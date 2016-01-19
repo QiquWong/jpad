@@ -567,6 +567,31 @@ public class LiftingSurface extends AeroComponent{
 		initializeDefaultSurface(type);
 
 	} // end of constructor
+	
+	// Construct Wing without fuselage, with rigging angle
+		public LiftingSurface(String name, 
+				String description, 
+				Double x, 
+				Double y, 
+				Double z, 
+				Double riggingAngle, 
+				ComponentEnum type
+				) { 
+
+			super(name, description, x, y, z, type);
+
+			_X0 = Amount.valueOf(x, SI.METER);
+			_Y0 = Amount.valueOf(y, SI.METER);
+			_Z0 = Amount.valueOf(z, SI.METER);
+			_cg = new CenterOfGravity(_X0, _Y0, _Z0);
+
+			// ATR 72 Data (matlab file)
+			
+			
+			initializeDefaultSurface(type);
+
+		} // end of constructor
+
 
 
 	// Construct Wing with other components
@@ -1056,35 +1081,46 @@ public class LiftingSurface extends AeroComponent{
 	 */
 	private void calculateSurfaceExposedAndWetted() {
 		// Calculate Sexp of Wing
-		Double w_b_half = 0.5 * _theFuselage.getWidthAtX(_deltaXWingFus.getEstimatedValue());
-
-		_x_le_exposed = Amount.valueOf(w_b_half * Math.tan(_sweepLEInnerPanel.doubleValue(SI.RADIAN)),SI.METER);
-		_x_te_exposed = Amount.valueOf(_chordRoot.doubleValue(SI.METER)+(w_b_half * Math.tan(_sweepTEInnerPanel.doubleValue(SI.RADIAN))),SI.METER);
-
 		Amount<Area> area_1_exposed = null;
 		Amount<Area> area_2_exposed = null;
 
-		Double x_a_1_exposed = _x_le_exposed.doubleValue(SI.METER);
-		Double y_a_1_exposed = w_b_half;
-		Double x_b_1_exposed = _chordRoot.doubleValue(SI.METER);
-		Double y_b_1_exposed = 0.;
-		Double x_c_1_exposed = 0.;
-		Double y_c_1_exposed = 0.;
-		Double x_a_2_exposed = _x_le_exposed.doubleValue(SI.METER);
-		Double y_a_2_exposed = w_b_half;
-		Double x_b_2_exposed = _chordRoot.doubleValue(SI.METER);
-		Double y_b_2_exposed = 0.;
-		Double x_c_2_exposed = _x_te_exposed.doubleValue(SI.METER);
-		Double y_c_2_exposed = w_b_half;
+		if ( _theFuselage != null ){
 
-		area_1_exposed = Amount.valueOf(Math.abs((x_b_1_exposed * y_a_1_exposed-x_a_1_exposed * y_b_1_exposed)+
-				(x_c_1_exposed * y_b_1_exposed-x_b_1_exposed * y_c_1_exposed)+
-				(x_a_1_exposed * y_c_1_exposed-x_c_1_exposed * y_a_1_exposed))/2,
-				SI.SQUARE_METRE);
-		area_2_exposed = Amount.valueOf(Math.abs((x_b_2_exposed * y_a_2_exposed-x_a_2_exposed * y_b_2_exposed)+
-				(x_c_2_exposed * y_b_2_exposed-x_b_2_exposed * y_c_2_exposed)+
-				(x_a_2_exposed * y_c_2_exposed-x_c_2_exposed * y_a_2_exposed))/2,
-				SI.SQUARE_METRE);
+			Double w_b_half = 0.5 * _theFuselage.getWidthAtX(_deltaXWingFus.getEstimatedValue());
+
+			_x_le_exposed = Amount.valueOf(w_b_half * Math.tan(_sweepLEInnerPanel.doubleValue(SI.RADIAN)),SI.METER);
+			_x_te_exposed = Amount.valueOf(_chordRoot.doubleValue(SI.METER)+(w_b_half * Math.tan(_sweepTEInnerPanel.doubleValue(SI.RADIAN))),SI.METER);
+
+
+			Double x_a_1_exposed = _x_le_exposed.doubleValue(SI.METER);
+			Double y_a_1_exposed = w_b_half;
+			Double x_b_1_exposed = _chordRoot.doubleValue(SI.METER);
+			Double y_b_1_exposed = 0.;
+			Double x_c_1_exposed = 0.;
+			Double y_c_1_exposed = 0.;
+			Double x_a_2_exposed = _x_le_exposed.doubleValue(SI.METER);
+			Double y_a_2_exposed = w_b_half;
+			Double x_b_2_exposed = _chordRoot.doubleValue(SI.METER);
+			Double y_b_2_exposed = 0.;
+			Double x_c_2_exposed = _x_te_exposed.doubleValue(SI.METER);
+			Double y_c_2_exposed = w_b_half;
+
+			area_1_exposed = Amount.valueOf(Math.abs((x_b_1_exposed * y_a_1_exposed-x_a_1_exposed * y_b_1_exposed)+
+					(x_c_1_exposed * y_b_1_exposed-x_b_1_exposed * y_c_1_exposed)+
+					(x_a_1_exposed * y_c_1_exposed-x_c_1_exposed * y_a_1_exposed))/2,
+					SI.SQUARE_METRE);
+			area_2_exposed = Amount.valueOf(Math.abs((x_b_2_exposed * y_a_2_exposed-x_a_2_exposed * y_b_2_exposed)+
+					(x_c_2_exposed * y_b_2_exposed-x_b_2_exposed * y_c_2_exposed)+
+					(x_a_2_exposed * y_c_2_exposed-x_c_2_exposed * y_a_2_exposed))/2,
+					SI.SQUARE_METRE);
+
+		}
+		else {
+			area_1_exposed = Amount.valueOf(0.0, SI.SQUARE_METRE);
+			area_2_exposed = Amount.valueOf(0.0, SI.SQUARE_METRE);
+
+			_surfaceWetted =_surface;
+		}
 
 		// Exposed planform surface
 		_surfaceExposed = Amount.valueOf(
@@ -1102,10 +1138,9 @@ public class LiftingSurface extends AeroComponent{
 		//  ADAS pag.98
 		_surfaceWetted = Amount.valueOf(
 				2 * (1 + 0.2 * _thicknessMean)*
-				_surface.doubleValue(SI.SQUARE_METRE),SI.SQUARE_METRE);                        		
+				_surface.doubleValue(SI.SQUARE_METRE),SI.SQUARE_METRE); 
 
 	}
-
 	/** 
 	 * Calculate tailplane arms
 	 * 

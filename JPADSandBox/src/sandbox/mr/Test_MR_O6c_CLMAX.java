@@ -1,17 +1,4 @@
-// This test generates a default wing in order to do some aerodynamic analysis on it.
-// Three airfoils are given as input data (with relatives value) and the purpose is the evaluation of the 
-// following value:
-
-// Lift curve of wing ( linear and non linear parts)
-// Drag polar for each intermediate profile
-// Moment curve for each intermediate profile
-// Distribution of drag coefficient 
-// Distribution of Moment
-
-
-
 package sandbox.mr;
-
 import static java.lang.Math.toRadians;
 
 import java.io.File;
@@ -53,7 +40,8 @@ import standaloneutils.customdata.CenterOfGravity;
 import standaloneutils.customdata.MyArray;
 import writers.JPADStaticWriteUtils;
 
-public class Test_MR_06_Wing {
+public class Test_MR_O6c_CLMAX {
+
 
 	public static void main(String[] args) {
 
@@ -167,7 +155,7 @@ public class Test_MR_06_Wing {
 		//		airfoilRoot.getAerodynamics().set_alphaStar(Amount.valueOf(Math.toRadians(10.0),SI.RADIAN));
 		//		airfoilRoot.getAerodynamics().set_alphaStall(Amount.valueOf(Math.toRadians(12.0),SI.RADIAN));
 		//		airfoilRoot.getAerodynamics().set_clAlpha(6.07);
-		//		airfoilRoot.getAerodynamics().set_clMax(1.3);
+		airfoilRoot.getAerodynamics().set_clMax(1.8);
 		//		airfoilRoot.getAerodynamics().set_clStar(1.06);
 
 
@@ -189,7 +177,7 @@ public class Test_MR_06_Wing {
 		//		airfoilKink.getAerodynamics().set_alphaStar(Amount.valueOf(Math.toRadians(10.0),SI.RADIAN));
 		//		airfoilKink.getAerodynamics().set_alphaStall(Amount.valueOf(Math.toRadians(12.0),SI.RADIAN));
 		//		airfoilKink.getAerodynamics().set_clAlpha(6.07);
-		//		airfoilKink.getAerodynamics().set_clMax(1.3);
+		airfoilKink.getAerodynamics().set_clMax(1.8);
 		//		airfoilKink.getAerodynamics().set_clStar(1.06);
 
 
@@ -210,7 +198,7 @@ public class Test_MR_06_Wing {
 		//		airfoilTip.getAerodynamics().set_alphaStar(Amount.valueOf(Math.toRadians(6.0),SI.RADIAN));
 		//		airfoilTip.getAerodynamics().set_alphaStall(Amount.valueOf(Math.toRadians(12.0),SI.RADIAN));
 		//		airfoilTip.getAerodynamics().set_clAlpha(6.01);
-		//		airfoilTip.getAerodynamics().set_clMax(1.0);
+		airfoilTip.getAerodynamics().set_clMax(1.6);
 		//		airfoilTip.getAerodynamics().set_clStar(0.63);
 
 		// -----------------------------------------------------------------------
@@ -225,25 +213,6 @@ public class Test_MR_06_Wing {
 		theWing.set_theAirfoilsList(myAirfoilList);
 		theWing.updateAirfoilsGeometry(); 
 
-
-		// -----------------------------------------------------------------------
-		// Mean airfoil 
-		// -----------------------------------------------------------------------
-
-		System.out.println("\n \n-----------------------------------------------------");
-		System.out.println("Starting evaluate the mean airfoil characteristics");
-		System.out.println("-----------------------------------------------------");
-
-		WingCalculator.MeanAirfoil theMeanAirfoilCalculator = theWngAnalysis.new MeanAirfoil();
-		meanAirfoil = theMeanAirfoilCalculator.calculateMeanAirfoil(theWing, airfoilRoot, airfoilKink, airfoilTip);
-		double meanAlphaStar = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
-
-
-		System.out.println("\nThe mean alpha star is [rad] = " + meanAlphaStar);
-		double alphaStarDeg = Math.toDegrees(meanAlphaStar);
-		System.out.println("The mean alpha star is [deg] = " + alphaStarDeg);
-
-		double meanLESharpnessParameter = meanAirfoil.getGeometry().get_deltaYPercent();
 
 		// -----------------------------------------------------------------------
 		// Using NASA-Blackwell method for estimating the lifting surface CLmax
@@ -269,6 +238,7 @@ public class Test_MR_06_Wing {
 		System.out.println("cl " + clMax);
 
 
+		//--------------------------------------
 		// PLOT
 
 		System.out.println("\n \n \t \t WRITING CHART TO FILE. Evaluating CL_MAX ");
@@ -297,7 +267,7 @@ public class Test_MR_06_Wing {
 
 
 		String folderPath = MyConfiguration.currentDirectoryString + File.separator + "out" + File.separator;
-		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "CL_Wing" + File.separator);
+		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "CL_Wing_Prova" + File.separator);
 
 		double [][] semiSpanAd = {theLSAnalysis.get_yStationsND(), theLSAnalysis.get_yStationsND(),
 				theLSAnalysis.get_yStationsND(), theLSAnalysis.get_yStationsND()};
@@ -322,214 +292,6 @@ public class Test_MR_06_Wing {
 		System.out.println("-----------------------------------------------------");
 		System.out.println("\t \t DONE ");
 
-
-		// -----------------------------------------------------------------------
-		// Evaluate alpha max
-		// -----------------------------------------------------------------------
-
-		// With NASA Blackwell method we can evaluate the CL max inviscid. So we can use a correction in alpha max  //Sforza p150
-
-		System.out.println("\n \n-----------------------------------------------------");
-		System.out.println("STARTING EVALUATE DELTA ALPHA MAX");
-		System.out.println("-----------------------------------------------------");
-
-
-		System.out.println(" the mean LE sharpness parameter is : " + meanLESharpnessParameter);
-		System.out.println("the LE sweep angle is " +  theWing.get_sweepLEEquivalent());
-		deltaAlphaMax = Amount.valueOf(toRadians (theLSAnalysis.get_AerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(theWing.get_sweepLEEquivalent().getEstimatedValue() ,
-				meanLESharpnessParameter )), SI.RADIAN);;
-				System.out.println("Delta  alpha max " + deltaAlphaMax);
-				Amount<javax.measure.quantity.Angle> alphaAtCLMaxNew =  Amount.valueOf((alphaAtCLMax.getEstimatedValue() + deltaAlphaMax.getEstimatedValue()), SI.RADIAN);
-				System.out.println( "Alpha max " + alphaAtCLMaxNew );
-
-
-
-
-				// -----------------------------------------------------------------------
-				// Evaluate wing Lift curve
-				// -----------------------------------------------------------------------
-
-				// Now we have all ingredient to evaluate the wing lift curve.
-				// The slope of linear part is given by the Nasa- Blackwell method. Known two points ( = evaluating CL at two
-				// different alpha ) we can know the slope.
-				// From CL alpha wing and Alpha_max, we can evaluate the non-linear part.
-
-
-				System.out.println("\n \n-----------------------------------------------------");
-				System.out.println("STARTING EVALUATE WING LIFT CURVE");
-				System.out.println("-----------------------------------------------------");
-
-
-
-				// cl alpha
-				WingCalculator.CalcCLWingCurve theCLCurve = theWngAnalysis.new CalcCLWingCurve();
-				theCLCurve.cLWingCurvePlot(theLSAnalysis, alphaAtCLMaxNew, alphaStarDeg, clMax);
-
-
-
-				// -----------------------------------------------------------------------
-				// Generate an intermediate airfoil
-				// -----------------------------------------------------------------------
-
-
-				WingCalculator.IntermediateAirfoil theIntermediate = theWngAnalysis.new IntermediateAirfoil();
-				MyAirfoil intermediateAirfoil = theIntermediate.calculateIntermediateAirfoil(theWing, airfoilRoot, airfoilKink, airfoilTip, 5.3);
-
-				// print value to check the result
-				System.out.println(" cl max kink " + airfoilKink.getAerodynamics().get_clMax());
-				System.out.println(" cl max intermediate "  + intermediateAirfoil.getAerodynamics().get_clMax());
-				System.out.println(" cl max tip " + airfoilTip.getAerodynamics().get_clMax());
-
-				System.out.println(" alpha stall kink " + airfoilKink.getAerodynamics().get_alphaStall());
-				System.out.println(" alpha stall intermediate "  + intermediateAirfoil.getAerodynamics().get_alphaStall());
-				System.out.println(" alpha stall tip " + airfoilTip.getAerodynamics().get_alphaStall());
-
-				System.out.println(" cl alpha kink " + airfoilKink.getAerodynamics().get_clAlpha());
-				System.out.println(" cl alpha intermediate "  + intermediateAirfoil.getAerodynamics().get_clAlpha());
-				System.out.println(" cl alpha tip " + airfoilTip.getAerodynamics().get_clAlpha());
-
-				System.out.println(" alpha star kink " + airfoilKink.getAerodynamics().get_alphaStar());
-				System.out.println(" alpha star intermediate "  + intermediateAirfoil.getAerodynamics().get_alphaStar());
-				System.out.println(" alpha star tip " + airfoilTip.getAerodynamics().get_alphaStar());
-
-
-
-				// -----------------------------------------------------------------------
-				// Evaluate airfoil Lift curve
-				// -----------------------------------------------------------------------
-
-				System.out.println("\n \n-----------------------------------------------------");
-				System.out.println("STARTING EVALUATE CL vs ALPHA CURVE OF AIRFOIL ");
-				System.out.println("-----------------------------------------------------");
-
-				String folderPathAirfoil = MyConfiguration.currentDirectoryString + File.separator + "out" + File.separator;
-				String subfolderPathAirfoil = JPADStaticWriteUtils.createNewFolder(folderPathAirfoil + "CL_Airfoil" + File.separator);
-
-				MyAirfoil airfoilPlot;
-				airfoilPlot = intermediateAirfoil;
-
-				double [] alphaArrayAirfoil = new double [40];
-				double [] clArrayAirfoil = new double [40];
-
-				alphaArrayAirfoil[1] = Amount.valueOf(-2, NonSI.DEGREE_ANGLE).getEstimatedValue();
-				for (int i=1 ; i<alphaArrayAirfoil.length ; i++){
-					alphaArrayAirfoil[i] = alphaArrayAirfoil[i-1] + Amount.valueOf(0.5, NonSI.DEGREE_ANGLE).getEstimatedValue();
-				}
-				System.out.println( " alpha array --> " + Arrays.toString(alphaArrayAirfoil));
-				for (int i=0 ; i<clArrayAirfoil.length; i++){
-					clArrayAirfoil[i] = airfoilPlot.getAerodynamics().calculateClAtAlpha(
-							Amount.valueOf(toRadians(alphaArrayAirfoil[i]), SI.RADIAN).getEstimatedValue());
-
-				} 
-				System.out.println( " cl array --> " + Arrays.toString(clArrayAirfoil));
-
-				//	    MyChartToFileUtils.plotNoLegend
-				//		(alphaArrayAirfoil, clArrayAirfoil,-2.0, 20.0 ,
-				//				-0.5,2.0, "alpha", "CL", "deg" , "", subfolderPathAirfoil, "CLalphaAirfoilRoot");
-
-				System.out.println("\n \n-----------------------------------------------------");
-				System.out.println("DONE ");
-				System.out.println("-----------------------------------------------------");
-
-
-				// -----------------------------------------------------------------------
-				// Evaluate wing lift distribution
-				// -----------------------------------------------------------------------
-
-				System.out.println(" cl max root " + airfoilRoot.getAerodynamics().get_clMax());
-				System.out.println(" cl max airfoil 0 " + theWing.get_theAirfoilsList().get(0).getAerodynamics().get_clMax());
-
-
-				System.out.println(" cl max kink " + airfoilKink.getAerodynamics().get_clMax());
-				System.out.println(" cl max airfoil 1 " + theWing.get_theAirfoilsList().get(1).getAerodynamics().get_clMax());
-
-				System.out.println(" cl max tip " + airfoilTip.getAerodynamics().get_clMax());
-				System.out.println(" cl max airfoil 2 " + theWing.get_theAirfoilsList().get(2).getAerodynamics().get_clMax());
-
-				System.out.println(" y station " + Arrays.toString(theLSAnalysis.get_yStations()));
-
-
-
-				// -----------------------------------------------------------------------
-				// Evaluate effective angle of attack
-				// -----------------------------------------------------------------------
-
-				System.out.println("\n \n-----------------------------------------------------");
-				System.out.println("STARTING EVALUATE EFFECTIVE ANGLE OF ATTACK ");
-				System.out.println("-----------------------------------------------------");
-
-				double[] alphaEffective;
-
-				AlphaEffective theAlphaCalculator = new AlphaEffective(theLSAnalysis, theWing, theOperatingConditions);
-				Amount<javax.measure.quantity.Angle> inputAngle = Amount.valueOf(toRadians(8.), SI.RADIAN);
-
-				alphaEffective = theAlphaCalculator.calculateAlphaEffective(inputAngle);
-
-				System.out.println("\n \n-----------------------------------------------------");
-				System.out.println(" alpha --> " + inputAngle);
-				System.out.println(" alpha effective --> " + Arrays.toString(alphaEffective));
-
-				System.out.println("\n \n-----------------------------------------------------");
-				System.out.println("DONE");
-				System.out.println("-----------------------------------------------------");
-
-
-				// -----------------------------------------------------------------------
-				// Evaluate CD
-				// ----------------------------------------------------------------------- 
-
-				System.out.println("\n \n-----------------------------------------------------");
-				System.out.println("STARTING EVALUATE CD ");
-				System.out.println("-----------------------------------------------------");
-
-				// NB --> best practice to define an object CalcLiftDistribution
-				LSAerodynamicsManager.CalcLiftDistribution calculateLiftDistribution = theLSAnalysis.getCalculateLiftDistribution();
-				calculateLiftDistribution.getNasaBlackwell().calculate(alphaFirst);
-
-				// calculation of the cd 
-				LSAerodynamicsManager.CalcCDAtAlpha calculateCD =  theLSAnalysis.new CalcCDAtAlpha();
-
-				double CD = calculateCD.integralFromCdAirfoil(alphaFirst, MethodEnum.NASA_BLACKWELL, theLSAnalysis);
-
-				System.out.println(" CD of wing at alpha " + alphaFirst.to(NonSI.DEGREE_ANGLE) + " = " + CD);
-
-
-				airfoilRoot.getAerodynamics().calculateCdAtAlpha(alphaFirst);
-
-				airfoilKink.getAerodynamics().plotPolar();
-				airfoilKink.getAerodynamics().plotClvsAlpha();
-
-
-				//	   double cdKink = calculateCd.calcCDatAlphaNasaBlackwell(alphaSecond, theLSAnalysis);
-				//	   double cdKinkSchrenk = calculateCd.calcCDatAlphaSchrenk(alphaSecond, theLSAnalysis);
-				//	  
-				//	   System.out.println(" cd kink at alpha with Nasa Blackwell = " + alphaSecond.getEstimatedValue()* 57.3 + " deg = " + cdKink);
-				//	   System.out.println(" cd kink at alpha with Schrenk = " + alphaSecond.getEstimatedValue()* 57.3 + " deg = " + cdKinkSchrenk);// output informations
-				//	   
-				//	   // plotting polar drag of airfoil
-				//	   calculateCd.plotPolar(theLSAnalysis, MethodEnum.NASA_BLACKWELL);
-				//	   calculateCd.plotPolar(theLSAnalysis, MethodEnum.SCHRENK);
-				//	   
-				//	   // calculation of the Cd Distribution
-				//	   double [] cdDistribution;
-				//	   LSAerodynamicsManager.CalcCdDistribution theCDDistribution = theLSAnalysis.new CalcCdDistribution();
-				//	   cdDistribution = theCDDistribution.nasaBlackwell(alphaFirst, theLSAnalysis);
-				//	   
-				//	   String subfolderPathCD = JPADStaticWriteUtils.createNewFolder(folderPath + "CD_distribution" + File.separator);
-				//	   
-				//	   // plotting the CD distribution
-				//	   MyChartToFileUtils.plotNoLegend(
-				//				theLSAnalysis.get_yStationsND(),	cdDistribution, 
-				//				0.0, 1.0, 0.0, 0.1,					    // axis with limits
-				//				"eta", "Cd", "", "",	   				
-				//				subfolderPathCD, "cd distribution alpha = " + alphaFirst.getEstimatedValue());	
-				//	   
-				//	   
-				//	  // calculation of CD
-				//	   
-				//	   LSAerodynamicsManager.CalcCDAtAlpha theCDCalculator= theLSAnalysis.new CalcCDAtAlpha();
-				//	   
-				//	   theCDCalculator.integralFromCdAirfoil(alphaFirst, MethodEnum.NASA_BLACKWELL, theLSAnalysis);   
 
 	}
 }

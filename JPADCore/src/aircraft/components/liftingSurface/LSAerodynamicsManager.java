@@ -196,6 +196,8 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				.get_theAerodynamics()
 				.get_aerodynamicDatabaseReader()
 				);
+		
+		getTheLiftingSurface().setAerodynamics(this);
 		initializeDataFromAircraft(ac);
 		initializeDataFromLiftingSurface(liftingSurf);
 		initializeDataFromOperatingConditions(conditions);
@@ -222,6 +224,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 		theOperatingConditions = conditions;
 		setTheLiftingSurface(liftingSurf);
+		getTheLiftingSurface().setAerodynamics(this);
 
 		initializeDataFromLiftingSurface(liftingSurf);
 		initializeDataFromOperatingConditions(conditions);
@@ -1492,7 +1495,53 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		
 	}
 	
-
+	/** 
+	 * This function plot CD vs Alpha curve  and CD vs CL curve of a wing, using 30 value of alpha between 
+	 * alpha=- 2 deg and alpha = 18 deg
+	 * 
+	 * @author Manuela Ruocco
+	 */
+public void PlotCDvsAlphaCurve(){
+		
+		double alphaFirstCD = -2.0;
+		double alphaLastCD = 18.0;
+		int nPointsCD = 50;
+		double [] alphaArrayPlotCD = MyArrayUtils.linspace(alphaFirstCD,alphaLastCD, nPointsCD);
+		double [] cDPlotArray = new double [nPointsCD];
+		double [] cLPlotArray = new double [nPointsCD];
+		Amount<Angle> alphaActual;
+		CalcCDAtAlpha theCDCalculator = new CalcCDAtAlpha();
+		CalcCLAtAlpha theCLCalculator = new CalcCLAtAlpha();
+		String folderPath = MyConfiguration.currentDirectoryString + File.separator + "out" + File.separator;
+		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "CD wing" + File.separator);
+		
+		for (int i=0; i<nPointsCD; i++){
+			alphaActual= Amount.valueOf(toRadians(alphaArrayPlotCD[i]), SI.RADIAN);
+		
+		cDPlotArray[i] = 
+				theCDCalculator
+				.integralFromCdAirfoil(
+						alphaActual,
+						MethodEnum.NASA_BLACKWELL,
+						this
+						);
+		cLPlotArray[i] = theCLCalculator.nasaBlackwell(alphaActual);
+		
+		}
+		
+		MyChartToFileUtils.plotNoLegend(
+				alphaArrayPlotCD,cDPlotArray, 
+				null, null , null , null ,					    // axis with limits
+				"alpha", "CDw", "deg", "",	   				
+				subfolderPath, "CD vs Alpha");
+		
+		MyChartToFileUtils.plotNoLegend(
+				alphaArrayPlotCD,cLPlotArray, 
+				null, null , null , null ,					    // axis with limits
+				"alpha", "CDw", "deg", "",	   				
+				subfolderPath, "CD vs CL");
+		
+	}
 	/** 
 	 * Evaluate CL vs alpha
 	 * 

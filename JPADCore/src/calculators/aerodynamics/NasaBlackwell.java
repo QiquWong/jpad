@@ -123,51 +123,7 @@ public class NasaBlackwell {
 		prepareDiscreteSurface();
 	}
 
-	public NasaBlackwell(
-			double semispan, 
-			double surface,
-			double[] yStationsActual,
-			double[] chordsVsYActual,
-			double[] xLEvsYActual,
-			double[] dihedral,
-			double[] twist,
-			double[] alpha0l,
-			double vortexSemiSpanToSemiSpanRatio,
-			double mach,
-			double altitude,
-			Amount<Angle> alphaInitial) {
 
-		this.mach = mach;
-		this.altitude = altitude;
-		this.surface = surface;
-		this.semispan = semispan;
-		this.yStationsActual = yStationsActual;
-		this.chordsVsYActual = chordsVsYActual;
-		this.xLEvsYActual = xLEvsYActual;
-		this.alpha0l = alpha0l;
-		this.vortexSemiSpanToSemiSpanRatio = vortexSemiSpanToSemiSpanRatio;
-		this.alphaInitial = alphaInitial;
-
-		//TODO change ifs
-
-
-		this.nPointsSemispanWise = (int) (1./(2*vortexSemiSpanToSemiSpanRatio));
-
-		if (twist.length != nPointsSemispanWise) this.twist = new double[nPointsSemispanWise];
-		else this.twist = twist;
-
-		this.dihedral = new double[nPointsSemispanWise];
-
-		yStationsNB = MyArray.createArray(MyArrayUtils.linspace(
-				vortexSemiSpan,
-				semispan - vortexSemiSpan,
-				nPointsSemispanWise));
-
-		yStations = MyArrayUtils.linspace(0., semispan, nPointsSemispanWise);
-		
-		//prepareDiscreteSurface();
-		
-	}
 
 	/**
 	 * Evaluate influence coefficient for downwash velocity, w
@@ -528,30 +484,42 @@ public class NasaBlackwell {
 	public void calculate(Amount<Angle> alpha) {
 		// prepareDiscreteSurface();
 
-		_alphaDistribution = new MyArray(AnglesCalc.getAlphaDistribution(alpha.doubleValue(SI.RADIAN), twist, alpha0l));
+		_alphaDistribution = new MyArray(AnglesCalc.getAlphaDistribution(
+				alpha.doubleValue(SI.RADIAN),
+				twist, 
+				alpha0l));
 
 		prepareSystemSolution();
 		calculateCLOverall();
 		calculateLoadingDistribution();
 	}
-
-	// TODO CONTINUE HERE -->	
-	public void calculateDownwash() {
+	/**
+	 * This method evaluates Gamma and influence factor which are useful in order to evaluate the effective
+	 * angle of attack in n control point among semispan due to downwash.
+	 * 
+	 * @author Manuela Ruocco
+	 * @param Amount<Angle> alpha : Initial angle of attack in radians 
+	 */
+	public void calculateDownwash(Amount<Angle> alpha) {
 
 		influenceFactor = new double [nPointsSemispanWise] [nPointsSemispanWise];
 		gamma = new double [nPointsSemispanWise];
 
-		controlPoints = getControlPoints();
-		vortexPoints = getVortexPoints();
+		controlPoints = get_listVortexPoints();
+		vortexPoints = get_listVortexPoints();
 		for ( int i=0 ; i<nPointsSemispanWise; i++){
 			for(int j=0 ; j<nPointsSemispanWise; j++){
 				influenceFactor[i][j] = fwSigned_ni_n(
-						controlPoints.get(i),  vortexPoints.get(j), vortexSemiSpan, dihedral[j]);
+						_listControlPoints.get(i), _listVortexPoints.get(j), 
+						vortexSemiSpan, 
+						dihedral[j]);
 			}
 		}
 
-		calculate(alphaInitial);
+		calculate(alpha);
 		gamma = get_gammaDistribution().toArray();
+		System.out.println(" gamma " + Arrays.toString(gamma));
+
 
 	}
 

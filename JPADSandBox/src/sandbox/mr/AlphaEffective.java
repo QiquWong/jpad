@@ -22,6 +22,7 @@ import configuration.enumerations.MethodEnum;
 import standaloneutils.GeometryCalc;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
+import standaloneutils.atmosphere.SpeedCalc;
 import standaloneutils.customdata.MyArray;
 import standaloneutils.customdata.MyPoint;
 
@@ -35,8 +36,6 @@ import standaloneutils.customdata.MyPoint;
 
 public class AlphaEffective {
 
-
-
 	int numberOfPoints = 30; //the same of static final  _numberOfPointsChordDistribution
 	OperatingConditions theOperatingConditions;
 	LSAerodynamicsManager theLSManager;
@@ -44,11 +43,14 @@ public class AlphaEffective {
 
 	double vortexSemiSpan, vortexSemiSpanToSemiSpanRatio, surface, semispan, mach, altitude ; 
 	double [] yStationsActual, dihedral,  twist, alpha0l, xLEvsYActual, chordsVsYActual, alpha0lArray,
-			  yStationsAirfoil, yStationsAlpha;	
+	yStationsAirfoil, yStationsAlpha;	
 	MyArray yStationsNB;
 	List<MyPoint> controlPoint, vortexPoint;
 
+
+	//--------------------------------------------------------
 	//builder
+
 	public AlphaEffective(LSAerodynamicsManager theLSManager, LiftingSurface theWing,
 			OperatingConditions theOperatingConditions){
 		this.theLSManager = theLSManager;
@@ -59,7 +61,7 @@ public class AlphaEffective {
 		vortexSemiSpan = vortexSemiSpanToSemiSpanRatio * theWing.get_semispan().getEstimatedValue();
 		mach = theOperatingConditions.get_machCurrent();
 		semispan = theWing.get_semispan().getEstimatedValue();
-		
+
 		dihedral = theWing.get_dihedral().toArray();
 		alpha0lArray = theWing.get_alpha0VsY().toArray();
 		twist = theWing.get_twistVsY().toArray();
@@ -70,17 +72,8 @@ public class AlphaEffective {
 		xLEvsYActual = theWing.get_xLEvsYActual().toArray();
 		surface = theWing.get_surface().getEstimatedValue();
 		altitude = theOperatingConditions.get_altitude().getEstimatedValue();
-		//nPointsSemispanWise = theLSManager.get_nPointsSemispanWise();
 
-		
 		alpha0l = theLSManager.get_alpha0lDistribution().toArray();
-		
-//		alpha0l = new MyArray(
-//				MyMathUtils.getInterpolatedValue1DLinear(
-//						yStationsAirfoil, 
-//						alpha0lArray,
-//						yStationsAlpha)).toArray();
-//		
 	}
 
 
@@ -93,46 +86,43 @@ public class AlphaEffective {
 		double [] gamma = new double [numberOfPoints];
 		double [] alphaInduced = new double [numberOfPoints];
 		double [] verticalVelocity = new double [numberOfPoints];
-		double [] summ = new double [numberOfPoints];
+		double summ =0.0 ;
 		int lowerLimit = 0, upperLimit=numberOfPoints-1;
-		
-		NasaBlackwell calculator = new NasaBlackwell(
-				semispan, surface, yStationsActual, 
+
+
+		NasaBlackwell theCalculator = new NasaBlackwell(
+				semispan, surface, yStationsActual,
 				chordsVsYActual, xLEvsYActual, 
 				dihedral, twist,alpha0l, vortexSemiSpanToSemiSpanRatio,
-				mach, altitude, alphaInitial);
-		
-//		double semispan, 
-//		double surface,
-//		double[] yStationsActual,
-//		double[] chordsVsYActual,
-//		double[] xLEvsYActual,
-//		double[] dihedral,
-//		double[] twist,
-//		double[] alpha0l,
-//		double vortexSemiSpanToSemiSpanRatio,
-//		double mach,
-//		double altitude,
-//		Amount<Angle> alphaInitial
-//		calculator.calculateDownwash(); 
-//		influenceFactor = calculator.getInfluenceFactor();
-//		gamma = calculator.getGamma();
-		
+				alphaInitial.getEstimatedValue(), mach, altitude);
 
-		velocity = theOperatingConditions.get_tas().getEstimatedValue(); //meters per second
+		theCalculator.calculateDownwash(alphaInitial); 
+		influenceFactor = theCalculator.getInfluenceFactor();
+		gamma = theCalculator.getGamma();
+
+		//velocity = theOperatingConditions.get_tas().getEstimatedValue(); //meters per second
+		velocity = SpeedCalc.calculateTAS(mach, altitude);
+
 
 		for (int i=0 ; i<numberOfPoints; i++){
 			for (int j = 0; j<numberOfPoints; j++){
-				
-		addend[j] =  gamma [j] * influenceFactor [i][j]; // devo costruire influence factor ad hoc
 
-		summ[j] = MyMathUtils.summation(lowerLimit, upperLimit, addend);	
-		verticalVelocity [i]= (1/(4*Math.PI)) * summ[j]; 
-		alphaInduced [i] = Math.atan(verticalVelocity [i] /velocity);
-		alphaEffective[i] = (alphaInitial.getEstimatedValue() - alphaInduced[i]);
+				addend[j] =  gamma [j] * influenceFactor [i][j]; 
+
+				summ = MyMathUtils.summation(lowerLimit, upperLimit, addend);	
+			}
+			verticalVelocity [i]= (1/(4*Math.PI)) * (summ*0.3048);
+			System.out.println("\n \n------------------------------------------- ");
+			System.out.println("\nVertical velocity " + verticalVelocity[i] );
+			System.out.println("Velocity " + velocity);
+
+			alphaInduced [i] = Math.atan(verticalVelocity [i] /velocity);
+
+			System.out.println("alpha induced " + alphaInduced[i]);
+			System.out.println(" alpha actual " + alphaInitial.getEstimatedValue());
+			alphaEffective[i] = (alphaInitial.getEstimatedValue() - alphaInduced[i]);
 		}
-		}
-		
+
 		return alphaEffective;
 
 	}
@@ -140,3 +130,4 @@ public class AlphaEffective {
 
 
 }
+
