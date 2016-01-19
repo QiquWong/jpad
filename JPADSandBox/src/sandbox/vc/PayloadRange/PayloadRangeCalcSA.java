@@ -155,9 +155,7 @@ public class PayloadRangeCalcSA {
 		IOmanager.addElement(PayloadRangeEnum.ByPassRatio, Amount.valueOf(0.0, Unit.ONE), "Bypass ratio of the engine. If it has been chosen TURBOPROP type,"
 				+ " set this value equal to 0.0");
 		IOmanager.addElement(PayloadRangeEnum.Propeller_efficiency, Amount.valueOf(0.0, Unit.ONE),  "Propeller efficiency");
-		//
 		IOmanager.addElement(PayloadRangeEnum.Mean_maximum_thickness, Amount.valueOf(0.0, Unit.ONE), "Mean maximum thickness of the wing airfoils");
-		//		
 		IOmanager.addElement(PayloadRangeEnum.Current_lift_coefficient, Amount.valueOf(0.0, Unit.ONE), "Total lift coefficient");
 		IOmanager.addElement(PayloadRangeEnum.AspectRatio, Amount.valueOf(0.0, Unit.ONE),  "Wing aspect ratio");
 		IOmanager.addElement(PayloadRangeEnum.CD0, Amount.valueOf(0.0, Unit.ONE), "Aircraft drag coefficient at zero lift");
@@ -185,14 +183,13 @@ public class PayloadRangeCalcSA {
 
 		IOmanager.addElement(PayloadRangeEnum.Design_Payload, rangeMP, "It's the range with maximum payload");
 		IOmanager.addElement(PayloadRangeEnum.Max_Fuel_Range, rangeMF, "It's the range with maximum fuel mass");
-		IOmanager.addElement(PayloadRangeEnum.Max_Range, rangeMF, "It's the range without payload");
+		IOmanager.addElement(PayloadRangeEnum.Max_Range, rangeZP, "It's the range without payload");
 		IOmanager.addElement(PayloadRangeEnum.Design_Payload, maxPayloadMass, "It's the value of design payload mass");
 		IOmanager.addElement(PayloadRangeEnum.SFC, Amount.valueOf(sfc, sfcUnit), "Specific Fuel Consumption");
 		IOmanager.addElement(PayloadRangeEnum.Efficiency, Amount.valueOf(E, Unit.ONE), "Aerodynamic efficiency");
 
 		return IOmanager;
 	}
-
 
 
 	/**
@@ -226,7 +223,7 @@ public class PayloadRangeCalcSA {
 	 */
 	public static void writeToFile(
 			String filenamewithPathAndExt,
-			String rootElement,
+//			String rootElement,
 			DatabaseIOmanager<PayloadRangeEnum> inputManager,
 			DatabaseIOmanager<PayloadRangeEnum> outputManager) {
 
@@ -237,8 +234,6 @@ public class PayloadRangeCalcSA {
 		databaseWriter.writeDocument();
 	}
 
-
-	//------------------------------------Start Moved snippet-------------------------------------------------
 
 	public static HashMap<Double, AirplaneType> pLRangeAirplaneTypes() {
 		
@@ -283,17 +278,10 @@ public class PayloadRangeCalcSA {
 			FuelFractionDatabaseReader fuelFractionReader) throws ClassNotFoundException, HDF5LibraryException, NullPointerException {
 
 		DatabaseIOmanager<PayloadRangeEnum> inputManager = readFromFile(inputFileNamewithPathAndExt); 
-		
-//		System.out.println("airplaneType: " + pLRangeAirplaneTypes().get(inputManager.getValue(PayloadRangeEnum.AirplaneType).getEstimatedValue()));
-//		System.out.println("airplaneType - key: " + inputManager.getValue(PayloadRangeEnum.AirplaneType).getEstimatedValue());
-//		
-//		System.out.println("engineType: " + pLRangeEngineType().get(inputManager.getValue(PayloadRangeEnum.EngineType).getEstimatedValue()));
-//		System.out.println("airfoilType: " + pLRangeAirfoilType().get(inputManager.getValue(PayloadRangeEnum.AirfoilType).getEstimatedValue()));
-		
+				
 		AirplaneType airplaneType = pLRangeAirplaneTypes().get(inputManager.getValue(PayloadRangeEnum.AirplaneType).getEstimatedValue());
 		EngineTypeEnum engineType = pLRangeEngineType().get(inputManager.getValue(PayloadRangeEnum.EngineType).getEstimatedValue());
 		AirfoilTypeEnum airfoilType = pLRangeAirfoilType().get(inputManager.getValue(PayloadRangeEnum.AirfoilType).getEstimatedValue());
-		
 		Amount<Angle> sweepLEEquivalent = inputManager.getValue(PayloadRangeEnum.SweepLE);
 		Amount<Mass> maxTakeOffMass = (Amount<Mass>) inputManager.getValue(PayloadRangeEnum.Maximum_take_off_mass);
 		Amount<Mass> operatingEmptyMass = (Amount<Mass>) inputManager.getValue(PayloadRangeEnum.Operating_empty_mass);
@@ -303,10 +291,7 @@ public class PayloadRangeCalcSA {
 		double oswald = inputManager.getValue(PayloadRangeEnum.OswaldFactor).getEstimatedValue();
 		double ar 	  = inputManager.getValue(PayloadRangeEnum.AspectRatio).getEstimatedValue();
 		double cl 	  = inputManager.getValue(PayloadRangeEnum.Current_lift_coefficient).getEstimatedValue();
-
-
-		double tcMax = inputManager.getValue(PayloadRangeEnum.Mean_maximum_thickness).getEstimatedValue();// It never used
-
+		double tcMax = inputManager.getValue(PayloadRangeEnum.Mean_maximum_thickness).getEstimatedValue();
 		double altitude 	= inputManager.getValue(PayloadRangeEnum.Altitude).getEstimatedValue();
 		double eta 			= inputManager.getValue(PayloadRangeEnum.Propeller_efficiency).getEstimatedValue();
 		double currentMach 	= inputManager.getValue(PayloadRangeEnum.Mach_number).getEstimatedValue();
@@ -421,7 +406,7 @@ public class PayloadRangeCalcSA {
 				test.getSfc_current_mach(), 
 				(test.getCl()/test.getCd()));
 		
-		writeToFile(outputFileWithPathAndExt, "PayloadRange", inputManager, outputManager);
+		writeToFile(outputFileWithPathAndExt, inputManager, outputManager);
 				
 	} //--end executeStandalonePayloadRange
 	//
@@ -1769,17 +1754,6 @@ public class PayloadRangeCalcSA {
 
 		return vRange;
 	}
-
-	/******************************************************************************************
-	 * 
-	 */
-//	DatabaseIOmanager<PayloadRangeEnum> outputManager = initializeOutputManager(rangeMP,
-//			rangeMF, 
-//			rangeZP,
-//			maxPayloadMass,
-//			sfc,
-//			(cl/cd));
-//	//TODO create a method which writes the output 
 
 	/******************************************************************************************
 	 * Method that allows users to generate Range and Payload matrices to be used in 
