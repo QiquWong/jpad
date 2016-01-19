@@ -1,0 +1,11 @@
+function CD=graficov_CD(CD0,e,AR,deltaCD1,deltaCD2,CL_max)
+
+
+N=100;
+k=1/(pi*AR*e);
+CL=linspace(0,CL_max,N)
+CD=CD0+k*CL.^2+deltaCD1+deltaCD2;
+g=
+plot(CL,CD,'-g','linewidth',2);axis([0 (CL_max+0.2) 0 0.3]);
+xlabel('CL'); ylabel('CD');
+end

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GetDataWorkspace>
+  <version>2.26.0.20</version>
+  <WSversion>10</WSversion>
+  <File>
+    <Name>C:\Users\Tech\Desktop\Get Data\CL alfa\Screenshot_2015-10-02-10-16-18.jpg</Name>
+    <Width>1440</Width>
+    <Height>2560</Height>
+  </File>
+  <Line>
+    <Caption>Line #1</Caption>
+    <LineColor>13,13,13</LineColor>
+    <BkColor>251,252,252</BkColor>
+    <PtColor>220,70,220</PtColor>
+    <LineType>0</LineType>
+    <Points MF="9">3082,15889,3802,14584,5197,12235,6592,10174,7465,9139,8284,8662,8779,8599,9454,8707,9940,9049,10480,9454</Points>
+    <Points MF="9">11029,9787</Points>
+  </Line>
+  <CurrentLine>0</CurrentLine>
+  <Xmin MF="9">1705,15934,-1.000000e+001</Xmin>
+  <Xmax MF="9">12352,15934,3.000000e+001</Xmax>
+  <Ymin MF="9">1705,15934,0.000000e+000</Ymin>
+  <Ymax MF="9">1714,7357,2.000000e+000</Ymax>
+  <XScale>linear</XScale>
+  <YScale>linear</YScale>
+  <Position>540,187</Position>
+  <Zoom>
+    <Scale>60.0</Scale>
+  </Zoom>
+  <Digitize>
+    <IgnorePixels>1</IgnorePixels>
+    <LineIDMethod>2</LineIDMethod>
+  </Digitize>
+  <AutoTrace>
+    <TraceDistance>8</TraceDistance>
+    <SmoothLines>1</SmoothLines>
+  </AutoTrace>
+  <DigitizeArea>
+    <LineOrArea>0</LineOrArea>
+    <RotateAngle>0.000000</RotateAngle>
+    <dx>8.000000</dx>
+  </DigitizeArea>
+  <GridSettings>
+    <ShowGrid>0</ShowGrid>
+    <AreaType>0</AreaType>
+    <dx>15.000000</dx>
+    <dy>15.000000</dy>
+  </GridSettings>
+</GetDataWorkspace>

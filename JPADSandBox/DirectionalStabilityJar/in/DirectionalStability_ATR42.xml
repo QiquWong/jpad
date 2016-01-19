@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<DirectionalStability>
+    <Input>
+        <Mach_number>
+		    <value>0.1500</value>
+            <description>Mach number.</description>
+        </Mach_number>
+		<Reynolds_number>
+		    <value>80000000</value>
+            <description>Reynolds number. It is referred to fuselage length</description>
+		</Reynolds_number>
+		<LiftCoefficient>
+		    <value>0.8</value>
+            <description>Lift coefficient</description>
+		</LiftCoefficient>
+        <Wing_Aspect_Ratio>
+            <value>11.0000</value>
+            <description>Wing Aspect Ratio. Accepts values in [6,14] range.</description>
+        </Wing_Aspect_Ratio>
+        <Wing_span>
+            <value unit="m">24.5700</value>
+            <description>Wing span</description>
+        </Wing_span>
+        <Wing_position>
+            <value>1.0000</value>
+            <description>Between -1 and +1. Low wing = -1; high wing = 1</description>
+        </Wing_position>
+        <Vertical_Tail_Aspect_Ratio>
+            <value>1.53000</value>
+            <description>Vertical Tail Aspect Ratio. Accepts values in [1,2] range.</description>
+        </Vertical_Tail_Aspect_Ratio>
+        <Vertical_Tail_span>
+            <value unit="m">4.5000</value>
+            <description>Vertical tail span</description>
+        </Vertical_Tail_span>
+        <Vertical_Tail_Arm>
+            <value unit="m">10.0000</value>
+            <description>Distance of the AC of the vertical tail MAC from the MAC/4 point of the wing</description>
+        </Vertical_Tail_Arm>
+        <Vertical_Tail_Sweep_at_half_chord>
+            <value unit="°">25.0000</value>
+            <description>Vertical Tail sweep at half chord.</description>
+        </Vertical_Tail_Sweep_at_half_chord>
+        <Vertical_tail_airfoil_lift_curve_slope>
+            <value unit="1/rad">6.0000</value>
+            <description>Vertical tail airfoil lift curve slope.</description>
+        </Vertical_tail_airfoil_lift_curve_slope>
+        <Horizontal_position_over_vertical>
+            <value>0.8500</value>
+            <description>Relative position of the horizontal tail over the vertical tail span, computed from a reference line. Must be in [0,1] range</description>
+        </Horizontal_position_over_vertical>
+        <Diameter_at_vertical_MAC>
+            <value unit="m">1.2000</value>
+            <description>Fuselage diameter at vertical MAC</description>
+        </Diameter_at_vertical_MAC>
+        <Tailcone_shape>
+            <value>0.5000</value>
+            <description>Fuselage tailcone shape</description>
+        </Tailcone_shape>
+		<FuselageDiameter>
+            <value unit="m">2.63</value>
+            <description>Fuselage diameter.</description>
+    </FuselageDiameter>
+		<FuselageLength>
+            <value unit="m">22.67</value>
+            <description>Fuselage Length.</description>
+    </FuselageLength>
+		<NoseFinenessRatio>
+            <value>1.20</value>
+            <description>"Nose fineness ratio is the ratio between nose fuselage length and maximum fuselage diameter. It varies between [1.2-1.7]"</description>
+    </NoseFinenessRatio>
+		<FinenessRatio>
+            <value>8.62</value>
+            <description>"Fuselage fineness ratio is the ratio between fuselage length and diameter. It varies between [7-12]"</description>
+    </FinenessRatio>
+		<TailFinenessRatio>
+            <value>3.48	</value>
+            <description>"Tailcone fineness ratio is the ratio between tailcone fuselage length and maximum fuselage diameter. It varies between [2.3-3.0]"</description>
+    </TailFinenessRatio>
+		<WindshieldAngle>
+            <value unit="°">30</value>
+            <description>"Windshield angle is the angle of the front window. It varies between [35 deg - 50 deg]"</description>
+		</WindshieldAngle>
+		<UpsweepAngle>
+            <value unit="°">11.6</value>
+            <description>"Upsweep angle is the upward curvature angle of the aft fuselage. It varies between [10 deg - 18 deg]"</description>
+    </UpsweepAngle>
+		<xPercentPositionPole>
+            <value>0.5000</value>
+            <description>"xPercentPositionPole is the position along x-axis of the reference moment point. It can be equal to 0.35, 0.50 or 0.60 which corresponds to 35%, 50% or 60% of fuselage length respectively"</description>
+		</xPercentPositionPole>
+		<WingSweepAngle>
+		    <value unit="°">0.0</value>
+            <description>"Sweep angle of the wing computed with respect to c/4 line"</description>
+		</WingSweepAngle>
+		<xACwMACratio>
+		    <value>0.25</value>
+            <description>"Ratio between the x-position of the wing aerodynamic center and the mean aerodynamic chord"</description>
+		</xACwMACratio>
+		<xCGMACratio>
+		    <value>0.27</value>
+            <description>"Ratio between the x-position of the center of gravity and the mean aerodynamic chord"</description>
+		</xCGMACratio>
+    </Input>
+    <Output>
+        <KFv_vs_bv_over_dfv>
+            <value>0.0000</value>
+            <description>Aerodynamic interference factor of the fuselage on the vertical tail as a function of the ratio of the vertical tail span over the fuselage diameter taken at the aerodynamic center on the MAC of the vertical tail</description>
+        </KFv_vs_bv_over_dfv>
+        <KHf_vs_zh_over_bv1>
+            <value>0.0000</value>
+            <description>Interference factor of the horizontal tail on the fuselage</description>
+        </KHf_vs_zh_over_bv1>
+        <KHv_vs_zh_over_bv1>
+            <value>0.0000</value>
+            <description>Interference factor of the horizontal tail on the vertical tail</description>
+        </KHv_vs_zh_over_bv1>
+        <KVf_vs_bv_over_dfv>
+            <value unit="m">0.0000</value>
+            <description>Interference factor of the vertical tail on the fuselage</description>
+        </KVf_vs_bv_over_dfv>
+        <KWf_vs_zw_over_rf>
+            <value>0.0000</value>
+            <description>Interference factor of the wing on the fuselage</description>
+        </KWf_vs_zw_over_rf>
+        <KWv_vs_zw_over_rf>
+            <value unit="m">0.0000</value>
+            <description>Interference factor of the wing on the vertical tail</description>
+        </KWv_vs_zw_over_rf>
+        <CN_beta_vertical>
+            <value unit="1/°">0.0000</value>
+            <description>Yawing moment coefficient derivative, vertical tail contribution</description>
+        </CN_beta_vertical>
+		<CNb_FR_vs_FR>
+            <value>0.0000</value>
+            <description>"Yawing moment derivative coefficient as function of fuselage fineness ratio"</description>
+    </CNb_FR_vs_FR>
+		<dCNb_nose_vs_FRn>
+            <value unit="1/°">0.0000</value>
+            <description>"Yawing moment nose correction factor. It depends on the nose fineness ratio"</description>
+    </dCNb_nose_vs_FRn>
+		<dCNb_tail_vs_FRt>
+            <value unit="1/°">0.0000</value>
+            <description>"Yawing moment tail correction factor. It depends on the tailcone fineness ratio."</description>
+    </dCNb_tail_vs_FRt>
+		<CNb_fuselage>
+		<value unit="1/°">0.0000</value>
+        <description>"Fuselage Yawing Moment Derivative Coefficient estimated with FusDes method"</description>
+		</CNb_fuselage>
+		<CNb_wing>
+		<value unit="1/°">0.0000</value>
+        <description>"Wing Yawing Moment Derivative Coefficient"</description>
+		</CNb_wing>		
+		<CNb_AC>
+		<value unit="1/°">0.0000</value>
+        <description>"Aircraft Yawing Moment Derivative Coefficient"</description>
+		</CNb_AC>
+	</Output>
+</DirectionalStability>

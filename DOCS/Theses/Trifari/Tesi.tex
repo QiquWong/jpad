@@ -1,0 +1,281 @@
+%******************************************************************************************
+%
+% AUTHOR:           Agostino De Marco
+% DESCRIPTION:      This is "Tesi.tex", the master source file of a thesis manuscript
+%                   When compiled with pdflatex creates a PDF document "Tesi.pdf".
+% USAGE:            Use the following command line:
+%                   $ pfdlatex Tesi
+%
+%******************************************************************************************
+
+%------------------------------------------------------------------------------------------
+% Meta-commands for the TeXworks editor
+%
+% !TEX encoding = UTF-8
+% !TEX program = pdflatex
+%------------------------------------------------------------------------------------------
+
+%------------------------------------------------------------------------------------------
+% INITIAL DEFINITIONS
+%------------------------------------------------------------------------------------------
+
+\input{_init}% plain TeX initial definitions in ./_init.tex
+
+%------------------------------------------------------------------------------------------
+% LaTeX STARTING DECLARATION
+%------------------------------------------------------------------------------------------
+
+\documentclass[12pt,twoside]{book}
+
+%------------------------------------------------------------------------------------------
+% PREAMBLE
+%------------------------------------------------------------------------------------------
+
+\input{_preamble}% all preamble settings in ./_preamble.tex
+
+%------------------------------------------------------------------------------------------
+% LOCAL USER-DEFINED MACROS & SETTINGS
+
+\input{_local_macros}
+
+%------------------------------------------------------------------------------------------
+% Stuff related to package glossaries
+% loaded here after _local_macros.tex to make all custom definition
+% known by the glossary code
+
+\input{_glossary}
+
+%------------------------------------------------------------------------------------------
+%                                                              B E G I N    D O C U M E N T
+%
+\begin{document}
+\selectlanguage{english}
+
+%------------------------------------------------------------------------------------------
+%                                                                   F R O N T E S P I Z I O
+\begin{frontespizio}
+\begin{Preambolo*}
+\usepackage{newtxtext}
+\renewcommand{\frontlogosep}{30pt}
+%\renewcommand{\frontinstitutionfont}{\fontsize{15}{10}\bfseries }
+%\renewcommand{\frontdivisionfont}{\fontsize{15}{18}\mdseries }
+\renewcommand{\fronttitlefont}{\fontsize{23}{24}\bfseries }
+%\renewcommand{\frontfootfont}{\fontsize{15}{17}\bfseries }
+%\renewcommand{\frontfixednamesfont}{\fontsize{15}{20}\mdseries }
+%\renewcommand{\frontnamesfont}{\fontsize{15}{20}\bfseries }
+%\renewcommand{\frontsmallfont}{\fontsize{15}{15}\bfseries }
+\renewcommand{\frontpretitlefont}{\fontsize{14}{16}\mdseries }
+\end{Preambolo*}
+\Margini {3cm}{2.5cm}{3cm}{2cm}
+\Istituzione {Universit\`a degli Studi di Napoli Federico II\\[0.5\baselineskip ] \textsc {Scuola Politecnica e delle Scienze di Base} }
+\Logo [3.5cm]{logounina.pdf}
+\Dipartimento {Ingegneria Industriale}
+\Corso [Laurea]{Ingegneria Aerospaziale}
+\Titoletto {Tesi di Laurea Magistrale\\ in\\ Ingegneria Aerospaziale ed Astronautica}
+\Titolo {Development of a Java Application for Parametric Aircraft Design}
+\Sottotitolo {\mbox{}\\[5pt]}
+\NCandidato {Candidato}
+\Candidato [M53/334]{Lorenzo~Attanasio} % \rule{0pt}{1.3em}
+\NRelatore {Relatori}{}
+\Relatore {\begin{tabular}{@{}l@{}}Prof.~Fabrizio~Nicolosi\\ Prof.~Agostino~De~Marco\end{tabular}}
+\Piede {Anno Accademico 2013/2014}
+\end{frontespizio}
+%------------------------------------------------------------------------------------------------------------------------------------------
+
+% -----------------------------------------------------------------------------------------
+%                                                                             S U M M A R Y
+%
+\newpage\null\thispagestyle{empty}\newpage\thispagestyle{empty}
+
+\newgeometry{left=3cm,right=3cm}
+\vspace*{2cm}
+\begin{center}
+\textit{A mia madre, per aver sempre posto la nostra famiglia prima di ogni altra cosa}
+
+\medskip
+\textit{A mio padre, per avermi insegnato a non arrendermi}
+\end{center}
+\vspace*{\fill}
+
+\restoregeometry
+\clearpage
+
+\selectlanguage{english}
+\begin{abstract}
+The thesis deals with the development of \theApplicationName{} (\theApplicationNameFull{}), a Java-based application conceived as a fast, reliable and user friendly computational aid for aircraft designers in the conceptual/preliminary design phases of a transport aircraft. The ultimate goal of such a software framework is to perform a multi-disciplinary analysis of an aircraft and then search for an optimized configuration. The search domain boundaries are usually defined by the user through a set of specified parameters. 
+
+Currently, the software is able to estimate the aircraft weight breakdown, the center of gravity location, the main aerodynamic parameters, and some stability derivatives. All these types of estimates can be usually performed using several interchangeable analysis methods. The wing aerodynamic load has been in particular estimated with a numerical method taken from \citet{NASA:Blackwell}. An extensive work has been carried out to validate all the results returned by the application.
+
+ADOpT can be used from the command line or with a dedicated graphical user interface (GUI). The GUI allows the user to have an immediate feedback about the aircraft features when changing the input parameters, to manage multiple aircraft simultaneously and compare them side by side, and to view a 3D CAD model of the aircraft. The CAD model has been generated using the well known \OpenCascadeNameFull{} libraries, and can be eventually exported to file for external usage (e.g., in CAD/CAE suites).
+
+Regarding the Input/Output capability of \theApplicationName{}, the application accepts configuration files in XML (eXtensible Markup Language) format and exports the results on file in two possible formats: XML and Microsoft Excel (XLS). The XML input files are also used in interactive work sessions to import a predefined aircraft and populate the GUI controls accordingly. The application has been developed making extensive use of the latest Java features introduced in 2014, i.\,e.~the Java~8 release by Oracle. This release includes the JavaFX platform, which has been used to set up the 3D view.
+
+\end{abstract}
+
+\selectlanguage{italian}
+\begin{abstract}
+La tesi descrive lo sviluppo di \theApplicationName{} (\theApplicationNameFull{}), un'applicazione scritta in linguaggio Java concepita per essere uno strumento veloce, affidabile e di semplice utilizzo per le fasi di sviluppo concettuale e preliminare di un velivolo da trasporto. Lo scopo finale del programma è effettuare un'analisi multidisciplinare di una configurazione definita dall'utente e successivamente alterarla in modo da ottenerne una ottimizzata. Il dominio di ricerca di tale configurazione è definito dall'utente tramite un apposito insieme di parametri.
+
+Allo stato attuale il programma effettua la stima dei pesi dei principali componenti di un velivolo, valuta la posizione del baricentro, i principali parametri aerodinamici e alcune derivate di stabilità. La stima di ciascun parametro può essere generalmente effettuata tramite diversi metodi tra loro intercambiabili. Il carico aerodinamico sull'ala, in particolare, è stato stimato tramite un metodo numerico tratto da \citet{NASA:Blackwell}. Molta attenzione è stata in generale dedicata alla validazione dei risultati forniti dall'applicazione.
+
+ADOpT può essere usato sia da riga di comando sia tramite un'apposita interfaccia grafica (GUI). Quest'ultima fornisce un riscontro immediato riguardo il cambiamento delle prestazioni del velivolo nel momento in cui l'utente modifica uno o più parametri di input; inoltre permette di gestire più velivoli (o più configurazioni dello stesso velivolo) simultaneamente, di confrontarne le caratteristiche e di visualizzarne il modello CAD. Questo è generato tramite la libreria \OpenCascadeName{} e può essere salvato su file in modo da poterlo usare in altri applicativi.
+
+Per quanto riguarda i files di input e di output, l'applicazione accetta files in formato XML (eXtensible Markup Language) contenenti la configurazione del velivolo e può esportare i risulati sia in formato XML sia in formato XLS. I file XML di uscita possono esssere successivamente re-importati e quindi modificati tramite l'interfaccia grafica. L'applicazione è stata sviluppata facendo largo uso delle ultime caratteristiche del linguaggio Java introdotte da Oracle nel 2014 con la versione 8; questa include, tra l'altro, la piattaforma JavaFX che è stata usata per costruire il visualizzatore del modello CAD.
+\end{abstract}
+\selectlanguage{english}
+
+%\clearpage
+%\input{CopyrightPage}
+\frontmatter
+%------------------------------------------------------------------------------------------
+%                                                                       T I T L E   P A G E
+%
+%\input{CoverPage}
+%\input{TitlePage}
+%
+%------------------------------------------------------------------------------------------
+%                                                               C O P Y R I G H T   P A G E
+%
+%
+\cleardoublepage
+%
+%
+% -----------------------------------------------------------------------------------------
+%                                                         T A B L E   O F   C O N T E N T S
+%
+\tableofcontents
+%
+% -----------------------------------------------------------------------------------------
+%                                                 I N T R O D U C T O R Y   M A T E R I A L
+%
+\input{Acknowledgements}
+%\input{Preface}
+
+\markboth{}{}
+\cleardoublepage
+
+% -----------------------------------------------------------------------------------------
+%                                                     O N E   M O R E   T I T L E   P A G E
+%\thispagestyle{empty}
+%\vspace*{\stretch{1}}
+%\begin{flushright}
+%\Huge\itshape Elementi di Meccanica del volo\\
+%\LARGE Manovre e stabilità statica
+%\\[35pt]
+%%Definizioni di base e notazioni
+%Richiami di Aerodinamica
+%\end{flushright}
+%\vspace*{\stretch{3}}
+
+% -----------------------------------------------------------------------------------------
+%                                                                M A I N    C O N T E N T S
+\mainmatter
+\pagestyle{myBookPageStyle}
+%
+% Here we include the core material of the book
+%
+\input{Tesi_Contents}
+
+%% reset the material handled by package background
+\makeatletter
+\renewcommand{\bg@material}{}%
+\makeatother
+
+% -----------------------------------------------------------------------------------------
+%                                                                       A P P E N D I C E S
+% some configuration commands by package appendix
+\cleardoublepage \phantomsection
+\renewcommand{\chaptername}{Appendix}
+\renewcommand{\appendixtocname}{Appendices}
+\renewcommand{\appendixpagename}{Appendices}
+\appendixpage
+\noappendicestocpagenum
+\addappheadtotoc
+\pagestyle{myAppendixPageStyle}
+%
+% Here we include the appendix material of the book
+%
+\begin{appendices}% needs package appendix
+%
+\input{Tesi_Appendices}
+%
+\end{appendices}
+%
+%
+% -----------------------------------------------------------------------------------------
+%                                                                     B I B L I O G R P H Y
+\cleardoublepage \phantomsection
+\addcontentsline{toc}{chapter}{Bibliography}
+\pagestyle{myBibliographyPageStyle}
+\nocite{*}
+%\printbibheading[title={Bibliography}]
+\printbibliography[heading=myBibliography]% needs biblatex, see myBibliography in _preamble.tex
+
+% -----------------------------------------------------------------------------------------
+%                                       P R I N T   G L O S S A R Y   and   A C R O N Y M S
+%
+% add all the entries to the glossaries without referencing each one explicitly
+\glsaddall
+%
+\glossarystyle{list}%    can choose other style for displying glossaries
+% styles -->   list, listdotted, long, longragged, super, tree
+%
+%\printglossaries
+%%%
+%%%  other possible uses:
+%%%
+%
+\markboth{}{}
+\cleardoublepage
+\pagestyle{myGlossaryPageStyle}
+\printglossary[type=main]% the default glossary is printed
+%
+\markboth{}{}
+\cleardoublepage
+\pagestyle{myAcronymsPageStyle}
+\printglossary[type=\acronymtype]
+%
+\markboth{}{}
+\cleardoublepage
+\pagestyle{myListOfSymbolsPageStyle}
+\printglossary[type=symbols]
+
+\newpage
+\thispagestyle{empty}
+
+% -----------------------------------------------------------------------------------------
+%                                                                                 I N D E X
+%\markboth{}{}
+%\cleardoublepage
+%\pagestyle{myIndexPageStyle}
+%
+%\indexnote{%
+%In the index we have many voices, of various types. The page number on the right
+%reveals where those terms appear in the book.%{\parfillskip=0pt\par}
+%
+%\medskip\noindent
+%\blindtext% this is just some dummy text
+%
+%\medskip
+%{\color{red}
+%The index---and index entries---should be the very last thing to work at when writing a book!
+%So, do not worry about what you see below. These items are going to change many times before
+%the final version of the document is released.}
+%}% end-of-indexnote
+%
+%\phantomsection
+%\printindex
+%
+%\markboth{}{}
+%\cleardoublepage
+%
+% -----------------------------------------------------------------------------------------
+%                                                                       T O   D O   L I S T
+%
+%\listoftodos[List of TO-DOs and comments]
+%
+
+\end{document}
+%---------------------------------------------------------------------------------------------------
+%                                                                                                                                 E N D    D O C U M E N T
+%

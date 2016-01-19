@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<input>
+	<header>
+		<title>XML test input file</title>
+		<author>Vittorio Trifari</author>
+		<version>1.0</version>
+	</header>
+	<wing_data_A380>
+		<span unit='m'>80</span>
+		<area unit='ft^2'>9095.504</area>
+	</wing_data_A380>	
+	<wing_data_ATR72>
+		<span unit='m'>27.051</span>
+		<area unit='ft^2'>656.60</area>
+	</wing_data_ATR72>	
+</input>

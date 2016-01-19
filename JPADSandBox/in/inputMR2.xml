@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data>
+	<header>
+		<name>Test XML</name>
+		<description>This file is used to test my program that reads XML files</description>
+		<creator>Manuela Ruocco</creator>
+		<timestamp/>
+		<version>1.0</version>
+	</header>
+	<wing name="My wing 0">
+		<span unit="m">80</span>
+		<area unit="m2">845</area>
+	</wing>	
+	<wing name="My wing 1">
+		<span unit="m">60</span>
+		<area unit="m2">437</area>
+	</wing>	
+	<wing name="My wing 2">
+		<span unit="m">34</span>
+		<area unit="m2">120</area>
+	</wing>	
+	<horizontal_tail name="My poor litte wing">
+		<span_h unit="m">40</span_h>
+		<chord_root unit="ft">8.5</chord_root>
+		<aspect_ratio>4</aspect_ratio>
+	</horizontal_tail>	
+</data>

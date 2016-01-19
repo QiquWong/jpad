@@ -1,0 +1,17 @@
+Retrieving an old repository:
+
+Via Git command line, get the history of commits and copy the id-string
+
+>> git log --graph --color=auto
+
+In Bitbucket go here:
+
+https://bitbucket.org/<owner>/<project>/src/<id-string>?=master
+
+examples: owner --> agodemar (adopt) or lorenzoexe (jpad)
+
+example:
+
+https://bitbucket.org/agodemar/adopt/src/9cf728463d0770928df7f2568548923e55e6ae57?at=master
+
+results in the source tree at the commit 9cf728463d0770928df7f2568548923e55e6ae57

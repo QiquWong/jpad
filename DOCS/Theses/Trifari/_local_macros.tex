@@ -1,0 +1,1054 @@
+%******************************************************************************************
+%
+% AUTHOR:           Agostino De Marco
+% DESCRIPTION:      This is "_local_macros.tex", an auxiliary LaTeX source file.
+%                   Here we collect all our user-defined macros.
+%
+%******************************************************************************************
+
+%------------------------------------------------------------------------------------------
+% Meta-commands for the TeXworks editor
+%
+% !TeX root = ./Tesi.tex
+% !TEX encoding = UTF-8
+% !TEX program = pdflatex
+
+%------------------------------------------------------------------------------------------
+% PRE-DEFINED NAMES
+\newcommand*{\theApplicationName}{ADOpT}
+\newcommand*{\theApplicationNameFull}{Aircraft Design and Optimization Tool}
+
+\newcommand*{\OpenCascadeName}{Open CASCADE}
+\newcommand*{\OpenCascadeNameFull}{\OpenCascadeName{} Technology}
+
+%------------------------------------------------------------------------------------------
+
+\newcommand*{\diff}{\mathop{}\!\mathrm{d}}% vedi guida GuIT, Beccari, pp. 113-114
+\newcommand*{\ddt}[1]{\frac{\textstyle\diff{#1}}{\textstyle\diff{t}}}
+
+% http://tex.stackexchange.com/questions/9466/color-underline-a-formula
+\def\mathunderline#1#2{\color{#1}\underline{{\color{black}#2}}\color{black}}
+
+
+\hyphenation{lon-gi-tu-di-nal-sim-me-tri-co}
+
+%------------------------------------------------------------------------------------------
+% C++ symbol
+% see http://stackoverflow.com/questions/2724760/how-to-write-c-in-latex
+
+\def\C++{%
+    C\kern-.051em\raise.30ex\hbox{\smaller{++}}%
+\spacefactor1000 }
+
+%-----------------------------------------------------------------------------------------------------
+
+\newenvironment{myDescription}
+   {\begin{list}{}{\let\makelabel\myDescriptionlabel%
+                   \setlength\labelwidth{6em}%
+                   \setlength\rightmargin{0em}%
+                   \setlength\leftmargin{\labelwidth+\labelsep}}%
+   }%
+   {\end{list}}
+\newcommand*\myDescriptionlabel[1]{\hfil\makebox[0em][r]{#1}}
+
+%-----------------------------------------------------------------------------------------------------
+% http://www.latex-community.org/forum/viewtopic.php?f=46&t=20717
+
+\newcommand*\xbar[1]{%
+  \hbox{%
+    \vbox{%
+      \hrule height 0.5pt % The actual bar
+      \kern0.5ex%         % Distance between bar and symbol
+      \hbox{%
+        \kern-0.1em%      % Shortening on the left side
+        \ensuremath{#1}%
+        \kern-0.1em%      % Shortening on the right side
+      }%
+    }%
+  }%
+} 
+
+%-----------------------------------------------------------------------------------------------------
+
+\newcommand{\msp}{\ensuremath{\mspace{1.5mu}}}
+
+%................................ Margin notes
+\newcommand{\marginalnote}[1]%
+             {\marginpar%
+                {\color{mydarkblue}\sf\scriptsize #1}%
+             }
+
+%................................ Vectors
+\renewcommand{\vec}[1]{\boldsymbol{#1}}
+\newcommand{\VEC}[1]{\vec{#1}}%
+
+%------------------------------------------------------------------------------------------
+% Define a new 'leo' style for the package that will use a smaller font
+
+\makeatletter
+\def\url@leostyle{%
+  \@ifundefined{selectfont}{\def\UrlFont{\sf}}{\def\UrlFont{\small\ttfamily}}}
+\makeatother
+%% Now actually use the newly defined style.
+\urlstyle{leo}
+\makeatother
+
+%%%% Comands to typeset LaTeX syntax
+\providecommand*\meta{}
+\renewcommand*\meta[1]{\ensuremath{\langle}{\normalfont\itshape#1\,}\ensuremath{\rangle}} 
+\newcommand*\oarg[1]{\texttt{[}\meta{#1}\texttt{]}}% optional arg with brackets
+\newcommand*\marg[1]{\texttt{\{}\meta{#1}\texttt{\}}}% compulsory arg with braces
+\newcommand*\Arg[1]{\texttt{\{#1\}}}% surround with curly braces a specific arg
+\newcommand\Oarg[1]{\texttt{[#1]}}% surrounds the argument with square brackets
+\newcommand*\Bambiente[1]{\cmdname{begin}\Arg{#1}}% begin a specific env
+\newcommand*\Eambiente[1]{\cmdname{end}\Arg{#1}}% end a specific env
+
+\providecommand*\cs{}
+\renewcommand*\cs[1]{\texttt{\cmdname{#1}\index{#1@\cmdname{#1}}}}% control seq in text and index 
+\newcommand*\prog[1]{\prgname{#1}\index{program!#1@\prgname{#1}}}% prog in text and index
+\newcommand*\opz[1]{\optname{#1}\index{option!#1@\optname{#1}}}% option in text and index
+\newcommand*\amb[1]{\envname{#1}\index{environment!#1@\envname{#1}}}%env in text and index
+\newcommand*\file[1]{\filname{#1}\index{file!#1@\filname{#1}}}% filename in text and index
+\newcommand*\class[1]{\clsname{#1}\index{class!#1@\clsname{#1}}}% cls in text and index
+\newcommand*\pack[1]{\pkgname{#1}\index{package!#1@\pkgname{#1}}}% pack in text and index
+\newcommand\conta[1]{\cntname{#1}\index{counter!#1@\cntname{#1}}}% counter in text and index
+
+\def\uishape{\fontshape{ui}\selectfont}
+\DeclareTextFontCommand{\textui}{\uishape}
+\newcommand*\textspsc[1]{\textsc{\lsstyle#1}}
+
+\newcommand*\filname[1]{\textsf{#1}}% file name in text
+\newcommand*\prgname[1]{\textsf{#1}}% program name in text
+\newcommand*\pkgname[1]{\textsf{#1}}% package name in text
+\newcommand*\clsname[1]{\textsf{#1}}% class name in text
+\newcommand*\optname[1]{\textsf{#1}}% option name in text
+\newcommand*\envname[1]{\textsf{#1}}% environment name in text
+\newcommand*\cmdname[1]{\texttt{\char92#1}}% control sequence name in text
+\newcommand*\cntname[1]{\textui{#1}}% counter name in text
+
+
+\newcommand*\ap[1]{\textormath{\textsuperscript{#1}}{^{\mathrm{#1}}}}
+\newcommand*\ped[1]{\textormath{\textunderscript{#1}}{_{\mathrm{#1}}}}
+
+%------------------------------------------------------------------------------------------
+%% A new environment: dancingfigure
+%% See original solution by Enrico Gregorio:
+%% http://www.guit.sssup.it/phpbb/viewtopic.php?t=8077
+%
+\newcounter{dancingfigure}
+\newenvironment{dancingfigure}[2][]
+  {\refstepcounter{dancingfigure}%
+   \edef\temp{\noexpand\label{DF@\arabic{dancingfigure}}}\temp
+   \ifthenelse{\isodd{\pageref{DF@\arabic{dancingfigure}}}}
+     {\odddancingfigure}{\evendancingfigure}
+   \begin{SCfigure}[#2][#1]}
+  {\end{SCfigure}}
+\newcommand{\odddancingfigure}{\def\positioning{r}}
+\newcommand{\evendancingfigure}{\def\positioning{l}}
+\newcommand{\dancinginclude}[5]{% all mandatory parameters
+  \makebox[#1][\positioning]{%
+    \raisebox{#5}{%
+        \includegraphics[width=#2,#3]{#4}}}}
+%
+% % Example of usage:
+%
+%    \begin{dancingfigure}%
+%        [t]% position on the page
+%        {0.8}% sidecaption with, in terms of image length
+%    \dancinginclude%
+%        {0.7\textwidth}% box width
+%        {0.8\textwidth}% image width (inside box)
+%        {}% additional option in includegraphics
+%        {chapter_2/images/ac_load_factor.pdf}
+%        {2em}% raise the image of this amount
+%    \caption{\finalhyphendemerits=1000
+%                % {\bf debug: \positioning} ---
+%                This is a Long caption. Volo in richiamata. Il valore del fattore
+%                di carico normale  determinato prevalentemente dal rapporto fra la
+%                portanza e il peso, se si trascura il contributo della spinta
+%            }%
+%    \label{fig:AC:Load:Factor}%
+%    \end{dancingfigure}
+%------------------------------------------------------------------------------------------
+
+%------------------------------------------------------------------------------------------
+%% A macro to place figues over the entire \textwidth+\marginparwidth+\marginparsep
+%
+\newcommand{\EnlargedFigure}[5]{%
+\begin{figure}[#1]%
+  \checkoddpage% needs changepage
+  \ifoddpage% needs changepage, needs two laTeX passes
+    % RHS page
+    \makebox[\textwidth][l]{%
+        \begin{minipage}[b]{\textwidth+\marginparwidth+\marginparsep}
+        \makebox[\linewidth][c]{%
+            \includegraphics%
+                [#3]%
+                {#2}%
+        }%
+        %
+        % Note: caption goes here to have it well centered w.r.t. the whole enlarged minipage
+        %
+        \caption{%\finalhyphendemerits=1000
+           #4}
+        %
+        % Note: caption moved inside the enlarged minipage
+        \label{#5}%
+        \end{minipage}
+    }
+  \else%
+    % LHS page
+    \makebox[\textwidth][r]{%
+        \begin{minipage}[b]{\textwidth+\marginparwidth+\marginparsep}
+        \makebox[\linewidth][c]{%
+            \includegraphics%
+                [#3]%
+                {#2}%
+        }%
+        %
+        % Note: caption goes here to have it well centered w.r.t. the whole enlarged minipage
+        %
+        \caption{%\finalhyphendemerits=1000
+           #4}
+        %
+        % Note: caption moved inside the enlarged minipage
+        \label{#5}%
+        \end{minipage}
+    }
+  \fi%
+        % Note: caption moved inside the enlarged minipage
+%
+\end{figure}%
+}
+% % Example of usage:
+%
+% \EnlargedFigure% needs two latex passes
+%     {<where>}% #1: t, b, p
+%     {<file>}% #2: the image file included by \includegraphics
+%     {<opt-list>}% #3: option list to pass to \includegraphics, e.g. width=\linewidth,rotate=0
+%     {<caption>}% #4: the caption text
+%     {<label>}% #5: the label
+%------------------------------------------------------------------------------------------
+
+%------------------------------------------------------------------------------------------
+%% A macro to place figues over the entire \textwidth+\marginparwidth+\marginparsep
+%% more general than \EnlargedFigure because the material inside the figure has to be coded
+%% by the user
+%
+\newcommand{\EnlargedFigureX}[4]{%
+\begin{figure}[#1]%
+  \checkoddpage% needs changepage
+  \ifoddpage% needs changepage, needs two laTeX passes
+    % RHS page
+    \makebox[\textwidth][l]{%
+        \begin{minipage}[b]{\textwidth+\marginparwidth+\marginparsep}
+            #2
+        %
+        % Note: caption goes here to have it well centered w.r.t. the whole enlarged minipage
+        %
+        \caption{%\finalhyphendemerits=1000
+           #3}
+        %
+        % Note: caption moved inside the enlarged minipage
+        \label{#4}%
+        \end{minipage}
+    }
+  \else%
+    % LHS page
+    \makebox[\textwidth][r]{%
+        \begin{minipage}[b]{\textwidth+\marginparwidth+\marginparsep}
+            #2
+        %
+        % Note: caption goes here to have it well centered w.r.t. the whole enlarged minipage
+        %
+        \caption{%\finalhyphendemerits=1000
+           #3}
+        %
+        % Note: caption moved inside the enlarged minipage
+        \label{#4}%
+        \end{minipage}
+    }
+  \fi%
+        % Note: caption moved inside the enlarged minipage
+%
+\end{figure}%
+}
+% % Example of usage:
+%
+% \EnlargedFigureX% needs two latex passes
+%     {<where>}% #1: t, b, p
+%     {
+%         \begin{tabular}{c}
+%             \includegraphics[<opt>]{<file 1>}\\
+%             \includegraphics[<opt>]{<file 2>}\\
+%         \end{tabular}
+%     }% #2: the image file included by \includegraphics
+%     {<caption>}% #3: the caption text
+%     {<label>}% #4: the label
+%------------------------------------------------------------------------------------------
+
+
+%------------------------------------------------------------------------------------------
+%% A macro to place figues over the entire \textwidth+\marginparwidth+\marginparsep
+%% more general than \EnlargedFigure because the material inside the figure has to be coded
+%% by the user
+%
+\newcommand{\EnlargedTableX}[4]{%
+\begin{table}[#1]%
+  \checkoddpage% needs changepage
+  \ifoddpage% needs changepage, needs two laTeX passes
+    % RHS page
+    \makebox[\textwidth][l]{%
+        \begin{minipage}[b]{\textwidth+\marginparwidth+\marginparsep}
+        %
+        % Note: caption goes here to have it well centered w.r.t. the whole enlarged minipage
+        %
+        \caption{%\finalhyphendemerits=1000
+           #3}
+        %
+        % Note: caption moved inside the enlarged minipage
+        \label{#4}%
+            #2
+        \end{minipage}
+    }
+  \else%
+    % LHS page
+    \makebox[\textwidth][r]{%
+        \begin{minipage}[b]{\textwidth+\marginparwidth+\marginparsep}
+        %
+        % Note: caption goes here to have it well centered w.r.t. the whole enlarged minipage
+        %
+        \caption{%\finalhyphendemerits=1000
+           #3}
+        %
+        % Note: caption moved inside the enlarged minipage
+        \label{#4}%
+            #2
+        \end{minipage}
+    }
+  \fi%
+        % Note: caption moved inside the enlarged minipage
+%
+\end{table}%
+}
+% % Example of usage:
+%
+% \EnlargedTableX% needs two latex passes
+%     {<where>}% #1: t, b, p
+%     {
+%         \begin{tabular}{c}
+%             \includegraphics[<opt>]{<file 1>}\\
+%             \includegraphics[<opt>]{<file 2>}\\
+%         \end{tabular}
+%     }% #2: the image file included by \includegraphics
+%     {<caption>}% #3: the caption text
+%     {<label>}% #4: the label
+%------------------------------------------------------------------------------------------
+
+\newenvironment{myindentpar}[1]%
+{\begin{list}{}%
+         {\setlength{\leftmargin}{#1}\setlength{\rightmargin}{#1}}%
+         \item[]%
+}
+{\end{list}}
+
+\newenvironment{criterio}[1][Criterio]{%
+    %###########################################################
+    % ciò che viene eseguito all'inizio dell'environment
+    %###########################################################
+    \par\vskip 12pt
+    {\bfseries \parindent=.7cm #1}
+    \vspace{-1em}
+    \begin{myindentpar}{0.7cm}
+    \rule{\linewidth}{0.2pt}
+}{%
+    %###########################################################
+    % ciò che viene eseguito alla fine dell'environment
+    %##########################################################
+    \par\rule[1em]{\linewidth}{0.2pt}%
+    \end{myindentpar}%
+    \smallskip%
+}%
+
+%------------------------------------------------------------------------------------------
+% Manipulate material handled by package background
+
+\newcommand{\ResetBackground}{%
+\makeatletter
+%\let\oldbg@material\bg@material%
+\renewcommand{\bg@material}{}%
+\makeatother
+}
+
+%------------------------------------------------------------------------------------------
+% macro per la definizione della simbologia aeronautica
+
+\newcommand{\Vinf}{\ensuremath{V_{\!\infty}}\xspace} % velocità asintotica
+\newcommand{\vVinf}{\ensuremath{\vec{V}_{\!\!\!\infty}}\xspace} % vettore velocità asintotica
+
+\newcommand{\Vzero}{\ensuremath{V_{\!0}}\xspace} % velocità asintotica
+\newcommand{\vVzero}{\ensuremath{\vec{V}_{\mspace{-8mu}0}}\xspace} % vettore velocità asintotica
+
+\newcommand{\Vdive}{\ensuremath{V_\text{dive}}\xspace}
+\newcommand{\Vcruise}{\ensuremath{V_\text{cruise}}\xspace}
+
+% Often used sub/superscripts
+% packages amsmath & mathtools are needed
+
+\newcommand{\Aero}{\ensuremath{\text{%
+  %\mdseries\scshape a%
+  A%
+  }}}
+\newcommand{\Thrust}{\ensuremath{\text{%
+  %\mdseries\scshape t%
+  T%
+  }}}
+\newcommand{\Grav}{\ensuremath{\text{%
+  %\mdseries\scshape g%
+  G%
+  }}}
+\newcommand{\earth}{\ensuremath{\text{%
+  %\mdseries\scshape e%
+  E%
+  }}}% \Earth is defined elsewhere
+\newcommand{\CMass}{\ensuremath{\text{%
+  %\mdseries\scshape cm
+  cm%
+  }}}
+\newcommand{\Body}{\ensuremath{\text{%
+  %\mdseries\scshape b%
+  B%
+  }}}
+\newcommand{\Fuselage}{\ensuremath{\text{%
+  %\mdseries\scshape f
+  F%
+  }}}
+\newcommand{\Wing}{\ensuremath{\text{%
+   %\mdseries\scshape w%
+   W%
+   }}}
+\newcommand{\Canard}{\ensuremath{\text{%
+  %\mdseries\scshape c
+  C%
+  }}}
+\newcommand{\Vertical}{\ensuremath{\text{%
+  %\mdseries\scshape v%
+  V%
+  }}}
+\newcommand{\VerticalI}{\ensuremath{\text{%
+  %\mdseries\scshape i%
+  I%
+  }}}
+\newcommand{\Inertial}{\ensuremath{\text{%
+  %\mdseries\scshape i%
+  I%
+  }}}
+\newcommand{\Interference}{\ensuremath{\text{%
+  %\mdseries\scshape i%
+  I%
+  }}}
+
+\newcommand{\Wind}{\ensuremath{\text{%
+  %\mdseries\scshape w%
+  wind%
+  }}}
+\newcommand{\Stability}{\ensuremath{\text{%
+  %\mdseries\scshape s%
+  S%
+  }}}
+
+\newcommand{\Stab}{\ensuremath{\mathrm{S}}}
+
+\newcommand{\Constr}{\ensuremath{\text{
+  %\mdseries\scshape c%
+  C%
+  }}}
+
+\newcommand{\SeaLevel}{\ensuremath{\text{
+  %\mdseries\scshape sl%
+  SL%
+  }}}
+\newcommand{\GroundTrack}{\ensuremath{\text{%
+  %\mdseries\scshape gt%
+  GT%
+  }}}
+
+\newcommand{\elev}{\mathrm{e}}
+\newcommand{\rud}{\mathrm{r}}
+\newcommand{\ail}{\mathrm{a}}
+\newcommand{\stab}{\mathrm{s}}
+\newcommand{\Htail}{\ensuremath{\text{%
+  %\mdseries\scshape h%
+  H%
+  }}}
+\newcommand{\Vtail}{\ensuremath{\text{%
+  %\mdseries\scshape v%
+  V%
+  }}}
+\newcommand{\flap}{\mathrm{f}}
+\newcommand{\tab}{\mathrm{t}}
+
+% Mach and Reynolds numbers
+\newcommand{\Mach}{\ensuremath{M}\xspace}%
+\newcommand{\Reynolds}{\ensuremath{\mathit{Re}}\xspace}
+
+\newcommand{\deltaE}{\ensuremath{\delta_\elev}\xspace}
+\newcommand{\deltaA}{\ensuremath{\delta_\ail}\xspace}
+\newcommand{\deltaR}{\ensuremath{\delta_\rud}\xspace}
+\newcommand{\deltaS}{\ensuremath{\delta_\stab}\xspace}
+
+
+\newcommand{\Cbarbar}{\ensuremath{%
+%\substack{=\\{\displaystyle c}}}
+\begin{array}[b]{@{}c@{}}\mathsmaller{=}\\[-1.6ex]c\end{array}
+%\bar{\bar{c}}%
+%
+% http://groups.google.it/group/comp.text.tex/browse_thread/thread/420529a68269d791/587ffe9ccc433d86?lnk=raot
+%
+}\xspace} % m.a.c. ESDU style
+
+\newcommand{\mmtow}{\ensuremath{m_\text{MTO}}\xspace}
+\newcommand{\wmtow}{\ensuremath{W_\text{MTO}}\xspace}
+\newcommand{\mmzfw}{\ensuremath{m_\text{MZF}}\xspace}
+\newcommand{\wmzfw}{\ensuremath{W_\text{MZF}}\xspace}
+\newcommand{\mml}{\ensuremath{m_\text{ML}}\xspace}
+\newcommand{\wml}{\ensuremath{W_\text{ML}}\xspace}
+
+\newcommand{\Cbar}{\ensuremath{\bar{c}}\xspace} % m.a.c.
+\newcommand{\CG}{CG}
+\newcommand{\Scs}{\ensuremath{S_\text{cs}}\xspace}
+\newcommand{\tc}{\ensuremath{(t/c)}\xspace}
+\newcommand{\tcroot}{\ensuremath{(t/c)_\text{r}}\xspace}
+\newcommand{\tcmean}{\ensuremath{\xbar{(t/c)}}\xspace}
+\newcommand{\alphazeroL}{\ensuremath{\alpha_{{0L}}}\xspace}
+\newcommand{\epsg}{\ensuremath{\varepsilon}_\mathrm{g}\xspace} %Angolo di svergolamento geometrico dell'ala
+\newcommand{\xcg}{\ensuremath{{x}_{\text{cg}}}} % posizione adimesionale del baricentro
+\newcommand{\xQC}{\ensuremath{x_{c/4}\xspace}} % posizione adimesionale del baricentro
+\newcommand{\xac}{\ensuremath{\ensuremath{{x}_\mathrm{ac}}}} % posizione adimensionale del c.a.
+\newcommand{\xLE}{\ensuremath{{x}_{\text{LE}}\xspace}}
+\newcommand{\xTE}{\ensuremath{{x}_{\text{TE}}\xspace}}
+\newcommand{\yLE}{\ensuremath{{y}_{\text{LE}}\xspace}}
+\newcommand{\yTE}{\ensuremath{{y}_{\text{TE}}\xspace}}
+\newcommand{\xN}{\ensuremath{\hat{x}_{\text{N}}}} % posizione adimesionale del punto neutro
+
+\newcommand{\CLiftW}{\ensuremath{C_{L_{\mathrm{W}}}}\xspace} %Coefficiente di portanza dell'ala
+\newcommand{\CLzeroW}{\ensuremath{C_{L_{0 \mathrm{,W}}}}\xspace} %CL dell'ala a portanza nulla
+\newcommand{\ClalphapW}{\ensuremath{\big(C_{l_{\mathlarger\alpha}}\big)_{\mathrm{Profilo},\mathrm{W}}}\xspace} %Clalfa 2D
+\newcommand{\CLalphaW}{\ensuremath{C_{L_{\mathlarger{\alpha}\mathrm{,W}}}}\xspace} %gradiente della retta di portanza dell'ala
+\newcommand{\CLalphaWclassic}{\ensuremath{C_{L_{\mathlarger{\alpha}\mathrm{,W \mathit{,classic}}}}}\xspace} %gradiente della retta di portanza dell'ala calcolato con formula classica
+
+\newcommand{\CMac}{\ensuremath{C_{\mathcal{M}_{\mathrm{ac}}}}\xspace} %Coeff di momento totale rispetto al centro aerodinamico dell'ala
+\newcommand{\CMCGW}{\ensuremath{C_{\mathcal{M}_\mathrm{CG,W}}}\xspace} %Coeff. di momento rispetto al baricentro, contributo dell'ala
+\newcommand{\CMzeroW}{\ensuremath{C_{\mathcal{M}_{0,\mathrm{W}}}}\xspace} %coefficiente di momento a portanza nulla
+\newcommand{\CMalphaW}{\ensuremath{\big(C_{\mathcal{M}\alpha}\big)_\mathrm{W}}\xspace} %coefficiente di momento a portanza nulla
+\newcommand{\CMacWRoskam}{\ensuremath{C_{\mathcal{M}_{\mathrm{ac,W}_\mathit{Roskam}}}}\xspace} %Coeff di momento rispetto al centro aerodinamico con la formula di Roskam
+
+\newcommand{\xacW}{\ensuremath{\ensuremath{\big(\hat{x}_{ac}\big)_\mathrm{W}}}\xspace} %posizione adimensionale del c.a. dell'ala
+\newcommand{\alphazlr}{\ensuremath{\alpha_{{0L}_{\mathrm{\larger root}}}}\xspace} %angolo di portaza nulla alla radice
+\newcommand{\alphazlt}{\ensuremath{\alpha_{{0L}_{\mathrm{\larger tip}}}}\xspace} %angolo di portaza nulla alla estremità
+\newcommand{\alphazeroLW}{\ensuremath{\alpha_{{0L},\mathrm{W}}}\xspace} %angolo di portanza nulla dell'ala
+\newcommand{\alphazlpW}{\ensuremath{\alpha_{{0L}_{\mathrm{\larger Profilo}}}}\xspace} %angolo di portanza nulla del profilo dell'ala
+\newcommand{\epstip}{\ensuremath{\epsilon_{\mathrm{tip}}}\xspace} %svergolamento all'estremità
+
+\newcommand{\frecciaLE}{\ensuremath{\Lambda_{\mathrm{leading edge}}}\xspace} %freccia del bordo di attacco
+\newcommand{\frecciaTE}{\ensuremath{\Lambda_{\mathrm{trailing edge}}}\xspace} %frecica del bordo di uscita
+\newcommand{\LambdaLE}{\ensuremath{\Lambda_{\mathit{LE}}}\xspace} %freccia del bordo di attacco
+\newcommand{\LambdaTE}{\ensuremath{\Lambda_{\mathrm{t.e.}}}\xspace} %freccia del bordo di uscita
+\newcommand{\LambdaQC}{\ensuremath{\Lambda_{c/4}}\xspace} %freccia del bordo di attacco quarter chord
+\newcommand{\LambdaHC}{\ensuremath{\Lambda_{c/2}}\xspace} %freccia del bordo di attacco half chord
+\newcommand{\LambdaN}{\ensuremath{\Lambda_{n}}\xspace} %freccia del bordo di uscita
+\newcommand{\Lambdax}{\ensuremath{\Lambda_{\mathit{x}}}\xspace} %freccia ad una generica percentuale x della corda
+\newcommand{\LambdaEA}{\ensuremath{\Lambda_\mathrm{ea}}\xspace} % freccia dell'asse elastico
+\newcommand{\Lambdatmax}{\ensuremath{\Lambda_{\mathit{t}_\mathit{max}}}\xspace} %freccia nel punto di maggior spessore relativo
+\newcommand{\GammaW}{\ensuremath{\Gamma_{\mathrm{W}}}\xspace} %angolo diedro
+
+\newcommand{\tauail}{\ensuremath{\tau_\ail}\xspace} %Efficienza degli alettoni
+\newcommand{\cail}{\ensuremath{\mathlarger{c}_{\mathrm{\ail}}}\xspace} %Corda dell'alettone
+\newcommand{\cflap}{\ensuremath{\mathlarger{c}_{\mathrm{\flap}}}\xspace} %Corda del flap
+\newcommand{\etaailin}{\ensuremath{\mathlarger{\eta}_{\mathrm{\ail\mathit{,in}}}}\xspace} %Stazione interna degli alettoni, adim
+\newcommand{\etaailout}{\ensuremath{\mathlarger{\eta}_{\mathrm{\ail\mathit{,out}}}}\xspace} %Stazione esterna degli alettoni, adim
+\newcommand{\etaflapin}{\ensuremath{\mathlarger{\eta}_{\mathrm{\flap\mathit{,in}}}}\xspace} %Stazione interna dei flap, adim
+\newcommand{\etaflapout}{\ensuremath{\mathlarger{\eta}_{\mathrm{\flap\mathit{,out}}}}\xspace} %Stazione esterna dei flap, dim
+\newcommand{\yailin}{\ensuremath{\mathlarger{y}_{\mathrm{\ail\mathit{,in}}}}\xspace} %Stazione interna degli alettoni, dim
+\newcommand{\yailout}{\ensuremath{\mathlarger{y}_{\mathrm{\ail \mathit{,out}}}}\xspace} %Stazione esterna degli alettoni, dim
+\newcommand{\yflapin}{\ensuremath{\mathlarger{y}_{\mathrm{\flap\mathit{,in}}}}\xspace} %Stazione interna dei flap, adim
+\newcommand{\yflapout}{\ensuremath{\mathlarger{y}_{\mathrm{\flap\mathit{,out}}}}\xspace} %Stazione esterna dei flap, dim
+\newcommand{\Sail}{\ensuremath{S_{\mathrm{\ail}}}\xspace} %Superfice degli alettoni
+\newcommand{\Sflap}{\ensuremath{S_{\mathrm{\flap}}}\xspace} %Superfice dei flaps
+\newcommand{\alphazeroLWflap}{\ensuremath{\alpha_{{0L_{\mathrm{W} \mathit{,flap}}}}}\xspace} %angolo di portanza nulla dell'ala con flaps estesi
+\newcommand{\alphazerolWflap}{\ensuremath{\alpha_{{0\ell_{\mathrm{W} \mathit{,flap}}}}}\xspace} %angolo di portanza nulla di un profilo con flap esteso
+
+%metodo di shrenk per il carico alare
+\newcommand{\cell}{\ensuremath{\mathlarger{c}_{\mathrm{ell}}}\xspace} %Corda dell'ala ellittica
+\newcommand{\cellzero}{\ensuremath{\mathlarger{c}_{\mathrm{ell}_0}}\xspace} %Corda dell'ala ellittica
+\newcommand{\ceff}{\ensuremath{\mathlarger{c}_{\mathrm{eff}}}\xspace} %Corda effettiva dell'ala
+\newcommand{\cClbasic}{\ensuremath{\mathlarger{cC}_{\mathrm{\ell}_b}}\xspace} %Carico basico
+\newcommand{\cCladd}{\ensuremath{\mathlarger{cC}_{\mathrm{\ell}_a}}\xspace} %Carico addizionale
+\newcommand{\CLbasic}{\ensuremath{\mathlarger{C}_{\mathrm{L}_b}}\xspace} %Carico basico
+\newcommand{\CLadd}{\ensuremath{\mathlarger{C}_{\mathrm{L}_a}}\xspace} %Carico addizionale
+
+
+%fusoliera
+\newcommand{\FFR}{\ensuremath{F\hspace{-0.1em}R\hspace{-0.1em}R}\xspace} %Rapporto di snellezza della fusoliera
+\newcommand{\lF}{\ensuremath{{l_\mathrm{F}}}\xspace} %Lunghezza della fusoliera
+\newcommand{\lFmax}{\ensuremath{{l_\mathrm{F,max}}}\xspace} %Lunghezza della fusoliera
+\newcommand{\lstructF}{\ensuremath{{l_\mathrm{struc,F}}}\xspace} %Lunghezza strutturale della fusoliera
+\newcommand{\dF}{\ensuremath{{d_{\mathrm{F}}}}\xspace} %Diametro della fusoliera
+\newcommand{\dFmax}{\ensuremath{{d_\mathrm{F,max}}}\xspace}
+\newcommand{\dFF}{\ensuremath{{{d}_{\mathrm{F}}^2(x)}}\xspace} %Diametro quadro della fusoliera
+\newcommand{\hF}{\ensuremath{{{h}_{\mathrm{F}}}}\xspace} %Ampiezza della fusoliera
+\newcommand{\hFmax}{\ensuremath{{{h}_{\mathrm{F,max}}}}\xspace} %Ampiezza della fusoliera
+\newcommand{\wF}{\ensuremath{{{w}_{\mathrm{F}}}}\xspace} %Ampiezza della fusoliera
+\newcommand{\wFmax}{\ensuremath{{{w}_{\mathrm{F,max}}}}\xspace} %Ampiezza della fusoliera
+\newcommand{\wFF}{\ensuremath{{{w}_{\mathrm{F}}^2(x)}}\xspace} %Ampiezza quadra della fusoliera
+\newcommand{\SFside}{\ensuremath{{S_\mathrm{F,side}}}\xspace} %Superficie di ingombro laterale della fusoliera
+\newcommand{\SwetF}{\ensuremath{{S_\mathrm{wet,F}}}\xspace}
+\newcommand{\diffPF}{\ensuremath{{\Delta P_\mathrm{F}}}\xspace}
+\newcommand{\diffPFmax}{\ensuremath{{\Delta P_\mathrm{F,max}}}\xspace}
+\newcommand{\icl}{\ensuremath{{i_\mathrm{cl}}}\xspace}
+
+\newcommand{\MF}{\ensuremath{\mathcal{M}_{\mathrm{F}}}\xspace} %Momento rispetto al baricentro, contributo della fusoliera
+\newcommand{\CMF}{\ensuremath{C_{\mathcal{M}_{\mathrm{F}}}}\xspace} %Coefficiente di momento, contributo della fusoliera
+\newcommand{\CMzeroF}{\ensuremath{C_{\mathcal{M}\mathrm{_0,F}}}\xspace} 
+%Coeff di momento della fusoliera ad angolo di attacco nullo
+\newcommand{\CMalphaF}{\ensuremath{C_{\mathcal{M}\alpha\mathrm{,F}}}\xspace} 
+%Gradiente del coefficiente di momento di beccheggio della fusoliera
+\newcommand{\CNbetaF}{\ensuremath{\big(C_{\mathcal{N}_{\mathlarger{\beta}}}\big)_\mathrm{F}}\xspace} 
+%Gradiente del coefficiente di momento di imbardata della fusoliera
+
+%nacelle
+\newcommand{\SwetN}{\ensuremath{{S_\mathrm{wet,N}}}\xspace}
+
+
+%piano orizz. di coda
+\newcommand{\CbarH}{\ensuremath{\mathlarger{\bar{c}}_{\mathrm{H}}}\xspace} %Corda media del piano di coda orizz.
+\newcommand{\alphaH}{\ensuremath{\alpha_{\mathrm{H}}}\xspace} %Incidenza dle piano di coda orizz.
+\newcommand{\alphaHzero}{\ensuremath{\alpha_{\mathrm{H}_0}}\xspace} %Incidenza del piano di coda orizz. quando il CL totale del velivolo è 0
+\newcommand{\alphazlH}{\ensuremath{\alpha_{{0L},\mathrm{H}}}\xspace} %angolo di portanza nulla del piano orizz.
+\newcommand{\iH}{\ensuremath{i_{\mathrm{H}}}\xspace} % angolo di calettamento del piano di coda
+\newcommand{\qH}{\ensuremath{q_{\mathrm{H}}}\xspace} %Pressione dinamica sul piano  di coda orizz.
+\newcommand{\etaH}{\ensuremath{\mathlarger{\eta}_{\mathrm{H}}}\xspace} %Rapporto tra le pressioni dinamiche sul piano orizz.
+\newcommand{\SH}{\ensuremath{S_{\mathrm{H}}}\xspace} %Superficie del piano di coda orizz.
+\newcommand{\cH}{\ensuremath{{c_{\mathrm{H}}}}\xspace} %Corda del piano di coda orizz.
+\newcommand{\bH}{\ensuremath{{\mathlarger{b}_{\mathrm{H}}}}\xspace} %Apertura alare del piano di coda orizz.
+\newcommand{\VH}{\ensuremath{\bar{\mathcal{V}}_{\mathrm{H}}}\xspace} %Rapporto volumetrico del piano orizzontale
+\newcommand{\Se}{\ensuremath{S_{\elev}}\xspace} %Superficie dell' equilibratore
+\newcommand{\ce}{\ensuremath{{c_{\elev}}}\xspace} %Corda dell'equilibratore
+\newcommand{\eH}{\ensuremath{\mathlarger{e}_{\mathrm{H}}}\xspace} %Fattore di Oswald del piano di coda orizz.
+\newcommand{\ARH}{\ensuremath{\AR_{\mathrm{H}}}\xspace} %Aspect Ratio del piano di coda orizz.
+\newcommand{\lamH}{\ensuremath{\mathlarger{\lambda}_{\mathrm{H}}}\xspace} %Taper Ratio del piano orizz. (rapporto dirastremazione)
+
+\newcommand{\CLH}{\ensuremath{C_{L_\mathrm{H}}}\xspace} %Coefficente di  portanza del piano di coda orizz.
+\newcommand{\CLiftH}{\ensuremath{C_{L_{\mathrm{H}}}}\xspace} %Coefficiente di portanza sul piano di coda orizz.
+\newcommand{\ClalphapH}{\ensuremath{\big(C_{l_{\mathlarger\alpha}}\big)_{\mathrm{Profilo},\mathrm{H}}}\xspace} %Clalfa 2D
+\newcommand{\CLalphaH}{\ensuremath{C_{L_{\mathlarger\alpha\mathrm{,H}}}}\xspace} %Clalfa 3D
+\newcommand{\epszero}{\ensuremath{\epsilon_0}\xspace} %Downwash ad alpha =0
+\newcommand{\udeps}{\ensuremath{\Bigg(1-\frac{\diff{\epsilon}}{\diff{\alpha}}\Bigg)}\xspace} %(1-deps/dalpha)
+\newcommand{\udepsfrac}{\ensuremath{\left(1-\mathlarger{\diff{\varepsilon}/\diff{\alpha}}\right)}\xspace} % (1-deps/dalpha)
+\newcommand{\depsfrac}{\ensuremath{\frac{\diff{\varepsilon}}{\diff{\alpha}}}\xspace} %(deps/dalpha)
+\newcommand{\deps}{\ensuremath{\diff{\varepsilon}/\diff{\alpha}}\xspace} %(deps/dalpha)
+\newcommand{\depsshort}{\ensuremath{\mathlarger{\varepsilon}_\alpha}} %deps/dalpha notazione sintetica
+
+\newcommand{\tauH}{\ensuremath{\mathlarger{\tau}_{\mathrm{H}}}\xspace} % efficacia del timone orizzontale
+\newcommand{\tauelev}{\ensuremath{\mathlarger{\tau}_\elev}\xspace} % efficacia dell'elevatore
+\newcommand{\tauequilib}{\ensuremath{\mathlarger{\tau}_{\mathrm{equilib}}}\xspace} %Efficienza del piano di coda
+\newcommand{\etaelevin}{\ensuremath{\mathlarger{\eta}_{\mathrm{\elev,in}}}\xspace} %Stazione interna dell'elevatore, adim
+\newcommand{\etaelevout}{\ensuremath{\mathlarger{\eta}_{\mathrm{\elev,out}}}\xspace} %Stazione esterna dell'elevatore, adim
+
+\newcommand{\CH}{\ensuremath{C_{\mathrm{H}}}\xspace} %Forza assiale sul piano di coda orizz.
+\newcommand{\CCH}{\ensuremath{C_{C_{\mathrm{H}}}}\xspace} %Coefficiente di forza assiale sul piano di coda orizz.
+\newcommand{\NH}{\ensuremath{N_{\mathrm{H}}}\xspace} %Forza normale sul piano di coda orizz.
+\newcommand{\CNH}{\ensuremath{C_{N_{\mathrm{H}}}}\xspace} %Coefficiente di forza normale sul piano di coda orizz.
+
+\newcommand{\MacH}{\ensuremath{\mathcal{M}_{\mathrm{ac,H}}}\xspace} %Momento focale del piano di coda orizz.
+\newcommand{\CMacH}{\ensuremath{C_{\mathcal{M}_{\mathrm{ac,H}}}}\xspace} %Coefficiente di momento focale del piano di coda orizz.
+
+\newcommand{\Mhe}{\ensuremath{\mathcal{M}_{\mathcal{h}_{\elev}}}\xspace} %Momento di cerniera dell'equilibratore
+\newcommand{\Che}{\ensuremath{C_{\mathcal{h}_{\elev}}}\xspace} %Coefficiente di momento di cerniera dell'equilibratore
+\newcommand{\Cheo}{\ensuremath{C_{\mathcal{h}_{\elev 0}}}\xspace} %Coeff di mom di cerniera dell'equil ad alpha e deltae nulli
+\newcommand{\Chalphae}{\ensuremath{C_{\mathcal{H}_{\alpha_{\elev}}}}\xspace} %Coeff di mom di cern dell'equil - derivata rispetto ad alpha
+\newcommand{\Chdeltae}{\ensuremath{C_{\mathcal{H}_{\delta_{\elev}}}}\xspace} %Coeff di mom di cern dell'equil - derivata rispetto a delta
+\newcommand{\Chdeltat}{\ensuremath{C_{\mathcal{h}_{\delta_\mathrm{t}}}}\xspace} 
+%Coeff di mom di cern dell'equil - derivata rispetto a deltat
+\newcommand{\deltaef}{\ensuremath{\delta_{\elev_{\mathrm{f}}}}\xspace} %Angolo di flottaggio dell'equilibratore
+\newcommand{\deltat}{\ensuremath{\delta_{\mathrm{t}}}\xspace} %Angolo di deflessione del trim tab
+
+\newcommand{\LHe}{\ensuremath{{L_{\mathrm{He}}}}\xspace} %Carico di equilibrio sul piano di coda
+\newcommand{\deltaEo}{\ensuremath{{\delta_{\elev\mathrm{0}}}}\xspace} %Deflessione dell'equilibratore necessaria all'equilibrio a CL=0
+\newcommand{\deltaEe}{\ensuremath{{\delta_{\elev\mathrm{e}}}}\xspace} 
+%Deflessione dell'equilibratore necessaria all'equilibrio a CL generico
+\newcommand{\deltaEmax}{\ensuremath{{\delta_{\elev_{\mathrm{max}}}}}\xspace} 
+%Deflessione dell'equilibratore necessaria all'equilibrio a CLmax
+\newcommand{\deltae}{\ensuremath{{\delta_{\elev}}}\xspace} 
+%Deflessione dell'equilibratore necessaria all'equilibrio a CL generico
+
+
+%piano vert. di coda
+\newcommand{\CbarV}{\ensuremath{\mathlarger{\bar{c}}_{\mathrm{V}}}\xspace} %Corda media del piano di coda vert.
+\newcommand{\alphazlV}{\ensuremath{\alpha_{{0L},\mathrm{V}}}\xspace} %angolo di portanza nulla del piano vert.
+\newcommand{\qV}{\ensuremath{q_{\mathrm{V}}}\xspace} %Pressione dinamica sul piano  di coda vert.
+\newcommand{\etaV}{\ensuremath{\mathlarger{\eta}_{\mathrm{V}}}\xspace} %Rapporto tra le pressioni dinamiche sul piano vert.
+\newcommand{\SV}{\ensuremath{S_{\mathrm{V}}}\xspace} %Superficie del piano di coda vert.
+\newcommand{\cV}{\ensuremath{{c_{\mathrm{V}}}}\xspace} %Corda del piano di coda vert.
+\newcommand{\bV}{\ensuremath{{b_{\mathrm{V}}}}\xspace} %''Apertura alare'' del piano di coda vert.
+\newcommand{\VV}{\ensuremath{\bar{\mathcal{V}}_{\mathrm{V}}}\xspace} %Rapporto volumetrico del piano orizzontale
+\newcommand{\Srud}{\ensuremath{S_{\rud}}\xspace} %Superficie del timone
+\newcommand{\crud}{\ensuremath{{c_{\rud}}}\xspace} %Corda del timone
+\newcommand{\eV}{\ensuremath{\mathlarger{e}_{\mathrm{V}}}\xspace} %Fattore di Oswald del piano di coda vert.
+\newcommand{\ARV}{\ensuremath{\AR_{\mathrm{V}}}\xspace} %Aspect Ratio del piano di coda vert.
+\newcommand{\lamV}{\ensuremath{\mathlarger{\lambda}_{\mathrm{V}}}\xspace} %Taper Ratio del piano vert. (rapporto dirastremazione)
+
+\newcommand{\CLiftV}{\ensuremath{C_{L_{\mathrm{H}}}}\xspace} %Coefficiente di portanza sul piano di coda vert.
+\newcommand{\ClalphapV}{\ensuremath{\big(C_{l_{\mathlarger\alpha}}\big)_{\mathrm{Profilo},\mathrm{V}}}\xspace} %Clalfa 2D
+\newcommand{\CLalphaV}{\ensuremath{C_{L_{\mathlarger\alpha\mathrm{,V}}}}\xspace} %Clalfa 3D
+\newcommand{\sidewash}{\ensuremath{\displaystyle\frac{\diff{\sigma}}{\diff{\beta}}}} %Sidewash
+
+\newcommand{\MacV}{\ensuremath{\mathcal{M}_{\mathrm{ac,V}}}\xspace} %Momento focale del piano di coda vert.
+\newcommand{\CMacV}{\ensuremath{C_{\mathcal{M}_{\mathrm{ac,V}}}}\xspace} %Coefficiente di momento focale del piano di coda vert.
+
+\newcommand{\taurud}{\ensuremath{\mathlarger{\tau}_\rud}\xspace} % efficacia del timone
+\newcommand{\etarudin}{\ensuremath{\mathlarger{\eta}_{\mathrm{\rud,in}}}\xspace} %Stazione interna del timone, adim
+\newcommand{\etarudout}{\ensuremath{\mathlarger{\eta}_{\mathrm{\rud,out}}}\xspace} %Stazione esterna del timone, adim
+
+
+%propulsori: elica e getto
+\newcommand{\Neng}{\ensuremath{{N_{\mathrm{eng}}}}}\xspace        %numero di propulsori
+\newcommand{\meng}{\ensuremath{{m_\mathrm{eng}}}}\xspace
+\newcommand{\mfuel}{\ensuremath{{m_\mathrm{fuel}}}}\xspace
+\newcommand{\alphap}{\ensuremath{{\alpha_{\mathrm{p}}}}\xspace}  		%Incidenza del propulsore
+\newcommand{\Np}{\ensuremath{{N_{\mathrm{p}}}}\xspace}           		%Forza normale del propulsore
+\newcommand{\Mp}{\ensuremath{{\mathcal{M}_{\mathrm{p}}}}\xspace} 		%Momento di beccheggio del propulsore
+\newcommand{\lp}{\ensuremath{{\ell_{\mathrm{p}}}}\xspace}        		%Distanza longitudinale disco prop-CG
+\newcommand{\Xeng}{\ensuremath{{X_{\mathit{eng}}}}\xspace}           		%Distanza orizzontale asse prop-CG
+\newcommand{\Zeng}{\ensuremath{{Z_{\mathit{eng}}}}\xspace}           		%Distanza verticale asse prop-CG
+\newcommand{\CNp}{\ensuremath{{C_{N_{\mathrm{p}}}}}\xspace}      		%Coefficente di forza nomale
+\newcommand{\CNalphaeng}{\ensuremath{{C_{N_{\mathlarger\alpha \mathit{,eng}}}}}\xspace}  %gradiente di forza nomale rispetto ad alpha
+\newcommand{\CNalphaengSlope}{\ensuremath{{C_{N_{\mathlarger\alpha' \mathit{,eng}}}}}\xspace}  %gradiente di forza nomale rispetto ad alpha
+\newcommand{\Sp}{\ensuremath{{S_{\mathrm{p}}}}\xspace}           		%Superficie del prop
+\newcommand{\CT}{\ensuremath{{C_{\mathrm{T}}}}\xspace}           		%Coefficinte di spinta (Renard)
+\newcommand{\TC}{\ensuremath{{T_{\mathrm{C}}}}\xspace}           		%Coefficiente di spinta
+\newcommand{\CMp}{\ensuremath{{C_{\mathcal{M}_{\mathrm{p}}}}}\xspace} 	%Coefficiente di momento di beccheggio del prop
+\newcommand{\CMzeroeng}{\ensuremath{C_{\mathcal{M}0_{\mathit{eng}}}}\xspace} %Coeff. di momento di becch. ad alpha=0 del motore
+\newcommand{\CMalphaeng}{\ensuremath{C_{\mathcal{M}_{\mathlarger\alpha \mathit{,eng}}}}\xspace} %Gradiente del coeff. di momento ripetto ad alpha del motore
+\newcommand{\Pa}{\ensuremath{{\Pi_{\mathrm{a}}}}\xspace}           		%Potenza all'albero del propulsore
+\newcommand{\etap}{\ensuremath{{\eta_{\mathrm{p}}}}\xspace}        		%Rendimento del propulsore
+\newcommand{\deng}{\ensuremath{{d_{\mathit{eng}}}}\xspace}           		%diametro del propulsore
+\newcommand{\Seng}{\ensuremath{{S_{\mathit{eng}}}}\xspace}           		%Superficie del propulsore
+\newcommand{\epseng}{\ensuremath{{\varepsilon_{\mathlarger \alpha \mathit{,eng}}}}\xspace} %Gradiente di downwash del motore
+
+\newcommand{\Mj}{\ensuremath{{\mathcal{M}_{\mathrm{j}}}}\xspace}   		%Momento di beccheggio del motore a getto
+\newcommand{\CMj}{\ensuremath{{C_{\mathcal{M}_{\mathrm{j}}}}}\xspace} 	%Coeff di momento di beccheggio propulsivo del motore a getto
+\newcommand{\hj}{\ensuremath{{h_{\mathrm{j}}}}\xspace}           		%Distanza verticale asse getto-CG
+
+
+%velivolo completo e parziale: resitenza, portanza, beccheggio (longitudinale)
+\newcommand{\alphaWB}{\ensuremath{\alpha_{\mathrm{WB}}}\xspace} %Angolo di attacco del velivolo parziale
+\newcommand{\alphafree}{\ensuremath{\alpha_{\mathit{free}}}\xspace} %Angolo di attacco del velivolo free
+\newcommand{\alphadot}{\ensuremath{\dot\alpha}\xspace} %Angolo di attacco del velivolo parziale
+
+\newcommand{\CDrag}{\ensuremath{C_D}\xspace} %Coefficiente di resistenza del velivolo
+\newcommand{\CDzero}{\ensuremath{C_{D0}}\xspace} %Coefficiente di resistenza a portanza nulla
+\newcommand{\CDi}{\ensuremath{C_{D_i}}\xspace} %Coefficiente di resistenza indotta
+\newcommand{\CDo}{\ensuremath{C_{D_0}}\xspace} % coefficiente di resistenza minimo nella polare parabolica
+\newcommand{\CDdeltae}{\ensuremath{C_{D_{\mathlarger{\delta_\mathrm{e}}}}}\xspace} %Gradiente del coeff. di resistenza rispetto all'elevatore
+\newcommand{\CDiH}{\ensuremath{C_{D_{\mathlarger{i_\mathrm{H}}}}}\xspace} %Gradiente del coeff. di resistenza ripetto ad iH
+\newcommand{\CDfree}{\ensuremath{C_{\mathcal{D}_{\mathit{free}}}}\xspace}%Coefficiente di resistenza del velivolo free
+\newcommand{\CDalphafree}{\ensuremath{C_{\mathcal{D}_{\mathlarger\alpha \mathit{,free}}}}\xspace} %Gradiente del coeff. di resistenza ripetto ad alpha free
+\newcommand{\CDalpha}{\ensuremath{C_{D_{\mathlarger\alpha}}}\xspace} %Gradiente del coeff. di resistenza ripetto ad alpha
+\newcommand{\CDalphadot}{\ensuremath{C_{\mathcal{D}_{\mathlarger{\dot\alpha}}}}\xspace} %Grad. del coeff. di resistenza ripetto ad alphaDot
+\newcommand{\CDq}{\ensuremath{C_{\mathcal{D}_{\mathlarger{q}}}}\xspace} %%Grad. del coeff. di resistenza ripetto a q
+
+\newcommand{\MCG}{\ensuremath{\mathcal{M}_{CG}}\xspace} %Momento totale rispetto al baricentro
+\newcommand{\CMCG}{\ensuremath{C_{\mathcal{M}_\mathrm{CG}}}\xspace} %Coefficiente di momento totale rispetto al baricentro
+\newcommand{\CMcg}{\ensuremath{C_{\mathcal{M}_{\mathlarger{\mathrm{cg}}}}}\xspace} %Coefficiente di momento di becch. risp. cg
+\newcommand{\CMCGWB}{\ensuremath{C_{\mathcal{M}_\mathrm{CG,WB}}}\xspace} 
+%Coeff. di mom. rispetto al baricentro, contributo del velivolo parziale
+\newcommand{\MacW}{\ensuremath{\mathcal{M}_{\mathrm{ac,w}}}\xspace} %Momento totale rispetto al c.a. dell'ala
+\newcommand{\CMacW}{\ensuremath{C_{\mathcal{M}_{\mathrm{ac,W}}}}\xspace} %Coeff di momento totale rispetto al centro aerodinamico dell'ala
+\newcommand{\CMacWB}{\ensuremath{C_{\mathcal{M}_{\mathrm{ac,WB}}}}\xspace}%Coeff di momento rispetto al centro aerodinamico del velivolo parziale
+\newcommand{\CM}{\ensuremath{C_{\mathcal{M}}}\xspace} %Coeff. di momento di beccheggio
+\newcommand{\CMT}{\ensuremath{C_{\mathcal{M}_{\mathrm{T}}}}\xspace} %Coeff di momento, contributo delle azioni propulsive
+\newcommand{\CMzero}{\ensuremath{C_{\mathcal{M}_0}}\xspace} %Coeff. di momento di becch. ad alpha=0
+\newcommand{\CMzeroWB}{\ensuremath{C_{\mathcal{M}0_{\mathrm{WB}}}}\xspace} %Coeff. di momento di becch. del WB ad alpha=0
+\newcommand{\CMzerofree}{\ensuremath{C_{\mathcal{M}0_{\mathit{free}}}}\xspace} %Coeff. di momento di becch. del WB ad alpha=0 free
+\newcommand{\CMalphafree}{\ensuremath{C_{\mathcal{M}_{\mathlarger\alpha \mathit{,free}}}}\xspace} %Gradiente del coeff. di momento ripetto ad alpha free
+\newcommand{\CMiHfree}{\ensuremath{C_{\mathcal{M}_{\mathlarger{i_\mathrm{H\mathit{,free}}}}}}\xspace} %Gradiente del coeff. di momento ripetto ad iH free
+\newcommand{\CMatalphazero}{\ensuremath{C_{\mathcal{M}}\big|_{\alpha=0}}\xspace} %Coeff. di momento di becch. ad alpha=0
+\newcommand{\CMalpha}{\ensuremath{C_{\mathcal{M}_{\mathlarger\alpha}}}\xspace} %Gradiente del coeff. di momento ripetto ad alpha
+\newcommand{\CMbeta}{\ensuremath{C_{\mathcal{M}_{\mathlarger\beta}}}\xspace} %Gradiente del coeff. di momento ripetto a beta
+\newcommand{\CMalphadot}{\ensuremath{C_{\mathcal{M}_{\mathlarger{\dot\alpha}}}}\xspace} %Grad. del coeff. di momento ripetto ad alphaDot
+\newcommand{\CMalphadotH}{\ensuremath{C_{\mathcal{M}_{\mathlarger{\dot\alpha}\mathrm{,H}}}}\xspace} %Grad. del coeff. di momento ripetto ad alphaDot
+\newcommand{\CMq}{\ensuremath{C_{\mathcal{M}_{\mathlarger{q}}}}\xspace} %%Grad. del coeff. di momento ripetto a q
+\newcommand{\CMqW}{\ensuremath{C_{\mathcal{M}_{\mathlarger{q}\mathrm{,W}}}}\xspace} %%Grad. del coeff. di momento ripetto a q
+\newcommand{\CMqH}{\ensuremath{C_{\mathcal{M}_{\mathlarger{q}\mathrm{,H}}}}\xspace} %%Grad. del coeff. di momento ripetto a q
+\newcommand{\CMdeltae}{\ensuremath{C_{\mathcal{M}_{\mathlarger{\deltae}}}}\xspace} %Gradiente del coeff. di momento ripetto a deltae
+\newcommand{\CMiH}{\ensuremath{C_{\mathcal{M}_{\mathlarger{i_\mathrm{H}}}}}\xspace} %Gradiente del coeff. di momento ripetto ad iH
+
+\newcommand{\Cnorm}{\ensuremath{C_N}\xspace} %Coefficiente di forza normale
+\newcommand{\CC}{\ensuremath{C_C}\xspace} %Coefficiente di forza assiale
+
+\newcommand{\CLift}{\ensuremath{C_L}\xspace} %Coefficiente di portanza del velivolo
+\newcommand{\CLiftmax}{\ensuremath{C_{L_{\mathrm{max}}}}\xspace} %Coefficiente di portanza massimo del velivolo
+\newcommand{\CLzero}{\ensuremath{C_{L0}}\xspace} %Coefficiente di portanza ad alpha nullo
+\newcommand{\CLalpha}{\ensuremath{C_{L_{\mathlarger\alpha}}}\xspace} %Gradiente del coeff. di portanza ripetto ad alpha
+\newcommand{\CLalphaWB}{\ensuremath{C_{L_{\mathlarger\alpha\mathrm{,WB}}}}\xspace} %Gradiente del coeff. di portanza ripetto ad alpha
+\newcommand{\CLalphadot}{\ensuremath{C_{L_{\mathlarger{\dot\alpha}}}}\xspace} %Grad. del coeff. di portanza ripetto ad alphaDot
+\newcommand{\CLalphadotH}{\ensuremath{C_{L_{\mathlarger{\dot\alpha}\mathrm{,H}}}}\xspace} %Grad. del coeff. di portanza ripetto ad alphaDot
+\newcommand{\CLdeltae}{\ensuremath{C_{L_{\mathlarger{\deltae}}}}\xspace} %Gradiente del coeff. di portanza ripetto a deltae
+\newcommand{\CLiH}{\ensuremath{C_{L_{\mathlarger{i_\mathrm{H}}}}}\xspace} %Gradiente del coeff. di portanza ripetto ad iH
+\newcommand{\CLiftfree}{\ensuremath{C_{\mathcal{L}_{\mathit{free}}}}\xspace} %Coefficiente di portanza free
+\newcommand{\CLzerofree}{\ensuremath{C_{\mathcal{L}0_{\mathit{free}}}}\xspace} %Coefficiente di portanza ad alpha nullo free
+\newcommand{\CLalphafree}{\ensuremath{C_{\mathcal{L}_{\mathlarger\alpha \mathit{,free}}}}\xspace} %Gradiente del coeff. di portanza ripetto ad alpha free
+\newcommand{\CLiHfree}{\ensuremath{C_{\mathcal{L}_{\mathlarger{i_\mathrm{H\mathit{,free}}}}}}\xspace} %Gradiente del coeff. di portanza ripetto ad iH free
+\newcommand{\CLq}{\ensuremath{C_{L_{\mathlarger{q}}}}\xspace} %%Grad. del coeff. di portanza ripetto a q
+\newcommand{\CLqW}{\ensuremath{C_{L_{\mathlarger{q\mathrm{,W}}}}}\xspace} %%Grad. del coeff. di portanza ripetto a q
+\newcommand{\CLqH}{\ensuremath{C_{L_{\mathlarger{q\mathrm{,H}}}}}\xspace} %%Grad. del coeff. di portanza ripetto a q
+\newcommand{\CLWB}{\ensuremath{C_{L_{\mathlarger {WB}}}}\xspace} %Coeff. di portanza del wing+body
+\newcommand{\CLzeroWB}{\ensuremath{C_{L0_{\mathlarger{WB}}}}\xspace} %Coeff. di portanza del wing+body ad angolo nullo
+\newcommand{\CLzeroH}{\ensuremath{C_{L0_{\mathlarger{H}}}}\xspace} %Coeff. di portanza dell'horiz. tail ad angolo nullo
+
+\newcommand{\MSCB}{\ensuremath{\left(\mathlarger{\frac{\partial \CMCG}{\partial \CLift}}\right)_{\mathrm{CB}}}\xspace} 
+%Margine di stabiltà a comandi bloccati
+\newcommand{\MSCL}{\ensuremath{\left(\mathlarger{\frac{\partial \CMCG}{\partial \CLift}}\right)_{\mathrm{CL}}}\xspace} 
+%Margine di stabiltà a comandi liberi
+\newcommand{\SSMfixed}{\ensuremath{S\hspace{-0.1em}S\hspace{-0.1em}M}\xspace}%Posizione adimensionale del punto neutro a comandi bloccati
+\newcommand{\SSMfree}{\ensuremath{S\hspace{-0.1em}S\hspace{-0.1em}M_{\mathit{free}}}\xspace}%Posizione adimensionale del punto neutro a comandi liberi
+\newcommand{\SSMeng}{\ensuremath{S\hspace{-0.1em}S\hspace{-0.1em}M_{\mathit{eng}}}\xspace}%Posizione adimensionale del punto neutro considerando i motori
+\newcommand{\xacwb}{\ensuremath{\big(\hat{x}_{ac}\big)_\mathrm{WB}}\xspace} %Posizione adimensionale del c.a. del velivolo parziale
+
+
+% Latero-Direzionale
+\newcommand{\CY}{\ensuremath{C_Y}\xspace} %Coeff. di forza laterale del velivolo
+\newcommand{\CYbeta}{\ensuremath{C_{Y_\beta}}\xspace} %Gradiente del coeff. di forza laterale del velivolo
+
+\newcommand{\CL}{\ensuremath{C_{\mathcal{L}}}\xspace} %Coeff. di momento di rollio del velivolo
+\newcommand{\CLzeroRoll}{\ensuremath{C_{\mathcal{L}_{\mathlarger{0}}}}\xspace} %Coeff. di momento di rollio del velivolo (zero)
+\newcommand{\CLbeta}{\ensuremath{C_{\mathcal{L}_{\mathlarger{\beta}}}}\xspace} %Coeff. di momento di rollio dovuto alla derapata
+\newcommand{\CLprate}{\ensuremath{C_{\mathcal{L}_{\mathlarger{p}}}}\xspace} %Coeff. di momento di rollio dovuto alla rotazione di rollio
+\newcommand{\CLprateWB}{\ensuremath{C_{\mathcal{L}_{\mathlarger{p \mathrm{,WB}}}}}\xspace} %Coeff. di momento di rollio dovuto alla rotazione di rollio
+\newcommand{\CLprateW}{\ensuremath{C_{\mathcal{L}_{\mathlarger{p \mathrm{,W}}}}}\xspace} %Coeff. di momento di rollio dovuto alla rotazione di rollio
+\newcommand{\CLprateH}{\ensuremath{C_{\mathcal{L}_{\mathlarger{p \mathrm{,H}}}}}\xspace} %Coeff. di momento di rollio dovuto alla rotazione di rollio
+\newcommand{\CLprateV}{\ensuremath{C_{\mathcal{L}_{\mathlarger{p \mathrm{,V}}}}}\xspace} %Coeff. di momento di rollio dovuto alla rotazione di rollio
+\newcommand{\CLrrate}{\ensuremath{C_{\mathcal{L}_{\mathlarger{r}}}}\xspace} %Coeff. di momento di rollio dovuto alla rotazione di imb.
+\newcommand{\CLrrateWB}{\ensuremath{C_{\mathcal{L}_{\mathlarger{r \mathrm{,WB}}}}}\xspace} %Coeff. di momento di rollio dovuto alla rotazione di imb.
+\newcommand{\CLrrateW}{\ensuremath{C_{\mathcal{L}_{\mathlarger{r \mathrm{,W}}}}}\xspace} %Coeff. di momento di rollio dovuto alla rotazione di imb.
+\newcommand{\CLrrateH}{\ensuremath{C_{\mathcal{L}_{\mathlarger{r \mathrm{,H}}}}}\xspace} %Coeff. di momento di rollio dovuto alla rotazione di imb.
+\newcommand{\CLrrateV}{\ensuremath{C_{\mathcal{L}_{\mathlarger{r \mathrm{,V}}}}}\xspace} %Coeff. di momento di rollio dovuto alla rotazione di imb.
+\newcommand{\CLdeltaa}{\ensuremath{C_{\mathcal{L}_{\mathlarger{\delta_a}}}}\xspace} %Coeff. di momento di rollio dovuto agli alettoni
+\newcommand{\CLdeltar}{\ensuremath{C_{\mathcal{L}_{\mathlarger{\delta_r}}}}\xspace} %Coeff. di momento di rollio dovuto al timone
+\newcommand{\CLbetaLambda}{\ensuremath{\big(C_{\mathcal{L}_{\mathlarger{\beta}}}\big)_{\Lambda}}\xspace} 
+%Coeff. di momento di rollio legato alla freccia
+\newcommand{\CLbetaGamma}{\ensuremath{\big(C_{\mathcal{L}_{\mathlarger{\beta}}}\big)_{\Gamma}}\xspace} 
+%Coeff. di momento di rollio legato al diedro
+\newcommand{\CLbetaV}{\ensuremath{C_{\mathcal{L}_{\mathlarger{\beta \mathrm{,V}}}}}\xspace} 
+%Coeff. di momento di rollio legato al verticale
+\newcommand{\CLbetaH}{\ensuremath{C_{\mathcal{L}_{\mathlarger{\beta \mathrm{,H}}}}}\xspace} 
+%Coeff. di momento di rollio legato all'orizzontale
+\newcommand{\CLbetaWB}{\ensuremath{C_{\mathcal{L}_{\mathlarger{\beta \mathrm{,WB}}}}}\xspace} 
+%Coeff. di momento di rollio legato al wing-body
+
+\newcommand{\CN}{\ensuremath{C_{\mathcal{N}}}\xspace} %Coeff. di momento di imbardata del velivolo
+\newcommand{\CNT}{\ensuremath{C_{\mathcal{N}_\mathlarger{T}}}\xspace} %Coeff. di momento di imbardata dovuto alla spinta asimmetrica
+\newcommand{\CNzeroYaw}{\ensuremath{C_{\mathcal{N}_{\mathlarger{0}}}}\xspace} %Coeff. di momento di imbardata del velivolo (zero)
+\newcommand{\CNbeta}{\ensuremath{C_{\mathcal{N}_{\mathlarger{\beta}}}}\xspace} %Coeff. di momento di imbardata dovuto alla derapata
+\newcommand{\CNdeltaa}{\ensuremath{C_{\mathcal{N}_{\mathlarger{\delta_a}}}}\xspace} %Coeff. di momento di imbardata dovuto agli alettoni
+\newcommand{\CNdeltar}{\ensuremath{C_{\mathcal{N}_{\mathlarger{\delta_r}}}}\xspace} %Coeff. di momento di imbardata dovuto al timone
+\newcommand{\CNbetaW}{\ensuremath{C_{\mathcal{N}_{\mathlarger{\beta \mathrm{,W}}}}}\xspace} 
+%Coeff. di momento di imbardata dovuto alla derapata
+\newcommand{\CNbetaBody}{\ensuremath{C_{\mathcal{N}_{\mathlarger{\beta \mathrm{,B}}}}}\xspace} 
+%Coeff. di momento di imbardata dovuto alla derapata
+\newcommand{\CNbetaV}{\ensuremath{C_{\mathcal{N}_{\mathlarger{\beta \mathrm{,V}}}}}\xspace} 
+%Coeff. di momento di imbardata alla derapata
+\newcommand{\CNbetaH}{\ensuremath{C_{\mathcal{N}_{\mathlarger{\beta \mathrm{,H}}}}}\xspace} 
+%Coeff. di momento di imbardata alla derapata
+\newcommand{\CNprate}{\ensuremath{C_{\mathcal{N}_{\mathlarger{p}}}}\xspace} %Coeff. di momento di imb. dovuto alla rotazione di rollio
+\newcommand{\CNprateWB}{\ensuremath{C_{\mathcal{N}_{\mathlarger{p \mathrm{,WB}}}}}\xspace} %Coeff. di momento di imb. dovuto alla rotazione di rollio
+\newcommand{\CNprateW}{\ensuremath{C_{\mathcal{N}_{\mathlarger{p \mathrm{,W}}}}}\xspace} %Coeff. di momento di imb. dovuto alla rotazione di rollio
+\newcommand{\CNprateH}{\ensuremath{C_{\mathcal{N}_{\mathlarger{p \mathrm{,H}}}}}\xspace} %Coeff. di momento di imb. dovuto alla rotazione di rollio
+\newcommand{\CNprateV}{\ensuremath{C_{\mathcal{N}_{\mathlarger{p \mathrm{,V}}}}}\xspace} %Coeff. di momento di imb. dovuto alla rotazione di rollio
+\newcommand{\CNrrate}{\ensuremath{C_{\mathcal{N}_{\mathlarger{r}}}}\xspace} %Coeff. di momento di imb. dovuto alla rotazione di imb.
+\newcommand{\CNrrateWB}{\ensuremath{C_{\mathcal{N}_{\mathlarger{r \mathrm{,WB}}}}}\xspace} %Coeff. di momento di imb. dovuto alla rotazione di imb.
+\newcommand{\CNrrateW}{\ensuremath{C_{\mathcal{N}_{\mathlarger{r \mathrm{,W}}}}}\xspace} %Coeff. di momento di imb. dovuto alla rotazione di imb.
+\newcommand{\CNrrateH}{\ensuremath{C_{\mathcal{N}_{\mathlarger{r \mathrm{,H}}}}}\xspace} %Coeff. di momento di imb. dovuto alla rotazione di imb.
+\newcommand{\CNrrateV}{\ensuremath{C_{\mathcal{N}_{\mathlarger{r \mathrm{,V}}}}}\xspace} %Coeff. di momento di imb. dovuto alla rotazione di imb.
+
+%Manovre
+\newcommand{\VT}{\ensuremath{V_T}\xspace} %Velocità di trim
+\newcommand{\gradFS}{\ensuremath{\frac{\diff{\FStick}}{\diff{V}}\Big|_{V=\VT}}\xspace} %Gradiente degli sforzi di barra vs V
+\newcommand{\deltaEpull}{\ensuremath{\delta_{\elev_\mathrm{pull-up}}}\xspace} %Deltae di manovra - richiamata
+\newcommand{\deltaEturn}{\ensuremath{\delta_{\elev_\mathrm{turn}}}\xspace} %Deltae di manovra - virata
+\newcommand{\xNmdim}{\ensuremath{x_{\mathrm{Nm}}}\xspace} %Posizione longitudinale del punto neutro di manovra- dimensionale
+\newcommand{\nlim}{\ensuremath{n_{\mathrm{lim}}}\xspace} %Fattore di carico limite
+\newcommand{\nult}{\ensuremath{n_{\mathrm{ult}}}\xspace} %Fattore di carico ultimo
+
+%velocità angolari nel riferimento solidale
+\newcommand{\dottheta}{\dot{\negthinspace \theta}\xspace} %theta punto
+\newcommand{\dotphi}{\dot{\phi}\xspace} %phi punto
+\newcommand{\dotpsi}{\dot{\psi}\xspace} %psi punto
+
+
+%assi e forze di natura aerodinamica
+\newcommand{\XA}{\ensuremath{X_\Aero}\xspace}
+\newcommand{\YA}{\ensuremath{Y_\Aero}\xspace}
+\newcommand{\ZA}{\ensuremath{Z_\Aero}\xspace}
+\newcommand{\LA}{\ensuremath{\mathcal{L}_\Aero}\xspace}
+\newcommand{\MA}{\ensuremath{\mathcal{M}_\Aero}\xspace}
+\newcommand{\NA}{\ensuremath{\mathcal{N}_\Aero}\xspace}
+
+
+%configurazioni degli assemblaggi delle parti del velivolo
+\newcommand{\BVH}{\ensuremath{\mathrm{BVH}}\xspace}
+\newcommand{\WB}{\ensuremath{\mathrm{WB}}\xspace}
+\newcommand{\WiB}{\ensuremath{\mathrm{W(B)}}\xspace}
+\newcommand{\BiW}{\ensuremath{\mathrm{B(W)}}\xspace}
+\newcommand{\WBV}{\ensuremath{\mathrm{WBV}}\xspace}
+\newcommand{\WBH}{\ensuremath{\mathrm{WBH}}\xspace}
+\newcommand{\Nose}{\ensuremath{\mathrm{N}}\xspace}
+\newcommand{\HiB}{\ensuremath{\mathrm{H(B)}}\xspace}
+\newcommand{\BiH}{\ensuremath{\mathrm{B(H)}}\xspace}
+
+
+%Altre distanze tra baricentri e centri aerodinamici
+\newcommand{\xcgdim}{\ensuremath{\mathlarger{x}_{\mathrm{CG}}}\xspace} %Posizione longitudinale baricentro sulla corda dell'ala - dimensionale
+\newcommand{\xacdim}{\ensuremath{\mathlarger{x}_{\mathrm{AC}}}\xspace} %Posizione longitudinale c.a. sulla corda dell'ala - dimensionale
+\newcommand{\xicgadim}{\ensuremath{\mathlarger{\xi}_{\mathrm{CG}}}\xspace} %Posizione longitudinale baricentro sulla corda dell'ala - adimensionale
+\newcommand{\xiacadim}{\ensuremath{\mathlarger{\xi}_{\mathrm{AC}}}\xspace} %Posizione longitudinale c.a. sulla corda dell'ala - adimensionale
+\newcommand{\xiacadimWB}{\ensuremath{\mathlarger{\xi}_{\mathrm{AC \mathrm{,WB}}}}\xspace} %Posizione longitudinale c.a. sulla corda dell'ala - adimensionale
+\newcommand{\xiacadimW}{\ensuremath{\mathlarger{\xi}_{\mathrm{AC \mathrm{,W}}}}\xspace} %Posizione longitudinale c.a. sulla corda dell'ala - adimensionale
+\newcommand{\xiacadimH}{\ensuremath{\mathlarger{\xi}_{\mathrm{AC \mathrm{,H}}}}\xspace} %Posizione longitudinale c.a. sulla corda dell'ala - adimensionale
+\newcommand{\xNdim}{\ensuremath{\mathlarger{x}_{\mathrm{N}}}\xspace} %Posizione longitudinale del punto neutro sulla corda dell'ala - dimensionale
+\newcommand{\xiNadim}{\ensuremath{\mathlarger{\xi}_{\mathrm{N}}}\xspace} %Posizione longitudinale del punto neutro sulla corda dell'ala - adimensionale
+\newcommand{\xiNadimfree}{\ensuremath{\mathlarger{\xi}_{\mathrm{N_\mathit{free}}}}\xspace} %Posizione longitudinale del punto neutro sulla corda dell'ala - adimensionale
+\newcommand{\xiNadimeng}{\ensuremath{\mathlarger{\xi}_{\mathrm{N_\mathit{eng}}}}\xspace} %Posizione longitudinale del punto neutro sulla corda dell'ala - adimensionale - considerando i motori
+\newcommand{\deltaxiNadimeng}{\ensuremath{\mathlarger{\Delta\xi}_{\mathrm{N_\mathit{eng}}}}\xspace} %Posizione longitudinale del punto neutro sulla corda dell'ala - adimensionale - considerando i motori
+\newcommand{\xNCLdim}{\ensuremath{x_{\mathrm{N}^{\prime}}}\xspace} %Pos. longit. del punto neutro a C.L. sulla corda dell'ala - dimensionale
+\newcommand{\xacwdim}{\ensuremath{x_{{\mathrm{ac}}_w}}\xspace} %Posizione longitudinale c.a. sulla corda dell'ala - dimensionale
+\newcommand{\xacdimh}{\ensuremath{\mathlarger{x}_{\mathrm{AC \mathrm{,H}}}}\xspace} %Posizione longitudinale c.a. sulla corda dell'ala - dimensional
+\newcommand{\xa}{\ensuremath{x_{\mathrm{a}}}\xspace} %Distanza longitudinale baricentro-c.a. dell'ala
+\newcommand{\za}{\ensuremath{z_{\mathrm{a}}}\xspace} %Distanza verticale baricentro-c.a. dell'ala
+\newcommand{\lH}{\ensuremath{\ell_{\mathrm{H}}}\xspace} %Distanza longitudinale baricentro-c.a. del piano di coda orizz.
+\newcommand{\hH}{\ensuremath{h_{\mathrm{H}}}\xspace} %Distanza verticle baricentro-c.a. del piano di coda orizz.
+\newcommand{\zH}{\ensuremath{z_{\mathrm{H}}}\xspace} %Distanza verticale baricentro-c.a. del piano di coda orizz.
+\newcommand{\xbW}{\ensuremath{x_{\mathrm{b}_\mathrm{W}}}\xspace}%Distanza tra il centro aerodinamico della sezione e il centro aerodinamico dell'ala finita
+
+
+
+%profilo
+\newcommand{\alphazerolW}{\ensuremath{\alpha_{{0\ell},\mathrm{W}}}\xspace} %angolo di portanza nulla dell'ala
+\newcommand{\alphazlp}{\ensuremath{\alpha_{{0\ell}}}} % angolo di portanza nulla di un profilo
+\newcommand{\Cmzerop}{\ensuremath{C_{\MTPCurly{m}_0}}} % coefficiente di momento a portanza nulla
+\newcommand{\Clalphap}{\ensuremath{C_{\ell_{\mathlarger\alpha}}}} % Clalfa 2D
+\newcommand{\xacp}{\ensuremath{\hat{x}_{ac}}} % posizione adimensionale del c.a. di un profilo
+\newcommand{\alphaCLmax}{\ensuremath{\alpha_{{C_{\ell_{\text{max}}}}}}} % angolo di portanza nulla del profilo
+\newcommand{\Clmaxp}{\ensuremath{C_{\ell_{\text{max}}}}} % Clmax 2D
+\newcommand{\alphastar}{\ensuremath{\alpha^*}} % angolo di portanza nulla del profilo
+\newcommand{\CLmax}{\ensuremath{C_{L_{\text{max}}}}} % CLmax 3D
+\newcommand{\alphazerolWmean}{\ensuremath{\xbar{\alpha}_{{0\ell,\mathrm{W}}}}\xspace} %angolo di portanza nulla di un profilo
+\newcommand{\CmacW}{\ensuremath{C_{\mathcal{M}_{\mathlarger{\mathrm{ac}}},\mathrm{W}}}\xspace} %coefficiente di momento 2D rispetto ad ac
+\newcommand{\CmacWmean}{\ensuremath{\xbar{C}_{\mathcal{M}_{\mathlarger{\mathrm{ac}}},\mathrm{W}}}\xspace} %coefficiente di momento 2D rispetto ad ac medio
+\newcommand{\ClalphaW}{\ensuremath{C_{\ell_{\mathlarger\alpha_{\mathrm{W}}}}}\xspace} %Clalfa 2D
+\newcommand{\ClalphaWmean}{\ensuremath{\xbar{C}_{\ell_{\mathlarger{\alpha}},\mathrm{W}}}\xspace} %Clalfa 2D medio
+\newcommand{\xiacWbidim}{\ensuremath{\xi_{\mathit{ac}_\mathrm{W, 2D}}}\xspace} %posizione adimensionale del c.a. di un profilo
+\newcommand{\MachcrWtwodim}{\ensuremath{M_{\mathrm{cr,\,2D,\,W}}}\xspace}%Mach critico 2D
+
+% DIMENSIONI DELL'ALA
+\newcommand{\cW}{\ensuremath{\mathlarger{c}_{\mathrm{W}}}\xspace} %Corda alare
+\newcommand{\CbarW}{\ensuremath{\mathlarger{\bar{c}}_{\mathrm{W}}}\xspace} %Corda media alare
+\newcommand{\bW}{\ensuremath{{b_{\mathrm{W}}}}\xspace} %Apertura alare
+\newcommand{\SW}{\ensuremath{S_{\mathrm{W}}}\xspace} %Superfice dell'ala
+\newcommand{\ScsW}{\ensuremath{S_\text{cs,W}}\xspace}
+\newcommand{\tcW}{\ensuremath{\tc_\mathrm{W}}\xspace}
+\newcommand{\tcmeanW}{\ensuremath{\tcmean_\mathrm{W}}\xspace}
+\newcommand{\iW}{\ensuremath{i_{\mathrm{W}}}\xspace} % angolo di calettamento dell'ala
+\newcommand{\alphaW}{\ensuremath{\alpha_{\mathrm{W}}}\xspace} %Angolo di attacco dell'ala
+\newcommand{\epsW}{\ensuremath{\varepsilon}\xspace} %Angolo di incidenza indotta dell'ala
+\newcommand{\epsWzero}{\ensuremath{\varepsilon_{0}}\xspace} %Angolo di incidenza indotta dell'ala
+\newcommand{\epsgW}{\ensuremath{\varepsilon}_{g_\mathrm{W}}\xspace} %Angolo di svergolamento geometrico dell'ala
+\newcommand{\eW}{\ensuremath{\mathlarger{e}_{\mathrm{W}}}\xspace} %Fattore di Oswald dell'ala
+\newcommand{\ARW}{\ensuremath{\AR_{\mathrm{W}}}\xspace} %Aspect Ratio dell'ala
+\newcommand{\lambdaW}{\ensuremath{\mathlarger{\lambda}_{\mathrm{W}}}\xspace} %Taper Ratio dell'ala (rapporto di rastremazione)
+\newcommand{\cWroot}{\ensuremath{\mathlarger{c}_{\mathrm{W} \mathit{,root}}}\xspace} %Corda alla radice alare
+\newcommand{\cWtip}{\ensuremath{\mathlarger{c}_{\mathrm{W} \mathit{,tip}}}\xspace} %Corda all'estremità alare
+\newcommand{\XmacLEW}{\ensuremath{\mathlarger{X}_{\mathlarger{\bar{c}}_{\mathrm{W} \mathrm{,LE}}}}\xspace} %Distanza orizzontale della MAC dal LE della corda di radice
+\newcommand{\YmacW}{\ensuremath{\mathlarger{Y}_{\mathlarger{\bar{c}}_{\mathrm{W}}}}\xspace} %Distanza laterale della MAC 
+\newcommand{\ZmacW}{\ensuremath{\mathlarger{Z}_{\mathlarger{\bar{c}}_{\mathrm{W}}}}\xspace} %Distanza verticale della MAC 
+\newcommand{\MachcrWthreedim}{\ensuremath{M_{\mathrm{cr},\mathrm{W}}}\xspace}%Mach critico 3D
+
+%ala
+\newcommand{\CMzerow}{\ensuremath{\big(C_{\mathcal{M}0}\big)_\mathrm{W}}} % coefficiente di momento a portanza nulla
+\newcommand{\CMalphaw}{\ensuremath{\big(C_{\mathcal{M}\alpha}\big)_\mathrm{W}}} % coefficiente di momento a portanza nulla
+\newcommand{\Clalphapw}{\ensuremath{\big(C_{l_{\mathlarger\alpha}}\big)_{\text{Profilo},\mathrm{W}}}} % Clalfa 2D
+\newcommand{\xacw}{\ensuremath{\ensuremath{\big(\hat{x}_{ac}\big)_\mathrm{W}}}} % posizione adimensionale del c.a. dell'ala
+\newcommand{\alphazlw}{\ensuremath{\alpha_{{0L},\mathrm{W}}}} % angolo di portanza nulla dell'ala
+\newcommand{\alphazlpw}{\ensuremath{\alpha_{{0L}_{\text{\larger Profilo}}}}} % angolo di portanza nulla del profilo dell'ala
+
+\newcommand{\CLw}{\ensuremath{\big(C_{L}\big)_\mathrm{W}}\xspace} % CL dell'ala
+\newcommand{\CLzerow}{\ensuremath{\big(C_{L_{0}}\big)_\mathrm{W}}\xspace} % CL dell'ala a portanza nulla
+\newcommand{\CLalphaw}{\ensuremath{\big(C_{L_{\mathlarger{\alpha}}}\big)_\mathrm{W}}\xspace} % gradiente della retta di portanza dell'ala
+
+\newcommand{\taualettoni}{\tau_{\text{alettoni}}}
+
+%fusoliera
+\newcommand{\CMzerof}{\ensuremath{\big(C_{\mathcal{M}0}\big)_{\mathrm{B}}}} % Coefficiente di momento della fusoliera ad angolo di attacco nullo
+\newcommand{\CMalphaf}{\ensuremath{\big(C_{\mathcal{M}_{\mathlarger{\alpha}}}\big)_\mathrm{B}}} % gradiente del coefficiente di momento di beccheggio della fusoliera
+\newcommand{\CNbetaf}{\ensuremath{\big(C_{\mathcal{N}_{\mathlarger{\beta}}}\big)_\mathrm{B}}} % gradiente del coefficiente di momento di imbardata della fusoliera
+
+%piano vert. di coda
+\newcommand{\tautimone}{\ensuremath{\tau_{\text{timone}}}}% efficienza del piano di coda
+
+
+% Latero-Direzionale
+\newcommand{\CLp}{\ensuremath{C_{\mathcal{L}_{\mathlarger{p}}}}} % momento di rollio dovuto alla rotazione di rollio
+\newcommand{\CNbetawb}{\ensuremath{\big(C_{\mathcal{N}_{\mathlarger{\beta}}}\big)_\mathrm{WB}}} % coeff. di momento di imbardata del velivolo parziale dovuto alla derapata
+%....................
+
+\newcommand{\CMf}{\ensuremath{C_{\mathcal{M}_{\text{B}}}}} % coefficiente di momento rispetto al baricentro, contributo della fusoliera
+\newcommand{\Mf}{\ensuremath{\mathcal{M}_{\text{B}}}} % momento rispetto al baricentro, contributo dell'ala
+
+\newcommand{\qinf}{\ensuremath{q_{\infty}}} % pressione dinamica asintotica
+%\newcommand{\aw}{\ensuremath{a_{\text{w}}}} % .
+%\newcommand{\alphazlW}{\ensuremath{\alpha_{\text{0L,w}}}}
+
+\newcommand{\Lf}{\ensuremath{{\text{L}_\text{f}}}} % lunghezza della fusoliera
+\newcommand{\df}{\ensuremath{{d_{\text{f}}^2(x)}}} % diametro
+\newcommand{\wf}{\ensuremath{{w_{\text{f}}^2(x)}}} % ampiezza
+
+\newcommand{\hp}{\ensuremath{{h_{\text{p}}}}}           % distanza verticale asse prop-CG
+\newcommand{\FStick}{\ensuremath{\mathcal{F}_\text{stick}}} % sforzo di barra
+\newcommand{\deltaStick}{\ensuremath{\delta_\text{stick}}} % angolo di rotazione della barra
+\newcommand{\LStick}{\ensuremath{\ell_\text{stick}}} % lunghezza della barra
+\newcommand{\GStick}{\ensuremath{G_\text{stick}}} % rapporto cinematico della barra
+\newcommand{\KStick}{\ensuremath{K_\text{stick}}} % rapporto cinematico della barra
+\newcommand{\AStick}{\ensuremath{A_\text{stick}}} % rapporto cinematico della barra
+
+\newcommand{\dens}{\ensuremath{\rho}}
+\newcommand{\Veq}{\ensuremath{V}}
+\newcommand{\weight}{\ensuremath{W}}
+
+%piano orizz. di coda
+%\newcommand{\ClalphapH}{\ensuremath{\big(C_{l_{\mathlarger\alpha}}\big)_{\text{Profilo},{text{H}}}}} % Clalfa 2D
+%\newcommand{\tauequilib}{\ensuremath{\tau_{\text{equilib}}}} % efficienza del piano di coda
+%\newcommand{\CLH}{\ensuremath{\big(C_L\big)_{\text{H}}}} % coefficente di portanza
+%\newcommand{\epszero}{\ensuremath{\varepsilon_0}} % downwash ad alpha =0
+%\newcommand{\CLalphaH}{\ensuremath{\big(C_{L_{\mathlarger\alpha}}\big)_{\text{H}}\xspace}} % Clalfa 3D
+%\newcommand{\udeps}{\ensuremath{\mathlarger{\left(1-\frac{\diff{\varepsilon}}{\diff{\alpha}}\right)}}\xspace} % (1-deps/dalpha)
+
+% icon for exercises with graphs, August 2013
+\newcommand*{\myIconGraph}{% requires adjustbox package
+  \adjincludegraphics[height=0.9em,raise=-2pt]{images/icon_reading_from_graph.pdf}%
+}
+
+% LaTeX3 stuff
+
+% see http://www.guitex.org/home/images/meeting2012/slides/presentazione_demarco_guitmeeting_2012.pdf
+
+% similar to siuntix macros, but able 
+% to manage expressions
+\ExplSyntaxOn
+
+\NewDocumentCommand{ \calcnum }{ o m }
+  {\num[#1]{ \fp_to_scientific:n {#2} } }
+\NewDocumentCommand{ \calcSI }{ o m m }
+  {\SI[#1]{ \fp_to_scientific:n {#2} }{#3} }
+
+\ExplSyntaxOff

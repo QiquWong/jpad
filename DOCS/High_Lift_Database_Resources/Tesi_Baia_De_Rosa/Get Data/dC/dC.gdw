@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GetDataWorkspace>
+  <version>2.26.0.20</version>
+  <WSversion>10</WSversion>
+  <File>
+    <Name>C:\Users\dario\Desktop\TESI High-lift\grafici get data\dC\dC.JPG</Name>
+    <Width>578</Width>
+    <Height>404</Height>
+  </File>
+  <Line>
+    <Caption>Line #1</Caption>
+    <LineColor>6,6,6</LineColor>
+    <BkColor>254,254,254</BkColor>
+    <PtColor>220,70,220</PtColor>
+    <LineType>0</LineType>
+    <Points MF="9">544,3208,625,2974,778,2524,922,2083,1021,1885,1156,1795,1327,1732,1480,1696,1993,1570,2497,1444</Points>
+    <Points MF="9">2983,1318,3316,1237</Points>
+  </Line>
+  <Line>
+    <Caption>Line #2</Caption>
+    <LineColor>6,6,6</LineColor>
+    <BkColor>254,254,254</BkColor>
+    <PtColor>230,220,20</PtColor>
+    <LineType>0</LineType>
+    <Points MF="9">544,3208,625,2974,778,2524,922,2083,1012,1858,1138,1732,1327,1624,1462,1561,1957,1336,2380,1147</Points>
+    <Points MF="9">3001,859,3487,643,3676,553,4045,382,4225,301</Points>
+  </Line>
+  <Line>
+    <Caption>Line #3</Caption>
+    <LineColor>6,6,6</LineColor>
+    <BkColor>254,254,254</BkColor>
+    <PtColor>255,20,160</PtColor>
+    <LineType>0</LineType>
+    <Points MF="9">544,3208,697,3046,913,2839,1138,2614,1273,2488,1453,2317,1642,2209,1867,2092,2200,1939,2434,1822</Points>
+    <Points MF="9">2983,1570,3316,1417,3820,1174,4225,985</Points>
+  </Line>
+  <Line>
+    <Caption>Line #4</Caption>
+    <LineColor>6,6,6</LineColor>
+    <BkColor>254,254,254</BkColor>
+    <PtColor>128,220,255</PtColor>
+    <LineType>0</LineType>
+    <Points MF="9">1525,2578,1732,2479,1930,2389,2173,2290,2479,2173,2695,2092,2911,2038,3145,1984,3406,1939,3559,1921</Points>
+    <Points MF="9">3739,1903,3820,1903,4027,1903,4108,1903,4234,1921</Points>
+  </Line>
+  <Line>
+    <Caption>Line #5</Caption>
+    <LineColor>6,6,6</LineColor>
+    <BkColor>254,254,254</BkColor>
+    <PtColor>128,245,128</PtColor>
+    <LineType>0</LineType>
+    <Points MF="9">1525,2722,1723,2650,1858,2605,1939,2578,2083,2524,2254,2479,2389,2434,2587,2380,2749,2335,2893,2308</Points>
+    <Points MF="9">3100,2263,3271,2236,3469,2218,3613,2200</Points>
+  </Line>
+  <Line>
+    <Caption>Line #6</Caption>
+    <LineColor>6,6,6</LineColor>
+    <BkColor>254,254,254</BkColor>
+    <PtColor>255,128,64</PtColor>
+    <LineType>0</LineType>
+    <Points MF="9">544,3208,895,3154,1039,3136,1174,3109,1462,3064,1768,3019,2128,2947,2515,2866,2938,2776,3307,2695</Points>
+  </Line>
+  <Line>
+    <Caption>Line #7</Caption>
+    <LineColor>6,6,6</LineColor>
+    <BkColor>254,254,254</BkColor>
+    <PtColor>128,0,255</PtColor>
+    <LineType>0</LineType>
+    <Points MF="9">544,3208,751,3127,994,3046,1336,2929,1606,2830,1849,2749,2056,2668,2236,2605,2398,2542,2542,2488</Points>
+    <Points MF="9">3145,2254,3586,2074,3811,1975,4216,1804</Points>
+  </Line>
+  <CurrentLine>6</CurrentLine>
+  <Xmin MF="9">544,3208,0.000000e+000</Xmin>
+  <Xmax MF="9">4225,3217,6.000000e+001</Xmax>
+  <Ymin MF="9">544,3208,0.000000e+000</Ymin>
+  <Ymax MF="9">544,130,1.000000e+000</Ymax>
+  <XScale>linear</XScale>
+  <YScale>linear</YScale>
+  <Position>490,-118</Position>
+  <Zoom>
+    <Scale>100.0</Scale>
+  </Zoom>
+  <Digitize>
+    <IgnorePixels>1</IgnorePixels>
+    <LineIDMethod>2</LineIDMethod>
+  </Digitize>
+  <AutoTrace>
+    <TraceDistance>8</TraceDistance>
+    <SmoothLines>1</SmoothLines>
+  </AutoTrace>
+  <DigitizeArea>
+    <LineOrArea>0</LineOrArea>
+    <RotateAngle>0.000000</RotateAngle>
+    <dx>8.000000</dx>
+  </DigitizeArea>
+  <GridSettings>
+    <ShowGrid>0</ShowGrid>
+    <AreaType>0</AreaType>
+    <dx>15.000000</dx>
+    <dy>15.000000</dy>
+  </GridSettings>
+</GetDataWorkspace>

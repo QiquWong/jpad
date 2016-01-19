@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GetDataWorkspace>
+  <version>2.26.0.20</version>
+  <WSversion>10</WSversion>
+  <File>
+    <Name>C:\Users\Tech\Desktop\Get Data\cl0 multi element flap\grafico 2.JPG</Name>
+    <Width>548</Width>
+    <Height>488</Height>
+  </File>
+  <Line>
+    <Caption>Line #2</Caption>
+    <LineColor>2,2,2</LineColor>
+    <BkColor>254,254,254</BkColor>
+    <PtColor>128,0,255</PtColor>
+    <LineType>0</LineType>
+    <Points MF="9">454,1570,562,1570,697,1588,895,1651,1102,1732,1246,1813,1561,2029,1867,2299,2164,2650,2371,2857</Points>
+    <Points MF="9">2596,3064,2893,3262,3118,3379</Points>
+  </Line>
+  <CurrentLine>0</CurrentLine>
+  <Xmin MF="9">481,3919,0.000000e+000</Xmin>
+  <Xmax MF="9">4720,3847,8.000000e+001</Xmax>
+  <Ymin MF="9">481,3919,3.000000e-001</Ymin>
+  <Ymax MF="9">400,229,1.000000e+000</Ymax>
+  <XScale>linear</XScale>
+  <YScale>linear</YScale>
+  <Position>784,66</Position>
+  <Zoom>
+    <Scale>100.0</Scale>
+  </Zoom>
+  <Digitize>
+    <IgnorePixels>1</IgnorePixels>
+    <LineIDMethod>2</LineIDMethod>
+  </Digitize>
+  <AutoTrace>
+    <TraceDistance>8</TraceDistance>
+    <SmoothLines>1</SmoothLines>
+  </AutoTrace>
+  <DigitizeArea>
+    <LineOrArea>0</LineOrArea>
+    <RotateAngle>0.000000</RotateAngle>
+    <dx>8.000000</dx>
+  </DigitizeArea>
+  <GridSettings>
+    <ShowGrid>0</ShowGrid>
+    <AreaType>0</AreaType>
+    <dx>15.000000</dx>
+    <dy>15.000000</dy>
+  </GridSettings>
+</GetDataWorkspace>

@@ -1,0 +1,48 @@
+<body>
+<p> Provides linear or angular {@link javax.measure.quantity quantities} which 
+    designate the position that a point occupies in a given reference frame or system.<p>
+
+<p> Coordinates are unambigous only when the {@link org.jscience.geography.coordinates.crs
+    coordinates reference system} to which those coordinates are related has 
+    been fully defined.</p>
+    
+<p> Applications may create new types of coordinates either by extending 
+    {@link org.jscience.geography.coordinates.Coordinates Coordinates}
+    (in which case they must provide a coordinates reference system) or simply by 
+    {@link org.jscience.geography.coordinates.CompoundCoordinates combining}
+    existing coordinates together. For example:[code]
+    
+    // High-Precision Coordinates.
+    class Position3D extends Coordinates<GeocentricCRS> {
+         public static final GeocentricCRS<Position3D> CRS = ...;                 
+         public GeocentricCRS<Position3D> getCoordinateReferenceSystem {
+             return CRS; // All instances use the same reference system.
+         }
+         public Real getX(Unit<Length> u) { ... }
+         public Real getY(Unit<Length> u) { ... }
+         public Real getZ(Unit<Length> u) { ... }
+         ...
+    }
+    
+    // Combining existing coordinates.
+    class LatLongHeight extends CompoundCoordinates<LatLong, Height> { }
+    class HeightTime extends CompoundCoordinates<Height, Time> { }
+    class UtmHeightTime extends CompoundCoordinates<CompoundCoordinates<UTM, Height>, Time> { }
+    [/code]
+        
+<p> Conversion between coordinates is achieved through  their coordinates
+    reference system. For example:[code]
+    // Converts UTM coordinates to Latitude/Longitude.
+    UTM utm = UTM.valueOf(17, 'E', 444.5, 556.44, METRE);
+    CoordinatesConverter<UTM, LatLong> utmToLatLong = UTM.CRS.getConverterTo(LatLong.CRS);
+    LatLong latLong = utmToLatLong.convert(utm);
+    
+    // Converts compound coordinates to X/Y/Z geocentric coordinates.
+    CompoundCoordinates<UTM, Height> utmHeight = new CompoundCoordinates(utm, new Height(2330.55, FOOT));
+    XYZ xyz = new CompoundCRS<UTM, Height>(UTM.CRS, Height.CRS).getConverterTo(XYZ.CRS).convert(utmHeight);
+
+    // Converts any projected coordinates to Latitude/Longitude.
+    Coordinates<ProjectedCRS> coord2d;
+    LatLong latLong = coord2d.getCoordinateReferenceSystem().getConverterTo(LatLong.CRS).convert(coord2d);
+    [/code]</p>
+</body>

@@ -1,0 +1,41 @@
+%Downwash_Gradient_NoLegend
+\begin{tikzpicture}
+
+\begin{axis}[
+width=\figurewidth,
+height=\figureheight,
+scaled ticks=false, tick label style={/pgf/number format/fixed},
+xmin=10.0,
+xmax=21.0,
+xlabel={Sweep Angle at c/4 (degree)},
+xmajorgrids,
+ymin=0.25,
+ymax=0.36,
+ylabel={Downwash Gradient (ad.)},
+ymajorgrids,
+legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
+]
+
+\addplot [
+color=black,
+solid
+]
+table[row sep=crcr]{
+11.188699999999997	0.2877915912291066\\
+14.188699999999997	0.28577947947333526\\
+17.188699999999997	0.2832890924333465\\
+20.188699999999997	0.2803186460856139\\
+};
+
+\addplot [
+color=black,
+densely dashed
+]
+table[row sep=crcr]{
+11.188699999999997	0.33610503155634536\\
+14.188699999999997	0.3377914032411696\\
+17.188699999999997	0.33963011471396554\\
+20.188699999999997	0.3416211659747331\\
+};
+\end{axis}
+\end{tikzpicture}%

@@ -1,0 +1,68 @@
+<body>
+<p> Provides support for monetary quantities and their currencies.</p>
+
+<p> Conversions between quantities stated in different currencies is possible
+    if the exchange rates for the currencies have been set (otherwise
+    <code>ConversionException</code> is thrown).
+    
+<p> Monetary quantities support the dynamic changes of the currencies exchange
+    rates as illustrated in the following example:[code]
+    import static javax.measure.units.SI.*;
+    import static javax.measure.units.NonSI.*;
+    import static org.jscience.economics.money.Currency.*;
+    
+        ///////////////////////////////////////////////////////////////////////
+        // Calculates the cost of a car trip in Europe for an American tourist.
+        ///////////////////////////////////////////////////////////////////////
+
+        // Use currency symbols instead of ISO-4217 codes.
+        UnitFormat.getStandardInstance().label(USD, "$"); // Use "$" symbol instead of currency code ("USD")
+        UnitFormat.getStandardInstance().label(EUR, "€"); // Use "€" symbol instead of currency code ("EUR")
+
+        // Sets exchange rates.
+        Currency.setReferenceCurrency(USD);
+        EUR.setExchangeRate(1.17); // 1.0 € = 1.17 $
+
+        // Calculates trip cost.
+        Amount<?> carMileage        = Amount.valueOf(20, MILE.divide(GALLON_LIQUID_US)); // 20 mi/gal.
+        Amount<?> gazPrice          = Amount.valueOf(1.2, EUR.divide(LITER)); // 1.2 €/L
+        Amount<Length> tripDistance = Amount.valueOf(400, KILO(METRE)); // 400 km
+        Amount<Money>  tripCost     = tripDistance.divide(carMileage).times(gazPrice).to(USD);
+
+        // Displays cost.
+        System.out.println("Trip cost = " + tripCost + " (" + tripCost.to(EUR) + ")");
+
+    > Trip cost = 66.05 $ (56.45 €)
+   [/code]</p>
+
+<p> The exchange rates between {@link org.jscience.economics.money.Currency currencies} 
+    is {@link javolution.context.LocalContext context local}. 
+    Application may use different sets of exchange rates concurrently (e.g. rates for buying and
+    rates for selling). For example:[code]
+        LocalContext.enter(); 
+        try {
+            EUR.setExchangeRate(1.22);  // Buying rate.
+            Amount<Money> price = Amount.valueOf(9.99, EUR);
+            System.out.println("Price: " + price.to(USD);
+        } finally {
+            LocalContext.exit();
+        }
+        ...
+        LocalContext.enter(); 
+        try {
+            EUR.setExchangeRate(1.18);  // Selling rate.
+            Amount<Money> price = Amount.valueOf(14.99, USD);
+            System.out.println("Price: " + price.to(EUR);
+        } finally {
+            LocalContext.exit();
+        }[/code]</p>
+        
+<p> Like any {@link org.jscience.physics.amount.Amount amount}, 
+    money quantities can be exact or approximate (with an error known 
+    and guaranteed).
+    [code]
+         Unit<Money> CENTS = Currency.USD.times(100);
+         Amount<Money> exactPrice = Amount.valueOf(1499, CENTS); // Integer value.
+         Amount<Money> apprxPrice = Amount.valueOf(14.99, USD);  // Floating-Point IEEE 754 accuracy.
+    [/code]</p>         
+</body>

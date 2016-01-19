@@ -1,0 +1,43 @@
+%PayloadRange_Mach
+\begin{tikzpicture}
+
+\begin{axis}[
+%width=\figurewidth,
+%height=\figureheight,
+width=\textwidth,
+height=0.68\textwidth,
+scaled ticks=false, tick label style={/pgf/number format/fixed},
+xmin=0.0,
+xmax=8500,
+xlabel={Range (nmi)},
+xmajorgrids,
+ymin=0.0,
+ymax=594.0,
+ylabel={Payload (No. Pass)},
+ymajorgrids,
+legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
+]
+
+\addplot [
+color=black,
+solid
+]
+table[row sep=crcr]{
+0.0	550.0\\
+6052.69159914772	550.0\\
+6054.4245495302075	550.0\\
+7823.0998142333265	0.0\\
+}node[right,pos=0.84] {Best Range};
+
+\addplot [
+color=black,
+densely dashed
+]
+table[row sep=crcr]{
+0.0	550.0\\
+4714.449641326871	550.0\\
+4715.799438714584	550.0\\
+6093.4229853161405	0.0\\
+}node[left,pos=0.84] {Chosen Condition};
+\end{axis}
+\end{tikzpicture}%

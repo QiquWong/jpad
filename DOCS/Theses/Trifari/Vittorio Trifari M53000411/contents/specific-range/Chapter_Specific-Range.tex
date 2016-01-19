@@ -1,0 +1,66 @@
+\documentclass[a4paper,12pt,oneside]{book}
+
+\pagestyle{plain}
+
+\usepackage[T1]{fontenc} % imposta la codifica dei font
+\usepackage[utf8]{inputenc} % lettere accentate da tastiera
+\usepackage[english]{babel} % per scrivere in italiano
+\usepackage{pgfplots}
+\usepackage{xcolor}
+\definecolor{light-gray}{gray}{0.95}
+
+\usepackage{listings}
+\lstset{%
+frame=trBL
+tabsize=2,%
+xleftmargin=-25pt,%
+xrightmargin=-28pt,%
+language=Java,%
+basicstyle=\small\ttfamily,%
+keywordstyle=\color{black}\bfseries,%
+commentstyle=\color{gray},%
+stringstyle=\color{black},%
+showstringspaces=false,%
+breaklines=true,%
+backgroundcolor=%
+\color{light-gray}}
+
+\usepackage{amsmath} % per scrivere le formule matematiche
+\usepackage{array}
+\usepackage{tikz}
+\usepackage{color}
+\usepackage{calc}
+\usepackage{booktabs}
+\usepackage{relsize}
+\usepackage{siunitx}
+\sisetup{
+  fixdp,dp=3,
+  load=derived,
+  unitsep=thin,
+  valuesep=thin,
+  decimalsymbol=comma,
+  % digitsep=thin,
+  % group-separator={},% ver. 2
+  % sepfour=false,
+  % round-mode = places,
+  % round-precision = 3
+}
+
+\usepackage{graphicx}
+\graphicspath{{../../images/}}
+\makeatletter
+\setlength{\@fptop}{0pt}
+\makeatother
+
+\usepackage{adjustbox}
+\usepackage{rotating}
+\usepackage{tikz}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+
+\begin{document}
+\chapter{The Specific Range class}
+
+
+
+\end{document}

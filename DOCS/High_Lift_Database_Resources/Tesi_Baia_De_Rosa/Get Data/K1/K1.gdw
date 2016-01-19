@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GetDataWorkspace>
+  <version>2.26.0.20</version>
+  <WSversion>10</WSversion>
+  <File>
+    <Name>C:\Users\Tech\Desktop\foto tesi\K1.JPG</Name>
+    <Width>651</Width>
+    <Height>346</Height>
+  </File>
+  <Line>
+    <Caption>Line #2</Caption>
+    <LineColor>34,34,34</LineColor>
+    <BkColor>254,254,254</BkColor>
+    <PtColor>255,20,160</PtColor>
+    <LineType>0</LineType>
+    <Points MF="9">814,2632,1048,2380,1732,1840,2515,1390,3127,1147,3964,886,4972,670,5620,553</Points>
+  </Line>
+  <Line>
+    <Caption>Line #2</Caption>
+    <LineColor>34,34,34</LineColor>
+    <BkColor>254,254,254</BkColor>
+    <PtColor>128,220,255</PtColor>
+    <LineType>0</LineType>
+    <Points MF="9">814,2632,2479,1939,3811,1381,5638,616</Points>
+  </Line>
+  <CurrentLine>1</CurrentLine>
+  <Xmin MF="9">814,2632,0.000000e+000</Xmin>
+  <Xmax MF="9">5638,2632,2.400000e+001</Xmax>
+  <Ymin MF="9">814,2632,0.000000e+000</Ymin>
+  <Ymax MF="9">814,112,1.200000e+000</Ymax>
+  <XScale>linear</XScale>
+  <YScale>linear</YScale>
+  <Position>206,231</Position>
+  <Zoom>
+    <Scale>100.0</Scale>
+  </Zoom>
+  <Digitize>
+    <IgnorePixels>1</IgnorePixels>
+    <LineIDMethod>2</LineIDMethod>
+  </Digitize>
+  <AutoTrace>
+    <TraceDistance>8</TraceDistance>
+    <SmoothLines>1</SmoothLines>
+  </AutoTrace>
+  <DigitizeArea>
+    <LineOrArea>0</LineOrArea>
+    <RotateAngle>0.000000</RotateAngle>
+    <dx>8.000000</dx>
+  </DigitizeArea>
+  <GridSettings>
+    <ShowGrid>0</ShowGrid>
+    <AreaType>0</AreaType>
+    <dx>15.000000</dx>
+    <dy>15.000000</dy>
+  </GridSettings>
+</GetDataWorkspace>

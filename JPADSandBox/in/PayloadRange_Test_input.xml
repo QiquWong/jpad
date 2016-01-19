@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<input>
+	<header>
+		<title>PayloadRange_Test_input</title>
+		<author>Vittorio Trifari</author>
+		<version>1.0</version>
+	</header>
+	<ATR72>
+		<Altitude from="input" unit="m" varName="altitude">6000.0000</Altitude>
+		<Mach_number from="input" unit="" varName="machCurrent">0.4300</Mach_number>
+		<Planform_surface from="input" unit="m²" varName="surface">61.0000</Planform_surface>
+		<TaperRatio from="input" unit="" varName="taperRatioEquivalent">0.5450</TaperRatio>
+		<Maximum_take_off_mass from="input" unit="kg" varName="MTOM">23063.5789</Maximum_take_off_mass>
+		<Operating_empty_mass from="input" unit="kg" varName="OEM">12950.5789</Operating_empty_mass>
+		<Maximum_fuel_mass from="input" unit="kg" varName="maxFuelMass">5000.0000</Maximum_fuel_mass>
+		<Maximum_number_of_passengers from="input" unit="" varName="nPassMax">72.0000</Maximum_number_of_passengers>
+		<SweepLE from="input" unit="°" varName="sweepLEEquivalent">2.8039</SweepLE>
+		<OswaldFactor from="input" unit="" varName="oswald">0.7585</OswaldFactor>
+		<ByPassRatio from="input" unit="" varName="byPassRatio">0.0</ByPassRatio>
+		<Propeller_efficiency from="input" unit="" varName="eta">0.85</Propeller_efficiency>
+		<Mean_maximum_thickness from="input" unit="" varName="tcMax">0.1675</Mean_maximum_thickness>
+		<Current_lift_coefficient from="input" unit="" varName="cl">0.4500</Current_lift_coefficient>
+		<AspectRatio from="input" unit="" varName="ar">12.0000</AspectRatio>
+		<CD0 from="input" unit="" varName="cd0">0.0317</CD0>
+	</ATR72>
+	<B747>
+		<Altitude from="input" unit="m" varName="altitude">11000.0000</Altitude>
+		<Mach_number from="input" unit="" varName="machCurrent">0.8300</Mach_number>
+		<Planform_surface from="input" unit="m²" varName="surface">511.0000</Planform_surface>
+		<TaperRatio from="input" unit="" varName="taperRatioEquivalent">0.2840</TaperRatio>
+		<Maximum_take_off_mass from="input" unit="kg" varName="MTOM">354991.5060</Maximum_take_off_mass>
+		<Operating_empty_mass from="input" unit="kg" varName="OEM">153131.9860</Operating_empty_mass>
+		<Maximum_fuel_mass from="input" unit="kg" varName="maxFuelMass">147409.52</Maximum_fuel_mass>
+		<Maximum_number_of_passengers from="input" unit="" varName="nPassMax">550.0000</Maximum_number_of_passengers>
+		<SweepLE from="input" unit="°" varName="sweepLEEquivalent">38.4288</SweepLE>
+		<OswaldFactor from="input" unit="" varName="oswald">0.6277</OswaldFactor>
+		<ByPassRatio from="input" unit="" varName="byPassRatio">5.0</ByPassRatio>
+		<Propeller_efficiency from="input" unit="" varName="eta">0.0</Propeller_efficiency>
+		<Mean_maximum_thickness from="input" unit="" varName="tcMax">0.1292</Mean_maximum_thickness>
+		<Current_lift_coefficient from="input" unit="" varName="cl">0.4500</Current_lift_coefficient>
+		<AspectRatio from="input" unit="" varName="ar">6.9000</AspectRatio>
+		<CD0 from="input" unit="" varName="cd0">0.0182</CD0>
+	</B747>
+</input>

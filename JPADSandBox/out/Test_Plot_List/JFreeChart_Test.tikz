@@ -1,0 +1,52 @@
+%JFreeChart_Test
+\begin{tikzpicture}
+
+\begin{axis}[
+width=\figurewidth,
+height=\figureheight,
+scaled ticks=false, tick label style={/pgf/number format/fixed},
+xmin=0.0,
+xmax=6.0,
+xlabel={x },
+xmajorgrids,
+ymin=0.0,
+ymax=10.0,
+ylabel={y },
+ymajorgrids,
+legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
+]
+
+\addplot [
+color=black,
+solid
+]
+table[row sep=crcr]{
+1.0	3.0\\
+2.0	10.0\\
+3.0	1.0\\
+4.0	5.0\\
+5.0	2.0\\
+};
+
+\addplot [
+color=black,
+densely dashed
+]
+table[row sep=crcr]{
+1.0	1.0\\
+2.0	-10.0\\
+3.0	0.0\\
+4.0	-5.0\\
+};
+
+\addplot [
+color=black,
+dashdotted
+]
+table[row sep=crcr]{
+1.0	0.0\\
+2.0	5.0\\
+3.0	4.0\\
+};
+\end{axis}
+\end{tikzpicture}%

@@ -1,0 +1,77 @@
+<body>
+<p> Provides support for exact or arbitrary precision measurements.</p>
+
+<h4>Amount as {@link javax.measure.Measurable measurable} quantity:</h4>
+
+The {@link org.jscience.physics.amount.Amount Amount}
+       base class is parameterized with the quantity onto which the measure applies 
+ (<code>Amount&lt;Q extends Quantity&gt;). If the quantity is not known then
+  &lt;?&gt; can be used. For example:[code]
+    Amount<?> carMileage = Amount.valueOf(20, MILE.divide(GALLON_LIQUID_US));
+    Amount<?> gazPrice   = Amount.valueOf(1.2, EUR.divide(LITER)); // 1.2 €/L
+[/code]
+
+If the expected quantity result for a measure is known but has been lost
+due to the  calculations performed; better than using &lt;?&gt;, the measure can
+be stated in a known unit for this quantity. It ensures dynamic check of
+the measure dimension/unit and avoid compiler warnings. For example:[code]
+    // No problem here as the measure type is infered from the unit.
+    Amount<Length> tripDistance = Amount.valueOf(400, KILO(SI.METRE));
+
+    // Warning as the measure type is lost during calculation.
+    Amount<Money> tripCost = tripDistance.divide(carMileage).times(gazPrice);
+
+    // Better: Dimension check and no warning (USD is a Currency (Unit<Money>))
+    Amount<Money> tripCost = tripDistance.divide(carMileage).times(gazPrice).to(USD);
+[/code]
+It should be noted that this conversion is immediate if the specified 
+unit is the actual unit for the amount (which is then returned unchanged).
+
+<h4> Error calculations:</h4>
+
+ Amount take into account measurement and calculation errors. For example:[code]
+    import static org.jscience.physics.units.SI.*;
+    ...
+    Amount<Length> x = Amount.valueOf(1.0, METRE);
+    Amount<Velocity> v = Amount.valueOf(0.01, METRE_PER_SECOND);
+    Amount<Duration> t = Amount.valueOf(1.0, MICRO(SECOND));
+    for (int i = 0; i < 10000000; i++) {
+        x = x.plus(v.times(t));
+    }
+    AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
+    System.out.println(x);
+
+    > 1.10000000 m
+    The exact value is guaranteed to be in the range: ]1.09999999 m, 1.10000001 m[
+        
+    The same calculation using primitive double type would have display:
+    > 1.099999999392253
+    with no idea on the accuracy of the result.[/code]
+        
+    
+<h4> Dimension checking.</h4>
+
+The unit of an amount determinates its type.
+For example, <code>Amount.valueOf("1 µm")</code> and <code>Amount.valueOf("1.2 ft")</code>
+are <code>Length</code> amounts (both <code>"µm"</code> and <code>"ft"</code> units
+are derived from <code>SI.METRE</code>).  Multiple physical models are supported (e.g. <code>Standard</code>,
+<code>Relativistic</code>, <code>High-Energy</code>, <code>Quantum</code>
+and <code>Natural</code>). The physical model sets which conversions are allowed or disallowed.
+For example:[code]
+        RelativisticModel.select(); // Selects a relativistic model.
+        Amount<Length> x = Amount.valueOf(100, NonSI.INCH);
+        x = x.plus(Amount.valueOf("2.3 µs")).to(METRE); // Length and Duration can be added.
+        Amount<Mass> m = Amount.valueOf("12 GeV").to(KILOGRAM); // Energy is compatible with mass (E=mc2)
+        System.out.println(x); 
+        System.out.println(m); 
+        
+        > (692.06265340000008 ± 5.1E-13) m
+        > (2.1391940763025056E-26 ± 4.3E-42) kg[/code]</p>
+
+<h4> Physical Constants</h4>
+
+Finally, this package holds the latest physical {@link org.jscience.physics.amount.Constants constants} measurements
+with the best known accuracy (the more accurate the constant, the higher the precision of the calculations
+making use of these constants). 
+        
+</body>

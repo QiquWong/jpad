@@ -1,0 +1,44 @@
+/*
+ *
+ * gradle :JPADConfigs:jar
+ *
+ */
+
+apply plugin: 'java'
+//apply plugin: 'application'
+
+compileJava.enabled = true
+archivesBaseName = 'jpad-configs'
+// version = '1.0'
+// mainClassName = 'it.unina.adopt.main.ADOPT_GUI'
+
+sourceSets {
+	main {
+		java {
+			srcDir 'src'
+		 }
+		resources {
+			srcDir 'src/resources'
+		}
+	}
+}
+
+//pre_configure.doLast {
+void pre_configure_OFF() {
+	println "[:JPADConfigs:pre_configure]"
+	// println "execEnvironmentVariables = " + project.execEnvironmentVariables
+	
+	//-----------------------------------------------------------------------------
+	// COPY files in build dir
+	
+	// println "/bin: \n" + fileTree(file('bin')).toList()
+	println "copying *.class files from /bin to /build/classes"
+	// main source files
+	copy{
+		from ('bin/') {
+			include '**/*.class'
+		}
+		into 'build/classes'
+	}
+	println "----------------------------------------------------------"
+}

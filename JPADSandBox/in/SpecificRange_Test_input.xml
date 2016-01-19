@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<input>
+	<header>
+		<title>SpecificRange_Test_input</title>
+		<author>Vittorio Trifari</author>
+		<version>1.0</version>
+	</header>
+	<ATR72>
+		<Altitude from="input" unit="m" varName="altitude">6000.0000</Altitude>
+		<Planform_surface from="input" unit="m²" varName="surface">61.0000</Planform_surface>
+		<TaperRatio from="input" unit="" varName="taperRatioEquivalent">0.5450</TaperRatio>
+		<Maximum_take_off_mass from="input" unit="kg" varName="MTOM">23063.5789</Maximum_take_off_mass>
+		<SweepLE from="input" unit="°" varName="sweepLEEquivalent">2.8039</SweepLE>
+		<ByPassRatio from="input" unit="" varName="byPassRatio">0.0</ByPassRatio>
+		<Propeller_efficiency from="input" unit="" varName="eta">0.85</Propeller_efficiency>
+		<Mean_maximum_thickness from="input" unit="" varName="tcMax">0.1675</Mean_maximum_thickness>
+		<AspectRatio from="input" unit="" varName="ar">12.0000</AspectRatio>
+		<CD0 from="input" unit="" varName="cd0">0.0317</CD0>
+		<CLmax from="input" unit="" varName="cLmax">1.6</CLmax>
+		<Total_Thrust_Single_Engine from="input" unit="N" varName="t0">8000.0</Total_Thrust_Single_Engine>
+		<Engine_number from="input" unit="" varName="engineNumber">2</Engine_number>
+		
+	</ATR72>
+	<B747>
+		<Altitude from="input" unit="m" varName="altitude">11000.0000</Altitude>
+		<Planform_surface from="input" unit="m²" varName="surface">511.0000</Planform_surface>
+		<TaperRatio from="input" unit="" varName="taperRatioEquivalent">0.2840</TaperRatio>
+		<Maximum_take_off_mass from="input" unit="kg" varName="MTOM">354991.5060</Maximum_take_off_mass>
+		<SweepLE from="input" unit="°" varName="sweepLEEquivalent">38.4288</SweepLE>
+		<ByPassRatio from="input" unit="" varName="byPassRatio">5.0</ByPassRatio>
+		<Propeller_efficiency from="input" unit="" varName="eta">0.0</Propeller_efficiency>
+		<Mean_maximum_thickness from="input" unit="" varName="tcMax">0.1292</Mean_maximum_thickness>
+		<AspectRatio from="input" unit="" varName="ar">6.9000</AspectRatio>
+		<CD0 from="input" unit="" varName="cd0">0.0182</CD0>
+		<CLmax from="input" unit="" varName="cLmax">1.4</CLmax>
+		<Total_Thrust_Single_Engine from="input" unit="N" varName="t0">213000.0</Total_Thrust_Single_Engine>
+		<Engine_number from="input" unit="" varName="engineNumber">4</Engine_number>
+	</B747>
+</input>

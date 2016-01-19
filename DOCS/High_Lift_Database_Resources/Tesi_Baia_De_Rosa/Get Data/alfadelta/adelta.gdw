@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GetDataWorkspace>
+  <version>2.26.0.20</version>
+  <WSversion>10</WSversion>
+  <File>
+    <Name>C:\Users\Tech\Desktop\Get Data\alfadelta\adelta.JPG</Name>
+    <Width>383</Width>
+    <Height>607</Height>
+  </File>
+  <Line>
+    <Caption>Line #1</Caption>
+    <LineColor>2,2,2</LineColor>
+    <BkColor>254,254,254</BkColor>
+    <PtColor>220,70,220</PtColor>
+    <LineType>0</LineType>
+    <Points MF="9">256,5197,436,3955,976,2632,1705,1633,2317,1039,3325,310</Points>
+  </Line>
+  <CurrentLine>0</CurrentLine>
+  <Xmin MF="9">256,5197,0.000000e+000</Xmin>
+  <Xmax MF="9">3307,5224,5.000000e-001</Xmax>
+  <Ymin MF="9">256,5197,0.000000e+000</Ymin>
+  <Ymax MF="9">283,400,8.000000e-001</Ymax>
+  <XScale>linear</XScale>
+  <YScale>linear</YScale>
+  <Position>181,293</Position>
+  <Zoom>
+    <Scale>100.0</Scale>
+  </Zoom>
+  <Digitize>
+    <IgnorePixels>1</IgnorePixels>
+    <LineIDMethod>2</LineIDMethod>
+  </Digitize>
+  <AutoTrace>
+    <TraceDistance>8</TraceDistance>
+    <SmoothLines>1</SmoothLines>
+  </AutoTrace>
+  <DigitizeArea>
+    <LineOrArea>0</LineOrArea>
+    <RotateAngle>0.000000</RotateAngle>
+    <dx>8.000000</dx>
+  </DigitizeArea>
+  <GridSettings>
+    <ShowGrid>0</ShowGrid>
+    <AreaType>0</AreaType>
+    <dx>15.000000</dx>
+    <dy>15.000000</dy>
+  </GridSettings>
+</GetDataWorkspace>

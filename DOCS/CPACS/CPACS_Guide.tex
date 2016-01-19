@@ -1,0 +1,307 @@
+\documentclass[a4paper]{article}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+
+\usepackage{geometry}
+\geometry{
+ a4paper,
+ total={210mm,297mm},
+ left=20mm,
+ right=20mm,
+ top=20mm,
+ bottom=20mm,
+ }
+
+\usepackage{newtxtext}% replaces the txfonts package;
+\usepackage[varg]{newtxmath}
+
+% Define text mono-spaced font
+% --> package txfonts uses TX mono (monospace typewriter font)
+\usepackage%
+   [scaled=0.810]% 0.865 , 0.84
+   {beramono}% set bera as mono-spaced font family
+
+\usepackage{mathtools}
+
+\usepackage{booktabs}
+\usepackage{longtable}
+
+\usepackage{paralist}
+
+\usepackage[
+  font=small,labelfont={bf,color=blue}, % labelsep=space,
+  textfont={color=blue},
+  justification=justified
+  ]{caption}
+
+% http://tex.stackexchange.com/questions/157115/how-to-retrieve-the-caption-of-a-table-longtable
+\captionsetup[longtable]{aboveskip=0pt}
+
+\usepackage{setspace}
+%\onehalfspacing
+%\doublespacing
+%\setstretch{1.5}
+
+\usepackage{nameref}
+
+\usepackage{subcaption}
+\usepackage{url}
+\usepackage{adjustbox}
+\usepackage{relsize}
+
+\usepackage{siunitx}
+
+\usepackage{graphicx}
+
+%\usepackage[colorinlistoftodos]{todonotes}
+
+\usepackage[%
+   backgroundcolor=orange!20,bordercolor=orange,
+   shadow,
+   textsize=footnotesize,
+   colorinlistoftodos
+   % ,disable % use this to disable the notes
+   ]{todonotes}
+
+\newcounter{todocounter}
+
+\newcommand{\TODO}[2][]{%
+   % initials of the author (optional) + note in the margin
+   \refstepcounter{todocounter}%
+   {%
+      \setstretch{0.85}% line spacing
+      \todo[backgroundcolor={orange!20},bordercolor=orange,size=\relsize{-1}]{%
+         \sffamily%
+         \thetodocounter.~\textbf{[\uppercase{#1}]:}~#2%
+      }%
+   }}
+
+\newcommand{\TODOInline}[2][]{%
+   % initials of the author (optional) + note in the margin
+   \refstepcounter{todocounter}%
+   {%
+      \setstretch{0.85}% line spacing
+      \todo[inline,backgroundcolor={orange!20},bordercolor=orange,size=\relsize{-1}]{%
+         \sffamily%
+         \thetodocounter.~\textbf{[\uppercase{#1}]:}~#2%
+      }%
+   }}
+
+%%% Examples of usage:
+%%% \TODO[ADM]{Continue this section taking material from Stevend \& Lewis book.}
+%%% \TODOInline[JSB]{Remove this sentence.}
+
+
+%-----------------------------------------------------
+
+\newcommand{\ADOpT}{\mbox{\sffamily ADOpT}}
+\newcommand{\JPAD}{\mbox{\sffamily JPAD}}
+
+
+\begin{document}
+
+\centerline{\bf\huge A guide to CPACS}
+
+\bigskip
+\noindent
+This guide is designed to provide a support to developers of libraries dealing with the CPACS format.
+The focus is on explaining the details of CPACS syntax with practical examples.
+
+\bigskip
+\noindent
+\hrule
+
+%\bigskip
+
+\listoftodos
+
+\bigskip
+\noindent
+\hrule
+
+\bigskip
+
+\section{General idea}
+
+The Common Parametric Aircraft Configuration Schema (CPACS) is a data definition for the air transportation system. CPACS enables engineers to exchange information between their tools. It is therefore a driver for multi-disciplinary and multi-fidelity design in distributed environments. CPACS describes the characteristics of aircraft, rotorcraft, engines, climate impact, fleets and mission in a structured, hierarchical manner. Not only product but also process information is stored in CPACS. The process information helps in setting up workflows for analysis modules. Due to the fact that CPACS follows a central model approach, the number of interfaces is reduced to a minimum.
+
+Since 2005 the Common Parametric Aircraft Configuration Schema (CPACS) is developed by DLR for the
+exchange of information on the level of preliminary design. The system is in operational use at all aeronautical
+institutes of DLR and has been extended for civil and military aircraft, rotorcraft, jet engines and entire air
+transportation systems.
+
+The CPACS data-format is based on XML technology. The documentation of the schema that described the syntactic 
+definition on CPACS is given in the file 
+\verb|CPACS_22_Documentation.chm| (v2.2).
+
+This is a getting started document prepared to support library developers dealing with CPACS format.
+
+\medskip
+\TODOInline[ADM]{Add more introductory thoughts on CPACS.}
+
+\section{The XML structure}
+
+Add more.
+
+\medskip
+\TODOInline[ADM]{Explain the overall XML structure of CPACS.}
+
+\section{Wing definitions}
+
+Add more.
+
+\medskip
+\TODOInline[ADM]{Add more on wings in CPACS.}
+
+\section{Fuselage definitions}
+
+\medskip
+\TODOInline[ADM]{Add more on fuselages in CPACS.}
+
+\medskip
+The fuselage in \ADOpT{} is conceptually divided three in subparts:
+\begin{compactitem}
+\item
+the \emph{nose} (front part, subscript `N'),
+\item
+the \emph{cylindrical body} (central part with constant cross section, subscript `C'), and
+\item
+the \emph{tail cone} (rear part, subscript `T').
+\end{compactitem}
+
+\medskip
+The shape of the fuselage is defined on the basis of a number of \emph{outline curves}.
+Outlines are associated to the different views of the body.
+
+The sideview outline (leftview or also $\text{\textit{XZ}}$-outline) is shown in Figure~\ref{fig:Fuselage:Sideview}
+as the union of two curves\,---\,\emph{upper} and \emph{lower} outlines\,---\,in the $\text{\textit{XZ}}$ plane, 
+giving the silhouette of the body as seen from the 
+negative $Y$-axis. A close up view of the nose is shown in Figure~\ref{fig:Fuselage:Sideview:Nose}.
+
+In Figure~\ref{fig:Fuselage:Sideview} is also shown the topview outline (also $\text{\textit{XY}}$-outline)
+as the union of two curves\,---\,\emph{right} and \emph{left} outlines\,---\,in the $\text{\textit{XY}}$ plane 
+representing the silhouette of the body as seen from the positive $Z$-axis.
+
+\begin{figure}[t]
+\centering
+\adjincludegraphics[
+         width=0.85\linewidth,
+         trim={{0.0\width} {0.0\width} {0.0\width} {0.0\width}}, clip % llx lly urx ury
+      ]{images/fuselage_iso_view_nomenclature.pdf}
+\caption{Fuselage perspective view.}
+\label{fig:Fuselage:Iso:View:Nomenclature}
+\end{figure}
+
+
+%\begin{figure}[p]
+%\centering
+%\adjincludegraphics[
+%         angle=90,
+%         height=0.95\textheight, % width=1.0\linewidth,
+%         trim={{0.0\width} {0.0\width} {0.0\width} {0.0\width}}, clip % llx lly urx ury
+%      ]{Fuselage_Nomenclature_Sideview_Topview.pdf}
+%\caption{Fuselage sideview ($\text{\textit{XZ}}$) and topview ($\text{\textit{XY}}$).}
+%\label{fig:Fuselage:Sideview}
+%\end{figure}
+%
+%
+%\begin{figure}[t]
+%\centering
+%\adjincludegraphics[
+%         width=0.55\linewidth,
+%         trim={{0.0\width} {0.0\width} {0.0\width} {0.0\width}}, clip % llx lly urx ury
+%      ]{Fuselage_Nomenclature_Sectionview.pdf}
+%\caption{Generic fuselage cross section at station $X$.}
+%\label{fig:Fuselage:Sectionview}
+%\end{figure}
+
+A generic cross section of the fuselage is shown in Figure~\ref{fig:Fuselage:Sectionview}
+as seen from the negative $X$-axis. The two outlines here\,---\,\emph{upper} and \emph{lower} 
+outlines\,---\,are those defining the upper and lower part of the section shape.
+
+
+In Table~\ref{tab:Fuselage:Variables} are listed the main variables defining the 
+fuselage shape.
+
+%%-------------------------------------------------------------------------------------
+%\begin{table}[t]
+%\centering
+%\begin{tabular}{rl}
+%\toprule
+%Quantity & Description
+%\\
+%\midrule
+%$l_\mathrm{F}$ & fuselage total length
+%\\
+%$l_\mathrm{N}$ & fuselage nose length
+%\\
+%$l_\mathrm{C}$ & fuselage cylindrical trunc length
+%\\
+%$l_\mathrm{T}$ & fuselage tail cone length
+%\\
+%$d_\mathrm{C}\equiv h_\mathrm{B}$ & height of fuselage cylindrical trunc, i.\,e. maximum fuselage height
+%\\
+%$h_\mathrm{f}(X)$ & height of fuselage section at station $X$
+%\\
+%$w_\mathrm{B}$ & width of fuselage cylindrical trunc, i.\,e. maximum fuselage width
+%\\
+%$w_\mathrm{f}(X)$ & width of fuselage section at station $X$
+%\\
+%\bottomrule
+%\end{tabular}
+%\end{table}
+%%-------------------------------------------------------------------------------------
+% see: http://www.lorenzopantieri.net/LaTeX_files/TabelleRipartite.pdf
+%
+\begingroup
+\centering
+\begin{longtable}[t]{rl}
+\caption[Fuselage variables.]{Fuselage variables.}\label{tab:Fuselage:Variables}\\
+\toprule
+Quantity & Description
+\\ \midrule
+\endfirsthead
+
+\multicolumn{2}{c}%
+  {{\bfseries\color{blue}\tablename\ \thetable{}: \nameref{tab:Fuselage:Variables}}}\\
+\multicolumn{2}{l}%
+  {\relsize{-1}({\itshape continued from previous page})}\\
+\toprule
+Quantity & Description
+\\ \midrule
+\endhead
+
+\midrule \multicolumn{2}{r}{{\relsize{-1}\itshape continued on next page}}
+\endfoot
+
+\bottomrule
+\endlastfoot
+
+$l_\mathrm{F}$ & fuselage total length
+\\
+$l_\mathrm{N}$ & fuselage nose length
+\\
+$l_\mathrm{C}$ & fuselage cylindrical trunc length
+\\
+$l_\mathrm{T}$ & fuselage tail cone length
+\\
+$d_\mathrm{C}\equiv h_\mathrm{B}$ & height of fuselage cylindrical trunc, i.\,e. maximum fuselage height
+\\
+$h_\mathrm{f}(X)$ & height of fuselage section at station $X$
+\\
+$w_\mathrm{B}$ & width of fuselage cylindrical trunk, i.\,e. maximum fuselage width
+\\
+$w_\mathrm{f}(X)$ & width of fuselage section at station $X$
+\\
+$h_\mathrm{f}(X)$ & height of fuselage section at station $X$
+\\
+\ldots & {\color{red}to be continued}
+\end{longtable}
+\endgroup
+
+
+\TODOInline[DG]{Add definition of topview outlines and their control points.}
+
+
+\end{document}

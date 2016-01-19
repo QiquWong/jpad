@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GetDataWorkspace>
+  <version>2.26.0.20</version>
+  <WSversion>10</WSversion>
+  <File>
+    <Name>C:\Users\dario\Desktop\grafici get data\k2\k2.JPG</Name>
+    <Width>807</Width>
+    <Height>432</Height>
+  </File>
+  <Line>
+    <Caption>Line #1</Caption>
+    <LineColor>149,149,149</LineColor>
+    <BkColor>254,254,254</BkColor>
+    <PtColor>220,70,220</PtColor>
+    <LineType>0</LineType>
+    <Points MF="9">1075,2299,1642,1930,2443,1453,3208,1075,3811,904,4342,841</Points>
+  </Line>
+  <Line>
+    <Caption>Line #2</Caption>
+    <LineColor>149,149,149</LineColor>
+    <BkColor>254,254,254</BkColor>
+    <PtColor>230,220,20</PtColor>
+    <LineType>0</LineType>
+    <Points MF="9">1075,2830,1408,2524,1948,2074,2614,1597,3190,1282,3721,1057,4261,904,4756,823</Points>
+  </Line>
+  <Line>
+    <Caption>Line #3</Caption>
+    <LineColor>149,149,149</LineColor>
+    <BkColor>254,254,254</BkColor>
+    <PtColor>255,20,160</PtColor>
+    <LineType>0</LineType>
+    <Points MF="9">1075,2830,1498,2488,2155,1975,2947,1489,3595,1183,4216,976,4639,877,5098,841</Points>
+  </Line>
+  <Line>
+    <Caption>Line #4</Caption>
+    <LineColor>149,149,149</LineColor>
+    <BkColor>254,254,254</BkColor>
+    <PtColor>128,220,255</PtColor>
+    <LineType>0</LineType>
+    <Points MF="9">1066,3280,1336,3001,1840,2488,2560,1957,3424,1453,4315,1120,4972,976,5962,841</Points>
+  </Line>
+  <CurrentLine>3</CurrentLine>
+  <Xmin MF="9">1066,3289,0.000000e+000</Xmin>
+  <Xmax MF="9">6718,3289,7.000000e+001</Xmax>
+  <Ymin MF="9">1066,3289,0.000000e+000</Ymin>
+  <Ymax MF="9">1066,346,1.200000e+000</Ymax>
+  <XScale>linear</XScale>
+  <YScale>linear</YScale>
+  <Position>362,-90</Position>
+  <Zoom>
+    <Scale>100.0</Scale>
+  </Zoom>
+  <Digitize>
+    <IgnorePixels>1</IgnorePixels>
+    <LineIDMethod>2</LineIDMethod>
+  </Digitize>
+  <AutoTrace>
+    <TraceDistance>8</TraceDistance>
+    <SmoothLines>1</SmoothLines>
+  </AutoTrace>
+  <DigitizeArea>
+    <LineOrArea>0</LineOrArea>
+    <RotateAngle>0.000000</RotateAngle>
+    <dx>8.000000</dx>
+  </DigitizeArea>
+  <GridSettings>
+    <ShowGrid>0</ShowGrid>
+    <AreaType>0</AreaType>
+    <dx>15.000000</dx>
+    <dy>15.000000</dy>
+  </GridSettings>
+</GetDataWorkspace>

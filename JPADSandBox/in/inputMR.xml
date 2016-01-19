@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data>
+	<header>
+		<name>Test XML</name>
+		<description>This file is used to test my program that reads XML files</description>
+		<creator>Manuela Ruocco</creator>
+		<timestamp/>
+		<version>1.0</version>
+	</header>
+	<wing name="My cute wing">
+		<span unit="m">80</span>
+		<chord_root unit="K·m/kK">20</chord_root>
+		<aspect_ratio>20</aspect_ratio>
+	</wing>
+	<wing name="My cute wing 2">
+		<span unit="m">90</span>
+		<chord_root unit="mm">25</chord_root>
+		<aspect_ratio>20</aspect_ratio>
+	</wing>
+	<horizontal_tail name="My poor litte wing">
+		<span unit="m">40</span>
+		<chord_root unit="ft">8.5</chord_root>
+		<aspect_ratio>4</aspect_ratio>
+	</horizontal_tail>
+	
+	<pippo ref="3xxd"/>
+	
+</data>

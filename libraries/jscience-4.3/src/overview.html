@@ -1,0 +1,296 @@
+<body>
+<H2><SPAN CLASS="style0">J</SPAN><SPAN CLASS="style1">Science</SPAN> - Java<SUP>TM</SUP>Tools and Libraries for the Advancement of Sciences.</H2>
+
+<a name="TUTORIAL"></a>
+<h3><b>Tutorial and Code Examples:</b></h3>
+These examples can be executed through the command: <code>"java -jar jscience.jar test"</code>
+(the code is located in <code>src/org/jscience/JScience.java</code>).
+
+<h4>Physics and measurements (org.jscience.physics)</h4>
+[code]
+    // Exact Measurements.
+    Amount<Mass> m0 = Amount.valueOf(100, POUND); // Integer representation.
+    Amount<Mass> m1 = m0.times(33).divide(2); // Still an integer.
+    Amount<ElectricCurrent> m2 = Amount.valueOf("234 mA").to(MICRO(AMPERE)); // Exact conversion.
+
+    > m0 = 100 lb
+    > m1 = 1650 lb
+    > m2 = 234000 µA
+
+    // Inexact Measurements.
+    Amount<Mass> m3 = Amount.valueOf(100.0, POUND); // IEEE 754 64-bits float accuracy. 
+    Amount<Mass> m4 = m0.divide(3); // No exact integer representation.
+    Amount<ElectricCurrent> m5 = Amount.valueOf("234 mA").to(AMPERE); // Conversion introduces errors.
+    Amount<Temperature> t0 = Amount.valueOf(-7.3, 0.5, DEGREE_CELSIUS); // Error explicit.
+
+    > m3 = (100.0 ± 2.1E-14) lb
+    > m4 = (33.333333333333336 ± 7.1E-15) lb
+    > m5 = (2.3400000000000004E-1 ± 4.2E-17) A
+    > t0 = (-7.30 ± 5.0E-1) °C
+
+    // Interval measurements
+    Amount<Volume> m6 = Amount.valueOf(20, 0.1, LITER);
+    Amount<Frequency> m7 = Amount.rangeOf(10, 11, KILO(HERTZ));
+
+    > m6 = (20.00 ± 1.0E-1) L
+    > m7 = (10.5 ± 5.0E-1) kHz
+
+    // Amount.equals (identical) / Amount.approximates (takes into account errors such as numeric errors)
+    Amount<Frequency> m8 = Amount.valueOf(9000, HERTZ);
+    Amount<Frequency> m10 = m8.divide(3).times(3); // Still exact.
+    Amount<Frequency> m11 = m8.divide(7).times(7); // No more exact.
+    System.out.println("m8 = " + m8);
+    System.out.println("m10 = " + m10);
+    System.out.println("m11 = " + m11);
+    System.out.println("(m10 == m8) = " + m10.equals(m8));
+    System.out.println("(m10 ≅ m8) = " + m10.approximates(m8));
+    System.out.println("(m11 == m8) = " + m11.equals(m8));
+    System.out.println("(m11 ≅ m8) = " + m11.approximates(m8));
+    
+    > m8 = 9000 Hz
+    > m10 = 9000 Hz
+    > m11 = (9000.0 ± 1.8E-12) Hz
+    > (m10 == m8) = true
+    > (m10 ≅ m8) = true
+    > (m11 == m8) = false
+    > (m11 ≅ m8) = true
+
+    // AmountFormat - Plus/Minus Error (3 digits error)
+    AmountFormat.setInstance(AmountFormat.getPlusMinusError(3));
+
+    > m3 = (100.0 ± 2.13E-14) lb
+    > m4 = (33.33333333333333504 ± 7.11E-15) lb
+    > m5 = (2.340000000000000512E-1 ± 4.16E-17) A
+
+    // AmountFormat - Bracket Error (2 digits error)
+    AmountFormat.setInstance(AmountFormat.getBracketErrorInstance(2));
+
+    > m3 = 100.000000000000000[21] lb
+    > m4 = 33.3333333333333376[71] lb
+    > m5 = 2.34000000000000032[41]E-1 A
+
+    // AmountFormat - Exact Digits Only
+    AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
+
+    > m3 = 100.000000000000 lb
+    > m4 = 33.3333333333333 lb
+    > m5 = 2.34000000000000E-1 A
+
+    // Numeric Errors
+    Amount<Length> x = Amount.valueOf(1.0, METRE);
+    Amount<Velocity> v = Amount.valueOf(0.01, METRE_PER_SECOND);
+    Amount<Duration> t = Amount.valueOf(1.0, MICRO(SECOND));
+    for (int i = 0; i < 10000000; i++) {
+          x = x.plus(v.times(t));
+    }
+    AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
+
+     > x = 1.1000000 m   (guaranteed in the interval [1.0999999, 1.1000001])
+
+    // Primitive double type (no idea on result accuracy).
+     double x = 1.0; // m
+     double v = 0.01; // m/s
+     double t = 1E-6; // s
+     for (int i = 0; i < 10000000; i++) {
+          x += v * t;
+     }
+
+     > x = 1.099999999392253 (no idea on the precision) 
+[/code]
+
+<h4>Physical Models  (org.jscience.physics.model)</h4>
+
+[code]
+     // Selects a relativistic model for dimension checking (typically at start-up).
+     RelativisticModel.select(); 
+
+     // Length and Duration can be added.
+     Amount<Length> x = Amount.valueOf(100, NonSI.INCH);
+     x = x.plus(Amount.valueOf("2.3 µs")).to(METRE); 
+     System.out.println(x); 
+
+     > (692.06265340000008 ± 5.1E-13) m
+        
+     // Energy is compatible with mass (E=mc2)
+     Amount<Mass> m = Amount.valueOf("12 GeV").to(KILOGRAM); 
+     System.out.println(m); 
+        
+     > (2.1391940763025056E-26 ± 4.3E-42) kg
+[/code]
+    
+<h4>Money/Currencies (org.jscience.economics.money)</h4>
+
+[code]
+     ///////////////////////////////////////////////////////////////////////
+     // Calculates the cost of a car trip in Europe for an American tourist.
+     ///////////////////////////////////////////////////////////////////////
+
+     // Use currency symbols instead of ISO-4217 codes.
+     UnitFormat.getStandardInstance().label(USD, "$"); // Use "$" symbol instead of currency code ("USD")
+     UnitFormat.getStandardInstance().label(EUR, "€"); // Use "€" symbol instead of currency code ("EUR")
+
+     // Sets exchange rates.
+     Currency.setReferenceCurrency(USD);
+     EUR.setExchangeRate(1.17); // 1.0 € = 1.17 $
+            
+     // Calculates trip cost.
+     Amount<?> carMileage = Amount.valueOf(20, MILE.divide(GALLON_LIQUID_US)); // 20 mi/gal.
+     Amount<?> gazPrice = Amount.valueOf(1.2, EUR.divide(LITRE)); // 1.2 €/L
+     Amount<Length> tripDistance = Amount.valueOf(400, KILO(SI.METRE)); // 400 km
+     Amount<Money> tripCost = tripDistance.divide(carMileage).times(gazPrice).to(USD);
+
+     // Displays cost.
+     System.out.println("Trip cost = " + tripCost + " (" + tripCost.to(EUR) + ")");
+
+     > Trip cost = 66.05 $ (56.45 €)
+[/code]
+
+<h4>Matrices/Vectors (org.jscience.mathematics.vectors)</h4>
+
+[code]
+     Amount<ElectricResistance> R1 = Amount.valueOf(100, 1, OHM); // 1% precision. 
+     Amount<ElectricResistance> R2 = Amount.valueOf(300, 3, OHM); // 1% precision.
+     Amount<ElectricPotential> U0 = Amount.valueOf(28, 0.01, VOLT); // ±0.01 V fluctuation.
+
+     // Equations:  U0 = U1 + U2       |1  1  0 |   |U1|   |U0|
+     //             U1 = R1 * I    =>  |-1 0  R1| * |U2| = |0 |
+     //             U2 = R2 * I        |0 -1  R2|   |I |   |0 |
+     //
+     //                                    A      *  X   =  B
+     //
+     DenseMatrix<Amount<?>> A = DenseMatrix.valueOf(new Amount<?>[][] {
+         { Amount.ONE,            Amount.ONE,            Amount.valueOf(0, OHM) },
+         { Amount.ONE.opposite(), Amount.ZERO,           R1 },
+         { Amount.ZERO,           Amount.ONE.opposite(), R2 } });
+     DenseVector<Amount<?>> B = DenseVector.valueOf(new Amount<?>[] 
+         { U0, Amount.valueOf(0, VOLT), Amount.valueOf(0, VOLT) });
+     Vector<Amount<?>> X = A.solve(B);
+     System.out.println(X);
+     System.out.println(X.get(2).to(MILLI(AMPERE)));
+
+     > {(7.0 ± 1.6E-1) V, (21.0 ± 1.5E-1) V, (7.0E-2 ± 7.3E-4) V/Ω}
+     > (70.0 ± 7.3E-1) mA
+[/code]
+
+<h4>Functions Symbolic Calculations (org.jscience.mathematics.functions)</h4>
+
+[code]
+     // Defines two local variables (x, y).
+     Variable<Complex> varX = new Variable.Local<Complex>("x");
+     Variable<Complex> varY = new Variable.Local<Complex>("y");
+
+     // f(x) = ix² + 2x + 1
+     Polynomial<Complex> x = Polynomial.valueOf(Complex.ONE, varX);
+     Polynomial<Complex> fx = x.pow(2).times(Complex.I).plus(x.times(Complex.valueOf(2, 0)).plus(Complex.ONE));
+     System.out.println(fx);
+     System.out.println(fx.pow(2));
+     System.out.println(fx.differentiate(varX));
+     System.out.println(fx.integrate(varY));
+     System.out.println(fx.compose(fx));
+
+     // Calculates expression.
+     varX.set(Complex.valueOf(2, 3));
+     System.out.println(fx.evaluate());
+
+     > [0.0 + 1.0i]x² + [2.0 + 0.0i]x + [1.0 + 0.0i]
+     > [-1.0 + 0.0i]x4 + [0.0 + 4.0i]x³ + [4.0 + 2.0i]x² + [4.0 + 0.0i]x + [1.0 + 0.0i]
+     > [0.0 + 2.0i]x + [2.0 + 0.0i]
+     > [0.0 + 1.0i]x²y + [2.0 + 0.0i]xy + [1.0 + 0.0i]y
+     > [0.0 - 1.0i]x4 + [-4.0 + 0.0i]x³ + [-2.0 + 6.0i]x² + [4.0 + 4.0i]x + [3.0 + 1.0i]
+     > -7.0 + 1.0i
+[/code]        
+
+<h4>Coordinates Conversions (org.jscience.geography.coordinates)</h4>
+[code]
+     // Simple Lat/Long to UTM conversion.
+     CoordinatesConverter<LatLong, UTM> latLongToUTM = LatLong.CRS.getConverterTo(UTM.CRS);
+     LatLong latLong = LatLong.valueOf(34.34, 23.56, DEGREE_ANGLE);
+     UTM utm = latLongToUTM.convert(latLong);
+     System.out.println(utm);
+     
+     > [735493.10596316272 m, 3802824.4520701632 m]
+
+     // Converts any projected coordinates to Latitude/Longitude.
+     Coordinates<ProjectedCRS> coord2d = utm;
+     ProjectedCRS crs = coord2d.getCoordinateReferenceSystem();
+     CoordinatesConverter<Coordinates, LatLong> cvtr = crs.getConverterTo(LatLong.CRS);
+     latLong = cvtr.convert(coord2d);
+     System.out.println(latLong);
+     
+     > [34.340000000327748 °, 23.559999984340976 °]
+     
+     // Compound coordinates.
+     Altitude alt = Altitude.valueOf(2000, FOOT);
+     CompoundCoordinates<LatLong, Altitude> latLongAlt = new CompoundCoordinates<LatLong, Altitude>(latLong, alt);
+     System.out.println(latLongAlt);
+     
+     > [34.340000000327748 °, 23.559999984340976 °, 609.6 m]
+
+     // Converts compound coordinates (3-D) to XYZ (GPS).
+     XYZ xyz = latLongAlt.getCoordinateReferenceSystem().getConverterTo(XYZ.CRS).convert(latLongAlt);
+     System.out.println(xyz);
+     
+     > [4833067.6201224736 m, 2107498.4040940592 m, 3577994.5499035148 m]
+
+     // Even more compounding...
+     Time time = Time.valueOf(new Date());
+     CompoundCoordinates<CompoundCoordinates, Time> latLongAltTime = new CompoundCoordinates<CompoundCoordinates, Time>(latLongAlt, time);
+     System.out.println(latLongAltTime);
+     
+     > [34.34 °, 23.559999999999999 °, 609.6 m, 1.18092879739E9 s]
+     
+[/code]        
+     
+<h4>Number types (org.jscience.mathematics.number)</h4>
+
+[code]
+     Real two = Real.valueOf(2); // 2.0000..00 
+     Real three = Real.valueOf(3);
+     Real.setExactPrecision(100); // Assumes 100 exact digits for exact numbers.
+
+     System.out.println("2/3       = " + two.divide(three));
+     Real sqrt2 = two.sqrt();
+     System.out.println("sqrt(2)   = " + sqrt2);
+     System.out.println("Precision = " + sqrt2.getPrecision() + " digits.");
+
+     > 2/3       = 6.66666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666667E-1
+     > sqrt(2)   = 1.4142135623730950488016887242096980785696718753769
+     > Precision = 50 digits.
+
+     LargeInteger dividend = LargeInteger.valueOf("3133861182986538201");
+     LargeInteger divisor = LargeInteger.valueOf("25147325102501733369");
+     Rational rational = Rational.valueOf(dividend, divisor);
+     System.out.println("rational  = " + rational);
+       
+     > rational  = 41/329
+            
+     ModuloInteger m = ModuloInteger.valueOf("233424242346");
+     LocalContext.enter(); // Avoids impacting others threads when setting the modulo.
+     try {
+         ModuloInteger.setModulus(LargeInteger.valueOf("31225208137"));
+         ModuloInteger inv = m.inverse();
+         System.out.println("inverse modulo = " + inv);
+                
+         ModuloInteger one = inv.times(m);
+         System.out.println("verification: one = " + one);
+
+     } finally {
+         LocalContext.exit();
+     }
+
+     > inverse modulo = 14099421625
+     > verification: one = 1
+[/code]
+
+<i>Additional examples can be find in the packages descriptions...</i><br>
+<i>Benchmark data available <a href="../doc/benchmark.html">here</a></i>
+
+<a name="license"></a>
+<h3><b>License:</b></h3>
+<p> Permission to use, copy, modify, and distribute this software is freely granted, 
+    provided that copyright notices are preserved.<BR>
+    The full license text can be found <a href="../doc/license.txt">here</a>).</p>
+
+<i>Note: The <b>J</b>Science binary (.jar) includes the latest
+          <a href="http://javolution.org">Javolution</a> classes for the J2SE 1.5+ runtime.</i>
+</body>

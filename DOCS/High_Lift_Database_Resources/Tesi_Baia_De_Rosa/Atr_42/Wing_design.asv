@@ -1,0 +1,109 @@
+
+%Disegno ala, impostati i parametri
+function disegno=Wing_design(Lambda_Le,b,c1,c2,c3,bg,cf1,ni1,no1,cf2,ni2,no2,cs1,nis1,nos1,cs2,nis2,nos2,cs3,nis3,nos3,cs4,nis4,nos4)
+%Parametri dell' ala
+
+Lambda_Le=Lambda_Le*(-0.00872);
+%Parametri del flap 1
+ni1=ni1*(b/2);
+no1=no1*(b/2);
+if n01>ni1
+    error('Error: ni<=no, retry to give input parameters');
+end
+%Parametri del flap 2
+ni2=ni2*(b/2);
+no2=no2*(b/2);
+if n02>ni2
+    error('Error: ni<=no, retry to give input parameters');
+end
+%Parametri slat 1
+nis1=nis1*(b/2);
+nos1=nos1*(b/2);
+%Parametri slat 2
+nis2=nis2*(b/2);
+nos2=nos2*(b/2);
+%Parametri slat 3
+nis3=nis3*(b/2);
+nos3=nos3*(b/2);
+%Parametri slat 4
+nis4=nis4*(b/2);
+nos4=nos4*(b/2);
+
+%Retta a sinistra
+N=100;
+p=0;
+y=linspace(-c1,0,N);
+x=p*y+0;
+plot(x,y,'k-','linewidth',2);title('Plain view of the wing');hold on;
+
+%Retta in alto
+l=tan(Lambda_Le);
+x=linspace(0,b/2,N);
+y=l*x;
+plot(x,y,'k-','linewidth',2);
+%Retta in basso, prima parte
+x=linspace(0,bg,N);
+k=bg*tan(Lambda_Le) - c2;
+y=-c1+(k+c1)/bg*x;
+plot(x,y,'k-','linewidth',2);
+
+%Retta in basso seconda parte
+x=linspace(bg,b/2,N);
+k=bg*tan(Lambda_Le) - c2;
+k1=(b/2)*tan(Lambda_Le) - c3;
+y=k+ (k1-k)/((b/2)-bg)*(x-bg);
+plot(x,y,'k-','linewidth',2);
+%Retta a destra
+p=0;
+k1=(b/2)*tan(Lambda_Le) - c3;
+y=linspace(k1,k1+c3,N);
+x=p*y+(b/2);
+plot(x,y,'k-','linewidth',2);
+axis([-2 (b/2 + 2) ((b/2)*tan(Lambda_Le) - c3-c1) 2]);
+
+%Flap 1
+
+y=linspace(-c1+(k+c1)/bg*ni1,-c1+(k+c1)/bg*ni1+cf1,N);
+x=0*y+ni1;
+plot(x,y,'k-','linewidth',2);
+
+y=linspace(-c1+(k+c1)/bg*no1,-c1+(k+c1)/bg*no1+cf1,N);
+x=0*y+no1;
+plot(x,y,'k-','linewidth',2);
+
+
+x=linspace(ni1,no1,N);
+k2=-c1+(k+c1)/bg*ni1+cf1;
+k3=-c1+(k+c1)/bg*no1+cf1;
+y=k2+(k3-k2)/(no1-ni1)*(x-ni1);
+plot(x,y,'k-','linewidth',2);
+
+
+%Flap 2
+
+y=linspace(k+ (k1-k)/((b/2)-bg)*(ni2-bg),k+ (k1-k)/((b/2)-bg)*(ni2-bg)+cf2,N);
+x=0*y+ni2;
+plot(x,y,'k-','linewidth',2);
+
+y=linspace(k+ (k1-k)/((b/2)-bg)*(no2-bg),k+ (k1-k)/((b/2)-bg)*(no2-bg)+cf2,N);
+x=0*y+no2;
+plot(x,y,'k-','linewidth',2);
+
+
+x=linspace(ni2,no2,N);
+k4=k+ (k1-k)/((b/2)-bg)*(ni2-bg)+cf2;
+k5=k+ (k1-k)/((b/2)-bg)*(no2-bg)+cf2;
+y=k4+(k5-k4)/(no2-ni2)*(x-ni2);
+plot(x,y,'k-','linewidth',2);
+
+
+%Slat 1
+slat(Lambda_Le,nis1,nos1,cs1);
+%Slat 2
+slat(Lambda_Le,nis2,nos2,cs2)
+%slat 3
+slat(Lambda_Le,nis3,nos3,cs3);
+%Slat 4
+slat(Lambda_Le,nis4,nos4,cs4);
+
+end

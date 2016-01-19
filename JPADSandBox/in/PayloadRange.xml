@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PayloadRange>
+	<input>
+		<AirplaneType>
+		    <value unit="">0</value>
+            <description unit="">It is possible to choose 0 which corresponds to TURBOFAN_TRANSPORT_JETS, or 1 for TURBOPROP_REGIONAL</description>
+		</AirplaneType>
+		<EngineType>
+			<value unit="">0</value>
+            <description unit="">It is possible to choose 0 for TURBOFAN or 1 for TURBOPROP</description>
+		</EngineType>
+		<AirfoilType>
+		    <value unit="">0</value>
+            <description unit="">It is possible to choose 0 for CONVENTIONAL, 1 for PEAKY, 2 for SUPERCRITICAL or 3 for MODERN_SUPERCRITICAL</description>
+		</AirfoilType>
+		<Altitude>
+			<value unit="m">6000.0000</value>
+            <description unit="">Altitude in meters</description>
+		</Altitude>
+		<Mach_number>
+			<value unit="">0.4300</value>
+            <description unit="">Mach number</description>
+		</Mach_number>
+		<Planform_surface>
+			<value  unit="m²">61.0000</value>
+            <description unit="">Planform wing surface</description>
+		</Planform_surface>
+		<TaperRatio>
+			<value  unit="">0.5450</value>
+            <description unit="">Wing taper ratio</description>
+		</TaperRatio>
+		<Maximum_take_off_mass>
+			<value  unit="kg">23063.5789</value>
+            <description unit="">Maximum take off mass (kg)</description>
+		</Maximum_take_off_mass>
+		<Operating_empty_mass>
+			<value  unit="kg">12950.5789</value>
+            <description unit="">Operating empty mass (kg)</description>
+		</Operating_empty_mass>
+		<Maximum_fuel_mass>
+			<value unit="kg">5000.0000</value>
+            <description unit="">Maximum fuel mass</description>
+		</Maximum_fuel_mass>
+		<Maximum_number_of_passengers>
+			<value  unit="">72.0000</value>
+            <description unit="">Maximum number of passenger</description>
+		</Maximum_number_of_passengers>		
+		<SweepLE>
+			<value unit="°">2.8039</value>
+            <description unit="">Wing sweep angle at leading edge</description>
+		</SweepLE>
+		<OswaldFactor>
+			<value unit="">0.7585</value>
+            <description unit="">Oswald factor</description>
+		</OswaldFactor>
+		<ByPassRatio>
+			<value unit="">0.0</value>
+            <description unit="">Bypass ratio of the engine. If it has been chosen TURBOPROP type, set this value equal to 0.0</description>
+		</ByPassRatio>
+		<Propeller_efficiency>
+			<value unit="">0.8500</value>
+            <description unit="">Propeller efficiency</description>
+		</Propeller_efficiency>
+		<Mean_maximum_thickness>
+			<value unit="">0.1675</value>
+            <description unit="">Mean maximum thickness of the wing airfoils</description>
+		</Mean_maximum_thickness>
+		<Current_lift_coefficient>
+			<value unit="">0.4500</value>
+            <description unit="">Total lift coefficient</description>
+		</Current_lift_coefficient>
+		<AspectRatio>
+			<value unit="">12.0000</value>
+            <description unit="">Wing aspect ratio</description>
+		</AspectRatio>
+		<CD0>
+			<value unit="">0.0317</value>
+            <description unit="">Aircraft drag coefficient at zero lift</description>
+		</CD0>		
+	</input>
+	<output>
+		<Design_Range>
+			<value unit="nmi">0.0</value>
+            <description unit="">It's the range with maximum payload</description>
+		</Design_Range>
+		<Max_Fuel_Range>
+			<value unit="nmi">0.0</value>
+            <description unit="">It's the range with maximum fuel mass</description>
+		</Max_Fuel_Range>
+		<Max_Range>
+			<value unit="nmi">0.0</value>
+            <description unit="">It's the range without payload</description>
+		</Max_Range>
+		<Design_Payload>
+			<value unit="kg">0.0</value>
+            <description unit="">It's the value of design payload mass</description>
+		</Design_Payload>
+		<SFC>
+		<value unit="lb/(lb*h)">0.0</value>
+        <description unit="">Specific Fuel Consumption</description>
+		</SFC>
+		<Efficiency>
+		<value unit="">0.0</value>
+        <description unit="">Aerodynamic efficiency</description>
+	</Efficiency>
+	</output>
+</PayloadRange>	

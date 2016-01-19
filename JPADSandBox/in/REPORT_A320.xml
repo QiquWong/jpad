@@ -1,0 +1,1272 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ADOpT>
+    <Operating_Conditions id="10">
+        <Altitude from="input" unit="m" varName="_altitude">11000.0000</Altitude>
+        <Mach_number from="input" unit="" varName="_machCurrent">0.7800</Mach_number>
+    </Operating_Conditions>
+    <AIRCRAFT>
+        <Configuration id="11">
+            <Number_of_passengers from="input" unit="" varName="_nPax">150.0000</Number_of_passengers>
+            <Maximum_number_of_passengers from="input" unit="" varName="_maxPax">180.0000</Maximum_number_of_passengers>
+            <Number_of_aisles from="input" unit="" varName="_aislesNumber">1</Number_of_aisles>
+            <Number_of_classes from="input" unit="" varName="_classesNumber">2.0000</Number_of_classes>
+            <Xcoordinate_of_first_row from="input" unit="m" varName="_xCoordinateFirstRow">6.2000</Xcoordinate_of_first_row>
+            <Cabin_Layout>
+                <Economy>
+                    <Pitch from="input" unit="m" varName="_pitchEconomyClass">0.8100</Pitch>
+                    <Width from="input" unit="m" varName="_widthEconomyClass">0.4700</Width>
+                    <Abreasts from="input" unit="" varName="_numberOfColumnsEconomyClass">[2.0, 2.0]</Abreasts>
+                    <Number_of_rows from="input" unit="" varName="_numberOfRowsEconomyClass">23</Number_of_rows>
+                    <Distance_from_wall from="input" unit="m" varName="_distanceFromWallEconomyClass">0.1150</Distance_from_wall>
+                    <Number_of_breaks from="input" unit="" varName="_numberOfBreaksEconomyClass">-1</Number_of_breaks>
+                    <Length_of_each_break from="input" unit="" varName="_lengthOfEachBreakEconomyClass">[0.0]</Length_of_each_break>
+                </Economy>
+                <Business>
+                    <Pitch from="input" unit="m" varName="_pitchBusinessClass">0.0000</Pitch>
+                    <Width from="input" unit="m" varName="_widthBusinessClass">0.0000</Width>
+                    <Abreasts from="input" unit="" varName="_numberOfColumnsBusinessClass">[0.0, 0.0]</Abreasts>
+                    <Number_of_rows from="input" unit="" varName="_numberOfRowsBusinessClass">0</Number_of_rows>
+                    <Distance_from_wall from="input" unit="m" varName="_distanceFromWallBusinessClass">0.0845</Distance_from_wall>
+                    <Number_of_breaks from="input" unit="" varName="_numberOfBreaksBusinessClass">-1</Number_of_breaks>
+                    <Length_of_each_break from="input" unit="" varName="_lengthOfEachBreakBusinessClass">[0.0]</Length_of_each_break>
+                </Business>
+                <First>
+                    <Pitch from="input" unit="m" varName="_pitchFirstClass">0.9140</Pitch>
+                    <Width from="input" unit="m" varName="_widthFirstClass">0.5700</Width>
+                    <Abreasts from="input" unit="" varName="_numberOfColumnsFirstClass">[0.0, 0.0]</Abreasts>
+                    <Number_of_rows from="input" unit="" varName="_numberOfRowsFirstClass">3</Number_of_rows>
+                    <Distance_from_wall from="input" unit="m" varName="_distanceFromWallFirstClass">0.1150</Distance_from_wall>
+                    <Number_of_breaks from="input" unit="" varName="_numberOfBreaksFirstClass">-1</Number_of_breaks>
+                    <Length_of_each_break from="input" unit="" varName="_lengthOfEachBreakFirstClass">[0.0]</Length_of_each_break>
+                </First>
+            </Cabin_Layout>
+        </Configuration>
+        <Performances id="21">
+            <Optimum_Cruise_Mach_Number from="input" unit="" varName="_machOptimumCruise">0.7800</Optimum_Cruise_Mach_Number>
+            <Maximum_Cruise_Mach_Number from="input" unit="" varName="_machMaxCruise">0.8200</Maximum_Cruise_Mach_Number>
+            <Limit_load_factor from="input" unit="" varName="_nLimit">2.5000</Limit_load_factor>
+            <Limit_load_factor_at_MZFW from="input" unit="" varName="_nLimitZFW">2.5000</Limit_load_factor_at_MZFW>
+            <Ultimate_load_factor from="input" unit="" varName="_nUltimate">3.7500</Ultimate_load_factor>
+        </Performances>
+        <Weights id="20">
+            <Material_density from="input" unit="kg/m³" varName="_materialDensity">2711.0000</Material_density>
+            <Maximum_zero_fuel_mass from="input" unit="kg" varName="_MZFM">56206.9560</Maximum_zero_fuel_mass>
+            <Maximum_landing_mass from="input" unit="kg" varName="_MLM">68104.6164</Maximum_landing_mass>
+            <Maximum_take_off_mass from="input" unit="kg" varName="_MTOM">75668.5960</Maximum_take_off_mass>
+        </Weights>
+        <Balance/>
+        <Fuselage id="0">
+            <Adjust_Criterion>NONE</Adjust_Criterion>
+            <Fuselage_Parameters>
+                <!--Main fuselage geometric parameters -->
+                <Length from="input" unit="m" varName="_len_F">37.5700</Length>
+                <Number_of_decks from="input" unit="">1</Number_of_decks>
+                <Nose_to_fuselage_lenght_ratio from="input" unit="" varName="_lenRatio_NF">0.1635</Nose_to_fuselage_lenght_ratio>
+                <Cylindrical_part_to_fuselage_lenght_ratio from="input" unit="" varName="_lenRatio_CF">0.4964</Cylindrical_part_to_fuselage_lenght_ratio>
+                <Cylindrical_part_width from="input" unit="m" varName="_sectionCylinderWidth">3.9500</Cylindrical_part_width>
+                <Cylindrical_part_height from="input" unit="m" varName="_sectionCylinderHeight">4.1400</Cylindrical_part_height>
+                <Nose_fineness_ratio from="input" unit="" varName="_lambda_N">1.5210</Nose_fineness_ratio>
+                <Minimum_height_from_ground from="input" unit="m" varName="_heightFromGround">2.0000</Minimum_height_from_ground>
+                <Surface_roughess from="input" unit="m" varName="_roughness">0.0000</Surface_roughess>
+                <Nose_furthermost_point_height from="input" unit="m" varName="_height_N">-0.7180</Nose_furthermost_point_height>
+                <Tail_rearmost_point_height from="input" unit="m" varName="_height_T">1.1690</Tail_rearmost_point_height>
+                <Nose_cap_lenght from="input" unit="m" varName="_dxNoseCap">0.4607</Nose_cap_lenght>
+                <Tail_cap_lenght from="input" unit="m" varName="_dxTailCap">0.2556</Tail_cap_lenght>
+                <Windshield_type from="input" unit="">Single,round</Windshield_type>
+                <Windshield_height from="input" unit="m" varName="_windshieldHeight">0.4600</Windshield_height>
+                <Windshield_width from="input" unit="m" varName="_windshieldWidth">3.0710</Windshield_width>
+                <Cylinder_lower_to_total_height_ratio from="input" unit="" varName="_sectionLowerToTotalHeightRatio">0.4000</Cylinder_lower_to_total_height_ratio>
+                <Cylinder_Rho_upper from="input" unit="" varName="_sectionCylinderRhoUpper">0.2000</Cylinder_Rho_upper>
+                <Cylinder_Rho_lower from="input" unit="" varName="_sectionCylinderRhoLower">0.3000</Cylinder_Rho_lower>
+                <Pressurization from="input" unit="" varName="_pressurized">true</Pressurization>
+                <Reference_mass from="input" unit="kg" varName="_massReference">8938.0000</Reference_mass>
+                <Mass_correction_factor from="input" unit="" varName="_massCorrectionFactor">1.0000</Mass_correction_factor>
+                <Nose_Length unit="m">6.1427</Nose_Length>
+                <Cylindrical_Length unit="m">18.6497</Cylindrical_Length>
+                <TailCone_Length unit="m">12.7776</TailCone_Length>
+                <Nose_Length_Ratio unit="">0.1635</Nose_Length_Ratio>
+                <Cylindrical_Length_Ratio unit="">0.4964</Cylindrical_Length_Ratio>
+                <TailCone_Length_Ratio unit="">0.3401</TailCone_Length_Ratio>
+                <Nose_Fineness_Ratio unit="">1.5210</Nose_Fineness_Ratio>
+                <Cylindrical_Fineness_Ratio unit="">4.5048</Cylindrical_Fineness_Ratio>
+                <TailCone_Fineness_Ratio unit="">3.0864</TailCone_Fineness_Ratio>
+            </Fuselage_Parameters>
+            <Fuse_Section_List>
+                <!--Fuselage Sections parameters. Edit these to alter the fuselage shape-->
+                <Fuse_Cylinder_Section_X_Location from="input" unit="m">6.1427</Fuse_Cylinder_Section_X_Location>
+                <Fuse_Cylinder_Section_Rho_Upper from="input" unit="" varName="_sectionCylinderRhoUpper">0.2000</Fuse_Cylinder_Section_Rho_Upper>
+                <Fuse_Cylinder_Section_Rho_Lower from="input" unit="" varName="_sectionCylinderRhoLower">0.3000</Fuse_Cylinder_Section_Rho_Lower>
+                <Fuse_Cylinder_Lower_to_total_height_ratio from="input" unit="" varName="_sectionLowerToTotalHeightRatio">0.4000</Fuse_Cylinder_Lower_to_total_height_ratio>
+                <Cylinder_Base_Area unit="m²">12.8436</Cylinder_Base_Area>
+                <Section_stations unit="m">0.4607</Section_stations>
+                <Nose_Cap_Section_Width unit="m">0.9380</Nose_Cap_Section_Width>
+                <Nose_Cap_Section_Height unit="m">0.9990</Nose_Cap_Section_Height>
+                <Nose_Cap_Section_Rho_Upper unit="">0.000000</Nose_Cap_Section_Rho_Upper>
+                <Nose_Cap_Section_Rho_Lower unit="">0.000000</Nose_Cap_Section_Rho_Lower>
+                <Nose_Cap_Lower_Section_a_Control_Point unit="">0.5000</Nose_Cap_Lower_Section_a_Control_Point>
+                <Mid_Nose_Section_X_Location unit="m">3.0713</Mid_Nose_Section_X_Location>
+                <Mid_Nose_Section_Width unit="m">2.8680</Mid_Nose_Section_Width>
+                <Mid_Nose_Section_Height unit="m">2.9750</Mid_Nose_Section_Height>
+                <Mid_Nose_Section_Rho_Upper unit="">0.2000</Mid_Nose_Section_Rho_Upper>
+                <Mid_Nose_Section_Rho_Lower unit="">0.3000</Mid_Nose_Section_Rho_Lower>
+                <Mid_Nose_Lower_Section_a_Control_Point unit="">0.4000</Mid_Nose_Lower_Section_a_Control_Point>
+                <Mid_Tail_Section_X_Location unit="m">31.1812</Mid_Tail_Section_X_Location>
+                <Mid_Tail_Section_Width unit="m">2.9550</Mid_Tail_Section_Width>
+                <Mid_Tail_Section_Height unit="m">3.2590</Mid_Tail_Section_Height>
+                <Mid_Tail_Section_Rho_Upper unit="">0.2000</Mid_Tail_Section_Rho_Upper>
+                <Mid_Tail_Section_Rho_Lower unit="">0.3000</Mid_Tail_Section_Rho_Lower>
+                <Mid_Tail_Lower_Section_a_Control_Point unit="">0.4000</Mid_Tail_Lower_Section_a_Control_Point>
+                <Tail_Cap_Section_X_Location unit="m">37.3144</Tail_Cap_Section_X_Location>
+                <Tail_Cap_Section_Width unit="m">0.4980</Tail_Cap_Section_Width>
+                <Tail_Cap_Section_Height unit="m">2.9750</Tail_Cap_Section_Height>
+                <Tail_Cap_Section_Rho_Upper unit="">0.000000</Tail_Cap_Section_Rho_Upper>
+                <Tail_Cap_Section_Rho_Lower unit="">0.000000</Tail_Cap_Section_Rho_Lower>
+                <Tail_Cap_Lower_Section_a_Control_Point unit="">0.5000</Tail_Cap_Lower_Section_a_Control_Point>
+            </Fuse_Section_List>
+        </Fuselage>
+        <Wing id="1">
+            <Equivalent_Wing_parameters>
+                <Xcoordinate from="input" unit="m" varName="_X0">11.8571</Xcoordinate>
+                <Ycoordinate from="input" unit="m" varName="_Y0">0.0000</Ycoordinate>
+                <Zcoordinate from="input" unit="m" varName="_Z0">-0.7180</Zcoordinate>
+                <Planform_surface from="input" unit="m²" varName="_surface">122.4000</Planform_surface>
+                <Control_surface_extension from="input" unit="m²" varName="_surfaceCS">25.0000</Control_surface_extension>
+                <aspectRatio from="input" unit="" varName="_aspectRatio">9.3900</aspectRatio>
+                <taperRatio from="input" unit="" varName="_taperRatioEquivalent">0.2400</taperRatio>
+                <Wing_position_in_percent_of_fuselage_height from="input" unit="" varName="_positionRelativeToAttachment">0.000000</Wing_position_in_percent_of_fuselage_height>
+                <kinkSpanStation from="input" unit="" varName="_spanStationKink">0.3700</kinkSpanStation>
+                <Thickness_to_chord_ratio_root from="input" unit="" varName="_tc_root">0.1500</Thickness_to_chord_ratio_root>
+                <Thickness_to_chord_ratio_kink from="input" unit="" varName="_tc_kink">0.1100</Thickness_to_chord_ratio_kink>
+                <Thickness_to_chord_ratio_tip from="input" unit="" varName="_tc_tip">0.0900</Thickness_to_chord_ratio_tip>
+                <Root_chord_LE_extension from="input" unit="" varName="_extensionLERootChordLinPanel">0.000000</Root_chord_LE_extension>
+                <Root_chord_TE_extension from="input" unit="" varName="_extensionTERootChordLinPanel">0.3900</Root_chord_TE_extension>
+                <sweepc4 from="input" unit="°" varName="_sweepQuarterChordEq">24.9999</sweepc4>
+                <Incidence_relative_to_xBRF from="input" unit="°" varName="_iw">0.0000</Incidence_relative_to_xBRF>
+                <kinkStationTwist from="input" unit="°" varName="_twistKink">-0.5000</kinkStationTwist>
+                <tipStationTwist from="input" unit="°" varName="_twistTip">-4.5000</tipStationTwist>
+                <Dihedral_inner_panel from="input" unit="°" varName="_dihedralInnerPanel">2.0002</Dihedral_inner_panel>
+                <Dihedral_outer_panel from="input" unit="°" varName="_dihedralOuterPanel">5.0002</Dihedral_outer_panel>
+                <Surface_roughness from="input" unit="m" varName="_roughness">0.0000</Surface_roughness>
+                <Transition_point_in_percent_of_chord_upper_wing from="input" unit="" varName="_xTransitionU">0.1500</Transition_point_in_percent_of_chord_upper_wing>
+                <Transition_point_in_percent_of_chord_upper_wing from="input" unit="" varName="_xTransitionL">0.1200</Transition_point_in_percent_of_chord_upper_wing>
+                <Reference_mass from="input" unit="kg" varName="_massReference">8801.0000</Reference_mass>
+                <Composite_correction_factor from="input" unit="" varName="_compositeCorretionFactor">0.000000</Composite_correction_factor>
+                <Mass_correction_factor from="input" unit="" varName="_massCorrectionFactor">1.0000</Mass_correction_factor>
+                <sweepLE unit="°">27.9941</sweepLE>
+                <Mean_aerodynamic_chord_MAC unit="m">4.0625</Mean_aerodynamic_chord_MAC>
+                <Root_chord unit="m">5.8233</Root_chord>
+            </Equivalent_Wing_parameters>
+            <Actual_Wing_parameters>
+                <Mach_number_transonic_threshold from="input" unit="" varName="_machTransonicThreshold">0.5000</Mach_number_transonic_threshold>
+                <Planform_surface unit="m²">122.4000</Planform_surface>
+                <Exposed_surface unit="m²">96.5430</Exposed_surface>
+                <Wetted_surface unit="m²">250.3905</Wetted_surface>
+                <Exposed_Wetted_surface unit="m²">197.4955</Exposed_Wetted_surface>
+                <span unit="m">33.9019</span>
+                <taperRatio unit="">0.1976</taperRatio>
+                <semiSurfaceInnerPanel unit="m²">33.8577</semiSurfaceInnerPanel>
+                <aspectRatioInnerPanel unit="">2.3236</aspectRatioInnerPanel>
+                <semiSurfaceOuterPanel unit="m²">27.3423</semiSurfaceOuterPanel>
+                <aspectRatioOuterPanel unit="">8.3419</aspectRatioOuterPanel>
+                <taperRatioInnerPanel unit="">0.5263</taperRatioInnerPanel>
+                <taperRatioOuterPanel unit="">0.3754</taperRatioOuterPanel>
+                <sweepLEInnerPanel unit="°">27.9941</sweepLEInnerPanel>
+                <sweepc4InnerPanel unit="°">21.7038</sweepc4InnerPanel>
+                <sweepLEOuterPanel unit="°">27.9941</sweepLEOuterPanel>
+                <sweepc4OuterPanel unit="°">25.5075</sweepc4OuterPanel>
+                <rootChord unit="m">7.0736</rootChord>
+                <rootChordXle unit="m">0.0000</rootChordXle>
+                <kinkChord unit="m">3.7231</kinkChord>
+                <kinkChordXle unit="m">3.3340</kinkChordXle>
+                <tipChord unit="m">1.3976</tipChord>
+                <tipChordXle unit="m">9.0107</tipChordXle>
+                <Mean_aerodynamic_chord_MAC unit="m">4.3084</Mean_aerodynamic_chord_MAC>
+                <Mean_aerodynamic_chord_xLE_LRF unit="m">3.3902</Mean_aerodynamic_chord_xLE_LRF>
+                <Mean_aerodynamic_chord_yLE_LRF unit="m">6.3777</Mean_aerodynamic_chord_yLE_LRF>
+                <Mean_aerodynamic_chord_xLE_BRF unit="m">15.2473</Mean_aerodynamic_chord_xLE_BRF>
+                <Mean_aerodynamic_chord_yLE_BRF unit="m">6.3777</Mean_aerodynamic_chord_yLE_BRF>
+                <Mean_dihedral_angle unit="°">3.8902</Mean_dihedral_angle>
+                <AC_to_CG_distance unit="">not_initialized</AC_to_CG_distance>
+                <AC_to_Wing_AC_distance unit="">not_initialized</AC_to_Wing_AC_distance>
+                <Volumetric_ratio unit="">not_initialized</Volumetric_ratio>
+                <Mean_maximum_thickness>
+                    <Integral_mean unit="">0.1175</Integral_mean>
+                </Mean_maximum_thickness>
+                <Number_of_airfoils from="input" unit="" varName="_numberOfAirfoils">3</Number_of_airfoils>
+                <Airfoil_1 id="1099" level="3">
+                    <Family from="input" unit="" varName="_family">NACA63_209</Family>
+                    <Type from="input" unit="" varName="_type">SUPERCRITICAL</Type>
+                    <Airfoil_Geometry id="10990099" level="4">
+                        <Position_along_semispan unit="">0.000000</Position_along_semispan>
+                        <Twist_relative_to_root from="input" unit="°" varName="_twist">0.0000</Twist_relative_to_root>
+                        <Thickness_to_chord_ratio_max from="input" unit="" varName="_maximumThicknessOverChord">0.1500</Thickness_to_chord_ratio_max>
+                        <Xcoordinate from="input" unit="" varName="_xCoords">[1.0, 0.9506, 0.9012, 0.85162, 0.80185, 0.75191, 0.70178, 0.65149, 0.60107, 0.55056, 0.5, 0.44943, 0.39885, 0.34829, 0.29775, 0.24726, 0.19683, 0.14651, 0.09636, 0.0714, 0.04656, 0.02194, 0.00981, 0.00509, 0.0028, 0.0, 0.0072, 0.00991, 0.01519, 0.02806, 0.05344, 0.0786, 0.10364, 0.15349, 0.20317, 0.25274, 0.30225, 0.35171, 0.40115, 0.45057, 0.5, 0.54944, 0.59893, 0.64851, 0.69822, 0.74809, 0.79815, 0.84838, 0.8988, 0.9494, 1.0]</Xcoordinate>
+                        <Zcoordinate from="input" unit="" varName="_zCoords">[0.0, 0.01275, 0.02744, 0.04276, 0.05794, 0.07238, 0.08539, 0.09639, 0.10464, 0.10923, 0.11148, 0.11188, 0.11059, 0.10759, 0.10287, 0.09633, 0.08773, 0.07669, 0.06231, 0.05347, 0.04306, 0.03, 0.02147, 0.01692, 0.01405, 0.0, -0.01205, -0.01412, -0.01719, -0.02256, -0.03042, -0.03651, -0.04163, -0.04977, -0.05589, -0.06053, -0.06399, -0.06639, -0.06775, -0.06808, -0.06736, -0.06543, -0.0618, -0.05519, -0.04651, -0.03658, -0.0261, -0.01584, -0.00676, -1.1E-4, 0.0]</Zcoordinate>
+                    </Airfoil_Geometry>
+                    <Airfoil_Aerodynamics id="10991099" level="4">
+                        <Alpha_zero_lift from="input" unit="°" varName="_alphaZeroLift">-1.5000</Alpha_zero_lift>
+                        <Alpha_end_linear from="input" unit="°" varName="_alphaStar">11.4592</Alpha_end_linear>
+                        <Alpha_stall from="input" unit="°" varName="_alphaStall">11.4592</Alpha_stall>
+                        <Cl_alpha from="input" unit="" varName="_clAlpha">6.1000</Cl_alpha>
+                        <Cd_min from="input" unit="" varName="_cdMin">0.000000</Cd_min>
+                        <Cl_at_Cdmin from="input" unit="" varName="_clAtCdMin">0.2000</Cl_at_Cdmin>
+                        <Cl_end_linear from="input" unit="" varName="_clStar">0.8000</Cl_end_linear>
+                        <Cl_max from="input" unit="" varName="_clMax">1.3000</Cl_max>
+                        <K_factor_drag from="input" unit="" varName="_kFactorDragPolar">0.1000</K_factor_drag>
+                        <Cm_alpha from="input" unit="" varName="_cmAlphaAC">0.000000</Cm_alpha>
+                        <Xac from="input" unit="" varName="_aerodynamicCenterX">0.3000</Xac>
+                        <CmAC from="input" unit="" varName="_cmAC">-0.070000</CmAC>
+                        <CmAC_at_stall from="input" unit="" varName="_cmACStall">-0.090000</CmAC_at_stall>
+                    </Airfoil_Aerodynamics>
+                </Airfoil_1>
+                <Airfoil_2 id="1199" level="3">
+                    <Family from="input" unit="" varName="_family">NACA63_209</Family>
+                    <Type from="input" unit="" varName="_type">SUPERCRITICAL</Type>
+                    <Airfoil_Geometry id="11990199" level="4">
+                        <Position_along_semispan unit="">6.2718</Position_along_semispan>
+                        <Twist_relative_to_root from="input" unit="°" varName="_twist">-1.5000</Twist_relative_to_root>
+                        <Thickness_to_chord_ratio_max from="input" unit="" varName="_maximumThicknessOverChord">0.1100</Thickness_to_chord_ratio_max>
+                        <Xcoordinate from="input" unit="" varName="_xCoords">[1.0, 0.9506, 0.9012, 0.85162, 0.80185, 0.75191, 0.70178, 0.65149, 0.60107, 0.55056, 0.5, 0.44943, 0.39885, 0.34829, 0.29775, 0.24726, 0.19683, 0.14651, 0.09636, 0.0714, 0.04656, 0.02194, 0.00981, 0.00509, 0.0028, 0.0, 0.0072, 0.00991, 0.01519, 0.02806, 0.05344, 0.0786, 0.10364, 0.15349, 0.20317, 0.25274, 0.30225, 0.35171, 0.40115, 0.45057, 0.5, 0.54944, 0.59893, 0.64851, 0.69822, 0.74809, 0.79815, 0.84838, 0.8988, 0.9494, 1.0]</Xcoordinate>
+                        <Zcoordinate from="input" unit="" varName="_zCoords">[0.0, 0.01275, 0.02744, 0.04276, 0.05794, 0.07238, 0.08539, 0.09639, 0.10464, 0.10923, 0.11148, 0.11188, 0.11059, 0.10759, 0.10287, 0.09633, 0.08773, 0.07669, 0.06231, 0.05347, 0.04306, 0.03, 0.02147, 0.01692, 0.01405, 0.0, -0.01205, -0.01412, -0.01719, -0.02256, -0.03042, -0.03651, -0.04163, -0.04977, -0.05589, -0.06053, -0.06399, -0.06639, -0.06775, -0.06808, -0.06736, -0.06543, -0.0618, -0.05519, -0.04651, -0.03658, -0.0261, -0.01584, -0.00676, -1.1E-4, 0.0]</Zcoordinate>
+                    </Airfoil_Geometry>
+                    <Airfoil_Aerodynamics id="11991199" level="4">
+                        <Alpha_zero_lift from="input" unit="°" varName="_alphaZeroLift">-2.5000</Alpha_zero_lift>
+                        <Alpha_end_linear from="input" unit="°" varName="_alphaStar">11.4592</Alpha_end_linear>
+                        <Alpha_stall from="input" unit="°" varName="_alphaStall">11.4592</Alpha_stall>
+                        <Cl_alpha from="input" unit="" varName="_clAlpha">6.1000</Cl_alpha>
+                        <Cd_min from="input" unit="" varName="_cdMin">0.000000</Cd_min>
+                        <Cl_at_Cdmin from="input" unit="" varName="_clAtCdMin">0.2000</Cl_at_Cdmin>
+                        <Cl_end_linear from="input" unit="" varName="_clStar">0.8000</Cl_end_linear>
+                        <Cl_max from="input" unit="" varName="_clMax">1.3000</Cl_max>
+                        <K_factor_drag from="input" unit="" varName="_kFactorDragPolar">0.1000</K_factor_drag>
+                        <Cm_alpha from="input" unit="" varName="_cmAlphaAC">0.000000</Cm_alpha>
+                        <Xac from="input" unit="" varName="_aerodynamicCenterX">0.3000</Xac>
+                        <CmAC from="input" unit="" varName="_cmAC">-0.070000</CmAC>
+                        <CmAC_at_stall from="input" unit="" varName="_cmACStall">-0.090000</CmAC_at_stall>
+                    </Airfoil_Aerodynamics>
+                </Airfoil_2>
+                <Airfoil_3 id="1299" level="3">
+                    <Family from="input" unit="" varName="_family">NACA63_209</Family>
+                    <Type from="input" unit="" varName="_type">SUPERCRITICAL</Type>
+                    <Airfoil_Geometry id="12990299" level="4">
+                        <Position_along_semispan unit="">16.9509</Position_along_semispan>
+                        <Twist_relative_to_root from="input" unit="°" varName="_twist">-4.5000</Twist_relative_to_root>
+                        <Thickness_to_chord_ratio_max from="input" unit="" varName="_maximumThicknessOverChord">0.0850</Thickness_to_chord_ratio_max>
+                        <Xcoordinate from="input" unit="" varName="_xCoords">[1.0, 0.9506, 0.9012, 0.85162, 0.80185, 0.75191, 0.70178, 0.65149, 0.60107, 0.55056, 0.5, 0.44943, 0.39885, 0.34829, 0.29775, 0.24726, 0.19683, 0.14651, 0.09636, 0.0714, 0.04656, 0.02194, 0.00981, 0.00509, 0.0028, 0.0, 0.0072, 0.00991, 0.01519, 0.02806, 0.05344, 0.0786, 0.10364, 0.15349, 0.20317, 0.25274, 0.30225, 0.35171, 0.40115, 0.45057, 0.5, 0.54944, 0.59893, 0.64851, 0.69822, 0.74809, 0.79815, 0.84838, 0.8988, 0.9494, 1.0]</Xcoordinate>
+                        <Zcoordinate from="input" unit="" varName="_zCoords">[0.0, 0.01275, 0.02744, 0.04276, 0.05794, 0.07238, 0.08539, 0.09639, 0.10464, 0.10923, 0.11148, 0.11188, 0.11059, 0.10759, 0.10287, 0.09633, 0.08773, 0.07669, 0.06231, 0.05347, 0.04306, 0.03, 0.02147, 0.01692, 0.01405, 0.0, -0.01205, -0.01412, -0.01719, -0.02256, -0.03042, -0.03651, -0.04163, -0.04977, -0.05589, -0.06053, -0.06399, -0.06639, -0.06775, -0.06808, -0.06736, -0.06543, -0.0618, -0.05519, -0.04651, -0.03658, -0.0261, -0.01584, -0.00676, -1.1E-4, 0.0]</Zcoordinate>
+                    </Airfoil_Geometry>
+                    <Airfoil_Aerodynamics id="12991299" level="4">
+                        <Alpha_zero_lift from="input" unit="°" varName="_alphaZeroLift">-3.0000</Alpha_zero_lift>
+                        <Alpha_end_linear from="input" unit="°" varName="_alphaStar">11.4592</Alpha_end_linear>
+                        <Alpha_stall from="input" unit="°" varName="_alphaStall">11.4592</Alpha_stall>
+                        <Cl_alpha from="input" unit="" varName="_clAlpha">6.1000</Cl_alpha>
+                        <Cd_min from="input" unit="" varName="_cdMin">0.000000</Cd_min>
+                        <Cl_at_Cdmin from="input" unit="" varName="_clAtCdMin">0.2000</Cl_at_Cdmin>
+                        <Cl_end_linear from="input" unit="" varName="_clStar">0.8000</Cl_end_linear>
+                        <Cl_max from="input" unit="" varName="_clMax">1.3000</Cl_max>
+                        <K_factor_drag from="input" unit="" varName="_kFactorDragPolar">0.1000</K_factor_drag>
+                        <Cm_alpha from="input" unit="" varName="_cmAlphaAC">0.000000</Cm_alpha>
+                        <Xac from="input" unit="" varName="_aerodynamicCenterX">0.3000</Xac>
+                        <CmAC from="input" unit="" varName="_cmAC">-0.070000</CmAC>
+                        <CmAC_at_stall from="input" unit="" varName="_cmACStall">-0.090000</CmAC_at_stall>
+                    </Airfoil_Aerodynamics>
+                </Airfoil_3>
+            </Actual_Wing_parameters>
+        </Wing>
+        <HTail id="2">
+            <Equivalent_HTail_parameters>
+                <Xcoordinate from="input" unit="m" varName="_X0">35.2000</Xcoordinate>
+                <Ycoordinate from="input" unit="m" varName="_Y0">0.0000</Ycoordinate>
+                <Zcoordinate from="input" unit="m" varName="_Z0">0.8930</Zcoordinate>
+                <Planform_surface from="input" unit="m²" varName="_surface">31.0000</Planform_surface>
+                <Control_surface_extension from="input" unit="m²" varName="_surfaceCS">7.7500</Control_surface_extension>
+                <aspectRatio from="input" unit="" varName="_aspectRatio">5.0000</aspectRatio>
+                <taperRatio from="input" unit="" varName="_taperRatioEquivalent">0.2560</taperRatio>
+                <Wing_position_in_percent_of_fuselage_height from="input" unit="" varName="_positionRelativeToAttachment">0.000000</Wing_position_in_percent_of_fuselage_height>
+                <kinkSpanStation from="input" unit="" varName="_spanStationKink">1.0000</kinkSpanStation>
+                <Thickness_to_chord_ratio_root from="input" unit="" varName="_tc_root">0.1100</Thickness_to_chord_ratio_root>
+                <Thickness_to_chord_ratio_kink from="input" unit="" varName="_tc_kink">0.1100</Thickness_to_chord_ratio_kink>
+                <Thickness_to_chord_ratio_tip from="input" unit="" varName="_tc_tip">0.1100</Thickness_to_chord_ratio_tip>
+                <Root_chord_LE_extension from="input" unit="" varName="_extensionLERootChordLinPanel">0.000000</Root_chord_LE_extension>
+                <Root_chord_TE_extension from="input" unit="" varName="_extensionTERootChordLinPanel">0.000000</Root_chord_TE_extension>
+                <sweepc4 from="input" unit="°" varName="_sweepQuarterChordEq">29.0003</sweepc4>
+                <Incidence_relative_to_xBRF from="input" unit="°" varName="_iw">0.0000</Incidence_relative_to_xBRF>
+                <kinkStationTwist from="input" unit="°" varName="_twistKink">0.0000</kinkStationTwist>
+                <tipStationTwist from="input" unit="°" varName="_twistTip">0.0000</tipStationTwist>
+                <Dihedral_inner_panel from="input" unit="°" varName="_dihedralInnerPanel">2.0002</Dihedral_inner_panel>
+                <Dihedral_outer_panel from="input" unit="°" varName="_dihedralOuterPanel">0.0000</Dihedral_outer_panel>
+                <Surface_roughness from="input" unit="m" varName="_roughness">0.0000</Surface_roughness>
+                <Transition_point_in_percent_of_chord_upper_wing from="input" unit="" varName="_xTransitionU">0.1200</Transition_point_in_percent_of_chord_upper_wing>
+                <Transition_point_in_percent_of_chord_upper_wing from="input" unit="" varName="_xTransitionL">0.1200</Transition_point_in_percent_of_chord_upper_wing>
+                <Reference_mass from="input" unit="kg" varName="_massReference">625.0000</Reference_mass>
+                <Composite_correction_factor from="input" unit="">not_initialized</Composite_correction_factor>
+                <Mass_correction_factor from="input" unit="">not_initialized</Mass_correction_factor>
+                <sweepLE unit="°">33.9322</sweepLE>
+                <Mean_aerodynamic_chord_MAC unit="m">2.7812</Mean_aerodynamic_chord_MAC>
+                <Root_chord unit="m">3.9649</Root_chord>
+            </Equivalent_HTail_parameters>
+            <Actual_HTail_parameters>
+                <Mach_number_transonic_threshold from="input" unit="" varName="_machTransonicThreshold">0.5000</Mach_number_transonic_threshold>
+                <Planform_surface unit="m²">31.0000</Planform_surface>
+                <Exposed_surface unit="m²">24.7961</Exposed_surface>
+                <Wetted_surface unit="m²">63.3640</Wetted_surface>
+                <Exposed_Wetted_surface unit="m²">50.6831</Exposed_Wetted_surface>
+                <span unit="m">12.4499</span>
+                <taperRatio unit="">0.2560</taperRatio>
+                <semiSurfaceInnerPanel unit="m²">15.5000</semiSurfaceInnerPanel>
+                <aspectRatioInnerPanel unit="">5.0000</aspectRatioInnerPanel>
+                <semiSurfaceOuterPanel unit="m²">0.0000</semiSurfaceOuterPanel>
+                <aspectRatioOuterPanel unit="">5.0000</aspectRatioOuterPanel>
+                <taperRatioInnerPanel unit="">0.2560</taperRatioInnerPanel>
+                <taperRatioOuterPanel unit="">1.0000</taperRatioOuterPanel>
+                <sweepLEInnerPanel unit="°">33.9322</sweepLEInnerPanel>
+                <sweepc4InnerPanel unit="°">29.0003</sweepc4InnerPanel>
+                <sweepLEOuterPanel unit="°">33.9322</sweepLEOuterPanel>
+                <sweepc4OuterPanel unit="°">29.0003</sweepc4OuterPanel>
+                <rootChord unit="m">3.9649</rootChord>
+                <rootChordXle unit="m">0.0000</rootChordXle>
+                <kinkChord unit="m">1.0150</kinkChord>
+                <kinkChordXle unit="m">4.1881</kinkChordXle>
+                <tipChord unit="m">1.0150</tipChord>
+                <tipChordXle unit="m">4.1881</tipChordXle>
+                <Mean_aerodynamic_chord_MAC unit="m">2.7819</Mean_aerodynamic_chord_MAC>
+                <Mean_aerodynamic_chord_xLE_LRF unit="m">1.6796</Mean_aerodynamic_chord_xLE_LRF>
+                <Mean_aerodynamic_chord_yLE_LRF unit="m">2.4964</Mean_aerodynamic_chord_yLE_LRF>
+                <Mean_aerodynamic_chord_xLE_BRF unit="m">36.8796</Mean_aerodynamic_chord_xLE_BRF>
+                <Mean_aerodynamic_chord_yLE_BRF unit="m">2.4964</Mean_aerodynamic_chord_yLE_BRF>
+                <Mean_dihedral_angle unit="°">2.0002</Mean_dihedral_angle>
+                <AC_to_CG_distance unit=""/>
+                <AC_to_Wing_AC_distance unit="m">21.2506</AC_to_Wing_AC_distance>
+                <Volumetric_ratio unit="">1.2492</Volumetric_ratio>
+                <Mean_maximum_thickness>
+                    <Integral_mean unit="">0.1500</Integral_mean>
+                </Mean_maximum_thickness>
+                <Number_of_airfoils from="input" unit="" varName="_numberOfAirfoils">2</Number_of_airfoils>
+                <Airfoil_1 id="2099" level="3">
+                    <Family from="input" unit="" varName="_family">NACA63_209</Family>
+                    <Type from="input" unit="" varName="_type">SUPERCRITICAL</Type>
+                    <Airfoil_Geometry id="20990099" level="4">
+                        <Position_along_semispan unit="">0.000000</Position_along_semispan>
+                        <Twist_relative_to_root from="input" unit="°" varName="_twist">0.0000</Twist_relative_to_root>
+                        <Thickness_to_chord_ratio_max from="input" unit="" varName="_maximumThicknessOverChord">0.1500</Thickness_to_chord_ratio_max>
+                        <Xcoordinate from="input" unit="" varName="_xCoords">[1.0, 0.99372, 0.982766, 0.969978, 0.955648, 0.940249, 0.924212, 0.907834, 0.89128, 0.874637, 0.857947, 0.84123, 0.824498, 0.807755, 0.791005, 0.77425, 0.757492, 0.740731, 0.72397, 0.707209, 0.690451, 0.673695, 0.656944, 0.640199, 0.62346, 0.606731, 0.590011, 0.573303, 0.556607, 0.539927, 0.523262, 0.506616, 0.48999, 0.473385, 0.456805, 0.440251, 0.423726, 0.407233, 0.390775, 0.374354, 0.357976, 0.341643, 0.325361, 0.309135, 0.292972, 0.276878, 0.260863, 0.244936, 0.22911, 0.213401, 0.197828, 0.182416, 0.167201, 0.152227, 0.137561, 0.123289, 0.109532, 0.096442, 0.084194, 0.072956, 0.06285, 0.053918, 0.046123, 0.039362, 0.033509, 0.028432, 0.024011, 0.020146, 0.016754, 0.013769, 0.011142, 0.008834, 0.006819, 0.005076, 0.003597, 0.002376, 0.001412, 7.03E-4, 2.45E-4, 2.6E-5, 2.6E-5, 2.45E-4, 7.03E-4, 0.001412, 0.002376, 0.003597, 0.005076, 0.006819, 0.008834, 0.011142, 0.013769, 0.016754, 0.020146, 0.024011, 0.028432, 0.033509, 0.039363, 0.046123, 0.053919, 0.06285, 0.072956, 0.084194, 0.096442, 0.109532, 0.123289, 0.137561, 0.152228, 0.167201, 0.182417, 0.197828, 0.213401, 0.22911, 0.244936, 0.260863, 0.276879, 0.292972, 0.309136, 0.325361, 0.341643, 0.357976, 0.374355, 0.390775, 0.407233, 0.423727, 0.440251, 0.456805, 0.473386, 0.48999, 0.506616, 0.523263, 0.539927, 0.556608, 0.573303, 0.590011, 0.606731, 0.623461, 0.640199, 0.656944, 0.673695, 0.690451, 0.70721, 0.72397, 0.740731, 0.757492, 0.77425, 0.791005, 0.807755, 0.824498, 0.84123, 0.857947, 0.874637, 0.89128, 0.907834, 0.924213, 0.940249, 0.955649, 0.969978, 0.982766, 0.99372, 1.0]</Xcoordinate>
+                        <Zcoordinate from="input" unit="" varName="_zCoords">[0.00126, 0.002138, 0.003653, 0.005396, 0.007317, 0.009346, 0.011419, 0.013497, 0.015557, 0.017589, 0.019588, 0.021551, 0.023478, 0.025368, 0.027222, 0.029039, 0.030819, 0.032562, 0.034267, 0.035934, 0.037562, 0.039149, 0.040696, 0.0422, 0.043661, 0.045077, 0.046446, 0.047766, 0.049036, 0.050253, 0.051414, 0.052518, 0.053561, 0.05454, 0.055453, 0.056295, 0.057063, 0.057753, 0.058361, 0.058882, 0.059311, 0.059644, 0.059875, 0.059998, 0.060007, 0.059894, 0.059654, 0.059277, 0.058757, 0.058084, 0.057248, 0.056241, 0.055054, 0.053676, 0.052101, 0.050328, 0.04836, 0.046216, 0.043928, 0.041542, 0.039116, 0.036701, 0.034339, 0.032051, 0.029846, 0.027721, 0.025669, 0.023677, 0.021733, 0.019823, 0.017936, 0.016059, 0.014185, 0.012303, 0.010409, 0.008502, 0.006586, 0.00467, 0.002769, 9.09E-4, -9.09E-4, -0.002769, -0.00467, -0.006586, -0.008502, -0.010409, -0.012303, -0.014185, -0.016059, -0.017936, -0.019823, -0.021733, -0.023677, -0.025669, -0.027721, -0.029846, -0.032051, -0.034339, -0.036701, -0.039116, -0.041542, -0.043928, -0.046216, -0.04836, -0.050328, -0.052101, -0.053676, -0.055054, -0.056241, -0.057248, -0.058084, -0.058757, -0.059277, -0.059654, -0.059894, -0.060007, -0.059998, -0.059875, -0.059644, -0.059311, -0.058882, -0.058361, -0.057753, -0.057063, -0.056295, -0.055453, -0.05454, -0.053561, -0.052518, -0.051414, -0.050253, -0.049036, -0.047766, -0.046446, -0.045077, -0.043661, -0.0422, -0.040696, -0.039149, -0.037562, -0.035934, -0.034267, -0.032562, -0.030819, -0.029039, -0.027222, -0.025368, -0.023478, -0.021551, -0.019588, -0.017589, -0.015557, -0.013497, -0.011419, -0.009346, -0.007317, -0.005396, -0.003653, -0.002138, -0.00126]</Zcoordinate>
+                    </Airfoil_Geometry>
+                    <Airfoil_Aerodynamics id="20991099" level="4">
+                        <Alpha_zero_lift from="input" unit="°" varName="_alphaZeroLift">-2.5000</Alpha_zero_lift>
+                        <Alpha_end_linear from="input" unit="°" varName="_alphaStar">10.0000</Alpha_end_linear>
+                        <Alpha_stall from="input" unit="°" varName="_alphaStall">12.0000</Alpha_stall>
+                        <Cl_alpha from="input" unit="" varName="_clAlpha">6.1000</Cl_alpha>
+                        <Cd_min from="input" unit="" varName="_cdMin">0.0250</Cd_min>
+                        <Cl_at_Cdmin from="input" unit="" varName="_clAtCdMin">0.2000</Cl_at_Cdmin>
+                        <Cl_end_linear from="input" unit="" varName="_clStar">0.8000</Cl_end_linear>
+                        <Cl_max from="input" unit="" varName="_clMax">1.3000</Cl_max>
+                        <K_factor_drag from="input" unit="" varName="_kFactorDragPolar">0.0750</K_factor_drag>
+                        <Cm_alpha from="input" unit="" varName="_cmAlphaAC">0.000000</Cm_alpha>
+                        <Xac from="input" unit="" varName="_aerodynamicCenterX">0.2500</Xac>
+                        <CmAC from="input" unit="" varName="_cmAC">-0.070000</CmAC>
+                        <CmAC_at_stall from="input" unit="" varName="_cmACStall">-0.090000</CmAC_at_stall>
+                    </Airfoil_Aerodynamics>
+                </Airfoil_1>
+                <Airfoil_2 id="2299" level="3">
+                    <Family from="input" unit="" varName="_family">NACA63_209</Family>
+                    <Type from="input" unit="" varName="_type">SUPERCRITICAL</Type>
+                    <Airfoil_Geometry id="22990299" level="4">
+                        <Position_along_semispan unit="">6.2249</Position_along_semispan>
+                        <Twist_relative_to_root from="input" unit="°" varName="_twist">0.0000</Twist_relative_to_root>
+                        <Thickness_to_chord_ratio_max from="input" unit="" varName="_maximumThicknessOverChord">0.1500</Thickness_to_chord_ratio_max>
+                        <Xcoordinate from="input" unit="" varName="_xCoords">[1.0, 0.99372, 0.982766, 0.969978, 0.955648, 0.940249, 0.924212, 0.907834, 0.89128, 0.874637, 0.857947, 0.84123, 0.824498, 0.807755, 0.791005, 0.77425, 0.757492, 0.740731, 0.72397, 0.707209, 0.690451, 0.673695, 0.656944, 0.640199, 0.62346, 0.606731, 0.590011, 0.573303, 0.556607, 0.539927, 0.523262, 0.506616, 0.48999, 0.473385, 0.456805, 0.440251, 0.423726, 0.407233, 0.390775, 0.374354, 0.357976, 0.341643, 0.325361, 0.309135, 0.292972, 0.276878, 0.260863, 0.244936, 0.22911, 0.213401, 0.197828, 0.182416, 0.167201, 0.152227, 0.137561, 0.123289, 0.109532, 0.096442, 0.084194, 0.072956, 0.06285, 0.053918, 0.046123, 0.039362, 0.033509, 0.028432, 0.024011, 0.020146, 0.016754, 0.013769, 0.011142, 0.008834, 0.006819, 0.005076, 0.003597, 0.002376, 0.001412, 7.03E-4, 2.45E-4, 2.6E-5, 2.6E-5, 2.45E-4, 7.03E-4, 0.001412, 0.002376, 0.003597, 0.005076, 0.006819, 0.008834, 0.011142, 0.013769, 0.016754, 0.020146, 0.024011, 0.028432, 0.033509, 0.039363, 0.046123, 0.053919, 0.06285, 0.072956, 0.084194, 0.096442, 0.109532, 0.123289, 0.137561, 0.152228, 0.167201, 0.182417, 0.197828, 0.213401, 0.22911, 0.244936, 0.260863, 0.276879, 0.292972, 0.309136, 0.325361, 0.341643, 0.357976, 0.374355, 0.390775, 0.407233, 0.423727, 0.440251, 0.456805, 0.473386, 0.48999, 0.506616, 0.523263, 0.539927, 0.556608, 0.573303, 0.590011, 0.606731, 0.623461, 0.640199, 0.656944, 0.673695, 0.690451, 0.70721, 0.72397, 0.740731, 0.757492, 0.77425, 0.791005, 0.807755, 0.824498, 0.84123, 0.857947, 0.874637, 0.89128, 0.907834, 0.924213, 0.940249, 0.955649, 0.969978, 0.982766, 0.99372, 1.0]</Xcoordinate>
+                        <Zcoordinate from="input" unit="" varName="_zCoords">[0.00126, 0.002138, 0.003653, 0.005396, 0.007317, 0.009346, 0.011419, 0.013497, 0.015557, 0.017589, 0.019588, 0.021551, 0.023478, 0.025368, 0.027222, 0.029039, 0.030819, 0.032562, 0.034267, 0.035934, 0.037562, 0.039149, 0.040696, 0.0422, 0.043661, 0.045077, 0.046446, 0.047766, 0.049036, 0.050253, 0.051414, 0.052518, 0.053561, 0.05454, 0.055453, 0.056295, 0.057063, 0.057753, 0.058361, 0.058882, 0.059311, 0.059644, 0.059875, 0.059998, 0.060007, 0.059894, 0.059654, 0.059277, 0.058757, 0.058084, 0.057248, 0.056241, 0.055054, 0.053676, 0.052101, 0.050328, 0.04836, 0.046216, 0.043928, 0.041542, 0.039116, 0.036701, 0.034339, 0.032051, 0.029846, 0.027721, 0.025669, 0.023677, 0.021733, 0.019823, 0.017936, 0.016059, 0.014185, 0.012303, 0.010409, 0.008502, 0.006586, 0.00467, 0.002769, 9.09E-4, -9.09E-4, -0.002769, -0.00467, -0.006586, -0.008502, -0.010409, -0.012303, -0.014185, -0.016059, -0.017936, -0.019823, -0.021733, -0.023677, -0.025669, -0.027721, -0.029846, -0.032051, -0.034339, -0.036701, -0.039116, -0.041542, -0.043928, -0.046216, -0.04836, -0.050328, -0.052101, -0.053676, -0.055054, -0.056241, -0.057248, -0.058084, -0.058757, -0.059277, -0.059654, -0.059894, -0.060007, -0.059998, -0.059875, -0.059644, -0.059311, -0.058882, -0.058361, -0.057753, -0.057063, -0.056295, -0.055453, -0.05454, -0.053561, -0.052518, -0.051414, -0.050253, -0.049036, -0.047766, -0.046446, -0.045077, -0.043661, -0.0422, -0.040696, -0.039149, -0.037562, -0.035934, -0.034267, -0.032562, -0.030819, -0.029039, -0.027222, -0.025368, -0.023478, -0.021551, -0.019588, -0.017589, -0.015557, -0.013497, -0.011419, -0.009346, -0.007317, -0.005396, -0.003653, -0.002138, -0.00126]</Zcoordinate>
+                    </Airfoil_Geometry>
+                    <Airfoil_Aerodynamics id="22991299" level="4">
+                        <Alpha_zero_lift from="input" unit="°" varName="_alphaZeroLift">-2.5000</Alpha_zero_lift>
+                        <Alpha_end_linear from="input" unit="°" varName="_alphaStar">10.0000</Alpha_end_linear>
+                        <Alpha_stall from="input" unit="°" varName="_alphaStall">12.0000</Alpha_stall>
+                        <Cl_alpha from="input" unit="" varName="_clAlpha">6.1000</Cl_alpha>
+                        <Cd_min from="input" unit="" varName="_cdMin">0.0250</Cd_min>
+                        <Cl_at_Cdmin from="input" unit="" varName="_clAtCdMin">0.2000</Cl_at_Cdmin>
+                        <Cl_end_linear from="input" unit="" varName="_clStar">0.8000</Cl_end_linear>
+                        <Cl_max from="input" unit="" varName="_clMax">1.3000</Cl_max>
+                        <K_factor_drag from="input" unit="" varName="_kFactorDragPolar">0.0750</K_factor_drag>
+                        <Cm_alpha from="input" unit="" varName="_cmAlphaAC">0.000000</Cm_alpha>
+                        <Xac from="input" unit="" varName="_aerodynamicCenterX">0.2500</Xac>
+                        <CmAC from="input" unit="" varName="_cmAC">-0.070000</CmAC>
+                        <CmAC_at_stall from="input" unit="" varName="_cmACStall">-0.090000</CmAC_at_stall>
+                    </Airfoil_Aerodynamics>
+                </Airfoil_2>
+            </Actual_HTail_parameters>
+        </HTail>
+        <VTail id="3">
+            <Equivalent_VTail_parameters>
+                <Xcoordinate from="input" unit="m" varName="_X0">32.0430</Xcoordinate>
+                <Ycoordinate from="input" unit="m" varName="_Y0">0.0000</Ycoordinate>
+                <Zcoordinate from="input" unit="m" varName="_Z0">1.7400</Zcoordinate>
+                <Planform_surface from="input" unit="m²" varName="_surface">21.5000</Planform_surface>
+                <Control_surface_extension from="input" unit="m²" varName="_surfaceCS">5.3750</Control_surface_extension>
+                <aspectRatio from="input" unit="" varName="_aspectRatio">1.8200</aspectRatio>
+                <taperRatio from="input" unit="" varName="_taperRatioEquivalent">0.3020</taperRatio>
+                <Wing_position_in_percent_of_fuselage_height from="input" unit="" varName="_positionRelativeToAttachment">1.0000</Wing_position_in_percent_of_fuselage_height>
+                <kinkSpanStation from="input" unit="" varName="_spanStationKink">1.0000</kinkSpanStation>
+                <Thickness_to_chord_ratio_root from="input" unit="" varName="_tc_root">0.1200</Thickness_to_chord_ratio_root>
+                <Thickness_to_chord_ratio_kink from="input" unit="" varName="_tc_kink">0.1200</Thickness_to_chord_ratio_kink>
+                <Thickness_to_chord_ratio_tip from="input" unit="" varName="_tc_tip">0.1200</Thickness_to_chord_ratio_tip>
+                <Root_chord_LE_extension from="input" unit="" varName="_extensionLERootChordLinPanel">0.000000</Root_chord_LE_extension>
+                <Root_chord_TE_extension from="input" unit="" varName="_extensionTERootChordLinPanel">0.000000</Root_chord_TE_extension>
+                <sweepc4 from="input" unit="°" varName="_sweepQuarterChordEq">33.9999</sweepc4>
+                <Incidence_relative_to_xBRF from="input" unit="°" varName="_iw">0.0000</Incidence_relative_to_xBRF>
+                <kinkStationTwist from="input" unit="°" varName="_twistKink">0.0000</kinkStationTwist>
+                <tipStationTwist from="input" unit="°" varName="_twistTip">0.0000</tipStationTwist>
+                <Dihedral_inner_panel from="input" unit="°" varName="_dihedralInnerPanel">0.0000</Dihedral_inner_panel>
+                <Dihedral_outer_panel from="input" unit="°" varName="_dihedralOuterPanel">0.0000</Dihedral_outer_panel>
+                <Surface_roughness from="input" unit="m" varName="_roughness">0.0000</Surface_roughness>
+                <Transition_point_in_percent_of_chord_upper_wing from="input" unit="" varName="_xTransitionU">0.1200</Transition_point_in_percent_of_chord_upper_wing>
+                <Transition_point_in_percent_of_chord_upper_wing from="input" unit="" varName="_xTransitionL">0.1200</Transition_point_in_percent_of_chord_upper_wing>
+                <Reference_mass from="input" unit="kg" varName="_massReference">463.0000</Reference_mass>
+                <Composite_correction_factor from="input" unit="">not_initialized</Composite_correction_factor>
+                <Mass_correction_factor from="input" unit="">not_initialized</Mass_correction_factor>
+                <sweepLE unit="°">44.0999</sweepLE>
+                <Mean_aerodynamic_chord_MAC unit="m">3.7663</Mean_aerodynamic_chord_MAC>
+                <Root_chord unit="m">5.2796</Root_chord>
+            </Equivalent_VTail_parameters>
+            <Actual_VTail_parameters>
+                <Mach_number_transonic_threshold from="input" unit="" varName="_machTransonicThreshold">0.5000</Mach_number_transonic_threshold>
+                <Planform_surface unit="m²">21.5000</Planform_surface>
+                <Exposed_surface unit="m²">9.2873</Exposed_surface>
+                <Wetted_surface unit="m²">44.0320</Wetted_surface>
+                <Exposed_Wetted_surface unit="m²">19.0205</Exposed_Wetted_surface>
+                <span unit="m">6.2554</span>
+                <taperRatio unit="">0.3020</taperRatio>
+                <semiSurfaceInnerPanel unit="m²">10.7500</semiSurfaceInnerPanel>
+                <aspectRatioInnerPanel unit="">1.8200</aspectRatioInnerPanel>
+                <semiSurfaceOuterPanel unit="m²">0.0000</semiSurfaceOuterPanel>
+                <aspectRatioOuterPanel unit="">1.8200</aspectRatioOuterPanel>
+                <taperRatioInnerPanel unit="">0.3020</taperRatioInnerPanel>
+                <taperRatioOuterPanel unit="">1.0000</taperRatioOuterPanel>
+                <sweepLEInnerPanel unit="°">44.0999</sweepLEInnerPanel>
+                <sweepc4InnerPanel unit="°">33.9999</sweepc4InnerPanel>
+                <sweepLEOuterPanel unit="°">44.0999</sweepLEOuterPanel>
+                <sweepc4OuterPanel unit="°">33.9999</sweepc4OuterPanel>
+                <rootChord unit="m">5.2796</rootChord>
+                <rootChordXle unit="m">0.0000</rootChordXle>
+                <kinkChord unit="m">1.5944</kinkChord>
+                <kinkChordXle unit="m">3.0309</kinkChordXle>
+                <tipChord unit="m">1.5944</tipChord>
+                <tipChordXle unit="m">3.0309</tipChordXle>
+                <Mean_aerodynamic_chord_MAC unit="m">3.7671</Mean_aerodynamic_chord_MAC>
+                <Mean_aerodynamic_chord_xLE_LRF unit="m">1.2440</Mean_aerodynamic_chord_xLE_LRF>
+                <Mean_aerodynamic_chord_yLE_LRF unit="m">1.2837</Mean_aerodynamic_chord_yLE_LRF>
+                <Mean_aerodynamic_chord_xLE_BRF unit="m">33.2870</Mean_aerodynamic_chord_xLE_BRF>
+                <Mean_aerodynamic_chord_yLE_BRF unit="m">1.2837</Mean_aerodynamic_chord_yLE_BRF>
+                <Mean_dihedral_angle unit="°">0.0000</Mean_dihedral_angle>
+                <AC_to_CG_distance unit=""/>
+                <AC_to_Wing_AC_distance unit="m">17.9043</AC_to_Wing_AC_distance>
+                <Volumetric_ratio unit="">0.0928</Volumetric_ratio>
+                <Mean_maximum_thickness>
+                    <Integral_mean unit="">0.2196</Integral_mean>
+                </Mean_maximum_thickness>
+                <Number_of_airfoils from="input" unit="" varName="_numberOfAirfoils">2</Number_of_airfoils>
+                <Airfoil_1 id="3099" level="3">
+                    <Family from="input" unit="" varName="_family">NACA63_209</Family>
+                    <Type from="input" unit="" varName="_type">SUPERCRITICAL</Type>
+                    <Airfoil_Geometry id="30990099" level="4">
+                        <Position_along_semispan unit="">0.000000</Position_along_semispan>
+                        <Twist_relative_to_root from="input" unit="°" varName="_twist">0.0000</Twist_relative_to_root>
+                        <Thickness_to_chord_ratio_max from="input" unit="" varName="_maximumThicknessOverChord">0.1500</Thickness_to_chord_ratio_max>
+                        <Xcoordinate from="input" unit="" varName="_xCoords">[1.0, 0.99372, 0.982766, 0.969978, 0.955648, 0.940249, 0.924212, 0.907834, 0.89128, 0.874637, 0.857947, 0.84123, 0.824498, 0.807755, 0.791005, 0.77425, 0.757492, 0.740731, 0.72397, 0.707209, 0.690451, 0.673695, 0.656944, 0.640199, 0.62346, 0.606731, 0.590011, 0.573303, 0.556607, 0.539927, 0.523262, 0.506616, 0.48999, 0.473385, 0.456805, 0.440251, 0.423726, 0.407233, 0.390775, 0.374354, 0.357976, 0.341643, 0.325361, 0.309135, 0.292972, 0.276878, 0.260863, 0.244936, 0.22911, 0.213401, 0.197828, 0.182416, 0.167201, 0.152227, 0.137561, 0.123289, 0.109532, 0.096442, 0.084194, 0.072956, 0.06285, 0.053918, 0.046123, 0.039362, 0.033509, 0.028432, 0.024011, 0.020146, 0.016754, 0.013769, 0.011142, 0.008834, 0.006819, 0.005076, 0.003597, 0.002376, 0.001412, 7.03E-4, 2.45E-4, 2.6E-5, 2.6E-5, 2.45E-4, 7.03E-4, 0.001412, 0.002376, 0.003597, 0.005076, 0.006819, 0.008834, 0.011142, 0.013769, 0.016754, 0.020146, 0.024011, 0.028432, 0.033509, 0.039363, 0.046123, 0.053919, 0.06285, 0.072956, 0.084194, 0.096442, 0.109532, 0.123289, 0.137561, 0.152228, 0.167201, 0.182417, 0.197828, 0.213401, 0.22911, 0.244936, 0.260863, 0.276879, 0.292972, 0.309136, 0.325361, 0.341643, 0.357976, 0.374355, 0.390775, 0.407233, 0.423727, 0.440251, 0.456805, 0.473386, 0.48999, 0.506616, 0.523263, 0.539927, 0.556608, 0.573303, 0.590011, 0.606731, 0.623461, 0.640199, 0.656944, 0.673695, 0.690451, 0.70721, 0.72397, 0.740731, 0.757492, 0.77425, 0.791005, 0.807755, 0.824498, 0.84123, 0.857947, 0.874637, 0.89128, 0.907834, 0.924213, 0.940249, 0.955649, 0.969978, 0.982766, 0.99372, 1.0]</Xcoordinate>
+                        <Zcoordinate from="input" unit="" varName="_zCoords">[0.00126, 0.002138, 0.003653, 0.005396, 0.007317, 0.009346, 0.011419, 0.013497, 0.015557, 0.017589, 0.019588, 0.021551, 0.023478, 0.025368, 0.027222, 0.029039, 0.030819, 0.032562, 0.034267, 0.035934, 0.037562, 0.039149, 0.040696, 0.0422, 0.043661, 0.045077, 0.046446, 0.047766, 0.049036, 0.050253, 0.051414, 0.052518, 0.053561, 0.05454, 0.055453, 0.056295, 0.057063, 0.057753, 0.058361, 0.058882, 0.059311, 0.059644, 0.059875, 0.059998, 0.060007, 0.059894, 0.059654, 0.059277, 0.058757, 0.058084, 0.057248, 0.056241, 0.055054, 0.053676, 0.052101, 0.050328, 0.04836, 0.046216, 0.043928, 0.041542, 0.039116, 0.036701, 0.034339, 0.032051, 0.029846, 0.027721, 0.025669, 0.023677, 0.021733, 0.019823, 0.017936, 0.016059, 0.014185, 0.012303, 0.010409, 0.008502, 0.006586, 0.00467, 0.002769, 9.09E-4, -9.09E-4, -0.002769, -0.00467, -0.006586, -0.008502, -0.010409, -0.012303, -0.014185, -0.016059, -0.017936, -0.019823, -0.021733, -0.023677, -0.025669, -0.027721, -0.029846, -0.032051, -0.034339, -0.036701, -0.039116, -0.041542, -0.043928, -0.046216, -0.04836, -0.050328, -0.052101, -0.053676, -0.055054, -0.056241, -0.057248, -0.058084, -0.058757, -0.059277, -0.059654, -0.059894, -0.060007, -0.059998, -0.059875, -0.059644, -0.059311, -0.058882, -0.058361, -0.057753, -0.057063, -0.056295, -0.055453, -0.05454, -0.053561, -0.052518, -0.051414, -0.050253, -0.049036, -0.047766, -0.046446, -0.045077, -0.043661, -0.0422, -0.040696, -0.039149, -0.037562, -0.035934, -0.034267, -0.032562, -0.030819, -0.029039, -0.027222, -0.025368, -0.023478, -0.021551, -0.019588, -0.017589, -0.015557, -0.013497, -0.011419, -0.009346, -0.007317, -0.005396, -0.003653, -0.002138, -0.00126]</Zcoordinate>
+                    </Airfoil_Geometry>
+                    <Airfoil_Aerodynamics id="30991099" level="4">
+                        <Alpha_zero_lift from="input" unit="°" varName="_alphaZeroLift">-2.5000</Alpha_zero_lift>
+                        <Alpha_end_linear from="input" unit="°" varName="_alphaStar">10.0000</Alpha_end_linear>
+                        <Alpha_stall from="input" unit="°" varName="_alphaStall">12.0000</Alpha_stall>
+                        <Cl_alpha from="input" unit="" varName="_clAlpha">6.1000</Cl_alpha>
+                        <Cd_min from="input" unit="" varName="_cdMin">0.0250</Cd_min>
+                        <Cl_at_Cdmin from="input" unit="" varName="_clAtCdMin">0.2000</Cl_at_Cdmin>
+                        <Cl_end_linear from="input" unit="" varName="_clStar">0.8000</Cl_end_linear>
+                        <Cl_max from="input" unit="" varName="_clMax">1.3000</Cl_max>
+                        <K_factor_drag from="input" unit="" varName="_kFactorDragPolar">0.0750</K_factor_drag>
+                        <Cm_alpha from="input" unit="" varName="_cmAlphaAC">0.000000</Cm_alpha>
+                        <Xac from="input" unit="" varName="_aerodynamicCenterX">0.2500</Xac>
+                        <CmAC from="input" unit="" varName="_cmAC">-0.070000</CmAC>
+                        <CmAC_at_stall from="input" unit="" varName="_cmACStall">-0.090000</CmAC_at_stall>
+                    </Airfoil_Aerodynamics>
+                </Airfoil_1>
+                <Airfoil_2 id="3299" level="3">
+                    <Family from="input" unit="" varName="_family">NACA63_209</Family>
+                    <Type from="input" unit="" varName="_type">SUPERCRITICAL</Type>
+                    <Airfoil_Geometry id="32990299" level="4">
+                        <Position_along_semispan unit="">6.2554</Position_along_semispan>
+                        <Twist_relative_to_root from="input" unit="°" varName="_twist">0.0000</Twist_relative_to_root>
+                        <Thickness_to_chord_ratio_max from="input" unit="" varName="_maximumThicknessOverChord">0.1500</Thickness_to_chord_ratio_max>
+                        <Xcoordinate from="input" unit="" varName="_xCoords">[1.0, 0.99372, 0.982766, 0.969978, 0.955648, 0.940249, 0.924212, 0.907834, 0.89128, 0.874637, 0.857947, 0.84123, 0.824498, 0.807755, 0.791005, 0.77425, 0.757492, 0.740731, 0.72397, 0.707209, 0.690451, 0.673695, 0.656944, 0.640199, 0.62346, 0.606731, 0.590011, 0.573303, 0.556607, 0.539927, 0.523262, 0.506616, 0.48999, 0.473385, 0.456805, 0.440251, 0.423726, 0.407233, 0.390775, 0.374354, 0.357976, 0.341643, 0.325361, 0.309135, 0.292972, 0.276878, 0.260863, 0.244936, 0.22911, 0.213401, 0.197828, 0.182416, 0.167201, 0.152227, 0.137561, 0.123289, 0.109532, 0.096442, 0.084194, 0.072956, 0.06285, 0.053918, 0.046123, 0.039362, 0.033509, 0.028432, 0.024011, 0.020146, 0.016754, 0.013769, 0.011142, 0.008834, 0.006819, 0.005076, 0.003597, 0.002376, 0.001412, 7.03E-4, 2.45E-4, 2.6E-5, 2.6E-5, 2.45E-4, 7.03E-4, 0.001412, 0.002376, 0.003597, 0.005076, 0.006819, 0.008834, 0.011142, 0.013769, 0.016754, 0.020146, 0.024011, 0.028432, 0.033509, 0.039363, 0.046123, 0.053919, 0.06285, 0.072956, 0.084194, 0.096442, 0.109532, 0.123289, 0.137561, 0.152228, 0.167201, 0.182417, 0.197828, 0.213401, 0.22911, 0.244936, 0.260863, 0.276879, 0.292972, 0.309136, 0.325361, 0.341643, 0.357976, 0.374355, 0.390775, 0.407233, 0.423727, 0.440251, 0.456805, 0.473386, 0.48999, 0.506616, 0.523263, 0.539927, 0.556608, 0.573303, 0.590011, 0.606731, 0.623461, 0.640199, 0.656944, 0.673695, 0.690451, 0.70721, 0.72397, 0.740731, 0.757492, 0.77425, 0.791005, 0.807755, 0.824498, 0.84123, 0.857947, 0.874637, 0.89128, 0.907834, 0.924213, 0.940249, 0.955649, 0.969978, 0.982766, 0.99372, 1.0]</Xcoordinate>
+                        <Zcoordinate from="input" unit="" varName="_zCoords">[0.00126, 0.002138, 0.003653, 0.005396, 0.007317, 0.009346, 0.011419, 0.013497, 0.015557, 0.017589, 0.019588, 0.021551, 0.023478, 0.025368, 0.027222, 0.029039, 0.030819, 0.032562, 0.034267, 0.035934, 0.037562, 0.039149, 0.040696, 0.0422, 0.043661, 0.045077, 0.046446, 0.047766, 0.049036, 0.050253, 0.051414, 0.052518, 0.053561, 0.05454, 0.055453, 0.056295, 0.057063, 0.057753, 0.058361, 0.058882, 0.059311, 0.059644, 0.059875, 0.059998, 0.060007, 0.059894, 0.059654, 0.059277, 0.058757, 0.058084, 0.057248, 0.056241, 0.055054, 0.053676, 0.052101, 0.050328, 0.04836, 0.046216, 0.043928, 0.041542, 0.039116, 0.036701, 0.034339, 0.032051, 0.029846, 0.027721, 0.025669, 0.023677, 0.021733, 0.019823, 0.017936, 0.016059, 0.014185, 0.012303, 0.010409, 0.008502, 0.006586, 0.00467, 0.002769, 9.09E-4, -9.09E-4, -0.002769, -0.00467, -0.006586, -0.008502, -0.010409, -0.012303, -0.014185, -0.016059, -0.017936, -0.019823, -0.021733, -0.023677, -0.025669, -0.027721, -0.029846, -0.032051, -0.034339, -0.036701, -0.039116, -0.041542, -0.043928, -0.046216, -0.04836, -0.050328, -0.052101, -0.053676, -0.055054, -0.056241, -0.057248, -0.058084, -0.058757, -0.059277, -0.059654, -0.059894, -0.060007, -0.059998, -0.059875, -0.059644, -0.059311, -0.058882, -0.058361, -0.057753, -0.057063, -0.056295, -0.055453, -0.05454, -0.053561, -0.052518, -0.051414, -0.050253, -0.049036, -0.047766, -0.046446, -0.045077, -0.043661, -0.0422, -0.040696, -0.039149, -0.037562, -0.035934, -0.034267, -0.032562, -0.030819, -0.029039, -0.027222, -0.025368, -0.023478, -0.021551, -0.019588, -0.017589, -0.015557, -0.013497, -0.011419, -0.009346, -0.007317, -0.005396, -0.003653, -0.002138, -0.00126]</Zcoordinate>
+                    </Airfoil_Geometry>
+                    <Airfoil_Aerodynamics id="32991299" level="4">
+                        <Alpha_zero_lift from="input" unit="°" varName="_alphaZeroLift">-2.5000</Alpha_zero_lift>
+                        <Alpha_end_linear from="input" unit="°" varName="_alphaStar">10.0000</Alpha_end_linear>
+                        <Alpha_stall from="input" unit="°" varName="_alphaStall">12.0000</Alpha_stall>
+                        <Cl_alpha from="input" unit="" varName="_clAlpha">6.1000</Cl_alpha>
+                        <Cd_min from="input" unit="" varName="_cdMin">0.0250</Cd_min>
+                        <Cl_at_Cdmin from="input" unit="" varName="_clAtCdMin">0.2000</Cl_at_Cdmin>
+                        <Cl_end_linear from="input" unit="" varName="_clStar">0.8000</Cl_end_linear>
+                        <Cl_max from="input" unit="" varName="_clMax">1.3000</Cl_max>
+                        <K_factor_drag from="input" unit="" varName="_kFactorDragPolar">0.0750</K_factor_drag>
+                        <Cm_alpha from="input" unit="" varName="_cmAlphaAC">0.000000</Cm_alpha>
+                        <Xac from="input" unit="" varName="_aerodynamicCenterX">0.2500</Xac>
+                        <CmAC from="input" unit="" varName="_cmAC">-0.070000</CmAC>
+                        <CmAC_at_stall from="input" unit="" varName="_cmACStall">-0.090000</CmAC_at_stall>
+                    </Airfoil_Aerodynamics>
+                </Airfoil_2>
+            </Actual_VTail_parameters>
+        </VTail>
+        <Nacelle id="7">
+            <Nacelle_parameters>
+                <Xcoordinate from="input" unit="m" varName="_X0">11.5740</Xcoordinate>
+                <Ycoordinate from="input" unit="m" varName="_Y0">5.7550</Ycoordinate>
+                <Zcoordinate from="input" unit="m" varName="_Z0">-2.0160</Zcoordinate>
+                <Lenght from="input" unit="m" varName="_length">4.5920</Lenght>
+                <Mean_diameter from="input" unit="m" varName="_diameterMean">1.4000</Mean_diameter>
+                <Inlet_diameter from="input" unit="m" varName="_diameterInlet">1.2000</Inlet_diameter>
+                <Outlet_diameter from="input" unit="m" varName="_diameterOutlet">0.2000</Outlet_diameter>
+                <Reference_mass from="input" unit="kg" varName="_massReference">600.0000</Reference_mass>
+                <Wetted_surface unit="m²">40.3933</Wetted_surface>
+                <FormFactor unit="">1.4424</FormFactor>
+            </Nacelle_parameters>
+        </Nacelle>
+        <Fuel_tank id="5">
+            <Fuel_tank_parameters>
+                <Xcoordinate from="input" unit="m" varName="_X0">12.5000</Xcoordinate>
+                <Ycoordinate from="input" unit="m" varName="_Y0">0.0000</Ycoordinate>
+                <Zcoordinate from="input" unit="m" varName="_Z0">0.0000</Zcoordinate>
+                <Fuel_density from="input" unit="(kg/m³)*0.001" varName="_fuelDensity">0.8040</Fuel_density>
+                <Fuel_volume from="input" unit="L" varName="_fuelVolume">24210.0000</Fuel_volume>
+                <Fuel_mass from="input" unit="kg" varName="_fuelMass">19464.8400</Fuel_mass>
+                <LE_spanwise_extension unit="m">12.7132</LE_spanwise_extension>
+                <TE_spanwise_extension unit="m">12.7132</TE_spanwise_extension>
+                <Chordwise_mean_extension unit="m">3.2313</Chordwise_mean_extension>
+                <Root_height unit="m">0.4920</Root_height>
+                <Tip_height unit="m">0.4920</Tip_height>
+                <LE_surface unit="m²">6.2544</LE_surface>
+                <TE_surface unit="m²">6.2544</TE_surface>
+                <Volume unit="m³">0.0000</Volume>
+            </Fuel_tank_parameters>
+        </Fuel_tank>
+        <PowerPlant id="8">
+            <Power_plant_parameters>
+                <Type from="input" unit="" varName="_engineType">TURBOFAN</Type>
+                <Xcoordinate from="input" unit="m" varName="_X0">0.0000</Xcoordinate>
+                <Ycoordinate from="input" unit="m" varName="_Y0">0.0000</Ycoordinate>
+                <Zcoordinate from="input" unit="m" varName="_Z0">0.0000</Zcoordinate>
+                <Number_of_engines from="input" unit="" varName="_engineNumber">2</Number_of_engines>
+                <Mounting_point from="input" unit="" varName="_position">WING</Mounting_point>
+                <Maximum_power_output from="input" unit="W" varName="_P0">1588677.8400</Maximum_power_output>
+                <Maximum_thrust from="input" unit="W·s/m" varName="_T0">118000.0000</Maximum_thrust>
+                <Maximum_total_power_output unit="W">3177355.6800</Maximum_total_power_output>
+                <Maximum_total_thrust unit="W·s/m">236000.0000</Maximum_total_thrust>
+                <Dry_engine_mass from="input" unit="kg" varName="_massDryEngineActual">2270.0000</Dry_engine_mass>
+                <Total_Reference_mass from="input" unit="kg" varName="_totalPowerPlantMassActual">7198.8000</Total_Reference_mass>
+            </Power_plant_parameters>
+        </PowerPlant>
+        <Systems id="9">
+            <Systems_data>
+                <Reference_mass from="input" unit="kg" varName="_massReference">4788.0000</Reference_mass>
+            </Systems_data>
+        </Systems>
+        <LandingGear id="6">
+            <Landing_gear_parameters>
+                <Xcoordinate from="input" unit="m" varName="_X0">5.0000</Xcoordinate>
+                <Ycoordinate from="input" unit="m" varName="_Y0">0.0000</Ycoordinate>
+                <Zcoordinate from="input" unit="m" varName="_Z0">0.0000</Zcoordinate>
+                <Mounting_point from="input" unit="">FUSELAGE</Mounting_point>
+                <Lenght from="input" unit="">not_initialized</Lenght>
+                <Reference_mass from="input" unit="kg" varName="_massReference">2275.0000</Reference_mass>
+            </Landing_gear_parameters>
+        </LandingGear>
+    </AIRCRAFT>
+    <ANALYSIS>
+        <Operating_Conditions>
+            <Static_Pressure unit="Pa">22699.9252</Static_Pressure>
+            <Dynamic_Pressure unit="Pa">9667.4442</Dynamic_Pressure>
+            <Stagnation_Pressure unit="Pa">33928.5925</Stagnation_Pressure>
+            <Cabin_to_outside_pressure_differential unit="Pa">56801.4793</Cabin_to_outside_pressure_differential>
+            <Density unit="kg/m³">0.3648</Density>
+            <Static_Temperature unit="K">216.7735</Static_Temperature>
+            <Stagnation_Temperature unit="K">243.1505</Stagnation_Temperature>
+            <Dynamic_Viscosity unit="Pa·s">0.0000</Dynamic_Viscosity>
+            <Equivalent_AirSpeed unit="m/s">125.6327</Equivalent_AirSpeed>
+            <Calibrated_AirSpeed unit="m/s">132.8522</Calibrated_AirSpeed>
+            <True_AirSpeed unit="m/s">230.2198</True_AirSpeed>
+        </Operating_Conditions>
+        <Whole_configuration_aerodynamics>
+            <Drag_Polar>
+                <OswaldFactor unit="">0.6993</OswaldFactor>
+                <K_Excrescences unit="">0.0777</K_Excrescences>
+                <CDTotalCurrent unit="">0.1375</CDTotalCurrent>
+                <CDRoughness unit="">0.001254</CDRoughness>
+                <CDCoolings unit="">0.001157</CDCoolings>
+                <CD0>
+                    <Fuselage unit="">0.008722</Fuselage>
+                    <Vertical_tail unit="">0.001034</Vertical_tail>
+                    <Wing unit="">0.006842</Wing>
+                    <Horizontal_tail unit="">0.001553</Horizontal_tail>
+                    <Nacelle unit="">0.002744</Nacelle>
+                    <All unit="">0.0233</All>
+                </CD0>
+                <CDWave unit="">[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 6.4E-7, 8.99E-6, 4.348E-5, 1.343E-4, 3.2339E-4, 6.6441E-4, 0.00123541, 0.00209446, 0.00333867, 0.0050689, 0.00739778, 0.01044966, 0.01436064, 0.01927858, 0.02536306, 0.03278543, 0.04172876, 0.05238789, 0.06496938, 0.07969157, 0.09678449, 0.0, 6.3E-7, 8.91E-6, 4.323E-5, 1.3372E-4, 3.2225E-4, 6.6247E-4, 0.00121972, 0.00207113, 0.00330555, 0.00502359, 0.0073376, 0.01037166, 0.01426162, 0.01915506]</CDWave>
+                <Maximum_efficiency_point>
+                    <Efficiency unit="">15.7105</Efficiency>
+                    <CD unit="">0.0418</CD>
+                    <CL unit="">0.6565</CL>
+                    <Drag unit="N">47233.1757</Drag>
+                    <Speed unit="m/s">225.0015</Speed>
+                    <Power unit="W">10627535.9727</Power>
+                </Maximum_efficiency_point>
+                <Minimum_power_required_point>
+                    <Efficiency unit="">13.6057</Efficiency>
+                    <CD unit="">0.0836</CD>
+                    <CL unit="">1.1372</CL>
+                    <Drag unit="N">47233.1757</Drag>
+                    <Speed unit="m/s">170.9642</Speed>
+                    <Power unit="W">9324415.9436</Power>
+                </Minimum_power_required_point>
+                <Maximum_range_point>
+                    <Efficiency unit="">13.6057</Efficiency>
+                    <CD unit="">0.0279</CD>
+                    <CL unit="">0.3791</CL>
+                    <Drag unit="N">54540.1734</Drag>
+                    <Speed unit="m/s">296.1186</Speed>
+                    <Power unit="W">16150362.1652</Power>
+                </Maximum_range_point>
+                <CD unit="">[0.02330523, 0.02379062, 0.02525316, 0.02771126, 0.03119504, 0.03574638, 0.04141891, 0.04827799, 0.05640074, 0.06587601, 0.07680442, 0.0892983, 0.10348175, 0.1194906, 0.13747245]</CD>
+                <CL unit="">[0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4]</CL>
+            </Drag_Polar>
+            <Static_stability>
+                <dEpsilonDAlpha unit="">0.2932</dEpsilonDAlpha>
+                <CLAlphaFixed unit="">7.1131</CLAlphaFixed>
+                <CMAlphaFixed unit="">NaN</CMAlphaFixed>
+                <CMCLFixed unit="">NaN</CMCLFixed>
+                <Neutral_point_xMRF unit="">0.9960</Neutral_point_xMRF>
+            </Static_stability>
+        </Whole_configuration_aerodynamics>
+        <Weights_Breakdown>
+            <Fuselage_mass unit="kg">8392.6667</Fuselage_mass>
+            <Wing_mass unit="kg">8519.0000</Wing_mass>
+            <HTail_mass unit="kg">619.5000</HTail_mass>
+            <VTail_mass unit="kg">459.0000</VTail_mass>
+            <Nacelle_mass unit="kg">753.0000</Nacelle_mass>
+            <Landing_gear_mass unit="kg">2076.0000</Landing_gear_mass>
+            <Structure_mass unit="kg">21572.1667</Structure_mass>
+            <Power_plant_mass unit="kg">7647.8716</Power_plant_mass>
+            <Systems_mass unit="kg">4447.7659</Systems_mass>
+            <Furnishings_and_Equipment_mass unit="kg">2891.0000</Furnishings_and_Equipment_mass>
+            <Manufacturer_empty_mass unit="kg">36558.8041</Manufacturer_empty_mass>
+            <Crew_mass unit="kg">535.6018</Crew_mass>
+            <Operating_Items_mass unit="kg">1292.5500</Operating_Items_mass>
+            <Operating_empty_mass unit="kg">38386.9560</Operating_empty_mass>
+            <Passengers_mass unit="kg">14850.0000</Passengers_mass>
+            <ZeroFuelMass unit="kg">53236.9560</ZeroFuelMass>
+        </Weights_Breakdown>
+        <Balance id="22">
+            <Xcg_structure_MAC unit="">-0.255364</Xcg_structure_MAC>
+            <Xcg_structure_BRF unit="m">14.1471</Xcg_structure_BRF>
+            <Xcg_structure_and_engines_MAC unit="">-1.050101</Xcg_structure_and_engines_MAC>
+            <Xcg_structure_and_engines_BRF unit="m">10.7231</Xcg_structure_and_engines_BRF>
+            <Xcg_MAC_MZFM unit="">NaN</Xcg_MAC_MZFM>
+            <Xcg_BRF_MZFM unit=""/>
+            <Xcg_MTOM_MAC unit="">NaN</Xcg_MTOM_MAC>
+            <Xcg_MTOM_BRF unit=""/>
+        </Balance>
+        <Performances_Analysis>
+            <Speeds>
+                <Dive_EAS unit="m/s">256.8468</Dive_EAS>
+                <Max_cruise_EAS unit="m/s">205.4774</Max_cruise_EAS>
+            </Speeds>
+            <Pressures>
+                <Maximum_dynamic_pressure unit="Pa">40406.7981</Maximum_dynamic_pressure>
+            </Pressures>
+        </Performances_Analysis>
+        <Configuration_Analysis>
+            <Number_of_crew_members unit="">7.0000</Number_of_crew_members>
+            <Furnishings_and_equipment_mass unit="kg">2891.0000</Furnishings_and_equipment_mass>
+            <Cabin_Center_of_Gravity_X unit=""/>
+            <Cabin_Center_of_Gravity_X_boarding_front_to_rear_window_seats unit="m">[12.90171877, 12.87370723, 12.85009457, 12.8308141, 12.81580046, 12.80498962, 12.79831881, 12.7957265, 12.79715238, 12.80253733, 12.81182336, 12.82495364, 12.84187242, 12.86252501, 12.8868578, 12.91481817, 12.94635453, 12.98141623, 13.01995359, 13.06191786, 13.1072612, 13.15593664, 13.2078981]</Cabin_Center_of_Gravity_X_boarding_front_to_rear_window_seats>
+            <Cabin_Center_of_Gravity_X_boarding_front_to_rear_aisle_seats unit="m">[13.17759199, 13.15126358, 13.12885859, 13.11032373, 13.09560668, 13.08465605, 13.07742135, 13.07385303, 13.07390238, 13.07752157, 13.08466359, 13.09528228, 13.10933226, 13.12676894, 13.14754851, 13.17162789, 13.19896477, 13.22951754, 13.26324529, 13.30010781, 13.34006556, 13.38307968, 13.42911195]</Cabin_Center_of_Gravity_X_boarding_front_to_rear_aisle_seats>
+            <Cabin_Center_of_Gravity_X_boarding_front_to_rear_other_seats unit="">[]</Cabin_Center_of_Gravity_X_boarding_front_to_rear_other_seats>
+            <Cabin_Center_of_Gravity_X_boarding_rear_to_front_window_seats unit="m">[12.9931627, 13.04739074, 13.09695357, 13.14192193, 13.18236511, 13.21835104, 13.2499463, 13.27721611, 13.30022446, 13.31903404, 13.33370634, 13.34430165, 13.35087909, 13.35349665, 13.3522112, 13.34707853, 13.33815338, 13.32548944, 13.3091394, 13.28915497, 13.2655869, 13.23848498, 13.2078981]</Cabin_Center_of_Gravity_X_boarding_rear_to_front_window_seats>
+            <Cabin_Center_of_Gravity_X_boarding_rear_to_front_aisle_seats unit="m">[13.25938256, 13.30669581, 13.34989476, 13.38903528, 13.42417226, 13.45535958, 13.48265017, 13.50609602, 13.52574819, 13.54165684, 13.55387126, 13.56243987, 13.56741026, 13.56882917, 13.56674257, 13.5611956, 13.55223265, 13.53989736, 13.52423262, 13.5052806, 13.48308275, 13.45767983, 13.42911195]</Cabin_Center_of_Gravity_X_boarding_rear_to_front_aisle_seats>
+            <Cabin_Center_of_Gravity_X_boarding_rear_to_front_other_seats unit="">[]</Cabin_Center_of_Gravity_X_boarding_rear_to_front_other_seats>
+        </Configuration_Analysis>
+        <Fuselage_Analysis>
+            <Geometry>
+                <Overall_Equivalent_diameter_GM unit="m">3.4112</Overall_Equivalent_diameter_GM>
+                <Cylinder_Equivalent_diameter_GM unit="m">4.0439</Cylinder_Equivalent_diameter_GM>
+                <Fineness_Ratio unit="">9.2906</Fineness_Ratio>
+                <Wetted_surface unit="">412.3365</Wetted_surface>
+                <Form_Factor unit="">1.0980</Form_Factor>
+            </Geometry>
+            <Weights>
+                <Reference_mass unit="kg">8938.0000</Reference_mass>
+                <Mass_correction_factor unit="">1.0000</Mass_correction_factor>
+                <Weight_estimation_methods_comparison>
+                    <Raymer unit="kg">7021.0000</Raymer>
+                    <Percent_error unit="">-21.447751</Percent_error>
+                    <Torenbeek_1976 unit="kg">9448.0000</Torenbeek_1976>
+                    <Percent_error unit="">5.7060</Percent_error>
+                    <Torenbeek_2013 unit="kg">8709.0000</Torenbeek_2013>
+                    <Percent_error unit="">-2.562094</Percent_error>
+                </Weight_estimation_methods_comparison>
+                <Estimated_mass unit="kg">8392.6667</Estimated_mass>
+            </Weights>
+            <Balance>
+                <Xcg_estimation_method_comparison>
+                    <Sforza unit="m">15.7900</Sforza>
+                    <Percent_error unit="">-6.604215</Percent_error>
+                    <Torenbeek_1982 unit="m">16.3429</Torenbeek_1982>
+                    <Percent_error unit="">-3.333333</Percent_error>
+                </Xcg_estimation_method_comparison>
+                <Xcg_LRF unit="m">16.0665</Xcg_LRF>
+                <Ycg_LRF unit="m">0.0000</Ycg_LRF>
+                <Zcg_LRF unit="m">0.0000</Zcg_LRF>
+                <Xcg_BRF unit="m">16.0665</Xcg_BRF>
+                <Ycg_BRF unit="m">0.0000</Ycg_BRF>
+                <Zcg_BRF unit="m">0.0000</Zcg_BRF>
+            </Balance>
+            <Aerodynamics>
+                <BaseDiameter unit="">0.0912</BaseDiameter>
+                <FrictionCoefficient_Cf unit="">0.001834</FrictionCoefficient_Cf>
+                <Cd0Parasite unit="">0.006783</Cd0Parasite>
+                <Cd0Base unit="">0.000002</Cd0Base>
+                <Cd0Upsweep unit="">0.000602</Cd0Upsweep>
+                <Cd0Windshield unit="">0.000808</Cd0Windshield>
+                <Cd0 unit="">0.008722</Cd0>
+                <Cm0>
+                    <Multhopp unit="">-0.000530</Multhopp>
+                </Cm0>
+                <CmAlpha>
+                    <Gilruth unit="">0.4820</Gilruth>
+                </CmAlpha>
+                <CmCL>
+                    <Gilruth unit="">0.0773</Gilruth>
+                </CmCL>
+            </Aerodynamics>
+        </Fuselage_Analysis>
+        <Fuselage_Analysis/>
+        <Wing_Analysis>
+            <Weights>
+                <Reference_mass unit="kg">8801.0000</Reference_mass>
+                <Composite_correction_factor unit="">0.000000</Composite_correction_factor>
+                <Mass_correction_factor unit="">1.0000</Mass_correction_factor>
+                <Weight_estimation_method_comparison>
+                    <Jenkinson unit="kg">8519.0000</Jenkinson>
+                    <Percent_error unit="">-3.204181</Percent_error>
+                    <Kroo unit="">not_initialized</Kroo>
+                    <Percent_error unit="">not_initialized</Percent_error>
+                    <Torenbeek_2013 unit="">not_initialized</Torenbeek_2013>
+                    <Percent_error unit="">not_initialized</Percent_error>
+                </Weight_estimation_method_comparison>
+                <Estimated_mass unit="kg">8519.0000</Estimated_mass>
+            </Weights>
+            <Balance>
+                <Xcg_estimation_method_comparison>
+                    <Sforza unit="m">5.8750</Sforza>
+                    <Percent_error unit="">107.6375</Percent_error>
+                    <Torenbeek_1982 unit="m">3.6926</Torenbeek_1982>
+                    <Percent_error unit="">30.5077</Percent_error>
+                </Xcg_estimation_method_comparison>
+                <Ycg_estimation_method_comparison>
+                    <Sforza unit="m">11.0032</Sforza>
+                    <Percent_error unit="">62.2807</Percent_error>
+                    <Torenbeek_1982 unit="m">5.9328</Torenbeek_1982>
+                    <Percent_error unit="">-12.500000</Percent_error>
+                </Ycg_estimation_method_comparison>
+                <Xcg_LRF unit="m">0.0000</Xcg_LRF>
+                <Ycg_LRF_half_wing unit="m">5.9328</Ycg_LRF_half_wing>
+                <Zcg_LRF unit="m">0.0000</Zcg_LRF>
+                <Xcg_BRF unit="m">11.8571</Xcg_BRF>
+                <Ycg_BRF_half_wing unit="m">5.9328</Ycg_BRF_half_wing>
+                <Zcg_BRF unit="m">-0.7180</Zcg_BRF>
+            </Balance>
+            <Aerodynamics>
+                <Aerodynamic_center_x_coordinate_MRF>
+                    <Quarter unit="m">1.0771</Quarter>
+                    <Deyoung_harper unit="m">1.3004</Deyoung_harper>
+                </Aerodynamic_center_x_coordinate_MRF>
+                <Aerodynamic_center_x_coordinate_LRF>
+                    <Quarter unit="m">4.4673</Quarter>
+                    <Deyoung_harper unit="m">4.6907</Deyoung_harper>
+                </Aerodynamic_center_x_coordinate_LRF>
+                <Critical_Mach_number>
+                    <Korn_mason unit="">0.6041</Korn_mason>
+                </Critical_Mach_number>
+                <FrictionCoefficient_Cf unit="">0.002201</FrictionCoefficient_Cf>
+                <CompressibilityFactor unit="">1.4138</CompressibilityFactor>
+                <FormFactor unit="">1.1636</FormFactor>
+                <Cd0Parasite unit="">0.004132</Cd0Parasite>
+                <CdWingFuselageInterference unit="">0.002235</CdWingFuselageInterference>
+                <CdWingNacelleInterference unit="">0.000053</CdWingNacelleInterference>
+                <CdGaps unit="">0.000101</CdGaps>
+                <CdWaveAtCurrentCL>
+                    <Lock_korn unit="">0.0192</Lock_korn>
+                </CdWaveAtCurrentCL>
+                <Cd0 unit="">0.006842</Cd0>
+                <Current_lift_coefficient unit="">0.4500</Current_lift_coefficient>
+                <Alpha_zero_lift>
+                    <Integral_mean_2d unit="°">-2.2900</Integral_mean_2d>
+                    <Integral_mean_3d unit="°">-0.6789</Integral_mean_3d>
+                </Alpha_zero_lift>
+                <CL_alpha>
+                    <Anderson_compressible_subsonic unit="">6.2355</Anderson_compressible_subsonic>
+                    <Integral_mean_2d unit="">6.0999</Integral_mean_2d>
+                    <Polhamus unit="">0.000000</Polhamus>
+                </CL_alpha>
+                <Maximum_lift_coefficient>
+                    <Nasa_blackwell unit="">1.1566</Nasa_blackwell>
+                </Maximum_lift_coefficient>
+                <CL_basic_along_span unit="">[-9.7125E-4, -0.00311715, -0.00740894]</CL_basic_along_span>
+                <CMac>
+                    <Additional unit="">-0.076228</Additional>
+                    <Basic unit="">0.001355</Basic>
+                    <Total unit="">-0.074874</Total>
+                </CMac>
+                <CMalpha>
+                    <Anderson_compressible_subsonic unit="">NaN</Anderson_compressible_subsonic>
+                    <Polhamus unit="">NaN</Polhamus>
+                </CMalpha>
+                <Alpha unit="°">[-2.0, 0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0]</Alpha>
+                <CLvsAlpha_curve>
+                    <Linear unit="">[-0.14377334, 0.07388599, 0.29154532, 0.50920465, 0.72686398, 0.94452332, 1.16218265, 1.37984198]</Linear>
+                    <Nasa_blackwell unit="">[-0.14398709, 0.07278444, 0.28955596, 0.50632749, 0.72309901, 0.93987054, 1.15664206, 1.37341358]</Nasa_blackwell>
+                </CLvsAlpha_curve>
+                <Non_dimensional_stations unit="">[0.0, 0.03448276, 0.06896552, 0.10344828, 0.13793103, 0.17241379, 0.20689655, 0.24137931, 0.27586207, 0.31034483, 0.34482759, 0.37931034, 0.4137931, 0.44827586, 0.48275862, 0.51724138, 0.55172414, 0.5862069, 0.62068966, 0.65517241, 0.68965517, 0.72413793, 0.75862069, 0.79310345, 0.82758621, 0.86206897, 0.89655172, 0.93103448, 0.96551724, 1.0]</Non_dimensional_stations>
+                <Elliptical_load_distribution unit="">[2.29846575, 2.29709883, 2.2929932, 2.2861341, 2.27649663, 2.26404533, 2.24873344, 2.23050206, 2.20927891, 2.18497682, 2.15749174, 2.12670027, 2.09245645, 2.05458766, 2.01288932, 1.96711792, 1.91698172, 1.8621282, 1.80212665, 1.7364435, 1.66440623, 1.58514879, 1.49752522, 1.39996551, 1.29021764, 1.16484171, 1.01808024, 0.8387819, 0.59838055, 7.0E-8]</Elliptical_load_distribution>
+                <Actual_load_distribution>
+                    <Nasa_blackwell>
+                        <Alpha unit="°">-2.0000</Alpha>
+                        <Load_at_Alpha_-0.034906585039886584 unit="">[-0.43396457, -0.43473106, -0.43664455, -0.43919507, -0.44215524, -0.44537957, -0.4487647, -0.45223379, -0.455729, -0.45920758, -0.46264023, -0.46601092, -0.46931842, -0.47257972, -0.47583631, -0.47916583, -0.48270507, -0.48671442, -0.49164893, -0.49846251, -0.50676881, -0.51589041, -0.52546769, -0.53527158, -0.54512736, -0.55488856, -0.56442643, -0.57362907, -0.58239125, -0.59061208, -0.59819249, -0.60503272, -0.61102984, -0.61607491, -0.62004959, -0.6228218, -0.6242399, -0.62412474, -0.62225835, -0.61836751, -0.61209914, -0.60298244, -0.59036869, -0.57333173, -0.55049538, -0.51971506, -0.47743411, -0.41716124, -0.3243809, 0.0]</Load_at_Alpha_-0.034906585039886584>
+                        <Alpha unit="°">0.0000</Alpha>
+                        <Load_at_Alpha_0.0 unit="">[0.61686651, 0.6158576, 0.6130394, 0.60869688, 0.60297417, 0.59597595, 0.58778652, 0.57847706, 0.56810909, 0.55673628, 0.54440554, 0.53115749, 0.51702673, 0.50204172, 0.48622442, 0.46958958, 0.45214397, 0.43389387, 0.41479187, 0.39434355, 0.3730219, 0.35108549, 0.32869161, 0.30596697, 0.28302053, 0.25994941, 0.23684532, 0.21379256, 0.1908699, 0.16815296, 0.14571519, 0.12362884, 0.10196586, 0.0807989, 0.06020257, 0.04025482, 0.02103887, 0.00264572, -0.01482228, -0.03124643, -0.04648415, -0.06035757, -0.07263555, -0.0830042, -0.09101612, -0.09599771, -0.09686388, -0.09168646, -0.07628464, 0.0]</Load_at_Alpha_0.0>
+                        <Alpha unit="°">2.0000</Alpha>
+                        <Load_at_Alpha_0.034906585039886584 unit="">[1.6676976, 1.66644625, 1.66272335, 1.65658882, 1.64810358, 1.63733147, 1.62433773, 1.60918791, 1.59194717, 1.57268015, 1.5514513, 1.5283259, 1.50337188, 1.47666315, 1.44828514, 1.41834499, 1.38699301, 1.35450216, 1.32123266, 1.28714961, 1.25281261, 1.2180614, 1.18285092, 1.14720551, 1.11116841, 1.07478737, 1.03811706, 1.00121419, 0.96413105, 0.926918, 0.88962288, 0.85229041, 0.81496155, 0.77767271, 0.74045473, 0.70333144, 0.66631764, 0.62941619, 0.59261379, 0.55587464, 0.51913084, 0.4822673, 0.44509759, 0.40732333, 0.36846314, 0.32771964, 0.28370634, 0.23378833, 0.17181162, 0.0]</Load_at_Alpha_0.034906585039886584>
+                        <Alpha unit="°">4.0000</Alpha>
+                        <Load_at_Alpha_0.06981317007977317 unit="">[2.71852868, 2.71703491, 2.71240731, 2.70448076, 2.69323299, 2.67868699, 2.66088895, 2.63989876, 2.61578525, 2.58862401, 2.55849706, 2.5254943, 2.48971704, 2.45128459, 2.41034587, 2.3671004, 2.32184204, 2.27511044, 2.22767345, 2.17995567, 2.13260332, 2.0850373, 2.03701022, 1.98844405, 1.9393163, 1.88962534, 1.83938881, 1.78863583, 1.73739219, 1.68568304, 1.63353057, 1.58095198, 1.52795724, 1.47454652, 1.42070689, 1.36640806, 1.31159641, 1.25618666, 1.20004986, 1.14299572, 1.08474583, 1.02489217, 0.96283073, 0.89765085, 0.8279424, 0.75143699, 0.66427657, 0.55926311, 0.41990788, 0.0]</Load_at_Alpha_0.06981317007977317>
+                        <Alpha unit="°">6.0000</Alpha>
+                        <Load_at_Alpha_0.10471975511965975 unit="">[3.76935976, 3.76762357, 3.76209126, 3.75237271, 3.7383624, 3.72004251, 3.69744016, 3.67060961, 3.63962334, 3.60456788, 3.56554283, 3.52266271, 3.47606219, 3.42590603, 3.3724066, 3.31585582, 3.25669108, 3.19571873, 3.13411425, 3.07276174, 3.01239403, 2.9520132, 2.89116953, 2.82968259, 2.76746419, 2.70446331, 2.64066055, 2.57605746, 2.51065334, 2.44444808, 2.37743826, 2.30961355, 2.24095294, 2.17142033, 2.10095905, 2.02948469, 1.95687518, 1.88295712, 1.80748593, 1.7301168, 1.65036081, 1.56751704, 1.48056387, 1.38797838, 1.28742167, 1.17515434, 1.04484679, 0.88473789, 0.66800415, 0.0]</Load_at_Alpha_0.10471975511965975>
+                        <Alpha unit="°">8.0000</Alpha>
+                        <Load_at_Alpha_0.13962634015954634 unit="">[4.82019085, 4.81821222, 4.81177521, 4.80026465, 4.78349181, 4.76139803, 4.73399138, 4.70132046, 4.66346142, 4.62051174, 4.57258859, 4.51983111, 4.46240734, 4.40052746, 4.33446733, 4.26461123, 4.19154012, 4.11632702, 4.04055504, 3.9655678, 3.89218473, 3.81898911, 3.74532883, 3.67092113, 3.59561208, 3.51930127, 3.4419323, 3.36347909, 3.28391448, 3.20321312, 3.12134594, 3.03827512, 2.95394863, 2.86829413, 2.78121122, 2.69256131, 2.60215395, 2.50972759, 2.41492201, 2.31723788, 2.2159758, 2.11014191, 1.99829701, 1.87830591, 1.74690093, 1.59887169, 1.42541702, 1.21021267, 0.91610041, 0.0]</Load_at_Alpha_0.13962634015954634>
+                        <Alpha unit="°">10.0000</Alpha>
+                        <Load_at_Alpha_0.17453292519943292 unit="">[5.87102193, 5.86880088, 5.86145916, 5.84815659, 5.82862122, 5.80275355, 5.77054259, 5.73203131, 5.6872995, 5.63645561, 5.57963435, 5.51699952, 5.4487525, 5.3751489, 5.29652805, 5.21336664, 5.12638915, 5.03693531, 4.94699584, 4.85837386, 4.77197544, 4.68596501, 4.59948814, 4.51215967, 4.42375996, 4.33413924, 4.24320404, 4.15090073, 4.05717563, 3.96197816, 3.86525363, 3.76693668, 3.66694432, 3.56516794, 3.46146338, 3.35563793, 3.24743272, 3.13649805, 3.02235808, 2.90435895, 2.78159079, 2.65276678, 2.51603015, 2.36863344, 2.20638019, 2.02258904, 1.80598724, 1.53568746, 1.16419667, 0.0]</Load_at_Alpha_0.17453292519943292>
+                        <Alpha unit="°">12.0000</Alpha>
+                        <Load_at_Alpha_0.2094395102393195 unit="">[6.92185302, 6.91938954, 6.91114312, 6.89604854, 6.87375063, 6.84410907, 6.80709381, 6.76274216, 6.71113759, 6.65239947, 6.58668012, 6.51416792, 6.43509765, 6.34977034, 6.25858878, 6.16212205, 6.06123819, 5.95754359, 5.85343663, 5.75117992, 5.65176615, 5.55294091, 5.45364744, 5.35339821, 5.25190785, 5.14897721, 5.04447579, 4.93832236, 4.83043678, 4.7207432, 4.60916132, 4.49559825, 4.37994002, 4.26204175, 4.14171554, 4.01871455, 3.8927115, 3.76326852, 3.62979415, 3.49148003, 3.34720577, 3.19539165, 3.03376329, 2.85896097, 2.66585945, 2.44630639, 2.18655747, 1.86116224, 1.41229293, 0.0]</Load_at_Alpha_0.2094395102393195>
+                    </Nasa_blackwell>
+                </Actual_load_distribution>
+                <Lift_coefficient_distribution>
+                    <Nasa_blackwell>
+                        <Alpha unit="°">-2.0000</Alpha>
+                        <Cl_at_Alpha_-0.034906585039886584 unit="">[-0.06214536, -0.06311915, -0.06514591, -0.06738507, -0.0698194, -0.07244288, -0.07525578, -0.078263, -0.08147345, -0.08490007, -0.08856018, -0.09247629, -0.09667737, -0.10120088, -0.10609591, -0.11142839, -0.11729048, -0.1236207, -0.13010328, -0.13614695, -0.14147521, -0.14711406, -0.15313279, -0.15948882, -0.16615214, -0.17310201, -0.18031835, -0.18778092, -0.19547304, -0.2033778, -0.21147712, -0.2197507, -0.22817476, -0.23672044, -0.24535172, -0.25402251, -0.26267261, -0.27122195, -0.27956208, -0.28754354, -0.29495649, -0.30150027, -0.30673414, -0.30999449, -0.31024947, -0.30582811, -0.2938713, -0.26904681, -0.21940456, 0.0]</Cl_at_Alpha_-0.034906585039886584>
+                        <Alpha unit="°">0.0000</Alpha>
+                        <Cl_at_Alpha_0.0 unit="">[0.08833761, 0.08941331, 0.09145682, 0.09338244, 0.09520257, 0.09692469, 0.09855382, 0.10009336, 0.10154542, 0.10291095, 0.10418976, 0.10538035, 0.10647979, 0.10748334, 0.10838405, 0.1091721, 0.10983397, 0.11017438, 0.10973744, 0.10768796, 0.10412415, 0.10010658, 0.09577964, 0.09116022, 0.0862614, 0.08109133, 0.07565938, 0.06997622, 0.06404927, 0.05788561, 0.05149232, 0.04487682, 0.03804725, 0.03101297, 0.02378522, 0.01637801, 0.00880934, 0.00110298, -0.00670898, -0.01458231, -0.02245476, -0.03023699, -0.03779781, -0.0449396, -0.05135538, -0.05654947, -0.05967833, -0.0591837, -0.05163728, 0.0]</Cl_at_Alpha_0.0>
+                        <Alpha unit="°">2.0000</Alpha>
+                        <Cl_at_Alpha_0.034906585039886584 unit="">[0.23882057, 0.24194576, 0.24805956, 0.25414995, 0.26022453, 0.26629225, 0.27236342, 0.27844972, 0.28456429, 0.29072198, 0.2969397, 0.30323699, 0.30963694, 0.31616755, 0.322864, 0.32977259, 0.33695842, 0.34396947, 0.34957817, 0.35152287, 0.34972352, 0.34732722, 0.34469207, 0.34180926, 0.33867494, 0.33528467, 0.33163711, 0.32773337, 0.32357158, 0.31914902, 0.31446177, 0.30950435, 0.30426926, 0.29874638, 0.29292216, 0.28677853, 0.28029129, 0.27342791, 0.26614411, 0.25837892, 0.25004697, 0.2410263, 0.23113852, 0.22011528, 0.2075387, 0.19272917, 0.17451465, 0.15067941, 0.11612999, 0.0]</Cl_at_Alpha_0.034906585039886584>
+                        <Alpha unit="°">4.0000</Alpha>
+                        <Cl_at_Alpha_0.06981317007977317 unit="">[0.38930354, 0.39447822, 0.40466229, 0.41491746, 0.42524649, 0.43565981, 0.44617302, 0.45680608, 0.46758316, 0.478533, 0.48968964, 0.50109364, 0.5127941, 0.52485176, 0.53734396, 0.55037308, 0.56408287, 0.57776456, 0.5894189, 0.59535779, 0.59532288, 0.59454786, 0.5936045, 0.59245829, 0.59108848, 0.58947801, 0.58761483, 0.58549051, 0.58309389, 0.58041243, 0.57743121, 0.57413188, 0.57049127, 0.56647979, 0.5620591, 0.55717904, 0.55177325, 0.54575284, 0.5389972, 0.53134015, 0.5225487, 0.51228958, 0.50007485, 0.48517017, 0.46643279, 0.44200781, 0.40870762, 0.36054252, 0.28389726, 0.0]</Cl_at_Alpha_0.06981317007977317>
+                        <Alpha unit="°">6.0000</Alpha>
+                        <Cl_at_Alpha_0.10471975511965975 unit="">[0.5397865, 0.54701067, 0.56126503, 0.57568497, 0.59026846, 0.60502738, 0.61998262, 0.63516244, 0.65060203, 0.66634403, 0.68243958, 0.69895028, 0.71595126, 0.73353598, 0.75182391, 0.77097357, 0.79120732, 0.81155964, 0.82925963, 0.8391927, 0.84092224, 0.8417685, 0.84251693, 0.84310733, 0.84350202, 0.84367135, 0.84359256, 0.84324766, 0.8426162, 0.84167584, 0.84040066, 0.83875941, 0.83671329, 0.8342132, 0.83119604, 0.82757956, 0.8232552, 0.81807776, 0.81185029, 0.80430139, 0.79505043, 0.78355286, 0.76901118, 0.75022506, 0.72532687, 0.69128645, 0.64290059, 0.57040564, 0.45166453, 0.0]</Cl_at_Alpha_0.10471975511965975>
+                        <Alpha unit="°">8.0000</Alpha>
+                        <Cl_at_Alpha_0.13962634015954634 unit="">[0.69026947, 0.69954313, 0.71786776, 0.73645248, 0.75529042, 0.77439494, 0.79379223, 0.81351879, 0.8336209, 0.85415505, 0.87518952, 0.89680692, 0.91910842, 0.94222019, 0.96630387, 0.99157406, 1.01833177, 1.04535473, 1.06910036, 1.08302761, 1.0865216, 1.08898914, 1.09142936, 1.09375637, 1.09591556, 1.09786469, 1.09957029, 1.1010048, 1.10213851, 1.10293924, 1.10337011, 1.10338693, 1.1029353, 1.10194661, 1.10033298, 1.09798008, 1.09473715, 1.09040269, 1.08470339, 1.07726262, 1.06755216, 1.05481614, 1.03794751, 1.01527994, 0.98422096, 0.94056509, 0.87709356, 0.78026875, 0.6194318, 0.0]</Cl_at_Alpha_0.13962634015954634>
+                        <Alpha unit="°">10.0000</Alpha>
+                        <Cl_at_Alpha_0.17453292519943292 unit="">[0.84075243, 0.85207559, 0.8744705, 0.89721999, 0.92031238, 0.9437625, 0.96760183, 0.99187515, 1.01663977, 1.04196608, 1.06793946, 1.09466356, 1.12226558, 1.15090441, 1.18078382, 1.21217455, 1.24545622, 1.27914981, 1.30894109, 1.32686253, 1.33212096, 1.33620978, 1.3403418, 1.34440541, 1.3483291, 1.35205803, 1.35554802, 1.35876195, 1.36166082, 1.36420265, 1.36633955, 1.36801446, 1.36915731, 1.36968002, 1.36946992, 1.36838059, 1.3662191, 1.36272762, 1.35755648, 1.35022385, 1.34005389, 1.32607942, 1.30688383, 1.28033483, 1.24311504, 1.18984372, 1.11128653, 0.99013186, 0.78719907, 0.0]</Cl_at_Alpha_0.17453292519943292>
+                        <Alpha unit="°">12.0000</Alpha>
+                        <Cl_at_Alpha_0.2094395102393195 unit="">[0.9912354, 1.00460804, 1.03107323, 1.0579875, 1.08533435, 1.11313007, 1.14141143, 1.17023151, 1.19965864, 1.2297771, 1.2606894, 1.29252021, 1.32542274, 1.35958862, 1.39526378, 1.43277504, 1.47258066, 1.5129449, 1.54878182, 1.57069744, 1.57772032, 1.58343042, 1.58925423, 1.59505444, 1.60074264, 1.60625137, 1.61152575, 1.61651909, 1.62118313, 1.62546606, 1.629309, 1.63264199, 1.63537932, 1.63741343, 1.63860686, 1.63878111, 1.63770105, 1.63505255, 1.63040957, 1.62318508, 1.61255562, 1.59734271, 1.57582016, 1.54538971, 1.50200912, 1.43912236, 1.34547951, 1.19999497, 0.95496634, 0.0]</Cl_at_Alpha_0.2094395102393195>
+                    </Nasa_blackwell>
+                </Lift_coefficient_distribution>
+                <Total_lift_coefficient>
+                    <Nasa_blackwell>
+                        <Alpha unit="">[-0.03490659, 0.0, 0.03490659, 0.06981317, 0.10471976, 0.13962634, 0.17453293, 0.20943951]</Alpha>
+                        <CL unit="">[-0.14398709, 0.07278444, 0.28955596, 0.50632749, 0.72309901, 0.93987054, 1.15664206, 1.37341358]</CL>
+                    </Nasa_blackwell>
+                    <Anderson_compressible_subsonic>
+                        <Alpha unit="">[-0.03490659, 0.0, 0.03490659, 0.06981317, 0.10471976, 0.13962634, 0.17453293, 0.20943951]</Alpha>
+                        <CL unit="">[-0.14377334, 0.07388599, 0.29154532, 0.50920465, 0.72686398, 0.94452332, 1.16218265, 1.37984198]</CL>
+                    </Anderson_compressible_subsonic>
+                </Total_lift_coefficient>
+            </Aerodynamics>
+        </Wing_Analysis>
+        <Fuselage_Analysis/>
+        <HTail_Analysis>
+            <Weights>
+                <Reference_mass unit="kg">625.0000</Reference_mass>
+                <Composite_correction_factor unit="">not_initialized</Composite_correction_factor>
+                <Mass_correction_factor unit="">not_initialized</Mass_correction_factor>
+                <Weight_estimation_method_comparison>
+                    <Jenkinson unit="kg">682.0000</Jenkinson>
+                    <Percent_error unit="">9.1200</Percent_error>
+                    <Kroo unit="kg">700.0000</Kroo>
+                    <Percent_error unit="">12.0000</Percent_error>
+                    <Nicolai_2013 unit="kg">518.0000</Nicolai_2013>
+                    <Percent_error unit="">-17.120000</Percent_error>
+                    <Raymer unit="kg">578.0000</Raymer>
+                    <Percent_error unit="">-7.520000</Percent_error>
+                </Weight_estimation_method_comparison>
+                <Estimated_mass unit="kg">619.5000</Estimated_mass>
+            </Weights>
+            <Balance>
+                <Xcg_estimation_method_comparison>
+                    <Torenbeek_1982 unit="m">1.9902</Torenbeek_1982>
+                    <Percent_error unit="">25.4875</Percent_error>
+                </Xcg_estimation_method_comparison>
+                <Ycg_estimation_method_comparison>
+                    <Torenbeek_1982 unit="m">2.3655</Torenbeek_1982>
+                    <Percent_error unit="">-5.000000</Percent_error>
+                </Ycg_estimation_method_comparison>
+                <Xcg_LRF unit="m">1.9902</Xcg_LRF>
+                <Ycg_LRF_half_wing unit="m">2.3655</Ycg_LRF_half_wing>
+                <Zcg_LRF unit="m">0.0000</Zcg_LRF>
+                <Xcg_BRF unit="m">37.1902</Xcg_BRF>
+                <Ycg_BRF_half_wing unit="m">2.3655</Ycg_BRF_half_wing>
+                <Zcg_BRF unit="m">0.8930</Zcg_BRF>
+            </Balance>
+            <Aerodynamics>
+                <Aerodynamic_center_x_coordinate_MRF>
+                    <Quarter unit="m">0.6955</Quarter>
+                    <Deyoung_harper unit="m">0.7756</Deyoung_harper>
+                </Aerodynamic_center_x_coordinate_MRF>
+                <Aerodynamic_center_x_coordinate_LRF>
+                    <Quarter unit="m">2.3751</Quarter>
+                    <Deyoung_harper unit="m">2.4552</Deyoung_harper>
+                </Aerodynamic_center_x_coordinate_LRF>
+                <Critical_Mach_number>
+                    <Korn_mason unit="">0.6914</Korn_mason>
+                </Critical_Mach_number>
+                <CG-ACtail_distance unit=""/>
+                <ACwing-ACtail_distance unit="m">21.2506</ACwing-ACtail_distance>
+                <VolumetricRatio_Vh unit="">1.2492</VolumetricRatio_Vh>
+                <FrictionCoefficient_Cf unit="">0.002396</FrictionCoefficient_Cf>
+                <CompressibilityFactor unit="">1.3677</CompressibilityFactor>
+                <FormFactor unit="">1.1441</FormFactor>
+                <Cd0Parasite unit="">0.001419</Cd0Parasite>
+                <CdGaps unit="">0.000024</CdGaps>
+                <CdWaveAtCurrentCL>
+                    <Lock_korn unit="">0.001232</Lock_korn>
+                </CdWaveAtCurrentCL>
+                <Cd0 unit="">0.001553</Cd0>
+                <Current_lift_coefficient unit="">0.4500</Current_lift_coefficient>
+                <Alpha_zero_lift>
+                    <Integral_mean_2d unit="°">-2.5000</Integral_mean_2d>
+                    <Integral_mean_3d unit="°">-2.5000</Integral_mean_3d>
+                </Alpha_zero_lift>
+                <CL_alpha>
+                    <Anderson_compressible_subsonic unit="">4.9025</Anderson_compressible_subsonic>
+                    <Integral_mean_2d unit="">6.0988</Integral_mean_2d>
+                    <Polhamus unit="">0.000000</Polhamus>
+                </CL_alpha>
+                <Maximum_lift_coefficient>
+                    <Nasa_blackwell unit="">1.0640</Nasa_blackwell>
+                </Maximum_lift_coefficient>
+                <CL_basic_along_span unit="">[-0.00357649, -0.00357649]</CL_basic_along_span>
+                <CMac>
+                    <Additional unit="">-0.084639</Additional>
+                    <Basic unit="">-0.000791</Basic>
+                    <Total unit="">-0.085430</Total>
+                </CMac>
+                <CMalpha>
+                    <Anderson_compressible_subsonic unit="">NaN</Anderson_compressible_subsonic>
+                    <Polhamus unit="">NaN</Polhamus>
+                </CMalpha>
+                <Alpha unit="°">[-2.0, 0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0]</Alpha>
+                <CLvsAlpha_curve>
+                    <Linear unit="">[0.04278237, 0.21391218, 0.38504199, 0.5561718, 0.72730162, 0.89843143, 1.06956124, 1.24069106]</Linear>
+                    <Nasa_blackwell unit="">[0.04256126, 0.21280631, 0.38305136, 0.55329642, 0.72354147, 0.89378652, 1.06403157, 1.23427662]</Nasa_blackwell>
+                </CLvsAlpha_curve>
+                <Non_dimensional_stations unit="">[0.0, 0.03448276, 0.06896552, 0.10344828, 0.13793103, 0.17241379, 0.20689655, 0.24137931, 0.27586207, 0.31034483, 0.34482759, 0.37931034, 0.4137931, 0.44827586, 0.48275862, 0.51724138, 0.55172414, 0.5862069, 0.62068966, 0.65517241, 0.68965517, 0.72413793, 0.75862069, 0.79310345, 0.82758621, 0.86206897, 0.89655172, 0.93103448, 0.96551724, 1.0]</Non_dimensional_stations>
+                <Elliptical_load_distribution unit="">[1.58517045, 1.58422774, 1.58139623, 1.57666575, 1.57001913, 1.56143191, 1.55087184, 1.5382983, 1.52366145, 1.50690116, 1.48794567, 1.46670988, 1.44309313, 1.41697637, 1.3882185, 1.35665158, 1.32207442, 1.28424389, 1.24286295, 1.1975636, 1.14788205, 1.093221, 1.03279013, 0.96550664, 0.88981743, 0.80335009, 0.7021339, 0.57847818, 0.41268188, 5.0E-8]</Elliptical_load_distribution>
+                <Actual_load_distribution>
+                    <Nasa_blackwell>
+                        <Alpha unit="°">-2.0000</Alpha>
+                        <Load_at_Alpha_-0.034906585039886584 unit="">[0.13117583, 0.13119478, 0.13122309, 0.1312239, 0.13118227, 0.1310896, 0.13094041, 0.13073106, 0.13045906, 0.13012267, 0.12972066, 0.12925216, 0.1287165, 0.12811317, 0.12744172, 0.12670174, 0.1258928, 0.12501444, 0.1240661, 0.12304716, 0.12195684, 0.12079422, 0.1195582, 0.11824748, 0.1168605, 0.11539462, 0.11384759, 0.11221756, 0.11050146, 0.10869564, 0.10679577, 0.10479672, 0.10269233, 0.10047525, 0.09813658, 0.0956655, 0.09304879, 0.09027005, 0.08730882, 0.08413919, 0.08072788, 0.07703144, 0.0729919, 0.06852989, 0.06353292, 0.05783334, 0.0511611, 0.04301957, 0.03222722, 0.0]</Load_at_Alpha_-0.034906585039886584>
+                        <Alpha unit="°">0.0000</Alpha>
+                        <Load_at_Alpha_0.0 unit="">[0.65587916, 0.65597391, 0.65611544, 0.65611949, 0.65591136, 0.65544801, 0.65470207, 0.65365532, 0.6522953, 0.65061333, 0.64860331, 0.6462608, 0.64358252, 0.64056586, 0.63720862, 0.63350871, 0.62946402, 0.62507219, 0.62033052, 0.61523579, 0.60978418, 0.60397108, 0.59779101, 0.59123742, 0.5843025, 0.57697311, 0.56923795, 0.56108782, 0.55250732, 0.5434782, 0.53397887, 0.52398359, 0.51346166, 0.50237624, 0.49068288, 0.47832751, 0.46524393, 0.45135024, 0.4365441, 0.42069594, 0.40363941, 0.3851572, 0.36495949, 0.34264947, 0.31766462, 0.28916669, 0.2558055, 0.21509787, 0.1611361, 0.0]</Load_at_Alpha_0.0>
+                        <Alpha unit="°">2.0000</Alpha>
+                        <Load_at_Alpha_0.034906585039886584 unit="">[1.18058249, 1.18075304, 1.1810078, 1.18101508, 1.18064044, 1.17980641, 1.17846373, 1.17657958, 1.17413153, 1.171104, 1.16748596, 1.16326945, 1.15844854, 1.15301855, 1.14697551, 1.14031568, 1.13303523, 1.12512995, 1.11659493, 1.10742443, 1.09761152, 1.08714795, 1.07602382, 1.06422735, 1.05174451, 1.0385516, 1.02462831, 1.00995808, 0.99451317, 0.97826077, 0.96116196, 0.94317045, 0.92423099, 0.90427724, 0.88322918, 0.86098951, 0.83743907, 0.81243044, 0.78577938, 0.75725269, 0.72655094, 0.69328297, 0.65692709, 0.61676905, 0.57179631, 0.52050004, 0.46044991, 0.38717617, 0.29004498, 0.0]</Load_at_Alpha_0.034906585039886584>
+                        <Alpha unit="°">4.0000</Alpha>
+                        <Load_at_Alpha_0.06981317007977317 unit="">[1.70528582, 1.70553217, 1.70590016, 1.70591067, 1.70536953, 1.70416482, 1.70222539, 1.69950383, 1.69596777, 1.69159467, 1.6863686, 1.68027809, 1.67331455, 1.66547124, 1.65674241, 1.64712265, 1.63660645, 1.6251877, 1.61285935, 1.59961306, 1.58543887, 1.57032482, 1.55425663, 1.53721728, 1.51918651, 1.50013009, 1.48001867, 1.45882833, 1.43651902, 1.41304333, 1.38834505, 1.36235732, 1.33500031, 1.30617824, 1.27577548, 1.24365152, 1.20963421, 1.17351063, 1.13501465, 1.09380944, 1.04946247, 1.00140873, 0.94889468, 0.89088862, 0.82592801, 0.75183339, 0.66509431, 0.55925447, 0.41895385, 0.0]</Load_at_Alpha_0.06981317007977317>
+                        <Alpha unit="°">6.0000</Alpha>
+                        <Load_at_Alpha_0.10471975511965975 unit="">[2.22998914, 2.2303113, 2.23079251, 2.23080626, 2.23009861, 2.22852323, 2.22598704, 2.22242809, 2.21780401, 2.21208533, 2.20525125, 2.19728673, 2.18818057, 2.17792393, 2.1665093, 2.15392962, 2.14017767, 2.12524545, 2.10912376, 2.0918017, 2.07326621, 2.05350169, 2.03248945, 2.01020721, 1.98662851, 1.96170858, 1.93540903, 1.90769859, 1.87852487, 1.84782589, 1.81552814, 1.78154419, 1.74576964, 1.70807923, 1.66832178, 1.62631353, 1.58182935, 1.53459083, 1.48424993, 1.43036619, 1.372374, 1.3095345, 1.24086227, 1.1650082, 1.0800597, 0.98316674, 0.86973871, 0.73133277, 0.54786273, 0.0]</Load_at_Alpha_0.10471975511965975>
+                        <Alpha unit="°">8.0000</Alpha>
+                        <Load_at_Alpha_0.13962634015954634 unit="">[2.75469247, 2.75509042, 2.75568487, 2.75570185, 2.7548277, 2.75288163, 2.7497487, 2.74535234, 2.73964024, 2.732576, 2.7241339, 2.71429538, 2.70304659, 2.69037662, 2.67627619, 2.66073659, 2.64374888, 2.62530321, 2.60538818, 2.58399033, 2.56109355, 2.53667855, 2.51072226, 2.48319714, 2.45407051, 2.42328707, 2.39079939, 2.35656884, 2.32053072, 2.28260846, 2.24271124, 2.20073106, 2.15653897, 2.10998023, 2.06086808, 2.00897553, 1.95402449, 1.89567102, 1.83348521, 1.76692294, 1.69528553, 1.61766026, 1.53282987, 1.43912777, 1.33419139, 1.21450009, 1.07438311, 0.90341107, 0.67677161, 0.0]</Load_at_Alpha_0.13962634015954634>
+                        <Alpha unit="°">10.0000</Alpha>
+                        <Load_at_Alpha_0.17453292519943292 unit="">[3.2793958, 3.27986955, 3.28057722, 3.28059744, 3.27955678, 3.27724004, 3.27351036, 3.2682766, 3.26147648, 3.25306667, 3.24301655, 3.23130402, 3.2179126, 3.20282932, 3.18604309, 3.16754356, 3.1473201, 3.12536096, 3.1016526, 3.07617897, 3.0489209, 3.01985542, 2.98895507, 2.95618708, 2.92151252, 2.88486556, 2.84618975, 2.8054391, 2.76253658, 2.71739102, 2.66989433, 2.61991793, 2.5673083, 2.51188122, 2.45341438, 2.39163754, 2.32621963, 2.25675121, 2.18272049, 2.1034797, 2.01819706, 1.92578602, 1.82479746, 1.71324735, 1.58832309, 1.44583344, 1.27902751, 1.07548937, 0.80568049, 0.0]</Load_at_Alpha_0.17453292519943292>
+                        <Alpha unit="°">12.0000</Alpha>
+                        <Load_at_Alpha_0.2094395102393195 unit="">[3.80409913, 3.80464868, 3.80546958, 3.80549303, 3.80428587, 3.80159844, 3.79727201, 3.79120086, 3.78331272, 3.77355734, 3.76189919, 3.74831266, 3.73277862, 3.71528201, 3.69580998, 3.67435053, 3.65089131, 3.62541871, 3.59791701, 3.5683676, 3.53674824, 3.50303229, 3.46718788, 3.42917701, 3.38895452, 3.34644405, 3.30158011, 3.25430936, 3.20454243, 3.15217358, 3.09707742, 3.0391048, 2.97807762, 2.91378222, 2.84596068, 2.77429955, 2.69841477, 2.61783141, 2.53195577, 2.44003645, 2.34110858, 2.23391179, 2.11676506, 1.98736693, 1.84245478, 1.67716679, 1.48367192, 1.24756767, 0.93458937, 0.0]</Load_at_Alpha_0.2094395102393195>
+                    </Nasa_blackwell>
+                </Actual_load_distribution>
+                <Lift_coefficient_distribution>
+                    <Nasa_blackwell>
+                        <Alpha unit="°">-2.0000</Alpha>
+                        <Cl_at_Alpha_-0.034906585039886584 unit="">[0.03333196, 0.03360085, 0.03413441, 0.03467766, 0.03522706, 0.03578056, 0.03633687, 0.03689509, 0.0374546, 0.03801498, 0.0385759, 0.03913713, 0.03969848, 0.0402598, 0.04082093, 0.04138174, 0.04194206, 0.0425017, 0.04306044, 0.04361798, 0.04417398, 0.04472799, 0.04527945, 0.04582769, 0.04637185, 0.04691082, 0.04744327, 0.04796762, 0.04848188, 0.04898359, 0.04946968, 0.04993636, 0.05037888, 0.0507913, 0.05116615, 0.05149392, 0.05176249, 0.05195626, 0.0520549, 0.05203171, 0.05185107, 0.0514648, 0.05080646, 0.04978233, 0.04825613, 0.04602115, 0.04274242, 0.03781169, 0.02983661, 0.0]</Cl_at_Alpha_-0.034906585039886584>
+                        <Alpha unit="°">0.0000</Alpha>
+                        <Cl_at_Alpha_0.0 unit="">[0.1666598, 0.16800427, 0.17067207, 0.17338829, 0.17613528, 0.17890281, 0.18168434, 0.18447543, 0.18727302, 0.19007491, 0.19287952, 0.19568567, 0.19849241, 0.20129898, 0.20410464, 0.20690868, 0.20971028, 0.21250851, 0.21530219, 0.21808992, 0.22086991, 0.22363994, 0.22639726, 0.22913844, 0.23185924, 0.23455411, 0.23721633, 0.23983809, 0.24240941, 0.24491795, 0.24734841, 0.2496818, 0.2518944, 0.25395652, 0.25583073, 0.25746958, 0.25881245, 0.25978128, 0.2602745, 0.26015854, 0.25925534, 0.25732398, 0.25403228, 0.24891163, 0.24128067, 0.23010575, 0.21371208, 0.18905843, 0.14918303, 0.0]</Cl_at_Alpha_0.0>
+                        <Alpha unit="°">2.0000</Alpha>
+                        <Cl_at_Alpha_0.034906585039886584 unit="">[0.29998764, 0.30240768, 0.30720972, 0.31209893, 0.31704351, 0.32202507, 0.32703181, 0.33205578, 0.33709144, 0.34213484, 0.34718314, 0.3522342, 0.35728634, 0.36233816, 0.36738836, 0.37243562, 0.37747851, 0.38251531, 0.38754395, 0.39256186, 0.39756584, 0.4025519, 0.40751508, 0.4124492, 0.41734664, 0.42219739, 0.4269894, 0.43170857, 0.43633694, 0.44085231, 0.44522714, 0.44942723, 0.45340992, 0.45712174, 0.46049531, 0.46344524, 0.46586242, 0.46760631, 0.46849411, 0.46828536, 0.46665962, 0.46318317, 0.45725811, 0.44804093, 0.4343052, 0.41419034, 0.38468175, 0.34030517, 0.26852945, 0.0]</Cl_at_Alpha_0.034906585039886584>
+                        <Alpha unit="°">4.0000</Alpha>
+                        <Cl_at_Alpha_0.06981317007977317 unit="">[0.43331549, 0.43681109, 0.44374737, 0.45080956, 0.45795173, 0.46514732, 0.47237929, 0.47963613, 0.48690985, 0.49419477, 0.50148676, 0.50878274, 0.51608027, 0.52337734, 0.53067207, 0.53796257, 0.54524674, 0.55252211, 0.5597857, 0.56703379, 0.57426177, 0.58146385, 0.58863289, 0.59575996, 0.60283404, 0.60984068, 0.61676246, 0.62357905, 0.63026448, 0.63678667, 0.64310587, 0.64917267, 0.65492544, 0.66028695, 0.6651599, 0.6694209, 0.67291238, 0.67543133, 0.67671371, 0.67641219, 0.67406389, 0.66904236, 0.66048394, 0.64717024, 0.62732974, 0.59827494, 0.55565142, 0.49155192, 0.38787588, 0.0]</Cl_at_Alpha_0.06981317007977317>
+                        <Alpha unit="°">6.0000</Alpha>
+                        <Cl_at_Alpha_0.10471975511965975 unit="">[0.56664333, 0.57121451, 0.58028503, 0.5895202, 0.59885995, 0.60826957, 0.61772676, 0.62721648, 0.63672827, 0.6462547, 0.65579038, 0.66533127, 0.6748742, 0.68441652, 0.69395579, 0.70348951, 0.71301496, 0.72252892, 0.73202746, 0.74150573, 0.75095769, 0.76037581, 0.7697507, 0.77907071, 0.78832143, 0.79748396, 0.80653553, 0.81544952, 0.82419201, 0.83272103, 0.8409846, 0.84891811, 0.85644096, 0.86345217, 0.86982448, 0.87539657, 0.87996234, 0.88325635, 0.88493331, 0.88453902, 0.88146816, 0.87490154, 0.86370977, 0.84629954, 0.82035428, 0.78235954, 0.72662109, 0.64279866, 0.5072223, 0.0]</Cl_at_Alpha_0.10471975511965975>
+                        <Alpha unit="°">8.0000</Alpha>
+                        <Cl_at_Alpha_0.13962634015954634 unit="">[0.69997117, 0.70561792, 0.71682268, 0.72823083, 0.73976818, 0.75139182, 0.76307423, 0.77479682, 0.78654669, 0.79831464, 0.810094, 0.82187981, 0.83366813, 0.8454557, 0.8572395, 0.86901646, 0.88078319, 0.89253572, 0.90426921, 0.91597767, 0.92765362, 0.93928776, 0.95086851, 0.96238147, 0.97380883, 0.98512725, 0.9963086, 1.00732, 1.01811954, 1.02865539, 1.03886333, 1.04866355, 1.05795648, 1.06661738, 1.07448907, 1.08137223, 1.08701231, 1.09108138, 1.09315292, 1.09266585, 1.08887244, 1.08076073, 1.0669356, 1.04542885, 1.01337881, 0.96644413, 0.89759076, 0.79404541, 0.62656872, 0.0]</Cl_at_Alpha_0.13962634015954634>
+                        <Alpha unit="°">10.0000</Alpha>
+                        <Cl_at_Alpha_0.17453292519943292 unit="">[0.83329901, 0.84002133, 0.85336033, 0.86694147, 0.8806764, 0.89451407, 0.9084217, 0.92237717, 0.9363651, 0.95037457, 0.96439762, 0.97842834, 0.99246206, 1.00649488, 1.02052321, 1.0345434, 1.04855142, 1.06254253, 1.07651097, 1.0904496, 1.10434955, 1.11819972, 1.13198632, 1.14569222, 1.15929622, 1.17277053, 1.18608166, 1.19919047, 1.21204707, 1.22458975, 1.23674206, 1.24840898, 1.259472, 1.2697826, 1.27915365, 1.28734789, 1.29406227, 1.2989064, 1.30137252, 1.30079268, 1.29627671, 1.28661992, 1.27016142, 1.24455815, 1.20640335, 1.15052873, 1.06856042, 0.94529215, 0.74591515, 0.0]</Cl_at_Alpha_0.17453292519943292>
+                        <Alpha unit="°">12.0000</Alpha>
+                        <Cl_at_Alpha_0.2094395102393195 unit="">[0.96662685, 0.97442475, 0.98989799, 1.0056521, 1.02158463, 1.03763632, 1.05376917, 1.06995752, 1.08618352, 1.1024345, 1.11870124, 1.13497688, 1.15125599, 1.16753407, 1.18380693, 1.20007035, 1.21631964, 1.23254933, 1.24875272, 1.26492154, 1.28104548, 1.29711168, 1.31310413, 1.32900298, 1.34478362, 1.36041382, 1.37585473, 1.39106095, 1.4059746, 1.42052411, 1.43462079, 1.44815442, 1.46098752, 1.47294782, 1.48381823, 1.49332355, 1.50111223, 1.50673143, 1.50959212, 1.50891951, 1.50368099, 1.4924791, 1.47338725, 1.44368746, 1.39942788, 1.33461333, 1.23953009, 1.09653889, 0.86526157, 0.0]</Cl_at_Alpha_0.2094395102393195>
+                    </Nasa_blackwell>
+                </Lift_coefficient_distribution>
+                <Total_lift_coefficient>
+                    <Nasa_blackwell>
+                        <Alpha unit="">[-0.03490659, 0.0, 0.03490659, 0.06981317, 0.10471976, 0.13962634, 0.17453293, 0.20943951]</Alpha>
+                        <CL unit="">[0.04256126, 0.21280631, 0.38305136, 0.55329642, 0.72354147, 0.89378652, 1.06403157, 1.23427662]</CL>
+                    </Nasa_blackwell>
+                    <Anderson_compressible_subsonic>
+                        <Alpha unit="">[-0.03490659, 0.0, 0.03490659, 0.06981317, 0.10471976, 0.13962634, 0.17453293, 0.20943951]</Alpha>
+                        <CL unit="">[0.04278237, 0.21391218, 0.38504199, 0.5561718, 0.72730162, 0.89843143, 1.06956124, 1.24069106]</CL>
+                    </Anderson_compressible_subsonic>
+                </Total_lift_coefficient>
+            </Aerodynamics>
+        </HTail_Analysis>
+        <Fuselage_Analysis/>
+        <VTail_Analysis>
+            <Weights>
+                <Reference_mass unit="kg">463.0000</Reference_mass>
+                <Composite_correction_factor unit="">not_initialized</Composite_correction_factor>
+                <Mass_correction_factor unit="">not_initialized</Mass_correction_factor>
+                <Weight_estimation_method_comparison>
+                    <Howe unit="kg">656.0000</Howe>
+                    <Percent_error unit="">41.6847</Percent_error>
+                    <Jenkinson unit="kg">473.0000</Jenkinson>
+                    <Percent_error unit="">2.1598</Percent_error>
+                    <Kroo unit="kg">445.0000</Kroo>
+                    <Percent_error unit="">-3.887689</Percent_error>
+                    <Torenbeek_1976 unit="kg">792.0000</Torenbeek_1976>
+                    <Percent_error unit="">71.0583</Percent_error>
+                </Weight_estimation_method_comparison>
+                <Estimated_mass unit="kg">459.0000</Estimated_mass>
+            </Weights>
+            <Balance>
+                <Xcg_estimation_method_comparison>
+                    <Torenbeek_1982 unit="m">2.1997</Torenbeek_1982>
+                    <Percent_error unit="">4.1588</Percent_error>
+                </Xcg_estimation_method_comparison>
+                <Ycg_estimation_method_comparison>
+                    <Torenbeek_1982 unit="m">1.7202</Torenbeek_1982>
+                    <Percent_error unit="">37.5000</Percent_error>
+                </Ycg_estimation_method_comparison>
+                <Xcg_LRF unit="m">2.1997</Xcg_LRF>
+                <Ycg_LRF_half_wing unit="m">0.0000</Ycg_LRF_half_wing>
+                <Zcg_LRF unit="m">0.0000</Zcg_LRF>
+                <Xcg_BRF unit="m">34.2427</Xcg_BRF>
+                <Ycg_BRF_half_wing unit="m">0.0000</Ycg_BRF_half_wing>
+                <Zcg_BRF unit="m">1.7400</Zcg_BRF>
+            </Balance>
+            <Aerodynamics>
+                <Aerodynamic_center_x_coordinate_MRF>
+                    <Quarter unit="m">0.9418</Quarter>
+                    <Deyoung_harper unit="m">0.9710</Deyoung_harper>
+                </Aerodynamic_center_x_coordinate_MRF>
+                <Aerodynamic_center_x_coordinate_LRF>
+                    <Quarter unit="m">2.1858</Quarter>
+                    <Deyoung_harper unit="m">2.2150</Deyoung_harper>
+                </Aerodynamic_center_x_coordinate_LRF>
+                <Critical_Mach_number>
+                    <Korn_mason unit="">0.6569</Korn_mason>
+                </Critical_Mach_number>
+                <CG-ACtail_distance unit=""/>
+                <ACwing-ACtail_distance unit="m">17.9043</ACwing-ACtail_distance>
+                <VolumetricRatio_Vt unit="">0.0928</VolumetricRatio_Vt>
+                <FrictionCoefficient_Cf unit="">0.002282</FrictionCoefficient_Cf>
+                <CompressibilityFactor unit="">1.3110</CompressibilityFactor>
+                <FormFactor unit="">1.1515</FormFactor>
+                <Cd0Parasite unit="">0.000945</Cd0Parasite>
+                <CdGaps unit="">0.000015</CdGaps>
+                <CdWaveAtCurrentCL>
+                    <Lock_korn unit="">0.004587</Lock_korn>
+                </CdWaveAtCurrentCL>
+                <Cd0 unit="">0.001034</Cd0>
+                <Current_lift_coefficient unit="">0.000000</Current_lift_coefficient>
+                <Alpha_zero_lift>
+                    <Integral_mean_2d unit="°">-3.6599</Integral_mean_2d>
+                    <Integral_mean_3d unit="°">-3.6599</Integral_mean_3d>
+                </Alpha_zero_lift>
+                <CL_alpha>
+                    <Anderson_compressible_subsonic unit="">2.7169</Anderson_compressible_subsonic>
+                    <Integral_mean_2d unit="">8.9274</Integral_mean_2d>
+                    <Polhamus unit="">0.000000</Polhamus>
+                </CL_alpha>
+                <Maximum_lift_coefficient/>
+                <CL_basic_along_span unit="">[-0.0052359, -0.0052359]</CL_basic_along_span>
+                <CMac>
+                    <Additional unit="">-0.164445</Additional>
+                    <Basic unit="">-0.000554</Basic>
+                    <Total unit="">-0.164999</Total>
+                </CMac>
+                <CMalpha>
+                    <Anderson_compressible_subsonic unit="">NaN</Anderson_compressible_subsonic>
+                    <Polhamus unit="">NaN</Polhamus>
+                </CMalpha>
+                <Alpha unit="°">[-2.0, 0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0]</Alpha>
+                <CLvsAlpha_curve>
+                    <Linear unit="">[0.07871333, 0.17355222, 0.26839112, 0.36323001, 0.4580689, 0.55290779, 0.64774668, 0.74258557]</Linear>
+                    <Nasa_blackwell unit="">[0.06292536, 0.31462679, 0.56632822, 0.81802964, 1.06973107, 1.3214325, 1.57313393, 1.82483536]</Nasa_blackwell>
+                </CLvsAlpha_curve>
+                <Non_dimensional_stations unit="">[0.0, 0.03448276, 0.06896552, 0.10344828, 0.13793103, 0.17241379, 0.20689655, 0.24137931, 0.27586207, 0.31034483, 0.34482759, 0.37931034, 0.4137931, 0.44827586, 0.48275862, 0.51724138, 0.55172414, 0.5862069, 0.62068966, 0.65517241, 0.68965517, 0.72413793, 0.75862069, 0.79310345, 0.82758621, 0.86206897, 0.89655172, 0.93103448, 0.96551724, 1.0]</Non_dimensional_stations>
+                <Elliptical_load_distribution unit="">[2.18808233, 2.18678106, 2.1828726, 2.17634291, 2.16716828, 2.15531495, 2.14073841, 2.12338259, 2.10317868, 2.08004369, 2.05387858, 2.02456586, 1.99196659, 1.95591644, 1.91622066, 1.87264742, 1.82491901, 1.77269982, 1.71557983, 1.6530511, 1.58447341, 1.5090223, 1.42560684, 1.33273241, 1.22825516, 1.10890039, 0.96918712, 0.79849954, 0.56964342, 7.0E-8]</Elliptical_load_distribution>
+                <Actual_load_distribution>
+                    <Nasa_blackwell>
+                        <Alpha unit="°">-2.0000</Alpha>
+                        <Load_at_Alpha_-0.034906585039886584 unit="">[0.27979388, 0.2797268, 0.27951576, 0.27914815, 0.27861905, 0.27792592, 0.27706751, 0.2760435, 0.27485423, 0.27350064, 0.27198423, 0.27030701, 0.26847157, 0.26648103, 0.26433915, 0.26205026, 0.2596193, 0.25705174, 0.25435341, 0.2515303, 0.24858802, 0.24553127, 0.24236281, 0.23908205, 0.23568234, 0.23213644, 0.2284412, 0.22462104, 0.22068114, 0.21661997, 0.21243102, 0.20810328, 0.2036215, 0.19896622, 0.19411359, 0.18903505, 0.18369663, 0.17805803, 0.17207109, 0.16567769, 0.15880658, 0.15136859, 0.14324915, 0.1342959, 0.12429686, 0.11293833, 0.09971301, 0.08367803, 0.06256611, 0.0]</Load_at_Alpha_-0.034906585039886584>
+                        <Alpha unit="°">0.0000</Alpha>
+                        <Load_at_Alpha_0.0 unit="">[1.39896939, 1.398634, 1.39757881, 1.39574076, 1.39309526, 1.38962958, 1.38533756, 1.38021749, 1.37427114, 1.3675032, 1.35992113, 1.35153505, 1.34235783, 1.33240517, 1.32169576, 1.31025131, 1.29809651, 1.28525868, 1.27176707, 1.25765148, 1.24294011, 1.22765636, 1.21181403, 1.19541026, 1.17841168, 1.16068218, 1.142206, 1.12310522, 1.10340568, 1.08309985, 1.0621551, 1.04051641, 1.01810752, 0.9948311, 0.97056796, 0.94517524, 0.91848317, 0.89029016, 0.86035546, 0.82838845, 0.79403288, 0.75684293, 0.71624575, 0.67147952, 0.62148432, 0.56469164, 0.49856506, 0.41839013, 0.31283055, 0.0]</Load_at_Alpha_0.0>
+                        <Alpha unit="°">2.0000</Alpha>
+                        <Load_at_Alpha_0.034906585039886584 unit="">[2.5181449, 2.51754121, 2.51564185, 2.51233337, 2.50757147, 2.50133325, 2.49360761, 2.48439149, 2.47368805, 2.46150576, 2.44785804, 2.4327631, 2.41624409, 2.39832931, 2.37905236, 2.35845235, 2.33657371, 2.31346563, 2.28918073, 2.26377266, 2.2372922, 2.20978144, 2.18126525, 2.15173847, 2.12114102, 2.08922792, 2.05597079, 2.0215894, 1.98613022, 1.94957974, 1.91187918, 1.87292954, 1.83259354, 1.79069597, 1.74702233, 1.70131543, 1.6532697, 1.60252229, 1.54863982, 1.49109921, 1.42925918, 1.36231728, 1.28924235, 1.20866314, 1.11867178, 1.01644495, 0.8974171, 0.75310224, 0.56309498, 0.0]</Load_at_Alpha_0.034906585039886584>
+                        <Alpha unit="°">4.0000</Alpha>
+                        <Load_at_Alpha_0.06981317007977317 unit="">[3.63732041, 3.63644841, 3.63370489, 3.62892598, 3.62204768, 3.61303691, 3.60187765, 3.58856548, 3.57310496, 3.55550833, 3.53579495, 3.51399114, 3.49013036, 3.46425345, 3.43640897, 3.4066534, 3.37505092, 3.34167258, 3.30659438, 3.26989384, 3.23164429, 3.19190653, 3.15071647, 3.10806667, 3.06387036, 3.01777366, 2.96973559, 2.92007357, 2.86885477, 2.81605962, 2.76160326, 2.70534266, 2.64707955, 2.58656085, 2.52347669, 2.45745561, 2.38805624, 2.31475442, 2.23692418, 2.15380997, 2.06448548, 1.96779162, 1.86223894, 1.74584676, 1.61585924, 1.46819827, 1.29626915, 1.08781435, 0.81335942, 0.0]</Load_at_Alpha_0.06981317007977317>
+                        <Alpha unit="°">6.0000</Alpha>
+                        <Load_at_Alpha_0.10471975511965975 unit="">[4.75649592, 4.75535561, 4.75176794, 4.74551859, 4.73652389, 4.72474058, 4.7101477, 4.69273948, 4.67252187, 4.64951089, 4.62373185, 4.59521919, 4.56401662, 4.53017758, 4.49376558, 4.45485445, 4.41352812, 4.36987952, 4.32400804, 4.27601502, 4.22599638, 4.17403161, 4.12016769, 4.06439488, 4.0065997, 3.9463194, 3.88350039, 3.81855775, 3.75157931, 3.6825395, 3.61132734, 3.53775579, 3.46156557, 3.38242573, 3.29993106, 3.2135958, 3.12284278, 3.02698654, 2.92520855, 2.81652073, 2.69971178, 2.57326597, 2.43523554, 2.28303037, 2.1130467, 1.91995158, 1.69512119, 1.42252646, 1.06362386, 0.0]</Load_at_Alpha_0.10471975511965975>
+                        <Alpha unit="°">8.0000</Alpha>
+                        <Load_at_Alpha_0.13962634015954634 unit="">[5.87567143, 5.87426281, 5.86983098, 5.8621112, 5.8510001, 5.83644425, 5.81841775, 5.79691347, 5.77193878, 5.74351345, 5.71166876, 5.67644723, 5.63790289, 5.59610172, 5.55112218, 5.50305549, 5.45200533, 5.39808647, 5.3414217, 5.2821362, 5.22034847, 5.1561567, 5.08961891, 5.02072309, 4.94932904, 4.87486514, 4.79726518, 4.71704193, 4.63430386, 4.54901938, 4.46105142, 4.37016892, 4.27605159, 4.17829061, 4.07638543, 3.96973599, 3.85762931, 3.73921867, 3.61349291, 3.47923149, 3.33493809, 3.17874031, 3.00823214, 2.82021399, 2.61023415, 2.37170489, 2.09397324, 1.75723857, 1.31388829, 0.0]</Load_at_Alpha_0.13962634015954634>
+                        <Alpha unit="°">10.0000</Alpha>
+                        <Load_at_Alpha_0.17453292519943292 unit="">[6.99484694, 6.99317002, 6.98789403, 6.97870381, 6.96547631, 6.94814791, 6.9266878, 6.90108747, 6.87135569, 6.83751601, 6.79960566, 6.75767527, 6.71178915, 6.66202586, 6.60847879, 6.55125654, 6.49048254, 6.42629342, 6.35883535, 6.28825738, 6.21470056, 6.13828178, 6.05907013, 5.9770513, 5.89205838, 5.80341088, 5.71102998, 5.6155261, 5.5170284, 5.41549927, 5.3107755, 5.20258205, 5.0905376, 4.97415548, 4.85283979, 4.72587618, 4.59241585, 4.4514508, 4.30177728, 4.14194224, 3.97016439, 3.78421466, 3.58122874, 3.35739761, 3.10742161, 2.82345821, 2.49282528, 2.09195067, 1.56415273, 0.0]</Load_at_Alpha_0.17453292519943292>
+                        <Alpha unit="°">12.0000</Alpha>
+                        <Load_at_Alpha_0.2094395102393195 unit="">[8.11402245, 8.11207722, 8.10595707, 8.09529643, 8.07995252, 8.05985158, 8.03495785, 8.00526146, 7.9707726, 7.93151857, 7.88754257, 7.83890332, 7.78567542, 7.72794999, 7.66583539, 7.59945758, 7.52895974, 7.45450036, 7.37624901, 7.29437856, 7.20905266, 7.12040687, 7.02852135, 6.9333795, 6.83478772, 6.73195662, 6.62479478, 6.51401028, 6.39975294, 6.28197915, 6.16049958, 6.03499517, 5.90502362, 5.77002036, 5.62929416, 5.48201637, 5.32720238, 5.16368293, 4.99006164, 4.804653, 4.60539069, 4.389689, 4.15422534, 3.89458122, 3.60460907, 3.27521152, 2.89167733, 2.42666278, 1.81441717, 0.0]</Load_at_Alpha_0.2094395102393195>
+                    </Nasa_blackwell>
+                </Actual_load_distribution>
+                <Lift_coefficient_distribution>
+                    <Nasa_blackwell>
+                        <Alpha unit="°">-2.0000</Alpha>
+                        <Cl_at_Alpha_-0.034906585039886584 unit="">[0.05374538, 0.05454716, 0.05615311, 0.05782668, 0.05957334, 0.06139982, 0.06331406, 0.06532535, 0.06744451, 0.06968419, 0.07205918, 0.07458687, 0.07728782, 0.08018649, 0.08331213, 0.08670004, 0.09039308, 0.09444376, 0.09891702, 0.10389392, 0.10947678, 0.11579644, 0.12302253, 0.13137869, 0.14116511, 0.14559076, 0.14327319, 0.14087728, 0.13840626, 0.13585918, 0.13323197, 0.13051771, 0.12770684, 0.12478715, 0.12174369, 0.11855854, 0.11521041, 0.111674, 0.10791913, 0.10390933, 0.09959992, 0.09493498, 0.08984265, 0.08422738, 0.0779562, 0.07083238, 0.06253776, 0.05248098, 0.03924006, 0.0]</Cl_at_Alpha_-0.034906585039886584>
+                        <Alpha unit="°">0.0000</Alpha>
+                        <Cl_at_Alpha_0.0 unit="">[0.26872689, 0.27273581, 0.28076557, 0.28913341, 0.29786672, 0.3069991, 0.3165703, 0.32662674, 0.33722257, 0.34842097, 0.36029591, 0.37293435, 0.38643911, 0.40093244, 0.41656066, 0.4335002, 0.45196539, 0.47221882, 0.49458511, 0.51946959, 0.54738392, 0.57898219, 0.61511263, 0.65689346, 0.70582557, 0.72795381, 0.71636597, 0.70438639, 0.69203128, 0.67929592, 0.66615984, 0.65258854, 0.63853419, 0.62393574, 0.60871844, 0.5927927, 0.57605203, 0.55837001, 0.53959563, 0.51954664, 0.4979996, 0.4746749, 0.44921326, 0.42113689, 0.38978102, 0.35416192, 0.31268881, 0.2624049, 0.1962003, 0.0]</Cl_at_Alpha_0.0>
+                        <Alpha unit="°">2.0000</Alpha>
+                        <Cl_at_Alpha_0.034906585039886584 unit="">[0.48370841, 0.49092446, 0.50537802, 0.52044014, 0.53616009, 0.55259838, 0.56982653, 0.58792813, 0.60700063, 0.62715775, 0.64853264, 0.67128184, 0.6955904, 0.72167839, 0.74980918, 0.78030035, 0.8135377, 0.84999387, 0.8902532, 0.93504526, 0.98529105, 1.04216794, 1.10720273, 1.18240824, 1.27048602, 1.31031686, 1.28945874, 1.2678955, 1.2456563, 1.22273266, 1.19908772, 1.17465937, 1.14936154, 1.12308433, 1.0956932, 1.06702685, 1.03689366, 1.00506601, 0.97127214, 0.93518396, 0.89639928, 0.85441482, 0.80858387, 0.7580464, 0.70160584, 0.63749146, 0.56283987, 0.47232883, 0.35316054, 0.0]</Cl_at_Alpha_0.034906585039886584>
+                        <Alpha unit="°">4.0000</Alpha>
+                        <Cl_at_Alpha_0.06981317007977317 unit="">[0.69868992, 0.7091131, 0.72999047, 0.75174687, 0.77445347, 0.79819767, 0.82308277, 0.84922953, 0.87677869, 0.90589453, 0.93676936, 0.96962932, 1.00474169, 1.04242433, 1.08305771, 1.12710051, 1.17511001, 1.22776893, 1.2859213, 1.35062092, 1.42319818, 1.5053537, 1.59929284, 1.70792301, 1.83514648, 1.89267991, 1.86255151, 1.83140461, 1.79928133, 1.76616939, 1.73201559, 1.69673021, 1.66018889, 1.62223292, 1.58266795, 1.54126101, 1.49773528, 1.45176202, 1.40294865, 1.35082128, 1.29479896, 1.23415474, 1.16795447, 1.0949559, 1.01343065, 0.920821, 0.81299092, 0.68225275, 0.51012077, 0.0]</Cl_at_Alpha_0.06981317007977317>
+                        <Alpha unit="°">6.0000</Alpha>
+                        <Cl_at_Alpha_0.10471975511965975 unit="">[0.91367144, 0.92730175, 0.95460292, 0.98305361, 1.01274685, 1.04379695, 1.07633901, 1.11053092, 1.14655675, 1.18463131, 1.22500609, 1.2679768, 1.31389298, 1.36317028, 1.41630624, 1.47390067, 1.53668232, 1.60554398, 1.68158939, 1.76619659, 1.86110531, 1.96853945, 2.09138294, 2.23343778, 2.39980693, 2.47504296, 2.43564429, 2.39491372, 2.35290635, 2.30960613, 2.26494346, 2.21880104, 2.17101624, 2.12138151, 2.0696427, 2.01549517, 1.95857691, 1.89845803, 1.83462515, 1.76645859, 1.69319864, 1.61389466, 1.52732508, 1.43186541, 1.32525547, 1.20415054, 1.06314197, 0.89217667, 0.66708101, 0.0]</Cl_at_Alpha_0.10471975511965975>
+                        <Alpha unit="°">8.0000</Alpha>
+                        <Cl_at_Alpha_0.13962634015954634 unit="">[1.12865295, 1.1454904, 1.17921538, 1.21436034, 1.25104022, 1.28939623, 1.32959524, 1.37183231, 1.4163348, 1.46336809, 1.51324282, 1.56632429, 1.62304427, 1.68391623, 1.74955476, 1.82070082, 1.89825462, 1.98331904, 2.07725748, 2.18177226, 2.29901245, 2.4317252, 2.58347304, 2.75895255, 2.96446739, 3.05740601, 3.00873706, 2.95842283, 2.90653137, 2.85304287, 2.79787134, 2.74087187, 2.68184359, 2.6205301, 2.55661746, 2.48972932, 2.41941853, 2.34515403, 2.26630166, 2.18209591, 2.09159832, 1.99363458, 1.88669569, 1.76877492, 1.63708028, 1.48748008, 1.31329302, 1.10210059, 0.82404125, 0.0]</Cl_at_Alpha_0.13962634015954634>
+                        <Alpha unit="°">10.0000</Alpha>
+                        <Cl_at_Alpha_0.17453292519943292 unit="">[1.34363447, 1.36367905, 1.40382783, 1.44566707, 1.4893336, 1.53499551, 1.58285148, 1.6331337, 1.68611286, 1.74210487, 1.80147955, 1.86467177, 1.93219556, 2.00466218, 2.08280329, 2.16750098, 2.25982693, 2.36109409, 2.47292557, 2.59734793, 2.73691958, 2.89491096, 3.07556315, 3.28446732, 3.52912784, 3.63976906, 3.58182984, 3.52193195, 3.4601564, 3.3964796, 3.33079921, 3.2629427, 3.19267094, 3.11967869, 3.04359221, 2.96396348, 2.88026015, 2.79185004, 2.69797817, 2.59773322, 2.48999801, 2.37337451, 2.24606629, 2.10568443, 1.9489051, 1.77080962, 1.56344407, 1.31202451, 0.98100149, 0.0]</Cl_at_Alpha_0.17453292519943292>
+                        <Alpha unit="°">12.0000</Alpha>
+                        <Cl_at_Alpha_0.2094395102393195 unit="">[1.55861598, 1.58186769, 1.62844028, 1.6769738, 1.72762697, 1.78059479, 1.83610772, 1.89443509, 1.95589092, 2.02084164, 2.08971627, 2.16301925, 2.24134685, 2.32540813, 2.41605182, 2.51430114, 2.62139924, 2.73886915, 2.86859366, 3.0129236, 3.17482671, 3.35809671, 3.56765325, 3.80998209, 4.0937883, 4.22213211, 4.15492261, 4.08544106, 4.01378142, 3.93991634, 3.86372708, 3.78501353, 3.70349829, 3.61882728, 3.53056696, 3.43819764, 3.34110178, 3.23854605, 3.12965467, 3.01337054, 2.88839769, 2.75311443, 2.6054369, 2.44259394, 2.26072991, 2.05413916, 1.81359512, 1.52194844, 1.13796173, 0.0]</Cl_at_Alpha_0.2094395102393195>
+                    </Nasa_blackwell>
+                </Lift_coefficient_distribution>
+                <Total_lift_coefficient>
+                    <Nasa_blackwell>
+                        <Alpha unit="">[-0.03490659, 0.0, 0.03490659, 0.06981317, 0.10471976, 0.13962634, 0.17453293, 0.20943951]</Alpha>
+                        <CL unit="">[0.06292536, 0.31462679, 0.56632822, 0.81802964, 1.06973107, 1.3214325, 1.57313393, 1.82483536]</CL>
+                    </Nasa_blackwell>
+                    <Anderson_compressible_subsonic>
+                        <Alpha unit="">[-0.03490659, 0.0, 0.03490659, 0.06981317, 0.10471976, 0.13962634, 0.17453293, 0.20943951]</Alpha>
+                        <CL unit="">[0.07871333, 0.17355222, 0.26839112, 0.36323001, 0.4580689, 0.55290779, 0.64774668, 0.74258557]</CL>
+                    </Anderson_compressible_subsonic>
+                </Total_lift_coefficient>
+            </Aerodynamics>
+        </VTail_Analysis>
+        <Power_plant_Analysis>
+            <Weights>
+                <Dry_engine_mass unit="kg">2270.0000</Dry_engine_mass>
+                <Total_Reference_mass unit="kg">7198.8000</Total_Reference_mass>
+                <Total_mass unit="kg">7647.8716</Total_mass>
+                <Percent_difference_from_total_mass_reference unit="">6.2381</Percent_difference_from_total_mass_reference>
+                <Estimated_mass unit="">not_initialized</Estimated_mass>
+            </Weights>
+            <Balance>
+                <Xcg_estimation_method_comparison>
+                    <Sforza unit="m">1.0650</Sforza>
+                    <Percent_error unit="">0.000000</Percent_error>
+                </Xcg_estimation_method_comparison>
+                <Xcg_LRF unit="m">1.0650</Xcg_LRF>
+                <Ycg_LRF unit="m">0.0000</Ycg_LRF>
+                <Zcg_LRF unit="m">0.0000</Zcg_LRF>
+                <Xcg_BRF unit="m">1.0650</Xcg_BRF>
+                <Ycg_BRF unit="m">0.0000</Ycg_BRF>
+                <Zcg_BRF unit="m">0.0000</Zcg_BRF>
+            </Balance>
+        </Power_plant_Analysis>
+        <Fuel_tank_Analysis>
+            <Weights/>
+            <Balance>
+                <Xcg_estimation_method_comparison>
+                    <Torenbeek_1982 unit="m">1.6156</Torenbeek_1982>
+                    <Percent_error unit="">-87.291584</Percent_error>
+                </Xcg_estimation_method_comparison>
+                <Xcg_LRF unit="m">1.6156</Xcg_LRF>
+                <Ycg_LRF unit="m">0.0000</Ycg_LRF>
+                <Zcg_LRF unit="m">0.0000</Zcg_LRF>
+                <Xcg_BRF unit="m">14.1156</Xcg_BRF>
+                <Ycg_BRF unit="m">0.0000</Ycg_BRF>
+                <Zcg_BRF unit="m">0.0000</Zcg_BRF>
+            </Balance>
+        </Fuel_tank_Analysis>
+        <Nacelle_Analysis>
+            <Weights>
+                <Reference_mass unit="kg">600.0000</Reference_mass>
+                <All_nacelles_mass unit="kg">1506.0000</All_nacelles_mass>
+                <Weight_estimation_methods_comparison>
+                    <Jenkinson unit="kg">802.0000</Jenkinson>
+                    <Percent_error unit="">33.6667</Percent_error>
+                    <Torenbeek_1976 unit="kg">795.0000</Torenbeek_1976>
+                    <Percent_error unit="">32.5000</Percent_error>
+                    <Torenbeek_1982 unit="kg">662.0000</Torenbeek_1982>
+                    <Percent_error unit="">10.3333</Percent_error>
+                </Weight_estimation_methods_comparison>
+                <Estimated_mass unit="kg">753.0000</Estimated_mass>
+            </Weights>
+            <Balance>
+                <Xcg_LRF unit="m">1.8368</Xcg_LRF>
+                <Ycg_LRF unit="m">0.0000</Ycg_LRF>
+                <Zcg_LRF unit="m">0.0000</Zcg_LRF>
+                <Xcg_BRF unit="m">13.4108</Xcg_BRF>
+                <Ycg_BRF unit="m">5.7550</Ycg_BRF>
+                <Zcg_BRF unit="m">-2.0160</Zcg_BRF>
+            </Balance>
+            <Aerodynamics>
+                <FrictionCoefficient_Cf unit="">0.002477</FrictionCoefficient_Cf>
+                <Cd0Parasite unit="">0.001179</Cd0Parasite>
+                <Cd0Base unit="">0.000101</Cd0Base>
+                <Cd0Nacelle unit="">0.002744</Cd0Nacelle>
+            </Aerodynamics>
+        </Nacelle_Analysis>
+        <Landing_gear_Analysis>
+            <Weights>
+                <Reference_mass unit="kg">2275.0000</Reference_mass>
+                <Mass unit="kg">2981.3688</Mass>
+                <Weight_estimation_method_comparison>
+                    <Roskam unit="kg">2076.0000</Roskam>
+                    <Percent_error unit="">-8.747253</Percent_error>
+                    <Stanford unit="kg">3027.0000</Stanford>
+                    <Percent_error unit="">33.0549</Percent_error>
+                    <Torenbeek_1982 unit="kg">3520.0000</Torenbeek_1982>
+                    <Percent_error unit="">54.7253</Percent_error>
+                    <Torenbeek_2013 unit="kg">2981.0000</Torenbeek_2013>
+                    <Percent_error unit="">31.0330</Percent_error>
+                </Weight_estimation_method_comparison>
+                <Estimated_mass unit="kg">2076.0000</Estimated_mass>
+            </Weights>
+            <Balance>
+                <Xcg_LRF unit="m">0.0000</Xcg_LRF>
+                <Ycg_LRF unit="m">0.0000</Ycg_LRF>
+                <Zcg_LRF unit="m">0.0000</Zcg_LRF>
+                <Xcg_BRF unit="m">5.0000</Xcg_BRF>
+                <Ycg_BRF unit="m">0.0000</Ycg_BRF>
+                <Zcg_BRF unit="m">0.0000</Zcg_BRF>
+            </Balance>
+        </Landing_gear_Analysis>
+        <Systems_Analysis>
+            <Weights>
+                <Reference_mass unit="kg">4788.0000</Reference_mass>
+                <Overall_mass unit="kg">4447.7659</Overall_mass>
+                <Mass_estimation_method unit="">TORENBEEK_2013</Mass_estimation_method>
+                <Mass unit="kg">4448.0000</Mass>
+                <Percent_difference unit="">-7.101086</Percent_difference>
+            </Weights>
+        </Systems_Analysis>
+    </ANALYSIS>
+</ADOpT>

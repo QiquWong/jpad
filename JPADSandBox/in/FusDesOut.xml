@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<FusDes_database.h5>
+    <Input>
+        <MachNumber>
+            <value>0.5200</value>
+            <description>Mach number</description>
+        </MachNumber>
+        <ReynoldsNumber>
+            <value>202000000.0000</value>
+            <description>Reynolds number</description>
+        </ReynoldsNumber>
+        <FuselageDiameter>
+            <value unit="m">3.4500</value>
+            <description>Fuselage diameter</description>
+        </FuselageDiameter>
+        <FuselageLength>
+            <value unit="m">30.0000</value>
+            <description>Fuselage length</description>
+        </FuselageLength>
+        <NoseFinenessRatio>
+            <value>1.6000</value>
+            <description>Nose fineness ratio is the ratio between nose fuselage length and maximum fuselage diameter. It varies between [1.2-1.7].</description>
+        </NoseFinenessRatio>
+        <FinenessRatio>
+            <value>8.7000</value>
+            <description>Fuselage fineness ratio is the ratio between fuselage length and diameter. It varies between [7-12].</description>
+        </FinenessRatio>
+        <TailFinenessRatio>
+            <value>2.8300</value>
+            <description>Tailcone fineness ratio is the ratio between tailcone fuselage length and maximum fuselage diameter. It varies between [2.3-3.0].</description>
+        </TailFinenessRatio>
+        <WindshieldAngle>
+            <value unit="°">39.7000</value>
+            <description>Windshield angle is the angle of the front window. It varies between [35 deg - 50 deg].</description>
+        </WindshieldAngle>
+        <UpsweepAngle>
+            <value unit="°">13.6000</value>
+            <description>Upsweep angle is the upward curvature angle of the aft fuselage. It varies between [10 deg - 18 deg].</description>
+        </UpsweepAngle>
+        <xPercentPositionPole>
+            <value>0.5000</value>
+            <description>xPositionPole is the position along x-axis of the reference moment point. It can be equal to 0.35, 0.50 or 0.60 which corresponds to 35%, 50% or 60% of fuselage length respectively.</description>
+        </xPercentPositionPole>
+    </Input>
+    <Output>
+        <kn_vs_FRn>
+            <value>1.7010</value>
+            <description>The nose shape factor Kn represents the contribution of the nose to the global drag coefficient and it takes into account the effect of the nose fineness ratio and of the windshield geometric angle</description>
+        </kn_vs_FRn>
+        <kc_vs_FR>
+            <value>1.0545</value>
+            <description>The shape factor Kc which represents the contribution of the cabin to the global drag coefficient and ittakes into account the effect of the cabin length (or cabin fineness ratio)</description>
+        </kc_vs_FR>
+        <kt_vs_FRt>
+            <value>0.8299</value>
+            <description>The tail shape factor Kt which represents the contribution of the tail to the global drag coefficient and it takes into account the effect of the upsweep angle</description>
+        </kt_vs_FRt>
+        <CD0_fuselage>
+            <value>0.0621</value>
+            <description>Fuselage Drag Coefficient estimated with FusDes method</description>
+        </CD0_fuselage>
+        <CM0_FR_vs_FR>
+            <value>-0.3148</value>
+            <description>Pitching moment coefficient as function of fuselage fineness ratio</description>
+        </CM0_FR_vs_FR>
+        <dCM_nose_vs_wshield>
+            <value>0.0070</value>
+            <description>Pitching moment nose correction factor. It depends on windshield angle and on the nose fineness ratio</description>
+        </dCM_nose_vs_wshield>
+        <dCM_tail_vs_upsweep>
+            <value>0.0066</value>
+            <description>Pitching moment tail correction factor. It depends on upsweep angle and on the tail fineness ratio</description>
+        </dCM_tail_vs_upsweep>
+        <CM0_fuselage>
+            <value>-0.3012</value>
+            <description>Pitching moment coefficient estimated with FusDes method</description>
+        </CM0_fuselage>
+        <CMa_FR_vs_FR>
+            <value>0.1813</value>
+            <description>Pitching moment derivative as function of fuselage fineness ratio</description>
+        </CMa_FR_vs_FR>
+        <dCMa_nose_vs_wshield>
+            <value>0.0007</value>
+            <description>Pitching moment nose derivative correction factor. It depends on windshield angle and on the nose fineness ratio</description>
+        </dCMa_nose_vs_wshield>
+        <dCMa_tail_vs_upsweep>
+            <value>-0.0020</value>
+            <description>Pitching moment tail derivative correction factor. It depends on upsweep angle and on the tailcone fineness ratio</description>
+        </dCMa_tail_vs_upsweep>
+        <CMa_fuselage>
+            <value>0.1800</value>
+            <description>Pitching moment coefficient derivative estimated with FusDes method</description>
+        </CMa_fuselage>
+        <CNb_FR_vs_FR>
+            <value>-0.1821</value>
+            <description>Yawing moment derivative coefficient as function of fuselage fineness ratio</description>
+        </CNb_FR_vs_FR>
+        <dCNb_nose_vs_FRn>
+            <value>0.0003</value>
+            <description>Yawing moment nose correction factor. It depends on the nose fineness ratio</description>
+        </dCNb_nose_vs_FRn>
+        <dCNb_tail_vs_FRt>
+            <value>0.0000</value>
+            <description>Yawing moment tail correction factor. It depends on the tailcone fineness ratio.</description>
+        </dCNb_tail_vs_FRt>
+        <CNb_fuselage>
+            <value>-0.1817</value>
+            <description>Yawing moment coefficient derivative estimated with FusDes method</description>
+        </CNb_fuselage>
+    </Output>
+</FusDes_database.h5>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JPADAircraft"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JPADCad"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JPADCalculators"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JPADEnums"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JPADUtils"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/hdf/jarhdf5-2.10.1.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/jscience-4.3/jscience.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

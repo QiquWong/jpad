@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GetDataWorkspace>
+  <version>2.26.0.20</version>
+  <WSversion>10</WSversion>
+  <File>
+    <Name>C:\Users\dario\Desktop\TESI High-lift\grafici get data\eta_delta\eta_delta.JPG</Name>
+    <Width>635</Width>
+    <Height>359</Height>
+  </File>
+  <Line>
+    <Caption>Line #1</Caption>
+    <LineColor>34,33,34</LineColor>
+    <BkColor>254,254,254</BkColor>
+    <PtColor>220,70,220</PtColor>
+    <LineType>0</LineType>
+    <Points MF="9">850,562,1246,562,1633,562,2173,562,2461,562,2731,562,2983,616,3532,868,4054,1138,4387,1327</Points>
+    <Points MF="9">4819,1588,5116,1759,5170,1795</Points>
+  </Line>
+  <CurrentLine>0</CurrentLine>
+  <Xmin MF="9">850,2605,0.000000e+000</Xmin>
+  <Xmax MF="9">5188,2605,3.500000e+001</Xmax>
+  <Ymin MF="9">850,2605,0.000000e+000</Ymin>
+  <Ymax MF="9">850,148,1.200000e+000</Ymax>
+  <XScale>linear</XScale>
+  <YScale>linear</YScale>
+  <Position>326,92</Position>
+  <Zoom>
+    <Scale>100.0</Scale>
+  </Zoom>
+  <Digitize>
+    <IgnorePixels>1</IgnorePixels>
+    <LineIDMethod>2</LineIDMethod>
+  </Digitize>
+  <AutoTrace>
+    <TraceDistance>8</TraceDistance>
+    <SmoothLines>1</SmoothLines>
+  </AutoTrace>
+  <DigitizeArea>
+    <LineOrArea>0</LineOrArea>
+    <RotateAngle>0.000000</RotateAngle>
+    <dx>8.000000</dx>
+  </DigitizeArea>
+  <GridSettings>
+    <ShowGrid>0</ShowGrid>
+    <AreaType>0</AreaType>
+    <dx>15.000000</dx>
+    <dy>15.000000</dy>
+  </GridSettings>
+</GetDataWorkspace>

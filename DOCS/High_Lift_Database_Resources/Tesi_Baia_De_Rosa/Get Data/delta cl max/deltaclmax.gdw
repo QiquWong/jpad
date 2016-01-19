@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GetDataWorkspace>
+  <version>2.26.0.20</version>
+  <WSversion>10</WSversion>
+  <File>
+    <Name>C:\Users\Tech\Desktop\Get Data\delta cl max\deltaclmax.JPG</Name>
+    <Width>710</Width>
+    <Height>398</Height>
+  </File>
+  <Line>
+    <Caption>Line #2</Caption>
+    <LineColor>35,35,35</LineColor>
+    <BkColor>254,254,254</BkColor>
+    <PtColor>128,220,255</PtColor>
+    <LineType>0</LineType>
+    <Points MF="9">814,2245,1552,2110,2344,1867,3199,1498,3901,1102,4603,697,5062,445,5485,310,5908,211</Points>
+  </Line>
+  <CurrentLine>0</CurrentLine>
+  <Xmin MF="9">805,2965,6.000000e+000</Xmin>
+  <Xmax MF="9">5971,2965,1.800000e+001</Xmax>
+  <Ymin MF="9">805,2965,8.000000e-001</Ymin>
+  <Ymax MF="9">805,211,1.800000e+000</Ymax>
+  <XScale>linear</XScale>
+  <YScale>linear</YScale>
+  <Position>535,-39</Position>
+  <Zoom>
+    <Scale>100.0</Scale>
+  </Zoom>
+  <Digitize>
+    <IgnorePixels>1</IgnorePixels>
+    <LineIDMethod>2</LineIDMethod>
+  </Digitize>
+  <AutoTrace>
+    <TraceDistance>8</TraceDistance>
+    <SmoothLines>1</SmoothLines>
+  </AutoTrace>
+  <DigitizeArea>
+    <LineOrArea>0</LineOrArea>
+    <RotateAngle>0.000000</RotateAngle>
+    <dx>8.000000</dx>
+  </DigitizeArea>
+  <GridSettings>
+    <ShowGrid>0</ShowGrid>
+    <AreaType>0</AreaType>
+    <dx>15.000000</dx>
+    <dy>15.000000</dy>
+  </GridSettings>
+</GetDataWorkspace>

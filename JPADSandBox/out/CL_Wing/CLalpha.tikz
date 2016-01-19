@@ -1,0 +1,38 @@
+%CLalpha
+\begin{tikzpicture}
+
+\begin{axis}[
+width=\figurewidth,
+height=\figureheight,
+scaled ticks=false, tick label style={/pgf/number format/fixed},
+xmin=-3.0,
+xmax=16.859548882724198,
+xlabel={alpha (deg)},
+xmajorgrids,
+ymin=-1.0,
+ymax=2.0,
+ylabel={CL },
+ymajorgrids,
+legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
+]
+
+\addplot [
+color=black,
+solid
+]
+table[row sep=crcr]{
+-2.0	0.04871718788433066\\
+9.5	1.1692125092239332\\
+10.03595488827242	1.2225065096241816\\
+10.571909776544839	1.2764179968159524\\
+11.10786466481726	1.328652489722732\\
+11.64381955308968	1.376915507268015\\
+12.179774441362099	1.4189125683752972\\
+12.715729329634518	1.4523491919680613\\
+13.251684217906938	1.4749308969698087\\
+13.787639106179359	1.4843632023040247\\
+14.323593994451777	1.478351626894201\\
+14.859548882724198	1.4546016896638325\\
+};
+\end{axis}
+\end{tikzpicture}%

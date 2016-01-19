@@ -1,0 +1,2 @@
+// include 'JPADAircraft', 'JPADCad', 'JPADCalculators', 'JPADConfigs', 'JPADDatabases', 'JPADDatabasesIO', 'JPADUtils'
+include 'JPADCalculators', 'JPADConfigs', 'JPADDatabases', 'JPADDatabasesIO', 'JPADUtils'

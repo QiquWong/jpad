@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<input>
+	<header>
+		<title>HighLiftDevices_Test_input</title>
+		<author>Vittorio Trifari</author>
+		<version>1.0</version>
+	</header>	
+	<B747>
+		<Flap_Number unit="">2</Flap_Number>
+		<Flap1>
+			<FlapType unit="">DOUBLE_SLOTTED</FlapType>
+			<Cf_C unit="">0.1567</Cf_C>
+			<Delta_Flap1 unit="°">15</Delta_Flap1>
+			<Delta_Flap1 unit="°">5</Delta_Flap1>
+			<Flap_inboard>0.14</Flap_inboard>
+			<Flap_outboard>0.31</Flap_outboard>
+		</Flap1>
+		<Flap2>
+			<FlapType unit="">DOUBLE_SLOTTED</FlapType>
+			<Cf_C unit="">0.1711</Cf_C>
+			<Delta_Flap2 unit="°">15</Delta_Flap2>
+			<Delta_Flap2 unit="°">5</Delta_Flap2>
+			<Flap_inboard unit="">0.42</Flap_inboard>
+			<Flap_outboard unit="">0.75</Flap_outboard>
+		</Flap2>
+		<Slat1>
+			<Delta_Slat unit="°">20</Delta_Slat>
+			<Cs_C unit="">0.1044</Cs_C>
+			<cExt_c unit="">1.1</cExt_c>
+			<LEradius_c_ratio unit="">0.0097</LEradius_c_ratio>
+			<Slat_inboard unit="">0.403</Slat_inboard>
+			<Slat_outboard unit="">0.589</Slat_outboard>
+		</Slat1>
+		<Slat2>
+			<Delta_Slat unit="°">20</Delta_Slat>
+			<Cs_C unit="">0.1044</Cs_C>
+			<cExt_c unit="">1.1</cExt_c>
+			<LEradius_c_ratio unit="">0.0097</LEradius_c_ratio>
+			<Slat_inboard unit="">0.589</Slat_inboard>
+			<Slat_outboard unit="">0.770</Slat_outboard>
+		</Slat2>
+		<Slat3>
+			<Delta_Slat unit="°">20</Delta_Slat>
+			<Cs_C unit="">0.1044</Cs_C>
+			<cExt_c unit="">1.1</cExt_c>
+			<LEradius_c_ratio unit="">0.0097</LEradius_c_ratio>
+			<Slat_inboard unit="">0.770</Slat_inboard>
+			<Slat_outboard unit="">0.96</Slat_outboard>
+		</Slat3>
+	</B747>
+</input>

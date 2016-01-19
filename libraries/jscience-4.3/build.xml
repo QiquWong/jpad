@@ -1,0 +1,191 @@
+<!-- ANT BUILD FILE (Ref. http://jakarta.apache.org/ant ) -->
+<project name="JScience" default="distribution" basedir=".">
+    <description>
+    	JScience - Java(TM) Tools and Libraries for the Advancement of Sciences.
+    </description>
+    
+    <target name="info">
+    	<echo>This software includes the Javolution Library (http://javolution.org)</echo>
+    </target>	
+    <target name="init">
+    	<tstamp/>
+        <property name="library"   value="jscience" />
+        <property name="version"   value="4.3" />
+        <property name="release"   value="1" />
+        <property name="src"       value="src" />
+        <property name="bin"       value="bin" />
+        <property name="lib"       value="lib" />
+        <property name="api"       value="api" />
+        <property name="debug"     value="true" />
+        <property name="optimize"  value="true" />
+        <property name="encoding"  value="UTF-8" />
+        <property name="classpath"  value="${bin};${lib}/javolution.jar;${lib}/geoapi.jar" />
+    </target>
+	
+	<target name="compile" depends="init">
+        <mkdir dir="${bin}" />
+
+		<!-- Compile -->
+        <javac srcdir="${src}" destdir="${bin}" classpath="${classpath}" target="1.5" source="1.5"
+               debug="${debug}" optimize="${optimize}" encoding="${encoding}">
+        	<!-- <compilerarg  value="-Xlint"/> -->
+        </javac>	
+
+		<!-- Updates version information (Javolution class) -->
+		<delete file="${bin}/org/jscience/JScience.class"/>
+        <filter token="VERSION" value="${version}.${release} ${TODAY}"/>
+        <copy file="src/org/jscience/JScience.java"
+              todir="${bin}/org/jscience" filtering="true"/>
+        <javac srcdir="${bin}" destdir="${bin}" classpath="${classpath}" target="1.5" source="1.5"
+               debug="${debug}" optimize="${optimize}" encoding="${encoding}"/> 
+
+		<!-- Copies resources if any -->
+		<copy todir="${bin}"  > 
+		    <fileset dir="${src}" >
+		        <include name="**/res-files/*" />
+		    </fileset>
+		</copy>
+		
+    </target>
+
+	<target name="javadoc" depends="init">
+        <mkdir dir="${api}" />
+        <javadoc sourcepath="${src}"
+                 destdir="${api}"
+                 windowtitle="JScience v${version} API"
+                 overview="src/overview.html"
+                 author="true"
+                 version="true"
+                 classpath="${classpath}"
+                 charset="${encoding}"
+                 encoding="${encoding}"
+                 docencoding="${encoding}"
+        	     stylesheetfile="doc/javadoc.css"
+        	     link="http://javolution.org/api/"
+                 splitindex="true">
+            <header>
+                <![CDATA[<A HREF="http://jscience.org">
+            	<SPAN CLASS="style0">J</SPAN><SPAN CLASS="style1">Science v${version}</SPAN></A>]]>
+            </header>
+            <bottom>
+               <![CDATA[<i>Copyright &#169; 2006 <b>J<b>Science.</i>]]>
+            </bottom>
+            <group title="JScience modules moved to JSR-275 to be part of Java Standard Library" packages="javax.*"/>
+            <group title="JScience core modules" packages="org.jscience.*"/>            
+            <packageset dir="${src}" defaultexcludes="yes">
+                <include name="org/jscience/**/*" />
+                <include name="javax/**/*" />
+                <exclude name="**/doc-files/**"/>
+                <exclude name="**/res-files/**"/>
+            </packageset>
+        </javadoc>
+    	<!-- Formats/colarizes code between [code]...[/code] -->
+		<java classname="Colapi" classpath="colapi.jar">
+			<arg value="${api}" />
+		</java>
+    </target>
+
+    <target name="jarfile" depends="compile">
+    	<unzip src="${lib}/javolution.jar"
+    	       dest="${bin}">
+    	    <patternset>
+    	        <include name="**/*.class"/>
+    	    </patternset>
+    	</unzip> 
+    	<unzip src="${lib}/geoapi.jar"
+    	       dest="${bin}">
+    	    <patternset>
+    	        <include name="**/*.class"/>
+    	    </patternset>
+    	</unzip> 
+        <jar jarfile="${library}.jar"
+             basedir="${bin}"
+             update="false">
+             <manifest>
+                 <attribute name="Main-Class"
+                           value="org.jscience.JScience"/>
+                 <attribute name="Specification-Title"
+                            value="JScience - Core"/>
+                 <attribute name="Specification-Version"
+                            value="${version}"/>
+                 <attribute name="Specification-Vendor"
+                            value="JScience"/>
+                 <attribute name="Implementation-Title"
+                            value="JScience - Core"/>
+                 <attribute name="Implementation-URL"
+                            value="http://jscience.org"/>
+                 <attribute name="Implementation-Vendor"
+                            value="JScience"/>
+                 <attribute name="Implementation-Version"
+                            value="${version}.${release} ${TODAY}"/>
+             </manifest>
+        </jar>
+    </target>
+	 
+    <target name="retroweaver" depends="init">
+    	<unzip src="retroweaver.jar"
+    	       dest="${bin}">
+    	    <patternset>
+    	        <include name="**/*.class"/>
+    	    </patternset>
+    	</unzip> 
+        <jar jarfile="${library}-vm14.jar"
+             basedir="${bin}"
+             update="false">
+             <manifest>
+                 <attribute name="Main-Class"
+                           value="org.jscience.JScience"/>
+                 <attribute name="Specification-Title"
+                            value="JScience - Core"/>
+                 <attribute name="Specification-Version"
+                            value="${version}-VM1.4"/>
+                 <attribute name="Specification-Vendor"
+                            value="JScience"/>
+                 <attribute name="Implementation-Title"
+                            value="JScience - Core"/>
+                 <attribute name="Implementation-URL"
+                            value="http://jscience.org"/>
+                 <attribute name="Implementation-Vendor"
+                            value="JScience"/>
+                 <attribute name="Implementation-Version"
+                            value="${version}.${release} ${TODAY} VM1.4"/>
+             </manifest>
+        </jar>
+    </target>
+
+	<target name="clean" depends="init">
+        <delete dir="${bin}" />
+        <delete dir="${api}" />
+        <delete file="${library}.jar"/>
+        <delete file="${library}-${version}.${release}-src.zip"/>
+        <delete file="${library}-${version}.${release}-bin.zip"/>
+    </target>
+
+	<target name="distribution" depends="info, clean, jarfile, javadoc">
+        <zip destfile="${library}-${version}.${release}-src.zip" update="false">
+            <zipfileset dir="." prefix="${library}-${version}"
+                        includes="${src}/**/*, doc/**/*, ${lib}/javolution.jar, ${lib}/geoapi.jar,
+                                  colapi.jar, index.html, build.xml" />
+        </zip>
+        <zip destfile="${library}-${version}.${release}-bin.zip" update="false">
+            <zipfileset dir="." prefix="${library}-${version}"
+                        includes="doc/**/*, ${api}/**/*,
+                                  index.html, ${library}.jar" />
+        </zip>
+    </target>
+    <!-- NETBEANS SUPPORT -->
+    <target name="run" depends="clean, compile">
+        <java classpath="${classpath}" classname="org.jscience.JScience" fork="true">
+            <jvmarg value="-server" />
+            <jvmarg value="-Xms512M" />
+            <jvmarg value="-Xmx512M" />
+            <arg value="perf" />
+        </java>
+    </target>
+    <target name="test" depends="clean, compile">
+        <java classpath="${classpath}" classname="org.jscience.JScience" fork="true">
+            <arg value="test" />
+        </java>
+    </target>
+	
+</project>
