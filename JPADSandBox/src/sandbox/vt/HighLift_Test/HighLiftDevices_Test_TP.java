@@ -74,6 +74,7 @@ public class HighLiftDevices_Test_TP {
 		//------------------------------------------------------------------------------------
 		// Operating Condition / Aircraft / AnalysisManager (geometry calculations)
 		OperatingConditions theCondition = new OperatingConditions();
+		theCondition.set_alphaCurrent(Amount.valueOf(2.0, NonSI.DEGREE_ANGLE));
 		Aircraft aircraft = Aircraft.createDefaultAircraft("ATR-72");
 
 		aircraft.get_theAerodynamics().set_aerodynamicDatabaseReader(aeroDatabaseReader);
@@ -253,36 +254,37 @@ public class HighLiftDevices_Test_TP {
 		for(int i=0; i<eta_out_property.size(); i++)
 			eta_out_flap.add(Double.valueOf(eta_out_property.get(i)));
 
-//		LSAerodynamicsManager.CalcHighLiftDevices highLiftCalculator = theLSAnalysis
-//				.new CalcHighLiftDevices(
-//						aircraft.get_wing(),
-//						deltaFlap,
-//						flapType,
-//						null,
-//						eta_in_flap,
-//						eta_out_flap,
-//						null,
-//						null,
-//						cf_c,
-//						null,
-//						null,
-//						null
-//						);
+		LSAerodynamicsManager.CalcHighLiftDevices highLiftCalculator = theLSAnalysis
+				.new CalcHighLiftDevices(
+						aircraft.get_wing(),
+						theCondition,
+						deltaFlap,
+						flapType,
+						null,
+						eta_in_flap,
+						eta_out_flap,
+						null,
+						null,
+						cf_c,
+						null,
+						null,
+						null
+						);
 		
-		CalcHighLiftDevices highLiftCalculator = new CalcHighLiftDevices(
-				aircraft,
-				deltaFlap,
-				flapType,
-				null,
-				eta_in_flap,
-				eta_out_flap,
-				null,
-				null,
-				cf_c,
-				null,
-				null,
-				null
-				);
+//		CalcHighLiftDevices highLiftCalculator = new CalcHighLiftDevices(
+//				aircraft,
+//				deltaFlap,
+//				flapType,
+//				null,
+//				eta_in_flap,
+//				eta_out_flap,
+//				null,
+//				null,
+//				cf_c,
+//				null,
+//				null,
+//				null
+//				);
 
 		highLiftCalculator.calculateHighLiftDevicesEffects();
 
@@ -330,9 +332,20 @@ public class HighLiftDevices_Test_TP {
 
 		System.out.println("\n\ndeltaCD = \n" + highLiftCalculator.getDeltaCD());
 		
+		System.out.println("\n\ndeltaCMc_4_list = ");
+		for(int i=0; i<highLiftCalculator.getDeltaCM_c4_list().size(); i++)
+			System.out.print(highLiftCalculator.getDeltaCM_c4_list().get(i) + " ");
+
+		
+		System.out.println("\n\ndeltaCMc_4 = \n" + highLiftCalculator.getDeltaCM_c4());		
+		
 //		--------------------------
 //		// New lift curve 
-//		
+		
+		highLiftCalculator.PlotHighLiftCurve();
+		System.out.println("DONE");	
+		
+		
 //		LSAerodynamicsManager.CalcCLAtAlpha theCLCalculator = theLSAnalysis
 //				.new CalcCLAtAlpha();
 //		

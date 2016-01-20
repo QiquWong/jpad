@@ -240,6 +240,7 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 	 */
 	public double get_mu_2_vs_bf_b(double eta_in, double eta_out, double taperRatio) {
 		return mu_2_vs_bf_b.value(eta_out-eta_in, taperRatio);
+	//	return mu_2_vs_bf_b.value(eta_out, taperRatio)-mu_2_vs_bf_b.value(eta_in, taperRatio);
 	}
 	
 	/**
@@ -251,5 +252,6 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 	 */
 	public double get_mu_3_vs_bf_b(double eta_in, double eta_out, double taperRatio) {
 		return mu_3_vs_bf_b.value(eta_out-eta_in, taperRatio);
+	//  return mu_3_vs_bf_b.value(eta_out, taperRatio)-mu_3_vs_bf_b.value(eta_in, taperRatio);
 	}
 		}

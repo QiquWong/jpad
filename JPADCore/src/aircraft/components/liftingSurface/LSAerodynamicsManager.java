@@ -49,6 +49,7 @@ import configuration.MyConfiguration;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineTypeEnum;
+import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
@@ -1174,89 +1175,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		}
 
 		
-		/**
-		 * This method calculates CL at alpha given as input for a wing with high lift devices.
-		 * This method calculates both linear trait and non linear trait. 
-		 * It use the NasaBlackwell method in order to evaluate the slope of the linear trait
-		 * and it builds the non-linear trait using a cubic interpolation. 
-		 * 
-		 * * NOTE THAT AN HIGH LIFT DEVICES ANALYSIS OF THE AIRCRAFT IS REQUIRED!! --> CalcHighLift class
-		 * 
-		 * @author Manuela Ruocco
-		 *
-		 */		
-		public double highLiftDevice(Amount<Angle> alpha, List<Double[]> deltaFlap,
-		List<Double> flapType,
-		List<Double> eta_in_flap,
-		List<Double> eta_out_flap,
-		List<Double> cf_c,
-		List<Double> deltaSlat,
-		List<Double> cs_c,
-		List<Double> leRadius_c_slat,
-		List<Double> eta_in_slat,
-		List<Double> eta_out_slat,
-		List<Double> cExt_c_slat){
-			
-			if (alpha.getUnit() == NonSI.DEGREE_ANGLE) 
-				alpha = alpha.to(SI.RADIAN);
-			
-			
-			CalcHighLiftDevices theHighLiftCalculator = new CalcHighLiftDevices(
-					getTheLiftingSurface(), deltaFlap, flapType, deltaSlat, 
-					eta_in_flap, eta_out_flap, eta_in_slat,
-					eta_out_slat, cf_c, cs_c, leRadius_c_slat,
-					cExt_c_slat);
-			
-			theHighLiftCalculator.calculateHighLiftDevicesEffects();
-			
-			MyAirfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
-			double deltaCL0 = theHighLiftCalculator.getDeltaCL0_flap();
-			double cLAlphaFlap = theHighLiftCalculator.getcLalpha_new()*57.3; // need it in 1/rad
-			double deltaCLMaxFlap = theHighLiftCalculator.getDeltaCLmax_flap();
-			double deltaCLMaxFSlat = theHighLiftCalculator.getDeltaCLmax_slat();
-			double deltaAlphaFlap = theHighLiftCalculator.getDeltaAlphaMax();   
-			Amount<Angle> deltaAlphaAmount = Amount.valueOf(toRadians(deltaAlphaFlap), SI.RADIAN);	
-					
-			double alphaStar = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
-			double cL0Clean =  nasaBlackwellCompleteCurve(Amount.valueOf(0.0, SI.RADIAN));
-			double cL0HighLift = cL0Clean + deltaCL0;
-			double qValue = cL0HighLift;
-			
-			calcAlphaAndCLMax();
-			double cLMaxClean = get_cLMaxClean();
-			Amount<Angle> alphaMax = get_alphaMaxClean().to(NonSI.DEGREE_ANGLE);	
-			double cLMaxHighLift = cLMaxClean + deltaCLMaxFlap + deltaCLMaxFSlat;
-			double alphaMaxHighLift = alphaMax.getEstimatedValue() + deltaAlphaAmount.getEstimatedValue();
-			alphaMaxHighLift = Amount.valueOf(toRadians(alphaMaxHighLift), SI.RADIAN).getEstimatedValue();
-					
-			if (alpha.getEstimatedValue() < alphaStar){ 
-			 double cLActual = cLAlphaFlap * alpha.getEstimatedValue() + qValue;	
-			return cLActual;
-			}
-			else{
-				double cLStarFlap = cLAlphaFlap * alphaStar + qValue;	
-				double[][] matrixData = { {Math.pow(alphaMaxHighLift, 3), Math.pow(alphaMaxHighLift, 2), alphaMaxHighLift,1.0},
-						{3* Math.pow(alphaMaxHighLift, 2), 2*alphaMaxHighLift, 1.0, 0.0},
-						{3* Math.pow(alphaStar, 2), 2*alphaStar, 1.0, 0.0},
-						{Math.pow(alphaStar, 3), Math.pow(alphaStar, 2),alphaStar,1.0}};
-				RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
-				double [] vector = {cLMaxHighLift, 0,cLAlphaFlap, cLStarFlap};
 
-				double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
-
-				double a = solSystem[0];
-				double b = solSystem[1];
-				double c = solSystem[2];
-				double d = solSystem[3];
-
-			    double clActual = a * Math.pow(alpha.getEstimatedValue(), 3) + 
-			    		    b * Math.pow(alpha.getEstimatedValue(), 2) + 
-			    		    c * alpha.getEstimatedValue() + d;
-				
-			    return clActual;
-			}
-			
-		}
 
 	}
 	
@@ -1269,7 +1188,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	public void PlotCLvsAlphaCurve(){
 		CalcCLAtAlpha theCLCalculator = new CalcCLAtAlpha();
 		
-		double alphaFirst = -2.0;
+		double alphaFirst = -10.0;
 		Amount<Angle> alphaActual;
 		Amount<Angle> alphaTemp = Amount.valueOf(0.0, SI.RADIAN);
 		int nPoints = 40;
@@ -1320,13 +1239,15 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			}
 				
 		}
-		System.out.println(" alpha star " + alphaStar*57.3);
-		System.out.println(" alpha max " + alphaMaxDouble*57.3);
+		
+		System.out.println(" -----------CLEAN-------------- ");
+		System.out.println(" alpha max " + alphaMaxDouble);
+		System.out.println(" alpha star " + alphaStar);
 		System.out.println(" cl max " + cLMax);
-		System.out.println(" cl slope " + cLLinearSlope);
 		System.out.println(" cl star " + cLStar);
-		System.out.println(" alpha vect or " + Arrays.toString(alphaArrayPlot));
-		System.out.println(" cl vector " + Arrays.toString(cLArrayPlot));
+		System.out.println(" cl alpha " + cLLinearSlope);
+
+		
 
 
 		MyChartToFileUtils.plotNoLegend(
@@ -1337,163 +1258,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	}
 
 
-	/** 
-	 * This function plot CL vs Alpha curve using 30 value of alpha between alpha=- 2 deg and
-	 * alphaMax+2 for a wing with high lift devices.
-	 * 
-	 * @author Manuela Ruocco
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
-	 */
 
-	public void PlotHighLiftCurve(List<Double[]> deltaFlap,
-			List<Double> flapType,
-			List<Double> eta_in_flap,
-			List<Double> eta_out_flap,
-			List<Double> cf_c,
-			List<Double> deltaSlat,
-			List<Double> cs_c,
-			List<Double> leRadius_c_slat,
-			List<Double> eta_in_slat,
-			List<Double> eta_out_slat,
-			List<Double> cExt_c_slat) throws InstantiationException, IllegalAccessException{ 
-		
-		PlotCLvsAlphaCurve();
-		
-		CalcHighLiftDevices theHighLiftCalculator = new CalcHighLiftDevices(
-				getTheLiftingSurface(), deltaFlap, flapType, deltaSlat, 
-				eta_in_flap, eta_out_flap, eta_in_slat,
-				eta_out_slat, cf_c, cs_c, leRadius_c_slat,
-				cExt_c_slat);
-		
-		theHighLiftCalculator.calculateHighLiftDevicesEffects();
-		MyConfiguration.initWorkingDirectoryTree();
-		
-		String folderPathHL = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR);
-		String subfolderPathHL = JPADStaticWriteUtils.createNewFolder(folderPathHL + "CL_vs_Alpha_Highlift" + File.separator);
-		
-	
-		double deltaCL0 = theHighLiftCalculator.getDeltaCL0_flap();
-		double cLAlphaFlap = theHighLiftCalculator.getcLalpha_new()*57.3; // need it in 1/rad
-		double deltaCLMaxFlap = theHighLiftCalculator.getDeltaCLmax_flap();
-		double deltaCLMaxFSlat = theHighLiftCalculator.getDeltaCLmax_slat();
-		double deltaAlphaFlap = theHighLiftCalculator.getDeltaAlphaMax();  
-		Amount<Angle> alphaActual;
-		Amount<Angle> deltaAlphaAmount = Amount.valueOf(toRadians(deltaAlphaFlap), SI.RADIAN);	
-		
-		List<Double[]> cLListPlot = new ArrayList<>(); 
-		List<Double[]> alphaListPlot = new ArrayList<>(); 
-	
-		
-		double[] cLArrayClean = get_cLArrayPlot();
-		double[] alphaArrayClean = get_alphaArrayPlot();
-		
-		double alphaFirst = -2.0;
-		int nPoints = 50;
-		MyAirfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
-		double alphaStar = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
-		Amount<Angle> alphaStarAmount = Amount.valueOf(alphaStar, SI.RADIAN);
-		
-		CalcCLAtAlpha theCLCleanCalculator = new CalcCLAtAlpha();
-		double cL0Clean =  theCLCleanCalculator.nasaBlackwellCompleteCurve(Amount.valueOf(0.0, SI.RADIAN));
-		double cL0HighLift = cL0Clean + deltaCL0;
-		double qValue = cL0HighLift;
-		double cLStarFlap = cLAlphaFlap * alphaStar + qValue;	
-		
-		calcAlphaAndCLMax();
-		double cLMaxClean = get_cLMaxClean();
-		Amount<Angle> alphaMax = get_alphaMaxClean().to(NonSI.DEGREE_ANGLE);	
-		double cLMaxHighLift = cLMaxClean + deltaCLMaxFlap + deltaCLMaxFSlat;
-		double alphaMaxHighLift = alphaMax.getEstimatedValue() + deltaAlphaFlap;
-		alphaMaxHighLift = Amount.valueOf(toRadians(alphaMaxHighLift), SI.RADIAN).getEstimatedValue();
-		double alphaMaxHighLiftDegree =  
-				Amount.valueOf(alphaMaxHighLift, SI.RADIAN)
-				.to(NonSI.DEGREE_ANGLE)
-				.getEstimatedValue();
-		
-		double[][] matrixData = { {Math.pow(alphaMaxHighLift, 3), Math.pow(alphaMaxHighLift, 2)
-			    , alphaMaxHighLift,1.0},
-				{3* Math.pow(alphaMaxHighLift, 2), 2*alphaMaxHighLift, 1.0, 0.0},
-				{3* Math.pow(alphaStar, 2), 2*alphaStar, 1.0, 0.0},
-				{Math.pow(alphaStar, 3), Math.pow(alphaStar, 2),alphaStar,1.0}};
-		RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
-		double [] vector = {cLMaxHighLift, 0,cLAlphaFlap, cLStarFlap};
-
-		double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
-
-		double a = solSystem[0];
-		double b = solSystem[1];
-		double c = solSystem[2];
-		double d = solSystem[3];
-		
-		double[] alphaArrayHighLiftPlot = MyArrayUtils.linspace(alphaFirst,
-				alphaMaxHighLiftDegree + 1,
-				nPoints);
-		
-		double[] cLArrayHighLiftPlot = new double [nPoints];
-		
-		
-		for ( int i=0 ; i< alphaArrayHighLiftPlot.length ; i++){
-			alphaActual = Amount.valueOf(toRadians(alphaArrayHighLiftPlot[i]), SI.RADIAN);
-			if (alphaActual.getEstimatedValue() < alphaStar) { 
-				cLArrayHighLiftPlot[i] = cLAlphaFlap * alphaActual.getEstimatedValue() + qValue;}
-			else {
-				cLArrayHighLiftPlot[i] = a * Math.pow(alphaActual.getEstimatedValue(), 3) + 
-						b * Math.pow(alphaActual.getEstimatedValue(), 2) + 
-						c * alphaActual.getEstimatedValue() + d;
-			}
-				
-		}
-		
-		// Convert from double to Double in order to use JFreeChart to plot.
-		MyArray alphaArrayCleanMyArray = new MyArray(alphaArrayClean);
-		Double[] alphaArrayCleanDouble = alphaArrayCleanMyArray.getdDouble();
-		
-		MyArray alphaArrayHighLiftMyArray = new MyArray(alphaArrayHighLiftPlot);
-		Double[] alphaArrayHighLiftDouble = alphaArrayHighLiftMyArray.getdDouble();
-		
-		MyArray cLArrayCleanMyArray = new MyArray(cLArrayClean);
-		Double[] cLArrayCleanDouble = cLArrayCleanMyArray.getdDouble();
-		
-		MyArray cLArrayHighLiftMyArray = new MyArray(cLArrayHighLiftPlot);
-		Double[] cLArrayHighLiftDouble = cLArrayHighLiftMyArray.getdDouble();
-		
-		
-		alphaListPlot.add(alphaArrayCleanDouble);
-		alphaListPlot.add(alphaArrayHighLiftDouble);
-		
-		cLListPlot.add(cLArrayCleanDouble);
-		cLListPlot.add(cLArrayHighLiftDouble);
-		
-
-		
-		List<String> legend  = new ArrayList<>(); 
-		
-		System.out.println(" alpha max new" + alphaMaxHighLiftDegree);
-		legend.add("clean");
-		legend.add("high lift");
-
-		
-		
-		MyChartToFileUtils.plotJFreeChart(alphaListPlot, 
-				cLListPlot,
-				"CL vs alpha",
-				"alpha", 
-				"CL",
-				"deg",
-				"",
-				true,
-				legend,
-				subfolderPathHL,
-				"CL alpha Wing High Lift");
-		
-		System.out.println(" alpha vector new" + Arrays.toString(alphaArrayHighLiftPlot));
-		System.out.println(" cl vector " + Arrays.toString(cLArrayHighLiftPlot));
-		System.out.println(" cl max " + cLMaxHighLift);
-		
-		
-		
-	}
 	
 	/** 
 	 * This function plot CD vs Alpha curve  and CD vs CL curve of a wing, using 30 value of alpha between 
@@ -1983,21 +1748,22 @@ public void PlotCDvsAlphaCurve(){
 	 * Last but not least is the drag coefficient variation due to high lift devices which calculation
 	 * is made upon a semi-empirical formula.
 	 * 
-	 * NOTE THAT AN AERODYNAMIC ANALYSIS OF THE AIRCRAFT IS REQUIRED!!
-	 * 
 	 * @author Vittorio Trifari
 	 *
 	 */
 	public class CalcHighLiftDevices {
 		//-------------------------------------------------------------------------------------
 		// VARIABLE DECLARATION:
-		
+
 		private LiftingSurface theWing;
+		private OperatingConditions theConditions;
 		private MyAirfoil meanAirfoil;
 		private List<Double[]> deltaFlap; 	    
-		private List<Double> flapType, deltaSlat, deltaFlap_ref, eta_in_flap, eta_out_flap, 
-					 eta_in_slat, eta_out_slat, cf_c, cs_c, leRadius_c_slat, cExt_c_slat;
-		
+		private List<Double> flapType_index, deltaSlat, eta_in_flap, eta_out_flap, 
+		eta_in_slat, eta_out_slat, cf_c, cs_c, leRadius_c_slat, cExt_c_slat;
+		private final List<Double> deltaFlap_ref;
+		private List<FlapTypeEnum> flapType;
+
 		//to evaluate:
 		private double deltaCl0_flap = 0,
 				deltaCL0_flap = 0,
@@ -2007,25 +1773,29 @@ public void PlotCDvsAlphaCurve(){
 				deltaCLmax_slat = 0,
 				cLalpha_new = 0,
 				deltaAlphaMax = 0,
-				deltaCD = 0;
-		private ArrayList<Double> deltaCl0_flap_list,
-				deltaCL0_flap_list,
-				deltaClmax_flap_list,
-				deltaCLmax_flap_list,
-				deltaClmax_slat_list,
-				deltaCLmax_slat_list,
-				cLalpha_new_list,
-				deltaAlphaMax_list,
-				deltaCD_list;
+				deltaCD = 0,
+				deltaCM_c4 = 0;
 
-		
+		private ArrayList<Double> deltaCl0_flap_list,
+		deltaCL0_flap_list,
+		deltaClmax_flap_list,
+		deltaCLmax_flap_list,
+		deltaClmax_slat_list,
+		deltaCLmax_slat_list,
+		cLalpha_new_list,
+		deltaAlphaMax_list,
+		deltaCD_list,
+		deltaCM_c4_list;
+
+
 		//-------------------------------------------------------------------------------------
 		// BUILDER:
-		
+
 		public CalcHighLiftDevices(
 				LiftingSurface theWing,
+				OperatingConditions theConditions,
 				List<Double[]> deltaFlap,
-				List<Double> flapType,
+				List<FlapTypeEnum> flapType,
 				List<Double> deltaSlat,
 				List<Double> eta_in_flap,
 				List<Double> eta_out_flap,
@@ -2036,9 +1806,15 @@ public void PlotCDvsAlphaCurve(){
 				List<Double> leRadius_slat,
 				List<Double> cExt_c_slat
 				) {
-			
+	
 			this.theWing = theWing;
-			this.meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(theWing);
+			this.theConditions = theConditions;
+			this.meanAirfoil = theWing
+					.getAerodynamics()
+					.new MeanAirfoil()
+					.calculateMeanAirfoil(
+							theWing
+							);
 			this.deltaFlap = deltaFlap;
 			this.flapType = flapType;
 			this.deltaSlat = deltaSlat;
@@ -2050,27 +1826,37 @@ public void PlotCDvsAlphaCurve(){
 			this.cs_c = cs_c;
 			this.leRadius_c_slat = leRadius_slat;
 			this.cExt_c_slat = cExt_c_slat;
-			
+
+			flapType_index = new ArrayList<Double>();
 			deltaFlap_ref = new ArrayList<Double>();
+
 			for(int i=0; i<flapType.size(); i++) {
-				if(flapType.get(i) == 1.0)
+				if(flapType.get(i) == FlapTypeEnum.SINGLE_SLOTTED) {
+					flapType_index.add(1.0);
 					deltaFlap_ref.add(45.0);
-				else if(flapType.get(i) == 2.0)
+				}
+				else if(flapType.get(i) == FlapTypeEnum.DOUBLE_SLOTTED) {
+					flapType_index.add(2.0);
 					deltaFlap_ref.add(50.0);
-				else if(flapType.get(i) == 3.0)
+				}
+				else if(flapType.get(i) == FlapTypeEnum.PLAIN) {
+					flapType_index.add(3.0);
 					deltaFlap_ref.add(60.0);
-				else if(flapType.get(i) == 4.0)
-					deltaFlap_ref.add(60.0);
-				else if(flapType.get(i) == 5.0)
+				}
+				else if(flapType.get(i) == FlapTypeEnum.FOWLER) {
+					flapType_index.add(4.0);
 					deltaFlap_ref.add(40.0);
-				else if(flapType.get(i) == 6.0)
+				}
+				else if(flapType.get(i) == FlapTypeEnum.TRIPLE_SLOTTED) {
+					flapType_index.add(5.0);
 					deltaFlap_ref.add(50.0);
+				}
 			}
 		}
-		
+
 		//-------------------------------------------------------------------------------------
 		// METHODS:
-		
+
 		/**
 		 * This method calculate high lift devices effects on lift coefficient curve of the 
 		 * airfoil and wing throughout semi-empirical formulas; in particular DeltaCl0, DeltaCL0
@@ -2081,124 +1867,135 @@ public void PlotCDvsAlphaCurve(){
 		 * @author Vittorio Trifari
 		 */
 		public void calculateHighLiftDevicesEffects() {
-			
+
+			//--------------------------------------------
+			// initialization of flap type map
+
 			//---------------------------------------------
 			// deltaCl0 (flap)
 			List<Double> theta_f = new ArrayList<Double>();
-			for(int i=0; i<flapType.size(); i++) 
+			for(int i=0; i<flapType_index.size(); i++) 
 				theta_f.add(Math.acos((2*cf_c.get(i))-1));
-			
+
 			List<Double> alphaDelta = new ArrayList<Double>();
 			for(int i=0; i<theta_f.size(); i++)
 				alphaDelta.add(1-((theta_f.get(i)-Math.sin(theta_f.get(i)))/Math.PI));
-			
-			Double[] deltaFlap_total = new Double[flapType.size()];
+
+			Double[] deltaFlap_total = new Double[flapType_index.size()];
 			for(int i=0; i<deltaFlap.size(); i++) {
 				deltaFlap_total[i] = 0.0;
 				for(int j=0; j<deltaFlap.get(i).length; j++) {
 					deltaFlap_total[i] += deltaFlap.get(i)[j];
 				}
 			}
-			
+
 			List<Double> eta_delta_flap = new ArrayList<Double>();
-			for(int i=0; i<flapType.size(); i++)
-				eta_delta_flap.add(
-						theWing
-						.getAerodynamics()
-						.get_highLiftDatabaseReader()
-						.get_eta_delta_vs_delta_flap(deltaFlap_total[i], flapType.get(i))
-						);
-			
+			for(int i=0; i<flapType_index.size(); i++) {
+				if(flapType_index.get(i) == 3.0)
+					eta_delta_flap.add(
+							theWing
+							.getAerodynamics()
+							.get_highLiftDatabaseReader()
+							.get_eta_delta_vs_delta_flap_plain(deltaFlap_total[i], cf_c.get(i)));
+				else
+					eta_delta_flap.add(
+							theWing
+							.getAerodynamics()
+							.get_highLiftDatabaseReader()
+							.get_eta_delta_vs_delta_flap(deltaFlap_total[i], flapType_index.get(i))
+							);
+			}
+
 			List<Double> deltaCl0_first = new ArrayList<Double>();
-			for(int i=0; i<flapType.size(); i++)
+			for(int i=0; i<flapType_index.size(); i++)
 				deltaCl0_first.add(
 						alphaDelta.get(i).doubleValue()
 						*eta_delta_flap.get(i).doubleValue()
 						*deltaFlap_total[i]
-						*meanAirfoil.getAerodynamics().get_clAlpha()*(Math.PI/180)
+								*meanAirfoil.getAerodynamics().get_clAlpha()*(Math.PI/180)
 						);
-			
+
 			List<Double> deltaC_Cf_flap = new ArrayList<Double>();
-			for(int i=0; i<flapType.size(); i++)
+			for(int i=0; i<flapType_index.size(); i++)
 				deltaC_Cf_flap.add(
 						theWing
 						.getAerodynamics()
 						.get_highLiftDatabaseReader()
-						.get_deltaC_Cf_vs_delta_flap(deltaFlap_total[i],flapType.get(i))
+						.get_deltaC_Cf_vs_delta_flap(deltaFlap_total[i],flapType_index.get(i))
 						);
-			
+
 			List<Double> c_first_c_flap = new ArrayList<Double>();
-			for(int i=0; i<flapType.size(); i++)
+			for(int i=0; i<flapType_index.size(); i++)
 				c_first_c_flap.add(1+(deltaC_Cf_flap.get(i).doubleValue()*cf_c.get(i).doubleValue()));
-			
+
 			deltaCl0_flap_list = new ArrayList<Double>();
-			for(int i=0; i<flapType.size(); i++)
+			for(int i=0; i<flapType_index.size(); i++)
 				deltaCl0_flap_list.add(
 						(deltaCl0_first.get(i).doubleValue()*c_first_c_flap.get(i).doubleValue())
 						+(meanAirfoil.getAerodynamics().calculateClAtAlpha(0.0)*(c_first_c_flap.get(i).doubleValue()-1))
 						);
-			
-			for(int i=0; i<flapType.size(); i++)
+
+			for(int i=0; i<flapType_index.size(); i++)
 				deltaCl0_flap += deltaCl0_flap_list.get(i).doubleValue();
-			
+
 			//---------------------------------------------------------------
 			// deltaClmax (flap)
 			List<Double> deltaClmax_base = new ArrayList<Double>();
-			for(int i=0; i<flapType.size(); i++)
+			for(int i=0; i<flapType_index.size(); i++)
 				deltaClmax_base.add(
 						theWing
 						.getAerodynamics()
 						.get_highLiftDatabaseReader()
 						.get_deltaCLmaxBase_vs_tc(
 								meanAirfoil.getGeometry().get_maximumThicknessOverChord(),
-								flapType.get(i)
+								flapType_index.get(i)
 								)
 						);
-			
+
 			List<Double> k1 = new ArrayList<Double>();
-			for(int i=0; i<flapType.size(); i++)
+			for(int i=0; i<flapType_index.size(); i++)
 				k1.add(theWing
 						.getAerodynamics()
 						.get_highLiftDatabaseReader()
-						.get_K1_vs_flapChordRatio(cf_c.get(i), flapType.get(i))
+						.get_K1_vs_flapChordRatio(cf_c.get(i), flapType_index.get(i))
 						);
-			
+
 
 			List<Double> k2 = new ArrayList<Double>();
-			for(int i=0; i<flapType.size(); i++)
+			for(int i=0; i<flapType_index.size(); i++)
 				k2.add(theWing
 						.getAerodynamics()
 						.get_highLiftDatabaseReader()
-						.get_K2_vs_delta_flap(deltaFlap_total[i], flapType.get(i))
+						.get_K2_vs_delta_flap(deltaFlap_total[i], flapType_index.get(i))
 						);
-			
+
 			List<Double> k3 = new ArrayList<Double>();
-			for(int i=0; i<flapType.size(); i++)
+			for(int i=0; i<flapType_index.size(); i++)
 				k3.add(theWing
 						.getAerodynamics()
 						.get_highLiftDatabaseReader()
 						.get_K3_vs_df_dfRef(
 								deltaFlap_total[i],
 								deltaFlap_ref.get(i),
-								flapType.get(i)
+								flapType_index.get(i)
 								)
 						);
-			
+
 			deltaClmax_flap_list = new ArrayList<Double>();
-			for(int i=0; i<flapType.size(); i++)
+			for(int i=0; i<flapType_index.size(); i++)
 				deltaClmax_flap_list.add(k1.get(i).doubleValue()
 						*k2.get(i).doubleValue()
 						*k3.get(i).doubleValue()
 						*deltaClmax_base.get(i).doubleValue()
 						);
-			
-			for(int i=0; i<flapType.size(); i++)
+
+			for(int i=0; i<flapType_index.size(); i++)
 				deltaClmax_flap += deltaClmax_flap_list.get(i).doubleValue();
-			
+
 			//---------------------------------------------------------------
 			// deltaClmax (slat)
 			if(deltaSlat != null) {
-				
+
 				List<Double> dCl_dDelta = new ArrayList<Double>();
 				for(int i=0; i<deltaSlat.size(); i++)
 					dCl_dDelta.add(theWing
@@ -2238,13 +2035,13 @@ public void PlotCDvsAlphaCurve(){
 
 				for(int i=0; i<deltaSlat.size(); i++)
 					deltaClmax_slat += deltaClmax_slat_list.get(i).doubleValue();
-				
+
 			}
-					
+
 			//---------------------------------------------------------------
 			// deltaCL0 (flap)
 			List<Double> kc = new ArrayList<Double>();
-			for(int i=0; i<flapType.size(); i++)
+			for(int i=0; i<flapType_index.size(); i++)
 				kc.add(theWing
 						.getAerodynamics()
 						.get_highLiftDatabaseReader()
@@ -2252,17 +2049,17 @@ public void PlotCDvsAlphaCurve(){
 								theWing.get_aspectRatio(),
 								alphaDelta.get(i))	
 						);
-			
+
 			List<Double> kb = new ArrayList<Double>();
-			for(int i=0; i<flapType.size(); i++)
+			for(int i=0; i<flapType_index.size(); i++)
 				kb.add(theWing
 						.getAerodynamics()
 						.get_highLiftDatabaseReader()
 						.get_Kb_vs_flapSpanRatio(eta_in_flap.get(i), eta_out_flap.get(i))	
 						);
-			
+
 			deltaCL0_flap_list = new ArrayList<Double>();
-			for(int i=0; i<flapType.size(); i++)
+			for(int i=0; i<flapType_index.size(); i++)
 				deltaCL0_flap_list.add(
 						kb.get(i).doubleValue()
 						*kc.get(i).doubleValue()
@@ -2270,51 +2067,51 @@ public void PlotCDvsAlphaCurve(){
 						*(theWing.getAerodynamics().getCalculateCLAlpha().integralMean2D())
 						/meanAirfoil.getAerodynamics().get_clAlpha()
 						);
-			
-			for(int i=0; i<flapType.size(); i++)
+
+			for(int i=0; i<flapType_index.size(); i++)
 				deltaCL0_flap += deltaCL0_flap_list.get(i).doubleValue();
-			
+
 			//---------------------------------------------------------------
 			// deltaCLmax (flap)
 			List<Double> flapSurface = new ArrayList<Double>();
-			for(int i=0; i<flapType.size(); i++)
+			for(int i=0; i<flapType_index.size(); i++)
 				flapSurface.add(
 						Math.abs(
-								 theWing.get_span().getEstimatedValue()							
-								 /2*theWing.get_chordRootEquivalentWing().getEstimatedValue()
-								 *(2-((1-theWing.get_taperRatioEquivalent())*(eta_in_flap.get(i)-eta_out_flap.get(i))))
+								theWing.get_span().getEstimatedValue()							
+								/2*theWing.get_chordRootEquivalentWing().getEstimatedValue()
+								*(2-((1-theWing.get_taperRatioEquivalent())*(eta_in_flap.get(i)-eta_out_flap.get(i))))
 								*(eta_in_flap.get(i)-eta_out_flap.get(i))
 								)
 						);
-			
+
 			List<Double> kLambda_flap = new ArrayList<Double>();
-			for(int i=0; i<flapType.size(); i++)
+			for(int i=0; i<flapType_index.size(); i++)
 				kLambda_flap.add(
 						Math.pow(Math.cos(theWing.get_sweepQuarterChordEq().getEstimatedValue()),0.75)
 						*(1-(0.08*Math.pow(Math.cos(theWing.get_sweepQuarterChordEq().getEstimatedValue()), 2)))
 						);
-			
+
 			deltaCLmax_flap_list = new ArrayList<Double>();
-			for(int i=0; i<flapType.size(); i++)
+			for(int i=0; i<flapType_index.size(); i++)
 				deltaCLmax_flap_list.add(deltaClmax_flap_list.get(i)
 						*(flapSurface.get(i)/theWing.get_surface().getEstimatedValue())
 						*kLambda_flap.get(i)
 						);
-			
-			for(int i=0; i<flapType.size(); i++)
+
+			for(int i=0; i<flapType_index.size(); i++)
 				deltaCLmax_flap += deltaCLmax_flap_list.get(i).doubleValue();
-			
+
 			//---------------------------------------------------------------
 			// deltaCLmax (slat)
 			if(deltaSlat != null) {
-				
+
 				List<Double> kLambda_slat = new ArrayList<Double>();
 				for(int i=0; i<deltaSlat.size(); i++)
 					kLambda_slat.add(
 							Math.pow(Math.cos(theWing.get_sweepQuarterChordEq().getEstimatedValue()),0.75)
 							*(1-(0.08*Math.pow(Math.cos(theWing.get_sweepQuarterChordEq().getEstimatedValue()), 2)))
 							);
-				
+
 				List<Double> slatSurface = new ArrayList<Double>();
 				for(int i=0; i<deltaSlat.size(); i++)
 					slatSurface.add(
@@ -2340,7 +2137,7 @@ public void PlotCDvsAlphaCurve(){
 			// new CLalpha
 			cLalpha_new_list = new ArrayList<Double>();
 			List<Double> swf_s = new ArrayList<Double>();
-			for(int i=0; i<flapType.size(); i++) {
+			for(int i=0; i<flapType_index.size(); i++) {
 				cLalpha_new_list.add(
 						theWing.getAerodynamics().getCalculateCLAlpha().integralMean2D()*(Math.PI/180)
 						*(1+((deltaCL0_flap_list.get(i)/deltaCl0_flap_list.get(i))
@@ -2348,54 +2145,353 @@ public void PlotCDvsAlphaCurve(){
 										*Math.pow(Math.sin(deltaFlap_total[i]*Math.PI/180), 2)))-1))));
 				swf_s.add(flapSurface.get(i)/theWing.get_surface().getEstimatedValue());
 			}
-			
+
 			double swf_s_tot = 0;
 			for(int i=0; i<swf_s.size(); i++)
 				swf_s_tot += swf_s.get(i);
-			
-			for(int i=0; i<flapType.size(); i++)
+
+			for(int i=0; i<flapType_index.size(); i++)
 				cLalpha_new += cLalpha_new_list.get(i)*swf_s.get(i);
-			
+
 			cLalpha_new /= swf_s_tot;
-			
+
 			//---------------------------------------------------------------
 			// Delta alpha max (flap)
 			deltaAlphaMax_list = new ArrayList<Double>();
-			for(int i=0; i<flapType.size(); i++)
+			for(int i=0; i<flapType_index.size(); i++)
 				deltaAlphaMax_list.add(theWing
 						.getAerodynamics()
 						.get_highLiftDatabaseReader()
 						.get_DeltaAlphaMax_vs_DeltaFlap(deltaFlap_total[i]));
 
-			for(int i=0; i<flapType.size(); i++)
+			for(int i=0; i<flapType_index.size(); i++)
 				setDeltaAlphaMax(getDeltaAlphaMax() + deltaAlphaMax_list.get(i).doubleValue());
-					
+
 			//---------------------------------------------------------------
 			// deltaCD
 			deltaCD_list = new ArrayList<Double>();
-			for(int i=0; i<flapType.size(); i++)
-				deltaCD_list.add(
-						0.9
-						*(Math.pow(cf_c.get(i), 1.38))
-						*(flapSurface.get(i)/theWing.get_surface().getEstimatedValue())
-						*(Math.pow(Math.sin(deltaFlap_total[i]), 2))
-						);
-			
-			for(int i=0; i<flapType.size(); i++)
+			for(int i=0; i<flapType_index.size(); i++) {
+				if(flapType_index.get(i) == 3.0)
+					deltaCD_list.add(
+							1.7
+							*(Math.pow(cf_c.get(i), 1.38))
+							*(flapSurface.get(i)/theWing.get_surface().getEstimatedValue())
+							*(Math.pow(Math.sin(deltaFlap_total[i]), 2))
+							);
+				else
+					deltaCD_list.add(
+							0.9
+							*(Math.pow(cf_c.get(i), 1.38))
+							*(flapSurface.get(i)/theWing.get_surface().getEstimatedValue())
+							*(Math.pow(Math.sin(deltaFlap_total[i]), 2))
+							);
+			}
+
+			for(int i=0; i<flapType_index.size(); i++)
 				deltaCD += deltaCD_list.get(i).doubleValue();	
+
+			//---------------------------------------------------------------
+			// deltaCM_c/4
+			List<Double> mu_1 = new ArrayList<Double>();
+			for (int i=0; i<flapType_index.size(); i++)
+				if(flapType_index.get(i) == 3.0)
+					mu_1.add(
+							theWing
+							.getAerodynamics()
+							.get_highLiftDatabaseReader()
+							.get_mu_1_vs_cf_c_First_Plain(
+									(cf_c.get(i))*(1/c_first_c_flap.get(i)),
+									deltaFlap_total[i]
+									)
+							);
+				else
+					mu_1.add(theWing
+							.getAerodynamics()
+							.get_highLiftDatabaseReader()
+							.get_mu_1_vs_cf_c_First_Slotted_Fowler((cf_c.get(i))*(1/c_first_c_flap.get(i)))
+							);
+
+			List<Double> mu_2 = new ArrayList<Double>();
+			for(int i=0; i<flapType_index.size(); i++)
+				mu_2.add(theWing
+						.getAerodynamics()
+						.get_highLiftDatabaseReader()
+						.get_mu_2_vs_bf_b(
+								eta_in_flap.get(i),
+								eta_out_flap.get(i),
+								theWing.get_taperRatioEquivalent()
+								)
+						);
+
+			List<Double> mu_3 = new ArrayList<Double>();
+			for(int i=0; i<flapType_index.size(); i++)
+				mu_3.add(theWing
+						.getAerodynamics()
+						.get_highLiftDatabaseReader()
+						.get_mu_3_vs_bf_b(
+								eta_in_flap.get(i),
+								eta_out_flap.get(i),
+								theWing.get_taperRatioEquivalent()
+								)
+						);
+
+			// FIXME: FIX THE CL CALL AND CHECK RESULTS FROM A.D. YOUNG P.31 (MODIFY FLAP INPUT)
+			deltaCM_c4_list = new ArrayList<Double>();
+			double cL = calcCLatAlphaHighLiftDevice(theConditions.get_alphaCurrent());
+			for(int i=0; i<flapType_index.size(); i++)
+				deltaCM_c4_list.add(
+						(mu_2.get(i)*(-(mu_1.get(i)*deltaClmax_flap_list.get(i)
+								*c_first_c_flap.get(i))-(c_first_c_flap.get(i)
+										*((c_first_c_flap.get(i))-1)
+										*(cL + (deltaClmax_flap_list.get(i)
+												*(1-(flapSurface.get(i)/theWing
+														.get_surface()
+														.getEstimatedValue()))))
+										*(1/8)))) + (0.7*(theWing
+												.get_aspectRatio()/(1+(theWing
+														.get_aspectRatio()/2)))
+												*mu_3.get(i)*deltaClmax_flap_list.get(i)
+												*Math.tan(theWing
+														.get_sweepQuarterChordEq()
+														.getEstimatedValue()))
+						);
+
+			for(int i=0; i<flapType_index.size(); i++)
+				deltaCM_c4 += deltaCM_c4_list.get(i).doubleValue();	
 		}
 		
+		
+		//---------------------------------------------------------------
+		
+		/**
+		 * This method calculates CL at alpha given as input for a wing with high lift devices.
+		 * This method calculates both linear trait and non linear trait. 
+		 * It use the NasaBlackwell method in order to evaluate the slope of the linear trait
+		 * and it builds the non-linear trait using a cubic interpolation. 
+		 * 
+		 * * NOTE THAT AN HIGH LIFT DEVICES ANALYSIS OF THE AIRCRAFT IS REQUIRED!! --> calculateHighLiftDevicesEffects
+		 * 
+		 * @author Manuela Ruocco
+		 *
+		 */		
+		public double calcCLatAlphaHighLiftDevice(Amount<Angle> alpha){
+
+			LSAerodynamicsManager.CalcCLAtAlpha theCLCalculator = LSAerodynamicsManager.this.new CalcCLAtAlpha();
+			
+			if (alpha.getUnit() == NonSI.DEGREE_ANGLE) 
+				alpha = alpha.to(SI.RADIAN);
+
+
+			MyAirfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
+			
+			
+			double cLAlphaFlap =cLalpha_new*57.3; // need it in 1/rad
+			
+			Amount<Angle> deltaAlphaAmount = Amount.valueOf(toRadians(deltaAlphaMax), SI.RADIAN);	
+
+			double alphaStar = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
+			double cL0Clean =  theCLCalculator.nasaBlackwellCompleteCurve(Amount.valueOf(0.0, SI.RADIAN));
+			double cL0HighLift = cL0Clean + deltaCL0_flap;
+			double qValue = cL0HighLift;
+
+			calcAlphaAndCLMax();
+			double cLMaxClean = get_cLMaxClean();
+			Amount<Angle> alphaMax = get_alphaMaxClean().to(NonSI.DEGREE_ANGLE);	
+			double cLMaxHighLift = cLMaxClean + deltaCLmax_flap + deltaCLmax_slat;
+			double alphaMaxHighLift = alphaMax.getEstimatedValue() + deltaAlphaAmount.getEstimatedValue();
+			alphaMaxHighLift = Amount.valueOf(toRadians(alphaMaxHighLift), SI.RADIAN).getEstimatedValue();
+
+			if (alpha.getEstimatedValue() < alphaStar){ 
+				double cLActual = cLAlphaFlap * alpha.getEstimatedValue() + qValue;	
+				return cLActual;
+			}
+			else{
+				double cLStarFlap = cLAlphaFlap * alphaStar + qValue;	
+				double[][] matrixData = { {Math.pow(alphaMaxHighLift, 3), Math.pow(alphaMaxHighLift, 2), alphaMaxHighLift,1.0},
+						{3* Math.pow(alphaMaxHighLift, 2), 2*alphaMaxHighLift, 1.0, 0.0},
+						{3* Math.pow(alphaStar, 2), 2*alphaStar, 1.0, 0.0},
+						{Math.pow(alphaStar, 3), Math.pow(alphaStar, 2),alphaStar,1.0}};
+				RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
+				double [] vector = {cLMaxHighLift, 0,cLAlphaFlap, cLStarFlap};
+
+				double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
+
+				double a = solSystem[0];
+				double b = solSystem[1];
+				double c = solSystem[2];
+				double d = solSystem[3];
+
+				double clActual = a * Math.pow(alpha.getEstimatedValue(), 3) + 
+						b * Math.pow(alpha.getEstimatedValue(), 2) + 
+						c * alpha.getEstimatedValue() + d;
+
+				return clActual;
+			}
+
+		}
+
+		/** 
+		 * This function plot CL vs Alpha curve using 30 value of alpha between alpha=- 2 deg and
+		 * alphaMax+2 for a wing with high lift devices.
+		 * 
+		 * @author Manuela Ruocco
+		 * @throws IllegalAccessException 
+		 * @throws InstantiationException 
+		 */
+
+		public void PlotHighLiftCurve() throws InstantiationException, IllegalAccessException{ 
+
+			PlotCLvsAlphaCurve();
+
+			String folderPathHL = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR);
+			String subfolderPathHL = JPADStaticWriteUtils.createNewFolder(folderPathHL + "CL_vs_Alpha_Highlift" + File.separator);
+
+			double cLAlphaFlap = cLalpha_new*57.3; // need it in 1/rad
+		
+			Amount<Angle> alphaActual;
+			Amount<Angle> deltaAlphaAmount = Amount.valueOf(toRadians(deltaAlphaMax), SI.RADIAN);	
+
+			List<Double[]> cLListPlot = new ArrayList<>(); 
+			List<Double[]> alphaListPlot = new ArrayList<>(); 
+
+			double[] cLArrayClean = get_cLArrayPlot();
+			double[] alphaArrayClean = get_alphaArrayPlot();
+
+			double alphaFirst = -10.0;
+			int nPoints = 50;
+			MyAirfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
+			//double alphaStar = 0.15;
+			double alphaStarClean = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
+			
+			Amount<Angle> alphaStarCleanAmount = Amount.valueOf(alphaStarClean, SI.RADIAN);
+
+			CalcCLAtAlpha theCLCleanCalculator = new CalcCLAtAlpha();
+			double cLStarClean = theCLCleanCalculator.nasaBlackwellCompleteCurve(alphaStarCleanAmount);
+			
+			double cL0Clean =  theCLCleanCalculator.nasaBlackwellCompleteCurve(Amount.valueOf(0.0, SI.RADIAN));
+			double cL0HighLift = cL0Clean + deltaCL0_flap;
+			double qValue = cL0HighLift;
+			double alphaStar = (cLStarClean - qValue)/cLAlphaFlap;
+			double alphaStarFlap = (alphaStar + alphaStarClean)/2;
+			double cLStarFlap = cLAlphaFlap * alphaStarFlap + qValue;	
+			System.out.println("\n----------------------------------");
+			System.out.println(" cl star " + cLStarFlap);
+			System.out.println(" cl alpha " + cLAlphaFlap);
+			System.out.println(" q " + qValue);
+			System.out.println("----------------------------------");
+			calcAlphaAndCLMax(); // TODO try to delete this
+			double cLMaxClean = get_cLMaxClean();
+			Amount<Angle> alphaMax = get_alphaMaxClean().to(NonSI.DEGREE_ANGLE);	
+			double cLMaxHighLift = cLMaxClean + deltaCLmax_flap + deltaCLmax_slat;
+			double alphaMaxHighLift = alphaMax.getEstimatedValue() + deltaAlphaMax;
+			alphaMaxHighLift = Amount.valueOf(toRadians(alphaMaxHighLift), SI.RADIAN).getEstimatedValue();
+			double alphaMaxHighLiftDegree =  
+					Amount.valueOf(alphaMaxHighLift, SI.RADIAN)
+					.to(NonSI.DEGREE_ANGLE)
+					.getEstimatedValue();
+			
+			double[][] matrixData = { {Math.pow(alphaMaxHighLift, 3), Math.pow(alphaMaxHighLift, 2)
+				, alphaMaxHighLift,1.0},
+					{3* Math.pow(alphaMaxHighLift, 2), 2*alphaMaxHighLift, 1.0, 0.0},
+					{3* Math.pow(alphaStarFlap, 2), 2*alphaStarFlap, 1.0, 0.0},
+					{Math.pow(alphaStarFlap, 3), Math.pow(alphaStarFlap, 2),alphaStarFlap,1.0}};
+			RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
+			
+			
+			double [] vector = {cLMaxHighLift, 0,cLAlphaFlap, cLStarFlap};
+			System.out.println(" -----------HIGH LIFT-------------- ");
+			System.out.println(" alpha max " + alphaMaxHighLift);
+			System.out.println(" alpha star " + alphaStarFlap);
+			System.out.println(" cl max " + cLMaxHighLift);
+			System.out.println(" cl star " + cLStarFlap);
+			System.out.println(" cl alpha " + cLAlphaFlap);
+
+			double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
+
+			double a = solSystem[0];
+			double b = solSystem[1];
+			double c = solSystem[2];
+			double d = solSystem[3];
+
+			double[] alphaArrayHighLiftPlot = MyArrayUtils.linspace(alphaFirst,
+					alphaMaxHighLiftDegree + 2,
+					nPoints);
+
+			double[] cLArrayHighLiftPlot = new double [nPoints];
+
+
+			for ( int i=0 ; i< alphaArrayHighLiftPlot.length ; i++){
+				alphaActual = Amount.valueOf(toRadians(alphaArrayHighLiftPlot[i]), SI.RADIAN);
+				if (alphaActual.getEstimatedValue() <= alphaStarFlap) { 
+					cLArrayHighLiftPlot[i] = cLAlphaFlap * alphaActual.getEstimatedValue() + qValue;}
+				else {
+					cLArrayHighLiftPlot[i] = a * Math.pow(alphaActual.getEstimatedValue(), 3) + 
+							b * Math.pow(alphaActual.getEstimatedValue(), 2) + 
+							c * alphaActual.getEstimatedValue() + d;
+				}
+
+			}
+
+			// Convert from double to Double in order to use JFreeChart to plot.
+			MyArray alphaArrayCleanMyArray = new MyArray(alphaArrayClean);
+			Double[] alphaArrayCleanDouble = alphaArrayCleanMyArray.getdDouble();
+
+			MyArray alphaArrayHighLiftMyArray = new MyArray(alphaArrayHighLiftPlot);
+			Double[] alphaArrayHighLiftDouble = alphaArrayHighLiftMyArray.getdDouble();
+
+			MyArray cLArrayCleanMyArray = new MyArray(cLArrayClean);
+			Double[] cLArrayCleanDouble = cLArrayCleanMyArray.getdDouble();
+
+			MyArray cLArrayHighLiftMyArray = new MyArray(cLArrayHighLiftPlot);
+			Double[] cLArrayHighLiftDouble = cLArrayHighLiftMyArray.getdDouble();
+
+
+			alphaListPlot.add(alphaArrayCleanDouble);
+			alphaListPlot.add(alphaArrayHighLiftDouble);
+
+			cLListPlot.add(cLArrayCleanDouble);
+			cLListPlot.add(cLArrayHighLiftDouble);
+
+
+
+			List<String> legend  = new ArrayList<>(); 
+
+			
+			legend.add("clean");
+			legend.add("high lift");
+
+
+
+			MyChartToFileUtils.plotJFreeChart(alphaListPlot, 
+					cLListPlot,
+					"CL vs alpha",
+					"alpha", 
+					"CL",
+					"deg",
+					"",
+					true,
+					legend,
+					subfolderPathHL,
+					"CL alpha Wing High Lift");
+
+//			System.out.println(" alpha vector new" + Arrays.toString(alphaArrayHighLiftPlot));
+//			System.out.println(" cl vector " + Arrays.toString(cLArrayHighLiftPlot));
+//			System.out.println(" cl max " + cLMaxHighLift);
+
+
+
+		}
 		//-------------------------------------------------------------------------------------
 		// GETTERS OF RESULTS:
-		
+
 		public ArrayList<Double> getDeltaCl0_flap_list() {
 			return deltaCl0_flap_list;
 		}
-		
+
 		public double getDeltaCl0_flap() {
 			return deltaCl0_flap;
 		}
-		
+
 		public ArrayList<Double> getDeltaCL0_flap_list() {
 			return deltaCL0_flap_list;
 		}
@@ -2407,11 +2503,11 @@ public void PlotCDvsAlphaCurve(){
 		public ArrayList<Double> getDeltaClmax_flap_list() {
 			return deltaClmax_flap_list;
 		}
-		
+
 		public double getDeltaClmax_flap() {
 			return deltaClmax_flap;
 		}
-		
+
 		public ArrayList<Double> getDeltaCLmax_flap_list() {
 			return deltaCLmax_flap_list;
 		}
@@ -2419,7 +2515,7 @@ public void PlotCDvsAlphaCurve(){
 		public double getDeltaCLmax_flap() {
 			return deltaCLmax_flap;
 		}
-		
+
 		public ArrayList<Double> getDeltaClmax_slat_list() {
 			return deltaClmax_slat_list;
 		}
@@ -2427,7 +2523,7 @@ public void PlotCDvsAlphaCurve(){
 		public double getDeltaClmax_slat() {
 			return deltaClmax_slat;
 		}
-		
+
 		public ArrayList<Double> getDeltaCLmax_slat_list() {
 			return deltaCLmax_slat_list;
 		}
@@ -2435,7 +2531,7 @@ public void PlotCDvsAlphaCurve(){
 		public double getDeltaCLmax_slat() {
 			return deltaCLmax_slat;
 		}
-		
+
 		public ArrayList<Double> getcLalpha_new_list() {
 			return cLalpha_new_list;
 		}
@@ -2443,7 +2539,7 @@ public void PlotCDvsAlphaCurve(){
 		public double getcLalpha_new() {
 			return cLalpha_new;
 		}
-		
+
 		public ArrayList<Double> getDeltaAlphaMax_list() {
 			return deltaAlphaMax_list;
 		}
@@ -2467,6 +2563,14 @@ public void PlotCDvsAlphaCurve(){
 		public double getDeltaCD() {
 			return deltaCD;
 		}
+		
+		public ArrayList<Double> getDeltaCM_c4_list() {
+			return deltaCM_c4_list;
+		}
+
+		public double getDeltaCM_c4() {
+			return deltaCM_c4;
+		}
 
 		public List<Double[]> getDeltaFlap() {
 			return deltaFlap;
@@ -2477,11 +2581,11 @@ public void PlotCDvsAlphaCurve(){
 		}
 
 		public List<Double> getFlapType() {
-			return flapType;
+			return flapType_index;
 		}
 
 		public void setFlapType(List<Double> flapType) {
-			this.flapType = flapType;
+			this.flapType_index = flapType;
 		}
 
 		public List<Double> getDeltaSlat() {
@@ -2556,7 +2660,7 @@ public void PlotCDvsAlphaCurve(){
 			this.cExt_c_slat = cExt_c_slat;
 		}
 	}
-		
+
 	/**
 	 * Evaluate alpha zero lift of the entire lifting surface
 	 * The alpha0L is considered relative to the root chord

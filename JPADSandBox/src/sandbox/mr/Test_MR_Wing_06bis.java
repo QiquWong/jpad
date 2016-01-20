@@ -2,6 +2,7 @@ package sandbox.mr;
 
 import static java.lang.Math.toRadians;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,10 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
+import org.kohsuke.args4j.Argument;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.Option;
 
 import aircraft.OperatingConditions;
 import aircraft.auxiliary.airfoil.MyAirfoil;
@@ -20,24 +25,41 @@ import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcHighLiftDevices;
 import configuration.MyConfiguration;
 import configuration.enumerations.ComponentEnum;
+import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
+import standaloneutils.JPADXmlReader;
 import standaloneutils.customdata.CenterOfGravity;
 
 public class Test_MR_Wing_06bis {
+	
+	//------------------------------------------------------------------------------------------
+	// VARIABLE DECLARATION: 
+	@Option(name = "-i", aliases = { "--input" }, required = false,
+			usage = "my input file")
+	private File _inputFile;
 
-	public static void main(String[] args) throws InstantiationException, IllegalAccessException {
+	// declaration necessary for Concrete Object usage
+	public CmdLineParser theCmdLineParser;
+	public JPADXmlReader reader;
+
+	@Argument
+	private List<String> arguments = new ArrayList<String>();
+
+	//BUILDER:
+		public Test_MR_Wing_06bis () {
+			theCmdLineParser = new CmdLineParser(this);
+		}
+
+
+	public static void main(String[] args) throws InstantiationException, IllegalAccessException, CmdLineException {
+
+		Test_MR_Wing_06bis main = new Test_MR_Wing_06bis();
+		
 		// -----------------------------------------------------------------------
 		// Generate default Wing
 		// -----------------------------------------------------------------------
-
-		// Fuselage
-		//				Fuselage theFuselage = new Fuselage(
-		//						"Fuselage", // name
-		//						"Data from AC_ATR_72_REV05.pdf", // description
-		//						0.0, 0.0, 0.0 // Fuselage apex (x,y,z)-coordinates in construction axes
-		//						);
 
 		// Wing
 		double xAw = 11.0; //meter 
@@ -48,8 +70,7 @@ public class Test_MR_Wing_06bis {
 				"Wing", // name
 				"Data from AC_ATR_72_REV05.pdf", 
 				xAw, yAw, zAw, iw, 
-				ComponentEnum.WING,
-				null // let her see the fuselage
+				ComponentEnum.WING
 				); 
 
 		theWing.calculateGeometry();
@@ -74,15 +95,18 @@ public class Test_MR_Wing_06bis {
 
 		cg.calculateCGinBRF();
 		theWing.set_cg(cg);
+		theWing.set_aspectRatio(6.0);
 
 		// Default operating conditions
-		OperatingConditions theOperatingConditions = new OperatingConditions();				
+		OperatingConditions theOperatingConditions = new OperatingConditions();		
+		theOperatingConditions.set_alphaCurrent(Amount.valueOf(2.0, NonSI.DEGREE_ANGLE));
 
 		System.out.println("\n \n-----------------------------------------------------");
 		System.out.println("Operating condition");
 		System.out.println("-----------------------------------------------------");
 		System.out.println("\tMach: " + theOperatingConditions.get_machCurrent());
 		System.out.println("\tAltitude: " + theOperatingConditions.get_altitude());
+		System.out.println("\tAlpha " + theOperatingConditions.get_alphaCurrent().getEstimatedValue());
 		System.out.println("----------------------");
 
 
@@ -107,9 +131,6 @@ public class Test_MR_Wing_06bis {
 
 		theLSAnalysis.set_AerodynamicDatabaseReader(aeroDatabaseReader);
 		theLSAnalysis.set_highLiftDatabaseReader(highLiftDatabaseReader);
-
-		//				theWing.getAerodynamics().set_AerodynamicDatabaseReader(aeroDatabaseReader);
-		//				theWing.getAerodynamics().set_highLiftDatabaseReader(highLiftDatabaseReader);
 
 		// -----------------------------------------------------------------------
 		// Define airfoil
@@ -179,7 +200,6 @@ public class Test_MR_Wing_06bis {
 
 
 
-
 		// -----------------------------------------------------------------------
 		// Calculate CL 
 		// -----------------------------------------------------------------------
@@ -201,42 +221,74 @@ public class Test_MR_Wing_06bis {
 		//----------------------------------------------------------------------------------
 		// High Lift Devices Test
 		List<Double[]> deltaFlap = new ArrayList<Double[]>();
-		List<Double> flapType = new ArrayList<Double>();
+		List<FlapTypeEnum> flapType = new ArrayList<FlapTypeEnum>();
 		List<Double> eta_in_flap = new ArrayList<Double>();
 		List<Double> eta_out_flap = new ArrayList<Double>();
 		List<Double> cf_c = new ArrayList<Double>();
 
-		// FLAP 1
-		// flapType from 1.0 to 6.0 for the required flap type:
-		//		  1 = Single Slotted Flap
-		//		  2 = Double Slotted Flap
-		//		  3 = Split Flap
-		//		  4 = Plain Flap
-		//		  5 = Fowler Flap
-		//		  6 = Triple Slotted Flap
-		flapType.add(1.0);
-		cf_c.add(0.1711);
-		deltaFlap.add(new Double[] {20.0});
-		eta_in_flap.add(0.098);
-		eta_out_flap.add(0.39072039072039072039072039072039);
+		// XML reading phase:
+		// Arguments check
+		if (args.length == 0){
+			System.err.println("NO INPUT FILE GIVEN --> TERMINATING");
+			return;
+		}
+		main.theCmdLineParser.parseArgument(args);
+		String path = main.get_inputFile().getAbsolutePath();
+		JPADXmlReader reader = new JPADXmlReader(path);
 
-		// FLAP 2 
-		// flapType from 1.0 to 6.0 for the required flap type:
-		//		  1 = Single Slotted Flap
-		//		  2 = Double Slotted Flap
-		//		  3 = Split Flap
-		//		  4 = Plain Flap
-		//		  5 = Fowler Flap
-		//		  6 = Triple Slotted Flap
-		flapType.add(1.0);
-		cf_c.add(0.1711);
-		deltaFlap.add(new Double[] {20.0});
-		eta_in_flap.add(0.39072039072039072039072039072039);
-		eta_out_flap.add(0.75);
+		System.out.println("-----------------------------------------------------------");
+		System.out.println("XML File Path : " + path);
+		System.out.println("-----------------------------------------------------------");
+		System.out.println("Initialize reading \n");
+
+		List<String> flapNumber_property = reader.getXMLPropertiesByPath("//Flap_Number");
+		int flapNumber = Integer.valueOf(flapNumber_property.get(0));
+		List<String> flapType_property = reader.getXMLPropertiesByPath("//FlapType");
+		List<String> cf_c_property = reader.getXMLPropertiesByPath("//Cf_c");
+		List<String> delta_flap1_property = reader.getXMLPropertiesByPath("//Delta_Flap1");
+		List<String> delta_flap2_property = reader.getXMLPropertiesByPath("//Delta_Flap2");
+		List<String> eta_in_property = reader.getXMLPropertiesByPath("//Flap_inboard");
+		List<String> eta_out_property = reader.getXMLPropertiesByPath("//Flap_outboard");
+
+		for(int i=0; i<flapType_property.size(); i++) {
+			if(flapType_property.get(i).equals("SINGLE_SLOTTED"))
+				flapType.add(FlapTypeEnum.SINGLE_SLOTTED);
+			else if(flapType_property.get(i).equals("DOUBLE_SLOTTED"))
+				flapType.add(FlapTypeEnum.DOUBLE_SLOTTED);
+			else if(flapType_property.get(i).equals("PLAIN"))
+				flapType.add(FlapTypeEnum.PLAIN);
+			else if(flapType_property.get(i).equals("FOWLER"))
+				flapType.add(FlapTypeEnum.FOWLER);
+			else if(flapType_property.get(i).equals("TRIPLE_SLOTTED"))
+				flapType.add(FlapTypeEnum.TRIPLE_SLOTTED);
+			else {
+				System.err.println("NO VALID FLAP TYPE!!");
+				return;
+			}
+		}
+		
+		Double[] deltaFlap1_array = new Double[delta_flap1_property.size()];
+		for(int i=0; i<deltaFlap1_array.length; i++)
+			deltaFlap1_array[i] = Double.valueOf(delta_flap1_property.get(i));
+		
+		Double[] deltaFlap2_array = new Double[delta_flap2_property.size()];
+		for(int i=0; i<deltaFlap1_array.length; i++)
+			deltaFlap2_array[i] = Double.valueOf(delta_flap2_property.get(i));
+		
+		deltaFlap.add(deltaFlap1_array);
+		deltaFlap.add(deltaFlap2_array);
+		
+		for(int i=0; i<cf_c_property.size(); i++)
+			cf_c.add(Double.valueOf(cf_c_property.get(i)));
+		for(int i=0; i<eta_in_property.size(); i++)
+			eta_in_flap.add(Double.valueOf(eta_in_property.get(i)));
+		for(int i=0; i<eta_out_property.size(); i++)
+			eta_out_flap.add(Double.valueOf(eta_out_property.get(i)));
 
 		LSAerodynamicsManager.CalcHighLiftDevices highLiftCalculator = theLSAnalysis
 				.new CalcHighLiftDevices(
 						theWing,
+						theOperatingConditions,
 						deltaFlap,
 						flapType,
 						null,
@@ -249,20 +301,21 @@ public class Test_MR_Wing_06bis {
 						null,
 						null
 						);
-		//				CalcHighLiftDevices highLiftCalculator = new CalcHighLiftDevices(
-		//						aircraft,
-		//						deltaFlap,
-		//						flapType,
-		//						null,
-		//						eta_in_flap,
-		//						eta_out_flap,
-		//						null,
-		//						null,
-		//						cf_c,
-		//						null,
-		//						null,
-		//						null
-		//						);
+		
+//		CalcHighLiftDevices highLiftCalculator = new CalcHighLiftDevices(
+//				aircraft,
+//				deltaFlap,
+//				flapType,
+//				null,
+//				eta_in_flap,
+//				eta_out_flap,
+//				null,
+//				null,
+//				cf_c,
+//				null,
+//				null,
+//				null
+//				);
 
 		highLiftCalculator.calculateHighLiftDevicesEffects();
 
@@ -292,12 +345,6 @@ public class Test_MR_Wing_06bis {
 
 		System.out.println("\n\ndeltaCLmax_flap = \n" + highLiftCalculator.getDeltaCLmax_flap());
 
-		System.out.println("\n\nclalpha_new_list = ");
-//		for(int i=0; i<highLiftCalculator.getClalpha_new_list().size(); i++)
-//			System.out.print(highLiftCalculator.getClalpha_new_list().get(i) + " ");
-//
-//		System.out.println("\n\nclalpha_new = \n" + highLiftCalculator.getClalpha_new());
-
 		System.out.println("\n\ncLalpha_new_list = ");
 		for(int i=0; i<highLiftCalculator.getcLalpha_new_list().size(); i++)
 			System.out.print(highLiftCalculator.getcLalpha_new_list().get(i) + " ");
@@ -307,51 +354,68 @@ public class Test_MR_Wing_06bis {
 		System.out.println("\n\ndeltaAlphaMax_list = ");
 		for(int i=0; i<highLiftCalculator.getDeltaAlphaMax_list().size(); i++)
 			System.out.print(highLiftCalculator.getDeltaAlphaMax_list().get(i) + " ");
-
+		
 		System.out.println("\n\ndeltaAlphaMax = \n" + highLiftCalculator.getDeltaAlphaMax());
-
+		
 		System.out.println("\n\ndeltaCD_list = ");
 		for(int i=0; i<highLiftCalculator.getDeltaCD_list().size(); i++)
 			System.out.print(highLiftCalculator.getDeltaCD_list().get(i) + " ");
 
 		System.out.println("\n\ndeltaCD = \n" + highLiftCalculator.getDeltaCD());
+		
+		System.out.println("\n\ndeltaCMc_4_list = ");
+		for(int i=0; i<highLiftCalculator.getDeltaCM_c4_list().size(); i++)
+			System.out.print(highLiftCalculator.getDeltaCM_c4_list().get(i) + " ");
 
-		//--------------------------
-		// New lift curve 
-
-
-		//Amount<Angle> alpha = Amount.valueOf(toRadians(8.), SI.RADIAN);
-		double cLHighLift = theCLCalculator.highLiftDevice(
-				alpha,
-				deltaFlap,
-				flapType,
-				eta_in_flap, 
-				eta_out_flap, 
-				cf_c,
-				null,
-				null, 
-				null,
-				null, 
-				null, 
-				null);
-
-		System.out.println("\n\nCL flap = " + cLHighLift);
-
-		theLSAnalysis.PlotHighLiftCurve(
-				deltaFlap,
-				flapType,
-				eta_in_flap, 
-				eta_out_flap, 
-				cf_c,
-				null,
-				null, 
-				null,
-				null, 
-				null, 
-				null);
-		System.out.println("DONE");
-
-
+		
+		System.out.println("\n\ndeltaCMc_4 = \n" + highLiftCalculator.getDeltaCM_c4());		
+		
+//		--------------------------
+//		// New lift curve 
+		
+		highLiftCalculator.PlotHighLiftCurve();
+		System.out.println("DONE");	
+		
+		
+//		LSAerodynamicsManager.CalcCLAtAlpha theCLCalculator = theLSAnalysis
+//				.new CalcCLAtAlpha();
+//		
+//		Amount<Angle> alpha = Amount.valueOf(toRadians(8.), SI.RADIAN);
+//		double cLHighLift = theCLCalculator.highLiftDevice(
+//				alpha,
+//				deltaFlap,
+//				flapType,
+//				eta_in_flap, 
+//				eta_out_flap, 
+//				cf_c,
+//				null,
+//				null, 
+//				null,
+//				null, 
+//				null, 
+//				null);
+//		
+//		System.out.println("\n\nCL flap = " + cLHighLift);
+//		
+//		theLSAnalysis.PlotHighLiftCurve(
+//				deltaFlap,
+//				flapType,
+//				eta_in_flap, 
+//				eta_out_flap, 
+//				cf_c,
+//				null,
+//				null, 
+//				null,
+//				null, 
+//				null, 
+//				null);
+//		System.out.println("DONE");
+		
 	}
-
+	
+	//------------------------------------------------------------------------------------------
+	// GETTERS & SETTERS:
+	public File get_inputFile() {
+		return _inputFile;
+	}
 }

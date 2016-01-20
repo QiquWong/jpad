@@ -9,14 +9,14 @@
 		<Flap_Number unit="">2</Flap_Number>
 		<Flap1>
 			<FlapType unit="">SINGLE_SLOTTED</FlapType>
-			<Cf_c unit="">0.1711</Cf_c>
+			<Cf_c unit="">0.26</Cf_c>
 			<Delta_Flap1 unit="°">20</Delta_Flap1>
 			<Flap_inboard>0.098</Flap_inboard>
 			<Flap_outboard>0.3907</Flap_outboard>
 		</Flap1>
 		<Flap2>
 			<FlapType unit="">SINGLE_SLOTTED</FlapType>
-			<Cf_c unit="">0.1711</Cf_c>
+			<Cf_c unit="">0.26</Cf_c>
 			<Delta_Flap2 unit="°">20</Delta_Flap2>
 			<Flap_inboard>0.3907</Flap_inboard>
 			<Flap_outboard>0.75</Flap_outboard>
