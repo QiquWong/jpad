@@ -43,7 +43,6 @@
 \usepackage[english,italian]{babel}
 \usepackage{csquotes}% Recommended with biblatex combined with italian (as main language)
 
-
 %------------------------------------------------------------------------------------------
 % LaTeX3 stuff
 
@@ -470,6 +469,7 @@
 %------------------------------------------------------------------------------------------
 % Graphics and related stuff
 \usepackage{graphicx}
+\graphicspath{{images/}}
 \usepackage[export]{adjustbox}
 \usepackage{tikz}
 \usepackage{pgfplots}
@@ -564,7 +564,18 @@
 % Units of measure according to the SI standard
 
 \usepackage{siunitx}
-
+\sisetup{
+  fixdp,dp=3,
+  load=derived,
+  unitsep=thin,
+  valuesep=thin,
+  decimalsymbol=comma,
+  % digitsep=thin,
+  % group-separator={},% ver. 2
+  % sepfour=false,
+  % round-mode = places,
+  % round-precision = 3
+}
 \input{_units}% load settings from ./_units.tex
 
 %------------------------------------------------------------------------------------------

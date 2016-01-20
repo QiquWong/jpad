@@ -8,48 +8,26 @@ width=\textwidth,
 height=0.65\textwidth,
 scaled ticks=false, tick label style={/pgf/number format/fixed},
 xmin=0.0,
-xmax=7205.947900774779,
+xmax=1977.6643801223847,
 xlabel={Range (nmi)},
 xmajorgrids,
 ymin=0.0,
-ymax=594.0,
+ymax=77.76,
 ylabel={Payload (No. Pass)},
 ymajorgrids,
 %legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
-legend entries = {$\SI{284000}{\kilogram}$\\$\SI{302000}{\kilogram}$\\$\SI{319000}{\kilogram}$\\$\SI{337000}{\kilogram}$\\$\SI{355000}{\kilogram}$\\},
+legend entries = {$\SI{18500}{\kilogram}$\\$\SI{19600}{\kilogram}$\\$\SI{20800}{\kilogram}$\\$\SI{21900}{\kilogram}$\\$\SI{23100}{\kilogram}$\\},
 ]
 
 \addplot [
 color=black,
-solid
+dotted
 ]
 table[row sep=crcr]{
-0.0	550.0\\
-2481.6216737719546	550.0\\
-6672.1739821988685	-167.0\\
-6093.4229853161405	0.0\\
-};
-
-\addplot [
-color=black,
-densely dashed
-]
-table[row sep=crcr]{
-0.0	550.0\\
-3088.24620007775	550.0\\
-6056.0322552032685	12.0\\
-6093.4229853161405	0.0\\
-};
-
-\addplot [
-color=black,
-dashdotted
-]
-table[row sep=crcr]{
-0.0	550.0\\
-3660.187016880501	550.0\\
-5538.489763557311	191.0\\
-6093.4229853161405	0.0\\
+0.0	72.0\\
+-1078.9286571061161	72.0\\
+1755.07333490137	5.0\\
+1831.1707223355413	0.0\\
 };
 
 \addplot [
@@ -57,21 +35,43 @@ color=black,
 dashed
 ]
 table[row sep=crcr]{
-0.0	550.0\\
-4201.196618409434	550.0\\
-5097.077818249801	370.0\\
-6093.4229853161405	0.0\\
+0.0	72.0\\
+-649.2556391032156	72.0\\
+1601.7689730994862	17.0\\
+1831.1707223355413	0.0\\
 };
 
 \addplot [
 color=black,
-dotted
+dashdotted
 ]
 table[row sep=crcr]{
-0.0	550.0\\
-4714.449641326871	550.0\\
-4715.7994387145845	550.0\\
-6093.4229853161405	0.0\\
+0.0	72.0\\
+-244.14914205597876	72.0\\
+1468.2276865740514	29.0\\
+1831.1707223355413	0.0\\
+};
+
+\addplot [
+color=black,
+densely dashed
+]
+table[row sep=crcr]{
+0.0	72.0\\
+139.04873105524126	72.0\\
+1350.839532297808	40.0\\
+1831.1707223355413	0.0\\
+};
+
+\addplot [
+color=black,
+solid
+]
+table[row sep=crcr]{
+0.0	72.0\\
+502.58657991049535	72.0\\
+1246.8272780900518	52.0\\
+1831.1707223355413	0.0\\
 };
 \end{axis}
 \end{tikzpicture}%
