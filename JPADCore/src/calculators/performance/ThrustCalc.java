@@ -137,6 +137,22 @@ public class ThrustCalc {
 		return EngineDatabaseManager.getThrustRatio(mach, altitude, bpr, engineType, flightCondition)*
 				t0*nEngine*phi;
 	}
+	
+	/**
+	 * @author Vittorio Trifari
+	 * @param t0 static thrust (N) per single engine
+	 * @param nEngine number of engines
+	 * @param phi engine power setting
+	 * @param simga density ratio at a given altitude
+	 * @param altitude (m)
+	 * @return
+	 */
+	public static double calculateThrust(
+			double t0, double nEngine, double phi, double altitude
+			) {
+		
+		return t0*nEngine*0.71*phi*(AtmosphereCalc.getDensity(altitude)/AtmosphereCalc.getDensity(0.0));
+	}
 
 	/**
 	 * @author Lorenzo Attanasio

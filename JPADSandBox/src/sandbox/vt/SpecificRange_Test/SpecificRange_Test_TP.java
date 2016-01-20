@@ -80,8 +80,8 @@ public class SpecificRange_Test_TP {
 		// generating variation of mass of 10% until -40% of maxTakeOffMass
 		double[] maxTakeOffMassArray = new double[5];
 		for (int i=0; i<5; i++)
-			maxTakeOffMassArray[i] = aircraft.get_weights().get_MTOM().getEstimatedValue()*(1-0.1*(4-i));
-//			maxTakeOffMassArray[i] = aircraft.get_weights().get_MTOM().plus(aircraft.get_weights().get_MLM()).divide(2).getEstimatedValue()*(1-0.1*(4-i));
+//			maxTakeOffMassArray[i] = aircraft.get_weights().get_MTOM().getEstimatedValue()*(1-0.1*(4-i));
+			maxTakeOffMassArray[i] = aircraft.get_weights().get_MTOM().plus(aircraft.get_weights().get_MLM()).divide(2).getEstimatedValue()*(1-0.1*(4-i));
 		
 		System.out.println("\n\nMAX TAKE OFF MASS ARRAY:");
 		for(int i=0; i<maxTakeOffMassArray.length; i++)

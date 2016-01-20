@@ -94,16 +94,20 @@ public class SpecificRangeCalc {
 		double[][] drag = new double[machList.size()][machList.get(0).length];
 		for(int i=0; i<machList.size(); i++){
 			for(int j=0; j<machList.get(i).length; j++) {
-				thrust[i][j] = ThrustCalc.calculateThrustDatabase(
-						t0,
-						engineNumber,
-						phi,
-						bpr,
-						engineType,
-						flightCondition,
-						altitude,
-						machList.get(i)[j]
-						);
+				if(engineType == EngineTypeEnum.TURBOPROP)
+					thrust[i][j] = ThrustCalc.calculateThrustDatabase(
+							t0,
+							engineNumber,
+							phi,
+							bpr,
+							engineType,
+							flightCondition,
+							altitude,
+							machList.get(i)[j]
+							);
+				else if(engineType == EngineTypeEnum.TURBOFAN)
+					thrust[i][j] = ThrustCalc.calculateThrust(t0, engineNumber, phi, altitude);
+				
 				drag[i][j] = DragCalc.calculateDragAtSpeed(
 						maxTakeOffMassArray[i]*AtmosphereCalc.g0.getEstimatedValue(),
 						altitude,

@@ -74,16 +74,16 @@ public class ACAnalysisManager {
 		_thePerformances = new ACPerformanceManager();
 
 		//it's possible to define a method setDatabase
-				aircraft.get_theAerodynamics().set_aerodynamicDatabaseReader(
-						aircraft
-						.get_wing()
-						.getAerodynamics()
-						.get_AerodynamicDatabaseReader());
-				aircraft.get_theAerodynamics().set_highLiftDatabaseReader(
-						aircraft
-						.get_wing()
-						.getAerodynamics()
-						.get_highLiftDatabaseReader());
+//				aircraft.get_theAerodynamics().set_aerodynamicDatabaseReader(
+//						aircraft
+//						.get_wing()
+//						.getAerodynamics()
+//						.get_AerodynamicDatabaseReader());
+//				aircraft.get_theAerodynamics().set_highLiftDatabaseReader(
+//						aircraft
+//						.get_wing()
+//						.getAerodynamics()
+//						.get_highLiftDatabaseReader());
 				
 		updateGeometry(aircraft);
 

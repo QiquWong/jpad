@@ -488,32 +488,32 @@ public class CalcHighLiftDevices {
 							)
 					);
 		
-		// FIXME: FIX THE CL CALL AND CHECK RESULTS FROM A.D. YOUNG P.31 (MODIFY FLAP INPUT)
-		deltaCM_c4_list = new ArrayList<Double>();
-		for(int i=0; i<flapType_index.size(); i++)
-			deltaCM_c4_list.add(
-					(mu_2.get(i)*(-(mu_1.get(i)*deltaClmax_flap_list.get(i)*cf_c.get(i)
-							*c_first_c_flap.get(i))-(cf_c.get(i)*c_first_c_flap.get(i)
-									*((cf_c.get(i)*c_first_c_flap.get(i))-1)
-									*(cL + (deltaClmax_flap_list.get(i)
-											*(1-(flapSurface.get(i)/aircraft
-													.get_wing()
-													.get_surface()
-													.getEstimatedValue()))))
-									*(1/8)))) + (0.7*(aircraft
-											.get_wing()
-											.get_aspectRatio()/(1+(aircraft
-													.get_wing()
-													.get_aspectRatio()/2)))
-											*mu_3.get(i)*deltaClmax_flap_list.get(i)
-											*Math.tan(aircraft
-													.get_wing()
-													.get_sweepQuarterChordEq()
-													.getEstimatedValue()))
-					);
-		
-		for(int i=0; i<flapType_index.size(); i++)
-			deltaCM_c4 += deltaCM_c4_list.get(i).doubleValue();	
+		// SEE LSAerodynamicManager From MANUELA) --> CalcHighLiftDevices Class
+//		deltaCM_c4_list = new ArrayList<Double>();
+//		for(int i=0; i<flapType_index.size(); i++)
+//			deltaCM_c4_list.add(
+//					(mu_2.get(i)*(-(mu_1.get(i)*deltaClmax_flap_list.get(i)*cf_c.get(i)
+//							*c_first_c_flap.get(i))-(cf_c.get(i)*c_first_c_flap.get(i)
+//									*((cf_c.get(i)*c_first_c_flap.get(i))-1)
+//									*(cL + (deltaClmax_flap_list.get(i)
+//											*(1-(flapSurface.get(i)/aircraft
+//													.get_wing()
+//													.get_surface()
+//													.getEstimatedValue()))))
+//									*(1/8)))) + (0.7*(aircraft
+//											.get_wing()
+//											.get_aspectRatio()/(1+(aircraft
+//													.get_wing()
+//													.get_aspectRatio()/2)))
+//											*mu_3.get(i)*deltaClmax_flap_list.get(i)
+//											*Math.tan(aircraft
+//													.get_wing()
+//													.get_sweepQuarterChordEq()
+//													.getEstimatedValue()))
+//					);
+//		
+//		for(int i=0; i<flapType_index.size(); i++)
+//			deltaCM_c4 += deltaCM_c4_list.get(i).doubleValue();	
 	}
 	
 	//-------------------------------------------------------------------------------------
