@@ -3,8 +3,10 @@ package sandbox.mr;
 import static java.lang.Math.toRadians;
 
 import java.io.File;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.measure.quantity.Angle;
 import javax.measure.unit.NonSI;
@@ -25,10 +27,12 @@ import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcHighLiftDevices;
 import configuration.MyConfiguration;
 import configuration.enumerations.ComponentEnum;
+import configuration.enumerations.DatabaseReaderEnum;
 import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
+import javafx.util.Pair;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.customdata.CenterOfGravity;
 
@@ -123,15 +127,20 @@ public class Test_MR_Wing_06bis {
 		MyConfiguration.initWorkingDirectoryTree();
 
 		// Setup database(s)	
-		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
-		String databaseFileName = "Aerodynamic_Database_Ultimate.h5";
-		String highLiftDatabaseFileName = "HighLiftDatabase.h5";
-		AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath, databaseFileName);
-		HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
+//		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
+//		String databaseFileName = "Aerodynamic_Database_Ultimate.h5";
+//		String highLiftDatabaseFileName = "HighLiftDatabase.h5";
+//		AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath, databaseFileName);
+//		HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
+//
+//		theLSAnalysis.set_AerodynamicDatabaseReader(aeroDatabaseReader);
+//		theLSAnalysis.set_highLiftDatabaseReader(highLiftDatabaseReader);
 
-		theLSAnalysis.set_AerodynamicDatabaseReader(aeroDatabaseReader);
-		theLSAnalysis.set_highLiftDatabaseReader(highLiftDatabaseReader);
-
+		theLSAnalysis.setDatabaseReaders(
+				new Pair(DatabaseReaderEnum.AERODYNAMIC, "Aerodynamic_Database_Ultimate.h5"),
+				new Pair(DatabaseReaderEnum.HIGHLIFT, "HighLiftDatabase.h5")
+				);
+		
 		// -----------------------------------------------------------------------
 		// Define airfoil
 		// -----------------------------------------------------------------------

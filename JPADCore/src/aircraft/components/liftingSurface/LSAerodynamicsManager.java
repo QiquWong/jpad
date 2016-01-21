@@ -6,6 +6,7 @@ import static java.lang.Math.toRadians;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -48,13 +49,20 @@ import calculators.geometry.LSGeometryCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.ComponentEnum;
+import configuration.enumerations.DatabaseReaderEnum;
+import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
+import database.databasefunctions.DatabaseReader;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.AerodynamicsDatabaseManager;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
+import database.databasefunctions.engine.EngineDatabaseReader;
+import database.databasefunctions.engine.TurbofanEngineDatabaseReader;
+import database.databasefunctions.engine.TurbopropEngineDatabaseReader;
+import javafx.util.Pair;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyMathUtils;
@@ -79,6 +87,23 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	private AerodynamicDatabaseReader _aerodynamicDatabaseReader;
 	private HighLiftDatabaseReader _highLiftDatabaseReader;
 
+	private List<DatabaseReader> listDatabaseReaders = new ArrayList<DatabaseReader>();
+	// TODO: just an idea
+	/*
+	 * 	// create an object of this class
+	 * 	LSAerodynamicsManager theLSAnalysis = new LSAerodynamicsManager ( 
+	 * 		theOperatingConditions,theWing);
+	 * 
+	 *	// Initialize database tree
+	 *	MyConfiguration.initWorkingDirectoryTree();
+	 *
+	 *	theLSAnalysis.setDatabaseReaders(
+	 *		DatabaseReaderEnum.AERODYNAMIC, "Aerodynamic_Database_Ultimate.h5",
+	 *		DatabaseReaderEnum.HIGHLIFT, "HighLiftDatabase.h5",
+	 *		);
+	 * 
+	 */
+	
 	Integer _numberOfAlpha;
 	private int _nPointsSemispanWise;
 
@@ -4127,4 +4152,37 @@ public void PlotCDvsAlphaCurve(){
 		return cLArrayPlot;
 	}
 
+	public void setDatabaseReaders(Pair... args) {
+		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
+		for (Pair a : args) {
+			DatabaseReaderEnum key = (DatabaseReaderEnum)a.getKey(); 
+			String databaseFileName = (String)a.getValue();
+			switch (key) {
+			case AERODYNAMIC:
+				_aerodynamicDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath, databaseFileName); 
+				listDatabaseReaders.add(_aerodynamicDatabaseReader);
+				break;
+			case HIGHLIFT:
+				_highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, databaseFileName); 
+				listDatabaseReaders.add(_highLiftDatabaseReader);
+				break;			
+			}
+			/*
+			 * TODO: manage other types of database reader
+			 * 
+			case ENGINE_TURBOFAN:
+				listDatabaseReaders.add(
+						new TurbofanEngineDatabaseReader(databaseFolderPath, databaseFileName)
+						);
+				break;
+			case ENGINE_TURBOPROP:
+				listDatabaseReaders.add(
+						new TurbopropEngineDatabaseReader(databaseFolderPath, databaseFileName)
+						);
+				break;
+			*/
+		}
+		
+	}
+	
 }
