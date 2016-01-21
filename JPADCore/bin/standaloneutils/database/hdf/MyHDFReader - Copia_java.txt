@@ -1,0 +1,1030 @@
+package standaloneutils.database.hdf;
+
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import ncsa.hdf.hdf5lib.H5;
+import ncsa.hdf.hdf5lib.HDF5Constants;
+import ncsa.hdf.hdf5lib.callbacks.H5O_iterate_cb;
+import ncsa.hdf.hdf5lib.callbacks.H5O_iterate_t;
+import ncsa.hdf.hdf5lib.exceptions.HDF5Exception;
+import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
+import ncsa.hdf.hdf5lib.structs.H5O_info_t;
+import ncsa.hdf.object.Dataset;
+import ncsa.hdf.object.FileFormat;
+import ncsa.hdf.object.Group;
+import ncsa.hdf.object.HObject;
+import ncsa.hdf.object.h5.H5File;
+import ncsa.hdf.object.h5.H5Group;
+import standaloneutils.MyInterpolatingFunction;
+
+public class MyHDFReader {
+
+	private String _fileName = null;
+	private H5File _fileH5 = null;
+	private H5Group _rootGroup = null;
+
+	// HDF5 Object Types
+	enum H5O_type {
+		H5O_TYPE_UNKNOWN(-1), // Unknown object type
+		H5O_TYPE_GROUP(0), // Object is a group
+		H5O_TYPE_DATASET(1), // Object is a dataset
+		H5O_TYPE_NAMED_DATATYPE(2), // Object is a named data type
+		H5O_TYPE_NTYPES(3); // Number of different object types
+		private static final Map<Integer, H5O_type> lookup = new HashMap<Integer, H5O_type>();
+
+		static {
+			for (H5O_type s : EnumSet.allOf(H5O_type.class))
+				lookup.put(s.getCode(), s);
+		}
+
+		private int code;
+
+		H5O_type(int layout_type) {
+			this.code = layout_type;
+		}
+
+		public int getCode() {
+			return this.code;
+		}
+
+		public static H5O_type get(int code) {
+			return lookup.get(code);
+		}
+	}
+
+	public MyHDFReader() {}
+
+	public MyHDFReader(String fname) {
+		_fileName = fname;
+		this.open();
+	}
+
+	public void open(){
+		
+		_fileH5 = new H5File(_fileName, FileFormat.READ); // throws an exception in case of failure
+		
+		// get the root node
+		String DATASETNAME = "/";
+		try {
+			_rootGroup = (H5Group) _fileH5.get(DATASETNAME);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		//		System.out.println("Root group: " + _rootGroup.getName());
+
+	} // end-of open()
+
+	public void close(){
+		if (_fileH5.getFID() >= 0)
+		{
+			try {
+				_fileH5.close();
+			} catch (HDF5Exception e) {
+				e.printStackTrace();
+			}
+			_fileName = null;
+			_rootGroup = null;			
+		}
+	}
+
+	public H5Group getRootGroup() {
+		return _rootGroup;
+	}
+
+	/////////////////////////////////////////////////////
+
+	private class MyIterateData_FindGroupByName {
+		public String link_name = null;
+		public int link_type = -1;
+		public int link_id = -1;
+
+		public boolean groupFound = false;
+		public H5Group group = null;
+
+		MyIterateData_FindGroupByName(String name, int type, int id) {
+			this.link_name = name;
+			this.link_type = type;
+			this.link_id   = id;
+		}
+	}
+
+	private class H5O_MyIterData_FindGroupByName implements H5O_iterate_t {
+		// a List containig data gathered at each call of callback function
+		public ArrayList<MyIterateData_FindGroupByName> iterdata = new ArrayList<MyIterateData_FindGroupByName>();
+		// When search is successful, the group id and info are stored 
+		// in last element of this list
+
+		// a function returning search success
+		public boolean isGroupFound()
+		{
+			if (iterdata.size() == 0)
+				return false;
+
+			// check the last iteration only
+			boolean retValue = iterdata.get(iterdata.size() - 1).groupFound;
+			return retValue;
+		}
+	}
+
+	private class H5O_IterCallback_FindGroupByName implements H5O_iterate_cb {
+
+		public String theNameWeSearch = null;
+		public int idGroupFound = -1;
+
+		public H5O_IterCallback_FindGroupByName(String theName)
+		{
+			super();
+			theNameWeSearch = theName;
+		}
+
+		public int callback(int group_id, String name, H5O_info_t info, H5O_iterate_t op_data) {
+
+			if ( ((H5O_MyIterData_FindGroupByName)op_data).isGroupFound() )
+			{
+				// there's non need to search further
+				// return straight away
+				//        		System.out.println("------- search stopped");
+				// the group id and info are stored in last element of 
+				// ((H5O_MyIterData_FindGroupByName)op_data).iterdata
+				return 0;
+			}
+
+			MyIterateData_FindGroupByName id = new MyIterateData_FindGroupByName(name, info.type, group_id);
+			((H5O_MyIterData_FindGroupByName)op_data).iterdata.add(id);
+
+			//			System.out.print("/"); /* Print root group in object path */
+
+			//Check if the current object is the root group, and if not print the full path name and type.
+
+			if (name.charAt(0) == '.')         /* Root group, do not print '.' */
+			{
+				//				System.out.println("  (Group)");
+			}
+			else if(info.type == HDF5Constants.H5O_TYPE_GROUP )
+			{
+				//				System.out.println(name + "  (Group)" );
+
+				// set flag in list of data
+				if (name.equals(theNameWeSearch))
+				{
+					int sz = ((H5O_MyIterData_FindGroupByName)op_data).iterdata.size();
+
+					// set flag
+					(((H5O_MyIterData_FindGroupByName)op_data)
+							.iterdata.get(sz - 1)
+							).groupFound = true;
+
+					idGroupFound = group_id;
+
+					//					System.out.println(
+					//							"---- FOUND ----> " + name + "\n" +
+					//							"---- ID    ----> " + group_id + "\n" +
+					//							"---- Type  ----> " + info.type                    				
+					//							);
+
+				}
+			}
+			else if(info.type == HDF5Constants.H5O_TYPE_DATASET)
+			{
+				//				System.out.println(name + "  (Dataset)");
+			}
+			else if (info.type == HDF5Constants.H5O_TYPE_NAMED_DATATYPE )
+			{
+				//				System.out.println(name + "  (Datatype)");
+			} else {
+				//				System.out.println(name + "  (Unknown)");
+			}
+
+			return 0;
+		}
+	}
+
+	public int findGroupByName(String groupFullName) throws HDF5LibraryException, NullPointerException{
+		if (_fileH5 == null || _rootGroup == null)
+			return -1;
+
+		if (groupFullName == null || groupFullName.length() == 0)
+			return -1;
+
+		// recursively iterate
+
+		// some useful variables
+		HObject obj = null;
+		int o_id = -1;
+		int objType;
+		H5O_info_t info;
+
+		// check start from root
+		o_id = _rootGroup.open();
+		info = H5.H5Oget_info(o_id);
+		objType = info.type;
+
+		H5O_iterate_t iter_data = new H5O_MyIterData_FindGroupByName();
+		H5O_iterate_cb iter_cb = new H5O_IterCallback_FindGroupByName(groupFullName);
+
+		// recursive visit
+		H5.H5Ovisit(
+				_fileH5.getFID(), 
+				HDF5Constants.H5_INDEX_NAME, 
+				HDF5Constants.H5_ITER_NATIVE, 
+				iter_cb, 
+				iter_data
+				);
+
+		//        System.out.println(
+		//        		"#############################" 
+		//        	);			
+		// loop on data used in the visit loop
+		//		int sz = ((H5O_MyIterData_FindGroupByName)iter_data).iterdata.size();
+		//		for (int k = 0; k < sz; k++)
+		//		if (sz > 0)
+		//		{
+		//			int k = sz -1;
+		//	        System.out.println(
+		//	        		"-------->" + k 
+		//	        	);			
+		//	        System.out.println(
+		//	        		"-------->" + 
+		//	        		(((H5O_MyIterData_FindDatasetByName)iter_data).iterdata).get(k).groupFound
+		//	        	);			
+		//	        System.out.println(
+		//	        		"-------->" + 
+		//	        		(((H5O_MyIterData_FindDatasetByName)iter_data).iterdata).get(k).link_name
+		//	        	);			
+		//		}
+
+		return ((H5O_IterCallback_FindGroupByName)iter_cb).idGroupFound;
+	}
+
+	/////////////////////////////////////////////////////
+
+	private class MyIterateData_FindDatasetByName {
+		public String link_name = null;
+		public int link_type = -1;
+		public int link_id = -1;
+
+		public boolean datasetFound = false;
+
+		MyIterateData_FindDatasetByName(String name, int type, int id) {
+			this.link_name = name;
+			this.link_type = type;
+			this.link_id   = id;
+		}
+	}
+
+	private class H5O_MyIterData_FindDatasetByName implements H5O_iterate_t {
+		// a List containig data gathered at each call of callback function
+		public ArrayList<MyIterateData_FindDatasetByName> iterdata = new ArrayList<MyIterateData_FindDatasetByName>();
+		// When search is successful, the group id and info are stored 
+		// in last element of this list
+
+		// a function returning search success
+		public boolean isDatasetFound()
+		{
+			if (iterdata.size() == 0)
+				return false;
+
+			// check the last iteration only
+			boolean retValue = iterdata.get(iterdata.size() - 1).datasetFound;
+			return retValue;
+		}
+	}
+
+	private class H5O_IterCallback_FindDatasetByName implements H5O_iterate_cb {
+
+		public String theNameWeSearch = null;
+		public int idDatasetFound = -1;
+		public float [] dataset = null;
+		public int rank = -1;
+		public long[] dims_out;
+
+
+		public H5O_IterCallback_FindDatasetByName(String theName)
+		{
+			super();
+			theNameWeSearch = theName;
+		}
+
+		public int callback(int dset_id, String name, H5O_info_t info, H5O_iterate_t op_data) {
+
+			if ( ((H5O_MyIterData_FindDatasetByName)op_data).isDatasetFound() )
+			{
+				// there's non need to search further
+				// return straight away
+				//				System.out.println("------- search stopped");
+				// the group id and info are stored in last element of 
+				// ((H5O_MyIterData_FindDatasetByName)op_data).iterdata
+				return 0;
+			}
+
+			MyIterateData_FindDatasetByName id = new MyIterateData_FindDatasetByName(name, info.type, dset_id);
+			((H5O_MyIterData_FindDatasetByName)op_data).iterdata.add(id);
+
+			//			System.out.print("/"); /* Print root group in object path */
+
+			//Check if the current object is the root group, and if not print the full path name and type.
+
+			if (name.charAt(0) == '.')         /* Root group, do not print '.' */
+			{
+				//				System.out.println("  (Group)");
+			}
+			else if(info.type == HDF5Constants.H5O_TYPE_GROUP )
+			{
+				//				System.out.println(name + "  (Group)" );
+			}
+			else if(info.type == HDF5Constants.H5O_TYPE_DATASET)
+			{
+				// set flag in list of data
+				if (
+						StringUtils.equals(name, theNameWeSearch) // APACHE COMMONS STRINGUTILS
+						//						name.equals(theNameWeSearch)
+						)
+				{
+					int sz = ((H5O_MyIterData_FindDatasetByName)op_data).iterdata.size();
+
+					// set flag
+					(((H5O_MyIterData_FindDatasetByName)op_data)
+							.iterdata.get(sz - 1)
+							).datasetFound = true;
+
+					idDatasetFound = dset_id;
+
+					try {
+
+						int id0 = H5.H5Dopen(dset_id, name, HDF5Constants.H5P_DEFAULT);
+						//						System.out.println("_________________________________id0: " + id0);
+
+						long storageSize = H5.H5Dget_storage_size(id0);
+						//						System.out.println("_________________________________Storage: " + storageSize);
+
+						dataset = new float[(int) storageSize/4]; // NOTE: 1 float = 4 bytes
+						int res = H5.H5Dread_float(
+								id0, 
+								HDF5Constants.H5T_NATIVE_FLOAT, // mem_type_id 
+								HDF5Constants.H5S_ALL, // mem_space_id
+								HDF5Constants.H5S_ALL, // file_space_id 
+								HDF5Constants.H5P_DEFAULT, // xfer_plist_id
+								dataset // buffer
+								);
+
+						//						System.out.println(
+						//								"_________________________________buff: " + Arrays.toString(buff));
+
+						int dataspace = H5.H5Dget_space(id0);
+						rank = H5.H5Sget_simple_extent_ndims(dataspace);
+
+						//						System.out.println(
+						//								"---- rank ----> " + rank
+						//						);
+
+						if (rank > 0) {
+							dims_out = new long[rank];
+							int status_n = H5.H5Sget_simple_extent_dims(dataspace, dims_out, null);
+
+							//							System.out.println(
+							//									"---- dims_out ----> " + Arrays.toString(dims_out)
+							//							);
+						}
+
+					} catch (HDF5LibraryException | NullPointerException e) {
+						e.printStackTrace();
+					}
+
+					//					System.out.println(
+					//							"---- FOUND ----> " + name + "\n" +
+					//							"---- ID    ----> " + dset_id + "\n" +
+					//							"---- Type  ----> " + info.type                    				
+					//							);
+				}
+			}
+			else if (info.type == HDF5Constants.H5O_TYPE_NAMED_DATATYPE )
+			{
+				//				System.out.println(name + "  (Datatype)");
+			}
+			else
+			{
+				//				System.out.println(name + "  (Unknown)");
+			}
+
+			return 0;
+		}
+	}
+
+	public int getIdDatasetByName(String datasetFullName) throws HDF5LibraryException, NullPointerException {
+
+		if (_fileH5 == null || _rootGroup == null)
+			return -1;
+
+		if (datasetFullName == null || datasetFullName.length() == 0)
+			return -1;
+
+		// recursively iterate
+
+		// some useful variables
+		//		HObject obj = null;
+		int o_id = -1;
+		int objType;
+		H5O_info_t info;
+
+		// check start from root
+		o_id = _rootGroup.open();
+		info = H5.H5Oget_info(o_id);
+		objType = info.type;
+
+		H5O_iterate_t iter_data = new H5O_MyIterData_FindDatasetByName();
+		H5O_iterate_cb iter_cb = new H5O_IterCallback_FindDatasetByName(datasetFullName);
+
+		// recursive visit
+		H5.H5Ovisit(
+				_fileH5.getFID(), 
+				HDF5Constants.H5_INDEX_NAME, 
+				HDF5Constants.H5_ITER_NATIVE, 
+				iter_cb, 
+				iter_data
+				);
+
+		float [] dset = ((H5O_IterCallback_FindDatasetByName)iter_cb).dataset;
+
+		int result = ((H5O_IterCallback_FindDatasetByName)iter_cb).idDatasetFound;
+
+		//		System.out.println(
+		//				"getIdDatasetByName :: dataset id " + result);		
+		return result;
+	}
+
+	public double[] getDataset1DFloatByName(String datasetFullName) throws HDF5LibraryException, NullPointerException {
+
+		if (_fileH5 == null || _rootGroup == null)
+			return null;
+
+		if (datasetFullName == null || datasetFullName.length() == 0)
+			return null;
+
+		// recursively iterate
+
+		// some useful variables
+		HObject obj = null;
+		int o_id = -1;
+		int objType;
+		H5O_info_t info;
+
+		// check start from root
+		o_id = _rootGroup.open();
+		info = H5.H5Oget_info(o_id);
+		objType = info.type;
+
+		H5O_iterate_t iter_data = new H5O_MyIterData_FindDatasetByName();
+		H5O_iterate_cb iter_cb = new H5O_IterCallback_FindDatasetByName(datasetFullName);
+
+		// recursive visit
+		H5.H5Ovisit(
+				_fileH5.getFID(), 
+				HDF5Constants.H5_INDEX_NAME, 
+				HDF5Constants.H5_ITER_NATIVE, 
+				iter_cb, 
+				iter_data
+				);
+
+		if ( ((H5O_IterCallback_FindDatasetByName)iter_cb).dataset != null ) {
+			// convert from float[] to double[]
+			int sz = (int) ((H5O_IterCallback_FindDatasetByName)iter_cb).dims_out[0];
+
+			if (sz == 0 ) return null;
+
+			double[] result = new double[sz];
+			for (int i=0; i<sz; i++) {
+				result[i] = (double) ((H5O_IterCallback_FindDatasetByName)iter_cb).dataset[i];
+			}
+			//			return ((H5O_IterCallback_FindDatasetByName)iter_cb).dataset;
+			return result;
+		} else
+			return null;
+
+	}
+
+	public double[][] getDataset2DFloatByName(String datasetFullName) throws HDF5LibraryException, NullPointerException {
+
+		if (_fileH5 == null || _rootGroup == null)
+			return null;
+
+		if (datasetFullName == null || datasetFullName.length() == 0)
+			return null;
+
+		// recursively iterate
+
+		// some useful variables
+		//		HObject obj = null;
+		int o_id = -1;
+		int objType;
+		H5O_info_t info;
+
+		// check start from root
+		o_id = _rootGroup.open();
+		info = H5.H5Oget_info(o_id);
+		objType = info.type;
+
+		H5O_iterate_t iter_data = new H5O_MyIterData_FindDatasetByName();
+		H5O_iterate_cb iter_cb = new H5O_IterCallback_FindDatasetByName(datasetFullName);
+
+		// recursive visit
+		H5.H5Ovisit(
+				_fileH5.getFID(), 
+				HDF5Constants.H5_INDEX_NAME, 
+				HDF5Constants.H5_ITER_NATIVE, 
+				iter_cb, 
+				iter_data
+				);
+
+		float [] dset = ((H5O_IterCallback_FindDatasetByName)iter_cb).dataset;
+
+		//		System.out.println(
+		//				"getDataset2DFloatByName :: dataset size " + dset.length + "\n"
+		//				+ Arrays.toString(dset)
+		//				);		
+		//		System.out.println(
+		//				"getDataset2DFloatByName :: dataset size = "
+		//				+ ((H5O_IterCallback_FindDatasetByName)iter_cb).rank
+		//				);
+
+		if (
+				((H5O_IterCallback_FindDatasetByName)iter_cb).rank == 2
+				) {
+
+			int nRows = (int) ((H5O_IterCallback_FindDatasetByName)iter_cb).dims_out[0];
+			int nCols = (int) ((H5O_IterCallback_FindDatasetByName)iter_cb).dims_out[1];
+
+			//			System.out.println("2D dataset !!!");
+			//			System.out.println(
+			//					"Dimensions (rows x columns): "
+			//					+ nRows
+			//					+ " x "
+			//					+ nCols
+			//			);
+
+			// From dset, a 1D array, to result, a 2D array
+			// http://stackoverflow.com/questions/1817631/iterating-one-dimension-array-as-two-dimension-array
+			// http://www.kosbie.net/cmu/fall-08/15-100/handouts/notes-two-dimensional-arrays.html
+
+			double[][] result = new double[nRows][nCols];
+			for(int index = 0; index < nRows*nCols; index++) {
+				int column = index % nCols;
+				int row = (index - column) / nCols;
+				result[row][column] = dset[index];
+				// System.out.println(row + ", " + column + ": " + dset[index]);
+			}			
+			return result;
+		} else {
+			// return a null array float[][]
+			// return Collections.emptyList().toArray(new double[0][0]);
+			return null;
+		}
+	}
+
+	/**
+	 * 
+	 * @param datasetFullName
+	 * @return
+	 * @throws HDF5LibraryException
+	 * @throws NullPointerException
+	 */
+	public double[][][] getDataset3DFloatByName(String datasetFullName) throws HDF5LibraryException, NullPointerException {
+
+		if (_fileH5 == null || _rootGroup == null)
+			return null;
+
+		if (datasetFullName == null || datasetFullName.length() == 0)
+			return null;
+
+		// recursively iterate
+
+		// some useful variables
+		//		HObject obj = null;
+		int o_id = -1;
+		int objType;
+		H5O_info_t info;
+
+		// check start from root
+		o_id = _rootGroup.open();
+		info = H5.H5Oget_info(o_id);
+		objType = info.type;
+
+		H5O_iterate_t iter_data = new H5O_MyIterData_FindDatasetByName();
+		H5O_iterate_cb iter_cb = new H5O_IterCallback_FindDatasetByName(datasetFullName);
+
+		// recursive visit
+		H5.H5Ovisit(
+				_fileH5.getFID(), 
+				HDF5Constants.H5_INDEX_NAME, 
+				HDF5Constants.H5_ITER_NATIVE, 
+				iter_cb, 
+				iter_data
+				);
+
+		float [] dset = ((H5O_IterCallback_FindDatasetByName)iter_cb).dataset;
+
+		//		System.out.println(
+		//				"getDataset2DFloatByName :: dataset size " + dset.length + "\n"
+		//				+ Arrays.toString(dset)
+		//				);		
+		//		System.out.println(
+		//				"getDataset2DFloatByName :: dataset size = "
+		//				+ ((H5O_IterCallback_FindDatasetByName)iter_cb).rank
+		//				);
+
+		if (((H5O_IterCallback_FindDatasetByName)iter_cb).rank == 3) {
+
+			int nRows  = (int) ((H5O_IterCallback_FindDatasetByName)iter_cb).dims_out[0];
+			int nCols  = (int) ((H5O_IterCallback_FindDatasetByName)iter_cb).dims_out[1];
+			int nPages = (int) ((H5O_IterCallback_FindDatasetByName)iter_cb).dims_out[2];
+
+			//			System.out.println("3D dataset !!!");
+			//			System.out.println(
+			//					"Dimensions (rows x columns x pages): "
+			//					+ nRows
+			//					+ " x "
+			//					+ nCols
+			//					+ " x "
+			//					+ nPages
+			//			);
+
+			// From dset, a 1D array, to result, a 3D array
+			// http://stackoverflow.com/questions/1817631/iterating-one-dimension-array-as-two-dimension-array
+			// http://www.kosbie.net/cmu/fall-08/15-100/handouts/notes-two-dimensional-arrays.html
+
+			double[][][] result = new double[nRows][nCols][nPages];
+
+			int index = -1;
+			for(int i = 0; i < nRows; i++) {
+				for(int j = 0; j < nCols; j++) {
+					for(int k = 0; k < nPages; k++) {
+						index++;
+						result[i][j][k] = dset[index];
+						// System.out.println(i + "," + j + "," + k + ": " + dset[index]);
+					}
+				}
+			}
+			//			System.out.println("##################");
+			//			for(int k = 0; k < nPages; k++) {
+			//				for(int j = 0; j < nCols; j++) {
+			//					for(int i = 0; i < nRows; i++) {
+			//						System.out.println(i + "," + j + "," + k + ": " + result[i][j][k]);
+			//					}
+			//				}
+			//			}			
+
+			return result;
+
+		} else {
+			// return a null array float[][]
+			// return Collections.emptyList().toArray(new double[0][0]);
+			return null;
+		}
+	}
+
+	/**
+	 * 
+	 * @param groupFullName
+	 * @return
+	 * @throws HDF5LibraryException
+	 * @throws NullPointerException
+	 */
+	public int getDataRankByGroupName(String groupFullName) throws HDF5LibraryException, NullPointerException {
+
+		String datasetFullName = groupFullName + "/data";
+
+		if (_fileH5 == null || _rootGroup == null)
+			return -1;
+
+		if (datasetFullName == null || datasetFullName.length() == 0)
+			return -1;
+
+		// recursively iterate
+
+		// some useful variables
+		//		HObject obj = null;
+		int o_id = -1;
+		int objType;
+		H5O_info_t info;
+
+		// check start from root
+		o_id = _rootGroup.open();
+		info = H5.H5Oget_info(o_id);
+		objType = info.type;
+
+		H5O_iterate_t iter_data = new H5O_MyIterData_FindDatasetByName();
+		H5O_iterate_cb iter_cb = new H5O_IterCallback_FindDatasetByName(datasetFullName);
+
+		// recursive visit
+		H5.H5Ovisit(
+				_fileH5.getFID(), 
+				HDF5Constants.H5_INDEX_NAME, 
+				HDF5Constants.H5_ITER_NATIVE, 
+				iter_cb, 
+				iter_data
+				);
+
+		//		float [] dset = ((H5O_IterCallback_FindDatasetByName)iter_cb).dataset;
+
+		//		System.out.println(
+		//				"getDataset2DFloatByName :: dataset size " + dset.length + "\n"
+		//				+ Arrays.toString(dset)
+		//				);		
+		//		System.out.println(
+		//				"getDataset2DFloatByName :: dataset size = "
+		//				+ ((H5O_IterCallback_FindDatasetByName)iter_cb).rank
+		//				);
+
+		return ((H5O_IterCallback_FindDatasetByName)iter_cb).rank;
+	}
+
+	/**
+	 * 
+	 * @param groupFullName
+	 * @return
+	 * @throws HDF5LibraryException
+	 * @throws NullPointerException
+	 */
+	public List<Double[]> getVarsByGroupName(String groupFullName) throws HDF5LibraryException, NullPointerException {
+
+		List<Double[]> result = new ArrayList<Double[]>();
+
+		if (_fileH5 == null || _rootGroup == null)
+			return null;
+
+		if (groupFullName == null || groupFullName.length() == 0)
+			return null;
+
+		List<String> datasetVarnames = new ArrayList<String>();
+		datasetVarnames.add("var_0");
+		datasetVarnames.add("var_1");
+		datasetVarnames.add("var_2");
+
+		for (String varName : datasetVarnames) {
+
+			String var1DFullName = groupFullName + "/" + varName;
+			double[] var = null;
+			try {
+				var = getDataset1DFloatByName(var1DFullName);
+			} catch (HDF5LibraryException | NullPointerException e) {
+				e.printStackTrace();
+			}
+			if (var != null) {
+				result.add(ArrayUtils.toObject(var));
+			}			
+		}
+		return result;
+	}
+
+	/**
+	 * 
+	 * @param group1DFullName
+	 * @param v0
+	 * @return
+	 */
+	public Double interpolate1DFromDataset(String group1DFullName, double v0) {
+		return interpolate1DFromDatasetFunction(group1DFullName).value(v0); 
+	}
+
+	/**
+	 * 
+	 * @param group1DFullName
+	 * @param v0
+	 * @return
+	 */
+	public MyInterpolatingFunction interpolate1DFromDatasetFunction(String group1DFullName) {
+
+		String dataset1DFullName = group1DFullName + "/data";
+		double[] dset1D = null;
+
+		try {
+			dset1D = getDataset1DFloatByName(dataset1DFullName);
+		} catch (HDF5LibraryException | NullPointerException e) {
+			e.printStackTrace();
+		} 
+
+		if (dset1D != null) {
+			String var01DFullName = group1DFullName + "/var_0";
+			double[] var01D = null;
+			try {
+				var01D = getDataset1DFloatByName(var01DFullName);
+			} catch (HDF5LibraryException | NullPointerException e) {
+				e.printStackTrace();
+			}
+
+			if (var01D != null) {
+				MyInterpolatingFunction f = new MyInterpolatingFunction();
+				f.interpolate(var01D, dset1D);
+				return f;
+
+			} else {
+				return null;
+			}
+
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * 
+	 * @param group2DFullName
+	 * @param v0 (y-wise)
+	 * @param v1 (x-wise)
+	 * @return f(x,y)
+	 */
+	public Double interpolate2DFromDataset(String group2DFullName, double v0, double v1) {
+		return interpolate2DFromDatasetFunction(group2DFullName).value(v1, v0);
+	}
+
+	/**
+	 * 
+	 * @param group2DFullName
+	 * @param v0 (y-wise)
+	 * @param v1 (x-wise)
+	 * @return a spline which represents f(x,y)
+	 */
+	public MyInterpolatingFunction interpolate2DFromDatasetFunction(String group2DFullName) {
+
+		String dataset2DFullName = group2DFullName + "/data";
+
+		double[][] dset2D = null;
+		try {
+			dset2D = getDataset2DFloatByName(dataset2DFullName);
+		} catch (HDF5LibraryException e) {
+			e.printStackTrace();
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+		}
+
+		if (dset2D == null) {
+			return null;
+		} else {
+			String var0_2DFullName = group2DFullName + "/var_0";
+			String var1_2DFullName = group2DFullName + "/var_1";
+			double[] var0_2D = null;
+			double[] var1_2D = null;
+			try {
+				var0_2D = getDataset1DFloatByName(var0_2DFullName);
+				var1_2D = getDataset1DFloatByName(var1_2DFullName);
+			} catch (HDF5LibraryException | NullPointerException e) {
+				e.printStackTrace();
+			} 
+
+			MyInterpolatingFunction f = new MyInterpolatingFunction();
+			f.interpolate(var1_2D, var0_2D, dset2D);
+			return f;
+		}
+	}
+
+	/**
+	 * 
+	 * @param group3DFullName
+	 * @param v0 (z-wise)
+	 * @param v1 (y-wise)
+	 * @param v2 (x-wise)
+	 * @return a spline which represents f(x,y,z)
+	 */
+	public Double interpolate3DFromDataset(String group3DFullName, double v0, double v1, double v2) {
+		return interpolate3DFromDatasetFunction(group3DFullName).value(v2, v1, v0);
+	}
+
+	/**
+	 * 
+	 * @param group3DFullName
+	 * @return
+	 */
+	public MyInterpolatingFunction interpolate3DFromDatasetFunction(String group3DFullName) {
+
+		String dataset3DFullName = group3DFullName + "/data";
+
+		double[][][] dset3D = null;
+		try {
+			dset3D = getDataset3DFloatByName(dataset3DFullName);
+		} catch (HDF5LibraryException e) {
+			e.printStackTrace();
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+		}
+
+		if (dset3D == null) {
+			return null;
+
+		} else {
+			double[] var0 = null;
+			double[] var1 = null;
+			double[] var2 = null;
+
+			try {
+				var0 = getDataset1DFloatByName(group3DFullName + "/var_0");
+				var1 = getDataset1DFloatByName(group3DFullName + "/var_1");
+				var2 = getDataset1DFloatByName(group3DFullName + "/var_2");
+
+			} catch (HDF5LibraryException | NullPointerException e) {
+				e.printStackTrace();
+			}
+			
+			MyInterpolatingFunction f = new MyInterpolatingFunction();
+			f.interpolate(var2, var1, var0, dset3D);
+			return f;
+		}
+	}
+
+	private void test(String fname, String groupName) {
+		
+		int nRows = 0, nCols = 0, nPages = 0, n4 = 0, index = 0;
+		
+		// retrieve an instance of H5File
+        FileFormat fileFormat = FileFormat.getFileFormat(FileFormat.FILE_TYPE_HDF5);
+
+        if (fileFormat == null) {
+            System.err.println("Cannot find HDF5 FileFormat.");
+            return;
+        }
+
+        // open the file with read access
+        FileFormat testFile = null;
+		try {
+			testFile = fileFormat.createInstance(fname, FileFormat.READ);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+        if (testFile == null) {
+            System.err.println("Failed to open file: " + fname);
+            return;
+        }
+
+        // open the file and retrieve the file structure
+        try {
+			testFile.open();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+        
+        Group root = (Group) ((javax.swing.tree.DefaultMutableTreeNode) testFile.getRootNode()).getUserObject();
+
+        // retrieve the dataset "2D 32-bit integer 20x10"
+        Dataset dataset = (Dataset) root.getMemberList().get(0);
+        for (int i=0; i<root.getMemberList().size(); i++) {
+        	if (root.getMemberList().get(i).equals(groupName)) { 
+        		dataset = (Dataset) root.getMemberList().get(i);
+        		nRows = (int) dataset.getDims()[0];
+        		nCols = (int) dataset.getDims()[1];
+        		nPages = (int) dataset.getDims()[2];
+        		n4 = (int) dataset.getDims()[3];
+        	}
+        }
+        
+        double[] dataRead = new double[0];
+		try {
+			dataRead = (double[]) dataset.read();
+		} catch (OutOfMemoryError | Exception e) {
+			e.printStackTrace();
+		}
+
+		double[][][] result = new double[nRows][nCols][nPages];
+		
+		for (int i=0; i< dataset.getDims().length; i++) {
+			
+		}
+		
+		for(int i = 0; i < nRows; i++) {
+			for(int j = 0; j < nCols; j++) {
+				for(int k = 0; k < nPages; k++) {
+					index++;
+					result[i][j][k] = dataRead[index];
+				}
+			}
+		}
+		
+        // print out the data values
+        System.out.println("\n\nOriginal Data Values");
+        for (int i = 0; i < 20; i++) {
+            System.out.print("\n" + dataRead[i * 10]);
+            for (int j = 1; j < 10; j++) {
+                System.out.print(", " + dataRead[i * 10 + j]);
+            }
+        }
+
+        // close file resource
+        try {
+			testFile.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public String getDatabaseAbsolutePath() {
+		return _fileH5.getAbsolutePath();
+	}
+
+
+} // end of class

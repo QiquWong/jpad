@@ -33,7 +33,7 @@ import standaloneutils.JPADXmlReader;
 import standaloneutils.customdata.CenterOfGravity;
 
 public class Test_MR_Wing_06bis {
-	
+
 	//------------------------------------------------------------------------------------------
 	// VARIABLE DECLARATION: 
 	@Option(name = "-i", aliases = { "--input" }, required = false,
@@ -48,15 +48,15 @@ public class Test_MR_Wing_06bis {
 	private List<String> arguments = new ArrayList<String>();
 
 	//BUILDER:
-		public Test_MR_Wing_06bis () {
-			theCmdLineParser = new CmdLineParser(this);
-		}
+	public Test_MR_Wing_06bis () {
+		theCmdLineParser = new CmdLineParser(this);
+	}
 
 
 	public static void main(String[] args) throws InstantiationException, IllegalAccessException, CmdLineException {
 
 		Test_MR_Wing_06bis main = new Test_MR_Wing_06bis();
-		
+
 		// -----------------------------------------------------------------------
 		// Generate default Wing
 		// -----------------------------------------------------------------------
@@ -266,18 +266,18 @@ public class Test_MR_Wing_06bis {
 				return;
 			}
 		}
-		
+
 		Double[] deltaFlap1_array = new Double[delta_flap1_property.size()];
 		for(int i=0; i<deltaFlap1_array.length; i++)
 			deltaFlap1_array[i] = Double.valueOf(delta_flap1_property.get(i));
-		
+
 		Double[] deltaFlap2_array = new Double[delta_flap2_property.size()];
 		for(int i=0; i<deltaFlap1_array.length; i++)
 			deltaFlap2_array[i] = Double.valueOf(delta_flap2_property.get(i));
-		
+
 		deltaFlap.add(deltaFlap1_array);
 		deltaFlap.add(deltaFlap2_array);
-		
+
 		for(int i=0; i<cf_c_property.size(); i++)
 			cf_c.add(Double.valueOf(cf_c_property.get(i)));
 		for(int i=0; i<eta_in_property.size(); i++)
@@ -301,21 +301,6 @@ public class Test_MR_Wing_06bis {
 						null,
 						null
 						);
-		
-//		CalcHighLiftDevices highLiftCalculator = new CalcHighLiftDevices(
-//				aircraft,
-//				deltaFlap,
-//				flapType,
-//				null,
-//				eta_in_flap,
-//				eta_out_flap,
-//				null,
-//				null,
-//				cf_c,
-//				null,
-//				null,
-//				null
-//				);
 
 		highLiftCalculator.calculateHighLiftDevicesEffects();
 
@@ -354,65 +339,30 @@ public class Test_MR_Wing_06bis {
 		System.out.println("\n\ndeltaAlphaMax_list = ");
 		for(int i=0; i<highLiftCalculator.getDeltaAlphaMax_list().size(); i++)
 			System.out.print(highLiftCalculator.getDeltaAlphaMax_list().get(i) + " ");
-		
+
 		System.out.println("\n\ndeltaAlphaMax = \n" + highLiftCalculator.getDeltaAlphaMax());
-		
+
 		System.out.println("\n\ndeltaCD_list = ");
 		for(int i=0; i<highLiftCalculator.getDeltaCD_list().size(); i++)
 			System.out.print(highLiftCalculator.getDeltaCD_list().get(i) + " ");
 
 		System.out.println("\n\ndeltaCD = \n" + highLiftCalculator.getDeltaCD());
-		
+
 		System.out.println("\n\ndeltaCMc_4_list = ");
 		for(int i=0; i<highLiftCalculator.getDeltaCM_c4_list().size(); i++)
 			System.out.print(highLiftCalculator.getDeltaCM_c4_list().get(i) + " ");
 
-		
+
 		System.out.println("\n\ndeltaCMc_4 = \n" + highLiftCalculator.getDeltaCM_c4());		
-		
-//		--------------------------
-//		// New lift curve 
-		
+
+		//		--------------------------
+		//		// New lift curve 
+
 		highLiftCalculator.PlotHighLiftCurve();
 		System.out.println("DONE");	
-		
-		
-//		LSAerodynamicsManager.CalcCLAtAlpha theCLCalculator = theLSAnalysis
-//				.new CalcCLAtAlpha();
-//		
-//		Amount<Angle> alpha = Amount.valueOf(toRadians(8.), SI.RADIAN);
-//		double cLHighLift = theCLCalculator.highLiftDevice(
-//				alpha,
-//				deltaFlap,
-//				flapType,
-//				eta_in_flap, 
-//				eta_out_flap, 
-//				cf_c,
-//				null,
-//				null, 
-//				null,
-//				null, 
-//				null, 
-//				null);
-//		
-//		System.out.println("\n\nCL flap = " + cLHighLift);
-//		
-//		theLSAnalysis.PlotHighLiftCurve(
-//				deltaFlap,
-//				flapType,
-//				eta_in_flap, 
-//				eta_out_flap, 
-//				cf_c,
-//				null,
-//				null, 
-//				null,
-//				null, 
-//				null, 
-//				null);
-//		System.out.println("DONE");
-		
+
 	}
-	
+
 	//------------------------------------------------------------------------------------------
 	// GETTERS & SETTERS:
 	public File get_inputFile() {
