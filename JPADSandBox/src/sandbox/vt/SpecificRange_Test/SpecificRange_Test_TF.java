@@ -1,16 +1,21 @@
 package sandbox.vt.SpecificRange_Test;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 import aircraft.OperatingConditions;
 import aircraft.auxiliary.airfoil.MyAirfoil;
 import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
-import calculators.aerodynamics.AerodynamicCalc;
+import calculators.aerodynamics.DragCalc;
+import calculators.performance.PerformanceCalcUtils;
+import calculators.performance.ThrustCalc;
+import calculators.performance.customdata.DragMap;
+import calculators.performance.customdata.DragThrustIntersectionMap;
+import calculators.performance.customdata.ThrustMap;
 import configuration.MyConfiguration;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.AnalysisTypeEnum;
@@ -19,9 +24,11 @@ import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import standaloneutils.MyArrayUtils;
+import standaloneutils.MyChartToFileUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
 import standaloneutils.customdata.CenterOfGravity;
+import writers.JPADStaticWriteUtils;
 
 public class SpecificRange_Test_TF {
 	
@@ -47,7 +54,7 @@ public class SpecificRange_Test_TF {
 		// Operating Condition / Aircraft / AnalysisManager (geometry calculations)
 		OperatingConditions theCondition = new OperatingConditions();
 		theCondition.set_altitude(Amount.valueOf(10000.0, SI.METER));
-		theCondition.set_machCurrent(0.84);
+		theCondition.set_machCurrent(0.83);
 		Aircraft aircraft = Aircraft.createDefaultAircraft("B747-100B");
 
 		aircraft.get_theAerodynamics().set_aerodynamicDatabaseReader(aeroDatabaseReader);
@@ -78,61 +85,98 @@ public class SpecificRange_Test_TF {
 
 		theAnalysis.doAnalysis(aircraft, 
 				AnalysisTypeEnum.AERODYNAMIC);
-		
+
 		// generating variation of mass of 10% until -40% of maxTakeOffMass
 		double[] maxTakeOffMassArray = new double[5];
 		for (int i=0; i<5; i++)
-//			maxTakeOffMassArray[i] = aircraft.get_weights().get_MTOM().getEstimatedValue()*(1-0.1*(4-i));
+			//maxTakeOffMassArray[i] = aircraft.get_weights().get_MTOM().getEstimatedValue()*(1-0.1*(4-i));
 			maxTakeOffMassArray[i] = aircraft.get_weights().get_MTOM().plus(aircraft.get_weights().get_MLM()).divide(2).getEstimatedValue()*(1-0.1*(4-i));
-		
-		double cLmax = 1.5; // TODO : Fix when the correct CLmax is calculated from wing
-		
-		Double[] vStall = new Double[maxTakeOffMassArray.length];
-		for(int i=0; i<vStall.length; i++)
-			vStall[i] = SpeedCalc.calculateSpeedStall(
-					theCondition.get_altitude().getEstimatedValue(),
-					Amount.valueOf(maxTakeOffMassArray[i], SI.KILOGRAM).times(AtmosphereCalc.g0).getEstimatedValue(),
-					aircraft.get_wing().get_surface().getEstimatedValue(),
-					cLmax);  
 
+		double[] weight = new double[maxTakeOffMassArray.length];
+		for(int i=0; i<weight.length; i++)
+			weight[i] = maxTakeOffMassArray[i]*AtmosphereCalc.g0.getEstimatedValue();
+		
+		double cLmax = 1.5; // TODO : Fix when the correct CLmax is calculated from wing 
+
+		// Drag Thrust Intersection		
+		double[] speed = MyArrayUtils.linspace(
+				SpeedCalc.calculateTAS(
+						0.15,
+						theCondition.get_altitude().getEstimatedValue()
+						),
+				SpeedCalc.calculateTAS(
+						1.0,
+						theCondition.get_altitude().getEstimatedValue()
+						),
+				250
+				);
+
+		List<DragMap> listDrag = new ArrayList<DragMap>();
+		for(int i=0; i<maxTakeOffMassArray.length; i++)
+			listDrag.add(
+					new DragMap(
+							weight[i],
+							theCondition.get_altitude().getEstimatedValue(),
+							DragCalc.calculateDragVsSpeed(
+									weight[i],
+									theCondition.get_altitude().getEstimatedValue(),
+									aircraft.get_wing().get_surface().getEstimatedValue(),
+									aircraft.get_theAerodynamics().get_cD0(),
+									aircraft.get_wing().get_aspectRatio(),
+									aircraft.get_theAerodynamics().get_oswald(),
+									speed,
+									aircraft.get_wing().get_sweepHalfChordEq().getEstimatedValue(),
+									aircraft.get_wing().get_maxThicknessMean(),
+									AirfoilTypeEnum.MODERN_SUPERCRITICAL
+									),
+							speed
+							)
+					);
+
+		List<ThrustMap> listThrust = new ArrayList<ThrustMap>();
+		for(int i=0; i<maxTakeOffMassArray.length; i++)
+			listThrust.add(
+					new ThrustMap(
+							theCondition.get_altitude().getEstimatedValue(),
+							1.0, // phi
+							ThrustCalc.calculateThrustVsSpeed(
+									aircraft.get_powerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
+									1.0, // phi
+									theCondition.get_altitude().getEstimatedValue(),
+									EngineOperatingConditionEnum.CRUISE,
+									EngineTypeEnum.TURBOFAN,
+									aircraft.get_powerPlant().get_engineList().get(0).get_bpr(),
+									aircraft.get_powerPlant().get_engineNumber(),
+									speed
+									),
+							speed,
+							aircraft.get_powerPlant().get_engineList().get(0).get_bpr(),
+							EngineOperatingConditionEnum.CRUISE
+							)
+					);
+
+		List<DragThrustIntersectionMap> intersectionList = PerformanceCalcUtils
+				.calculateDragThrustIntersection(
+						new double[] {theCondition.get_altitude().getEstimatedValue()},
+						speed,
+						weight,
+						new double[] {1.0},
+						new EngineOperatingConditionEnum[] {EngineOperatingConditionEnum.CRUISE},
+						aircraft.get_powerPlant().get_engineList().get(0).get_bpr(),
+						aircraft.get_wing().get_surface().getEstimatedValue(),
+						cLmax,
+						listDrag,
+						listThrust
+						);
+		
 		//----------------------------------------------------------------------------------
 		// Definition of a Mach array for each maxTakeOffMass
 		List<Double[]> machList = new ArrayList<Double[]>();
-		
 		for(int i=0; i<maxTakeOffMassArray.length; i++) 
 			machList.add(MyArrayUtils.linspaceDouble(
-					SpeedCalc.calculateMach(
-							theCondition.get_altitude().getEstimatedValue(),
-							vStall[i]),
-					1.0,
+					intersectionList.get(i).getMinMach(),
+					intersectionList.get(i).getMaxMach(),
 					250));
-		
-		// Drag Thrust Intersection
-		double[][] intersection = SpecificRangeCalc.ThrustDragIntersection(
-				machList,
-				aircraft.get_powerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
-				aircraft.get_powerPlant().get_engineNumber(),
-				1, // phi
-				aircraft.get_powerPlant().get_engineList().get(0).get_bpr(),
-				EngineTypeEnum.TURBOFAN,
-				EngineOperatingConditionEnum.CRUISE,
-				theCondition.get_altitude().getEstimatedValue(),
-				maxTakeOffMassArray,
-				aircraft.get_wing().get_surface().getEstimatedValue(),
-				aircraft.get_theAerodynamics().get_cD0(),
-				aircraft.get_theAerodynamics().get_oswald(),
-				aircraft.get_wing().get_aspectRatio(),
-				aircraft.get_wing().get_sweepHalfChordEq().getEstimatedValue(),
-				aircraft.get_wing().get_maxThicknessMean(),
-				AirfoilTypeEnum.MODERN_SUPERCRITICAL
-				);
-		System.out.println("Intersection Matrix\n");
-		for(int i=0; i<intersection.length; i++) {
-			for(int j=0; j<intersection[i].length; j++) {
-				System.out.print(intersection[i][j] + " ");
-			}
-			System.out.println(" ");
-		}
 
 		System.out.println("-----------------------------------------------------------");
 
@@ -203,20 +247,59 @@ public class SpecificRange_Test_TF {
 		System.out.println("-----------------------------------------------------------");
 		
 		//-----------------------------------------------------------------------------------
-		// PLOTTING:
-		
-		// Mass in lbs
-		for (int i=0; i<maxTakeOffMassArray.length; i++)
-			maxTakeOffMassArray[i] = Amount.valueOf(maxTakeOffMassArray[i], SI.KILOGRAM).to(NonSI.POUND).getEstimatedValue();
-		
+		// PLOTTING:		
 		// building legend
 		List<String> legend = new ArrayList<String>();
 		for(int i=0; i<maxTakeOffMassArray.length; i++)
-			legend.add("MTOM = " + maxTakeOffMassArray[i] + " lbs ");
+			legend.add("MTOM = " + maxTakeOffMassArray[i] + " kg ");
 		
 		SpecificRangeCalc.createSpecificRangeChart(specificRange, machList, legend);
 		SpecificRangeCalc.createSfcChart(sfcList, machList, legend, EngineTypeEnum.TURBOFAN);
 		SpecificRangeCalc.createEfficiencyChart(efficiencyList, machList, legend);
+		
+		System.out.println("\n------WRITING SPECIFIC RANGE v.s. MACH CHART TO FILE-------");
+		String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR);
+		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "SpecificRange" + File.separator);
+
+		List<Double[]> yList = new ArrayList<Double[]>();
+		Double[][] dragMatrix = new Double[listDrag.size()][listDrag.get(0).getDrag().length];
+		for(int i=0; i<listDrag.size(); i++)
+			for(int j=0; j<listDrag.get(i).getDrag().length; j++)
+				dragMatrix[i][j] = Double.valueOf(listDrag.get(i).getDrag()[j]);
+		for(int i=0; i<dragMatrix.length; i++)
+			yList.add(dragMatrix[i]);
+		Double[][] thrustMatrix = new Double[listThrust.size()][listThrust.get(0).getThrust().length];
+		for(int i=0; i<listThrust.size(); i++)
+			for(int j=0; j<listThrust.get(i).getThrust().length; j++)
+				thrustMatrix[i][j] = Double.valueOf(listThrust.get(i).getThrust()[j]);
+		yList.add(thrustMatrix[0]);
+
+		List<Double[]> xList = new ArrayList<Double[]>();
+		Double[][] machMatrix = new Double[maxTakeOffMassArray.length + 1][speed.length];
+		for(int i=0; i<maxTakeOffMassArray.length + 1; i++)
+			for(int j=0; j<speed.length; j++)
+				machMatrix[i][j] = Double.valueOf(
+						SpeedCalc.calculateMach(
+								theCondition.get_altitude().getEstimatedValue(),
+								speed[j]
+								)
+						);
+		for(int i=0; i<machMatrix.length; i++)
+			xList.add(machMatrix[i]);
+			
+		List<String> legendList = new ArrayList<String>();
+		for(int i=0; i<maxTakeOffMassArray.length; i++)
+			legendList.add("Drag ar MTOM = " + maxTakeOffMassArray[i]);
+		legendList.add("Thrust available");
+		
+		MyChartToFileUtils.plotJFreeChart(
+				xList, yList,
+				"Drag-Thrust v.s. Mach at " + theCondition.get_altitude().getEstimatedValue() + " m", "Mach", "Drag, Thrust",
+				0.36, null, null, 1000000.0,
+				"", "N",
+				true, legendList,
+				subfolderPath, "DragThrust"
+				);
 	}
 	//------------------------------------------------------------------------------------------
 	// END OF THE TEST

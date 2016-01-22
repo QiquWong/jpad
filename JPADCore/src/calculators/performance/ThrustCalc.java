@@ -216,8 +216,11 @@ public class ThrustCalc {
 	
 		for (int i=0; i< speed.length; i++){
 			double mach = SpeedCalc.calculateMach(altitude, speed[i]);
-			thrust[i] = calculateThrustDatabase(t0, nEngine, phi, bpr, engineType, flightCondition, altitude, mach);
+			if (engineType == EngineTypeEnum.TURBOPROP)
+				thrust[i] = calculateThrustDatabase(t0, nEngine, phi, bpr, engineType, flightCondition, altitude, mach);
 //						thrust[i] = calculateThrustHowe(t0, nEngine, bpr, phi, altitude, mach);
+			else if (engineType == EngineTypeEnum.TURBOFAN)
+				thrust[i] = calculateThrust(t0, nEngine, phi, altitude);
 		}
 	
 		return thrust;

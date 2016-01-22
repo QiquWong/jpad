@@ -507,10 +507,6 @@ public class MyChartToFileUtils {
 	 * @param chartName a String containing the name that the user wants to display on top
 	 * @param xLabelName 
 	 * @param yLabelName
-	 * @param xMin
-	 * @param xMax
-	 * @param yMin
-	 * @param yMax
 	 * @param legend a List of String which elements are the name of each plotted line
 	 * @param folderPathName
 	 * @param fileName
@@ -520,6 +516,7 @@ public class MyChartToFileUtils {
 	public static void plotJFreeChart(
 			List<Double[]> xList, List<Double[]> yList,
 			String chartName, String xLabelName, String yLabelName,
+			Double xMin, Double xMax, Double yMin, Double yMax,
 			String xUnit, String yUnit,
 			boolean showLegend, List<String> legend,
 			String folderPathName, String fileName) throws InstantiationException, IllegalAccessException {
@@ -552,6 +549,38 @@ public class MyChartToFileUtils {
 //				legend.add("default");
 //		}
 			
+		// minimum and maximum of Lists research
+		if(xMin == null) {
+			xMin = 0.0;
+			Double[] xMinArray = new Double[xList.size()];
+			for(int i=0; i<xList.size(); i++) 
+				xMinArray[i] = MyArrayUtils.getMin(xList.get(i));
+			xMin = MyArrayUtils.getMin(xMinArray);
+		}
+		
+		if(xMax == null) {
+			xMax = 0.0;
+			Double[] xMaxArray = new Double[xList.size()];
+			for(int i=0; i<xList.size(); i++) 
+				xMaxArray[i] = MyArrayUtils.getMax(xList.get(i));			
+			xMax = MyArrayUtils.getMax(xMaxArray);
+		}
+		
+		if(yMin == null) {
+			yMin = 0.0;
+			Double[] yMinArray = new Double[yList.size()];
+			for(int i=0; i<xList.size(); i++) 
+				yMinArray[i] = MyArrayUtils.getMin(yList.get(i));			
+			yMin = MyArrayUtils.getMin(yMinArray);
+		}
+		
+		if(yMax == null) {
+			yMax = 0.0;
+			Double[] yMaxArray = new Double[yList.size()];
+			for(int i=0; i<xList.size(); i++) 
+				yMaxArray[i] = MyArrayUtils.getMax(yList.get(i));			
+			yMax = MyArrayUtils.getMax(yMaxArray);
+		}
 				
 		JFreeChart chart = ChartFactory.createXYLineChart(
 				chartName,	 					// Title
@@ -572,30 +601,8 @@ public class MyChartToFileUtils {
 		chart.getXYPlot().setDomainGridlinePaint(Color.LIGHT_GRAY);
 		chart.getXYPlot().setRangeGridlinesVisible(true);
 		chart.getXYPlot().setRangeGridlinePaint(Color.LIGHT_GRAY);
-		
-		// minimum and maximum of Lists research
-		double xMin = 0;
-		double xMax = 0;
-		double yMin = 0;
-		double yMax = 0;
-		
-		Double[] xMinArray = new Double[xList.size()];
-		Double[] xMaxArray = new Double[xList.size()];
-		Double[] yMinArray = new Double[yList.size()];
-		Double[] yMaxArray = new Double[yList.size()];
-		for(int i=0; i<xList.size(); i++) {
-			xMinArray[i] = MyArrayUtils.getMin(xList.get(i));
-			xMaxArray[i] = MyArrayUtils.getMax(xList.get(i));
-		}
-		for(int i=0; i<yList.size(); i++) {
-			yMinArray[i] = MyArrayUtils.getMin(yList.get(i));
-			yMaxArray[i] = MyArrayUtils.getMax(yList.get(i));
-		}
-		
-		xMin = MyArrayUtils.getMin(xMinArray);
-		xMax = MyArrayUtils.getMax(xMaxArray);
-		yMin = MyArrayUtils.getMin(yMinArray);
-		yMax = MyArrayUtils.getMax(yMaxArray);
+		chart.getXYPlot().getDomainAxis().setRange(xMin - 0.1*xMin, xMax + 0.1*xMax);
+		chart.getXYPlot().getRangeAxis().setRange(yMin - 0.1*yMin, yMax + 0.1*yMax);
 		
 		// creation of the file .png
 		File xyChart = new File(folderPathName + fileName + ".png"); 

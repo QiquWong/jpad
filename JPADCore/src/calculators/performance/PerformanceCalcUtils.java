@@ -97,9 +97,11 @@ public class PerformanceCalcUtils {
 		//			upperBound = speed[speed.length - 1];
 		//		} 
 
-		speedMin = MyArrayUtils.intersectArraysBrent(speed, thrust, drag, stallSpeed, stallSpeed+30, AllowedSolution.BELOW_SIDE);
-		speedMax = MyArrayUtils.intersectArraysBrent(speed, thrust, drag, stallSpeed+30, speed[speed.length-1], AllowedSolution.ABOVE_SIDE);
+//		speedMin = MyArrayUtils.intersectArraysBrent(speed, thrust, drag, stallSpeed, stallSpeed+30, AllowedSolution.BELOW_SIDE);
+//		speedMax = MyArrayUtils.intersectArraysBrent(speed, thrust, drag, stallSpeed+30, speed[speed.length-1], AllowedSolution.ABOVE_SIDE);
 
+		double[] intersection = MyArrayUtils.intersectArraysSimple(thrust, drag);
+		
 		if (speedMin != null && stallSpeed > speedMin) speedMin = stallSpeed;
 		else if (speedMin == null && speedMax != null) speedMin = stallSpeed;
 		else if (speedMax == null && speedMin == null) { 

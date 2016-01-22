@@ -56,6 +56,7 @@ public class Test_JFreeChart {
 		MyChartToFileUtils.plotJFreeChart(
 				xList, yList,						// List to be plotted
 				"Test Chart", "x", "y",				// title and labels
+				null, null, null, null,				// axis
 				"","",								// units
 				true, legend, 						// legend visibility and values 
 				subfolderPath, "JFreeChart_Test"	// output information

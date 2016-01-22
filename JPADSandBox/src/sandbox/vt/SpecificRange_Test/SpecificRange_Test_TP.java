@@ -3,14 +3,18 @@ package sandbox.vt.SpecificRange_Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 import aircraft.OperatingConditions;
 import aircraft.auxiliary.airfoil.MyAirfoil;
 import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
-import calculators.aerodynamics.AerodynamicCalc;
+import calculators.aerodynamics.DragCalc;
+import calculators.performance.PerformanceCalcUtils;
+import calculators.performance.ThrustCalc;
+import calculators.performance.customdata.DragMap;
+import calculators.performance.customdata.DragThrustIntersectionMap;
+import calculators.performance.customdata.ThrustMap;
 import configuration.MyConfiguration;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.AnalysisTypeEnum;
@@ -46,7 +50,7 @@ public class SpecificRange_Test_TP {
 		//------------------------------------------------------------------------------------
 		// Operating Condition / Aircraft / AnalysisManager (geometry calculations)
 		OperatingConditions theCondition = new OperatingConditions();
-		theCondition.set_altitude(Amount.valueOf(5000.0, SI.METER));
+		theCondition.set_altitude(Amount.valueOf(6000.0, SI.METER));
 		Aircraft aircraft = Aircraft.createDefaultAircraft("ATR-72");
 
 		aircraft.get_theAerodynamics().set_aerodynamicDatabaseReader(aeroDatabaseReader);
@@ -82,68 +86,103 @@ public class SpecificRange_Test_TP {
 		for (int i=0; i<5; i++)
 //			maxTakeOffMassArray[i] = aircraft.get_weights().get_MTOM().getEstimatedValue()*(1-0.1*(4-i));
 			maxTakeOffMassArray[i] = aircraft.get_weights().get_MTOM().plus(aircraft.get_weights().get_MLM()).divide(2).getEstimatedValue()*(1-0.1*(4-i));
+	
+		double[] weight = new double[maxTakeOffMassArray.length];
+		for(int i=0; i<weight.length; i++)
+			weight[i] = maxTakeOffMassArray[i]*AtmosphereCalc.g0.getEstimatedValue();
 		
 		System.out.println("\n\nMAX TAKE OFF MASS ARRAY:");
 		for(int i=0; i<maxTakeOffMassArray.length; i++)
 			System.out.print(maxTakeOffMassArray[i] + " ");
 		System.out.println("\n\n");
 		
-		double cLmax = 1.6; // TODO : Fix when the correct CLmax is calculated from wing
-
-		Double[] vStall = new Double[maxTakeOffMassArray.length];
-		for(int i=0; i<vStall.length; i++)
-			vStall[i] = SpeedCalc.calculateSpeedStall(
-					theCondition.get_altitude().getEstimatedValue(),
-					Amount.valueOf(maxTakeOffMassArray[i], SI.KILOGRAM).times(AtmosphereCalc.g0).getEstimatedValue(),
-					aircraft.get_wing().get_surface().getEstimatedValue(),
-					cLmax);  
-
+		double cLmax = 1.6; // TODO : Fix when the correct CLmax is calculated from wing		
+		
+		// Drag Thrust Intersection		
+		double[] speed = MyArrayUtils.linspace(
+				SpeedCalc.calculateTAS(
+						0.15,
+						theCondition.get_altitude().getEstimatedValue()
+						),
+				SpeedCalc.calculateTAS(
+						1.0,
+						theCondition.get_altitude().getEstimatedValue()
+						),
+				250
+				);
+			
+		List<DragMap> listDrag = new ArrayList<DragMap>();
+		for(int i=0; i<maxTakeOffMassArray.length; i++)
+			listDrag.add(
+					new DragMap(
+							weight[i],
+							theCondition.get_altitude().getEstimatedValue(),
+							DragCalc.calculateDragVsSpeed(
+									weight[i],
+									theCondition.get_altitude().getEstimatedValue(),
+									aircraft.get_wing().get_surface().getEstimatedValue(),
+									aircraft.get_theAerodynamics().get_cD0(),
+									aircraft.get_wing().get_aspectRatio(),
+									aircraft.get_theAerodynamics().get_oswald(),
+									speed,
+									aircraft.get_wing().get_sweepHalfChordEq().getEstimatedValue(),
+									aircraft.get_wing().get_maxThicknessMean(),
+									AirfoilTypeEnum.CONVENTIONAL
+									),
+							speed
+							)
+					);
+		
+		List<ThrustMap> listThrust = new ArrayList<ThrustMap>();
+		for(int i=0; i<maxTakeOffMassArray.length; i++)
+			listThrust.add(
+					new ThrustMap(
+							theCondition.get_altitude().getEstimatedValue(),
+							1.0, // phi
+							ThrustCalc.calculateThrustVsSpeed(
+									aircraft.get_powerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
+									1.0, // phi
+									theCondition.get_altitude().getEstimatedValue(),
+									EngineOperatingConditionEnum.CRUISE,
+									EngineTypeEnum.TURBOPROP,
+									aircraft.get_powerPlant().get_engineList().get(0).get_bpr(),
+									aircraft.get_powerPlant().get_engineNumber(),
+									speed
+									),
+							speed,
+							aircraft.get_powerPlant().get_engineList().get(0).get_bpr(),
+							EngineOperatingConditionEnum.CRUISE
+							)
+					);
+		
+		List<DragThrustIntersectionMap> intersectionList = PerformanceCalcUtils
+				.calculateDragThrustIntersection(
+						new double[] {theCondition.get_altitude().getEstimatedValue()},
+						speed,
+						weight,
+						new double[] {1.0},
+						new EngineOperatingConditionEnum[] {EngineOperatingConditionEnum.CRUISE},
+						aircraft.get_powerPlant().get_engineList().get(0).get_bpr(),
+						aircraft.get_wing().get_surface().getEstimatedValue(),
+						cLmax,
+						listDrag,
+						listThrust
+						);
+				
 		//----------------------------------------------------------------------------------
 		// Definition of a Mach array for each maxTakeOffMass
 		List<Double[]> machList = new ArrayList<Double[]>();
-
 		for(int i=0; i<maxTakeOffMassArray.length; i++) 
 			machList.add(MyArrayUtils.linspaceDouble(
-					SpeedCalc.calculateMach(
-							theCondition.get_altitude().getEstimatedValue(),
-							vStall[i]),
-					0.7,
+					intersectionList.get(i).getMinMach(),
+					intersectionList.get(i).getMaxMach(),
 					250));
-
-		// Drag Thrust Intersection
-		double[][] intersection = SpecificRangeCalc.ThrustDragIntersection(
-				machList,
-				aircraft.get_powerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
-				aircraft.get_powerPlant().get_engineNumber(),
-				1, // phi
-				aircraft.get_powerPlant().get_engineList().get(0).get_bpr(),
-				EngineTypeEnum.TURBOPROP,
-				EngineOperatingConditionEnum.CRUISE,
-				theCondition.get_altitude().getEstimatedValue(),
-				maxTakeOffMassArray,
-				aircraft.get_wing().get_surface().getEstimatedValue(),
-				aircraft.get_theAerodynamics().get_cD0(),
-				aircraft.get_theAerodynamics().get_oswald(),
-				aircraft.get_wing().get_aspectRatio(),
-				aircraft.get_wing().get_sweepHalfChordEq().getEstimatedValue(),
-				aircraft.get_wing().get_maxThicknessMean(),
-				AirfoilTypeEnum.CONVENTIONAL
-				);
-		System.out.println("Intersection Matrix\n");
-		for(int i=0; i<intersection.length; i++) {
-			for(int j=0; j<intersection[i].length; j++) {
-				System.out.print(intersection[i][j] + " ");
-			}
-			System.out.println(" ");
-		}
-
-		System.out.println("-----------------------------------------------------------");
 
 		System.out.println("\n-----------------------------------------------------------");
 		System.out.println("Mach Matrix\n");
 		for (int i=0; i<machList.size(); i++)
 			System.out.println(Arrays.toString(machList.get(i)));
-
+		
 		System.out.println("-----------------------------------------------------------");
 
 		//-----------------------------------------------------------------------------------
@@ -207,15 +246,11 @@ public class SpecificRange_Test_TP {
 
 		//-----------------------------------------------------------------------------------
 		// PLOTTING:
-
-		// Mass in lbs
-		for (int i=0; i<maxTakeOffMassArray.length; i++)
-			maxTakeOffMassArray[i] = Amount.valueOf(maxTakeOffMassArray[i], SI.KILOGRAM).to(NonSI.POUND).getEstimatedValue();
-
+		
 		// building legend
 		List<String> legend = new ArrayList<String>();
 		for(int i=0; i<maxTakeOffMassArray.length; i++)
-			legend.add("MTOM = " + maxTakeOffMassArray[i] + " lbs ");
+			legend.add("MTOM = " + maxTakeOffMassArray[i] + " kg ");
 
 		SpecificRangeCalc.createSpecificRangeChart(specificRange, machList, legend);
 		SpecificRangeCalc.createSfcChart(sfcList, machList, legend, EngineTypeEnum.TURBOPROP);

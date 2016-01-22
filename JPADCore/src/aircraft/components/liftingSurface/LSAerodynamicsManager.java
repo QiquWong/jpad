@@ -2494,6 +2494,7 @@ public void PlotCDvsAlphaCurve(){
 					"CL vs alpha",
 					"alpha", 
 					"CL",
+					null, null, null, null,
 					"deg",
 					"",
 					true,

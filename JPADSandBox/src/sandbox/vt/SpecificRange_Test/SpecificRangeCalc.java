@@ -189,6 +189,7 @@ public class SpecificRangeCalc {
 		MyChartToFileUtils.plotJFreeChart(
 				xList, yList,
 				"Drag-Thrust v.s. Mach at " + altitude + " m", "Mach", "Drag, Thrust",
+				null, null, null, null,
 				"", "N",
 				true, legendList,
 				subfolderPath, "DragThrust"
@@ -402,6 +403,7 @@ public class SpecificRangeCalc {
 		MyChartToFileUtils.plotJFreeChart(
 				mach, specificRange,									// List to be plotted
 				"Specific Range v.s. Mach","Mach", "Specific Range",	// Title and labels
+				null, null, null, null,									// Axis
 				"", "nmi/lbs",											// Units			
 				true, legend,											// Legend visibility and values
 				subfolderPath, "SpecificRange"							// output information
@@ -441,6 +443,7 @@ public class SpecificRangeCalc {
 			MyChartToFileUtils.plotJFreeChart(
 					mach, sfc,
 					"SFC v.s. Mach", "Mach", "SFC",
+					null, null, null, null,
 					"", "lb/(lb*h)",
 					true, legend,
 					subfolderPath, "SFC"
@@ -449,6 +452,7 @@ public class SpecificRangeCalc {
 			MyChartToFileUtils.plotJFreeChart(
 					mach, sfc,
 					"SFC v.s. Mach", "Mach", "SFC",
+					null, null, null, null,
 					"", "lb/(hp*h)",
 					true, legend,
 					subfolderPath, "SFC"
@@ -474,6 +478,7 @@ public class SpecificRangeCalc {
 		MyChartToFileUtils.plotJFreeChart(
 				mach, efficiency,
 				"Efficiency v.s. Mach", "Mach", "Efficiency",
+				null, null, null, null,
 				"", "",	
 				true, legend,
 				subfolderPath, "Efficiency"
