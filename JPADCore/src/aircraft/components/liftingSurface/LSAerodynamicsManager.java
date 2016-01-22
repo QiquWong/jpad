@@ -28,6 +28,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.TreeBasedTable;
 import com.sun.corba.se.spi.legacy.connection.GetEndPointInfoAgainException;
 import com.sun.org.apache.bcel.internal.generic.NEWARRAY;
+import com.sun.org.apache.xml.internal.utils.ThreadControllerWrapper;
 
 import aircraft.OperatingConditions;
 import aircraft.auxiliary.airfoil.Aerodynamics;
@@ -1188,6 +1189,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			
 			}							
 		}
+		
 
 		public void allMethods(Amount<Angle> alpha) {
 			linearAndersonCompressibleSubsonic(alpha);
@@ -1199,7 +1201,28 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			// TODO Auto-generated method stub
 		}
 
+		/**
+		 * This method calculates CL at alpha given as input. This method calculates both linear trait and 
+		 * non linear trait. It use the NasaBlackwell method in order to evaluate the slope of the linear trait
+		 * and it builds the non-linear trait using a cubic interpolation. 
+		 * 
+		 * @author Manuela Ruocco
+		 * @param Amount<Angle> alphaBody. It is the angle of attack between the direction of asimptotic 
+         * velocity and the reference line of fuselage.
+		 */		
 		
+		public double nasaBlackwellalphaBody(Amount<Angle> alphaBody){
+			if (alphaBody.getUnit() == NonSI.DEGREE_ANGLE) 
+				alphaBody = alphaBody.to(SI.RADIAN);
+			
+			Amount<Angle> angleOfIncidence = theLiftingSurface.get_iw();
+			Amount<Angle> alphaWing = Amount.valueOf(
+					alphaBody.getEstimatedValue() +
+					angleOfIncidence.getEstimatedValue(), SI.RADIAN);
+			
+			double cLWing = nasaBlackwellCompleteCurve(alphaWing);
+			return cLWing;
+		}
 
 
 	}
