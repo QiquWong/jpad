@@ -2300,43 +2300,48 @@ public void PlotCDvsAlphaCurve(){
 		 *
 		 */		
 		public double calcCLatAlphaHighLiftDevice(Amount<Angle> alpha){
-
-			LSAerodynamicsManager.CalcCLAtAlpha theCLCalculator = LSAerodynamicsManager.this.new CalcCLAtAlpha();
 			
 			if (alpha.getUnit() == NonSI.DEGREE_ANGLE) 
 				alpha = alpha.to(SI.RADIAN);
 
+			double cLAlphaFlap = cLalpha_new*57.3; // need it in 1/rad
 
 			MyAirfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
+			//double alphaStar = 0.15;
+			double alphaStarClean = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
 			
-			
-			double cLAlphaFlap =cLalpha_new*57.3; // need it in 1/rad
-			
-			Amount<Angle> deltaAlphaAmount = Amount.valueOf(toRadians(deltaAlphaMax), SI.RADIAN);	
+			Amount<Angle> alphaStarCleanAmount = Amount.valueOf(alphaStarClean, SI.RADIAN);
 
-			double alphaStar = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
-			double cL0Clean =  theCLCalculator.nasaBlackwellCompleteCurve(Amount.valueOf(0.0, SI.RADIAN));
+			CalcCLAtAlpha theCLCleanCalculator = new CalcCLAtAlpha();
+			double cLStarClean = theCLCleanCalculator.nasaBlackwellCompleteCurve(alphaStarCleanAmount);
+			
+			double cL0Clean =  theCLCleanCalculator.nasaBlackwellCompleteCurve(Amount.valueOf(0.0, SI.RADIAN));
 			double cL0HighLift = cL0Clean + deltaCL0_flap;
 			double qValue = cL0HighLift;
-
-			calcAlphaAndCLMax();
+			double alphaStar = (cLStarClean - qValue)/cLAlphaFlap;
+			double alphaStarFlap = (alphaStar + alphaStarClean)/2;
+			double cLStarFlap = cLAlphaFlap * alphaStarFlap + qValue;	
+			calcAlphaAndCLMax(); // TODO try to delete this
 			double cLMaxClean = get_cLMaxClean();
 			Amount<Angle> alphaMax = get_alphaMaxClean().to(NonSI.DEGREE_ANGLE);	
 			double cLMaxHighLift = cLMaxClean + deltaCLmax_flap + deltaCLmax_slat;
-			double alphaMaxHighLift = alphaMax.getEstimatedValue() + deltaAlphaAmount.getEstimatedValue();
+			double alphaMaxHighLift = alphaMax.getEstimatedValue() + deltaAlphaMax;
 			alphaMaxHighLift = Amount.valueOf(toRadians(alphaMaxHighLift), SI.RADIAN).getEstimatedValue();
-
-			if (alpha.getEstimatedValue() < alphaStar){ 
+			
+			
+			if (alpha.getEstimatedValue() < alphaStarFlap ){ 
 				double cLActual = cLAlphaFlap * alpha.getEstimatedValue() + qValue;	
 				return cLActual;
 			}
 			else{
-				double cLStarFlap = cLAlphaFlap * alphaStar + qValue;	
-				double[][] matrixData = { {Math.pow(alphaMaxHighLift, 3), Math.pow(alphaMaxHighLift, 2), alphaMaxHighLift,1.0},
+				double[][] matrixData = { {Math.pow(alphaMaxHighLift, 3), Math.pow(alphaMaxHighLift, 2)
+					, alphaMaxHighLift,1.0},
 						{3* Math.pow(alphaMaxHighLift, 2), 2*alphaMaxHighLift, 1.0, 0.0},
-						{3* Math.pow(alphaStar, 2), 2*alphaStar, 1.0, 0.0},
-						{Math.pow(alphaStar, 3), Math.pow(alphaStar, 2),alphaStar,1.0}};
+						{3* Math.pow(alphaStarFlap, 2), 2*alphaStarFlap, 1.0, 0.0},
+						{Math.pow(alphaStarFlap, 3), Math.pow(alphaStarFlap, 2),alphaStarFlap,1.0}};
 				RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
+				
+				
 				double [] vector = {cLMaxHighLift, 0,cLAlphaFlap, cLStarFlap};
 
 				double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
@@ -2399,11 +2404,6 @@ public void PlotCDvsAlphaCurve(){
 			double alphaStar = (cLStarClean - qValue)/cLAlphaFlap;
 			double alphaStarFlap = (alphaStar + alphaStarClean)/2;
 			double cLStarFlap = cLAlphaFlap * alphaStarFlap + qValue;	
-			System.out.println("\n----------------------------------");
-			System.out.println(" cl star " + cLStarFlap);
-			System.out.println(" cl alpha " + cLAlphaFlap);
-			System.out.println(" q " + qValue);
-			System.out.println("----------------------------------");
 			calcAlphaAndCLMax(); // TODO try to delete this
 			double cLMaxClean = get_cLMaxClean();
 			Amount<Angle> alphaMax = get_alphaMaxClean().to(NonSI.DEGREE_ANGLE);	
@@ -2485,7 +2485,9 @@ public void PlotCDvsAlphaCurve(){
 			legend.add("clean");
 			legend.add("high lift");
 
-
+			for (int i = 1; i<cLArrayHighLiftDouble.length; i++){
+				System.out.println(" \nalpha " + alphaArrayHighLiftDouble[i] +"             cl " + cLArrayHighLiftPlot[i]);			
+			}
 
 			MyChartToFileUtils.plotJFreeChart(alphaListPlot, 
 					cLListPlot,
@@ -4154,19 +4156,24 @@ public void PlotCDvsAlphaCurve(){
 
 	public void setDatabaseReaders(Pair... args) {
 		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
+		
 		for (Pair a : args) {
 			DatabaseReaderEnum key = (DatabaseReaderEnum)a.getKey(); 
 			String databaseFileName = (String)a.getValue();
+			
 			switch (key) {
 			case AERODYNAMIC:
 				_aerodynamicDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath, databaseFileName); 
 				listDatabaseReaders.add(_aerodynamicDatabaseReader);
 				break;
+				
 			case HIGHLIFT:
 				_highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, databaseFileName); 
 				listDatabaseReaders.add(_highLiftDatabaseReader);
-				break;			
+				break;	
+				
 			}
+			
 			/*
 			 * TODO: manage other types of database reader
 			 * 

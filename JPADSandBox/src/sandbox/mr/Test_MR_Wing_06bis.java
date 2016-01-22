@@ -34,7 +34,10 @@ import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import javafx.util.Pair;
 import standaloneutils.JPADXmlReader;
+import standaloneutils.MyChartToFileUtils;
 import standaloneutils.customdata.CenterOfGravity;
+import standaloneutils.customdata.MyArray;
+import writers.JPADStaticWriteUtils;
 
 public class Test_MR_Wing_06bis {
 
@@ -137,7 +140,8 @@ public class Test_MR_Wing_06bis {
 //		theLSAnalysis.set_highLiftDatabaseReader(highLiftDatabaseReader);
 
 		theLSAnalysis.setDatabaseReaders(
-				new Pair(DatabaseReaderEnum.AERODYNAMIC, "Aerodynamic_Database_Ultimate.h5"),
+				new Pair(DatabaseReaderEnum.AERODYNAMIC, 
+						"Aerodynamic_Database_Ultimate.h5"),
 				new Pair(DatabaseReaderEnum.HIGHLIFT, "HighLiftDatabase.h5")
 				);
 		
@@ -368,7 +372,31 @@ public class Test_MR_Wing_06bis {
 		//		// New lift curve 
 
 		highLiftCalculator.PlotHighLiftCurve();
-		System.out.println("DONE");	
+		System.out.println("\nDONE");	
+		
+		Amount<Angle> alpha2 =(Amount.valueOf(toRadians(2.), SI.RADIAN));
+		Amount<Angle> alpha4 =(Amount.valueOf(toRadians(4.), SI.RADIAN));
+		Amount<Angle> alpha6 =(Amount.valueOf(toRadians(6.), SI.RADIAN));
+		Amount<Angle> alpha9 =(Amount.valueOf(toRadians(9.), SI.RADIAN));
+		Amount<Angle> alpha12 =(Amount.valueOf(toRadians(12.), SI.RADIAN));
+		Amount<Angle> alpha14 =(Amount.valueOf(toRadians(14.), SI.RADIAN));
+		
+		double cL2 = highLiftCalculator.calcCLatAlphaHighLiftDevice(alpha2);
+		double cL4 = highLiftCalculator.calcCLatAlphaHighLiftDevice(alpha4);
+		double cL9 = highLiftCalculator.calcCLatAlphaHighLiftDevice(alpha9);
+		double cL12 = highLiftCalculator.calcCLatAlphaHighLiftDevice(alpha12);
+		double cL14 = highLiftCalculator.calcCLatAlphaHighLiftDevice(alpha14);
+		double cL6 = highLiftCalculator.calcCLatAlphaHighLiftDevice(alpha6);
+		
+		System.out.println(" cl at alpha " + alpha2.to(NonSI.DEGREE_ANGLE) + " " + cL2);
+		System.out.println(" cl at alpha " + alpha4.to(NonSI.DEGREE_ANGLE) + "  " + cL4);
+		System.out.println(" cl at alpha " + alpha6.to(NonSI.DEGREE_ANGLE) + "  " + cL6);
+		System.out.println(" cl at alpha " + alpha9.to(NonSI.DEGREE_ANGLE) + "  " + cL9);
+		System.out.println(" cl at alpha " + alpha12.to(NonSI.DEGREE_ANGLE) + "  " + cL12);
+		System.out.println(" cl at alpha " + alpha14.to(NonSI.DEGREE_ANGLE) + " " +  cL14);
+		
+
+		
 
 	}
 

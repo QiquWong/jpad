@@ -531,5 +531,7 @@ public class Test_MR_06_Wing {
 				//	   
 				//	   theCDCalculator.integralFromCdAirfoil(alphaFirst, MethodEnum.NASA_BLACKWELL, theLSAnalysis);   
 
+			
 	}
+	
 }
