@@ -45,6 +45,8 @@ public class LandingGear extends Component{
 
 	private Double[] _percentDifferenceXCG;
 
+	private double _deltaCD0;
+
 
 	public LandingGear(String name, String description, double x, double y,
 			double z) {
@@ -80,11 +82,13 @@ public class LandingGear extends Component{
 		case "ATR-72":
 			_mounting = MountingPosition.FUSELAGE;
 			_massReference = Amount.valueOf(675.8, SI.KILOGRAM);
+			set_deltaCD0(0.010);
 			break;
 			
 		case "B747-100B":
 			_mounting = MountingPosition.FUSELAGE;
 			_massReference = Amount.valueOf(13900.0, SI.KILOGRAM);
+			set_deltaCD0(0.010);
 			break;
 		}
 	}
@@ -330,6 +334,14 @@ public class LandingGear extends Component{
 
 	public static String getId() {
 		return "6";
+	}
+
+	public double get_deltaCD0() {
+		return _deltaCD0;
+	}
+
+	public void set_deltaCD0(double _deltaCD0) {
+		this._deltaCD0 = _deltaCD0;
 	}
 
 }

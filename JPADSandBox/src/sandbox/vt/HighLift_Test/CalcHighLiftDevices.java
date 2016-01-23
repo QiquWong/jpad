@@ -517,7 +517,7 @@ public class CalcHighLiftDevices {
 	}
 	
 	//-------------------------------------------------------------------------------------
-	// GETTERS OF RESULTS:
+	// GETTERS AND SETTERS:
 	
 	public ArrayList<Double> getDeltaCl0_flap_list() {
 		return deltaCl0_flap_list;
