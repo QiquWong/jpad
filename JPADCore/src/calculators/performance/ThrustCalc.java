@@ -143,7 +143,6 @@ public class ThrustCalc {
 	 * @param t0 static thrust (N) per single engine
 	 * @param nEngine number of engines
 	 * @param phi engine power setting
-	 * @param simga density ratio at a given altitude
 	 * @param altitude (m)
 	 * @return
 	 */

@@ -1822,7 +1822,8 @@ public void PlotCDvsAlphaCurve(){
 				cLalpha_new = 0,
 				deltaAlphaMax = 0,
 				deltaCD = 0,
-				deltaCM_c4 = 0;
+				deltaCM_c4 = 0,
+				cL_Max_Flap;
 
 		private ArrayList<Double> deltaCl0_flap_list,
 		deltaCL0_flap_list,
@@ -1900,6 +1901,8 @@ public void PlotCDvsAlphaCurve(){
 					deltaFlap_ref.add(50.0);
 				}
 			}
+			
+			calcAlphaAndCLMax();
 		}
 
 		//-------------------------------------------------------------------------------------
@@ -2283,7 +2286,6 @@ public void PlotCDvsAlphaCurve(){
 								)
 						);
 
-			// FIXME: FIX THE CL CALL AND CHECK RESULTS FROM A.D. YOUNG P.31 (MODIFY FLAP INPUT)
 			deltaCM_c4_list = new ArrayList<Double>();
 			double cL = calcCLatAlphaHighLiftDevice(theConditions.get_alphaCurrent());
 			for(int i=0; i<flapType_index.size(); i++)
@@ -2344,10 +2346,9 @@ public void PlotCDvsAlphaCurve(){
 			double alphaStar = (cLStarClean - qValue)/cLAlphaFlap;
 			double alphaStarFlap = (alphaStar + alphaStarClean)/2;
 			double cLStarFlap = cLAlphaFlap * alphaStarFlap + qValue;	
-			calcAlphaAndCLMax(); // TODO try to delete this
 			double cLMaxClean = get_cLMaxClean();
 			Amount<Angle> alphaMax = get_alphaMaxClean().to(NonSI.DEGREE_ANGLE);	
-			double cLMaxHighLift = cLMaxClean + deltaCLmax_flap + deltaCLmax_slat;
+			cL_Max_Flap = cLMaxClean + deltaCLmax_flap + deltaCLmax_slat;
 			double alphaMaxHighLift = alphaMax.getEstimatedValue() + deltaAlphaMax;
 			alphaMaxHighLift = Amount.valueOf(toRadians(alphaMaxHighLift), SI.RADIAN).getEstimatedValue();
 			
@@ -2365,7 +2366,7 @@ public void PlotCDvsAlphaCurve(){
 				RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
 				
 				
-				double [] vector = {cLMaxHighLift, 0,cLAlphaFlap, cLStarFlap};
+				double [] vector = {cL_Max_Flap, 0,cLAlphaFlap, cLStarFlap};
 
 				double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
 
@@ -2709,6 +2710,14 @@ public void PlotCDvsAlphaCurve(){
 
 		public void setcExt_c_slat(List<Double> cExt_c_slat) {
 			this.cExt_c_slat = cExt_c_slat;
+		}
+
+		public double getcL_Max_Flap() {
+			return cL_Max_Flap;
+		}
+
+		public void setcL_Max_Flap(double cL_Max_Flap) {
+			this.cL_Max_Flap = cL_Max_Flap;
 		}
 	}
 
