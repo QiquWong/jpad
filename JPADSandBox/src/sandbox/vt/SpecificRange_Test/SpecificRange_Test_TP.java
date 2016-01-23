@@ -101,7 +101,7 @@ public class SpecificRange_Test_TP {
 		// Drag Thrust Intersection		
 		double[] speed = MyArrayUtils.linspace(
 				SpeedCalc.calculateTAS(
-						0.15,
+						0.05,
 						theCondition.get_altitude().getEstimatedValue()
 						),
 				SpeedCalc.calculateTAS(
@@ -255,6 +255,13 @@ public class SpecificRange_Test_TP {
 		SpecificRangeCalc.createSpecificRangeChart(specificRange, machList, legend);
 		SpecificRangeCalc.createSfcChart(sfcList, machList, legend, EngineTypeEnum.TURBOPROP);
 		SpecificRangeCalc.createEfficiencyChart(efficiencyList, machList, legend);
+		SpecificRangeCalc.createThrustDragIntersectionChart(
+				theCondition.get_altitude().getEstimatedValue(),
+				maxTakeOffMassArray,
+				listDrag,
+				listThrust,
+				speed
+				);
 	}
 	//------------------------------------------------------------------------------------------
 	// END OF THE TEST

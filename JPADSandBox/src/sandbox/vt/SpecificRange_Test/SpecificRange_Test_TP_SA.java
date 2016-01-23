@@ -5,15 +5,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.measure.quantity.Angle;
-import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
-import calculators.aerodynamics.AerodynamicCalc;
+import calculators.aerodynamics.DragCalc;
 import calculators.geometry.LSGeometryCalc;
+import calculators.performance.PerformanceCalcUtils;
+import calculators.performance.ThrustCalc;
+import calculators.performance.customdata.DragMap;
+import calculators.performance.customdata.DragThrustIntersectionMap;
+import calculators.performance.customdata.ThrustMap;
 import configuration.MyConfiguration;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;
@@ -80,6 +84,8 @@ public class SpecificRange_Test_TP_SA {
 		
 		List<String> maxTakeOffMass_property = reader.getXMLPropertiesByPath("//ATR72/Maximum_take_off_mass");	
 		double maxTakeOffMass = Double.valueOf(maxTakeOffMass_property.get(0));
+		List<String> maxLandingMass_property = reader.getXMLPropertiesByPath("//ATR72/Maximum_landing_mass");	
+		double maxLandingMass = Double.valueOf(maxLandingMass_property.get(0));
 		List<String> altitude_property = reader.getXMLPropertiesByPath("//ATR72/Altitude");	
 		double altitude = Double.valueOf(altitude_property.get(0));
 		List<String> surface_property = reader.getXMLPropertiesByPath("//ATR72/Planform_surface");
@@ -88,14 +94,14 @@ public class SpecificRange_Test_TP_SA {
 		double cLmax = Double.valueOf(cLmax_property.get(0));
 		List<String> byPassRatio_property = reader.getXMLPropertiesByPath("//ATR72/ByPassRatio");
 		double byPassRatio = Double.valueOf(byPassRatio_property.get(0));
-		List<String> eta_property = reader.getXMLPropertiesByPath("//ATR72/Propeller_efficiency");
-		double eta = Double.valueOf(eta_property.get(0));
 		List<String> tcMax_property = reader.getXMLPropertiesByPath("//ATR72/Mean_maximum_thickness");
 		double tcMax = Double.valueOf(tcMax_property.get(0));
 		List<String> ar_property = reader.getXMLPropertiesByPath("//ATR72/AspectRatio");
 		double ar = Double.valueOf(ar_property.get(0));	
 		List<String> cd0_property = reader.getXMLPropertiesByPath("//ATR72/CD0");
 		double cd0 = Double.valueOf(cd0_property.get(0));
+		List<String> oswald_property = reader.getXMLPropertiesByPath("//ATR72/Oswald");
+		double oswald = Double.valueOf(oswald_property.get(0));
 		List<String> t0_property = reader.getXMLPropertiesByPath("//ATR72/Total_Thrust_Single_Engine");
 		double t0 = Double.valueOf(t0_property.get(0));
 		List<String> engineNumber_property = reader.getXMLPropertiesByPath("//ATR72/Engine_number");
@@ -114,62 +120,93 @@ public class SpecificRange_Test_TP_SA {
 		// generating variation of mass of 10% until -40% of maxTakeOffMass
 		double[] maxTakeOffMassArray = new double[5];
 		for (int i=0; i<5; i++)
-			maxTakeOffMassArray[i] = maxTakeOffMass*(1-0.1*(4-i));
-
-		Double[] vStall = new Double[maxTakeOffMassArray.length];
-		for(int i=0; i<vStall.length; i++)
-			vStall[i] = SpeedCalc.calculateSpeedStall(
-					altitude,
-					Amount.valueOf(maxTakeOffMassArray[i], SI.KILOGRAM).times(AtmosphereCalc.g0).getEstimatedValue(),
-					surface,
-					cLmax);  
+//			maxTakeOffMassArray[i] = maxTakeOffMass*(1-0.1*(4-i));
+			maxTakeOffMassArray[i] = ((maxTakeOffMass + maxLandingMass)/2)*(1-0.1*(4-i));
+		
+		double[] weight = new double[maxTakeOffMassArray.length];
+		for(int i=0; i<weight.length; i++)
+			weight[i] = maxTakeOffMassArray[i]*AtmosphereCalc.g0.getEstimatedValue();
 
 		//----------------------------------------------------------------------------------
+		// Drag Thrust Intersection		
+		double[] speed = MyArrayUtils.linspace(
+				SpeedCalc.calculateTAS(
+						0.05,
+						altitude
+						),
+				SpeedCalc.calculateTAS(
+						1.0,
+						altitude
+						),
+				250
+				);
+
+		List<DragMap> listDrag = new ArrayList<DragMap>();
+		for(int i=0; i<maxTakeOffMassArray.length; i++)
+			listDrag.add(
+					new DragMap(
+							weight[i],
+							altitude,
+							DragCalc.calculateDragVsSpeed(
+									weight[i],
+									altitude,
+									surface,
+									cd0,
+									ar,
+									oswald,
+									speed,
+									sweepHalfChord.getEstimatedValue(),
+									tcMax,
+									AirfoilTypeEnum.CONVENTIONAL
+									),
+							speed
+							)
+					);
+
+		List<ThrustMap> listThrust = new ArrayList<ThrustMap>();
+		for(int i=0; i<maxTakeOffMassArray.length; i++)
+			listThrust.add(
+					new ThrustMap(
+							altitude,
+							1.0, // phi
+							ThrustCalc.calculateThrustVsSpeed(
+									t0,
+									1.0, // phi
+									altitude,
+									EngineOperatingConditionEnum.CRUISE,
+									EngineTypeEnum.TURBOPROP,
+									byPassRatio,
+									engineNumber,
+									speed
+									),
+							speed,
+							byPassRatio,
+							EngineOperatingConditionEnum.CRUISE
+							)
+					);
+
+		List<DragThrustIntersectionMap> intersectionList = PerformanceCalcUtils
+				.calculateDragThrustIntersection(
+						new double[] {altitude},
+						speed,
+						weight,
+						new double[] {1.0},
+						new EngineOperatingConditionEnum[] {EngineOperatingConditionEnum.CRUISE},
+						byPassRatio,
+						surface,
+						cLmax,
+						listDrag,
+						listThrust
+						);
+		
 		// Definition of a Mach array for each maxTakeOffMass
 		List<Double[]> machList = new ArrayList<Double[]>();
-
 		for(int i=0; i<maxTakeOffMassArray.length; i++) 
 			machList.add(MyArrayUtils.linspaceDouble(
-					SpeedCalc.calculateMach(
-							altitude,
-							vStall[i]),
-					0.7,
+					intersectionList.get(i).getMinMach(),
+					intersectionList.get(i).getMaxMach(),
 					250));
-
-		// Drag Thrust Intersection
-		double oswald = AerodynamicCalc.calculateOswaldRaymer(
-				sweepLE.to(SI.RADIAN).getEstimatedValue(),
-				ar
-				);
-
-		double[][] intersection = SpecificRangeCalc.ThrustDragIntersection(
-				machList,
-				t0,
-				engineNumber,
-				0.9, // phi
-				byPassRatio,
-				EngineTypeEnum.TURBOPROP,
-				EngineOperatingConditionEnum.CRUISE,
-				altitude,
-				maxTakeOffMassArray,
-				surface,
-				cd0,
-				oswald,
-				ar,
-				sweepHalfChord.getEstimatedValue(),
-				tcMax,
-				AirfoilTypeEnum.CONVENTIONAL
-				);
-		System.out.println("Intersection Matrix\n");
-		for(int i=0; i<intersection.length; i++) {
-			for(int j=0; j<intersection[i].length; j++) {
-				System.out.print(intersection[i][j] + " ");
-			}
-			System.out.println(" ");
-		}
-
-		System.out.println("-----------------------------------------------------------");
-
+		
 		System.out.println("\n-----------------------------------------------------------");
 		System.out.println("Mach Matrix\n");
 		for (int i=0; i<machList.size(); i++)
@@ -185,7 +222,7 @@ public class SpecificRange_Test_TP_SA {
 					machList.get(i),
 					altitude,
 					byPassRatio,
-					EngineTypeEnum.TURBOFAN
+					EngineTypeEnum.TURBOPROP
 					));
 
 		System.out.println("SFC Matrix\n");
@@ -238,21 +275,23 @@ public class SpecificRange_Test_TP_SA {
 
 		//-----------------------------------------------------------------------------------
 		// PLOTTING:
-
-		// Mass in lbs
-		for (int i=0; i<maxTakeOffMassArray.length; i++)
-			maxTakeOffMassArray[i] = Amount.valueOf(maxTakeOffMassArray[i], SI.KILOGRAM).to(NonSI.POUND).getEstimatedValue();
-
+		
 		// building legend
 		List<String> legend = new ArrayList<String>();
 		for(int i=0; i<maxTakeOffMassArray.length; i++)
-			legend.add("MTOM = " + maxTakeOffMassArray[i] + " lbs ");
+			legend.add("MTOM = " + maxTakeOffMassArray[i] + " kg ");
 
 		SpecificRangeCalc.createSpecificRangeChart(specificRange, machList, legend);
 		SpecificRangeCalc.createSfcChart(sfcList, machList, legend, EngineTypeEnum.TURBOPROP);
 		SpecificRangeCalc.createEfficiencyChart(efficiencyList, machList, legend);
+		SpecificRangeCalc.createThrustDragIntersectionChart(
+				altitude,
+				maxTakeOffMassArray,
+				listDrag,
+				listThrust,
+				speed
+				);
 	}
-
 
 	//------------------------------------------------------------------------------------------
 	// GETTERS & SETTERS:

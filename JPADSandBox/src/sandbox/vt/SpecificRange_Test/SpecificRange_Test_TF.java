@@ -1,6 +1,5 @@
 package sandbox.vt.SpecificRange_Test;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,11 +23,9 @@ import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import standaloneutils.MyArrayUtils;
-import standaloneutils.MyChartToFileUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
 import standaloneutils.customdata.CenterOfGravity;
-import writers.JPADStaticWriteUtils;
 
 public class SpecificRange_Test_TF {
 	
@@ -101,7 +98,7 @@ public class SpecificRange_Test_TF {
 		// Drag Thrust Intersection		
 		double[] speed = MyArrayUtils.linspace(
 				SpeedCalc.calculateTAS(
-						0.15,
+						0.05,
 						theCondition.get_altitude().getEstimatedValue()
 						),
 				SpeedCalc.calculateTAS(
@@ -256,50 +253,13 @@ public class SpecificRange_Test_TF {
 		SpecificRangeCalc.createSpecificRangeChart(specificRange, machList, legend);
 		SpecificRangeCalc.createSfcChart(sfcList, machList, legend, EngineTypeEnum.TURBOFAN);
 		SpecificRangeCalc.createEfficiencyChart(efficiencyList, machList, legend);
-		
-		System.out.println("\n------WRITING SPECIFIC RANGE v.s. MACH CHART TO FILE-------");
-		String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR);
-		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "SpecificRange" + File.separator);
-
-		List<Double[]> yList = new ArrayList<Double[]>();
-		Double[][] dragMatrix = new Double[listDrag.size()][listDrag.get(0).getDrag().length];
-		for(int i=0; i<listDrag.size(); i++)
-			for(int j=0; j<listDrag.get(i).getDrag().length; j++)
-				dragMatrix[i][j] = Double.valueOf(listDrag.get(i).getDrag()[j]);
-		for(int i=0; i<dragMatrix.length; i++)
-			yList.add(dragMatrix[i]);
-		Double[][] thrustMatrix = new Double[listThrust.size()][listThrust.get(0).getThrust().length];
-		for(int i=0; i<listThrust.size(); i++)
-			for(int j=0; j<listThrust.get(i).getThrust().length; j++)
-				thrustMatrix[i][j] = Double.valueOf(listThrust.get(i).getThrust()[j]);
-		yList.add(thrustMatrix[0]);
-
-		List<Double[]> xList = new ArrayList<Double[]>();
-		Double[][] machMatrix = new Double[maxTakeOffMassArray.length + 1][speed.length];
-		for(int i=0; i<maxTakeOffMassArray.length + 1; i++)
-			for(int j=0; j<speed.length; j++)
-				machMatrix[i][j] = Double.valueOf(
-						SpeedCalc.calculateMach(
-								theCondition.get_altitude().getEstimatedValue(),
-								speed[j]
-								)
-						);
-		for(int i=0; i<machMatrix.length; i++)
-			xList.add(machMatrix[i]);
-			
-		List<String> legendList = new ArrayList<String>();
-		for(int i=0; i<maxTakeOffMassArray.length; i++)
-			legendList.add("Drag ar MTOM = " + maxTakeOffMassArray[i]);
-		legendList.add("Thrust available");
-		
-		MyChartToFileUtils.plotJFreeChart(
-				xList, yList,
-				"Drag-Thrust v.s. Mach at " + theCondition.get_altitude().getEstimatedValue() + " m", "Mach", "Drag, Thrust",
-				0.36, null, null, 1000000.0,
-				"", "N",
-				true, legendList,
-				subfolderPath, "DragThrust"
-				);
+		SpecificRangeCalc.createThrustDragIntersectionChart(
+				theCondition.get_altitude().getEstimatedValue(),
+				maxTakeOffMassArray,
+				listDrag,
+				listThrust,
+				speed
+				);	
 	}
 	//------------------------------------------------------------------------------------------
 	// END OF THE TEST

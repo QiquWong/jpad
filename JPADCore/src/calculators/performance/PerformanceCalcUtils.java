@@ -101,6 +101,13 @@ public class PerformanceCalcUtils {
 //		speedMax = MyArrayUtils.intersectArraysBrent(speed, thrust, drag, stallSpeed+30, speed[speed.length-1], AllowedSolution.ABOVE_SIDE);
 
 		double[] intersection = MyArrayUtils.intersectArraysSimple(thrust, drag);
+		List<Double> intersectionSpeed = new ArrayList<Double>();
+		for(int i=0; i<intersection.length; i++)
+			if(intersection[i] != 0.0)
+				intersectionSpeed.add(speed[i]);
+		
+		speedMin = intersectionSpeed.get(0);
+		speedMax = intersectionSpeed.get(1);
 		
 		if (speedMin != null && stallSpeed > speedMin) speedMin = stallSpeed;
 		else if (speedMin == null && speedMax != null) speedMin = stallSpeed;
