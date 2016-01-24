@@ -47,23 +47,41 @@ public class CalcTakeOff_Landing {
 	
 	private Aircraft aircraft;
 	private OperatingConditions theConditions;
-	private Amount<Velocity> v_s_TO, v_R, v_LO;
-	private double phi;
+	private CalcHighLiftDevices highLiftCalculator;
+	private Amount<Velocity> v_s_TO, v_R, v_LO, v_wind;
+	private Amount<Length> wing_to_ground_distance;
 	private List<Double> time, alpha, alpha_dot, cL, cD;
 	private List<Amount<Velocity>> speed, mean_speed;
 	private List<Amount<Acceleration>> acceleration, mean_acceleration;
 	private List<Amount<Force>> thrust, thrust_horizontal, thrust_vertical, lift,
 							    drag, friction, total_force;
 	private List<Amount<Length>> delta_GroundDistance, ground_distance;
-	private double dt, k_alpha_dot, mu, mu_brake, cLmaxTO;
+	private double dt, k_alpha_dot, mu, mu_brake, cLmaxTO, k_ground;
 	private final double k_Rot = 1.1,
 						 k_LO = 1.2,
 						 k1 = 0.078,
-						 k2 = 0.365;
+						 k2 = 0.365,
+						 phi = 1.0;
 		
 	//-------------------------------------------------------------------------------------
 	// BUILDER:
 	
+	/**************************************************************************************
+	 * This builder has the purpose of pass input to the class fields and to initialize all
+	 * lists with the correct initial values in order to setup the take-off length calculation 
+	 * 
+	 * @author Vittorio Trifari
+	 * @param aircraft
+	 * @param theConditions
+	 * @param highLiftCalculator instance of LSAerodynamicManager inner class for managing 
+	 * 		  and slat effects 
+	 * @param dt temporal step
+	 * @param k_alpha_dot decrease factor of alpha_dot
+	 * @param mu friction coefficient at take-off
+	 * @param mu_brake friction coefficient in landing or aborting
+	 * @param wing_to_ground_distance
+	 * @param v_wind negative is adverse
+	 */
 	public CalcTakeOff_Landing(
 			Aircraft aircraft,
 			OperatingConditions theConditions,
@@ -71,20 +89,25 @@ public class CalcTakeOff_Landing {
 			double dt,
 			double k_alpha_dot,
 			double mu,
-			double mu_brake
+			double mu_brake,
+			Amount<Length> wing_to_ground_distance,
+			Amount<Velocity> v_wind
 			) {
 
 		// Required data
 		this.aircraft = aircraft;
 		this.theConditions = theConditions;
+		this.highLiftCalculator = highLiftCalculator;
 		this.dt = dt;
 		this.k_alpha_dot = k_alpha_dot;
 		this.mu = mu;
 		this.mu_brake = mu_brake;
-
+		this.wing_to_ground_distance = wing_to_ground_distance;
+		this.v_wind = v_wind;
+		
 		// CalcHighLiftDevices object to manage flap/slat effects
 		highLiftCalculator.calculateHighLiftDevicesEffects();
-		cLmaxTO = highLiftCalculator.getcL_Max_Flap();
+        cLmaxTO = highLiftCalculator.getcL_Max_Flap();
 		
 		// Reference velocities definition
 		v_s_TO = Amount.valueOf(
@@ -98,6 +121,10 @@ public class CalcTakeOff_Landing {
 		v_R = v_s_TO.times(k_Rot);
 		v_LO = v_s_TO.times(k_LO);
 		
+		// Ground effect coefficient
+		k_ground = (1 - (1.32*(wing_to_ground_distance.getEstimatedValue()/aircraft.get_wing().get_span().getEstimatedValue())))
+				/(1.05 + (7.4*(wing_to_ground_distance.getEstimatedValue()/aircraft.get_wing().get_span().getEstimatedValue())));
+
 		// List initialization with known values
 		this.time = new ArrayList<Double>();
 		time.add(0.0);
@@ -162,40 +189,169 @@ public class CalcTakeOff_Landing {
 		
 		this.alpha = new ArrayList<Double>();
 		alpha.add(0.0);
+		this.alpha_dot = new ArrayList<Double>();
+		alpha_dot.add(0.0);
+		
 		this.cL = new ArrayList<Double>();
 		cL.add(highLiftCalculator.calcCLatAlphaHighLiftDevice(Amount.valueOf(alpha.get(0), NonSI.DEGREE_ANGLE)));
+		this.lift = new ArrayList<Amount<Force>>();
+		lift.add(Amount.valueOf(0.0, SI.NEWTON));
+		
+		
+		this.cD = new ArrayList<Double>();
+		cD.add(aircraft.get_theAerodynamics().get_cD0() 
+			   + highLiftCalculator.getDeltaCD()
+			   + aircraft.get_landingGear().get_deltaCD0() 
+			   + ((Math.pow(cL.get(0),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald()))
+			   - k_ground*((Math.pow(cL.get(0),2))/(Math.PI*aircraft.get_wing().get_aspectRatio())));
+		this.drag = new ArrayList<Amount<Force>>();
+		drag.add(Amount.valueOf(0.0, SI.NEWTON));
+		
+		this.friction = new ArrayList<Amount<Force>>();
+		friction.add(aircraft.get_weights().get_MTOW().times(mu));
+		this.total_force = new ArrayList<Amount<Force>>();
+		total_force.add(thrust_horizontal.get(0).minus(friction.get(0)));
+		this.acceleration = new ArrayList<Amount<Acceleration>>();
+		acceleration.add(Amount.valueOf(
+				AtmosphereCalc.g0.divide(aircraft.get_weights().get_MTOW()).times(total_force.get(0)).getEstimatedValue(),
+				SI.METERS_PER_SQUARE_SECOND));
+		this.mean_acceleration = new ArrayList<Amount<Acceleration>>(); 
+		mean_acceleration.add(acceleration.get(0));
+		this.mean_speed = new ArrayList<Amount<Velocity>>();
+		mean_speed.add(Amount.valueOf(0.0, SI.METERS_PER_SECOND));
+		this.delta_GroundDistance = new ArrayList<Amount<Length>>();
+		delta_GroundDistance.add(Amount.valueOf(0.0, SI.METER));
 		this.ground_distance = new ArrayList<Amount<Length>>();
 		ground_distance.add(Amount.valueOf(0.0, SI.METER));
-		
-		// List initialization
-		
-		// TODO: INITIALIZE WITH CORRECT VALUES
-		
-		this.acceleration = new ArrayList<Amount<Acceleration>>();
-		this.mean_acceleration = new ArrayList<Amount<Acceleration>>(); 
-		this.mean_speed = new ArrayList<Amount<Velocity>>();
-		this.alpha_dot = new ArrayList<Double>();
-		this.cD = new ArrayList<Double>();
-		this.lift = new ArrayList<Amount<Force>>();
-		this.drag = new ArrayList<Amount<Force>>();
-		this.friction = new ArrayList<Amount<Force>>();
-		this.total_force = new ArrayList<Amount<Force>>();
-		this.delta_GroundDistance = new ArrayList<Amount<Length>>();
 	}
 	
 	//-------------------------------------------------------------------------------------
 	// METHODS:
 	
 	/**************************************************************************************
+	 * This method performs a step by step integration of horizontal equation of motion in
+	 * order to calculate the ground roll distance of a given airplane take-off phase. 
+	 * Moreover it calculates all accessories quantity in terms of forces and velocities.
 	 * 
 	 * @author Vittorio Trifari
 	 */
 	public void calculateGroundRollDistance() {
 		
 		// Computation starts from the result of first step initialized in the builder
+		
+		// final instant of the first step
 		int i = 1;
-		while(speed.get(i).isLessThan(v_R)) {
-			// TO BE FILLED
+		
+		// step by step integration
+		while(speed.get(i-1).isLessThan(v_R)) {
+			
+			// increment at actual speed
+			speed.add(Amount.valueOf(
+					speed.get(i-1).getEstimatedValue() + (mean_acceleration.get(i-1).getEstimatedValue()*dt),
+					SI.METERS_PER_SECOND));
+			
+			// update of all variables
+			time.add(time.get(i-1) + dt);
+			
+			if(aircraft.get_powerPlant().get_engineType() == EngineTypeEnum.TURBOPROP) {
+				thrust.add(Amount.valueOf(
+						ThrustCalc.calculateThrustDatabase(
+								aircraft.get_powerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
+								aircraft.get_powerPlant().get_engineNumber(),
+								phi,
+								aircraft.get_powerPlant().get_engineList().get(0).get_bpr(),
+								aircraft.get_powerPlant().get_engineType(),
+								EngineOperatingConditionEnum.TAKE_OFF,
+								theConditions.get_altitude().getEstimatedValue(),
+								SpeedCalc.calculateMach(
+										theConditions.get_altitude().getEstimatedValue(),
+										speed.get(i).getEstimatedValue())
+								),
+						SI.NEWTON)
+						);
+				thrust_horizontal.add(Amount.valueOf(
+						ThrustCalc.calculateThrustDatabase(
+								aircraft.get_powerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
+								aircraft.get_powerPlant().get_engineNumber(),
+								phi,
+								aircraft.get_powerPlant().get_engineList().get(0).get_bpr(),
+								aircraft.get_powerPlant().get_engineType(),
+								EngineOperatingConditionEnum.TAKE_OFF,
+								theConditions.get_altitude().getEstimatedValue(),
+								SpeedCalc.calculateMach(
+										theConditions.get_altitude().getEstimatedValue(),
+										speed.get(i).getEstimatedValue())
+								),
+						SI.NEWTON)
+						);
+				thrust_vertical.add(Amount.valueOf(0.0, SI.NEWTON));
+			}
+			else if(aircraft.get_powerPlant().get_engineType() == EngineTypeEnum.TURBOFAN) {
+				thrust.add(Amount.valueOf(
+						ThrustCalc.calculateThrust(
+								aircraft.get_powerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
+								aircraft.get_powerPlant().get_engineNumber(),
+								phi,
+								theConditions.get_altitude().getEstimatedValue()),
+						SI.NEWTON)
+						);
+				thrust_horizontal.add(Amount.valueOf(
+						ThrustCalc.calculateThrust(
+								aircraft.get_powerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
+								aircraft.get_powerPlant().get_engineNumber(),
+								phi,
+								theConditions.get_altitude().getEstimatedValue()),
+						SI.NEWTON)
+						);
+				thrust_vertical.add(Amount.valueOf(0.0, SI.NEWTON));
+			}
+			
+			alpha.add(alpha.get(i-1));
+			alpha_dot.add(alpha_dot.get(i-1));
+			
+			cL.add(cL.get(i-1));
+			lift.add(Amount.valueOf(
+					0.5
+					*aircraft.get_wing().get_surface().getEstimatedValue()
+					*AtmosphereCalc.getDensity(
+							theConditions.get_altitude().getEstimatedValue())
+					*(Math.pow(speed.get(i).getEstimatedValue(), 2))
+					*cL.get(i),
+					SI.NEWTON)
+					);
+			
+			cD.add(aircraft.get_theAerodynamics().get_cD0() 
+					   + highLiftCalculator.getDeltaCD()
+					   + aircraft.get_landingGear().get_deltaCD0() 
+					   + ((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald()))
+					   - k_ground*((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio())));
+			drag.add(Amount.valueOf(
+					0.5
+					*aircraft.get_wing().get_surface().getEstimatedValue()
+					*AtmosphereCalc.getDensity(
+							theConditions.get_altitude().getEstimatedValue())
+					*(Math.pow(speed.get(i).getEstimatedValue(), 2))
+					*cD.get(i),
+					SI.NEWTON)
+					);
+			
+			friction.add((aircraft.get_weights().get_MTOW().minus(lift.get(i))).times(mu));
+			total_force.add(thrust_horizontal.get(i).minus(friction.get(i)).minus(drag.get(i)));
+			acceleration.add(Amount.valueOf(
+					AtmosphereCalc.g0.divide(aircraft.get_weights().get_MTOW()).times(total_force.get(i)).getEstimatedValue(),
+					SI.METERS_PER_SQUARE_SECOND));
+			mean_acceleration.add((acceleration.get(i-1).plus(acceleration.get(i))).divide(2));
+			mean_speed.add(((speed.get(i-1).plus(speed.get(i))).divide(2)).plus(v_wind));
+			delta_GroundDistance.add(
+					Amount.valueOf(
+							mean_speed.get(i).getEstimatedValue()*dt,
+							SI.METER
+							)
+					);
+			ground_distance.add(ground_distance.get(i-1).plus(delta_GroundDistance.get(i)));
+			
+			// step increment
+			i += 1;
 		}
 	}
 	
@@ -446,7 +602,27 @@ public class CalcTakeOff_Landing {
 		return phi;
 	}
 
-	public void setPhi(double phi) {
-		this.phi = phi;
+	public Amount<Length> getWing_to_ground_distance() {
+		return wing_to_ground_distance;
+	}
+
+	public void setWing_to_ground_distance(Amount<Length> wing_to_ground_distance) {
+		this.wing_to_ground_distance = wing_to_ground_distance;
+	}
+
+	public double getK_ground() {
+		return k_ground;
+	}
+
+	public void setK_ground(double k_ground) {
+		this.k_ground = k_ground;
+	}
+
+	public Amount<Velocity> getV_wind() {
+		return v_wind;
+	}
+
+	public void setV_wind(Amount<Velocity> v_wind) {
+		this.v_wind = v_wind;
 	}
 }

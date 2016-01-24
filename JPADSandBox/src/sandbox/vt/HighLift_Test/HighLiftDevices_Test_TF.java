@@ -13,7 +13,6 @@ import aircraft.OperatingConditions;
 import aircraft.auxiliary.airfoil.MyAirfoil;
 import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
-import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import configuration.MyConfiguration;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.AnalysisTypeEnum;

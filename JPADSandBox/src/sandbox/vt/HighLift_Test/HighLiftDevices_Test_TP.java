@@ -1,13 +1,9 @@
 package sandbox.vt.HighLift_Test;
 
-import static java.lang.Math.toRadians;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.measure.quantity.Angle;
 import javax.measure.unit.NonSI;
-import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
@@ -18,15 +14,12 @@ import aircraft.auxiliary.airfoil.MyAirfoil;
 import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
-import calculators.geometry.LSGeometryCalc;
 import configuration.MyConfiguration;
-import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import standaloneutils.JPADXmlReader;
-import standaloneutils.customdata.CenterOfGravity;
 
 public class HighLiftDevices_Test_TP {
 	
