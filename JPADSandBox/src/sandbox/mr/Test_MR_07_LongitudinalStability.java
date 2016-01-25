@@ -1,7 +1,7 @@
 // This is the Test class for Longitudinal Stability. The object of analysis is an aircraft.
 //
 // The reference angle of attack is alphaBody, that is the angle between the direction of asimptotic 
-// velocity and the reference line of fuselage. So, for each component it is necessary to evaluate the
+// velocity and the reference line of fuselage. So, for each component is necessary to evaluate the
 // aerodynamic characteristics, such as lift, drag and moment, having alphaBody as input.
 // Moreover for each component are drawn the aerodynamic curves in function of local angle of attack.
 
@@ -16,6 +16,7 @@ package sandbox.mr;
 
 import static java.lang.Math.toRadians;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +38,7 @@ import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import javafx.util.Pair;
+import writers.JPADStaticWriteUtils;
 
 public class Test_MR_07_LongitudinalStability {
 
@@ -53,7 +55,8 @@ public class Test_MR_07_LongitudinalStability {
 
 
 		System.out.println("\nInitializing test class...");
-
+		String folderPath = MyConfiguration.currentDirectoryString + File.separator + "out" + File.separator;
+		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "Longitudinal_Static_Stability" + File.separator);
 		
 		//----------------------------------------------------------------------------------
 		// Default folders creation:
@@ -173,18 +176,21 @@ public class Test_MR_07_LongitudinalStability {
 		// It is important to note that each component works at a different angle of attack, meanwhile
 		// for longitudinal stability the reference angle of attack is alphaBody.
 		
-		System.out.println("------------------------------------");
+		System.out.println("\n\n------------------------------------");
 		System.out.println("\n LIFT CHARACTERISTICS  ");
 		System.out.println("\n------------------------------------");
 		
+		double cLIsolatedWing;
+		
 		System.out.println("\nAngle of attack alpha body = " + alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
 		System.out.println("Angle of incidence of wing = " + theWing.get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue());
-		double cLIsolatedWing;
 		
 		LSAerodynamicsManager.CalcCLAtAlpha theCLWingCalculator = theLSAnalysis.new CalcCLAtAlpha();
 		cLIsolatedWing = theCLWingCalculator.nasaBlackwellalphaBody(alphaBody);
 		
 		System.out.println("CL of Isolated wing at alpha body = " + cLIsolatedWing);
+		theLSAnalysis.PlotCLvsAlphaCurve(subfolderPath);
+		System.out.println("\t \t \tDONE PLOTTING CL VS ALPHA CURVE  ");
 		
 	}
 

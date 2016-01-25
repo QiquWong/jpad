@@ -350,7 +350,13 @@ public class FusAerodynamicsManager extends aircraft.componentmodel.componentcal
 		public Map<MethodEnum, Double> get_methodMap() {
 			return _methodMap;
 		}
+		
 
+	}
+	
+	public  double calculateDeltaCLAlpha(){ //Sforza p64
+		//(1+(1/4)*(_theFuselage.get__diam_C().getEstimatedValue()));
+		return 0.0;
 	}
 
 	public CalculateCm0 getCalculateCm0() {

@@ -107,7 +107,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	
 	Integer _numberOfAlpha;
 	private int _nPointsSemispanWise;
-
+	private boolean subfolderPathCeck = true;
 	Amount<Angle> alphaStart, alphaEnd, _alphaMaxClean; 
 
 
@@ -182,7 +182,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	semispan, span, chordRoot,
 	ar, taperRatioEq, tcRoot,
 	dihedralMean, sweepHalfChordEq, sweepQuarterChordEq, 
-	maxThicknessMean, deltaAlpha, alphaNew, diffCL =1 ;
+	maxThicknessMean, deltaAlpha, alphaNew, cLLinearSlope, diffCL =1 ;
 
 	private double _vortexSemiSpan, _vortexSemiSpanToSemiSpanRatio = 0.01;
 
@@ -211,7 +211,9 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	private ComponentEnum lsType;
 	private double[] alphaArrayPlot;
 	private double[] cLArrayPlot;
-
+	private String subfolderPathCLAlpha;
+	
+	
 
 	public LSAerodynamicsManager(OperatingConditions conditions, LiftingSurface liftingSurf, Aircraft ac) {
 
@@ -1138,15 +1140,15 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			if (alpha.getUnit() == NonSI.DEGREE_ANGLE) 
 				alpha = alpha.to(SI.RADIAN);
 			
-			double cLStar, cLTemp, cLLinearSlope, qValue, a ,b ,c ,d;
+			double cLStar, cLTemp, qValue, a ,b ,c ,d;
 			Amount<Angle> alphaTemp = Amount.valueOf(0.0, SI.RADIAN);
 			MyAirfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
 			double alphaStar = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
 			Amount<Angle> alphaStarAmount = Amount.valueOf(alphaStar, SI.RADIAN);
 			
+			cLStar = nasaBlackwell(alphaStarAmount);
+			cLTemp = nasaBlackwell(alphaTemp);
 			if (alpha.getEstimatedValue() < alphaStar){    //linear trait
-				cLStar = nasaBlackwell(alphaStarAmount);
-				cLTemp = nasaBlackwell(alphaTemp);
 				cLLinearSlope = (cLStar - cLTemp)/alphaStar;
 				//System.out.println("CL Linear Slope [1/rad] = " + cLLinearSlope);
 				qValue = cLStar - cLLinearSlope*alphaStar;
@@ -1157,14 +1159,11 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			
 			else {  // non linear trait
 			
-				calcAlphaAndCLMax();
+				calcAlphaAndCLMax(meanAirfoil);
 				double cLMax = get_cLMaxClean();
-				Amount<Angle> alphaMax = get_alphaMaxClean();
-				
+				Amount<Angle> alphaMax = get_alphaMaxClean();	
 				double alphaMaxDouble = alphaMax.getEstimatedValue();
-				
-				cLStar = nasaBlackwell(alphaStarAmount);
-				cLTemp = nasaBlackwell(alphaTemp);
+
 				cLLinearSlope = (cLStar - cLTemp)/alphaStar;
 				//System.out.println("CL Linear Slope [1/rad] = " + cLLinearSlope);
 				double[][] matrixData = { {Math.pow(alphaMaxDouble, 3), Math.pow(alphaMaxDouble, 2), alphaMaxDouble,1.0},
@@ -1248,7 +1247,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		double cLLinearSlope = (cLStar - cLTemp)/alphaStar;
 		double qValue = cLStar - cLLinearSlope*alphaStar;
 		
-		calcAlphaAndCLMax();
+		calcAlphaAndCLMax(meanAirfoil);
 		double cLMax = get_cLMaxClean();
 		Amount<Angle> alphaMax = get_alphaMaxClean().to(NonSI.DEGREE_ANGLE);
 		double alphaMaxDoubleDegree = alphaMax.getEstimatedValue();
@@ -1272,7 +1271,8 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		
 		
 		String folderPath = MyConfiguration.currentDirectoryString + File.separator + "out" + File.separator;
-		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "CL alpha Wing Clean" + File.separator);
+		if(subfolderPathCeck)
+		subfolderPathCLAlpha = JPADStaticWriteUtils.createNewFolder(folderPath + "CL alpha Wing Clean" + File.separator);
 
 
 
@@ -1301,11 +1301,16 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		MyChartToFileUtils.plotNoLegend(
 				alphaArrayPlot,	cLArrayPlot, 
 				null, null , null , null ,					    // axis with limits
-				"alpha", "CL", "deg", "",	   				
-				subfolderPath, "CL vs Alpha clean");
+				"alpha_W", "CL", "deg", "",	   				
+				subfolderPathCLAlpha, "CL vs Alpha clean");
 	}
 
-
+	public void PlotCLvsAlphaCurve(String subfolderPath){
+		this.subfolderPathCLAlpha = subfolderPath;
+		subfolderPathCeck =false;
+		PlotCLvsAlphaCurve();
+		
+	};
 
 	
 	/** 
@@ -1762,9 +1767,8 @@ public void PlotCDvsAlphaCurve(){
 
 	
 	
-	public void calcAlphaAndCLMax(){
+	public void calcAlphaAndCLMax(MyAirfoil meanAirfoil){
 		Amount<Angle> deltaAlphaMax;
-		MyAirfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
 		double meanLESharpnessParameter = meanAirfoil.getGeometry().get_deltaYPercent();
 		
 		CalcCLvsAlphaCurve theCLAnalysis = new CalcCLvsAlphaCurve();
@@ -1902,7 +1906,7 @@ public void PlotCDvsAlphaCurve(){
 				}
 			}
 			
-			calcAlphaAndCLMax();
+			calcAlphaAndCLMax(meanAirfoil);
 		}
 
 		//-------------------------------------------------------------------------------------
@@ -2177,7 +2181,6 @@ public void PlotCDvsAlphaCurve(){
 				for(int i=0; i<deltaSlat.size(); i++)
 					deltaCLmax_slat_list.add(deltaClmax_slat_list.get(i)
 							*(slatSurface.get(i)/theWing.get_surface().getEstimatedValue())
-							*kLambda_slat.get(i)
 							);
 
 				for(int i=0; i<deltaSlat.size(); i++)
@@ -2425,10 +2428,13 @@ public void PlotCDvsAlphaCurve(){
 			double cL0Clean =  theCLCleanCalculator.nasaBlackwellCompleteCurve(Amount.valueOf(0.0, SI.RADIAN));
 			double cL0HighLift = cL0Clean + deltaCL0_flap;
 			double qValue = cL0HighLift;
-			double alphaStar = (cLStarClean - qValue)/cLAlphaFlap;
-			double alphaStarFlap = (alphaStar + alphaStarClean)/2;
+			//double alphaStar = (cLStarClean - qValue)/cLAlphaFlap;
+			double deltaAlphaStar = alphaStarClean - (-cL0Clean/cLLinearSlope);
+			System.out.println(" CL LINEAR SLOPE " + cLLinearSlope);
+			//double alphaStarFlap = (alphaStar + alphaStarClean)/2;
+			double 	alphaStarFlap  = (-qValue/cLAlphaFlap) + deltaAlphaStar;
 			double cLStarFlap = cLAlphaFlap * alphaStarFlap + qValue;	
-			calcAlphaAndCLMax(); // TODO try to delete this
+			calcAlphaAndCLMax(meanAirfoil); // TODO try to delete this
 			double cLMaxClean = get_cLMaxClean();
 			Amount<Angle> alphaMax = get_alphaMaxClean().to(NonSI.DEGREE_ANGLE);	
 			double cLMaxHighLift = cLMaxClean + deltaCLmax_flap + deltaCLmax_slat;
