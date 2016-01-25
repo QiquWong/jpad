@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.measure.quantity.Acceleration;
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Duration;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Velocity;
@@ -52,7 +53,8 @@ public class CalcTakeOff_Landing {
 	private Amount<Velocity> v_s_TO, v_R, v_LO, v_wind;
 	private Amount<Length> wing_to_ground_distance;
 	private Amount<Angle> alpha_ground;
-	private List<Double> time, alpha, alpha_dot, cL, cD;
+	private List<Double> alpha, alpha_dot, cL, cD;
+	private List<Amount<Duration>> time;
 	private List<Amount<Velocity>> speed, mean_speed;
 	private List<Amount<Acceleration>> acceleration, mean_acceleration;
 	private List<Amount<Force>> thrust, thrust_horizontal, thrust_vertical, lift,
@@ -130,8 +132,8 @@ public class CalcTakeOff_Landing {
 				/(1.05 + (7.4*(wing_to_ground_distance.getEstimatedValue()/aircraft.get_wing().get_span().getEstimatedValue())));
 
 		// List initialization with known values
-		this.time = new ArrayList<Double>();
-		time.add(0.0);
+		this.time = new ArrayList<Amount<Duration>>();
+		time.add(Amount.valueOf(0.0, SI.SECOND));
 		this.speed = new ArrayList<Amount<Velocity>>();
 		speed.add(Amount.valueOf(0.0, SI.METERS_PER_SECOND));
 		
@@ -255,7 +257,7 @@ public class CalcTakeOff_Landing {
 					SI.METERS_PER_SECOND));
 			
 			// update of all variables
-			time.add(time.get(i-1) + dt);
+			time.add(time.get(i-1).plus(Amount.valueOf(dt, SI.SECOND)));
 			
 			if(aircraft.get_powerPlant().get_engineType() == EngineTypeEnum.TURBOPROP) {
 				thrust.add(Amount.valueOf(
@@ -357,6 +359,12 @@ public class CalcTakeOff_Landing {
 			// step increment
 			i += 1;
 		}
+		
+		double cL0 = highLiftCalculator.calcCLatAlphaHighLiftDevice(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+		double cL_LO = highLiftCalculator.getcL_Max_Flap()/(Math.pow(k_LO, 2));
+		double alpha_dot_in =  (((cL_LO - cL0)/highLiftCalculator.getcLalpha_new()) - alpha.get(0))
+							   * ((0.95*acceleration.get(acceleration.size()-1).getEstimatedValue())/(0.1*v_s_TO.getEstimatedValue())); 
+		System.out.println("\n\nalpha_dot_in = " + alpha_dot_in);
 	}
 	
 	//-------------------------------------------------------------------------------------
@@ -378,11 +386,11 @@ public class CalcTakeOff_Landing {
 		this.theConditions = theConditions;
 	}
 
-	public List<Double> getTime() {
+	public List<Amount<Duration>> getTime() {
 		return time;
 	}
 
-	public void setTime(List<Double> time) {
+	public void setTime(List<Amount<Duration>> time) {
 		this.time = time;
 	}
 
