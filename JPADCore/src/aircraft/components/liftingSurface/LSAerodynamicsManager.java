@@ -3797,6 +3797,16 @@ public void PlotCDvsAlphaCurve(){
 		}
 	}
 	
+	public double getcLLinearSlopeNB() {
+		return cLLinearSlope;
+	}
+
+
+	public void setcLLinearSlopeNB(double cLLinearSlope) {
+		this.cLLinearSlope = cLLinearSlope;
+	}
+
+
 	public Amount<Angle> get_alphaCurrent() {
 		return _alphaCurrent;
 	}

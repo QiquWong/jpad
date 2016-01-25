@@ -15,6 +15,7 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.OperatingConditions;
 import aircraft.components.Aircraft;
+import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.DragCalc;
 import configuration.enumerations.AnalysisTypeEnum;
@@ -473,6 +474,28 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 				*calculateCLAlphaFixed(aircraft);
 
 		return _cMAlphaFixed;
+	}
+	
+	/**
+	 * This class evaluates the CL vs Alpha curve both in linear and non linear trait starting from 
+	 * the CL vs Alpha curve of isolated wing and introducing an influence factor from fuselage.
+	 * see--> Sforza p.64
+	 * 
+	 * WARNING --> it is necessary to call LSAerodynamicsManager.CalcCLAtAlpha first
+	 * 
+	 * @param Amount<Angle> alphaBody. It is the angle between the direction of asimptotic 
+     * velocity and the reference line of fuselage.
+	 * @author Manuela Ruocco
+	 */
+
+	public void calculateCLAtAlphaWingBody(Amount<Angle> alphaBody){
+		double clAlphaWingBody, clAlphaWing;
+
+		clAlphaWing = _theAircraft.get_wing().getAerodynamics().getcLLinearSlopeNB();
+		clAlphaWingBody = _theAircraft
+				.get_fuselage()
+				.getAerodynamics()
+				.calculateCLAlphaFuselage(clAlphaWing);
 	}
 
 	private void initializeComponentsAerodynamics(

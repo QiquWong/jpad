@@ -24,9 +24,10 @@ public class FusAerodynamicsManager extends aircraft.componentmodel.componentcal
 
 	private Fuselage _theFuselage;
 	private Aircraft _theAircraft;
-
-	private AerodynamicDatabaseReader _aeroDatabaseReader;
 	
+	
+	private AerodynamicDatabaseReader _aeroDatabaseReader;
+
 	private final double[] _positionOfC4ToFuselageLength = {.1,.2,.3,.4,.5,.6,.7};
 	private final double[] _kF = {.115, .172, .344, .487, .688, .888, 1.146};
 
@@ -56,9 +57,10 @@ public class FusAerodynamicsManager extends aircraft.componentmodel.componentcal
 
 		_theAircraft = aircraft;
 		_theFuselage = aircraft.get_fuselage();
+		 aircraft.get_fuselage().setAerodynamics(this);
 		_theOperatingConditions = ops;
-		_aeroDatabaseReader = _theAircraft.get_theAerodynamics().get_aerodynamicDatabaseReader();
-
+		_aeroDatabaseReader = _theAircraft.get_wing().getAerodynamics().get_AerodynamicDatabaseReader();
+   
 		initializeDependentData();
 		initializeInnerCalculators();
 	}
@@ -242,7 +244,7 @@ public class FusAerodynamicsManager extends aircraft.componentmodel.componentcal
 		private double k2k1;
 
 		public CalculateCm0() {
-			_aerodynamicDatabaseReader = _theAircraft.get_theAerodynamics().get_aerodynamicDatabaseReader();
+			_aerodynamicDatabaseReader = _theAircraft.get_wing().getAerodynamics().get_AerodynamicDatabaseReader();
 			k2k1 = _aerodynamicDatabaseReader.get_C_m0_b_k2_minus_k1_vs_FFR(
 					_theFuselage.get_len_F().doubleValue(SI.METER), 
 					_theFuselage.get_equivalentDiameterGM().doubleValue(SI.METER)); 
@@ -350,13 +352,28 @@ public class FusAerodynamicsManager extends aircraft.componentmodel.componentcal
 		public Map<MethodEnum, Double> get_methodMap() {
 			return _methodMap;
 		}
-		
+
 
 	}
-	
-	public  double calculateDeltaCLAlpha(){ //Sforza p64
-		//(1+(1/4)*(_theFuselage.get__diam_C().getEstimatedValue()));
-		return 0.0;
+
+
+	/**
+	 * This class evaluates slope of the linear trait of CL vs Alpha curve of wing-body. 
+	 * see--> Sforza p.64
+	 * 
+	 * @author Manuela Ruocco
+	 */
+
+	public  double calculateCLAlphaFuselage(double cLAlphaWing){ //Sforza p64
+		double d = _theFuselage.getEquivalentDiameterAtX(
+				_theAircraft
+				.get_wing()
+				.get_xLEMacActualBRF().getEstimatedValue()
+				);
+		double b = _theAircraft.get_wing().get_span().getEstimatedValue();
+		double cLAlphaFuselage = (1.0+((1/4.0)*(d/b)))-((1/40.0)*Math.pow((d/b), 2))*cLAlphaWing;
+
+		return cLAlphaFuselage;
 	}
 
 	public CalculateCm0 getCalculateCm0() {

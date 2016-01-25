@@ -30,6 +30,7 @@ import aircraft.OperatingConditions;
 import aircraft.auxiliary.airfoil.MyAirfoil;
 import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
+import aircraft.components.fuselage.FusAerodynamicsManager;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.MyConfiguration;
@@ -57,7 +58,7 @@ public class Test_MR_07_LongitudinalStability {
 		System.out.println("\nInitializing test class...");
 		String folderPath = MyConfiguration.currentDirectoryString + File.separator + "out" + File.separator;
 		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "Longitudinal_Static_Stability" + File.separator);
-		
+
 		//----------------------------------------------------------------------------------
 		// Default folders creation:
 		MyConfiguration.initWorkingDirectoryTree();
@@ -91,18 +92,26 @@ public class Test_MR_07_LongitudinalStability {
 				aircraft
 				); 
 
+		
 		aircraft.get_wing().setAerodynamics(theLSAnalysis);
-
 
 		//--------------------------------------------------------------------------------------
 		// Set databases
+
+
 		theLSAnalysis.setDatabaseReaders(
 				new Pair(DatabaseReaderEnum.AERODYNAMIC, 
 						"Aerodynamic_Database_Ultimate.h5"),
 				new Pair(DatabaseReaderEnum.HIGHLIFT, "HighLiftDatabase.h5")
-				);
-		
-		
+				);		
+
+
+
+		//--------------------------------------------------------------------------------------
+		FusAerodynamicsManager theFuselageManager = new FusAerodynamicsManager(theConditions, aircraft);
+
+
+
 		//--------------------------------------------------------------------------------------
 		// Define airfoils
 
@@ -134,7 +143,7 @@ public class Test_MR_07_LongitudinalStability {
 		System.out.println("CL max --> " + airfoilRoot.getAerodynamics().get_clMax());
 		System.out.println("LE sharpness parameter Kink = " + airfoilKink.getGeometry().get_deltaYPercent());
 
-	
+
 		//AIRFOIL 3
 		double yLocTip = theWing.get_semispan().getEstimatedValue();
 		MyAirfoil airfoilTip = new MyAirfoil(theWing, yLocTip, "23-012");
@@ -146,8 +155,8 @@ public class Test_MR_07_LongitudinalStability {
 		System.out.println("Tip maximum thickness = " + airfoilTip.getGeometry().get_maximumThicknessOverChord());
 		System.out.println("CL max --> " + airfoilRoot.getAerodynamics().get_clMax());
 		System.out.println("LE sharpness parameter Tip = " + airfoilTip.getGeometry().get_deltaYPercent());
-	
-		
+
+
 		//--------------------------------------------------------------------------------------
 		// Assign airfoil
 
@@ -158,40 +167,55 @@ public class Test_MR_07_LongitudinalStability {
 		myAirfoilList.add(2, airfoilTip);
 		theWing.set_theAirfoilsList(myAirfoilList);
 		theWing.updateAirfoilsGeometry(); 
-		
-		
+
+
 		//--------------------------------------------------------------------------------------
 		// Angle of attack
-		
+
 		Amount<Angle> alphaBody = theConditions.get_alphaCurrent();
-		
+
 		// -----------------------------------------------------------------------
 		// LIFT CHARACTERISTICS 
 		// -----------------------------------------------------------------------
-		
+
 		// Considering an angle of attack alphaBody, the aircraft components generates a lift. So 
 		// it is necessary to evaluate these contributes. In particular, first of all, is wanted to 
 		// evaluate the CL of isolated wing. This value will be correct with fuselage influence.
 		// Afterwards it is necessary to evaluate the contribute of horizontal tail. 
 		// It is important to note that each component works at a different angle of attack, meanwhile
 		// for longitudinal stability the reference angle of attack is alphaBody.
-		
+
 		System.out.println("\n\n------------------------------------");
 		System.out.println("\n LIFT CHARACTERISTICS  ");
 		System.out.println("\n------------------------------------");
-		
+
+
+		// ------------------Wing---------------
 		double cLIsolatedWing;
-		
+		double cLAlphaWingBody;
+
 		System.out.println("\nAngle of attack alpha body = " + alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
 		System.out.println("Angle of incidence of wing = " + theWing.get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue());
-		
+
 		LSAerodynamicsManager.CalcCLAtAlpha theCLWingCalculator = theLSAnalysis.new CalcCLAtAlpha();
 		cLIsolatedWing = theCLWingCalculator.nasaBlackwellalphaBody(alphaBody);
-		
+
 		System.out.println("CL of Isolated wing at alpha body = " + cLIsolatedWing);
 		theLSAnalysis.PlotCLvsAlphaCurve(subfolderPath);
 		System.out.println("\t \t \tDONE PLOTTING CL VS ALPHA CURVE  ");
-		
+
+
+
+
+		// ------------------Fuselage---------------
+
+		double cLAlphaWing = theLSAnalysis.getcLLinearSlopeNB();
+		cLAlphaWingBody = theFuselageManager.calculateCLAlphaFuselage(cLAlphaWing);
+
+		System.out.println(" cl alpha isolated wing = " + cLAlphaWing);
+		System.out.println(" cl alpha wing body = " + cLAlphaWingBody);
+
+		aircraft.get_theAerodynamics().calculateCLAtAlphaWingBody(alphaBody);
 	}
 
 }

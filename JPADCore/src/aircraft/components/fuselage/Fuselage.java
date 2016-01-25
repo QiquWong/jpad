@@ -4531,6 +4531,10 @@ public class Fuselage extends AeroComponent {
 		return aerodynamics;
 	}
 
+	public void setAerodynamics(FusAerodynamicsManager aerodynamics) {
+		this.aerodynamics = aerodynamics;
+	}
+
 	public static String getId() {
 		return "0";
 	}
