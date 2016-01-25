@@ -21,7 +21,12 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 									mu_1_vs_cf_c_First_Slotted_Fowler,
 									mu_1_vs_cf_c_First_Plain,
 									mu_2_vs_bf_b,
-									mu_3_vs_bf_b;
+									mu_3_vs_bf_b,
+									delta_1_vs_cf_c_plain,
+									delta_1_vs_cf_c_slotted,
+									delta_2_vs_delta_flap_plain,
+									delta_2_vs_delta_flap_slotted,
+									delta_3_vs_bf_b;
 
 	public HighLiftDatabaseReader(String databaseFolderPath, String databaseFileName) {
 		super(databaseFolderPath, databaseFileName);
@@ -43,6 +48,11 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 		mu_1_vs_cf_c_First_Plain = database.interpolate2DFromDatasetFunction("Mu_1_pitching_moment_Plain");
 		mu_2_vs_bf_b = database.interpolate2DFromDatasetFunction("Mu_2_pitching_moment");
 		mu_3_vs_bf_b = database.interpolate2DFromDatasetFunction("Mu_3_pitching_moment");
+		delta_1_vs_cf_c_plain = database.interpolate2DFromDatasetFunction("Delta1_vs_cf_c_Plain");
+		delta_1_vs_cf_c_slotted = database.interpolate2DFromDatasetFunction("Delta1_vs_cf_c_Slotted");
+		delta_2_vs_delta_flap_plain = database.interpolate1DFromDatasetFunction("Delta2_vs_DeltaFlap_Plain");
+		delta_2_vs_delta_flap_slotted = database.interpolate2DFromDatasetFunction("Delta2_vs_delta_flap_Slotted");
+		delta_3_vs_bf_b = database.interpolate2DFromDatasetFunction("Delta3_vs_bf_b");
 	}
 	
 	/**
@@ -248,10 +258,60 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 	 * @param eta_in adimensional position of the flap inner station
 	 * @param eta_out adimensional position of the flap inner station
 	 * @param taperRatio
-	 * @return he interpolated value of the curve at that flap span ratio for that taper ratio
+	 * @return the interpolated value of the curve at that flap span ratio for that taper ratio
 	 */
 	public double get_mu_3_vs_bf_b(double eta_in, double eta_out, double taperRatio) {
 		return mu_3_vs_bf_b.value(eta_out-eta_in, taperRatio);
 	//  return mu_3_vs_bf_b.value(eta_out, taperRatio)-mu_3_vs_bf_b.value(eta_in, taperRatio);
 	}
-		}
+	
+	/**
+	 * @author Vittorio Trifari
+	 * @param cf_c flap chord to wing chord ratio
+	 * @param tc thickness to chord ratio
+	 * @return the interpolated value of the curve at that cf_c for that tc
+	 */
+	public double get_delta_1_vs_cf_c_plain(double cf_c, double tc) {
+		return delta_1_vs_cf_c_plain.value(cf_c, tc);
+	}
+	
+	/**
+	 * @author Vittorio Trifari
+	 * @param cf_c flap chord to wing chord ratio
+	 * @param tc thickness to chord ratio
+	 * @return the interpolated value of the curve at that cf_c for that tc
+	 */
+	public double get_delta_1_vs_cf_c_slotted(double cf_c, double tc) {
+		return delta_1_vs_cf_c_slotted.value(cf_c, tc);
+	}
+	
+	/**
+	 * @author Vittorio Trifari
+	 * @param delta_flap from 0° to 63°
+	 * @return the interpolated value of the curve at that flap deflection
+	 */
+	public double get_delta_2_vs_delta_flap_plain(double delta_flap) {
+		return delta_2_vs_delta_flap_plain.value(delta_flap);
+	}
+	
+	/**
+	 * @author Vittorio Trifari
+	 * @param delta_flap from 0° to 100°
+	 * @param tc thickness to chord ratio
+	 * @return the interpolated value of the curve at that flap deflection for that tc
+	 */
+	public double get_delta_2_vs_delta_flap_slotted(double delta_flap, double tc) {
+		return delta_2_vs_delta_flap_slotted.value(delta_flap, tc);
+	}
+	
+	/**
+	 * @author Vittorio Trifari
+	 * @param eta_in adimensional position of the flap inner station 
+	 * @param eta_out adimensional position of the flap inner station
+	 * @param taperRatio
+	 * @return
+	 */
+	public double get_delta_3_vs_bf_b(double eta_in, double eta_out, double taperRatio) {
+		return delta_3_vs_bf_b.value(eta_out-eta_in, taperRatio);
+	}
+}

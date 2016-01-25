@@ -2223,22 +2223,55 @@ public void PlotCDvsAlphaCurve(){
 
 			//---------------------------------------------------------------
 			// deltaCD
-			deltaCD_list = new ArrayList<Double>();
+			List<Double> delta1 = new ArrayList<Double>();
 			for(int i=0; i<flapType_index.size(); i++) {
 				if(flapType_index.get(i) == 3.0)
-					deltaCD_list.add(
-							1.7
-							*(Math.pow(cf_c.get(i), 1.38))
-							*(flapSurface.get(i)/theWing.get_surface().getEstimatedValue())
-							*(Math.pow(Math.sin(deltaFlap_total[i]), 2))
+					delta1.add(
+							theWing
+							.getAerodynamics()
+							.get_highLiftDatabaseReader()
+							.get_delta_1_vs_cf_c_plain(cf_c.get(i), theWing.get_maxThicknessMean())
 							);
 				else
-					deltaCD_list.add(
-							0.9
-							*(Math.pow(cf_c.get(i), 1.38))
-							*(flapSurface.get(i)/theWing.get_surface().getEstimatedValue())
-							*(Math.pow(Math.sin(deltaFlap_total[i]), 2))
+					delta1.add(
+							theWing
+							.getAerodynamics()
+							.get_highLiftDatabaseReader()
+							.get_delta_1_vs_cf_c_slotted(cf_c.get(i), theWing.get_maxThicknessMean())
 							);
+			}
+			
+			List<Double> delta2 = new ArrayList<Double>();
+			for(int i=0; i<flapType_index.size(); i++) {
+				if(flapType_index.get(i) == 3.0)
+					delta2.add(
+							theWing
+							.getAerodynamics()
+							.get_highLiftDatabaseReader()
+							.get_delta_2_vs_delta_flap_plain(deltaFlap_total[i])
+							);
+				else
+					delta2.add(
+							theWing
+							.getAerodynamics()
+							.get_highLiftDatabaseReader()
+							.get_delta_2_vs_delta_flap_slotted(deltaFlap_total[i], theWing.get_maxThicknessMean())
+							);
+			}
+			
+			List<Double> delta3 = new ArrayList<Double>();
+			for(int i=0; i<flapType_index.size(); i++) {
+				delta3.add(
+						theWing
+						.getAerodynamics()
+						.get_highLiftDatabaseReader()
+						.get_delta_3_vs_bf_b(eta_in_flap.get(i), eta_out_flap.get(i), theWing.get_taperRatioEquivalent())
+						);
+			}
+			
+			deltaCD_list = new ArrayList<Double>();
+			for(int i=0; i<flapType_index.size(); i++) {
+				deltaCD_list.add(delta1.get(i)*delta2.get(i)*delta3.get(i));
 			}
 
 			for(int i=0; i<flapType_index.size(); i++)
