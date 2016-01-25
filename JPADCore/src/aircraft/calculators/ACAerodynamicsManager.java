@@ -8,12 +8,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.measure.quantity.Angle;
+import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
 import org.jscience.physics.amount.Amount;
 
 import aircraft.OperatingConditions;
+import aircraft.auxiliary.airfoil.MyAirfoil;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import calculators.aerodynamics.AerodynamicCalc;
@@ -488,14 +490,38 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 	 * @author Manuela Ruocco
 	 */
 
-	public void calculateCLAtAlphaWingBody(Amount<Angle> alphaBody){
-		double clAlphaWingBody, clAlphaWing;
-
-		clAlphaWing = _theAircraft.get_wing().getAerodynamics().getcLLinearSlopeNB();
-		clAlphaWingBody = _theAircraft
+	public void calculateCLAtAlphaWingBody(Amount<Angle> alphaBody, MyAirfoil meanAirfoil){
+		double cLAlphaWingBody, cLAlphaWing, cLMaxWingClean, cLZeroWing, alphaZeroLift, cLZeroWingBody;
+		Amount<Angle> alphaMaxWingClean, alphaStar, alphaMaxWingBody;
+		
+		alphaMaxWingClean =  _theAircraft.get_wing().getAerodynamics().get_alphaMaxClean();
+		cLMaxWingClean = _theAircraft.get_wing().getAerodynamics().get_cLMaxClean();
+		cLAlphaWing = _theAircraft.get_wing().getAerodynamics().getcLLinearSlopeNB();
+		alphaStar = meanAirfoil.getAerodynamics().get_alphaStar();
+		alphaZeroLift = _theAircraft.get_wing().getAerodynamics().getAlphaZeroLiftWingClean();
+		cLZeroWing = _theAircraft.get_wing().getAerodynamics().getcLAlphaZero();
+		
+		cLAlphaWingBody = _theAircraft
 				.get_fuselage()
 				.getAerodynamics()
-				.calculateCLAlphaFuselage(clAlphaWing);
+				.calculateCLAlphaFuselage(cLAlphaWing);
+		
+		cLZeroWingBody = -cLAlphaWingBody * alphaZeroLift;
+		
+		double alphaTempWing = (cLMaxWingClean - cLZeroWing)/cLAlphaWing;
+		double alphaTempWingBody = (cLMaxWingClean - cLZeroWingBody)/cLAlphaWingBody;
+		double deltaAlphaTemp = alphaTempWing - alphaTempWingBody;
+		alphaMaxWingBody = Amount.valueOf(alphaMaxWingClean.getEstimatedValue() - Math.abs(deltaAlphaTemp), SI.RADIAN);
+		
+		//System.out.println(" alpha max clean " + alphaMaxWingClean.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
+		//System.out.println(" cl max wing clean " + cLMaxWingClean);
+		//System.out.println(" cl alpha wing " + cLAlphaWing);
+		System.out.println("\n -----------WING BODY-------------- ");
+		System.out.println(" alpha max " + alphaMaxWingBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
+		System.out.println(" alpha star " + alphaStar.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
+		System.out.println(" cL max " + cLMaxWingClean);
+		System.out.println(" cL alpha wing body " + cLAlphaWingBody);
+		System.out.println(" alpha zero lift " + alphaZeroLift);
 	}
 
 	private void initializeComponentsAerodynamics(

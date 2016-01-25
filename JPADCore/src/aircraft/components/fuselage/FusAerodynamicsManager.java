@@ -371,8 +371,8 @@ public class FusAerodynamicsManager extends aircraft.componentmodel.componentcal
 				.get_xLEMacActualBRF().getEstimatedValue()
 				);
 		double b = _theAircraft.get_wing().get_span().getEstimatedValue();
-		double cLAlphaFuselage = (1.0+((1/4.0)*(d/b)))-((1/40.0)*Math.pow((d/b), 2))*cLAlphaWing;
-
+		double cLAlphaFuselage = (1.0+((1/4.0)*(d/b))-((1/40.0)*Math.pow((d/b), 2)))*cLAlphaWing;
+	
 		return cLAlphaFuselage;
 	}
 

@@ -212,6 +212,8 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	private double[] alphaArrayPlot;
 	private double[] cLArrayPlot;
 	private String subfolderPathCLAlpha;
+	public double cLAlphaZero;
+	public double alphaZeroLiftWingClean;
 	
 	
 
@@ -1152,6 +1154,8 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				cLLinearSlope = (cLStar - cLTemp)/alphaStar;
 				//System.out.println("CL Linear Slope [1/rad] = " + cLLinearSlope);
 				qValue = cLStar - cLLinearSlope*alphaStar;
+				cLAlphaZero = qValue;
+				alphaZeroLiftWingClean = -qValue/cLLinearSlope;
 				double cLActual = cLLinearSlope * alpha.getEstimatedValue() + qValue;
 				//System.out.println(" CL Actual = " + cLActual );
 				return cLActual;
@@ -1289,11 +1293,11 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		}
 		
 		System.out.println(" -----------CLEAN-------------- ");
-		System.out.println(" alpha max " + alphaMaxDouble);
-		System.out.println(" alpha star " + alphaStar);
-		System.out.println(" cl max " + cLMax);
-		System.out.println(" cl star " + cLStar);
-		System.out.println(" cl alpha " + cLLinearSlope);
+		System.out.println(" alpha max " + alphaMaxDouble*57.3);
+		System.out.println(" alpha star " + alphaStar*57.3);
+		System.out.println(" cL max " + cLMax);
+		System.out.println(" cL star " + cLStar);
+		System.out.println(" cL alpha " + cLLinearSlope);
 
 		
 
@@ -4247,6 +4251,7 @@ public void PlotCDvsAlphaCurve(){
 			case AERODYNAMIC:
 				_aerodynamicDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath, databaseFileName); 
 				listDatabaseReaders.add(_aerodynamicDatabaseReader);
+				theAircraft.get_theAerodynamics().set_aerodynamicDatabaseReader(_aerodynamicDatabaseReader);
 				break;
 				
 			case HIGHLIFT:
@@ -4272,6 +4277,26 @@ public void PlotCDvsAlphaCurve(){
 			*/
 		}
 		
+	}
+
+
+	public double getcLAlphaZero() {
+		return cLAlphaZero;
+	}
+
+
+	public void setcLAlphaZero(double cLAlphaZero) {
+		this.cLAlphaZero = cLAlphaZero;
+	}
+
+
+	public double getAlphaZeroLiftWingClean() {
+		return alphaZeroLiftWingClean;
+	}
+
+
+	public void setAlphaZeroLiftWingClean(double alphaZeroLiftWingClean) {
+		this.alphaZeroLiftWingClean = alphaZeroLiftWingClean;
 	}
 	
 }

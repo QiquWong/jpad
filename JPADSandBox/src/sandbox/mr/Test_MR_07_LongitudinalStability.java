@@ -39,6 +39,7 @@ import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import javafx.util.Pair;
+import sandbox.mr.WingCalculator.MeanAirfoil;
 import writers.JPADStaticWriteUtils;
 
 public class Test_MR_07_LongitudinalStability {
@@ -171,6 +172,12 @@ public class Test_MR_07_LongitudinalStability {
 
 		//--------------------------------------------------------------------------------------
 		// Angle of attack
+		LSAerodynamicsManager.MeanAirfoil theMeanAirfoilCalculator = theLSAnalysis.new MeanAirfoil();
+		MyAirfoil meanAirfoil = theMeanAirfoilCalculator.calculateMeanAirfoil(theWing);
+
+		
+		//--------------------------------------------------------------------------------------
+		// Angle of attack
 
 		Amount<Angle> alphaBody = theConditions.get_alphaCurrent();
 
@@ -194,7 +201,8 @@ public class Test_MR_07_LongitudinalStability {
 		double cLIsolatedWing;
 		double cLAlphaWingBody;
 
-		System.out.println("\nAngle of attack alpha body = " + alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
+		System.out.println("\n \t Data: ");
+		System.out.println("Angle of attack alpha body = " + alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
 		System.out.println("Angle of incidence of wing = " + theWing.get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue());
 
 		LSAerodynamicsManager.CalcCLAtAlpha theCLWingCalculator = theLSAnalysis.new CalcCLAtAlpha();
@@ -202,7 +210,7 @@ public class Test_MR_07_LongitudinalStability {
 
 		System.out.println("CL of Isolated wing at alpha body = " + cLIsolatedWing);
 		theLSAnalysis.PlotCLvsAlphaCurve(subfolderPath);
-		System.out.println("\t \t \tDONE PLOTTING CL VS ALPHA CURVE  ");
+		System.out.println("\n \t \t \tDONE PLOTTING CL VS ALPHA CURVE  ");
 
 
 
@@ -212,10 +220,10 @@ public class Test_MR_07_LongitudinalStability {
 		double cLAlphaWing = theLSAnalysis.getcLLinearSlopeNB();
 		cLAlphaWingBody = theFuselageManager.calculateCLAlphaFuselage(cLAlphaWing);
 
-		System.out.println(" cl alpha isolated wing = " + cLAlphaWing);
-		System.out.println(" cl alpha wing body = " + cLAlphaWingBody);
+//		System.out.println(" cl alpha isolated wing = " + cLAlphaWing);
+//		System.out.println(" cl alpha wing body = " + cLAlphaWingBody);
 
-		aircraft.get_theAerodynamics().calculateCLAtAlphaWingBody(alphaBody);
+		aircraft.get_theAerodynamics().calculateCLAtAlphaWingBody(alphaBody, meanAirfoil);
 	}
 
 }
