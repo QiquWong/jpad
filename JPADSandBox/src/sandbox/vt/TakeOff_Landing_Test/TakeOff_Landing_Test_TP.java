@@ -3,8 +3,10 @@ package sandbox.vt.TakeOff_Landing_Test;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Velocity;
+import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 import org.kohsuke.args4j.Argument;
@@ -247,6 +249,7 @@ public class TakeOff_Landing_Test_TP {
 		double k_alpha_dot = 0.07; // [1/deg]
 		Amount<Length> wing_to_ground_distance = Amount.valueOf(5.41, SI.METER);
 		Amount<Velocity> v_wind = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
+		Amount<Angle> alpha_ground = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		CalcTakeOff_Landing theTakeOffLandingCalculator = new CalcTakeOff_Landing(
 				aircraft,
 				theCondition,
@@ -256,10 +259,11 @@ public class TakeOff_Landing_Test_TP {
 				mu,
 				mu_brake,
 				wing_to_ground_distance,
-				v_wind
+				v_wind,
+				alpha_ground
 				);
 		
-		theTakeOffLandingCalculator.calculateGroundRollDistance();
+		theTakeOffLandingCalculator.calculateGroundDistance();
 		
 		// results print
 		System.out.println("\n------------------------------------------------------------");

@@ -356,7 +356,7 @@ public class CalcHighLiftDevices {
 		deltaCLmax_flap_list = new ArrayList<Double>();
 		for(int i=0; i<flapType_index.size(); i++)
 			deltaCLmax_flap_list.add(deltaClmax_flap_list.get(i)
-					*(flapSurface.get(i)/aircraft.get_wing().get_surface().getEstimatedValue())
+					*(flapSurface.get(i)/(aircraft.get_wing().get_surface().getEstimatedValue()/2))
 					*kLambda_flap.get(i)
 					);
 		
@@ -387,7 +387,7 @@ public class CalcHighLiftDevices {
 			deltaCLmax_slat_list = new ArrayList<Double>();
 			for(int i=0; i<deltaSlat.size(); i++)
 				deltaCLmax_slat_list.add(deltaClmax_slat_list.get(i)
-						*(slatSurface.get(i)/aircraft.get_wing().get_surface().getEstimatedValue())
+						*(slatSurface.get(i)/(aircraft.get_wing().get_surface().getEstimatedValue()/2))
 						*kLambda_slat.get(i)
 						);
 
@@ -405,7 +405,7 @@ public class CalcHighLiftDevices {
 					*(1+((deltaCL0_flap_list.get(i)/deltaCl0_flap_list.get(i))
 							*(c_first_c_flap.get(i)*(1-((cf_c.get(i))*(c_first_c_flap.get(i))
 									*Math.pow(Math.sin(deltaFlap_total[i]*Math.PI/180), 2)))-1))));
-			swf_s.add(flapSurface.get(i)/aircraft.get_wing().get_surface().getEstimatedValue());
+			swf_s.add(flapSurface.get(i)/(aircraft.get_wing().get_surface().getEstimatedValue()/2));
 		}
 		
 		double swf_s_tot = 0;
@@ -436,7 +436,7 @@ public class CalcHighLiftDevices {
 			deltaCD_list.add(
 					0.9
 					*(Math.pow(cf_c.get(i), 1.38))
-					*(flapSurface.get(i)/aircraft.get_wing().get_surface().getEstimatedValue())
+					*(flapSurface.get(i)/(aircraft.get_wing().get_surface().getEstimatedValue()/2))
 					*(Math.pow(Math.sin(deltaFlap_total[i]), 2))
 					);
 		
@@ -496,10 +496,10 @@ public class CalcHighLiftDevices {
 //							*c_first_c_flap.get(i))-(cf_c.get(i)*c_first_c_flap.get(i)
 //									*((cf_c.get(i)*c_first_c_flap.get(i))-1)
 //									*(cL + (deltaClmax_flap_list.get(i)
-//											*(1-(flapSurface.get(i)/aircraft
+//											*(1-(flapSurface.get(i)/(aircraft
 //													.get_wing()
 //													.get_surface()
-//													.getEstimatedValue()))))
+//													.getEstimatedValue()/2)))))
 //									*(1/8)))) + (0.7*(aircraft
 //											.get_wing()
 //											.get_aspectRatio()/(1+(aircraft

@@ -3,6 +3,7 @@ package sandbox.vt.TakeOff_Landing_Test;
 import java.util.ArrayList;
 import java.util.List;
 import javax.measure.quantity.Acceleration;
+import javax.measure.quantity.Angle;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Velocity;
@@ -50,6 +51,7 @@ public class CalcTakeOff_Landing {
 	private CalcHighLiftDevices highLiftCalculator;
 	private Amount<Velocity> v_s_TO, v_R, v_LO, v_wind;
 	private Amount<Length> wing_to_ground_distance;
+	private Amount<Angle> alpha_ground;
 	private List<Double> time, alpha, alpha_dot, cL, cD;
 	private List<Amount<Velocity>> speed, mean_speed;
 	private List<Amount<Acceleration>> acceleration, mean_acceleration;
@@ -91,7 +93,8 @@ public class CalcTakeOff_Landing {
 			double mu,
 			double mu_brake,
 			Amount<Length> wing_to_ground_distance,
-			Amount<Velocity> v_wind
+			Amount<Velocity> v_wind,
+			Amount<Angle> alpha_ground
 			) {
 
 		// Required data
@@ -104,6 +107,7 @@ public class CalcTakeOff_Landing {
 		this.mu_brake = mu_brake;
 		this.wing_to_ground_distance = wing_to_ground_distance;
 		this.v_wind = v_wind;
+		this.alpha_ground = alpha_ground;
 		
 		// CalcHighLiftDevices object to manage flap/slat effects
 		highLiftCalculator.calculateHighLiftDevicesEffects();
@@ -193,7 +197,7 @@ public class CalcTakeOff_Landing {
 		alpha_dot.add(0.0);
 		
 		this.cL = new ArrayList<Double>();
-		cL.add(highLiftCalculator.calcCLatAlphaHighLiftDevice(Amount.valueOf(alpha.get(0), NonSI.DEGREE_ANGLE)));
+		cL.add(highLiftCalculator.calcCLatAlphaHighLiftDevice(alpha_ground));
 		this.lift = new ArrayList<Amount<Force>>();
 		lift.add(Amount.valueOf(0.0, SI.NEWTON));
 		
@@ -235,7 +239,7 @@ public class CalcTakeOff_Landing {
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public void calculateGroundRollDistance() {
+	public void calculateGroundDistance() {
 		
 		// Computation starts from the result of first step initialized in the builder
 		
@@ -624,5 +628,13 @@ public class CalcTakeOff_Landing {
 
 	public void setV_wind(Amount<Velocity> v_wind) {
 		this.v_wind = v_wind;
+	}
+
+	public Amount<Angle> getAlpha_ground() {
+		return alpha_ground;
+	}
+
+	public void setAlpha_ground(Amount<Angle> alpha_ground) {
+		this.alpha_ground = alpha_ground;
 	}
 }
