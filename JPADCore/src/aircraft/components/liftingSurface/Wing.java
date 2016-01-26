@@ -142,7 +142,7 @@ public class Wing extends LiftingSurface{
 			_taperRatioEquivalent = 0.636;
 			_sweepQuarterChordEq = Amount.valueOf(Math.toRadians(1.4),SI.RADIAN);
 			_spanStationKink = 0.3478;
-			_iw = Amount.valueOf(0., SI.RADIAN);
+			_iw = Amount.valueOf(Math.toRadians(2.0), SI.RADIAN);
 			_twistKink = Amount.valueOf(Math.toRadians(0.0),SI.RADIAN);
 			_twistTip = Amount.valueOf(Math.toRadians(-2.0),SI.RADIAN);
 			_dihedralInnerPanel = Amount.valueOf(Math.toRadians(0.0),SI.RADIAN);

@@ -216,7 +216,12 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	public double alphaZeroLiftWingClean;
 	
 	
-
+	double rootChord, kinkChord, tipChord, dimensionalKinkStation, dimensionalOverKink;
+	private double intermediateClMax, intermediateEta,intermediateTwist, intermediateChord, intermediateDistanceAC, intermediateXac ,
+	intermediateAlphaZL, intermediateAlphaStar,intermediateClStar,
+	intermediateClMaxSweep, intermediateClatMinCD, intermediateCdMin, intermediateCm,
+	intermediateCmAlphaLE , intermediateAerodynamicCentre, intermediateMaxThickness , 
+	intermediateReynolds, intermediatekFactorPolar, intermediateClAlpha, intermediateAlphaStall;
 	public LSAerodynamicsManager(OperatingConditions conditions, LiftingSurface liftingSurf, Aircraft ac) {
 
 		theOperatingConditions = conditions;
@@ -355,6 +360,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		//				_nPointsSemispanWise).data;
 
 		_yStations = MyArrayUtils.linspace(0., semispan, _nPointsSemispanWise);
+
 
 		/** Non dimensional stations (eta) */
 		_yStationsND = MyArrayUtils.linspace(0., 1., _nPointsSemispanWise);
@@ -867,8 +873,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			MyAirfoil airfoilTip = theWing.get_theAirfoilsList().get(2);
 			
 			for (int i=0 ; i< _nPointsSemispanWise ; i++){
-				IntermediateAirfoil theIntermediate = new IntermediateAirfoil();
-				intermediateAirfoil = theIntermediate.calculateIntermediateAirfoil(
+				intermediateAirfoil = calculateIntermediateAirfoil(
 								theWing, _yStations[i]);
 				clLocalAirfoil[i] = intermediateAirfoil.getAerodynamics().calculateClAtAlpha(alphaDouble);
 				clLocalAirfoil[_nPointsSemispanWise-1] = 0;
@@ -3100,7 +3105,7 @@ public void PlotCDvsAlphaCurve(){
 		
 		public double[] nasaBlackwell(Amount<Angle> alpha, LSAerodynamicsManager theLSManager) {
 			
-			IntermediateAirfoil theIntermediate = new IntermediateAirfoil();
+	
 			MyAirfoil airfoilActual;
 			double yActual;
 			cdDistributionNasaBlackwell = new double [_nPointsSemispanWise];
@@ -3108,7 +3113,7 @@ public void PlotCDvsAlphaCurve(){
 			
 			for (int i=0 ; i<_nPointsSemispanWise ; i++){
 				yActual = get_yStations()[i];
-				airfoilActual = theIntermediate.calculateIntermediateAirfoil(theLS, yActual);
+				airfoilActual = calculateIntermediateAirfoil(theLS, yActual);
 				CalculateCd calculateCd =  new CalculateCd();
 				cdDistributionNasaBlackwell [i] = calculateCd.nasaBlackwell(alpha, theLSManager, airfoilActual);
 			}
@@ -3706,14 +3711,7 @@ public void PlotCDvsAlphaCurve(){
 		}
 	}
 	
-	
-	public class IntermediateAirfoil { 
-		double rootChord, kinkChord, tipChord, dimensionalKinkStation, dimensionalOverKink;
-		private double intermediateClMax, intermediateEta,intermediateTwist, intermediateChord, intermediateDistanceAC, intermediateXac ,
-		intermediateAlphaZL, intermediateAlphaStar,intermediateClStar,
-		intermediateClMaxSweep, intermediateClatMinCD, intermediateCdMin, intermediateCm,
-		intermediateCmAlphaLE , intermediateAerodynamicCentre, intermediateMaxThickness , 
-		intermediateReynolds, intermediatekFactorPolar, intermediateClAlpha, intermediateAlphaStall;
+
 
 
 		/**
@@ -3726,7 +3724,7 @@ public void PlotCDvsAlphaCurve(){
 		 * @param Dimensional station where the airfoil is located.
 		 */ 
 
-		public MyAirfoil calculateIntermediateAirfoil (LiftingSurface theWing, double yLoc){
+		 public MyAirfoil calculateIntermediateAirfoil (LiftingSurface theWing, double yLoc){
 
 			MyAirfoil intermediateAirfoil = new MyAirfoil(theWing);
 
@@ -3832,7 +3830,7 @@ public void PlotCDvsAlphaCurve(){
 			return intermediateAirfoil;
 
 		}
-	}
+	
 	
 	public double getcLLinearSlopeNB() {
 		return cLLinearSlope;

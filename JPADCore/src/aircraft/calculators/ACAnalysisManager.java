@@ -6,6 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.measure.unit.SI;
+
+import org.jscience.physics.amount.Amount;
+
 import aircraft.OperatingConditions;
 import aircraft.components.Aircraft;
 import configuration.enumerations.AnalysisTypeEnum;
@@ -134,6 +138,18 @@ public class ACAnalysisManager {
 			//			aircraft.get_wing().updateAirfoilsGeometry();
 			aircraft.get_wing().getGeometry().calculateAll();
 			aircraft.set_sWetTotal(aircraft.get_wing().get_surfaceWettedExposed().getEstimatedValue());
+		}
+		//ExposedWing
+		//TODO: eventually continue here
+		if(aircraft.get_exposedWing() != null){
+		aircraft.get_exposedWing().set_surface(aircraft.get_wing().get_surfaceExposed());
+		aircraft.get_exposedWing().set_span(Amount.valueOf(aircraft.get_wing().get_span().getEstimatedValue()-
+				aircraft.get_fuselage().getWidthAtX(aircraft.get_wing()
+						.get_xLEMacActualBRF().getEstimatedValue()), SI.METER));
+		aircraft.get_exposedWing().set_semispan(
+				Amount.valueOf(
+						(aircraft.get_exposedWing().get_span().getEstimatedValue()/2),SI.METER)
+				);
 		}
 
 		// Htail

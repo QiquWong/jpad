@@ -3,6 +3,10 @@ package aircraft.components;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.measure.unit.SI;
+
+import org.jscience.physics.amount.Amount;
+
 import aircraft.calculators.ACAerodynamicsManager;
 import aircraft.calculators.ACBalanceManager;
 import aircraft.calculators.ACPerformanceManager;
@@ -55,6 +59,7 @@ public class Aircraft {
 	private HTail _theHTail = null;
 	private VTail _theVTail = null;
 	private Canard _theCanard = null;
+	private Wing _exposedWing = null;
 
 	//TODO: remove nacelle from aircraft, leave only nacelleS
 	private Nacelle _theNacelle = null;
@@ -73,6 +78,7 @@ public class Aircraft {
 	private NacellesManager _theNacelles;
 	private ACAerodynamicsManager _theAerodynamics;
 	private MyCosts _theCosts;
+
 
 	/** 
 	 * Create an aircraft without components
@@ -195,6 +201,7 @@ public class Aircraft {
 		aircraft.createNacelles(aircraftName);
 		aircraft.createLandingGear(aircraftName);
 		aircraft.createSystems(aircraftName);
+		aircraft.createExposedWing(aircraftName);
 		return aircraft;
 	}
 
@@ -319,6 +326,55 @@ public class Aircraft {
 		_liftingSurfaceList.add(_theWing);
 	}
 
+	/**
+	 * This method creates an exposed wing
+	 * 
+	 * @author Manuela Ruocco
+	 */
+	public void createExposedWing(String aircraftName) {
+		
+		switch(aircraftName) {
+		case "ATR-72":
+			_exposedWing = new Wing(
+					aircraftName,
+					"Wing", // name
+					"Data from AC_ATR_72_REV05.pdf", 
+					11.0, 0.0, 1.6,
+					ComponentEnum.WING,
+					_theFuselage,
+					_theNacelle,
+					_theHTail,
+					_theVTail
+					);
+			
+			
+			
+			break;
+		case "B747-100B":
+			_exposedWing = new Wing(
+					aircraftName,
+					"Wing", // name
+					"Data from REPORT_B747_100B in database", 
+					18.2, 0.0, -2.875,
+					ComponentEnum.WING,
+					_theFuselage,
+					_theNacelle,
+					_theHTail,
+					_theVTail
+					);
+			_exposedWing.set_surface(_theWing.get_surfaceExposed());
+			_exposedWing.set_span(Amount.valueOf(_theWing.get_span().getEstimatedValue()-
+					_theFuselage.getWidthAtX(this
+							.get_wing()
+							.get_xLEMacActualBRF().getEstimatedValue()), SI.METER));
+			_exposedWing.set_semispan(Amount.valueOf((_exposedWing.get_semispan().getEstimatedValue()/2),SI.METER));
+			break;
+		}
+
+		_componentsList.add(_theWing);
+		_liftingSurfaceList.add(_theWing);
+	}
+	
 	public void createNacelle() {
 		_theNacelle = new Nacelle(
 				"Nacelle",
@@ -932,6 +988,14 @@ public class Aircraft {
 
 	public MyCosts get_theCosts() {
 		return _theCosts;
+	}
+
+	public Wing get_exposedWing() {
+		return _exposedWing;
+	}
+
+	public void set_exposedWing(Wing _exposedWing) {
+		this._exposedWing = _exposedWing;
 	}
 
 } // end of class
