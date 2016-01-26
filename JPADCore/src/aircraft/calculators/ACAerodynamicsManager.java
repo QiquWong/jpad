@@ -3,7 +3,9 @@ package aircraft.calculators;
 import static java.lang.Math.cos;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
+import static java.lang.Math.toRadians;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,21 +14,30 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
+import org.apache.commons.math3.linear.MatrixUtils;
+import org.apache.commons.math3.linear.RealMatrix;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.OperatingConditions;
 import aircraft.auxiliary.airfoil.MyAirfoil;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
+import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
+import aircraft.components.liftingSurface.LSAerodynamicsManager.MeanAirfoil;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.DragCalc;
+import configuration.MyConfiguration;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
+import standaloneutils.MyArrayUtils;
+import standaloneutils.MyChartToFileUtils;
+import standaloneutils.MyMathUtils;
 import standaloneutils.customdata.DragPolarPoint;
 import standaloneutils.customdata.MyArray;
+import writers.JPADStaticWriteUtils;
 
 /** 
  * Evaluate and store aerodynamic parameters relative to the whole aircraft.
@@ -97,6 +108,11 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 	private DragPolarPoint minPowerPoint;
 	private DragPolarPoint maxRangePoint;
 	private double _cD0Total;
+	private double[] [] alphaArrayPlotWingBody;
+	private double[] [] cLArrayPlotWingBody;
+	private String subfolderPathCLAlpha;
+	
+	private boolean subfolderPathCeck = true;
 
 	public ACAerodynamicsManager() {
 		_type = AnalysisTypeEnum.AERODYNAMIC;
@@ -490,29 +506,34 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 	 * @author Manuela Ruocco
 	 */
 
-	public void calculateCLAtAlphaWingBody(Amount<Angle> alphaBody, MyAirfoil meanAirfoil){
-		double cLAlphaWingBody, cLAlphaWing, cLMaxWingClean, cLZeroWing, alphaZeroLift, cLZeroWingBody;
+	public double calculateCLAtAlphaWingBody(Amount<Angle> alphaBody, MyAirfoil meanAirfoil){
+		if (alphaBody.getUnit() == NonSI.DEGREE_ANGLE) 
+			alphaBody = alphaBody.to(SI.RADIAN);
+
+		double cLAlphaWingBody, cLAlphaWing, cLMaxWingClean, cLZeroWing, alphaZeroLift, cLZeroWingBody,
+		cLActual = 0, cLStar;
+		double a, b, c, d;
 		Amount<Angle> alphaMaxWingClean, alphaStar, alphaMaxWingBody;
-		
+
 		alphaMaxWingClean =  _theAircraft.get_wing().getAerodynamics().get_alphaMaxClean();
 		cLMaxWingClean = _theAircraft.get_wing().getAerodynamics().get_cLMaxClean();
 		cLAlphaWing = _theAircraft.get_wing().getAerodynamics().getcLLinearSlopeNB();
 		alphaStar = meanAirfoil.getAerodynamics().get_alphaStar();
 		alphaZeroLift = _theAircraft.get_wing().getAerodynamics().getAlphaZeroLiftWingClean();
 		cLZeroWing = _theAircraft.get_wing().getAerodynamics().getcLAlphaZero();
-		
+
 		cLAlphaWingBody = _theAircraft
 				.get_fuselage()
 				.getAerodynamics()
 				.calculateCLAlphaFuselage(cLAlphaWing);
-		
+
 		cLZeroWingBody = -cLAlphaWingBody * alphaZeroLift;
-		
+
 		double alphaTempWing = (cLMaxWingClean - cLZeroWing)/cLAlphaWing;
 		double alphaTempWingBody = (cLMaxWingClean - cLZeroWingBody)/cLAlphaWingBody;
 		double deltaAlphaTemp = alphaTempWing - alphaTempWingBody;
 		alphaMaxWingBody = Amount.valueOf(alphaMaxWingClean.getEstimatedValue() - Math.abs(deltaAlphaTemp), SI.RADIAN);
-		
+		cLStar = cLAlphaWingBody * alphaStar .getEstimatedValue() + cLZeroWingBody;	
 		//System.out.println(" alpha max clean " + alphaMaxWingClean.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
 		//System.out.println(" cl max wing clean " + cLMaxWingClean);
 		//System.out.println(" cl alpha wing " + cLAlphaWing);
@@ -522,7 +543,180 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		System.out.println(" cL max " + cLMaxWingClean);
 		System.out.println(" cL alpha wing body " + cLAlphaWingBody);
 		System.out.println(" alpha zero lift " + alphaZeroLift);
+
+		double alphaWing = alphaBody.getEstimatedValue() +
+				_theAircraft.get_wing().get_iw().getEstimatedValue();
+
+		if ( alphaWing < alphaStar.getEstimatedValue() ){
+			cLActual = cLAlphaWingBody * alphaWing + cLZeroWingBody;	
+			return cLActual;
+		}
+
+		else{
+			double[][] matrixData = { {Math.pow(alphaMaxWingBody.getEstimatedValue(), 3),
+				Math.pow(alphaMaxWingBody.getEstimatedValue(), 2),
+				alphaMaxWingBody.getEstimatedValue(),1.0},
+					{3* Math.pow(alphaMaxWingBody.getEstimatedValue(), 2),
+					2*alphaMaxWingBody.getEstimatedValue(), 1.0, 0.0},
+					{3* Math.pow(alphaStar.getEstimatedValue(), 2), 
+						2*alphaStar.getEstimatedValue(), 1.0, 0.0},
+					{Math.pow(alphaStar.getEstimatedValue(), 3), 
+							Math.pow(alphaStar.getEstimatedValue(), 2),
+							alphaStar.getEstimatedValue(),1.0}};
+			RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
+			double [] vector = {cLMaxWingClean, 0,cLAlphaWingBody, cLStar};
+
+			double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
+
+			a = solSystem[0];
+			b = solSystem[1];
+			c = solSystem[2];
+			d = solSystem[3];
+
+			double clActual = a * Math.pow(alphaWing, 3) + 
+					b * Math.pow(alphaWing, 2) + 
+					c * alphaWing+ d;
+
+			return clActual;
+
+		}
+
 	}
+
+
+	/** 
+	 * This function plot CL vs Alpha curve (wing-body) using 30 value of alpha between alpha=- 2 deg and
+	 * alphaMax+2. 
+	 * 
+	 * @author Manuela Ruocco
+	 */
+	public void PlotCLvsAlphaCurve(MyAirfoil meanAirfoil){
+		
+		double alphaFirst = -2.0 ;
+		Amount<Angle> alphaActual;
+		Amount<Angle> alphaTemp = Amount.valueOf(0.0, SI.RADIAN);
+		int nPoints = 40;
+		double cLAlphaWingBody, cLAlphaWing, cLMaxWingClean, cLZeroWing, alphaZeroLift, cLZeroWingBody,
+		cLActual = 0, cLStar;
+		double aWB, bWB, cWB, dWB, a, b, c, d;
+		Amount<Angle> alphaMaxWingClean, alphaStar, alphaMaxWingBody;
+
+		alphaMaxWingClean =  _theAircraft.get_wing().getAerodynamics().get_alphaMaxClean();
+		cLMaxWingClean = _theAircraft.get_wing().getAerodynamics().get_cLMaxClean();
+		cLAlphaWing = _theAircraft.get_wing().getAerodynamics().getcLLinearSlopeNB();
+		alphaStar = meanAirfoil.getAerodynamics().get_alphaStar();
+		alphaZeroLift = _theAircraft.get_wing().getAerodynamics().getAlphaZeroLiftWingClean();
+		cLZeroWing = _theAircraft.get_wing().getAerodynamics().getcLAlphaZero();
+
+		cLAlphaWingBody = _theAircraft
+				.get_fuselage()
+				.getAerodynamics()
+				.calculateCLAlphaFuselage(cLAlphaWing);
+
+		cLZeroWingBody = -cLAlphaWingBody * alphaZeroLift;
+
+		double alphaTempWing = (cLMaxWingClean - cLZeroWing)/cLAlphaWing;
+		double alphaTempWingBody = (cLMaxWingClean - cLZeroWingBody)/cLAlphaWingBody;
+		double deltaAlphaTemp = alphaTempWing - alphaTempWingBody;
+		alphaMaxWingBody = Amount.valueOf(alphaMaxWingClean.getEstimatedValue() - Math.abs(deltaAlphaTemp), SI.RADIAN);
+		double alphaMaxDeg = alphaMaxWingBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue();
+		cLStar = cLAlphaWing * alphaStar .getEstimatedValue() + cLZeroWing;	
+		
+		alphaArrayPlotWingBody = new double [2][nPoints];
+		double [] alphaArray = MyArrayUtils.linspace(alphaFirst,alphaMaxDeg + 2, nPoints);
+		
+		for (int i=0 ; i < nPoints ; i++){
+			alphaArrayPlotWingBody [0][i] = alphaArray[i];
+			alphaArrayPlotWingBody [1][i] = alphaArray[i];
+		}
+		cLArrayPlotWingBody = new double [2][nPoints];
+		double alphaStarWingBody =(cLStar - cLZeroWingBody)/cLAlphaWingBody;
+		
+		double[][] matrixDataWB = { {Math.pow(alphaMaxWingBody.getEstimatedValue(), 3),
+			Math.pow(alphaMaxWingBody.getEstimatedValue(), 2),
+			alphaMaxWingBody.getEstimatedValue(),1.0},
+				{3* Math.pow(alphaMaxWingBody.getEstimatedValue(), 2),
+				2*alphaMaxWingBody.getEstimatedValue(), 1.0, 0.0},
+				{3* Math.pow(alphaStarWingBody, 2), 2*alphaStarWingBody, 1.0, 0.0},
+				{Math.pow(alphaStarWingBody, 3),Math.pow(alphaStarWingBody, 2),alphaStarWingBody,1.0}};
+		RealMatrix mWB = MatrixUtils.createRealMatrix(matrixDataWB);
+		double [] vectorWB = {cLMaxWingClean, 0,cLAlphaWingBody, cLStar};
+
+		double [] solSystemWB = MyMathUtils.solveLinearSystem(mWB, vectorWB);
+
+		aWB = solSystemWB[0];
+		bWB = solSystemWB[1];
+		cWB = solSystemWB[2];
+		dWB = solSystemWB[3];
+		
+		double[][] matrixData = { {Math.pow(alphaMaxWingClean.getEstimatedValue(), 3),
+			Math.pow(alphaMaxWingClean.getEstimatedValue(), 2),
+			alphaMaxWingClean.getEstimatedValue(),1.0},
+				{3* Math.pow(alphaMaxWingClean.getEstimatedValue(), 2),
+				2*alphaMaxWingClean.getEstimatedValue(), 1.0, 0.0},
+				{3* Math.pow(alphaStar.getEstimatedValue(), 2), 
+					2*alphaStar.getEstimatedValue(), 1.0, 0.0},
+				{Math.pow(alphaStar.getEstimatedValue(), 3), 
+						Math.pow(alphaStar.getEstimatedValue(), 2),
+						alphaStar.getEstimatedValue(),1.0}};
+		RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
+		double [] vector = {cLMaxWingClean, 0,cLAlphaWing, cLStar};
+
+		double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
+
+		a = solSystem[0];
+		b = solSystem[1];
+		c = solSystem[2];
+		d = solSystem[3];
+		
+		
+		String folderPath = MyConfiguration.currentDirectoryString + File.separator + "out" + File.separator;
+		if(subfolderPathCeck)
+		subfolderPathCLAlpha = JPADStaticWriteUtils.createNewFolder(folderPath + "CL alpha WingBody " + File.separator);
+
+		System.out.println(" alpha star " + alphaStar.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
+		for ( int i=0 ; i< nPoints ; i++){
+			alphaActual = Amount.valueOf(toRadians(alphaArrayPlotWingBody[0][i]), SI.RADIAN);
+			if ( alphaActual.getEstimatedValue() < alphaStar.getEstimatedValue() ){ 
+				cLArrayPlotWingBody[1][i] = cLAlphaWingBody * alphaActual.getEstimatedValue() + cLZeroWingBody;
+				cLArrayPlotWingBody[0][i] = cLAlphaWing * alphaActual.getEstimatedValue() + cLZeroWing;
+			}
+			else {
+				cLArrayPlotWingBody[1][i] = aWB * Math.pow(alphaActual.getEstimatedValue(), 3) + 
+						bWB * Math.pow(alphaActual.getEstimatedValue(), 2) + 
+						cWB * alphaActual.getEstimatedValue() + dWB;
+				cLArrayPlotWingBody[0][i] = a * Math.pow(alphaActual.getEstimatedValue(), 3) + 
+						b * Math.pow(alphaActual.getEstimatedValue(), 2) + 
+						c * alphaActual.getEstimatedValue() + d;
+			}
+				
+		}
+			
+		String [] legend = new String [2];
+		legend[0] = "CL vs Alpha Isolated Wing";
+		legend[1] = "CL vs Alpha Wing Body";
+		
+		MyChartToFileUtils.plot(
+				alphaArrayPlotWingBody,	cLArrayPlotWingBody, 
+				null, null , null , null ,					    // axis with limits
+				"alpha_W", "CL", "deg", "",legend, 	   				
+				subfolderPathCLAlpha, "CL vs Alpha wing body");
+	}
+
+	/** 
+	 * This function plot CL vs Alpha curve (wing-body) using 30 value of alpha between alpha=- 2 deg and
+	 * alphaMax+2. This function accepts in input subfolder path name. If you want to use the default folder
+	 * path ("CL alpha WingBody") you can use PlotCLvsAlphaCurve(MyAirfoil meanAirfoil).
+	 * 
+	 * @author Manuela Ruocco
+	 */
+	public void PlotCLvsAlphaCurve(MyAirfoil meanAirfoil, String subfolderPath){
+		this.subfolderPathCLAlpha = subfolderPath;
+		subfolderPathCeck = false;
+		PlotCLvsAlphaCurve(meanAirfoil);
+		
+	};
+
 
 	private void initializeComponentsAerodynamics(
 			OperatingConditions conditions, 
