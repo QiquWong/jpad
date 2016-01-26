@@ -1,13 +1,7 @@
 package database.databasefunctions.aerodynamics;
 
-import java.io.File;
-import java.net.URL;
-
-import aircraft.components.fuselage.MyFuselageAdjustCriteria;
-import configuration.MyConfiguration;
 import database.databasefunctions.DatabaseReader;
 import standaloneutils.MyInterpolatingFunction;
-import standaloneutils.database.hdf.MyHDFReader;
 
 public class AerodynamicDatabaseReader extends DatabaseReader {
 
@@ -17,8 +11,6 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 	 x_bar_ac_w_k1_vs_lambda, x_bar_ac_w_k2_vs_L_LE_AR_lambda,
 	 d_Alpha_Vs_LambdaLE_VsDy;
 	
-
-
 	double cM0_b_k2_minus_k1, ar_v_eff_c2, x_bar_ac_w_k1, x_bar_ac_w_k2, x_bar_ac_w_xac_cr, d_Alpha_Vs_LambdaLE;
  
 	public AerodynamicDatabaseReader(String databaseFolderPath, String databaseFileName) {
