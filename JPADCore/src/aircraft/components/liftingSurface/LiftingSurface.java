@@ -681,6 +681,59 @@ public class LiftingSurface extends AeroComponent{
 
 		_numberOfAirfoils = new Integer(_theAirfoilsList.size());
 		getAirfoilsPropertiesAsArray();
+		
+
+		//				addAirfoil(0., "Airfoil_1");
+		//		if (_spanStationKink != 1.) {
+		//			addAirfoil(_spanStationKink, "Airfoil_2");
+		//			addAirfoil(1., "Airfoil_3");
+		//		} else {
+		//			addAirfoil(1., "Airfoil_2");
+		//		}
+	}
+	
+	public void updateAirfoilsGeometryEquivalentWing(Aircraft aircraft) {
+
+		//		MyAirfoil.idCounter = 0;
+		//		core.auxiliary.airfoil.Geometry.idCounter = 0;
+		//		core.auxiliary.airfoil.Aerodynamics.idCounter = 0;
+		
+		List<MyAirfoil> myAirfoilList = new ArrayList<MyAirfoil>();
+		
+		double yLoc = aircraft.get_fuselage().getWidthAtX(aircraft.get_wing()
+				.get_xLEMacActualBRF().getEstimatedValue());
+		MyAirfoil airfoilRootExposed = aircraft
+				.get_wing()
+				.getAerodynamics()
+				.calculateIntermediateAirfoil(aircraft.get_wing(), yLoc);
+		myAirfoilList.add(0, airfoilRootExposed);
+		
+		if (aircraft.get_wing().get_theAirfoilsList().size() < 3) {
+		MyAirfoil airfoilKinkExposed = aircraft.get_wing().get_theAirfoilsList().get(1);
+		MyAirfoil airfoilTipExposed = aircraft.get_wing().get_theAirfoilsList().get(2);
+		myAirfoilList.add(1, airfoilKinkExposed);
+		myAirfoilList.add(2, airfoilTipExposed);
+		}
+		
+		else{
+			MyAirfoil airfoilTipExposed = aircraft.get_wing().get_theAirfoilsList().get(1);
+			myAirfoilList.add(1, airfoilTipExposed);
+		}
+
+		//TODO CONTINUE HERE 
+		_theAirfoilsList.get(0).getGeometry().update(0.);
+
+		if (_theAirfoilsList.size() < 3) {
+			_theAirfoilsList.get(1).getGeometry().update(_semispan.getEstimatedValue());
+
+		} else {
+			_theAirfoilsList.get(1).getGeometry().update(_spanStationKink*_semispan.getEstimatedValue());
+			_theAirfoilsList.get(2).getGeometry().update(_semispan.getEstimatedValue());
+		}
+
+		_numberOfAirfoils = new Integer(_theAirfoilsList.size());
+		getAirfoilsPropertiesAsArray();
+		
 
 		//				addAirfoil(0., "Airfoil_1");
 		//		if (_spanStationKink != 1.) {
@@ -3227,6 +3280,10 @@ public class LiftingSurface extends AeroComponent{
 		return _semispan;
 	}
 
+
+	public void set_semispan(Amount<Length> _semispan) {
+		this._semispan = _semispan;
+	}
 
 	public Amount<Length> get_meanGeometricChord() {
 		return _meanGeometricChord;
