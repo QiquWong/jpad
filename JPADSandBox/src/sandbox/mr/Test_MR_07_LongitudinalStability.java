@@ -208,8 +208,9 @@ public class Test_MR_07_LongitudinalStability {
 		LSAerodynamicsManager.CalcCLAtAlpha theCLWingCalculator = theLSAnalysis.new CalcCLAtAlpha();
 		cLIsolatedWing = theCLWingCalculator.nasaBlackwellalphaBody(alphaBody);
 
-		System.out.println("CL of Isolated wing at alpha body = " + cLIsolatedWing);
 		theLSAnalysis.PlotCLvsAlphaCurve(subfolderPath);
+		System.out.println("-------------------------------------");
+		System.out.println("CL of Isolated wing at alpha body = " + cLIsolatedWing);
 		System.out.println("\n \t \t \tDONE PLOTTING CL VS ALPHA CURVE  ");
 
 
@@ -220,10 +221,12 @@ public class Test_MR_07_LongitudinalStability {
 		double cLAlphaWing = theLSAnalysis.getcLLinearSlopeNB();
 		cLAlphaWingBody = theFuselageManager.calculateCLAlphaFuselage(cLAlphaWing);
 
-//		System.out.println(" cl alpha isolated wing = " + cLAlphaWing);
-//		System.out.println(" cl alpha wing body = " + cLAlphaWingBody);
-
-		aircraft.get_theAerodynamics().calculateCLAtAlphaWingBody(alphaBody, meanAirfoil);
+		double cLWingBody = aircraft.get_theAerodynamics().calculateCLAtAlphaWingBody(alphaBody, meanAirfoil);
+		System.out.println("-------------------------------------");
+		System.out.println(" CL of Wing Body at alpha body = " + cLWingBody);
+		
+		aircraft.get_theAerodynamics().PlotCLvsAlphaCurve(meanAirfoil, subfolderPath);
+		System.out.println("\n \t \t \tDONE PLOTTING CL VS ALPHA CURVE  ");
 	}
 
 }

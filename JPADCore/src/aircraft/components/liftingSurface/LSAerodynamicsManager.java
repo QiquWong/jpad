@@ -1231,7 +1231,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	}
 	
 	/** 
-	 * This function plot CL vs Alpha curve using 30 value of alpha between alpha=- 2 deg and
+	 * This function plot CL vs Alpha curve of an isolated wing using 30 value of alpha between alpha=- 10.0 deg and
 	 * alphaMax+2. 
 	 * 
 	 * @author Manuela Ruocco
