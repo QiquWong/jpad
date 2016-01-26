@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Duration;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
@@ -269,30 +270,34 @@ public class TakeOff_Landing_Test_TF {
 		//----------------------------------------------------------------------------------
 
 		// temporal step
-		double dt = 0.5; // [s]
+		Amount<Duration> dt = Amount.valueOf(0.5, SI.SECOND);
+		Amount<Duration> dtRot = Amount.valueOf(3, SI.SECOND);
 		double mu = 0.025;
 		double mu_brake = 0.3;
 		double k_alpha_dot = 0.07; // [1/deg]
 		Amount<Length> wing_to_ground_distance = Amount.valueOf(6.56, SI.METER);
 		Amount<Velocity> v_wind = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
 		Amount<Angle> alpha_ground = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		Amount<Angle> iw = Amount.valueOf(2.0, NonSI.DEGREE_ANGLE);
 		CalcTakeOff_Landing theTakeOffLandingCalculator = new CalcTakeOff_Landing(
 				aircraft,
 				theCondition,
 				highLiftCalculator,
 				dt,
+				dtRot,
 				k_alpha_dot,
 				mu,
 				mu_brake,
 				wing_to_ground_distance,
 				v_wind,
-				alpha_ground
+				alpha_ground,
+				iw
 				);
 
-		theTakeOffLandingCalculator.calculateGroundDistance();
+		theTakeOffLandingCalculator.calculateTakeOffDistance();
 
 		// results print
-		System.out.println("\n------------------------------------------------------------");
+		System.out.println("\n\n\n------------------------------------------------------------");
 		System.out.println(" Ground Roll Results : ");
 		System.out.println("------------------------------------------------------------");
 
@@ -344,6 +349,10 @@ public class TakeOff_Landing_Test_TF {
 		for(int i=0; i<theTakeOffLandingCalculator.getTotal_force().size(); i++)
 			System.out.print(theTakeOffLandingCalculator.getTotal_force().get(i) + " ");
 
+		System.out.println("\n\nLoad_Factor = ");
+		for(int i=0; i<theTakeOffLandingCalculator.getLoadFactor().size(); i++)
+			System.out.print(theTakeOffLandingCalculator.getLoadFactor().get(i) + " ");
+		
 		System.out.println("\n\nAcceleration = ");
 		for(int i=0; i<theTakeOffLandingCalculator.getAcceleration().size(); i++)
 			System.out.print(theTakeOffLandingCalculator.getAcceleration().get(i) + " ");
