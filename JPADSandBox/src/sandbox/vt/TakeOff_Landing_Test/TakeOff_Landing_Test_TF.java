@@ -50,7 +50,7 @@ public class TakeOff_Landing_Test_TF {
 		theCmdLineParser = new CmdLineParser(this);
 	}
 
-	public static void main(String[] args) throws CmdLineException {
+	public static void main(String[] args) throws CmdLineException, InstantiationException, IllegalAccessException {
 		
 		System.out.println("-----------------------------------------------------------");
 		System.out.println("TakeOff_Landing_Test :: B747-100B");
@@ -272,10 +272,13 @@ public class TakeOff_Landing_Test_TF {
 		// temporal step
 		Amount<Duration> dt = Amount.valueOf(0.5, SI.SECOND);
 		Amount<Duration> dtRot = Amount.valueOf(3, SI.SECOND);
+		Amount<Duration> dtHold = Amount.valueOf(0.5, SI.SECOND);
 		double mu = 0.025;
 		double mu_brake = 0.3;
 		double k_alpha_dot = 0.07; // [1/deg]
+		double alphaRed = -2; // [deg/s]
 		Amount<Length> wing_to_ground_distance = Amount.valueOf(6.56, SI.METER);
+		Amount<Length> obstacle = Amount.valueOf(35, NonSI.FOOT).to(SI.METER);
 		Amount<Velocity> v_wind = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
 		Amount<Angle> alpha_ground = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		Amount<Angle> iw = Amount.valueOf(2.0, NonSI.DEGREE_ANGLE);
@@ -285,16 +288,20 @@ public class TakeOff_Landing_Test_TF {
 				highLiftCalculator,
 				dt,
 				dtRot,
+				dtHold,
 				k_alpha_dot,
+				alphaRed,
 				mu,
 				mu_brake,
 				wing_to_ground_distance,
+				obstacle,
 				v_wind,
 				alpha_ground,
 				iw
 				);
 
 		theTakeOffLandingCalculator.calculateTakeOffDistance();
+		theTakeOffLandingCalculator.createTakeOffCharts();
 
 		// results print
 		System.out.println("\n\n\n------------------------------------------------------------");
@@ -392,6 +399,14 @@ public class TakeOff_Landing_Test_TF {
 		System.out.println("\n\nGround Distance = ");
 		for(int i=0; i<theTakeOffLandingCalculator.getGround_distance().size(); i++)
 			System.out.print(theTakeOffLandingCalculator.getGround_distance().get(i) + " ");
+		
+		System.out.println("\n\ndelta Vertical Distance = ");
+		for(int i=0; i<theTakeOffLandingCalculator.getDelta_VerticalDistance().size(); i++)
+			System.out.print(theTakeOffLandingCalculator.getDelta_VerticalDistance().get(i) + " ");
+		
+		System.out.println("\n\nVertical Distance = ");
+		for(int i=0; i<theTakeOffLandingCalculator.getVertical_distance().size(); i++)
+			System.out.print(theTakeOffLandingCalculator.getVertical_distance().get(i) + " ");
 	}
 	
 	//------------------------------------------------------------------------------------------
