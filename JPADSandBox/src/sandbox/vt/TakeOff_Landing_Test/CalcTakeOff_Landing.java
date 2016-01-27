@@ -56,9 +56,9 @@ public class CalcTakeOff_Landing {
 	private Amount<Length> wing_to_ground_distance;
 	private Amount<Angle> alpha_ground, iw;
 	private List<Double> alpha_dot, cL, cD, loadFactor;
-	private List<Amount<Angle>> alpha;
+	private List<Amount<Angle>> alpha, theta, gamma;
 	private List<Amount<Duration>> time;
-	private List<Amount<Velocity>> speed, mean_speed;
+	private List<Amount<Velocity>> speed, mean_speed, rateOfClimb, meanRateOfClimb;
 	private List<Amount<Acceleration>> acceleration, mean_acceleration;
 	private List<Amount<Force>> thrust, thrust_horizontal, thrust_vertical, lift,
 							    drag, friction, total_force;
@@ -185,6 +185,10 @@ public class CalcTakeOff_Landing {
 		alpha.add(alpha_ground);
 		this.alpha_dot = new ArrayList<Double>();
 		alpha_dot.add(0.0);
+		this.gamma = new ArrayList<Amount<Angle>>();
+		gamma.add(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+		this.theta = new ArrayList<Amount<Angle>>();
+		theta.add(alpha.get(0).plus(gamma.get(0)));
 		
 		this.cL = new ArrayList<Double>();
 		cL.add(highLiftCalculator.calcCLatAlphaHighLiftDevice(alpha_ground));
@@ -215,6 +219,10 @@ public class CalcTakeOff_Landing {
 		mean_acceleration.add(acceleration.get(0));
 		this.mean_speed = new ArrayList<Amount<Velocity>>();
 		mean_speed.add(Amount.valueOf(0.0, SI.METERS_PER_SECOND));
+		this.rateOfClimb = new ArrayList<Amount<Velocity>>();
+		rateOfClimb.add(speed.get(0).plus(v_wind).times(Math.sin(gamma.get(0).getEstimatedValue())));
+		this.meanRateOfClimb = new ArrayList<Amount<Velocity>>();
+		rateOfClimb.add(Amount.valueOf(0.0, SI.METERS_PER_SECOND));
 		this.delta_GroundDistance = new ArrayList<Amount<Length>>();
 		delta_GroundDistance.add(Amount.valueOf(0.0, SI.METER));
 		this.ground_distance = new ArrayList<Amount<Length>>();
@@ -282,6 +290,8 @@ public class CalcTakeOff_Landing {
 			
 			alpha.add(alpha.get(i-1));
 			alpha_dot.add(alpha_dot.get(i-1));
+			gamma.add(gamma.get(i-1));
+			theta.add(alpha.get(i).plus(gamma.get(i)));
 			
 			cL.add(cL.get(i-1));
 			lift.add(Amount.valueOf(
@@ -318,6 +328,8 @@ public class CalcTakeOff_Landing {
 					SI.METERS_PER_SQUARE_SECOND));
 			mean_acceleration.add((acceleration.get(i-1).plus(acceleration.get(i))).divide(2));
 			mean_speed.add(((speed.get(i-1).plus(speed.get(i))).divide(2)).plus(v_wind));
+			rateOfClimb.add(speed.get(i).plus(v_wind).times(Math.sin(gamma.get(i).getEstimatedValue())));
+			meanRateOfClimb.add((rateOfClimb.get(i).plus(rateOfClimb.get(i-1)).divide(2)));
 			delta_GroundDistance.add(
 					Amount.valueOf(
 							mean_speed.get(i).getEstimatedValue()*dt.getEstimatedValue(),
@@ -378,6 +390,8 @@ public class CalcTakeOff_Landing {
 					alpha.get(i-1).getEstimatedValue() + (alpha_dot.get(i)*dt.getEstimatedValue()*0.05),
 					NonSI.DEGREE_ANGLE)
 					);
+			gamma.add(gamma.get(i-1));
+			theta.add(alpha.get(i).plus(gamma.get(i)));
 			
 			cL.add(cL0 + ((highLiftCalculator.getcLalpha_new())*(alpha.get(i).getEstimatedValue() + iw.getEstimatedValue())));
 			lift.add(Amount.valueOf(
@@ -455,6 +469,11 @@ public class CalcTakeOff_Landing {
 									.times(Math.cos(alpha.get(i).to(SI.RADIAN).getEstimatedValue())))
 									.plus(thrust_vertical.get(i)))
 							.times(mu)));
+			if (friction.get(i).isLessThan(Amount.valueOf(0.0, SI.NEWTON))) {
+				friction.remove(i);
+				friction.add(Amount.valueOf(0.0, SI.NEWTON));
+			}
+				
 			total_force.add(thrust_horizontal.get(i)
 					.minus(friction.get(i))
 					.minus(drag.get(i).times(Math.cos(alpha.get(i).to(SI.RADIAN).getEstimatedValue()))));
@@ -467,6 +486,8 @@ public class CalcTakeOff_Landing {
 					SI.METERS_PER_SQUARE_SECOND));
 			mean_acceleration.add((acceleration.get(i-1).plus(acceleration.get(i))).divide(2));
 			mean_speed.add(((speed.get(i-1).plus(speed.get(i))).divide(2)).plus(v_wind));
+			rateOfClimb.add(speed.get(i).plus(v_wind).times(Math.sin(gamma.get(i).getEstimatedValue())));
+			meanRateOfClimb.add((rateOfClimb.get(i).plus(rateOfClimb.get(i-1)).divide(2)));
 			delta_GroundDistance.add(
 					Amount.valueOf(
 							mean_speed.get(i).getEstimatedValue()*dt.getEstimatedValue()*0.05,
@@ -538,6 +559,22 @@ public class CalcTakeOff_Landing {
 
 	public void setAlpha(List<Amount<Angle>> alpha) {
 		this.alpha = alpha;
+	}
+
+	public List<Amount<Angle>> getTheta() {
+		return theta;
+	}
+
+	public void setTheta(List<Amount<Angle>> theta) {
+		this.theta = theta;
+	}
+
+	public List<Amount<Angle>> getGamma() {
+		return gamma;
+	}
+
+	public void setGamma(List<Amount<Angle>> gamma) {
+		this.gamma = gamma;
 	}
 
 	public List<Double> getAlpha_dot() {
@@ -822,5 +859,21 @@ public class CalcTakeOff_Landing {
 
 	public void setGroundRollResults(TakeOffResultsMap groundRollResults) {
 		this.groundRollResults = groundRollResults;
+	}
+
+	public List<Amount<Velocity>> getRateOfClimb() {
+		return rateOfClimb;
+	}
+
+	public void setRateOfClimb(List<Amount<Velocity>> rateOfClimb) {
+		this.rateOfClimb = rateOfClimb;
+	}
+
+	public List<Amount<Velocity>> getMeanRateOfClimb() {
+		return meanRateOfClimb;
+	}
+
+	public void setMeanRateOfClimb(List<Amount<Velocity>> meanRateOfClimb) {
+		this.meanRateOfClimb = meanRateOfClimb;
 	}
 }

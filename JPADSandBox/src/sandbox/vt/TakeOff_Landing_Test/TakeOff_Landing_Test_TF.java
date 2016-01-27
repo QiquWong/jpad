@@ -320,6 +320,14 @@ public class TakeOff_Landing_Test_TF {
 		System.out.println("\n\nAlpha = ");
 		for(int i=0; i<theTakeOffLandingCalculator.getAlpha().size(); i++)
 			System.out.print(theTakeOffLandingCalculator.getAlpha().get(i) + " ");
+		
+		System.out.println("\n\nGamma = ");
+		for(int i=0; i<theTakeOffLandingCalculator.getGamma().size(); i++)
+			System.out.print(theTakeOffLandingCalculator.getGamma().get(i) + " ");
+		
+		System.out.println("\n\nTheta = ");
+		for(int i=0; i<theTakeOffLandingCalculator.getTheta().size(); i++)
+			System.out.print(theTakeOffLandingCalculator.getTheta().get(i) + " ");
 
 		System.out.println("\n\nAlpha_dot = ");
 		for(int i=0; i<theTakeOffLandingCalculator.getAlpha_dot().size(); i++)
@@ -369,6 +377,14 @@ public class TakeOff_Landing_Test_TF {
 		for(int i=0; i<theTakeOffLandingCalculator.getMean_speed().size(); i++)
 			System.out.print(theTakeOffLandingCalculator.getMean_speed().get(i) + " ");
 
+		System.out.println("\n\nRate of Climb = ");
+		for(int i=0; i<theTakeOffLandingCalculator.getRateOfClimb().size(); i++)
+			System.out.print(theTakeOffLandingCalculator.getRateOfClimb().get(i) + " ");
+		
+		System.out.println("\n\nMean Rate of Climb = ");
+		for(int i=0; i<theTakeOffLandingCalculator.getMeanRateOfClimb().size(); i++)
+			System.out.print(theTakeOffLandingCalculator.getMeanRateOfClimb().get(i) + " ");
+		
 		System.out.println("\n\ndelta Ground Distance = ");
 		for(int i=0; i<theTakeOffLandingCalculator.getDelta_GroundDistance().size(); i++)
 			System.out.print(theTakeOffLandingCalculator.getDelta_GroundDistance().get(i) + " ");
