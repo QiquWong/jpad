@@ -70,7 +70,7 @@ public class StabilityDerivatives {
 	//			inputManager.getValue(DirStabEnum.xPercentPositionPole).getEstimatedValue());
 
 	// ---------------------------------------------------------------------------------------------------------------------------------------------
-	// TODO: geometry parameters 
+	// TODO: geometric parameters 
 	// ---------------------------------------------------------------------------------------------------------------------------------------------
 	//	double cNbVertical = MomentCalc.calcCNbetaVerticalTail(Amount wingAspectRatio, Amount verticalTailAspectRatio, Amount<Length> verticalTailArm,
 	//												Amount<Length> wingSpan, Double wingSurface, Double verticalSurface, Double verticalSweepAngleAtHalfChord, 

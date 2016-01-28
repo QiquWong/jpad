@@ -36,7 +36,7 @@ public class Test_VC_complete_AC {
 	// Set the operating condition
 	OperatingConditions theCondition = new OperatingConditions();
 	
-	theCondition.set_machCurrent(0.53);
+	theCondition.set_machCurrent(0.4);
 	theCondition.set_altitude(Amount.valueOf(15000, NonSI.FOOT));
 	
 	// Define the Analysis Manager
