@@ -63,10 +63,10 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/vecmath/vecmath.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/cloning/cloning-1.9.1.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/cloning/lib/objenesis-2.1.jar"/>
-	<classpathentry kind="var" path="LIBRARY_FOLDER/fxgraphics2d/fxgraphics2d-1.1.jar"/>
-	<classpathentry kind="var" path="LIBRARY_FOLDER/fxgraphics2d/lib/orsonpdf-1.6-eval.jar"/>
-	<classpathentry kind="var" path="LIBRARY_FOLDER/fxgraphics2d/lib/orsoncharts-1.5-pre.jar"/>
-	<classpathentry kind="var" path="LIBRARY_FOLDER/fxgraphics2d/lib/jfreesvg-2.0.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/fxgraphics2d/fxgraphics2d-1.3.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/fxgraphics2d/lib/orsonpdf-1.7.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/fxgraphics2d/lib/orsoncharts-1.5.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/fxgraphics2d/lib/jfreesvg-3.0.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/fxgraphics2d/lib/jfreechart-nofx-2.0-pre1.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/swing/swing2swt.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jna/jna-4.1.0.jar"/>

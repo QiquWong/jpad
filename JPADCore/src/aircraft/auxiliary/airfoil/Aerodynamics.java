@@ -24,6 +24,7 @@ import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLMaxClean;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcLiftDistribution;
 import configuration.MyConfiguration;
 import configuration.enumerations.AirfoilFamilyEnum;
+import configuration.enumerations.AirfoilStationEnum;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.MyArrayUtils;
@@ -87,6 +88,216 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 	private Geometry geometry;
 	private MyAirfoil _theAirfoil;
 
+	public Aerodynamics(MyAirfoil airf, String aircraftName, AirfoilStationEnum station) {
+		switch (aircraftName) {
+		case "ATR-72":
+			switch (station) {
+			case ROOT:
+				Aerodynamics(airf, "23-018");
+				break;
+			case KINK:
+				Aerodynamics(airf, "23-015") ;
+				break;
+			case TIP:
+				Aerodynamics(airf, "23-012");
+				break;	
+			}
+			break;
+		case "B747-100B":
+			//TODO implement this 
+			switch (station) {
+			case ROOT:
+				new Aerodynamics(airf, aircraftName, AirfoilStationEnum.ROOT);
+				break;
+			case KINK:
+				new Aerodynamics(airf, aircraftName, AirfoilStationEnum.KINK);
+				break;
+			case TIP:
+				new Aerodynamics(airf, aircraftName, AirfoilStationEnum.TIP);
+				break;	
+			}
+			break;
+		}
+		
+	}
+
+	private void Aerodynamics(MyAirfoil airf, String string) {
+		 switch (string) {
+		 
+		 case "23-018":
+			 _id = airf.getId() + "1" + idCounter + "99";
+				idCounter++;
+			 airf.set_family(AirfoilFamilyEnum.NACA23_018);	
+			 _theAirfoil = airf;
+			 geometry = airf.getGeometry();
+
+			 _alphaZeroLift = Amount.valueOf(Math.toRadians(-1.2), SI.RADIAN); 
+			 _clAlpha = 7.22; 
+			 _alphaStar = Amount.valueOf(Math.toRadians(9.5),SI.RADIAN); // end-of-linearity 
+			 _clStar = 1.3 ; 
+			 _alphaStall = Amount.valueOf(Math.toRadians(16.0),SI.RADIAN); 
+			 _clMax = 1.6; //1.8;
+
+			 _cdMin = 0.00675;
+			 _clAtCdMin = 0.3;
+			 _kFactorDragPolar = 0.075;
+
+			 _aerodynamicCenterX = 0.243;
+			 _cmAC = -0.083;
+			 _cmACStall = -0.09;
+			 _cmAlphaAC = 0. ;
+			 _cmAlphaLE = -0.1; //TODO, change this value
+			 //_cmAtClMax = 
+
+			 _reynoldsCruise = 8.9e+6;
+			 _reynoldsNumberStall = 1e+6;
+
+			 calculateClAlpha = new CalculateClAlpha();
+			 calculateMachCr = new CalculateMachCr();
+			 calculateCdWaveDrag = new CalculateCdWaveDrag();
+			 break;
+
+		 case "23-015":
+			 airf.set_family(AirfoilFamilyEnum.NACA23_015);	
+			 _id = airf.getId() + "1" + idCounter + "99";
+				idCounter++;
+				
+			 _theAirfoil = airf;
+			 geometry = airf.getGeometry();
+
+			 _alphaZeroLift = Amount.valueOf(Math.toRadians(-1.1), SI.RADIAN); 
+			 _clAlpha = 7.05; 
+			 _alphaStar = Amount.valueOf(Math.toRadians(10),SI.RADIAN); // end-of-linearity 
+			 _clStar = 1.2 ; 
+			 _alphaStall = Amount.valueOf(Math.toRadians(18.0),SI.RADIAN); 
+			 _clMax = 1.72; //1.6;
+
+			 _cdMin = 0.00625;
+			 _clAtCdMin = 0.1;
+			 _kFactorDragPolar = 0.075;
+
+			 _aerodynamicCenterX = 0.243;
+			 _cmAC = -0.0833;
+			 _cmACStall = -0.07;
+			 _cmAlphaAC = 0. ;
+			 _cmAlphaLE = -0.1; //TODO, change this value
+			 //_cmAtClMax = 
+
+			 _reynoldsCruise = 8.9e+6;
+			 _reynoldsNumberStall = 1e+6;
+
+			 calculateClAlpha = new CalculateClAlpha();
+			 calculateMachCr = new CalculateMachCr();
+			 calculateCdWaveDrag = new CalculateCdWaveDrag();
+			 break;
+			 
+		 case "23-012":
+			 airf.set_family(AirfoilFamilyEnum.NACA23_012);	
+			 _id = airf.getId() + "1" + idCounter + "99";
+				idCounter++;
+				
+			 _theAirfoil = airf;
+			 geometry = airf.getGeometry();
+
+			 _alphaZeroLift = Amount.valueOf(Math.toRadians(-1.32), SI.RADIAN); 
+			 _clAlpha = 6.88; 
+			 _alphaStar = Amount.valueOf(Math.toRadians(14),SI.RADIAN); // end-of-linearity 
+			 _clStar = 1.6 ; 
+			 _alphaStall = Amount.valueOf(Math.toRadians(18),SI.RADIAN); 
+			 _clMax = 1.8 ; //1.5;
+
+			 _cdMin = 0.00575;
+			 _clAtCdMin = 0.23;
+			 _kFactorDragPolar = 0.075;
+
+			 _aerodynamicCenterX = 0.247;
+			 _cmAC = -0.083;
+			 _cmACStall = -0.09;
+			 _cmAlphaAC = 0. ;
+			 _cmAlphaLE = -0.1; //TODO, change this value
+			 //_cmAtClMax = 
+
+			 _reynoldsCruise = 8.8e+6;
+			 _reynoldsNumberStall = 1e+6;
+
+			 calculateClAlpha = new CalculateClAlpha();
+			 calculateMachCr = new CalculateMachCr();
+			 calculateCdWaveDrag = new CalculateCdWaveDrag();
+			 break;	
+			 
+			 
+		 case "65-209": 
+			_id = airf.getId() + "1" + idCounter + "99";
+			idCounter++;
+			
+			_theAirfoil = airf;
+			geometry = airf.getGeometry();
+			
+			_alphaZeroLift = Amount.valueOf(Math.toRadians(-1.3), SI.RADIAN); 
+			_clAlpha = 5.96; 
+			_alphaStar = Amount.valueOf(Math.toRadians(11),SI.RADIAN); // end-of-linearity 
+			_clStar = 1.1 ; 
+			_alphaStall = Amount.valueOf(Math.toRadians(17.0),SI.RADIAN); 
+			_clMax = 1.6;
+
+			_cdMin = 0.025;
+			_clAtCdMin = 0.2;
+			_kFactorDragPolar = 0.075;
+
+			_aerodynamicCenterX = 0.25;
+			_cmAC = -0.07;
+			_cmACStall = -0.09;
+			_cmAlphaAC = 0. ;
+			_cmAlphaLE = -0.1; //TODO, change this value
+			//_cmAtClMax = 
+
+			_reynoldsCruise = 1e+7;
+			_reynoldsNumberStall = 1e+6;
+
+			calculateClAlpha = new CalculateClAlpha();
+			calculateMachCr = new CalculateMachCr();
+			calculateCdWaveDrag = new CalculateCdWaveDrag();	
+			break;
+			
+		 case "65-206" :
+			 _id = airf.getId() + "1" + idCounter + "99";
+			idCounter++;
+			
+			_theAirfoil = airf;
+			geometry = airf.getGeometry();
+			
+			_alphaZeroLift = Amount.valueOf(Math.toRadians(-1.4), SI.RADIAN); 
+			_clAlpha = 6.13; 
+			_alphaStar = Amount.valueOf(Math.toRadians(10.0),SI.RADIAN); // end-of-linearity 
+			_clStar = _clAlpha * _alphaStar.getEstimatedValue() ; 
+			_alphaStall = Amount.valueOf(Math.toRadians(15.0),SI.RADIAN); 
+			_clMax = 1.3;
+
+			_cdMin = 0.025;
+			_clAtCdMin = 0.2;
+			_kFactorDragPolar = 0.075;
+
+			_aerodynamicCenterX = 0.25;
+			_cmAC = -0.07;
+			_cmACStall = -0.09;
+			_cmAlphaAC = 0. ;
+			_cmAlphaLE = -0.1; //TODO, change this value
+			//_cmAtClMax = 
+
+			_reynoldsCruise = 1e+7;
+			_reynoldsNumberStall = 1e+6;
+
+			calculateClAlpha = new CalculateClAlpha();
+			calculateMachCr = new CalculateMachCr();
+			calculateCdWaveDrag = new CalculateCdWaveDrag();	
+			break;
+		 }
+		 
+			 
+		}
+		
+	
+
 	public Aerodynamics(MyAirfoil airf) {
 		
 		_id = airf.getId() + "1" + idCounter + "99";
@@ -126,6 +337,9 @@ public Aerodynamics(MyAirfoil airf, String name) {
 	 switch (name) {
 	 
 	 case "23-018":
+		 _id = airf.getId() + "1" + idCounter + "99";
+			idCounter++;
+			
 		 _theAirfoil = airf;
 		 geometry = airf.getGeometry();
 
@@ -156,6 +370,9 @@ public Aerodynamics(MyAirfoil airf, String name) {
 		 break;
 
 	 case "23-015":
+		 _id = airf.getId() + "1" + idCounter + "99";
+			idCounter++;
+			
 		 _theAirfoil = airf;
 		 geometry = airf.getGeometry();
 
@@ -186,6 +403,9 @@ public Aerodynamics(MyAirfoil airf, String name) {
 		 break;
 		 
 	 case "23-012":
+		 _id = airf.getId() + "1" + idCounter + "99";
+			idCounter++;
+			
 		 _theAirfoil = airf;
 		 geometry = airf.getGeometry();
 
