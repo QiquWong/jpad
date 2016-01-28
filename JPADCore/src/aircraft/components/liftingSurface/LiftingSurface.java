@@ -523,15 +523,15 @@ public class LiftingSurface extends AeroComponent{
 		aircraft.auxiliary.airfoil.Aerodynamics.idCounter = 0;
 
 		// Create three default airfoils
-		_theAirfoilsList.add(new MyAirfoil(aircraftName,  ls, 0.));// AirfoilStationEnum.ROOT , ls, 0.));
+		_theAirfoilsList.add(new MyAirfoil(aircraftName, AirfoilStationEnum.ROOT , ls, 0.));
 
 		if (_type.equals(ComponentEnum.VERTICAL_TAIL)) {
 			_theAirfoilsList.add(new MyAirfoil(aircraftName, ls, _spanStationKink*span));
 			_theAirfoilsList.add(new MyAirfoil(aircraftName, ls, span));
 
 		} else {
-			_theAirfoilsList.add(new MyAirfoil(aircraftName, ls, _spanStationKink*span/2.));
-			_theAirfoilsList.add(new MyAirfoil(aircraftName, ls, span/2.));
+			_theAirfoilsList.add(new MyAirfoil(aircraftName,  AirfoilStationEnum.KINK ,ls, _spanStationKink*span/2.));
+			_theAirfoilsList.add(new MyAirfoil(aircraftName,  AirfoilStationEnum.TIP,ls, span/2.));
 		}
 	}
 

@@ -121,7 +121,7 @@ public class Test_MR_07_LongitudinalStability {
 
 		//AIRFOIL 1
 		double yLocRoot = 0.0;
-		MyAirfoil airfoilRoot = new MyAirfoil(theWing, yLocRoot, "23-018");
+		MyAirfoil airfoilRoot = theWing.get_theAirfoilsList().get(0);
 		airfoilRoot.getGeometry().update(yLocRoot);  // define chord
 		airfoilRoot.getGeometry().set_maximumThicknessOverChord(0.18); //REPORT
 		airfoilRoot.getGeometry().set_deltaYPercent(0.192 *airfoilRoot.getGeometry().get_maximumThicknessOverChord()*100 );
@@ -134,7 +134,7 @@ public class Test_MR_07_LongitudinalStability {
 
 		//AIRFOIL 2
 		double yLocKink = theWing.get_spanStationKink() * theWing.get_semispan().getEstimatedValue();
-		MyAirfoil airfoilKink = new MyAirfoil(theWing, yLocKink, "23-015");
+		MyAirfoil airfoilKink = theWing.get_theAirfoilsList().get(1);
 		airfoilKink.getGeometry().update(yLocKink);   // define chord
 		airfoilKink.getGeometry().set_maximumThicknessOverChord(0.15); //REPORT
 		airfoilKink.getGeometry().set_deltaYPercent(0.192 *airfoilKink.getGeometry().get_maximumThicknessOverChord()*100 );
@@ -148,7 +148,7 @@ public class Test_MR_07_LongitudinalStability {
 
 		//AIRFOIL 3
 		double yLocTip = theWing.get_semispan().getEstimatedValue();
-		MyAirfoil airfoilTip = new MyAirfoil(theWing, yLocTip, "23-012");
+		MyAirfoil airfoilTip = theWing.get_theAirfoilsList().get(2);
 		airfoilTip.getGeometry().update(yLocRoot);  // define chord
 		airfoilTip.getGeometry().set_maximumThicknessOverChord(0.12); //REPORT
 		airfoilTip.getGeometry().set_deltaYPercent(0.192 *airfoilTip.getGeometry().get_maximumThicknessOverChord()*100 );
@@ -169,7 +169,7 @@ public class Test_MR_07_LongitudinalStability {
 		myAirfoilList.add(2, airfoilTip);
 		theWing.set_theAirfoilsList(myAirfoilList);
 		theWing.updateAirfoilsGeometry(); 
-		theLSAnalysis.initializeDependentData();
+		//theLSAnalysis.initializeDependentData();
 		aircraft.get_exposedWing().set_theAirfoilsList(myAirfoilList);
 		aircraft.get_exposedWing().updateAirfoilsGeometryExposedWing( aircraft);
 		

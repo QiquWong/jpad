@@ -138,12 +138,11 @@ public class MyAirfoil {
 		
 		switch(aircraftName) {
 		case "ATR-72":
-			_family = AirfoilFamilyEnum.NACA63_209;
 			_type = AirfoilTypeEnum.CONVENTIONAL;
 
 			_theLiftingSurface = ls;
 			geometry = new Geometry(this, yLoc);
-			aerodynamics = new Aerodynamics(this, aircraftName ); // , station);
+			aerodynamics = new Aerodynamics(this, aircraftName, station);
 			break;
 		
 		// TODO: put inside Geometry and Aerodynamics B747-100B correct data (actually there are the same data in both ATR-72 and B747-100B
@@ -233,6 +232,10 @@ public class MyAirfoil {
 
 	public AirfoilFamilyEnum get_family() {
 		return _family;
+	}
+
+	public void setAerodynamics(Aerodynamics aerodynamics) {
+		this.aerodynamics = aerodynamics;
 	}
 
 	public void set_family(AirfoilFamilyEnum _family) {
