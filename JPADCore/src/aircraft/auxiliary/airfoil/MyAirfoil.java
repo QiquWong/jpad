@@ -143,7 +143,7 @@ public class MyAirfoil {
 
 			_theLiftingSurface = ls;
 			geometry = new Geometry(this, yLoc);
-			aerodynamics = new Aerodynamics(this, aircraftName, station);
+			aerodynamics = new Aerodynamics(this, aircraftName ); // , station);
 			break;
 		
 		// TODO: put inside Geometry and Aerodynamics B747-100B correct data (actually there are the same data in both ATR-72 and B747-100B
