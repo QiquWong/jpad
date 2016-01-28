@@ -24,6 +24,7 @@ import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLMaxClean;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcLiftDistribution;
 import configuration.MyConfiguration;
 import configuration.enumerations.AirfoilFamilyEnum;
+import configuration.enumerations.AirfoilStationEnum;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.MyArrayUtils;
@@ -86,6 +87,38 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 	private double _machCr, _cdw = 0., _machCurrent;
 	private Geometry geometry;
 	private MyAirfoil _theAirfoil;
+
+	public Aerodynamics(MyAirfoil airf, String aircraftName, AirfoilStationEnum station) {
+		switch (aircraftName) {
+		case "ATR-72":
+			switch (station) {
+			case ROOT:
+				new Aerodynamics(airf, "23-018");
+				break;
+			case KINK:
+				new Aerodynamics(airf, "23-015");
+				break;
+			case TIP:
+				new Aerodynamics(airf, "23-012");
+				break;	
+			}
+			break;
+		case "B747-100B":
+			switch (station) {
+			case ROOT:
+				new Aerodynamics(airf, aircraftName, AirfoilStationEnum.ROOT);
+				break;
+			case KINK:
+				new Aerodynamics(airf, aircraftName, AirfoilStationEnum.KINK);
+				break;
+			case TIP:
+				new Aerodynamics(airf, aircraftName, AirfoilStationEnum.TIP);
+				break;	
+			}
+			break;
+		}
+		
+	}
 
 	public Aerodynamics(MyAirfoil airf) {
 		
