@@ -382,6 +382,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		//				_nPointsSemispanWise).data;
 
 		_yStations = MyArrayUtils.linspace(0., semispan, _nPointsSemispanWise);
+		if (theAircraft != null ){
 		if (theAircraft.get_exposedWing() != null ){
 			double yLocRootExposed = theAircraft.get_exposedWing().get_theAirfoilsList().get(0).getGeometry().get_yStation();
 			_yStationsIntegral = MyArrayUtils.linspace(yLocRootExposed, semispan, _nPointsSemispanWise);
@@ -405,9 +406,13 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			_chordsVsYExposed.toArray();
 
 		}
+		}
 		/** Non dimensional stations (eta) */
+	
 		_yStationsND = MyArrayUtils.linspace(0., 1., _nPointsSemispanWise);
 
+		_yStationsIntegral = MyArrayUtils.linspace(0, semispan, _nPointsSemispanWise);
+		
 		for (int i=0; i<_nPointsSemispanWise; i++){
 			_chordsVsY.add(getTheLiftingSurface().getChordAtYActual(_yStations[i]));
 		}
@@ -2943,6 +2948,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			//				surfaceInteg = surface;
 			//				semispanInteg = semispan;
 			//			}
+			
 			_alpha0L = Amount.valueOf(
 					AnglesCalc.alpha0LintegralMeanNoTwist(surface, semispan, 
 							_yStationsIntegral, _chordsVsY.toArray(), _alpha0lDistribution.toArray()),
@@ -2956,16 +2962,8 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 		public Amount<Angle>  integralMeanWithTwist() {
 
-			if ( theAircraft.get_exposedWing() != null ){
-				surfaceInteg = theAircraft.get_exposedWing().get_surface().getEstimatedValue();
-				semispanInteg = theAircraft.get_exposedWing().get_semispan().getEstimatedValue();
-			}
-			else{
-				surfaceInteg = surface;
-				semispanInteg = semispan;
-			}
 			_alpha0L = Amount.valueOf(
-					AnglesCalc.alpha0LintegralMeanWithTwist(surfaceInteg, semispanInteg, 
+					AnglesCalc.alpha0LintegralMeanWithTwist(surface, semispan, 
 							_yStationsIntegral, _chordsVsY.toArray(), 
 							_alpha0lDistribution.toArray(), _twistDistribution.toArray()),
 					SI.RADIAN);
@@ -2978,7 +2976,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 
 			if ( theAircraft.get_exposedWing() != null ){
-				//System.out.println(" y s tation integral " + Arrays.toString(_yStationsIntegral));
+				//System.out.println(" y station integral " + Arrays.toString(_yStationsIntegral));
 				surfaceInteg = theAircraft.get_exposedWing().get_surface().getEstimatedValue();
 				System.out.println(" surface " + theAircraft.get_exposedWing().get_surface().getEstimatedValue());
 				semispanInteg = theAircraft.get_exposedWing().get_semispan().getEstimatedValue();
