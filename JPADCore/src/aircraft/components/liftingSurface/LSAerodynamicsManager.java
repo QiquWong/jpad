@@ -104,7 +104,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	 *		);
 	 * 
 	 */
-	
+
 	Integer _numberOfAlpha;
 	private int _nPointsSemispanWise;
 	private boolean subfolderPathCeck = true;
@@ -113,9 +113,11 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 	AirfoilTypeEnum _airfoilType;
 
-	private MyArray alphaArray, cLArray, _alphaDistribution, _twistDistribution, _alpha0lDistribution;
+	private MyArray alphaArray, cLArray, _alphaDistribution, _twistDistribution, _alpha0lDistribution,
+	_twistDistributionExposed, _alpha0lDistributionExposed ;
 	private MyArray
 	_chordsVsY = new MyArray(SI.METER),
+	_chordsVsYExposed =  new MyArray(SI.METER),
 	_alpha0lVsY, 
 	_clAlphaVsY,
 	_ccLAdd,
@@ -214,14 +216,34 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	private String subfolderPathCLAlpha;
 	public double cLAlphaZero;
 	public double alphaZeroLiftWingClean;
-	
-	
-	double rootChord, kinkChord, tipChord, dimensionalKinkStation, dimensionalOverKink;
-	private double intermediateClMax, intermediateEta,intermediateTwist, intermediateChord, intermediateDistanceAC, intermediateXac ,
-	intermediateAlphaZL, intermediateAlphaStar,intermediateClStar,
-	intermediateClMaxSweep, intermediateClatMinCD, intermediateCdMin, intermediateCm,
-	intermediateCmAlphaLE , intermediateAerodynamicCentre, intermediateMaxThickness , 
-	intermediateReynolds, intermediatekFactorPolar, intermediateClAlpha, intermediateAlphaStall;
+
+
+	static double rootChord;
+	static double kinkChord;
+	static double tipChord;
+	static double dimensionalKinkStation;
+	static double dimensionalOverKink;
+	private static double intermediateClMax;
+	private static double intermediateEta;
+	private static double intermediateTwist;
+	private double intermediateChord;
+	private double intermediateDistanceAC;
+	private double intermediateXac;
+	private static double intermediateAlphaZL;
+	private static double intermediateAlphaStar;
+	private static double intermediateClStar;
+	private static double intermediateClMaxSweep;
+	private static double intermediateClatMinCD;
+	private static double intermediateCdMin;
+	private static double intermediateCm;
+	private static double intermediateCmAlphaLE;
+	private static double intermediateAerodynamicCentre;
+	private static double intermediateMaxThickness;
+	private static double intermediateReynolds;
+	private static double intermediatekFactorPolar;
+	private static double intermediateClAlpha;
+	private static double intermediateAlphaStall;
+	private double[] _yStationsIntegral;
 	public LSAerodynamicsManager(OperatingConditions conditions, LiftingSurface liftingSurf, Aircraft ac) {
 
 		theOperatingConditions = conditions;
@@ -232,7 +254,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				.get_theAerodynamics()
 				.get_aerodynamicDatabaseReader()
 				);
-		
+
 		getTheLiftingSurface().setAerodynamics(this);
 		initializeDataFromAircraft(ac);
 		initializeDataFromLiftingSurface(liftingSurf);
@@ -241,7 +263,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		initializeInnerCalculators();
 	}
 
-   
+
 	public LSAerodynamicsManager(OperatingConditions conditions, LiftingSurface liftingSurf, Aircraft ac, AerodynamicDatabaseReader adbr) {
 
 		theOperatingConditions = conditions;
@@ -298,7 +320,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		this.taperRatioEq = taperRatioEq;
 		this.sweepHalfChordEq = sweepHalfChordEq; 
 		this.sweepQuarterChordEq = sweepQuarterChordEq;
-	//	this.maxThicknessMean = maxThicknessMean;
+		//	this.maxThicknessMean = maxThicknessMean;
 		this.yStationsActual = yStationsActual;
 		this.chordsVsYActual = chordsVsYActual;
 		this.xLEvsYActual = xLEvsYActual;
@@ -330,9 +352,9 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				ls.get_dihedral().toArray(),
 				ls.get_alpha0VsY().toArray(),
 				ls.get_etaAirfoil().toArray());
-		
+
 	} 
-	
+
 
 	public void initializeOperatingConditions(double altitude, double mach, double alpha) {
 		this.machCurrent = mach;
@@ -360,8 +382,29 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		//				_nPointsSemispanWise).data;
 
 		_yStations = MyArrayUtils.linspace(0., semispan, _nPointsSemispanWise);
+		if (theAircraft.get_exposedWing() != null ){
+			double yLocRootExposed = theAircraft.get_exposedWing().get_theAirfoilsList().get(0).getGeometry().get_yStation();
+			_yStationsIntegral = MyArrayUtils.linspace(yLocRootExposed, semispan, _nPointsSemispanWise);
 
+			_yStationsND = MyArrayUtils.linspace(0., 1., _nPointsSemispanWise);
+			//					
+			//					for (int i=0; i<_nPointsSemispanWise; i++){
+			//						_chordsVsYExposed.add(getTheLiftingSurface().getChordAtYActual(_yStationsIntegral[i]));
+			//		
+			//					_alpha0lDistributionExposed = MyArray.createArray(
+			//							theAircraft.get_exposedWing().get_alpha0VsYExposed().interpolate(
+			//										theAircraft.get_exposedWing().get_etaAirfoilExposed().toArray(),
+			//										_yStationsND));
+			//					
+			//					_twistDistribution = MyArray.createArray(
+			//							theAircraft.get_exposedWing().get_twistVsYExposed().interpolate(
+			//									theAircraft.get_exposedWing().get_etaAirfoilExposed().toArray(),
+			//									_yStationsND));
+			//						
+			//					}
+			_chordsVsYExposed.toArray();
 
+		}
 		/** Non dimensional stations (eta) */
 		_yStationsND = MyArrayUtils.linspace(0., 1., _nPointsSemispanWise);
 
@@ -399,7 +442,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		//		alphaArray.setDouble(new double[]{toRadians(3.), toRadians(5.), toRadians(7.), toRadians(9.)});
 	}
 
-	
+
 
 
 	@Override
@@ -706,7 +749,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 		//		System.out.println("------" + checkBasicLoad());
 	}
-	
+
 
 	public class CalcBasicLoad extends InnerCalculator {
 
@@ -781,7 +824,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			this.chordsVsYActual = chordsVsYActual;
 			this.xLEvsYActual = xLEvsYActual;
 
-			
+
 			nasaBlackwell = new NasaBlackwell(semispan, surface, 
 					yStationsActual, chordsVsYActual, xLEvsYActual, dihedral, twist, alpha0l, 
 					vortexSemiSpanToSemiSpanRatio, alpha, mach, altitude);
@@ -850,8 +893,8 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			return _ccLVsY.toArray();
 		}
 
-		
-		
+
+
 		/**
 		 * This function calculates the lift distribution using the cl of 50 airfoil among the semispan.
 		 * This function creates a new airfoil with its own characteristics for each of 50 station and 
@@ -861,27 +904,27 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		 * @param Amount<Angle> alpha
 		 * @param LiftingSurface theWing
 		 */  
-		
-		
+
+
 		public void airfoilLiftDistribution (Amount<Angle> alpha, LiftingSurface theWing){
 			double [] clLocalAirfoil = new double [_nPointsSemispanWise];
 			MyAirfoil intermediateAirfoil;
 			double alphaDouble = alpha.getEstimatedValue();
-			
+
 			MyAirfoil airfoilRoot = theWing.get_theAirfoilsList().get(0);
 			MyAirfoil airfoilKink = theWing.get_theAirfoilsList().get(1);
 			MyAirfoil airfoilTip = theWing.get_theAirfoilsList().get(2);
-			
+
 			for (int i=0 ; i< _nPointsSemispanWise ; i++){
 				intermediateAirfoil = calculateIntermediateAirfoil(
-								theWing, _yStations[i]);
+						theWing, _yStations[i]);
 				clLocalAirfoil[i] = intermediateAirfoil.getAerodynamics().calculateClAtAlpha(alphaDouble);
 				clLocalAirfoil[_nPointsSemispanWise-1] = 0;
-			
+
 			}	
 			System.out.println(" cl distribution " + Arrays.toString(clLocalAirfoil));
 		}
-		
+
 
 		@Override
 		public void allMethods() {
@@ -930,7 +973,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 			return machCr;
 		}
-		
+
 		/**
 		 * This method allows users to calculate the crest critical Mach number using the 
 		 * Kroo graph which adapts the Shevell graph for swept wing. From this graph the following
@@ -948,22 +991,22 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		 * @return m_cr the crest critical Mach number from Kroo equation (2001)
 		 */
 		public double kroo(double cL) {
-			
+
 			// sweepHalfChord --> radians are required
-			
+
 			double y = cL/(Math.pow(cos(sweepHalfChordEq),2));
 			double x = maxThicknessMean/(Math.cos(sweepHalfChordEq));
-			
+
 			double m_cr = ((2.8355*Math.pow(x, 2)) - (1.9072*x) + 0.9499 - (0.2*y) + (0.4262*x*y)) /
-					      (Math.cos(sweepHalfChordEq) );
-			
+					(Math.cos(sweepHalfChordEq) );
+
 			// this method work for peaky airfoils; for modern supercritical some corrections
 			// have to be made.
 			if (_airfoilType.equals(AirfoilTypeEnum.SUPERCRITICAL))
 				m_cr += 0.035;
 			else if (_airfoilType.equals(AirfoilTypeEnum.MODERN_SUPERCRITICAL))
 				m_cr += 0.06;
-			
+
 			return m_cr;
 		}
 
@@ -1132,7 +1175,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 			return cL;
 		}
-		
+
 		/**
 		 * This method calculates CL at alpha given as input. This method calculates both linear trait and 
 		 * non linear trait. It use the NasaBlackwell method in order to evaluate the slope of the linear trait
@@ -1141,18 +1184,18 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		 * @author Manuela Ruocco
 		 *
 		 */		
-		
+
 		public double nasaBlackwellCompleteCurve(Amount<Angle> alpha){
-			
+
 			if (alpha.getUnit() == NonSI.DEGREE_ANGLE) 
 				alpha = alpha.to(SI.RADIAN);
-			
+
 			double cLStar, cLTemp, qValue, a ,b ,c ,d;
 			Amount<Angle> alphaTemp = Amount.valueOf(0.0, SI.RADIAN);
 			MyAirfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
 			double alphaStar = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
 			Amount<Angle> alphaStarAmount = Amount.valueOf(alphaStar, SI.RADIAN);
-			
+
 			cLStar = nasaBlackwell(alphaStarAmount);
 			cLTemp = nasaBlackwell(alphaTemp);
 			if (alpha.getEstimatedValue() < alphaStar){    //linear trait
@@ -1164,10 +1207,10 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				double cLActual = cLLinearSlope * alpha.getEstimatedValue() + qValue;
 				//System.out.println(" CL Actual = " + cLActual );
 				return cLActual;
-				}
-			
+			}
+
 			else {  // non linear trait
-			
+
 				calcAlphaAndCLMax(meanAirfoil);
 				double cLMax = get_cLMaxClean();
 				Amount<Angle> alphaMax = get_alphaMaxClean();	
@@ -1189,15 +1232,15 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				c = solSystem[2];
 				d = solSystem[3];
 
-			    double clActual = a * Math.pow(alpha.getEstimatedValue(), 3) + 
-			    		    b * Math.pow(alpha.getEstimatedValue(), 2) + 
-			    		    c * alpha.getEstimatedValue() + d;
-			    
-			    return clActual;
-			
+				double clActual = a * Math.pow(alpha.getEstimatedValue(), 3) + 
+						b * Math.pow(alpha.getEstimatedValue(), 2) + 
+						c * alpha.getEstimatedValue() + d;
+
+				return clActual;
+
 			}							
 		}
-		
+
 
 		public void allMethods(Amount<Angle> alpha) {
 			linearAndersonCompressibleSubsonic(alpha);
@@ -1216,25 +1259,25 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		 * 
 		 * @author Manuela Ruocco
 		 * @param Amount<Angle> alphaBody. It is the angle of attack between the direction of asimptotic 
-         * velocity and the reference line of fuselage.
+		 * velocity and the reference line of fuselage.
 		 */		
-		
+
 		public double nasaBlackwellalphaBody(Amount<Angle> alphaBody){
 			if (alphaBody.getUnit() == NonSI.DEGREE_ANGLE) 
 				alphaBody = alphaBody.to(SI.RADIAN);
-			
+
 			Amount<Angle> angleOfIncidence = theLiftingSurface.get_iw();
 			Amount<Angle> alphaWing = Amount.valueOf(
 					alphaBody.getEstimatedValue() +
 					angleOfIncidence.getEstimatedValue(), SI.RADIAN);
-			
+
 			double cLWing = nasaBlackwellCompleteCurve(alphaWing);
 			return cLWing;
 		}
 
 
 	}
-	
+
 	/** 
 	 * This function plot CL vs Alpha curve of an isolated wing using 30 value of alpha between alpha=- 10.0 deg and
 	 * alphaMax+2. 
@@ -1243,7 +1286,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	 */
 	public void PlotCLvsAlphaCurve(){
 		CalcCLAtAlpha theCLCalculator = new CalcCLAtAlpha();
-		
+
 		double alphaFirst = -10.0;
 		Amount<Angle> alphaActual;
 		Amount<Angle> alphaTemp = Amount.valueOf(0.0, SI.RADIAN);
@@ -1255,7 +1298,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		double cLTemp = theCLCalculator.nasaBlackwell(alphaTemp);
 		double cLLinearSlope = (cLStar - cLTemp)/alphaStar;
 		double qValue = cLStar - cLLinearSlope*alphaStar;
-		
+
 		calcAlphaAndCLMax(meanAirfoil);
 		double cLMax = get_cLMaxClean();
 		Amount<Angle> alphaMax = get_alphaMaxClean().to(NonSI.DEGREE_ANGLE);
@@ -1263,7 +1306,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		double alphaMaxDouble = alphaMax.to(SI.RADIAN).getEstimatedValue();
 		alphaArrayPlot = MyArrayUtils.linspace(alphaFirst,alphaMaxDoubleDegree + 2, nPoints);
 		cLArrayPlot = new double [nPoints];
-		
+
 		double[][] matrixData = { {Math.pow(alphaMaxDouble, 3), Math.pow(alphaMaxDouble, 2), alphaMaxDouble,1.0},
 				{3* Math.pow(alphaMaxDouble, 2), 2*alphaMaxDouble, 1.0, 0.0},
 				{3* Math.pow(alphaStar, 2), 2*alphaStar, 1.0, 0.0},
@@ -1277,11 +1320,11 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		double b = solSystem[1];
 		double c = solSystem[2];
 		double d = solSystem[3];
-		
-		
+
+
 		String folderPath = MyConfiguration.currentDirectoryString + File.separator + "out" + File.separator;
 		if(subfolderPathCeck)
-		subfolderPathCLAlpha = JPADStaticWriteUtils.createNewFolder(folderPath + "CL alpha Wing Clean" + File.separator);
+			subfolderPathCLAlpha = JPADStaticWriteUtils.createNewFolder(folderPath + "CL alpha Wing Clean" + File.separator);
 
 
 
@@ -1294,9 +1337,9 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 						b * Math.pow(alphaActual.getEstimatedValue(), 2) + 
 						c * alphaActual.getEstimatedValue() + d;
 			}
-				
+
 		}
-		
+
 		System.out.println(" -----------CLEAN-------------- ");
 		System.out.println(" alpha max " + alphaMaxDouble*57.3);
 		System.out.println(" alpha star " + alphaStar*57.3);
@@ -1304,7 +1347,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		System.out.println(" cL star " + cLStar);
 		System.out.println(" cL alpha " + cLLinearSlope);
 
-		
+
 
 
 		MyChartToFileUtils.plotNoLegend(
@@ -1318,18 +1361,18 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		this.subfolderPathCLAlpha = subfolderPath;
 		subfolderPathCeck =false;
 		PlotCLvsAlphaCurve();
-		
+
 	};
 
-	
+
 	/** 
 	 * This function plot CD vs Alpha curve  and CD vs CL curve of a wing, using 30 value of alpha between 
 	 * alpha=- 2 deg and alpha = 18 deg
 	 * 
 	 * @author Manuela Ruocco
 	 */
-public void PlotCDvsAlphaCurve(){
-		
+	public void PlotCDvsAlphaCurve(){
+
 		double alphaFirstCD = -2.0;
 		double alphaLastCD = 18.0;
 		int nPointsCD = 50;
@@ -1341,33 +1384,33 @@ public void PlotCDvsAlphaCurve(){
 		CalcCLAtAlpha theCLCalculator = new CalcCLAtAlpha();
 		String folderPath = MyConfiguration.currentDirectoryString + File.separator + "out" + File.separator;
 		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "CD wing" + File.separator);
-		
+
 		for (int i=0; i<nPointsCD; i++){
 			alphaActual= Amount.valueOf(toRadians(alphaArrayPlotCD[i]), SI.RADIAN);
-		
-		cDPlotArray[i] = 
-				theCDCalculator
-				.integralFromCdAirfoil(
-						alphaActual,
-						MethodEnum.NASA_BLACKWELL,
-						this
-						);
-		cLPlotArray[i] = theCLCalculator.nasaBlackwell(alphaActual);
-		
+
+			cDPlotArray[i] = 
+					theCDCalculator
+					.integralFromCdAirfoil(
+							alphaActual,
+							MethodEnum.NASA_BLACKWELL,
+							this
+							);
+			cLPlotArray[i] = theCLCalculator.nasaBlackwell(alphaActual);
+
 		}
-		
+
 		MyChartToFileUtils.plotNoLegend(
 				alphaArrayPlotCD,cDPlotArray, 
 				null, null , null , null ,					    // axis with limits
 				"alpha", "CDw", "deg", "",	   				
 				subfolderPath, "CD vs Alpha");
-		
+
 		MyChartToFileUtils.plotNoLegend(
 				alphaArrayPlotCD,cLPlotArray, 
 				null, null , null , null ,					    // axis with limits
 				"alpha", "CDw", "deg", "",	   				
 				subfolderPath, "CD vs CL");
-		
+
 	}
 	/** 
 	 * Evaluate CL vs alpha
@@ -1399,8 +1442,8 @@ public void PlotCDvsAlphaCurve(){
 			_cLMap.put(MethodEnum.DLR_NITA_SCHOLZ, new MyArray(cL));
 			_curveMap.put(MethodEnum.DLR_NITA_SCHOLZ, _cLvsAlphaCurve);
 		}
-		
-		
+
+
 
 		public double[] nasaBlackwell() {
 
@@ -1415,14 +1458,14 @@ public void PlotCDvsAlphaCurve(){
 
 			_cLMap.put(MethodEnum.NASA_BLACKWELL, new MyArray(cL));
 			_curveMap.put(MethodEnum.NASA_BLACKWELL, _cLvsAlphaCurve);
-			
+
 			//			ADOPT_GUI.getLOG().info("\nAlpha " + Arrays.toString(alpha.toArray()) 
 			//					+ "\nCLvsAlpha curve: " + Arrays.toString(cL) + "\n");
 
 			return cL;
 		}
 
-	
+
 		/** 
 		 * Evaluate linear CL vs alpha curve of the lifting surface
 		 * 
@@ -1512,10 +1555,10 @@ public void PlotCDvsAlphaCurve(){
 		 * 
 		 * @author Lorenzo Attanasio ft Manuela Ruocco
 		 */
-		
-								
-								
-					
+
+
+
+
 		public void nasaBlackwell() {
 
 			// System.out.println("\n\n\t\t\tCalcCLMaxClean : nasaBlackwell\n\n");
@@ -1529,8 +1572,8 @@ public void PlotCDvsAlphaCurve(){
 			boolean _findStall = false;
 			Amount<javax.measure.quantity.Angle> alphaNewAmount;
 
-			
-			
+
+
 
 
 			// TODO: try to use nasa Blackwell also for vtail
@@ -1548,8 +1591,8 @@ public void PlotCDvsAlphaCurve(){
 										> clAirfoils.get(i) ) {
 
 									//System.out.println( "distribution " +  cLMap.getCxyVsAlphaTable()
-//									.get( MethodEnum.NASA_BLACKWELL,
-//											alphaArray.getAsAmount(j))  );
+									//									.get( MethodEnum.NASA_BLACKWELL,
+									//											alphaArray.getAsAmount(j))  );
 
 									//@author Manuela ruocco
 									// After find the first point where CL_wing > Cl_MAX_airfoil, starts an iteration on alpha
@@ -1675,7 +1718,7 @@ public void PlotCDvsAlphaCurve(){
 										diffCL = 0;
 
 										for (int m =0; m< _nPointsSemispanWise; m++) {
-	
+
 											diffCLapp = ( cLMap.getCxyVsAlphaTable()
 													.get( MethodEnum.NASA_BLACKWELL,
 															alphaNewAmount).get(m) -  clAirfoils.get(m));
@@ -1732,7 +1775,7 @@ public void PlotCDvsAlphaCurve(){
 				}
 			}
 		}
-		
+
 		public Amount<Angle> getAlphaAtCLMax() {
 			return alphaAtCLMax;
 		}
@@ -1774,30 +1817,30 @@ public void PlotCDvsAlphaCurve(){
 	 * @param Amount<Angle> alphaAtCLMax
 	 */  
 
-	
-	
+
+
 	public void calcAlphaAndCLMax(MyAirfoil meanAirfoil){
 		Amount<Angle> deltaAlphaMax;
 		double meanLESharpnessParameter = meanAirfoil.getGeometry().get_deltaYPercent();
-		
+
 		CalcCLvsAlphaCurve theCLAnalysis = new CalcCLvsAlphaCurve();
 		CalcCLAtAlpha theCLatAlpha = new CalcCLAtAlpha();
 		CalcCLMaxClean theCLmaxAnalysis = new CalcCLMaxClean();
-		
+
 		theCLAnalysis.nasaBlackwell();
 		theCLmaxAnalysis.nasaBlackwell();
-		
+
 		Amount<Angle> alphaMaxNasaBlackwell = this.get_alphaStall();
 		this.set_cLMaxClean(theCLatAlpha.nasaBlackwell(alphaMaxNasaBlackwell));
 		//System.out.println("CL Max " + get_cLMaxClean());
 		deltaAlphaMax = Amount.valueOf(
 				toRadians (this.get_AerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(
 						getTheLiftingSurface().get_sweepLEEquivalent().getEstimatedValue() ,
-						 meanLESharpnessParameter )), SI.RADIAN);
-//		System.out.println("Delta  alpha max " + deltaAlphaMax.to(NonSI.DEGREE_ANGLE));
+						meanLESharpnessParameter )), SI.RADIAN);
+		//		System.out.println("Delta  alpha max " + deltaAlphaMax.to(NonSI.DEGREE_ANGLE));
 		Amount<Angle> alphaMax =  Amount.valueOf((alphaMaxNasaBlackwell.getEstimatedValue() + deltaAlphaMax.getEstimatedValue()), SI.RADIAN);
-//		System.out.println( "Alpha max " + alphaMax.to(NonSI.DEGREE_ANGLE) );
-		
+		//		System.out.println( "Alpha max " + alphaMax.to(NonSI.DEGREE_ANGLE) );
+
 		this.set_alphaMaxClean(alphaMax);
 	}
 
@@ -1868,7 +1911,7 @@ public void PlotCDvsAlphaCurve(){
 				List<Double> leRadius_slat,
 				List<Double> cExt_c_slat
 				) {
-	
+
 			this.theWing = theWing;
 			this.theConditions = theConditions;
 			this.meanAirfoil = theWing
@@ -1914,7 +1957,7 @@ public void PlotCDvsAlphaCurve(){
 					deltaFlap_ref.add(50.0);
 				}
 			}
-			
+
 			calcAlphaAndCLMax(meanAirfoil);
 		}
 
@@ -2249,7 +2292,7 @@ public void PlotCDvsAlphaCurve(){
 							.get_delta_1_vs_cf_c_slotted(cf_c.get(i), theWing.get_maxThicknessMean())
 							);
 			}
-			
+
 			List<Double> delta2 = new ArrayList<Double>();
 			for(int i=0; i<flapType_index.size(); i++) {
 				if(flapType_index.get(i) == 3.0)
@@ -2267,7 +2310,7 @@ public void PlotCDvsAlphaCurve(){
 							.get_delta_2_vs_delta_flap_slotted(deltaFlap_total[i], theWing.get_maxThicknessMean())
 							);
 			}
-			
+
 			List<Double> delta3 = new ArrayList<Double>();
 			for(int i=0; i<flapType_index.size(); i++) {
 				delta3.add(
@@ -2277,7 +2320,7 @@ public void PlotCDvsAlphaCurve(){
 						.get_delta_3_vs_bf_b(eta_in_flap.get(i), eta_out_flap.get(i), theWing.get_taperRatioEquivalent())
 						);
 			}
-			
+
 			deltaCD_list = new ArrayList<Double>();
 			for(int i=0; i<flapType_index.size(); i++) {
 				deltaCD_list.add(delta1.get(i)*delta2.get(i)*delta3.get(i));
@@ -2354,10 +2397,10 @@ public void PlotCDvsAlphaCurve(){
 			for(int i=0; i<flapType_index.size(); i++)
 				deltaCM_c4 += deltaCM_c4_list.get(i).doubleValue();	
 		}
-		
-		
+
+
 		//---------------------------------------------------------------
-		
+
 		/**
 		 * This method calculates CL at alpha given as input for a wing with high lift devices.
 		 * This method calculates both linear trait and non linear trait. 
@@ -2370,7 +2413,7 @@ public void PlotCDvsAlphaCurve(){
 		 *
 		 */		
 		public double calcCLatAlphaHighLiftDevice(Amount<Angle> alpha){
-			
+
 			if (alpha.getUnit() == NonSI.DEGREE_ANGLE) 
 				alpha = alpha.to(SI.RADIAN);
 
@@ -2379,12 +2422,12 @@ public void PlotCDvsAlphaCurve(){
 			MyAirfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
 			//double alphaStar = 0.15;
 			double alphaStarClean = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
-			
+
 			Amount<Angle> alphaStarCleanAmount = Amount.valueOf(alphaStarClean, SI.RADIAN);
 
 			CalcCLAtAlpha theCLCleanCalculator = new CalcCLAtAlpha();
 			double cLStarClean = theCLCleanCalculator.nasaBlackwellCompleteCurve(alphaStarCleanAmount);
-			
+
 			double cL0Clean =  theCLCleanCalculator.nasaBlackwellCompleteCurve(Amount.valueOf(0.0, SI.RADIAN));
 			double cL0HighLift = cL0Clean + deltaCL0_flap;
 			double qValue = cL0HighLift;
@@ -2396,8 +2439,8 @@ public void PlotCDvsAlphaCurve(){
 			cL_Max_Flap = cLMaxClean + deltaCLmax_flap + deltaCLmax_slat;
 			double alphaMaxHighLift = alphaMax.getEstimatedValue() + deltaAlphaMax;
 			alphaMaxHighLift = Amount.valueOf(toRadians(alphaMaxHighLift), SI.RADIAN).getEstimatedValue();
-			
-			
+
+
 			if (alpha.getEstimatedValue() < alphaStarFlap ){ 
 				double cLActual = cLAlphaFlap * alpha.getEstimatedValue() + qValue;	
 				return cLActual;
@@ -2409,8 +2452,8 @@ public void PlotCDvsAlphaCurve(){
 						{3* Math.pow(alphaStarFlap, 2), 2*alphaStarFlap, 1.0, 0.0},
 						{Math.pow(alphaStarFlap, 3), Math.pow(alphaStarFlap, 2),alphaStarFlap,1.0}};
 				RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
-				
-				
+
+
 				double [] vector = {cL_Max_Flap, 0,cLAlphaFlap, cLStarFlap};
 
 				double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
@@ -2446,7 +2489,7 @@ public void PlotCDvsAlphaCurve(){
 			String subfolderPathHL = JPADStaticWriteUtils.createNewFolder(folderPathHL + "CL_vs_Alpha_Highlift" + File.separator);
 
 			double cLAlphaFlap = cLalpha_new*57.3; // need it in 1/rad
-		
+
 			Amount<Angle> alphaActual;
 			Amount<Angle> deltaAlphaAmount = Amount.valueOf(toRadians(deltaAlphaMax), SI.RADIAN);	
 
@@ -2461,12 +2504,12 @@ public void PlotCDvsAlphaCurve(){
 			MyAirfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
 			//double alphaStar = 0.15;
 			double alphaStarClean = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
-			
+
 			Amount<Angle> alphaStarCleanAmount = Amount.valueOf(alphaStarClean, SI.RADIAN);
 
 			CalcCLAtAlpha theCLCleanCalculator = new CalcCLAtAlpha();
 			double cLStarClean = theCLCleanCalculator.nasaBlackwellCompleteCurve(alphaStarCleanAmount);
-			
+
 			double cL0Clean =  theCLCleanCalculator.nasaBlackwellCompleteCurve(Amount.valueOf(0.0, SI.RADIAN));
 			double cL0HighLift = cL0Clean + deltaCL0_flap;
 			double qValue = cL0HighLift;
@@ -2486,15 +2529,15 @@ public void PlotCDvsAlphaCurve(){
 					Amount.valueOf(alphaMaxHighLift, SI.RADIAN)
 					.to(NonSI.DEGREE_ANGLE)
 					.getEstimatedValue();
-			
+
 			double[][] matrixData = { {Math.pow(alphaMaxHighLift, 3), Math.pow(alphaMaxHighLift, 2)
 				, alphaMaxHighLift,1.0},
 					{3* Math.pow(alphaMaxHighLift, 2), 2*alphaMaxHighLift, 1.0, 0.0},
 					{3* Math.pow(alphaStarFlap, 2), 2*alphaStarFlap, 1.0, 0.0},
 					{Math.pow(alphaStarFlap, 3), Math.pow(alphaStarFlap, 2),alphaStarFlap,1.0}};
 			RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
-			
-			
+
+
 			double [] vector = {cLMaxHighLift, 0,cLAlphaFlap, cLStarFlap};
 			System.out.println(" -----------HIGH LIFT-------------- ");
 			System.out.println(" alpha max " + alphaMaxHighLift);
@@ -2553,7 +2596,7 @@ public void PlotCDvsAlphaCurve(){
 
 			List<String> legend  = new ArrayList<>(); 
 
-			
+
 			legend.add("clean");
 			legend.add("high lift");
 
@@ -2574,9 +2617,9 @@ public void PlotCDvsAlphaCurve(){
 					subfolderPathHL,
 					"CL alpha Wing High Lift");
 
-//			System.out.println(" alpha vector new" + Arrays.toString(alphaArrayHighLiftPlot));
-//			System.out.println(" cl vector " + Arrays.toString(cLArrayHighLiftPlot));
-//			System.out.println(" cl max " + cLMaxHighLift);
+			//			System.out.println(" alpha vector new" + Arrays.toString(alphaArrayHighLiftPlot));
+			//			System.out.println(" cl vector " + Arrays.toString(cLArrayHighLiftPlot));
+			//			System.out.println(" cl max " + cLMaxHighLift);
 
 
 
@@ -2663,7 +2706,7 @@ public void PlotCDvsAlphaCurve(){
 		public double getDeltaCD() {
 			return deltaCD;
 		}
-		
+
 		public ArrayList<Double> getDeltaCM_c4_list() {
 			return deltaCM_c4_list;
 		}
@@ -2777,23 +2820,277 @@ public void PlotCDvsAlphaCurve(){
 	 */
 	public class CalcAlpha0L extends InnerCalculator {
 
+		private double surfaceInteg;
+		private double semispanInteg;
+		private MyArray _alpha0lDistributionInteg;
+		private MyArray _twistDistributionInteg;
+		private MyArray _chordsVsYIntegral;
+
 		public Amount<Angle> integralMeanNoTwist() {
+
+			//			if ( theAircraft.get_exposedWing() != null ){
+			//				System.out.println(" y s tation integral " + Arrays.toString(_yStationsIntegral));
+			//				surfaceInteg = theAircraft.get_exposedWing().get_surface().getEstimatedValue();
+			//				System.out.println(" surface " + theAircraft.get_exposedWing().get_surface().getEstimatedValue());
+			//				semispanInteg = theAircraft.get_exposedWing().get_semispan().getEstimatedValue();
+			//				System.out.println(" smispan " + theAircraft.get_exposedWing().get_semispan().getEstimatedValue());
+			//				MyArray alphaZeroLiftExposed = new MyArray();
+			//				MyArray chordDistributionExposed = new MyArray();
+			//				alphaZeroLiftExposed.add(
+			//						theAircraft
+			//						.get_exposedWing()
+			//						.get_theAirfoilsListExposed()
+			//						.get(0).getAerodynamics()
+			//						.get_alphaZeroLift()
+			//						.getEstimatedValue());
+			//				
+			//				System.out.println(" alpha zero lift root " + theAircraft
+			//						.get_exposedWing()
+			//						.get_theAirfoilsListExposed()
+			//						.get(0).getAerodynamics()
+			//						.get_alphaZeroLift().to(NonSI.DEGREE_ANGLE)
+			//						.getEstimatedValue());
+			//				
+			//				chordDistributionExposed.add(theAircraft.get_wing().getChordAtYActual(
+			//						theAircraft
+			//						.get_exposedWing()
+			//						.get_theAirfoilsListExposed()
+			//						.get(0).getGeometry().get_yStation()));
+			//				
+			//				System.out.println(" corda " + theAircraft
+			//						.get_exposedWing()
+			//						.get_theAirfoilsListExposed()
+			//						.get(0).getGeometry().get_yStation());
+			////						theAircraft.get_fuselage().getWidthAtX(
+			////								theAircraft.get_wing().get_xLEMacActualBRF().getEstimatedValue())));
+			//				
+			//				chordDistributionExposed.add(theAircraft.get_wing().getChordAtYActual(
+			//						theAircraft.get_wing().get_semispan().getEstimatedValue()));
+			//				
+			//				if ( theAircraft.get_exposedWing().get_numberOfAirfoils()<3){
+			//					alphaZeroLiftExposed.add(
+			//							theAircraft
+			//							.get_exposedWing()
+			//							.get_theAirfoilsListExposed()
+			//							.get(1).getAerodynamics()
+			//							.get_alphaZeroLift()
+			//							.getEstimatedValue());
+			//				}
+			//				else{
+			//				alphaZeroLiftExposed.add(
+			//						theAircraft
+			//						.get_exposedWing()
+			//						.get_theAirfoilsListExposed()
+			//						.get(1).getAerodynamics()
+			//						.get_alphaZeroLift()
+			//						.getEstimatedValue());
+			//				
+			//				System.out.println("alpha zero lift kink " + theAircraft
+			//						.get_exposedWing()
+			//						.get_theAirfoilsListExposed()
+			//						.get(1).getAerodynamics()
+			//						.get_alphaZeroLift().to(NonSI.DEGREE_ANGLE)
+			//						.getEstimatedValue());
+			//				
+			//				alphaZeroLiftExposed.add(
+			//						theAircraft
+			//						.get_exposedWing()
+			//						.get_theAirfoilsListExposed()
+			//						.get(2).getAerodynamics()
+			//						.get_alphaZeroLift()
+			//						.getEstimatedValue());
+			//				
+			//				System.out.println(" alpha zero lift tip " + theAircraft
+			//						.get_exposedWing()
+			//						.get_theAirfoilsListExposed()
+			//						.get(2).getAerodynamics()
+			//						.get_alphaZeroLift().to(NonSI.DEGREE_ANGLE)
+			//						.getEstimatedValue());
+			//				}
+			//				
+			//				double [] yStationAlpha0lExposed = new double [theAircraft.get_exposedWing().get_numberOfAirfoils()];
+			//				double [] yStationChordExposed = new double [2];
+			//				
+			//				for ( int i = 0 ; i < yStationAlpha0lExposed.length ; i ++)
+			//					yStationAlpha0lExposed[i] = theAircraft
+			//					.get_exposedWing()
+			//					.get_theAirfoilsListExposed()
+			//					.get(i).getGeometry().get_yStation();
+			//				
+			//				yStationChordExposed [0] = theAircraft
+			//						.get_exposedWing()
+			//						.get_theAirfoilsListExposed()
+			//						.get(0).getGeometry().get_yStation();
+			//				
+			//				yStationChordExposed [1] = theAircraft
+			//						.get_exposedWing()
+			//						.get_theAirfoilsListExposed()
+			//						.get(2).getGeometry().get_yStation();
+			//				
+			//				
+			//				
+			//				
+			//				_alpha0lDistribution = MyArray.createArray(
+			//						alphaZeroLiftExposed
+			//						.interpolate(yStationAlpha0lExposed, _yStationsIntegral));
+			//				
+			//				_chordsVsY = MyArray.createArray(
+			//						chordDistributionExposed
+			//						.interpolate(yStationChordExposed, _yStationsIntegral));
+			//				
+			//			}
+			//			else{
+			//				surfaceInteg = surface;
+			//				semispanInteg = semispan;
+			//			}
 			_alpha0L = Amount.valueOf(
 					AnglesCalc.alpha0LintegralMeanNoTwist(surface, semispan, 
-							_yStations, _chordsVsY.toArray(), _alpha0lDistribution.toArray()),
+							_yStationsIntegral, _chordsVsY.toArray(), _alpha0lDistribution.toArray()),
 					SI.RADIAN);
+			System.out.println(" alpha dist " + _alpha0lDistribution.toString());
+			System.out.println(" chord dist " + _chordsVsY.toString());
 			_methodsMap.put(MethodEnum.INTEGRAL_MEAN_NO_TWIST, _alpha0L.doubleValue(SI.RADIAN));
 
 			return _alpha0L;
 		}
 
 		public Amount<Angle>  integralMeanWithTwist() {
+
+			if ( theAircraft.get_exposedWing() != null ){
+				surfaceInteg = theAircraft.get_exposedWing().get_surface().getEstimatedValue();
+				semispanInteg = theAircraft.get_exposedWing().get_semispan().getEstimatedValue();
+			}
+			else{
+				surfaceInteg = surface;
+				semispanInteg = semispan;
+			}
 			_alpha0L = Amount.valueOf(
-					AnglesCalc.alpha0LintegralMeanWithTwist(surface, semispan, 
-							_yStations, _chordsVsY.toArray(), 
+					AnglesCalc.alpha0LintegralMeanWithTwist(surfaceInteg, semispanInteg, 
+							_yStationsIntegral, _chordsVsY.toArray(), 
 							_alpha0lDistribution.toArray(), _twistDistribution.toArray()),
 					SI.RADIAN);
 			_methodsMap.put(MethodEnum.INTEGRAL_MEAN_TWIST, _alpha0L.doubleValue(SI.RADIAN));	
+
+			return _alpha0L;
+		}
+
+		public Amount<Angle> integralMeanExposedNoTwist() {
+
+
+			if ( theAircraft.get_exposedWing() != null ){
+				//System.out.println(" y s tation integral " + Arrays.toString(_yStationsIntegral));
+				surfaceInteg = theAircraft.get_exposedWing().get_surface().getEstimatedValue();
+				System.out.println(" surface " + theAircraft.get_exposedWing().get_surface().getEstimatedValue());
+				semispanInteg = theAircraft.get_exposedWing().get_semispan().getEstimatedValue();
+				System.out.println(" smispan " + theAircraft.get_exposedWing().get_semispan().getEstimatedValue());
+				MyArray alphaZeroLiftExposed = new MyArray();
+				MyArray chordDistributionExposed = new MyArray();
+				alphaZeroLiftExposed.add(
+						theAircraft
+						.get_exposedWing()
+						.get_theAirfoilsListExposed()
+						.get(0).getAerodynamics()
+						.get_alphaZeroLift()
+						.getEstimatedValue());
+
+				System.out.println(" alpha zero lift root " + theAircraft
+						.get_exposedWing()
+				.get_theAirfoilsListExposed()
+				.get(0).getAerodynamics()
+				.get_alphaZeroLift().to(NonSI.DEGREE_ANGLE)
+				.getEstimatedValue());
+
+				chordDistributionExposed.add(theAircraft.get_wing().getChordAtYActual(
+						theAircraft
+						.get_exposedWing()
+						.get_theAirfoilsListExposed()
+						.get(0).getGeometry().get_yStation()));
+
+				chordDistributionExposed.add(theAircraft.get_wing().getChordAtYActual(
+						theAircraft.get_wing().get_semispan().getEstimatedValue()));
+
+				if ( theAircraft.get_exposedWing().get_numberOfAirfoils()<3){
+					alphaZeroLiftExposed.add(
+							theAircraft
+							.get_exposedWing()
+							.get_theAirfoilsListExposed()
+							.get(1).getAerodynamics()
+							.get_alphaZeroLift()
+							.getEstimatedValue());
+				}
+				else{
+					alphaZeroLiftExposed.add(
+							theAircraft
+							.get_exposedWing()
+							.get_theAirfoilsListExposed()
+							.get(1).getAerodynamics()
+							.get_alphaZeroLift()
+							.getEstimatedValue());
+
+					System.out.println("alpha zero lift kink " + theAircraft
+							.get_exposedWing()
+					.get_theAirfoilsListExposed()
+					.get(1).getAerodynamics()
+					.get_alphaZeroLift().to(NonSI.DEGREE_ANGLE)
+					.getEstimatedValue());
+
+					alphaZeroLiftExposed.add(
+							theAircraft
+							.get_exposedWing()
+							.get_theAirfoilsListExposed()
+							.get(2).getAerodynamics()
+							.get_alphaZeroLift()
+							.getEstimatedValue());
+
+					System.out.println(" alpha zero lift tip " + theAircraft
+							.get_exposedWing()
+					.get_theAirfoilsListExposed()
+					.get(2).getAerodynamics()
+					.get_alphaZeroLift().to(NonSI.DEGREE_ANGLE)
+					.getEstimatedValue());
+				}
+
+				double [] yStationAlpha0lExposed = new double [theAircraft.get_exposedWing().get_numberOfAirfoils()];
+				double [] yStationChordExposed = new double [2];
+
+				for ( int i = 0 ; i < yStationAlpha0lExposed.length ; i ++)
+					yStationAlpha0lExposed[i] = theAircraft
+					.get_exposedWing()
+					.get_theAirfoilsListExposed()
+					.get(i).getGeometry().get_yStation();
+
+				yStationChordExposed [0] = theAircraft
+						.get_exposedWing()
+						.get_theAirfoilsListExposed()
+						.get(0).getGeometry().get_yStation();
+
+				yStationChordExposed [1] = theAircraft
+						.get_exposedWing()
+						.get_theAirfoilsListExposed()
+						.get(2).getGeometry().get_yStation();
+
+
+
+
+				_alpha0lDistribution = MyArray.createArray(
+						alphaZeroLiftExposed
+						.interpolate(yStationAlpha0lExposed, _yStationsIntegral));
+
+				_chordsVsY = MyArray.createArray(
+						chordDistributionExposed
+						.interpolate(yStationChordExposed, _yStationsIntegral));
+
+			}
+			else{
+				return null;
+			}
+			_alpha0L = Amount.valueOf(
+					AnglesCalc.alpha0LintegralMeanNoTwist(surfaceInteg, semispanInteg, 
+							_yStationsIntegral, _chordsVsY.toArray(), _alpha0lDistribution.toArray()),
+					SI.RADIAN);
+			System.out.println(" alpha dist " + _alpha0lDistribution.toString());
+			System.out.println(" chord dist " + _chordsVsY.toString());
+			_methodsMap.put(MethodEnum.INTEGRAL_MEAN_NO_TWIST, _alpha0L.doubleValue(SI.RADIAN));
 
 			return _alpha0L;
 		}
@@ -3099,18 +3396,18 @@ public void PlotCDvsAlphaCurve(){
 	 * 
 	 * @author Manuela Ruocco
 	 */
-	
-	
+
+
 	public class CalcCdDistribution {
-		
+
 		public double[] nasaBlackwell(Amount<Angle> alpha, LSAerodynamicsManager theLSManager) {
-			
-	
+
+
 			MyAirfoil airfoilActual;
 			double yActual;
 			cdDistributionNasaBlackwell = new double [_nPointsSemispanWise];
 			LiftingSurface theLS = getTheLiftingSurface();
-			
+
 			for (int i=0 ; i<_nPointsSemispanWise ; i++){
 				yActual = get_yStations()[i];
 				airfoilActual = calculateIntermediateAirfoil(theLS, yActual);
@@ -3120,9 +3417,9 @@ public void PlotCDvsAlphaCurve(){
 			cdDistributionNasaBlackwell [_nPointsSemispanWise-1] = 0 ;
 			return cdDistributionNasaBlackwell ;
 		}
-		
+
 	}
-	
+
 	/**
 	 * This nested class has some methods that evaluates the cd of an airfoil corresponding to an alpha that 
 	 * is the input value of the method. The difference between the methods is the way to calculate cl from alpha.
@@ -3136,7 +3433,7 @@ public void PlotCDvsAlphaCurve(){
 		double [] clNasaBlackwell , clSchrenk;
 		double [] yStations ;
 		double clLocal , clLocalSchrenk, cdLocal, cdLocalSchrenk;
-		
+
 		/**
 		 * @param alpha of the wing
 		 * @param LSAerodynamic Manager
@@ -3274,7 +3571,7 @@ public void PlotCDvsAlphaCurve(){
 			return clLocalSchrenk;
 		}
 	}
-	
+
 
 	/**
 	 * This class evaluates the drag coefficient of a wing. This method calls CalcCdDistribution in order
@@ -3283,16 +3580,16 @@ public void PlotCDvsAlphaCurve(){
 	 * 
 	 * @author Manuela Ruocco
 	 */
-	
+
 	public class CalcCDAtAlpha{
-		
+
 		public Double integralFromCdAirfoil(
 				Amount<Angle> alpha, MethodEnum method, LSAerodynamicsManager theLSManager){
-			
+
 			double [] yStations = get_yStationsND();
 			double [] cdLocal;
 			Double cdAtAlpha = null;
-			
+
 			switch (method) {
 			case NASA_BLACKWELL:
 				CalcCdDistribution theCdCalculator = new CalcCdDistribution();
@@ -3300,18 +3597,18 @@ public void PlotCDvsAlphaCurve(){
 				cdLocal = getCdDistributionNasaBlackwell();
 				cdAtAlpha = MyMathUtils.integrate1DSimpsonSpline(
 						yStations, cdLocal);		
-				
+
 				System.out.println(" CD Total at alpha " + alpha.getEstimatedValue()*57.3 + " = " + cdAtAlpha);
 				break;
-				
+
 			}
-			
+
 			return cdAtAlpha;
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Store aerodynamic results in order to
 	 * access them easier.
@@ -3343,7 +3640,7 @@ public void PlotCDvsAlphaCurve(){
 			cxyVsAlphaTable = TreeBasedTable.create();
 			ccxyVsAlphaTable = TreeBasedTable.create();
 		}
-		
+
 
 
 		public int getNumberOfMethods() {
@@ -3421,7 +3718,7 @@ public void PlotCDvsAlphaCurve(){
 
 	}
 
-	
+
 	public class MeanAirfoil { //Behind ADAS p39
 		private double influenceAreaRoot, influenceAreaKink, influenceAreaTip ;
 		private double kRoot, kKink, kTip;
@@ -3468,15 +3765,15 @@ public void PlotCDvsAlphaCurve(){
 		public MyAirfoil calculateMeanAirfoil (LiftingSurface theWing){
 
 			MyAirfoil meanAirfoil = new MyAirfoil(theWing);
-			
+
 			MyAirfoil airfoilRoot = theWing.get_theAirfoilsList().get(0);
 			MyAirfoil airfoilKink = theWing.get_theAirfoilsList().get(1);
 			MyAirfoil airfoilTip = theWing.get_theAirfoilsList().get(2);
 
-//			System.out.println( "---------------------------------------");
-//			System.out.println( "STARTING EVALUATION OF THE MEAN AIRFOIL");
-//			System.out.println( "---------------------------------------");
-//			System.out.println("\n \nSTART OF THE EVALUTATION OF THE INFLUENCE AREAS...");
+			//			System.out.println( "---------------------------------------");
+			//			System.out.println( "STARTING EVALUATION OF THE MEAN AIRFOIL");
+			//			System.out.println( "---------------------------------------");
+			//			System.out.println("\n \nSTART OF THE EVALUTATION OF THE INFLUENCE AREAS...");
 
 			rootChord = theWing.get_chordRoot().getEstimatedValue();
 			kinkChord = theWing.get_chordKink().getEstimatedValue();
@@ -3487,20 +3784,20 @@ public void PlotCDvsAlphaCurve(){
 			influenceAreaRoot = rootChord * dimensionalKinkStation/2;
 			influenceAreaKink = (kinkChord * dimensionalKinkStation/2) + (kinkChord * dimensionalOverKink/2);
 			influenceAreaTip = tipChord * dimensionalOverKink/2;
-//
-//			System.out.println("The influence area of root chord is [m^] = " + influenceAreaRoot );
-//			System.out.println("The influence area of kink chord is [m^] = " + influenceAreaKink );
-//			System.out.println("The influence area of tip chord is [m^] = " + influenceAreaTip);
+			//
+			//			System.out.println("The influence area of root chord is [m^] = " + influenceAreaRoot );
+			//			System.out.println("The influence area of kink chord is [m^] = " + influenceAreaKink );
+			//			System.out.println("The influence area of tip chord is [m^] = " + influenceAreaTip);
 
 			kRoot = 2*influenceAreaRoot/theWing.get_surface().getEstimatedValue();
 			kKink = 2*influenceAreaKink/theWing.get_surface().getEstimatedValue();
 			kTip = 2*influenceAreaTip/theWing.get_surface().getEstimatedValue();
 
-//			System.out.println("The coefficients of influence areas are: \n k1= " + kRoot + 
-//					"\n k2= " + kKink + "\n k3= " + kTip);
-//
-//			System.out.println( "\n \n---------------------------------------");
-//			System.out.println("DONE");
+			//			System.out.println("The coefficients of influence areas are: \n k1= " + kRoot + 
+			//					"\n k2= " + kKink + "\n k3= " + kTip);
+			//
+			//			System.out.println( "\n \n---------------------------------------");
+			//			System.out.println("DONE");
 
 			//ALPHA ZERO LIFT
 			alphaZeroLiftRoot = airfoilRoot.getAerodynamics().get_alphaZeroLift().getEstimatedValue();
@@ -3710,128 +4007,128 @@ public void PlotCDvsAlphaCurve(){
 
 		}
 	}
-	
 
 
 
-		/**
-		 * This function calculates the characteristics of an intermediate airfoil.
-		 * 
-		 * @author Manuela Ruocco
-		 * @param Airfoilroot
-		 * @param Airfoilkink
-		 * @param Airfoiltip
-		 * @param Dimensional station where the airfoil is located.
-		 */ 
 
-		 public MyAirfoil calculateIntermediateAirfoil (LiftingSurface theWing, double yLoc){
+	/**
+	 * This function calculates the characteristics of an intermediate airfoil.
+	 * 
+	 * @author Manuela Ruocco
+	 * @param Airfoilroot
+	 * @param Airfoilkink
+	 * @param Airfoiltip
+	 * @param Dimensional station where the airfoil is located.
+	 */ 
 
-			MyAirfoil intermediateAirfoil = new MyAirfoil(theWing);
+	public static MyAirfoil calculateIntermediateAirfoil (LiftingSurface theWing, double yLoc){
 
-//			System.out.println( "---------------------------------------");
-//			System.out.println( "STARTING EVALUATION OF INTERMEDIATE AIRFOIL");
-//			System.out.println( "---------------------------------------");
-//			System.out.println( " The position of arifoil is --> " + yLoc);
+		MyAirfoil intermediateAirfoil = new MyAirfoil(theWing);
 
-			rootChord = theWing.get_chordRoot().getEstimatedValue();
-			kinkChord = theWing.get_chordKink().getEstimatedValue();
-			tipChord = theWing.get_chordTip().getEstimatedValue();
-			dimensionalKinkStation = theWing.get_spanStationKink()*theWing.get_semispan().getEstimatedValue();
-			dimensionalOverKink = theWing.get_semispan().getEstimatedValue() - dimensionalKinkStation;
-//			MyAirfoil airfoilRoot = theWing.get_theAirfoilsList().get(0);
-//			MyAirfoil airfoilKink = theWing.get_theAirfoilsList().get(1);
-//			MyAirfoil airfoilTip = theWing.get_theAirfoilsList().get(2);
+		//			System.out.println( "---------------------------------------");
+		//			System.out.println( "STARTING EVALUATION OF INTERMEDIATE AIRFOIL");
+		//			System.out.println( "---------------------------------------");
+		//			System.out.println( " The position of arifoil is --> " + yLoc);
 
-
-			// ETA
-			intermediateEta = MyMathUtils.getInterpolatedValue1DLinear(
-					theWing.get_yStationsAirfoil().toArray(),theWing.get_etaAirfoil().toArray(), yLoc);
-			intermediateAirfoil.getGeometry().set_etaLocation(intermediateEta);
-
-			// TWIST
-			intermediateTwist = MyMathUtils.getInterpolatedValue1DLinear(
-					theWing.get_yStationsAirfoil().toArray(),theWing.get_twistVsY().toArray(), yLoc);
-			intermediateAirfoil.getGeometry().set_twist(Amount.valueOf((intermediateTwist), SI.RADIAN));
-
-			// CL MAX
-			intermediateClMax = MyMathUtils.getInterpolatedValue1DLinear(
-					theWing.get_yStationsAirfoil().toArray(),theWing.get_clMaxVsY().toArray(), yLoc);
-			intermediateAirfoil.getAerodynamics().set_clMax(intermediateClMax);
-
-			// CHORD
-			intermediateAirfoil.getGeometry().update(yLoc);
-
-			// ALFA ZERO LIFT
-			intermediateAlphaZL = MyMathUtils.getInterpolatedValue1DLinear(
-					theWing.get_yStationsAirfoil().toArray(),theWing.get_alpha0VsY().toArray(), yLoc);
-			intermediateAirfoil.getAerodynamics().set_alphaZeroLift(Amount.valueOf((intermediateAlphaZL), SI.RADIAN));
-
-			//CL ALPHA
-			intermediateClAlpha = MyMathUtils.getInterpolatedValue1DLinear(
-					theWing.get_yStationsAirfoil().toArray(),theWing.get_clAlpha_y().toArray(), yLoc);
-			intermediateAirfoil.getAerodynamics().set_clAlpha(intermediateClAlpha);
-
-			// ALFA STAR
-			intermediateAlphaStar = MyMathUtils.getInterpolatedValue1DLinear(
-					theWing.get_yStationsAirfoil().toArray(),theWing.get_alphaStar_y().toArray(), yLoc);
-			intermediateAirfoil.getAerodynamics().set_alphaStar((Amount.valueOf((intermediateAlphaStar), SI.RADIAN)));
-
-			//ALFA STALL
-			intermediateAlphaStall = MyMathUtils.getInterpolatedValue1DLinear(
-					theWing.get_yStationsAirfoil().toArray(),theWing.get_alphaStall().toArray(), yLoc);
-			intermediateAirfoil.getAerodynamics().set_alphaStall((Amount.valueOf((intermediateAlphaStall), SI.RADIAN)));
-
-			// CL STAR 
-			intermediateClStar =  MyMathUtils.getInterpolatedValue1DLinear(
-					theWing.get_yStationsAirfoil().toArray(),theWing.get_clStar_y().toArray(), yLoc);
-			intermediateAirfoil.getAerodynamics().set_clStar(intermediateClStar);
-
-			// CL MAX SWEEP
-			//intermediateClMaxSweep =  MyMathUtils.getInterpolatedValue1DLinear(
-			//	theWing.get_yStationsAirfoil().toArray(),theWing.get_clMaxSweep_y().toArray(), yLoc);
-			//intermediateAirfoil.getAerodynamics().set_clMaxSweep(intermediateClMaxSweep);
-
-			// CL AT CD MIN
-			intermediateClatMinCD =  MyMathUtils.getInterpolatedValue1DLinear(
-					theWing.get_yStationsAirfoil().toArray(),theWing.get_clAtCdMin_y().toArray(), yLoc);
-			intermediateAirfoil.getAerodynamics().set_clAtCdMin(intermediateClatMinCD);
-
-			// CD MIN
-			intermediateCdMin =   MyMathUtils.getInterpolatedValue1DLinear(
-					theWing.get_yStationsAirfoil().toArray(),theWing.get_cdMin_y().toArray(), yLoc);
-			intermediateAirfoil.getAerodynamics().set_cdMin(intermediateCdMin);
-
-			// CM AC
-			intermediateCm = MyMathUtils.getInterpolatedValue1DLinear(
-					theWing.get_yStationsAirfoil().toArray(),theWing.get_cmAC_y().toArray(), yLoc);
-			intermediateAirfoil.getAerodynamics().set_cmAC(intermediateCm );
-
-			// CM AT LE
-			intermediateCmAlphaLE = MyMathUtils.getInterpolatedValue1DLinear(
-					theWing.get_yStationsAirfoil().toArray(),theWing.get_cmAlphaLE_y().toArray(), yLoc);
-			intermediateAirfoil.getAerodynamics().set_cmAlphaLE(intermediateCmAlphaLE);
-
-			// AERODYNAMIC CENTRE X CHOORD
-			intermediateAerodynamicCentre = MyMathUtils.getInterpolatedValue1DLinear(
-					theWing.get_yStationsAirfoil().toArray(),theWing.get_aerodynamicCenterXcoord_y().toArray(), yLoc);
-			intermediateAirfoil.getAerodynamics().set_aerodynamicCenterX(intermediateAerodynamicCentre);
-
-			// MAX THICKNESS
-			intermediateMaxThickness = MyMathUtils.getInterpolatedValue1DLinear(
-					theWing.get_yStationsAirfoil().toArray(),theWing.get_maxThicknessVsY().toArray(), yLoc);
-			intermediateAirfoil.getGeometry().set_maximumThicknessOverChord(intermediateMaxThickness);	
-
-			// K FACTOR DRAG POLAR
-			intermediatekFactorPolar = MyMathUtils.getInterpolatedValue1DLinear(
-					theWing.get_yStationsAirfoil().toArray(),theWing.get_kFactorDragPolar_y().toArray(), yLoc);
-			intermediateAirfoil.getAerodynamics().set_kFactorDragPolar(intermediatekFactorPolar);
+		rootChord = theWing.get_chordRoot().getEstimatedValue();
+		kinkChord = theWing.get_chordKink().getEstimatedValue();
+		tipChord = theWing.get_chordTip().getEstimatedValue();
+		dimensionalKinkStation = theWing.get_spanStationKink()*theWing.get_semispan().getEstimatedValue();
+		dimensionalOverKink = theWing.get_semispan().getEstimatedValue() - dimensionalKinkStation;
+		//			MyAirfoil airfoilRoot = theWing.get_theAirfoilsList().get(0);
+		//			MyAirfoil airfoilKink = theWing.get_theAirfoilsList().get(1);
+		//			MyAirfoil airfoilTip = theWing.get_theAirfoilsList().get(2);
 
 
-			return intermediateAirfoil;
+		// ETA
+		intermediateEta = MyMathUtils.getInterpolatedValue1DLinear(
+				theWing.get_yStationsAirfoil().toArray(),theWing.get_etaAirfoil().toArray(), yLoc);
+		intermediateAirfoil.getGeometry().set_etaLocation(intermediateEta);
 
-		}
-	
-	
+		// TWIST
+		intermediateTwist = MyMathUtils.getInterpolatedValue1DLinear(
+				theWing.get_yStationsAirfoil().toArray(),theWing.get_twistVsY().toArray(), yLoc);
+		intermediateAirfoil.getGeometry().set_twist(Amount.valueOf((intermediateTwist), SI.RADIAN));
+
+		// CL MAX
+		intermediateClMax = MyMathUtils.getInterpolatedValue1DLinear(
+				theWing.get_yStationsAirfoil().toArray(),theWing.get_clMaxVsY().toArray(), yLoc);
+		intermediateAirfoil.getAerodynamics().set_clMax(intermediateClMax);
+
+		// CHORD
+		intermediateAirfoil.getGeometry().update(yLoc);
+
+		// ALFA ZERO LIFT
+		intermediateAlphaZL = MyMathUtils.getInterpolatedValue1DLinear(
+				theWing.get_yStationsAirfoil().toArray(),theWing.get_alpha0VsY().toArray(), yLoc);
+		intermediateAirfoil.getAerodynamics().set_alphaZeroLift(Amount.valueOf((intermediateAlphaZL), SI.RADIAN));
+
+		//CL ALPHA
+		intermediateClAlpha = MyMathUtils.getInterpolatedValue1DLinear(
+				theWing.get_yStationsAirfoil().toArray(),theWing.get_clAlpha_y().toArray(), yLoc);
+		intermediateAirfoil.getAerodynamics().set_clAlpha(intermediateClAlpha);
+
+		// ALFA STAR
+		intermediateAlphaStar = MyMathUtils.getInterpolatedValue1DLinear(
+				theWing.get_yStationsAirfoil().toArray(),theWing.get_alphaStar_y().toArray(), yLoc);
+		intermediateAirfoil.getAerodynamics().set_alphaStar((Amount.valueOf((intermediateAlphaStar), SI.RADIAN)));
+
+		//ALFA STALL
+		intermediateAlphaStall = MyMathUtils.getInterpolatedValue1DLinear(
+				theWing.get_yStationsAirfoil().toArray(),theWing.get_alphaStall().toArray(), yLoc);
+		intermediateAirfoil.getAerodynamics().set_alphaStall((Amount.valueOf((intermediateAlphaStall), SI.RADIAN)));
+
+		// CL STAR 
+		intermediateClStar =  MyMathUtils.getInterpolatedValue1DLinear(
+				theWing.get_yStationsAirfoil().toArray(),theWing.get_clStar_y().toArray(), yLoc);
+		intermediateAirfoil.getAerodynamics().set_clStar(intermediateClStar);
+
+		// CL MAX SWEEP
+		//intermediateClMaxSweep =  MyMathUtils.getInterpolatedValue1DLinear(
+		//	theWing.get_yStationsAirfoil().toArray(),theWing.get_clMaxSweep_y().toArray(), yLoc);
+		//intermediateAirfoil.getAerodynamics().set_clMaxSweep(intermediateClMaxSweep);
+
+		// CL AT CD MIN
+		intermediateClatMinCD =  MyMathUtils.getInterpolatedValue1DLinear(
+				theWing.get_yStationsAirfoil().toArray(),theWing.get_clAtCdMin_y().toArray(), yLoc);
+		intermediateAirfoil.getAerodynamics().set_clAtCdMin(intermediateClatMinCD);
+
+		// CD MIN
+		intermediateCdMin =   MyMathUtils.getInterpolatedValue1DLinear(
+				theWing.get_yStationsAirfoil().toArray(),theWing.get_cdMin_y().toArray(), yLoc);
+		intermediateAirfoil.getAerodynamics().set_cdMin(intermediateCdMin);
+
+		// CM AC
+		intermediateCm = MyMathUtils.getInterpolatedValue1DLinear(
+				theWing.get_yStationsAirfoil().toArray(),theWing.get_cmAC_y().toArray(), yLoc);
+		intermediateAirfoil.getAerodynamics().set_cmAC(intermediateCm );
+
+		// CM AT LE
+		intermediateCmAlphaLE = MyMathUtils.getInterpolatedValue1DLinear(
+				theWing.get_yStationsAirfoil().toArray(),theWing.get_cmAlphaLE_y().toArray(), yLoc);
+		intermediateAirfoil.getAerodynamics().set_cmAlphaLE(intermediateCmAlphaLE);
+
+		// AERODYNAMIC CENTRE X CHOORD
+		intermediateAerodynamicCentre = MyMathUtils.getInterpolatedValue1DLinear(
+				theWing.get_yStationsAirfoil().toArray(),theWing.get_aerodynamicCenterXcoord_y().toArray(), yLoc);
+		intermediateAirfoil.getAerodynamics().set_aerodynamicCenterX(intermediateAerodynamicCentre);
+
+		// MAX THICKNESS
+		intermediateMaxThickness = MyMathUtils.getInterpolatedValue1DLinear(
+				theWing.get_yStationsAirfoil().toArray(),theWing.get_maxThicknessVsY().toArray(), yLoc);
+		intermediateAirfoil.getGeometry().set_maximumThicknessOverChord(intermediateMaxThickness);	
+
+		// K FACTOR DRAG POLAR
+		intermediatekFactorPolar = MyMathUtils.getInterpolatedValue1DLinear(
+				theWing.get_yStationsAirfoil().toArray(),theWing.get_kFactorDragPolar_y().toArray(), yLoc);
+		intermediateAirfoil.getAerodynamics().set_kFactorDragPolar(intermediatekFactorPolar);
+
+
+		return intermediateAirfoil;
+
+	}
+
+
 	public double getcLLinearSlopeNB() {
 		return cLLinearSlope;
 	}
@@ -3850,7 +4147,7 @@ public void PlotCDvsAlphaCurve(){
 	public void set_alphaCurrent(Amount<Angle> _alphaCurrent) {
 		this._alphaCurrent = _alphaCurrent;
 	}
-	
+
 	public CalcCLAlpha getCalculateCLAlpha() {
 		return calculateCLAlpha;
 	}
@@ -4170,7 +4467,7 @@ public void PlotCDvsAlphaCurve(){
 	public void setTheLiftingSurface(LiftingSurface theLiftingSurface) {
 		this.theLiftingSurface = theLiftingSurface;
 	}
-	
+
 	public double get_vortexSemiSpanToSemiSpanRatio() {
 		return _vortexSemiSpanToSemiSpanRatio;
 	}
@@ -4184,7 +4481,7 @@ public void PlotCDvsAlphaCurve(){
 	}
 
 	public void set_AerodynamicDatabaseReader(AerodynamicDatabaseReader _aerodynamicDatabaseReader) {
-		
+
 		this._aerodynamicDatabaseReader = _aerodynamicDatabaseReader;
 	}
 
@@ -4229,36 +4526,36 @@ public void PlotCDvsAlphaCurve(){
 	public void set_alphaMaxClean(Amount<Angle> _alphaMaxClean) {
 		this._alphaMaxClean = _alphaMaxClean;
 	}
-	
+
 	public double[] get_alphaArrayPlot(){
 		return alphaArrayPlot;
 	}
-	
+
 	public double[] get_cLArrayPlot(){
 		return cLArrayPlot;
 	}
 
 	public void setDatabaseReaders(Pair... args) {
 		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
-		
+
 		for (Pair a : args) {
 			DatabaseReaderEnum key = (DatabaseReaderEnum)a.getKey(); 
 			String databaseFileName = (String)a.getValue();
-			
+
 			switch (key) {
 			case AERODYNAMIC:
 				_aerodynamicDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath, databaseFileName); 
 				listDatabaseReaders.add(_aerodynamicDatabaseReader);
 				theAircraft.get_theAerodynamics().set_aerodynamicDatabaseReader(_aerodynamicDatabaseReader);
 				break;
-				
+
 			case HIGHLIFT:
 				_highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, databaseFileName); 
 				listDatabaseReaders.add(_highLiftDatabaseReader);
 				break;	
-				
+
 			}
-			
+
 			/*
 			 * TODO: manage other types of database reader
 			 * 
@@ -4272,9 +4569,9 @@ public void PlotCDvsAlphaCurve(){
 						new TurbopropEngineDatabaseReader(databaseFolderPath, databaseFileName)
 						);
 				break;
-			*/
+			 */
 		}
-		
+
 	}
 
 
@@ -4296,5 +4593,5 @@ public void PlotCDvsAlphaCurve(){
 	public void setAlphaZeroLiftWingClean(double alphaZeroLiftWingClean) {
 		this.alphaZeroLiftWingClean = alphaZeroLiftWingClean;
 	}
-	
+
 }

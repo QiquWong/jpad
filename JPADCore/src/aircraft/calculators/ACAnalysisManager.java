@@ -150,6 +150,7 @@ public class ACAnalysisManager {
 				Amount.valueOf(
 						(aircraft.get_exposedWing().get_span().getEstimatedValue()/2),SI.METER)
 				);
+		//aircraft.get_exposedWing().updateAirfoilsGeometryEquivalentWing(aircraft);
 		}
 
 		// Htail

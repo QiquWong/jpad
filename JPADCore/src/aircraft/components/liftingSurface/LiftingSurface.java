@@ -103,14 +103,14 @@ public class LiftingSurface extends AeroComponent{
 
 	Amount<Length> 
 	_span = null, 
-	
+
 	/**
 	 * Returns the semispan value for the wing and the horizontal tail.
 	 * Returns the full span if the lifting surface is a vertical tail.
 	 */
 	_semispan = null;
-	
-	
+
+
 	Amount<Length> _semiSpanInnerPanel = null;   // _semi_spanKink
 	Amount<Length> _semiSpanOuterPanel = null;
 	Amount<Length> _chordRootEquivalentWing = null, _meanGeometricChord = null;
@@ -228,6 +228,7 @@ public class LiftingSurface extends AeroComponent{
 	boolean _variableIncidence;
 	static final int _numberOfPointsChordDistribution = 30;
 	Integer _numberOfAirfoils = 0;
+	Integer _numberOfAirfoilsExposed = 0;
 	double[] _vc2;
 	double[] _vx_le;
 	double[] _vy_le;
@@ -245,10 +246,12 @@ public class LiftingSurface extends AeroComponent{
 
 	MyAirfoil _theCurrentAirfoil = null;
 
+
 	/**
 	 * Contains all the airfoil relative to the current lifting surface
 	 */
 	List<MyAirfoil> _theAirfoilsList = new ArrayList<MyAirfoil>();
+	List<MyAirfoil> _theAirfoilsListExposed = new ArrayList<MyAirfoil>();
 
 	MyArray _etaAirfoil,
 	_twistVsY,
@@ -276,7 +279,7 @@ public class LiftingSurface extends AeroComponent{
 	_kFactorDragPolar_y,
 	_maxThicknessVsY;
 
-	
+
 
 	Amount _xACActualMRF, _xACActualLRF;
 
@@ -286,6 +289,17 @@ public class LiftingSurface extends AeroComponent{
 	}
 
 	private LSGeometryManager geometry;
+
+	private MyArray _etaAirfoilExposed;
+
+	private MyArray _twistVsYExposed;
+
+	private MyArray _yStationsAirfoilExposed;
+
+	private MyArray _alpha0VsYExposed;
+
+	private MyArray _chordVsYAirfoilsExposed;
+
 
 	private void initializeDefaultSurface(ComponentEnum type){
 
@@ -340,10 +354,10 @@ public class LiftingSurface extends AeroComponent{
 
 			// Calibration constant (to account for slight weight changes due to composites etc...)
 			_massCorrectionFactor = 1.;
-			
-			
+
+
 			//aerodynamics = new LSAerodynamicsManager(_theOperatingConditions, this); //? 
-			
+
 		} break;
 
 		case HORIZONTAL_TAIL : {
@@ -460,7 +474,7 @@ public class LiftingSurface extends AeroComponent{
 		initializeAirfoils(this);
 
 	}
-	
+
 	protected void initializeAirfoils(LiftingSurface ls) {
 
 		// TODO: this methods is executed twice!!! (the second time in MyAnalysis)
@@ -485,10 +499,10 @@ public class LiftingSurface extends AeroComponent{
 			_theAirfoilsList.add(new MyAirfoil(ls, span/2.));
 		}
 	}
-	
-	
 
-	
+
+
+
 	/**
 	 * 
 	 * Overload of the airfoils initializer method that recognize aircraft name and sets it's value.
@@ -562,35 +576,35 @@ public class LiftingSurface extends AeroComponent{
 
 		_theFuselage = fuselage;
 		// ATR 72 Data (matlab file)
-		
-		
+
+
 		initializeDefaultSurface(type);
 
 	} // end of constructor
-	
+
 	// Construct Wing without fuselage, with rigging angle
-		public LiftingSurface(String name, 
-				String description, 
-				Double x, 
-				Double y, 
-				Double z, 
-				Double riggingAngle, 
-				ComponentEnum type
-				) { 
+	public LiftingSurface(String name, 
+			String description, 
+			Double x, 
+			Double y, 
+			Double z, 
+			Double riggingAngle, 
+			ComponentEnum type
+			) { 
 
-			super(name, description, x, y, z, type);
+		super(name, description, x, y, z, type);
 
-			_X0 = Amount.valueOf(x, SI.METER);
-			_Y0 = Amount.valueOf(y, SI.METER);
-			_Z0 = Amount.valueOf(z, SI.METER);
-			_cg = new CenterOfGravity(_X0, _Y0, _Z0);
+		_X0 = Amount.valueOf(x, SI.METER);
+		_Y0 = Amount.valueOf(y, SI.METER);
+		_Z0 = Amount.valueOf(z, SI.METER);
+		_cg = new CenterOfGravity(_X0, _Y0, _Z0);
 
-			// ATR 72 Data (matlab file)
-			
-			
-			initializeDefaultSurface(type);
+		// ATR 72 Data (matlab file)
 
-		} // end of constructor
+
+		initializeDefaultSurface(type);
+
+	} // end of constructor
 
 
 
@@ -681,7 +695,7 @@ public class LiftingSurface extends AeroComponent{
 
 		_numberOfAirfoils = new Integer(_theAirfoilsList.size());
 		getAirfoilsPropertiesAsArray();
-		
+
 
 		//				addAirfoil(0., "Airfoil_1");
 		//		if (_spanStationKink != 1.) {
@@ -691,49 +705,36 @@ public class LiftingSurface extends AeroComponent{
 		//			addAirfoil(1., "Airfoil_2");
 		//		}
 	}
-	
-	public void updateAirfoilsGeometryEquivalentWing(Aircraft aircraft) {
+
+	public void updateAirfoilsGeometryExposedWing( Aircraft aircraft) {
 
 		//		MyAirfoil.idCounter = 0;
 		//		core.auxiliary.airfoil.Geometry.idCounter = 0;
 		//		core.auxiliary.airfoil.Aerodynamics.idCounter = 0;
-		
-		List<MyAirfoil> myAirfoilList = new ArrayList<MyAirfoil>();
-		
+
 		double yLoc = aircraft.get_fuselage().getWidthAtX(aircraft.get_wing()
-				.get_xLEMacActualBRF().getEstimatedValue());
-		MyAirfoil airfoilRootExposed = aircraft
-				.get_wing()
-				.getAerodynamics()
-				.calculateIntermediateAirfoil(aircraft.get_wing(), yLoc);
-		myAirfoilList.add(0, airfoilRootExposed);
-		
+				.get_xLEMacActualBRF().getEstimatedValue())/2;
+		MyAirfoil airfoilRootExposed =LSAerodynamicsManager.calculateIntermediateAirfoil(
+				aircraft.get_wing(),
+				yLoc);
+		_theAirfoilsListExposed.add(0, airfoilRootExposed);
+		_theAirfoilsListExposed.get(0).getGeometry().update(yLoc);
+
 		if (aircraft.get_wing().get_theAirfoilsList().size() < 3) {
-		MyAirfoil airfoilKinkExposed = aircraft.get_wing().get_theAirfoilsList().get(1);
-		MyAirfoil airfoilTipExposed = aircraft.get_wing().get_theAirfoilsList().get(2);
-		myAirfoilList.add(1, airfoilKinkExposed);
-		myAirfoilList.add(2, airfoilTipExposed);
-		}
-		
-		else{
 			MyAirfoil airfoilTipExposed = aircraft.get_wing().get_theAirfoilsList().get(1);
-			myAirfoilList.add(1, airfoilTipExposed);
+			_theAirfoilsListExposed.add(1, airfoilTipExposed);
 		}
 
-		//TODO CONTINUE HERE 
-		_theAirfoilsList.get(0).getGeometry().update(0.);
-
-		if (_theAirfoilsList.size() < 3) {
-			_theAirfoilsList.get(1).getGeometry().update(_semispan.getEstimatedValue());
-
-		} else {
-			_theAirfoilsList.get(1).getGeometry().update(_spanStationKink*_semispan.getEstimatedValue());
-			_theAirfoilsList.get(2).getGeometry().update(_semispan.getEstimatedValue());
+		else{
+			MyAirfoil airfoilKinkExposed = aircraft.get_wing().get_theAirfoilsList().get(1);
+			MyAirfoil airfoilTipExposed = aircraft.get_wing().get_theAirfoilsList().get(2);
+			_theAirfoilsListExposed.add(1, airfoilKinkExposed);
+			_theAirfoilsListExposed.add(2, airfoilTipExposed);
 		}
 
-		_numberOfAirfoils = new Integer(_theAirfoilsList.size());
-		getAirfoilsPropertiesAsArray();
-		
+		_numberOfAirfoilsExposed = new Integer(_theAirfoilsListExposed.size());
+
+		//getAirfoilsPropertiesAsArrayExposed(aircraft);
 
 		//				addAirfoil(0., "Airfoil_1");
 		//		if (_spanStationKink != 1.) {
@@ -2008,6 +2009,7 @@ public class LiftingSurface extends AeroComponent{
 			_maxThicknessVsY.add(_theAirfoilsList.get(i).getGeometry().get_maximumThicknessOverChord().doubleValue());
 
 			_alpha0VsY.add(_theAirfoilsList.get(i).getAerodynamics().get_alphaZeroLift().getEstimatedValue());
+			System.out.println("alpha zero lift wing " + _theAirfoilsList.get(i).getAerodynamics().get_alphaZeroLift().to(NonSI.DEGREE_ANGLE).getEstimatedValue());
 			_alphaStar_y.add(_theAirfoilsList.get(i).getAerodynamics().get_alphaStar().getEstimatedValue());
 			_clAlpha_y.add(_theAirfoilsList.get(i).getAerodynamics().get_clAlpha().doubleValue());
 			_alphaStall.add(_theAirfoilsList.get(i).getAerodynamics().get_alphaStall().getEstimatedValue());
@@ -2050,7 +2052,38 @@ public class LiftingSurface extends AeroComponent{
 
 	}
 
-
+	//	private void getAirfoilsPropertiesAsArrayExposed(Aircraft aircraft) {
+	//		// Remove airfoils which have the same y (that is, eta) coordinate
+	//				for (int i = 0; i < _numberOfAirfoils - 1; i++) {
+	//					if (_theAirfoilsListExposed.get(i).getGeometry().get_yStation()
+	//							.equals(_theAirfoilsListExposed.get(i+1).getGeometry().get_yStation())) {
+	//						_theAirfoilsListExposed.remove(i);
+	//					}
+	//				}
+	//		
+	//		_numberOfAirfoils = _theAirfoilsListExposed.size();
+	//
+	//		_etaAirfoilExposed = new MyArray();
+	//		_twistVsYExposed = new MyArray(SI.RADIAN);
+	//		_yStationsAirfoilExposed = new MyArray();
+	//		_alpha0VsYExposed = new MyArray();
+	//		_chordVsYAirfoilsExposed = new MyArray();
+	//		_eta.setDouble(MyArrayUtils.linspace(0., 1., _numberOfPointsChordDistribution));
+	//		_yStationActual.setRealVector(_eta.getRealVector().mapMultiply(0.5*_span.doubleValue(SI.METER)));
+	//		
+	//		for (int i = 0; i < _numberOfAirfoils; i++){
+	//		_etaAirfoilExposed.add(_theAirfoilsListExposed.get(i).getGeometry().get_etaStation());
+	//		_twistVsYExposed.add(_theAirfoilsListExposed.get(i).getGeometry().get_twist().getEstimatedValue());
+	//		_yStationsAirfoilExposed.add(_theAirfoilsListExposed.get(i).getGeometry().get_yStation());
+	//		System.out.println(" y station exposed " + _yStationsAirfoilExposed.get(i));
+	//		System.out.println(" yStation actual " + _yStationActual.toString());
+	//		_chordVsYAirfoilsExposed.add(getChordAtYActual(_yStationsAirfoilExposed.get(i)));
+	//		_alpha0VsYExposed.add(_theAirfoilsListExposed.get(i).getAerodynamics().get_alphaZeroLift().getEstimatedValue());
+	//		}
+	//		
+	//		
+	//		
+	//	}
 	//-------------------------------------------------------------------
 
 
@@ -2247,6 +2280,14 @@ public class LiftingSurface extends AeroComponent{
 
 	public Amount<Length> get_xLEKink() {
 		return _xLEKink;
+	}
+
+	public MyArray get_alpha0VsYExposed() {
+		return _alpha0VsYExposed;
+	}
+
+	public void set_alpha0VsYExposed(MyArray _alpha0VsYExposed) {
+		this._alpha0VsYExposed = _alpha0VsYExposed;
 	}
 
 	public void set_xLEKink(Amount<Length> _xLEKink) {
@@ -3032,6 +3073,7 @@ public class LiftingSurface extends AeroComponent{
 	@Override
 	public void set_X0(Amount<Length> x) { _X0 = x; };
 
+
 	@Override
 	public Amount<Length> get_Y0() { return _Y0; }
 
@@ -3354,6 +3396,14 @@ public class LiftingSurface extends AeroComponent{
 		return _xTEvsYActual;
 	}
 
+	public List<MyAirfoil> get_theAirfoilsListExposed() {
+		return _theAirfoilsListExposed;
+	}
+
+	public void set_theAirfoilsListExposed(List<MyAirfoil> _theAirfoilsListExposed) {
+		this._theAirfoilsListExposed = _theAirfoilsListExposed;
+	}
+
 	public MyArray get_chordsVsYActual() {
 		return _chordsVsYActual;
 	}
@@ -3362,5 +3412,29 @@ public class LiftingSurface extends AeroComponent{
 		return _yStationsAirfoil;
 	}
 
-	
+	public MyArray get_etaAirfoilExposed() {
+		return _etaAirfoilExposed;
+	}
+
+	public void set_etaAirfoilExposed(MyArray _etaAirfoilExposed) {
+		this._etaAirfoilExposed = _etaAirfoilExposed;
+	}
+
+	public MyArray get_twistVsYExposed() {
+		return _twistVsYExposed;
+	}
+
+	public void set_twistVsYExposed(MyArray _twistVsYExposed) {
+		this._twistVsYExposed = _twistVsYExposed;
+	}
+
+	public MyArray get_chordVsYAirfoilsExposed() {
+		return _chordVsYAirfoilsExposed;
+	}
+
+	public void set_chordVsYAirfoilsExposed(MyArray _chordVsYAirfoilsExposed) {
+		this._chordVsYAirfoilsExposed = _chordVsYAirfoilsExposed;
+	}
+
+
 }
