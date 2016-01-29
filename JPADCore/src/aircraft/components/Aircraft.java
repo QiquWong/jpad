@@ -32,7 +32,7 @@ import configuration.enumerations.ComponentEnum;
  * This class holds all the data related with the aircraft
  * An aircraft object can be passed to each component
  * in order to make it aware of all the available data
- * 
+ *
  * @author Lorenzo Attanasio
  */
 public class Aircraft {
@@ -80,29 +80,29 @@ public class Aircraft {
 	private MyCosts _theCosts;
 
 
-	/** 
+	/**
 	 * Create an aircraft without components
-	 * 
+	 *
 	 * @author Lorenzo Attanasio
 	 */
 	public Aircraft() {
 		initialize();
 	}
-	
-	/** 
+
+	/**
 	 * Overload of the previous builder that creates an aircraft without components
 	 * corresponding to the name specified.
-	 * 
+	 *
 	 * @author Vittorio Trifari
 	 */
 	public Aircraft(String aircraftName) {
 		initialize(aircraftName);
 	}
 
-	/** 
+	/**
 	 * Creates an aircraft according to user's needs.
 	 * The user may pass a variable number of components
-	 * 
+	 *
 	 * @param components
 	 */
 	public Aircraft(Object ... components) {
@@ -129,14 +129,14 @@ public class Aircraft {
 
 	/**
 	 * Overload of the initialize method that recognize the name of the given aircraft and
-	 * initialize it with it's data. 
-	 * 
+	 * initialize it with it's data.
+	 *
 	 * @author Vittorio Trifari
 	 * @param aircraftName
 	 */
 	public void initialize(String aircraftName) {
-		
-		// TODO: complete with other default aircraft  
+
+		// TODO: complete with other default aircraft
 		switch(aircraftName) {
 		case "ATR-72":
 			_name = "";
@@ -148,7 +148,7 @@ public class Aircraft {
 			_thePerformances = new ACPerformanceManager("ATR-72");
 			_theCosts = new MyCosts(this);
 			break;
-			
+
 		case "B747-100B":
 			_name = "";
 			_typeVehicle = AircraftTypeEnum.JET;
@@ -162,10 +162,10 @@ public class Aircraft {
 			break;
 		}
 	}
-	
+
 	/**
 	 * Create a default aircraft (ATR-72)
-	 * 
+	 *
 	 * @return
 	 */
 	public static Aircraft createDefaultAircraft() {
@@ -181,12 +181,12 @@ public class Aircraft {
 		aircraft.createSystems();
 		return aircraft;
 	}
-	
+
 	/**
 	 * Overload of the previous method that creates a default aircraft by giving it's name
 	 * (ATR-72/B747-100B/F100/A320)
-	 * TODO: add other aircraft data (actually only ATR-72/B747-100B are present) 
-	 * 
+	 * TODO: add other aircraft data (actually only ATR-72/B747-100B are present)
+	 *
 	 * @author Vittorio Trifari
 	 * @return
 	 */
@@ -253,11 +253,11 @@ public class Aircraft {
 				);
 		_componentsList.add(_theFuselage);
 	}
-	
+
 	/**
 	 * Overload of the fuselage creator that recognize the aircraft name and initialize with
-	 * their parameters. 
-	 * 
+	 * their parameters.
+	 *
 	 * @author Vittorio Trifari
 	 */
 	public void createFuselage(String aircraftName) {
@@ -273,7 +273,7 @@ public class Aircraft {
 	public void createWing() {
 		_theWing = new Wing(
 				"Wing", // name
-				"Data from AC_ATR_72_REV05.pdf", 
+				"Data from AC_ATR_72_REV05.pdf",
 				11.0, 0.0, 1.6,
 				ComponentEnum.WING,
 				_theFuselage,
@@ -285,20 +285,20 @@ public class Aircraft {
 		_componentsList.add(_theWing);
 		_liftingSurfaceList.add(_theWing);
 	}
-	
+
 	/**
 	 * Overload of the wing builder that recognize the aircraft and sets it's relative values.
-	 * 
+	 *
 	 * @author Vittorio Trifari
 	 */
 	public void createWing(String aircraftName) {
-		
+
 		switch(aircraftName) {
 		case "ATR-72":
 			_theWing = new Wing(
 					aircraftName,
 					"Wing", // name
-					"Data from AC_ATR_72_REV05.pdf", 
+					"Data from AC_ATR_72_REV05.pdf",
 					11.0, 0.0, 1.6,
 					ComponentEnum.WING,
 					_theFuselage,
@@ -311,7 +311,7 @@ public class Aircraft {
 			_theWing = new Wing(
 					aircraftName,
 					"Wing", // name
-					"Data from REPORT_B747_100B in database", 
+					"Data from REPORT_B747_100B in database",
 					18.2, 0.0, -2.875,
 					ComponentEnum.WING,
 					_theFuselage,
@@ -328,47 +328,42 @@ public class Aircraft {
 
 	/**
 	 * This method creates an exposed wing
-	 * 
+	 *
 	 * @author Manuela Ruocco
 	 */
 	public void createExposedWing(String aircraftName) {
-		
-		switch(aircraftName) {
-		case "ATR-72":
+
+		if ( (this.get_wing() != null) && (this.get_fuselage() != null)) {
+
+			this.get_fuselage().calculateGeometry();
+			this.get_fuselage().checkGeometry();
+			this.set_sWetTotal(this.get_fuselage().get_sWet().getEstimatedValue());
+
+			this.get_wing().calculateGeometry();
+			// this.get_wing().updateAirfoilsGeometry();
+			this.get_wing().getGeometry().calculateAll();
+			this.set_sWetTotal(this.get_wing().get_surfaceWettedExposed().getEstimatedValue());
+
 			_exposedWing = new Wing(
 					aircraftName,
 					"Wing", // name
-					"Data from AC_ATR_72_REV05.pdf", 
-					11.0, 0.0, 1.6,
+					"Data from AC_ATR_72_REV05.pdf",
+					this.get_wing().get_X0().getEstimatedValue(),
+						this.get_fuselage().getWidthAtX(this.get_wing().get_xLEMacActualBRF().getEstimatedValue()),
+							this.get_wing().get_Z0().getEstimatedValue(),
 					ComponentEnum.WING,
 					_theFuselage,
 					_theNacelle,
 					_theHTail,
 					_theVTail
 					);
-			
-			
-			
-			break;
-		case "B747-100B":
-			_exposedWing = new Wing(
-					aircraftName,
-					"Wing", // name
-					"Data from REPORT_B747_100B in database", 
-					18.2, 0.0, -2.875,
-					ComponentEnum.WING,
-					_theFuselage,
-					_theNacelle,
-					_theHTail,
-					_theVTail
-					);
-			break;
+
 		}
 
 		_componentsList.add(_theWing);
 		_liftingSurfaceList.add(_theWing);
 	}
-	
+
 	public void createNacelle() {
 		_theNacelle = new Nacelle(
 				"Nacelle",
@@ -388,10 +383,10 @@ public class Aircraft {
 			_componentsList.add(_theNacelles.get_nacellesList().get(i));
 		}
 	}
-	
+
 	/**
 	 * Overload of the default creator that recognize aircraft name and creates it's nacelles.
-	 * 
+	 *
 	 * @author Vittorio Trifari
 	 */
 	public void createNacelles(String aircraftName) {
@@ -408,7 +403,7 @@ public class Aircraft {
 		_theHTail =  new HTail(
 				"HTail",
 				"Data taken from ...",
-				24.6,  
+				24.6,
 				0.0,
 				7.72 - _theFuselage.get_heightFromGround().getEstimatedValue() - _theFuselage.get__diam_C().getEstimatedValue()/2,
 				ComponentEnum.HORIZONTAL_TAIL,
@@ -424,19 +419,19 @@ public class Aircraft {
 
 	/**
 	 * Overload of the H-Tail creator that recognize aircraft name and sets create it's H-tail.
-	 * 
+	 *
 	 * @author Vittorio Trifari
 	 */
 	public void createHTail(String aircraftName) {
-		
+
 		switch(aircraftName) {
-		
+
 		case "ATR-72":
 			_theHTail =  new HTail(
 					aircraftName,
 					"HTail",
 					"Data taken from ...",
-					24.6,  
+					24.6,
 					0.0,
 					7.72 - _theFuselage.get_heightFromGround().getEstimatedValue() - _theFuselage.get__diam_C().getEstimatedValue()/2,
 					ComponentEnum.HORIZONTAL_TAIL,
@@ -446,13 +441,13 @@ public class Aircraft {
 					_theVTail
 					);
 			break;
-			
+
 		case "B747-100B":
 			_theHTail =  new HTail(
 					aircraftName,
 					"HTail",
 					"Data taken from REPORT-B747_100B",
-					60.7,  
+					60.7,
 					0.0,
 					0.4850,
 					ComponentEnum.HORIZONTAL_TAIL,
@@ -467,12 +462,12 @@ public class Aircraft {
 		_componentsList.add(_theHTail);
 		_liftingSurfaceList.add(_theHTail);
 	}
-	
+
 	public void createVTail() {
 		_theVTail =  new VTail(
 				"VTail",
 				"Data taken from ...",
-				21.9,  
+				21.9,
 				0.0,
 				1.30,
 				ComponentEnum.VERTICAL_TAIL,
@@ -485,21 +480,21 @@ public class Aircraft {
 		_componentsList.add(_theVTail);
 		_liftingSurfaceList.add(_theVTail);
 	}
-	
+
 	/**
 	 * Overload of the default creator that recognize the aircraft name and creates a V-tail with it's values.
-	 * 
+	 *
 	 * @author Vittorio Trifari
 	 */
 	public void createVTail(String aircraftName) {
-		
+
 		switch(aircraftName) {
 		case "ATR-72":
 			_theVTail =  new VTail(
 					aircraftName,
 					"VTail",
 					"Data taken from ...",
-					21.9,  
+					21.9,
 					0.0,
 					1.30,
 					ComponentEnum.VERTICAL_TAIL,
@@ -509,13 +504,13 @@ public class Aircraft {
 					_theHTail
 					);
 			break;
-			
+
 		case "B747-100B":
 			_theVTail =  new VTail(
 					aircraftName,
 					"VTail",
 					"Data taken from REPORT-B747_100B",
-					56.2900,  
+					56.2900,
 					0.0,
 					2.8150,
 					ComponentEnum.VERTICAL_TAIL,
@@ -526,7 +521,7 @@ public class Aircraft {
 					);
 			break;
 		}
-		
+
 		_componentsList.add(_theVTail);
 		_liftingSurfaceList.add(_theVTail);
 	}
@@ -535,7 +530,7 @@ public class Aircraft {
 		_theCanard =  new Canard(
 				"Canard",
 				"Data taken from ...",
-				21.9,  
+				21.9,
 				0.0,
 				_theFuselage.get_heightFromGround().getEstimatedValue() + _theFuselage.get__diam_C().getEstimatedValue(),
 				ComponentEnum.CANARD,
@@ -551,36 +546,36 @@ public class Aircraft {
 
 	public void createLandingGear() {
 		_theLandingGear = new LandingGear(
-				"Landing Gear", 
-				"ATR 72 Landing Gear", 
+				"Landing Gear",
+				"ATR 72 Landing Gear",
 				12.5, 0., 0.);
 		_componentsList.add(_theLandingGear);
 	}
-	
+
 	/**
 	 * Overload of the default creator that recognize aircraft name and
 	 * sets it's landing gear data.
-	 * 
+	 *
 	 * @author Vittorio Trifari
 	 */
 	public void createLandingGear(String aircraftName) {
-		
+
 		switch(aircraftName) {
-		
+
 		case "ATR-72":
 			_theLandingGear = new LandingGear(
 					aircraftName,
-					"Landing Gear", 
-					"ATR 72 Landing Gear", 
+					"Landing Gear",
+					"ATR 72 Landing Gear",
 					12.5, 0., 0.);
 			_componentsList.add(_theLandingGear);
 			break;
-			
+
 		case "B747-100B":
 			_theLandingGear = new LandingGear(
 					aircraftName,
-					"Landing Gear", 
-					"B747-100B Landing Gear", 
+					"Landing Gear",
+					"B747-100B Landing Gear",
 					5., 0., 0.);
 			_componentsList.add(_theLandingGear);
 			break;
@@ -590,15 +585,15 @@ public class Aircraft {
 	public void createFuelTank() {
 
 		_theFuelTank = new FuelTank(
-				"Fuel Tank", 
-				"ATR 72 Fuel Tank", 
+				"Fuel Tank",
+				"ATR 72 Fuel Tank",
 				12.5, 0., 0.);
 		_componentsList.add(_theFuelTank);
 	}
 
 	/**
 	 * Overload of the creator of the fuel tank that recognize aircraft name and sets it's data.
-	 * 
+	 *
 	 * @author Vittorio Trifari
 	 */
 	public void createFuelTank(String aircraftName) {
@@ -607,23 +602,23 @@ public class Aircraft {
 		case "ATR-72":
 			_theFuelTank = new FuelTank(
 					aircraftName,
-					"Fuel Tank", 
-					"ATR 72 Fuel Tank", 
+					"Fuel Tank",
+					"ATR 72 Fuel Tank",
 					12.5, 0., 0.);
 			_componentsList.add(_theFuelTank);
 			break;
-			
+
 		case "B747-100B":
 			_theFuelTank = new FuelTank(
 					aircraftName,
-					"Fuel Tank", 
-					"B747-100B Fuel Tank", 
+					"Fuel Tank",
+					"B747-100B Fuel Tank",
 					34.14, 14.44, -2.8750);
 			_componentsList.add(_theFuelTank);
 			break;
 		}
 	}
-	
+
 	public void createPowerPlant() {
 
 		_thePowerPlant = new PowerPlant(
@@ -633,10 +628,10 @@ public class Aircraft {
 				this);
 		_componentsList.add(_thePowerPlant);
 	}
-	
+
 	/**
 	 * Overload of the default creator that recognize aircraft name and sets it's values.
-	 * 
+	 *
 	 * @author Vittorio Trifari
 	 */
 	public void createPowerPlant(String aircraftName) {
@@ -660,11 +655,11 @@ public class Aircraft {
 		_componentsList.add(_theSystems);
 
 	}
-	
+
 	/**
-	 * Overload of the default creator that recognize aircraft name and 
+	 * Overload of the default creator that recognize aircraft name and
 	 * sets it's data.
-	 * 
+	 *
 	 * @author Vittorio Trifari
 	 */
 	public void createSystems(String aircraftName) {
@@ -688,7 +683,7 @@ public class Aircraft {
 				_theFuselage == null &&
 				_theWing == null &&
 				_theNacelle == null
-				) 
+				)
 		{
 			_type = AeroConfigurationTypeEnum.EMPTY;
 		}
@@ -696,7 +691,7 @@ public class Aircraft {
 				_theFuselage != null &&
 				_theWing == null &&
 				_theNacelle == null
-				) 
+				)
 		{
 			_type = AeroConfigurationTypeEnum.FUSELAGE_ISOLATED;
 		}
@@ -704,7 +699,7 @@ public class Aircraft {
 				_theFuselage == null &&
 				_theWing != null &&
 				_theNacelle == null
-				) 
+				)
 		{
 			_type = AeroConfigurationTypeEnum.WING_ISOLATED;
 		}
@@ -712,7 +707,7 @@ public class Aircraft {
 				_theFuselage != null &&
 				_theWing != null &&
 				_theNacelle == null
-				) 
+				)
 		{
 			_type = AeroConfigurationTypeEnum.WING_FUSELAGE;
 		}
@@ -720,7 +715,7 @@ public class Aircraft {
 				_theFuselage != null &&
 				_theWing != null &&
 				_theNacelle != null
-				) 
+				)
 		{
 			_type = AeroConfigurationTypeEnum.WING_FUSELAGE_NACELLES;
 		}
@@ -729,7 +724,7 @@ public class Aircraft {
 				_theWing != null &&
 				_theNacelle != null &&
 				_theHTail != null
-				) 
+				)
 		{
 			_type = AeroConfigurationTypeEnum.WING_FUSELAGE_HTAIL_NACELLES;
 		}
@@ -806,9 +801,9 @@ public class Aircraft {
 		return _theFuselage;
 	}
 
-	/** 
+	/**
 	 * Return the object corresponding to enum constant
-	 * 
+	 *
 	 * @param component
 	 * @return
 	 */
@@ -850,7 +845,7 @@ public class Aircraft {
 
 		//		else {
 		//			return _thePropulsion;
-		//		} 
+		//		}
 	}
 
 
