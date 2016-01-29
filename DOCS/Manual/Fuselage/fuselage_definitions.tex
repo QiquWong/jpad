@@ -1,0 +1,266 @@
+\documentclass[a4paper]{article}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+
+\usepackage{geometry}
+\geometry{
+ a4paper,
+ total={210mm,297mm},
+ left=20mm,
+ right=20mm,
+ top=20mm,
+ bottom=20mm,
+ }
+
+\usepackage{newtxtext}% replaces the txfonts package;
+\usepackage[varg]{newtxmath}
+
+% Define text mono-spaced font
+% --> package txfonts uses TX mono (monospace typewriter font)
+\usepackage%
+   [scaled=0.810]% 0.865 , 0.84
+   {beramono}% set bera as mono-spaced font family
+
+\usepackage{mathtools}
+
+\usepackage{booktabs}
+\usepackage{longtable}
+
+\usepackage{paralist}
+
+\usepackage[
+  font=small,labelfont={bf,color=blue}, % labelsep=space,
+  textfont={color=blue},
+  justification=justified
+  ]{caption}
+
+% http://tex.stackexchange.com/questions/157115/how-to-retrieve-the-caption-of-a-table-longtable
+\captionsetup[longtable]{aboveskip=0pt}
+
+\usepackage{setspace}
+%\onehalfspacing
+%\doublespacing
+%\setstretch{1.5}
+
+\usepackage{nameref}
+
+\usepackage{subcaption}
+\usepackage{url}
+\usepackage{adjustbox}
+\usepackage{relsize}
+
+\usepackage{siunitx}
+
+\usepackage{graphicx}
+
+%\usepackage[colorinlistoftodos]{todonotes}
+
+\usepackage[%
+   backgroundcolor=orange!20,bordercolor=orange,
+   shadow,
+   textsize=footnotesize,
+   colorinlistoftodos
+   % ,disable % use this to disable the notes
+   ]{todonotes}
+
+\newcounter{todocounter}
+
+\newcommand{\TODO}[2][]{%
+   % initials of the author (optional) + note in the margin
+   \refstepcounter{todocounter}%
+   {%
+      \setstretch{0.85}% line spacing
+      \todo[backgroundcolor={orange!20},bordercolor=orange,size=\relsize{-1}]{%
+         \sffamily%
+         \thetodocounter.~\textbf{[\uppercase{#1}]:}~#2%
+      }%
+   }}
+
+\newcommand{\TODOInline}[2][]{%
+   % initials of the author (optional) + note in the margin
+   \refstepcounter{todocounter}%
+   {%
+      \setstretch{0.85}% line spacing
+      \todo[inline,backgroundcolor={orange!20},bordercolor=orange,size=\relsize{-1}]{%
+         \sffamily%
+         \thetodocounter.~\textbf{[\uppercase{#1}]:}~#2%
+      }%
+   }}
+
+%%% Examples of usage:
+%%% \TODO[ADM]{Continue this section taking material from Stevend \& Lewis book.}
+%%% \TODOInline[JSB]{Remove this sentence.}
+
+
+%-----------------------------------------------------
+
+\newcommand{\ADOpT}{\mbox{\sffamily ADOpT}}
+
+
+\begin{document}
+
+\listoftodos
+
+\bigskip
+\noindent
+\hrule
+
+\bigskip
+
+\section{Fuselage definitions}
+The fuselage in \ADOpT{} is conceptually divided three in subparts:
+\begin{compactitem}
+\item
+the \emph{nose} (front part, subscript `N'),
+\item
+the \emph{cylindrical body} (central part with constant cross section, subscript `C'), and
+\item
+the \emph{tail cone} (rear part, subscript `T').
+\end{compactitem}
+
+\medskip
+The shape of the fuselage is defined on the basis of a number of \emph{outline curves}.
+Outlines are associated to the different views of the body.
+
+The sideview outline (leftview or also $\text{\textit{XZ}}$-outline) is shown in Figure~\ref{fig:Fuselage:Sideview}
+as the union of two curves\,---\,\emph{upper} and \emph{lower} outlines\,---\,in the $\text{\textit{XZ}}$ plane, 
+giving the silhouette of the body as seen from the 
+negative $Y$-axis. A close up view of the nose is shown in Figure~\ref{fig:Fuselage:Sideview:Nose}.
+
+In Figure~\ref{fig:Fuselage:Sideview} is also shown the topview outline (also $\text{\textit{XY}}$-outline)
+as the union of two curves\,---\,\emph{right} and \emph{left} outlines\,---\,in the $\text{\textit{XY}}$ plane 
+representing the silhouette of the body as seen from the positive $Z$-axis.
+
+\begin{figure}[p]
+\centering
+\adjincludegraphics[
+         angle=90,
+         height=0.95\textheight, % width=1.0\linewidth,
+         trim={{0.0\width} {0.0\width} {0.0\width} {0.0\width}}, clip % llx lly urx ury
+      ]{Fuselage_Nomenclature_Sideview_Topview.pdf}
+\caption{Fuselage sideview ($\text{\textit{XZ}}$) and topview ($\text{\textit{XY}}$).}
+\label{fig:Fuselage:Sideview}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\adjincludegraphics[
+         width=0.55\linewidth,
+         trim={{0.0\width} {0.0\width} {0.0\width} {0.0\width}}, clip % llx lly urx ury
+      ]{Fuselage_Nomenclature_Sideview_Nose.pdf}
+\caption{Fuselage sideview. Nose definitions.}
+\label{fig:Fuselage:Sideview:Nose}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\adjincludegraphics[
+         width=0.55\linewidth,
+         trim={{0.0\width} {0.0\width} {0.0\width} {0.0\width}}, clip % llx lly urx ury
+      ]{Fuselage_Nomenclature_Sectionview.pdf}
+\caption{Generic fuselage cross section at station $X$.}
+\label{fig:Fuselage:Sectionview}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\adjincludegraphics[
+         width=0.55\linewidth,
+         trim={{0.0\width} {0.0\width} {0.0\width} {0.0\width}}, clip % llx lly urx ury
+      ]{Fuselage_Nomenclature_Sideview_Tail.pdf}
+\caption{Fuselage sideview. Tail definitions.}
+\label{fig:Fuselage:Sideview:Tail}
+\end{figure}
+
+
+
+A generic cross section of the fuselage is shown in Figure~\ref{fig:Fuselage:Sectionview}
+as seen from the negative $X$-axis. The two outlines here\,---\,\emph{upper} and \emph{lower} 
+outlines\,---\,are those defining the upper and lower part of the section shape.
+
+
+In Table~\ref{tab:Fuselage:Variables} are listed the main variables defining the 
+fuselage shape.
+
+%%-------------------------------------------------------------------------------------
+%\begin{table}[t]
+%\centering
+%\begin{tabular}{rl}
+%\toprule
+%Quantity & Description
+%\\
+%\midrule
+%$l_\mathrm{F}$ & fuselage total length
+%\\
+%$l_\mathrm{N}$ & fuselage nose length
+%\\
+%$l_\mathrm{C}$ & fuselage cylindrical trunc length
+%\\
+%$l_\mathrm{T}$ & fuselage tail cone length
+%\\
+%$d_\mathrm{C}\equiv h_\mathrm{B}$ & height of fuselage cylindrical trunc, i.\,e. maximum fuselage height
+%\\
+%$h_\mathrm{f}(X)$ & height of fuselage section at station $X$
+%\\
+%$w_\mathrm{B}$ & width of fuselage cylindrical trunc, i.\,e. maximum fuselage width
+%\\
+%$w_\mathrm{f}(X)$ & width of fuselage section at station $X$
+%\\
+%\bottomrule
+%\end{tabular}
+%\end{table}
+%%-------------------------------------------------------------------------------------
+% see: http://www.lorenzopantieri.net/LaTeX_files/TabelleRipartite.pdf
+\begingroup
+\centering
+\begin{longtable}[t]{rl}
+\caption[Fuselage variables.]{Fuselage variables.}\label{tab:Fuselage:Variables}\\
+\toprule
+Quantity & Description
+\\ \midrule
+\endfirsthead
+
+\multicolumn{2}{c}%
+  {{\bfseries\color{blue}\tablename\ \thetable{}: \nameref{tab:Fuselage:Variables}}}\\
+\multicolumn{2}{l}%
+  {\relsize{-1}({\itshape continued from previous page})}\\
+\toprule
+Quantity & Description
+\\ \midrule
+\endhead
+
+\midrule \multicolumn{2}{r}{{\relsize{-1}\itshape continued on next page}}
+\endfoot
+
+\bottomrule
+\endlastfoot
+
+$l_\mathrm{F}$ & fuselage total length
+\\
+$l_\mathrm{N}$ & fuselage nose length
+\\
+$l_\mathrm{C}$ & fuselage cylindrical trunc length
+\\
+$l_\mathrm{T}$ & fuselage tail cone length
+\\
+$d_\mathrm{C}\equiv h_\mathrm{B}$ & height of fuselage cylindrical trunc, i.\,e. maximum fuselage height
+\\
+$h_\mathrm{f}(X)$ & height of fuselage section at station $X$
+\\
+$w_\mathrm{B}$ & width of fuselage cylindrical trunk, i.\,e. maximum fuselage width
+\\
+$w_\mathrm{f}(X)$ & width of fuselage section at station $X$
+\\
+$h_\mathrm{f}(X)$ & height of fuselage section at station $X$
+\\
+\ldots & {\color{red}to be continued}
+\end{longtable}
+\endgroup
+
+\TODOInline[ADM]{Check definition of sideview outlines and their control points.}
+
+\TODOInline[DG]{Add definition of topview outlines and their control points.}
+
+
+\end{document}
