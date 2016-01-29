@@ -22,6 +22,7 @@ import aircraft.OperatingConditions;
 import aircraft.auxiliary.airfoil.MyAirfoil;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
+import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcAlpha0L;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.MeanAirfoil;
 import calculators.aerodynamics.AerodynamicCalc;
@@ -519,7 +520,10 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		cLMaxWingClean = _theAircraft.get_wing().getAerodynamics().get_cLMaxClean();
 		cLAlphaWing = _theAircraft.get_wing().getAerodynamics().getcLLinearSlopeNB();
 		alphaStar = meanAirfoil.getAerodynamics().get_alphaStar();
-		alphaZeroLift = _theAircraft.get_wing().getAerodynamics().getAlphaZeroLiftWingClean();
+		LSAerodynamicsManager theManager = _theAircraft.get_wing().getAerodynamics();
+		LSAerodynamicsManager.CalcAlpha0L theAlphaZeroLiftCalculator = theManager.new CalcAlpha0L();
+		alphaZeroLift = theAlphaZeroLiftCalculator.integralMeanExposedWithTwist().getEstimatedValue();
+		//alphaZeroLift = _theAircraft.get_wing().getAerodynamics().getAlphaZeroLiftWingClean();
 		cLZeroWing = _theAircraft.get_wing().getAerodynamics().getcLAlphaZero();
 
 		cLAlphaWingBody = _theAircraft

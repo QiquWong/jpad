@@ -1,9 +1,9 @@
 package configuration.enumerations;
 	
 /**
- * Airfoil stations
+ * Airfoil stations 
  *  
- * @author Manuela Ruocco
+ * @author MR
  *
  */
 
