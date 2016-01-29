@@ -362,12 +362,6 @@ public class Aircraft {
 					_theHTail,
 					_theVTail
 					);
-			_exposedWing.set_surface(_theWing.get_surfaceExposed());
-			_exposedWing.set_span(Amount.valueOf(_theWing.get_span().getEstimatedValue()-
-					_theFuselage.getWidthAtX(this
-							.get_wing()
-							.get_xLEMacActualBRF().getEstimatedValue()), SI.METER));
-			_exposedWing.set_semispan(Amount.valueOf((_exposedWing.get_semispan().getEstimatedValue()/2),SI.METER));
 			break;
 		}
 
