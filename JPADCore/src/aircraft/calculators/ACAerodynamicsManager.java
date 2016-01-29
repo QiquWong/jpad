@@ -546,7 +546,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		System.out.println(" alpha star " + alphaStar.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
 		System.out.println(" cL max " + cLMaxWingClean);
 		System.out.println(" cL alpha wing body " + cLAlphaWingBody);
-		System.out.println(" alpha zero lift " + alphaZeroLift);
+		System.out.println(" alpha zero lift " + alphaZeroLift*57.3);
 
 		double alphaWing = alphaBody.getEstimatedValue() +
 				_theAircraft.get_wing().get_iw().getEstimatedValue();
