@@ -3206,7 +3206,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			}
 
 			_alpha0L = Amount.valueOf(
-					AnglesCalc.alpha0LintegralMeanWithTwist(surface, semispan, 
+					AnglesCalc.alpha0LintegralMeanWithTwist(surfaceInteg, semispanInteg, 
 							_yStationsIntegral, _chordsVsY.toArray(), 
 							_alpha0lDistribution.toArray(), _twistDistribution.toArray()),
 					SI.RADIAN);
