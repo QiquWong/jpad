@@ -1345,7 +1345,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 		}
 
-		System.out.println(" -----------CLEAN-------------- ");
+		System.out.println("\n -----------CLEAN-------------- ");
 		System.out.println(" alpha max " + alphaMaxDouble*57.3);
 		System.out.println(" alpha star " + alphaStar*57.3);
 		System.out.println(" cL max " + cLMax);
@@ -2953,8 +2953,6 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 					AnglesCalc.alpha0LintegralMeanNoTwist(surface, semispan, 
 							_yStationsIntegral, _chordsVsY.toArray(), _alpha0lDistribution.toArray()),
 					SI.RADIAN);
-			System.out.println(" alpha dist " + _alpha0lDistribution.toString());
-			System.out.println(" chord dist " + _chordsVsY.toString());
 			_methodsMap.put(MethodEnum.INTEGRAL_MEAN_NO_TWIST, _alpha0L.doubleValue(SI.RADIAN));
 
 			return _alpha0L;
@@ -2978,9 +2976,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			if ( theAircraft.get_exposedWing() != null ){
 				//System.out.println(" y station integral " + Arrays.toString(_yStationsIntegral));
 				surfaceInteg = theAircraft.get_exposedWing().get_surface().getEstimatedValue();
-				System.out.println(" surface " + theAircraft.get_exposedWing().get_surface().getEstimatedValue());
 				semispanInteg = theAircraft.get_exposedWing().get_semispan().getEstimatedValue();
-				System.out.println(" smispan " + theAircraft.get_exposedWing().get_semispan().getEstimatedValue());
 				MyArray alphaZeroLiftExposed = new MyArray();
 				MyArray chordDistributionExposed = new MyArray();
 				alphaZeroLiftExposed.add(
@@ -2990,13 +2986,6 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 						.get(0).getAerodynamics()
 						.get_alphaZeroLift()
 						.getEstimatedValue());
-
-				System.out.println(" alpha zero lift root " + theAircraft
-						.get_exposedWing()
-				.get_theAirfoilsListExposed()
-				.get(0).getAerodynamics()
-				.get_alphaZeroLift().to(NonSI.DEGREE_ANGLE)
-				.getEstimatedValue());
 
 				chordDistributionExposed.add(theAircraft.get_wing().getChordAtYActual(
 						theAircraft
@@ -3025,13 +3014,6 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 							.get_alphaZeroLift()
 							.getEstimatedValue());
 
-					System.out.println("alpha zero lift kink " + theAircraft
-							.get_exposedWing()
-					.get_theAirfoilsListExposed()
-					.get(1).getAerodynamics()
-					.get_alphaZeroLift().to(NonSI.DEGREE_ANGLE)
-					.getEstimatedValue());
-
 					alphaZeroLiftExposed.add(
 							theAircraft
 							.get_exposedWing()
@@ -3039,13 +3021,6 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 							.get(2).getAerodynamics()
 							.get_alphaZeroLift()
 							.getEstimatedValue());
-
-					System.out.println(" alpha zero lift tip " + theAircraft
-							.get_exposedWing()
-					.get_theAirfoilsListExposed()
-					.get(2).getAerodynamics()
-					.get_alphaZeroLift().to(NonSI.DEGREE_ANGLE)
-					.getEstimatedValue());
 				}
 
 				double [] yStationAlpha0lExposed = new double [theAircraft.get_exposedWing().get_numberOfAirfoils()];
@@ -3080,15 +3055,162 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 			}
 			else{
-				return null;
+				surfaceInteg = surface;
+				semispanInteg = semispan;
+				System.out.println(" Exposed wing is the wing. There isn't fuselage in the aircraft.");
 			}
 			_alpha0L = Amount.valueOf(
 					AnglesCalc.alpha0LintegralMeanNoTwist(surfaceInteg, semispanInteg, 
 							_yStationsIntegral, _chordsVsY.toArray(), _alpha0lDistribution.toArray()),
 					SI.RADIAN);
-			System.out.println(" alpha dist " + _alpha0lDistribution.toString());
-			System.out.println(" chord dist " + _chordsVsY.toString());
 			_methodsMap.put(MethodEnum.INTEGRAL_MEAN_NO_TWIST, _alpha0L.doubleValue(SI.RADIAN));
+
+			return _alpha0L;
+		}
+		
+		public Amount<Angle>  integralMeanExposedWithTwist() {
+			if ( theAircraft.get_exposedWing() != null ){
+				//System.out.println(" y station integral " + Arrays.toString(_yStationsIntegral));
+				surfaceInteg = theAircraft.get_exposedWing().get_surface().getEstimatedValue();
+				semispanInteg = theAircraft.get_exposedWing().get_semispan().getEstimatedValue();
+				MyArray alphaZeroLiftExposed = new MyArray();
+				MyArray chordDistributionExposed = new MyArray();
+				MyArray twistExposed = new MyArray();
+				
+				alphaZeroLiftExposed.add(
+						theAircraft
+						.get_exposedWing()
+						.get_theAirfoilsListExposed()
+						.get(0).getAerodynamics()
+						.get_alphaZeroLift()
+						.getEstimatedValue());
+				
+				twistExposed.add(
+						theAircraft
+						.get_exposedWing()
+						.get_theAirfoilsListExposed()
+						.get(0).getGeometry()
+						.get_twist()
+						.getEstimatedValue());
+
+				chordDistributionExposed.add(theAircraft.get_wing().getChordAtYActual(
+						theAircraft
+						.get_exposedWing()
+						.get_theAirfoilsListExposed()
+						.get(0).getGeometry().get_yStation()));
+
+				chordDistributionExposed.add(theAircraft.get_wing().getChordAtYActual(
+						theAircraft.get_wing().get_semispan().getEstimatedValue()));
+
+				if ( theAircraft.get_exposedWing().get_numberOfAirfoils()<3){
+					alphaZeroLiftExposed.add(
+							theAircraft
+							.get_exposedWing()
+							.get_theAirfoilsListExposed()
+							.get(1).getAerodynamics()
+							.get_alphaZeroLift()
+							.getEstimatedValue());
+					
+					twistExposed.add(
+							theAircraft
+							.get_exposedWing()
+							.get_theAirfoilsListExposed()
+							.get(1).getGeometry()
+							.get_twist()
+							.getEstimatedValue());
+				}
+				else{
+					alphaZeroLiftExposed.add(
+							theAircraft
+							.get_exposedWing()
+							.get_theAirfoilsListExposed()
+							.get(1).getAerodynamics()
+							.get_alphaZeroLift()
+							.getEstimatedValue());
+
+					alphaZeroLiftExposed.add(
+							theAircraft
+							.get_exposedWing()
+							.get_theAirfoilsListExposed()
+							.get(2).getAerodynamics()
+							.get_alphaZeroLift()
+							.getEstimatedValue());
+					
+
+					twistExposed.add(
+							theAircraft
+							.get_exposedWing()
+							.get_theAirfoilsListExposed()
+							.get(1).getGeometry()
+							.get_twist()
+							.getEstimatedValue());
+					
+
+					twistExposed.add(
+							theAircraft
+							.get_exposedWing()
+							.get_theAirfoilsListExposed()
+							.get(2).getGeometry()
+							.get_twist()
+							.getEstimatedValue());
+				}
+
+				double [] yStationAlpha0lExposed = new double [theAircraft.get_exposedWing().get_numberOfAirfoils()];
+				double [] yStationChordExposed = new double [2];
+				double [] yStationTwistExposed = new double [theAircraft.get_exposedWing().get_numberOfAirfoils()];
+
+				for ( int i = 0 ; i < yStationAlpha0lExposed.length ; i ++){
+					yStationAlpha0lExposed[i] = 
+							theAircraft
+							.get_exposedWing()
+							.get_theAirfoilsListExposed()
+							.get(i).getGeometry().get_yStation();
+
+					yStationTwistExposed [i] = 
+							theAircraft
+							.get_exposedWing()
+							.get_theAirfoilsListExposed()
+							.get(i).getGeometry().get_yStation();
+				}
+
+				yStationChordExposed [0] = theAircraft
+						.get_exposedWing()
+						.get_theAirfoilsListExposed()
+						.get(0).getGeometry().get_yStation();
+
+				yStationChordExposed [1] = theAircraft
+						.get_exposedWing()
+						.get_theAirfoilsListExposed()
+						.get(2).getGeometry().get_yStation();
+
+
+
+
+				_alpha0lDistribution = MyArray.createArray(
+						alphaZeroLiftExposed
+						.interpolate(yStationAlpha0lExposed, _yStationsIntegral));
+
+				_chordsVsY = MyArray.createArray(
+						chordDistributionExposed
+						.interpolate(yStationChordExposed, _yStationsIntegral));
+				
+				_twistDistribution = MyArray.createArray(
+						twistExposed
+						.interpolate(yStationTwistExposed, _yStationsIntegral));
+
+			}
+			else{
+				surfaceInteg = surface;
+				semispanInteg = semispan;
+				System.out.println(" Exposed wing is the wing. There isn't fuselage in the aircraft.");
+			}
+
+			_alpha0L = Amount.valueOf(
+					AnglesCalc.alpha0LintegralMeanWithTwist(surface, semispan, 
+							_yStationsIntegral, _chordsVsY.toArray(), 
+							_alpha0lDistribution.toArray(), _twistDistribution.toArray()),
+					SI.RADIAN);
+			_methodsMap.put(MethodEnum.INTEGRAL_MEAN_TWIST, _alpha0L.doubleValue(SI.RADIAN));	
 
 			return _alpha0L;
 		}

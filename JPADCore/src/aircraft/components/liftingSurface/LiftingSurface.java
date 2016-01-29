@@ -2010,7 +2010,6 @@ public class LiftingSurface extends AeroComponent{
 			_maxThicknessVsY.add(_theAirfoilsList.get(i).getGeometry().get_maximumThicknessOverChord().doubleValue());
 
 			_alpha0VsY.add(_theAirfoilsList.get(i).getAerodynamics().get_alphaZeroLift().getEstimatedValue());
-			System.out.println("alpha zero lift wing " + _theAirfoilsList.get(i).getAerodynamics().get_alphaZeroLift().to(NonSI.DEGREE_ANGLE).getEstimatedValue());
 			_alphaStar_y.add(_theAirfoilsList.get(i).getAerodynamics().get_alphaStar().getEstimatedValue());
 			_clAlpha_y.add(_theAirfoilsList.get(i).getAerodynamics().get_clAlpha().doubleValue());
 			_alphaStall.add(_theAirfoilsList.get(i).getAerodynamics().get_alphaStall().getEstimatedValue());

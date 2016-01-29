@@ -62,11 +62,13 @@ public class Test_MR_07_LongitudinalStability {
 
 		//----------------------------------------------------------------------------------
 		// Default folders creation:
+		
 		MyConfiguration.initWorkingDirectoryTree();
 
 
 		//------------------------------------------------------------------------------------
 		// Operating Condition 
+		
 		OperatingConditions theConditions = new OperatingConditions();
 		theConditions.set_alphaCurrent(Amount.valueOf(toRadians(2.), SI.RADIAN));
 
@@ -81,8 +83,8 @@ public class Test_MR_07_LongitudinalStability {
 		// Wing
 		LiftingSurface theWing = aircraft.get_wing();
 
-		
-		
+
+
 		//--------------------------------------------------------------------------------------
 		// Aerodynamic managers
 		ACAnalysisManager theAnalysis = new ACAnalysisManager(theConditions);
@@ -92,21 +94,16 @@ public class Test_MR_07_LongitudinalStability {
 				theWing,
 				aircraft
 				); 
-	
 
-		
 		aircraft.get_wing().setAerodynamics(theLSAnalysis);
 
 		//--------------------------------------------------------------------------------------
 		// Set databases
-
-
 		theLSAnalysis.setDatabaseReaders(
 				new Pair(DatabaseReaderEnum.AERODYNAMIC, 
 						"Aerodynamic_Database_Ultimate.h5"),
 				new Pair(DatabaseReaderEnum.HIGHLIFT, "HighLiftDatabase.h5")
 				);		
-
 
 
 		//--------------------------------------------------------------------------------------
@@ -162,7 +159,6 @@ public class Test_MR_07_LongitudinalStability {
 		//--------------------------------------------------------------------------------------
 		// Assign airfoil
 
-
 		List<MyAirfoil> myAirfoilList = new ArrayList<MyAirfoil>();
 		myAirfoilList.add(0, airfoilRoot);
 		myAirfoilList.add(1, airfoilKink);
@@ -172,24 +168,33 @@ public class Test_MR_07_LongitudinalStability {
 		//theLSAnalysis.initializeDependentData();
 		aircraft.get_exposedWing().set_theAirfoilsList(myAirfoilList);
 		aircraft.get_exposedWing().updateAirfoilsGeometryExposedWing( aircraft);
-		
-		
-		////--------------------------------------------------------------------------------------
-		// Equivalent Wing
-		
-		System.out.println("\n\nEQUIVALENT WING:");
-		double yLocRootExposed = aircraft.get_exposedWing().get_theAirfoilsList().get(0).getGeometry().get_yStation();
-		System.out.println(" station root exposed wing  " + yLocRootExposed);
-		System.out.println(" station kink " + theWing.get_theAirfoilsList().get(1).getGeometry().get_yStation());
-		System.out.println(" wing span " + theWing.get_span().getEstimatedValue());
-		System.out.println(" wing span equivalent" + aircraft.get_exposedWing().get_span().getEstimatedValue());
+
 
 		//--------------------------------------------------------------------------------------
-		// Angle of attack
+		// Mean Airfoil
+		
 		LSAerodynamicsManager.MeanAirfoil theMeanAirfoilCalculator = theLSAnalysis.new MeanAirfoil();
 		MyAirfoil meanAirfoil = theMeanAirfoilCalculator.calculateMeanAirfoil(theWing);
 
+
+		////--------------------------------------------------------------------------------------
+		// Equivalent Wing
+
+		System.out.println("\n\nEQUIVALENT WING:");
+		double yLocRootExposed = aircraft.get_exposedWing().get_theAirfoilsListExposed().get(0).getGeometry().get_yStation();
+		System.out.println(" Root station exposed wing [m] = " + yLocRootExposed);
+		System.out.println(" Kink station exposed wing [m] = " + theWing.get_theAirfoilsList().get(1).getGeometry().get_yStation());
+		System.out.println(" Wing span [m] = " + theWing.get_span().getEstimatedValue());
+		System.out.println(" Exposed wing span [m] = "  + aircraft.get_exposedWing().get_span().getEstimatedValue());
+
+		LSAerodynamicsManager.CalcAlpha0L theAlphaZeroLiftCalculator = theLSAnalysis.new CalcAlpha0L();
+		Amount<Angle> alpha0LExposedWing = theAlphaZeroLiftCalculator.integralMeanExposedWithTwist();
+		Amount<Angle> alpha0LWing = theAlphaZeroLiftCalculator.integralMeanNoTwist();
+	
+		System.out.println("\nAlpha Zero Lift Exposed Wing [deg] = " + alpha0LExposedWing.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
+		System.out.println("Alpha Zero Lift Wing [deg] = " + alpha0LWing.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
 		
+
 		//--------------------------------------------------------------------------------------
 		// Angle of attack
 
@@ -214,16 +219,11 @@ public class Test_MR_07_LongitudinalStability {
 		// ------------------Wing---------------
 		double cLIsolatedWing;
 		double cLAlphaWingBody;
-		LSAerodynamicsManager.CalcAlpha0L theAlphaZeroLiftCalculator = theLSAnalysis.new CalcAlpha0L();
-		Amount<Angle> alpha0LExposedWing = theAlphaZeroLiftCalculator.integralMeanExposedNoTwist();
-		Amount<Angle> alpha0LWing = theAlphaZeroLiftCalculator.integralMeanNoTwist();
-		
+
 		System.out.println("\n \t Data: ");
 		System.out.println("Angle of attack alpha body [deg] = " + Math.ceil(alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue()));
 		System.out.println("Angle of incidence of wing [deg] = " +  Math.ceil(theWing.get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue()));
-		System.out.println("Alpha Zero Lift Exposed Wing [deg] = " + alpha0LExposedWing.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
-		System.out.println("Alpha Zero Lift Wing [deg] = " + alpha0LWing.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
-		
+
 		LSAerodynamicsManager.CalcCLAtAlpha theCLWingCalculator = theLSAnalysis.new CalcCLAtAlpha();
 		cLIsolatedWing = theCLWingCalculator.nasaBlackwellalphaBody(alphaBody);
 
@@ -243,16 +243,10 @@ public class Test_MR_07_LongitudinalStability {
 		double cLWingBody = aircraft.get_theAerodynamics().calculateCLAtAlphaWingBody(alphaBody, meanAirfoil);
 		System.out.println("-------------------------------------");
 		System.out.println(" CL of Wing Body at alpha body = " + cLWingBody);
-		
+
 		aircraft.get_theAerodynamics().PlotCLvsAlphaCurve(meanAirfoil, subfolderPath);
 		System.out.println("\n \t \t \tDONE PLOTTING CL VS ALPHA CURVE  ");
-		
-		System.out.println(" twist root " + airfoilRoot.getGeometry().get_twist().getEstimatedValue());
-		System.out.println(" twist root " + airfoilKink.getGeometry().get_twist().getEstimatedValue());
-		System.out.println(" twist root " + airfoilTip.getGeometry().get_twist().getEstimatedValue());
-		
-		System.out.println(" surface " + theWing.get_surface().getEstimatedValue());
-		System.out.println(" semispan " + theWing.get_semispan().getEstimatedValue());
+
 	}
 
 }

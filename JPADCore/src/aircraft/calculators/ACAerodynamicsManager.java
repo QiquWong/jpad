@@ -674,7 +674,6 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		if(subfolderPathCeck)
 		subfolderPathCLAlpha = JPADStaticWriteUtils.createNewFolder(folderPath + "CL alpha WingBody " + File.separator);
 
-		System.out.println(" alpha star " + alphaStar.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
 		for ( int i=0 ; i< nPoints ; i++){
 			alphaActual = Amount.valueOf(toRadians(alphaArrayPlotWingBody[0][i]), SI.RADIAN);
 			if ( alphaActual.getEstimatedValue() < alphaStar.getEstimatedValue() ){ 
