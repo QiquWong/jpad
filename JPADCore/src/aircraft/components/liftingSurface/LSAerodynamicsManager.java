@@ -4544,6 +4544,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			case AERODYNAMIC:
 				_aerodynamicDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath, databaseFileName); 
 				listDatabaseReaders.add(_aerodynamicDatabaseReader);
+				if( theAircraft!= null)
 				theAircraft.get_theAerodynamics().set_aerodynamicDatabaseReader(_aerodynamicDatabaseReader);
 				break;
 

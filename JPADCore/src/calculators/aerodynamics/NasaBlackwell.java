@@ -488,8 +488,6 @@ public class NasaBlackwell {
 				alpha.doubleValue(SI.RADIAN),
 				twist, 
 				alpha0l));
-		
-		System.out.println("alfa: " + Arrays.toString(alpha0l));
 
 		prepareSystemSolution();
 		calculateCLOverall();
