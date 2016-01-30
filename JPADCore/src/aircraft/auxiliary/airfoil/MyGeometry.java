@@ -14,7 +14,7 @@ import configuration.enumerations.ComponentEnum;
 import processing.core.PVector;
 import standaloneutils.customdata.MyArray;
 
-public class Geometry extends AuxiliaryComponentCalculator{
+public class MyGeometry extends AuxiliaryComponentCalculator{
 
 	private String _id = ""; 
 	public static int idCounter = 0;
@@ -44,13 +44,13 @@ public class Geometry extends AuxiliaryComponentCalculator{
 
 	// Non dimensional coordinate of the airfoil along the semi-span
 	private Double _yStation = 0.;
-	private Airfoil _theAirfoil;
+	private MyAirfoil _theAirfoil;
 	private boolean isMirrored;
 	private ComponentEnum liftingSurfaceType;
 	private double _etaStation;
 	private double iw;
 
-	public Geometry(Airfoil airfoil, double yLoc) {	
+	public MyGeometry(MyAirfoil airfoil, double yLoc) {	
 
 		_id = airfoil.getId() + "0" + idCounter + "99";
 		idCounter++;

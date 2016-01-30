@@ -33,7 +33,7 @@ import standaloneutils.MyMathUtils;
 import standaloneutils.customdata.MyArray;
 import writers.JPADStaticWriteUtils;
 
-public class Aerodynamics extends AuxiliaryComponentCalculator{
+public class MyAerodynamics extends AuxiliaryComponentCalculator{
 
 	private String _id = ""; 
 	public static int idCounter = 0;
@@ -85,10 +85,10 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 	private Double _reynoldsNumberStall;
 
 	private double _machCr, _cdw = 0., _machCurrent;
-	private Geometry geometry;
-	private Airfoil _theAirfoil;
+	private MyGeometry geometry;
+	private MyAirfoil _theAirfoil;
 
-	public Aerodynamics(Airfoil airf, String aircraftName, AirfoilStationEnum station) {
+	public MyAerodynamics(MyAirfoil airf, String aircraftName, AirfoilStationEnum station) {
 		switch (aircraftName) {
 		case "ATR-72":
 			switch (station) {
@@ -107,13 +107,13 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			//TODO implement this 
 			switch (station) {
 			case ROOT:
-				new Aerodynamics(airf, aircraftName, AirfoilStationEnum.ROOT);
+				new MyAerodynamics(airf, aircraftName, AirfoilStationEnum.ROOT);
 				break;
 			case KINK:
-				new Aerodynamics(airf, aircraftName, AirfoilStationEnum.KINK);
+				new MyAerodynamics(airf, aircraftName, AirfoilStationEnum.KINK);
 				break;
 			case TIP:
-				new Aerodynamics(airf, aircraftName, AirfoilStationEnum.TIP);
+				new MyAerodynamics(airf, aircraftName, AirfoilStationEnum.TIP);
 				break;	
 			}
 			break;
@@ -121,7 +121,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 		
 	}
 
-	private void Aerodynamics(Airfoil airf, String string) {
+	private void Aerodynamics(MyAirfoil airf, String string) {
 		 switch (string) {
 		 
 		 case "23-018":
@@ -298,7 +298,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 		
 	
 
-	public Aerodynamics(Airfoil airf) {
+	public MyAerodynamics(MyAirfoil airf) {
 		
 		_id = airf.getId() + "1" + idCounter + "99";
 		idCounter++;
@@ -332,7 +332,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 		calculateCdWaveDrag = new CalculateCdWaveDrag();	
 	}
 	
-public Aerodynamics(Airfoil airf, String name) {
+public MyAerodynamics(MyAirfoil airf, String name) {
 	
 	 switch (name) {
 	 

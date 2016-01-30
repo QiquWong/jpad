@@ -485,8 +485,8 @@ public class LiftingSurface extends AeroComponent{
 
 		// The id must be initially 0 to properly read the airfoils 
 		MyAirfoil.idCounter = 0;
-		aircraft.auxiliary.airfoil.Geometry.idCounter = 0;
-		aircraft.auxiliary.airfoil.Aerodynamics.idCounter = 0;
+		aircraft.auxiliary.airfoil.MyGeometry.idCounter = 0;
+		aircraft.auxiliary.airfoil.MyAerodynamics.idCounter = 0;
 
 		// Create three default airfoils
 		_theAirfoilsList.add(new MyAirfoil(ls,0.));
@@ -519,8 +519,8 @@ public class LiftingSurface extends AeroComponent{
 
 		// The id must be initially 0 to properly read the airfoils 
 		MyAirfoil.idCounter = 0;
-		aircraft.auxiliary.airfoil.Geometry.idCounter = 0;
-		aircraft.auxiliary.airfoil.Aerodynamics.idCounter = 0;
+		aircraft.auxiliary.airfoil.MyGeometry.idCounter = 0;
+		aircraft.auxiliary.airfoil.MyAerodynamics.idCounter = 0;
 
 		// Create three default airfoils
 		_theAirfoilsList.add(new MyAirfoil(aircraftName, AirfoilStationEnum.ROOT , ls, 0.));

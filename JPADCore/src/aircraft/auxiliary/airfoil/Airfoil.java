@@ -8,7 +8,7 @@ import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.AirfoilStationEnum;
 import configuration.enumerations.AirfoilTypeEnum;
 
-public class MyAirfoil {
+public class Airfoil {
 
 	// NOTE: airfoil shape, means _unit chord_
 	// NOTE: all X's and Z's are non-dimensional
@@ -24,8 +24,8 @@ public class MyAirfoil {
 
 	AirfoilFamilyEnum _family;
 	AirfoilTypeEnum _type;
-	MyGeometry geometry;
-	MyAerodynamics aerodynamics;
+	Geometry geometry;
+	Aerodynamics aerodynamics;
 	double _chordLocal;
 	private LiftingSurface _theLiftingSurface;
 
@@ -70,7 +70,7 @@ public class MyAirfoil {
 	/** 
 	 * Initialize an airfoil with default values
 	 */
-	public MyAirfoil(LiftingSurface ls, Double yLoc) {
+	public Airfoil(LiftingSurface ls, Double yLoc) {
 
 		_id = ls.getObjectId() + idCounter + "99";
 		idCounter++;
@@ -78,11 +78,11 @@ public class MyAirfoil {
 		_type = AirfoilTypeEnum.CONVENTIONAL;
 		
 		_theLiftingSurface = ls;
-		geometry = new MyGeometry(this, yLoc);
-		aerodynamics = new MyAerodynamics(this);
+		geometry = new Geometry(this, yLoc);
+		aerodynamics = new Aerodynamics(this);
 	}
 	
-	public MyAirfoil(LiftingSurface ls, Double yLoc, String name) {
+	public Airfoil(LiftingSurface ls, Double yLoc, String name) {
 
 		_id = ls.getObjectId() + idCounter + "99";
 		idCounter++;
@@ -90,8 +90,8 @@ public class MyAirfoil {
 		_type = AirfoilTypeEnum.CONVENTIONAL;
 		
 		_theLiftingSurface = ls;
-		geometry = new MyGeometry(this, yLoc);
-		aerodynamics = new MyAerodynamics(this, name);
+		geometry = new Geometry(this, yLoc);
+		aerodynamics = new Aerodynamics(this, name);
 	}
 	
 	/**
@@ -99,7 +99,7 @@ public class MyAirfoil {
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public MyAirfoil(String aircraftName, LiftingSurface ls, Double yLoc) {
+	public Airfoil(String aircraftName, LiftingSurface ls, Double yLoc) {
 
 		_id = ls.getObjectId() + idCounter + "99";
 		idCounter++;
@@ -110,8 +110,8 @@ public class MyAirfoil {
 			_type = AirfoilTypeEnum.CONVENTIONAL;
 
 			_theLiftingSurface = ls;
-			geometry = new MyGeometry(this, yLoc);
-			aerodynamics = new MyAerodynamics(this);
+			geometry = new Geometry(this, yLoc);
+			aerodynamics = new Aerodynamics(this);
 			break;
 		
 		// TODO: put inside Geometry and Aerodynamics B747-100B correct data (actually there are the same data in both ATR-72 and B747-100B
@@ -120,8 +120,8 @@ public class MyAirfoil {
 			_type = AirfoilTypeEnum.MODERN_SUPERCRITICAL;
 
 			_theLiftingSurface = ls;
-			geometry = new MyGeometry(this, yLoc);
-			aerodynamics = new MyAerodynamics(this);
+			geometry = new Geometry(this, yLoc);
+			aerodynamics = new Aerodynamics(this);
 			break;
 		}
 	}
@@ -131,7 +131,7 @@ public class MyAirfoil {
 	 * 
 	 * @author Manuela Ruocco
 	 */
-	public MyAirfoil(String aircraftName, AirfoilStationEnum station, LiftingSurface ls, Double yLoc) {
+	public Airfoil(String aircraftName, AirfoilStationEnum station, LiftingSurface ls, Double yLoc) {
 
 		_id = ls.getObjectId() + idCounter + "99";
 		idCounter++;
@@ -141,8 +141,8 @@ public class MyAirfoil {
 			_type = AirfoilTypeEnum.CONVENTIONAL;
 
 			_theLiftingSurface = ls;
-			geometry = new MyGeometry(this, yLoc);
-			aerodynamics = new MyAerodynamics(this, aircraftName, station);
+			geometry = new Geometry(this, yLoc);
+			aerodynamics = new Aerodynamics(this, aircraftName, station);
 			break;
 		
 		// TODO: put inside Geometry and Aerodynamics B747-100B correct data (actually there are the same data in both ATR-72 and B747-100B
@@ -151,24 +151,24 @@ public class MyAirfoil {
 			_type = AirfoilTypeEnum.MODERN_SUPERCRITICAL;
 
 			_theLiftingSurface = ls;
-			geometry = new MyGeometry(this, yLoc);
-			aerodynamics = new MyAerodynamics(this);
+			geometry = new Geometry(this, yLoc);
+			aerodynamics = new Aerodynamics(this);
 			break;
 		}
 	}
 	
 	
 	
-	public MyAirfoil() {
-		geometry = new MyGeometry(this, 10000.0);
-		aerodynamics = new MyAerodynamics(this);
+	public Airfoil() {
+		geometry = new Geometry(this, 10000.0);
+		aerodynamics = new Aerodynamics(this);
 		_type = AirfoilTypeEnum.CONVENTIONAL;
 	}
 	
-	public MyAirfoil(LiftingSurface ls) {
+	public Airfoil(LiftingSurface ls) {
 		_theLiftingSurface = ls;
-		geometry = new MyGeometry(this, 10000.0);
-		aerodynamics = new MyAerodynamics(this);
+		geometry = new Geometry(this, 10000.0);
+		aerodynamics = new Aerodynamics(this);
 		_type = AirfoilTypeEnum.CONVENTIONAL;
 	}
 	
@@ -184,7 +184,7 @@ public class MyAirfoil {
 	}
 
 	public void initializeAerodynamics() {
-		aerodynamics = new MyAerodynamics(this);		
+		aerodynamics = new Aerodynamics(this);		
 	}
 
 	public static void populateKWaveDragMap() {
@@ -222,11 +222,11 @@ public class MyAirfoil {
 		this._type = _type;
 	}
 
-	public MyGeometry getGeometry() {
+	public Geometry getGeometry() {
 		return geometry;
 	}
 
-	public MyAerodynamics getAerodynamics() {
+	public Aerodynamics getAerodynamics() {
 		return aerodynamics;
 	}
 
@@ -234,7 +234,7 @@ public class MyAirfoil {
 		return _family;
 	}
 
-	public void setAerodynamics(MyAerodynamics aerodynamics) {
+	public void setAerodynamics(Aerodynamics aerodynamics) {
 		this.aerodynamics = aerodynamics;
 	}
 

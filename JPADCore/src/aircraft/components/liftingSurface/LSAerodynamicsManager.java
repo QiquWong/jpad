@@ -31,7 +31,7 @@ import com.sun.org.apache.bcel.internal.generic.NEWARRAY;
 import com.sun.org.apache.xml.internal.utils.ThreadControllerWrapper;
 
 import aircraft.OperatingConditions;
-import aircraft.auxiliary.airfoil.Aerodynamics;
+import aircraft.auxiliary.airfoil.MyAerodynamics;
 import aircraft.auxiliary.airfoil.MyAirfoil;
 import aircraft.componentmodel.InnerCalculator;
 import aircraft.componentmodel.componentcalcmanager.AerodynamicsManager;
