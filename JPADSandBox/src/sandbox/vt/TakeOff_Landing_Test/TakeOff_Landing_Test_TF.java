@@ -316,7 +316,7 @@ public class TakeOff_Landing_Test_TF {
 				iw
 				);
 
-		theTakeOffLandingCalculator.calculateTakeOffDistance();
+		theTakeOffLandingCalculator.calculateTakeOffDistance(null, false);
 		_stopTimeCalculation = System.currentTimeMillis();
 		_startTimeGraph = System.currentTimeMillis();
 		theTakeOffLandingCalculator.createTakeOffCharts();
