@@ -224,6 +224,7 @@ public class Test_MR_06_Wing {
 		myAirfoilList.add(2, airfoilTip);
 		theWing.set_theAirfoilsList(myAirfoilList);
 		theWing.updateAirfoilsGeometry(); 
+		theLSAnalysis.initializeDependentData();
 
 
 		// -----------------------------------------------------------------------

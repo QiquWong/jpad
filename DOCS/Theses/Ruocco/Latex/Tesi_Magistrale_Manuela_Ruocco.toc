@@ -1,0 +1,38 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\defcounter {refsection}{0}\relax 
+\select@language {italian}
+\defcounter {refsection}{0}\relax 
+\select@language {italian}
+\select@language {english}
+\select@language {italian}
+\select@language {english}
+\contentsline {part}{I\hspace {1em}Aircraft Design Overview}{1}{part.1}
+\contentsline {chapter}{\numberline {1}Aircraft Design}{2}{chapter.1}
+\contentsline {chapter}{\numberline {2}ADOpT applicaton overview}{3}{chapter.2}
+\contentsline {part}{II\hspace {1em}Development of Application}{4}{part.2}
+\contentsline {chapter}{\numberline {3}Introdution to Java}{5}{chapter.3}
+\contentsline {chapter}{\numberline {4}Work Object}{6}{chapter.4}
+\contentsline {section}{\numberline {4.1}Introduction}{6}{section.4.1}
+\contentsline {section}{\numberline {4.2}Input data from .XML file}{6}{section.4.2}
+\contentsline {section}{\numberline {4.3}Default Aircraft}{7}{section.4.3}
+\contentsline {subsection}{\numberline {4.3.1}How is made a default Aircraft}{8}{subsection.4.3.1}
+\contentsline {subsection}{\numberline {4.3.2}How is made a default Wing}{11}{subsection.4.3.2}
+\contentsline {section}{\numberline {4.4}Database in JPAD}{12}{section.4.4}
+\contentsline {subsection}{\numberline {4.4.1}Setup database}{12}{subsection.4.4.1}
+\contentsline {subsection}{\numberline {4.4.2}Assign database using an Aircraft object}{13}{subsection.4.4.2}
+\contentsline {subsection}{\numberline {4.4.3}Assign database using a Wing object}{13}{subsection.4.4.3}
+\contentsline {subsection}{\numberline {4.4.4}Developer's guide}{14}{subsection.4.4.4}
+\contentsline {part}{III\hspace {1em}Functionality Overview}{16}{part.3}
+\contentsline {chapter}{\numberline {5}Lift characteristics of a wing}{17}{chapter.5}
+\contentsline {chapter}{\numberline {6}Drag characteristics of a wing}{18}{chapter.6}
+\contentsline {chapter}{\numberline {7}Longitudinal stability of an aircraft}{19}{chapter.7}
+\contentsline {chapter}{\numberline {8}Minor Works}{20}{chapter.8}
+\contentsline {chapter}{Appendices}{}{section*.9}
+\contentsline {chapter}{\numberline {A}Java Reference}{22}{Appendix.a.A}
+\contentsline {section}{\numberline {A.1}Inheritance, Overriding and Polymorphism}{22}{section.a.A.1}
+\contentsline {section}{\numberline {A.2}Packages}{22}{section.a.A.2}
+\contentsline {section}{\numberline {A.3}Documentation}{23}{section.a.A.3}
+\contentsline {chapter}{Glossary}{25}{section*.10}
+\contentsline {chapter}{Acronyms}{27}{section*.12}
+\contentsline {chapter}{List of symbols}{28}{section*.14}
+\contentsline {chapter}{Bibliography}{30}{section*.16}
