@@ -261,13 +261,17 @@ public class TakeOff_Landing_Test_TP {
 		_startTimeCalculation = System.currentTimeMillis();
 		// temporal step
 		Amount<Duration> dt = Amount.valueOf(0.5, SI.SECOND);
-		Amount<Duration> dtRot = Amount.valueOf(2, SI.SECOND);
+		Amount<Duration> dtRot = Amount.valueOf(3, SI.SECOND);
 		Amount<Duration> dtHold = Amount.valueOf(0.5, SI.SECOND);
 		double mu = 0.025;
 		double mu_brake = 0.3;
 		double k_alpha_dot = 0.07; // [1/deg]
-		double alphaRed = -2; // [deg/s]
-		Amount<Length> wing_to_ground_distance = Amount.valueOf(5.41, SI.METER);
+		double kcLMax = 0.9;
+		double kRot = 1.05;
+		double kLO = 1.1;
+		double phi = 1.0;
+		double alphaRed = -4; // [deg/s]
+		Amount<Length> wing_to_ground_distance = Amount.valueOf(4.0, SI.METER);
 		Amount<Length> obstacle = Amount.valueOf(35, NonSI.FOOT).to(SI.METER);
 		Amount<Velocity> v_wind = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
 		Amount<Angle> alpha_ground = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
@@ -279,6 +283,10 @@ public class TakeOff_Landing_Test_TP {
 				dt,
 				dtRot,
 				dtHold,
+				kcLMax,
+				kRot,
+				kLO,
+				phi,
 				k_alpha_dot,
 				alphaRed,
 				mu,
@@ -290,15 +298,15 @@ public class TakeOff_Landing_Test_TP {
 				iw
 				);
 		
-//		theTakeOffLandingCalculator.initialize();
-//		theTakeOffLandingCalculator.calculateTakeOffDistance(null, false);
+		theTakeOffLandingCalculator.initialize();
+		theTakeOffLandingCalculator.calculateTakeOffDistance(null, false);
 		_stopTimeCalculation = System.currentTimeMillis();
-//		_startTimeGraph = System.currentTimeMillis();
-//		theTakeOffLandingCalculator.createTakeOffCharts();
-//		_stopTimeGraph = System.currentTimeMillis();
-		_startTimeBalanced = System.currentTimeMillis();
-		theTakeOffLandingCalculator.calculateBalancedFieldLength();
-		_stopTimeBalanced = System.currentTimeMillis();
+		_startTimeGraph = System.currentTimeMillis();
+		theTakeOffLandingCalculator.createTakeOffCharts();
+		_stopTimeGraph = System.currentTimeMillis();
+//		_startTimeBalanced = System.currentTimeMillis();
+//		theTakeOffLandingCalculator.calculateBalancedFieldLength();
+//		_stopTimeBalanced = System.currentTimeMillis();
 		_stopTimeTotal = System.currentTimeMillis();
 		
 		_elapsedTimeTotal = _stopTimeTotal - _startTimeCalculation;

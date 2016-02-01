@@ -31,10 +31,10 @@ import standaloneutils.customdata.CenterOfGravity;
 
 public class TakeOff_Landing_Test_TF {
 	
-	private static long _startTimeCalculation, _startTimeGraph, _stopTimeTotal, 
-						_stopTimeCalculation, _stopTimeGraph, _elapsedTimeTotal,
-						_elapsedTimeCalculation, _elapsedTimeGraph;
-
+	private static long _startTimeCalculation, _startTimeGraph, _startTimeBalanced, 
+						_stopTimeCalculation, _stopTimeGraph, _stopTimeBalanced, _stopTimeTotal,
+						_elapsedTimeTotal, _elapsedTimeCalculation, _elapsedTimeGraph, _elapsedTimeBalanced; 
+		
 	//------------------------------------------------------------------------------------------
 	// VARIABLE DECLARATION: 
 	@Option(name = "-i", aliases = { "--input" }, required = false,
@@ -292,7 +292,11 @@ public class TakeOff_Landing_Test_TF {
 		double mu = 0.025;
 		double mu_brake = 0.3;
 		double k_alpha_dot = 0.07; // [1/deg]
-		double alphaRed = -2; // [deg/s]
+		double kcLMax = 0.85;
+		double kRot = 1.05;
+		double kLO = 1.15;
+		double phi = 1.0;
+		double alphaRed = -4; // [deg/s]
 		Amount<Length> wing_to_ground_distance = Amount.valueOf(6.56, SI.METER);
 		Amount<Length> obstacle = Amount.valueOf(35, NonSI.FOOT).to(SI.METER);
 		Amount<Velocity> v_wind = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
@@ -305,6 +309,10 @@ public class TakeOff_Landing_Test_TF {
 				dt,
 				dtRot,
 				dtHold,
+				kcLMax,
+				kRot,
+				kLO,
+				phi,
 				k_alpha_dot,
 				alphaRed,
 				mu,
@@ -312,24 +320,30 @@ public class TakeOff_Landing_Test_TF {
 				wing_to_ground_distance,
 				obstacle,
 				v_wind,
-				alpha_ground,
+				alpha_ground, 
 				iw
 				);
 
+		theTakeOffLandingCalculator.initialize();
 		theTakeOffLandingCalculator.calculateTakeOffDistance(null, false);
 		_stopTimeCalculation = System.currentTimeMillis();
 		_startTimeGraph = System.currentTimeMillis();
 		theTakeOffLandingCalculator.createTakeOffCharts();
 		_stopTimeGraph = System.currentTimeMillis();
+//		_startTimeBalanced = System.currentTimeMillis();
+//		theTakeOffLandingCalculator.calculateBalancedFieldLength();
+//		_stopTimeBalanced = System.currentTimeMillis();
 		_stopTimeTotal = System.currentTimeMillis();
 		
 		_elapsedTimeTotal = _stopTimeTotal - _startTimeCalculation;
 		_elapsedTimeCalculation = _stopTimeCalculation - _startTimeCalculation;
 		_elapsedTimeGraph = _stopTimeGraph - _startTimeGraph;
+		_elapsedTimeBalanced = _stopTimeBalanced - _startTimeBalanced;
 		
 		System.out.println("\nANALYSIS TIME = " + (get_elapsedTime()) + " millisenconds");
-		System.out.println("\nCALCULATION TIME = " + (get_elapsedTimeCalculation()) + " millisenconds");
-		System.out.println("\nGRAPHICS TIME = " + (get_elapsedTimeGraph()) + " millisenconds");
+		System.out.println("\nCALCULATION TIME = " + (get_elapsedTimeCalculation()) + "millisenconds");
+		System.out.println("\nBALANCED FIELD LENGTH TIME = " + (get_elapsedTimeBalanced()) + "millisenconds");
+		System.out.println("\nGRAPHICS TIME = " + (get_elapsedTimeGraph()) + "millisenconds");		
 	}
 	
 	//------------------------------------------------------------------------------------------
@@ -348,5 +362,9 @@ public class TakeOff_Landing_Test_TF {
 
 	public static long get_elapsedTimeCalculation() {
 		return _elapsedTimeCalculation;
+	}
+
+	public static long get_elapsedTimeBalanced() {
+		return _elapsedTimeBalanced;
 	}
 }

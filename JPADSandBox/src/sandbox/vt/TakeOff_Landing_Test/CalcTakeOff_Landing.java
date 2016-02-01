@@ -76,14 +76,10 @@ public class CalcTakeOff_Landing {
 								totalForce, totalForceAborted;
 	private List<Amount<Length>> deltaGroundDistance, deltaGroundDistanceAborted, groundDistance,
 								 groundDistanceAborted, deltaVerticalDistance, verticalDistance;
-	private double kAlphaDot, mu, muBrake, cLmaxTO, kGround, alphaDotInitial, alphaRed, cL0, cLground,
+	private double kAlphaDot, kcLMax, kRot, kLO, phi, mu, muBrake, cLmaxTO, kGround, alphaDotInitial, alphaRed, cL0, cLground,
 				   kFailure = 1.0;
-	private final double kRot = 1.05,
-						 kLO = 1.1,
-						 kclMax = 0.85,
-						 k1 = 0.078,
-						 k2 = 0.365,
-						 phi = 1.0;
+	private final double k1 = 0.078,
+						 k2 = 0.365;
 	
 	// Statistics to be collected at every phase: (initialization of the lists through the builder
 	private TakeOffResultsMap takeOffResults = new TakeOffResultsMap();
@@ -119,6 +115,10 @@ public class CalcTakeOff_Landing {
 			Amount<Duration> dt,
 			Amount<Duration> dtRot, 
 			Amount<Duration> dtHold,
+			double kcLMax,
+			double kRot,
+			double kLO,
+			double phi,
 			double k_alpha_dot,
 			double alphaRed,
 			double mu,
@@ -137,6 +137,10 @@ public class CalcTakeOff_Landing {
 		this.dt = dt;
 		this.dtRot = dtRot;
 		this.dtHold = dtHold;
+		this.kcLMax = kcLMax;
+		this.kRot = kRot;
+		this.kLO = kLO;
+		this.phi = phi;
 		this.kAlphaDot = k_alpha_dot;
 		this.alphaRed = alphaRed;
 		this.mu = mu;
@@ -164,9 +168,14 @@ public class CalcTakeOff_Landing {
 		vLO = vSTakeOff.times(kLO);
 		
 		// Ground effect coefficient
-		kGround = (1 - (1.32*(wing_to_ground_distance.getEstimatedValue()/aircraft.get_wing().get_span().getEstimatedValue())))
-				/(1.05 + (7.4*(wing_to_ground_distance.getEstimatedValue()/aircraft.get_wing().get_span().getEstimatedValue())));
+//		kGround = (1 - (1.32*(wing_to_ground_distance.getEstimatedValue()/aircraft.get_wing().get_span().getEstimatedValue())))
+//				/(1.05 + (7.4*(wing_to_ground_distance.getEstimatedValue()/aircraft.get_wing().get_span().getEstimatedValue())));
 
+		// McCormick interpolated function --> See the excel file into JPAD DOCS
+		double hb = wing_to_ground_distance.divide(aircraft.get_wing().get_span().times(Math.PI/4)).getEstimatedValue();
+		kGround = - 622.44*(Math.pow(hb, 5)) + 624.46*(Math.pow(hb, 4)) - 255.24*(Math.pow(hb, 3))
+				  + 47.105*(Math.pow(hb, 2)) - 0.6378*hb + 0.0055;
+		
 		cL0 = highLiftCalculator.calcCLatAlphaHighLiftDevice(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 		cLground = highLiftCalculator.calcCLatAlphaHighLiftDevice(getAlphaGround().plus(iw));
 		
@@ -319,11 +328,18 @@ public class CalcTakeOff_Landing {
 		cL.add(getcLground());
 		lift.add(Amount.valueOf(0.0, SI.NEWTON));
 		loadFactor.add(0.0);
+//		cD.add(aircraft.get_theAerodynamics().get_cD0() 
+//				+ highLiftCalculator.getDeltaCD()
+//				+ aircraft.get_landingGear().get_deltaCD0() 
+//				+ ((Math.pow(cL.get(0),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald()))
+//				- kGround*((Math.pow(cL.get(0),2))/(Math.PI*aircraft.get_wing().get_aspectRatio())));
+		
 		cD.add(aircraft.get_theAerodynamics().get_cD0() 
 				+ highLiftCalculator.getDeltaCD()
 				+ aircraft.get_landingGear().get_deltaCD0() 
-				+ ((Math.pow(cL.get(0),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald()))
-				- kGround*((Math.pow(cL.get(0),2))/(Math.PI*aircraft.get_wing().get_aspectRatio())));
+				+ (kGround*((Math.pow(cL.get(0),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald())))
+				);
+		
 		drag.add(Amount.valueOf(0.0, SI.NEWTON));
 		friction.add(aircraft.get_weights().get_MTOW().times(mu));
 		totalForce.add(thrustHorizontal.get(0).minus(friction.get(0)));
@@ -472,11 +488,18 @@ public class CalcTakeOff_Landing {
 
 				loadFactor.add(lift.get(i).divide(aircraft.get_weights().get_MTOW()).getEstimatedValue());
 
+//				cD.add(aircraft.get_theAerodynamics().get_cD0() 
+//						+ highLiftCalculator.getDeltaCD()
+//						+ aircraft.get_landingGear().get_deltaCD0() 
+//						+ ((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald()))
+//						- kGround*((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio())));
+				
 				cD.add(aircraft.get_theAerodynamics().get_cD0() 
 						+ highLiftCalculator.getDeltaCD()
 						+ aircraft.get_landingGear().get_deltaCD0() 
-						+ ((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald()))
-						- kGround*((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio())));
+						+ (kGround*((Math.pow(cL.get(0),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald())))
+						);
+				
 				drag.add(Amount.valueOf(
 						0.5
 						*aircraft.get_wing().get_surface().getEstimatedValue()
@@ -561,11 +584,18 @@ public class CalcTakeOff_Landing {
 
 				loadFactor.add(lift.get(i).divide(aircraft.get_weights().get_MTOW()).getEstimatedValue());
 
+//				cD.add(1.1*(aircraft.get_theAerodynamics().get_cD0() 
+//						+ highLiftCalculator.getDeltaCD()
+//						+ aircraft.get_landingGear().get_deltaCD0() 
+//						+ ((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald()))
+//						- kGround*((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()))));
+				
 				cD.add(1.1*(aircraft.get_theAerodynamics().get_cD0() 
 						+ highLiftCalculator.getDeltaCD()
 						+ aircraft.get_landingGear().get_deltaCD0() 
-						+ ((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald()))
-						- kGround*((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()))));
+						+ (kGround*((Math.pow(cL.get(0),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald())))
+						));
+				
 				drag.add(Amount.valueOf(
 						0.5
 						*aircraft.get_wing().get_surface().getEstimatedValue()
@@ -638,7 +668,7 @@ public class CalcTakeOff_Landing {
 		Amount<Duration> dtRotation = dt.times(0.5);
 
 		// alpha_dot_initial calculation
-		double cLatLiftOff = highLiftCalculator.getcL_Max_Flap()/(Math.pow(kLO, 2));
+		double cLatLiftOff = cLmaxTO/(Math.pow(kLO, 2));
 		double alphaLiftOff = (cLatLiftOff - cL0)/highLiftCalculator.getcLalpha_new();
 		alphaDotInitial = (((alphaLiftOff - iw.getEstimatedValue()) - alpha.get(0).getEstimatedValue())/(dtRot.getEstimatedValue()));
 		
@@ -686,17 +716,31 @@ public class CalcTakeOff_Landing {
 
 				// CD cases
 				if(cL.get(i) <= 1.2)
+//					cD.add(aircraft.get_theAerodynamics().get_cD0() 
+//							+ highLiftCalculator.getDeltaCD()
+//							+ aircraft.get_landingGear().get_deltaCD0() 
+//							+ ((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald()))
+//							- kGround*((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio())));
+					
 					cD.add(aircraft.get_theAerodynamics().get_cD0() 
 							+ highLiftCalculator.getDeltaCD()
 							+ aircraft.get_landingGear().get_deltaCD0() 
-							+ ((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald()))
-							- kGround*((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio())));
+							+ (kGround*((Math.pow(cL.get(0),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald())))
+							);
 				else
+//					cD.add(aircraft.get_theAerodynamics().get_cD0() 
+//							+ highLiftCalculator.getDeltaCD()
+//							+ aircraft.get_landingGear().get_deltaCD0() 
+//							+ ((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald()))
+//							- kGround*((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()))
+//							+ k1*(cL.get(i)-1.2)
+//							+ k2*(Math.pow((cL.get(i)-1.2), 2))
+//							);
+					
 					cD.add(aircraft.get_theAerodynamics().get_cD0() 
 							+ highLiftCalculator.getDeltaCD()
 							+ aircraft.get_landingGear().get_deltaCD0() 
-							+ ((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald()))
-							- kGround*((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()))
+							+ (kGround*((Math.pow(cL.get(0),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald())))
 							+ k1*(cL.get(i)-1.2)
 							+ k2*(Math.pow((cL.get(i)-1.2), 2))
 							);
@@ -808,19 +852,33 @@ public class CalcTakeOff_Landing {
 
 				// CD cases
 				if(cL.get(i) <= 1.2)
-					cD.add(1.1*(aircraft.get_theAerodynamics().get_cD0() 
+//					cD.add(aircraft.get_theAerodynamics().get_cD0() 
+//							+ highLiftCalculator.getDeltaCD()
+//							+ aircraft.get_landingGear().get_deltaCD0() 
+//							+ ((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald()))
+//							- kGround*((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio())));
+					
+					cD.add(aircraft.get_theAerodynamics().get_cD0() 
 							+ highLiftCalculator.getDeltaCD()
 							+ aircraft.get_landingGear().get_deltaCD0() 
-							+ ((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald()))
-							- kGround*((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()))));
+							+ (kGround*((Math.pow(cL.get(0),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald())))
+							);
 				else
-					cD.add(1.1*(aircraft.get_theAerodynamics().get_cD0() 
+//					cD.add(aircraft.get_theAerodynamics().get_cD0() 
+//							+ highLiftCalculator.getDeltaCD()
+//							+ aircraft.get_landingGear().get_deltaCD0() 
+//							+ ((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald()))
+//							- kGround*((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()))
+//							+ k1*(cL.get(i)-1.2)
+//							+ k2*(Math.pow((cL.get(i)-1.2), 2))
+//							);
+					
+					cD.add(aircraft.get_theAerodynamics().get_cD0() 
 							+ highLiftCalculator.getDeltaCD()
 							+ aircraft.get_landingGear().get_deltaCD0() 
-							+ ((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald()))
-							- kGround*((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()))
+							+ (kGround*((Math.pow(cL.get(0),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald())))
 							+ k1*(cL.get(i)-1.2)
-							+ k2*(Math.pow((cL.get(i)-1.2), 2)))
+							+ k2*(Math.pow((cL.get(i)-1.2), 2))
 							);
 
 				drag.add(Amount.valueOf(
@@ -966,9 +1024,9 @@ public class CalcTakeOff_Landing {
 		while (verticalDistance.get(i-1).isLessThan(obstacle)) {
 
 			// time step selection
-			double checkValue = (((kclMax*cLmaxTO) - (cL.get(i-1)))/(kclMax*cLmaxTO))*100;
+			double checkValue = (((kcLMax*cLmaxTO) - (cL.get(i-1)))/(kcLMax*cLmaxTO))*100;
 			if ((checkValue <= 1) // 1% = threshold 
-					&& (((kclMax*cLmaxTO) - (cL.get(i-1))) > 0.0)
+					&& (((kcLMax*cLmaxTO) - (cL.get(i-1))) > 0.0)
 					&& ((cL.get(i-1) - cL.get(i-2))>0)) 
 				dt = dtFit;
 			else
@@ -991,7 +1049,7 @@ public class CalcTakeOff_Landing {
 				tHold  = time.get(i-1).getMaximumValue();
 
 			// alpha_dot cases
-			if ((cL.get(i-1) < kclMax*cLmaxTO)
+			if ((cL.get(i-1) < kcLMax*cLmaxTO)
 					&& ((cL.get(i-1) - cL.get(i-2))>0)
 					&& (
 							(tHold == 0) 
@@ -999,7 +1057,7 @@ public class CalcTakeOff_Landing {
 							)
 					)
 				alphaDot.add(alphaDotInitial*(1-(kAlphaDot*(alpha.get(i-1).getEstimatedValue() + iw.getEstimatedValue()))));
-			else if ((cL.get(i-1) >= kclMax*cLmaxTO) 
+			else if ((cL.get(i-1) >= kcLMax*cLmaxTO) 
 					&& (time.get(i-1).getEstimatedValue() <= (tHold + (n*dt.getEstimatedValue()))))  
 				alphaDot.add(0.0);
 			else if ((time.get(i-1).getEstimatedValue() > (tHold + (n*dt.getEstimatedValue())))
@@ -1011,11 +1069,18 @@ public class CalcTakeOff_Landing {
 					.times(Math.cos(gamma.get(i-1).to(SI.RADIAN).getEstimatedValue())).getEstimatedValue()))
 				alphaDot.add(((alpha.get(i-1).minus(alpha.get(i-2))).divide(dt.getEstimatedValue())).getEstimatedValue());
 
-			alpha.add(Amount.valueOf(
-					alpha.get(i-1).getEstimatedValue() + (alphaDot.get(i)*dt.getEstimatedValue()),
-					NonSI.DEGREE_ANGLE)
-					);
-
+			// alpha case
+			if (lift.get(i-1).isGreaterThan(
+					aircraft.get_weights().get_MTOW()
+					.times(Math.cos(gamma.get(i-1).to(SI.RADIAN).getEstimatedValue()))))
+				alpha.add(Amount.valueOf(
+						alpha.get(i-1).getEstimatedValue() + (alphaDot.get(i)*dt.getEstimatedValue()),
+						NonSI.DEGREE_ANGLE)
+						);
+			else if (lift.get(i-1).getEstimatedValue() <= (aircraft.get_weights().get_MTOW()
+					.times(Math.cos(gamma.get(i-1).to(SI.RADIAN).getEstimatedValue())).getEstimatedValue()))
+				alpha.add(alpha.get(i-1));
+			
 			if(aircraft.get_powerPlant().get_engineType() == EngineTypeEnum.TURBOPROP) {
 				thrust.add(Amount.valueOf(
 						ThrustCalc.calculateThrustDatabase(
@@ -1048,10 +1113,10 @@ public class CalcTakeOff_Landing {
 				thrustVertical.add(thrust.get(i).times(Math.sin(alpha.get(i).to(SI.RADIAN).getEstimatedValue())));
 			}
 
-			gammaDot.add((AtmosphereCalc.g0.getEstimatedValue()/(speed.get(i).plus(vWind).getEstimatedValue()))
+			gammaDot.add((AtmosphereCalc.g0.getEstimatedValue()/(speed.get(i-1).plus(vWind).getEstimatedValue()))
 					*((lift.get(i-1)
 							.plus(thrustVertical.get(i-1))
-							.minus(aircraft.get_weights().get_MTOW().times(Math.cos(gamma.get(i-1).getEstimatedValue()))).getEstimatedValue())
+							.minus(aircraft.get_weights().get_MTOW().times(Math.cos(gamma.get(i-1).to(SI.RADIAN).getEstimatedValue()))).getEstimatedValue())
 							/aircraft.get_weights().get_MTOW().getEstimatedValue())
 					*57.3);
 			gamma.add(Amount.valueOf(
@@ -1089,46 +1154,33 @@ public class CalcTakeOff_Landing {
 					.times(Math.cos(gamma.get(i-1).to(SI.RADIAN).getEstimatedValue())).getEstimatedValue()))
 				lift.add(aircraft.get_weights().get_MTOW().times(Math.cos(gamma.get(i).to(SI.RADIAN).getEstimatedValue())));
 
-			// check on lift -> if it's lower than W*cos(gamma), it has to be set as W*cos(gamma)
-			// the same on CL, gamma_dot, gamma and theta that has to be set to the one related to L=W*cos(gamma)
-			if(lift.get(i).getEstimatedValue() <= (aircraft.get_weights().get_MTOW()
-					.times(Math.cos(gamma.get(i).to(SI.RADIAN).getEstimatedValue())).getEstimatedValue())) {
-				lift.remove(i);
-				lift.add(aircraft.get_weights().get_MTOW().times(Math.cos(gamma.get(i-1).to(SI.RADIAN).getEstimatedValue())));
-				cL.remove(i);
-				cL.add((aircraft.get_weights().get_MTOW().times(2).times(Math.cos(gamma.get(i-1).to(SI.RADIAN).getEstimatedValue())).getEstimatedValue())
-						/(aircraft.get_wing().get_surface()
-								.times(theConditions.get_densityCurrent().getEstimatedValue())
-								.times(Math.pow(speed.get(i-1).getEstimatedValue(), 2))).getEstimatedValue());
-				gammaDot.remove(i);
-				gammaDot.add((AtmosphereCalc.g0.getEstimatedValue()/(speed.get(i-1).plus(vWind).getEstimatedValue()))
-						*((lift.get(i-1)
-								.plus(thrustVertical.get(i-1))
-								.minus(aircraft.get_weights().get_MTOW().times(Math.cos(gamma.get(i-1).getEstimatedValue()))).getEstimatedValue())
-								/aircraft.get_weights().get_MTOW().getEstimatedValue())
-						*57.3);
-				gamma.remove(i);
-				gamma.add(Amount.valueOf(
-						gamma.get(i-1).getEstimatedValue() + (gammaDot.get(i)*dt.getEstimatedValue()),
-						NonSI.DEGREE_ANGLE)
-						);
-				theta.remove(i);
-				theta.add(alpha.get(i-1).plus(gamma.get(i-1)));
-			}
-
 			// CD cases
 			if(cL.get(i) <= 1.2)
+//				cD.add(kFailure*(aircraft.get_theAerodynamics().get_cD0() 
+//						+ highLiftCalculator.getDeltaCD()
+//						+ aircraft.get_landingGear().get_deltaCD0() 
+//						+ ((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald()))
+//						- kGround*((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()))));
+				
 				cD.add(kFailure*(aircraft.get_theAerodynamics().get_cD0() 
 						+ highLiftCalculator.getDeltaCD()
 						+ aircraft.get_landingGear().get_deltaCD0() 
-						+ ((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald()))
-						- kGround*((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()))));
+						+ (kGround*((Math.pow(cL.get(0),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald())))
+						));
 			else
+//				cD.add(kFailure*(aircraft.get_theAerodynamics().get_cD0() 
+//						+ highLiftCalculator.getDeltaCD()
+//						+ aircraft.get_landingGear().get_deltaCD0() 
+//						+ ((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald()))
+//						- kGround*((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()))
+//						+ k1*(cL.get(i)-1.2)
+//						+ k2*(Math.pow((cL.get(i)-1.2), 2))
+//						));
+				
 				cD.add(kFailure*(aircraft.get_theAerodynamics().get_cD0() 
 						+ highLiftCalculator.getDeltaCD()
 						+ aircraft.get_landingGear().get_deltaCD0() 
-						+ ((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald()))
-						- kGround*((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()))
+						+ (kGround*((Math.pow(cL.get(0),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald())))
 						+ k1*(cL.get(i)-1.2)
 						+ k2*(Math.pow((cL.get(i)-1.2), 2))
 						));
@@ -1299,8 +1351,7 @@ public class CalcTakeOff_Landing {
 				cDAborted.add(aircraft.get_theAerodynamics().get_cD0() 
 						+ highLiftCalculator.getDeltaCD()
 						+ aircraft.get_landingGear().get_deltaCD0() 
-						+ ((Math.pow(cLAborted.get(iAborted),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald()))
-						- kGround*((Math.pow(cLAborted.get(iAborted),2))/(Math.PI*aircraft.get_wing().get_aspectRatio())));
+						+ (kGround*((Math.pow(cL.get(0),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald()))));
 				dragAborted.add(Amount.valueOf(
 						0.5
 						*aircraft.get_wing().get_surface().getEstimatedValue()
@@ -1380,8 +1431,7 @@ public class CalcTakeOff_Landing {
 				cDAborted.add(1.1*(aircraft.get_theAerodynamics().get_cD0() 
 						+ highLiftCalculator.getDeltaCD()
 						+ aircraft.get_landingGear().get_deltaCD0() 
-						+ ((Math.pow(cLAborted.get(iAborted),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald()))
-						- kGround*((Math.pow(cLAborted.get(iAborted),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()))));
+						+ (kGround*((Math.pow(cL.get(0),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald())))));
 				dragAborted.add(Amount.valueOf(
 						0.5
 						*aircraft.get_wing().get_surface().getEstimatedValue()
@@ -1431,8 +1481,7 @@ public class CalcTakeOff_Landing {
 				cDAborted.add(1.1*(aircraft.get_theAerodynamics().get_cD0() 
 						+ highLiftCalculator.getDeltaCD()
 						+ aircraft.get_landingGear().get_deltaCD0() 
-						+ ((Math.pow(cLAborted.get(iAborted),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald()))
-						- kGround*((Math.pow(cLAborted.get(iAborted),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()))));
+						+ (kGround*((Math.pow(cL.get(0),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald())))));
 				dragAborted.add(Amount.valueOf(
 						0.5
 						*aircraft.get_wing().get_surface().getEstimatedValue()
@@ -1490,11 +1539,10 @@ public class CalcTakeOff_Landing {
 	public void calculateBalancedFieldLength() {
 		
 		// failure speed array
-		// TODO: SEE WHY UNDER V_s_TO IT'S IMPOSSIBLE TO EVALUATE THE TAKE-OFF DISTANCE OEI
 		double[] failureSpeedArray = MyArrayUtils.linspace(
-				vSTakeOff.plus(vSTakeOff.times(0.1)).getEstimatedValue(),
+				vSTakeOff.times(1.09).getEstimatedValue(),
 				vLO.getEstimatedValue(),
-				5);
+				4);
 		// continued take-off array
 		double[] continuedTakeOffArray = new double[failureSpeedArray.length];
 		// aborted take-off array
@@ -2488,7 +2536,7 @@ public class CalcTakeOff_Landing {
 	}
 
 	public double getKclMax() {
-		return kclMax;
+		return kcLMax;
 	}
 
 	public double getK1() {
