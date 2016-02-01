@@ -44,13 +44,13 @@ public class Geometry extends AuxiliaryComponentCalculator{
 
 	// Non dimensional coordinate of the airfoil along the semi-span
 	private Double _yStation = 0.;
-	private MyAirfoil _theAirfoil;
+	private Airfoil _theAirfoil;
 	private boolean isMirrored;
 	private ComponentEnum liftingSurfaceType;
 	private double _etaStation;
 	private double iw;
 
-	public Geometry(MyAirfoil airfoil, double yLoc) {	
+	public Geometry(Airfoil airfoil, double yLoc) {	
 
 		_id = airfoil.getId() + "0" + idCounter + "99";
 		idCounter++;

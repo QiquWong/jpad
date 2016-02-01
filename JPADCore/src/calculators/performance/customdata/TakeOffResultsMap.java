@@ -70,6 +70,41 @@ public class TakeOffResultsMap extends PerformanceMap{
 	//-------------------------------------------------------------------------------------
 	// METHODS:
 	
+	/**************************************************************************************
+	 * This method initialize all lists in order to make reusable this map for other 
+	 * calculations.
+	 * 
+	 * @author Vittorio Trifari
+	 */
+	public void initialize() {
+		time.clear();
+		thrust.clear();
+		thrustHorizontal.clear();
+		thrustVertical.clear();
+		friction.clear();
+		lift.clear();
+		drag.clear();
+		totalForce.clear();
+		loadFactor.clear();
+		speed.clear();
+		meanSpeed.clear();
+		rateOfClimb.clear();
+		meanRateOfClimb.clear();
+		acceleration.clear();
+		meanAcceleration.clear();
+		deltaGruondDistance.clear();
+		groundDistance.clear();
+		deltaVerticalDistance.clear();
+		verticalDistance.clear();
+		alpha.clear(); 
+		alphaDot.clear();
+		gamma.clear(); 
+		gammaDot.clear();
+		theta.clear();
+		cL.clear();
+		cD.clear();
+	}
+	
 	/***************************************************************************************
 	 * This method collects all given values into the lists created by the builder.
 	 * 

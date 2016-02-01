@@ -31,6 +31,10 @@ import standaloneutils.customdata.CenterOfGravity;
 
 public class TakeOff_Landing_Test_TP {
 	
+	private static long _startTimeCalculation, _startTimeGraph, _startTimeBalanced, 
+						_stopTimeCalculation, _stopTimeGraph, _stopTimeBalanced, _stopTimeTotal,
+						_elapsedTimeTotal, _elapsedTimeCalculation, _elapsedTimeGraph, _elapsedTimeBalanced; 
+
 	//------------------------------------------------------------------------------------------
 	// VARIABLE DECLARATION: 
 	@Option(name = "-i", aliases = { "--input" }, required = false,
@@ -74,6 +78,7 @@ public class TakeOff_Landing_Test_TP {
 		// Operating Condition / Aircraft / AnalysisManager (geometry calculations)
 		OperatingConditions theCondition = new OperatingConditions();
 		theCondition.set_altitude(Amount.valueOf(0.0, SI.METER));
+		theCondition.calculate();
 
 		Aircraft aircraft = Aircraft.createDefaultAircraft("ATR-72");
 		aircraft.set_name("ATR-72");
@@ -115,45 +120,56 @@ public class TakeOff_Landing_Test_TP {
 
 		//AIRFOIL 1
 		double yLocRoot = 0.0;
-		MyAirfoil airfoilRoot = new MyAirfoil(theWing, yLocRoot, "23-018");
+		MyAirfoil airfoilRoot = theWing.get_theAirfoilsList().get(0);
 		airfoilRoot.getGeometry().update(yLocRoot);  // define chord
 		airfoilRoot.getGeometry().set_maximumThicknessOverChord(0.18); //REPORT
 		airfoilRoot.getGeometry().set_deltaYPercent(0.192 *airfoilRoot.getGeometry().get_maximumThicknessOverChord()*100 );
-		System.out.println("\nRoot Chord " + theWing.get_chordRoot().getEstimatedValue() );
-		System.out.println("Root maximum thickness " + airfoilRoot.getGeometry().get_maximumThicknessOverChord());
+		System.out.println("\n \n \t ROOT \nAirfoil Type: " + airfoilRoot.get_family());
+		System.out.println("Root Chord [m] = " + theWing.get_chordRoot().getEstimatedValue() );
+		System.out.println("Root maximum thickness = " + airfoilRoot.getGeometry().get_maximumThicknessOverChord());
 		System.out.println("CL max --> " + airfoilRoot.getAerodynamics().get_clMax());		
-		System.out.println("LE sharpness parameter Root " + airfoilRoot.getGeometry().get_deltaYPercent());
+		System.out.println("LE sharpness parameter Root = " + airfoilRoot.getGeometry().get_deltaYPercent());
+
 
 		//AIRFOIL 2
 		double yLocKink = theWing.get_spanStationKink() * theWing.get_semispan().getEstimatedValue();
-		MyAirfoil airfoilKink = new MyAirfoil(theWing, yLocKink, "23-015");
+		MyAirfoil airfoilKink = theWing.get_theAirfoilsList().get(1);
 		airfoilKink.getGeometry().update(yLocKink);   // define chord
 		airfoilKink.getGeometry().set_maximumThicknessOverChord(0.15); //REPORT
 		airfoilKink.getGeometry().set_deltaYPercent(0.192 *airfoilKink.getGeometry().get_maximumThicknessOverChord()*100 );
-		System.out.println("\nKink Station " + yLocKink);
-		System.out.println("Kink Chord " + theWing.get_chordKink().getEstimatedValue() );
-		System.out.println("Kink maximum thickness " + airfoilKink.getGeometry().get_maximumThicknessOverChord());
+		System.out.println("\n \n \t KINK \nAirfoil Type: " + airfoilKink.get_family());
+		System.out.println("Kink Station [m] = " + yLocKink);
+		System.out.println("Kink Chord [m] = " + theWing.get_chordKink().getEstimatedValue() );
+		System.out.println("Kink maximum thickness = " + airfoilKink.getGeometry().get_maximumThicknessOverChord());
 		System.out.println("CL max --> " + airfoilRoot.getAerodynamics().get_clMax());
-		System.out.println("LE sharpness parameter Kink " + airfoilKink.getGeometry().get_deltaYPercent());
+		System.out.println("LE sharpness parameter Kink = " + airfoilKink.getGeometry().get_deltaYPercent());
+
 
 		//AIRFOIL 3
 		double yLocTip = theWing.get_semispan().getEstimatedValue();
-		MyAirfoil airfoilTip = new MyAirfoil(theWing, yLocTip, "23-012");
+		MyAirfoil airfoilTip = theWing.get_theAirfoilsList().get(2);
 		airfoilTip.getGeometry().update(yLocRoot);  // define chord
 		airfoilTip.getGeometry().set_maximumThicknessOverChord(0.12); //REPORT
 		airfoilTip.getGeometry().set_deltaYPercent(0.192 *airfoilTip.getGeometry().get_maximumThicknessOverChord()*100 );
-		System.out.println("\ntip Chord " +theWing.get_chordTip().getEstimatedValue() );
-		System.out.println("Tip maximum thickness " + airfoilTip.getGeometry().get_maximumThicknessOverChord());
+		System.out.println("\n \n \t TIP \nAirfoil Type: " + airfoilKink.get_family());
+		System.out.println("tip Chord [m] = " +theWing.get_chordTip().getEstimatedValue() );
+		System.out.println("Tip maximum thickness = " + airfoilTip.getGeometry().get_maximumThicknessOverChord());
 		System.out.println("CL max --> " + airfoilRoot.getAerodynamics().get_clMax());
-		System.out.println("LE sharpness parameter Tip " + airfoilTip.getGeometry().get_deltaYPercent() + "\n");
+		System.out.println("LE sharpness parameter Tip = " + airfoilTip.getGeometry().get_deltaYPercent());
 
+
+		//--------------------------------------------------------------------------------------
 		// Assign airfoil
+
 		List<MyAirfoil> myAirfoilList = new ArrayList<MyAirfoil>();
 		myAirfoilList.add(0, airfoilRoot);
 		myAirfoilList.add(1, airfoilKink);
 		myAirfoilList.add(2, airfoilTip);
 		theWing.set_theAirfoilsList(myAirfoilList);
 		theWing.updateAirfoilsGeometry(); 
+		//theLSAnalysis.initializeDependentData();
+		aircraft.get_exposedWing().set_theAirfoilsList(myAirfoilList);
+		aircraft.get_exposedWing().updateAirfoilsGeometryExposedWing( aircraft);
 			
 		//----------------------------------------------------------------------------------
 		// High Lift Devices Input
@@ -242,7 +258,7 @@ public class TakeOff_Landing_Test_TP {
 		//----------------------------------------------------------------------------------
 		// TakeOff - Ground Roll Distance Test
 		//----------------------------------------------------------------------------------
-		
+		_startTimeCalculation = System.currentTimeMillis();
 		// temporal step
 		Amount<Duration> dt = Amount.valueOf(0.5, SI.SECOND);
 		Amount<Duration> dtRot = Amount.valueOf(2, SI.SECOND);
@@ -274,122 +290,47 @@ public class TakeOff_Landing_Test_TP {
 				iw
 				);
 		
-		theTakeOffLandingCalculator.calculateTakeOffDistance();
-		theTakeOffLandingCalculator.createTakeOffCharts();
+//		theTakeOffLandingCalculator.initialize();
+//		theTakeOffLandingCalculator.calculateTakeOffDistance(null, false);
+		_stopTimeCalculation = System.currentTimeMillis();
+//		_startTimeGraph = System.currentTimeMillis();
+//		theTakeOffLandingCalculator.createTakeOffCharts();
+//		_stopTimeGraph = System.currentTimeMillis();
+		_startTimeBalanced = System.currentTimeMillis();
+		theTakeOffLandingCalculator.calculateBalancedFieldLength();
+		_stopTimeBalanced = System.currentTimeMillis();
+		_stopTimeTotal = System.currentTimeMillis();
 		
-		// results print
-		System.out.println("\n\n\n------------------------------------------------------------");
-		System.out.println(" Ground Roll Results : ");
-		System.out.println("------------------------------------------------------------");
+		_elapsedTimeTotal = _stopTimeTotal - _startTimeCalculation;
+		_elapsedTimeCalculation = _stopTimeCalculation - _startTimeCalculation;
+		_elapsedTimeGraph = _stopTimeGraph - _startTimeGraph;
+		_elapsedTimeBalanced = _stopTimeBalanced - _startTimeBalanced;
 		
-		System.out.println("\nTime = ");
-		for(int i=0; i<theTakeOffLandingCalculator.getTime().size(); i++)
-			System.out.print(theTakeOffLandingCalculator.getTime().get(i) + " ");
-		
-		System.out.println("\n\nThrust = ");
-		for(int i=0; i<theTakeOffLandingCalculator.getThrust().size(); i++)
-			System.out.print(theTakeOffLandingCalculator.getThrust().get(i) + " ");
-		
-		System.out.println("\n\nThrust Horizontal = ");
-		for(int i=0; i<theTakeOffLandingCalculator.getThrust_horizontal().size(); i++)
-			System.out.print(theTakeOffLandingCalculator.getThrust_horizontal().get(i) + " ");
-		
-		System.out.println("\n\nThrust Vertical = ");
-		for(int i=0; i<theTakeOffLandingCalculator.getThrust_vertical().size(); i++)
-			System.out.print(theTakeOffLandingCalculator.getThrust_vertical().get(i) + " ");
-		
-		System.out.println("\n\nAlpha = ");
-		for(int i=0; i<theTakeOffLandingCalculator.getAlpha().size(); i++)
-			System.out.print(theTakeOffLandingCalculator.getAlpha().get(i) + " ");
-		
-		System.out.println("\n\nGamma = ");
-		for(int i=0; i<theTakeOffLandingCalculator.getGamma().size(); i++)
-			System.out.print(theTakeOffLandingCalculator.getGamma().get(i) + " ");
-		
-		System.out.println("\n\nTheta = ");
-		for(int i=0; i<theTakeOffLandingCalculator.getTheta().size(); i++)
-			System.out.print(theTakeOffLandingCalculator.getTheta().get(i) + " ");
-		
-		System.out.println("\n\nAlpha_dot = ");
-		for(int i=0; i<theTakeOffLandingCalculator.getAlpha_dot().size(); i++)
-			System.out.print(theTakeOffLandingCalculator.getAlpha_dot().get(i) + " ");
-		
-		System.out.println("\n\nGamma_dot = ");
-		for(int i=0; i<theTakeOffLandingCalculator.getGamma_dot().size(); i++)
-			System.out.print(theTakeOffLandingCalculator.getGamma_dot().get(i) + " ");
-		
-		System.out.println("\n\ncL = ");
-		for(int i=0; i<theTakeOffLandingCalculator.getcL().size(); i++)
-			System.out.print(theTakeOffLandingCalculator.getcL().get(i) + " ");
-		
-		System.out.println("\n\nLift = ");
-		for(int i=0; i<theTakeOffLandingCalculator.getLift().size(); i++)
-			System.out.print(theTakeOffLandingCalculator.getLift().get(i) + " ");
-		
-		System.out.println("\n\ncD = ");
-		for(int i=0; i<theTakeOffLandingCalculator.getcD().size(); i++)
-			System.out.print(theTakeOffLandingCalculator.getcD().get(i) + " ");
-		
-		System.out.println("\n\nDrag = ");
-		for(int i=0; i<theTakeOffLandingCalculator.getDrag().size(); i++)
-			System.out.print(theTakeOffLandingCalculator.getDrag().get(i) + " ");
-		
-		System.out.println("\n\nFriction = ");
-		for(int i=0; i<theTakeOffLandingCalculator.getFriction().size(); i++)
-			System.out.print(theTakeOffLandingCalculator.getFriction().get(i) + " ");
-		
-		System.out.println("\n\nForce_Total = ");
-		for(int i=0; i<theTakeOffLandingCalculator.getTotal_force().size(); i++)
-			System.out.print(theTakeOffLandingCalculator.getTotal_force().get(i) + " ");
-		
-		System.out.println("\n\nLoad_Factor = ");
-		for(int i=0; i<theTakeOffLandingCalculator.getLoadFactor().size(); i++)
-			System.out.print(theTakeOffLandingCalculator.getLoadFactor().get(i) + " ");
-		
-		System.out.println("\n\nAcceleration = ");
-		for(int i=0; i<theTakeOffLandingCalculator.getAcceleration().size(); i++)
-			System.out.print(theTakeOffLandingCalculator.getAcceleration().get(i) + " ");
-		
-		System.out.println("\n\nMean Acceleration = ");
-		for(int i=0; i<theTakeOffLandingCalculator.getMean_acceleration().size(); i++)
-			System.out.print(theTakeOffLandingCalculator.getMean_acceleration().get(i) + " ");
-		
-		System.out.println("\n\nSpeed = ");
-		for(int i=0; i<theTakeOffLandingCalculator.getSpeed().size(); i++)
-			System.out.print(theTakeOffLandingCalculator.getSpeed().get(i) + " ");
-		
-		System.out.println("\n\nMean Speed = ");
-		for(int i=0; i<theTakeOffLandingCalculator.getMean_speed().size(); i++)
-			System.out.print(theTakeOffLandingCalculator.getMean_speed().get(i) + " ");
-		
-		System.out.println("\n\nRate of Climb = ");
-		for(int i=0; i<theTakeOffLandingCalculator.getRateOfClimb().size(); i++)
-			System.out.print(theTakeOffLandingCalculator.getRateOfClimb().get(i) + " ");
-		
-		System.out.println("\n\nMean Rate of Climb = ");
-		for(int i=0; i<theTakeOffLandingCalculator.getMeanRateOfClimb().size(); i++)
-			System.out.print(theTakeOffLandingCalculator.getMeanRateOfClimb().get(i) + " ");
-		
-		System.out.println("\n\ndelta Ground Distance = ");
-		for(int i=0; i<theTakeOffLandingCalculator.getDelta_GroundDistance().size(); i++)
-			System.out.print(theTakeOffLandingCalculator.getDelta_GroundDistance().get(i) + " ");
-		
-		System.out.println("\n\nGround Distance = ");
-		for(int i=0; i<theTakeOffLandingCalculator.getGround_distance().size(); i++)
-			System.out.print(theTakeOffLandingCalculator.getGround_distance().get(i) + " ");
-		
-		System.out.println("\n\ndelta Vertical Distance = ");
-		for(int i=0; i<theTakeOffLandingCalculator.getDelta_VerticalDistance().size(); i++)
-			System.out.print(theTakeOffLandingCalculator.getDelta_VerticalDistance().get(i) + " ");
-		
-		System.out.println("\n\nVertical Distance = ");
-		for(int i=0; i<theTakeOffLandingCalculator.getVertical_distance().size(); i++)
-			System.out.print(theTakeOffLandingCalculator.getVertical_distance().get(i) + " ");
+		System.out.println("\nANALYSIS TIME = " + (get_elapsedTime()) + " millisenconds");
+		System.out.println("\nCALCULATION TIME = " + (get_elapsedTimeCalculation()) + "millisenconds");
+		System.out.println("\nBALANCED FIELD LENGTH TIME = " + (get_elapsedTimeBalanced()) + "millisenconds");
+		System.out.println("\nGRAPHICS TIME = " + (get_elapsedTimeGraph()) + "millisenconds");		
 	}
 	
 	//------------------------------------------------------------------------------------------
 	// GETTERS & SETTERS:
 	public File get_inputFile() {
 		return _inputFile;
+	}
+
+	public static long get_elapsedTime() {
+		return _elapsedTimeTotal;
+	}
+
+	public static long get_elapsedTimeGraph() {
+		return _elapsedTimeGraph;
+	}
+
+	public static long get_elapsedTimeCalculation() {
+		return _elapsedTimeCalculation;
+	}
+
+	public static long get_elapsedTimeBalanced() {
+		return _elapsedTimeBalanced;
 	}
 }

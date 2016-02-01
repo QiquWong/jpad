@@ -86,9 +86,9 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 
 	private double _machCr, _cdw = 0., _machCurrent;
 	private Geometry geometry;
-	private MyAirfoil _theAirfoil;
+	private Airfoil _theAirfoil;
 
-	public Aerodynamics(MyAirfoil airf, String aircraftName, AirfoilStationEnum station) {
+	public Aerodynamics(Airfoil airf, String aircraftName, AirfoilStationEnum station) {
 		switch (aircraftName) {
 		case "ATR-72":
 			switch (station) {
@@ -121,7 +121,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 		
 	}
 
-	private void Aerodynamics(MyAirfoil airf, String string) {
+	private void Aerodynamics(Airfoil airf, String string) {
 		 switch (string) {
 		 
 		 case "23-018":
@@ -298,7 +298,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 		
 	
 
-	public Aerodynamics(MyAirfoil airf) {
+	public Aerodynamics(Airfoil airf) {
 		
 		_id = airf.getId() + "1" + idCounter + "99";
 		idCounter++;
@@ -332,7 +332,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 		calculateCdWaveDrag = new CalculateCdWaveDrag();	
 	}
 	
-public Aerodynamics(MyAirfoil airf, String name) {
+public Aerodynamics(Airfoil airf, String name) {
 	
 	 switch (name) {
 	 

@@ -24,8 +24,8 @@ public class MyAirfoil {
 
 	AirfoilFamilyEnum _family;
 	AirfoilTypeEnum _type;
-	Geometry geometry;
-	Aerodynamics aerodynamics;
+	MyGeometry geometry;
+	MyAerodynamics aerodynamics;
 	double _chordLocal;
 	private LiftingSurface _theLiftingSurface;
 
@@ -78,8 +78,8 @@ public class MyAirfoil {
 		_type = AirfoilTypeEnum.CONVENTIONAL;
 		
 		_theLiftingSurface = ls;
-		geometry = new Geometry(this, yLoc);
-		aerodynamics = new Aerodynamics(this);
+		geometry = new MyGeometry(this, yLoc);
+		aerodynamics = new MyAerodynamics(this);
 	}
 	
 	public MyAirfoil(LiftingSurface ls, Double yLoc, String name) {
@@ -90,8 +90,8 @@ public class MyAirfoil {
 		_type = AirfoilTypeEnum.CONVENTIONAL;
 		
 		_theLiftingSurface = ls;
-		geometry = new Geometry(this, yLoc);
-		aerodynamics = new Aerodynamics(this, name);
+		geometry = new MyGeometry(this, yLoc);
+		aerodynamics = new MyAerodynamics(this, name);
 	}
 	
 	/**
@@ -110,8 +110,8 @@ public class MyAirfoil {
 			_type = AirfoilTypeEnum.CONVENTIONAL;
 
 			_theLiftingSurface = ls;
-			geometry = new Geometry(this, yLoc);
-			aerodynamics = new Aerodynamics(this);
+			geometry = new MyGeometry(this, yLoc);
+			aerodynamics = new MyAerodynamics(this);
 			break;
 		
 		// TODO: put inside Geometry and Aerodynamics B747-100B correct data (actually there are the same data in both ATR-72 and B747-100B
@@ -120,8 +120,8 @@ public class MyAirfoil {
 			_type = AirfoilTypeEnum.MODERN_SUPERCRITICAL;
 
 			_theLiftingSurface = ls;
-			geometry = new Geometry(this, yLoc);
-			aerodynamics = new Aerodynamics(this);
+			geometry = new MyGeometry(this, yLoc);
+			aerodynamics = new MyAerodynamics(this);
 			break;
 		}
 	}
@@ -141,8 +141,8 @@ public class MyAirfoil {
 			_type = AirfoilTypeEnum.CONVENTIONAL;
 
 			_theLiftingSurface = ls;
-			geometry = new Geometry(this, yLoc);
-			aerodynamics = new Aerodynamics(this, aircraftName, station);
+			geometry = new MyGeometry(this, yLoc);
+			aerodynamics = new MyAerodynamics(this, aircraftName, station);
 			break;
 		
 		// TODO: put inside Geometry and Aerodynamics B747-100B correct data (actually there are the same data in both ATR-72 and B747-100B
@@ -151,8 +151,8 @@ public class MyAirfoil {
 			_type = AirfoilTypeEnum.MODERN_SUPERCRITICAL;
 
 			_theLiftingSurface = ls;
-			geometry = new Geometry(this, yLoc);
-			aerodynamics = new Aerodynamics(this);
+			geometry = new MyGeometry(this, yLoc);
+			aerodynamics = new MyAerodynamics(this);
 			break;
 		}
 	}
@@ -160,15 +160,15 @@ public class MyAirfoil {
 	
 	
 	public MyAirfoil() {
-		geometry = new Geometry(this, 10000.0);
-		aerodynamics = new Aerodynamics(this);
+		geometry = new MyGeometry(this, 10000.0);
+		aerodynamics = new MyAerodynamics(this);
 		_type = AirfoilTypeEnum.CONVENTIONAL;
 	}
 	
 	public MyAirfoil(LiftingSurface ls) {
 		_theLiftingSurface = ls;
-		geometry = new Geometry(this, 10000.0);
-		aerodynamics = new Aerodynamics(this);
+		geometry = new MyGeometry(this, 10000.0);
+		aerodynamics = new MyAerodynamics(this);
 		_type = AirfoilTypeEnum.CONVENTIONAL;
 	}
 	
@@ -184,7 +184,7 @@ public class MyAirfoil {
 	}
 
 	public void initializeAerodynamics() {
-		aerodynamics = new Aerodynamics(this);		
+		aerodynamics = new MyAerodynamics(this);		
 	}
 
 	public static void populateKWaveDragMap() {
@@ -222,11 +222,11 @@ public class MyAirfoil {
 		this._type = _type;
 	}
 
-	public Geometry getGeometry() {
+	public MyGeometry getGeometry() {
 		return geometry;
 	}
 
-	public Aerodynamics getAerodynamics() {
+	public MyAerodynamics getAerodynamics() {
 		return aerodynamics;
 	}
 
@@ -234,7 +234,7 @@ public class MyAirfoil {
 		return _family;
 	}
 
-	public void setAerodynamics(Aerodynamics aerodynamics) {
+	public void setAerodynamics(MyAerodynamics aerodynamics) {
 		this.aerodynamics = aerodynamics;
 	}
 

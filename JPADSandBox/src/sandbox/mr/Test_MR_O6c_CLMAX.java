@@ -14,8 +14,8 @@ import org.jscience.physics.amount.Amount;
 import com.google.common.collect.TreeBasedTable;
 
 import aircraft.OperatingConditions;
-import aircraft.auxiliary.airfoil.Aerodynamics;
-import aircraft.auxiliary.airfoil.Geometry;
+import aircraft.auxiliary.airfoil.MyAerodynamics;
+import aircraft.auxiliary.airfoil.MyGeometry;
 import aircraft.auxiliary.airfoil.MyAirfoil;
 import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
