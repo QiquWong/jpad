@@ -7,6 +7,52 @@
 \usepackage {graphicx}
 \usepackage [svgnames]{xcolor}
 \usepackage[nowrite,infront,standard,swapnames,nouppercase]{frontespizio}
+
+
+%-------------------------------------------------------------------------------------
+% MathTime Professional 2
+
+\usepackage{newtxtext} % set Times as the default text font
+
+% The following loads mtpro and defines some common MTPro options [2, 4]
+
+\usepackage[complete,%
+   subscriptcorrection,slantedGreek,nofontinfo,%
+   mtpcal,mtpscr,% mtpluscal,%mtpcal,%
+   mtphrd]{mtpro2}
+
+%% see mtp2.tex
+
+% Options for blackboard bold fonts [2.9]:
+%   mtphrb - holey roman bold        mtpbb - blackboard bold
+%   mtphrd - holey roman bold dark   mtpbbd - blackboard bold dark
+%   mtphbi - holey bold italic       mtpbbi - blackboard bold italic
+
+% Options for alternate character sets [2.6, 2.7]:
+%   mtpcal - assigns Math Script to the math alphabets \mathcal and \mathbcal,
+%   overwriting the default math calligraphic typeface
+%   mtpccal - assigns Math Curly to the math alphabets \mathcal and \mathbcal,
+%   overwriting the default math calligraphic typeface
+%   mtpscr - assigns Math Script to the new math alphabets \mathscr and \mathbscr,
+%       leaving \mathcal unchanged
+%   mtpfrak - assigns Math Fraktur to a new math alphabet \mathfrak
+
+% Options for AMS symbols
+%   amssymbols - makes the mtpro2 AMS symbols available
+
+% Optionally load the following package to use heavy symbols in place of bold symbols
+%\usepackage{bm}
+
+%----------------------------------------------------------------------
+% font for Aspect Ratio
+
+%\usepackage{ar}% original package by Claudio Beccari (based on Computer Modern Roman)
+\usepackage[TM]{ar}% AR ligature based on Times font design
+%\newcommand{\AR}{{\ARtm}}
+%\newcommand{\ARb}{{\ARtmb}}
+
+
+
 \nofiles 
 \fontoptionnormal 
 \Universita {Napoli Federico II}
