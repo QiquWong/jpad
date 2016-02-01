@@ -26,7 +26,7 @@ public class Test_VC_complete_AC {
 	MyConfiguration.initWorkingDirectoryTree();	
 	
 	// Define the aircraft
-	Aircraft aircraft = Aircraft.createDefaultAircraft();
+	Aircraft aircraft = Aircraft.createDefaultAircraft("ATR-72");
 	aircraft.set_name("ATR-72");
 	
 	// Import aircraft from .xml file
