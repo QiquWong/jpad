@@ -182,17 +182,17 @@ public class Test_MR_07_LongitudinalStability {
 
 		System.out.println("\n\nEQUIVALENT WING:");
 		double yLocRootExposed = aircraft.get_exposedWing().get_theAirfoilsListExposed().get(0).getGeometry().get_yStation();
-		System.out.println(" Root station exposed wing [m] = " + yLocRootExposed);
-		System.out.println(" Kink station exposed wing [m] = " + theWing.get_theAirfoilsList().get(1).getGeometry().get_yStation());
-		System.out.println(" Wing span [m] = " + theWing.get_span().getEstimatedValue());
-		System.out.println(" Exposed wing span [m] = "  + aircraft.get_exposedWing().get_span().getEstimatedValue());
+		System.out.println(" Root station exposed wing (m) = " + yLocRootExposed);
+		System.out.println(" Kink station exposed wing (m) = " + theWing.get_theAirfoilsList().get(1).getGeometry().get_yStation());
+		System.out.println(" Wing span (m) = " + theWing.get_span().getEstimatedValue());
+		System.out.println(" Exposed wing span (m) = "  + aircraft.get_exposedWing().get_span().getEstimatedValue());
 
 		LSAerodynamicsManager.CalcAlpha0L theAlphaZeroLiftCalculator = theLSAnalysis.new CalcAlpha0L();
 		Amount<Angle> alpha0LExposedWing = theAlphaZeroLiftCalculator.integralMeanExposedWithTwist();
 		Amount<Angle> alpha0LWing = theAlphaZeroLiftCalculator.integralMeanNoTwist();
 	
-		System.out.println("\nAlpha Zero Lift Exposed Wing [deg] = " + alpha0LExposedWing.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
-		System.out.println("Alpha Zero Lift Wing [deg] = " + alpha0LWing.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
+		System.out.println("\nAlpha Zero Lift Exposed Wing (deg) = " + alpha0LExposedWing.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
+		System.out.println("Alpha Zero Lift Wing (deg) = " + alpha0LWing.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
 		
 
 		//--------------------------------------------------------------------------------------
@@ -221,8 +221,8 @@ public class Test_MR_07_LongitudinalStability {
 		double cLAlphaWingBody;
 
 		System.out.println("\n \t Data: ");
-		System.out.println("Angle of attack alpha body [deg] = " + Math.ceil(alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue()));
-		System.out.println("Angle of incidence of wing [deg] = " +  Math.ceil(theWing.get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue()));
+		System.out.println("Angle of attack alpha body (deg) = " + Math.ceil(alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue()));
+		System.out.println("Angle of incidence of wing (deg) = " +  Math.ceil(theWing.get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue()));
 
 		LSAerodynamicsManager.CalcCLAtAlpha theCLWingCalculator = theLSAnalysis.new CalcCLAtAlpha();
 		cLIsolatedWing = theCLWingCalculator.nasaBlackwellalphaBody(alphaBody);
@@ -247,6 +247,20 @@ public class Test_MR_07_LongitudinalStability {
 		aircraft.get_theAerodynamics().PlotCLvsAlphaCurve(meanAirfoil, subfolderPath);
 		System.out.println("\n \t \t \tDONE PLOTTING CL VS ALPHA CURVE  ");
 
+
+
+
+		// ------------------Downwash---------------
+		
+		System.out.println("\n-----Start of downwash calculation-----\n" );
+		
+		DownwashCalculator_07 theDownwashCalculator = new DownwashCalculator_07();
+		double dist = theDownwashCalculator.distanceZeroLiftLineACHorizontalTail(aircraft);
+		
+		System.out.println(" distance " + dist);
+		double downwashGradientLinear = theDownwashCalculator.calculateDownwashLinearDelft(aircraft, dist);
+		
+		System.out.println(" linear gradient " + downwashGradientLinear );
 	}
 
 }

@@ -150,6 +150,9 @@ public class ACAnalysisManager {
 				Amount.valueOf(
 						(aircraft.get_exposedWing().get_span().getEstimatedValue()/2),SI.METER)
 				);
+		aircraft.get_exposedWing().set_aspectRatio(
+				(Math.pow(aircraft.get_exposedWing().get_span().getEstimatedValue(),2))
+				/(aircraft.get_exposedWing().get_surface().getEstimatedValue()));
 		//aircraft.get_exposedWing().updateAirfoilsGeometryEquivalentWing(aircraft);
 		}
 

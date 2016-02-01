@@ -47,13 +47,13 @@ public class Test_MR_03_DownwashAircraft {
 			theAnalysis.updateGeometry(aircraft);
 			
 		
-			theAnalysis.doAnalysis(aircraft, 
-					AnalysisTypeEnum.AERODYNAMIC, 
-					AnalysisTypeEnum.BALANCE,
-					AnalysisTypeEnum.WEIGHTS,
-					AnalysisTypeEnum.PERFORMANCES, 
-					AnalysisTypeEnum.COSTS
-					);
+//			theAnalysis.doAnalysis(aircraft, 
+//					AnalysisTypeEnum.AERODYNAMIC, 
+//					AnalysisTypeEnum.BALANCE,
+//					AnalysisTypeEnum.WEIGHTS,
+//					AnalysisTypeEnum.PERFORMANCES, 
+//					AnalysisTypeEnum.COSTS
+//					);
 
 			aircraft.get_HTail().calculateGeometry();
 			aircraft.get_HTail().calculateACwACdistance(aircraft);
