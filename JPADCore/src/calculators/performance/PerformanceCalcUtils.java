@@ -106,6 +106,7 @@ public class PerformanceCalcUtils {
 			if(intersection[i] != 0.0)
 				intersectionSpeed.add(speed[i]);
 		
+		
 		speedMin = intersectionSpeed.get(0);
 		speedMax = intersectionSpeed.get(1);
 		
