@@ -26,8 +26,9 @@ public class Test_VC_complete_AC {
 	MyConfiguration.initWorkingDirectoryTree();	
 	
 	// Define the aircraft
+	// TODO: Have to deprecate -> Aircraft.createDefaultAircraft()
 	Aircraft aircraft = Aircraft.createDefaultAircraft("ATR-72");
-	aircraft.set_name("ATR-72");
+//	aircraft.set_name("ATR-72");
 	
 	// Import aircraft from .xml file
 //	importFile = MyConfiguration.inputDirectory + aircraftName;
@@ -56,8 +57,6 @@ public class Test_VC_complete_AC {
 						AnalysisTypeEnum.PERFORMANCES, 
 						AnalysisTypeEnum.COSTS
 						);		
-	
-	
 	
 
 	} // end Main method
