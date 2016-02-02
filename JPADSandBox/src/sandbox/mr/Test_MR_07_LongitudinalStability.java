@@ -252,15 +252,39 @@ public class Test_MR_07_LongitudinalStability {
 
 		// ------------------Downwash---------------
 		
+//		
+//		double angleOfIncidenceExposed = aircraft.get_wing().get_iw().getEstimatedValue()
+//				+ aircraft.get_exposedWing().get_twistDistributionExposed().get(0);
+//		double alphaZeroLiftRootExposed = aircraft.get_exposedWing().get_alpha0lDistributionExposed().get(0);
+//		
+//		System.out.println(" iw exposed " + angleOfIncidenceExposed );
+//		System.out.println( " alphaZeroLiftRootExposed " + alphaZeroLiftRootExposed*57.3 );
+		
 		System.out.println("\n-----Start of downwash calculation-----\n" );
 		
-		DownwashCalculator_07 theDownwashCalculator = new DownwashCalculator_07();
-		double dist = theDownwashCalculator.distanceZeroLiftLineACHorizontalTail(aircraft);
+		DownwashCalculator theDownwashCalculator = new DownwashCalculator(aircraft);
+		double dist = theDownwashCalculator.distanceZeroLiftLineACHorizontalTail();
 		
-		System.out.println(" distance " + dist);
-		double downwashGradientLinear = theDownwashCalculator.calculateDownwashLinearDelft(aircraft, dist);
+		//System.out.println(" distance " + dist);
+		double downwashGradientLinear = theDownwashCalculator.calculateDownwashGradientLinearDelft( dist);
 		
-		System.out.println(" linear gradient " + downwashGradientLinear );
+		//System.out.println(" linear gradient " + downwashGradientLinear );
+		
+		double newDist = theDownwashCalculator.distanceVortexShedPlaneACHTailNoDownwash(alphaBody);
+		//System.out.println(" new distance " + newDist);
+		Amount<Angle> alpha = Amount.valueOf(Math.toRadians(3), SI.RADIAN);
+		
+		theDownwashCalculator.calculateDownwashNonLinearDelftAtAlpha(alpha);
+		
+		theDownwashCalculator.plotDownwashDelftWithPath(subfolderPath);
+		
+
+		System.out.println("\n\n\t\t\tDONE PLOTTING DOWNWASH ANGLE vs ALPHA BODY");
+		
+		theDownwashCalculator.plotDownwashGradientDelftWithPath(subfolderPath);
+		theDownwashCalculator.plotZDistanceWithPath(subfolderPath);
+		
+		System.out.println("done");
 	}
 
 }

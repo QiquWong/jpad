@@ -118,7 +118,7 @@ public class Test_MR_03_DownwashAircraft {
 			// Creating the Calculator Object	
 			System.out.println("\n Start calculating Downwash gradiendt ... \n ");
 			
-			DownwashCalculator test = new DownwashCalculator(aircraft.get_wing().get_aspectRatio(), 
+			DownwashCalculator_03 test = new DownwashCalculator_03(aircraft.get_wing().get_aspectRatio(), 
 					aircraft.get_wing().get_taperRatioActual());
 	
 			double downwashDatcom=test.calculateDownwashDatcom(distAerodynamicCenter, distWingToHTail,
