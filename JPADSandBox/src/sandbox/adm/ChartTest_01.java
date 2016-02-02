@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.block.BlockBorder;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
@@ -100,6 +102,16 @@ public class ChartTest_01 extends Application {
 		chart.getLegend().setItemFont(new Font(fontName, Font.PLAIN, 14));
 		chart.getLegend().setFrame(BlockBorder.NONE);
 		//chart.getLegend().setHorizontalAlignment(HorizontalAlignment.CENTER);
+
+
+		NumberAxis rangeX = (NumberAxis) plot.getDomainAxis();
+        rangeX.setRange(-0.50, 1.50);
+		NumberAxis rangeY = (NumberAxis) chart.getXYPlot().getRangeAxis();
+		rangeY.setRange(-5, 10);
+		// rangeY.setTickUnit(new NumberTickUnit(0.1));
+
+
+
 		XYItemRenderer r = plot.getRenderer();
 		if (r instanceof XYLineAndShapeRenderer) {
 
