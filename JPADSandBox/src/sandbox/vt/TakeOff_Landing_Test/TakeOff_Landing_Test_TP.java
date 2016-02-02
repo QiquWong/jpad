@@ -269,6 +269,7 @@ public class TakeOff_Landing_Test_TP {
 		double kcLMax = 0.9;
 		double kRot = 1.05;
 		double kLO = 1.1;
+		double kFailure = 1.0;
 		double phi = 1.0;
 		double alphaRed = -4; // [deg/s]
 		Amount<Length> wing_to_ground_distance = Amount.valueOf(4.0, SI.METER);
@@ -286,6 +287,7 @@ public class TakeOff_Landing_Test_TP {
 				kcLMax,
 				kRot,
 				kLO,
+				kFailure,
 				phi,
 				k_alpha_dot,
 				alphaRed,
@@ -298,15 +300,15 @@ public class TakeOff_Landing_Test_TP {
 				iw
 				);
 		
-		theTakeOffLandingCalculator.initialize();
-		theTakeOffLandingCalculator.calculateTakeOffDistance(null, false);
+//		theTakeOffLandingCalculator.initialize();
+//		theTakeOffLandingCalculator.calculateTakeOffDistance(null, false);
 		_stopTimeCalculation = System.currentTimeMillis();
-		_startTimeGraph = System.currentTimeMillis();
-		theTakeOffLandingCalculator.createTakeOffCharts();
-		_stopTimeGraph = System.currentTimeMillis();
-//		_startTimeBalanced = System.currentTimeMillis();
-//		theTakeOffLandingCalculator.calculateBalancedFieldLength();
-//		_stopTimeBalanced = System.currentTimeMillis();
+//		_startTimeGraph = System.currentTimeMillis();
+//		theTakeOffLandingCalculator.createTakeOffCharts();
+//		_stopTimeGraph = System.currentTimeMillis();
+		_startTimeBalanced = System.currentTimeMillis();
+		theTakeOffLandingCalculator.calculateBalancedFieldLength();
+		_stopTimeBalanced = System.currentTimeMillis();
 		_stopTimeTotal = System.currentTimeMillis();
 		
 		_elapsedTimeTotal = _stopTimeTotal - _startTimeCalculation;

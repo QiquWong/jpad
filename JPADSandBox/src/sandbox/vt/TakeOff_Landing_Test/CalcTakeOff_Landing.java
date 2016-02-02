@@ -77,7 +77,7 @@ public class CalcTakeOff_Landing {
 	private List<Amount<Length>> deltaGroundDistance, deltaGroundDistanceAborted, groundDistance,
 								 groundDistanceAborted, deltaVerticalDistance, verticalDistance;
 	private double kAlphaDot, kcLMax, kRot, kLO, phi, mu, muBrake, cLmaxTO, kGround, alphaDotInitial, alphaRed, cL0, cLground,
-				   kFailure = 1.0;
+				   kFailure;
 	private final double k1 = 0.078,
 						 k2 = 0.365;
 	
@@ -87,7 +87,9 @@ public class CalcTakeOff_Landing {
 	MyInterpolatingFunction continuedTakeOffFitted = new MyInterpolatingFunction();
 	MyInterpolatingFunction abortedTakeOffFitted = new MyInterpolatingFunction();
 	// integration index
-	private int i, iAborted; 
+	private int i, iAborted;
+	private double[] failureSpeedArray, continuedTakeOffArray, abortedTakeOffArray,
+					 failureSpeedArrayFitted, continuedTakeOffSplineValues, abortedTakeOffSplineValues;
 		
 	//-------------------------------------------------------------------------------------
 	// BUILDER:
@@ -118,6 +120,7 @@ public class CalcTakeOff_Landing {
 			double kcLMax,
 			double kRot,
 			double kLO,
+			double kFailure,
 			double phi,
 			double k_alpha_dot,
 			double alphaRed,
@@ -140,6 +143,7 @@ public class CalcTakeOff_Landing {
 		this.kcLMax = kcLMax;
 		this.kRot = kRot;
 		this.kLO = kLO;
+		this.kFailure = kFailure;
 		this.phi = phi;
 		this.kAlphaDot = k_alpha_dot;
 		this.alphaRed = alphaRed;
@@ -167,7 +171,7 @@ public class CalcTakeOff_Landing {
 		vRot = vSTakeOff.times(kRot);
 		vLO = vSTakeOff.times(kLO);
 		
-		// Ground effect coefficient
+		// Ground effect coefficient (Roskam)
 //		kGround = (1 - (1.32*(wing_to_ground_distance.getEstimatedValue()/aircraft.get_wing().get_span().getEstimatedValue())))
 //				/(1.05 + (7.4*(wing_to_ground_distance.getEstimatedValue()/aircraft.get_wing().get_span().getEstimatedValue())));
 
@@ -590,7 +594,7 @@ public class CalcTakeOff_Landing {
 //						+ ((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald()))
 //						- kGround*((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()))));
 				
-				cD.add(1.1*(aircraft.get_theAerodynamics().get_cD0() 
+				cD.add(kFailure*(aircraft.get_theAerodynamics().get_cD0() 
 						+ highLiftCalculator.getDeltaCD()
 						+ aircraft.get_landingGear().get_deltaCD0() 
 						+ (kGround*((Math.pow(cL.get(0),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald())))
@@ -858,11 +862,11 @@ public class CalcTakeOff_Landing {
 //							+ ((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald()))
 //							- kGround*((Math.pow(cL.get(i),2))/(Math.PI*aircraft.get_wing().get_aspectRatio())));
 					
-					cD.add(aircraft.get_theAerodynamics().get_cD0() 
+					cD.add(kFailure*(aircraft.get_theAerodynamics().get_cD0() 
 							+ highLiftCalculator.getDeltaCD()
 							+ aircraft.get_landingGear().get_deltaCD0() 
 							+ (kGround*((Math.pow(cL.get(0),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald())))
-							);
+							));
 				else
 //					cD.add(aircraft.get_theAerodynamics().get_cD0() 
 //							+ highLiftCalculator.getDeltaCD()
@@ -873,13 +877,13 @@ public class CalcTakeOff_Landing {
 //							+ k2*(Math.pow((cL.get(i)-1.2), 2))
 //							);
 					
-					cD.add(aircraft.get_theAerodynamics().get_cD0() 
+					cD.add(kFailure*(aircraft.get_theAerodynamics().get_cD0() 
 							+ highLiftCalculator.getDeltaCD()
 							+ aircraft.get_landingGear().get_deltaCD0() 
 							+ (kGround*((Math.pow(cL.get(0),2))/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald())))
 							+ k1*(cL.get(i)-1.2)
 							+ k2*(Math.pow((cL.get(i)-1.2), 2))
-							);
+							));
 
 				drag.add(Amount.valueOf(
 						0.5
@@ -1004,12 +1008,12 @@ public class CalcTakeOff_Landing {
 		
 		int nEngine;
 		// failure check
-		if (failure == true) {
-			nEngine = aircraft.get_powerPlant().get_engineNumber()-1;
-			kFailure = 1.1;
+		if (failure == false) {
+			nEngine = aircraft.get_powerPlant().get_engineNumber();
+			kFailure = 1.0;
 		}
 		else
-			nEngine = aircraft.get_powerPlant().get_engineNumber();
+			nEngine = aircraft.get_powerPlant().get_engineNumber()-1;
 		// dtAirborne
 		Amount<Duration> dtAirborne = dt.times(0.2);
 		// definition of time steps necessary to cover dtHold
@@ -1539,14 +1543,14 @@ public class CalcTakeOff_Landing {
 	public void calculateBalancedFieldLength() {
 		
 		// failure speed array
-		double[] failureSpeedArray = MyArrayUtils.linspace(
-				vSTakeOff.times(1.09).getEstimatedValue(),
+		failureSpeedArray = MyArrayUtils.linspace(
+			    0.0,
 				vLO.getEstimatedValue(),
 				4);
 		// continued take-off array
-		double[] continuedTakeOffArray = new double[failureSpeedArray.length];
+		continuedTakeOffArray = new double[failureSpeedArray.length];
 		// aborted take-off array
-		double[] abortedTakeOffArray = new double[failureSpeedArray.length];
+		abortedTakeOffArray = new double[failureSpeedArray.length];
 		
 		// iterative take-off distance calculation for both conditions
 		for(int i=0; i<failureSpeedArray.length; i++) {
@@ -1558,16 +1562,16 @@ public class CalcTakeOff_Landing {
 		}
 		
 		// interpolation of the two arrays
-		double[] failureSpeedArrayFitted = MyArrayUtils.linspace(
+		failureSpeedArrayFitted = MyArrayUtils.linspace(
 				0.0,
 				vLO.getEstimatedValue(),
 				250);
-		continuedTakeOffFitted.interpolate(continuedTakeOffArray, failureSpeedArray);
-		abortedTakeOffFitted.interpolate(abortedTakeOffArray, failureSpeedArray);
+		continuedTakeOffFitted.interpolate(failureSpeedArray, continuedTakeOffArray);
+		abortedTakeOffFitted.interpolate(failureSpeedArray, abortedTakeOffArray);
 		
 		// values extraction from the polynomial spline functions
-		double[] continuedTakeOffSplineValues = new double[failureSpeedArrayFitted.length];
-		double[] abortedTakeOffSplineValues = new double[failureSpeedArrayFitted.length];
+		continuedTakeOffSplineValues = new double[failureSpeedArrayFitted.length];
+		abortedTakeOffSplineValues = new double[failureSpeedArrayFitted.length];
 		
 		for(int i=0; i<failureSpeedArrayFitted.length; i++){
 			continuedTakeOffSplineValues[i] = continuedTakeOffFitted.value(failureSpeedArrayFitted[i]);
@@ -1575,7 +1579,9 @@ public class CalcTakeOff_Landing {
 		}
 		
 		// arrays intersection
-		double[] intersection = MyArrayUtils.intersectArraysSimple(continuedTakeOffSplineValues, abortedTakeOffSplineValues);
+		double[] intersection = MyArrayUtils.intersectArraysSimple(
+				continuedTakeOffSplineValues,
+				abortedTakeOffSplineValues);
 		for(int i=0; i<intersection.length; i++)
 			if(intersection[i] != 0.0) {
 				balancedFieldLength = Amount.valueOf(intersection[i], SI.METER);
@@ -1689,72 +1695,6 @@ public class CalcTakeOff_Landing {
 			weightHorizontal[i] = aircraft.get_weights().get_MTOW().getEstimatedValue()
 						*Math.sin(getGamma().get(i).to(SI.RADIAN).getEstimatedValue());
 
-//		//----------------------------------------------------------------------------------
-//		// Aborted take-off data setup
-//		double[] timeAborted = new double[getTimeAborted().size()];
-//		for(int i=0; i<timeAborted.length; i++)
-//			timeAborted[i] = getTimeAborted().get(i).getEstimatedValue();
-//		double[] grounDistanceAborted = new double[getGroundDistanceAborted().size()];
-//		for(int i=0; i<grounDistanceAborted.length; i++)
-//			grounDistanceAborted[i] = getGroundDistanceAborted().get(i).getEstimatedValue();
-//		double[] thrustAborted = new double[getThrustAborted().size()];
-//		for(int i=0; i<thrustAborted.length; i++)
-//			thrustAborted[i] = getThrustAborted().get(i).getEstimatedValue();
-//		double[] dragAborted = new double[getDragAborted().size()];
-//		for(int i=0; i<dragAborted.length; i++)
-//			dragAborted[i] = getDragAborted().get(i).getEstimatedValue();
-//		double[] frictionAborted = new double[getFrictionAborted().size()];
-//		for(int i=0; i<frictionAborted.length; i++)
-//			frictionAborted[i] = getFrictionAborted().get(i).getEstimatedValue();
-//		double[] totalForceAborted = new double[getTotalForceAborted().size()];
-//		for(int i=0; i<totalForceAborted.length; i++)
-//			totalForceAborted[i] = getTotalForceAborted().get(i).getEstimatedValue();
-//		double[] loadFactorAborted = new double[getLoadFactorAborted().size()];
-//		for(int i=0; i<loadFactorAborted.length; i++)
-//			loadFactorAborted[i] = getLoadFactorAborted().get(i);
-//		double[] accelerationAborted = new double[getAccelerationAborted().size()];
-//		for(int i=0; i<accelerationAborted.length; i++)
-//			accelerationAborted[i] = getAccelerationAborted().get(i).getEstimatedValue();
-//		double[] speedAborted = new double[getSpeedAborted().size()];
-//		for(int i=0; i<speedAborted.length; i++)
-//			speedAborted[i] = getSpeedAborted().get(i).getEstimatedValue();
-//		
-//		MyChartToFileUtils.plotNoLegend(
-//				timeAborted, grounDistanceAborted,
-//				0.0, null, 0.0, null,
-//				"Time", "Ground Distance", "s", "m",
-//				subfolderPath, "Aborted distance evolution");
-//		MyChartToFileUtils.plotNoLegend(
-//				timeAborted, speedAborted,
-//				0.0, null, 0.0, null,
-//				"Time", "Speed", "s", "m/s",
-//				subfolderPath, "SpeedAborted_evolution");
-//		MyChartToFileUtils.plotNoLegend(
-//				timeAborted, accelerationAborted,
-//				0.0, null, null, null,
-//				"Time", "Acceleration", "s", "m/(s^2)",
-//				subfolderPath, "AccelerationAborted_evolution");
-//		MyChartToFileUtils.plotNoLegend(
-//				timeAborted, loadFactorAborted,
-//				0.0, null, 0.0, null,
-//				"Time", "Load Factor", "s", "",
-//				subfolderPath, "LoadFactorAborted_evolution");
-//		double[][] xMatrixAborted = new double[4][totalForceAborted.length];
-//		for(int i=0; i<xMatrixAborted.length; i++)
-//			xMatrixAborted[i] = timeAborted;
-//		double[][] yMatrixAborted = new double[4][totalForceAborted.length];
-//		yMatrixAborted[0] = totalForceAborted;
-//		yMatrixAborted[1] = thrustAborted;
-//		yMatrixAborted[2] = dragAborted;
-//		yMatrixAborted[3] = frictionAborted;
-//		MyChartToFileUtils.plot(
-//				xMatrixAborted, yMatrixAborted,
-//				0.0, null, null, null,
-//				"Time", "Horizontal Forces", "s", "N",
-//				new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "W*sin(gamma)"},
-//				subfolderPath, "HorizontalForcesAborted_evolution");
-//		//--------------------------------------------------------------------------------
-		
 		// take-off trajectory
 		MyChartToFileUtils.plotNoLegend(
 				groundDistance, verticalDistance,
@@ -1979,6 +1919,38 @@ public class CalcTakeOff_Landing {
 		System.out.println("\n---------------------------DONE!-------------------------------");
 	}
 
+	/**************************************************************************************
+	 * This method allows users to plot the OEI continued take-off distance and the aborted
+	 * take-off distance as function of the failure speed compared with the take-off stalling
+	 * speed. From the intersection of the two curves it's possible to identify the decision 
+	 * speed (V1) and the balanced field length.  
+	 * 
+	 * @author Vittorio Trifari
+	 */
+	public void createBalancedFieldLengthChart() {
+		
+		System.out.println("\n-------WRITING BALANCED TAKE-OFF DISTANCE CHART TO FILE--------");
+
+		String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR);
+		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "Take-Off_Performance" + File.separator);
+		
+		for(int i=0; i<failureSpeedArrayFitted.length; i++)
+			failureSpeedArrayFitted[i] = failureSpeedArrayFitted[i]/vSTakeOff.getEstimatedValue(); 
+		
+		double[][] xArray = new double[][] 
+				{failureSpeedArrayFitted, failureSpeedArrayFitted};
+		double[][] yArray = new double[][]
+				{continuedTakeOffSplineValues, abortedTakeOffSplineValues};
+		
+		MyChartToFileUtils.plot(
+				xArray, yArray,
+				null, null, null, null,
+				"Vfailure/VsTO", "Distance", "", "m",
+				new String[] {"OEI Take-Off", "Aborted Take-Off"},
+				subfolderPath, "BalancedTakeOffLength");
+		
+		System.out.println("\n---------------------------DONE!-------------------------------");
+	}
 	
 	//-------------------------------------------------------------------------------------
 	// GETTERS AND SETTERS:
@@ -2581,5 +2553,45 @@ public class CalcTakeOff_Landing {
 
 	public void setBalancedFieldLength(Amount<Length> balancedFieldLength) {
 		this.balancedFieldLength = balancedFieldLength;
+	}
+
+	public double[] getFailureSpeedArray() {
+		return failureSpeedArray;
+	}
+
+	public void setFailureSpeedArray(double[] failureSpeedArray) {
+		this.failureSpeedArray = failureSpeedArray;
+	}
+
+	public double[] getContinuedTakeOffArray() {
+		return continuedTakeOffArray;
+	}
+
+	public void setContinuedTakeOffArray(double[] continuedTakeOffArray) {
+		this.continuedTakeOffArray = continuedTakeOffArray;
+	}
+
+	public double[] getAbortedTakeOffArray() {
+		return abortedTakeOffArray;
+	}
+
+	public void setAbortedTakeOffArray(double[] abortedTakeOffArray) {
+		this.abortedTakeOffArray = abortedTakeOffArray;
+	}
+
+	public double[] getContinuedTakeOffSplineValues() {
+		return continuedTakeOffSplineValues;
+	}
+
+	public void setContinuedTakeOffSplineValues(double[] continuedTakeOffSplineValues) {
+		this.continuedTakeOffSplineValues = continuedTakeOffSplineValues;
+	}
+
+	public double[] getAbortedTakeOffSplineValues() {
+		return abortedTakeOffSplineValues;
+	}
+
+	public void setAbortedTakeOffSplineValues(double[] abortedTakeOffSplineValues) {
+		this.abortedTakeOffSplineValues = abortedTakeOffSplineValues;
 	}
 }

@@ -26,6 +26,7 @@ import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
+import igeo.io.IObjFileImporter.GeometricVertex;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.customdata.CenterOfGravity;
 
@@ -294,7 +295,8 @@ public class TakeOff_Landing_Test_TF {
 		double k_alpha_dot = 0.07; // [1/deg]
 		double kcLMax = 0.85;
 		double kRot = 1.05;
-		double kLO = 1.15;
+		double kLO = 1.1;
+		double kFailure = 1.0;
 		double phi = 1.0;
 		double alphaRed = -4; // [deg/s]
 		Amount<Length> wing_to_ground_distance = Amount.valueOf(6.56, SI.METER);
@@ -312,6 +314,7 @@ public class TakeOff_Landing_Test_TF {
 				kcLMax,
 				kRot,
 				kLO,
+				kFailure,
 				phi,
 				k_alpha_dot,
 				alphaRed,
@@ -324,15 +327,16 @@ public class TakeOff_Landing_Test_TF {
 				iw
 				);
 
-		theTakeOffLandingCalculator.initialize();
-		theTakeOffLandingCalculator.calculateTakeOffDistance(null, false);
+//		theTakeOffLandingCalculator.initialize();
+//		theTakeOffLandingCalculator.calculateTakeOffDistance(null, false);
 		_stopTimeCalculation = System.currentTimeMillis();
-		_startTimeGraph = System.currentTimeMillis();
-		theTakeOffLandingCalculator.createTakeOffCharts();
-		_stopTimeGraph = System.currentTimeMillis();
-//		_startTimeBalanced = System.currentTimeMillis();
-//		theTakeOffLandingCalculator.calculateBalancedFieldLength();
-//		_stopTimeBalanced = System.currentTimeMillis();
+//		_startTimeGraph = System.currentTimeMillis();
+//		theTakeOffLandingCalculator.createTakeOffCharts();
+//		_stopTimeGraph = System.currentTimeMillis();
+		_startTimeBalanced = System.currentTimeMillis();
+		theTakeOffLandingCalculator.calculateBalancedFieldLength();
+		theTakeOffLandingCalculator.createBalancedFieldLengthChart();
+		_stopTimeBalanced = System.currentTimeMillis();
 		_stopTimeTotal = System.currentTimeMillis();
 		
 		_elapsedTimeTotal = _stopTimeTotal - _startTimeCalculation;
@@ -343,7 +347,10 @@ public class TakeOff_Landing_Test_TF {
 		System.out.println("\nANALYSIS TIME = " + (get_elapsedTime()) + " millisenconds");
 		System.out.println("\nCALCULATION TIME = " + (get_elapsedTimeCalculation()) + "millisenconds");
 		System.out.println("\nBALANCED FIELD LENGTH TIME = " + (get_elapsedTimeBalanced()) + "millisenconds");
-		System.out.println("\nGRAPHICS TIME = " + (get_elapsedTimeGraph()) + "millisenconds");		
+		System.out.println("\nGRAPHICS TIME = " + (get_elapsedTimeGraph()) + "millisenconds");	
+		
+		System.out.println("\nBALANCED FIELD LENGTH = " + theTakeOffLandingCalculator.getBalancedFieldLength());
+		System.out.println("\nDecision Speed = " + theTakeOffLandingCalculator.getV1().divide(theTakeOffLandingCalculator.getvSTakeOff()));
 	}
 	
 	//------------------------------------------------------------------------------------------
