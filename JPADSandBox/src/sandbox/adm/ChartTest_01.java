@@ -104,11 +104,14 @@ public class ChartTest_01 extends Application {
 		//chart.getLegend().setHorizontalAlignment(HorizontalAlignment.CENTER);
 
 
+		// Set min/max
 		NumberAxis rangeX = (NumberAxis) plot.getDomainAxis();
         rangeX.setRange(-0.50, 1.50);
 		NumberAxis rangeY = (NumberAxis) chart.getXYPlot().getRangeAxis();
-		rangeY.setRange(-5, 10);
+		rangeY.setRange(-1, 2);
 		// rangeY.setTickUnit(new NumberTickUnit(0.1));
+
+		System.out.println("---> " + dataset.getItemCount(0));
 
 
 
@@ -151,29 +154,42 @@ public class ChartTest_01 extends Application {
 
 		// generate x-values
 		List<Double> x0 = Arrays.asList(ArrayUtils.toObject(
-				Matrix.linspace(0.0, 10, 20).data
+				Matrix.linspace(0.0, 1, 20).data
 				));
 
 		List<Pair<Double,Double>> xy0 =
 				x0.stream()
 				.map(x -> new Pair(x, x*x))
 				.collect(Collectors.toList());
-
-		// System.out.println(xy0);
+		XYSeries xyS0 = new XYSeries("xy0");
+		for(Pair<Double,Double> xy : xy0) {
+			xyS0.add(xy.getKey(),xy.getValue());
+		}
 
 		List<Pair<Double,Double>> xy1 =
 				x0.stream()
 				.map(x -> new Pair(x, Math.pow(x, 3)))
 				.collect(Collectors.toList())
 				;
+		XYSeries xyS1 = new XYSeries("xy1");
+		for(Pair<Double,Double> xy : xy1) {
+			xyS1.add(xy.getKey(),xy.getValue());
+		}
 
-		XYSeries xyS0 = new XYSeries("xy0");
-		for(Pair<Double,Double> xy : xy0) {
-			xyS0.add(xy.getKey(),xy.getValue());
+		List<Pair<Double,Double>> xy2 =
+				x0.stream()
+				.map(x -> new Pair(x, Math.pow(x, 4)))
+				.collect(Collectors.toList())
+				;
+		XYSeries xyS2 = new XYSeries("xy2");
+		for(Pair<Double,Double> xy : xy2) {
+			xyS2.add(xy.getKey(),xy.getValue());
 		}
 
 		XYSeriesCollection dataset = new XYSeriesCollection();
-		//		dataset.add
+		dataset.addSeries(xyS0);
+		dataset.addSeries(xyS1);
+		dataset.addSeries(xyS2);
 
 		return dataset;
 	}
