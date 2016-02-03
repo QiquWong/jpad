@@ -301,6 +301,12 @@ public class LiftingSurface extends AeroComponent{
 
 	private MyArray _chordVsYAirfoilsExposed;
 
+	private MyArray _alpha0lDistributionExposed;
+
+	private MyArray _chordsVsYExposed;
+
+	private MyArray _twistDistributionExposed;
+
 
 	private void initializeDefaultSurface(ComponentEnum type){
 
@@ -735,7 +741,7 @@ public class LiftingSurface extends AeroComponent{
 
 		_numberOfAirfoilsExposed = new Integer(_theAirfoilsListExposed.size());
 
-		//getAirfoilsPropertiesAsArrayExposed(aircraft);
+		getAirfoilsPropertiesAsArrayExposed(aircraft);
 
 		//				addAirfoil(0., "Airfoil_1");
 		//		if (_spanStationKink != 1.) {
@@ -2052,7 +2058,7 @@ public class LiftingSurface extends AeroComponent{
 
 	}
 
-	//	private void getAirfoilsPropertiesAsArrayExposed(Aircraft aircraft) {
+		private void getAirfoilsPropertiesAsArrayExposed(Aircraft theAircraft) {
 	//		// Remove airfoils which have the same y (that is, eta) coordinate
 	//				for (int i = 0; i < _numberOfAirfoils - 1; i++) {
 	//					if (_theAirfoilsListExposed.get(i).getGeometry().get_yStation()
@@ -2083,7 +2089,141 @@ public class LiftingSurface extends AeroComponent{
 	//		
 	//		
 	//		
-	//	}
+			
+			double yLocRootExposed = theAircraft.get_exposedWing().get_theAirfoilsList().get(0).getGeometry().get_yStation();
+			double [] _yStationsIntegral = MyArrayUtils.linspace(yLocRootExposed, theAircraft.get_wing().get_semispan().getEstimatedValue(),
+					theAircraft.get_wing().getAerodynamics().get_nPointsSemispanWise());
+			
+			MyArray alphaZeroLiftExposed = new MyArray();
+			MyArray chordDistributionExposed = new MyArray();
+			MyArray twistExposed = new MyArray();
+			
+			alphaZeroLiftExposed.add(
+					theAircraft
+					.get_exposedWing()
+					.get_theAirfoilsListExposed()
+					.get(0).getAerodynamics()
+					.get_alphaZeroLift()
+					.getEstimatedValue());
+			
+			twistExposed.add(
+					theAircraft
+					.get_exposedWing()
+					.get_theAirfoilsListExposed()
+					.get(0).getGeometry()
+					.get_twist()
+					.getEstimatedValue());
+
+			chordDistributionExposed.add(theAircraft.get_wing().getChordAtYActual(
+					theAircraft
+					.get_exposedWing()
+					.get_theAirfoilsListExposed()
+					.get(0).getGeometry().get_yStation()));
+
+			chordDistributionExposed.add(theAircraft.get_wing().getChordAtYActual(
+					theAircraft.get_wing().get_semispan().getEstimatedValue()));
+
+			if ( theAircraft.get_exposedWing().get_numberOfAirfoils()<3){
+				alphaZeroLiftExposed.add(
+						theAircraft
+						.get_exposedWing()
+						.get_theAirfoilsListExposed()
+						.get(1).getAerodynamics()
+						.get_alphaZeroLift()
+						.getEstimatedValue());
+				
+				twistExposed.add(
+						theAircraft
+						.get_exposedWing()
+						.get_theAirfoilsListExposed()
+						.get(1).getGeometry()
+						.get_twist()
+						.getEstimatedValue());
+			}
+			else{
+				alphaZeroLiftExposed.add(
+						theAircraft
+						.get_exposedWing()
+						.get_theAirfoilsListExposed()
+						.get(1).getAerodynamics()
+						.get_alphaZeroLift()
+						.getEstimatedValue());
+
+				alphaZeroLiftExposed.add(
+						theAircraft
+						.get_exposedWing()
+						.get_theAirfoilsListExposed()
+						.get(2).getAerodynamics()
+						.get_alphaZeroLift()
+						.getEstimatedValue());
+				
+
+				twistExposed.add(
+						theAircraft
+						.get_exposedWing()
+						.get_theAirfoilsListExposed()
+						.get(1).getGeometry()
+						.get_twist()
+						.getEstimatedValue());
+				
+
+				twistExposed.add(
+						theAircraft
+						.get_exposedWing()
+						.get_theAirfoilsListExposed()
+						.get(2).getGeometry()
+						.get_twist()
+						.getEstimatedValue());
+			}
+
+			double [] yStationAlpha0lExposed = new double [theAircraft.get_exposedWing().get_numberOfAirfoils()];
+			double [] yStationChordExposed = new double [2];
+			double [] yStationTwistExposed = new double [theAircraft.get_exposedWing().get_numberOfAirfoils()];
+
+			for ( int i = 0 ; i < yStationAlpha0lExposed.length ; i ++){
+				yStationAlpha0lExposed[i] = 
+						theAircraft
+						.get_exposedWing()
+						.get_theAirfoilsListExposed()
+						.get(i).getGeometry().get_yStation();
+
+				yStationTwistExposed [i] = 
+						theAircraft
+						.get_exposedWing()
+						.get_theAirfoilsListExposed()
+						.get(i).getGeometry().get_yStation();
+			}
+
+			yStationChordExposed [0] = theAircraft
+					.get_exposedWing()
+					.get_theAirfoilsListExposed()
+					.get(0).getGeometry().get_yStation();
+
+			yStationChordExposed [1] = theAircraft
+					.get_exposedWing()
+					.get_theAirfoilsListExposed()
+					.get(2).getGeometry().get_yStation();
+
+
+
+
+			_alpha0lDistributionExposed = MyArray.createArray(
+					alphaZeroLiftExposed
+					.interpolate(yStationAlpha0lExposed, _yStationsIntegral));
+
+			_chordsVsYExposed = MyArray.createArray(
+					chordDistributionExposed
+					.interpolate(yStationChordExposed, _yStationsIntegral));
+			
+			_twistDistributionExposed = MyArray.createArray(
+					twistExposed
+					.interpolate(yStationTwistExposed, _yStationsIntegral));
+System.out.println(" alpha exposed " + _alpha0lDistributionExposed.toString());
+System.out.println(" chord exposed " + _chordsVsYExposed.toString());
+System.out.println(" twist exposed " + _twistDistributionExposed.toString());
+
+			
+		}
 	//-------------------------------------------------------------------
 
 
@@ -2459,6 +2599,14 @@ public class LiftingSurface extends AeroComponent{
 
 	public Amount<Length> get_deltaXWingFus() {
 		return _deltaXWingFus;
+	}
+
+	public MyArray get_chordsVsYExposed() {
+		return _chordsVsYExposed;
+	}
+
+	public void set_chordsVsY(MyArray _chordsVsY) {
+		this._chordsVsYExposed = _chordsVsY;
 	}
 
 	public void set_deltaXWingFus(Amount<Length> _deltaXWingFus) {
@@ -3434,6 +3582,22 @@ public class LiftingSurface extends AeroComponent{
 
 	public void set_chordVsYAirfoilsExposed(MyArray _chordVsYAirfoilsExposed) {
 		this._chordVsYAirfoilsExposed = _chordVsYAirfoilsExposed;
+	}
+
+	public MyArray get_alpha0lDistributionExposed() {
+		return _alpha0lDistributionExposed;
+	}
+
+	public void set_alpha0lDistribution(MyArray _alpha0lDistribution) {
+		this._alpha0lDistributionExposed = _alpha0lDistribution;
+	}
+
+	public MyArray get_twistDistributionExposed() {
+		return _twistDistributionExposed;
+	}
+
+	public void set_twistDistribution(MyArray _twistDistribution) {
+		this._twistDistributionExposed = _twistDistribution;
 	}
 
 

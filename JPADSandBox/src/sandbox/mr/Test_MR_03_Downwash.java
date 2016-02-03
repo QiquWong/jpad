@@ -129,7 +129,7 @@ public class Test_MR_03_Downwash {
 		// Define an object to do the downwash test
 		System.out.println("\n Start calculating Downwash gradiendt ... \n ");
 				
-		DownwashCalculator test = new DownwashCalculator( aspectRatioDouble,
+		DownwashCalculator_03 test = new DownwashCalculator_03( aspectRatioDouble,
 				                                          taperRatioDouble);
 		double downwashDatcom=test.calculateDownwashDatcom(distAerodynamicCenter, distWingToHTail,
 														    wingSpanDouble,sweepQuarterChordEq);
@@ -181,7 +181,7 @@ public class Test_MR_03_Downwash {
 	
 		int n = sweepAngles.length;
 		
-		DownwashCalculator.createSweepAngleDownwashGradientChart(n, sweepAngles, downwashArrayDatcom, downwashArrayDelft);
+		DownwashCalculator_03.createSweepAngleDownwashGradientChart(n, sweepAngles, downwashArrayDatcom, downwashArrayDelft);
 	}	
 
 	public void manageCmdLineArguments(String[] args) {

@@ -1,0 +1,1 @@
+Put here the definitive image files (.pdf, .png, etc)

@@ -244,6 +244,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	private static double intermediateClAlpha;
 	private static double intermediateAlphaStall;
 	private double[] _yStationsIntegral;
+	public double cLStarWing;
 	public LSAerodynamicsManager(OperatingConditions conditions, LiftingSurface liftingSurf, Aircraft ac) {
 
 		theOperatingConditions = conditions;
@@ -1201,12 +1202,12 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			double alphaStar = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
 			Amount<Angle> alphaStarAmount = Amount.valueOf(alphaStar, SI.RADIAN);
 
-			cLStar = nasaBlackwell(alphaStarAmount);
+			cLStarWing = nasaBlackwell(alphaStarAmount);
 			cLTemp = nasaBlackwell(alphaTemp);
 			if (alpha.getEstimatedValue() < alphaStar){    //linear trait
-				cLLinearSlope = (cLStar - cLTemp)/alphaStar;
+				cLLinearSlope = (cLStarWing - cLTemp)/alphaStar;
 				//System.out.println("CL Linear Slope [1/rad] = " + cLLinearSlope);
-				qValue = cLStar - cLLinearSlope*alphaStar;
+				qValue = cLStarWing - cLLinearSlope*alphaStar;
 				cLAlphaZero = qValue;
 				alphaZeroLiftWingClean = -qValue/cLLinearSlope;
 				double cLActual = cLLinearSlope * alpha.getEstimatedValue() + qValue;
@@ -1221,14 +1222,14 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				Amount<Angle> alphaMax = get_alphaMaxClean();	
 				double alphaMaxDouble = alphaMax.getEstimatedValue();
 
-				cLLinearSlope = (cLStar - cLTemp)/alphaStar;
+				cLLinearSlope = (cLStarWing - cLTemp)/alphaStar;
 				//System.out.println("CL Linear Slope [1/rad] = " + cLLinearSlope);
 				double[][] matrixData = { {Math.pow(alphaMaxDouble, 3), Math.pow(alphaMaxDouble, 2), alphaMaxDouble,1.0},
 						{3* Math.pow(alphaMaxDouble, 2), 2*alphaMaxDouble, 1.0, 0.0},
 						{3* Math.pow(alphaStar, 2), 2*alphaStar, 1.0, 0.0},
 						{Math.pow(alphaStar, 3), Math.pow(alphaStar, 2),alphaStar,1.0}};
 				RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
-				double [] vector = {cLMax, 0,cLLinearSlope, cLStar};
+				double [] vector = {cLMax, 0,cLLinearSlope, cLStarWing};
 
 				double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
 
@@ -1282,6 +1283,8 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 
 	}
+
+
 
 	/** 
 	 * This function plot CL vs Alpha curve of an isolated wing using 30 value of alpha between alpha=- 10.0 deg and
@@ -2977,81 +2980,77 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				//System.out.println(" y station integral " + Arrays.toString(_yStationsIntegral));
 				surfaceInteg = theAircraft.get_exposedWing().get_surface().getEstimatedValue();
 				semispanInteg = theAircraft.get_exposedWing().get_semispan().getEstimatedValue();
-				MyArray alphaZeroLiftExposed = new MyArray();
-				MyArray chordDistributionExposed = new MyArray();
-				alphaZeroLiftExposed.add(
-						theAircraft
-						.get_exposedWing()
-						.get_theAirfoilsListExposed()
-						.get(0).getAerodynamics()
-						.get_alphaZeroLift()
-						.getEstimatedValue());
-
-				chordDistributionExposed.add(theAircraft.get_wing().getChordAtYActual(
-						theAircraft
-						.get_exposedWing()
-						.get_theAirfoilsListExposed()
-						.get(0).getGeometry().get_yStation()));
-
-				chordDistributionExposed.add(theAircraft.get_wing().getChordAtYActual(
-						theAircraft.get_wing().get_semispan().getEstimatedValue()));
-
-				if ( theAircraft.get_exposedWing().get_numberOfAirfoils()<3){
-					alphaZeroLiftExposed.add(
-							theAircraft
-							.get_exposedWing()
-							.get_theAirfoilsListExposed()
-							.get(1).getAerodynamics()
-							.get_alphaZeroLift()
-							.getEstimatedValue());
-				}
-				else{
-					alphaZeroLiftExposed.add(
-							theAircraft
-							.get_exposedWing()
-							.get_theAirfoilsListExposed()
-							.get(1).getAerodynamics()
-							.get_alphaZeroLift()
-							.getEstimatedValue());
-
-					alphaZeroLiftExposed.add(
-							theAircraft
-							.get_exposedWing()
-							.get_theAirfoilsListExposed()
-							.get(2).getAerodynamics()
-							.get_alphaZeroLift()
-							.getEstimatedValue());
-				}
-
-				double [] yStationAlpha0lExposed = new double [theAircraft.get_exposedWing().get_numberOfAirfoils()];
-				double [] yStationChordExposed = new double [2];
-
-				for ( int i = 0 ; i < yStationAlpha0lExposed.length ; i ++)
-					yStationAlpha0lExposed[i] = theAircraft
-					.get_exposedWing()
-					.get_theAirfoilsListExposed()
-					.get(i).getGeometry().get_yStation();
-
-				yStationChordExposed [0] = theAircraft
-						.get_exposedWing()
-						.get_theAirfoilsListExposed()
-						.get(0).getGeometry().get_yStation();
-
-				yStationChordExposed [1] = theAircraft
-						.get_exposedWing()
-						.get_theAirfoilsListExposed()
-						.get(2).getGeometry().get_yStation();
-
-
+//				MyArray alphaZeroLiftExposed = new MyArray();
+//				MyArray chordDistributionExposed = new MyArray();
+//				alphaZeroLiftExposed.add(
+//						theAircraft
+//						.get_exposedWing()
+//						.get_theAirfoilsListExposed()
+//						.get(0).getAerodynamics()
+//						.get_alphaZeroLift()
+//						.getEstimatedValue());
+//
+//				chordDistributionExposed.add(theAircraft.get_wing().getChordAtYActual(
+//						theAircraft
+//						.get_exposedWing()
+//						.get_theAirfoilsListExposed()
+//						.get(0).getGeometry().get_yStation()));
+//
+//				chordDistributionExposed.add(theAircraft.get_wing().getChordAtYActual(
+//						theAircraft.get_wing().get_semispan().getEstimatedValue()));
+//
+//				if ( theAircraft.get_exposedWing().get_numberOfAirfoils()<3){
+//					alphaZeroLiftExposed.add(
+//							theAircraft
+//							.get_exposedWing()
+//							.get_theAirfoilsListExposed()
+//							.get(1).getAerodynamics()
+//							.get_alphaZeroLift()
+//							.getEstimatedValue());
+//				}
+//				else{
+//					alphaZeroLiftExposed.add(
+//							theAircraft
+//							.get_exposedWing()
+//							.get_theAirfoilsListExposed()
+//							.get(1).getAerodynamics()
+//							.get_alphaZeroLift()
+//							.getEstimatedValue());
+//
+//					alphaZeroLiftExposed.add(
+//							theAircraft
+//							.get_exposedWing()
+//							.get_theAirfoilsListExposed()
+//							.get(2).getAerodynamics()
+//							.get_alphaZeroLift()
+//							.getEstimatedValue());
+//				}
+//
+//				double [] yStationAlpha0lExposed = new double [theAircraft.get_exposedWing().get_numberOfAirfoils()];
+//				double [] yStationChordExposed = new double [2];
+//
+//				for ( int i = 0 ; i < yStationAlpha0lExposed.length ; i ++)
+//					yStationAlpha0lExposed[i] = theAircraft
+//					.get_exposedWing()
+//					.get_theAirfoilsListExposed()
+//					.get(i).getGeometry().get_yStation();
+//
+//				yStationChordExposed [0] = theAircraft
+//						.get_exposedWing()
+//						.get_theAirfoilsListExposed()
+//						.get(0).getGeometry().get_yStation();
+//
+//				yStationChordExposed [1] = theAircraft
+//						.get_exposedWing()
+//						.get_theAirfoilsListExposed()
+//						.get(2).getGeometry().get_yStation();
 
 
-				_alpha0lDistribution = MyArray.createArray(
-						alphaZeroLiftExposed
-						.interpolate(yStationAlpha0lExposed, _yStationsIntegral));
 
-				_chordsVsY = MyArray.createArray(
-						chordDistributionExposed
-						.interpolate(yStationChordExposed, _yStationsIntegral));
+
+				_alpha0lDistribution = theAircraft.get_exposedWing().get_alpha0lDistributionExposed();
+
+				_chordsVsY = theAircraft.get_exposedWing().get_chordsVsYExposed();
 
 			}
 			else{
@@ -3073,131 +3072,137 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				//System.out.println(" y station integral " + Arrays.toString(_yStationsIntegral));
 				surfaceInteg = theAircraft.get_exposedWing().get_surface().getEstimatedValue();
 				semispanInteg = theAircraft.get_exposedWing().get_semispan().getEstimatedValue();
-				MyArray alphaZeroLiftExposed = new MyArray();
-				MyArray chordDistributionExposed = new MyArray();
-				MyArray twistExposed = new MyArray();
+//				MyArray alphaZeroLiftExposed = new MyArray();
+//				MyArray chordDistributionExposed = new MyArray();
+//				MyArray twistExposed = new MyArray();
+//				
+//				alphaZeroLiftExposed.add(
+//						theAircraft
+//						.get_exposedWing()
+//						.get_theAirfoilsListExposed()
+//						.get(0).getAerodynamics()
+//						.get_alphaZeroLift()
+//						.getEstimatedValue());
+//				
+//				twistExposed.add(
+//						theAircraft
+//						.get_exposedWing()
+//						.get_theAirfoilsListExposed()
+//						.get(0).getGeometry()
+//						.get_twist()
+//						.getEstimatedValue());
+//
+//				chordDistributionExposed.add(theAircraft.get_wing().getChordAtYActual(
+//						theAircraft
+//						.get_exposedWing()
+//						.get_theAirfoilsListExposed()
+//						.get(0).getGeometry().get_yStation()));
+//
+//				chordDistributionExposed.add(theAircraft.get_wing().getChordAtYActual(
+//						theAircraft.get_wing().get_semispan().getEstimatedValue()));
+//
+//				if ( theAircraft.get_exposedWing().get_numberOfAirfoils()<3){
+//					alphaZeroLiftExposed.add(
+//							theAircraft
+//							.get_exposedWing()
+//							.get_theAirfoilsListExposed()
+//							.get(1).getAerodynamics()
+//							.get_alphaZeroLift()
+//							.getEstimatedValue());
+//					
+//					twistExposed.add(
+//							theAircraft
+//							.get_exposedWing()
+//							.get_theAirfoilsListExposed()
+//							.get(1).getGeometry()
+//							.get_twist()
+//							.getEstimatedValue());
+//				}
+//				else{
+//					alphaZeroLiftExposed.add(
+//							theAircraft
+//							.get_exposedWing()
+//							.get_theAirfoilsListExposed()
+//							.get(1).getAerodynamics()
+//							.get_alphaZeroLift()
+//							.getEstimatedValue());
+//
+//					alphaZeroLiftExposed.add(
+//							theAircraft
+//							.get_exposedWing()
+//							.get_theAirfoilsListExposed()
+//							.get(2).getAerodynamics()
+//							.get_alphaZeroLift()
+//							.getEstimatedValue());
+//					
+//
+//					twistExposed.add(
+//							theAircraft
+//							.get_exposedWing()
+//							.get_theAirfoilsListExposed()
+//							.get(1).getGeometry()
+//							.get_twist()
+//							.getEstimatedValue());
+//					
+//
+//					twistExposed.add(
+//							theAircraft
+//							.get_exposedWing()
+//							.get_theAirfoilsListExposed()
+//							.get(2).getGeometry()
+//							.get_twist()
+//							.getEstimatedValue());
+//				}
+//
+//				double [] yStationAlpha0lExposed = new double [theAircraft.get_exposedWing().get_numberOfAirfoils()];
+//				double [] yStationChordExposed = new double [2];
+//				double [] yStationTwistExposed = new double [theAircraft.get_exposedWing().get_numberOfAirfoils()];
+//
+//				for ( int i = 0 ; i < yStationAlpha0lExposed.length ; i ++){
+//					yStationAlpha0lExposed[i] = 
+//							theAircraft
+//							.get_exposedWing()
+//							.get_theAirfoilsListExposed()
+//							.get(i).getGeometry().get_yStation();
+//
+//					yStationTwistExposed [i] = 
+//							theAircraft
+//							.get_exposedWing()
+//							.get_theAirfoilsListExposed()
+//							.get(i).getGeometry().get_yStation();
+//				}
+//
+//				yStationChordExposed [0] = theAircraft
+//						.get_exposedWing()
+//						.get_theAirfoilsListExposed()
+//						.get(0).getGeometry().get_yStation();
+//
+//				yStationChordExposed [1] = theAircraft
+//						.get_exposedWing()
+//						.get_theAirfoilsListExposed()
+//						.get(2).getGeometry().get_yStation();
+//
+//
+//
+//
+//				_alpha0lDistribution = MyArray.createArray(
+//						alphaZeroLiftExposed
+//						.interpolate(yStationAlpha0lExposed, _yStationsIntegral));
+//
+//				_chordsVsY = MyArray.createArray(
+//						chordDistributionExposed
+//						.interpolate(yStationChordExposed, _yStationsIntegral));
+//				
+//				_twistDistribution = MyArray.createArray(
+//						twistExposed
+//						.interpolate(yStationTwistExposed, _yStationsIntegral));
 				
-				alphaZeroLiftExposed.add(
-						theAircraft
-						.get_exposedWing()
-						.get_theAirfoilsListExposed()
-						.get(0).getAerodynamics()
-						.get_alphaZeroLift()
-						.getEstimatedValue());
+				_alpha0lDistribution = theAircraft.get_exposedWing().get_alpha0lDistributionExposed();
+
+				_chordsVsY = theAircraft.get_exposedWing().get_chordsVsYExposed();
+
+				_twistDistribution =theAircraft.get_exposedWing().get_twistDistributionExposed();
 				
-				twistExposed.add(
-						theAircraft
-						.get_exposedWing()
-						.get_theAirfoilsListExposed()
-						.get(0).getGeometry()
-						.get_twist()
-						.getEstimatedValue());
-
-				chordDistributionExposed.add(theAircraft.get_wing().getChordAtYActual(
-						theAircraft
-						.get_exposedWing()
-						.get_theAirfoilsListExposed()
-						.get(0).getGeometry().get_yStation()));
-
-				chordDistributionExposed.add(theAircraft.get_wing().getChordAtYActual(
-						theAircraft.get_wing().get_semispan().getEstimatedValue()));
-
-				if ( theAircraft.get_exposedWing().get_numberOfAirfoils()<3){
-					alphaZeroLiftExposed.add(
-							theAircraft
-							.get_exposedWing()
-							.get_theAirfoilsListExposed()
-							.get(1).getAerodynamics()
-							.get_alphaZeroLift()
-							.getEstimatedValue());
-					
-					twistExposed.add(
-							theAircraft
-							.get_exposedWing()
-							.get_theAirfoilsListExposed()
-							.get(1).getGeometry()
-							.get_twist()
-							.getEstimatedValue());
-				}
-				else{
-					alphaZeroLiftExposed.add(
-							theAircraft
-							.get_exposedWing()
-							.get_theAirfoilsListExposed()
-							.get(1).getAerodynamics()
-							.get_alphaZeroLift()
-							.getEstimatedValue());
-
-					alphaZeroLiftExposed.add(
-							theAircraft
-							.get_exposedWing()
-							.get_theAirfoilsListExposed()
-							.get(2).getAerodynamics()
-							.get_alphaZeroLift()
-							.getEstimatedValue());
-					
-
-					twistExposed.add(
-							theAircraft
-							.get_exposedWing()
-							.get_theAirfoilsListExposed()
-							.get(1).getGeometry()
-							.get_twist()
-							.getEstimatedValue());
-					
-
-					twistExposed.add(
-							theAircraft
-							.get_exposedWing()
-							.get_theAirfoilsListExposed()
-							.get(2).getGeometry()
-							.get_twist()
-							.getEstimatedValue());
-				}
-
-				double [] yStationAlpha0lExposed = new double [theAircraft.get_exposedWing().get_numberOfAirfoils()];
-				double [] yStationChordExposed = new double [2];
-				double [] yStationTwistExposed = new double [theAircraft.get_exposedWing().get_numberOfAirfoils()];
-
-				for ( int i = 0 ; i < yStationAlpha0lExposed.length ; i ++){
-					yStationAlpha0lExposed[i] = 
-							theAircraft
-							.get_exposedWing()
-							.get_theAirfoilsListExposed()
-							.get(i).getGeometry().get_yStation();
-
-					yStationTwistExposed [i] = 
-							theAircraft
-							.get_exposedWing()
-							.get_theAirfoilsListExposed()
-							.get(i).getGeometry().get_yStation();
-				}
-
-				yStationChordExposed [0] = theAircraft
-						.get_exposedWing()
-						.get_theAirfoilsListExposed()
-						.get(0).getGeometry().get_yStation();
-
-				yStationChordExposed [1] = theAircraft
-						.get_exposedWing()
-						.get_theAirfoilsListExposed()
-						.get(2).getGeometry().get_yStation();
-
-
-
-
-				_alpha0lDistribution = MyArray.createArray(
-						alphaZeroLiftExposed
-						.interpolate(yStationAlpha0lExposed, _yStationsIntegral));
-
-				_chordsVsY = MyArray.createArray(
-						chordDistributionExposed
-						.interpolate(yStationChordExposed, _yStationsIntegral));
-				
-				_twistDistribution = MyArray.createArray(
-						twistExposed
-						.interpolate(yStationTwistExposed, _yStationsIntegral));
-
 			}
 			else{
 				surfaceInteg = surface;
@@ -4703,6 +4708,15 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 	public void setcLAlphaZero(double cLAlphaZero) {
 		this.cLAlphaZero = cLAlphaZero;
+	}
+	
+	public double getcLStarWing() {
+		return cLStarWing;
+	}
+
+
+	public void setcLStarWing(double cLStarWing) {
+		this.cLStarWing = cLStarWing;
 	}
 
 

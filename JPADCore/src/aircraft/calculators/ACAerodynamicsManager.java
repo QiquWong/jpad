@@ -511,15 +511,16 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		if (alphaBody.getUnit() == NonSI.DEGREE_ANGLE) 
 			alphaBody = alphaBody.to(SI.RADIAN);
 
-		double cLAlphaWingBody, cLAlphaWing, cLMaxWingClean, cLZeroWing, alphaZeroLift, cLZeroWingBody,
-		cLActual = 0, cLStar;
+		double cLAlphaWingBody, cLAlphaWing, cLMaxWingClean, cLZeroWing, alphaZeroLift,
+			cLZeroWingBody,alphaStarDouble, cLActual = 0, cLStar;
 		double a, b, c, d;
 		Amount<Angle> alphaMaxWingClean, alphaStar, alphaMaxWingBody;
 
 		alphaMaxWingClean =  _theAircraft.get_wing().getAerodynamics().get_alphaMaxClean();
 		cLMaxWingClean = _theAircraft.get_wing().getAerodynamics().get_cLMaxClean();
 		cLAlphaWing = _theAircraft.get_wing().getAerodynamics().getcLLinearSlopeNB();
-		alphaStar = meanAirfoil.getAerodynamics().get_alphaStar();
+		//alphaStar = meanAirfoil.getAerodynamics().get_alphaStar();
+		cLStar = _theAircraft.get_wing().getAerodynamics().getcLStarWing();
 		LSAerodynamicsManager theManager = _theAircraft.get_wing().getAerodynamics();
 		LSAerodynamicsManager.CalcAlpha0L theAlphaZeroLiftCalculator = theManager.new CalcAlpha0L();
 		alphaZeroLift = theAlphaZeroLiftCalculator.integralMeanExposedWithTwist().getEstimatedValue();
@@ -537,13 +538,14 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		double alphaTempWingBody = (cLMaxWingClean - cLZeroWingBody)/cLAlphaWingBody;
 		double deltaAlphaTemp = alphaTempWing - alphaTempWingBody;
 		alphaMaxWingBody = Amount.valueOf(alphaMaxWingClean.getEstimatedValue() - Math.abs(deltaAlphaTemp), SI.RADIAN);
-		cLStar = cLAlphaWingBody * alphaStar .getEstimatedValue() + cLZeroWingBody;	
+		alphaStarDouble = (cLStar-cLZeroWingBody)/cLAlphaWingBody;
+
 		//System.out.println(" alpha max clean " + alphaMaxWingClean.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
 		//System.out.println(" cl max wing clean " + cLMaxWingClean);
 		//System.out.println(" cl alpha wing " + cLAlphaWing);
 		System.out.println("\n -----------WING BODY-------------- ");
 		System.out.println(" alpha max " + alphaMaxWingBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
-		System.out.println(" alpha star " + alphaStar.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
+		System.out.println(" alpha star " + alphaStarDouble*57.3);
 		System.out.println(" cL max " + cLMaxWingClean);
 		System.out.println(" cL alpha wing body " + cLAlphaWingBody);
 		System.out.println(" alpha zero lift " + alphaZeroLift*57.3);
@@ -551,7 +553,9 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		double alphaWing = alphaBody.getEstimatedValue() +
 				_theAircraft.get_wing().get_iw().getEstimatedValue();
 
-		if ( alphaWing < alphaStar.getEstimatedValue() ){
+	
+		
+		if ( alphaWing < alphaStarDouble ){
 			cLActual = cLAlphaWingBody * alphaWing + cLZeroWingBody;	
 			return cLActual;
 		}
@@ -562,11 +566,11 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 				alphaMaxWingBody.getEstimatedValue(),1.0},
 					{3* Math.pow(alphaMaxWingBody.getEstimatedValue(), 2),
 					2*alphaMaxWingBody.getEstimatedValue(), 1.0, 0.0},
-					{3* Math.pow(alphaStar.getEstimatedValue(), 2), 
-						2*alphaStar.getEstimatedValue(), 1.0, 0.0},
-					{Math.pow(alphaStar.getEstimatedValue(), 3), 
-							Math.pow(alphaStar.getEstimatedValue(), 2),
-							alphaStar.getEstimatedValue(),1.0}};
+					{3* Math.pow(alphaStarDouble, 2), 
+						2*alphaStarDouble, 1.0, 0.0},
+					{Math.pow(alphaStarDouble, 3), 
+							Math.pow(alphaStarDouble, 2),
+							alphaStarDouble,1.0}};
 			RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
 			double [] vector = {cLMaxWingClean, 0,cLAlphaWingBody, cLStar};
 
