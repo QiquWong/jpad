@@ -1,0 +1,42 @@
+<database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader>
+  <databaseFolderPath>data</databaseFolderPath>
+  <databaseFileName>VeDSC_database.h5</databaseFileName>
+  <database>
+    <__fileName>data\VeDSC_database.h5</__fileName>
+    <__fileH5 serialization="custom">
+      <file>
+        <default>
+          <path>data\VeDSC_database.h5</path>
+        </default>
+        <char>\</char>
+      </file>
+      <ncsa.hdf.object.FileFormat>
+        <default>
+          <fid>-1</fid>
+          <isReadOnly>true</isReadOnly>
+          <max__members>10000</max__members>
+          <start__members>0</start__members>
+          <fullFileName>C:\Users\agodemar\ADOPT_PROJECT\jpad\JPAD-Apps\DirectionalStability\data\VeDSC_database.h5</fullFileName>
+        </default>
+      </ncsa.hdf.object.FileFormat>
+      <ncsa.hdf.object.h5.H5File>
+        <default>
+          <attrFlag>false</attrFlag>
+          <flag>0</flag>
+          <indexOrder>0</indexOrder>
+          <indexType>0</indexType>
+          <libver>
+            <int>0</int>
+            <int>0</int>
+          </libver>
+        </default>
+      </ncsa.hdf.object.h5.H5File>
+    </__fileH5>
+  </database>
+  <kFv>0.0</kFv>
+  <kVf>0.0</kVf>
+  <kWv>0.0</kWv>
+  <kWf>0.0</kWf>
+  <kHv>0.0</kHv>
+  <kHf>0.0</kHf>
+</database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader>
