@@ -32,8 +32,8 @@ public class DownwashCalculator {
 	private double bRLineZeroLiftLine;
 	private double distTrailingEdgeWingXACH;
 	Aircraft aircraft;
-	double zHTailAC, cRootExposedWing , angleOfIncidenceExposed, zWing, distAerodynamicCenter, 
-	alphaZeroLiftRootExposed, xACLRF, xACRootExposed, angleOfIncidenceExposedDeg, 
+	double zHTailAC, cRootExposedWing , angleOfIncidenceExposed, zWing, distAerodynamicCenter,
+	alphaZeroLiftRootExposed, xACLRF, xACRootExposed, angleOfIncidenceExposedDeg,
 	alphaZeroLiftRootExposedDeg;
 	private double[] downwashArray;
 	private double[] alphaArray ;
@@ -49,7 +49,7 @@ public class DownwashCalculator {
 	private double deltaAlpha;
 
 
-	//BUILDER 
+	//BUILDER
 
 	public DownwashCalculator(
 			Aircraft aircraft
@@ -80,21 +80,21 @@ public class DownwashCalculator {
 
 
 	/**
-	 * This method calculates the downwash gradient using Delft formula. The downwash gradient is 
+	 * This method calculates the downwash gradient using Delft formula. The downwash gradient is
 	 * considered as constant. The distances considered in the formula are geometric and fixed.
-	 * 
-	 * Distance along X axis -- > Distance between the points at c/4 of the mean 
-	 *	                          aerodynamic chord of the wing and the same point 
+	 *
+	 * Distance along X axis -- > Distance between the points at c/4 of the mean
+	 *	                          aerodynamic chord of the wing and the same point
 	 *	                          of the horizontal tail.
-	 *	                          
+	 *
 	 * Distance along Z axis -- >Distance between the horizontal tail the vortex
 	 *                           shed plane, which can be approximated with the plane
 	 *                           from the wing root chord.
-	 * 
+	 *
 	 * @param Aircraft
 	 * @param distVortexPlane Distance between the horizontal tail the vortex
 	 * shed plane, which can be approximated with the plane from the wing root chord.
-	 * 
+	 *
 	 * @author  Manuela Ruocco
 	 */
 
@@ -105,8 +105,8 @@ public class DownwashCalculator {
 	public double calculateDownwashGradientLinearDelft(double distVortexPlane){
 
 		double downwashGradientLinear;
-		double distAerodynamicCenter; // Distance between the points at c/4 of the mean 
-		// aerodynamic chord of the wing and the same point 
+		double distAerodynamicCenter; // Distance between the points at c/4 of the mean
+		// aerodynamic chord of the wing and the same point
 		// of the horizontal tail.
 
 		distAerodynamicCenter = aircraft.get_HTail().get_ACw_ACdistance().getEstimatedValue();
@@ -115,7 +115,7 @@ public class DownwashCalculator {
 		double sweepQuarterChordEq = aircraft.get_wing().get_sweepQuarterChordEq().getEstimatedValue();
 		double aspectRatio = aircraft.get_exposedWing().get_aspectRatio();
 
-		double keGamma, keGammaZero;	
+		double keGamma, keGammaZero;
 
 		double r=distAerodynamicCenter/semiWingSpan;
 		double rPow=Math.pow(r,2);
@@ -135,51 +135,51 @@ public class DownwashCalculator {
 
 		return downwashGradientLinear;
 
-	}	
+	}
 
 	/**
-	 * This method calculates the downwash gradient using Delft formula. The downwash gradient is 
+	 * This method calculates the downwash gradient using Delft formula. The downwash gradient is
 	 * considered variable in alpha absolute. The distance along x considered in the formula
 	 * is geometric and fixed. Conversely the distance along z is variable and it is considered as
 	 * the Distance between the horizontal tail the vortex shed plane.
-	 * 
-	 * Distance along X axis -- > Distance between the points at c/4 of the mean 
-	 *	                          aerodynamic chord of the wing and the same point 
+	 *
+	 * Distance along X axis -- > Distance between the points at c/4 of the mean
+	 *	                          aerodynamic chord of the wing and the same point
 	 *	                          of the horizontal tail.
-	 *	                          
+	 *
 	 * Distance along Z axis -- >Distance between the horizontal tail the vortex
 	 *                           shed plane.
-	 * 
+	 *
 	 * @param Amount<Angle> alpha Body in degree or radians
 	 *
-	 * 
+	 *
 	 * @author  Manuela Ruocco
 	 */
 
 
 	// This method evaluates the downwash at alpha body considering a variable downwash gradient.
-	// In order to evaluate this value it's necessary to implement an iterative process when the 
+	// In order to evaluate this value it's necessary to implement an iterative process when the
 	// value of downwash at alpha depends on the value at previous step.
-	// This method accepts an alpha body as input and it calculates the downwash gradient and 
-	// the relative value of downwash for a variable number of step until alpha actual is equal to 
-	// alpha body, starting from an alpha such that alpha absolute = 0. 
+	// This method accepts an alpha body as input and it calculates the downwash gradient and
+	// the relative value of downwash for a variable number of step until alpha actual is equal to
+	// alpha body, starting from an alpha such that alpha absolute = 0.
 	// When alpha absolute =0, in fact, the value of downwash is assumed zero, but the downwash gradient
-	// is not null. 
-	// This value of downwash gradien is used in the following step as effort value in order to 
+	// is not null.
+	// This value of downwash gradien is used in the following step as effort value in order to
 	// calculate a new distance along z axis and a new value of downwash gradient.
 
 
 	public double calculateDownwashNonLinearDelftAtAlpha( Amount<Angle> alphaBody){
 
-		if (alphaBody.getUnit() == SI.RADIAN) 
+		if (alphaBody.getUnit() == SI.RADIAN)
 			alphaBody = alphaBody.to(NonSI.DEGREE_ANGLE);
 
 		// Variable Declaration
 
-		List<Double> alphaAbsoluteList = new ArrayList<>(); 
-		List<Double> alphaBodyList = new ArrayList<>(); 
-		List<Double> zDistanceList = new ArrayList<>(); 
-		List<Double> downwashGradientList = new ArrayList<>(); 
+		List<Double> alphaAbsoluteList = new ArrayList<>();
+		List<Double> alphaBodyList = new ArrayList<>();
+		List<Double> zDistanceList = new ArrayList<>();
+		List<Double> downwashGradientList = new ArrayList<>();
 		List<Double> downwashList = new ArrayList<>();
 
 		double alphaBodyActual, alphaAbsoluteActual = 0.0, downwashActual, downwashGradientActual,
@@ -224,12 +224,13 @@ public class DownwashCalculator {
 
 			downwashGradientTemp =  downwashGradientList.get(i-1);
 			downwashActual = downwashGradientTemp  * alphaAbsoluteActual; //* deltaAlpha;
-			//downwashList.get(i-1) + downwashGradientTemp  * alphaAbsoluteActual; //* deltaAlpha;
+//			downwashActual = downwashList.get(i-1) +
+//					downwashGradientTemp  * deltaAlpha; // alphaAbsoluteActual; //* deltaAlpha;
 			//alphaAbsoluteActual;
 			downwashRadian = Amount.valueOf(
 					Math.toRadians(downwashActual), SI.RADIAN).getEstimatedValue();
 
-			zDistanceActual = zDistanceList.get(i-1) - 
+			zDistanceActual = zDistanceList.get(i-1) -
 					distTrailingEdgeWingXACH * Math.tan(
 							angleOfIncidenceExposed + alphaZeroLiftRootExposed - deltaAlpha + downwashRadian);
 			zDistanceList.add(i, zDistanceActual);
@@ -237,8 +238,9 @@ public class DownwashCalculator {
 			downwashGradientActual = calculateDownwashGradientLinearDelft(zDistanceActual);
 			downwashGradientList.add(i, downwashGradientActual);
 
-			downwashActual = downwashGradientActual * alphaAbsoluteActual; 
-			//downwashList.get(i-1) + downwashGradientActual * alphaAbsoluteActual; // * deltaAlpha;
+			downwashActual = downwashGradientActual * alphaAbsoluteActual;
+//			downwashActual = downwashList.get(i-1) +
+//					downwashGradientActual  * deltaAlpha; // alphaAbsoluteActual; //* deltaAlpha;
 			downwashList.add(i, downwashActual);
 
 			i=i+1;
@@ -323,9 +325,9 @@ public class DownwashCalculator {
 				alphaArray, epsilonMatrix,
 				null, null, null, null,
 				"alpha_Body", "epsilon",
-				" deg ", "deg", 
-				legend,subfolderPath, 
-				"Epsilon vs Alpha Body"); 
+				" deg ", "deg",
+				legend,subfolderPath,
+				"Epsilon vs Alpha Body");
 
 
 	}
@@ -378,9 +380,9 @@ public class DownwashCalculator {
 				alphaArray, downwashGradientMatrix,
 				null, null, null, null,
 				"alpha_Body", "d epsilon/d alpha",
-				" deg ", "", 
-				legend,subfolderPath, 
-				"Downwash Gradient vs Alpha Body"); 
+				" deg ", "",
+				legend,subfolderPath,
+				"Downwash Gradient vs Alpha Body");
 
 
 	}
@@ -430,9 +432,9 @@ public class DownwashCalculator {
 				alphaArray, zDistanceMatrix,
 				null, null, null, null,
 				"alpha_Body", "z",
-				" deg ", "m", 
-				legend,subfolderPath, 
-				"Z Distance vs Alpha Body"); 
+				" deg ", "m",
+				legend,subfolderPath,
+				"Z Distance vs Alpha Body");
 
 
 	}
@@ -445,38 +447,38 @@ public class DownwashCalculator {
 	}
 
 	/**
-	 * This method calculates the distance along Z axis between the AC of the Htail and the 
+	 * This method calculates the distance along Z axis between the AC of the Htail and the
 	 * zero-lift line of the exposed wing.
-	 * 
+	 *
 	 * @param Aircraft
-	 * 
+	 *
 	 * @author  Manuela Ruocco
 	 */
 
 
 	// 1
-	//	 This method calculates the distance along Z axis between the AC of the Htail and the 
+	//	 This method calculates the distance along Z axis between the AC of the Htail and the
 	//	 zero-lift line of the exposed wing. The following treatment is referred to an exposed wing
 	//	 so it will called more briefly wing.
 	//	 This distance is the sum of the Z coordinate of the Htail and the vertical component between body reference line and the zero lift line of the wing.
 	//	 In order to evaluate this contribution it is necessary to translate the body reference line
-	//	 of a x quantity until the trailing edge of the root airfoil. 
-	//	
+	//	 of a x quantity until the trailing edge of the root airfoil.
+	//
 	//  	fig. complete
 
 	//	 It is possible to evaluate this quantity starting from the knowledge of wing root chord, the
 	//	 angle of incidence of the wing, and the origin of LRF.
-	//	
-	//      first particular	
-	//	
+	//
+	//      first particular
+	//
 	//     formula
-	//	
+	//
 	//   Now it's possible to evaluate the distance --NOME-- between the new body reference line and the
-	//  zero-lift wing line that is easy obtainable known the position of the aerodynamic center and the root chord 
+	//  zero-lift wing line that is easy obtainable known the position of the aerodynamic center and the root chord
 	//	of the wing
-	//	
-	//  second particular	
-	//	
+	//
+	//  second particular
+	//
 	//  formula
 
 
@@ -498,11 +500,11 @@ public class DownwashCalculator {
 
 
 	/**
-	 * This method calculates the distance along Z axis between the AC of the Htail and the 
+	 * This method calculates the distance along Z axis between the AC of the Htail and the
 	 * direction of flow not considering the deflection due to downwash.
-	 * 
+	 *
 	 * @param Aircraft
-	 * 
+	 *
 	 * @author  Manuela Ruocco
 	 */
 
@@ -510,22 +512,22 @@ public class DownwashCalculator {
 	// 2
 	//	 In order to evaluate the effective distance between the horizontal tail an the vortex shed plane
 	// it's necessary to evaluate the same distance not considering the deflection due to downwash.
-	// This deflection, in fact, is obtainable with an iterative process in witch the starting 
+	// This deflection, in fact, is obtainable with an iterative process in witch the starting
 	// value of downwash is obtained from the previous step.
 	//
 	//  graph
-	// particular 
+	// particular
 
 	public double distanceVortexShedPlaneACHTailNoDownwash( Amount<Angle> alphaAbsolute){
 
-		if (alphaAbsolute.getUnit() == NonSI.DEGREE_ANGLE) 
+		if (alphaAbsolute.getUnit() == NonSI.DEGREE_ANGLE)
 			alphaAbsolute = alphaAbsolute.to(SI.RADIAN);
 
 		double zeroLiftDistance = distanceZeroLiftLineACHorizontalTail();
 		double bRLineVelocityDirection = getDistTrailingEdgeWingXACH() * Math.tan(
 				angleOfIncidenceExposed + alphaZeroLiftRootExposed - alphaAbsolute.getEstimatedValue());
 
-		double distance = zeroLiftDistance - (getbRLineZeroLiftLine()-bRLineVelocityDirection); 
+		double distance = zeroLiftDistance - (getbRLineZeroLiftLine()-bRLineVelocityDirection);
 		return distance;
 	}
 
