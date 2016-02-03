@@ -21,6 +21,7 @@ import org.apache.commons.math3.ode.FirstOrderIntegrator;
 import org.apache.commons.math3.ode.events.EventHandler;
 import org.apache.commons.math3.ode.events.EventHandler.Action;
 import org.apache.commons.math3.ode.nonstiff.DormandPrince853Integrator;
+import org.apache.commons.math3.ode.nonstiff.MidpointIntegrator;
 import org.apache.commons.math3.ode.sampling.StepHandler;
 import org.apache.commons.math3.ode.sampling.StepInterpolator;
 import org.jscience.physics.amount.Amount;
@@ -250,12 +251,15 @@ public class CalcTakeOff_Landing {
 
 		// see: https://commons.apache.org/proper/commons-math/userguide/ode.html
 
-		FirstOrderIntegrator dp853 = new DormandPrince853Integrator(
+		FirstOrderIntegrator theIntegrator = new DormandPrince853Integrator(
 				1.0e-8,   // minStep
 				100.0,    // maxStep
 				1.0e-10,  // vecAbsoluteTolerance
 				1.0e-10   // vecRelativeTolerance
 				);
+
+		// FirstOrderIntegrator theIntegrator = new MidpointIntegrator(0.1); // time step
+
 		FirstOrderDifferentialEquations ode = new DynamicsEquations();
 
 		// handle detail infos
@@ -272,7 +276,7 @@ public class CalcTakeOff_Landing {
 
 			}
 		};
-		dp853.addStepHandler(stepHandler);
+		theIntegrator.addStepHandler(stepHandler);
 
 		EventHandler eventHandler = new EventHandler() {
 
@@ -302,10 +306,10 @@ public class CalcTakeOff_Landing {
 			}
 
 		};
-		dp853.addEventHandler(eventHandler, 1.0e-8, 1e-6, 1000);
+		theIntegrator.addEventHandler(eventHandler, 1.0e-8, 1e-6, 1000);
 
 		double[] xAt0 = new double[] { 0.0, 0.0, 0.0 }; // initial state
-		dp853.integrate(ode, 0.0, xAt0, 16.0, xAt0); // now y contains final state at time t=16.0
+		theIntegrator.integrate(ode, 0.0, xAt0, 16.0, xAt0); // now y contains final state at time t=16.0
 
 		System.out.println("\n\n---------------------------------------------------");
 
