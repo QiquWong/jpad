@@ -1,0 +1,55 @@
+\chapter{Downwash Estimation}
+
+In order to evaluate the characteristics of longitudinal stability of an aircraft it's necessary to assess the flow direction aft of the wing. The contribution of horizontal tail surface to the airplane equilibrium and stability, in fact, depends seriously on the flow direction. The pourpose of this chapter is to introduce and evaluate the downwash gradient due from the wing's vortex system, considering a dipendence of the downwash angle from the absolute angle of attack. 
+
+\section{Theoretical background}
+
+Due to the finite extention of the wing the lift distribution in span is not uniform. For this reason the difference of pressure between upper and lower surfaces generates a movement of air aroud the wingtips. The tendency is for particles of air to move from the region of high pressure around the wing tip to the region of low pressure (for positive lift from the lower wing surface to the upper surface). This made the wing's vortex system that consisting of the bound vortex, located at the wing quarter chord and a vortex sheet which rolling up, at the wing tip, in two trailing vortex.\cite{PerkinsHage} \cite{Jacobs:NACA:Rep:648} \\ 
+
+\begin{figure}[H]
+\centering
+{\includegraphics[height=6cm]{Immagini/wing_vortex_sheet3.pdf}} 
+\caption{The wing vortex sheet.}
+\end{figure}
+
+The main effect of this vortex system is to deflect the airflow behind the wing downward relative to the direction of freestream flow. This angle of deviation is known as {\itshape Downwash Angle} $\epsilon$. This phenomenon occurs for every lifting surface, but in subsonic flow a lifting surface also affects the flow forward of itself. In this region the vortex creates an {itshape Upwash}, that is an upward flow deflection.\\
+
+
+\begin{figure}[H]
+\centering
+{\includegraphics[height=5cm]{Immagini/wing_upwash_downwash.pdf}} 
+\caption{Upwash and Downwash in a finite wing.}
+\end{figure}
+
+As consequence of the downwash behind the wing, the local angle of attack on the horizontal tail is reduced by  $\epsilon$. In order to evaluate the dlow direction behind the wing, an other important parameter id the change in downwash angle with angle of attack, that is the {\itshape Downwash Gradient } $\frac{d\epsilon}{d\alpha}$.\\
+This parameter depends principally on the location of the horizontal tail with respect to the wing and the vortex plane. As first approssimation this value could be considered constant in alpha, but more accurately it's possible to evaluate this dependence considering the reference variable for the calculation of the distances. \\ \\
+
+In order to evaluate the downwash gradient it refers to fig. \ref{PerkinsDownwash}, where ``$r \frac{b}{2}$''  is the distance between the aerodynamic center of wing and the aerodynamic center of the horizontal tail. This is a geometric an fixed distance. Conversely,  in order to have a greates accuracy it's possible to consider the distance ``$m  \frac{b}{2}$'' variable with the angle of attack. Properly this is the distance between the horizontal tail and the vortex shed plane, but it's possible to approximate it with the distance between the horizontal tail and the wing root chord.
+
+\begin{figure}[H]
+\centering
+{\includegraphics[height=7.3cm]{Immagini/wing_htail_Roskam.pdf}} 
+\caption{Dimensions for determination of Downwash Gradient.}
+\label{PerkinsDownwash}
+\end{figure} 
+
+%% METTI FONTE FORMULA DOWNWASH
+%% TODO --> DIVIDI FORMULA \ALIGN
+\begin{equation}
+ \frac{d\epsilon}{d\alpha} = \frac{K_{\epsilon \Lambda}}{K_{\epsilon _{\Lambda=0}}}  \left ( \frac{r}{r^2+m_{tv}^2} 
+ \frac{0.4876}{\sqrt{r^2 + 0.6319 + m_{tv}^2}}  + \displaybreak  \left [1+{ \left ( \frac{r^2}{r^2 + 0.7915 + 5.0734 m_{tv}^2} \right ) }^{0.3113} \right ]     \left \{ 1- \sqrt{\frac{m_{tv}^2}{1+m_{tv}^2}} \right \}     \right )    \frac{C_{L_{{\alpha}_w}}}{\pi \AR}\end{equation}
+
+Where the two $K_{\epsilon}$ terms accounting fot the wing sweep angle effect are defined as follow ( where $\Lambda $ expressed in radians):
+
+\begin{equation}
+K_{\epsilon \Lambda} = \frac{ 0.1124 + 0.1265 \Lambda + 0.1766 \Lambda^2}{r^2} + \frac{0.1024}{r} +2
+\end{equation}
+
+\begin{equation}
+K_{\epsilon _{\Lambda=0}} = \frac{ 0.1124 }{r^2} + \frac{0.1024}{r} +2
+\end{equation}
+
+% INTRO
+% TEST CLASS
+% DEVELOPER GUIDE
+

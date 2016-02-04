@@ -17,13 +17,15 @@
 \BOOKMARK [-1][-]{part.3}{III Functionality Overview}{}% 17
 \BOOKMARK [0][-]{chapter.5}{Lift characteristics of a wing}{part.3}% 18
 \BOOKMARK [0][-]{chapter.6}{Drag characteristics of a wing}{part.3}% 19
-\BOOKMARK [0][-]{chapter.7}{Longitudinal stability of an aircraft}{part.3}% 20
-\BOOKMARK [0][-]{chapter.8}{Minor Works}{part.3}% 21
-\BOOKMARK [0][-]{Appendix.a.A}{Java Reference}{part.3}% 22
-\BOOKMARK [1][-]{section.a.A.1}{Inheritance, Overriding and Polymorphism}{Appendix.a.A}% 23
-\BOOKMARK [1][-]{section.a.A.2}{Packages}{Appendix.a.A}% 24
-\BOOKMARK [1][-]{section.a.A.3}{Documentation}{Appendix.a.A}% 25
-\BOOKMARK [0][-]{section*.10}{Glossary}{part.3}% 26
-\BOOKMARK [0][-]{section*.12}{Acronyms}{part.3}% 27
-\BOOKMARK [0][-]{section*.14}{List of symbols}{part.3}% 28
-\BOOKMARK [0][-]{section*.16}{Bibliography}{part.3}% 29
+\BOOKMARK [0][-]{chapter.7}{Downwash Estimation}{part.3}% 20
+\BOOKMARK [1][-]{section.7.1}{Theoretical background}{chapter.7}% 21
+\BOOKMARK [0][-]{chapter.8}{Longitudinal stability of an aircraft}{part.3}% 22
+\BOOKMARK [0][-]{chapter.9}{Minor Works}{part.3}% 23
+\BOOKMARK [0][-]{Appendix.a.A}{Java Reference}{part.3}% 24
+\BOOKMARK [1][-]{section.a.A.1}{Inheritance, Overriding and Polymorphism}{Appendix.a.A}% 25
+\BOOKMARK [1][-]{section.a.A.2}{Packages}{Appendix.a.A}% 26
+\BOOKMARK [1][-]{section.a.A.3}{Documentation}{Appendix.a.A}% 27
+\BOOKMARK [0][-]{section*.13}{Glossary}{part.3}% 28
+\BOOKMARK [0][-]{section*.15}{Acronyms}{part.3}% 29
+\BOOKMARK [0][-]{section*.17}{List of symbols}{part.3}% 30
+\BOOKMARK [0][-]{section*.19}{Bibliography}{part.3}% 31

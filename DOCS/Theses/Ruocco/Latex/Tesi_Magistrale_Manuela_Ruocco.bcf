@@ -2238,10 +2238,13 @@
     <bcf:datasource type="file" datatype="bibtex">Tesi_Bibliography.bib</bcf:datasource>
   </bcf:bibdata>
   <bcf:section number="0">
-    <bcf:citekey order="1">atr:atr</bcf:citekey>
-    <bcf:citekey order="2">wiki:atr</bcf:citekey>
-    <bcf:citekey order="3">wiki:boeing</bcf:citekey>
-    <bcf:citekey order="4">boeing:boeing</bcf:citekey>
+    <bcf:citekey order="1">wiki:xml</bcf:citekey>
+    <bcf:citekey order="2">atr:atr</bcf:citekey>
+    <bcf:citekey order="3">wiki:atr</bcf:citekey>
+    <bcf:citekey order="4">wiki:boeing</bcf:citekey>
+    <bcf:citekey order="5">boeing:boeing</bcf:citekey>
+    <bcf:citekey order="6">PerkinsHage</bcf:citekey>
+    <bcf:citekey order="7">Jacobs:NACA:Rep:648</bcf:citekey>
     <bcf:citekey order="0">*</bcf:citekey>
   </bcf:section>
   <bcf:sortlist section="0" name="nty" type="entry" sortscheme="nty">

@@ -176,6 +176,25 @@
       \verb https://www.hdfgroup.org/products/java/hdf-java-html/javadocs/ncsa/hdf/hdf5lib/H5.html
       \endverb
     \endentry
+    \entry{hilton1951high}{book}{}
+      \name{author}{1}{}{%
+        {{hash=8870ba735beab90427263c4a46389153}{Hilton}{H\bibinitperiod}{W.F.}{W\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {Longmans, Green}%
+      }
+      \strng{namehash}{8870ba735beab90427263c4a46389153}
+      \strng{fullhash}{8870ba735beab90427263c4a46389153}
+      \field{sortinit}{H}
+      \field{sortinithash}{82012198d5dfa657b8c4a168793268a6}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{High-speed Aerodynamics}
+      \field{year}{1951}
+      \verb{url}
+      \verb https://books.google.it/books?id=%5C_RRFAAAAMAAJ
+      \endverb
+    \endentry
     \entry{howe2000aircraft}{book}{}
       \name{author}{1}{}{%
         {{hash=bcd070b18e34c8795189c9573db5b837}{Howe}{H\bibinitperiod}{D.}{D\bibinitperiod}{}{}{}{}}%

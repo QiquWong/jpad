@@ -11,6 +11,11 @@
 
 %%% ---------------------------------------------------------------- Main glossary
 
+\newdualentry{AF} % label
+  {A.F.}            % abbreviation
+  {Autonomy Factor}  % long form
+  {Is the combination of three main efficiency: the propulsive efficiciency represented by SFC, the propeller efficiency $\eta_{p}$ or the jet efficiency represented by V and, finally, the aerodynamic efficinecy $\frac{L}{D}$} % description
+
 \newdualentry{JPAD} % label
   {JPAD}            % abbreviation
   {Java Program toolchain for Aircraft Design}  % long form
@@ -32,6 +37,11 @@
   {Hierarchical Data Format}  % long form
   {A set of file formats (HDF4, HDF5) designed to store and organize large amounts of data}
   
+\newdualentry{TAS}%
+  {TAS}            % abbreviation
+  {True AirSpeed}  % long form
+  {Is the speed of the aircraft relative to the airmass in which it is flying; TAS is the true measure of aircraft performance in cruise, thus it is the speed listed in aircraft specifications, manuals, performance comparisons, pilot reports, and every situation when cruise or endurance performance needs to be measured. It is the speed normally listed on the flight plan, also used in flight planning, before considering the effects of wind}
+  
 \newdualentry{PNG} % label
   {PNG}            % abbreviation
   {Portable Network Graphics}  % long form
@@ -39,12 +49,22 @@
   
 \newdualentry{TiKZ} % label
   {TikZ}            % abbreviation
-  {TikZ ist kein Zeichenprogramm}  % long form
-  {TikZ is a set of higher-level macros that use PGF} % description
+  {TikZ}  % long form
+  {Is a set of higher-level macros that use PGF} % description
 
 \newglossaryentry{List}{%
 	name=List,
 	description={The java.util.List interface is a subtype of the java.util.Collection interface. It represents an ordered list of objects, meaning you can access the elements of a List in a specific order, and by an index too. You can also add the same element more than once to a List}
+}
+
+\newglossaryentry{Static}{%
+	name=Static method,
+	description={The term static means that the method is available at the Class level, and so does not require that an object is instantiated before it's called}
+}
+
+\newglossaryentry{Map}{%
+	name=Map,
+	description={The java.util.Map interface represents a mapping between a key and a value. The Map interface is not a subtype of the Collection interface. Therefore it behaves a bit different from the rest of the collection types}
 }
 
 \newglossaryentry{parsing}{%
@@ -55,13 +75,13 @@
 \newglossaryentry{Table}{%
    name=Table,
    description={%
-      a collection that associates an ordered pair of keys, called a row key and a column key, with a single value. A table may be sparse, with only a small fraction of row key / column key pairs possessing a corresponding value}
+      Is a collection that associates an ordered pair of keys, called a row key and a column key, with a single value. A table may be sparse, with only a small fraction of row key / column key pairs possessing a corresponding value}
 }
 
 \newglossaryentry{User:Developer}{%
    name=User developer,
    description={%
-      the term refers to the developer which will use a method without being interested in how the method performs the required action. This is the case of a utility method: the developer is the one who writes the method, while the user developer is who uses that method to accomplish some action which requires the functionality provided by the utility method. It has to be noticed that the user developer and the developer can be the same person}
+      The term refers to the developer which will use a method without being interested in how the method performs the required action. This is the case of a utility method: the developer is the one who writes the method, while the user developer is who uses that method to accomplish some action which requires the functionality provided by the utility method. It has to be noticed that the user developer and the developer can be the same person}
 }
 
 %%% --------------------------------------------------------------- List of symbols

@@ -68,24 +68,66 @@
       \endverb
       \warn{\item Datamodel: Entry 'occjava' (Tesi_Bibliography.bib): Invalid format '01.16.2015' of date field 'date' - ignoring}
     \endentry
-    \entry{atr:atr}{online}{}
-      \field{sortinit}{a}
+    \entry{wiki:atr}{online}{}
+      \name{author}{1}{}{%
+        {{hash=7da2a74e066e90281bae34a5d86abefd}{Authors}{A\bibinitperiod}{Various}{V\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{fullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \field{sortinit}{A}
       \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
+      \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{label}{\atr}
+      \field{title}{ATR 72. Aircraft description}
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/ATR_72
+      \endverb
+      \warn{\item Datamodel: Entry 'wiki:atr' (Tesi_Bibliography.bib): Invalid format '4.02.16' of date field 'date' - ignoring}
+    \endentry
+    \entry{atr:atr}{online}{}
+      \name{author}{1}{}{%
+        {{hash=7da2a74e066e90281bae34a5d86abefd}{Authors}{A\bibinitperiod}{Various}{V\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{fullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \field{sortinit}{A}
+      \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
       \field{title}{ATR 72. Aircraft description}
       \verb{url}
       \verb http://www.atraircraft.com/products/list.html
       \endverb
     \endentry
-    \entry{wiki:atr}{online}{}
-      \field{sortinit}{a}
+    \entry{wiki:boeing}{online}{}
+      \name{author}{1}{}{%
+        {{hash=7da2a74e066e90281bae34a5d86abefd}{Authors}{A\bibinitperiod}{Various}{V\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{fullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \field{sortinit}{A}
       \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
+      \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{label}{\atrwiki}
-      \field{title}{ATR 72. Aircraft description}
+      \field{title}{Boeing 747. Aircraft description}
       \verb{url}
-      \verb https://en.wikipedia.org/wiki/ATR_72
+      \verb https://en.wikipedia.org/wiki/Boeing_747
+      \endverb
+      \warn{\item Datamodel: Entry 'wiki:boeing' (Tesi_Bibliography.bib): Invalid format '4.02.16' of date field 'date' - ignoring}
+    \endentry
+    \entry{boeing:boeing}{online}{}
+      \name{author}{1}{}{%
+        {{hash=7da2a74e066e90281bae34a5d86abefd}{Authors}{A\bibinitperiod}{Various}{V\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{fullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \field{sortinit}{A}
+      \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Boeing 747. Aircraft description}
+      \verb{url}
+      \verb http://www.boeing.com
       \endverb
     \endentry
     \entry{ESDU:CrankedWings:Properties}{other}{}
@@ -255,26 +297,6 @@
       \field{number}{NASA Technical Note D-5335}
       \field{title}{A Finite-Step Method for Calculation of Theoretical Load Distributions for Arbitrary Lifting-Surface Arrangements at Subsonic Speeds}
       \field{year}{1969}
-    \endentry
-    \entry{boeing:boeing}{online}{}
-      \field{sortinit}{b}
-      \field{sortinithash}{4ecbea03efd0532989d3836d1a048c32}
-      \field{labeltitlesource}{title}
-      \field{label}{\boeing}
-      \field{title}{Boeing 747. Aircraft description}
-      \verb{url}
-      \verb http://www.boeing.com
-      \endverb
-    \endentry
-    \entry{wiki:boeing}{online}{}
-      \field{sortinit}{b}
-      \field{sortinithash}{4ecbea03efd0532989d3836d1a048c32}
-      \field{labeltitlesource}{title}
-      \field{label}{\boeingwiki}
-      \field{title}{Boeing 747. Aircraft description}
-      \verb{url}
-      \verb https://en.wikipedia.org/wiki/Boeing_747
-      \endverb
     \endentry
     \entry{Calcara}{book}{}
       \name{author}{1}{}{%
@@ -1051,6 +1073,25 @@
       \verb{url}
       \verb https://books.google.it/books?id=knhHAgAAQBAJ
       \endverb
+    \endentry
+    \entry{Jacobs:NACA:Rep:648}{other}{}
+      \name{author}{2}{}{%
+        {{hash=370efd15eaf480e579d2b6d7b0ddf8a4}{Silverstein}{S\bibinitperiod}{Abe}{A\bibinitperiod}{}{}{}{}}%
+        {{hash=8d68609cf9d86f3b812646d458d6b3f1}{Katzoff}{K\bibinitperiod}{S.}{S\bibinitperiod}{}{}{}{}}%
+      }
+      \list{institution}{1}{%
+        {NASA Langley Research Center}%
+      }
+      \strng{namehash}{9c12ab60d3232c109ab065be5ee09510}
+      \strng{fullhash}{9c12ab60d3232c109ab065be5ee09510}
+      \field{sortinit}{S}
+      \field{sortinithash}{fd1e7c5ab79596b13dbbb67f8d70fb5a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{number}{NACA-TR-648}
+      \field{title}{Design Charts for Predicting Downwash Angles and Wake Characteristics behind Plain and Flapped Wings}
+      \field{type}{techreport}
+      \field{year}{1939}
     \endentry
     \entry{torenbeek2013advanced}{book}{}
       \name{author}{1}{}{%
