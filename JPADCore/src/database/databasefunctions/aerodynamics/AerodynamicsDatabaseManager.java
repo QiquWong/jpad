@@ -84,7 +84,7 @@ public class AerodynamicsDatabaseManager {
 					"Serializing file " + "==> VeDSC_database.h5 ==> "
 							+ fileVeDSC.getAbsolutePath() + " ...");
 			reader = new VeDSCDatabaseReader(
-					MyConfiguration.databaseFolderPath,"VeDSC_database.h5");
+					databaseDirectory,"VeDSC_database.h5");
 
 			File dir = new File(interpolaterVeDSCDatabaseSerializedDirectory);
 			if (!dir.exists()) {
@@ -164,7 +164,7 @@ public class AerodynamicsDatabaseManager {
 		else {
 			System.out.println(	"Serializing file " + "==> FusDes_database.h5 ==> "+ 
 					fileFusDes.getAbsolutePath() + " ...");
-			reader = new FusDesDatabaseReader(MyConfiguration.databaseDirectory,"FusDes_database.h5");
+			reader = new FusDesDatabaseReader(databaseDirectory,"FusDes_database.h5");
 
 
 			File dir = new File(interpolaterFusDesDatabaseSerializedDirectory);
