@@ -262,7 +262,7 @@ public class Test_MR_07_LongitudinalStability {
 		
 		System.out.println("\n-----Start of downwash calculation-----\n" );
 		
-		DownwashCalculator theDownwashCalculator = new DownwashCalculator(aircraft);
+		DownwashCalculatorOldVersion theDownwashCalculator = new DownwashCalculatorOldVersion(aircraft);
 		double dist = theDownwashCalculator.distanceZeroLiftLineACHorizontalTail();
 		
 		//System.out.println(" distance " + dist);

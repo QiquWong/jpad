@@ -1,0 +1,8 @@
+In questa cartella ci sono i disegni sul downwash da cui partire per quelli che saranno poi inseriti nella tesi e nei manuali.
+
+-wing_vortex_sheet0 --> non occorre modificarlo
+-wing_vortex_sheet0 --> non occorre modificarlo
+-wing_htail_Roskam --> disegno di partenza per la spiegazione delle distanze nel calcolo del gradiente di downwash.
+                       Occorre mettere linea di portanza nulla dell' ala, linea di flusso con delta alfa, nuova distanza m b/2
+                       con angoli epsilon e delta alfa. Nomenclatura e spiegazioni in inglese
+-wing_upwash_downwash--> traduzione.
