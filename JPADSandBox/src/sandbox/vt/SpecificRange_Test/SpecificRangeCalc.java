@@ -28,9 +28,9 @@ import writers.JPADStaticWriteUtils;
  * Class that allows user to evaluate the specific range for different mach numbers.
  * The guideline is to assign an array of Mach values, starting from the one realitve
  * to cruise stalling speed, and then evaluate the SFC, from engine database, for each 
- * Mach number of a given array; from here the F.A. is built by evaluating the aerodynamic
+ * Mach number of a given array; from here the A.F. is built by evaluating the aerodynamic
  * efficinecy for each value of the same Mach array. Finally the specific range is
- * calculated, in [nmi]/[lbs], dividing the F.A. by the max take off mass.
+ * calculated, in [nmi]/[lbs], dividing the A.F. by the max take off mass.
  * Furthermore the class allow to plot the Specific Range v.s. Mach chart parameterized
  * at different weight conditions. 
  * 

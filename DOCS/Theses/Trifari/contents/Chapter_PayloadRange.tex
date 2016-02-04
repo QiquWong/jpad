@@ -21,7 +21,7 @@ Because the payload is carried in the fuselage while the fuel is carried in wing
 
 In order to avoid this situation it’s possible to decide, preventively, the maximum payload weight the aircraft can carry in fuselage so that the maximum bending load for wings and, in consequence their structural weight, is set; this particular weight is named maximum zero fuel weight (MZFW).
 
-As a result of this, the previous diagram changes in the one reported in Figure~\ref{fig:Figure2} which starts with the maximum zero fuel weight and keep it constant until the maximum take-off weight is reached. From this point on, the far the aircraft have to go, the more the fuel it needs, but, since the maximum take-off weight is set, the only way to increase fuel weight is to reduce the payload; this condition is represented by the second segment of the diagram and, along this, the aircraft weight is always equal to the maximum take-off weight. With further increase of the required range for the aircraft, the fuel tanks maximum capacity will be reached prevent to store more fuel; the only solution at this problem is to put the additional fuel into the fuselage, reducing, consequently, the payload weight in order to respect the maximum zero fuel weight limitation. Along this last segment the payload weight decreases more rapidly with increasing range reaching, ideally, the value of zero at which the flight mission is useless; moreover the aircraft weight is not equal to the maximum take-off weight anymore but to a lower one.
+As a result of this, the previous diagram changes in the one reported in figure~\ref{fig:Figure2} which starts with the maximum zero fuel weight and keep it constant until the maximum take-off weight is reached. From this point on, the far the aircraft have to go, the more the fuel it needs, but, since the maximum take-off weight is set, the only way to increase fuel weight is to reduce the payload; this condition is represented by the second segment of the diagram and, along this, the aircraft weight is always equal to the maximum take-off weight. With further increase of the required range for the aircraft, the fuel tanks maximum capacity will be reached prevent to store more fuel; the only solution at this problem is to put the additional fuel into the fuselage, reducing, consequently, the payload weight in order to respect the maximum zero fuel weight limitation. Along this last segment the payload weight decreases more rapidly with increasing range reaching, ideally, the value of zero at which the flight mission is useless; moreover the aircraft weight is not equal to the maximum take-off weight anymore but to a lower one.
 
 \bigskip
 \begin{figure}[ht]
@@ -160,7 +160,7 @@ This new take-off weight generates a lower $M_{ff}$, from fuel fraction equation
 %------------------------- JAVA CLASS ARCHITECTURE ---------------------------
 \bigskip
 \section{Java class architecture}
-In this paragraph the implementation in the JPAD software of the Payload-Range diagram, through the \lstinline[language=Java]!calcPayloadRange! Java class, is presented. The idea has been to create a dedicated Java class which is demanded of the calculation of the four couple of range and payload values presented before; moreover it has to confront the user chosen Mach number condition with the best range one and to parametrize the analysis at different maximum take-off weight in order to help users making design decisions about different version of the same aircraft.
+In this paragraph the implementation in the JPAD software of the Payload-Range diagram, through the \lstinline[language=Java]!PayloadRangeCalc! Java class, is presented. The idea has been to create a dedicated Java class which is demanded of the calculation of the four couple of range and payload values presented before; moreover it has to confront the user chosen Mach number condition with the best range one and to parametrize the analysis at different maximum take-off weight in order to help users making design decisions about different version of the same aircraft.
 
 The class core consists of the following three principal methods which have to evaluate points B, C and D coordinates using the procedure explained before.
 
@@ -355,7 +355,7 @@ Now that all required resources are set up, following steps are to create the ai
 
 \bigskip
 \noindent
-All data required by the \lstinline[language=Java]!calcPayloadRange! class are now ready to be used and it’s possible to create an istance of this class accessing, in this way, to all its methods, which have been explained in the previous paragraph. 
+All data required by the \lstinline[language=Java]!PayloadRangeCalc! class are now ready to be used and it’s possible to create an istance of this class accessing, in this way, to all its methods, which have been explained in the previous paragraph. 
 
 \bigskip
 \begin{lstlisting}[caption={Excerpt of the ATR-72 Payload-Range test - Payload-Range class istance creation}, captionpos=b, tabsize=2]

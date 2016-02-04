@@ -17,23 +17,23 @@
 \contentsline {section}{\numberline {2.1}Theoretical background}{7}{section.2.1}
 \contentsline {section}{\numberline {2.2}Java class architecture}{11}{section.2.2}
 \contentsline {section}{\numberline {2.3}Case study: ATR-72 and B747-100B}{14}{section.2.3}
-\contentsline {chapter}{\numberline {3}Specific Range}{27}{chapter.3}
+\contentsline {chapter}{\numberline {3}Specific Range and Cruise Grid}{27}{chapter.3}
 \contentsline {section}{\numberline {3.1}Theoretical background}{27}{section.3.1}
 \contentsline {section}{\numberline {3.2}Java class architecture}{32}{section.3.2}
-\contentsline {section}{\numberline {3.3}Case study: ATR-72 and B747-100B}{32}{section.3.3}
-\contentsline {chapter}{\numberline {4}High lift devices effects}{33}{chapter.4}
-\contentsline {section}{\numberline {4.1}Theoretical background}{33}{section.4.1}
-\contentsline {section}{\numberline {4.2}Java class architecture}{33}{section.4.2}
-\contentsline {section}{\numberline {4.3}Case study: ATR-72 and B747-100B}{33}{section.4.3}
-\contentsline {chapter}{\numberline {5}Take-off performance}{35}{chapter.5}
-\contentsline {section}{\numberline {5.1}Theoretical background}{35}{section.5.1}
-\contentsline {section}{\numberline {5.2}Java class architecture}{35}{section.5.2}
-\contentsline {section}{\numberline {5.3}Case study: B747-100B}{35}{section.5.3}
-\contentsline {chapter}{Appendices}{}{section*.26}
-\contentsline {chapter}{\numberline {A}HDF databse creation and reading }{39}{Appendix.a.A}
-\contentsline {section}{\numberline {A.1}Creation of a database using MATLAB}{39}{section.a.A.1}
-\contentsline {section}{\numberline {A.2}Reading data from an HDF database in JPAD}{42}{section.a.A.2}
-\contentsline {chapter}{Bibliography}{44}{section*.29}
-\contentsline {chapter}{Glossary}{47}{section*.31}
-\contentsline {chapter}{Acronyms}{49}{section*.33}
-\contentsline {chapter}{List of symbols}{51}{section*.35}
+\contentsline {section}{\numberline {3.3}Case study: ATR-72 and B747-100B}{34}{section.3.3}
+\contentsline {chapter}{\numberline {4}High lift devices effects}{35}{chapter.4}
+\contentsline {section}{\numberline {4.1}Theoretical background}{35}{section.4.1}
+\contentsline {section}{\numberline {4.2}Java class architecture}{35}{section.4.2}
+\contentsline {section}{\numberline {4.3}Case study: ATR-72 and B747-100B}{35}{section.4.3}
+\contentsline {chapter}{\numberline {5}Take-off performance}{37}{chapter.5}
+\contentsline {section}{\numberline {5.1}Theoretical background}{37}{section.5.1}
+\contentsline {section}{\numberline {5.2}Java class architecture}{37}{section.5.2}
+\contentsline {section}{\numberline {5.3}Case study: B747-100B}{37}{section.5.3}
+\contentsline {chapter}{Appendices}{}{section*.30}
+\contentsline {chapter}{\numberline {A}HDF databse creation and reading }{41}{Appendix.a.A}
+\contentsline {section}{\numberline {A.1}Creation of a database using MATLAB}{41}{section.a.A.1}
+\contentsline {section}{\numberline {A.2}Reading data from an HDF database in JPAD}{44}{section.a.A.2}
+\contentsline {chapter}{Bibliography}{46}{section*.33}
+\contentsline {chapter}{Glossary}{49}{section*.35}
+\contentsline {chapter}{Acronyms}{51}{section*.37}
+\contentsline {chapter}{List of symbols}{53}{section*.39}

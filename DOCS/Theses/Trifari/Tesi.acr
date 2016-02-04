@@ -1,34 +1,41 @@
 \glossarysection[\glossarytoctitle]{\glossarytitle}\glossarypreamble
 \begin{theglossary}\glossaryheader
+\glsgroupheading{A}\relax \glsresetentrylist %
+\glossentry{AF}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{48}\delimN 
+		\glsseeformat[Glossary:]{gls-AF}{Z}}}\glsgroupskip
 \glsgroupheading{D}\relax \glsresetentrylist %
 \glossentry{DOC}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{42}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{48}\delimN 
 		\glsseeformat[Glossary:]{gls-DOC}{Z}}}\glsgroupskip
 \glsgroupheading{H}\relax \glsresetentrylist %
 \glossentry{HDF}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{42}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{48}\delimN 
 		\glsseeformat[Glossary:]{gls-HDF}{Z}}}\glsgroupskip
 \glsgroupheading{J}\relax \glsresetentrylist %
 \glossentry{JPAD}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{42}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{48}\delimN 
 		\glsseeformat[Glossary:]{gls-JPAD}{Z}}}\glsgroupskip
 \glsgroupheading{M}\relax \glsresetentrylist %
 \glossentry{acr:MZFW}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{42}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{48}}}\glsgroupskip
 \glsgroupheading{P}\relax \glsresetentrylist %
 \glossentry{PNG}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{42}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{48}\delimN 
 		\glsseeformat[Glossary:]{gls-PNG}{Z}}}\glsgroupskip
 \glsgroupheading{S}\relax \glsresetentrylist %
 \glossentry{acr:SFC}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{42}}}%
+		\setentrycounter[]{page}\glsnumberformat{48}}}%
 \glossentry{acr:SFCJ}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{42}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{48}}}\glsgroupskip
 \glsgroupheading{T}\relax \glsresetentrylist %
+\glossentry{TAS}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{48}\delimN 
+		\glsseeformat[Glossary:]{gls-TAS}{Z}}}%
 \glossentry{TiKZ}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{42}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{48}\delimN 
 		\glsseeformat[Glossary:]{gls-TiKZ}{Z}}}\glsgroupskip
 \glsgroupheading{U}\relax \glsresetentrylist %
 \glossentry{acr:UAV}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{42}}}%
+		\setentrycounter[]{page}\glsnumberformat{48}}}%
 \end{theglossary}\glossarypostamble

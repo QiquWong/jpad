@@ -20,7 +20,7 @@
           <y:Geometry height="238.44052863436116" width="305.39317180616746" x="-616.2868125344164" y="-843.5728033796805"/>
           <y:Fill color="#33CCCC" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="94.087890625" modelName="custom" textColor="#000000" visible="true" width="265.0205078125" x="20.1863319968337" y="72.17631900468052">PayloadRangeCalc
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="94.087890625" modelName="custom" textColor="#000000" visible="true" width="262.92578125" x="21.2336952780837" y="72.17631900468052">SpecificRangeCalc
 
 Object<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
@@ -38,14 +38,14 @@ Object<y:LabelModel>
         <y:ProxyAutoBoundsNode>
           <y:Realizers active="0">
             <y:GroupNode>
-              <y:Geometry height="657.0292968750001" width="1057.1460133411188" x="-216.94841390094126" y="-1107.3818359375"/>
+              <y:Geometry height="555.9686376884642" width="753.6552499919108" x="-245.79126752045477" y="-1006.3211767509641"/>
               <y:Fill color="#FFFF99" transparent="false"/>
               <y:BorderStyle color="#000000" type="dashed" width="1.0"/>
-              <y:NodeLabel alignment="right" autoSizePolicy="node_width" backgroundColor="#FFFF99" borderDistance="0.0" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasLineColor="false" height="34.029296875" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="1057.1460133411188" x="0.0" y="0.0">Payload and range array construction</y:NodeLabel>
+              <y:NodeLabel alignment="right" autoSizePolicy="node_width" backgroundColor="#FFFF99" borderDistance="0.0" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasLineColor="false" height="34.029296875" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="753.6552499919108" x="0.0" y="0.0">Calculation</y:NodeLabel>
               <y:Shape type="roundrectangle"/>
               <y:State closed="false" closedHeight="50.0" closedWidth="50.0" innerGraphDisplayEnabled="false"/>
               <y:Insets bottom="15" bottomF="15.0" left="15" leftF="15.0" right="15" rightF="15.0" top="15" topF="15.0"/>
-              <y:BorderInsets bottom="46" bottomF="46.29460352422893" left="154" leftF="154.37192289682133" right="31" rightF="31.420704845814953" top="7" topF="7.33149779735686"/>
+              <y:BorderInsets bottom="46" bottomF="46.29460352422893" left="119" leftF="119.18803854842042" right="109" rightF="109.24208308469133" top="20" topF="20.233944337692947"/>
             </y:GroupNode>
             <y:GroupNode>
               <y:Geometry height="50.0" width="50.0" x="0.0" y="60.0"/>
@@ -64,12 +64,10 @@ Object<y:LabelModel>
         <node id="n1::n0">
           <data key="d6">
             <y:GenericNode configuration="BevelNode2">
-              <y:Geometry height="120.08920704845809" width="383.833824010973" x="-47.57649100411993" y="-976.0210412651431"/>
+              <y:Geometry height="96.0" width="495.225128358799" x="-111.60322897203434" y="-937.0579355382712"/>
               <y:Fill color="#00FF00" transparent="false"/>
               <y:BorderStyle hasColor="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="94.087890625" modelName="custom" textColor="#000000" visible="true" width="327.90625" x="27.963787005486495" y="13.000658211729046">createRangeArray
-
-(best range condition)<y:LabelModel>
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="34.029296875" modelName="custom" textColor="#000000" visible="true" width="383.7021484375" x="55.7614899606495" y="30.9853515625">calculateEfficiencyVsMach<y:LabelModel>
                   <y:SmartNodeLabelModel distance="4.0"/>
                 </y:LabelModel>
                 <y:ModelParameter>
@@ -82,12 +80,10 @@ Object<y:LabelModel>
         <node id="n1::n1">
           <data key="d6">
             <y:GenericNode configuration="BevelNode2">
-              <y:Geometry height="129.0" width="383.833824010973" x="-47.57649100411993" y="-788.8525390624999"/>
+              <y:Geometry height="96.0" width="495.225128358799" x="-111.60322897203434" y="-772.3525390625"/>
               <y:Fill color="#00FF00" transparent="false"/>
               <y:BorderStyle hasColor="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="94.087890625" modelName="custom" textColor="#000000" visible="true" width="361.0703125" x="11.381755755486495" y="17.4560546875">createRangeArray
-
-(chosen Mach condition)<y:LabelModel>
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="34.029296875" modelName="custom" textColor="#000000" visible="true" width="284.2685546875" x="105.4782868356495" y="30.9853515625">calculateSfcVsMach<y:LabelModel>
                   <y:SmartNodeLabelModel distance="4.0"/>
                 </y:LabelModel>
                 <y:ModelParameter>
@@ -100,123 +96,10 @@ Object<y:LabelModel>
         <node id="n1::n2">
           <data key="d6">
             <y:GenericNode configuration="BevelNode2">
-              <y:Geometry height="96.0" width="383.833824010973" x="-47.57649100411993" y="-607.6471425867288"/>
+              <y:Geometry height="96.0" width="495.225128358799" x="-111.60322897203434" y="-607.6471425867288"/>
               <y:Fill color="#00FF00" transparent="false"/>
               <y:BorderStyle hasColor="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="34.029296875" modelName="custom" textColor="#000000" visible="true" width="288.9267578125" x="47.453533099236495" y="30.9853515625">createPayloadArray
-<y:LabelModel>
-                  <y:SmartNodeLabelModel distance="4.0"/>
-                </y:LabelModel>
-                <y:ModelParameter>
-                  <y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/>
-                </y:ModelParameter>
-              </y:NodeLabel>
-            </y:GenericNode>
-          </data>
-        </node>
-        <node id="n1::n3">
-          <data key="d6">
-            <y:GenericNode configuration="ShinyPlateNode">
-              <y:Geometry height="45.0" width="371.68939912326755" x="422.08749547109505" y="-996.9764377409141"/>
-              <y:Fill color="#00FF00" transparent="false"/>
-              <y:BorderStyle hasColor="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="34.029296875" modelName="custom" textColor="#000000" visible="true" width="352.10546875" x="9.791965186633774" y="5.4853515625">calcRangeAtMaxPayload<y:LabelModel>
-                  <y:SmartNodeLabelModel distance="4.0"/>
-                </y:LabelModel>
-                <y:ModelParameter>
-                  <y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/>
-                </y:ModelParameter>
-              </y:NodeLabel>
-            </y:GenericNode>
-          </data>
-        </node>
-        <node id="n1::n4">
-          <data key="d6">
-            <y:GenericNode configuration="ShinyPlateNode">
-              <y:Geometry height="45.0" width="383.833824010973" x="-47.57649100411993" y="-1051.0210412651431"/>
-              <y:Fill color="#00FF00" transparent="false"/>
-              <y:BorderStyle hasColor="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="34.029296875" modelName="custom" textColor="#000000" visible="true" width="358.19921875" x="12.817302630486495" y="5.4853515625">calculateBestRangeMach<y:LabelModel>
-                  <y:SmartNodeLabelModel distance="4.0"/>
-                </y:LabelModel>
-                <y:ModelParameter>
-                  <y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/>
-                </y:ModelParameter>
-              </y:NodeLabel>
-            </y:GenericNode>
-          </data>
-        </node>
-        <node id="n1::n5">
-          <data key="d6">
-            <y:GenericNode configuration="ShinyPlateNode">
-              <y:Geometry height="45.0" width="371.68939912326755" x="422.08749547109505" y="-938.4764377409141"/>
-              <y:Fill color="#00FF00" transparent="false"/>
-              <y:BorderStyle hasColor="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="34.029296875" modelName="custom" textColor="#000000" visible="true" width="300.42578125" x="35.631808936633774" y="5.4853515625">calcRangeAtMaxFuel<y:LabelModel>
-                  <y:SmartNodeLabelModel distance="4.0"/>
-                </y:LabelModel>
-                <y:ModelParameter>
-                  <y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/>
-                </y:ModelParameter>
-              </y:NodeLabel>
-            </y:GenericNode>
-          </data>
-        </node>
-        <node id="n1::n6">
-          <data key="d6">
-            <y:GenericNode configuration="ShinyPlateNode">
-              <y:Geometry height="45.0" width="371.68939912326755" x="422.08749547109505" y="-879.9764377409141"/>
-              <y:Fill color="#00FF00" transparent="false"/>
-              <y:BorderStyle hasColor="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="34.029296875" modelName="custom" textColor="#000000" visible="true" width="359.2392578125" x="6.2250706553837745" y="5.4853515625">calcRangeAtZeroPayload<y:LabelModel>
-                  <y:SmartNodeLabelModel distance="4.0"/>
-                </y:LabelModel>
-                <y:ModelParameter>
-                  <y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/>
-                </y:ModelParameter>
-              </y:NodeLabel>
-            </y:GenericNode>
-          </data>
-        </node>
-        <node id="n1::n7">
-          <data key="d6">
-            <y:GenericNode configuration="ShinyPlateNode">
-              <y:Geometry height="45.0" width="371.68939912326755" x="422.08749547109505" y="-805.3525390624999"/>
-              <y:Fill color="#00FF00" transparent="false"/>
-              <y:BorderStyle hasColor="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="34.029296875" modelName="custom" textColor="#000000" visible="true" width="352.10546875" x="9.791965186633774" y="5.4853515625">calcRangeAtMaxPayload<y:LabelModel>
-                  <y:SmartNodeLabelModel distance="4.0"/>
-                </y:LabelModel>
-                <y:ModelParameter>
-                  <y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/>
-                </y:ModelParameter>
-              </y:NodeLabel>
-            </y:GenericNode>
-          </data>
-        </node>
-        <node id="n1::n8">
-          <data key="d6">
-            <y:GenericNode configuration="ShinyPlateNode">
-              <y:Geometry height="45.0" width="371.68939912326755" x="422.08749547109505" y="-746.8525390624999"/>
-              <y:Fill color="#00FF00" transparent="false"/>
-              <y:BorderStyle hasColor="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="34.029296875" modelName="custom" textColor="#000000" visible="true" width="300.42578125" x="35.631808936633774" y="5.4853515625">calcRangeAtMaxFuel<y:LabelModel>
-                  <y:SmartNodeLabelModel distance="4.0"/>
-                </y:LabelModel>
-                <y:ModelParameter>
-                  <y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/>
-                </y:ModelParameter>
-              </y:NodeLabel>
-            </y:GenericNode>
-          </data>
-        </node>
-        <node id="n1::n9">
-          <data key="d6">
-            <y:GenericNode configuration="ShinyPlateNode">
-              <y:Geometry height="45.0" width="371.68939912326755" x="422.08749547109505" y="-688.3525390624999"/>
-              <y:Fill color="#00FF00" transparent="false"/>
-              <y:BorderStyle hasColor="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="34.029296875" modelName="custom" textColor="#000000" visible="true" width="359.2392578125" x="6.2250706553837745" y="5.4853515625">calcRangeAtZeroPayload<y:LabelModel>
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="34.029296875" modelName="custom" textColor="#000000" visible="true" width="441.51953125" x="26.8527985543995" y="30.9853515625">calculateSpecificRangeVsMach<y:LabelModel>
                   <y:SmartNodeLabelModel distance="4.0"/>
                 </y:LabelModel>
                 <y:ModelParameter>
@@ -234,14 +117,14 @@ Object<y:LabelModel>
         <y:ProxyAutoBoundsNode>
           <y:Realizers active="0">
             <y:GroupNode>
-              <y:Geometry height="201.4754697824892" width="1057.1460133411188" x="-216.94841390094126" y="-399.51764265556164"/>
+              <y:Geometry height="343.1636060737385" width="1114.8317205801459" x="-245.79126752045477" y="-397.09897032879593"/>
               <y:Fill color="#FFCC99" transparent="false"/>
               <y:BorderStyle color="#000000" type="dashed" width="1.0"/>
-              <y:NodeLabel alignment="right" autoSizePolicy="node_width" backgroundColor="#FFCC99" borderDistance="0.0" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasLineColor="false" height="34.029296875" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="1057.1460133411188" x="0.0" y="0.0">Plotting the diagram</y:NodeLabel>
+              <y:NodeLabel alignment="right" autoSizePolicy="node_width" backgroundColor="#FFCC99" borderDistance="0.0" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasLineColor="false" height="34.029296875" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="1114.8317205801459" x="0.0" y="0.0">Plotting the diagram</y:NodeLabel>
               <y:Shape type="roundrectangle"/>
               <y:State closed="false" closedHeight="50.0" closedWidth="50.0" innerGraphDisplayEnabled="false"/>
               <y:Insets bottom="15" bottomF="15.0" left="15" leftF="15.0" right="15" rightF="15.0" top="15" topF="15.0"/>
-              <y:BorderInsets bottom="28" bottomF="27.902326541850357" left="277" leftF="277.49397553959244" right="227" rightF="227.4653919822233" top="14" topF="13.543846365638842"/>
+              <y:BorderInsets bottom="13" bottomF="12.812061711079991" left="10" leftF="9.795518316590972" right="1" rightF="0.6629106249488359" top="14" topF="13.543846365638842"/>
             </y:GroupNode>
             <y:GroupNode>
               <y:Geometry height="50.0" width="50.0" x="0.0" y="60.0"/>
@@ -260,10 +143,58 @@ Object<y:LabelModel>
         <node id="n2::n0">
           <data key="d6">
             <y:GenericNode configuration="BevelNode2">
-              <y:Geometry height="96.0" width="522.1866458193031" x="75.54556163865118" y="-336.9444994149228"/>
+              <y:Geometry height="96.0" width="522.1866458193031" x="-220.9957492038638" y="-334.5258270881571"/>
               <y:Fill color="#00FF00" transparent="false"/>
               <y:BorderStyle hasColor="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="34.029296875" modelName="custom" textColor="#000000" visible="true" width="476.880859375" x="22.652893222151533" y="30.9853515625">createPayloadRangeCharts_Mach<y:LabelModel>
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="34.029296875" modelName="custom" textColor="#000000" visible="true" width="371.9541015625" x="75.11627212840153" y="30.9853515625">createSpecificRangeChart<y:LabelModel>
+                  <y:SmartNodeLabelModel distance="4.0"/>
+                </y:LabelModel>
+                <y:ModelParameter>
+                  <y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/>
+                </y:ModelParameter>
+              </y:NodeLabel>
+            </y:GenericNode>
+          </data>
+        </node>
+        <node id="n2::n1">
+          <data key="d6">
+            <y:GenericNode configuration="BevelNode2">
+              <y:Geometry height="96.0" width="522.1866458193031" x="331.19089661543927" y="-334.5258270881571"/>
+              <y:Fill color="#00FF00" transparent="false"/>
+              <y:BorderStyle hasColor="false" type="line" width="1.0"/>
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="34.029296875" modelName="custom" textColor="#000000" visible="true" width="214.703125" x="153.74176040965153" y="30.9853515625">createSfcChart<y:LabelModel>
+                  <y:SmartNodeLabelModel distance="4.0"/>
+                </y:LabelModel>
+                <y:ModelParameter>
+                  <y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/>
+                </y:ModelParameter>
+              </y:NodeLabel>
+            </y:GenericNode>
+          </data>
+        </node>
+        <node id="n2::n2">
+          <data key="d6">
+            <y:GenericNode configuration="BevelNode2">
+              <y:Geometry height="96.0" width="522.1866458193031" x="-220.9957492038638" y="-177.74742596613743"/>
+              <y:Fill color="#00FF00" transparent="false"/>
+              <y:BorderStyle hasColor="false" type="line" width="1.0"/>
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="34.029296875" modelName="custom" textColor="#000000" visible="true" width="314.13671875" x="104.02496353465153" y="30.9853515625">createEfficiencyChart<y:LabelModel>
+                  <y:SmartNodeLabelModel distance="4.0"/>
+                </y:LabelModel>
+                <y:ModelParameter>
+                  <y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/>
+                </y:ModelParameter>
+              </y:NodeLabel>
+            </y:GenericNode>
+          </data>
+        </node>
+        <node id="n2::n3">
+          <data key="d6">
+            <y:GenericNode configuration="BevelNode2">
+              <y:Geometry height="96.0" width="522.1866458193031" x="331.19089661543927" y="-177.74742596613743"/>
+              <y:Fill color="#00FF00" transparent="false"/>
+              <y:BorderStyle hasColor="false" type="line" width="1.0"/>
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="34.029296875" modelName="custom" textColor="#000000" visible="true" width="498.5458984375" x="11.820373690901533" y="30.9853515625">createThustDragIntersectionChart<y:LabelModel>
                   <y:SmartNodeLabelModel distance="4.0"/>
                 </y:LabelModel>
                 <y:ModelParameter>
@@ -275,12 +206,97 @@ Object<y:LabelModel>
         </node>
       </graph>
     </node>
+    <node id="n3" yfiles.foldertype="group">
+      <data key="d4"/>
+      <data key="d5"/>
+      <data key="d6">
+        <y:ProxyAutoBoundsNode>
+          <y:Realizers active="0">
+            <y:GroupNode>
+              <y:Geometry height="556.6337115835903" width="285.0583450210378" x="583.9821080386533" y="-1006.9862506460903"/>
+              <y:Fill color="#CCFFFF" transparent="false"/>
+              <y:BorderStyle color="#000000" type="dashed" width="1.0"/>
+              <y:NodeLabel alignment="right" autoSizePolicy="node_width" backgroundColor="#CCFFFF" borderDistance="0.0" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasLineColor="false" height="34.029296875" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="285.0583450210378" x="0.0" y="0.0">Output collection</y:NodeLabel>
+              <y:Shape type="roundrectangle"/>
+              <y:State closed="false" closedHeight="50.0" closedWidth="50.0" innerGraphDisplayEnabled="false"/>
+              <y:Insets bottom="15" bottomF="15.0" left="15" leftF="15.0" right="15" rightF="15.0" top="15" topF="15.0"/>
+              <y:BorderInsets bottom="25" bottomF="25.395585291409702" left="59" leftF="58.64213183730715" right="45" rightF="44.843983169705325" top="0" topF="0.0"/>
+            </y:GroupNode>
+            <y:GroupNode>
+              <y:Geometry height="50.0" width="50.0" x="0.0" y="60.0"/>
+              <y:Fill color="#F5F5F5" transparent="false"/>
+              <y:BorderStyle color="#000000" type="dashed" width="1.0"/>
+              <y:NodeLabel alignment="right" autoSizePolicy="node_width" backgroundColor="#EBEBEB" borderDistance="0.0" fontFamily="Dialog" fontSize="15" fontStyle="plain" hasLineColor="false" height="22.37646484375" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="59.02685546875" x="-4.513427734375" y="0.0">Folder 3</y:NodeLabel>
+              <y:Shape type="roundrectangle"/>
+              <y:State closed="true" closedHeight="50.0" closedWidth="50.0" innerGraphDisplayEnabled="false"/>
+              <y:Insets bottom="5" bottomF="5.0" left="5" leftF="5.0" right="5" rightF="5.0" top="5" topF="5.0"/>
+              <y:BorderInsets bottom="0" bottomF="0.0" left="0" leftF="0.0" right="0" rightF="0.0" top="0" topF="0.0"/>
+            </y:GroupNode>
+          </y:Realizers>
+        </y:ProxyAutoBoundsNode>
+      </data>
+      <graph edgedefault="directed" id="n3:">
+        <node id="n3::n0">
+          <data key="d5"/>
+          <data key="d6">
+            <y:ShapeNode>
+              <y:Geometry height="137.79803646563823" width="151.5722300140252" x="657.6242398759606" y="-957.9569537710903"/>
+              <y:Fill color="#FFCC00" transparent="false"/>
+              <y:BorderStyle color="#000000" type="line" width="1.0"/>
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="34.029296875" modelName="custom" textColor="#000000" visible="true" width="103.6533203125" x="23.95945485076254" y="51.88436979531912">Output<y:LabelModel>
+                  <y:SmartNodeLabelModel distance="4.0"/>
+                </y:LabelModel>
+                <y:ModelParameter>
+                  <y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/>
+                </y:ModelParameter>
+              </y:NodeLabel>
+              <y:Shape type="octagon"/>
+            </y:ShapeNode>
+          </data>
+        </node>
+        <node id="n3::n1">
+          <data key="d5"/>
+          <data key="d6">
+            <y:ShapeNode>
+              <y:Geometry height="137.79803646563823" width="151.5722300140252" x="657.6242398759605" y="-793.2515572953191"/>
+              <y:Fill color="#FFCC00" transparent="false"/>
+              <y:BorderStyle color="#000000" type="line" width="1.0"/>
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="34.029296875" modelName="custom" textColor="#000000" visible="true" width="103.6533203125" x="23.95945485076254" y="51.88436979531912">Output<y:LabelModel>
+                  <y:SmartNodeLabelModel distance="4.0"/>
+                </y:LabelModel>
+                <y:ModelParameter>
+                  <y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/>
+                </y:ModelParameter>
+              </y:NodeLabel>
+              <y:Shape type="octagon"/>
+            </y:ShapeNode>
+          </data>
+        </node>
+        <node id="n3::n2">
+          <data key="d5"/>
+          <data key="d6">
+            <y:ShapeNode>
+              <y:Geometry height="137.79803646563823" width="151.5722300140252" x="657.6242398759605" y="-628.5461608195479"/>
+              <y:Fill color="#FFCC00" transparent="false"/>
+              <y:BorderStyle color="#000000" type="line" width="1.0"/>
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="34.029296875" modelName="custom" textColor="#000000" visible="true" width="103.6533203125" x="23.95945485076254" y="51.88436979531912">Output<y:LabelModel>
+                  <y:SmartNodeLabelModel distance="4.0"/>
+                </y:LabelModel>
+                <y:ModelParameter>
+                  <y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/>
+                </y:ModelParameter>
+              </y:NodeLabel>
+              <y:Shape type="octagon"/>
+            </y:ShapeNode>
+          </data>
+        </node>
+      </graph>
+    </node>
     <edge id="e0" source="n0" target="n1::n0">
       <data key="d10">
         <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
+          <y:Path sx="0.0" sy="0.0" tx="-217.86773364486515" ty="0.0">
             <y:Point x="-81.8583984375" y="-724.3525390624999"/>
-            <y:Point x="-81.8583984375" y="-915.9764377409141"/>
           </y:Path>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
@@ -291,9 +307,8 @@ Object<y:LabelModel>
     <edge id="e1" source="n0" target="n1::n2">
       <data key="d10">
         <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
+          <y:Path sx="0.0" sy="0.0" tx="-217.86773364486515" ty="0.0">
             <y:Point x="-81.8583984375" y="-724.3525390624999"/>
-            <y:Point x="-81.8583984375" y="-559.6471425867288"/>
           </y:Path>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
@@ -311,7 +326,20 @@ Object<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="n1::e0" source="n1::n0" target="n1::n4">
+    <edge id="e3" source="n0" target="n2">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
+            <y:Point x="-463.5902266313327" y="-225.51716729192668"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e4" source="n1::n0" target="n3::n0">
+      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -321,7 +349,8 @@ Object<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e3" source="n1" target="n2">
+    <edge id="e5" source="n1::n1" target="n3::n1">
+      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -331,29 +360,8 @@ Object<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e4" source="n0" target="n2::n0">
-      <data key="d10">
-        <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
-            <y:Point x="-463.5902266313327" y="-288.9444994149228"/>
-          </y:Path>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-          <y:BendStyle smoothed="false"/>
-        </y:PolyLineEdge>
-      </data>
-    </edge>
-    <edge id="e5" source="n1" target="n1::n9">
-      <data key="d10">
-        <y:PolyLineEdge>
-          <y:Path sx="82.3111331179339" sy="108.00976562500011" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-          <y:BendStyle smoothed="false"/>
-        </y:PolyLineEdge>
-      </data>
-    </edge>
-    <edge id="n1::e1" source="n1::n1" target="n1::n8">
+    <edge id="e6" source="n1::n2" target="n3::n2">
+      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -363,62 +371,33 @@ Object<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="n1::e2" source="n1::n1" target="n1::n7">
+    <edge id="e7" source="n3::n0" target="n1::n2">
+      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
-            <y:Point x="359.90198237885454" y="-724.3525390624999"/>
-            <y:Point x="359.90198237885454" y="-782.8525390624999"/>
-          </y:Path>
+          <y:Path sx="0.0" sy="0.0" tx="247.64391392978172" ty="0.0"/>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
           <y:BendStyle smoothed="false"/>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="n1::e3" source="n1::n1" target="n1::n9">
+    <edge id="e8" source="n3::n1" target="n1::n2">
+      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="0.0" tx="-137.63374921708768" ty="0.0">
-            <y:Point x="359.90198237885454" y="-724.3525390624999"/>
-            <y:Point x="359.90198237885454" y="-665.8525390624999"/>
-          </y:Path>
+          <y:Path sx="0.0" sy="0.0" tx="247.64391392978172" ty="0.0"/>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
           <y:BendStyle smoothed="false"/>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="n1::e4" source="n1::n0" target="n1::n5">
+    <edge id="e9" source="n3" target="n2">
+      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-          <y:BendStyle smoothed="false"/>
-        </y:PolyLineEdge>
-      </data>
-    </edge>
-    <edge id="n1::e5" source="n1::n0" target="n1::n3">
-      <data key="d10">
-        <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
-            <y:Point x="363.04405286343615" y="-915.9764377409141"/>
-            <y:Point x="363.04405286343615" y="-974.4764377409141"/>
-          </y:Path>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-          <y:BendStyle smoothed="false"/>
-        </y:PolyLineEdge>
-      </data>
-    </edge>
-    <edge id="n1::e6" source="n1::n0" target="n1::n6">
-      <data key="d10">
-        <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
-            <y:Point x="363.04405286343615" y="-915.9764377409141"/>
-            <y:Point x="363.04405286343615" y="-857.4764377409141"/>
-          </y:Path>
+          <y:Path sx="0.0" sy="0.0" tx="414.886687779554" ty="2.9449747785576506"/>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
           <y:BendStyle smoothed="false"/>
