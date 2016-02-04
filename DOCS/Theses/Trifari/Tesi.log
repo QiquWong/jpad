@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.11.16)  20 JAN 2016 01:27
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.11.16)  4 FEB 2016 00:58
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2971,11 +2971,47 @@ Package biblatex Info: ... file 'english.lbx' found.
 
 (c:/texlive/2015/texmf-dist/tex/latex/biblatex/lbx/english.lbx
 File: english.lbx 2015/10/21 v3.1 biblatex localization (PK/JW/AB)
-))
+)
+
+LaTeX Warning: Label `fig:Figure1' multiply defined.
+
+
+LaTeX Warning: Label `fig:Figure1@cref' multiply defined.
+
+
+LaTeX Warning: Label `fig:Figure2' multiply defined.
+
+
+LaTeX Warning: Label `fig:Figure2@cref' multiply defined.
+
+
+LaTeX Warning: Label `fig:Figure3' multiply defined.
+
+
+LaTeX Warning: Label `fig:Figure3@cref' multiply defined.
+
+
+LaTeX Warning: Label `fig:Figure4' multiply defined.
+
+
+LaTeX Warning: Label `fig:Figure4@cref' multiply defined.
+
+
+LaTeX Warning: Label `fig:Figure5' multiply defined.
+
+
+LaTeX Warning: Label `fig:Figure5@cref' multiply defined.
+
+
+LaTeX Warning: Label `fig:Figure6' multiply defined.
+
+
+LaTeX Warning: Label `fig:Figure6@cref' multiply defined.
+
+)
 \openout1 = `Tesi.aux'.
 
-
-(c:/texlive/2015/texmf-dist/tex/latex/base/ts1cmr.fd
+ (c:/texlive/2015/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 *geometry* driver: auto-detecting
@@ -4354,12 +4390,19 @@ Package biblatex Info: Automatic encoding selection.
 \openout8 = `Tesi.bcf'.
 
 Package biblatex Info: Trying to load bibliographic data...
-Package biblatex Info: ... file 'Tesi.bbl' not found.
-No file Tesi.bbl.
+Package biblatex Info: ... file 'Tesi.bbl' found.
+(./Tesi.bbl
+
+Package biblatex Warning: Biber reported the following issues
+(biblatex)                with 'jscience':
+(biblatex)                - Datamodel: Entry 'jscience' (Tesi_Bibliography.bib)
+: Invalid format '2015.01.05' of date field 'date' - ignoring.
+
+)
 Package biblatex Info: Reference section=0 on input line 51.
 Package biblatex Info: Reference segment=0 on input line 51.
 Package hyperref Info: Link coloring ON on input line 51.
-(c:/texlive/2015/texmf-dist/tex/latex/hyperref/nameref.sty
+ (c:/texlive/2015/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 
 (c:/texlive/2015/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
@@ -4396,7 +4439,7 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-<Tesi-frn.pdf, id=47, 597.50829pt x 845.0471pt>
+<Tesi-frn.pdf, id=147, 597.50829pt x 845.0471pt>
 File: Tesi-frn.pdf Graphic file (type pdf)
  <use Tesi-frn.pdf>
 Package pdftex.def Info: Tesi-frn.pdf used on input line 56.
@@ -4410,7 +4453,7 @@ Package pdftex.def Info: Tesi-frn.pdf used on input line 56.
 ]
 Package minitoc Info: I0010
 (minitoc)             The italian language is selected.
-(minitoc)              on input line 108.
+(minitoc)              on input line 110.
 
 (c:/texlive/2015/texmf-dist/tex/latex/minitoc/italian.mld
 File: italian.mld 2006/01/13
@@ -4418,26 +4461,11 @@ File: italian.mld 2006/01/13
  been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.109 \begin{abstract}
+l.111 \begin{abstract}
                        [1
 
 
 ] [2
-
-] [3
-
-] (./CopyrightPage.tex
-(c:/texlive/2015/texmf-dist/tex/latex/newtx/ts1ntxtlf.fd
-File: ts1ntxtlf.fd 2015/01/18 v1.0 fd file for TS1/ntxtlf
-)
-Package microtype Info: Loading generic settings for font family
-(microtype)             `ntxtlf' (encoding: TS1).
-(microtype)             For optimal results, create family-specific settings.
-(microtype)             See the microtype manual for details.
-Package microtype Info: Character `029' is missing
-(microtype)             in font `T1/ntxtlf/m/sc/10'.
-(microtype)             Ignoring protrusion settings for this character.
-) [4
 
 ]
 Package microtype Info: Character `029' is missing
@@ -4464,25 +4492,12 @@ Package minitoc Info: I0010
 
 (c:/texlive/2015/texmf-dist/tex/latex/minitoc/italian.mld
 File: italian.mld 2006/01/13
-))
+) [3
+
+])
 \tf@toc=\write14
 \openout14 = `Tesi.toc'.
 
- [5
-
-
-] [6
-
-]
-(./Tesi_Contents.tex (./contents/Chapter_Payload-Range.tex
-Chapter 1.
-<images/Flexible_Payload_Range.png, id=105, 479.391pt x 354.926pt>
-File: images/Flexible_Payload_Range.png Graphic file (type png)
-
-<use images/Flexible_Payload_Range.png>
-Package pdftex.def Info: images/Flexible_Payload_Range.png used on input line 1
-5.
-(pdftex.def)             Requested size: 291.14803pt x 215.5622pt.
 
 (c:/texlive/2015/texmf-dist/tex/latex/psnfss/t1phv.fd
 File: t1phv.fd 2001/06/04 scalable font definitions for T1/phv.
@@ -4491,58 +4506,73 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             `phv' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
- [7
+ [4] (./Tesi_Contents.tex (./contents/Chapter_SoftwareOverview.tex
+Chapter 1.
+) (./contents/Chapter_PayloadRange.tex [5
 
+
+] [6
 
 ]
-<images/Payload_Range.png, id=114, 477.785pt x 360.547pt>
+Chapter 2.
+<images/Flexible_Payload_Range.png, id=233, 479.391pt x 354.926pt>
+File: images/Flexible_Payload_Range.png Graphic file (type png)
+
+<use images/Flexible_Payload_Range.png>
+Package pdftex.def Info: images/Flexible_Payload_Range.png used on input line 1
+5.
+(pdftex.def)             Requested size: 291.14803pt x 215.5622pt.
+ [7
+
+]
+<images/Payload_Range.png, id=242, 477.785pt x 360.547pt>
 File: images/Payload_Range.png Graphic file (type png)
 
 <use images/Payload_Range.png>
 Package pdftex.def Info: images/Payload_Range.png used on input line 29.
 (pdftex.def)             Requested size: 291.14803pt x 219.70776pt.
  [8 <./images/Flexible_Payload_Range.png> <./images/Payload_Range.png>] [9]
-Underfull \hbox (badness 10000) in paragraph at lines 111--111
+Underfull \hbox (badness 10000) in paragraph at lines 117--117
 []|\T1/ntxtlf/b/n/12 Start\T1/ntxtlf/m/n/12 (+20) ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 111--111
+Underfull \hbox (badness 10000) in paragraph at lines 117--117
 []|\T1/ntxtlf/b/n/12 Brief
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 111--112
+Underfull \hbox (badness 10000) in paragraph at lines 117--118
 []|\T1/ntxtlf/b/n/12 Landing,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 111--112
+Underfull \hbox (badness 10000) in paragraph at lines 117--118
 \T1/ntxtlf/b/n/12 Taxi and
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 122--122
+Underfull \hbox (badness 10000) in paragraph at lines 128--128
 []|\T1/ntxtlf/m/n/12 (+20) Mil.Patrol,Bmb
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 123--123
+Underfull \hbox (badness 10000) in paragraph at lines 129--129
 []|\T1/ntxtlf/m/n/12 (+20) Flying
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 123--123
+Underfull \hbox (badness 10000) in paragraph at lines 129--129
 \T1/ntxtlf/m/n/12 (+20) boats,Amph.
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 124--124
+Underfull \hbox (badness 10000) in paragraph at lines 130--130
 []|\T1/ntxtlf/m/n/12 (+20) Supersonic
  []
 
 
-Overfull \hbox (12.75484pt too wide) in paragraph at lines 109--127
+Overfull \hbox (12.75484pt too wide) in paragraph at lines 115--133
  [][] 
  []
 
@@ -4554,58 +4584,64 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-Underfull \hbox (badness 3758) in paragraph at lines 176--176
+Underfull \hbox (badness 3758) in paragraph at lines 185--185
 []|\T1/ntxtlf/m/n/12 (+20) The cur-rent lift co-ef-fi-cient in cruise
  []
 
-[11] [12]
-<images/PayloadRange_BestRange_Flowchart.png, id=169, 1493.58pt x 943.525pt>
+[11]
+Overfull \hbox (17.98544pt too wide) in paragraph at lines 236--238
+\T1/ntxtlf/m/n/12 (-20) anal-y-sis, for the last method that has to plot the di
+-a-gram; this is called [][][]
+ []
+
+[12]
+<images/PayloadRange_BestRange_Flowchart.png, id=296, 1493.58pt x 943.525pt>
 File: images/PayloadRange_BestRange_Flowchart.png Graphic file (type png)
 
 <use images/PayloadRange_BestRange_Flowchart.png>
 Package pdftex.def Info: images/PayloadRange_BestRange_Flowchart.png used on in
-put line 233.
+put line 246.
 (pdftex.def)             Requested size: 366.13948pt x 231.28802pt.
 
-<images/PayloadRange_MTOM_Flowchart.png, id=170, 1494.58376pt x 744.7825pt>
+<images/PayloadRange_MTOM_Flowchart.png, id=297, 1494.58376pt x 744.7825pt>
 File: images/PayloadRange_MTOM_Flowchart.png Graphic file (type png)
 
 <use images/PayloadRange_MTOM_Flowchart.png>
 Package pdftex.def Info: images/PayloadRange_MTOM_Flowchart.png used on input l
-ine 241.
+ine 254.
 (pdftex.def)             Requested size: 366.13948pt x 182.45625pt.
  [13 <./images/PayloadRange_BestRange_Flowchart.png (PNG copy)>] [14 <./images/
 PayloadRange_MTOM_Flowchart.png (PNG copy)>] [15]
-Overfull \hbox (2.58348pt too wide) in paragraph at lines 309--310
+Overfull \hbox (2.58348pt too wide) in paragraph at lines 328--329
 [][][][][][][][][][][]  
  []
 
 [16] [17] [18]
-<images/HowToCreateADefaultAircraftInJPAD.png, id=353, 2328.7pt x 2013.5225pt>
+<images/HowToCreateADefaultAircraftInJPAD.png, id=484, 2328.7pt x 2013.5225pt>
 File: images/HowToCreateADefaultAircraftInJPAD.png Graphic file (type png)
 
 <use images/HowToCreateADefaultAircraftInJPAD.png>
 Package pdftex.def Info: images/HowToCreateADefaultAircraftInJPAD.png used on i
-nput line 505.
+nput line 529.
 (pdftex.def)             Requested size: 512.31558pt x 442.97632pt.
 
-<images/ATR-72.png, id=354, 1028.643pt x 639.5895pt>
+<images/ATR-72.png, id=485, 1028.643pt x 639.5895pt>
 File: images/ATR-72.png Graphic file (type png)
  <use images/ATR-72.png>
-Package pdftex.def Info: images/ATR-72.png used on input line 511.
+Package pdftex.def Info: images/ATR-72.png used on input line 535.
 (pdftex.def)             Requested size: 352.90608pt x 219.42892pt.
 
-Overfull \hbox (8.33444pt too wide) in paragraph at lines 540--540
+Overfull \hbox (8.33444pt too wide) in paragraph at lines 564--564
 []|$[][][] []$|| 
  []
 
 
-Overfull \hbox (8.33444pt too wide) in paragraph at lines 540--540
+Overfull \hbox (8.33444pt too wide) in paragraph at lines 564--564
 []|$[][][] []$|| 
  []
 
 
-Overfull \hbox (2.33444pt too wide) in paragraph at lines 540--540
+Overfull \hbox (2.33444pt too wide) in paragraph at lines 564--564
 []|$[] []$|| 
  []
 
@@ -4617,24 +4653,24 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<images/B747-100B.png, id=355, 908.193pt x 528.17325pt>
+<images/B747-100B.png, id=486, 908.193pt x 528.17325pt>
 File: images/B747-100B.png Graphic file (type png)
 
 <use images/B747-100B.png>
-Package pdftex.def Info: images/B747-100B.png used on input line 559.
+Package pdftex.def Info: images/B747-100B.png used on input line 583.
 (pdftex.def)             Requested size: 352.90608pt x 205.23721pt.
 
-Overfull \hbox (14.33444pt too wide) in paragraph at lines 588--588
+Overfull \hbox (14.33444pt too wide) in paragraph at lines 612--612
 []|$[] []$|| 
  []
 
 
-Overfull \hbox (14.33444pt too wide) in paragraph at lines 588--588
+Overfull \hbox (14.33444pt too wide) in paragraph at lines 612--612
 []|$[] []$|| 
  []
 
 
-Overfull \hbox (14.33444pt too wide) in paragraph at lines 588--588
+Overfull \hbox (14.33444pt too wide) in paragraph at lines 612--612
 []|$[] []$|| 
  []
 
@@ -4643,7 +4679,7 @@ Overfull \hbox (14.33444pt too wide) in paragraph at lines 588--588
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 (./images/PayloadRange_MaxTakeOffMass_TF.tikz)
-Overfull \hbox (6.46675pt too wide) in paragraph at lines 78--602
+Overfull \hbox (6.46675pt too wide) in paragraph at lines 78--626
  [][] 
  []
 
@@ -4651,7 +4687,157 @@ Overfull \hbox (6.46675pt too wide) in paragraph at lines 78--602
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 [19] [20 <./images/HowToCreateADefaultAircraftInJPAD.png (PNG copy)>] [21 <./im
-ages/ATR-72.png>] [22] [23 <./images/B747-100B.png>] [24]))
+ages/ATR-72.png>] [22] [23 <./images/B747-100B.png>] [24])
+(./contents/Chapter_SpecificRange.tex [25
+
+] [26
+
+]
+Chapter 3.
+<images/TDelta.png, id=571, 472.967pt x 436.832pt>
+File: images/TDelta.png Graphic file (type png)
+ <use images/TDelta.png>
+Package pdftex.def Info: images/TDelta.png used on input line 21.
+(pdftex.def)             Requested size: 220.56546pt x 203.718pt.
+
+[27
+
+] <images/TDelta_SpecificRange.png, id=578, 470.558pt x 450.483pt>
+File: images/TDelta_SpecificRange.png Graphic file (type png)
+
+<use images/TDelta_SpecificRange.png>
+Package pdftex.def Info: images/TDelta_SpecificRange.png used on input line 63.
+
+(pdftex.def)             Requested size: 220.56546pt x 211.15651pt.
+ [28 <./images/TDelta.png>]
+<images/DragDelta_SpecificRange.png, id=588, 474.573pt x 445.665pt>
+File: images/DragDelta_SpecificRange.png Graphic file (type png)
+
+<use images/DragDelta_SpecificRange.png>
+Package pdftex.def Info: images/DragDelta_SpecificRange.png used on input line 
+79.
+(pdftex.def)             Requested size: 220.56546pt x 207.13008pt.
+ [29 <./images/TDelta_SpecificRange.png> <./images/DragDelta_SpecificRange.png>
+]
+<images/TDeltaDragDelta.png, id=599, 497.057pt x 450.483pt>
+File: images/TDeltaDragDelta.png Graphic file (type png)
+
+<use images/TDeltaDragDelta.png>
+Package pdftex.def Info: images/TDeltaDragDelta.png used on input line 92.
+(pdftex.def)             Requested size: 220.56546pt x 199.8972pt.
+
+<images/AutonomyFactor.png, id=602, 574.145pt x 468.952pt>
+File: images/AutonomyFactor.png Graphic file (type png)
+
+<use images/AutonomyFactor.png>
+Package pdftex.def Info: images/AutonomyFactor.png used on input line 127.
+(pdftex.def)             Requested size: 264.68124pt x 216.1928pt.
+ [30 <./images/TDeltaDragDelta.png>]
+<images/CruiseGrid.png, id=614, 480.194pt x 438.438pt>
+File: images/CruiseGrid.png Graphic file (type png)
+
+<use images/CruiseGrid.png>
+Package pdftex.def Info: images/CruiseGrid.png used on input line 139.
+(pdftex.def)             Requested size: 220.56546pt x 201.38287pt.
+) (./contents/Chapter_HighLiftDevices.tex [31 <./images/AutonomyFactor.png> <./
+images/CruiseGrid.png>] [32]
+Chapter 4.
+) (./contents/Chapter_TakeOff.tex [33
+
+] [34
+
+]
+Chapter 5.
+)) [35
+
+] [36
+
+
+] [37
+
+] (./Tesi_Appendices.tex (./appendices/HDFDatabase.tex [38
+
+]
+Appendix A.
+(c:/texlive/2015/texmf-dist/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2015/06/04 1.6 listings language file
+)
+(c:/texlive/2015/texmf-dist/tex/latex/listings/lstmisc.sty
+File: lstmisc.sty 2015/06/04 1.6 (Carsten Heinz)
+) [39
+
+] [40]
+<images/HDF_Dataset_creation.png, id=719, 1266.7325pt x 612.2875pt>
+File: images/HDF_Dataset_creation.png Graphic file (type png)
+
+<use images/HDF_Dataset_creation.png>
+Package pdftex.def Info: images/HDF_Dataset_creation.png used on input line 122
+.
+(pdftex.def)             Requested size: 388.19737pt x 187.63965pt.
+ [41 <./images/HDF_Dataset_creation.png (PNG copy)>] <images/deltaAlphaSforza.p
+ng, id=760, 921.4425pt x 538.26094pt>
+File: images/deltaAlphaSforza.png Graphic file (type png)
+
+<use images/deltaAlphaSforza.png>
+Package pdftex.def Info: images/deltaAlphaSforza.png used on input line 129.
+(pdftex.def)             Requested size: 242.62335pt x 141.7268pt.
+
+<images/DAlphaVsLambdaLEVsDy_MATLAB.png, id=761, 421.575pt x 316.18124pt>
+File: images/DAlphaVsLambdaLEVsDy_MATLAB.png Graphic file (type png)
+
+<use images/DAlphaVsLambdaLEVsDy_MATLAB.png>
+Package pdftex.def Info: images/DAlphaVsLambdaLEVsDy_MATLAB.png used on input l
+ine 129.
+(pdftex.def)             Requested size: 242.62335pt x 181.97165pt.
+
+Overfull \hbox (44.11577pt too wide) in paragraph at lines 129--130
+ [][][] 
+ []
+
+[42
+
+ <./images/deltaAlphaSforza.png> <./images/DAlphaVsLambdaLEVsDy_MATLAB.png (PNG
+ copy)>])) [43] [44
+
+
+]
+Package microtype Info: Character `029' is missing
+(microtype)             in font `T1/ntxtlf/m/sc/12'.
+(microtype)             Ignoring protrusion settings for this character.
+
+
+Package biblatex Warning: No driver for entry type 'other'.
+(biblatex)                Using fallback driver on input line 189.
+
+[45
+
+]
+
+Package biblatex Warning: No driver for entry type 'other'.
+(biblatex)                Using fallback driver on input line 189.
+
+
+Package glossaries Warning: Deprecated command \glossarystyle.
+ I recommend you switch to \setglossarystyle unless you want to maintain backwa
+rd compatibility on input line 197.
+
+[46] (./Tesi.gls) [47
+
+
+
+] (./Tesi.acr [48
+
+
+]) [49
+
+
+] (./Tesi.sym [50
+
+
+] [51
+
+
+])
 \tf@thm=\write15
 \openout15 = `Tesi.thm'.
 
@@ -4675,17 +4861,10 @@ Package minitoc(hints) Warning: W0024
 (minitoc(hints))                Some hints have been written 
 (minitoc(hints))                in the Tesi.log file.
 
-[25
-
-]
-
-Package glossaries Warning: No \printglossary or \printglossaries found.
-(Remove \makeglossaries if you don't want any glossaries.)
-This document will not have a glossary.
-
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 251.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 251.
-(./Tesi.aux
+[52]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 252.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 252.
+ (./Tesi.aux
 Package minitoc Info: I0010
 (minitoc)             The italian language is selected.
 (minitoc)              on input line 34.
@@ -4706,38 +4885,43 @@ Package minitoc Info: I0010
 (c:/texlive/2015/texmf-dist/tex/latex/minitoc/italian.mld
 File: italian.mld 2006/01/13
 ))
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 251.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 251.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 252.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 252.
 Package rerunfilecheck Info: File `Tesi.out' has not changed.
-(rerunfilecheck)             Checksum: 14F850E40AEED8DAB773087421A332D7;273.
+(rerunfilecheck)             Checksum: D26602E5D65B60709A32030091E829B1;1903.
+
+
+LaTeX Warning: There were multiply-defined labels.
+
 Package logreq Info: Writing requests to 'Tesi.run.xml'.
 \openout1 = `Tesi.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 65049 strings out of 493054
- 1347071 string characters out of 6138326
- 2170741 words of memory out of 5000000
- 66877 multiletter control sequences out of 15000+600000
- 173623 words of font info for 151 fonts, out of 8000000 for 9000
+ 65974 strings out of 493054
+ 1359371 string characters out of 6138326
+ 2167393 words of memory out of 5000000
+ 67435 multiletter control sequences out of 15000+600000
+ 182992 words of font info for 163 fonts, out of 8000000 for 9000
  1142 hyphenation exceptions out of 8191
- 61i,25n,104p,10382b,3406s stack positions out of 5000i,500n,10000p,200000b,80000s
-{c:/texlive/2015/texmf-dist/fonts/enc/dvips/newtx/ntx-ec-tlf.enc}{c:/texlive/
-2015/texmf-dist/fonts/enc/dvips/base/8r.enc}{c:/texlive/2015/texmf-dist/fonts/e
-nc/dvips/newtx/ntx-ec-tlf-sc.enc}{c:/texlive/2015/texmf-dist/fonts/enc/dvips/te
-x-gyre/q-ts1.enc}<c:/texlive/2015/texmf-dist/fonts/type1/public/bera/fvmr8a.pfb
-><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2exa.pfb><c:/texlive/texmf-
-local/fonts/type1/pctex/mtpro2/mt2mis.pfb><c:/texlive/texmf-local/fonts/type1/p
-ctex/mtpro2/mt2mit.pfb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2sys.
-pfb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2syt.pfb><c:/texlive/201
-5/texmf-dist/fonts/type1/public/tex-gyre/qtmb.pfb><c:/texlive/2015/texmf-dist/f
-onts/type1/public/tex-gyre/qtmr.pfb><c:/texlive/2015/texmf-dist/fonts/type1/pub
-lic/tex-gyre/qtmri.pfb><c:/texlive/2015/texmf-dist/fonts/type1/urw/helvetic/uhv
-b8a.pfb><c:/texlive/2015/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb>
-Output written on Tesi.pdf (26 pages, 2454435 bytes).
+ 61i,25n,104p,10382b,4155s stack positions out of 5000i,500n,10000p,200000b,80000s
+{c:/texlive/2015/texmf-dist/fonts/enc/dvips/newtx/ntx-ec-tlf-sc.enc}{c:/texli
+ve/2015/texmf-dist/fonts/enc/dvips/newtx/ntx-ec-tlf.enc}{c:/texlive/2015/texmf-
+dist/fonts/enc/dvips/base/8r.enc}<c:/texlive/2015/texmf-dist/fonts/type1/public
+/aspectratio/amarbi.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/bera/fvm
+r8a.pfb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2bmit.pfb><c:/texliv
+e/texmf-local/fonts/type1/pctex/mtpro2/mt2exa.pfb><c:/texlive/texmf-local/fonts
+/type1/pctex/mtpro2/mt2mis.pfb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2
+/mt2mit.pfb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2sys.pfb><c:/tex
+live/texmf-local/fonts/type1/pctex/mtpro2/mt2syt.pfb><c:/texlive/2015/texmf-dis
+t/fonts/type1/public/tex-gyre/qtmb.pfb><c:/texlive/2015/texmf-dist/fonts/type1/
+public/tex-gyre/qtmr.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/tex-gyr
+e/qtmri.pfb><c:/texlive/2015/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb><c:
+/texlive/2015/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb>
+Output written on Tesi.pdf (53 pages, 2753623 bytes).
 PDF statistics:
- 530 PDF objects out of 1000 (max. 8388607)
- 457 compressed objects within 5 object streams
- 244 named destinations out of 1000 (max. 500000)
- 32437 words of extra memory for PDF output out of 35830 (max. 10000000)
+ 1100 PDF objects out of 1200 (max. 8388607)
+ 977 compressed objects within 10 object streams
+ 519 named destinations out of 1000 (max. 500000)
+ 29610 words of extra memory for PDF output out of 29859 (max. 10000000)
 

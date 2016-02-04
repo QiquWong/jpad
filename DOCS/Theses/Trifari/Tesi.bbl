@@ -1,0 +1,546 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 2.5 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \sortlist{nty}{nty}
+    \entry{attanasio}{thesis}{}
+      \name{author}{1}{}{%
+        {{hash=16469682b233c4ccda7a388f3cb3a68c}{Attanasio}{A\bibinitperiod}{L.}{L\bibinitperiod}{}{}{}{}}%
+      }
+      \list{institution}{1}{%
+        {University of Naples "Federico II"}%
+      }
+      \strng{namehash}{16469682b233c4ccda7a388f3cb3a68c}
+      \strng{fullhash}{16469682b233c4ccda7a388f3cb3a68c}
+      \field{sortinit}{A}
+      \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Development of a Java Application for Parametric Aircraft Design}
+      \field{type}{Master thesis}
+      \field{year}{2014}
+    \endentry
+    \entry{wiki:atr72}{online}{}
+      \name{author}{1}{}{%
+        {{hash=7da2a74e066e90281bae34a5d86abefd}{Authors}{A\bibinitperiod}{Various}{V\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{fullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \field{sortinit}{A}
+      \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{ATR 72}
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/ATR_72
+      \endverb
+    \endentry
+    \entry{wiki:b747}{online}{}
+      \name{author}{1}{}{%
+        {{hash=7da2a74e066e90281bae34a5d86abefd}{Authors}{A\bibinitperiod}{Various}{V\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{fullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \field{sortinit}{A}
+      \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Boeing 747}
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/Boeing_747
+      \endverb
+    \endentry
+    \entry{wiki:xml}{online}{}
+      \name{author}{1}{}{%
+        {{hash=7da2a74e066e90281bae34a5d86abefd}{Authors}{A\bibinitperiod}{Various}{V\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{fullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \field{sortinit}{A}
+      \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{eXtensible Markup Language (XML)}
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/XML
+      \endverb
+    \endentry
+    \entry{Ciornei:CriticalMach}{other}{}
+      \name{author}{1}{}{%
+        {{hash=c043f3b9ec1eb02a0e4e2365ce5ab15e}{Ciornei}{C\bibinitperiod}{S.}{S\bibinitperiod}{}{}{}{}}%
+      }
+      \list{institution}{1}{%
+        {Hamburg University of Applied Sciences}%
+      }
+      \strng{namehash}{c043f3b9ec1eb02a0e4e2365ce5ab15e}
+      \strng{fullhash}{c043f3b9ec1eb02a0e4e2365ce5ab15e}
+      \field{sortinit}{C}
+      \field{sortinithash}{59f25d509f3381b07695554a9f35ecb2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Mach number, relative thickness, sweep and lift coefficient of the wing - An empirical investigation of parameters and equations}
+      \field{type}{Paper}
+      \field{year}{31.05.2005}
+    \endentry
+    \entry{listAPI}{online}{}
+      \name{author}{1}{}{%
+        {{hash=2baf8209f62fd23c32fa375f52fbf33f}{Corporation}{C\bibinitperiod}{Oracle}{O\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \strng{fullhash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \field{sortinit}{C}
+      \field{sortinithash}{59f25d509f3381b07695554a9f35ecb2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{List}
+      \verb{url}
+      \verb https://docs.oracle.com/javase/8/docs/api/java/util/List.html
+      \endverb
+    \endentry
+    \entry{jscience}{online}{}
+      \name{author}{1}{}{%
+        {{hash=577c772e504efcfcc6e0b45594b8de24}{Dautelle}{D\bibinitperiod}{Jean-Marie}{J\bibinithyphendelim M\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{577c772e504efcfcc6e0b45594b8de24}
+      \strng{fullhash}{577c772e504efcfcc6e0b45594b8de24}
+      \field{sortinit}{D}
+      \field{sortinithash}{78f7c4753a2004675f316a80bdb31742}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Jscience}
+      \verb{url}
+      \verb http://jscience.org/
+      \endverb
+      \warn{\item Datamodel: Entry 'jscience' (Tesi_Bibliography.bib): Invalid format '2015.01.05' of date field 'date' - ignoring}
+    \endentry
+    \entry{deBono}{thesis}{}
+      \name{author}{1}{}{%
+        {{hash=ab22e925715b2dc26894b5931d3449fb}{De\bibnamedelima Bono}{D\bibinitperiod\bibinitdelim B\bibinitperiod}{E.}{E\bibinitperiod}{}{}{}{}}%
+      }
+      \list{institution}{1}{%
+        {University of Naples "Federico II"}%
+      }
+      \strng{namehash}{ab22e925715b2dc26894b5931d3449fb}
+      \strng{fullhash}{ab22e925715b2dc26894b5931d3449fb}
+      \field{sortinit}{D}
+      \field{sortinithash}{78f7c4753a2004675f316a80bdb31742}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Prestazioni di decollo e atterraggio. Calcolo approssimato e verifica sperimentale.}
+      \field{type}{Thesis}
+      \field{year}{2011}
+    \endentry
+    \entry{jfreechart}{online}{}
+      \name{author}{1}{}{%
+        {{hash=674aa7cddd62392b188758b03e8f0e44}{Gilbert}{G\bibinitperiod}{D.\bibnamedelimi et\bibnamedelima al}{D\bibinitperiod\bibinitdelim e\bibinitperiod\bibinitdelim a\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{674aa7cddd62392b188758b03e8f0e44}
+      \strng{fullhash}{674aa7cddd62392b188758b03e8f0e44}
+      \field{sortinit}{G}
+      \field{sortinithash}{1c854ef9177a91bf894e66485bdbd3ed}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{JFreeChart}
+      \verb{url}
+      \verb http://www.jfree.org/jfreechart/
+      \endverb
+    \endentry
+    \entry{hdf}{online}{}
+      \name{author}{1}{}{%
+        {{hash=4a3fada39a22bb4e03a41c2f63ce6a3b}{Group}{G\bibinitperiod}{The\bibnamedelima HDF}{T\bibinitperiod\bibinitdelim H\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{4a3fada39a22bb4e03a41c2f63ce6a3b}
+      \strng{fullhash}{4a3fada39a22bb4e03a41c2f63ce6a3b}
+      \field{sortinit}{G}
+      \field{sortinithash}{1c854ef9177a91bf894e66485bdbd3ed}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{HDF}
+      \verb{url}
+      \verb https://www.hdfgroup.org/products/java/hdf-java-html/javadocs/ncsa/hdf/hdf5lib/H5.html
+      \endverb
+    \endentry
+    \entry{howe2000aircraft}{book}{}
+      \name{author}{1}{}{%
+        {{hash=bcd070b18e34c8795189c9573db5b837}{Howe}{H\bibinitperiod}{D.}{D\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {Professional Engineering Publishing}%
+      }
+      \strng{namehash}{bcd070b18e34c8795189c9573db5b837}
+      \strng{fullhash}{bcd070b18e34c8795189c9573db5b837}
+      \field{sortinit}{H}
+      \field{sortinithash}{82012198d5dfa657b8c4a168793268a6}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{9781860583018}
+      \field{series}{Aerospace Series}
+      \field{title}{Aircraft conceptual design synthesis}
+      \field{year}{2000}
+      \verb{url}
+      \verb https://books.google.it/books?id=QJZTAAAAMAAJ
+      \endverb
+    \endentry
+    \entry{huwaldt:atmo}{online}{}
+      \name{author}{1}{}{%
+        {{hash=9cf3f33e86c0e23d134218c500bdd07d}{Huwaldt}{H\bibinitperiod}{J.}{J\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{9cf3f33e86c0e23d134218c500bdd07d}
+      \strng{fullhash}{9cf3f33e86c0e23d134218c500bdd07d}
+      \field{sortinit}{H}
+      \field{sortinithash}{82012198d5dfa657b8c4a168793268a6}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{1976 Standard Atmosphere Program}
+      \verb{url}
+      \verb http://thehuwaldtfamily.org/java/Applications/StdAtmosphere/StdAtmosphere.html
+      \endverb
+    \endentry
+    \entry{janes}{book}{}
+      \name{author}{2}{}{%
+        {{hash=ccb94d9eb559bfd643161081e7378c24}{Jackson}{J\bibinitperiod}{P.}{P\bibinitperiod}{}{}{}{}}%
+        {{hash=e1adbba5ab81d9d64ed91dcbba93ec0a}{FRAeS}{F\bibinitperiod}{}{}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {Jane's Information Group}%
+      }
+      \strng{namehash}{5058634f858afccda732f32fd2e40f82}
+      \strng{fullhash}{5058634f858afccda732f32fd2e40f82}
+      \field{sortinit}{J}
+      \field{sortinithash}{ec3950a647c092421b9fcca6d819504a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{0710626142}
+      \field{series}{Jane's All the World's Aircraft}
+      \field{title}{Jane’s All the World’s Aircraft}
+      \field{year}{2004-2005}
+      \verb{url}
+      \verb https://www.ihs.com/products/janes-all-the-worlds-aircraft-in-service.html
+      \endverb
+    \endentry
+    \entry{jenkinson1999civil}{book}{}
+      \name{author}{3}{}{%
+        {{hash=4b9a93731511ff22802a2da7b2f45a20}{Jenkinson}{J\bibinitperiod}{L.R.}{L\bibinitperiod}{}{}{}{}}%
+        {{hash=b7eeab8e46702bae7796173507984104}{Rhodes}{R\bibinitperiod}{D.}{D\bibinitperiod}{}{}{}{}}%
+        {{hash=db5f0c9a50c3393d2d4bdb6641d5ba0a}{Simpkin}{S\bibinitperiod}{P.}{P\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {Arnold}%
+      }
+      \strng{namehash}{014de2007ec05be57eaaca102e3b4c5f}
+      \strng{fullhash}{014de2007ec05be57eaaca102e3b4c5f}
+      \field{sortinit}{J}
+      \field{sortinithash}{ec3950a647c092421b9fcca6d819504a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{9780340741528}
+      \field{series}{AIAA education series}
+      \field{title}{Civil jet aircraft design}
+      \field{year}{1999}
+      \verb{url}
+      \verb https://books.google.it/books?id=6tMeAQAAIAAJ
+      \endverb
+    \endentry
+    \entry{args4j}{online}{}
+      \name{author}{1}{}{%
+        {{hash=2e8f18a1d63274a1eae7ecfcd8c5c6c9}{Kawaguchi}{K\bibinitperiod}{K.}{K\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{2e8f18a1d63274a1eae7ecfcd8c5c6c9}
+      \strng{fullhash}{2e8f18a1d63274a1eae7ecfcd8c5c6c9}
+      \field{sortinit}{K}
+      \field{sortinithash}{a7d5b3aec5a0890aae7baf85a209abfc}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Args4j}
+      \verb{url}
+      \verb http://args4j.kohsuke.org/
+      \endverb
+    \endentry
+    \entry{stanford:kroo}{book}{}
+      \name{author}{2}{}{%
+        {{hash=58ced680c7c933ab452921a518c9027c}{Kroo}{K\bibinitperiod}{I.}{I\bibinitperiod}{}{}{}{}}%
+        {{hash=d3bc81e78b350e9db2d354c857f3497f}{Shevell}{S\bibinitperiod}{R.}{R\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{29b8d4b8c8cc0be35f0902f26481a4aa}
+      \strng{fullhash}{29b8d4b8c8cc0be35f0902f26481a4aa}
+      \field{sortinit}{K}
+      \field{sortinithash}{a7d5b3aec5a0890aae7baf85a209abfc}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Aircraft Design: Synthesis and Analysis}
+      \field{year}{1999}
+    \endentry
+    \entry{Lausetti:decollo}{book}{}
+      \name{author}{1}{}{%
+        {{hash=935b0eb7b11852900d2c4bd2d374097a}{Lausetti}{L\bibinitperiod}{A.}{A\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {Levrotto \& Bella Editrice S.a.s.}%
+      }
+      \strng{namehash}{935b0eb7b11852900d2c4bd2d374097a}
+      \strng{fullhash}{935b0eb7b11852900d2c4bd2d374097a}
+      \field{sortinit}{L}
+      \field{sortinithash}{872351f18d0f736066eda0bf18bfa4f7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Decollo e atterramento di aeroplani, idrovolanti trasportati}
+      \field{year}{1992}
+    \endentry
+    \entry{McCormick}{book}{}
+      \name{author}{1}{}{%
+        {{hash=8f6589a6615076a91f7dd6d93d7f75d9}{McCormick}{M\bibinitperiod}{B.\bibnamedelimi W.}{B\bibinitperiod\bibinitdelim W\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {John Wiley \& Sons}%
+      }
+      \strng{namehash}{8f6589a6615076a91f7dd6d93d7f75d9}
+      \strng{fullhash}{8f6589a6615076a91f7dd6d93d7f75d9}
+      \field{sortinit}{M}
+      \field{sortinithash}{2684bec41e9697b92699b46491061da2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Aerodynamics, Aeronautics, and Flight Mechanics}
+      \field{year}{1979}
+    \endentry
+    \entry{nicolai2010fundamentals}{book}{}
+      \name{author}{2}{}{%
+        {{hash=c25a463e317f67b479eb2e1c12d08ff9}{Nicolai}{N\bibinitperiod}{L.M.}{L\bibinitperiod}{}{}{}{}}%
+        {{hash=569c86bc872c7673a9e06d36d5187bd2}{Carichner}{C\bibinitperiod}{G.}{G\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{2}{%
+        {American Institute of Aeronautics}%
+        {Astronautics}%
+      }
+      \strng{namehash}{8d1512dd3bb1074ce71988e3c31db325}
+      \strng{fullhash}{8d1512dd3bb1074ce71988e3c31db325}
+      \field{sortinit}{N}
+      \field{sortinithash}{925374ca63e7594de7fafdb83e64d41d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{9781600867514}
+      \field{number}{v. 1}
+      \field{series}{AIAA education series}
+      \field{title}{Fundamentals of Aircraft and Airship Design}
+      \field{year}{2010}
+      \verb{url}
+      \verb https://books.google.it/books?id=qA0oAQAAMAAJ
+      \endverb
+    \endentry
+    \entry{adas}{book}{}
+      \name{author}{2}{}{%
+        {{hash=17d7540fa988e76824185545af56573d}{Nicolosi}{N\bibinitperiod}{F.}{F\bibinitperiod}{}{}{}{}}%
+        {{hash=16dc476a2a96c0a7cbad55dad1320b70}{Paduano}{P\bibinitperiod}{G.}{G\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{2150b4490ea6d5b07a417c0b60d3df26}
+      \strng{fullhash}{2150b4490ea6d5b07a417c0b60d3df26}
+      \field{sortinit}{N}
+      \field{sortinithash}{925374ca63e7594de7fafdb83e64d41d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Behind ADAS}
+      \field{type}{Developer Guide}
+      \field{year}{2011}
+    \endentry
+    \entry{obert2009aerodynamic}{book}{}
+      \name{author}{1}{}{%
+        {{hash=439eb49dd7797f4577b2503b8aded70a}{Obert}{O\bibinitperiod}{E.}{E\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {IOS Press}%
+      }
+      \strng{namehash}{439eb49dd7797f4577b2503b8aded70a}
+      \strng{fullhash}{439eb49dd7797f4577b2503b8aded70a}
+      \field{sortinit}{O}
+      \field{sortinithash}{7803d2715d5e795e70382b084ab8d00e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{9781607504078}
+      \field{title}{Aerodynamic Design of Transport Aircraft}
+      \field{year}{2009}
+      \verb{url}
+      \verb https://books.google.it/books?id=axPvAgAAQBAJ
+      \endverb
+    \endentry
+    \entry{raymer1992}{book}{}
+      \name{author}{1}{}{%
+        {{hash=93c3dbe92ab67dbce70cb2cf0c5738da}{Raymer}{R\bibinitperiod}{D.P.}{D\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{93c3dbe92ab67dbce70cb2cf0c5738da}
+      \strng{fullhash}{93c3dbe92ab67dbce70cb2cf0c5738da}
+      \field{sortinit}{R}
+      \field{sortinithash}{c7387613477035a752d935acfc3e3ea2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Aircraft Design: A Conceptual Approach}
+      \field{year}{1992}
+    \endentry
+    \entry{raymer2013aircraft}{book}{}
+      \name{author}{1}{}{%
+        {{hash=93c3dbe92ab67dbce70cb2cf0c5738da}{Raymer}{R\bibinitperiod}{D.P.}{D\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {Amer Inst of Aeronautics \&}%
+      }
+      \strng{namehash}{93c3dbe92ab67dbce70cb2cf0c5738da}
+      \strng{fullhash}{93c3dbe92ab67dbce70cb2cf0c5738da}
+      \field{sortinit}{R}
+      \field{sortinithash}{c7387613477035a752d935acfc3e3ea2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{9781600869211}
+      \field{series}{AIAA Education Series}
+      \field{title}{Aircraft Design / RDS-Student: A Conceptual Approach}
+      \field{year}{2013}
+      \verb{url}
+      \verb https://books.google.it/books?id=bvxllgEACAAJ
+      \endverb
+    \endentry
+    \entry{sadraey2012aircraft}{book}{}
+      \name{author}{1}{}{%
+        {{hash=f37bdc36291a5f5f76bf75ec2ffd83b8}{Sadraey}{S\bibinitperiod}{M.H.}{M\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {Wiley}%
+      }
+      \strng{namehash}{f37bdc36291a5f5f76bf75ec2ffd83b8}
+      \strng{fullhash}{f37bdc36291a5f5f76bf75ec2ffd83b8}
+      \field{sortinit}{S}
+      \field{sortinithash}{fd1e7c5ab79596b13dbbb67f8d70fb5a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{9781118352809}
+      \field{series}{Aerospace Series}
+      \field{title}{Aircraft Design: A Systems Engineering Approach}
+      \field{year}{2012}
+      \verb{url}
+      \verb https://books.google.it/books?id=VT-Tc3Tx5aEC
+      \endverb
+    \endentry
+    \entry{sforza2014commercial}{book}{}
+      \name{author}{1}{}{%
+        {{hash=e47195ee2eb4aeaf3209156cfb4e2a52}{Sforza}{S\bibinitperiod}{P.M.}{P\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {Elsevier Science}%
+      }
+      \strng{namehash}{e47195ee2eb4aeaf3209156cfb4e2a52}
+      \strng{fullhash}{e47195ee2eb4aeaf3209156cfb4e2a52}
+      \field{sortinit}{S}
+      \field{sortinithash}{fd1e7c5ab79596b13dbbb67f8d70fb5a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{9780124199774}
+      \field{title}{Commercial Airplane Design Principles}
+      \field{year}{2014}
+      \verb{url}
+      \verb https://books.google.it/books?id=knhHAgAAQBAJ
+      \endverb
+    \endentry
+    \entry{torenbeek2013advanced}{book}{}
+      \name{author}{1}{}{%
+        {{hash=c1b36875a18efe5403d2947a46417ec5}{Torenbeek}{T\bibinitperiod}{E.}{E\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {Wiley}%
+      }
+      \strng{namehash}{c1b36875a18efe5403d2947a46417ec5}
+      \strng{fullhash}{c1b36875a18efe5403d2947a46417ec5}
+      \field{sortinit}{T}
+      \field{sortinithash}{423d138a005a533b47e6475e39378bf2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{9781118568095}
+      \field{series}{Aerospace Series}
+      \field{title}{Advanced Aircraft Design: Conceptual Design, Technology and Optimization of Subsonic Civil Airplanes}
+      \field{year}{2013}
+      \verb{url}
+      \verb https://books.google.it/books?id=C0gUyoYewhoC
+      \endverb
+    \endentry
+    \entry{torenbeek1998cruise}{book}{}
+      \name{author}{1}{}{%
+        {{hash=c1b36875a18efe5403d2947a46417ec5}{Torenbeek}{T\bibinitperiod}{E.}{E\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {Delft University Press}%
+      }
+      \strng{namehash}{c1b36875a18efe5403d2947a46417ec5}
+      \strng{fullhash}{c1b36875a18efe5403d2947a46417ec5}
+      \field{sortinit}{T}
+      \field{sortinithash}{423d138a005a533b47e6475e39378bf2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Optimum Cruise Performance of Subsonic Transport Aircraft}
+      \field{year}{1998}
+    \endentry
+    \entry{torenbeek1976}{book}{}
+      \name{author}{1}{}{%
+        {{hash=c1b36875a18efe5403d2947a46417ec5}{Torenbeek}{T\bibinitperiod}{E.}{E\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{c1b36875a18efe5403d2947a46417ec5}
+      \strng{fullhash}{c1b36875a18efe5403d2947a46417ec5}
+      \field{sortinit}{T}
+      \field{sortinithash}{423d138a005a533b47e6475e39378bf2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Synthesis of Subsonic Aircraft Design}
+      \field{year}{1976}
+    \endentry
+    \entry{torenbeek1982synthesis}{book}{}
+      \name{author}{1}{}{%
+        {{hash=c1b36875a18efe5403d2947a46417ec5}{Torenbeek}{T\bibinitperiod}{E.}{E\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{c1b36875a18efe5403d2947a46417ec5}
+      \strng{fullhash}{c1b36875a18efe5403d2947a46417ec5}
+      \field{sortinit}{T}
+      \field{sortinithash}{423d138a005a533b47e6475e39378bf2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{9789024727247}
+      \field{title}{Synthesis of Subsonic Airplane Design: An Introduction to the Preliminary Design of Subsonic General Aviation and Transport Aircraft, with Emphasis on Layout, Aerodynamic Design, Propulsion and Performance}
+      \field{year}{1982}
+      \verb{url}
+      \verb https://books.google.it/books?id=NG2%5C_qiSjmMEC
+      \endverb
+    \endentry
+    \entry{Young:Flaps}{other}{}
+      \name{author}{1}{}{%
+        {{hash=37b612a73661db75bdd3bb99b3d1147d}{Young}{Y\bibinitperiod}{A.D.}{A\bibinitperiod}{}{}{}{}}%
+      }
+      \list{institution}{1}{%
+        {Ministry of Supply}%
+      }
+      \strng{namehash}{37b612a73661db75bdd3bb99b3d1147d}
+      \strng{fullhash}{37b612a73661db75bdd3bb99b3d1147d}
+      \field{sortinit}{Y}
+      \field{sortinithash}{3cbc1e3d286284cedb5e5218a3248f94}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{number}{R.A.E. Report Aero. 2185}
+      \field{title}{The Aerodynamic Characteristics of Flaps}
+      \field{type}{Technical Report}
+      \field{year}{1947}
+    \endentry
+  \endsortlist
+\endrefsection
+\endinput
+

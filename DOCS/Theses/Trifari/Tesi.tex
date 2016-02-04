@@ -72,7 +72,7 @@
 \Dipartimento {Ingegneria Industriale}
 \Corso [Laurea]{Ingegneria Aerospaziale}
 \Titoletto {Tesi di Laurea Magistrale\\ in\\ Ingegneria Aerospaziale ed Astronautica}
-\Titolo {Development of a Java Application for Parametric Aircraft Design}
+\Titolo {Development of a Java Framework for Parametric Aircraft Design \\ \bigskip\bigskip The Performance Analysis Module }
 \Sottotitolo {\mbox{}\\[5pt]}
 \NCandidato {Candidato}
 \Candidato [M53/411]{Vittorio~Trifari} % \rule{0pt}{1.3em}
@@ -102,12 +102,16 @@
 
 \selectlanguage{english}
 \begin{abstract}
--------------------------------------FILL THIS-----------------------------------------
+This thesis has the main purpose of providing a comprehensive overview about the development, in Java, of a software dedicated to the preliminary design of an aircraft, focusing on the performance analysis module.
+
+The point of view from which this subject will be observed expects first to define methodologies and theoretical aspects necessary for the examined performance calculation for then show, in more detail, the implementation of the latter within the software; this will be seen both from the point of view of the developer, through a detailed explanation of the architecture of the different calculation modules, both of a potential user developer, by showing some commented examples of use supplied with graphical and numerical results suitable, among other things, also to the validation of calculations performed.
 \end{abstract}
 
 \selectlanguage{italian}
 \begin{abstract}
--------------------------------------FILL THIS------------------------------------------
+Questo lavoro di tesi ha lo scopo principale di fornire una panoramica esaustiva circa lo sviluppo, in ambiente Java, di un software dedicato al progetto preliminare di un aeromobile, concentrandosi sull'aspetto dell'analisi delle performance.
+
+Il punto di vista con il quale verrà affrontato questo argomento prevede dapprima di inquadrare le metodologie e gli aspetti teorici necessari per la stima delle performance in esame per poi mostrare, più nel dettaglio, l'implementazione di questi ultimi all'interno del software; ciò sia dal punto di vista dello sviluppatore, attraverso la spiegazione dettagliata dell'architettura dei vari moduli di calcolo, sia dal punto di vista di un potenziale utente, tramite alcuni esempi d'uso commentati e corredati di risultati grafici e numerici atti, tra l'altro, anche alla validazione dei calcoli svolti. 
 \end{abstract}
 \selectlanguage{english}
 
@@ -121,9 +125,9 @@
 %                                                               C O P Y R I G H T   P A G E
 %
 %
-\clearpage
-\input{CopyrightPage}
-\frontmatter
+%\clearpage
+%\input{CopyrightPage}
+%\frontmatter
 %
 %
 % -----------------------------------------------------------------------------------------
@@ -157,40 +161,40 @@
 % -----------------------------------------------------------------------------------------
 %                                                                       A P P E N D I C E S
 % some configuration commands by package appendix
-%\cleardoublepage \phantomsection
-%\renewcommand{\chaptername}{Appendix}
-%\renewcommand{\appendixtocname}{Appendices}
-%\renewcommand{\appendixpagename}{Appendices}
-%\appendixpage
-%\noappendicestocpagenum
-%\addappheadtotoc
-%\pagestyle{myAppendixPageStyle}
-%
-% Here we include the appendix material of the book
-%
-%\begin{appendices}% needs package appendix
-%
-%\input{Tesi_Appendices}
-%
-%\end{appendices}
+\clearpage \phantomsection
+\renewcommand{\chaptername}{Appendix}
+\renewcommand{\appendixtocname}{Appendices}
+\renewcommand{\appendixpagename}{Appendices}
+\appendixpage
+\noappendicestocpagenum
+\addappheadtotoc
+\pagestyle{myAppendixPageStyle}
+
+%Here we include the appendix material of the book
+
+\begin{appendices}% needs package appendix
+
+\input{Tesi_Appendices}
+
+\end{appendices}
 %
 %
 % -----------------------------------------------------------------------------------------
 %                                                                     B I B L I O G R P H Y
-%\cleardoublepage \phantomsection
-%\addcontentsline{toc}{chapter}{Bibliography}
-%\pagestyle{myBibliographyPageStyle}
-%\nocite{*}
+\clearpage \phantomsection
+\addcontentsline{toc}{chapter}{Bibliography}
+\pagestyle{myBibliographyPageStyle}
+\nocite{*}
 %\printbibheading[title={Bibliography}]
-%\printbibliography[heading=myBibliography]% needs biblatex, see myBibliography in _preamble.tex
+\printbibliography[heading=myBibliography]% needs biblatex, see myBibliography in _preamble.tex
 
 % -----------------------------------------------------------------------------------------
 %                                       P R I N T   G L O S S A R Y   and   A C R O N Y M S
 %
 % add all the entries to the glossaries without referencing each one explicitly
-%\glsaddall
+\glsaddall
 %
-%\glossarystyle{list}%    can choose other style for displying glossaries
+\glossarystyle{list}%    can choose other style for displying glossaries
 % styles -->   list, listdotted, long, longragged, super, tree
 %
 %\printglossaries
@@ -198,23 +202,20 @@
 %%%  other possible uses:
 %%%
 %
-%\markboth{}{}
-%\cleardoublepage
-%\pagestyle{myGlossaryPageStyle}
-%\printglossary[type=main]% the default glossary is printed
+\markboth{}{}
+\clearpage
+\pagestyle{myGlossaryPageStyle}
+\printglossary[type=main]% the default glossary is printed
 %
-%\markboth{}{}
-%\cleardoublepage
-%\pagestyle{myAcronymsPageStyle}
-%\printglossary[type=\acronymtype]
+\markboth{}{}
+\clearpage
+\pagestyle{myAcronymsPageStyle}
+\printglossary[type=\acronymtype]
 %
-%\markboth{}{}
-%\cleardoublepage
-%\pagestyle{myListOfSymbolsPageStyle}
-%\printglossary[type=symbols]
-
-%\newpage
-%\thispagestyle{empty}
+\markboth{}{}
+\clearpage
+\pagestyle{myListOfSymbolsPageStyle}
+\printglossary[type=symbols]
 
 % -----------------------------------------------------------------------------------------
 %                                                                                 I N D E X

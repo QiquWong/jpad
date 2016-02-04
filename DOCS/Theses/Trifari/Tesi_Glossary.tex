@@ -11,10 +11,10 @@
 
 %%% ---------------------------------------------------------------- Main glossary
 
-\newdualentry{ACRF} % label
-  {ACRF}            % abbreviation
-  {Aicraft Construction Reference Frame}  % long form
-  {The reference frame which has its origin in the fuselage forwardmost point, the x-axis pointing from the nose to the tail, the y-axis from fuselage plane of symmetry to the right wing (from the pilot's point of view) and the z-axis from pilot's feet to pilot's head} % description
+\newdualentry{JPAD} % label
+  {JPAD}            % abbreviation
+  {Java Program toolchain for Aircraft Design}  % long form
+  {Collection of libraries and classes with the aim of providing complete aircraft preliminary design analyses through the use of several semi-empirical formulas tested against experimental data} % description
 
 %\newglossaryentry{ACRF}{%
 %   name=Aicraft Construction Reference Frame (ACRF),
@@ -22,40 +22,34 @@
 %      the reference frame which has its origin in the fuselage forwardmost point, the x-axis pointing from the nose to the tail, the y-axis from fuselage plane of symmetry to the right wing (from the pilot's point of view) and the z-axis from pilot's feet to pilot's head}
 %}
 
-\newglossaryentry{Client:Code}{%
-   name=client code,
-   description={%
-      the code where the code in question will be effectively exploited}
-}
+\newdualentry{DOC}%
+  {DOC}            % abbreviation
+  {Direct Operative Cost}  % long form
+  {The totality of aircraft costs directly connected to the aircraft flight. It can be seen as the amount of money necessary to carry 1 ton of payload upon 1 km}
 
-\newdualentry{GUI}%
-  {GUI}            % abbreviation
-  {Graphical User Interface}  % long form
-  {In computing, a Graphical User Interface is a type of interface that allows users to interact with electronic devices through graphical icons and visual indicators such as secondary notation, as opposed to text-based interfaces, typed command labels or text navigation}
+\newdualentry{HDF}%
+  {HDF}            % abbreviation
+  {Hierarchical Data Format}  % long form
+  {A set of file formats (HDF4, HDF5) designed to store and organize large amounts of data}
+  
+\newdualentry{PNG} % label
+  {PNG}            % abbreviation
+  {Portable Network Graphics}  % long form
+  {A raster graphics file format that supports lossless data compression. PNG was created as an improved, non-patented replacement for Graphics Interchange Format (GIF), and is the most used lossless image compression format on the Internet} % description
+  
+\newdualentry{TiKZ} % label
+  {TikZ}            % abbreviation
+  {TikZ ist kein Zeichenprogramm}  % long form
+  {TikZ is a set of higher-level macros that use PGF} % description
 
 \newglossaryentry{List}{%
 	name=List,
 	description={The java.util.List interface is a subtype of the java.util.Collection interface. It represents an ordered list of objects, meaning you can access the elements of a List in a specific order, and by an index too. You can also add the same element more than once to a List}
 }
 
-\newglossaryentry{Map}{%
-	name=Map,
-	description={The java.util.Map interface represents a mapping between a key and a value. The Map interface is not a subtype of the Collection interface. Therefore it behaves a bit different from the rest of the collection types}
-}
-
 \newglossaryentry{parsing}{%
-	name=parsing,
+	name=Parsing,
 	description={Parsing or syntactic analysis is the process of analysing a string of symbols, either in natural language or in computer languages, conforming to the rules of a formal grammar}
-}
-
-\newglossaryentry{reflection}{%
-	name=reflection,
-	description={In computer science, reflection is the ability of a computer program to examine (see type introspection) and modify the structure and behavior (specifically the values, meta-data, properties and functions) of the program at runtime}
-}
-
-\newglossaryentry{serialization}{%
-	name=serialization,
-	description={In computer science, in the context of data storage, serialization is the process of translating data structures or object state into a format that can be stored (for example, in a file or memory buffer, or transmitted across a network connection link) and reconstructed later in the same or another computer environment}
 }
 
 \newglossaryentry{Table}{%
@@ -64,22 +58,11 @@
       a collection that associates an ordered pair of keys, called a row key and a column key, with a single value. A table may be sparse, with only a small fraction of row key / column key pairs possessing a corresponding value}
 }
 
-\newdualentry{UML} % label
-  {UML}            % abbreviation
-  {Unified Modeling Language}  % long form
-  {The Unified Modeling Language (UML) is a general-purpose modeling language in the field of software engineering, which is designed to provide a standard way to visualize the design of a system} % description
-
 \newglossaryentry{User:Developer}{%
-   name=user developer,
+   name=User developer,
    description={%
       the term refers to the developer which will use a method without being interested in how the method performs the required action. This is the case of a utility method: the developer is the one who writes the method, while the user developer is who uses that method to accomplish some action which requires the functionality provided by the utility method. It has to be noticed that the user developer and the developer can be the same person}
 }
-
-\newglossaryentry{Wrapper:Function}{%
-	name=wrapper function,
-	description={A wrapper function is a subroutine in a software library or a computer program whose main purpose is to call a second subroutine or a system call with little or no additional computation.}
-}
-
 
 %%% --------------------------------------------------------------- List of symbols
 %%% see _local_macros.tex
@@ -91,80 +74,45 @@
    description={gravitational acceleration}
 }
 
-\newglossaryentry{mass}{%
-   type=symbols,
-   name={\ensuremath{m}},
-   sort=m,
-   description={mass, in kg or lb}
-}
-
 \newglossaryentry{weight}{%
    type=symbols,
    name={\ensuremath{W}},
-   sort=m,
-   description={weight, in Newtons}
+   sort=W,
+   description={weight, in N or lbf}
 }
 
-\newglossaryentry{nult}{%
+\newglossaryentry{n}{%
    type=symbols,
-   name={\ensuremath{n_\text{ult}}},
-   sort=m,
-   description={ultimate load factor}
-}
-
-\newglossaryentry{nlim}{%
-   type=symbols,
-   name={\ensuremath{n_\text{lim}}},
-   sort=m,
-   description={limit load factor}
-}
-
-\newglossaryentry{mass:Wing}{%
-   type=symbols,
-   name={\ensuremath{m_\mathrm{W}}},
-   sort=mW,
-   description={wing mass}
-}
-
-\newglossaryentry{diam}{%
-   type=symbols,
-   name={\ensuremath{d}},
-   sort=m,
-   description={diameter}
-}
-
-\newglossaryentry{length}{%
-   type=symbols,
-   name={\ensuremath{l}},
-   sort=m,
-   description={length}
+   name={\ensuremath{n}},
+   sort=n,
+   description={load factor}
 }
 
 \newglossaryentry{span}{%
    type=symbols,
    name={\ensuremath{b}},
-   sort=m,
+   sort=b,
    description={span}
 }
 
 \newglossaryentry{velocity}{%
    type=symbols,
    name={\ensuremath{V}},
-   sort=m,
+   sort=V,
    description={scalar velocity}
 }
 
 \newglossaryentry{surface}{%
    type=symbols,
    name={\ensuremath{S}},
-   sort=m,
+   sort=S,
    description={surface}
 }
 
 \newglossaryentry{ar}{%
    type=symbols,
    name={\ensuremath{\AR}},
-   sort=m,
+   sort=A,
    description={aspect ratio}
 }
 
@@ -207,14 +155,7 @@
    type=symbols,
    name={\ensuremath{\alpha_\Wing}},
    sort=zz:alpha:W,
-   description={angolo d'attacco riferito alla corda di radice dell'ala}
-}
-
-\newglossaryentry{beta}{%
-   type=symbols,
-   name={\ensuremath{\beta}},
-   sort=zz:beta,
-   description={sideslip angle}
+   description={angle of attack referred to wing root chord}
 }
 
 \newglossaryentry{Drag}{%
@@ -224,6 +165,20 @@
    description={aerodynamic drag}
 }
 
+\newglossaryentry{DragCoeff}{%
+   type=symbols,
+   name={\ensuremath{C\textsubscript{D}}},
+   sort=C,
+   description={aerodynamic drag coefficient}
+}
+
+\newglossaryentry{ParasiteDragCoeff}{%
+   type=symbols,
+   name={\ensuremath{C\textsubscript{D0}}},
+   sort=C,
+   description={aerodynamic parasite drag coefficient}
+}
+
 \newglossaryentry{Lift}{%
    type=symbols,
    name={\ensuremath{L}},
@@ -231,39 +186,40 @@
    description={aerodynamic lift}
 }
 
+\newglossaryentry{LiftCoeff}{%
+   type=symbols,
+   name={\ensuremath{C\textsubscript{L}}},
+   sort=C,
+   description={aerodynamic lift coefficient}
+}
+
 \newglossaryentry{Thrust}{%
    type=symbols,
    name={\ensuremath{T}},
-   sort=L,
-   description={Thrust}
+   sort=T,
+   description={thrust}
 }
 
-\newglossaryentry{q:bar}{%
+\newglossaryentry{Range}{%
    type=symbols,
-   name={\ensuremath{q}},
-   sort=q,
-   description={dynamic pressure}
+   name={\ensuremath{R}},
+   sort=R,
+   description={range in nmi or km}
 }
+
+\newglossaryentry{etaProp}{%
+   type=symbols,
+   name={\ensuremath{\eta_p}},
+   sort=aaE,
+   description={propeller efficiency}
+}
+
 
 \newglossaryentry{Mach}{%
    type=symbols,
    name={\ensuremath{\Mach}},
    sort=M,
    description={Mach number}
-}
-
-\newglossaryentry{Reynolds}{%
-   type=symbols,
-   name={\ensuremath{\Reynolds}},
-   sort=Re,
-   description={Reynolds number (evaluated with respect to $\bar{c}$)}
-}
-
-\newglossaryentry{CG}{%
-   type=symbols,
-   name={CG},
-   sort=G,
-   description={Center of Gravity}
 }
 
 \newglossaryentry{i:Wing}{%
@@ -273,108 +229,76 @@
    description={the angle between the wing root chord and the ACRF x-axis}
 }
 
-\newglossaryentry{i:Htail}{%
+\newglossaryentry{sub:cruise}{%
    type=symbols,
-   name={\ensuremath{i_\Htail}},
-   sort=iH,
-   description={the angle between the horizontal tail root chord and the ACRF x-axis}
-}
-
-\newglossaryentry{sub:WF}{%
-   type=symbols,
-   name={\ensuremath{(\;)_\text{WF}}},
-   sort=aaWB,
-   description={quantity related to the wing-fuselage configuration}
-}
-
-\newglossaryentry{sub:F}{%
-   type=symbols,
-   name={\ensuremath{(\;)_\text{F}}},
-   sort=aaWB,
-   description={quantity related to the fuselage}
-}
-
-\newglossaryentry{sub:H}{%
-   type=symbols,
-   name={\ensuremath{(\;)_{\Htail}}},
-   sort=aaH,
-   description={quantity related to the horizontal tail}
-}
-
-\newglossaryentry{sub:V}{%
-   type=symbols,
-   name={\ensuremath{(\;)_{\Vtail}}},
-   sort=aaV,
-   description={quantity related to the vertical tail}
-}
-
-\newglossaryentry{sub:N}{%
-   type=symbols,
-   name={\ensuremath{(\;)_\text{N}}},
-   sort=aaV,
-   description={quantity related to the nacelle}
+   name={\ensuremath{(\;)_{cruise}}},
+   sort=aaC,
+   description={quantity related to cruise condition}
 }
 
 \newglossaryentry{sub:LG}{%
    type=symbols,
    name={\ensuremath{(\;)_\text{LG}}},
-   sort=aaV,
+   sort=aaL,
    description={quantity related to the landing gear}
 }
 
-\newglossaryentry{sub:S}{%
+\newglossaryentry{sub:flap}{%
    type=symbols,
-   name={\ensuremath{(\;)_\text{S}}},
-   sort=aaV,
-   description={quantity related to systems}
+   name={\ensuremath{(\;)_\text{f}}},
+   sort=aaF,
+   description={quantity related to flaps}
 }
 
-%% TO DO:
-%\item[$\bar{q} =$] pressione dinamica di volo, anche detta $q_{\infty}$ in Aerodinamica;
-%per la (\ref{eq:Vequivalente})
-%\item[$=$]$\dfrac{1}{2} \rho (u^2+v^2+w^2) = \dfrac{1}{2}\,\gamma\,p\,\Mach^2$;
-%\item[$\rho =$] densità dell'aria alla quota effettiva di volo;
-%\item[$p =$] pressione  statica alla quota effettiva di volo;
-%\item[$\Mach =$] numero di Mach di volo;
-%\item[$\gamma =$] rapporto dei calori specifici dell'aria $(=\SI{1.4}{})$;
-%\item[$S =$] superficie di riferimento, tipicamente la superficie della forma in pianta dell'ala;
-%\item[$b =$] apertura alare di riferimento;
-%\item[$c =$] corda alare di riferimento, tipicamente la corda media aerodinamica dell'ala, detta anche $\bar{c}$.
+\newglossaryentry{Mff}{%
+   type=symbols,
+   name={\ensuremath{M_\text{ff}}},
+   sort=M,
+   description={Fuel fraction over entire mission}
+}
 
+\newglossaryentry{WTO}{%
+   type=symbols,
+   name={\ensuremath{W\textsubscript{TO}}},
+   sort=W,
+   description={Take Off Weight}
+}
+
+\newglossaryentry{WOE}{%
+   type=symbols,
+   name={\ensuremath{W\textsubscript{OE}}},
+   sort=W,
+   description={Operating Empty Weight}
+}
+
+\newglossaryentry{Wpayload}{%
+   type=symbols,
+   name={\ensuremath{W\textsubscript{Payload}}},
+   sort=W,
+   description={Payload Weight}
+}
+
+\newglossaryentry{Wfuel}{%
+   type=symbols,
+   name={\ensuremath{W\textsubscript{fuel}}},
+   sort=W,
+   description={Fuel Weight}
+}
 
 %%% -------------------------------------------------------------------- Acronyms
-
-%\newacronym[long={Aicraft Construction Reference Frame}]{acr:ACRF}{ACRF}{%
-%  Aicraft Construction Reference Frame.\glspar
-%      A reference frame which has its origin in the fuselage forwardmost point, the x-axis pointing from the nose to the tail, the y-axis from fuselage plane of symmetry to the right wing (from the pilot's point of view) and the z-axis from pilot's feet to pilot's head%
-%}%
-
-\newacronym{acr:Mean:Sea:Level}{MSL}{%
-   Mean Sea Level
-}
-
-\newacronym{acr:MAC}{MAC}{%
-   Mean Aerodynamic Chord
-}
-
-\newacronym{acr:MAPE}{MAPE}{%
-   Mean Absolute Percentage Error
-}
-
-\newacronym{acr:MLW}{MLW}{%
-   Maximum Landing Weight
-}
 
 \newacronym{acr:MZFW}{MZFW}{%
    Maximum Zero Fuel Weight
 }
 
-\newacronym{acr:MTOW}{MTOW}{%
-   Maximum Take Off Weight
+\newacronym{acr:SFC}{SFC}{%
+   Specific Fuel Consumption
 }
 
-\newacronym{acr:AIAA}{AIAA}{American Institute of Aeronautics and Astronautics}
-\newacronym{acr:FAA}{FAA}{Federal Aviation Administration}
-\newacronym{acr:GNC}{GNC}{Guidance Navigation and Control}
+\newacronym{acr:SFCJ}{SFCJ}{%
+   Jet Specific Fuel Consumption
+}
 
-
+\newacronym{acr:UAV}{UAV}{%
+   Unmanned Aerial Vehicle 
+}
