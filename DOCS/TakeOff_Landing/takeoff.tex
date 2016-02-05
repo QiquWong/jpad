@@ -1,96 +1,26 @@
-\documentclass[a4paper]{article}
+%------------------------------------------------------------------------------------------
+% INITIAL DEFINITIONS
+%------------------------------------------------------------------------------------------
 
-\usepackage[english]{babel}
-\usepackage[utf8]{inputenc}
+\input{_init}% plain TeX initial definitions in ./_init.tex
 
-\usepackage{geometry}
-\geometry{
- a4paper,
- total={210mm,297mm},
- left=20mm,
- right=20mm,
- top=20mm,
- bottom=20mm,
- }
+%------------------------------------------------------------------------------------------
+% LaTeX STARTING DECLARATION
+%------------------------------------------------------------------------------------------
 
-\usepackage{newtxtext}% replaces the txfonts package;
-\usepackage[varg]{newtxmath}
+%\documentclass[a4paper]{article}
+\documentclass[12pt,twoside]{book}
 
-% Define text mono-spaced font
-% --> package txfonts uses TX mono (monospace typewriter font)
-\usepackage%
-   [scaled=0.810]% 0.865 , 0.84
-   {beramono}% set bera as mono-spaced font family
+%------------------------------------------------------------------------------------------
+% PREAMBLE
+%------------------------------------------------------------------------------------------
 
-\usepackage{mathtools}
+\input{_preamble}% all preamble settings in ./_preamble.tex
 
-\usepackage{booktabs}
-\usepackage{longtable}
+%------------------------------------------------------------------------------------------
+% LOCAL USER-DEFINED MACROS & SETTINGS
 
-\usepackage{paralist}
-
-\usepackage[
-  font=small,labelfont={bf,color=blue}, % labelsep=space,
-  textfont={color=blue},
-  justification=justified
-  ]{caption}
-
-% http://tex.stackexchange.com/questions/157115/how-to-retrieve-the-caption-of-a-table-longtable
-\captionsetup[longtable]{aboveskip=0pt}
-
-\usepackage{setspace}
-%\onehalfspacing
-%\doublespacing
-%\setstretch{1.5}
-
-\usepackage{nameref}
-
-\usepackage{subcaption}
-\usepackage{url}
-\usepackage{adjustbox}
-\usepackage{relsize}
-
-\usepackage{siunitx}
-
-\usepackage{graphicx}
-
-%\usepackage[colorinlistoftodos]{todonotes}
-
-\usepackage[%
-   backgroundcolor=orange!20,bordercolor=orange,
-   shadow,
-   textsize=footnotesize,
-   colorinlistoftodos
-   % ,disable % use this to disable the notes
-   ]{todonotes}
-
-\newcounter{todocounter}
-
-\newcommand{\TODO}[2][]{%
-   % initials of the author (optional) + note in the margin
-   \refstepcounter{todocounter}%
-   {%
-      \setstretch{0.85}% line spacing
-      \todo[backgroundcolor={orange!20},bordercolor=orange,size=\relsize{-1}]{%
-         \sffamily%
-         \thetodocounter.~\textbf{[\uppercase{#1}]:}~#2%
-      }%
-   }}
-
-\newcommand{\TODOInline}[2][]{%
-   % initials of the author (optional) + note in the margin
-   \refstepcounter{todocounter}%
-   {%
-      \setstretch{0.85}% line spacing
-      \todo[inline,backgroundcolor={orange!20},bordercolor=orange,size=\relsize{-1}]{%
-         \sffamily%
-         \thetodocounter.~\textbf{[\uppercase{#1}]:}~#2%
-      }%
-   }}
-
-%%% Examples of usage:
-%%% \TODO[ADM]{Continue this section taking material from Stevend \& Lewis book.}
-%%% \TODOInline[JSB]{Remove this sentence.}
+\input{_local_macros}
 
 
 %-----------------------------------------------------
@@ -99,17 +29,117 @@
 
 
 \begin{document}
+\selectlanguage{english}
 
-\listoftodos
-
-\bigskip
-\noindent
-\hrule
-
-\bigskip
 
 \section{Modelling aircraft take-off}
 
+The set of ordinary differential equations that model the take-off run is the following:
+%
+\begin{equation}\label{eq:System:Dynamics:A}
+    \LEFTRIGHT\lcbrace\rcbrace{\begin{array}{c}\dot{s}\\[2pt] \dot{V} \\[2pt] \dot{\gamma} \\[2pt] \dot{h} \end{array}}
+= 
+    \LEFTRIGHT\lcbrace\rcbrace{\begin{array}{l}
+       f_1 \big(\, s,\, V,\, \gamma,\, h \,; \, \alpha \big) \\[4pt]
+       f_2 \big(\, s,\, V,\, \gamma,\, h \,; \, \alpha \big) \\[4pt]
+       f_3 \big(\, s,\, V,\, \gamma,\, h \,; \, \alpha \big) \\[4pt]
+       f_4 \big(\, s,\, V,\, \gamma,\, h \,; \, \alpha \big)
+    \end{array}}
+\qquad
+    \text{with}\quad
+    \LEFTRIGHT\lcbrace.{\begin{array}{l} x_1 = s\\[2pt] x_2 = V \\[2pt] x_3 = \gamma \\[2pt] x_4 = h \end{array}}
+\qquad
+    \text{and}\quad
+    u = \alpha
+\end{equation}
+%
+that can be written in the concise form:
+\begin{equation}
+\label{eq:System:Dynamics:B}
+\dot{\vec{x}} = \vec{f}\big(\, \vec{x}\,,\,u(t) \,\big)
+\end{equation}
+%
+where $\vec{x} = [\mspace{2mu} x_1,\, x_2,\, x_3,\, x_4 \mspace{2mu}]^{\text{T}}$ is the vector of state variables
+and $u(t)$ is a given function of time, for $0 \leq t \leq t_{\text{final}}$.
+
+The functions defining the right-hand sides of system (\ref{eq:System:Dynamics:A}) are defined as follows:
+%----------------------------------------------------------------------------------------
+\begin{subequations}\label{eq:System:Dynamics:RHS:functions}
+\begin{equation}\label{eq:System:Dynamics:RHS:functions:A}
+f_1 \big(\, \vec{x}\,,\,u(t) \,\big) =  x_2
+\end{equation}
+
+\begin{equation}\label{eq:System:Dynamics:RHS:functions:B}
+f_2 \big(\, \vec{x}\,,\,u(t) \,\big) =
+  \frac{g}{W}
+    \LEFTRIGHT\lcbrace.{
+      \begin{array}{l@{\rule{2em}{0pt}}l} 
+        T(x_2) - D(x_2,u) - \mu \big[ W - L(x_2,u) \big]
+          & \text{if} \;\, \mathcal{S}(x_2 , u) < 1
+        \\[1em]
+        T(x_2) \cos u - D(x_2,u) - W \sin x_3
+          & \text{if} \;\, \mathcal{S}(x_2 , u) \geq 1
+      \end{array}
+    }  
+\end{equation}
+
+\begin{equation}\label{eq:System:Dynamics:RHS:functions:C}
+f_3 \big(\, \vec{x}\,,\,u(t) \,\big) =
+  \frac{g}{W\,x_2}
+    \LEFTRIGHT\lcbrace.{
+      \begin{array}{l@{\rule{2em}{0pt}}l} 
+        0
+          & \text{if} \;\, \mathcal{S}(x_2 , u) < 1
+        \\[1em]
+        L(x_2,u) + T(x_2)\sin u - W \cos x_3
+          & \text{if} \;\, \mathcal{S}(x_2 , u) \geq 1
+      \end{array}
+    }  
+\end{equation}
+
+\begin{equation}\label{eq:System:Dynamics:RHS:functions:D}
+f_4 \big(\, \vec{x}\,,\,u(t) \,\big) =  x_2 \, \sin x_3
+\end{equation}
+
+
+The thrust $T(x_2)$ is calculated by means of the interpolating function $T_{\text{tab}}\big(V_{\text{a}}\big)$
+based on a table lookup algorithm  --- where $V_{\text{a}} = V + V_{\text{w}}$ is the airspeed.
+The drag $D$ and lift $L$, as functions of airspeed $V_{\text{a}}$ and angle of attack, are given by the conventional formnulas
+\begin{equation}\label{eq:System:Dynamics:RHS:functions:E}
+D(x_2,u) = \frac{1}{2} \, \rho \, \big( x_2 + V_{\text{w}} \big)^2 \,S \, C_D\big( u \big)
+\;,\qquad
+L(x_2,u) = \frac{1}{2} \, \rho \, \big( x_2 + V_{\text{w}} \big)^2 \,S \, C_L\big( u \big)
+\end{equation}
+
+The switching function $\mathcal{S}$ of aircraft velocity and angle of attack is defined as follows:
+\begin{equation}\label{eq:System:Dynamics:RHS:functions:D}
+\mathcal{S}(x_2 , u) = \frac{L(x_2,u)}{W \cos x_3}
+\end{equation}
+\end{subequations}
+%----------------------------------------------------------------------------------------
+
+The formulas (\ref{eq:System:Dynamics:RHS:functions}) make the system (\ref{eq:System:Dynamics:B})
+a closed set of ODEs.
+When the function $u(t)$ is assigned and the system is associated to a set of initial conditions a well-posed
+initial value problem (IVP) is formed, which can be solved numerically.
+
+The function $u$ can be constructed by picking the time $t_{\text{rot}}$ when the rotation speed $V_{\text{rot}}$ 
+is reached along the ground roll. Setting
+\begin{equation}\label{eq:System:Dynamics:Alpha:Law}
+u (t) =
+    \LEFTRIGHT\lcbrace.{
+      \begin{array}{l@{\rule{2em}{0pt}}l} 
+        \alpha_{\text{ground}}
+          & \text{if} \;\, t < t_{\text{rot}}
+        \\[1em]
+        \alpha(t)
+          & \text{if} \;\, t \geq t_{\text{rot}}
+      \end{array}
+    }  
+\end{equation}
+
+
+%============================================================================================================
 %The fuselage in \ADOpT{} is conceptually divided three in subparts:
 %\begin{compactitem}
 %\item
