@@ -25,8 +25,8 @@ public class TakeOffResultsMap extends PerformanceMap{
 	private List<Amount<Duration>> time;
 	private List<Amount<Force>> thrust, thrustHorizontal, thrustVertical,
 								friction, lift, drag, totalForce;
-	private List<Amount<Velocity>> speed, meanSpeed, rateOfClimb, meanRateOfClimb;
-	private List<Amount<Acceleration>> acceleration, meanAcceleration;
+	private List<Amount<Velocity>> speed, rateOfClimb;
+	private List<Amount<Acceleration>> acceleration;
 	private List<Amount<Length>> deltaGruondDistance, groundDistance,
 								 deltaVerticalDistance, verticalDistance;
 	private List<Amount<Angle>> alpha, gamma, theta;
@@ -49,14 +49,9 @@ public class TakeOffResultsMap extends PerformanceMap{
 		this.totalForce = new ArrayList<Amount<Force>>();
 		this.loadFactor = new ArrayList<Double>();
 		this.speed = new ArrayList<Amount<Velocity>>();
-		this.meanSpeed  = new ArrayList<Amount<Velocity>>();
 		this.rateOfClimb = new ArrayList<Amount<Velocity>>();
-		this.meanRateOfClimb = new ArrayList<Amount<Velocity>>();
 		this.acceleration = new ArrayList<Amount<Acceleration>>();
-		this.meanAcceleration = new ArrayList<Amount<Acceleration>>();
-		this.deltaGruondDistance = new ArrayList<Amount<Length>>();
 		this.groundDistance = new ArrayList<Amount<Length>>();
-		this.deltaVerticalDistance = new ArrayList<Amount<Length>>();
 		this.verticalDistance = new ArrayList<Amount<Length>>();
 		this.alpha = new ArrayList<Amount<Angle>>();
 		this.alphaDot = new ArrayList<Double>();
@@ -87,14 +82,9 @@ public class TakeOffResultsMap extends PerformanceMap{
 		totalForce.clear();
 		loadFactor.clear();
 		speed.clear();
-		meanSpeed.clear();
 		rateOfClimb.clear();
-		meanRateOfClimb.clear();
 		acceleration.clear();
-		meanAcceleration.clear();
-		deltaGruondDistance.clear();
 		groundDistance.clear();
-		deltaVerticalDistance.clear();
 		verticalDistance.clear();
 		alpha.clear(); 
 		alphaDot.clear();
@@ -132,13 +122,10 @@ public class TakeOffResultsMap extends PerformanceMap{
 			Amount<Force> thrustHorizontalValue, Amount<Force> thrustVerticalValue,
 			Amount<Force> frictionValue, Amount<Force> liftValue, Amount<Force> dragValue,
 			Amount<Force> totalForceValue, double loadFactorValue, Amount<Velocity> speedValue, 
-			Amount<Velocity> meanSpeedValue, Amount<Velocity> rateOfClimbValue,
-			Amount<Velocity> meanRateOfClimbValue, Amount<Acceleration> accelerationValue,
-			Amount<Acceleration> meanAccelerationValue,	Amount<Length> deltaGruondDistanceValue,
-			Amount<Length> groundDistanceValue, Amount<Length> deltaVerticalDistanceValue,
-			Amount<Length> verticalDistanceValue, Amount<Angle> alphaValue, 
-			double alphaDotValue, Amount<Angle> gammaValue, double gammaDotValue,
-			Amount<Angle> thetaValue, double cLValue, double cDValue) {
+			Amount<Velocity> rateOfClimbValue, Amount<Acceleration> accelerationValue,
+			Amount<Length> groundDistanceValue,	Amount<Length> verticalDistanceValue,
+			Amount<Angle> alphaValue, double alphaDotValue, Amount<Angle> gammaValue,
+			double gammaDotValue, Amount<Angle> thetaValue, double cLValue, double cDValue) {
 
 		time.add(timeValue);
 		thrust.add(thrustHorizontalValue);
@@ -150,14 +137,9 @@ public class TakeOffResultsMap extends PerformanceMap{
 		totalForce.add(totalForceValue);
 		loadFactor.add(loadFactorValue);
 		speed.add(speedValue);
-		meanSpeed.add(meanSpeedValue);
 		rateOfClimb.add(rateOfClimbValue);
-		meanRateOfClimb.add(meanRateOfClimbValue);
 		acceleration.add(accelerationValue);
-		meanAcceleration.add(meanAccelerationValue);
-		deltaGruondDistance.add(deltaGruondDistanceValue);
 		groundDistance.add(groundDistanceValue);
-		deltaVerticalDistance.add(deltaVerticalDistanceValue);
 		verticalDistance.add(verticalDistanceValue);
 		alpha.add(alphaValue);
 		alphaDot.add(alphaDotValue);
@@ -244,14 +226,6 @@ public class TakeOffResultsMap extends PerformanceMap{
 		this.speed = speed;
 	}
 	
-	public List<Amount<Velocity>> getMeanSpeed() {
-		return meanSpeed;
-	}
-	
-	public void setMeanSpeed(List<Amount<Velocity>> meanSpeed) {
-		this.meanSpeed = meanSpeed;
-	}
-	
 	public List<Amount<Velocity>> getRateOfClimb() {
 		return rateOfClimb;
 	}
@@ -260,28 +234,12 @@ public class TakeOffResultsMap extends PerformanceMap{
 		this.rateOfClimb = rateOfClimb;
 	}
 	
-	public List<Amount<Velocity>> getMeanRateOfClimb() {
-		return meanRateOfClimb;
-	}
-	
-	public void setMeanRateOfClimb(List<Amount<Velocity>> meanRateOfClimb) {
-		this.meanRateOfClimb = meanRateOfClimb;
-	}
-	
 	public List<Amount<Acceleration>> getAcceleration() {
 		return acceleration;
 	}
 	
 	public void setAcceleration(List<Amount<Acceleration>> acceleration) {
 		this.acceleration = acceleration;
-	}
-	
-	public List<Amount<Acceleration>> getMeanAcceleration() {
-		return meanAcceleration;
-	}
-	
-	public void setMeanAcceleration(List<Amount<Acceleration>> meanAcceleration) {
-		this.meanAcceleration = meanAcceleration;
 	}
 	
 	public List<Amount<Length>> getDeltaGruondDistance() {

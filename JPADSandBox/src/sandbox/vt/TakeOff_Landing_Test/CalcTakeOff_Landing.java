@@ -11,7 +11,6 @@ import javax.measure.quantity.Length;
 import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
-
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.apache.commons.math3.exception.DimensionMismatchException;
@@ -19,15 +18,10 @@ import org.apache.commons.math3.exception.MaxCountExceededException;
 import org.apache.commons.math3.ode.FirstOrderDifferentialEquations;
 import org.apache.commons.math3.ode.FirstOrderIntegrator;
 import org.apache.commons.math3.ode.events.EventHandler;
-import org.apache.commons.math3.ode.events.EventHandler.Action;
 import org.apache.commons.math3.ode.nonstiff.DormandPrince853Integrator;
-import org.apache.commons.math3.ode.nonstiff.MidpointIntegrator;
 import org.apache.commons.math3.ode.sampling.StepHandler;
 import org.apache.commons.math3.ode.sampling.StepInterpolator;
 import org.jscience.physics.amount.Amount;
-
-import com.sun.openpisces.AlphaConsumer;
-
 import aircraft.OperatingConditions;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcHighLiftDevices;
@@ -74,28 +68,23 @@ public class CalcTakeOff_Landing {
 	private Aircraft aircraft;
 	private OperatingConditions theConditions;
 	private CalcHighLiftDevices highLiftCalculator;
-	private Amount<Duration> dt, dtRot, dtHold,
-	dtRec = Amount.valueOf(1.5, SI.SECOND);
+	private Amount<Duration> dt, dtRot, dtHold,	dtRec = Amount.valueOf(1.5, SI.SECOND);
 	private Amount<Velocity> vSTakeOff, vRot, vLO, vWind, v1;
 	private Amount<Length> wingToGroundDistance, obstacle, balancedFieldLength;
 	private Amount<Angle> alphaGround, iw;
-	private List<Double> alphaDot, gammaDot, cL, cLAborted,
-	cD, cDAborted, loadFactor, loadFactorAborted;
+	private List<Double> alphaDot, gammaDot, cL, cLAborted, cD, cDAborted, loadFactor, loadFactorAborted;
 	private List<Amount<Angle>> alpha, alphaAborted, theta, gamma;
 	private List<Amount<Duration>> time, timeAborted;
-	private List<Amount<Velocity>> speed, speedAborted, meanSpeed, meanSpeedAborted,
-	rateOfClimb, meanRateOfClimb;
-	private List<Amount<Acceleration>> acceleration, accelerationAborted,
-	meanAcceleration, meanAccelerationAborted;
+	private List<Amount<Velocity>> speed, speedAborted, rateOfClimb;
+	private List<Amount<Acceleration>> acceleration, accelerationAborted;
 	private List<Amount<Force>> thrust, thrustAborted, thrustHorizontal, thrustVertical,
-	lift, liftAborted, drag, dragAborted, friction, frictionAborted,
-	totalForce, totalForceAborted;
+								lift, liftAborted, drag, dragAborted, friction, frictionAborted,
+								totalForce, totalForceAborted;
 	private List<Amount<Length>> deltaGroundDistance, deltaGroundDistanceAborted, groundDistance,
-	groundDistanceAborted, deltaVerticalDistance, verticalDistance;
-	private double kAlphaDot, kcLMax, kRot, kLO, phi, mu, muBrake, cLmaxTO, kGround, alphaDotInitial, alphaRed, cL0, cLground,
-	kFailure;
-	private final double k1 = 0.078,
-			k2 = 0.365;
+								 groundDistanceAborted, deltaVerticalDistance, verticalDistance;
+	private double kAlphaDot, kcLMax, kRot, kLO, phi, mu, muBrake, cLmaxTO, kGround, alphaDotInitial,
+				   alphaRed, cL0, cLground, kFailure;
+	private final double k1 = 0.078, k2 = 0.365;
 
 	// Statistics to be collected at every phase: (initialization of the lists through the builder
 	private TakeOffResultsMap takeOffResults = new TakeOffResultsMap();
@@ -105,7 +94,8 @@ public class CalcTakeOff_Landing {
 	// integration index
 	private int idxCurrent, idxAborted;
 	private double[] failureSpeedArray, continuedTakeOffArray, abortedTakeOffArray,
-	failureSpeedArrayFitted, continuedTakeOffSplineValues, abortedTakeOffSplineValues;
+					 failureSpeedArrayFitted, continuedTakeOffSplineValues,
+					 abortedTakeOffSplineValues;
 
 	//-------------------------------------------------------------------------------------
 	// BUILDER:
@@ -218,10 +208,7 @@ public class CalcTakeOff_Landing {
 		this.friction = new ArrayList<Amount<Force>>();
 		this.totalForce = new ArrayList<Amount<Force>>();
 		this.acceleration = new ArrayList<Amount<Acceleration>>();
-		this.meanAcceleration = new ArrayList<Amount<Acceleration>>();
-		this.meanSpeed = new ArrayList<Amount<Velocity>>();
 		this.rateOfClimb = new ArrayList<Amount<Velocity>>();
-		this.meanRateOfClimb = new ArrayList<Amount<Velocity>>();
 		this.deltaGroundDistance = new ArrayList<Amount<Length>>();
 		this.groundDistance = new ArrayList<Amount<Length>>();
 		this.deltaVerticalDistance = new ArrayList<Amount<Length>>();
@@ -240,13 +227,12 @@ public class CalcTakeOff_Landing {
 		this.frictionAborted = new ArrayList<Amount<Force>>();
 		this.totalForceAborted = new ArrayList<Amount<Force>>();
 		this.accelerationAborted = new ArrayList<Amount<Acceleration>>();
-		this.meanAccelerationAborted = new ArrayList<Amount<Acceleration>>();
-		this.meanSpeedAborted = new ArrayList<Amount<Velocity>>();
 		this.deltaGroundDistanceAborted = new ArrayList<Amount<Length>>();
 		this.groundDistanceAborted = new ArrayList<Amount<Length>>();
 
+		takeOffResults.initialize();
 
-		System.out.println("\n\n---------------------------------------------------");
+		System.out.println("---------------------------------------------------");
 		System.out.println("CalcTakeOff_Landing :: ODE integration\n\n");
 
 		// see: https://commons.apache.org/proper/commons-math/userguide/ode.html
@@ -258,27 +244,135 @@ public class CalcTakeOff_Landing {
 				1.0e-10   // vecRelativeTolerance
 				);
 
-		// FirstOrderIntegrator theIntegrator = new MidpointIntegrator(0.1); // time step
-
 		FirstOrderDifferentialEquations ode = new DynamicsEquations();
 
 		// handle detail infos
 		StepHandler stepHandler = new StepHandler() {
+			
+			boolean doWrite = false;
+			
 			public void init(double t0, double[] x0, double t) {
+				doWrite = true;
 			}
 
 			@Override
 			public void handleStep(StepInterpolator interpolator, boolean isLast) throws MaxCountExceededException {
+				
+				if(!doWrite)
+					return;
+				
 				double   t = interpolator.getCurrentTime();
 				double[] x = interpolator.getInterpolatedState();
-				System.out.println(t + " \n\tx[0] = s = " + x[0] + "\n\tx[1] = V = " + x[1] + "\n\tx[2] = gamma = " + x[2]);
-				System.out.println("\n\talpha = " + ((DynamicsEquations)ode).alphaFunction.value(t));
-
+				
+				System.out.println(
+						"\n\tt = " + t + " s" +
+						"\n\tx[0] = s = " + x[0] + " m" +
+						"\n\tx[1] = V = " + x[1] + " m/s" + 
+						"\n\tx[2] = gamma = " + x[2] + " °" +
+						"\n\tx[3] = quota = " + x[3] + " m"
+						);
+				
+				CalcTakeOff_Landing.this.getTime().add(Amount.valueOf(t, SI.SECOND));
+				CalcTakeOff_Landing.this.getSpeed().add(Amount.valueOf(x[1], SI.METERS_PER_SECOND));
+				CalcTakeOff_Landing.this.getThrust().add(Amount.valueOf(
+						((DynamicsEquations)ode).thrust(x[1]),
+						SI.NEWTON)
+						);
+				CalcTakeOff_Landing.this.getThrustHorizontal().add(Amount.valueOf(
+						((DynamicsEquations)ode).thrust(x[1])*Math.cos(((DynamicsEquations)ode).alpha),
+						SI.NEWTON)
+						);
+				CalcTakeOff_Landing.this.getThrustVertical().add(Amount.valueOf(
+						((DynamicsEquations)ode).thrust(x[1])*Math.sin(((DynamicsEquations)ode).alpha),
+						SI.NEWTON)
+						);
+				CalcTakeOff_Landing.this.getFriction().add(Amount.valueOf(
+						CalcTakeOff_Landing.this.getMu()
+						*(((DynamicsEquations)ode).weight
+								- ((DynamicsEquations)ode).lift(x[1],((DynamicsEquations)ode).alpha)),
+						SI.NEWTON)
+						);
+				CalcTakeOff_Landing.this.getLift().add(Amount.valueOf(
+						((DynamicsEquations)ode).lift(x[1],((DynamicsEquations)ode).alpha),
+						SI.NEWTON)
+						);
+				CalcTakeOff_Landing.this.getDrag().add(Amount.valueOf(
+						((DynamicsEquations)ode).drag(x[1],((DynamicsEquations)ode).alpha),
+						SI.NEWTON)
+						);
+				CalcTakeOff_Landing.this.getTotalForce().add(Amount.valueOf(
+						((DynamicsEquations)ode).thrust(x[1])*Math.cos(((DynamicsEquations)ode).alpha)
+						- ((DynamicsEquations)ode).drag(x[1],((DynamicsEquations)ode).alpha)
+						- CalcTakeOff_Landing.this.getMu()*(((DynamicsEquations)ode).weight
+								- ((DynamicsEquations)ode).lift(x[1],((DynamicsEquations)ode).alpha))
+						- ((DynamicsEquations)ode).weight*Math.sin(x[2]),
+						SI.NEWTON)
+						);
+				CalcTakeOff_Landing.this.getLoadFactor().add(
+						((DynamicsEquations)ode).lift(x[1], ((DynamicsEquations)ode).alpha)
+						/(((DynamicsEquations)ode).weight*Math.cos(x[2]))
+						);
+				CalcTakeOff_Landing.this.getSpeed().add(Amount.valueOf(
+						x[1],
+						SI.METERS_PER_SECOND)
+						);
+				CalcTakeOff_Landing.this.getRateOfClimb().add(Amount.valueOf(
+						x[1]*Math.sin(x[2]),
+						SI.METERS_PER_SECOND)
+						);
+				CalcTakeOff_Landing.this.getAcceleration().add(Amount.valueOf(
+						(AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquations)ode).weight)
+						*((DynamicsEquations)ode).thrust(x[1])*Math.cos(((DynamicsEquations)ode).alpha)
+						- ((DynamicsEquations)ode).drag(x[1],((DynamicsEquations)ode).alpha)
+						- CalcTakeOff_Landing.this.getMu()*(((DynamicsEquations)ode).weight
+								- ((DynamicsEquations)ode).lift(x[1],((DynamicsEquations)ode).alpha))
+						- ((DynamicsEquations)ode).weight*Math.sin(x[2]),
+						SI.METERS_PER_SQUARE_SECOND)
+						);
+				CalcTakeOff_Landing.this.getGroundDistance().add(Amount.valueOf(
+						x[0],
+						SI.METER)
+						);
+				CalcTakeOff_Landing.this.getVerticalDistance().add(Amount.valueOf(
+						x[3],
+						SI.METER)
+						);
+				CalcTakeOff_Landing.this.getAlpha().add(Amount.valueOf(
+						((DynamicsEquations)ode).alpha,
+						NonSI.DEGREE_ANGLE)
+						);
+				CalcTakeOff_Landing.this.getGamma().add(Amount.valueOf(
+						x[2],
+						NonSI.DEGREE_ANGLE)
+						);
+				
+				// TODO: ADD ALPHA_DOT AND GAMMA_DOT WHEN AVAILABLE
+				CalcTakeOff_Landing.this.getAlphaDot().add(0.0);
+				CalcTakeOff_Landing.this.getGammaDot().add(0.0);
+				
+				CalcTakeOff_Landing.this.getTheta().add(Amount.valueOf(
+						x[2] + ((DynamicsEquations)ode).alpha,
+						NonSI.DEGREE_ANGLE)
+						);
+				CalcTakeOff_Landing.this.getcL().add(
+						((DynamicsEquations)ode).cL(((DynamicsEquations)ode).alpha)
+						);
+				CalcTakeOff_Landing.this.getcD().add(
+						((DynamicsEquations)ode).cD0 
+						+ ((DynamicsEquations)ode).deltaCD0 
+						+ ((((DynamicsEquations)ode).cL(((DynamicsEquations)ode).alpha)
+								/(Math.PI
+										*((DynamicsEquations)ode).ar
+										*((DynamicsEquations)ode).oswald))
+								*kGround)
+						);
+				
+				doWrite = false;
 			}
 		};
 		theIntegrator.addStepHandler(stepHandler);
 
-		EventHandler eventHandler = new EventHandler() {
+		EventHandler ehCheckVRot = new EventHandler() {
 
 			@Override
 			public void init(double t0, double[] y0, double t) {
@@ -294,25 +388,57 @@ public class CalcTakeOff_Landing {
 			@Override
 			public double g(double t, double[] x) {
 				double speed = x[1];
-				return speed - 200.0;
+				return speed - vRot.getEstimatedValue();
 			}
 
 			@Override
 			public Action eventOccurred(double t, double[] x, boolean increasing) {
 				// Handle an event and choose what to do next.
-				System.out.println("\n\n\n ---> speed - 10.0 > 0 at t = " + t);
-				System.out.println("\tincreasing: " + increasing + "\n\n");
+				System.out.println("\n switching function changes sign at t = " + t);
+				System.out.println(
+						"\n\tx[0] = s = " + x[0] + " m" +
+						"\n\tx[1] = V = " + x[1] + " m/s" + 
+						"\n\tx[2] = gamma = " + x[2] + " °" +
+						"\n\tx[3] = quota = " + x[3] + " m"
+						);
+				
+				// COLLECTING DATA IN TakeOffResultsMap
+				System.out.println("\n\tCOLLECTING DATA AT THE END OF GROUND ROLL PHASE ...");
+				takeOffResults.initialize();
+				takeOffResults.collectResults(
+						time.get(time.size()-1),
+						thrust.get(thrust.size()-1),
+						thrustHorizontal.get(thrustHorizontal.size()-1),
+						thrustVertical.get(thrustVertical.size()-1),
+						friction.get(friction.size()-1),
+						lift.get(lift.size()-1),
+						drag.get(drag.size()-1),
+						totalForce.get(totalForce.size()-1),
+						loadFactor.get(loadFactor.size()-1),
+						speed.get(speed.size()-1),
+						rateOfClimb.get(rateOfClimb.size()-1),
+						acceleration.get(acceleration.size()-1),
+						groundDistance.get(groundDistance.size()-1),
+						verticalDistance.get(verticalDistance.size()-1),
+						alpha.get(alpha.size()-1),
+						alphaDot.get(alphaDot.size()-1),
+						gamma.get(gamma.size()-1),
+						gammaDot.get(gammaDot.size()-1),
+						theta.get(theta.size()-1),
+						cL.get(cL.size()-1),
+						cD.get(cD.size()-1)
+						);
+				System.out.println("\n---------------------------DONE!-------------------------------");
 				return  Action.STOP;
 			}
 
 		};
-		theIntegrator.addEventHandler(eventHandler, 1.0e-8, 1e-6, 1000);
+		theIntegrator.addEventHandler(ehCheckVRot, 1.0e-5, 5e-2, 50);
 
-		double[] xAt0 = new double[] { 0.0, 0.0, 0.0 }; // initial state
-		theIntegrator.integrate(ode, 0.0, xAt0, 16.0, xAt0); // now y contains final state at time t=16.0
+		double[] xAt0 = new double[] {0.0, 0.0, 0.0, 0.0}; // initial state
+		theIntegrator.integrate(ode, 0.0, xAt0, 40, xAt0); // now xAt0 contains final state at time t=16.0
 
 		System.out.println("\n\n---------------------------------------------------");
-
 	}
 
 	//-------------------------------------------------------------------------------------
@@ -349,10 +475,7 @@ public class CalcTakeOff_Landing {
 		friction.clear();
 		totalForce.clear();
 		acceleration.clear();
-		meanAcceleration.clear();
-		meanSpeed.clear();
 		rateOfClimb.clear();
-		meanRateOfClimb.clear();
 		deltaGroundDistance.clear();
 		groundDistance.clear();
 		deltaVerticalDistance.clear();
@@ -370,8 +493,6 @@ public class CalcTakeOff_Landing {
 		frictionAborted.clear();
 		totalForceAborted.clear();
 		accelerationAborted.clear();
-		meanAccelerationAborted.clear();
-		meanSpeedAborted.clear();
 		deltaGroundDistanceAborted.clear();
 		groundDistanceAborted.clear();
 
@@ -435,10 +556,7 @@ public class CalcTakeOff_Landing {
 		acceleration.add(Amount.valueOf(
 				AtmosphereCalc.g0.divide(aircraft.get_weights().get_MTOW()).times(totalForce.get(0)).getEstimatedValue(),
 				SI.METERS_PER_SQUARE_SECOND));
-		meanAcceleration.add(acceleration.get(0));
-		meanSpeed.add(Amount.valueOf(0.0, SI.METERS_PER_SECOND));
 		rateOfClimb.add(speed.get(0).plus(getvWind()).times(Math.sin(gamma.get(0).to(SI.RADIAN).getEstimatedValue())));
-		meanRateOfClimb.add(Amount.valueOf(0.0, SI.METERS_PER_SECOND));
 		deltaGroundDistance.add(Amount.valueOf(0.0, SI.METER));
 		groundDistance.add(Amount.valueOf(0.0, SI.METER));
 		deltaVerticalDistance.add(Amount.valueOf(0.0, SI.METER));
@@ -485,8 +603,6 @@ public class CalcTakeOff_Landing {
 		accelerationAborted.add(Amount.valueOf(
 				AtmosphereCalc.g0.divide(aircraft.get_weights().get_MTOW()).times(totalForceAborted.get(0)).getEstimatedValue(),
 				SI.METERS_PER_SQUARE_SECOND));
-		meanAccelerationAborted.add(acceleration.get(0));
-		meanSpeedAborted.add(Amount.valueOf(0.0, SI.METERS_PER_SECOND));
 		deltaGroundDistanceAborted.add(Amount.valueOf(0.0, SI.METER));
 		groundDistanceAborted.add(Amount.valueOf(0.0, SI.METER));
 	}
@@ -520,7 +636,7 @@ public class CalcTakeOff_Landing {
 			time.add(time.get(idxCurrent-1).plus(dt));
 			// increment at actual speed
 			speed.add(Amount.valueOf(
-					speed.get(idxCurrent-1).getEstimatedValue() + (meanAcceleration.get(idxCurrent-1).getEstimatedValue()*dt.getEstimatedValue()),
+					speed.get(idxCurrent-1).getEstimatedValue() + (acceleration.get(idxCurrent-1).getEstimatedValue()*dt.getEstimatedValue()),
 					SI.METERS_PER_SECOND));
 
 			// speed check
@@ -605,18 +721,15 @@ public class CalcTakeOff_Landing {
 				acceleration.add(Amount.valueOf(
 						AtmosphereCalc.g0.divide(aircraft.get_weights().get_MTOW()).times(totalForce.get(idxCurrent)).getEstimatedValue(),
 						SI.METERS_PER_SQUARE_SECOND));
-				meanAcceleration.add((acceleration.get(idxCurrent-1).plus(acceleration.get(idxCurrent))).divide(2));
-				meanSpeed.add(((speed.get(idxCurrent-1).plus(speed.get(idxCurrent))).divide(2)).plus(vWind));
 				rateOfClimb.add(speed.get(idxCurrent).plus(vWind).times(Math.sin(gamma.get(idxCurrent).to(SI.RADIAN).getEstimatedValue())));
-				meanRateOfClimb.add((rateOfClimb.get(idxCurrent).plus(rateOfClimb.get(idxCurrent-1)).divide(2)));
 				deltaGroundDistance.add(
 						Amount.valueOf(
-								meanSpeed.get(idxCurrent).getEstimatedValue()*dt.getEstimatedValue(),
+								speed.get(idxCurrent).getEstimatedValue()*dt.getEstimatedValue(),
 								SI.METER
 								)
 						);
 				groundDistance.add(groundDistance.get(idxCurrent-1).plus(deltaGroundDistance.get(idxCurrent)));
-				deltaVerticalDistance.add(Amount.valueOf(meanRateOfClimb.get(idxCurrent).times(dt).getEstimatedValue(), SI.METER));
+				deltaVerticalDistance.add(Amount.valueOf(rateOfClimb.get(idxCurrent).times(dt).getEstimatedValue(), SI.METER));
 				verticalDistance.add(verticalDistance.get(idxCurrent-1).plus(deltaVerticalDistance.get(idxCurrent)));
 			}
 
@@ -701,18 +814,15 @@ public class CalcTakeOff_Landing {
 				acceleration.add(Amount.valueOf(
 						AtmosphereCalc.g0.divide(aircraft.get_weights().get_MTOW()).times(totalForce.get(idxCurrent)).getEstimatedValue(),
 						SI.METERS_PER_SQUARE_SECOND));
-				meanAcceleration.add((acceleration.get(idxCurrent-1).plus(acceleration.get(idxCurrent))).divide(2));
-				meanSpeed.add(((speed.get(idxCurrent-1).plus(speed.get(idxCurrent))).divide(2)).plus(vWind));
 				rateOfClimb.add(speed.get(idxCurrent).plus(vWind).times(Math.sin(gamma.get(idxCurrent).to(SI.RADIAN).getEstimatedValue())));
-				meanRateOfClimb.add((rateOfClimb.get(idxCurrent).plus(rateOfClimb.get(idxCurrent-1)).divide(2)));
 				deltaGroundDistance.add(
 						Amount.valueOf(
-								meanSpeed.get(idxCurrent).getEstimatedValue()*dt.getEstimatedValue(),
+								speed.get(idxCurrent).getEstimatedValue()*dt.getEstimatedValue(),
 								SI.METER
 								)
 						);
 				groundDistance.add(groundDistance.get(idxCurrent-1).plus(deltaGroundDistance.get(idxCurrent)));
-				deltaVerticalDistance.add(Amount.valueOf(meanRateOfClimb.get(idxCurrent).times(dt).getEstimatedValue(), SI.METER));
+				deltaVerticalDistance.add(Amount.valueOf(rateOfClimb.get(idxCurrent).times(dt).getEstimatedValue(), SI.METER));
 				verticalDistance.add(verticalDistance.get(idxCurrent-1).plus(deltaVerticalDistance.get(idxCurrent)));
 			}
 
@@ -735,14 +845,9 @@ public class CalcTakeOff_Landing {
 				totalForce.get(totalForce.size()-1),
 				loadFactor.get(loadFactor.size()-1),
 				speed.get(speed.size()-1),
-				meanSpeed.get(meanSpeed.size()-1),
 				rateOfClimb.get(rateOfClimb.size()-1),
-				meanRateOfClimb.get(meanRateOfClimb.size()-1),
 				acceleration.get(acceleration.size()-1),
-				meanAcceleration.get(meanAcceleration.size()-1),
-				deltaGroundDistance.get(deltaGroundDistance.size()-1),
 				groundDistance.get(groundDistance.size()-1),
-				deltaVerticalDistance.get(verticalDistance.size()-1),
 				verticalDistance.get(verticalDistance.size()-1),
 				alpha.get(alpha.size()-1),
 				alphaDot.get(alphaDot.size()-1),
@@ -771,7 +876,7 @@ public class CalcTakeOff_Landing {
 			// temporal steps in rotation are smaller in order to track this short phase in a better way
 			time.add(time.get(idxCurrent-1).plus(dtRotation));
 			speed.add(Amount.valueOf(
-					speed.get(idxCurrent-1).getEstimatedValue() + (meanAcceleration.get(idxCurrent-1).getEstimatedValue()*dtRotation.getEstimatedValue()),
+					speed.get(idxCurrent-1).getEstimatedValue() + (acceleration.get(idxCurrent-1).getEstimatedValue()*dtRotation.getEstimatedValue()),
 					SI.METERS_PER_SECOND));
 
 			// speed check
@@ -896,18 +1001,15 @@ public class CalcTakeOff_Landing {
 				acceleration.add(Amount.valueOf(
 						(AtmosphereCalc.g0.divide(aircraft.get_weights().get_MTOW())).times(totalForce.get(idxCurrent)).getEstimatedValue(),
 						SI.METERS_PER_SQUARE_SECOND));
-				meanAcceleration.add((acceleration.get(idxCurrent-1).plus(acceleration.get(idxCurrent))).divide(2));
-				meanSpeed.add(((speed.get(idxCurrent-1).plus(speed.get(idxCurrent))).divide(2)).plus(vWind));
 				rateOfClimb.add(speed.get(idxCurrent).plus(vWind).times(Math.sin(gamma.get(idxCurrent).to(SI.RADIAN).getEstimatedValue())));
-				meanRateOfClimb.add((rateOfClimb.get(idxCurrent).plus(rateOfClimb.get(idxCurrent-1)).divide(2)));
 				deltaGroundDistance.add(
 						Amount.valueOf(
-								meanSpeed.get(idxCurrent).getEstimatedValue()*dtRotation.getEstimatedValue(),
+								speed.get(idxCurrent).getEstimatedValue()*dtRotation.getEstimatedValue(),
 								SI.METER
 								)
 						);
 				groundDistance.add(groundDistance.get(idxCurrent-1).plus(deltaGroundDistance.get(idxCurrent)));
-				deltaVerticalDistance.add(Amount.valueOf(meanRateOfClimb.get(idxCurrent).times(dtRotation).getEstimatedValue(), SI.METER));
+				deltaVerticalDistance.add(Amount.valueOf(rateOfClimb.get(idxCurrent).times(dtRotation).getEstimatedValue(), SI.METER));
 				verticalDistance.add(verticalDistance.get(idxCurrent-1).plus(deltaVerticalDistance.get(idxCurrent)));
 			}
 
@@ -1032,18 +1134,15 @@ public class CalcTakeOff_Landing {
 				acceleration.add(Amount.valueOf(
 						(AtmosphereCalc.g0.divide(aircraft.get_weights().get_MTOW())).times(totalForce.get(idxCurrent)).getEstimatedValue(),
 						SI.METERS_PER_SQUARE_SECOND));
-				meanAcceleration.add((acceleration.get(idxCurrent-1).plus(acceleration.get(idxCurrent))).divide(2));
-				meanSpeed.add(((speed.get(idxCurrent-1).plus(speed.get(idxCurrent))).divide(2)).plus(vWind));
 				rateOfClimb.add(speed.get(idxCurrent).plus(vWind).times(Math.sin(gamma.get(idxCurrent).to(SI.RADIAN).getEstimatedValue())));
-				meanRateOfClimb.add((rateOfClimb.get(idxCurrent).plus(rateOfClimb.get(idxCurrent-1)).divide(2)));
 				deltaGroundDistance.add(
 						Amount.valueOf(
-								meanSpeed.get(idxCurrent).getEstimatedValue()*dtRotation.getEstimatedValue(),
+								speed.get(idxCurrent).getEstimatedValue()*dtRotation.getEstimatedValue(),
 								SI.METER
 								)
 						);
 				groundDistance.add(groundDistance.get(idxCurrent-1).plus(deltaGroundDistance.get(idxCurrent)));
-				deltaVerticalDistance.add(Amount.valueOf(meanRateOfClimb.get(idxCurrent).times(dtRotation).getEstimatedValue(), SI.METER));
+				deltaVerticalDistance.add(Amount.valueOf(rateOfClimb.get(idxCurrent).times(dtRotation).getEstimatedValue(), SI.METER));
 				verticalDistance.add(verticalDistance.get(idxCurrent-1).plus(deltaVerticalDistance.get(idxCurrent)));
 			}
 			// step increment
@@ -1064,14 +1163,9 @@ public class CalcTakeOff_Landing {
 				totalForce.get(totalForce.size()-1),
 				loadFactor.get(loadFactor.size()-1),
 				speed.get(speed.size()-1),
-				meanSpeed.get(meanSpeed.size()-1),
 				rateOfClimb.get(rateOfClimb.size()-1),
-				meanRateOfClimb.get(meanRateOfClimb.size()-1),
 				acceleration.get(acceleration.size()-1),
-				meanAcceleration.get(meanAcceleration.size()-1),
-				deltaGroundDistance.get(deltaGroundDistance.size()-1),
 				groundDistance.get(groundDistance.size()-1),
-				deltaVerticalDistance.get(verticalDistance.size()-1),
 				verticalDistance.get(verticalDistance.size()-1),
 				alpha.get(alpha.size()-1),
 				alphaDot.get(alphaDot.size()-1),
@@ -1134,7 +1228,7 @@ public class CalcTakeOff_Landing {
 
 			time.add(time.get(idxCurrent-1).plus(dt));
 			speed.add(Amount.valueOf(
-					speed.get(idxCurrent-1).getEstimatedValue() + (meanAcceleration.get(idxCurrent-1).getEstimatedValue()*dt.getEstimatedValue()),
+					speed.get(idxCurrent-1).getEstimatedValue() + (acceleration.get(idxCurrent-1).getEstimatedValue()*dt.getEstimatedValue()),
 					SI.METERS_PER_SECOND));
 
 			// check on CL to obtain the time at which CL=0.9*CLmaxTO (a minor time step is required
@@ -1312,18 +1406,15 @@ public class CalcTakeOff_Landing {
 			acceleration.add(Amount.valueOf(
 					AtmosphereCalc.g0.divide(aircraft.get_weights().get_MTOW()).times(totalForce.get(idxCurrent)).getEstimatedValue(),
 					SI.METERS_PER_SQUARE_SECOND));
-			meanAcceleration.add((acceleration.get(idxCurrent-1).plus(acceleration.get(idxCurrent))).divide(2));
-			meanSpeed.add(((speed.get(idxCurrent-1).plus(speed.get(idxCurrent))).divide(2)).plus(vWind));
 			rateOfClimb.add(speed.get(idxCurrent).plus(vWind).times(Math.sin(gamma.get(idxCurrent).to(SI.RADIAN).getEstimatedValue())));
-			meanRateOfClimb.add((rateOfClimb.get(idxCurrent).plus(rateOfClimb.get(idxCurrent-1)).divide(2)));
 			deltaGroundDistance.add(
 					Amount.valueOf(
-							meanSpeed.get(idxCurrent).getEstimatedValue()*dt.getEstimatedValue(),
+							speed.get(idxCurrent).getEstimatedValue()*dt.getEstimatedValue(),
 							SI.METER
 							)
 					);
 			groundDistance.add(groundDistance.get(idxCurrent-1).plus(deltaGroundDistance.get(idxCurrent)));
-			deltaVerticalDistance.add(Amount.valueOf(meanRateOfClimb.get(idxCurrent).times(dt).getEstimatedValue(), SI.METER));
+			deltaVerticalDistance.add(Amount.valueOf(rateOfClimb.get(idxCurrent).times(dt).getEstimatedValue(), SI.METER));
 			verticalDistance.add(verticalDistance.get(idxCurrent-1).plus(deltaVerticalDistance.get(idxCurrent)));
 
 			// altitude update
@@ -1348,14 +1439,9 @@ public class CalcTakeOff_Landing {
 				totalForce.get(totalForce.size()-1),
 				loadFactor.get(loadFactor.size()-1),
 				speed.get(speed.size()-1),
-				meanSpeed.get(meanSpeed.size()-1),
 				rateOfClimb.get(rateOfClimb.size()-1),
-				meanRateOfClimb.get(meanRateOfClimb.size()-1),
 				acceleration.get(acceleration.size()-1),
-				meanAcceleration.get(meanAcceleration.size()-1),
-				deltaGroundDistance.get(deltaGroundDistance.size()-1),
 				groundDistance.get(groundDistance.size()-1),
-				deltaVerticalDistance.get(verticalDistance.size()-1),
 				verticalDistance.get(verticalDistance.size()-1),
 				alpha.get(alpha.size()-1),
 				alphaDot.get(alphaDot.size()-1),
@@ -1392,7 +1478,7 @@ public class CalcTakeOff_Landing {
 			timeAborted.add(timeAborted.get(idxAborted-1).plus(dt));
 			// increment at actual speed
 			speedAborted.add(Amount.valueOf(
-					speedAborted.get(idxAborted-1).getEstimatedValue() + (meanAccelerationAborted.get(idxAborted-1).getEstimatedValue()*dt.getEstimatedValue()),
+					speedAborted.get(idxAborted-1).getEstimatedValue() + (accelerationAborted.get(idxAborted-1).getEstimatedValue()*dt.getEstimatedValue()),
 					SI.METERS_PER_SECOND));
 
 			// speed check
@@ -1461,11 +1547,9 @@ public class CalcTakeOff_Landing {
 				accelerationAborted.add(Amount.valueOf(
 						AtmosphereCalc.g0.divide(aircraft.get_weights().get_MTOW()).times(totalForceAborted.get(idxAborted)).getEstimatedValue(),
 						SI.METERS_PER_SQUARE_SECOND));
-				meanAccelerationAborted.add((accelerationAborted.get(idxAborted-1).plus(accelerationAborted.get(idxAborted))).divide(2));
-				meanSpeedAborted.add(((speedAborted.get(idxAborted-1).plus(speedAborted.get(idxAborted))).divide(2)).plus(vWind));
 				deltaGroundDistanceAborted.add(
 						Amount.valueOf(
-								meanSpeedAborted.get(idxAborted).getEstimatedValue()*dt.getEstimatedValue(),
+								speedAborted.get(idxAborted).getEstimatedValue()*dt.getEstimatedValue(),
 								SI.METER
 								)
 						);
@@ -1541,11 +1625,9 @@ public class CalcTakeOff_Landing {
 				accelerationAborted.add(Amount.valueOf(
 						AtmosphereCalc.g0.divide(aircraft.get_weights().get_MTOW()).times(totalForceAborted.get(idxAborted)).getEstimatedValue(),
 						SI.METERS_PER_SQUARE_SECOND));
-				meanAccelerationAborted.add((accelerationAborted.get(idxAborted-1).plus(accelerationAborted.get(idxAborted))).divide(2));
-				meanSpeedAborted.add(((speedAborted.get(idxAborted-1).plus(speedAborted.get(idxAborted))).divide(2)).plus(vWind));
 				deltaGroundDistanceAborted.add(
 						Amount.valueOf(
-								meanSpeedAborted.get(idxAborted).getEstimatedValue()*dt.getEstimatedValue(),
+								speedAborted.get(idxAborted).getEstimatedValue()*dt.getEstimatedValue(),
 								SI.METER
 								)
 						);
@@ -1591,11 +1673,9 @@ public class CalcTakeOff_Landing {
 				accelerationAborted.add(Amount.valueOf(
 						AtmosphereCalc.g0.divide(aircraft.get_weights().get_MTOW()).times(totalForceAborted.get(idxAborted)).getEstimatedValue(),
 						SI.METERS_PER_SQUARE_SECOND));
-				meanAccelerationAborted.add((accelerationAborted.get(idxAborted-1).plus(accelerationAborted.get(idxAborted))).divide(2));
-				meanSpeedAborted.add(((speedAborted.get(idxAborted-1).plus(speedAborted.get(idxAborted))).divide(2)).plus(vWind));
 				deltaGroundDistanceAborted.add(
 						Amount.valueOf(
-								meanSpeedAborted.get(idxAborted).getEstimatedValue()*dt.getEstimatedValue(),
+								speedAborted.get(idxAborted).getEstimatedValue()*dt.getEstimatedValue(),
 								SI.METER
 								)
 						);
@@ -1889,21 +1969,22 @@ public class CalcTakeOff_Landing {
 				subfolderPath, "HorizontalForces_evolution");
 
 		// Horizontal Forces v.s. Ground Distance
-		double[][] xMatrix2 = new double[4][totalForce.length];
+		double[][] xMatrix2 = new double[5][totalForce.length];
 		for(int i=0; i<xMatrix2.length; i++)
 			xMatrix2[i] = groundDistance;
 
-		double[][] yMatrix2 = new double[4][totalForce.length];
+		double[][] yMatrix2 = new double[5][totalForce.length];
 		yMatrix2[0] = totalForce;
 		yMatrix2[1] = thrustHorizontal;
 		yMatrix2[2] = drag;
 		yMatrix2[3] = friction;
+		yMatrix2[4] = weightHorizontal;
 
 		MyChartToFileUtils.plot(
 				xMatrix2, yMatrix2,
 				0.0, null, null, null,
 				"Ground Distance", "Horizontal Forces", "m", "N",
-				new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction"},
+				new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "W*sin(gamma)"},
 				subfolderPath, "HorizontalForces_vs_GroundDistance");
 
 		// Vertical Forces v.s. Time
@@ -1952,7 +2033,7 @@ public class CalcTakeOff_Landing {
 
 		MyChartToFileUtils.plot(
 				xMatrix5, yMatrix5,
-				0.0, null, null, null,
+				0.0, null, null, 5.0,
 				"Time", "Angles", "s", "deg",
 				new String[] {"Alpha", "Theta", "Gamma"},
 				subfolderPath, "Angles_evolution");
@@ -1969,7 +2050,7 @@ public class CalcTakeOff_Landing {
 
 		MyChartToFileUtils.plot(
 				xMatrix6, yMatrix6,
-				0.0, null, null, null,
+				0.0, null, null, 5.0,
 				"Ground Distance", "Angles", "m", "deg",
 				new String[] {"Alpha", "Theta", "Gamma"},
 				subfolderPath, "Angles_vs_GroundDistance");
@@ -1985,7 +2066,7 @@ public class CalcTakeOff_Landing {
 
 		MyChartToFileUtils.plot(
 				xMatrix7, yMatrix7,
-				0.0, null, null, null,
+				0.0, null, null, 2.0,
 				"Time", "Angular Velocity", "s", "deg/s",
 				new String[] {"Alpha_dot", "Gamma_dot"},
 				subfolderPath, "AngularVelocity_evolution");
@@ -2001,7 +2082,7 @@ public class CalcTakeOff_Landing {
 
 		MyChartToFileUtils.plot(
 				xMatrix8, yMatrix8,
-				0.0, null, null, null,
+				0.0, null, null, 11.0,
 				"Ground Distance", "Angular Velocity", "m", "deg/s",
 				new String[] {"Alpha_dot", "Gamma_dot"},
 				subfolderPath, "AngularVelocity_vs_GroundDistance");
@@ -2042,6 +2123,139 @@ public class CalcTakeOff_Landing {
 						System.out.println("\n---------------------------DONE!-------------------------------");
 	}
 
+	
+	//-------------------------------------------------------------------------------------
+    //										INNER CLASS
+	//-------------------------------------------------------------------------------------
+	// ODE integration
+	// see: https://commons.apache.org/proper/commons-math/userguide/ode.html
+
+	public class DynamicsEquations implements FirstOrderDifferentialEquations {
+
+		double weight, g0, mu, kAlpha, cD0, deltaCD0, oswald, ar, k1, k2, kGround, vWind;
+
+		// interpolation of the two arrays
+		public double[] timeBreakPoints;
+		public double[] alphaBreakPoints;
+		public LinearInterpolator alphaLinearInterpolator;
+		public PolynomialSplineFunction alphaFunction;
+		public double alpha;
+
+		public DynamicsEquations() {
+
+			// constants and known values
+			weight = aircraft.get_weights().get_MTOW().getEstimatedValue();
+			g0 = AtmosphereCalc.g0.getEstimatedValue();
+			mu = CalcTakeOff_Landing.this.mu;
+			kAlpha = CalcTakeOff_Landing.this.kAlphaDot;
+			cD0 = aircraft.get_theAerodynamics().get_cD0();
+			deltaCD0 = highLiftCalculator.getDeltaCD() + aircraft.get_landingGear().get_deltaCD0();
+			oswald = aircraft.get_theAerodynamics().get_oswald();
+			ar = aircraft.get_wing().get_aspectRatio();
+			k1 = CalcTakeOff_Landing.this.getK1();
+			k2 = CalcTakeOff_Landing.this.getK2();
+			kGround = CalcTakeOff_Landing.this.getkGround();
+			vWind = CalcTakeOff_Landing.this.getvWind().getEstimatedValue();
+
+			// TODO : Add alpha method to evaluate alpha at different time
+			
+//			timeBreakPoints = MyArrayUtils.linspace(0.0, 100.0, 10);
+//			alphaBreakPoints = MyArrayUtils.linspace(2.0, 5.0, 10);
+//			alphaLinearInterpolator = new LinearInterpolator();
+//			alphaFunction = alphaLinearInterpolator.interpolate(timeBreakPoints, alphaBreakPoints);
+			alpha = CalcTakeOff_Landing.this.getAlphaGround().getEstimatedValue();
+		}
+
+		@Override
+		public int getDimension() {
+			return 4;
+		}
+
+		@Override
+		public void computeDerivatives(double t, double[] x, double[] xDot)
+				throws MaxCountExceededException, DimensionMismatchException {
+
+//			double alpha = alphaFunction.value(t);
+			double alpha = CalcTakeOff_Landing.this.getAlphaGround().getEstimatedValue();
+//			double space = x[0];
+			double speed = x[1];
+			double gamma = x[2];
+//			double altitude = x[3];
+
+			xDot[0] = speed;
+			xDot[1] = (g0/weight)*(thrust(speed) - drag(speed, alpha) - (mu*(weight - lift(speed, alpha))));
+			xDot[2] = 0.0;
+			xDot[3] = speed*Math.sin(gamma);
+		}
+
+		public double thrust(double speed) {
+
+			double theThrust = 0.0;
+
+			if(aircraft.get_powerPlant().get_engineType() == EngineTypeEnum.TURBOPROP) {
+				theThrust =	ThrustCalc.calculateThrustDatabase(
+						aircraft.get_powerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
+						aircraft.get_powerPlant().get_engineNumber(),
+						phi,
+						aircraft.get_powerPlant().get_engineList().get(0).get_bpr(),
+						aircraft.get_powerPlant().get_engineType(),
+						EngineOperatingConditionEnum.TAKE_OFF,
+						theConditions.get_altitude().getEstimatedValue(),
+						SpeedCalc.calculateMach(
+								theConditions.get_altitude().getEstimatedValue(),
+								speed + vWind)
+						);
+			}
+			else if(aircraft.get_powerPlant().get_engineType() == EngineTypeEnum.TURBOFAN) {
+				theThrust =	 ThrustCalc.calculateThrust(
+						aircraft.get_powerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
+						aircraft.get_powerPlant().get_engineNumber(),
+						phi,
+						theConditions.get_altitude().getEstimatedValue());
+			}
+			return theThrust;
+		}
+
+		public double drag(double speed, double alpha) {
+
+			double cD = cD0 + deltaCD0 + ((cL(alpha)/(Math.PI*ar*oswald))*kGround); 
+
+			return 	0.5
+					*aircraft.get_wing().get_surface().getEstimatedValue()
+					*AtmosphereCalc.getDensity(
+							theConditions.get_altitude().getEstimatedValue())
+					*(Math.pow(speed + vWind, 2))
+					*cD;
+
+		}
+
+		public double lift(double speed, double alpha) {
+
+			double cL = cL(alpha);
+		
+			return 	0.5
+					*aircraft.get_wing().get_surface().getEstimatedValue()
+					*AtmosphereCalc.getDensity(
+							theConditions.get_altitude().getEstimatedValue())
+					*(Math.pow(speed + vWind, 2))
+					*cL;
+		}
+		
+		public double cL(double alpha) {
+			
+			double cL0 = CalcTakeOff_Landing.this.cL0;
+			double cLalpha = highLiftCalculator.getcLalpha_new();
+			double alphaWing = alpha + CalcTakeOff_Landing.this.getIw().getEstimatedValue();
+			
+			return cL0 + (cLalpha*alphaWing);
+		}
+		
+	}
+	//-------------------------------------------------------------------------------------
+    //									END INNER CLASS	
+	//-------------------------------------------------------------------------------------
+	
+	
 	//-------------------------------------------------------------------------------------
 	// GETTERS AND SETTERS:
 
@@ -2293,36 +2507,12 @@ public class CalcTakeOff_Landing {
 		this.speedAborted = speedAborted;
 	}
 
-	public List<Amount<Velocity>> getMeanSpeed() {
-		return meanSpeed;
-	}
-
-	public void setMeanSpeed(List<Amount<Velocity>> meanSpeed) {
-		this.meanSpeed = meanSpeed;
-	}
-
-	public List<Amount<Velocity>> getMeanSpeedAborted() {
-		return meanSpeedAborted;
-	}
-
-	public void setMeanSpeedAborted(List<Amount<Velocity>> meanSpeedAborted) {
-		this.meanSpeedAborted = meanSpeedAborted;
-	}
-
 	public List<Amount<Velocity>> getRateOfClimb() {
 		return rateOfClimb;
 	}
 
 	public void setRateOfClimb(List<Amount<Velocity>> rateOfClimb) {
 		this.rateOfClimb = rateOfClimb;
-	}
-
-	public List<Amount<Velocity>> getMeanRateOfClimb() {
-		return meanRateOfClimb;
-	}
-
-	public void setMeanRateOfClimb(List<Amount<Velocity>> meanRateOfClimb) {
-		this.meanRateOfClimb = meanRateOfClimb;
 	}
 
 	public List<Amount<Acceleration>> getAcceleration() {
@@ -2339,22 +2529,6 @@ public class CalcTakeOff_Landing {
 
 	public void setAccelerationAborted(List<Amount<Acceleration>> accelerationAborted) {
 		this.accelerationAborted = accelerationAborted;
-	}
-
-	public List<Amount<Acceleration>> getMeanAcceleration() {
-		return meanAcceleration;
-	}
-
-	public void setMeanAcceleration(List<Amount<Acceleration>> meanAcceleration) {
-		this.meanAcceleration = meanAcceleration;
-	}
-
-	public List<Amount<Acceleration>> getMeanAccelerationAborted() {
-		return meanAccelerationAborted;
-	}
-
-	public void setMeanAccelerationAborted(List<Amount<Acceleration>> meanAccelerationAborted) {
-		this.meanAccelerationAborted = meanAccelerationAborted;
 	}
 
 	public List<Amount<Force>> getThrust() {
@@ -2684,111 +2858,4 @@ public class CalcTakeOff_Landing {
 	public void setAbortedTakeOffSplineValues(double[] abortedTakeOffSplineValues) {
 		this.abortedTakeOffSplineValues = abortedTakeOffSplineValues;
 	}
-
-
-	// ODE integration
-	// see: https://commons.apache.org/proper/commons-math/userguide/ode.html
-
-	public class DynamicsEquations implements FirstOrderDifferentialEquations {
-
-		double weight, g0, mu, kAlpha;
-
-		// interpolation of the two arrays
-		public double[] timeBreakPoints;
-		public double[] alphaBreakPoints;
-		public LinearInterpolator alphaLinearInterpolator;
-		public PolynomialSplineFunction alphaFunction;
-
-		public DynamicsEquations() {
-
-			// TODO: constants
-			// weight, g0, mu, kAlpha;
-
-			// TODO
-
-			timeBreakPoints = MyArrayUtils.linspace(0.0, 100.0, 10);
-			alphaBreakPoints = MyArrayUtils.linspace(2.0, 5.0, 10);
-			alphaLinearInterpolator = new LinearInterpolator();
-			alphaFunction = alphaLinearInterpolator.interpolate(timeBreakPoints, alphaBreakPoints);
-
-		}
-
-		@Override
-		public int getDimension() {
-			return 3;
-		}
-
-		@Override
-		public void computeDerivatives(double t, double[] x, double[] xDot)
-				throws MaxCountExceededException, DimensionMismatchException {
-
-			double alpha = alphaFunction.value(t);
-
-			double space = x[0];
-			double speed = x[1];
-			double gamma = x[2];
-
-			xDot[0] = speed;
-			xDot[1] = thrust(speed);
-
-		}
-
-		public double thrust(double speed) {
-
-			double theThrust = 0.0;
-
-			if(aircraft.get_powerPlant().get_engineType() == EngineTypeEnum.TURBOPROP) {
-				theThrust =	ThrustCalc.calculateThrustDatabase(
-						aircraft.get_powerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
-						aircraft.get_powerPlant().get_engineNumber(),
-						phi,
-						aircraft.get_powerPlant().get_engineList().get(0).get_bpr(),
-						aircraft.get_powerPlant().get_engineType(),
-						EngineOperatingConditionEnum.TAKE_OFF,
-						theConditions.get_altitude().getEstimatedValue(),
-						SpeedCalc.calculateMach(
-								theConditions.get_altitude().getEstimatedValue(),
-								speed)
-						);
-			}
-			else if(aircraft.get_powerPlant().get_engineType() == EngineTypeEnum.TURBOFAN) {
-				theThrust =	 ThrustCalc.calculateThrust(
-						aircraft.get_powerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
-						aircraft.get_powerPlant().get_engineNumber(),
-						phi,
-						theConditions.get_altitude().getEstimatedValue());
-			}
-			return theThrust;
-		}
-
-		public double drag(double speed, double alpha) {
-
-			double cD = 0.25; // TODO
-
-			return 	0.5
-					*aircraft.get_wing().get_surface().getEstimatedValue()
-					*AtmosphereCalc.getDensity(
-							theConditions.get_altitude().getEstimatedValue())
-					*(Math.pow(speed, 2))
-					*cD;
-
-		}
-
-		public double lift(double speed, double alpha) {
-
-			double cL = 1.05; // TODO
-
-			return 	0.5
-					*aircraft.get_wing().get_surface().getEstimatedValue()
-					*AtmosphereCalc.getDensity(
-							theConditions.get_altitude().getEstimatedValue())
-					*(Math.pow(speed, 2))
-					*cL;
-
-		}
-
-	}
-
-
-
 }
