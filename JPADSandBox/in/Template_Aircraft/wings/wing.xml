@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+    <wing mirrored="TRUE">
+        <panels>
+            <panel id="Inner panel">
+                <semispan unit="m">4.0</semispan>
+                <dihedral unit="deg">1.5</dihedral>
+                <inner_section>
+                    <airfoil file="naca63209.xml"/>
+                    <geometric_twist unit="deg">0.0</geometric_twist>
+                </inner_section>
+                <outer_section>
+                    <airfoil file="naca63209.xml"/>
+                    <geometric_twist unit="deg">0.0</geometric_twist>
+                </outer_section>
+            </panel>
+            <panel id="Outer panel" linked_to="Inner panel">
+                <semispan unit="m">7.0</semispan>
+                <dihedral unit="deg">3.5</dihedral>
+                <outer_section>
+                    <airfoil file="naca63209.xml"/>
+                    <geometric_twist unit="deg">-2.5</geometric_twist>
+                </outer_section>
+            </panel>
+        </panels>
+    </wing>
+</jpad_config>
