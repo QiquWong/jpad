@@ -34,7 +34,7 @@
 
 \section{Modelling aircraft take-off}
 
-The set of ordinary differential equations that model the take-off run is the following:
+The set of ordinary differential equations that model the take-off run are written in the following form:
 %
 \begin{equation}\label{eq:System:Dynamics:A}
     \LEFTRIGHT\lcbrace\rcbrace{\begin{array}{c}\dot{s}\\[2pt] \dot{V} \\[2pt] \dot{\gamma} \\[2pt] \dot{h} \end{array}}
@@ -53,24 +53,25 @@ The set of ordinary differential equations that model the take-off run is the fo
     u = \alpha
 \end{equation}
 %
-that can be written in the concise form:
+or, more concisely:
 \begin{equation}
 \label{eq:System:Dynamics:B}
 \dot{\vec{x}} = \vec{f}\big(\, \vec{x}\,,\,u(t) \,\big)
 \end{equation}
 %
-where $\vec{x} = [\mspace{2mu} x_1,\, x_2,\, x_3,\, x_4 \mspace{2mu}]^{\text{T}}$ is the vector of state variables
-and $u(t)$ is a given function of time, for $0 \leq t \leq t_{\text{final}}$.
+The unknown $\vec{x} = [\mspace{2mu} x_1,\, x_2,\, x_3,\, x_4 \mspace{2mu}]^{\text{T}}$ is the vector of state 
+variables. The input $u(t)$ is a given function of time, for $0 \leq t \leq t_{\text{final}}$,
+that corresponds to an assumed time history of the angle of attack during take-off.
 
-The functions defining the right-hand sides of system (\ref{eq:System:Dynamics:A}) are defined as follows:
+The right-hand sides of system (\ref{eq:System:Dynamics:A}) are defined by the following functions:
 %----------------------------------------------------------------------------------------
 \begin{subequations}\label{eq:System:Dynamics:RHS:functions}
 \begin{equation}\label{eq:System:Dynamics:RHS:functions:A}
-f_1 \big(\, \vec{x}\,,\,u(t) \,\big) =  x_2
+f_1 \big(\, \vec{x}\,,\,u \,\big) =  x_2
 \end{equation}
-
+%
 \begin{equation}\label{eq:System:Dynamics:RHS:functions:B}
-f_2 \big(\, \vec{x}\,,\,u(t) \,\big) =
+f_2 \big(\, \vec{x}\,,\,u \,\big) =
   \frac{g}{W}
     \LEFTRIGHT\lcbrace.{
       \begin{array}{l@{\rule{2em}{0pt}}l} 
@@ -82,9 +83,9 @@ f_2 \big(\, \vec{x}\,,\,u(t) \,\big) =
       \end{array}
     }  
 \end{equation}
-
+%
 \begin{equation}\label{eq:System:Dynamics:RHS:functions:C}
-f_3 \big(\, \vec{x}\,,\,u(t) \,\big) =
+f_3 \big(\, \vec{x}\,,\,u \,\big) =
   \frac{g}{W\,x_2}
     \LEFTRIGHT\lcbrace.{
       \begin{array}{l@{\rule{2em}{0pt}}l} 
@@ -96,19 +97,20 @@ f_3 \big(\, \vec{x}\,,\,u(t) \,\big) =
       \end{array}
     }  
 \end{equation}
-
+%
 \begin{equation}\label{eq:System:Dynamics:RHS:functions:D}
-f_4 \big(\, \vec{x}\,,\,u(t) \,\big) =  x_2 \, \sin x_3
+f_4 \big(\, \vec{x}\,,\,u \,\big) =  x_2 \, \sin x_3
 \end{equation}
 
 
 The thrust $T(x_2)$ is calculated by means of the interpolating function $T_{\text{tab}}\big(V_{\text{a}}\big)$
-based on a table lookup algorithm  --- where $V_{\text{a}} = V + V_{\text{w}}$ is the airspeed.
+based on a table lookup algorithm  --- where $V_{\text{a}} = V + V_{\text{w}}$ is the airspeed
+and $V_{\text{w}}$ is the wind speed (horizontal component, positive if opposite to the aircraft motion).
 The drag $D$ and lift $L$, as functions of airspeed $V_{\text{a}}$ and angle of attack, are given by the conventional formnulas
 \begin{equation}\label{eq:System:Dynamics:RHS:functions:E}
-D(x_2,u) = \frac{1}{2} \, \rho \, \big( x_2 + V_{\text{w}} \big)^2 \,S \, C_D\big( u \big)
-\;,\qquad
-L(x_2,u) = \frac{1}{2} \, \rho \, \big( x_2 + V_{\text{w}} \big)^2 \,S \, C_L\big( u \big)
+D(x_2,u) = \frac{1}{2} \, \rho \, \big( x_2 + V_{\text{w}}\cos x_3 \big)^2 \,S \, C_D\big( u \big)
+\;,\quad
+L(x_2,u) = \frac{1}{2} \, \rho \, \big( x_2 + V_{\text{w}}\cos x_3 \big)^2 \,S \, C_L\big( u \big)
 \end{equation}
 
 The switching function $\mathcal{S}$ of aircraft velocity and angle of attack is defined as follows:
@@ -123,7 +125,7 @@ a closed set of ODEs.
 When the function $u(t)$ is assigned and the system is associated to a set of initial conditions a well-posed
 initial value problem (IVP) is formed, which can be solved numerically.
 
-The function $u$ can be constructed by picking the time $t_{\text{rot}}$ when the rotation speed $V_{\text{rot}}$ 
+The function $u$ can be constructed by picking the time $t_{\text{Rot}}$ when the rotation speed $V_{\text{rot}}$ 
 is reached along the ground roll. Setting
 \begin{equation}\label{eq:System:Dynamics:Alpha:Law}
 u (t) =
@@ -137,6 +139,56 @@ u (t) =
       \end{array}
     }  
 \end{equation}
+
+In Table~\ref{tab:Take:Off:Speeds:FAR25} are reported the take-off characteristic speeds and their
+corresponding requirements as defined by FAR~25.
+
+%%-------------------------------------------------------------------------------------
+% see: http://www.lorenzopantieri.net/LaTeX_files/TabelleRipartite.pdf
+% see also file AE-429-13.pdf
+\begingroup
+\centering
+\begin{longtable}[t]{lll}
+\caption[Take-off speeds and FAR~25 requirements.]{Take-off speeds and FAR~25 requirements..}\label{tab:Take:Off:Speeds:FAR25}\\
+\toprule
+Speed & Description & Requirement
+\\ \midrule
+\endfirsthead
+
+\multicolumn{3}{c}%
+  {{\bfseries\color{blue}\tablename\ \thetable{}: \nameref{tab:Take:Off:Speeds:FAR25}}}\\
+\multicolumn{3}{l}%
+  {\relsize{-1}({\itshape continued from previous page})}\\
+\toprule
+Speed & Description & Requirement
+\\ \midrule
+\endhead
+
+\midrule \multicolumn{3}{r}{{\relsize{-1}\itshape continued on next page}}
+\endfoot
+
+\bottomrule
+\endlastfoot
+
+$V_\mathrm{S}$ & fuselage total length & ---
+\\
+$V_\mathrm{MC}$ & minimum control speed with one engine inoperative (OEI) & ---
+\\
+$V_1$ & OEI decision speed & $\geq V_\mathrm{mc}$
+\\
+$V_\mathrm{Rot}$ & rotation speed & $>1.05\, V_\mathrm{MC}$
+\\
+$V_\mathrm{MU}$ & minimum unstick speed for safe flight & $\geq V_\mathrm{S}$
+\\
+$V_\mathrm{LO}$ & lift-off speed & $> 1.10 \, V_\mathrm{MU}$
+\\
+                &                & $> 1.05 \, V_\mathrm{MU}$ (OEI)
+\\
+$V_2$ & take-off climb speed at \SI[round-precision=0]{35}{ft} & $> 1.20 \, V_\mathrm{S}$
+\\
+                &                & $> 1.10 \, V_\mathrm{MC}$
+\end{longtable}
+\endgroup
 
 
 %============================================================================================================
