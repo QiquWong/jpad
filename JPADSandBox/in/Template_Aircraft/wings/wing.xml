@@ -23,5 +23,35 @@
                 </outer_section>
             </panel>
         </panels>
+        <symmetric_flaps>
+            <symmetric_flap id="Inner flap">
+                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">
+                    <value>0.15<value/>
+                </inner_station_spanwise_position>
+                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">
+                    <value>0.45<value/>
+                </outer_station_spanwise_position>
+                <percent_chord value="40"/>
+                <angle_range unit="deg">[0.0,40.0]</angle_range>
+            </symmetric_flap>
+        </symmetric_flaps>
+        <slats>
+            <slat linked_to="Inner flap">
+                <percent_chord value="10"/>
+                <angle_range unit="deg">[0.0,10.0]</angle_range>
+            </slat>
+        </slats>
+        <asymmetric_flaps>
+            <asymmetric_flap id="Aileron">
+                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">
+                    <value>0.75<value/>
+                </inner_station_spanwise_position>
+                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">
+                    <value>0.97<value/>
+                </outer_station_spanwise_position>
+                <percent_chord value="20"/>
+                <angle_range unit="deg">[-5.0,10.0]</angle_range>
+            </asymmetric_flap>
+        </asymmetric_flaps>
     </wing>
 </jpad_config>
