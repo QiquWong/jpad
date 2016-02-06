@@ -24,7 +24,7 @@
             </panel>
         </panels>
         <symmetric_flaps>
-            <symmetric_flap id="Inner flap">
+            <symmetric_flap id="Inner flap" type="SINGLE_SLOTTED">
                 <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">
                     <value>0.15<value/>
                 </inner_station_spanwise_position>
@@ -36,13 +36,13 @@
             </symmetric_flap>
         </symmetric_flaps>
         <slats>
-            <slat linked_to="Inner flap">
+            <slat linked_to="Inner flap" type="SINGLE">
                 <percent_chord value="10"/>
                 <angle_range unit="deg">[0.0,10.0]</angle_range>
             </slat>
         </slats>
         <asymmetric_flaps>
-            <asymmetric_flap id="Aileron">
+            <asymmetric_flap id="Aileron" type="PLAIN">
                 <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">
                     <value>0.75<value/>
                 </inner_station_spanwise_position>
@@ -51,6 +51,7 @@
                 </outer_station_spanwise_position>
                 <percent_chord value="20"/>
                 <angle_range unit="deg">[-5.0,10.0]</angle_range>
+                <differential_deflection_factor value="1.0"/>
             </asymmetric_flap>
         </asymmetric_flaps>
     </wing>
