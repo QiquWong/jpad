@@ -98,19 +98,24 @@ Since during the cruise phase the aircraft weight decreases continuously, the pi
 
 \bigskip
 \noindent
-The specific range can also be connected to Breguet formulas, reported at (\ref{eqn:BreguetEquation1.1}) and (\ref{eqn:BreguetEquation1.2}), as it can be obtained by dividng the autonomy factor, $A.F.$, by the aircraft weight; in particular the autonomy factor, groups three main aircraft efficiency and can be written as follow.
+The specific range can also be connected to Breguet formulas (\ref{eqn:BreguetEquation}) as it can be obtained by dividng the autonomy factor, $A.F.$, by the aircraft weight; in particular the autonomy factor, groups three main aircraft efficiency and can be written as follow.
 
-\begin{eqnarray}
-A.F.=\frac{\eta_{p}}{SFC}\cdot\left(\frac{L}{D}\right) %
-\qquad \textrm {\parbox[t][][t]{.25\linewidth} {propeller aircraft}}
-\label{eqn:A.F.Equation4}
-\end{eqnarray}
-
-\begin{eqnarray}
-A.F.=\frac{V}{SFCJ}\cdot\left(\frac{L}{D}\right) %
-\qquad \textrm {\parbox[t][][t]{.25\linewidth} {jet aircraft}}
-\label{eqn:A.F.Equation5}
-\end{eqnarray}
+\begin{subequations}\label{eqn:AutonomyFactor}
+\begin{equation}\label{eqn:AutonomyFactorProp}
+A.F.=
+      \begin{array}{l@{\rule{5em}{0pt}}l} 
+      \dfrac{\eta_{p}}{SFC}\cdot\left(\dfrac{L}{D}\right)
+          & \text{if} \;\, \text{propeller engine driven}
+      \end{array}
+\end{equation}
+\begin{equation}\label{eqn:AutonomyFactorJet}
+A.F.=
+      \begin{array}{l@{\rule{7em}{0pt}}l} 
+      \dfrac{V}{SFCJ}\cdot\left(\dfrac{L}{D}\right)
+          & \text{if} \;\, \text{jet engine driven}
+      \end{array}
+\end{equation}
+\end{subequations}
 
 \noindent
 where
@@ -150,6 +155,7 @@ The chart, so obtained, in figure~\ref{fig:Figure6} is the one upon which the cr
 It's important to highlight that, on long distances, the maximum distance line is not often followed during the cruise because it is tied to a low speed which adversely affects the total flight time increasing the D.O.C.; in order to avoid this condition, pilots prefer to follow the long range line which has only 1\% of penalty on the specific range but, at the same time, allows to fly at significantly higher speed with benefits on flight time and, as a result, on the~D.O.C.
 
 %------------------------- JAVA CLASS ARCHITECTURE ---------------------------
+
 \section{Java class architecture}
 After having introduced the theory behind the cruise grid chart, a presentation of the related Java class inside JPAD is shown. Using the same philosophy of the previous chapter, a dedicated class, named \lstinline[language=Java]!SpecificRangeCalc!, has been implemented inside which a series of static methods provide the needed calculation tools. Generaly speaking, the giudeline followed in creating this class is to assign an array of Mach numbers, starting from the one realitve to the minimum cruising speed and ending with the maximum cruising speed at that altitude and weight, and then evaluate the SFC, from engine database, for each Mach number; from here the A.F. is built after the evaluation of the aerodynamic efficinecy for each value of the same Mach array. Finally the specific range is calculated, in $\frac{\si{nmi}}{\si{lbs}}$, dividing the A.F. by the aircraft max take off mass.
 
@@ -216,7 +222,7 @@ The second static method implemented is \lstinline[language=Java]!calculateSfcVs
 
 \bigskip
 \noindent
-Finally, the two previous method leads to the last one named \lstinline[language=Java]!calculateSpecificRangeVsMach! which allows to calculate the A.F. and, from it, the specific range by implementing the (\ref{eqn:A.F.Equation4}) or the (\ref{eqn:A.F.Equation5}) depending on the given engine type. 
+Finally, the two previous method leads to the last one named \lstinline[language=Java]!calculateSpecificRangeVsMach! which allows to calculate the A.F. and, from it, the specific range by implementing the (\ref{eqn:AutonomyFactorProp}) or the (\ref{eqn:AutonomyFactorJet}) depending on the given engine type. 
 
 To do this, it's necessary to give as input the Mach numbers array, the aerodynamic efficiency array calculated with~\lstinline[language=Java]!calculateEfficiencyVsMach! and the SFC array calculated with~\lstinline[language=Java]!calculateSfcVsMach! as shown in table~\ref{table:Table3}.
 
@@ -241,6 +247,9 @@ To do this, it's necessary to give as input the Mach numbers array, the aerodyna
 \noindent
 The class is completed by other four static methods demanded of plotting the results; in particular, using the same approach shown in the previous chapter, a .png and a .tikz output images are created for each of the SFC, the aerodynamic efficiency and the specific range.
 
+It's important to highlight that the first of these plotting methods, which is named \lstinline[language=Java]!createSpecificRangeChart! and is demanded of plotting the cruise grid chart, has implemented, inside it, the evaluation of the maximum range condition as well as the long range one; this by calculating all maximum points and, from them, all points at -1\% of penalty obtained through the evaluation of the bigger of the two intersction points that the line at -1\% of penalty defines on each specific range curve.
+
+\noindent
 The fourth method is, insetad, used for plotting the intersection between the required and available thrust, giving as input a speed array, the altitude and two~\lstinline[language=Java]!List! of custom~\lstinline[language=Java]!Map! named~\lstinline[language=Java]!DragMap! and~\lstinline[language=Java]!ThustMap!; these are two classes used to store all data related to drag and thrust curves like the aircraft weight, the current altitude, the speed array on which the drag or thrust are evaluated and, finally, the drag or thrust array itself.  
 
 \bigskip
@@ -257,7 +266,48 @@ In conclusion a flowchart of the described class is shown in figure~\ref{fig:Fig
 %----------------------- CASE STUDY : ATR72 AND B747 -------------------------
 \section{Case study: ATR-72 and B747-100B}
 
-%TODO --> CONTINUE PARAGRAPH
+In order to validate all the teoretical concepts explained in the previous paragraphs, as well as to give to the reader a useful example of how to handle this class usage, the following pages shows two application of the class methods made upon the two default aircraft described in paragraph~\ref{par:DefultAircraft}.
 
-Since the independent variable is the Mach number, the fisrt task is to identify the upper and lower limitations of the Mach array; this can be done by evaluating the required thrust, which is equal to the drag during cruise, and comparing it with the available thrust supplied by the power plant. By the intersections of the latter the two required speeds can be derived; otherwise, if the minimum speed intersection can't be found, the cruising stalling speed, at that weight and altitude condition, replaces the missing intersection abscissa.
+\bigskip
+\noindent
+Once all preliminary steps have been completed, as explained in paragraph~\ref{par:DefultAircraft}, it's possible to start the test of this class. 
+
+First of all, since the cruise grid chart is parameterized in aircraft weight, an array of aircraft masses has to be created; in particular, in this test, a variation of mass of -10\% has been implemented, starting from the aircraft maximum take-off mass until it reaches the 60\% of the latter. 
+
+The second step is to define the independent variable, which is the Mach number, and in particular it's necessary to identify the upper and lower limitations of its array; this can be done by evaluating the required thrust, which is equal to the drag during cruise, and comparing it with the available thrust supplied by the power plant.
+
+\noindent
+By the intersections of the latter, the two required speeds can be derived; otherwise, if the minimum speed intersection can't be found, the cruising stalling speed, at that weight and altitude condition and for a specified c\textsubscript{Lmax}, replaces the missing intersection abscissa.
+
+\begin{figure}[t]
+\begin{lstlisting}[caption={Mass variation in Specific Range test - B747-100B}, captionpos=b, tabsize=2]
+		double[] maxTakeOffMassArray = new double[5];
+		for (int i=0; i<5; i++)
+		
+			maxTakeOffMassArray[i] =
+							aircraft.get_weights().get_MTOM().plus(aircraft.get_weights().get_MLM()).divide(2).getEstimatedValue()
+							*(1-0.1*(4-i));
+
+		double[] weight = new double[maxTakeOffMassArray.length];
+		for(int i=0; i<weight.length; i++)
+			weight[i] = maxTakeOffMassArray[i]*AtmosphereCalc.g0.getEstimatedValue();
+\end{lstlisting}
+\end{figure}
+
+In terms of code, the last step can be carried out using the static method~\lstinline[language=Java]!calculateDragThrustIntersection! of the~\lstinline[language=Java]!JPADCore! class named~\lstinline[language=Java]!PerformanceCalcUtils!; the latter requires as input the following data:
+
+\begin{itemize}
+\item An array of altitudes
+\item An array of speeds
+\item An array of weights
+\item An array of throttle settings
+\item An array of flight conditions chosen from a dedicated enumeration named~\lstinline[language=Java]!EngineOperatingConditionEnum!
+\item The engine by-pass ratio, set to zero in case of propeller aircraft
+\item The wing surface
+\item Wing C\textsubscript{Lmax} in clean configuration
+\item A~\lstinline[language=Java]!List! of custom data map named~\lstinline[language=Java]!DragMap!
+\item A~\lstinline[language=Java]!List! of custom data map named~\lstinline[language=Java]!ThrustMap!
+\end{itemize}
+
+%---------------------------ADD DRAG AND THUST MAP DESCRIPTION THEN CONTINUE TO EXPLAIN THE TEST----------------------------------------------------
 

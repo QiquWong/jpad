@@ -56,17 +56,22 @@ Since point A is very simple to obtain, it’s more interesting to analyze how t
 
 For point B it’s necessary to focus the attention upon Breguet formulas in order to calculate the maximum range the aircraft can fly at maximum take-off weight with maximum payload; these are different for jet or propeller aircraft and can be written as follow, with R in \si{}{\km}, SFC in $\frac{\si{lb}}{\si{hp}\cdot\hour}$ and SFCJ in $\frac{\si{lb}}{\si{lb}\cdot\hour}$.
 
-\begin{eqnarray}
-R=603.5\cdot \left(\frac{\eta_{p}}{SFC}\right)_{cruise}\cdot \left(\frac{L}{D}\right)_{cruise}\cdot \ln\left(\frac{W_{i}}{W_{f}}\right) %
-\qquad \textrm {\parbox[t][][t]{.25\linewidth } {\raggedright propeller aircraft}}
-\label{eqn:BreguetEquation1.1}
-\end{eqnarray}
-
-\begin{eqnarray}
-R=\left(\frac{V}{SFCJ}\right)_{cruise}\cdot \left(\frac{L}{D}\right)_{cruise}\cdot \ln\left(\frac{W_{i}}{W_{f}}\right) %
-\qquad \textrm {\parbox[t][][t]{.25\linewidth} {jet aircraft}}
-\label{eqn:BreguetEquation1.2}
-\end{eqnarray}
+\begin{subequations}\label{eqn:BreguetEquation}
+\begin{equation}\label{eqn:BreguetEquationProp}
+R=
+      \begin{array}{l@{\rule{2em}{0pt}}l} 
+      603.5\cdot \left(\frac{\eta_{p}}{SFC}\right)_{cruise}\cdot \left(\frac{L}{D}\right)_{cruise}\cdot \ln\left(\frac{W_{i}}{W_{f}}\right)
+          & \text{if} \;\, \text{propeller engine driven}
+      \end{array}
+\end{equation}
+\begin{equation}\label{eqn:BreguetEquationJet}
+R=
+      \begin{array}{l@{\rule{7em}{0pt}}l} 
+      \left(\frac{V}{SFCJ}\right)_{cruise}\cdot \left(\frac{L}{D}\right)_{cruise}\cdot \ln\left(\frac{W_{i}}{W_{f}}\right)
+          & \text{if} \;\, \text{jet engine driven}
+      \end{array}
+\end{equation}
+\end{subequations}
 
 \bigskip
 \noindent
@@ -90,6 +95,7 @@ W_{fuel}=\left(1-M_{ff}\right)\cdot W_{TO}
 \noindent
 $M_{ff}$ is the fuel fraction of the entire mission profile given by the following expression.
 
+\bigskip
 \begin{equation}
 M_{ff}=\frac{W_1}{W_{TO}}\cdot 
 	   \frac{W_2}{W_{1}}\cdot
