@@ -1,6 +1,7 @@
 package sandbox.adm.liftingsurface2;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +67,11 @@ public class AirfoilTest_01 {
 						reader.getXmlDoc(), reader.getXpath(), 
 						"//airfoil/@type");
 		System.out.println("\tType: " + typeS);
-		AirfoilTypeEnum type = AirfoilTypeEnum.valueOf(typeS);
+		// check if the airfoil type given in file is a legal enumerated type
+		AirfoilTypeEnum type = Arrays.stream(AirfoilTypeEnum.values())
+	            .filter(e -> e.toString().equals(typeS))
+	            .findFirst()
+	            .orElseThrow(() -> new IllegalStateException(String.format("Unsupported airfoil type %s.", typeS)));
 		
 		Double tOverC = Double.parseDouble(
 				MyXMLReaderUtils
@@ -78,7 +83,7 @@ public class AirfoilTest_01 {
 		Amount<Angle> alpha0l = reader.getXMLAmountAngleByPath("//airfoil/aerodynamics/alpha_zero_lift");
 		System.out.println("\talpha_0l = " + alpha0l.to(NonSI.DEGREE_ANGLE).getEstimatedValue() + " deg");
 		
-		// create an Airfoil object
+		// create an Airfoil object with the Builder pattern
 		Airfoil a = new AirfoilBuilder("Pippo-1")
 				.type(type)
 				.alphaZeroLift(alpha0l)
@@ -86,7 +91,7 @@ public class AirfoilTest_01 {
 				.build();
 		System.out.println(a);
 		
-		// TODO - wrap this code in a method of Airfoil, e.g. importFromXML
+		// TODO - wrap this code into a method of Airfoil class, e.g. importFromXML
 
 		
 		
