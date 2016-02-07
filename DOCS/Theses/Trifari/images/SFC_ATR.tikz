@@ -2,23 +2,23 @@
 \begin{tikzpicture}
 
 \begin{axis}[
-width=\figurewidth,
-height=\figureheight,
+width=\textwidth,
+height=0.65\textwidth,
 scaled ticks=false, tick label style={/pgf/number format/fixed},
-xmin=0.19991031820848165,
-xmax=0.4811244979919689,
+xmin=0.19,
+xmax=0.58,
 xlabel={Mach },
 xmajorgrids,
-ymin=0.26089613673398443,
-ymax=0.4678480826852808,
-ylabel={SFC ((lb/(hp*h)))},
+ymin=0.26,
+ymax=0.48,
+ylabel={SFC $\left(\frac{\si{lb}}{\si{hp}\cdot\hour}\right)$},
 ymajorgrids,
-legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
+legend entries = {$\SI{13146}{\kilogram}$\\$\SI{15337}{\kilogram}$\\$\SI{17528}{\kilogram}$\\$\SI{19719}{\kilogram}$\\$\SI{21910}{\kilogram}$\\}
 ]
 
 \addplot [
 color=black,
-solid
+densely dotted
 ]
 table[row sep=crcr]{
 0.19991031820848165	0.26089613673398443\\
@@ -275,7 +275,7 @@ table[row sep=crcr]{
 
 \addplot [
 color=black,
-densely dashed
+dashed
 ]
 table[row sep=crcr]{
 0.21592782254089546	0.2698994291726312\\
@@ -789,7 +789,7 @@ table[row sep=crcr]{
 
 \addplot [
 color=black,
-dashed
+densely dashdotted
 ]
 table[row sep=crcr]{
 0.24483913696409848	0.2871674543472237\\
@@ -1046,7 +1046,7 @@ table[row sep=crcr]{
 
 \addplot [
 color=black,
-dotted
+solid
 ]
 table[row sep=crcr]{
 0.25808311105215825	0.2945406206092004\\
