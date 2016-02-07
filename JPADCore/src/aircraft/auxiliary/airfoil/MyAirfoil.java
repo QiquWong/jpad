@@ -256,6 +256,10 @@ public class MyAirfoil {
 		return _chordLocal;
 	}
 
+	public void set_chordLocal(double _chordLocal) {
+		this._chordLocal = _chordLocal;
+	}
+
 	public LiftingSurface get_theLiftingSurface() {
 		return _theLiftingSurface;
 	}

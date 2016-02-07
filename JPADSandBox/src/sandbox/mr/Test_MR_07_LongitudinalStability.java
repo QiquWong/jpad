@@ -34,12 +34,14 @@ import aircraft.components.fuselage.FusAerodynamicsManager;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.MyConfiguration;
+import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.DatabaseReaderEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import javafx.util.Pair;
 import sandbox.mr.WingCalculator.MeanAirfoil;
+import standaloneutils.customdata.CenterOfGravity;
 import writers.JPADStaticWriteUtils;
 
 public class Test_MR_07_LongitudinalStability {
@@ -76,7 +78,7 @@ public class Test_MR_07_LongitudinalStability {
 		//------------------------------------------------------------------------------------
 		// Default Aircraft 
 		Aircraft aircraft = Aircraft.createDefaultAircraft("ATR-72");
-		aircraft.set_name("ATR-72");
+		//aircraft.set_name("ATR-72");
 		System.out.println("\nDefault aircraft: " + aircraft.get_name() + "\n");
 
 		//------------------------------------------------------------------------------------
@@ -109,8 +111,8 @@ public class Test_MR_07_LongitudinalStability {
 		//--------------------------------------------------------------------------------------
 		FusAerodynamicsManager theFuselageManager = new FusAerodynamicsManager(theConditions, aircraft);
 
-
-
+	
+		
 		//--------------------------------------------------------------------------------------
 		// Define airfoils
 
@@ -172,15 +174,36 @@ public class Test_MR_07_LongitudinalStability {
 
 		//--------------------------------------------------------------------------------------
 		// Mean Airfoil
-		
+
 		LSAerodynamicsManager.MeanAirfoil theMeanAirfoilCalculator = theLSAnalysis.new MeanAirfoil();
 		MyAirfoil meanAirfoil = theMeanAirfoilCalculator.calculateMeanAirfoil(theWing);
 
 
-		////--------------------------------------------------------------------------------------
-		// Equivalent Wing
+		
+		//--------------------------------------------------------------------------------------
+        // Aerodynamic Analysis
+		
+//		// Set the CoG(Bypass the Balance analysis allowing to perform Aerodynamic analysis only)
+//		CenterOfGravity cgMTOM = new CenterOfGravity();
+//
+//		// x_cg in body-ref.-frame
+//		cgMTOM.set_xBRF(Amount.valueOf(23.1, SI.METER)); 
+//		cgMTOM.set_yBRF(Amount.valueOf(0.0, SI.METER));
+//		cgMTOM.set_zBRF(Amount.valueOf(0.0, SI.METER));
+//
+//		aircraft.get_theBalance().set_cgMTOM(cgMTOM);
+//		aircraft.get_HTail().calculateArms(aircraft);
+//		aircraft.get_VTail().calculateArms(aircraft);
+//
+//		theAnalysis.doAnalysis(aircraft, 
+//				AnalysisTypeEnum.AERODYNAMIC
+//				);
+//
+//		
+		//--------------------------------------------------------------------------------------
+		// Exposed Wing
 
-		System.out.println("\n\nEQUIVALENT WING:");
+		System.out.println("\n\nEXPOSED WING:");
 		double yLocRootExposed = aircraft.get_exposedWing().get_theAirfoilsListExposed().get(0).getGeometry().get_yStation();
 		System.out.println(" Root station exposed wing (m) = " + yLocRootExposed);
 		System.out.println(" Kink station exposed wing (m) = " + theWing.get_theAirfoilsList().get(1).getGeometry().get_yStation());
@@ -239,7 +262,8 @@ public class Test_MR_07_LongitudinalStability {
 
 		double cLAlphaWing = theLSAnalysis.getcLLinearSlopeNB();
 		cLAlphaWingBody = theFuselageManager.calculateCLAlphaFuselage(cLAlphaWing);
-
+		
+		theWing.getAerodynamics().calcAlphaAndCLMax(meanAirfoil);
 		double cLWingBody = aircraft.get_theAerodynamics().calculateCLAtAlphaWingBody(alphaBody, meanAirfoil);
 		System.out.println("-------------------------------------");
 		System.out.println(" CL of Wing Body at alpha body = " + cLWingBody);
@@ -252,39 +276,20 @@ public class Test_MR_07_LongitudinalStability {
 
 		// ------------------Downwash---------------
 		
-//		
-//		double angleOfIncidenceExposed = aircraft.get_wing().get_iw().getEstimatedValue()
-//				+ aircraft.get_exposedWing().get_twistDistributionExposed().get(0);
-//		double alphaZeroLiftRootExposed = aircraft.get_exposedWing().get_alpha0lDistributionExposed().get(0);
-//		
-//		System.out.println(" iw exposed " + angleOfIncidenceExposed );
-//		System.out.println( " alphaZeroLiftRootExposed " + alphaZeroLiftRootExposed*57.3 );
 		
 		System.out.println("\n-----Start of downwash calculation-----\n" );
+			
+		DownwashCalculator theDownwashCalculator = new DownwashCalculator(aircraft);
 		
-		DownwashCalculatorOldVersion theDownwashCalculator = new DownwashCalculatorOldVersion(aircraft);
-		double dist = theDownwashCalculator.distanceZeroLiftLineACHorizontalTail();
-		
-		//System.out.println(" distance " + dist);
-		double downwashGradientLinear = theDownwashCalculator.calculateDownwashGradientLinearDelft( dist);
-		
-		//System.out.println(" linear gradient " + downwashGradientLinear );
-		
-		double newDist = theDownwashCalculator.distanceVortexShedPlaneACHTailNoDownwash(alphaBody);
-		//System.out.println(" new distance " + newDist);
-		Amount<Angle> alpha = Amount.valueOf(Math.toRadians(3), SI.RADIAN);
-		
-		theDownwashCalculator.calculateDownwashNonLinearDelftAtAlpha(alpha);
+		theDownwashCalculator.calculateDownwashNonLinearDelft();
 		
 		theDownwashCalculator.plotDownwashDelftWithPath(subfolderPath);
-		
-
-		System.out.println("\n\n\t\t\tDONE PLOTTING DOWNWASH ANGLE vs ALPHA BODY");
-		
 		theDownwashCalculator.plotDownwashGradientDelftWithPath(subfolderPath);
 		theDownwashCalculator.plotZDistanceWithPath(subfolderPath);
+		System.out.println("\n\n\t\t\tDONE PLOTTING DOWNWASH ANGLE vs ALPHA BODY");
 		
-		System.out.println("done");
+		double downwash = theDownwashCalculator.getDownwashAtAlphaBody(alphaBody);
+		System.out.println( " At alpha " + alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue() + " (deg) the downwash angle is (deg) = " + downwash );
 	}
 
 }
