@@ -2,23 +2,23 @@
 \begin{tikzpicture}
 
 \begin{axis}[
-width=\figurewidth,
-height=\figureheight,
+width=\textwidth,
+height=0.65\textwidth,
 scaled ticks=false, tick label style={/pgf/number format/fixed},
-xmin=0.19991031820848165,
-xmax=0.4811244979919689,
+xmin=0.19,
+xmax=0.5,
 xlabel={Mach },
 xmajorgrids,
-ymin=0.1775565698956337,
-ymax=0.524916759345417,
-ylabel={Specific Range ((nmi/lbs))},
+ymin=0.15,
+ymax=0.55,
+ylabel={Specific Range $\left(\frac{\si{nmi}}{\si{lb}}\right)$},
 ymajorgrids,
-legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
+legend entries = {$\SI{13146}{\kilogram}$\\$\SI{15337}{\kilogram}$\\$\SI{17528}{\kilogram}$\\$\SI{19719}{\kilogram}$\\$\SI{21910}{\kilogram}$\\Maximum Range\\Long Range\\}
 ]
 
 \addplot [
 color=black,
-solid
+densely dotted
 ]
 table[row sep=crcr]{
 0.19991031820848165	0.5027808774544085\\
@@ -275,7 +275,7 @@ table[row sep=crcr]{
 
 \addplot [
 color=black,
-densely dashed
+dashed
 ]
 table[row sep=crcr]{
 0.21592782254089546	0.4165792599763765\\
@@ -789,7 +789,7 @@ table[row sep=crcr]{
 
 \addplot [
 color=black,
-dashed
+densely dashdotted
 ]
 table[row sep=crcr]{
 0.24483913696409848	0.30452287580140536\\
@@ -1046,7 +1046,7 @@ table[row sep=crcr]{
 
 \addplot [
 color=black,
-dotted
+solid
 ]
 table[row sep=crcr]{
 0.25808311105215825	0.2672098434781677\\
@@ -1303,7 +1303,10 @@ table[row sep=crcr]{
 
 \addplot [
 color=black,
-loosely dashed
+solid,
+mark=*,
+mark options={solid},
+smooth
 ]
 table[row sep=crcr]{
 0.2315327962564237	0.524916759345417\\
@@ -1315,7 +1318,10 @@ table[row sep=crcr]{
 
 \addplot [
 color=black,
-dashdotdotted
+solid,
+mark=o,
+mark options={solid},
+smooth
 ]
 table[row sep=crcr]{
 0.24960278371239059	0.5197594428739096\\
