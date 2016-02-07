@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014/W32TeX) (preloaded format=pdflatex 2015.2.6)  6 FEB 2016 22:45
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014/W32TeX) (preloaded format=pdflatex 2015.2.6)  7 FEB 2016 01:19
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2832,11 +2832,12 @@ Package biblatex Info: ... file 'english.lbx' found.
 File: english.lbx 2014/06/25 v2.9a biblatex localization (PK/JW/AB)
 )
 
-LaTeX Warning: Label `eq:System:Dynamics:RHS:functions:D' multiply defined.
+LaTeX Warning: Label `eq:Take:Off:System:Dynamics:RHS:functions:D' multiply def
+ined.
 
 
-LaTeX Warning: Label `eq:System:Dynamics:RHS:functions:D@cref' multiply defined
-.
+LaTeX Warning: Label `eq:Take:Off:System:Dynamics:RHS:functions:D@cref' multipl
+y defined.
 
 )
 \openout1 = `takeoff.aux'.
@@ -4313,8 +4314,8 @@ Package minitoc(hints) Warning: W0024
 (minitoc(hints))                in the takeoff.log file.
 
 [2]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 349.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 349.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 229.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 229.
  (./takeoff.aux
 Package minitoc Info: I0010
 (minitoc)             The italian language is selected.
@@ -4329,8 +4330,8 @@ Package minitoc Info: I0010
 (c:/texlive/2014/texmf-dist/tex/latex/minitoc/italian.mld
 File: italian.mld 2006/01/13
 ))
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 349.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 349.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 229.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 229.
 Package rerunfilecheck Info: File `takeoff.out' has not changed.
 (rerunfilecheck)             Checksum: 72C703EC9F7B007325D9DDD0BC3826B9;64.
 
@@ -4342,28 +4343,30 @@ Package logreq Info: Writing requests to 'takeoff.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 57387 strings out of 493109
- 1216420 string characters out of 6138588
- 1885491 words of memory out of 5000000
- 59582 multiletter control sequences out of 15000+600000
- 136859 words of font info for 90 fonts, out of 8000000 for 9000
+ 57424 strings out of 493109
+ 1217203 string characters out of 6138588
+ 1885727 words of memory out of 5000000
+ 59610 multiletter control sequences out of 15000+600000
+ 152942 words of font info for 103 fonts, out of 8000000 for 9000
  1142 hyphenation exceptions out of 8191
  61i,30n,104p,10383b,2090s stack positions out of 5000i,500n,10000p,200000b,80000s
 {c:/texlive/2014/texmf-dist/fonts/enc/dvips/base/8r.enc}{c:/texlive/2014/texm
-f-dist/fonts/enc/dvips/newtx/ntx-ec-tlf.enc}<c:/texlive/texmf-local/fonts/type1
-/pctex/mtpro2/mt2bmit.pfb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2e
-xa.pfb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2exe.pfb><c:/texlive/
-texmf-local/fonts/type1/pctex/mtpro2/mt2exf.pfb><c:/texlive/texmf-local/fonts/t
-ype1/pctex/mtpro2/mt2mis.pfb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/m
-t2mit.pfb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2mst.pfb><c:/texli
-ve/texmf-local/fonts/type1/pctex/mtpro2/mt2syt.pfb><c:/texlive/2014/texmf-dist/
-fonts/type1/public/tex-gyre/qtmb.pfb><c:/texlive/2014/texmf-dist/fonts/type1/pu
-blic/tex-gyre/qtmr.pfb><c:/texlive/2014/texmf-dist/fonts/type1/urw/helvetic/uhv
-b8a.pfb><c:/texlive/2014/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb>
-Output written on takeoff.pdf (2 pages, 133288 bytes).
+f-dist/fonts/enc/dvips/newtx/ntx-ec-tlf.enc}<c:/texlive/2014/texmf-dist/fonts/t
+ype1/public/aspectratio/amarri.pfb><c:/texlive/texmf-local/fonts/type1/pctex/mt
+pro2/mt2bmit.pfb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2exa.pfb><c
+:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2exe.pfb><c:/texlive/texmf-loc
+al/fonts/type1/pctex/mtpro2/mt2exf.pfb><c:/texlive/texmf-local/fonts/type1/pcte
+x/mtpro2/mt2mis.pfb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2mit.pfb
+><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2mst.pfb><c:/texlive/texmf-
+local/fonts/type1/pctex/mtpro2/mt2sys.pfb><c:/texlive/texmf-local/fonts/type1/p
+ctex/mtpro2/mt2syt.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/tex-gyre/
+qtmb.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/tex-gyre/qtmr.pfb><c:/t
+exlive/2014/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb><c:/texlive/2014/tex
+mf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb>
+Output written on takeoff.pdf (2 pages, 147346 bytes).
 PDF statistics:
- 118 PDF objects out of 1000 (max. 8388607)
- 84 compressed objects within 1 object stream
- 15 named destinations out of 1000 (max. 500000)
- 19573 words of extra memory for PDF output out of 20736 (max. 10000000)
+ 131 PDF objects out of 1000 (max. 8388607)
+ 95 compressed objects within 1 object stream
+ 18 named destinations out of 1000 (max. 500000)
+ 21109 words of extra memory for PDF output out of 24883 (max. 10000000)
 
