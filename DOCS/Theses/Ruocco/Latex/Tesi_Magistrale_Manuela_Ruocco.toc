@@ -27,14 +27,17 @@
 \contentsline {chapter}{\numberline {6}Drag characteristics of a wing}{18}{chapter.6}
 \contentsline {chapter}{\numberline {7}Downwash Estimation}{19}{chapter.7}
 \contentsline {section}{\numberline {7.1}Theoretical background}{19}{section.7.1}
-\contentsline {chapter}{\numberline {8}Longitudinal stability of an aircraft}{22}{chapter.8}
-\contentsline {chapter}{\numberline {9}Minor Works}{23}{chapter.9}
-\contentsline {chapter}{Appendices}{}{section*.12}
-\contentsline {chapter}{\numberline {A}Java Reference}{25}{Appendix.a.A}
-\contentsline {section}{\numberline {A.1}Inheritance, Overriding and Polymorphism}{25}{section.a.A.1}
-\contentsline {section}{\numberline {A.2}Packages}{25}{section.a.A.2}
-\contentsline {section}{\numberline {A.3}Documentation}{26}{section.a.A.3}
-\contentsline {chapter}{Glossary}{28}{section*.13}
-\contentsline {chapter}{Acronyms}{30}{section*.15}
-\contentsline {chapter}{List of symbols}{31}{section*.17}
-\contentsline {chapter}{Bibliography}{33}{section*.19}
+\contentsline {section}{\numberline {7.2}Java Class Architecture}{21}{section.7.2}
+\contentsline {subsection}{\numberline {7.2.1}Test Class}{22}{subsection.7.2.1}
+\contentsline {section}{\numberline {7.3}Developer's Guide}{22}{section.7.3}
+\contentsline {chapter}{\numberline {8}Longitudinal stability of an aircraft}{23}{chapter.8}
+\contentsline {chapter}{\numberline {9}Minor Works}{24}{chapter.9}
+\contentsline {chapter}{Appendices}{}{section*.13}
+\contentsline {chapter}{\numberline {A}Java Reference}{26}{Appendix.a.A}
+\contentsline {section}{\numberline {A.1}Inheritance, Overriding and Polymorphism}{26}{section.a.A.1}
+\contentsline {section}{\numberline {A.2}Packages}{26}{section.a.A.2}
+\contentsline {section}{\numberline {A.3}Documentation}{27}{section.a.A.3}
+\contentsline {chapter}{Glossary}{29}{section*.14}
+\contentsline {chapter}{Acronyms}{31}{section*.16}
+\contentsline {chapter}{List of symbols}{32}{section*.18}
+\contentsline {chapter}{Bibliography}{34}{section*.20}
