@@ -409,7 +409,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			}
 		}
 		/** Non dimensional stations (eta) */
-
+		_chordsVsYExposed.toArray();
 		_yStationsND = MyArrayUtils.linspace(0., 1., _nPointsSemispanWise);
 
 		_yStationsIntegral = MyArrayUtils.linspace(0.0, semispan, _nPointsSemispanWise);
@@ -417,15 +417,16 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		for (int i=0; i<_nPointsSemispanWise; i++){
 			_chordsVsY.add(getTheLiftingSurface().getChordAtYActual(_yStations[i]));
 		}
-		_chordsVsY.toArray();
+		//_chordsVsY.toArray();
+		
 
 		_twistDistribution = MyArray.createArray(
-				getTheLiftingSurface()._twistVsY.interpolate(
+				theLiftingSurface._twistVsY.interpolate(
 						etaAirfoil,
 						_yStationsND));
 
 		_alpha0lDistribution = MyArray.createArray(
-				getTheLiftingSurface().get_alpha0VsY().interpolate(
+				theLiftingSurface.get_alpha0VsY().interpolate(
 						etaAirfoil,
 						_yStationsND));
 
@@ -1307,7 +1308,6 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 					alphaBody.getEstimatedValue() +
 					angleOfIncidence.getEstimatedValue()- downwash.getEstimatedValue()
 					,SI.RADIAN);
-			System.out.println("\n\n alpha Wing " + alphaWing.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
 
 			double cLWing = nasaBlackwellCompleteCurve(alphaWing);
 			return cLWing;
@@ -2984,7 +2984,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			//				semispanInteg = semispan;
 			//			}
 
-			System.out.println(" alpha dist LS " + _alpha0lDistribution.toString());
+			
 			_alpha0L = Amount.valueOf(
 					AnglesCalc.alpha0LintegralMeanNoTwist(surface, semispan, 
 							_yStationsIntegral, _chordsVsY.toArray(), _alpha0lDistribution.toArray()),
@@ -3231,7 +3231,6 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				//						.interpolate(yStationTwistExposed, _yStationsIntegral));
 
 				_alpha0lDistribution = theAircraft.get_exposedWing().get_alpha0lDistributionExposed();
-
 				_chordsVsY = theAircraft.get_exposedWing().get_chordsVsYExposed();
 
 				_twistDistribution =theAircraft.get_exposedWing().get_twistDistributionExposed();

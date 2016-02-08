@@ -84,7 +84,7 @@ public class Test_MR_07_LongitudinalStability {
 
 		
 		//------------------------------------------------------------------------------------
-		// Wings
+		// Wing and Tail
 		LiftingSurface theWing = aircraft.get_wing();
 		LiftingSurface horizontalTail = aircraft.get_HTail();
 
@@ -99,15 +99,10 @@ public class Test_MR_07_LongitudinalStability {
 				aircraft
 				); 
 		
-		
-		LSAerodynamicsManager theLSHorizontalTail = new LSAerodynamicsManager(
-				theConditions,
-				horizontalTail,
-				aircraft);
 
 		
 		aircraft.get_wing().setAerodynamics(theLSAnalysis);
-		aircraft.get_HTail().setAerodynamics(theLSHorizontalTail);
+		
 		
 		//--------------------------------------------------------------------------------------
 		// Set databases
@@ -117,11 +112,6 @@ public class Test_MR_07_LongitudinalStability {
 				new Pair(DatabaseReaderEnum.HIGHLIFT, "HighLiftDatabase.h5")
 				);	
 		
-		theLSHorizontalTail.setDatabaseReaders(
-				new Pair(DatabaseReaderEnum.AERODYNAMIC, 
-						"Aerodynamic_Database_Ultimate.h5"),
-				new Pair(DatabaseReaderEnum.HIGHLIFT, "HighLiftDatabase.h5")
-				);	
 
 
 		//--------------------------------------------------------------------------------------
@@ -132,7 +122,7 @@ public class Test_MR_07_LongitudinalStability {
 		//--------------------------------------------------------------------------------------
 		// Define airfoils
 
-		System.out.println("\nAIRFOILS:");
+		System.out.println("\nWING AIRFOILS:");
 
 		//AIRFOIL 1
 		double yLocRoot = 0.0;
@@ -183,7 +173,7 @@ public class Test_MR_07_LongitudinalStability {
 		myAirfoilList.add(2, airfoilTip);
 		theWing.set_theAirfoilsList(myAirfoilList);
 		theWing.updateAirfoilsGeometry(); 
-		//theLSAnalysis.initializeDependentData();
+		theLSAnalysis.initializeDependentData();
 		aircraft.get_exposedWing().set_theAirfoilsList(myAirfoilList);
 		aircraft.get_exposedWing().updateAirfoilsGeometryExposedWing( aircraft);
 
@@ -208,7 +198,24 @@ public class Test_MR_07_LongitudinalStability {
 		horizontalTail.set_theAirfoilsList(myAirfoilListHorizontalTail);
 		horizontalTail.updateAirfoilsGeometry(); 
 		
-		theLSHorizontalTail.initializeDependentData();
+		
+		LSAerodynamicsManager theLSHorizontalTail = new LSAerodynamicsManager(
+				theConditions,
+				horizontalTail,
+				aircraft);
+		
+		
+		aircraft.get_HTail().setAerodynamics(theLSHorizontalTail);
+		
+		theLSHorizontalTail.setDatabaseReaders(
+				new Pair(DatabaseReaderEnum.AERODYNAMIC, 
+						"Aerodynamic_Database_Ultimate.h5"),
+				new Pair(DatabaseReaderEnum.HIGHLIFT, "HighLiftDatabase.h5")
+				);	
+		
+		
+		//theLSHorizontalTail.initializeDependentData();
+		
 		
 		//--------------------------------------------------------------------------------------
 		// Mean Airfoil
@@ -340,22 +347,29 @@ public class Test_MR_07_LongitudinalStability {
 		System.out.println("Angle of incidence of horizontal tail (deg) " + horizontalTail.get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue());
 		System.out.println("Downwash Angle at Alpha Body (deg) " + downwash );
 		
-		double angleHorizontalDouble = alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue() - downwash +  horizontalTail.get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue();
+		double angleHorizontalDouble = alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue() 
+				- downwash +  horizontalTail.get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue();
 		Amount<Angle> alphaHorizontalTail = Amount.valueOf(Math.toRadians(angleHorizontalDouble), SI.RADIAN);
-		System.out.println("Angle of Attack of Horizontal Tail (deg) " + alphaHorizontalTail.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
+		System.out.println("Angle of Attack of Horizontal Tail (deg) "
+		+ alphaHorizontalTail.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
 		
-		LSAerodynamicsManager.CalcCLAtAlpha theCLHorizontalTailCalculator = theLSHorizontalTail.new CalcCLAtAlpha();
+		LSAerodynamicsManager.CalcCLAtAlpha theCLHorizontalTailCalculator = 
+				theLSHorizontalTail
+				.new CalcCLAtAlpha();
+		
 		double cLHorizontalTail = theCLHorizontalTailCalculator.nasaBlackwellalphaBody(alphaBody, downwashAmountRadiant);
 	
 		System.out.println("CL of horizontal tail at alpha body = " + cLHorizontalTail);
 		
 		theLSHorizontalTail.PlotCLvsAlphaCurve(subfolderPath);
 		LSAerodynamicsManager.CalcAlpha0L theAlphaZeroLiftCalculatorTail = theLSHorizontalTail.new CalcAlpha0L();
-//		Amount<Angle> alpha0LTail = theAlphaZeroLiftCalculatorTail.integralMeanNoTwist();
-//	
-//		System.out.println("\nAlpha Zero Tail (deg) = " + alpha0LTail.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
-//		System.out.println(" alpha zero lift distribution " + horizontalTail.get_alpha0VsY().toString());
-//		System.out.println(" twist distribution " + horizontalTail.get_twistVsY().toString());
+		Amount<Angle> alpha0LTail = theAlphaZeroLiftCalculatorTail.integralMeanNoTwist();
+	
+		System.out.println("\n\n\t\t\tDONE PLOTTING CL vs ALPHA WING");
+		
+		
+		
+		
 	}
 
 }
