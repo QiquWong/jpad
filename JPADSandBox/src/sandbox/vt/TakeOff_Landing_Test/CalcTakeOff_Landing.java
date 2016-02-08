@@ -15,7 +15,6 @@ import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.apache.commons.math3.exception.DimensionMismatchException;
 import org.apache.commons.math3.exception.MaxCountExceededException;
-import org.apache.commons.math3.ode.ContinuousOutputModel;
 import org.apache.commons.math3.ode.FirstOrderDifferentialEquations;
 import org.apache.commons.math3.ode.FirstOrderIntegrator;
 import org.apache.commons.math3.ode.events.EventHandler;
@@ -69,7 +68,12 @@ public class CalcTakeOff_Landing {
 	private Aircraft aircraft;
 	private OperatingConditions theConditions;
 	private CalcHighLiftDevices highLiftCalculator;
-	private Amount<Duration> dt, dtRot, dtHold,	dtRec = Amount.valueOf(1.5, SI.SECOND);
+	private Amount<Duration> dt, dtRot, dtHold,	
+							 dtRec = Amount.valueOf(1.5, SI.SECOND),
+						     tHold = Amount.valueOf(10000.0, SI.SECOND), // initialization to an impossible time
+							 tEndHold = Amount.valueOf(10000.0, SI.SECOND), // initialization to an impossible time
+							 tRot = Amount.valueOf(10000.0, SI.SECOND),  // initialization to an impossible time
+							 tAlphaCost = Amount.valueOf(10000.0, SI.SECOND);  // initialization to an impossible time
 	private Amount<Velocity> vSTakeOff, vRot, vLO, vWind, v1;
 	private Amount<Length> wingToGroundDistance, obstacle, balancedFieldLength;
 	private Amount<Angle> alphaGround, iw;
@@ -247,7 +251,7 @@ public class CalcTakeOff_Landing {
 
 		FirstOrderDifferentialEquations ode = new DynamicsEquations();
 
-		// handle detail infos
+		// handle detailed info
 		StepHandler stepHandler = new StepHandler() {
 						
 			public void init(double t0, double[] x0, double t) {
@@ -328,12 +332,14 @@ public class CalcTakeOff_Landing {
 						x[2],
 						NonSI.DEGREE_ANGLE)
 						);
+				CalcTakeOff_Landing.this.getAlphaDot().add(
+						((DynamicsEquations)ode).alphaDot(t)
+						);  
 				
 				//-------------------------------------------------
-				// TODO: ADD ALPHA_DOT AND GAMMA_DOT WHEN AVAILABLE
+				// TODO: ADD GAMMA_DOT WHEN AVAILABLE
 				//-------------------------------------------------
-				CalcTakeOff_Landing.this.getAlphaDot().add(0.0);  
-				CalcTakeOff_Landing.this.getGammaDot().add(0.0);  
+				CalcTakeOff_Landing.this.getGammaDot().add(0.0); 
 				//--------------------------------------------------
 				
 				CalcTakeOff_Landing.this.getTheta().add(Amount.valueOf(
@@ -378,13 +384,16 @@ public class CalcTakeOff_Landing {
 			@Override
 			public Action eventOccurred(double t, double[] x, boolean increasing) {
 				// Handle an event and choose what to do next.
-				System.out.println("\n switching function changes sign at t = " + t);
+				System.out.println("\n\t\tEND OF GROUND ROLL PHASE");
+				System.out.println("\tswitching function changes sign at t = " + t);
 				System.out.println(
 						"\n\tx[0] = s = " + x[0] + " m" +
 						"\n\tx[1] = V = " + x[1] + " m/s" + 
 						"\n\tx[2] = gamma = " + x[2] + " °" +
 						"\n\tx[3] = quota = " + x[3] + " m"
 						);
+				
+				tRot = Amount.valueOf(t, SI.SECOND);
 				
 				// COLLECTING DATA IN TakeOffResultsMap
 				System.out.println("\n\tCOLLECTING DATA AT THE END OF GROUND ROLL PHASE ...");
@@ -413,7 +422,7 @@ public class CalcTakeOff_Landing {
 						cD.get(cD.size()-1)
 						);
 				System.out.println("\n---------------------------DONE!-------------------------------");
-				return  Action.STOP;
+				return  Action.CONTINUE;
 			}
 
 		};
@@ -444,13 +453,18 @@ public class CalcTakeOff_Landing {
 			@Override
 			public Action eventOccurred(double t, double[] x, boolean increasing) {
 				// Handle an event and choose what to do next.
+				System.out.println("\n\t\tEND OF ROTATION PHASE");
 				System.out.println("\n switching function changes sign at t = " + t);
+				System.out.println("\tincreasing = " + increasing);
 				System.out.println(
 						"\n\tx[0] = s = " + x[0] + " m" +
 						"\n\tx[1] = V = " + x[1] + " m/s" + 
 						"\n\tx[2] = gamma = " + x[2] + " °" +
 						"\n\tx[3] = quota = " + x[3] + " m"
 						);
+				
+				if(!increasing)
+					settAlphaCost(Amount.valueOf(t, SI.SECOND));
 				
 				// COLLECTING DATA IN TakeOffResultsMap
 				System.out.println("\n\tCOLLECTING DATA AT THE END OF ROTATION PHASE ...");
@@ -483,7 +497,71 @@ public class CalcTakeOff_Landing {
 			}
 
 		};
-//		theIntegrator.addEventHandler(ehCheckLoadFactor, 1.0e-5, 5e-2, 50);
+		theIntegrator.addEventHandler(ehCheckLoadFactor, 1.0e-5, 5e-2, 50);
+		
+		EventHandler ehCLtoHold = new EventHandler() {
+
+			@Override
+			public void init(double t0, double[] y0, double t) {
+
+			}
+
+			@Override
+			public void resetState(double t, double[] y) {
+
+			}
+
+			// Discrete event, switching function
+			@Override
+			public double g(double t, double[] x) {
+				double cL = ((DynamicsEquations)ode).cL(((DynamicsEquations)ode).alpha);
+				return cL - (kcLMax*cLmaxTO);
+			}
+
+			@Override
+			public Action eventOccurred(double t, double[] x, boolean increasing) {
+				// Handle an event and choose what to do next.
+				System.out.println("\n switching function changes sign at t = " + t);
+			
+				tHold = Amount.valueOf(t, SI.SECOND);
+				
+				return  Action.CONTINUE;
+			}
+
+		};
+		theIntegrator.addEventHandler(ehCLtoHold, 1.0e-5, 5e-2, 50);
+		
+		EventHandler ehEndConstantCL = new EventHandler() {
+
+			@Override
+			public void init(double t0, double[] y0, double t) {
+
+			}
+
+			@Override
+			public void resetState(double t, double[] y) {
+
+			}
+
+			// Discrete event, switching function
+			@Override
+			public double g(double t, double[] x) {
+				
+				return t - (tHold.plus(dtHold).getEstimatedValue());
+			}
+
+			@Override
+			public Action eventOccurred(double t, double[] x, boolean increasing) {
+				// Handle an event and choose what to do next.
+				System.out.println("\n switching function changes sign at t = " + t);
+			
+				tEndHold = Amount.valueOf(t, SI.SECOND);
+				
+				return  Action.CONTINUE;
+			}
+
+		};
+		theIntegrator.addEventHandler(ehEndConstantCL, 1.0e-5, 5e-2, 50);
 		
 		double[] xAt0 = new double[] {0.0, 0.0, 0.0, 0.0}; // initial state
 		theIntegrator.integrate(ode, 0.0, xAt0, 200, xAt0); // now xAt0 contains final state
@@ -2182,13 +2260,9 @@ public class CalcTakeOff_Landing {
 
 	public class DynamicsEquations implements FirstOrderDifferentialEquations {
 
-		double weight, g0, mu, kAlpha, cD0, deltaCD0, oswald, ar, k1, k2, kGround, vWind;
+		double weight, g0, mu, kAlpha, cD0, deltaCD0, oswald, ar, k1, k2, kGround, vWind, alphaDotInitial;
 
-		// interpolation of the two arrays
-		public double[] timeBreakPoints;
-		public double[] alphaBreakPoints;
-		public LinearInterpolator alphaLinearInterpolator;
-		public PolynomialSplineFunction alphaFunction;
+		// visible variables
 		public double alpha;
 
 		public DynamicsEquations() {
@@ -2206,6 +2280,14 @@ public class CalcTakeOff_Landing {
 			k2 = CalcTakeOff_Landing.this.getK2();
 			kGround = CalcTakeOff_Landing.this.getkGround();
 			vWind = CalcTakeOff_Landing.this.getvWind().getEstimatedValue();
+			
+			// alpha_dot_initial calculation
+			double cLatLiftOff = cLmaxTO/(Math.pow(kLO, 2));
+			double alphaLiftOff = (cLatLiftOff - cL0)/highLiftCalculator.getcLalpha_new();
+			alphaDotInitial = (((alphaLiftOff - iw.getEstimatedValue()) 
+					- CalcTakeOff_Landing.this.getAlphaGround().getEstimatedValue())
+					/(dtRot.getEstimatedValue())
+					);
 		}
 
 		@Override
@@ -2217,7 +2299,7 @@ public class CalcTakeOff_Landing {
 		public void computeDerivatives(double t, double[] x, double[] xDot)
 				throws MaxCountExceededException, DimensionMismatchException {
 
-			double alpha = alpha(t);
+			alpha = alpha(t);
 			double speed = x[1];
 			double gamma = x[2];
 
@@ -2255,9 +2337,24 @@ public class CalcTakeOff_Landing {
 			return theThrust;
 		}
 
+		public double cD(double cL) {
+			
+			double cD = 0.0;
+			
+			if(cL < 1.2) {
+				cD = cD0 + deltaCD0 + ((cL/(Math.PI*ar*oswald))*kGround);
+			}
+			else { 
+				cD = cD0 + deltaCD0 + ((cL/(Math.PI*ar*oswald))*kGround)
+							+ (k1*(cL - 1.2)) + (k2*(Math.pow((cL - 1.2), 2))) ;
+			}
+							
+			return cD;
+		}
+		
 		public double drag(double speed, double alpha) {
 
-			double cD = cD0 + deltaCD0 + ((cL(alpha)/(Math.PI*ar*oswald))*kGround); 
+			double cD = cD(cL(alpha));
 
 			return 	0.5
 					*aircraft.get_wing().get_surface().getEstimatedValue()
@@ -2265,7 +2362,15 @@ public class CalcTakeOff_Landing {
 							theConditions.get_altitude().getEstimatedValue())
 					*(Math.pow(speed + vWind, 2))
 					*cD;
-
+		}
+		
+		public double cL(double alpha) {
+			
+			double cL0 = CalcTakeOff_Landing.this.cL0;
+			double cLalpha = highLiftCalculator.getcLalpha_new();
+			double alphaWing = alpha + CalcTakeOff_Landing.this.getIw().getEstimatedValue();
+			
+			return cL0 + (cLalpha*alphaWing);
 		}
 
 		public double lift(double speed, double alpha) {
@@ -2280,31 +2385,34 @@ public class CalcTakeOff_Landing {
 					*cL;
 		}
 		
-		public double cL(double alpha) {
+		public double alphaDot(double time) {
 			
-			double cL0 = CalcTakeOff_Landing.this.cL0;
-			double cLalpha = highLiftCalculator.getcLalpha_new();
-			double alphaWing = alpha + CalcTakeOff_Landing.this.getIw().getEstimatedValue();
+			double alphaDot = 0.0;
 			
-			return cL0 + (cLalpha*alphaWing);
+			if((time > tRot.getEstimatedValue()) && (time < tHold.getEstimatedValue()))
+				alphaDot = alphaDotInitial*(1-(kAlpha*CalcTakeOff_Landing.this.getAlpha().get(
+						CalcTakeOff_Landing.this.getAlpha().size()-1).getEstimatedValue())
+						);
+			else if((time > tEndHold.getEstimatedValue()) && (time < tAlphaCost.getEstimatedValue()))
+				alphaDot = alphaRed;
+			
+			return alphaDot;
 		}
 		
 		public double alpha(double time) {
 			
 			double alpha = CalcTakeOff_Landing.this.getAlphaGround().getEstimatedValue();
 			
+			if(time > tRot.getEstimatedValue())
+				alpha = CalcTakeOff_Landing.this.getAlpha().get(
+						CalcTakeOff_Landing.this.getAlpha().size()-1).getEstimatedValue()
+						+(alphaDot(time)*(CalcTakeOff_Landing.this.getTime().get(
+						CalcTakeOff_Landing.this.getTime().size()-1).getEstimatedValue()
+						- CalcTakeOff_Landing.this.getTime().get(
+						CalcTakeOff_Landing.this.getTime().size()-2).getEstimatedValue()));
 			
-			
-			return alpha;	
+			return alpha;
 		}
-		
-		public double alphaDot(double time, double[] x, double cL) {
-			
-			double alphaDot = 0.0;
-			
-			return alphaDot;
-		}
-		
 	}
 	//-------------------------------------------------------------------------------------
     //									END INNER CLASS	
@@ -2912,5 +3020,37 @@ public class CalcTakeOff_Landing {
 
 	public void setAbortedTakeOffSplineValues(double[] abortedTakeOffSplineValues) {
 		this.abortedTakeOffSplineValues = abortedTakeOffSplineValues;
+	}
+	
+	public Amount<Duration> gettHold() {
+		return tHold;
+	}
+
+	public void settHold(Amount<Duration> tHold) {
+		this.tHold = tHold;
+	}
+
+	public Amount<Duration> gettEndHold() {
+		return tEndHold;
+	}
+
+	public void settEndHold(Amount<Duration> tEndHold) {
+		this.tEndHold = tEndHold;
+	}
+
+	public Amount<Duration> gettRot() {
+		return tRot;
+	}
+
+	public void settRot(Amount<Duration> tRot) {
+		this.tRot = tRot;
+	}
+
+	public Amount<Duration> gettAlphaCost() {
+		return tAlphaCost;
+	}
+
+	public void settAlphaCost(Amount<Duration> tAlphaCost) {
+		this.tAlphaCost = tAlphaCost;
 	}
 }
