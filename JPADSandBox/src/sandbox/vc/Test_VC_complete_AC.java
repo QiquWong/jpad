@@ -76,11 +76,11 @@ public class Test_VC_complete_AC {
 
 	// Define the analysis
 	theAnalysis.doAnalysis(aircraft, 
-						AnalysisTypeEnum.AERODYNAMIC, 
-						AnalysisTypeEnum.BALANCE,
-						AnalysisTypeEnum.WEIGHTS,
-						AnalysisTypeEnum.PERFORMANCES, 
-						AnalysisTypeEnum.COSTS
+//						AnalysisTypeEnum.AERODYNAMIC, 
+//						AnalysisTypeEnum.BALANCE,
+						AnalysisTypeEnum.WEIGHTS //,
+//						AnalysisTypeEnum.PERFORMANCES //, 
+//						AnalysisTypeEnum.COSTS
 						);		
 	// Write results
 	/* Lorenzo sandbox:
