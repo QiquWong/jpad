@@ -101,9 +101,6 @@ public class TakeOff_Landing_Test_TF {
 		aircraft.get_HTail().calculateArms(aircraft);
 		aircraft.get_VTail().calculateArms(aircraft);
 
-		aircraft.get_theAerodynamics().set_aerodynamicDatabaseReader(aeroDatabaseReader);
-		theAnalysis.doAnalysis(aircraft, 
-				AnalysisTypeEnum.AERODYNAMIC);
 
 		LSAerodynamicsManager theLSAnalysis = new LSAerodynamicsManager(
 				theCondition,
@@ -112,6 +109,9 @@ public class TakeOff_Landing_Test_TF {
 				);
 		
 		theLSAnalysis.set_AerodynamicDatabaseReader(aeroDatabaseReader);
+
+		theAnalysis.doAnalysis(aircraft,AnalysisTypeEnum.AERODYNAMIC);
+		
 		theLSAnalysis.set_highLiftDatabaseReader(highLiftDatabaseReader);
 		theWing.setAerodynamics(theLSAnalysis);
 		

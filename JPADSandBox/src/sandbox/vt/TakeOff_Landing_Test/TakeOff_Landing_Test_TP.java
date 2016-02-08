@@ -103,9 +103,6 @@ public class TakeOff_Landing_Test_TP {
 		aircraft.get_HTail().calculateArms(aircraft);
 		aircraft.get_VTail().calculateArms(aircraft);
 
-		aircraft.get_theAerodynamics().set_aerodynamicDatabaseReader(aeroDatabaseReader);
-		theAnalysis.doAnalysis(aircraft, AnalysisTypeEnum.AERODYNAMIC);
-
 		LSAerodynamicsManager theLSAnalysis = new LSAerodynamicsManager(
 				theCondition,
 				theWing,
@@ -113,9 +110,12 @@ public class TakeOff_Landing_Test_TP {
 				);
 
 		theLSAnalysis.set_AerodynamicDatabaseReader(aeroDatabaseReader);
+		
+		theAnalysis.doAnalysis(aircraft, AnalysisTypeEnum.AERODYNAMIC);
+
 		theLSAnalysis.set_highLiftDatabaseReader(highLiftDatabaseReader);
 		theWing.setAerodynamics(theLSAnalysis);
-
+		
 		// Define airfoil
 		System.out.println("\n \n-----------------------------------------------------");
 		System.out.println("AIRFOILS");
