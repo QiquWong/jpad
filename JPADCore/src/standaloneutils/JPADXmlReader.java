@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
@@ -24,7 +25,7 @@ import aircraft.OperatingConditions;
 import aircraft.components.Aircraft;
 
 public class JPADXmlReader {
-	
+
 	public enum Status {
 		PARSED_OK,
 		FILE_NOT_FOUND,
@@ -32,12 +33,13 @@ public class JPADXmlReader {
 		UNKNOWN,
 		RESET;
 	}
-	
+
 	private Status _status = Status.UNKNOWN;
 	private String _xmlFilePath = "";
 	private File _xmlFile;
 
 	private Document _xmlDoc;
+
 	private DocumentBuilder _builderDoc;
 	private DocumentBuilderFactory _factoryBuilderDoc;
 	private XPathFactory _xpathFactory;
@@ -45,7 +47,7 @@ public class JPADXmlReader {
 	private Aircraft _theAircraft;
 	private OperatingConditions _theOperatingConditions;
 	private String _xmlFileImport;
-	
+
 	/*
 	 *  Constructor
 	 *  @param filePath  file absolute path
@@ -54,9 +56,9 @@ public class JPADXmlReader {
 
 		// Incorporates: reset() + init()
 		this.open(filePath);
-		
+
 	}
-	
+
 	/**
 	 * Builder used for importing an aircraft from xml file.
 	 * 
@@ -66,13 +68,13 @@ public class JPADXmlReader {
 	 */
 	public JPADXmlReader(Aircraft aircraft, OperatingConditions conditions,
 			String importFileName) {
-		
+
 		_theAircraft = aircraft;
 		_theOperatingConditions = conditions;
 		//		_factoryImport.setSchema(null);
 
 		_xpathFactory = XPathFactory.newInstance();
-		
+
 		_xmlFileImport = importFileName;
 		_xmlDoc = MyXMLReaderUtils.importDocument(importFileName);
 	}
@@ -82,9 +84,9 @@ public class JPADXmlReader {
 	 * @param filePath  file absolute path
 	 */
 	public void open(String filePath) {
-		
+
 		this.reset();
-		
+
 		_xmlFilePath = filePath;
 		_xmlFile = new File(_xmlFilePath);
 
@@ -100,9 +102,9 @@ public class JPADXmlReader {
 			_status = Status.FILE_NOT_FOUND;
 		}
 	}
-	
+
 	private void init() {
-		
+
 		_factoryBuilderDoc = DocumentBuilderFactory.newInstance();
 		_factoryBuilderDoc.setNamespaceAware(true);
 		_factoryBuilderDoc.setIgnoringComments(true);
@@ -119,9 +121,9 @@ public class JPADXmlReader {
 			// Initialize XPath-related stuff
 			_xpathFactory = XPathFactory.newInstance();
 			_xpath = _xpathFactory.newXPath();
-			
+
 			_status = Status.PARSED_OK;
-			
+
 		} catch (ParserConfigurationException | SAXException | IOException e) {
 			e.printStackTrace();
 			_status = Status.STUCK;
@@ -141,7 +143,7 @@ public class JPADXmlReader {
 		_xpathFactory = null;
 		_xpath = null;		
 	}
-	
+
 	/*
 	 * Search first occurrence of a given expression via XPath
 	 * @param expression  the XPath expression
@@ -155,7 +157,7 @@ public class JPADXmlReader {
 			return null;
 		}		
 	}
-	
+
 	/*
 	 * Search all occurrence of a given expression via XPath
 	 * @param expression  the XPath expression
@@ -182,9 +184,9 @@ public class JPADXmlReader {
 	public Amount<?> getXMLAmountWithUnitByPath(String expression) {
 
 		return MyXMLReaderUtils.getXMLAmountWithUnitByPath(_xmlDoc, _xpath, expression);
-		
+
 	}
-	
+
 	/*
 	 * Get a length quantity from XML path; unit attribute is not mandatory, if not present
 	 * the numeric value is assumed as SI.METRE ; if search fails return null
@@ -197,31 +199,37 @@ public class JPADXmlReader {
 	 * @return           amount, dimensions according to unit attribute value 
 	 */
 	public Amount<Length> getXMLAmountLengthByPath(String expression) {
-		
+
 		return MyXMLReaderUtils.getXMLAmountLengthByPath(_xmlDoc, _xpath, expression);
-		
+
+	}
+
+	public double[] getXMLAmountsLengthByPath(String expression) throws XPathExpressionException {
+
+		return MyXMLReaderUtils.getXMLAmountsLengthByPath(_xmlDoc, _xpath, expression);
+
+	}
+
+	public Amount<Angle> getXMLAmountAngleByPath(String expression) {
+
+		return MyXMLReaderUtils.getXMLAmountAngleByPath(_xmlDoc, _xpath, expression);
+
 	}
 	
-public double[] getXMLAmountsLengthByPath(String expression) throws XPathExpressionException {
-		
-		return MyXMLReaderUtils.getXMLAmountsLengthByPath(_xmlDoc, _xpath, expression);
-		
-	}
 	
 	// TODO: implement similar functions, such as:
 	// getXMLAmountSurfaceByPath
 	// getXMLAmountVolumeByPath
-	// getXMLAmountAngleByPath
 	// getXMLAmountMassByPath
 	// etc
-	
+
 	/*
 	 * @return true if file is parsed OK
 	 */
 	public boolean isStatusOK() {
 		return (_status == Status.PARSED_OK);
 	}
-	
+
 	/*
 	 * @return one of enumerated status codes (see standaloneutils.MyXMLReader.Status)
 	 */
@@ -229,7 +237,7 @@ public double[] getXMLAmountsLengthByPath(String expression) throws XPathExpress
 		return _status;
 	}
 
-	
+
 	/** 
 	 * Read component (e.g., theFuselage) from file and initialize it
 	 * The component is recognized through its unique id.
@@ -252,7 +260,7 @@ public double[] getXMLAmountsLengthByPath(String expression) throws XPathExpress
 						"//*[@id='" + JPADGlobalData.getTheXmlTree().getIdAsString(object) + "']",
 						_xmlDoc, 
 						XPathConstants.NODE);
-				
+
 				// TODO: Remove this when debug is complete
 				System.out.println("//*[@id='" + JPADGlobalData.getTheXmlTree().getIdAsString(object) + "']");
 
@@ -273,7 +281,7 @@ public double[] getXMLAmountsLengthByPath(String expression) throws XPathExpress
 			System.out.println("The object to be read has not been initialized");
 		}
 	}
-	
+
 	/**
 	 * Import the entire aircraft
 	 * 
@@ -328,7 +336,7 @@ public double[] getXMLAmountsLengthByPath(String expression) throws XPathExpress
 		importItemFromXMLById(aircraft.get_systems(), importFileWithExt);
 	}
 
-	
+
 	/**
 	 * Overload of the method located in ADOpT utilities. It writes the import aircraft
 	 * and operating conditions of the .xml file to the local ones. 
@@ -342,11 +350,20 @@ public double[] getXMLAmountsLengthByPath(String expression) throws XPathExpress
 			Aircraft aircraft, 
 			OperatingConditions conditions,
 			String importFile) {
-		
+
 		String ext = "";
 		if (!importFile.endsWith(".xml")) ext = ".xml";
-		
+
 		importItemFromXMLById(conditions, importFile + ext);
 		importAircraft(aircraft, importFile + ext);
 	}
+
+	public Document getXmlDoc() {
+		return _xmlDoc;
+	}
+
+	public XPath getXpath() {
+		return _xpath;
+	}
+
 }

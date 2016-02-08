@@ -21,19 +21,19 @@
 \contentsline {section}{\numberline {3.1}Theoretical background}{27}{section.3.1}
 \contentsline {section}{\numberline {3.2}Java class architecture}{32}{section.3.2}
 \contentsline {section}{\numberline {3.3}Case study: ATR-72 and B747-100B}{34}{section.3.3}
-\contentsline {chapter}{\numberline {4}High lift devices effects}{35}{chapter.4}
-\contentsline {section}{\numberline {4.1}Theoretical background}{35}{section.4.1}
-\contentsline {section}{\numberline {4.2}Java class architecture}{35}{section.4.2}
-\contentsline {section}{\numberline {4.3}Case study: ATR-72 and B747-100B}{35}{section.4.3}
-\contentsline {chapter}{\numberline {5}Take-off performance}{37}{chapter.5}
-\contentsline {section}{\numberline {5.1}Theoretical background}{37}{section.5.1}
-\contentsline {section}{\numberline {5.2}Java class architecture}{37}{section.5.2}
-\contentsline {section}{\numberline {5.3}Case study: B747-100B}{37}{section.5.3}
-\contentsline {chapter}{Appendices}{}{section*.30}
-\contentsline {chapter}{\numberline {A}HDF databse creation and reading }{41}{Appendix.a.A}
-\contentsline {section}{\numberline {A.1}Creation of a database using MATLAB}{41}{section.a.A.1}
-\contentsline {section}{\numberline {A.2}Reading data from an HDF database in JPAD}{44}{section.a.A.2}
-\contentsline {chapter}{Bibliography}{46}{section*.33}
-\contentsline {chapter}{Glossary}{49}{section*.35}
-\contentsline {chapter}{Acronyms}{51}{section*.37}
-\contentsline {chapter}{List of symbols}{53}{section*.39}
+\contentsline {chapter}{\numberline {4}High lift devices effects}{43}{chapter.4}
+\contentsline {section}{\numberline {4.1}Theoretical background}{43}{section.4.1}
+\contentsline {section}{\numberline {4.2}Java class architecture}{43}{section.4.2}
+\contentsline {section}{\numberline {4.3}Case study: ATR-72 and B747-100B}{43}{section.4.3}
+\contentsline {chapter}{\numberline {5}Take-off performance}{45}{chapter.5}
+\contentsline {section}{\numberline {5.1}Theoretical background}{45}{section.5.1}
+\contentsline {section}{\numberline {5.2}Java class architecture}{45}{section.5.2}
+\contentsline {section}{\numberline {5.3}Case study: B747-100B}{45}{section.5.3}
+\contentsline {chapter}{Appendices}{}{section*.39}
+\contentsline {chapter}{\numberline {A}HDF databse creation and reading }{49}{Appendix.a.A}
+\contentsline {section}{\numberline {A.1}Creation of a database using MATLAB}{49}{section.a.A.1}
+\contentsline {section}{\numberline {A.2}Reading data from an HDF database in JPAD}{52}{section.a.A.2}
+\contentsline {chapter}{Bibliography}{54}{section*.42}
+\contentsline {chapter}{Glossary}{57}{section*.44}
+\contentsline {chapter}{Acronyms}{59}{section*.46}
+\contentsline {chapter}{List of symbols}{61}{section*.48}

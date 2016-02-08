@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Quantity;
 import javax.measure.unit.NonSI;
@@ -263,7 +264,7 @@ public class MyXMLReaderUtils {
 						}
 
 					} else {
-						
+
 						if (unit == null) // if "unit" attribute is not present, default to non-dimensional 
 							unit = "";
 
@@ -402,10 +403,10 @@ public class MyXMLReaderUtils {
 	 */
 	public static List<String> getXMLPropertiesByPath(Document doc, XPath xpath, String expression) {
 		try {
-			
+
 			XPathExpression expr =
 					xpath.compile(expression);
-	
+
 			// evaluate expression result on XML document
 			List<String> list_elements = new ArrayList<>();
 			NodeList nodes = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
@@ -421,7 +422,7 @@ public class MyXMLReaderUtils {
 			return null; // ??
 		}
 	} // end-of-getXMLPropertiesByPath:
-	
+
 	/*
 	 * Get the list of property values for a given XPath expression
 	 * @param document
@@ -430,7 +431,7 @@ public class MyXMLReaderUtils {
 	 */
 	public static List<String> getXMLPropertiesByPath(Document doc, String expression) {
 		try {
-			
+
 			// Once we have document object. We are ready to use XPath. Just create an xpath object using XPathFactory.
 			// Create XPathFactory object
 			XPathFactory xpathFactory = XPathFactory.newInstance();
@@ -440,8 +441,8 @@ public class MyXMLReaderUtils {
 
 			XPathExpression expr =
 					xpath.compile(expression);
-			
-			
+
+
 			// evaluate expression result on XML document
 			List<String> list_elements = new ArrayList<>();
 			NodeList nodes = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
@@ -467,7 +468,7 @@ public class MyXMLReaderUtils {
 	 */
 	public static NodeList getXMLNodeListByPath(Document doc, XPath xpath, String expression) {
 		try {
-			
+
 			XPathExpression expr =
 					xpath.compile(expression);
 			// evaluate expression result on XML document
@@ -486,7 +487,7 @@ public class MyXMLReaderUtils {
 		}
 	} // end-of-getXMLNodeListByPath:
 
-	
+
 	/*
 	 * Get the quantity from XML path; unit attribute is mandatory; if search fails return null
 	 * <p>
@@ -499,18 +500,18 @@ public class MyXMLReaderUtils {
 	 * @return           amount, dimensions according to unit attribute value 
 	 */
 	public static Amount<?> getXMLAmountWithUnitByPath(Document xmlDoc, XPath xpath, String expression) {
-		
+
 		String valueStr = MyXMLReaderUtils.getXMLPropertyByPath(xmlDoc, xpath, expression + "/text()");
 		String unitStr = MyXMLReaderUtils.getXMLPropertyByPath(xmlDoc, xpath, expression + "/@unit");
-		
+
 		if ((valueStr != null) && (!valueStr.equals("")) && (unitStr != null)) {
 			try {
-				
+
 				Double value = Double.parseDouble(valueStr);
 				Amount<?> quantity = Amount.valueOf(value, Unit.valueOf(unitStr));
-				
+
 				return quantity;
-				
+
 			} catch (NumberFormatException | AmountException e) {
 				e.printStackTrace();
 				return null;
@@ -533,22 +534,22 @@ public class MyXMLReaderUtils {
 	 * @return           amount, dimensions according to unit attribute value 
 	 */
 	public static Amount<Length> getXMLAmountLengthByPath(Document xmlDoc, XPath xpath, String expression) {
-		
+
 		String valueStr = MyXMLReaderUtils.getXMLPropertyByPath(xmlDoc, xpath, expression + "/text()");
 		String unitStr = MyXMLReaderUtils.getXMLPropertyByPath(xmlDoc, xpath, expression + "/@unit");
-		
+
 		if ((valueStr != null) && (!valueStr.equals(""))) {
 			try {
-				
+
 				Double value = Double.parseDouble(valueStr);
 				Amount<Length> quantity;
 				if (unitStr != null)
 					quantity = (Amount<Length>) Amount.valueOf(value, Unit.valueOf(unitStr));
 				else
 					quantity = Amount.valueOf(value, SI.METER);
-				
+
 				return quantity;
-				
+
 			} catch (NumberFormatException | AmountException e) {
 				e.printStackTrace();
 				return null;
@@ -556,7 +557,7 @@ public class MyXMLReaderUtils {
 		} else
 			return null;
 	}
-	
+
 	/*
 	 * Get the list of length quantities from XML path; unit attribute is not mandatory, if not present
 	 * the numeric value is assumed as SI.METRE ; if search fails return null
@@ -570,69 +571,103 @@ public class MyXMLReaderUtils {
 	 * @param expression XPath expression
 	 * @return           amounts, dimensions according to unit attribute value 
 	 */	
-public static double[] getXMLAmountsLengthByPath(Document xmlDoc, XPath xpath, String expression) throws XPathExpressionException {
-	
-	    XPathExpression expr = null;
+	public static double[] getXMLAmountsLengthByPath(Document xmlDoc, XPath xpath, String expression) throws XPathExpressionException {
+
+		XPathExpression expr = null;
 		try {
 			expr = xpath.compile(expression);
-			
+
 		} catch (XPathExpressionException e1) {
-		
+
 			e1.printStackTrace();
 		}
 		NodeList nodes = (NodeList) expr.evaluate(xmlDoc, XPathConstants.NODESET); 
-			
-		
+
+
 		List<String> list_elements = MyXMLReaderUtils.getXMLPropertiesByPath(xmlDoc, xpath, expression + "/text()");
 		List<String> list_value =  MyXMLReaderUtils.getXMLPropertiesByPath(xmlDoc, xpath, expression + "/@unit");
-		
-		
+
+
 		double[] values = new double [nodes.getLength()];
-		
+
 		Amount<Length> quantity;
 		for (int i = 0; i < nodes.getLength(); i++){
-	
-		if ((list_elements.get(i) != null) && (!list_value.get(i).equals(""))) {
-			try {
-				
-				Double value = Double.parseDouble(list_elements.get(i)); //converte in double il valore
-				
-				
-				if (list_value.get(i)!= null)
-	
-					quantity = (Amount<Length>) Amount.valueOf(value, Unit.valueOf(list_value.get(i)));
-				//quantity= quantity.to(SI.METRE).getEstimatedValue();
-				
-				
-					
-				else 
-					quantity = Amount.valueOf(value, SI.METER);
-				System.out.println("Wing Span number " + (i+1) + "=" + quantity); // FIN QUI VA PER LA PRIMA ITERAZIONE 
-				
 
-				values [i]= quantity.to(SI.METRE).getEstimatedValue();
-		
-				
-			} catch (NumberFormatException| AmountException e) {
-				e.printStackTrace();
-				
-				values[i]=0;
-			
-			}	}		
-		 else
-		
-			 values[i]=0;}
-		
-	
-            return values;  }
-	
-	
+			if ((list_elements.get(i) != null) && (!list_value.get(i).equals(""))) {
+				try {
+
+					Double value = Double.parseDouble(list_elements.get(i)); //converte in double il valore
+
+
+					if (list_value.get(i)!= null)
+
+						quantity = (Amount<Length>) Amount.valueOf(value, Unit.valueOf(list_value.get(i)));
+					//quantity= quantity.to(SI.METRE).getEstimatedValue();
+
+
+
+					else 
+						quantity = Amount.valueOf(value, SI.METER);
+					System.out.println("Wing Span number " + (i+1) + "=" + quantity); // FIN QUI VA PER LA PRIMA ITERAZIONE 
+
+
+					values [i]= quantity.to(SI.METRE).getEstimatedValue();
+
+
+				} catch (NumberFormatException| AmountException e) {
+					e.printStackTrace();
+
+					values[i]=0;
+
+				}	}		
+			else
+
+				values[i]=0;}
+
+
+		return values;  }
+
+
 	// TODO: implement similar functions, such as:
 	// getXMLAmountSurfaceByPath
 	// getXMLAmountVolumeByPath
 	// getXMLAmountAngleByPath
 	// getXMLAmountMassByPath
 	// etc
+
+	
+	public static Amount<Angle> getXMLAmountAngleByPath(Document xmlDoc, XPath xpath, String expression) {
+
+		String valueStr = MyXMLReaderUtils.getXMLPropertyByPath(xmlDoc, xpath, expression + "/text()");
+		String unitStr = MyXMLReaderUtils.getXMLPropertyByPath(xmlDoc, xpath, expression + "/@unit");
+
+		if ((valueStr != null) && (!valueStr.equals(""))) {
+			try {
+
+				Double value = Double.parseDouble(valueStr);
+				Amount<Angle> quantity;
+				if (unitStr != null) {
+					switch (unitStr) {
+					case "deg":
+					case "DEG":
+					case "Deg":
+						unitStr = "°";
+						break;
+					}
+					quantity = (Amount<Angle>) Amount.valueOf(value, Unit.valueOf(unitStr));
+				} else
+					quantity = Amount.valueOf(value, SI.RADIAN);
+
+				return quantity;
+
+			} catch (NumberFormatException | AmountException e) {
+				e.printStackTrace();
+				return null;
+			}			
+		} else
+			return null;
+	}
+	
 	
 
 	/** 
@@ -645,7 +680,7 @@ public static double[] getXMLAmountsLengthByPath(Document xmlDoc, XPath xpath, S
 	public static Document importDocument(String filenameWithPathAndExt){
 
 		if (filenameWithPathAndExt == null) return null; 
-		
+
 		if (!filenameWithPathAndExt.endsWith(".xml") 
 				&& !filenameWithPathAndExt.endsWith(".XML"))
 			filenameWithPathAndExt = filenameWithPathAndExt + ".xml";

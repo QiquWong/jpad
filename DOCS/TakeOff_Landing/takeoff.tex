@@ -1,96 +1,26 @@
-\documentclass[a4paper]{article}
+%------------------------------------------------------------------------------------------
+% INITIAL DEFINITIONS
+%------------------------------------------------------------------------------------------
 
-\usepackage[english]{babel}
-\usepackage[utf8]{inputenc}
+\input{_init}% plain TeX initial definitions in ./_init.tex
 
-\usepackage{geometry}
-\geometry{
- a4paper,
- total={210mm,297mm},
- left=20mm,
- right=20mm,
- top=20mm,
- bottom=20mm,
- }
+%------------------------------------------------------------------------------------------
+% LaTeX STARTING DECLARATION
+%------------------------------------------------------------------------------------------
 
-\usepackage{newtxtext}% replaces the txfonts package;
-\usepackage[varg]{newtxmath}
+%\documentclass[a4paper]{article}
+\documentclass[12pt,twoside]{book}
 
-% Define text mono-spaced font
-% --> package txfonts uses TX mono (monospace typewriter font)
-\usepackage%
-   [scaled=0.810]% 0.865 , 0.84
-   {beramono}% set bera as mono-spaced font family
+%------------------------------------------------------------------------------------------
+% PREAMBLE
+%------------------------------------------------------------------------------------------
 
-\usepackage{mathtools}
+\input{_preamble}% all preamble settings in ./_preamble.tex
 
-\usepackage{booktabs}
-\usepackage{longtable}
+%------------------------------------------------------------------------------------------
+% LOCAL USER-DEFINED MACROS & SETTINGS
 
-\usepackage{paralist}
-
-\usepackage[
-  font=small,labelfont={bf,color=blue}, % labelsep=space,
-  textfont={color=blue},
-  justification=justified
-  ]{caption}
-
-% http://tex.stackexchange.com/questions/157115/how-to-retrieve-the-caption-of-a-table-longtable
-\captionsetup[longtable]{aboveskip=0pt}
-
-\usepackage{setspace}
-%\onehalfspacing
-%\doublespacing
-%\setstretch{1.5}
-
-\usepackage{nameref}
-
-\usepackage{subcaption}
-\usepackage{url}
-\usepackage{adjustbox}
-\usepackage{relsize}
-
-\usepackage{siunitx}
-
-\usepackage{graphicx}
-
-%\usepackage[colorinlistoftodos]{todonotes}
-
-\usepackage[%
-   backgroundcolor=orange!20,bordercolor=orange,
-   shadow,
-   textsize=footnotesize,
-   colorinlistoftodos
-   % ,disable % use this to disable the notes
-   ]{todonotes}
-
-\newcounter{todocounter}
-
-\newcommand{\TODO}[2][]{%
-   % initials of the author (optional) + note in the margin
-   \refstepcounter{todocounter}%
-   {%
-      \setstretch{0.85}% line spacing
-      \todo[backgroundcolor={orange!20},bordercolor=orange,size=\relsize{-1}]{%
-         \sffamily%
-         \thetodocounter.~\textbf{[\uppercase{#1}]:}~#2%
-      }%
-   }}
-
-\newcommand{\TODOInline}[2][]{%
-   % initials of the author (optional) + note in the margin
-   \refstepcounter{todocounter}%
-   {%
-      \setstretch{0.85}% line spacing
-      \todo[inline,backgroundcolor={orange!20},bordercolor=orange,size=\relsize{-1}]{%
-         \sffamily%
-         \thetodocounter.~\textbf{[\uppercase{#1}]:}~#2%
-      }%
-   }}
-
-%%% Examples of usage:
-%%% \TODO[ADM]{Continue this section taking material from Stevend \& Lewis book.}
-%%% \TODOInline[JSB]{Remove this sentence.}
+\input{_local_macros}
 
 
 %-----------------------------------------------------
@@ -99,169 +29,201 @@
 
 
 \begin{document}
+\selectlanguage{english}
 
-\listoftodos
-
-\bigskip
-\noindent
-\hrule
-
-\bigskip
 
 \section{Modelling aircraft take-off}
 
-%The fuselage in \ADOpT{} is conceptually divided three in subparts:
-%\begin{compactitem}
-%\item
-%the \emph{nose} (front part, subscript `N'),
-%\item
-%the \emph{cylindrical body} (central part with constant cross section, subscript `C'), and
-%\item
-%the \emph{tail cone} (rear part, subscript `T').
-%\end{compactitem}
+The set of ordinary differential equations that models the take-off run is written in the following form:
 %
-%\medskip
-%The shape of the fuselage is defined on the basis of a number of \emph{outline curves}.
-%Outlines are associated to the different views of the body.
+\begin{equation}\label{eq:Take:Off:System:Dynamics:A}
+    \LEFTRIGHT\lcbrace\rcbrace{\begin{array}{c}\dot{s}\\[2pt] \dot{V} \\[2pt] \dot{\gamma} \\[2pt] \dot{h} \end{array}}
+= 
+    \LEFTRIGHT\lcbrace\rcbrace{\begin{array}{l}
+       f_1 \big(\, s,\, V,\, \gamma,\, h \,; \, \alpha \big) \\[4pt]
+       f_2 \big(\, s,\, V,\, \gamma,\, h \,; \, \alpha \big) \\[4pt]
+       f_3 \big(\, s,\, V,\, \gamma,\, h \,; \, \alpha \big) \\[4pt]
+       f_4 \big(\, s,\, V,\, \gamma,\, h \,; \, \alpha \big)
+    \end{array}}
+\qquad
+    \text{with}\quad
+    \LEFTRIGHT\lcbrace.{\begin{array}{l} x_1 = s\\[2pt] x_2 = V \\[2pt] x_3 = \gamma \\[2pt] x_4 = h \end{array}}
+\qquad
+    \text{and}\quad
+    u = \alpha
+\end{equation}
 %
-%The sideview outline (leftview or also $\text{\textit{XZ}}$-outline) is shown in Figure~\ref{fig:Fuselage:Sideview}
-%as the union of two curves\,---\,\emph{upper} and \emph{lower} outlines\,---\,in the $\text{\textit{XZ}}$ plane, 
-%giving the silhouette of the body as seen from the 
-%negative $Y$-axis. A close up view of the nose is shown in Figure~\ref{fig:Fuselage:Sideview:Nose}.
+or, more concisely:
+\begin{equation}
+\label{eq:Take:Off:System:Dynamics:B}
+\dot{\vec{x}} = \vec{f}\big(\, \vec{x}\,;\,u \,\big)
+\end{equation}
 %
-%In Figure~\ref{fig:Fuselage:Sideview} is also shown the topview outline (also $\text{\textit{XY}}$-outline)
-%as the union of two curves\,---\,\emph{right} and \emph{left} outlines\,---\,in the $\text{\textit{XY}}$ plane 
-%representing the silhouette of the body as seen from the positive $Z$-axis.
+The unknown $\vec{x} = [\mspace{2mu} x_1,\, x_2,\, x_3,\, x_4 \mspace{2mu}]^{\text{T}}$ is the vector of state 
+variables. The input $u(t)$ is a given function of time, for $0 \leq t \leq t_{\text{final}}$,
+that corresponds to an assumed time history of the angle of attack during take-off.
+
+The right-hand sides of system (\ref{eq:Take:Off:System:Dynamics:A}) are defined by the following functions:
+%----------------------------------------------------------------------------------------
+\begin{subequations}\label{eq:Take:Off:System:Dynamics:RHS:functions}
+\begin{equation}\label{eq:Take:Off:System:Dynamics:RHS:functions:A}
+f_1 \big(\, \vec{x}\,,\,u \,\big) =  x_2
+\end{equation}
 %
-%\begin{figure}[p]
-%\centering
-%\adjincludegraphics[
-%         angle=90,
-%         height=0.95\textheight, % width=1.0\linewidth,
-%         trim={{0.0\width} {0.0\width} {0.0\width} {0.0\width}}, clip % llx lly urx ury
-%      ]{Fuselage_Nomenclature_Sideview_Topview.pdf}
-%\caption{Fuselage sideview ($\text{\textit{XZ}}$) and topview ($\text{\textit{XY}}$).}
-%\label{fig:Fuselage:Sideview}
-%\end{figure}
+\begin{equation}\label{eq:Take:Off:System:Dynamics:RHS:functions:B}
+f_2 \big(\, \vec{x}\,,\,u \,\big) =
+  \frac{g}{W}
+    \LEFTRIGHT\lcbrace.{
+      \begin{array}{l@{\rule{2em}{0pt}}l} 
+        T(x_2) - D(x_2,u) - \mu \big[ W - L(x_2,u) \big]
+          & \text{if} \;\, \mathcal{S}(x_2 , u) < 1
+        \\[1em]
+        T(x_2) \cos u - D(x_2,u) - W \sin x_3
+          & \text{if} \;\, \mathcal{S}(x_2 , u) \geq 1
+      \end{array}
+    }  
+\end{equation}
 %
-%\begin{figure}[t]
-%\centering
-%\adjincludegraphics[
-%         width=0.55\linewidth,
-%         trim={{0.0\width} {0.0\width} {0.0\width} {0.0\width}}, clip % llx lly urx ury
-%      ]{Fuselage_Nomenclature_Sideview_Nose.pdf}
-%\caption{Fuselage sideview. Nose definitions.}
-%\label{fig:Fuselage:Sideview:Nose}
-%\end{figure}
+\begin{equation}\label{eq:Take:Off:System:Dynamics:RHS:functions:C}
+f_3 \big(\, \vec{x}\,,\,u \,\big) =
+  \frac{g}{W\,x_2}
+    \LEFTRIGHT\lcbrace.{
+      \begin{array}{l@{\rule{2em}{0pt}}l} 
+        0
+          & \text{if} \;\, \mathcal{S}(x_2 , u) < 1
+        \\[1em]
+        L(x_2,u) + T(x_2)\sin u - W \cos x_3
+          & \text{if} \;\, \mathcal{S}(x_2 , u) \geq 1
+      \end{array}
+    }  
+\end{equation}
 %
-%\begin{figure}[t]
-%\centering
-%\adjincludegraphics[
-%         width=0.55\linewidth,
-%         trim={{0.0\width} {0.0\width} {0.0\width} {0.0\width}}, clip % llx lly urx ury
-%      ]{Fuselage_Nomenclature_Sectionview.pdf}
-%\caption{Generic fuselage cross section at station $X$.}
-%\label{fig:Fuselage:Sectionview}
-%\end{figure}
+\begin{equation}\label{eq:Take:Off:System:Dynamics:RHS:functions:D}
+f_4 \big(\, \vec{x}\,,\,u \,\big) =  x_2 \, \sin x_3
+\end{equation}
+
+
+The thrust $T(x_2)$ is calculated by means of the interpolating function $T_{\text{tab}}\big(V_{\text{a}}\big)$
+based on a table lookup algorithm  --- where $V_{\text{a}} = V + V_{\text{w}}$ is the airspeed
+and $V_{\text{w}}$ is the wind speed (horizontal component, positive if opposite to the aircraft motion).
+The drag $D$ and lift $L$, as functions of airspeed $V_{\text{a}}$ and angle of attack, are given by the conventional formnulas
+\begin{equation}\label{eq:Take:Off:System:Dynamics:RHS:functions:E}
+D(x_2,u) = \frac{1}{2} \, \rho \, \big( x_2 + V_{\text{w}}\cos x_3 \big)^2 \,S \, C_D\big( u \big)
+\;,\quad
+L(x_2,u) = \frac{1}{2} \, \rho \, \big( x_2 + V_{\text{w}}\cos x_3 \big)^2 \,S \, C_L\big( u \big)
+\end{equation}
+
+The switching function $\mathcal{S}$ of aircraft velocity and angle of attack is defined as follows:
+\begin{equation}\label{eq:Take:Off:System:Dynamics:RHS:functions:D}
+\mathcal{S}(x_2 , u) = \frac{L(x_2,u)}{W \cos x_3}
+\end{equation}
+\end{subequations}
+%----------------------------------------------------------------------------------------
+
+The formulas (\ref{eq:Take:Off:System:Dynamics:RHS:functions}) make the system (\ref{eq:Take:Off:System:Dynamics:B})
+a closed set of ODEs.
+When the function $u(t)$ is assigned and the system is associated to a set of initial conditions a well-posed
+initial value problem (IVP) is formed, which can be solved numerically.
+
+The function $u$ can be constructed by picking the time $t_{\text{Rot}}$ when the rotation speed $V_{\text{Rot}}$ 
+is reached along the ground roll. It is assumed that
+\begin{equation}\label{eq:Take:Off:System:Dynamics:Alpha:Law}
+u (t) =
+    \LEFTRIGHT\lcbrace.{
+      \begin{array}{l@{\rule{2em}{0pt}}l} 
+        \alpha_{\text{g}}
+          & \text{if} \;\, t < t_{\text{Rot}}
+        \\[1em]
+        \alpha_1(t)
+          & \text{if} \;\, t \geq t_{\text{Rot}}
+      \end{array}
+    }
+\end{equation}
 %
-%\begin{figure}[t]
-%\centering
-%\adjincludegraphics[
-%         width=0.55\linewidth,
-%         trim={{0.0\width} {0.0\width} {0.0\width} {0.0\width}}, clip % llx lly urx ury
-%      ]{Fuselage_Nomenclature_Sideview_Tail.pdf}
-%\caption{Fuselage sideview. Tail definitions.}
-%\label{fig:Fuselage:Sideview:Tail}
-%\end{figure}
-%
-%
-%
-%A generic cross section of the fuselage is shown in Figure~\ref{fig:Fuselage:Sectionview}
-%as seen from the negative $X$-axis. The two outlines here\,---\,\emph{upper} and \emph{lower} 
-%outlines\,---\,are those defining the upper and lower part of the section shape.
-%
-%
-%In Table~\ref{tab:Fuselage:Variables} are listed the main variables defining the 
-%fuselage shape.
-%
-%%%-------------------------------------------------------------------------------------
-%%\begin{table}[t]
-%%\centering
-%%\begin{tabular}{rl}
-%%\toprule
-%%Quantity & Description
-%%\\
-%%\midrule
-%%$l_\mathrm{F}$ & fuselage total length
-%%\\
-%%$l_\mathrm{N}$ & fuselage nose length
-%%\\
-%%$l_\mathrm{C}$ & fuselage cylindrical trunc length
-%%\\
-%%$l_\mathrm{T}$ & fuselage tail cone length
-%%\\
-%%$d_\mathrm{C}\equiv h_\mathrm{B}$ & height of fuselage cylindrical trunc, i.\,e. maximum fuselage height
-%%\\
-%%$h_\mathrm{f}(X)$ & height of fuselage section at station $X$
-%%\\
-%%$w_\mathrm{B}$ & width of fuselage cylindrical trunc, i.\,e. maximum fuselage width
-%%\\
-%%$w_\mathrm{f}(X)$ & width of fuselage section at station $X$
-%%\\
-%%\bottomrule
-%%\end{tabular}
-%%\end{table}
-%%%-------------------------------------------------------------------------------------
-%% see: http://www.lorenzopantieri.net/LaTeX_files/TabelleRipartite.pdf
-%\begingroup
-%\centering
-%\begin{longtable}[t]{rl}
-%\caption[Fuselage variables.]{Fuselage variables.}\label{tab:Fuselage:Variables}\\
-%\toprule
-%Quantity & Description
-%\\ \midrule
-%\endfirsthead
-%
-%\multicolumn{2}{c}%
-%  {{\bfseries\color{blue}\tablename\ \thetable{}: \nameref{tab:Fuselage:Variables}}}\\
-%\multicolumn{2}{l}%
-%  {\relsize{-1}({\itshape continued from previous page})}\\
-%\toprule
-%Quantity & Description
-%\\ \midrule
-%\endhead
-%
-%\midrule \multicolumn{2}{r}{{\relsize{-1}\itshape continued on next page}}
-%\endfoot
-%
-%\bottomrule
-%\endlastfoot
-%
-%$l_\mathrm{F}$ & fuselage total length
-%\\
-%$l_\mathrm{N}$ & fuselage nose length
-%\\
-%$l_\mathrm{C}$ & fuselage cylindrical trunc length
-%\\
-%$l_\mathrm{T}$ & fuselage tail cone length
-%\\
-%$d_\mathrm{C}\equiv h_\mathrm{B}$ & height of fuselage cylindrical trunc, i.\,e. maximum fuselage height
-%\\
-%$h_\mathrm{f}(X)$ & height of fuselage section at station $X$
-%\\
-%$w_\mathrm{B}$ & width of fuselage cylindrical trunk, i.\,e. maximum fuselage width
-%\\
-%$w_\mathrm{f}(X)$ & width of fuselage section at station $X$
-%\\
-%$h_\mathrm{f}(X)$ & height of fuselage section at station $X$
-%\\
-%\ldots & {\color{red}to be continued}
-%\end{longtable}
-%\endgroup
-%
-%\TODOInline[ADM]{Check definition of sideview outlines and their control points.}
-%
-%\TODOInline[DG]{Add definition of topview outlines and their control points.}
+with a constant $\alpha_{\text{g}}$ during the ground run up to the rotation speed,
+and a given non-zero law $\alpha_1(t)$ for the post-rotation angle of attack time history.
+
+In Table~\ref{tab:Take:Off:Speeds:FAR25} are reported the take-off characteristic speeds and their
+corresponding requirements as defined by FAR~25.
+
+%%-------------------------------------------------------------------------------------
+% see: http://www.lorenzopantieri.net/LaTeX_files/TabelleRipartite.pdf
+% see also file AE-429-13.pdf
+\begingroup
+\centering
+\begin{longtable}[t]{lll}
+\caption[Take-off speeds and FAR~25 requirements.]{Take-off speeds and FAR~25 requirements..}\label{tab:Take:Off:Speeds:FAR25}\\
+\toprule
+Speed & Description & Requirement
+\\ \midrule
+\endfirsthead
+
+\multicolumn{3}{c}%
+  {{\bfseries\color{blue}\tablename\ \thetable{}: \nameref{tab:Take:Off:Speeds:FAR25}}}\\
+\multicolumn{3}{l}%
+  {\relsize{-1}({\itshape continued from previous page})}\\
+\toprule
+Speed & Description & Requirement
+\\ \midrule
+\endhead
+
+\midrule \multicolumn{3}{r}{{\relsize{-1}\itshape continued on next page}}
+\endfoot
+
+\bottomrule
+\endlastfoot
+
+$V_\mathrm{S}$ & fuselage total length & ---
+\\
+$V_\mathrm{MC}$ & minimum control speed with one engine inoperative (OEI) & ---
+\\
+$V_1$ & OEI decision speed & $\geq V_\mathrm{mc}$
+\\
+$V_\mathrm{Rot}$ & rotation speed & $>1.05\, V_\mathrm{MC}$
+\\
+$V_\mathrm{MU}$ & minimum unstick speed for safe flight & $\geq V_\mathrm{S}$
+\\
+$V_\mathrm{LO}$ & lift-off speed & $> 1.10 \, V_\mathrm{MU}$
+\\
+                &                & $> 1.05 \, V_\mathrm{MU}$ (OEI)
+\\
+$V_2$ & take-off climb speed at \SI[round-precision=0]{35}{ft} & $> 1.20 \, V_\mathrm{S}$
+\\
+                &                & $> 1.10 \, V_\mathrm{MC}$
+\end{longtable}
+\endgroup
+
+The drag coefficient $C_D$ that appears in (\ref{eq:Take:Off:System:Dynamics:RHS:functions:E})
+can be modelled as follows:
+\begin{equation}\label{eq:CD:A}
+C_D = C_{D0} + \upDelta C_{D0} + \left( K + \frac{G}{\pi \AR e} \right) C_L^2
+\end{equation}
+with a $\upDelta C_{D0}$ due to flap and undercarriage
+\begin{equation}\label{eq:CD:B}
+\upDelta C_{D0} = \frac{W}{S} \, K_{\text{uc}} \, m_{\text{MTO}}^{-\num{0.219}}
+\;,\qquad
+K_{\text{uc}} =
+    \LEFTRIGHT\lcbrace.{
+      \begin{array}{l@{\rule{2em}{0pt}}l} 
+        \num[round-precision=2]{5.81}\cdot 10^{-5}
+          & \text{zero flap}
+        \\[1em]
+        \num[round-precision=2]{3.16}\cdot 10^{-5}
+          & \text{max flap down}
+      \end{array}
+    }  
+\end{equation}
+where the maximum mass $m_{\text{MTO}}$ is expressed in \si{kg} and the
+wing loading $W/S$ is expressed in \si{N/m^2}.
+The term $G$ in (\ref{eq:CD:A}) incorporates the ground effect and is calculated as
+\begin{equation}\label{eq:CD:Ground:Effect}
+G = \frac{\big( 16\,h_{\text{W}}/b \big)^2}{1+ \big( 16\,h_{\text{W}}/b \big)^2}
+\end{equation}
+with $h_{\text{W}}$ the height of wing above the ground.
+With conventional undercarriages $h_{\text{W}}/b$ is usually between
+$\num[round-precision=1]{0.1}$ and $\num[round-precision=1]{0.2}$ when the aircraft is on the ground.
+When the aircraft is airborne it can be assumed $h_{\text{W}} \approx h$. 
+
 
 
 \end{document}

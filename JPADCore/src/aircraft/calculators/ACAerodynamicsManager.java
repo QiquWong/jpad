@@ -515,7 +515,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 			cLZeroWingBody,alphaStarDouble, cLActual = 0, cLStar;
 		double a, b, c, d;
 		Amount<Angle> alphaMaxWingClean, alphaStar, alphaMaxWingBody;
-
+		
 		alphaMaxWingClean =  _theAircraft.get_wing().getAerodynamics().get_alphaMaxClean();
 		cLMaxWingClean = _theAircraft.get_wing().getAerodynamics().get_cLMaxClean();
 		cLAlphaWing = _theAircraft.get_wing().getAerodynamics().getcLLinearSlopeNB();

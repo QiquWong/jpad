@@ -1,0 +1,39 @@
+%******************************************************************************************
+%
+% AUTHOR:           Agostino De Marco
+% DESCRIPTION:      This is "_init.tex", containing plain TeX commands.
+%                   Goes in document before \documentclass
+%
+%******************************************************************************************
+%
+%------------------------------------------------------------------------------------------
+% Meta-commands for the TeXworks editor
+%
+% !TeX root = ./Tesi.tex
+% !TEX encoding = UTF-8
+% !TEX program = pdflatex
+%------------------------------------------------------------------------------------------
+
+%%% We need a non standard MakeIndex style, because many entries in
+%%% the index have names containing `@'.  Compilation of the index
+%%% requires the call `makeindex Tesi'
+
+\begin{filecontents*}{Tesi.ist}
+actual '='
+\end{filecontents*}
+
+%%% Some constant strings
+
+\def\myAuthorsList{Gennaro~Esposito}
+\def\myAuthorListAbbreviated{V.~Trifari}
+
+\def\myDocName{JPAD, a Java Program toolchain for Aircraft Designers}
+\def\myDocSubTitle{Development manual}
+
+\def\myFooterLeft{\myAuthorsList\  -- \myDocName}
+\def\myFooterRight{\myDocSubTitle}
+
+\def\myDocVersion{ver.~2016.a}% <================== %?[ADJUST-HERE] EDIT THIS STRING AS NEEDED
+\def\myDocDate{November~2014}% not used
+
+%% EOF

@@ -6,15 +6,9 @@ import java.util.List;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Duration;
 import javax.measure.quantity.Length;
-import javax.measure.quantity.Quantity;
 import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
-import javax.measure.unit.Unit;
-
-import org.apache.commons.math3.ode.FirstOrderDifferentialEquations;
-import org.apache.commons.math3.ode.FirstOrderIntegrator;
-import org.apache.commons.math3.ode.nonstiff.DormandPrince853Integrator;
 import org.jscience.physics.amount.Amount;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
@@ -41,8 +35,8 @@ public class TakeOff_Landing_Test_TP {
 						_stopTimeCalculation, _stopTimeGraph, _stopTimeBalanced, _stopTimeTotal,
 						_elapsedTimeTotal, _elapsedTimeCalculation, _elapsedTimeGraph, _elapsedTimeBalanced;
 
-	// TODO: example of custom NON_SI unit
-	private static Unit<? extends Quantity> angularRateUnit = (NonSI.DEGREE_ANGLE).divide((SI.SECOND));
+//	TODO: example of custom NON_SI unit
+//	private static Unit<? extends Quantity> angularRateUnit = (NonSI.DEGREE_ANGLE).divide((SI.SECOND));
 
 	//------------------------------------------------------------------------------------------
 	// VARIABLE DECLARATION:
@@ -309,27 +303,27 @@ public class TakeOff_Landing_Test_TP {
 				iw
 				);
 
-		theTakeOffLandingCalculator.initialize();
-		theTakeOffLandingCalculator.calculateTakeOffDistance(null, false);
-		_stopTimeCalculation = System.currentTimeMillis();
-		_startTimeGraph = System.currentTimeMillis();
+//		theTakeOffLandingCalculator.initialize();
+//		theTakeOffLandingCalculator.calculateTakeOffDistance(null, false);
+//		_stopTimeCalculation = System.currentTimeMillis();
+//		_startTimeGraph = System.currentTimeMillis();
 		theTakeOffLandingCalculator.createTakeOffCharts();
-		_stopTimeGraph = System.currentTimeMillis();
-		_startTimeBalanced = System.currentTimeMillis();
-		theTakeOffLandingCalculator.calculateBalancedFieldLength();
-		theTakeOffLandingCalculator.createBalancedFieldLengthChart();
-		_stopTimeBalanced = System.currentTimeMillis();
-		_stopTimeTotal = System.currentTimeMillis();
-
-		_elapsedTimeTotal = _stopTimeTotal - _startTimeCalculation;
-		_elapsedTimeCalculation = _stopTimeCalculation - _startTimeCalculation;
-		_elapsedTimeGraph = _stopTimeGraph - _startTimeGraph;
-		_elapsedTimeBalanced = _stopTimeBalanced - _startTimeBalanced;
-
-		System.out.println("\nANALYSIS TIME = " + (get_elapsedTime()) + " millisenconds");
-		System.out.println("\nCALCULATION TIME = " + (get_elapsedTimeCalculation()) + " millisenconds");
-		System.out.println("\nBALANCED FIELD LENGTH TIME = " + (get_elapsedTimeBalanced()) + " millisenconds");
-		System.out.println("\nGRAPHICS TIME = " + (get_elapsedTimeGraph()) + " millisenconds");
+//		_stopTimeGraph = System.currentTimeMillis();
+//		_startTimeBalanced = System.currentTimeMillis();
+//		theTakeOffLandingCalculator.calculateBalancedFieldLength();
+//		theTakeOffLandingCalculator.createBalancedFieldLengthChart();
+//		_stopTimeBalanced = System.currentTimeMillis();
+//		_stopTimeTotal = System.currentTimeMillis();
+//
+//		_elapsedTimeTotal = _stopTimeTotal - _startTimeCalculation;
+//		_elapsedTimeCalculation = _stopTimeCalculation - _startTimeCalculation;
+//		_elapsedTimeGraph = _stopTimeGraph - _startTimeGraph;
+//		_elapsedTimeBalanced = _stopTimeBalanced - _startTimeBalanced;
+//
+//		System.out.println("\nANALYSIS TIME = " + (get_elapsedTime()) + " millisenconds");
+//		System.out.println("\nCALCULATION TIME = " + (get_elapsedTimeCalculation()) + " millisenconds");
+//		System.out.println("\nBALANCED FIELD LENGTH TIME = " + (get_elapsedTimeBalanced()) + " millisenconds");
+//		System.out.println("\nGRAPHICS TIME = " + (get_elapsedTimeGraph()) + " millisenconds");
 
 	}
 

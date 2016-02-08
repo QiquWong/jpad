@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.11.16)  4 FEB 2016 13:34
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.11.16)  7 FEB 2016 22:44
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -4556,47 +4556,47 @@ File: images/Payload_Range.png Graphic file (type png)
 Package pdftex.def Info: images/Payload_Range.png used on input line 29.
 (pdftex.def)             Requested size: 291.14803pt x 219.70776pt.
  [8 <./images/Flexible_Payload_Range.png> <./images/Payload_Range.png>] [9]
-Underfull \hbox (badness 10000) in paragraph at lines 117--117
+Underfull \hbox (badness 10000) in paragraph at lines 123--123
 []|\T1/ntxtlf/b/n/12 Start\T1/ntxtlf/m/n/12 (+20) ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 117--117
+Underfull \hbox (badness 10000) in paragraph at lines 123--123
 []|\T1/ntxtlf/b/n/12 Brief
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 117--118
+Underfull \hbox (badness 10000) in paragraph at lines 123--124
 []|\T1/ntxtlf/b/n/12 Landing,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 117--118
+Underfull \hbox (badness 10000) in paragraph at lines 123--124
 \T1/ntxtlf/b/n/12 Taxi and
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 128--128
+Underfull \hbox (badness 10000) in paragraph at lines 134--134
 []|\T1/ntxtlf/m/n/12 (+20) Mil.Patrol,Bmb
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 129--129
+Underfull \hbox (badness 10000) in paragraph at lines 135--135
 []|\T1/ntxtlf/m/n/12 (+20) Flying
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 129--129
+Underfull \hbox (badness 10000) in paragraph at lines 135--135
 \T1/ntxtlf/m/n/12 (+20) boats,Amph.
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 130--130
+Underfull \hbox (badness 10000) in paragraph at lines 136--136
 []|\T1/ntxtlf/m/n/12 (+20) Supersonic
  []
 
 
-Overfull \hbox (12.75484pt too wide) in paragraph at lines 115--133
+Overfull \hbox (12.75484pt too wide) in paragraph at lines 121--139
  [][] 
  []
 
@@ -4608,23 +4608,30 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-Underfull \hbox (badness 3758) in paragraph at lines 185--185
+Underfull \hbox (badness 3758) in paragraph at lines 191--191
 []|\T1/ntxtlf/m/n/12 (+20) The cur-rent lift co-ef-fi-cient in cruise
  []
 
-[11]
-Overfull \hbox (17.98544pt too wide) in paragraph at lines 236--238
+
+LaTeX Warning: Reference `eqn:BreguetEquation1.1' on page 11 undefined on input
+ line 205.
+
+
+LaTeX Warning: Reference `eqn:BreguetEquation1.2' on page 11 undefined on input
+ line 205.
+
+[11] [12]
+Overfull \hbox (17.98544pt too wide) in paragraph at lines 242--244
 \T1/ntxtlf/m/n/12 (-20) anal-y-sis, for the last method that has to plot the di
 -a-gram; this is called [][][]
  []
 
-[12]
 <images/PayloadRange_BestRange_Flowchart.png, id=298, 1493.58pt x 943.525pt>
 File: images/PayloadRange_BestRange_Flowchart.png Graphic file (type png)
 
 <use images/PayloadRange_BestRange_Flowchart.png>
 Package pdftex.def Info: images/PayloadRange_BestRange_Flowchart.png used on in
-put line 246.
+put line 252.
 (pdftex.def)             Requested size: 366.13948pt x 231.28802pt.
 
 <images/PayloadRange_MTOM_Flowchart.png, id=299, 1494.58376pt x 744.7825pt>
@@ -4632,11 +4639,11 @@ File: images/PayloadRange_MTOM_Flowchart.png Graphic file (type png)
 
 <use images/PayloadRange_MTOM_Flowchart.png>
 Package pdftex.def Info: images/PayloadRange_MTOM_Flowchart.png used on input l
-ine 254.
+ine 260.
 (pdftex.def)             Requested size: 366.13948pt x 182.45625pt.
  [13 <./images/PayloadRange_BestRange_Flowchart.png (PNG copy)>] [14 <./images/
 PayloadRange_MTOM_Flowchart.png (PNG copy)>] [15]
-Overfull \hbox (2.58348pt too wide) in paragraph at lines 328--329
+Overfull \hbox (2.58348pt too wide) in paragraph at lines 334--335
 [][][][][][][][][][][]  
  []
 
@@ -4646,26 +4653,26 @@ File: images/HowToCreateADefaultAircraftInJPAD.png Graphic file (type png)
 
 <use images/HowToCreateADefaultAircraftInJPAD.png>
 Package pdftex.def Info: images/HowToCreateADefaultAircraftInJPAD.png used on i
-nput line 529.
+nput line 535.
 (pdftex.def)             Requested size: 512.31558pt x 442.97632pt.
 
 <images/ATR-72.png, id=487, 1028.643pt x 639.5895pt>
 File: images/ATR-72.png Graphic file (type png)
  <use images/ATR-72.png>
-Package pdftex.def Info: images/ATR-72.png used on input line 535.
+Package pdftex.def Info: images/ATR-72.png used on input line 541.
 (pdftex.def)             Requested size: 352.90608pt x 219.42892pt.
 
-Overfull \hbox (8.33444pt too wide) in paragraph at lines 564--564
+Overfull \hbox (8.33444pt too wide) in paragraph at lines 570--570
 []|$[][][] []$|| 
  []
 
 
-Overfull \hbox (8.33444pt too wide) in paragraph at lines 564--564
+Overfull \hbox (8.33444pt too wide) in paragraph at lines 570--570
 []|$[][][] []$|| 
  []
 
 
-Overfull \hbox (2.33444pt too wide) in paragraph at lines 564--564
+Overfull \hbox (2.33444pt too wide) in paragraph at lines 570--570
 []|$[] []$|| 
  []
 
@@ -4681,20 +4688,20 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 File: images/B747-100B.png Graphic file (type png)
 
 <use images/B747-100B.png>
-Package pdftex.def Info: images/B747-100B.png used on input line 583.
+Package pdftex.def Info: images/B747-100B.png used on input line 589.
 (pdftex.def)             Requested size: 352.90608pt x 205.23721pt.
 
-Overfull \hbox (14.33444pt too wide) in paragraph at lines 612--612
+Overfull \hbox (14.33444pt too wide) in paragraph at lines 618--618
 []|$[] []$|| 
  []
 
 
-Overfull \hbox (14.33444pt too wide) in paragraph at lines 612--612
+Overfull \hbox (14.33444pt too wide) in paragraph at lines 618--618
 []|$[] []$|| 
  []
 
 
-Overfull \hbox (14.33444pt too wide) in paragraph at lines 612--612
+Overfull \hbox (14.33444pt too wide) in paragraph at lines 618--618
 []|$[] []$|| 
  []
 
@@ -4703,7 +4710,7 @@ Overfull \hbox (14.33444pt too wide) in paragraph at lines 612--612
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 (./images/PayloadRange_MaxTakeOffMass_TF.tikz)
-Overfull \hbox (6.46675pt too wide) in paragraph at lines 78--626
+Overfull \hbox (6.46675pt too wide) in paragraph at lines 78--632
  [][] 
  []
 
@@ -4750,45 +4757,84 @@ File: images/TDeltaDragDelta.png Graphic file (type png)
 Package pdftex.def Info: images/TDeltaDragDelta.png used on input line 94.
 (pdftex.def)             Requested size: 220.56546pt x 199.8972pt.
 
-<images/AutonomyFactor.png, id=605, 574.145pt x 468.952pt>
+<images/AutonomyFactor.png, id=604, 574.145pt x 468.952pt>
 File: images/AutonomyFactor.png Graphic file (type png)
 
 <use images/AutonomyFactor.png>
-Package pdftex.def Info: images/AutonomyFactor.png used on input line 129.
+Package pdftex.def Info: images/AutonomyFactor.png used on input line 134.
 (pdftex.def)             Requested size: 264.68124pt x 216.1928pt.
  [30 <./images/TDeltaDragDelta.png>]
 <images/CruiseGrid.png, id=616, 480.194pt x 438.438pt>
 File: images/CruiseGrid.png Graphic file (type png)
 
 <use images/CruiseGrid.png>
-Package pdftex.def Info: images/CruiseGrid.png used on input line 141.
+Package pdftex.def Info: images/CruiseGrid.png used on input line 146.
 (pdftex.def)             Requested size: 220.56546pt x 201.38287pt.
- [31 <./images/AutonomyFactor.png> <./images/CruiseGrid.png>] [32]
-<images/SpecificRange_Flowchart.png, id=638, 1522.68875pt x 987.69pt>
+ [31 <./images/AutonomyFactor.png> <./images/CruiseGrid.png>] [32] [33]
+<images/SpecificRange_Flowchart.png, id=644, 1522.68875pt x 987.69pt>
 File: images/SpecificRange_Flowchart.png Graphic file (type png)
 
 <use images/SpecificRange_Flowchart.png>
 Package pdftex.def Info: images/SpecificRange_Flowchart.png used on input line 
-252.
+261.
 (pdftex.def)             Requested size: 397.01514pt x 257.51674pt.
- [33])
-(./contents/Chapter_HighLiftDevices.tex [34 <./images/SpecificRange_Flowchart.p
-ng (PNG copy)>]
-Chapter 4.
-) (./contents/Chapter_TakeOff.tex [35
+ [34 <./images/SpecificRange_Flowchart.png (PNG copy)>] [35] [36] [37] (./image
+s/DragThrust_ATR.tikz)
+Overfull \hbox (27.0917pt too wide) in paragraph at lines 1526--474
+ [][] 
+ []
 
-] [36
+(./images/DragThrust_B747.tikz)
+Overfull \hbox (28.45808pt too wide) in paragraph at lines 1165--481
+ [][] 
+ []
+
+(./images/SFC_ATR.tikz)
+Overfull \hbox (14.44876pt too wide) in paragraph at lines 1304--488
+ [][] 
+ []
+
+(./images/SFC_B747.tikz)
+Overfull \hbox (18.85065pt too wide) in paragraph at lines 1303--495
+ [][] 
+ []
+
+(./images/Efficiency_ATR.tikz)
+Overfull \hbox (8.73279pt too wide) in paragraph at lines 1304--502
+ [][] 
+ []
+
+(./images/Efficiency_B747.tikz)
+Overfull \hbox (8.72409pt too wide) in paragraph at lines 1303--509
+ [][] 
+ []
+
+(./images/SpecificRange_ATR.tikz)
+Overfull \hbox (18.82077pt too wide) in paragraph at lines 1334--516
+ [][] 
+ []
+
+(./images/SpecificRange_B747.tikz)
+Overfull \hbox (27.82321pt too wide) in paragraph at lines 1334--523
+ [][] 
+ []
+
+) (./contents/Chapter_HighLiftDevices.tex [38] [39] [40] [41] [42]
+Chapter 4.
+) (./contents/Chapter_TakeOff.tex [43
+
+] [44
 
 ]
 Chapter 5.
-)) [37
+)) [45
 
-] [38
+] [46
 
 
-] [39
+] [47
 
-] (./Tesi_Appendices.tex (./appendices/HDFDatabase.tex [40
+] (./Tesi_Appendices.tex (./appendices/HDFDatabase.tex [48
 
 ]
 Appendix A.
@@ -4797,25 +4843,25 @@ File: lstlang1.sty 2015/06/04 1.6 listings language file
 )
 (c:/texlive/2015/texmf-dist/tex/latex/listings/lstmisc.sty
 File: lstmisc.sty 2015/06/04 1.6 (Carsten Heinz)
-) [41
+) [49
 
-] [42]
-<images/HDF_Dataset_creation.png, id=743, 1266.7325pt x 612.2875pt>
+] [50]
+<images/HDF_Dataset_creation.png, id=943, 1266.7325pt x 612.2875pt>
 File: images/HDF_Dataset_creation.png Graphic file (type png)
 
 <use images/HDF_Dataset_creation.png>
 Package pdftex.def Info: images/HDF_Dataset_creation.png used on input line 122
 .
 (pdftex.def)             Requested size: 388.19737pt x 187.63965pt.
- [43 <./images/HDF_Dataset_creation.png (PNG copy)>] <images/deltaAlphaSforza.p
-ng, id=784, 921.4425pt x 538.26094pt>
+ [51 <./images/HDF_Dataset_creation.png (PNG copy)>] <images/deltaAlphaSforza.p
+ng, id=984, 921.4425pt x 538.26094pt>
 File: images/deltaAlphaSforza.png Graphic file (type png)
 
 <use images/deltaAlphaSforza.png>
 Package pdftex.def Info: images/deltaAlphaSforza.png used on input line 129.
 (pdftex.def)             Requested size: 242.62335pt x 141.7268pt.
 
-<images/DAlphaVsLambdaLEVsDy_MATLAB.png, id=785, 421.575pt x 316.18124pt>
+<images/DAlphaVsLambdaLEVsDy_MATLAB.png, id=985, 421.575pt x 316.18124pt>
 File: images/DAlphaVsLambdaLEVsDy_MATLAB.png Graphic file (type png)
 
 <use images/DAlphaVsLambdaLEVsDy_MATLAB.png>
@@ -4827,10 +4873,10 @@ Overfull \hbox (44.11577pt too wide) in paragraph at lines 129--130
  [][][] 
  []
 
-[44
+[52
 
  <./images/deltaAlphaSforza.png> <./images/DAlphaVsLambdaLEVsDy_MATLAB.png (PNG
- copy)>])) [45] [46
+ copy)>])) [53] [54
 
 
 ]
@@ -4842,7 +4888,7 @@ Package microtype Info: Character `029' is missing
 Package biblatex Warning: No driver for entry type 'other'.
 (biblatex)                Using fallback driver on input line 189.
 
-[47
+[55
 
 ]
 
@@ -4854,18 +4900,18 @@ Package glossaries Warning: Deprecated command \glossarystyle.
  I recommend you switch to \setglossarystyle unless you want to maintain backwa
 rd compatibility on input line 197.
 
-[48] (./Tesi.gls [49
+[56] (./Tesi.gls [57
 
 
 
-]) [50] (./Tesi.acr) [51
+]) [58] (./Tesi.acr) [59
 
 
 
-] (./Tesi.sym [52
+] (./Tesi.sym [60
 
 
-] [53
+] [61
 
 
 ])
@@ -4892,7 +4938,7 @@ Package minitoc(hints) Warning: W0024
 (minitoc(hints))                Some hints have been written 
 (minitoc(hints))                in the Tesi.log file.
 
-[54]
+[62]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 252.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 252.
  (./Tesi.aux
@@ -4919,7 +4965,10 @@ File: italian.mld 2006/01/13
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 252.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 252.
 Package rerunfilecheck Info: File `Tesi.out' has not changed.
-(rerunfilecheck)             Checksum: FA6CA51087E10A85442E72A961748890;1919.
+(rerunfilecheck)             Checksum: C794C8E11E7E8FE347BC978CB350E449;1919.
+
+
+LaTeX Warning: There were undefined references.
 
 
 LaTeX Warning: There were multiply-defined labels.
@@ -4929,13 +4978,13 @@ Package logreq Info: Writing requests to 'Tesi.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 66211 strings out of 493054
- 1363199 string characters out of 6138326
- 2170994 words of memory out of 5000000
- 67655 multiletter control sequences out of 15000+600000
- 183229 words of font info for 166 fonts, out of 8000000 for 9000
+ 66614 strings out of 493054
+ 1370425 string characters out of 6138326
+ 2577664 words of memory out of 5000000
+ 67866 multiletter control sequences out of 15000+600000
+ 183314 words of font info for 167 fonts, out of 8000000 for 9000
  1142 hyphenation exceptions out of 8191
- 61i,25n,104p,10382b,4155s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 61i,25n,107p,10382b,4155s stack positions out of 5000i,500n,10000p,200000b,80000s
 {c:/texlive/2015/texmf-dist/fonts/enc/dvips/newtx/ntx-ec-tlf-sc.enc}{c:/texli
 ve/2015/texmf-dist/fonts/enc/dvips/newtx/ntx-ec-tlf.enc}{c:/texlive/2015/texmf-
 dist/fonts/enc/dvips/base/8r.enc}<c:/texlive/2015/texmf-dist/fonts/type1/public
@@ -4943,17 +4992,18 @@ dist/fonts/enc/dvips/base/8r.enc}<c:/texlive/2015/texmf-dist/fonts/type1/public
 tio/amarri.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/bera/fvmr8a.pfb><
 c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2bmit.pfb><c:/texlive/texmf-l
 ocal/fonts/type1/pctex/mtpro2/mt2exa.pfb><c:/texlive/texmf-local/fonts/type1/pc
-tex/mtpro2/mt2mis.pfb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2mit.p
-fb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2sys.pfb><c:/texlive/texm
-f-local/fonts/type1/pctex/mtpro2/mt2syt.pfb><c:/texlive/2015/texmf-dist/fonts/t
-ype1/public/tex-gyre/qtmb.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/te
-x-gyre/qtmr.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmri.p
-fb><c:/texlive/2015/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb><c:/texlive/
-2015/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb>
-Output written on Tesi.pdf (55 pages, 2852251 bytes).
+tex/mtpro2/mt2mif.pfb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2mis.p
+fb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2mit.pfb><c:/texlive/texm
+f-local/fonts/type1/pctex/mtpro2/mt2sys.pfb><c:/texlive/texmf-local/fonts/type1
+/pctex/mtpro2/mt2syt.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/tex-gyr
+e/qtmb.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmr.pfb><c:
+/texlive/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmri.pfb><c:/texlive/2015
+/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb><c:/texlive/2015/texmf-dist/fon
+ts/type1/urw/helvetic/uhvr8a.pfb>
+Output written on Tesi.pdf (63 pages, 2995165 bytes).
 PDF statistics:
- 1136 PDF objects out of 1200 (max. 8388607)
- 1008 compressed objects within 11 object streams
- 534 named destinations out of 1000 (max. 500000)
+ 1373 PDF objects out of 1440 (max. 8388607)
+ 1234 compressed objects within 13 object streams
+ 700 named destinations out of 1000 (max. 500000)
  29615 words of extra memory for PDF output out of 29859 (max. 10000000)
 
