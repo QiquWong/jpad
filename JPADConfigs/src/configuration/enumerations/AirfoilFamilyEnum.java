@@ -7,6 +7,7 @@ package configuration.enumerations;
  *
  */
 public enum AirfoilFamilyEnum{
+	NACA0012,
 	NACA63_209,
 	NACA64_208,
 	NACA65_209,
