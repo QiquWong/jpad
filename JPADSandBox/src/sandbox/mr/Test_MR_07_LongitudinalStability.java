@@ -177,6 +177,7 @@ public class Test_MR_07_LongitudinalStability {
 		aircraft.get_exposedWing().set_theAirfoilsList(myAirfoilList);
 		aircraft.get_exposedWing().updateAirfoilsGeometryExposedWing( aircraft);
 
+		
 		//--------------------------------------------------------------------------------------
 		//Horizontal Tail
 
