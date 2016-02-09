@@ -251,117 +251,6 @@ public class CalcTakeOff_Landing {
 
 		FirstOrderDifferentialEquations ode = new DynamicsEquations();
 
-		// handle detailed info
-		StepHandler stepHandler = new StepHandler() {
-						
-			public void init(double t0, double[] x0, double t) {
-			}
-
-			@Override
-			public void handleStep(StepInterpolator interpolator, boolean isLast) throws MaxCountExceededException {
-				
-				double   t = interpolator.getCurrentTime();
-				double[] x = interpolator.getInterpolatedState();
-				
-				CalcTakeOff_Landing.this.getTime().add(Amount.valueOf(t, SI.SECOND));
-				CalcTakeOff_Landing.this.getSpeed().add(Amount.valueOf(x[1], SI.METERS_PER_SECOND));
-				CalcTakeOff_Landing.this.getThrust().add(Amount.valueOf(
-						((DynamicsEquations)ode).thrust(x[1]),
-						SI.NEWTON)
-						);
-				CalcTakeOff_Landing.this.getThrustHorizontal().add(Amount.valueOf(
-						((DynamicsEquations)ode).thrust(x[1])*Math.cos(((DynamicsEquations)ode).alpha),
-						SI.NEWTON)
-						);
-				CalcTakeOff_Landing.this.getThrustVertical().add(Amount.valueOf(
-						((DynamicsEquations)ode).thrust(x[1])*Math.sin(((DynamicsEquations)ode).alpha),
-						SI.NEWTON)
-						);
-				CalcTakeOff_Landing.this.getFriction().add(Amount.valueOf(
-						CalcTakeOff_Landing.this.getMu()
-						*(((DynamicsEquations)ode).weight
-								- ((DynamicsEquations)ode).lift(x[1],((DynamicsEquations)ode).alpha)),
-						SI.NEWTON)
-						);
-				CalcTakeOff_Landing.this.getLift().add(Amount.valueOf(
-						((DynamicsEquations)ode).lift(x[1],((DynamicsEquations)ode).alpha),
-						SI.NEWTON)
-						);
-				CalcTakeOff_Landing.this.getDrag().add(Amount.valueOf(
-						((DynamicsEquations)ode).drag(x[1],((DynamicsEquations)ode).alpha),
-						SI.NEWTON)
-						);
-				CalcTakeOff_Landing.this.getTotalForce().add(Amount.valueOf(
-						((DynamicsEquations)ode).thrust(x[1])*Math.cos(((DynamicsEquations)ode).alpha)
-						- ((DynamicsEquations)ode).drag(x[1],((DynamicsEquations)ode).alpha)
-						- CalcTakeOff_Landing.this.getMu()*(((DynamicsEquations)ode).weight
-								- ((DynamicsEquations)ode).lift(x[1],((DynamicsEquations)ode).alpha))
-						- ((DynamicsEquations)ode).weight*Math.sin(x[2]),
-						SI.NEWTON)
-						);
-				CalcTakeOff_Landing.this.getLoadFactor().add(
-						((DynamicsEquations)ode).lift(x[1], ((DynamicsEquations)ode).alpha)
-						/(((DynamicsEquations)ode).weight*Math.cos(x[2]))
-						);
-				CalcTakeOff_Landing.this.getRateOfClimb().add(Amount.valueOf(
-						x[1]*Math.sin(x[2]),
-						SI.METERS_PER_SECOND)
-						);
-				CalcTakeOff_Landing.this.getAcceleration().add(Amount.valueOf(
-						(AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquations)ode).weight)
-						*(((DynamicsEquations)ode).thrust(x[1])*Math.cos(((DynamicsEquations)ode).alpha)
-						- ((DynamicsEquations)ode).drag(x[1],((DynamicsEquations)ode).alpha)
-						- CalcTakeOff_Landing.this.getMu()*(((DynamicsEquations)ode).weight
-								- ((DynamicsEquations)ode).lift(x[1],((DynamicsEquations)ode).alpha))
-						- ((DynamicsEquations)ode).weight*Math.sin(x[2])),
-						SI.METERS_PER_SQUARE_SECOND)
-						);
-				CalcTakeOff_Landing.this.getGroundDistance().add(Amount.valueOf(
-						x[0],
-						SI.METER)
-						);
-				CalcTakeOff_Landing.this.getVerticalDistance().add(Amount.valueOf(
-						x[3],
-						SI.METER)
-						);
-				CalcTakeOff_Landing.this.getAlpha().add(Amount.valueOf(
-						((DynamicsEquations)ode).alpha,
-						NonSI.DEGREE_ANGLE)
-						);
-				CalcTakeOff_Landing.this.getGamma().add(Amount.valueOf(
-						x[2],
-						NonSI.DEGREE_ANGLE)
-						);
-				CalcTakeOff_Landing.this.getAlphaDot().add(
-						((DynamicsEquations)ode).alphaDot(t)
-						);  
-				
-				//-------------------------------------------------
-				// TODO: ADD GAMMA_DOT WHEN AVAILABLE
-				//-------------------------------------------------
-				CalcTakeOff_Landing.this.getGammaDot().add(0.0); 
-				//--------------------------------------------------
-				
-				CalcTakeOff_Landing.this.getTheta().add(Amount.valueOf(
-						x[2] + ((DynamicsEquations)ode).alpha,
-						NonSI.DEGREE_ANGLE)
-						);
-				CalcTakeOff_Landing.this.getcL().add(
-						((DynamicsEquations)ode).cL(((DynamicsEquations)ode).alpha)
-						);
-				CalcTakeOff_Landing.this.getcD().add(
-						((DynamicsEquations)ode).cD0 
-						+ ((DynamicsEquations)ode).deltaCD0 
-						+ ((((DynamicsEquations)ode).cL(((DynamicsEquations)ode).alpha)
-								/(Math.PI
-										*((DynamicsEquations)ode).ar
-										*((DynamicsEquations)ode).oswald))
-								*kGround)
-						);
-			}
-		};
-		theIntegrator.addStepHandler(stepHandler);
-		
 		EventHandler ehCheckVRot = new EventHandler() {
 
 			@Override
@@ -426,8 +315,8 @@ public class CalcTakeOff_Landing {
 			}
 
 		};
-		theIntegrator.addEventHandler(ehCheckVRot, 1.0e-5, 5e-2, 50);
-
+		theIntegrator.addEventHandler(ehCheckVRot, 1.0e-3, 5e-1, 20);
+		
 		EventHandler ehCheckLoadFactor = new EventHandler() {
 
 			@Override
@@ -464,7 +353,7 @@ public class CalcTakeOff_Landing {
 						);
 				
 				if(!increasing)
-					settAlphaCost(Amount.valueOf(t, SI.SECOND));
+					tAlphaCost = (Amount.valueOf(t, SI.SECOND));
 				
 				// COLLECTING DATA IN TakeOffResultsMap
 				System.out.println("\n\tCOLLECTING DATA AT THE END OF ROTATION PHASE ...");
@@ -497,7 +386,7 @@ public class CalcTakeOff_Landing {
 			}
 
 		};
-		theIntegrator.addEventHandler(ehCheckLoadFactor, 1.0e-5, 5e-2, 50);
+		theIntegrator.addEventHandler(ehCheckLoadFactor, 1.0e-3, 5e-1, 20);
 		
 		EventHandler ehCLtoHold = new EventHandler() {
 
@@ -529,7 +418,7 @@ public class CalcTakeOff_Landing {
 			}
 
 		};
-		theIntegrator.addEventHandler(ehCLtoHold, 1.0e-5, 5e-2, 50);
+		theIntegrator.addEventHandler(ehCLtoHold, 1.0e-3, 5e-1, 20);
 		
 		EventHandler ehEndConstantCL = new EventHandler() {
 
@@ -561,7 +450,118 @@ public class CalcTakeOff_Landing {
 			}
 
 		};
-		theIntegrator.addEventHandler(ehEndConstantCL, 1.0e-5, 5e-2, 50);
+		theIntegrator.addEventHandler(ehEndConstantCL, 1.0e-3, 5e-1, 20);
+		
+		// handle detailed info
+		StepHandler stepHandler = new StepHandler() {
+
+			public void init(double t0, double[] x0, double t) {
+			}
+
+			@Override
+			public void handleStep(StepInterpolator interpolator, boolean isLast) throws MaxCountExceededException {
+
+				double   t = interpolator.getCurrentTime();
+				double[] x = interpolator.getInterpolatedState();
+
+				CalcTakeOff_Landing.this.getTime().add(Amount.valueOf(t, SI.SECOND));
+				CalcTakeOff_Landing.this.getSpeed().add(Amount.valueOf(x[1], SI.METERS_PER_SECOND));
+				CalcTakeOff_Landing.this.getThrust().add(Amount.valueOf(
+						((DynamicsEquations)ode).thrust(x[1]),
+						SI.NEWTON)
+						);
+				CalcTakeOff_Landing.this.getThrustHorizontal().add(Amount.valueOf(
+						((DynamicsEquations)ode).thrust(x[1])*Math.cos(((DynamicsEquations)ode).alpha),
+						SI.NEWTON)
+						);
+				CalcTakeOff_Landing.this.getThrustVertical().add(Amount.valueOf(
+						((DynamicsEquations)ode).thrust(x[1])*Math.sin(((DynamicsEquations)ode).alpha),
+						SI.NEWTON)
+						);
+				CalcTakeOff_Landing.this.getFriction().add(Amount.valueOf(
+						CalcTakeOff_Landing.this.getMu()
+						*(((DynamicsEquations)ode).weight
+								- ((DynamicsEquations)ode).lift(x[1],((DynamicsEquations)ode).alpha)),
+						SI.NEWTON)
+						);
+				CalcTakeOff_Landing.this.getLift().add(Amount.valueOf(
+						((DynamicsEquations)ode).lift(x[1],((DynamicsEquations)ode).alpha),
+						SI.NEWTON)
+						);
+				CalcTakeOff_Landing.this.getDrag().add(Amount.valueOf(
+						((DynamicsEquations)ode).drag(x[1],((DynamicsEquations)ode).alpha),
+						SI.NEWTON)
+						);
+				CalcTakeOff_Landing.this.getTotalForce().add(Amount.valueOf(
+						((DynamicsEquations)ode).thrust(x[1])*Math.cos(((DynamicsEquations)ode).alpha)
+						- ((DynamicsEquations)ode).drag(x[1],((DynamicsEquations)ode).alpha)
+						- CalcTakeOff_Landing.this.getMu()*(((DynamicsEquations)ode).weight
+								- ((DynamicsEquations)ode).lift(x[1],((DynamicsEquations)ode).alpha))
+						- ((DynamicsEquations)ode).weight*Math.sin(x[2]),
+						SI.NEWTON)
+						);
+				CalcTakeOff_Landing.this.getLoadFactor().add(
+						((DynamicsEquations)ode).lift(x[1], ((DynamicsEquations)ode).alpha)
+						/(((DynamicsEquations)ode).weight*Math.cos(x[2]))
+						);
+				CalcTakeOff_Landing.this.getRateOfClimb().add(Amount.valueOf(
+						x[1]*Math.sin(x[2]),
+						SI.METERS_PER_SECOND)
+						);
+				CalcTakeOff_Landing.this.getAcceleration().add(Amount.valueOf(
+						(AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquations)ode).weight)
+						*(((DynamicsEquations)ode).thrust(x[1])*Math.cos(((DynamicsEquations)ode).alpha)
+								- ((DynamicsEquations)ode).drag(x[1],((DynamicsEquations)ode).alpha)
+								- CalcTakeOff_Landing.this.getMu()*(((DynamicsEquations)ode).weight
+										- ((DynamicsEquations)ode).lift(x[1],((DynamicsEquations)ode).alpha))
+								- ((DynamicsEquations)ode).weight*Math.sin(x[2])),
+						SI.METERS_PER_SQUARE_SECOND)
+						);
+				CalcTakeOff_Landing.this.getGroundDistance().add(Amount.valueOf(
+						x[0],
+						SI.METER)
+						);
+				CalcTakeOff_Landing.this.getVerticalDistance().add(Amount.valueOf(
+						x[3],
+						SI.METER)
+						);
+				CalcTakeOff_Landing.this.getAlpha().add(Amount.valueOf(
+						((DynamicsEquations)ode).alpha,
+						NonSI.DEGREE_ANGLE)
+						);
+				CalcTakeOff_Landing.this.getGamma().add(Amount.valueOf(
+						x[2],
+						NonSI.DEGREE_ANGLE)
+						);
+				CalcTakeOff_Landing.this.getAlphaDot().add(
+						((DynamicsEquations)ode).alphaDot(t)
+						);  
+
+				//-------------------------------------------------
+				// TODO: ADD GAMMA_DOT WHEN AVAILABLE
+				//-------------------------------------------------
+				CalcTakeOff_Landing.this.getGammaDot().add(0.0); 
+				//--------------------------------------------------
+
+				CalcTakeOff_Landing.this.getTheta().add(Amount.valueOf(
+						x[2] + ((DynamicsEquations)ode).alpha,
+						NonSI.DEGREE_ANGLE)
+						);
+				CalcTakeOff_Landing.this.getcL().add(
+						((DynamicsEquations)ode).cL(((DynamicsEquations)ode).alpha)
+						);
+				CalcTakeOff_Landing.this.getcD().add(
+						((DynamicsEquations)ode).cD0 
+						+ ((DynamicsEquations)ode).deltaCD0 
+						+ ((((DynamicsEquations)ode).cL(((DynamicsEquations)ode).alpha)
+								/(Math.PI
+										*((DynamicsEquations)ode).ar
+										*((DynamicsEquations)ode).oswald))
+								*kGround)
+						);
+			}
+		};
+		theIntegrator.addStepHandler(stepHandler);
 		
 		double[] xAt0 = new double[] {0.0, 0.0, 0.0, 0.0}; // initial state
 		theIntegrator.integrate(ode, 0.0, xAt0, 200, xAt0); // now xAt0 contains final state
