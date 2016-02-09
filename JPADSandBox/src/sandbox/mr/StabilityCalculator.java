@@ -1,0 +1,59 @@
+package sandbox.mr;
+
+import javax.measure.quantity.Angle;
+import javax.measure.unit.NonSI;
+import javax.measure.unit.SI;
+
+import org.jscience.physics.amount.Amount;
+
+import aircraft.components.Aircraft;
+
+public class StabilityCalculator {
+
+	/**
+	 * This method evaluates the tau factor reading external databases. 
+	 * 
+	 * @param chordRatio --> cf/c
+	 * @param aircraft
+	 * @param angle of deflection of the elevator in deg or radians
+	 *
+	 * @author  Manuela Ruocco
+	 */
+	
+	public double calculateTauIndex(double chordRatio, 
+			Aircraft aircraft, 
+			Amount<Angle> deflection
+			)
+	{
+		if (deflection.getUnit() == SI.RADIAN){
+			deflection = deflection.to(NonSI.DEGREE_ANGLE);
+		}
+		double deflectionAngleDeg = deflection.getEstimatedValue();
+		
+		double aspectratioHorizontalTail = aircraft.get_HTail().get_aspectRatio();
+		
+		double etaDelta = aircraft
+				.get_theAerodynamics()
+				.get_highLiftDatabaseReader()
+				.get_eta_delta_vs_delta_flap_plain(deflectionAngleDeg, chordRatio);
+		System.out.println(" eta delta = " + etaDelta );
+		
+		double deltaAlpha2D = aircraft
+				.get_theAerodynamics()
+				.get_aerodynamicDatabaseReader()
+				.getD_Alpha_d_Delta_2d_VS_cf_c(chordRatio);
+		System.out.println(" aelta alfa 2d = " + deltaAlpha2D );
+		
+		double deltaAlpha2D3D = aircraft
+				.get_theAerodynamics()
+				.get_aerodynamicDatabaseReader()
+				.getD_Alpha_d_Delta_2d_d_Alpha_d_Delta_3D_VS_aspectRatio(
+						aspectratioHorizontalTail,
+						deltaAlpha2D
+						);
+		System.out.println(" aelta alfa 3d/2d = " + deltaAlpha2D3D );
+		
+		double tauIndex = deltaAlpha2D3D * deltaAlpha2D * etaDelta;
+		return tauIndex;
+	}
+}

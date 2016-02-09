@@ -40,9 +40,12 @@ import configuration.enumerations.DatabaseReaderEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
+import functions.Linspace;
 import javafx.util.Pair;
 import sandbox.mr.WingCalculator.MeanAirfoil;
+import standaloneutils.MyArrayUtils;
 import standaloneutils.customdata.CenterOfGravity;
+import standaloneutils.customdata.MyArray;
 import writers.JPADStaticWriteUtils;
 
 public class Test_MR_07_LongitudinalStability {
@@ -365,12 +368,53 @@ public class Test_MR_07_LongitudinalStability {
 		theLSHorizontalTail.PlotCLvsAlphaCurve(subfolderPath);
 		LSAerodynamicsManager.CalcAlpha0L theAlphaZeroLiftCalculatorTail = theLSHorizontalTail.new CalcAlpha0L();
 		Amount<Angle> alpha0LTail = theAlphaZeroLiftCalculatorTail.integralMeanNoTwist();
-	
+		
 		System.out.println("\n\n\t\t\tDONE PLOTTING CL vs ALPHA WING");
 		
+	
+		// In order to evaluate the contribution to the longitudinal stability of horizontal tail 
+		// it's necessary to consider the deflection of the elevator. 
+		//
+		// disegno elevatore --> p 95 pgv
+		//
+		//
+		// The variation of zero lift angle is not constant with the angle of deflection. So it's necessary
+		// to evaluate the tau factor which is defined as follows:
+		// 
+		// tau = dalpha 0/ d delta
+		//
+		// Introducing this parameter the Lift coefficient of the horizontal tail can be rated as follows:
+		//
+		// fomule quaderno
+		//
+		// In general the value of tau is constant until 15-20 deg, after this value, due to the flow
+		// separation, the effectiveness of elevator decrease and consequently the product tau* delta
+		// that appears in the equation of lift coefficient
+		//
+		// grafici di progetto.
+		//
+		// The evaluation of tau is made by reading of external database, considerin the followeing graphs.
+		//
+		// forumla tau 
+		//
+		// grafici
 		
+		System.out.println("\n-----Start of tau calculation-----\n" ); 
 		
+		double chordRatio = 0.3;
+		Amount<Angle> deflection;
 		
+		double[] deflectionArray = MyArrayUtils.linspace(0.0, 35.0, 8);
+		double[] tau = new double [deflectionArray.length];
+		
+		for ( int i=0 ; i<deflectionArray.length ; i++ ){
+		deflection = Amount.valueOf(deflectionArray[i], NonSI.DEGREE_ANGLE);
+		StabilityCalculator theStablityCalculator = new StabilityCalculator();
+		tau[i] = theStablityCalculator.calculateTauIndex(chordRatio, aircraft, deflection);
+		
+		System.out.println("\n For an elevator deflection of " + deflection.getEstimatedValue() + 
+				" deg, the tau parameter is " + tau[i] );
+		}
 	}
 
 }
