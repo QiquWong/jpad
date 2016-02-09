@@ -1,5 +1,7 @@
 package aircraft.components.liftingSurface.adm;
 
+import java.util.List;
+
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
@@ -8,6 +10,17 @@ import org.jscience.physics.amount.Amount;
 
 public interface ILiftingSurfacePanel {
 
+	/*
+	 * Given root chord, tip chord, span, l.e. sweep angle
+	 * calculates the rest of the wing parameters:
+	 * - planform and wetted surface, 
+	 * - taper ratio, 
+	 * - aspect ratio, 
+	 * - sweep angle of quarter-chord line,
+	 * - sweep angle of half-chord line,
+	 * - sweep angle of trailing edge line,
+	 * - mean aerodynamic chord and its position in LRF 
+	 */
 	public void calculateGeometry();
 
 	Amount<Length> getChordRoot();
@@ -16,28 +29,66 @@ public interface ILiftingSurfacePanel {
 	Amount<Length> getChordTip();
 	void setChordTip(Amount<Length> ct);
 	
+	Airfoil getAirfoilRoot();
+	void setAirfoilRoot(Airfoil a);
+
+	Airfoil getAirfoilTip();
+	void setAirfoilTip(Airfoil a);
+
+	Amount<Angle> getTwistGeometricAtTip();
+	void setTwistGeometricAtTip(Amount<Angle> epsilonG);
+
+	Amount<Angle> getTwistAerodynamicAtTip();
+	
 	Amount<Length> getSpan();
 	void setSpan(Amount<Length> b);
+
+	Amount<Length> getSemiSpan();
+	void setSemiSpan(Amount<Length> b);
 	
-	Amount<Angle> getSweepAtLeadingEdge();
-	Amount<Angle> getSweepAtQuarterChord();
-	Amount<Angle> getSweepAtHalfChord();
+	Amount<Angle> getSweepLeadingEdge();
+	Amount<Angle> getSweepQuarterChord();
+	Amount<Angle> getSweepHalfChord();
 	Amount<Angle> getSweepAtTrailingEdge();
 	void setSweepAtLeadingEdge(Amount<Angle> lambda);
 	
 	Amount<Angle> getDihedral();
 	void setDihedral(Amount<Angle> gamma);
 	
-	public Amount<Length> getMeanAerodChord();
-	Amount<Length>[] getMeanAerodChordLeadingEdge();
-	Amount<Length> getMeanAerodChordLeadingEdgeX();
-	Amount<Length> getMeanAerodChordLeadingEdgeY();
-	Amount<Length> getMeanAerodChordLeadingEdgeZ();
+	public Amount<Length> getMeanAerodynamicChord();
+	List<Amount<Length>> getMeanAerodynamicChordLeadingEdge();
+	Amount<Length> getMeanAerodynamicChordLeadingEdgeX();
+	Amount<Length> getMeanAerodynamicChordLeadingEdgeY();
+	Amount<Length> getMeanAerodynamicChordLeadingEdgeZ();
 
 	public Amount<Area> getSurfacePlanform();
 	public Amount<Area> getSurfaceWetted();
 
 	public Double getAspectRatio();
 	public Double getTaperRatio();
+	
+	/** 
+	 * Returns the chord of the wing panel at y station (distance from local root)
+	 * 
+	 * @author Agostino De Marco
+	 * @param y in meter
+	 * @return in meter
+	 */
+	default double getChordAtY(Double y) {
+
+		double chord = 
+			(
+				(2 * getSurfacePlanform().getEstimatedValue())/
+					(getSpan().getEstimatedValue() * (1 + getTaperRatio()))
+			)
+			*(
+				1 - (
+						2 * y * (1 - getTaperRatio())/getSpan().getEstimatedValue() 
+					)
+			);
+		return chord;
+
+	}
+
 
 }

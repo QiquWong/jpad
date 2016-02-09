@@ -31,8 +31,8 @@ public interface IAirfoil {
 	Double getCamberRatio();
 	void setCamberRatio(Double fOverC);
 	
-	Amount<Length> getRadiusLeadingEdge();
-	void setRadiusLeadingEdge(Amount<Length> rLE);
+	Double getRadiusLeadingEdgeNormalized();
+	void setRadiusLeadingEdgeNormalized(Double rLE);
 	
 	Amount<Angle> getAngleAtTrailingEdge();
 	void setAngleAtTrailingEdge(Amount<Angle> phiTE);
@@ -73,8 +73,8 @@ public interface IAirfoil {
     Double getCmAlphaQuarterChord();
     void setCmAlphaQuarterChord(Double cmAlphaQuarterChord);
     
-    Double getXACAdimensional();
-    void setXACAdimensional(Double xACAdimensional);
+    Double getXACNormalized();
+    void setXACNormalized(Double xACNormalized);
     
     Double getCmAC();
     void setCmAC(Double cmAC);

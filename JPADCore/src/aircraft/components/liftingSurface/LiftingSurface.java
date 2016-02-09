@@ -3599,5 +3599,4 @@ public class LiftingSurface extends AeroComponent{
 		this._twistDistributionExposed = _twistDistribution;
 	}
 
-
 }
