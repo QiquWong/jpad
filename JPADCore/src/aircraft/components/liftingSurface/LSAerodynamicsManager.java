@@ -4912,6 +4912,8 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			case HIGHLIFT:
 				_highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, databaseFileName); 
 				listDatabaseReaders.add(_highLiftDatabaseReader);
+				if( theAircraft!= null)
+					theAircraft.get_theAerodynamics().set_highLiftDatabaseReader(_highLiftDatabaseReader);
 				break;	
 
 			}
