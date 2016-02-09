@@ -47,6 +47,7 @@ import calculators.aerodynamics.LiftCalc;
 import calculators.aerodynamics.MomentCalc;
 import calculators.aerodynamics.NasaBlackwell;
 import calculators.geometry.LSGeometryCalc;
+import calculators.stability.StabilityCalculators;
 import configuration.MyConfiguration;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.ComponentEnum;
@@ -245,6 +246,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	private static double intermediateAlphaStall;
 	private double[] _yStationsIntegral;
 	public double cLStarWing;
+	private double alphaZeroLiftDeflection;
 	public LSAerodynamicsManager(OperatingConditions conditions, LiftingSurface liftingSurf, Aircraft ac) {
 
 		theOperatingConditions = conditions;
@@ -418,7 +420,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			_chordsVsY.add(getTheLiftingSurface().getChordAtYActual(_yStations[i]));
 		}
 		//_chordsVsY.toArray();
-		
+
 
 		_twistDistribution = MyArray.createArray(
 				theLiftingSurface._twistVsY.interpolate(
@@ -1137,6 +1139,8 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	public class CalcCLAtAlpha extends InnerCalculator {
 
 		private double cL;
+		private double alphaZeroLiftDeflection;
+		private double[] alphaTailArray;
 
 		public CalcCLAtAlpha() {
 
@@ -1313,10 +1317,122 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			return cLWing;
 		}
 
+		/**
+		 * This method evaluates CL for an alpha array having the elevator deflection as input. 
+		 * 
+		 * @param angle of deflection of the elevator in deg or radians
+		 * @param chord ratio -> cf_c
+		 *
+		 * @return Cl array for fixed deflection
+		 * @author  Manuela Ruocco
+		 */
+
+		// The calculation of the lift coefficient with a deflection of the elevator is made by the
+		// method calculateCLWithElevatorDeflection. This method fills the array of 20 value of CL in
+		// its linear trait. 
+		// The procedure used to calculate the CL is the following. It's important to know that 
+		// it's necessary to call the method nasaBlackwellCompleteCurve in order to obtain the
+		// cl linear slope of the horizontal tail with no elevator deflection.
+		//
+		//1 . First of all the tau factor it's calculated used the method calculateTauIndex in the .. class
+		//2. It's necessary to get the linear slope of the horizontal tail with no elevator defletion.
+		// 3. The alphazero lift of the deflected configuration is calculated with this formula
+		//   alphaw= tau per delta e
+		// 4. At this it's possible to create an alpha array, starting from the alpha zero lift, until
+		//   15 degrees after.
+		// 5. the value of cl for each alpha is calculated with the formula :
+		//  cl alfa * (alfa + t delta e)
+
+		public double[] calculateCLWithElevatorDeflection (Amount<Angle> deflection, double chordRatio){
+
+			if (deflection.getUnit() == SI.RADIAN){
+				deflection = deflection.to(NonSI.DEGREE_ANGLE);
+			}
+			double deflectionAngleDeg = deflection.getEstimatedValue();
+
+			double tauValue, cLLinearSlopeNoDeflection;
+			alphaTailArray = new double [2];
+			double[] cLArray = new double [2];
+
+			StabilityCalculators theStablityCalculator = new StabilityCalculators();
+			tauValue = theStablityCalculator.calculateTauIndex(chordRatio, theAircraft, deflection);
+			cLLinearSlopeNoDeflection = getcLLinearSlopeNB()/57.3; //in deg 
+			alphaZeroLiftDeflection = - tauValue*deflectionAngleDeg;
+			alphaTailArray = MyArrayUtils.linspace(alphaZeroLiftDeflection, alphaZeroLiftDeflection + 15, 2);
+
+			cLArray[0] = cLLinearSlopeNoDeflection * ( alphaTailArray[0] + tauValue * deflectionAngleDeg);
+			cLArray[1] = cLLinearSlopeNoDeflection * ( alphaTailArray[1] + tauValue * deflectionAngleDeg);
+
+			return cLArray;
+		}
+
+
+		public double[] getAlphaTailArray() {
+			return alphaTailArray;
+		}
+		
+		public Double[] getAlphaTailArrayDouble() {
+			Double[]alphaTailArrayDouble = new Double [getAlphaTailArray().length];
+			for ( int i=0; i<getAlphaTailArray().length; i++){
+				alphaTailArrayDouble [i] = (Double)getAlphaTailArray()[i];
+			}
+			return alphaTailArrayDouble;
+		}
+
+		/**
+		 * This method calculates CL of an horizontal tail at alpha given as input. This method calculates linear trait 
+		 * considering a known elevator deflection. It use the NasaBlackwell method in order to evaluate the slope of the linear trait
+		 * This method needs that the field of cl has filled before. --> Need to call calculateCLWithElevatorDeflection
+		 * before!
+		 * 
+		 * @author Manuela Ruocco
+		 * @param Amount<Angle> alphaBody. It is the angle of attack between the direction of asimptotic 
+		 * velocity and the reference line of fuselage.
+		 * @param Amount<Angle> deflection of elevator in degree. 
+		 */	
+
+		// In ordet to obtain a value of lift coefficient corresponding at an alpha body with a known
+		// elevator deflection it's possible to use the method getCLHTailatAlphaBodyWithElevator.
+
+		public double getCLHTailatAlphaBodyWithElevator (double chordRatio,
+				Amount<Angle> alphaBody,
+				Amount<Angle> deflection,
+				Amount<Angle> downwashAngle){
+
+			if (alphaBody.getUnit() == SI.RADIAN)
+				alphaBody = alphaBody.to(NonSI.DEGREE_ANGLE);
+			double alphaBodyDouble = alphaBody.getEstimatedValue();
+
+			if (downwashAngle.getUnit() == SI.RADIAN)
+				downwashAngle = downwashAngle.to(NonSI.DEGREE_ANGLE);
+			double downwashAngleDeg = downwashAngle.getEstimatedValue();
+
+
+			double deflectionAngleDeg = deflection.getEstimatedValue();
+			double alphaZeroLift = getAlphaZeroLiftDeflection();
+
+			double[] alphaLocalArray = new double [2];
+			alphaLocalArray = MyArrayUtils.linspace(alphaZeroLift, alphaZeroLift + 15, 2);
+
+
+			double alphaLocal = alphaBodyDouble 
+					- downwashAngleDeg 
+					+ theAircraft.get_HTail().get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue();
+
+			double[]  clArray = calculateCLWithElevatorDeflection(deflection, chordRatio);
+
+			double clAtAlpha = MyMathUtils.getInterpolatedValue1DLinear(alphaLocalArray, clArray, alphaLocal);
+
+			return clAtAlpha;
+
+		}
+
 
 	}
 
-
+	public double getAlphaZeroLiftDeflection() {
+		return alphaZeroLiftDeflection;
+	}
 
 	/** 
 	 * This function plot CL vs Alpha curve of an isolated wing using 30 value of alpha between alpha=- 10.0 deg and
@@ -2640,9 +2756,9 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			legend.add("clean");
 			legend.add("high lift");
 
-			for (int i = 1; i<cLArrayHighLiftDouble.length; i++){
-				System.out.println(" \nalpha " + alphaArrayHighLiftDouble[i] +"             cl " + cLArrayHighLiftPlot[i]);			
-			}
+//			for (int i = 1; i<cLArrayHighLiftDouble.length; i++){
+//				System.out.println(" \nalpha " + alphaArrayHighLiftDouble[i] +"             cl " + cLArrayHighLiftPlot[i]);			
+//			}
 
 			MyChartToFileUtils.plotJFreeChart(alphaListPlot, 
 					cLListPlot,
@@ -2984,7 +3100,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			//				semispanInteg = semispan;
 			//			}
 
-			
+
 			_alpha0L = Amount.valueOf(
 					AnglesCalc.alpha0LintegralMeanNoTwist(surface, semispan, 
 							_yStationsIntegral, _chordsVsY.toArray(), _alpha0lDistribution.toArray()),
@@ -4167,14 +4283,14 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 				MyAirfoil airfoilRoot = theWing.get_theAirfoilsList().get(0);
 				MyAirfoil airfoilTip = theWing.get_theAirfoilsList().get(1);
-				
+
 				rootChord = theWing.get_chordRoot().getEstimatedValue();
 				tipChord = theWing.get_chordTip().getEstimatedValue();
 
 				kRoot = rootChord /(rootChord + tipChord);
 				kTip = tipChord /(rootChord + tipChord);
-				
-			
+
+
 
 				//ALPHA ZERO LIFT
 				alphaZeroLiftRoot = airfoilRoot.getAerodynamics().get_alphaZeroLift().getEstimatedValue();
@@ -4361,7 +4477,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 
 			}
-			
+
 			return meanAirfoil;
 
 		}

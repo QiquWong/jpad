@@ -18,6 +18,7 @@ import static java.lang.Math.toRadians;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.measure.quantity.Angle;
@@ -44,6 +45,7 @@ import functions.Linspace;
 import javafx.util.Pair;
 import sandbox.mr.WingCalculator.MeanAirfoil;
 import standaloneutils.MyArrayUtils;
+import standaloneutils.MyChartToFileUtils;
 import standaloneutils.customdata.CenterOfGravity;
 import standaloneutils.customdata.MyArray;
 import writers.JPADStaticWriteUtils;
@@ -51,7 +53,7 @@ import writers.JPADStaticWriteUtils;
 public class Test_MR_07_LongitudinalStability {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InstantiationException, IllegalAccessException {
 
 		System.out.println("------------------------------------");
 		System.out.println("\n Longitudinal Stability Test ");
@@ -369,7 +371,7 @@ public class Test_MR_07_LongitudinalStability {
 		LSAerodynamicsManager.CalcAlpha0L theAlphaZeroLiftCalculatorTail = theLSHorizontalTail.new CalcAlpha0L();
 		Amount<Angle> alpha0LTail = theAlphaZeroLiftCalculatorTail.integralMeanNoTwist();
 		
-		System.out.println("\n\n\t\t\tDONE PLOTTING CL vs ALPHA WING");
+		System.out.println("\n\n\t\t\tDONE PLOTTING CL vs ALPHA HORIZONTAL TAIL");
 		
 	
 		// In order to evaluate the contribution to the longitudinal stability of horizontal tail 
@@ -403,8 +405,9 @@ public class Test_MR_07_LongitudinalStability {
 		
 		double chordRatio = 0.3;
 		Amount<Angle> deflection;
+		int nValueDelta = 7;
 		
-		double[] deflectionArray = MyArrayUtils.linspace(0.0, 35.0, 8);
+		double[] deflectionArray = MyArrayUtils.linspace(0.0, 30.0, nValueDelta);
 		double[] tau = new double [deflectionArray.length];
 		
 		for ( int i=0 ; i<deflectionArray.length ; i++ ){
@@ -415,6 +418,68 @@ public class Test_MR_07_LongitudinalStability {
 		System.out.println("\n For an elevator deflection of " + deflection.getEstimatedValue() + 
 				" deg, the tau parameter is " + tau[i] );
 		}
+		// Plot
+		// creo una matrice dove sulle colonne ci sono i valori del cl al variare di delta. Poi da quelle
+		// mi creo la lista.
+		
+		 Double [] cLVector = new Double[2];
+		 double [] cLVectorTemp = new double[2];
+		 Double [] alphaVector = new Double[2];
+		 double [] alphaVectorTemp = new double[2];
+		 List<Double[]> cLListPlot = new ArrayList<Double[]>(); 
+		 List<Double[]> alphaListPlot = new ArrayList<Double[]>();
+		
+		 // first value
+		double [] cLPlot = theLSHorizontalTail.get_cLArrayPlot();
+		double [] alphaPlot = theLSHorizontalTail.get_alphaArrayPlot();
+		Double [] cLPlotDouble = new Double [cLPlot.length];
+		Double [] alphaPlotDouble = new Double [alphaPlot.length];
+		
+		for ( int k=0 ; k< cLPlot.length ; k++){
+			cLPlotDouble[k] = (Double)cLPlot[k];
+			alphaPlotDouble[k] = (Double)alphaPlot[k];
+		}
+		cLListPlot.add(cLPlotDouble);
+		alphaListPlot.add(alphaPlotDouble);
+		
+		for (int j=1 ; j<nValueDelta ; j++ ){	
+		cLVectorTemp = theCLHorizontalTailCalculator.calculateCLWithElevatorDeflection(
+				Amount.valueOf(deflectionArray[j], NonSI.DEGREE_ANGLE),
+				chordRatio);
+		cLVector[0] = (Double)cLVectorTemp[0];
+		cLVector[1] = (Double)cLVectorTemp[1];
+		cLListPlot.add(cLVector);
+
+		alphaVector = theCLHorizontalTailCalculator.getAlphaTailArrayDouble();
+		alphaListPlot.add(alphaVector);
+		}
+		
+		List<String> legend  = new ArrayList<>(); 
+		legend.add("clean");
+
+		for (int j=1 ; j<nValueDelta ; j++){
+			legend.add("delta = (deg) " + deflectionArray[j]);
+			}
+	
+		MyChartToFileUtils.plotJFreeChart(alphaListPlot, 
+				cLListPlot,
+				"CL vs alpha",
+				"alpha", 
+				"CL",
+				-12.0, 22.0, 0.0, 1.3,
+				"deg",
+				"",
+				true,
+				legend,
+				subfolderPath,
+				"CL alpha Horizontal Tail with Elevator");
+		
+		System.out.println("\n\n\t\t\tDONE PLOTTING CL vs ALPHA HORIZONTAL TAIL WITH ELEVATOR DEFLECTION");
+		
+		
+		
+		}
+		
 	}
 
-}
+

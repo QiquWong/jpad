@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.12.21)  8 FEB 2016 18:09
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.12.21)  9 FEB 2016 20:20
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2522,7 +2522,7 @@ File: t1qhv.fd 2009/09/25 v1.2 font definition file for T1/qhv
 (c:/texlive/2015/texmf-dist/tex/latex/newtx/t1ntxtt.fd
 File: t1ntxtt.fd 2012/04/20 v3.1
 )
-<Tesi_Magistrale_Manuela_Ruocco-frn.pdf, id=143, 597.50829pt x 845.0471pt>
+<Tesi_Magistrale_Manuela_Ruocco-frn.pdf, id=191, 597.50829pt x 845.0471pt>
 File: Tesi_Magistrale_Manuela_Ruocco-frn.pdf Graphic file (type pdf)
 
 <use Tesi_Magistrale_Manuela_Ruocco-frn.pdf>
@@ -2594,7 +2594,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 26--27
 
  []
 
-<Immagini/xml1.jpg, id=258, 135.50626pt x 11.29219pt>
+<Immagini/xml1.jpg, id=318, 135.50626pt x 11.29219pt>
 File: Immagini/xml1.jpg Graphic file (type jpg)
  <use Immagini/xml1.jpg>
 Package pdftex.def Info: Immagini/xml1.jpg used on input line 30.
@@ -2607,7 +2607,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 34--35
 [6
 
  <./Immagini/xml1.jpg>]
-<Immagini/xml2.jpg, id=269, 338.76563pt x 14.30344pt>
+<Immagini/xml2.jpg, id=330, 338.76563pt x 14.30344pt>
 File: Immagini/xml2.jpg Graphic file (type jpg)
  <use Immagini/xml2.jpg>
 Package pdftex.def Info: Immagini/xml2.jpg used on input line 38.
@@ -2630,7 +2630,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 60--61
 
  []
 
-<Immagini/atr72mod.jpg, id=272, 477.58424pt x 166.52213pt>
+<Immagini/atr72mod.jpg, id=333, 477.58424pt x 166.52213pt>
 File: Immagini/atr72mod.jpg Graphic file (type jpg)
 
 <use Immagini/atr72mod.jpg>
@@ -2644,7 +2644,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  This may cause the page layout to be inconsistent, however.
 
 [7 <./Immagini/xml2.jpg> <./Immagini/atr72mod.jpg>]
-<Immagini/boeing.jpg, id=286, 960.88988pt x 323.70938pt>
+<Immagini/boeing.jpg, id=347, 960.88988pt x 323.70938pt>
 File: Immagini/boeing.jpg Graphic file (type jpg)
 
 <use Immagini/boeing.jpg>
@@ -2667,7 +2667,7 @@ Package Listings Warning: Text dropped after begin of listing on input line 101
 .
 
 
-<immagini/HowToCreateADefaultAircraftInJPAD3.pdf, id=295, 1896.08376pt x 1117.1
+<immagini/HowToCreateADefaultAircraftInJPAD3.pdf, id=356, 1896.08376pt x 1117.1
 7375pt>
 File: immagini/HowToCreateADefaultAircraftInJPAD3.pdf Graphic file (type pdf)
  <use immagini/HowToCreateADefaultAircraftInJPAD3.pdf>
@@ -2738,7 +2738,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[13] <immagini/HowToAssignDatabase.jpg, id=605, 1726.45pt x 840.13875pt>
+[13] <immagini/HowToAssignDatabase.jpg, id=665, 1726.45pt x 840.13875pt>
 File: immagini/HowToAssignDatabase.jpg Graphic file (type jpg)
 
 <use immagini/HowToAssignDatabase.jpg>
@@ -2780,7 +2780,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 7--8
 
 pdfTeX warning: pdflatex.exe (file ./Immagini/wing_vortex_sheet3.pdf): PDF incl
 usion: found PDF version <1.6>, but at most version <1.5> allowed
-<Immagini/wing_vortex_sheet3.pdf, id=649, 771.49246pt x 287.62234pt>
+<Immagini/wing_vortex_sheet3.pdf, id=709, 771.49246pt x 287.62234pt>
 File: Immagini/wing_vortex_sheet3.pdf Graphic file (type pdf)
 
 <use Immagini/wing_vortex_sheet3.pdf>
@@ -2803,7 +2803,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 15--16
 
 pdfTeX warning: pdflatex.exe (file ./Immagini/wing_upwash_downwash.pdf): PDF in
 clusion: found PDF version <1.6>, but at most version <1.5> allowed
-<Immagini/wing_upwash_downwash.pdf, id=676, 525.10075pt x 171.98553pt>
+<Immagini/wing_upwash_downwash.pdf, id=736, 525.10075pt x 171.98553pt>
 File: Immagini/wing_upwash_downwash.pdf Graphic file (type pdf)
 
 <use Immagini/wing_upwash_downwash.pdf>
@@ -2820,7 +2820,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 24--26
 
  []
 
-<Immagini/wing_htail_Roskam_eng.pdf, id=678, 471.02675pt x 212.31522pt>
+<Immagini/wing_htail_Roskam_eng.pdf, id=738, 471.02675pt x 212.31522pt>
 File: Immagini/wing_htail_Roskam_eng.pdf Graphic file (type pdf)
 
 <use Immagini/wing_htail_Roskam_eng.pdf>
@@ -2844,7 +2844,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 60--62
 
  []
 
-<Immagini/Wing_Alpha_Zero_List.pdf, id=716, 1366.74751pt x 546.22006pt>
+<Immagini/Wing_Alpha_Zero_List.pdf, id=776, 1366.74751pt x 546.22006pt>
 File: Immagini/Wing_Alpha_Zero_List.pdf Graphic file (type pdf)
 
 <use Immagini/Wing_Alpha_Zero_List.pdf>
@@ -3092,7 +3092,7 @@ Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 259.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 259.
 Package rerunfilecheck Info: File `Tesi_Magistrale_Manuela_Ruocco.out' has not 
 changed.
-(rerunfilecheck)             Checksum: ACF39BF30DC454CBE8C10B01797331F0;2254.
+(rerunfilecheck)             Checksum: 25D6ED0BFB5C125A6AD072130D97110E;3031.
 
 
 LaTeX Warning: There were multiply-defined labels.
@@ -3103,10 +3103,10 @@ l'.
 
  ) 
 Here is how much of TeX's memory you used:
- 55502 strings out of 493054
- 1153804 string characters out of 6138326
+ 55532 strings out of 493054
+ 1154296 string characters out of 6138326
  1800999 words of memory out of 5000000
- 57667 multiletter control sequences out of 15000+600000
+ 57683 multiletter control sequences out of 15000+600000
  99946 words of font info for 72 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  62i,19n,92p,10402b,3299s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -3132,11 +3132,11 @@ exmf-dist/fonts/type1/public/tex-gyre/qtmb.pfb><c:/texlive/2015/texmf-dist/font
 s/type1/public/tex-gyre/qtmr.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public
 /tex-gyre/qtmri.pfb><c:/texlive/2015/texmf-dist/fonts/type1/urw/courier/ucrb8a.
 pfb><c:/texlive/2015/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb>
-Output written on Tesi_Magistrale_Manuela_Ruocco.pdf (44 pages, 3398370 bytes).
+Output written on Tesi_Magistrale_Manuela_Ruocco.pdf (44 pages, 3398529 bytes).
 
 PDF statistics:
- 1150 PDF objects out of 1200 (max. 8388607)
- 1031 compressed objects within 11 object streams
- 421 named destinations out of 1000 (max. 500000)
- 340 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1216 PDF objects out of 1440 (max. 8388607)
+ 1097 compressed objects within 11 object streams
+ 435 named destinations out of 1000 (max. 500000)
+ 436 words of extra memory for PDF output out of 10000 (max. 10000000)
 

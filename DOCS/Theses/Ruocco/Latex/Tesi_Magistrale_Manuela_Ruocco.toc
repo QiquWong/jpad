@@ -31,13 +31,27 @@
 \contentsline {subsection}{\numberline {7.2.1}Test Class}{22}{subsection.7.2.1}
 \contentsline {section}{\numberline {7.3}Developer's Guide}{22}{section.7.3}
 \contentsline {chapter}{\numberline {8}Longitudinal stability of an aircraft}{23}{chapter.8}
+\contentsline {section}{\numberline {8.1}Aerodynamic Lift}{23}{section.8.1}
+\contentsline {subsection}{\numberline {8.1.1}Wing}{23}{subsection.8.1.1}
+\contentsline {subsection}{\numberline {8.1.2}Fuselage}{23}{subsection.8.1.2}
+\contentsline {subsection}{\numberline {8.1.3}Horizontal Tail}{23}{subsection.8.1.3}
+\contentsline {subsubsection}{Elevator index of effectiveness}{23}{subsubsection*.13}
+\contentsline {subsubsection}{Developer's Guide}{23}{subsubsection*.14}
+\contentsline {subsection}{\numberline {8.1.4}Complete Aircraft}{23}{subsection.8.1.4}
+\contentsline {section}{\numberline {8.2}Aerodynamic Drag}{23}{section.8.2}
+\contentsline {section}{\numberline {8.3}Pitching Moments}{23}{section.8.3}
+\contentsline {subsection}{\numberline {8.3.1}Wing}{23}{subsection.8.3.1}
+\contentsline {subsection}{\numberline {8.3.2}Fuselage}{23}{subsection.8.3.2}
+\contentsline {subsection}{\numberline {8.3.3}Horizontal Tail}{23}{subsection.8.3.3}
+\contentsline {subsection}{\numberline {8.3.4}Propulsors}{23}{subsection.8.3.4}
+\contentsline {subsection}{\numberline {8.3.5}Stability Calculation}{23}{subsection.8.3.5}
 \contentsline {chapter}{\numberline {9}Minor Works}{24}{chapter.9}
-\contentsline {chapter}{Appendices}{}{section*.14}
+\contentsline {chapter}{Appendices}{}{section*.16}
 \contentsline {chapter}{\numberline {A}Java Reference}{26}{Appendix.a.A}
 \contentsline {section}{\numberline {A.1}Inheritance, Overriding and Polymorphism}{26}{section.a.A.1}
 \contentsline {section}{\numberline {A.2}Packages}{26}{section.a.A.2}
 \contentsline {section}{\numberline {A.3}Documentation}{27}{section.a.A.3}
-\contentsline {chapter}{Glossary}{29}{section*.15}
-\contentsline {chapter}{Acronyms}{31}{section*.17}
-\contentsline {chapter}{List of symbols}{32}{section*.19}
-\contentsline {chapter}{Bibliography}{34}{section*.21}
+\contentsline {chapter}{Glossary}{29}{section*.17}
+\contentsline {chapter}{Acronyms}{31}{section*.19}
+\contentsline {chapter}{List of symbols}{32}{section*.21}
+\contentsline {chapter}{Bibliography}{34}{section*.23}

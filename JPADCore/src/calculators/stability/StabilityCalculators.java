@@ -1,4 +1,4 @@
-package sandbox.mr;
+package calculators.stability;
 
 import javax.measure.quantity.Angle;
 import javax.measure.unit.NonSI;
@@ -8,7 +8,7 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
 
-public class StabilityCalculator {
+public class StabilityCalculators {
 
 	/**
 	 * This method evaluates the tau factor reading external databases. 

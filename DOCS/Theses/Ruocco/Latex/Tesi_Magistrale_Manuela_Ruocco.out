@@ -23,12 +23,24 @@
 \BOOKMARK [2][-]{subsection.7.2.1}{Test Class}{section.7.2}% 23
 \BOOKMARK [1][-]{section.7.3}{Developer's Guide}{chapter.7}% 24
 \BOOKMARK [0][-]{chapter.8}{Longitudinal stability of an aircraft}{part.3}% 25
-\BOOKMARK [0][-]{chapter.9}{Minor Works}{part.3}% 26
-\BOOKMARK [0][-]{Appendix.a.A}{Java Reference}{part.3}% 27
-\BOOKMARK [1][-]{section.a.A.1}{Inheritance, Overriding and Polymorphism}{Appendix.a.A}% 28
-\BOOKMARK [1][-]{section.a.A.2}{Packages}{Appendix.a.A}% 29
-\BOOKMARK [1][-]{section.a.A.3}{Documentation}{Appendix.a.A}% 30
-\BOOKMARK [0][-]{section*.15}{Glossary}{part.3}% 31
-\BOOKMARK [0][-]{section*.17}{Acronyms}{part.3}% 32
-\BOOKMARK [0][-]{section*.19}{List of symbols}{part.3}% 33
-\BOOKMARK [0][-]{section*.21}{Bibliography}{part.3}% 34
+\BOOKMARK [1][-]{section.8.1}{Aerodynamic Lift}{chapter.8}% 26
+\BOOKMARK [2][-]{subsection.8.1.1}{Wing}{section.8.1}% 27
+\BOOKMARK [2][-]{subsection.8.1.2}{Fuselage}{section.8.1}% 28
+\BOOKMARK [2][-]{subsection.8.1.3}{Horizontal Tail}{section.8.1}% 29
+\BOOKMARK [2][-]{subsection.8.1.4}{Complete Aircraft}{section.8.1}% 30
+\BOOKMARK [1][-]{section.8.2}{Aerodynamic Drag}{chapter.8}% 31
+\BOOKMARK [1][-]{section.8.3}{Pitching Moments}{chapter.8}% 32
+\BOOKMARK [2][-]{subsection.8.3.1}{Wing}{section.8.3}% 33
+\BOOKMARK [2][-]{subsection.8.3.2}{Fuselage}{section.8.3}% 34
+\BOOKMARK [2][-]{subsection.8.3.3}{Horizontal Tail}{section.8.3}% 35
+\BOOKMARK [2][-]{subsection.8.3.4}{Propulsors}{section.8.3}% 36
+\BOOKMARK [2][-]{subsection.8.3.5}{Stability Calculation}{section.8.3}% 37
+\BOOKMARK [0][-]{chapter.9}{Minor Works}{part.3}% 38
+\BOOKMARK [0][-]{Appendix.a.A}{Java Reference}{part.3}% 39
+\BOOKMARK [1][-]{section.a.A.1}{Inheritance, Overriding and Polymorphism}{Appendix.a.A}% 40
+\BOOKMARK [1][-]{section.a.A.2}{Packages}{Appendix.a.A}% 41
+\BOOKMARK [1][-]{section.a.A.3}{Documentation}{Appendix.a.A}% 42
+\BOOKMARK [0][-]{section*.17}{Glossary}{part.3}% 43
+\BOOKMARK [0][-]{section*.19}{Acronyms}{part.3}% 44
+\BOOKMARK [0][-]{section*.21}{List of symbols}{part.3}% 45
+\BOOKMARK [0][-]{section*.23}{Bibliography}{part.3}% 46
