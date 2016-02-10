@@ -2245,6 +2245,8 @@
     <bcf:citekey order="5">boeing:boeing</bcf:citekey>
     <bcf:citekey order="6">PerkinsHage</bcf:citekey>
     <bcf:citekey order="7">Jacobs:NACA:Rep:648</bcf:citekey>
+    <bcf:citekey order="8">schimidth</bcf:citekey>
+    <bcf:citekey order="9">roskam2002airplane</bcf:citekey>
     <bcf:citekey order="0">*</bcf:citekey>
   </bcf:section>
   <bcf:sortlist section="0" name="nty" type="entry" sortscheme="nty">

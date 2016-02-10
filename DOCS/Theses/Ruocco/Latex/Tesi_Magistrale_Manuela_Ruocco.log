@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.12.21)  10 FEB 2016 01:11
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.12.21)  10 FEB 2016 18:08
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2031,7 +2031,7 @@ LaTeX Info: Redefining \labelcpageref on input line 2230.
 Package cleveref Info: `listings' support loaded on input line 2950.
 Package cleveref Info: `subfig' support loaded on input line 2983.
 )
-Package biblatex Info: Redefining '\citetitle' on input line 113.
+Package biblatex Info: Redefining '\citetitle' on input line 122.
 ) (./glossary.tex
 (c:/texlive/2015/texmf-dist/tex/latex/glossaries/base/glossaries.sty
 Package: glossaries 2015/11/30 v4.20 (NLCT)
@@ -2228,12 +2228,6 @@ LaTeX Warning: Label `fig:schemauno' multiply defined.
 
 
 LaTeX Warning: Label `fig:schemauno@cref' multiply defined.
-
-
-LaTeX Warning: Label `efficiency' multiply defined.
-
-
-LaTeX Warning: Label `efficiency@cref' multiply defined.
 
 )
 \openout1 = `Tesi_Magistrale_Manuela_Ruocco.aux'.
@@ -2528,7 +2522,7 @@ File: t1qhv.fd 2009/09/25 v1.2 font definition file for T1/qhv
 (c:/texlive/2015/texmf-dist/tex/latex/newtx/t1ntxtt.fd
 File: t1ntxtt.fd 2012/04/20 v3.1
 )
-<Tesi_Magistrale_Manuela_Ruocco-frn.pdf, id=191, 597.50829pt x 845.0471pt>
+<Tesi_Magistrale_Manuela_Ruocco-frn.pdf, id=208, 597.50829pt x 845.0471pt>
 File: Tesi_Magistrale_Manuela_Ruocco-frn.pdf Graphic file (type pdf)
 
 <use Tesi_Magistrale_Manuela_Ruocco-frn.pdf>
@@ -2551,7 +2545,17 @@ l.153 \newpage\null\thispagestyle{empty}\newpage
 
 
 
-]) [2
+]
+Underfull \hbox (badness 10000) in paragraph at lines 16--21
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 16--21
+
+ []
+
+) [2
 
 ] (./Tesi_Magistrale_Manuela_Ruocco.toc [3
 
@@ -2559,15 +2563,8 @@ l.153 \newpage\null\thispagestyle{empty}\newpage
 \tf@toc=\write11
 \openout11 = `Tesi_Magistrale_Manuela_Ruocco.toc'.
 
-
-
-Package Fancyhdr Warning: \headheight is too small (12.0pt): 
- Make it at least 14.49998pt.
- We now make it that large for the rest of the document.
- This may cause the page layout to be inconsistent, however.
-
-[4] (./Chapters/contents.texpdfTeX warning (ext4): destination with the same id
-entifier (name{page.1}) has been already used, duplicate ignored
+ [4] (./Chapters/contents.texpdfTeX warning (ext4): destination with the same i
+dentifier (name{page.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
 l.1 \part{Aircraft Design Overview}
@@ -2600,7 +2597,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 26--27
 
  []
 
-<Immagini/xml1.jpg, id=318, 135.50626pt x 11.29219pt>
+<Immagini/xml1.jpg, id=340, 135.50626pt x 11.29219pt>
 File: Immagini/xml1.jpg Graphic file (type jpg)
  <use Immagini/xml1.jpg>
 Package pdftex.def Info: Immagini/xml1.jpg used on input line 30.
@@ -2613,7 +2610,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 34--35
 [6
 
  <./Immagini/xml1.jpg>]
-<Immagini/xml2.jpg, id=330, 338.76563pt x 14.30344pt>
+<Immagini/xml2.jpg, id=351, 338.76563pt x 14.30344pt>
 File: Immagini/xml2.jpg Graphic file (type jpg)
  <use Immagini/xml2.jpg>
 Package pdftex.def Info: Immagini/xml2.jpg used on input line 38.
@@ -2636,7 +2633,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 60--61
 
  []
 
-<Immagini/atr72mod.jpg, id=333, 477.58424pt x 166.52213pt>
+<Immagini/atr72mod.jpg, id=354, 477.58424pt x 166.52213pt>
 File: Immagini/atr72mod.jpg Graphic file (type jpg)
 
 <use Immagini/atr72mod.jpg>
@@ -2650,7 +2647,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  This may cause the page layout to be inconsistent, however.
 
 [7 <./Immagini/xml2.jpg> <./Immagini/atr72mod.jpg>]
-<Immagini/boeing.jpg, id=347, 960.88988pt x 323.70938pt>
+<Immagini/boeing.jpg, id=368, 960.88988pt x 323.70938pt>
 File: Immagini/boeing.jpg Graphic file (type jpg)
 
 <use Immagini/boeing.jpg>
@@ -2673,7 +2670,7 @@ Package Listings Warning: Text dropped after begin of listing on input line 101
 .
 
 
-<immagini/HowToCreateADefaultAircraftInJPAD3.pdf, id=356, 1896.08376pt x 1117.1
+<immagini/HowToCreateADefaultAircraftInJPAD3.pdf, id=377, 1896.08376pt x 1117.1
 7375pt>
 File: immagini/HowToCreateADefaultAircraftInJPAD3.pdf Graphic file (type pdf)
  <use immagini/HowToCreateADefaultAircraftInJPAD3.pdf>
@@ -2744,7 +2741,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[13] <immagini/HowToAssignDatabase.jpg, id=665, 1726.45pt x 840.13875pt>
+[13] <immagini/HowToAssignDatabase.jpg, id=687, 1726.45pt x 840.13875pt>
 File: immagini/HowToAssignDatabase.jpg Graphic file (type jpg)
 
 <use immagini/HowToAssignDatabase.jpg>
@@ -2786,18 +2783,13 @@ Underfull \hbox (badness 10000) in paragraph at lines 7--8
 
 pdfTeX warning: pdflatex.exe (file ./Immagini/wing_vortex_sheet3.pdf): PDF incl
 usion: found PDF version <1.6>, but at most version <1.5> allowed
-<Immagini/wing_vortex_sheet3.pdf, id=709, 771.49246pt x 287.62234pt>
+<Immagini/wing_vortex_sheet3.pdf, id=730, 771.49246pt x 287.62234pt>
 File: Immagini/wing_vortex_sheet3.pdf Graphic file (type pdf)
 
 <use Immagini/wing_vortex_sheet3.pdf>
 Package pdftex.def Info: Immagini/wing_vortex_sheet3.pdf used on input line 11.
 
-(pdftex.def)             Requested size: 457.93126pt x 170.71652pt.
-
-Overfull \hbox (16.91353pt too wide) in paragraph at lines 11--12
- [][] 
- []
-
+(pdftex.def)             Requested size: 435.0347pt x 162.18062pt.
 
 Underfull \hbox (badness 10000) in paragraph at lines 15--16
 
@@ -2809,7 +2801,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 15--16
 
 pdfTeX warning: pdflatex.exe (file ./Immagini/wing_upwash_downwash.pdf): PDF in
 clusion: found PDF version <1.6>, but at most version <1.5> allowed
-<Immagini/wing_upwash_downwash.pdf, id=736, 525.10075pt x 171.98553pt>
+<Immagini/wing_upwash_downwash.pdf, id=757, 525.10075pt x 171.98553pt>
 File: Immagini/wing_upwash_downwash.pdf Graphic file (type pdf)
 
 <use Immagini/wing_upwash_downwash.pdf>
@@ -2817,26 +2809,17 @@ Package pdftex.def Info: Immagini/wing_upwash_downwash.pdf used on input line 2
 0.
 (pdftex.def)             Requested size: 434.35123pt x 142.26378pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 24--26
+Underfull \hbox (badness 10000) in paragraph at lines 32--34
 
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 24--26
-
- []
-
-<Immagini/wing_htail_Roskam_eng.pdf, id=738, 471.02675pt x 212.31522pt>
+<Immagini/wing_htail_Roskam_eng.pdf, id=760, 471.02675pt x 212.31522pt>
 File: Immagini/wing_htail_Roskam_eng.pdf Graphic file (type pdf)
 
 <use Immagini/wing_htail_Roskam_eng.pdf>
 Package pdftex.def Info: Immagini/wing_htail_Roskam_eng.pdf used on input line 
-31.
-(pdftex.def)             Requested size: 460.79808pt x 207.7052pt.
-
-Overfull \hbox (19.78035pt too wide) in paragraph at lines 31--32
- [][] 
- []
+37.
+(pdftex.def)             Requested size: 397.67938pt x 179.25244pt.
 
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -2846,16 +2829,16 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
 
 [20 <./Immagini/wing_upwash_downwash.pdf, page is rotated 90 degrees> <./Immagi
 ni/wing_htail_Roskam_eng.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 60--62
+Underfull \hbox (badness 10000) in paragraph at lines 64--66
 
  []
 
-<Immagini/Wing_Alpha_Zero_List.pdf, id=776, 1366.74751pt x 546.22006pt>
+<Immagini/Wing_Alpha_Zero_List.pdf, id=802, 1366.74751pt x 546.22006pt>
 File: Immagini/Wing_Alpha_Zero_List.pdf Graphic file (type pdf)
 
 <use Immagini/Wing_Alpha_Zero_List.pdf>
-Package pdftex.def Info: Immagini/Wing_Alpha_Zero_List.pdf used on input line 6
-8.
+Package pdftex.def Info: Immagini/Wing_Alpha_Zero_List.pdf used on input line 7
+2.
 (pdftex.def)             Requested size: 427.17012pt x 170.71652pt.
 
 
@@ -2873,38 +2856,43 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
 
 [22]
 Chapter 8.
-<Immagini/Eta_Delta_Plain.png, id=804, 634.16925pt x 457.71pt>
-File: Immagini/Eta_Delta_Plain.png Graphic file (type png)
+<Immagini/alfadeltanew.png, id=829, 470.9595pt x 203.86162pt>
+File: Immagini/alfadeltanew.png Graphic file (type png)
 
-<use Immagini/Eta_Delta_Plain.png>
-Package pdftex.def Info: Immagini/Eta_Delta_Plain.png used on input line 49.
-(pdftex.def)             Requested size: 236.52588pt x 170.71652pt.
- [23
+<use Immagini/alfadeltanew.png>
+Package pdftex.def Info: Immagini/alfadeltanew.png used on input line 64.
+(pdftex.def)             Requested size: 446.31667pt x 193.19402pt.
 
-]
-<Immagini/alfadelta.png, id=814, 396.88275pt x 336.65775pt>
-File: Immagini/alfadelta.png Graphic file (type png)
+Overfull \hbox (5.29893pt too wide) in paragraph at lines 64--66
+ [][] 
+ []
 
-<use Immagini/alfadelta.png>
-Package pdftex.def Info: Immagini/alfadelta.png used on input line 57.
-(pdftex.def)             Requested size: 201.25084pt x 170.71652pt.
-) (./Chapters/works.tex
+[23
+
+]) (./Chapters/works.tex
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
  Make it at least 14.49998pt.
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[24 <./Immagini/Eta_Delta_Plain.png> <./Immagini/alfadelta.png>]
-Chapter 9.
-)) [25
+[24 <./Immagini/alfadeltanew.png>]
 
-] [26
+Package Fancyhdr Warning: \headheight is too small (12.0pt): 
+ Make it at least 14.49998pt.
+ We now make it that large for the rest of the document.
+ This may cause the page layout to be inconsistent, however.
+
+[25]
+Chapter 9.
+)) [26
+
+] [27
 
 
 ] (./Tesi_Appendices.tex (./appendices/JavaReference.tex
 Appendix A.
-[27
+[28
 
 ]))
 
@@ -2913,11 +2901,11 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[28]
+[29]
 
 Package glossaries Warning: Deprecated command \glossarystyle.
  I recommend you switch to \setglossarystyle unless you want to maintain backwa
-rd compatibility on input line 227.
+rd compatibility on input line 228.
 
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -2925,9 +2913,9 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[29
+[30
 
-] (./Tesi_Magistrale_Manuela_Ruocco.gls [30
+] (./Tesi_Magistrale_Manuela_Ruocco.gls [31
 
 
 
@@ -2938,12 +2926,12 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[31] (./Tesi_Magistrale_Manuela_Ruocco.acr) [32
+[32] (./Tesi_Magistrale_Manuela_Ruocco.acr) [33
 
 
 
 ]
-(./Tesi_Magistrale_Manuela_Ruocco.sym [33
+(./Tesi_Magistrale_Manuela_Ruocco.sym [34
 
 
 
@@ -2954,15 +2942,15 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[34]
-Overfull \hbox (5.51205pt too wide) in paragraph at lines 257--257
+[35]
+Overfull \hbox (5.51205pt too wide) in paragraph at lines 258--258
 []\T1/ntxtlf/m/n/12 Guillaume Alleon. \T1/ntxtlf/m/it/12 oc-c-java\T1/ntxtlf/m/
 n/12 . \T1/ntxtlf/m/sc/12 url\T1/ntxtlf/m/n/12 : [][]$\T1/pcr/m/n/12 http : / /
  jcae . sourceforge . net / occjava .
  []
 
 
-Overfull \hbox (4.48705pt too wide) in paragraph at lines 257--257
+Overfull \hbox (4.48705pt too wide) in paragraph at lines 258--258
 []\T1/ntxtlf/m/n/12 Various Au-thors. \T1/ntxtlf/m/it/12 Boe-ing 747. Air-craft
  de-scrip-tion\T1/ntxtlf/m/n/12 . \T1/ntxtlf/m/sc/12 url\T1/ntxtlf/m/n/12 : [][
 ]$\T1/pcr/m/n/12 https : / / en . wikipedia .
@@ -2970,24 +2958,24 @@ Overfull \hbox (4.48705pt too wide) in paragraph at lines 257--257
 
 
 Package biblatex Warning: No driver for entry type 'other'.
-(biblatex)                Using fallback driver on input line 257.
+(biblatex)                Using fallback driver on input line 258.
 
 
-Overfull \hbox (25.09587pt too wide) in paragraph at lines 257--257
+Overfull \hbox (25.09587pt too wide) in paragraph at lines 258--258
 []\T1/ntxtlf/m/n/12 Various Au-thors. \T1/ntxtlf/m/it/12 eX-ten-si-ble Markup L
 an-guage (XML)\T1/ntxtlf/m/n/12 . \T1/ntxtlf/m/sc/12 url\T1/ntxtlf/m/n/12 : [][
 ]$\T1/pcr/m/n/12 https : / / en . wikipedia .
  []
 
 
-Overfull \hbox (25.93597pt too wide) in paragraph at lines 257--257
+Overfull \hbox (25.93597pt too wide) in paragraph at lines 258--258
 []\T1/ntxtlf/m/n/12 Various Au-thors. \T1/ntxtlf/m/it/12 Win-dow Builder\T1/ntx
 tlf/m/n/12 . \T1/ntxtlf/m/sc/12 url\T1/ntxtlf/m/n/12 : [][]$\T1/pcr/m/n/12 http
 s : / / eclipse . org / windowbuilder/$[][]\T1/ntxtlf/m/n/12 . 
  []
 
 
-Overfull \hbox (13.82811pt too wide) in paragraph at lines 257--257
+Overfull \hbox (13.82811pt too wide) in paragraph at lines 258--258
 []\T1/ntxtlf/m/n/12 Azeckoski. \T1/ntxtlf/m/it/12 Re-flec-tU-tils\T1/ntxtlf/m/n
 /12 . \T1/ntxtlf/m/sc/12 url\T1/ntxtlf/m/n/12 : [][]$\T1/pcr/m/n/12 https : / /
  code . google . com / p / reflectutils/$[][]\T1/ntxtlf/m/n/12 . 
@@ -2995,10 +2983,10 @@ Overfull \hbox (13.82811pt too wide) in paragraph at lines 257--257
 
 
 Package biblatex Warning: No driver for entry type 'other'.
-(biblatex)                Using fallback driver on input line 257.
+(biblatex)                Using fallback driver on input line 258.
 
 
-Overfull \hbox (17.157pt too wide) in paragraph at lines 257--257
+Overfull \hbox (17.157pt too wide) in paragraph at lines 258--258
 \T1/ntxtlf/m/n/12 9788871460062. \T1/ntxtlf/m/sc/12 url\T1/ntxtlf/m/n/12 : [][]
 $\T1/pcr/m/n/12 http : / / books . google . it / books ? id = HqBoAQAACAAJ$[][]
 \T1/ntxtlf/m/n/12 . 
@@ -3006,29 +2994,29 @@ $\T1/pcr/m/n/12 http : / / books . google . it / books ? id = HqBoAQAACAAJ$[][]
 
 
 Package biblatex Warning: No driver for entry type 'other'.
-(biblatex)                Using fallback driver on input line 257.
+(biblatex)                Using fallback driver on input line 258.
 
 
-Overfull \hbox (2.58382pt too wide) in paragraph at lines 257--257
+Overfull \hbox (2.58382pt too wide) in paragraph at lines 258--258
 []\T1/ntxtlf/m/n/12 The Apache Soft-ware Foun-da-tion. \T1/ntxtlf/m/it/12 Apach
 e Com-mons Math\T1/ntxtlf/m/n/12 . \T1/ntxtlf/m/sc/12 url\T1/ntxtlf/m/n/12 : []
 []$\T1/pcr/m/n/12 http : / / commons .
  []
 
-[35
+[36
 
 
 ]
 
 Package biblatex Warning: No driver for entry type 'other'.
-(biblatex)                Using fallback driver on input line 257.
+(biblatex)                Using fallback driver on input line 258.
 
 
 Package biblatex Warning: No driver for entry type 'other'.
-(biblatex)                Using fallback driver on input line 257.
+(biblatex)                Using fallback driver on input line 258.
 
 
-Overfull \hbox (19.78224pt too wide) in paragraph at lines 257--257
+Overfull \hbox (19.78224pt too wide) in paragraph at lines 258--258
 []\T1/ntxtlf/m/n/12 J. Huwaldt. \T1/ntxtlf/m/it/12 1976 Stan-dard At-mo-sphere 
 Pro-gram\T1/ntxtlf/m/n/12 . \T1/ntxtlf/m/sc/12 url\T1/ntxtlf/m/n/12 : [][]$\T1/
 pcr/m/n/12 http : / / thehuwaldtfamily .
@@ -3036,15 +3024,15 @@ pcr/m/n/12 http : / / thehuwaldtfamily .
 
 
 Package biblatex Warning: No driver for entry type 'other'.
-(biblatex)                Using fallback driver on input line 257.
+(biblatex)                Using fallback driver on input line 258.
 
 
 Package biblatex Warning: No driver for entry type 'other'.
-(biblatex)                Using fallback driver on input line 257.
+(biblatex)                Using fallback driver on input line 258.
 
 
 Package biblatex Warning: No driver for entry type 'other'.
-(biblatex)                Using fallback driver on input line 257.
+(biblatex)                Using fallback driver on input line 258.
 
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -3052,35 +3040,42 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[36]
-Overfull \hbox (26.36877pt too wide) in paragraph at lines 257--257
+[37]
+Overfull \hbox (26.36877pt too wide) in paragraph at lines 258--258
 []\T1/ntxtlf/m/n/12 E. Obert. \T1/ntxtlf/m/it/12 Aero-dy-namic De-sign of Trans
 -port Air-craft\T1/ntxtlf/m/n/12 . IOS Press, 2009. \T1/ntxtlf/m/sc/12 isbn\T1/
 ntxtlf/m/n/12 : 9781607504078.
  []
 
 
-Overfull \hbox (24.357pt too wide) in paragraph at lines 257--257
+Overfull \hbox (24.357pt too wide) in paragraph at lines 258--258
 \T1/ntxtlf/m/n/12 9781884885501. \T1/ntxtlf/m/sc/12 url\T1/ntxtlf/m/n/12 : [][]
 $\T1/pcr/m/n/12 https : / / books . google . it / books ? id = mMU47Ld7yQkC$[][
 ]\T1/ntxtlf/m/n/12 . 
  []
 
 
-Overfull \hbox (24.357pt too wide) in paragraph at lines 257--257
+Overfull \hbox (24.357pt too wide) in paragraph at lines 258--258
 \T1/ntxtlf/m/n/12 9781884885556. \T1/ntxtlf/m/sc/12 url\T1/ntxtlf/m/n/12 : [][]
 $\T1/pcr/m/n/12 https : / / books . google . it / books ? id = GIHHFkd829cC$[][
 ]\T1/ntxtlf/m/n/12 . 
  []
 
 
-Overfull \hbox (3.96745pt too wide) in paragraph at lines 257--257
+Overfull \hbox (3.96745pt too wide) in paragraph at lines 258--258
 \T1/ntxtlf/m/n/12 Dy-nam-ics and Au-to-matic Flight Con-trols. Dar-cor-po-ra-ti
 on, 2003. \T1/ntxtlf/m/sc/12 isbn\T1/ntxtlf/m/n/12 : 9781884885181.
  []
 
 
-Overfull \hbox (24.357pt too wide) in paragraph at lines 257--257
+Overfull \hbox (2.00662pt too wide) in paragraph at lines 258--258
+[]\T1/ntxtlf/m/n/12 David Schmidt. \T1/ntxtlf/m/it/12 Mod-ern Flight Dy-nam-ics
+\T1/ntxtlf/m/n/12 . McGraw-Hill, 2012. \T1/ntxtlf/m/sc/12 isbn\T1/ntxtlf/m/n/12
+ : 97800711339811. 
+ []
+
+
+Overfull \hbox (24.357pt too wide) in paragraph at lines 258--258
 \T1/ntxtlf/m/n/12 9780124199774. \T1/ntxtlf/m/sc/12 url\T1/ntxtlf/m/n/12 : [][]
 $\T1/pcr/m/n/12 https : / / books . google . it / books ? id = knhHAgAAQBAJ$[][
 ]\T1/ntxtlf/m/n/12 . 
@@ -3088,10 +3083,10 @@ $\T1/pcr/m/n/12 https : / / books . google . it / books ? id = knhHAgAAQBAJ$[][
 
 
 Package biblatex Warning: No driver for entry type 'other'.
-(biblatex)                Using fallback driver on input line 257.
+(biblatex)                Using fallback driver on input line 258.
 
 
-Overfull \hbox (22.76648pt too wide) in paragraph at lines 257--257
+Overfull \hbox (22.76648pt too wide) in paragraph at lines 258--258
 \T1/ntxtlf/m/it/12 miza-tion of Sub-sonic Civil Air-planes\T1/ntxtlf/m/n/12 . A
 erospace Se-ries. Wi-ley, 2013. \T1/ntxtlf/m/sc/12 isbn\T1/ntxtlf/m/n/12 : 9781
 118568095.
@@ -3103,22 +3098,22 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[37]
+[38]
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
  Make it at least 14.49998pt.
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[38]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 259.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 259.
+[39]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 260.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 260.
  (./Tesi_Magistrale_Manuela_Ruocco.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 259.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 259.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 260.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 260.
 Package rerunfilecheck Info: File `Tesi_Magistrale_Manuela_Ruocco.out' has not 
 changed.
-(rerunfilecheck)             Checksum: B09820E17623AC02560D4AE6E84E2C50;3031.
+(rerunfilecheck)             Checksum: F1783EF0549B30271AE0ECD2579C04BE;3309.
 
 
 LaTeX Warning: There were multiply-defined labels.
@@ -3129,11 +3124,11 @@ l'.
 
  ) 
 Here is how much of TeX's memory you used:
- 55552 strings out of 493054
- 1154710 string characters out of 6138326
- 1801100 words of memory out of 5000000
- 57694 multiletter control sequences out of 15000+600000
- 99946 words of font info for 72 fonts, out of 8000000 for 9000
+ 55563 strings out of 493054
+ 1154822 string characters out of 6138326
+ 1801323 words of memory out of 5000000
+ 57698 multiletter control sequences out of 15000+600000
+ 102717 words of font info for 73 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  62i,19n,92p,10402b,3299s stack positions out of 5000i,500n,10000p,200000b,80000s
 pdfTeX warning (dest): name{glo:acr:lrf} has been referenced but does not exi
@@ -3141,28 +3136,30 @@ st, replaced by a fixed one
 
 {c:/texlive/2015/texmf-dist/fonts/enc/dvips/newtx/ntx-ec-tlf-sc.enc}{c:/texlive
 /2015/texmf-dist/fonts/enc/dvips/base/8r.enc}{c:/texlive/2015/texmf-dist/fonts/
-enc/dvips/newtx/ntx-ec-tlf.enc}<c:/texlive/2015/texmf-dist/fonts/type1/public/a
-spectratio/amarbi.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/aspectrati
-o/amarri.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.
-pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb><c:/
-texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/20
-15/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2015/texmf-d
-ist/fonts/type1/public/amsfonts/latxfont/lcircle1.pfb><c:/texlive/texmf-local/f
-onts/type1/pctex/mtpro2/mt2bmit.pfb><c:/texlive/texmf-local/fonts/type1/pctex/m
-tpro2/mt2exa.pfb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2mif.pfb><c
-:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2mis.pfb><c:/texlive/texmf-loc
-al/fonts/type1/pctex/mtpro2/mt2mit.pfb><c:/texlive/texmf-local/fonts/type1/pcte
-x/mtpro2/mt2syf.pfb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2sys.pfb
-><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2syt.pfb><c:/texlive/2015/t
-exmf-dist/fonts/type1/public/tex-gyre/qtmb.pfb><c:/texlive/2015/texmf-dist/font
-s/type1/public/tex-gyre/qtmr.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public
-/tex-gyre/qtmri.pfb><c:/texlive/2015/texmf-dist/fonts/type1/urw/courier/ucrb8a.
-pfb><c:/texlive/2015/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb>
-Output written on Tesi_Magistrale_Manuela_Ruocco.pdf (45 pages, 3790337 bytes).
+enc/dvips/newtx/ntx-ecth-tlf.enc}{c:/texlive/2015/texmf-dist/fonts/enc/dvips/ne
+wtx/ntx-ec-tlf.enc}<c:/texlive/2015/texmf-dist/fonts/type1/public/aspectratio/a
+marbi.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/aspectratio/amarri.pfb
+><c:/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><c:/texl
+ive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb><c:/texlive/2015
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2015/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2015/texmf-dist/fonts/ty
+pe1/public/amsfonts/latxfont/lcircle1.pfb><c:/texlive/texmf-local/fonts/type1/p
+ctex/mtpro2/mt2bmit.pfb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2exa
+.pfb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2mif.pfb><c:/texlive/te
+xmf-local/fonts/type1/pctex/mtpro2/mt2mis.pfb><c:/texlive/texmf-local/fonts/typ
+e1/pctex/mtpro2/mt2mit.pfb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2
+syf.pfb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2sys.pfb><c:/texlive
+/texmf-local/fonts/type1/pctex/mtpro2/mt2syt.pfb><c:/texlive/2015/texmf-dist/fo
+nts/type1/public/newtx/ntxtmri.pfb><c:/texlive/2015/texmf-dist/fonts/type1/publ
+ic/tex-gyre/qtmb.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/tex-gyre/qt
+mr.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmri.pfb><c:/te
+xlive/2015/texmf-dist/fonts/type1/urw/courier/ucrb8a.pfb><c:/texlive/2015/texmf
+-dist/fonts/type1/urw/courier/ucrr8a.pfb>
+Output written on Tesi_Magistrale_Manuela_Ruocco.pdf (46 pages, 3711119 bytes).
 
 PDF statistics:
- 1232 PDF objects out of 1440 (max. 8388607)
- 1107 compressed objects within 12 object streams
- 442 named destinations out of 1000 (max. 500000)
- 446 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1267 PDF objects out of 1440 (max. 8388607)
+ 1143 compressed objects within 12 object streams
+ 449 named destinations out of 1000 (max. 500000)
+ 473 words of extra memory for PDF output out of 10000 (max. 10000000)
 

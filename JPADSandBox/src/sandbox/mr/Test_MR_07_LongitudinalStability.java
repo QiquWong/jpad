@@ -315,7 +315,7 @@ public class Test_MR_07_LongitudinalStability {
 		cLAlphaWingBody = theFuselageManager.calculateCLAlphaFuselage(cLAlphaWing);
 		
 		theWing.getAerodynamics().calcAlphaAndCLMax(meanAirfoil);
-		double cLWingBody = aircraft.get_theAerodynamics().calculateCLAtAlphaWingBody(alphaBody, meanAirfoil);
+		double cLWingBody = aircraft.get_theAerodynamics().calculateCLAtAlphaWingBody(alphaBody, meanAirfoil, true);
 		System.out.println("-------------------------------------");
 		System.out.println(" CL of Wing Body at alpha body = " + cLWingBody);
 
@@ -374,34 +374,11 @@ public class Test_MR_07_LongitudinalStability {
 		System.out.println("\n\n\t\t\tDONE PLOTTING CL vs ALPHA HORIZONTAL TAIL");
 		
 	
-		// In order to evaluate the contribution to the longitudinal stability of horizontal tail 
-		// it's necessary to consider the deflection of the elevator. 
-		//
-		// disegno elevatore --> p 95 pgv
-		//
-		//
-		// The variation of zero lift angle is not constant with the angle of deflection. So it's necessary
-		// to evaluate the tau factor which is defined as follows:
-		// 
-		// tau = dalpha 0/ d delta
-		//
-		// Introducing this parameter the Lift coefficient of the horizontal tail can be rated as follows:
-		//
-		// fomule quaderno
-		//
-		// In general the value of tau is constant until 15-20 deg, after this value, due to the flow
-		// separation, the effectiveness of elevator decrease and consequently the product tau* delta
-		// that appears in the equation of lift coefficient
-		//
-		// grafici di progetto.
-		//
-		// The evaluation of tau is made by reading of external database, considerin the followeing graphs.
-		//
-		// forumla tau 
-		//
-		// grafici
+		// TAU 
 		
 		System.out.println("\n-----Start of tau calculation-----\n" ); 
+		
+		StabilityCalculator theStablityCalculator = new StabilityCalculator();
 		
 		double chordRatio = 0.3;
 		Amount<Angle> deflection;
@@ -412,20 +389,17 @@ public class Test_MR_07_LongitudinalStability {
 		
 		for ( int i=0 ; i<deflectionArray.length ; i++ ){
 		deflection = Amount.valueOf(deflectionArray[i], NonSI.DEGREE_ANGLE);
-		StabilityCalculator theStablityCalculator = new StabilityCalculator();
 		tau[i] = theStablityCalculator.calculateTauIndex(chordRatio, aircraft, deflection);
 		
 		System.out.println("\n For an elevator deflection of " + deflection.getEstimatedValue() + 
 				" deg, the tau parameter is " + tau[i] );
 		}
+		
 		// Plot
-		// creo una matrice dove sulle colonne ci sono i valori del cl al variare di delta. Poi da quelle
-		// mi creo la lista.
 		
 		 Double [] cLVector = new Double[2];
 		 double [] cLVectorTemp = new double[2];
 		 Double [] alphaVector = new Double[2];
-		 double [] alphaVectorTemp = new double[2];
 		 List<Double[]> cLListPlot = new ArrayList<Double[]>(); 
 		 List<Double[]> alphaListPlot = new ArrayList<Double[]>();
 		
@@ -477,9 +451,38 @@ public class Test_MR_07_LongitudinalStability {
 		System.out.println("\n\n\t\t\tDONE PLOTTING CL vs ALPHA HORIZONTAL TAIL WITH ELEVATOR DEFLECTION");
 		
 		
+		// ------------------Complete Aircraft---------------
 		
-		}
+		System.out.println("\n-----Complete Aircraft-----\n" );
 		
+		double etaRatio = 1.0; // T tail
+		Amount<Angle> deflectionAngle = Amount.valueOf(20, NonSI.DEGREE_ANGLE);
+		double cLTotal = theStablityCalculator.claculateCLCompleteAircraft(
+				aircraft,
+				alphaBody,
+				meanAirfoil,
+				deflectionAngle, 
+				chordRatio, 
+				etaRatio);
+
+		System.out.println("\n the CL of aircraft at alpha body =(deg)" + 
+				alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue() +
+				" for delta = (deg) "
+				+ deflectionAngle.getEstimatedValue() 
+				+ " is " + cLTotal);
+		
+
+		// -----------------------------------------------------------------------
+		// DRAG CHARACTERISTICS 
+		// -----------------------------------------------------------------------
+
+
+		System.out.println("\n\n------------------------------------");
+		System.out.println("\n DRAG CHARACTERISTICS  ");
+		System.out.println("\n------------------------------------");
+
+	}
+
 	}
 
 

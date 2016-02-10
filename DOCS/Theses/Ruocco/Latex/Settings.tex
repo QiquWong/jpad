@@ -46,7 +46,7 @@ showstringspaces=true}
 
 
 \usepackage{fancyhdr}
-\pagestyle{fancy}
+
 
 \renewcommand{\chaptermark}[1]{\markboth{#1}{}}
 \lhead {{\bfseries \chaptername \ \thechapter} \; \leftmark}
@@ -80,6 +80,15 @@ showstringspaces=true}
   {3ex}
   {\titlerule\vspace{2ex}\filright}
   [\vspace{2ex}{\titlerule[2pt]}]
+
+
+
+\titleformat{\tableofcontents}
+  {  \bfseries \Large}
+  {\filleft \huge    \lapbox[6pt]{\width} 
+ \ \colorbox{\myChapterHeadingColorMix}{\color{white}\Huge \strut }}
+  {3ex}
+  {\titlerule\vspace{2ex}\filright}
 
 
 %------------------------------------------------------------------------------------------

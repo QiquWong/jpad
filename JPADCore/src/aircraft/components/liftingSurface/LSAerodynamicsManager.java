@@ -1191,6 +1191,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		 * This method calculates CL at alpha given as input. This method calculates both linear trait and 
 		 * non linear trait. It use the NasaBlackwell method in order to evaluate the slope of the linear trait
 		 * and it builds the non-linear trait using a cubic interpolation. 
+		 * alpha is alpha wing in degree or radians 
 		 * 
 		 * @author Manuela Ruocco
 		 *

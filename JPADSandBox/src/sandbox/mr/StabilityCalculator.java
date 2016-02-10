@@ -6,7 +6,10 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
+import aircraft.auxiliary.airfoil.MyAirfoil;
 import aircraft.components.Aircraft;
+import aircraft.components.liftingSurface.LSAerodynamicsManager;
+import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
 
 public class StabilityCalculator {
 
@@ -56,19 +59,73 @@ public class StabilityCalculator {
 		double tauIndex = deltaAlpha2D3D * deltaAlpha2D * etaDelta;
 		return tauIndex;
 	}
-	
+
 	/**
-	 * This method evaluates CL for an alpha array having the elevator deflection as input. 
+	 * This method evaluates the lift coefficient of the entire aircraft at alpha= alpha body. 
 	 * 
+	 * @param aircraft
+	 * @param angle of attack between the flow direction and the fuselage reference line
 	 * @param angle of deflection of the elevator in deg or radians
+	 * @param MyAirfoil the mean airfoil of the wing
+	 * @param chord ratio of elevator
+	 * @param eta the pressure ratio. For T tail is 1.
+	 * 
+	 *@return CL 
 	 *
 	 * @author  Manuela Ruocco
 	 */
-	
-	// The calculation of the lift coefficient with a deflection of the elevator is made by the
-	// method 
-	public void calculateCLWithElevatorDeflection (Amount<Angle> deflection){
+	public double claculateCLCompleteAircraft (Aircraft aircraft,
+			Amount<Angle> alphaBody,
+			MyAirfoil meanAirfoil,
+			Amount<Angle> deflection,
+			double chordRatio,
+			double etaRatio
+			)
+	{
 		
+		LSAerodynamicsManager.CalcCLAtAlpha theCLWingCalculator = 
+				aircraft.get_wing().getAerodynamics()
+				.new CalcCLAtAlpha();
+		double alphaWingAngle = alphaBody.getEstimatedValue()+ aircraft.get_wing().get_iw().getEstimatedValue();
+		Amount<Angle> alphaWing = Amount.valueOf(alphaWingAngle, SI.RADIAN);
 		
+		double cLWing = theCLWingCalculator.nasaBlackwellCompleteCurve(alphaWing);
+		
+		System.out.println("the CL of wing at alpha body =(deg)" + 
+				alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue()
+				+ " is " + cLWing);
+		
+		double cLWingBody = aircraft.get_theAerodynamics().calculateCLAtAlphaWingBody(
+				alphaBody,
+				meanAirfoil,
+				false
+				);
+		
+		System.out.println("the CL of wing body at alpha body =(deg)" + 
+				alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue()
+				+ " is " + cLWingBody);
+		
+		LSAerodynamicsManager.CalcCLAtAlpha theCLHorizontalTailCalculator = 
+				aircraft.get_HTail().getAerodynamics()
+				.new CalcCLAtAlpha();
+		
+		DownwashCalculator theDownwashCalculator = new DownwashCalculator(aircraft);
+		theDownwashCalculator.calculateDownwashNonLinearDelft();
+		double downwash = theDownwashCalculator.getDownwashAtAlphaBody(alphaBody);
+		Amount<Angle> downwashAmount = Amount.valueOf(downwash, NonSI.DEGREE_ANGLE);
+		
+		double cLHTail = theCLHorizontalTailCalculator.getCLHTailatAlphaBodyWithElevator(chordRatio, alphaBody, deflection, downwashAmount);
+		
+		System.out.println("the CL of aircraft at alpha body =(deg)" + 
+				alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue() +
+				" for delta = (deg) "
+				+ deflection.getEstimatedValue() 
+				+ " is " + cLHTail);
+		
+		double hTailSurface = aircraft.get_HTail().get_surface().getEstimatedValue();
+		double wingSurface = aircraft.get_wing().get_surface().getEstimatedValue();
+		
+		double cLTotal = cLWingBody + cLHTail * (hTailSurface / wingSurface ) * etaRatio;
+		return cLTotal;
 	}
 }
