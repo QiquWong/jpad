@@ -2238,10 +2238,12 @@
     <bcf:datasource type="file" datatype="bibtex">Tesi_Bibliography.bib</bcf:datasource>
   </bcf:bibdata>
   <bcf:section number="0">
-    <bcf:citekey order="1">torenbeek1982synthesis</bcf:citekey>
-    <bcf:citekey order="2">torenbeek1982synthesis</bcf:citekey>
+    <bcf:citekey order="1">Ciornei:CriticalMach</bcf:citekey>
+    <bcf:citekey order="2">hilton1951high</bcf:citekey>
     <bcf:citekey order="3">torenbeek1982synthesis</bcf:citekey>
-    <bcf:citekey order="4">sforza2014commercial</bcf:citekey>
+    <bcf:citekey order="4">torenbeek1982synthesis</bcf:citekey>
+    <bcf:citekey order="5">torenbeek1982synthesis</bcf:citekey>
+    <bcf:citekey order="6">sforza2014commercial</bcf:citekey>
     <bcf:citekey order="0">*</bcf:citekey>
   </bcf:section>
   <bcf:sortlist section="0" name="nty" type="entry" sortscheme="nty">
