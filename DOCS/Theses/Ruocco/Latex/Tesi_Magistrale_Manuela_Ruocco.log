@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.12.21)  9 FEB 2016 20:20
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.12.21)  10 FEB 2016 01:11
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2229,6 +2229,12 @@ LaTeX Warning: Label `fig:schemauno' multiply defined.
 
 LaTeX Warning: Label `fig:schemauno@cref' multiply defined.
 
+
+LaTeX Warning: Label `efficiency' multiply defined.
+
+
+LaTeX Warning: Label `efficiency@cref' multiply defined.
+
 )
 \openout1 = `Tesi_Magistrale_Manuela_Ruocco.aux'.
 
@@ -2867,18 +2873,38 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
 
 [22]
 Chapter 8.
-) (./Chapters/works.tex [23
+<Immagini/Eta_Delta_Plain.png, id=804, 634.16925pt x 457.71pt>
+File: Immagini/Eta_Delta_Plain.png Graphic file (type png)
+
+<use Immagini/Eta_Delta_Plain.png>
+Package pdftex.def Info: Immagini/Eta_Delta_Plain.png used on input line 49.
+(pdftex.def)             Requested size: 236.52588pt x 170.71652pt.
+ [23
 
 ]
-Chapter 9.
-)) [24
+<Immagini/alfadelta.png, id=814, 396.88275pt x 336.65775pt>
+File: Immagini/alfadelta.png Graphic file (type png)
 
-] [25
+<use Immagini/alfadelta.png>
+Package pdftex.def Info: Immagini/alfadelta.png used on input line 57.
+(pdftex.def)             Requested size: 201.25084pt x 170.71652pt.
+) (./Chapters/works.tex
+
+Package Fancyhdr Warning: \headheight is too small (12.0pt): 
+ Make it at least 14.49998pt.
+ We now make it that large for the rest of the document.
+ This may cause the page layout to be inconsistent, however.
+
+[24 <./Immagini/Eta_Delta_Plain.png> <./Immagini/alfadelta.png>]
+Chapter 9.
+)) [25
+
+] [26
 
 
 ] (./Tesi_Appendices.tex (./appendices/JavaReference.tex
 Appendix A.
-[26
+[27
 
 ]))
 
@@ -2887,7 +2913,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[27]
+[28]
 
 Package glossaries Warning: Deprecated command \glossarystyle.
  I recommend you switch to \setglossarystyle unless you want to maintain backwa
@@ -2899,9 +2925,9 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[28
+[29
 
-] (./Tesi_Magistrale_Manuela_Ruocco.gls [29
+] (./Tesi_Magistrale_Manuela_Ruocco.gls [30
 
 
 
@@ -2912,12 +2938,12 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[30] (./Tesi_Magistrale_Manuela_Ruocco.acr) [31
+[31] (./Tesi_Magistrale_Manuela_Ruocco.acr) [32
 
 
 
 ]
-(./Tesi_Magistrale_Manuela_Ruocco.sym [32
+(./Tesi_Magistrale_Manuela_Ruocco.sym [33
 
 
 
@@ -2928,7 +2954,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[33]
+[34]
 Overfull \hbox (5.51205pt too wide) in paragraph at lines 257--257
 []\T1/ntxtlf/m/n/12 Guillaume Alleon. \T1/ntxtlf/m/it/12 oc-c-java\T1/ntxtlf/m/
 n/12 . \T1/ntxtlf/m/sc/12 url\T1/ntxtlf/m/n/12 : [][]$\T1/pcr/m/n/12 http : / /
@@ -2989,7 +3015,7 @@ e Com-mons Math\T1/ntxtlf/m/n/12 . \T1/ntxtlf/m/sc/12 url\T1/ntxtlf/m/n/12 : []
 []$\T1/pcr/m/n/12 http : / / commons .
  []
 
-[34
+[35
 
 
 ]
@@ -3026,7 +3052,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[35]
+[36]
 Overfull \hbox (26.36877pt too wide) in paragraph at lines 257--257
 []\T1/ntxtlf/m/n/12 E. Obert. \T1/ntxtlf/m/it/12 Aero-dy-namic De-sign of Trans
 -port Air-craft\T1/ntxtlf/m/n/12 . IOS Press, 2009. \T1/ntxtlf/m/sc/12 isbn\T1/
@@ -3077,14 +3103,14 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[36]
+[37]
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
  Make it at least 14.49998pt.
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[37]
+[38]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 259.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 259.
  (./Tesi_Magistrale_Manuela_Ruocco.aux)
@@ -3092,7 +3118,7 @@ Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 259.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 259.
 Package rerunfilecheck Info: File `Tesi_Magistrale_Manuela_Ruocco.out' has not 
 changed.
-(rerunfilecheck)             Checksum: 25D6ED0BFB5C125A6AD072130D97110E;3031.
+(rerunfilecheck)             Checksum: B09820E17623AC02560D4AE6E84E2C50;3031.
 
 
 LaTeX Warning: There were multiply-defined labels.
@@ -3103,10 +3129,10 @@ l'.
 
  ) 
 Here is how much of TeX's memory you used:
- 55532 strings out of 493054
- 1154296 string characters out of 6138326
- 1800999 words of memory out of 5000000
- 57683 multiletter control sequences out of 15000+600000
+ 55552 strings out of 493054
+ 1154710 string characters out of 6138326
+ 1801100 words of memory out of 5000000
+ 57694 multiletter control sequences out of 15000+600000
  99946 words of font info for 72 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  62i,19n,92p,10402b,3299s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -3132,11 +3158,11 @@ exmf-dist/fonts/type1/public/tex-gyre/qtmb.pfb><c:/texlive/2015/texmf-dist/font
 s/type1/public/tex-gyre/qtmr.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public
 /tex-gyre/qtmri.pfb><c:/texlive/2015/texmf-dist/fonts/type1/urw/courier/ucrb8a.
 pfb><c:/texlive/2015/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb>
-Output written on Tesi_Magistrale_Manuela_Ruocco.pdf (44 pages, 3398529 bytes).
+Output written on Tesi_Magistrale_Manuela_Ruocco.pdf (45 pages, 3790337 bytes).
 
 PDF statistics:
- 1216 PDF objects out of 1440 (max. 8388607)
- 1097 compressed objects within 11 object streams
- 435 named destinations out of 1000 (max. 500000)
- 436 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1232 PDF objects out of 1440 (max. 8388607)
+ 1107 compressed objects within 12 object streams
+ 442 named destinations out of 1000 (max. 500000)
+ 446 words of extra memory for PDF output out of 10000 (max. 10000000)
 
