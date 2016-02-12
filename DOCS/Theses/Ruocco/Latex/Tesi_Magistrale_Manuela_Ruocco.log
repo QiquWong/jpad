@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.12.21)  11 FEB 2016 14:42
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.12.21)  12 FEB 2016 13:52
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2031,7 +2031,7 @@ LaTeX Info: Redefining \labelcpageref on input line 2230.
 Package cleveref Info: `listings' support loaded on input line 2950.
 Package cleveref Info: `subfig' support loaded on input line 2983.
 )
-Package biblatex Info: Redefining '\citetitle' on input line 122.
+Package biblatex Info: Redefining '\citetitle' on input line 114.
 ) (./glossary.tex
 (c:/texlive/2015/texmf-dist/tex/latex/glossaries/base/glossaries.sty
 Package: glossaries 2015/11/30 v4.20 (NLCT)
@@ -2230,6 +2230,30 @@ LaTeX Warning: Label `fig:schemauno' multiply defined.
 LaTeX Warning: Label `fig:schemauno@cref' multiply defined.
 
 
+LaTeX Warning: Label `ch:workobject' multiply defined.
+
+
+LaTeX Warning: Label `ch:workobject@cref' multiply defined.
+
+
+LaTeX Warning: Label `ch:workobject' multiply defined.
+
+
+LaTeX Warning: Label `ch:workobject@cref' multiply defined.
+
+
+LaTeX Warning: Label `ch:workobject' multiply defined.
+
+
+LaTeX Warning: Label `ch:workobject@cref' multiply defined.
+
+
+LaTeX Warning: Label `ch:workobject' multiply defined.
+
+
+LaTeX Warning: Label `ch:workobject@cref' multiply defined.
+
+
 LaTeX Warning: Label `flowchartangles' multiply defined.
 
 
@@ -2240,6 +2264,18 @@ LaTeX Warning: Label `flowchartangles' multiply defined.
 
 
 LaTeX Warning: Label `flowchartangles@cref' multiply defined.
+
+
+LaTeX Warning: Label `[style' multiply defined.
+
+
+LaTeX Warning: Label `[style@cref' multiply defined.
+
+
+LaTeX Warning: Label `ch:workobject' multiply defined.
+
+
+LaTeX Warning: Label `ch:workobject@cref' multiply defined.
 
 )
 \openout1 = `Tesi_Magistrale_Manuela_Ruocco.aux'.
@@ -2534,7 +2570,7 @@ File: t1qhv.fd 2009/09/25 v1.2 font definition file for T1/qhv
 (c:/texlive/2015/texmf-dist/tex/latex/newtx/t1ntxtt.fd
 File: t1ntxtt.fd 2012/04/20 v3.1
 )
-<Tesi_Magistrale_Manuela_Ruocco-frn.pdf, id=208, 597.50829pt x 845.0471pt>
+<Tesi_Magistrale_Manuela_Ruocco-frn.pdf, id=212, 597.50829pt x 845.0471pt>
 File: Tesi_Magistrale_Manuela_Ruocco-frn.pdf Graphic file (type pdf)
 
 <use Tesi_Magistrale_Manuela_Ruocco-frn.pdf>
@@ -2584,7 +2620,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 17--22
 dentifier (name{page.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1 \part{Aircraft Design Overview}
+l.2 \part{Aircraft Design Overview}
                                     [1
 
 
@@ -2614,7 +2650,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 26--27
 
  []
 
-<Immagini/xml1.jpg, id=340, 135.50626pt x 11.29219pt>
+<Immagini/xml1.jpg, id=345, 135.50626pt x 11.29219pt>
 File: Immagini/xml1.jpg Graphic file (type jpg)
  <use Immagini/xml1.jpg>
 Package pdftex.def Info: Immagini/xml1.jpg used on input line 30.
@@ -2627,7 +2663,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 34--35
 [6
 
  <./Immagini/xml1.jpg>]
-<Immagini/xml2.jpg, id=351, 338.76563pt x 14.30344pt>
+<Immagini/xml2.jpg, id=356, 338.76563pt x 14.30344pt>
 File: Immagini/xml2.jpg Graphic file (type jpg)
  <use Immagini/xml2.jpg>
 Package pdftex.def Info: Immagini/xml2.jpg used on input line 38.
@@ -2650,7 +2686,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 60--61
 
  []
 
-<Immagini/atr72mod.jpg, id=354, 477.58424pt x 166.52213pt>
+<Immagini/atr72mod.jpg, id=359, 477.58424pt x 166.52213pt>
 File: Immagini/atr72mod.jpg Graphic file (type jpg)
 
 <use Immagini/atr72mod.jpg>
@@ -2664,7 +2700,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  This may cause the page layout to be inconsistent, however.
 
 [7 <./Immagini/xml2.jpg> <./Immagini/atr72mod.jpg>]
-<Immagini/boeing.jpg, id=368, 960.88988pt x 323.70938pt>
+<Immagini/boeing.jpg, id=373, 960.88988pt x 323.70938pt>
 File: Immagini/boeing.jpg Graphic file (type jpg)
 
 <use Immagini/boeing.jpg>
@@ -2687,7 +2723,7 @@ Package Listings Warning: Text dropped after begin of listing on input line 101
 .
 
 
-<immagini/HowToCreateADefaultAircraftInJPAD3.pdf, id=377, 1896.08376pt x 1117.1
+<immagini/HowToCreateADefaultAircraftInJPAD3.pdf, id=382, 1896.08376pt x 1117.1
 7375pt>
 File: immagini/HowToCreateADefaultAircraftInJPAD3.pdf Graphic file (type pdf)
  <use immagini/HowToCreateADefaultAircraftInJPAD3.pdf>
@@ -2758,7 +2794,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[13] <immagini/HowToAssignDatabase.jpg, id=687, 1726.45pt x 840.13875pt>
+[13] <immagini/HowToAssignDatabase.jpg, id=692, 1726.45pt x 840.13875pt>
 File: immagini/HowToAssignDatabase.jpg Graphic file (type jpg)
 
 <use immagini/HowToAssignDatabase.jpg>
@@ -2781,18 +2817,27 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
 
 [15 <./immagini/HowToAssignDatabase.jpg>] [16
 
-] (./Chapters/Lift.tex
+] (./Chapters/Data.tex
 Chapter 5.
-) (./Chapters/Drag.tex [17
+) (./Chapters/Lift.tex [17
 
 ]
 Chapter 6.
-) (./Chapters/Downwash.tex [18
+) (./Chapters/Drag.tex [18
 
 ]
 Chapter 7.
 
-Underfull \hbox (badness 10000) in paragraph at lines 14--15
+Underfull \hbox (badness 10000) in paragraph at lines 23--24
+
+ []
+
+) (./Chapters/Downwash.tex [19
+
+]
+Chapter 8.
+
+Underfull \hbox (badness 10000) in paragraph at lines 16--17
 
  []
 
@@ -2800,50 +2845,50 @@ Underfull \hbox (badness 10000) in paragraph at lines 14--15
 
 pdfTeX warning: pdflatex.exe (file ./Immagini/wing_vortex_sheet3.pdf): PDF incl
 usion: found PDF version <1.6>, but at most version <1.5> allowed
-<Immagini/wing_vortex_sheet3.pdf, id=730, 771.49246pt x 287.62234pt>
+<Immagini/wing_vortex_sheet3.pdf, id=744, 771.49246pt x 287.62234pt>
 File: Immagini/wing_vortex_sheet3.pdf Graphic file (type pdf)
 
 <use Immagini/wing_vortex_sheet3.pdf>
-Package pdftex.def Info: Immagini/wing_vortex_sheet3.pdf used on input line 20.
+Package pdftex.def Info: Immagini/wing_vortex_sheet3.pdf used on input line 22.
 
 (pdftex.def)             Requested size: 435.0347pt x 162.18062pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 24--25
+Underfull \hbox (badness 10000) in paragraph at lines 26--27
 
  []
 
-[19
+[20
 
  <./Immagini/wing_vortex_sheet3.pdf, page is rotated 90 degrees>]
 
 pdfTeX warning: pdflatex.exe (file ./Immagini/wing_upwash_downwash.pdf): PDF in
 clusion: found PDF version <1.6>, but at most version <1.5> allowed
-<Immagini/wing_upwash_downwash.pdf, id=756, 525.10075pt x 171.98553pt>
+<Immagini/wing_upwash_downwash.pdf, id=770, 525.10075pt x 171.98553pt>
 File: Immagini/wing_upwash_downwash.pdf Graphic file (type pdf)
 
 <use Immagini/wing_upwash_downwash.pdf>
-Package pdftex.def Info: Immagini/wing_upwash_downwash.pdf used on input line 2
-9.
+Package pdftex.def Info: Immagini/wing_upwash_downwash.pdf used on input line 3
+1.
 (pdftex.def)             Requested size: 448.2527pt x 146.81631pt.
 
-Overfull \hbox (7.23497pt too wide) in paragraph at lines 29--30
+Overfull \hbox (7.23497pt too wide) in paragraph at lines 31--32
  [][] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 41--43
+Underfull \hbox (badness 10000) in paragraph at lines 43--45
 
  []
 
-<Immagini/wing_htail_Roskam_eng.pdf, id=759, 471.02675pt x 212.31522pt>
+<Immagini/wing_htail_Roskam_eng.pdf, id=773, 471.02675pt x 212.31522pt>
 File: Immagini/wing_htail_Roskam_eng.pdf Graphic file (type pdf)
 
 <use Immagini/wing_htail_Roskam_eng.pdf>
 Package pdftex.def Info: Immagini/wing_htail_Roskam_eng.pdf used on input line 
-60.
+62.
 (pdftex.def)             Requested size: 467.1157pt x 210.55022pt.
 
-Overfull \hbox (26.09798pt too wide) in paragraph at lines 60--61
+Overfull \hbox (26.09798pt too wide) in paragraph at lines 62--63
  [][] 
  []
 
@@ -2853,17 +2898,17 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[20 <./Immagini/wing_upwash_downwash.pdf, page is rotated 90 degrees>]
-Underfull \hbox (badness 10000) in paragraph at lines 80--82
+[21 <./Immagini/wing_upwash_downwash.pdf, page is rotated 90 degrees>]
+Underfull \hbox (badness 10000) in paragraph at lines 82--84
 
  []
 
-<Immagini/Wing_Alpha_Zero_List.pdf, id=793, 1366.74751pt x 546.22006pt>
+<Immagini/Wing_Alpha_Zero_List.pdf, id=808, 1366.74751pt x 546.22006pt>
 File: Immagini/Wing_Alpha_Zero_List.pdf Graphic file (type pdf)
 
 <use Immagini/Wing_Alpha_Zero_List.pdf>
-Package pdftex.def Info: Immagini/Wing_Alpha_Zero_List.pdf used on input line 8
-8.
+Package pdftex.def Info: Immagini/Wing_Alpha_Zero_List.pdf used on input line 9
+0.
 (pdftex.def)             Requested size: 427.17012pt x 170.71652pt.
 
 
@@ -2872,65 +2917,65 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[21 <./Immagini/wing_htail_Roskam_eng.pdf>]
+[22 <./Immagini/wing_htail_Roskam_eng.pdf>]
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
  Make it at least 14.49998pt.
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[22 <./Immagini/Wing_Alpha_Zero_List.pdf>]
-<Immagini/linearDownwash.pdf, id=830, 1353.055pt x 405.515pt>
-File: Immagini/linearDownwash.pdf Graphic file (type pdf)
+[23 <./Immagini/Wing_Alpha_Zero_List.pdf>]
+<Immagini/linearDownwash_2.pdf, id=844, 1000.73875pt x 490.83376pt>
+File: Immagini/linearDownwash_2.pdf Graphic file (type pdf)
 
-<use Immagini/linearDownwash.pdf>
-Package pdftex.def Info: Immagini/linearDownwash.pdf used on input line 118.
-(pdftex.def)             Requested size: 465.19409pt x 139.41832pt.
+<use Immagini/linearDownwash_2.pdf>
+Package pdftex.def Info: Immagini/linearDownwash_2.pdf used on input line 120.
+(pdftex.def)             Requested size: 464.08658pt x 227.62204pt.
 
-Overfull \hbox (24.17636pt too wide) in paragraph at lines 118--119
+Overfull \hbox (23.06885pt too wide) in paragraph at lines 120--121
  [][] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 171--172
-
- []
-
-
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
  Make it at least 14.49998pt.
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[23 <./Immagini/linearDownwash.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 174--176
+[24 <./Immagini/linearDownwash_2.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 173--174
 
  []
 
-<Immagini/arms_definitions.pdf, id=867, 2683.8464pt x 1109.7418pt>
+
+Underfull \hbox (badness 10000) in paragraph at lines 176--178
+
+ []
+
+<Immagini/arms_definitions.pdf, id=882, 2683.8464pt x 1109.7418pt>
 File: Immagini/arms_definitions.pdf Graphic file (type pdf)
 
 <use Immagini/arms_definitions.pdf>
-Package pdftex.def Info: Immagini/arms_definitions.pdf used on input line 179.
+Package pdftex.def Info: Immagini/arms_definitions.pdf used on input line 181.
 (pdftex.def)             Requested size: 456.20691pt x 188.6419pt.
 
-Overfull \hbox (15.18918pt too wide) in paragraph at lines 179--180
+Overfull \hbox (15.18918pt too wide) in paragraph at lines 181--182
  [][] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 190--192
+Underfull \hbox (badness 10000) in paragraph at lines 192--194
 
  []
 
-<Immagini/nonlinear.pdf, id=868, 1406.25375pt x 493.845pt>
-File: Immagini/nonlinear.pdf Graphic file (type pdf)
+<Immagini/nonlinear_2.pdf, id=883, 1292.83pt x 835.12pt>
+File: Immagini/nonlinear_2.pdf Graphic file (type pdf)
 
-<use Immagini/nonlinear.pdf>
-Package pdftex.def Info: Immagini/nonlinear.pdf used on input line 197.
-(pdftex.def)             Requested size: 453.70111pt x 159.3356pt.
+<use Immagini/nonlinear_2.pdf>
+Package pdftex.def Info: Immagini/nonlinear_2.pdf used on input line 199.
+(pdftex.def)             Requested size: 466.89798pt x 301.59938pt.
 
-Overfull \hbox (12.68338pt too wide) in paragraph at lines 197--198
+Overfull \hbox (25.88025pt too wide) in paragraph at lines 199--200
  [][] 
  []
 
@@ -2940,36 +2985,32 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[24 <./Immagini/arms_definitions.pdf>]) (./Chapters/Stability.tex
+[25 <./Immagini/arms_definitions.pdf>]
+
+Package Listings Warning: Text dropped after begin of listing on input line 207
+.
+
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
  Make it at least 14.49998pt.
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[25 <./Immagini/nonlinear.pdf>]
-Chapter 8.
-<Immagini/alfadeltanew.png, id=918, 470.9595pt x 203.86162pt>
-File: Immagini/alfadeltanew.png Graphic file (type png)
+[26 <./Immagini/nonlinear_2.pdf>]
 
-<use Immagini/alfadeltanew.png>
-Package pdftex.def Info: Immagini/alfadeltanew.png used on input line 64.
-(pdftex.def)             Requested size: 446.31667pt x 193.19402pt.
+Package Fancyhdr Warning: \headheight is too small (12.0pt): 
+ Make it at least 14.49998pt.
+ We now make it that large for the rest of the document.
+ This may cause the page layout to be inconsistent, however.
 
-Overfull \hbox (5.29893pt too wide) in paragraph at lines 64--66
- [][] 
+[27]
+Overfull \hbox (0.58676pt too wide) in paragraph at lines 330--335
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
+][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
+ 
  []
 
-[26
-
-]) (./Chapters/works.tex
-
-Package Fancyhdr Warning: \headheight is too small (12.0pt): 
- Make it at least 14.49998pt.
- We now make it that large for the rest of the document.
- This may cause the page layout to be inconsistent, however.
-
-[27 <./Immagini/alfadeltanew.png>]
+) (./Chapters/Stability.tex
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
  Make it at least 14.49998pt.
@@ -2978,14 +3019,43 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
 
 [28]
 Chapter 9.
-)) [29
+<Immagini/alfadeltanew.png, id=1073, 470.9595pt x 203.86162pt>
+File: Immagini/alfadeltanew.png Graphic file (type png)
 
-] [30
+<use Immagini/alfadeltanew.png>
+Package pdftex.def Info: Immagini/alfadeltanew.png used on input line 72.
+(pdftex.def)             Requested size: 446.31667pt x 193.19402pt.
+
+Overfull \hbox (5.29893pt too wide) in paragraph at lines 72--74
+ [][] 
+ []
+
+[29
+
+]) (./Chapters/works.tex
+
+Package Fancyhdr Warning: \headheight is too small (12.0pt): 
+ Make it at least 14.49998pt.
+ We now make it that large for the rest of the document.
+ This may cause the page layout to be inconsistent, however.
+
+[30 <./Immagini/alfadeltanew.png>]
+
+Package Fancyhdr Warning: \headheight is too small (12.0pt): 
+ Make it at least 14.49998pt.
+ We now make it that large for the rest of the document.
+ This may cause the page layout to be inconsistent, however.
+
+[31]
+Chapter 10.
+)) [32
+
+] [33
 
 
 ] (./Tesi_Appendices.tex (./appendices/JavaReference.tex
 Appendix A.
-[31
+[34
 
 ]))
 
@@ -2994,7 +3064,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[32]
+[35]
 
 Package glossaries Warning: Deprecated command \glossarystyle.
  I recommend you switch to \setglossarystyle unless you want to maintain backwa
@@ -3006,9 +3076,9 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[33
+[36
 
-] (./Tesi_Magistrale_Manuela_Ruocco.gls [34
+] (./Tesi_Magistrale_Manuela_Ruocco.gls [37
 
 
 
@@ -3019,12 +3089,12 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[35] (./Tesi_Magistrale_Manuela_Ruocco.acr) [36
+[38] (./Tesi_Magistrale_Manuela_Ruocco.acr) [39
 
 
 
 ]
-(./Tesi_Magistrale_Manuela_Ruocco.sym [37
+(./Tesi_Magistrale_Manuela_Ruocco.sym [40
 
 
 
@@ -3035,7 +3105,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[38]
+[41]
 Overfull \hbox (5.51205pt too wide) in paragraph at lines 258--258
 []\T1/ntxtlf/m/n/12 Guillaume Alleon. \T1/ntxtlf/m/it/12 oc-c-java\T1/ntxtlf/m/
 n/12 . \T1/ntxtlf/m/sc/12 url\T1/ntxtlf/m/n/12 : [][]$\T1/pcr/m/n/12 http : / /
@@ -3096,7 +3166,7 @@ e Com-mons Math\T1/ntxtlf/m/n/12 . \T1/ntxtlf/m/sc/12 url\T1/ntxtlf/m/n/12 : []
 []$\T1/pcr/m/n/12 http : / / commons .
  []
 
-[39
+[42
 
 
 ]
@@ -3133,7 +3203,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[40]
+[43]
 Overfull \hbox (26.36877pt too wide) in paragraph at lines 258--258
 []\T1/ntxtlf/m/n/12 E. Obert. \T1/ntxtlf/m/it/12 Aero-dy-namic De-sign of Trans
 -port Air-craft\T1/ntxtlf/m/n/12 . IOS Press, 2009. \T1/ntxtlf/m/sc/12 isbn\T1/
@@ -3191,23 +3261,30 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[41]
+[44]
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
  Make it at least 14.49998pt.
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[42]
+[45]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 260.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 260.
  (./Tesi_Magistrale_Manuela_Ruocco.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 260.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 260.
-Package rerunfilecheck Info: File `Tesi_Magistrale_Manuela_Ruocco.out' has not 
-changed.
-(rerunfilecheck)             Checksum: 88D217003E050EA2A682F3FD53129035;3307.
 
+
+Package rerunfilecheck Warning: File `Tesi_Magistrale_Manuela_Ruocco.out' has c
+hanged.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `Tesi_Magistrale_Manuela_Ruocco.out'
+:
+(rerunfilecheck)             Before: 97F9117CEB3CDD65D5E7B24BD51E6BC8;3357
+(rerunfilecheck)             After:  1A597071EBA78EAB21CF6984FA53AA91;3875.
 
 LaTeX Warning: There were multiply-defined labels.
 
@@ -3217,13 +3294,13 @@ l'.
 
  ) 
 Here is how much of TeX's memory you used:
- 55591 strings out of 493054
- 1155394 string characters out of 6138326
- 1801474 words of memory out of 5000000
- 57712 multiletter control sequences out of 15000+600000
+ 55789 strings out of 493054
+ 1158661 string characters out of 6138326
+ 1807402 words of memory out of 5000000
+ 57764 multiletter control sequences out of 15000+600000
  102717 words of font info for 73 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 62i,19n,92p,10402b,3299s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 62i,19n,92p,10402b,3395s stack positions out of 5000i,500n,10000p,200000b,80000s
 pdfTeX warning (dest): name{glo:acr:lrf} has been referenced but does not exi
 st, replaced by a fixed one
 
@@ -3248,11 +3325,11 @@ ic/tex-gyre/qtmb.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/tex-gyre/qt
 mr.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmri.pfb><c:/te
 xlive/2015/texmf-dist/fonts/type1/urw/courier/ucrb8a.pfb><c:/texlive/2015/texmf
 -dist/fonts/type1/urw/courier/ucrr8a.pfb>
-Output written on Tesi_Magistrale_Manuela_Ruocco.pdf (49 pages, 4311952 bytes).
+Output written on Tesi_Magistrale_Manuela_Ruocco.pdf (52 pages, 4328136 bytes).
 
 PDF statistics:
- 1360 PDF objects out of 1440 (max. 8388607)
- 1215 compressed objects within 13 object streams
- 460 named destinations out of 1000 (max. 500000)
- 488 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1545 PDF objects out of 1728 (max. 8388607)
+ 1396 compressed objects within 14 object streams
+ 603 named destinations out of 1000 (max. 500000)
+ 496 words of extra memory for PDF output out of 10000 (max. 10000000)
 

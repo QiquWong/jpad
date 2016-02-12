@@ -481,6 +481,9 @@ public class Test_MR_07_LongitudinalStability {
 		System.out.println("\n DRAG CHARACTERISTICS  ");
 		System.out.println("\n------------------------------------");
 
+		LSAerodynamicsManager.CalcCDAtAlpha theCDWingCalculator = theLSAnalysis.new CalcCDAtAlpha();
+		cLIsolatedWing = theCDWingCalculator.
+		
 	}
 
 	}
