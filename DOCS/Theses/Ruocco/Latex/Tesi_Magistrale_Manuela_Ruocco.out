@@ -19,41 +19,39 @@
 \BOOKMARK [0][-]{chapter.6}{Wing Lift Characteristics}{part.3}% 19
 \BOOKMARK [0][-]{chapter.7}{Wing Drag Characteristics}{part.3}% 20
 \BOOKMARK [1][-]{section.7.1}{Theoretical background}{chapter.7}% 21
-\BOOKMARK [2][-]{subsection.7.1.1}{Integral estimation}{section.7.1}% 22
-\BOOKMARK [2][-]{subsection.7.1.2}{Sforza}{section.7.1}% 23
-\BOOKMARK [1][-]{section.7.2}{Java Class Architecture}{chapter.7}% 24
-\BOOKMARK [1][-]{section.7.3}{Case Study}{chapter.7}% 25
-\BOOKMARK [0][-]{chapter.8}{Downwash Estimation}{part.3}% 26
-\BOOKMARK [1][-]{section.8.1}{Theoretical background}{chapter.8}% 27
-\BOOKMARK [1][-]{section.8.2}{Java Class Architecture}{chapter.8}% 28
-\BOOKMARK [2][-]{subsection.8.2.1}{Constant Downwash Gradient}{section.8.2}% 29
-\BOOKMARK [2][-]{subsection.8.2.2}{Variable Downwash Gradient}{section.8.2}% 30
-\BOOKMARK [1][-]{section.8.3}{Case Study}{chapter.8}% 31
-\BOOKMARK [0][-]{chapter.9}{Aircraft Longitudinal Static Stability}{part.3}% 32
-\BOOKMARK [1][-]{section.9.1}{Aerodynamic Lift}{chapter.9}% 33
-\BOOKMARK [2][-]{subsection.9.1.1}{Wing}{section.9.1}% 34
-\BOOKMARK [2][-]{subsection.9.1.2}{Fuselage}{section.9.1}% 35
-\BOOKMARK [2][-]{subsection.9.1.3}{Horizontal Tail}{section.9.1}% 36
-\BOOKMARK [2][-]{subsection.9.1.4}{Complete Aircraft}{section.9.1}% 37
-\BOOKMARK [1][-]{section.9.2}{Aerodynamic Drag}{chapter.9}% 38
-\BOOKMARK [2][-]{subsection.9.2.1}{Wing}{section.9.2}% 39
-\BOOKMARK [2][-]{subsection.9.2.2}{Fuselage}{section.9.2}% 40
-\BOOKMARK [2][-]{subsection.9.2.3}{Horizontal Tail}{section.9.2}% 41
-\BOOKMARK [1][-]{section.9.3}{Pitching Moments}{chapter.9}% 42
-\BOOKMARK [2][-]{subsection.9.3.1}{Wing}{section.9.3}% 43
-\BOOKMARK [2][-]{subsection.9.3.2}{Fuselage}{section.9.3}% 44
-\BOOKMARK [2][-]{subsection.9.3.3}{Horizontal Tail}{section.9.3}% 45
-\BOOKMARK [2][-]{subsection.9.3.4}{Propulsors}{section.9.3}% 46
-\BOOKMARK [2][-]{subsection.9.3.5}{Stability Calculation}{section.9.3}% 47
-\BOOKMARK [1][-]{section.9.4}{Java Class Architecture}{chapter.9}% 48
-\BOOKMARK [1][-]{section.9.5}{User's Guide}{chapter.9}% 49
-\BOOKMARK [1][-]{section.9.6}{Analysis Results}{chapter.9}% 50
-\BOOKMARK [0][-]{chapter.10}{Minor Works}{part.3}% 51
-\BOOKMARK [0][-]{Appendix.a.A}{Java Reference}{part.3}% 52
-\BOOKMARK [1][-]{section.a.A.1}{Inheritance, Overriding and Polymorphism}{Appendix.a.A}% 53
-\BOOKMARK [1][-]{section.a.A.2}{Packages}{Appendix.a.A}% 54
-\BOOKMARK [1][-]{section.a.A.3}{Documentation}{Appendix.a.A}% 55
-\BOOKMARK [0][-]{section*.20}{Glossary}{part.3}% 56
-\BOOKMARK [0][-]{section*.22}{Acronyms}{part.3}% 57
-\BOOKMARK [0][-]{section*.24}{List of symbols}{part.3}% 58
-\BOOKMARK [0][-]{section*.26}{Bibliography}{part.3}% 59
+\BOOKMARK [1][-]{section.7.2}{Java Class Architecture}{chapter.7}% 22
+\BOOKMARK [1][-]{section.7.3}{Case Study}{chapter.7}% 23
+\BOOKMARK [0][-]{chapter.8}{Downwash Estimation}{part.3}% 24
+\BOOKMARK [1][-]{section.8.1}{Theoretical background}{chapter.8}% 25
+\BOOKMARK [1][-]{section.8.2}{Java Class Architecture}{chapter.8}% 26
+\BOOKMARK [2][-]{subsection.8.2.1}{Constant Downwash Gradient}{section.8.2}% 27
+\BOOKMARK [2][-]{subsection.8.2.2}{Variable Downwash Gradient}{section.8.2}% 28
+\BOOKMARK [1][-]{section.8.3}{Case Study}{chapter.8}% 29
+\BOOKMARK [0][-]{chapter.9}{Aircraft Longitudinal Static Stability}{part.3}% 30
+\BOOKMARK [1][-]{section.9.1}{Aerodynamic Lift}{chapter.9}% 31
+\BOOKMARK [2][-]{subsection.9.1.1}{Wing}{section.9.1}% 32
+\BOOKMARK [2][-]{subsection.9.1.2}{Fuselage}{section.9.1}% 33
+\BOOKMARK [2][-]{subsection.9.1.3}{Horizontal Tail}{section.9.1}% 34
+\BOOKMARK [2][-]{subsection.9.1.4}{Complete Aircraft}{section.9.1}% 35
+\BOOKMARK [1][-]{section.9.2}{Aerodynamic Drag}{chapter.9}% 36
+\BOOKMARK [2][-]{subsection.9.2.1}{Wing}{section.9.2}% 37
+\BOOKMARK [2][-]{subsection.9.2.2}{Fuselage}{section.9.2}% 38
+\BOOKMARK [2][-]{subsection.9.2.3}{Horizontal Tail}{section.9.2}% 39
+\BOOKMARK [1][-]{section.9.3}{Pitching Moments}{chapter.9}% 40
+\BOOKMARK [2][-]{subsection.9.3.1}{Wing}{section.9.3}% 41
+\BOOKMARK [2][-]{subsection.9.3.2}{Fuselage}{section.9.3}% 42
+\BOOKMARK [2][-]{subsection.9.3.3}{Horizontal Tail}{section.9.3}% 43
+\BOOKMARK [2][-]{subsection.9.3.4}{Propulsors}{section.9.3}% 44
+\BOOKMARK [2][-]{subsection.9.3.5}{Stability Calculation}{section.9.3}% 45
+\BOOKMARK [1][-]{section.9.4}{Java Class Architecture}{chapter.9}% 46
+\BOOKMARK [1][-]{section.9.5}{User's Guide}{chapter.9}% 47
+\BOOKMARK [1][-]{section.9.6}{Analysis Results}{chapter.9}% 48
+\BOOKMARK [0][-]{chapter.10}{Minor Works}{part.3}% 49
+\BOOKMARK [0][-]{Appendix.a.A}{Java Reference}{part.3}% 50
+\BOOKMARK [1][-]{section.a.A.1}{Inheritance, Overriding and Polymorphism}{Appendix.a.A}% 51
+\BOOKMARK [1][-]{section.a.A.2}{Packages}{Appendix.a.A}% 52
+\BOOKMARK [1][-]{section.a.A.3}{Documentation}{Appendix.a.A}% 53
+\BOOKMARK [0][-]{section*.24}{Glossary}{part.3}% 54
+\BOOKMARK [0][-]{section*.26}{Acronyms}{part.3}% 55
+\BOOKMARK [0][-]{section*.28}{List of symbols}{part.3}% 56
+\BOOKMARK [0][-]{section*.30}{Bibliography}{part.3}% 57

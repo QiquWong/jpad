@@ -26,44 +26,42 @@
 \contentsline {chapter}{\numberline {5}Work Object Data}{17}{chapter.5}
 \contentsline {chapter}{\numberline {6}Wing Lift Characteristics}{18}{chapter.6}
 \contentsline {chapter}{\numberline {7}Wing Drag Characteristics}{19}{chapter.7}
-\contentsline {section}{\numberline {7.1}Theoretical background}{19}{section.7.1}
-\contentsline {subsection}{\numberline {7.1.1}Integral estimation}{19}{subsection.7.1.1}
-\contentsline {subsection}{\numberline {7.1.2}Sforza}{19}{subsection.7.1.2}
-\contentsline {section}{\numberline {7.2}Java Class Architecture}{19}{section.7.2}
-\contentsline {section}{\numberline {7.3}Case Study}{19}{section.7.3}
-\contentsline {chapter}{\numberline {8}Downwash Estimation}{20}{chapter.8}
-\contentsline {section}{\numberline {8.1}Theoretical background}{20}{section.8.1}
-\contentsline {section}{\numberline {8.2}Java Class Architecture}{22}{section.8.2}
-\contentsline {subsection}{\numberline {8.2.1}Constant Downwash Gradient}{23}{subsection.8.2.1}
-\contentsline {subsection}{\numberline {8.2.2}Variable Downwash Gradient}{24}{subsection.8.2.2}
-\contentsline {section}{\numberline {8.3}Case Study}{26}{section.8.3}
-\contentsline {chapter}{\numberline {9}Aircraft Longitudinal Static Stability}{29}{chapter.9}
-\contentsline {section}{\numberline {9.1}Aerodynamic Lift}{29}{section.9.1}
-\contentsline {subsection}{\numberline {9.1.1}Wing}{29}{subsection.9.1.1}
-\contentsline {subsection}{\numberline {9.1.2}Fuselage}{29}{subsection.9.1.2}
-\contentsline {subsection}{\numberline {9.1.3}Horizontal Tail}{29}{subsection.9.1.3}
-\contentsline {subsubsection}{Elevator index of effectiveness}{29}{subsubsection*.16}
-\contentsline {subsection}{\numberline {9.1.4}Complete Aircraft}{30}{subsection.9.1.4}
-\contentsline {section}{\numberline {9.2}Aerodynamic Drag}{31}{section.9.2}
-\contentsline {subsection}{\numberline {9.2.1}Wing}{31}{subsection.9.2.1}
-\contentsline {subsection}{\numberline {9.2.2}Fuselage}{31}{subsection.9.2.2}
-\contentsline {subsection}{\numberline {9.2.3}Horizontal Tail}{31}{subsection.9.2.3}
-\contentsline {section}{\numberline {9.3}Pitching Moments}{31}{section.9.3}
-\contentsline {subsection}{\numberline {9.3.1}Wing}{31}{subsection.9.3.1}
-\contentsline {subsection}{\numberline {9.3.2}Fuselage}{31}{subsection.9.3.2}
-\contentsline {subsection}{\numberline {9.3.3}Horizontal Tail}{31}{subsection.9.3.3}
-\contentsline {subsection}{\numberline {9.3.4}Propulsors}{31}{subsection.9.3.4}
-\contentsline {subsection}{\numberline {9.3.5}Stability Calculation}{31}{subsection.9.3.5}
-\contentsline {section}{\numberline {9.4}Java Class Architecture}{31}{section.9.4}
-\contentsline {section}{\numberline {9.5}User's Guide}{31}{section.9.5}
-\contentsline {section}{\numberline {9.6}Analysis Results}{31}{section.9.6}
-\contentsline {chapter}{\numberline {10}Minor Works}{32}{chapter.10}
-\contentsline {chapter}{Appendices}{}{section*.19}
-\contentsline {chapter}{\numberline {A}Java Reference}{34}{Appendix.a.A}
-\contentsline {section}{\numberline {A.1}Inheritance, Overriding and Polymorphism}{34}{section.a.A.1}
-\contentsline {section}{\numberline {A.2}Packages}{34}{section.a.A.2}
-\contentsline {section}{\numberline {A.3}Documentation}{35}{section.a.A.3}
-\contentsline {chapter}{Glossary}{37}{section*.20}
-\contentsline {chapter}{Acronyms}{39}{section*.22}
-\contentsline {chapter}{List of symbols}{40}{section*.24}
-\contentsline {chapter}{Bibliography}{42}{section*.26}
+\contentsline {section}{\numberline {7.1}Theoretical background}{21}{section.7.1}
+\contentsline {section}{\numberline {7.2}Java Class Architecture}{21}{section.7.2}
+\contentsline {section}{\numberline {7.3}Case Study}{22}{section.7.3}
+\contentsline {chapter}{\numberline {8}Downwash Estimation}{23}{chapter.8}
+\contentsline {section}{\numberline {8.1}Theoretical background}{23}{section.8.1}
+\contentsline {section}{\numberline {8.2}Java Class Architecture}{25}{section.8.2}
+\contentsline {subsection}{\numberline {8.2.1}Constant Downwash Gradient}{26}{subsection.8.2.1}
+\contentsline {subsection}{\numberline {8.2.2}Variable Downwash Gradient}{27}{subsection.8.2.2}
+\contentsline {section}{\numberline {8.3}Case Study}{29}{section.8.3}
+\contentsline {chapter}{\numberline {9}Aircraft Longitudinal Static Stability}{32}{chapter.9}
+\contentsline {section}{\numberline {9.1}Aerodynamic Lift}{32}{section.9.1}
+\contentsline {subsection}{\numberline {9.1.1}Wing}{32}{subsection.9.1.1}
+\contentsline {subsection}{\numberline {9.1.2}Fuselage}{32}{subsection.9.1.2}
+\contentsline {subsection}{\numberline {9.1.3}Horizontal Tail}{32}{subsection.9.1.3}
+\contentsline {subsubsection}{Elevator index of effectiveness}{32}{subsubsection*.20}
+\contentsline {subsection}{\numberline {9.1.4}Complete Aircraft}{33}{subsection.9.1.4}
+\contentsline {section}{\numberline {9.2}Aerodynamic Drag}{34}{section.9.2}
+\contentsline {subsection}{\numberline {9.2.1}Wing}{34}{subsection.9.2.1}
+\contentsline {subsection}{\numberline {9.2.2}Fuselage}{34}{subsection.9.2.2}
+\contentsline {subsection}{\numberline {9.2.3}Horizontal Tail}{34}{subsection.9.2.3}
+\contentsline {section}{\numberline {9.3}Pitching Moments}{34}{section.9.3}
+\contentsline {subsection}{\numberline {9.3.1}Wing}{34}{subsection.9.3.1}
+\contentsline {subsection}{\numberline {9.3.2}Fuselage}{34}{subsection.9.3.2}
+\contentsline {subsection}{\numberline {9.3.3}Horizontal Tail}{34}{subsection.9.3.3}
+\contentsline {subsection}{\numberline {9.3.4}Propulsors}{34}{subsection.9.3.4}
+\contentsline {subsection}{\numberline {9.3.5}Stability Calculation}{34}{subsection.9.3.5}
+\contentsline {section}{\numberline {9.4}Java Class Architecture}{34}{section.9.4}
+\contentsline {section}{\numberline {9.5}User's Guide}{34}{section.9.5}
+\contentsline {section}{\numberline {9.6}Analysis Results}{34}{section.9.6}
+\contentsline {chapter}{\numberline {10}Minor Works}{35}{chapter.10}
+\contentsline {chapter}{Appendices}{}{section*.23}
+\contentsline {chapter}{\numberline {A}Java Reference}{37}{Appendix.a.A}
+\contentsline {section}{\numberline {A.1}Inheritance, Overriding and Polymorphism}{37}{section.a.A.1}
+\contentsline {section}{\numberline {A.2}Packages}{37}{section.a.A.2}
+\contentsline {section}{\numberline {A.3}Documentation}{38}{section.a.A.3}
+\contentsline {chapter}{Glossary}{40}{section*.24}
+\contentsline {chapter}{Acronyms}{42}{section*.26}
+\contentsline {chapter}{List of symbols}{43}{section*.28}
+\contentsline {chapter}{Bibliography}{45}{section*.30}

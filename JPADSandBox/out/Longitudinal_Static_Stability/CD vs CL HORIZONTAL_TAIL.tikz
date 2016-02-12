@@ -7,11 +7,11 @@ height=\figureheight,
 scaled ticks=false, tick label style={/pgf/number format/fixed},
 xmin=0.0,
 xmax=0.14129673682065197,
-xlabel={alpha (deg)},
+xlabel={CD },
 xmajorgrids,
 ymin=-0.15574390968751245,
 ymax=1.401695187187612,
-ylabel={CDw },
+ylabel={CL },
 ymajorgrids,
 legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
 ]

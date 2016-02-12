@@ -11,7 +11,7 @@ xlabel={alpha (deg)},
 xmajorgrids,
 ymin=0.0,
 ymax=0.14129673682065197,
-ylabel={CDw },
+ylabel={CD },
 ymajorgrids,
 legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
 ]

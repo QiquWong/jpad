@@ -1563,13 +1563,13 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		MyChartToFileUtils.plotNoLegend(
 				alphaArrayPlotCD,cDPlotArray, 
 				null, null , null , null ,					    // axis with limits
-				"alpha", "CDw", "deg", "",	   				
+				"alpha", "CD", "deg", "",	   				
 				subfolderPathCDAlpha, "CD vs Alpha " + theLiftingSurface.get_type());
 
 		MyChartToFileUtils.plotNoLegend(
 				cDPlotArray,cLPlotArray, 
 				null, null , null , null ,					    // axis with limits
-				"alpha", "CDw", "deg", "",	   				
+				"CD", "CL", "", "",	   				
 				subfolderPathCDAlpha, "CD vs CL " + theLiftingSurface.get_type());
 
 	}
