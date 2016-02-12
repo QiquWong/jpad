@@ -37,7 +37,7 @@
 		<ByPassRatio from="input" unit="" varName="byPassRatio">5.0</ByPassRatio>
 		<Propeller_efficiency from="input" unit="" varName="eta">0.0</Propeller_efficiency>
 		<Mean_maximum_thickness from="input" unit="" varName="tcMax">0.1292</Mean_maximum_thickness>
-		<Current_lift_coefficient from="input" unit="" varName="cl">0.4500</Current_lift_coefficient>
+		<Current_lift_coefficient from="input" unit="" varName="cl">0.45</Current_lift_coefficient>
 		<AspectRatio from="input" unit="" varName="ar">6.9000</AspectRatio>
 		<CD0 from="input" unit="" varName="cd0">0.0182</CD0>
 	</B747>

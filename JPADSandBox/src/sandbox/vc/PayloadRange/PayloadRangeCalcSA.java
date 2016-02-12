@@ -76,7 +76,7 @@ public class PayloadRangeCalcSA {
 	private AirplaneType airplaneType;
 	private EngineTypeEnum engineType;
 
-	private static Unit<? extends Quantity> sfcUnit = (NonSI.POUND_FORCE).divide((NonSI.HORSEPOWER).times(NonSI.HOUR));
+	private static Unit<? extends Quantity> sfcUnit = (NonSI.POUND).divide((NonSI.POUND_FORCE).times(NonSI.HOUR));
 	private static HashMap<Double, AirplaneType> mapPLRangeAirplane = new HashMap<Double, AirplaneType>();
 	private static HashMap<Double, EngineTypeEnum> mapPLRangeEngine = new HashMap<Double, EngineTypeEnum>();
 	private static HashMap<Double, AirfoilTypeEnum> mapPLRangeAirfoil = new HashMap<Double, AirfoilTypeEnum>();
@@ -181,7 +181,7 @@ public class PayloadRangeCalcSA {
 
 		DatabaseIOmanager<PayloadRangeEnum> IOmanager = new DatabaseIOmanager<PayloadRangeEnum>(); 
 
-		IOmanager.addElement(PayloadRangeEnum.Design_Payload, rangeMP, "It's the range with maximum payload");
+		IOmanager.addElement(PayloadRangeEnum.Design_Range, rangeMP, "It's the range with maximum payload");
 		IOmanager.addElement(PayloadRangeEnum.Max_Fuel_Range, rangeMF, "It's the range with maximum fuel mass");
 		IOmanager.addElement(PayloadRangeEnum.Max_Range, rangeZP, "It's the range without payload");
 		IOmanager.addElement(PayloadRangeEnum.Design_Payload, maxPayloadMass, "It's the value of design payload mass");

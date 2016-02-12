@@ -362,7 +362,7 @@ public class DirStabCalc {
 		DatabaseIOmanager<DirStabEnum> inputManager = readFromFile(inputFileNamewithPathAndExt); 
 
 		System.out.println("---> dir: " + databaseDirectory);
-		System.out.println("---> name: " + veDSCDatabaseFileName);
+//		System.out.println("---> name: " + veDSCDatabaseFileName);
 		
 		VeDSCDatabaseReader veDSCDatabaseReader = AerodynamicsDatabaseManager.initializeVeDSC(new VeDSCDatabaseReader(
 				databaseDirectory, veDSCDatabaseFileName),

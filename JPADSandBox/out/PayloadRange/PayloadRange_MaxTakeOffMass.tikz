@@ -6,11 +6,11 @@ width=\figurewidth,
 height=\figureheight,
 scaled ticks=false, tick label style={/pgf/number format/fixed},
 xmin=0.0,
-xmax=1341.9953617990773,
+xmax=7371.050666128087,
 xlabel={Range (nmi)},
 xmajorgrids,
 ymin=0.0,
-ymax=77.76,
+ymax=594.0,
 ylabel={Payload (No. Pass)},
 ymajorgrids,
 legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
@@ -21,54 +21,54 @@ color=black,
 solid
 ]
 table[row sep=crcr]{
-0.0	72.0\\
--713.7568296609282	72.0\\
-1193.0209550581499	5.0\\
-1242.5882979621085	0.0\\
-} node[above,pos=0.1] {MTOM =  = 18500  Kg };
+0.0	550.0\\
+2539.2613743939974	550.0\\
+6825.046913081562	-167.0\\
+6233.998806042761	0.0\\
+} node[above,pos=0.1] {MTOM =  = 284000  Kg };
 
 \addplot [
 color=black,
 densely dashed
 ]
 table[row sep=crcr]{
-0.0	72.0\\
--425.20284523611224	72.0\\
-1090.06688865378	17.0\\
-1242.5882979621085	0.0\\
-} node[above,pos=0.16] {19600  Kg };
+0.0	550.0\\
+3159.975742215848	550.0\\
+6194.8357349334265	12.0\\
+6233.998806042761	0.0\\
+} node[above,pos=0.16] {302000  Kg };
 
 \addplot [
 color=black,
 dashdotted
 ]
 table[row sep=crcr]{
-0.0	72.0\\
--153.14691213916564	72.0\\
-1000.3850406028273	28.0\\
-1242.5882979621085	0.0\\
-} node[above,pos=0.22] {20800  Kg };
+0.0	550.0\\
+3745.2008149559397	550.0\\
+5665.464108232152	191.0\\
+6233.998806042761	0.0\\
+} node[above,pos=0.22] {319000  Kg };
 
 \addplot [
 color=black,
 dashed
 ]
 table[row sep=crcr]{
-0.0	72.0\\
-104.19592410244339	72.0\\
-921.5510942728381	40.0\\
-1242.5882979621085	0.0\\
-} node[above,pos=0.28] {21900  Kg };
+0.0	550.0\\
+4298.77624462675	550.0\\
+5213.955445474301	371.0\\
+6233.998806042761	0.0\\
+} node[above,pos=0.28] {337000  Kg };
 
 \addplot [
 color=black,
 dotted
 ]
 table[row sep=crcr]{
-0.0	72.0\\
-348.3357475988818	72.0\\
-851.6999537005155	52.0\\
-1242.5882979621085	0.0\\
-} node[above,pos=0.34] {23100  Kg };
+0.0	550.0\\
+4823.950403991774	550.0\\
+4823.950403991778	550.0\\
+6233.998806042761	0.0\\
+} node[above,pos=0.34] {355000  Kg };
 \end{axis}
 \end{tikzpicture}%
