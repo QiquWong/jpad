@@ -21,37 +21,40 @@
 \contentsline {subsection}{\numberline {4.4.1}Setup database}{12}{subsection.4.4.1}
 \contentsline {subsection}{\numberline {4.4.2}Assign database using an Aircraft object}{13}{subsection.4.4.2}
 \contentsline {subsection}{\numberline {4.4.3}Assign database using a Wing object}{13}{subsection.4.4.3}
-\contentsline {subsection}{\numberline {4.4.4}Developer's guide}{14}{subsection.4.4.4}
+\contentsline {subsection}{\numberline {4.4.4}User's guide}{14}{subsection.4.4.4}
 \contentsline {part}{III\hspace {1em}Functionality Overview}{16}{part.3}
 \contentsline {chapter}{\numberline {5}Lift characteristics of a wing}{17}{chapter.5}
 \contentsline {chapter}{\numberline {6}Drag characteristics of a wing}{18}{chapter.6}
 \contentsline {chapter}{\numberline {7}Downwash Estimation}{19}{chapter.7}
 \contentsline {section}{\numberline {7.1}Theoretical background}{19}{section.7.1}
 \contentsline {section}{\numberline {7.2}Java Class Architecture}{21}{section.7.2}
-\contentsline {subsection}{\numberline {7.2.1}Test Class}{22}{subsection.7.2.1}
-\contentsline {section}{\numberline {7.3}Developer's Guide}{22}{section.7.3}
-\contentsline {chapter}{\numberline {8}Longitudinal stability of an aircraft}{23}{chapter.8}
-\contentsline {section}{\numberline {8.1}Aerodynamic Lift}{23}{section.8.1}
-\contentsline {subsection}{\numberline {8.1.1}Wing}{23}{subsection.8.1.1}
-\contentsline {subsection}{\numberline {8.1.2}Fuselage}{23}{subsection.8.1.2}
-\contentsline {subsection}{\numberline {8.1.3}Horizontal Tail}{23}{subsection.8.1.3}
-\contentsline {subsubsection}{Elevator index of effectiveness}{23}{subsubsection*.13}
-\contentsline {subsubsection}{Developer's Guide}{24}{subsubsection*.16}
-\contentsline {subsection}{\numberline {8.1.4}Complete Aircraft}{24}{subsection.8.1.4}
-\contentsline {section}{\numberline {8.2}Aerodynamic Drag}{24}{section.8.2}
-\contentsline {section}{\numberline {8.3}Pitching Moments}{24}{section.8.3}
-\contentsline {subsection}{\numberline {8.3.1}Wing}{24}{subsection.8.3.1}
-\contentsline {subsection}{\numberline {8.3.2}Fuselage}{24}{subsection.8.3.2}
-\contentsline {subsection}{\numberline {8.3.3}Horizontal Tail}{24}{subsection.8.3.3}
-\contentsline {subsection}{\numberline {8.3.4}Propulsors}{24}{subsection.8.3.4}
-\contentsline {subsection}{\numberline {8.3.5}Stability Calculation}{24}{subsection.8.3.5}
-\contentsline {chapter}{\numberline {9}Minor Works}{25}{chapter.9}
-\contentsline {chapter}{Appendices}{}{section*.18}
-\contentsline {chapter}{\numberline {A}Java Reference}{27}{Appendix.a.A}
-\contentsline {section}{\numberline {A.1}Inheritance, Overriding and Polymorphism}{27}{section.a.A.1}
-\contentsline {section}{\numberline {A.2}Packages}{27}{section.a.A.2}
-\contentsline {section}{\numberline {A.3}Documentation}{28}{section.a.A.3}
-\contentsline {chapter}{Glossary}{30}{section*.19}
-\contentsline {chapter}{Acronyms}{32}{section*.21}
-\contentsline {chapter}{List of symbols}{33}{section*.23}
-\contentsline {chapter}{Bibliography}{35}{section*.25}
+\contentsline {subsection}{\numberline {7.2.1}Constant Downwash Gradient}{22}{subsection.7.2.1}
+\contentsline {subsection}{\numberline {7.2.2}Variable Downwash Gradient}{23}{subsection.7.2.2}
+\contentsline {section}{\numberline {7.3}Case Study}{25}{section.7.3}
+\contentsline {chapter}{\numberline {8}Longitudinal stability of an aircraft}{26}{chapter.8}
+\contentsline {section}{\numberline {8.1}Aerodynamic Lift}{26}{section.8.1}
+\contentsline {subsection}{\numberline {8.1.1}Wing}{26}{subsection.8.1.1}
+\contentsline {subsection}{\numberline {8.1.2}Fuselage}{26}{subsection.8.1.2}
+\contentsline {subsection}{\numberline {8.1.3}Horizontal Tail}{26}{subsection.8.1.3}
+\contentsline {subsubsection}{Elevator index of effectiveness}{26}{subsubsection*.16}
+\contentsline {subsection}{\numberline {8.1.4}Complete Aircraft}{27}{subsection.8.1.4}
+\contentsline {section}{\numberline {8.2}Aerodynamic Drag}{28}{section.8.2}
+\contentsline {section}{\numberline {8.3}Pitching Moments}{28}{section.8.3}
+\contentsline {subsection}{\numberline {8.3.1}Wing}{28}{subsection.8.3.1}
+\contentsline {subsection}{\numberline {8.3.2}Fuselage}{28}{subsection.8.3.2}
+\contentsline {subsection}{\numberline {8.3.3}Horizontal Tail}{28}{subsection.8.3.3}
+\contentsline {subsection}{\numberline {8.3.4}Propulsors}{28}{subsection.8.3.4}
+\contentsline {subsection}{\numberline {8.3.5}Stability Calculation}{28}{subsection.8.3.5}
+\contentsline {section}{\numberline {8.4}Java Class Architecture}{28}{section.8.4}
+\contentsline {section}{\numberline {8.5}User's Guide}{28}{section.8.5}
+\contentsline {section}{\numberline {8.6}Analysis Results}{28}{section.8.6}
+\contentsline {chapter}{\numberline {9}Minor Works}{29}{chapter.9}
+\contentsline {chapter}{Appendices}{}{section*.19}
+\contentsline {chapter}{\numberline {A}Java Reference}{31}{Appendix.a.A}
+\contentsline {section}{\numberline {A.1}Inheritance, Overriding and Polymorphism}{31}{section.a.A.1}
+\contentsline {section}{\numberline {A.2}Packages}{31}{section.a.A.2}
+\contentsline {section}{\numberline {A.3}Documentation}{32}{section.a.A.3}
+\contentsline {chapter}{Glossary}{34}{section*.20}
+\contentsline {chapter}{Acronyms}{36}{section*.22}
+\contentsline {chapter}{List of symbols}{37}{section*.24}
+\contentsline {chapter}{Bibliography}{39}{section*.26}

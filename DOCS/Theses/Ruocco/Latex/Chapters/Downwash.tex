@@ -1,40 +1,48 @@
 \chapter{Downwash Estimation}
 
+\begin{flushright}
+	{\smaller
+		\textit{Citazione\\ citazione}\\
+		-- Autore}
+\end{flushright}
+
+
 In order to evaluate the characteristics of longitudinal stability of an aircraft it's necessary to assess the flow direction aft of the wing. The contribution of horizontal tail surface to the airplane equilibrium and stability, in fact, depends seriously on the flow direction. The pourpose of this chapter is to introduce and evaluate the downwash gradient due from the wing's vortex system, considering a dipendence of the downwash angle from the absolute angle of attack. 
 
 \section{Theoretical background}
 
 Due to the finite extention of the wing the lift distribution in span is not uniform. For this reason the difference of pressure between upper and lower surfaces generates a movement of air aroud the wingtips. The tendency is for particles of air to move from the region of high pressure around the wing tip to the region of low pressure (for positive lift from the lower wing surface to the upper surface). This made the wing's vortex system that consisting of the bound vortex, located at the wing quarter chord and a vortex sheet which rolling up, at the wing tip, in two trailing vortex.\cite{PerkinsHage} \cite{Jacobs:NACA:Rep:648} \\ 
 
+% traduci
+
 \begin{figure}[H]
 \centering
-{\includegraphics[height=6cm]{Immagini/wing_vortex_sheet3.pdf}} 
+{\includegraphics[height=5.7cm]{Immagini/wing_vortex_sheet3.pdf}} 
 \caption{The wing vortex sheet.}
 \end{figure}
 
-The main effect of this vortex system is to deflect the airflow behind the wing downward relative to the direction of freestream flow. This angle of deviation is known as {\itshape Downwash Angle} $\epsilon$. This phenomenon occurs for every lifting surface, but in subsonic flow a lifting surface also affects the flow forward of itself. In this region the vortex creates an {itshape Upwash}, that is an upward flow deflection.\\
+The main effect of this vortex system is to deflect the airflow behind the wing downward relative to the direction of freestream flow. This angle of deviation is known as {\itshape Downwash Angle} $\epsilon$. This phenomenon occurs for every lifting surface, but in subsonic flow a lifting surface also affects the flow forward of itself. In this region the vortex creates an {itshape upwash}, that is an upward flow deflection.\\
 
 
 \begin{figure}[H]
 \centering
-{\includegraphics[height=5cm]{Immagini/wing_upwash_downwash.pdf}} 
+{\includegraphics[height=5.16cm]{Immagini/wing_upwash_downwash.pdf}} 
 \caption{Upwash and Downwash in a finite wing.}
 \end{figure}
 
-As consequence of the downwash behind the wing, the local angle of attack on the horizontal tail is reduced by  $\epsilon$. In order to evaluate the dlow direction behind the wing, an other important parameter id the change in downwash angle with angle of attack, that is the {\itshape Downwash Gradient } $\frac{d\epsilon}{d\alpha}$.\\
-This parameter depends principally on the location of the horizontal tail with respect to the wing and the vortex plane. As first approssimation this value could be considered constant in alpha, but more accurately it's possible to evaluate this dependence considering the reference variable for the calculation of the distances. \\ \\
+As consequence of the downwash behind the wing, the local angle of attack on the horizontal tail is reduced by  $\epsilon$. In order to evaluate the flow direction behind the wing, an other important parameter is the change in downwash angle with angle of attack, that is the {\itshape Downwash Gradient } $\frac{d\epsilon}{d\alpha}$.\\
+This parameter depends principally on the location of the horizontal tail with respect to the wing and the vortex plane. As first approssimation this value could be considered constant in alpha, but more accurately it's possible to evaluate this dependence considering the reference variable for the calculation of the distances. 
+Both if the vertical distance is considered as constant and it is considered variable with alpha, starting from the downwash gradient, the downwash angle is :
 
-In order to evaluate the downwash gradient it refers to fig. \ref{PerkinsDownwash}, where ``$r \frac{b}{2}$''  is the distance between the aerodynamic center of wing and the aerodynamic center of the horizontal tail. This is a geometric an fixed distance. Conversely,  in order to have a greates accuracy it's possible to consider the distance ``$m  \frac{b}{2}$'' variable with the angle of attack. Properly this is the distance between the horizontal tail and the vortex shed plane, but it's possible to approximate it with the distance between the horizontal tail and the wing root chord.
+\begin{equation}
+\epsilon = \frac {d \epsilon}{d \alpha_w} (\alpha_w - \alpha_{0_w})
+\end{equation}
 
-\begin{figure}[H]
-\centering
-{\includegraphics[height=7.3cm]{Immagini/wing_htail_Roskam_eng.pdf}} 
-\caption{Dimensions for determination of Downwash Gradient.}
-\label{PerkinsDownwash}
-\end{figure} 
+\noindent \\ \\
+In order to evaluate the downwash gradient it refers to fig. \ref{PerkinsDownwash}, where ``$r \frac{b}{2}$''  is the distance between the aerodynamic center of wing and the aerodynamic center of the horizontal tail. This is a geometric an fixed distance. Conversely,  in order to have a greates accuracy it's possible to consider the distance ``$m  \frac{b}{2}$'' variable with the angle of attack. Properly this is the distance between the horizontal tail and the vortex shed plane, but it's possible to approximate it with the distance between the horizontal tail and the wing root chord.\cite{schimidth}
 
-%% METTI FONTE FORMULA DOWNWASH
-
+Referring to % fonte formula 
+the equation used in order to evaluate the downwash gradient is the following: 
 
 \begin{equation}
 \begin{split}
@@ -45,7 +53,16 @@ In order to evaluate the downwash gradient it refers to fig. \ref{PerkinsDownwas
 \end{equation}
 
 \noindent \\
-Where the two $K_{\epsilon}$ terms accounting fot the wing sweep angle effect are defined as follow ( where $\Lambda $ expressed in radians):
+Considering a variable downwash gradient the changing parameter is $m \frac{b}{2}$.
+
+\begin{figure}[H]
+\centering
+{\includegraphics[height=7.4cm]{Immagini/wing_htail_Roskam_eng.pdf}} 
+\caption{Dimensions for determination of Downwash Gradient, considering constant distances.}
+\label{PerkinsDownwash}
+\end{figure} 
+
+The two $K_{\epsilon}$ terms in the eq~\ref{PerkinsDownwash} accounting for the wing sweep angle effect are defined as follow ( where $\Lambda $ expressed in radians):
 
 \begin{equation}
 K_{\epsilon \Lambda} = \frac{ 0.1124 + 0.1265 \Lambda + 0.1766 \Lambda^2}{r^2} + \frac{0.1024}{r} +2
@@ -55,13 +72,16 @@ K_{\epsilon \Lambda} = \frac{ 0.1124 + 0.1265 \Lambda + 0.1766 \Lambda^2}{r^2} +
 K_{\epsilon _{\Lambda=0}} = \frac{ 0.1124 }{r^2} + \frac{0.1024}{r} +2
 \end{equation}
 
+
+
+
 \section{Java Class Architecture}
 
 In order to simplify the calculation of downwash, as mentioned, it's possible to assume the downwash gradient constant with the angle of attack. In this case the reference line to calculate the distance along z axis is the plane from the wing root chord or else the zero-lift line of the wing.\\
 To obtain a more accurate analysis it's possible to consider the variation in alpha of the downwash gradient. So the reference line of wing it's not costant, but is the vortex sheed plane. The location of this plane depend from the value of downwash, but this location is itself necessary to evaluate the downwash. So it's necessary an iterative process in which the position of the vortex reference line at alpha is calculated from the value of downwash gradient at previous step.\\ 
 
-In this process the reference angle of attack is the absolute angle $\alpha_a$, that is the angle between the flow direction and the zero lift line of the wing. This choice is necessary because for $\alpha_a = 0$ it's possible to assume the downwash zero, but the downwash gradient is not null.
-In view of stability, however, the reference angle of attack is the $\alpha_B$. The relation between these angles is in the %fig. \ref{angle}. 
+In this process the reference angle of attack is the absolute angle $\alpha_a$, that is the angle between the flow direction and the zero lift line of the wing. This choice is necessary because for $\alpha_a = 0$ it's possible to assume the downwash zero, but the downwash gradient is not null. In this way it's possible to assume the downwash value in the first step of the iteration and to continue for each step with the previous value as first attempt.
+In view of stability, however, the reference angle of attack is the $\alpha_B$. The relation between these angles is in the fig~\ref{angles}.
 
 \begin{figure}[H]
 \centering
@@ -70,7 +90,6 @@ In view of stability, however, the reference angle of attack is the $\alpha_B$. 
 \label{angles}
 \end{figure} 
 
-%FIGURA ANGOLI D ATTACCO
 
 The downwash angle is calculated by a class named \texttt{DownwashCalculator}. The builder of this class defines and assings all the geometrical variables, necessary to implement the calculation. The  \texttt{DownwashCalculator} class has seven methods and some overloads. The methods are explained in the table~\ref{table:Table1}. The methods will be explained more in detail below.
 
@@ -89,20 +108,99 @@ The downwash angle is calculated by a class named \texttt{DownwashCalculator}. T
 \label{table:Table1}
 \end{table}
 
-% spiegazione delle classi nel dettaglio. Partire dal file user guide poi disegni.
+
+\subsection{Constant Downwash Gradient}
+In order to evaluate the downwash angle case of constant downwash gradient it's necessary only to call the method \texttt{calculateDownwashGradientConstantDelft} using the distance from aerodynamic center of horizontal tail and the alpha zero lift line as input. It's possible to calculate this distance geometrically using the method \texttt{calculateZ DistanceZeroLift} of the same class. The choice to calculate separatly the distance and the downwash gradient is made to reuse the method for calculate downwash gradient simply varying the input distance. \\ 
+This method has the downwash gradient as output. To obtain the angle of downwash it simply need to moltiplicate the output value and the absolute angle of attack. 
+
+\begin{figure}[H]
+\centering
+{\includegraphics[height=4.9cm]{Immagini/linearDownwash.pdf}} 
+\caption{Flow chart of the calculation of linear downwash angle.}
+\label{flowchartangles}
+\end{figure} 
 
 
 
-%Starting from alpha absolute = 0. When alpha absolute =0, in fact, the value of downwash is assumed zero, but the downwash gradient
-%is not null. The second step is for alphaabs = delta alpha. In order to evaluate the position of the vortex shed plane
-%is used the value of downwash gradient at previous step as effort value. Starting from this position is calculated
-%a new value of downwash gradient and a new value of downwash.
-%schema
-%foto
+\subsection{Variable Downwash Gradient}
 
-\subsection{Test Class}
+In order to evaluate the non-constant downwash gradient must to use the method texttt{calculateDownwashNonLinearDelft}. 
+This method calculates the downwash gradient using Delft formula. The downwash gradient is considered variable in alpha absolute. The distance along x considered in the formula is geometric and fixed. Conversely the other distance is variable and it is considered as the distance between the horizontal tail the vortex shed plane. \\
+This method works through the following steps:
 
-\section{Developer's Guide}
+\begin{enumerate}
+
+\item First of all this method creates an array of absolute angle of attack starting from $\alpha = 0^{\circ}$ to  $\alpha = 20^{\circ}$ with a step of $0.25^{\circ}$.
+\item The results array are initialized ( $\alpha_a$ , $\alpha_b$ , $\frac{d\epsilon}{d\alpha}$ ,  $\epsilon$ , $m  \frac{b}{2}$ ). 
+\item For the first step the state is the following:
+
+\begin{itemize}
+\item $\alpha_a = 0^{\circ}$ 
+\item $\alpha_b =\alpha_{0L} - i_w$ 
+\item $\frac{d\epsilon}{d\alpha}$  is the constant value calculated with the method
+\item  $m  \frac{b}{2}$  distance is the same of the previous case and it is calculated using the method \texttt{calculateZDistanceZeroLift}. 
+\item $\epsilon = 0$ 
+\end{itemize}
+
+\item Starting from the second step the process is iterative. Starting from $\alpha_a = 0^{\circ}$ the absolute angle of attack increase of $\upDelta \alpha$. For the step i:
+
+%\begin{enumerate}
+%\item $\alpha_a = i \Delta \alpha$ 
+%\item $\epsilon_{temp}= \frac{d\epsilon}{d\alpha} \right |_{i-1} *  \alpha_a $%\right |_{i}$ 
+%\item  $m  \frac{b}{2} _{temp} $ is calculated considering the temporary value of downwash angle.
+%\item $\frac{d\epsilon}{d\alpha}_{temp}$ is calculated using the formula and the temporary value of distance.
+%\item $\epsilon_{i}=  \frac{d\epsilon}{d\alpha}\right_{temp} *  \alpha_a \right |_{i}$ 
+%\item  $m  \frac{b}{2} _{i} $ is calculated considering the new value of downwash angle.
+%\item $\frac{d\epsilon}{d\alpha}_{i}$ is updated.
+%\item $\alpha_b =\alpha_{0L} - i_w + \alpha_a $ 
+%\end{enumerate}
+
+\begin{itemize}
+\item $\alpha_a|_i = i \upDelta \alpha$ 
+\item $\epsilon_{temp}= \frac{d\epsilon}{d\alpha} |_{i-1} *  \alpha_a |_i $%\right |_{i}$ 
+\item  $m  \frac{b}{2} _{temp} $  is calculated considering the temporary value of downwash angle.
+\item $\frac{d\epsilon}{d\alpha}_{temp}$  is calculated using the formula and the temporary value of distance.
+\item $\epsilon_{i}=  \frac{d\epsilon}{d\alpha}_{temp} *  \alpha_a |_i $ 
+\item  $m  \frac{b}{2}| _{i} $  is calculated considering the new value of downwash angle.
+\item $\frac{d\epsilon}{d\alpha}_{i}$  is updated.
+\item $\alpha_b =\alpha_{0L} - i_w + \alpha_a $ 
+\end{itemize}
+
+\end{enumerate}
+
+In order to relieve the calculations, the evaluation of downwash angle and downwash gradient should be done only one time. To obtain the value of epsilon at alpha body it's possible to call the method  texttt{getDownwashAtAlphaBody} that interpolates the value of downwash angle and angle of attack which field must be filled before.\\ 
+
+
+Step by step the value of $m  \frac{b}{2}$ is calculated with the following geometrical construction: 
+\noindent \\
+
+\begin{figure}[H]
+\centering
+{\includegraphics[height=6.63cm]{Immagini/arms_definitions.pdf}} 
+\caption{Arm definitions for downwash gradient evaluation.}
+\label{flowchartangles}
+\end{figure} 
+
+Referring to the step 0, the distance $m  \frac{b}{2}$ is the segment $\overline{CD}$. It's possible to calculate this distance geometrically as follow:
+
+\begin{equation}
+\overline{CD} = ( \overline{CF} + \overline{FE} ) * \cos {i_w -\alpha_{0L}}
+\end{equation}
+
+$\overline{CF}$ is the distance along Z between the aerodynamic center of horizontal tail and the trailing edge of root airfoil of the wing.\\
+Is possible to calculate the distance $\overline{FE}$ considering the triangle $BFE$. The side  $\overline{BF}$ is the tistance along X axis between the aerodynamic center of horizontal tail and the trailing edge of root airfoil of the wing, while the angle between this side and the hypotenuse is $i_w -\alpha_{0L}$.\\
+
+For each step the method is the same, but the difference is that the angle  $i_w -\alpha_{0L}$  becomes $i_w -\alpha_{0L} -i\upDelta\alpha + \epsilon$.
+
+\begin{figure}[H]
+\centering
+{\includegraphics[height=5.6cm]{Immagini/nonlinear.pdf}} 
+\caption{Flow chart of the calculation of non-linear downwash angle.}
+\label{flowchartangles}
+\end{figure} 
+
+
+\section{Case Study}
 
 % DEVELOPER GUIDE
-
+% test

@@ -44,22 +44,30 @@ The evaluation of tau is made by reading of external database, considering the f
 
 
 
+%\begin{figure}[H]
+%\centering
+%{\includegraphics[height=6cm]{Immagini/Eta_Delta_Plain.png}} 
+%\caption{2D efficiency correction for elevator.}
+%\label{efficiency}
+%\end{figure} 		
+%
+%
+%\begin{figure}[H]
+%\centering
+%{\includegraphics[height=6cm]{Immagini/alfadelta.png}} 
+%\caption{$\frac{d \alpha_{0l}}{d \delta_e}$ 2D and 3D correction.}
+%\label{efficiency}
+%\end{figure} 		
+
 \begin{figure}[H]
 \centering
-{\includegraphics[height=6cm]{Immagini/Eta_Delta_Plain.png}} 
-\caption{2D efficiency correction for elevator.}
+{\includegraphics[height=6.79cm]{Immagini/alfadeltanew.png}} 
 \label{efficiency}
 \end{figure} 		
 
 
-\begin{figure}[H]
-\centering
-{\includegraphics[height=6cm]{Immagini/alfadelta.png}} 
-\caption{$\frac{d \alpha_{0l}}{d \delta_e}$ 2D and 3D correction.}
-\label{efficiency}
-\end{figure} 		
 		
-\subsubsection{Developer's Guide} % java class archiecture(?)
+% java class archiecture(?)
 %tabella elenco metodi con classe e che fanno
 
 % descrizione
@@ -72,6 +80,26 @@ The evaluation of tau is made by reading of external database, considering the f
 
 \subsection{Complete Aircraft}
 
+In order to evaluate the lift coefficient of the entire airplane it's possible to consider it as consisting of the following parts\cite{ roskam2002airplane}:
+
+\begin{itemize}
+\item wing and fuselage
+\item horizontal Tail
+\item canard
+\end{itemize}
+
+It's important to consider the effectivness angles of attack in which the surfaces work. This is made considering the angles of incidence of the lifting surfaces and the downwash angle aft of the wing. An horizontal tail and a canard may be equiped with a trailing edge control surface. So in order to evaluate these contributes it' s important to know the angle of deflection $\delta$ of these control surfaces.\\
+The calculation of the individual contributions it's reported in the relevant sections. In this section will be shown the method to evaluate the aircraft lift coefficient, known the single contributes.\\
+For an aircraft with no cadard, the formula is the following:
+
+\begin{equation}
+C_L = C_{L_{wb}} + \frac{S_t}{S_w} \eta_t C_{L_{t}}
+\end{equation}
+
+Where $\eta_t$ is the ratio of dynamic pressure. In fact the dynamic pressure seen by horizontal tail differ from the free stream dynamic pressure due to two main reasons: the combination wing-fuselage and the presence of the propeller. The dynamic pressure of the tail depends on the location of the tail. If the tail is in the wake of the wing-body, the local dynamic pressure will be less than the freestream because the flow gradually looses its kinetic energy. While if the tail is in the slipstream of propeller, the local dynamic pressure may increase due to the power absorbed by the propeller.
+
+
+
 \section{Aerodynamic Drag}
 
 \section{Pitching Moments}
@@ -81,4 +109,17 @@ The evaluation of tau is made by reading of external database, considering the f
 \subsection{Propulsors}
 
 \subsection{Stability Calculation}
+
 % calcolo delle forze normali e tangenziali, calcolo momenti, risultati
+
+\section{Java Class Architecture}
+% intro
+% riepilogo di tutte le classi in schema. vedi su quaderno  prima di stabilita
+% schema in yed
+
+\section{User's Guide}
+%intro
+% test class
+
+\section{Analysis Results} % fai qui? oppure durante?
+%grafici

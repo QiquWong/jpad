@@ -233,13 +233,13 @@ public class DownwashCalculator {
 			alphaBodyArray[i] = alphaAbsoluteArray[i] - angleOfIncidenceExposedDeg + alphaZeroLiftRootExposedDeg;
 			
 		}
-		System.out.println("\n Results -----");
-		System.out.println("DownwashGradient " + Arrays.toString(downwashGradientArray));
-		System.out.println("Downwash Angle (deg) " + Arrays.toString(downwashArray));
-		System.out.println("Alpha Absolute (deg) " + Arrays.toString(alphaAbsoluteArray));
-		System.out.println("Alpha Body (deg)" + Arrays.toString(alphaBodyArray));
-		System.out.println("Z Distance Absolute (m) " + Arrays.toString(zDistanceArray));	
-		
+//		System.out.println("\n Results -----");
+//		System.out.println("DownwashGradient " + Arrays.toString(downwashGradientArray));
+//		System.out.println("Downwash Angle (deg) " + Arrays.toString(downwashArray));
+//		System.out.println("Alpha Absolute (deg) " + Arrays.toString(alphaAbsoluteArray));
+//		System.out.println("Alpha Body (deg)" + Arrays.toString(alphaBodyArray));
+//		System.out.println("Z Distance Absolute (m) " + Arrays.toString(zDistanceArray));	
+//		
 	}
 	
 	
@@ -249,7 +249,7 @@ public class DownwashCalculator {
 	 *
 	 * @param Amount<Angle> alpha Body in degree or radians
 	 *
-	 *
+	 * @return downwash angle as double in deg
 	 * @author  Manuela Ruocco
 	 */
 	

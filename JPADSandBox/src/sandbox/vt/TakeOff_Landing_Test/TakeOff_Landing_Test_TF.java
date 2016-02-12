@@ -329,28 +329,28 @@ public class TakeOff_Landing_Test_TF {
 
 //		theTakeOffLandingCalculator.initialize();
 //		theTakeOffLandingCalculator.calculateTakeOffDistance(null, false);
-		_stopTimeCalculation = System.currentTimeMillis();
+//		_stopTimeCalculation = System.currentTimeMillis();
 //		_startTimeGraph = System.currentTimeMillis();
-//		theTakeOffLandingCalculator.createTakeOffCharts();
+		theTakeOffLandingCalculator.createTakeOffCharts();
 //		_stopTimeGraph = System.currentTimeMillis();
-		_startTimeBalanced = System.currentTimeMillis();
-		theTakeOffLandingCalculator.calculateBalancedFieldLength();
-		theTakeOffLandingCalculator.createBalancedFieldLengthChart();
-		_stopTimeBalanced = System.currentTimeMillis();
-		_stopTimeTotal = System.currentTimeMillis();
-		
-		_elapsedTimeTotal = _stopTimeTotal - _startTimeCalculation;
-		_elapsedTimeCalculation = _stopTimeCalculation - _startTimeCalculation;
-		_elapsedTimeGraph = _stopTimeGraph - _startTimeGraph;
-		_elapsedTimeBalanced = _stopTimeBalanced - _startTimeBalanced;
-		
-		System.out.println("\nANALYSIS TIME = " + (get_elapsedTime()) + " millisenconds");
-		System.out.println("\nCALCULATION TIME = " + (get_elapsedTimeCalculation()) + "millisenconds");
-		System.out.println("\nBALANCED FIELD LENGTH TIME = " + (get_elapsedTimeBalanced()) + "millisenconds");
-		System.out.println("\nGRAPHICS TIME = " + (get_elapsedTimeGraph()) + "millisenconds");	
-		
-		System.out.println("\nBALANCED FIELD LENGTH = " + theTakeOffLandingCalculator.getBalancedFieldLength());
-		System.out.println("\nDecision Speed = " + theTakeOffLandingCalculator.getV1().divide(theTakeOffLandingCalculator.getvSTakeOff()));
+//		_startTimeBalanced = System.currentTimeMillis();
+//		theTakeOffLandingCalculator.calculateBalancedFieldLength();
+//		theTakeOffLandingCalculator.createBalancedFieldLengthChart();
+//		_stopTimeBalanced = System.currentTimeMillis();
+//		_stopTimeTotal = System.currentTimeMillis();
+//		
+//		_elapsedTimeTotal = _stopTimeTotal - _startTimeCalculation;
+//		_elapsedTimeCalculation = _stopTimeCalculation - _startTimeCalculation;
+//		_elapsedTimeGraph = _stopTimeGraph - _startTimeGraph;
+//		_elapsedTimeBalanced = _stopTimeBalanced - _startTimeBalanced;
+//		
+//		System.out.println("\nANALYSIS TIME = " + (get_elapsedTime()) + " millisenconds");
+//		System.out.println("\nCALCULATION TIME = " + (get_elapsedTimeCalculation()) + "millisenconds");
+//		System.out.println("\nBALANCED FIELD LENGTH TIME = " + (get_elapsedTimeBalanced()) + "millisenconds");
+//		System.out.println("\nGRAPHICS TIME = " + (get_elapsedTimeGraph()) + "millisenconds");	
+//		
+//		System.out.println("\nBALANCED FIELD LENGTH = " + theTakeOffLandingCalculator.getBalancedFieldLength());
+//		System.out.println("\nDecision Speed = " + theTakeOffLandingCalculator.getV1().divide(theTakeOffLandingCalculator.getvSTakeOff()));
 	}
 	
 	//------------------------------------------------------------------------------------------

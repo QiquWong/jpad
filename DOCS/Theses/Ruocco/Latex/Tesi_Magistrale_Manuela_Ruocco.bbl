@@ -902,6 +902,26 @@
       \field{volume}{Vol. 41}
       \field{year}{2004}
     \endentry
+    \entry{philips}{book}{}
+      \name{author}{1}{}{%
+        {{hash=63fc570f2eed4b27e55799d580637c2f}{Phillips}{P\bibinitperiod}{Warren\bibnamedelima F.}{W\bibinitperiod\bibinitdelim F\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{2}{%
+        {John Wiley}%
+        {Sons}%
+      }
+      \strng{namehash}{63fc570f2eed4b27e55799d580637c2f}
+      \strng{fullhash}{63fc570f2eed4b27e55799d580637c2f}
+      \field{sortinit}{P}
+      \field{sortinithash}{c0a4896d0e424f9ca4d7f14f2b3428e7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Mechanics of Flight}
+      \field{year}{2004}
+      \verb{url}
+      \verb https://books.google.it/books/about/Mechanics_of_Flight.html?id=6-_iGbJHM-8C&redir_esc=y
+      \endverb
+    \endentry
     \entry{raymer1992}{book}{}
       \name{author}{1}{}{%
         {{hash=93c3dbe92ab67dbce70cb2cf0c5738da}{Raymer}{R\bibinitperiod}{D.P.}{D\bibinitperiod}{}{}{}{}}%
@@ -1053,6 +1073,23 @@
       \verb http://www.opencascade.org/
       \endverb
       \warn{\item Datamodel: Entry 'opencascade' (Tesi_Bibliography.bib): Invalid format '01.16.2015' of date field 'date' - ignoring}
+    \endentry
+    \entry{schimidth}{book}{}
+      \name{author}{1}{}{%
+        {{hash=efb6c24e84c6c2fb69a3fe02b72d6761}{Schmidt}{S\bibinitperiod}{David}{D\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {McGraw-Hill}%
+      }
+      \strng{namehash}{efb6c24e84c6c2fb69a3fe02b72d6761}
+      \strng{fullhash}{efb6c24e84c6c2fb69a3fe02b72d6761}
+      \field{sortinit}{S}
+      \field{sortinithash}{fd1e7c5ab79596b13dbbb67f8d70fb5a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{97800711339811}
+      \field{title}{Modern Flight Dynamics}
+      \field{year}{2012}
     \endentry
     \entry{sforza2014commercial}{book}{}
       \name{author}{1}{}{%
