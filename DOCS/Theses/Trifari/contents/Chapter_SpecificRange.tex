@@ -23,7 +23,6 @@ Regarding the thrust, the generalized version can be obtained by dividing it by 
 \label{fig:Figure1}
 \end{figure}
 
-\noindent
 where
 
 \begin{itemize}
@@ -35,7 +34,7 @@ where
 \end{itemize}
 
 \noindent
-so that the genralized thrust results as a function of Mach number and generalized fuel flow rate.
+In this way that the genralized thrust results as a function of Mach number and generalized fuel flow rate.
 
 \begin{equation}
 \frac{T}{\delta}=\frac{T_{f}}{\delta}\cdot f\left(\frac{m_{f}}{\delta \cdot \sqrt{\theta}}\right)
@@ -117,7 +116,6 @@ A.F.=
 \end{equation}
 \end{subequations}
 
-\noindent
 where
 
 \begin{itemize}
@@ -157,13 +155,13 @@ It's important to highlight that, on long distances, the maximum distance line i
 %------------------------- JAVA CLASS ARCHITECTURE ---------------------------
 
 \section{Java class architecture}
-After having introduced the theory behind the cruise grid chart, a presentation of the related Java class inside JPAD is shown. Using the same philosophy of the previous chapter, a dedicated class, named \lstinline[language=Java]!SpecificRangeCalc!, has been implemented inside which a series of static methods provide the needed calculation tools. Generaly speaking, the giudeline followed in creating this class is to assign an array of Mach numbers, starting from the one realitve to the minimum cruising speed and ending with the maximum cruising speed at that altitude and weight, and then evaluate the SFC, from engine database, for each Mach number; from here the A.F. is built after the evaluation of the aerodynamic efficinecy for each value of the same Mach array. Finally the specific range is calculated, in $\frac{\si{nmi}}{\si{lbs}}$, dividing the A.F. by the aircraft max take off mass.
+After having introduced the theory behind the cruise grid chart, a presentation of the related Java class inside JPAD is shown. Using the same philosophy of the previous chapter, a dedicated class, named \lstinline[language=Java]!SpecificRangeCalc!, has been implemented inside which a series of static methods provide the needed calculation tools. Generaly speaking, the giudeline followed in creating this class is to assign an array of Mach numbers, starting from the one realitve to the minimum cruising speed and ending with the maximum cruising speed at that altitude and weight, and then evaluate the $SFC$, from engine database, for each Mach number; from here the $A.F.$ is built after the evaluation of the aerodynamic efficinecy for each value of the same Mach array. Finally the specific range is calculated, in $\frac{\si{nmi}}{\si{lbs}}$, dividing the $A.F.$ by the aircraft max take off mass.
 
 \bigskip
 \noindent
-The first static method presented is \lstinline[language=Java]!calculateEfficiencyVsMach!. It allows to evaluate the aerodynamic efficiency value for each  Mach number of a given array through the evaluation of the C\textsubscript{L} and the relative C\textsubscript{D} from the aircraft total drag polar; in particular the two aerodynamic coefficients are calculated by calling other two static methods which come from two classes of the aerodynamic calculator package of \lstinline[language=Java]!JPADCore! named, respectively, \lstinline[language=Java]!LiftCalc! and \lstinline[language=Java]!DragCalc!.
+The first static method presented is \lstinline[language=Java]!calculateEfficiencyVsMach!. It allows to evaluate the aerodynamic efficiency value for each  Mach number of a given array through the evaluation of the $C_{L}$ and the relative $C_{D}$ from the aircraft total drag polar; in particular the two aerodynamic coefficients are calculated by calling other two static methods which come from two classes of the aerodynamic calculator package of \lstinline[language=Java]!JPADCore! named, respectively, \lstinline[language=Java]!LiftCalc! and \lstinline[language=Java]!DragCalc!.
 
-The static \lstinline[language=Java]!LiftCalc! method, named \lstinline[language=Java]!calculateLiftCoeff!, performs the C\textsubscript{L} calculation using the following formula, valid in cruise phase.
+The static \lstinline[language=Java]!LiftCalc! method, named \lstinline[language=Java]!calculateLiftCoeff!, performs the $C_{L}$ calculation using the following formula, valid in cruise phase.
 
 \begin{equation}
 C_L=\frac{2W}{\rho S V^2}
@@ -192,20 +190,20 @@ where $V$, is the TAS speed derived from the actual Mach number of the array at 
 \label{table:Table1}
 \end{table}
 
-On the other hand, the static \lstinline[language=Java]!DragCalc! method, named \lstinline[language=Java]!calculateCDTotal!, performs the C\textsubscript{D} calculation using the total drag polar expression.
+On the other hand, the static \lstinline[language=Java]!DragCalc! method, named \lstinline[language=Java]!calculateCDTotal!, performs the $C_{D}$ calculation using the total drag polar expression.
 
 \begin{equation}
-C_D=C_{D0}+\frac{C_L^2}{\pi \ensuremath{\AR} e}+C_{Dwave}
+C_D=C_{D0}+\frac{C_L^2}{\pi \ensuremath{\AR} e}+C_{D\text{wave}}
 \label{eqn:Drag.Total}
 \end{equation}
 
 \bigskip
 \noindent
-~where the $C_{Dwave}$ is calculated as presented in~\cite{hilton1951high}.
+In particular the $C_{D\text{wave}}$ is calculated as presented in~\cite{hilton1951high}.
 
 \bigskip
 \noindent
-The second static method implemented is \lstinline[language=Java]!calculateSfcVsMach!, which accepts as input data reported in table~\ref{table:Table2} allows to evaluate the SFC of a turboprop aircraft, or the SFCJ of a turbofan aircraft, for each Mach number of the given array by reading data from the related engine database.
+The second static method implemented is \lstinline[language=Java]!calculateSfcVsMach!, which accepts as input data reported in table~\ref{table:Table2} allows to evaluate the $SFC$ of a turboprop aircraft, or the $SFCJ$ of a turbofan aircraft, for each Mach number of the given array by reading data from the related engine database.
 
 \begin{table}[t]
 \begin{tabular}{p{7cm}p{7.5cm}}
@@ -222,9 +220,9 @@ The second static method implemented is \lstinline[language=Java]!calculateSfcVs
 
 \bigskip
 \noindent
-Finally, the two previous method leads to the last one named \lstinline[language=Java]!calculateSpecificRangeVsMach! which allows to calculate the A.F. and, from it, the specific range by implementing the (\ref{eqn:AutonomyFactorProp}) or the (\ref{eqn:AutonomyFactorJet}) depending on the given engine type. 
+Finally, the two previous method leads to the last one named \lstinline[language=Java]!calculateSpecificRangeVsMach! which allows to calculate the $A.F.$ and, from it, the specific range by implementing the (\ref{eqn:AutonomyFactorProp}) or the (\ref{eqn:AutonomyFactorJet}) depending on the given engine type. 
 
-To do this, it's necessary to give as input the Mach numbers array, the aerodynamic efficiency array calculated with~\lstinline[language=Java]!calculateEfficiencyVsMach! and the SFC array calculated with~\lstinline[language=Java]!calculateSfcVsMach! as shown in table~\ref{table:Table3}.
+To do this, it's necessary to give as input the Mach numbers array, the aerodynamic efficiency array calculated with~\lstinline[language=Java]!calculateEfficiencyVsMach! and the $SFC$ array calculated with~\lstinline[language=Java]!calculateSfcVsMach! as shown in table~\ref{table:Table3}.
 
 \begin{table}[!b]
 \begin{tabular}{p{7cm}p{7.5cm}}
@@ -245,7 +243,7 @@ To do this, it's necessary to give as input the Mach numbers array, the aerodyna
 
 \bigskip
 \noindent
-The class is completed by other four static methods demanded of plotting the results; in particular, using the same approach shown in the previous chapter, a .png and a .tikz output images are created for each of the SFC, the aerodynamic efficiency and the specific range.
+The class is completed by other four static methods demanded of plotting the results; in particular, using the same approach shown in the previous chapter, a .png and a .tikz output images are created for each of the $SFC$, the aerodynamic efficiency and the specific range.
 
 It's important to highlight that the first of these plotting methods, which is named \lstinline[language=Java]!createSpecificRangeChart! and is demanded of plotting the cruise grid chart, has implemented, inside it, the evaluation of the maximum range condition as well as the long range one; this by calculating all maximum points and, from them, all points at -1\% of penalty obtained through the evaluation of the bigger of the two intersction points that the line at -1\% of penalty defines on each specific range curve.
 
@@ -277,7 +275,7 @@ First of all, since the cruise grid chart is parameterized in aircraft weight, a
 The second step is to define the independent variable, which is the Mach number, and in particular it's necessary to identify the upper and lower limitations of its array; this can be done by evaluating the required thrust, which is equal to the drag during cruise, and comparing it with the available thrust supplied by the power plant.
 
 \noindent
-By the intersections of the latter, the two required speeds can be derived; otherwise, if the minimum speed intersection can't be found, the cruising stalling speed, at that weight and altitude condition and for a specified c\textsubscript{Lmax}, replaces the missing intersection abscissa.
+By the intersections of the latter, the two required speeds can be derived; otherwise, if the minimum speed intersection can't be found, the cruising stalling speed, at that weight and altitude condition and for a specified $C_{L\text{max}}$, replaces the missing intersection abscissa.
 
 \begin{figure}[t]
 \begin{lstlisting}[caption={Mass variation in Specific Range test - B747-100B}, captionpos=b, tabsize=2]
@@ -314,7 +312,7 @@ In terms of code, the last step can be carried out using the static method, of t
 \noindent
 The last two input are two collections of maps designed to store all data necessary to manage curves of drag, or thrust, as function of speed; in particular, in the reported example, the drag and thrust arrays passed to each of them are calculated using the static method of the~\lstinline[language=Java]!JPADCore! classes~\lstinline[language=Java]!DragCalc! and~\lstinline[language=Java]!ThrustCalc! named, respectively,~\lstinline[language=Java]!calculateDragVsSpeed! and~\lstinline[language=Java]!calculateThrustVsSpeed!. 
 
-The first one implements the classic formula of drag as function of speed and of the c\textsubscript{D} calculated with the (\ref{eqn:Drag.Total}), while the second one recognizes the engine type and reads the thrust value from the related external database.
+The first one implements the classic formula of drag as function of speed and of the $C_{D}$ calculated with the (\ref{eqn:Drag.Total}), while the second one recognizes the engine type and reads the thrust value from the related external database.
 
 \begin{lstlisting}[caption={Intersection of drag and thrust curves in Specific Range test - B747-100B}, captionpos=b, tabsize=2]
 		// Drag Thrust Intersection		

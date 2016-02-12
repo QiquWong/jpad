@@ -21,6 +21,8 @@ Because the payload is carried in the fuselage while the fuel is carried in wing
 
 In order to avoid this situation it’s possible to decide, preventively, the maximum payload weight the aircraft can carry in fuselage so that the maximum bending load for wings and, in consequence their structural weight, is set; this particular weight is named maximum zero fuel weight (MZFW).
 
+\bigskip
+\noindent
 As a result of this, the previous diagram changes in the one reported in figure~\ref{fig:Figure2} which starts with the maximum zero fuel weight and keep it constant until the maximum take-off weight is reached. From this point on, the far the aircraft have to go, the more the fuel it needs, but, since the maximum take-off weight is set, the only way to increase fuel weight is to reduce the payload; this condition is represented by the second segment of the diagram and, along this, the aircraft weight is always equal to the maximum take-off weight. With further increase of the required range for the aircraft, the fuel tanks maximum capacity will be reached prevent to store more fuel; the only solution at this problem is to put the additional fuel into the fuselage, reducing, consequently, the payload weight in order to respect the maximum zero fuel weight limitation. Along this last segment the payload weight decreases more rapidly with increasing range reaching, ideally, the value of zero at which the flight mission is useless; moreover the aircraft weight is not equal to the maximum take-off weight anymore but to a lower one.
 
 \bigskip
@@ -54,20 +56,20 @@ Furthermore four fundamental couples of payload and range values have to be defi
 \noindent
 Since point A is very simple to obtain, it’s more interesting to analyze how to calculate points B, C and D coordinates.
 
-For point B it’s necessary to focus the attention upon Breguet formulas in order to calculate the maximum range the aircraft can fly at maximum take-off weight with maximum payload; these are different for jet or propeller aircraft and can be written as follow, with R in \si{}{\km}, SFC in $\frac{\si{lb}}{\si{hp}\cdot\hour}$ and SFCJ in $\frac{\si{lb}}{\si{lb}\cdot\hour}$.
+For point B it’s necessary to focus the attention upon Breguet formulas in order to calculate the maximum range the aircraft can fly at maximum take-off weight with maximum payload; these are different for jet or propeller aircraft and can be written as follow, with $R$ in \si{}{\km}, $SFC$ in $\frac{\si{lb}}{\si{hp}\cdot\hour}$ and $SFCJ$ in $\frac{\si{lb}}{\si{lb}\cdot\hour}$.
 
 \begin{subequations}\label{eqn:BreguetEquation}
 \begin{equation}\label{eqn:BreguetEquationProp}
 R=
       \begin{array}{l@{\rule{2em}{0pt}}l} 
-      603.5\cdot \left(\frac{\eta_{p}}{SFC}\right)_{cruise}\cdot \left(\frac{L}{D}\right)_{cruise}\cdot \ln\left(\frac{W_{i}}{W_{f}}\right)
+      603.5\cdot \left(\frac{\eta_{p}}{SFC}\right)_{\text{cruise}}\cdot \left(\frac{L}{D}\right)_{\text{cruise}}\cdot \ln\left(\frac{W_{i}}{W_{f}}\right)
           & \text{if} \;\, \text{propeller engine driven}
       \end{array}
 \end{equation}
 \begin{equation}\label{eqn:BreguetEquationJet}
 R=
       \begin{array}{l@{\rule{7em}{0pt}}l} 
-      \left(\frac{V}{SFCJ}\right)_{cruise}\cdot \left(\frac{L}{D}\right)_{cruise}\cdot \ln\left(\frac{W_{i}}{W_{f}}\right)
+      \left(\frac{V}{SFCJ}\right)_{\text{cruise}}\cdot \left(\frac{L}{D}\right)_{\text{cruise}}\cdot \ln\left(\frac{W_{i}}{W_{f}}\right)
           & \text{if} \;\, \text{jet engine driven}
       \end{array}
 \end{equation}
@@ -78,7 +80,7 @@ R=
 Knowing the specific fuel consumption, the aerodynamic and propeller efficiency, or speed for jet aircraft, in cruise condition, the only unknown left for calculate the range is the weight ratio. In order to calculate this it’s necessary to start by evaluating the amount of fuel the airplane can take on board, at maximum take-off weight and maximum payload, with the following formula.
 
 \begin{equation}
-W_{TO,max}=W_{OE}+W_{payoad,max}+W_{fuel}
+W_{TO,\text{max}}=W_{OE}+W_{\text{payoad,max}}+W_{\text{fuel}}
 \label{eqn:Equation1.3}
 \end{equation}
 
@@ -87,7 +89,7 @@ W_{TO,max}=W_{OE}+W_{payoad,max}+W_{fuel}
 Once the used fuel weight is known, it’s possible to use the fuel fraction method from the weight estimation design phase in order to find the total weight ratio across the entire aircraft mission. 
 
 \begin{equation}
-W_{fuel}=\left(1-M_{ff}\right)\cdot W_{TO}
+W_{\text{fuel}}=\left(1-M_{ff}\right)\cdot W_{TO}
 \label{eqn:Equation1.4}
 \end{equation}
 
@@ -107,7 +109,7 @@ M_{ff}=\frac{W_1}{W_{TO}}\cdot
 	   \frac{W_8}{W_{7}}\cdot 
 	   \frac{W_9}{W_{8}}\cdot 
 	   \frac{W_{10}}{W_{9}}\cdot 
-	   \frac{W_{fianl}}{W_{10}} 
+	   \frac{W_{\text{final}}}{W_{10}} 
 	   \label{eqn:Equation1.5} 
 \end{equation}
 
@@ -144,7 +146,7 @@ Supersonic Cruise              & 0,990 & 0,995 & 0,995 & 0,920-0,870 & 0,985 & 0
 For the evaluation of point C, similar steps have to be followed with the difference that, in this case, the fuel is the maximum that the wing tanks can store and the payload is the unknown of the (\ref{eqn:Equation1.6}).
 
 \begin{equation}
-W_{TO,max}=W_{OE}+W_{payload}+W_{fuel,max}
+W_{TO,\text{max}}=W_{OE}+W_{\text{payload}}+W_{\text{fuel,max}}
 \label{eqn:Equation1.6}
 \end{equation}
 
@@ -155,7 +157,7 @@ From this equation it’s possible to calculate point C ordinate, while for the 
 Finally for point D, the payload is set at zero so that is possible to evaluate the WTO, relative to maximum fuel weight with no passengers, from the following equation.
 
 \begin{equation}
-W_{TO}=W_{OE}+W_{fuel,max}
+W_{TO}=W_{OE}+W_{\text{fuel,max}}
 \label{eqn:Equation1.7}
 \end{equation}
 
@@ -202,7 +204,7 @@ Each of these requires in input the table~\ref{table:Table2} data, a database wh
 \label{table:Table2}
 \end{table}
 
-From this point on, the evaluation of (\ref{eqn:Equation1.3}), (\ref{eqn:Equation1.6}) and (\ref{eqn:Equation1.7}), for each method, and of (\ref{eqn:Equation1.4}), for all of them, is performed in order to set up the following calculations and to obtain the unknown value of the payload in point~C case; after that the fuel fractions database is read in order to obtain all known data necessary to calculate the required weight ratio to be used in (\ref{eqn:BreguetEquation1.1}) or (\ref{eqn:BreguetEquation1.2}) depending on the aircraft engine type. It’s important to highlight that the database reading process is made up so that it can recognize all different kind of aircraft from table~\ref{table:Table1} and read the related line values.
+From this point on, the evaluation of (\ref{eqn:Equation1.3}), (\ref{eqn:Equation1.6}) and (\ref{eqn:Equation1.7}), for each method, and of (\ref{eqn:Equation1.4}), for all of them, is performed in order to set up the following calculations and to obtain the unknown value of the payload in point~C case; after that the fuel fractions database is read in order to obtain all known data necessary to calculate the required weight ratio to be used in (\ref{eqn:BreguetEquationProp}) or (\ref{eqn:BreguetEquationJet}) depending on the aircraft engine type. It’s important to highlight that the database reading process is made up so that it can recognize all different kind of aircraft from table~\ref{table:Table1} and read the related line values.
 
 \bigskip
 \noindent
@@ -240,7 +242,7 @@ They use the Java \lstinline[language=Java]!List! interface to generate an order
 
 \bigskip
 \noindent
-Finally the two arrays are used as input, together with another one from the best range condition analysis, for the last method that has to plot the diagram; this is called \lstinline[language=Java]!createPayloadRangeCharts_Mach! and uses the \lstinline[language=Java]!JFreeChart! Java library to generate a .png output image into the output folder of the software and is also able to create a .tikz version of the diagram to be used in \LaTeX.
+Finally the two arrays are used as input, together with another one from the best range condition analysis, for the last method, named~\lstinline[language=Java]!createPayloadRangeCharts_Mach!, that has to plot the diagram; this uses the~\lstinline[language=Java]!JFreeChart! Java library~\cite{jfreechart} to generate a .png output image into the output folder of the software and is also able to create a .tikz version of the diagram to be used in \LaTeX.
 
 As said before, this class finds another purpose in parameterizing the diagram in different maximum take-off weight conditions. To do that, the three core methods are used again inside a new one, named \lstinline[language=Java]!createPayloadRangeMatrices!, which implements a recursive calculation of the three points coordinates at different maximum take-off mass conditions generated by decreasing the original mass by 5$\%$ until it reaches a total decrease of 20$\%$. This new method requires the same input data reported in table~\ref{table:Table2} except for the maximum take-off mass which is generated inside the method itself.
 
