@@ -39,6 +39,7 @@ import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.DatabaseReaderEnum;
 import configuration.enumerations.FoldersEnum;
+import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import functions.Linspace;
@@ -273,7 +274,8 @@ public class Test_MR_07_LongitudinalStability {
 		// Angle of attack
 
 		Amount<Angle> alphaBody = theConditions.get_alphaCurrent();
-
+		Amount<Angle> alphaWing = Amount.valueOf(alphaBody.getEstimatedValue()+theWing.get_iw().getEstimatedValue(), SI.RADIAN);
+		
 		// -----------------------------------------------------------------------
 		// LIFT CHARACTERISTICS 
 		// -----------------------------------------------------------------------
@@ -343,7 +345,9 @@ public class Test_MR_07_LongitudinalStability {
 		Amount<Angle> downwashAmountRadiant = Amount.valueOf(Math.toRadians(downwash), SI.RADIAN);
 		System.out.println( "\nAt alpha " + alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue() + " (deg) the downwash angle is (deg) = " + downwash );
 	
-	
+		double alphaTail =  alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue() 
+				+ horizontalTail.get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue()- downwash ;
+		Amount<Angle> angleTailAmount =  Amount.valueOf(Math.toRadians(alphaTail), SI.RADIAN);
 	
 		
 		// ------------------Horizontal Tail---------------
@@ -481,9 +485,33 @@ public class Test_MR_07_LongitudinalStability {
 		System.out.println("\n DRAG CHARACTERISTICS  ");
 		System.out.println("\n------------------------------------");
 
+		// Wing
 		LSAerodynamicsManager.CalcCDAtAlpha theCDWingCalculator = theLSAnalysis.new CalcCDAtAlpha();
-		cLIsolatedWing = theCDWingCalculator.
+		double cDIsolatedWing = theCDWingCalculator.integralFromCdAirfoil(
+				alphaWing, MethodEnum.NASA_BLACKWELL, theLSAnalysis);
+		System.out.println(" CD of Wing at alpha body = (deg) "
+				+ alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue()
+				+ " is " + cDIsolatedWing);
 		
+		System.out.println(" ...waiting for plotting");
+		theLSAnalysis.PlotCDvsAlphaCurve(subfolderPath);
+		System.out.println("\n\n\t\t\tDONE PLOTTING CD vs ALPHA WING");
+		
+		// Horizontal Tail
+		LSAerodynamicsManager.CalcCDAtAlpha theCDHTailCalculator = theLSHorizontalTail.new CalcCDAtAlpha();
+		double cDHorizontalTail = theCDHTailCalculator.integralFromCdAirfoil(
+				angleTailAmount, MethodEnum.NASA_BLACKWELL, theLSAnalysis);
+		System.out.println("\n CD of Horizontal Tail at alpha body = (deg) "
+				+ alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue()
+				+ " is " + cDHorizontalTail
+				);
+		
+		System.out.println(" ...waiting for plotting");
+		theLSHorizontalTail.PlotCDvsAlphaCurve(subfolderPath);
+		System.out.println("\n\n\t\t\tDONE PLOTTING CD vs ALPHA H TAIL CLEAN");
+		
+		
+
 	}
 
 	}

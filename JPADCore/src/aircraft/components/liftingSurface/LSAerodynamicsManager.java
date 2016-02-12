@@ -247,6 +247,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	private double[] _yStationsIntegral;
 	public double cLStarWing;
 	private double alphaZeroLiftDeflection;
+	String subfolderPathCDAlpha;
 	public LSAerodynamicsManager(OperatingConditions conditions, LiftingSurface liftingSurf, Aircraft ac) {
 
 		theOperatingConditions = conditions;
@@ -1516,8 +1517,9 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 	public void PlotCLvsAlphaCurve(String subfolderPath){
 		this.subfolderPathCLAlpha = subfolderPath;
-		subfolderPathCeck =false;
+		subfolderPathCeck = false;
 		PlotCLvsAlphaCurve();
+		subfolderPathCeck = true;
 
 	};
 
@@ -1532,7 +1534,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 		double alphaFirstCD = -2.0;
 		double alphaLastCD = 18.0;
-		int nPointsCD = 50;
+		int nPointsCD = 30;
 		double [] alphaArrayPlotCD = MyArrayUtils.linspace(alphaFirstCD,alphaLastCD, nPointsCD);
 		double [] cDPlotArray = new double [nPointsCD];
 		double [] cLPlotArray = new double [nPointsCD];
@@ -1540,7 +1542,9 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		CalcCDAtAlpha theCDCalculator = new CalcCDAtAlpha();
 		CalcCLAtAlpha theCLCalculator = new CalcCLAtAlpha();
 		String folderPath = MyConfiguration.currentDirectoryString + File.separator + "out" + File.separator;
-		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "CD wing" + File.separator);
+		
+		if(subfolderPathCeck)
+			subfolderPathCDAlpha = JPADStaticWriteUtils.createNewFolder(folderPath + "CD wing" + File.separator);
 
 		for (int i=0; i<nPointsCD; i++){
 			alphaActual= Amount.valueOf(toRadians(alphaArrayPlotCD[i]), SI.RADIAN);
@@ -1560,15 +1564,25 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				alphaArrayPlotCD,cDPlotArray, 
 				null, null , null , null ,					    // axis with limits
 				"alpha", "CDw", "deg", "",	   				
-				subfolderPath, "CD vs Alpha");
+				subfolderPathCDAlpha, "CD vs Alpha " + theLiftingSurface.get_type());
 
 		MyChartToFileUtils.plotNoLegend(
-				alphaArrayPlotCD,cLPlotArray, 
+				cDPlotArray,cLPlotArray, 
 				null, null , null , null ,					    // axis with limits
 				"alpha", "CDw", "deg", "",	   				
-				subfolderPath, "CD vs CL");
+				subfolderPathCDAlpha, "CD vs CL " + theLiftingSurface.get_type());
 
 	}
+	
+	
+		public void PlotCDvsAlphaCurve(String subfolderPath){
+			this.subfolderPathCDAlpha = subfolderPath;
+			subfolderPathCeck = false;
+			PlotCDvsAlphaCurve();
+			subfolderPathCeck = true;
+		
+	}
+	
 	/** 
 	 * Evaluate CL vs alpha
 	 * 
@@ -3872,7 +3886,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				cdAtAlpha = MyMathUtils.integrate1DSimpsonSpline(
 						yStations, cdLocal);		
 
-				System.out.println(" CD Total at alpha " + alpha.getEstimatedValue()*57.3 + " = " + cdAtAlpha);
+				//System.out.println(" CD Total at alpha " + alpha.getEstimatedValue()*57.3 + " = " + cdAtAlpha);
 				break;
 
 			}
