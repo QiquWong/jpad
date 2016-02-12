@@ -1,6 +1,5 @@
 package sandbox.ac;
 
-import java.io.File;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -10,8 +9,6 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
-import org.kohsuke.args4j.CmdLineParser;
-import org.kohsuke.args4j.Option;
 
 import aircraft.OperatingConditions;
 import aircraft.calculators.costs.MyCosts;
@@ -20,24 +17,8 @@ import calculators.costs.CostsCalcUtils;
 import calculators.performance.PerformanceCalcUtils;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
-import standaloneutils.JPADXmlReader;
 
-public class Test_Costs_v01 {
-	
-	//------------------------------------------------------------------------------------------
-		// VARIABLE DECLARATION:
-		@Option(name = "-i", aliases = { "--input" }, required = true,
-				usage = "my input file")
-		private File _inputFile;
-		
-		// declaration necessary for Concrete Object usage
-		public CmdLineParser theCmdLineParser;
-		public JPADXmlReader reader;
-	
-		// Builder
-		public Test_Costs_v01() {
-			theCmdLineParser = new CmdLineParser(this);
-			}
+public class MyTest_AC_costs {
 	
 	public static void main(String[] args) {
 		

@@ -45,12 +45,6 @@ public class Test_01 {
 		// Allocate the main object
 		Test_01 theTestObject = new Test_01();
 		
-		// Arguments check
-//		if (args.length < 2){
-//			System.err.println("NO INPUT FILE GIVEN, No database path given--> TERMINATING");
-//			return;
-//		}
-		
 		theTestObject.theCmdLineParser.parseArgument(args);
 		String fileNameWithPathAndExt = theTestObject.get_inputFile().getAbsolutePath();
 		String databaseDirectoryAbsolutePath = theTestObject.get_databasePath().getAbsolutePath();
