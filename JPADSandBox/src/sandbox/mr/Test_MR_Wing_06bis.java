@@ -227,7 +227,7 @@ public class Test_MR_Wing_06bis {
 
 		System.out.println(" At alpha " + alpha.to(NonSI.DEGREE_ANGLE) + " CL = " + CL);
 
-		theLSAnalysis.PlotCLvsAlphaCurve();
+		theLSAnalysis.plotCLvsAlphaCurve();
 
 		System.out.println("\nDONE "); 
 
@@ -353,7 +353,7 @@ public class Test_MR_Wing_06bis {
 		for(int i=0; i<highLiftCalculator.getDeltaAlphaMax_list().size(); i++)
 			System.out.print(highLiftCalculator.getDeltaAlphaMax_list().get(i) + " ");
 
-		System.out.println("\n\ndeltaAlphaMax = \n" + highLiftCalculator.getDeltaAlphaMax());
+		System.out.println("\n\ndeltaAlphaMax = \n" + highLiftCalculator.getDeltaAlphaMaxFlap());
 
 		System.out.println("\n\ndeltaCD_list = ");
 		for(int i=0; i<highLiftCalculator.getDeltaCD_list().size(); i++)
@@ -371,7 +371,7 @@ public class Test_MR_Wing_06bis {
 		//		--------------------------
 		//		// New lift curve 
 
-		highLiftCalculator.PlotHighLiftCurve();
+		highLiftCalculator.plotHighLiftCurve();
 		System.out.println("\nDONE");	
 		
 		Amount<Angle> alpha2 =(Amount.valueOf(toRadians(2.), SI.RADIAN));

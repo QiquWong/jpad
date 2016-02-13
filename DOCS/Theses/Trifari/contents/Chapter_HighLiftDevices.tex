@@ -137,7 +137,7 @@ The effects of a single slotted flap show an increment in all the aerodynamic co
 
 Due to the necessity of keeping the rear part of the wing section extended out the main element its implementation system is usually more complicated than the single slotted flaps but its weight and costs are largely justified by its high lift effectiveness. Its typical deflection are about 40° for landing and 15° for take-off, smaller than other types because the chord extension provides a bigger lift increment due to the bigger wing surface; this also reduces the drag in take-off wth benefit an the required field length.
 \item[\textbf{Slat}]  It's the most efficient leading edge device; thanks to combined deflection and forward motion, it acts in order to increase airfoil camber, and so the maximum lift coefficient, as well as increase the airfoil chord with the result of a bigger surface which provides a bigger aspect ratio with the effect of increase the lift curve slope of the linear trait. Furthermore, thanks to the slot which provides a boundary layer energization, it also increases the stalling angle of attack.
-\item[\textbf{Kruger flap}]  It acts in the same way as the slat, but it is thinner and more suitable for installation on thin wings. Krueger flaps are very common because of their simple architecture.
+\item[\textbf{Krueger flap}]  It acts in the same way as the slat, but it is thinner and more suitable for installation on thin wings. Krueger flaps are very common because of their simple architecture.
 \item[\textbf{Plain leading edge flap}] Is less effective than slat since it has no slot, it is mechanically simple and rigid and particularly suitable for thin airfoil sections. The leading edge can be hinged in order to move it backward (droop nose) or it has a mechanism inside that changes the curvature of the nose (variable camber flap).
 \item[\textbf{Leading edge fixed slot}] It has a fixed slot at the leading edge that, at high angle of attack, allows the airflow to pass through energizing the boundary layer; this helps to increase the stalling angle of attack. During the criuse phase, in which the angle of attack is small, the gap is usually seald.
 \end{itemize}
@@ -204,7 +204,7 @@ with $C_{l\alpha}$ equals to the linear slope of the llift curve of the airfoil,
 \label{eqn:DeltaCl0EtaDelta}
 \end{equation}
 
-where $\eta_\delta$ can be evaluated from the charts provided in figures~\ref{fig:EtaDeltaPlain} and~\ref{fig:EtaDelta}.
+More in detail, $\eta_\delta$ can be evaluated from the charts provided in figures~\ref{fig:EtaDeltaPlain} and~\ref{fig:EtaDelta}.
 
 \begin{figure}[!t]
   \centering
@@ -229,14 +229,15 @@ C_{l}=\left(C_{l0}'+\upDelta C_{l0}'\right)\ \frac{c'}{c}
 \end{equation}
 
 \noindent 
-Here the variables with superscript are referred to the extended chord. Assuming that for the basic section $c_{l0}'=c_{l0}$, it's possible to derive the $\upDelta C_{l0}$ as folllows.
+Here the variables with superscript are referred to the extended chord. Assuming that for the basic section $C_{l0}'=C_{l0}$, it's possible to derive the $\upDelta C_{l0}$ as folllows.
 
 \begin{equation}
 \upDelta C_{l0}=\upDelta C_{l0}'\ \frac{c'}{c}+C_{l0}\left(\frac{c'}{c}-1\right)
 \label{eqn:Deltacl0Final}
 \end{equation}
 
-where $C_{l0}$ is known, $\upDelta C_{l0}'$ is calculated as in (\ref{eqn:DeltaCl0EtaDelta}) and $\frac{c'}{c}$ is equal to the following~expression.
+\noindent
+In particular $C_{l0}$ is known, $\upDelta C_{l0}'$ is calculated as in (\ref{eqn:DeltaCl0EtaDelta}) and $\frac{c'}{c}$ is equal to the following~expression.
 
 \begin{equation}
 \frac{c'}{c}=1+\frac{\upDelta c}{c_f}\ \frac{c_f}{c}
@@ -280,7 +281,7 @@ where $C_{L\alpha}$ and $C_{l\alpha}$ are respectively the lift curve slopes of 
 
 %------------------------- DeltaClmax & DeltaCLmax subsection---------------------------
 \subsection{$\upDelta C_{l\text{max}}$ and  $\upDelta C_{L\text{max}}$ calculation for trailing edge and leading edge devices}
-An empirical method for predicting airfoil maximum lift increments for plain and slotted flaps is presented in DATCOM and will be followed from~\cite{sforza2014commercial}.
+An empirical method for predicting airfoil maximum lift increments for plain and slotted flaps is presented in \gls{DATCOM} and will be followed from~\cite{sforza2014commercial}.
 
 The maximum lift increment provided to an airfoil by the deflection of a trailing edge flap is given by the (\ref{eqn:DeltaClmaxFlap}).
 
@@ -323,7 +324,7 @@ Here $\left(\upDelta C_{l\text{max}}\right)_{\text{base}}$ is the section maximu
 \noindent
 Regarding leading edge devices, the leading edge slats are the most common ones; as explained previously, the latter increase the maximum lift coefficient of the airfoil along with the stall angle. As a result, they are commonly used, particularly in landing, though they are also useful on takeoff because the lift increment they develop comes with little drag penalty.
 
-The DATCOM method for leading edge flaps and slats proposes that the maximum lift increment for leading edge flaps or slats may be approximated by the following empirical relation.
+The \gls{DATCOM} method for leading edge flaps and slats proposes that the maximum lift increment for leading edge flaps or slats may be approximated by the following empirical relation.
 
 \begin{equation}
 \upDelta C_{l\text{max}}=\left(\dfrac{\partial C_l}{\partial \delta}\right)_{\text{max}}\ \eta_{\text{max}}\ \eta_\delta\ \delta_s\ \dfrac{c'}{c}
@@ -337,7 +338,7 @@ The second term, $\eta_{\text{max}}$, is an empirical factor which accounts for 
 
 The third term, $\eta_\delta$, is another empirical factor which corrects for flap, or slat, deflections different from the optimum flap angle. This parameter is shown in figure~\ref{fig:etaDeltaSlat} as a function of the flap, or slat, deflection angle $\delta_s$. To understand the angle $\delta_s$ one may first imagine
 drawing a chord line on the slat-airfoil combination when the slat is stowed; then when the slat is deflected, the segment of the chord line that was drawn on
-the slat in the stowed position has now rotated through the deflection angle $\delta_s$. This is the standard used in the DATCOM method and is not necessarily used throughout the literature as a definition of slat deflection angle.
+the slat in the stowed position has now rotated through the deflection angle $\delta_s$. This is the standard used in the \gls{DATCOM} method and is not necessarily used throughout the literature as a definition of slat deflection angle.
 
 Finally, the ratio $\frac{c'}{c}$ accounts for the apparent increase in chord length when the slat is deflected and a slot is formed between the two airfoil elements; this dimension, along with the deflection angle $\delta_s$, is illustrated in figure~\ref{fig:c'c_deltaSlat}.
 
@@ -371,7 +372,7 @@ Finally, the ratio $\frac{c'}{c}$ accounts for the apparent increase in chord le
 
 \noindent
 Now that all increments related to the airfoil have been explained, the next step is to extend these two-dimensional quantities to the entire three-dimensional wing.
-Regarding trailing edge devices, the DATCOM method provides the following equation to compute the increment in maximum lift coefficient for the wing.
+Regarding trailing edge devices, the \gls{DATCOM} method provides the following equation to compute the increment in maximum lift coefficient for the wing.
 
 \begin{equation}
 \upDelta C_{L\text{max}}=\upDelta C_{l\text{max}}\ \dfrac{S_{w,f}}{S}\ K_\Lambda
@@ -422,7 +423,7 @@ The lift gradient is affected by flap deflection in three ways:
 In order to evaluate the variation in $C_{l\alpha}$ due to flap deflection, references to~\cite{torenbeek1982synthesis} have been made. In particular, Torenbeek provides the following equation which approximates the results of the exact theory fairly accurately and is in qualitative agreement with experimental data. 
 
 \begin{equation}
-C_{l\alpha_{\left(\text{flap down}\right)}}=C_{l\alpha}\ \left[\dfrac{c'}{c}\ \left(1-\dfrac{c_f}{c}\ \sin^2\delta_f\right)\right]
+C_{l\alpha_{\left(\text{flap down}\right)}}=C_{l\alpha}\ \left[\dfrac{c'}{c}\ \left(1-\dfrac{c_f}{c'}\ \sin^2\delta_f\right)\right]
 \label{eqn:ClalphaFlap}
 \end{equation}
 
@@ -430,7 +431,7 @@ C_{l\alpha_{\left(\text{flap down}\right)}}=C_{l\alpha}\ \left[\dfrac{c'}{c}\ \l
 This equation is then corrected for the three-dimensional wing as follows.
 
 \begin{equation}
-C_{L\alpha_{\left(\text{flap down}\right)}}=C_{L\alpha}\ \left\{1+\dfrac{\upDelta C_{L0}}{\upDelta C_{l0}}\ \left[\left(\dfrac{c'}{c}\ \left(1-\dfrac{c_f}{c}\sin^2\delta_f\right)-1\right)\right]\right\}
+C_{L\alpha_{\left(\text{flap down}\right)}}=C_{L\alpha}\ \left\{1+\dfrac{\upDelta C_{L0}}{\upDelta C_{l0}}\ \left[\left(\dfrac{c'}{c}\ \left(1-\dfrac{c_f}{c'}\sin^2\delta_f\right)-1\right)\right]\right\}
 \label{eqn:ClalphaFlap}
 \end{equation}
 
@@ -590,11 +591,11 @@ where $\upDelta C_{m_{\frac{c}{4}}}$ is the one from (\ref{eqn:DeltaCmPractical}
 
 %------------------------- JAVA CLASS ARCHITECTURE ---------------------------
 \section{Java class architecture}
-The main purpose of this paragraph is to provide a comprehensive description of how all semi-empirical methods, presented previously, are implemented and used inside the Java class created to manage high-lift devices effects upon wings. Because of the great number of charts from which some important data have to be derived, an external database, containing all the digitized curves shown in previous paragraph figures, has been created following the procedure explained in the first paragraph of appendix~\ref{ch:hdf}.
+The main purpose of this paragraph is to provide a comprehensive description of how all semi-empirical methods, presented previously, are implemented and used inside the Java class created to manage high-lift devices effects upon wings. Because of the great number of charts from which some important data have to be derived, an external database, containing all the digitized curves shown in previous paragraph figures, has been created following the procedure explained in appendix~\ref{par:Appendix1}.
 
 \bigskip
 \noindent
-This database, named~\lstinline[language=Java]!HighLiftDatabase!, is then read by a dedicated class created inside the database package of~\lstinline[language=Java]!JPADCore! which name is~\lstinline[language=Java]!HighLiftDatabaseReader!; the latter, in particular, has been built up following the giudeline of the second paragraph of appendix~\ref{ch:hdf}.
+This database, named~\lstinline[language=Java]!HighLiftDatabase!, is then read by a dedicated class created inside the database package of~\lstinline[language=Java]!JPADCore! which name is~\lstinline[language=Java]!HighLiftDatabaseReader!; the latter, in particular, has been built up following the giudeline of appendix~\ref{par:Appendix2}.
 
 \bigskip
 \noindent
@@ -606,12 +607,12 @@ The first component of~\lstinline[language=Java]!CalcHighLiftDevices! that has t
 
 \begin{enumerate}
 \item Assign user's inputs to their related class fields
-\item Recognize flaps types from a~\lstinline[language=Java]!List! of~\lstinline[language=Java]!FlapTypeEnum! objects and link them to their typical maximum deflection value; moreover it gives them an appropriate index to be used inside~\lstinline[language=Java]!HighLiftDatabaseReader! in order to access to the specific flap type curve of the database when needed
+\item Recognize flaps types from a \gls{List} of~\lstinline[language=Java]!FlapTypeEnum! objects and link them to their typical maximum deflection value; moreover it gives them an appropriate index to be used inside~\lstinline[language=Java]!HighLiftDatabaseReader! in order to access to the specific flap type curve of the database when needed
 \item Perform the preliminary calculation of the wing clean maximum lift coefficient, and of the related stalling angle of attack, using the method named~\lstinline[language=Java]!calcAlphaAndCLMax!, of the~\lstinline[language=Java]!LSAerodynamicsManager!, which accepts as input the wing mean airfoil calculated by the constructor using the method~\lstinline[language=Java]!calculateMeanAirfoil!, of a~\lstinline[language=Java]!LSAerodynamicsManager! inner class named~\lstinline[language=Java]!MeanAirfoil!, which performs the calculation of the required characteristics using influence areas method based on the three main wing airfoils (Root, Kink, Tip).   
 \end{enumerate}
 
 \noindent
-In particular~\lstinline[language=Java]!FlapTypeEnum! is an~\lstinline[language=Java]!Enumeration!\cite{enumAPI} of possible flaps types created inside the~\lstinline[language=Java]!JPADConfigs! package to manage in a smart and intuitive way this parameter. 
+In particular~\lstinline[language=Java]!FlapTypeEnum! is an \gls{Enum}\cite{enumAPI} of possible flaps types created inside the~\lstinline[language=Java]!JPADConfigs! package to manage in a smart and intuitive way this parameter. 
 
 Furthermore it has to be noted that having the clean maximum lift coefficient, and its stalling angle of attack, calculated in the constructor allows to reduce computational cost because these heavy calculations are performed only once when the object is created; this is very useful when the user wants to calculate the lift coefficient, at a specific angle of attack on the flapped lift curve, many time, for example, during iterations.  
 
@@ -648,7 +649,7 @@ Triple slotted & 50° & 5.0 \\
 \lstinline[language=Java]!etaInSlat! & A \lstinline[language=Java]!List! of \lstinline[language=Java]!Double! values containing each flap outer adimensional position, to be set to null if there aren't slats \\  [0.2cm]
 \lstinline[language=Java]!cfc! & A \lstinline[language=Java]!List! of \lstinline[language=Java]!Double! values containing flap chord to airfoil chord ratios for each flap \\  [0.2cm]
 \lstinline[language=Java]!csc! & A \lstinline[language=Java]!List! of \lstinline[language=Java]!Double! values containing slat chord to airfoil chord ratios for each slat, to be set to null if there aren't slats \\  [0.2cm]
-\lstinline[language=Java]!leRadiusSlat! & A \lstinline[language=Java]!List! of  \lstinline[language=Java]!Double! values containing leading edge radius to airfoil thickness ratios $\left(LER/t=LER/c\cdot t/c\right)$ for each slat, to be set to null if there aren't slats \\  [0.2cm]
+\lstinline[language=Java]!leRadiusRatioSlat! & A \lstinline[language=Java]!List! of  \lstinline[language=Java]!Double! values containing \gls{acr:LER} to airfoil thickness ratios $\left(LER/t=LER/c\cdot t/c\right)$ for each slat, to be set to null if there aren't slats \\  [0.2cm]
 \lstinline[language=Java]!cExtcSlat! & A \lstinline[language=Java]!List! of  \lstinline[language=Java]!Double! arrays containing extended chord to airfoil chord ratios for each slat \\ 
 \bottomrule
 \end{tabular}
@@ -666,7 +667,7 @@ The first one is~\lstinline[language=Java]!calculateHighLiftDevicesEffects! whic
 
 \bigskip
 \noindent
-The second one is~\lstinline[language=Java]!calcCLatAlphaHighLiftDevice!, which requires firstly to run~\lstinline[language=Java]!calculateHighLiftDevicesEffects!, calculates the lift coefficent at a given angle of attack for a wing with high-lift devices deflected. This method calculates both linear trait and non-linear trait of the curve using the NASA Blackwell method for the slope of the linear trait and a cubic interpolation for the non-linear one. 
+The second one is~\lstinline[language=Java]!calcCLatAlphaHighLiftDevice!, which requires firstly to perform the analysis of \lstinline[language=Java]!calculateHighLiftDevicesEffects!; it calculates the lift coefficent at a given angle of attack for a wing with high-lift devices deflected. This method calculates both linear trait and non-linear trait of the curve using the NASA Blackwell method for the slope of the linear trait and a cubic interpolation for the non-linear one. 
 
 In particular it sums up the effect of $\upDelta C_{L0}$ to the clean wing $C_{L0}$ in order to obtain the new value with deflected high-lift devices, then it replaces the clean wing $C_{L\alpha}$ with the new one calculated with the previous method; assuming also that the angle of attack at the end of the linear trait is taken as the mean of the old one, realted to the mean airfoil, and the one calculated at the same $C_L^*$ but on the new curve, the new $C_L^*$  can be evaluated completing the calculations of the linear trait parameters. From this point on, $\upDelta C_{L\text{max}}$ and $\upDelta\alpha_{\text{stall}}$ are summed to the clean curve $C_{L\text{max}}$ and $\alpha_{\text{stall}}$ calculated into the constructor; then a cubic interpolation, starting from the end of linear trait, allows to build the non-linear one.
 
@@ -674,10 +675,226 @@ The method accept as input an angle of attack which is then compared with $\alph
 
 \bigskip
 \noindent
-The third, and last, method is~\lstinline[language=Java]!PlotHighLiftCurve!. It is used to plot both the clean wing lift curve, both the flapped one; the first task is done by an~\lstinline[language=Java]!LSAerodynamicsManager! method named~\lstinline[language=Java]!PlotCLvsAlphaCurve!, while the second one follows the same philosophy of the previous method to calculate the lift coefficent for 30 angles of attack starting from -10° and ending at the $\left(\alpha_{\text{stall}}\right)_{\text{flap}}$+2°.
+The third, and last, method is~\lstinline[language=Java]!plotHighLiftCurve!. It is used to plot both the clean wing lift curve, both the flapped one; the first task is done by an~\lstinline[language=Java]!LSAerodynamicsManager! method named~\lstinline[language=Java]!PlotCLvsAlphaCurve!, while the second one follows the same philosophy of the previous method to calculate the lift coefficent for 30 angles of attack starting from -10° and ending at $\left(\alpha_{\text{stall}}\right)_{\text{flap}}$+2°.
 
-%---------------------------------------------------------------------------INSERT CLASS FLOWCHART-----------------------------------------------------------------------
-
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1.15\linewidth]{HighLiftDevices_Flowchart}
+  \caption{~\lstinline[language=Java]!CalcHighLiftDevices! class flowchart}
+  \label{fig:CalcHighLiftFlowchart}
+\end{figure}
 
 %----------------------- CASE STUDY : ATR72 AND B747 -------------------------
 \section{Case study: ATR-72 and B747-100B}
+The last task to be done is to show an application of the~\lstinline[language=Java]!CalcHighLiftDevices! class in order to validate the calculation performed as well as to give a useful example to a potential user developer. 
+
+As in previous chapters the test will be performed using ATR-72 and B747-100B aircraft models, built up as explained in paragraph~\ref{par:DefultAircraft}. These aircraft models dosen't have high-lift devices input data embedded, so that they have to be assigned from an external .xml file; this choice has been taken because the user may want to try different high-lift devices setups without changing the aircraft model on which these latter will be applied.
+
+The input .xml file\cite{wiki:xml} has to provide all data from~\ref{table:CalcHighLiftConstructor}, except for the lifting surface model and the operating condition, and it is modeled as follows.
+
+\bigskip
+\lstset{language=XML}
+\begin{lstlisting}[caption={Example of high-lift devices .xml input file for the B747-100B in take-off configuration}, captionpos=b, tabsize=6]
+<input>
+	<B747>
+		<Flap_Number unit="">2</Flap_Number>
+		<Flap1>
+			<FlapType unit="">DOUBLE_SLOTTED</FlapType>
+			<Cf_C unit="">0.1264</Cf_C>
+			<Delta_Flap1 unit="$\deg$">15</Delta_Flap1>
+			<Delta_Flap1 unit="$\deg$">5</Delta_Flap1>
+			<Flap_inboard>0.0995</Flap_inboard>
+			<Flap_outboard>0.3614</Flap_outboard>
+		</Flap1>
+		<Flap2>
+			<FlapType unit="">DOUBLE_SLOTTED</FlapType>
+			<Cf_C unit="">0.2806</Cf_C>
+			<Delta_Flap2 unit="$\deg$">15</Delta_Flap2>
+			<Delta_Flap2 unit="$\deg$">5</Delta_Flap2>
+			<Flap_inboard unit="">0.4123</Flap_inboard>
+			<Flap_outboard unit="">0.6624</Flap_outboard>
+		</Flap2>
+		<Slat1>
+			<Delta_Slat unit="$\deg$">20</Delta_Slat>
+			<Cs_C unit="">0.115</Cs_C>
+			<cExt_c unit="">1.1</cExt_c>
+			<LEradius_c_ratio unit="">0.0097</LEradius_c_ratio>
+			<Slat_inboard unit="">0.192</Slat_inboard>
+			<Slat_outboard unit="">0.3696</Slat_outboard>
+		</Slat1>
+		<Slat2>
+			<Delta_Slat unit="$\deg$">20</Delta_Slat>
+			<Cs_C unit="">0.193</Cs_C>
+			<cExt_c unit="">1.1</cExt_c>
+			<LEradius_c_ratio unit="">0.0097</LEradius_c_ratio>
+			<Slat_inboard unit="">0.4279</Slat_inboard>
+			<Slat_outboard unit="">0.6578</Slat_outboard>
+		</Slat2>
+		<Slat3>
+			<Delta_Slat unit="$\deg$">20</Delta_Slat>
+			<Cs_C unit="">0.243</Cs_C>
+			<cExt_c unit="">1.1</cExt_c>
+			<LEradius_c_ratio unit="">0.0097</LEradius_c_ratio>
+			<Slat_inboard unit="">0.666</Slat_inboard>
+			<Slat_outboard unit="">0.997</Slat_outboard>
+		</Slat3>
+	</B747>
+</input>
+\end{lstlisting}
+
+\bigskip
+\lstset{language=XML}
+\begin{lstlisting}[caption={Example of high-lift devices .xml input file for the ATR-72 in take-off configuration}, captionpos=b, tabsize=6]
+<input>
+	<ATR72>
+		<Flap_Number unit="">2</Flap_Number>
+		<Flap1>
+			<FlapType unit="">SINGLE_SLOTTED</FlapType>
+			<Cf_c unit="">0.35</Cf_c>
+			<Delta_Flap1 unit="$\deg$">20</Delta_Flap1>
+			<Flap_inboard>0.0884</Flap_inboard>
+			<Flap_outboard>0.34575</Flap_outboard>
+		</Flap1>
+		<Flap2>
+			<FlapType unit="">SINGLE_SLOTTED</FlapType>
+			<Cf_c unit="">0.35</Cf_c>
+			<Delta_Flap2 unit="$\deg$">20</Delta_Flap2>
+			<Flap_inboard>0.34575</Flap_inboard>
+			<Flap_outboard>0.82063</Flap_outboard>
+		</Flap2>
+	</ATR72>
+</input>
+\end{lstlisting}
+
+\bigskip
+\noindent
+The first thing to do in order to read these data is use the Java library~\lstinline[language=Java]!args4j!; the latter allows the user to make the \gls{parsing} of the input file in order to make it available for reading inside the test class. For more information regarding this library the reader can consult~\cite{args4j}.
+
+After the input file has been parsed correctly, the reading process can start. The user now has to create a \gls{List} for each input data of table~\ref{table:CalcHighLiftConstructor} and then an object of the class~\lstinline[language=Java]!JPADXmlReader!, of the~\lstinline[language=Java]!JPADCore!~\lstinline[language=Java]!standaloneutils! package, in order to manage the scan of the .xml file through its methods. 
+
+\bigskip
+\lstset{language=Java}
+\begin{lstlisting}[caption={Excerpt of B747-100B test - Input data reading}, captionpos=b, tabsize=2]
+	// High Lift Devices Input
+	List<Double[]> deltaFlap = new ArrayList<Double[]>();
+	List<FlapTypeEnum> flapType = new ArrayList<FlapTypeEnum>();
+	List<Double> etaInFlap = new ArrayList<Double>();
+	List<Double> etaOutFlap = new ArrayList<Double>();
+	List<Double> cfc = new ArrayList<Double>();
+	List<Double> deltaSlat = new ArrayList<Double>();
+	List<Double> etaInSlat = new ArrayList<Double>();
+	List<Double> etaOutSlat = new ArrayList<Double>();
+	List<Double> csc = new ArrayList<Double>();
+	List<Double> cExtcSlat = new ArrayList<Double>();
+	List<Double> leRadiusSlatRatio = new ArrayList<Double>();
+		
+	// XML reading phase:
+	// Arguments check
+	if (args.length == 0){
+		System.err.println("NO INPUT FILE GIVEN --> TERMINATING");
+		return;
+	}
+		
+	// Input file parsing
+	main.theCmdLineParser.parseArgument(args);
+	// Creation of the reader object
+	String path = main.get_inputFile().getAbsolutePath();
+	JPADXmlReader reader = new JPADXmlReader(path);
+	// XML file scan through JPADXmlReader methods
+	List<String> flapNumberProperty = reader.getXMLPropertiesByPath("//Flap_Number");
+	int flapNumber = Integer.valueOf(flapNumberProperty.get(0));
+	List<String> flapTypeProperty = reader.getXMLPropertiesByPath("//FlapType");
+	List<String> cfcProperty = reader.getXMLPropertiesByPath("//Cf_C");
+	List<String> deltaFlap1Property = reader.getXMLPropertiesByPath("//Delta_Flap1");
+	List<String> deltaFlap2Property = reader.getXMLPropertiesByPath("//Delta_Flap2");
+	List<String> etaInFlaProperty = reader.getXMLPropertiesByPath("//Flap_inboard");
+	List<String> etaOutFlapProperty = 
+					reader.getXMLPropertiesByPath("//Flap_outboard");
+	List<String> deltaSlatProperty = reader.getXMLPropertiesByPath("//Delta_Slat");
+	List<String> cscProperty = reader.getXMLPropertiesByPath("//Cs_C");
+	List<String> cExtcSlatProperty = reader.getXMLPropertiesByPath("//cExt_c");
+	List<String> leRadiusSlatRatioProperty = 
+					reader.getXMLPropertiesByPath("//LEradius_c_ratio");
+	List<String> etaInSlatProperty = reader.getXMLPropertiesByPath("//Slat_inboard");
+	List<String> etaOutSlatProperty = 
+					reader.getXMLPropertiesByPath("//Slat_outboard");
+	// Management of the Lists of String in order to populate the previous Lists  
+	// Recognizing flap type
+	for(int i=0; i<flapTypeProperty.size(); i++) {
+		if(flapTypeProperty.get(i).equals("SINGLE_SLOTTED"))
+			flapType.add(FlapTypeEnum.SINGLE_SLOTTED);
+		else if(flapTypeProperty.get(i).equals("DOUBLE_SLOTTED"))
+			flapType.add(FlapTypeEnum.DOUBLE_SLOTTED);
+		else if(flapTypeProperty.get(i).equals("PLAIN"))
+			flapType.add(FlapTypeEnum.PLAIN);
+		else if(flapTypeProperty.get(i).equals("FOWLER"))
+			flapType.add(FlapTypeEnum.FOWLER);
+		else if(flapTypeProperty.get(i).equals("TRIPLE_SLOTTED"))
+			flapType.add(FlapTypeEnum.TRIPLE_SLOTTED);
+		else {
+			System.err.println("NO VALID FLAP TYPE!!");
+			return;
+		}
+	}
+	Double[] deltaFlap1Array = new Double[delta_flap1_property.size()];
+	for(int i=0; i<deltaFlap1Array.length; i++)
+		deltaFlap1Array[i] = Double.valueOf(deltaFlap1Property.get(i));
+		Double[] deltaFlap2Array = new Double[deltaFlap2Property.size()];
+	for(int i=0; i<deltaFlap1Array.length; i++)
+		deltaFlap2Array[i] = Double.valueOf(deltaFlap2Property.get(i));
+		deltaFlap.add(deltaFlap1Array);
+	deltaFlap.add(deltaFlap2Array);
+		for(int i=0; i<cfcProperty.size(); i++)
+		cfc.add(Double.valueOf(cfcProperty.get(i)));
+	for(int i=0; i<etaInFlapProperty.size(); i++)
+		etaInFlap.add(Double.valueOf(etaInFlapProperty.get(i)));
+	for(int i=0; i<etaOutFlapProperty.size(); i++)
+		etaOutFlap.add(Double.valueOf(etaOutFlapProperty.get(i)));
+	for(int i=0; i<deltaSlatProperty.size(); i++)
+		deltaSlat.add(Double.valueOf(deltaSlatProperty.get(i)));
+	for(int i=0; i<cscProperty.size(); i++)
+		csc.add(Double.valueOf(cscProperty.get(i)));
+	for(int i=0; i<cExtcSlatProperty.size(); i++)
+		cExtcSlat.add(Double.valueOf(cExtcSlatProperty.get(i)));
+	for(int i=0; i<leRadiusSlatRatioProperty.size(); i++)
+		leRadiusSlatRatio.add(Double.valueOf(leRadiusSlatRatioProperty.get(i)));
+	for(int i=0; i<etaInSlatProperty.size(); i++)
+		etaInSlat.add(Double.valueOf(etaInSlatProperty.get(i)));
+	for(int i=0; i<etaOutSlatProperty.size(); i++)
+		etaOutSlat.add(Double.valueOf(etaOutSlatProperty.get(i)));
+\end{lstlisting}
+
+\bigskip
+\noindent
+It's important to highlight that~\lstinline[language=Java]!JPADXmlReader! methods can return an~\lstinline[language=Java]!Amount!\cite{jscienceAmount} or a~\lstinline[language=Java]!String! for each data read this way so that a post-reading management is necessary in order to have data in correct types.
+
+\bigskip
+\noindent
+At this point all the required data are ready for use; now the user just have to create the object of the class~\lstinline[language=Java]!CalcHighLiftDevices! and call its methods as described in figure~\ref{fig:CalcHighLiftFlowchart}.
+
+It has to be noted that, since~\lstinline[language=Java]!CalcHighLiftDevices! is a class nested into~\lstinline[language=Java]!LSAerodynamicsManager!, the creation of the required object is a little bit different from the usual; in particular an object of~\lstinline[language=Java]!LSAerodynamicsManager!, named~\lstinline[language=Java]!theLSAnalysis! in the example below, has to be created first and then the~\lstinline[language=Java]!CalcHighLiftDevices! one can be created as follows.
+
+\bigskip
+\lstset{language=Java}
+\begin{lstlisting}[caption={Excerpt of B747-100B test - calculator object creation}, captionpos=b, tabsize=2]
+	LSAerodynamicsManager.CalcHighLiftDevices highLiftCalculator = theLSAnalysis
+					.new CalcHighLiftDevices(
+							aircraft.get_wing(),
+							theCondition,
+							deltaFlap,
+							flapType,
+							deltaSlat,
+							eta_in_flap,
+							eta_out_flap,
+							eta_in_slat,
+							eta_out_slat,
+							cf_c,
+							cs_c,
+							leRadius_c_slat,
+							cExt_c_slat
+							);
+\end{lstlisting}
+
+\bigskip
+\noindent
+In conclusion, the following pages show the numerical and graphical results of the described tests, applied to the two aircraft, mentioned at the beginning of paragraph, in take-off configuration.

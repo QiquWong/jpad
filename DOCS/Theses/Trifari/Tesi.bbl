@@ -149,7 +149,7 @@
       \verb https://docs.oracle.com/javase/8/docs/api/java/util/List.html
       \endverb
     \endentry
-    \entry{jscience}{online}{}
+    \entry{jscienceAmount}{online}{}
       \name{author}{1}{}{%
         {{hash=577c772e504efcfcc6e0b45594b8de24}{Dautelle}{D\bibinitperiod}{Jean-Marie}{J\bibinithyphendelim M\bibinitperiod}{}{}{}{}}%
       }
@@ -161,9 +161,9 @@
       \field{labeltitlesource}{title}
       \field{title}{Jscience}
       \verb{url}
-      \verb http://jscience.org/
+      \verb http://jscience.org/api/org/jscience/physics/amount/Amount.html
       \endverb
-      \warn{\item Datamodel: Entry 'jscience' (Tesi_Bibliography.bib): Invalid format '2015.01.05' of date field 'date' - ignoring}
+      \warn{\item Datamodel: Entry 'jscienceAmount' (Tesi_Bibliography.bib): Invalid format '2015.01.05' of date field 'date' - ignoring}
     \endentry
     \entry{deBono}{thesis}{}
       \name{author}{1}{}{%

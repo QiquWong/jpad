@@ -30,15 +30,15 @@
 \contentsline {subsection}{\numberline {4.1.5}Further effects calculations}{56}{subsection.4.1.5}
 \contentsline {section}{\numberline {4.2}Java class architecture}{60}{section.4.2}
 \contentsline {section}{\numberline {4.3}Case study: ATR-72 and B747-100B}{63}{section.4.3}
-\contentsline {chapter}{\numberline {5}Take-off performance}{65}{chapter.5}
-\contentsline {section}{\numberline {5.1}Theoretical background}{65}{section.5.1}
-\contentsline {section}{\numberline {5.2}Java class architecture}{65}{section.5.2}
-\contentsline {section}{\numberline {5.3}Case study: B747-100B}{65}{section.5.3}
-\contentsline {chapter}{Appendices}{}{section*.68}
-\contentsline {chapter}{\numberline {A}HDF databse creation and reading }{69}{Appendix.a.A}
-\contentsline {section}{\numberline {A.1}Creation of a database using MATLAB}{69}{section.a.A.1}
-\contentsline {section}{\numberline {A.2}Reading data from an HDF database in JPAD}{72}{section.a.A.2}
-\contentsline {chapter}{Bibliography}{74}{section*.71}
-\contentsline {chapter}{Glossary}{77}{section*.73}
-\contentsline {chapter}{Acronyms}{79}{section*.75}
-\contentsline {chapter}{List of symbols}{81}{section*.77}
+\contentsline {chapter}{\numberline {5}Take-off performance}{69}{chapter.5}
+\contentsline {section}{\numberline {5.1}Theoretical background}{69}{section.5.1}
+\contentsline {section}{\numberline {5.2}Java class architecture}{69}{section.5.2}
+\contentsline {section}{\numberline {5.3}Case study: B747-100B}{69}{section.5.3}
+\contentsline {chapter}{Appendices}{}{section*.69}
+\contentsline {chapter}{\numberline {A}HDF databse creation and reading }{73}{Appendix.a.A}
+\contentsline {section}{\numberline {A.1}Creation of a database using MATLAB}{73}{section.a.A.1}
+\contentsline {section}{\numberline {A.2}Reading data from an HDF database in JPAD}{76}{section.a.A.2}
+\contentsline {chapter}{Bibliography}{78}{section*.72}
+\contentsline {chapter}{Glossary}{81}{section*.74}
+\contentsline {chapter}{Acronyms}{83}{section*.76}
+\contentsline {chapter}{List of symbols}{85}{section*.78}

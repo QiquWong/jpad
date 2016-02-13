@@ -8,11 +8,11 @@
 \chapter{HDF databse creation and reading }
 \label{ch:hdf}
 
-\section{Creation of a database using MATLAB}
+\section{Creation of a database using MATLAB}\label{par:Appendix1}
 Creation and mangment of an HDF Dataset are very important to handle because they allow to generate resources which are required by a lot of analysis; for example by using this datasets it's possible to implement a new engine type allowing the analysis of the preformance of a new aircraft. 
 This feature has not been implemented inside JPAD with the purpose of being able to generate the required resources independently.
 
-For more information regarding the Hierarchical Data Format (HDF), the reader can refer to~\cite{hdf}.
+For more information regarding the \gls{HDF}, the reader can refer to~\cite{hdf}.
 
 \bigskip
 \noindent
@@ -130,7 +130,7 @@ h5write(hdfFileName, '/DAlphaVsLambdaLEVsDy/var_1', lambdaLEVector_deg');
 \caption{Comparison between the initial graph and the digitized one}
 \end{figure}
 
-\section{Reading data from an HDF database in JPAD}
+\section{Reading data from an HDF database in JPAD}\label{par:Appendix2}
 After creating the database, this has to be read in order to obtain the required data; inside JPAD this operation can be done defining a specific class, which extends the abstract class \lstinline[language=Java]!DatabaseReader! that is designed for HDF dataset reading. 
 
 This son class has a specific structure which main key points can be summarized in the following ones:
@@ -138,7 +138,7 @@ This son class has a specific structure which main key points can be summarized 
 \begin{enumerate}
 \item Creation of variables, in number equal to the function to be interpolated, using the type \lstinline[language=Java]!MyInterpolatingFunction! 
 \item Creation of variables for all values that are wanted to be read from the interpolating functions
-\item Creation of a builder that accepts the folder path string and the file name string of the database. This builder has to launch the interpolating method for all functions contained into the database by using  \lstinline[language=Java]!MyInterpolatingFunction! methods.
+\item Creation of a constructor that accepts the folder path string and the file name string of the database. This constructor has to launch the interpolating method for all functions contained into the database by using  \lstinline[language=Java]!MyInterpolatingFunction! methods.
 \item Creation of a getter method for each of the variables allocated at point 2 in order to obtain values from interpolated functions by giving in input the required parameters
 \end{enumerate}
 

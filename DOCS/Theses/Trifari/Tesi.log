@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.11.16)  12 FEB 2016 20:29
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.11.16)  13 FEB 2016 20:02
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -4429,9 +4429,9 @@ Package biblatex Info: ... file 'Tesi.bbl' found.
 (./Tesi.bbl
 
 Package biblatex Warning: Biber reported the following issues
-(biblatex)                with 'jscience':
-(biblatex)                - Datamodel: Entry 'jscience' (Tesi_Bibliography.bib)
-: Invalid format '2015.01.05' of date field 'date' - ignoring.
+(biblatex)                with 'jscienceAmount':
+(biblatex)                - Datamodel: Entry 'jscienceAmount' (Tesi_Bibliograph
+y.bib): Invalid format '2015.01.05' of date field 'date' - ignoring.
 
 )
 Package biblatex Info: Reference section=0 on input line 51.
@@ -4550,7 +4550,7 @@ Chapter 1.
 
 ]
 Chapter 2.
-<images/Flexible_Payload_Range.png, id=261, 464.134pt x 356.532pt>
+<images/Flexible_Payload_Range.png, id=264, 464.134pt x 356.532pt>
 File: images/Flexible_Payload_Range.png Graphic file (type png)
 
 <use images/Flexible_Payload_Range.png>
@@ -4560,7 +4560,7 @@ Package pdftex.def Info: images/Flexible_Payload_Range.png used on input line 1
  [7
 
 ]
-<images/Payload_Range.png, id=269, 462.528pt x 358.941pt>
+<images/Payload_Range.png, id=276, 462.528pt x 358.941pt>
 File: images/Payload_Range.png Graphic file (type png)
 
 <use images/Payload_Range.png>
@@ -4625,53 +4625,53 @@ Underfull \hbox (badness 3758) in paragraph at lines 193--193
  []
 
 [11] [12]
-<images/PayloadRange_BestRange_Flowchart.png, id=327, 1493.58pt x 943.525pt>
+<images/PayloadRange_BestRange_Flowchart.png, id=344, 1493.58pt x 943.525pt>
 File: images/PayloadRange_BestRange_Flowchart.png Graphic file (type png)
 
 <use images/PayloadRange_BestRange_Flowchart.png>
 Package pdftex.def Info: images/PayloadRange_BestRange_Flowchart.png used on in
-put line 254.
+put line 252.
 (pdftex.def)             Requested size: 366.13948pt x 231.28802pt.
 
-<images/PayloadRange_MTOM_Flowchart.png, id=328, 1494.58376pt x 744.7825pt>
+<images/PayloadRange_MTOM_Flowchart.png, id=345, 1494.58376pt x 744.7825pt>
 File: images/PayloadRange_MTOM_Flowchart.png Graphic file (type png)
 
 <use images/PayloadRange_MTOM_Flowchart.png>
 Package pdftex.def Info: images/PayloadRange_MTOM_Flowchart.png used on input l
-ine 262.
+ine 260.
 (pdftex.def)             Requested size: 366.13948pt x 182.45625pt.
  [13 <./images/PayloadRange_BestRange_Flowchart.png (PNG copy)>] [14 <./images/
 PayloadRange_MTOM_Flowchart.png (PNG copy)>] [15]
-Overfull \hbox (2.58348pt too wide) in paragraph at lines 336--337
+Overfull \hbox (2.58348pt too wide) in paragraph at lines 334--335
 [][][][][][][][][][][]  
  []
 
 [16] [17] [18]
-<images/HowToCreateADefaultAircraftInJPAD.png, id=516, 2328.7pt x 2013.5225pt>
+<images/HowToCreateADefaultAircraftInJPAD.png, id=544, 2328.7pt x 2013.5225pt>
 File: images/HowToCreateADefaultAircraftInJPAD.png Graphic file (type png)
 
 <use images/HowToCreateADefaultAircraftInJPAD.png>
 Package pdftex.def Info: images/HowToCreateADefaultAircraftInJPAD.png used on i
-nput line 537.
+nput line 535.
 (pdftex.def)             Requested size: 512.31558pt x 442.97632pt.
 
-<images/ATR-72.png, id=517, 1028.643pt x 639.5895pt>
+<images/ATR-72.png, id=545, 1028.643pt x 639.5895pt>
 File: images/ATR-72.png Graphic file (type png)
  <use images/ATR-72.png>
-Package pdftex.def Info: images/ATR-72.png used on input line 543.
+Package pdftex.def Info: images/ATR-72.png used on input line 541.
 (pdftex.def)             Requested size: 352.90608pt x 219.42892pt.
 
-Overfull \hbox (8.33444pt too wide) in paragraph at lines 572--572
+Overfull \hbox (8.33444pt too wide) in paragraph at lines 570--570
 []|$[][][] []$|| 
  []
 
 
-Overfull \hbox (8.33444pt too wide) in paragraph at lines 572--572
+Overfull \hbox (8.33444pt too wide) in paragraph at lines 570--570
 []|$[][][] []$|| 
  []
 
 
-Overfull \hbox (2.33444pt too wide) in paragraph at lines 572--572
+Overfull \hbox (2.33444pt too wide) in paragraph at lines 570--570
 []|$[] []$|| 
  []
 
@@ -4683,24 +4683,24 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<images/B747-100B.png, id=518, 908.193pt x 528.17325pt>
+<images/B747-100B.png, id=546, 908.193pt x 528.17325pt>
 File: images/B747-100B.png Graphic file (type png)
 
 <use images/B747-100B.png>
-Package pdftex.def Info: images/B747-100B.png used on input line 591.
+Package pdftex.def Info: images/B747-100B.png used on input line 589.
 (pdftex.def)             Requested size: 352.90608pt x 205.23721pt.
 
-Overfull \hbox (14.33444pt too wide) in paragraph at lines 620--620
+Overfull \hbox (14.33444pt too wide) in paragraph at lines 618--618
 []|$[] []$|| 
  []
 
 
-Overfull \hbox (14.33444pt too wide) in paragraph at lines 620--620
+Overfull \hbox (14.33444pt too wide) in paragraph at lines 618--618
 []|$[] []$|| 
  []
 
 
-Overfull \hbox (14.33444pt too wide) in paragraph at lines 620--620
+Overfull \hbox (14.33444pt too wide) in paragraph at lines 618--618
 []|$[] []$|| 
  []
 
@@ -4709,7 +4709,7 @@ Overfull \hbox (14.33444pt too wide) in paragraph at lines 620--620
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 (./images/PayloadRange_MaxTakeOffMass_TF.tikz)
-Overfull \hbox (6.46675pt too wide) in paragraph at lines 78--634
+Overfull \hbox (6.46675pt too wide) in paragraph at lines 78--632
  [][] 
  []
 
@@ -4724,7 +4724,7 @@ ages/ATR-72.png>] [22] [23 <./images/B747-100B.png>] [24])
 
 ]
 Chapter 3.
-<images/TDelta.png, id=603, 472.967pt x 436.832pt>
+<images/TDelta.png, id=631, 472.967pt x 436.832pt>
 File: images/TDelta.png Graphic file (type png)
  <use images/TDelta.png>
 Package pdftex.def Info: images/TDelta.png used on input line 21.
@@ -4732,7 +4732,7 @@ Package pdftex.def Info: images/TDelta.png used on input line 21.
 
 [27
 
-] <images/TDelta_SpecificRange.png, id=610, 470.558pt x 450.483pt>
+] <images/TDelta_SpecificRange.png, id=639, 470.558pt x 450.483pt>
 File: images/TDelta_SpecificRange.png Graphic file (type png)
 
 <use images/TDelta_SpecificRange.png>
@@ -4740,7 +4740,7 @@ Package pdftex.def Info: images/TDelta_SpecificRange.png used on input line 63.
 
 (pdftex.def)             Requested size: 220.56546pt x 211.15651pt.
  [28 <./images/TDelta.png>]
-<images/DragDelta_SpecificRange.png, id=620, 474.573pt x 445.665pt>
+<images/DragDelta_SpecificRange.png, id=650, 474.573pt x 445.665pt>
 File: images/DragDelta_SpecificRange.png Graphic file (type png)
 
 <use images/DragDelta_SpecificRange.png>
@@ -4749,28 +4749,28 @@ Package pdftex.def Info: images/DragDelta_SpecificRange.png used on input line
 (pdftex.def)             Requested size: 220.56546pt x 207.13008pt.
  [29 <./images/TDelta_SpecificRange.png> <./images/DragDelta_SpecificRange.png>
 ]
-<images/TDeltaDragDelta.png, id=632, 497.057pt x 450.483pt>
+<images/TDeltaDragDelta.png, id=662, 497.057pt x 450.483pt>
 File: images/TDeltaDragDelta.png Graphic file (type png)
 
 <use images/TDeltaDragDelta.png>
 Package pdftex.def Info: images/TDeltaDragDelta.png used on input line 93.
 (pdftex.def)             Requested size: 220.56546pt x 199.8972pt.
 
-<images/AutonomyFactor.png, id=634, 574.145pt x 468.952pt>
+<images/AutonomyFactor.png, id=665, 574.145pt x 468.952pt>
 File: images/AutonomyFactor.png Graphic file (type png)
 
 <use images/AutonomyFactor.png>
 Package pdftex.def Info: images/AutonomyFactor.png used on input line 132.
 (pdftex.def)             Requested size: 264.68124pt x 216.1928pt.
  [30 <./images/TDeltaDragDelta.png>]
-<images/CruiseGrid.png, id=646, 480.194pt x 438.438pt>
+<images/CruiseGrid.png, id=678, 480.194pt x 438.438pt>
 File: images/CruiseGrid.png Graphic file (type png)
 
 <use images/CruiseGrid.png>
 Package pdftex.def Info: images/CruiseGrid.png used on input line 144.
 (pdftex.def)             Requested size: 220.56546pt x 201.38287pt.
  [31 <./images/AutonomyFactor.png> <./images/CruiseGrid.png>] [32] [33]
-<images/SpecificRange_Flowchart.png, id=675, 1522.68875pt x 987.69pt>
+<images/SpecificRange_Flowchart.png, id=713, 1522.68875pt x 987.69pt>
 File: images/SpecificRange_Flowchart.png Graphic file (type png)
 
 <use images/SpecificRange_Flowchart.png>
@@ -4822,14 +4822,14 @@ Overfull \hbox (27.82321pt too wide) in paragraph at lines 1334--521
 Chapter 4.
 [43
 
-] <images/FlapEffects.png, id=892, 801.99625pt x 916.42375pt>
+] <images/FlapEffects.png, id=930, 801.99625pt x 916.42375pt>
 File: images/FlapEffects.png Graphic file (type png)
 
 <use images/FlapEffects.png>
 Package pdftex.def Info: images/FlapEffects.png used on input line 113.
 (pdftex.def)             Requested size: 198.50755pt x 226.82607pt.
 
-<images/SlatEffects.png, id=893, 974.64125pt x 1004.75375pt>
+<images/SlatEffects.png, id=931, 974.64125pt x 1004.75375pt>
 File: images/SlatEffects.png Graphic file (type png)
 
 <use images/SlatEffects.png>
@@ -4844,13 +4844,13 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
  [44] [45 <./images/FlapEffects.png> <./images/SlatEffects.png>]
-<images/Flap.png, id=907, 558.085pt x 210.7875pt>
+<images/Flap.png, id=945, 558.085pt x 210.7875pt>
 File: images/Flap.png Graphic file (type png)
  <use images/Flap.png>
 Package pdftex.def Info: images/Flap.png used on input line 147.
 (pdftex.def)             Requested size: 441.13094pt x 166.62001pt.
 
-<images/Slat.png, id=908, 388.45125pt x 138.5175pt>
+<images/Slat.png, id=946, 388.45125pt x 138.5175pt>
 File: images/Slat.png Graphic file (type png)
  <use images/Slat.png>
 Package pdftex.def Info: images/Slat.png used on input line 154.
@@ -4881,14 +4881,14 @@ Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 (hyperref)                removing `math shift' on input line 176.
 
-<images/Eta_Delta_Plain.png, id=923, 634.16925pt x 457.71pt>
+<images/Eta_Delta_Plain.png, id=961, 634.16925pt x 457.71pt>
 File: images/Eta_Delta_Plain.png Graphic file (type png)
 
 <use images/Eta_Delta_Plain.png>
 Package pdftex.def Info: images/Eta_Delta_Plain.png used on input line 211.
 (pdftex.def)             Requested size: 286.7324pt x 206.94537pt.
 
-<images/Eta_Delta.png, id=924, 825.68475pt x 416.757pt>
+<images/Eta_Delta.png, id=962, 825.68475pt x 416.757pt>
 File: images/Eta_Delta.png Graphic file (type png)
 
 <use images/Eta_Delta.png>
@@ -4900,245 +4900,251 @@ Overfull \hbox (3.81265pt too wide) in paragraph at lines 218--219
  []
 
 [47 <./images/Slat.png>] [48 <./images/Eta_Delta_Plain.png> <./images/Eta_Delta
-.png>] <images/DeltaC_Cf.png, id=950, 998.5305pt x 454.69875pt>
+.png>] <images/DeltaC_Cf.png, id=988, 998.5305pt x 454.69875pt>
 File: images/DeltaC_Cf.png Graphic file (type png)
 
 <use images/DeltaC_Cf.png>
-Package pdftex.def Info: images/DeltaC_Cf.png used on input line 251.
+Package pdftex.def Info: images/DeltaC_Cf.png used on input line 252.
 (pdftex.def)             Requested size: 441.13094pt x 200.87982pt.
- <images/Kc.png, id=953, 805.20825pt x 483.60675pt>
+ <images/Kc.png, id=991, 805.20825pt x 483.60675pt>
 File: images/Kc.png Graphic file (type png)
 
 <use images/Kc.png>
-Package pdftex.def Info: images/Kc.png used on input line 269.
+Package pdftex.def Info: images/Kc.png used on input line 270.
 (pdftex.def)             Requested size: 308.7903pt x 185.46231pt.
- <images/Kb.png, id=954, 428.802pt x 377.0085pt>
+ <images/Kb.png, id=992, 428.802pt x 377.0085pt>
 File: images/Kb.png Graphic file (type png)
 
 <use images/Kb.png>
-Package pdftex.def Info: images/Kb.png used on input line 276.
+Package pdftex.def Info: images/Kb.png used on input line 277.
 (pdftex.def)             Requested size: 220.56546pt x 193.9228pt.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 282.
+(hyperref)                removing `math shift' on input line 283.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\upDelta' on input line 282.
+(hyperref)                removing `\upDelta' on input line 283.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 282.
+(hyperref)                removing `math shift' on input line 283.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 282.
+(hyperref)                removing `math shift' on input line 283.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\upDelta' on input line 282.
+(hyperref)                removing `\upDelta' on input line 283.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 282.
+(hyperref)                removing `math shift' on input line 283.
 
 [49 <./images/DeltaC_Cf.png> <./images/Kc.png>]
-<images/DeltaClmax_Base.png, id=972, 776.30025pt x 445.06274pt>
+<images/DeltaClmax_Base.png, id=1011, 776.30025pt x 445.06274pt>
 File: images/DeltaClmax_Base.png Graphic file (type png)
 
 <use images/DeltaClmax_Base.png>
-Package pdftex.def Info: images/DeltaClmax_Base.png used on input line 297.
+Package pdftex.def Info: images/DeltaClmax_Base.png used on input line 298.
 (pdftex.def)             Requested size: 352.90608pt x 202.32729pt.
 
-<images/K1.png, id=973, 751.608pt x 418.56375pt>
+<images/K1.png, id=1012, 751.608pt x 418.56375pt>
 File: images/K1.png Graphic file (type png)
  <use images/K1.png>
-Package pdftex.def Info: images/K1.png used on input line 304.
+Package pdftex.def Info: images/K1.png used on input line 305.
 (pdftex.def)             Requested size: 352.90608pt x 196.53337pt.
 
-<images/K2.png, id=974, 835.923pt x 468.5505pt>
+<images/K2.png, id=1013, 835.923pt x 468.5505pt>
 File: images/K2.png Graphic file (type png)
  <use images/K2.png>
-Package pdftex.def Info: images/K2.png used on input line 311.
+Package pdftex.def Info: images/K2.png used on input line 312.
 (pdftex.def)             Requested size: 352.90608pt x 197.81224pt.
- [50 <./images/Kb.png> <./images/K1.png>] <images/K3.png, id=986, 826.287pt x 4
-69.15276pt>
+ [50 <./images/Kb.png> <./images/K1.png>]
+<images/K3.png, id=1026, 826.287pt x 469.15276pt>
 File: images/K3.png Graphic file (type png)
-
-<use images/K3.png>
-Package pdftex.def Info: images/K3.png used on input line 318.
+ <use images/K3.png>
+Package pdftex.def Info: images/K3.png used on input line 319.
 (pdftex.def)             Requested size: 352.90608pt x 200.3716pt.
- [51 <./images/K2.png> <./images/K3.png> <./images/DeltaClmax_Base.png>] <image
-s/DeltaCl_Ddelta.png, id=998, 732.336pt x 472.164pt>
+ [51 <./images/K2.png> <./images/K3.png> <./images/DeltaClmax_Base.png>]
+<images/DeltaCl_Ddelta.png, id=1040, 732.336pt x 472.164pt>
 File: images/DeltaCl_Ddelta.png Graphic file (type png)
 
 <use images/DeltaCl_Ddelta.png>
-Package pdftex.def Info: images/DeltaCl_Ddelta.png used on input line 346.
+Package pdftex.def Info: images/DeltaCl_Ddelta.png used on input line 347.
 (pdftex.def)             Requested size: 352.90608pt x 227.53671pt.
 
-<images/Eta_max.png, id=999, 705.837pt x 440.847pt>
+<images/Eta_max.png, id=1041, 705.837pt x 440.847pt>
 File: images/Eta_max.png Graphic file (type png)
  <use images/Eta_max.png>
-Package pdftex.def Info: images/Eta_max.png used on input line 353.
+Package pdftex.def Info: images/Eta_max.png used on input line 354.
 (pdftex.def)             Requested size: 352.90608pt x 220.41623pt.
 
 [52 <./images/DeltaCl_Ddelta.png>]
-<images/Eta_Delta_Slat.png, id=1010, 633.567pt x 396.2805pt>
+<images/Eta_Delta_Slat.png, id=1053, 633.567pt x 396.2805pt>
 File: images/Eta_Delta_Slat.png Graphic file (type png)
 
 <use images/Eta_Delta_Slat.png>
-Package pdftex.def Info: images/Eta_Delta_Slat.png used on input line 360.
+Package pdftex.def Info: images/Eta_Delta_Slat.png used on input line 361.
 (pdftex.def)             Requested size: 352.90608pt x 220.7304pt.
 
-<images/deltaSlat_c'c.png, id=1011, 553.46774pt x 238.491pt>
+<images/deltaSlat_c'c.png, id=1054, 553.46774pt x 238.491pt>
 File: images/deltaSlat_c'c.png Graphic file (type png)
 
 <use images/deltaSlat_c'c.png>
-Package pdftex.def Info: images/deltaSlat_c'c.png used on input line 367.
+Package pdftex.def Info: images/deltaSlat_c'c.png used on input line 368.
 (pdftex.def)             Requested size: 352.90608pt x 152.07329pt.
  [53 <./images/Eta_max.png> <./images/Eta_Delta_Slat.png> <./images/deltaSlat_c
 'c.png>]
-<images/Swf.png, id=1022, 413.74574pt x 336.65775pt>
+<images/Swf.png, id=1066, 413.74574pt x 336.65775pt>
 File: images/Swf.png Graphic file (type png)
  <use images/Swf.png>
-Package pdftex.def Info: images/Swf.png used on input line 391.
+Package pdftex.def Info: images/Swf.png used on input line 392.
 (pdftex.def)             Requested size: 352.90608pt x 287.16727pt.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 412.
+(hyperref)                removing `math shift' on input line 413.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\alpha' on input line 412.
+(hyperref)                removing `\alpha' on input line 413.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 412.
+(hyperref)                removing `math shift' on input line 413.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 412.
+(hyperref)                removing `math shift' on input line 413.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\alpha' on input line 412.
+(hyperref)                removing `\alpha' on input line 413.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 412.
+(hyperref)                removing `math shift' on input line 413.
 
 [54 <./images/Swf.png>]
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 438.
+(hyperref)                removing `math shift' on input line 439.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\upDelta' on input line 438.
+(hyperref)                removing `\upDelta' on input line 439.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\alpha' on input line 438.
+(hyperref)                removing `\alpha' on input line 439.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 438.
+(hyperref)                removing `math shift' on input line 439.
 
-<images/DeltaAlphaMax.png, id=1039, 463.13025pt x 398.08725pt>
+<images/DeltaAlphaMax.png, id=1082, 463.13025pt x 398.08725pt>
 File: images/DeltaAlphaMax.png Graphic file (type png)
 
 <use images/DeltaAlphaMax.png>
-Package pdftex.def Info: images/DeltaAlphaMax.png used on input line 445.
+Package pdftex.def Info: images/DeltaAlphaMax.png used on input line 446.
 (pdftex.def)             Requested size: 264.68124pt x 227.50737pt.
  [55 <./images/DeltaAlphaMax.png>]
-<images/Delta1_Plain.png, id=1056, 431.81325pt x 373.99725pt>
+<images/Delta1_Plain.png, id=1099, 431.81325pt x 373.99725pt>
 File: images/Delta1_Plain.png Graphic file (type png)
 
 <use images/Delta1_Plain.png>
-Package pdftex.def Info: images/Delta1_Plain.png used on input line 477.
+Package pdftex.def Info: images/Delta1_Plain.png used on input line 478.
 (pdftex.def)             Requested size: 352.90608pt x 305.67534pt.
 
-<images/Delta2_Plain.png, id=1057, 399.29175pt x 348.70274pt>
+<images/Delta2_Plain.png, id=1100, 399.29175pt x 348.70274pt>
 File: images/Delta2_Plain.png Graphic file (type png)
 
 <use images/Delta2_Plain.png>
-Package pdftex.def Info: images/Delta2_Plain.png used on input line 484.
+Package pdftex.def Info: images/Delta2_Plain.png used on input line 485.
 (pdftex.def)             Requested size: 308.7903pt x 269.6725pt.
  [56 <./images/Delta1_Plain.png>]
-<images/Delta1_Slotted.png, id=1070, 437.83575pt x 510.708pt>
+<images/Delta1_Slotted.png, id=1113, 437.83575pt x 510.708pt>
 File: images/Delta1_Slotted.png Graphic file (type png)
 
 <use images/Delta1_Slotted.png>
-Package pdftex.def Info: images/Delta1_Slotted.png used on input line 491.
+Package pdftex.def Info: images/Delta1_Slotted.png used on input line 492.
 (pdftex.def)             Requested size: 308.7903pt x 360.19724pt.
 
-<images/Delta2_Slotted.png, id=1071, 442.65375pt x 221.628pt>
+<images/Delta2_Slotted.png, id=1114, 442.65375pt x 221.628pt>
 File: images/Delta2_Slotted.png Graphic file (type png)
 
 <use images/Delta2_Slotted.png>
-Package pdftex.def Info: images/Delta2_Slotted.png used on input line 498.
+Package pdftex.def Info: images/Delta2_Slotted.png used on input line 499.
 (pdftex.def)             Requested size: 308.7903pt x 154.61436pt.
  [57 <./images/Delta2_Plain.png> <./images/Delta1_Slotted.png>] <images/Delta3.
-png, id=1079, 413.74574pt x 368.577pt>
+png, id=1122, 413.74574pt x 368.577pt>
 File: images/Delta3.png Graphic file (type png)
 
 <use images/Delta3.png>
-Package pdftex.def Info: images/Delta3.png used on input line 517.
+Package pdftex.def Info: images/Delta3.png used on input line 518.
 (pdftex.def)             Requested size: 352.90608pt x 314.39423pt.
  [58 <./images/Delta2_Slotted.png> <./images/Delta3.png>] <images/Mu1_Pitching_
-Moment.png, id=1094, 463.13025pt x 317.988pt>
+Moment.png, id=1137, 463.13025pt x 317.988pt>
 File: images/Mu1_Pitching_Moment.png Graphic file (type png)
 
 <use images/Mu1_Pitching_Moment.png>
-Package pdftex.def Info: images/Mu1_Pitching_Moment.png used on input line 544.
+Package pdftex.def Info: images/Mu1_Pitching_Moment.png used on input line 545.
 
 (pdftex.def)             Requested size: 330.84819pt x 227.16075pt.
  [59 <./images/Mu1_Pitching_Moment.png>]
-<images/Mu2_Pitching_Moment.png, id=1108, 389.455pt x 454.69875pt>
+<images/Mu2_Pitching_Moment.png, id=1151, 389.455pt x 454.69875pt>
 File: images/Mu2_Pitching_Moment.png Graphic file (type png)
 
 <use images/Mu2_Pitching_Moment.png>
-Package pdftex.def Info: images/Mu2_Pitching_Moment.png used on input line 571.
+Package pdftex.def Info: images/Mu2_Pitching_Moment.png used on input line 572.
 
 (pdftex.def)             Requested size: 242.62335pt x 283.26324pt.
 
-Overfull \hbox (22.05789pt too wide) in paragraph at lines 571--572
+Overfull \hbox (22.05789pt too wide) in paragraph at lines 572--573
  [][] 
  []
 
-<images/Mu3_Pitching_Moment.png, id=1109, 297.11pt x 405.515pt>
+<images/Mu3_Pitching_Moment.png, id=1152, 297.11pt x 405.515pt>
 File: images/Mu3_Pitching_Moment.png Graphic file (type png)
 
 <use images/Mu3_Pitching_Moment.png>
-Package pdftex.def Info: images/Mu3_Pitching_Moment.png used on input line 577.
+Package pdftex.def Info: images/Mu3_Pitching_Moment.png used on input line 578.
 
 (pdftex.def)             Requested size: 207.33206pt x 282.99228pt.
  [60 <./images/Mu2_Pitching_Moment.png> <./images/Mu3_Pitching_Moment.png>]
-Overfull \hbox (10.748pt too wide) in paragraph at lines 613--615
-\T1/ntxtlf/m/n/12 (-20) In par-tic-u-lar [][][] is an [][][][[][]7[][]] of pos-
-si-ble flaps types cre-ated in-side the [][][]
+Overfull \hbox (18.26315pt too wide) in paragraph at lines 656--656
+[]|[][][]| 
  []
 
-[61]
-Overfull \hbox (63.29526pt too wide) in paragraph at lines 668--670
-\T1/ntxtlf/m/n/12 (-20) The sec-ond one is [][][], which re-quires firstly to r
-un [][][],
+[61] [62]
+<images/HighLiftDevices_Flowchart.png, id=1187, 1824.8175pt x 1377.145pt>
+File: images/HighLiftDevices_Flowchart.png Graphic file (type png)
+
+<use images/HighLiftDevices_Flowchart.png>
+Package pdftex.def Info: images/HighLiftDevices_Flowchart.png used on input lin
+e 682.
+(pdftex.def)             Requested size: 507.29788pt x 382.8452pt.
+
+Overfull \hbox (66.16695pt too wide) in paragraph at lines 682--683
+ [][] 
  []
 
-[62]) (./contents/Chapter_TakeOff.tex [63] [64
+[63 <./images/HighLiftDevices_Flowchart.png (PNG copy)>] [64] [65] [66])
+(./contents/Chapter_TakeOff.tex [67] [68
 
 ]
 Chapter 5.
-)) [65
+)) [69
 
-] [66
+] [70
 
 
-] [67
+] [71
 
-] (./Tesi_Appendices.tex (./appendices/HDFDatabase.tex [68
+] (./Tesi_Appendices.tex (./appendices/HDFDatabase.tex [72
 
 ]
 Appendix A.
@@ -5147,25 +5153,25 @@ File: lstlang1.sty 2015/06/04 1.6 listings language file
 )
 (c:/texlive/2015/texmf-dist/tex/latex/listings/lstmisc.sty
 File: lstmisc.sty 2015/06/04 1.6 (Carsten Heinz)
-) [69
+) [73
 
-] [70]
-<images/HDF_Dataset_creation.png, id=1231, 1266.7325pt x 612.2875pt>
+] [74]
+<images/HDF_Dataset_creation.png, id=1484, 1266.7325pt x 612.2875pt>
 File: images/HDF_Dataset_creation.png Graphic file (type png)
 
 <use images/HDF_Dataset_creation.png>
 Package pdftex.def Info: images/HDF_Dataset_creation.png used on input line 122
 .
 (pdftex.def)             Requested size: 388.19737pt x 187.63965pt.
- [71 <./images/HDF_Dataset_creation.png (PNG copy)>] <images/deltaAlphaSforza.p
-ng, id=1271, 921.4425pt x 538.26094pt>
+ [75 <./images/HDF_Dataset_creation.png (PNG copy)>] <images/deltaAlphaSforza.p
+ng, id=1524, 921.4425pt x 538.26094pt>
 File: images/deltaAlphaSforza.png Graphic file (type png)
 
 <use images/deltaAlphaSforza.png>
 Package pdftex.def Info: images/deltaAlphaSforza.png used on input line 129.
 (pdftex.def)             Requested size: 242.62335pt x 141.7268pt.
 
-<images/DAlphaVsLambdaLEVsDy_MATLAB.png, id=1272, 421.575pt x 316.18124pt>
+<images/DAlphaVsLambdaLEVsDy_MATLAB.png, id=1525, 421.575pt x 316.18124pt>
 File: images/DAlphaVsLambdaLEVsDy_MATLAB.png Graphic file (type png)
 
 <use images/DAlphaVsLambdaLEVsDy_MATLAB.png>
@@ -5177,10 +5183,10 @@ Overfull \hbox (44.11577pt too wide) in paragraph at lines 129--130
  [][][] 
  []
 
-[72
+[76
 
  <./images/deltaAlphaSforza.png> <./images/DAlphaVsLambdaLEVsDy_MATLAB.png (PNG
- copy)>])) [73] [74
+ copy)>])) [77] [78
 
 
 ]
@@ -5192,7 +5198,7 @@ Package microtype Info: Character `029' is missing
 Package biblatex Warning: No driver for entry type 'other'.
 (biblatex)                Using fallback driver on input line 189.
 
-[75
+[79
 
 ]
 
@@ -5204,18 +5210,18 @@ Package glossaries Warning: Deprecated command \glossarystyle.
  I recommend you switch to \setglossarystyle unless you want to maintain backwa
 rd compatibility on input line 197.
 
-[76] (./Tesi.gls [77
+[80] (./Tesi.gls [81
 
 
 
-]) [78] (./Tesi.acr) [79
+]) [82] (./Tesi.acr) [83
 
 
 
-] (./Tesi.sym [80
+] (./Tesi.sym [84
 
 
-] [81
+] [85
 
 
 ])
@@ -5242,7 +5248,7 @@ Package minitoc(hints) Warning: W0024
 (minitoc(hints))                Some hints have been written 
 (minitoc(hints))                in the Tesi.log file.
 
-[82]
+[86]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 252.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 252.
  (./Tesi.aux
@@ -5269,7 +5275,7 @@ File: italian.mld 2006/01/13
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 252.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 252.
 Package rerunfilecheck Info: File `Tesi.out' has not changed.
-(rerunfilecheck)             Checksum: F9188C3EDCFFB05E41DB44B437706C31;2410.
+(rerunfilecheck)             Checksum: 9903FC5B0C2325BD09ACDCB017499BF3;2410.
 
 
 LaTeX Warning: There were multiply-defined labels.
@@ -5279,13 +5285,13 @@ Package logreq Info: Writing requests to 'Tesi.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 67198 strings out of 493054
- 1381488 string characters out of 6138326
- 2587892 words of memory out of 5000000
- 68326 multiletter control sequences out of 15000+600000
- 237074 words of font info for 200 fonts, out of 8000000 for 9000
+ 67444 strings out of 493054
+ 1385475 string characters out of 6138326
+ 2586802 words of memory out of 5000000
+ 68394 multiletter control sequences out of 15000+600000
+ 237159 words of font info for 201 fonts, out of 8000000 for 9000
  1142 hyphenation exceptions out of 8191
- 61i,25n,107p,10382b,4151s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 61i,25n,107p,10382b,4225s stack positions out of 5000i,500n,10000p,200000b,80000s
 {c:/texlive/2015/texmf-dist/fonts/enc/dvips/newtx/ntx-ec-tlf-sc.enc}{c:/texli
 ve/2015/texmf-dist/fonts/enc/dvips/tex-gyre/q-ts1.enc}{c:/texlive/2015/texmf-di
 st/fonts/enc/dvips/newtx/ntx-ec-tlf.enc}{c:/texlive/2015/texmf-dist/fonts/enc/d
@@ -5302,10 +5308,10 @@ e/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmb.pfb><c:/texlive/2015/texmf-d
 ist/fonts/type1/public/tex-gyre/qtmr.pfb><c:/texlive/2015/texmf-dist/fonts/type
 1/public/tex-gyre/qtmri.pfb><c:/texlive/2015/texmf-dist/fonts/type1/urw/helveti
 c/uhvb8a.pfb><c:/texlive/2015/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb>
-Output written on Tesi.pdf (83 pages, 8121708 bytes).
+Output written on Tesi.pdf (87 pages, 8350613 bytes).
 PDF statistics:
- 1680 PDF objects out of 1728 (max. 8388607)
- 1464 compressed objects within 15 object streams
- 781 named destinations out of 1000 (max. 500000)
- 39006 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 1947 PDF objects out of 2073 (max. 8388607)
+ 1723 compressed objects within 18 object streams
+ 956 named destinations out of 1000 (max. 500000)
+ 39011 words of extra memory for PDF output out of 42996 (max. 10000000)
 

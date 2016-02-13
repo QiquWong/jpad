@@ -45,7 +45,7 @@ In this way that the genralized thrust results as a function of Mach number and 
 \noindent
 As shown in figure~\ref{fig:Figure1} the generalized thrust decreases with Mach number, at given fuel flow rate, and grows with the latter, at given Mach number. This because if the Mach number grows at fixed fuel flow rate, the air flow rate grows reducing the thrust; otherwise, if fuel flow rate grows at fixed Mach number, air flow rate is lower giving more thrust.
 
-With this function it's possible to correlate generalized thrust to hourly fuel consumption which is a main keypoint in building the cruise grid chart of an endurance based aircraft such as UAV. 
+With this function it's possible to correlate generalized thrust to hourly fuel consumption which is a main keypoint in building the cruise grid chart of an endurance based aircraft such as \gls{acr:UAV}. 
 
 Since transport aircrafts rely more on range performance, it's necessary to obtain the same relationship between generalized thurst and fuel consumption referred to the generalized specific range indicated with $\delta\bar s $. 
 
@@ -97,7 +97,7 @@ Since during the cruise phase the aircraft weight decreases continuously, the pi
 
 \bigskip
 \noindent
-The specific range can also be connected to Breguet formulas (\ref{eqn:BreguetEquation}) as it can be obtained by dividng the autonomy factor, $A.F.$, by the aircraft weight; in particular the autonomy factor, groups three main aircraft efficiency and can be written as follow.
+The specific range can also be connected to Breguet formulas (\ref{eqn:BreguetEquation}) as it can be obtained by dividng the \gls{AF} by the aircraft weight; in particular the autonomy factor, groups three main aircraft efficiency and can be written as follow.
 
 \begin{subequations}\label{eqn:AutonomyFactor}
 \begin{equation}\label{eqn:AutonomyFactorProp}
@@ -159,7 +159,7 @@ After having introduced the theory behind the cruise grid chart, a presentation 
 
 \bigskip
 \noindent
-The first static method presented is \lstinline[language=Java]!calculateEfficiencyVsMach!. It allows to evaluate the aerodynamic efficiency value for each  Mach number of a given array through the evaluation of the $C_{L}$ and the relative $C_{D}$ from the aircraft total drag polar; in particular the two aerodynamic coefficients are calculated by calling other two static methods which come from two classes of the aerodynamic calculator package of \lstinline[language=Java]!JPADCore! named, respectively, \lstinline[language=Java]!LiftCalc! and \lstinline[language=Java]!DragCalc!.
+The first \gls{Static} presented is \lstinline[language=Java]!calculateEfficiencyVsMach!. It allows to evaluate the aerodynamic efficiency value for each  Mach number of a given array through the evaluation of the $C_{L}$ and the relative $C_{D}$ from the aircraft total drag polar; in particular the two aerodynamic coefficients are calculated by calling other two static methods which come from two classes of the aerodynamic calculator package of \lstinline[language=Java]!JPADCore! named, respectively, \lstinline[language=Java]!LiftCalc! and \lstinline[language=Java]!DragCalc!.
 
 The static \lstinline[language=Java]!LiftCalc! method, named \lstinline[language=Java]!calculateLiftCoeff!, performs the $C_{L}$ calculation using the following formula, valid in cruise phase.
 
@@ -169,7 +169,7 @@ C_L=\frac{2W}{\rho S V^2}
 \end{equation}
 
 \noindent
-where $V$, is the TAS speed derived from the actual Mach number of the array at that the given altitude.
+where $V$, is the \gls{TAS} derived from the actual Mach number of the array at that the given altitude.
 
 \begin{table}[b]
 \begin{tabular}{p{7cm}p{7.5cm}}
@@ -203,7 +203,7 @@ In particular the $C_{D\text{wave}}$ is calculated as presented in~\cite{hilton1
 
 \bigskip
 \noindent
-The second static method implemented is \lstinline[language=Java]!calculateSfcVsMach!, which accepts as input data reported in table~\ref{table:Table2} allows to evaluate the $SFC$ of a turboprop aircraft, or the $SFCJ$ of a turbofan aircraft, for each Mach number of the given array by reading data from the related engine database.
+The second \gls{Static} implemented is \lstinline[language=Java]!calculateSfcVsMach!, which accepts as input data reported in table~\ref{table:Table2} allows to evaluate the $SFC$ of a turboprop aircraft, or the $SFCJ$ of a turbofan aircraft, for each Mach number of the given array by reading data from the related engine database.
 
 \begin{table}[t]
 \begin{tabular}{p{7cm}p{7.5cm}}
@@ -248,7 +248,7 @@ The class is completed by other four static methods demanded of plotting the res
 It's important to highlight that the first of these plotting methods, which is named \lstinline[language=Java]!createSpecificRangeChart! and is demanded of plotting the cruise grid chart, has implemented, inside it, the evaluation of the maximum range condition as well as the long range one; this by calculating all maximum points and, from them, all points at -1\% of penalty obtained through the evaluation of the bigger of the two intersction points that the line at -1\% of penalty defines on each specific range curve.
 
 \noindent
-The fourth method is, insetad, used for plotting the intersection between the required and available thrust, giving as input a speed array, the altitude and two~\lstinline[language=Java]!List! of custom~\lstinline[language=Java]!Map! named~\lstinline[language=Java]!DragMap! and~\lstinline[language=Java]!ThustMap!; these are two classes used to store all data related to drag and thrust curves like the aircraft weight, the current altitude, the speed array on which the drag or thrust are evaluated and, finally, the drag or thrust array itself.  
+The fourth method is, insetad, used for plotting the intersection between the required and available thrust, giving as input a speed array, the altitude and two \gls{List} of custom \gls{Map} named~\lstinline[language=Java]!DragMap! and~\lstinline[language=Java]!ThustMap!; these are two classes used to store all data related to drag and thrust curves like the aircraft weight, the current altitude, the speed array on which the drag or thrust are evaluated and, finally, the drag or thrust array itself.  
 
 \bigskip
 \noindent

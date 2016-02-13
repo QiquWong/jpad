@@ -5,60 +5,60 @@ import standaloneutils.MyInterpolatingFunction;
 
 public class HighLiftDatabaseReader extends DatabaseReader{
 	
-	private MyInterpolatingFunction deltaC_Cf_vs_delta_flap,
-									dCl_dDelta_vs_cs_c,
-									deltaCLmaxBase_vs_tc,
-									eta_delta_vs_delta_flap,
-									eta_delta_vs_delta_flap_plain,
-									eta_delta_vs_delta_slat,
-									etaMax_vs_LEradius_tickness_ratio,
-									K1_vs_flapChordRatio,
-									K2_vs_delta_flap,
-									K3_vs_df_dfRef,
-									Kb_vs_flapSpanRatio,
-									Kc_vs_AR,
-									deltaAlphaMax_vs_DeltaFlap,
-									mu_1_vs_cf_c_First_Slotted_Fowler,
-									mu_1_vs_cf_c_First_Plain,
-									mu_2_vs_bf_b,
-									mu_3_vs_bf_b,
-									delta_1_vs_cf_c_plain,
-									delta_1_vs_cf_c_slotted,
-									delta_2_vs_delta_flap_plain,
-									delta_2_vs_delta_flap_slotted,
-									delta_3_vs_bf_b;
+	private MyInterpolatingFunction deltaCCfVsDeltaFlap,
+									dCldDeltaVsCsC,
+									deltaCLmaxBaseVsTc,
+									etaDeltaVsDeltaFlap,
+									etaDeltaVsDeltaFlapPlain,
+									etaDeltaVsDeltaSlat,
+									etaMaxVsLEradiusTicknessRatio,
+									k1VsFlapChordRatio,
+									k2VsDeltaFlap,
+									k3VsDfDfRef,
+									kbVsFlapSpanRatio,
+									kcVsAR,
+									deltaAlphaMaxVsDeltaFlap,
+									mu1VsCfCFirstSlottedFowler,
+									mu1VsCfCFirstPlain,
+									mu2VsBfB,
+									mu3VsBfB,
+									delta1VsCfCPlain,
+									delta1VsCfCSlotted,
+									delta2VsDeltaFlapPlain,
+									delta2VsDeltaFlapSlotted,
+									delta3VsBfB;
 
 	public HighLiftDatabaseReader(String databaseFolderPath, String databaseFileName) {
 		super(databaseFolderPath, databaseFileName);
 		
-		deltaC_Cf_vs_delta_flap = database.interpolate2DFromDatasetFunction("DeltacCf_vs_deltaf");
-		dCl_dDelta_vs_cs_c = database.interpolate1DFromDatasetFunction("DClsuDdelta_vs_SlatChordRatio");
-		deltaCLmaxBase_vs_tc = database.interpolate2DFromDatasetFunction("DeltaClmaxBase_vs_airfoilThickness");
-		eta_delta_vs_delta_flap = database.interpolate2DFromDatasetFunction("EtaDelta_vs_DeltaFlap");
-		eta_delta_vs_delta_flap_plain = database.interpolate2DFromDatasetFunction("EtaDelta_vs_DeltaFlap_Plain");
-		eta_delta_vs_delta_slat = database.interpolate1DFromDatasetFunction("EtaDelta_vs_DeltaSlat");
-		etaMax_vs_LEradius_tickness_ratio = database.interpolate1DFromDatasetFunction("EtaDeltaMax_vs_LEradius_thickness");
-		K1_vs_flapChordRatio = database.interpolate2DFromDatasetFunction("K1_vs_FlapChordRatio");
-		K2_vs_delta_flap = database.interpolate2DFromDatasetFunction("K2_vs_deltaf");
-		K3_vs_df_dfRef = database.interpolate2DFromDatasetFunction("K3_vs_df_dfRef");
-		Kb_vs_flapSpanRatio = database.interpolate1DFromDatasetFunction("Kb_vs_flapSpanRatio");
-		Kc_vs_AR = database.interpolate2DFromDatasetFunction("Kc_vs_AR_vs_alphaDelta");
-		deltaAlphaMax_vs_DeltaFlap = database.interpolate1DFromDatasetFunction("DeltaAlphaMax_vs_DeltaFlap");
-		mu_1_vs_cf_c_First_Slotted_Fowler = database.interpolate1DFromDatasetFunction("Mu_1_pitching_moment_Slotted_Fowler");
-		mu_1_vs_cf_c_First_Plain = database.interpolate2DFromDatasetFunction("Mu_1_pitching_moment_Plain");
-		mu_2_vs_bf_b = database.interpolate2DFromDatasetFunction("Mu_2_pitching_moment");
-		mu_3_vs_bf_b = database.interpolate2DFromDatasetFunction("Mu_3_pitching_moment");
-		delta_1_vs_cf_c_plain = database.interpolate2DFromDatasetFunction("Delta1_vs_cf_c_Plain");
-		delta_1_vs_cf_c_slotted = database.interpolate2DFromDatasetFunction("Delta1_vs_cf_c_Slotted");
-		delta_2_vs_delta_flap_plain = database.interpolate1DFromDatasetFunction("Delta2_vs_DeltaFlap_Plain");
-		delta_2_vs_delta_flap_slotted = database.interpolate2DFromDatasetFunction("Delta2_vs_delta_flap_Slotted");
-		delta_3_vs_bf_b = database.interpolate2DFromDatasetFunction("Delta3_vs_bf_b");
+		deltaCCfVsDeltaFlap = database.interpolate2DFromDatasetFunction("DeltacCf_vs_deltaf");
+		dCldDeltaVsCsC = database.interpolate1DFromDatasetFunction("DClsuDdelta_vs_SlatChordRatio");
+		deltaCLmaxBaseVsTc = database.interpolate2DFromDatasetFunction("DeltaClmaxBase_vs_airfoilThickness");
+		etaDeltaVsDeltaFlap = database.interpolate2DFromDatasetFunction("EtaDelta_vs_DeltaFlap");
+		etaDeltaVsDeltaFlapPlain = database.interpolate2DFromDatasetFunction("EtaDelta_vs_DeltaFlap_Plain");
+		etaDeltaVsDeltaSlat = database.interpolate1DFromDatasetFunction("EtaDelta_vs_DeltaSlat");
+		etaMaxVsLEradiusTicknessRatio = database.interpolate1DFromDatasetFunction("EtaDeltaMax_vs_LEradius_thickness");
+		k1VsFlapChordRatio = database.interpolate2DFromDatasetFunction("K1_vs_FlapChordRatio");
+		k2VsDeltaFlap = database.interpolate2DFromDatasetFunction("K2_vs_deltaf");
+		k3VsDfDfRef = database.interpolate2DFromDatasetFunction("K3_vs_df_dfRef");
+		kbVsFlapSpanRatio = database.interpolate1DFromDatasetFunction("Kb_vs_flapSpanRatio");
+		kcVsAR = database.interpolate2DFromDatasetFunction("Kc_vs_AR_vs_alphaDelta");
+		deltaAlphaMaxVsDeltaFlap = database.interpolate1DFromDatasetFunction("DeltaAlphaMax_vs_DeltaFlap");
+		mu1VsCfCFirstSlottedFowler = database.interpolate1DFromDatasetFunction("Mu_1_pitching_moment_Slotted_Fowler");
+		mu1VsCfCFirstPlain = database.interpolate2DFromDatasetFunction("Mu_1_pitching_moment_Plain");
+		mu2VsBfB = database.interpolate2DFromDatasetFunction("Mu_2_pitching_moment");
+		mu3VsBfB = database.interpolate2DFromDatasetFunction("Mu_3_pitching_moment");
+		delta1VsCfCPlain = database.interpolate2DFromDatasetFunction("Delta1_vs_cf_c_Plain");
+		delta1VsCfCSlotted = database.interpolate2DFromDatasetFunction("Delta1_vs_cf_c_Slotted");
+		delta2VsDeltaFlapPlain = database.interpolate1DFromDatasetFunction("Delta2_vs_DeltaFlap_Plain");
+		delta2VsDeltaFlapSlotted = database.interpolate2DFromDatasetFunction("Delta2_vs_delta_flap_Slotted");
+		delta3VsBfB = database.interpolate2DFromDatasetFunction("Delta3_vs_bf_b");
 	}
 	
 	/**
 	 * @author Vittorio Trifari
 	 * 
-	 * @param delta_flap from 0° to 60°
+	 * @param deltaFlap from 0° to 60°
 	 * @param flapTypeIndex from 1.0 to 5.0 for the required flap type:
 	 * 		  1 = Single Slotted Flap
 	 * 		  2 = Double Slotted Flap
@@ -67,8 +67,8 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 	 * 		  5 = Triple Slotted Flap
 	 * @return the interpolated value of the specific curve at that flap deflection
 	 */
-	public double get_deltaC_Cf_vs_delta_flap(double delta_flap, double flapTypeIndex) {
-		return deltaC_Cf_vs_delta_flap.value(delta_flap, flapTypeIndex);
+	public double getDeltaCCfVsDeltaFlap(double deltaFlap, double flapTypeIndex) {
+		return deltaCCfVsDeltaFlap.value(deltaFlap, flapTypeIndex);
 	}
 	
 	/**
@@ -76,8 +76,8 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 	 * @param slatChordRatio
 	 * @return the interpolated value of the curve at that Slat chord ratio
 	 */
-	public double get_dCl_dDelta_vs_cs_c(double slatChordRatio) {
-		return dCl_dDelta_vs_cs_c.value(slatChordRatio);
+	public double getDCldDeltaVsCsC(double slatChordRatio) {
+		return dCldDeltaVsCsC.value(slatChordRatio);
 	}
 	
 	/**
@@ -91,13 +91,13 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 	 * 		  5 = Triple Slotted Flap
 	 * @return the interpolated value of the specific curve at that thickness ratio (%)
 	 */
-	public double get_deltaCLmaxBase_vs_tc(double tc, double flapTypeIndex) {
-		return deltaCLmaxBase_vs_tc.value(tc*100, flapTypeIndex);
+	public double getDeltaCLmaxBaseVsTc(double tc, double flapTypeIndex) {
+		return deltaCLmaxBaseVsTc.value(tc*100, flapTypeIndex);
 	}
 	
 	/**
 	 * @author Vittorio Trifari
-	 * @param delta_flap from 0° to 80°
+	 * @param deltaFlap from 0° to 80°
 	 * @param flapTypeIndex from 1.0 to 5.0 for the required flap type:
 	 * 		  1 = Single Slotted Flap
 	 * 		  2 = Double Slotted Flap
@@ -106,27 +106,27 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 	 * 		  without 3 because Plain Flap is handled separately.
 	 * @return the interpolated value of the specific curve at that flap deflection
 	 */
-	public double get_eta_delta_vs_delta_flap(double delta_flap, double flapTypeIndex) {
-		return eta_delta_vs_delta_flap.value(delta_flap, flapTypeIndex);
+	public double getEtaDeltaVsDeltaFlap(double deltaFlap, double flapTypeIndex) {
+		return etaDeltaVsDeltaFlap.value(deltaFlap, flapTypeIndex);
 	}
 	
 	/**
 	 * @author Vittorio Trifari
-	 * @param delta_flap from 0° to 60°
-	 * @param cf_c the flap chord ratio
+	 * @param deltaFlap from 0° to 60°
+	 * @param cfc the flap chord ratio
 	 * @return the interpolated value of the specific curve at that flap deflection
 	 */
-	public double get_eta_delta_vs_delta_flap_plain(double delta_flap, double cf_c) {
-		return eta_delta_vs_delta_flap_plain.value(delta_flap, cf_c);
+	public double getEtaDeltaVsDeltaFlapPlain(double deltaFlap, double cfc) {
+		return etaDeltaVsDeltaFlapPlain.value(deltaFlap, cfc);
 	}
 	
 	/**
 	 * @author Vittorio Trifari
-	 * @param delta_slat from 0° to 35°
+	 * @param deltaSlat from 0° to 35°
 	 * @return the interpolated value of the curve at that slat deflection
 	 */
-	public double get_eta_delta_vs_delta_slat(double delta_slat) {
-		return eta_delta_vs_delta_slat.value(delta_slat);
+	public double getEtaDeltaVsDeltaSlat(double deltaSlat) {
+		return etaDeltaVsDeltaSlat.value(deltaSlat);
 	}
 	
 	/**
@@ -135,8 +135,8 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 	 * @param tc airfoil thickness ratio 
 	 * @return the interpolated value of the curve at that LEradius/t value
 	 */
-	public double get_etaMax_vs_LEradius_tickness_ratio(double LEradiusRatio, double tc) {
-		return etaMax_vs_LEradius_tickness_ratio.value(LEradiusRatio/tc);
+	public double getEtaMaxVsLEradiusTicknessRatio(double LEradiusRatio, double tc) {
+		return etaMaxVsLEradiusTicknessRatio.value(LEradiusRatio/tc);
 	}
 	
 	/**
@@ -150,13 +150,13 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 	 * 		  5 = Triple Slotted Flap
 	 * @return the interpolated value of the specific curve at that flap chord ratio (%)
 	 */
-	public double get_K1_vs_flapChordRatio(double flapChordRatio, double flapTypeIndex) {
-		return K1_vs_flapChordRatio.value(flapChordRatio*100, flapTypeIndex);
+	public double getK1vsFlapChordRatio(double flapChordRatio, double flapTypeIndex) {
+		return k1VsFlapChordRatio.value(flapChordRatio*100, flapTypeIndex);
 	}
 
 	/**
 	 * @author Vittorio Trifari
-	 * @param delta_flap from 0° to 60°
+	 * @param deltaFlap from 0° to 60°
 	 * @param flapTypeIndex from 1.0 to 5.0 for the required flap type:
 	 * 		  1 = Single Slotted Flap
 	 * 		  2 = Double Slotted Flap
@@ -165,14 +165,14 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 	 * 		  5 = Triple Slotted Flap
 	 * @return the interpolated value of the specific curve at that flap deflection
 	 */
-	public double get_K2_vs_delta_flap(double delta_flap, double flapTypeIndex) {
-		return K2_vs_delta_flap.value(delta_flap, flapTypeIndex);
+	public double getK2VsDeltaFlap(double deltaFlap, double flapTypeIndex) {
+		return k2VsDeltaFlap.value(deltaFlap, flapTypeIndex);
 	}
 	
 	/**
 	 * @author Vittorio Trifari
-	 * @param delta_flap
-	 * @param delta_flap_ref the reference flap type deflection:
+	 * @param deltaFlap
+	 * @param deltaFlapRef the reference flap type deflection:
 	 * 		  40° = Single Slotted Flap
 	 * 		  45° = Double Slotted Flap
 	 * 		  60° = Split Flap
@@ -188,19 +188,19 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 	 * 		  6 = Triple Slotted Flap
 	 * @return the interpolated value of the specific curve at that flap deflection ratio
 	 */
-	public double get_K3_vs_df_dfRef(double delta_flap, double delta_flap_ref, double flapTypeIndex) {
-		return K3_vs_df_dfRef.value(delta_flap/delta_flap_ref, flapTypeIndex);
+	public double getK3VsDfDfRef(double deltaFlap, double deltaFlapRef, double flapTypeIndex) {
+		return k3VsDfDfRef.value(deltaFlap/deltaFlapRef, flapTypeIndex);
 	}
 	
 	/**
 	 * @author Vittorio Trifari
 	 * @param b wing span
-	 * @param eta_in adimensional position of the flap inner station
-	 * @param eta_out adimensional position of the flap inner station
+	 * @param etaIn adimensional position of the flap inner station
+	 * @param etaOut adimensional position of the flap inner station
 	 * @return the interpolated value of the curve at that flap span ratio
 	 */
-	public double get_Kb_vs_flapSpanRatio(double eta_in, double eta_out) {
-		return Kb_vs_flapSpanRatio.value(eta_out)-Kb_vs_flapSpanRatio.value(eta_in);
+	public double getKbVsFlapSpanRatio(double etaIn, double etaOut) {
+		return kbVsFlapSpanRatio.value(etaOut)-kbVsFlapSpanRatio.value(etaIn);
 	}
 	
 	/**
@@ -209,109 +209,109 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 	 * @param alphaDelta see Baia-De Rosa thesis pag.16
 	 * @return the interpolated value of the curve at that AR and that alphaDelta values
 	 */
-	public double get_Kc_vs_AR(double ar, double alphaDelta) {
-		return Kc_vs_AR.value(ar, alphaDelta);
+	public double getKcVsAR(double ar, double alphaDelta) {
+		return kcVsAR.value(ar, alphaDelta);
 	}
 	
 	/**
 	 * @author Vittorio Trifari
-	 * @param delta_flap from 0° to 60°
+	 * @param deltaFlap from 0° to 60°
 	 * @return the interpolated value of the curve at that flap span ratio
 	 */
-	public double get_DeltaAlphaMax_vs_DeltaFlap(double delta_flap) {
-		return deltaAlphaMax_vs_DeltaFlap.value(delta_flap);
+	public double getDeltaAlphaMaxVsDeltaFlap(double deltaFlap) {
+		return deltaAlphaMaxVsDeltaFlap.value(deltaFlap);
 	}
 	
 	/**
 	 * @author Vittorio Trifari
-	 * @param cf_c_first 
+	 * @param cfcFirst 
 	 * @return the interpolated value of the curve at that cf/c'
 	 */
-	public double get_mu_1_vs_cf_c_First_Slotted_Fowler(double cf_c_first) {
-		return mu_1_vs_cf_c_First_Slotted_Fowler.value(cf_c_first);
+	public double getMu1VsCfCFirstSlottedFowler(double cfcFirst) {
+		return mu1VsCfCFirstSlottedFowler.value(cfcFirst);
 	}
 	
 	/**
 	 * @author Vittorio Trifari
-	 * @param cf_c_first
+	 * @param cfcFirst
 	 * @param deltaFlap from 10° to 60°
 	 * @return the interpolated value of the curve at that cf/c' and at that flap deflection
 	 */
-	public double get_mu_1_vs_cf_c_First_Plain(double cf_c_first, double deltaFlap) {
-		return mu_1_vs_cf_c_First_Plain.value(cf_c_first, deltaFlap);
+	public double getMu1VsCfCFirstPlain(double cfcFirst, double deltaFlap) {
+		return mu1VsCfCFirstPlain.value(cfcFirst, deltaFlap);
 	}
 	
 	/**
 	 * @author Vittorio Trifari
-	 * @param eta_in adimensional position of the flap inner station
-	 * @param eta_out adimensional position of the flap inner station
+	 * @param etaIn adimensional position of the flap inner station
+	 * @param etaOut adimensional position of the flap inner station
 	 * @param taperRatio
 	 * @return the interpolated value of the curve at that flap span ratio for that taper ratio
 	 */
-	public double get_mu_2_vs_bf_b(double eta_in, double eta_out, double taperRatio) {
-		return mu_2_vs_bf_b.value(eta_out-eta_in, taperRatio);
+	public double getMu2VsBfB(double etaIn, double etaOut, double taperRatio) {
+		return mu2VsBfB.value(etaOut-etaIn, taperRatio);
 	//	return mu_2_vs_bf_b.value(eta_out, taperRatio)-mu_2_vs_bf_b.value(eta_in, taperRatio);
 	}
 	
 	/**
 	 * @author Vittorio Trifari
-	 * @param eta_in adimensional position of the flap inner station
-	 * @param eta_out adimensional position of the flap inner station
+	 * @param etaIn adimensional position of the flap inner station
+	 * @param etaOut adimensional position of the flap inner station
 	 * @param taperRatio
 	 * @return the interpolated value of the curve at that flap span ratio for that taper ratio
 	 */
-	public double get_mu_3_vs_bf_b(double eta_in, double eta_out, double taperRatio) {
-		return mu_3_vs_bf_b.value(eta_out-eta_in, taperRatio);
+	public double getMu3VsBfB(double etaIn, double etaOut, double taperRatio) {
+		return mu3VsBfB.value(etaOut-etaIn, taperRatio);
 	//  return mu_3_vs_bf_b.value(eta_out, taperRatio)-mu_3_vs_bf_b.value(eta_in, taperRatio);
 	}
 	
 	/**
 	 * @author Vittorio Trifari
-	 * @param cf_c flap chord to wing chord ratio
+	 * @param cfc flap chord to wing chord ratio
 	 * @param tc thickness to chord ratio
 	 * @return the interpolated value of the curve at that cf_c for that tc
 	 */
-	public double get_delta_1_vs_cf_c_plain(double cf_c, double tc) {
-		return delta_1_vs_cf_c_plain.value(cf_c, tc);
+	public double getDelta1VsCfCPlain(double cfc, double tc) {
+		return delta1VsCfCPlain.value(cfc, tc);
 	}
 	
 	/**
 	 * @author Vittorio Trifari
-	 * @param cf_c flap chord to wing chord ratio
+	 * @param cfc flap chord to wing chord ratio
 	 * @param tc thickness to chord ratio
 	 * @return the interpolated value of the curve at that cf_c for that tc
 	 */
-	public double get_delta_1_vs_cf_c_slotted(double cf_c, double tc) {
-		return delta_1_vs_cf_c_slotted.value(cf_c, tc);
+	public double getDelta1VsCfCSlotted(double cfc, double tc) {
+		return delta1VsCfCSlotted.value(cfc, tc);
 	}
 	
 	/**
 	 * @author Vittorio Trifari
-	 * @param delta_flap from 0° to 63°
+	 * @param deltaFlap from 0° to 63°
 	 * @return the interpolated value of the curve at that flap deflection
 	 */
-	public double get_delta_2_vs_delta_flap_plain(double delta_flap) {
-		return delta_2_vs_delta_flap_plain.value(delta_flap);
+	public double getDelta2VsDeltaFlapPlain(double deltaFlap) {
+		return delta2VsDeltaFlapPlain.value(deltaFlap);
 	}
 	
 	/**
 	 * @author Vittorio Trifari
-	 * @param delta_flap from 0° to 100°
+	 * @param deltaFlap from 0° to 100°
 	 * @param tc thickness to chord ratio
 	 * @return the interpolated value of the curve at that flap deflection for that tc
 	 */
-	public double get_delta_2_vs_delta_flap_slotted(double delta_flap, double tc) {
-		return delta_2_vs_delta_flap_slotted.value(delta_flap, tc);
+	public double getDelta2VsDeltaFlapSlotted(double deltaFlap, double tc) {
+		return delta2VsDeltaFlapSlotted.value(deltaFlap, tc);
 	}
 	
 	/**
 	 * @author Vittorio Trifari
-	 * @param eta_in adimensional position of the flap inner station 
-	 * @param eta_out adimensional position of the flap inner station
+	 * @param etaIn adimensional position of the flap inner station 
+	 * @param etaOut adimensional position of the flap inner station
 	 * @param taperRatio
 	 * @return
 	 */
-	public double get_delta_3_vs_bf_b(double eta_in, double eta_out, double taperRatio) {
-		return delta_3_vs_bf_b.value(eta_out-eta_in, taperRatio);
+	public double getDelta3VsBfB(double etaIn, double etaOut, double taperRatio) {
+		return delta3VsBfB.value(etaOut-etaIn, taperRatio);
 	}
 }
