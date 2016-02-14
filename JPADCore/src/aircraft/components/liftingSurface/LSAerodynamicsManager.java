@@ -443,7 +443,8 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		cLArray = new MyArray(Unit.ONE);
 
 		alphaStart = Amount.valueOf(toRadians(-2.), SI.RADIAN);
-		alphaEnd = Amount.valueOf(toRadians(12.), SI.RADIAN);
+//		alphaEnd = Amount.valueOf(toRadians(12.), SI.RADIAN);
+		alphaEnd = Amount.valueOf(toRadians(18.), SI.RADIAN);
 		_numberOfAlpha = 15; //8
 		alphaArray.setDouble(MyArrayUtils.linspace(
 				alphaStart.getEstimatedValue(), 
@@ -1453,8 +1454,12 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		double alphaStar = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
 		Amount<Angle> alphaStarAmount = Amount.valueOf(alphaStar, SI.RADIAN);
 		double cLStar = theCLCalculator.nasaBlackwell(alphaStarAmount);
-		double cLTemp = theCLCalculator.nasaBlackwell(alphaTemp);
-		double cLLinearSlope = (cLStar - cLTemp)/alphaStar;
+//		double cLTemp = theCLCalculator.nasaBlackwell(alphaTemp);
+//		double cLLinearSlope = (cLStar - cLTemp)/alphaStar;
+		
+		CalcCLAlpha theLineraSlopeCalculator = new CalcCLAlpha();
+		double cLLinearSlope = theLineraSlopeCalculator.nasaBlackwell(theCLCalculator);
+		
 		double qValue = cLStar - cLLinearSlope*alphaStar;
 
 		calcAlphaAndCLMax(meanAirfoil);
@@ -1676,9 +1681,12 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 	public class CalcCLMaxClean extends InnerCalculator {
 
-		private MyArray clAirfoils = new MyArray(getTheLiftingSurface()._clMaxSweep_y)
-				.interpolate(getTheLiftingSurface()._yStationsAirfoil.toArray(), _yStations);
+//		private MyArray clAirfoils = new MyArray(getTheLiftingSurface()._clMaxSweep_y)
+//				.interpolate(getTheLiftingSurface()._yStationsAirfoil.toArray(), _yStations);
 
+		private MyArray clAirfoils = new MyArray(getTheLiftingSurface()._clMaxVsY)
+				.interpolate(getTheLiftingSurface()._yStationsAirfoil.toArray(), _yStations);
+		
 		public MyArray getClAirfoils() {
 			return clAirfoils;
 		}
@@ -1752,7 +1760,6 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				if (calculateLiftDistribution.getNasaBlackwell() != null) {
 
 					for (int j=0; j < _numberOfAlpha; j++) {
-
 						if (found == false) {
 							for(int i =0; i< _nPointsSemispanWise; i++) {
 								if (found == false 
@@ -1761,9 +1768,9 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 												alphaArray.getAsAmount(j)).get(i) 
 										> clAirfoils.get(i) ) {
 
-									//System.out.println( "distribution " +  cLMap.getCxyVsAlphaTable()
-									//									.get( MethodEnum.NASA_BLACKWELL,
-									//											alphaArray.getAsAmount(j))  );
+//									System.out.println( "distribution " +  cLMap.getCxyVsAlphaTable()
+//																		.get( MethodEnum.NASA_BLACKWELL,
+//																				alphaArray.getAsAmount(j))  );
 
 									//@author Manuela ruocco
 									// After find the first point where CL_wing > Cl_MAX_airfoil, starts an iteration on alpha
@@ -2405,7 +2412,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				for(int i=0; i<deltaSlat.size(); i++)
 					deltaCLmaxSlatList.add(deltaClmaxSlatList.get(i)
 							*(slatSurface.get(i)/theWing.get_surface().getEstimatedValue())
-							);
+							*kLambdaSlat.get(i));
 
 				for(int i=0; i<deltaSlat.size(); i++)
 					deltaCLmaxSlat += deltaCLmaxSlatList.get(i).doubleValue();
@@ -2413,11 +2420,14 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			}
 			//---------------------------------------------------------------
 			// new CLalpha
+			CalcCLAlpha calcLinearSlope = new CalcCLAlpha();
+			double cLLinearSlope = calcLinearSlope.nasaBlackwell(new CalcCLAtAlpha());
+			
 			cLalphaNewList = new ArrayList<Double>();
 			List<Double> swf = new ArrayList<Double>();
 			for(int i=0; i<flapTypeIndex.size(); i++) {
 				cLalphaNewList.add(
-						theWing.getAerodynamics().getCalculateCLAlpha().integralMean2D()*(Math.PI/180)
+						cLLinearSlope*(Math.PI/180)
 						*(1+((deltaCL0FlapList.get(i)/deltaCl0FlapList.get(i))
 								*(cFirstCFlap.get(i)*(1-((cfc.get(i))*(1/cFirstCFlap.get(i))
 										*Math.pow(Math.sin(deltaFlapTotal[i]*Math.PI/180), 2)))-1))));
@@ -2446,9 +2456,9 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				deltaAlphaMaxFlap += deltaAlphaMaxList.get(i).doubleValue();
 
 			//---------------------------------------------------------------
-			// Delta alpha max (slat) --> average experimental data see thesis Trifari p.56
+			// Delta alpha max (slat) --> to be set from experimental data see thesis Trifari p.56
 			if(deltaSlat != null)
-				deltaAlphaMaxSlat = 10; //deg
+				deltaAlphaMaxSlat = 7; //deg
 			
 			//---------------------------------------------------------------
 			// deltaCD
@@ -2675,24 +2685,23 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			double[] cLArrayClean = get_cLArrayPlot();
 			double[] alphaArrayClean = get_alphaArrayPlot();
 
-			double alphaFirst = -10.0;
+			double alphaFirst = -13.0;
 			int nPoints = 50;
 			MyAirfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
 			//double alphaStar = 0.15;
 			double alphaStarClean = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
-
-//			Amount<Angle> alphaStarCleanAmount = Amount.valueOf(alphaStarClean, SI.RADIAN);
+			Amount<Angle> alphaStarCleanAmount = Amount.valueOf(alphaStarClean, SI.RADIAN);
 
 			CalcCLAtAlpha theCLCleanCalculator = new CalcCLAtAlpha();
-//			double cLStarClean = theCLCleanCalculator.nasaBlackwellCompleteCurve(alphaStarCleanAmount);
 
+			double cLStarClean = theCLCleanCalculator.nasaBlackwellCompleteCurve(alphaStarCleanAmount);
 			double cL0Clean =  theCLCleanCalculator.nasaBlackwellCompleteCurve(Amount.valueOf(0.0, SI.RADIAN));
 			double cL0HighLift = cL0Clean + deltaCL0Flap;
 			double qValue = cL0HighLift;
-//			double alphaStar = (cLStarClean - qValue)/cLAlphaFlap;
-			double deltaAlphaStar = alphaStarClean - (-cL0Clean/cLLinearSlope);
-//			double alphaStarFlap = (alphaStar + alphaStarClean)/2;
-			double 	alphaStarFlap  = (-qValue/cLAlphaFlap) + deltaAlphaStar;
+			double alphaStar = (cLStarClean - qValue)/cLAlphaFlap;
+//			double deltaAlphaStar = alphaStarClean - (-cL0Clean/cLLinearSlope);
+			double alphaStarFlap = (alphaStar + alphaStarClean)/2;
+//			double 	alphaStarFlap  = (-qValue/cLAlphaFlap) + deltaAlphaStar;
 			double cLStarFlap = cLAlphaFlap * alphaStarFlap + qValue;	
 			double cLMaxClean = get_cLMaxClean();
 			Amount<Angle> alphaMax = get_alphaMaxClean().to(NonSI.DEGREE_ANGLE);	
@@ -2728,7 +2737,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			double d = solSystem[3];
 
 			double[] alphaArrayHighLiftPlot = MyArrayUtils.linspace(alphaFirst,
-					alphaMaxHighLiftDegree + 2,
+					alphaMaxHighLiftDegree + 4,
 					nPoints);
 
 			double[] cLArrayHighLiftPlot = new double [nPoints];
@@ -3414,6 +3423,33 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 		}
 
+		/**
+		 * This function determines the linear trait slope of the CL-alpha curve using the NasaBlackwell method.
+		 * It evaluate CL wing in correspondence of two alpha and calculates the equation of the line.
+		 * 
+		 * @author Manuela Ruocco
+		 * @param LSAerodynamicsManager.CalcCLAtAlpha theCLatAlpha
+		 */  
+
+		public double nasaBlackwell(LSAerodynamicsManager.CalcCLAtAlpha theCLatAlpha){
+
+			Amount<Angle> _alphaOne = Amount.valueOf(toRadians(0.), SI.RADIAN);
+			double _clOne = theCLatAlpha.nasaBlackwell(_alphaOne);
+			System.out.println("CL at alpha " + _alphaOne + " = "+ _clOne);
+
+			Amount<Angle>_alphaTwo = Amount.valueOf(toRadians(4.), SI.RADIAN);
+			double alphaTwoDouble = 4.0;
+			double _clTwo = theCLatAlpha.nasaBlackwell(_alphaTwo);
+			System.out.println("CL at alpha " + _alphaTwo + " = "+ _clTwo);
+
+			double cLSlope = (_clTwo-_clOne)/_alphaTwo.getEstimatedValue();
+			double cLSlopeDeg = Math.toRadians(cLSlope);
+
+			double q = _clTwo- cLSlopeDeg* alphaTwoDouble;
+			System.out.println("q --> " + q);
+			return cLSlope;
+		}
+		
 		public double polhamus() {
 
 			_kPolhamus = LiftCalc.kFactorPolhamus(

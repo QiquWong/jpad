@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.11.16)  13 FEB 2016 20:02
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.11.16)  14 FEB 2016 20:53
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -3043,6 +3043,12 @@ LaTeX Warning: Label `eqn:ClalphaFlap' multiply defined.
 
 LaTeX Warning: Label `eqn:ClalphaFlap@cref' multiply defined.
 
+
+LaTeX Warning: Label `fig:FlapATR' multiply defined.
+
+
+LaTeX Warning: Label `fig:FlapATR@cref' multiply defined.
+
 )
 \openout1 = `Tesi.aux'.
 
@@ -5056,42 +5062,42 @@ Package pdftex.def Info: images/DeltaAlphaMax.png used on input line 446.
 File: images/Delta1_Plain.png Graphic file (type png)
 
 <use images/Delta1_Plain.png>
-Package pdftex.def Info: images/Delta1_Plain.png used on input line 478.
+Package pdftex.def Info: images/Delta1_Plain.png used on input line 482.
 (pdftex.def)             Requested size: 352.90608pt x 305.67534pt.
 
 <images/Delta2_Plain.png, id=1100, 399.29175pt x 348.70274pt>
 File: images/Delta2_Plain.png Graphic file (type png)
 
 <use images/Delta2_Plain.png>
-Package pdftex.def Info: images/Delta2_Plain.png used on input line 485.
+Package pdftex.def Info: images/Delta2_Plain.png used on input line 489.
 (pdftex.def)             Requested size: 308.7903pt x 269.6725pt.
- [56 <./images/Delta1_Plain.png>]
-<images/Delta1_Slotted.png, id=1113, 437.83575pt x 510.708pt>
+
+<images/Delta1_Slotted.png, id=1101, 437.83575pt x 510.708pt>
 File: images/Delta1_Slotted.png Graphic file (type png)
 
 <use images/Delta1_Slotted.png>
-Package pdftex.def Info: images/Delta1_Slotted.png used on input line 492.
+Package pdftex.def Info: images/Delta1_Slotted.png used on input line 496.
 (pdftex.def)             Requested size: 308.7903pt x 360.19724pt.
-
+ [56 <./images/Delta2_Plain.png>]
 <images/Delta2_Slotted.png, id=1114, 442.65375pt x 221.628pt>
 File: images/Delta2_Slotted.png Graphic file (type png)
 
 <use images/Delta2_Slotted.png>
-Package pdftex.def Info: images/Delta2_Slotted.png used on input line 499.
+Package pdftex.def Info: images/Delta2_Slotted.png used on input line 503.
 (pdftex.def)             Requested size: 308.7903pt x 154.61436pt.
- [57 <./images/Delta2_Plain.png> <./images/Delta1_Slotted.png>] <images/Delta3.
+ [57 <./images/Delta1_Slotted.png> <./images/Delta1_Plain.png>] <images/Delta3.
 png, id=1122, 413.74574pt x 368.577pt>
 File: images/Delta3.png Graphic file (type png)
 
 <use images/Delta3.png>
-Package pdftex.def Info: images/Delta3.png used on input line 518.
+Package pdftex.def Info: images/Delta3.png used on input line 522.
 (pdftex.def)             Requested size: 352.90608pt x 314.39423pt.
  [58 <./images/Delta2_Slotted.png> <./images/Delta3.png>] <images/Mu1_Pitching_
 Moment.png, id=1137, 463.13025pt x 317.988pt>
 File: images/Mu1_Pitching_Moment.png Graphic file (type png)
 
 <use images/Mu1_Pitching_Moment.png>
-Package pdftex.def Info: images/Mu1_Pitching_Moment.png used on input line 545.
+Package pdftex.def Info: images/Mu1_Pitching_Moment.png used on input line 549.
 
 (pdftex.def)             Requested size: 330.84819pt x 227.16075pt.
  [59 <./images/Mu1_Pitching_Moment.png>]
@@ -5099,11 +5105,11 @@ Package pdftex.def Info: images/Mu1_Pitching_Moment.png used on input line 545.
 File: images/Mu2_Pitching_Moment.png Graphic file (type png)
 
 <use images/Mu2_Pitching_Moment.png>
-Package pdftex.def Info: images/Mu2_Pitching_Moment.png used on input line 572.
+Package pdftex.def Info: images/Mu2_Pitching_Moment.png used on input line 576.
 
 (pdftex.def)             Requested size: 242.62335pt x 283.26324pt.
 
-Overfull \hbox (22.05789pt too wide) in paragraph at lines 572--573
+Overfull \hbox (22.05789pt too wide) in paragraph at lines 576--577
  [][] 
  []
 
@@ -5111,11 +5117,11 @@ Overfull \hbox (22.05789pt too wide) in paragraph at lines 572--573
 File: images/Mu3_Pitching_Moment.png Graphic file (type png)
 
 <use images/Mu3_Pitching_Moment.png>
-Package pdftex.def Info: images/Mu3_Pitching_Moment.png used on input line 578.
+Package pdftex.def Info: images/Mu3_Pitching_Moment.png used on input line 582.
 
 (pdftex.def)             Requested size: 207.33206pt x 282.99228pt.
  [60 <./images/Mu2_Pitching_Moment.png> <./images/Mu3_Pitching_Moment.png>]
-Overfull \hbox (18.26315pt too wide) in paragraph at lines 656--656
+Overfull \hbox (18.26315pt too wide) in paragraph at lines 660--660
 []|[][][]| 
  []
 
@@ -5125,26 +5131,28 @@ File: images/HighLiftDevices_Flowchart.png Graphic file (type png)
 
 <use images/HighLiftDevices_Flowchart.png>
 Package pdftex.def Info: images/HighLiftDevices_Flowchart.png used on input lin
-e 682.
+e 686.
 (pdftex.def)             Requested size: 507.29788pt x 382.8452pt.
 
-Overfull \hbox (66.16695pt too wide) in paragraph at lines 682--683
+Overfull \hbox (66.16695pt too wide) in paragraph at lines 686--687
  [][] 
  []
 
-[63 <./images/HighLiftDevices_Flowchart.png (PNG copy)>] [64] [65] [66])
-(./contents/Chapter_TakeOff.tex [67] [68
+[63 <./images/HighLiftDevices_Flowchart.png (PNG copy)>] [64] [65] [66]
+(./images/CLAlphaWingHighLift_ATR.tikz) [67]
+(./images/CLAlphaWingHighLift_B747.tikz) [68] [69])
+(./contents/Chapter_TakeOff.tex [70
 
 ]
 Chapter 5.
-)) [69
+)) [71
 
-] [70
+] [72
 
 
-] [71
+] [73
 
-] (./Tesi_Appendices.tex (./appendices/HDFDatabase.tex [72
+] (./Tesi_Appendices.tex (./appendices/HDFDatabase.tex [74
 
 ]
 Appendix A.
@@ -5153,25 +5161,25 @@ File: lstlang1.sty 2015/06/04 1.6 listings language file
 )
 (c:/texlive/2015/texmf-dist/tex/latex/listings/lstmisc.sty
 File: lstmisc.sty 2015/06/04 1.6 (Carsten Heinz)
-) [73
+) [75
 
-] [74]
-<images/HDF_Dataset_creation.png, id=1484, 1266.7325pt x 612.2875pt>
+] [76]
+<images/HDF_Dataset_creation.png, id=1533, 1266.7325pt x 612.2875pt>
 File: images/HDF_Dataset_creation.png Graphic file (type png)
 
 <use images/HDF_Dataset_creation.png>
 Package pdftex.def Info: images/HDF_Dataset_creation.png used on input line 122
 .
 (pdftex.def)             Requested size: 388.19737pt x 187.63965pt.
- [75 <./images/HDF_Dataset_creation.png (PNG copy)>] <images/deltaAlphaSforza.p
-ng, id=1524, 921.4425pt x 538.26094pt>
+ [77 <./images/HDF_Dataset_creation.png (PNG copy)>] <images/deltaAlphaSforza.p
+ng, id=1572, 921.4425pt x 538.26094pt>
 File: images/deltaAlphaSforza.png Graphic file (type png)
 
 <use images/deltaAlphaSforza.png>
 Package pdftex.def Info: images/deltaAlphaSforza.png used on input line 129.
 (pdftex.def)             Requested size: 242.62335pt x 141.7268pt.
 
-<images/DAlphaVsLambdaLEVsDy_MATLAB.png, id=1525, 421.575pt x 316.18124pt>
+<images/DAlphaVsLambdaLEVsDy_MATLAB.png, id=1573, 421.575pt x 316.18124pt>
 File: images/DAlphaVsLambdaLEVsDy_MATLAB.png Graphic file (type png)
 
 <use images/DAlphaVsLambdaLEVsDy_MATLAB.png>
@@ -5183,10 +5191,10 @@ Overfull \hbox (44.11577pt too wide) in paragraph at lines 129--130
  [][][] 
  []
 
-[76
+[78
 
  <./images/deltaAlphaSforza.png> <./images/DAlphaVsLambdaLEVsDy_MATLAB.png (PNG
- copy)>])) [77] [78
+ copy)>])) [79] [80
 
 
 ]
@@ -5198,7 +5206,7 @@ Package microtype Info: Character `029' is missing
 Package biblatex Warning: No driver for entry type 'other'.
 (biblatex)                Using fallback driver on input line 189.
 
-[79
+[81
 
 ]
 
@@ -5210,18 +5218,18 @@ Package glossaries Warning: Deprecated command \glossarystyle.
  I recommend you switch to \setglossarystyle unless you want to maintain backwa
 rd compatibility on input line 197.
 
-[80] (./Tesi.gls [81
+[82] (./Tesi.gls [83
 
 
 
-]) [82] (./Tesi.acr) [83
+]) [84] (./Tesi.acr) [85
 
 
 
-] (./Tesi.sym [84
+] (./Tesi.sym [86
 
 
-] [85
+] [87
 
 
 ])
@@ -5248,7 +5256,7 @@ Package minitoc(hints) Warning: W0024
 (minitoc(hints))                Some hints have been written 
 (minitoc(hints))                in the Tesi.log file.
 
-[86]
+[88]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 252.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 252.
  (./Tesi.aux
@@ -5275,7 +5283,7 @@ File: italian.mld 2006/01/13
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 252.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 252.
 Package rerunfilecheck Info: File `Tesi.out' has not changed.
-(rerunfilecheck)             Checksum: 9903FC5B0C2325BD09ACDCB017499BF3;2410.
+(rerunfilecheck)             Checksum: F06AF5A7F383FE63F0C549DBEEE2D2C7;2410.
 
 
 LaTeX Warning: There were multiply-defined labels.
@@ -5285,10 +5293,10 @@ Package logreq Info: Writing requests to 'Tesi.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 67444 strings out of 493054
- 1385475 string characters out of 6138326
- 2586802 words of memory out of 5000000
- 68394 multiletter control sequences out of 15000+600000
+ 67549 strings out of 493054
+ 1387336 string characters out of 6138326
+ 2585034 words of memory out of 5000000
+ 68451 multiletter control sequences out of 15000+600000
  237159 words of font info for 201 fonts, out of 8000000 for 9000
  1142 hyphenation exceptions out of 8191
  61i,25n,107p,10382b,4225s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -5308,10 +5316,10 @@ e/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmb.pfb><c:/texlive/2015/texmf-d
 ist/fonts/type1/public/tex-gyre/qtmr.pfb><c:/texlive/2015/texmf-dist/fonts/type
 1/public/tex-gyre/qtmri.pfb><c:/texlive/2015/texmf-dist/fonts/type1/urw/helveti
 c/uhvb8a.pfb><c:/texlive/2015/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb>
-Output written on Tesi.pdf (87 pages, 8350613 bytes).
+Output written on Tesi.pdf (89 pages, 8363096 bytes).
 PDF statistics:
- 1947 PDF objects out of 2073 (max. 8388607)
- 1723 compressed objects within 18 object streams
- 956 named destinations out of 1000 (max. 500000)
+ 2003 PDF objects out of 2073 (max. 8388607)
+ 1777 compressed objects within 18 object streams
+ 998 named destinations out of 1000 (max. 500000)
  39011 words of extra memory for PDF output out of 42996 (max. 10000000)
 

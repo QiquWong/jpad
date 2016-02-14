@@ -458,6 +458,10 @@ Referring to~\cite{Young:Flaps}, Young tested some flap types combined with lead
 \label{eqn:DeltaAlphaMaxSlat}
 \end{equation}
 
+\bigskip
+\noindent
+In absence of known experimental data and since slats don't cover usually the full span, or have so high deflections, the lower bound of the interval will be taken into account.
+ 
 %---------------------------  DeltaCD0 & DeltaCM subsection--------------------------------
 \subsection{Further effects calculations}
 High-lift devices influence not only the lift curve but also the wing drag polar, in particular the $C_{D0}$, and the wing pitching moment. Further calculations are, therefore, necessary to predict these latter.
@@ -693,72 +697,62 @@ As in previous chapters the test will be performed using ATR-72 and B747-100B ai
 The input .xml file\cite{wiki:xml} has to provide all data from~\ref{table:CalcHighLiftConstructor}, except for the lifting surface model and the operating condition, and it is modeled as follows.
 
 \bigskip
-\lstset{language=XML}
-\begin{lstlisting}[caption={Example of high-lift devices .xml input file for the B747-100B in take-off configuration}, captionpos=b, tabsize=6]
+\begin{lstlisting}[caption={Example of high-lift devices .xml input file for the B747-100B in take-off configuration}, captionpos=b, tabsize=6, language=XML]
 <input>
 	<B747>
 		<Flap_Number unit="">2</Flap_Number>
 		<Flap1>
 			<FlapType unit="">DOUBLE_SLOTTED</FlapType>
 			<Cf_C unit="">0.1264</Cf_C>
-			<Delta_Flap1 unit="$\deg$">15</Delta_Flap1>
-			<Delta_Flap1 unit="$\deg$">5</Delta_Flap1>
+			<Delta_Flap1 unit="deg">15</Delta_Flap1>
+			<Delta_Flap1 unit="deg">5</Delta_Flap1>
 			<Flap_inboard>0.0995</Flap_inboard>
 			<Flap_outboard>0.3614</Flap_outboard>
 		</Flap1>
 		<Flap2>
 			<FlapType unit="">DOUBLE_SLOTTED</FlapType>
 			<Cf_C unit="">0.2806</Cf_C>
-			<Delta_Flap2 unit="$\deg$">15</Delta_Flap2>
-			<Delta_Flap2 unit="$\deg$">5</Delta_Flap2>
+			<Delta_Flap2 unit="deg">15</Delta_Flap2>
+			<Delta_Flap2 unit="deg">5</Delta_Flap2>
 			<Flap_inboard unit="">0.4123</Flap_inboard>
 			<Flap_outboard unit="">0.6624</Flap_outboard>
 		</Flap2>
 		<Slat1>
-			<Delta_Slat unit="$\deg$">20</Delta_Slat>
-			<Cs_C unit="">0.115</Cs_C>
+			<Delta_Slat unit="deg">10</Delta_Slat>
+			<Cs_C unit="">0.15</Cs_C>
 			<cExt_c unit="">1.1</cExt_c>
 			<LEradius_c_ratio unit="">0.0097</LEradius_c_ratio>
-			<Slat_inboard unit="">0.192</Slat_inboard>
-			<Slat_outboard unit="">0.3696</Slat_outboard>
+			<Slat_inboard unit="">0.14</Slat_inboard>
+			<Slat_outboard unit="">0.37</Slat_outboard>
 		</Slat1>
 		<Slat2>
-			<Delta_Slat unit="$\deg$">20</Delta_Slat>
+			<Delta_Slat unit="deg">10</Delta_Slat>
 			<Cs_C unit="">0.193</Cs_C>
 			<cExt_c unit="">1.1</cExt_c>
 			<LEradius_c_ratio unit="">0.0097</LEradius_c_ratio>
-			<Slat_inboard unit="">0.4279</Slat_inboard>
-			<Slat_outboard unit="">0.6578</Slat_outboard>
+			<Slat_inboard unit="">0.42</Slat_inboard>
+			<Slat_outboard unit="">0.9</Slat_outboard>
 		</Slat2>
-		<Slat3>
-			<Delta_Slat unit="$\deg$">20</Delta_Slat>
-			<Cs_C unit="">0.243</Cs_C>
-			<cExt_c unit="">1.1</cExt_c>
-			<LEradius_c_ratio unit="">0.0097</LEradius_c_ratio>
-			<Slat_inboard unit="">0.666</Slat_inboard>
-			<Slat_outboard unit="">0.997</Slat_outboard>
-		</Slat3>
 	</B747>
 </input>
 \end{lstlisting}
 
 \bigskip
-\lstset{language=XML}
-\begin{lstlisting}[caption={Example of high-lift devices .xml input file for the ATR-72 in take-off configuration}, captionpos=b, tabsize=6]
+\begin{lstlisting}[caption={Example of high-lift devices .xml input file for the ATR-72 in take-off configuration}, captionpos=b, tabsize=6, language=XML]
 <input>
 	<ATR72>
 		<Flap_Number unit="">2</Flap_Number>
 		<Flap1>
 			<FlapType unit="">SINGLE_SLOTTED</FlapType>
 			<Cf_c unit="">0.35</Cf_c>
-			<Delta_Flap1 unit="$\deg$">20</Delta_Flap1>
+			<Delta_Flap1 unit="deg">20</Delta_Flap1>
 			<Flap_inboard>0.0884</Flap_inboard>
 			<Flap_outboard>0.34575</Flap_outboard>
 		</Flap1>
 		<Flap2>
 			<FlapType unit="">SINGLE_SLOTTED</FlapType>
 			<Cf_c unit="">0.35</Cf_c>
-			<Delta_Flap2 unit="$\deg$">20</Delta_Flap2>
+			<Delta_Flap2 unit="deg">20</Delta_Flap2>
 			<Flap_inboard>0.34575</Flap_inboard>
 			<Flap_outboard>0.82063</Flap_outboard>
 		</Flap2>
@@ -773,7 +767,6 @@ The first thing to do in order to read these data is use the Java library~\lstin
 After the input file has been parsed correctly, the reading process can start. The user now has to create a \gls{List} for each input data of table~\ref{table:CalcHighLiftConstructor} and then an object of the class~\lstinline[language=Java]!JPADXmlReader!, of the~\lstinline[language=Java]!JPADCore!~\lstinline[language=Java]!standaloneutils! package, in order to manage the scan of the .xml file through its methods. 
 
 \bigskip
-\lstset{language=Java}
 \begin{lstlisting}[caption={Excerpt of B747-100B test - Input data reading}, captionpos=b, tabsize=2]
 	// High Lift Devices Input
 	List<Double[]> deltaFlap = new ArrayList<Double[]>();
@@ -898,3 +891,71 @@ It has to be noted that, since~\lstinline[language=Java]!CalcHighLiftDevices! is
 \bigskip
 \noindent
 In conclusion, the following pages show the numerical and graphical results of the described tests, applied to the two aircraft, mentioned at the beginning of paragraph, in take-off configuration.
+
+\begin{figure}[H]
+\centering
+\input{images/CLAlphaWingHighLift_ATR.tikz}
+\caption{ATR-72 lift curve with and without flaps in take-off configuration}
+\label{fig:FlapATR}
+\end{figure}
+
+\bigskip
+\lstset{language=Java}
+\begin{lstlisting}[caption={ATR-72 test results}, captionpos=b, tabsize=2]
+deltaCl0_flap = 2.3939974237661317
+deltaCL0_flap = 0.9707980864918362
+deltaClmax_flap = 1.2122379635109801
+deltaCLmax_flap = 0.5352640320770878
+cLalpha_new = 0.09843774835851372 (1/deg)
+deltaAlphaMax = -1.9369466185196893 deg
+deltaCD = 0.01518722606307197
+deltaCMc_4 = -0.12338582743821447
+
+ -----------CLEAN-------------- 
+ alpha max 15.218482314757672 deg
+ alpha star 10.918671750781748 deg
+ cL max 1.4880204551617757
+ cL star 1.1785803287397512
+ cL alpha 5.582578511036018 (1/deg)
+ -----------HIGH LIFT-------------- 
+ alpha max 13.28041476420454 deg
+ alpha star 5.93160145503965 deg
+ cl max 2.023284487238864
+ cl star 1.6694962995582308
+ cl alpha 5.640482980942836 (1/deg)
+\end{lstlisting}
+
+\begin{figure}[H]
+\centering
+\input{images/CLAlphaWingHighLift_B747.tikz}
+\caption{B747-100B lift curve with and without flaps in take-off configuration}
+\label{fig:FlapATR}
+\end{figure}
+
+\bigskip
+\lstset{language=Java}
+\begin{lstlisting}[caption={B747-100B test results}, captionpos=b, tabsize=2]
+deltaCl0_flap = 2.275544332733731
+deltaCL0_flap =  0.687810914469225
+deltaClmax_flap = 0.6867057564174156
+deltaCLmax_flap = 0.24074371285515445
+deltaClmax_slat = 0.9402218789010066
+deltaCLmax_slat = 0.4912313077380954
+cLalpha_new = 0.09452181208095264 (1/deg)
+deltaAlphaMaxFlap = -1.9369466185196893 ${^\circ}$
+deltaAlphaMaxSlat = 7.0 ${^\circ}$
+deltaCD = 0.006456897617521261
+
+ -----------CLEAN-------------- 
+ alpha max 23.5720556895134 deg
+ alpha star 10.32038751072542 deg
+ cL max 1.7755421013298376
+ cL star 0.8678153853483048
+ cL alpha 5.375380327859693 (1/deg)
+ -----------HIGH LIFT-------------- 
+ alpha max 28.633372848434192 deg
+ alpha star 5.645511974399449 deg
+ cl max 2.5075171219230876
+ cl star 1.3096930922947507
+ cl alpha 5.4160998322385865 (1/deg)
+\end{lstlisting}

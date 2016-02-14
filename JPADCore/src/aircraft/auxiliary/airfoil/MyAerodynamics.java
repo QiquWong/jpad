@@ -107,13 +107,13 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 			//TODO implement this 
 			switch (station) {
 			case ROOT:
-				new MyAerodynamics(airf, aircraftName, AirfoilStationEnum.ROOT);
+				Aerodynamics(airf, "23-018");
 				break;
 			case KINK:
-				new MyAerodynamics(airf, aircraftName, AirfoilStationEnum.KINK);
+				Aerodynamics(airf, "23-015") ;
 				break;
 			case TIP:
-				new MyAerodynamics(airf, aircraftName, AirfoilStationEnum.TIP);
+				Aerodynamics(airf, "23-012");
 				break;	
 			}
 			break;
