@@ -47,11 +47,11 @@
 \BOOKMARK [1][-]{section.9.5}{User's Guide}{chapter.9}% 47
 \BOOKMARK [1][-]{section.9.6}{Analysis Results}{chapter.9}% 48
 \BOOKMARK [0][-]{chapter.10}{Minor Works}{part.3}% 49
-\BOOKMARK [0][-]{Appendix.a.A}{Java Reference}{part.3}% 50
-\BOOKMARK [1][-]{section.a.A.1}{Inheritance, Overriding and Polymorphism}{Appendix.a.A}% 51
-\BOOKMARK [1][-]{section.a.A.2}{Packages}{Appendix.a.A}% 52
-\BOOKMARK [1][-]{section.a.A.3}{Documentation}{Appendix.a.A}% 53
-\BOOKMARK [0][-]{section*.24}{Glossary}{part.3}% 54
-\BOOKMARK [0][-]{section*.26}{Acronyms}{part.3}% 55
-\BOOKMARK [0][-]{section*.28}{List of symbols}{part.3}% 56
-\BOOKMARK [0][-]{section*.30}{Bibliography}{part.3}% 57
+\BOOKMARK [0][-]{Appendix.a.A}{HDF dataset and database reader creation}{part.3}% 50
+\BOOKMARK [1][-]{section.a.A.1}{Chart Digitization}{Appendix.a.A}% 51
+\BOOKMARK [1][-]{section.a.A.2}{Creation of an HDF file with Matlab}{Appendix.a.A}% 52
+\BOOKMARK [0][-]{Appendix.a.B}{App2}{part.3}% 53
+\BOOKMARK [0][-]{section*.32}{Glossary}{part.3}% 54
+\BOOKMARK [0][-]{section*.34}{Acronyms}{part.3}% 55
+\BOOKMARK [0][-]{section*.36}{List of symbols}{part.3}% 56
+\BOOKMARK [0][-]{section*.38}{Bibliography}{part.3}% 57

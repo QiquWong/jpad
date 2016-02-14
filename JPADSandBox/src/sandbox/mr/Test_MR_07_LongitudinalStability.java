@@ -34,10 +34,12 @@ import aircraft.components.Aircraft;
 import aircraft.components.fuselage.FusAerodynamicsManager;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcHighLiftDevices;
 import configuration.MyConfiguration;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.DatabaseReaderEnum;
+import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
@@ -276,6 +278,13 @@ public class Test_MR_07_LongitudinalStability {
 		Amount<Angle> alphaBody = theConditions.get_alphaCurrent();
 		Amount<Angle> alphaWing = Amount.valueOf(alphaBody.getEstimatedValue()+theWing.get_iw().getEstimatedValue(), SI.RADIAN);
 		
+		//--------------------------------------------------------------------------------------
+		// Data
+		
+		double chordRatio = 0.3;
+		double deflectionElevator = 20.0; //deg
+		
+		
 		// -----------------------------------------------------------------------
 		// LIFT CHARACTERISTICS 
 		// -----------------------------------------------------------------------
@@ -384,7 +393,6 @@ public class Test_MR_07_LongitudinalStability {
 		
 		StabilityCalculator theStablityCalculator = new StabilityCalculator();
 		
-		double chordRatio = 0.3;
 		Amount<Angle> deflection;
 		int nValueDelta = 7;
 		
@@ -510,8 +518,49 @@ public class Test_MR_07_LongitudinalStability {
 		theLSHorizontalTail.PlotCDvsAlphaCurve(subfolderPath);
 		System.out.println("\n\n\t\t\tDONE PLOTTING CD vs ALPHA H TAIL CLEAN");
 		
-		
+		// elevator contribute
 
+		List<Double[]> deltaFlap = new ArrayList<Double[]>();
+		List<FlapTypeEnum> flapType = new ArrayList<FlapTypeEnum>();
+		List<Double> eta_in_flap = new ArrayList<Double>();
+		List<Double> eta_out_flap = new ArrayList<Double>();
+		List<Double> cf_c = new ArrayList<Double>();
+		
+		Double[] deltaFlapDouble =  new Double [1];
+		deltaFlapDouble[0] = deflectionElevator;
+		
+		deltaFlap.add(deltaFlapDouble);
+		flapType.add(FlapTypeEnum.PLAIN);
+		eta_in_flap.add(0.0);
+		eta_out_flap.add(horizontalTail.get_semispan().getEstimatedValue());
+		cf_c.add(chordRatio);
+		
+		LSAerodynamicsManager.CalcHighLiftDevices highLiftCalculator = theLSHorizontalTail
+				.new CalcHighLiftDevices(						
+						horizontalTail,
+						theConditions,
+						deltaFlap,
+						flapType,
+						null,
+						eta_in_flap,
+						eta_out_flap,
+						null,
+						null,
+						cf_c,
+						null,
+						null,
+						null
+						);
+
+		highLiftCalculator.calculateHighLiftDevicesEffects();
+		
+		System.out.println("\n\ndelta CD_0 elevator=" + highLiftCalculator.getDeltaCD());
+
+		double cDTotal = highLiftCalculator.getDeltaCD()+cDHorizontalTail;
+		System.out.println("\n CD of Horizontal Tail at alpha body = (deg) "
+				+ alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue()
+				+ " with a deflection of (deg) " + deflectionElevator + " is " + cDTotal	
+				);
 	}
 
 	}

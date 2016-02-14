@@ -43,6 +43,31 @@ C_{L_H}= C_{L_{{\alpha}_H}} \left ( \alpha_H + \tau_e \delta_e \right)
  In general the value of $\tau$ is constant until about 15 deg; after this value, due to the flow separation, the effectiveness of elevator decrease and consequently the product $ \tau_e \delta_e$ that appears in the equation of lift coefficient.
 		
 %grafici di progetto.
+
+
+\begin{figure}[H]
+\centering
+{\includegraphics[height=6.79cm]{Immagini/taude.png}} 
+\label{tau1}
+\caption{Qualitative trend of $\tau$ with the deflection of elevator.}
+\end{figure} 		
+
+
+\begin{figure}[H]
+\centering
+{\includegraphics[height=6.79cm]{Immagini/taudeltae.png}} 
+\label{tau2}
+\caption{Qualitative trend of the term $\tau \cdot \delta_e$ with the deflection of elevator.}
+\end{figure} 		
+
+
+\begin{figure}[H]
+\centering
+{\includegraphics[height=4.9cm]{Immagini/tau.png}} 
+\label{tau3}
+\end{figure} 		
+
+
 		
 The evaluation of tau is made by reading of external database, considering the following graphs.
 	
@@ -91,20 +116,20 @@ The evaluation of tau is made by reading of external database, considering the f
 In order to evaluate the lift coefficient of the entire airplane it's possible to consider it as consisting of the following parts\cite{ roskam2002airplane}:
 
 \begin{itemize}
-\item wing and fuselage
-\item horizontal Tail
-\item canard
+\item Wing and Fuselage
+\item Horizontal Tail
+\item Canard
 \end{itemize}
 
-It's important to consider the effectivness angles of attack in which the surfaces work. This is made considering the angles of incidence of the lifting surfaces and the downwash angle aft of the wing. An horizontal tail and a canard may be equiped with a trailing edge control surface. So in order to evaluate these contributes it' s important to know the angle of deflection $\delta$ of these control surfaces.\\
+It's important to consider the effectiveness angles of attack in which the surfaces work. This is made considering the angles of incidence of the lifting surfaces and the downwash angle aft of the wing. An horizontal tail and a canard may be equipped with a trailing edge control surface. So in order to evaluate these contributes it's important to know the angle of deflection $\delta$ of these control surfaces.\\
 The calculation of the individual contributions it's reported in the relevant sections. In this section will be shown the method to evaluate the aircraft lift coefficient, known the single contributes.\\
-For an aircraft with no cadard, the formula is the following:
+For an aircraft with no canard, the formula is the following:
 
 \begin{equation}
 C_L = C_{L_{wb}} + \frac{S_t}{S_w} \eta_t C_{L_{t}}
 \end{equation}
 
-Where $\eta_t$ is the ratio of dynamic pressure. In fact the dynamic pressure seen by horizontal tail differ from the free stream dynamic pressure due to two main reasons: the combination wing-fuselage and the presence of the propeller. The dynamic pressure of the tail depends on the location of the tail. If the tail is in the wake of the wing-body, the local dynamic pressure will be less than the freestream because the flow gradually looses its kinetic energy. While if the tail is in the slipstream of propeller, the local dynamic pressure may increase due to the power absorbed by the propeller.
+Where $\eta_t$ is the ratio of dynamic pressure. In fact the dynamic pressure seen by horizontal tail differ from the free stream dynamic pressure due to two main reasons: the combination wing-fuselage and the presence of the propeller. The dynamic pressure of the tail depends on the location of the tail. If the tail is in the wake of the wing-body, the local dynamic pressure will be less than the freestream because the flow gradually loses its kinetic energy. While if the tail is in the slipstream of propeller, the local dynamic pressure may increase due to the power absorbed by the propeller.
 
 
 
@@ -115,6 +140,7 @@ Where $\eta_t$ is the ratio of dynamic pressure. In fact the dynamic pressure se
 \subsection{Wing}
 \subsection{Fuselage}
 \subsection{Horizontal Tail}
+% contributo dovuto al flap
 \section{Pitching Moments}
 \subsection{Wing}
 \subsection{Fuselage}
