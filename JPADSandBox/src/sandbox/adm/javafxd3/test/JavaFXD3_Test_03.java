@@ -97,7 +97,8 @@ public class JavaFXD3_Test_03 extends Application {
 		};
 
 		//create browser
-		browser = new JavaFxD3Browser(postLoadingHook, true);
+		boolean debugMode = false;
+		browser = new JavaFxD3Browser(postLoadingHook, debugMode);
 
 		//create the scene
 		scene = new Scene(browser, 750, 500, Color.web("#666970"));
@@ -122,7 +123,7 @@ public class JavaFXD3_Test_03 extends Application {
 
 		svg = d3.select("svg").attr("width", width).attr("height", height).append("g");
 
-		String cssClassName = "linedemo";
+		String cssClassName = "LineDemo";
 		path = svg.append("path").classed(cssClassName, true);
 		
 		addPoint(true);
@@ -163,6 +164,10 @@ public class JavaFXD3_Test_03 extends Application {
 		String coordinates = line.generate(coordsList);
 		path.attr("d", coordinates);
 
+//		line.interpolate(InterpolationMode.CARDINAL);
+//		System.out.println("Interpolation mode: " + line.interpolate());
+
+		
 		ArrayList<Coords> data;
 		if (showPoints) {
 			data = new ArrayList<>(points);
@@ -178,7 +183,12 @@ public class JavaFXD3_Test_03 extends Application {
 
 		EnteringSelection enter = updateSelection.enter();
 		if (enter != null) {
-			Selection result = enter.append("circle").attr("cx", cxFunction).attr("cy", cyFunction).attr("r", 10);
+			Selection result = 
+				enter
+					.append("circle")
+					.attr("cx", cxFunction)
+					.attr("cy", cyFunction)
+					.attr("r", 5); // radius
 						
 			//Inspector.inspect(result);
 			updateSelection.exit().remove();
