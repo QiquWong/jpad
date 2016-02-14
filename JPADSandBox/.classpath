@@ -103,5 +103,6 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/fxyz/JCSG.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/fxyz/poly2tri-core-0.1.0-SNAPSHOT.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jfxchartext-1.0/jfxchartext-1.0.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/javafx-d3/javafx-d3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
