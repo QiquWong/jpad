@@ -89,6 +89,55 @@ In order to give more flexibility to the code, the calculation of drag coefficie
 % schema yed 
 
 \section{Case Study}
+
+After initializing the Test class and defining the work object, it is possible to define an object of the class \texttt{CalcCDAtAlpha} that calculates the drag coefficient of a wing at a given angle of attack. This method accepts as input three parameters: the angle of attack of the wing,  the method used in order to calculate of lift distribution and an object of the lifting surface aerodynamic manager.\\
+The it is possible to plot the curves of drag coefficient versus $\alpha_w$ or lift coefficient that is the drag polar of the wing.
+
+
+\noindent \\
+\begin{lstlisting}[frame=rbl,caption={{\footnotesize Use of Drag Calculator class}},label= [style=\bfseries]{Listing}]
+
+// -----------------------------------------------------------------------
+// DRAG CHARACTERISTICS 
+// ----------------------------------------------------------------------
+
+
+System.out.println("\n\n------------------------------------");
+System.out.println("\n DRAG CHARACTERISTICS  ");
+System.out.println("\n------------------------------------");
+
+// Wing
+
+LSAerodynamicsManager.CalcCDAtAlpha theCDWingCalculator = theLSAnalysis
+		.new CalcCDAtAlpha();
+double cDIsolatedWing = theCDWingCalculator.integralFromCdAirfoil(
+		alphaWing, MethodEnum.NASA_BLACKWELL, theLSAnalysis);
+System.out.println(" CD of Wing at alpha body = (deg) "
+		+ alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue()
+		+ " is " + cDIsolatedWing);
+	
+System.out.println(" ...waiting for plotting");
+theLSAnalysis.PlotCDvsAlphaCurve(subfolderPath);
+System.out.println("\n\n\t\t\tDONE PLOTTING CD vs ALPHA WING");
+			
+}
+\end{lstlisting}
+
+\begin{figure}[H]
+\centering
+\input{immagini/CDalfa.tikz}
+\caption{ATR 72 CD vs Alpha_w at Mach 0.43 and Altitude: 6000 m.}
+\label{fig:DragATR}
+\end{figure}
+
+
+\begin{figure}[H]
+\centering
+\input{immagini/polar.tikz}
+\caption{ATR 72 Parabolic Polar Drag at Mach 0.43 and Altitude: 6000 m.}
+\label{fig:DragATR}
+\end{figure}
+
 % test class 
 % output
 

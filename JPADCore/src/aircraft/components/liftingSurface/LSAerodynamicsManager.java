@@ -3446,7 +3446,6 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			double cLSlopeDeg = Math.toRadians(cLSlope);
 
 			double q = _clTwo- cLSlopeDeg* alphaTwoDouble;
-			System.out.println("q --> " + q);
 			return cLSlope;
 		}
 		

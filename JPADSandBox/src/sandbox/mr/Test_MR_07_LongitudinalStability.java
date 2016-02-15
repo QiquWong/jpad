@@ -494,7 +494,8 @@ public class Test_MR_07_LongitudinalStability {
 		System.out.println("\n------------------------------------");
 
 		// Wing
-		LSAerodynamicsManager.CalcCDAtAlpha theCDWingCalculator = theLSAnalysis.new CalcCDAtAlpha();
+		LSAerodynamicsManager.CalcCDAtAlpha theCDWingCalculator = theLSAnalysis
+				.new CalcCDAtAlpha();
 		double cDIsolatedWing = theCDWingCalculator.integralFromCdAirfoil(
 				alphaWing, MethodEnum.NASA_BLACKWELL, theLSAnalysis);
 		System.out.println(" CD of Wing at alpha body = (deg) "
@@ -504,6 +505,7 @@ public class Test_MR_07_LongitudinalStability {
 		System.out.println(" ...waiting for plotting");
 		theLSAnalysis.PlotCDvsAlphaCurve(subfolderPath);
 		System.out.println("\n\n\t\t\tDONE PLOTTING CD vs ALPHA WING");
+		
 		
 		// Horizontal Tail
 		LSAerodynamicsManager.CalcCDAtAlpha theCDHTailCalculator = theLSHorizontalTail.new CalcCDAtAlpha();
