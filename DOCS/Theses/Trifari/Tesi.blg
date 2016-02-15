@@ -1,0 +1,17 @@
+[0] Config.pm:327> INFO - This is Biber 2.2
+[0] Config.pm:330> INFO - Logfile is 'Tesi.blg'
+[85] biber-MSWIN:283> INFO - === 
+[86] Biber.pm:334> INFO - Reading 'Tesi.bcf'
+[272] Biber.pm:674> INFO - Using all citekeys in bib section 0
+[315] Biber.pm:3054> INFO - Processing section 0
+[358] Biber.pm:3193> INFO - Looking for bibtex format file 'Tesi_Bibliography.bib' for section 0
+[364] bibtex.pm:1072> INFO - Decoding LaTeX character macros into UTF-8
+[369] bibtex.pm:935> INFO - Found BibTeX data source 'Tesi_Bibliography.bib'
+[444] Utils.pm:147> WARN - Datamodel: Entry 'jscienceAmount' (Tesi_Bibliography.bib): Invalid format '2015.01.05' of date field 'date' - ignoring
+[1136] UCollate.pm:66> INFO - Overriding locale 'it-IT' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[1137] UCollate.pm:66> INFO - Overriding locale 'it-IT' defaults 'variable = shifted' with 'variable = non-ignorable'
+[1137] Biber.pm:2931> INFO - Sorting list 'nty' of type 'entry' with scheme 'nty' and locale 'it-IT'
+[1137] Biber.pm:2935> INFO - No sort tailoring available for locale 'it-IT'
+[1259] bbl.pm:505> INFO - Writing 'Tesi.bbl' with encoding 'UTF-8'
+[1265] bbl.pm:596> INFO - Output to Tesi.bbl
+[1265] Biber.pm:107> INFO - WARNINGS: 1

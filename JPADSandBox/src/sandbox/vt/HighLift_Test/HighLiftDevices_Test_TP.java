@@ -105,7 +105,7 @@ public class HighLiftDevices_Test_TP {
 		
 		aircraft.get_wing().setAerodynamics(theLSAnalysis);
 		
-		theLSAnalysis.set_highLiftDatabaseReader(highLiftDatabaseReader);
+		theLSAnalysis.setHighLiftDatabaseReader(highLiftDatabaseReader);
 		theLSAnalysis.set_AerodynamicDatabaseReader(aeroDatabaseReader);
 //		//--------------------------------------------------------------------------------------
 //		// Define airfoil
@@ -317,7 +317,7 @@ public class HighLiftDevices_Test_TP {
 		for(int i=0; i<highLiftCalculator.getDeltaAlphaMax_list().size(); i++)
 			System.out.print(highLiftCalculator.getDeltaAlphaMax_list().get(i) + " ");
 		
-		System.out.println("\n\ndeltaAlphaMax = \n" + highLiftCalculator.getDeltaAlphaMax());
+		System.out.println("\n\ndeltaAlphaMax = \n" + highLiftCalculator.getDeltaAlphaMaxFlap());
 		
 		System.out.println("\n\ndeltaCD_list = ");
 		for(int i=0; i<highLiftCalculator.getDeltaCD_list().size(); i++)
@@ -335,7 +335,7 @@ public class HighLiftDevices_Test_TP {
 //		--------------------------
 //		// New lift curve 
 		
-		highLiftCalculator.PlotHighLiftCurve();
+		highLiftCalculator.plotHighLiftCurve();
 		System.out.println("DONE");	
 		
 		

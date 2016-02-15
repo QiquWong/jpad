@@ -1,20 +1,43 @@
-\glossaryentry{Autonomy Factor?\glossentry{gls-AF}|setentrycounter[]{page}\glsnumberformat}{62}
-\glossaryentry{Java Program toolchain for Aircraft Design?\glossentry{gls-JPAD}|setentrycounter[]{page}\glsnumberformat}{62}
-\glossaryentry{Direct Operative Cost?\glossentry{gls-DOC}|setentrycounter[]{page}\glsnumberformat}{62}
-\glossaryentry{Hierarchical Data Format?\glossentry{gls-HDF}|setentrycounter[]{page}\glsnumberformat}{62}
-\glossaryentry{True AirSpeed?\glossentry{gls-TAS}|setentrycounter[]{page}\glsnumberformat}{62}
-\glossaryentry{Portable Network Graphics?\glossentry{gls-PNG}|setentrycounter[]{page}\glsnumberformat}{62}
-\glossaryentry{TikZ?\glossentry{gls-TiKZ}|setentrycounter[]{page}\glsnumberformat}{62}
-\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{62}
-\glossaryentry{Static method?\glossentry{Static}|setentrycounter[]{page}\glsnumberformat}{62}
-\glossaryentry{Map?\glossentry{Map}|setentrycounter[]{page}\glsnumberformat}{62}
-\glossaryentry{Parsing?\glossentry{parsing}|setentrycounter[]{page}\glsnumberformat}{62}
-\glossaryentry{Table?\glossentry{Table}|setentrycounter[]{page}\glsnumberformat}{62}
-\glossaryentry{User developer?\glossentry{User:Developer}|setentrycounter[]{page}\glsnumberformat}{62}
-\glossaryentry{Autonomy Factor?\glossentry{gls-AF}|setentrycounter[]{page}\glsnumberformat}{65}
-\glossaryentry{Direct Operative Cost?\glossentry{gls-DOC}|setentrycounter[]{page}\glsnumberformat}{65}
-\glossaryentry{Hierarchical Data Format?\glossentry{gls-HDF}|setentrycounter[]{page}\glsnumberformat}{65}
-\glossaryentry{Java Program toolchain for Aircraft Design?\glossentry{gls-JPAD}|setentrycounter[]{page}\glsnumberformat}{65}
-\glossaryentry{Portable Network Graphics?\glossentry{gls-PNG}|setentrycounter[]{page}\glsnumberformat}{65}
-\glossaryentry{True AirSpeed?\glossentry{gls-TAS}|setentrycounter[]{page}\glsnumberformat}{65}
-\glossaryentry{TikZ?\glossentry{gls-TiKZ}|setentrycounter[]{page}\glsnumberformat}{65}
+\glossaryentry{user developer?\glossentry{User:Developer}|setentrycounter[]{page}\glsnumberformat}{1}
+\glossaryentry{Direct Operative Cost?\glossentry{gls-DOC}|setentrycounter[]{page}\glsnumberformat}{7}
+\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{13}
+\glossaryentry{Portable Network Graphics?\glossentry{gls-PNG}|setentrycounter[]{page}\glsnumberformat}{13}
+\glossaryentry{TikZ?\glossentry{TiKZ}|setentrycounter[]{page}\glsnumberformat}{13}
+\glossaryentry{static method?\glossentry{Static}|setentrycounter[]{page}\glsnumberformat}{15}
+\glossaryentry{Enumeration?\glossentry{Enum}|setentrycounter[]{page}\glsnumberformat}{15}
+\glossaryentry{Map?\glossentry{Map}|setentrycounter[]{page}\glsnumberformat}{15}
+\glossaryentry{Hierarchical Data Format?\glossentry{gls-HDF}|setentrycounter[]{page}\glsnumberformat}{15}
+\glossaryentry{Autonomy Factor?\glossentry{gls-AF}|setentrycounter[]{page}\glsnumberformat}{30}
+\glossaryentry{static method?\glossentry{Static}|setentrycounter[]{page}\glsnumberformat}{32}
+\glossaryentry{True AirSpeed?\glossentry{gls-TAS}|setentrycounter[]{page}\glsnumberformat}{32}
+\glossaryentry{static method?\glossentry{Static}|setentrycounter[]{page}\glsnumberformat}{33}
+\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{34}
+\glossaryentry{Map?\glossentry{Map}|setentrycounter[]{page}\glsnumberformat}{34}
+\glossaryentry{DATCOM?\glossentry{DATCOM}|setentrycounter[]{page}\glsnumberformat}{50}
+\glossaryentry{DATCOM?\glossentry{DATCOM}|setentrycounter[]{page}\glsnumberformat}{52}
+\glossaryentry{DATCOM?\glossentry{DATCOM}|setentrycounter[]{page}\glsnumberformat}{52}
+\glossaryentry{DATCOM?\glossentry{DATCOM}|setentrycounter[]{page}\glsnumberformat}{54}
+\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{61}
+\glossaryentry{Enumeration?\glossentry{Enum}|setentrycounter[]{page}\glsnumberformat}{61}
+\glossaryentry{parsing?\glossentry{parsing}|setentrycounter[]{page}\glsnumberformat}{65}
+\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{65}
+\glossaryentry{Autonomy Factor?\glossentry{gls-AF}|setentrycounter[]{page}\glsnumberformat}{86}
+\glossaryentry{Java Program toolchain for Aircraft Design?\glossentry{gls-JPAD}|setentrycounter[]{page}\glsnumberformat}{86}
+\glossaryentry{Direct Operative Cost?\glossentry{gls-DOC}|setentrycounter[]{page}\glsnumberformat}{86}
+\glossaryentry{Hierarchical Data Format?\glossentry{gls-HDF}|setentrycounter[]{page}\glsnumberformat}{86}
+\glossaryentry{True AirSpeed?\glossentry{gls-TAS}|setentrycounter[]{page}\glsnumberformat}{86}
+\glossaryentry{Portable Network Graphics?\glossentry{gls-PNG}|setentrycounter[]{page}\glsnumberformat}{86}
+\glossaryentry{TikZ?\glossentry{TiKZ}|setentrycounter[]{page}\glsnumberformat}{86}
+\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{86}
+\glossaryentry{Enumeration?\glossentry{Enum}|setentrycounter[]{page}\glsnumberformat}{86}
+\glossaryentry{static method?\glossentry{Static}|setentrycounter[]{page}\glsnumberformat}{86}
+\glossaryentry{Map?\glossentry{Map}|setentrycounter[]{page}\glsnumberformat}{86}
+\glossaryentry{DATCOM?\glossentry{DATCOM}|setentrycounter[]{page}\glsnumberformat}{86}
+\glossaryentry{parsing?\glossentry{parsing}|setentrycounter[]{page}\glsnumberformat}{86}
+\glossaryentry{user developer?\glossentry{User:Developer}|setentrycounter[]{page}\glsnumberformat}{86}
+\glossaryentry{Autonomy Factor?\glossentry{gls-AF}|setentrycounter[]{page}\glsnumberformat}{89}
+\glossaryentry{Direct Operative Cost?\glossentry{gls-DOC}|setentrycounter[]{page}\glsnumberformat}{89}
+\glossaryentry{Hierarchical Data Format?\glossentry{gls-HDF}|setentrycounter[]{page}\glsnumberformat}{89}
+\glossaryentry{Java Program toolchain for Aircraft Design?\glossentry{gls-JPAD}|setentrycounter[]{page}\glsnumberformat}{89}
+\glossaryentry{Portable Network Graphics?\glossentry{gls-PNG}|setentrycounter[]{page}\glsnumberformat}{89}
+\glossaryentry{True AirSpeed?\glossentry{gls-TAS}|setentrycounter[]{page}\glsnumberformat}{89}

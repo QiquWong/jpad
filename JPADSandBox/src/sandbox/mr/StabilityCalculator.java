@@ -38,7 +38,7 @@ public class StabilityCalculator {
 		double etaDelta = aircraft
 				.get_theAerodynamics()
 				.get_highLiftDatabaseReader()
-				.get_eta_delta_vs_delta_flap_plain(deflectionAngleDeg, chordRatio);
+				.getEtaDeltaVsDeltaFlapPlain(deflectionAngleDeg, chordRatio);
 		//System.out.println(" eta delta = " + etaDelta );
 		
 		double deltaAlpha2D = aircraft

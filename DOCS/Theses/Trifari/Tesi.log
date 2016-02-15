@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.11.16)  10 FEB 2016 23:51
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.11.16)  15 FEB 2016 20:33
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -3037,6 +3037,34 @@ LaTeX Warning: Label `eqn:c'/c' multiply defined.
 
 LaTeX Warning: Label `eqn:c'/c@cref' multiply defined.
 
+
+LaTeX Warning: Label `eqn:ClalphaFlap' multiply defined.
+
+
+LaTeX Warning: Label `eqn:ClalphaFlap@cref' multiply defined.
+
+
+LaTeX Warning: Label `fig:FlapATR' multiply defined.
+
+
+LaTeX Warning: Label `fig:FlapATR@cref' multiply defined.
+
+
+LaTeX Warning: Label `eq:Take:Off:System:Dynamics:RHS:functions:E' multiply def
+ined.
+
+
+LaTeX Warning: Label `eq:Take:Off:System:Dynamics:RHS:functions:E@cref' multipl
+y defined.
+
+
+LaTeX Warning: Label `eq:Take:Off:System:Dynamics:RHS:functions:D' multiply def
+ined.
+
+
+LaTeX Warning: Label `eq:Take:Off:System:Dynamics:RHS:functions:D@cref' multipl
+y defined.
+
 )
 \openout1 = `Tesi.aux'.
 
@@ -4423,9 +4451,9 @@ Package biblatex Info: ... file 'Tesi.bbl' found.
 (./Tesi.bbl
 
 Package biblatex Warning: Biber reported the following issues
-(biblatex)                with 'jscience':
-(biblatex)                - Datamodel: Entry 'jscience' (Tesi_Bibliography.bib)
-: Invalid format '2015.01.05' of date field 'date' - ignoring.
+(biblatex)                with 'jscienceAmount':
+(biblatex)                - Datamodel: Entry 'jscienceAmount' (Tesi_Bibliograph
+y.bib): Invalid format '2015.01.05' of date field 'date' - ignoring.
 
 )
 Package biblatex Info: Reference section=0 on input line 51.
@@ -4468,7 +4496,7 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-<Tesi-frn.pdf, id=167, 597.50829pt x 845.0471pt>
+<Tesi-frn.pdf, id=175, 597.50829pt x 845.0471pt>
 File: Tesi-frn.pdf Graphic file (type pdf)
  <use Tesi-frn.pdf>
 Package pdftex.def Info: Tesi-frn.pdf used on input line 56.
@@ -4544,7 +4572,7 @@ Chapter 1.
 
 ]
 Chapter 2.
-<images/Flexible_Payload_Range.png, id=260, 464.134pt x 356.532pt>
+<images/Flexible_Payload_Range.png, id=278, 464.134pt x 356.532pt>
 File: images/Flexible_Payload_Range.png Graphic file (type png)
 
 <use images/Flexible_Payload_Range.png>
@@ -4554,54 +4582,55 @@ Package pdftex.def Info: images/Flexible_Payload_Range.png used on input line 1
  [7
 
 ]
-<images/Payload_Range.png, id=269, 462.528pt x 358.941pt>
+<images/Payload_Range.png, id=290, 462.528pt x 358.941pt>
 File: images/Payload_Range.png Graphic file (type png)
 
 <use images/Payload_Range.png>
-Package pdftex.def Info: images/Payload_Range.png used on input line 29.
+Package pdftex.def Info: images/Payload_Range.png used on input line 31.
 (pdftex.def)             Requested size: 291.14803pt x 225.95328pt.
- [8 <./images/Flexible_Payload_Range.png> <./images/Payload_Range.png>] [9]
-Underfull \hbox (badness 10000) in paragraph at lines 123--123
+ [8 <./images/Flexible_Payload_Range.png>]
+[9 <./images/Payload_Range.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 125--125
 []|\T1/ntxtlf/b/n/12 Start\T1/ntxtlf/m/n/12 (+20) ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 123--123
+Underfull \hbox (badness 10000) in paragraph at lines 125--125
 []|\T1/ntxtlf/b/n/12 Brief
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 123--124
+Underfull \hbox (badness 10000) in paragraph at lines 125--126
 []|\T1/ntxtlf/b/n/12 Landing,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 123--124
+Underfull \hbox (badness 10000) in paragraph at lines 125--126
 \T1/ntxtlf/b/n/12 Taxi and
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 134--134
+Underfull \hbox (badness 10000) in paragraph at lines 136--136
 []|\T1/ntxtlf/m/n/12 (+20) Mil.Patrol,Bmb
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 135--135
+Underfull \hbox (badness 10000) in paragraph at lines 137--137
 []|\T1/ntxtlf/m/n/12 (+20) Flying
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 135--135
+Underfull \hbox (badness 10000) in paragraph at lines 137--137
 \T1/ntxtlf/m/n/12 (+20) boats,Amph.
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 136--136
+Underfull \hbox (badness 10000) in paragraph at lines 138--138
 []|\T1/ntxtlf/m/n/12 (+20) Supersonic
  []
 
 
-Overfull \hbox (12.75484pt too wide) in paragraph at lines 121--139
+Overfull \hbox (12.75484pt too wide) in paragraph at lines 123--141
  [][] 
  []
 
@@ -4613,20 +4642,12 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-Underfull \hbox (badness 3758) in paragraph at lines 191--191
+Underfull \hbox (badness 3758) in paragraph at lines 193--193
 []|\T1/ntxtlf/m/n/12 (+20) The cur-rent lift co-ef-fi-cient in cruise
  []
 
-
-LaTeX Warning: Reference `eqn:BreguetEquation1.1' on page 11 undefined on input
- line 205.
-
-
-LaTeX Warning: Reference `eqn:BreguetEquation1.2' on page 11 undefined on input
- line 205.
-
 [11] [12]
-<images/PayloadRange_BestRange_Flowchart.png, id=323, 1493.58pt x 943.525pt>
+<images/PayloadRange_BestRange_Flowchart.png, id=358, 1493.58pt x 943.525pt>
 File: images/PayloadRange_BestRange_Flowchart.png Graphic file (type png)
 
 <use images/PayloadRange_BestRange_Flowchart.png>
@@ -4634,7 +4655,7 @@ Package pdftex.def Info: images/PayloadRange_BestRange_Flowchart.png used on in
 put line 252.
 (pdftex.def)             Requested size: 366.13948pt x 231.28802pt.
 
-<images/PayloadRange_MTOM_Flowchart.png, id=324, 1494.58376pt x 744.7825pt>
+<images/PayloadRange_MTOM_Flowchart.png, id=359, 1494.58376pt x 744.7825pt>
 File: images/PayloadRange_MTOM_Flowchart.png Graphic file (type png)
 
 <use images/PayloadRange_MTOM_Flowchart.png>
@@ -4648,7 +4669,7 @@ Overfull \hbox (2.58348pt too wide) in paragraph at lines 334--335
  []
 
 [16] [17] [18]
-<images/HowToCreateADefaultAircraftInJPAD.png, id=511, 2328.7pt x 2013.5225pt>
+<images/HowToCreateADefaultAircraftInJPAD.png, id=559, 2328.7pt x 2013.5225pt>
 File: images/HowToCreateADefaultAircraftInJPAD.png Graphic file (type png)
 
 <use images/HowToCreateADefaultAircraftInJPAD.png>
@@ -4656,7 +4677,7 @@ Package pdftex.def Info: images/HowToCreateADefaultAircraftInJPAD.png used on i
 nput line 535.
 (pdftex.def)             Requested size: 512.31558pt x 442.97632pt.
 
-<images/ATR-72.png, id=512, 1028.643pt x 639.5895pt>
+<images/ATR-72.png, id=560, 1028.643pt x 639.5895pt>
 File: images/ATR-72.png Graphic file (type png)
  <use images/ATR-72.png>
 Package pdftex.def Info: images/ATR-72.png used on input line 541.
@@ -4684,7 +4705,7 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<images/B747-100B.png, id=513, 908.193pt x 528.17325pt>
+<images/B747-100B.png, id=561, 908.193pt x 528.17325pt>
 File: images/B747-100B.png Graphic file (type png)
 
 <use images/B747-100B.png>
@@ -4725,97 +4746,104 @@ ages/ATR-72.png>] [22] [23 <./images/B747-100B.png>] [24])
 
 ]
 Chapter 3.
-<images/TDelta.png, id=598, 472.967pt x 436.832pt>
-File: images/TDelta.png Graphic file (type png)
- <use images/TDelta.png>
-Package pdftex.def Info: images/TDelta.png used on input line 21.
-(pdftex.def)             Requested size: 220.56546pt x 203.718pt.
+<images/TDelta.pdf, id=645, 473.18668pt x 436.7368pt>
+File: images/TDelta.pdf Graphic file (type pdf)
+ <use images/TDelta.pdf>
+Package pdftex.def Info: images/TDelta.pdf used on input line 21.
+(pdftex.def)             Requested size: 220.56546pt x 203.5803pt.
 
 [27
 
-] <images/TDelta_SpecificRange.png, id=605, 470.558pt x 450.483pt>
-File: images/TDelta_SpecificRange.png Graphic file (type png)
+] <images/TDelta_SpecificRange.pdf, id=653, 473.18668pt x 436.7368pt>
+File: images/TDelta_SpecificRange.pdf Graphic file (type pdf)
 
-<use images/TDelta_SpecificRange.png>
-Package pdftex.def Info: images/TDelta_SpecificRange.png used on input line 64.
+<use images/TDelta_SpecificRange.pdf>
+Package pdftex.def Info: images/TDelta_SpecificRange.pdf used on input line 63.
 
-(pdftex.def)             Requested size: 220.56546pt x 211.15651pt.
- [28 <./images/TDelta.png>]
-<images/DragDelta_SpecificRange.png, id=615, 474.573pt x 445.665pt>
-File: images/DragDelta_SpecificRange.png Graphic file (type png)
+(pdftex.def)             Requested size: 220.56546pt x 203.5803pt.
+ [28 <./images/TDelta.pdf>]
+<images/DragDelta_SpecificRange.pdf, id=665, 497.10266pt x 450.67346pt>
+File: images/DragDelta_SpecificRange.pdf Graphic file (type pdf)
 
-<use images/DragDelta_SpecificRange.png>
-Package pdftex.def Info: images/DragDelta_SpecificRange.png used on input line 
-81.
-(pdftex.def)             Requested size: 220.56546pt x 207.13008pt.
- [29 <./images/TDelta_SpecificRange.png> <./images/DragDelta_SpecificRange.png>
-]
-<images/TDeltaDragDelta.png, id=627, 497.057pt x 450.483pt>
+<use images/DragDelta_SpecificRange.pdf>
+Package pdftex.def Info: images/DragDelta_SpecificRange.pdf used on input line 
+80.
+(pdftex.def)             Requested size: 220.56546pt x 199.96109pt.
+ [29 <./images/TDelta_SpecificRange.pdf> <./images/DragDelta_SpecificRange.pdf
+
+pdfTeX warning: pdflatex.exe (file ./images/DragDelta_SpecificRange.pdf): PDF i
+nclusion: multiple pdfs with page group included in a single page
+>] <images/TDeltaDragDelta.png, id=679, 497.057pt x 450.483pt>
 File: images/TDeltaDragDelta.png Graphic file (type png)
 
 <use images/TDeltaDragDelta.png>
-Package pdftex.def Info: images/TDeltaDragDelta.png used on input line 94.
+Package pdftex.def Info: images/TDeltaDragDelta.png used on input line 93.
 (pdftex.def)             Requested size: 220.56546pt x 199.8972pt.
 
-<images/AutonomyFactor.png, id=629, 574.145pt x 468.952pt>
-File: images/AutonomyFactor.png Graphic file (type png)
+<images/AutonomyFactor.pdf, id=682, 573.95729pt x 469.14757pt>
+File: images/AutonomyFactor.pdf Graphic file (type pdf)
 
-<use images/AutonomyFactor.png>
-Package pdftex.def Info: images/AutonomyFactor.png used on input line 134.
-(pdftex.def)             Requested size: 264.68124pt x 216.1928pt.
- [30 <./images/TDeltaDragDelta.png>]
-<images/CruiseGrid.png, id=641, 480.194pt x 438.438pt>
-File: images/CruiseGrid.png Graphic file (type png)
+<use images/AutonomyFactor.pdf>
+Package pdftex.def Info: images/AutonomyFactor.pdf used on input line 132.
+(pdftex.def)             Requested size: 264.68124pt x 216.35454pt.
 
-<use images/CruiseGrid.png>
-Package pdftex.def Info: images/CruiseGrid.png used on input line 146.
-(pdftex.def)             Requested size: 220.56546pt x 201.38287pt.
- [31 <./images/AutonomyFactor.png> <./images/CruiseGrid.png>] [32] [33]
-<images/SpecificRange_Flowchart.png, id=670, 1522.68875pt x 987.69pt>
+<images/CruiseGrid.pdf, id=685, 479.99796pt x 438.29077pt>
+File: images/CruiseGrid.pdf Graphic file (type pdf)
+
+<use images/CruiseGrid.pdf>
+Package pdftex.def Info: images/CruiseGrid.pdf used on input line 144.
+(pdftex.def)             Requested size: 220.56546pt x 201.40218pt.
+ [30 <./images/TDeltaDragDelta.png>] [31 <./images/AutonomyFactor.pdf> <./image
+s/CruiseGrid.pdf
+
+pdfTeX warning: pdflatex.exe (file ./images/CruiseGrid.pdf): PDF inclusion: mul
+tiple pdfs with page group included in a single page
+>] [32] [33]
+<images/SpecificRange_Flowchart.png, id=730, 1522.68875pt x 987.69pt>
 File: images/SpecificRange_Flowchart.png Graphic file (type png)
 
 <use images/SpecificRange_Flowchart.png>
 Package pdftex.def Info: images/SpecificRange_Flowchart.png used on input line 
-261.
+259.
 (pdftex.def)             Requested size: 397.01514pt x 257.51674pt.
  [34 <./images/SpecificRange_Flowchart.png (PNG copy)>] [35] [36] [37] (./image
 s/DragThrust_ATR.tikz)
-Overfull \hbox (27.0917pt too wide) in paragraph at lines 1526--474
+Overfull \hbox (27.0917pt too wide) in paragraph at lines 1526--472
  [][] 
  []
 
 (./images/DragThrust_B747.tikz)
-Overfull \hbox (28.45808pt too wide) in paragraph at lines 1165--481
+Overfull \hbox (28.45808pt too wide) in paragraph at lines 1165--479
  [][] 
  []
 
 (./images/SFC_ATR.tikz)
-Overfull \hbox (14.44876pt too wide) in paragraph at lines 1304--488
+Overfull \hbox (14.44876pt too wide) in paragraph at lines 1304--486
  [][] 
  []
 
 (./images/SFC_B747.tikz)
-Overfull \hbox (18.85065pt too wide) in paragraph at lines 1303--495
+Overfull \hbox (18.85065pt too wide) in paragraph at lines 1303--493
  [][] 
  []
 
 (./images/Efficiency_ATR.tikz)
-Overfull \hbox (8.73279pt too wide) in paragraph at lines 1304--502
+Overfull \hbox (8.73279pt too wide) in paragraph at lines 1304--500
  [][] 
  []
 
 (./images/Efficiency_B747.tikz)
-Overfull \hbox (8.72409pt too wide) in paragraph at lines 1303--509
+Overfull \hbox (8.72409pt too wide) in paragraph at lines 1303--507
  [][] 
  []
 
 (./images/SpecificRange_ATR.tikz)
-Overfull \hbox (18.82077pt too wide) in paragraph at lines 1334--516
+Overfull \hbox (18.82077pt too wide) in paragraph at lines 1334--514
  [][] 
  []
 
 (./images/SpecificRange_B747.tikz)
-Overfull \hbox (27.82321pt too wide) in paragraph at lines 1334--523
+Overfull \hbox (27.82321pt too wide) in paragraph at lines 1334--521
  [][] 
  []
 
@@ -4823,18 +4851,18 @@ Overfull \hbox (27.82321pt too wide) in paragraph at lines 1334--523
 Chapter 4.
 [43
 
-] <images/FlapEffects.png, id=887, 801.99625pt x 916.42375pt>
+] <images/FlapEffects.png, id=947, 801.99625pt x 916.42375pt>
 File: images/FlapEffects.png Graphic file (type png)
 
 <use images/FlapEffects.png>
-Package pdftex.def Info: images/FlapEffects.png used on input line 112.
+Package pdftex.def Info: images/FlapEffects.png used on input line 113.
 (pdftex.def)             Requested size: 198.50755pt x 226.82607pt.
 
-<images/SlatEffects.png, id=888, 974.64125pt x 1004.75375pt>
+<images/SlatEffects.png, id=948, 974.64125pt x 1004.75375pt>
 File: images/SlatEffects.png Graphic file (type png)
 
 <use images/SlatEffects.png>
-Package pdftex.def Info: images/SlatEffects.png used on input line 118.
+Package pdftex.def Info: images/SlatEffects.png used on input line 119.
 (pdftex.def)             Requested size: 220.56546pt x 227.37833pt.
 
 (c:/texlive/2015/texmf-dist/tex/latex/newtx/ts1ntxtlf.fd
@@ -4845,16 +4873,16 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
  [44] [45 <./images/FlapEffects.png> <./images/SlatEffects.png>]
-<images/Flap.png, id=902, 558.085pt x 210.7875pt>
+<images/Flap.png, id=962, 558.085pt x 210.7875pt>
 File: images/Flap.png Graphic file (type png)
  <use images/Flap.png>
-Package pdftex.def Info: images/Flap.png used on input line 146.
+Package pdftex.def Info: images/Flap.png used on input line 147.
 (pdftex.def)             Requested size: 441.13094pt x 166.62001pt.
 
-<images/Slat.png, id=903, 388.45125pt x 138.5175pt>
+<images/Slat.png, id=963, 388.45125pt x 138.5175pt>
 File: images/Slat.png Graphic file (type png)
  <use images/Slat.png>
-Package pdftex.def Info: images/Slat.png used on input line 153.
+Package pdftex.def Info: images/Slat.png used on input line 154.
 (pdftex.def)             Requested size: 308.7903pt x 110.11453pt.
 
 [46 <./images/Flap.png>]
@@ -4882,119 +4910,307 @@ Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 (hyperref)                removing `math shift' on input line 176.
 
-<images/Eta_Delta_Plain.png, id=918, 634.16925pt x 457.71pt>
+<images/Eta_Delta_Plain.png, id=978, 634.16925pt x 457.71pt>
 File: images/Eta_Delta_Plain.png Graphic file (type png)
 
 <use images/Eta_Delta_Plain.png>
-Package pdftex.def Info: images/Eta_Delta_Plain.png used on input line 215.
+Package pdftex.def Info: images/Eta_Delta_Plain.png used on input line 211.
 (pdftex.def)             Requested size: 286.7324pt x 206.94537pt.
- [47 <./images/Slat.png>]
-<images/Eta_Delta.png, id=929, 825.68475pt x 416.757pt>
+
+<images/Eta_Delta.png, id=979, 825.68475pt x 416.757pt>
 File: images/Eta_Delta.png Graphic file (type png)
 
 <use images/Eta_Delta.png>
-Package pdftex.def Info: images/Eta_Delta.png used on input line 222.
+Package pdftex.def Info: images/Eta_Delta.png used on input line 218.
 (pdftex.def)             Requested size: 441.13094pt x 222.66072pt.
 
-Overfull \hbox (3.81265pt too wide) in paragraph at lines 222--223
+Overfull \hbox (3.81265pt too wide) in paragraph at lines 218--219
  [][] 
  []
 
-[48 <./images/Eta_Delta_Plain.png> <./images/Eta_Delta.png>]
-<images/DeltaC_Cf.png, id=944, 998.5305pt x 454.69875pt>
+[47 <./images/Slat.png>] [48 <./images/Eta_Delta_Plain.png> <./images/Eta_Delta
+.png>] <images/DeltaC_Cf.png, id=1005, 998.5305pt x 454.69875pt>
 File: images/DeltaC_Cf.png Graphic file (type png)
 
 <use images/DeltaC_Cf.png>
-Package pdftex.def Info: images/DeltaC_Cf.png used on input line 256.
+Package pdftex.def Info: images/DeltaC_Cf.png used on input line 252.
 (pdftex.def)             Requested size: 441.13094pt x 200.87982pt.
- <images/Kc.png, id=947, 805.20825pt x 483.60675pt>
+ <images/Kc.png, id=1008, 805.20825pt x 483.60675pt>
 File: images/Kc.png Graphic file (type png)
 
 <use images/Kc.png>
-Package pdftex.def Info: images/Kc.png used on input line 274.
+Package pdftex.def Info: images/Kc.png used on input line 270.
 (pdftex.def)             Requested size: 308.7903pt x 185.46231pt.
- <images/Kb.png, id=948, 428.802pt x 377.0085pt>
+ <images/Kb.png, id=1009, 428.802pt x 377.0085pt>
 File: images/Kb.png Graphic file (type png)
 
 <use images/Kb.png>
-Package pdftex.def Info: images/Kb.png used on input line 281.
+Package pdftex.def Info: images/Kb.png used on input line 277.
 (pdftex.def)             Requested size: 220.56546pt x 193.9228pt.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 287.
+(hyperref)                removing `math shift' on input line 283.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\upDelta' on input line 287.
+(hyperref)                removing `\upDelta' on input line 283.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 287.
+(hyperref)                removing `math shift' on input line 283.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 287.
+(hyperref)                removing `math shift' on input line 283.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\upDelta' on input line 287.
+(hyperref)                removing `\upDelta' on input line 283.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 287.
+(hyperref)                removing `math shift' on input line 283.
+
+[49 <./images/DeltaC_Cf.png> <./images/Kc.png>]
+<images/DeltaClmax_Base.png, id=1028, 776.30025pt x 445.06274pt>
+File: images/DeltaClmax_Base.png Graphic file (type png)
+
+<use images/DeltaClmax_Base.png>
+Package pdftex.def Info: images/DeltaClmax_Base.png used on input line 298.
+(pdftex.def)             Requested size: 352.90608pt x 202.32729pt.
+
+<images/K1.png, id=1029, 751.608pt x 418.56375pt>
+File: images/K1.png Graphic file (type png)
+ <use images/K1.png>
+Package pdftex.def Info: images/K1.png used on input line 305.
+(pdftex.def)             Requested size: 352.90608pt x 196.53337pt.
+
+<images/K2.png, id=1030, 835.923pt x 468.5505pt>
+File: images/K2.png Graphic file (type png)
+ <use images/K2.png>
+Package pdftex.def Info: images/K2.png used on input line 312.
+(pdftex.def)             Requested size: 352.90608pt x 197.81224pt.
+ [50 <./images/Kb.png> <./images/K1.png>]
+<images/K3.png, id=1044, 826.287pt x 469.15276pt>
+File: images/K3.png Graphic file (type png)
+ <use images/K3.png>
+Package pdftex.def Info: images/K3.png used on input line 319.
+(pdftex.def)             Requested size: 352.90608pt x 200.3716pt.
+ [51 <./images/K2.png> <./images/K3.png> <./images/DeltaClmax_Base.png>]
+<images/DeltaCl_Ddelta.png, id=1058, 732.336pt x 472.164pt>
+File: images/DeltaCl_Ddelta.png Graphic file (type png)
+
+<use images/DeltaCl_Ddelta.png>
+Package pdftex.def Info: images/DeltaCl_Ddelta.png used on input line 347.
+(pdftex.def)             Requested size: 352.90608pt x 227.53671pt.
+
+<images/Eta_max.png, id=1059, 705.837pt x 440.847pt>
+File: images/Eta_max.png Graphic file (type png)
+ <use images/Eta_max.png>
+Package pdftex.def Info: images/Eta_max.png used on input line 354.
+(pdftex.def)             Requested size: 352.90608pt x 220.41623pt.
+
+[52 <./images/DeltaCl_Ddelta.png>]
+<images/Eta_Delta_Slat.png, id=1070, 633.567pt x 396.2805pt>
+File: images/Eta_Delta_Slat.png Graphic file (type png)
+
+<use images/Eta_Delta_Slat.png>
+Package pdftex.def Info: images/Eta_Delta_Slat.png used on input line 361.
+(pdftex.def)             Requested size: 352.90608pt x 220.7304pt.
+
+<images/deltaSlat_c'c.png, id=1071, 553.46774pt x 238.491pt>
+File: images/deltaSlat_c'c.png Graphic file (type png)
+
+<use images/deltaSlat_c'c.png>
+Package pdftex.def Info: images/deltaSlat_c'c.png used on input line 368.
+(pdftex.def)             Requested size: 352.90608pt x 152.07329pt.
+ [53 <./images/Eta_max.png> <./images/Eta_Delta_Slat.png> <./images/deltaSlat_c
+'c.png>]
+<images/Swf.png, id=1083, 413.74574pt x 336.65775pt>
+File: images/Swf.png Graphic file (type png)
+ <use images/Swf.png>
+Package pdftex.def Info: images/Swf.png used on input line 392.
+(pdftex.def)             Requested size: 352.90608pt x 287.16727pt.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 289.
+(hyperref)                removing `math shift' on input line 413.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\alpha' on input line 289.
+(hyperref)                removing `\alpha' on input line 413.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 289.
+(hyperref)                removing `math shift' on input line 413.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 289.
+(hyperref)                removing `math shift' on input line 413.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\alpha' on input line 289.
+(hyperref)                removing `\alpha' on input line 413.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 289.
+(hyperref)                removing `math shift' on input line 413.
+
+[54 <./images/Swf.png>]
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 439.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 291.
+(hyperref)                removing `\upDelta' on input line 439.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\upDelta' on input line 291.
+(hyperref)                removing `\alpha' on input line 439.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\alpha' on input line 291.
+(hyperref)                removing `math shift' on input line 439.
 
+<images/DeltaAlphaMax.png, id=1099, 463.13025pt x 398.08725pt>
+File: images/DeltaAlphaMax.png Graphic file (type png)
 
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 291.
+<use images/DeltaAlphaMax.png>
+Package pdftex.def Info: images/DeltaAlphaMax.png used on input line 446.
+(pdftex.def)             Requested size: 264.68124pt x 227.50737pt.
+ [55 <./images/DeltaAlphaMax.png>]
+<images/Delta1_Plain.png, id=1116, 431.81325pt x 373.99725pt>
+File: images/Delta1_Plain.png Graphic file (type png)
 
-) (./contents/Chapter_TakeOff.tex [49 <./images/DeltaC_Cf.png> <./images/Kc.png
->] [50 <./images/Kb.png>]
+<use images/Delta1_Plain.png>
+Package pdftex.def Info: images/Delta1_Plain.png used on input line 482.
+(pdftex.def)             Requested size: 352.90608pt x 305.67534pt.
+
+<images/Delta2_Plain.png, id=1117, 399.29175pt x 348.70274pt>
+File: images/Delta2_Plain.png Graphic file (type png)
+
+<use images/Delta2_Plain.png>
+Package pdftex.def Info: images/Delta2_Plain.png used on input line 489.
+(pdftex.def)             Requested size: 308.7903pt x 269.6725pt.
+
+<images/Delta1_Slotted.png, id=1118, 437.83575pt x 510.708pt>
+File: images/Delta1_Slotted.png Graphic file (type png)
+
+<use images/Delta1_Slotted.png>
+Package pdftex.def Info: images/Delta1_Slotted.png used on input line 496.
+(pdftex.def)             Requested size: 308.7903pt x 360.19724pt.
+ [56 <./images/Delta2_Plain.png>]
+<images/Delta2_Slotted.png, id=1131, 442.65375pt x 221.628pt>
+File: images/Delta2_Slotted.png Graphic file (type png)
+
+<use images/Delta2_Slotted.png>
+Package pdftex.def Info: images/Delta2_Slotted.png used on input line 503.
+(pdftex.def)             Requested size: 308.7903pt x 154.61436pt.
+ [57 <./images/Delta1_Slotted.png> <./images/Delta1_Plain.png>] <images/Delta3.
+png, id=1139, 413.74574pt x 368.577pt>
+File: images/Delta3.png Graphic file (type png)
+
+<use images/Delta3.png>
+Package pdftex.def Info: images/Delta3.png used on input line 522.
+(pdftex.def)             Requested size: 352.90608pt x 314.39423pt.
+ [58 <./images/Delta2_Slotted.png> <./images/Delta3.png>] <images/Mu1_Pitching_
+Moment.png, id=1154, 463.13025pt x 317.988pt>
+File: images/Mu1_Pitching_Moment.png Graphic file (type png)
+
+<use images/Mu1_Pitching_Moment.png>
+Package pdftex.def Info: images/Mu1_Pitching_Moment.png used on input line 549.
+
+(pdftex.def)             Requested size: 330.84819pt x 227.16075pt.
+ [59 <./images/Mu1_Pitching_Moment.png>]
+<images/Mu2_Pitching_Moment.png, id=1168, 389.455pt x 454.69875pt>
+File: images/Mu2_Pitching_Moment.png Graphic file (type png)
+
+<use images/Mu2_Pitching_Moment.png>
+Package pdftex.def Info: images/Mu2_Pitching_Moment.png used on input line 576.
+
+(pdftex.def)             Requested size: 242.62335pt x 283.26324pt.
+
+Overfull \hbox (22.05789pt too wide) in paragraph at lines 576--577
+ [][] 
+ []
+
+<images/Mu3_Pitching_Moment.png, id=1169, 297.11pt x 405.515pt>
+File: images/Mu3_Pitching_Moment.png Graphic file (type png)
+
+<use images/Mu3_Pitching_Moment.png>
+Package pdftex.def Info: images/Mu3_Pitching_Moment.png used on input line 582.
+
+(pdftex.def)             Requested size: 207.33206pt x 282.99228pt.
+ [60 <./images/Mu2_Pitching_Moment.png> <./images/Mu3_Pitching_Moment.png>]
+Overfull \hbox (18.26315pt too wide) in paragraph at lines 660--660
+[]|[][][]| 
+ []
+
+[61] [62]
+<images/HighLiftDevices_Flowchart.png, id=1204, 1824.8175pt x 1377.145pt>
+File: images/HighLiftDevices_Flowchart.png Graphic file (type png)
+
+<use images/HighLiftDevices_Flowchart.png>
+Package pdftex.def Info: images/HighLiftDevices_Flowchart.png used on input lin
+e 686.
+(pdftex.def)             Requested size: 507.29788pt x 382.8452pt.
+
+Overfull \hbox (66.16695pt too wide) in paragraph at lines 686--687
+ [][] 
+ []
+
+[63 <./images/HighLiftDevices_Flowchart.png (PNG copy)>] [64] [65] [66]
+(./images/CLAlphaWingHighLift_ATR.tikz) [67]
+(./images/CLAlphaWingHighLift_B747.tikz) [68] [69])
+(./contents/Chapter_TakeOff.tex [70
+
+]
 Chapter 5.
-)) [51
-
-] [52
 
 
-] [53
+pdfTeX warning: pdflatex.exe (file ./images/TakeOffRun.pdf): PDF inclusion: fou
+nd PDF version <1.6>, but at most version <1.5> allowed
+<images/TakeOffRun.pdf, id=1466, 445.84827pt x 178.54102pt>
+File: images/TakeOffRun.pdf Graphic file (type pdf)
 
-] (./Tesi_Appendices.tex (./appendices/HDFDatabase.tex [54
+<use images/TakeOffRun.pdf>
+Package pdftex.def Info: images/TakeOffRun.pdf used on input line 15.
+(pdftex.def)             Requested size: 449.95543pt x 180.18605pt.
+
+Overfull \hbox (8.8245pt too wide) in paragraph at lines 15--16
+ [][] 
+ []
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\gls' on input line 21.
+
+[71
+
+] [72 <./images/TakeOffRun.pdf>]
+(c:/texlive/texmf-local/tex/latex/mtpro2/umt2ms.fd
+File: umt2ms.fd 2006/05/03 v1.1 MathTimePro II Script (PCTeX/WaS)
+) [73]
+<images/AlphaInputTakeOff.pdf, id=1545, 317.40582pt x 437.15433pt>
+File: images/AlphaInputTakeOff.pdf Graphic file (type pdf)
+
+<use images/AlphaInputTakeOff.pdf>
+Package pdftex.def Info: images/AlphaInputTakeOff.pdf used on input line 208.
+(pdftex.def)             Requested size: 198.50757pt x 273.40755pt.
+ [74]
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\gls' on input line 239.
+
+)) [75 <./images/AlphaInputTakeOff.pdf>] [76
+
+
+] [77
+
+] (./Tesi_Appendices.tex
+(./appendices/HDFDatabase.tex [78
 
 ]
 Appendix A.
@@ -5003,25 +5219,25 @@ File: lstlang1.sty 2015/06/04 1.6 listings language file
 )
 (c:/texlive/2015/texmf-dist/tex/latex/listings/lstmisc.sty
 File: lstmisc.sty 2015/06/04 1.6 (Carsten Heinz)
-) [55
+) [79
 
-] [56]
-<images/HDF_Dataset_creation.png, id=1050, 1266.7325pt x 612.2875pt>
+] [80]
+<images/HDF_Dataset_creation.png, id=1649, 1266.7325pt x 612.2875pt>
 File: images/HDF_Dataset_creation.png Graphic file (type png)
 
 <use images/HDF_Dataset_creation.png>
 Package pdftex.def Info: images/HDF_Dataset_creation.png used on input line 122
 .
 (pdftex.def)             Requested size: 388.19737pt x 187.63965pt.
- [57 <./images/HDF_Dataset_creation.png (PNG copy)>] <images/deltaAlphaSforza.p
-ng, id=1090, 921.4425pt x 538.26094pt>
+ [81 <./images/HDF_Dataset_creation.png (PNG copy)>] <images/deltaAlphaSforza.p
+ng, id=1688, 921.4425pt x 538.26094pt>
 File: images/deltaAlphaSforza.png Graphic file (type png)
 
 <use images/deltaAlphaSforza.png>
 Package pdftex.def Info: images/deltaAlphaSforza.png used on input line 129.
 (pdftex.def)             Requested size: 242.62335pt x 141.7268pt.
 
-<images/DAlphaVsLambdaLEVsDy_MATLAB.png, id=1091, 421.575pt x 316.18124pt>
+<images/DAlphaVsLambdaLEVsDy_MATLAB.png, id=1689, 421.575pt x 316.18124pt>
 File: images/DAlphaVsLambdaLEVsDy_MATLAB.png Graphic file (type png)
 
 <use images/DAlphaVsLambdaLEVsDy_MATLAB.png>
@@ -5033,10 +5249,10 @@ Overfull \hbox (44.11577pt too wide) in paragraph at lines 129--130
  [][][] 
  []
 
-[58
+[82
 
  <./images/deltaAlphaSforza.png> <./images/DAlphaVsLambdaLEVsDy_MATLAB.png (PNG
- copy)>])) [59] [60
+ copy)>])) [83] [84
 
 
 ]
@@ -5048,7 +5264,7 @@ Package microtype Info: Character `029' is missing
 Package biblatex Warning: No driver for entry type 'other'.
 (biblatex)                Using fallback driver on input line 189.
 
-[61
+[85
 
 ]
 
@@ -5060,18 +5276,18 @@ Package glossaries Warning: Deprecated command \glossarystyle.
  I recommend you switch to \setglossarystyle unless you want to maintain backwa
 rd compatibility on input line 197.
 
-[62] (./Tesi.gls [63
+[86] (./Tesi.gls [87
 
 
 
-]) [64] (./Tesi.acr) [65
+]) [88] (./Tesi.acr) [89
 
 
 
-] (./Tesi.sym [66
+] (./Tesi.sym [90
 
 
-] [67
+] [91
 
 
 ])
@@ -5098,7 +5314,7 @@ Package minitoc(hints) Warning: W0024
 (minitoc(hints))                Some hints have been written 
 (minitoc(hints))                in the Tesi.log file.
 
-[68]
+[92]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 252.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 252.
  (./Tesi.aux
@@ -5125,10 +5341,7 @@ File: italian.mld 2006/01/13
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 252.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 252.
 Package rerunfilecheck Info: File `Tesi.out' has not changed.
-(rerunfilecheck)             Checksum: 120D30FD7B8DAD2AA5A72B9832805272;2364.
-
-
-LaTeX Warning: There were undefined references.
+(rerunfilecheck)             Checksum: E5FE1ABF98BF00355D0C87E1C84759E0;2584.
 
 
 LaTeX Warning: There were multiply-defined labels.
@@ -5138,33 +5351,42 @@ Package logreq Info: Writing requests to 'Tesi.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 66847 strings out of 493054
- 1374778 string characters out of 6138326
- 2579924 words of memory out of 5000000
- 68049 multiletter control sequences out of 15000+600000
- 235776 words of font info for 195 fonts, out of 8000000 for 9000
+ 67775 strings out of 493054
+ 1391948 string characters out of 6138326
+ 2587395 words of memory out of 5000000
+ 68639 multiletter control sequences out of 15000+600000
+ 241717 words of font info for 209 fonts, out of 8000000 for 9000
  1142 hyphenation exceptions out of 8191
- 61i,25n,107p,10382b,4155s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 61i,30n,107p,10382b,4225s stack positions out of 5000i,500n,10000p,200000b,80000s
 {c:/texlive/2015/texmf-dist/fonts/enc/dvips/newtx/ntx-ec-tlf-sc.enc}{c:/texli
 ve/2015/texmf-dist/fonts/enc/dvips/tex-gyre/q-ts1.enc}{c:/texlive/2015/texmf-di
 st/fonts/enc/dvips/newtx/ntx-ec-tlf.enc}{c:/texlive/2015/texmf-dist/fonts/enc/d
 vips/base/8r.enc}<c:/texlive/2015/texmf-dist/fonts/type1/public/aspectratio/ama
 rbi.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/aspectratio/amarri.pfb><
-c:/texlive/2015/texmf-dist/fonts/type1/public/bera/fvmr8a.pfb><c:/texlive/texmf
--local/fonts/type1/pctex/mtpro2/mt2bmit.pfb><c:/texlive/texmf-local/fonts/type1
-/pctex/mtpro2/mt2exa.pfb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2mi
-f.pfb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2mis.pfb><c:/texlive/t
-exmf-local/fonts/type1/pctex/mtpro2/mt2mit.pfb><c:/texlive/texmf-local/fonts/ty
-pe1/pctex/mtpro2/mt2syf.pfb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt
-2sys.pfb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2syt.pfb><c:/texliv
-e/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmb.pfb><c:/texlive/2015/texmf-d
-ist/fonts/type1/public/tex-gyre/qtmr.pfb><c:/texlive/2015/texmf-dist/fonts/type
-1/public/tex-gyre/qtmri.pfb><c:/texlive/2015/texmf-dist/fonts/type1/urw/helveti
-c/uhvb8a.pfb><c:/texlive/2015/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb>
-Output written on Tesi.pdf (69 pages, 5279573 bytes).
+c:/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><c:/texliv
+e/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb><c:/texlive/2015/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb><c:/texlive/2015/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2015/texmf-dist/fonts/type1/
+public/amsfonts/cm/cmr7.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/amsf
+onts/cm/cmr8.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cms
+y7.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/bera/fvmr8a.pfb><c:/texli
+ve/texmf-local/fonts/type1/pctex/mtpro2/mt2bmit.pfb><c:/texlive/texmf-local/fon
+ts/type1/pctex/mtpro2/mt2exa.pfb><c:/texlive/texmf-local/fonts/type1/pctex/mtpr
+o2/mt2exe.pfb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2exf.pfb><c:/t
+exlive/texmf-local/fonts/type1/pctex/mtpro2/mt2mif.pfb><c:/texlive/texmf-local/
+fonts/type1/pctex/mtpro2/mt2mis.pfb><c:/texlive/texmf-local/fonts/type1/pctex/m
+tpro2/mt2mit.pfb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2mst.pfb><c
+:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2syf.pfb><c:/texlive/texmf-loc
+al/fonts/type1/pctex/mtpro2/mt2sys.pfb><c:/texlive/texmf-local/fonts/type1/pcte
+x/mtpro2/mt2syt.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/tex-gyre/qtm
+b.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmr.pfb><c:/texl
+ive/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmri.pfb><c:/texlive/2015/texm
+f-dist/fonts/type1/urw/helvetic/uhvb8a.pfb><c:/texlive/2015/texmf-dist/fonts/ty
+pe1/urw/helvetic/uhvr8a.pfb>
+Output written on Tesi.pdf (93 pages, 8589332 bytes).
 PDF statistics:
- 1489 PDF objects out of 1728 (max. 8388607)
- 1324 compressed objects within 14 object streams
- 729 named destinations out of 1000 (max. 500000)
- 37380 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 2137 PDF objects out of 2487 (max. 8388607)
+ 1895 compressed objects within 19 object streams
+ 1023 named destinations out of 1200 (max. 500000)
+ 41085 words of extra memory for PDF output out of 42996 (max. 10000000)
 

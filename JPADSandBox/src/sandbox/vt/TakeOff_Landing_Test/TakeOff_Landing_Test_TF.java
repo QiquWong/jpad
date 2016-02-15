@@ -20,6 +20,9 @@ import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
+import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLMaxClean;
+import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLvsAlphaCurve;
 import configuration.MyConfiguration;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.FlapTypeEnum;
@@ -27,6 +30,8 @@ import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import igeo.io.IObjFileImporter.GeometricVertex;
+import sandbox.mr.WingCalculator;
+import sandbox.mr.WingCalculator.MeanAirfoil;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.customdata.CenterOfGravity;
 
@@ -112,9 +117,10 @@ public class TakeOff_Landing_Test_TF {
 
 		theAnalysis.doAnalysis(aircraft,AnalysisTypeEnum.AERODYNAMIC);
 		
-		theLSAnalysis.set_highLiftDatabaseReader(highLiftDatabaseReader);
+		theLSAnalysis.setHighLiftDatabaseReader(highLiftDatabaseReader);
 		theWing.setAerodynamics(theLSAnalysis);
 		
+		// -----------------------------------------------------------------------
 		// Define airfoil
 		System.out.println("\n \n-----------------------------------------------------");
 		System.out.println("AIRFOILS");
@@ -132,7 +138,6 @@ public class TakeOff_Landing_Test_TF {
 		System.out.println("CL max --> " + airfoilRoot.getAerodynamics().get_clMax());		
 		System.out.println("LE sharpness parameter Root = " + airfoilRoot.getGeometry().get_deltaYPercent());
 
-
 		//AIRFOIL 2
 		double yLocKink = theWing.get_spanStationKink() * theWing.get_semispan().getEstimatedValue();
 		MyAirfoil airfoilKink = theWing.get_theAirfoilsList().get(1);
@@ -143,9 +148,8 @@ public class TakeOff_Landing_Test_TF {
 		System.out.println("Kink Station [m] = " + yLocKink);
 		System.out.println("Kink Chord [m] = " + theWing.get_chordKink().getEstimatedValue() );
 		System.out.println("Kink maximum thickness = " + airfoilKink.getGeometry().get_maximumThicknessOverChord());
-		System.out.println("CL max --> " + airfoilRoot.getAerodynamics().get_clMax());
+		System.out.println("CL max --> " + airfoilKink.getAerodynamics().get_clMax());
 		System.out.println("LE sharpness parameter Kink = " + airfoilKink.getGeometry().get_deltaYPercent());
-
 
 		//AIRFOIL 3
 		double yLocTip = theWing.get_semispan().getEstimatedValue();
@@ -156,9 +160,8 @@ public class TakeOff_Landing_Test_TF {
 		System.out.println("\n \n \t TIP \nAirfoil Type: " + airfoilKink.get_family());
 		System.out.println("tip Chord [m] = " +theWing.get_chordTip().getEstimatedValue() );
 		System.out.println("Tip maximum thickness = " + airfoilTip.getGeometry().get_maximumThicknessOverChord());
-		System.out.println("CL max --> " + airfoilRoot.getAerodynamics().get_clMax());
+		System.out.println("CL max --> " + airfoilTip.getAerodynamics().get_clMax());
 		System.out.println("LE sharpness parameter Tip = " + airfoilTip.getGeometry().get_deltaYPercent());
-
 
 		//--------------------------------------------------------------------------------------
 		// Assign airfoil
@@ -169,7 +172,6 @@ public class TakeOff_Landing_Test_TF {
 		myAirfoilList.add(2, airfoilTip);
 		theWing.set_theAirfoilsList(myAirfoilList);
 		theWing.updateAirfoilsGeometry(); 
-		//theLSAnalysis.initializeDependentData();
 		aircraft.get_exposedWing().set_theAirfoilsList(myAirfoilList);
 		aircraft.get_exposedWing().updateAirfoilsGeometryExposedWing( aircraft);
 			
@@ -216,7 +218,6 @@ public class TakeOff_Landing_Test_TF {
 		List<String> leRadius_c_slat_property = reader.getXMLPropertiesByPath("//LEradius_c_ratio");
 		List<String> eta_in_slat_property = reader.getXMLPropertiesByPath("//Slat_inboard");
 		List<String> eta_out_slat_property = reader.getXMLPropertiesByPath("//Slat_outboard");
-
 
 		for(int i=0; i<flapType_property.size(); i++) {
 			if(flapType_property.get(i).equals("SINGLE_SLOTTED"))
@@ -282,6 +283,68 @@ public class TakeOff_Landing_Test_TF {
 						cExt_c_slat
 						);
 
+//		highLiftCalculator.calculateHighLiftDevicesEffects();
+//		
+//		//----------------------------------------------------------------------------------
+//		// Results print
+//		System.out.println("\ndeltaCl0_flap_list = ");
+//		for(int i=0; i<highLiftCalculator.getDeltaCl0_flap_list().size(); i++)
+//			System.out.print(highLiftCalculator.getDeltaCl0_flap_list().get(i) + " ");
+//
+//		System.out.println("\n\ndeltaCl0_flap = \n" + highLiftCalculator.getDeltaCl0_flap());
+//
+//		System.out.println("\n\ndeltaCL0_flap_list = ");
+//		for(int i=0; i<highLiftCalculator.getDeltaCL0_flap_list().size(); i++)
+//			System.out.print(highLiftCalculator.getDeltaCL0_flap_list().get(i) + " ");
+//
+//		System.out.println("\n\ndeltaCL0_flap = \n" + highLiftCalculator.getDeltaCL0_flap());
+//
+//		System.out.println("\n\ndeltaClmax_flap_list = ");
+//		for(int i=0; i<highLiftCalculator.getDeltaClmax_flap_list().size(); i++)
+//			System.out.print(highLiftCalculator.getDeltaClmax_flap_list().get(i) + " ");
+//
+//		System.out.println("\n\ndeltaClmax_flap = \n" + highLiftCalculator.getDeltaClmax_flap());
+//
+//		System.out.println("\n\ndeltaCLmax_flap_list = ");
+//		for(int i=0; i<highLiftCalculator.getDeltaCLmax_flap_list().size(); i++)
+//			System.out.print(highLiftCalculator.getDeltaCLmax_flap_list().get(i) + " ");
+//
+//		System.out.println("\n\ndeltaCLmax_flap = \n" + highLiftCalculator.getDeltaCLmax_flap());
+//
+//		System.out.println("\n\ndeltaClmax_slat_list = ");
+//		for(int i=0; i<highLiftCalculator.getDeltaClmax_slat_list().size(); i++)
+//			System.out.print(highLiftCalculator.getDeltaClmax_slat_list().get(i) + " ");
+//
+//		System.out.println("\n\ndeltaClmax_slat = \n" + highLiftCalculator.getDeltaClmax_slat());
+//
+//		System.out.println("\n\ndeltaCLmax_slat_list = ");
+//		for(int i=0; i<highLiftCalculator.getDeltaCLmax_slat_list().size(); i++)
+//			System.out.print(highLiftCalculator.getDeltaCLmax_slat_list().get(i) + " ");
+//
+//		System.out.println("\n\ndeltaCLmax_slat = \n" + highLiftCalculator.getDeltaCLmax_slat());
+//
+//		System.out.println("\n\ncLalpha_new_list = ");
+//		for(int i=0; i<highLiftCalculator.getcLalpha_new_list().size(); i++)
+//			System.out.print(highLiftCalculator.getcLalpha_new_list().get(i) + " ");
+//
+//		System.out.println("\n\ncLalpha_new = \n" + highLiftCalculator.getcLalpha_new());
+//
+//		System.out.println("\n\ndeltaAlphaMax_list = ");
+//		for(int i=0; i<highLiftCalculator.getDeltaAlphaMax_list().size(); i++)
+//			System.out.print(highLiftCalculator.getDeltaAlphaMax_list().get(i) + " ");
+//
+//		System.out.println("\n\ndeltaAlphaMaxFlap = \n" + highLiftCalculator.getDeltaAlphaMaxFlap());
+//
+//		System.out.println("\n\ndeltaAlphaMaxSlat = \n" + highLiftCalculator.getDeltaAlphaMaxSlat());
+//		
+//		System.out.println("\n\ndeltaCD_list = ");
+//		for(int i=0; i<highLiftCalculator.getDeltaCD_list().size(); i++)
+//			System.out.print(highLiftCalculator.getDeltaCD_list().get(i) + " ");
+//
+//		System.out.println("\n\ndeltaCD = \n" + highLiftCalculator.getDeltaCD());
+//		
+//		highLiftCalculator.plotHighLiftCurve();
+		
 		//----------------------------------------------------------------------------------
 		// TakeOff - Ground Roll Distance Test
 		//----------------------------------------------------------------------------------

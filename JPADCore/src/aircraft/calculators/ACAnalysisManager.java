@@ -85,12 +85,12 @@ public class ACAnalysisManager {
 						.getAerodynamics()
 						.get_AerodynamicDatabaseReader());}
 		
-		if ( aircraft.get_wing().getAerodynamics().get_highLiftDatabaseReader() != null){
+		if ( aircraft.get_wing().getAerodynamics().getHighLiftDatabaseReader() != null){
 				aircraft.get_theAerodynamics().set_highLiftDatabaseReader(
 						aircraft
 						.get_wing()
 						.getAerodynamics()
-						.get_highLiftDatabaseReader());}
+						.getHighLiftDatabaseReader());}
 				
 		updateGeometry(aircraft);
 
