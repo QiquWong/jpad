@@ -1,0 +1,28 @@
+%VMC
+\begin{tikzpicture}
+
+\begin{axis}[
+width=\figurewidth,
+height=\figureheight,
+scaled ticks=false, tick label style={/pgf/number format/fixed},
+xmin=15.653522202699678,
+xmax=367.5174778025142,
+xlabel={TAS (m/s)},
+xmajorgrids,
+ymin=994.8577184863752,
+ymax=618471.8894741618,
+ylabel={Thrust - Yawing Moment (N m)},
+ymajorgrids,
+legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
+]
+
+\addplot [
+color=black,
+solid
+]
+table[row sep=crcr]{
+17.014698046412693	572659.1569205201\\
+18.31300833911085	1081.3670853112774\\
+};
+\end{axis}
+\end{tikzpicture}%
