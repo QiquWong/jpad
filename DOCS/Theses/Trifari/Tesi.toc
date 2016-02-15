@@ -32,13 +32,15 @@
 \contentsline {section}{\numberline {4.3}Case study: ATR-72 and B747-100B}{63}{section.4.3}
 \contentsline {chapter}{\numberline {5}Take-off performance}{71}{chapter.5}
 \contentsline {section}{\numberline {5.1}Theoretical background}{71}{section.5.1}
-\contentsline {section}{\numberline {5.2}Java class architecture}{71}{section.5.2}
-\contentsline {section}{\numberline {5.3}Case study: B747-100B}{71}{section.5.3}
-\contentsline {chapter}{Appendices}{}{section*.71}
-\contentsline {chapter}{\numberline {A}HDF databse creation and reading }{75}{Appendix.a.A}
-\contentsline {section}{\numberline {A.1}Creation of a database using MATLAB}{75}{section.a.A.1}
-\contentsline {section}{\numberline {A.2}Reading data from an HDF database in JPAD}{78}{section.a.A.2}
-\contentsline {chapter}{Bibliography}{80}{section*.74}
-\contentsline {chapter}{Glossary}{83}{section*.76}
-\contentsline {chapter}{Acronyms}{85}{section*.78}
-\contentsline {chapter}{List of symbols}{87}{section*.80}
+\contentsline {subsection}{\numberline {5.1.1}\gls {acr:AOE} take-off run}{71}{subsection.5.1.1}
+\contentsline {subsection}{\numberline {5.1.2}\gls {acr:OEI} take-off run and balanced field lenght}{75}{subsection.5.1.2}
+\contentsline {section}{\numberline {5.2}Java class architecture}{75}{section.5.2}
+\contentsline {section}{\numberline {5.3}Case study: B747-100B}{75}{section.5.3}
+\contentsline {chapter}{Appendices}{}{section*.73}
+\contentsline {chapter}{\numberline {A}HDF databse creation and reading }{79}{Appendix.a.A}
+\contentsline {section}{\numberline {A.1}Creation of a database using MATLAB}{79}{section.a.A.1}
+\contentsline {section}{\numberline {A.2}Reading data from an HDF database in JPAD}{82}{section.a.A.2}
+\contentsline {chapter}{Bibliography}{84}{section*.76}
+\contentsline {chapter}{Glossary}{87}{section*.78}
+\contentsline {chapter}{Acronyms}{89}{section*.80}
+\contentsline {chapter}{List of symbols}{91}{section*.82}
