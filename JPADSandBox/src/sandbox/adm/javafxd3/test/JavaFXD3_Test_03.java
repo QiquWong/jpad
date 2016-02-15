@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Stack;
 
+import org.treez.javafxd3.javafx.SaveHelper;
+
 import com.github.javafxd3.d3.D3;
 import com.github.javafxd3.d3.coords.Coords;
 import com.github.javafxd3.d3.core.EnteringSelection;
@@ -61,8 +63,8 @@ public class JavaFXD3_Test_03 extends Application {
 
 	protected InterpolationMode mode = InterpolationMode.LINEAR;
 
-	protected int width = 450;
-	protected int height = 320;
+	protected int widthSVG = 1200;
+	protected int heightSVG = 800;
 
 	protected double tension;
 	
@@ -93,6 +95,17 @@ public class JavaFXD3_Test_03 extends Application {
 
 			//do some d3 stuff
 			createD3Example();
+			
+			//--------------------------------------------------
+			
+			System.out.println(
+					"SVG:\n\n" + 
+					getSvg()
+					);
+			
+			// SaveHelper saveHelper = new SaveHelper();
+			// saveHelper.saveSvg(svg.html());
+			
 
 		};
 
@@ -104,7 +117,6 @@ public class JavaFXD3_Test_03 extends Application {
 		scene = new Scene(browser, 750, 500, Color.web("#666970"));
 		stage.setScene(scene);
 		stage.show();	
-
 	}
 
 	private void createD3Example() {
@@ -121,15 +133,26 @@ public class JavaFXD3_Test_03 extends Application {
 		DatumFunction<Boolean> isDefinedAccessor = CustomCoords.definedAccessor(webEngine);
 		line = d3.svg().line().x(xAccessor).y(yAcccessor).defined(isDefinedAccessor);
 
-		svg = d3.select("svg").attr("width", width).attr("height", height).append("g");
+		svg = d3.select("svg")
+				.attr("width", widthSVG)
+				.attr("height", heightSVG)
+				.append("g");
 
 		String cssClassName = "LineDemo";
 		path = svg.append("path").classed(cssClassName, true);
+		path
+			.attr("fill","none")
+			.attr("stroke","red")
+			.attr("stroke-width","5")
+			.attr("stroke-linecap","square") // "butt", "round", "square"
+			.attr("stroke-dasharray","15,10");
 		
 		addPoint(true);
 		addPoint(true);
 		addPoint(true);
-
+		addPoint(true);
+		
+		d3.select("body").append("p").text("Agodemar :: Hi there!");
 
 	}
 
@@ -139,8 +162,8 @@ public class JavaFXD3_Test_03 extends Application {
 		System.out.println("Adding point");
 
 		Random random = new Random();
-		double x = random.nextInt(width);
-		double y = random.nextInt(height);
+		double x = random.nextInt(widthSVG/2);
+		double y = random.nextInt(heightSVG/2);
 		CustomCoords coords = new CustomCoords(webEngine, x, y, defined);
 		points.push(coords);
 
@@ -154,20 +177,23 @@ public class JavaFXD3_Test_03 extends Application {
 
 		System.out.println("Updating content");
 
+		mode = InterpolationMode.BASIS;
 		line = line.interpolate(mode);
+		System.out.println("Interpolation mode: " + line.interpolate());
+
+		tension = 2.0;
 		line = line.tension(tension);
+		System.out.println("tension: " + line.tension());
 
 		List<Coords> coordsList = new ArrayList<>(points);
 
 		// Double[] values = new Double[]{20.0,20.0};
 
 		String coordinates = line.generate(coordsList);
+		System.out.println("coordinates: " + coordinates);
+
 		path.attr("d", coordinates);
 
-//		line.interpolate(InterpolationMode.CARDINAL);
-//		System.out.println("Interpolation mode: " + line.interpolate());
-
-		
 		ArrayList<Coords> data;
 		if (showPoints) {
 			data = new ArrayList<>(points);
