@@ -746,9 +746,9 @@
     \headrule
     \sethead%
         [{\makebox[\marginparwidth+\marginparsep][l]{\thepage}%
-            {\sffamily\mdseries Bibliografia}%
+            {\sffamily\mdseries Bibliography}%
         }][][]
-        {}{}{\raggedleft{\sffamily\mdseries Bibliografia}{\makebox[\marginparwidth+\marginparsep][r]{\thepage}}}
+        {}{}{\raggedleft{\sffamily\mdseries Bibliography}{\makebox[\marginparwidth+\marginparsep][r]{\thepage}}}
     % NOTE: this footer might become empty
     %\footrule
     \setfoot%
@@ -1256,9 +1256,9 @@
 %%% matter)
 
 \renewcommand\frontmatter{%
-  \cleardoublepage\@mainmatterfalse}
+  \@mainmatterfalse}
 \renewcommand\mainmatter{%
-  \cleardoublepage\@mainmattertrue}
+  \@mainmattertrue}
 
 %%% Modify \cleardoublepage to give a really blank page
 %%% Use the emptypage package if it is in the TeX tree,
@@ -1270,13 +1270,13 @@
 %   \g@laddto@macro\cleardoublepage
 %  {\afterpage{\thispagestyle{empty}}}}
 
-\renewcommand*\cleardoublepage[1][empty]{%
-\clearpage
-\ifodd\c@page\else
-  \thispagestyle{#1}
-  \null\clearpage
-  \fi
-}
+%\renewcommand*\cleardoublepage[1][empty]{%
+%\clearpage
+%\ifodd\c@page\else
+%  \thispagestyle{#1}
+%  \null\clearpage
+%  \fi
+%}
 
 %%% some misc definitions
 
