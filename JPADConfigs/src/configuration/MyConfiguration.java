@@ -135,9 +135,9 @@ public class MyConfiguration {
 		if(Arrays.asList(str).contains(databaseDirectory)) mapPaths.put(FoldersEnum.DATABASE_DIR, databaseDirectory);
 		if(Arrays.asList(str).contains(inputDirectory)) mapPaths.put(FoldersEnum.INPUT_DIR, inputDirectory);
 		if(Arrays.asList(str).contains(outputDirectory)) mapPaths.put(FoldersEnum.OUTPUT_DIR, outputDirectory);
-		if(Arrays.asList(str).contains(runsDirectory)) mapPaths.put(FoldersEnum.OUTPUT_DIR, runsDirectory);
-		if(Arrays.asList(str).contains(cadDirectory)) mapPaths.put(FoldersEnum.OUTPUT_DIR, cadDirectory);
-		if(Arrays.asList(str).contains(imagesDirectory)) mapPaths.put(FoldersEnum.OUTPUT_DIR, imagesDirectory);
+		if(Arrays.asList(str).contains(runsDirectory)) mapPaths.put(FoldersEnum.RUNS_DIR, runsDirectory);
+		if(Arrays.asList(str).contains(cadDirectory)) mapPaths.put(FoldersEnum.CAD_DIR, cadDirectory);
+		if(Arrays.asList(str).contains(imagesDirectory)) mapPaths.put(FoldersEnum.IMAGE_DIR, imagesDirectory);
 
 		return mapPaths;
 	}

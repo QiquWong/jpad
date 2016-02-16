@@ -72,6 +72,22 @@ public class FusDesDatabaseReader extends DatabaseReader{
 		dCNbt = get_dCNb_tail_vs_FRt(tailFinenessRatio, xPositionPole);
 	}
 	
+	/**
+	 * 
+	 * @param noseFinenessRatio
+	 * @param finenessRatio
+	 * @param tailFinenessRatio
+	 * @param xPositionPole
+	 */
+	public void runAnalysisCNbeta(double noseFinenessRatio, double finenessRatio,
+			double tailFinenessRatio, double xPositionPole) {
+		CNbFR = get_CNb_FR_vs_FR(finenessRatio,xPositionPole);
+		dCNbn =	get_dCNb_nose_vs_FRn(noseFinenessRatio, xPositionPole);
+		dCNbt = get_dCNb_tail_vs_FRt(tailFinenessRatio, xPositionPole);
+	}
+
+	
+	
 	// ***************************************************** CD *************************************************************************
 	/**
 	 * This function returns the nose shape factor Kn which represents the contribution of the nose to the global drag coefficient 

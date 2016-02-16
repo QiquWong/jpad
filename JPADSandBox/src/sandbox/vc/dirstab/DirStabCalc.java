@@ -378,12 +378,10 @@ public class DirStabCalc {
 				inputManager.getValue(DirStabEnum.Tailcone_shape).getEstimatedValue());
 
 
-		fusDesDatabaseReader.runAnalysis(
+		fusDesDatabaseReader.runAnalysisCNbeta(
 				inputManager.getValue(DirStabEnum.NoseFinenessRatio).getEstimatedValue(),
-				inputManager.getValue(DirStabEnum.WindshieldAngle).doubleValue(NonSI.DEGREE_ANGLE),
 				inputManager.getValue(DirStabEnum.FinenessRatio).getEstimatedValue(),
 				inputManager.getValue(DirStabEnum.TailFinenessRatio).getEstimatedValue(),
-				inputManager.getValue(DirStabEnum.UpsweepAngle).doubleValue(NonSI.DEGREE_ANGLE),
 				inputManager.getValue(DirStabEnum.xPercentPositionPole).getEstimatedValue());
 
 
@@ -530,12 +528,10 @@ public class DirStabCalc {
 				inputManager.getValue(DirStabEnum.Tailcone_shape).getEstimatedValue());
 
 
-		fusDesDatabaseReader.runAnalysis(
+		fusDesDatabaseReader.runAnalysisCNbeta(
 				inputManager.getValue(DirStabEnum.NoseFinenessRatio).getEstimatedValue(),
-				inputManager.getValue(DirStabEnum.WindshieldAngle).doubleValue(NonSI.DEGREE_ANGLE),
 				inputManager.getValue(DirStabEnum.FinenessRatio).getEstimatedValue(),
 				inputManager.getValue(DirStabEnum.TailFinenessRatio).getEstimatedValue(),
-				inputManager.getValue(DirStabEnum.UpsweepAngle).doubleValue(NonSI.DEGREE_ANGLE),
 				inputManager.getValue(DirStabEnum.xPercentPositionPole).getEstimatedValue());
 
 
