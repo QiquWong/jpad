@@ -395,6 +395,24 @@ public class MyXMLReaderUtils {
 		}
 	} // end-of-getXMLPropertyByPath:
 
+	public static NodeList getXMLNodeListByPath(Document doc, String expression) {
+		try {
+			XPathFactory xpathFactory = XPathFactory.newInstance();
+			XPath xpath = xpathFactory.newXPath();
+			XPathExpression expr =
+					xpath.compile(expression);
+			// evaluate expression result on XML document
+			NodeList nodes = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
+			return nodes;
+		} catch (XPathExpressionException ex1) {
+			System.err.println("########################## MyXMLReaderUtils :: getXMLNodeListByPath");
+			ex1.printStackTrace();
+			return null; // ??
+		}
+	} // end-of-getXMLPropertyByPath:
+	
+	
+	
 	/*
 	 * Get the list of property values for a given XPath expression
 	 * @param document

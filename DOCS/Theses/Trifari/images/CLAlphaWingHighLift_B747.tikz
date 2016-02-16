@@ -13,7 +13,7 @@ ymin=-1,
 ymax=3.2,
 ylabel={C\textsubscript{L}},
 ymajorgrids,
-legend entries = {Clean\\Flap@TO\\}
+legend entries = {Clean\\Flap+Slat@TO\\}
 ]
 
 \addplot [

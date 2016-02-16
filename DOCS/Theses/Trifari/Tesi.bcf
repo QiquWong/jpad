@@ -2256,7 +2256,11 @@
     <bcf:citekey order="16">wiki:xml</bcf:citekey>
     <bcf:citekey order="17">args4j</bcf:citekey>
     <bcf:citekey order="18">jscienceAmount</bcf:citekey>
-    <bcf:citekey order="19">hdf</bcf:citekey>
+    <bcf:citekey order="19">McCormick</bcf:citekey>
+    <bcf:citekey order="20">McCormick</bcf:citekey>
+    <bcf:citekey order="21">nicolai2010fundamentals</bcf:citekey>
+    <bcf:citekey order="22">sforza2014commercial</bcf:citekey>
+    <bcf:citekey order="23">hdf</bcf:citekey>
     <bcf:citekey order="0">*</bcf:citekey>
   </bcf:section>
   <bcf:sortlist section="0" name="nty" type="entry" sortscheme="nty">

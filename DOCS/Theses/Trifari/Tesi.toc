@@ -13,32 +13,34 @@
 \contentsline {section}{\numberline {1.3}The Core Package}{5}{section.1.3}
 \contentsline {section}{\numberline {1.4}Aircraft model creation}{5}{section.1.4}
 \contentsline {section}{\numberline {1.5}The Graphical User Interface}{5}{section.1.5}
-\contentsline {chapter}{\numberline {2}Payload-Range}{7}{chapter.2}
-\contentsline {section}{\numberline {2.1}Theoretical background}{7}{section.2.1}
-\contentsline {section}{\numberline {2.2}Java class architecture}{11}{section.2.2}
-\contentsline {section}{\numberline {2.3}Case study: ATR-72 and B747-100B}{14}{section.2.3}
-\contentsline {chapter}{\numberline {3}Specific Range and Cruise Grid}{27}{chapter.3}
-\contentsline {section}{\numberline {3.1}Theoretical background}{27}{section.3.1}
-\contentsline {section}{\numberline {3.2}Java class architecture}{32}{section.3.2}
-\contentsline {section}{\numberline {3.3}Case study: ATR-72 and B747-100B}{34}{section.3.3}
-\contentsline {chapter}{\numberline {4}High lift devices effects}{43}{chapter.4}
-\contentsline {section}{\numberline {4.1}Theoretical background}{44}{section.4.1}
-\contentsline {subsection}{\numberline {4.1.1}$\upDelta C_{l0}$ and $\upDelta C_{L0}$ calculation}{47}{subsection.4.1.1}
-\contentsline {subsection}{\numberline {4.1.2}$\upDelta C_{l\text {max}}$ and $\upDelta C_{L\text {max}}$ calculation for trailing edge and leading edge devices}{50}{subsection.4.1.2}
-\contentsline {subsection}{\numberline {4.1.3}$C_{l\alpha , \text {flap}}$ and $C_{L\alpha , \text {flap}}$ calculation}{55}{subsection.4.1.3}
-\contentsline {subsection}{\numberline {4.1.4}$\upDelta \alpha _{\text {stall}}$ calculation for trailing edge and leading edge devices}{55}{subsection.4.1.4}
-\contentsline {subsection}{\numberline {4.1.5}Further effects calculations}{56}{subsection.4.1.5}
-\contentsline {section}{\numberline {4.2}Java class architecture}{60}{section.4.2}
-\contentsline {section}{\numberline {4.3}Case study: ATR-72 and B747-100B}{63}{section.4.3}
-\contentsline {chapter}{\numberline {5}Take-off performance}{71}{chapter.5}
-\contentsline {section}{\numberline {5.1}Theoretical background}{71}{section.5.1}
-\contentsline {section}{\numberline {5.2}Java class architecture}{71}{section.5.2}
-\contentsline {section}{\numberline {5.3}Case study: B747-100B}{71}{section.5.3}
-\contentsline {chapter}{Appendices}{}{section*.71}
-\contentsline {chapter}{\numberline {A}HDF databse creation and reading }{75}{Appendix.a.A}
-\contentsline {section}{\numberline {A.1}Creation of a database using MATLAB}{75}{section.a.A.1}
-\contentsline {section}{\numberline {A.2}Reading data from an HDF database in JPAD}{78}{section.a.A.2}
-\contentsline {chapter}{Bibliography}{80}{section*.74}
-\contentsline {chapter}{Glossary}{83}{section*.76}
-\contentsline {chapter}{Acronyms}{85}{section*.78}
-\contentsline {chapter}{List of symbols}{87}{section*.80}
+\contentsline {chapter}{\numberline {2}Payload-Range}{6}{chapter.2}
+\contentsline {section}{\numberline {2.1}Theoretical background}{6}{section.2.1}
+\contentsline {section}{\numberline {2.2}Java class architecture}{10}{section.2.2}
+\contentsline {section}{\numberline {2.3}Case study: ATR-72 and B747-100B}{13}{section.2.3}
+\contentsline {chapter}{\numberline {3}Specific Range and Cruise Grid}{25}{chapter.3}
+\contentsline {section}{\numberline {3.1}Theoretical background}{25}{section.3.1}
+\contentsline {section}{\numberline {3.2}Java class architecture}{30}{section.3.2}
+\contentsline {section}{\numberline {3.3}Case study: ATR-72 and B747-100B}{32}{section.3.3}
+\contentsline {chapter}{\numberline {4}High lift devices effects}{41}{chapter.4}
+\contentsline {section}{\numberline {4.1}Theoretical background}{42}{section.4.1}
+\contentsline {subsection}{\numberline {4.1.1}$\upDelta C_{l0}$ and $\upDelta C_{L0}$ calculation}{45}{subsection.4.1.1}
+\contentsline {subsection}{\numberline {4.1.2}$\upDelta C_{l\text {max}}$ and $\upDelta C_{L\text {max}}$ calculation for trailing edge and leading edge devices}{48}{subsection.4.1.2}
+\contentsline {subsection}{\numberline {4.1.3}$C_{l\alpha , \text {flap}}$ and $C_{L\alpha , \text {flap}}$ calculation}{53}{subsection.4.1.3}
+\contentsline {subsection}{\numberline {4.1.4}$\upDelta \alpha _{\text {stall}}$ calculation for trailing edge and leading edge devices}{53}{subsection.4.1.4}
+\contentsline {subsection}{\numberline {4.1.5}Further effects calculations}{54}{subsection.4.1.5}
+\contentsline {section}{\numberline {4.2}Java class architecture}{58}{section.4.2}
+\contentsline {section}{\numberline {4.3}Case study: ATR-72 and B747-100B}{61}{section.4.3}
+\contentsline {chapter}{\numberline {5}Take-off performance}{68}{chapter.5}
+\contentsline {section}{\numberline {5.1}Theoretical background}{68}{section.5.1}
+\contentsline {subsection}{\numberline {5.1.1}\gls {acr:AOE} take-off run}{68}{subsection.5.1.1}
+\contentsline {subsection}{\numberline {5.1.2}\gls {acr:OEI} take-off run and balanced field lenght}{74}{subsection.5.1.2}
+\contentsline {section}{\numberline {5.2}Java class architecture}{75}{section.5.2}
+\contentsline {section}{\numberline {5.3}Case study: B747-100B}{75}{section.5.3}
+\contentsline {chapter}{Appendices}{}{section*.76}
+\contentsline {chapter}{\numberline {A}HDF databse creation and reading }{77}{Appendix.a.A}
+\contentsline {section}{\numberline {A.1}Creation of a database using MATLAB}{77}{section.a.A.1}
+\contentsline {section}{\numberline {A.2}Reading data from an HDF database in JPAD}{80}{section.a.A.2}
+\contentsline {chapter}{Bibliography}{82}{section*.79}
+\contentsline {chapter}{Glossary}{84}{section*.81}
+\contentsline {chapter}{Acronyms}{86}{section*.83}
+\contentsline {chapter}{List of symbols}{87}{section*.85}

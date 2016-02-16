@@ -1,5 +1,6 @@
 package sandbox.vc.dirstab;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.measure.unit.NonSI;
@@ -15,6 +16,7 @@ import calculators.geometry.LSGeometryCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.DirStabEnum;
 import configuration.enumerations.FoldersEnum;
+import configuration.enumerations.cNbetaContributionsEnum;
 import database.databasefunctions.aerodynamics.AerodynamicsDatabaseManager;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
@@ -376,12 +378,10 @@ public class DirStabCalc {
 				inputManager.getValue(DirStabEnum.Tailcone_shape).getEstimatedValue());
 
 
-		fusDesDatabaseReader.runAnalysis(
+		fusDesDatabaseReader.runAnalysisCNbeta(
 				inputManager.getValue(DirStabEnum.NoseFinenessRatio).getEstimatedValue(),
-				inputManager.getValue(DirStabEnum.WindshieldAngle).doubleValue(NonSI.DEGREE_ANGLE),
 				inputManager.getValue(DirStabEnum.FinenessRatio).getEstimatedValue(),
 				inputManager.getValue(DirStabEnum.TailFinenessRatio).getEstimatedValue(),
-				inputManager.getValue(DirStabEnum.UpsweepAngle).doubleValue(NonSI.DEGREE_ANGLE),
 				inputManager.getValue(DirStabEnum.xPercentPositionPole).getEstimatedValue());
 
 
@@ -491,5 +491,159 @@ public class DirStabCalc {
 		writeToFile(outputFileWithPathAndExt, veDSCDatabaseFileName, inputManager, outputManager);
 		writeToFile(outputFileWithPathAndExt, fusDesDatabaseFileName, inputManager, outputManager);
 
+	}
+	
+	
+	/**
+	 * This method returns the yawning moment coefficients
+	 * 
+	 * @param veDSCDatabaseFileName
+	 * @param fusDesDatabaseFileName
+	 * @param databaseDirectory
+	 * @param inputFileNamewithPathAndExt
+	 * @param outputFileWithPathAndExt
+	 * @return yawning moment coefficient and its contributions
+	 */
+	
+	public static  HashMap<cNbetaContributionsEnum, Double> executeStandaloneDirStabMap(String veDSCDatabaseFileName, String fusDesDatabaseFileName, String databaseDirectory, 
+			String inputFileNamewithPathAndExt, String outputFileWithPathAndExt){
+		
+		DatabaseIOmanager<DirStabEnum> inputManager = readFromFile(inputFileNamewithPathAndExt); 
+
+		VeDSCDatabaseReader veDSCDatabaseReader = AerodynamicsDatabaseManager.initializeVeDSC(new VeDSCDatabaseReader(
+				databaseDirectory, veDSCDatabaseFileName),
+				databaseDirectory);
+
+		FusDesDatabaseReader fusDesDatabaseReader = AerodynamicsDatabaseManager.initializeFusDes(new FusDesDatabaseReader(
+				databaseDirectory, fusDesDatabaseFileName), 
+				databaseDirectory);
+
+		veDSCDatabaseReader.runAnalysis(
+				inputManager.getValue(DirStabEnum.Wing_Aspect_Ratio).getEstimatedValue(), 
+				inputManager.getValue(DirStabEnum.Wing_position).getEstimatedValue(), 
+				inputManager.getValue(DirStabEnum.Vertical_Tail_Aspect_Ratio).getEstimatedValue(), 
+				inputManager.getValue(DirStabEnum.Vertical_Tail_span).doubleValue(SI.METER), 
+				inputManager.getValue(DirStabEnum.Horizontal_position_over_vertical).getEstimatedValue(),
+				inputManager.getValue(DirStabEnum.Diameter_at_vertical_MAC).doubleValue(SI.METER), 
+				inputManager.getValue(DirStabEnum.Tailcone_shape).getEstimatedValue());
+
+
+		fusDesDatabaseReader.runAnalysisCNbeta(
+				inputManager.getValue(DirStabEnum.NoseFinenessRatio).getEstimatedValue(),
+				inputManager.getValue(DirStabEnum.FinenessRatio).getEstimatedValue(),
+				inputManager.getValue(DirStabEnum.TailFinenessRatio).getEstimatedValue(),
+				inputManager.getValue(DirStabEnum.xPercentPositionPole).getEstimatedValue());
+
+
+
+		//-------------  Start - Calculation vertical geoemtry parameters --------------------------------------
+		double surfaceVertical = LSGeometryCalc.calculateSurface(
+				inputManager.getValue(DirStabEnum.Vertical_Tail_span).doubleValue(SI.METER), 
+				inputManager.getValue(DirStabEnum.Vertical_Tail_Aspect_Ratio).getEstimatedValue());
+
+		double surfaceWing = LSGeometryCalc.calculateSurface(
+				inputManager.getValue(DirStabEnum.Wing_span).doubleValue(SI.METER), 
+				inputManager.getValue(DirStabEnum.Wing_Aspect_Ratio).getEstimatedValue());
+		//-------------  End - Calculation vertical geoemtry parameters --------------------------------------
+
+
+
+		//-------------  Start - Calculation fusealge geoemtry parameters --------------------------------------
+		double noseLength = FusGeometryCalc.calculateFuselageNoseLength(
+				inputManager.getValue(DirStabEnum.FuselageDiameter).doubleValue(SI.METER),
+				inputManager.getValue(DirStabEnum.NoseFinenessRatio).getEstimatedValue());
+
+		double tailLength = FusGeometryCalc.calculateFuselageTailLength(
+				inputManager.getValue(DirStabEnum.FuselageDiameter).doubleValue(SI.METER),
+				inputManager.getValue(DirStabEnum.TailFinenessRatio).getEstimatedValue());
+
+		double cabinLength = FusGeometryCalc.calculateFuselageCabinLength(
+				inputManager.getValue(DirStabEnum.FuselageLength).doubleValue(SI.METER),
+				noseLength,tailLength);
+
+		double 	sWetNose = FusGeometryCalc.calcFuselageNoseWetSurface(
+				inputManager.getValue(DirStabEnum.FuselageDiameter).doubleValue(SI.METER), 
+				noseLength);
+
+		double 	sWetCabin = FusGeometryCalc.calcFuselageCabinWetSurface(
+				inputManager.getValue(DirStabEnum.FuselageDiameter).doubleValue(SI.METER), 
+				cabinLength);
+
+		double 	sWetTail = FusGeometryCalc.calcFuselageTailWetSurface(
+				inputManager.getValue(DirStabEnum.FuselageDiameter).doubleValue(SI.METER), 
+				tailLength);
+
+		double wetSurface = FusGeometryCalc.calcFuselageWetSurface(
+				inputManager.getValue(DirStabEnum.FuselageDiameter).doubleValue(SI.METER),
+				inputManager.getValue(DirStabEnum.FuselageLength).doubleValue(SI.METER), 
+				noseLength,cabinLength, tailLength);
+
+		double frontSurface = Fuselage.calculateSfront(
+				inputManager.getValue(DirStabEnum.FuselageDiameter).doubleValue(SI.METER));
+
+		double wingSurface = Math.pow(inputManager.getValue(DirStabEnum.Wing_span).doubleValue(SI.METER),2)/
+				inputManager.getValue(DirStabEnum.Wing_Aspect_Ratio).doubleValue(Unit.ONE);
+
+		double surfaceRatio = frontSurface/wingSurface;
+		//-------------  End - Calculation fusealge geoemtry parameters --------------------------------------
+
+
+		// cNb vertical [1/deg]
+		double cNbVertical = MomentCalc.calcCNbetaVerticalTail(
+				inputManager.getValue(DirStabEnum.Wing_Aspect_Ratio).getEstimatedValue(), 
+				inputManager.getValue(DirStabEnum.Vertical_Tail_Aspect_Ratio).getEstimatedValue(),
+				inputManager.getValue(DirStabEnum.Vertical_Tail_Arm).doubleValue(SI.METER),
+				inputManager.getValue(DirStabEnum.Wing_span).doubleValue(SI.METER),
+				surfaceWing, surfaceVertical, 
+				inputManager.getValue(DirStabEnum.Vertical_Tail_Sweep_at_half_chord).doubleValue(SI.RADIAN),
+				inputManager.getValue(DirStabEnum.Vertical_tail_airfoil_lift_curve_slope).getEstimatedValue(),
+				inputManager.getValue(DirStabEnum.Mach_number).getEstimatedValue(), 
+				veDSCDatabaseReader.getkFv(),
+				veDSCDatabaseReader.getkWv(),
+				veDSCDatabaseReader.getkHv())/(180/Math.PI);
+
+
+
+		// cNbFuselage referred to wing surface and span [1/deg] estimated with FusDes method
+		double cNbFuselageFusDes = MomentCalc.calcCNBetaFusalage(
+				fusDesDatabaseReader.getCNbFR(),
+				fusDesDatabaseReader.getdCNbn(),
+				fusDesDatabaseReader.getdCNbt())* surfaceRatio * inputManager.getValue(DirStabEnum.FuselageDiameter).doubleValue(SI.METER)/
+																 inputManager.getValue(DirStabEnum.Wing_span).doubleValue(SI.METER);
+
+		// cNbFuselage referred to wing surface and span [1/deg] estimated with VeDSC method 
+		double cNbFuselage = cNbFuselageFusDes * veDSCDatabaseReader.getkVf()*
+												 veDSCDatabaseReader.getkHf()*
+												 veDSCDatabaseReader.getkWf();
+
+		// cNbWing referred to wing surface and span [1/deg] 
+		double cNbWing = MomentCalc.calcCNBetaWing(inputManager.getValue(DirStabEnum.LiftCoefficient).doubleValue(Unit.ONE),
+												   inputManager.getValue(DirStabEnum.WingSweepAngle).doubleValue(NonSI.DEGREE_ANGLE),
+												   inputManager.getValue(DirStabEnum.Wing_Aspect_Ratio).doubleValue(Unit.ONE),
+												   inputManager.getValue(DirStabEnum.xACwMACratio).doubleValue(Unit.ONE),
+												   inputManager.getValue(DirStabEnum.xCGMACratio).doubleValue(Unit.ONE)
+												  );
+
+		double cNbAC= MomentCalc.calcCNBetaAC(cNbVertical, cNbFuselage, cNbWing);
+
+		DatabaseIOmanager<DirStabEnum> outputManager = initializeOutputTree(
+				cNbVertical,
+				veDSCDatabaseReader.getkFv(),
+				veDSCDatabaseReader.getkHv(),
+				veDSCDatabaseReader.getkWv(),
+				cNbFuselage,
+				veDSCDatabaseReader.getkHf(),
+				veDSCDatabaseReader.getkWf(),
+				veDSCDatabaseReader.getkVf(),
+				cNbWing,
+				cNbAC);
+		
+		HashMap<cNbetaContributionsEnum,Double> cNb = new  HashMap<>();
+		cNb.put(cNbetaContributionsEnum.cNbVertical,cNbVertical);
+		cNb.put(cNbetaContributionsEnum.cNbFuselage, cNbFuselage);
+		cNb.put(cNbetaContributionsEnum.cNbWing, cNbWing);
+		cNb.put(cNbetaContributionsEnum.cNbAC, cNbAC);
+
+	return cNb;
 	}
 }
