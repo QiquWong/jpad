@@ -2,11 +2,11 @@
 <PayloadRange>
     <Input>
         <AirplaneType>
-            <value unit="">0.0000</value>
+            <value unit="">1.0000</value>
             <description unit="">It is possible to choose 0 which corresponds to TURBOFAN_TRANSPORT_JETS, or 1 for TURBOPROP_REGIONAL</description>
         </AirplaneType>
         <EngineType>
-            <value unit="">0.0000</value>
+            <value unit="">1.0000</value>
             <description unit="">It is possible to choose 0 for TURBOFAN or 1 for TURBOPROP</description>
         </EngineType>
         <AirfoilType>
@@ -79,16 +79,16 @@
         </CD0>
     </Input>
     <Output>
-        <Design_Payload>
-            <value unit="nmi">348.3357</value>
+        <Design_Range>
+            <value unit="nmi">531.6525</value>
             <description unit="">It's the range with maximum payload</description>
-        </Design_Payload>
+        </Design_Range>
         <Max_Fuel_Range>
-            <value unit="nmi">851.7000</value>
+            <value unit="nmi">1332.9830</value>
             <description unit="">It's the range with maximum fuel mass</description>
         </Max_Fuel_Range>
         <Max_Range>
-            <value unit="nmi">1242.5883</value>
+            <value unit="nmi">1955.2576</value>
             <description unit="">It's the range without payload</description>
         </Max_Range>
         <Design_Payload>
@@ -96,7 +96,7 @@
             <description unit="">It's the value of design payload mass</description>
         </Design_Payload>
         <SFC>
-            <value unit="lbf/(hp·h)">0.6448</value>
+            <value unit="lb/(lbf·h)">0.4242</value>
             <description unit="">Specific Fuel Consumption</description>
         </SFC>
         <Efficiency>

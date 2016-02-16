@@ -81,8 +81,9 @@ public class Test_AC_AGILE_01 {
 		databaseDirectoryAbsolutePath = theTestObject.get_databasePath().getAbsolutePath();
 		String outputFileNameWithPathAndExt = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR) + File.separator + 
 				Files.getNameWithoutExtension(fileNameWithPathAndExt) + "_Out.xml";
-		
+		//------------------------------------------------------------------------------------
 		// Initialize Aircraft with default parameters
+		//------------------------------------------------------------------------------------
 		Aircraft aircraft = Aircraft.createDefaultAircraft("B747-100B"); //("ATR-72")
 				
 		OperatingConditions operatingConditions = new OperatingConditions();
@@ -93,30 +94,23 @@ public class Test_AC_AGILE_01 {
 		aircraft.get_weights().set_MTOM(MTOM);
 		Amount<Force> _MLW = MTOM.times(0.9).times(AtmosphereCalc.g0).to(SI.NEWTON);
 		aircraft.get_weights().set_MLW(_MLW);
-//		aircraft.get_weights().set_paxSingleMass(paxSingleMass);
-		
-//		Amount<Length> range = Amount.valueOf(1890, NonSI.MILE);
-//		Amount<Mass> paxSingleMass = Amount.valueOf(225, NonSI.POUND);
-//		aircraft.get_performances().set_range(range);
+
 //		// Geometry		
 		Amount<Area> _surface = Amount.valueOf(76.33,SI.SQUARE_METRE);
 		aircraft.get_exposedWing().set_surface(_surface);
 		Amount<Length> _span = Amount.valueOf(27.6, SI.METER);
 		aircraft.get_exposedWing().set_span(_span);
-//		Amount<Length> diam_C_MAX = Amount.valueOf(3, SI.METER);
-//		aircraft.get_fuselage().set_diam_C_MAX(diam_C_MAX );
+		//------------------------------------------------------------------------------------
 		
 		//------------------------------------------------------------------
 		// Engine Moment calculation
 		//------------------------------------------------------------------
 		Amount<Force> _T0Total = Amount.valueOf(13217.65, NonSI.POUND_FORCE);
 		aircraft.get_powerPlant().set_T0Total(_T0Total);
-//		EngineMountingPositionEnum _position = null;
-//		aircraft.get_powerPlant().set_position(_position);
 		
 		double le = 5; // engine arm [m]
 		double byPassRatio = 8;
-		double engineNumber = 2;
+		double engineNumber = 1;
 		double[] speed = MyArrayUtils.linspace(
 					SpeedCalc.calculateTAS(
 							0.05,
@@ -128,7 +122,8 @@ public class Test_AC_AGILE_01 {
 							),
 					250
 					);
-			
+		double[] machVector = MyArrayUtils.linspace(0.05,1,250);
+					
 		double[] thrust = ThrustCalc.calculateThrustVsSpeed(
 									_T0Total.to(SI.NEWTON).getEstimatedValue(),
 									1, // phi
@@ -145,11 +140,10 @@ public class Test_AC_AGILE_01 {
 			thrustMoment[i] = thrust[i]*le;
 		}
 		
-		
-		System.out.println("\n T0: " + _T0Total.getEstimatedValue()+ " " + _T0Total.getUnit());
-		System.out.println("\n h: " + operatingConditions.get_altitude().getEstimatedValue());
-		System.out.println("\n BPR: " + byPassRatio);
-		System.out.println("\n nun engine: " + engineNumber);
+//		System.out.println("\n T0: " + _T0Total.getEstimatedValue()+ " " + _T0Total.getUnit());
+//		System.out.println("\n h: " + operatingConditions.get_altitude().getEstimatedValue());
+//		System.out.println("\n BPR: " + byPassRatio);
+//		System.out.println("\n nun engine: " + engineNumber);
 		
 		//------------------------------------------------------------------
 		// Aerodynamic Moment calculation
@@ -164,7 +158,7 @@ public class Test_AC_AGILE_01 {
 				outputFileNameWithPathAndExt);
 		
 		double tau = 0.5;
-		double dr  = 25;
+		double dr  = 30;
 		double _density = operatingConditions.get_densityCurrent().getEstimatedValue();
 		double[] yawingMoment = new double[thrustMoment.length];
 		
@@ -175,22 +169,25 @@ public class Test_AC_AGILE_01 {
 //				operatingConditions.get_dynamicPressure().getEstimatedValue()*
 				0.5*
 				_density*
-				speed[i]*
+				Math.pow(speed[i],2)*
 				_surface.getEstimatedValue()*
 				_span.getEstimatedValue();
 		}
 		
 		//-------------------------------------------------
 		// PLOTTING:
-		double[][] thrustPlotVector = new double [speed.length][2];
-		System.out.println("speed: " + speed.length);
+		double[][] thrustPlotVector = new double [2][speed.length];
+//		System.out.println("speed: " + speed.length);
 		
 		for(int i=0; i < speed.length; i++){
-		thrustPlotVector[i][0] = thrustMoment[i];
-		thrustPlotVector[i][1]= yawingMoment[i];
+		thrustPlotVector[0][i] = thrustMoment[i];
+		thrustPlotVector[1][i] = yawingMoment[i];
 		}
+		String[] legendValue = new String[2];
+		legendValue[0] = "Thrust Moment";
+		legendValue[1] = "Yawning Moment";
 		
-		System.out.println("thrustPlotVector length: " + thrustPlotVector[1].length);
+//		System.out.println("thrustPlotVector length: " + thrustPlotVector.length);
 			MyChartToFileUtils.plotNoLegend(speed,thrust,
 					null,null,null,null,
 					"TAS", "Thrust",
@@ -203,10 +200,13 @@ public class Test_AC_AGILE_01 {
 					"m/s", "N m",
 					folderPathName, "Engine moment");
 			
-			MyChartToFileUtils.plotNoLegend(speed,thrustPlotVector[0],
-					null,null,null,null,
-					"TAS", "Thrust - Yawing Moment",
-					"m/s", "N m",
+			MyChartToFileUtils.plot(machVector,thrustPlotVector,
+//					null,100.0,null,yawingMoment[yawingMoment.length/3] ,	// axis with limits
+					null,0.5,null,yawingMoment[yawingMoment.length/3] ,
+//					"TAS", "Thrust - Yawing Moment",	
+					"M", "Thrust - Yawing Moment",
+//					"m/s", "N m",legendValue,
+					"", "N m",legendValue,
 					folderPathName, "VMC");
 
 	}
