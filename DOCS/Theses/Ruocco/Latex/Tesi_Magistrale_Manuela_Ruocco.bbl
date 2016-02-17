@@ -230,6 +230,22 @@
       \endverb
       \warn{\item Datamodel: Entry 'plotdigitizer' (Tesi_Bibliography.bib): Invalid format '24.10.15' of date field 'date' - ignoring}
     \endentry
+    \entry{nasaLift}{other}{}
+      \name{author}{1}{}{%
+        {{hash=7da2a74e066e90281bae34a5d86abefd}{Authors}{A\bibinitperiod}{Various}{V\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{fullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \field{sortinit}{A}
+      \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{The Lift Coefficient}
+      \field{year}{2006}
+      \verb{url}
+      \verb https://www.grc.nasa.gov/www/K-12/airplane/liftco.html
+      \endverb
+    \endentry
     \entry{swt}{online}{}
       \name{author}{1}{}{%
         {{hash=7da2a74e066e90281bae34a5d86abefd}{Authors}{A\bibinitperiod}{Various}{V\bibinitperiod}{}{}{}{}}%
