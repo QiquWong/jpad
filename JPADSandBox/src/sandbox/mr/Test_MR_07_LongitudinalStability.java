@@ -34,6 +34,9 @@ import aircraft.components.Aircraft;
 import aircraft.components.fuselage.FusAerodynamicsManager;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
+import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLMaxClean;
+import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLvsAlphaCurve;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcHighLiftDevices;
 import configuration.MyConfiguration;
 import configuration.enumerations.AnalysisTypeEnum;
@@ -317,6 +320,50 @@ public class Test_MR_07_LongitudinalStability {
 		System.out.println("CL of Isolated wing at alpha body = " + cLIsolatedWing);
 		System.out.println("\n \t \t \tDONE PLOTTING CL VS ALPHA CURVE  ");
 
+		// -----------------------------------------------------------------------
+				// Using NASA-Blackwell method in order to estimate the lifting surface CLmax
+				// -----------------------------------------------------------------------
+
+				System.out.println("\n \n-----------------------------------------------------");
+				System.out.println("Starting evaluate stall path of wing");
+				System.out.println("-----------------------------------------------------");
+
+
+				LSAerodynamicsManager.CalcCLMaxClean theCLmaxAnalysis = theLSAnalysis.new CalcCLMaxClean(); //is nested
+				LSAerodynamicsManager.CalcCLvsAlphaCurve theCLAnalysis = theLSAnalysis.new CalcCLvsAlphaCurve();
+				theCLAnalysis.nasaBlackwell(); 
+				theCLmaxAnalysis.nasaBlackwell();
+				Amount<javax.measure.quantity.Angle> alphaAtCLMax = theLSAnalysis.get_alphaStall();
+				double clMax = theCLWingCalculator.nasaBlackwell(alphaAtCLMax);
+
+
+				// PLOT
+
+				System.out.println("\n \n \t \t WRITING CHART TO FILE. Stall path. ");
+				System.out.println("-----------------------------------------------------");
+
+
+				// interpolation of CL MAX_airfoil
+				MyArray clMaxAirfoil = theCLmaxAnalysis.getClAirfoils();
+
+				MyArray clAlphaThird = theLSAnalysis.getcLMap().getCxyVsAlphaTable().get(MethodEnum.NASA_BLACKWELL ,alphaAtCLMax);
+
+				double [][] semiSpanAd = {theLSAnalysis.get_yStationsND(), theLSAnalysis.get_yStationsND()};
+
+				double [][] clDistribution = {clMaxAirfoil.getRealVector().toArray(), clAlphaThird.getRealVector().toArray()};
+				String [] legend = new String [4];
+				legend[0] = "CL max airfoil";
+				legend[1] = "CL distribution at alpha " + Math.toDegrees( alphaAtCLMax.getEstimatedValue());	
+
+				MyChartToFileUtils.plot(
+						semiSpanAd,	clDistribution, // array to plot
+						0.0, 1.0, 0.0, null,					    // axis with limits
+						"eta", "CL", "", "",	    // label with unit
+						legend,					// legend
+						subfolderPath, "Stall Path of Wing ");			    // output informations
+
+				System.out.println("-----------------------------------------------------");
+				System.out.println("\t \t DONE ");
 
 
 
@@ -387,6 +434,52 @@ public class Test_MR_07_LongitudinalStability {
 		System.out.println("\n\n\t\t\tDONE PLOTTING CL vs ALPHA HORIZONTAL TAIL");
 
 
+		// -----------------------------------------------------------------------
+		// Using NASA-Blackwell method in order to estimate the lifting surface CLmax
+		// -----------------------------------------------------------------------
+
+		System.out.println("\n \n-----------------------------------------------------");
+		System.out.println("Starting evaluate stall path of horiontal tail");
+		System.out.println("-----------------------------------------------------");
+
+
+		LSAerodynamicsManager.CalcCLMaxClean theCLmaxHTailAnalysis = theLSHorizontalTail.new CalcCLMaxClean(); //is nested
+		LSAerodynamicsManager.CalcCLvsAlphaCurve theCLHTailAnalysis = theLSHorizontalTail.new CalcCLvsAlphaCurve();
+		theCLHTailAnalysis.nasaBlackwell(); 
+		theCLmaxHTailAnalysis.nasaBlackwell();
+		Amount<javax.measure.quantity.Angle> alphaHTailAtCLMax = theLSHorizontalTail.get_alphaStall();
+		double clMaxHtail = theCLHorizontalTailCalculator.nasaBlackwell(alphaHTailAtCLMax);
+
+
+		// PLOT
+
+		System.out.println("\n \n \t \t WRITING CHART TO FILE. Stall path. ");
+		System.out.println("-----------------------------------------------------");
+
+
+		// interpolation of CL MAX_airfoil
+		MyArray clMaxAirfoilHtail = theCLmaxHTailAnalysis.getClAirfoils();
+
+		MyArray clAlphaThirdHTail = theLSHorizontalTail.getcLMap().getCxyVsAlphaTable().get(MethodEnum.NASA_BLACKWELL ,alphaHTailAtCLMax);
+
+		double [][] semiSpanAdHTail = {theLSHorizontalTail.get_yStationsND(), theLSHorizontalTail.get_yStationsND()};
+
+		double [][] clDistributionHtail = {clMaxAirfoilHtail.getRealVector().toArray(), clAlphaThirdHTail.getRealVector().toArray()};
+		String [] legendHtail = new String [4];
+		legendHtail[0] = "CL max airfoil";
+		legendHtail[1] = "CL distribution at alpha " + Math.toDegrees( alphaHTailAtCLMax.getEstimatedValue());	
+
+		MyChartToFileUtils.plot(
+				semiSpanAdHTail, clDistributionHtail, // array to plot
+				0.0, 1.0, 0.0, null,					    // axis with limits
+				"eta", "CL", "", "",	    // label with unit
+				legendHtail,					// legend
+				subfolderPath, "Stall Path of Horizontal Tail ");			    // output informations
+
+		System.out.println("-----------------------------------------------------");
+		System.out.println("\t \t DONE ");
+
+
 		// TAU 
 
 		System.out.println("\n-----Start of tau calculation-----\n" ); 
@@ -440,11 +533,11 @@ public class Test_MR_07_LongitudinalStability {
 			alphaListPlot.add(alphaVector);
 		}
 
-		List<String> legend  = new ArrayList<>(); 
-		legend.add("clean");
+		List<String> legendStall  = new ArrayList<>(); 
+		legendStall.add("clean");
 
 		for (int j=1 ; j<nValueDelta ; j++){
-			legend.add("delta = (deg) " + deflectionArray[j]);
+			legendStall.add("delta = (deg) " + deflectionArray[j]);
 		}
 
 		MyChartToFileUtils.plotJFreeChart(alphaListPlot, 
@@ -452,15 +545,16 @@ public class Test_MR_07_LongitudinalStability {
 				"CL vs alpha",
 				"alpha", 
 				"CL",
-				-12.0, 22.0, 0.0, 1.3,
+				-12.0, 22.0, 0.0,null,
 				"deg",
 				"",
 				true,
-				legend,
+				legendStall,
 				subfolderPath,
 				"CL alpha Horizontal Tail with Elevator");
 
 		System.out.println("\n\n\t\t\tDONE PLOTTING CL vs ALPHA HORIZONTAL TAIL WITH ELEVATOR DEFLECTION");
+
 
 
 		// ------------------Complete Aircraft---------------
