@@ -5,11 +5,11 @@ import javax.measure.quantity.Length;
 import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 import aircraft.OperatingConditions;
-import aircraft.auxiliary.airfoil.MyAirfoil;
 import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
+import aircraft.components.liftingSurface.LSAerodynamicsManager;
+import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.MyConfiguration;
-import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.AirplaneType;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.EngineTypeEnum;
@@ -45,25 +45,18 @@ public class PayloadRange_Test_TF{
 		//------------------------------------------------------------------------------------
 		// Operating Condition / Aircraft / AnalysisManager (geometry calculations)
 		OperatingConditions theCondition = new OperatingConditions();
-		theCondition.set_altitude(Amount.valueOf(11000.0, SI.METER));
+		theCondition.set_altitude(Amount.valueOf(11000, SI.METER));
 		theCondition.set_machCurrent(0.84);
+		
 		Aircraft aircraft = Aircraft.createDefaultAircraft("B747-100B");
-		
-		aircraft.get_theAerodynamics().set_aerodynamicDatabaseReader(aeroDatabaseReader);
-		aircraft.get_theFuelTank().setFuelFractionDatabase(fuelFractionReader);
 		aircraft.set_name("B747-100B");
-		aircraft.get_wing().set_theCurrentAirfoil(
-				new MyAirfoil(
-						aircraft.get_wing(), 
-						0.5
-						)
-				);	
-		aircraft.get_wing().get_theCurrentAirfoil().set_type(AirfoilTypeEnum.MODERN_SUPERCRITICAL);
-		
+		aircraft.get_theFuelTank().setFuelFractionDatabase(fuelFractionReader);
+
+		LiftingSurface theWing = aircraft.get_wing();
+
 		ACAnalysisManager theAnalysis = new ACAnalysisManager(theCondition);
 		theAnalysis.updateGeometry(aircraft);
 
-		//--------------------------------------------------------------------------------------
 		// Set the CoG(Bypass the Balance analysis allowing to perform Aerodynamic analysis only)
 		CenterOfGravity cgMTOM = new CenterOfGravity();
 
@@ -75,10 +68,18 @@ public class PayloadRange_Test_TF{
 		aircraft.get_theBalance().set_cgMTOM(cgMTOM);
 		aircraft.get_HTail().calculateArms(aircraft);
 		aircraft.get_VTail().calculateArms(aircraft);
-		
-		theAnalysis.doAnalysis(aircraft, 
-				AnalysisTypeEnum.AERODYNAMIC);
-		
+
+
+		LSAerodynamicsManager theLSAnalysis = new LSAerodynamicsManager(
+				theCondition,
+				theWing,
+				aircraft
+				);
+
+		theLSAnalysis.set_AerodynamicDatabaseReader(aeroDatabaseReader);
+		theWing.setAerodynamics(theLSAnalysis);
+		theAnalysis.doAnalysis(aircraft,AnalysisTypeEnum.AERODYNAMIC);
+
 		//------------------------------------------------------------------------------------
 		// Creating the Calculator Object
 		

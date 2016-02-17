@@ -2618,14 +2618,14 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			double alphaStar = (cLStarClean - qValue)/cLAlphaFlap;
 			double cLMaxClean = get_cLMaxClean();
 			Amount<Angle> alphaMax = get_alphaMaxClean().to(NonSI.DEGREE_ANGLE);	
-			double cLMaxHighLift = cLMaxClean + deltaCLmaxFlap + deltaCLmaxSlat;
+			cLMaxFlap = cLMaxClean + deltaCLmaxFlap + deltaCLmaxSlat;
 			
 			double alphaMaxHighLift;
 
 			if(deltaSlat == null)
 				alphaMaxHighLift = alphaMax.getEstimatedValue() + deltaAlphaMaxFlap;
 			else
-				alphaMaxHighLift = ((cLMaxHighLift-cL0HighLift)/cLalphaNew) 
+				alphaMaxHighLift = ((cLMaxFlap-cL0HighLift)/cLalphaNew) 
 									+ get_AerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(
 											getTheLiftingSurface()
 											.get_sweepLEEquivalent().to(NonSI.DEGREE_ANGLE).getEstimatedValue(),
@@ -2716,14 +2716,14 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			
 			double cLMaxClean = get_cLMaxClean();
 			Amount<Angle> alphaMax = get_alphaMaxClean().to(NonSI.DEGREE_ANGLE);	
-			double cLMaxHighLift = cLMaxClean + deltaCLmaxFlap + deltaCLmaxSlat;
+			cLMaxFlap = cLMaxClean + deltaCLmaxFlap + deltaCLmaxSlat;
 
 			double alphaMaxHighLift;
 
 			if(deltaSlat == null)
 				alphaMaxHighLift = alphaMax.getEstimatedValue() + deltaAlphaMaxFlap;
 			else
-				alphaMaxHighLift = ((cLMaxHighLift-cL0HighLift)/cLalphaNew) 
+				alphaMaxHighLift = ((cLMaxFlap-cL0HighLift)/cLalphaNew) 
 									+ get_AerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(
 											getTheLiftingSurface()
 											.get_sweepLEEquivalent().to(NonSI.DEGREE_ANGLE).getEstimatedValue(),
@@ -2753,11 +2753,11 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
 
 
-			double [] vector = {cLMaxHighLift, 0,cLAlphaFlap, cLStarFlap};
+			double [] vector = {cLMaxFlap, 0,cLAlphaFlap, cLStarFlap};
 			System.out.println(" -----------HIGH LIFT-------------- ");
 			System.out.println(" alpha max " + alphaMaxHighLiftDegree + " (deg)");
 			System.out.println(" alpha star " + alphaStarFlap*57.3 + " (deg)");
-			System.out.println(" cl max " + cLMaxHighLift);
+			System.out.println(" cl max " + cLMaxFlap);
 			System.out.println(" cl star " + cLStarFlap);
 			System.out.println(" cl alpha " + cLAlphaFlap + " (1/rad)");
 

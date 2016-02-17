@@ -6,9 +6,10 @@ import java.util.List;
 import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 import aircraft.OperatingConditions;
-import aircraft.auxiliary.airfoil.MyAirfoil;
 import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
+import aircraft.components.liftingSurface.LSAerodynamicsManager;
+import aircraft.components.liftingSurface.LiftingSurface;
 import calculators.aerodynamics.DragCalc;
 import calculators.performance.PerformanceCalcUtils;
 import calculators.performance.ThrustCalc;
@@ -51,23 +52,17 @@ public class SpecificRange_Test_TF {
 		// Operating Condition / Aircraft / AnalysisManager (geometry calculations)
 		OperatingConditions theCondition = new OperatingConditions();
 		theCondition.set_altitude(Amount.valueOf(10000.0, SI.METER));
-		theCondition.set_machCurrent(0.83);
-		Aircraft aircraft = Aircraft.createDefaultAircraft("B747-100B");
+		theCondition.set_machCurrent(0.84);
+		theCondition.calculate();
 
-		aircraft.get_theAerodynamics().set_aerodynamicDatabaseReader(aeroDatabaseReader);
+		Aircraft aircraft = Aircraft.createDefaultAircraft("B747-100B");
 		aircraft.set_name("B747-100B");
-		aircraft.get_wing().set_theCurrentAirfoil(
-				new MyAirfoil(
-						aircraft.get_wing(), 
-						0.5
-						)
-				);	
-		aircraft.get_wing().get_theCurrentAirfoil().set_type(AirfoilTypeEnum.MODERN_SUPERCRITICAL);
+
+		LiftingSurface theWing = aircraft.get_wing();
 
 		ACAnalysisManager theAnalysis = new ACAnalysisManager(theCondition);
 		theAnalysis.updateGeometry(aircraft);
 
-		//--------------------------------------------------------------------------------------
 		// Set the CoG(Bypass the Balance analysis allowing to perform Aerodynamic analysis only)
 		CenterOfGravity cgMTOM = new CenterOfGravity();
 
@@ -80,8 +75,16 @@ public class SpecificRange_Test_TF {
 		aircraft.get_HTail().calculateArms(aircraft);
 		aircraft.get_VTail().calculateArms(aircraft);
 
-		theAnalysis.doAnalysis(aircraft, 
-				AnalysisTypeEnum.AERODYNAMIC);
+
+		LSAerodynamicsManager theLSAnalysis = new LSAerodynamicsManager(
+				theCondition,
+				theWing,
+				aircraft
+				);
+
+		theLSAnalysis.set_AerodynamicDatabaseReader(aeroDatabaseReader);
+		theAnalysis.doAnalysis(aircraft,AnalysisTypeEnum.AERODYNAMIC);
+		theWing.setAerodynamics(theLSAnalysis);
 
 		// generating variation of mass of 10% until -40% of maxTakeOffMass
 		double[] maxTakeOffMassArray = new double[5];

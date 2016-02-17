@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.11.16)  17 FEB 2016 14:01
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.11.16)  17 FEB 2016 16:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -4809,7 +4809,7 @@ Overfull \hbox (27.0917pt too wide) in paragraph at lines 1526--472
  []
 
 (./images/DragThrust_B747.tikz)
-Overfull \hbox (28.45808pt too wide) in paragraph at lines 1165--479
+Overfull \hbox (28.45808pt too wide) in paragraph at lines 1159--479
  [][] 
  []
 
@@ -5081,42 +5081,42 @@ Package pdftex.def Info: images/DeltaAlphaMax.png used on input line 446.
 File: images/Delta1_Plain.png Graphic file (type png)
 
 <use images/Delta1_Plain.png>
-Package pdftex.def Info: images/Delta1_Plain.png used on input line 482.
-(pdftex.def)             Requested size: 352.90608pt x 305.67534pt.
+Package pdftex.def Info: images/Delta1_Plain.png used on input line 473.
+(pdftex.def)             Requested size: 397.01514pt x 343.8819pt.
 
 <images/Delta2_Plain.png, id=1108, 399.29175pt x 348.70274pt>
 File: images/Delta2_Plain.png Graphic file (type png)
 
 <use images/Delta2_Plain.png>
-Package pdftex.def Info: images/Delta2_Plain.png used on input line 489.
+Package pdftex.def Info: images/Delta2_Plain.png used on input line 480.
 (pdftex.def)             Requested size: 308.7903pt x 269.6725pt.
-
-<images/Delta1_Slotted.png, id=1109, 437.83575pt x 510.708pt>
+ [54 <./images/Delta1_Plain.png>]
+<images/Delta1_Slotted.png, id=1122, 437.83575pt x 510.708pt>
 File: images/Delta1_Slotted.png Graphic file (type png)
 
 <use images/Delta1_Slotted.png>
-Package pdftex.def Info: images/Delta1_Slotted.png used on input line 496.
+Package pdftex.def Info: images/Delta1_Slotted.png used on input line 487.
 (pdftex.def)             Requested size: 308.7903pt x 360.19724pt.
- [54 <./images/Delta2_Plain.png>]
+
 <images/Delta2_Slotted.png, id=1123, 442.65375pt x 221.628pt>
 File: images/Delta2_Slotted.png Graphic file (type png)
 
 <use images/Delta2_Slotted.png>
-Package pdftex.def Info: images/Delta2_Slotted.png used on input line 503.
+Package pdftex.def Info: images/Delta2_Slotted.png used on input line 494.
 (pdftex.def)             Requested size: 308.7903pt x 154.61436pt.
- [55 <./images/Delta1_Slotted.png> <./images/Delta1_Plain.png>] <images/Delta3.
+ [55 <./images/Delta2_Plain.png> <./images/Delta1_Slotted.png>] <images/Delta3.
 png, id=1131, 413.74574pt x 368.577pt>
 File: images/Delta3.png Graphic file (type png)
 
 <use images/Delta3.png>
-Package pdftex.def Info: images/Delta3.png used on input line 522.
+Package pdftex.def Info: images/Delta3.png used on input line 513.
 (pdftex.def)             Requested size: 352.90608pt x 314.39423pt.
  [56 <./images/Delta2_Slotted.png> <./images/Delta3.png>] <images/Mu1_Pitching_
 Moment.png, id=1146, 463.13025pt x 317.988pt>
 File: images/Mu1_Pitching_Moment.png Graphic file (type png)
 
 <use images/Mu1_Pitching_Moment.png>
-Package pdftex.def Info: images/Mu1_Pitching_Moment.png used on input line 549.
+Package pdftex.def Info: images/Mu1_Pitching_Moment.png used on input line 540.
 
 (pdftex.def)             Requested size: 330.84819pt x 227.16075pt.
  [57 <./images/Mu1_Pitching_Moment.png>]
@@ -5124,11 +5124,11 @@ Package pdftex.def Info: images/Mu1_Pitching_Moment.png used on input line 549.
 File: images/Mu2_Pitching_Moment.png Graphic file (type png)
 
 <use images/Mu2_Pitching_Moment.png>
-Package pdftex.def Info: images/Mu2_Pitching_Moment.png used on input line 576.
+Package pdftex.def Info: images/Mu2_Pitching_Moment.png used on input line 567.
 
 (pdftex.def)             Requested size: 242.62335pt x 283.26324pt.
 
-Overfull \hbox (22.05789pt too wide) in paragraph at lines 576--577
+Overfull \hbox (22.05789pt too wide) in paragraph at lines 567--568
  [][] 
  []
 
@@ -5136,7 +5136,7 @@ Overfull \hbox (22.05789pt too wide) in paragraph at lines 576--577
 File: images/Mu3_Pitching_Moment.png Graphic file (type png)
 
 <use images/Mu3_Pitching_Moment.png>
-Package pdftex.def Info: images/Mu3_Pitching_Moment.png used on input line 582.
+Package pdftex.def Info: images/Mu3_Pitching_Moment.png used on input line 573.
 
 (pdftex.def)             Requested size: 207.33206pt x 282.99228pt.
  [58 <./images/Mu2_Pitching_Moment.png> <./images/Mu3_Pitching_Moment.png>] [59
@@ -5146,10 +5146,10 @@ File: images/HighLiftDevices_Flowchart.png Graphic file (type png)
 
 <use images/HighLiftDevices_Flowchart.png>
 Package pdftex.def Info: images/HighLiftDevices_Flowchart.png used on input lin
-e 686.
+e 677.
 (pdftex.def)             Requested size: 507.29788pt x 382.8452pt.
 
-Overfull \hbox (66.16695pt too wide) in paragraph at lines 686--687
+Overfull \hbox (66.16695pt too wide) in paragraph at lines 677--678
  [][] 
  []
 
@@ -5355,11 +5355,11 @@ Package logreq Info: Writing requests to 'Tesi.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 67803 strings out of 493054
- 1392813 string characters out of 6138326
- 2588173 words of memory out of 5000000
- 68658 multiletter control sequences out of 15000+600000
- 241931 words of font info for 211 fonts, out of 8000000 for 9000
+ 67795 strings out of 493054
+ 1392655 string characters out of 6138326
+ 2588446 words of memory out of 5000000
+ 68651 multiletter control sequences out of 15000+600000
+ 240803 words of font info for 208 fonts, out of 8000000 for 9000
  1142 hyphenation exceptions out of 8191
  61i,30n,107p,10382b,4225s stack positions out of 5000i,500n,10000p,200000b,80000s
 {c:/texlive/2015/texmf-dist/fonts/enc/dvips/newtx/ntx-ec-tlf-sc.enc}{c:/texli
@@ -5387,10 +5387,10 @@ b.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmr.pfb><c:/texl
 ive/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmri.pfb><c:/texlive/2015/texm
 f-dist/fonts/type1/urw/helvetic/uhvb8a.pfb><c:/texlive/2015/texmf-dist/fonts/ty
 pe1/urw/helvetic/uhvr8a.pfb>
-Output written on Tesi.pdf (89 pages, 8707394 bytes).
+Output written on Tesi.pdf (89 pages, 8711606 bytes).
 PDF statistics:
- 2304 PDF objects out of 2487 (max. 8388607)
- 2060 compressed objects within 21 object streams
- 1025 named destinations out of 1200 (max. 500000)
- 41100 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 2303 PDF objects out of 2487 (max. 8388607)
+ 2059 compressed objects within 21 object streams
+ 1024 named destinations out of 1200 (max. 500000)
+ 39564 words of extra memory for PDF output out of 42996 (max. 10000000)
 
