@@ -1504,11 +1504,11 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		}
 
 		System.out.println("\n -----------CLEAN-------------- ");
-		System.out.println(" alpha max " + alphaMaxDouble*57.3 + " °");
-		System.out.println(" alpha star " + alphaStar*57.3 + " °");
+		System.out.println(" alpha max " + alphaMaxDouble*57.3 + " (deg)");
+		System.out.println(" alpha star " + alphaStar*57.3 + " (deg)");
 		System.out.println(" cL max " + cLMax);
 		System.out.println(" cL star " + cLStar);
-		System.out.println(" cL alpha " + cLLinearSlope + " (1/deg)");
+		System.out.println(" cL alpha " + cLLinearSlope + " (1/rad)");
 
 
 
@@ -1767,9 +1767,9 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 												alphaArray.getAsAmount(j)).get(i) 
 										> clAirfoils.get(i) ) {
 
-									System.out.println( "distribution " +  cLMap.getCxyVsAlphaTable()
-																		.get( MethodEnum.NASA_BLACKWELL,
-																				alphaArray.getAsAmount(j))  );
+//									System.out.println( "distribution " +  cLMap.getCxyVsAlphaTable()
+//																		.get( MethodEnum.NASA_BLACKWELL,
+//																				alphaArray.getAsAmount(j))  );
 
 									//@author Manuela ruocco
 									// After find the first point where CL_wing > Cl_MAX_airfoil, starts an iteration on alpha
@@ -2009,7 +2009,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 		Amount<Angle> alphaMaxNasaBlackwell = this.get_alphaStall();
 		
-		System.out.println("Alpha max NASA Blackwell : " + alphaMaxNasaBlackwell.to(NonSI.DEGREE_ANGLE));
+//		System.out.println("Alpha max NASA Blackwell : " + alphaMaxNasaBlackwell.to(NonSI.DEGREE_ANGLE));
 		
 		this.set_cLMaxClean(theCLatAlpha.nasaBlackwell(alphaMaxNasaBlackwell));
 		//System.out.println("CL Max " + get_cLMaxClean());
@@ -2459,11 +2459,6 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				deltaAlphaMaxFlap += deltaAlphaMaxList.get(i).doubleValue();
 
 			//---------------------------------------------------------------
-			// Delta alpha max (slat) --> to be set from experimental data see thesis Trifari p.56
-			if(deltaSlat != null)
-				deltaAlphaMaxSlat = 7; //deg
-			
-			//---------------------------------------------------------------
 			// deltaCD
 			List<Double> delta1 = new ArrayList<Double>();
 			for(int i=0; i<flapTypeIndex.size(); i++) {
@@ -2610,7 +2605,6 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			double cLAlphaFlap = cLalphaNew*57.3; // need it in 1/rad
 
 			MyAirfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
-			//double alphaStar = 0.15;
 			double alphaStarClean = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
 
 			Amount<Angle> alphaStarCleanAmount = Amount.valueOf(alphaStarClean, SI.RADIAN);
@@ -2622,13 +2616,31 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			double cL0HighLift = cL0Clean + deltaCL0Flap;
 			double qValue = cL0HighLift;
 			double alphaStar = (cLStarClean - qValue)/cLAlphaFlap;
-			double alphaStarFlap = (alphaStar + alphaStarClean)/2;
-			double cLStarFlap = cLAlphaFlap * alphaStarFlap + qValue;	
 			double cLMaxClean = get_cLMaxClean();
 			Amount<Angle> alphaMax = get_alphaMaxClean().to(NonSI.DEGREE_ANGLE);	
-			cLMaxFlap = cLMaxClean + deltaCLmaxFlap + deltaCLmaxSlat;
-			double alphaMaxHighLift = alphaMax.getEstimatedValue() + deltaAlphaMaxFlap + deltaAlphaMaxSlat;
+			double cLMaxHighLift = cLMaxClean + deltaCLmaxFlap + deltaCLmaxSlat;
+			
+			double alphaMaxHighLift;
+
+			if(deltaSlat == null)
+				alphaMaxHighLift = alphaMax.getEstimatedValue() + deltaAlphaMaxFlap;
+			else
+				alphaMaxHighLift = ((cLMaxHighLift-cL0HighLift)/cLalphaNew) 
+									+ get_AerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(
+											getTheLiftingSurface()
+											.get_sweepLEEquivalent().to(NonSI.DEGREE_ANGLE).getEstimatedValue(),
+											meanAirfoil.getGeometry().get_deltaYPercent());
+			
 			alphaMaxHighLift = Amount.valueOf(toRadians(alphaMaxHighLift), SI.RADIAN).getEstimatedValue();
+
+			double alphaStarFlap; 
+
+			if(deltaSlat == null)
+				alphaStarFlap = (alphaStar + alphaStarClean)/2;
+			else
+				alphaStarFlap = alphaMaxHighLift-(alphaMax.to(SI.RADIAN).getEstimatedValue()-alphaStarClean);
+
+			double cLStarFlap = cLAlphaFlap * alphaStarFlap + qValue;	
 
 
 			if (alpha.getEstimatedValue() < alphaStarFlap ){ 
@@ -2691,7 +2703,6 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			double alphaFirst = -13.0;
 			int nPoints = 50;
 			MyAirfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
-			//double alphaStar = 0.15;
 			double alphaStarClean = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
 			Amount<Angle> alphaStarCleanAmount = Amount.valueOf(alphaStarClean, SI.RADIAN);
 
@@ -2702,20 +2713,38 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			double cL0HighLift = cL0Clean + deltaCL0Flap;
 			double qValue = cL0HighLift;
 			double alphaStar = (cLStarClean - qValue)/cLAlphaFlap;
-//			double deltaAlphaStar = alphaStarClean - (-cL0Clean/cLLinearSlope);
-			double alphaStarFlap = (alphaStar + alphaStarClean)/2;
-//			double 	alphaStarFlap  = (-qValue/cLAlphaFlap) + deltaAlphaStar;
-			double cLStarFlap = cLAlphaFlap * alphaStarFlap + qValue;	
+			
 			double cLMaxClean = get_cLMaxClean();
 			Amount<Angle> alphaMax = get_alphaMaxClean().to(NonSI.DEGREE_ANGLE);	
 			double cLMaxHighLift = cLMaxClean + deltaCLmaxFlap + deltaCLmaxSlat;
-			double alphaMaxHighLift = alphaMax.getEstimatedValue() + deltaAlphaMaxFlap + deltaAlphaMaxSlat;
+
+			double alphaMaxHighLift;
+
+			if(deltaSlat == null)
+				alphaMaxHighLift = alphaMax.getEstimatedValue() + deltaAlphaMaxFlap;
+			else
+				alphaMaxHighLift = ((cLMaxHighLift-cL0HighLift)/cLalphaNew) 
+									+ get_AerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(
+											getTheLiftingSurface()
+											.get_sweepLEEquivalent().to(NonSI.DEGREE_ANGLE).getEstimatedValue(),
+											meanAirfoil.getGeometry().get_deltaYPercent());
+			
 			alphaMaxHighLift = Amount.valueOf(toRadians(alphaMaxHighLift), SI.RADIAN).getEstimatedValue();
 			double alphaMaxHighLiftDegree =  
 					Amount.valueOf(alphaMaxHighLift, SI.RADIAN)
 					.to(NonSI.DEGREE_ANGLE)
 					.getEstimatedValue();
 
+			double alphaStarFlap; 
+
+			if(deltaSlat == null)
+				alphaStarFlap = (alphaStar + alphaStarClean)/2;
+			else
+				alphaStarFlap = alphaMaxHighLift-(alphaMax.to(SI.RADIAN).getEstimatedValue()-alphaStarClean);
+
+			double cLStarFlap = cLAlphaFlap * alphaStarFlap + qValue;	
+
+			
 			double[][] matrixData = { {Math.pow(alphaMaxHighLift, 3), Math.pow(alphaMaxHighLift, 2)
 				, alphaMaxHighLift,1.0},
 					{3* Math.pow(alphaMaxHighLift, 2), 2*alphaMaxHighLift, 1.0, 0.0},
@@ -2726,11 +2755,11 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 			double [] vector = {cLMaxHighLift, 0,cLAlphaFlap, cLStarFlap};
 			System.out.println(" -----------HIGH LIFT-------------- ");
-			System.out.println(" alpha max " + alphaMaxHighLiftDegree + " °");
-			System.out.println(" alpha star " + alphaStarFlap*57.3 + " °");
+			System.out.println(" alpha max " + alphaMaxHighLiftDegree + " (deg)");
+			System.out.println(" alpha star " + alphaStarFlap*57.3 + " (deg)");
 			System.out.println(" cl max " + cLMaxHighLift);
 			System.out.println(" cl star " + cLStarFlap);
-			System.out.println(" cl alpha " + cLAlphaFlap + " (1/deg)");
+			System.out.println(" cl alpha " + cLAlphaFlap + " (1/rad)");
 
 			double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
 
@@ -2786,10 +2815,6 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			legend.add("clean");
 			legend.add("high lift");
 
-//			for (int i = 1; i<cLArrayHighLiftDouble.length; i++){
-//				System.out.println(" \nalpha " + alphaArrayHighLiftDouble[i] +"             cl " + cLArrayHighLiftPlot[i]);			
-//			}
-
 			MyChartToFileUtils.plotJFreeChart(alphaListPlot, 
 					cLListPlot,
 					"CL vs alpha",
@@ -2802,10 +2827,6 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 					legend,
 					subfolderPathHL,
 					"CL alpha Wing High Lift");
-
-			//			System.out.println(" alpha vector new" + Arrays.toString(alphaArrayHighLiftPlot));
-			//			System.out.println(" cl vector " + Arrays.toString(cLArrayHighLiftPlot));
-			//			System.out.println(" cl max " + cLMaxHighLift);
 
 			System.out.println("\n----------------------------DONE------------------------------");
 
@@ -3438,12 +3459,12 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 			Amount<Angle> _alphaOne = Amount.valueOf(toRadians(0.), SI.RADIAN);
 			double _clOne = theCLatAlpha.nasaBlackwell(_alphaOne);
-			System.out.println("CL at alpha " + _alphaOne + " = "+ _clOne);
+//			System.out.println("CL at alpha " + _alphaOne + " = "+ _clOne);
 
 			Amount<Angle>_alphaTwo = Amount.valueOf(toRadians(4.), SI.RADIAN);
 			double alphaTwoDouble = 4.0;
 			double _clTwo = theCLatAlpha.nasaBlackwell(_alphaTwo);
-			System.out.println("CL at alpha " + _alphaTwo + " = "+ _clTwo);
+//			System.out.println("CL at alpha " + _alphaTwo + " = "+ _clTwo);
 
 			double cLSlope = (_clTwo-_clOne)/_alphaTwo.getEstimatedValue();
 			double cLSlopeDeg = Math.toRadians(cLSlope);

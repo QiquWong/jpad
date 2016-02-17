@@ -336,8 +336,6 @@ public class TakeOff_Landing_Test_TF {
 
 		System.out.println("\n\ndeltaAlphaMaxFlap = \n" + highLiftCalculator.getDeltaAlphaMaxFlap());
 
-		System.out.println("\n\ndeltaAlphaMaxSlat = \n" + highLiftCalculator.getDeltaAlphaMaxSlat());
-		
 		System.out.println("\n\ndeltaCD_list = ");
 		for(int i=0; i<highLiftCalculator.getDeltaCD_list().size(); i++)
 			System.out.print(highLiftCalculator.getDeltaCD_list().get(i) + " ");

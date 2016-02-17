@@ -81,6 +81,7 @@ public class TakeOff_Landing_Test_TP {
 		// Operating Condition / Aircraft / AnalysisManager (geometry calculations)
 		OperatingConditions theCondition = new OperatingConditions();
 		theCondition.set_altitude(Amount.valueOf(0.0, SI.METER));
+		theCondition.set_machCurrent(0.15);
 		theCondition.calculate();
 
 		Aircraft aircraft = Aircraft.createDefaultAircraft("ATR-72");

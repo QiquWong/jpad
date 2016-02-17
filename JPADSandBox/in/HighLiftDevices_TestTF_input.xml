@@ -24,7 +24,7 @@
 			<Flap_outboard unit="">0.6624</Flap_outboard>
 		</Flap2>
 		<Slat1>
-			<Delta_Slat unit="°">10</Delta_Slat>
+			<Delta_Slat unit="°">15</Delta_Slat>
 			<Cs_C unit="">0.15</Cs_C>
 			<cExt_c unit="">1.1</cExt_c>
 			<LEradius_c_ratio unit="">0.0097</LEradius_c_ratio>
@@ -32,7 +32,7 @@
 			<Slat_outboard unit="">0.37</Slat_outboard>
 		</Slat1>
 		<Slat2>
-			<Delta_Slat unit="°">10</Delta_Slat>
+			<Delta_Slat unit="°">15</Delta_Slat>
 			<Cs_C unit="">0.193</Cs_C>
 			<cExt_c unit="">1.1</cExt_c>
 			<LEradius_c_ratio unit="">0.0097</LEradius_c_ratio>
