@@ -31,46 +31,47 @@
 \contentsline {subsection}{\numberline {6.1.3}Maximum Lift Coefficient}{20}{subsection.6.1.3}
 \contentsline {subsection}{\numberline {6.1.4}Stall Angle of Attack}{23}{subsection.6.1.4}
 \contentsline {subsection}{\numberline {6.1.5}Construction of the curve}{23}{subsection.6.1.5}
-\contentsline {subsection}{\numberline {6.1.6}High Lift devices}{24}{subsection.6.1.6}
-\contentsline {section}{\numberline {6.2}Java Class Architecture}{24}{section.6.2}
-\contentsline {section}{\numberline {6.3}Case Study}{24}{section.6.3}
-\contentsline {chapter}{\numberline {7}Wing Drag Characteristics}{25}{chapter.7}
-\contentsline {section}{\numberline {7.1}Theoretical background}{27}{section.7.1}
-\contentsline {section}{\numberline {7.2}Java Class Architecture}{27}{section.7.2}
-\contentsline {section}{\numberline {7.3}Case Study}{28}{section.7.3}
-\contentsline {chapter}{\numberline {8}Downwash Estimation}{30}{chapter.8}
-\contentsline {section}{\numberline {8.1}Theoretical background}{30}{section.8.1}
-\contentsline {section}{\numberline {8.2}Java Class Architecture}{32}{section.8.2}
-\contentsline {subsection}{\numberline {8.2.1}Constant Downwash Gradient}{33}{subsection.8.2.1}
-\contentsline {subsection}{\numberline {8.2.2}Variable Downwash Gradient}{34}{subsection.8.2.2}
-\contentsline {section}{\numberline {8.3}Case Study}{36}{section.8.3}
-\contentsline {chapter}{\numberline {9}Aircraft Longitudinal Static Stability}{40}{chapter.9}
-\contentsline {section}{\numberline {9.1}Aerodynamic Lift}{40}{section.9.1}
-\contentsline {subsection}{\numberline {9.1.1}Wing}{40}{subsection.9.1.1}
-\contentsline {subsection}{\numberline {9.1.2}Fuselage}{40}{subsection.9.1.2}
-\contentsline {subsection}{\numberline {9.1.3}Horizontal Tail}{40}{subsection.9.1.3}
-\contentsline {subsubsection}{Elevator index of effectiveness}{40}{subsubsection*.34}
-\contentsline {subsection}{\numberline {9.1.4}Complete Aircraft}{42}{subsection.9.1.4}
-\contentsline {section}{\numberline {9.2}Aerodynamic Drag}{43}{section.9.2}
-\contentsline {subsection}{\numberline {9.2.1}Wing}{43}{subsection.9.2.1}
-\contentsline {subsection}{\numberline {9.2.2}Fuselage}{43}{subsection.9.2.2}
-\contentsline {subsection}{\numberline {9.2.3}Horizontal Tail}{43}{subsection.9.2.3}
-\contentsline {section}{\numberline {9.3}Pitching Moments}{43}{section.9.3}
-\contentsline {subsection}{\numberline {9.3.1}Wing}{43}{subsection.9.3.1}
-\contentsline {subsection}{\numberline {9.3.2}Fuselage}{43}{subsection.9.3.2}
-\contentsline {subsection}{\numberline {9.3.3}Horizontal Tail}{43}{subsection.9.3.3}
-\contentsline {subsection}{\numberline {9.3.4}Propulsors}{43}{subsection.9.3.4}
-\contentsline {subsection}{\numberline {9.3.5}Stability Calculation}{43}{subsection.9.3.5}
-\contentsline {section}{\numberline {9.4}Java Class Architecture}{43}{section.9.4}
-\contentsline {section}{\numberline {9.5}User's Guide}{43}{section.9.5}
-\contentsline {section}{\numberline {9.6}Analysis Results}{43}{section.9.6}
-\contentsline {chapter}{\numberline {10}Minor Works}{44}{chapter.10}
-\contentsline {chapter}{Appendices}{}{section*.40}
-\contentsline {chapter}{\numberline {A}HDF dataset and database reader creation}{46}{Appendix.a.A}
-\contentsline {section}{\numberline {A.1}Chart Digitization}{46}{section.a.A.1}
-\contentsline {section}{\numberline {A.2}Creation of an HDF file with Matlab}{47}{section.a.A.2}
-\contentsline {chapter}{\numberline {B}App2}{50}{Appendix.a.B}
-\contentsline {chapter}{Glossary}{52}{section*.43}
-\contentsline {chapter}{Acronyms}{54}{section*.45}
-\contentsline {chapter}{List of symbols}{55}{section*.47}
-\contentsline {chapter}{Bibliography}{57}{section*.49}
+\contentsline {subsection}{\numberline {6.1.6}Mach number effects on Lift curve }{24}{subsection.6.1.6}
+\contentsline {subsection}{\numberline {6.1.7}High Lift devices}{25}{subsection.6.1.7}
+\contentsline {section}{\numberline {6.2}Java Class Architecture}{26}{section.6.2}
+\contentsline {section}{\numberline {6.3}Case Study}{26}{section.6.3}
+\contentsline {chapter}{\numberline {7}Wing Drag Characteristics}{27}{chapter.7}
+\contentsline {section}{\numberline {7.1}Theoretical background}{29}{section.7.1}
+\contentsline {section}{\numberline {7.2}Java Class Architecture}{29}{section.7.2}
+\contentsline {section}{\numberline {7.3}Case Study}{30}{section.7.3}
+\contentsline {chapter}{\numberline {8}Downwash Estimation}{32}{chapter.8}
+\contentsline {section}{\numberline {8.1}Theoretical background}{32}{section.8.1}
+\contentsline {section}{\numberline {8.2}Java Class Architecture}{34}{section.8.2}
+\contentsline {subsection}{\numberline {8.2.1}Constant Downwash Gradient}{35}{subsection.8.2.1}
+\contentsline {subsection}{\numberline {8.2.2}Variable Downwash Gradient}{36}{subsection.8.2.2}
+\contentsline {section}{\numberline {8.3}Case Study}{38}{section.8.3}
+\contentsline {chapter}{\numberline {9}Aircraft Longitudinal Static Stability}{42}{chapter.9}
+\contentsline {section}{\numberline {9.1}Aerodynamic Lift}{42}{section.9.1}
+\contentsline {subsection}{\numberline {9.1.1}Wing}{42}{subsection.9.1.1}
+\contentsline {subsection}{\numberline {9.1.2}Fuselage}{42}{subsection.9.1.2}
+\contentsline {subsection}{\numberline {9.1.3}Horizontal Tail}{42}{subsection.9.1.3}
+\contentsline {subsubsection}{Elevator index of effectiveness}{42}{subsubsection*.38}
+\contentsline {subsection}{\numberline {9.1.4}Complete Aircraft}{44}{subsection.9.1.4}
+\contentsline {section}{\numberline {9.2}Aerodynamic Drag}{45}{section.9.2}
+\contentsline {subsection}{\numberline {9.2.1}Wing}{45}{subsection.9.2.1}
+\contentsline {subsection}{\numberline {9.2.2}Fuselage}{45}{subsection.9.2.2}
+\contentsline {subsection}{\numberline {9.2.3}Horizontal Tail}{45}{subsection.9.2.3}
+\contentsline {section}{\numberline {9.3}Pitching Moments}{45}{section.9.3}
+\contentsline {subsection}{\numberline {9.3.1}Wing}{45}{subsection.9.3.1}
+\contentsline {subsection}{\numberline {9.3.2}Fuselage}{45}{subsection.9.3.2}
+\contentsline {subsection}{\numberline {9.3.3}Horizontal Tail}{45}{subsection.9.3.3}
+\contentsline {subsection}{\numberline {9.3.4}Propulsors}{45}{subsection.9.3.4}
+\contentsline {subsection}{\numberline {9.3.5}Stability Calculation}{45}{subsection.9.3.5}
+\contentsline {section}{\numberline {9.4}Java Class Architecture}{45}{section.9.4}
+\contentsline {section}{\numberline {9.5}User's Guide}{45}{section.9.5}
+\contentsline {section}{\numberline {9.6}Analysis Results}{45}{section.9.6}
+\contentsline {chapter}{\numberline {10}Minor Works}{46}{chapter.10}
+\contentsline {chapter}{Appendices}{}{section*.45}
+\contentsline {chapter}{\numberline {A}HDF dataset and database reader creation}{48}{Appendix.a.A}
+\contentsline {section}{\numberline {A.1}Chart Digitization}{48}{section.a.A.1}
+\contentsline {section}{\numberline {A.2}Creation of an HDF file with Matlab}{49}{section.a.A.2}
+\contentsline {chapter}{\numberline {B}App2}{52}{Appendix.a.B}
+\contentsline {chapter}{Glossary}{54}{section*.48}
+\contentsline {chapter}{Acronyms}{56}{section*.50}
+\contentsline {chapter}{List of symbols}{57}{section*.52}
+\contentsline {chapter}{Bibliography}{59}{section*.54}
