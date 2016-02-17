@@ -210,10 +210,48 @@ Obtained the maximum cl is therefore necessary to calculate the $\upDelta \alpha
 
 
 \subsection{Construction of the curve}
-At this point ... % ci sono tutti gli elementi per il calcolo completo della curva...
-%tratto lineare
-%cubica
-% grafico con tutti elementi
+At this point all elements are available in order to draft the CL vs $\alpha$ curve.\\ The linear trait is evaluated using the equation of straight line.
+
+\begin{equation}
+C_L= C_{L_\alpha} \alpha + C_{L_0}
+\end{equation}
+
+There is a method in \texttt{LSAerodynamicManager} that evaluates the linear slope of lift curve of a lifting surface using Nasa-Blackwell method. This method ( \texttt{nasaBlackwell} in the nested class\texttt{CalcCLAlpha()} evaluate CL wing in correspondence of two alpha and calculates the angolar coefficient.
+
+In order to plot the non linear trait is used a cubic function. In fact in this zone we have four conditions:
+
+\begin{itemize}
+\item Pass to $\alpha^{\star}$ , $C_L^{\star}$
+\item The derivatine in  $\alpha^{\star}$ , $C_L^{\star}$ is $C_{L_\alpha}$ for continuity
+\item Pass to $\alpha_{stall}$ , $C_{L_{MAX}}$
+\item The derivatine in  $\alpha^{stall}$ , $C_{L_{MAX}}$ is $0$.Here there is the maximum of the curve.
+\end{itemize}
+
+So the system of equations is :
+
+\begin{equation}
+\begin{cases}
+ C_L^{\star} = a {\alpha^{\star}}^3 +  b {\alpha^{\star}}^2 +  c {\alpha^{\star}} + d \\
+ C_{L_\alpha} = 3 a {\alpha^{\star}}^2 +  2b {\alpha^{\star}} +  c  \\ 
+ C_{L_{MAX}} = a {\alpha_{stall}}^3 +  b {\alpha_{stall}}^2 +  c {\alpha_{stall}} + d \\
+0 = 3 a {\alpha_{stall}}^2 +  2b {\alpha_{stall}} +  c  \\ 
+  \end{cases}
+\end{equation}
+
+
+
+
+\begin{figure}[H]
+\centering
+{\includegraphics[height=9cm]{Immagini/Wing_CL_Vs_alpha_curve.pdf}} 
+\caption{Wing $C_L$ vs $\alpha$ curve.}
+\label{fig:clalfa}
+\end{figure}
+
+
+%The method that draws the curve is \texttt{plotCLvsAlphaCurve()} in \texttt{LSAerodynamicsManager}.\\
+%The method \texttt{plotCLvsAlphaCurve()} solves the system and calculates the parameters using a static function of \texttt{MyMathUtils}, \texttt{solveLinearSystem}.
+
 
 \subsection{High Lift devices}
 %intro
