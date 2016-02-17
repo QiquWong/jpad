@@ -33,7 +33,7 @@ Following it will be explain the theory behind how these contributions have been
 
 \subsection{Zero-Lift Angle and Lift Coefficient Slope}
 
-In order to evaluate the linear trait of the wing lift curve, it's been used the Nasa-Blackwell method. The {\bfseries Nasa-Blackwell} is a numerical method for calculating the subsonic load distribution for arbitrary lifting surface arrangements at a fixed angle of attack. The method is suitable for swept wings, non-planar wings, wing with pylons and/or end-plates; it can be also used to study the aerodynamic interaction of the wing and the horizontal tail. The method has been implemented because its results, as shown in the report, were in good agreement with the experimental results.
+In order to evaluate the linear trait of the wing lift curve, it's been used the Nasa-Blackwell method.\\ The {\bfseries Nasa-Blackwell} is a numerical method for calculating the subsonic load distribution for arbitrary lifting surface arrangements at a fixed angle of attack. The method is suitable for swept wings, non-planar wings, wing with pylons and/or end-plates; it can be also used to study the aerodynamic interaction of the wing and the horizontal tail. The method has been implemented because its results, as shown in the report, were in good agreement with the experimental results.
 The lifting surfaces are divided in several rectangular horse-shoe vortices along the span; one horseshoe vortex along the chord is used, that is, the midpoints of the vortices are placed only at points along the quarter-chord lines. An equal number of control points are located along the three-quarter-chord lines. The velocity from the total vortex system is equated to the component of free-stream velocity normal to the lifting surface chord at each control point. Application of this tangent-flow boundary condition for a symmetrical loading provides a set of N simultaneous equations in the N unknown circulation strengths. Solution of this set of equations provides the loading distributions over the lifting surfaces. Mach number effect is introduced through a Prandtl-Glauert correction. Further details can be found in \cite{NASA:Blackwell}.
 
 In this way it's calculated the Zero Lift angle using the integral of the load distribution and the linear trait slope starting from the value of CL at $\alpha =  0^{\circ}$ and $\alpha = 2^{\circ}$.
@@ -189,7 +189,7 @@ Instead,  if there is a point of intersectionat $\alpha_{new}$ the new value of 
 
 \begin{figure}[H]
 \centering
-{\includegraphics[height=8cm]{Immagini/wing_loading_B}} 
+{\includegraphics[height=8.3cm]{Immagini/wing_loading_B}} 
 \caption{Wing Loading distribution.}
 \label{fig:wl}
 \end{figure}
@@ -216,7 +216,7 @@ At this point all elements are available in order to draft the CL vs $\alpha$ cu
 C_L= C_{L_\alpha} \alpha + C_{L_0}
 \end{equation}
 
-There is a method in \texttt{LSAerodynamicManager} that evaluates the linear slope of lift curve of a lifting surface using Nasa-Blackwell method. This method ( \texttt{nasaBlackwell} in the nested class\texttt{CalcCLAlpha()} evaluate CL wing in correspondence of two alpha and calculates the angolar coefficient.
+%There is a method in \texttt{LSAerodynamicManager} that evaluates the linear slope of lift curve of a lifting surface using Nasa-Blackwell method. This method ( \texttt{nasaBlackwell} in the nested class\texttt{CalcCLAlpha()} evaluate CL wing in correspondence of two alpha and calculates the angolar coefficient.
 
 In order to plot the non linear trait is used a cubic function. In fact in this zone we have four conditions:
 
@@ -224,7 +224,7 @@ In order to plot the non linear trait is used a cubic function. In fact in this 
 \item Pass to $\alpha^{\star}$ , $C_L^{\star}$
 \item The derivatine in  $\alpha^{\star}$ , $C_L^{\star}$ is $C_{L_\alpha}$ for continuity
 \item Pass to $\alpha_{stall}$ , $C_{L_{MAX}}$
-\item The derivatine in  $\alpha^{stall}$ , $C_{L_{MAX}}$ is $0$.Here there is the maximum of the curve.
+\item The derivatine in  $\alpha_{stall}$ , $C_{L_{MAX}}$ is $0$.Here there is the maximum of the curve.
 \end{itemize}
 
 So the system of equations is :
@@ -240,7 +240,6 @@ So the system of equations is :
 
 
 
-
 \begin{figure}[H]
 \centering
 {\includegraphics[height=9cm]{Immagini/Wing_CL_Vs_alpha_curve.pdf}} 
@@ -252,8 +251,62 @@ So the system of equations is :
 %The method that draws the curve is \texttt{plotCLvsAlphaCurve()} in \texttt{LSAerodynamicsManager}.\\
 %The method \texttt{plotCLvsAlphaCurve()} solves the system and calculates the parameters using a static function of \texttt{MyMathUtils}, \texttt{solveLinearSystem}.
 
+\subsection{Mach number effects on Lift curve }
+The characteristics of airflow depend heavily from the Mach number. These changes in airflow have a significant effect on the airplane lift. For airplanes that operate entirely within the subsonic speed range, there are no significant effects of compressibility of the air on the airplane lift. For airplane that operate at high subsonic speeds in the transonic speed region, the airplane lift and drag curves will vary as the flight Mach number is increased due to the compressible nature of the air, so there is a family of lift curves one for each flight Mach number of interest.\\
+The family of lift curves is characterized by an increase in the slope of the curve and decrease in maximum lift coefficient as the Mach number increased in the high subsonic region as shown in the fig. \ref{fig:clalfawing}.
+The explanation of these Mach number effects on the lift curve has been derived from the theory of compressible flow, and confirmed by experimental data obtained in wind tunnels and from flight tests. It can be shown that, for an airplane at given angle of attack, the lift coefficient will increase with Mach number because the suction on the wing upper surfac, and the pressures on the wing lower surface tend to grow with Mach number.  \cite{manual}
+
+\begin{figure}[H]
+\centering
+{\includegraphics[height=5.6cm]{Immagini/clamach}} 
+\caption{Mach number effects on Lift curve.}
+\label{fig:clalfawing}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+{\includegraphics[height=5.6cm]{Immagini/declmach.png}} 
+\caption{Mach number effects on Lift linear slope.}
+\label{fig:clalfawingslope}
+\end{figure}
 
 \subsection{High Lift devices}
+The aircraft’s performances at low speed are very important for their mission, infact good high lift devices allow to land or take off on many airports, with their various runways.\cite{adas}
+To assure high lift in take-off and landing without varying weight and wing surface, it's varied the airfoil shape, for this reasons high-lift systems are used. High-lift systems are commonly defined as the devices that allow to increase the maximum lift coefficient of the aircraft and consequently to decrease the stalling speeds. 
+A great variety of high lift devices exists, many of which are mechanically complex. The simplest systems change only the camber of the aerofoil. More complex concepts not only change camber but also extend the chord, opening up slots as they do so. \cite{howe2000aircraft}\\
+High-lift devices can be classified in two main categories: trailing edge devices, or leading edge devices.
+TE devices are small aerofoil-like elements that are fitted at the trailing edge of the wing that are called flap, while  at the LE as a slat.
+
+
+\begin{figure}[H]
+\centering
+{\includegraphics[height=11.3cm, angle =-90 ]{Immagini/highlift.png}} 
+\caption{Different kind of High Lift devices and their effects.}
+\label{fig:hl}
+\end{figure}
+
+In order to evaluate the new wing lift curve with flap and slat it's necessaty to evaluate the contribution due to these devices starting from the clean $C_L$ vs $\alpha$ curve. In particular these contribution on the lift curve are the following:
+
+\begin{itemize}
+\item $\upDelta C_{L_0} $ flap 
+\item $\upDelta C_{L_{MAX}} $ flap
+\item $CL_{\alpha}$ flap 
+\item $\upDelta \alpha_{MAX} $ flap
+\item $\upDelta C_{L_{MAX}} $ slat
+\item $\upDelta \alpha_{MAX} $ slat
+\end{itemize}
+
+
+All of these parameters are calculated using formulas or graphs. For further details see \cite{nicolai2010fundamentals}
+
+\begin{figure}[H]
+\centering
+{\includegraphics[height=12cm]{Immagini/Airfoil_Cl_Vs_alpha_curve_flap_slat.pdf}} 
+\caption{Wing $C_L$ vs $\alpha$ curve for clean wing and with high lift devices.}
+\label{fig:clalfahl}
+\end{figure}
+
+
 %intro
 %modifiche
 %foto
@@ -263,3 +316,4 @@ So the system of equations is :
 
 \section{Case Study}
 %caso di studio
+% metti variabilita del cl con mach

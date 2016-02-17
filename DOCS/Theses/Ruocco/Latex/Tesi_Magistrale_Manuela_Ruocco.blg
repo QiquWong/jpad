@@ -1,0 +1,52 @@
+[0] Config.pm:327> INFO - This is Biber 2.2
+[0] Config.pm:330> INFO - Logfile is 'Tesi_Magistrale_Manuela_Ruocco.blg'
+[35] biber-MSWIN:283> INFO - === 
+[36] Biber.pm:334> INFO - Reading 'Tesi_Magistrale_Manuela_Ruocco.bcf'
+[135] Biber.pm:674> INFO - Using all citekeys in bib section 0
+[163] Biber.pm:3054> INFO - Processing section 0
+[190] Biber.pm:3193> INFO - Looking for bibtex format file 'Tesi_Bibliography.bib' for section 0
+[217] bibtex.pm:1072> INFO - Decoding LaTeX character macros into UTF-8
+[223] bibtex.pm:935> INFO - Found BibTeX data source 'Tesi_Bibliography.bib'
+[228] Utils.pm:147> WARN - Duplicate entry key: 'wiki:xml' in file 'Tesi_Bibliography.bib', skipping ...
+[230] Utils.pm:147> WARN - Duplicate entry key: 'Abbott' in file 'Tesi_Bibliography.bib', skipping ...
+[232] Utils.pm:147> WARN - Duplicate entry key: 'Book:Napolitano:2011' in file 'Tesi_Bibliography.bib', skipping ...
+[233] Utils.pm:147> WARN - Duplicate entry key: 'PerkinsHage' in file 'Tesi_Bibliography.bib', skipping ...
+[234] Utils.pm:147> WARN - Duplicate entry key: 'roskam2002airplane' in file 'Tesi_Bibliography.bib', skipping ...
+[234] Utils.pm:147> WARN - Duplicate entry key: 'sforza2014commercial' in file 'Tesi_Bibliography.bib', skipping ...
+[236] Utils.pm:147> WARN - Duplicate entry key: 'wiki:xml' in file 'Tesi_Bibliography.bib', skipping ...
+[282] Utils.pm:147> WARN - Datamodel: Entry 'apache' (Tesi_Bibliography.bib): Invalid format '01.16.15' of date field 'date' - ignoring
+[287] Utils.pm:147> WARN - Datamodel: Entry 'graphviz' (Tesi_Bibliography.bib): Invalid format '02.02.2015' of date field 'date' - ignoring
+[294] Utils.pm:147> WARN - Datamodel: Entry 'jfreechart' (Tesi_Bibliography.bib): Invalid format '01.16.2015' of date field 'date' - ignoring
+[295] Utils.pm:147> WARN - Datamodel: Entry 'xstream' (Tesi_Bibliography.bib): Invalid format '01.24.15' of date field 'date' - ignoring
+[298] Utils.pm:147> WARN - Datamodel: Entry 'jscience' (Tesi_Bibliography.bib): Invalid format '2015.01.05' of date field 'date' - ignoring
+[304] Utils.pm:147> WARN - Datamodel: Entry 'huwaldt:atmo' (Tesi_Bibliography.bib): Invalid format '01.16.2015' of date field 'date' - ignoring
+[305] Utils.pm:147> WARN - Name "Gur, O., Mason, W.H., Schetz, J.A." has too many commas: skipping name
+[307] Utils.pm:147> WARN - Datamodel: Entry 'plotdigitizer' (Tesi_Bibliography.bib): Invalid format '24.10.15' of date field 'date' - ignoring
+[310] Utils.pm:147> WARN - Datamodel: Entry 'DLR:Scholz' (Tesi_Bibliography.bib): Invalid format '02/01/2015' of date field 'date' - ignoring
+[314] Utils.pm:147> WARN - Datamodel: Entry 'opencascade' (Tesi_Bibliography.bib): Invalid format '01.16.2015' of date field 'date' - ignoring
+[316] Utils.pm:147> WARN - Datamodel: Entry 'reflectutils' (Tesi_Bibliography.bib): Invalid format '01.16.2015' of date field 'date' - ignoring
+[317] Utils.pm:147> WARN - Datamodel: Entry 'jface' (Tesi_Bibliography.bib): Invalid format '01.24.2015' of date field 'date' - ignoring
+[317] Utils.pm:147> WARN - Datamodel: Entry 'windowBuilder' (Tesi_Bibliography.bib): Invalid format '01.16.2015' of date field 'date' - ignoring
+[318] Utils.pm:147> WARN - Datamodel: Entry 'wiki:atr' (Tesi_Bibliography.bib): Invalid format '4.02.16' of date field 'date' - ignoring
+[320] Utils.pm:147> WARN - Datamodel: Entry 'NACATR711' (Tesi_Bibliography.bib): Invalid format '12.12.1940' of date field 'date' - ignoring
+[321] Utils.pm:147> WARN - Datamodel: Entry 'hdf' (Tesi_Bibliography.bib): Invalid format '01.16.2015' of date field 'date' - ignoring
+[323] Utils.pm:147> WARN - Datamodel: Entry 'wiki:mvc' (Tesi_Bibliography.bib): Invalid format '01.25.2015' of date field 'date' - ignoring
+[323] Utils.pm:147> WARN - Datamodel: Entry 'apacheCommonsMath' (Tesi_Bibliography.bib): Invalid format '01.16.2015' of date field 'date' - ignoring
+[324] Utils.pm:147> WARN - Datamodel: Entry 'args4j' (Tesi_Bibliography.bib): Invalid format '01.28.15' of date field 'date' - ignoring
+[327] Utils.pm:147> WARN - Datamodel: Entry 'wiki:boeing' (Tesi_Bibliography.bib): Invalid format '4.02.16' of date field 'date' - ignoring
+[328] Utils.pm:147> WARN - Datamodel: Entry 'jlatexmath' (Tesi_Bibliography.bib): Invalid format '01.16.2015' of date field 'date' - ignoring
+[329] Utils.pm:147> WARN - Datamodel: Entry 'wiki:xml' (Tesi_Bibliography.bib): Invalid format '23.01.15' of date field 'date' - ignoring
+[330] Utils.pm:147> WARN - Datamodel: Entry 'occjava' (Tesi_Bibliography.bib): Invalid format '01.16.2015' of date field 'date' - ignoring
+[332] Utils.pm:147> WARN - Datamodel: Entry 'apachePOI' (Tesi_Bibliography.bib): Invalid format '01.16.2015' of date field 'date' - ignoring
+[334] Utils.pm:147> WARN - Datamodel: Entry 'guava' (Tesi_Bibliography.bib): Invalid format '01.16.2015' of date field 'date' - ignoring
+[335] Utils.pm:147> WARN - ISBN '97800711339811' in entry 'schimidth' is invalid - run biber with '--validate_datamodel' for details.
+[338] Utils.pm:147> WARN - Datamodel: Entry 'swt' (Tesi_Bibliography.bib): Invalid format '01.16.2015' of date field 'date' - ignoring
+[352] Utils.pm:147> WARN - BibTeX subsystem: C:\Users\Manuela\AppData\Local\Temp\lVns8DkZJL\Tesi_Bibliography.bib_2036.utf8, line 259, warning: 166 characters of junk seen at toplevel
+[357] Utils.pm:147> WARN - The field 'author' in entry 'gur' cannot be null, deleting it
+[991] UCollate.pm:66> INFO - Overriding locale 'it-IT' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[991] UCollate.pm:66> INFO - Overriding locale 'it-IT' defaults 'variable = shifted' with 'variable = non-ignorable'
+[991] Biber.pm:2931> INFO - Sorting list 'nty' of type 'entry' with scheme 'nty' and locale 'it-IT'
+[991] Biber.pm:2935> INFO - No sort tailoring available for locale 'it-IT'
+[1150] bbl.pm:505> INFO - Writing 'Tesi_Magistrale_Manuela_Ruocco.bbl' with encoding 'UTF-8'
+[1157] bbl.pm:596> INFO - Output to Tesi_Magistrale_Manuela_Ruocco.bbl
+[1158] Biber.pm:107> INFO - WARNINGS: 36

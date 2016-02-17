@@ -386,6 +386,22 @@
       \verb http://web.mit.edu/drela/Public/web/xfoil/
       \endverb
     \endentry
+    \entry{adas}{book}{}
+      \name{author}{1}{}{%
+        {{hash=e0909a3745a2d76c70f437f76edc99b4}{Fabrizio\bibnamedelima Nicolosi}{F\bibinitperiod\bibinitdelim N\bibinitperiod}{Giuseppe\bibnamedelima Paduano}{G\bibinitperiod\bibinitdelim P\bibinitperiod}{}{}{}{}}%
+      }
+      \list{location}{1}{%
+        {Napoli}%
+      }
+      \strng{namehash}{e0909a3745a2d76c70f437f76edc99b4}
+      \strng{fullhash}{e0909a3745a2d76c70f437f76edc99b4}
+      \field{sortinit}{F}
+      \field{sortinithash}{c6a7d9913bbd7b20ea954441c0460b78}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{BEHIND ADAS 1.0}
+      \field{year}{2011}
+    \endentry
     \entry{apacheCommonsMath}{online}{}
       \name{author}{1}{}{%
         {{hash=ffe4cf17ca8c1f982178700c0396c583}{Foundation}{F\bibinitperiod}{The\bibnamedelimb Apache\bibnamedelima Software}{T\bibinitperiod\bibinitdelim A\bibinitperiod\bibinitdelim S\bibinitperiod}{}{}{}{}}%
@@ -659,6 +675,21 @@
       \verb https://books.google.it/books?id=6tMeAQAAIAAJ
       \endverb
     \endentry
+    \entry{manual}{book}{}
+      \name{author}{1}{}{%
+        {{hash=31f18c596a06f8e1cea0990210acfc34}{Karl-Heinrich\bibnamedelima Grote}{K\bibinithyphendelim H\bibinitperiod\bibinitdelim G\bibinitperiod}{Erik\bibnamedelimb K.\bibnamedelimi Antonsson}{E\bibinitperiod\bibinitdelim K\bibinitperiod\bibinitdelim A\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {Grote Antonsson}%
+      }
+      \strng{namehash}{31f18c596a06f8e1cea0990210acfc34}
+      \strng{fullhash}{31f18c596a06f8e1cea0990210acfc34}
+      \field{sortinit}{K}
+      \field{sortinithash}{a7d5b3aec5a0890aae7baf85a209abfc}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Springer Handbook of Mechanical Engineering}
+    \endentry
     \entry{args4j}{online}{}
       \name{author}{1}{}{%
         {{hash=2e8f18a1d63274a1eae7ecfcd8c5c6c9}{Kawaguchi}{K\bibinitperiod}{K.}{K\bibinitperiod}{}{}{}{}}%
@@ -688,6 +719,22 @@
       \field{labeltitlesource}{title}
       \field{title}{Aircraft Design: Synthesis and Analysis}
       \field{year}{1999}
+    \endentry
+    \entry{kundu}{book}{}
+      \name{author}{1}{}{%
+        {{hash=77ed73acccd07b5d03dc285043a68b7d}{Kundu}{K\bibinitperiod}{Ajoy\bibnamedelima Kumar}{A\bibinitperiod\bibinitdelim K\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {Cambridge University Press}%
+      }
+      \strng{namehash}{77ed73acccd07b5d03dc285043a68b7d}
+      \strng{fullhash}{77ed73acccd07b5d03dc285043a68b7d}
+      \field{sortinit}{K}
+      \field{sortinithash}{a7d5b3aec5a0890aae7baf85a209abfc}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Aircraft Design}
+      \field{year}{2010}
     \endentry
     \entry{jlatexmath}{online}{}
       \name{author}{2}{}{%
