@@ -131,7 +131,7 @@ public class HTail extends LiftingSurface{
 			// ATR72
 			// _tipChord = 1.167 m;
 			// _tipRoot = 2.047 m;
-			_sweepQuarterChordEq = Amount.valueOf(Math.toRadians(0.),SI.RADIAN);
+			_sweepQuarterChordEq = Amount.valueOf(Math.toRadians(12.5),SI.RADIAN);
 
 			// if _spanStationKink=1.0 the wing has no crank (simply tapered wing)
 			_spanStationKink = 1.0;  

@@ -22,6 +22,7 @@ import java.util.List;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
+import org.apache.poi.hpsf.NoSingleSectionException;
 import org.jscience.physics.amount.Amount;
 
 import com.google.common.collect.TreeBasedTable;
@@ -64,69 +65,116 @@ public class Test_MR_06_Wing {
 		// -----------------------------------------------------------------------
 		// Generate default Wing
 		// -----------------------------------------------------------------------
+		//
+		//		// Fuselage
+		//		Fuselage theFuselage = new Fuselage(
+		//				"Fuselage", // name
+		//				"Data from AC_ATR_72_REV05.pdf", // description
+		//				0.0, 0.0, 0.0 // Fuselage apex (x,y,z)-coordinates in construction axes
+		//				);
+		//
+		//		// Wing
+		//		double xAw = 11.0; //meter 
+		//		double yAw = 0.0;
+		//		double zAw = 1.6;
+		//		double iw = 0.0;
+		//		LiftingSurface theWing = new LiftingSurface(
+		//				"Wing", // name
+		//				"Data from AC_ATR_72_REV05.pdf", 
+		//				xAw, yAw, zAw, iw, 
+		//				ComponentEnum.WING,
+		//				theFuselage // let her see the fuselage
+		//				); 
+		//
+		//		theWing.calculateGeometry();
+		//		theWing.getGeometry().calculateAll();
+		//
+		//		// Center of Gravity
+		//		double xCgLocal= 1.5; // meter 
+		//		double yCgLocal= 0;
+		//		double zCgLocal= 0;
+		//
+		//		CenterOfGravity cg = new CenterOfGravity(
+		//				Amount.valueOf(xCgLocal, SI.METER), // coordinates in LRF
+		//				Amount.valueOf(yCgLocal, SI.METER),
+		//				Amount.valueOf(zCgLocal, SI.METER),
+		//				Amount.valueOf(xAw, SI.METER), // origin of LRF in BRF 
+		//				Amount.valueOf(yAw, SI.METER),
+		//				Amount.valueOf(zAw, SI.METER),
+		//				Amount.valueOf(0.0, SI.METER),// origin of BRF
+		//				Amount.valueOf(0.0, SI.METER),
+		//				Amount.valueOf(0.0, SI.METER)
+		//				);
+		//
+		//		cg.calculateCGinBRF();
+		//		theWing.set_cg(cg);
+		//
+		//		// Default operating conditions
+		//		OperatingConditions theOperatingConditions = new OperatingConditions();				
+		//
+		//		System.out.println("\n \n-----------------------------------------------------");
+		//		System.out.println("Operating condition");
+		//		System.out.println("-----------------------------------------------------");
+		//		System.out.println("\tMach: " + theOperatingConditions.get_machCurrent());
+		//		System.out.println("\tAltitude: " + theOperatingConditions.get_altitude());
+		//		System.out.println("----------------------");
+		//
+		//
+		//		// allocate manager
+		//		LSAerodynamicsManager theLSAnalysis = new LSAerodynamicsManager ( 
+		//				theOperatingConditions,
+		//				theWing
+		//				);
+		//
+		//
+		//		WingCalculator theWngAnalysis = new WingCalculator();
 
-		// Fuselage
-		Fuselage theFuselage = new Fuselage(
-				"Fuselage", // name
-				"Data from AC_ATR_72_REV05.pdf", // description
-				0.0, 0.0, 0.0 // Fuselage apex (x,y,z)-coordinates in construction axes
-				);
 
-		// Wing
-		double xAw = 11.0; //meter 
-		double yAw = 0.0;
-		double zAw = 1.6;
-		double iw = 0.0;
-		LiftingSurface theWing = new LiftingSurface(
-				"Wing", // name
-				"Data from AC_ATR_72_REV05.pdf", 
-				xAw, yAw, zAw, iw, 
-				ComponentEnum.WING,
-				theFuselage // let her see the fuselage
-				); 
+		//--------------------------------------------------------------------------------------
+		// B747-100B
+		//------------------------------------------------------------------------------------
+		// Operating Condition / Aircraft / AnalysisManager (geometry calculations)
+		OperatingConditions theOperatingConditions = new OperatingConditions();
+		theOperatingConditions.set_altitude(Amount.valueOf(10000.0, SI.METER));
+		theOperatingConditions.set_machCurrent(0.84);
+		theOperatingConditions.calculate();
 
-		theWing.calculateGeometry();
-		theWing.getGeometry().calculateAll();
+		Aircraft aircraft = Aircraft.createDefaultAircraft("B747-100B");
+		aircraft.set_name("B747-100B");
 
-		// Center of Gravity
-		double xCgLocal= 1.5; // meter 
-		double yCgLocal= 0;
-		double zCgLocal= 0;
+		LiftingSurface theWing = aircraft.get_wing();
 
-		CenterOfGravity cg = new CenterOfGravity(
-				Amount.valueOf(xCgLocal, SI.METER), // coordinates in LRF
-				Amount.valueOf(yCgLocal, SI.METER),
-				Amount.valueOf(zCgLocal, SI.METER),
-				Amount.valueOf(xAw, SI.METER), // origin of LRF in BRF 
-				Amount.valueOf(yAw, SI.METER),
-				Amount.valueOf(zAw, SI.METER),
-				Amount.valueOf(0.0, SI.METER),// origin of BRF
-				Amount.valueOf(0.0, SI.METER),
-				Amount.valueOf(0.0, SI.METER)
-				);
-
-		cg.calculateCGinBRF();
-		theWing.set_cg(cg);
-
-		// Default operating conditions
-		OperatingConditions theOperatingConditions = new OperatingConditions();				
-
-		System.out.println("\n \n-----------------------------------------------------");
-		System.out.println("Operating condition");
-		System.out.println("-----------------------------------------------------");
-		System.out.println("\tMach: " + theOperatingConditions.get_machCurrent());
-		System.out.println("\tAltitude: " + theOperatingConditions.get_altitude());
-		System.out.println("----------------------");
+		ACAnalysisManager theAnalysis = new ACAnalysisManager(theOperatingConditions);
+		theAnalysis.updateGeometry(aircraft);
 
 
-		// allocate manager
-		LSAerodynamicsManager theLSAnalysis = new LSAerodynamicsManager ( 
+		//--------------------------------------------------------------------------------------
+		// B747-100B
+		//--------------------------------------------------------------------------------------
+		// Set the CoG(Bypass the Balance analysis allowing to perform Aerodynamic analysis only)
+		CenterOfGravity cgMTOM = new CenterOfGravity();
+
+		// x_cg in body-ref.-frame
+		cgMTOM.set_xBRF(Amount.valueOf(23.1, SI.METER)); 
+		cgMTOM.set_yBRF(Amount.valueOf(0.0, SI.METER));
+		cgMTOM.set_zBRF(Amount.valueOf(0.0, SI.METER));
+
+		aircraft.get_theBalance().set_cgMTOM(cgMTOM);
+		aircraft.get_HTail().calculateArms(aircraft);
+		aircraft.get_VTail().calculateArms(aircraft);
+
+
+		LSAerodynamicsManager theLSAnalysis = new LSAerodynamicsManager(
 				theOperatingConditions,
-				theWing
+				theWing,
+				aircraft
 				);
 
 
-		WingCalculator theWngAnalysis = new WingCalculator();
+
+		// -----------------------------------------------------------------------
+		// Database
+		// -----------------------------------------------------------------------
 
 
 		// Assign all default folders
@@ -138,6 +186,19 @@ public class Test_MR_06_Wing {
 		AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath, databaseFileName);
 
 		theLSAnalysis.set_AerodynamicDatabaseReader(aeroDatabaseReader);
+
+
+
+		theLSAnalysis.set_AerodynamicDatabaseReader(aeroDatabaseReader);
+
+		theAnalysis.doAnalysis(aircraft,AnalysisTypeEnum.AERODYNAMIC);
+
+		theWing.setAerodynamics(theLSAnalysis);
+
+		theWing.calculateGeometry();
+		theWing.getGeometry().calculateAll();
+
+		WingCalculator theWngAnalysis = new WingCalculator();
 
 
 		// -----------------------------------------------------------------------
@@ -281,15 +342,15 @@ public class Test_MR_06_Wing {
 		System.out.println("CL max airfoil " + clMaxAirfoil);
 
 		// CL distribution
-		Amount<javax.measure.quantity.Angle> alphaFirst = Amount.valueOf(toRadians(2.), SI.RADIAN);
-		MyArray clAlphaFirst = theLSAnalysis.getcLMap().getCxyVsAlphaTable().get(MethodEnum.NASA_BLACKWELL , alphaFirst);
-		//double clAlphaFirst = theCLatAlpha.nasaBlackwell(alphaFirst);
-		System.out.println("CL distribution at alpha " + alphaFirst + " --> " + clAlphaFirst );
-
-		Amount<javax.measure.quantity.Angle> alphaSecond = Amount.valueOf(toRadians(6), SI.RADIAN);
-		MyArray clAlphaSecond = theLSAnalysis.getcLMap().getCxyVsAlphaTable().get(MethodEnum.NASA_BLACKWELL , alphaSecond);
-		//double clAlphaSecond = theCLatAlpha.nasaBlackwell(alphaSecond);
-		System.out.println("CL distribution at alpha " + alphaSecond + " --> " + clAlphaSecond );
+		//		Amount<javax.measure.quantity.Angle> alphaFirst = Amount.valueOf(toRadians(2.), SI.RADIAN);
+		//		MyArray clAlphaFirst = theLSAnalysis.getcLMap().getCxyVsAlphaTable().get(MethodEnum.NASA_BLACKWELL , alphaFirst);
+		//		//double clAlphaFirst = theCLatAlpha.nasaBlackwell(alphaFirst);
+		//		System.out.println("CL distribution at alpha " + alphaFirst + " --> " + clAlphaFirst );
+		//
+		//		Amount<javax.measure.quantity.Angle> alphaSecond = Amount.valueOf(toRadians(6), SI.RADIAN);
+		//		MyArray clAlphaSecond = theLSAnalysis.getcLMap().getCxyVsAlphaTable().get(MethodEnum.NASA_BLACKWELL , alphaSecond);
+		//		//double clAlphaSecond = theCLatAlpha.nasaBlackwell(alphaSecond);
+		//		System.out.println("CL distribution at alpha " + alphaSecond + " --> " + clAlphaSecond );
 
 		MyArray clAlphaThird = theLSAnalysis.getcLMap().getCxyVsAlphaTable().get(MethodEnum.NASA_BLACKWELL ,alphaAtCLMax);
 		//double [] clAlphaThird = theCLAnalysis.nasaBlackwell();
@@ -298,20 +359,21 @@ public class Test_MR_06_Wing {
 
 
 		String folderPath = MyConfiguration.currentDirectoryString + File.separator + "out" + File.separator;
-		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "CL_Wing" + File.separator);
+		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "CL_Wing_testMR" + File.separator);
 
-		double [][] semiSpanAd = {theLSAnalysis.get_yStationsND(), theLSAnalysis.get_yStationsND(),
-				theLSAnalysis.get_yStationsND(), theLSAnalysis.get_yStationsND()};
+		double [][] semiSpanAd = {theLSAnalysis.get_yStationsND(), theLSAnalysis.get_yStationsND()};
+		//				theLSAnalysis.get_yStationsND(), theLSAnalysis.get_yStationsND()};
 
 
-		double [][] clDistribution = {clMaxAirfoil.getRealVector().toArray(), clAlphaFirst.getRealVector().toArray(),
-				clAlphaSecond.getRealVector().toArray(), clAlphaThird.getRealVector().toArray()};
+		//		double [][] clDistribution = {clMaxAirfoil.getRealVector().toArray(), clAlphaFirst.getRealVector().toArray(),
+		//				clAlphaSecond.getRealVector().toArray(), clAlphaThird.getRealVector().toArray()};
 
+		double [][] clDistribution = {clMaxAirfoil.getRealVector().toArray(), clAlphaThird.getRealVector().toArray()};
 		String [] legend = new String [4];
 		legend[0] = "CL max airfoil";
-		legend[1] = "CL distribution at alpha " + Math.toDegrees(alphaFirst.getEstimatedValue());
-		legend[2] = "CL distribution at alpha " + Math.toDegrees(alphaSecond.getEstimatedValue());
-		legend[3] = "CL distribution at alpha " + Math.toDegrees( alphaAtCLMax.getEstimatedValue());	
+		//		legend[1] = "CL distribution at alpha " + Math.toDegrees(alphaFirst.getEstimatedValue());
+		//		legend[2] = "CL distribution at alpha " + Math.toDegrees(alphaSecond.getEstimatedValue());
+		legend[1] = "CL distribution at alpha " + Math.toDegrees( alphaAtCLMax.getEstimatedValue());	
 
 		MyChartToFileUtils.plot(
 				semiSpanAd,	clDistribution, // array to plot
@@ -337,7 +399,7 @@ public class Test_MR_06_Wing {
 
 		System.out.println(" the mean LE sharpness parameter is : " + meanLESharpnessParameter);
 		System.out.println("the LE sweep angle is " +  theWing.get_sweepLEEquivalent());
-		deltaAlphaMax = Amount.valueOf(toRadians (theLSAnalysis.get_AerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(theWing.get_sweepLEEquivalent().getEstimatedValue() ,
+		deltaAlphaMax = Amount.valueOf(toRadians (theLSAnalysis.get_AerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(theWing.get_sweepLEEquivalent().to(NonSI.DEGREE_ANGLE).getEstimatedValue() ,
 				meanLESharpnessParameter )), SI.RADIAN);;
 				System.out.println("Delta  alpha max " + deltaAlphaMax);
 				Amount<javax.measure.quantity.Angle> alphaAtCLMaxNew =  Amount.valueOf((alphaAtCLMax.getEstimatedValue() + deltaAlphaMax.getEstimatedValue()), SI.RADIAN);
@@ -478,27 +540,27 @@ public class Test_MR_06_Wing {
 				// -----------------------------------------------------------------------
 				// Evaluate CD
 				// ----------------------------------------------------------------------- 
-
-				System.out.println("\n \n-----------------------------------------------------");
-				System.out.println("STARTING EVALUATE CD ");
-				System.out.println("-----------------------------------------------------");
-
-				// NB --> best practice to define an object CalcLiftDistribution
-				LSAerodynamicsManager.CalcLiftDistribution calculateLiftDistribution = theLSAnalysis.getCalculateLiftDistribution();
-				calculateLiftDistribution.getNasaBlackwell().calculate(alphaFirst);
-
-				// calculation of the cd 
-				LSAerodynamicsManager.CalcCDAtAlpha calculateCD =  theLSAnalysis.new CalcCDAtAlpha();
-
-				double CD = calculateCD.integralFromCdAirfoil(alphaFirst, MethodEnum.NASA_BLACKWELL, theLSAnalysis);
-
-				System.out.println(" CD of wing at alpha " + alphaFirst.to(NonSI.DEGREE_ANGLE) + " = " + CD);
-
-
-				airfoilRoot.getAerodynamics().calculateCdAtAlpha(alphaFirst);
-
-				airfoilKink.getAerodynamics().plotPolar();
-				airfoilKink.getAerodynamics().plotClvsAlpha();
+				//
+				//				System.out.println("\n \n-----------------------------------------------------");
+				//				System.out.println("STARTING EVALUATE CD ");
+				//				System.out.println("-----------------------------------------------------");
+				//
+				//				// NB --> best practice to define an object CalcLiftDistribution
+				//				LSAerodynamicsManager.CalcLiftDistribution calculateLiftDistribution = theLSAnalysis.getCalculateLiftDistribution();
+				//				calculateLiftDistribution.getNasaBlackwell().calculate(alphaFirst);
+				//
+				//				// calculation of the cd 
+				//				LSAerodynamicsManager.CalcCDAtAlpha calculateCD =  theLSAnalysis.new CalcCDAtAlpha();
+				//
+				//				double CD = calculateCD.integralFromCdAirfoil(alphaFirst, MethodEnum.NASA_BLACKWELL, theLSAnalysis);
+				//
+				//				System.out.println(" CD of wing at alpha " + alphaFirst.to(NonSI.DEGREE_ANGLE) + " = " + CD);
+				//
+				//
+				//				airfoilRoot.getAerodynamics().calculateCdAtAlpha(alphaFirst);
+				//
+				//				airfoilKink.getAerodynamics().plotPolar();
+				//				airfoilKink.getAerodynamics().plotClvsAlpha();
 
 
 				//	   double cdKink = calculateCd.calcCDatAlphaNasaBlackwell(alphaSecond, theLSAnalysis);
