@@ -1,0 +1,27 @@
+
+.chart {
+
+}
+
+.main {
+	
+}
+
+.main text {
+    font: 10px sans-serif;	
+}
+
+.axis line, .axis path {
+    shape-rendering: crispEdges;
+    stroke: black;
+    fill: none;
+    stroke-width:3;
+    stroke-miterlimit:4;
+    stroke-dasharray:none;
+    stroke-opacity:1;
+}
+
+circle {
+    fill: steelblue;
+}
+
