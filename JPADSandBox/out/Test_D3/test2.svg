@@ -1,115 +1,112 @@
-<?xml version="1.0" encoding="UTF-8"?><svg id="svg" class="chart" width="500" height="500" xmlns="http://www.w3.org/2000/svg">
-    <g>
-        <path class="Agodemar-Test-Line" fill="none" stroke="red" stroke-width="5" stroke-linecap="square" stroke-dasharray="15,10" d="M5,3L5.833333333333332,5.333333333333333C6.666666666666666,7.666666666666666,8.333333333333332,12.333333333333332,10,12.499999999999998C11.666666666666666,12.666666666666666,13.333333333333332,8.333333333333332,15,6.5C16.666666666666664,4.666666666666666,18.333333333333332,5.333333333333333,19.166666666666664,5.666666666666667L20,6"/>
-    </g>
-    <g transform="translate(60.0,20.0)" width="425" height="420" class="main">
-        <g transform="translate(0,420.0)" class="main axis date">
+<?xml version="1.0" encoding="UTF-8"?><svg id="svg" class="chart" width="550" height="550" xmlns="http://www.w3.org/2000/svg">
+    <g/>
+    <g transform="translate(60.0,20.0)" width="475" height="470" class="main">
+        <g transform="translate(0,470.0)" class="main axis date">
             <g class="tick" transform="translate(0,0)" style="opacity: 1;">
                 <line y2="6" x2="0"/>
                 <text dy=".71em" y="9" x="0" style="text-anchor: middle;">0</text>
             </g>
-            <g class="tick" transform="translate(38.63636363636364,0)" style="opacity: 1;">
+            <g class="tick" transform="translate(47.5,0)" style="opacity: 1;">
                 <line y2="6" x2="0"/>
-                <text dy=".71em" y="9" x="0" style="text-anchor: middle;">2</text>
+                <text dy=".71em" y="9" x="0" style="text-anchor: middle;">5</text>
             </g>
-            <g class="tick" transform="translate(77.27272727272728,0)" style="opacity: 1;">
-                <line y2="6" x2="0"/>
-                <text dy=".71em" y="9" x="0" style="text-anchor: middle;">4</text>
-            </g>
-            <g class="tick" transform="translate(115.9090909090909,0)" style="opacity: 1;">
-                <line y2="6" x2="0"/>
-                <text dy=".71em" y="9" x="0" style="text-anchor: middle;">6</text>
-            </g>
-            <g class="tick" transform="translate(154.54545454545456,0)" style="opacity: 1;">
-                <line y2="6" x2="0"/>
-                <text dy=".71em" y="9" x="0" style="text-anchor: middle;">8</text>
-            </g>
-            <g class="tick" transform="translate(193.1818181818182,0)" style="opacity: 1;">
+            <g class="tick" transform="translate(95,0)" style="opacity: 1;">
                 <line y2="6" x2="0"/>
                 <text dy=".71em" y="9" x="0" style="text-anchor: middle;">10</text>
             </g>
-            <g class="tick" transform="translate(231.8181818181818,0)" style="opacity: 1;">
+            <g class="tick" transform="translate(142.5,0)" style="opacity: 1;">
                 <line y2="6" x2="0"/>
-                <text dy=".71em" y="9" x="0" style="text-anchor: middle;">12</text>
+                <text dy=".71em" y="9" x="0" style="text-anchor: middle;">15</text>
             </g>
-            <g class="tick" transform="translate(270.45454545454544,0)" style="opacity: 1;">
-                <line y2="6" x2="0"/>
-                <text dy=".71em" y="9" x="0" style="text-anchor: middle;">14</text>
-            </g>
-            <g class="tick" transform="translate(309.0909090909091,0)" style="opacity: 1;">
-                <line y2="6" x2="0"/>
-                <text dy=".71em" y="9" x="0" style="text-anchor: middle;">16</text>
-            </g>
-            <g class="tick" transform="translate(347.72727272727275,0)" style="opacity: 1;">
-                <line y2="6" x2="0"/>
-                <text dy=".71em" y="9" x="0" style="text-anchor: middle;">18</text>
-            </g>
-            <g class="tick" transform="translate(386.3636363636364,0)" style="opacity: 1;">
+            <g class="tick" transform="translate(190,0)" style="opacity: 1;">
                 <line y2="6" x2="0"/>
                 <text dy=".71em" y="9" x="0" style="text-anchor: middle;">20</text>
             </g>
-            <g class="tick" transform="translate(425,0)" style="opacity: 1;">
+            <g class="tick" transform="translate(237.5,0)" style="opacity: 1;">
                 <line y2="6" x2="0"/>
-                <text dy=".71em" y="9" x="0" style="text-anchor: middle;">22</text>
+                <text dy=".71em" y="9" x="0" style="text-anchor: middle;">25</text>
             </g>
-            <path class="domain" d="M0,6V0H425V6"/>
+            <g class="tick" transform="translate(285,0)" style="opacity: 1;">
+                <line y2="6" x2="0"/>
+                <text dy=".71em" y="9" x="0" style="text-anchor: middle;">30</text>
+            </g>
+            <g class="tick" transform="translate(332.5,0)" style="opacity: 1;">
+                <line y2="6" x2="0"/>
+                <text dy=".71em" y="9" x="0" style="text-anchor: middle;">35</text>
+            </g>
+            <g class="tick" transform="translate(380,0)" style="opacity: 1;">
+                <line y2="6" x2="0"/>
+                <text dy=".71em" y="9" x="0" style="text-anchor: middle;">40</text>
+            </g>
+            <g class="tick" transform="translate(427.5,0)" style="opacity: 1;">
+                <line y2="6" x2="0"/>
+                <text dy=".71em" y="9" x="0" style="text-anchor: middle;">45</text>
+            </g>
+            <g class="tick" transform="translate(475,0)" style="opacity: 1;">
+                <line y2="6" x2="0"/>
+                <text dy=".71em" y="9" x="0" style="text-anchor: middle;">50</text>
+            </g>
+            <path class="domain" d="M0,6V0H475V6"/>
         </g>
         <g transform="translate(0,0)" class="main axis date">
-            <g class="tick" transform="translate(0,420)" style="opacity: 1;">
+            <g class="tick" transform="translate(0,470)" style="opacity: 1;">
+                <line x2="-6" y2="0"/>
+                <text dy=".32em" x="-9" y="0" style="text-anchor: end;">-25</text>
+            </g>
+            <g class="tick" transform="translate(0,423)" style="opacity: 1;">
+                <line x2="-6" y2="0"/>
+                <text dy=".32em" x="-9" y="0" style="text-anchor: end;">-20</text>
+            </g>
+            <g class="tick" transform="translate(0,376)" style="opacity: 1;">
+                <line x2="-6" y2="0"/>
+                <text dy=".32em" x="-9" y="0" style="text-anchor: end;">-15</text>
+            </g>
+            <g class="tick" transform="translate(0,329)" style="opacity: 1;">
+                <line x2="-6" y2="0"/>
+                <text dy=".32em" x="-9" y="0" style="text-anchor: end;">-10</text>
+            </g>
+            <g class="tick" transform="translate(0,282)" style="opacity: 1;">
+                <line x2="-6" y2="0"/>
+                <text dy=".32em" x="-9" y="0" style="text-anchor: end;">-5</text>
+            </g>
+            <g class="tick" transform="translate(0,235)" style="opacity: 1;">
                 <line x2="-6" y2="0"/>
                 <text dy=".32em" x="-9" y="0" style="text-anchor: end;">0</text>
             </g>
-            <g class="tick" transform="translate(0,381.8181818181818)" style="opacity: 1;">
+            <g class="tick" transform="translate(0,188)" style="opacity: 1;">
                 <line x2="-6" y2="0"/>
-                <text dy=".32em" x="-9" y="0" style="text-anchor: end;">2</text>
+                <text dy=".32em" x="-9" y="0" style="text-anchor: end;">5</text>
             </g>
-            <g class="tick" transform="translate(0,343.6363636363636)" style="opacity: 1;">
-                <line x2="-6" y2="0"/>
-                <text dy=".32em" x="-9" y="0" style="text-anchor: end;">4</text>
-            </g>
-            <g class="tick" transform="translate(0,305.45454545454544)" style="opacity: 1;">
-                <line x2="-6" y2="0"/>
-                <text dy=".32em" x="-9" y="0" style="text-anchor: end;">6</text>
-            </g>
-            <g class="tick" transform="translate(0,267.27272727272725)" style="opacity: 1;">
-                <line x2="-6" y2="0"/>
-                <text dy=".32em" x="-9" y="0" style="text-anchor: end;">8</text>
-            </g>
-            <g class="tick" transform="translate(0,229.09090909090907)" style="opacity: 1;">
+            <g class="tick" transform="translate(0,141.00000000000003)" style="opacity: 1;">
                 <line x2="-6" y2="0"/>
                 <text dy=".32em" x="-9" y="0" style="text-anchor: end;">10</text>
             </g>
-            <g class="tick" transform="translate(0,190.90909090909093)" style="opacity: 1;">
+            <g class="tick" transform="translate(0,93.99999999999999)" style="opacity: 1;">
                 <line x2="-6" y2="0"/>
-                <text dy=".32em" x="-9" y="0" style="text-anchor: end;">12</text>
+                <text dy=".32em" x="-9" y="0" style="text-anchor: end;">15</text>
             </g>
-            <g class="tick" transform="translate(0,152.72727272727272)" style="opacity: 1;">
-                <line x2="-6" y2="0"/>
-                <text dy=".32em" x="-9" y="0" style="text-anchor: end;">14</text>
-            </g>
-            <g class="tick" transform="translate(0,114.54545454545453)" style="opacity: 1;">
-                <line x2="-6" y2="0"/>
-                <text dy=".32em" x="-9" y="0" style="text-anchor: end;">16</text>
-            </g>
-            <g class="tick" transform="translate(0,76.36363636363635)" style="opacity: 1;">
-                <line x2="-6" y2="0"/>
-                <text dy=".32em" x="-9" y="0" style="text-anchor: end;">18</text>
-            </g>
-            <g class="tick" transform="translate(0,38.181818181818194)" style="opacity: 1;">
+            <g class="tick" transform="translate(0,46.99999999999999)" style="opacity: 1;">
                 <line x2="-6" y2="0"/>
                 <text dy=".32em" x="-9" y="0" style="text-anchor: end;">20</text>
             </g>
             <g class="tick" transform="translate(0,0)" style="opacity: 1;">
                 <line x2="-6" y2="0"/>
-                <text dy=".32em" x="-9" y="0" style="text-anchor: end;">22</text>
+                <text dy=".32em" x="-9" y="0" style="text-anchor: end;">25</text>
             </g>
-            <path class="domain" d="M-6,0H0V420H-6"/>
+            <path class="domain" d="M-6,0H0V470H-6"/>
         </g>
         <g>
-            <circle cy="362.72727272727275" cx="96.5909090909091" r="5" style="opacity: 0.6;"/>
-            <circle cy="95.45454545454547" cx="193.1818181818182" r="5" style="opacity: 0.6;"/>
-            <circle cy="343.6363636363636" cx="289.77272727272725" r="5" style="opacity: 0.6;"/>
-            <circle cy="305.45454545454544" cx="386.3636363636364" r="5" style="opacity: 0.6;"/>
+            <circle cy="206.79999999999998" cx="47.5" r="5" style="opacity: 1;"/>
+            <circle cy="75.20000000000002" cx="95" r="5" style="opacity: 1;"/>
+            <circle cy="197.4" cx="237.5" r="5" style="opacity: 1;"/>
+            <circle cy="141.00000000000003" cx="304" r="5" style="opacity: 1;"/>
+            <circle cy="178.6" cx="380" r="5" style="opacity: 1;"/>
+            <circle cy="423" cx="380" r="5" style="opacity: 1;"/>
+            <circle cy="423" cx="142.5" r="5" style="opacity: 1;"/>
+            <circle cy="235" cx="66.5" r="5" style="opacity: 1;"/>
+            <g class="Pippo-line-group">
+                <path class="Agodemar-Test-Line" fill="none" stroke="red" stroke-width="5" stroke-linecap="square" stroke-dasharray="15,10" d="M47.5,206.79999999999998C48.41249821411634,204.27189968467977,78.46280623825672,91.01768077000429,95,75.20000000000002S202.6674399796492,197.23587665955324,237.5,197.4S280.25,141.00000000000003,304,141.00000000000003S380,178.6,380,178.6S419.5833333333333,423,380,423S194.75,423,142.5,423S68.27924773022049,239.4012970168612,66.5,235"/>
+            </g>
         </g>
     </g>
 </svg>

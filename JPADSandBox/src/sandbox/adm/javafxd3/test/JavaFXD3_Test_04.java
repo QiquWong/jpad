@@ -127,7 +127,7 @@ public class JavaFXD3_Test_04 extends Application {
 				Document doc = browser.getWebEngine().getDocument();
 
 				String stringifiedDoc = getStringFromDoc(doc); 
-				System.out.println(stringifiedDoc);
+				// System.out.println(stringifiedDoc);
 				
 //				NodeList nodes = 			
 //						MyXMLReaderUtils
@@ -168,7 +168,7 @@ public class JavaFXD3_Test_04 extends Application {
 		browser = new JavaFxD3Browser(postLoadingHook, debugMode);
 
 		//create the scene
-		scene = new Scene(browser, 750, 500, Color.web("#666970"));
+		scene = new Scene(browser, 700, 600, Color.web("#666970"));
 		stage.setScene(scene);
 		stage.show();
 		
@@ -198,13 +198,13 @@ public class JavaFXD3_Test_04 extends Application {
 		// create initial d3 content
 
 		// data that you want to plot, I"ve used separate arrays for x and y values
-		double[] xData = {5, 10, 15, 20};
-		double[] yData = {3, 17, 4, 6};
+		double[] xData = {5, 10, 25, 32, 40, 40, 15, 7};
+		double[] yData = {3, 17, 4, 10, 6, -20, -20.0, 0};
 
 		// size and margins for the chart		
 		
-		double totalWidth = 500;
-		double totalHeight = 500;
+		double totalWidth = 550;
+		double totalHeight = 550;
 		
 		double marginLeft = 60;
 		double marginRight = 15;
@@ -217,28 +217,30 @@ public class JavaFXD3_Test_04 extends Application {
 		
 		// x and y scales, I've used linear here but there are other options
 		// the scales translate data values to pixel values for you
-		double xMax = 22;
+		double xMin = 0;
+		double xMax = 50;
 		LinearScale x = d3.scale().linear() //
-		          .domain(new double[]{0, xMax})  // the range of the values to plot
+		          .domain(new double[]{xMin, xMax})  // the range of the values to plot
 		          .range(new double[]{0, width});        // the pixel range of the x-axis
 
-		double yMax = 22;
+		double yMin = -25;
+		double yMax = 25;
 		LinearScale y = d3.scale().linear() //
-		          .domain(new double[]{0, yMax}) //
+		          .domain(new double[]{yMin, yMax}) //
 		          .range(new double[]{height, 0});
 
 		// the chart object, includes all margins
 		Selection chart = d3.select("svg") //
-		.attr("width", width + marginRight + marginLeft) //
-		.attr("height", height + marginTop + marginBottom) //
-		.attr("class", "chart");
+			.attr("width", width + marginRight + marginLeft) //
+			.attr("height", height + marginTop + marginBottom) //
+			.attr("class", "chart");
 
 		// the main object where the chart and axis will be drawn
 		Selection main = chart.append("g") //
-		.attr("transform", "translate(" + marginLeft + "," + marginTop + ")") //
-		.attr("width", width) //
-		.attr("height", height) //
-		.attr("class", "main");   
+			.attr("transform", "translate(" + marginLeft + "," + marginTop + ")") //
+			.attr("width", width) //
+			.attr("height", height) //
+			.attr("class", "main");   
 
 		// draw the x axis
 		Axis xAxis = d3.svg().axis().scale(x).orient(Orientation.BOTTOM);
@@ -247,18 +249,18 @@ public class JavaFXD3_Test_04 extends Application {
 		
 		
 		main.append("g") //
-		.attr("transform", "translate(0," + height + ")") //
-		.attr("class", "main axis date").call(xAxis);
+			.attr("transform", "translate(0," + height + ")") //
+			.attr("class", "main axis date").call(xAxis);
 
 		// draw the y axis
 		Axis yAxis = d3.svg().axis() //
-		.scale(y) //
-		.orient(Orientation.LEFT);
+			.scale(y) //
+			.orient(Orientation.LEFT);
 
 		main.append("g") //
-		.attr("transform", "translate(0,0)") //
-		.attr("class", "main axis date") //
-		.call(yAxis);
+			.attr("transform", "translate(0,0)") //
+			.attr("class", "main axis date") //
+			.call(yAxis);
 
 		// draw the graph object
 		Selection g = main.append("svg:g"); 
@@ -266,25 +268,27 @@ public class JavaFXD3_Test_04 extends Application {
 		g.selectAll("scatter-dots")
 		  .data(yData)  // using the values in the ydata array
 		  .enter().append("svg:circle")  // create a new circle for each value
-		      .attr("cy", new YAxisDatumFunction(webEngine, y) ) // translate y value to a pixel
+		      .attr("cy", new YAxisDatumFunction(webEngine, y, yData) ) // translate y value to a pixel
 		      .attr("cx", new XAxisDatumFunction(webEngine, x, xData)) // translate x value
 		      .attr("r", 5) // radius of circle
-		      .style("opacity", 0.6); // opacity of circle
+		      .style("opacity", 1.0); // opacity of circle
 
 
-		
-		
-		
-		
+		// Line, the path generator
 		Line line;
+		
 		InterpolationMode mode = InterpolationMode.LINEAR;
-		DatumFunction<Double> xAccessor = CustomCoords.xAccessor(webEngine);
-		DatumFunction<Double> yAcccessor = CustomCoords.yAccessor(webEngine);
-		DatumFunction<Boolean> isDefinedAccessor = CustomCoords.definedAccessor(webEngine);
-		line = d3.svg().line().x(xAccessor).y(yAcccessor).defined(isDefinedAccessor);
 
+		// line = d3.svg().line().x(xAccessor).y(yAcccessor).defined(isDefinedAccessor);
+		line = d3.svg().line()
+				.x(new XAxisDatumFunction(webEngine, x, xData))
+				.y(new YAxisDatumFunction(webEngine, y, yData));
+
+		Selection g2 = g.append("svg:g")
+				.classed("Pippo-line-group", true);
+		
 		String cssClassName = "Agodemar-Test-Line";
-		Selection pathLine = svg.append("path").classed(cssClassName, true);
+		Selection pathLine = g2.append("path").classed(cssClassName, true);
 		pathLine
 			.attr("fill","none")
 			.attr("stroke","red")
@@ -299,20 +303,26 @@ public class JavaFXD3_Test_04 extends Application {
 		
 		IntStream.range(0, xData.length)
 			.forEach(i ->
-					points.push(new CustomCoords(webEngine, xData[i], yData[i], true))
+					points.push(new Coords(webEngine, xData[i], yData[i]))
 					);
 
-//		System.out.println("Updating content");
+		System.out.println("points:");
+		points.stream()
+			.forEach(p -> System.out.println(p.x()+", "+p.y()));
 
-		mode = InterpolationMode.BASIS;
+		mode = InterpolationMode.MONOTONE;
 		line = line.interpolate(mode);
 		System.out.println("Interpolation mode: " + line.interpolate());
 
-		double tension = 2.0;
+		double tension = 0.1;
 		line = line.tension(tension);
 		System.out.println("tension: " + line.tension());
 
 		List<Coords> coordsList = new ArrayList<>(points);
+
+		System.out.println("coordsList:");
+		coordsList.stream()
+			.forEach(c -> System.out.println(c.x()+", "+c.y()));
 
 		// Double[] values = new Double[]{20.0,20.0};
 
@@ -321,32 +331,6 @@ public class JavaFXD3_Test_04 extends Application {
 
 		pathLine.attr("d", coordinates);
 
-		ArrayList<Coords> data;
-		if (showPoints) {
-			data = new ArrayList<>(points);
-		} else {
-			data = new ArrayList<>();
-		}
-
-		UpdateSelection updateSelection = getSvg().selectAll("circle").data(data);
-
-		DatumFunction<Double> cxFunction = new CxDatumFunction(webEngine);
-
-		DatumFunction<Double> cyFunction = new CyDatumFunction(webEngine);
-
-		EnteringSelection enter = updateSelection.enter();
-		if (enter != null) {
-			Selection result = 
-				enter
-					.append("circle")
-					.attr("cx", cxFunction)
-					.attr("cy", cyFunction)
-					.attr("r", 5); // radius
-						
-			//Inspector.inspect(result);
-			updateSelection.exit().remove();
-		}
-		
 		
 //		// make a paragraph <p> in the html
 //		d3.select("body").append("p").text("Agodemar :: Hi there!");
