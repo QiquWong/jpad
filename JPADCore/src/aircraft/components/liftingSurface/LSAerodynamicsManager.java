@@ -444,7 +444,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 		alphaStart = Amount.valueOf(toRadians(-2.), SI.RADIAN);
 //		alphaEnd = Amount.valueOf(toRadians(12.), SI.RADIAN);
-		alphaEnd = Amount.valueOf(toRadians(18.), SI.RADIAN);
+		alphaEnd = Amount.valueOf(toRadians(28.), SI.RADIAN);
 		_numberOfAlpha = 15; //8
 		alphaArray.setDouble(MyArrayUtils.linspace(
 				alphaStart.getEstimatedValue(), 
@@ -1758,7 +1758,6 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			// TODO: try to use nasa Blackwell also for vtail
 			if (getTheLiftingSurface()._type != ComponentEnum.VERTICAL_TAIL) {
 				if (calculateLiftDistribution.getNasaBlackwell() != null) {
-
 					for (int j=0; j < _numberOfAlpha; j++) {
 						if (found == false) {
 							for(int i =0; i< _nPointsSemispanWise; i++) {
@@ -1768,9 +1767,9 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 												alphaArray.getAsAmount(j)).get(i) 
 										> clAirfoils.get(i) ) {
 
-//									System.out.println( "distribution " +  cLMap.getCxyVsAlphaTable()
-//																		.get( MethodEnum.NASA_BLACKWELL,
-//																				alphaArray.getAsAmount(j))  );
+									System.out.println( "distribution " +  cLMap.getCxyVsAlphaTable()
+																		.get( MethodEnum.NASA_BLACKWELL,
+																				alphaArray.getAsAmount(j))  );
 
 									//@author Manuela ruocco
 									// After find the first point where CL_wing > Cl_MAX_airfoil, starts an iteration on alpha
@@ -2009,15 +2008,19 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		theCLmaxAnalysis.nasaBlackwell();
 
 		Amount<Angle> alphaMaxNasaBlackwell = this.get_alphaStall();
+		
+		System.out.println("Alpha max NASA Blackwell : " + alphaMaxNasaBlackwell.to(NonSI.DEGREE_ANGLE));
+		
 		this.set_cLMaxClean(theCLatAlpha.nasaBlackwell(alphaMaxNasaBlackwell));
 		//System.out.println("CL Max " + get_cLMaxClean());
 		deltaAlphaMax = Amount.valueOf(
 				toRadians (this.get_AerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(
-						getTheLiftingSurface().get_sweepLEEquivalent().getEstimatedValue() ,
+						getTheLiftingSurface().get_sweepLEEquivalent().to(NonSI.DEGREE_ANGLE).getEstimatedValue() ,
 						meanLESharpnessParameter )), SI.RADIAN);
-		//		System.out.println("Delta  alpha max " + deltaAlphaMax.to(NonSI.DEGREE_ANGLE));
+//				System.out.println("Sweep LE Equivalent = " + getTheLiftingSurface().get_sweepLEEquivalent().getEstimatedValue());
+//				System.out.println("Delta  alpha max " + deltaAlphaMax.to(NonSI.DEGREE_ANGLE));
 		Amount<Angle> alphaMax =  Amount.valueOf((alphaMaxNasaBlackwell.getEstimatedValue() + deltaAlphaMax.getEstimatedValue()), SI.RADIAN);
-		//		System.out.println( "Alpha max " + alphaMax.to(NonSI.DEGREE_ANGLE) );
+//				System.out.println( "Alpha max " + alphaMax.to(NonSI.DEGREE_ANGLE) );
 
 		this.set_alphaMaxClean(alphaMax);
 	}

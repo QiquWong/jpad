@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.measure.quantity.Angle;
+import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 import aircraft.OperatingConditions;
@@ -93,7 +94,7 @@ public class TestCleanWingCLmax {
 		//--------------------------------------------------------------------------------------
 		// ATR-72
 		//--------------------------------------------------------------------------------------
-//		// Set the CoG(Bypass the Balance analysis allowing to perform Aerodynamic analysis only)
+		// Set the CoG(Bypass the Balance analysis allowing to perform Aerodynamic analysis only)
 //		CenterOfGravity cgMTOM = new CenterOfGravity();
 //
 //		// x_cg in body-ref.-frame
@@ -278,8 +279,8 @@ public class TestCleanWingCLmax {
 		System.out.println("-----------------------------------------------------");
 
 		System.out.println(" the mean LE sharpness parameter is : " + meanLESharpnessParameter);
-		System.out.println("the LE sweep angle is " +  theWing.get_sweepLEEquivalent());
-		deltaAlphaMax = Amount.valueOf(toRadians (theLSAnalysis.get_AerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(theWing.get_sweepLEEquivalent().getEstimatedValue() ,
+		System.out.println("the LE sweep angle is " +  theWing.get_sweepLEEquivalent().to(NonSI.DEGREE_ANGLE));
+		deltaAlphaMax = Amount.valueOf(toRadians (theLSAnalysis.get_AerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(theWing.get_sweepLEEquivalent().to(NonSI.DEGREE_ANGLE).getEstimatedValue() ,
 				meanLESharpnessParameter )), SI.RADIAN);
 		System.out.println("Delta  alpha max " + deltaAlphaMax);
 		Amount<Angle> alphaAtCLMaxNew =  Amount.valueOf((alphaAtCLMax.getEstimatedValue() + deltaAlphaMax.getEstimatedValue()), SI.RADIAN);
