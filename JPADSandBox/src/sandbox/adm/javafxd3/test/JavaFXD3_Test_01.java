@@ -1,6 +1,6 @@
 package sandbox.adm.javafxd3.test;
 
-import com.github.javafxd3.javafx.FunctionPlotter;
+import org.treez.javafxd3.javafx.FunctionPlotter;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -28,9 +28,9 @@ public class JavaFXD3_Test_01 extends Application {
 		
 		//create function plotter
 		FunctionPlotter functionPlotter = new FunctionPlotter();
-		functionPlotter.setXDomain(-2,2);	
-		functionPlotter.setYDomain(-0.2,1.2);
-		functionPlotter.plot("[{fn: 'exp(-x^2)'}]");
+		functionPlotter.setXDomain(0,7);	
+		functionPlotter.setYDomain(-1.2,1.2);
+		functionPlotter.plot("cos(2*x)*exp(-0.2*x^2)");
 
 		//create the scene
 		Scene scene = new Scene(functionPlotter, 750, 500, Color.web("#666970"));

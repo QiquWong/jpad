@@ -26,29 +26,20 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
+import org.treez.javafxd3.d3.D3;
+import org.treez.javafxd3.d3.coords.Coords;
+import org.treez.javafxd3.d3.core.Selection;
+import org.treez.javafxd3.d3.scales.LinearScale;
+import org.treez.javafxd3.d3.svg.Axis;
+import org.treez.javafxd3.d3.svg.Axis.Orientation;
+import org.treez.javafxd3.d3.svg.InterpolationMode;
+import org.treez.javafxd3.d3.svg.Line;
+import org.treez.javafxd3.d3.wrapper.Inspector;
+import org.treez.javafxd3.javafx.JavaFxD3Browser;
 import org.treez.javafxd3.javafx.SaveHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import com.github.javafxd3.d3.D3;
-import com.github.javafxd3.d3.coords.Coords;
-import com.github.javafxd3.d3.core.EnteringSelection;
-import com.github.javafxd3.d3.core.Selection;
-import com.github.javafxd3.d3.core.UpdateSelection;
-import com.github.javafxd3.d3.core.Value;
-import com.github.javafxd3.d3.functions.DatumFunction;
-import com.github.javafxd3.d3.scales.IdentityScale;
-import com.github.javafxd3.d3.scales.LinearScale;
-import com.github.javafxd3.d3.scales.LogScale;
-import com.github.javafxd3.d3.scales.OrdinalScale;
-import com.github.javafxd3.d3.svg.Axis;
-import com.github.javafxd3.d3.svg.Line;
-import com.github.javafxd3.d3.svg.Axis.Orientation;
-import com.github.javafxd3.d3.svg.Line.InterpolationMode;
-import com.github.javafxd3.functionplot.FunctionPlot;
-import com.github.javafxd3.functionplot.Options;
-import com.github.javafxd3.javafx.JavaFxD3Browser;
 
 import configuration.MyConfiguration;
 import javafx.application.Application;
@@ -334,6 +325,11 @@ public class JavaFXD3_Test_04 extends Application {
 		
 //		// make a paragraph <p> in the html
 //		d3.select("body").append("p").text("Agodemar :: Hi there!");
+		
+//		Inspector.inspect(
+//				svg.select("g")
+//				.attr("class", "main") 
+//				.getJsObject());
 
 	}
 

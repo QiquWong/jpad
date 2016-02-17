@@ -1,8 +1,8 @@
 package sandbox.adm.javafxd3.test;
 
-import com.github.javafxd3.d3.core.Value;
-import com.github.javafxd3.d3.functions.DatumFunction;
-import com.github.javafxd3.d3.scales.LinearScale;
+import org.treez.javafxd3.d3.core.Value;
+import org.treez.javafxd3.d3.functions.DatumFunction;
+import org.treez.javafxd3.d3.scales.LinearScale;
 
 import javafx.scene.web.WebEngine;
 import netscape.javascript.JSObject;
