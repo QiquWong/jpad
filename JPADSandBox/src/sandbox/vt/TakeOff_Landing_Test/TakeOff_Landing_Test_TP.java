@@ -327,8 +327,12 @@ public class TakeOff_Landing_Test_TP {
 		double kRot = 1.05;
 		double kLO = 1.1;
 		double kFailure = 1.0;
+//		double k1 = 0.078;
+//		double k2 = 0.365;
+		double k1 = 0.0;
+		double k2 = 0.0;
 		double phi = 1.0;
-		double alphaReductionRate = -5; // [deg/s]
+		double alphaReductionRate = -6; // [deg/s]
 		Amount<Length> wing_to_ground_distance = Amount.valueOf(4.0, SI.METER);
 		Amount<Length> obstacle = Amount.valueOf(35, NonSI.FOOT).to(SI.METER);
 		Amount<Velocity> v_wind = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
@@ -345,6 +349,8 @@ public class TakeOff_Landing_Test_TP {
 				kRot,
 				kLO,
 				kFailure,
+				k1,
+				k2,
 				phi,
 				k_alpha_dot,
 				alphaReductionRate,
@@ -362,7 +368,7 @@ public class TakeOff_Landing_Test_TP {
 //		theTakeOffLandingCalculator.calculateTakeOffDistance(null, false);
 //		_stopTimeCalculation = System.currentTimeMillis();
 //		_startTimeGraph = System.currentTimeMillis();
-//		theTakeOffLandingCalculator.createTakeOffCharts();
+		theTakeOffLandingCalculator.createTakeOffCharts();
 //		_stopTimeGraph = System.currentTimeMillis();
 //		_startTimeBalanced = System.currentTimeMillis();
 //		theTakeOffLandingCalculator.calculateBalancedFieldLength();

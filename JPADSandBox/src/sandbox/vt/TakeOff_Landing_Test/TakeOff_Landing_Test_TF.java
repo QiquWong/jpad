@@ -353,6 +353,10 @@ public class TakeOff_Landing_Test_TF {
 		double kRot = 1.05;
 		double kLO = 1.1;
 		double kFailure = 1.0;
+//		double k1 = 0.078;
+//		double k2 = 0.365;
+		double k1 = 0.0;
+		double k2 = 0.0;
 		double phi = 1.0;
 		double alphaRed = -5; // [deg/s]
 		Amount<Length> wing_to_ground_distance = Amount.valueOf(6.56, SI.METER);
@@ -371,6 +375,8 @@ public class TakeOff_Landing_Test_TF {
 				kRot,
 				kLO,
 				kFailure,
+				k1,
+				k2,
 				phi,
 				k_alpha_dot,
 				alphaRed,
