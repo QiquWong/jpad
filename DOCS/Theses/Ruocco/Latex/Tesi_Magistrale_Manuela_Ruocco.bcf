@@ -2243,18 +2243,20 @@
     <bcf:citekey order="3">wiki:atr</bcf:citekey>
     <bcf:citekey order="4">wiki:boeing</bcf:citekey>
     <bcf:citekey order="5">boeing:boeing</bcf:citekey>
-    <bcf:citekey order="6">nasaLift</bcf:citekey>
-    <bcf:citekey order="7">NASA:Blackwell</bcf:citekey>
-    <bcf:citekey order="8">manual</bcf:citekey>
-    <bcf:citekey order="9">adas</bcf:citekey>
-    <bcf:citekey order="10">howe2000aircraft</bcf:citekey>
-    <bcf:citekey order="11">nicolai2010fundamentals</bcf:citekey>
-    <bcf:citekey order="12">PerkinsHage</bcf:citekey>
-    <bcf:citekey order="13">Jacobs:NACA:Rep:648</bcf:citekey>
-    <bcf:citekey order="14">schimidth</bcf:citekey>
-    <bcf:citekey order="15">kundu</bcf:citekey>
-    <bcf:citekey order="16">roskam2002airplane</bcf:citekey>
-    <bcf:citekey order="17">plotdigitizer</bcf:citekey>
+    <bcf:citekey order="6">NASA:Blackwell</bcf:citekey>
+    <bcf:citekey order="7">manual</bcf:citekey>
+    <bcf:citekey order="8">adas</bcf:citekey>
+    <bcf:citekey order="9">howe2000aircraft</bcf:citekey>
+    <bcf:citekey order="10">nicolai2010fundamentals</bcf:citekey>
+    <bcf:citekey order="11">PerkinsHage</bcf:citekey>
+    <bcf:citekey order="12">Jacobs:NACA:Rep:648</bcf:citekey>
+    <bcf:citekey order="13">schimidth</bcf:citekey>
+    <bcf:citekey order="14">sforza2014commercial</bcf:citekey>
+    <bcf:citekey order="15">zlotnick</bcf:citekey>
+    <bcf:citekey order="16">roskammethods</bcf:citekey>
+    <bcf:citekey order="17">kundu</bcf:citekey>
+    <bcf:citekey order="18">roskam2002airplane</bcf:citekey>
+    <bcf:citekey order="19">plotdigitizer</bcf:citekey>
     <bcf:citekey order="0">*</bcf:citekey>
   </bcf:section>
   <bcf:sortlist section="0" name="nty" type="entry" sortscheme="nty">

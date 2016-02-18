@@ -1116,6 +1116,22 @@
       \verb http://books.google.it/books?id=pWUAzy87zLYC
       \endverb
     \endentry
+    \entry{roskammethods}{book}{}
+      \name{author}{1}{}{%
+        {{hash=f21425413dd55dbd465800547a46b61c}{Roskam}{R\bibinitperiod}{J.}{J\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {published by the author}%
+      }
+      \strng{namehash}{f21425413dd55dbd465800547a46b61c}
+      \strng{fullhash}{f21425413dd55dbd465800547a46b61c}
+      \field{sortinit}{R}
+      \field{sortinithash}{c7387613477035a752d935acfc3e3ea2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Methods for Estimating Stability and Control Derivatives of Conventional Subsonic Airplanes}
+      \field{year}{1971}
+    \endentry
     \entry{sadraey2012aircraft}{book}{}
       \name{author}{1}{}{%
         {{hash=f37bdc36291a5f5f76bf75ec2ffd83b8}{Sadraey}{S\bibinitperiod}{M.H.}{M\bibinitperiod}{}{}{}{}}%
@@ -1208,6 +1224,21 @@
       \field{title}{Design Charts for Predicting Downwash Angles and Wake Characteristics behind Plain and Flapped Wings}
       \field{type}{techreport}
       \field{year}{1939}
+    \endentry
+    \entry{zlotnick}{other}{}
+      \list{institution}{1}{%
+        {NACA}%
+      }
+      \list{location}{1}{%
+        {Washington, D.C.}%
+      }
+      \field{sortinit}{T}
+      \field{sortinithash}{423d138a005a533b47e6475e39378bf2}
+      \field{labeltitlesource}{title}
+      \field{number}{NACA RM L51J19}
+      \field{title}{Theoretical Calculation of the Effect of The Fuselage on the Spanwise Lift Distribution on a Wing}
+      \field{year}{1952}
+      \warn{\item Name "Zlotnick, M., Diederich, F.W.," has too many commas: skipping name}
     \endentry
     \entry{torenbeek2013advanced}{book}{}
       \name{author}{1}{}{%

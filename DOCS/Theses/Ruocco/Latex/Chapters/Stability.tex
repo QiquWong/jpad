@@ -8,11 +8,47 @@
 \end{flushright}
 
 % introduzione... stabilità, grafici e quali sono tutti i dati che servono
-%Nicolai 576
-\section{Aerodynamic Lift}
-% intro
+%Nicolai 585 
+%
+%disegno stabilità
+\section{Aerodynamic Lift}		
+ Considering a reference angle of attack $\alpha_B$, the aircraft components generates lift. So it is necessary to evaluate these contributes. In particular, first of all, is wanted to evaluate the $C_L$ of isolated wing. This value will be correct with fuselage influence. Afterwards it is necessary to evaluate the contribute of horizontal tail.  It is important to note that each component works at a different angle of attack in dipendence of angles of incidence and downwash , meanwhile for longitudinal stability the reference angle of attack is $\alpha_B$.
+
 \subsection{Wing}
 \subsection{Fuselage}
+
+
+The lift distribution on a wing is affected by the presence of the fuselage as a result of the following effects:
+\begin{itemize}
+\item The presence of the fuselage disturbs the longitudinal velocity field near the wing.
+\item At an angle of attack relative to the free stream, the fuselage also perturbs the flow about the wing in planes normal to the free stream.
+\item The fuselage has a blocking effect on the flow.
+\end{itemize}
+These effects are not large for a slender fuselage but may be important when the fuselage is relatively bulky, so that a substantial alteration to the local longitudinal velocity may result. The cross-flow caused by the fuselage at angle of attack changes the component of free stream velocity normal to the fuselage axis and affects the downwash flow produced by the wing. \cite{sforza2014commercial}
+However, theoretical analysis showed that the presence of a slender fuselage does not have an important effect on the lift
+distribution on an unswept wing of moderate aspect ratio, but a larger change in the lift distribution on a wing in the presence of a fuselage may be anticipated if the wing is swept.\cite{zlotnick}
+For greater accuracy of the calculation, the value of lift linear slope has been corrected using the following equation from \cite{roskammethods}:
+
+\begin{equation}
+\left ( \frac{d C_L}{d\alpha} \right)_{w \!b} = \left[ 1 + \frac{1}{4} \left ( \frac {d}{b} \right ) - \frac{1}{40} \left (\frac{d}{b} \right) ^2 \right] \left ( \frac{d C_L}{d\alpha} \right)_{w}
+\end{equation}
+
+Note that for typical airliners $\frac{d}{b} \approx 0.1$ and therefore the lift curve slope of the wing-body is approximately equal to that of the wing alone.\\
+In addition to the calculation of the linear slope of the wing body group, it is necessary to calculate the intersection point between the lift curve of wing and the lift curve of wing-body. This point is the $\alpha_{0_L}$ of the exposed wing, that is the wing outside the fuselage. This value has been calculated with the integral formula.
+
+\begin{equation}
+\alpha_{0L} |_{EW} = \frac{2}{S_E}\int_{y_{0_E}}^{\frac{b}{2}} c(y) [ \alpha_0(y_E) - \epsilon_T(y_E) ] \, dy
+\end{equation}
+
+
+\begin{figure}[H]
+\centering
+{\includegraphics[height=8.4cm]{Immagini/WingBody_CL_Vs_alpha_curve}} 
+\label{wblc}
+\caption{Lift curve of isolated wing and of wing-body group.}
+\end{figure} 		
+
+
 \subsection{Horizontal Tail}
 The H-tail consists of the stabilizer (fixed or moving) and the elevator (moving) for handling the pitch degree of freedom. The H-tail can be positioned low through the fuselage, in the middle cutting through the V-tail, or at the top of the V-tail to form a T-tail. \cite{kundu}
 %nicolai p 283
@@ -21,7 +57,7 @@ The H-tail consists of the stabilizer (fixed or moving) and the elevator (moving
 		
 \begin{figure}[H]
 \centering
-{\includegraphics[height=3.09cm]{Immagini/horizontal_tail_profile_deltaE.pdf}} 
+{\includegraphics[height=2.3cm]{Immagini/horizontal_tail_profile_deltaE.pdf}} 
 \label{htailangle}
 \caption{Characteristic angles of the horizontal tail.}
 \end{figure} 		
