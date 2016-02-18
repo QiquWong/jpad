@@ -108,7 +108,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 	Integer _numberOfAlpha;
 	private int _nPointsSemispanWise;
-	private boolean subfolderPathCeck = true;
+	private boolean subfolderPathCheck = true;
 	Amount<Angle> alphaStart, alphaEnd, _alphaMaxClean; 
 
 
@@ -1341,7 +1341,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		//2. It's necessary to get the linear slope of the horizontal tail with no elevator defletion.
 		// 3. The alphazero lift of the deflected configuration is calculated with this formula
 		//   alphaw= tau per delta e
-		// 4. At this it's possible to create an alpha array, starting from the alpha zero lift, until
+		// 4. At this point it's possible to create an alpha array, starting from the alpha zero lift, until
 		//   15 degrees after.
 		// 5. the value of cl for each alpha is calculated with the formula :
 		//  cl alfa * (alfa + t delta e)
@@ -1361,7 +1361,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			tauValue = theStablityCalculator.calculateTauIndex(chordRatio, theAircraft, deflection);
 			cLLinearSlopeNoDeflection = getcLLinearSlopeNB()/57.3; //in deg 
 			alphaZeroLiftDeflection = - tauValue*deflectionAngleDeg;
-			alphaTailArray = MyArrayUtils.linspace(alphaZeroLiftDeflection, alphaZeroLiftDeflection + 15, 2);
+			alphaTailArray = MyArrayUtils.linspace(alphaZeroLiftDeflection, alphaZeroLiftDeflection + 13, 2);
 
 			cLArray[0] = cLLinearSlopeNoDeflection * ( alphaTailArray[0] + tauValue * deflectionAngleDeg);
 			cLArray[1] = cLLinearSlopeNoDeflection * ( alphaTailArray[1] + tauValue * deflectionAngleDeg);
@@ -1486,7 +1486,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 
 		String folderPath = MyConfiguration.currentDirectoryString + File.separator + "out" + File.separator;
-		if(subfolderPathCeck)
+		if(subfolderPathCheck)
 			subfolderPathCLAlpha = JPADStaticWriteUtils.createNewFolder(folderPath + "CL alpha Wing Clean" + File.separator);
 
 
@@ -1522,9 +1522,9 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 	public void PlotCLvsAlphaCurve(String subfolderPath){
 		this.subfolderPathCLAlpha = subfolderPath;
-		subfolderPathCeck = false;
+		subfolderPathCheck = false;
 		plotCLvsAlphaCurve();
-		subfolderPathCeck = true;
+		subfolderPathCheck = true;
 
 	};
 
@@ -1548,7 +1548,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		CalcCLAtAlpha theCLCalculator = new CalcCLAtAlpha();
 		String folderPath = MyConfiguration.currentDirectoryString + File.separator + "out" + File.separator;
 		
-		if(subfolderPathCeck)
+		if(subfolderPathCheck)
 			subfolderPathCDAlpha = JPADStaticWriteUtils.createNewFolder(folderPath + "CD wing" + File.separator);
 
 		for (int i=0; i<nPointsCD; i++){
@@ -1582,9 +1582,9 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	
 		public void PlotCDvsAlphaCurve(String subfolderPath){
 			this.subfolderPathCDAlpha = subfolderPath;
-			subfolderPathCeck = false;
+			subfolderPathCheck = false;
 			PlotCDvsAlphaCurve();
-			subfolderPathCeck = true;
+			subfolderPathCheck = true;
 		
 	}
 	
