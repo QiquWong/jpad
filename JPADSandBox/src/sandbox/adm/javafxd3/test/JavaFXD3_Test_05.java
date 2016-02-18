@@ -41,6 +41,7 @@ import org.treez.javafxd3.d3.wrapper.Inspector;
 import org.treez.javafxd3.javafx.JavaFxD3Browser;
 import org.treez.javafxd3.javafx.SaveHelper;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -76,7 +77,7 @@ public class JavaFXD3_Test_05 extends Application {
 	 * Controls the browser
 	 */
 	protected WebEngine webEngine;
-	
+
 	private JavaFxD3Browser browser;
 
 	private Selection svg;
@@ -87,7 +88,7 @@ public class JavaFXD3_Test_05 extends Application {
 
 	/**
 	 * Main
-	 * 
+	 *
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -102,7 +103,7 @@ public class JavaFXD3_Test_05 extends Application {
 		String rootOutputFolderPath = MyConfiguration.currentDirectoryString + File.separator + "out" + File.separator;
 		String outputFolderPath = JPADStaticWriteUtils.createNewFolder(rootOutputFolderPath + "Test_D3" + File.separator);
 		System.out.println("Output ==> " + outputFolderPath);
-		
+
 		//--------------------------------------------------
 		//set state title
 		stage.setTitle("treez/javafx-d3 XXX demo");
@@ -113,48 +114,48 @@ public class JavaFXD3_Test_05 extends Application {
 
 			//do some d3 stuff
 			createD3Example();
-			
+
 			//--------------------------------------------------
-			
+
 			try {
-				
+
 				// get the svg node
-				
+
 				Document doc = browser.getWebEngine().getDocument();
 
-				String stringifiedDoc = getStringFromDoc(doc); 
+				String stringifiedDoc = getStringFromDoc(doc);
 				// System.out.println(stringifiedDoc);
-				
-//				NodeList nodes = 			
+
+//				NodeList nodes =
 //						MyXMLReaderUtils
 //							.getXMLNodeListByPath(doc, "//HTML/BODY/DIV/svg");
 				NodeList nodes = doc.getElementsByTagName("svg");
 
 				System.out.println("Svg nodes, length: " + nodes.getLength());
-				
+
 				if ( nodes.getLength() > 0 ) {
 					Node svgNode = nodes.item(0);
 					String stringifiedSVG = getStringFromNode(svgNode);
-					
+
 //					// File chooser
 //					SaveHelper saveHelper = new SaveHelper();
 //					saveHelper.saveSvg(stringifiedSVG);
-					
+
 					String outputFilePath = outputFolderPath + "test3.svg";
 					File file = new File(outputFilePath);
-					if (file != null) {			
+					if (file != null) {
 						try {
 							PrintWriter out = new PrintWriter(file);
 							out.print(
-									stringifiedSVG // stringifiedDoc // 
+									stringifiedSVG // stringifiedDoc //
 									);
 							out.close();
 						} catch (FileNotFoundException e) {
-							// 
+							//
 						}
-					}					
+					}
 				}
-				
+
 			} catch (TransformerException e) {
 				e.printStackTrace();
 			}
@@ -169,7 +170,7 @@ public class JavaFXD3_Test_05 extends Application {
 		scene = new Scene(browser, 700, 600, Color.web("#666970"));
 		stage.setScene(scene);
 		stage.show();
-		
+
 	}
 
 	/*
@@ -186,38 +187,44 @@ public class JavaFXD3_Test_05 extends Application {
 
 		d3 = browser.getD3();
 		webEngine = d3.getWebEngine();
-		
+
 		// apply CSS
 		loadCssForThisClass();
-		
+
 		svg = d3.select("svg")
 				.attr("width", widthSVG)
 				.attr("height", heightSVG);
 
-		injectStyleInSVG();
-		
-		
-		
+		try {
+
+			injectStyleInSVG();
+
+		} catch (TransformerException e) {
+			e.printStackTrace();
+		}
+
+
+
 		// create initial d3 content
 
 		// data that you want to plot, I"ve used separate arrays for x and y values
 		double[] xData = {5, 10, 25, 32, 40, 40, 15, 7};
 		double[] yData = {3, 17, 4, 10, 6, -20, -20.0, 0};
 
-		// size and margins for the chart		
-		
+		// size and margins for the chart
+
 		double totalWidth = 550;
 		double totalHeight = 550;
-		
+
 		double marginLeft = 60;
 		double marginRight = 15;
-		
+
 		double marginTop = 20;
 		double marginBottom = 60;
-		
+
 		double width = totalWidth - marginLeft - marginRight;
 		double height = totalHeight - marginTop - marginBottom;
-		
+
 		// x and y scales, I've used linear here but there are other options
 		// the scales translate data values to pixel values for you
 		double xMin = 0;
@@ -243,14 +250,14 @@ public class JavaFXD3_Test_05 extends Application {
 			.attr("transform", "translate(" + marginLeft + "," + marginTop + ")") //
 			.attr("width", width) //
 			.attr("height", height) //
-			.attr("class", "main");   
+			.attr("class", "main");
 
 		// draw the x axis
 		Axis xAxis = d3.svg().axis().scale(x).orient(Orientation.BOTTOM);
-		
+
 		//xAxis.innerTickSize(10);
-		
-		
+
+
 		main.append("g") //
 			.attr("transform", "translate(0," + height + ")") //
 			.attr("class", "main axis date").call(xAxis);
@@ -266,7 +273,7 @@ public class JavaFXD3_Test_05 extends Application {
 			.call(yAxis);
 
 		// draw the graph object
-		Selection g = main.append("svg:g"); 
+		Selection g = main.append("svg:g");
 
 		g.selectAll("scatter-dots")
 		  .data(yData)  // using the values in the ydata array
@@ -279,7 +286,7 @@ public class JavaFXD3_Test_05 extends Application {
 
 		// Line, the path generator
 		Line line;
-		
+
 		InterpolationMode mode = InterpolationMode.LINEAR;
 
 		// line = d3.svg().line().x(xAccessor).y(yAcccessor).defined(isDefinedAccessor);
@@ -289,7 +296,7 @@ public class JavaFXD3_Test_05 extends Application {
 
 		Selection g2 = g.append("svg:g")
 				.classed("Pippo-line-group", true);
-		
+
 		String cssClassName = "Agodemar-Test-Line";
 		Selection pathLine = g2.append("path").classed(cssClassName, true);
 		pathLine
@@ -298,12 +305,12 @@ public class JavaFXD3_Test_05 extends Application {
 			.attr("stroke-width","5")
 			.attr("stroke-linecap","square") // "butt", "round", "square"
 			.attr("stroke-dasharray","15,10");
-		
+
 		final Stack<Coords> points = new Stack<>();
 
 //		double [] x = {50.0, 120.0, 400.0, 700};
 //		double [] y = {100.0, 30.0, 20.0, 200};
-		
+
 		IntStream.range(0, xData.length)
 			.forEach(i ->
 					points.push(new Coords(webEngine, xData[i], yData[i]))
@@ -336,15 +343,15 @@ public class JavaFXD3_Test_05 extends Application {
 
 //		// make a paragraph <p> in the html
 //		d3.select("body").append("p").text("Agodemar :: Hi there!");
-		
+
 //		Inspector.inspect(
 //				svg.select("g")
-//				.attr("class", "main") 
+//				.attr("class", "main")
 //				.getJsObject());
 
 	}
 
-	
+
 	/**
 	 * @return
 	 */
@@ -353,72 +360,89 @@ public class JavaFXD3_Test_05 extends Application {
 		return svg;
 	}
 
-	
+
 	//#end region
 
-	
+
 	/**
 	 * If a css file exists that has the same name as the java/class file and
-	 * is located next to that file, the css file is loaded with this method. 
+	 * is located next to that file, the css file is loaded with this method.
 	 */
 	private void loadCssForThisClass() {
 		String className = getClass().getName();
-		String cssPath = className.replace(".", "/") + ".css";		
-		URL cssUrl = getClass().getClassLoader().getResource(cssPath);		
+		String cssPath = className.replace(".", "/") + ".css";
+		URL cssUrl = getClass().getClassLoader().getResource(cssPath);
 		loadCss(cssUrl);
-		
+
 		// System.out.println("CSS:\n" + getCssContent(cssUrl) );
 	}
-	
+
 	public void loadCss(URL cssUrl){
-		
+
 		String command = "var head  = document.getElementsByTagName('head')[0];" //
-		+ "    var link  = document.createElement('link');" //		
+		+ "    var link  = document.createElement('link');" //
 		+ "    link.rel  = 'stylesheet';" //
 		+ "    link.type = 'text/css';" //
 		+ "    link.href = '"+ cssUrl + "';" //
 		+ "    link.media = 'all';" //
-		+ "    head.appendChild(link);";		
-		webEngine.executeScript(command);		
+		+ "    head.appendChild(link);";
+		webEngine.executeScript(command);
 	}
-	
+
 	public String getCssContent(URL cssUrl){
 		try {
-			FileInputStream  fis = new FileInputStream(cssUrl.getFile());			
+			FileInputStream  fis = new FileInputStream(cssUrl.getFile());
 			String stringFromStream = CharStreams.toString(new InputStreamReader(fis, "UTF-8"));
-			return stringFromStream;			
+			return stringFromStream;
 		} catch (IOException e) {
 			System.err.println("###############################");
 			System.err.println("getCssContent !!!");
 			e.printStackTrace();
 			System.err.println("###############################");
 			return null;
-		}		
+		}
 	}
-	
-	public void injectStyleInSVG() {
-		
+
+	public void injectStyleInSVG() throws TransformerException {
+
 		String className = getClass().getName();
-		String cssPath = className.replace(".", "/") + ".css";		
-		URL cssUrl = getClass().getClassLoader().getResource(cssPath);		
-		String stringFromStream = getCssContent(cssUrl);
-	
+		String cssPath = className.replace(".", "/") + ".css";
+		URL cssUrl = getClass().getClassLoader().getResource(cssPath);
+		String stringCSSContent = getCssContent(cssUrl);
+
+		stringCSSContent.replace("\n\r", "");
+		stringCSSContent.replace("\n", "");
+
+		Node svgNode = getSVGNode();
+
+		if (browser != null) {
+			Document document = browser.getWebEngine().getDocument();
+			Element style = browser.getWebEngine().getDocument().createElementNS("http://www.w3.org/2000/svg", "style");
+
+			style.appendChild(document.createTextNode(stringCSSContent));
+			svgNode.appendChild(style);
+
+			System.out.println("SVG:\n" + getStringFromNode(svgNode).replace("\n", ""));
+
+		}
+
+
 		//stringFromStream = "Pippo agodemar!";
-		
+
 		/*
 		 * FIXME : try to get
-		 * 
+		 *
 <style>
 .chart {
 
 }
 
 .main {
-	
+
 }
 
 .main text {
-    font: 10px sans-serif;	
+    font: 10px sans-serif;
 }
 
 .axis line, .axis path {
@@ -434,20 +458,20 @@ public class JavaFXD3_Test_05 extends Application {
 circle {
     fill: steelblue;
 }
-</style> 
+</style>
 		* PROBLEM are the dots .main .axis etc
 		*/
-		
-		String command = "var svg  = document.getElementsByTagName('svg')[0];" //
-		+ "    var style  = document.createElementNS(\"http://www.w3.org/2000/svg\", 'style');" //		
-		+ "    style.appendChild(document.createTextNode('"+stringFromStream+"'));" // stringFromStream
-		+ "    svg.appendChild(style);";		
-		
-		System.out.println("----------------\n" + command + "\n------------------");
-		//webEngine.executeScript(command);		
-		
+
+//		String command = "var svg  = document.getElementsByTagName('svg')[0];" //
+//		+ "    var style  = document.createElementNS(\"http://www.w3.org/2000/svg\", 'style');" //
+//		+ "    style.appendChild(document.createTextNode('"+stringFromStream+"'));" // stringFromStream
+//		+ "    svg.appendChild(style);";
+//
+//		System.out.println("----------------\n" + command + "\n------------------");
+		//webEngine.executeScript(command);
+
 	}
-	
+
 	//-------------------------------------------------------------------------
 	// Converting a org.w3c.dom.Document in Java to String using Transformer
 	// http://stackoverflow.com/questions/22539158/converting-a-org-w3c-dom-document-in-java-to-string-using-transformer
@@ -466,14 +490,19 @@ circle {
         transformer.transform(domSource, result);
         writer.flush();
         return writer.toString();
-    }	
+    }
 
 	public static String getStringFromNode(Node node) throws TransformerException {
 
         DOMSource domSource = new DOMSource(node);
         StringWriter writer = new StringWriter();
         StreamResult result = new StreamResult(writer);
+
         TransformerFactory tf = TransformerFactory.newInstance();
+
+        // select the Saxon processor if you want to prevent wrong escape char conversions
+        // TransformerFactory tf = TransformerFactory.newInstance("net.sf.saxon.TransformerFactoryImpl",null);
+
         Transformer transformer = tf.newTransformer();
         transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
@@ -483,7 +512,18 @@ circle {
         transformer.transform(domSource, result);
         writer.flush();
         return writer.toString();
-    }	
-	
-	
+    }
+
+	public Node getSVGNode() {
+		// get the svg node
+		if (browser != null) {
+			NodeList nodes = browser.getWebEngine().getDocument().getElementsByTagName("svg");
+			if ( nodes.getLength() > 0 )
+				return nodes.item(0);
+			else
+				return null;
+		}
+		else
+			return null;
+	}
 }
