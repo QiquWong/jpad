@@ -6,15 +6,9 @@ import java.util.List;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Duration;
 import javax.measure.quantity.Length;
-import javax.measure.quantity.Quantity;
 import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
-import javax.measure.unit.Unit;
-
-import org.apache.commons.math3.ode.FirstOrderDifferentialEquations;
-import org.apache.commons.math3.ode.FirstOrderIntegrator;
-import org.apache.commons.math3.ode.nonstiff.DormandPrince853Integrator;
 import org.jscience.physics.amount.Amount;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
@@ -41,8 +35,8 @@ public class TakeOff_Landing_Test_TP {
 						_stopTimeCalculation, _stopTimeGraph, _stopTimeBalanced, _stopTimeTotal,
 						_elapsedTimeTotal, _elapsedTimeCalculation, _elapsedTimeGraph, _elapsedTimeBalanced;
 
-	// TODO: example of custom NON_SI unit
-	private static Unit<? extends Quantity> angularRateUnit = (NonSI.DEGREE_ANGLE).divide((SI.SECOND));
+//	TODO: example of custom NON_SI unit
+//	private static Unit<? extends Quantity> angularRateUnit = (NonSI.DEGREE_ANGLE).divide((SI.SECOND));
 
 	//------------------------------------------------------------------------------------------
 	// VARIABLE DECLARATION:
@@ -87,6 +81,7 @@ public class TakeOff_Landing_Test_TP {
 		// Operating Condition / Aircraft / AnalysisManager (geometry calculations)
 		OperatingConditions theCondition = new OperatingConditions();
 		theCondition.set_altitude(Amount.valueOf(0.0, SI.METER));
+		theCondition.set_machCurrent(0.15);
 		theCondition.calculate();
 
 		Aircraft aircraft = Aircraft.createDefaultAircraft("ATR-72");
@@ -109,9 +104,6 @@ public class TakeOff_Landing_Test_TP {
 		aircraft.get_HTail().calculateArms(aircraft);
 		aircraft.get_VTail().calculateArms(aircraft);
 
-		aircraft.get_theAerodynamics().set_aerodynamicDatabaseReader(aeroDatabaseReader);
-		theAnalysis.doAnalysis(aircraft, AnalysisTypeEnum.AERODYNAMIC);
-
 		LSAerodynamicsManager theLSAnalysis = new LSAerodynamicsManager(
 				theCondition,
 				theWing,
@@ -119,9 +111,12 @@ public class TakeOff_Landing_Test_TP {
 				);
 
 		theLSAnalysis.set_AerodynamicDatabaseReader(aeroDatabaseReader);
-		theLSAnalysis.set_highLiftDatabaseReader(highLiftDatabaseReader);
-		theWing.setAerodynamics(theLSAnalysis);
+		
+		theAnalysis.doAnalysis(aircraft, AnalysisTypeEnum.AERODYNAMIC);
 
+		theLSAnalysis.setHighLiftDatabaseReader(highLiftDatabaseReader);
+		theWing.setAerodynamics(theLSAnalysis);
+		
 		// Define airfoil
 		System.out.println("\n \n-----------------------------------------------------");
 		System.out.println("AIRFOILS");
@@ -150,7 +145,7 @@ public class TakeOff_Landing_Test_TP {
 		System.out.println("Kink Station [m] = " + yLocKink);
 		System.out.println("Kink Chord [m] = " + theWing.get_chordKink().getEstimatedValue() );
 		System.out.println("Kink maximum thickness = " + airfoilKink.getGeometry().get_maximumThicknessOverChord());
-		System.out.println("CL max --> " + airfoilRoot.getAerodynamics().get_clMax());
+		System.out.println("CL max --> " + airfoilKink.getAerodynamics().get_clMax());
 		System.out.println("LE sharpness parameter Kink = " + airfoilKink.getGeometry().get_deltaYPercent());
 
 
@@ -163,7 +158,7 @@ public class TakeOff_Landing_Test_TP {
 		System.out.println("\n \n \t TIP \nAirfoil Type: " + airfoilKink.get_family());
 		System.out.println("tip Chord [m] = " +theWing.get_chordTip().getEstimatedValue() );
 		System.out.println("Tip maximum thickness = " + airfoilTip.getGeometry().get_maximumThicknessOverChord());
-		System.out.println("CL max --> " + airfoilRoot.getAerodynamics().get_clMax());
+		System.out.println("CL max --> " + airfoilTip.getAerodynamics().get_clMax());
 		System.out.println("LE sharpness parameter Tip = " + airfoilTip.getGeometry().get_deltaYPercent());
 
 
@@ -176,7 +171,6 @@ public class TakeOff_Landing_Test_TP {
 		myAirfoilList.add(2, airfoilTip);
 		theWing.set_theAirfoilsList(myAirfoilList);
 		theWing.updateAirfoilsGeometry();
-		//theLSAnalysis.initializeDependentData();
 		aircraft.get_exposedWing().set_theAirfoilsList(myAirfoilList);
 		aircraft.get_exposedWing().updateAirfoilsGeometryExposedWing( aircraft);
 
@@ -184,9 +178,9 @@ public class TakeOff_Landing_Test_TP {
 		// High Lift Devices Input
 		List<Double[]> deltaFlap = new ArrayList<Double[]>();
 		List<FlapTypeEnum> flapType = new ArrayList<FlapTypeEnum>();
-		List<Double> eta_in_flap = new ArrayList<Double>();
-		List<Double> eta_out_flap = new ArrayList<Double>();
-		List<Double> cf_c = new ArrayList<Double>();
+		List<Double> etaInFlap = new ArrayList<Double>();
+		List<Double> etaOutFlap = new ArrayList<Double>();
+		List<Double> cfc = new ArrayList<Double>();
 
 		// XML reading phase:
 		// Arguments check
@@ -203,25 +197,25 @@ public class TakeOff_Landing_Test_TP {
 		System.out.println("-----------------------------------------------------------");
 		System.out.println("Initialize reading \n");
 
-		List<String> flapNumber_property = reader.getXMLPropertiesByPath("//Flap_Number");
-		int flapNumber = Integer.valueOf(flapNumber_property.get(0));
-		List<String> flapType_property = reader.getXMLPropertiesByPath("//FlapType");
-		List<String> cf_c_property = reader.getXMLPropertiesByPath("//Cf_c");
-		List<String> delta_flap1_property = reader.getXMLPropertiesByPath("//Delta_Flap1");
-		List<String> delta_flap2_property = reader.getXMLPropertiesByPath("//Delta_Flap2");
-		List<String> eta_in_property = reader.getXMLPropertiesByPath("//Flap_inboard");
-		List<String> eta_out_property = reader.getXMLPropertiesByPath("//Flap_outboard");
+		List<String> flapNumberProperty = reader.getXMLPropertiesByPath("//Flap_Number");
+		int flapNumber = Integer.valueOf(flapNumberProperty.get(0));
+		List<String> flapTypeProperty = reader.getXMLPropertiesByPath("//FlapType");
+		List<String> cfcProperty = reader.getXMLPropertiesByPath("//Cf_c");
+		List<String> deltaFlap1Property = reader.getXMLPropertiesByPath("//Delta_Flap1");
+		List<String> deltaFlap2Property = reader.getXMLPropertiesByPath("//Delta_Flap2");
+		List<String> etaInProperty = reader.getXMLPropertiesByPath("//Flap_inboard");
+		List<String> etaOutProperty = reader.getXMLPropertiesByPath("//Flap_outboard");
 
-		for(int i=0; i<flapType_property.size(); i++) {
-			if(flapType_property.get(i).equals("SINGLE_SLOTTED"))
+		for(int i=0; i<flapTypeProperty.size(); i++) {
+			if(flapTypeProperty.get(i).equals("SINGLE_SLOTTED"))
 				flapType.add(FlapTypeEnum.SINGLE_SLOTTED);
-			else if(flapType_property.get(i).equals("DOUBLE_SLOTTED"))
+			else if(flapTypeProperty.get(i).equals("DOUBLE_SLOTTED"))
 				flapType.add(FlapTypeEnum.DOUBLE_SLOTTED);
-			else if(flapType_property.get(i).equals("PLAIN"))
+			else if(flapTypeProperty.get(i).equals("PLAIN"))
 				flapType.add(FlapTypeEnum.PLAIN);
-			else if(flapType_property.get(i).equals("FOWLER"))
+			else if(flapTypeProperty.get(i).equals("FOWLER"))
 				flapType.add(FlapTypeEnum.FOWLER);
-			else if(flapType_property.get(i).equals("TRIPLE_SLOTTED"))
+			else if(flapTypeProperty.get(i).equals("TRIPLE_SLOTTED"))
 				flapType.add(FlapTypeEnum.TRIPLE_SLOTTED);
 			else {
 				System.err.println("NO VALID FLAP TYPE!!");
@@ -229,23 +223,23 @@ public class TakeOff_Landing_Test_TP {
 			}
 		}
 
-		Double[] deltaFlap1_array = new Double[delta_flap1_property.size()];
-		for(int i=0; i<deltaFlap1_array.length; i++)
-			deltaFlap1_array[i] = Double.valueOf(delta_flap1_property.get(i));
+		Double[] deltaFlap1Array = new Double[deltaFlap1Property.size()];
+		for(int i=0; i<deltaFlap1Array.length; i++)
+			deltaFlap1Array[i] = Double.valueOf(deltaFlap1Property.get(i));
 
-		Double[] deltaFlap2_array = new Double[delta_flap2_property.size()];
-		for(int i=0; i<deltaFlap1_array.length; i++)
-			deltaFlap2_array[i] = Double.valueOf(delta_flap2_property.get(i));
+		Double[] deltaFlap2Array = new Double[deltaFlap2Property.size()];
+		for(int i=0; i<deltaFlap1Array.length; i++)
+			deltaFlap2Array[i] = Double.valueOf(deltaFlap2Property.get(i));
 
-		deltaFlap.add(deltaFlap1_array);
-		deltaFlap.add(deltaFlap2_array);
+		deltaFlap.add(deltaFlap1Array);
+		deltaFlap.add(deltaFlap2Array);
 
-		for(int i=0; i<cf_c_property.size(); i++)
-			cf_c.add(Double.valueOf(cf_c_property.get(i)));
-		for(int i=0; i<eta_in_property.size(); i++)
-			eta_in_flap.add(Double.valueOf(eta_in_property.get(i)));
-		for(int i=0; i<eta_out_property.size(); i++)
-			eta_out_flap.add(Double.valueOf(eta_out_property.get(i)));
+		for(int i=0; i<cfcProperty.size(); i++)
+			cfc.add(Double.valueOf(cfcProperty.get(i)));
+		for(int i=0; i<etaInProperty.size(); i++)
+			etaInFlap.add(Double.valueOf(etaInProperty.get(i)));
+		for(int i=0; i<etaOutProperty.size(); i++)
+			etaOutFlap.add(Double.valueOf(etaOutProperty.get(i)));
 
 		LSAerodynamicsManager.CalcHighLiftDevices highLiftCalculator = theLSAnalysis
 				.new CalcHighLiftDevices(
@@ -254,20 +248,74 @@ public class TakeOff_Landing_Test_TP {
 						deltaFlap,
 						flapType,
 						null,
-						eta_in_flap,
-						eta_out_flap,
+						etaInFlap,
+						etaOutFlap,
 						null,
 						null,
-						cf_c,
+						cfc,
 						null,
 						null,
 						null
 						);
 
+//		highLiftCalculator.calculateHighLiftDevicesEffects();
+//		
+//		//----------------------------------------------------------------------------------
+//		// Results print
+//		System.out.println("\ndeltaCl0_flap_list = ");
+//		for(int i=0; i<highLiftCalculator.getDeltaCl0_flap_list().size(); i++)
+//			System.out.print(highLiftCalculator.getDeltaCl0_flap_list().get(i) + " ");
+//
+//		System.out.println("\n\ndeltaCl0_flap = \n" + highLiftCalculator.getDeltaCl0_flap());
+//
+//		System.out.println("\n\ndeltaCL0_flap_list = ");
+//		for(int i=0; i<highLiftCalculator.getDeltaCL0_flap_list().size(); i++)
+//			System.out.print(highLiftCalculator.getDeltaCL0_flap_list().get(i) + " ");
+//
+//		System.out.println("\n\ndeltaCL0_flap = \n" + highLiftCalculator.getDeltaCL0_flap());
+//
+//		System.out.println("\n\ndeltaClmax_flap_list = ");
+//		for(int i=0; i<highLiftCalculator.getDeltaClmax_flap_list().size(); i++)
+//			System.out.print(highLiftCalculator.getDeltaClmax_flap_list().get(i) + " ");
+//
+//		System.out.println("\n\ndeltaClmax_flap = \n" + highLiftCalculator.getDeltaClmax_flap());
+//
+//		System.out.println("\n\ndeltaCLmax_flap_list = ");
+//		for(int i=0; i<highLiftCalculator.getDeltaCLmax_flap_list().size(); i++)
+//			System.out.print(highLiftCalculator.getDeltaCLmax_flap_list().get(i) + " ");
+//
+//		System.out.println("\n\ndeltaCLmax_flap = \n" + highLiftCalculator.getDeltaCLmax_flap());
+//
+//		System.out.println("\n\ncLalpha_new_list = ");
+//		for(int i=0; i<highLiftCalculator.getcLalpha_new_list().size(); i++)
+//			System.out.print(highLiftCalculator.getcLalpha_new_list().get(i) + " ");
+//
+//		System.out.println("\n\ncLalpha_new = \n" + highLiftCalculator.getcLalpha_new());
+//
+//		System.out.println("\n\ndeltaAlphaMax_list = ");
+//		for(int i=0; i<highLiftCalculator.getDeltaAlphaMax_list().size(); i++)
+//			System.out.print(highLiftCalculator.getDeltaAlphaMax_list().get(i) + " ");
+//
+//		System.out.println("\n\ndeltaAlphaMax = \n" + highLiftCalculator.getDeltaAlphaMaxFlap());
+//
+//		System.out.println("\n\ndeltaCD_list = ");
+//		for(int i=0; i<highLiftCalculator.getDeltaCD_list().size(); i++)
+//			System.out.print(highLiftCalculator.getDeltaCD_list().get(i) + " ");
+//
+//		System.out.println("\n\ndeltaCD = \n" + highLiftCalculator.getDeltaCD());
+//
+//		System.out.println("\n\ndeltaCMc_4_list = ");
+//		for(int i=0; i<highLiftCalculator.getDeltaCM_c4_list().size(); i++)
+//			System.out.print(highLiftCalculator.getDeltaCM_c4_list().get(i) + " ");
+//
+//		System.out.println("\n\ndeltaCMc_4 = \n" + highLiftCalculator.getDeltaCM_c4());
+//
+//		highLiftCalculator.plotHighLiftCurve();
+		
 		//----------------------------------------------------------------------------------
 		// TakeOff - Ground Roll Distance Test
 		//----------------------------------------------------------------------------------
-		_startTimeCalculation = System.currentTimeMillis();
+//		_startTimeCalculation = System.currentTimeMillis();
 		// temporal step
 		Amount<Duration> dt = Amount.valueOf(0.5, SI.SECOND);
 		Amount<Duration> dtRot = Amount.valueOf(3, SI.SECOND);
@@ -275,12 +323,12 @@ public class TakeOff_Landing_Test_TP {
 		double mu = 0.025;
 		double mu_brake = 0.3;
 		double k_alpha_dot = 0.07; // [1/deg]
-		double kcLMax = 0.9;
+		double kcLMax = 0.85;
 		double kRot = 1.05;
 		double kLO = 1.1;
 		double kFailure = 1.0;
 		double phi = 1.0;
-		double alphaReductionRate = -4; // [deg/s]
+		double alphaReductionRate = -5; // [deg/s]
 		Amount<Length> wing_to_ground_distance = Amount.valueOf(4.0, SI.METER);
 		Amount<Length> obstacle = Amount.valueOf(35, NonSI.FOOT).to(SI.METER);
 		Amount<Velocity> v_wind = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
@@ -309,28 +357,31 @@ public class TakeOff_Landing_Test_TP {
 				iw
 				);
 
-		theTakeOffLandingCalculator.initialize();
-		theTakeOffLandingCalculator.calculateTakeOffDistance(null, false);
-		_stopTimeCalculation = System.currentTimeMillis();
-		_startTimeGraph = System.currentTimeMillis();
-		theTakeOffLandingCalculator.createTakeOffCharts();
-		_stopTimeGraph = System.currentTimeMillis();
-		_startTimeBalanced = System.currentTimeMillis();
-		theTakeOffLandingCalculator.calculateBalancedFieldLength();
-		theTakeOffLandingCalculator.createBalancedFieldLengthChart();
-		_stopTimeBalanced = System.currentTimeMillis();
-		_stopTimeTotal = System.currentTimeMillis();
-
-		_elapsedTimeTotal = _stopTimeTotal - _startTimeCalculation;
-		_elapsedTimeCalculation = _stopTimeCalculation - _startTimeCalculation;
-		_elapsedTimeGraph = _stopTimeGraph - _startTimeGraph;
-		_elapsedTimeBalanced = _stopTimeBalanced - _startTimeBalanced;
-
-		System.out.println("\nANALYSIS TIME = " + (get_elapsedTime()) + " millisenconds");
-		System.out.println("\nCALCULATION TIME = " + (get_elapsedTimeCalculation()) + " millisenconds");
-		System.out.println("\nBALANCED FIELD LENGTH TIME = " + (get_elapsedTimeBalanced()) + " millisenconds");
-		System.out.println("\nGRAPHICS TIME = " + (get_elapsedTimeGraph()) + " millisenconds");
-
+		theTakeOffLandingCalculator.calculateTakeOffDistanceODE();
+//		theTakeOffLandingCalculator.initialize();
+//		theTakeOffLandingCalculator.calculateTakeOffDistance(null, false);
+//		_stopTimeCalculation = System.currentTimeMillis();
+//		_startTimeGraph = System.currentTimeMillis();
+//		theTakeOffLandingCalculator.createTakeOffCharts();
+//		_stopTimeGraph = System.currentTimeMillis();
+//		_startTimeBalanced = System.currentTimeMillis();
+//		theTakeOffLandingCalculator.calculateBalancedFieldLength();
+//		theTakeOffLandingCalculator.createBalancedFieldLengthChart();
+//		_stopTimeBalanced = System.currentTimeMillis();
+//		_stopTimeTotal = System.currentTimeMillis();
+//
+//		_elapsedTimeTotal = _stopTimeTotal - _startTimeCalculation;
+//		_elapsedTimeCalculation = _stopTimeCalculation - _startTimeCalculation;
+//		_elapsedTimeGraph = _stopTimeGraph - _startTimeGraph;
+//		_elapsedTimeBalanced = _stopTimeBalanced - _startTimeBalanced;
+//
+//		System.out.println("\nANALYSIS TIME = " + (get_elapsedTime()) + " millisenconds");
+//		System.out.println("\nCALCULATION TIME = " + (get_elapsedTimeCalculation()) + " millisenconds");
+//		System.out.println("\nBALANCED FIELD LENGTH TIME = " + (get_elapsedTimeBalanced()) + " millisenconds");
+//		System.out.println("\nGRAPHICS TIME = " + (get_elapsedTimeGraph()) + " millisenconds");
+//
+//		System.out.println("\nBALANCED FIELD LENGTH = " + theTakeOffLandingCalculator.getBalancedFieldLength());
+//		System.out.println("\nDecision Speed = " + theTakeOffLandingCalculator.getV1().divide(theTakeOffLandingCalculator.getvSTakeOff()));
 	}
 
 	//------------------------------------------------------------------------------------------

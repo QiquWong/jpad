@@ -158,13 +158,13 @@ public class CalcHighLiftDevices {
 						aircraft
 						.get_theAerodynamics()
 						.get_highLiftDatabaseReader()
-						.get_eta_delta_vs_delta_flap_plain(deltaFlap_total[i], cf_c.get(i)));
+						.getEtaDeltaVsDeltaFlapPlain(deltaFlap_total[i], cf_c.get(i)));
 			else
 				eta_delta_flap.add(
 						aircraft
 						.get_theAerodynamics()
 						.get_highLiftDatabaseReader()
-						.get_eta_delta_vs_delta_flap(deltaFlap_total[i], flapType_index.get(i))
+						.getEtaDeltaVsDeltaFlap(deltaFlap_total[i], flapType_index.get(i))
 						);
 		}
 		
@@ -183,7 +183,7 @@ public class CalcHighLiftDevices {
 					aircraft
 					.get_theAerodynamics()
 					.get_highLiftDatabaseReader()
-					.get_deltaC_Cf_vs_delta_flap(deltaFlap_total[i],flapType_index.get(i))
+					.getDeltaCCfVsDeltaFlap(deltaFlap_total[i],flapType_index.get(i))
 					);
 		
 		List<Double> c_first_c_flap = new ArrayList<Double>();
@@ -208,7 +208,7 @@ public class CalcHighLiftDevices {
 					aircraft
 					.get_theAerodynamics()
 					.get_highLiftDatabaseReader()
-					.get_deltaCLmaxBase_vs_tc(
+					.getDeltaCLmaxBaseVsTc(
 							meanAirfoil.getGeometry().get_maximumThicknessOverChord(),
 							flapType_index.get(i)
 							)
@@ -219,7 +219,7 @@ public class CalcHighLiftDevices {
 			k1.add(aircraft
 					.get_theAerodynamics()
 					.get_highLiftDatabaseReader()
-					.get_K1_vs_flapChordRatio(cf_c.get(i), flapType_index.get(i))
+					.getK1vsFlapChordRatio(cf_c.get(i), flapType_index.get(i))
 					);
 		
 
@@ -228,7 +228,7 @@ public class CalcHighLiftDevices {
 			k2.add(aircraft
 					.get_theAerodynamics()
 					.get_highLiftDatabaseReader()
-					.get_K2_vs_delta_flap(deltaFlap_total[i], flapType_index.get(i))
+					.getK2VsDeltaFlap(deltaFlap_total[i], flapType_index.get(i))
 					);
 		
 		List<Double> k3 = new ArrayList<Double>();
@@ -236,7 +236,7 @@ public class CalcHighLiftDevices {
 			k3.add(aircraft
 					.get_theAerodynamics()
 					.get_highLiftDatabaseReader()
-					.get_K3_vs_df_dfRef(
+					.getK3VsDfDfRef(
 							deltaFlap_total[i],
 							deltaFlap_ref.get(i),
 							flapType_index.get(i)
@@ -263,7 +263,7 @@ public class CalcHighLiftDevices {
 				dCl_dDelta.add(aircraft
 						.get_theAerodynamics()
 						.get_highLiftDatabaseReader()
-						.get_dCl_dDelta_vs_cs_c(cs_c.get(i))
+						.getDCldDeltaVsCsC(cs_c.get(i))
 						);
 
 			List<Double> eta_max_slat = new ArrayList<Double>();
@@ -271,7 +271,7 @@ public class CalcHighLiftDevices {
 				eta_max_slat.add(aircraft
 						.get_theAerodynamics()
 						.get_highLiftDatabaseReader()
-						.get_etaMax_vs_LEradius_tickness_ratio(
+						.getEtaMaxVsLEradiusTicknessRatio(
 								leRadius_c_slat.get(i),
 								meanAirfoil.getGeometry().get_maximumThicknessOverChord())
 						);
@@ -282,7 +282,7 @@ public class CalcHighLiftDevices {
 						aircraft
 						.get_theAerodynamics()
 						.get_highLiftDatabaseReader()
-						.get_eta_delta_vs_delta_slat(deltaSlat.get(i))
+						.getEtaDeltaVsDeltaSlat(deltaSlat.get(i))
 						);
 
 			deltaClmax_slat_list = new ArrayList<Double>();
@@ -307,7 +307,7 @@ public class CalcHighLiftDevices {
 			kc.add(aircraft
 					.get_theAerodynamics()
 					.get_highLiftDatabaseReader()
-					.get_Kc_vs_AR(
+					.getKcVsAR(
 							aircraft.get_wing().get_aspectRatio(),
 							alphaDelta.get(i))	
 					);
@@ -317,7 +317,7 @@ public class CalcHighLiftDevices {
 			kb.add(aircraft
 					.get_theAerodynamics()
 					.get_highLiftDatabaseReader()
-					.get_Kb_vs_flapSpanRatio(eta_in_flap.get(i), eta_out_flap.get(i))	
+					.getKbVsFlapSpanRatio(eta_in_flap.get(i), eta_out_flap.get(i))	
 					);
 		
 		deltaCL0_flap_list = new ArrayList<Double>();
@@ -424,7 +424,7 @@ public class CalcHighLiftDevices {
 			deltaAlphaMax_list.add(aircraft
 					.get_theAerodynamics()
 					.get_highLiftDatabaseReader()
-					.get_DeltaAlphaMax_vs_DeltaFlap(deltaFlap_total[i]));
+					.getDeltaAlphaMaxVsDeltaFlap(deltaFlap_total[i]));
 
 		for(int i=0; i<flapType_index.size(); i++)
 			setDeltaAlphaMax(getDeltaAlphaMax() + deltaAlphaMax_list.get(i).doubleValue());
@@ -452,7 +452,7 @@ public class CalcHighLiftDevices {
 						aircraft
 						.get_theAerodynamics()
 						.get_highLiftDatabaseReader()
-						.get_mu_1_vs_cf_c_First_Plain(
+						.getMu1VsCfCFirstPlain(
 								1/c_first_c_flap.get(i),
 								deltaFlap_total[i]
 										)
@@ -461,7 +461,7 @@ public class CalcHighLiftDevices {
 				mu_1.add(aircraft
 						.get_theAerodynamics()
 						.get_highLiftDatabaseReader()
-						.get_mu_1_vs_cf_c_First_Slotted_Fowler(1/c_first_c_flap.get(i))
+						.getMu1VsCfCFirstSlottedFowler(1/c_first_c_flap.get(i))
 						);
 		
 		List<Double> mu_2 = new ArrayList<Double>();
@@ -469,7 +469,7 @@ public class CalcHighLiftDevices {
 			mu_2.add(aircraft
 					.get_theAerodynamics()
 					.get_highLiftDatabaseReader()
-					.get_mu_2_vs_bf_b(
+					.getMu2VsBfB(
 							eta_in_flap.get(i),
 							eta_out_flap.get(i),
 							aircraft.get_wing().get_taperRatioEquivalent()
@@ -481,7 +481,7 @@ public class CalcHighLiftDevices {
 			mu_3.add(aircraft
 					.get_theAerodynamics()
 					.get_highLiftDatabaseReader()
-					.get_mu_3_vs_bf_b(
+					.getMu3VsBfB(
 							eta_in_flap.get(i),
 							eta_out_flap.get(i),
 							aircraft.get_wing().get_taperRatioEquivalent()

@@ -8,15 +8,18 @@
 \chapter{HDF databse creation and reading }
 \label{ch:hdf}
 
-\section{Creation of a database using MATLAB}
+\section{Creation of a database using MATLAB}\label{par:Appendix1}
 Creation and mangment of an HDF Dataset are very important to handle because they allow to generate resources which are required by a lot of analysis; for example by using this datasets it's possible to implement a new engine type allowing the analysis of the preformance of a new aircraft. 
 This feature has not been implemented inside JPAD with the purpose of being able to generate the required resources independently.
 
-\bigskip
-First of all it's necessary to have curves of the database that has to be digitalized; then, with the use of sotware like \emph{PlotDigitizer}, it's possible to acquire them using a finite number of points chosen by the user.
-The output of this procedure is a \emph{.csv} file containing all the copule of points which have been used to digitalize the specific curve.
+For more information regarding the \gls{HDF}, the reader can refer to~\cite{hdf}.
 
-Now the matlab code comes in play to manage these data and to generate the digitalized curves and the HDF dataset. 
+\bigskip
+\noindent
+First of all it's necessary to have curves of the database that has to be digitized; then, with the use of sotware like \emph{PlotDigitizer}, it's possible to acquire them using a finite number of points chosen by the user.
+The output of this procedure is a \emph{.csv} file containing all the copule of points which have been used to digitize the specific curve.
+
+Now the matlab code comes in play to manage these data and to generate the digitized curves and the HDF dataset. 
 In the example reported there are four curves defined by points through \emph{PlotDigitizer} which have, firstly, been imported in MATLAB generating four \emph{.mat} files; at this point the code interpolates curves points with cubic splines in order to have more points to plot for each curve.
 
 Finally curves are plotted and the HDF Dataset is populated by using \emph{h5create} and \emph{h5write}; in particular curves points, abscissas and parameterization values are attached to the h5 file through these commands.
@@ -44,7 +47,6 @@ DAlphaVsLambdaLESplineStatic_Dy1p2 = csaps( ...
 DAlphaVsLambdaLEStatic_Dy1p2 = ppval( ...
     DAlphaVsLambdaLESplineStatic_Dy1p2, ...
     lambdaLEVector_deg);
-
 %% dy/c = 2.0
 smoothingParameter = 0.999999; 
 DAlphaVsLambdaLESplineStatic_Dy2p0 = csaps( ...
@@ -54,7 +56,6 @@ DAlphaVsLambdaLESplineStatic_Dy2p0 = csaps( ...
 DAlphaVsLambdaLEStatic_Dy2p0 = ppval( ...
     DAlphaVsLambdaLESplineStatic_Dy2p0, ...
     lambdaLEVector_deg);
-
 %% dy/c = 3.0
 smoothingParameter =0.999999;
 DAlphaVsLambdaLESplineStatic_Dy3p0 = csaps( ...
@@ -64,7 +65,6 @@ DAlphaVsLambdaLESplineStatic_Dy3p0 = csaps( ...
 DAlphaVsLambdaLEStatic_Dy3p0 = ppval( ...
     DAlphaVsLambdaLESplineStatic_Dy3p0, ...
     lambdaLEVector_deg);
-
 %% dy/c = 4.0
 smoothingParameter = 0.999999; 
 DAlphaVsLambdaLESplineStatic_Dy4p0 = csaps( ...
@@ -128,9 +128,10 @@ h5write(hdfFileName, '/DAlphaVsLambdaLEVsDy/var_1', lambdaLEVector_deg');
 \centering
 \includegraphics[keepaspectratio, width=0.55\textwidth]{deltaAlphaSforza.png}\includegraphics[keepaspectratio, width=0.55\textwidth]{DAlphaVsLambdaLEVsDy_MATLAB.png}
 \caption{Comparison between the initial graph and the digitized one}
+\label{fig:DeltaAlphaMaxClean}
 \end{figure}
 
-\section{Reading data from an HDF database in JPAD}
+\section{Reading data from an HDF database in JPAD}\label{par:Appendix2}
 After creating the database, this has to be read in order to obtain the required data; inside JPAD this operation can be done defining a specific class, which extends the abstract class \lstinline[language=Java]!DatabaseReader! that is designed for HDF dataset reading. 
 
 This son class has a specific structure which main key points can be summarized in the following ones:
@@ -138,14 +139,16 @@ This son class has a specific structure which main key points can be summarized 
 \begin{enumerate}
 \item Creation of variables, in number equal to the function to be interpolated, using the type \lstinline[language=Java]!MyInterpolatingFunction! 
 \item Creation of variables for all values that are wanted to be read from the interpolating functions
-\item Creation of a builder that accepts the folder path string and the file name string of the database. This builder has to launch the interpolating method for all functions contained into the database by using  \lstinline[language=Java]!MyInterpolatingFunction! methods.
+\item Creation of a constructor that accepts the folder path string and the file name string of the database. This constructor has to launch the interpolating method for all functions contained into the database by using  \lstinline[language=Java]!MyInterpolatingFunction! methods.
 \item Creation of a getter method for each of the variables allocated at point 2 in order to obtain values from interpolated functions by giving in input the required parameters
 \end{enumerate}
 
+\noindent
 In particular the class \lstinline[language=Java]!MyInterpolatingFunction! implements methods for a spline, bicubic and tricubic data interpolation as well as three methods for extracting a specific value from each of the previou interpolated curve.
 
 \bigskip
-The following listing describes, with an example upon the aerodynamic database, how the reader class should be build following the previous steps.
+\noindent
+The following listing describes, with an example upon the aerodynamic database, how the reader class should be built up following the previous steps.
 
 \lstset{language=Java}
 \begin{lstlisting}[caption={DatabaseReader son class creation}, captionpos=t, tabsize=2]
@@ -179,3 +182,7 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 	}
 }
 \end{lstlisting}
+
+\bigskip
+\noindent
+Once the class is created, is possible to create an object of it in any test class in order to have access to all its methods; in particular the user needs to invoke the getter related to the quantity he wants to read from the interpolating function. 

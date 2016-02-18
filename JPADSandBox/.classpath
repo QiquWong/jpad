@@ -88,7 +88,6 @@
 	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.jface.databinding_1.7.0.v20150406-2148.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/money/money-api-1.0-SNAPSHOT.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JPADConfigs"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/JPADCore"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/poi/poi-examples-3.10.1-20140818.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/poi/poi-excelant-3.10.1-20140818.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/poi/poi-ooxml-schemas-3.10.1-20140818.jar"/>
@@ -103,5 +102,7 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/fxyz/JCSG.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/fxyz/poly2tri-core-0.1.0-SNAPSHOT.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jfxchartext-1.0/jfxchartext-1.0.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/javafx-d3/org.treez.javafxd3_1.0.0.201602152140.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JPADCore"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

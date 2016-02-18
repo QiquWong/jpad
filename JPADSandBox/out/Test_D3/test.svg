@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><svg id="svg" class="svg" width="1200" height="800" xmlns="http://www.w3.org/2000/svg">
+    <g>
+        <path class="LineDemo" fill="none" stroke="red" stroke-width="5" stroke-linecap="square" stroke-dasharray="15,10" d="M318,46L293,42.99999999999999C268,40,218,34,218.66666666666666,58.33333333333333C219.33333333333331,82.66666666666666,270.66666666666663,137.33333333333334,306.5,138.5C342.3333333333333,139.66666666666666,362.66666666666663,87.33333333333333,372.8333333333333,61.166666666666664L383,35"/>
+    </g>
+    <circle cx="318" cy="46" r="5"/>
+    <circle cx="168" cy="28" r="5"/>
+    <circle cx="322" cy="192" r="5"/>
+    <circle cx="383" cy="35" r="5"/>
+</svg>

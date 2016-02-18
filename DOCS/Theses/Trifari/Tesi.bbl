@@ -19,6 +19,27 @@
 
 \refsection{0}
   \sortlist{nty}{nty}
+    \entry{abbott}{book}{}
+      \name{author}{2}{}{%
+        {{hash=33b970ce06e1d9cade74e36da40cd68e}{Abbott}{A\bibinitperiod}{H.I.}{H\bibinitperiod}{}{}{}{}}%
+        {{hash=fd0d0dd72fae9c4536d23402714587e9}{Von\bibnamedelima Doenhoff}{V\bibinitperiod\bibinitdelim D\bibinitperiod}{E.A.}{E\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {Dover Publications, Inc.}%
+      }
+      \strng{namehash}{c073444dae40a376b03fe7a14b780206}
+      \strng{fullhash}{c073444dae40a376b03fe7a14b780206}
+      \field{sortinit}{A}
+      \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{0486605868}
+      \field{title}{Theory Of Wing Sections}
+      \field{year}{1949}
+      \verb{url}
+      \verb http://store.doverpublications.com/0486605868.html
+      \endverb
+    \endentry
     \entry{attanasio}{thesis}{}
       \name{author}{1}{}{%
         {{hash=16469682b233c4ccda7a388f3cb3a68c}{Attanasio}{A\bibinitperiod}{L.}{L\bibinitperiod}{}{}{}{}}%
@@ -98,6 +119,21 @@
       \field{type}{Paper}
       \field{year}{31.05.2005}
     \endentry
+    \entry{enumAPI}{online}{}
+      \name{author}{1}{}{%
+        {{hash=2baf8209f62fd23c32fa375f52fbf33f}{Corporation}{C\bibinitperiod}{Oracle}{O\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \strng{fullhash}{2baf8209f62fd23c32fa375f52fbf33f}
+      \field{sortinit}{C}
+      \field{sortinithash}{59f25d509f3381b07695554a9f35ecb2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Enumeration}
+      \verb{url}
+      \verb https://docs.oracle.com/javase/8/docs/api/java/util/Enumeration.html
+      \endverb
+    \endentry
     \entry{listAPI}{online}{}
       \name{author}{1}{}{%
         {{hash=2baf8209f62fd23c32fa375f52fbf33f}{Corporation}{C\bibinitperiod}{Oracle}{O\bibinitperiod}{}{}{}{}}%
@@ -113,7 +149,7 @@
       \verb https://docs.oracle.com/javase/8/docs/api/java/util/List.html
       \endverb
     \endentry
-    \entry{jscience}{online}{}
+    \entry{jscienceAmount}{online}{}
       \name{author}{1}{}{%
         {{hash=577c772e504efcfcc6e0b45594b8de24}{Dautelle}{D\bibinitperiod}{Jean-Marie}{J\bibinithyphendelim M\bibinitperiod}{}{}{}{}}%
       }
@@ -125,26 +161,9 @@
       \field{labeltitlesource}{title}
       \field{title}{Jscience}
       \verb{url}
-      \verb http://jscience.org/
+      \verb http://jscience.org/api/org/jscience/physics/amount/Amount.html
       \endverb
-      \warn{\item Datamodel: Entry 'jscience' (Tesi_Bibliography.bib): Invalid format '2015.01.05' of date field 'date' - ignoring}
-    \endentry
-    \entry{deBono}{thesis}{}
-      \name{author}{1}{}{%
-        {{hash=ab22e925715b2dc26894b5931d3449fb}{De\bibnamedelima Bono}{D\bibinitperiod\bibinitdelim B\bibinitperiod}{E.}{E\bibinitperiod}{}{}{}{}}%
-      }
-      \list{institution}{1}{%
-        {University of Naples "Federico II"}%
-      }
-      \strng{namehash}{ab22e925715b2dc26894b5931d3449fb}
-      \strng{fullhash}{ab22e925715b2dc26894b5931d3449fb}
-      \field{sortinit}{D}
-      \field{sortinithash}{78f7c4753a2004675f316a80bdb31742}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{Prestazioni di decollo e atterraggio. Calcolo approssimato e verifica sperimentale.}
-      \field{type}{Thesis}
-      \field{year}{2011}
+      \warn{\item Datamodel: Entry 'jscienceAmount' (Tesi_Bibliography.bib): Invalid format '2015.01.05' of date field 'date' - ignoring}
     \endentry
     \entry{jfreechart}{online}{}
       \name{author}{1}{}{%

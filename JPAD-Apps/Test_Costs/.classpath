@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/JPADConfigs.jar"/>
+	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/JPADCore.jar"/>
+	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/jscience.jar"/>
+	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/args4j-2.0.21.jar"/>
+	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/guava-16.0.1.jar"/>
+	<classpathentry kind="src" path="/JPADConfigs"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

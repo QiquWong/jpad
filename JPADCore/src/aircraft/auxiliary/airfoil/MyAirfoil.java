@@ -147,12 +147,11 @@ public class MyAirfoil {
 		
 		// TODO: put inside Geometry and Aerodynamics B747-100B correct data (actually there are the same data in both ATR-72 and B747-100B
 		case "B747-100B":
-			_family = AirfoilFamilyEnum.NACA63_209;
 			_type = AirfoilTypeEnum.MODERN_SUPERCRITICAL;
 
 			_theLiftingSurface = ls;
 			geometry = new MyGeometry(this, yLoc);
-			aerodynamics = new MyAerodynamics(this);
+			aerodynamics = new MyAerodynamics(this, aircraftName, station);
 			break;
 		}
 	}
@@ -254,6 +253,10 @@ public class MyAirfoil {
 
 	public double get_chordLocal() {
 		return _chordLocal;
+	}
+
+	public void set_chordLocal(double _chordLocal) {
+		this._chordLocal = _chordLocal;
 	}
 
 	public LiftingSurface get_theLiftingSurface() {

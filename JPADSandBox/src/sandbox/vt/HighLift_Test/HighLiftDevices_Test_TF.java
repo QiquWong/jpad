@@ -102,7 +102,7 @@ public class HighLiftDevices_Test_TF {
 		theAnalysis.doAnalysis(aircraft, 
 				AnalysisTypeEnum.AERODYNAMIC);
 
-		aircraft.get_wing().getAerodynamics().set_highLiftDatabaseReader(highLiftDatabaseReader);
+		aircraft.get_wing().getAerodynamics().setHighLiftDatabaseReader(highLiftDatabaseReader);
 
 		//--------------------------------------------------------------------------------------
 //		// Define airfoil

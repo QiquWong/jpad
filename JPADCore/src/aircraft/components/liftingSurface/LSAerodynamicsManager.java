@@ -47,6 +47,7 @@ import calculators.aerodynamics.LiftCalc;
 import calculators.aerodynamics.MomentCalc;
 import calculators.aerodynamics.NasaBlackwell;
 import calculators.geometry.LSGeometryCalc;
+import calculators.stability.StabilityCalculators;
 import configuration.MyConfiguration;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.ComponentEnum;
@@ -245,6 +246,8 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	private static double intermediateAlphaStall;
 	private double[] _yStationsIntegral;
 	public double cLStarWing;
+	private double alphaZeroLiftDeflection;
+	String subfolderPathCDAlpha;
 	public LSAerodynamicsManager(OperatingConditions conditions, LiftingSurface liftingSurf, Aircraft ac) {
 
 		theOperatingConditions = conditions;
@@ -384,48 +387,49 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 		_yStations = MyArrayUtils.linspace(0., semispan, _nPointsSemispanWise);
 		if (theAircraft != null ){
-		if (theAircraft.get_exposedWing() != null ){
-			double yLocRootExposed = theAircraft.get_exposedWing().get_theAirfoilsList().get(0).getGeometry().get_yStation();
-			_yStationsIntegral = MyArrayUtils.linspace(yLocRootExposed, semispan, _nPointsSemispanWise);
+			if (theAircraft.get_exposedWing() != null && theLiftingSurface.getType()==ComponentEnum.WING){
+				double yLocRootExposed = theAircraft.get_exposedWing().get_theAirfoilsList().get(0).getGeometry().get_yStation();
+				_yStationsIntegral = MyArrayUtils.linspace(yLocRootExposed, semispan, _nPointsSemispanWise);
 
-			_yStationsND = MyArrayUtils.linspace(0., 1., _nPointsSemispanWise);
-			//					
-			//					for (int i=0; i<_nPointsSemispanWise; i++){
-			//						_chordsVsYExposed.add(getTheLiftingSurface().getChordAtYActual(_yStationsIntegral[i]));
-			//		
-			//					_alpha0lDistributionExposed = MyArray.createArray(
-			//							theAircraft.get_exposedWing().get_alpha0VsYExposed().interpolate(
-			//										theAircraft.get_exposedWing().get_etaAirfoilExposed().toArray(),
-			//										_yStationsND));
-			//					
-			//					_twistDistribution = MyArray.createArray(
-			//							theAircraft.get_exposedWing().get_twistVsYExposed().interpolate(
-			//									theAircraft.get_exposedWing().get_etaAirfoilExposed().toArray(),
-			//									_yStationsND));
-			//						
-			//					}
-			_chordsVsYExposed.toArray();
+				_yStationsND = MyArrayUtils.linspace(0., 1., _nPointsSemispanWise);
+				//					
+				//					for (int i=0; i<_nPointsSemispanWise; i++){
+				//						_chordsVsYExposed.add(getTheLiftingSurface().getChordAtYActual(_yStationsIntegral[i]));
+				//		
+				//					_alpha0lDistributionExposed = MyArray.createArray(
+				//							theAircraft.get_exposedWing().get_alpha0VsYExposed().interpolate(
+				//										theAircraft.get_exposedWing().get_etaAirfoilExposed().toArray(),
+				//										_yStationsND));
+				//					
+				//					_twistDistribution = MyArray.createArray(
+				//							theAircraft.get_exposedWing().get_twistVsYExposed().interpolate(
+				//									theAircraft.get_exposedWing().get_etaAirfoilExposed().toArray(),
+				//									_yStationsND));
+				//						
+				//					}
+				_chordsVsYExposed.toArray();
 
-		}
+			}
 		}
 		/** Non dimensional stations (eta) */
-	
+		_chordsVsYExposed.toArray();
 		_yStationsND = MyArrayUtils.linspace(0., 1., _nPointsSemispanWise);
 
-		_yStationsIntegral = MyArrayUtils.linspace(0, semispan, _nPointsSemispanWise);
-		
+		_yStationsIntegral = MyArrayUtils.linspace(0.0, semispan, _nPointsSemispanWise);
+
 		for (int i=0; i<_nPointsSemispanWise; i++){
 			_chordsVsY.add(getTheLiftingSurface().getChordAtYActual(_yStations[i]));
 		}
-		_chordsVsY.toArray();
+		//_chordsVsY.toArray();
+
 
 		_twistDistribution = MyArray.createArray(
-				getTheLiftingSurface()._twistVsY.interpolate(
+				theLiftingSurface._twistVsY.interpolate(
 						etaAirfoil,
 						_yStationsND));
 
 		_alpha0lDistribution = MyArray.createArray(
-				getTheLiftingSurface().get_alpha0VsY().interpolate(
+				theLiftingSurface.get_alpha0VsY().interpolate(
 						etaAirfoil,
 						_yStationsND));
 
@@ -439,7 +443,8 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		cLArray = new MyArray(Unit.ONE);
 
 		alphaStart = Amount.valueOf(toRadians(-2.), SI.RADIAN);
-		alphaEnd = Amount.valueOf(toRadians(12.), SI.RADIAN);
+//		alphaEnd = Amount.valueOf(toRadians(12.), SI.RADIAN);
+		alphaEnd = Amount.valueOf(toRadians(28.), SI.RADIAN);
 		_numberOfAlpha = 15; //8
 		alphaArray.setDouble(MyArrayUtils.linspace(
 				alphaStart.getEstimatedValue(), 
@@ -1136,6 +1141,8 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	public class CalcCLAtAlpha extends InnerCalculator {
 
 		private double cL;
+		private double alphaZeroLiftDeflection;
+		private double[] alphaTailArray;
 
 		public CalcCLAtAlpha() {
 
@@ -1186,6 +1193,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		 * This method calculates CL at alpha given as input. This method calculates both linear trait and 
 		 * non linear trait. It use the NasaBlackwell method in order to evaluate the slope of the linear trait
 		 * and it builds the non-linear trait using a cubic interpolation. 
+		 * alpha is alpha wing in degree or radians 
 		 * 
 		 * @author Manuela Ruocco
 		 *
@@ -1272,6 +1280,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			if (alphaBody.getUnit() == NonSI.DEGREE_ANGLE) 
 				alphaBody = alphaBody.to(SI.RADIAN);
 
+
 			Amount<Angle> angleOfIncidence = theLiftingSurface.get_iw();
 			Amount<Angle> alphaWing = Amount.valueOf(
 					alphaBody.getEstimatedValue() +
@@ -1281,10 +1290,152 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			return cLWing;
 		}
 
+		/**
+		 * This method calculates CL at alpha given as input. This method calculates both linear trait and 
+		 * non linear trait. It use the NasaBlackwell method in order to evaluate the slope of the linear trait
+		 * and it builds the non-linear trait using a cubic interpolation. This is an overload of previous method
+		 * that accepts in input the downwash angle. 
+		 * 
+		 * @author Manuela Ruocco
+		 * @param Amount<Angle> alphaBody. It is the angle of attack between the direction of asimptotic 
+		 * velocity and the reference line of fuselage.
+		 * @param Amount<Angle> downwash. 
+		 */	
+
+		public double nasaBlackwellalphaBody(Amount<Angle> alphaBody,Amount<Angle> downwash ){
+			if (alphaBody.getUnit() == NonSI.DEGREE_ANGLE) 
+				alphaBody = alphaBody.to(SI.RADIAN);
+
+			if (downwash.getUnit() == NonSI.DEGREE_ANGLE) 
+				alphaBody = alphaBody.to(SI.RADIAN);
+
+
+			Amount<Angle> angleOfIncidence = theLiftingSurface.get_iw();
+			Amount<Angle> alphaWing = Amount.valueOf(
+					alphaBody.getEstimatedValue() +
+					angleOfIncidence.getEstimatedValue()- downwash.getEstimatedValue()
+					,SI.RADIAN);
+
+			double cLWing = nasaBlackwellCompleteCurve(alphaWing);
+			return cLWing;
+		}
+
+		/**
+		 * This method evaluates CL for an alpha array having the elevator deflection as input. 
+		 * 
+		 * @param angle of deflection of the elevator in deg or radians
+		 * @param chord ratio -> cf_c
+		 *
+		 * @return Cl array for fixed deflection
+		 * @author  Manuela Ruocco
+		 */
+
+		// The calculation of the lift coefficient with a deflection of the elevator is made by the
+		// method calculateCLWithElevatorDeflection. This method fills the array of 20 value of CL in
+		// its linear trait. 
+		// The procedure used to calculate the CL is the following. It's important to know that 
+		// it's necessary to call the method nasaBlackwellCompleteCurve in order to obtain the
+		// cl linear slope of the horizontal tail with no elevator deflection.
+		//
+		//1 . First of all the tau factor it's calculated used the method calculateTauIndex in the .. class
+		//2. It's necessary to get the linear slope of the horizontal tail with no elevator defletion.
+		// 3. The alphazero lift of the deflected configuration is calculated with this formula
+		//   alphaw= tau per delta e
+		// 4. At this it's possible to create an alpha array, starting from the alpha zero lift, until
+		//   15 degrees after.
+		// 5. the value of cl for each alpha is calculated with the formula :
+		//  cl alfa * (alfa + t delta e)
+
+		public double[] calculateCLWithElevatorDeflection (Amount<Angle> deflection, double chordRatio){
+
+			if (deflection.getUnit() == SI.RADIAN){
+				deflection = deflection.to(NonSI.DEGREE_ANGLE);
+			}
+			double deflectionAngleDeg = deflection.getEstimatedValue();
+
+			double tauValue, cLLinearSlopeNoDeflection;
+			alphaTailArray = new double [2];
+			double[] cLArray = new double [2];
+
+			StabilityCalculators theStablityCalculator = new StabilityCalculators();
+			tauValue = theStablityCalculator.calculateTauIndex(chordRatio, theAircraft, deflection);
+			cLLinearSlopeNoDeflection = getcLLinearSlopeNB()/57.3; //in deg 
+			alphaZeroLiftDeflection = - tauValue*deflectionAngleDeg;
+			alphaTailArray = MyArrayUtils.linspace(alphaZeroLiftDeflection, alphaZeroLiftDeflection + 15, 2);
+
+			cLArray[0] = cLLinearSlopeNoDeflection * ( alphaTailArray[0] + tauValue * deflectionAngleDeg);
+			cLArray[1] = cLLinearSlopeNoDeflection * ( alphaTailArray[1] + tauValue * deflectionAngleDeg);
+
+			return cLArray;
+		}
+
+
+		public double[] getAlphaTailArray() {
+			return alphaTailArray;
+		}
+		
+		public Double[] getAlphaTailArrayDouble() {
+			Double[]alphaTailArrayDouble = new Double [getAlphaTailArray().length];
+			for ( int i=0; i<getAlphaTailArray().length; i++){
+				alphaTailArrayDouble [i] = (Double)getAlphaTailArray()[i];
+			}
+			return alphaTailArrayDouble;
+		}
+
+		/**
+		 * This method calculates CL of an horizontal tail at alpha given as input. This method calculates linear trait 
+		 * considering a known elevator deflection. It use the NasaBlackwell method in order to evaluate the slope of the linear trait
+		 * This method needs that the field of cl has filled before. --> Need to call calculateCLWithElevatorDeflection
+		 * before!
+		 * 
+		 * @author Manuela Ruocco
+		 * @param Amount<Angle> alphaBody. It is the angle of attack between the direction of asimptotic 
+		 * velocity and the reference line of fuselage.
+		 * @param Amount<Angle> deflection of elevator in degree. 
+		 */	
+
+		// In ordet to obtain a value of lift coefficient corresponding at an alpha body with a known
+		// elevator deflection it's possible to use the method getCLHTailatAlphaBodyWithElevator.
+
+		public double getCLHTailatAlphaBodyWithElevator (double chordRatio,
+				Amount<Angle> alphaBody,
+				Amount<Angle> deflection,
+				Amount<Angle> downwashAngle){
+
+			if (alphaBody.getUnit() == SI.RADIAN)
+				alphaBody = alphaBody.to(NonSI.DEGREE_ANGLE);
+			double alphaBodyDouble = alphaBody.getEstimatedValue();
+
+			if (downwashAngle.getUnit() == SI.RADIAN)
+				downwashAngle = downwashAngle.to(NonSI.DEGREE_ANGLE);
+			double downwashAngleDeg = downwashAngle.getEstimatedValue();
+
+
+			double deflectionAngleDeg = deflection.getEstimatedValue();
+			double alphaZeroLift = getAlphaZeroLiftDeflection();
+
+			double[] alphaLocalArray = new double [2];
+			alphaLocalArray = MyArrayUtils.linspace(alphaZeroLift, alphaZeroLift + 15, 2);
+
+
+			double alphaLocal = alphaBodyDouble 
+					- downwashAngleDeg 
+					+ theAircraft.get_HTail().get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue();
+
+			double[]  clArray = calculateCLWithElevatorDeflection(deflection, chordRatio);
+
+			double clAtAlpha = MyMathUtils.getInterpolatedValue1DLinear(alphaLocalArray, clArray, alphaLocal);
+
+			return clAtAlpha;
+
+		}
+
 
 	}
 
-
+	public double getAlphaZeroLiftDeflection() {
+		return alphaZeroLiftDeflection;
+	}
 
 	/** 
 	 * This function plot CL vs Alpha curve of an isolated wing using 30 value of alpha between alpha=- 10.0 deg and
@@ -1292,7 +1443,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	 * 
 	 * @author Manuela Ruocco
 	 */
-	public void PlotCLvsAlphaCurve(){
+	public void plotCLvsAlphaCurve(){
 		CalcCLAtAlpha theCLCalculator = new CalcCLAtAlpha();
 
 		double alphaFirst = -10.0;
@@ -1303,8 +1454,12 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		double alphaStar = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
 		Amount<Angle> alphaStarAmount = Amount.valueOf(alphaStar, SI.RADIAN);
 		double cLStar = theCLCalculator.nasaBlackwell(alphaStarAmount);
-		double cLTemp = theCLCalculator.nasaBlackwell(alphaTemp);
-		double cLLinearSlope = (cLStar - cLTemp)/alphaStar;
+//		double cLTemp = theCLCalculator.nasaBlackwell(alphaTemp);
+//		double cLLinearSlope = (cLStar - cLTemp)/alphaStar;
+		
+		CalcCLAlpha theLineraSlopeCalculator = new CalcCLAlpha();
+		double cLLinearSlope = theLineraSlopeCalculator.nasaBlackwell(theCLCalculator);
+		
 		double qValue = cLStar - cLLinearSlope*alphaStar;
 
 		calcAlphaAndCLMax(meanAirfoil);
@@ -1349,11 +1504,11 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		}
 
 		System.out.println("\n -----------CLEAN-------------- ");
-		System.out.println(" alpha max " + alphaMaxDouble*57.3);
-		System.out.println(" alpha star " + alphaStar*57.3);
+		System.out.println(" alpha max " + alphaMaxDouble*57.3 + " (deg)");
+		System.out.println(" alpha star " + alphaStar*57.3 + " (deg)");
 		System.out.println(" cL max " + cLMax);
 		System.out.println(" cL star " + cLStar);
-		System.out.println(" cL alpha " + cLLinearSlope);
+		System.out.println(" cL alpha " + cLLinearSlope + " (1/rad)");
 
 
 
@@ -1362,13 +1517,14 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				alphaArrayPlot,	cLArrayPlot, 
 				null, null , null , null ,					    // axis with limits
 				"alpha_W", "CL", "deg", "",	   				
-				subfolderPathCLAlpha, "CL vs Alpha clean");
+				subfolderPathCLAlpha, "CL vs Alpha clean " + theLiftingSurface.getType());
 	}
 
 	public void PlotCLvsAlphaCurve(String subfolderPath){
 		this.subfolderPathCLAlpha = subfolderPath;
-		subfolderPathCeck =false;
-		PlotCLvsAlphaCurve();
+		subfolderPathCeck = false;
+		plotCLvsAlphaCurve();
+		subfolderPathCeck = true;
 
 	};
 
@@ -1383,7 +1539,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 		double alphaFirstCD = -2.0;
 		double alphaLastCD = 18.0;
-		int nPointsCD = 50;
+		int nPointsCD = 30;
 		double [] alphaArrayPlotCD = MyArrayUtils.linspace(alphaFirstCD,alphaLastCD, nPointsCD);
 		double [] cDPlotArray = new double [nPointsCD];
 		double [] cLPlotArray = new double [nPointsCD];
@@ -1391,7 +1547,9 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		CalcCDAtAlpha theCDCalculator = new CalcCDAtAlpha();
 		CalcCLAtAlpha theCLCalculator = new CalcCLAtAlpha();
 		String folderPath = MyConfiguration.currentDirectoryString + File.separator + "out" + File.separator;
-		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "CD wing" + File.separator);
+		
+		if(subfolderPathCeck)
+			subfolderPathCDAlpha = JPADStaticWriteUtils.createNewFolder(folderPath + "CD wing" + File.separator);
 
 		for (int i=0; i<nPointsCD; i++){
 			alphaActual= Amount.valueOf(toRadians(alphaArrayPlotCD[i]), SI.RADIAN);
@@ -1410,16 +1568,26 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		MyChartToFileUtils.plotNoLegend(
 				alphaArrayPlotCD,cDPlotArray, 
 				null, null , null , null ,					    // axis with limits
-				"alpha", "CDw", "deg", "",	   				
-				subfolderPath, "CD vs Alpha");
+				"alpha", "CD", "deg", "",	   				
+				subfolderPathCDAlpha, "CD vs Alpha " + theLiftingSurface.get_type());
 
 		MyChartToFileUtils.plotNoLegend(
-				alphaArrayPlotCD,cLPlotArray, 
+				cDPlotArray,cLPlotArray, 
 				null, null , null , null ,					    // axis with limits
-				"alpha", "CDw", "deg", "",	   				
-				subfolderPath, "CD vs CL");
+				"CD", "CL", "", "",	   				
+				subfolderPathCDAlpha, "CD vs CL " + theLiftingSurface.get_type());
 
 	}
+	
+	
+		public void PlotCDvsAlphaCurve(String subfolderPath){
+			this.subfolderPathCDAlpha = subfolderPath;
+			subfolderPathCeck = false;
+			PlotCDvsAlphaCurve();
+			subfolderPathCeck = true;
+		
+	}
+	
 	/** 
 	 * Evaluate CL vs alpha
 	 * 
@@ -1513,9 +1681,12 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 	public class CalcCLMaxClean extends InnerCalculator {
 
-		private MyArray clAirfoils = new MyArray(getTheLiftingSurface()._clMaxSweep_y)
-				.interpolate(getTheLiftingSurface()._yStationsAirfoil.toArray(), _yStations);
+//		private MyArray clAirfoils = new MyArray(getTheLiftingSurface()._clMaxSweep_y)
+//				.interpolate(getTheLiftingSurface()._yStationsAirfoil.toArray(), _yStations);
 
+		private MyArray clAirfoils = new MyArray(getTheLiftingSurface()._clMaxVsY)
+				.interpolate(getTheLiftingSurface()._yStationsAirfoil.toArray(), _yStations);
+		
 		public MyArray getClAirfoils() {
 			return clAirfoils;
 		}
@@ -1587,9 +1758,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			// TODO: try to use nasa Blackwell also for vtail
 			if (getTheLiftingSurface()._type != ComponentEnum.VERTICAL_TAIL) {
 				if (calculateLiftDistribution.getNasaBlackwell() != null) {
-
 					for (int j=0; j < _numberOfAlpha; j++) {
-
 						if (found == false) {
 							for(int i =0; i< _nPointsSemispanWise; i++) {
 								if (found == false 
@@ -1598,9 +1767,9 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 												alphaArray.getAsAmount(j)).get(i) 
 										> clAirfoils.get(i) ) {
 
-									//System.out.println( "distribution " +  cLMap.getCxyVsAlphaTable()
-									//									.get( MethodEnum.NASA_BLACKWELL,
-									//											alphaArray.getAsAmount(j))  );
+//									System.out.println( "distribution " +  cLMap.getCxyVsAlphaTable()
+//																		.get( MethodEnum.NASA_BLACKWELL,
+//																				alphaArray.getAsAmount(j))  );
 
 									//@author Manuela ruocco
 									// After find the first point where CL_wing > Cl_MAX_airfoil, starts an iteration on alpha
@@ -1839,15 +2008,19 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		theCLmaxAnalysis.nasaBlackwell();
 
 		Amount<Angle> alphaMaxNasaBlackwell = this.get_alphaStall();
+		
+//		System.out.println("Alpha max NASA Blackwell : " + alphaMaxNasaBlackwell.to(NonSI.DEGREE_ANGLE));
+		
 		this.set_cLMaxClean(theCLatAlpha.nasaBlackwell(alphaMaxNasaBlackwell));
 		//System.out.println("CL Max " + get_cLMaxClean());
 		deltaAlphaMax = Amount.valueOf(
 				toRadians (this.get_AerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(
-						getTheLiftingSurface().get_sweepLEEquivalent().getEstimatedValue() ,
+						getTheLiftingSurface().get_sweepLEEquivalent().to(NonSI.DEGREE_ANGLE).getEstimatedValue() ,
 						meanLESharpnessParameter )), SI.RADIAN);
-		//		System.out.println("Delta  alpha max " + deltaAlphaMax.to(NonSI.DEGREE_ANGLE));
+//				System.out.println("Sweep LE Equivalent = " + getTheLiftingSurface().get_sweepLEEquivalent().getEstimatedValue());
+//				System.out.println("Delta  alpha max " + deltaAlphaMax.to(NonSI.DEGREE_ANGLE));
 		Amount<Angle> alphaMax =  Amount.valueOf((alphaMaxNasaBlackwell.getEstimatedValue() + deltaAlphaMax.getEstimatedValue()), SI.RADIAN);
-		//		System.out.println( "Alpha max " + alphaMax.to(NonSI.DEGREE_ANGLE) );
+//				System.out.println( "Alpha max " + alphaMax.to(NonSI.DEGREE_ANGLE) );
 
 		this.set_alphaMaxClean(alphaMax);
 	}
@@ -1871,34 +2044,35 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		private OperatingConditions theConditions;
 		private MyAirfoil meanAirfoil;
 		private List<Double[]> deltaFlap; 	    
-		private List<Double> flapType_index, deltaSlat, eta_in_flap, eta_out_flap, 
-		eta_in_slat, eta_out_slat, cf_c, cs_c, leRadius_c_slat, cExt_c_slat;
-		private final List<Double> deltaFlap_ref;
+		private List<Double> flapTypeIndex, deltaSlat, etaInFlap, etaOutFlap, 
+		etaInSlat, etaOutSlat, cfc, csc, leRadiusSlatRatio, cExtcSlat;
+		private final List<Double> deltaFlapRef;
 		private List<FlapTypeEnum> flapType;
 
 		//to evaluate:
-		private double deltaCl0_flap = 0,
-				deltaCL0_flap = 0,
-				deltaClmax_flap = 0,
-				deltaCLmax_flap = 0,
-				deltaClmax_slat = 0,
-				deltaCLmax_slat = 0,
-				cLalpha_new = 0,
-				deltaAlphaMax = 0,
+		private double deltaCl0Flap = 0,
+				deltaCL0Flap = 0,
+				deltaClmaxFlap = 0,
+				deltaCLmaxFlap = 0,
+				deltaClmaxSlat = 0,
+				deltaCLmaxSlat = 0,
+				cLalphaNew = 0,
+				deltaAlphaMaxFlap = 0,
+				deltaAlphaMaxSlat = 0,
 				deltaCD = 0,
-				deltaCM_c4 = 0,
-				cL_Max_Flap;
+				deltaCMC4 = 0,
+				cLMaxFlap;
 
-		private ArrayList<Double> deltaCl0_flap_list,
-		deltaCL0_flap_list,
-		deltaClmax_flap_list,
-		deltaCLmax_flap_list,
-		deltaClmax_slat_list,
-		deltaCLmax_slat_list,
-		cLalpha_new_list,
-		deltaAlphaMax_list,
-		deltaCD_list,
-		deltaCM_c4_list;
+		private ArrayList<Double> deltaCl0FlapList,
+		deltaCL0FlapList,
+		deltaClmaxFlapList,
+		deltaCLmaxFlapList,
+		deltaClmaxSlatList,
+		deltaCLmaxSlatList,
+		cLalphaNewList,
+		deltaAlphaMaxList,
+		deltaCDList,
+		deltaCMC4List;
 
 
 		//-------------------------------------------------------------------------------------
@@ -1910,14 +2084,14 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				List<Double[]> deltaFlap,
 				List<FlapTypeEnum> flapType,
 				List<Double> deltaSlat,
-				List<Double> eta_in_flap,
-				List<Double> eta_out_flap,
-				List<Double> eta_in_slat,
-				List<Double> eta_out_slat, 
-				List<Double> cf_c,
-				List<Double> cs_c,
-				List<Double> leRadius_slat,
-				List<Double> cExt_c_slat
+				List<Double> etaInFlap,
+				List<Double> etaOutFlap,
+				List<Double> etaInSlat,
+				List<Double> etaOutSlat, 
+				List<Double> cfc,
+				List<Double> csc,
+				List<Double> leRadiusSlatRatio,
+				List<Double> cExtcSlat
 				) {
 
 			this.theWing = theWing;
@@ -1931,38 +2105,38 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			this.deltaFlap = deltaFlap;
 			this.flapType = flapType;
 			this.deltaSlat = deltaSlat;
-			this.eta_in_flap = eta_in_flap;
-			this.eta_out_flap = eta_out_flap;
-			this.eta_in_slat = eta_in_slat;
-			this.eta_out_slat = eta_out_slat;
-			this.cf_c = cf_c;
-			this.cs_c = cs_c;
-			this.leRadius_c_slat = leRadius_slat;
-			this.cExt_c_slat = cExt_c_slat;
+			this.etaInFlap = etaInFlap;
+			this.etaOutFlap = etaOutFlap;
+			this.etaInSlat = etaInSlat;
+			this.etaOutSlat = etaOutSlat;
+			this.cfc = cfc;
+			this.csc = csc;
+			this.leRadiusSlatRatio = leRadiusSlatRatio;
+			this.cExtcSlat = cExtcSlat;
 
-			flapType_index = new ArrayList<Double>();
-			deltaFlap_ref = new ArrayList<Double>();
+			flapTypeIndex = new ArrayList<Double>();
+			deltaFlapRef = new ArrayList<Double>();
 
 			for(int i=0; i<flapType.size(); i++) {
 				if(flapType.get(i) == FlapTypeEnum.SINGLE_SLOTTED) {
-					flapType_index.add(1.0);
-					deltaFlap_ref.add(45.0);
+					flapTypeIndex.add(1.0);
+					deltaFlapRef.add(45.0);
 				}
 				else if(flapType.get(i) == FlapTypeEnum.DOUBLE_SLOTTED) {
-					flapType_index.add(2.0);
-					deltaFlap_ref.add(50.0);
+					flapTypeIndex.add(2.0);
+					deltaFlapRef.add(50.0);
 				}
 				else if(flapType.get(i) == FlapTypeEnum.PLAIN) {
-					flapType_index.add(3.0);
-					deltaFlap_ref.add(60.0);
+					flapTypeIndex.add(3.0);
+					deltaFlapRef.add(60.0);
 				}
 				else if(flapType.get(i) == FlapTypeEnum.FOWLER) {
-					flapType_index.add(4.0);
-					deltaFlap_ref.add(40.0);
+					flapTypeIndex.add(4.0);
+					deltaFlapRef.add(40.0);
 				}
 				else if(flapType.get(i) == FlapTypeEnum.TRIPLE_SLOTTED) {
-					flapType_index.add(5.0);
-					deltaFlap_ref.add(50.0);
+					flapTypeIndex.add(5.0);
+					deltaFlapRef.add(50.0);
 				}
 			}
 
@@ -1988,241 +2162,241 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 			//---------------------------------------------
 			// deltaCl0 (flap)
-			List<Double> theta_f = new ArrayList<Double>();
-			for(int i=0; i<flapType_index.size(); i++) 
-				theta_f.add(Math.acos((2*cf_c.get(i))-1));
+			List<Double> thetaF = new ArrayList<Double>();
+			for(int i=0; i<flapTypeIndex.size(); i++) 
+				thetaF.add(Math.acos((2*cfc.get(i))-1));
 
 			List<Double> alphaDelta = new ArrayList<Double>();
-			for(int i=0; i<theta_f.size(); i++)
-				alphaDelta.add(1-((theta_f.get(i)-Math.sin(theta_f.get(i)))/Math.PI));
+			for(int i=0; i<thetaF.size(); i++)
+				alphaDelta.add(1-((thetaF.get(i)-Math.sin(thetaF.get(i)))/Math.PI));
 
-			Double[] deltaFlap_total = new Double[flapType_index.size()];
+			Double[] deltaFlapTotal = new Double[flapTypeIndex.size()];
 			for(int i=0; i<deltaFlap.size(); i++) {
-				deltaFlap_total[i] = 0.0;
+				deltaFlapTotal[i] = 0.0;
 				for(int j=0; j<deltaFlap.get(i).length; j++) {
-					deltaFlap_total[i] += deltaFlap.get(i)[j];
+					deltaFlapTotal[i] += deltaFlap.get(i)[j];
 				}
 			}
 
-			List<Double> eta_delta_flap = new ArrayList<Double>();
-			for(int i=0; i<flapType_index.size(); i++) {
-				if(flapType_index.get(i) == 3.0)
-					eta_delta_flap.add(
+			List<Double> etaDeltaFlap = new ArrayList<Double>();
+			for(int i=0; i<flapTypeIndex.size(); i++) {
+				if(flapTypeIndex.get(i) == 3.0)
+					etaDeltaFlap.add(
 							theWing
 							.getAerodynamics()
-							.get_highLiftDatabaseReader()
-							.get_eta_delta_vs_delta_flap_plain(deltaFlap_total[i], cf_c.get(i)));
+							.getHighLiftDatabaseReader()
+							.getEtaDeltaVsDeltaFlapPlain(deltaFlapTotal[i], cfc.get(i)));
 				else
-					eta_delta_flap.add(
+					etaDeltaFlap.add(
 							theWing
 							.getAerodynamics()
-							.get_highLiftDatabaseReader()
-							.get_eta_delta_vs_delta_flap(deltaFlap_total[i], flapType_index.get(i))
+							.getHighLiftDatabaseReader()
+							.getEtaDeltaVsDeltaFlap(deltaFlapTotal[i], flapTypeIndex.get(i))
 							);
 			}
 
-			List<Double> deltaCl0_first = new ArrayList<Double>();
-			for(int i=0; i<flapType_index.size(); i++)
-				deltaCl0_first.add(
+			List<Double> deltaCl0First = new ArrayList<Double>();
+			for(int i=0; i<flapTypeIndex.size(); i++)
+				deltaCl0First.add(
 						alphaDelta.get(i).doubleValue()
-						*eta_delta_flap.get(i).doubleValue()
-						*deltaFlap_total[i]
+						*etaDeltaFlap.get(i).doubleValue()
+						*deltaFlapTotal[i]
 								*meanAirfoil.getAerodynamics().get_clAlpha()*(Math.PI/180)
 						);
 
-			List<Double> deltaC_Cf_flap = new ArrayList<Double>();
-			for(int i=0; i<flapType_index.size(); i++)
-				deltaC_Cf_flap.add(
+			List<Double> deltaCCfFlap = new ArrayList<Double>();
+			for(int i=0; i<flapTypeIndex.size(); i++)
+				deltaCCfFlap.add(
 						theWing
 						.getAerodynamics()
-						.get_highLiftDatabaseReader()
-						.get_deltaC_Cf_vs_delta_flap(deltaFlap_total[i],flapType_index.get(i))
+						.getHighLiftDatabaseReader()
+						.getDeltaCCfVsDeltaFlap(deltaFlapTotal[i],flapTypeIndex.get(i))
 						);
 
-			List<Double> c_first_c_flap = new ArrayList<Double>();
-			for(int i=0; i<flapType_index.size(); i++)
-				c_first_c_flap.add(1+(deltaC_Cf_flap.get(i).doubleValue()*cf_c.get(i).doubleValue()));
+			List<Double> cFirstCFlap = new ArrayList<Double>();
+			for(int i=0; i<flapTypeIndex.size(); i++)
+				cFirstCFlap.add(1+(deltaCCfFlap.get(i).doubleValue()*cfc.get(i).doubleValue()));
 
-			deltaCl0_flap_list = new ArrayList<Double>();
-			for(int i=0; i<flapType_index.size(); i++)
-				deltaCl0_flap_list.add(
-						(deltaCl0_first.get(i).doubleValue()*c_first_c_flap.get(i).doubleValue())
-						+(meanAirfoil.getAerodynamics().calculateClAtAlpha(0.0)*(c_first_c_flap.get(i).doubleValue()-1))
+			deltaCl0FlapList = new ArrayList<Double>();
+			for(int i=0; i<flapTypeIndex.size(); i++)
+				deltaCl0FlapList.add(
+						(deltaCl0First.get(i).doubleValue()*cFirstCFlap.get(i).doubleValue())
+						+(meanAirfoil.getAerodynamics().calculateClAtAlpha(0.0)*(cFirstCFlap.get(i).doubleValue()-1))
 						);
 
-			for(int i=0; i<flapType_index.size(); i++)
-				deltaCl0_flap += deltaCl0_flap_list.get(i).doubleValue();
+			for(int i=0; i<flapTypeIndex.size(); i++)
+				deltaCl0Flap += deltaCl0FlapList.get(i).doubleValue();
 
 			//---------------------------------------------------------------
 			// deltaClmax (flap)
-			List<Double> deltaClmax_base = new ArrayList<Double>();
-			for(int i=0; i<flapType_index.size(); i++)
-				deltaClmax_base.add(
+			List<Double> deltaClmaxBase = new ArrayList<Double>();
+			for(int i=0; i<flapTypeIndex.size(); i++)
+				deltaClmaxBase.add(
 						theWing
 						.getAerodynamics()
-						.get_highLiftDatabaseReader()
-						.get_deltaCLmaxBase_vs_tc(
+						.getHighLiftDatabaseReader()
+						.getDeltaCLmaxBaseVsTc(
 								meanAirfoil.getGeometry().get_maximumThicknessOverChord(),
-								flapType_index.get(i)
+								flapTypeIndex.get(i)
 								)
 						);
 
 			List<Double> k1 = new ArrayList<Double>();
-			for(int i=0; i<flapType_index.size(); i++)
+			for(int i=0; i<flapTypeIndex.size(); i++)
 				k1.add(theWing
 						.getAerodynamics()
-						.get_highLiftDatabaseReader()
-						.get_K1_vs_flapChordRatio(cf_c.get(i), flapType_index.get(i))
+						.getHighLiftDatabaseReader()
+						.getK1vsFlapChordRatio(cfc.get(i), flapTypeIndex.get(i))
 						);
 
 
 			List<Double> k2 = new ArrayList<Double>();
-			for(int i=0; i<flapType_index.size(); i++)
+			for(int i=0; i<flapTypeIndex.size(); i++)
 				k2.add(theWing
 						.getAerodynamics()
-						.get_highLiftDatabaseReader()
-						.get_K2_vs_delta_flap(deltaFlap_total[i], flapType_index.get(i))
+						.getHighLiftDatabaseReader()
+						.getK2VsDeltaFlap(deltaFlapTotal[i], flapTypeIndex.get(i))
 						);
 
 			List<Double> k3 = new ArrayList<Double>();
-			for(int i=0; i<flapType_index.size(); i++)
+			for(int i=0; i<flapTypeIndex.size(); i++)
 				k3.add(theWing
 						.getAerodynamics()
-						.get_highLiftDatabaseReader()
-						.get_K3_vs_df_dfRef(
-								deltaFlap_total[i],
-								deltaFlap_ref.get(i),
-								flapType_index.get(i)
+						.getHighLiftDatabaseReader()
+						.getK3VsDfDfRef(
+								deltaFlapTotal[i],
+								deltaFlapRef.get(i),
+								flapTypeIndex.get(i)
 								)
 						);
 
-			deltaClmax_flap_list = new ArrayList<Double>();
-			for(int i=0; i<flapType_index.size(); i++)
-				deltaClmax_flap_list.add(k1.get(i).doubleValue()
+			deltaClmaxFlapList = new ArrayList<Double>();
+			for(int i=0; i<flapTypeIndex.size(); i++)
+				deltaClmaxFlapList.add(k1.get(i).doubleValue()
 						*k2.get(i).doubleValue()
 						*k3.get(i).doubleValue()
-						*deltaClmax_base.get(i).doubleValue()
+						*deltaClmaxBase.get(i).doubleValue()
 						);
 
-			for(int i=0; i<flapType_index.size(); i++)
-				deltaClmax_flap += deltaClmax_flap_list.get(i).doubleValue();
+			for(int i=0; i<flapTypeIndex.size(); i++)
+				deltaClmaxFlap += deltaClmaxFlapList.get(i).doubleValue();
 
 			//---------------------------------------------------------------
 			// deltaClmax (slat)
 			if(deltaSlat != null) {
 
-				List<Double> dCl_dDelta = new ArrayList<Double>();
+				List<Double> dCldDelta = new ArrayList<Double>();
 				for(int i=0; i<deltaSlat.size(); i++)
-					dCl_dDelta.add(theWing
+					dCldDelta.add(theWing
 							.getAerodynamics()
-							.get_highLiftDatabaseReader()
-							.get_dCl_dDelta_vs_cs_c(cs_c.get(i))
+							.getHighLiftDatabaseReader()
+							.getDCldDeltaVsCsC(csc.get(i))
 							);
 
-				List<Double> eta_max_slat = new ArrayList<Double>();
+				List<Double> etaMaxSlat = new ArrayList<Double>();
 				for(int i=0; i<deltaSlat.size(); i++)
-					eta_max_slat.add(theWing
+					etaMaxSlat.add(theWing
 							.getAerodynamics()
-							.get_highLiftDatabaseReader()
-							.get_etaMax_vs_LEradius_tickness_ratio(
-									leRadius_c_slat.get(i),
+							.getHighLiftDatabaseReader()
+							.getEtaMaxVsLEradiusTicknessRatio(
+									leRadiusSlatRatio.get(i),
 									meanAirfoil.getGeometry().get_maximumThicknessOverChord())
 							);
 
-				List<Double> eta_delta_slat = new ArrayList<Double>();
+				List<Double> etaDeltaSlat = new ArrayList<Double>();
 				for(int i=0; i<deltaSlat.size(); i++)
-					eta_delta_slat.add(
+					etaDeltaSlat.add(
 							theWing
 							.getAerodynamics()
-							.get_highLiftDatabaseReader()
-							.get_eta_delta_vs_delta_slat(deltaSlat.get(i))
+							.getHighLiftDatabaseReader()
+							.getEtaDeltaVsDeltaSlat(deltaSlat.get(i))
 							);
 
-				deltaClmax_slat_list = new ArrayList<Double>();
+				deltaClmaxSlatList = new ArrayList<Double>();
 				for(int i=0; i<deltaSlat.size(); i++)
-					deltaClmax_slat_list.add(
-							dCl_dDelta.get(i).doubleValue()
-							*eta_max_slat.get(i).doubleValue()
-							*eta_delta_slat.get(i).doubleValue()
+					deltaClmaxSlatList.add(
+							dCldDelta.get(i).doubleValue()
+							*etaMaxSlat.get(i).doubleValue()
+							*etaDeltaSlat.get(i).doubleValue()
 							*deltaSlat.get(i).doubleValue()
-							*cExt_c_slat.get(i).doubleValue()
+							*cExtcSlat.get(i).doubleValue()
 							);
 
 				for(int i=0; i<deltaSlat.size(); i++)
-					deltaClmax_slat += deltaClmax_slat_list.get(i).doubleValue();
+					deltaClmaxSlat += deltaClmaxSlatList.get(i).doubleValue();
 
 			}
 
 			//---------------------------------------------------------------
 			// deltaCL0 (flap)
 			List<Double> kc = new ArrayList<Double>();
-			for(int i=0; i<flapType_index.size(); i++)
+			for(int i=0; i<flapTypeIndex.size(); i++)
 				kc.add(theWing
 						.getAerodynamics()
-						.get_highLiftDatabaseReader()
-						.get_Kc_vs_AR(
+						.getHighLiftDatabaseReader()
+						.getKcVsAR(
 								theWing.get_aspectRatio(),
 								alphaDelta.get(i))	
 						);
 
 			List<Double> kb = new ArrayList<Double>();
-			for(int i=0; i<flapType_index.size(); i++)
+			for(int i=0; i<flapTypeIndex.size(); i++)
 				kb.add(theWing
 						.getAerodynamics()
-						.get_highLiftDatabaseReader()
-						.get_Kb_vs_flapSpanRatio(eta_in_flap.get(i), eta_out_flap.get(i))	
+						.getHighLiftDatabaseReader()
+						.getKbVsFlapSpanRatio(etaInFlap.get(i), etaOutFlap.get(i))	
 						);
 
-			deltaCL0_flap_list = new ArrayList<Double>();
-			for(int i=0; i<flapType_index.size(); i++)
-				deltaCL0_flap_list.add(
+			deltaCL0FlapList = new ArrayList<Double>();
+			for(int i=0; i<flapTypeIndex.size(); i++)
+				deltaCL0FlapList.add(
 						kb.get(i).doubleValue()
 						*kc.get(i).doubleValue()
-						*deltaCl0_flap_list.get(i).doubleValue()
+						*deltaCl0FlapList.get(i).doubleValue()
 						*(theWing.getAerodynamics().getCalculateCLAlpha().integralMean2D())
 						/meanAirfoil.getAerodynamics().get_clAlpha()
 						);
 
-			for(int i=0; i<flapType_index.size(); i++)
-				deltaCL0_flap += deltaCL0_flap_list.get(i).doubleValue();
+			for(int i=0; i<flapTypeIndex.size(); i++)
+				deltaCL0Flap += deltaCL0FlapList.get(i).doubleValue();
 
 			//---------------------------------------------------------------
 			// deltaCLmax (flap)
 			List<Double> flapSurface = new ArrayList<Double>();
-			for(int i=0; i<flapType_index.size(); i++)
+			for(int i=0; i<flapTypeIndex.size(); i++)
 				flapSurface.add(
 						Math.abs(
 								theWing.get_span().getEstimatedValue()							
 								/2*theWing.get_chordRootEquivalentWing().getEstimatedValue()
-								*(2-((1-theWing.get_taperRatioEquivalent())*(eta_in_flap.get(i)-eta_out_flap.get(i))))
-								*(eta_in_flap.get(i)-eta_out_flap.get(i))
+								*(2-((1-theWing.get_taperRatioEquivalent())*(etaInFlap.get(i)-etaOutFlap.get(i))))
+								*(etaInFlap.get(i)-etaOutFlap.get(i))
 								)
 						);
 
-			List<Double> kLambda_flap = new ArrayList<Double>();
-			for(int i=0; i<flapType_index.size(); i++)
-				kLambda_flap.add(
+			List<Double> kLambdaFlap = new ArrayList<Double>();
+			for(int i=0; i<flapTypeIndex.size(); i++)
+				kLambdaFlap.add(
 						Math.pow(Math.cos(theWing.get_sweepQuarterChordEq().getEstimatedValue()),0.75)
 						*(1-(0.08*Math.pow(Math.cos(theWing.get_sweepQuarterChordEq().getEstimatedValue()), 2)))
 						);
 
-			deltaCLmax_flap_list = new ArrayList<Double>();
-			for(int i=0; i<flapType_index.size(); i++)
-				deltaCLmax_flap_list.add(deltaClmax_flap_list.get(i)
+			deltaCLmaxFlapList = new ArrayList<Double>();
+			for(int i=0; i<flapTypeIndex.size(); i++)
+				deltaCLmaxFlapList.add(deltaClmaxFlapList.get(i)
 						*(flapSurface.get(i)/theWing.get_surface().getEstimatedValue())
-						*kLambda_flap.get(i)
+						*kLambdaFlap.get(i)
 						);
 
-			for(int i=0; i<flapType_index.size(); i++)
-				deltaCLmax_flap += deltaCLmax_flap_list.get(i).doubleValue();
+			for(int i=0; i<flapTypeIndex.size(); i++)
+				deltaCLmaxFlap += deltaCLmaxFlapList.get(i).doubleValue();
 
 			//---------------------------------------------------------------
 			// deltaCLmax (slat)
 			if(deltaSlat != null) {
 
-				List<Double> kLambda_slat = new ArrayList<Double>();
+				List<Double> kLambdaSlat = new ArrayList<Double>();
 				for(int i=0; i<deltaSlat.size(); i++)
-					kLambda_slat.add(
+					kLambdaSlat.add(
 							Math.pow(Math.cos(theWing.get_sweepQuarterChordEq().getEstimatedValue()),0.75)
 							*(1-(0.08*Math.pow(Math.cos(theWing.get_sweepQuarterChordEq().getEstimatedValue()), 2)))
 							);
@@ -2232,178 +2406,181 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 					slatSurface.add(
 							Math.abs(theWing.get_span().getEstimatedValue()
 									/2*theWing.get_chordRootEquivalentWing().getEstimatedValue()
-									*(2-(1-theWing.get_taperRatioEquivalent())*(eta_in_slat.get(i)-eta_out_slat.get(i)))
-									*(eta_in_slat.get(i)-eta_out_slat.get(i))
+									*(2-(1-theWing.get_taperRatioEquivalent())*(etaInSlat.get(i)-etaOutSlat.get(i)))
+									*(etaInSlat.get(i)-etaOutSlat.get(i))
 									)
 							);
 
-				deltaCLmax_slat_list = new ArrayList<Double>();
+				deltaCLmaxSlatList = new ArrayList<Double>();
 				for(int i=0; i<deltaSlat.size(); i++)
-					deltaCLmax_slat_list.add(deltaClmax_slat_list.get(i)
+					deltaCLmaxSlatList.add(deltaClmaxSlatList.get(i)
 							*(slatSurface.get(i)/theWing.get_surface().getEstimatedValue())
-							);
+							*kLambdaSlat.get(i));
 
 				for(int i=0; i<deltaSlat.size(); i++)
-					deltaCLmax_slat += deltaCLmax_slat_list.get(i).doubleValue();
+					deltaCLmaxSlat += deltaCLmaxSlatList.get(i).doubleValue();
 
 			}
 			//---------------------------------------------------------------
 			// new CLalpha
-			cLalpha_new_list = new ArrayList<Double>();
-			List<Double> swf_s = new ArrayList<Double>();
-			for(int i=0; i<flapType_index.size(); i++) {
-				cLalpha_new_list.add(
-						theWing.getAerodynamics().getCalculateCLAlpha().integralMean2D()*(Math.PI/180)
-						*(1+((deltaCL0_flap_list.get(i)/deltaCl0_flap_list.get(i))
-								*(c_first_c_flap.get(i)*(1-((cf_c.get(i))*(1/c_first_c_flap.get(i))
-										*Math.pow(Math.sin(deltaFlap_total[i]*Math.PI/180), 2)))-1))));
-				swf_s.add(flapSurface.get(i)/theWing.get_surface().getEstimatedValue());
+			CalcCLAlpha calcLinearSlope = new CalcCLAlpha();
+			double cLLinearSlope = calcLinearSlope.nasaBlackwell(new CalcCLAtAlpha());
+			
+			cLalphaNewList = new ArrayList<Double>();
+			List<Double> swf = new ArrayList<Double>();
+			for(int i=0; i<flapTypeIndex.size(); i++) {
+				cLalphaNewList.add(
+						cLLinearSlope*(Math.PI/180)
+						*(1+((deltaCL0FlapList.get(i)/deltaCl0FlapList.get(i))
+								*(cFirstCFlap.get(i)*(1-((cfc.get(i))*(1/cFirstCFlap.get(i))
+										*Math.pow(Math.sin(deltaFlapTotal[i]*Math.PI/180), 2)))-1))));
+				swf.add(flapSurface.get(i)/theWing.get_surface().getEstimatedValue());
 			}
 
-			double swf_s_tot = 0;
-			for(int i=0; i<swf_s.size(); i++)
-				swf_s_tot += swf_s.get(i);
+			double swfTot = 0;
+			for(int i=0; i<swf.size(); i++)
+				swfTot += swf.get(i);
 
-			for(int i=0; i<flapType_index.size(); i++)
-				cLalpha_new += cLalpha_new_list.get(i)*swf_s.get(i);
+			for(int i=0; i<flapTypeIndex.size(); i++)
+				cLalphaNew += cLalphaNewList.get(i)*swf.get(i);
 
-			cLalpha_new /= swf_s_tot;
+			cLalphaNew /= swfTot;
 
 			//---------------------------------------------------------------
 			// Delta alpha max (flap)
-			deltaAlphaMax_list = new ArrayList<Double>();
-			for(int i=0; i<flapType_index.size(); i++)
-				deltaAlphaMax_list.add(theWing
+			deltaAlphaMaxList = new ArrayList<Double>();
+			for(int i=0; i<flapTypeIndex.size(); i++)
+				deltaAlphaMaxList.add(theWing
 						.getAerodynamics()
-						.get_highLiftDatabaseReader()
-						.get_DeltaAlphaMax_vs_DeltaFlap(deltaFlap_total[i]));
+						.getHighLiftDatabaseReader()
+						.getDeltaAlphaMaxVsDeltaFlap(deltaFlapTotal[i]));
 
-			for(int i=0; i<flapType_index.size(); i++)
-				setDeltaAlphaMax(getDeltaAlphaMax() + deltaAlphaMax_list.get(i).doubleValue());
+			for(int i=0; i<flapTypeIndex.size(); i++)
+				deltaAlphaMaxFlap += deltaAlphaMaxList.get(i).doubleValue();
 
 			//---------------------------------------------------------------
 			// deltaCD
 			List<Double> delta1 = new ArrayList<Double>();
-			for(int i=0; i<flapType_index.size(); i++) {
-				if(flapType_index.get(i) == 3.0)
+			for(int i=0; i<flapTypeIndex.size(); i++) {
+				if(flapTypeIndex.get(i) == 3.0)
 					delta1.add(
 							theWing
 							.getAerodynamics()
-							.get_highLiftDatabaseReader()
-							.get_delta_1_vs_cf_c_plain(cf_c.get(i), theWing.get_maxThicknessMean())
+							.getHighLiftDatabaseReader()
+							.getDelta1VsCfCPlain(cfc.get(i), theWing.get_maxThicknessMean())
 							);
 				else
 					delta1.add(
 							theWing
 							.getAerodynamics()
-							.get_highLiftDatabaseReader()
-							.get_delta_1_vs_cf_c_slotted(cf_c.get(i), theWing.get_maxThicknessMean())
+							.getHighLiftDatabaseReader()
+							.getDelta1VsCfCSlotted(cfc.get(i), theWing.get_maxThicknessMean())
 							);
 			}
 
 			List<Double> delta2 = new ArrayList<Double>();
-			for(int i=0; i<flapType_index.size(); i++) {
-				if(flapType_index.get(i) == 3.0)
+			for(int i=0; i<flapTypeIndex.size(); i++) {
+				if(flapTypeIndex.get(i) == 3.0)
 					delta2.add(
 							theWing
 							.getAerodynamics()
-							.get_highLiftDatabaseReader()
-							.get_delta_2_vs_delta_flap_plain(deltaFlap_total[i])
+							.getHighLiftDatabaseReader()
+							.getDelta2VsDeltaFlapPlain(deltaFlapTotal[i])
 							);
 				else
 					delta2.add(
 							theWing
 							.getAerodynamics()
-							.get_highLiftDatabaseReader()
-							.get_delta_2_vs_delta_flap_slotted(deltaFlap_total[i], theWing.get_maxThicknessMean())
+							.getHighLiftDatabaseReader()
+							.getDelta2VsDeltaFlapSlotted(deltaFlapTotal[i], theWing.get_maxThicknessMean())
 							);
 			}
 
 			List<Double> delta3 = new ArrayList<Double>();
-			for(int i=0; i<flapType_index.size(); i++) {
+			for(int i=0; i<flapTypeIndex.size(); i++) {
 				delta3.add(
 						theWing
 						.getAerodynamics()
-						.get_highLiftDatabaseReader()
-						.get_delta_3_vs_bf_b(eta_in_flap.get(i), eta_out_flap.get(i), theWing.get_taperRatioEquivalent())
+						.getHighLiftDatabaseReader()
+						.getDelta3VsBfB(etaInFlap.get(i), etaOutFlap.get(i), theWing.get_taperRatioEquivalent())
 						);
 			}
 
-			deltaCD_list = new ArrayList<Double>();
-			for(int i=0; i<flapType_index.size(); i++) {
-				deltaCD_list.add(delta1.get(i)*delta2.get(i)*delta3.get(i));
+			deltaCDList = new ArrayList<Double>();
+			for(int i=0; i<flapTypeIndex.size(); i++) {
+				deltaCDList.add(delta1.get(i)*delta2.get(i)*delta3.get(i));
 			}
 
-			for(int i=0; i<flapType_index.size(); i++)
-				deltaCD += deltaCD_list.get(i).doubleValue();	
+			for(int i=0; i<flapTypeIndex.size(); i++)
+				deltaCD += deltaCDList.get(i).doubleValue();	
 
 			//---------------------------------------------------------------
 			// deltaCM_c/4
-			List<Double> mu_1 = new ArrayList<Double>();
-			for (int i=0; i<flapType_index.size(); i++)
-				if(flapType_index.get(i) == 3.0)
-					mu_1.add(
+			List<Double> mu1 = new ArrayList<Double>();
+			for (int i=0; i<flapTypeIndex.size(); i++)
+				if(flapTypeIndex.get(i) == 3.0)
+					mu1.add(
 							theWing
 							.getAerodynamics()
-							.get_highLiftDatabaseReader()
-							.get_mu_1_vs_cf_c_First_Plain(
-									(cf_c.get(i))*(1/c_first_c_flap.get(i)),
-									deltaFlap_total[i]
+							.getHighLiftDatabaseReader()
+							.getMu1VsCfCFirstPlain(
+									(cfc.get(i))*(1/cFirstCFlap.get(i)),
+									deltaFlapTotal[i]
 									)
 							);
 				else
-					mu_1.add(theWing
+					mu1.add(theWing
 							.getAerodynamics()
-							.get_highLiftDatabaseReader()
-							.get_mu_1_vs_cf_c_First_Slotted_Fowler((cf_c.get(i))*(1/c_first_c_flap.get(i)))
+							.getHighLiftDatabaseReader()
+							.getMu1VsCfCFirstSlottedFowler((cfc.get(i))*(1/cFirstCFlap.get(i)))
 							);
 
-			List<Double> mu_2 = new ArrayList<Double>();
-			for(int i=0; i<flapType_index.size(); i++)
-				mu_2.add(theWing
+			List<Double> mu2 = new ArrayList<Double>();
+			for(int i=0; i<flapTypeIndex.size(); i++)
+				mu2.add(theWing
 						.getAerodynamics()
-						.get_highLiftDatabaseReader()
-						.get_mu_2_vs_bf_b(
-								eta_in_flap.get(i),
-								eta_out_flap.get(i),
+						.getHighLiftDatabaseReader()
+						.getMu2VsBfB(
+								etaInFlap.get(i),
+								etaOutFlap.get(i),
 								theWing.get_taperRatioEquivalent()
 								)
 						);
 
-			List<Double> mu_3 = new ArrayList<Double>();
-			for(int i=0; i<flapType_index.size(); i++)
-				mu_3.add(theWing
+			List<Double> mu3 = new ArrayList<Double>();
+			for(int i=0; i<flapTypeIndex.size(); i++)
+				mu3.add(theWing
 						.getAerodynamics()
-						.get_highLiftDatabaseReader()
-						.get_mu_3_vs_bf_b(
-								eta_in_flap.get(i),
-								eta_out_flap.get(i),
+						.getHighLiftDatabaseReader()
+						.getMu3VsBfB(
+								etaInFlap.get(i),
+								etaOutFlap.get(i),
 								theWing.get_taperRatioEquivalent()
 								)
 						);
 
-			deltaCM_c4_list = new ArrayList<Double>();
+			deltaCMC4List = new ArrayList<Double>();
 			double cL = calcCLatAlphaHighLiftDevice(theConditions.get_alphaCurrent());
-			for(int i=0; i<flapType_index.size(); i++)
-				deltaCM_c4_list.add(
-						(mu_2.get(i)*(-(mu_1.get(i)*deltaClmax_flap_list.get(i)
-								*c_first_c_flap.get(i))-(c_first_c_flap.get(i)
-										*((c_first_c_flap.get(i))-1)
-										*(cL + (deltaClmax_flap_list.get(i)
+			for(int i=0; i<flapTypeIndex.size(); i++)
+				deltaCMC4List.add(
+						(mu2.get(i)*(-(mu1.get(i)*deltaClmaxFlapList.get(i)
+								*cFirstCFlap.get(i))-(cFirstCFlap.get(i)
+										*((cFirstCFlap.get(i))-1)
+										*(cL + (deltaClmaxFlapList.get(i)
 												*(1-(flapSurface.get(i)/theWing
 														.get_surface()
 														.getEstimatedValue()))))
 										*(1/8)))) + (0.7*(theWing
 												.get_aspectRatio()/(1+(theWing
 														.get_aspectRatio()/2)))
-												*mu_3.get(i)*deltaClmax_flap_list.get(i)
+												*mu3.get(i)*deltaClmaxFlapList.get(i)
 												*Math.tan(theWing
 														.get_sweepQuarterChordEq()
 														.getEstimatedValue()))
 						);
 
-			for(int i=0; i<flapType_index.size(); i++)
-				deltaCM_c4 += deltaCM_c4_list.get(i).doubleValue();	
+			for(int i=0; i<flapTypeIndex.size(); i++)
+				deltaCMC4 += deltaCMC4List.get(i).doubleValue();	
 		}
 
 
@@ -2425,10 +2602,9 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			if (alpha.getUnit() == NonSI.DEGREE_ANGLE) 
 				alpha = alpha.to(SI.RADIAN);
 
-			double cLAlphaFlap = cLalpha_new*57.3; // need it in 1/rad
+			double cLAlphaFlap = cLalphaNew*57.3; // need it in 1/rad
 
 			MyAirfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
-			//double alphaStar = 0.15;
 			double alphaStarClean = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
 
 			Amount<Angle> alphaStarCleanAmount = Amount.valueOf(alphaStarClean, SI.RADIAN);
@@ -2437,16 +2613,34 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			double cLStarClean = theCLCleanCalculator.nasaBlackwellCompleteCurve(alphaStarCleanAmount);
 
 			double cL0Clean =  theCLCleanCalculator.nasaBlackwellCompleteCurve(Amount.valueOf(0.0, SI.RADIAN));
-			double cL0HighLift = cL0Clean + deltaCL0_flap;
+			double cL0HighLift = cL0Clean + deltaCL0Flap;
 			double qValue = cL0HighLift;
 			double alphaStar = (cLStarClean - qValue)/cLAlphaFlap;
-			double alphaStarFlap = (alphaStar + alphaStarClean)/2;
-			double cLStarFlap = cLAlphaFlap * alphaStarFlap + qValue;	
 			double cLMaxClean = get_cLMaxClean();
 			Amount<Angle> alphaMax = get_alphaMaxClean().to(NonSI.DEGREE_ANGLE);	
-			cL_Max_Flap = cLMaxClean + deltaCLmax_flap + deltaCLmax_slat;
-			double alphaMaxHighLift = alphaMax.getEstimatedValue() + deltaAlphaMax;
+			cLMaxFlap = cLMaxClean + deltaCLmaxFlap + deltaCLmaxSlat;
+			
+			double alphaMaxHighLift;
+
+			if(deltaSlat == null)
+				alphaMaxHighLift = alphaMax.getEstimatedValue() + deltaAlphaMaxFlap;
+			else
+				alphaMaxHighLift = ((cLMaxFlap-cL0HighLift)/cLalphaNew) 
+									+ get_AerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(
+											getTheLiftingSurface()
+											.get_sweepLEEquivalent().to(NonSI.DEGREE_ANGLE).getEstimatedValue(),
+											meanAirfoil.getGeometry().get_deltaYPercent());
+			
 			alphaMaxHighLift = Amount.valueOf(toRadians(alphaMaxHighLift), SI.RADIAN).getEstimatedValue();
+
+			double alphaStarFlap; 
+
+			if(deltaSlat == null)
+				alphaStarFlap = (alphaStar + alphaStarClean)/2;
+			else
+				alphaStarFlap = alphaMaxHighLift-(alphaMax.to(SI.RADIAN).getEstimatedValue()-alphaStarClean);
+
+			double cLStarFlap = cLAlphaFlap * alphaStarFlap + qValue;	
 
 
 			if (alpha.getEstimatedValue() < alphaStarFlap ){ 
@@ -2462,7 +2656,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
 
 
-				double [] vector = {cL_Max_Flap, 0,cLAlphaFlap, cLStarFlap};
+				double [] vector = {cLMaxFlap, 0,cLAlphaFlap, cLStarFlap};
 
 				double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
 
@@ -2489,17 +2683,16 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		 * @throws InstantiationException 
 		 */
 
-		public void PlotHighLiftCurve() throws InstantiationException, IllegalAccessException{ 
+		public void plotHighLiftCurve() throws InstantiationException, IllegalAccessException{ 
 
-			PlotCLvsAlphaCurve();
+			plotCLvsAlphaCurve();
 
 			String folderPathHL = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR);
 			String subfolderPathHL = JPADStaticWriteUtils.createNewFolder(folderPathHL + "CL_vs_Alpha_Highlift" + File.separator);
 
-			double cLAlphaFlap = cLalpha_new*57.3; // need it in 1/rad
-
+			double cLAlphaFlap = cLalphaNew*57.3; // need it in 1/rad
+			
 			Amount<Angle> alphaActual;
-			Amount<Angle> deltaAlphaAmount = Amount.valueOf(toRadians(deltaAlphaMax), SI.RADIAN);	
 
 			List<Double[]> cLListPlot = new ArrayList<>(); 
 			List<Double[]> alphaListPlot = new ArrayList<>(); 
@@ -2507,37 +2700,51 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			double[] cLArrayClean = get_cLArrayPlot();
 			double[] alphaArrayClean = get_alphaArrayPlot();
 
-			double alphaFirst = -10.0;
+			double alphaFirst = -13.0;
 			int nPoints = 50;
 			MyAirfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
-			//double alphaStar = 0.15;
 			double alphaStarClean = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
-
 			Amount<Angle> alphaStarCleanAmount = Amount.valueOf(alphaStarClean, SI.RADIAN);
 
 			CalcCLAtAlpha theCLCleanCalculator = new CalcCLAtAlpha();
-			double cLStarClean = theCLCleanCalculator.nasaBlackwellCompleteCurve(alphaStarCleanAmount);
 
+			double cLStarClean = theCLCleanCalculator.nasaBlackwellCompleteCurve(alphaStarCleanAmount);
 			double cL0Clean =  theCLCleanCalculator.nasaBlackwellCompleteCurve(Amount.valueOf(0.0, SI.RADIAN));
-			double cL0HighLift = cL0Clean + deltaCL0_flap;
+			double cL0HighLift = cL0Clean + deltaCL0Flap;
 			double qValue = cL0HighLift;
-			//double alphaStar = (cLStarClean - qValue)/cLAlphaFlap;
-			double deltaAlphaStar = alphaStarClean - (-cL0Clean/cLLinearSlope);
-			System.out.println(" CL LINEAR SLOPE " + cLLinearSlope);
-			//double alphaStarFlap = (alphaStar + alphaStarClean)/2;
-			double 	alphaStarFlap  = (-qValue/cLAlphaFlap) + deltaAlphaStar;
-			double cLStarFlap = cLAlphaFlap * alphaStarFlap + qValue;	
-			calcAlphaAndCLMax(meanAirfoil); // TODO try to delete this
+			double alphaStar = (cLStarClean - qValue)/cLAlphaFlap;
+			
 			double cLMaxClean = get_cLMaxClean();
 			Amount<Angle> alphaMax = get_alphaMaxClean().to(NonSI.DEGREE_ANGLE);	
-			double cLMaxHighLift = cLMaxClean + deltaCLmax_flap + deltaCLmax_slat;
-			double alphaMaxHighLift = alphaMax.getEstimatedValue() + deltaAlphaMax;
+			cLMaxFlap = cLMaxClean + deltaCLmaxFlap + deltaCLmaxSlat;
+
+			double alphaMaxHighLift;
+
+			if(deltaSlat == null)
+				alphaMaxHighLift = alphaMax.getEstimatedValue() + deltaAlphaMaxFlap;
+			else
+				alphaMaxHighLift = ((cLMaxFlap-cL0HighLift)/cLalphaNew) 
+									+ get_AerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(
+											getTheLiftingSurface()
+											.get_sweepLEEquivalent().to(NonSI.DEGREE_ANGLE).getEstimatedValue(),
+											meanAirfoil.getGeometry().get_deltaYPercent());
+			
 			alphaMaxHighLift = Amount.valueOf(toRadians(alphaMaxHighLift), SI.RADIAN).getEstimatedValue();
 			double alphaMaxHighLiftDegree =  
 					Amount.valueOf(alphaMaxHighLift, SI.RADIAN)
 					.to(NonSI.DEGREE_ANGLE)
 					.getEstimatedValue();
 
+			double alphaStarFlap; 
+
+			if(deltaSlat == null)
+				alphaStarFlap = (alphaStar + alphaStarClean)/2;
+			else
+				alphaStarFlap = alphaMaxHighLift-(alphaMax.to(SI.RADIAN).getEstimatedValue()-alphaStarClean);
+
+			double cLStarFlap = cLAlphaFlap * alphaStarFlap + qValue;	
+
+			
 			double[][] matrixData = { {Math.pow(alphaMaxHighLift, 3), Math.pow(alphaMaxHighLift, 2)
 				, alphaMaxHighLift,1.0},
 					{3* Math.pow(alphaMaxHighLift, 2), 2*alphaMaxHighLift, 1.0, 0.0},
@@ -2546,13 +2753,13 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
 
 
-			double [] vector = {cLMaxHighLift, 0,cLAlphaFlap, cLStarFlap};
+			double [] vector = {cLMaxFlap, 0,cLAlphaFlap, cLStarFlap};
 			System.out.println(" -----------HIGH LIFT-------------- ");
-			System.out.println(" alpha max " + alphaMaxHighLift);
-			System.out.println(" alpha star " + alphaStarFlap);
-			System.out.println(" cl max " + cLMaxHighLift);
+			System.out.println(" alpha max " + alphaMaxHighLiftDegree + " (deg)");
+			System.out.println(" alpha star " + alphaStarFlap*57.3 + " (deg)");
+			System.out.println(" cl max " + cLMaxFlap);
 			System.out.println(" cl star " + cLStarFlap);
-			System.out.println(" cl alpha " + cLAlphaFlap);
+			System.out.println(" cl alpha " + cLAlphaFlap + " (1/rad)");
 
 			double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
 
@@ -2562,7 +2769,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			double d = solSystem[3];
 
 			double[] alphaArrayHighLiftPlot = MyArrayUtils.linspace(alphaFirst,
-					alphaMaxHighLiftDegree + 2,
+					alphaMaxHighLiftDegree + 4,
 					nPoints);
 
 			double[] cLArrayHighLiftPlot = new double [nPoints];
@@ -2608,10 +2815,6 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			legend.add("clean");
 			legend.add("high lift");
 
-			for (int i = 1; i<cLArrayHighLiftDouble.length; i++){
-				System.out.println(" \nalpha " + alphaArrayHighLiftDouble[i] +"             cl " + cLArrayHighLiftPlot[i]);			
-			}
-
 			MyChartToFileUtils.plotJFreeChart(alphaListPlot, 
 					cLListPlot,
 					"CL vs alpha",
@@ -2625,90 +2828,94 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 					subfolderPathHL,
 					"CL alpha Wing High Lift");
 
-			//			System.out.println(" alpha vector new" + Arrays.toString(alphaArrayHighLiftPlot));
-			//			System.out.println(" cl vector " + Arrays.toString(cLArrayHighLiftPlot));
-			//			System.out.println(" cl max " + cLMaxHighLift);
-
-
+			System.out.println("\n----------------------------DONE------------------------------");
 
 		}
 		//-------------------------------------------------------------------------------------
 		// GETTERS OF RESULTS:
 
 		public ArrayList<Double> getDeltaCl0_flap_list() {
-			return deltaCl0_flap_list;
+			return deltaCl0FlapList;
 		}
 
 		public double getDeltaCl0_flap() {
-			return deltaCl0_flap;
+			return deltaCl0Flap;
 		}
 
 		public ArrayList<Double> getDeltaCL0_flap_list() {
-			return deltaCL0_flap_list;
+			return deltaCL0FlapList;
 		}
 
 		public double getDeltaCL0_flap() {
-			return deltaCL0_flap;
+			return deltaCL0Flap;
 		}
 
 		public ArrayList<Double> getDeltaClmax_flap_list() {
-			return deltaClmax_flap_list;
+			return deltaClmaxFlapList;
 		}
 
 		public double getDeltaClmax_flap() {
-			return deltaClmax_flap;
+			return deltaClmaxFlap;
 		}
 
 		public ArrayList<Double> getDeltaCLmax_flap_list() {
-			return deltaCLmax_flap_list;
+			return deltaCLmaxFlapList;
 		}
 
 		public double getDeltaCLmax_flap() {
-			return deltaCLmax_flap;
+			return deltaCLmaxFlap;
 		}
 
 		public ArrayList<Double> getDeltaClmax_slat_list() {
-			return deltaClmax_slat_list;
+			return deltaClmaxSlatList;
 		}
 
 		public double getDeltaClmax_slat() {
-			return deltaClmax_slat;
+			return deltaClmaxSlat;
 		}
 
 		public ArrayList<Double> getDeltaCLmax_slat_list() {
-			return deltaCLmax_slat_list;
+			return deltaCLmaxSlatList;
 		}
 
 		public double getDeltaCLmax_slat() {
-			return deltaCLmax_slat;
+			return deltaCLmaxSlat;
 		}
 
 		public ArrayList<Double> getcLalpha_new_list() {
-			return cLalpha_new_list;
+			return cLalphaNewList;
 		}
 
 		public double getcLalpha_new() {
-			return cLalpha_new;
+			return cLalphaNew;
 		}
 
 		public ArrayList<Double> getDeltaAlphaMax_list() {
-			return deltaAlphaMax_list;
+			return deltaAlphaMaxList;
 		}
 
 		public void setDeltaAlphaMax_list(ArrayList<Double> deltaAlphaMax_list) {
-			this.deltaAlphaMax_list = deltaAlphaMax_list;
+			this.deltaAlphaMaxList = deltaAlphaMax_list;
 		}
 
-		public double getDeltaAlphaMax() {
-			return deltaAlphaMax;
+		public double getDeltaAlphaMaxFlap() {
+			return deltaAlphaMaxFlap;
 		}
 
-		public void setDeltaAlphaMax(double deltaAlphaMax) {
-			this.deltaAlphaMax = deltaAlphaMax;
+		public void setDeltaAlphaMaxFlap(double deltaAlphaMax) {
+			this.deltaAlphaMaxFlap = deltaAlphaMax;
+		}
+
+		public double getDeltaAlphaMaxSlat() {
+			return deltaAlphaMaxSlat;
+		}
+
+		public void setDeltaAlphaMaxSlat(double deltaAlphaMaxSlat) {
+			this.deltaAlphaMaxSlat = deltaAlphaMaxSlat;
 		}
 
 		public ArrayList<Double> getDeltaCD_list() {
-			return deltaCD_list;
+			return deltaCDList;
 		}
 
 		public double getDeltaCD() {
@@ -2716,11 +2923,11 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		}
 
 		public ArrayList<Double> getDeltaCM_c4_list() {
-			return deltaCM_c4_list;
+			return deltaCMC4List;
 		}
 
 		public double getDeltaCM_c4() {
-			return deltaCM_c4;
+			return deltaCMC4;
 		}
 
 		public List<Double[]> getDeltaFlap() {
@@ -2732,11 +2939,11 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		}
 
 		public List<Double> getFlapType() {
-			return flapType_index;
+			return flapTypeIndex;
 		}
 
 		public void setFlapType(List<Double> flapType) {
-			this.flapType_index = flapType;
+			this.flapTypeIndex = flapType;
 		}
 
 		public List<Double> getDeltaSlat() {
@@ -2748,75 +2955,75 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		}
 
 		public List<Double> getEta_in_flap() {
-			return eta_in_flap;
+			return etaInFlap;
 		}
 
 		public void setEta_in_flap(List<Double> eta_in_flap) {
-			this.eta_in_flap = eta_in_flap;
+			this.etaInFlap = eta_in_flap;
 		}
 
 		public List<Double> getEta_out_flap() {
-			return eta_out_flap;
+			return etaOutFlap;
 		}
 
 		public void setEta_out_flap(List<Double> eta_out_flap) {
-			this.eta_out_flap = eta_out_flap;
+			this.etaOutFlap = eta_out_flap;
 		}
 
 		public List<Double> getEta_in_slat() {
-			return eta_in_slat;
+			return etaInSlat;
 		}
 
 		public void setEta_in_slat(List<Double> eta_in_slat) {
-			this.eta_in_slat = eta_in_slat;
+			this.etaInSlat = eta_in_slat;
 		}
 
 		public List<Double> getEta_out_slat() {
-			return eta_out_slat;
+			return etaOutSlat;
 		}
 
 		public void setEta_out_slat(List<Double> eta_out_slat) {
-			this.eta_out_slat = eta_out_slat;
+			this.etaOutSlat = eta_out_slat;
 		}
 
 		public List<Double> getCf_c() {
-			return cf_c;
+			return cfc;
 		}
 
 		public void setCf_c(List<Double> cf_c) {
-			this.cf_c = cf_c;
+			this.cfc = cf_c;
 		}
 
 		public List<Double> getCs_c() {
-			return cs_c;
+			return csc;
 		}
 
 		public void setCs_c(List<Double> cs_c) {
-			this.cs_c = cs_c;
+			this.csc = cs_c;
 		}
 
 		public List<Double> getLeRadius_c_slat() {
-			return leRadius_c_slat;
+			return leRadiusSlatRatio;
 		}
 
 		public void setLeRadius_c_slat(List<Double> leRadius_c_slat) {
-			this.leRadius_c_slat = leRadius_c_slat;
+			this.leRadiusSlatRatio = leRadius_c_slat;
 		}
 
 		public List<Double> getcExt_c_slat() {
-			return cExt_c_slat;
+			return cExtcSlat;
 		}
 
 		public void setcExt_c_slat(List<Double> cExt_c_slat) {
-			this.cExt_c_slat = cExt_c_slat;
+			this.cExtcSlat = cExt_c_slat;
 		}
 
 		public double getcL_Max_Flap() {
-			return cL_Max_Flap;
+			return cLMaxFlap;
 		}
 
 		public void setcL_Max_Flap(double cL_Max_Flap) {
-			this.cL_Max_Flap = cL_Max_Flap;
+			this.cLMaxFlap = cL_Max_Flap;
 		}
 	}
 
@@ -2951,7 +3158,8 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			//				surfaceInteg = surface;
 			//				semispanInteg = semispan;
 			//			}
-			
+
+
 			_alpha0L = Amount.valueOf(
 					AnglesCalc.alpha0LintegralMeanNoTwist(surface, semispan, 
 							_yStationsIntegral, _chordsVsY.toArray(), _alpha0lDistribution.toArray()),
@@ -2976,74 +3184,74 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		public Amount<Angle> integralMeanExposedNoTwist() {
 
 
-			if ( theAircraft.get_exposedWing() != null ){
+			if ( theAircraft.get_exposedWing() != null && theLiftingSurface.getType() == ComponentEnum.WING){
 				//System.out.println(" y station integral " + Arrays.toString(_yStationsIntegral));
 				surfaceInteg = theAircraft.get_exposedWing().get_surface().getEstimatedValue();
 				semispanInteg = theAircraft.get_exposedWing().get_semispan().getEstimatedValue();
-//				MyArray alphaZeroLiftExposed = new MyArray();
-//				MyArray chordDistributionExposed = new MyArray();
-//				alphaZeroLiftExposed.add(
-//						theAircraft
-//						.get_exposedWing()
-//						.get_theAirfoilsListExposed()
-//						.get(0).getAerodynamics()
-//						.get_alphaZeroLift()
-//						.getEstimatedValue());
-//
-//				chordDistributionExposed.add(theAircraft.get_wing().getChordAtYActual(
-//						theAircraft
-//						.get_exposedWing()
-//						.get_theAirfoilsListExposed()
-//						.get(0).getGeometry().get_yStation()));
-//
-//				chordDistributionExposed.add(theAircraft.get_wing().getChordAtYActual(
-//						theAircraft.get_wing().get_semispan().getEstimatedValue()));
-//
-//				if ( theAircraft.get_exposedWing().get_numberOfAirfoils()<3){
-//					alphaZeroLiftExposed.add(
-//							theAircraft
-//							.get_exposedWing()
-//							.get_theAirfoilsListExposed()
-//							.get(1).getAerodynamics()
-//							.get_alphaZeroLift()
-//							.getEstimatedValue());
-//				}
-//				else{
-//					alphaZeroLiftExposed.add(
-//							theAircraft
-//							.get_exposedWing()
-//							.get_theAirfoilsListExposed()
-//							.get(1).getAerodynamics()
-//							.get_alphaZeroLift()
-//							.getEstimatedValue());
-//
-//					alphaZeroLiftExposed.add(
-//							theAircraft
-//							.get_exposedWing()
-//							.get_theAirfoilsListExposed()
-//							.get(2).getAerodynamics()
-//							.get_alphaZeroLift()
-//							.getEstimatedValue());
-//				}
-//
-//				double [] yStationAlpha0lExposed = new double [theAircraft.get_exposedWing().get_numberOfAirfoils()];
-//				double [] yStationChordExposed = new double [2];
-//
-//				for ( int i = 0 ; i < yStationAlpha0lExposed.length ; i ++)
-//					yStationAlpha0lExposed[i] = theAircraft
-//					.get_exposedWing()
-//					.get_theAirfoilsListExposed()
-//					.get(i).getGeometry().get_yStation();
-//
-//				yStationChordExposed [0] = theAircraft
-//						.get_exposedWing()
-//						.get_theAirfoilsListExposed()
-//						.get(0).getGeometry().get_yStation();
-//
-//				yStationChordExposed [1] = theAircraft
-//						.get_exposedWing()
-//						.get_theAirfoilsListExposed()
-//						.get(2).getGeometry().get_yStation();
+				//				MyArray alphaZeroLiftExposed = new MyArray();
+				//				MyArray chordDistributionExposed = new MyArray();
+				//				alphaZeroLiftExposed.add(
+				//						theAircraft
+				//						.get_exposedWing()
+				//						.get_theAirfoilsListExposed()
+				//						.get(0).getAerodynamics()
+				//						.get_alphaZeroLift()
+				//						.getEstimatedValue());
+				//
+				//				chordDistributionExposed.add(theAircraft.get_wing().getChordAtYActual(
+				//						theAircraft
+				//						.get_exposedWing()
+				//						.get_theAirfoilsListExposed()
+				//						.get(0).getGeometry().get_yStation()));
+				//
+				//				chordDistributionExposed.add(theAircraft.get_wing().getChordAtYActual(
+				//						theAircraft.get_wing().get_semispan().getEstimatedValue()));
+				//
+				//				if ( theAircraft.get_exposedWing().get_numberOfAirfoils()<3){
+				//					alphaZeroLiftExposed.add(
+				//							theAircraft
+				//							.get_exposedWing()
+				//							.get_theAirfoilsListExposed()
+				//							.get(1).getAerodynamics()
+				//							.get_alphaZeroLift()
+				//							.getEstimatedValue());
+				//				}
+				//				else{
+				//					alphaZeroLiftExposed.add(
+				//							theAircraft
+				//							.get_exposedWing()
+				//							.get_theAirfoilsListExposed()
+				//							.get(1).getAerodynamics()
+				//							.get_alphaZeroLift()
+				//							.getEstimatedValue());
+				//
+				//					alphaZeroLiftExposed.add(
+				//							theAircraft
+				//							.get_exposedWing()
+				//							.get_theAirfoilsListExposed()
+				//							.get(2).getAerodynamics()
+				//							.get_alphaZeroLift()
+				//							.getEstimatedValue());
+				//				}
+				//
+				//				double [] yStationAlpha0lExposed = new double [theAircraft.get_exposedWing().get_numberOfAirfoils()];
+				//				double [] yStationChordExposed = new double [2];
+				//
+				//				for ( int i = 0 ; i < yStationAlpha0lExposed.length ; i ++)
+				//					yStationAlpha0lExposed[i] = theAircraft
+				//					.get_exposedWing()
+				//					.get_theAirfoilsListExposed()
+				//					.get(i).getGeometry().get_yStation();
+				//
+				//				yStationChordExposed [0] = theAircraft
+				//						.get_exposedWing()
+				//						.get_theAirfoilsListExposed()
+				//						.get(0).getGeometry().get_yStation();
+				//
+				//				yStationChordExposed [1] = theAircraft
+				//						.get_exposedWing()
+				//						.get_theAirfoilsListExposed()
+				//						.get(2).getGeometry().get_yStation();
 
 
 
@@ -3066,143 +3274,142 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 			return _alpha0L;
 		}
-		
+
 		public Amount<Angle>  integralMeanExposedWithTwist() {
 			if ( theAircraft.get_exposedWing() != null ){
 				//System.out.println(" y station integral " + Arrays.toString(_yStationsIntegral));
 				surfaceInteg = theAircraft.get_exposedWing().get_surface().getEstimatedValue();
 				semispanInteg = theAircraft.get_exposedWing().get_semispan().getEstimatedValue();
-//				MyArray alphaZeroLiftExposed = new MyArray();
-//				MyArray chordDistributionExposed = new MyArray();
-//				MyArray twistExposed = new MyArray();
-//				
-//				alphaZeroLiftExposed.add(
-//						theAircraft
-//						.get_exposedWing()
-//						.get_theAirfoilsListExposed()
-//						.get(0).getAerodynamics()
-//						.get_alphaZeroLift()
-//						.getEstimatedValue());
-//				
-//				twistExposed.add(
-//						theAircraft
-//						.get_exposedWing()
-//						.get_theAirfoilsListExposed()
-//						.get(0).getGeometry()
-//						.get_twist()
-//						.getEstimatedValue());
-//
-//				chordDistributionExposed.add(theAircraft.get_wing().getChordAtYActual(
-//						theAircraft
-//						.get_exposedWing()
-//						.get_theAirfoilsListExposed()
-//						.get(0).getGeometry().get_yStation()));
-//
-//				chordDistributionExposed.add(theAircraft.get_wing().getChordAtYActual(
-//						theAircraft.get_wing().get_semispan().getEstimatedValue()));
-//
-//				if ( theAircraft.get_exposedWing().get_numberOfAirfoils()<3){
-//					alphaZeroLiftExposed.add(
-//							theAircraft
-//							.get_exposedWing()
-//							.get_theAirfoilsListExposed()
-//							.get(1).getAerodynamics()
-//							.get_alphaZeroLift()
-//							.getEstimatedValue());
-//					
-//					twistExposed.add(
-//							theAircraft
-//							.get_exposedWing()
-//							.get_theAirfoilsListExposed()
-//							.get(1).getGeometry()
-//							.get_twist()
-//							.getEstimatedValue());
-//				}
-//				else{
-//					alphaZeroLiftExposed.add(
-//							theAircraft
-//							.get_exposedWing()
-//							.get_theAirfoilsListExposed()
-//							.get(1).getAerodynamics()
-//							.get_alphaZeroLift()
-//							.getEstimatedValue());
-//
-//					alphaZeroLiftExposed.add(
-//							theAircraft
-//							.get_exposedWing()
-//							.get_theAirfoilsListExposed()
-//							.get(2).getAerodynamics()
-//							.get_alphaZeroLift()
-//							.getEstimatedValue());
-//					
-//
-//					twistExposed.add(
-//							theAircraft
-//							.get_exposedWing()
-//							.get_theAirfoilsListExposed()
-//							.get(1).getGeometry()
-//							.get_twist()
-//							.getEstimatedValue());
-//					
-//
-//					twistExposed.add(
-//							theAircraft
-//							.get_exposedWing()
-//							.get_theAirfoilsListExposed()
-//							.get(2).getGeometry()
-//							.get_twist()
-//							.getEstimatedValue());
-//				}
-//
-//				double [] yStationAlpha0lExposed = new double [theAircraft.get_exposedWing().get_numberOfAirfoils()];
-//				double [] yStationChordExposed = new double [2];
-//				double [] yStationTwistExposed = new double [theAircraft.get_exposedWing().get_numberOfAirfoils()];
-//
-//				for ( int i = 0 ; i < yStationAlpha0lExposed.length ; i ++){
-//					yStationAlpha0lExposed[i] = 
-//							theAircraft
-//							.get_exposedWing()
-//							.get_theAirfoilsListExposed()
-//							.get(i).getGeometry().get_yStation();
-//
-//					yStationTwistExposed [i] = 
-//							theAircraft
-//							.get_exposedWing()
-//							.get_theAirfoilsListExposed()
-//							.get(i).getGeometry().get_yStation();
-//				}
-//
-//				yStationChordExposed [0] = theAircraft
-//						.get_exposedWing()
-//						.get_theAirfoilsListExposed()
-//						.get(0).getGeometry().get_yStation();
-//
-//				yStationChordExposed [1] = theAircraft
-//						.get_exposedWing()
-//						.get_theAirfoilsListExposed()
-//						.get(2).getGeometry().get_yStation();
-//
-//
-//
-//
-//				_alpha0lDistribution = MyArray.createArray(
-//						alphaZeroLiftExposed
-//						.interpolate(yStationAlpha0lExposed, _yStationsIntegral));
-//
-//				_chordsVsY = MyArray.createArray(
-//						chordDistributionExposed
-//						.interpolate(yStationChordExposed, _yStationsIntegral));
-//				
-//				_twistDistribution = MyArray.createArray(
-//						twistExposed
-//						.interpolate(yStationTwistExposed, _yStationsIntegral));
-				
-				_alpha0lDistribution = theAircraft.get_exposedWing().get_alpha0lDistributionExposed();
+				//				MyArray alphaZeroLiftExposed = new MyArray();
+				//				MyArray chordDistributionExposed = new MyArray();
+				//				MyArray twistExposed = new MyArray();
+				//				
+				//				alphaZeroLiftExposed.add(
+				//						theAircraft
+				//						.get_exposedWing()
+				//						.get_theAirfoilsListExposed()
+				//						.get(0).getAerodynamics()
+				//						.get_alphaZeroLift()
+				//						.getEstimatedValue());
+				//				
+				//				twistExposed.add(
+				//						theAircraft
+				//						.get_exposedWing()
+				//						.get_theAirfoilsListExposed()
+				//						.get(0).getGeometry()
+				//						.get_twist()
+				//						.getEstimatedValue());
+				//
+				//				chordDistributionExposed.add(theAircraft.get_wing().getChordAtYActual(
+				//						theAircraft
+				//						.get_exposedWing()
+				//						.get_theAirfoilsListExposed()
+				//						.get(0).getGeometry().get_yStation()));
+				//
+				//				chordDistributionExposed.add(theAircraft.get_wing().getChordAtYActual(
+				//						theAircraft.get_wing().get_semispan().getEstimatedValue()));
+				//
+				//				if ( theAircraft.get_exposedWing().get_numberOfAirfoils()<3){
+				//					alphaZeroLiftExposed.add(
+				//							theAircraft
+				//							.get_exposedWing()
+				//							.get_theAirfoilsListExposed()
+				//							.get(1).getAerodynamics()
+				//							.get_alphaZeroLift()
+				//							.getEstimatedValue());
+				//					
+				//					twistExposed.add(
+				//							theAircraft
+				//							.get_exposedWing()
+				//							.get_theAirfoilsListExposed()
+				//							.get(1).getGeometry()
+				//							.get_twist()
+				//							.getEstimatedValue());
+				//				}
+				//				else{
+				//					alphaZeroLiftExposed.add(
+				//							theAircraft
+				//							.get_exposedWing()
+				//							.get_theAirfoilsListExposed()
+				//							.get(1).getAerodynamics()
+				//							.get_alphaZeroLift()
+				//							.getEstimatedValue());
+				//
+				//					alphaZeroLiftExposed.add(
+				//							theAircraft
+				//							.get_exposedWing()
+				//							.get_theAirfoilsListExposed()
+				//							.get(2).getAerodynamics()
+				//							.get_alphaZeroLift()
+				//							.getEstimatedValue());
+				//					
+				//
+				//					twistExposed.add(
+				//							theAircraft
+				//							.get_exposedWing()
+				//							.get_theAirfoilsListExposed()
+				//							.get(1).getGeometry()
+				//							.get_twist()
+				//							.getEstimatedValue());
+				//					
+				//
+				//					twistExposed.add(
+				//							theAircraft
+				//							.get_exposedWing()
+				//							.get_theAirfoilsListExposed()
+				//							.get(2).getGeometry()
+				//							.get_twist()
+				//							.getEstimatedValue());
+				//				}
+				//
+				//				double [] yStationAlpha0lExposed = new double [theAircraft.get_exposedWing().get_numberOfAirfoils()];
+				//				double [] yStationChordExposed = new double [2];
+				//				double [] yStationTwistExposed = new double [theAircraft.get_exposedWing().get_numberOfAirfoils()];
+				//
+				//				for ( int i = 0 ; i < yStationAlpha0lExposed.length ; i ++){
+				//					yStationAlpha0lExposed[i] = 
+				//							theAircraft
+				//							.get_exposedWing()
+				//							.get_theAirfoilsListExposed()
+				//							.get(i).getGeometry().get_yStation();
+				//
+				//					yStationTwistExposed [i] = 
+				//							theAircraft
+				//							.get_exposedWing()
+				//							.get_theAirfoilsListExposed()
+				//							.get(i).getGeometry().get_yStation();
+				//				}
+				//
+				//				yStationChordExposed [0] = theAircraft
+				//						.get_exposedWing()
+				//						.get_theAirfoilsListExposed()
+				//						.get(0).getGeometry().get_yStation();
+				//
+				//				yStationChordExposed [1] = theAircraft
+				//						.get_exposedWing()
+				//						.get_theAirfoilsListExposed()
+				//						.get(2).getGeometry().get_yStation();
+				//
+				//
+				//
+				//
+				//				_alpha0lDistribution = MyArray.createArray(
+				//						alphaZeroLiftExposed
+				//						.interpolate(yStationAlpha0lExposed, _yStationsIntegral));
+				//
+				//				_chordsVsY = MyArray.createArray(
+				//						chordDistributionExposed
+				//						.interpolate(yStationChordExposed, _yStationsIntegral));
+				//				
+				//				_twistDistribution = MyArray.createArray(
+				//						twistExposed
+				//						.interpolate(yStationTwistExposed, _yStationsIntegral));
 
+				_alpha0lDistribution = theAircraft.get_exposedWing().get_alpha0lDistributionExposed();
 				_chordsVsY = theAircraft.get_exposedWing().get_chordsVsYExposed();
 
 				_twistDistribution =theAircraft.get_exposedWing().get_twistDistributionExposed();
-				
+
 			}
 			else{
 				surfaceInteg = surface;
@@ -3240,6 +3447,32 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 		}
 
+		/**
+		 * This function determines the linear trait slope of the CL-alpha curve using the NasaBlackwell method.
+		 * It evaluate CL wing in correspondence of two alpha and calculates the equation of the line.
+		 * 
+		 * @author Manuela Ruocco
+		 * @param LSAerodynamicsManager.CalcCLAtAlpha theCLatAlpha
+		 */  
+
+		public double nasaBlackwell(LSAerodynamicsManager.CalcCLAtAlpha theCLatAlpha){
+
+			Amount<Angle> _alphaOne = Amount.valueOf(toRadians(0.), SI.RADIAN);
+			double _clOne = theCLatAlpha.nasaBlackwell(_alphaOne);
+//			System.out.println("CL at alpha " + _alphaOne + " = "+ _clOne);
+
+			Amount<Angle>_alphaTwo = Amount.valueOf(toRadians(4.), SI.RADIAN);
+			double alphaTwoDouble = 4.0;
+			double _clTwo = theCLatAlpha.nasaBlackwell(_alphaTwo);
+//			System.out.println("CL at alpha " + _alphaTwo + " = "+ _clTwo);
+
+			double cLSlope = (_clTwo-_clOne)/_alphaTwo.getEstimatedValue();
+			double cLSlopeDeg = Math.toRadians(cLSlope);
+
+			double q = _clTwo- cLSlopeDeg* alphaTwoDouble;
+			return cLSlope;
+		}
+		
 		public double polhamus() {
 
 			_kPolhamus = LiftCalc.kFactorPolhamus(
@@ -3723,7 +3956,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				cdAtAlpha = MyMathUtils.integrate1DSimpsonSpline(
 						yStations, cdLocal);		
 
-				System.out.println(" CD Total at alpha " + alpha.getEstimatedValue()*57.3 + " = " + cdAtAlpha);
+				//System.out.println(" CD Total at alpha " + alpha.getEstimatedValue()*57.3 + " = " + cdAtAlpha);
 				break;
 
 			}
@@ -3891,242 +4124,444 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 			MyAirfoil meanAirfoil = new MyAirfoil(theWing);
 
-			MyAirfoil airfoilRoot = theWing.get_theAirfoilsList().get(0);
-			MyAirfoil airfoilKink = theWing.get_theAirfoilsList().get(1);
-			MyAirfoil airfoilTip = theWing.get_theAirfoilsList().get(2);
+			if ( theLiftingSurface.get_type() == ComponentEnum.WING ){
+				MyAirfoil airfoilRoot = theWing.get_theAirfoilsList().get(0);
+				MyAirfoil airfoilKink = theWing.get_theAirfoilsList().get(1);
+				MyAirfoil airfoilTip = theWing.get_theAirfoilsList().get(2);
 
-			//			System.out.println( "---------------------------------------");
-			//			System.out.println( "STARTING EVALUATION OF THE MEAN AIRFOIL");
-			//			System.out.println( "---------------------------------------");
-			//			System.out.println("\n \nSTART OF THE EVALUTATION OF THE INFLUENCE AREAS...");
+				//			System.out.println( "---------------------------------------");
+				//			System.out.println( "STARTING EVALUATION OF THE MEAN AIRFOIL");
+				//			System.out.println( "---------------------------------------");
+				//			System.out.println("\n \nSTART OF THE EVALUTATION OF THE INFLUENCE AREAS...");
 
-			rootChord = theWing.get_chordRoot().getEstimatedValue();
-			kinkChord = theWing.get_chordKink().getEstimatedValue();
-			tipChord = theWing.get_chordTip().getEstimatedValue();
-			dimensionalKinkStation = theWing.get_spanStationKink()*theWing.get_semispan().getEstimatedValue();
-			dimensionalOverKink = theWing.get_semispan().getEstimatedValue() - dimensionalKinkStation;
+				rootChord = theWing.get_chordRoot().getEstimatedValue();
+				kinkChord = theWing.get_chordKink().getEstimatedValue();
+				tipChord = theWing.get_chordTip().getEstimatedValue();
+				dimensionalKinkStation = theWing.get_spanStationKink()*theWing.get_semispan().getEstimatedValue();
+				dimensionalOverKink = theWing.get_semispan().getEstimatedValue() - dimensionalKinkStation;
 
-			influenceAreaRoot = rootChord * dimensionalKinkStation/2;
-			influenceAreaKink = (kinkChord * dimensionalKinkStation/2) + (kinkChord * dimensionalOverKink/2);
-			influenceAreaTip = tipChord * dimensionalOverKink/2;
-			//
-			//			System.out.println("The influence area of root chord is [m^] = " + influenceAreaRoot );
-			//			System.out.println("The influence area of kink chord is [m^] = " + influenceAreaKink );
-			//			System.out.println("The influence area of tip chord is [m^] = " + influenceAreaTip);
+				influenceAreaRoot = rootChord * dimensionalKinkStation/2;
+				influenceAreaKink = (kinkChord * dimensionalKinkStation/2) + (kinkChord * dimensionalOverKink/2);
+				influenceAreaTip = tipChord * dimensionalOverKink/2;
+				//
+				//			System.out.println("The influence area of root chord is [m^] = " + influenceAreaRoot );
+				//			System.out.println("The influence area of kink chord is [m^] = " + influenceAreaKink );
+				//			System.out.println("The influence area of tip chord is [m^] = " + influenceAreaTip);
 
-			kRoot = 2*influenceAreaRoot/theWing.get_surface().getEstimatedValue();
-			kKink = 2*influenceAreaKink/theWing.get_surface().getEstimatedValue();
-			kTip = 2*influenceAreaTip/theWing.get_surface().getEstimatedValue();
+				kRoot = 2*influenceAreaRoot/theWing.get_surface().getEstimatedValue();
+				kKink = 2*influenceAreaKink/theWing.get_surface().getEstimatedValue();
+				kTip = 2*influenceAreaTip/theWing.get_surface().getEstimatedValue();
 
-			//			System.out.println("The coefficients of influence areas are: \n k1= " + kRoot + 
-			//					"\n k2= " + kKink + "\n k3= " + kTip);
-			//
-			//			System.out.println( "\n \n---------------------------------------");
-			//			System.out.println("DONE");
+				//			System.out.println("The coefficients of influence areas are: \n k1= " + kRoot + 
+				//					"\n k2= " + kKink + "\n k3= " + kTip);
+				//
+				//			System.out.println( "\n \n---------------------------------------");
+				//			System.out.println("DONE");
 
-			//ALPHA ZERO LIFT
-			alphaZeroLiftRoot = airfoilRoot.getAerodynamics().get_alphaZeroLift().getEstimatedValue();
-			alphaZeroLiftKink = airfoilKink.getAerodynamics().get_alphaZeroLift().getEstimatedValue();
-			alphaZeroLiftTip = airfoilTip.getAerodynamics().get_alphaZeroLift().getEstimatedValue();
+				//ALPHA ZERO LIFT
+				alphaZeroLiftRoot = airfoilRoot.getAerodynamics().get_alphaZeroLift().getEstimatedValue();
+				alphaZeroLiftKink = airfoilKink.getAerodynamics().get_alphaZeroLift().getEstimatedValue();
+				alphaZeroLiftTip = airfoilTip.getAerodynamics().get_alphaZeroLift().getEstimatedValue();
 
-			double alphaZeroLiftMeanAirfoil = alphaZeroLiftRoot * kRoot + alphaZeroLiftKink * kKink + alphaZeroLiftTip * kTip;
+				double alphaZeroLiftMeanAirfoil = alphaZeroLiftRoot * kRoot + alphaZeroLiftKink * kKink + alphaZeroLiftTip * kTip;
 
-			meanAirfoil.getAerodynamics().set_alphaZeroLift(
-					Amount.valueOf(
-							(alphaZeroLiftMeanAirfoil), SI.RADIAN));
+				meanAirfoil.getAerodynamics().set_alphaZeroLift(
+						Amount.valueOf(
+								(alphaZeroLiftMeanAirfoil), SI.RADIAN));
 
-			//CL_ALPHA
-			clAplhaRoot = airfoilRoot.getAerodynamics().get_clAlpha();
-			clAplhaKink = airfoilKink.getAerodynamics().get_clAlpha();
-			clAplhaTip = airfoilTip.getAerodynamics().get_clAlpha();
+				//CL_ALPHA
+				clAplhaRoot = airfoilRoot.getAerodynamics().get_clAlpha();
+				clAplhaKink = airfoilKink.getAerodynamics().get_clAlpha();
+				clAplhaTip = airfoilTip.getAerodynamics().get_clAlpha();
 
-			double clAlphaMeanAirfoil = clAplhaRoot * kRoot + clAplhaKink * kKink + clAplhaTip * kTip;
+				double clAlphaMeanAirfoil = clAplhaRoot * kRoot + clAplhaKink * kKink + clAplhaTip * kTip;
 
-			meanAirfoil.getAerodynamics().set_clAlpha(clAlphaMeanAirfoil);
+				meanAirfoil.getAerodynamics().set_clAlpha(clAlphaMeanAirfoil);
 
-			//CL STAR
-			clStarRoot = airfoilRoot.getAerodynamics().get_clStar();
-			clStarKink = airfoilKink.getAerodynamics().get_clStar();
-			clStarTip = airfoilTip.getAerodynamics().get_clStar();
+				//CL STAR
+				clStarRoot = airfoilRoot.getAerodynamics().get_clStar();
+				clStarKink = airfoilKink.getAerodynamics().get_clStar();
+				clStarTip = airfoilTip.getAerodynamics().get_clStar();
 
-			double clStarMeanAirfoil = clStarRoot * kRoot + clStarKink * kKink + clStarTip * kTip;
+				double clStarMeanAirfoil = clStarRoot * kRoot + clStarKink * kKink + clStarTip * kTip;
 
-			meanAirfoil.getAerodynamics().set_clStar(clStarMeanAirfoil);
+				meanAirfoil.getAerodynamics().set_clStar(clStarMeanAirfoil);
 
-			//ALPHA MAX
-			alphaMaxRoot = airfoilRoot.getAerodynamics().get_alphaStall().getEstimatedValue();
-			alphaMaxKink = airfoilKink.getAerodynamics().get_alphaStall().getEstimatedValue();
-			alphaMaxTip = airfoilTip.getAerodynamics().get_alphaStall().getEstimatedValue();
+				//ALPHA MAX
+				alphaMaxRoot = airfoilRoot.getAerodynamics().get_alphaStall().getEstimatedValue();
+				alphaMaxKink = airfoilKink.getAerodynamics().get_alphaStall().getEstimatedValue();
+				alphaMaxTip = airfoilTip.getAerodynamics().get_alphaStall().getEstimatedValue();
 
-			double alphaMaxMeanAirfoil = alphaMaxRoot * kRoot + alphaMaxKink * kKink + alphaMaxTip * kTip;
+				double alphaMaxMeanAirfoil = alphaMaxRoot * kRoot + alphaMaxKink * kKink + alphaMaxTip * kTip;
 
-			meanAirfoil.getAerodynamics().set_alphaStall(
-					Amount.valueOf(
-							(alphaMaxMeanAirfoil), SI.RADIAN));
+				meanAirfoil.getAerodynamics().set_alphaStall(
+						Amount.valueOf(
+								(alphaMaxMeanAirfoil), SI.RADIAN));
 
-			//CL MAX
-			clMaxRoot = airfoilRoot.getAerodynamics().get_clMax();
-			clMaxKink = airfoilKink.getAerodynamics().get_clMax();
-			clMaxTip = airfoilTip.getAerodynamics().get_clMax();
+				//CL MAX
+				clMaxRoot = airfoilRoot.getAerodynamics().get_clMax();
+				clMaxKink = airfoilKink.getAerodynamics().get_clMax();
+				clMaxTip = airfoilTip.getAerodynamics().get_clMax();
 
-			double clMaxMeanAirfoil = clMaxRoot * kRoot + clMaxKink * kKink + clMaxTip * kTip;
+				double clMaxMeanAirfoil = clMaxRoot * kRoot + clMaxKink * kKink + clMaxTip * kTip;
 
-			meanAirfoil.getAerodynamics().set_clMax(clMaxMeanAirfoil);
+				meanAirfoil.getAerodynamics().set_clMax(clMaxMeanAirfoil);
 
-			//CD MIN
-			cdMinRoot = airfoilRoot.getAerodynamics().get_cdMin();
-			cdMinKink = airfoilKink.getAerodynamics().get_cdMin();
-			cdMinTip = airfoilTip.getAerodynamics().get_cdMin();
+				//CD MIN
+				cdMinRoot = airfoilRoot.getAerodynamics().get_cdMin();
+				cdMinKink = airfoilKink.getAerodynamics().get_cdMin();
+				cdMinTip = airfoilTip.getAerodynamics().get_cdMin();
 
-			double cdMinMeanAirfoil = cdMinRoot * kRoot + cdMinKink * kKink + cdMinTip * kTip;
+				double cdMinMeanAirfoil = cdMinRoot * kRoot + cdMinKink * kKink + cdMinTip * kTip;
 
-			meanAirfoil.getAerodynamics().set_cdMin(cdMinMeanAirfoil);
+				meanAirfoil.getAerodynamics().set_cdMin(cdMinMeanAirfoil);
 
-			//CL AT CD MIN
-			cl_cdMinRoot = airfoilRoot.getAerodynamics().get_clAtCdMin();
-			cl_cdMinKink = airfoilKink.getAerodynamics().get_clAtCdMin();
-			cl_cdMinTip = airfoilTip.getAerodynamics().get_clAtCdMin();
+				//CL AT CD MIN
+				cl_cdMinRoot = airfoilRoot.getAerodynamics().get_clAtCdMin();
+				cl_cdMinKink = airfoilKink.getAerodynamics().get_clAtCdMin();
+				cl_cdMinTip = airfoilTip.getAerodynamics().get_clAtCdMin();
 
-			double cl_cdMinMeanAirfoil = cl_cdMinRoot * kRoot + cl_cdMinKink * kKink + cl_cdMinTip * kTip;
+				double cl_cdMinMeanAirfoil = cl_cdMinRoot * kRoot + cl_cdMinKink * kKink + cl_cdMinTip * kTip;
 
-			meanAirfoil.getAerodynamics().set_clAtCdMin(cl_cdMinMeanAirfoil);
+				meanAirfoil.getAerodynamics().set_clAtCdMin(cl_cdMinMeanAirfoil);
 
-			//K FACTOR DRAG POLAR
-			kDragPolarRoot = airfoilRoot.getAerodynamics().get_kFactorDragPolar();
-			kDragPolarKink = airfoilKink.getAerodynamics().get_kFactorDragPolar();
-			kDragPolarTip = airfoilTip.getAerodynamics().get_kFactorDragPolar();
+				//K FACTOR DRAG POLAR
+				kDragPolarRoot = airfoilRoot.getAerodynamics().get_kFactorDragPolar();
+				kDragPolarKink = airfoilKink.getAerodynamics().get_kFactorDragPolar();
+				kDragPolarTip = airfoilTip.getAerodynamics().get_kFactorDragPolar();
 
-			double kDragPolarMeanAirfoil = kDragPolarRoot * kRoot + kDragPolarKink * kKink + kDragPolarTip * kTip;
+				double kDragPolarMeanAirfoil = kDragPolarRoot * kRoot + kDragPolarKink * kKink + kDragPolarTip * kTip;
 
-			meanAirfoil.getAerodynamics().set_kFactorDragPolar(kDragPolarMeanAirfoil);
+				meanAirfoil.getAerodynamics().set_kFactorDragPolar(kDragPolarMeanAirfoil);
 
-			//Xac
-			x_acRoot = airfoilRoot.getAerodynamics().get_aerodynamicCenterX();
-			x_acKink = airfoilKink.getAerodynamics().get_aerodynamicCenterX();
-			x_acTip = airfoilTip.getAerodynamics().get_aerodynamicCenterX();
+				//Xac
+				x_acRoot = airfoilRoot.getAerodynamics().get_aerodynamicCenterX();
+				x_acKink = airfoilKink.getAerodynamics().get_aerodynamicCenterX();
+				x_acTip = airfoilTip.getAerodynamics().get_aerodynamicCenterX();
 
-			double x_acMeanAirfoil = x_acRoot * kRoot + x_acKink * kKink + x_acTip * kTip;
+				double x_acMeanAirfoil = x_acRoot * kRoot + x_acKink * kKink + x_acTip * kTip;
 
-			meanAirfoil.getAerodynamics().set_aerodynamicCenterX(x_acMeanAirfoil);
+				meanAirfoil.getAerodynamics().set_aerodynamicCenterX(x_acMeanAirfoil);
 
-			//CMac
-			cm_acRoot = airfoilRoot.getAerodynamics().get_cmAC();
-			cm_acKink = airfoilKink.getAerodynamics().get_cmAC();
-			cm_acTip = airfoilTip.getAerodynamics().get_cmAC();
+				//CMac
+				cm_acRoot = airfoilRoot.getAerodynamics().get_cmAC();
+				cm_acKink = airfoilKink.getAerodynamics().get_cmAC();
+				cm_acTip = airfoilTip.getAerodynamics().get_cmAC();
 
-			double cm_acMeanAirfoil = cm_acRoot * kRoot + cm_acKink * kKink + cm_acTip * kTip;
+				double cm_acMeanAirfoil = cm_acRoot * kRoot + cm_acKink * kKink + cm_acTip * kTip;
 
-			meanAirfoil.getAerodynamics().set_cmAC(cm_acMeanAirfoil);
+				meanAirfoil.getAerodynamics().set_cmAC(cm_acMeanAirfoil);
 
-			//CMac_Stall
-			cm_ac_StallRoot = airfoilRoot.getAerodynamics().get_cmACStall();
-			cm_ac_StallKink = airfoilKink.getAerodynamics().get_cmACStall();
-			cm_ac_StallTip = airfoilTip.getAerodynamics().get_cmACStall();
+				//CMac_Stall
+				cm_ac_StallRoot = airfoilRoot.getAerodynamics().get_cmACStall();
+				cm_ac_StallKink = airfoilKink.getAerodynamics().get_cmACStall();
+				cm_ac_StallTip = airfoilTip.getAerodynamics().get_cmACStall();
 
-			double cm_acStallMeanAirfoil = cm_ac_StallRoot * kRoot + cm_ac_StallKink * kKink + cm_ac_StallTip * kTip;
+				double cm_acStallMeanAirfoil = cm_ac_StallRoot * kRoot + cm_ac_StallKink * kKink + cm_ac_StallTip * kTip;
 
-			meanAirfoil.getAerodynamics().set_cmACStall(cm_acStallMeanAirfoil);
+				meanAirfoil.getAerodynamics().set_cmACStall(cm_acStallMeanAirfoil);
 
-			//CM ALPHA LE
-			cmAlpha_acRoot = airfoilRoot.getAerodynamics().get_cmAlphaAC();
-			cmalpha_acKink = airfoilKink.getAerodynamics().get_cmAlphaAC();
-			cmAlpha_acTip = airfoilTip.getAerodynamics().get_cmAlphaAC();
+				//CM ALPHA LE
+				cmAlpha_acRoot = airfoilRoot.getAerodynamics().get_cmAlphaAC();
+				cmalpha_acKink = airfoilKink.getAerodynamics().get_cmAlphaAC();
+				cmAlpha_acTip = airfoilTip.getAerodynamics().get_cmAlphaAC();
 
-			double cmAlpha_acMeanAirfoil = cmAlpha_acRoot * kRoot + cmalpha_acKink * kKink + cmAlpha_acTip * kTip;
+				double cmAlpha_acMeanAirfoil = cmAlpha_acRoot * kRoot + cmalpha_acKink * kKink + cmAlpha_acTip * kTip;
 
-			meanAirfoil.getAerodynamics().set_cmAlphaAC(cmAlpha_acMeanAirfoil);
+				meanAirfoil.getAerodynamics().set_cmAlphaAC(cmAlpha_acMeanAirfoil);
 
-			//REYNOLDS CRUISE
-			reynoldsCruiseRoot = airfoilRoot.getAerodynamics().get_reynoldsCruise();
-			reynoldsCruiseKink = airfoilKink.getAerodynamics().get_reynoldsCruise();
-			reynoldsCruiseTip = airfoilTip.getAerodynamics().get_reynoldsCruise();
+				//REYNOLDS CRUISE
+				reynoldsCruiseRoot = airfoilRoot.getAerodynamics().get_reynoldsCruise();
+				reynoldsCruiseKink = airfoilKink.getAerodynamics().get_reynoldsCruise();
+				reynoldsCruiseTip = airfoilTip.getAerodynamics().get_reynoldsCruise();
 
-			double reynoldsCruiseMeanAirfoil = reynoldsCruiseRoot * kRoot + reynoldsCruiseKink * kKink + reynoldsCruiseTip * kTip;
+				double reynoldsCruiseMeanAirfoil = reynoldsCruiseRoot * kRoot + reynoldsCruiseKink * kKink + reynoldsCruiseTip * kTip;
 
-			meanAirfoil.getAerodynamics().set_reynoldsCruise(reynoldsCruiseMeanAirfoil);
+				meanAirfoil.getAerodynamics().set_reynoldsCruise(reynoldsCruiseMeanAirfoil);
 
-			//REYNOLDS STALL
-			reynoldsStallRoot = airfoilRoot.getAerodynamics().get_reynoldsNumberStall();
-			reynoldsStallKink = airfoilKink.getAerodynamics().get_reynoldsNumberStall();
-			reynoldsStallTip = airfoilTip.getAerodynamics().get_reynoldsNumberStall();
+				//REYNOLDS STALL
+				reynoldsStallRoot = airfoilRoot.getAerodynamics().get_reynoldsNumberStall();
+				reynoldsStallKink = airfoilKink.getAerodynamics().get_reynoldsNumberStall();
+				reynoldsStallTip = airfoilTip.getAerodynamics().get_reynoldsNumberStall();
 
-			double reynoldsStallMeanAirfoil = reynoldsStallRoot * kRoot + reynoldsStallKink * kKink + reynoldsStallTip * kTip;
+				double reynoldsStallMeanAirfoil = reynoldsStallRoot * kRoot + reynoldsStallKink * kKink + reynoldsStallTip * kTip;
 
-			meanAirfoil.getAerodynamics().set_reynoldsNumberStall(reynoldsStallMeanAirfoil);
+				meanAirfoil.getAerodynamics().set_reynoldsNumberStall(reynoldsStallMeanAirfoil);
 
-			//TWIST
-			twistRoot = airfoilRoot.getGeometry().get_twist().getEstimatedValue();
-			twistKink = airfoilKink.getGeometry().get_twist().getEstimatedValue();
-			twistTip = airfoilTip.getGeometry().get_twist().getEstimatedValue();
+				//TWIST
+				twistRoot = airfoilRoot.getGeometry().get_twist().getEstimatedValue();
+				twistKink = airfoilKink.getGeometry().get_twist().getEstimatedValue();
+				twistTip = airfoilTip.getGeometry().get_twist().getEstimatedValue();
 
-			double twistMeanAirfoil = twistRoot * kRoot + twistKink * kKink + twistTip * kTip;
+				double twistMeanAirfoil = twistRoot * kRoot + twistKink * kKink + twistTip * kTip;
 
-			meanAirfoil.getGeometry().set_twist(
-					Amount.valueOf(
-							(twistMeanAirfoil), SI.RADIAN));
+				meanAirfoil.getGeometry().set_twist(
+						Amount.valueOf(
+								(twistMeanAirfoil), SI.RADIAN));
 
-			//PHI_TE
-			phi_TERoot = airfoilRoot.getGeometry().get_anglePhiTE().getEstimatedValue();
-			phi_TEKink = airfoilKink.getGeometry().get_anglePhiTE().getEstimatedValue();
-			phi_TETip = airfoilTip.getGeometry().get_anglePhiTE().getEstimatedValue();
+				//PHI_TE
+				phi_TERoot = airfoilRoot.getGeometry().get_anglePhiTE().getEstimatedValue();
+				phi_TEKink = airfoilKink.getGeometry().get_anglePhiTE().getEstimatedValue();
+				phi_TETip = airfoilTip.getGeometry().get_anglePhiTE().getEstimatedValue();
 
-			double phi_TEMeanAirfoil = phi_TERoot * kRoot + phi_TEKink * kKink + phi_TETip * kTip;
+				double phi_TEMeanAirfoil = phi_TERoot * kRoot + phi_TEKink * kKink + phi_TETip * kTip;
 
-			meanAirfoil.getGeometry().set_anglePhiTE(
-					Amount.valueOf(
-							(phi_TEMeanAirfoil), SI.RADIAN));
+				meanAirfoil.getGeometry().set_anglePhiTE(
+						Amount.valueOf(
+								(phi_TEMeanAirfoil), SI.RADIAN));
 
-			//RADIUS LE
-			radius_LERoot = airfoilRoot.getGeometry().get_radiusLE();
-			radius_LEKink = airfoilKink.getGeometry().get_radiusLE();
-			radius_LETip = airfoilTip.getGeometry().get_radiusLE();
+				//RADIUS LE
+				radius_LERoot = airfoilRoot.getGeometry().get_radiusLE();
+				radius_LEKink = airfoilKink.getGeometry().get_radiusLE();
+				radius_LETip = airfoilTip.getGeometry().get_radiusLE();
 
-			double radius_LEMeanAirfoil = radius_LERoot * kRoot + radius_LEKink * kKink + radius_LETip * kTip;
+				double radius_LEMeanAirfoil = radius_LERoot * kRoot + radius_LEKink * kKink + radius_LETip * kTip;
 
-			meanAirfoil.getGeometry().set_radiusLE(radius_LEMeanAirfoil);
+				meanAirfoil.getGeometry().set_radiusLE(radius_LEMeanAirfoil);
 
-			//THICKNESS OVER CHORD UNIT
-			thicknessOverChordUnit_Root = airfoilRoot.getGeometry().get_thicknessOverChordUnit();
-			thicknessOverChordUnit_Kink = airfoilKink.getGeometry().get_thicknessOverChordUnit();
-			thicknessOverChordUnit_Tip = airfoilTip.getGeometry().get_thicknessOverChordUnit();
+				//THICKNESS OVER CHORD UNIT
+				thicknessOverChordUnit_Root = airfoilRoot.getGeometry().get_thicknessOverChordUnit();
+				thicknessOverChordUnit_Kink = airfoilKink.getGeometry().get_thicknessOverChordUnit();
+				thicknessOverChordUnit_Tip = airfoilTip.getGeometry().get_thicknessOverChordUnit();
 
-			double thicknessOverChordUnit_MeanAirfoil = thicknessOverChordUnit_Root * kRoot + thicknessOverChordUnit_Kink * kKink + thicknessOverChordUnit_Tip * kTip;
+				double thicknessOverChordUnit_MeanAirfoil = thicknessOverChordUnit_Root * kRoot + thicknessOverChordUnit_Kink * kKink + thicknessOverChordUnit_Tip * kTip;
 
-			meanAirfoil.getGeometry().set_thicknessOverChordUnit(thicknessOverChordUnit_MeanAirfoil);
+				meanAirfoil.getGeometry().set_thicknessOverChordUnit(thicknessOverChordUnit_MeanAirfoil);
 
-			//MAX THICKNESS OVER CHORD
-			maxThicknessOverChord_Root = airfoilRoot.getGeometry().get_maximumThicknessOverChord();
-			maxThicknessOverChord_Kink = airfoilKink.getGeometry().get_maximumThicknessOverChord();
-			maxThicknessOverChord_Tip = airfoilTip.getGeometry().get_maximumThicknessOverChord();
+				//MAX THICKNESS OVER CHORD
+				maxThicknessOverChord_Root = airfoilRoot.getGeometry().get_maximumThicknessOverChord();
+				maxThicknessOverChord_Kink = airfoilKink.getGeometry().get_maximumThicknessOverChord();
+				maxThicknessOverChord_Tip = airfoilTip.getGeometry().get_maximumThicknessOverChord();
 
-			double maxThicknessOverChord_MeanAirfoil = maxThicknessOverChord_Root * kRoot + maxThicknessOverChord_Kink * kKink + maxThicknessOverChord_Tip * kTip;
+				double maxThicknessOverChord_MeanAirfoil = maxThicknessOverChord_Root * kRoot + maxThicknessOverChord_Kink * kKink + maxThicknessOverChord_Tip * kTip;
 
-			meanAirfoil.getGeometry().set_thicknessOverChordUnit(maxThicknessOverChord_MeanAirfoil);
+				meanAirfoil.getGeometry().set_thicknessOverChordUnit(maxThicknessOverChord_MeanAirfoil);
 
-			//ALPHA STAR 
+				//ALPHA STAR 
 
-			alphaStarRoot = airfoilRoot.getAerodynamics().get_alphaStar().getEstimatedValue();
-			alphaStarKink = airfoilKink.getAerodynamics().get_alphaStar().getEstimatedValue();
-			alphaStarTip = airfoilTip.getAerodynamics().get_alphaStar().getEstimatedValue();
+				alphaStarRoot = airfoilRoot.getAerodynamics().get_alphaStar().getEstimatedValue();
+				alphaStarKink = airfoilKink.getAerodynamics().get_alphaStar().getEstimatedValue();
+				alphaStarTip = airfoilTip.getAerodynamics().get_alphaStar().getEstimatedValue();
 
-			double alphaStarMeanAirfoil = alphaStarRoot * kRoot + alphaStarKink * kKink + alphaStarTip * kTip;
+				double alphaStarMeanAirfoil = alphaStarRoot * kRoot + alphaStarKink * kKink + alphaStarTip * kTip;
 
-			meanAirfoil.getAerodynamics().set_alphaStar(
-					Amount.valueOf(
-							(alphaStarMeanAirfoil), SI.RADIAN));
+				meanAirfoil.getAerodynamics().set_alphaStar(
+						Amount.valueOf(
+								(alphaStarMeanAirfoil), SI.RADIAN));
 
 
 
-			//LEADING EDGE SHARPNESS PARAMETER
+				//LEADING EDGE SHARPNESS PARAMETER
 
-			double LESharpnessParameterRoot = airfoilRoot.getGeometry().get_deltaYPercent();
-			double LESharpnessParameterKink =  airfoilKink.getGeometry().get_deltaYPercent();
-			double LESharpnessParameterTip =  airfoilTip.getGeometry().get_deltaYPercent();
+				double LESharpnessParameterRoot = airfoilRoot.getGeometry().get_deltaYPercent();
+				double LESharpnessParameterKink =  airfoilKink.getGeometry().get_deltaYPercent();
+				double LESharpnessParameterTip =  airfoilTip.getGeometry().get_deltaYPercent();
 
-			double meanLESharpParam =LESharpnessParameterRoot * kRoot + LESharpnessParameterKink *  kKink +
-					LESharpnessParameterTip * kTip;
+				double meanLESharpParam =LESharpnessParameterRoot * kRoot + LESharpnessParameterKink *  kKink +
+						LESharpnessParameterTip * kTip;
 
-			meanAirfoil.getGeometry().set_deltaYPercent(meanLESharpParam);
+				meanAirfoil.getGeometry().set_deltaYPercent(meanLESharpParam);
+
+			}
+
+			if ( theLiftingSurface.get_type() == ComponentEnum.HORIZONTAL_TAIL ){
+
+				MyAirfoil airfoilRoot = theWing.get_theAirfoilsList().get(0);
+				MyAirfoil airfoilTip = theWing.get_theAirfoilsList().get(1);
+
+				rootChord = theWing.get_chordRoot().getEstimatedValue();
+				tipChord = theWing.get_chordTip().getEstimatedValue();
+
+				kRoot = rootChord /(rootChord + tipChord);
+				kTip = tipChord /(rootChord + tipChord);
+
+
+
+				//ALPHA ZERO LIFT
+				alphaZeroLiftRoot = airfoilRoot.getAerodynamics().get_alphaZeroLift().getEstimatedValue();
+
+				alphaZeroLiftTip = airfoilTip.getAerodynamics().get_alphaZeroLift().getEstimatedValue();
+
+				double alphaZeroLiftMeanAirfoil = alphaZeroLiftRoot * alphaZeroLiftTip * kTip;
+
+				meanAirfoil.getAerodynamics().set_alphaZeroLift(
+						Amount.valueOf(
+								(alphaZeroLiftMeanAirfoil), SI.RADIAN));
+
+				//CL_ALPHA
+				clAplhaRoot = airfoilRoot.getAerodynamics().get_clAlpha();
+				clAplhaTip = airfoilTip.getAerodynamics().get_clAlpha();
+
+				double clAlphaMeanAirfoil = clAplhaRoot * kRoot + clAplhaTip * kTip;
+
+				meanAirfoil.getAerodynamics().set_clAlpha(clAlphaMeanAirfoil);
+
+				//CL STAR
+				clStarRoot = airfoilRoot.getAerodynamics().get_clStar();
+				clStarTip = airfoilTip.getAerodynamics().get_clStar();
+
+				double clStarMeanAirfoil = clStarRoot * kRoot  + clStarTip * kTip;
+
+				meanAirfoil.getAerodynamics().set_clStar(clStarMeanAirfoil);
+
+				//ALPHA MAX
+				alphaMaxRoot = airfoilRoot.getAerodynamics().get_alphaStall().getEstimatedValue();
+				alphaMaxTip = airfoilTip.getAerodynamics().get_alphaStall().getEstimatedValue();
+
+				double alphaMaxMeanAirfoil = alphaMaxRoot * kRoot + alphaMaxTip * kTip;
+
+				meanAirfoil.getAerodynamics().set_alphaStall(
+						Amount.valueOf(
+								(alphaMaxMeanAirfoil), SI.RADIAN));
+
+				//CL MAX
+				clMaxRoot = airfoilRoot.getAerodynamics().get_clMax();
+				clMaxTip = airfoilTip.getAerodynamics().get_clMax();
+
+				double clMaxMeanAirfoil = clMaxRoot * kRoot + clMaxTip * kTip;
+
+				meanAirfoil.getAerodynamics().set_clMax(clMaxMeanAirfoil);
+
+				//CD MIN
+				cdMinRoot = airfoilRoot.getAerodynamics().get_cdMin();
+				cdMinTip = airfoilTip.getAerodynamics().get_cdMin();
+
+				double cdMinMeanAirfoil = cdMinRoot * kRoot + cdMinTip * kTip;
+
+				meanAirfoil.getAerodynamics().set_cdMin(cdMinMeanAirfoil);
+
+				//CL AT CD MIN
+				cl_cdMinRoot = airfoilRoot.getAerodynamics().get_clAtCdMin();
+				cl_cdMinTip = airfoilTip.getAerodynamics().get_clAtCdMin();
+
+				double cl_cdMinMeanAirfoil = cl_cdMinRoot * kRoot + cl_cdMinTip * kTip;
+
+				meanAirfoil.getAerodynamics().set_clAtCdMin(cl_cdMinMeanAirfoil);
+
+				//K FACTOR DRAG POLAR
+				kDragPolarRoot = airfoilRoot.getAerodynamics().get_kFactorDragPolar();
+				kDragPolarTip = airfoilTip.getAerodynamics().get_kFactorDragPolar();
+
+				double kDragPolarMeanAirfoil = kDragPolarRoot * kRoot + kDragPolarTip * kTip;
+
+				meanAirfoil.getAerodynamics().set_kFactorDragPolar(kDragPolarMeanAirfoil);
+
+				//Xac
+				x_acRoot = airfoilRoot.getAerodynamics().get_aerodynamicCenterX();
+				x_acTip = airfoilTip.getAerodynamics().get_aerodynamicCenterX();
+
+				double x_acMeanAirfoil = x_acRoot * kRoot + x_acTip * kTip;
+
+				meanAirfoil.getAerodynamics().set_aerodynamicCenterX(x_acMeanAirfoil);
+
+				//CMac
+				cm_acRoot = airfoilRoot.getAerodynamics().get_cmAC();
+				cm_acTip = airfoilTip.getAerodynamics().get_cmAC();
+
+				double cm_acMeanAirfoil = cm_acRoot * kRoot + cm_acTip * kTip;
+
+				meanAirfoil.getAerodynamics().set_cmAC(cm_acMeanAirfoil);
+
+				//CMac_Stall
+				cm_ac_StallRoot = airfoilRoot.getAerodynamics().get_cmACStall();
+				cm_ac_StallTip = airfoilTip.getAerodynamics().get_cmACStall();
+
+				double cm_acStallMeanAirfoil = cm_ac_StallRoot * kRoot + cm_ac_StallTip * kTip;
+
+				meanAirfoil.getAerodynamics().set_cmACStall(cm_acStallMeanAirfoil);
+
+				//CM ALPHA LE
+				cmAlpha_acRoot = airfoilRoot.getAerodynamics().get_cmAlphaAC();
+				cmAlpha_acTip = airfoilTip.getAerodynamics().get_cmAlphaAC();
+
+				double cmAlpha_acMeanAirfoil = cmAlpha_acRoot * kRoot + cmAlpha_acTip * kTip;
+
+				meanAirfoil.getAerodynamics().set_cmAlphaAC(cmAlpha_acMeanAirfoil);
+
+				//REYNOLDS CRUISE
+				reynoldsCruiseRoot = airfoilRoot.getAerodynamics().get_reynoldsCruise();
+				reynoldsCruiseTip = airfoilTip.getAerodynamics().get_reynoldsCruise();
+
+				double reynoldsCruiseMeanAirfoil = reynoldsCruiseRoot * kRoot + reynoldsCruiseTip * kTip;
+
+				meanAirfoil.getAerodynamics().set_reynoldsCruise(reynoldsCruiseMeanAirfoil);
+
+				//REYNOLDS STALL
+				reynoldsStallRoot = airfoilRoot.getAerodynamics().get_reynoldsNumberStall();
+				reynoldsStallTip = airfoilTip.getAerodynamics().get_reynoldsNumberStall();
+
+				double reynoldsStallMeanAirfoil = reynoldsStallRoot * kRoot + reynoldsStallTip * kTip;
+
+				meanAirfoil.getAerodynamics().set_reynoldsNumberStall(reynoldsStallMeanAirfoil);
+
+				//TWIST
+				twistRoot = airfoilRoot.getGeometry().get_twist().getEstimatedValue();
+				twistTip = airfoilTip.getGeometry().get_twist().getEstimatedValue();
+
+				double twistMeanAirfoil = twistRoot * kRoot + twistTip * kTip;
+
+				meanAirfoil.getGeometry().set_twist(
+						Amount.valueOf(
+								(twistMeanAirfoil), SI.RADIAN));
+
+				//PHI_TE
+				phi_TERoot = airfoilRoot.getGeometry().get_anglePhiTE().getEstimatedValue();
+				phi_TETip = airfoilTip.getGeometry().get_anglePhiTE().getEstimatedValue();
+
+				double phi_TEMeanAirfoil = phi_TERoot * kRoot + phi_TETip * kTip;
+
+				meanAirfoil.getGeometry().set_anglePhiTE(
+						Amount.valueOf(
+								(phi_TEMeanAirfoil), SI.RADIAN));
+
+				//RADIUS LE
+				radius_LERoot = airfoilRoot.getGeometry().get_radiusLE();
+				radius_LETip = airfoilTip.getGeometry().get_radiusLE();
+
+				double radius_LEMeanAirfoil = radius_LERoot * kRoot + radius_LETip * kTip;
+
+				meanAirfoil.getGeometry().set_radiusLE(radius_LEMeanAirfoil);
+
+				//THICKNESS OVER CHORD UNIT
+				thicknessOverChordUnit_Root = airfoilRoot.getGeometry().get_thicknessOverChordUnit();
+				thicknessOverChordUnit_Tip = airfoilTip.getGeometry().get_thicknessOverChordUnit();
+
+				double thicknessOverChordUnit_MeanAirfoil = thicknessOverChordUnit_Root * kRoot + thicknessOverChordUnit_Tip * kTip;
+
+				meanAirfoil.getGeometry().set_thicknessOverChordUnit(thicknessOverChordUnit_MeanAirfoil);
+
+				//MAX THICKNESS OVER CHORD
+				maxThicknessOverChord_Root = airfoilRoot.getGeometry().get_maximumThicknessOverChord();
+				maxThicknessOverChord_Tip = airfoilTip.getGeometry().get_maximumThicknessOverChord();
+
+				double maxThicknessOverChord_MeanAirfoil = maxThicknessOverChord_Root * kRoot + maxThicknessOverChord_Tip * kTip;
+
+				meanAirfoil.getGeometry().set_thicknessOverChordUnit(maxThicknessOverChord_MeanAirfoil);
+
+				//ALPHA STAR 
+
+				alphaStarRoot = airfoilRoot.getAerodynamics().get_alphaStar().getEstimatedValue();
+				alphaStarTip = airfoilTip.getAerodynamics().get_alphaStar().getEstimatedValue();
+
+				double alphaStarMeanAirfoil = alphaStarRoot * kRoot + alphaStarTip * kTip;
+
+				meanAirfoil.getAerodynamics().set_alphaStar(
+						Amount.valueOf(
+								(alphaStarMeanAirfoil), SI.RADIAN));
+
+
+
+				//LEADING EDGE SHARPNESS PARAMETER
+
+				double LESharpnessParameterRoot = airfoilRoot.getGeometry().get_deltaYPercent();
+				double LESharpnessParameterTip =  airfoilTip.getGeometry().get_deltaYPercent();
+
+				double meanLESharpParam =LESharpnessParameterRoot * kRoot + LESharpnessParameterTip * kTip;
+
+				meanAirfoil.getGeometry().set_deltaYPercent(meanLESharpParam);
+
+
+			}
 
 			return meanAirfoil;
 
@@ -4610,11 +5045,11 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		this._aerodynamicDatabaseReader = _aerodynamicDatabaseReader;
 	}
 
-	public HighLiftDatabaseReader get_highLiftDatabaseReader() {
+	public HighLiftDatabaseReader getHighLiftDatabaseReader() {
 		return _highLiftDatabaseReader;
 	}
 
-	public void set_highLiftDatabaseReader(HighLiftDatabaseReader _highLiftDatabaseReader) {
+	public void setHighLiftDatabaseReader(HighLiftDatabaseReader _highLiftDatabaseReader) {
 		this._highLiftDatabaseReader = _highLiftDatabaseReader;
 	}
 	public MyArray get_alpha0lDistribution() {
@@ -4672,12 +5107,14 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				_aerodynamicDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath, databaseFileName); 
 				listDatabaseReaders.add(_aerodynamicDatabaseReader);
 				if( theAircraft!= null)
-				theAircraft.get_theAerodynamics().set_aerodynamicDatabaseReader(_aerodynamicDatabaseReader);
+					theAircraft.get_theAerodynamics().set_aerodynamicDatabaseReader(_aerodynamicDatabaseReader);
 				break;
 
 			case HIGHLIFT:
 				_highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, databaseFileName); 
 				listDatabaseReaders.add(_highLiftDatabaseReader);
+				if( theAircraft!= null)
+					theAircraft.get_theAerodynamics().set_highLiftDatabaseReader(_highLiftDatabaseReader);
 				break;	
 
 			}
@@ -4709,7 +5146,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	public void setcLAlphaZero(double cLAlphaZero) {
 		this.cLAlphaZero = cLAlphaZero;
 	}
-	
+
 	public double getcLStarWing() {
 		return cLStarWing;
 	}

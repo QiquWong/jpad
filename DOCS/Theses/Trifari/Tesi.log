@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.11.16)  4 FEB 2016 13:34
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.11.16)  17 FEB 2016 16:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1941,6 +1941,24 @@ Package: colortbl 2012/02/13 v1.0a Color table columns (DPC)
 \everycr=\toks71
 \minrowclearance=\skip97
 )
+(c:/texlive/2015/texmf-dist/tex/latex/tools/longtable.sty
+Package: longtable 2014/10/28 v4.11 Multi-page Table package (DPC)
+\LTleft=\skip98
+\LTright=\skip99
+\LTpre=\skip100
+\LTpost=\skip101
+\LTchunksize=\count350
+\LTcapwidth=\dimen369
+\LT@head=\box107
+\LT@firsthead=\box108
+\LT@foot=\box109
+\LT@lastfoot=\box110
+\LT@cols=\count351
+\LT@rows=\count352
+\c@LT@tables=\count353
+\c@LT@chunks=\count354
+\LT@p@ftn=\toks72
+)
 (c:/texlive/2015/texmf-dist/tex/latex/minitoc/minitoc.sty
 Package: minitoc 2015/07/13 v61 Package minitoc
 
@@ -1950,17 +1968,17 @@ Package: mtcmess 2006/03/14
 Package minitoc Info: I0001
 (minitoc)             *** minitoc package, version 61 ***.
 \tf@mtc=\write5
-\mtcindent=\skip98
-\mtcskipamount=\skip99
+\mtcindent=\skip102
+\mtcskipamount=\skip103
 Package minitoc Info: I0005
 (minitoc)             compatible with hyperref.
 Package minitoc Info: I0023
 (minitoc)             part level macros available.
 Package minitoc Info: I0003
 (minitoc)             chapter level macros available.
-\mtc@toks=\toks72
-\mtc@strutbox=\box107
-\mtc@hstrutbox=\box108
+\mtc@toks=\toks73
+\mtc@strutbox=\box111
+\mtc@hstrutbox=\box112
 Package minitoc Info: I0002
 (minitoc)             Autoconfiguration of extensions.
 \openout5 = `Tesi.mtc0'.
@@ -1977,11 +1995,11 @@ Package minitoc Info: I0031
 
 \openout5 = `Tesi.mtc0'.
 
-\c@mtc=\count350
-\c@minitocdepth=\count351
-\c@ptc=\count352
-\c@parttocdepth=\count353
-\ptcindent=\skip100
+\c@mtc=\count355
+\c@minitocdepth=\count356
+\c@ptc=\count357
+\c@parttocdepth=\count358
+\ptcindent=\skip104
 Package minitoc Info: I0010
 (minitoc)             The english language is selected.
 (minitoc)              on input line 4909.
@@ -2001,23 +2019,23 @@ File: english.mld 2006/01/13
 ))
 (c:/texlive/2015/texmf-dist/tex/latex/titlesec/titlesec.sty
 Package: titlesec 2011/12/15 v2.10.0 Sectioning titles
-\ttl@box=\box109
-\beforetitleunit=\skip101
-\aftertitleunit=\skip102
-\ttl@plus=\dimen369
-\ttl@minus=\dimen370
-\ttl@toksa=\toks73
-\titlewidth=\dimen371
-\titlewidthlast=\dimen372
-\titlewidthfirst=\dimen373
+\ttl@box=\box113
+\beforetitleunit=\skip105
+\aftertitleunit=\skip106
+\ttl@plus=\dimen370
+\ttl@minus=\dimen371
+\ttl@toksa=\toks74
+\titlewidth=\dimen372
+\titlewidthlast=\dimen373
+\titlewidthfirst=\dimen374
 
 (c:/texlive/2015/texmf-dist/tex/latex/titlesec/ttlps.def
 File: ttlps.def 2011/12/15
 ))
 (c:/texlive/2015/texmf-dist/tex/latex/changepage/changepage.sty
 Package: changepage 2009/10/20 v1.0c check page and change page layout
-\c@cp@cntr=\count354
-\cp@tempcnt=\count355
+\c@cp@cntr=\count359
+\cp@tempcnt=\count360
 LaTeX Info: Redefining \checkoddpage on input line 59.
 )
 (c:/texlive/2015/texmf-dist/tex/latex/fullwidth/fullwidth.sty
@@ -2047,24 +2065,24 @@ Package zref Info: New property list: main on input line 759.
 Package zref Info: New property: default on input line 760.
 Package zref Info: New property: page on input line 761.
 )
-\c@abspage=\count356
+\c@abspage=\count361
 Package zref Info: New property: abspage on input line 62.
 )
-\fwd@width@length=\skip103
-\fwd@skipabove@length=\skip104
-\fwd@skipbelow@length=\skip105
-\fwd@leftmargin@length=\skip106
-\fwd@rightmargin@length=\skip107
-\fwd@innertopmargin@length=\skip108
-\fwd@innerbottommargin@length=\skip109
-\fwd@splittopskip@length=\skip110
-\fwd@splitbottomskip@length=\skip111
-\fwd@outermargin@length=\skip112
-\fwd@innermargin@length=\skip113
-\fwd@footenotedistance@length=\skip114
-\c@fwd@zref@counter=\count357
+\fwd@width@length=\skip107
+\fwd@skipabove@length=\skip108
+\fwd@skipbelow@length=\skip109
+\fwd@leftmargin@length=\skip110
+\fwd@rightmargin@length=\skip111
+\fwd@innertopmargin@length=\skip112
+\fwd@innerbottommargin@length=\skip113
+\fwd@splittopskip@length=\skip114
+\fwd@splitbottomskip@length=\skip115
+\fwd@outermargin@length=\skip116
+\fwd@innermargin@length=\skip117
+\fwd@footenotedistance@length=\skip118
+\c@fwd@zref@counter=\count362
 Package zref Info: New property: fwd@pagevalue on input line 209.
-\fwd@freevspace@length=\skip115
+\fwd@freevspace@length=\skip119
 )
 (c:/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzli
 brarycalc.code.tex
@@ -2080,7 +2098,7 @@ File: tikzlibraryarrows.code.tex 2008/01/09 v3.0.1a (rcs-revision 1.1)
 
 (c:/texlive/2015/texmf-dist/tex/generic/pgf/libraries/pgflibraryarrows.code.tex
 File: pgflibraryarrows.code.tex 2013/09/23 v3.0.1a (rcs-revision 1.16)
-\arrowsize=\dimen374
+\arrowsize=\dimen375
 ))
 (c:/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzli
 braryfpu.code.tex)
@@ -2094,84 +2112,84 @@ x
 (c:/texlive/2015/texmf-dist/tex/generic/pgfplots/numtable/pgfplotstable.coltype
 .code.tex))) (c:/texlive/2015/texmf-dist/tex/latex/mdframed/mdframed.sty
 Package: mdframed 2013/07/01 1.9b: mdframed
-\mdf@templength=\skip116
-\c@mdf@globalstyle@cnt=\count358
-\mdf@skipabove@length=\skip117
-\mdf@skipbelow@length=\skip118
-\mdf@leftmargin@length=\skip119
-\mdf@rightmargin@length=\skip120
-\mdf@innerleftmargin@length=\skip121
-\mdf@innerrightmargin@length=\skip122
-\mdf@innertopmargin@length=\skip123
-\mdf@innerbottommargin@length=\skip124
-\mdf@splittopskip@length=\skip125
-\mdf@splitbottomskip@length=\skip126
-\mdf@outermargin@length=\skip127
-\mdf@innermargin@length=\skip128
-\mdf@linewidth@length=\skip129
-\mdf@innerlinewidth@length=\skip130
-\mdf@middlelinewidth@length=\skip131
-\mdf@outerlinewidth@length=\skip132
-\mdf@roundcorner@length=\skip133
-\mdf@footenotedistance@length=\skip134
-\mdf@userdefinedwidth@length=\skip135
-\mdf@needspace@length=\skip136
-\mdf@frametitleaboveskip@length=\skip137
-\mdf@frametitlebelowskip@length=\skip138
-\mdf@frametitlerulewidth@length=\skip139
-\mdf@frametitleleftmargin@length=\skip140
-\mdf@frametitlerightmargin@length=\skip141
-\mdf@shadowsize@length=\skip142
-\mdf@extratopheight@length=\skip143
-\mdf@subtitleabovelinewidth@length=\skip144
-\mdf@subtitlebelowlinewidth@length=\skip145
-\mdf@subtitleaboveskip@length=\skip146
-\mdf@subtitlebelowskip@length=\skip147
-\mdf@subtitleinneraboveskip@length=\skip148
-\mdf@subtitleinnerbelowskip@length=\skip149
-\mdf@subsubtitleabovelinewidth@length=\skip150
-\mdf@subsubtitlebelowlinewidth@length=\skip151
-\mdf@subsubtitleaboveskip@length=\skip152
-\mdf@subsubtitlebelowskip@length=\skip153
-\mdf@subsubtitleinneraboveskip@length=\skip154
-\mdf@subsubtitleinnerbelowskip@length=\skip155
+\mdf@templength=\skip120
+\c@mdf@globalstyle@cnt=\count363
+\mdf@skipabove@length=\skip121
+\mdf@skipbelow@length=\skip122
+\mdf@leftmargin@length=\skip123
+\mdf@rightmargin@length=\skip124
+\mdf@innerleftmargin@length=\skip125
+\mdf@innerrightmargin@length=\skip126
+\mdf@innertopmargin@length=\skip127
+\mdf@innerbottommargin@length=\skip128
+\mdf@splittopskip@length=\skip129
+\mdf@splitbottomskip@length=\skip130
+\mdf@outermargin@length=\skip131
+\mdf@innermargin@length=\skip132
+\mdf@linewidth@length=\skip133
+\mdf@innerlinewidth@length=\skip134
+\mdf@middlelinewidth@length=\skip135
+\mdf@outerlinewidth@length=\skip136
+\mdf@roundcorner@length=\skip137
+\mdf@footenotedistance@length=\skip138
+\mdf@userdefinedwidth@length=\skip139
+\mdf@needspace@length=\skip140
+\mdf@frametitleaboveskip@length=\skip141
+\mdf@frametitlebelowskip@length=\skip142
+\mdf@frametitlerulewidth@length=\skip143
+\mdf@frametitleleftmargin@length=\skip144
+\mdf@frametitlerightmargin@length=\skip145
+\mdf@shadowsize@length=\skip146
+\mdf@extratopheight@length=\skip147
+\mdf@subtitleabovelinewidth@length=\skip148
+\mdf@subtitlebelowlinewidth@length=\skip149
+\mdf@subtitleaboveskip@length=\skip150
+\mdf@subtitlebelowskip@length=\skip151
+\mdf@subtitleinneraboveskip@length=\skip152
+\mdf@subtitleinnerbelowskip@length=\skip153
+\mdf@subsubtitleabovelinewidth@length=\skip154
+\mdf@subsubtitlebelowlinewidth@length=\skip155
+\mdf@subsubtitleaboveskip@length=\skip156
+\mdf@subsubtitlebelowskip@length=\skip157
+\mdf@subsubtitleinneraboveskip@length=\skip158
+\mdf@subsubtitleinnerbelowskip@length=\skip159
 
 (c:/texlive/2015/texmf-dist/tex/latex/mdframed/md-frame-1.mdf
 File: md-frame-1.mdf 2013/07/01\ 1.9b: md-frame-1
 )
-\mdf@frametitlebox=\box110
-\mdf@footnotebox=\box111
-\mdf@splitbox@one=\box112
-\mdf@splitbox@two=\box113
-\mdf@splitbox@save=\box114
-\mdfsplitboxwidth=\skip156
-\mdfsplitboxtotalwidth=\skip157
-\mdfsplitboxheight=\skip158
-\mdfsplitboxdepth=\skip159
-\mdfsplitboxtotalheight=\skip160
-\mdfframetitleboxwidth=\skip161
-\mdfframetitleboxtotalwidth=\skip162
-\mdfframetitleboxheight=\skip163
-\mdfframetitleboxdepth=\skip164
-\mdfframetitleboxtotalheight=\skip165
-\mdffootnoteboxwidth=\skip166
-\mdffootnoteboxtotalwidth=\skip167
-\mdffootnoteboxheight=\skip168
-\mdffootnoteboxdepth=\skip169
-\mdffootnoteboxtotalheight=\skip170
-\mdftotallinewidth=\skip171
-\mdfboundingboxwidth=\skip172
-\mdfboundingboxtotalwidth=\skip173
-\mdfboundingboxheight=\skip174
-\mdfboundingboxdepth=\skip175
-\mdfboundingboxtotalheight=\skip176
-\mdf@freevspace@length=\skip177
-\mdf@horizontalwidthofbox@length=\skip178
-\mdf@verticalmarginwhole@length=\skip179
-\mdf@horizontalspaceofbox=\skip180
-\mdfsubtitleheight=\skip181
-\mdfsubsubtitleheight=\skip182
-\c@mdfcountframes=\count359
+\mdf@frametitlebox=\box114
+\mdf@footnotebox=\box115
+\mdf@splitbox@one=\box116
+\mdf@splitbox@two=\box117
+\mdf@splitbox@save=\box118
+\mdfsplitboxwidth=\skip160
+\mdfsplitboxtotalwidth=\skip161
+\mdfsplitboxheight=\skip162
+\mdfsplitboxdepth=\skip163
+\mdfsplitboxtotalheight=\skip164
+\mdfframetitleboxwidth=\skip165
+\mdfframetitleboxtotalwidth=\skip166
+\mdfframetitleboxheight=\skip167
+\mdfframetitleboxdepth=\skip168
+\mdfframetitleboxtotalheight=\skip169
+\mdffootnoteboxwidth=\skip170
+\mdffootnoteboxtotalwidth=\skip171
+\mdffootnoteboxheight=\skip172
+\mdffootnoteboxdepth=\skip173
+\mdffootnoteboxtotalheight=\skip174
+\mdftotallinewidth=\skip175
+\mdfboundingboxwidth=\skip176
+\mdfboundingboxtotalwidth=\skip177
+\mdfboundingboxheight=\skip178
+\mdfboundingboxdepth=\skip179
+\mdfboundingboxtotalheight=\skip180
+\mdf@freevspace@length=\skip181
+\mdf@horizontalwidthofbox@length=\skip182
+\mdf@verticalmarginwhole@length=\skip183
+\mdf@horizontalspaceofbox=\skip184
+\mdfsubtitleheight=\skip185
+\mdfsubsubtitleheight=\skip186
+\c@mdfcountframes=\count364
 
 ****** mdframed patching \endmdf@trivlist
 
@@ -2187,13 +2205,13 @@ File: md-frame-1.mdf 2013/07/01\ 1.9b: md-frame-1
 . 
 . Defining command \mdtheorem with sig. ' O{} m o m o ' on line 701.
 .................................................
-\mdf@envdepth=\count360
-\c@mdf@env@i=\count361
-\c@mdf@env@ii=\count362
-\c@mdf@zref@counter=\count363
+\mdf@envdepth=\count365
+\c@mdf@env@i=\count366
+\c@mdf@env@ii=\count367
+\c@mdf@zref@counter=\count368
 Package zref Info: New property: mdf@pagevalue on input line 895.
 )
-\c@myInsight=\count364
+\c@myInsight=\count369
 
 (c:/texlive/2015/texmf-dist/tex/latex/eso-pic/eso-pic.sty
 Package: eso-pic 2015/07/21 v2.0g eso-pic (RN)
@@ -2204,7 +2222,7 @@ Package: background 2014/03/04 v2.1 background material
 (c:/texlive/2015/texmf-dist/tex/latex/everypage/everypage.sty
 Package: everypage 2007/06/20 1.1 Hooks to run on every page
 ))
-\c@chapshift=\count365
+\c@chapshift=\count370
 
 (c:/texlive/2015/texmf-dist/tex/latex/setspace/setspace.sty
 Package: setspace 2011/12/19 v6.7a set line spacing
@@ -2217,30 +2235,30 @@ Package: fancyvrb 2008/02/07
 
 Style option: `fancyvrb' v2.7a, with DG/SPQR fixes, and firstline=lastline fix 
 <2008/02/07> (tvz)
-\FV@CodeLineNo=\count366
+\FV@CodeLineNo=\count371
 \FV@InFile=\read3
-\FV@TabBox=\box115
-\c@FancyVerbLine=\count367
-\FV@StepNumber=\count368
+\FV@TabBox=\box119
+\c@FancyVerbLine=\count372
+\FV@StepNumber=\count373
 \FV@OutFile=\write6
 ) (c:/texlive/2015/texmf-dist/tex/latex/listings/listings.sty
-\lst@mode=\count369
-\lst@gtempboxa=\box116
-\lst@token=\toks74
-\lst@length=\count370
-\lst@currlwidth=\dimen375
-\lst@column=\count371
-\lst@pos=\count372
-\lst@lostspace=\dimen376
-\lst@width=\dimen377
-\lst@newlines=\count373
-\lst@lineno=\count374
-\lst@maxwidth=\dimen378
+\lst@mode=\count374
+\lst@gtempboxa=\box120
+\lst@token=\toks75
+\lst@length=\count375
+\lst@currlwidth=\dimen376
+\lst@column=\count376
+\lst@pos=\count377
+\lst@lostspace=\dimen377
+\lst@width=\dimen378
+\lst@newlines=\count378
+\lst@lineno=\count379
+\lst@maxwidth=\dimen379
 (c:/texlive/2015/texmf-dist/tex/latex/listings/lstmisc.sty
 File: lstmisc.sty 2015/06/04 1.6 (Carsten Heinz)
-\c@lstnumber=\count375
-\lst@skipnumbers=\count376
-\lst@framebox=\box117
+\c@lstnumber=\count380
+\lst@skipnumbers=\count381
+\lst@framebox=\box121
 )
 (c:/texlive/2015/texmf-dist/tex/latex/listings/listings.cfg
 File: listings.cfg 2015/06/04 1.6 listings configuration
@@ -2451,62 +2469,62 @@ B)
 
 (c:/texlive/2015/texmf-dist/tex/latex/logreq/logreq.sty
 Package: logreq 2010/08/04 v1.0 xml request logger
-\lrq@indent=\count377
+\lrq@indent=\count382
 
 (c:/texlive/2015/texmf-dist/tex/latex/logreq/logreq.def
 File: logreq.def 2010/08/04 v1.0 logreq spec v1.0
 ))
-\c@tabx@nest=\count378
-\c@listtotal=\count379
-\c@listcount=\count380
-\c@liststart=\count381
-\c@liststop=\count382
-\c@citecount=\count383
-\c@citetotal=\count384
-\c@multicitecount=\count385
-\c@multicitetotal=\count386
-\c@instcount=\count387
-\c@maxnames=\count388
-\c@minnames=\count389
-\c@maxitems=\count390
-\c@minitems=\count391
-\c@citecounter=\count392
-\c@savedcitecounter=\count393
-\c@uniquelist=\count394
-\c@uniquename=\count395
-\c@refsection=\count396
-\c@refsegment=\count397
-\c@maxextratitle=\count398
-\c@maxextratitleyear=\count399
-\c@maxextrayear=\count400
-\c@maxextraalpha=\count401
-\c@abbrvpenalty=\count402
-\c@highnamepenalty=\count403
-\c@lownamepenalty=\count404
-\c@maxparens=\count405
-\c@parenlevel=\count406
-\blx@tempcnta=\count407
-\blx@tempcntb=\count408
-\blx@tempcntc=\count409
-\blx@maxsection=\count410
-\blx@maxsegment@0=\count411
-\blx@notetype=\count412
-\blx@parenlevel@text=\count413
-\blx@parenlevel@foot=\count414
-\blx@sectionciteorder@0=\count415
-\labelnumberwidth=\skip183
-\labelalphawidth=\skip184
-\biblabelsep=\skip185
-\bibitemsep=\skip186
-\bibnamesep=\skip187
-\bibinitsep=\skip188
-\bibparsep=\skip189
-\bibhang=\skip190
+\c@tabx@nest=\count383
+\c@listtotal=\count384
+\c@listcount=\count385
+\c@liststart=\count386
+\c@liststop=\count387
+\c@citecount=\count388
+\c@citetotal=\count389
+\c@multicitecount=\count390
+\c@multicitetotal=\count391
+\c@instcount=\count392
+\c@maxnames=\count393
+\c@minnames=\count394
+\c@maxitems=\count395
+\c@minitems=\count396
+\c@citecounter=\count397
+\c@savedcitecounter=\count398
+\c@uniquelist=\count399
+\c@uniquename=\count400
+\c@refsection=\count401
+\c@refsegment=\count402
+\c@maxextratitle=\count403
+\c@maxextratitleyear=\count404
+\c@maxextrayear=\count405
+\c@maxextraalpha=\count406
+\c@abbrvpenalty=\count407
+\c@highnamepenalty=\count408
+\c@lownamepenalty=\count409
+\c@maxparens=\count410
+\c@parenlevel=\count411
+\blx@tempcnta=\count412
+\blx@tempcntb=\count413
+\blx@tempcntc=\count414
+\blx@maxsection=\count415
+\blx@maxsegment@0=\count416
+\blx@notetype=\count417
+\blx@parenlevel@text=\count418
+\blx@parenlevel@foot=\count419
+\blx@sectionciteorder@0=\count420
+\labelnumberwidth=\skip187
+\labelalphawidth=\skip188
+\biblabelsep=\skip189
+\bibitemsep=\skip190
+\bibnamesep=\skip191
+\bibinitsep=\skip192
+\bibparsep=\skip193
+\bibhang=\skip194
 \blx@bcfin=\read4
 \blx@bcfout=\write8
-\c@mincomprange=\count416
-\c@maxcomprange=\count417
-\c@mincompwidth=\count418
+\c@mincomprange=\count421
+\c@maxcomprange=\count422
+\c@mincompwidth=\count423
 Package biblatex Info: Trying to load biblatex default data model...
 Package biblatex Info: ... file 'blx-dm.def' found.
 
@@ -2515,78 +2533,78 @@ Package biblatex Info: Trying to load biblatex citestyle data model...
 Package biblatex Info: ... file 'numeric-comp.dbx' not found.
 Package biblatex Info: Trying to load biblatex custom data model...
 Package biblatex Info: ... file 'biblatex-dm.cfg' not found.
-\c@afterword=\count419
-\c@savedafterword=\count420
-\c@annotator=\count421
-\c@savedannotator=\count422
-\c@author=\count423
-\c@savedauthor=\count424
-\c@bookauthor=\count425
-\c@savedbookauthor=\count426
-\c@commentator=\count427
-\c@savedcommentator=\count428
-\c@editor=\count429
-\c@savededitor=\count430
-\c@editora=\count431
-\c@savededitora=\count432
-\c@editorb=\count433
-\c@savededitorb=\count434
-\c@editorc=\count435
-\c@savededitorc=\count436
-\c@foreword=\count437
-\c@savedforeword=\count438
-\c@holder=\count439
-\c@savedholder=\count440
-\c@introduction=\count441
-\c@savedintroduction=\count442
-\c@namea=\count443
-\c@savednamea=\count444
-\c@nameb=\count445
-\c@savednameb=\count446
-\c@namec=\count447
-\c@savednamec=\count448
-\c@translator=\count449
-\c@savedtranslator=\count450
-\c@shortauthor=\count451
-\c@savedshortauthor=\count452
-\c@shorteditor=\count453
-\c@savedshorteditor=\count454
-\c@labelname=\count455
-\c@savedlabelname=\count456
-\c@institution=\count457
-\c@savedinstitution=\count458
-\c@lista=\count459
-\c@savedlista=\count460
-\c@listb=\count461
-\c@savedlistb=\count462
-\c@listc=\count463
-\c@savedlistc=\count464
-\c@listd=\count465
-\c@savedlistd=\count466
-\c@liste=\count467
-\c@savedliste=\count468
-\c@listf=\count469
-\c@savedlistf=\count470
-\c@location=\count471
-\c@savedlocation=\count472
-\c@organization=\count473
-\c@savedorganization=\count474
-\c@origlocation=\count475
-\c@savedoriglocation=\count476
-\c@origpublisher=\count477
-\c@savedorigpublisher=\count478
-\c@publisher=\count479
-\c@savedpublisher=\count480
-\c@language=\count481
-\c@savedlanguage=\count482
-\c@pageref=\count483
-\c@savedpageref=\count484
-\shorthandwidth=\skip191
-\shortjournalwidth=\skip192
-\shortserieswidth=\skip193
-\shorttitlewidth=\skip194
-\shortauthorwidth=\skip195
-\shorteditorwidth=\skip196
+\c@afterword=\count424
+\c@savedafterword=\count425
+\c@annotator=\count426
+\c@savedannotator=\count427
+\c@author=\count428
+\c@savedauthor=\count429
+\c@bookauthor=\count430
+\c@savedbookauthor=\count431
+\c@commentator=\count432
+\c@savedcommentator=\count433
+\c@editor=\count434
+\c@savededitor=\count435
+\c@editora=\count436
+\c@savededitora=\count437
+\c@editorb=\count438
+\c@savededitorb=\count439
+\c@editorc=\count440
+\c@savededitorc=\count441
+\c@foreword=\count442
+\c@savedforeword=\count443
+\c@holder=\count444
+\c@savedholder=\count445
+\c@introduction=\count446
+\c@savedintroduction=\count447
+\c@namea=\count448
+\c@savednamea=\count449
+\c@nameb=\count450
+\c@savednameb=\count451
+\c@namec=\count452
+\c@savednamec=\count453
+\c@translator=\count454
+\c@savedtranslator=\count455
+\c@shortauthor=\count456
+\c@savedshortauthor=\count457
+\c@shorteditor=\count458
+\c@savedshorteditor=\count459
+\c@labelname=\count460
+\c@savedlabelname=\count461
+\c@institution=\count462
+\c@savedinstitution=\count463
+\c@lista=\count464
+\c@savedlista=\count465
+\c@listb=\count466
+\c@savedlistb=\count467
+\c@listc=\count468
+\c@savedlistc=\count469
+\c@listd=\count470
+\c@savedlistd=\count471
+\c@liste=\count472
+\c@savedliste=\count473
+\c@listf=\count474
+\c@savedlistf=\count475
+\c@location=\count476
+\c@savedlocation=\count477
+\c@organization=\count478
+\c@savedorganization=\count479
+\c@origlocation=\count480
+\c@savedoriglocation=\count481
+\c@origpublisher=\count482
+\c@savedorigpublisher=\count483
+\c@publisher=\count484
+\c@savedpublisher=\count485
+\c@language=\count486
+\c@savedlanguage=\count487
+\c@pageref=\count488
+\c@savedpageref=\count489
+\shorthandwidth=\skip195
+\shortjournalwidth=\skip196
+\shortserieswidth=\skip197
+\shorttitlewidth=\skip198
+\shortauthorwidth=\skip199
+\shorteditorwidth=\skip256
 Package biblatex Info: Trying to load compatibility code...
 Package biblatex Info: ... file 'blx-compat.def' found.
 
@@ -2598,13 +2616,13 @@ Package biblatex Info: ... file 'biblatex.def' found.
 
 (c:/texlive/2015/texmf-dist/tex/latex/biblatex/biblatex.def
 File: biblatex.def 
-\c@textcitecount=\count485
-\c@textcitetotal=\count486
-\c@textcitemaxnames=\count487
-\c@biburlnumpenalty=\count488
-\c@biburlucpenalty=\count489
-\c@biburllcpenalty=\count490
-\c@smartand=\count491
+\c@textcitecount=\count490
+\c@textcitetotal=\count491
+\c@textcitemaxnames=\count492
+\c@biburlnumpenalty=\count493
+\c@biburlucpenalty=\count494
+\c@biburllcpenalty=\count495
+\c@smartand=\count496
 )
 Package biblatex Info: Trying to load natbib compatibility...
 Package biblatex Info: ... file 'blx-natbib.def' found.
@@ -2627,16 +2645,16 @@ Package biblatex Info: ... file 'standard.bbx' found.
 
 (c:/texlive/2015/texmf-dist/tex/latex/biblatex/bbx/standard.bbx
 File: standard.bbx 2015/10/21 v3.1 biblatex bibliography style (PK/JW/AB)
-\c@bbx:relatedcount=\count492
-\c@bbx:relatedtotal=\count493
+\c@bbx:relatedcount=\count497
+\c@bbx:relatedtotal=\count498
 )))
 Package biblatex Info: Trying to load citation style 'numeric-comp'...
 Package biblatex Info: ... file 'numeric-comp.cbx' found.
 
 (c:/texlive/2015/texmf-dist/tex/latex/biblatex/cbx/numeric-comp.cbx
 File: numeric-comp.cbx 2015/10/21 v3.1 biblatex citation style (PK/JW/AB)
-\c@cbx@tempcnta=\count494
-\c@cbx@tempcntb=\count495
+\c@cbx@tempcnta=\count499
+\c@cbx@tempcntb=\count500
 Package biblatex Info: Redefining '\cite'.
 Package biblatex Info: Redefining '\parencite'.
 Package biblatex Info: Redefining '\footcite'.
@@ -2690,16 +2708,16 @@ Package hobsub Info: Skipping package `atbegshi' (already loaded).
 Package: refcount 2011/10/16 v3.4 Data extraction from label references (HO)
 Package: hycolor 2011/01/30 v1.7 Color options for hyperref/bookmark (HO)
 )
-\@linkdim=\dimen379
-\Hy@linkcounter=\count496
-\Hy@pagecounter=\count497
+\@linkdim=\dimen380
+\Hy@linkcounter=\count501
+\Hy@pagecounter=\count502
 
 (c:/texlive/2015/texmf-dist/tex/latex/hyperref/pd1enc.def
 File: pd1enc.def 2012/11/06 v6.83m Hyperref: PDFDocEncoding definition (HO)
 Now handling font encoding PD1 ...
 ... no UTF-8 mapping file for font encoding PD1
 )
-\Hy@SavedSpaceFactor=\count498
+\Hy@SavedSpaceFactor=\count503
 
 (c:/texlive/2015/texmf-dist/tex/latex/latexconfig/hyperref.cfg
 File: hyperref.cfg 2002/06/06 v1.2 hyperref configuration of TeXLive
@@ -2712,12 +2730,12 @@ Package hyperref Info: Plain pages OFF on input line 4458.
 Package hyperref Info: Backreferencing OFF on input line 4463.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4688.
-\c@Hy@tempcnt=\count499
+\c@Hy@tempcnt=\count504
 LaTeX Info: Redefining \url on input line 5041.
-\XeTeXLinkMargin=\dimen380
-\Fld@menulength=\count500
-\Field@Width=\dimen381
-\Fld@charsize=\dimen382
+\XeTeXLinkMargin=\dimen381
+\Fld@menulength=\count505
+\Field@Width=\dimen382
+\Fld@charsize=\dimen383
 Package hyperref Info: Hyper figures OFF on input line 6295.
 Package hyperref Info: Link nesting OFF on input line 6300.
 Package hyperref Info: Hyper index ON on input line 6303.
@@ -2727,25 +2745,25 @@ Package hyperref Info: Link coloring with OCG OFF on input line 6320.
 Package hyperref Info: PDF/A mode OFF on input line 6325.
 LaTeX Info: Redefining \ref on input line 6365.
 LaTeX Info: Redefining \pageref on input line 6369.
-\Hy@abspage=\count501
-\c@Item=\count502
-\c@Hfootnote=\count503
+\Hy@abspage=\count506
+\c@Item=\count507
+\c@Hfootnote=\count508
 )
 
 Package hyperref Message: Driver (autodetected): hpdftex.
 
 (c:/texlive/2015/texmf-dist/tex/latex/hyperref/hpdftex.def
 File: hpdftex.def 2012/11/06 v6.83m Hyperref driver for pdfTeX
-\HyAnn@Count=\count504
-\Fld@listcount=\count505
-\c@bookmark@seq@number=\count506
+\HyAnn@Count=\count509
+\Fld@listcount=\count510
+\c@bookmark@seq@number=\count511
 
 (c:/texlive/2015/texmf-dist/tex/latex/oberdiek/rerunfilecheck.sty
 Package: rerunfilecheck 2011/04/15 v1.7 Rerun checks for auxiliary files (HO)
 Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 82.
 )
-\Hy@SectionHShift=\skip197
+\Hy@SectionHShift=\skip257
 )
 (c:/texlive/2015/texmf-dist/tex/latex/cleveref/cleveref.sty
 Package: cleveref 2013/12/28 v0.19 Intelligent cross-referencing
@@ -2770,10 +2788,10 @@ LaTeX Info: Redefining \fullref on input line 2453.
 Package cleveref Info: `ntheorem' support loaded on input line 2887.
 Package cleveref Info: `listings' support loaded on input line 2950.
 )
-Package biblatex Info: Redefining '\citetitle' on input line 1351.
+Package biblatex Info: Redefining '\citetitle' on input line 1352.
 )
 (./_local_macros.tex
-\c@dancingfigure=\count507
+\c@dancingfigure=\count512
 .................................................
 . LaTeX info: "xparse/define-command"
 . 
@@ -2790,8 +2808,8 @@ Package: glossaries 2015/09/09 v4.18 (NLCT)
 
 (c:/texlive/2015/texmf-dist/tex/latex/mfirstuc/mfirstuc.sty
 Package: mfirstuc 2015/09/09 v2.0 (NLCT)
-\@glsmfirst=\toks75
-\@glsmrest=\toks76
+\@glsmfirst=\toks76
+\@glsmrest=\toks77
 )
 (c:/texlive/2015/texmf-dist/tex/latex/textcase/textcase.sty
 Package: textcase 2004/10/07 v0.07 Text only upper/lower case changing (DPC)
@@ -2804,7 +2822,7 @@ Package: datatool-base 2015/07/11 v2.23 (NLCT)
 
 (c:/texlive/2015/texmf-dist/tex/latex/substr/substr.sty
 Package: substr 2009/10/20 v1.2 Handle substrings
-\c@su@anzahl=\count508
+\c@su@anzahl=\count513
 )
 (c:/texlive/2015/texmf-dist/tex/latex/datatool/datatool-fp.sty
 Package: datatool-fp 2015/07/11 v2.23 (NLCT)
@@ -2815,19 +2833,19 @@ Package: fp 1995/04/02
 `Fixed Point Package', Version 0.8, April 2, 1995 (C) Michael Mehlich
 (c:/texlive/2015/texmf-dist/tex/latex/fp/defpattern.sty
 Package: defpattern 1994/10/12
-\actioncount=\count509
+\actioncount=\count514
 )
 (c:/texlive/2015/texmf-dist/tex/latex/fp/fp-basic.sty
 Package: fp-basic 1996/05/13
-\FP@xs=\count510
-\FP@xia=\count511
-\FP@xib=\count512
-\FP@xfa=\count513
-\FP@xfb=\count514
-\FP@rega=\count515
-\FP@regb=\count516
-\FP@regs=\count517
-\FP@times=\count518
+\FP@xs=\count515
+\FP@xia=\count516
+\FP@xib=\count517
+\FP@xfa=\count518
+\FP@xfb=\count519
+\FP@rega=\count520
+\FP@regb=\count521
+\FP@regs=\count522
+\FP@times=\count523
 )
 (c:/texlive/2015/texmf-dist/tex/latex/fp/fp-addons.sty
 Package: fp-addons 1995/03/15
@@ -2846,7 +2864,7 @@ Package: fp-pas 1994/08/29
 )
 (c:/texlive/2015/texmf-dist/tex/latex/fp/fp-random.sty
 Package: fp-random 1995/02/23
-\FPseed=\count519
+\FPseed=\count524
 )
 (c:/texlive/2015/texmf-dist/tex/latex/fp/fp-eqn.sty
 Package: fp-eqn 1995/04/03
@@ -2857,56 +2875,37 @@ Package: fp-upn 1996/10/21
 (c:/texlive/2015/texmf-dist/tex/latex/fp/fp-eval.sty
 Package: fp-eval 1995/04/03
 )))
-\@dtl@toks=\toks77
-\@dtl@tmpcount=\count520
-\dtl@tmplength=\skip198
-\dtl@sortresult=\count521
-\@dtl@numgrpsepcount=\count522
-\@dtl@datatype=\count523
-\dtl@codeA=\count524
-\dtl@codeB=\count525
-\@dtl@foreach@level=\count526
+\@dtl@toks=\toks78
+\@dtl@tmpcount=\count525
+\dtl@tmplength=\skip258
+\dtl@sortresult=\count526
+\@dtl@numgrpsepcount=\count527
+\@dtl@datatype=\count528
+\dtl@codeA=\count529
+\dtl@codeB=\count530
+\@dtl@foreach@level=\count531
 )
 (c:/texlive/2015/texmf-dist/tex/latex/glossaries/base/glossaries-compatible-307
 .sty
 Package: glossaries-compatible-307 2015/09/09 v4.18 (NLCT)
 )
-\gls@level=\count527
-\@gls@tmpb=\toks78
-\gls@tmplen=\skip199
-\glskeylisttok=\toks79
-\glslabeltok=\toks80
-\glsshorttok=\toks81
-\glslongtok=\toks82
+\gls@level=\count532
+\@gls@tmpb=\toks79
+\gls@tmplen=\skip259
+\glskeylisttok=\toks80
+\glslabeltok=\toks81
+\glsshorttok=\toks82
+\glslongtok=\toks83
 
 (c:/texlive/2015/texmf-dist/tex/latex/glossaries/styles/glossary-hypernav.sty
 Package: glossary-hypernav 2015/09/09 v4.18 (NLCT)
 )
 (c:/texlive/2015/texmf-dist/tex/latex/glossaries/styles/glossary-list.sty
 Package: glossary-list 2015/09/09 v4.18 (NLCT)
-\glslistdottedwidth=\skip256
+\glslistdottedwidth=\skip260
 )
 (c:/texlive/2015/texmf-dist/tex/latex/glossaries/styles/glossary-long.sty
 Package: glossary-long 2015/09/09 v4.18 (NLCT)
-
-(c:/texlive/2015/texmf-dist/tex/latex/tools/longtable.sty
-Package: longtable 2014/10/28 v4.11 Multi-page Table package (DPC)
-\LTleft=\skip257
-\LTright=\skip258
-\LTpre=\skip259
-\LTpost=\skip260
-\LTchunksize=\count528
-\LTcapwidth=\dimen383
-\LT@head=\box118
-\LT@firsthead=\box119
-\LT@foot=\box120
-\LT@lastfoot=\box121
-\LT@cols=\count529
-\LT@rows=\count530
-\c@LT@tables=\count531
-\c@LT@chunks=\count532
-\LT@p@ftn=\toks83
-)
 \glsdescwidth=\skip261
 \glspagelistwidth=\skip262
 )
@@ -3031,6 +3030,40 @@ LaTeX Warning: Label `fig:Figure7' multiply defined.
 
 
 LaTeX Warning: Label `fig:Figure7@cref' multiply defined.
+
+
+LaTeX Warning: Label `eqn:c'/c' multiply defined.
+
+
+LaTeX Warning: Label `eqn:c'/c@cref' multiply defined.
+
+
+LaTeX Warning: Label `eqn:ClalphaFlap' multiply defined.
+
+
+LaTeX Warning: Label `eqn:ClalphaFlap@cref' multiply defined.
+
+
+LaTeX Warning: Label `fig:FlapATR' multiply defined.
+
+
+LaTeX Warning: Label `fig:FlapATR@cref' multiply defined.
+
+
+LaTeX Warning: Label `eq:Take:Off:System:Dynamics:RHS:functions:E' multiply def
+ined.
+
+
+LaTeX Warning: Label `eq:Take:Off:System:Dynamics:RHS:functions:E@cref' multipl
+y defined.
+
+
+LaTeX Warning: Label `eq:Take:Off:System:Dynamics:RHS:functions:D' multiply def
+ined.
+
+
+LaTeX Warning: Label `eq:Take:Off:System:Dynamics:RHS:functions:D@cref' multipl
+y defined.
 
 )
 \openout1 = `Tesi.aux'.
@@ -4418,9 +4451,9 @@ Package biblatex Info: ... file 'Tesi.bbl' found.
 (./Tesi.bbl
 
 Package biblatex Warning: Biber reported the following issues
-(biblatex)                with 'jscience':
-(biblatex)                - Datamodel: Entry 'jscience' (Tesi_Bibliography.bib)
-: Invalid format '2015.01.05' of date field 'date' - ignoring.
+(biblatex)                with 'jscienceAmount':
+(biblatex)                - Datamodel: Entry 'jscienceAmount' (Tesi_Bibliograph
+y.bib): Invalid format '2015.01.05' of date field 'date' - ignoring.
 
 )
 Package biblatex Info: Reference section=0 on input line 51.
@@ -4463,7 +4496,7 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-<Tesi-frn.pdf, id=147, 597.50829pt x 845.0471pt>
+<Tesi-frn.pdf, id=175, 597.50829pt x 845.0471pt>
 File: Tesi-frn.pdf Graphic file (type pdf)
  <use Tesi-frn.pdf>
 Package pdftex.def Info: Tesi-frn.pdf used on input line 56.
@@ -4523,6 +4556,7 @@ File: italian.mld 2006/01/13
 \openout14 = `Tesi.toc'.
 
 
+(./Tesi_Contents.tex (./contents/Chapter_SoftwareOverview.tex
 (c:/texlive/2015/texmf-dist/tex/latex/psnfss/t1phv.fd
 File: t1phv.fd 2001/06/04 scalable font definitions for T1/phv.
 )
@@ -4530,77 +4564,75 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             `phv' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
- [4] (./Tesi_Contents.tex (./contents/Chapter_SoftwareOverview.tex
+ [4]
 Chapter 1.
 ) (./contents/Chapter_PayloadRange.tex [5
 
-
-] [6
-
 ]
 Chapter 2.
-<images/Flexible_Payload_Range.png, id=233, 479.391pt x 354.926pt>
+<images/Flexible_Payload_Range.png, id=273, 464.134pt x 356.532pt>
 File: images/Flexible_Payload_Range.png Graphic file (type png)
 
 <use images/Flexible_Payload_Range.png>
 Package pdftex.def Info: images/Flexible_Payload_Range.png used on input line 1
 5.
-(pdftex.def)             Requested size: 291.14803pt x 215.5622pt.
- [7
+(pdftex.def)             Requested size: 291.14803pt x 223.65341pt.
+ [6
 
 ]
-<images/Payload_Range.png, id=242, 477.785pt x 360.547pt>
+<images/Payload_Range.png, id=286, 462.528pt x 358.941pt>
 File: images/Payload_Range.png Graphic file (type png)
 
 <use images/Payload_Range.png>
-Package pdftex.def Info: images/Payload_Range.png used on input line 29.
-(pdftex.def)             Requested size: 291.14803pt x 219.70776pt.
- [8 <./images/Flexible_Payload_Range.png> <./images/Payload_Range.png>] [9]
-Underfull \hbox (badness 10000) in paragraph at lines 117--117
+Package pdftex.def Info: images/Payload_Range.png used on input line 31.
+(pdftex.def)             Requested size: 291.14803pt x 225.95328pt.
+ [7 <./images/Flexible_Payload_Range.png>]
+[8 <./images/Payload_Range.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 125--125
 []|\T1/ntxtlf/b/n/12 Start\T1/ntxtlf/m/n/12 (+20) ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 117--117
+Underfull \hbox (badness 10000) in paragraph at lines 125--125
 []|\T1/ntxtlf/b/n/12 Brief
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 117--118
+Underfull \hbox (badness 10000) in paragraph at lines 125--126
 []|\T1/ntxtlf/b/n/12 Landing,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 117--118
+Underfull \hbox (badness 10000) in paragraph at lines 125--126
 \T1/ntxtlf/b/n/12 Taxi and
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 128--128
+Underfull \hbox (badness 10000) in paragraph at lines 136--136
 []|\T1/ntxtlf/m/n/12 (+20) Mil.Patrol,Bmb
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 129--129
+Underfull \hbox (badness 10000) in paragraph at lines 137--137
 []|\T1/ntxtlf/m/n/12 (+20) Flying
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 129--129
+Underfull \hbox (badness 10000) in paragraph at lines 137--137
 \T1/ntxtlf/m/n/12 (+20) boats,Amph.
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 130--130
+Underfull \hbox (badness 10000) in paragraph at lines 138--138
 []|\T1/ntxtlf/m/n/12 (+20) Supersonic
  []
 
 
-Overfull \hbox (12.75484pt too wide) in paragraph at lines 115--133
+Overfull \hbox (12.75484pt too wide) in paragraph at lines 123--141
  [][] 
  []
 
-[10] (c:/texlive/2015/texmf-dist/tex/latex/bera/t1fvm.fd
+[9] (c:/texlive/2015/texmf-dist/tex/latex/bera/t1fvm.fd
 File: t1fvm.fd 2004/09/07 scalable font definitions for T1/fvm.
 )
 Package microtype Info: Loading generic settings for font family
@@ -4608,64 +4640,58 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-Underfull \hbox (badness 3758) in paragraph at lines 185--185
+Underfull \hbox (badness 3758) in paragraph at lines 193--193
 []|\T1/ntxtlf/m/n/12 (+20) The cur-rent lift co-ef-fi-cient in cruise
  []
 
-[11]
-Overfull \hbox (17.98544pt too wide) in paragraph at lines 236--238
-\T1/ntxtlf/m/n/12 (-20) anal-y-sis, for the last method that has to plot the di
--a-gram; this is called [][][]
- []
-
-[12]
-<images/PayloadRange_BestRange_Flowchart.png, id=298, 1493.58pt x 943.525pt>
+[10] [11]
+<images/PayloadRange_BestRange_Flowchart.png, id=353, 1493.58pt x 943.525pt>
 File: images/PayloadRange_BestRange_Flowchart.png Graphic file (type png)
 
 <use images/PayloadRange_BestRange_Flowchart.png>
 Package pdftex.def Info: images/PayloadRange_BestRange_Flowchart.png used on in
-put line 246.
+put line 252.
 (pdftex.def)             Requested size: 366.13948pt x 231.28802pt.
 
-<images/PayloadRange_MTOM_Flowchart.png, id=299, 1494.58376pt x 744.7825pt>
+<images/PayloadRange_MTOM_Flowchart.png, id=354, 1494.58376pt x 744.7825pt>
 File: images/PayloadRange_MTOM_Flowchart.png Graphic file (type png)
 
 <use images/PayloadRange_MTOM_Flowchart.png>
 Package pdftex.def Info: images/PayloadRange_MTOM_Flowchart.png used on input l
-ine 254.
+ine 260.
 (pdftex.def)             Requested size: 366.13948pt x 182.45625pt.
- [13 <./images/PayloadRange_BestRange_Flowchart.png (PNG copy)>] [14 <./images/
-PayloadRange_MTOM_Flowchart.png (PNG copy)>] [15]
-Overfull \hbox (2.58348pt too wide) in paragraph at lines 328--329
+ [12 <./images/PayloadRange_BestRange_Flowchart.png (PNG copy)>] [13 <./images/
+PayloadRange_MTOM_Flowchart.png (PNG copy)>] [14]
+Overfull \hbox (2.58348pt too wide) in paragraph at lines 334--335
 [][][][][][][][][][][]  
  []
 
-[16] [17] [18]
-<images/HowToCreateADefaultAircraftInJPAD.png, id=486, 2328.7pt x 2013.5225pt>
+[15] [16] [17]
+<images/HowToCreateADefaultAircraftInJPAD.png, id=553, 2328.7pt x 2013.5225pt>
 File: images/HowToCreateADefaultAircraftInJPAD.png Graphic file (type png)
 
 <use images/HowToCreateADefaultAircraftInJPAD.png>
 Package pdftex.def Info: images/HowToCreateADefaultAircraftInJPAD.png used on i
-nput line 529.
+nput line 535.
 (pdftex.def)             Requested size: 512.31558pt x 442.97632pt.
 
-<images/ATR-72.png, id=487, 1028.643pt x 639.5895pt>
+<images/ATR-72.png, id=554, 1028.643pt x 639.5895pt>
 File: images/ATR-72.png Graphic file (type png)
  <use images/ATR-72.png>
-Package pdftex.def Info: images/ATR-72.png used on input line 535.
+Package pdftex.def Info: images/ATR-72.png used on input line 541.
 (pdftex.def)             Requested size: 352.90608pt x 219.42892pt.
 
-Overfull \hbox (8.33444pt too wide) in paragraph at lines 564--564
+Overfull \hbox (8.33444pt too wide) in paragraph at lines 570--570
 []|$[][][] []$|| 
  []
 
 
-Overfull \hbox (8.33444pt too wide) in paragraph at lines 564--564
+Overfull \hbox (8.33444pt too wide) in paragraph at lines 570--570
 []|$[][][] []$|| 
  []
 
 
-Overfull \hbox (2.33444pt too wide) in paragraph at lines 564--564
+Overfull \hbox (2.33444pt too wide) in paragraph at lines 570--570
 []|$[] []$|| 
  []
 
@@ -4677,24 +4703,24 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<images/B747-100B.png, id=488, 908.193pt x 528.17325pt>
+<images/B747-100B.png, id=555, 908.193pt x 528.17325pt>
 File: images/B747-100B.png Graphic file (type png)
 
 <use images/B747-100B.png>
-Package pdftex.def Info: images/B747-100B.png used on input line 583.
+Package pdftex.def Info: images/B747-100B.png used on input line 589.
 (pdftex.def)             Requested size: 352.90608pt x 205.23721pt.
 
-Overfull \hbox (14.33444pt too wide) in paragraph at lines 612--612
+Overfull \hbox (14.33444pt too wide) in paragraph at lines 618--618
 []|$[] []$|| 
  []
 
 
-Overfull \hbox (14.33444pt too wide) in paragraph at lines 612--612
+Overfull \hbox (14.33444pt too wide) in paragraph at lines 618--618
 []|$[] []$|| 
  []
 
 
-Overfull \hbox (14.33444pt too wide) in paragraph at lines 612--612
+Overfull \hbox (14.33444pt too wide) in paragraph at lines 618--618
 []|$[] []$|| 
  []
 
@@ -4703,119 +4729,523 @@ Overfull \hbox (14.33444pt too wide) in paragraph at lines 612--612
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 (./images/PayloadRange_MaxTakeOffMass_TF.tikz)
-Overfull \hbox (6.46675pt too wide) in paragraph at lines 78--626
+Overfull \hbox (6.46675pt too wide) in paragraph at lines 78--632
  [][] 
  []
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[19] [20 <./images/HowToCreateADefaultAircraftInJPAD.png (PNG copy)>] [21 <./im
-ages/ATR-72.png>] [22] [23 <./images/B747-100B.png>] [24])
-(./contents/Chapter_SpecificRange.tex [25
-
-] [26
+[18] [19 <./images/HowToCreateADefaultAircraftInJPAD.png (PNG copy)>] [20 <./im
+ages/ATR-72.png>] [21] [22 <./images/B747-100B.png>] [23])
+(./contents/Chapter_SpecificRange.tex [24
 
 ]
 Chapter 3.
-<images/TDelta.png, id=573, 472.967pt x 436.832pt>
-File: images/TDelta.png Graphic file (type png)
- <use images/TDelta.png>
-Package pdftex.def Info: images/TDelta.png used on input line 21.
-(pdftex.def)             Requested size: 220.56546pt x 203.718pt.
+<images/TDelta.pdf, id=637, 473.18668pt x 436.7368pt>
+File: images/TDelta.pdf Graphic file (type pdf)
+ <use images/TDelta.pdf>
+Package pdftex.def Info: images/TDelta.pdf used on input line 21.
+(pdftex.def)             Requested size: 220.56546pt x 203.5803pt.
 
-[27
+[25
 
-] <images/TDelta_SpecificRange.png, id=580, 470.558pt x 450.483pt>
-File: images/TDelta_SpecificRange.png Graphic file (type png)
+] <images/TDelta_SpecificRange.pdf, id=645, 473.18668pt x 436.7368pt>
+File: images/TDelta_SpecificRange.pdf Graphic file (type pdf)
 
-<use images/TDelta_SpecificRange.png>
-Package pdftex.def Info: images/TDelta_SpecificRange.png used on input line 64.
+<use images/TDelta_SpecificRange.pdf>
+Package pdftex.def Info: images/TDelta_SpecificRange.pdf used on input line 63.
 
-(pdftex.def)             Requested size: 220.56546pt x 211.15651pt.
- [28 <./images/TDelta.png>]
-<images/DragDelta_SpecificRange.png, id=590, 474.573pt x 445.665pt>
-File: images/DragDelta_SpecificRange.png Graphic file (type png)
+(pdftex.def)             Requested size: 220.56546pt x 203.5803pt.
+ [26 <./images/TDelta.pdf>]
+<images/DragDelta_SpecificRange.pdf, id=657, 497.10266pt x 450.67346pt>
+File: images/DragDelta_SpecificRange.pdf Graphic file (type pdf)
 
-<use images/DragDelta_SpecificRange.png>
-Package pdftex.def Info: images/DragDelta_SpecificRange.png used on input line 
-81.
-(pdftex.def)             Requested size: 220.56546pt x 207.13008pt.
- [29 <./images/TDelta_SpecificRange.png> <./images/DragDelta_SpecificRange.png>
-]
-<images/TDeltaDragDelta.png, id=602, 497.057pt x 450.483pt>
+<use images/DragDelta_SpecificRange.pdf>
+Package pdftex.def Info: images/DragDelta_SpecificRange.pdf used on input line 
+80.
+(pdftex.def)             Requested size: 220.56546pt x 199.96109pt.
+ [27 <./images/TDelta_SpecificRange.pdf> <./images/DragDelta_SpecificRange.pdf
+
+pdfTeX warning: pdflatex.exe (file ./images/DragDelta_SpecificRange.pdf): PDF i
+nclusion: multiple pdfs with page group included in a single page
+>] <images/TDeltaDragDelta.png, id=670, 497.057pt x 450.483pt>
 File: images/TDeltaDragDelta.png Graphic file (type png)
 
 <use images/TDeltaDragDelta.png>
-Package pdftex.def Info: images/TDeltaDragDelta.png used on input line 94.
+Package pdftex.def Info: images/TDeltaDragDelta.png used on input line 93.
 (pdftex.def)             Requested size: 220.56546pt x 199.8972pt.
 
-<images/AutonomyFactor.png, id=605, 574.145pt x 468.952pt>
-File: images/AutonomyFactor.png Graphic file (type png)
+<images/AutonomyFactor.pdf, id=673, 573.95729pt x 469.14757pt>
+File: images/AutonomyFactor.pdf Graphic file (type pdf)
 
-<use images/AutonomyFactor.png>
-Package pdftex.def Info: images/AutonomyFactor.png used on input line 129.
-(pdftex.def)             Requested size: 264.68124pt x 216.1928pt.
- [30 <./images/TDeltaDragDelta.png>]
-<images/CruiseGrid.png, id=616, 480.194pt x 438.438pt>
-File: images/CruiseGrid.png Graphic file (type png)
+<use images/AutonomyFactor.pdf>
+Package pdftex.def Info: images/AutonomyFactor.pdf used on input line 132.
+(pdftex.def)             Requested size: 264.68124pt x 216.35454pt.
 
-<use images/CruiseGrid.png>
-Package pdftex.def Info: images/CruiseGrid.png used on input line 141.
-(pdftex.def)             Requested size: 220.56546pt x 201.38287pt.
- [31 <./images/AutonomyFactor.png> <./images/CruiseGrid.png>] [32]
-<images/SpecificRange_Flowchart.png, id=638, 1522.68875pt x 987.69pt>
+<images/CruiseGrid.pdf, id=676, 479.99796pt x 438.29077pt>
+File: images/CruiseGrid.pdf Graphic file (type pdf)
+
+<use images/CruiseGrid.pdf>
+Package pdftex.def Info: images/CruiseGrid.pdf used on input line 144.
+(pdftex.def)             Requested size: 220.56546pt x 201.40218pt.
+ [28 <./images/TDeltaDragDelta.png>] [29 <./images/AutonomyFactor.pdf> <./image
+s/CruiseGrid.pdf
+
+pdfTeX warning: pdflatex.exe (file ./images/CruiseGrid.pdf): PDF inclusion: mul
+tiple pdfs with page group included in a single page
+>] [30] [31]
+<images/SpecificRange_Flowchart.png, id=722, 1522.68875pt x 987.69pt>
 File: images/SpecificRange_Flowchart.png Graphic file (type png)
 
 <use images/SpecificRange_Flowchart.png>
 Package pdftex.def Info: images/SpecificRange_Flowchart.png used on input line 
-252.
+259.
 (pdftex.def)             Requested size: 397.01514pt x 257.51674pt.
- [33])
-(./contents/Chapter_HighLiftDevices.tex [34 <./images/SpecificRange_Flowchart.p
-ng (PNG copy)>]
+ [32 <./images/SpecificRange_Flowchart.png (PNG copy)>] [33] [34] [35] (./image
+s/DragThrust_ATR.tikz)
+Overfull \hbox (27.0917pt too wide) in paragraph at lines 1526--472
+ [][] 
+ []
+
+(./images/DragThrust_B747.tikz)
+Overfull \hbox (28.45808pt too wide) in paragraph at lines 1159--479
+ [][] 
+ []
+
+(./images/SFC_ATR.tikz)
+Overfull \hbox (14.44876pt too wide) in paragraph at lines 1304--486
+ [][] 
+ []
+
+(./images/SFC_B747.tikz)
+Overfull \hbox (18.85065pt too wide) in paragraph at lines 1303--493
+ [][] 
+ []
+
+(./images/Efficiency_ATR.tikz)
+Overfull \hbox (8.73279pt too wide) in paragraph at lines 1304--500
+ [][] 
+ []
+
+(./images/Efficiency_B747.tikz)
+Overfull \hbox (8.72409pt too wide) in paragraph at lines 1303--507
+ [][] 
+ []
+
+(./images/SpecificRange_ATR.tikz)
+Overfull \hbox (18.82077pt too wide) in paragraph at lines 1334--514
+ [][] 
+ []
+
+(./images/SpecificRange_B747.tikz)
+Overfull \hbox (27.82321pt too wide) in paragraph at lines 1334--521
+ [][] 
+ []
+
+) (./contents/Chapter_HighLiftDevices.tex [36] [37] [38] [39] [40]
 Chapter 4.
-) (./contents/Chapter_TakeOff.tex [35
+[41
 
-] [36
+] <images/FlapEffects.png, id=938, 801.99625pt x 916.42375pt>
+File: images/FlapEffects.png Graphic file (type png)
 
-]
+<use images/FlapEffects.png>
+Package pdftex.def Info: images/FlapEffects.png used on input line 113.
+(pdftex.def)             Requested size: 198.50755pt x 226.82607pt.
+
+<images/SlatEffects.png, id=939, 974.64125pt x 1004.75375pt>
+File: images/SlatEffects.png Graphic file (type png)
+
+<use images/SlatEffects.png>
+Package pdftex.def Info: images/SlatEffects.png used on input line 119.
+(pdftex.def)             Requested size: 220.56546pt x 227.37833pt.
+
+(c:/texlive/2015/texmf-dist/tex/latex/newtx/ts1ntxtlf.fd
+File: ts1ntxtlf.fd 2015/01/18 v1.0 fd file for TS1/ntxtlf
+)
+Package microtype Info: Loading generic settings for font family
+(microtype)             `ntxtlf' (encoding: TS1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+ [42] [43 <./images/FlapEffects.png> <./images/SlatEffects.png>]
+<images/Flap.png, id=954, 558.085pt x 210.7875pt>
+File: images/Flap.png Graphic file (type png)
+ <use images/Flap.png>
+Package pdftex.def Info: images/Flap.png used on input line 147.
+(pdftex.def)             Requested size: 441.13094pt x 166.62001pt.
+
+<images/Slat.png, id=955, 388.45125pt x 138.5175pt>
+File: images/Slat.png Graphic file (type png)
+ <use images/Slat.png>
+Package pdftex.def Info: images/Slat.png used on input line 154.
+(pdftex.def)             Requested size: 308.7903pt x 110.11453pt.
+
+[44 <./images/Flap.png>]
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 176.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\upDelta' on input line 176.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 176.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 176.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\upDelta' on input line 176.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 176.
+
+<images/Eta_Delta_Plain.png, id=970, 634.16925pt x 457.71pt>
+File: images/Eta_Delta_Plain.png Graphic file (type png)
+
+<use images/Eta_Delta_Plain.png>
+Package pdftex.def Info: images/Eta_Delta_Plain.png used on input line 211.
+(pdftex.def)             Requested size: 286.7324pt x 206.94537pt.
+
+<images/Eta_Delta.png, id=971, 825.68475pt x 416.757pt>
+File: images/Eta_Delta.png Graphic file (type png)
+
+<use images/Eta_Delta.png>
+Package pdftex.def Info: images/Eta_Delta.png used on input line 218.
+(pdftex.def)             Requested size: 441.13094pt x 222.66072pt.
+
+Overfull \hbox (3.81265pt too wide) in paragraph at lines 218--219
+ [][] 
+ []
+
+[45 <./images/Slat.png>] [46 <./images/Eta_Delta_Plain.png> <./images/Eta_Delta
+.png>] <images/DeltaC_Cf.png, id=996, 998.5305pt x 454.69875pt>
+File: images/DeltaC_Cf.png Graphic file (type png)
+
+<use images/DeltaC_Cf.png>
+Package pdftex.def Info: images/DeltaC_Cf.png used on input line 252.
+(pdftex.def)             Requested size: 441.13094pt x 200.87982pt.
+ <images/Kc.png, id=999, 805.20825pt x 483.60675pt>
+File: images/Kc.png Graphic file (type png)
+
+<use images/Kc.png>
+Package pdftex.def Info: images/Kc.png used on input line 270.
+(pdftex.def)             Requested size: 308.7903pt x 185.46231pt.
+ <images/Kb.png, id=1000, 428.802pt x 377.0085pt>
+File: images/Kb.png Graphic file (type png)
+
+<use images/Kb.png>
+Package pdftex.def Info: images/Kb.png used on input line 277.
+(pdftex.def)             Requested size: 220.56546pt x 193.9228pt.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 283.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\upDelta' on input line 283.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 283.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 283.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\upDelta' on input line 283.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 283.
+
+[47 <./images/DeltaC_Cf.png> <./images/Kc.png>]
+<images/DeltaClmax_Base.png, id=1019, 776.30025pt x 445.06274pt>
+File: images/DeltaClmax_Base.png Graphic file (type png)
+
+<use images/DeltaClmax_Base.png>
+Package pdftex.def Info: images/DeltaClmax_Base.png used on input line 298.
+(pdftex.def)             Requested size: 352.90608pt x 202.32729pt.
+
+<images/K1.png, id=1020, 751.608pt x 418.56375pt>
+File: images/K1.png Graphic file (type png)
+ <use images/K1.png>
+Package pdftex.def Info: images/K1.png used on input line 305.
+(pdftex.def)             Requested size: 352.90608pt x 196.53337pt.
+
+<images/K2.png, id=1021, 835.923pt x 468.5505pt>
+File: images/K2.png Graphic file (type png)
+ <use images/K2.png>
+Package pdftex.def Info: images/K2.png used on input line 312.
+(pdftex.def)             Requested size: 352.90608pt x 197.81224pt.
+ [48 <./images/Kb.png> <./images/K1.png>]
+<images/K3.png, id=1036, 826.287pt x 469.15276pt>
+File: images/K3.png Graphic file (type png)
+ <use images/K3.png>
+Package pdftex.def Info: images/K3.png used on input line 319.
+(pdftex.def)             Requested size: 352.90608pt x 200.3716pt.
+ [49 <./images/K2.png> <./images/K3.png> <./images/DeltaClmax_Base.png>]
+<images/DeltaCl_Ddelta.png, id=1050, 732.336pt x 472.164pt>
+File: images/DeltaCl_Ddelta.png Graphic file (type png)
+
+<use images/DeltaCl_Ddelta.png>
+Package pdftex.def Info: images/DeltaCl_Ddelta.png used on input line 347.
+(pdftex.def)             Requested size: 352.90608pt x 227.53671pt.
+
+<images/Eta_max.png, id=1051, 705.837pt x 440.847pt>
+File: images/Eta_max.png Graphic file (type png)
+ <use images/Eta_max.png>
+Package pdftex.def Info: images/Eta_max.png used on input line 354.
+(pdftex.def)             Requested size: 352.90608pt x 220.41623pt.
+
+[50 <./images/DeltaCl_Ddelta.png>]
+<images/Eta_Delta_Slat.png, id=1062, 633.567pt x 396.2805pt>
+File: images/Eta_Delta_Slat.png Graphic file (type png)
+
+<use images/Eta_Delta_Slat.png>
+Package pdftex.def Info: images/Eta_Delta_Slat.png used on input line 361.
+(pdftex.def)             Requested size: 352.90608pt x 220.7304pt.
+
+<images/deltaSlat_c'c.png, id=1063, 553.46774pt x 238.491pt>
+File: images/deltaSlat_c'c.png Graphic file (type png)
+
+<use images/deltaSlat_c'c.png>
+Package pdftex.def Info: images/deltaSlat_c'c.png used on input line 368.
+(pdftex.def)             Requested size: 352.90608pt x 152.07329pt.
+ [51 <./images/Eta_max.png> <./images/Eta_Delta_Slat.png> <./images/deltaSlat_c
+'c.png>]
+<images/Swf.png, id=1075, 413.74574pt x 336.65775pt>
+File: images/Swf.png Graphic file (type png)
+ <use images/Swf.png>
+Package pdftex.def Info: images/Swf.png used on input line 392.
+(pdftex.def)             Requested size: 352.90608pt x 287.16727pt.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 413.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\alpha' on input line 413.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 413.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 413.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\alpha' on input line 413.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 413.
+
+[52 <./images/Swf.png>]
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 439.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\upDelta' on input line 439.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\alpha' on input line 439.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 439.
+
+<images/DeltaAlphaMax.png, id=1090, 463.13025pt x 398.08725pt>
+File: images/DeltaAlphaMax.png Graphic file (type png)
+
+<use images/DeltaAlphaMax.png>
+Package pdftex.def Info: images/DeltaAlphaMax.png used on input line 446.
+(pdftex.def)             Requested size: 264.68124pt x 227.50737pt.
+ [53 <./images/DeltaAlphaMax.png>]
+<images/Delta1_Plain.png, id=1107, 431.81325pt x 373.99725pt>
+File: images/Delta1_Plain.png Graphic file (type png)
+
+<use images/Delta1_Plain.png>
+Package pdftex.def Info: images/Delta1_Plain.png used on input line 473.
+(pdftex.def)             Requested size: 397.01514pt x 343.8819pt.
+
+<images/Delta2_Plain.png, id=1108, 399.29175pt x 348.70274pt>
+File: images/Delta2_Plain.png Graphic file (type png)
+
+<use images/Delta2_Plain.png>
+Package pdftex.def Info: images/Delta2_Plain.png used on input line 480.
+(pdftex.def)             Requested size: 308.7903pt x 269.6725pt.
+ [54 <./images/Delta1_Plain.png>]
+<images/Delta1_Slotted.png, id=1122, 437.83575pt x 510.708pt>
+File: images/Delta1_Slotted.png Graphic file (type png)
+
+<use images/Delta1_Slotted.png>
+Package pdftex.def Info: images/Delta1_Slotted.png used on input line 487.
+(pdftex.def)             Requested size: 308.7903pt x 360.19724pt.
+
+<images/Delta2_Slotted.png, id=1123, 442.65375pt x 221.628pt>
+File: images/Delta2_Slotted.png Graphic file (type png)
+
+<use images/Delta2_Slotted.png>
+Package pdftex.def Info: images/Delta2_Slotted.png used on input line 494.
+(pdftex.def)             Requested size: 308.7903pt x 154.61436pt.
+ [55 <./images/Delta2_Plain.png> <./images/Delta1_Slotted.png>] <images/Delta3.
+png, id=1131, 413.74574pt x 368.577pt>
+File: images/Delta3.png Graphic file (type png)
+
+<use images/Delta3.png>
+Package pdftex.def Info: images/Delta3.png used on input line 513.
+(pdftex.def)             Requested size: 352.90608pt x 314.39423pt.
+ [56 <./images/Delta2_Slotted.png> <./images/Delta3.png>] <images/Mu1_Pitching_
+Moment.png, id=1146, 463.13025pt x 317.988pt>
+File: images/Mu1_Pitching_Moment.png Graphic file (type png)
+
+<use images/Mu1_Pitching_Moment.png>
+Package pdftex.def Info: images/Mu1_Pitching_Moment.png used on input line 540.
+
+(pdftex.def)             Requested size: 330.84819pt x 227.16075pt.
+ [57 <./images/Mu1_Pitching_Moment.png>]
+<images/Mu2_Pitching_Moment.png, id=1160, 389.455pt x 454.69875pt>
+File: images/Mu2_Pitching_Moment.png Graphic file (type png)
+
+<use images/Mu2_Pitching_Moment.png>
+Package pdftex.def Info: images/Mu2_Pitching_Moment.png used on input line 567.
+
+(pdftex.def)             Requested size: 242.62335pt x 283.26324pt.
+
+Overfull \hbox (22.05789pt too wide) in paragraph at lines 567--568
+ [][] 
+ []
+
+<images/Mu3_Pitching_Moment.png, id=1161, 297.11pt x 405.515pt>
+File: images/Mu3_Pitching_Moment.png Graphic file (type png)
+
+<use images/Mu3_Pitching_Moment.png>
+Package pdftex.def Info: images/Mu3_Pitching_Moment.png used on input line 573.
+
+(pdftex.def)             Requested size: 207.33206pt x 282.99228pt.
+ [58 <./images/Mu2_Pitching_Moment.png> <./images/Mu3_Pitching_Moment.png>] [59
+] [60]
+<images/HighLiftDevices_Flowchart.png, id=1196, 1824.8175pt x 1377.145pt>
+File: images/HighLiftDevices_Flowchart.png Graphic file (type png)
+
+<use images/HighLiftDevices_Flowchart.png>
+Package pdftex.def Info: images/HighLiftDevices_Flowchart.png used on input lin
+e 677.
+(pdftex.def)             Requested size: 507.29788pt x 382.8452pt.
+
+Overfull \hbox (66.16695pt too wide) in paragraph at lines 677--678
+ [][] 
+ []
+
+[61 <./images/HighLiftDevices_Flowchart.png (PNG copy)>] [62] [63] [64]
+(./images/CLAlphaWingHighLift_ATR.tikz) [65]
+(./images/CLAlphaWingHighLift_B747.tikz) [66]) (./contents/Chapter_TakeOff.tex
+[67]
 Chapter 5.
-)) [37
-
-] [38
 
 
-] [39
+pdfTeX warning: pdflatex.exe (file ./images/TakeOffRun.pdf): PDF inclusion: fou
+nd PDF version <1.6>, but at most version <1.5> allowed
+<images/TakeOffRun.pdf, id=1453, 445.84827pt x 178.54102pt>
+File: images/TakeOffRun.pdf Graphic file (type pdf)
 
-] (./Tesi_Appendices.tex (./appendices/HDFDatabase.tex [40
+<use images/TakeOffRun.pdf>
+Package pdftex.def Info: images/TakeOffRun.pdf used on input line 15.
+(pdftex.def)             Requested size: 449.95543pt x 180.18605pt.
 
-]
+Overfull \hbox (8.8245pt too wide) in paragraph at lines 15--16
+ [][] 
+ []
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\gls' on input line 21.
+
+[68
+
+] [69 <./images/TakeOffRun.pdf>]
+(c:/texlive/texmf-local/tex/latex/mtpro2/umt2ms.fd
+File: umt2ms.fd 2006/05/03 v1.1 MathTimePro II Script (PCTeX/WaS)
+) [70]
+<images/McCormickGroundEffect.png, id=1537, 342.68025pt x 349.305pt>
+File: images/McCormickGroundEffect.png Graphic file (type png)
+
+<use images/McCormickGroundEffect.png>
+Package pdftex.def Info: images/McCormickGroundEffect.png used on input line 20
+0.
+(pdftex.def)             Requested size: 172.04079pt x 175.36627pt.
+ [71 <./images/McCormickGroundEffect.png>] <images/GroundEffect.pdf, id=1548, 4
+60.31238pt x 189.11964pt>
+File: images/GroundEffect.pdf Graphic file (type pdf)
+
+<use images/GroundEffect.pdf>
+Package pdftex.def Info: images/GroundEffect.pdf used on input line 214.
+(pdftex.def)             Requested size: 441.13094pt x 181.24979pt.
+ [72 <./images/GroundEffect.pdf>]
+<images/AlphaInputTakeOff.pdf, id=1717, 317.40582pt x 437.15433pt>
+File: images/AlphaInputTakeOff.pdf Graphic file (type pdf)
+
+<use images/AlphaInputTakeOff.pdf>
+Package pdftex.def Info: images/AlphaInputTakeOff.pdf used on input line 258.
+(pdftex.def)             Requested size: 198.50757pt x 273.40755pt.
+ [73 <./images/AlphaInputTakeOff.pdf>]
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\gls' on input line 289.
+
+[74] <images/BalancedFieldLength.pdf, id=1744, 437.28938pt x 311.1125pt>
+File: images/BalancedFieldLength.pdf Graphic file (type pdf)
+
+<use images/BalancedFieldLength.pdf>
+Package pdftex.def Info: images/BalancedFieldLength.pdf used on input line 321.
+
+(pdftex.def)             Requested size: 264.68124pt x 188.31146pt.
+)) [75 <./images/BalancedFieldLength.pdf>]
+[76
+
+
+] (./Tesi_Appendices.tex (./appendices/HDFDatabase.tex
 Appendix A.
 (c:/texlive/2015/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2015/06/04 1.6 listings language file
 )
 (c:/texlive/2015/texmf-dist/tex/latex/listings/lstmisc.sty
 File: lstmisc.sty 2015/06/04 1.6 (Carsten Heinz)
-) [41
+) [77
 
-] [42]
-<images/HDF_Dataset_creation.png, id=743, 1266.7325pt x 612.2875pt>
+] [78]
+<images/HDF_Dataset_creation.png, id=1824, 1266.7325pt x 612.2875pt>
 File: images/HDF_Dataset_creation.png Graphic file (type png)
 
 <use images/HDF_Dataset_creation.png>
 Package pdftex.def Info: images/HDF_Dataset_creation.png used on input line 122
 .
 (pdftex.def)             Requested size: 388.19737pt x 187.63965pt.
- [43 <./images/HDF_Dataset_creation.png (PNG copy)>] <images/deltaAlphaSforza.p
-ng, id=784, 921.4425pt x 538.26094pt>
+ [79 <./images/HDF_Dataset_creation.png (PNG copy)>] <images/deltaAlphaSforza.p
+ng, id=1864, 921.4425pt x 538.26094pt>
 File: images/deltaAlphaSforza.png Graphic file (type png)
 
 <use images/deltaAlphaSforza.png>
 Package pdftex.def Info: images/deltaAlphaSforza.png used on input line 129.
 (pdftex.def)             Requested size: 242.62335pt x 141.7268pt.
 
-<images/DAlphaVsLambdaLEVsDy_MATLAB.png, id=785, 421.575pt x 316.18124pt>
+<images/DAlphaVsLambdaLEVsDy_MATLAB.png, id=1865, 421.575pt x 316.18124pt>
 File: images/DAlphaVsLambdaLEVsDy_MATLAB.png Graphic file (type png)
 
 <use images/DAlphaVsLambdaLEVsDy_MATLAB.png>
@@ -4827,13 +5257,10 @@ Overfull \hbox (44.11577pt too wide) in paragraph at lines 129--130
  [][][] 
  []
 
-[44
+[80
 
  <./images/deltaAlphaSforza.png> <./images/DAlphaVsLambdaLEVsDy_MATLAB.png (PNG
- copy)>])) [45] [46
-
-
-]
+ copy)>])) [81]
 Package microtype Info: Character `029' is missing
 (microtype)             in font `T1/ntxtlf/m/sc/12'.
 (microtype)             Ignoring protrusion settings for this character.
@@ -4842,7 +5269,8 @@ Package microtype Info: Character `029' is missing
 Package biblatex Warning: No driver for entry type 'other'.
 (biblatex)                Using fallback driver on input line 189.
 
-[47
+[82
+
 
 ]
 
@@ -4854,18 +5282,16 @@ Package glossaries Warning: Deprecated command \glossarystyle.
  I recommend you switch to \setglossarystyle unless you want to maintain backwa
 rd compatibility on input line 197.
 
-[48] (./Tesi.gls [49
+[83] (./Tesi.gls [84
 
 
 
-]) [50] (./Tesi.acr) [51
+]) [85] (./Tesi.acr) [86
 
 
 
-] (./Tesi.sym [52
+] (./Tesi.sym [87
 
-
-] [53
 
 
 ])
@@ -4892,7 +5318,7 @@ Package minitoc(hints) Warning: W0024
 (minitoc(hints))                Some hints have been written 
 (minitoc(hints))                in the Tesi.log file.
 
-[54]
+[88]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 252.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 252.
  (./Tesi.aux
@@ -4919,7 +5345,7 @@ File: italian.mld 2006/01/13
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 252.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 252.
 Package rerunfilecheck Info: File `Tesi.out' has not changed.
-(rerunfilecheck)             Checksum: FA6CA51087E10A85442E72A961748890;1919.
+(rerunfilecheck)             Checksum: E2B434EB9919E4FE804B49ACE0EA437F;2584.
 
 
 LaTeX Warning: There were multiply-defined labels.
@@ -4929,31 +5355,42 @@ Package logreq Info: Writing requests to 'Tesi.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 66211 strings out of 493054
- 1363199 string characters out of 6138326
- 2170994 words of memory out of 5000000
- 67655 multiletter control sequences out of 15000+600000
- 183229 words of font info for 166 fonts, out of 8000000 for 9000
+ 67795 strings out of 493054
+ 1392655 string characters out of 6138326
+ 2588446 words of memory out of 5000000
+ 68651 multiletter control sequences out of 15000+600000
+ 240803 words of font info for 208 fonts, out of 8000000 for 9000
  1142 hyphenation exceptions out of 8191
- 61i,25n,104p,10382b,4155s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 61i,30n,107p,10382b,4225s stack positions out of 5000i,500n,10000p,200000b,80000s
 {c:/texlive/2015/texmf-dist/fonts/enc/dvips/newtx/ntx-ec-tlf-sc.enc}{c:/texli
-ve/2015/texmf-dist/fonts/enc/dvips/newtx/ntx-ec-tlf.enc}{c:/texlive/2015/texmf-
-dist/fonts/enc/dvips/base/8r.enc}<c:/texlive/2015/texmf-dist/fonts/type1/public
-/aspectratio/amarbi.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/aspectra
-tio/amarri.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/bera/fvmr8a.pfb><
-c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2bmit.pfb><c:/texlive/texmf-l
-ocal/fonts/type1/pctex/mtpro2/mt2exa.pfb><c:/texlive/texmf-local/fonts/type1/pc
-tex/mtpro2/mt2mis.pfb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2mit.p
-fb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2sys.pfb><c:/texlive/texm
-f-local/fonts/type1/pctex/mtpro2/mt2syt.pfb><c:/texlive/2015/texmf-dist/fonts/t
-ype1/public/tex-gyre/qtmb.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/te
-x-gyre/qtmr.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmri.p
-fb><c:/texlive/2015/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb><c:/texlive/
-2015/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb>
-Output written on Tesi.pdf (55 pages, 2852251 bytes).
+ve/2015/texmf-dist/fonts/enc/dvips/tex-gyre/q-ts1.enc}{c:/texlive/2015/texmf-di
+st/fonts/enc/dvips/newtx/ntx-ec-tlf.enc}{c:/texlive/2015/texmf-dist/fonts/enc/d
+vips/base/8r.enc}<c:/texlive/2015/texmf-dist/fonts/type1/public/aspectratio/ama
+rbi.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/aspectratio/amarri.pfb><
+c:/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><c:/texliv
+e/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb><c:/texlive/2015/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb><c:/texlive/2015/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2015/texmf-dist/fonts/type1/
+public/amsfonts/cm/cmr7.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/amsf
+onts/cm/cmr8.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cms
+y7.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/bera/fvmr8a.pfb><c:/texli
+ve/texmf-local/fonts/type1/pctex/mtpro2/mt2bmit.pfb><c:/texlive/texmf-local/fon
+ts/type1/pctex/mtpro2/mt2exa.pfb><c:/texlive/texmf-local/fonts/type1/pctex/mtpr
+o2/mt2exe.pfb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2exf.pfb><c:/t
+exlive/texmf-local/fonts/type1/pctex/mtpro2/mt2mif.pfb><c:/texlive/texmf-local/
+fonts/type1/pctex/mtpro2/mt2mis.pfb><c:/texlive/texmf-local/fonts/type1/pctex/m
+tpro2/mt2mit.pfb><c:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2mst.pfb><c
+:/texlive/texmf-local/fonts/type1/pctex/mtpro2/mt2syf.pfb><c:/texlive/texmf-loc
+al/fonts/type1/pctex/mtpro2/mt2sys.pfb><c:/texlive/texmf-local/fonts/type1/pcte
+x/mtpro2/mt2syt.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/tex-gyre/qtm
+b.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmr.pfb><c:/texl
+ive/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmri.pfb><c:/texlive/2015/texm
+f-dist/fonts/type1/urw/helvetic/uhvb8a.pfb><c:/texlive/2015/texmf-dist/fonts/ty
+pe1/urw/helvetic/uhvr8a.pfb>
+Output written on Tesi.pdf (89 pages, 8711606 bytes).
 PDF statistics:
- 1136 PDF objects out of 1200 (max. 8388607)
- 1008 compressed objects within 11 object streams
- 534 named destinations out of 1000 (max. 500000)
- 29615 words of extra memory for PDF output out of 29859 (max. 10000000)
+ 2303 PDF objects out of 2487 (max. 8388607)
+ 2059 compressed objects within 21 object streams
+ 1024 named destinations out of 1200 (max. 500000)
+ 39564 words of extra memory for PDF output out of 42996 (max. 10000000)
 

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+    <panel id="Inner panel">
+        <semispan unit="m">9.0</semispan>
+        <dihedral unit="deg">1.5</dihedral>
+        <sweep_leading_edge unit="deg">24</sweep_leading_edge>
+        <inner_section>
+            <chord unit="m">3.0</chord>
+            <airfoil file="naca63209.xml"/>
+            <geometric_twist unit="deg">0.0</geometric_twist>
+        </inner_section>
+        <outer_section>
+            <chord unit="m">1.5</chord>
+            <airfoil file="naca63209.xml"/>
+            <geometric_twist unit="deg">-2.5</geometric_twist>
+        </outer_section>
+    </panel>
+</jpad_config>

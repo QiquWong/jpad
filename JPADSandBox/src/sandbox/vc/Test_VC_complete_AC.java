@@ -1,7 +1,5 @@
 package sandbox.vc;
 
-import java.util.HashMap;
-
 import javax.measure.unit.NonSI;
 
 import org.jscience.physics.amount.Amount;
@@ -14,7 +12,6 @@ import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.MyConfiguration;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.DatabaseReaderEnum;
-import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import javafx.util.Pair;
 
@@ -76,11 +73,11 @@ public class Test_VC_complete_AC {
 
 	// Define the analysis
 	theAnalysis.doAnalysis(aircraft, 
-						AnalysisTypeEnum.AERODYNAMIC, 
-						AnalysisTypeEnum.BALANCE,
-						AnalysisTypeEnum.WEIGHTS,
-						AnalysisTypeEnum.PERFORMANCES, 
-						AnalysisTypeEnum.COSTS
+//						AnalysisTypeEnum.AERODYNAMIC, 
+//						AnalysisTypeEnum.BALANCE,
+						AnalysisTypeEnum.WEIGHTS //,
+//						AnalysisTypeEnum.PERFORMANCES //, 
+//						AnalysisTypeEnum.COSTS
 						);		
 	// Write results
 	/* Lorenzo sandbox:

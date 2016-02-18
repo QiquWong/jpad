@@ -726,6 +726,7 @@ public class LiftingSurface extends AeroComponent{
 				yLoc);
 		_theAirfoilsListExposed.add(0, airfoilRootExposed);
 		_theAirfoilsListExposed.get(0).getGeometry().update(yLoc);
+		_theAirfoilsListExposed.get(0).initializeGeometry(aircraft.get_exposedWing(), yLoc);
 
 		if (aircraft.get_wing().get_theAirfoilsList().size() < 3) {
 			MyAirfoil airfoilTipExposed = aircraft.get_wing().get_theAirfoilsList().get(1);
@@ -2218,9 +2219,7 @@ public class LiftingSurface extends AeroComponent{
 			_twistDistributionExposed = MyArray.createArray(
 					twistExposed
 					.interpolate(yStationTwistExposed, _yStationsIntegral));
-System.out.println(" alpha exposed " + _alpha0lDistributionExposed.toString());
-System.out.println(" chord exposed " + _chordsVsYExposed.toString());
-System.out.println(" twist exposed " + _twistDistributionExposed.toString());
+
 
 			
 		}
@@ -3599,6 +3598,5 @@ System.out.println(" twist exposed " + _twistDistributionExposed.toString());
 	public void set_twistDistribution(MyArray _twistDistribution) {
 		this._twistDistributionExposed = _twistDistribution;
 	}
-
 
 }

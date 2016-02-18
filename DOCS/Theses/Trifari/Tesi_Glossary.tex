@@ -28,7 +28,7 @@
 %}
 
 \newdualentry{DOC}%
-  {DOC}            % abbreviation
+  {D.O.C.}            % abbreviation
   {Direct Operative Cost}  % long form
   {The totality of aircraft costs directly connected to the aircraft flight. It can be seen as the amount of money necessary to carry 1 ton of payload upon 1 km}
 
@@ -43,22 +43,27 @@
   {Is the speed of the aircraft relative to the airmass in which it is flying; TAS is the true measure of aircraft performance in cruise, thus it is the speed listed in aircraft specifications, manuals, performance comparisons, pilot reports, and every situation when cruise or endurance performance needs to be measured. It is the speed normally listed on the flight plan, also used in flight planning, before considering the effects of wind}
   
 \newdualentry{PNG} % label
-  {PNG}            % abbreviation
+  {png}            % abbreviation
   {Portable Network Graphics}  % long form
   {A raster graphics file format that supports lossless data compression. PNG was created as an improved, non-patented replacement for Graphics Interchange Format (GIF), and is the most used lossless image compression format on the Internet} % description
   
-\newdualentry{TiKZ} % label
-  {TikZ}            % abbreviation
-  {TikZ}  % long form
-  {Is a set of higher-level macros that use PGF} % description
+\newglossaryentry{TiKZ}{ % 
+  name=TikZ,      
+  description={Is a set of higher-level macros that use PGF}
+}
 
 \newglossaryentry{List}{%
 	name=List,
 	description={The java.util.List interface is a subtype of the java.util.Collection interface. It represents an ordered list of objects, meaning you can access the elements of a List in a specific order, and by an index too. You can also add the same element more than once to a List}
 }
 
+\newglossaryentry{Enum}{%
+	name=Enumeration,
+	description={The java.util.Enumeration interface represents a special data type that enables for a variable to be a set of predefined constants. The variable must be equal to one of the values that have been predefined for it. Because they are constants, the names of an enum type's fields are in uppercase letters.}
+}
+
 \newglossaryentry{Static}{%
-	name=Static method,
+	name=static method,
 	description={The term static means that the method is available at the Class level, and so does not require that an object is instantiated before it's called}
 }
 
@@ -67,19 +72,18 @@
 	description={The java.util.Map interface represents a mapping between a key and a value. The Map interface is not a subtype of the Collection interface. Therefore it behaves a bit different from the rest of the collection types}
 }
 
+\newglossaryentry{DATCOM}{%
+	name=DATCOM,
+	description={Digital Datcom is a computer program which calculates static stability, high lift and control, and dynamic derivative characteristics using the methods contained in the USAF Stability and Control Datcom (Data Compendium). Configuration geometry, attitude, and Mach range capabilities are consistent with those accommodated by the Datcom. The program contains a trim option that computes control deflections and aerodynamic increments for vehicle trim at subsonic Mach numbers}
+}
+
 \newglossaryentry{parsing}{%
-	name=Parsing,
+	name=parsing,
 	description={Parsing or syntactic analysis is the process of analysing a string of symbols, either in natural language or in computer languages, conforming to the rules of a formal grammar}
 }
 
-\newglossaryentry{Table}{%
-   name=Table,
-   description={%
-      Is a collection that associates an ordered pair of keys, called a row key and a column key, with a single value. A table may be sparse, with only a small fraction of row key / column key pairs possessing a corresponding value}
-}
-
 \newglossaryentry{User:Developer}{%
-   name=User developer,
+   name=user developer,
    description={%
       The term refers to the developer which will use a method without being interested in how the method performs the required action. This is the case of a utility method: the developer is the one who writes the method, while the user developer is who uses that method to accomplish some action which requires the functionality provided by the utility method. It has to be noticed that the user developer and the developer can be the same person}
 }
@@ -315,10 +319,30 @@
    Specific Fuel Consumption
 }
 
+\newacronym{acr:AOE}{AOE}{%
+   All Operative Engines
+}
+
+\newacronym{acr:OEI}{OEI}{%
+   One Inoperative Engine
+}
+
 \newacronym{acr:SFCJ}{SFCJ}{%
    Jet Specific Fuel Consumption
 }
 
+\newacronym{acr:ODE}{ODE}{%
+   Ordinary Differential Equations
+}
+
+\newacronym{acr:IVP}{IVP}{%
+   Initial Value Problem
+}
+
 \newacronym{acr:UAV}{UAV}{%
-   Unmanned Aerial Vehicle 
+   Unmanned Aerial Vehicles
+}
+
+\newacronym{acr:LER}{LER}{%
+  Leading Edge Radius 
 }

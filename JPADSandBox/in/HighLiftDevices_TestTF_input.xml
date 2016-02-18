@@ -24,28 +24,20 @@
 			<Flap_outboard unit="">0.6624</Flap_outboard>
 		</Flap2>
 		<Slat1>
-			<Delta_Slat unit="°">20</Delta_Slat>
-			<Cs_C unit="">0.115</Cs_C>
+			<Delta_Slat unit="°">15</Delta_Slat>
+			<Cs_C unit="">0.15</Cs_C>
 			<cExt_c unit="">1.1</cExt_c>
 			<LEradius_c_ratio unit="">0.0097</LEradius_c_ratio>
-			<Slat_inboard unit="">0.192</Slat_inboard>
-			<Slat_outboard unit="">0.3696</Slat_outboard>
+			<Slat_inboard unit="">0.14</Slat_inboard>
+			<Slat_outboard unit="">0.37</Slat_outboard>
 		</Slat1>
 		<Slat2>
-			<Delta_Slat unit="°">20</Delta_Slat>
+			<Delta_Slat unit="°">15</Delta_Slat>
 			<Cs_C unit="">0.193</Cs_C>
 			<cExt_c unit="">1.1</cExt_c>
 			<LEradius_c_ratio unit="">0.0097</LEradius_c_ratio>
-			<Slat_inboard unit="">0.4279</Slat_inboard>
-			<Slat_outboard unit="">0.6578</Slat_outboard>
+			<Slat_inboard unit="">0.42</Slat_inboard>
+			<Slat_outboard unit="">0.9</Slat_outboard>
 		</Slat2>
-		<Slat3>
-			<Delta_Slat unit="°">20</Delta_Slat>
-			<Cs_C unit="">0.243</Cs_C>
-			<cExt_c unit="">1.1</cExt_c>
-			<LEradius_c_ratio unit="">0.0097</LEradius_c_ratio>
-			<Slat_inboard unit="">0.666</Slat_inboard>
-			<Slat_outboard unit="">0.997</Slat_outboard>
-		</Slat3>
 	</B747>
 </input>

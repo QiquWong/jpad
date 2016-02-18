@@ -133,9 +133,20 @@ public class ThrustCalc {
 			double bpr, EngineTypeEnum engineType, 
 			EngineOperatingConditionEnum flightCondition, double altitude, double mach
 			) {
-		
-		return EngineDatabaseManager.getThrustRatio(mach, altitude, bpr, engineType, flightCondition)*
+
+		double tDisp = EngineDatabaseManager.getThrustRatio(mach, altitude, bpr, engineType, flightCondition)*
 				t0*nEngine*phi;
+		
+		/*
+		 *  T/T0 from turbofan database is underpredicted.
+		 *  This correction factor is used to fix the result.
+		 *   (Determined thanks to a comparison with ADAS Performance Module)
+		 */
+		double kCorrection = 0.113;
+		
+		double tDispEff = tDisp + kCorrection*tDisp;
+		
+		return tDispEff;
 	}
 	
 	/**
@@ -219,7 +230,8 @@ public class ThrustCalc {
 				thrust[i] = calculateThrustDatabase(t0, nEngine, phi, bpr, engineType, flightCondition, altitude, mach);
 //						thrust[i] = calculateThrustHowe(t0, nEngine, bpr, phi, altitude, mach);
 			else if (engineType == EngineTypeEnum.TURBOFAN)
-				thrust[i] = calculateThrust(t0, nEngine, phi, altitude);
+//				thrust[i] = calculateThrust(t0, nEngine, phi, altitude);
+				thrust[i] = calculateThrustDatabase(t0, nEngine, phi, bpr, engineType, flightCondition, altitude, mach);
 		}
 	
 		return thrust;
