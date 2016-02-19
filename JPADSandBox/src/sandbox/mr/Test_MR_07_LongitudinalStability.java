@@ -710,13 +710,118 @@ public class Test_MR_07_LongitudinalStability {
 		System.out.println("\n\n------------------------------------");
 		System.out.println("\n PITCHING MOMENT  ");
 		System.out.println("\n------------------------------------");
-
+		
+		// Wing
+		
 		double cMWing;
 		
-//		StabilityCalculator.CalcPitchingMoment theCMCalculator = theStablityCalculator
-//				.new CalcPitchingMoment(theWing);
-//		cMWing = theCMCalculator.calculateCMQuarterMACIntegral(alphaWing, theConditions);
-//		theCMCalculator.plotCMatAlpha(alphaWing, theConditions, subfolderPath);
+		StabilityCalculator.CalcPitchingMoment theCMCalculator = theStablityCalculator
+				.new CalcPitchingMoment(theWing, theConditions);
+		cMWing = theCMCalculator.calculateCMQuarterMACIntegral(alphaWing);
+		System.out.println(" CM Wing at alpha " + alphaWing + " is " + cMWing);
+//		theCMCalculator.plotCMatAlpha(alphaWing, subfolderPath);
+		//System.out.println("\n\n\t\t\tDONE PLOTTING CM vs eta");
+		
+		
+		// PLOT
+		
+		int numAlpha = 40;
+		double [] alphaVectorCM = new double [numAlpha];
+		double alphaStart = 0;
+		MyArray alphaArray = new MyArray(); 
+		alphaArray.setDouble(MyArrayUtils.linspace(
+				alphaStart, alphaStart+(numAlpha/2), numAlpha));
+		double [] cMVector = new double [numAlpha];
+		double [] alphaArraydouble = new double [numAlpha];
+		
+		for (int i=0; i<numAlpha; i++){
+			cMVector[i] = theCMCalculator.calculateCMQuarterMACIntegral(
+					Amount.valueOf(Math.toRadians(alphaArray.get(i)), SI.RADIAN));
+			alphaArraydouble[i] = alphaArray.get(i);
+			
+			}
+
+		
+		MyChartToFileUtils.plotNoLegend(
+				alphaArraydouble , cMVector,
+				null, null, null, null,
+				"alpha", "CM",
+				"deg", "", 
+				subfolderPath," Moment Coefficient vs alpha for Wing" );	
+		
+		System.out.println("\n\n\t\t\tDONE PLOTTING CM vs ALPHA FOR WING");
+		
+		
+		
+//		StabilityCalculatorInduced theStablityCalculatorInduced = new StabilityCalculatorInduced();
+//		StabilityCalculatorInduced.CalcPitchingMoment theCMCalculatorInduced = theStablityCalculatorInduced
+//				.new CalcPitchingMoment(theWing, theConditions);
+//		cMWing = theCMCalculator.calculateCMQuarterMACIntegral(alphaWing);
+//		System.out.println(" CM Wing at alpha " + alphaWing + " is " + cMWing);
+//		theCMCalculator.plotCMatAlpha(alphaWing, subfolderPath);
+//		//System.out.println("\n\n\t\t\tDONE PLOTTING CM vs eta");
+//		
+//		
+//		// PLOT
+//		
+//		double [] alphaVectorCMInduced = new double [numAlpha];
+//		double [] cMVectorInduced = new double [numAlpha];
+//		double [] alphaArraydoubleInduced = new double [numAlpha];
+//		
+//		for (int i=0; i<numAlpha; i++){
+//			cMVectorInduced[i] = theCMCalculatorInduced.calculateCMQuarterMACIntegral(
+//					Amount.valueOf(Math.toRadians(alphaArray.get(i)), SI.RADIAN));
+//			alphaArraydoubleInduced[i] = alphaArray.get(i);
+//			
+//			}
+//
+//		
+//		MyChartToFileUtils.plotNoLegend(
+//				alphaArraydoubleInduced ,cMVectorInduced,
+//				null, null, null, null,
+//				"alpha", "CM",
+//				"deg", "", 
+//				subfolderPath," Moment Coefficient vs alpha for Wing with alpha induced" );	
+//		
+//		System.out.println("\n\n\t\t\tDONE PLOTTING CM vs ALPHA FOR WING");
+		
+		
+		
+		// Wing
+		
+		double cMHTail;
+		
+		StabilityCalculator.CalcPitchingMoment theCMHTailCalculator = theStablityCalculator
+				.new CalcPitchingMoment(horizontalTail, theConditions);
+		cMHTail = theCMHTailCalculator.calculateCMQuarterMACIntegral(alphaHorizontalTail);
+		System.out.println(" CM Wing at alpha " + alphaHorizontalTail + " is " + cMHTail);
+//		theCMCalculator.plotCMatAlpha(alphaWing, subfolderPath);
+		//System.out.println("\n\n\t\t\tDONE PLOTTING CM vs eta");
+		
+		
+		// Horizontal Tail
+		
+
+		double [] cMVectorHTail = new double [numAlpha];
+
+		
+		for (int i=0; i<numAlpha; i++){
+			cMVectorHTail[i] = theCMHTailCalculator.calculateCMQuarterMACIntegral(
+					Amount.valueOf(Math.toRadians(alphaArray.get(i)), SI.RADIAN));
+			
+			}
+
+		
+		MyChartToFileUtils.plotNoLegend(
+				alphaArraydouble , cMVectorHTail,
+				null, null, null, null,
+				"alpha", "CM",
+				"deg", "", 
+				subfolderPath," Moment Coefficient vs alpha for Horizontal Tail" );	
+		
+		System.out.println("\n\n\t\t\tDONE PLOTTING CM vs ALPHA FOR HORIZONTAL TAIL");
+		
+		
 		
 	}
 
