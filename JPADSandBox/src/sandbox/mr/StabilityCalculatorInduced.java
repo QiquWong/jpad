@@ -1,5 +1,7 @@
 package sandbox.mr;
 
+import static java.lang.Math.toRadians;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +25,7 @@ import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyMathUtils;
 import standaloneutils.customdata.MyArray;
 
-public class StabilityCalculator {
+public class StabilityCalculatorInduced {
 
 	/**
 	 * This method evaluates the tau factor reading external databases. 
@@ -163,12 +165,13 @@ public class CalcPitchingMoment{
 	
 	LiftingSurface theLiftingSurface;
 	OperatingConditions theConditions;
+	AlphaEffective theAlphaCalculator;
 	
 	double meanAerodinamicChord, xMAC, yMAC;
 	double [] xLEActualArray, yArray, cMACAirfoils, pitchingMomentAirfoilsDueToLift, 
 	liftForceAirfoils, cMAirfoilsDueToLift, armMomentAirfoils, pitchingMomentLiftingSurface, cMLiftingSurfaceArray,
-	yStationsNB, cLDistributionNB, chordLocal, xcPArrayLRF;
-	Double[] cLDistribution;
+	yStationsNB, cLDistributionNB, chordLocal, xcPArrayLRF, alphaEffective;
+	Double[] cLDistribution,  alphaEffectiveDistribution;
 	int nPointSemiSpan;
 	List<MyAirfoil> airfoilList = new ArrayList<MyAirfoil>();;
 	LSAerodynamicsManager theLSManager; 
@@ -181,7 +184,7 @@ public class CalcPitchingMoment{
 		this.theConditions = theConditions;
 		
 		theLSManager = theLiftingSurface.getAerodynamics();
-		
+		theAlphaCalculator = new AlphaEffective(theLSManager, theLiftingSurface, theConditions);
 		meanAerodinamicChord = theLiftingSurface.get_meanAerodChordActual().getEstimatedValue();
 		xMAC = theLiftingSurface.get_xLEMacActualLRF().getEstimatedValue();
 		nPointSemiSpan = theLSManager.get_nPointsSemispanWise();
@@ -189,6 +192,7 @@ public class CalcPitchingMoment{
 		
 		// initializing array
 		xLEActualArray = new double [nPointSemiSpan];
+		alphaEffective = new double [nPointSemiSpan];
 		yArray = new double [nPointSemiSpan];
 		yArray = theLSManager.get_yStations();
 		cMACAirfoils = new double [nPointSemiSpan];
@@ -201,6 +205,8 @@ public class CalcPitchingMoment{
 		cMLiftingSurfaceArray = new double [nPointSemiSpan];	
 		chordLocal = new double [nPointSemiSpan];	
 		xcPArrayLRF = new double [nPointSemiSpan];
+		alphaEffectiveDistribution = new Double [nPointSemiSpan];
+		
 		
 		for (int i=0; i<nPointSemiSpan ; i++){
 			xLEActualArray[i] = theLiftingSurface.getXLEAtYActual(yArray[i]);
@@ -230,9 +236,14 @@ public class CalcPitchingMoment{
 	
 		double dynamicPressure = theConditions.get_dynamicPressure().getEstimatedValue();
 		
+	
+		alphaEffective = theAlphaCalculator.calculateAlphaEffective(alphaLocal);
+		alphaEffectiveDistribution = MyMathUtils.getInterpolatedValue1DLinear(
+				theAlphaCalculator.getyStationsActual(), alphaEffective, yArray);
+		
 		for (int i=0 ; i<nPointSemiSpan ;  i++){
 			cLDistribution[i] = airfoilList.get(i).getAerodynamics().calculateClAtAlpha(
-					alphaLocal.getEstimatedValue()+ 
+					alphaEffectiveDistribution[i]+ 
 					airfoilList.get(i).getGeometry().get_twist().getEstimatedValue());
 			liftForceAirfoils [i] = cLDistribution[i] * dynamicPressure * chordLocal[i];
 			xcPArrayLRF [i] = chordLocal[i] *( 
@@ -270,7 +281,7 @@ public class CalcPitchingMoment{
 		
 		double[] yStationsND = theLSManager.get_yStationsND();
 		MyChartToFileUtils.plotNoLegend(
-				yStationsND , cMLiftingSurfaceArray,
+				yStationsND ,cMLiftingSurfaceArray,
 				null, null, null, null,
 				"eta stat.", "CM",
 				"", "", 

@@ -77,6 +77,11 @@ public class AlphaEffective {
 	}
 
 
+	public double[] getyStationsActual() {
+		return yStationsActual;
+	}
+
+
 	public double[] calculateAlphaEffective(
 			Amount<Angle> alphaInitial){
 		double velocity;

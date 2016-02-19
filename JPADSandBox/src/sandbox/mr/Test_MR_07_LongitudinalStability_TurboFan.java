@@ -49,6 +49,7 @@ import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import functions.Linspace;
 import javafx.util.Pair;
+import sandbox.mr.StabilityCalculator.CalcPitchingMoment;
 import sandbox.mr.WingCalculator.MeanAirfoil;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
@@ -704,6 +705,7 @@ public class Test_MR_07_LongitudinalStability_TurboFan {
 
 
 
+
 		// -----------------------------------------------------------------------
 		// PITCHING MOMENT
 		// -----------------------------------------------------------------------
@@ -713,7 +715,44 @@ public class Test_MR_07_LongitudinalStability_TurboFan {
 		System.out.println("\n PITCHING MOMENT  ");
 		System.out.println("\n------------------------------------");
 
+		double cMWing;
+		
+		StabilityCalculator.CalcPitchingMoment theCMCalculator = theStablityCalculator
+				.new CalcPitchingMoment(theWing, theConditions);
+		cMWing = theCMCalculator.calculateCMQuarterMACIntegral(alphaWing);
+		System.out.println(" CM Wing at alpha " + alphaWing + " is " + cMWing);
+		//theCMCalculator.plotCMatAlpha(alphaWing, subfolderPath);
+		//System.out.println("\n\n\t\t\tDONE PLOTTING CM vs eta");
+		
+		
+		// PLOT
+		
+		int numAlpha = 40;
+		double [] alphaVectorCM = new double [numAlpha];
+		double alphaStart = 0;
+		MyArray alphaArray = new MyArray(); 
+		alphaArray.setDouble(MyArrayUtils.linspace(
+				alphaStart, alphaStart+(numAlpha/2), numAlpha));
+		double [] cMVector = new double [numAlpha];
+		double [] alphaArraydouble = new double [numAlpha];
+		
+		for (int i=0; i<numAlpha; i++){
+			cMVector[i] = theCMCalculator.calculateCMQuarterMACIntegral(
+					Amount.valueOf(Math.toRadians(alphaArray.get(i)), SI.RADIAN));
+			alphaArraydouble[i] = alphaArray.get(i);
+			
+			}
 
+		
+		MyChartToFileUtils.plotNoLegend(
+				alphaArraydouble , cMVector,
+				null, null, null, null,
+				"alpha", "CM",
+				"deg", "", 
+				subfolderPath," Moment Coefficient vs alpha for Wing" );	
+		
+		System.out.println("\n\n\t\t\tDONE PLOTTING CM vs ALPHA FOR WING");
+		
 	}
 
 }
