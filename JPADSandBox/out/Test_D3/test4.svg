@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     id="svg"
+     class="svg"
+     width="700"
+     height="400">
+   <style>
+.chart {
+
+}
+
+.main {
+	
+}
+
+.main text {
+    font: 10px sans-serif;	
+}
+
+.axis line, .axis path {
+    shape-rendering: crispEdges;
+    stroke: black;
+    fill: none;
+    stroke-width:3;
+    stroke-miterlimit:4;
+    stroke-dasharray:none;
+    stroke-opacity:1;
+}
+
+circle {
+    fill: steelblue;
+}
+</style>
+   <g transform="translate(40,20)">
+      <rect width="640" height="350"/>
+      <g class="x axis" transform="translate(0,350)">
+         <g class="tick" transform="translate(20,0)" style="opacity: 1;">
+            <line y2="-350" x2="0"/>
+            <text dy=".71em" y="3" x="0" style="text-anchor: middle;">-300</text>
+         </g>
+         <g class="tick" transform="translate(70,0)" style="opacity: 1;">
+            <line y2="-350" x2="0"/>
+            <text dy=".71em" y="3" x="0" style="text-anchor: middle;">-250</text>
+         </g>
+         <g class="tick" transform="translate(120,0)" style="opacity: 1;">
+            <line y2="-350" x2="0"/>
+            <text dy=".71em" y="3" x="0" style="text-anchor: middle;">-200</text>
+         </g>
+         <g class="tick" transform="translate(170,0)" style="opacity: 1;">
+            <line y2="-350" x2="0"/>
+            <text dy=".71em" y="3" x="0" style="text-anchor: middle;">-150</text>
+         </g>
+         <g class="tick" transform="translate(220,0)" style="opacity: 1;">
+            <line y2="-350" x2="0"/>
+            <text dy=".71em" y="3" x="0" style="text-anchor: middle;">-100</text>
+         </g>
+         <g class="tick" transform="translate(270,0)" style="opacity: 1;">
+            <line y2="-350" x2="0"/>
+            <text dy=".71em" y="3" x="0" style="text-anchor: middle;">-50</text>
+         </g>
+         <g class="tick" transform="translate(320,0)" style="opacity: 1;">
+            <line y2="-350" x2="0"/>
+            <text dy=".71em" y="3" x="0" style="text-anchor: middle;">0</text>
+         </g>
+         <g class="tick" transform="translate(370,0)" style="opacity: 1;">
+            <line y2="-350" x2="0"/>
+            <text dy=".71em" y="3" x="0" style="text-anchor: middle;">50</text>
+         </g>
+         <g class="tick" transform="translate(420,0)" style="opacity: 1;">
+            <line y2="-350" x2="0"/>
+            <text dy=".71em" y="3" x="0" style="text-anchor: middle;">100</text>
+         </g>
+         <g class="tick" transform="translate(470,0)" style="opacity: 1;">
+            <line y2="-350" x2="0"/>
+            <text dy=".71em" y="3" x="0" style="text-anchor: middle;">150</text>
+         </g>
+         <g class="tick" transform="translate(520,0)" style="opacity: 1;">
+            <line y2="-350" x2="0"/>
+            <text dy=".71em" y="3" x="0" style="text-anchor: middle;">200</text>
+         </g>
+         <g class="tick" transform="translate(570,0)" style="opacity: 1;">
+            <line y2="-350" x2="0"/>
+            <text dy=".71em" y="3" x="0" style="text-anchor: middle;">250</text>
+         </g>
+         <g class="tick" transform="translate(620,0)" style="opacity: 1;">
+            <line y2="-350" x2="0"/>
+            <text dy=".71em" y="3" x="0" style="text-anchor: middle;">300</text>
+         </g>
+         <path class="domain" d="M0,-350V0H640V-350"/>
+      </g>
+      <g class="y axis">
+         <g class="tick" transform="translate(0,275)" style="opacity: 1;">
+            <line x2="640" y2="0"/>
+            <text dy=".32em" x="-3" y="0" style="text-anchor: end;">-100</text>
+         </g>
+         <g class="tick" transform="translate(0,175)" style="opacity: 1;">
+            <line x2="640" y2="0"/>
+            <text dy=".32em" x="-3" y="0" style="text-anchor: end;">0</text>
+         </g>
+         <g class="tick" transform="translate(0,75)" style="opacity: 1;">
+            <line x2="640" y2="0"/>
+            <text dy=".32em" x="-3" y="0" style="text-anchor: end;">100</text>
+         </g>
+         <path class="domain" d="M640,0H0V350H640"/>
+      </g>
+   </g>
+</svg>

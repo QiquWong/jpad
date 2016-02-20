@@ -4,33 +4,32 @@
      class="chart"
      width="550"
      height="550">
-   <style>&#xD;
-.chart {&#xD;
-&#xD;
-}&#xD;
-&#xD;
-.main {&#xD;
-	&#xD;
-}&#xD;
-&#xD;
-.main text {&#xD;
-    font: 10px sans-serif;	&#xD;
-}&#xD;
-&#xD;
-.axis line, .axis path {&#xD;
-    shape-rendering: crispEdges;&#xD;
-    stroke: black;&#xD;
-    fill: none;&#xD;
-    stroke-width:3;&#xD;
-    stroke-miterlimit:4;&#xD;
-    stroke-dasharray:none;&#xD;
-    stroke-opacity:1;&#xD;
-}&#xD;
-&#xD;
-circle {&#xD;
-    fill: steelblue;&#xD;
-}&#xD;
-&#xD;
+   <style>
+.chart {
+
+}
+
+.main {
+	
+}
+
+.main text {
+    font: 10px sans-serif;	
+}
+
+.axis line, .axis path {
+    shape-rendering: crispEdges;
+    stroke: black;
+    fill: none;
+    stroke-width:3;
+    stroke-miterlimit:4;
+    stroke-dasharray:none;
+    stroke-opacity:1;
+}
+
+circle {
+    fill: steelblue;
+}
 </style>
    <g transform="translate(60.0,20.0)"
       width="475"
@@ -155,5 +154,9 @@ circle {&#xD;
                   d="M47.5,206.79999999999998C48.41249821411634,204.27189968467977,78.46280623825672,91.01768077000429,95,75.20000000000002S202.6674399796492,197.23587665955324,237.5,197.4S280.25,141.00000000000003,304,141.00000000000003S380,178.6,380,178.6S419.5833333333333,423,380,423S194.75,423,142.5,423S68.27924773022049,239.4012970168612,66.5,235"/>
          </g>
       </g>
+   </g>
+   <text x="20" y="100">Hello World</text>
+   <g class="main">
+      <text x="20" dx="12em" y="56" dy="2em" font="20px sans-serif">Agodemar!!!</text>
    </g>
 </svg>

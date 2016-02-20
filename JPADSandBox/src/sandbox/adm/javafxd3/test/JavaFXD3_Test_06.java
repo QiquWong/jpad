@@ -4,18 +4,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import java.util.Stack;
 import java.util.stream.IntStream;
 
@@ -25,22 +19,18 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathFactory;
 
 import org.treez.javafxd3.d3.D3;
+import org.treez.javafxd3.d3.behaviour.Zoom;
+import org.treez.javafxd3.d3.behaviour.Zoom.ZoomEventType;
 import org.treez.javafxd3.d3.coords.Coords;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.scales.LinearScale;
 import org.treez.javafxd3.d3.svg.Axis;
-import org.treez.javafxd3.d3.svg.Axis.Orientation;
 import org.treez.javafxd3.d3.svg.InterpolationMode;
 import org.treez.javafxd3.d3.svg.Line;
-import org.treez.javafxd3.d3.wrapper.Inspector;
+import org.treez.javafxd3.d3.svg.Axis.Orientation;
 import org.treez.javafxd3.javafx.JavaFxD3Browser;
-import org.treez.javafxd3.javafx.SaveHelper;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -60,7 +50,7 @@ import writers.JPADStaticWriteUtils;
  * Demonstrates how d3.js can be used with a JavaFx WebView
  *
  */
-public class JavaFXD3_Test_05 extends Application {
+public class JavaFXD3_Test_06 extends Application {
 
 	//#region ATTRIBUTES
 
@@ -83,6 +73,19 @@ public class JavaFXD3_Test_05 extends Application {
 
 	private Selection svg;
 
+	private Axis xAxis;
+	private Axis yAxis;
+
+	// set margins
+	final Margin margin = new Margin(20, 20, 30, 40);
+	final int width = 700 - margin.left - margin.right;
+	final int height = 400 - margin.top - margin.bottom;
+
+	private Selection scaleLabel;
+	private Selection translateLabel;	
+	
+	
+	
 	//#end region
 
 	//#region METHODS
@@ -142,7 +145,7 @@ public class JavaFXD3_Test_05 extends Application {
 //					SaveHelper saveHelper = new SaveHelper();
 //					saveHelper.saveSvg(stringifiedSVG);
 
-					String outputFilePath = outputFolderPath + "test3.svg";
+					String outputFilePath = outputFolderPath + "test4.svg";
 					File file = new File(outputFilePath);
 					if (file != null) {
 						try {
@@ -204,178 +207,84 @@ public class JavaFXD3_Test_05 extends Application {
 		} catch (TransformerException e) {
 			e.printStackTrace();
 		}
-
-
-
-		// create initial d3 content
-
-		// data that you want to plot, I"ve used separate arrays for x and y values
-		double[] xData = {5, 10, 25, 32, 40, 40, 15, 7};
-		double[] yData = {3, 17, 4, 10, 6, -20, -20.0, 0};
-
-		// size and margins for the chart
-
-		double totalWidth = 550;
-		double totalHeight = 550;
-
-		double marginLeft = 60;
-		double marginRight = 15;
-
-		double marginTop = 20;
-		double marginBottom = 60;
-
-		double width = totalWidth - marginLeft - marginRight;
-		double height = totalHeight - marginTop - marginBottom;
-
-		// x and y scales, I've used linear here but there are other options
-		// the scales translate data values to pixel values for you
-		double xMin = 0;
-		double xMax = 50;
-		LinearScale x = d3.scale().linear() //
-		          .domain(new double[]{xMin, xMax})  // the range of the values to plot
-		          .range(new double[]{0, width});        // the pixel range of the x-axis
-
-		double yMin = -25;
-		double yMax = 25;
-		LinearScale y = d3.scale().linear() //
-		          .domain(new double[]{yMin, yMax}) //
-		          .range(new double[]{height, 0});
-
-		// the chart object, includes all margins
-		Selection chart = d3.select("svg") //
-			.attr("width", width + marginRight + marginLeft) //
-			.attr("height", height + marginTop + marginBottom) //
-			.attr("class", "chart");
-
-		// the main object where the chart and axis will be drawn
-		Selection main = chart.append("g") //
-			.attr("transform", "translate(" + marginLeft + "," + marginTop + ")") //
-			.attr("width", width) //
-			.attr("height", height) //
-			.attr("class", "main");
-
-		// draw the x axis
-		Axis xAxis = d3.svg().axis().scale(x).orient(Orientation.BOTTOM);
-
-		//xAxis.innerTickSize(10);
-
-
-		main.append("g") //
-			.attr("transform", "translate(0," + height + ")") //
-			.attr("class", "main axis date").call(xAxis);
-
-		// draw the y axis
-		Axis yAxis = d3.svg().axis() //
-			.scale(y) //
-			.orient(Orientation.LEFT);
+		
+		initialize();
 		
 		
-		
-		main.append("g") //
-			.attr("transform", "translate(0,0)") //
-			.attr("class", "main axis date") //
-			.call(yAxis);
-
-		// draw the graph object
-		Selection g = main.append("svg:g");
-
-		g.selectAll("scatter-dots")
-		  .data(yData)  // using the values in the ydata array
-		  .enter().append("svg:circle")  // create a new circle for each value
-		      .attr("cy", new YAxisDatumFunction(webEngine, y, yData) ) // translate y value to a pixel
-		      .attr("cx", new XAxisDatumFunction(webEngine, x, xData)) // translate x value
-		      .attr("r", 5) // radius of circle
-		      .style("opacity", 1.0); // opacity of circle
-
-
-		// Line, the path generator
-		Line line;
-
-		InterpolationMode mode = InterpolationMode.LINEAR;
-
-		line = d3.svg().line()
-				.x(new XAxisDatumFunction(webEngine, x, xData))
-				.y(new YAxisDatumFunction(webEngine, y, yData));
-
-		Selection g2 = g.append("svg:g")
-				.classed("Pippo-line-group", true);
-
-		String cssClassName = "Agodemar-Test-Line";
-		Selection pathLine = g2.append("path").classed(cssClassName, true);
-		pathLine
-			.attr("fill","none")
-			.attr("stroke","red")
-			.attr("stroke-width","5")
-			.attr("stroke-linecap","square") // "butt", "round", "square"
-			.attr("stroke-dasharray","15,10");
-
-		final Stack<Coords> points = new Stack<>();
-
-//		double [] x = {50.0, 120.0, 400.0, 700};
-//		double [] y = {100.0, 30.0, 20.0, 200};
-
-		IntStream.range(0, xData.length)
-			.forEach(i ->
-					points.push(new Coords(webEngine, xData[i], yData[i]))
-					);
-
-//		System.out.println("points:");
-//		points.stream()
-//			.forEach(p -> System.out.println(p.x()+", "+p.y()));
-
-		mode = InterpolationMode.MONOTONE;
-		line = line.interpolate(mode);
-		System.out.println("Interpolation mode: " + line.interpolate());
-
-		double tension = 0.1;
-		line = line.tension(tension);
-//		System.out.println("tension: " + line.tension());
-
-		List<Coords> coordsList = new ArrayList<>(points);
-
-//		System.out.println("coordsList:");
-//		coordsList.stream()
-//			.forEach(c -> System.out.println(c.x()+", "+c.y()));
-
-		String coordinates = line.generate(coordsList);
-
-//		System.out.println("coordinates: " + coordinates);
-
-		pathLine.attr("d", coordinates);
-
-		LabelFactory labelFactory = new LabelFactory();
-		
-//		Selection myText = labelFactory.createInParentSelection(svg);
-//		myText.text("Agodemar!!!");
-		
-		Selection text = svg.append("text") //
-				.attr("x", 20) // String.format("%d", widthSVG/2))
-				.attr("y", 100) // String.format("%d", heightSVG/2))
-				.text("Hello World");		
-		
-		svg.append("g")
-			.attr("class", "main")
-			.append("text")
-			.attr("x", 20).attr("dx", "12em")
-			.attr("y", 56).attr("dy", "2em")
-			.attr("font","20px sans-serif")
-			.text("Agodemar!!!");
-
-//		svg.append("g")
-//			.attr("class", "y" + " " + "axis")
-//			.call(yAxis).append("text")
-//			.attr("transform", "rotate(-90)")
-//			.attr("y", 6).attr("dy", ".71em")
-//			.style("text-anchor", "end")
-//			.text("Frequency");
-		
-		
-//		// make a paragraph <p> in the html
-//		d3.select("body").append("p").text("Agodemar :: Hi there!");
-
 	}
 
+	private void initialize() {
 
+		LinearScale x = d3.scale() //
+				.linear() //
+				.domain(-width / 2, width / 2) //
+				.range(0.0, width);
+
+		LinearScale y = d3.scale() //
+				.linear() //
+				.domain(-height / 2, height / 2) //
+				.range(height, 0.0);
+
+		// set the x axis
+		xAxis = d3.svg() //
+				.axis() //
+				.scale(x) //
+				.orient(Orientation.BOTTOM) //
+				.tickSize(-height);
+
+		// set the y axis
+		yAxis = d3.svg() //
+				.axis() //
+				.scale(y) //
+				.orient(Orientation.LEFT) //
+				.ticks(5) //
+				.tickSize(-width);
+
+		Selection selection = d3.select("#root");
+
+		// create info text boxes
+		scaleLabel = selection.append("div") //
+				.text("scale:");
+
+		translateLabel = selection //
+				.append("div") //
+				.text("translate:");
+
+		//.x(x) //
+		//.y(y) //
+
+		svg = d3.select("#svg") //
+				.attr("width", width + margin.left + margin.right) //
+				.attr("height", height + margin.top + margin.bottom) //
+				.append("g") //
+				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+		// create zoom behavior
+		Zoom zoom = d3.behavior() //
+				.zoom() //	
+				.x(x)
+				.y(y)
+				.on(ZoomEventType.ZOOM, new ZoomDatumFunction(d3, scaleLabel, translateLabel, svg, xAxis, yAxis));
+
+		svg.call(zoom);
+
+		svg.append("rect") //
+				.attr("width", width) //
+				.attr("height", height);
+
+		svg.append("g") //
+				.attr("class", "x axis") //
+				.attr("transform", "translate(0," + height + ")") //
+				.call(xAxis);
+
+		svg.append("g") //
+				.attr("class", "y axis") //
+				.call(yAxis);
+
+	}
+	
+	
+	
 	/**
 	 * @return
 	 */

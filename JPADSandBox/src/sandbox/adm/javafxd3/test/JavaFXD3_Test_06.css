@@ -1,4 +1,12 @@
 
+svg {
+  font: 10px sans-serif;
+  shape-rendering: crispEdges;
+}
+rect {
+  fill: #ddd;
+}
+
 .chart {
 
 }
@@ -15,7 +23,7 @@
     shape-rendering: crispEdges;
     stroke: black;
     fill: none;
-    stroke-width:3;
+    stroke-width:1;
     stroke-miterlimit:4;
     stroke-dasharray:none;
     stroke-opacity:1;
