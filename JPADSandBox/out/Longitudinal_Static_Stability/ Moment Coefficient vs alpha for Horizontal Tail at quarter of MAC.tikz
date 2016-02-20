@@ -1,4 +1,4 @@
-% Moment Coefficient vs alpha for Horizontal Tail
+% Moment Coefficient vs alpha for Horizontal Tail at quarter of MAC
 \begin{tikzpicture}
 
 \begin{axis}[

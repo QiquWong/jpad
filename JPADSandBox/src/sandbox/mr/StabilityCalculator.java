@@ -17,6 +17,7 @@ import aircraft.componentmodel.InnerCalculator;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
+import aircraft.components.liftingSurface.LSAerodynamicsManager.MeanAirfoil;
 import database.databasefunctions.DatabaseReader;
 import aircraft.components.liftingSurface.LiftingSurface;
 import standaloneutils.MyChartToFileUtils;
@@ -143,15 +144,10 @@ public class StabilityCalculator {
 
 
 	/**
-	 * This method calculates the Pitching moment coefficient of a wing respect to a quarter of MAC
-	 * starting from the lifting characteristics and moment ones of the airfoils.
+	 * This method calculates the Pitching moment coefficient of a wing respect a point of MAC.
 	 *
-	 * @param aircraft
-	 * @param angle of attack between the flow direction and the fuselage reference line
-	 * @param angle of deflection of the elevator in deg or radians
-	 * @param MyAirfoil the mean airfoil of the wing
-	 * @param chord ratio of elevator
-	 * @param eta the pressure ratio. For T tail is 1.
+	 * @param Amount<Angle> alphaLocal
+	 * @param Double xPercentMAC
 	 *
 	 *
 	 * @author  Manuela Ruocco
@@ -218,7 +214,7 @@ public class CalcPitchingMoment{
 
 	//METHODS--------------------------------------
 
-	public double calculateCMIntegral (Amount<Angle> alphaLocal, Double xPercentMAC){
+	public double calculateCMIntegral (Amount<Angle> alphaLocal, double xPercentMAC){
 		if (alphaLocal.getUnit() == NonSI.DEGREE_ANGLE)
 			alphaLocal = alphaLocal.to(SI.RADIAN);
 
@@ -334,6 +330,64 @@ public class CalcPitchingMoment{
 	}
 
 
+	
+	public double getACLiftingSurface(){
+		double cMTempAlphaFirst;
+		double cMTempAlphaSecond;
+		double cMDiff;
+		double percent = 0.25;
+		
+		Amount<Angle> alphaFirst;
+		Amount<Angle> alphaSecond;
+		
+		LSAerodynamicsManager.MeanAirfoil theMeanAirfoilCalculator = theLiftingSurface.getAerodynamics().new MeanAirfoil();
+		MyAirfoil meanAirfoil = theMeanAirfoilCalculator.calculateMeanAirfoil(theLiftingSurface);
+	
+		alphaFirst = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		alphaSecond = Amount.valueOf(
+				meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue()/2,
+				SI.RADIAN);
+		
+		cMTempAlphaFirst = calculateCMIntegral ( alphaFirst, percent);
+		cMTempAlphaSecond = calculateCMIntegral ( alphaSecond, percent);
+		
+		cMDiff = cMTempAlphaSecond-cMTempAlphaFirst;
+//		System.out.println(" cm first " + cMTempAlphaFirst);
+//		System.out.println(" cm second " + cMTempAlphaSecond);
+//		System.out.println("cm diff " + cMDiff);
+		while ( Math.abs(cMDiff) > 0.00005){
+			if ((cMTempAlphaFirst > 0 & cMTempAlphaSecond <0) || ( (cMTempAlphaSecond - cMTempAlphaFirst) < 0)){
+
+				percent = percent + 0.0001;	
+//				System.out.println(" percent " + percent);
+				cMTempAlphaFirst = calculateCMIntegral ( alphaFirst, percent);
+				cMTempAlphaSecond = calculateCMIntegral ( alphaSecond, percent);
+				cMDiff = cMTempAlphaSecond-cMTempAlphaFirst;
+//				System.out.println(" first");
+//				System.out.println(" cm first " + cMTempAlphaFirst);
+//				System.out.println(" cm second " + cMTempAlphaSecond);
+//				System.out.println("cm diff " + cMDiff);
+			}
+			
+				if ((cMTempAlphaFirst < 0 & cMTempAlphaSecond > 0) || ( (cMTempAlphaSecond - cMTempAlphaFirst) > 0)){
+
+					percent = percent - 0.0001;	
+//					System.out.println(" percent " + percent);
+					cMTempAlphaFirst = calculateCMIntegral ( alphaFirst, percent);
+					cMTempAlphaSecond = calculateCMIntegral ( alphaSecond, percent);	
+					cMDiff = cMTempAlphaSecond-cMTempAlphaFirst;
+//					System.out.println("second");
+//					System.out.println(" cm first " + cMTempAlphaFirst);
+//					System.out.println(" cm second " + cMTempAlphaSecond);
+//					System.out.println("cm diff " + cMDiff);
+				}
+		}	
+				
+		return percent;
+		
+	}
+	
+	
 	public double[] getcMLiftingSurfaceArray() {
 		return cMLiftingSurfaceArray;
 	}
