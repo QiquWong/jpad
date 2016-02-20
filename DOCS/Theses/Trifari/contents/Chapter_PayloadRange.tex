@@ -1,24 +1,24 @@
 %------------------------------- CHAPTER NAME --------------------------------
 \chapter{Payload-Range}
 The Payload-Range diagram is a very important resource in aircrafts design because it allows to illustrate an aircraft operational limits by showing the trade-off relationship between the payload that can be carried and the range that can be flown; moreover, in synergy with the \gls{DOC} diagram, it’s very useful to the future aircraft customers to have an idea of expected profits derived by their investment.
-
+%
 Payload-Range is also a key feature of the design requirements so it’s possible to state that its relevance is felt through all the preliminary design phase.
-
+%
 %-------------------------- THEORETICAL BACKGROUND ---------------------------
 \section{Theoretical background}
 To better understand the theoretical background behind this diagram, the first step is to focus the attention upon the link between the range and the fuel consumption, which is influenced by aircraft weight through Breguet formulas. 
-
+%
 It’s possible to imagine, at first, an aircraft in which payload and fuel weights can be managed at will, so that, in this completely flexible aircraft, the more the required range is, the less is the payload in order to carry more fuel at a specified maximum take-off weight; this leads to the diagram in figure~\ref{fig:Figure1}.
-
-\begin{figure}[ht]
+%
+\begin{figure}[t]
 \centering
 \includegraphics[keepaspectratio, width=0.66\textwidth]{Flexible_Payload_Range}
 \caption{Payload-Range for a completely flexible aircraft}
 \label{fig:Figure1}
 \end{figure}
-
+%
 Because the payload is carried in the fuselage while the fuel is carried in wing tanks, the more the payload, the more the weight in the fuselage; this means that wings are incrementally more bending loaded so that a heavier structure is required. However, in this way the operating empty weight grows up limiting the payload the aircraft can carry, at that maximum take-off and fuel weights, for that range; the consequence of this is that, in particular for long range missions, the payload is too low, providing low profits.
-
+%
 In order to avoid this situation it’s possible to decide, preventively, the maximum payload weight the aircraft can carry in fuselage so that the maximum bending load for wings and, in consequence their structural weight, is set; this particular weight is named \gls{acr:MZFW}.
 
 \bigskip
@@ -26,7 +26,7 @@ In order to avoid this situation it’s possible to decide, preventively, the ma
 As a result of this, the previous diagram changes in the one reported in figure~\ref{fig:Figure2} which starts with the maximum zero fuel weight and keep it constant until the maximum take-off weight is reached. From this point on, the far the aircraft have to go, the more the fuel it needs, but, since the maximum take-off weight is set, the only way to increase fuel weight is to reduce the payload; this condition is represented by the second segment of the diagram and, along this, the aircraft weight is always equal to the maximum take-off weight. With further increase of the required range for the aircraft, the fuel tanks maximum capacity will be reached prevent to store more fuel; the only solution at this problem is to put the additional fuel into the fuselage, reducing, consequently, the payload weight in order to respect the maximum zero fuel weight limitation. Along this last segment the payload weight decreases more rapidly with increasing range reaching, ideally, the value of zero at which the flight mission is useless; moreover the aircraft weight is not equal to the maximum take-off weight anymore but to a lower one.
 
 \bigskip
-\begin{figure}[ht]
+\begin{figure}[b]
 \centering
 \includegraphics[keepaspectratio, width=0.66\textwidth]{Payload_Range}
 \caption{Payload-Range with MZFW limitation}
@@ -36,28 +36,28 @@ As a result of this, the previous diagram changes in the one reported in figure~
 \bigskip
 \noindent
 Now that the theory behind the Payload-Range is explained, it’s interesting to see how to build up the diagram. For this purpose at least the preliminary weight estimation has to be done in order to know the value of the following weights.
-
+%
 \begin{itemize}
 \item W\textsubscript{TO}
 \item W\textsubscript{OE}
 \item W\textsubscript{Payload}
 \end{itemize}
-
+%
 \noindent 
 Furthermore four fundamental couples of payload and range values have to be defined:
-
+%
 \begin{itemize}
 \item Point A, in which the payload is the maximum allowed and the range is zero.
 \item Point B, in which the maximum range, with maximum take-off weight and maximum payload, is reached. This range value is called Armoinc Range.
 \item Point C, in which the fuel tanks full capacity is reached with a payload lower than the maximum one and still the maximum take-off weight.
 \item Point D, in which the take-off weight decreases because of the reduction of payload to zero in order to store more fuel in the fuselage.
 \end{itemize}
-
+%
 \noindent
 Since point A is very simple to obtain, it’s more interesting to analyze how to calculate points B, C and D coordinates.
-
+%
 For point B it’s necessary to focus the attention upon Breguet formulas in order to calculate the maximum range the aircraft can fly at maximum take-off weight with maximum payload; these are different for jet or propeller aircraft and can be written as follow, with \gls{Range} in \si{}{\km}, \gls{acr:SFC} in $\frac{\si{lb}}{\si{hp}\cdot\hour}$ and \gls{acr:SFCJ} in $\frac{\si{lb}}{\si{lb}\cdot\hour}$.
-
+%
 \begin{subequations}\label{eqn:BreguetEquation}
 \begin{equation}\label{eqn:BreguetEquationProp}
 R=
@@ -75,25 +75,22 @@ R=
 \end{equation}
 \end{subequations}
 
-\bigskip
 \noindent
 Knowing the specific fuel consumption, the aerodynamic and propeller efficiency, or speed for jet aircraft, in cruise condition, the only unknown left for calculate the range is the weight ratio. In order to calculate this it’s necessary to start by evaluating the amount of fuel the airplane can take on board, at maximum take-off weight and maximum payload, with the following formula.
-
+%
 \begin{equation}
 W_{TO,\text{max}}=W_{OE}+W_{\text{payoad,max}}+W_{\text{fuel}}
 \label{eqn:Equation1.3}
 \end{equation}
 
-\bigskip
 \noindent
 Once the used fuel weight is known, it’s possible to use the fuel fraction method from the weight estimation design phase in order to find the total weight ratio across the entire aircraft mission. 
-
+%
 \begin{equation}
 W_{\text{fuel}}=\left(1-M_{ff}\right)\cdot W_{TO}
 \label{eqn:Equation1.4}
 \end{equation}
 
-\bigskip
 \noindent
 $M_{ff}$ is the fuel fraction of the entire mission profile given by the following expression.
 
@@ -113,7 +110,6 @@ M_{ff}=\frac{W_1}{W_{TO}}\cdot
 	   \label{eqn:Equation1.5} 
 \end{equation}
 
-\bigskip
 \noindent
 From this point on, it’s necessary to have a table, like the one of table~\ref{table:Table1}, in which all weight ratios can be found statistically except for cruise, alternate cruise and loiter phases; these three unknown ratios are those that build up the Breguet weight ratio required by the range formula.   
 
@@ -141,47 +137,43 @@ Supersonic Cruise              & 0,990 & 0,995 & 0,995 & 0,920-0,870 & 0,985 & 0
 \caption{Suggested fuel fractions}
 \label{table:Table1}
 \end{table}
-
+%
 \noindent
 For the evaluation of point C, similar steps have to be followed with the difference that, in this case, the fuel is the maximum that the wing tanks can store and the payload is the unknown of the (\ref{eqn:Equation1.6}).
-
+%
 \begin{equation}
 W_{TO,\text{max}}=W_{OE}+W_{\text{payload}}+W_{\text{fuel,max}}
 \label{eqn:Equation1.6}
 \end{equation}
 
-\bigskip
 \noindent
 From this equation it’s possible to calculate point C ordinate, while for the range abscissa the same procedure used for point B range has to be followed with the difference that now it’s necessary to use the fuel weight relative to the maximum fuel tank capacity which is known from the wing fuel tank design.
-  
+%
 Finally for point D, the payload is set at zero so that is possible to evaluate the WTO, relative to maximum fuel weight with no passengers, from the following equation.
-
+%
 \begin{equation}
 W_{TO}=W_{OE}+W_{\text{fuel,max}}
 \label{eqn:Equation1.7}
 \end{equation}
-
-\bigskip
+%
 \noindent
 This new take-off weight generates a lower $M_{ff}$, from fuel fraction equation, which leads to a bigger weight ratio to be used in Breguet formulas with the result of a bigger range.
-
+%
 %------------------------- JAVA CLASS ARCHITECTURE ---------------------------
-\bigskip
 \section{Java class architecture}
 In this paragraph the implementation in the JPAD software of the Payload-Range diagram, through the \lstinline[language=Java]!PayloadRangeCalc! Java class, is presented. The idea has been to create a dedicated Java class which is demanded of the calculation of the four couple of range and payload values presented before; moreover it has to confront the user chosen Mach number condition with the best range one and to parametrize the analysis at different maximum take-off weight in order to help users making design decisions about different version of the same aircraft.
-
+%
 The class core consists of the following three principal methods which have to evaluate points B, C and D coordinates using the procedure explained before.
-
+%
 \begin{itemize}
 \item\lstinline[language=Java]!calcRangeAtMaxPayload!
 \item\lstinline[language=Java]!calcRangeAtMaxFuel!
 \item\lstinline[language=Java]!calcRangeAtZeroPayload!
 \end{itemize}
-
-\bigskip
+%
 \noindent
 Each of these requires in input the table~\ref{table:Table2} data, a database which collects all data from table~\ref{table:Table1},  named \emph{FuelFractions.h5}, and an engine database, for turboprop or turbofan, in which all specific fuel consumption values, at given Mach number and altitude, are stored.
-
+%
 \begin{table}[!ht]
 \begin{tabular}{p{7cm}p{7.5cm}}
 \toprule
@@ -203,26 +195,27 @@ Each of these requires in input the table~\ref{table:Table2} data, a database wh
 \caption{Input data}
 \label{table:Table2}
 \end{table}
-
+%
 From this point on, the evaluation of (\ref{eqn:Equation1.3}), (\ref{eqn:Equation1.6}) and (\ref{eqn:Equation1.7}), for each method, and of (\ref{eqn:Equation1.4}), for all of them, is performed in order to set up the following calculations and to obtain the unknown value of the payload in point~C case; after that the fuel fractions database is read in order to obtain all known data necessary to calculate the required weight ratio to be used in (\ref{eqn:BreguetEquationProp}) or (\ref{eqn:BreguetEquationJet}) depending on the aircraft engine type. It’s important to highlight that the database reading process is made up so that it can recognize all different kind of aircraft from table~\ref{table:Table1} and read the related line values.
 
 \bigskip
 \noindent
 Since each method has to compare the chosen Mach number condition with the best range one, the boolean variable presented before is used in order to distinguish between different application cases; in this way, when the user specify the aircraft engine type and the boolean variable, the method reads the specific fuel consumption value, at given Mach number and altitude, from the related engine database and performs the calculation of the lift and drag wing coefficients which are then used to obtain the aerodynamic efficiency value. At this point is possible to calculate the range that represents point B, C or D abscissa. 
-
+%
 It should be noted that, in case of a true value of the boolean variable, the evaluation of the lift and drag wing coefficients, as well as the best range Mach number that replaces the user chosen one, is performed by calculating the parabolic drag polar characteristic points and choosing those that maximizes the range (point E for the turboprop and point A for the turbofan); whereas for a false value of the boolean variable, the lift coefficient is calculated by using the current flight condition angle of attack into the linear part of the wing lift curve, while the drag coefficient is evaluated from the aircraft total drag polar taking also into account potential wave drag sources.   
 
 \bigskip
 \noindent
 Now that all points coordinates are known, the two following methods are demanded to build up abscissas and ordinates values arrays to be used in plotting the diagram.
-
+%
 \begin{itemize}
 \item\lstinline[language=Java]!createRangeArray!
 \item\lstinline[language=Java]!createPayloadArray!
 \end{itemize}
-
+%
 \begin{table}[!ht]
 \centering
+\makebox[\textwidth]{
 \begin{tabular}{cc}
 \toprule
 \textbf{Range Array} & \textbf{Payload Array} \\ 
@@ -233,17 +226,18 @@ Now that all points coordinates are known, the two following methods are demande
 \lstinline[language=Java]!calcRangeAtZeroPayload! output &	0,0 \\ [0.2cm]
 \bottomrule
 \end{tabular}
+}
 \caption{Payload and range array components}
 \label{table:Table3}
 \end{table}
-
+%
 \noindent
 They use the Java \gls{List} interface to generate an ordered collection of values which are then populated with the following values.
 
 \bigskip
 \noindent
 Finally the two arrays are used as input, together with another one from the best range condition analysis, for the last method, named~\lstinline[language=Java]!createPayloadRangeCharts_Mach!, that has to plot the diagram; this uses the~\lstinline[language=Java]!JFreeChart! Java library\cite{jfreechart} to generate a \gls{PNG} output image into the output folder of the software and is also able to create a \gls{TiKZ} version of the diagram to be used in \LaTeX.
-
+%
 As said before, this class finds another purpose in parameterizing the diagram in different maximum take-off weight conditions. To do that, the three core methods are used again inside a new one, named \lstinline[language=Java]!createPayloadRangeMatrices!, which implements a recursive calculation of the three points coordinates at different maximum take-off mass conditions generated by decreasing the original mass by 5$\%$ until it reaches a total decrease of 20$\%$. This new method requires the same input data reported in table~\ref{table:Table2} except for the maximum take-off mass which is generated inside the method itself. The output matrices are then used in a plotting method, equivalent to previous one but named \lstinline[language=Java]!createPayloadRangeCharts_MaxTakeOffMass!, which generates the .png and .tikz output images by receiving as input two matrices and not two arrays as before.
 
 \bigskip
@@ -261,9 +255,9 @@ As said before, this class finds another purpose in parameterizing the diagram i
 \caption{Payload-Range java class flowchart for maximum take-off mass parameterization}
 \label{fig:Figure4}
 \end{figure}
-
+%
 %----------------------- CASE STUDY : ATR72 AND B747 -------------------------
-
+%
 \section{Case study: ATR-72 and B747-100B}
 With the purpose of validating calculations presented before, two case studies have been taken into account; the first one is on the ATR-72 and the second one on the B747-100B.
 
@@ -282,9 +276,9 @@ The two presented tests share the same architecture so that a general guideline 
 \bigskip
 \noindent
 For more clarity, listings of the two test types are reported, as an exemplificative practice, only in the case of the ATR-72 turboprop aircraft. 
-
+%
 First of all it’s necessary to set up all default folders in order to make them achievable from any location inside the software; this is done with the static method \lstinline[language=Java]!initWorkingDirectoryTree! of the \lstinline[language=Java]!MyConfiguration! class located in \lstinline[language=Java]!JPADConfigs! package. In this way, every time the user wants to point at a specific folder, like the input or output directory, it’s necessary only to call the \gls{Static} \lstinline[language=Java]!getDir!, also from \lstinline[language=Java]!MyConfiguration! class, which reads the~folder name, from a dedicated \gls{Enum}, and associate it with the related directory from a \gls{Map} named \lstinline[language=Java]!mapPaths!.
-
+%
 The second step is to read the engine and the fuel fractions databases with the related java class reader; this particular class type uses the super class \lstinline[language=Java]!DatabaseReader!, which implements the use of \lstinline[language=Java]!MyHDFReader! class, to access an~.h5 dataset values. For more information about how to build and use a \gls{HDF} database, see appendix~\ref{ch:hdf}.
 
 \bigskip
@@ -314,16 +308,16 @@ public class PayloadRange_Test_TP{
 						fuelFractionDatabaseFileName
 						);
 \end{lstlisting}
-
+%
 \noindent
 Now that all required resources are set up, following steps are to create the aircraft model, assign its operating conditions and perform all necessary analysis like the aerodynamic one. This is done throughout the use of the following three fundamental classes, which modes of operation are explained in the flowchart of figure~\ref{fig:Figure5}.
-
+%
 \begin{itemize}
 \item\lstinline[language=Java]!Aircraft! class
 \item\lstinline[language=Java]!OperatingConditions! class
 \item\lstinline[language=Java]!ACAnalysisManager! class
 \end{itemize}
-
+%
 \begin{lstlisting}[caption={Excerpt of the ATR-72 Payload-Range test - Aircraft, OperatingConditions and ACAnalysisManager setup}, captionpos=b, tabsize=2]
 		//--------------------------------------------------
 		// Operating Condition / Aircraft / AnalysisManager 
@@ -488,11 +482,9 @@ At this point, if the user wants to compare the chosen Mach number condition wit
 										test.getAltitude()),
 						test.getCurrentMach());
 	}
-	//--------------------------------------------------
-	// END OF THE TEST
 } 
 \end{lstlisting}
-
+%
 \noindent
 Otherwise, if it’s the maximum take-off mass parameterization the wanted analysis, the required call is for \lstinline[language=Java]!createPayloadRangeMatrices! method followed by the plotting method \lstinline[language=Java]!createPayloadRangeCharts_MaxTakeOffMass!. 
 
@@ -526,7 +518,7 @@ Otherwise, if it’s the maximum take-off mass parameterization the wanted analy
 \bigskip
 \noindent
 In conclusion, following pages shows a summary of input data used for each analyzed aircraft, together with their related results in terms of Payload-Range diagrams for both the chosen Mach number and best range comparison and max take-off mass parameterization. 
-
+%
 \begin{figure}
   \begin{adjustbox}{addcode={\begin{minipage}{\width}}{\caption{%
      \lstinline[language=Java]!Aircraft!, \lstinline[language=Java]!OperatingConditions! and \lstinline[language=Java]!ACAnalysisManager! flowchart}
@@ -535,14 +527,14 @@ In conclusion, following pages shows a summary of input data used for each analy
       \includegraphics[scale=.22]{HowToCreateADefaultAircraftInJPAD}
   \end{adjustbox}
 \end{figure}
-
+%
 \begin{figure}[!ht]
 \centering
 \includegraphics[keepaspectratio, width=0.8\textwidth]{ATR-72}
 \caption{ATR-72 views – Jane's All the World's Aircraft 2004-2005}
 \label{fig:Figure6}
 \end{figure}
-
+%
 \begin{table}[!hb]
 \makebox[\linewidth]{
 \begin{tabular}{p{4cm}p{7.5cm}p{2cm}}
@@ -571,26 +563,26 @@ In conclusion, following pages shows a summary of input data used for each analy
 \caption{ATR-72 input data}
 \label{table:Table4}
 \end{table}
-
+%
 \begin{figure}[!h]
 \centering
 \input{images/PayloadRange_Mach_TP.tikz}
 \caption{ATR-72 Payload-Range - Chosen Mach number and best range comparison}
 \end{figure}
-
+%
 \begin{figure}[!h]
 \centering
 \input{images/PayloadRange_MaxTakeOffMass_TP.tikz}
 \caption{ATR-72 Payload-Range - Maximum take-off mass parameterization}
 \end{figure}
-
+%
 \begin{figure}[!ht]
 \centering
 \includegraphics[keepaspectratio, width=0.8\textwidth]{B747-100B}
 \caption{B747-100B views – Jane's All the World's Aircraft 2004-2005}
 \label{fig:Figure7}
 \end{figure}
-
+%
 \begin{table}[!hb]
 \makebox[\linewidth]{
 \begin{tabular}{p{4cm}p{7.5cm}p{2cm}}
@@ -619,19 +611,19 @@ In conclusion, following pages shows a summary of input data used for each analy
 \caption{B747-100B input data}
 \label{table:Table5}
 \end{table}
-
+%
 \begin{figure}[!h]
 \centering
 \input{images/PayloadRange_Mach_TF.tikz}
 \caption{B747-100B Payload-Range - Chosen Mach number and best range comparison}
 \end{figure}
-
+%
 \begin{figure}[!h]
 \centering
 \input{images/PayloadRange_MaxTakeOffMass_TF.tikz}
 \caption{B747-100B Payload-Range - Maximum take-off mass parameterization}
 \end{figure}
-
+%
 \clearpage
 \begin{table}[!ht]
 \makebox[\linewidth]{

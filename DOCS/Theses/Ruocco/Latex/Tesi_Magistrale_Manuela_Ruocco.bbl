@@ -330,6 +330,22 @@
       \field{title}{A Finite-Step Method for Calculation of Theoretical Load Distributions for Arbitrary Lifting-Surface Arrangements at Subsonic Speeds}
       \field{year}{1969}
     \endentry
+    \entry{airf}{book}{}
+      \name{author}{1}{}{%
+        {{hash=ee03da9700c2026e5ea2fb1abb66589a}{CA}{C\bibinitperiod}{AIR\bibnamedelimb FORCE\bibnamedelimb TEST\bibnamedelimb PILOT\bibnamedelimb SCHOOL\bibnamedelimb EDWARDS\bibnamedelima AFB}{A\bibinitperiod\bibinitdelim F\bibinitperiod\bibinitdelim T\bibinitperiod\bibinitdelim P\bibinitperiod\bibinitdelim S\bibinitperiod\bibinitdelim E\bibinitperiod\bibinitdelim A\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {published by the author}%
+      }
+      \strng{namehash}{ee03da9700c2026e5ea2fb1abb66589a}
+      \strng{fullhash}{ee03da9700c2026e5ea2fb1abb66589a}
+      \field{sortinit}{C}
+      \field{sortinithash}{59f25d509f3381b07695554a9f35ecb2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Volume II. Flying Qualities Phase. Chapter 5: Longitudinal Static Stability.}
+      \field{year}{OCT 1990}
+    \endentry
     \entry{Calcara}{book}{}
       \name{author}{1}{}{%
         {{hash=f7aa02988a849f20d5bc672418c62716}{Calcara}{C\bibinitperiod}{M.}{M\bibinitperiod}{}{}{}{}}%
