@@ -53,15 +53,17 @@
 \BOOKMARK [2][-]{subsection.9.3.3}{Horizontal Tail}{section.9.3}% 53
 \BOOKMARK [2][-]{subsection.9.3.4}{Propulsors}{section.9.3}% 54
 \BOOKMARK [2][-]{subsection.9.3.5}{Stability Calculation}{section.9.3}% 55
-\BOOKMARK [1][-]{section.9.4}{Java Class Architecture}{chapter.9}% 56
-\BOOKMARK [1][-]{section.9.5}{User's Guide}{chapter.9}% 57
-\BOOKMARK [1][-]{section.9.6}{Analysis Results}{chapter.9}% 58
-\BOOKMARK [0][-]{chapter.10}{Minor Works}{part.3}% 59
-\BOOKMARK [0][-]{Appendix.a.A}{HDF dataset and database reader creation}{part.3}% 60
-\BOOKMARK [1][-]{section.a.A.1}{Chart Digitization}{Appendix.a.A}% 61
-\BOOKMARK [1][-]{section.a.A.2}{Creation of an HDF file with Matlab}{Appendix.a.A}% 62
-\BOOKMARK [0][-]{Appendix.a.B}{App2}{part.3}% 63
-\BOOKMARK [0][-]{section*.50}{Glossary}{part.3}% 64
-\BOOKMARK [0][-]{section*.52}{Acronyms}{part.3}% 65
-\BOOKMARK [0][-]{section*.54}{List of symbols}{part.3}% 66
-\BOOKMARK [0][-]{section*.56}{Bibliography}{part.3}% 67
+\BOOKMARK [1][-]{section.9.4}{Propeller}{chapter.9}% 56
+\BOOKMARK [1][-]{section.9.5}{Stability Equations}{chapter.9}% 57
+\BOOKMARK [1][-]{section.9.6}{Java Class Architecture}{chapter.9}% 58
+\BOOKMARK [1][-]{section.9.7}{User's Guide}{chapter.9}% 59
+\BOOKMARK [1][-]{section.9.8}{Analysis Results}{chapter.9}% 60
+\BOOKMARK [0][-]{chapter.10}{Minor Works}{part.3}% 61
+\BOOKMARK [0][-]{Appendix.a.A}{HDF dataset and database reader creation}{part.3}% 62
+\BOOKMARK [1][-]{section.a.A.1}{Chart Digitization}{Appendix.a.A}% 63
+\BOOKMARK [1][-]{section.a.A.2}{Creation of an HDF file with Matlab}{Appendix.a.A}% 64
+\BOOKMARK [0][-]{Appendix.a.B}{App2}{part.3}% 65
+\BOOKMARK [0][-]{section*.52}{Glossary}{part.3}% 66
+\BOOKMARK [0][-]{section*.54}{Acronyms}{part.3}% 67
+\BOOKMARK [0][-]{section*.56}{List of symbols}{part.3}% 68
+\BOOKMARK [0][-]{section*.58}{Bibliography}{part.3}% 69

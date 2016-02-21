@@ -2253,12 +2253,16 @@
     <bcf:citekey order="13">schimidth</bcf:citekey>
     <bcf:citekey order="14">airf</bcf:citekey>
     <bcf:citekey order="15">kundu</bcf:citekey>
-    <bcf:citekey order="16">sforza2014commercial</bcf:citekey>
-    <bcf:citekey order="17">zlotnick</bcf:citekey>
-    <bcf:citekey order="18">roskammethods</bcf:citekey>
-    <bcf:citekey order="19">kundu</bcf:citekey>
-    <bcf:citekey order="20">roskam2002airplane</bcf:citekey>
-    <bcf:citekey order="21">plotdigitizer</bcf:citekey>
+    <bcf:citekey order="16">nicolai2010fundamentals</bcf:citekey>
+    <bcf:citekey order="17">sforza2014commercial</bcf:citekey>
+    <bcf:citekey order="18">sforza2014commercial</bcf:citekey>
+    <bcf:citekey order="19">sforza2014commercial</bcf:citekey>
+    <bcf:citekey order="20">zlotnick</bcf:citekey>
+    <bcf:citekey order="21">roskammethods</bcf:citekey>
+    <bcf:citekey order="22">kundu</bcf:citekey>
+    <bcf:citekey order="23">obert2009aerodynamic</bcf:citekey>
+    <bcf:citekey order="24">roskam2002airplane</bcf:citekey>
+    <bcf:citekey order="25">plotdigitizer</bcf:citekey>
     <bcf:citekey order="0">*</bcf:citekey>
   </bcf:section>
   <bcf:sortlist section="0" name="nty" type="entry" sortscheme="nty">
