@@ -165,6 +165,21 @@
       \endverb
       \warn{\item Datamodel: Entry 'jscienceAmount' (Tesi_Bibliography.bib): Invalid format '2015.01.05' of date field 'date' - ignoring}
     \endentry
+    \entry{apache:ode}{online}{}
+      \name{author}{1}{}{%
+        {{hash=ffe4cf17ca8c1f982178700c0396c583}{Foundation}{F\bibinitperiod}{The\bibnamedelimb Apache\bibnamedelima Software}{T\bibinitperiod\bibinitdelim A\bibinitperiod\bibinitdelim S\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{ffe4cf17ca8c1f982178700c0396c583}
+      \strng{fullhash}{ffe4cf17ca8c1f982178700c0396c583}
+      \field{sortinit}{F}
+      \field{sortinithash}{c6a7d9913bbd7b20ea954441c0460b78}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Ordinary Differential Equations Integration}
+      \verb{url}
+      \verb https://commons.apache.org/proper/commons-math/userguide/ode.html
+      \endverb
+    \endentry
     \entry{jfreechart}{online}{}
       \name{author}{1}{}{%
         {{hash=674aa7cddd62392b188758b03e8f0e44}{Gilbert}{G\bibinitperiod}{D.\bibnamedelimi et\bibnamedelima al}{D\bibinitperiod\bibinitdelim e\bibinitperiod\bibinitdelim a\bibinitperiod}{}{}{}{}}%

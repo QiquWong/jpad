@@ -588,6 +588,7 @@ where $\upDelta C_{m_{\frac{c}{4}}}$ is the one from (\ref{eqn:DeltaCmPractical}
 %
 %------------------------- JAVA CLASS ARCHITECTURE ---------------------------
 \section{Java class architecture}
+\label{par:CalcHighLiftDevices}
 The main purpose of this paragraph is to provide a comprehensive description of how all semi-empirical methods, presented previously, are implemented and used inside the Java class created to manage high-lift devices effects upon wings. Because of the great number of charts from which some important data have to be derived, an external database, containing all the digitized curves shown in previous paragraph figures, has been created following the procedure explained in appendix~\ref{par:Appendix1}.
 
 \bigskip
@@ -683,6 +684,7 @@ The third, and last, method is~\lstinline[language=Java]!plotHighLiftCurve!. It 
 %
 %----------------------- CASE STUDY : ATR72 AND B747 -------------------------
 \section{Case study: ATR-72 and B747-100B}
+\label{par:CaseStudyHighLift}
 The last task to be done is to show an application of the~\lstinline[language=Java]!CalcHighLiftDevices! class in order to validate the calculation performed as well as to give a useful example to a potential user developer. 
 %
 As in previous chapters the test will be performed using ATR-72 and B747-100B aircraft models, built up as explained in paragraph~\ref{par:DefultAircraft}. These aircraft models dosen't have high-lift devices input data embedded, so that they have to be assigned from an external .xml file; this choice has been taken because the user may want to try different high-lift devices setups without changing the aircraft model on which these latter will be applied.

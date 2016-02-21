@@ -41,7 +41,7 @@ import writers.JPADStaticWriteUtils;
  *
  * Take-Off:
  * - the ground roll distance (rotation included)
- * - the airborne distance (until the reach of a given obstacle altitude)
+ * - the airborne distance (until the aircraft reaches a given obstacle altitude)
  *
  * Landing:
  * - the airborne distance
@@ -105,18 +105,31 @@ public class CalcTakeOff_Landing {
 	/**************************************************************************************
 	 * This builder has the purpose of pass input to the class fields and to initialize all
 	 * lists with the correct initial values in order to setup the take-off length calculation
-	 *
+	 * 
 	 * @author Vittorio Trifari
 	 * @param aircraft
 	 * @param theConditions
 	 * @param highLiftCalculator instance of LSAerodynamicManager inner class for managing
 	 * 		  and slat effects
-	 * @param dt temporal step
-	 * @param k_alpha_dot decrease factor of alpha_dot
-	 * @param mu friction coefficient at take-off
-	 * @param mu_brake friction coefficient in landing or aborting
-	 * @param wing_to_ground_distance
-	 * @param v_wind negative is adverse
+	 * @param dtRot time interval of the rotation phase
+	 * @param dtHold time interval of the constant CL phase
+	 * @param kcLMax percentage of the CLmaxTO not to be surpasses
+	 * @param kRot percentage of VstallTO which defines the rotation speed
+	 * @param kLO percentage of VstallTO which defines the lift-off speed
+	 * @param kFailure parameter which defines the drag increment due to engine failure
+	 * @param k1 linear correction factor of the parabolic drag polar at high CL
+	 * @param k2 quadratic correction factor of the parabolic drag polar at high CL
+	 * @param phi throttle setting
+	 * @param kAlphaDot coefficient which defines the decrease of alpha_dot during manouvering
+	 * @param alphaRed constant negative pitching angular velocity to be maintained after holding 
+	 * the CL constant
+	 * @param mu friction coefficient without brakes action
+	 * @param muBrake friction coefficient with brakes activated
+	 * @param wingToGroundDistance
+	 * @param obstacle
+	 * @param vWind
+	 * @param alphaGround
+	 * @param iw
 	 */
 	public CalcTakeOff_Landing(
 			Aircraft aircraft,
@@ -131,14 +144,14 @@ public class CalcTakeOff_Landing {
 			double k1,
 			double k2,
 			double phi,
-			double k_alpha_dot,
+			double kAlphaDot,
 			double alphaRed,
 			double mu,
-			double mu_brake,
-			Amount<Length> wing_to_ground_distance,
+			double muBrake,
+			Amount<Length> wingToGroundDistance,
 			Amount<Length> obstacle,
-			Amount<Velocity> v_wind,
-			Amount<Angle> alpha_ground,
+			Amount<Velocity> vWind,
+			Amount<Angle> alphaGround,
 			Amount<Angle> iw
 			) {
 
@@ -155,19 +168,21 @@ public class CalcTakeOff_Landing {
 		this.k1 = k1;
 		this.k2 = k2;
 		this.phi = phi;
-		this.kAlphaDot = k_alpha_dot;
+		this.kAlphaDot = kAlphaDot;
 		this.alphaRed = alphaRed;
 		this.mu = mu;
-		this.muBrake = mu_brake;
-		this.wingToGroundDistance = wing_to_ground_distance;
+		this.muBrake = muBrake;
+		this.wingToGroundDistance = wingToGroundDistance;
 		this.obstacle = obstacle;
-		this.vWind = v_wind;
-		this.alphaGround = alpha_ground;
+		this.vWind = vWind;
+		this.alphaGround = alphaGround;
 		this.iw = iw;
 
 		// CalcHighLiftDevices object to manage flap/slat effects
 		highLiftCalculator.calculateHighLiftDevicesEffects();
 		cLmaxTO = highLiftCalculator.getcL_Max_Flap();
+		cL0 = highLiftCalculator.calcCLatAlphaHighLiftDevice(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+		cLground = highLiftCalculator.calcCLatAlphaHighLiftDevice(getAlphaGround().plus(iw));
 
 		// Reference velocities definition
 		vSTakeOff = Amount.valueOf(
@@ -186,20 +201,16 @@ public class CalcTakeOff_Landing {
 		System.out.println("VsTO = " + vSTakeOff);
 		System.out.println("VRot = " + vRot);
 		System.out.println("vLO = " + vLO);
-
-		// McCormick interpolated function --> See the excel file into JPAD DOCS
-		double hb = wing_to_ground_distance.divide(aircraft.get_wing().get_span().times(Math.PI/4)).getEstimatedValue();
-		kGround = - 622.44*(Math.pow(hb, 5)) + 624.46*(Math.pow(hb, 4)) - 255.24*(Math.pow(hb, 3))
-				+ 47.105*(Math.pow(hb, 2)) - 0.6378*hb + 0.0055;
-
-		cL0 = highLiftCalculator.calcCLatAlphaHighLiftDevice(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
-		cLground = highLiftCalculator.calcCLatAlphaHighLiftDevice(getAlphaGround().plus(iw));
-
 		System.out.println("CL0 = " + cL0);
 		System.out.println("CLground = " + cLground);
 		System.out.println("-----------------------------------------------------------\n");
+
+		// McCormick interpolated function --> See the excel file into JPAD DOCS
+		double hb = wingToGroundDistance.divide(aircraft.get_wing().get_span().times(Math.PI/4)).getEstimatedValue();
+		kGround = - 622.44*(Math.pow(hb, 5)) + 624.46*(Math.pow(hb, 4)) - 255.24*(Math.pow(hb, 3))
+				+ 47.105*(Math.pow(hb, 2)) - 0.6378*hb + 0.0055;
 		
-		// List initialization with known values
+		// List initialization
 		this.time = new ArrayList<Amount<Duration>>();
 		this.speed = new ArrayList<Amount<Velocity>>();
 		this.thrust = new ArrayList<Amount<Force>>();
@@ -221,6 +232,7 @@ public class CalcTakeOff_Landing {
 		this.rateOfClimb = new ArrayList<Amount<Velocity>>();
 		this.groundDistance = new ArrayList<Amount<Length>>();
 		this.verticalDistance = new ArrayList<Amount<Length>>();
+		
 		takeOffResults.initialize();
 	}
 	//-------------------------------------------------------------------------------------
