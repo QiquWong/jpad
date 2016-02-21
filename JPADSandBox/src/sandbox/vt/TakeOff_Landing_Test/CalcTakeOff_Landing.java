@@ -16,15 +16,9 @@ import org.apache.commons.math3.exception.MaxCountExceededException;
 import org.apache.commons.math3.ode.FirstOrderDifferentialEquations;
 import org.apache.commons.math3.ode.FirstOrderIntegrator;
 import org.apache.commons.math3.ode.events.EventHandler;
-import org.apache.commons.math3.ode.nonstiff.AdamsBashforthIntegrator;
-import org.apache.commons.math3.ode.nonstiff.DormandPrince54Integrator;
-import org.apache.commons.math3.ode.nonstiff.DormandPrince853Integrator;
 import org.apache.commons.math3.ode.nonstiff.HighamHall54Integrator;
-import org.apache.commons.math3.ode.nonstiff.MidpointIntegrator;
 import org.apache.commons.math3.ode.sampling.StepHandler;
 import org.apache.commons.math3.ode.sampling.StepInterpolator;
-import org.apache.poi.ss.formula.functions.Even;
-import org.eclipse.ui.internal.themes.ThemeElementCategory;
 import org.jscience.physics.amount.Amount;
 import aircraft.OperatingConditions;
 import aircraft.components.Aircraft;
@@ -33,7 +27,6 @@ import calculators.performance.ThrustCalc;
 import calculators.performance.customdata.TakeOffResultsMap;
 import configuration.MyConfiguration;
 import configuration.enumerations.EngineOperatingConditionEnum;
-import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
@@ -92,8 +85,7 @@ public class CalcTakeOff_Landing {
 	private List<Amount<Force>> thrust, thrustHorizontal, thrustVertical, lift, drag, friction, totalForce;
 	private List<Amount<Length>> groundDistance, verticalDistance;
 	private double kAlphaDot, kcLMax, kRot, kLO, phi, mu, muBrake, cLmaxTO, kGround, alphaDotInitial,
-	alphaRed, cL0, cLground, kFailure;
-	private double k1, k2;
+	alphaRed, cL0, cLground, kFailure, k1, k2;
 	private Double vFailure;
 	private boolean isAborted;
 
@@ -176,7 +168,6 @@ public class CalcTakeOff_Landing {
 		// CalcHighLiftDevices object to manage flap/slat effects
 		highLiftCalculator.calculateHighLiftDevicesEffects();
 		cLmaxTO = highLiftCalculator.getcL_Max_Flap();
-		System.out.println("CLmaxTO = " + cLmaxTO);
 
 		// Reference velocities definition
 		vSTakeOff = Amount.valueOf(
@@ -189,6 +180,12 @@ public class CalcTakeOff_Landing {
 				SI.METERS_PER_SECOND);
 		vRot = vSTakeOff.times(kRot);
 		vLO = vSTakeOff.times(kLO);
+		
+		System.out.println("\n-----------------------------------------------------------");
+		System.out.println("CLmaxTO = " + cLmaxTO);
+		System.out.println("VsTO = " + vSTakeOff);
+		System.out.println("VRot = " + vRot);
+		System.out.println("vLO = " + vLO);
 
 		// McCormick interpolated function --> See the excel file into JPAD DOCS
 		double hb = wing_to_ground_distance.divide(aircraft.get_wing().get_span().times(Math.PI/4)).getEstimatedValue();
@@ -198,6 +195,10 @@ public class CalcTakeOff_Landing {
 		cL0 = highLiftCalculator.calcCLatAlphaHighLiftDevice(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 		cLground = highLiftCalculator.calcCLatAlphaHighLiftDevice(getAlphaGround().plus(iw));
 
+		System.out.println("CL0 = " + cL0);
+		System.out.println("CLground = " + cLground);
+		System.out.println("-----------------------------------------------------------\n");
+		
 		// List initialization with known values
 		this.time = new ArrayList<Amount<Duration>>();
 		this.speed = new ArrayList<Amount<Velocity>>();
@@ -255,11 +256,25 @@ public class CalcTakeOff_Landing {
 		rateOfClimb.clear();
 		groundDistance.clear();
 		verticalDistance.clear();
+		
+		tHold = Amount.valueOf(10000.0, SI.SECOND); // initialization to an impossible time
+		tEndHold = Amount.valueOf(10000.0, SI.SECOND); // initialization to an impossible time
+		tRot = Amount.valueOf(10000.0, SI.SECOND);  // initialization to an impossible time
+		tEndRot = Amount.valueOf(10000.0, SI.SECOND); // initialization to an impossible time
+		tClimb = Amount.valueOf(10000.0, SI.SECOND);  // initialization to an impossible time
+		tFaiulre = Amount.valueOf(10000.0, SI.SECOND); // initialization to an impossible time
+		tRec = Amount.valueOf(10000.0, SI.SECOND); // initialization to an impossible time
+		
+		alphaDotInitial = 0.0;
+		vFailure = null;
+		isAborted = false;
+		
+		takeOffResults.initialize();
 	}
 	
 	/***************************************************************************************
-	 * This methosd performs the integration of the total take-off distance by solving a set of
-	 * ODE with a DormandPrince853Integrator. The library used is the Apache Math3. 
+	 * This method performs the integration of the total take-off distance by solving a set of
+	 * ODE with a HighamHall54Integrator. The library used is the Apache Math3. 
 	 * 
 	 * see: https://commons.apache.org/proper/commons-math/userguide/ode.html
 	 * 
@@ -336,7 +351,11 @@ public class CalcTakeOff_Landing {
 			@Override
 			public double g(double t, double[] x) {
 				double speed = x[1];
-				return speed - vRot.getEstimatedValue();
+				
+				if(t < tRec.getEstimatedValue())
+					return speed - vRot.getEstimatedValue();
+				else
+					return 10; // a generic positive value used to make the event trigger once
 			}
 
 			@Override
@@ -551,7 +570,7 @@ public class CalcTakeOff_Landing {
 			theIntegrator.addEventHandler(ehCheckVRot, 1.0, 1e-3, 20);
 			theIntegrator.addEventHandler(ehCheckFailure, 1.0, 1e-3, 20);
 			theIntegrator.addEventHandler(ehCheckBrakes, 1.0, 1e-3, 20);
-			theIntegrator.addEventHandler(ehCheckStop, 1.0, 1e-3, 20);
+			theIntegrator.addEventHandler(ehCheckStop, 1.0, 1e-6, 20);
 		}
 
 		// handle detailed info
@@ -652,30 +671,77 @@ public class CalcTakeOff_Landing {
 				CalcTakeOff_Landing.this.getSpeed().add(Amount.valueOf(x[1], SI.METERS_PER_SECOND));
 				//----------------------------------------------------------------------------------------
 				// THRUST:
-				CalcTakeOff_Landing.this.getThrust().add(Amount.valueOf(
-						((DynamicsEquations)ode).thrust(x[1], x[2], t),
-						SI.NEWTON)
-						);
+				if(!isAborted)
+					CalcTakeOff_Landing.this.getThrust().add(Amount.valueOf(
+							((DynamicsEquations)ode).thrust(x[1], x[2], t),
+							SI.NEWTON)
+							);
+				else {
+					if(t < tRec.getEstimatedValue())
+						CalcTakeOff_Landing.this.getThrust().add(Amount.valueOf(
+								((DynamicsEquations)ode).thrust(x[1], x[2], t),
+								SI.NEWTON)
+								);
+					else
+						CalcTakeOff_Landing.this.getThrust().add(Amount.valueOf(
+								0.0,
+								SI.NEWTON)
+								);
+				}
 				//----------------------------------------------------------------------------------------
 				// THRUST HORIZONTAL:
-				CalcTakeOff_Landing.this.getThrustHorizontal().add(Amount.valueOf(
-						((DynamicsEquations)ode).thrust(x[1], x[2], t)*Math.cos(
-								Amount.valueOf(
-										((DynamicsEquations)ode).alpha,
-										NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
-								),
-						SI.NEWTON)
-						);
+				if(!isAborted)
+					CalcTakeOff_Landing.this.getThrustHorizontal().add(Amount.valueOf(
+							((DynamicsEquations)ode).thrust(x[1], x[2], t)*Math.cos(
+									Amount.valueOf(
+											((DynamicsEquations)ode).alpha,
+											NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
+									),
+							SI.NEWTON)
+							);
+				else {
+					if(t < tRec.getEstimatedValue())
+						CalcTakeOff_Landing.this.getThrustHorizontal().add(Amount.valueOf(
+								((DynamicsEquations)ode).thrust(x[1], x[2], t)*Math.cos(
+										Amount.valueOf(
+												((DynamicsEquations)ode).alpha,
+												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
+										),
+								SI.NEWTON)
+								);
+					else
+						CalcTakeOff_Landing.this.getThrustHorizontal().add(Amount.valueOf(
+								0.0,
+								SI.NEWTON)
+								);
+				}
 				//----------------------------------------------------------------------------------------
 				// THRUST VERTICAL:
-				CalcTakeOff_Landing.this.getThrustVertical().add(Amount.valueOf(
-						((DynamicsEquations)ode).thrust(x[1], x[2], t)*Math.sin(
-								Amount.valueOf(
-										((DynamicsEquations)ode).alpha,
-										NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
-								),
-						SI.NEWTON)
-						);
+				if(!isAborted)
+					CalcTakeOff_Landing.this.getThrustVertical().add(Amount.valueOf(
+							((DynamicsEquations)ode).thrust(x[1], x[2], t)*Math.sin(
+									Amount.valueOf(
+											((DynamicsEquations)ode).alpha,
+											NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
+									),
+							SI.NEWTON)
+							);
+				else {
+					if(t < tRec.getEstimatedValue())
+						CalcTakeOff_Landing.this.getThrustVertical().add(Amount.valueOf(
+								((DynamicsEquations)ode).thrust(x[1], x[2], t)*Math.sin(
+										Amount.valueOf(
+												((DynamicsEquations)ode).alpha,
+												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
+										),
+								SI.NEWTON)
+								);
+					else
+						CalcTakeOff_Landing.this.getThrustVertical().add(Amount.valueOf(
+								0.0,
+								SI.NEWTON)
+								);
+				}
 				//--------------------------------------------------------------------------------
 				// FRICTION:
 				if(!isAborted) {
@@ -892,7 +958,7 @@ public class CalcTakeOff_Landing {
 										((DynamicsEquations)ode).alpha,
 										x[2],
 										t)
-										- CalcTakeOff_Landing.this.getMu()*(((DynamicsEquations)ode).weight
+										- CalcTakeOff_Landing.this.getMuBrake()*(((DynamicsEquations)ode).weight
 												- ((DynamicsEquations)ode).lift(
 														x[1],
 														((DynamicsEquations)ode).alpha,
@@ -1018,7 +1084,7 @@ public class CalcTakeOff_Landing {
 		failureSpeedArray = MyArrayUtils.linspace(
 				2.0,
 				vLO.getEstimatedValue(),
-				4);
+				5);
 		// continued take-off array
 		continuedTakeOffArray = new double[failureSpeedArray.length];
 		// aborted take-off array
@@ -1031,7 +1097,7 @@ public class CalcTakeOff_Landing {
 			continuedTakeOffArray[i] = getGroundDistance().get(groundDistance.size()-1).getEstimatedValue();
 			initialize();
 			calculateTakeOffDistanceODE(failureSpeedArray[i], true);
-			continuedTakeOffArray[i] = getGroundDistance().get(groundDistance.size()-1).getEstimatedValue();
+			abortedTakeOffArray[i] = getGroundDistance().get(groundDistance.size()-1).getEstimatedValue();
 		}
 
 		// interpolation of the two arrays
@@ -1168,20 +1234,22 @@ public class CalcTakeOff_Landing {
 			weightHorizontal[i] = aircraft.get_weights().get_MTOW().getEstimatedValue()
 			*Math.sin(getGamma().get(i).to(SI.RADIAN).getEstimatedValue());
 
-		// take-off trajectory
-		MyChartToFileUtils.plotNoLegend(
-				groundDistance, verticalDistance,
-				0.0, null, 0.0, 11.0,
-				"Ground Distance", "Altitude", "m", "m",
-				subfolderPath, "TakeOff_Trajectory");
+		if(!isAborted) {
+			// take-off trajectory
+			MyChartToFileUtils.plotNoLegend(
+					groundDistance, verticalDistance,
+					0.0, null, 0.0, null,
+					"Ground Distance", "Altitude", "m", "m",
+					subfolderPath, "TakeOff_Trajectory");
 
-		// vertical distance v.s. time
-		MyChartToFileUtils.plotNoLegend(
-				time, verticalDistance,
-				0.0, null, 0.0, 11.0,
-				"Time", "Altitude", "s", "m",
-				subfolderPath, "Altitude_evolution");
-
+			// vertical distance v.s. time
+			MyChartToFileUtils.plotNoLegend(
+					time, verticalDistance,
+					0.0, null, 0.0, null,
+					"Time", "Altitude", "s", "m",
+					subfolderPath, "Altitude_evolution");
+		}
+		
 		// speed v.s. time
 		MyChartToFileUtils.plotNoLegend(
 				time, speed,
@@ -1224,20 +1292,22 @@ public class CalcTakeOff_Landing {
 				"Ground distance", "Load Factor", "m", "",
 				subfolderPath, "LoadFactor_vs_GroundDistance");
 
-		// Rate of Climb v.s. Time
-		MyChartToFileUtils.plotNoLegend(
-				time, rateOfClimb,
-				0.0, null, 0.0, 15.0,
-				"Time", "Rate of Climb", "s", "m/s",
-				subfolderPath, "RateOfClimb_evolution");
+		if(!isAborted) {
+			// Rate of Climb v.s. Time
+			MyChartToFileUtils.plotNoLegend(
+					time, rateOfClimb,
+					0.0, null, 0.0, null,
+					"Time", "Rate of Climb", "s", "m/s",
+					subfolderPath, "RateOfClimb_evolution");
 
-		// Rate of Climb v.s. Ground distance
-		MyChartToFileUtils.plotNoLegend(
-				groundDistance, rateOfClimb,
-				0.0, null, 0.0, 15.0,
-				"Ground distance", "Rate of Climb", "m", "m/s",
-				subfolderPath, "RateOfClimb_vs_GroundDistance");
-
+			// Rate of Climb v.s. Ground distance
+			MyChartToFileUtils.plotNoLegend(
+					groundDistance, rateOfClimb,
+					0.0, null, 0.0, null,
+					"Ground distance", "Rate of Climb", "m", "m/s",
+					subfolderPath, "RateOfClimb_vs_GroundDistance");
+		}
+		
 		// CL v.s. Time
 		MyChartToFileUtils.plotNoLegend(
 				time, cL,
@@ -1324,72 +1394,74 @@ public class CalcTakeOff_Landing {
 				new String[] {"Lift", "Thrust Vertical", "W*cos(gamma)"},
 				subfolderPath, "VerticalForces_vs_GroundDistance");
 
-		// Angles v.s. time
-		double[][] xMatrix5 = new double[3][totalForce.length];
-		for(int i=0; i<xMatrix5.length; i++)
-			xMatrix5[i] = time;
+		if(!isAborted) {
+			// Angles v.s. time
+			double[][] xMatrix5 = new double[3][totalForce.length];
+			for(int i=0; i<xMatrix5.length; i++)
+				xMatrix5[i] = time;
 
-		double[][] yMatrix5 = new double[3][totalForce.length];
-		yMatrix5[0] = alpha;
-		yMatrix5[1] = theta;
-		yMatrix5[2] = gamma;
+			double[][] yMatrix5 = new double[3][totalForce.length];
+			yMatrix5[0] = alpha;
+			yMatrix5[1] = theta;
+			yMatrix5[2] = gamma;
 
-		MyChartToFileUtils.plot(
-				xMatrix5, yMatrix5,
-				0.0, null, null, 10.0,
-				"Time", "Angles", "s", "deg",
-				new String[] {"Alpha Body", "Theta", "Gamma"},
-				subfolderPath, "Angles_evolution");
+			MyChartToFileUtils.plot(
+					xMatrix5, yMatrix5,
+					0.0, null, null, null,
+					"Time", "Angles", "s", "deg",
+					new String[] {"Alpha Body", "Theta", "Gamma"},
+					subfolderPath, "Angles_evolution");
 
-		// Angles v.s. Ground Distance
-		double[][] xMatrix6 = new double[3][totalForce.length];
-		for(int i=0; i<xMatrix6.length; i++)
-			xMatrix6[i] = groundDistance;
+			// Angles v.s. Ground Distance
+			double[][] xMatrix6 = new double[3][totalForce.length];
+			for(int i=0; i<xMatrix6.length; i++)
+				xMatrix6[i] = groundDistance;
 
-		double[][] yMatrix6 = new double[3][totalForce.length];
-		yMatrix6[0] = alpha;
-		yMatrix6[1] = theta;
-		yMatrix6[2] = gamma;
+			double[][] yMatrix6 = new double[3][totalForce.length];
+			yMatrix6[0] = alpha;
+			yMatrix6[1] = theta;
+			yMatrix6[2] = gamma;
 
-		MyChartToFileUtils.plot(
-				xMatrix6, yMatrix6,
-				0.0, null, null, 10.0,
-				"Ground Distance", "Angles", "m", "deg",
-				new String[] {"Alpha Body", "Theta", "Gamma"},
-				subfolderPath, "Angles_vs_GroundDistance");
+			MyChartToFileUtils.plot(
+					xMatrix6, yMatrix6,
+					0.0, null, null, null,
+					"Ground Distance", "Angles", "m", "deg",
+					new String[] {"Alpha Body", "Theta", "Gamma"},
+					subfolderPath, "Angles_vs_GroundDistance");
 
-		// Angular velocity v.s. time
-		double[][] xMatrix7 = new double[2][totalForce.length];
-		for(int i=0; i<xMatrix7.length; i++)
-			xMatrix7[i] = time;
+			// Angular velocity v.s. time
+			double[][] xMatrix7 = new double[2][totalForce.length];
+			for(int i=0; i<xMatrix7.length; i++)
+				xMatrix7[i] = time;
 
-		double[][] yMatrix7 = new double[2][totalForce.length];
-		yMatrix7[0] = alphaDot;
-		yMatrix7[1] = gammaDot;
+			double[][] yMatrix7 = new double[2][totalForce.length];
+			yMatrix7[0] = alphaDot;
+			yMatrix7[1] = gammaDot;
 
-		MyChartToFileUtils.plot(
-				xMatrix7, yMatrix7,
-				0.0, null, null, 10.0,
-				"Time", "Angular Velocity", "s", "deg/s",
-				new String[] {"Alpha_dot", "Gamma_dot"},
-				subfolderPath, "AngularVelocity_evolution");
+			MyChartToFileUtils.plot(
+					xMatrix7, yMatrix7,
+					0.0, null, null, null,
+					"Time", "Angular Velocity", "s", "deg/s",
+					new String[] {"Alpha_dot", "Gamma_dot"},
+					subfolderPath, "AngularVelocity_evolution");
 
-		// Angular velocity v.s. Ground Distance
-		double[][] xMatrix8 = new double[2][totalForce.length];
-		for(int i=0; i<xMatrix8.length; i++)
-			xMatrix8[i] = groundDistance;
+			// Angular velocity v.s. Ground Distance
+			double[][] xMatrix8 = new double[2][totalForce.length];
+			for(int i=0; i<xMatrix8.length; i++)
+				xMatrix8[i] = groundDistance;
 
-		double[][] yMatrix8 = new double[2][totalForce.length];
-		yMatrix8[0] = alphaDot;
-		yMatrix8[1] = gammaDot;
+			double[][] yMatrix8 = new double[2][totalForce.length];
+			yMatrix8[0] = alphaDot;
+			yMatrix8[1] = gammaDot;
 
-		MyChartToFileUtils.plot(
-				xMatrix8, yMatrix8,
-				0.0, null, null, 10.0,
-				"Ground Distance", "Angular Velocity", "m", "deg/s",
-				new String[] {"Alpha_dot", "Gamma_dot"},
-				subfolderPath, "AngularVelocity_vs_GroundDistance");
-
+			MyChartToFileUtils.plot(
+					xMatrix8, yMatrix8,
+					0.0, null, null, null,
+					"Ground Distance", "Angular Velocity", "m", "deg/s",
+					new String[] {"Alpha_dot", "Gamma_dot"},
+					subfolderPath, "AngularVelocity_vs_GroundDistance");
+		}
+		
 		System.out.println("\n---------------------------DONE!-------------------------------");
 	}
 
@@ -1409,11 +1481,14 @@ public class CalcTakeOff_Landing {
 		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "Take-Off_Performance" + File.separator);
 
 		for(int i=0; i<failureSpeedArrayFitted.length; i++)
+//			failureSpeedArray[i] = failureSpeedArray[i]/vSTakeOff.getEstimatedValue();
 			failureSpeedArrayFitted[i] = failureSpeedArrayFitted[i]/vSTakeOff.getEstimatedValue();
 
 		double[][] xArray = new double[][]
+//				{failureSpeedArray, failureSpeedArray};
 				{failureSpeedArrayFitted, failureSpeedArrayFitted};
 				double[][] yArray = new double[][]
+//						{continuedTakeOffArray, abortedTakeOffArray};
 						{continuedTakeOffSplineValues, abortedTakeOffSplineValues};
 
 						MyChartToFileUtils.plot(
@@ -1575,7 +1650,12 @@ public class CalcTakeOff_Landing {
 
 		public double drag(double speed, double alpha, double gamma, double time) {
 
-			double cD = cD(cL(speed, alpha, gamma, time));
+			double cD = 0;
+			
+			if (time < tRec.getEstimatedValue())
+				cD = cD(cL(speed, alpha, gamma, time));
+			else
+				cD = kFailure*cD(cL(speed, alpha, gamma, time));
 
 			return 	0.5
 					*aircraft.get_wing().get_surface().getEstimatedValue()
@@ -1620,16 +1700,19 @@ public class CalcTakeOff_Landing {
 		public double alphaDot(double time) {
 
 			double alphaDot = 0.0;
-
-			if((time > tRot.getEstimatedValue()) && (time < tHold.getEstimatedValue())) {
-				alphaDot = alphaDotInitial*(1-(kAlpha*(CalcTakeOff_Landing.this.getAlpha().get(
-						CalcTakeOff_Landing.this.getAlpha().size()-1).getEstimatedValue()))
-						);
+			
+			if(isAborted)
+				alphaDot = 0.0;
+			else {
+				if((time > tRot.getEstimatedValue()) && (time < tHold.getEstimatedValue())) {
+					alphaDot = alphaDotInitial*(1-(kAlpha*(CalcTakeOff_Landing.this.getAlpha().get(
+							CalcTakeOff_Landing.this.getAlpha().size()-1).getEstimatedValue()))
+							);
+				}
+				else if((time > tEndHold.getEstimatedValue()) && (time < tClimb.getEstimatedValue())) {
+					alphaDot = alphaRed;
+				}
 			}
-			else if((time > tEndHold.getEstimatedValue()) && (time < tClimb.getEstimatedValue())) {
-				alphaDot = alphaRed;
-			}
-
 			return alphaDot;
 		}
 

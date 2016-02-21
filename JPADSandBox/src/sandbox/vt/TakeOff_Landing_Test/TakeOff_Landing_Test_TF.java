@@ -31,10 +31,12 @@ import standaloneutils.customdata.CenterOfGravity;
 
 public class TakeOff_Landing_Test_TF {
 	
-	private static long _startTimeCalculation, _startTimeGraph, _startTimeBalanced, 
-						_stopTimeCalculation, _stopTimeGraph, _stopTimeBalanced, _stopTimeTotal,
-						_elapsedTimeTotal, _elapsedTimeCalculation, _elapsedTimeGraph, _elapsedTimeBalanced; 
-		
+	private static long _startTimeCalculation, _startTimeGraph, _startTimeBalancedCalculation,
+						_startTimeBalancedGraph, _stopTimeBalancedGraph, _stopTimeCalculation,
+						_stopTimeGraph, _stopTimeBalancedCalculation, _stopTimeTotal,
+						_elapsedTimeTotal, _elapsedTimeCalculation, _elapsedTimeGraph,
+						_elapsedTimeBalancedCalculation, _elapsedTimeBalancedGraph;
+	
 	//------------------------------------------------------------------------------------------
 	// VARIABLE DECLARATION: 
 	@Option(name = "-i", aliases = { "--input" }, required = false,
@@ -342,18 +344,15 @@ public class TakeOff_Landing_Test_TF {
 		// TakeOff - Ground Roll Distance Test
 		//----------------------------------------------------------------------------------
 		_startTimeCalculation = System.currentTimeMillis();
-		// temporal step
 		Amount<Duration> dtRot = Amount.valueOf(3, SI.SECOND);
 		Amount<Duration> dtHold = Amount.valueOf(0.5, SI.SECOND);
 		double mu = 0.025;
 		double mu_brake = 0.3;
-		double k_alpha_dot = 0.02; // [1/deg]
+		double k_alpha_dot = 0.06; // [1/deg]
 		double kcLMax = 0.85;
 		double kRot = 1.05;
 		double kLO = 1.1;
-		double kFailure = 1.0;
-		
-		System.out.println("WTO = " + aircraft.get_weights().get_MTOM());
+		double kFailure = 1.1;
 		
 //		PARAMETERS USED TO CONSIDER THE PARABOLIC DRAG POLAR CORRECTION AT HIGH CL
 //		double k1 = 0.078;
@@ -362,12 +361,12 @@ public class TakeOff_Landing_Test_TF {
 		double k2 = 0.0;
 		
 		double phi = 1.0;
-		double alphaRed = -7; // [deg/s]
+		double alphaRed = -3; // [deg/s]
 		Amount<Length> wing_to_ground_distance = Amount.valueOf(6.56, SI.METER);
 		Amount<Length> obstacle = Amount.valueOf(35, NonSI.FOOT).to(SI.METER);
 		Amount<Velocity> v_wind = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
 		Amount<Angle> alpha_ground = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
-		Amount<Angle> iw = Amount.valueOf(1.5, NonSI.DEGREE_ANGLE);
+		Amount<Angle> iw = Amount.valueOf(1.0, NonSI.DEGREE_ANGLE);
 		CalcTakeOff_Landing theTakeOffLandingCalculator = new CalcTakeOff_Landing(
 				aircraft,
 				theCondition,
@@ -397,26 +396,33 @@ public class TakeOff_Landing_Test_TF {
 		_startTimeGraph = System.currentTimeMillis();
 		theTakeOffLandingCalculator.createTakeOffCharts();
 		_stopTimeGraph = System.currentTimeMillis();
-		_startTimeBalanced = System.currentTimeMillis();
+		_startTimeBalancedCalculation = System.currentTimeMillis();
 		theTakeOffLandingCalculator.calculateBalancedFieldLength();
+		_stopTimeBalancedCalculation = System.currentTimeMillis();
+		_startTimeBalancedGraph = System.currentTimeMillis();
 		theTakeOffLandingCalculator.createBalancedFieldLengthChart();
-		_stopTimeBalanced = System.currentTimeMillis();
+		_stopTimeBalancedGraph = System.currentTimeMillis();
 		_stopTimeTotal = System.currentTimeMillis();
-		
+
 		_elapsedTimeTotal = _stopTimeTotal - _startTimeCalculation;
 		_elapsedTimeCalculation = _stopTimeCalculation - _startTimeCalculation;
 		_elapsedTimeGraph = _stopTimeGraph - _startTimeGraph;
-		_elapsedTimeBalanced = _stopTimeBalanced - _startTimeBalanced;
+		_elapsedTimeBalancedCalculation = _stopTimeBalancedCalculation - _startTimeBalancedCalculation;
+		_elapsedTimeBalancedGraph = _stopTimeBalancedGraph - _startTimeBalancedGraph;
 		
+		System.out.println("\n------------------COMPUTATIONAL TIME-----------------------");
 		System.out.println("\nANALYSIS TIME = " + (get_elapsedTime()) + " millisenconds");
-		System.out.println("\nCALCULATION TIME = " + (get_elapsedTimeCalculation()) + "millisenconds");
-		System.out.println("\nBALANCED FIELD LENGTH TIME = " + (get_elapsedTimeBalanced()) + "millisenconds");
-		System.out.println("\nGRAPHICS TIME = " + (get_elapsedTimeGraph()) + "millisenconds");	
-		
+		System.out.println("\nCALCULATION TIME = " + (get_elapsedTimeCalculation()) + " millisenconds");
+		System.out.println("\nBALANCED FIELD LENGTH CALCULATION TIME = " + (get_elapsedTimeBalanced()) + " millisenconds");
+		System.out.println("\nBALANCED FIELD LENGTH GRAPH TIME = " + (get_elapsedTimeBalancedGraph()) + " millisenconds");
+		System.out.println("\nGRAPHICS TIME = " + (get_elapsedTimeGraph()) + " millisenconds");
+		System.out.println("-----------------------------------------------------------\n");
+		System.out.println("\n-----------------------------------------------------------");
 		System.out.println("\nBALANCED FIELD LENGTH = " + theTakeOffLandingCalculator.getBalancedFieldLength());
 		System.out.println("\nDecision Speed = " + theTakeOffLandingCalculator.getV1().divide(theTakeOffLandingCalculator.getvSTakeOff()));
+		System.out.println("-----------------------------------------------------------\n");
 	}
-	
+
 	//------------------------------------------------------------------------------------------
 	// GETTERS & SETTERS:
 	public File get_inputFile() {
@@ -436,6 +442,10 @@ public class TakeOff_Landing_Test_TF {
 	}
 
 	public static long get_elapsedTimeBalanced() {
-		return _elapsedTimeBalanced;
+		return _elapsedTimeBalancedCalculation;
+	}
+	
+	public static long get_elapsedTimeBalancedGraph() {
+		return _elapsedTimeBalancedGraph;
 	}
 }
