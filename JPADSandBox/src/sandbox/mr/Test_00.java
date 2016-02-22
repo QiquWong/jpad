@@ -6,6 +6,7 @@ import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.MyConfiguration;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.DatabaseReaderEnum;
 import javafx.util.Pair;
@@ -23,7 +24,7 @@ public class Test_00 {
 		// --------------------------------------------------------------
 		// Generate default Aircraft
 		// --------------------------------------------------------------
-		Aircraft aircraft = Aircraft.createDefaultAircraft("B747-100B");
+		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.B747_100B);
 		LiftingSurface theWing = aircraft.get_wing();
 
 		// Default operating conditions

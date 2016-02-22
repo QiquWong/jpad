@@ -42,6 +42,7 @@ import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLMaxClean;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcLiftDistribution;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcXAC;
 import configuration.MyConfiguration;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FoldersEnum;
@@ -139,7 +140,7 @@ public class Test_MR_06_Wing {
 		theOperatingConditions.set_machCurrent(0.84);
 		theOperatingConditions.calculate();
 
-		Aircraft aircraft = Aircraft.createDefaultAircraft("B747-100B");
+		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.B747_100B);
 		aircraft.set_name("B747-100B");
 
 		LiftingSurface theWing = aircraft.get_wing();

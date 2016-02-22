@@ -39,6 +39,7 @@ import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLMaxClean;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLvsAlphaCurve;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcHighLiftDevices;
 import configuration.MyConfiguration;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.DatabaseReaderEnum;
@@ -83,7 +84,7 @@ public class Test_MR_07_LongitudinalStability_TurboFan {
 
 		//------------------------------------------------------------------------------------
 		// Default Aircraft 
-		Aircraft aircraft = Aircraft.createDefaultAircraft("B747-100B");
+		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.B747_100B);
 		aircraft.set_name("B747-100B");
 		System.out.println("\nDefault aircraft: " + aircraft.get_name() + "\n");
 
