@@ -16,6 +16,7 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.OperatingConditions;
 import aircraft.componentmodel.Component;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.atmosphere.AtmosphereCalc;
@@ -50,18 +51,22 @@ public class Systems extends Component{
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public Systems(String aircraftName, String name, String description, double x, double y,
+	public Systems(AircraftEnum aircraftName, String name, String description, double x, double y,
 			double z) {
 		super("", name, description, x, y, z);
 
 		switch(aircraftName) {
 		
-		case "ATR-72":
+		case ATR72:
 			_massReference = Amount.valueOf(2118, SI.KILOGRAM);
 			break;
 			
-		case "B747-100B":
+		case B747_100B:
 			_massReference = Amount.valueOf(15949.0, SI.KILOGRAM);
+			break;
+			
+		case AGILE_DC1:
+			_massReference = Amount.valueOf(5087., SI.KILOGRAM);
 			break;
 		}
 	}

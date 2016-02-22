@@ -23,6 +23,7 @@ import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLMaxClean;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcLiftDistribution;
 import configuration.MyConfiguration;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.AirfoilStationEnum;
 import configuration.enumerations.AirfoilTypeEnum;
@@ -88,43 +89,58 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 	private MyGeometry geometry;
 	private MyAirfoil _theAirfoil;
 
-	public MyAerodynamics(MyAirfoil airf, String aircraftName, AirfoilStationEnum station) {
+	public MyAerodynamics(MyAirfoil airf, AircraftEnum aircraftName, AirfoilStationEnum station) {
 		switch (aircraftName) {
-		case "ATR-72":
+		case ATR72:
 			switch (station) {
 			case ROOT:
-				Aerodynamics(airf, "23-018");
+				Aerodynamics(airf, AirfoilFamilyEnum.NACA23_018);
 				break;
 			case KINK:
-				Aerodynamics(airf, "23-015") ;
+				Aerodynamics(airf, AirfoilFamilyEnum.NACA23_015) ;
 				break;
 			case TIP:
-				Aerodynamics(airf, "23-012");
+				Aerodynamics(airf, AirfoilFamilyEnum.NACA23_012);
 				break;	
 			}
 			break;
-		case "B747-100B":
+		case B747_100B:
 			//TODO implement this 
 			switch (station) {
 			case ROOT:
-				Aerodynamics(airf, "23-018");
+				Aerodynamics(airf, AirfoilFamilyEnum.NACA23_018);
 				break;
 			case KINK:
-				Aerodynamics(airf, "23-015") ;
+				Aerodynamics(airf, AirfoilFamilyEnum.NACA23_015) ;
 				break;
 			case TIP:
-				Aerodynamics(airf, "23-012");
+				Aerodynamics(airf, AirfoilFamilyEnum.NACA23_012);
 				break;	
+				
 			}
 			break;
+			
+		case AGILE_DC1:
+			switch (station) {
+			case ROOT:
+				Aerodynamics(airf, AirfoilFamilyEnum.DFVLR_R4); //TODO: It should be Ha5 airfoil
+				break;
+			case KINK:
+				Aerodynamics(airf, AirfoilFamilyEnum.DFVLR_R4) ;
+				break;
+			case TIP:
+				Aerodynamics(airf, AirfoilFamilyEnum.DFVLR_R4);
+				break;
+			}
+
 		}
 		
 	}
 
-	private void Aerodynamics(MyAirfoil airf, String string) {
-		 switch (string) {
+	private void Aerodynamics(MyAirfoil airf, AirfoilFamilyEnum airfoilName) {
+		 switch (airfoilName) {
 		 
-		 case "23-018":
+		 case NACA23_018:
 			 _id = airf.getId() + "1" + idCounter + "99";
 				idCounter++;
 			 airf.set_family(AirfoilFamilyEnum.NACA23_018);	
@@ -157,7 +173,7 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 			 calculateCdWaveDrag = new CalculateCdWaveDrag();
 			 break;
 
-		 case "23-015":
+		 case NACA23_015:
 			 airf.set_family(AirfoilFamilyEnum.NACA23_015);	
 			 _id = airf.getId() + "1" + idCounter + "99";
 				idCounter++;
@@ -191,7 +207,7 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 			 calculateCdWaveDrag = new CalculateCdWaveDrag();
 			 break;
 			 
-		 case "23-012":
+		 case NACA23_012:
 			 airf.set_family(AirfoilFamilyEnum.NACA23_012);	
 			 _id = airf.getId() + "1" + idCounter + "99";
 				idCounter++;
@@ -226,7 +242,7 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 			 break;	
 			 
 			 
-		 case "65-209": 
+		 case NACA65_209: 
 			_id = airf.getId() + "1" + idCounter + "99";
 			idCounter++;
 			
@@ -259,7 +275,7 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 			calculateCdWaveDrag = new CalculateCdWaveDrag();	
 			break;
 			
-		 case "65-206" :
+		 case NACA65_206:
 			 _id = airf.getId() + "1" + idCounter + "99";
 			idCounter++;
 			
@@ -292,7 +308,7 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 			calculateCdWaveDrag = new CalculateCdWaveDrag();	
 			break;
 			
-		 case "0012":
+		 case NACA0012:
 			 airf.set_family(AirfoilFamilyEnum.NACA0012);	
 			 _id = airf.getId() + "1" + idCounter + "99";
 				idCounter++;
@@ -326,6 +342,39 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 			 calculateCdWaveDrag = new CalculateCdWaveDrag();
 			 break;	
 			 
+		 case DFVLR_R4:
+			 airf.set_family(AirfoilFamilyEnum.DFVLR_R4);	
+			 _id = airf.getId() + "1" + idCounter + "99";
+				idCounter++;
+				
+			 _theAirfoil = airf;
+			 geometry = airf.getGeometry();
+
+			 _alphaZeroLift = Amount.valueOf(Math.toRadians(-3.75), SI.RADIAN); 
+			 _clAlpha = 6.30; 
+			 _alphaStar = Amount.valueOf(Math.toRadians(11),SI.RADIAN); // end-of-linearity 
+			 _clStar = 1.53 ; 
+			 _alphaStall = Amount.valueOf(Math.toRadians(16.75),SI.RADIAN); 
+			 _clMax = 1.7671 ; //1.5;
+
+			 _cdMin = 0.0056;
+			 _clAtCdMin = 0.0;
+			 _kFactorDragPolar = 0.075;
+
+			 _aerodynamicCenterX = 0.25;
+			 _cmAC = -0.1168;
+			 _cmACStall = -0.0515;
+			 _cmAlphaAC = 0.0015 ;
+			 _cmAlphaLE = 0.; //TODO, change this value
+			 //_cmAtClMax = 
+
+			 _reynoldsCruise = 1e+6;
+			 _reynoldsNumberStall = 1e+6;
+
+			 calculateClAlpha = new CalculateClAlpha();
+			 calculateMachCr = new CalculateMachCr();
+			 calculateCdWaveDrag = new CalculateCdWaveDrag();
+			 break;	
 		 }
 		 
 			 
@@ -538,6 +587,39 @@ public MyAerodynamics(MyAirfoil airf, String name) {
 		break;
 		
 	 case "65-206" :
+		 _id = airf.getId() + "1" + idCounter + "99";
+		idCounter++;
+		
+		_theAirfoil = airf;
+		geometry = airf.getGeometry();
+		
+		_alphaZeroLift = Amount.valueOf(Math.toRadians(-1.4), SI.RADIAN); 
+		_clAlpha = 6.13; 
+		_alphaStar = Amount.valueOf(Math.toRadians(10.0),SI.RADIAN); // end-of-linearity 
+		_clStar = _clAlpha * _alphaStar.getEstimatedValue() ; 
+		_alphaStall = Amount.valueOf(Math.toRadians(15.0),SI.RADIAN); 
+		_clMax = 1.3;
+
+		_cdMin = 0.025;
+		_clAtCdMin = 0.2;
+		_kFactorDragPolar = 0.075;
+
+		_aerodynamicCenterX = 0.25;
+		_cmAC = -0.07;
+		_cmACStall = -0.09;
+		_cmAlphaAC = 0. ;
+		_cmAlphaLE = -0.1; //TODO, change this value
+		//_cmAtClMax = 
+
+		_reynoldsCruise = 1e+7;
+		_reynoldsNumberStall = 1e+6;
+
+		calculateClAlpha = new CalculateClAlpha();
+		calculateMachCr = new CalculateMachCr();
+		calculateCdWaveDrag = new CalculateCdWaveDrag();	
+		break;
+		
+	 case "DFVLR_R4" :
 		 _id = airf.getId() + "1" + idCounter + "99";
 		idCounter++;
 		

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import aircraft.components.liftingSurface.LiftingSurface;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.AirfoilStationEnum;
 import configuration.enumerations.AirfoilTypeEnum;
@@ -99,13 +100,13 @@ public class MyAirfoil {
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public MyAirfoil(String aircraftName, LiftingSurface ls, Double yLoc) {
+	public MyAirfoil(AircraftEnum aircraftName, LiftingSurface ls, Double yLoc) {
 
 		_id = ls.getObjectId() + idCounter + "99";
 		idCounter++;
 		
 		switch(aircraftName) {
-		case "ATR-72":
+		case ATR72:
 			_family = AirfoilFamilyEnum.NACA63_209;
 			_type = AirfoilTypeEnum.CONVENTIONAL;
 
@@ -115,9 +116,18 @@ public class MyAirfoil {
 			break;
 		
 		// TODO: put inside Geometry and Aerodynamics B747-100B correct data (actually there are the same data in both ATR-72 and B747-100B
-		case "B747-100B":
+		case B747_100B:
 			_family = AirfoilFamilyEnum.NACA63_209;
 			_type = AirfoilTypeEnum.MODERN_SUPERCRITICAL;
+
+			_theLiftingSurface = ls;
+			geometry = new MyGeometry(this, yLoc);
+			aerodynamics = new MyAerodynamics(this);
+			break;
+			
+		case AGILE_DC1:
+			_family = AirfoilFamilyEnum.DFVLR_R4;
+			_type = AirfoilTypeEnum.MODERN_SUPERCRITICAL; //TODO: have to check
 
 			_theLiftingSurface = ls;
 			geometry = new MyGeometry(this, yLoc);
@@ -131,13 +141,13 @@ public class MyAirfoil {
 	 * 
 	 * @author Manuela Ruocco
 	 */
-	public MyAirfoil(String aircraftName, AirfoilStationEnum station, LiftingSurface ls, Double yLoc) {
+	public MyAirfoil(AircraftEnum aircraftName, AirfoilStationEnum station, LiftingSurface ls, Double yLoc) {
 
 		_id = ls.getObjectId() + idCounter + "99";
 		idCounter++;
 		
 		switch(aircraftName) {
-		case "ATR-72":
+		case ATR72:
 			_type = AirfoilTypeEnum.CONVENTIONAL;
 
 			_theLiftingSurface = ls;
@@ -146,12 +156,21 @@ public class MyAirfoil {
 			break;
 		
 		// TODO: put inside Geometry and Aerodynamics B747-100B correct data (actually there are the same data in both ATR-72 and B747-100B
-		case "B747-100B":
+		case B747_100B:
 			_type = AirfoilTypeEnum.MODERN_SUPERCRITICAL;
 
 			_theLiftingSurface = ls;
 			geometry = new MyGeometry(this, yLoc);
 			aerodynamics = new MyAerodynamics(this, aircraftName, station);
+			break;
+			
+		case AGILE_DC1:
+			_family = AirfoilFamilyEnum.DFVLR_R4;
+			_type = AirfoilTypeEnum.MODERN_SUPERCRITICAL; //TODO: have to check
+
+			_theLiftingSurface = ls;
+			geometry = new MyGeometry(this, yLoc);
+			aerodynamics = new MyAerodynamics(this,aircraftName, station);
 			break;
 		}
 	}

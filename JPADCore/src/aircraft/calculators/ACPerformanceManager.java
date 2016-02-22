@@ -12,6 +12,7 @@ import org.jscience.physics.amount.Amount;
 import aircraft.OperatingConditions;
 import aircraft.components.Aircraft;
 import calculators.performance.PerformanceCalcManager;
+import configuration.enumerations.AircraftEnum;
 import standaloneutils.atmosphere.AtmosphereCalc;
 
 /** 
@@ -84,10 +85,10 @@ public class ACPerformanceManager {
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public ACPerformanceManager(String aircraftName) {
+	public ACPerformanceManager(AircraftEnum aircraftName) {
 		
 		switch(aircraftName) {
-		case "ATR-72":
+		case ATR72:
 			_nLimit = 2.5;
 			_nLimitZFW = 2.5;
 			_nUltimate = 1.5 * _nLimit;
@@ -115,7 +116,7 @@ public class ACPerformanceManager {
 			calculateSpeeds();
 			break;
 			
-		case "B747-100B":
+		case B747_100B:
 			_nLimit = 2.5;
 			_nLimitZFW = 2.5;
 			_nUltimate = 1.5 * _nLimit;
@@ -140,6 +141,34 @@ public class ACPerformanceManager {
 			_cruiseCL = 0.58;
 
 			_range = Amount.valueOf(9800., SI.KILOMETER);
+
+			calculateSpeeds();
+			break;
+			
+		case AGILE_DC1:
+			_nLimit = 2.5;
+			_nLimitZFW = 2.5;
+			_nUltimate = 1.5 * _nLimit;
+
+			// Altitude at which TAS is maximum.
+			_maxAltitudeAtMaxSpeed = Amount.valueOf(36000., NonSI.FOOT).to(SI.METER);
+
+			_altitudeOptimumCruise = Amount.valueOf(36000., NonSI.FOOT).to(SI.METER);
+
+			// Cruise Mach number
+			_machOptimumCruise = 0.78;
+
+			_vOptimumCruise = Amount.valueOf(_machOptimumCruise*AtmosphereCalc.getSpeedOfSound(_altitudeOptimumCruise.doubleValue(SI.METER)), SI.METERS_PER_SECOND);
+
+			// Max Mach number
+			_machMaxCruise = 0.82;
+
+			_blockTime = Amount.valueOf(2.6, NonSI.HOUR);
+			_flightTime = Amount.valueOf(2.33, NonSI.HOUR);
+
+			_cruiseCL = 0.5;
+
+			_range = Amount.valueOf(3500., SI.KILOMETER);
 
 			calculateSpeeds();
 			break;

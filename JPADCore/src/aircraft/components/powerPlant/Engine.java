@@ -19,6 +19,7 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.componentmodel.Component;
 import aircraft.components.Aircraft;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
@@ -91,7 +92,7 @@ public class Engine extends Component{
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public Engine(String aircraftName, String name, String description, 
+	public Engine(AircraftEnum aircraftName, String name, String description, 
 			double x, double y,double z, 
 			Aircraft aircraft) {
 		
@@ -150,11 +151,11 @@ public class Engine extends Component{
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public void initialize(String aircraftName) {
+	public void initialize(AircraftEnum aircraftName) {
 		
 		switch(aircraftName) {
 		
-		case "ATR-72":
+		case ATR72:
 			_cg = new CenterOfGravity(_X0, _Y0, _Z0);
 
 			// PW127 Data
@@ -192,7 +193,7 @@ public class Engine extends Component{
 			balance = new EngBalanceManager(this);
 			break;
 			
-		case "B747-100B":
+		case B747_100B:
 			_cg = new CenterOfGravity(_X0, _Y0, _Z0);
 
 			// PWJT9D-7 Data
@@ -220,6 +221,44 @@ public class Engine extends Component{
 
 			/** Reference total engine mass (dry + something) */
 			_totalMass = Amount.valueOf(4010., SI.KILOGRAM);
+
+			_muT = Amount.valueOf(0., SI.RADIAN);
+
+			// Engine position
+			_mountingPoint = EngineMountingPositionEnum.WING;
+			
+			weights = new EngWeightsManager(_theAircraft, this);
+			balance = new EngBalanceManager(this);
+			break;
+			
+		case AGILE_DC1:
+			//PW1700G
+			_cg = new CenterOfGravity(_X0, _Y0, _Z0);
+
+			_engineType = EngineTypeEnum.TURBOFAN;
+
+			_length = Amount.valueOf(2.739, SI.METER);
+
+			// By-pass ratio
+			set_bpr(8.0);
+			
+			_numberOfCompressorStages = 5; // TODO: CHECK
+			_numberOfShafts = 2;// TODO: CHECK
+			_overallPressureRatio = 15.;// TODO: CHECK
+
+			// Reference dry engine mass (from public domain data)
+			_dryMassPublicDomain = Amount.valueOf(1162.6, NonSI.POUND).to(SI.KILOGRAM);
+
+			_t0 = Amount.valueOf(13217.65, NonSI.POUND_FORCE).to(SI.NEWTON);
+			
+			// Single engine maximum power output (from public domain data)
+			_p0 = Amount.valueOf(80397.37218, NonSI.HORSEPOWER).to(SI.WATT); // TODO: check
+
+			// Reference speed at take-off
+			_v0 = Amount.valueOf(5., SI.METERS_PER_SECOND);
+
+			/** Reference total engine mass (dry + something) */
+			_totalMass = Amount.valueOf(3325.0, SI.KILOGRAM);
 
 			_muT = Amount.valueOf(0., SI.RADIAN);
 

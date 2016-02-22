@@ -17,6 +17,7 @@ import aircraft.OperatingConditions;
 import aircraft.componentmodel.Component;
 import aircraft.components.Aircraft;
 import aircraft.components.powerPlant.Engine;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.MethodEnum;
 
@@ -108,7 +109,7 @@ public class Nacelle extends Component{
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public Nacelle(String aircraftName, String name, String description, 
+	public Nacelle(AircraftEnum aircraftName, String name, String description, 
 			double x, double y, double z,
 			Aircraft aircraft) {
 		this(name, description, x, y, z);
@@ -170,11 +171,11 @@ public class Nacelle extends Component{
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public void initializeData(String aircraftName) {
+	public void initializeData(AircraftEnum aircraftName) {
 		
 		switch(aircraftName) {
 		
-		case "ATR-72":
+		case ATR72:
 			_length = Amount.valueOf(4.371,SI.METER);
 			_diameterMean = Amount.valueOf(1.4,SI.METER);
 			_diameterInlet = Amount.valueOf(1.2,SI.METER);
@@ -194,7 +195,7 @@ public class Nacelle extends Component{
 			calculateSurfaceWetted();
 			break;
 			
-		case "B747-100B":
+		case B747_100B:
 			_length = Amount.valueOf(7.6,SI.METER);
 			_diameterMean = Amount.valueOf(2.0,SI.METER);
 			_diameterInlet = Amount.valueOf(1.2,SI.METER);
@@ -209,6 +210,23 @@ public class Nacelle extends Component{
 			_surfaceWetted = Amount.valueOf(95.5044, Area.UNIT); // matlab file ATR72
 
 			_massReference = Amount.valueOf(1184.2500, SI.KILOGRAM);
+			_mountingPosition = MountingPosition.WING;
+			
+			calculateSurfaceWetted();
+			break;
+			
+		case AGILE_DC1:
+			_length = Amount.valueOf(2.739,SI.METER);
+			_diameterMean = Amount.valueOf(1.226,SI.METER);
+			_diameterInlet = Amount.valueOf(1.226,SI.METER);
+			_diameterOutlet = Amount.valueOf(1.226,SI.METER);
+
+			_roughness = Amount.valueOf(0.405 * Math.pow(10,-5), SI.METRE);
+			_heightFromGround = Amount.valueOf(3.6, SI.METER);
+
+			_surfaceWetted = Amount.valueOf(12.1, Area.UNIT); // ADAS
+
+			_massReference = Amount.valueOf(395.95, SI.KILOGRAM);
 			_mountingPosition = MountingPosition.WING;
 			
 			calculateSurfaceWetted();

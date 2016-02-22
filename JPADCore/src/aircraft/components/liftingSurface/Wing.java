@@ -7,6 +7,7 @@ import org.jscience.physics.amount.AmountFormat;
 
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.nacelles.Nacelle;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ComponentEnum;
 
 public class Wing extends LiftingSurface{
@@ -47,7 +48,7 @@ public class Wing extends LiftingSurface{
 	 * @author Vittorio Trifari 
 	 */
 	public Wing(
-			String aircraftName,
+			AircraftEnum aircraftName,
 			String name, 
 			String description, 
 			Double x, 
@@ -118,7 +119,7 @@ public class Wing extends LiftingSurface{
 		_compositeCorretionFactor = 0.1;
 
 		// A reference value chosen by the user
-		_massReference = Amount.valueOf(2080.6, SI.KILOGRAM);
+		_massReference = Amount.valueOf(2263.4, SI.KILOGRAM);
 
 		// Calibration constant (to account for slight weight changes due to composites etc...)
 		_massCorrectionFactor = 1.;
@@ -127,7 +128,7 @@ public class Wing extends LiftingSurface{
 
 	}
 	
-	private void initializeDefaultSurface(String aircraftName){
+	private void initializeDefaultSurface(AircraftEnum aircraftName){
 
 		AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
 		_type = ComponentEnum.WING;
@@ -136,7 +137,7 @@ public class Wing extends LiftingSurface{
 		// Input data
 		//////////////////////////////
 		switch(aircraftName) {
-		case "ATR-72":
+		case ATR72:
 			_surface = Amount.valueOf(61, SI.SQUARE_METRE);
 			_aspectRatio = 12.0;
 			_taperRatioEquivalent = 0.636;
@@ -183,7 +184,7 @@ public class Wing extends LiftingSurface{
 			initializeAirfoils(aircraftName, this);
 			break;
 			
-		case "B747-100B":
+		case B747_100B:
 			_surface = Amount.valueOf(511, SI.SQUARE_METRE);
 			_aspectRatio = 6.96;
 			_taperRatioEquivalent = 0.284;
@@ -223,6 +224,53 @@ public class Wing extends LiftingSurface{
 
 			// A reference value chosen by the user
 			_massReference = Amount.valueOf(40159.0, SI.KILOGRAM);
+
+			// Calibration constant (to account for slight weight changes due to composites etc...)
+			_massCorrectionFactor = 1.;
+
+			initializeAirfoils(aircraftName, this);
+			break;
+			
+		case AGILE_DC1:
+			_surface = Amount.valueOf(76.38, SI.SQUARE_METRE);
+			_aspectRatio = 9.97;
+			_taperRatioEquivalent = 0.212;
+			_sweepQuarterChordEq = Amount.valueOf(Math.toRadians(19.4),SI.RADIAN);
+			_spanStationKink = 0.35;
+			_iw = Amount.valueOf(Math.toRadians(2.0), SI.RADIAN);
+			_twistKink = Amount.valueOf(Math.toRadians(-1.5),SI.RADIAN);
+			_twistTip = Amount.valueOf(Math.toRadians(-5),SI.RADIAN);
+			_dihedralInnerPanel = Amount.valueOf(Math.toRadians(3.0),SI.RADIAN);
+			_dihedralOuterPanel = Amount.valueOf(Math.toRadians(3.0),SI.RADIAN);
+
+			// distance of wing apex (LE of xz plane chord) from fuselage nose = (0,0,0) point
+			_deltaXWingFus = Amount.valueOf(_X0.getEstimatedValue(),SI.METER);  
+			_roughness = Amount.valueOf(0.152e-5, SI.METER);
+			_xTransitionU = 0.15;
+			_xTransitionL = 0.12;
+
+			// Thickness of 3 section
+			_tc_root = 0.15; // from ADAS              
+			_tc_kink = 0.09; // from ADAS              
+			_tc_tip = 0.085; // from ADAS
+
+			// Z position relative to the height of component to which this one is attached
+			_positionRelativeToAttachment = 0.0; 
+
+			// Extension of control surfaces in percent of total surface
+			_surfaceCS = Amount.valueOf(_surface.times(0.31).getEstimatedValue(), SI.SQUARE_METRE);
+
+			// Additional chord extension at root (LE) with respect to equivalent wing
+			_extensionLERootChordLinPanel = 0.;
+
+			// Additional chord extension at root (TE) with respect to equivalent wing
+			_extensionTERootChordLinPanel = 0.;
+
+			// Percent of composite material used for wing structure
+			_compositeCorretionFactor = 0.1;
+
+			// A reference value chosen by the user
+			_massReference = Amount.valueOf(4669.0, SI.KILOGRAM);
 
 			// Calibration constant (to account for slight weight changes due to composites etc...)
 			_massCorrectionFactor = 1.;

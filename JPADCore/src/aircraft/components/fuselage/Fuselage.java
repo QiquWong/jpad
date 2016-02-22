@@ -52,6 +52,7 @@ import aircraft.calculators.ACPerformanceManager;
 import aircraft.componentmodel.AeroComponent;
 import aircraft.components.Aircraft;
 import aircraft.components.LandingGear;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
@@ -300,7 +301,7 @@ public class Fuselage extends AeroComponent {
 	 * 
 	 *@author Vittorio Trifari
 	 */
-	public Fuselage(String aircraftName,
+	public Fuselage(AircraftEnum aircraftName,
 			String name, 
 			String description, 
 			double x, double y, double z) {
@@ -523,7 +524,7 @@ public class Fuselage extends AeroComponent {
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public void initializeDefaultVariables(String aircraftName) {
+	public void initializeDefaultVariables(AircraftEnum aircraftName) {
 
 		// init variables - Reference aircraft: 
 		AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
@@ -531,7 +532,7 @@ public class Fuselage extends AeroComponent {
 		// --- INPUT DATA ------------------------------------------
 
 		switch(aircraftName) {
-		case"ATR-72":
+		case ATR72:
 			_deckNumber = 1;
 
 			_len_F         =  Amount.valueOf(27.166, 0.0, SI.METRE);
@@ -594,7 +595,7 @@ public class Fuselage extends AeroComponent {
 			_sectionMidTailRhoLower_MAX  = _sectionRhoLower_MAX;
 			break;
 			
-		case "B747-100B":
+		case B747_100B:
 			_deckNumber = 1;
 
 			_len_F         =  Amount.valueOf(68.63, 0.0, SI.METRE);
@@ -631,6 +632,69 @@ public class Fuselage extends AeroComponent {
 			_sectionCylinderLowerToTotalHeightRatio     = 0.4;
 			_sectionCylinderRhoUpper     = 0.2;
 			_sectionCylinderRhoLower     =  0.3;
+
+			_sectionNoseMidLowerToTotalHeightRatio      = _sectionCylinderLowerToTotalHeightRatio.doubleValue();
+			_sectionTailMidLowerToTotalHeightRatio      = _sectionCylinderLowerToTotalHeightRatio.doubleValue();
+			//++++++++++++++++++++++++++++++++++++
+			_sectionNoseMidToTotalHeightRatio_MIN       = _sectionLowerToTotalHeightRatio_MIN;
+			_sectionNoseMidToTotalHeightRatio_MAX       = _sectionLowerToTotalHeightRatio_MAX;
+			_sectionTailMidToTotalHeightRatio_MIN       = _sectionLowerToTotalHeightRatio_MIN;
+			_sectionTailMidToTotalHeightRatio_MAX       = _sectionLowerToTotalHeightRatio_MAX;
+
+			//+++++++++++++++++++++++++++++++++++++
+			_sectionMidNoseRhoUpper      = _sectionCylinderRhoUpper.doubleValue();
+			_sectionMidNoseRhoUpper_MIN  = _sectionRhoUpper_MIN;
+			_sectionMidNoseRhoUpper_MAX  = _sectionRhoUpper_MAX;
+			_sectionMidTailRhoUpper      = _sectionCylinderRhoUpper.doubleValue();
+			_sectionMidTailRhoUpper_MIN  = _sectionRhoUpper_MIN;
+			_sectionMidTailRhoUpper_MAX  = _sectionRhoUpper_MAX;
+
+			//+++++++++++++++++++++++++++++++++++++
+			_sectionMidNoseRhoLower      = _sectionCylinderRhoLower.doubleValue();
+			_sectionMidNoseRhoLower_MIN  = _sectionRhoLower_MIN;
+			_sectionMidNoseRhoLower_MAX  = _sectionRhoLower_MAX;
+			_sectionMidTailRhoLower      = _sectionCylinderRhoLower.doubleValue();
+			_sectionMidTailRhoLower_MIN  = _sectionRhoLower_MIN;
+			_sectionMidTailRhoLower_MAX  = _sectionRhoLower_MAX;
+			break;
+			
+		case AGILE_DC1:
+			_deckNumber = 1;
+
+			_len_F         =  Amount.valueOf(31.95, 0.0, SI.METRE);
+			_lenRatio_NF       = 0.1420;
+			_lenRatio_CF       = 0.6148;
+
+			_sectionCylinderWidth     = Amount.valueOf(3.24,SI.METRE);
+			_sectionCylinderHeight    = Amount.valueOf(3.24, SI.METRE);
+
+			// Nose fineness ratio, _len_N/_diam_N
+			_lambda_N      = 1.4; 
+
+			// Height from ground of lowest part of fuselage
+			_heightFromGround = Amount.valueOf(4.25, SI.METER);
+
+			// Fuselage Roughness
+			_roughness = Amount.valueOf(0.405e-5, SI.METRE);
+
+			// positive if nose tip higher than cylindrical part ref. line (in XZ plane)
+			_height_N      = Amount.valueOf(-0.1698*_sectionCylinderHeight.doubleValue(SI.METRE), SI.METRE);
+			_height_T      = Amount.valueOf( 0.262*(0.5*_sectionCylinderHeight.doubleValue(SI.METRE)), SI.METRE);
+
+			_massReference = Amount.valueOf(3340.0, SI.KILOGRAM);
+			_pressurized = true;
+
+			// Section parameters
+			_dxNoseCapPercent = 0.075; // TODO: Have to Check
+			_dxTailCapPercent = 0.020; // TODO: Have to Check
+
+			_windshieldType = "Single,round";
+			_windshieldHeight = Amount.valueOf(0.5, SI.METER);
+			_windshieldWidth = Amount.valueOf(3.0, SI.METER);
+
+			_sectionCylinderLowerToTotalHeightRatio     = 0.4;
+			_sectionCylinderRhoUpper     = 0.1;
+			_sectionCylinderRhoLower     = 0.1;
 
 			_sectionNoseMidLowerToTotalHeightRatio      = _sectionCylinderLowerToTotalHeightRatio.doubleValue();
 			_sectionTailMidLowerToTotalHeightRatio      = _sectionCylinderLowerToTotalHeightRatio.doubleValue();

@@ -25,6 +25,7 @@ import aircraft.components.nacelles.Nacelle;
 import aircraft.components.nacelles.NacellesManager;
 import aircraft.components.powerPlant.PowerPlant;
 import configuration.enumerations.AeroConfigurationTypeEnum;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AircraftTypeEnum;
 import configuration.enumerations.ComponentEnum;
 
@@ -95,7 +96,7 @@ public class Aircraft {
 	 *
 	 * @author Vittorio Trifari
 	 */
-	public Aircraft(String aircraftName) {
+	public Aircraft(AircraftEnum aircraftName) {
 		initialize(aircraftName);
 	}
 
@@ -134,32 +135,46 @@ public class Aircraft {
 	 * @author Vittorio Trifari
 	 * @param aircraftName
 	 */
-	public void initialize(String aircraftName) {
+	public void initialize(AircraftEnum aircraftName) {
 
 		// TODO: complete with other default aircraft
+//		switch(aircraftName) {
 		switch(aircraftName) {
-		case "ATR-72":
+		case ATR72:
 			_name = "";
 			_typeVehicle = AircraftTypeEnum.TURBOPROP;
-			_theConfiguration = new Configuration("ATR-72");
+			_theConfiguration = new Configuration(AircraftEnum.ATR72);
 			_theBalance = new ACBalanceManager();
-			_theWeights = new ACWeightsManager("ATR-72");
+			_theWeights = new ACWeightsManager(AircraftEnum.ATR72);
 			_theAerodynamics = new ACAerodynamicsManager(this);
-			_thePerformances = new ACPerformanceManager("ATR-72");
+			_thePerformances = new ACPerformanceManager(AircraftEnum.ATR72);
 			_theCosts = new MyCosts(this);
 			break;
 
-		case "B747-100B":
+		case B747_100B:
 			_name = "";
 			_typeVehicle = AircraftTypeEnum.JET;
-			_theConfiguration = new Configuration("B747-100B");
+			_theConfiguration = new Configuration(AircraftEnum.B747_100B);
 			_theBalance = new ACBalanceManager();
-			_theWeights = new ACWeightsManager("B747-100B");
+			_theWeights = new ACWeightsManager(AircraftEnum.B747_100B);
 			_theAerodynamics = new ACAerodynamicsManager(this);
-			_thePerformances = new ACPerformanceManager("B747-100B");
+			_thePerformances = new ACPerformanceManager(AircraftEnum.B747_100B);
 			// TODO: These data are incorrect because referred to ATR-72. Fix when available
 			_theCosts = new MyCosts(this);
 			break;
+			
+		case AGILE_DC1:
+			_name = "";
+			_typeVehicle = AircraftTypeEnum.JET;
+			_theConfiguration = new Configuration(AircraftEnum.AGILE_DC1);
+			_theBalance = new ACBalanceManager();
+			_theWeights = new ACWeightsManager(AircraftEnum.AGILE_DC1);
+			_theAerodynamics = new ACAerodynamicsManager(this);
+			_thePerformances = new ACPerformanceManager(AircraftEnum.AGILE_DC1);
+			_theCosts = new MyCosts(this);
+			break;
+		
+		
 		}
 	}
 
@@ -190,7 +205,7 @@ public class Aircraft {
 	 * @author Vittorio Trifari
 	 * @return
 	 */
-	public static Aircraft createDefaultAircraft(String aircraftName) {
+	public static Aircraft createDefaultAircraft(AircraftEnum aircraftName) {
 		Aircraft aircraft = new Aircraft(aircraftName);
 		aircraft.createFuselage(aircraftName);
 		aircraft.createWing(aircraftName);
@@ -260,7 +275,7 @@ public class Aircraft {
 	 *
 	 * @author Vittorio Trifari
 	 */
-	public void createFuselage(String aircraftName) {
+	public void createFuselage(AircraftEnum aircraftName) {
 		_theFuselage = new Fuselage(
 				aircraftName,
 				"Fuselage", // name
@@ -291,10 +306,10 @@ public class Aircraft {
 	 *
 	 * @author Vittorio Trifari
 	 */
-	public void createWing(String aircraftName) {
+	public void createWing(AircraftEnum aircraftName) {
 
 		switch(aircraftName) {
-		case "ATR-72":
+		case ATR72:
 			_theWing = new Wing(
 					aircraftName,
 					"Wing", // name
@@ -307,7 +322,7 @@ public class Aircraft {
 					_theVTail
 					);
 			break;
-		case "B747-100B":
+		case B747_100B:
 			_theWing = new Wing(
 					aircraftName,
 					"Wing", // name
@@ -320,6 +335,19 @@ public class Aircraft {
 					_theVTail
 					);
 			break;
+			
+			case AGILE_DC1:
+				_theWing = new Wing(
+						aircraftName,
+						"Wing", // name
+						"Data from AGILE_D2.5 doc",
+						11.5, 0.0, 0.39,
+						ComponentEnum.WING,
+						_theFuselage,
+						_theNacelle,
+						_theHTail,
+						_theVTail
+						);
 		}
 
 		_componentsList.add(_theWing);
@@ -331,7 +359,7 @@ public class Aircraft {
 	 *
 	 * @author Manuela Ruocco
 	 */
-	public void createExposedWing(String aircraftName) {
+	public void createExposedWing(AircraftEnum aircraftName) {
 
 		if ( (this.get_wing() != null) && (this.get_fuselage() != null)) {
 
@@ -389,7 +417,7 @@ public class Aircraft {
 	 *
 	 * @author Vittorio Trifari
 	 */
-	public void createNacelles(String aircraftName) {
+	public void createNacelles(AircraftEnum aircraftName) {
 		_theNacelles = new NacellesManager(aircraftName, this);
 		_theNacelles.initializeNacelles(aircraftName);
 		_theNacelles.setEngines();
@@ -422,11 +450,11 @@ public class Aircraft {
 	 *
 	 * @author Vittorio Trifari
 	 */
-	public void createHTail(String aircraftName) {
+	public void createHTail(AircraftEnum aircraftName) {
 
 		switch(aircraftName) {
 
-		case "ATR-72":
+		case ATR72:
 			_theHTail =  new HTail(
 					aircraftName,
 					"HTail",
@@ -442,7 +470,7 @@ public class Aircraft {
 					);
 			break;
 
-		case "B747-100B":
+		case B747_100B:
 			_theHTail =  new HTail(
 					aircraftName,
 					"HTail",
@@ -450,6 +478,22 @@ public class Aircraft {
 					60.7,
 					0.0,
 					0.4850,
+					ComponentEnum.HORIZONTAL_TAIL,
+					_theFuselage,
+					_theNacelle,
+					_theWing,
+					_theVTail
+					);
+			break;
+			
+		case AGILE_DC1:
+			_theHTail =  new HTail(
+					aircraftName,
+					"HTail",
+					"Data taken from AGILE_D2.5 doc",
+					29.72,
+					0.0,
+					2.46,
 					ComponentEnum.HORIZONTAL_TAIL,
 					_theFuselage,
 					_theNacelle,
@@ -486,10 +530,10 @@ public class Aircraft {
 	 *
 	 * @author Vittorio Trifari
 	 */
-	public void createVTail(String aircraftName) {
+	public void createVTail(AircraftEnum aircraftName) {
 
 		switch(aircraftName) {
-		case "ATR-72":
+		case ATR72:
 			_theVTail =  new VTail(
 					aircraftName,
 					"VTail",
@@ -505,7 +549,7 @@ public class Aircraft {
 					);
 			break;
 
-		case "B747-100B":
+		case B747_100B:
 			_theVTail =  new VTail(
 					aircraftName,
 					"VTail",
@@ -520,6 +564,23 @@ public class Aircraft {
 					_theHTail
 					);
 			break;
+			
+		case AGILE_DC1:
+			_theVTail =  new VTail(
+					aircraftName,
+					"VTail",
+					"Data taken from AGILE_D2.5 doc",
+					28.12,
+					0.0,
+					2.98,
+					ComponentEnum.VERTICAL_TAIL,
+					_theFuselage,
+					_theNacelle,
+					_theWing,
+					_theHTail
+					);
+			break;
+			
 		}
 
 		_componentsList.add(_theVTail);
@@ -558,11 +619,11 @@ public class Aircraft {
 	 *
 	 * @author Vittorio Trifari
 	 */
-	public void createLandingGear(String aircraftName) {
+	public void createLandingGear(AircraftEnum aircraftName) {
 
 		switch(aircraftName) {
 
-		case "ATR-72":
+		case ATR72:
 			_theLandingGear = new LandingGear(
 					aircraftName,
 					"Landing Gear",
@@ -571,12 +632,21 @@ public class Aircraft {
 			_componentsList.add(_theLandingGear);
 			break;
 
-		case "B747-100B":
+		case B747_100B:
 			_theLandingGear = new LandingGear(
 					aircraftName,
 					"Landing Gear",
 					"B747-100B Landing Gear",
 					5., 0., 0.);
+			_componentsList.add(_theLandingGear);
+			break;
+			
+		case AGILE_DC1:
+			_theLandingGear = new LandingGear(
+					aircraftName,
+					"Landing Gear",
+					"AGILE_DC1 Landing Gear",
+					12.5, 0., 0.);
 			_componentsList.add(_theLandingGear);
 			break;
 		}
@@ -596,10 +666,10 @@ public class Aircraft {
 	 *
 	 * @author Vittorio Trifari
 	 */
-	public void createFuelTank(String aircraftName) {
+	public void createFuelTank(AircraftEnum aircraftName) {
 
 		switch(aircraftName) {
-		case "ATR-72":
+		case ATR72:
 			_theFuelTank = new FuelTank(
 					aircraftName,
 					"Fuel Tank",
@@ -608,12 +678,21 @@ public class Aircraft {
 			_componentsList.add(_theFuelTank);
 			break;
 
-		case "B747-100B":
+		case B747_100B:
 			_theFuelTank = new FuelTank(
 					aircraftName,
 					"Fuel Tank",
 					"B747-100B Fuel Tank",
 					34.14, 14.44, -2.8750);
+			_componentsList.add(_theFuelTank);
+			break;
+			
+		case AGILE_DC1:
+			_theFuelTank = new FuelTank(
+					aircraftName,
+					"Fuel Tank",
+					"AGILE_DC1 Fuel Tank",
+					12.891, 4.968, -1.782);
 			_componentsList.add(_theFuelTank);
 			break;
 		}
@@ -634,7 +713,7 @@ public class Aircraft {
 	 *
 	 * @author Vittorio Trifari
 	 */
-	public void createPowerPlant(String aircraftName) {
+	public void createPowerPlant(AircraftEnum aircraftName) {
 
 		_thePowerPlant = new PowerPlant(
 				aircraftName,
@@ -662,7 +741,7 @@ public class Aircraft {
 	 *
 	 * @author Vittorio Trifari
 	 */
-	public void createSystems(String aircraftName) {
+	public void createSystems(AircraftEnum aircraftName) {
 		_theSystems = new Systems(
 				aircraftName,
 				"Systems",

@@ -10,6 +10,7 @@ import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.MyConfiguration;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.DatabaseReaderEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
@@ -18,7 +19,6 @@ import javafx.util.Pair;
 
 public class Test_VC_complete_AC {
 	
-	private static String aircraftName = "ATR72	";
 	private static AerodynamicDatabaseReader aeroDatabaseReader;
 	private static Object importFile;
 
@@ -30,7 +30,7 @@ public class Test_VC_complete_AC {
 	
 	// Define the aircraft
 	// TODO: Have to deprecate Aircraft.createDefaultAircraft() ->  Aircraft.createDefaultAircraft(String aircraftName)
-	Aircraft aircraft = Aircraft.createDefaultAircraft("ATR-72");
+	Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.ATR72);
 	LiftingSurface theWing = aircraft.get_wing();
 	
 	// Import aircraft from .xml file
