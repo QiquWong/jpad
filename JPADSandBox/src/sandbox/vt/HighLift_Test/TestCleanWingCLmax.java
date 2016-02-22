@@ -16,6 +16,7 @@ import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.MyConfiguration;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
@@ -31,7 +32,7 @@ public class TestCleanWingCLmax {
 
 	public static void main(String[] args) {
 
-		Amount<Angle> deltaAlphaMax; 
+		Amount<Angle> deltaAlphaMax;
 		MyAirfoil meanAirfoil;
 
 		//----------------------------------------------------------------------------------
@@ -39,7 +40,7 @@ public class TestCleanWingCLmax {
 		MyConfiguration.initWorkingDirectoryTree();
 
 		//------------------------------------------------------------------------------------
-		// Setup database(s)	
+		// Setup database(s)
 		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
 		String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
 		String highLiftDatabaseFileName = "HighLiftDatabase.h5";
@@ -54,15 +55,15 @@ public class TestCleanWingCLmax {
 		theCondition.set_altitude(Amount.valueOf(10000.0, SI.METER));
 		theCondition.set_machCurrent(0.84);
 		theCondition.calculate();
-		
-		Aircraft aircraft = Aircraft.createDefaultAircraft("B747-100B");
+
+		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.B747_100B);
 		aircraft.set_name("B747-100B");
 
 		LiftingSurface theWing = aircraft.get_wing();
 
 		ACAnalysisManager theAnalysis = new ACAnalysisManager(theCondition);
 		theAnalysis.updateGeometry(aircraft);
-		
+
 		//--------------------------------------------------------------------------------------
 		// ATR-72
 		//------------------------------------------------------------------------------------
@@ -83,7 +84,7 @@ public class TestCleanWingCLmax {
 		CenterOfGravity cgMTOM = new CenterOfGravity();
 
 		// x_cg in body-ref.-frame
-		cgMTOM.set_xBRF(Amount.valueOf(23.1, SI.METER)); 
+		cgMTOM.set_xBRF(Amount.valueOf(23.1, SI.METER));
 		cgMTOM.set_yBRF(Amount.valueOf(0.0, SI.METER));
 		cgMTOM.set_zBRF(Amount.valueOf(0.0, SI.METER));
 
@@ -141,7 +142,7 @@ public class TestCleanWingCLmax {
 		System.out.println("\n \n \t ROOT \nAirfoil Type: " + airfoilRoot.get_family());
 		System.out.println("Root Chord " + theWing.get_chordRoot().getEstimatedValue() );
 		System.out.println("Root maximum thickness " + airfoilRoot.getGeometry().get_maximumThicknessOverChord());
-		System.out.println("CL max --> " + airfoilRoot.getAerodynamics().get_clMax());		
+		System.out.println("CL max --> " + airfoilRoot.getAerodynamics().get_clMax());
 		System.out.println("LE sharpness parameter Root " + airfoilRoot.getGeometry().get_deltaYPercent());
 
 		//AIRFOIL 2
@@ -183,7 +184,7 @@ public class TestCleanWingCLmax {
 		aircraft.get_exposedWing().updateAirfoilsGeometryExposedWing( aircraft);
 
 		// -----------------------------------------------------------------------
-		// Mean airfoil 
+		// Mean airfoil
 		// -----------------------------------------------------------------------
 
 		System.out.println("\n \n-----------------------------------------------------");
@@ -212,7 +213,7 @@ public class TestCleanWingCLmax {
 		LSAerodynamicsManager.CalcCLvsAlphaCurve theCLAnalysis = theLSAnalysis.new CalcCLvsAlphaCurve();
 		LSAerodynamicsManager.CalcCLAtAlpha theCLatAlpha= theLSAnalysis.new CalcCLAtAlpha();
 		System.out.println("\tEvaluate CL distribution using Nasa-Blackwell method");
-		theCLAnalysis.nasaBlackwell(); //it's possible to set alpha values 
+		theCLAnalysis.nasaBlackwell(); //it's possible to set alpha values
 		System.out.println("\n \tEvaluate CL max using CL distribution");
 		theCLmaxAnalysis.nasaBlackwell();
 		Amount<Angle> alphaAtCLMax = theLSAnalysis.get_alphaStall();
@@ -256,7 +257,7 @@ public class TestCleanWingCLmax {
 		legend[0] = "CL max airfoil";
 //		legend[1] = "CL distribution at alpha " + Math.toDegrees(alphaFirst.getEstimatedValue());
 //		legend[2] = "CL distribution at alpha " + Math.toDegrees(alphaSecond.getEstimatedValue());
-		legend[1] = "CL distribution at alpha " + Math.toDegrees(alphaAtCLMax.getEstimatedValue());	
+		legend[1] = "CL distribution at alpha " + Math.toDegrees(alphaAtCLMax.getEstimatedValue());
 
 		MyChartToFileUtils.plot(
 				semiSpanAd,	clDistribution, // array to plot

@@ -17,6 +17,7 @@ import calculators.performance.customdata.DragMap;
 import calculators.performance.customdata.DragThrustIntersectionMap;
 import calculators.performance.customdata.ThrustMap;
 import configuration.MyConfiguration;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;
@@ -29,21 +30,21 @@ import standaloneutils.atmosphere.SpeedCalc;
 import standaloneutils.customdata.CenterOfGravity;
 
 public class SpecificRange_Test_TP {
-	
+
 	//------------------------------------------------------------------------------------------
 	// MAIN:
 	public static void main(String[] args) throws InstantiationException, IllegalAccessException {
-		
+
 		System.out.println("-----------------------------------------------------------");
 		System.out.println("SpecificRangeCalc_Test :: TURBOPROP");
 		System.out.println("-----------------------------------------------------------\n");
-		
+
 		//----------------------------------------------------------------------------------
 		// Default folders creation:
 		MyConfiguration.initWorkingDirectoryTree();
 
 		//------------------------------------------------------------------------------------
-		// Setup database(s)	
+		// Setup database(s)
 		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
 		String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
 		AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
@@ -55,7 +56,7 @@ public class SpecificRange_Test_TP {
 		theCondition.set_machCurrent(0.45);
 		theCondition.calculate();
 
-		Aircraft aircraft = Aircraft.createDefaultAircraft("ATR-72");
+		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.ATR72);
 		aircraft.set_name("ATR-72");
 
 		LiftingSurface theWing = aircraft.get_wing();
@@ -90,19 +91,19 @@ public class SpecificRange_Test_TP {
 		for (int i=0; i<5; i++)
 //			maxTakeOffMassArray[i] = aircraft.get_weights().get_MTOM().getEstimatedValue()*(1-0.1*(4-i));
 			maxTakeOffMassArray[i] = aircraft.get_weights().get_MTOM().plus(aircraft.get_weights().get_MLM()).divide(2).getEstimatedValue()*(1-0.1*(4-i));
-	
+
 		double[] weight = new double[maxTakeOffMassArray.length];
 		for(int i=0; i<weight.length; i++)
 			weight[i] = maxTakeOffMassArray[i]*AtmosphereCalc.g0.getEstimatedValue();
-		
+
 		System.out.println("\n\nMAX TAKE OFF MASS ARRAY:");
 		for(int i=0; i<maxTakeOffMassArray.length; i++)
 			System.out.print(maxTakeOffMassArray[i] + " ");
 		System.out.println("\n\n");
-		
-		double cLmax = 1.6; // TODO : Fix when the correct CLmax is calculated from wing		
-		
-		// Drag Thrust Intersection		
+
+		double cLmax = 1.6; // TODO : Fix when the correct CLmax is calculated from wing
+
+		// Drag Thrust Intersection
 		double[] speed = MyArrayUtils.linspace(
 				SpeedCalc.calculateTAS(
 						0.05,
@@ -114,7 +115,7 @@ public class SpecificRange_Test_TP {
 						),
 				250
 				);
-			
+
 		List<DragMap> listDrag = new ArrayList<DragMap>();
 		for(int i=0; i<maxTakeOffMassArray.length; i++)
 			listDrag.add(
@@ -136,7 +137,7 @@ public class SpecificRange_Test_TP {
 							speed
 							)
 					);
-		
+
 		List<ThrustMap> listThrust = new ArrayList<ThrustMap>();
 		for(int i=0; i<maxTakeOffMassArray.length; i++)
 			listThrust.add(
@@ -158,7 +159,7 @@ public class SpecificRange_Test_TP {
 							EngineOperatingConditionEnum.CRUISE
 							)
 					);
-		
+
 		List<DragThrustIntersectionMap> intersectionList = PerformanceCalcUtils
 				.calculateDragThrustIntersection(
 						new double[] {theCondition.get_altitude().getEstimatedValue()},
@@ -172,11 +173,11 @@ public class SpecificRange_Test_TP {
 						listDrag,
 						listThrust
 						);
-				
+
 		//----------------------------------------------------------------------------------
 		// Definition of a Mach array for each maxTakeOffMass
 		List<Double[]> machList = new ArrayList<Double[]>();
-		for(int i=0; i<maxTakeOffMassArray.length; i++) 
+		for(int i=0; i<maxTakeOffMassArray.length; i++)
 			machList.add(MyArrayUtils.linspaceDouble(
 					intersectionList.get(i).getMinMach(),
 					intersectionList.get(i).getMaxMach(),
@@ -186,7 +187,7 @@ public class SpecificRange_Test_TP {
 		System.out.println("Mach Matrix\n");
 		for (int i=0; i<machList.size(); i++)
 			System.out.println(Arrays.toString(machList.get(i)));
-		
+
 		System.out.println("-----------------------------------------------------------");
 
 		//-----------------------------------------------------------------------------------
@@ -250,7 +251,7 @@ public class SpecificRange_Test_TP {
 
 		//-----------------------------------------------------------------------------------
 		// PLOTTING:
-		
+
 		// building legend
 		List<String> legend = new ArrayList<String>();
 		for(int i=0; i<maxTakeOffMassArray.length; i++)

@@ -4,124 +4,124 @@
       <META charset="utf-8"/>
       <SCRIPT type="text/javascript"
               src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG"> </SCRIPT>
-      <SCRIPT type="text/javascript">/*
- * SVG_MathJax
- * 
- * Copyright 2014 Jason M. Sachs
- * Based loosely on an approach outlined by Martin Clark
- * in http://stackoverflow.com/a/21923030/44330
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
- 
-Svg_MathJax = (function() {
-    // apply a function to elements of an array x
-    function forEach(x,f) { 
-        var n = x.length; for (var i = 0; i < n; ++i) { f(x[i]); } 
-    }
-
-    // find all the SVG text elements that are delimited by 
-    // \( \) or $ $ MathJax delimiters 
-    // (with optional whitespace before/after)
-    function findSVGMathJax(f, context)
-    {
-        var re = /^\s*([LlRrCc]?)(\\\(.*\\\)|\$.*\$)\s*$/;
-        context = context || document;
-        forEach(context.getElementsByTagName('svg'), function(svg) {
-            forEach(svg.getElementsByTagName('text'), function(t) {
-                var m = t.textContent.match(re);
-                if (m)
-                {
-                    f(svg, t, m);
-                }
-            });
-        });
-    }
-
-    function _install(options) {
-        var items = [];
-
-        // Move the raw MathJax items to a temporary element
-        MathJax.Hub.Register.StartupHook("Begin Typeset",function () { 
-            var mathbucket = document.createElement('div');
-            mathbucket.setAttribute('id','mathjax_svg_bucket');
-            document.body.appendChild(mathbucket);
-            findSVGMathJax(function(svg, t, m) { 
-                var d = document.createElement('div');
-                mathbucket.appendChild(d);
-                var mathmarkup = m[2].replace(/^\$(.*)\$$/,'\\($1\\)');
-                d.appendChild(document.createTextNode(mathmarkup));
-                t.textContent = '';	
-                items.push([t,d,m[1]]);
-            });
-        });
-        MathJax.Hub.Register.StartupHook("End Typeset",function() {
-            forEach(items, function(x) {
-                var svgdest = x[0]; 
-                var mathjaxdiv = x[1]; 
-                var justification = x[2];
-                var svgmath = 
-                     mathjaxdiv.getElementsByClassName('MathJax_SVG')[0]
-                               .getElementsByTagName('svg')[0];
-                var svgmathinfo = {
-                  width: svgmath.viewBox.baseVal.width, 
-                  height: svgmath.viewBox.baseVal.height
-                };
-                // get graphics nodes
-                var gnodes = 
-                    svgmath.getElementsByTagName('g')[0].cloneNode(true);
-                var fontsize = svgdest.getAttribute('font-size');
-                var scale = options.scale*fontsize;
-                var x =  +svgdest.getAttribute('x');
-                var y =  +svgdest.getAttribute('y');
-
-                var x0 = x;
-                var y0 = y;
-                var x1;
-                switch (justification.toUpperCase())
-                {
-                case 'L': x1 = 0; break;
-                case 'R': x1 = -svgmathinfo.width; break;
-                case 'C': // default to center
-                default:  x1 = -svgmathinfo.width * 0.5; break;
-                }
-                var y1 = svgmathinfo.height*0;
-                gnodes.setAttribute('transform', 'translate('+x0+' '+y0+')'
-                     +' scale('+scale+') translate('+x1+' '+y1+')'
-                     +' matrix(1 0 0 -1 0 0)');
-                if (options.escape_clip)
-                    svgdest.parentNode.removeAttribute('clip-path');
-                svgdest.parentNode.replaceChild(gnodes,svgdest);
-            });
-            // remove the temporary items
-            var mathbucket = document.getElementById('mathjax_svg_bucket');
-            mathbucket.parentNode.removeChild(mathbucket);
-        });
-    }
-    
-    var F = function()
-    {
-        this.scale = 0.0016;
-        this.escape_clip = false;
-    };
-    F.prototype.install = function() { _install(this); }
-    return F;
-})();
+      <SCRIPT type="text/javascript">/*&#xD;
+ * SVG_MathJax&#xD;
+ * &#xD;
+ * Copyright 2014 Jason M. Sachs&#xD;
+ * Based loosely on an approach outlined by Martin Clark&#xD;
+ * in http://stackoverflow.com/a/21923030/44330&#xD;
+ *&#xD;
+ * Licensed under the Apache License, Version 2.0 (the "License");&#xD;
+ * you may not use this file except in compliance with the License.&#xD;
+ * You may obtain a copy of the License at&#xD;
+ *&#xD;
+ *  http://www.apache.org/licenses/LICENSE-2.0&#xD;
+ *&#xD;
+ * Unless required by applicable law or agreed to in writing, software&#xD;
+ * distributed under the License is distributed on an "AS IS" BASIS,&#xD;
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.&#xD;
+ * See the License for the specific language governing permissions and&#xD;
+ * limitations under the License.&#xD;
+ */&#xD;
+ &#xD;
+Svg_MathJax = (function() {&#xD;
+    // apply a function to elements of an array x&#xD;
+    function forEach(x,f) { &#xD;
+        var n = x.length; for (var i = 0; i < n; ++i) { f(x[i]); } &#xD;
+    }&#xD;
+&#xD;
+    // find all the SVG text elements that are delimited by &#xD;
+    // \( \) or $ $ MathJax delimiters &#xD;
+    // (with optional whitespace before/after)&#xD;
+    function findSVGMathJax(f, context)&#xD;
+    {&#xD;
+        var re = /^\s*([LlRrCc]?)(\\\(.*\\\)|\$.*\$)\s*$/;&#xD;
+        context = context || document;&#xD;
+        forEach(context.getElementsByTagName('svg'), function(svg) {&#xD;
+            forEach(svg.getElementsByTagName('text'), function(t) {&#xD;
+                var m = t.textContent.match(re);&#xD;
+                if (m)&#xD;
+                {&#xD;
+                    f(svg, t, m);&#xD;
+                }&#xD;
+            });&#xD;
+        });&#xD;
+    }&#xD;
+&#xD;
+    function _install(options) {&#xD;
+        var items = [];&#xD;
+&#xD;
+        // Move the raw MathJax items to a temporary element&#xD;
+        MathJax.Hub.Register.StartupHook("Begin Typeset",function () { &#xD;
+            var mathbucket = document.createElement('div');&#xD;
+            mathbucket.setAttribute('id','mathjax_svg_bucket');&#xD;
+            document.body.appendChild(mathbucket);&#xD;
+            findSVGMathJax(function(svg, t, m) { &#xD;
+                var d = document.createElement('div');&#xD;
+                mathbucket.appendChild(d);&#xD;
+                var mathmarkup = m[2].replace(/^\$(.*)\$$/,'\\($1\\)');&#xD;
+                d.appendChild(document.createTextNode(mathmarkup));&#xD;
+                t.textContent = '';	&#xD;
+                items.push([t,d,m[1]]);&#xD;
+            });&#xD;
+        });&#xD;
+        MathJax.Hub.Register.StartupHook("End Typeset",function() {&#xD;
+            forEach(items, function(x) {&#xD;
+                var svgdest = x[0]; &#xD;
+                var mathjaxdiv = x[1]; &#xD;
+                var justification = x[2];&#xD;
+                var svgmath = &#xD;
+                     mathjaxdiv.getElementsByClassName('MathJax_SVG')[0]&#xD;
+                               .getElementsByTagName('svg')[0];&#xD;
+                var svgmathinfo = {&#xD;
+                  width: svgmath.viewBox.baseVal.width, &#xD;
+                  height: svgmath.viewBox.baseVal.height&#xD;
+                };&#xD;
+                // get graphics nodes&#xD;
+                var gnodes = &#xD;
+                    svgmath.getElementsByTagName('g')[0].cloneNode(true);&#xD;
+                var fontsize = svgdest.getAttribute('font-size');&#xD;
+                var scale = options.scale*fontsize;&#xD;
+                var x =  +svgdest.getAttribute('x');&#xD;
+                var y =  +svgdest.getAttribute('y');&#xD;
+&#xD;
+                var x0 = x;&#xD;
+                var y0 = y;&#xD;
+                var x1;&#xD;
+                switch (justification.toUpperCase())&#xD;
+                {&#xD;
+                case 'L': x1 = 0; break;&#xD;
+                case 'R': x1 = -svgmathinfo.width; break;&#xD;
+                case 'C': // default to center&#xD;
+                default:  x1 = -svgmathinfo.width * 0.5; break;&#xD;
+                }&#xD;
+                var y1 = svgmathinfo.height*0;&#xD;
+                gnodes.setAttribute('transform', 'translate('+x0+' '+y0+')'&#xD;
+                     +' scale('+scale+') translate('+x1+' '+y1+')'&#xD;
+                     +' matrix(1 0 0 -1 0 0)');&#xD;
+                if (options.escape_clip)&#xD;
+                    svgdest.parentNode.removeAttribute('clip-path');&#xD;
+                svgdest.parentNode.replaceChild(gnodes,svgdest);&#xD;
+            });&#xD;
+            // remove the temporary items&#xD;
+            var mathbucket = document.getElementById('mathjax_svg_bucket');&#xD;
+            mathbucket.parentNode.removeChild(mathbucket);&#xD;
+        });&#xD;
+    }&#xD;
+    &#xD;
+    var F = function()&#xD;
+    {&#xD;
+        this.scale = 0.0016;&#xD;
+        this.escape_clip = false;&#xD;
+    };&#xD;
+    F.prototype.install = function() { _install(this); }&#xD;
+    return F;&#xD;
+})();&#xD;
 </SCRIPT>
       <SCRIPT type="text/javascript">new Svg_MathJax().install();</SCRIPT>
       <LINK rel="stylesheet"
             type="text/css"
-            href="file:/C:/Users/jyota/ADOPT_PROJECT/jpad/JPADSandBox/bin/sandbox/adm/javafxd3/test/JavaFXD3_Test_06.css"
+            href="file:/C:/Users/agodemar/ADOPT_PROJECT/jpad/JPADSandBox/bin/sandbox/adm/javafxd3/test/JavaFXD3_Test_06.css"
             media="all"/>
    </HEAD>
    <BODY style="margin:0;padding:0;">
@@ -133,40 +133,40 @@ Svg_MathJax = (function() {
               class="chart"
               width="700"
               height="500">
-            <style>
-svg {
-  font: 10px sans-serif;
-  shape-rendering: crispEdges;
-}
-rect {
-  fill: #c0d2dd;
-}
-
-.chart {
-
-}
-
-.main {
-	
-}
-
-.main text {
-    font: 10px sans-serif;	
-}
-
-.axis line, .axis path {
-    shape-rendering: crispEdges;
-    stroke: black;
-    fill: none;
-    stroke-width:1;
-    stroke-miterlimit:4;
-    stroke-dasharray:none;
-    stroke-opacity:1;
-}
-
-circle {
-    fill: darkgreen; /* steelblue; */
-}
+            <style>&#xD;
+svg {&#xD;
+  font: 10px sans-serif;&#xD;
+  shape-rendering: crispEdges;&#xD;
+}&#xD;
+rect {&#xD;
+  fill: #c0d2dd;&#xD;
+}&#xD;
+&#xD;
+.chart {&#xD;
+&#xD;
+}&#xD;
+&#xD;
+.main {&#xD;
+	&#xD;
+}&#xD;
+&#xD;
+.main text {&#xD;
+    font: 10px sans-serif;	&#xD;
+}&#xD;
+&#xD;
+.axis line, .axis path {&#xD;
+    shape-rendering: crispEdges;&#xD;
+    stroke: black;&#xD;
+    fill: none;&#xD;
+    stroke-width:1;&#xD;
+    stroke-miterlimit:4;&#xD;
+    stroke-dasharray:none;&#xD;
+    stroke-opacity:1;&#xD;
+}&#xD;
+&#xD;
+circle {&#xD;
+    fill: darkgreen; /* steelblue; */&#xD;
+}&#xD;
 </style>
             <g transform="translate(40,20)">
                <rect width="640" height="450"/>

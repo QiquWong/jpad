@@ -4,40 +4,40 @@
      class="chart"
      width="700"
      height="500">
-   <style>
-svg {
-  font: 10px sans-serif;
-  shape-rendering: crispEdges;
-}
-rect {
-  fill: #c0d2dd;
-}
-
-.chart {
-
-}
-
-.main {
-	
-}
-
-.main text {
-    font: 10px sans-serif;	
-}
-
-.axis line, .axis path {
-    shape-rendering: crispEdges;
-    stroke: black;
-    fill: none;
-    stroke-width:1;
-    stroke-miterlimit:4;
-    stroke-dasharray:none;
-    stroke-opacity:1;
-}
-
-circle {
-    fill: darkgreen; /* steelblue; */
-}
+   <style>&#xD;
+svg {&#xD;
+  font: 10px sans-serif;&#xD;
+  shape-rendering: crispEdges;&#xD;
+}&#xD;
+rect {&#xD;
+  fill: #c0d2dd;&#xD;
+}&#xD;
+&#xD;
+.chart {&#xD;
+&#xD;
+}&#xD;
+&#xD;
+.main {&#xD;
+	&#xD;
+}&#xD;
+&#xD;
+.main text {&#xD;
+    font: 10px sans-serif;	&#xD;
+}&#xD;
+&#xD;
+.axis line, .axis path {&#xD;
+    shape-rendering: crispEdges;&#xD;
+    stroke: black;&#xD;
+    fill: none;&#xD;
+    stroke-width:1;&#xD;
+    stroke-miterlimit:4;&#xD;
+    stroke-dasharray:none;&#xD;
+    stroke-opacity:1;&#xD;
+}&#xD;
+&#xD;
+circle {&#xD;
+    fill: darkgreen; /* steelblue; */&#xD;
+}&#xD;
 </style>
    <g transform="translate(40,20)">
       <rect width="640" height="450"/>
