@@ -3,10 +3,10 @@ package sandbox.adm.javafxd3.test;
 import java.util.Arrays;
 import java.util.Collections;
 
-import com.github.javafxd3.d3.D3;
-import com.github.javafxd3.d3.core.Selection;
-import com.github.javafxd3.d3.scales.LinearScale;
-import com.github.javafxd3.javafx.JavaFxD3Browser;
+import org.treez.javafxd3.d3.D3;
+import org.treez.javafxd3.d3.core.Selection;
+import org.treez.javafxd3.d3.scales.LinearScale;
+import org.treez.javafxd3.javafx.JavaFxD3Browser;
 
 import javafx.application.Application;
 import javafx.scene.Scene;

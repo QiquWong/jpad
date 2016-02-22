@@ -27,9 +27,9 @@ import standaloneutils.customdata.MyArray;
 import standaloneutils.customdata.MyPoint;
 
 // This class evaluates the effective angle of attack introducing the induced alpha by downwash.
-// The effective angle of attack il the difference between the angle of attack and induced alpha. 
+// The effective angle of attack il the difference between the angle of attack and induced alpha.
 // This alpha_i is evaluates as the tg^-1 (w/u) where u is asymptotic velocity and w is the downwash.
-// In order to evaluate the downwash this class use some methods, some of which are taken from the class 
+// In order to evaluate the downwash this class use some methods, some of which are taken from the class
 // NasaBlackwell.
 //
 // @author Manuela Ruocco
@@ -41,9 +41,9 @@ public class AlphaEffective {
 	LSAerodynamicsManager theLSManager;
 	LiftingSurface theWing;
 
-	double vortexSemiSpan, vortexSemiSpanToSemiSpanRatio, surface, semispan, mach, altitude ; 
+	double vortexSemiSpan, vortexSemiSpanToSemiSpanRatio, surface, semispan, mach, altitude ;
 	double [] yStationsActual, dihedral,  twist, alpha0l, xLEvsYActual, chordsVsYActual, alpha0lArray,
-	yStationsAirfoil, yStationsAlpha;	
+	yStationsAirfoil, yStationsAlpha;
 	MyArray yStationsNB;
 	List<MyPoint> controlPoint, vortexPoint;
 
@@ -77,11 +77,16 @@ public class AlphaEffective {
 	}
 
 
+	public double[] getyStationsActual() {
+		return yStationsActual;
+	}
+
+
 	public double[] calculateAlphaEffective(
 			Amount<Angle> alphaInitial){
 		double velocity;
 		double[] alphaEffective = new double[numberOfPoints];
-		double [] addend = new double[numberOfPoints]; 
+		double [] addend = new double[numberOfPoints];
 		double [][] influenceFactor = new double [numberOfPoints][numberOfPoints];
 		double [] gamma = new double [numberOfPoints];
 		double [] alphaInduced = new double [numberOfPoints];
@@ -92,11 +97,11 @@ public class AlphaEffective {
 
 		NasaBlackwell theCalculator = new NasaBlackwell(
 				semispan, surface, yStationsActual,
-				chordsVsYActual, xLEvsYActual, 
+				chordsVsYActual, xLEvsYActual,
 				dihedral, twist,alpha0l, vortexSemiSpanToSemiSpanRatio,
 				alphaInitial.getEstimatedValue(), mach, altitude);
 
-		theCalculator.calculateDownwash(alphaInitial); 
+		theCalculator.calculateDownwash(alphaInitial);
 		influenceFactor = theCalculator.getInfluenceFactor();
 		gamma = theCalculator.getGamma();
 
@@ -104,12 +109,16 @@ public class AlphaEffective {
 		velocity = SpeedCalc.calculateTAS(mach, altitude);
 
 
+		Double[] twistDistribution = MyMathUtils.getInterpolatedValue1DLinear(
+				theWing.get_yStationsAirfoil().toArray(), twist, yStationsActual);
+
+
 		for (int i=0 ; i<numberOfPoints; i++){
 			for (int j = 0; j<numberOfPoints; j++){
 
-				addend[j] =  gamma [j] * influenceFactor [i][j]; 
+				addend[j] =  gamma [j] * influenceFactor [i][j];
 
-				summ = MyMathUtils.summation(lowerLimit, upperLimit, addend);	
+				summ = MyMathUtils.summation(lowerLimit, upperLimit, addend);
 			}
 			verticalVelocity [i]= (1/(4*Math.PI)) * (summ*0.3048);
 			System.out.println("\n \n------------------------------------------- ");
@@ -120,7 +129,9 @@ public class AlphaEffective {
 
 			System.out.println("alpha induced " + alphaInduced[i]);
 			System.out.println(" alpha actual " + alphaInitial.getEstimatedValue());
-			alphaEffective[i] = (alphaInitial.getEstimatedValue() - alphaInduced[i]);
+
+
+			alphaEffective[i] = alphaInitial.getEstimatedValue() - alphaInduced[i] + twistDistribution[i];
 		}
 
 		return alphaEffective;

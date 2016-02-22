@@ -330,6 +330,22 @@
       \field{title}{A Finite-Step Method for Calculation of Theoretical Load Distributions for Arbitrary Lifting-Surface Arrangements at Subsonic Speeds}
       \field{year}{1969}
     \endentry
+    \entry{airf}{book}{}
+      \name{author}{1}{}{%
+        {{hash=ee03da9700c2026e5ea2fb1abb66589a}{CA}{C\bibinitperiod}{AIR\bibnamedelimb FORCE\bibnamedelimb TEST\bibnamedelimb PILOT\bibnamedelimb SCHOOL\bibnamedelimb EDWARDS\bibnamedelima AFB}{A\bibinitperiod\bibinitdelim F\bibinitperiod\bibinitdelim T\bibinitperiod\bibinitdelim P\bibinitperiod\bibinitdelim S\bibinitperiod\bibinitdelim E\bibinitperiod\bibinitdelim A\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {published by the author}%
+      }
+      \strng{namehash}{ee03da9700c2026e5ea2fb1abb66589a}
+      \strng{fullhash}{ee03da9700c2026e5ea2fb1abb66589a}
+      \field{sortinit}{C}
+      \field{sortinithash}{59f25d509f3381b07695554a9f35ecb2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Volume II. Flying Qualities Phase. Chapter 5: Longitudinal Static Stability.}
+      \field{year}{OCT 1990}
+    \endentry
     \entry{Calcara}{book}{}
       \name{author}{1}{}{%
         {{hash=f7aa02988a849f20d5bc672418c62716}{Calcara}{C\bibinitperiod}{M.}{M\bibinitperiod}{}{}{}{}}%
@@ -385,6 +401,22 @@
       \verb{url}
       \verb http://web.mit.edu/drela/Public/web/xfoil/
       \endverb
+    \endentry
+    \entry{adas}{book}{}
+      \name{author}{1}{}{%
+        {{hash=e0909a3745a2d76c70f437f76edc99b4}{Fabrizio\bibnamedelima Nicolosi}{F\bibinitperiod\bibinitdelim N\bibinitperiod}{Giuseppe\bibnamedelima Paduano}{G\bibinitperiod\bibinitdelim P\bibinitperiod}{}{}{}{}}%
+      }
+      \list{location}{1}{%
+        {Napoli}%
+      }
+      \strng{namehash}{e0909a3745a2d76c70f437f76edc99b4}
+      \strng{fullhash}{e0909a3745a2d76c70f437f76edc99b4}
+      \field{sortinit}{F}
+      \field{sortinithash}{c6a7d9913bbd7b20ea954441c0460b78}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{BEHIND ADAS 1.0}
+      \field{year}{2011}
     \endentry
     \entry{apacheCommonsMath}{online}{}
       \name{author}{1}{}{%
@@ -659,6 +691,21 @@
       \verb https://books.google.it/books?id=6tMeAQAAIAAJ
       \endverb
     \endentry
+    \entry{manual}{book}{}
+      \name{author}{1}{}{%
+        {{hash=31f18c596a06f8e1cea0990210acfc34}{Karl-Heinrich\bibnamedelima Grote}{K\bibinithyphendelim H\bibinitperiod\bibinitdelim G\bibinitperiod}{Erik\bibnamedelimb K.\bibnamedelimi Antonsson}{E\bibinitperiod\bibinitdelim K\bibinitperiod\bibinitdelim A\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {Grote Antonsson}%
+      }
+      \strng{namehash}{31f18c596a06f8e1cea0990210acfc34}
+      \strng{fullhash}{31f18c596a06f8e1cea0990210acfc34}
+      \field{sortinit}{K}
+      \field{sortinithash}{a7d5b3aec5a0890aae7baf85a209abfc}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Springer Handbook of Mechanical Engineering}
+    \endentry
     \entry{args4j}{online}{}
       \name{author}{1}{}{%
         {{hash=2e8f18a1d63274a1eae7ecfcd8c5c6c9}{Kawaguchi}{K\bibinitperiod}{K.}{K\bibinitperiod}{}{}{}{}}%
@@ -688,6 +735,22 @@
       \field{labeltitlesource}{title}
       \field{title}{Aircraft Design: Synthesis and Analysis}
       \field{year}{1999}
+    \endentry
+    \entry{kundu}{book}{}
+      \name{author}{1}{}{%
+        {{hash=77ed73acccd07b5d03dc285043a68b7d}{Kundu}{K\bibinitperiod}{Ajoy\bibnamedelima Kumar}{A\bibinitperiod\bibinitdelim K\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {Cambridge University Press}%
+      }
+      \strng{namehash}{77ed73acccd07b5d03dc285043a68b7d}
+      \strng{fullhash}{77ed73acccd07b5d03dc285043a68b7d}
+      \field{sortinit}{K}
+      \field{sortinithash}{a7d5b3aec5a0890aae7baf85a209abfc}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Aircraft Design}
+      \field{year}{2010}
     \endentry
     \entry{jlatexmath}{online}{}
       \name{author}{2}{}{%
@@ -1069,6 +1132,22 @@
       \verb http://books.google.it/books?id=pWUAzy87zLYC
       \endverb
     \endentry
+    \entry{roskammethods}{book}{}
+      \name{author}{1}{}{%
+        {{hash=f21425413dd55dbd465800547a46b61c}{Roskam}{R\bibinitperiod}{J.}{J\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {published by the author}%
+      }
+      \strng{namehash}{f21425413dd55dbd465800547a46b61c}
+      \strng{fullhash}{f21425413dd55dbd465800547a46b61c}
+      \field{sortinit}{R}
+      \field{sortinithash}{c7387613477035a752d935acfc3e3ea2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Methods for Estimating Stability and Control Derivatives of Conventional Subsonic Airplanes}
+      \field{year}{1971}
+    \endentry
     \entry{sadraey2012aircraft}{book}{}
       \name{author}{1}{}{%
         {{hash=f37bdc36291a5f5f76bf75ec2ffd83b8}{Sadraey}{S\bibinitperiod}{M.H.}{M\bibinitperiod}{}{}{}{}}%
@@ -1161,6 +1240,21 @@
       \field{title}{Design Charts for Predicting Downwash Angles and Wake Characteristics behind Plain and Flapped Wings}
       \field{type}{techreport}
       \field{year}{1939}
+    \endentry
+    \entry{zlotnick}{other}{}
+      \list{institution}{1}{%
+        {NACA}%
+      }
+      \list{location}{1}{%
+        {Washington, D.C.}%
+      }
+      \field{sortinit}{T}
+      \field{sortinithash}{423d138a005a533b47e6475e39378bf2}
+      \field{labeltitlesource}{title}
+      \field{number}{NACA RM L51J19}
+      \field{title}{Theoretical Calculation of the Effect of The Fuselage on the Spanwise Lift Distribution on a Wing}
+      \field{year}{1952}
+      \warn{\item Name "Zlotnick, M., Diederich, F.W.," has too many commas: skipping name}
     \endentry
     \entry{torenbeek2013advanced}{book}{}
       \name{author}{1}{}{%

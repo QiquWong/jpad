@@ -27,8 +27,7 @@ public class TakeOffResultsMap extends PerformanceMap{
 								friction, lift, drag, totalForce;
 	private List<Amount<Velocity>> speed, rateOfClimb;
 	private List<Amount<Acceleration>> acceleration;
-	private List<Amount<Length>> deltaGruondDistance, groundDistance,
-								 deltaVerticalDistance, verticalDistance;
+	private List<Amount<Length>> groundDistance, verticalDistance;
 	private List<Amount<Angle>> alpha, gamma, theta;
 	private List<Double> alphaDot, gammaDot, cL, cD, loadFactor;
 
@@ -95,7 +94,7 @@ public class TakeOffResultsMap extends PerformanceMap{
 		cD.clear();
 	}
 	
-	/***************************************************************************************
+	/*******************************************************************************************
 	 * This method collects all given values into the lists created by the builder.
 	 * 
 	 * @author Vittorio Trifari
@@ -107,14 +106,17 @@ public class TakeOffResultsMap extends PerformanceMap{
 	 * @param liftValue
 	 * @param dragValue
 	 * @param totalForceValue
+	 * @param loadFactorValue
 	 * @param speedValue
-	 * @param meanSpeedValue
+	 * @param rateOfClimbValue
 	 * @param accelerationValue
-	 * @param meanAccelerationValue
-	 * @param deltaGruondDistanceValue
 	 * @param groundDistanceValue
+	 * @param verticalDistanceValue
 	 * @param alphaValue
 	 * @param alphaDotValue
+	 * @param gammaValue
+	 * @param gammaDotValue
+	 * @param thetaValue
 	 * @param cLValue
 	 * @param cDValue
 	 */
@@ -149,7 +151,6 @@ public class TakeOffResultsMap extends PerformanceMap{
 		cL.add(cLValue);
 		cD.add(cDValue);
 	}
-
 
 	//-------------------------------------------------------------------------------------
 	// GETTERS AND SETTERS:
@@ -242,14 +243,6 @@ public class TakeOffResultsMap extends PerformanceMap{
 		this.acceleration = acceleration;
 	}
 	
-	public List<Amount<Length>> getDeltaGruondDistance() {
-		return deltaGruondDistance;
-	}
-	
-	public void setDeltaGruondDistance(List<Amount<Length>> deltaGruondDistance) {
-		this.deltaGruondDistance = deltaGruondDistance;
-	}
-	
 	public List<Amount<Length>> getGroundDistance() {
 		return groundDistance;
 	}
@@ -320,14 +313,6 @@ public class TakeOffResultsMap extends PerformanceMap{
 	
 	public void setLoadFactor(List<Double> loadFactor) {
 		this.loadFactor = loadFactor;
-	}
-
-	public List<Amount<Length>> getDeltaVerticalDistance() {
-		return deltaVerticalDistance;
-	}
-
-	public void setDeltaVerticalDistance(List<Amount<Length>> deltaVerticalDistance) {
-		this.deltaVerticalDistance = deltaVerticalDistance;
 	}
 
 	public List<Amount<Length>> getVerticalDistance() {
