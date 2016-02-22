@@ -140,7 +140,7 @@ public class ThrustCalc {
 		 *   (Determined thanks to a comparison with ADAS Performance Module)
 		 */
 		
-		double kCorrection = 0.0;
+		double kCorrection = 1.0;
 		
 		if(flightCondition == EngineOperatingConditionEnum.CRUISE)
 			kCorrection = 1.43279165;	// FIXME: More in depth analysis required
