@@ -133,20 +133,25 @@ public class ThrustCalc {
 			double bpr, EngineTypeEnum engineType, 
 			EngineOperatingConditionEnum flightCondition, double altitude, double mach
 			) {
-
-		double tDisp = EngineDatabaseManager.getThrustRatio(mach, altitude, bpr, engineType, flightCondition)*
-				t0*nEngine*phi;
 		
 		/*
 		 *  T/T0 from turbofan database is underpredicted.
 		 *  This correction factor is used to fix the result.
 		 *   (Determined thanks to a comparison with ADAS Performance Module)
 		 */
-		double kCorrection = 0.113;
 		
-		double tDispEff = tDisp + kCorrection*tDisp;
+		double kCorrection = 0.0;
 		
-		return tDispEff;
+		if(flightCondition == EngineOperatingConditionEnum.CRUISE)
+			kCorrection = 1.43279165;	// FIXME: More in depth analysis required
+		
+		double thrustRatio = EngineDatabaseManager.getThrustRatio(mach, altitude, bpr, engineType, flightCondition);
+		
+		double thrustRatioEff = thrustRatio*kCorrection;
+		
+		double tDisp = thrustRatioEff*t0*nEngine*phi;
+
+		return tDisp;
 	}
 	
 	/**
