@@ -20,6 +20,7 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.componentmodel.Component;
 import aircraft.components.Aircraft;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.EngineTypeEnum;
@@ -105,7 +106,7 @@ public class PowerPlant extends Component{
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public PowerPlant(String aircraftName, String name, String description, 
+	public PowerPlant(AircraftEnum aircraftName, String name, String description, 
 			double x, double y,double z,
 			Aircraft aircraft) {
 
@@ -152,18 +153,26 @@ public class PowerPlant extends Component{
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public void initializeEngines(String aircraftName) {
+	public void initializeEngines(AircraftEnum aircraftName) {
 		
 		switch(aircraftName) {
-		case "ATR-72":
+		case ATR72:
 			_engineNumber = 2;
 			_engineType = EngineTypeEnum.TURBOPROP;
 			for (int i=0; i < _engineNumber; i++) {
 				engineList.add(new Engine(aircraftName, "Engine_" + i, "", 0.0, 0.0, 0.0, _theAircraft));
 			}
 			break;
-		case "B747-100B":
+		case B747_100B:
 			_engineNumber = 4;
+			_engineType = EngineTypeEnum.TURBOFAN;
+			for (int i=0; i < _engineNumber; i++) {
+				engineList.add(new Engine(aircraftName, "Engine_" + i, "", 0.0, 0.0, 0.0, _theAircraft));
+			}
+			break;
+			
+		case AGILE_DC1:
+			_engineNumber = 2;
 			_engineType = EngineTypeEnum.TURBOFAN;
 			for (int i=0; i < _engineNumber; i++) {
 				engineList.add(new Engine(aircraftName, "Engine_" + i, "", 0.0, 0.0, 0.0, _theAircraft));

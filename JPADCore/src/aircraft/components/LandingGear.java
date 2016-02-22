@@ -17,6 +17,7 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.OperatingConditions;
 import aircraft.componentmodel.Component;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.customdata.CenterOfGravity;
@@ -68,7 +69,7 @@ public class LandingGear extends Component{
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public LandingGear(String aircraftName, String name, String description, double x, double y,
+	public LandingGear(AircraftEnum aircraftName, String name, String description, double x, double y,
 			double z) {
 		super("", name, description, x, y, z);
 
@@ -79,16 +80,22 @@ public class LandingGear extends Component{
 
 		switch(aircraftName) {
 		
-		case "ATR-72":
+		case ATR72:
 			_mounting = MountingPosition.FUSELAGE;
 			_massReference = Amount.valueOf(675.8, SI.KILOGRAM);
 			set_deltaCD0(0.010);
 			break;
 			
-		case "B747-100B":
+		case B747_100B:
 			_mounting = MountingPosition.FUSELAGE;
 			_massReference = Amount.valueOf(13900.0, SI.KILOGRAM);
 			set_deltaCD0(0.010);
+			break;
+			
+		case AGILE_DC1:
+			_mounting = MountingPosition.FUSELAGE;
+			_massReference = Amount.valueOf(1501.6, SI.KILOGRAM);
+			set_deltaCD0(0.018);
 			break;
 		}
 	}

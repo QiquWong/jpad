@@ -19,6 +19,7 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.OperatingConditions;
 import aircraft.componentmodel.Component;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
@@ -97,7 +98,7 @@ public class FuelTank extends Component{
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public FuelTank(String aircraftName, String name, String description, double x, double y,double z) {
+	public FuelTank(AircraftEnum aircraftName, String name, String description, double x, double y,double z) {
 
 		super("", name, description, x, y, z);
 		_X0 = Amount.valueOf(x, SI.METER);
@@ -112,13 +113,18 @@ public class FuelTank extends Component{
 
 		switch(aircraftName) {
 		
-		case "ATR-72":
+		case ATR72:
 			_fuelMass = Amount.valueOf(5000., SI.KILOGRAM);
 			_fuelVolume = Amount.valueOf(_fuelMass.divide(_fuelDensity).getEstimatedValue(), NonSI.LITER);
 			break;
 			
-		case "B747-100B":
+		case B747_100B:
 			_fuelMass = Amount.valueOf(147437.52, SI.KILOGRAM);
+			_fuelVolume = Amount.valueOf(_fuelMass.divide(_fuelDensity).getEstimatedValue(), NonSI.LITER);
+			break;
+			
+		case AGILE_DC1:
+			_fuelMass = Amount.valueOf(6800., SI.KILOGRAM);
 			_fuelVolume = Amount.valueOf(_fuelMass.divide(_fuelDensity).getEstimatedValue(), NonSI.LITER);
 			break;
 		}

@@ -366,7 +366,7 @@ public class TakeOff_Landing_Test_TF {
 		Amount<Length> obstacle = Amount.valueOf(35, NonSI.FOOT).to(SI.METER);
 		Amount<Velocity> v_wind = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
 		Amount<Angle> alpha_ground = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
-		Amount<Angle> iw = Amount.valueOf(1.0, NonSI.DEGREE_ANGLE);
+		Amount<Angle> iw = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		CalcTakeOff_Landing theTakeOffLandingCalculator = new CalcTakeOff_Landing(
 				aircraft,
 				theCondition,

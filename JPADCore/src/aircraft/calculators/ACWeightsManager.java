@@ -7,12 +7,14 @@ import java.util.Map;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.VolumetricDensity;
+import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
 import aircraft.OperatingConditions;
 import aircraft.components.Aircraft;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
@@ -81,12 +83,12 @@ public class ACWeightsManager extends ACCalculatorManager {
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public ACWeightsManager(String aircraftName) {
+	public ACWeightsManager(AircraftEnum aircraftName) {
 
 		super();
 
 		switch(aircraftName) {
-		case "ATR-72":
+		case ATR72:
 			_name = "Weights";
 			_type = AnalysisTypeEnum.WEIGHTS;
 			
@@ -112,7 +114,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 			_paxSingleMass = Amount.valueOf(99.0, SI.KILOGRAM);
 			break;
 			
-		case "B747-100B":
+		case B747_100B:
 			_name = "Weights";
 			_type = AnalysisTypeEnum.WEIGHTS;
 			
@@ -136,6 +138,33 @@ public class ACWeightsManager extends ACCalculatorManager {
 			
 			// 84 kg assumed for each passenger + 15 kg baggage (EASA 2008.C.06) 
 			_paxSingleMass = Amount.valueOf(99.0, SI.KILOGRAM);
+			break;
+			
+		case AGILE_DC1:
+			_name = "Weights";
+			_type = AnalysisTypeEnum.WEIGHTS;
+			
+			_MTOM = Amount.valueOf(36336, SI.KILOGRAM); // ADAS project
+			
+			//		_mtomIter = MyMathUtils.linspace(.*);
+			//		_mtomResult = new double[_mtomIter.length];
+			
+			_MZFM = Amount.valueOf(29716, SI.KILOGRAM); // 
+			
+			_MLM = Amount.valueOf(32702.4, SI.KILOGRAM);
+			_MLW = _MLM.times(AtmosphereCalc.g0).to(SI.NEWTON);
+			
+			_OEM = Amount.valueOf(20529, SI.KILOGRAM);
+			
+			// Actuators oils
+			_TFOM = Amount.valueOf(0., SI.KILOGRAM);
+			
+			// Aluminum density
+			_materialDensity = Amount.valueOf(2711., VolumetricDensity.UNIT);
+			
+			// 102 kg (225 lbs) assumed for each passenger (AGILE_2.5 doc) 
+			// Into ADAS 159lbs + 66lbs = 225 lbs 
+			_paxSingleMass = Amount.valueOf(102.0, SI.KILOGRAM);
 			break;
 		}
 	}

@@ -28,6 +28,7 @@ import aircraft.components.liftingSurface.LiftingSurface;
 import calculators.performance.ThrustCalc;
 import calculators.performance.customdata.ThrustMap;
 import configuration.MyConfiguration;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.DatabaseReaderEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
@@ -76,7 +77,7 @@ public class Test_AC_AGILE_02 {
 		theTestObject.theCmdLineParser.parseArgument(args);
 		
 		// Initialize Aircraft with default parameters
-		Aircraft aircraft = Aircraft.createDefaultAircraft("B747-100B"); //("ATR-72")
+		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.B747_100B); 
 		LiftingSurface theWing = aircraft.get_wing();
 		
 		OperatingConditions operatingConditions = new OperatingConditions();

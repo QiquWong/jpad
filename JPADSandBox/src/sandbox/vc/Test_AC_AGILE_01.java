@@ -25,6 +25,7 @@ import aircraft.components.Aircraft;
 import calculators.performance.ThrustCalc;
 import calculators.performance.customdata.ThrustMap;
 import configuration.MyConfiguration;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
@@ -84,7 +85,7 @@ public class Test_AC_AGILE_01 {
 		//------------------------------------------------------------------------------------
 		// Initialize Aircraft with default parameters
 		//------------------------------------------------------------------------------------
-		Aircraft aircraft = Aircraft.createDefaultAircraft("B747-100B"); //("ATR-72")
+		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.ATR72); 
 				
 		OperatingConditions operatingConditions = new OperatingConditions();
 		operatingConditions.set_altitude(Amount.valueOf(0.000, SI.METER));

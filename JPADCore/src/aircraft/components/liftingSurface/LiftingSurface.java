@@ -35,6 +35,7 @@ import aircraft.componentmodel.AeroComponent;
 import aircraft.components.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.nacelles.Nacelle;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AirfoilStationEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
@@ -516,7 +517,7 @@ public class LiftingSurface extends AeroComponent{
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	protected void initializeAirfoils(String aircraftName, LiftingSurface ls) {
+	protected void initializeAirfoils(AircraftEnum aircraftName, LiftingSurface ls) {
 
 		// TODO: this methods is executed twice!!! (the second time in MyAnalysis)
 		// calculateGeometry();

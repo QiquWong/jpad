@@ -20,6 +20,7 @@ import aircraft.auxiliary.SeatsBlock.CGboarding;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.nacelles.Nacelle;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ClassTypeEnum;
 import configuration.enumerations.MethodEnum;
@@ -198,10 +199,10 @@ public class Configuration {
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public Configuration(String aircratName) {
+	public Configuration(AircraftEnum aircratName) {
 
 		switch(aircratName) {
-		case "ATR-72":
+		case ATR72:
 			_massFurnishingsAndEquipmentReference = Amount.valueOf(2000., SI.KILOGRAM);
 			
 			_maxPax = 72.;
@@ -265,7 +266,7 @@ public class Configuration {
 			calculateDependentVariables();
 			break;
 			
-		case "B747-100B":
+		case B747_100B:
 			// see Roskam (Part V) Appendix-A pag.152 --> Fixed Equipment Total
 			_massFurnishingsAndEquipmentReference = Amount.valueOf(28000., SI.KILOGRAM);
 			
@@ -306,6 +307,71 @@ public class Configuration {
 			//		_lengthOfEachBreak.add(_lengthOfEachBreakEconomyClass);
 
 			_numberOfRowsEconomyClass = new Integer(55);
+			_numberOfRowsBusinessClass = new Integer(0);
+			_numberOfRowsFirstClass = new Integer(0);
+
+			_numberOfColumnsEconomyClass = new Integer[]{2,2};
+			_numberOfColumnsBusinessClass = new Integer[]{0,0};
+			_numberOfColumnsFirstClass = new Integer[]{0,0};
+
+			// _missingSeatsRowList.size() must be equal to number of classes
+			_missingSeatsRowList.add(new Integer[] { -1});
+			_missingSeatsRowList.add(new Integer[] { -1});
+			_missingSeatsRowList.add(new Integer[] { -1});
+
+			// _missingSeatsColumnList.size() must be equal to number of classes
+			_missingSeatsColumnList.add(new Integer[] { -1});
+			_missingSeatsColumnList.add(new Integer[] { -1});
+			_missingSeatsColumnList.add(new Integer[] { -1});
+
+			_typeList.add(ClassTypeEnum.ECONOMY);
+			_typeList.add(ClassTypeEnum.BUSINESS);
+			_typeList.add(ClassTypeEnum.FIRST);
+
+			calculateDependentVariables();
+			break;
+			
+		case AGILE_DC1:
+			// see Roskam (Part V) Appendix-A pag.152 --> Fixed Equipment Total
+			_massFurnishingsAndEquipmentReference = Amount.valueOf(1853., SI.KILOGRAM);
+			
+			_maxPax = 90.0;
+			_nPax = 90.0;
+			_flightCrewNumber = 2.;
+			
+			// Number of classes
+			_classesNumber = 1.;
+
+			// Number of aisles
+			_aislesNumber = new Integer(1);
+
+			_position = RelativePositionEnum.RIGHT;
+			_xCoordinateFirstRow = Amount.valueOf(7.40, SI.METER);
+
+			_pitchEconomyClass = Amount.valueOf(0.80, SI.METER);
+			_pitchBusinessClass = Amount.valueOf(0., SI.METER);
+			_pitchFirstClass = Amount.valueOf(0., SI.METER);
+
+			_widthEconomyClass = Amount.valueOf(0.4, SI.METER);
+			_widthBusinessClass = Amount.valueOf(0., SI.METER);
+			_widthFirstClass = Amount.valueOf(0., SI.METER);
+
+			_distanceFromWallEconomyClass = Amount.valueOf(0.1, SI.METER);
+			_distanceFromWallBusinessClass = Amount.valueOf(0.1, SI.METER);
+			_distanceFromWallFirstClass = Amount.valueOf(0.1, SI.METER);
+
+			_numberOfBreaksEconomyClass = new Integer(-1);
+			_numberOfBreaksBusinessClass = new Integer(-1);
+			_numberOfBreaksFirstClass = new Integer(-1);
+
+			_lengthOfEachBreakEconomyClass = new Double[] {0.0, 0.0};
+			_lengthOfEachBreakBusinessClass = new Double[] {0.0, 0.0};
+			_lengthOfEachBreakFirstClass = new Double[] {0.0, 0.0};
+			//		_lengthOfEachBreak.add(_lengthOfEachBreakEconomyClass);
+			//		_lengthOfEachBreak.add(_lengthOfEachBreakEconomyClass);
+			//		_lengthOfEachBreak.add(_lengthOfEachBreakEconomyClass);
+
+			_numberOfRowsEconomyClass = new Integer(22);
 			_numberOfRowsBusinessClass = new Integer(0);
 			_numberOfRowsFirstClass = new Integer(0);
 

@@ -393,8 +393,8 @@ public class SpecificRangeCalc {
 				xList, yList,
 				"Drag-Thrust v.s. Mach at " + altitude + " m", "Mach", "Drag, Thrust",
 //				0.22, 0.5, null, 30000.0,      // TP axis
-//				0.4, 0.9, null, 400000.0,       // TF axis
-				null, null, null, null,
+				0.4, 0.9, null, 400000.0,       // TF axis
+//				null, null, null, null,
 				"", "N",
 				true, legendList,
 				subfolderPath, "DragThrust"

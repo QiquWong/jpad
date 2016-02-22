@@ -14,6 +14,7 @@ import org.jscience.physics.amount.Amount;
 import aircraft.components.Aircraft;
 import aircraft.components.powerPlant.Engine;
 import aircraft.components.powerPlant.PowerPlant;
+import configuration.enumerations.AircraftEnum;
 import standaloneutils.customdata.CenterOfGravity;
 
 /** 
@@ -52,20 +53,26 @@ public class NacellesManager {
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public NacellesManager(String aircraftName, Aircraft aircraft) {
+	public NacellesManager(AircraftEnum aircraftName, Aircraft aircraft) {
 		
 		switch(aircraftName) {
 		
-		case "ATR-72":
+		case ATR72:
 			_theAircraft = aircraft;
 			_nacellesNumber = 2;
 			_massReference = Amount.valueOf(409.4000, SI.KILOGRAM);
 			break;
 		
-		case "B747-100B":
+		case B747_100B:
 			_theAircraft = aircraft;
 			_nacellesNumber = 4;
 			_massReference = Amount.valueOf(1184.2500, SI.KILOGRAM);
+			break;
+			
+		case AGILE_DC1:
+			_theAircraft = aircraft;
+			_nacellesNumber = 2;
+			_massReference = Amount.valueOf(719.9, SI.KILOGRAM);
 			break;
 		}
 	}
@@ -86,19 +93,26 @@ public class NacellesManager {
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public void initializeNacelles(String aircraftName) {
+	public void initializeNacelles(AircraftEnum aircraftName) {
 
 		switch(aircraftName) {
 		
-		case "ATR-72":
+		case ATR72:
 			_nacellesNumber = 2;
 			for(int i=0; i < _nacellesNumber; i++) {
 				_nacellesList.add(new Nacelle(aircraftName, "Nacelle_" + i, "", 0.0, 0.0, 0.0, _theAircraft));
 			}
 			break;
 			
-		case "B747-100B":
+		case B747_100B:
 			_nacellesNumber = 4;
+			for(int i=0; i < _nacellesNumber; i++) {
+				_nacellesList.add(new Nacelle(aircraftName, "Nacelle_" + i, "", 0.0, 0.0, 0.0, _theAircraft));
+			}
+			break;
+			
+		case AGILE_DC1:
+			_nacellesNumber = 2;
 			for(int i=0; i < _nacellesNumber; i++) {
 				_nacellesList.add(new Nacelle(aircraftName, "Nacelle_" + i, "", 0.0, 0.0, 0.0, _theAircraft));
 			}
