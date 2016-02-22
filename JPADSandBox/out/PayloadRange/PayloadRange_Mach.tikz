@@ -6,7 +6,7 @@ width=\figurewidth,
 height=\figureheight,
 scaled ticks=false, tick label style={/pgf/number format/fixed},
 xmin=0.0,
-xmax=7924.4870050918025,
+xmax=8473.57661648188,
 xlabel={Range (nmi)},
 xmajorgrids,
 ymin=0.0,
@@ -22,9 +22,9 @@ solid
 ]
 table[row sep=crcr]{
 0.0	550.0\\
-5676.976241566979	550.0\\
-5678.601620621578	550.0\\
-7337.4879676775945	0.0\\
+6070.335291351503	550.0\\
+6072.073293311896	550.0\\
+7845.904274520258	0.0\\
 };
 
 \addplot [
@@ -33,9 +33,9 @@ densely dashed
 ]
 table[row sep=crcr]{
 0.0	550.0\\
-4729.748249005326	550.0\\
-4731.1024265481465	550.0\\
-6113.1964254339555	0.0\\
+4725.981855575879	550.0\\
+4727.334954759952	550.0\\
+6108.328364463794	0.0\\
 };
 \end{axis}
 \end{tikzpicture}%
