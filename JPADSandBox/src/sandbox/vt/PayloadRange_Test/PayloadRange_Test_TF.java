@@ -10,6 +10,7 @@ import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.MyConfiguration;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AirplaneType;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.EngineTypeEnum;
@@ -20,7 +21,7 @@ import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 import standaloneutils.customdata.CenterOfGravity;
 
 public class PayloadRange_Test_TF{
-	
+
 	//---------------------------------------------------------------------------------
 	// MAIN:
 	public static void main(String[] args) throws HDF5LibraryException, NullPointerException{
@@ -29,26 +30,26 @@ public class PayloadRange_Test_TF{
 		System.out.println("PayloadRangeCalc_Test :: main");
 		System.out.println("--------------------------------------------------------");
 		System.out.println(" ");
-		
+
 		//------------------------------------------------------------------------------------
 		// Assign all default folders
 		MyConfiguration.initWorkingDirectoryTree();
 
 		//------------------------------------------------------------------------------------
-		// Setup database(s)	
+		// Setup database(s)
 		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
 		String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
 		String fuelFractionDatabaseFileName = "FuelFractions.h5";
 		AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
 		FuelFractionDatabaseReader fuelFractionReader = new FuelFractionDatabaseReader(databaseFolderPath, fuelFractionDatabaseFileName);
-		
+
 		//------------------------------------------------------------------------------------
 		// Operating Condition / Aircraft / AnalysisManager (geometry calculations)
 		OperatingConditions theCondition = new OperatingConditions();
 		theCondition.set_altitude(Amount.valueOf(11000, SI.METER));
 		theCondition.set_machCurrent(0.84);
-		
-		Aircraft aircraft = Aircraft.createDefaultAircraft("B747-100B");
+
+		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.B747_100B);
 		aircraft.set_name("B747-100B");
 		aircraft.get_theFuelTank().setFuelFractionDatabase(fuelFractionReader);
 
@@ -61,7 +62,7 @@ public class PayloadRange_Test_TF{
 		CenterOfGravity cgMTOM = new CenterOfGravity();
 
 		// x_cg in body-ref.-frame
-		cgMTOM.set_xBRF(Amount.valueOf(23.1, SI.METER)); 
+		cgMTOM.set_xBRF(Amount.valueOf(23.1, SI.METER));
 		cgMTOM.set_yBRF(Amount.valueOf(0.0, SI.METER));
 		cgMTOM.set_zBRF(Amount.valueOf(0.0, SI.METER));
 
@@ -82,40 +83,40 @@ public class PayloadRange_Test_TF{
 
 		//------------------------------------------------------------------------------------
 		// Creating the Calculator Object
-		
+
 		PayloadRangeCalc test = new PayloadRangeCalc(
 				// this call sets parameters to default aircraft values (ATR72)
-				theCondition, 
+				theCondition,
 				aircraft,
 				AirplaneType.TURBOFAN_TRANSPORT_JETS);
-		
+
 		// -----------------------CRITICAL MACH NUMBER CHECK----------------------------
-		
+
 		boolean check = test.checkCriticalMach(theCondition.get_machCurrent());
-		
+
 		if (check)
 			System.out.println("\n\n-----------------------------------------------------------"
 					+ "\nCurrent Mach is lower then critical Mach number."
-					+ "\nCurrent Mach = " + theCondition.get_machCurrent() 
-					+ "\nCritical Mach = " + test.getCriticalMach() 
+					+ "\nCurrent Mach = " + theCondition.get_machCurrent()
+					+ "\nCritical Mach = " + test.getCriticalMach()
 					+ "\n\n\t CHECK PASSED --> PROCEDING TO CALCULATION "
 					+ "\n\n"
 					+ "-----------------------------------------------------------");
 		else{
 			System.err.println("\n\n-----------------------------------------------------------"
 					+ "\nCurrent Mach is bigger then critical Mach number."
-					+ "\nCurrent Mach = " + theCondition.get_machCurrent() 
-					+ "\nCritical Mach = " + test.getCriticalMach() 
+					+ "\nCurrent Mach = " + theCondition.get_machCurrent()
+					+ "\nCritical Mach = " + test.getCriticalMach()
 					+ "\n\n\t CHECK NOT PASSED --> WARNING!!! "
 					+ "\n\n"
 					+ "-----------------------------------------------------------");
 		}
-		
-		// ---------------------------BEST RANGE CASE-----------------------------------			
-		
+
+		// ---------------------------BEST RANGE CASE-----------------------------------
+
 		System.out.println();
 		System.out.println("-------------------BEST RANGE CASE-------------------------");
-		
+
 		List<Amount<Length>> vRange_BR = test.createRangeArray(
 				test.getMaxTakeOffMass(),
 				test.getSweepHalfChordEquivalent(),
@@ -137,9 +138,9 @@ public class PayloadRange_Test_TF{
 						test.getAltitude()),
 				true
 				);
-				
+
 		// -------------------------USER CURRENT MACH------------------------------------
-		
+
 		System.out.println();
 		System.out.println("-------------------CURRENT MACH CASE-------------------------");
 		List<Amount<Length>> vRange_CM = test.createRangeArray(
@@ -157,9 +158,9 @@ public class PayloadRange_Test_TF{
 				test.getCurrentMach(),
 				false
 				);
-		
-		// ------------------------------PLOTTING----------------------------------------		
-		
+
+		// ------------------------------PLOTTING----------------------------------------
+
 		List<Double> vPayload = test.createPayloadArray();
 		test.createPayloadRangeCharts_Mach(
 				vRange_BR,

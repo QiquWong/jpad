@@ -8,6 +8,7 @@ import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.MyConfiguration;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AirplaneType;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.FoldersEnum;
@@ -17,7 +18,7 @@ import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 import standaloneutils.customdata.CenterOfGravity;
 
 public class PayloadRange_Test_TP_MTOM{
-	
+
 	//---------------------------------------------------------------------------------
 	// MAIN:
 	public static void main(String[] args) throws HDF5LibraryException, NullPointerException{
@@ -26,24 +27,24 @@ public class PayloadRange_Test_TP_MTOM{
 		System.out.println("PayloadRangeCalc_Test :: main");
 		System.out.println("--------------------------------------------------------");
 		System.out.println(" ");
-		
+
 		//------------------------------------------------------------------------------------
 		// Assign all default folders
 		MyConfiguration.initWorkingDirectoryTree();
 
 		//------------------------------------------------------------------------------------
-		// Setup database(s)	
+		// Setup database(s)
 		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
 		String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
 		String fuelFractionDatabaseFileName = "FuelFractions.h5";
 		AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
 		FuelFractionDatabaseReader fuelFractionReader = new FuelFractionDatabaseReader(databaseFolderPath, fuelFractionDatabaseFileName);
-		
+
 		//------------------------------------------------------------------------------------
 		// Operating Condition / Aircraft / AnalysisManager (geometry calculations)
 		OperatingConditions theCondition = new OperatingConditions();
-		
-		Aircraft aircraft = Aircraft.createDefaultAircraft("ATR-72");
+
+		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.ATR72);
 		aircraft.set_name("ATR-72");
 		aircraft.get_theFuelTank().setFuelFractionDatabase(fuelFractionReader);
 
@@ -56,7 +57,7 @@ public class PayloadRange_Test_TP_MTOM{
 		CenterOfGravity cgMTOM = new CenterOfGravity();
 
 		// x_cg in body-ref.-frame
-		cgMTOM.set_xBRF(Amount.valueOf(12.0, SI.METER)); 
+		cgMTOM.set_xBRF(Amount.valueOf(12.0, SI.METER));
 		cgMTOM.set_yBRF(Amount.valueOf(0.0, SI.METER));
 		cgMTOM.set_zBRF(Amount.valueOf(2.3, SI.METER));
 
@@ -74,40 +75,40 @@ public class PayloadRange_Test_TP_MTOM{
 		theLSAnalysis.set_AerodynamicDatabaseReader(aeroDatabaseReader);
 		theWing.setAerodynamics(theLSAnalysis);
 		theAnalysis.doAnalysis(aircraft,AnalysisTypeEnum.AERODYNAMIC);
-		
+
 		//------------------------------------------------------------------------------------
 		// Creating the Calculator Object
-		
+
 		PayloadRangeCalc test = new PayloadRangeCalc(
 				// this call sets parameters to default aircraft values (ATR72)
-				theCondition, 
+				theCondition,
 				aircraft,
 				AirplaneType.TURBOPROP_REGIONAL);
-		
+
 		// -----------------------CRITICAL MACH NUMBER CHECK----------------------------
-		
+
 		boolean check = test.checkCriticalMach(theCondition.get_machCurrent());
-		
+
 		if (check)
 			System.out.println("\n\n-----------------------------------------------------------"
 					+ "\nCurrent Mach is lower then critical Mach number."
-					+ "\nCurrent Mach = " + theCondition.get_machCurrent() 
-					+ "\nCritical Mach = " + test.getCriticalMach() 
+					+ "\nCurrent Mach = " + theCondition.get_machCurrent()
+					+ "\nCritical Mach = " + test.getCriticalMach()
 					+ "\n\n\t CHECK PASSED --> PROCEDING TO CALCULATION "
 					+ "\n\n"
 					+ "-----------------------------------------------------------");
 		else{
 			System.err.println("\n\n-----------------------------------------------------------"
 					+ "\nCurrent Mach is bigger then critical Mach number."
-					+ "\nCurrent Mach = " + theCondition.get_machCurrent() 
-					+ "\nCritical Mach = " + test.getCriticalMach() 
+					+ "\nCurrent Mach = " + theCondition.get_machCurrent()
+					+ "\nCritical Mach = " + test.getCriticalMach()
 					+ "\n\n\t CHECK NOT PASSED --> WARNING!!! "
 					+ "\n\n"
 					+ "-----------------------------------------------------------");
 		}
-		
+
 		// ------------------------MTOM PARAMETERIZATION---------------------------------
-		
+
 		test.createPayloadRangeMatrices(
 				test.getSweepHalfChordEquivalent(),
 				test.getSurface(),
@@ -122,9 +123,9 @@ public class PayloadRange_Test_TP_MTOM{
 				test.getCurrentMach(),
 				false
 				);
-		// ------------------------------PLOTTING----------------------------------------		
+		// ------------------------------PLOTTING----------------------------------------
 		// MTOM parameterization:
-		
+
 		test.createPayloadRangeCharts_MaxTakeOffMass(
 				test.getRangeMatrix(),
 				test.getPayloadMatrix()

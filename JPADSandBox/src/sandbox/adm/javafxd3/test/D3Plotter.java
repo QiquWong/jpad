@@ -11,13 +11,21 @@ import java.util.stream.IntStream;
 
 import javax.xml.transform.TransformerException;
 
+import org.treez.core.atom.graphics.length.Length;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.coords.Coords;
 import org.treez.javafxd3.d3.core.Selection;
+import org.treez.javafxd3.d3.functions.AxisScaleFirstDatumFunction;
+import org.treez.javafxd3.d3.functions.AxisScaleSecondDatumFunction;
+import org.treez.javafxd3.d3.functions.AxisTransformPointDatumFunction;
 import org.treez.javafxd3.d3.scales.LinearScale;
+import org.treez.javafxd3.d3.scales.QuantitativeScale;
+import org.treez.javafxd3.d3.svg.Area;
 import org.treez.javafxd3.d3.svg.Axis;
 import org.treez.javafxd3.d3.svg.InterpolationMode;
 import org.treez.javafxd3.d3.svg.Line;
+import org.treez.javafxd3.d3.svg.Symbol;
+import org.treez.javafxd3.d3.svg.SymbolType;
 import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
 import org.treez.javafxd3.d3.svg.Axis.Orientation;
 import org.treez.javafxd3.javafx.JavaFxD3Browser;
@@ -40,25 +48,32 @@ public class D3Plotter {
 
 	private JavaFxD3Browser browser;
 
-	private Selection svg;
-
-	private Axis xAxis;
-	private Axis yAxis;
+	private Selection svgSelection;
 
 	// set margins
-	final Margin margin = new Margin(20, 20, 30, 40);
+	final Margin margin = new Margin(20, 20, 10, 40); // t r b l
 
-	final int widthDefault = 700 - margin.left - margin.right;
-	final int heightDefault = 500 - margin.top - margin.bottom;
+	final int widthGraph = 700 - margin.left - margin.right;
+	final int heightGraph = 500 - margin.top - margin.bottom;
 
-	private int widthSVG;
-	private int heightSVG;
+	private int widthPageSVG;
+	private int heightPageSVG;
 
 	private Selection scaleLabel;
 	private Selection translateLabel;
 
-	private String colorFillChart = "#c0d2dd";
-	private String colorStrokeChart = "black";
+	private String graphBackground = "lightblue";
+
+	private final double xtickPadding = 12.0;
+	private final double ytickPadding = 5.0;
+
+	private final int symbolSquareSize = 64;
+	private String symbolStyle = "fill:red; stroke:blue; stroke-width:2";
+
+	private String lineStyle = "fill:none; stroke:red; stroke-width:2";
+
+	private String areaStyle = "fill:green;";
+
 
 	public class Margin {
 		public final int top;
@@ -87,15 +102,31 @@ public class D3Plotter {
 	 *  Constructor
 	 */
 	public D3Plotter(int wSVG, int hSVG) {
-		this.widthSVG = wSVG;
-		this.heightSVG = hSVG;
+		this.widthPageSVG = wSVG;
+		this.heightPageSVG = hSVG;
 	}
 
+	public D3Plotter() {
+		this.widthPageSVG = widthGraph;
+		this.heightPageSVG = heightGraph;
+	}
 
 	/*
 	 * called in Runnable object
 	 */
 	public void createD3Content() {
+
+
+		Double[][] dataArray = { { 1.0, 0.0 }, { 20.0, 15.5 }, { 50.0, 10.0 } };
+
+		// data that you want to plot, I"ve used separate arrays for x and y values
+		double[] xData1 = {5, 10, 25, 32, 40, 40, 15, 7};
+		double[] yData1 = {3, 17, 4, 10, 6, -20, -20.0, 0};
+
+		double xMin = 0;
+		double xMax = 50;
+		double yMin = -30.0;
+		double yMax = 30.0;
 
 		System.out.println("D3Plotter :: createD3Content");
 
@@ -110,161 +141,230 @@ public class D3Plotter {
 //		injectMathJax();
 
 		// apply CSS
-		loadCssForThisClass();
+//		loadCssForThisClass();
 
-		svg = d3.select("svg")
-				.attr("width", widthSVG)
-				.attr("height", heightSVG);
+		// svg
+		svgSelection = d3.select("svg")
+				.attr("width", widthPageSVG)
+				.attr("height", heightPageSVG);
+
+		//page
+		Selection pageSelection = svgSelection //
+				.append("g") //
+				.attr("id", "page")
+				.attr("width", widthPageSVG) //
+				.attr("height", widthPageSVG);
 
 		// Inject basic style attributes into svg node
-		try {
-
-			injectStyleInSVG();
-
-		} catch (TransformerException e) {
-			e.printStackTrace();
-		}
-
-
-		double xMin = 0;
-		double xMax = 50;
-		double yMin = -25;
-		double yMax = 25;
-
-		LinearScale x = d3.scale() //
-				.linear() //
-				.domain(xMin, xMax) //
-				.range(0.0, widthDefault);
-
-		LinearScale y = d3.scale() //
-				.linear() //
-				.domain(yMin, yMax) //
-				.range(heightDefault, 0.0);
-
-		// set the x axis
-		xAxis = d3.svg() //
-				.axis() //
-				.scale(x) //
-				.orient(Orientation.BOTTOM) //
-				.tickSize(-heightDefault)
-				// .outerTickSize(10) // agodemar
-				.tickPadding(12) // agodemar
-				;
-
-		// set the y axis
-		yAxis = d3.svg() //
-				.axis() //
-				.scale(y) //
-				.orient(Orientation.LEFT) //
-				.ticks(5) //
-				.tickSize(-widthDefault)
-				// .outerTickSize(10) // agodemar
-				.tickPadding(5) // agodemar
-				;
-
-		Selection selection = d3.select("#root");
-
-		// create info text boxes
-		scaleLabel = selection.append("div") //
-				.text("scale:");
-
-		translateLabel = selection //
-				.append("div") //
-				.text("translate:");
-
-		//.x(x) //
-		//.y(y) //
-
-
-//		//Double[] data = Arrays.range(16).map(callback);
-//		List<Coords> coordsList = new ArrayList<>();
-//		for(int index=0;index<16;index++){
-//			Coords coords = new Coords(webEngine, SQUARE_WIDTH / 2, SQUARE_HEIGHT / 2);
-//			coordsList.add(coords);
+//		try {
+//
+//			injectStyleInSVG();
+//
+//		} catch (TransformerException e) {
+//			e.printStackTrace();
 //		}
 
-		svg = d3.select("#svg") //
-				.attr("width", widthDefault + margin.left + margin.right) //
-				.attr("height", heightDefault + margin.top + margin.bottom) //
+		//graph
+		Selection graphSelection = pageSelection //
 				.append("g") //
-				.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+				.attr("id", "graph") //
+				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+		Selection graphRectSelection = graphSelection //
+				.append("rect") //
+				.attr("width", widthGraph) //
+				.attr("height", heightGraph) //
+				.attr("fill", graphBackground);
+
+		//x axis
+		Selection xAxisSelection = graphSelection //
+				.append("g") //
+				.attr("id", "" + "xAxis") //
+				.attr("class", "axis") //
+				.attr("transform", "translate(0," + heightGraph + ")");
+
+		// QuantitativeScale<?> xScale;
+
+		LinearScale xScale = d3.scale() //
+				.linear() //
+				.domain(xMin, xMax) //
+				.range(0.0, widthGraph);
+
+		// set the x axis
+		org.treez.javafxd3.d3.svg.Axis xAxis = d3.svg() //
+				.axis() //
+				.scale(xScale) //
+				.orient(org.treez.javafxd3.d3.svg.Axis.Orientation.BOTTOM) //
+				.tickSize(-heightGraph)
+				// .outerTickSize(10) // agodemar
+				.tickPadding(xtickPadding) // agodemar
 				;
 
-//		// create zoom behavior
-//		Zoom zoom = d3.behavior() //
-//				.zoom() //
-//				.x(x)
-//				.y(y)
-//				.on(ZoomEventType.ZOOM, new ZoomDatumFunction(d3, scaleLabel, translateLabel, svg, xAxis, yAxis));
+		xAxis.apply(xAxisSelection);
+
+		xAxisSelection //
+				.selectAll("path, line") //
+				.style("fill", "none") //
+				.style("stroke", "#000")
+				.style("stroke-width", "1.2px") //
+				.style("shape-rendering", "geometricPrecision"); // "crispEdges"
+
+//		if (logXScale) {
+//			//major ticks
+//			xAxisSelection //
+//			.selectAll(".tick:nth-child(1)") //
+//			.classed("major", true);
 //
-//		svg.call(zoom);
+//			xAxisSelection //
+//			.selectAll(".tick:nth-child(9n+1)") //
+//			.classed("major", true);
+//
+//			Selection majorTickLines = xAxisSelection //
+//					.selectAll(".major") //
+//					.selectAll("line");
+//
+//			Selection minorTickLines = xAxisSelection //
+//					.selectAll(".tick:not(.major)") //
+//					.selectAll("line");
+//
+//			majorTickLines //
+//			.style("stroke", "blue") //
+//			.attr("y2", "+" + 20);
+//
+//			minorTickLines //
+//			.style("stroke", "red")
+//			.attr("y2", "+" + 10);
+//
+//		}
 
-		svg.append("rect") //
-				.attr("width", widthDefault) //
-				.attr("height", heightDefault)
+		//y axis
+		Selection yAxisSelection = graphSelection //
+				.append("g") //
+				.attr("id", "" + "yAxis") //
+				.attr("class", "axis");
+
+		LinearScale yScale = d3 //
+				.scale() //
+				.linear() //
+				.domain(yMin, yMax) //
+				.range(heightGraph, 0.0);
+
+		org.treez.javafxd3.d3.svg.Axis yAxis = d3 //
+				.svg() //
+				.axis() //
+				.scale(yScale)
+				.orient(org.treez.javafxd3.d3.svg.Axis.Orientation.LEFT)
+				.tickPadding(ytickPadding)
+				.tickSize(-widthGraph)
+				// .outerTickSize(10) // agodemar
+				// .tickPadding(5) // agodemar
 				;
 
-		svg.append("g") //
-				.attr("class", "x axis") //
-				.attr("transform", "translate(0," + heightDefault + ")") //
-				.call(xAxis)
-				;
+		yAxis.apply(yAxisSelection);
 
-		svg.append("g") //
-				.attr("class", "y axis") //
-				.call(yAxis);
+		yAxisSelection //
+			.selectAll("path, line") //
+			.style("fill", "none") //
+			.style("stroke", "#000")
+			// .style("stroke-dasharray","15,10")
+			.style("stroke-width", "1.2px") //
+			.style("shape-rendering", "geometricPrecision"); // "crispEdges"
 
-		// agodemar
 
-		// data that you want to plot, I"ve used separate arrays for x and y values
-		double[] xData = {5, 10, 25, 32, 40, 40, 15, 7};
-		double[] yData = {3, 17, 4, 10, 6, -20, -20.0, 0};
+		//xy plot
+		Selection xySelection = graphSelection //
+			.append("g") //
+			.attr("id", "xy") //
+			.attr("class", "xy");
 
-		// the chart object, includes all margins
-		Selection chart = d3.select("svg") //
-			.attr("width", widthDefault + margin.right + margin.left) //
-			.attr("height", heightDefault + margin.top + margin.bottom) //
-			.attr("class", "chart")
-			.attr("fill", colorFillChart)
-			.attr("stroke", colorStrokeChart)
+
+		//plot line
+		org.treez.javafxd3.d3.svg.Line linePathGenerator = d3 //
+			.svg()//
+			.line()
+			.x(new AxisScaleFirstDatumFunction(xScale))
+			.y(new AxisScaleSecondDatumFunction(yScale));
+
+		Selection line = xySelection //
+				.append("path") //
+				.attr("id", "line") //
+				.attr("d", linePathGenerator.generate(dataArray))
+				.attr("class", "line")
+				.attr("style", lineStyle);
+
+
+		//plot area beneath line
+		double yMin1 = yScale.apply(0.0).asDouble();
+		Area areaPathGenerator = d3 //
+			.svg() //
+			.area() //
+			.x(new AxisScaleFirstDatumFunction(xScale))
+			.y0(yMin1)
+			.y1(new AxisScaleSecondDatumFunction(yScale));
+		String areaPath = areaPathGenerator.generate(dataArray);
+
+		@SuppressWarnings("unused")
+		Selection area = xySelection //
+			.append("path") //
+			.attr("id", "area") //
+			.attr("d", areaPath)
+			.attr("class", "area")
+			.attr("style", areaStyle)
+			.attr("opacity", "0.5")
 			;
 
-		// the main object where the chart and axis will be drawn
-		Selection main = chart.append("g") //
-			.attr("transform", "translate(" + margin.left + "," + margin.top + ")") //
-			.attr("width", widthDefault) //
-			.attr("height", heightDefault) //
-			.attr("class", "main")
-			;
+		//plot symbols
+		Symbol symbol = d3 //
+				.svg() //
+				.symbol();
+		symbol = symbol //
+				.size(symbolSquareSize) //
+				.type(SymbolType.CIRCLE);
+
+		String symbolDString = symbol.generate();
+
+		Selection symbolSelection = xySelection //
+				.append("g") //
+				.attr("id", "symbols") //
+				.attr("class", "symbols");
+
+		@SuppressWarnings("unused")
+		Selection symbols = symbolSelection
+				.selectAll("path") //
+				.data(dataArray) //
+				.enter() //
+				.append("path") //
+				.attr("transform", new AxisTransformPointDatumFunction(xScale, yScale)) //
+				//.attrExpression("transform", "function(d, i) { return 'translate(' + d[0] + ',' + d[1] + ')'; }") //
+				.attr("d", symbolDString) //
+				.attr("style", symbolStyle);
+
+		//################################
 
 		// draw the graph object
-		Selection g = main.append("svg:g");
-
-		g.selectAll("scatter-dots")
-		  .data(yData)  // using the values in the ydata array
+		Selection points1Selection = xySelection.append("svg:g");
+		points1Selection.selectAll("scatter-dots")
+		  .data(yData1)  // using the values in the ydata array
 		  .enter().append("svg:circle")  // create a new circle for each value
-		      .attr("cy", new YAxisDatumFunction(webEngine, y, yData) ) // translate y value to a pixel
-		      .attr("cx", new XAxisDatumFunction(webEngine, x, xData)) // translate x value
+		      .attr("cy", new YAxisDatumFunction(webEngine, yScale, yData1) ) // translate y value to a pixel
+		      .attr("cx", new XAxisDatumFunction(webEngine, xScale, xData1)) // translate x value
 		      .attr("r", 5) // radius of circle
 		      .attr("fill", "darkgreen")
 		      .style("opacity", 1.0); // opacity of circle
 
-
 		// Line, the path generator
-		Line line;
-
-		InterpolationMode mode = InterpolationMode.LINEAR;
-
-		line = d3.svg().line()
-				.x(new XAxisDatumFunction(webEngine, x, xData))
-				.y(new YAxisDatumFunction(webEngine, y, yData))
+		Line line1 = d3.svg().line()
+				.x(new XAxisDatumFunction(webEngine, xScale, xData1))
+				.y(new YAxisDatumFunction(webEngine, yScale, yData1))
 				;
 
-		Selection g2 = g.append("svg:g")
+		Selection line1Selection = xySelection.append("svg:g")
 				.classed("Pippo-line-group", true);
-
 		String cssClassName = "Agodemar-Test-Line";
-		Selection pathLine = g2.append("path").classed(cssClassName, true);
+		Selection pathLine = line1Selection
+				.append("path")
+				.classed(cssClassName, true)
+				;
 		pathLine
 			.attr("fill","none")
 			.attr("stroke","red")
@@ -275,24 +375,21 @@ public class D3Plotter {
 
 		final Stack<Coords> points = new Stack<>();
 
-//		double [] x = {50.0, 120.0, 400.0, 700};
-//		double [] y = {100.0, 30.0, 20.0, 200};
-
-		IntStream.range(0, xData.length)
+		IntStream.range(0, xData1.length)
 			.forEach(i ->
-					points.push(new Coords(webEngine, xData[i], yData[i]))
+					points.push(new Coords(webEngine, xData1[i], yData1[i]))
 					);
 
 //		System.out.println("points:");
 //		points.stream()
 //			.forEach(p -> System.out.println(p.x()+", "+p.y()));
 
-		mode = InterpolationMode.MONOTONE;
-		line = line.interpolate(mode);
-		System.out.println("Interpolation mode: " + line.interpolate());
+		InterpolationMode mode1 = InterpolationMode.MONOTONE;
+		line1 = line1.interpolate(mode1);
+//		System.out.println("Interpolation mode: " + line.interpolate());
 
 		double tension = 0.1;
-		line = line.tension(tension);
+		line1 = line1.tension(tension);
 //		System.out.println("tension: " + line.tension());
 
 		List<Coords> coordsList = new ArrayList<>(points);
@@ -301,7 +398,7 @@ public class D3Plotter {
 //		coordsList.stream()
 //			.forEach(c -> System.out.println(c.x()+", "+c.y()));
 
-		String coordinates = line.generate(coordsList);
+		String coordinates = line1.generate(coordsList);
 
 //		System.out.println("coordinates: " + coordinates);
 
@@ -309,22 +406,10 @@ public class D3Plotter {
 			.attr("fill", "gray")
 			;
 
-		// ###########################################################à
+		// ###########################################################
 
-//		Selection symbolSelection = xySelection //
-//				.append("g") //
-//				.attr("id", "symbols") //
-//				.attr("class", "symbols");
-//
-//		Selection symbols = symbolSelection
-//				.selectAll("path") //
-//				.data(dataArray) //
-//				.enter() //
-//				.append("path") //
-//				.attr("transform", new AxisTransformPointDatumFunction(xScale, yScale)) //
-//				//.attrExpression("transform", "function(d, i) { return 'translate(' + d[0] + ',' + d[1] + ')'; }") //
-//				.attr("d", symbolDString) //
-//				.attr("style", symbolStyle);
+		// ###########################################################
+		// this is my playground ...
 
 
 

@@ -47,7 +47,7 @@ public class JavaFXD3_Test_07  extends Application {
 		JavaFxD3Browser browser = d3Plotter.getBrowser(postLoadingHook, false);
 
 		//create the scene
-		Scene scene = new Scene(browser, WIDTH, HEIGHT, Color.web("#666970"));
+		Scene scene = new Scene(browser, WIDTH+20, HEIGHT+20, Color.web("#666970"));
 		primaryStage.setScene(scene);
 		primaryStage.show();
 
