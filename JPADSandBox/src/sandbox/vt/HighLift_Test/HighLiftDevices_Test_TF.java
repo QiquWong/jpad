@@ -14,6 +14,7 @@ import aircraft.auxiliary.airfoil.MyAirfoil;
 import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
 import configuration.MyConfiguration;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.FlapTypeEnum;
@@ -69,7 +70,7 @@ public class HighLiftDevices_Test_TF {
 		OperatingConditions theCondition = new OperatingConditions();
 		theCondition.set_altitude(Amount.valueOf(11000.0, SI.METER));
 		theCondition.set_machCurrent(0.84);
-		Aircraft aircraft = Aircraft.createDefaultAircraft("B747-100B");
+		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.B747_100B);
 
 		aircraft.get_theAerodynamics().set_aerodynamicDatabaseReader(aeroDatabaseReader);
 		aircraft.get_theAerodynamics().set_highLiftDatabaseReader(highLiftDatabaseReader);

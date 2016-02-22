@@ -2,8 +2,11 @@ package calculators.performance;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import javax.measure.quantity.Angle;
+import javax.measure.quantity.Mass;
+import org.jscience.physics.amount.Amount;
 import calculators.aerodynamics.DragCalc;
+import calculators.aerodynamics.LiftCalc;
 import calculators.performance.customdata.ThrustMap;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;
@@ -242,17 +245,17 @@ public class ThrustCalc {
 		return thrust;
 	}
 
-	/**
-	 * Overload of the previous method allowing the usage of Double[]
+	/***************************************************************************************
+	 * This method accepts the T0/P0 ratio in order to obtain the T0 from a given P0 for a 
+	 * propeller engine
 	 * 
 	 * @author Vittorio Trifari
-	 * @param t0 static thrust (N)
-	 * @param phi
-	 * @param altitude (m)
-	 * @param flightCondition
-	 * @param bpr by-pass ratio
-	 * @param nEngine number of engines
-	 * @param speed (m/s)
+	 * @param p0 the static power of the engine
+	 * @param p0T0ratio the ratio P0/T0
 	 * @return
 	 */
+	public static double calculateT0fromP0 (double p0, double p0T0ratio) {
+		
+		return p0*p0T0ratio;
+	}
 }

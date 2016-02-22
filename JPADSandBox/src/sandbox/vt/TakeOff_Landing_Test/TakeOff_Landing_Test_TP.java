@@ -21,6 +21,7 @@ import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.MyConfiguration;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.FoldersEnum;
@@ -86,7 +87,7 @@ public class TakeOff_Landing_Test_TP {
 		theCondition.set_machCurrent(0.15);
 		theCondition.calculate();
 
-		Aircraft aircraft = Aircraft.createDefaultAircraft("ATR-72");
+		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.ATR72);
 		aircraft.set_name("ATR-72");
 
 		LiftingSurface theWing = aircraft.get_wing();

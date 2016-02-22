@@ -8,6 +8,7 @@ import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.MyConfiguration;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AirplaneType;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.FoldersEnum;
@@ -44,7 +45,7 @@ public class PayloadRange_Test_TF_MTOM{
 		theCondition.set_altitude(Amount.valueOf(11000, SI.METER));
 		theCondition.set_machCurrent(0.84);
 		
-		Aircraft aircraft = Aircraft.createDefaultAircraft("B747-100B");
+		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.B747_100B);
 		aircraft.set_name("B747-100B");
 		aircraft.get_theFuelTank().setFuelFractionDatabase(fuelFractionReader);
 
