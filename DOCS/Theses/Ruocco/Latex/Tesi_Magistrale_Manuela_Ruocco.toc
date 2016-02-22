@@ -52,28 +52,24 @@
 \contentsline {subsection}{\numberline {9.1.3}Horizontal Tail}{46}{subsection.9.1.3}
 \contentsline {subsubsection}{Elevator index of effectiveness}{47}{subsubsection*.44}
 \contentsline {subsection}{\numberline {9.1.4}Complete Aircraft}{48}{subsection.9.1.4}
-\contentsline {section}{\numberline {9.2}Aerodynamic Drag}{49}{section.9.2}
-\contentsline {subsection}{\numberline {9.2.1}Wing}{49}{subsection.9.2.1}
-\contentsline {subsection}{\numberline {9.2.2}Fuselage}{49}{subsection.9.2.2}
-\contentsline {subsection}{\numberline {9.2.3}Horizontal Tail}{49}{subsection.9.2.3}
-\contentsline {section}{\numberline {9.3}Pitching Moments}{49}{section.9.3}
-\contentsline {subsection}{\numberline {9.3.1}Wing}{49}{subsection.9.3.1}
-\contentsline {subsection}{\numberline {9.3.2}Fuselage}{49}{subsection.9.3.2}
-\contentsline {subsection}{\numberline {9.3.3}Horizontal Tail}{49}{subsection.9.3.3}
-\contentsline {subsection}{\numberline {9.3.4}Propulsors}{49}{subsection.9.3.4}
-\contentsline {subsection}{\numberline {9.3.5}Stability Calculation}{49}{subsection.9.3.5}
-\contentsline {section}{\numberline {9.4}Propeller}{49}{section.9.4}
-\contentsline {section}{\numberline {9.5}Stability Equations}{49}{section.9.5}
-\contentsline {section}{\numberline {9.6}Java Class Architecture}{49}{section.9.6}
-\contentsline {section}{\numberline {9.7}User's Guide}{49}{section.9.7}
-\contentsline {section}{\numberline {9.8}Analysis Results}{49}{section.9.8}
-\contentsline {chapter}{\numberline {10}Minor Works}{50}{chapter.10}
-\contentsline {chapter}{Appendices}{}{section*.49}
-\contentsline {chapter}{\numberline {A}HDF dataset and database reader creation}{52}{Appendix.a.A}
-\contentsline {section}{\numberline {A.1}Chart Digitization}{52}{section.a.A.1}
-\contentsline {section}{\numberline {A.2}Creation of an HDF file with Matlab}{53}{section.a.A.2}
-\contentsline {chapter}{\numberline {B}App2}{56}{Appendix.a.B}
-\contentsline {chapter}{Glossary}{58}{section*.52}
-\contentsline {chapter}{Acronyms}{60}{section*.54}
-\contentsline {chapter}{List of symbols}{61}{section*.56}
-\contentsline {chapter}{Bibliography}{63}{section*.58}
+\contentsline {section}{\numberline {9.2}Aerodynamic Drag}{48}{section.9.2}
+\contentsline {subsection}{\numberline {9.2.1}Drag of a lifting surface}{49}{subsection.9.2.1}
+\contentsline {subsection}{\numberline {9.2.2}Additional drag due to elevator}{49}{subsection.9.2.2}
+\contentsline {section}{\numberline {9.3}Pitching Moments}{50}{section.9.3}
+\contentsline {subsection}{\numberline {9.3.1}Lifting surface}{51}{subsection.9.3.1}
+\contentsline {subsection}{\numberline {9.3.2}Fuselage}{52}{subsection.9.3.2}
+\contentsline {section}{\numberline {9.4}Propulsors}{53}{section.9.4}
+\contentsline {subsection}{\numberline {9.4.1}Stability Calculation}{53}{subsection.9.4.1}
+\contentsline {subsection}{\numberline {9.4.2}Neutral Point and Static Margin}{53}{subsection.9.4.2}
+\contentsline {section}{\numberline {9.5}Java Class Architecture}{53}{section.9.5}
+\contentsline {section}{\numberline {9.6}Case Study}{53}{section.9.6}
+\contentsline {chapter}{\numberline {10}Minor Works}{54}{chapter.10}
+\contentsline {chapter}{Appendices}{}{section*.56}
+\contentsline {chapter}{\numberline {A}HDF dataset and database reader creation}{56}{Appendix.a.A}
+\contentsline {section}{\numberline {A.1}Chart Digitization}{56}{section.a.A.1}
+\contentsline {section}{\numberline {A.2}Creation of an HDF file with Matlab}{57}{section.a.A.2}
+\contentsline {chapter}{\numberline {B}App2}{60}{Appendix.a.B}
+\contentsline {chapter}{Glossary}{62}{section*.59}
+\contentsline {chapter}{Acronyms}{64}{section*.61}
+\contentsline {chapter}{List of symbols}{65}{section*.63}
+\contentsline {chapter}{Bibliography}{67}{section*.65}

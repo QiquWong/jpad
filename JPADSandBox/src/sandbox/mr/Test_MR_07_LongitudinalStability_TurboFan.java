@@ -83,7 +83,6 @@ public class Test_MR_07_LongitudinalStability_TurboFan {
 
 
 		//------------------------------------------------------------------------------------
-		// Default Aircraft
 		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.B747_100B);
 		aircraft.set_name("B747-100B");
 		System.out.println("\nDefault aircraft: " + aircraft.get_name() + "\n");
