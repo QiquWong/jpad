@@ -2262,7 +2262,12 @@
     <bcf:citekey order="22">kundu</bcf:citekey>
     <bcf:citekey order="23">obert2009aerodynamic</bcf:citekey>
     <bcf:citekey order="24">roskam2002airplane</bcf:citekey>
-    <bcf:citekey order="25">plotdigitizer</bcf:citekey>
+    <bcf:citekey order="25">kundu</bcf:citekey>
+    <bcf:citekey order="26">sforza2014commercial</bcf:citekey>
+    <bcf:citekey order="27">sforza2014commercial</bcf:citekey>
+    <bcf:citekey order="28">Young:Flaps</bcf:citekey>
+    <bcf:citekey order="29">adas</bcf:citekey>
+    <bcf:citekey order="30">plotdigitizer</bcf:citekey>
     <bcf:citekey order="0">*</bcf:citekey>
   </bcf:section>
   <bcf:sortlist section="0" name="nty" type="entry" sortscheme="nty">

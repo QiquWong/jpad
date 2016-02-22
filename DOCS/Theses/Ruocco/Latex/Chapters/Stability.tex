@@ -21,7 +21,8 @@ In addition to the static stability it's possible to analize the dynamical stabi
 It is important to note that there is a substantial difference between the concepts of ``Stability'' and ``Equilibrium''. In fact, stability is a characteristic of an aircraft, while equilibrium is a state in which airplane can be, that means the equilibrium of the forces and the moments acting on it.\\
 ``Longitudinal static stability'' is the stability of an aircraft in the longitudinal, or pitching, plane under steady-flight conditions. This characteristic is important because an airplane must have the tendency to return to the equilibrium position if perturbed. The pitch plane is the XZ plane of aircraft symmetry. The linear velocities are along the X-axis and w along the Z-axis. Angular velocity is about the Y-axis , known as pitching (positive if nose up). Pilot-induced activation of the elevator changes the aircraft pitch. In the plane of symmetry, the aircraft motion is uncoupled; that is, motion is limited only to the pitch plane.\cite{kundu}\\ \\
 In order to evaluate the characteristics of longitudinal stability of an aircraft it's ncessary to express all the forces and the moments acting on it and evaluate the resultant pitching moment about the center of gravity.\\
- The lift and drag are by definition always perpendicular and parallel to $V_{\infty}$, respectively. It is, therefore, inconvenient to use these forces to obtain moments because their moment arms relative to the center of gravity vary with angle-of-attack a. For this reason, all forces are resolved into normal, N, and chordwise, C, forces whose axes remain fixed with the aircraft and whose arms are, therefore, constant. \cite{nicolai2010fundamentals}\\
+ The lift and drag are by definition always perpendicular and parallel to $V_{\infty}$, 
+ively. It is, therefore, inconvenient to use these forces to obtain moments because their moment arms relative to the center of gravity vary with angle-of-attack a. For this reason, all forces are resolved into normal, N, and chordwise, C, forces whose axes remain fixed with the aircraft and whose arms are, therefore, constant. \cite{nicolai2010fundamentals}\\
 
 \begin{figure}[H]
 \centering
@@ -72,7 +73,7 @@ Below will be calculated all the contributions in order to evaluate the pitching
 
 \subsection{Wing}
  The wing may be considered as the most important component of an aircraft. Its main purpose is  to generate sufficient lift force. However, the wing has two other productions, namely drag force or drag and pitching moment. While a wing designer is looking to maximize the lift, the other two (drag and pitching moment) must be minimized. \\
- The theoretical background and the followed process are shown in the Cap \ref{ch:worklift}.
+ The theoretical background and the followed process are shown in the CHAPT \ref{ch:worklift}.
 
 \subsection{Fuselage}
 
@@ -200,12 +201,29 @@ C_{L_H}= C_{L_{{\alpha}_H}} \left ( \alpha_H + \tau_e \delta_e \right)
 %\caption{Qualitative trend of the term $\tau \cdot \delta_e$ with the deflection of elevator.}
 %\end{figure} 		
 
-
 \begin{figure}[H]
 \centering
-{\includegraphics[height=4.9cm]{Immagini/tau.png}} 
-\label{tau3}
-\end{figure} 		
+\begin{minipage}{.5\textwidth}
+\centering
+\includegraphics[height=5.3cm]{Immagini/taude.png}
+\captionof{figure}{Qualitative trend of $\tau$ with  \\ the deflection of elevator.}
+\label{tau1}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+\centering
+\includegraphics[height=5.3cm]{Immagini/taudeltae.png}
+\captionof{figure}{Qualitative trend of the term $\tau \cdot \delta_e$ with the deflection of elevator.}
+\label{tau2}
+\end{minipage}
+\label{fig:effects}
+\end{figure}
+
+
+%\begin{figure}[H]
+%\centering
+%{\includegraphics[height=4.9cm]{Immagini/tau.png}} 
+%\label{tau3}
+%\end{figure} 		
 
 
 		
@@ -232,11 +250,29 @@ The evaluation of tau is made by reading of external database, considering the f
 %\label{efficiency}
 %\end{figure} 		
 
+
 \begin{figure}[H]
 \centering
-{\includegraphics[height=6.79cm]{Immagini/alfadeltanew.png}} 
+\begin{minipage}{.5\textwidth}
+\centering
+\includegraphics[height=5.3cm]{Immagini/Eta_Delta_Plain.png}
+\captionof{figure}{2D efficiency correction for elevator.}
 \label{efficiency}
-\end{figure} 		
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+\centering
+\includegraphics[height=5.3cm]{Immagini/alfadelta.png}
+\captionof{figure}{$\frac{d \alpha_{0l}}{d \delta_e}$ 2D and 3D correction.}
+\label{eff2}
+\end{minipage}
+\label{fig:effects}
+\end{figure}
+
+%\begin{figure}[H]
+%\centering
+%{\includegraphics[height=6.79cm]{Immagini/alfadeltanew.png}} 
+%\label{efficiency}
+%\end{figure} 		
 
 
 		
@@ -274,41 +310,188 @@ Where $\eta_t$ is the ratio of dynamic pressure, called {\itshape tail efficienc
 
 
 \section{Aerodynamic Drag}
-% nell' ottica di questo lavoro divideremo per componente
-% foto divisione p 387 sforza pdf
-% mettiamo ala piano coda e fusoliera
-\subsection{Wing}
-\subsection{Fuselage}
-\subsection{Horizontal Tail}
-% contributo dovuto al flap
+The drag of an aircraft depends on its shape and speed, which are design-dependent, as well as on the properties of air, which are nature-dependent. Drag is a complex phenomenon arising from several sources, such as the viscous effects that result in skin friction and pressure differences as well as the induced flow field of the lifting surfaces and compressibility effects. \\
+The aircraft drag estimate starts with the isolated aircraft components. Each component of the aircraft generates drag largely dictated by its shape. Total aircraft drag is obtained by summing the drag of all components plus their interference effects when the components are combined. It is important to note that the drag of two isolated bodies increases when they are brought together due to the interference of their flow fields.\cite{kundu}
+
+\begin{figure}[H]
+\centering
+{\includegraphics[height=5.6cm]{Immagini/dragcomponent.png}} 
+\label{drag}
+\caption{Drag components making up the total commercial airplane drag.\cite{sforza2014commercial}}
+\end{figure} 		
+
+In this thesis work, in order to evakuate the pitching moment coefficient of an aircraft has been considered the drag forces due to wing and horizontal tail.
+
+\subsection{Drag of a lifting surface}
+
+As widely expressed in the CHAPT  \ref{ch:wingdrag}, the drag coefficient of a lifting surface is calculated starting from the drag coefficient of the airfoils, expressed by the following equation:
+
+\begin{equation}
+CD = CD_{min} + (CL - CL_{CD_{min}})^2 + k
+\end{equation}
+
+For each station, known the semi-spanwise lift distribution, it's possible to calculate the local lift coefficient of the intermediate airfoil and, consequently, the drag coefficient. After the drag coefficient of the entire lifting surface is calculated with an integral.
+
+\subsection{Additional drag due to elevator}
+
+For the horizontal tail it's necessary to consider the additional drag due to the elevator deflection. It's possible to consider the elevator as a {\itshape plain flap} and use the concerning methods. \\
+A plain flap is an high lift devices where a portion of the rear of a wing is simply hinged. The effectiveness of the flap derives from the fact that on rotation it changes the camber of the section and so permits of a change of circulation and therefore, of lift at a given incidence. \\
+The increment in profile drag coefficient due to a flap at a given incidence is rather more influenced by test conditions than is the lift coefficient
+increment. Nevertheless, the influence of test conditions and wing incidence is still sufficiently small over a wide range of incidence for us to accept the increment at a standard incidence as a reliable measure of the profile drag characteristics of a flap. \cite{Young:Flaps} The increment of drag is a $\upDelta CD_0$
+Young and Hufton assumed that  $\upDelta C_D0$ can be calculated as follow for a full-span flap:
+%
+\begin{equation}
+\upDelta C_{D0}=\delta_1\left(c_f/c\right)\cdot\delta_2\left(\delta_f\right)
+\label{eqn:DeltaCD0FullSpan}
+\end{equation}
+%
+where $\delta_1$ and $\delta_2$ are functions that were determined from experimental data. Their related curves are shown in figure~\ref{fig:Delta1Plain} and~\ref{fig:Delta2Plain} for plain flap.
+%
+\begin{figure}[H]
+\centering
+\includegraphics[height=7.9cm]{Immagini/Delta1_Plain}
+\caption{The functions $\delta_1\left(c_f/c\right)$ for split and plain flaps}
+\label{fig:Delta1Plain}
+\end{figure}
+%
+\begin{figure}[H]
+\centering
+\includegraphics[height=7.9cm]{Immagini/Delta2_Plain}
+\caption{The functions $\delta_2\left(\delta_f\right)$ for plain flaps}
+\label{fig:Delta2Plain}
+\end{figure}
+%
 
 
 \section{Pitching Moments}
+The purpose of this section is to explain the followed procedure used to evaluate the pitching coefficient moments of the aircraft components.\\
+Due to the interaction between the body and the flow a pressure distribution is generated whose result is the aerodynamic force acting at the center of pressure. In consequence of what there is a pitching moment that is a moment acting on the pitch axis of a moving body. \\
+As angle of attack changes on a cambered airfoil, there is movement of the center of pressure forward and aft.  One of the remarkable properties of a cambered airfoil is that, even though the center of pressure moves forward and aft, there is a point, called Aerodynamic Center, with respect to which the moment coefficient is constant. The aerodynamic center is the most convenient place to locate the lift, drag, and moment of an aircraft wing or airfoil section.\\
+So, for each component of the aircraft, it will be calculated the pitching moment coefficient respect to its aerodynamic center.
+
+
+%sforza224
 
 % ridurre tutto allla corda media- nicolai
-\subsection{Wing}
+\subsection{Lifting surface}
+
+In order to evaluate the pitching moment coefficient of a lifting surface, at a given angle of attack, the implemented process is the following.\\
+First it's calculated the pitching momet coefficient respect to the point at a quarter of the mean aerodynamic chord. Starting from these values, to vary the angle of attack, it's possible to evaluate the position of aerodynamic center.
+
+\begin{enumerate}
+\item Fifty points along the semispan are defined
+\item For each point, an intermediate airfoil is calculated
+\item For each airfoil, at given station, the lift coefficient is calculated with the local CL vs $\alpha$ curve. In this way it's possible to consider both the linear trait and non linear
+\item For each airfoil the center of pressure is calculated using the following equation:
+
+\begin {equation}
+\frac{x_{CP}}{c} = \frac{x_{AC}}{c} - \frac{C_{M_{ac}}}{C_l}
+\end{equation}
+
+\item For each airfoil the arm between the local center of pressure and the point at a quarter of lifting surface's MAC is calculated. The equations that define the MAC are the following:
+
+\begin{equation}
+MAC=\frac{2}{S} \int_{0}^{\frac{b}{2}} c^2\, dy
+\end{equation}
+
+\begin{equation}
+x_{MAC}=\frac{2}{S} \int_{0}^{\frac{b}{2}}x_{le}(y) c(y)\, dy
+\end{equation}
+
+\begin{equation}
+y_{MAC}=\frac{2}{S} \int_{0}^{\frac{b}{2}}y_{le}(y) c(y)\, dy
+\end{equation}
+
+\item Finally it's possible to evaluate the pitching moment respect to the point at a quarter of MAC with the product between the lift force and the arm
+\end{enumerate}
+
+
+Repeating the process to vary the angle of attack it's possible to estimate the slope of the pitching moment curve.  In fact, the aerodynamic center, is that point on an aircraft, wing, or airfoil section about which the pitching moment is independent of angle of attack.
+If the slope is positive, the aerodynamic center is behind the quarter of the MAC, conversely if the slope is negative, the aerodynamic center is the quarter of the MAC is behind the aerodynamic center.
+
+\begin{figure}[H]
+\centering
+\includegraphics[height=7cm]{Immagini/wing_topview_1_new}
+\caption{Wing topview definitions.}
+\label{wing}
+\end{figure}
+
+
+
+
 \subsection{Fuselage}
-\subsection{Horizontal Tail}
-\subsection{Propulsors}
+The moment coefficient of the fuselage, for what, since it is a pure couple, is not necessary specify the pole, assuming the linearity, is represented by the following equation in function of the angle of attack.
+
+\begin{equation}
+C_{M_f}=C_{M_{0_f}}+C_{{M\alpha}_f} \alpha_{body}
+\label{eq:fus}
+\end{equation}
+
+Each term in the equation \ref{eq:fus} can be calculated by the Multhopp method.  Multhopp has developed a method of calculating the local lift and pitching moment on wings of any plan-form in subsonic steady flow.  The bodymust be divided for all its length, in equal parts, regardless of the wing position.
+
+The two coefficients $C_{M_{0_f}}$  and $C_{{M\alpha}_f}$ in eq. \ref{eq:fus} can be obtained from the following equations.
+
+\begin{equation}
+C_{M_{0}f}=\dfrac{K_2-K_1}{36.5\cdot S\cdot MAC}\cdot\int_0^{l_f} \! {W_f}^2\cdot\left(\alpha_{{0L}_w}+i_w+i_{{cl}_f}\right) \, \mathrm{d}x
+\end{equation}
+
+\begin{equation}
+C_{{M\alpha}_f}=\dfrac{1}{36.5\cdot S\cdot MAC}\cdot \left\{ \int_0^{l_{f1}} \! {W_f}^2\cdot \left[ {\left( \dfrac{\partial \epsilon_u}{\partial \alpha} \right)}_1 +1\right] \, \mathrm{d}x_1 + \int_0^{l_{f2}} \! {W_f}^2\cdot \left[ {\left( \dfrac{\partial \epsilon_d}{\partial \alpha} \right)}_2 +1\right] \, \mathrm{d}x_2 \right\}
+\end{equation}
+
+Instead of the integrals it’s possible to substitute them with summations.
+
+\begin{equation}
+C_{M_{0}f}=\dfrac{K_2-K_1}{36.5\cdot S\cdot MAC}\cdot\sum_{j=1}^{n} \! {W_{f_j}}^2\cdot\left(\alpha_{{0L}_w}+i_w+i_{{cl}_f}\right)\cdot \Delta x;
+\end{equation}
+
+\begin{equation}
+C_{{M\alpha}_f}=\dfrac{1}{36.5\cdot S\cdot MAC}\cdot \left\{ \sum_{j=1}^{n_1} \! {W_{f_j}}^2\cdot \left[ {\left( \dfrac{\partial \epsilon_u}{\partial \alpha} \right)}_1 +1\right] \cdot \Delta x_{1} + \sum_{j=1}^{n_2} \! {W_{f_j}}^2\cdot \left[ {\left( \dfrac{\partial \epsilon_d}{\partial \alpha} \right)}_2 +1\right] \cdot \Delta x_{2} \right\}
+\end{equation}
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[height=2.9cm]{Immagini/stripszero}
+\caption{Strips definition for the determination of $C_{M_{0_f}}$.}
+\label{wing}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[height=6cm]{Immagini/stripsalfa}
+\caption{Strips definition for the determination of $C_{{M\alpha}_f}$ .}
+\label{wing}
+\end{figure}
+
+
+The parameter $K_2-K_1$ is a correction factor that is dependent on the value of the fineness ratio and is evaluated by the following figure.\cite{adas}
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[height=3.9cm]{Immagini/kdue}
+\caption{$K_2-K_1$ correction factor in function of fineness ratio.}
+\label{kfactor}
+\end{figure}
+
+
+\section{Propulsors}
+%Obert 453
 
 \subsection{Stability Calculation}
+\subsection{Neutral Point and Static Margin}
+%sforza 611
 
 % calcolo delle forze normali e tangenziali, calcolo momenti, risultati
 
-\section{Propeller}
-%Obert 453
 
-\section{Stability Equations}
 
 
 \section{Java Class Architecture}
 % intro
 % riepilogo di tutte le classi in schema. vedi su quaderno  prima di stabilita
 % schema in yed
-
-\section{User's Guide}
-%intro
-% test class
-
-\section{Analysis Results} % fai qui? oppure durante?
-%grafici
+ % per l' ala scrivi le grandezze geometriche con foto
+ 
+\section{Case Study}
