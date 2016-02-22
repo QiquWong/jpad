@@ -429,9 +429,16 @@ Once all data are stored, it's easy with this map to get one, or more than one, 
 \noindent
 It has to be noted that all these preliminary calculations and \gls{List}s initializations are put into the constructor for a reason; in fact, as these are all quite heavy operations in terms of computational cost, put them in the constructor means that they are carried out only once allowing a more rapid use, even iterative, of the main method that will be described shortly.
 
-
-%----------------------------PUT THE DESCRIPTION OF THE ODE INTEGRATOR------------------------------
-
+\bigskip
+\noindent
+The most important method of the class is~\lstinline[language=Java]!calculateTakeOffDistanceODE! which is in charge of the resolution of the ODE set presented in (\ref{eq:Take:Off:System:Dynamics:A}). This method accepts as input two parameters which are used to determine, firstly, if an engine failure has occurred during the take-off run, and then if the take-off run has to be aborted; these are:
+%
+\begin{itemize}
+\item \lstinline[language=Java]!vFailure!, a \lstinline[language=Java]!Double! value representing the failure speed in $\si{\meter\per\second}$. Can be set to \lstinline[language=Java]!null! if the user dosen't want to calculate the \gls{acr:OEI} take-off distance. 
+\item \lstinline[language=Java]!isAborted!, a \lstinline[language=Java]!boolean! flag which is \lstinline[language=Java]!true! if the method has to calculate the aborted take-off distance.
+\end{itemize}
+%
+After performig a check upon these two variables, the method knows which case it has to study and proceed with the calculation; in particular it creates the integrator object of the class \lstinline[language=Java]!FirstOrderIntegrator!
 
 %----------------------- CASE STUDY : ATR72 AND B747 -------------------------
 \section{Case study: ATR-72}
