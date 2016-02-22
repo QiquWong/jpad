@@ -1346,6 +1346,24 @@
       \field{title}{The USAF Stability and Control Digital Datcom}
       \field{year}{1979}
     \endentry
+    \entry{Young:Flaps}{other}{}
+      \name{author}{1}{}{%
+        {{hash=37b612a73661db75bdd3bb99b3d1147d}{Young}{Y\bibinitperiod}{A.D.}{A\bibinitperiod}{}{}{}{}}%
+      }
+      \list{institution}{1}{%
+        {Ministry of Supply}%
+      }
+      \strng{namehash}{37b612a73661db75bdd3bb99b3d1147d}
+      \strng{fullhash}{37b612a73661db75bdd3bb99b3d1147d}
+      \field{sortinit}{Y}
+      \field{sortinithash}{3cbc1e3d286284cedb5e5218a3248f94}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{number}{R.A.E. Report Aero. 2185}
+      \field{title}{The Aerodynamic Characteristics of Flaps}
+      \field{type}{Technical Report}
+      \field{year}{1947}
+    \endentry
   \endsortlist
 \endrefsection
 \endinput

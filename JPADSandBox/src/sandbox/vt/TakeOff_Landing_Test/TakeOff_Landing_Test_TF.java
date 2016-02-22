@@ -31,15 +31,15 @@ import standaloneutils.JPADXmlReader;
 import standaloneutils.customdata.CenterOfGravity;
 
 public class TakeOff_Landing_Test_TF {
-	
+
 	private static long _startTimeCalculation, _startTimeGraph, _startTimeBalancedCalculation,
 						_startTimeBalancedGraph, _stopTimeBalancedGraph, _stopTimeCalculation,
 						_stopTimeGraph, _stopTimeBalancedCalculation, _stopTimeTotal,
 						_elapsedTimeTotal, _elapsedTimeCalculation, _elapsedTimeGraph,
 						_elapsedTimeBalancedCalculation, _elapsedTimeBalancedGraph;
-	
+
 	//------------------------------------------------------------------------------------------
-	// VARIABLE DECLARATION: 
+	// VARIABLE DECLARATION:
 	@Option(name = "-i", aliases = { "--input" }, required = false,
 			usage = "my input file")
 	private File _inputFile;
@@ -58,19 +58,19 @@ public class TakeOff_Landing_Test_TF {
 	}
 
 	public static void main(String[] args) throws CmdLineException, InstantiationException, IllegalAccessException {
-		
+
 		System.out.println("-----------------------------------------------------------");
 		System.out.println("TakeOff_Landing_Test :: B747-100B");
 		System.out.println("-----------------------------------------------------------\n");
-		
+
 		TakeOff_Landing_Test_TF main = new TakeOff_Landing_Test_TF();
-		
+
 		//----------------------------------------------------------------------------------
 		// Default folders creation:
 		MyConfiguration.initWorkingDirectoryTree();
 
 		//------------------------------------------------------------------------------------
-		// Setup database(s)	
+		// Setup database(s)
 		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
 		String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
 		String highLiftDatabaseFileName = "HighLiftDatabase.h5";
@@ -86,17 +86,17 @@ public class TakeOff_Landing_Test_TF {
 
 		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.B747_100B);
 		aircraft.set_name("B747-100B");
-		
+
 		LiftingSurface theWing = aircraft.get_wing();
-		
+
 		ACAnalysisManager theAnalysis = new ACAnalysisManager(theCondition);
 		theAnalysis.updateGeometry(aircraft);
-		
+
 		// Set the CoG(Bypass the Balance analysis allowing to perform Aerodynamic analysis only)
 		CenterOfGravity cgMTOM = new CenterOfGravity();
 
 		// x_cg in body-ref.-frame
-		cgMTOM.set_xBRF(Amount.valueOf(23.1, SI.METER)); 
+		cgMTOM.set_xBRF(Amount.valueOf(23.1, SI.METER));
 		cgMTOM.set_yBRF(Amount.valueOf(0.0, SI.METER));
 		cgMTOM.set_zBRF(Amount.valueOf(0.0, SI.METER));
 
@@ -110,14 +110,14 @@ public class TakeOff_Landing_Test_TF {
 				theWing,
 				aircraft
 				);
-		
+
 		theLSAnalysis.set_AerodynamicDatabaseReader(aeroDatabaseReader);
 
 		theAnalysis.doAnalysis(aircraft,AnalysisTypeEnum.AERODYNAMIC);
-		
+
 		theLSAnalysis.setHighLiftDatabaseReader(highLiftDatabaseReader);
 		theWing.setAerodynamics(theLSAnalysis);
-		
+
 		// -----------------------------------------------------------------------
 		// Define airfoil
 		System.out.println("\n \n-----------------------------------------------------");
@@ -133,7 +133,7 @@ public class TakeOff_Landing_Test_TF {
 		System.out.println("\n \n \t ROOT \nAirfoil Type: " + airfoilRoot.get_family());
 		System.out.println("Root Chord [m] = " + theWing.get_chordRoot().getEstimatedValue() );
 		System.out.println("Root maximum thickness = " + airfoilRoot.getGeometry().get_maximumThicknessOverChord());
-		System.out.println("CL max --> " + airfoilRoot.getAerodynamics().get_clMax());		
+		System.out.println("CL max --> " + airfoilRoot.getAerodynamics().get_clMax());
 		System.out.println("LE sharpness parameter Root = " + airfoilRoot.getGeometry().get_deltaYPercent());
 
 		//AIRFOIL 2
@@ -169,10 +169,10 @@ public class TakeOff_Landing_Test_TF {
 		myAirfoilList.add(1, airfoilKink);
 		myAirfoilList.add(2, airfoilTip);
 		theWing.set_theAirfoilsList(myAirfoilList);
-		theWing.updateAirfoilsGeometry(); 
+		theWing.updateAirfoilsGeometry();
 		aircraft.get_exposedWing().set_theAirfoilsList(myAirfoilList);
 		aircraft.get_exposedWing().updateAirfoilsGeometryExposedWing( aircraft);
-			
+
 		//----------------------------------------------------------------------------------
 		// High Lift Devices Input
 		List<Double[]> deltaFlap = new ArrayList<Double[]>();
@@ -282,7 +282,7 @@ public class TakeOff_Landing_Test_TF {
 						);
 
 //		highLiftCalculator.calculateHighLiftDevicesEffects();
-//		
+//
 //		//----------------------------------------------------------------------------------
 //		// Results print
 //		System.out.println("\ndeltaCl0_flap_list = ");
@@ -338,9 +338,9 @@ public class TakeOff_Landing_Test_TF {
 //			System.out.print(highLiftCalculator.getDeltaCD_list().get(i) + " ");
 //
 //		System.out.println("\n\ndeltaCD = \n" + highLiftCalculator.getDeltaCD());
-//		
+//
 //		highLiftCalculator.plotHighLiftCurve();
-		
+
 		//----------------------------------------------------------------------------------
 		// TakeOff - Ground Roll Distance Test
 		//----------------------------------------------------------------------------------
@@ -354,13 +354,13 @@ public class TakeOff_Landing_Test_TF {
 		double kRot = 1.05;
 		double kLO = 1.1;
 		double kFailure = 1.1;
-		
+
 //		PARAMETERS USED TO CONSIDER THE PARABOLIC DRAG POLAR CORRECTION AT HIGH CL
 //		double k1 = 0.078;
 //		double k2 = 0.365;
 		double k1 = 0.0;
 		double k2 = 0.0;
-		
+
 		double phi = 1.0;
 		double alphaRed = -3; // [deg/s]
 		Amount<Length> wing_to_ground_distance = Amount.valueOf(6.56, SI.METER);
@@ -388,7 +388,7 @@ public class TakeOff_Landing_Test_TF {
 				wing_to_ground_distance,
 				obstacle,
 				v_wind,
-				alpha_ground, 
+				alpha_ground,
 				iw
 				);
 
@@ -410,7 +410,7 @@ public class TakeOff_Landing_Test_TF {
 		_elapsedTimeGraph = _stopTimeGraph - _startTimeGraph;
 		_elapsedTimeBalancedCalculation = _stopTimeBalancedCalculation - _startTimeBalancedCalculation;
 		_elapsedTimeBalancedGraph = _stopTimeBalancedGraph - _startTimeBalancedGraph;
-		
+
 		System.out.println("\n------------------COMPUTATIONAL TIME-----------------------");
 		System.out.println("\nANALYSIS TIME = " + (get_elapsedTime()) + " millisenconds");
 		System.out.println("\nCALCULATION TIME = " + (get_elapsedTimeCalculation()) + " millisenconds");
@@ -445,7 +445,7 @@ public class TakeOff_Landing_Test_TF {
 	public static long get_elapsedTimeBalanced() {
 		return _elapsedTimeBalancedCalculation;
 	}
-	
+
 	public static long get_elapsedTimeBalancedGraph() {
 		return _elapsedTimeBalancedGraph;
 	}

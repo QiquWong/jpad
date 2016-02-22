@@ -23,9 +23,9 @@ import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import standaloneutils.JPADXmlReader;
 
 public class HighLiftDevices_Test_TP {
-	
+
 	//------------------------------------------------------------------------------------------
-	// VARIABLE DECLARATION: 
+	// VARIABLE DECLARATION:
 	@Option(name = "-i", aliases = { "--input" }, required = false,
 			usage = "my input file")
 	private File _inputFile;
@@ -52,13 +52,13 @@ public class HighLiftDevices_Test_TP {
 		System.out.println("-----------------------------------------------------------\n");
 
 		HighLiftDevices_Test_TP main = new HighLiftDevices_Test_TP();
-		
+
 		//----------------------------------------------------------------------------------
 		// Default folders creation:
 		MyConfiguration.initWorkingDirectoryTree();
 
 		//------------------------------------------------------------------------------------
-		// Setup database(s)	
+		// Setup database(s)
 		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
 		String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
 		String highLiftDatabaseFileName = "HighLiftDatabase.h5";
@@ -73,14 +73,14 @@ public class HighLiftDevices_Test_TP {
 
 		aircraft.get_theAerodynamics().set_aerodynamicDatabaseReader(aeroDatabaseReader);
 		aircraft.get_theAerodynamics().set_highLiftDatabaseReader(highLiftDatabaseReader);;
-		
+
 		aircraft.set_name("ATR-72");
 		aircraft.get_wing().set_theCurrentAirfoil(
 				new MyAirfoil(
-						aircraft.get_wing(), 
+						aircraft.get_wing(),
 						0.5
 						)
-				);	
+				);
 
 		//--------------------------------------------------------------------------------------
 		// Aerodynamic analysis
@@ -91,7 +91,7 @@ public class HighLiftDevices_Test_TP {
 //		CenterOfGravity cgMTOM = new CenterOfGravity();
 //
 //		// x_cg in body-ref.-frame
-//		cgMTOM.set_xBRF(Amount.valueOf(12.0, SI.METER)); 
+//		cgMTOM.set_xBRF(Amount.valueOf(12.0, SI.METER));
 //		cgMTOM.set_yBRF(Amount.valueOf(0.0, SI.METER));
 //		cgMTOM.set_zBRF(Amount.valueOf(2.3, SI.METER));
 //
@@ -99,13 +99,13 @@ public class HighLiftDevices_Test_TP {
 //		aircraft.get_HTail().calculateArms(aircraft);
 //		aircraft.get_VTail().calculateArms(aircraft);
 //
-//		theAnalysis.doAnalysis(aircraft, 
+//		theAnalysis.doAnalysis(aircraft,
 //				AnalysisTypeEnum.AERODYNAMIC);
 
-		LSAerodynamicsManager theLSAnalysis = new LSAerodynamicsManager(theCondition, aircraft.get_wing()); 
-		
+		LSAerodynamicsManager theLSAnalysis = new LSAerodynamicsManager(theCondition, aircraft.get_wing());
+
 		aircraft.get_wing().setAerodynamics(theLSAnalysis);
-		
+
 		theLSAnalysis.setHighLiftDatabaseReader(highLiftDatabaseReader);
 		theLSAnalysis.set_AerodynamicDatabaseReader(aeroDatabaseReader);
 //		//--------------------------------------------------------------------------------------
@@ -123,7 +123,7 @@ public class HighLiftDevices_Test_TP {
 //		System.out.println("\n \n \t ROOT \nAirfoil Type: " + airfoilRoot.get_family());
 //		System.out.println("Root Chord " + aircraft.get_wing().get_chordRoot().getEstimatedValue() );
 //		System.out.println("Root maximum thickness " + airfoilRoot.getGeometry().get_maximumThicknessOverChord());
-//		System.out.println("CL max --> " + airfoilRoot.getAerodynamics().get_clMax());		
+//		System.out.println("CL max --> " + airfoilRoot.getAerodynamics().get_clMax());
 //		System.out.println("LE sharpness parameter Root " + airfoilRoot.getGeometry().get_deltaYPercent());
 //
 //		airfoilRoot.getAerodynamics().set_alphaZeroLift(Amount.valueOf(Math.toRadians(-1.2), SI.RADIAN));
@@ -179,7 +179,7 @@ public class HighLiftDevices_Test_TP {
 //		myAirfoilList.add(1, airfoilKink);
 //		myAirfoilList.add(2, airfoilTip);
 //		aircraft.get_wing().set_theAirfoilsList(myAirfoilList);
-//		aircraft.get_wing().updateAirfoilsGeometry(); 
+//		aircraft.get_wing().updateAirfoilsGeometry();
 
 		//----------------------------------------------------------------------------------
 		// High Lift Devices Test
@@ -229,18 +229,18 @@ public class HighLiftDevices_Test_TP {
 				return;
 			}
 		}
-		
+
 		Double[] deltaFlap1_array = new Double[delta_flap1_property.size()];
 		for(int i=0; i<deltaFlap1_array.length; i++)
 			deltaFlap1_array[i] = Double.valueOf(delta_flap1_property.get(i));
-		
+
 		Double[] deltaFlap2_array = new Double[delta_flap2_property.size()];
 		for(int i=0; i<deltaFlap1_array.length; i++)
 			deltaFlap2_array[i] = Double.valueOf(delta_flap2_property.get(i));
-		
+
 		deltaFlap.add(deltaFlap1_array);
 		deltaFlap.add(deltaFlap2_array);
-		
+
 		for(int i=0; i<cf_c_property.size(); i++)
 			cf_c.add(Double.valueOf(cf_c_property.get(i)));
 		for(int i=0; i<eta_in_property.size(); i++)
@@ -264,7 +264,7 @@ public class HighLiftDevices_Test_TP {
 						null,
 						null
 						);
-		
+
 //		CalcHighLiftDevices highLiftCalculator = new CalcHighLiftDevices(
 //				aircraft,
 //				deltaFlap,
@@ -317,65 +317,65 @@ public class HighLiftDevices_Test_TP {
 		System.out.println("\n\ndeltaAlphaMax_list = ");
 		for(int i=0; i<highLiftCalculator.getDeltaAlphaMax_list().size(); i++)
 			System.out.print(highLiftCalculator.getDeltaAlphaMax_list().get(i) + " ");
-		
+
 		System.out.println("\n\ndeltaAlphaMax = \n" + highLiftCalculator.getDeltaAlphaMaxFlap());
-		
+
 		System.out.println("\n\ndeltaCD_list = ");
 		for(int i=0; i<highLiftCalculator.getDeltaCD_list().size(); i++)
 			System.out.print(highLiftCalculator.getDeltaCD_list().get(i) + " ");
 
 		System.out.println("\n\ndeltaCD = \n" + highLiftCalculator.getDeltaCD());
-		
+
 		System.out.println("\n\ndeltaCMc_4_list = ");
 		for(int i=0; i<highLiftCalculator.getDeltaCM_c4_list().size(); i++)
 			System.out.print(highLiftCalculator.getDeltaCM_c4_list().get(i) + " ");
 
-		
-		System.out.println("\n\ndeltaCMc_4 = \n" + highLiftCalculator.getDeltaCM_c4());		
-		
+
+		System.out.println("\n\ndeltaCMc_4 = \n" + highLiftCalculator.getDeltaCM_c4());
+
 //		--------------------------
-//		// New lift curve 
-		
+//		// New lift curve
+
 		highLiftCalculator.plotHighLiftCurve();
-		System.out.println("DONE");	
-		
-		
+		System.out.println("DONE");
+
+
 //		LSAerodynamicsManager.CalcCLAtAlpha theCLCalculator = theLSAnalysis
 //				.new CalcCLAtAlpha();
-//		
+//
 //		Amount<Angle> alpha = Amount.valueOf(toRadians(8.), SI.RADIAN);
 //		double cLHighLift = theCLCalculator.highLiftDevice(
 //				alpha,
 //				deltaFlap,
 //				flapType,
-//				eta_in_flap, 
-//				eta_out_flap, 
+//				eta_in_flap,
+//				eta_out_flap,
 //				cf_c,
 //				null,
-//				null, 
 //				null,
-//				null, 
-//				null, 
+//				null,
+//				null,
+//				null,
 //				null);
-//		
+//
 //		System.out.println("\n\nCL flap = " + cLHighLift);
-//		
+//
 //		theLSAnalysis.PlotHighLiftCurve(
 //				deltaFlap,
 //				flapType,
-//				eta_in_flap, 
-//				eta_out_flap, 
+//				eta_in_flap,
+//				eta_out_flap,
 //				cf_c,
 //				null,
-//				null, 
 //				null,
-//				null, 
-//				null, 
+//				null,
+//				null,
+//				null,
 //				null);
 //		System.out.println("DONE");
-		
+
 	}
-	
+
 	//------------------------------------------------------------------------------------------
 	// GETTERS & SETTERS:
 	public File get_inputFile() {

@@ -39,6 +39,7 @@ import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLMaxClean;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLvsAlphaCurve;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcHighLiftDevices;
 import configuration.MyConfiguration;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.DatabaseReaderEnum;
@@ -83,7 +84,7 @@ public class Test_MR_07_LongitudinalStability {
 
 		//------------------------------------------------------------------------------------
 		// Default Aircraft
-		Aircraft aircraft = Aircraft.createDefaultAircraft("ATR-72");
+		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.ATR72);
 		aircraft.set_name("ATR-72");
 		System.out.println("\nDefault aircraft: " + aircraft.get_name() + "\n");
 
@@ -717,7 +718,7 @@ public class Test_MR_07_LongitudinalStability {
 		System.out.println("|       WING        |");
 		System.out.println(" ------------------- \n\n");
 
-		
+
 		System.out.println("\n\tData:");
 		System.out.println(" xLE_MAC wing is " + theWing.get_xLEMacActualLRF().getEstimatedValue());
 		System.out.println(" MAC wing is " +  theWing.get_meanAerodChordActual().getEstimatedValue());
@@ -764,7 +765,7 @@ public class Test_MR_07_LongitudinalStability {
 		System.out.println("AC WING percent MAC is " + aCWing);
 
 
-		//AC 
+		//AC
 
 		double [] cMVectorAC = new double [numAlpha];
 
@@ -785,7 +786,7 @@ public class Test_MR_07_LongitudinalStability {
 
 		System.out.println("\n\n\t\t\tDONE PLOTTING CM vs ALPHA FOR WING AT AC");
 
-		
+
 		System.out.println("\n\n CM_quarter chord Wing at alpha " + alphaWing + " is " + cMWing);
 		double cMACWing = theCMCalculator.calculateCMIntegral(alphaWing, aCWing);
 		System.out.println(" CM_AC Wing at alpha " + alphaWing + " is " + cMACWing);
@@ -829,12 +830,12 @@ public class Test_MR_07_LongitudinalStability {
 
 
 
-		// Horizontal Tail 
+		// Horizontal Tail
 
 		System.out.println("\n ------------------- ");
 		System.out.println("|  HORIZONTAL TAIL   |");
 		System.out.println(" ------------------- \n\n");
-		
+
 		System.out.println("\n\tData:");
 		System.out.println(" xLE_MAC horizontal tail is " + horizontalTail.get_xLEMacActualLRF().getEstimatedValue());
 		System.out.println(" MAC horizontal tail is " +  horizontalTail.get_meanAerodChordActual().getEstimatedValue());
@@ -864,7 +865,7 @@ public class Test_MR_07_LongitudinalStability {
 				subfolderPath," Moment Coefficient vs alpha for Horizontal Tail at quarter of MAC" );
 
 
-		//AC 
+		//AC
 
 //		double aCHtail = theCMHTailCalculator.getACLiftingSurface();
 //		System.out.println("AC HORIZONTAL TAIL percent MAC is " + aCHtail);

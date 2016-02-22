@@ -114,12 +114,12 @@ public class TakeOff_Landing_Test_TP {
 				);
 
 		theLSAnalysis.set_AerodynamicDatabaseReader(aeroDatabaseReader);
-		
+
 		theAnalysis.doAnalysis(aircraft, AnalysisTypeEnum.AERODYNAMIC);
 
 		theLSAnalysis.setHighLiftDatabaseReader(highLiftDatabaseReader);
 		theWing.setAerodynamics(theLSAnalysis);
-		
+
 		// Define airfoil
 		System.out.println("\n \n-----------------------------------------------------");
 		System.out.println("AIRFOILS");
@@ -262,7 +262,7 @@ public class TakeOff_Landing_Test_TP {
 						);
 
 //		highLiftCalculator.calculateHighLiftDevicesEffects();
-//		
+//
 //		//----------------------------------------------------------------------------------
 //		// Results print
 //		System.out.println("\ndeltaCl0_flap_list = ");
@@ -314,7 +314,7 @@ public class TakeOff_Landing_Test_TP {
 //		System.out.println("\n\ndeltaCMc_4 = \n" + highLiftCalculator.getDeltaCM_c4());
 //
 //		highLiftCalculator.plotHighLiftCurve();
-		
+
 		//----------------------------------------------------------------------------------
 		// TakeOff - Ground Roll Distance Test
 		//----------------------------------------------------------------------------------
@@ -328,13 +328,13 @@ public class TakeOff_Landing_Test_TP {
 		double kRot = 1.05;
 		double kLO = 1.1;
 		double kFailure = 1.1;
-		
+
 //		PARAMETERS USED TO CONSIDER THE PARABOLIC DRAG POLAR CORRECTION AT HIGH CL
 //		double k1 = 0.078;
 //		double k2 = 0.365;
 		double k1 = 0.0;
 		double k2 = 0.0;
-		
+
 		double phi = 1.0;
 		double alphaReductionRate = -3; // [deg/s]
 		Amount<Length> wing_to_ground_distance = Amount.valueOf(4.0, SI.METER);
@@ -384,7 +384,7 @@ public class TakeOff_Landing_Test_TP {
 		_elapsedTimeGraph = _stopTimeGraph - _startTimeGraph;
 		_elapsedTimeBalancedCalculation = _stopTimeBalancedCalculation - _startTimeBalancedCalculation;
 		_elapsedTimeBalancedGraph = _stopTimeBalancedGraph - _startTimeBalancedGraph;
-		
+
 		System.out.println("\n------------------COMPUTATIONAL TIME-----------------------");
 		System.out.println("\nANALYSIS TIME = " + (get_elapsedTime()) + " millisenconds");
 		System.out.println("\nCALCULATION TIME = " + (get_elapsedTimeCalculation()) + " millisenconds");
@@ -419,7 +419,7 @@ public class TakeOff_Landing_Test_TP {
 	public static long get_elapsedTimeBalanced() {
 		return _elapsedTimeBalancedCalculation;
 	}
-	
+
 	public static long get_elapsedTimeBalancedGraph() {
 		return _elapsedTimeBalancedGraph;
 	}
