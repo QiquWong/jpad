@@ -1,17 +1,26 @@
 package sandbox.adm.javafxd3.test;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 import java.util.stream.IntStream;
 
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
-import org.treez.core.atom.graphics.length.Length;
+import org.treez.core.atom.attribute.Section;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.coords.Coords;
 import org.treez.javafxd3.d3.core.Selection;
@@ -21,13 +30,10 @@ import org.treez.javafxd3.d3.functions.AxisTransformPointDatumFunction;
 import org.treez.javafxd3.d3.scales.LinearScale;
 import org.treez.javafxd3.d3.scales.QuantitativeScale;
 import org.treez.javafxd3.d3.svg.Area;
-import org.treez.javafxd3.d3.svg.Axis;
 import org.treez.javafxd3.d3.svg.InterpolationMode;
 import org.treez.javafxd3.d3.svg.Line;
 import org.treez.javafxd3.d3.svg.Symbol;
 import org.treez.javafxd3.d3.svg.SymbolType;
-import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
-import org.treez.javafxd3.d3.svg.Axis.Orientation;
 import org.treez.javafxd3.javafx.JavaFxD3Browser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -51,7 +57,7 @@ public class D3Plotter {
 	private Selection svgSelection;
 
 	// set margins
-	final Margin margin = new Margin(20, 20, 10, 40); // t r b l
+	final Margin margin = new Margin(40, 20, 10, 60); // t r b l
 
 	final int widthGraph = 700 - margin.left - margin.right;
 	final int heightGraph = 500 - margin.top - margin.bottom;
@@ -67,7 +73,7 @@ public class D3Plotter {
 	private final double xtickPadding = 12.0;
 	private final double ytickPadding = 5.0;
 
-	private final int symbolSquareSize = 64;
+	private final int symbolSize = 64;
 	private String symbolStyle = "fill:red; stroke:blue; stroke-width:2";
 
 	private String lineStyle = "fill:none; stroke:red; stroke-width:2";
@@ -117,7 +123,13 @@ public class D3Plotter {
 	public void createD3Content() {
 
 
-		Double[][] dataArray = { { 1.0, 0.0 }, { 20.0, 15.5 }, { 50.0, 10.0 } };
+		Double[][] dataArray = {
+				{ 1.0, 0.0 },
+				{ 20.0, 15.5 },
+				{ 50.0, 10.0 },
+				{ 40.0, -10.0 },
+				{ 35.0, 18.0 }
+				};
 
 		// data that you want to plot, I"ve used separate arrays for x and y values
 		double[] xData1 = {5, 10, 25, 32, 40, 40, 15, 7};
@@ -207,6 +219,7 @@ public class D3Plotter {
 				.style("fill", "none") //
 				.style("stroke", "#000")
 				.style("stroke-width", "1.2px") //
+				.style("font", "10px sans-serif")
 				.style("shape-rendering", "geometricPrecision"); // "crispEdges"
 
 //		if (logXScale) {
@@ -271,6 +284,33 @@ public class D3Plotter {
 			.style("shape-rendering", "geometricPrecision"); // "crispEdges"
 
 
+		// X-axis Label
+		svgSelection.append("text")
+		    .attr("class", "x label")
+		    .attr("text-anchor", "middle")
+		    .attr("x", margin.left + widthGraph/2)
+		    .attr("y", margin.top + heightGraph + 45) // NB: offset
+		    .text("income per capita, inflation-adjusted (dollars)");
+
+		// Y-Axis label
+		svgSelection.append("text")
+		    .attr("class", "y label")
+		    .attr("text-anchor", "middle")
+		    .attr("x", -margin.top - heightGraph/2)
+		    .attr("y", margin.left/2 - 15) // NB: offset
+		    .attr("dy", ".75em")
+		    .attr("transform", "rotate(-90)")
+		    .text("life expectancy (years)");
+
+		// Title
+		svgSelection.append("text")
+	      .attr("class", "title")
+	      .attr("text-anchor", "middle")
+	      .attr("x", margin.left + widthGraph/2)
+	      .attr("y", (margin.top / 2) - 0)  // NB: offset
+	      .text("This is the title");
+
+
 		//xy plot
 		Selection xySelection = graphSelection //
 			.append("g") //
@@ -318,7 +358,7 @@ public class D3Plotter {
 				.svg() //
 				.symbol();
 		symbol = symbol //
-				.size(symbolSquareSize) //
+				.size(symbolSize) //
 				.type(SymbolType.CIRCLE);
 
 		String symbolDString = symbol.generate();
@@ -404,13 +444,13 @@ public class D3Plotter {
 
 		pathLine.attr("d", coordinates)
 			.attr("fill", "gray")
+			.attr("fill-opacity", "0.2")
 			;
 
 		// ###########################################################
 
 		// ###########################################################
 		// this is my playground ...
-
 
 
 	}
@@ -495,8 +535,102 @@ public class D3Plotter {
 			return null;
 	}
 
+	private static void applyTransformation(Selection selection, double x, double y, double rotation) {
+		String transformString = "translate(" + x + "," + y + "),rotate(" + rotation + ")";
+		selection.attr("transform", transformString);
+	}
+
+
+	public void saveSVG(String outputFilePath) {
+
+		System.out.println("D3Plotter :: saveSVG");
+
+		// get the svg node
+
+		Document doc = browser.getWebEngine().getDocument();
+
+		//String stringifiedDoc = getStringFromDoc(doc);
+		//System.out.println(stringifiedDoc);
+
+		NodeList nodes = doc.getElementsByTagName("svg");
+
+		//System.out.println("Svg nodes, length: " + nodes.getLength());
+
+		String stringifiedSVG = "";
+
+		if ( nodes.getLength() > 0 ) {
+			Node svgNode = nodes.item(0);
+			try {
+				stringifiedSVG = getStringFromNode(svgNode);
+			} catch (TransformerException e1) {
+				e1.printStackTrace();
+			}
+
+//			// File chooser
+//			SaveHelper saveHelper = new SaveHelper();
+//			saveHelper.saveSvg(stringifiedSVG);
+
+			File file = new File(outputFilePath);
+			if (file != null) {
+				try {
+					PrintWriter out = new PrintWriter(file);
+					out.print(
+							stringifiedSVG // stringifiedDoc //
+							);
+					out.close();
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+	}
+
+	//-------------------------------------------------------------------------
+	// Converting a org.w3c.dom.Document in Java to String using Transformer
+	// http://stackoverflow.com/questions/22539158/converting-a-org-w3c-dom-document-in-java-to-string-using-transformer
+	public static String getStringFromDoc(Document doc) throws TransformerException {
+
+        DOMSource domSource = new DOMSource(doc);
+        StringWriter writer = new StringWriter();
+        StreamResult result = new StreamResult(writer);
+        TransformerFactory tf = TransformerFactory.newInstance();
+        Transformer transformer = tf.newTransformer();
+        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+	    transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+	    transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+        transformer.transform(domSource, result);
+        writer.flush();
+        return writer.toString();
+    }
+
+	public static String getStringFromNode(Node node) throws TransformerException {
+
+        DOMSource domSource = new DOMSource(node);
+        StringWriter writer = new StringWriter();
+        StreamResult result = new StreamResult(writer);
+
+        TransformerFactory tf = TransformerFactory.newInstance();
+
+        // select the Saxon processor if you want to prevent wrong escape char conversions
+        // TransformerFactory tf = TransformerFactory.newInstance("net.sf.saxon.TransformerFactoryImpl",null);
+
+        Transformer transformer = tf.newTransformer();
+        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+	    transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+	    transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+        transformer.transform(domSource, result);
+        writer.flush();
+        return writer.toString();
+    }
+
 	public JavaFxD3Browser getBrowser(Runnable postLoadingHook, boolean debugMode) {
 		this.browser = new JavaFxD3Browser(postLoadingHook, debugMode);
 		return this.browser;
 	}
+
 }
