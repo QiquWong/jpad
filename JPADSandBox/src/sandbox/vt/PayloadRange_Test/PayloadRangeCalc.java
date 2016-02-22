@@ -1918,7 +1918,6 @@ public class PayloadRangeCalc{
 	public double getSfc_current_mach() {
 		return sfc;
 	}
-
 	public double[][] getRangeMatrix() {
 		return rangeMatrix;
 	}

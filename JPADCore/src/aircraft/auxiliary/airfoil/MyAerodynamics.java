@@ -159,7 +159,7 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 			 _kFactorDragPolar = 0.075;
 
 			 _aerodynamicCenterX = 0.243;
-			 _cmAC = -0.083;
+			 _cmAC = -0.02;
 			 _cmACStall = -0.09;
 			 _cmAlphaAC = 0. ;
 			 _cmAlphaLE = -0.1; //TODO, change this value
@@ -193,7 +193,7 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 			 _kFactorDragPolar = 0.075;
 
 			 _aerodynamicCenterX = 0.243;
-			 _cmAC = -0.0833;
+			 _cmAC = -0.03;
 			 _cmACStall = -0.07;
 			 _cmAlphaAC = 0. ;
 			 _cmAlphaLE = -0.1; //TODO, change this value
@@ -227,7 +227,7 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 			 _kFactorDragPolar = 0.075;
 
 			 _aerodynamicCenterX = 0.247;
-			 _cmAC = -0.083;
+			 _cmAC = -0.021;
 			 _cmACStall = -0.09;
 			 _cmAlphaAC = 0. ;
 			 _cmAlphaLE = -0.1; //TODO, change this value

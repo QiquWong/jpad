@@ -43,7 +43,6 @@ public class PayloadRange_Test_TP_MTOM{
 		//------------------------------------------------------------------------------------
 		// Operating Condition / Aircraft / AnalysisManager (geometry calculations)
 		OperatingConditions theCondition = new OperatingConditions();
-
 		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.ATR72);
 		aircraft.set_name("ATR-72");
 		aircraft.get_theFuelTank().setFuelFractionDatabase(fuelFractionReader);

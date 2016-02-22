@@ -53,9 +53,8 @@ public class TestCleanWingCLmax {
 		// Operating Condition / Aircraft / AnalysisManager (geometry calculations)
 		OperatingConditions theCondition = new OperatingConditions();
 		theCondition.set_altitude(Amount.valueOf(10000.0, SI.METER));
-		theCondition.set_machCurrent(0.84);
+		theCondition.set_machCurrent(0.83);
 		theCondition.calculate();
-
 		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.B747_100B);
 		aircraft.set_name("B747-100B");
 

@@ -6,11 +6,11 @@ width=\figurewidth,
 height=\figureheight,
 scaled ticks=false, tick label style={/pgf/number format/fixed},
 xmin=0.0,
-xmax=3264.204264503729,
+xmax=8473.57661648188,
 xlabel={Range (nmi)},
 xmajorgrids,
 ymin=0.0,
-ymax=77.76,
+ymax=594.0,
 ylabel={Payload (No. Pass)},
 ymajorgrids,
 legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
@@ -21,10 +21,10 @@ color=black,
 solid
 ]
 table[row sep=crcr]{
-0.0	72.0\\
-829.5367373328838	72.0\\
-2057.9320531572025	52.0\\
-3022.411356021971	0.0\\
+0.0	550.0\\
+6070.335291351503	550.0\\
+6072.073293311896	550.0\\
+7845.904274520258	0.0\\
 };
 
 \addplot [
@@ -32,10 +32,10 @@ color=black,
 densely dashed
 ]
 table[row sep=crcr]{
-0.0	72.0\\
-503.23491506745614	72.0\\
-1248.4356814803446	52.0\\
-1833.5329269887156	0.0\\
+0.0	550.0\\
+4725.981855575879	550.0\\
+4727.334954759952	550.0\\
+6108.328364463794	0.0\\
 };
 \end{axis}
 \end{tikzpicture}%

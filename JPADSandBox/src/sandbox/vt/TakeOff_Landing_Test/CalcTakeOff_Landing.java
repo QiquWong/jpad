@@ -1493,24 +1493,21 @@ public class CalcTakeOff_Landing {
 		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "Take-Off_Performance" + File.separator);
 
 		for(int i=0; i<failureSpeedArrayFitted.length; i++)
-//			failureSpeedArray[i] = failureSpeedArray[i]/vSTakeOff.getEstimatedValue();
 			failureSpeedArrayFitted[i] = failureSpeedArrayFitted[i]/vSTakeOff.getEstimatedValue();
 
 		double[][] xArray = new double[][]
-//				{failureSpeedArray, failureSpeedArray};
 				{failureSpeedArrayFitted, failureSpeedArrayFitted};
-				double[][] yArray = new double[][]
-//						{continuedTakeOffArray, abortedTakeOffArray};
-						{continuedTakeOffSplineValues, abortedTakeOffSplineValues};
+		double[][] yArray = new double[][]
+				{continuedTakeOffSplineValues, abortedTakeOffSplineValues};
 
-						MyChartToFileUtils.plot(
-								xArray, yArray,
-								null, null, null, null,
-								"Vfailure/VsTO", "Distance", "", "m",
-								new String[] {"OEI Take-Off", "Aborted Take-Off"},
-								subfolderPath, "BalancedTakeOffLength");
+		MyChartToFileUtils.plot(
+				xArray, yArray,
+				null, null, null, null,
+				"Vfailure/VsTO", "Distance", "", "m",
+				new String[] {"OEI Take-Off", "Aborted Take-Off"},
+				subfolderPath, "BalancedTakeOffLength");
 
-						System.out.println("\n---------------------------DONE!-------------------------------");
+		System.out.println("\n---------------------------DONE!-------------------------------");
 	}
 
 	//-------------------------------------------------------------------------------------

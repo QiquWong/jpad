@@ -420,14 +420,26 @@ If the slope is positive, the aerodynamic center is behind the quarter of the MA
 
 
 \subsection{Fuselage}
-The moment coefficient of the fuselage, for what, since it is a pure couple, is not necessary specify the pole, assuming the linearity, is represented by the following equation in function of the angle of attack.
+The moment coefficient of the fuselage is a pure couple, so is not necessary specify the pole.
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[height=4cm]{Immagini/fuse}
+\caption{Fuselage in potential flow at angle of attack.}
+\label{fus}
+\end{figure}
+
+
+Assuming the linearity, is possible to represented the pitching moment coefficient by the following equation in function of the angle of attack.
 
 \begin{equation}
 C_{M_f}=C_{M_{0_f}}+C_{{M\alpha}_f} \alpha_{body}
 \label{eq:fus}
 \end{equation}
 
-Each term in the equation \ref{eq:fus} can be calculated by the Multhopp method.  Multhopp has developed a method of calculating the local lift and pitching moment on wings of any plan-form in subsonic steady flow.  The bodymust be divided for all its length, in equal parts, regardless of the wing position.
+Each term in the equation \ref{eq:fus} can be calculated by the Multhopp method. % Multhopp has developed a method of calculating the local lift and pitching moment on wings of any plan-form in subsonic steady flow.  
+The body must be divided for all its length, in equal parts, regardless of the wing position.
 
 The two coefficients $C_{M_{0_f}}$  and $C_{{M\alpha}_f}$ in eq. \ref{eq:fus} can be obtained from the following equations.
 
@@ -474,6 +486,20 @@ The parameter $K_2-K_1$ is a correction factor that is dependent on the value of
 \caption{$K_2-K_1$ correction factor in function of fineness ratio.}
 \label{kfactor}
 \end{figure}
+
+Dor stability it's necessary to evaluate the new aerodynamic center (wing-body) and the pitching moment coefficient respect to this point. In fact the fuselage introduces a shift of the aerodynamic center to the leading edge. 
+It's possible to obtain the new aerodynamic center using the Eq. \ref{eq:aerc}
+
+\begin{equation}
+\upDelta X_{ac} = x_{ac_{wb}} - x_{ac_{w}} = -\frac{C_{M_{\alpha_f}}}{C_{L_{\alpha_f}}}
+\label{eq:aerc}
+\end{equation}
+
+The wing-body pitching moment respect to the new aerodynamic center is :
+
+\begin{equation}
+C_{M_{ac_{wb}}} = C_{M_{ac_{w}}}  + C_{M_{0l_f}}
+\end{equation}
 
 
 \section{Propulsors}

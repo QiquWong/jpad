@@ -46,9 +46,10 @@ public class PayloadRange_Test_TF{
 		//------------------------------------------------------------------------------------
 		// Operating Condition / Aircraft / AnalysisManager (geometry calculations)
 		OperatingConditions theCondition = new OperatingConditions();
+		theCondition.set_altitude(Amount.valueOf(10000, SI.METER));
+		theCondition.set_machCurrent(0.83);
 		theCondition.set_altitude(Amount.valueOf(11000, SI.METER));
 		theCondition.set_machCurrent(0.84);
-
 		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.B747_100B);
 		aircraft.set_name("B747-100B");
 		aircraft.get_theFuelTank().setFuelFractionDatabase(fuelFractionReader);

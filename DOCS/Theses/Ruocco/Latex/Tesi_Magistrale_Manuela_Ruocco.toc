@@ -58,18 +58,18 @@
 \contentsline {section}{\numberline {9.3}Pitching Moments}{50}{section.9.3}
 \contentsline {subsection}{\numberline {9.3.1}Lifting surface}{51}{subsection.9.3.1}
 \contentsline {subsection}{\numberline {9.3.2}Fuselage}{52}{subsection.9.3.2}
-\contentsline {section}{\numberline {9.4}Propulsors}{53}{section.9.4}
-\contentsline {subsection}{\numberline {9.4.1}Stability Calculation}{53}{subsection.9.4.1}
-\contentsline {subsection}{\numberline {9.4.2}Neutral Point and Static Margin}{53}{subsection.9.4.2}
-\contentsline {section}{\numberline {9.5}Java Class Architecture}{53}{section.9.5}
-\contentsline {section}{\numberline {9.6}Case Study}{53}{section.9.6}
-\contentsline {chapter}{\numberline {10}Minor Works}{54}{chapter.10}
-\contentsline {chapter}{Appendices}{}{section*.56}
-\contentsline {chapter}{\numberline {A}HDF dataset and database reader creation}{56}{Appendix.a.A}
-\contentsline {section}{\numberline {A.1}Chart Digitization}{56}{section.a.A.1}
-\contentsline {section}{\numberline {A.2}Creation of an HDF file with Matlab}{57}{section.a.A.2}
-\contentsline {chapter}{\numberline {B}App2}{60}{Appendix.a.B}
-\contentsline {chapter}{Glossary}{62}{section*.59}
-\contentsline {chapter}{Acronyms}{64}{section*.61}
-\contentsline {chapter}{List of symbols}{65}{section*.63}
-\contentsline {chapter}{Bibliography}{67}{section*.65}
+\contentsline {section}{\numberline {9.4}Propulsors}{54}{section.9.4}
+\contentsline {subsection}{\numberline {9.4.1}Stability Calculation}{54}{subsection.9.4.1}
+\contentsline {subsection}{\numberline {9.4.2}Neutral Point and Static Margin}{54}{subsection.9.4.2}
+\contentsline {section}{\numberline {9.5}Java Class Architecture}{54}{section.9.5}
+\contentsline {section}{\numberline {9.6}Case Study}{54}{section.9.6}
+\contentsline {chapter}{\numberline {10}Minor Works}{55}{chapter.10}
+\contentsline {chapter}{Appendices}{}{section*.57}
+\contentsline {chapter}{\numberline {A}HDF dataset and database reader creation}{57}{Appendix.a.A}
+\contentsline {section}{\numberline {A.1}Chart Digitization}{57}{section.a.A.1}
+\contentsline {section}{\numberline {A.2}Creation of an HDF file with Matlab}{58}{section.a.A.2}
+\contentsline {chapter}{\numberline {B}App2}{61}{Appendix.a.B}
+\contentsline {chapter}{Glossary}{63}{section*.60}
+\contentsline {chapter}{Acronyms}{65}{section*.62}
+\contentsline {chapter}{List of symbols}{66}{section*.64}
+\contentsline {chapter}{Bibliography}{68}{section*.66}

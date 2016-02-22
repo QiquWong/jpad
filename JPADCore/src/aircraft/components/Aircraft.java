@@ -179,6 +179,8 @@ public class Aircraft {
 	}
 
 	/**
+	 * @deprecated it must be used createDefaultAircraft(AircraftEnum aircraftName)
+	 * 
 	 * Create a default aircraft (ATR-72)
 	 *
 	 * @return

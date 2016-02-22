@@ -44,7 +44,6 @@ public class PayloadRange_Test_TF_MTOM{
 		OperatingConditions theCondition = new OperatingConditions();
 		theCondition.set_altitude(Amount.valueOf(11000, SI.METER));
 		theCondition.set_machCurrent(0.84);
-
 		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.B747_100B);
 		aircraft.set_name("B747-100B");
 		aircraft.get_theFuelTank().setFuelFractionDatabase(fuelFractionReader);
