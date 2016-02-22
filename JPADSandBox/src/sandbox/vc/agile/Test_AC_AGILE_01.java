@@ -1,4 +1,4 @@
-package sandbox.vc;
+package sandbox.vc.agile;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -91,7 +91,7 @@ public class Test_AC_AGILE_01 {
 		operatingConditions.set_altitude(Amount.valueOf(0.000, SI.METER));
 		operatingConditions.set_machCurrent(0.78);
 		// Mass - Weight
-		Amount<Mass> MTOM = Amount.valueOf(25330, NonSI.POUND);
+		Amount<Mass> MTOM = Amount.valueOf(25330, NonSI.POUND); // 
 		aircraft.get_weights().set_MTOM(MTOM);
 		Amount<Force> _MLW = MTOM.times(0.9).times(AtmosphereCalc.g0).to(SI.NEWTON);
 		aircraft.get_weights().set_MLW(_MLW);

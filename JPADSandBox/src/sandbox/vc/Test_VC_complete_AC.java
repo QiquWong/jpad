@@ -29,7 +29,6 @@ public class Test_VC_complete_AC {
 	MyConfiguration.initWorkingDirectoryTree();	
 	
 	// Define the aircraft
-	// TODO: Have to deprecate Aircraft.createDefaultAircraft() ->  Aircraft.createDefaultAircraft(String aircraftName)
 	Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.ATR72);
 	LiftingSurface theWing = aircraft.get_wing();
 	
