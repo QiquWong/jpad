@@ -1535,7 +1535,7 @@ public class CalcTakeOff_Landing {
 			kAlpha = CalcTakeOff_Landing.this.kAlphaDot;
 			cD0 = aircraft.get_theAerodynamics().get_cD0();
 			deltaCD0 = highLiftCalculator.getDeltaCD() + aircraft.get_landingGear().get_deltaCD0();
-			oswald = aircraft.get_theAerodynamics().get_oswald();
+			oswald = aircraft.get_theAerodynamics().get_oswald()+0.1;
 			ar = aircraft.get_wing().get_aspectRatio();
 			k1 = CalcTakeOff_Landing.this.getK1();
 			k2 = CalcTakeOff_Landing.this.getK2();
