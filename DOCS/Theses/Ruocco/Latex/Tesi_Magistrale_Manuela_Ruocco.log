@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.12.21)  22 FEB 2016 16:00
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.12.21)  22 FEB 2016 17:24
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -3641,17 +3641,12 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[51]
-Overfull \hbox (28.29985pt too wide) detected at line 450
-[][]\LMP1/mtt/m/it/12 C[] \LMP2/ntxtlf/m/n/12 D [] ^^A []
- []
+[51] <Immagini/fuse.png, id=1598, 500.16862pt x 202.05487pt>
+File: Immagini/fuse.png Graphic file (type png)
 
-<Immagini/stripszero.png, id=1600, 479.99326pt x 143.3355pt>
-File: Immagini/stripszero.png Graphic file (type png)
-
-<use Immagini/stripszero.png>
-Package pdftex.def Info: Immagini/stripszero.png used on input line 455.
-(pdftex.def)             Requested size: 276.32356pt x 82.51282pt.
+<use Immagini/fuse.png>
+Package pdftex.def Info: Immagini/fuse.png used on input line 428.
+(pdftex.def)             Requested size: 281.73338pt x 113.81102pt.
 
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -3659,21 +3654,31 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[52 <./Immagini/wing_topview_1_new.pdf>]
-<Immagini/stripsalfa.png, id=1613, 423.38174pt x 321.90262pt>
+[52 <./Immagini/wing_topview_1_new.pdf> <./Immagini/fuse.png>]
+Overfull \hbox (28.29985pt too wide) detected at line 462
+[][]\LMP1/mtt/m/it/12 C[] \LMP2/ntxtlf/m/n/12 D [] ^^A []
+ []
+
+<Immagini/stripszero.png, id=1613, 479.99326pt x 143.3355pt>
+File: Immagini/stripszero.png Graphic file (type png)
+
+<use Immagini/stripszero.png>
+Package pdftex.def Info: Immagini/stripszero.png used on input line 467.
+(pdftex.def)             Requested size: 276.32356pt x 82.51282pt.
+
+<Immagini/stripsalfa.png, id=1614, 423.38174pt x 321.90262pt>
 File: Immagini/stripsalfa.png Graphic file (type png)
 
 <use Immagini/stripsalfa.png>
-Package pdftex.def Info: Immagini/stripsalfa.png used on input line 462.
+Package pdftex.def Info: Immagini/stripsalfa.png used on input line 474.
 (pdftex.def)             Requested size: 224.53984pt x 170.71652pt.
 
-<Immagini/kdue.png, id=1615, 152.36925pt x 74.679pt>
+<Immagini/kdue.png, id=1616, 152.36925pt x 74.679pt>
 File: Immagini/kdue.png Graphic file (type png)
  <use Immagini/kdue.png>
-Package pdftex.def Info: Immagini/kdue.png used on input line 473.
+Package pdftex.def Info: Immagini/kdue.png used on input line 485.
 (pdftex.def)             Requested size: 226.42595pt x 110.96556pt.
-)
-(./Chapters/works.tex
+
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
  Make it at least 14.49998pt.
@@ -3681,22 +3686,29 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  This may cause the page layout to be inconsistent, however.
 
 [53 <./Immagini/stripszero.png> <./Immagini/stripsalfa.png> <./Immagini/kdue.pn
-g>]
-Chapter 10.
-)) [54
+g>]) (./Chapters/works.tex
 
-] [55
+Package Fancyhdr Warning: \headheight is too small (12.0pt): 
+ Make it at least 14.49998pt.
+ We now make it that large for the rest of the document.
+ This may cause the page layout to be inconsistent, however.
+
+[54]
+Chapter 10.
+)) [55
+
+] [56
 
 
 ] (./Tesi_Appendices.tex (./appendices/HDF.tex
 Appendix A.
-<Immagini/digitize.png, id=1637, 405.9165pt x 313.47113pt>
+<Immagini/digitize.png, id=1647, 405.9165pt x 313.47113pt>
 File: Immagini/digitize.png Graphic file (type png)
 
 <use Immagini/digitize.png>
 Package pdftex.def Info: Immagini/digitize.png used on input line 11.
 (pdftex.def)             Requested size: 291.06425pt x 224.7766pt.
- [56
+ [57
 
  <./Immagini/digitize.png>]
 (c:/texlive/2015/texmf-dist/tex/latex/listings/lstlang1.sty
@@ -3712,7 +3724,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[57]
+[58]
 Underfull \hbox (badness 10000) in paragraph at lines 161--163
 
  []
@@ -3723,7 +3735,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[58] <Immagini/digitize2.png, id=1787, 544.434pt x 227.6505pt>
+[59] <Immagini/digitize2.png, id=1797, 544.434pt x 227.6505pt>
 File: Immagini/digitize2.png Graphic file (type png)
 
 <use Immagini/digitize2.png>
@@ -3736,9 +3748,9 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[59 <./Immagini/digitize2.png>]
+[60 <./Immagini/digitize2.png>]
 Appendix B.
-)) [60
+)) [61
 
 ]
 
@@ -3752,9 +3764,9 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[61
+[62
 
-] (./Tesi_Magistrale_Manuela_Ruocco.gls [62
+] (./Tesi_Magistrale_Manuela_Ruocco.gls [63
 
 
 
@@ -3765,12 +3777,12 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[63] (./Tesi_Magistrale_Manuela_Ruocco.acr) [64
+[64] (./Tesi_Magistrale_Manuela_Ruocco.acr) [65
 
 
 
 ]
-(./Tesi_Magistrale_Manuela_Ruocco.sym [65
+(./Tesi_Magistrale_Manuela_Ruocco.sym [66
 
 
 
@@ -3781,7 +3793,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[66]
+[67]
 Overfull \hbox (5.51205pt too wide) in paragraph at lines 259--259
 []\T1/ntxtlf/m/n/12 Guillaume Alleon. \T1/ntxtlf/m/it/12 oc-c-java\T1/ntxtlf/m/
 n/12 . \T1/ntxtlf/m/sc/12 url\T1/ntxtlf/m/n/12 : [][]$\T1/pcr/m/n/12 http : / /
@@ -3828,7 +3840,7 @@ Overfull \hbox (13.82811pt too wide) in paragraph at lines 259--259
 Package biblatex Warning: No driver for entry type 'other'.
 (biblatex)                Using fallback driver on input line 259.
 
-[67
+[68
 
 
 ]
@@ -3874,7 +3886,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[68]
+[69]
 
 Package biblatex Warning: No driver for entry type 'other'.
 (biblatex)                Using fallback driver on input line 259.
@@ -3916,7 +3928,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[69]
+[70]
 Overfull \hbox (2.00662pt too wide) in paragraph at lines 259--259
 []\T1/ntxtlf/m/n/12 David Schmidt. \T1/ntxtlf/m/it/12 Mod-ern Flight Dy-nam-ics
 \T1/ntxtlf/m/n/12 . McGraw-Hill, 2012. \T1/ntxtlf/m/sc/12 isbn\T1/ntxtlf/m/n/12
@@ -3955,7 +3967,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[70]
+[71]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 261.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 261.
  (./Tesi_Magistrale_Manuela_Ruocco.aux)
@@ -3963,7 +3975,7 @@ Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 261.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 261.
 Package rerunfilecheck Info: File `Tesi_Magistrale_Manuela_Ruocco.out' has not 
 changed.
-(rerunfilecheck)             Checksum: 6FB36C704C4A0A415EAE427BB460AF2F;4456.
+(rerunfilecheck)             Checksum: 6DF86A84A0FA2278D9A64C3FFE53F3FF;4456.
 
 
 LaTeX Warning: There were undefined references.
@@ -3977,10 +3989,10 @@ l'.
 
  ) 
 Here is how much of TeX's memory you used:
- 57316 strings out of 493054
- 1189460 string characters out of 6138326
- 1804424 words of memory out of 5000000
- 59059 multiletter control sequences out of 15000+600000
+ 57329 strings out of 493054
+ 1189647 string characters out of 6138326
+ 1804603 words of memory out of 5000000
+ 59067 multiletter control sequences out of 15000+600000
  102717 words of font info for 73 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  62i,19n,92p,10402b,3279s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -4008,11 +4020,11 @@ ic/tex-gyre/qtmb.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/tex-gyre/qt
 mr.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmri.pfb><c:/te
 xlive/2015/texmf-dist/fonts/type1/urw/courier/ucrb8a.pfb><c:/texlive/2015/texmf
 -dist/fonts/type1/urw/courier/ucrr8a.pfb>
-Output written on Tesi_Magistrale_Manuela_Ruocco.pdf (77 pages, 7077508 bytes).
+Output written on Tesi_Magistrale_Manuela_Ruocco.pdf (78 pages, 7193965 bytes).
 
 PDF statistics:
- 2264 PDF objects out of 2487 (max. 8388607)
- 1939 compressed objects within 20 object streams
- 784 named destinations out of 1000 (max. 500000)
- 783 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 2275 PDF objects out of 2487 (max. 8388607)
+ 1947 compressed objects within 20 object streams
+ 788 named destinations out of 1000 (max. 500000)
+ 788 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -887,7 +887,28 @@ public class Test_MR_07_LongitudinalStability {
 //				"deg", "",
 //				subfolderPath," Moment Coefficient vs alpha for HORIZONTAL TAIL at AC " );
 //		System.out.println("\n\n\t\t\tDONE PLOTTING CM vs ALPHA FOR HORIZONTAL TAIL");
+		
+		
+		
+		// Fuselage
 
+		System.out.println("\n ------------------- ");
+		System.out.println("|      FUSELAGE      |");
+		System.out.println(" ------------------- \n\n");
+		
+		FusAerodynamicsManager theFusACManager = new FusAerodynamicsManager(theConditions, aircraft);
+		FusAerodynamicsManager.CalculateCm0 theCm0Calculator = theFusACManager.new CalculateCm0();
+		
+		double Cm0 = theCm0Calculator.multhopp();
+
+		FusAerodynamicsManager.CalculateCmAlpha theCmAlphaCalculator = theFusACManager.new CalculateCmAlpha();
+		
+		double CmAlpha = theCmAlphaCalculator.gilruth();
+		
+		System.out.println(" Cm0 fuselage " + Cm0);
+		System.out.println(" Cm alpha fuselage " + CmAlpha);
+		
+		// use method from vc
 	}
 
 }
