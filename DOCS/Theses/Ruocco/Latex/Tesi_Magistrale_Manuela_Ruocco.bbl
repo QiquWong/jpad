@@ -68,6 +68,26 @@
       \endverb
       \warn{\item Datamodel: Entry 'occjava' (Tesi_Bibliography.bib): Invalid format '01.16.2015' of date field 'date' - ignoring}
     \endentry
+    \entry{fuselageunina}{other}{}
+      \name{author}{1}{}{%
+        {{hash=16469682b233c4ccda7a388f3cb3a68c}{Attanasio}{A\bibinitperiod}{L.}{L\bibinitperiod}{}{}{}{}}%
+      }
+      \list{institution}{1}{%
+        {University of Naples Federico II}%
+      }
+      \list{location}{1}{%
+        {Naples}%
+      }
+      \strng{namehash}{16469682b233c4ccda7a388f3cb3a68c}
+      \strng{fullhash}{16469682b233c4ccda7a388f3cb3a68c}
+      \field{sortinit}{A}
+      \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Fuselage aerodynamic prediction methods}
+      \field{year}{2015}
+      \warn{\item Name "F. Nicolosi, P. Della Vecchia, D. Ciliberti, V.Cusati" has too many commas: skipping name}
+    \endentry
     \entry{wiki:atr}{online}{}
       \name{author}{1}{}{%
         {{hash=7da2a74e066e90281bae34a5d86abefd}{Authors}{A\bibinitperiod}{Various}{V\bibinitperiod}{}{}{}{}}%
