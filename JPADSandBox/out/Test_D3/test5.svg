@@ -8,61 +8,73 @@
       <g id="graph" transform="translate(60,40)">
          <rect width="620" height="450" fill="lightblue"/>
          <g id="xAxis" class="axis" transform="translate(0,450)">
-            <g class="tick" transform="translate(0,0)" style="opacity: 1;">
-               <line y2="-450"
-                     x2="0"
-                     style="fill: none; stroke: #000000; stroke-width: 1.2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
-               <text dy=".71em" y="12" x="0" style="text-anchor: middle;">0</text>
-            </g>
-            <g class="tick" transform="translate(62,0)" style="opacity: 1;">
+            <g class="tick"
+               transform="translate(50.61224489795918,0)"
+               style="opacity: 1;">
                <line y2="-450"
                      x2="0"
                      style="fill: none; stroke: #000000; stroke-width: 1.2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
                <text dy=".71em" y="12" x="0" style="text-anchor: middle;">5</text>
             </g>
-            <g class="tick" transform="translate(124,0)" style="opacity: 1;">
+            <g class="tick"
+               transform="translate(113.87755102040816,0)"
+               style="opacity: 1;">
                <line y2="-450"
                      x2="0"
                      style="fill: none; stroke: #000000; stroke-width: 1.2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
                <text dy=".71em" y="12" x="0" style="text-anchor: middle;">10</text>
             </g>
-            <g class="tick" transform="translate(186,0)" style="opacity: 1;">
+            <g class="tick"
+               transform="translate(177.14285714285714,0)"
+               style="opacity: 1;">
                <line y2="-450"
                      x2="0"
                      style="fill: none; stroke: #000000; stroke-width: 1.2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
                <text dy=".71em" y="12" x="0" style="text-anchor: middle;">15</text>
             </g>
-            <g class="tick" transform="translate(248,0)" style="opacity: 1;">
+            <g class="tick"
+               transform="translate(240.40816326530611,0)"
+               style="opacity: 1;">
                <line y2="-450"
                      x2="0"
                      style="fill: none; stroke: #000000; stroke-width: 1.2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
                <text dy=".71em" y="12" x="0" style="text-anchor: middle;">20</text>
             </g>
-            <g class="tick" transform="translate(310,0)" style="opacity: 1;">
+            <g class="tick"
+               transform="translate(303.6734693877551,0)"
+               style="opacity: 1;">
                <line y2="-450"
                      x2="0"
                      style="fill: none; stroke: #000000; stroke-width: 1.2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
                <text dy=".71em" y="12" x="0" style="text-anchor: middle;">25</text>
             </g>
-            <g class="tick" transform="translate(372,0)" style="opacity: 1;">
+            <g class="tick"
+               transform="translate(366.9387755102041,0)"
+               style="opacity: 1;">
                <line y2="-450"
                      x2="0"
                      style="fill: none; stroke: #000000; stroke-width: 1.2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
                <text dy=".71em" y="12" x="0" style="text-anchor: middle;">30</text>
             </g>
-            <g class="tick" transform="translate(434,0)" style="opacity: 1;">
+            <g class="tick"
+               transform="translate(430.2040816326531,0)"
+               style="opacity: 1;">
                <line y2="-450"
                      x2="0"
                      style="fill: none; stroke: #000000; stroke-width: 1.2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
                <text dy=".71em" y="12" x="0" style="text-anchor: middle;">35</text>
             </g>
-            <g class="tick" transform="translate(496,0)" style="opacity: 1;">
+            <g class="tick"
+               transform="translate(493.46938775510205,0)"
+               style="opacity: 1;">
                <line y2="-450"
                      x2="0"
                      style="fill: none; stroke: #000000; stroke-width: 1.2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
                <text dy=".71em" y="12" x="0" style="text-anchor: middle;">40</text>
             </g>
-            <g class="tick" transform="translate(558,0)" style="opacity: 1;">
+            <g class="tick"
+               transform="translate(556.734693877551,0)"
+               style="opacity: 1;">
                <line y2="-450"
                      x2="0"
                      style="fill: none; stroke: #000000; stroke-width: 1.2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
@@ -83,91 +95,115 @@
                <line x2="620"
                      y2="0"
                      style="fill: none; stroke: #000000; stroke-width: 1.2px; shape-rendering: geometricprecision;"/>
-               <text dy=".32em" x="-5" y="0" style="text-anchor: end;">-30</text>
-            </g>
-            <g class="tick" transform="translate(0,412.5)" style="opacity: 1;">
-               <line x2="620"
-                     y2="0"
-                     style="fill: none; stroke: #000000; stroke-width: 1.2px; shape-rendering: geometricprecision;"/>
-               <text dy=".32em" x="-5" y="0" style="text-anchor: end;">-25</text>
-            </g>
-            <g class="tick" transform="translate(0,375)" style="opacity: 1;">
-               <line x2="620"
-                     y2="0"
-                     style="fill: none; stroke: #000000; stroke-width: 1.2px; shape-rendering: geometricprecision;"/>
-               <text dy=".32em" x="-5" y="0" style="text-anchor: end;">-20</text>
-            </g>
-            <g class="tick" transform="translate(0,337.5)" style="opacity: 1;">
-               <line x2="620"
-                     y2="0"
-                     style="fill: none; stroke: #000000; stroke-width: 1.2px; shape-rendering: geometricprecision;"/>
-               <text dy=".32em" x="-5" y="0" style="text-anchor: end;">-15</text>
-            </g>
-            <g class="tick"
-               transform="translate(0,300.00000000000006)"
-               style="opacity: 1;">
-               <line x2="620"
-                     y2="0"
-                     style="fill: none; stroke: #000000; stroke-width: 1.2px; shape-rendering: geometricprecision;"/>
                <text dy=".32em" x="-5" y="0" style="text-anchor: end;">-10</text>
             </g>
             <g class="tick"
-               transform="translate(0,262.49999999999994)"
+               transform="translate(0,417.8571428571429)"
                style="opacity: 1;">
                <line x2="620"
                      y2="0"
                      style="fill: none; stroke: #000000; stroke-width: 1.2px; shape-rendering: geometricprecision;"/>
-               <text dy=".32em" x="-5" y="0" style="text-anchor: end;">-5</text>
+               <text dy=".32em" x="-5" y="0" style="text-anchor: end;">-8</text>
             </g>
-            <g class="tick" transform="translate(0,225)" style="opacity: 1;">
+            <g class="tick"
+               transform="translate(0,385.7142857142857)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: #000000; stroke-width: 1.2px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-5" y="0" style="text-anchor: end;">-6</text>
+            </g>
+            <g class="tick"
+               transform="translate(0,353.57142857142856)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: #000000; stroke-width: 1.2px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-5" y="0" style="text-anchor: end;">-4</text>
+            </g>
+            <g class="tick"
+               transform="translate(0,321.42857142857144)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: #000000; stroke-width: 1.2px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-5" y="0" style="text-anchor: end;">-2</text>
+            </g>
+            <g class="tick"
+               transform="translate(0,289.2857142857143)"
+               style="opacity: 1;">
                <line x2="620"
                      y2="0"
                      style="fill: none; stroke: #000000; stroke-width: 1.2px; shape-rendering: geometricprecision;"/>
                <text dy=".32em" x="-5" y="0" style="text-anchor: end;">0</text>
             </g>
             <g class="tick"
-               transform="translate(0,187.49999999999997)"
+               transform="translate(0,257.1428571428571)"
                style="opacity: 1;">
                <line x2="620"
                      y2="0"
                      style="fill: none; stroke: #000000; stroke-width: 1.2px; shape-rendering: geometricprecision;"/>
-               <text dy=".32em" x="-5" y="0" style="text-anchor: end;">5</text>
+               <text dy=".32em" x="-5" y="0" style="text-anchor: end;">2</text>
+            </g>
+            <g class="tick" transform="translate(0,225)" style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: #000000; stroke-width: 1.2px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-5" y="0" style="text-anchor: end;">4</text>
             </g>
             <g class="tick"
-               transform="translate(0,150.00000000000003)"
+               transform="translate(0,192.85714285714286)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: #000000; stroke-width: 1.2px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-5" y="0" style="text-anchor: end;">6</text>
+            </g>
+            <g class="tick"
+               transform="translate(0,160.7142857142857)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: #000000; stroke-width: 1.2px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-5" y="0" style="text-anchor: end;">8</text>
+            </g>
+            <g class="tick"
+               transform="translate(0,128.57142857142856)"
                style="opacity: 1;">
                <line x2="620"
                      y2="0"
                      style="fill: none; stroke: #000000; stroke-width: 1.2px; shape-rendering: geometricprecision;"/>
                <text dy=".32em" x="-5" y="0" style="text-anchor: end;">10</text>
             </g>
-            <g class="tick" transform="translate(0,112.5)" style="opacity: 1;">
-               <line x2="620"
-                     y2="0"
-                     style="fill: none; stroke: #000000; stroke-width: 1.2px; shape-rendering: geometricprecision;"/>
-               <text dy=".32em" x="-5" y="0" style="text-anchor: end;">15</text>
-            </g>
             <g class="tick"
-               transform="translate(0,74.99999999999999)"
+               transform="translate(0,96.42857142857143)"
                style="opacity: 1;">
                <line x2="620"
                      y2="0"
                      style="fill: none; stroke: #000000; stroke-width: 1.2px; shape-rendering: geometricprecision;"/>
-               <text dy=".32em" x="-5" y="0" style="text-anchor: end;">20</text>
+               <text dy=".32em" x="-5" y="0" style="text-anchor: end;">12</text>
             </g>
             <g class="tick"
-               transform="translate(0,37.500000000000014)"
+               transform="translate(0,64.2857142857143)"
                style="opacity: 1;">
                <line x2="620"
                      y2="0"
                      style="fill: none; stroke: #000000; stroke-width: 1.2px; shape-rendering: geometricprecision;"/>
-               <text dy=".32em" x="-5" y="0" style="text-anchor: end;">25</text>
+               <text dy=".32em" x="-5" y="0" style="text-anchor: end;">14</text>
+            </g>
+            <g class="tick"
+               transform="translate(0,32.14285714285713)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: #000000; stroke-width: 1.2px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-5" y="0" style="text-anchor: end;">16</text>
             </g>
             <g class="tick" transform="translate(0,0)" style="opacity: 1;">
                <line x2="620"
                      y2="0"
                      style="fill: none; stroke: #000000; stroke-width: 1.2px; shape-rendering: geometricprecision;"/>
-               <text dy=".32em" x="-5" y="0" style="text-anchor: end;">30</text>
+               <text dy=".32em" x="-5" y="0" style="text-anchor: end;">18</text>
             </g>
             <path class="domain"
                   d="M620,0H0V450H620"
@@ -175,69 +211,69 @@
          </g>
          <g id="xy" class="xy">
             <path id="line"
-                  d="M12.4,225L248,108.75000000000001L620,150.00000000000003L496,300.00000000000006L434,89.99999999999999"
+                  d="M0,289.2857142857143L240.40816326530611,40.17857142857144L620,128.57142857142856L493.46938775510205,450L430.2040816326531,0"
                   class="line"
                   style="fill:none; stroke:red; stroke-width:2"/>
             <path id="area"
-                  d="M12.4,225L248,108.75000000000001L620,150.00000000000003L496,300.00000000000006L434,89.99999999999999L434,225L496,225L620,225L248,225L12.4,225Z"
+                  d="M0,289.2857142857143L240.40816326530611,40.17857142857144L620,128.57142857142856L493.46938775510205,450L430.2040816326531,0L430.2040816326531,289.2857142857143L493.46938775510205,289.2857142857143L620,289.2857142857143L240.40816326530611,289.2857142857143L0,289.2857142857143Z"
                   class="area"
                   style="fill:green;"
                   opacity="0.5"/>
             <g id="symbols" class="symbols">
-               <path transform="translate(12.4,225.0)"
+               <path transform="translate(0.0,289.2857142857143)"
                      d="M0,4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,-4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,4.51351666838205Z"
                      style="fill:red; stroke:blue; stroke-width:2"/>
-               <path transform="translate(248.0,108.75000000000001)"
+               <path transform="translate(240.40816326530611,40.17857142857144)"
                      d="M0,4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,-4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,4.51351666838205Z"
                      style="fill:red; stroke:blue; stroke-width:2"/>
-               <path transform="translate(620.0,150.00000000000003)"
+               <path transform="translate(620.0,128.57142857142856)"
                      d="M0,4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,-4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,4.51351666838205Z"
                      style="fill:red; stroke:blue; stroke-width:2"/>
-               <path transform="translate(496.0,300.00000000000006)"
+               <path transform="translate(493.46938775510205,450.0)"
                      d="M0,4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,-4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,4.51351666838205Z"
                      style="fill:red; stroke:blue; stroke-width:2"/>
-               <path transform="translate(434.0,89.99999999999999)"
+               <path transform="translate(430.2040816326531,0.0)"
                      d="M0,4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,-4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,4.51351666838205Z"
                      style="fill:red; stroke:blue; stroke-width:2"/>
             </g>
             <g>
-               <circle cy="202.49999999999997"
-                       cx="62"
+               <circle cy="241.07142857142856"
+                       cx="50.61224489795918"
                        r="5"
                        fill="darkgreen"
                        style="opacity: 1;"/>
-               <circle cy="97.5"
-                       cx="124"
-                       r="5"
-                       fill="darkgreen"
-                       style="opacity: 1;"/>
-               <circle cy="195"
-                       cx="310"
-                       r="5"
-                       fill="darkgreen"
-                       style="opacity: 1;"/>
-               <circle cy="150.00000000000003"
-                       cx="396.8"
-                       r="5"
-                       fill="darkgreen"
-                       style="opacity: 1;"/>
-               <circle cy="180"
-                       cx="496"
-                       r="5"
-                       fill="darkgreen"
-                       style="opacity: 1;"/>
-               <circle cy="375"
-                       cx="496"
-                       r="5"
-                       fill="darkgreen"
-                       style="opacity: 1;"/>
-               <circle cy="375"
-                       cx="186"
+               <circle cy="16.071428571428566"
+                       cx="113.87755102040816"
                        r="5"
                        fill="darkgreen"
                        style="opacity: 1;"/>
                <circle cy="225"
-                       cx="86.80000000000001"
+                       cx="303.6734693877551"
+                       r="5"
+                       fill="darkgreen"
+                       style="opacity: 1;"/>
+               <circle cy="128.57142857142856"
+                       cx="392.2448979591837"
+                       r="5"
+                       fill="darkgreen"
+                       style="opacity: 1;"/>
+               <circle cy="192.85714285714286"
+                       cx="493.46938775510205"
+                       r="5"
+                       fill="darkgreen"
+                       style="opacity: 1;"/>
+               <circle cy="610.7142857142858"
+                       cx="493.46938775510205"
+                       r="5"
+                       fill="darkgreen"
+                       style="opacity: 1;"/>
+               <circle cy="610.7142857142858"
+                       cx="177.14285714285714"
+                       r="5"
+                       fill="darkgreen"
+                       style="opacity: 1;"/>
+               <circle cy="289.2857142857143"
+                       cx="75.91836734693878"
                        r="5"
                        fill="darkgreen"
                        style="opacity: 1;"/>
@@ -249,11 +285,33 @@
                      stroke-width="5"
                      stroke-linecap="square"
                      stroke-dasharray="15,10"
-                     d="M62,202.49999999999997C64.67141928396889,197.97582218037525,93.19670257323688,115.50999244709939,124,97.5S264.5337104972004,194.86904870534906,310,195S365.8,150.00000000000003,396.8,150.00000000000003S496,180,496,180S547.6666666666666,375,496,375S254.2,375,186,375S91.83077803448954,232.60702323763536,86.80000000000001,225"
+                     d="M50.61224489795918,241.07142857142856C51.3848085539557,238.3238433109893,97.05758750297558,36.7233595837601,113.87755102040816,16.071428571428566S257.28060875401883,224.71939802036047,303.6734693877551,225S360.61224489795916,128.57142857142856,392.2448979591837,128.57142857142856S493.46938775510205,192.85714285714286,493.46938775510205,192.85714285714286S546.1904761904761,610.7142857142858,493.46938775510205,610.7142857142858S246.73469387755102,610.7142857142858,177.14285714285714,610.7142857142858S77.44056040924711,294.1192910460683,75.91836734693878,289.2857142857143"
                      fill-opacity="0.2"/>
             </g>
          </g>
       </g>
+      <rect>
+         <rect x="555"
+               y="function(d, i){ return i *  20;}"
+               width="10"
+               height="10"/>
+         <rect x="555"
+               y="function(d, i){ return i *  20;}"
+               width="10"
+               height="10"/>
+         <rect x="555"
+               y="function(d, i){ return i *  20;}"
+               width="10"
+               height="10"/>
+         <rect x="555"
+               y="function(d, i){ return i *  20;}"
+               width="10"
+               height="10"/>
+         <rect x="555"
+               y="function(d, i){ return i *  20;}"
+               width="10"
+               height="10"/>
+      </rect>
    </g>
    <text class="x label" text-anchor="middle" x="370" y="535">income per capita, inflation-adjusted (dollars)</text>
    <text class="y label"

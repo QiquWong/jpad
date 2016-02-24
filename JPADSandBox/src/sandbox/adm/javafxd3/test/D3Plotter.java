@@ -9,7 +9,13 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.DoubleSummaryStatistics;
+import java.util.IntSummaryStatistics;
 import java.util.List;
+import java.util.OptionalDouble;
 import java.util.Stack;
 import java.util.stream.IntStream;
 
@@ -20,6 +26,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.poi.ss.formula.functions.T;
 import org.treez.core.atom.attribute.Section;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.coords.Coords;
@@ -43,6 +50,7 @@ import org.w3c.dom.NodeList;
 import com.google.common.io.CharStreams;
 
 import javafx.scene.web.WebEngine;
+import standaloneutils.MyArrayUtils;
 
 public class D3Plotter {
 
@@ -131,14 +139,44 @@ public class D3Plotter {
 				{ 35.0, 18.0 }
 				};
 
-		// data that you want to plot, I"ve used separate arrays for x and y values
+		System.out.println(dataArray.length);
+//		OptionalDouble xMax = IntStream.range(0, dataArray.length)
+//			.mapToDouble(i -> dataArray[i][1])
+//			.max();
+
+		//--------------------------------------------------------
+		// Find X- and Y- min/max values
+
+//		List<List<Double>> dataList = MyArrayUtils.convert2DArrayToList(dataArray);
+//		System.out.println(dataList);
+
+//		System.out.println(MyArrayUtils.extractColumnOf2DArrayToList(dataArray, 0));
+
+		DoubleSummaryStatistics summaryStatisticsX = MyArrayUtils.extractColumnOf2DArrayToList(dataArray, 0).stream()
+				.mapToDouble(v -> v)
+		        .summaryStatistics();
+
+		double xMax = summaryStatisticsX.getMax();
+		double xMin = summaryStatisticsX.getMin();
+
+//		System.out.println(MyArrayUtils.extractColumnOf2DArrayToList(dataArray, 1));
+
+		DoubleSummaryStatistics summaryStatisticsY = MyArrayUtils.extractColumnOf2DArrayToList(dataArray, 1).stream()
+				.mapToDouble(v -> v)
+		        .summaryStatistics();
+
+		double yMax = summaryStatisticsY.getMax();
+		double yMin = summaryStatisticsY.getMin();
+
+
+		// data that you want to plot, I've used separate arrays for x and y values
 		double[] xData1 = {5, 10, 25, 32, 40, 40, 15, 7};
 		double[] yData1 = {3, 17, 4, 10, 6, -20, -20.0, 0};
 
-		double xMin = 0;
-		double xMax = 50;
-		double yMin = -30.0;
-		double yMax = 30.0;
+		//double xMin = 0;
+		//double xMax = 50;
+		//double yMin = -30.0;
+		//double yMax = 30.0;
 
 		System.out.println("D3Plotter :: createD3Content");
 
@@ -220,7 +258,7 @@ public class D3Plotter {
 				.style("stroke", "#000")
 				.style("stroke-width", "1.2px") //
 				.style("font", "10px sans-serif")
-				.style("shape-rendering", "geometricPrecision"); // "crispEdges"
+				.style("shape-rendering", "geometricPrecision"); // "crispEdges" // "geometricPrecision"
 
 //		if (logXScale) {
 //			//major ticks
@@ -400,10 +438,9 @@ public class D3Plotter {
 
 		Selection line1Selection = xySelection.append("svg:g")
 				.classed("Pippo-line-group", true);
-		String cssClassName = "Agodemar-Test-Line";
 		Selection pathLine = line1Selection
 				.append("path")
-				.classed(cssClassName, true)
+				.classed("Agodemar-Test-Line", true)
 				;
 		pathLine
 			.attr("fill","none")
@@ -452,9 +489,16 @@ public class D3Plotter {
 		// ###########################################################
 		// this is my playground ...
 
+		putLegend();
+
 
 	}
 
+
+	private void putLegend() {
+		// TODO
+
+	}
 
 	/**
 	 * If a css file exists that has the same name as the java/class file and
