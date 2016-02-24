@@ -1,0 +1,28 @@
+% Moment Coefficient vs alpha body for fuselage
+\begin{tikzpicture}
+
+\begin{axis}[
+width=\figurewidth,
+height=\figureheight,
+scaled ticks=false, tick label style={/pgf/number format/fixed},
+xmin=-1.2256082435562066,
+xmax=16.200000000000003,
+xlabel={alpha_body (deg)},
+xmajorgrids,
+ymin=-0.06338485783507404,
+ymax=0.36101227665852165,
+ylabel={CM_f },
+ymajorgrids,
+legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
+]
+
+\addplot [
+color=black,
+solid
+]
+table[row sep=crcr]{
+-1.1348224477372282	-0.058689683180624105\\
+15.0	0.3342706265356682\\
+};
+\end{axis}
+\end{tikzpicture}%

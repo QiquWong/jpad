@@ -26,7 +26,7 @@ Finally curves are plotted and the HDF Dataset is populated by using \emph{h5cre
 
 \bigskip
 \lstset{language=Matlab}
-\begin{lstlisting}[caption={MATLAB script for creating the HDF Database}, captionpos=t, tabsize=2]
+\begin{lstlisting}[caption={MATLAB script for creating the HDF Database}, captionpos=b, tabsize=2]
 clc; close all; clear all;
 
 %% Import data
@@ -149,9 +149,10 @@ In particular the class \lstinline[language=Java]!MyInterpolatingFunction! imple
 \bigskip
 \noindent
 The following listing describes, with an example upon the aerodynamic database, how the reader class should be built up following the previous steps.
-%
+
+\bigskip
 \lstset{language=Java}
-\begin{lstlisting}[caption={DatabaseReader son class creation}, captionpos=t, tabsize=2]
+\begin{lstlisting}[caption={DatabaseReader son class creation}, captionpos=b, tabsize=2]
 public class AerodynamicDatabaseReader extends DatabaseReader {
 // STEP 1:
 	private MyInterpolatingFunction 

@@ -165,6 +165,36 @@
       \endverb
       \warn{\item Datamodel: Entry 'jscienceAmount' (Tesi_Bibliography.bib): Invalid format '2015.01.05' of date field 'date' - ignoring}
     \endentry
+    \entry{apache:FirstOrderDifferentialEquations}{online}{}
+      \name{author}{1}{}{%
+        {{hash=ffe4cf17ca8c1f982178700c0396c583}{Foundation}{F\bibinitperiod}{The\bibnamedelimb Apache\bibnamedelima Software}{T\bibinitperiod\bibinitdelim A\bibinitperiod\bibinitdelim S\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{ffe4cf17ca8c1f982178700c0396c583}
+      \strng{fullhash}{ffe4cf17ca8c1f982178700c0396c583}
+      \field{sortinit}{F}
+      \field{sortinithash}{c6a7d9913bbd7b20ea954441c0460b78}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Interface FirstOrderDifferentialEquations}
+      \verb{url}
+      \verb https://commons.apache.org/proper/commons-math/apidocs/org/apache/commons/math3/ode/FirstOrderDifferentialEquations.html
+      \endverb
+    \endentry
+    \entry{apache:FirstOrderIntegrator}{online}{}
+      \name{author}{1}{}{%
+        {{hash=ffe4cf17ca8c1f982178700c0396c583}{Foundation}{F\bibinitperiod}{The\bibnamedelimb Apache\bibnamedelima Software}{T\bibinitperiod\bibinitdelim A\bibinitperiod\bibinitdelim S\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{ffe4cf17ca8c1f982178700c0396c583}
+      \strng{fullhash}{ffe4cf17ca8c1f982178700c0396c583}
+      \field{sortinit}{F}
+      \field{sortinithash}{c6a7d9913bbd7b20ea954441c0460b78}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Interface FirstOrderIntegrator}
+      \verb{url}
+      \verb https://commons.apache.org/proper/commons-math/apidocs/org/apache/commons/math3/ode/FirstOrderIntegrator.html
+      \endverb
+    \endentry
     \entry{apache:ode}{online}{}
       \name{author}{1}{}{%
         {{hash=ffe4cf17ca8c1f982178700c0396c583}{Foundation}{F\bibinitperiod}{The\bibnamedelimb Apache\bibnamedelima Software}{T\bibinitperiod\bibinitdelim A\bibinitperiod\bibinitdelim S\bibinitperiod}{}{}{}{}}%

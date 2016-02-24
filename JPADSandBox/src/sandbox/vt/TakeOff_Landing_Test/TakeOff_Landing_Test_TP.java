@@ -322,8 +322,8 @@ public class TakeOff_Landing_Test_TP {
 		Amount<Duration> dtRot = Amount.valueOf(3, SI.SECOND);
 		Amount<Duration> dtHold = Amount.valueOf(0.5, SI.SECOND);
 		double mu = 0.025;
-		double mu_brake = 0.3;
-		double k_alpha_dot = 0.06; // [1/deg]
+		double muBrake = 0.3;
+		double kAlphaDot = 0.07; // [1/deg]
 		double kcLMax = 0.85;
 		double kRot = 1.05;
 		double kLO = 1.1;
@@ -337,10 +337,10 @@ public class TakeOff_Landing_Test_TP {
 
 		double phi = 1.0;
 		double alphaReductionRate = -3; // [deg/s]
-		Amount<Length> wing_to_ground_distance = Amount.valueOf(4.0, SI.METER);
+		Amount<Length> wingToGroundDistance = Amount.valueOf(4.0, SI.METER);
 		Amount<Length> obstacle = Amount.valueOf(35, NonSI.FOOT).to(SI.METER);
-		Amount<Velocity> v_wind = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
-		Amount<Angle> alpha_ground = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		Amount<Velocity> vWind = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
+		Amount<Angle> alphaGround = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		Amount<Angle> iw = Amount.valueOf(2.0, NonSI.DEGREE_ANGLE);
 		CalcTakeOff_Landing theTakeOffLandingCalculator = new CalcTakeOff_Landing(
 				aircraft,
@@ -355,14 +355,14 @@ public class TakeOff_Landing_Test_TP {
 				k1,
 				k2,
 				phi,
-				k_alpha_dot,
+				kAlphaDot,
 				alphaReductionRate,
 				mu,
-				mu_brake,
-				wing_to_ground_distance,
+				muBrake,
+				wingToGroundDistance,
 				obstacle,
-				v_wind,
-				alpha_ground,
+				vWind,
+				alphaGround,
 				iw
 				);
 
@@ -394,7 +394,7 @@ public class TakeOff_Landing_Test_TP {
 		System.out.println("-----------------------------------------------------------\n");
 		System.out.println("\n-----------------------------------------------------------");
 		System.out.println("\nBALANCED FIELD LENGTH = " + theTakeOffLandingCalculator.getBalancedFieldLength());
-		System.out.println("\nDecision Speed = " + theTakeOffLandingCalculator.getV1().divide(theTakeOffLandingCalculator.getvSTakeOff()));
+		System.out.println("\nDecision Speed (V1/VsTO) = " + theTakeOffLandingCalculator.getV1().divide(theTakeOffLandingCalculator.getvSTakeOff()));
 		System.out.println("-----------------------------------------------------------\n");
 	}
 

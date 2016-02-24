@@ -438,8 +438,12 @@ C_{M_f}=C_{M_{0_f}}+C_{{M\alpha}_f} \alpha_{body}
 \label{eq:fus}
 \end{equation}
 
+In JPAD it's possible to evaluate these two contributes using different methods.
+
+\subsubsection{Multhopp method}
+
 Each term in the equation \ref{eq:fus} can be calculated by the Multhopp method. % Multhopp has developed a method of calculating the local lift and pitching moment on wings of any plan-form in subsonic steady flow.  
-The body must be divided for all its length, in equal parts, regardless of the wing position.
+The fuselage is divided into strips, each of which gives a contribution to the pitching moment according to its distance from the wing.
 
 The two coefficients $C_{M_{0_f}}$  and $C_{{M\alpha}_f}$ in eq. \ref{eq:fus} can be obtained from the following equations.
 
@@ -464,14 +468,14 @@ C_{{M\alpha}_f}=\dfrac{1}{36.5\cdot S\cdot MAC}\cdot \left\{ \sum_{j=1}^{n_1} \!
 
 \begin{figure}[H]
 \centering
-\includegraphics[height=2.9cm]{Immagini/stripszero}
+\includegraphics[height=2.6cm]{Immagini/stripszero}
 \caption{Strips definition for the determination of $C_{M_{0_f}}$.}
 \label{wing}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[height=6cm]{Immagini/stripsalfa}
+\includegraphics[height=5.6cm]{Immagini/stripsalfa}
 \caption{Strips definition for the determination of $C_{{M\alpha}_f}$ .}
 \label{wing}
 \end{figure}
@@ -482,7 +486,7 @@ The parameter $K_2-K_1$ is a correction factor that is dependent on the value of
 
 \begin{figure}[H]
 \centering
-\includegraphics[height=3.9cm]{Immagini/kdue}
+\includegraphics[height=3.7cm]{Immagini/kdue}
 \caption{$K_2-K_1$ correction factor in function of fineness ratio.}
 \label{kfactor}
 \end{figure}
@@ -501,9 +505,76 @@ The wing-body pitching moment respect to the new aerodynamic center is :
 C_{M_{ac_{wb}}} = C_{M_{ac_{w}}}  + C_{M_{0l_f}}
 \end{equation}
 
+\subsubsection{Fuselage Pitching moment prediction method}
+This method has been developed in the Dept. of Industrial Engineering, University of Study of Naples Federico II, by numerical aerodynamic analyses performed with STAR-CCM+. \
+From a reference fuselage layout the nose, cabin (constant fuselage diameter), and tailcone geometry have been parametrically changed. Then, the aerodynamic drag, the pitching moment at zero incidence, the longitudinal static stability derivative, and the yawing moment coefficients $C_D$, $C_{M_0}$, $C_{M_{\alpha}}$, and $C_{N_{\beta}}$ respectively, have been evaluated by numerical analysis. Aerodynamic effects of each component (nose, cabin, tailcone) have been directly obtained from the CFD aerodynamic solver, separating the forces and moments contributions of each fuselage part. \cite{fuselageunina}
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[height=4.1cm]{Immagini/fuselage}
+\caption{Main fuselage geometrical parameters.}
+\label{fusgeometry}
+\end{figure}
+
+
+The fuselage pitching moment coefficient can be estimated according to the equation \ref{eq:fus} where :
+
+\begin{equation}
+C_{M_{0_f}} = C_{M_{0_{FR}}} + \upDelta C_{M_{0_{NOSE}}} +  \upDelta C_{M_{0_{TAIL}}}
+\end{equation}
+
+\begin{equation}
+C_{M_{{\alpha}_f}} = C_{M_{{\alpha}_{FR}}} + \upDelta C_{M_{{\alpha}_{NOSE}}} +  \upDelta C_{M_{{\alpha}_{TAIL}}}
+\end{equation}
+
+\noindent \\
+
+where the subscript $FR$ refers to the pitching moment coefficient as function of fuselage fineness ratio. The subscript $NOSE$ the pitching moment nose correction factor. It depends on windshield angle $\Phi$ and on the nose fineness ratio $FR_n$. Finally the subscript $TAIL$ refers to the pitching moment tail correction factor. It depends on upsweep angle $\theta$ and on the tail fineness ratio $FR_t$.\\
+The following figures show the variability of introduced parameters.
+
+\begin{figure}[H]
+\centering
+\includegraphics[height=4.9cm]{Immagini/fuselage1}
+\caption{Zero angle of attack pitching moment coefficient $C_{M_{0_{FR}}}$ .}
+\label{fusgeometry}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[height=4.9cm]{Immagini/fuselage2}
+\caption{Zero angle of attack pitching moment coefficient nose correction factor.}
+\label{fusgeometry}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[height=4.9cm]{Immagini/fuselage3}
+\caption{Zero angle of attack pitching moment coefficient tail correction factor.}
+\label{fusgeometry}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[height=4.9cm]{Immagini/fuselage4}
+\caption{Pitching moment derivative with respect to FR.}
+\label{fusgeometry}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[height=4.9cm]{Immagini/fuselage5}
+\caption{Pitching moment derivative nose correction factor.}
+\label{fusgeometry}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[height=4.9cm]{Immagini/fuselage6}
+\caption{Pitching moment derivative tail correction factor.}
+\label{fusgeometry}
+\end{figure}
+
 
 \section{Propulsors}
 %Obert 453
+%roskam 369
+
 
 \subsection{Stability Calculation}
 \subsection{Neutral Point and Static Margin}
