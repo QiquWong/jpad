@@ -19,6 +19,20 @@
 
 \refsection{0}
   \sortlist{nty}{nty}
+    \entry{adoptunina}{other}{}
+      \list{institution}{1}{%
+        {University of Naples Federico II}%
+      }
+      \list{location}{1}{%
+        {Naples}%
+      }
+      \field{sortinit}{A}
+      \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
+      \field{labeltitlesource}{title}
+      \field{title}{A Java desktop application for Aircraft Preliminary Design}
+      \field{year}{2015}
+      \warn{\item Name "A. De Marco, F. Nicolosi, L. Attanasio, P. Della Vecchia" has too many commas: skipping name}
+    \endentry
     \entry{abbott}{book}{}
       \name{author}{2}{}{%
         {{hash=33b970ce06e1d9cade74e36da40cd68e}{Abbott}{A\bibinitperiod}{H.I.}{H\bibinitperiod}{}{}{}{}}%
@@ -209,6 +223,23 @@
       \verb{url}
       \verb https://commons.apache.org/proper/commons-math/userguide/ode.html
       \endverb
+    \endentry
+    \entry{gambardella}{thesis}{}
+      \name{author}{1}{}{%
+        {{hash=cc9b934b91d32cfb58373c7b06601052}{Gambardella}{G\bibinitperiod}{D.}{D\bibinitperiod}{}{}{}{}}%
+      }
+      \list{institution}{1}{%
+        {University of Naples "Federico II"}%
+      }
+      \strng{namehash}{cc9b934b91d32cfb58373c7b06601052}
+      \strng{fullhash}{cc9b934b91d32cfb58373c7b06601052}
+      \field{sortinit}{G}
+      \field{sortinithash}{1c854ef9177a91bf894e66485bdbd3ed}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Development of a Java-Based Framework for Aircraft Preliminary Design}
+      \field{type}{Master thesis}
+      \field{year}{2014}
     \endentry
     \entry{jfreechart}{online}{}
       \name{author}{1}{}{%
