@@ -19,6 +19,20 @@
 
 \refsection{0}
   \sortlist{nty}{nty}
+    \entry{adoptunina}{other}{}
+      \list{institution}{1}{%
+        {University of Naples Federico II}%
+      }
+      \list{location}{1}{%
+        {Naples}%
+      }
+      \field{sortinit}{A}
+      \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
+      \field{labeltitlesource}{title}
+      \field{title}{A Java desktop application for Aircraft Preliminary Design}
+      \field{year}{2015}
+      \warn{\item Name "A. De Marco, F. Nicolosi, L. Attanasio, P. Della Vecchia" has too many commas: skipping name}
+    \endentry
     \entry{Abbott}{book}{}
       \name{author}{2}{}{%
         {{hash=087710b71c28cc5ac0484e71ab8d1d55}{Abbott}{A\bibinitperiod}{I.\bibnamedelimi H.}{I\bibinitperiod\bibinitdelim H\bibinitperiod}{}{}{}{}}%
@@ -68,6 +82,23 @@
       \endverb
       \warn{\item Datamodel: Entry 'occjava' (Tesi_Bibliography.bib): Invalid format '01.16.2015' of date field 'date' - ignoring}
     \endentry
+    \entry{attanasio}{thesis}{}
+      \name{author}{1}{}{%
+        {{hash=16469682b233c4ccda7a388f3cb3a68c}{Attanasio}{A\bibinitperiod}{L.}{L\bibinitperiod}{}{}{}{}}%
+      }
+      \list{institution}{1}{%
+        {University of Naples "Federico II"}%
+      }
+      \strng{namehash}{16469682b233c4ccda7a388f3cb3a68c}
+      \strng{fullhash}{16469682b233c4ccda7a388f3cb3a68c}
+      \field{sortinit}{A}
+      \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Development of a Java Application for Parametric Aircraft Design}
+      \field{type}{Master thesis}
+      \field{year}{2014}
+    \endentry
     \entry{fuselageunina}{other}{}
       \name{author}{1}{}{%
         {{hash=16469682b233c4ccda7a388f3cb3a68c}{Attanasio}{A\bibinitperiod}{L.}{L\bibinitperiod}{}{}{}{}}%
@@ -104,21 +135,6 @@
       \endverb
       \warn{\item Datamodel: Entry 'wiki:atr' (Tesi_Bibliography.bib): Invalid format '4.02.16' of date field 'date' - ignoring}
     \endentry
-    \entry{atr:atr}{online}{}
-      \name{author}{1}{}{%
-        {{hash=7da2a74e066e90281bae34a5d86abefd}{Authors}{A\bibinitperiod}{Various}{V\bibinitperiod}{}{}{}{}}%
-      }
-      \strng{namehash}{7da2a74e066e90281bae34a5d86abefd}
-      \strng{fullhash}{7da2a74e066e90281bae34a5d86abefd}
-      \field{sortinit}{A}
-      \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{ATR 72. Aircraft description}
-      \verb{url}
-      \verb http://www.atraircraft.com/products/list.html
-      \endverb
-    \endentry
     \entry{wiki:boeing}{online}{}
       \name{author}{1}{}{%
         {{hash=7da2a74e066e90281bae34a5d86abefd}{Authors}{A\bibinitperiod}{Various}{V\bibinitperiod}{}{}{}{}}%
@@ -134,21 +150,6 @@
       \verb https://en.wikipedia.org/wiki/Boeing_747
       \endverb
       \warn{\item Datamodel: Entry 'wiki:boeing' (Tesi_Bibliography.bib): Invalid format '4.02.16' of date field 'date' - ignoring}
-    \endentry
-    \entry{boeing:boeing}{online}{}
-      \name{author}{1}{}{%
-        {{hash=7da2a74e066e90281bae34a5d86abefd}{Authors}{A\bibinitperiod}{Various}{V\bibinitperiod}{}{}{}{}}%
-      }
-      \strng{namehash}{7da2a74e066e90281bae34a5d86abefd}
-      \strng{fullhash}{7da2a74e066e90281bae34a5d86abefd}
-      \field{sortinit}{A}
-      \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{Boeing 747. Aircraft description}
-      \verb{url}
-      \verb http://www.boeing.com
-      \endverb
     \endentry
     \entry{ESDU:CrankedWings:Properties}{other}{}
       \name{author}{1}{}{%
@@ -201,6 +202,22 @@
       \verb https://github.com/google/guava
       \endverb
       \warn{\item Datamodel: Entry 'guava' (Tesi_Bibliography.bib): Invalid format '01.16.2015' of date field 'date' - ignoring}
+    \endentry
+    \entry{wiki:java}{online}{}
+      \name{author}{1}{}{%
+        {{hash=7da2a74e066e90281bae34a5d86abefd}{Authors}{A\bibinitperiod}{Various}{V\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{fullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \field{sortinit}{A}
+      \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Java (programming language)}
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/Java_(programming_language)
+      \endverb
+      \warn{\item Datamodel: Entry 'wiki:java' (Tesi_Bibliography.bib): Invalid format '17.02.16' of date field 'date' - ignoring}
     \endentry
     \entry{jface}{online}{}
       \name{author}{1}{}{%
@@ -822,6 +839,19 @@
       \field{title}{Aerodynamics, Aeronautics, and Flight Mechanics}
       \field{year}{1979}
     \endentry
+    \entry{aircraft}{book}{}
+      \name{author}{1}{}{%
+        {{hash=0d9969a019e62a02cbe9ecb4859a34dd}{Mohammad\bibnamedelima Sadraey}{M\bibinitperiod\bibinitdelim S\bibinitperiod}{Daniel\bibnamedelimb Webster\bibnamedelima College}{D\bibinitperiod\bibinitdelim W\bibinitperiod\bibinitdelim C\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{0d9969a019e62a02cbe9ecb4859a34dd}
+      \strng{fullhash}{0d9969a019e62a02cbe9ecb4859a34dd}
+      \field{sortinit}{M}
+      \field{sortinithash}{2684bec41e9697b92699b46491061da2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Aircraft conceptual design}
+      \field{year}{2012}
+    \endentry
     \entry{Multhopp:A}{other}{}
       \name{author}{1}{}{%
         {{hash=ec344729899444fd729b5bc30f40ab4d}{Multhopp}{M\bibinitperiod}{H.}{H\bibinitperiod}{}{}{}{}}%
@@ -973,6 +1003,19 @@
       \verb{url}
       \verb https://books.google.it/books?id=axPvAgAAQBAJ
       \endverb
+    \endentry
+    \entry{java}{other}{}
+      \name{author}{1}{}{%
+        {{hash=30162ed78b6c10f731411f2fc440c24f}{Oracle}{O\bibinitperiod}{}{}{}{}{}{}}%
+      }
+      \strng{namehash}{30162ed78b6c10f731411f2fc440c24f}
+      \strng{fullhash}{30162ed78b6c10f731411f2fc440c24f}
+      \field{sortinit}{O}
+      \field{sortinithash}{7803d2715d5e795e70382b084ab8d00e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{1.2 Design Goals of the Java Programming Language}
+      \field{year}{2013}
     \endentry
     \entry{PerkinsHage}{book}{}
       \name{author}{2}{}{%
@@ -1260,6 +1303,14 @@
       \field{title}{Design Charts for Predicting Downwash Angles and Wake Characteristics behind Plain and Flapped Wings}
       \field{type}{techreport}
       \field{year}{1939}
+    \endentry
+    \entry{javaoracle}{other}{}
+      \field{sortinit}{T}
+      \field{sortinithash}{423d138a005a533b47e6475e39378bf2}
+      \field{labeltitlesource}{title}
+      \field{title}{The Java Language Specification}
+      \field{year}{2015}
+      \warn{\item Name "James Gosling, Bill Joy, Guy Steele, Gilad Bracha, Alex Buckley" has too many commas: skipping name}
     \endentry
     \entry{zlotnick}{other}{}
       \list{institution}{1}{%

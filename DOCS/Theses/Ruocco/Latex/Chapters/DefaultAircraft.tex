@@ -92,9 +92,10 @@ This step is required in order to create the following default folders that are 
 
 Using  \texttt{MyConfiguration} class it's possible to point at a specific folder, like the input or output directory, with the static method  \texttt{getDir}. This is a crucial step that must be executed at the beginning of every test.
 To set the working directory with the useful folders, it's necessary to call the function \texttt{initWorkingDirectoryTree()} at the beginning of each test. The function creates all necessary folders. Morover the function has been overloaded and it can be even called with a variable number of arguments (\texttt{initWorkingDirectoryTree( String...str)}). These strings are the directory strings in \texttt{MyConfiguration} class.
-After it is possible to create an \texttt{Aircraft} object choosing between ``ATR-72'' or ``B747-100B'' using the method \texttt{createDefaultAircraft} from \texttt{Aircraft} class. This method defines a new Aircraft object and invokes another Aircraft's method that creates the components using default data. In the method \texttt{createDefaultAircraft} there is a calling to the builder of \texttt{Aircraft} class that initializes the objects of the classes that perform calculations. At this step all the components of the aircraft are created. It is possible also to define new airfoils for the aircraft or change some data from the existing. \\
+The second step is the creation of an\texttt{Aircraft} object choosing between the ones grouped into a dedicated \texttt{Enum}, named \texttt{AircraftEnum}.
+After it is possible to create an \texttt{Aircraft} using the method \texttt{createDefaultAircraft} from \texttt{Aircraft} class. This method defines a new Aircraft object and invokes another Aircraft's method that creates the components using default data. In the method \texttt{createDefaultAircraft} there is a calling to the builder of \texttt{Aircraft} class that initializes the objects of the classes that perform calculations. At this step all the components of the aircraft are created. It is possible also to define new airfoils for the aircraft or change some data from the existing. \\
 Afterwards it is necessary to set the operating conditions such as the number of Mach of analysis or altitude. Each default aircraft has a set of default conditions but the user could change them.\\
-In order to manage all the aircraft related analysis it is necessary to define an object of the class  \texttt{ACAnalysisManager}. Similarly to the aircraft,  exist an analysis manager also for the wing that is an object of the  \texttt{LSAerodynamicAnalysis} class. \\
+In order to manage all the aircraft related analysis it is necessary to define an object of the class  \texttt{ACAnalysisManager}. Similarly to the aircraft,  exist an analysis manager also for the wing that is an object of the  \texttt{LSAerodynamicManager} class. \\
 The next step is to define and assign the needed databases. This will be explained in detail in the next section. Finally it is possible to do analysis.
 
 \noindent \\
@@ -110,7 +111,7 @@ public static void main(String[] args) {
 	// --------------------------------------------------------------
 	// Generate default Aircraft
 	// --------------------------------------------------------------
-	Aircraft aircraft = Aircraft.createDefaultAircraft("B747-100B");
+	Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum..B747_100B);
 	LiftingSurface theWing = aircraft.get_wing();
 
 	// Default operating conditions

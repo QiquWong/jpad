@@ -1,24 +1,18 @@
-%------------------------------------------------------------------------------------------
-% Meta-commands for the TeXworks editor
-%
-% !TeX root = ../Tesi.tex
-% !TEX encoding = UTF-8
-% !TEX program = pdflatex
-%
+\pagestyle{pippo}
 \chapter{Java Reference}
 
 
-\section{Inheritance, Overriding and Polymorphism}
-An extensive usage of inheritance, overriding and polymorphism has been made throughout the application.
-
-\medskip
-Java inheritance can be defined as the process where one object acquires the properties of another. With the use of inheritance the information is made manageable in a hierarchical order. Inheritance has been used several times to define superclass-subclass relationship in order to ease the management of the instances of the subclasses and to group together a set of properties that each subclass must have. Some of the methods defined in the superclass are overridden by the subclasses to execute the proper action accordingly to the run-time object type.
-
-Polymorphism is the ability of an object to take on many forms. The most common use of polymorphism in OOP occurs when a parent class reference is used to refer to a child class object. Any Java object that can pass more than one IS-A test is considered to be polymorphic. In Java, all Java objects are polymorphic since any object will pass the IS-A test for their own type and for the class Object.
-Polymorphism has been exploited in the design of methods which had to perform an action that could be valid for more than one object type. In such a case, the method signature contains a parameter which is of the superclass type; when invoking the method elsewhere in the application with a subclass instance as an argument at compile time, the compiler uses the method in the superclass to validate the statement in the "client" method. At run time, however, the JVM invokes the method which is defined in the subclass which overrides the superclass method. This behaviour is referred to as virtual method invocation, and the methods are referred to as virtual methods.
-
-\medskip
-In this way it was possible to define a single method which was suitable for several objects types instead of defining a different method for each component or using the instanceof operator.
+%\section{Inheritance, Overriding and Polymorphism}
+%An extensive usage of inheritance, overriding and polymorphism has been made throughout the application.
+%
+%\medskip
+%Java inheritance can be defined as the process where one object acquires the properties of another. With the use of inheritance the information is made manageable in a hierarchical order. Inheritance has been used several times to define superclass-subclass relationship in order to ease the management of the instances of the subclasses and to group together a set of properties that each subclass must have. Some of the methods defined in the superclass are overridden by the subclasses to execute the proper action accordingly to the run-time object type.
+%
+%Polymorphism is the ability of an object to take on many forms. The most common use of polymorphism in OOP occurs when a parent class reference is used to refer to a child class object. Any Java object that can pass more than one IS-A test is considered to be polymorphic. In Java, all Java objects are polymorphic since any object will pass the IS-A test for their own type and for the class Object.
+%Polymorphism has been exploited in the design of methods which had to perform an action that could be valid for more than one object type. In such a case, the method signature contains a parameter which is of the superclass type; when invoking the method elsewhere in the application with a subclass instance as an argument at compile time, the compiler uses the method in the superclass to validate the statement in the "client" method. At run time, however, the JVM invokes the method which is defined in the subclass which overrides the superclass method. This behaviour is referred to as virtual method invocation, and the methods are referred to as virtual methods.
+%
+%\medskip
+%In this way it was possible to define a single method which was suitable for several objects types instead of defining a different method for each component or using the instanceof operator.
 
 \section{Packages}\label{sec:package}
 A Java package is a mechanism for organizing Java classes into namespaces, providing modular programming. Java packages can be stored in compressed files called JAR files, allowing classes to be downloaded faster as groups rather than individually. Programmers also typically use packages to organize classes belonging to the same category or providing similar functionality.
