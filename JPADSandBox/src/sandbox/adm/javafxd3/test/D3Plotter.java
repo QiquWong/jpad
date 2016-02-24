@@ -31,9 +31,11 @@ import org.treez.core.atom.attribute.Section;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.coords.Coords;
 import org.treez.javafxd3.d3.core.Selection;
+import org.treez.javafxd3.d3.core.Value;
 import org.treez.javafxd3.d3.functions.AxisScaleFirstDatumFunction;
 import org.treez.javafxd3.d3.functions.AxisScaleSecondDatumFunction;
 import org.treez.javafxd3.d3.functions.AxisTransformPointDatumFunction;
+import org.treez.javafxd3.d3.functions.DatumFunction;
 import org.treez.javafxd3.d3.scales.LinearScale;
 import org.treez.javafxd3.d3.scales.QuantitativeScale;
 import org.treez.javafxd3.d3.svg.Area;
@@ -41,6 +43,7 @@ import org.treez.javafxd3.d3.svg.InterpolationMode;
 import org.treez.javafxd3.d3.svg.Line;
 import org.treez.javafxd3.d3.svg.Symbol;
 import org.treez.javafxd3.d3.svg.SymbolType;
+import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
 import org.treez.javafxd3.javafx.JavaFxD3Browser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -50,6 +53,7 @@ import org.w3c.dom.NodeList;
 import com.google.common.io.CharStreams;
 
 import javafx.scene.web.WebEngine;
+import netscape.javascript.JSObject;
 import standaloneutils.MyArrayUtils;
 
 public class D3Plotter {
@@ -489,14 +493,108 @@ public class D3Plotter {
 		// ###########################################################
 		// this is my playground ...
 
-		putLegend();
+		injectAdditionalJavascripts();
+		putLegend(dataArray);
 
 
 	}
 
+	private void putLegend(Double[][] dataArray) {
 
-	private void putLegend() {
+		System.out.println("D3Plotter :: putLegend");
+
 		// TODO
+
+		Selection legend = svgSelection.append("g")
+				  .attr("class", "legend")
+				  .attr("x", widthGraph - 65)
+				  .attr("y", 25)
+				  .attr("height", 100)
+				  .attr("width", 100);
+
+		String commandDefineColorHash =
+				"var color_hash = {" //
+					+ "0 : \"green\"," //
+					+ "1 : \"orange\"," //
+					+ "2 : \"red\"" //
+					+"}"
+				;
+
+		d3.eval(commandDefineColorHash);
+
+		String commandDefineDataset =
+				"var dataset = [" //
+					+ "{x: 0, y: 0}," //
+					+ "{x: 1, y: 0}," //
+					+ "{x: 2, y: 0}" //
+					+"];"
+				;
+		d3.eval(commandDefineDataset);
+
+		String expression1 = "function(d, i){ return i *  20;}";
+
+		// ...
+		JSObject d3JsObject = d3.getJsObject();
+		String funcName = createNewTemporaryInstanceName(); // see JavaScriptObject.java
+		System.out.println("\t" + funcName);
+		String name = "fill";
+		d3JsObject.setMember(funcName, new ColorLegendDatumFunction(webEngine));
+		// see Selection.java line 495
+		String command = "try { return this.style('" + name + "', " + //
+				"function(d, i) { " + "try { var r = d3." + funcName + ".apply(this,{datum:d},i); return r; } "
+				+ "catch (e) { alert(e); return null; } }); } " + //
+				"catch (e) { alert(e); return null; }";
+
+/*
+
+try {
+  return this.style(
+    'fill',
+    function(d, i) {
+      try {
+        var r = d3.temp__instance__1456336066549_331.apply(this,{datum:d},i);
+        return r;
+      } catch (e) {
+        alert(e);
+        return null;
+      }
+    }
+  );
+} catch (e) {
+  alert(e);
+  return null;
+}
+
+ */
+		System.out.println(command);
+		//JSObject result = legend.evalForJsObject(command);
+
+		// ...
+
+		legend.selectAll("rect")
+	      .data(new int[]{1, 2, 3})
+	      .enter()
+	      .append("rect")
+	      .attrExpression("y", expression1)
+	      .attr("width", 10)
+	      .attr("height", 10)
+	      .style("fill","green")
+	      //.style("fill", new ColorLegendDatumFunction(webEngine))
+	      ;
+
+
+		// see ScatterplotMatrixDemo.java
+//	      .style("fill", new DatumFunction<String>() {
+//				@Override
+//				public String apply(final Object context, final Object d, final int index) {
+//
+//					Value datum = (Value) d;
+//					Element element =(Element) context;
+//
+//					return "red"; // color.apply(datum.<DsvRow> as().get("species").asString()).asString();
+//				}
+//			})
+
 
 	}
 
@@ -672,9 +770,66 @@ public class D3Plotter {
         return writer.toString();
     }
 
+	private void injectAdditionalJavascripts() {
+		System.out.println("Injecting additional D3-related .js");
+
+		String className = getClass().getName();
+		String classPath = className.replace(".", "/");
+		// System.out.println("==> " + classPath);
+		int lastSlash = classPath.lastIndexOf("/");
+		// System.out.println("==> " + lastSlash);
+		if (lastSlash != -1) {
+			List<String> jsList =
+				    Arrays.asList(
+				    		"d3-legend.min.js"
+				    		/*
+				    		 *
+				    		 * you might have more than one .js
+				    		 * and put it here, they'll be executed
+				    		 * in sequence, e.g.
+				    		 *
+				    		"MathJax.js",
+				    		"TeX-AMS-MML_SVG.js",
+				    		"jax.js",
+				    		"mathjaxlabel.js"
+				    		 */
+				    		);
+			jsList.stream()
+				.forEach(
+					s -> {
+						String sPath = classPath.substring(0, lastSlash) + "/" + s;
+						System.out.println("\t" + sPath);
+						URL sUrl = getClass().getClassLoader().getResource(sPath);
+						try {
+							FileInputStream  fis = new FileInputStream(sUrl.getFile());
+							String jsContent = CharStreams.toString(new InputStreamReader(fis, "UTF-8"));
+
+							// !!!
+							webEngine.executeScript(jsContent);
+
+						} catch (IOException e) {
+							System.err.println("###############################");
+							System.err.println("injectAdditionalJavascripts !!!");
+							e.printStackTrace();
+							System.err.println("###############################");
+						}
+					});
+		}
+
+	}// injectMathJax
+
+
+
 	public JavaFxD3Browser getBrowser(Runnable postLoadingHook, boolean debugMode) {
 		this.browser = new JavaFxD3Browser(postLoadingHook, debugMode);
 		return this.browser;
+	}
+
+	protected static String createNewTemporaryInstanceName() {
+		double random = Math.random();
+		String randomString = ("" + random).substring(2,5);
+		String name =  "temp__instance__" + System.currentTimeMillis() + "_" + randomString;
+		return name;
 	}
 
 }
