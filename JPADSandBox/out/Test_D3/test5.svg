@@ -299,9 +299,12 @@
          dy=".75em"
          transform="rotate(-90)">life expectancy (years)</text>
    <text class="title" text-anchor="middle" x="370" y="20">This is the title</text>
-   <g class="legend" x="555" y="25" height="100" width="100">
-      <rect y="0" width="10" height="10" style="fill: #008000;"/>
-      <rect y="20" width="10" height="10" style="fill: #008000;"/>
+   <g class="legend" transform="translate(558.0,45.0)">
+      <rect y="0" width="10" height="10" style="fill: #ff0000;"/>
+      <rect y="20" width="10" height="10" style="fill: #0000ff;"/>
       <rect y="40" width="10" height="10" style="fill: #008000;"/>
+      <text text-anchor="start" x="12" y="10">Ago</text>
+      <text text-anchor="start" x="12" y="30">dem</text>
+      <text text-anchor="start" x="12" y="50">ar</text>
    </g>
 </svg>

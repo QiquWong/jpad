@@ -507,97 +507,67 @@ public class D3Plotter {
 
 		Selection legend = svgSelection.append("g")
 				  .attr("class", "legend")
-				  .attr("x", widthGraph - 65)
-				  .attr("y", 25)
-				  .attr("height", 100)
-				  .attr("width", 100);
-
-		String commandDefineColorHash =
-				"var color_hash = {" //
-					+ "0 : \"green\"," //
-					+ "1 : \"orange\"," //
-					+ "2 : \"red\"" //
-					+"}"
+//				  .attr("x", widthGraph - 65)
+//				  .attr("y", 25)
+//				  .attr("height", 100)
+//				  .attr("width", 100)
+				.attr("transform", "translate(" + 0.9*widthGraph + "," + 0.1*heightGraph + ")")
 				;
+		
+		String commandFill = getLegendCommandFill(
+				new ColorLegendDatumFunction(
+						webEngine, Arrays.asList("red", "blue", "green")));
+		// System.out.println(commandFill);
 
-		d3.eval(commandDefineColorHash);
-
-		String commandDefineDataset =
-				"var dataset = [" //
-					+ "{x: 0, y: 0}," //
-					+ "{x: 1, y: 0}," //
-					+ "{x: 2, y: 0}" //
-					+"];"
-				;
-		d3.eval(commandDefineDataset);
-
-		String expression1 = "function(d, i){ return i *  20;}";
-
-		// ...
-		JSObject d3JsObject = d3.getJsObject();
-		String funcName = createNewTemporaryInstanceName(); // see JavaScriptObject.java
-		System.out.println("\t" + funcName);
-		String name = "fill";
-		d3JsObject.setMember(funcName, new ColorLegendDatumFunction(webEngine));
-		// see Selection.java line 495
-		String command = "try { return this.style('" + name + "', " + //
-				"function(d, i) { " + "try { var r = d3." + funcName + ".apply(this,{datum:d},i); return r; } "
-				+ "catch (e) { alert(e); return null; } }); } " + //
-				"catch (e) { alert(e); return null; }";
-
-/*
-
-try {
-  return this.style(
-    'fill',
-    function(d, i) {
-      try {
-        var r = d3.temp__instance__1456336066549_331.apply(this,{datum:d},i);
-        return r;
-      } catch (e) {
-        alert(e);
-        return null;
-      }
-    }
-  );
-} catch (e) {
-  alert(e);
-  return null;
-}
-
- */
-		System.out.println(command);
-		//JSObject result = legend.evalForJsObject(command);
-
-		// ...
+//		String commandText = getLegendCommandText(
+//				new TextLegendDatumFunction(
+//						webEngine, Arrays.asList("Ago", "dem", "ar")));
 
 		legend.selectAll("rect")
-	      .data(new int[]{1, 2, 3})
+	      .data(new int[]{1, 2, 3}) // legend item counter
 	      .enter()
 	      .append("rect")
-	      .attrExpression("y", expression1)
+	      .attrExpression("y", "function(d, i){ return i *  20;}")
 	      .attr("width", 10)
 	      .attr("height", 10)
-	      .style("fill","green")
-	      //.style("fill", new ColorLegendDatumFunction(webEngine))
+	      //.style("fill","green")
+	      .evalForJsObject(commandFill) // .style("fill", new ColorLegendDatumFunction(webEngine))
 	      ;
 
-
-		// see ScatterplotMatrixDemo.java
-//	      .style("fill", new DatumFunction<String>() {
-//				@Override
-//				public String apply(final Object context, final Object d, final int index) {
-//
-//					Value datum = (Value) d;
-//					Element element =(Element) context;
-//
-//					return "red"; // color.apply(datum.<DsvRow> as().get("species").asString()).asString();
-//				}
-//			})
-
+		legend.selectAll("text")
+	      .data(new int[]{1, 2, 3}) // legend item counter
+	      .enter()
+	      .append("text")
+		  .attr("text-anchor", "start")
+	      .attr("x", 12)
+	      .attrExpression("y", "function(d, i){ return 10 + i *  20;}")
+	      //.text("pippo")
+	      .text(new TextLegendDatumFunction(webEngine, Arrays.asList("Ago", "dem", "ar")))
+	      ;
 
 	}
 
+	
+	private String getLegendCommandFill(ColorLegendDatumFunction colorDatumFunction) {
+		JSObject d3JsObject = d3.getJsObject();
+		String funcName = createNewTemporaryInstanceName(); // see JavaScriptObject.java
+		System.out.println("\t" + funcName);
+		d3JsObject.setMember(funcName, colorDatumFunction);
+		return "this.style('fill', function(d,i) {" //
+				+ "return d3." + funcName + ".apply(this, {datum:d}, i);" //
+				+ "})";	
+	}
+
+	private String getLegendCommandText(TextLegendDatumFunction textDatumFunction) {
+		JSObject d3JsObject = d3.getJsObject();
+		String funcName = createNewTemporaryInstanceName(); // see JavaScriptObject.java
+		System.out.println("\t" + funcName);
+		d3JsObject.setMember(funcName, textDatumFunction);
+		return "this.style('text', function(d,i) {" //
+				+ "return d3." + funcName + ".apply(this, {datum:d}, i);" //
+				+ "})";	
+	}
+	
 	/**
 	 * If a css file exists that has the same name as the java/class file and
 	 * is located next to that file, the css file is loaded with this method.
