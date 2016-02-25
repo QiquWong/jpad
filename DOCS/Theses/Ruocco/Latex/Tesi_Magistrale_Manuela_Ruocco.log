@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.12.21)  25 FEB 2016 13:03
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.12.21)  25 FEB 2016 13:12
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2826,24 +2826,24 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  This may cause the page layout to be inconsistent, however.
 
 [5 <./Immagini/tradeoff.png> <./Immagini/componentfunction.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 108--109
-
- []
-
-<Immagini/Fishbone.jpg, id=568, 1017.04968pt x 605.26125pt>
-File: Immagini/Fishbone.jpg Graphic file (type jpg)
-
-<use Immagini/Fishbone.jpg>
-Package pdftex.def Info: Immagini/Fishbone.jpg used on input line 112.
-(pdftex.def)             Requested size: 363.35973pt x 216.2411pt.
-
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
  Make it at least 14.49998pt.
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[6]) (./Chapters/Adopt.tex
+[6]
+Underfull \hbox (badness 10000) in paragraph at lines 108--109
+
+ []
+
+<Immagini/Fishbone.jpg, id=575, 1017.04968pt x 605.26125pt>
+File: Immagini/Fishbone.jpg Graphic file (type jpg)
+
+<use Immagini/Fishbone.jpg>
+Package pdftex.def Info: Immagini/Fishbone.jpg used on input line 112.
+(pdftex.def)             Requested size: 363.35973pt x 216.2411pt.
+) (./Chapters/Adopt.tex
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
  Make it at least 14.49998pt.
@@ -4247,11 +4247,11 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
 
 [80
 
-] (./Tesi_Magistrale_Manuela_Ruocco.gls [81
+] (./Tesi_Magistrale_Manuela_Ruocco.gls) [81
 
 
 
-])
+]
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
  Make it at least 14.49998pt.
@@ -4492,10 +4492,10 @@ l'.
 
  ) 
 Here is how much of TeX's memory you used:
- 57845 strings out of 493054
- 1199348 string characters out of 6138326
- 1808296 words of memory out of 5000000
- 59421 multiletter control sequences out of 15000+600000
+ 57953 strings out of 493054
+ 1200638 string characters out of 6138326
+ 1813397 words of memory out of 5000000
+ 59529 multiletter control sequences out of 15000+600000
  160071 words of font info for 105 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  62i,19n,92p,10402b,3279s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -4521,7 +4521,7 @@ pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmr.pfb><c:/texliv
 e/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmri.pfb><c:/texlive/2015/texmf-
 dist/fonts/type1/urw/courier/ucrb8a.pfb><c:/texlive/2015/texmf-dist/fonts/type1
 /urw/courier/ucrr8a.pfb>
-Output written on Tesi_Magistrale_Manuela_Ruocco.pdf (97 pages, 10914118 bytes)
+Output written on Tesi_Magistrale_Manuela_Ruocco.pdf (97 pages, 10918780 bytes)
 .
 PDF statistics:
  2700 PDF objects out of 2984 (max. 8388607)

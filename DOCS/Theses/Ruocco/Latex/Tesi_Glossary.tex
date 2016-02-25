@@ -33,14 +33,36 @@
   {Graphical User Interface}  % long form
   {In computing, a Graphical User Interface is a type of interface that allows users to interact with electronic devices through graphical icons and visual indicators such as secondary notation, as opposed to text-based interfaces, typed command labels or text navigation}
 
+
+\newdualentry{KBE}% label
+  {KBE}            % abbreviation
+  {Knowledge-Based Engineering}  % long form
+  {KBE is essentially engineering on the basis of knowledge models. A knowledge model uses knowledge representation to represent the artifacts of the design process (as well as the process itself) rather than, or in addition to, conventional programming and database techniques. KBE can have a wide scope that covers the full range of activities related to Product Lifecycle Management and Multidisciplinary Design Optimization. KBE's scope includes design, analysis, manufacturing, and support} % description
+
+\newdualentry{IDE}% label
+  {IDE}            % abbreviation
+  {Integrated Development Environment}  % long form
+  {An integrated development environment (IDE) is a software application that provides comprehensive facilities to computer programmers for software development. An IDE normally consists of a source code editor, build automation tools and a debugger. Most modern IDEs have an intelligent code completion. Some IDEs contain a compiler, interpreter, or both, such as NetBeans and Eclipse; others do not, such as SharpDevelop and Lazarus. The boundary between an integrated development environment and other parts of the broader software development environment is not well-defined. Sometimes a version control system, or various tools to simplify the construction of a Graphical User Interface (GUI), are integrated. Many modern IDEs also have a class browser, an object browser, and a class hierarchy diagram, for use in object-oriented software development} % description
+
+\newdualentry{MDO}% label
+  {MDO}            % abbreviation
+  {Multi-disciplinary Design Optimization}  % long form
+  {Multi-disciplinary design optimization (MDO) is a field of engineering that uses optimization methods to solve design problems incorporating a number of disciplines.MDO allows designers to incorporate all relevant disciplines simultaneously. The optimum of the simultaneous problem is superior to the design found by optimizing each discipline sequentially, since it can exploit the interactions between the disciplines. However, including all disciplines simultaneously significantly increases the complexity of the problem} % description
+
+
 \newglossaryentry{List}{%
 	name=List,
 	description={The java.util.List interface is a subtype of the java.util.Collection interface. It represents an ordered list of objects, meaning you can access the elements of a List in a specific order, and by an index too. You can also add the same element more than once to a List}
 }
 
-\newglossaryentry{MDO}{%
-	name=MDO,
-	description={The java.util.List interface is a subtype of the java.util.Collection interface. It represents an ordered list of objects, meaning you can access the elements of a List in a specific order, and by an index too. You can also add the same element more than once to a List}
+\newglossaryentry{Enum}{%
+	name=Enumeration,
+	description={The java.util.Enumeration interface represents a special data type that enables for a variable to be a set of predefined constants. The variable must be equal to one of the values that have been predefined for it. Because they are constants, the names of an enum type's fields are in uppercase letters.}
+}
+
+\newglossaryentry{Static}{%
+	name=static method,
+	description={The term static means that the method is available at the Class level, and so does not require that an object is instantiated before it's called}
 }
 
 \newglossaryentry{Map}{%
@@ -48,43 +70,26 @@
 	description={The java.util.Map interface represents a mapping between a key and a value. The Map interface is not a subtype of the Collection interface. Therefore it behaves a bit different from the rest of the collection types}
 }
 
+\newglossaryentry{Interface}{%
+	name=Interface,
+	description={In the Java programming language, an interface is a reference type, similar to a class, that can contain only constants, method signatures, default methods, static methods, and nested types. Method bodies exist only for default methods and static methods. Interfaces cannot be instantiated—they can only be implemented by classes or extended by other interfaces.}
+}
+
+\newglossaryentry{DATCOM}{%
+	name=DATCOM,
+	description={Digital Datcom is a computer program which calculates static stability, high lift and control, and dynamic derivative characteristics using the methods contained in the USAF Stability and Control Datcom (Data Compendium). Configuration geometry, attitude, and Mach range capabilities are consistent with those accommodated by the Datcom. The program contains a trim option that computes control deflections and aerodynamic increments for vehicle trim at subsonic Mach numbers}
+}
+
 \newglossaryentry{parsing}{%
 	name=parsing,
 	description={Parsing or syntactic analysis is the process of analysing a string of symbols, either in natural language or in computer languages, conforming to the rules of a formal grammar}
 }
 
-\newglossaryentry{reflection}{%
-	name=reflection,
-	description={In computer science, reflection is the ability of a computer program to examine (see type introspection) and modify the structure and behavior (specifically the values, meta-data, properties and functions) of the program at runtime}
-}
-
-\newglossaryentry{serialization}{%
-	name=serialization,
-	description={In computer science, in the context of data storage, serialization is the process of translating data structures or object state into a format that can be stored (for example, in a file or memory buffer, or transmitted across a network connection link) and reconstructed later in the same or another computer environment}
-}
-
-\newglossaryentry{Table}{%
-   name=Table,
-   description={%
-      a collection that associates an ordered pair of keys, called a row key and a column key, with a single value. A table may be sparse, with only a small fraction of row key / column key pairs possessing a corresponding value}
-}
-
-\newdualentry{UML} % label
-  {UML}            % abbreviation
-  {Unified Modeling Language}  % long form
-  {The Unified Modeling Language (UML) is a general-purpose modeling language in the field of software engineering, which is designed to provide a standard way to visualize the design of a system} % description
-
 \newglossaryentry{User:Developer}{%
    name=user developer,
    description={%
-      the term refers to the developer which will use a method without being interested in how the method performs the required action. This is the case of a utility method: the developer is the one who writes the method, while the user developer is who uses that method to accomplish some action which requires the functionality provided by the utility method. It has to be noticed that the user developer and the developer can be the same person}
+      The term refers to the developer which will use a method without being interested in how the method performs the required action. This is the case of a utility method: the developer is the one who writes the method, while the user developer is who uses that method to accomplish some action which requires the functionality provided by the utility method. It has to be noticed that the user developer and the developer can be the same person}
 }
-
-\newglossaryentry{Wrapper:Function}{%
-	name=wrapper function,
-	description={A wrapper function is a subroutine in a software library or a computer program whose main purpose is to call a second subroutine or a system call with little or no additional computation.}
-}
-
 
 %%% --------------------------------------------------------------- List of symbols
 %%% see _local_macros.tex
