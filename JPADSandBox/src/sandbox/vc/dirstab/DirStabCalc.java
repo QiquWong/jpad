@@ -301,7 +301,7 @@ public class DirStabCalc {
 
 
 		// cNbFuselage referred to wing surface and span [1/deg] estimated with FusDes method
-		double cNbFuselageFusDes = MomentCalc.calcCNBetaFusalage(
+		double cNbFuselageFusDes = MomentCalc.calcCNBetaFuselage(
 				fusDesDatabaseReader.getCNbFR(),
 				fusDesDatabaseReader.getdCNbn(),
 				fusDesDatabaseReader.getdCNbt())* surfaceRatio * inputManager.getValue(DirStabEnum.FuselageDiameter).doubleValue(SI.METER)/
@@ -455,7 +455,7 @@ public class DirStabCalc {
 
 
 		// cNbFuselage referred to wing surface and span [1/deg] estimated with FusDes method
-		double cNbFuselageFusDes = MomentCalc.calcCNBetaFusalage(
+		double cNbFuselageFusDes = MomentCalc.calcCNBetaFuselage(
 				fusDesDatabaseReader.getCNbFR(),
 				fusDesDatabaseReader.getdCNbn(),
 				fusDesDatabaseReader.getdCNbt())* surfaceRatio * inputManager.getValue(DirStabEnum.FuselageDiameter).doubleValue(SI.METER)/
@@ -605,7 +605,7 @@ public class DirStabCalc {
 
 
 		// cNbFuselage referred to wing surface and span [1/deg] estimated with FusDes method
-		double cNbFuselageFusDes = MomentCalc.calcCNBetaFusalage(
+		double cNbFuselageFusDes = MomentCalc.calcCNBetaFuselage(
 				fusDesDatabaseReader.getCNbFR(),
 				fusDesDatabaseReader.getdCNbn(),
 				fusDesDatabaseReader.getdCNbt())* surfaceRatio * inputManager.getValue(DirStabEnum.FuselageDiameter).doubleValue(SI.METER)/

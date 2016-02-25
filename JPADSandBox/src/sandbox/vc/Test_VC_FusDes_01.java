@@ -80,19 +80,19 @@ public class Test_VC_FusDes_01 {
 				theAircraft.get_fuselage().get_area_C().doubleValue(SI.SQUARE_METRE),
 				cDFlatPlate) * fusSurfRatio;
 
-		double cM0Fuselage = MomentCalc.calcCM0Fusalage(
+		double cM0Fuselage = MomentCalc.calcCM0Fuselage(
 				fusDesDatabaseReader.getCM0FR(),
 				fusDesDatabaseReader.getdCMn(),
 				fusDesDatabaseReader.getdCMt())* fusSurfRatio*theAircraft.get_fuselage().get__diam_C().doubleValue(SI.METER)/
 														      theAircraft.get_wing().get_meanAerodChordActual().doubleValue(SI.METRE);
 
-		double cMaFuselage = MomentCalc.calcCMAlphaFusalage(
+		double cMaFuselage = MomentCalc.calcCMAlphaFuselage(
 				fusDesDatabaseReader.getCMaFR(),
 				fusDesDatabaseReader.getdCMan(),
 				fusDesDatabaseReader.getdCMat())* fusSurfRatio*theAircraft.get_fuselage().get__diam_C().doubleValue(SI.METER)/
 															   theAircraft.get_wing().get_meanAerodChordActual().doubleValue(SI.METRE);
 
-		double cNbFuselage = MomentCalc.calcCNBetaFusalage(
+		double cNbFuselage = MomentCalc.calcCNBetaFuselage(
 				fusDesDatabaseReader.getCNbFR(),
 				fusDesDatabaseReader.getdCNbn(),
 				fusDesDatabaseReader.getdCNbt())* fusSurfRatio * theAircraft.get_fuselage().get__diam_C().doubleValue(SI.METER)/
@@ -121,6 +121,8 @@ public class Test_VC_FusDes_01 {
 		System.out.println("Kt: " + fusDesDatabaseReader.getKt());
 		System.out.println("CD0 fuselge: " + cDFuselage);		// 69 counts (75 cfd)
 		System.out.println("CM0 FR: " + fusDesDatabaseReader.getCM0FR());
+		System.out.println("CM0 FR Sw mac: " + fusDesDatabaseReader.getCM0FR()*fusSurfRatio*theAircraft.get_fuselage().get__diam_C().doubleValue(SI.METER)/
+			      theAircraft.get_wing().get_meanAerodChordActual().doubleValue(SI.METRE));
 		System.out.println("CMn: " + fusDesDatabaseReader.getdCMn());
 		System.out.println("CMt: " + fusDesDatabaseReader.getdCMt());
 		System.out.println("CM0 fuselge: " + cM0Fuselage);		// - 0.0361 (-0.2180)

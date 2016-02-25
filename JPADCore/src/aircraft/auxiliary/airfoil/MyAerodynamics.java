@@ -368,7 +368,7 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 			 _cmAlphaLE = 0.; //TODO, change this value
 			 //_cmAtClMax = 
 
-			 _reynoldsCruise = 1e+6;
+			 _reynoldsCruise = 9e+6;
 			 _reynoldsNumberStall = 1e+6;
 
 			 calculateClAlpha = new CalculateClAlpha();

@@ -144,7 +144,7 @@ public class MomentCalc {
 	 * Conference, Aviation Forum 2015, Dallas (Texas, USA)).
 	 */
 
-	public static double calcCM0Fusalage(double fuselageMainMomentContributionCoefficient, double fuselageNoseMomentCorrectionCoefficient,
+	public static double calcCM0Fuselage(double fuselageMainMomentContributionCoefficient, double fuselageNoseMomentCorrectionCoefficient,
 			double fuselageTailMomentCorrectionCoefficient){
 
 		double cM0FR = fuselageMainMomentContributionCoefficient;
@@ -167,7 +167,7 @@ public class MomentCalc {
 	 * Conference, Aviation Forum 2015, Dallas (Texas, USA)).
 	 */
 
-	public static double calcCMAlphaFusalage(double fuselageMainMomentDerivativeContributionCoefficient, 
+	public static double calcCMAlphaFuselage(double fuselageMainMomentDerivativeContributionCoefficient, 
 			double fuselageNoseMomentDerivativeCorrectionCoefficient,
 			double fuselageTailMomentDerivativeCorrectionCoefficient){
 
@@ -191,7 +191,7 @@ public class MomentCalc {
 	 * Conference, Aviation Forum 2015, Dallas (Texas, USA)).
 	 */
 
-	public static double calcCNBetaFusalage(double fuselageMainYawingMomentDerivativeCoefficient, 
+	public static double calcCNBetaFuselage(double fuselageMainYawingMomentDerivativeCoefficient, 
 			double fuselageNoseYawingMomentDerivativeCoefficient,
 			double fuselageTailYawingMomentDerivativeCoefficient){
 

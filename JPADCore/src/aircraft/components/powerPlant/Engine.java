@@ -259,7 +259,7 @@ public class Engine extends Component{
 			_v0 = Amount.valueOf(5., SI.METERS_PER_SECOND);
 
 			/** Reference total engine mass (dry + something) */
-			_totalMass = Amount.valueOf(3325.0, SI.KILOGRAM);
+			_totalMass = Amount.valueOf(1162.6, SI.KILOGRAM);
 
 			_muT = Amount.valueOf(0., SI.RADIAN);
 

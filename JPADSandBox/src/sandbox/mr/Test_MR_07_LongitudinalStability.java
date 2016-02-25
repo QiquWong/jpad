@@ -931,7 +931,7 @@ public class Test_MR_07_LongitudinalStability {
 		
 		//UNINA METHOD
 		
-		double cM0Fuselage = -MomentCalc.calcCM0Fusalage(
+		double cM0Fuselage = -MomentCalc.calcCM0Fuselage(
 				fusDesDatabaseReader.getCM0FR(),
 				fusDesDatabaseReader.getdCMn(),
 				fusDesDatabaseReader.getdCMt())* 
@@ -945,7 +945,7 @@ public class Test_MR_07_LongitudinalStability {
 		
 		
 		
-		double cMaFuselage = MomentCalc.calcCMAlphaFusalage(
+		double cMaFuselage = MomentCalc.calcCMAlphaFuselage(
 				fusDesDatabaseReader.getCMaFR(),
 				fusDesDatabaseReader.getdCMan(),
 				fusDesDatabaseReader.getdCMat())* 
@@ -957,6 +957,10 @@ public class Test_MR_07_LongitudinalStability {
 				.get_wing().get_meanAerodChordActual()
 				.doubleValue(SI.METRE);
 		
+		System.out.println(" CM0 FR = "+ fusDesDatabaseReader.getCM0FR());
+		System.out.println(" dCMn = "+ fusDesDatabaseReader.getdCMn());
+		System.out.println(" dCMt = "+ fusDesDatabaseReader.getdCMt());
+		
 		System.out.println(" CM0 fuselage = "+ cM0Fuselage);
 		System.out.println(" CMalpha fuselage  = (1/deg) "+ cMaFuselage);
 	
@@ -964,11 +968,11 @@ public class Test_MR_07_LongitudinalStability {
 
 		
 //	    System.out.println(" alpha zer lift " + alpha0LWing);
-//	    System.out.println(" finess ratio fuselage " + finenessRatio);
-//	    System.out.println(" nose " + noseFinenessRatio);
-//	    System.out.println(" tail "+ tailFinenessRatio);
-//	    System.out.println(" psi " + windshieldAngle);
-//	    System.out.println(" thete " + upsweepAngle);
+	    System.out.println(" finess ratio fuselage " + finenessRatio);
+	    System.out.println(" nose " + noseFinenessRatio);
+	    System.out.println(" tail "+ tailFinenessRatio);
+	    System.out.println(" psi " + windshieldAngle);
+	    System.out.println(" thete " + upsweepAngle);
      
 		
 		

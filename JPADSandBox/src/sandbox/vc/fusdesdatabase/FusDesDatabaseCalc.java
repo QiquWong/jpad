@@ -258,21 +258,21 @@ public class FusDesDatabaseCalc {
 				frontSurface, cDFlatPlate)*surfaceRatio;
 
 		// Referred to wing surface and MAC
-		double cMFuselage = MomentCalc.calcCM0Fusalage(
+		double cMFuselage = MomentCalc.calcCM0Fuselage(
 				fusDesDatabaseReader.getCM0FR(),
 				fusDesDatabaseReader.getdCMn(),
 				fusDesDatabaseReader.getdCMt()) * surfaceRatio * inputManager.getValue(FusDesDatabaseEnum.FuselageDiameter).doubleValue(SI.METER)/
 				 											   	 inputManager.getValue(FusDesDatabaseEnum.MAC).doubleValue(SI.METER);
 
 		// Referred to wing surface and MAC
-		double cMaFuselage = MomentCalc.calcCMAlphaFusalage(
+		double cMaFuselage = MomentCalc.calcCMAlphaFuselage(
 				fusDesDatabaseReader.getCMaFR(),
 				fusDesDatabaseReader.getdCMan(),
 				fusDesDatabaseReader.getdCMat()) * surfaceRatio * inputManager.getValue(FusDesDatabaseEnum.FuselageDiameter).doubleValue(SI.METER)/
 			   	 												  inputManager.getValue(FusDesDatabaseEnum.MAC).doubleValue(SI.METER);;
 
 		// Referred to wing surface and span
-		double cNbFuselage = MomentCalc.calcCNBetaFusalage(
+		double cNbFuselage = MomentCalc.calcCNBetaFuselage(
 				fusDesDatabaseReader.getCNbFR(),
 				fusDesDatabaseReader.getdCNbn(),
 				fusDesDatabaseReader.getdCNbt()) * surfaceRatio * inputManager.getValue(FusDesDatabaseEnum.FuselageDiameter).doubleValue(SI.METER)/
