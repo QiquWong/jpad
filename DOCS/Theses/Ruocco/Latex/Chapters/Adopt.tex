@@ -8,7 +8,7 @@
 		-- L. Ligabue}
 \end{flushright}
 
-In this Chapter an overview of the \gls{acr:Adopt} software, and its reference library \gls{acr:Jpad} is presented.\\
+In this Chapter an overview of the \gls{acr:Adopt} software, and its reference library \gls{acr:Jpad} will be presented.\\
 \gls{acr:Adopt} is a Java-based desktop application developed at the University of Naples Federico II, conceived as a fast, reliable and user friendly computational aid for aircraft designers in the conceptual and preliminary design phases. The ultimate goal of such a tool is to perform a parametric, multi-disciplinary analysis of an aircraft and then search for an optimized configuration. The search domain boundaries are usually defined by the user through a set of specifyed parameters. An important design requirement of  \gls{acr:Adopt} is related to its interoperability with other engineering analysis tools. In fact, the application can be easily integrated into a comprehensive aircraft optimization cycle. This is made possible because  \gls{acr:Adopt} can be launched both in \gls{acr:gui} and command line mode. Much care has been given to input/output and configuration files to increase the possible uses of the software.
 
 \begin{figure}[H]
@@ -20,7 +20,7 @@ In this Chapter an overview of the \gls{acr:Adopt} software, and its reference l
 
 \section{Software architecture}
 
-\gls{acr:Jpad} library isactually divided into three package: JPADConfigs, JPADCore and JPADSandbox.  Each package is organized in several classes or more package in order to have a clear and simple classification. The possibility to place similar classes in the same package has been extensively exploited for the same reasons, see section A.2.   The source code has been extensively commented following Javadoc practices. This enabled us to automatically generate documentation using Doxygen \cite{doxgen}
+\gls{acr:Jpad} library is actually divided into three package: JPADConfigs, JPADCore and JPADSandbox.  Each package is organized in several classes or more package in order to have a clear and simple classification. The possibility to place similar classes in the same package has been extensively exploited for the same reasons, see section A.2.   The source code has been extensively commented following Javadoc practices. This enabled us to automatically generate documentation using Doxygen \cite{doxgen}
 
 \begin{figure}[H]
 	\centering
@@ -29,9 +29,21 @@ In this Chapter an overview of the \gls{acr:Adopt} software, and its reference l
 	\label{fig:sw}
 \end{figure}
  
- The main package of \gls{acr:Jpad} library is JPADCore where there are all aircraft component, the managers of calculator and  its computers classes. In the following subsection will explained the main packages of JPADCore.
+ The main package of \gls{acr:Jpad} library is JPADCore where there are all aircraft component, the managers of calculator and  its computers classes. In the following subsection will explained the main features of JPADCore.\\
+ JPADCore contains the following sub-packages:
+ \begin{enumerate}
+ \item \texttt{aircraft} $\rightarrow$ This package contains all aircraft's component classes, their calculators and the related managers and also the operating condition's class.
+ \item \texttt{cad} $\rightarrow$  This package contains everything concerning the creation of CAD model.
+ \item \texttt{calculators} $\rightarrow$ In this package there are the classes, divided in package by type of analysis, whose methods implement the calculation formulas.
+ \item \texttt{database} $\rightarrow$ This package contains the classes that manage the database .h5 whose data are useful for the analysis. 
+ \item \texttt{standaloneutils} $\rightarrow$ In this package there are several calculation classes with mathematical tools to support the analysis.
+ \item \texttt{writers} $\rightarrow$ this class is in charge of writing files.
+ \end{enumerate}
  
- \subsection{Aircraft package}
+ \noindent \\
+ Following will be explained the main features of the fundamental packages.
+ 
+ \subsection{\texttt{Aircraft }package}
  Each component (e.g., the fuselage, the wing, the engine) is therefore defined in its own class. In the aircraft package there are other sub-package for components. In each of these there are a class for the object definition and a manager for the analysis. These manager classes uses the utilities located in the calculator package. \\
  The sub-package in the \texttt{aircraft} package are the following:
  
@@ -40,8 +52,8 @@ In this Chapter an overview of the \gls{acr:Adopt} software, and its reference l
  \item  \texttt{Component} that contains the \texttt{aircraft} class, the aircraft components packages (fuselage, lifting surfaces, nacelles, power plant, fuel tank, landing gear, systems) and, inside them, their manager analysis classes used to call related analysis methods. 
  \item \texttt{OperatingConditions} 
  \end{itemize}
- 
- \noindent \\ \\ 
+
+The main aircraft components are organised as follows: \\ 
 
 Basic data for describing the {\bfseries fuselage} are contained in the \texttt{fuselage} class. This holds all the fuselage overall properties, such as the length, maximum width and maximum height, length ratios between the nose and the tail parts length to the constant section part length, number of decks and so on. Other classes in the package manage the shape of fuselage sections and outlines (which define the fuselage shape in the xz and xy planes) and aerodynamics calculations (Aerodynamics class).\\ \\
 
@@ -69,8 +81,7 @@ The data relating to the {\bfseries airfoils} are handled by \texttt{Airfoil} cl
 \end{enumerate}
 At the time of writing all these quantities have to be entered by the user. The \texttt{Airfoil} class provides the \texttt{populateCoordinateList()} method which transforms the non dimensional coordinates provided by the user in order to obtain their actual coordinates, which takes into account of actual chord length, ACRF position, sweep, twist and dihedral.\\ \\
 
-The power plant is defined in the package \texttt{PowerPlant} in \texttt{components}. In this package there is the \texttt{engine} class that initializes the data related to the single engine. An other class in the same package, \texttt{powerPlant} creates the parametric model of the power plant using a list of objects creates by \texttt{engine}.
-
+The  {\bfseries power plant} is defined in the package \texttt{PowerPlant} in \texttt{components}. In this package there is the \texttt{engine} class that initializes the data related to the single engine. An other class in the same package, \texttt{powerPlant} creates the parametric model of the power plant using a list of objects creates by \texttt{engine}.
 
 
 \subsection{\texttt{MyOperatingConditions} class}
@@ -78,29 +89,42 @@ As the name suggests, this class contains all the data related to atmosphere con
 
 A \texttt{MyOperatingConditions} object can be created regardless of the aircraft configuration as the class is entirely self contained: the aircraft could also be undefined at the time of the object creation. If the user wants to run several analysis at different operating conditions, a \texttt{MyOperatingConditions} instance has to be created for each one.
 
+\subsection{\texttt{CAD} package}
 
- \subsection{Calculators package}
- % continua da qua 
+Throughout the development of the application, great care has been given to the making of the CAD model for several reasons:
+\begin{itemize}
+	\item it enables the user and the user developer to have an immediate feedback about the data provided to the application: if some geometrical parameter is wrong, the CAD model makes it impossible not noticing it;
+	\item it allows the user to run a CFD analysis with an external program. The CAD model has been in fact built so that it is ready to be meshed by an external mesher without any further adjustment;
+	\item it provides an accurate estimate of the wetted surface of each component.
+\end{itemize}
+
+The creation of the CAD model was made possible by the occjava library, whose classes and methods have been used to build each component's model.
+
+ \subsection{\texttt{Calculators} package}
  This package includes all the calculators classes. Calculator classes have been created to evaluate quantities related with more than one component. The calculator classes are the following:
  
  \begin{itemize}
- \item {\texttt{AerodynamicCalc} class}: It contains all the necessary methods to evaluate the current configuration aerodynamics, such as the overall $C_{D_0}$ coefficient and the drag polar.
-\item {\texttt{MyBalance} class}: It holds the methods for evaluating the current configuration center of gravity and the loading cycle curve.
-\item {\texttt{MyPerformances} class}: It holds all performance related calculations such as maximum range, flight envelope and so on.
-\item {\texttt{MyWeights} class}: It calls the methods of each component necessary to evaluate the component weight. Since each component's weight can be estimated with several different methods, this class also manages which method have to be used. 
+ \item {\texttt{aerodynamics} package}
+\item {\texttt{cost} package}
+\item {\texttt{geometry} package}
+\item {\texttt{performance} package}
+\item {\texttt{stability} package}
 \end{itemize} 
 
+Each of these package contains calculators classes and concerning methods that implement all mathematical equations. These methods are called by the analysis manager classes that are in the package of relatives components (such as fuselage, lifting surfaces etc.).
 
-\subsection{Database package}
+\subsection{\texttt{Database} package}
+In order to manage a large quantity of data, it has been necessary to read data from graphs available in literature; for such a reason an extensive database has been built over the years by several of my colleagues to digitalize this data in order to exploit it in a computer program. The data has been stored in an hdf5 file.\\
+In the \texttt{database} package there are all the classes that manage and reads the .h5 files. To obtain the useful data in JPAD, interpolating functions are used . These functions can be of one, two or three dimensions and read data from graphics that have been digitize previously.
 
-
- \subsection{Writers package}
- 
+\subsection{\texttt{Writers} package}
+ This class is based on the Apache POI library and provides methods which enable the user developer to easily add a sheet to an XLS file, to set the styles of the XLS file and to compare different XLS files.The last function permits to create an XLS file which contains a different aircraft data for each column; in such a way the comparison between two or more aircraft (or,
+simply, between slightly different configurations of the same aircraft) is easier and effective.
 
 
 
 \section{Graphical User Interface (GUI)}
-An extensive work has been done to set up an effective Graphical User interface (GUI) to reduce the time the user has to spend to obtain relevant results. The result presented in this section is the early step of graphical interface, which is currently in development.\\ \\
+An extensive work has been done to set up an effective Graphical User interface (GUI) to reduce the time the user has to spend to obtain relevant results. The result presented in this section is the early step of graphical interface, which is currently in development.\\ 
 
 The Java programming language greatly helped to build the GUI: several open source libraries (SWT, JFace) allowed us to build a functional yet pleasant GUI which allows the user to easily change the aircraft’s parameters, to view a 3D model of the defined geometry, to launch a new analysis and view the corresponding results. The current GUI appearance is shown in fig. \ref{fig:guiStart}. It is composed of several items:
 \begin{enumerate}
@@ -115,7 +139,7 @@ The Java programming language greatly helped to build the GUI: several open sour
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[height = 8cm ]{Immagini/gui/applicationStart.png}
+	\includegraphics[height = 7cm ]{Immagini/gui/applicationStart.png}
 	\caption{The GUI when the application is started.}
 	\label{fig:guiStart}
 \end{figure}
@@ -124,48 +148,29 @@ The Java programming language greatly helped to build the GUI: several open sour
 In developing the application we focused on making the user's typical work session as simple as possible. Few basics steps are required for running an analysis:
 
 \begin{enumerate}
-	\item create a new aircraft, which we will call A. This can be done using the corresponding button \big(\includegraphics[scale=0.6]{Immagini/gui/icons/FolderAirplane_32x32.png}\big) in the toolbar, which instantiates the default aircraft
+\item create a new aircraft, which we will call A. This can be done using the corresponding button \big(\includegraphics[scale=0.6]{Immagini/gui/icons/FolderAirplane_32x32.png}\big) in the toolbar, which instantiates the default aircraft
 	
-	\item set the parameters that define the aircraft model using the corresponding window opened using the tree
-
-	
-	\item explore the 3D model \big(\includegraphics[scale=1.2]{Immagini/gui/icons/3DView_32x32.png}\big) of the aircraft and eventually change some parameters if there is some error
-
-	
-	\item execute a complete analysis \big(\includegraphics[scale=0.5]{Immagini/gui/icons/analysis_32x32.png}\big) of the aircraft previously defined;
+\item set the parameters that define the aircraft model using the corresponding window opened using the tree
+\begin{figure}[H]
+		\centering
+		\includegraphics[height = 7cm]{Immagini/gui/changeFusParam.png}
+		\caption{The window for changing the fuselage parameters.}
+	\end{figure}
+\item explore the 3D model \big(\includegraphics[scale=1.2]{Immagini/gui/icons/3DView_32x32.png}\big) of the aircraft and eventually change some parameters if there is some error
+		\begin{figure}[H]
+	\centering
+		\includegraphics[height =7cm]{Immagini/gui/cad1.png}
+		\caption{The aircraft 3D view (log window and project tree hidden).}
+	\end{figure}
+\item execute a complete analysis \big(\includegraphics[scale=0.5]{Immagini/gui/icons/analysis_32x32.png}\big) of the aircraft previously defined;
 
 	\item export the analysis results to an XML and/or an XLS file \big(\includegraphics[scale=0.4]{Immagini/gui/icons/Export_32x32.png}\big);
 	
 	\item eventually export the CAD model of the aircraft \big(\includegraphics[scale=1.2]{Immagini/gui/icons/cad_32x32.png}\big);
 	\item save the current aircraft to an XML file \big(\includegraphics[scale=0.4]{Immagini/gui/icons/XML_32x32.png}\big).
 \end{enumerate}
-%
 
-\begin{figure}[H]
-		\centering
-		\includegraphics[height = 8cm ]{Immagini/gui/createAircraftDone.png}
-		\caption{The GUI as it appears when an aircraft is created.}
-		\label{fig:guiDescription}
-	\end{figure}
 	
-	\begin{figure}[H]
-		\centering
-		\includegraphics[height = 8cm]{Immagini/gui/changeFusParam.png}
-		\caption{The window for changing the fuselage parameters.}
-	\end{figure}
-	
-	\begin{figure}[H]
-	\centering
-		\includegraphics[height =8cm]{Immagini/gui/cad1.png}
-		\caption{The aircraft 3D view (log window and project tree hidden).}
-	\end{figure}
-	
-	\begin{figure}[H]
-	\centering
-		\includegraphics[height =9cm]{Immagini/gui/cad3.png}
-		\caption{The aircraft 3D view.}
-	\end{figure}
-
 At this point the user could simply change the current configuration until the analysis results are satisfactory. The application can however help the user in finding such a configuration, since it can hold multiple configurations simultaneously, analyse all of them and compare them side by side. To accomplish this task, once the first aircraft has been created, the user should:
 
 \begin{enumerate}
@@ -175,13 +180,21 @@ At this point the user could simply change the current configuration until the a
 	\item save every configuration and the corresponding results to file;
 	\item export both aircraft and the corresponding results to an XLS file.
 \end{enumerate}
-
-\begin{figure}[h]
+	
+	\begin{figure}[H]
 	\centering
-	\includegraphics[width=5cm]{Immagini/gui/tabId.png}
-	\caption{Same component tab belonging to different aircraft}
-	\label{fig:tabId}
-\end{figure}
+		\includegraphics[height =8cm]{Immagini/gui/cad3.png}
+		\caption{The aircraft 3D view.}
+	\end{figure}		
+%
+
+%\begin{figure}[H]
+%		\centering
+%		\includegraphics[height = 8cm ]{Immagini/gui/createAircraftDone.png}
+%		\caption{The GUI as it appears when an aircraft is created.}
+%		\label{fig:guiDescription}
+%	\end{figure}
+
 
 There is no limit to the number of aircraft the application can handle; each aircraft is added to the project tree as shown in fig. \ref{fig:projectTreeMulti} providing access to the corresponding components and analysis.
 
@@ -192,19 +205,17 @@ There is no limit to the number of aircraft the application can handle; each air
 	\label{fig:projectTreeMulti}
 \end{figure}
 
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=5cm]{Immagini/gui/tabId.png}
+	\caption{Same component tab belonging to different aircraft}
+	\label{fig:tabId}
+\end{figure}
+
+
+
 \subsection{CAD modelling}
 The application can also be used as a basic parametric \gls{acr:cad} modeler. The capability to change the aircraft parameters using the corresponding controls in the \gls{acr:gui}, coupled with the 3D view, allows the user to change each component shape and dimension, view the updated \gls{acr:cad}model and eventually export it to file once some satisfactory results have been obtained.\\
-
-Throughout the development of the application, great care has been given to the making of
-the CAD model for several reasons:
-
-
-\begin{itemize}
-\item it enables the user and the user developer to have an immediate feedback about the data provided to the application: if some geometrical parameter is wrong, the CAD model makes it impossible not noticing it;
-\item  it allows the user to run a CFD analysis with an external program. The CAD model has been in fact built so that it is ready to be meshed by an external mesher without any kind of adjustment;
-\item it provides an accurate estimate of the wetted surface of each component.
-\end{itemize}
-
 The creation of the CAD model was made possible by the occjava library, whose classes and methods have been used to build each component’s model. The CAD model can be saved in two different file formats: STEP and BREP; they have proven to take both little memory and to give the best results in terms of geometry representation. The IGES format gave instead mixed results so we preferred to use only the first two.
 
 \begin{figure}[H]

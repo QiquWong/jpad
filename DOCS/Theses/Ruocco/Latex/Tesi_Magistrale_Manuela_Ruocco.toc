@@ -11,17 +11,18 @@
 \contentsline {section}{\numberline {1.1}Historical Overview}{2}{section.1.1}
 \contentsline {section}{\numberline {1.2}General Process of Aircraft Design}{3}{section.1.2}
 \contentsline {section}{\numberline {1.3}Design Requirements and Objectives of an Aircraft}{4}{section.1.3}
-\contentsline {section}{\numberline {1.4}Aircraft Design Optimization}{5}{section.1.4}
-\contentsline {chapter}{\numberline {2}Application overview}{7}{chapter.2}
-\contentsline {section}{\numberline {2.1}Software architecture}{8}{section.2.1}
-\contentsline {subsection}{\numberline {2.1.1}Aircraft package}{8}{subsection.2.1.1}
-\contentsline {subsection}{\numberline {2.1.2}\texttt {MyOperatingConditions} class}{10}{subsection.2.1.2}
-\contentsline {subsection}{\numberline {2.1.3}Calculators package}{10}{subsection.2.1.3}
-\contentsline {subsection}{\numberline {2.1.4}Database package}{10}{subsection.2.1.4}
-\contentsline {subsection}{\numberline {2.1.5}Writers package}{10}{subsection.2.1.5}
-\contentsline {section}{\numberline {2.2}Graphical User Interface (GUI)}{10}{section.2.2}
-\contentsline {subsection}{\numberline {2.2.1}Typical work session}{11}{subsection.2.2.1}
-\contentsline {subsection}{\numberline {2.2.2}CAD modelling}{15}{subsection.2.2.2}
+\contentsline {section}{\numberline {1.4}Aircraft Design Optimization}{6}{section.1.4}
+\contentsline {chapter}{\numberline {2}Application overview}{8}{chapter.2}
+\contentsline {section}{\numberline {2.1}Software architecture}{9}{section.2.1}
+\contentsline {subsection}{\numberline {2.1.1}\texttt {Aircraft }package}{10}{subsection.2.1.1}
+\contentsline {subsection}{\numberline {2.1.2}\texttt {MyOperatingConditions} class}{11}{subsection.2.1.2}
+\contentsline {subsection}{\numberline {2.1.3}\texttt {CAD} package}{11}{subsection.2.1.3}
+\contentsline {subsection}{\numberline {2.1.4}\texttt {Calculators} package}{12}{subsection.2.1.4}
+\contentsline {subsection}{\numberline {2.1.5}\texttt {Database} package}{12}{subsection.2.1.5}
+\contentsline {subsection}{\numberline {2.1.6}\texttt {Writers} package}{12}{subsection.2.1.6}
+\contentsline {section}{\numberline {2.2}Graphical User Interface (GUI)}{12}{section.2.2}
+\contentsline {subsection}{\numberline {2.2.1}Typical work session}{13}{subsection.2.2.1}
+\contentsline {subsection}{\numberline {2.2.2}CAD modelling}{16}{subsection.2.2.2}
 \contentsline {section}{\numberline {2.3}In Development}{16}{section.2.3}
 \contentsline {part}{II\hspace {1em}Development of Application}{17}{part.2}
 \contentsline {chapter}{\numberline {3}Introdution to Java}{18}{chapter.3}
@@ -66,7 +67,7 @@
 \contentsline {subsection}{\numberline {9.1.1}Wing}{59}{subsection.9.1.1}
 \contentsline {subsection}{\numberline {9.1.2}Fuselage}{59}{subsection.9.1.2}
 \contentsline {subsection}{\numberline {9.1.3}Horizontal Tail}{61}{subsection.9.1.3}
-\contentsline {subsubsection}{Elevator index of effectiveness}{62}{subsubsection*.60}
+\contentsline {subsubsection}{Elevator index of effectiveness}{62}{subsubsection*.59}
 \contentsline {subsection}{\numberline {9.1.4}Complete Aircraft}{63}{subsection.9.1.4}
 \contentsline {section}{\numberline {9.2}Aerodynamic Drag}{63}{section.9.2}
 \contentsline {subsection}{\numberline {9.2.1}Drag of a lifting surface}{64}{subsection.9.2.1}
@@ -74,22 +75,22 @@
 \contentsline {section}{\numberline {9.3}Pitching Moments}{65}{section.9.3}
 \contentsline {subsection}{\numberline {9.3.1}Lifting surface}{66}{subsection.9.3.1}
 \contentsline {subsection}{\numberline {9.3.2}Fuselage}{67}{subsection.9.3.2}
-\contentsline {subsubsection}{Multhopp method}{67}{subsubsection*.69}
-\contentsline {subsubsection}{Fuselage Pitching moment prediction method}{69}{subsubsection*.73}
-\contentsline {section}{\numberline {9.4}Propulsors}{71}{section.9.4}
-\contentsline {subsection}{\numberline {9.4.1}Stability Calculation}{71}{subsection.9.4.1}
-\contentsline {subsection}{\numberline {9.4.2}Neutral Point and Static Margin}{71}{subsection.9.4.2}
-\contentsline {section}{\numberline {9.5}Java Class Architecture}{71}{section.9.5}
-\contentsline {section}{\numberline {9.6}Case Study}{71}{section.9.6}
-\contentsline {chapter}{\numberline {10}Minor Works}{72}{chapter.10}
-\contentsline {chapter}{Appendices}{}{section*.82}
-\contentsline {chapter}{\numberline {A}HDF dataset and database reader creation}{74}{Appendix.a.A}
-\contentsline {section}{\numberline {A.1}Chart Digitization}{74}{section.a.A.1}
-\contentsline {section}{\numberline {A.2}Creation of an HDF file with Matlab}{75}{section.a.A.2}
-\contentsline {chapter}{\numberline {B}Java Reference}{78}{Appendix.a.B}
-\contentsline {section}{\numberline {B.1}Packages}{78}{section.a.B.1}
-\contentsline {section}{\numberline {B.2}Documentation}{78}{section.a.B.2}
-\contentsline {chapter}{Glossary}{80}{section*.85}
-\contentsline {chapter}{Acronyms}{82}{section*.87}
-\contentsline {chapter}{List of symbols}{83}{section*.89}
-\contentsline {chapter}{Bibliography}{85}{section*.91}
+\contentsline {subsubsection}{Multhopp method}{67}{subsubsection*.68}
+\contentsline {subsubsection}{Fuselage Pitching moment prediction method}{69}{subsubsection*.72}
+\contentsline {section}{\numberline {9.4}Propulsors}{72}{section.9.4}
+\contentsline {subsection}{\numberline {9.4.1}Stability Calculation}{72}{subsection.9.4.1}
+\contentsline {subsection}{\numberline {9.4.2}Neutral Point and Static Margin}{72}{subsection.9.4.2}
+\contentsline {section}{\numberline {9.5}Java Class Architecture}{72}{section.9.5}
+\contentsline {section}{\numberline {9.6}Case Study}{72}{section.9.6}
+\contentsline {chapter}{\numberline {10}Minor Works}{73}{chapter.10}
+\contentsline {chapter}{Appendices}{}{section*.81}
+\contentsline {chapter}{\numberline {A}HDF dataset and database reader creation}{75}{Appendix.a.A}
+\contentsline {section}{\numberline {A.1}Chart Digitization}{75}{section.a.A.1}
+\contentsline {section}{\numberline {A.2}Creation of an HDF file with Matlab}{76}{section.a.A.2}
+\contentsline {chapter}{\numberline {B}Java Reference}{79}{Appendix.a.B}
+\contentsline {section}{\numberline {B.1}Packages}{79}{section.a.B.1}
+\contentsline {section}{\numberline {B.2}Documentation}{79}{section.a.B.2}
+\contentsline {chapter}{Glossary}{81}{section*.84}
+\contentsline {chapter}{Acronyms}{83}{section*.86}
+\contentsline {chapter}{List of symbols}{84}{section*.88}
+\contentsline {chapter}{Bibliography}{86}{section*.90}

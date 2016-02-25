@@ -2,72 +2,72 @@
 \begin{theglossary}\glossaryheader
 \glsgroupheading{A}\relax \glsresetentrylist %
 \glossentry{ACRF}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{76}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{80}\delimN 
 		\glsseeformat[Glossary:]{gls-ACRF}{Z}}}%
 \glossentry{acr:Adopt}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{i\delimN ii}\delimN 
 		\setentrycounter[]{page}\glsnumberformat{2}\delimN 
-		\setentrycounter[]{page}\glsnumberformat{7}\delimN 
-		\setentrycounter[]{page}\glsnumberformat{17}\delimN 
-		\setentrycounter[]{page}\glsnumberformat{76}}}%
+		\setentrycounter[]{page}\glsnumberformat{8}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{20}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{80}}}%
 \glossentry{acr:AIAA}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{76}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{80}}}\glsgroupskip
 \glsgroupheading{B}\relax \glsresetentrylist %
 \glossentry{acr:brf}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{23}\delimN 
-		\setentrycounter[]{page}\glsnumberformat{76}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{26}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{80}}}\glsgroupskip
 \glsgroupheading{C}\relax \glsresetentrylist %
 \glossentry{acr:cad}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{6}\delimN 
-		\setentrycounter[]{page}\glsnumberformat{12}\delimN 
-		\setentrycounter[]{page}\glsnumberformat{76}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{16}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{80}}}\glsgroupskip
 \glsgroupheading{F}\relax \glsresetentrylist %
 \glossentry{acr:FAA}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{76}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{80}}}\glsgroupskip
 \glsgroupheading{G}\relax \glsresetentrylist %
 \glossentry{acr:cg}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{23}\delimN 
-		\setentrycounter[]{page}\glsnumberformat{76}}}%
+		\setentrycounter[]{page}\glsnumberformat{26}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{80}}}%
 \glossentry{acr:GNC}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{76}}}%
+		\setentrycounter[]{page}\glsnumberformat{80}}}%
 \glossentry{GUI}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{16\delimN 17}\delimN 
-		\setentrycounter[]{page}\glsnumberformat{76}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{19\delimN 20}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{80}\delimN 
 		\glsseeformat[Glossary:]{gls-GUI}{Z}}}%
 \glossentry{acr:gui}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{7}\delimN 
-		\setentrycounter[]{page}\glsnumberformat{12}\delimN 
-		\setentrycounter[]{page}\glsnumberformat{76}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{8}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{16}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{80}}}\glsgroupskip
 \glsgroupheading{I}\relax \glsresetentrylist %
 \glossentry{acr:ide}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{16\delimN 17}\delimN 
-		\setentrycounter[]{page}\glsnumberformat{76}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{19\delimN 20}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{80}}}\glsgroupskip
 \glsgroupheading{J}\relax \glsresetentrylist %
 \glossentry{acr:Jpad}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{i\delimN ii}\delimN 
 		\setentrycounter[]{page}\glsnumberformat{2}\delimN 
-		\setentrycounter[]{page}\glsnumberformat{7}\delimN 
-		\setentrycounter[]{page}\glsnumberformat{17}\delimN 
-		\setentrycounter[]{page}\glsnumberformat{76}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{8\delimN 9}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{20}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{80}}}\glsgroupskip
 \glsgroupheading{L}\relax \glsresetentrylist %
 \glossentry{acr:lrf}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{23}\delimN 
-		\setentrycounter[]{page}\glsnumberformat{76}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{26}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{80}}}\glsgroupskip
 \glsgroupheading{M}\relax \glsresetentrylist %
 \glossentry{acr:MAC}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{76}}}%
+		\setentrycounter[]{page}\glsnumberformat{80}}}%
 \glossentry{acr:MAPE}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{76}}}%
+		\setentrycounter[]{page}\glsnumberformat{80}}}%
 \glossentry{acr:MLW}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{76}}}%
+		\setentrycounter[]{page}\glsnumberformat{80}}}%
 \glossentry{acr:Mean:Sea:Level}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{76}}}%
+		\setentrycounter[]{page}\glsnumberformat{80}}}%
 \glossentry{acr:MTOW}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{76}}}%
+		\setentrycounter[]{page}\glsnumberformat{80}}}%
 \glossentry{acr:MZFW}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{76}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{80}}}\glsgroupskip
 \glsgroupheading{U}\relax \glsresetentrylist %
 \glossentry{UML}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{76}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{80}\delimN 
 		\glsseeformat[Glossary:]{gls-UML}{Z}}}%
 \end{theglossary}\glossarypostamble
