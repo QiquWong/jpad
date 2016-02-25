@@ -203,6 +203,22 @@
       \endverb
       \warn{\item Datamodel: Entry 'guava' (Tesi_Bibliography.bib): Invalid format '01.16.2015' of date field 'date' - ignoring}
     \endentry
+    \entry{induced}{online}{}
+      \name{author}{1}{}{%
+        {{hash=7da2a74e066e90281bae34a5d86abefd}{Authors}{A\bibinitperiod}{Various}{V\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{fullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \field{sortinit}{A}
+      \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Induced and Effective AOA for a Wing}
+      \verb{url}
+      \verb http://gtae6343.wikia.com/wiki/Angle_of_Attack#cite_ref-1
+      \endverb
+      \warn{\item Datamodel: Entry 'induced' (Tesi_Bibliography.bib): Invalid format '17.02.16' of date field 'date' - ignoring}
+    \endentry
     \entry{wiki:java}{online}{}
       \name{author}{1}{}{%
         {{hash=7da2a74e066e90281bae34a5d86abefd}{Authors}{A\bibinitperiod}{Various}{V\bibinitperiod}{}{}{}{}}%

@@ -4,11 +4,11 @@
 
 \begin{flushright}
 	{\smaller
-		\textit{C'è qualcuno che può rompere il muro del suono,\\ mentre tutto il mondo si commenta da solo.}\\
-		-- L. Ligabue}
+		\textit{Non ho paura dei computer, 
+\\ ma della loro eventuale mancanza.}\\
+		--  Isaac Asimov}
 \end{flushright}
-
-In this Chapter an overview of the \gls{acr:Adopt} software, and its reference library \gls{acr:Jpad} will be presented.\\
+In this Chapter an overview of the \gls{acr:Adopt} software, and its reference library \gls{acr:Jpad} will be presented.
 \gls{acr:Adopt} is a Java-based desktop application developed at the University of Naples Federico II, conceived as a fast, reliable and user friendly computational aid for aircraft designers in the conceptual and preliminary design phases. The ultimate goal of such a tool is to perform a parametric, multi-disciplinary analysis of an aircraft and then search for an optimized configuration. The search domain boundaries are usually defined by the user through a set of specifyed parameters. An important design requirement of  \gls{acr:Adopt} is related to its interoperability with other engineering analysis tools. In fact, the application can be easily integrated into a comprehensive aircraft optimization cycle. This is made possible because  \gls{acr:Adopt} can be launched both in \gls{acr:gui} and command line mode. Much care has been given to input/output and configuration files to increase the possible uses of the software.
 
 \begin{figure}[H]
@@ -221,16 +221,34 @@ The creation of the CAD model was made possible by the occjava library, whose cl
 \begin{figure}[H]
 	\centering
 		\includegraphics[width=6 cm]{Immagini/gui/CADfuselageTailBAD2.png}
-		\caption{A detail of the tail of the fuselage obtained as a unique loft}
+		\caption{A detail of the tail of the fuselage obtained as a unique loft.}
 		\label{fig:badTail}
 	\end{figure}
 	
 	\begin{figure}[H]
 	\centering
 		\includegraphics[width=6 cm]{Immagini/gui/CADfuselageTailOK.png}
-		\caption{A detail of the tail of the fuselage obtained sewing together its parts}
+		\caption{A detail of the tail of the fuselage obtained sewing together its parts.}
 		\label{fig:goodTail}
 \end{figure}
 
 
+	\begin{figure}[H]
+	\centering
+		\includegraphics[width=12 cm]{Immagini/gui/CADfuselage}
+		\caption{External fuselage shape exported as STEP file.}
+		\label{fig:goodTail}
+\end{figure}
+
+
+\subsection{Interface with external software}
+With ADOpT it's also possible to execute some high-fidelity analyses using external tools (i.e. CFD Navier-Stokes solver, panel method, FEM for structural static and dynamic analysis, etc.) by importing the dedicated output (such as a CAD model) produced by the software. The higher-fidelity tools could improve the results obtained and give therefore some useful clues in order to start a new design loop with different requirements and/or different constraints. The possibility to interface the software with drawings and graphical representation (i.e. CAD or Catia) of the designed aircraft is also very important.
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=12 cm]{Immagini/interface}
+		\caption{Interface with external CFD tools.}
+		\label{fig:badTail}
+	\end{figure}
+	
 \section{In Development}

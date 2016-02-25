@@ -572,11 +572,45 @@ The following figures show the variability of introduced parameters.
 
 
 \section{Propulsors}
-%Obert 453
+
+The effects of propeller and slipstream on airplane static longitudinal stability may be significant. It's possible to divide the power effects on longitudinal static stability in two categories: direct effects and
+Indirect effects.
+\subsection{Direct Effects}
+ These effects are principally the following:
+\begin{itemize}
+\item  Effect due to the thrust and moments result from the line of action of force with respect to the CG.
+\item Pitching moment due to non axial flow.
+\item Contrast couple on the that must be compensated by the aileron.
+\end{itemize}
+
+Due to these effects, the airplane pitching curve must be accounted for a change in slope $\frac{dC_m}{dC_L}$. The equations differs between turboprop engine aircraft and turbojet. In case of turboprop it's possible to express the power direct effects with the following equations:
+Pitching moment due to thrust effect:
+
+\begin{equation}
+C_{M_P} = 2 T_C \frac{D^2}{S} \frac{h_p}{\bar c} = 2 (K C_L^{\frac{3}{2}}) \frac{D^2}{S} \frac{h_p}{\bar c} 
+\end{equation}
+
+This equation means that if the thrust acting under the cg ( $h_p > 0$ ) with increasing alpha ( and CL ) the moment coefficient undergoes a positive change, ie the power effect has an unstable contributions.
+
+\noindent \\
+Pitching moment due to non axial effect:
+\begin{equation}
+\frac{dC_{M_P}}{dC_L} = \frac{dC_{N_P}}{d\alpha_p} \frac{S_p}{S} \frac{l_p}{\bar c} \frac{ \left ( 1 + \frac{d \epsilon}{d \alpha} \right )}{C_{L_{\alpha w}}} N_{prop}
+\end{equation}
+
+Whre $\frac{d \epsilon}{d \alpha}$ is the upwash effect forward wing, represented in fig. \ref {wingud}
+
+\begin{figure}[H]
+\centering
+\includegraphics[height=7.3cm]{Immagini/wing_up-downwash}
+\caption{Wing upwash and downwash.}
+\label{wingud}
+\end{figure}
+
 %roskam 369
 
 
-\subsection{Stability Calculation}
+\section{Stability Calculation}
 \subsection{Neutral Point and Static Margin}
 %sforza 611
 
