@@ -1,4 +1,4 @@
-\pagestyle{pippo}
+
 \chapter{HDF dataset and database reader creation}
 
 In a tool for preliminary design phase of an aircraft, it's very important to have aviable database. It's possible to create database starting from graphics using external software. In this appendix will be explained the step required in order to digitalize the graphics, create an HDF dataset and set up the database-reader class in Jpad.
@@ -161,14 +161,25 @@ h5write(hdfFileName, '/DAlphaVsLambdaLEVsDy/var_1', lambdaLEVector_deg');
 \noindent \\ \\ 
 This script plot the graph after digitization. In this way it's possible to compare the initial graph and the digitized one.
 
-\pagestyle{pippo}
+
  \begin{figure}[H]
 \centering
 {\includegraphics[height=6cm]{Immagini/digitize2.png}} 
 \label{angles}
 \end{figure} 
 
-\chapter{App2}
+
+\chapter{Java Reference}
+
+
+\section{Packages}\label{sec:package}
+A Java package is a mechanism for organizing Java classes into namespaces, providing modular programming. Java packages can be stored in compressed files called JAR files, allowing classes to be downloaded faster as groups rather than individually. Programmers also typically use packages to organize classes belonging to the same category or providing similar functionality.
+
+A package provides a unique namespace for the types it contains.
+In general, a namespace is a container for a set of identifiers (also known as symbols, names). Namespaces provide a level of direction to specific identifiers, thus making it possible to distinguish between identifiers with the same exact name. For example, a surname could be thought of as a namespace that makes it possible to distinguish people who have the same given name. In computer programming, namespaces are typically employed for the purpose of grouping symbols and identifiers around a particular functionality.
+
+\section{Documentation}
+The doc comments, which are a particular type of comments provided by Java, are automatically recognized by the most popular IDE programs; this helps the developer to quickly get an idea of the actions performed by each method, the parameter which has to be passed to it and the what it returns to the user.
 
 
 

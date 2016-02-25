@@ -9,7 +9,13 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.DoubleSummaryStatistics;
+import java.util.IntSummaryStatistics;
 import java.util.List;
+import java.util.OptionalDouble;
 import java.util.Stack;
 import java.util.stream.IntStream;
 
@@ -20,13 +26,16 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.poi.ss.formula.functions.T;
 import org.treez.core.atom.attribute.Section;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.coords.Coords;
 import org.treez.javafxd3.d3.core.Selection;
+import org.treez.javafxd3.d3.core.Value;
 import org.treez.javafxd3.d3.functions.AxisScaleFirstDatumFunction;
 import org.treez.javafxd3.d3.functions.AxisScaleSecondDatumFunction;
 import org.treez.javafxd3.d3.functions.AxisTransformPointDatumFunction;
+import org.treez.javafxd3.d3.functions.DatumFunction;
 import org.treez.javafxd3.d3.scales.LinearScale;
 import org.treez.javafxd3.d3.scales.QuantitativeScale;
 import org.treez.javafxd3.d3.svg.Area;
@@ -34,6 +43,7 @@ import org.treez.javafxd3.d3.svg.InterpolationMode;
 import org.treez.javafxd3.d3.svg.Line;
 import org.treez.javafxd3.d3.svg.Symbol;
 import org.treez.javafxd3.d3.svg.SymbolType;
+import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
 import org.treez.javafxd3.javafx.JavaFxD3Browser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -43,6 +53,8 @@ import org.w3c.dom.NodeList;
 import com.google.common.io.CharStreams;
 
 import javafx.scene.web.WebEngine;
+import netscape.javascript.JSObject;
+import standaloneutils.MyArrayUtils;
 
 public class D3Plotter {
 
@@ -131,14 +143,44 @@ public class D3Plotter {
 				{ 35.0, 18.0 }
 				};
 
-		// data that you want to plot, I"ve used separate arrays for x and y values
+		System.out.println(dataArray.length);
+//		OptionalDouble xMax = IntStream.range(0, dataArray.length)
+//			.mapToDouble(i -> dataArray[i][1])
+//			.max();
+
+		//--------------------------------------------------------
+		// Find X- and Y- min/max values
+
+//		List<List<Double>> dataList = MyArrayUtils.convert2DArrayToList(dataArray);
+//		System.out.println(dataList);
+
+//		System.out.println(MyArrayUtils.extractColumnOf2DArrayToList(dataArray, 0));
+
+		DoubleSummaryStatistics summaryStatisticsX = MyArrayUtils.extractColumnOf2DArrayToList(dataArray, 0).stream()
+				.mapToDouble(v -> v)
+		        .summaryStatistics();
+
+		double xMax = summaryStatisticsX.getMax();
+		double xMin = summaryStatisticsX.getMin();
+
+//		System.out.println(MyArrayUtils.extractColumnOf2DArrayToList(dataArray, 1));
+
+		DoubleSummaryStatistics summaryStatisticsY = MyArrayUtils.extractColumnOf2DArrayToList(dataArray, 1).stream()
+				.mapToDouble(v -> v)
+		        .summaryStatistics();
+
+		double yMax = summaryStatisticsY.getMax();
+		double yMin = summaryStatisticsY.getMin();
+
+
+		// data that you want to plot, I've used separate arrays for x and y values
 		double[] xData1 = {5, 10, 25, 32, 40, 40, 15, 7};
 		double[] yData1 = {3, 17, 4, 10, 6, -20, -20.0, 0};
 
-		double xMin = 0;
-		double xMax = 50;
-		double yMin = -30.0;
-		double yMax = 30.0;
+		//double xMin = 0;
+		//double xMax = 50;
+		//double yMin = -30.0;
+		//double yMax = 30.0;
 
 		System.out.println("D3Plotter :: createD3Content");
 
@@ -220,7 +262,7 @@ public class D3Plotter {
 				.style("stroke", "#000")
 				.style("stroke-width", "1.2px") //
 				.style("font", "10px sans-serif")
-				.style("shape-rendering", "geometricPrecision"); // "crispEdges"
+				.style("shape-rendering", "geometricPrecision"); // "crispEdges" // "geometricPrecision"
 
 //		if (logXScale) {
 //			//major ticks
@@ -400,10 +442,9 @@ public class D3Plotter {
 
 		Selection line1Selection = xySelection.append("svg:g")
 				.classed("Pippo-line-group", true);
-		String cssClassName = "Agodemar-Test-Line";
 		Selection pathLine = line1Selection
 				.append("path")
-				.classed(cssClassName, true)
+				.classed("Agodemar-Test-Line", true)
 				;
 		pathLine
 			.attr("fill","none")
@@ -452,10 +493,81 @@ public class D3Plotter {
 		// ###########################################################
 		// this is my playground ...
 
+		injectAdditionalJavascripts();
+		putLegend(dataArray);
+
 
 	}
 
+	private void putLegend(Double[][] dataArray) {
 
+		System.out.println("D3Plotter :: putLegend");
+
+		// TODO
+
+		Selection legend = svgSelection.append("g")
+				  .attr("class", "legend")
+//				  .attr("x", widthGraph - 65)
+//				  .attr("y", 25)
+//				  .attr("height", 100)
+//				  .attr("width", 100)
+				.attr("transform", "translate(" + 0.9*widthGraph + "," + 0.1*heightGraph + ")")
+				;
+		
+		String commandFill = getLegendCommandFill(
+				new ColorLegendDatumFunction(
+						webEngine, Arrays.asList("red", "blue", "green")));
+		// System.out.println(commandFill);
+
+//		String commandText = getLegendCommandText(
+//				new TextLegendDatumFunction(
+//						webEngine, Arrays.asList("Ago", "dem", "ar")));
+
+		legend.selectAll("rect")
+	      .data(new int[]{1, 2, 3}) // legend item counter
+	      .enter()
+	      .append("rect")
+	      .attrExpression("y", "function(d, i){ return i *  20;}")
+	      .attr("width", 10)
+	      .attr("height", 10)
+	      //.style("fill","green")
+	      .evalForJsObject(commandFill) // .style("fill", new ColorLegendDatumFunction(webEngine))
+	      ;
+
+		legend.selectAll("text")
+	      .data(new int[]{1, 2, 3}) // legend item counter
+	      .enter()
+	      .append("text")
+		  .attr("text-anchor", "start")
+	      .attr("x", 12)
+	      .attrExpression("y", "function(d, i){ return 10 + i *  20;}")
+	      //.text("pippo")
+	      .text(new TextLegendDatumFunction(webEngine, Arrays.asList("Ago", "dem", "ar")))
+	      ;
+
+	}
+
+	
+	private String getLegendCommandFill(ColorLegendDatumFunction colorDatumFunction) {
+		JSObject d3JsObject = d3.getJsObject();
+		String funcName = createNewTemporaryInstanceName(); // see JavaScriptObject.java
+		System.out.println("\t" + funcName);
+		d3JsObject.setMember(funcName, colorDatumFunction);
+		return "this.style('fill', function(d,i) {" //
+				+ "return d3." + funcName + ".apply(this, {datum:d}, i);" //
+				+ "})";	
+	}
+
+	private String getLegendCommandText(TextLegendDatumFunction textDatumFunction) {
+		JSObject d3JsObject = d3.getJsObject();
+		String funcName = createNewTemporaryInstanceName(); // see JavaScriptObject.java
+		System.out.println("\t" + funcName);
+		d3JsObject.setMember(funcName, textDatumFunction);
+		return "this.style('text', function(d,i) {" //
+				+ "return d3." + funcName + ".apply(this, {datum:d}, i);" //
+				+ "})";	
+	}
+	
 	/**
 	 * If a css file exists that has the same name as the java/class file and
 	 * is located next to that file, the css file is loaded with this method.
@@ -628,9 +740,66 @@ public class D3Plotter {
         return writer.toString();
     }
 
+	private void injectAdditionalJavascripts() {
+		System.out.println("Injecting additional D3-related .js");
+
+		String className = getClass().getName();
+		String classPath = className.replace(".", "/");
+		// System.out.println("==> " + classPath);
+		int lastSlash = classPath.lastIndexOf("/");
+		// System.out.println("==> " + lastSlash);
+		if (lastSlash != -1) {
+			List<String> jsList =
+				    Arrays.asList(
+				    		"d3-legend.min.js"
+				    		/*
+				    		 *
+				    		 * you might have more than one .js
+				    		 * and put it here, they'll be executed
+				    		 * in sequence, e.g.
+				    		 *
+				    		"MathJax.js",
+				    		"TeX-AMS-MML_SVG.js",
+				    		"jax.js",
+				    		"mathjaxlabel.js"
+				    		 */
+				    		);
+			jsList.stream()
+				.forEach(
+					s -> {
+						String sPath = classPath.substring(0, lastSlash) + "/" + s;
+						System.out.println("\t" + sPath);
+						URL sUrl = getClass().getClassLoader().getResource(sPath);
+						try {
+							FileInputStream  fis = new FileInputStream(sUrl.getFile());
+							String jsContent = CharStreams.toString(new InputStreamReader(fis, "UTF-8"));
+
+							// !!!
+							webEngine.executeScript(jsContent);
+
+						} catch (IOException e) {
+							System.err.println("###############################");
+							System.err.println("injectAdditionalJavascripts !!!");
+							e.printStackTrace();
+							System.err.println("###############################");
+						}
+					});
+		}
+
+	}// injectMathJax
+
+
+
 	public JavaFxD3Browser getBrowser(Runnable postLoadingHook, boolean debugMode) {
 		this.browser = new JavaFxD3Browser(postLoadingHook, debugMode);
 		return this.browser;
+	}
+
+	protected static String createNewTemporaryInstanceName() {
+		double random = Math.random();
+		String randomString = ("" + random).substring(2,5);
+		String name =  "temp__instance__" + System.currentTimeMillis() + "_" + randomString;
+		return name;
 	}
 
 }

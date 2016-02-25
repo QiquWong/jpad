@@ -323,7 +323,7 @@ public class TakeOff_Landing_Test_TP {
 		Amount<Duration> dtHold = Amount.valueOf(0.5, SI.SECOND);
 		double mu = 0.025;
 		double muBrake = 0.3;
-		double kAlphaDot = 0.07; // [1/deg]
+		double kAlphaDot = 0.065; // [1/deg]
 		double kcLMax = 0.85;
 		double kRot = 1.05;
 		double kLO = 1.1;

@@ -48,16 +48,16 @@ public final class MyArrayUtils {
 	 * Concatenate two matrices a,b to get a new matrix:
 	 * |a|
 	 * |b|
-	 * 
+	 *
 	 * a and b must have the same number of columns
-	 * 
+	 *
 	 * @param a
 	 * @param b
 	 * @return
 	 */
 	public static double[][] concatMatricesVertically(double[][] a, double[][] b) {
 
-		if (a[0].length != b[0].length){ 
+		if (a[0].length != b[0].length){
 			System.out.println("Input matrices have different number of columns");
 			return null;
 		}
@@ -89,7 +89,7 @@ public final class MyArrayUtils {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param d an array [x, y, z]
 	 * @return an array [x, y, z, x, y, z]
 	 */
@@ -101,7 +101,7 @@ public final class MyArrayUtils {
 			dd[d.length + i] = d[i];
 		}
 
-		return dd;		
+		return dd;
 	}
 
 	/**
@@ -152,7 +152,7 @@ public final class MyArrayUtils {
 		return ArrayUtils.toPrimitive(set.toArray(new Double[set.size()]));
 	}
 
-	/** 
+	/**
 	 * Search for maximum value in a list of Double[]
 	 */
 	public static double searchMax(List<Double[]> dList) {
@@ -186,7 +186,7 @@ public final class MyArrayUtils {
 	            .getAsInt();  // or throw
 		return minIdx;
 	}
-	
+
 	public static int getIndexOfMin(Double[] d) {
 		// http://stackoverflow.com/questions/31116190/java-8-find-index-of-minimum-value-from-a-list
 		int minIdx = IntStream.range(0,d.length)
@@ -202,7 +202,7 @@ public final class MyArrayUtils {
 	            .getAsInt();  // or throw
 		return maxIdx;
 	}
-	
+
 	public static int getIndexOfMax(Double[] d) {
 		// http://stackoverflow.com/questions/31116190/java-8-find-index-of-minimum-value-from-a-list
 		int maxIdx = IntStream.range(0,d.length)
@@ -251,7 +251,7 @@ public final class MyArrayUtils {
 		return getMin(dd);
 	}
 
-	/** 
+	/**
 	 * Search for minimum value in a list of Double[]
 	 */
 	public static double searchMin(List<Double[]> dList) {
@@ -274,27 +274,59 @@ public final class MyArrayUtils {
 		return sum/(double)data.length;
 	}
 
+
+	// http://stackoverflow.com/questions/11447780/convert-two-dimensional-array-to-list-in-java
+	public static <T> List<List<T>> convert2DArrayToList(T[][] twoDArray) {
+	    List<List<T>> list = new ArrayList<>(twoDArray.length);
+	    for (T[] subarray : twoDArray) {
+	    	List<T> sublist = new ArrayList<>(subarray.length);
+	    	Collections.addAll(sublist, subarray);
+	    	list.add(sublist);
+	    }
+	    return list;
+	}
+
+	public static <T> List<T> extractColumnOf2DArrayToList(T[][] twoDArray, int c) {
+
+		if (twoDArray.length == 0)
+			return null;
+		else {
+			if (c >= twoDArray[0].length)
+				return null;
+		}
+		if (c < 0)
+			return null;
+
+	    List<T> list = new ArrayList<>(twoDArray.length);
+	    for (T[] subarray : twoDArray) {
+	    	T element = subarray[c];
+	    	list.add(element);
+	    }
+	    return list;
+	}
+
+
 	//	public int findFirstGreaterThan(double[] d1, double[] d2) {
-	//		
+	//
 	//		if (search)
-	//		
+	//
 	//		for (int i=)
 	//	}
 
 	public static double[] convertToDoublePrimitive(Double[] vec){
-		
+
 		double[] vec_d = ArrayUtils.toPrimitive(vec);
-		
+
 		return vec_d;
 	}
-	
+
 	public static double[] convertToDoublePrimitive(List<Double> list){
-		
+
 		double[] vec_d = ArrayUtils.toPrimitive(list.toArray(new Double[list.size()]));
-	
+
 		return vec_d;
 	}
-	
+
 	public static <T extends Quantity> List<Amount<T>> convertDoubleArrayToListOfAmount(double[] d, Unit unit) {
 
 		if ( d.length == 0 ) return null;
@@ -393,7 +425,7 @@ public final class MyArrayUtils {
 
 
 	/** Compute a cosine-spaced array of values
-	 * 
+	 *
 	 * @author Agodemar
 	 * @param a, b, n
 	 * @return double[]
@@ -414,7 +446,7 @@ public final class MyArrayUtils {
 
 
 	/** Compute a half-cosine-spaced array of values (finer spacing near first boundary value)
-	 * 
+	 *
 	 * @author Agodemar
 	 * @param a, b, n
 	 * @return double[]
@@ -435,7 +467,7 @@ public final class MyArrayUtils {
 
 
 	/** Compute a half-cosine-spaced array of values (finer spacing near second boundary value)
-	 * 
+	 *
 	 * @author Agodemar
 	 * @param a, b, n
 	 * @return double[]
@@ -482,9 +514,9 @@ public final class MyArrayUtils {
 		return c;
 	}
 
-	/** 
+	/**
 	 * Compute product of the elements of an array
-	 * 
+	 *
 	 * @author Lorenzo Attanasio
 	 * @param d
 	 * @return
@@ -500,9 +532,9 @@ public final class MyArrayUtils {
 	}
 
 
-	/** 
+	/**
 	 * Compute sum of the elements of an array
-	 * 
+	 *
 	 * @author Lorenzo Attanasio
 	 * @param d
 	 * @return
@@ -567,7 +599,7 @@ public final class MyArrayUtils {
 		return intersectionArray;
 	}
 
-	public static Double rootFindingBrent(double[] x, double[] y, 
+	public static Double rootFindingBrent(double[] x, double[] y,
 			double lowerBound, double upperBound, AllowedSolution solutionSide) {
 
 		if (x.length != y.length) {
@@ -586,7 +618,7 @@ public final class MyArrayUtils {
 	}
 
 
-	public static Double intersectArraysBrent(double[] x, double[] d1, double[] d2, 
+	public static Double intersectArraysBrent(double[] x, double[] d1, double[] d2,
 			double lowerBound, double upperBound, AllowedSolution solutionSide) {
 		if (d1.length != d2.length) {
 			System.out.println("intersectArraysBrent: Input arrays must have the same length");
@@ -645,7 +677,7 @@ public final class MyArrayUtils {
 	}
 
 	/**
-	 * 
+	 *
 	 * @author Lorenzo Attanasio
 	 *
 	 * @param start
@@ -658,15 +690,15 @@ public final class MyArrayUtils {
 		double step = (end-start)/(nPoints-1);
 		d[0] = start;
 		d[d.length-1] = end;
-		for (int i=1; i<nPoints-1; i++) 
+		for (int i=1; i<nPoints-1; i++)
 			d[i] = d[i-1] + step;
-	
+
 		return d;
 	}
-	
+
 	/**
 	 * Overload of the double[] linspace method for Double[]
-	 * 
+	 *
 	 * @author Vittorio Trifari
 	 *
 	 * @param start
@@ -679,9 +711,9 @@ public final class MyArrayUtils {
 		Double step = (end-start)/(nPoints-1);
 		d[0] = start;
 		d[d.length-1] = end;
-		for (int i=1; i<nPoints-1; i++) 
+		for (int i=1; i<nPoints-1; i++)
 			d[i] = d[i-1] + step;
-	
+
 		return d;
 	}
 }

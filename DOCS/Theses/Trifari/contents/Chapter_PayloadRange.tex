@@ -172,7 +172,7 @@ The class core consists of the following three principal methods which have to e
 \end{itemize}
 %
 \noindent
-Each of these requires in input the table~\ref{table:Table2} data, a database which collects all data from table~\ref{table:Table1},  named \emph{FuelFractions.h5}, and an engine database, for turboprop or turbofan, in which all specific fuel consumption values, at given Mach number and altitude, are stored.
+Each of these requires in input the table~\ref{table:Table2} data, a database which collects all data from table~\ref{table:Table1},  named \lstinline[language=Java]!FuelFractionDatabaseReader!, and an engine database, for turboprop or turbofan, in which all specific fuel consumption values, at given Mach number and altitude, are stored.
 %
 \begin{table}[!ht]
 \begin{tabular}{p{7cm}p{7.5cm}}
@@ -263,103 +263,23 @@ With the purpose of validating calculations presented before, two case studies h
 
 \bigskip
 \noindent
-The ATR-72, made by the French-Italian aircraft manufacturer ATR, is a stretched variant of the original ATR-42 that entered in service in 1989; it’s powered by two turboprop engine and it’s used typically as a regional airliner. The main purpose of its design was to increase the seating capacity throughout the stretching of the fuselage by 4.5m, an increased wingspan, more powerful engines and an increased fuel capacity by approximately 10$\%$.
+The two presented tests share the same architecture so that a general guideline can be followed; this strategy has been designed with the purpose of making a general procedure in order to simplify user’s work. Thus, for more clarity, the listings of test is reported, as an exemplificative practice, only in the case of the ATR-72. 
 
 \bigskip
 \noindent
-The Boeing 747 is a wide-body commercial jet airliner and cargo aircraft, often referred to by its original nickname, Jumbo Jet, or Queen of the Skies. Its distinctive hump upper deck along the forward part of the aircraft makes it among the world's most recognizable aircraft, and it was the first wide-body produced. Manufactured by Boeing's Commercial Airplane unit in the United States, the original version of the 747 had two and a half times greater capacity than the Boeing 707, one of the common large commercial aircraft of the 1960s. The four-engine 747 uses a double deck configuration for part of its length and it’s available in passenger and other versions. Boeing designed the 747's hump-like upper deck to serve as a first class lounge or extra seating, and to allow the aircraft to be easily converted to a cargo carrier by removing seats and installing a front cargo door. The 747-100B model was developed from the 747-100SR, using its stronger airframe and landing gear design; the type had an increased fuel capacity of $\SI{182000}{\liter}$, allowing for a 5000 nautical mile range with a typical 452 passengers payload, and an increased maximum take-off weight of $\SI{340000}{\kilogram}$ was offered; unlike the original 747-100, the 747-100B was offered with Pratt \& Whitney JT9D-7A, General Electric CF6-50, or Rolls-Royce RB211-524 turbofan engines.
+The preliminary steps required to build up the test class are the same that have been discussed in the paragraph \ref{par:DefaultAircraft}. However, since the class \lstinline[language=Java]!PayloadRangeCalc! requires that data from table \ref{table:Table1} are available, another database has to be read. This database is named \lstinline[language=Java]!FuelFraction.h5! and is read by the class \lstinline[language=Java]!FuelFractionDatabaseReader! created following the guideline of appendix~\ref{par:Appendix2}.
+%
+Furhermore, this database is strictly connected with the fuel tank so that it has been decided to link the object of the class \lstinline[language=Java]!FuelFractionDatabaseReader! to this aircraft component as follows.
 
 \bigskip
-\noindent
-The two presented tests share the same architecture so that a general guideline can be followed; this strategy has been designed with the purpose of making a general procedure in order to simplify user’s work.
-
-\bigskip
-\noindent
-For more clarity, listings of the two test types are reported, as an exemplificative practice, only in the case of the ATR-72 turboprop aircraft. 
-%
-First of all it’s necessary to set up all default folders in order to make them achievable from any location inside the software; this is done with the static method \lstinline[language=Java]!initWorkingDirectoryTree! of the \lstinline[language=Java]!MyConfiguration! class located in \lstinline[language=Java]!JPADConfigs! package. In this way, every time the user wants to point at a specific folder, like the input or output directory, it’s necessary only to call the \gls{Static} \lstinline[language=Java]!getDir!, also from \lstinline[language=Java]!MyConfiguration! class, which reads the~folder name, from a dedicated \gls{Enum}, and associate it with the related directory from a \gls{Map} named \lstinline[language=Java]!mapPaths!.
-%
-The second step is to read the engine and the fuel fractions databases with the related java class reader; this particular class type uses the super class \lstinline[language=Java]!DatabaseReader!, which implements the use of \lstinline[language=Java]!MyHDFReader! class, to access an~.h5 dataset values. For more information about how to build and use a \gls{HDF} database, see appendix~\ref{ch:hdf}.
-
-\bigskip
-\begin{lstlisting}[caption={Excerpt of the ATR-72 Payload-Range test - preliminary steps}, captionpos=b, tabsize=2]
-public class PayloadRange_Test_TP{
-	//-----------------------------------------------------
-	// MAIN:
-	public static void main(String[] args) throws
-					HDF5LibraryException, NullPointerException{
-		System.out.println("-----------------------------");
-		System.out.println("PayloadRangeCalc_Test :: main");
-		System.out.println("-----------------------------");
-		//--------------------------------------------------
-		// Assign all default folders
-		MyConfiguration.initWorkingDirectoryTree();
-		//--------------------------------------------------
-		// Setup database(s)	
-		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
-		String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
-		String fuelFractionDatabaseFileName = "FuelFractions.h5";
-		AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(
-						databaseFolderPath,
-						aerodynamicDatabaseFileName
-						);
-		FuelFractionDatabaseReader fuelFractionReader = new FuelFractionDatabaseReader(
-						databaseFolderPath,
-						fuelFractionDatabaseFileName
-						);
-\end{lstlisting}
-%
-\noindent
-Now that all required resources are set up, following steps are to create the aircraft model, assign its operating conditions and perform all necessary analysis like the aerodynamic one. This is done throughout the use of the following three fundamental classes, which modes of operation are explained in the flowchart of figure~\ref{fig:Figure5}.
-%
-\begin{itemize}
-\item\lstinline[language=Java]!Aircraft! class
-\item\lstinline[language=Java]!OperatingConditions! class
-\item\lstinline[language=Java]!ACAnalysisManager! class
-\end{itemize}
-%
-\begin{lstlisting}[caption={Excerpt of the ATR-72 Payload-Range test - Aircraft, OperatingConditions and ACAnalysisManager setup}, captionpos=b, tabsize=2]
-		//--------------------------------------------------
-		// Operating Condition / Aircraft / AnalysisManager 
-		// (geometry calculations)
-		OperatingConditions theCondition = new OperatingConditions();
-		
-		Aircraft aircraft = Aircraft.createDefaultAircraft("ATR-72");
-		aircraft.get_theAerodynamics().set_aerodynamicDatabaseReader(aeroDatabaseReader);
+\begin{lstlisting}[caption={Attachment of the \lstinline!FuelFractionDatabaseReader! to the fuel tank component of the aircraft}, captionpos=b, tabsize=2]
 		aircraft.get_theFuelTank().setFuelFractionDatabase(fuelFractionReader);
-		aircraft.set_name("ATR-72");
-		aircraft.get_wing().set_theCurrentAirfoil(new MyAirfoil(
-						aircraft.get_wing(),
-						0.5)
-						 );		
-		
-		ACAnalysisManager theAnalysis = new ACAnalysisManager(theCondition);
-		theAnalysis.updateGeometry(aircraft);
-		
-		//--------------------------------------------------
-		// Set the CoG(Bypass the Balance analysis allowing
-		// to perform Aerodynamic analysis only)
-		CenterOfGravity cgMTOM = new CenterOfGravity();
-
-		// x_cg in body-ref.-frame
-		cgMTOM.set_xBRF(Amount.valueOf(12.0, SI.METER)); 
-		cgMTOM.set_yBRF(Amount.valueOf(0.0, SI.METER));
-		cgMTOM.set_zBRF(Amount.valueOf(2.3, SI.METER));
-
-		aircraft.get_theBalance().set_cgMTOM(cgMTOM);
-		aircraft.get_HTail().calculateArms(aircraft);
-		aircraft.get_VTail().calculateArms(aircraft);
-		
-		theAnalysis.doAnalysis(aircraft, AnalysisTypeEnum.AERODYNAMIC);
 \end{lstlisting}
-
-\bigskip
-\noindent
-All data required by the \lstinline[language=Java]!PayloadRangeCalc! class are now ready to be used and it’s possible to create an istance of this class accessing, in this way, to all its methods, which have been explained in the previous paragraph. 
+%
+At this point all data required by the \lstinline[language=Java]!PayloadRangeCalc! class are now ready to be used and it’s possible to create an object of this class accessing, in this way, to all its methods, which have been explained in the previous paragraph. 
 
 \bigskip
 \begin{lstlisting}[caption={Excerpt of the ATR-72 Payload-Range test - Payload-Range class istance creation}, captionpos=b, tabsize=2]
-		//--------------------------------------------------
 		// Creating the Calculator Object
 		PayloadRangeCalc test = new PayloadRangeCalc(
 								theCondition, 
@@ -376,7 +296,6 @@ The first check that is implemented has the purpose of inspect wether or not the
 \begin{lstlisting}[caption={Excerpt of the ATR-72 Payload-Range test - critical Mach number check}, captionpos=b, tabsize=2]
 		// ----------CRITICAL MACH NUMBER CHECK--------------
 		boolean check = test.checkCriticalMach(theCondition.get_machCurrent()	);
-		
 		if (check)
 			System.out.println("\n\n-------------------------"
 			+"\nCurrent Mach lower then critical Mach number"
@@ -398,24 +317,20 @@ The first check that is implemented has the purpose of inspect wether or not the
 
 \bigskip
 \begin{lstlisting}[caption={Excerpt of the ATR-72 Payload-Range test results - critical Mach number check}, captionpos=b, tabsize=2]
----------------------------------------------------------
 Current Mach is lower then critical Mach number.
 Current Mach = 0.43
 Critical Mach = 0.6659791543529567
 
 	 CHECK PASSED --> PROCEDING TO CALCULATION 
----------------------------------------------------------
 \end{lstlisting}
 
 \bigskip
 \begin{lstlisting}[caption={Excerpt of the B747-100B Payload-Range test results - critical Mach number check}, captionpos=b, tabsize=2]
----------------------------------------------------------
 Current Mach is lower then critical Mach number.
 Current Mach = 0.84
 Critical Mach = 0.8490814607347361
 
 	 CHECK PASSED --> PROCEDING TO CALCULATION 
----------------------------------------------------------
 \end{lstlisting}
 
 \bigskip
@@ -519,112 +434,6 @@ Otherwise, if it’s the maximum take-off mass parameterization the wanted analy
 \noindent
 In conclusion, following pages shows a summary of input data used for each analyzed aircraft, together with their related results in terms of Payload-Range diagrams for both the chosen Mach number and best range comparison and max take-off mass parameterization. 
 %
-\begin{figure}
-  \begin{adjustbox}{addcode={\begin{minipage}{\width}}{\caption{%
-     \lstinline[language=Java]!Aircraft!, \lstinline[language=Java]!OperatingConditions! and \lstinline[language=Java]!ACAnalysisManager! flowchart}
-     \label{fig:Figure5}
-     \end{minipage}},rotate=90,center}
-      \includegraphics[scale=.22]{HowToCreateADefaultAircraftInJPAD}
-  \end{adjustbox}
-\end{figure}
-%
-\begin{figure}[!ht]
-\centering
-\includegraphics[keepaspectratio, width=0.8\textwidth]{ATR-72}
-\caption{ATR-72 views – Jane's All the World's Aircraft 2004-2005}
-\label{fig:Figure6}
-\end{figure}
-%
-\begin{table}[!hb]
-\makebox[\linewidth]{
-\begin{tabular}{p{4cm}p{7.5cm}p{2cm}}
-\toprule
-\textbf{Variables} & \textbf{Description} & \textbf{Values} \\
-\midrule
-\lstinline[language=Java]!altitude! & Cruise altitude & $\SI{6000}{\meter}$ \\[0.2cm]
-\lstinline[language=Java]!machCurrent! & The user chosen Mach number & 0,43 \\[0.2cm]
-\lstinline[language=Java]!surface! & Wing surface & $\SI{61}{\meter\squared}$ \\[0.2cm]
-\lstinline[language=Java]!taperRatioEquivalent! & Taper ratio of the equivalent wing & 0,545   \\[0.2cm]
-\lstinline[language=Java]!maxTakeOffMass! & maximum take-off mass & $\SI{23063.5789}{\kilogram}$         \\[0.2cm]
-\lstinline[language=Java]!operatingEmptyMass!	& operating empty mass & $\SI{12935.5789}{\kilogram}$ \\[0.2cm]
-\lstinline[language=Java]!maxFuelMass! & maximum fuel mass & $\SI{5000.0}{\kilogram}$ \\[0.2cm]
-\lstinline[language=Java]!nPassMax! & maximum number of passengers & 72 \\[0.2cm]
-\lstinline[language=Java]!sweepLEEquivalent! & Equivalent wing leading edge sweep angle & $\SI{3.1415}{\degree}$ \\[0.2cm]
-\lstinline[language=Java]!oswald! & Wing oswald factor & 0,7585 \\[0.2cm]
-\lstinline[language=Java]!byPassRatio! & Engine bypass ratio & 0,0 \\[0.2cm]
-\lstinline[language=Java]!eta! & propeller efficiency & 0,85 \\[0.2cm]
-\lstinline[language=Java]!tcMax! & Mean maximum thickness of the wing & 0,1675 \\[0.2cm]
-\lstinline[language=Java]!cl! & The cruise lift coefficient & 0,45 \\[0.2cm]
-\lstinline[language=Java]!ar! & Wing aspect ratio & 12 \\[0.2cm]
-\lstinline[language=Java]!cd0! & Wing parasite drag coefficient & 0,0317 \\[0.2cm]
-\bottomrule
-\end{tabular}
-}
-\caption{ATR-72 input data}
-\label{table:Table4}
-\end{table}
-%
-\begin{figure}[!h]
-\centering
-\input{images/PayloadRange_Mach_TP.tikz}
-\caption{ATR-72 Payload-Range - Chosen Mach number and best range comparison}
-\end{figure}
-%
-\begin{figure}[!h]
-\centering
-\input{images/PayloadRange_MaxTakeOffMass_TP.tikz}
-\caption{ATR-72 Payload-Range - Maximum take-off mass parameterization}
-\end{figure}
-%
-\begin{figure}[!ht]
-\centering
-\includegraphics[keepaspectratio, width=0.8\textwidth]{B747-100B}
-\caption{B747-100B views – Jane's All the World's Aircraft 2004-2005}
-\label{fig:Figure7}
-\end{figure}
-%
-\begin{table}[!hb]
-\makebox[\linewidth]{
-\begin{tabular}{p{4cm}p{7.5cm}p{2cm}}
-\toprule
-\textbf{Variables} & \textbf{Description} & \textbf{Values} \\
-\midrule
-\lstinline[language=Java]!altitude! & Cruise altitude & $\SI{11000}{\meter}$ \\[0.2cm]
-\lstinline[language=Java]!machCurrent! & The user chosen Mach number & 0,83 \\[0.2cm]
-\lstinline[language=Java]!surface! & Wing surface & $\SI{511}{\meter\squared}$ \\[0.2cm]
-\lstinline[language=Java]!taperRatioEquivalent! & Taper ratio of the equivalent wing & 0,284   \\[0.2cm]
-\lstinline[language=Java]!maxTakeOffMass! & maximum take-off mass & $\SI{354991.5060}{\kilogram}$         \\[0.2cm]
-\lstinline[language=Java]!operatingEmptyMass!	& operating empty mass & $\SI{153131.9860}{\kilogram}$ \\[0.2cm]
-\lstinline[language=Java]!maxFuelMass! & maximum fuel mass & $\SI{147409.52}{\kilogram}$ \\[0.2cm]
-\lstinline[language=Java]!nPassMax! & maximum number of passengers & 550 \\[0.2cm]
-\lstinline[language=Java]!sweepLEEquivalent! & Equivalent wing leading edge sweep angle & $\SI{38.4288}{\degree}$ \\[0.2cm]
-\lstinline[language=Java]!oswald! & Wing oswald factor & 0,6277 \\[0.2cm]
-\lstinline[language=Java]!byPassRatio! & Engine bypass ratio & 5,0 \\[0.2cm]
-\lstinline[language=Java]!eta! & propeller efficiency & 0,0 \\[0.2cm]
-\lstinline[language=Java]!tcMax! & Mean maximum thickness of the wing & 0,1292 \\[0.2cm]
-\lstinline[language=Java]!cl! & The cruise lift coefficient & 0,45 \\[0.2cm]
-\lstinline[language=Java]!ar! & Wing aspect ratio & 6,9 \\[0.2cm]
-\lstinline[language=Java]!cd0! & Wing parasite drag coefficient & 0,0182 \\[0.2cm]
-\bottomrule
-\end{tabular}
-}
-\caption{B747-100B input data}
-\label{table:Table5}
-\end{table}
-%
-\begin{figure}[!h]
-\centering
-\input{images/PayloadRange_Mach_TF.tikz}
-\caption{B747-100B Payload-Range - Chosen Mach number and best range comparison}
-\end{figure}
-%
-\begin{figure}[!h]
-\centering
-\input{images/PayloadRange_MaxTakeOffMass_TF.tikz}
-\caption{B747-100B Payload-Range - Maximum take-off mass parameterization}
-\end{figure}
-%
-\clearpage
 \begin{table}[!ht]
 \makebox[\linewidth]{
 \begin{minipage}{6cm}
@@ -684,3 +493,27 @@ SFC & 0.626 \\
 \caption{Review of ATR-72 (left) and B747-100B (right) results at chosen Mach number conditions}
 \label{table:Table6}
 \end{table}
+%
+\begin{figure}[!h]
+\centering
+\input{images/PayloadRange_Mach_TP.tikz}
+\caption{ATR-72 Payload-Range - Chosen Mach number and best range comparison}
+\end{figure}
+%
+\begin{figure}[!h]
+\centering
+\input{images/PayloadRange_MaxTakeOffMass_TP.tikz}
+\caption{ATR-72 Payload-Range - Maximum take-off mass parameterization}
+\end{figure}
+%
+\begin{figure}[!h]
+\centering
+\input{images/PayloadRange_Mach_TF.tikz}
+\caption{B747-100B Payload-Range - Chosen Mach number and best range comparison}
+\end{figure}
+%
+\begin{figure}[!h]
+\centering
+\input{images/PayloadRange_MaxTakeOffMass_TF.tikz}
+\caption{B747-100B Payload-Range - Maximum take-off mass parameterization}
+\end{figure}
