@@ -9,8 +9,8 @@ xmin=-1.2256082435562066,
 xmax=16.200000000000003,
 xlabel={alpha_body (deg)},
 xmajorgrids,
-ymin=-0.06338485783507404,
-ymax=0.36101227665852165,
+ymin=-0.06619650300694778,
+ymax=0.320652,
 ylabel={CM_f },
 ymajorgrids,
 legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
@@ -21,8 +21,8 @@ color=black,
 solid
 ]
 table[row sep=crcr]{
--1.1348224477372282	-0.058689683180624105\\
-15.0	0.3342706265356682\\
+-1.1348224477372282	-0.06129305833976646\\
+15.0	0.2969\\
 };
 \end{axis}
 \end{tikzpicture}%

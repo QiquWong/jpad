@@ -26,74 +26,77 @@
 \contentsline {subsection}{\numberline {2.2.2}CAD modelling}{16}{subsection.2.2.2}
 \contentsline {subsection}{\numberline {2.2.3}Interface with external software}{16}{subsection.2.2.3}
 \contentsline {section}{\numberline {2.3}In Development}{17}{section.2.3}
-\contentsline {part}{II\hspace {1em}Development of Application}{18}{part.2}
-\contentsline {chapter}{\numberline {3}Introdution to Java}{19}{chapter.3}
-\contentsline {section}{\numberline {3.1}The java Language}{19}{section.3.1}
-\contentsline {section}{\numberline {3.2}Java choice}{20}{section.3.2}
-\contentsline {chapter}{\numberline {4}Work Object}{22}{chapter.4}
-\contentsline {section}{\numberline {4.1}Introduction}{22}{section.4.1}
-\contentsline {section}{\numberline {4.2}Input data from .XML file}{22}{section.4.2}
-\contentsline {section}{\numberline {4.3}Default Aircraft}{23}{section.4.3}
-\contentsline {subsection}{\numberline {4.3.1}How is made a default Aircraft}{24}{subsection.4.3.1}
-\contentsline {subsection}{\numberline {4.3.2}How is made a default Wing}{27}{subsection.4.3.2}
-\contentsline {section}{\numberline {4.4}Database in JPAD}{28}{section.4.4}
-\contentsline {subsection}{\numberline {4.4.1}Setup database}{29}{subsection.4.4.1}
-\contentsline {subsection}{\numberline {4.4.2}Assign database using an Aircraft object}{29}{subsection.4.4.2}
-\contentsline {subsection}{\numberline {4.4.3}Assign database using a Wing object}{29}{subsection.4.4.3}
-\contentsline {subsection}{\numberline {4.4.4}User's guide}{30}{subsection.4.4.4}
-\contentsline {part}{III\hspace {1em}Functionality Overview}{32}{part.3}
-\contentsline {chapter}{\numberline {5}Work Object Data}{33}{chapter.5}
-\contentsline {chapter}{\numberline {6}Wing Lift Characteristics}{36}{chapter.6}
-\contentsline {section}{\numberline {6.1}Theoretical background}{36}{section.6.1}
-\contentsline {subsection}{\numberline {6.1.1}Zero-Lift Angle and Lift Coefficient Slope}{37}{subsection.6.1.1}
-\contentsline {subsection}{\numberline {6.1.2}End of Linearity angle of attack}{38}{subsection.6.1.2}
-\contentsline {subsection}{\numberline {6.1.3}Maximum Lift Coefficient}{38}{subsection.6.1.3}
-\contentsline {subsection}{\numberline {6.1.4}Stall Angle of Attack}{41}{subsection.6.1.4}
-\contentsline {subsection}{\numberline {6.1.5}Construction of the curve}{41}{subsection.6.1.5}
-\contentsline {subsection}{\numberline {6.1.6}Mach number effects on Lift curve }{42}{subsection.6.1.6}
-\contentsline {subsection}{\numberline {6.1.7}High Lift devices}{43}{subsection.6.1.7}
-\contentsline {section}{\numberline {6.2}Java Class Architecture}{44}{section.6.2}
-\contentsline {section}{\numberline {6.3}Case Study}{44}{section.6.3}
-\contentsline {chapter}{\numberline {7}Wing Drag Characteristics}{45}{chapter.7}
-\contentsline {section}{\numberline {7.1}Theoretical background}{47}{section.7.1}
-\contentsline {section}{\numberline {7.2}Java Class Architecture}{47}{section.7.2}
-\contentsline {section}{\numberline {7.3}Case Study}{48}{section.7.3}
-\contentsline {chapter}{\numberline {8}Downwash Estimation}{50}{chapter.8}
-\contentsline {section}{\numberline {8.1}Theoretical background}{50}{section.8.1}
-\contentsline {section}{\numberline {8.2}Java Class Architecture}{52}{section.8.2}
-\contentsline {subsection}{\numberline {8.2.1}Constant Downwash Gradient}{53}{subsection.8.2.1}
-\contentsline {subsection}{\numberline {8.2.2}Variable Downwash Gradient}{54}{subsection.8.2.2}
-\contentsline {section}{\numberline {8.3}Case Study}{56}{section.8.3}
-\contentsline {chapter}{\numberline {9}Aircraft Longitudinal Static Stability}{59}{chapter.9}
-\contentsline {section}{\numberline {9.1}Aerodynamic Lift}{61}{section.9.1}
-\contentsline {subsection}{\numberline {9.1.1}Wing}{62}{subsection.9.1.1}
-\contentsline {subsection}{\numberline {9.1.2}Fuselage}{62}{subsection.9.1.2}
-\contentsline {subsection}{\numberline {9.1.3}Horizontal Tail}{64}{subsection.9.1.3}
-\contentsline {subsubsection}{Elevator index of effectiveness}{65}{subsubsection*.64}
-\contentsline {subsection}{\numberline {9.1.4}Complete Aircraft}{66}{subsection.9.1.4}
-\contentsline {section}{\numberline {9.2}Aerodynamic Drag}{66}{section.9.2}
-\contentsline {subsection}{\numberline {9.2.1}Drag of a lifting surface}{67}{subsection.9.2.1}
-\contentsline {subsection}{\numberline {9.2.2}Additional drag due to elevator}{67}{subsection.9.2.2}
-\contentsline {section}{\numberline {9.3}Pitching Moments}{68}{section.9.3}
-\contentsline {subsection}{\numberline {9.3.1}Lifting surface}{69}{subsection.9.3.1}
-\contentsline {subsection}{\numberline {9.3.2}Fuselage}{70}{subsection.9.3.2}
-\contentsline {subsubsection}{Multhopp method}{70}{subsubsection*.73}
-\contentsline {subsubsection}{Fuselage Pitching moment prediction method}{72}{subsubsection*.77}
-\contentsline {section}{\numberline {9.4}Propulsors}{75}{section.9.4}
-\contentsline {subsection}{\numberline {9.4.1}Direct Effects}{75}{subsection.9.4.1}
-\contentsline {section}{\numberline {9.5}Stability Calculation}{76}{section.9.5}
-\contentsline {subsection}{\numberline {9.5.1}Neutral Point and Static Margin}{76}{subsection.9.5.1}
-\contentsline {section}{\numberline {9.6}Java Class Architecture}{76}{section.9.6}
-\contentsline {section}{\numberline {9.7}Case Study}{76}{section.9.7}
-\contentsline {chapter}{\numberline {10}Minor Works}{77}{chapter.10}
-\contentsline {section}{\numberline {10.1}Induced Angle of Attack}{77}{section.10.1}
-\contentsline {chapter}{\numberline {A}HDF dataset and database reader creation}{80}{Appendix.a.A}
-\contentsline {section}{\numberline {A.1}Chart Digitization}{80}{section.a.A.1}
-\contentsline {section}{\numberline {A.2}Creation of an HDF file with Matlab}{81}{section.a.A.2}
-\contentsline {chapter}{\numberline {B}Java Reference}{84}{Appendix.a.B}
-\contentsline {section}{\numberline {B.1}Packages}{84}{section.a.B.1}
-\contentsline {section}{\numberline {B.2}Documentation}{84}{section.a.B.2}
-\contentsline {chapter}{Glossary}{86}{section*.92}
-\contentsline {chapter}{Acronyms}{88}{section*.94}
-\contentsline {chapter}{List of symbols}{89}{section*.96}
-\contentsline {chapter}{Bibliography}{91}{section*.98}
+\contentsline {subsection}{\numberline {2.3.1}Input File}{17}{subsection.2.3.1}
+\contentsline {subsection}{\numberline {2.3.2}Calculation modules}{20}{subsection.2.3.2}
+\contentsline {subsection}{\numberline {2.3.3}Optimization Process}{20}{subsection.2.3.3}
+\contentsline {part}{II\hspace {1em}Development of Application}{21}{part.2}
+\contentsline {chapter}{\numberline {3}Introdution to Java}{22}{chapter.3}
+\contentsline {section}{\numberline {3.1}The java Language}{22}{section.3.1}
+\contentsline {section}{\numberline {3.2}Java choice}{23}{section.3.2}
+\contentsline {chapter}{\numberline {4}Work Object}{25}{chapter.4}
+\contentsline {section}{\numberline {4.1}Introduction}{25}{section.4.1}
+\contentsline {section}{\numberline {4.2}Input data from .XML file}{25}{section.4.2}
+\contentsline {section}{\numberline {4.3}Default Aircraft}{26}{section.4.3}
+\contentsline {subsection}{\numberline {4.3.1}How is made a default Aircraft}{27}{subsection.4.3.1}
+\contentsline {subsection}{\numberline {4.3.2}How is made a default Wing}{30}{subsection.4.3.2}
+\contentsline {section}{\numberline {4.4}Database in JPAD}{31}{section.4.4}
+\contentsline {subsection}{\numberline {4.4.1}Setup database}{32}{subsection.4.4.1}
+\contentsline {subsection}{\numberline {4.4.2}Assign database using an Aircraft object}{32}{subsection.4.4.2}
+\contentsline {subsection}{\numberline {4.4.3}Assign database using a Wing object}{32}{subsection.4.4.3}
+\contentsline {subsection}{\numberline {4.4.4}User's guide}{33}{subsection.4.4.4}
+\contentsline {part}{III\hspace {1em}Functionality Overview}{35}{part.3}
+\contentsline {chapter}{\numberline {5}Work Object Data}{36}{chapter.5}
+\contentsline {chapter}{\numberline {6}Wing Lift Characteristics}{39}{chapter.6}
+\contentsline {section}{\numberline {6.1}Theoretical background}{39}{section.6.1}
+\contentsline {subsection}{\numberline {6.1.1}Zero-Lift Angle and Lift Coefficient Slope}{40}{subsection.6.1.1}
+\contentsline {subsection}{\numberline {6.1.2}End of Linearity angle of attack}{41}{subsection.6.1.2}
+\contentsline {subsection}{\numberline {6.1.3}Maximum Lift Coefficient}{41}{subsection.6.1.3}
+\contentsline {subsection}{\numberline {6.1.4}Stall Angle of Attack}{44}{subsection.6.1.4}
+\contentsline {subsection}{\numberline {6.1.5}Construction of the curve}{44}{subsection.6.1.5}
+\contentsline {subsection}{\numberline {6.1.6}Mach number effects on Lift curve }{45}{subsection.6.1.6}
+\contentsline {subsection}{\numberline {6.1.7}High Lift devices}{46}{subsection.6.1.7}
+\contentsline {section}{\numberline {6.2}Java Class Architecture}{47}{section.6.2}
+\contentsline {section}{\numberline {6.3}Case Study}{47}{section.6.3}
+\contentsline {chapter}{\numberline {7}Wing Drag Characteristics}{48}{chapter.7}
+\contentsline {section}{\numberline {7.1}Theoretical background}{50}{section.7.1}
+\contentsline {section}{\numberline {7.2}Java Class Architecture}{50}{section.7.2}
+\contentsline {section}{\numberline {7.3}Case Study}{51}{section.7.3}
+\contentsline {chapter}{\numberline {8}Downwash Estimation}{53}{chapter.8}
+\contentsline {section}{\numberline {8.1}Theoretical background}{53}{section.8.1}
+\contentsline {section}{\numberline {8.2}Java Class Architecture}{55}{section.8.2}
+\contentsline {subsection}{\numberline {8.2.1}Constant Downwash Gradient}{56}{subsection.8.2.1}
+\contentsline {subsection}{\numberline {8.2.2}Variable Downwash Gradient}{57}{subsection.8.2.2}
+\contentsline {section}{\numberline {8.3}Case Study}{59}{section.8.3}
+\contentsline {chapter}{\numberline {9}Aircraft Longitudinal Static Stability}{62}{chapter.9}
+\contentsline {section}{\numberline {9.1}Aerodynamic Lift}{64}{section.9.1}
+\contentsline {subsection}{\numberline {9.1.1}Wing}{65}{subsection.9.1.1}
+\contentsline {subsection}{\numberline {9.1.2}Fuselage}{65}{subsection.9.1.2}
+\contentsline {subsection}{\numberline {9.1.3}Horizontal Tail}{67}{subsection.9.1.3}
+\contentsline {subsubsection}{Elevator index of effectiveness}{68}{subsubsection*.66}
+\contentsline {subsection}{\numberline {9.1.4}Complete Aircraft}{69}{subsection.9.1.4}
+\contentsline {section}{\numberline {9.2}Aerodynamic Drag}{69}{section.9.2}
+\contentsline {subsection}{\numberline {9.2.1}Drag of a lifting surface}{70}{subsection.9.2.1}
+\contentsline {subsection}{\numberline {9.2.2}Additional drag due to elevator}{70}{subsection.9.2.2}
+\contentsline {section}{\numberline {9.3}Pitching Moments}{71}{section.9.3}
+\contentsline {subsection}{\numberline {9.3.1}Lifting surface}{72}{subsection.9.3.1}
+\contentsline {subsection}{\numberline {9.3.2}Fuselage}{73}{subsection.9.3.2}
+\contentsline {subsubsection}{Multhopp method}{73}{subsubsection*.75}
+\contentsline {subsubsection}{Fuselage Pitching moment prediction method}{75}{subsubsection*.79}
+\contentsline {section}{\numberline {9.4}Propulsors}{78}{section.9.4}
+\contentsline {subsection}{\numberline {9.4.1}Direct Effects}{78}{subsection.9.4.1}
+\contentsline {section}{\numberline {9.5}Stability Calculation}{79}{section.9.5}
+\contentsline {subsection}{\numberline {9.5.1}Neutral Point and Static Margin}{79}{subsection.9.5.1}
+\contentsline {section}{\numberline {9.6}Java Class Architecture}{79}{section.9.6}
+\contentsline {section}{\numberline {9.7}Case Study}{79}{section.9.7}
+\contentsline {chapter}{\numberline {10}Minor Works}{80}{chapter.10}
+\contentsline {section}{\numberline {10.1}Induced Angle of Attack}{80}{section.10.1}
+\contentsline {chapter}{\numberline {A}HDF dataset and database reader creation}{83}{Appendix.a.A}
+\contentsline {section}{\numberline {A.1}Chart Digitization}{83}{section.a.A.1}
+\contentsline {section}{\numberline {A.2}Creation of an HDF file with Matlab}{84}{section.a.A.2}
+\contentsline {chapter}{\numberline {B}Java Reference}{87}{Appendix.a.B}
+\contentsline {section}{\numberline {B.1}Packages}{87}{section.a.B.1}
+\contentsline {section}{\numberline {B.2}Documentation}{87}{section.a.B.2}
+\contentsline {chapter}{Glossary}{89}{section*.94}
+\contentsline {chapter}{Acronyms}{91}{section*.96}
+\contentsline {chapter}{List of symbols}{92}{section*.98}
+\contentsline {chapter}{Bibliography}{94}{section*.100}

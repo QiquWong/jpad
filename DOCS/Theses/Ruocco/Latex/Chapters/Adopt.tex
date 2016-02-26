@@ -245,9 +245,181 @@ With ADOpT it's also possible to execute some high-fidelity analyses using exter
 
 \begin{figure}[H]
 	\centering
-		\includegraphics[width=12 cm]{Immagini/interface}
+		\includegraphics[width=12.9 cm]{Immagini/interface}
 		\caption{Interface with external CFD tools.}
 		\label{fig:badTail}
 	\end{figure}
 	
 \section{In Development}
+
+JPAD library is currently being developed in order to achieve a complete analysis of an aircraft and its optimization. The development is actually moving on a complete reorganization of the input file, and the implementation of other methods of analysis. Anyway, to date, it was reached an advanced level of implemented methods and a full functionality of some modules.
+
+\subsection{Input File}
+
+In order to obtain an useful and intuitive input structure a new data arrangement is in development. The JPAD input files are actually in XML data format. This extension will not change, but the purpose of the new structure is to allow the user to easily manage the input data in order to execute the desired analyzes.\\
+The structure is inspired by that proposed by SUAVE. SUAVE is an open source suite constructed as a modular set of analysis tools written in Python and it is currently being developed in the Aerospace Design Lab at Stanford University. \cite{suave}
+%This tool is based on a three input data structure as in the following figures.
+
+\begin{figure}[H]
+\centering
+	\includegraphics[width=11cm]{Immagini/suave/flowchartBoeing1}
+	\caption{Data Structure used by SUAVE.}
+	\label{fig:suave1}
+\end{figure}
+
+%
+%\begin{figure}[H]
+%	\centering
+%	\includegraphics[width=12 cm]{Immagini/suave/flowchartBoeing2}
+%	\caption{Data Structure used by SUAVE.}
+%	\label{fig:suave2}
+%\end{figure}
+
+
+
+\begin{figure}[H]
+\centering
+	\includegraphics[width=11 cm]{Immagini/suave/Folder_Tree}
+		\caption{Folder Structure in development.}
+		\label{fig:suave3}
+\end{figure}
+
+The fundamental criteria on which the construction is based are expressed following.\\
+In the input file folder, there are many sub-folder for different aircraft. In each of these there are several folders for component in which may be more XML file that corresponding to a different configuration. In fact, there is an XML file for each configuration of each aircraft component ( fuselage, lifting surfaces etc. ).In this way it's possible to choose different configuration for the same aircraft simply changing one or more XML input file.\\
+ For the analysis the useful data will be explained in a user guide. User could make a complete analysis on a new aircraft, simply defining the required data and organize them in separated xml file. \\
+ The main XML file is ``aircraft.xml'' which calls the other XML of the aircraft components. A typical file structure is in the following listings.
+ 
+\begin{lstlisting}[frame=rbl,style=MyxmlStyle, caption={{\footnotesize XML input file for an aircraft.}},label= [style=\bfseries]{Listing}]
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+    <aircraft>
+        <wings>
+            <wing type="WING" file="wing.xml">
+                <position>
+                    <x unit="m">12.0</x>
+                    <y unit="m"> 0.0</y>
+                    <z unit="m"> 2.0</z>
+                </position>
+                <rigging_angle unit="deg">2.0</rigging_angle>
+            </wing>
+            <wing type="HTAIL" file="htail.xml">
+                <position>
+                    <x unit="m">30.0</x>
+                    <y unit="m"> 0.0</y>
+                    <z unit="m"> 4.0</z>
+                </position>
+                <rigging_angle unit="deg">0.0</rigging_angle>
+            </wing>
+            <wing type="VTAIL" file="vtail.xml">
+                <position>
+                    <x unit="m">30.0</x>
+                    <y unit="m"> 0.0</y>
+                    <z unit="m"> 5.0</z>
+                </position>
+                <rigging_angle unit="deg">0.0</rigging_angle>
+            </wing>
+        </wings>
+        <fuselages>
+            <fuselage file="fuselage.xml">
+                <position>
+                    <x unit="m">0.0</x>
+                    <y unit="m">0.0</y>
+                    <z unit="m">0.0</z>
+                </position>
+            </fuselage>
+        </fuselages>
+        <propulsors>
+            <propulsor file="propulsor.xml">
+                <position>
+                    <x unit="m">12.0</x>
+                    <y unit="m"> 5.0</y>
+                    <z unit="m"> 0.0</z>
+                </position>
+                <tilting_angle unit="deg">2.0</tilting_angle>
+                <yawing_angle unit="deg">0.0</yawing_angle>
+            </propulsor>
+            <propulsor file="propulsor.xml">
+                <position>
+                    <x unit="m">12.0</x>
+                    <y unit="m">-5.0</y>
+                    <z unit="m"> 0.0</z>
+                </position>
+                <tilting_angle unit="deg">2.0</tilting_angle>
+                <yawing_angle unit="deg">0.0</yawing_angle>
+            </propulsor>
+        </propulsors>
+    </aircraft>
+</jpad_config>
+\end{lstlisting}
+
+\begin{lstlisting}[frame=rbl,style=MyxmlStyle, caption={{\footnotesize XML input file for an aircraft.}},label= [style=\bfseries]{Listing}]
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+    <wing mirrored="TRUE">
+        <panels>
+            <panel id="Inner panel">
+                <semispan unit="m">4.0</semispan>
+                <dihedral unit="deg">1.5</dihedral>
+                <inner_section>
+                    <airfoil file="naca63209.xml"/>
+                    <geometric_twist unit="deg">0.0</geometric_twist>
+                </inner_section>
+                <outer_section>
+                    <airfoil file="naca63209.xml"/>
+                    <geometric_twist unit="deg">0.0</geometric_twist>
+                </outer_section>
+            </panel>
+            <panel id="Outer panel" linked_to="Inner panel">
+                <semispan unit="m">7.0</semispan>
+                <dihedral unit="deg">3.5</dihedral>
+                <outer_section>
+                    <airfoil file="naca63209.xml"/>
+                    <geometric_twist unit="deg">-2.5</geometric_twist>
+                </outer_section>
+            </panel>
+        </panels>
+        <symmetric_flaps>
+            <symmetric_flap id="Inner flap" type="SINGLE_SLOTTED">
+                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">
+                    <value>0.15<value/>
+                </inner_station_spanwise_position>
+                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">
+                    <value>0.45<value/>
+                </outer_station_spanwise_position>
+                <percent_chord value="40"/>
+                <angle_range unit="deg">[0.0,40.0]</angle_range>
+            </symmetric_flap>
+        </symmetric_flaps>
+        <slats>
+            <slat linked_to="Inner flap" type="SINGLE">
+                <percent_chord value="10"/>
+                <angle_range unit="deg">[0.0,10.0]</angle_range>
+            </slat>
+        </slats>
+        <asymmetric_flaps>
+            <asymmetric_flap id="Aileron" type="PLAIN">
+                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">
+                    <value>0.75<value/>
+                </inner_station_spanwise_position>
+                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">
+                    <value>0.97<value/>
+                </outer_station_spanwise_position>
+                <percent_chord value="20"/>
+                <angle_range unit="deg">[-5.0,10.0]</angle_range>
+                <differential_deflection_factor value="1.0"/>
+            </asymmetric_flap>
+        </asymmetric_flaps>
+    </wing>
+</jpad_config>
+\end{lstlisting}
+
+\subsection{Calculation modules}
+Currently the software is able to esimate the aircraft weight breakdown, the center of gravity location, calculate some aerodynamic parameters and estimate the performance. All these types of estimates can be usually performed using several analysis methods, comparable and interchangeable. 
+It is also provided a static longitudinal stability analysis, take-off performances and the generation of Payload Range chart.\\
+Future targets for the software are the implementation of landing performances, ultimate the directional static stability % ... 
+
+
+\subsection{Optimization Process}
+It has always been the engineer’s dream to have all aspects of analysis done in a relatively short time period so that many different configurations can be examined and the best suitable product can be delivered on time. Although this may still be a dream, actual design turn-around time has become shorter due to the use of mathematical optimization techniques which have been
+introduced into the design process.\cite{torenbeek2013advanced}
+As all analysis modules inside the JPADCore package will be completed and tested, the final purpose of the code will be to allow users to define a certain numbers of macroscopical geometrical parameters, along with a given objective function, and to receive as output the best set of the previous parameters which suits the wanted objective.
