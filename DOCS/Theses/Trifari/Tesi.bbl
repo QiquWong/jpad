@@ -566,6 +566,21 @@
       \verb https://books.google.it/books?id=knhHAgAAQBAJ
       \endverb
     \endentry
+    \entry{SUAVE}{online}{}
+      \name{author}{1}{}{%
+        {{hash=b3df137b6012b18b0bd3ab387dfcbadf}{Stanford\bibnamedelima University}{S\bibinitperiod\bibinitdelim U\bibinitperiod}{Aerospace\bibnamedelimb Design\bibnamedelima Lab}{A\bibinitperiod\bibinitdelim D\bibinitperiod\bibinitdelim L\bibinitperiod}{at}{a\bibinitperiod}{}{}}%
+      }
+      \strng{namehash}{b3df137b6012b18b0bd3ab387dfcbadf}
+      \strng{fullhash}{b3df137b6012b18b0bd3ab387dfcbadf}
+      \field{sortinit}{S}
+      \field{sortinithash}{fd1e7c5ab79596b13dbbb67f8d70fb5a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{SUAVE - An Aerospace Vehicle Environment for Designing Future Aircraft}
+      \verb{url}
+      \verb http://suave.stanford.edu/
+      \endverb
+    \endentry
     \entry{torenbeek2013advanced}{book}{}
       \name{author}{1}{}{%
         {{hash=c1b36875a18efe5403d2947a46417ec5}{Torenbeek}{T\bibinitperiod}{E.}{E\bibinitperiod}{}{}{}{}}%
@@ -634,6 +649,22 @@
       \field{year}{1982}
       \verb{url}
       \verb https://books.google.it/books?id=NG2%5C_qiSjmMEC
+      \endverb
+    \endentry
+    \entry{doxgen}{online}{}
+      \name{author}{1}{}{%
+        {{hash=7086f4282cebf873cb3ec772f457113c}{Van\bibnamedelima Heesch}{V\bibinitperiod\bibinitdelim H\bibinitperiod}{Dimitri}{D\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{7086f4282cebf873cb3ec772f457113c}
+      \strng{fullhash}{7086f4282cebf873cb3ec772f457113c}
+      \field{sortinit}{V}
+      \field{sortinithash}{d18f5ce25ce0b5ca7f924e3f6c04870e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Doxygen}
+      \field{year}{1997-2014}
+      \verb{url}
+      \verb www.doxygen.org
       \endverb
     \endentry
     \entry{Young:Flaps}{other}{}

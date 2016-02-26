@@ -2,80 +2,80 @@
 \begin{theglossary}\glossaryheader
 \glsgroupheading{A}\relax \glsresetentrylist %
 \glossentry{ar}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{103}}}%
+		\setentrycounter[]{page}\glsnumberformat{115}}}%
 \glossentry{sub:cruise}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{103}}}%
+		\setentrycounter[]{page}\glsnumberformat{115}}}%
 \glossentry{etaProp}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{103}}}%
+		\setentrycounter[]{page}\glsnumberformat{115}}}%
 \glossentry{sub:flap}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{103}}}%
+		\setentrycounter[]{page}\glsnumberformat{115}}}%
 \glossentry{sub:LG}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{103}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{115}}}\glsgroupskip
 \glsgroupheading{B}\relax \glsresetentrylist %
 \glossentry{span}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{103}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{115}}}\glsgroupskip
 \glsgroupheading{C}\relax \glsresetentrylist %
 \glossentry{DragCoeff}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{103}}}%
+		\setentrycounter[]{page}\glsnumberformat{115}}}%
 \glossentry{LiftCoeff}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{103}}}%
+		\setentrycounter[]{page}\glsnumberformat{115}}}%
 \glossentry{ParasiteDragCoeff}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{103}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{115}}}\glsgroupskip
 \glsgroupheading{D}\relax \glsresetentrylist %
 \glossentry{Drag}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{103}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{115}}}\glsgroupskip
 \glsgroupheading{G}\relax \glsresetentrylist %
 \glossentry{vec:g}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{103}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{115}}}\glsgroupskip
 \glsgroupheading{I}\relax \glsresetentrylist %
 \glossentry{i:Wing}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{103}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{115}}}\glsgroupskip
 \glsgroupheading{L}\relax \glsresetentrylist %
 \glossentry{Lift}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{103}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{115}}}\glsgroupskip
 \glsgroupheading{M}\relax \glsresetentrylist %
 \glossentry{Mach}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{103}}}%
+		\setentrycounter[]{page}\glsnumberformat{115}}}%
 \glossentry{Mff}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{103}}}%
+		\setentrycounter[]{page}\glsnumberformat{115}}}%
 \glossentry{chord}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{103}}}%
+		\setentrycounter[]{page}\glsnumberformat{115}}}%
 \glossentry{sweep}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{103}}}%
+		\setentrycounter[]{page}\glsnumberformat{115}}}%
 \glossentry{taperRatio}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{103}}}%
+		\setentrycounter[]{page}\glsnumberformat{115}}}%
 \glossentry{thickness}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{103}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{115}}}\glsgroupskip
 \glsgroupheading{N}\relax \glsresetentrylist %
 \glossentry{n}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{103}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{115}}}\glsgroupskip
 \glsgroupheading{R}\relax \glsresetentrylist %
 \glossentry{Range}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{24}\delimN 
-		\setentrycounter[]{page}\glsnumberformat{103}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{34}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{115}}}\glsgroupskip
 \glsgroupheading{S}\relax \glsresetentrylist %
 \glossentry{surface}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{103}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{115}}}\glsgroupskip
 \glsgroupheading{T}\relax \glsresetentrylist %
 \glossentry{Thrust}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{103}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{115}}}\glsgroupskip
 \glsgroupheading{V}\relax \glsresetentrylist %
 \glossentry{velocity}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{103}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{115}}}\glsgroupskip
 \glsgroupheading{W}\relax \glsresetentrylist %
 \glossentry{WOE}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{103}}}%
+		\setentrycounter[]{page}\glsnumberformat{115}}}%
 \glossentry{WTO}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{103}}}%
+		\setentrycounter[]{page}\glsnumberformat{115}}}%
 \glossentry{Wfuel}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{103}}}%
+		\setentrycounter[]{page}\glsnumberformat{115}}}%
 \glossentry{Wpayload}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{103}}}%
+		\setentrycounter[]{page}\glsnumberformat{115}}}%
 \glossentry{weight}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{103}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{115}}}\glsgroupskip
 \glsgroupheading{Z}\relax \glsresetentrylist %
 \glossentry{alpha:Wing}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{103}}}%
+		\setentrycounter[]{page}\glsnumberformat{115}}}%
 \glossentry{rho}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{103}}}%
+		\setentrycounter[]{page}\glsnumberformat{115}}}%
 \end{theglossary}\glossarypostamble
