@@ -371,7 +371,7 @@ public class TakeOff_Landing_Test_TF {
 		CalcTakeOff_Landing theTakeOffLandingCalculator = new CalcTakeOff_Landing(
 				aircraft,
 				theCondition,
-				highLiftCalculator,
+//				highLiftCalculator,
 				dtRot,
 				dtHold,
 				kcLMax,

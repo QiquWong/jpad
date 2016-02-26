@@ -25,6 +25,7 @@ import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
+import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.customdata.CenterOfGravity;
 
 public class Engine extends Component{
@@ -241,7 +242,7 @@ public class Engine extends Component{
 			_length = Amount.valueOf(2.739, SI.METER);
 
 			// By-pass ratio
-			set_bpr(8.0);
+			set_bpr(6.0);
 			
 			_numberOfCompressorStages = 5; // TODO: CHECK
 			_numberOfShafts = 2;// TODO: CHECK
@@ -250,7 +251,7 @@ public class Engine extends Component{
 			// Reference dry engine mass (from public domain data)
 			_dryMassPublicDomain = Amount.valueOf(1162.6, NonSI.POUND).to(SI.KILOGRAM);
 
-			_t0 = Amount.valueOf(13217.65, NonSI.POUND_FORCE).to(SI.NEWTON);
+			_t0 = Amount.valueOf(7000*AtmosphereCalc.g0.getEstimatedValue(), SI.NEWTON);
 			
 			// Single engine maximum power output (from public domain data)
 			_p0 = Amount.valueOf(80397.37218, NonSI.HORSEPOWER).to(SI.WATT); // TODO: check
