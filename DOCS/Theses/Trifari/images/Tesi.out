@@ -1,0 +1,42 @@
+\BOOKMARK [0][-]{chapter.1}{Introduction and software overview}{}% 1
+\BOOKMARK [1][-]{section.1.1}{Main purposes}{chapter.1}% 2
+\BOOKMARK [2][-]{subsection.1.1.1}{Aircraft design ovrewiev}{section.1.1}% 3
+\BOOKMARK [2][-]{subsection.1.1.2}{Java: motivation and main features}{section.1.1}% 4
+\BOOKMARK [1][-]{section.1.2}{Input file structure}{chapter.1}% 5
+\BOOKMARK [1][-]{section.1.3}{JPAD Library}{chapter.1}% 6
+\BOOKMARK [1][-]{section.1.4}{Aircraft model creation}{chapter.1}% 7
+\BOOKMARK [1][-]{section.1.5}{The acr:GUI}{chapter.1}% 8
+\BOOKMARK [2][-]{subsection.1.5.1}{Typical work session}{section.1.5}% 9
+\BOOKMARK [2][-]{subsection.1.5.2}{CAD modelling}{section.1.5}% 10
+\BOOKMARK [1][-]{section.1.6}{Optimization process}{chapter.1}% 11
+\BOOKMARK [0][-]{chapter.2}{Payload-Range}{}% 12
+\BOOKMARK [1][-]{section.2.1}{Theoretical background}{chapter.2}% 13
+\BOOKMARK [1][-]{section.2.2}{Java class architecture}{chapter.2}% 14
+\BOOKMARK [1][-]{section.2.3}{Case study: ATR-72 and B747-100B}{chapter.2}% 15
+\BOOKMARK [0][-]{chapter.3}{Specific Range and Cruise Grid}{}% 16
+\BOOKMARK [1][-]{section.3.1}{Theoretical background}{chapter.3}% 17
+\BOOKMARK [1][-]{section.3.2}{Java class architecture}{chapter.3}% 18
+\BOOKMARK [1][-]{section.3.3}{Case study: ATR-72 and B747-100B}{chapter.3}% 19
+\BOOKMARK [0][-]{chapter.4}{High lift devices effects}{}% 20
+\BOOKMARK [1][-]{section.4.1}{Theoretical background}{chapter.4}% 21
+\BOOKMARK [2][-]{subsection.4.1.1}{C_l0 and C_L0 calculation}{section.4.1}% 22
+\BOOKMARK [2][-]{subsection.4.1.2}{C_lmax and C_Lmax calculation for trailing edge and leading edge devices}{section.4.1}% 23
+\BOOKMARK [2][-]{subsection.4.1.3}{C_l, flap and C_L, flap calculation}{section.4.1}% 24
+\BOOKMARK [2][-]{subsection.4.1.4}{_stall calculation for trailing edge and leading edge devices}{section.4.1}% 25
+\BOOKMARK [2][-]{subsection.4.1.5}{Further effects calculations}{section.4.1}% 26
+\BOOKMARK [1][-]{section.4.2}{Java class architecture}{chapter.4}% 27
+\BOOKMARK [1][-]{section.4.3}{Case study: ATR-72 and B747-100B}{chapter.4}% 28
+\BOOKMARK [0][-]{chapter.5}{Take-off performance}{}% 29
+\BOOKMARK [1][-]{section.5.1}{Theoretical background}{chapter.5}% 30
+\BOOKMARK [2][-]{subsection.5.1.1}{acr:AOE take-off run}{section.5.1}% 31
+\BOOKMARK [2][-]{subsection.5.1.2}{acr:OEI take-off run and balanced field lenght}{section.5.1}% 32
+\BOOKMARK [1][-]{section.5.2}{Java class architecture}{chapter.5}% 33
+\BOOKMARK [1][-]{section.5.3}{Case study: ATR-72}{chapter.5}% 34
+\BOOKMARK [0][-]{chapter*.89}{Conclusions}{}% 35
+\BOOKMARK [0][-]{Appendix.a.A}{HDF databse creation and reading }{}% 36
+\BOOKMARK [1][-]{section.a.A.1}{Creation of a database using MATLAB}{Appendix.a.A}% 37
+\BOOKMARK [1][-]{section.a.A.2}{Reading data from an HDF database in JPAD}{Appendix.a.A}% 38
+\BOOKMARK [0][-]{section*.94}{Bibliography}{}% 39
+\BOOKMARK [0][-]{section*.96}{Glossary}{}% 40
+\BOOKMARK [0][-]{section*.98}{Acronyms}{}% 41
+\BOOKMARK [0][-]{section*.100}{List of symbols}{}% 42

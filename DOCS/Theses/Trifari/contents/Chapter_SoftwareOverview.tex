@@ -1,5 +1,12 @@
 %------------------------------- CHAPTER NAME --------------------------------
-\chapter{Software overview}
+\chapter{Introduction and software overview}
+
+\begin{flushright}
+	{\smaller
+		\textit{There must be a beginning of any great matter,\\ but the continuing unto the end \\ until it be thoroughly finished \\ yields the true glory}\\
+		-- Sir Francis Drake, 1587}
+\end{flushright}
+
 %------------------------------- MAIN PURPOSES -------------------------------
 \section{Main purposes}
 This thesis deals with the development of a software framework that could help, during preliminary and conceptual design phases, in finding a configuration which satisfies several basic requirements and, eventually, a constrained optimum. 
@@ -15,14 +22,11 @@ Whenever possible, application results have been compared with values found in l
 %-------------------------------AIRCRAFT DESIGN -------------------------------
 \subsection{Aircraft design ovrewiev}
 Modern aerospace design begins with the desire of mankind to achieve powered, heavier-than-air flight. Early aerospace designs were characterized not only by a great deal of trial and error but also by a not inconsiderable amount of analysis. As the technologies used in aerospace applications
-have developed, the goals have become vastly more sophisticated.
-
-\noindent
-It is possible to view the first 75 years of aerospace design as a series of stages: first came the early pioneers, working at a time when many were skeptical about the benefits of flight or even if it was possible at all. Next came the phase where outstanding individuals dominated aeronautical science and design during the interwar and early postwar years. This was followed in the 1950s and 1960s by a greater emphasis on design teams and the massive expansion of the great aerospace companies that we recognize today, such as Lockheed Martin and Rolls-Royce. Following these stages, the advent of \gls{acr:CAE}, design and  manufacture in the mid-1970s transformed activities in aerospace with an increasing focus on faster design cycles, more accurate predictive capabilities and the rise of computer science. At the same time, the great drawing offices of the 1950s declined and fewer people were involved in the design of each individual component.\cite{gambardella}
+have developed, the goals have become vastly more sophisticated. It is possible to view the first 75 years of aerospace design as a series of stages: first came the early pioneers, working at a time when many were skeptical about the benefits of flight or even if it was possible at all. Next came the phase where outstanding individuals dominated aeronautical science and design during the interwar and early postwar years. This was followed in the 1950s and 1960s by a greater emphasis on design teams and the massive expansion of the great aerospace companies that we recognize today. Following these stages, the advent of \gls{acr:CAE}, design and  manufacture in the mid-1970s transformed activities in aerospace with an increasing focus on faster design cycles, more accurate predictive capabilities and the rise of computer science. At the same time, the great drawing offices of the 1950s declined and fewer people were involved in the design of each individual component.\cite{gambardella}
 
 \bigskip
 \noindent
-Recent developments in information technology have had a major impact upon the aeronautical design process. The emphasis has become one where the whole design procedure from concept to the derivation of manufacturing data is covered by an integrated information technology system. Computer aided design techniques are used to produce digital data for, for example, application to numerically controlled machining. Virtual reality concepts are employed to visualise threedimensional installation and operational aspects, at least in part replacing full-scale mockups. While these procedures are particularly relevant to the detail phases of the design process their application commences as soon as a requirement is defined and numerical data are derived from it.\cite{howe2000aircraft}
+Recent developments in information technology have had a major impact upon the aeronautical design process. Computer aided design techniques are used to produce digital data for, for example, application to numerically controlled machining. Virtual reality concepts are employed to visualise threedimensional installation and operational aspects, at least in part replacing full-scale mockups. While these procedures are particularly relevant to the detail phases of the design process their application commences as soon as a requirement is defined and numerical data are derived from it.\cite{howe2000aircraft}
 
 \bigskip
 \noindent
@@ -126,86 +130,114 @@ In \gls{JPAD} it is possible to read an .xml file as input or generate an object
 \noindent
 Actually it is possible to define two different aircraft in order to test the functionality of the application: ATR-72 and B747-100B.
 %
+\begin{figure}[H]
+\centering
+\includegraphics[keepaspectratio, width=0.7\textwidth]{ATR-72}
+\caption{ATR-72 and B747-100B input data}
+\label{fig:Figure6}
+\end{figure}
 
 \bigskip
 \noindent
 The ATR-72, made by the French-Italian aircraft manufacturer ATR, is a stretched variant of the original ATR-42 that entered in service in 1989; it’s powered by two turboprop engine and it’s used typically as a regional airliner. The main purpose of its design was to increase the seating capacity throughout the stretching of the fuselage by 4.5m, an increased wingspan, more powerful engines and an increased fuel capacity by approximately 10$\%$.
+%
+\begin{figure}[H]
+\centering
+\includegraphics[keepaspectratio, width=0.75\textwidth]{B747-100B}
+\caption{B747-100B views – Jane's All the World's Aircraft 2004-2005}
+\label{fig:Figure7}
+\end{figure}
 
 \bigskip
 \noindent
 The Boeing 747 is a wide-body commercial jet airliner and cargo aircraft, often referred to by its original nickname, Jumbo Jet, or Queen of the Skies. Its distinctive hump upper deck along the forward part of the aircraft makes it among the world's most recognizable aircraft, and it was the first wide-body produced. Manufactured by Boeing's Commercial Airplane unit in the United States, the original version of the 747 had two and a half times greater capacity than the Boeing 707, one of the common large commercial aircraft of the 1960s. The four-engine 747 uses a double deck configuration for part of its length and it’s available in passenger and other versions. Boeing designed the 747's hump-like upper deck to serve as a first class lounge or extra seating, and to allow the aircraft to be easily converted to a cargo carrier by removing seats and installing a front cargo door. The 747-100B model was developed from the 747-100SR, using its stronger airframe and landing gear design; the type had an increased fuel capacity of $\SI{182000}{\liter}$, allowing for a 5000 nautical mile range with a typical 452 passengers payload, and an increased maximum take-off weight of $\SI{340000}{\kilogram}$ was offered; unlike the original 747-100, the 747-100B was offered with Pratt \& Whitney JT9D-7A, General Electric CF6-50, or Rolls-Royce RB211-524 turbofan engines.
+
 %
-\begin{figure}[H]
-\centering
-\includegraphics[keepaspectratio, width=0.8\textwidth]{ATR-72}
-\caption{ATR-72 views – Jane's All the World's Aircraft 2004-2005}
-\label{fig:Figure6}
-\end{figure}
-%
-\begin{table}[h]
-\makebox[\linewidth]{
-\begin{tabular}{p{4cm}p{7.5cm}p{2cm}}
+\begingroup
+\begin{longtable}[h]{lll}
+\textbf{} & \textbf{ATR-72} & \textbf{B747-100B}\\
 \toprule
-\textbf{Variables} & \textbf{Description} & \textbf{Values} \\
-\midrule
-\lstinline[language=Java]!altitude! & Cruise altitude & $\SI{6000}{\meter}$ \\[0.2cm]
-\lstinline[language=Java]!machCurrent! & The user chosen Mach number & 0,43 \\[0.2cm]
-\lstinline[language=Java]!surface! & Wing surface & $\SI{61}{\meter\squared}$ \\[0.2cm]
-\lstinline[language=Java]!taperRatioEquivalent! & Taper ratio of the equivalent wing & 0,545   \\[0.2cm]
-\lstinline[language=Java]!maxTakeOffMass! & maximum take-off mass & $\SI{23063.5789}{\kilogram}$         \\[0.2cm]
-\lstinline[language=Java]!operatingEmptyMass!	& operating empty mass & $\SI{12935.5789}{\kilogram}$ \\[0.2cm]
-\lstinline[language=Java]!maxFuelMass! & maximum fuel mass & $\SI{5000.0}{\kilogram}$ \\[0.2cm]
-\lstinline[language=Java]!nPassMax! & maximum number of passengers & 72 \\[0.2cm]
-\lstinline[language=Java]!sweepLEEquivalent! & Equivalent wing leading edge sweep angle & $\SI{3.1415}{\degree}$ \\[0.2cm]
-\lstinline[language=Java]!oswald! & Wing oswald factor & 0,7585 \\[0.2cm]
-\lstinline[language=Java]!byPassRatio! & Engine bypass ratio & 0,0 \\[0.2cm]
-\lstinline[language=Java]!eta! & propeller efficiency & 0,85 \\[0.2cm]
-\lstinline[language=Java]!tcMax! & Mean maximum thickness of the wing & 0,1675 \\[0.2cm]
-\lstinline[language=Java]!cl! & The cruise lift coefficient & 0,45 \\[0.2cm]
-\lstinline[language=Java]!ar! & Wing aspect ratio & 12 \\[0.2cm]
-\lstinline[language=Java]!cd0! & Wing parasite drag coefficient & 0,0317 \\[0.2cm]
-\bottomrule
-\end{tabular}
-}
-\caption{ATR-72 input data}
-\label{table:Table4}
-\end{table}
+\endfirsthead
 %
-\begin{figure}[H]
-\centering
-\includegraphics[keepaspectratio, width=0.85\textwidth]{B747-100B}
-\caption{B747-100B views – Jane's All the World's Aircraft 2004-2005}
-\label{fig:Figure7}
-\end{figure}
-%
-\begin{table}[H]
-\makebox[\linewidth]{
-\begin{tabular}{p{4cm}p{7.5cm}p{2cm}}
+\multicolumn{3}{l}%
+  {\relsize{-1}({\itshape continued from previous page})}\\
+\textbf{} & \textbf{ATR-72} & \textbf{B747-100B}\\
 \toprule
-\textbf{Variables} & \textbf{Description} & \textbf{Values} \\
-\midrule
-\lstinline[language=Java]!altitude! & Cruise altitude & $\SI{11000}{\meter}$ \\[0.2cm]
-\lstinline[language=Java]!machCurrent! & The user chosen Mach number & 0,83 \\[0.2cm]
-\lstinline[language=Java]!surface! & Wing surface & $\SI{511}{\meter\squared}$ \\[0.2cm]
-\lstinline[language=Java]!taperRatioEquivalent! & Taper ratio of the equivalent wing & 0,284   \\[0.2cm]
-\lstinline[language=Java]!maxTakeOffMass! & maximum take-off mass & $\SI{354991.5060}{\kilogram}$         \\[0.2cm]
-\lstinline[language=Java]!operatingEmptyMass!	& operating empty mass & $\SI{153131.9860}{\kilogram}$ \\[0.2cm]
-\lstinline[language=Java]!maxFuelMass! & maximum fuel mass & $\SI{147409.52}{\kilogram}$ \\[0.2cm]
-\lstinline[language=Java]!nPassMax! & maximum number of passengers & 550 \\[0.2cm]
-\lstinline[language=Java]!sweepLEEquivalent! & Equivalent wing leading edge sweep angle & $\SI{38.4288}{\degree}$ \\[0.2cm]
-\lstinline[language=Java]!oswald! & Wing oswald factor & 0,6277 \\[0.2cm]
-\lstinline[language=Java]!byPassRatio! & Engine bypass ratio & 5,0 \\[0.2cm]
-\lstinline[language=Java]!eta! & propeller efficiency & 0,0 \\[0.2cm]
-\lstinline[language=Java]!tcMax! & Mean maximum thickness of the wing & 0,1292 \\[0.2cm]
-\lstinline[language=Java]!cl! & The cruise lift coefficient & 0,45 \\[0.2cm]
-\lstinline[language=Java]!ar! & Wing aspect ratio & 6,9 \\[0.2cm]
-\lstinline[language=Java]!cd0! & Wing parasite drag coefficient & 0,0182 \\[0.2cm]
+\endhead
+%
+\midrule \multicolumn{3}{r}{{\relsize{-1}\itshape continued on next page}}
+\endfoot
+%
 \bottomrule
-\end{tabular}
-}
-\caption{B747-100B input data}
-\label{table:Table5}
-\end{table}
+\caption{ATR-72 and B747-100B input data}
+\endlastfoot
+%
+\textbf{Operating Conditions} & \textbf{} & \textbf{}\\
+\midrule
+Altitude & $\SI{6000.0000}{\meter}$ & $\SI{10000.0000}{\meter}$ \\
+Cruising Mach number & 0.4300 &  0.8300 \\
+\midrule
+\textbf{Weights} & \textbf{ } & \textbf{ }\\
+\midrule
+Maximum Take-Off Mass & $\SI{23063.5790}{\kilogram}$ & $\SI{354991.5060}{\kilogram}$ \\
+Operating Empty Mass & $\SI{12935.5790}{\kilogram}$ & $\SI{153131.9860}{\kilogram}$\\
+Maximum Fuel Mass & $\SI{5000.0000}{\kilogram}$ & $\SI{147409.5200}{\kilogram}$ \\
+Maximum number of passengers & 72 & 550 \\
+\midrule
+\textbf{Fuselage} & \textbf{ } & \textbf{ }\\
+\midrule
+Length & $\SI{27.1660}{\meter}$ & $\SI{68.6300}{\meter}$ \\
+Diameter & $\SI{2.7561}{\meter}$ & $\SI{6.7934}{\meter}$ \\
+Fineness Ratio & 9.8566 & 10.1025  \\
+\midrule
+\textbf{Wing} & \textbf{ } & \textbf{ }\\
+\midrule
+Surface & $\SI{61.0000}{\square\meter}$  & $\SI{511.0000}{\square\meter}$ \\
+\AR & 12.0000 & 6.9000 \\
+Span & $\SI{27.05549}{\meter}$ & $\SI{59.3792}{\meter}$ \\
+Taper Ratio & 0.5450 & 0.2840 \\
+Root Chord & $\SI{2.9186}{\meter}$ & $\SI{14.6152}{\meter}$ \\
+Mean Aerodynamic Chord & $\SI{2.3198}{\meter}$ & $\SI{9.6913}{\meter}$ \\
+Sweep\textsubscript{LE} & $\SI{2.8390}{\degree}$ & $\SI{38.4290}{\degree}$\\
+Sweep\textsubscript{C/4} & $\SI{1.3997}{\degree}$ & $\SI{35.4999}{\degree}$ \\
+$t/c_{\text{max}}$ & 0.1675 & 0.1292 \\
+$C_{D0}$ & 0.03170  & 0.01820 \\
+Oswald Factor & 0.7585 & 0.6277 \\
+Airfoil type & Conventional & Modern Supercritical\\
+\midrule
+\textbf{Horizontal Tail} & \textbf{ } & \textbf{ }\\
+\midrule
+Surface & $\SI{11.7300}{\square\meter}$  & $\SI{136.6000}{\square\meter}$\\
+\AR & 4.5550  & 3.5700\\
+Span & $\SI{7.3095}{\meter}$  & $\SI{22.08307}{\meter}$\\
+Taper Ratio & 0.5700 & 0.2650\\
+Root Chord & $\SI{2.04430}{\meter}$ & $\SI{9.7798}{\meter}$\\
+Mean Aerodynamic Chord & $\SI{1.6450}{\meter}$ & $\SI{6.8835}{\meter}$\\
+Sweep\textsubscript{LE} & $\SI{3.4410}{\degree}$ & $\SI{38.2250}{\degree}$\\
+Sweep\textsubscript{C/4} & $\SI{0.0000}{\degree}$ & $\SI{32.0003}{\degree}$\\
+$t/c_{\text{max}}$ & 0.1500 & 0.1500\\
+\midrule
+\textbf{Vertical Tail} & \textbf{ } & \textbf{ }\\
+\midrule
+Surface & $\SI{12.4800}{\square\meter}$ & $\SI{77.1000}{\square\meter}$\\
+\AR &  1.6600 & 1.3400\\
+Span & $\SI{4.5515}{\meter}$ & $\SI{10.1643}{\meter}$\\
+Taper Ratio & 0.3200 & 0.3300 \\
+Root Chord & $\SI{4.1544}{\meter}$ & $\SI{11.4065}{\meter}$\\
+Mean Aerodynamic Chord & $\SI{2.9323}{\meter}$ & $\SI{8.2285}{\meter}$\\
+Sweep\textsubscript{LE} & $\SI{40.5485}{\degree}$  & $\SI{53.9913}{\degree}$\\
+Sweep\textsubscript{C/4} & $\SI{28.5998}{\degree}$  & $\SI{45.0001}{\degree}$ \\
+$t/c_{\text{max}}$ & 0.2227 & 0.2245 \\
+\midrule
+\textbf{Power Plant} & \textbf{ } & \textbf{ }\\
+\midrule
+Static Thrust (per engine) & $\SI{7700.0000}{\newton}$ & $\SI{204000.0000}{\newton}$\\
+Engines Number & 2 & 4\\
+Engines type & Turboprop & Turbofan\\
+BRR & 0.0000 & 5.0000\\
+$\eta_{\text{p}}$ & 0.85 & 0.00 \\
+\end{longtable}
+\endgroup
 
 \bigskip
 \noindent

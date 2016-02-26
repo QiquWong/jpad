@@ -7,40 +7,41 @@
 \glsgroupheading{C}\relax \glsresetentrylist %
 \glossentry{Client:Code}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{80}}}\glsgroupskip
+\glsgroupheading{D}\relax \glsresetentrylist %
+\glossentry{DATCOM}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{80}}}\glsgroupskip
+\glsgroupheading{E}\relax \glsresetentrylist %
+\glossentry{Enum}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{80}}}\glsgroupskip
 \glsgroupheading{G}\relax \glsresetentrylist %
 \glossentry{gls-GUI}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{19}\delimN 
 		\setentrycounter[]{page}\glsnumberformat{80}\delimN 
 		\setentrycounter[]{page}\glsnumberformat{83}}}\glsgroupskip
+\glsgroupheading{I}\relax \glsresetentrylist %
+\glossentry{gls-IDE}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{80}}}%
+\glossentry{Interface}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{80}}}\glsgroupskip
+\glsgroupheading{K}\relax \glsresetentrylist %
+\glossentry{gls-KBE}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{80}}}\glsgroupskip
 \glsgroupheading{L}\relax \glsresetentrylist %
 \glossentry{List}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{80}}}\glsgroupskip
 \glsgroupheading{M}\relax \glsresetentrylist %
 \glossentry{Map}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{80}}}%
-\glossentry{MDO}{\glossaryentrynumbers{\relax 
+\glossentry{gls-MDO}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{2}\delimN 
-		\setentrycounter[]{page}\glsnumberformat{6}\delimN 
-		\setentrycounter[]{page}\glsnumberformat{80}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{80\delimN 81}}}\glsgroupskip
 \glsgroupheading{P}\relax \glsresetentrylist %
 \glossentry{parsing}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{80}}}\glsgroupskip
-\glsgroupheading{R}\relax \glsresetentrylist %
-\glossentry{reflection}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{80}}}\glsgroupskip
 \glsgroupheading{S}\relax \glsresetentrylist %
-\glossentry{serialization}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{80}}}\glsgroupskip
-\glsgroupheading{T}\relax \glsresetentrylist %
-\glossentry{Table}{\glossaryentrynumbers{\relax 
+\glossentry{Static}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{80}}}\glsgroupskip
 \glsgroupheading{U}\relax \glsresetentrylist %
-\glossentry{gls-UML}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{80}\delimN 
-		\setentrycounter[]{page}\glsnumberformat{83}}}%
 \glossentry{User:Developer}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{80}}}\glsgroupskip
-\glsgroupheading{W}\relax \glsresetentrylist %
-\glossentry{Wrapper:Function}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{80}}}%
 \end{theglossary}\glossarypostamble

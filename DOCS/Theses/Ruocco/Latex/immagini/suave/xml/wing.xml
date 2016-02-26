@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+    <wing mirrored="TRUE">
+        <panels>
+            <panel id="Inner panel">
+                <semispan unit="m">4.0</semispan>
+                <dihedral unit="deg">1.5</dihedral>
+                <inner_section>
+                    <airfoil file="naca63209.xml"/>
+                    <geometric_twist unit="deg">0.0</geometric_twist>
+                </inner_section>
+                <outer_section>
+                    <airfoil file="naca63209.xml"/>
+                    <geometric_twist unit="deg">0.0</geometric_twist>
+                </outer_section>
+            </panel>
+            <panel id="Outer panel" linked_to="Inner panel">
+                <semispan unit="m">7.0</semispan>
+                <dihedral unit="deg">3.5</dihedral>
+                <outer_section>
+                    <airfoil file="naca63209.xml"/>
+                    <geometric_twist unit="deg">-2.5</geometric_twist>
+                </outer_section>
+            </panel>
+        </panels>
+        <symmetric_flaps>
+            <symmetric_flap id="Inner flap" type="SINGLE_SLOTTED">
+                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">
+                    <value>0.15<value/>
+                </inner_station_spanwise_position>
+                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">
+                    <value>0.45<value/>
+                </outer_station_spanwise_position>
+                <percent_chord value="40"/>
+                <angle_range unit="deg">[0.0,40.0]</angle_range>
+            </symmetric_flap>
+        </symmetric_flaps>
+        <slats>
+            <slat linked_to="Inner flap" type="SINGLE">
+                <percent_chord value="10"/>
+                <angle_range unit="deg">[0.0,10.0]</angle_range>
+            </slat>
+        </slats>
+        <asymmetric_flaps>
+            <asymmetric_flap id="Aileron" type="PLAIN">
+                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">
+                    <value>0.75<value/>
+                </inner_station_spanwise_position>
+                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">
+                    <value>0.97<value/>
+                </outer_station_spanwise_position>
+                <percent_chord value="20"/>
+                <angle_range unit="deg">[-5.0,10.0]</angle_range>
+                <differential_deflection_factor value="1.0"/>
+            </asymmetric_flap>
+        </asymmetric_flaps>
+    </wing>
+</jpad_config>

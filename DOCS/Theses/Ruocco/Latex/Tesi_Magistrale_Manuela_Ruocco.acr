@@ -39,6 +39,9 @@
 		\setentrycounter[]{page}\glsnumberformat{16}\delimN 
 		\setentrycounter[]{page}\glsnumberformat{80}}}\glsgroupskip
 \glsgroupheading{I}\relax \glsresetentrylist %
+\glossentry{IDE}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{80}\delimN 
+		\glsseeformat[Glossary:]{gls-IDE}{Z}}}%
 \glossentry{acr:ide}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{19\delimN 20}\delimN 
 		\setentrycounter[]{page}\glsnumberformat{80}}}\glsgroupskip
@@ -49,6 +52,10 @@
 		\setentrycounter[]{page}\glsnumberformat{8\delimN 9}\delimN 
 		\setentrycounter[]{page}\glsnumberformat{20}\delimN 
 		\setentrycounter[]{page}\glsnumberformat{80}}}\glsgroupskip
+\glsgroupheading{K}\relax \glsresetentrylist %
+\glossentry{KBE}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{80}\delimN 
+		\glsseeformat[Glossary:]{gls-KBE}{Z}}}\glsgroupskip
 \glsgroupheading{L}\relax \glsresetentrylist %
 \glossentry{acr:lrf}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{26}\delimN 
@@ -58,6 +65,11 @@
 		\setentrycounter[]{page}\glsnumberformat{80}}}%
 \glossentry{acr:MAPE}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{80}}}%
+\glossentry{MDO}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{2}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{6}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{80}\delimN 
+		\glsseeformat[Glossary:]{gls-MDO}{Z}}}%
 \glossentry{acr:MLW}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{80}}}%
 \glossentry{acr:Mean:Sea:Level}{\glossaryentrynumbers{\relax 
@@ -65,9 +77,5 @@
 \glossentry{acr:MTOW}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{80}}}%
 \glossentry{acr:MZFW}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{80}}}\glsgroupskip
-\glsgroupheading{U}\relax \glsresetentrylist %
-\glossentry{UML}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{80}\delimN 
-		\glsseeformat[Glossary:]{gls-UML}{Z}}}%
+		\setentrycounter[]{page}\glsnumberformat{80}}}%
 \end{theglossary}\glossarypostamble
