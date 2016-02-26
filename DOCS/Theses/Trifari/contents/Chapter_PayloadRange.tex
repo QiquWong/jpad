@@ -1,8 +1,16 @@
 %------------------------------- CHAPTER NAME --------------------------------
 \chapter{Payload-Range}
+
+\begin{flushright}
+	{\smaller
+		\textit{All men dream: but not equally. Those who dream by night in the dusty recesses of their minds \\ wake in the day to find that it was vanity: but the dreamers of the day are dangerous men,\\ for they may act their dreams with open eyes, to make it possible. This I did.}\\
+		-- T.E Lawrence "Lawrence of Arabia"}
+\end{flushright}
+
+\noindent
 The Payload-Range diagram is a very important resource in aircrafts design because it allows to illustrate an aircraft operational limits by showing the trade-off relationship between the payload that can be carried and the range that can be flown; moreover, in synergy with the \gls{DOC} diagram, it’s very useful to the future aircraft customers to have an idea of expected profits derived by their investment.
 %
-Payload-Range is also a key feature of the design requirements so it’s possible to state that its relevance is felt through all the preliminary design phase.
+Payload-Range is also a key feature of the design requirements so it’s possible to state that its relevance is felt through all the conceptual and preliminary design phases.
 %
 %-------------------------- THEORETICAL BACKGROUND ---------------------------
 \section{Theoretical background}
@@ -12,23 +20,19 @@ It’s possible to imagine, at first, an aircraft in which payload and fuel weig
 %
 \begin{figure}[t]
 \centering
-\includegraphics[keepaspectratio, width=0.66\textwidth]{Flexible_Payload_Range}
+\includegraphics[keepaspectratio, width=0.6\textwidth]{Flexible_Payload_Range}
 \caption{Payload-Range for a completely flexible aircraft}
 \label{fig:Figure1}
 \end{figure}
 %
 Because the payload is carried in the fuselage while the fuel is carried in wing tanks, the more the payload, the more the weight in the fuselage; this means that wings are incrementally more bending loaded so that a heavier structure is required. However, in this way the operating empty weight grows up limiting the payload the aircraft can carry, at that maximum take-off and fuel weights, for that range; the consequence of this is that, in particular for long range missions, the payload is too low, providing low profits.
 %
-In order to avoid this situation it’s possible to decide, preventively, the maximum payload weight the aircraft can carry in fuselage so that the maximum bending load for wings and, in consequence their structural weight, is set; this particular weight is named \gls{acr:MZFW}.
-
-\bigskip
-\noindent
-As a result of this, the previous diagram changes in the one reported in figure~\ref{fig:Figure2} which starts with the maximum zero fuel weight and keep it constant until the maximum take-off weight is reached. From this point on, the far the aircraft have to go, the more the fuel it needs, but, since the maximum take-off weight is set, the only way to increase fuel weight is to reduce the payload; this condition is represented by the second segment of the diagram and, along this, the aircraft weight is always equal to the maximum take-off weight. With further increase of the required range for the aircraft, the fuel tanks maximum capacity will be reached prevent to store more fuel; the only solution at this problem is to put the additional fuel into the fuselage, reducing, consequently, the payload weight in order to respect the maximum zero fuel weight limitation. Along this last segment the payload weight decreases more rapidly with increasing range reaching, ideally, the value of zero at which the flight mission is useless; moreover the aircraft weight is not equal to the maximum take-off weight anymore but to a lower one.
+In order to avoid this situation it’s possible to decide, preventively, the maximum payload weight the aircraft can carry in fuselage so that the maximum bending load for wings and, in consequence their structural weight, is set; this particular weight is named \gls{acr:MZFW}. As a result of this, the previous diagram changes in the one reported in figure~\ref{fig:Figure2} which starts with the maximum zero fuel weight and keep it constant until the maximum take-off weight is reached. From this point on, the far the aircraft have to go, the more the fuel it needs, but, since the maximum take-off weight is set, the only way to increase fuel weight is to reduce the payload; this condition is represented by the second segment of the diagram and, along this, the aircraft weight is always equal to the maximum take-off weight. With further increase of the required range for the aircraft, the fuel tanks maximum capacity will be reached prevent to store more fuel; the only solution at this problem is to put the additional fuel into the fuselage, reducing, consequently, the payload weight in order to respect the maximum zero fuel weight limitation. Along this last segment the payload weight decreases more rapidly with increasing range reaching, ideally, the value of zero at which the flight mission is useless; moreover the aircraft weight is not equal to the maximum take-off weight anymore but to a lower one.
 
 \bigskip
 \begin{figure}[b]
 \centering
-\includegraphics[keepaspectratio, width=0.66\textwidth]{Payload_Range}
+\includegraphics[keepaspectratio, width=0.6\textwidth]{Payload_Range}
 \caption{Payload-Range with MZFW limitation}
 \label{fig:Figure2}
 \end{figure}
@@ -241,7 +245,7 @@ Finally the two arrays are used as input, together with another one from the bes
 As said before, this class finds another purpose in parameterizing the diagram in different maximum take-off weight conditions. To do that, the three core methods are used again inside a new one, named \lstinline[language=Java]!createPayloadRangeMatrices!, which implements a recursive calculation of the three points coordinates at different maximum take-off mass conditions generated by decreasing the original mass by 5$\%$ until it reaches a total decrease of 20$\%$. This new method requires the same input data reported in table~\ref{table:Table2} except for the maximum take-off mass which is generated inside the method itself. The output matrices are then used in a plotting method, equivalent to previous one but named \lstinline[language=Java]!createPayloadRangeCharts_MaxTakeOffMass!, which generates the .png and .tikz output images by receiving as input two matrices and not two arrays as before.
 
 \bigskip
-\begin{figure}[!ht]
+\begin{figure}[H]
 \centering
 \includegraphics[keepaspectratio, width=0.83\textwidth]{PayloadRange_BestRange_Flowchart}
 \caption{Payload-Range java class flowchart for best range and chosen Mach conditions comparison}
@@ -249,7 +253,7 @@ As said before, this class finds another purpose in parameterizing the diagram i
 \end{figure}
 
 \bigskip
-\begin{figure}[!ht]
+\begin{figure}[H]
 \centering
 \includegraphics[keepaspectratio, width=0.83\textwidth]{PayloadRange_MTOM_Flowchart}
 \caption{Payload-Range java class flowchart for maximum take-off mass parameterization}
