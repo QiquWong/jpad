@@ -96,6 +96,7 @@ public class Test_MR_07_LongitudinalStability {
 
 		OperatingConditions theConditions = new OperatingConditions();
 		theConditions.set_alphaCurrent(Amount.valueOf(toRadians(2.), SI.RADIAN));
+		theConditions.set_machCurrent(0.65);
 		System.out.println("\n OPERATING CONDITIONS: ");
 		System.out.println("Altitude " + theConditions.get_altitude());
 		System.out.println("Mach number " + theConditions.get_machCurrent()+"\n");
@@ -347,8 +348,13 @@ public class Test_MR_07_LongitudinalStability {
 		System.out.println("|       WING        |");
 		System.out.println(" ------------------- \n\n");
 		System.out.println("\n \t Data: ");
-		System.out.println("Angle of attack alpha body (deg) = " + Math.ceil(alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue()));
-		System.out.println("Angle of incidence of wing (deg) = " +  Math.ceil(theWing.get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue()));
+		System.out.println("Angle of attack alpha body (deg) = "
+				+ "" + Math.ceil(alphaBody.to(NonSI.DEGREE_ANGLE)
+						.getEstimatedValue()));
+		System.out.println("Angle of incidence of wing (deg) = "
+				+ "" +  Math.ceil(theWing.get_iw()
+						.to(NonSI.DEGREE_ANGLE)
+						.getEstimatedValue()));
 
 
 		System.out.println("\n \n-----------------------------------------------------");
@@ -356,7 +362,9 @@ public class Test_MR_07_LongitudinalStability {
 		System.out.println("-----------------------------------------------------");
 
 
-		LSAerodynamicsManager.CalcCLAtAlpha theCLWingCalculator = theLSAnalysis.new CalcCLAtAlpha();
+		LSAerodynamicsManager.CalcCLAtAlpha theCLWingCalculator = 
+				theLSAnalysis
+				.new CalcCLAtAlpha();
 		cLIsolatedWing = theCLWingCalculator.nasaBlackwellalphaBody(alphaBody);
 
 		theLSAnalysis.PlotCLvsAlphaCurve(subfolderPath);
@@ -369,8 +377,11 @@ public class Test_MR_07_LongitudinalStability {
 		// -----------------------------------------------------------------------
 
 
-		LSAerodynamicsManager.CalcCLMaxClean theCLmaxAnalysis = theLSAnalysis.new CalcCLMaxClean(); //is nested
-		LSAerodynamicsManager.CalcCLvsAlphaCurve theCLAnalysis = theLSAnalysis.new CalcCLvsAlphaCurve();
+		LSAerodynamicsManager.CalcCLMaxClean theCLmaxAnalysis = 
+				theLSAnalysis
+				.new CalcCLMaxClean(); //is nested
+		LSAerodynamicsManager.CalcCLvsAlphaCurve theCLAnalysis
+		= theLSAnalysis.new CalcCLvsAlphaCurve();
 		theCLAnalysis.nasaBlackwell();
 		theCLmaxAnalysis.nasaBlackwell();
 		Amount<javax.measure.quantity.Angle> alphaAtCLMax = theLSAnalysis.get_alphaStall();
@@ -385,14 +396,20 @@ public class Test_MR_07_LongitudinalStability {
 		// interpolation of CL MAX_airfoil
 		MyArray clMaxAirfoil = theCLmaxAnalysis.getClAirfoils();
 
-		MyArray clAlphaThird = theLSAnalysis.getcLMap().getCxyVsAlphaTable().get(MethodEnum.NASA_BLACKWELL ,alphaAtCLMax);
+		MyArray clAlphaThird = theLSAnalysis.getcLMap()
+				.getCxyVsAlphaTable()
+				.get(MethodEnum.NASA_BLACKWELL ,alphaAtCLMax);
 
-		double [][] semiSpanAd = {theLSAnalysis.get_yStationsND(), theLSAnalysis.get_yStationsND()};
+		double [][] semiSpanAd = {
+				theLSAnalysis.get_yStationsND(), theLSAnalysis.get_yStationsND()};
 
-		double [][] clDistribution = {clMaxAirfoil.getRealVector().toArray(), clAlphaThird.getRealVector().toArray()};
+		double [][] clDistribution = {
+				clMaxAirfoil.getRealVector().toArray(), 
+				clAlphaThird.getRealVector().toArray()};
 		String [] legend = new String [4];
 		legend[0] = "CL max airfoil";
-		legend[1] = "CL distribution at alpha " + Math.toDegrees( alphaAtCLMax.getEstimatedValue());
+		legend[1] = "CL distribution at alpha " 
+		+ Math.toDegrees( alphaAtCLMax.getEstimatedValue());
 
 		MyChartToFileUtils.plot(
 				semiSpanAd,	clDistribution, // array to plot

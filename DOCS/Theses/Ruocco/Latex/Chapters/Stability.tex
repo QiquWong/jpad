@@ -620,9 +620,31 @@ Whre $\frac{d \epsilon}{d \alpha}$ is the upwash effect forward wing, represente
 
 
 \section{Java Class Architecture}
+
+%spiega la classse per il calcolo del cl del piano di coda con deflessione dell'equilibratore ( vedi doc di calculateCLWithElevatorDeflection in lsaerodynamic manager)
+%
+%		// The calculation of the lift coefficient with a deflection of the elevator is made by the
+%		// method calculateCLWithElevatorDeflection. This method fills the array of 20 value of CL in
+%		// its linear trait. 
+%		// The procedure used to calculate the CL is the following. It's important to know that 
+%		// it's necessary to call the method nasaBlackwellCompleteCurve in order to obtain the
+%		// cl linear slope of the horizontal tail with no elevator deflection.
+%		//
+%		//1 . First of all the tau factor it's calculated used the method calculateTauIndex in the .. class
+%		//2. It's necessary to get the linear slope of the horizontal tail with no elevator defletion.
+%		// 3. The alphazero lift of the deflected configuration is calculated with this formula
+%		//   alphaw= tau per delta e
+%		// 4. At this point it's possible to create an alpha array, starting from the alpha zero lift, until
+%		//   15 degrees after.
+%		// 5. the value of cl for each alpha is calculated with the formula :
+%		//  cl alfa * (alfa + t delta e)
+
 % intro
 % riepilogo di tutte le classi in schema. vedi su quaderno  prima di stabilita
 % schema in yed
  % per l' ala scrivi le grandezze geometriche con foto
  
 \section{Case Study}
+
+% stallpathhtailboeing.tikz
+% stallpathhtailatr.tikz

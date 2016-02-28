@@ -1250,6 +1250,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 						b * Math.pow(alpha.getEstimatedValue(), 2) + 
 						c * alpha.getEstimatedValue() + d;
 
+				
 				return clActual;
 
 			}							
