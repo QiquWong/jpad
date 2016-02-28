@@ -96,7 +96,7 @@ public class Test_MR_07_LongitudinalStability {
 
 		OperatingConditions theConditions = new OperatingConditions();
 		theConditions.set_alphaCurrent(Amount.valueOf(toRadians(2.), SI.RADIAN));
-		theConditions.set_machCurrent(0.65);
+		//theConditions.set_machCurrent(0.65);
 		System.out.println("\n OPERATING CONDITIONS: ");
 		System.out.println("Altitude " + theConditions.get_altitude());
 		System.out.println("Mach number " + theConditions.get_machCurrent()+"\n");

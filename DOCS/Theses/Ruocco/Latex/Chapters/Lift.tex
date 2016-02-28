@@ -306,7 +306,7 @@ All of these parameters are calculated using formulas or graphs. For further det
 
 \section{Java Class Architecture}
 
-In this paragraph the implementation inside the JPAD library of the calculation of the take-off distance, and of the wing lift characteristics will be desribed. In JPAD there are several methods relating to the calculation of lift or wing load, which are summarized in the table below all contained in \texttt{LSAerodynamicManager} class. In order to have a clear organization of the class, the methods relating to the calculations of the same items are organized in nested classes.
+In this paragraph the implementation inside the JPAD library of the calculation of the wing lift characteristics will be desribed. In JPAD there are several methods relating to the calculation of lift or wing load, which are summarized in the table below, all contained in \texttt{LSAerodynamicManager} class. In order to have a clear organization of the class, the methods relating to the calculations of the same items are organized in nested classes.
 
 \begin{table}[H]
 \begin{tabular}{p{7cm}p{7.5cm}}
@@ -326,7 +326,7 @@ In this paragraph the implementation inside the JPAD library of the calculation 
 \label{table:Table2}
 \end{table}
 
-In order to evaluate the lift coefficient of a lifting surface and to obtain the lift curve it's necessary, first of all, to define an object of \texttt{LSAerodynamicManager} class. This class holds all aerodynamic analysis methods available for a generic lifting surface. There are different constructor of this class depending on the presence of the aircraft. In fact in JPAD it's possible to analyze a complete aircraft or an isolated wing. In both cases it's necessary to give an object of \texttt{OperatingConditions} class as input parameter. After it's possible to define an object of the nested class \texttt{CalcCLAtAlpha} and then it's possible to use a method of this class in order to evaluate the lift coefficient. The process is shown in Fig.\ref{fig:clalf}
+In order to evaluate the lift coefficient of a lifting surface and to obtain the lift curve it's necessary, first of all, to define an object of \texttt{LSAerodynamicManager} class. This class holds all aerodynamic analysis methods available for a generic lifting surface. There are different constructor of this class depending on the presence of the aircraft. In fact in JPAD it's possible to analyze a complete aircraft or an isolated wing. In both cases it's necessary to give an object of \texttt{OperatingConditions} class as input parameter. After it's possible to define an object of the nested class \texttt{CalcCLAtAlpha} and then it's possible to use a method of this class in order to evaluate the lift coefficient. The process is shown in Fig.\ref{fig:clalf}.
 
 \begin{figure}[H]
 \centering
@@ -552,7 +552,7 @@ CL of Isolated wing at alpha body = 0.29714759091882836
 \begin{figure}[H]
 \centering
 \input{immagini/clalfaboeing.tikz}
-\caption{BOEING 747-100B CL vs Alpha_w at Mach 0.43 and Altitude: 6000 m.}
+\caption{BOEING 747-100B CL vs Alpha_w at Mach 0.84 and Altitude: 10000 m.}
 \label{fig:clB}
 \end{figure}
 
@@ -566,7 +566,7 @@ CL of Isolated wing at alpha body = 0.29714759091882836
 \begin{figure}[H]
 \centering
 \input{immagini/stallpathboeing.tikz}
-\caption{BOEING 747-100B Stall Path at Mach 0.43 and Altitude: 6000 m.}
+\caption{BOEING 747-100B Stall Path at Mach 0.84 and Altitude: 10000 m.}
 \label{fig:stallB}
 \end{figure}
 

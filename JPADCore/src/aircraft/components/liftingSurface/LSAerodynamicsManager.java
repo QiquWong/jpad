@@ -3770,7 +3770,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			for (int i=0 ; i<_nPointsSemispanWise ; i++){
 				yActual = get_yStations()[i];
 				airfoilActual = calculateIntermediateAirfoil(theLS, yActual);
-				CalculateCd calculateCd =  new CalculateCd();
+				CalculateCdAirfoil calculateCd =  new CalculateCdAirfoil();
 				cdDistributionNasaBlackwell [i] = calculateCd.nasaBlackwell(alpha, theLSManager, airfoilActual);
 			}
 			cdDistributionNasaBlackwell [_nPointsSemispanWise-1] = 0 ;
@@ -3787,7 +3787,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	 */  
 
 
-	public class CalculateCd {
+	public class CalculateCdAirfoil {
 
 		double [] clNasaBlackwell , clSchrenk;
 		double [] yStations ;
