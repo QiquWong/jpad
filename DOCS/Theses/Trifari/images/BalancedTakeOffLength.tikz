@@ -6,9 +6,8 @@ width=\textwidth,
 height=0.6\textwidth,
 scaled ticks=false, tick label style={/pgf/number format/fixed},
 xmin=0.0,
-xmax=1.188,
-xtick={0,400,800,1200,1600,2000,2400,2800,3200},
-xlabel={Vfailure/VsTO },
+xmax=1.2,
+xlabel={$V_{\text{Failure}}/V_s$},
 xmajorgrids,
 ymin=16.343983261177346,
 ymax=3409.4029481001066,
@@ -276,7 +275,7 @@ table[row sep=crcr]{
 
 \addplot [
 color=black,
-densely dashed
+densely dashdotted
 ]
 table[row sep=crcr]{
 0.03654553385124616	17.765199196931896\\

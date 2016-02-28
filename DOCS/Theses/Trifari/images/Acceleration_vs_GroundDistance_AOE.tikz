@@ -6,14 +6,14 @@ width=\textwidth,
 height=0.45\textwidth,
 scaled ticks=false, tick label style={/pgf/number format/fixed},
 xmin=0.0,
-xmax=1384.5346672985966,
+xmax=1400,
 xlabel={Ground Distance (m)},
+xtick={0,200,400,600,800,1000,1200,1400},
 xmajorgrids,
 ymin=0.7870546929072948,
 ymax=2.9383329541999035,
-ylabel={Acceleration (m/(s^2))},
-ymajorgrids,
-legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
+ylabel={Acceleration ($\si{\meter\per\square\second}$)},
+ymajorgrids
 ]
 
 \addplot [
@@ -2798,4 +2798,4 @@ table[row sep=crcr]{
 1281.9765437949968	0.8554942314209726\\
 };
 \end{axis}
-\end{tikzpicture}%
+\end{tikzpicture}

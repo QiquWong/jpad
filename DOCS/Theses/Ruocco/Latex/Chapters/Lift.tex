@@ -298,7 +298,7 @@ All of these parameters are calculated using formulas or graphs. For further det
 
 \begin{figure}[H]
 \centering
-{\includegraphics[height=12cm]{Immagini/Airfoil_Cl_Vs_alpha_curve_flap_slat.pdf}} 
+{\includegraphics[height=12.9cm]{Immagini/Airfoil_Cl_Vs_alpha_curve_flap_slat.pdf}} 
 \caption{Wing $C_L$ vs $\alpha$ curve for clean wing and with high lift devices.}
 \label{fig:clalfahl}
 \end{figure}
@@ -306,9 +306,271 @@ All of these parameters are calculated using formulas or graphs. For further det
 
 \section{Java Class Architecture}
 
+In this paragraph the implementation inside the JPAD library of the calculation of the wing lift characteristics will be desribed. In JPAD there are several methods relating to the calculation of lift or wing load, which are summarized in the table below, all contained in \texttt{LSAerodynamicManager} class. In order to have a clear organization of the class, the methods relating to the calculations of the same items are organized in nested classes.
 
-%schema con varie classi
+\begin{table}[H]
+\begin{tabular}{p{7cm}p{7.5cm}}
+\toprule
+\lstinline[language=Java]!CalcBasicLoad! & This nested class contains a method that evaluate the basic load semi-spanwise using the Schrenk method.\\ \hline 
+\lstinline[language=Java]!CalcLiftDistribution! &This nested class contains some methods that calculates the lift distribution semi-spanwise. It's possible to choose Schrenk method, the Nasa-Blackwell method and it's also possible to evaluate the lift distibution using 50 airfoil and evaluating for each of them the lift coefficient from the 2D lift curves. \\ \hline 
+\lstinline[language=Java]!CalcCLAtAlpha! & Using a method of this class it's possible to evaluate the lift coefficient of a lifting surface at a given angle of attack. It's possible to use the following formulas: DLR equation, Anderson compressible subsonic equation and Nasa-Blackwell method. With the last method it's calculated both linear trait and non linear trait. In order to builds the non-linear trait a cubic interpolation is used.\\ \hline 
+\lstinline[language=Java]!CalcCLMaxClean! &This class contains some method that evaluatex the maximum lift coefficient of a lifting surface without hig-lift devices. It' possible to use Phillips and Alley method or stall path method in which the load distribution in evaluated with Nasa-Blackwell method.\\ \hline 
+\lstinline[language=Java]!plotCLvsAlphaCurve()! & This function plot CL vs Alpha curve of an isolated wing using 30 value of alpha between $\alpha = - 10.0^{\circ}$  deg and  $\alpha = \alpha + 2^{\circ}$.\\ \hline 
+\lstinline[language=Java]!calcAlphaAndCLMax! & This method calls all the needed method in order to evaluate the maximum lift coefficient and the stall angle.\\ \hline 
+\lstinline[language=Java]!CalcHighLiftDevices! & This method calculates the effects of high-lift devices on the lift characteristics.\\ \hline 
+\lstinline[language=Java]!CalcCLAlpha! & This class calculates the lift coefficient gradient of the whole lifting surface. It's possible to choose Polhamus formula,  Anderson equation, or Nasa-Blackwell method where the lift coefficient gradient is evaluated from two value of lift coefficient.\\ \hline 
+\lstinline[language=Java]!CalcCL0! & This class calculates $C_{L_0}$ using Anderson formula.\\ \hline 
+\bottomrule
+\end{tabular}
+\caption{Methods for lift characteristcs of a lifting surface.}
+\label{table:Table2}
+\end{table}
+
+In order to evaluate the lift coefficient of a lifting surface and to obtain the lift curve it's necessary, first of all, to define an object of \texttt{LSAerodynamicManager} class. This class holds all aerodynamic analysis methods available for a generic lifting surface. There are different constructor of this class depending on the presence of the aircraft. In fact in JPAD it's possible to analyze a complete aircraft or an isolated wing. In both cases it's necessary to give an object of \texttt{OperatingConditions} class as input parameter. After it's possible to define an object of the nested class \texttt{CalcCLAtAlpha} and then it's possible to use a method of this class in order to evaluate the lift coefficient. The process is shown in Fig.\ref{fig:clalf}.
+
+\begin{figure}[H]
+\centering
+{\includegraphics[height=14cm, angle=90]{Immagini/clflowchart.pdf}} 
+\caption{Flow chart of lift estimation classes.}
+\label{fig:clalf}
+\end{figure}
+
 
 \section{Case Study}
-%caso di studio
+
+The last task to be done is to show an application of the calculation of lift characteristics of a lifting surface in order
+to validate the calculation performed as well as to give a useful example of use. In previous chapters two aircraft were introduced:
+ATR-72 and B747-100B. On these two aircraft analyzes we were made, the results of which are shown below.\\
+First of all it's necessary to define working directory and the work object as explained in the previous chapter, then it's possible to do the analysis and the procedure is shown below.
+
+\begin{lstlisting}[frame=rbl,caption={{\footnotesize Lift Characteristics of a Lifting Surface - Test Class}},label= [style=\bfseries]{Listing}]
+
+System.out.println("\n\n------------------------------------");
+System.out.println("\n LIFT CHARACTERISTICS  ");
+System.out.println("\n------------------------------------");
+
+
+double cLIsolatedWing;
+double cLAlphaWingBody;
+
+
+System.out.println("\n ------------------- ");
+System.out.println("|       WING        |");
+System.out.println(" ------------------- \n\n");
+
+System.out.println("\n \t Data: ");
+
+System.out.println("Angle of attack alpha body (deg) = "
+		+ "" + Math.ceil(alphaBody.to(NonSI.DEGREE_ANGLE)
+				.getEstimatedValue()));
+System.out.println("Angle of incidence of wing (deg) = "
+		+ "" +  Math.ceil(theWing.get_iw()
+				.to(NonSI.DEGREE_ANGLE)
+				.getEstimatedValue()));
+
+System.out.println("\n \n-----------------------------------------------------");
+System.out.println("Starting evaluate stall path of wing");
+System.out.println("-----------------------------------------------------");
+
+LSAerodynamicsManager theLSAnalysis = new LSAerodynamicsManager(
+				theConditions,
+				theWing,
+				aircraft
+				);
+				
+LSAerodynamicsManager.CalcCLAtAlpha theCLWingCalculator = 
+				theLSAnalysis
+				.new CalcCLAtAlpha();
+cLIsolatedWing = theCLWingCalculator.nasaBlackwellalphaBody(alphaBody);
+
+theLSAnalysis.PlotCLvsAlphaCurve(subfolderPath);
+System.out.println("-------------------------------------");
+System.out.println("CL of Isolated wing at alpha body = " + cLIsolatedWing);
+System.out.println("\n \t \t \tDONE PLOTTING CL VS ALPHA CURVE  ");
+
+// -----------------------------------------------------------------------
+// Using NASA-Blackwell method in order to estimate the lifting surface CLmax
+// -----------------------------------------------------------------------
+
+
+LSAerodynamicsManager.CalcCLMaxClean theCLmaxAnalysis = 
+		theLSAnalysis
+		.new CalcCLMaxClean(); //is nested
+LSAerodynamicsManager.CalcCLvsAlphaCurve theCLAnalysis
+       = theLSAnalysis.new CalcCLvsAlphaCurve();
+theCLAnalysis.nasaBlackwell();
+theCLmaxAnalysis.nasaBlackwell();
+Amount<javax.measure.quantity.Angle> alphaAtCLMax = theLSAnalysis.get_alphaStall();
+double clMax = theCLWingCalculator.nasaBlackwell(alphaAtCLMax);
+
+
+// PLOT
+
+System.out.println("\n \n \t \t WRITING CHART TO FILE. Stall path. ");
+
+// interpolation of CL MAX_airfoil
+		MyArray clMaxAirfoil = theCLmaxAnalysis.getClAirfoils();
+
+		MyArray clAlphaThird = theLSAnalysis.getcLMap()
+				.getCxyVsAlphaTable()
+				.get(MethodEnum.NASA_BLACKWELL ,alphaAtCLMax);
+
+		double [][] semiSpanAd = {
+				theLSAnalysis.get_yStationsND(),
+				 theLSAnalysis.get_yStationsND()};
+
+		double [][] clDistribution = {
+				clMaxAirfoil.getRealVector().toArray(), 
+				clAlphaThird.getRealVector().toArray()};
+		String [] legend = new String [4];
+		legend[0] = "CL max airfoil";
+		legend[1] = "CL distribution at alpha " 
+		+ Math.toDegrees( alphaAtCLMax.getEstimatedValue());
+
+MyChartToFileUtils.plot(
+		semiSpanAd,	clDistribution, // array to plot
+		0.0, 1.0, 0.0, 2.0,					
+		"eta", "CL", "", "",	    // label with unit
+		legend,					// legend
+		subfolderPath, "Stall Path of Wing ");			
+
+
+System.out.println("-----------------------------------------------------");
+System.out.println("\t \t DONE ");
+
+\end{lstlisting}
+
+
+\begin{lstlisting}[caption={{\footnotesize Lift Characteristics of a Lifting Surface - Results. ATR-72}},label= [style=\bfseries]{Listing}]
+------------------------------------
+
+ LIFT CHARACTERISTICS  
+
+------------------------------------
+
+ ------------------- 
+|       WING        |
+ ------------------- 
+
+
+
+ 	 Data: 
+Angle of attack alpha body (deg) = 2.0
+Angle of incidence of wing (deg) = 2.0
+
+ 
+-----------------------------------------------------
+Starting evaluate stall path of wing
+-----------------------------------------------------
+
+ -----------CLEAN-------------- 
+ alpha max 15.229385456031025 (deg)
+ alpha star 10.918671750781748 (deg)
+ cL max 1.4880884199886235
+ cL star 1.1785803287397512
+ cL alpha 5.582578511036018 (1/rad)
+-------------------------------------
+CL of Isolated wing at alpha body = 0.5045422247468523
+
+ 	 	 	DONE PLOTTING CL VS ALPHA CURVE  
+
+ 
+ 	 	 WRITING CHART TO FILE. Stall path. 
+-----------------------------------------------------
+	 	 DONE 
+\end{lstlisting}
+
+
+\begin{lstlisting}[caption={{\footnotesize Lift Characteristics of a Lifting Surface - Results. BOEING 747-100B}},label= [style=\bfseries]{Listing}]
+------------------------------------
+
+ LIFT CHARACTERISTICS  
+
+------------------------------------
+
+ ------------------- 
+|       WING        |
+ ------------------- 
+
+
+
+ 	 Data: 
+Angle of attack alpha body (deg) = 2.0
+Angle of incidence of wing (deg) = 0.0
+
+ 
+-----------------------------------------------------
+Starting evaluate stall path of wing
+-----------------------------------------------------
+
+ -----------CLEAN-------------- 
+ alpha max 17.862869870680967 (deg)
+ alpha star 10.32038751072542 (deg)
+ cL max 1.4116038303729044
+ cL star 1.077679099283923
+ cL alpha 5.375380327859693 (1/rad)
+-------------------------------------
+CL of Isolated wing at alpha body = 0.29714759091882836
+
+ 	 	 	DONE PLOTTING CL VS ALPHA CURVE  
+
+ 
+ 	 	 WRITING CHART TO FILE. Stall path. 
+-----------------------------------------------------
+	 	 DONE 
+\end{lstlisting}
+
+\begin{figure}[H]
+\centering
+\input{immagini/clalfaatr.tikz}
+\caption{ATR 72 CL vs Alpha_w at Mach 0.43 and Altitude: 6000 m.}
+\label{fig:clATR}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\input{immagini/CLAlphaWingHighLift_ATR.tikz}
+\caption{ATR-72 lift curve with and without flaps in take-off configuration.}
+\label{fig:clATR}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\input{immagini/clalfamach.tikz}
+\caption{ATR-72 lift curve Altitude: 6000 m. Variation with Mach number.}
+\label{fig:clATR}
+\end{figure}
+
+
+\begin{figure}[H]
+\centering
+\input{immagini/stallpathatr.tikz}
+\caption{ATR 72 Stall Path of wing at Mach 0.43 and Altitude: 6000 m.}
+\label{fig:stallATR}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\input{immagini/clalfaboeing.tikz}
+\caption{BOEING 747-100B CL vs Alpha_w at Mach 0.84 and Altitude: 10000 m.}
+\label{fig:clB}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\input{immagini/CLAlphaWingHighLift_B747.tikz}
+\caption{BOEING 747-100B  lift curve with and without flaps in take-off configuration.}
+\label{fig:clATR}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\input{immagini/stallpathboeing.tikz}
+\caption{BOEING 747-100B Stall Path at Mach 0.84 and Altitude: 10000 m.}
+\label{fig:stallB}
+\end{figure}
+
+
+
+	 	 
 % metti variabilita del cl con mach

@@ -71,34 +71,39 @@ The {\bfseries Nasa-Blackwell}, as mentioned, is a numerical method for calculat
 
 \section{Java Class Architecture}
 
+In this paragraph the implementation inside the JPAD library of the calculation of the wing drag characteristics will be desribed. In this library there are several methods relating to the calculation of drag, which are summarized in the table below, all contained in \texttt{LSAerodynamicManager} class. As mentioned the drag may be broken down in different way: using a causal breakdown or a component breakdown, so there are various methods that evaluate the different contributions. In order to have a clear organization of the class, the methods relating to the calculations of the same items are organized in nested classes in  \texttt{LSAerodynamicManager}.\\ \\
 
-In order to give more flexibility to the code, the calculation of drag coefficient is made from three different class summarized in the folloving table.
+In this work the focus will be on the calculation of drag characteristics of a lifting surface starting from the airfoil semi-spanwise. The first step to evaluate the drag coefficient with this method, is to define an object of the class  \texttt{CalcCDAtAlpha}. This class evaluates the drag coefficient of a lifting surface. This method calls  a method of an other class \texttt{CalcCdDistribution} in order to evaluate the Cd distribution at alpha. The drag coefficient distribution is calculated starting from the lift distribution and using a parabolic approximation for the lifting surface polar by the class \texttt{CalculateCd}. The process is shown in Fig.\ref{fig:cd}.
+
+
+\begin{figure}
+\centering
+{\includegraphics[height=11cm, angle=90]{immagini/dragflowchart.pdf}}
+\caption{Flow chart of drag estimation classes.}
+\label{fig:cd}
+\end{figure}
 
 \begin{table}[H]
 \begin{tabular}{p{7cm}p{7.5cm}}
 \toprule
-\lstinline[language=Java]!integralFromCdAirfoil! & This method calculates the drag coefficient of the lifting surface using an integral and calling other method that fills the needed field. This is in the nested class \texttt{CalcCDAtAlpha}\\ \hline 
-\lstinline[language=Java]!nasaBlackwell! &This method calculates drag distribution starting from the load distribution calculated with Nasa-Blackwell method and using a parabolic approximation for the drag polar.  This is in the nested class \texttt{CalcCdDistribution} \\ \hline 
-\lstinline[language=Java]!nasaBlackwell! & This method calculates the drag coefficient of an airfoil having the lift coefficient and using a parabolic approximation.\\ 
+\lstinline[language=Java]!CalcCdWaveDrag! & This method calculates a lifting surface wave drag\\ \hline 
+\lstinline[language=Java]!CalcCDAtAlpha! & This method calculates the drag coefficient of the lifting surface using an integral and calling other method that fills the needed field. \\ \hline 
+\lstinline[language=Java]!CalcCdDistribution! &This method calculates drag distribution starting from the load distribution calculated with Nasa-Blackwell method or Schrenk method using a parabolic approximation for the drag polar.  
+\\ \hline 
+\lstinline[language=Java]!CalculateCdAirfoil! & This nested class has some methods that evaluates the cd of an airfoil corresponding to an alpha that is the input value of the method. The difference between the methods is the way to calculate cl from alpha.\\ \hline 
+\lstinline[language=Java]!PlotCDvsAlphaCurve! & This method draws CD vs Alpha curve and CD vs CL curve of a wing, using 30 value of alpha between $\alpha=- 2^{\circ}$ and $\alpha = 18^{\circ}$.\\ \hline 
+\lstinline[language=Java]!DragCalc! & this is a class in which there are all methods useful to calculate the drag contributions considering a causal breakdown. \\ \hline 
 \bottomrule
 \end{tabular}
-\caption{Methods for drag coefficient calculatorof a lifting surface.}
+\caption{Methods for drag coefficient calculator of a lifting surface.}
 \label{table:Table2}
 \end{table}
 
-\begin{figure}[H]
-\centering
-{\includegraphics[height=9.9cm]{immagini/dragflowchart.pdf}}
-\caption{Flow chart of drag estimation classes.}
-\label{fig:Drag}
-\end{figure}
 
 \section{Case Study}
 
-After initializing the Test class and defining the work object, it is possible to define an object of the class \texttt{CalcCDAtAlpha} that calculates the drag coefficient of a wing at a given angle of attack. This method accepts as input three parameters: the angle of attack of the wing,  the method used in order to calculate of lift distribution and an object of the lifting surface aerodynamic manager.\\
-The it is possible to plot the curves of drag coefficient versus $\alpha_w$ or lift coefficient that is the drag polar of the wing.
-
-
+In this section will present the results of the application of the previously introduced method on two aircraft: ATR-72 and B747-100B.
+After initializing the Test class and defining the work object, it is possible to define an object of the class \texttt{CalcCDAtAlpha} that calculates the drag coefficient of a wing at a given angle of attack. This method accepts as input three parameters: the angle of attack of the wing,  the method used in order to calculate of lift distribution and an object of the lifting surface aerodynamic manager.
 \noindent \\
 \begin{lstlisting}[frame=rbl,caption={{\footnotesize Use of Drag Calculator class}},label= [style=\bfseries]{Listing}]
 
@@ -125,6 +130,27 @@ System.out.println("\n\n\t\t\tDONE PLOTTING CD vs ALPHA WING");
 }
 \end{lstlisting}
 
+
+%\begin{lstlisting}[caption={{\footnotesize Drag Characteristics of a Lifting Surface - Results. ATR-72}},label= [style=\bfseries]{Listing}]
+%------------------------------------
+%
+% DRAG CHARACTERISTICS  
+%
+%------------------------------------
+%
+% ------------------- 
+%|       WING        |
+% ------------------- 
+%
+% CD of Wing at alpha body = 2.0 ° is 0.0145499801315
+% 
+% 
+% 	 	 WRITING CHART TO FILE. Parabolic Polar. 
+%-----------------------------------------------------
+%	 	 DONE 
+%	 	 
+%\end{lstlisting}
+
 \noindent \\
 
 Following there are the summary diagrams of the results obtained for the ATR 72:
@@ -146,5 +172,42 @@ Following there are the summary diagrams of the results obtained for the ATR 72:
 \label{fig:DragATR}
 \end{figure}
 
+%
+%\begin{lstlisting}[caption={{\footnotesize Drag Characteristics of a Lifting Surface - Results. BOEING 747-100B}},label= [style=\bfseries]{Listing}]
+%------------------------------------
+%
+% DRAG CHARACTERISTICS  
+%
+%------------------------------------
+%
+% ------------------- 
+%|       WING        |
+% ------------------- 
+%
+%
+% CD of Wing at alpha body = 2.0° is 0.00809609934283
+% 
+% 
+% 	 	 WRITING CHART TO FILE. Parabolic Polar. 
+%-----------------------------------------------------
+%	 	 DONE 
+%	 	 
+%\end{lstlisting}
+
+
+\begin{figure}[H]
+\centering
+\input{immagini/CDalfab.tikz}
+\caption{ATR 72 CD vs Alpha_w at Mach 0.84 and Altitude: 10000 m.}
+\label{fig:DragATR}
+\end{figure}
+
+
+\begin{figure}[H]
+\centering
+\input{immagini/polarb.tikz}
+\caption{ATR 72 Parabolic Polar Drag at Mach 0.84 and Altitude: 10000 m.}
+\label{fig:DragATR}
+\end{figure}
 
 
