@@ -44,7 +44,7 @@ loading $W/\!S$ \\ [0.1 cm]
 Small camber \\ [0.1 cm]
 Low drag \\ [0.1 cm]
 High speed \\ [0.1 cm]
-Lift generated using low c\textsubscript{L} \\ 
+Lift generated using low C\textsubscript{L} \\ 
 \bottomrule
 \end{tabular}
 }
@@ -55,11 +55,11 @@ Lift generated using low c\textsubscript{L} \\
 \toprule
 \textbf{Take-Off and Landing requirements} \\
 \midrule
-Big wing surface, or high c\textsubscript{Lmax}, in order \\
+Big wing surface, or high C\textsubscript{Lmax}, in order \\
 to have an high equivalent wing loading \\
-$m=W/(\!S\cdot c_{Lmax})$ \\ [0.2 cm]
+$m=W/(\!S\cdot C_{L\text{max}})$ \\ [0.2 cm]
 High drag value in landing \\ [0.2 cm]
-Lift generated using high c\textsubscript{L} due to the \\
+Lift generated using high C\textsubscript{L} due to the \\
 low speed \\ 
 \bottomrule
 \end{tabular}
@@ -98,7 +98,7 @@ A more in depth analysis shows that \emph{trailing-edge devices} increase the ca
 About \emph{trailing-edge devices}, their effects can be resumed in:
 %
 \begin{itemize}
-\item Higher c\textsubscript{L} at a given angle of attack and higher c\textsubscript{Lmax}
+\item Higher C\textsubscript{L} at a given angle of attack and higher C\textsubscript{Lmax}
 \item Lower stalling angle of attack
 \item Lower zero-lift angle due to increasing camber
 \end{itemize}
@@ -106,7 +106,7 @@ About \emph{trailing-edge devices}, their effects can be resumed in:
 \noindent
 while \emph{leading-edge devices} provide the followings:
 \begin{itemize}
-\item Extension of the linear trait of the lift curve with an increase of the maximum angle of attack and of the c\textsubscript{Lmax}
+\item Extension of the linear trait of the lift curve with an increase of the maximum angle of attack and of the C\textsubscript{Lmax}
 \item Higher zero-lift angle due to translation of the lift curve on the right caused by leading edge deflection which reduce the actual angle of attack 
 \item Higher slope of the linear trait of the lift curve, for those devices which extend airfoils chords with the effect of increase the wing surface and, with constant wing span, the aspect ratio
 \end{itemize}
@@ -652,7 +652,7 @@ Triple slotted & 50° & 5.0 \\
 \lstinline[language=Java]!etaInSlat! & A \lstinline[language=Java]!List! of \lstinline[language=Java]!Double! values containing each flap outer adimensional position, to be set to null if there aren't slats \\  [0.2cm]
 \lstinline[language=Java]!cfc! & A \lstinline[language=Java]!List! of \lstinline[language=Java]!Double! values containing flap chord to airfoil chord ratios for each flap \\  [0.2cm]
 \lstinline[language=Java]!csc! & A \lstinline[language=Java]!List! of \lstinline[language=Java]!Double! values containing slat chord to airfoil chord ratios for each slat, to be set to null if there aren't slats \\  [0.2cm]
-\lstinline[language=Java]!leRadiusRatioSlat! & A \lstinline[language=Java]!List! of  \lstinline[language=Java]!Double! values containing \gls{acr:LER} to airfoil thickness ratios $\left(LER/t=LER/c\cdot t/c\right)$ for each slat, to be set to null if there aren't slats \\  [0.2cm]
+\lstinline[language=Java]!leRadiusRatioSlat! & A \lstinline[language=Java]!List! of  \lstinline[language=Java]!Double! values containing \gls{acr:LER} to airfoil thickness ratios $\left(\text{LER}/t=\text{LER}/c\cdot t/c\right)$ for each slat, to be set to null if there aren't slats \\  [0.2cm]
 \lstinline[language=Java]!cExtcSlat! & A \lstinline[language=Java]!List! of  \lstinline[language=Java]!Double! arrays containing extended chord to airfoil chord ratios for each slat \\ 
 \bottomrule
 \end{tabular}
@@ -692,12 +692,12 @@ The third, and last, method is~\lstinline[language=Java]!plotHighLiftCurve!. It 
 \label{par:CaseStudyHighLift}
 The last task to be done is to show an application of the~\lstinline[language=Java]!CalcHighLiftDevices! class in order to validate the calculation performed as well as to give a useful example to a potential user developer. 
 %
-As in previous chapters the test will be performed using ATR-72 and B747-100B aircraft models, built up as explained in paragraph~\ref{par:DefaultAircraft}. These aircraft models dosen't have high-lift devices input data embedded, so that they have to be assigned from an external .xml file; this choice has been taken because the user may want to try different high-lift devices setups without changing the aircraft model on which these latter will be applied.
+As in previous chapters the test will be performed using ATR-72 and B747-100B aircraft models, built up as explained in paragraph~\ref{par:DefaultAircraft}. These aircraft models dosen't have high-lift devices input data embedded, so that they have to be assigned from an external XML file; this choice has been taken because the user may want to try different high-lift devices setups without changing the aircraft model on which these latter will be applied.
 %
-The input .xml file\cite{wiki:xml} has to provide all data from~\ref{table:CalcHighLiftConstructor}, except for the lifting surface model and the operating condition, and it is modeled as follows.
+The input XML file\cite{wiki:xml} has to provide all data from~\ref{table:CalcHighLiftConstructor}, except for the lifting surface model and the operating condition, and it is modeled as follows.
 
 \bigskip
-\begin{lstlisting}[caption={Example of high-lift devices .xml input file for the B747-100B in take-off configuration}, captionpos=b, tabsize=6, language=XML]
+\begin{lstlisting}[caption={Example of high-lift devices XML input file for the B747-100B in take-off configuration}, captionpos=b, tabsize=6, language=XML]
 <input>
 	<B747>
 		<Flap_Number unit="">2</Flap_Number>
@@ -738,7 +738,7 @@ The input .xml file\cite{wiki:xml} has to provide all data from~\ref{table:CalcH
 \end{lstlisting}
 
 \bigskip
-\begin{lstlisting}[caption={Example of high-lift devices .xml input file for the ATR-72 in take-off configuration}, captionpos=b, tabsize=6, language=XML]
+\begin{lstlisting}[caption={Example of high-lift devices XML input file for the ATR-72 in take-off configuration}, captionpos=b, tabsize=6, language=XML]
 <input>
 	<ATR72>
 		<Flap_Number unit="">2</Flap_Number>
@@ -764,7 +764,7 @@ The input .xml file\cite{wiki:xml} has to provide all data from~\ref{table:CalcH
 \noindent
 The first thing to do in order to read these data is use the Java library~\lstinline[language=Java]!args4j!; the latter allows the user to make the \gls{parsing} of the input file in order to make it available for reading inside the test class. For more information regarding this library the reader can consult~\cite{args4j}.
 %
-After the input file has been parsed correctly, the reading process can start. The user now has to create a \gls{List} for each input data of table~\ref{table:CalcHighLiftConstructor} and then an object of the class~\lstinline[language=Java]!JPADXmlReader!, of the~\lstinline[language=Java]!JPADCore!~\lstinline[language=Java]!standaloneutils! package, in order to manage the scan of the .xml file through its methods. 
+After the input file has been parsed correctly, the reading process can start. The user now has to create a \gls{List} for each input data of table~\ref{table:CalcHighLiftConstructor} and then an object of the class~\lstinline[language=Java]!JPADXmlReader!, of the~\lstinline[language=Java]!JPADCore!~\lstinline[language=Java]!standaloneutils! package, in order to manage the scan of the XML file through its methods. 
 
 \bigskip
 \begin{lstlisting}[caption={Excerpt of B747-100B test - Input data reading}, captionpos=b, tabsize=2]
@@ -895,7 +895,7 @@ In conclusion, the following pages show the numerical and graphical results of t
 \begin{figure}[H]
 \centering
 \input{images/CLAlphaWingHighLift_ATR.tikz}
-\caption{ATR-72 lift curve with and without flaps in take-off configuration}
+\caption{ATR-72 lift curve with and without flaps deflected}
 \label{fig:FlapATR}
 \end{figure}
 
@@ -928,7 +928,7 @@ deltaCMc_4 = -0.12338582743821447
 \begin{figure}[H]
 \centering
 \input{images/CLAlphaWingHighLift_B747.tikz}
-\caption{B747-100B lift curve with and without flaps in take-off configuration}
+\caption{B747-100B lift curve with and without flaps and slats deflected}
 \label{fig:FlapATR}
 \end{figure}
 

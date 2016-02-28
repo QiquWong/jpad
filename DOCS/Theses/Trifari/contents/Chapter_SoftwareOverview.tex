@@ -118,6 +118,7 @@ According to the TIOBE index, in terms of popularity, during the last year the J
 %
 %--------------------------- INPUT FILE STRUCTURE ---------------------------
 \section{Input file structure}
+\label{par:InputFile}
 In order to read databases, or to read an entire aricraft parametric model, the input file type chosen is the XML. The file extension stands for \emph{eXtensible Markup Language} and is a markup language that defines a set of rules for encoding documents in a format which is both \emph{human-readable} and \emph{machine-readable}; moreover its design goals of emphasize simplicity, generality and usability across the Internet. XML is a textual data format with strong support via Unicode for different human languages and, although the design of XML focuses on documents, it is widely used for the representation of arbitrary data structures such as those used in web services. It is defined \emph{Markup Language} due to the use of tags that describes the content; while is considered \emph{extensible} because the markup symbols are unlimited and self-defining, so that it's possible to use a personal tag for each data. In this way to read an XML file results relatively simple.\cite{wiki:xml}
 
 \bigskip
@@ -172,7 +173,7 @@ In order to simplify, for a potential \gls{User:Developer}, the definition of th
 \begin{figure}[!b]
 \centering
 \includegraphics[keepaspectratio, width=0.67\textwidth]{Folder_Tree}
-\caption{Input file folder tree prototype for JPAD}
+\caption{Input file folder tree prototype for \gls{JPAD}}
 \label{fig:inputJPAD}
 \end{figure}
 
@@ -376,18 +377,18 @@ The data relating to airfoils are handled by the \lstinline[language=Java]!Airfo
 	\item twist value relative to root, $\epsilon_g$;
 	\item zero lift angle of attack, $\alphazlp$;
 	\item angle of attack value at the end of the linear part of $C_l(\alpha)$ curve, $\alphastar$;
-	\item stall angle of attack, $\alpha_{stall}$;
+	\item stall angle of attack, $\alpha_{\text{stall}}$;
 	\item lift gradient of the linear part of $C_l(\alpha)$ curve, $\Clalphap$;
-	\item minimum drag coefficient, $C_{d,min}$;
-	\item lift coefficient at $C_{d,min}$, $C_l@C_{d,min}$;
+	\item minimum drag coefficient, $C_{d\text{min}}$;
+	\item lift coefficient at $C_{d,min}$, $C_l@C_{d\text{min}}$;
 	\item lift cofficient at the end of linear part;
-	\item maximum lift coefficient, $\Clmaxp$
+	\item maximum lift coefficient, $C_{l\text{max}}$
 	\item drag polar $K$ factor;
 	\item aerodynamic moment coefficient gradient, $C_{m_\alpha}$;
 	\item aerodynamic center x coordinate, $x_{ac}$;
 	\item aerodynamic moment coefficient with respect to the aerodynamic center, $C_{m_{ac}}$ or $\Cmzerop$;
-	\item aerodynamic moment coefficient with respect to the aerodynamic center at stall, $C_{m_{ac},stall}$;
-	\item maximum thickness to chord ratio, $t/c_{max}$;
+	\item aerodynamic moment coefficient with respect to the aerodynamic center at stall, $C_{m_{ac},\text{stall}}$;
+	\item maximum thickness to chord ratio, $t/c_{\text{max}}$;
 	\item x,z non dimensional coordinates.
 \end{enumerate}
 %
@@ -395,7 +396,7 @@ At the time of writing, all these quantities have to be entered by the user. The
 
 \bigskip
 \noindent
-The power plant is defined in the package \lstinline[language=Java]!powerPlant! inside \lstinline[language=Java]!components!. In this package there is the \lstinline[language=Java]!Engine! class, which initializes the data related to the single engine; while other class in the same package, named \lstinline[language=Java]!PowerPlant! creates the parametric model of the power plant using a list of objects creates by the \lstinline[language=Java]!Engine! class.
+The power plant is defined in the package \lstinline[language=Java]!powerPlant! inside \lstinline[language=Java]!components!. In this package there is the \lstinline[language=Java]!Engine! class, which initializes the data related to the single engine; while other class in the same package, named \lstinline[language=Java]!PowerPlant! creates the parametric model of the power plant using a \gls{List}\cite{listAPI} of objects creates by the \lstinline[language=Java]!Engine! class.
 %
 %------------------------------- Cad package ---------------------------------
 \subsection{\texttt{cad} package}
@@ -442,24 +443,24 @@ Actually it is possible to define two different aircraft in order to test the fu
 \begin{figure}[!t]
 \centering
 \includegraphics[keepaspectratio, width=0.8\textwidth]{ATR-72}
-\caption{ATR-72 and B747-100B input data}
+\caption{ATR-72 views – Jane's All the World's Aircraft 2004-2005\cite{janes}}
 \label{fig:Figure6}
 \end{figure}
 
 \bigskip
 \noindent
-The ATR-72, made by the French-Italian aircraft manufacturer ATR, is a stretched variant of the original ATR-42 that entered in service in 1989; it’s powered by two turboprop engine and it’s used typically as a regional airliner. The main purpose of its design was to increase the seating capacity throughout the stretching of the fuselage by 4.5m, an increased wingspan, more powerful engines and an increased fuel capacity by approximately 10$\%$.
+The ATR-72, made by the French-Italian aircraft manufacturer ATR, is a stretched variant of the original ATR-42 that entered in service in 1989; it’s powered by two turboprop engine and it’s used typically as a regional airliner. The main purpose of its design was to increase the seating capacity throughout the stretching of the fuselage by 4.5m, an increased wingspan, more powerful engines and an increased fuel capacity by approximately 10$\%$.\cite{wiki:atr72}
 %
 \begin{figure}[!b]
 \centering
 \includegraphics[keepaspectratio, width=0.85\textwidth]{B747-100B}
-\caption{B747-100B views – Jane's All the World's Aircraft 2004-2005}
+\caption{B747-100B views – Jane's All the World's Aircraft 2004-2005\cite{janes}}
 \label{fig:Figure7}
 \end{figure}
 
 \bigskip
 \noindent
-The Boeing 747 is a wide-body commercial jet airliner and cargo aircraft, often referred to by its original nickname, Jumbo Jet, or Queen of the Skies. Its distinctive hump upper deck along the forward part of the aircraft makes it among the world's most recognizable aircraft, and it was the first wide-body produced. Manufactured by Boeing's Commercial Airplane unit in the United States, the original version of the 747 had two and a half times greater capacity than the Boeing 707, one of the common large commercial aircraft of the 1960s. The four-engine 747 uses a double deck configuration for part of its length and it’s available in passenger and other versions. Boeing designed the 747's hump-like upper deck to serve as a first class lounge or extra seating, and to allow the aircraft to be easily converted to a cargo carrier by removing seats and installing a front cargo door. The 747-100B model was developed from the 747-100SR, using its stronger airframe and landing gear design; the type had an increased fuel capacity of $\SI{182000}{\liter}$, allowing for a 5000 nautical mile range with a typical 452 passengers payload, and an increased maximum take-off weight of $\SI{340000}{\kilogram}$ was offered; unlike the original 747-100, the 747-100B was offered with Pratt \& Whitney JT9D-7A, General Electric CF6-50, or Rolls-Royce RB211-524 turbofan engines.
+The Boeing 747 is a wide-body commercial jet airliner and cargo aircraft, often referred to by its original nickname, Jumbo Jet, or Queen of the Skies. Its distinctive hump upper deck along the forward part of the aircraft makes it among the world's most recognizable aircraft, and it was the first wide-body produced. Manufactured by Boeing's Commercial Airplane unit in the United States, the original version of the 747 had two and a half times greater capacity than the Boeing 707, one of the common large commercial aircraft of the 1960s. The four-engine 747 uses a double deck configuration for part of its length and it’s available in passenger and other versions. Boeing designed the 747's hump-like upper deck to serve as a first class lounge or extra seating, and to allow the aircraft to be easily converted to a cargo carrier by removing seats and installing a front cargo door. The 747-100B model was developed from the 747-100SR, using its stronger airframe and landing gear design; the type had an increased fuel capacity of $\SI{182000}{\liter}$, allowing for a 5000 nautical mile range with a typical 452 passengers payload, and an increased maximum take-off weight of $\SI{340000}{\kilogram}$ was offered; unlike the original 747-100, the 747-100B was offered with Pratt \& Whitney JT9D-7A, General Electric CF6-50, or Rolls-Royce RB211-524 turbofan engines.\cite{wiki:b747}
 
 %
 \begingroup
@@ -650,6 +651,7 @@ In conclusion the following pages shows two flowcharts useful to better understa
 %
 %---------------------------------------GUI ----------------------------------------
 \section{The \gls{acr:GUI}}
+\label{par:GUI}
 An extensive work has been done to set up an effective \gls{acr:GUI} to reduce the time the user has to spend to obtain relevant results. It should be noted that this \gls{acr:GUI} is only a prototype, although fully functional, of a possible future interface still in development.
 
 \bigskip
@@ -741,10 +743,11 @@ There is no limit to the number of aircraft the application can handle; each air
 \subsection{CAD modelling}
 The application can also be used as a basic parametric CAD modeler. The capability to change the aircraft parameters using the corresponding controls in the \gls{acr:GUI}, coupled with the 3D view, allows the user to change each component shape and dimension, view the updated CAD model and eventually export it to file once some satisfactory results have been obtained.
 %
-The CAD model, once saved to a STEP or BRep file, can be imported in CAD suites like FreeCAD, MeshLab, SketchUp, Blender, SolidWorks, or CATIA. The file can also be used to further study the aircraft in a CAE software, such as CD-adapco STAR-CCM+ or ANSYS suite.
+The CAD model, once saved to a STEP or BRep file, can be imported in CAD suites like FreeCAD, MeshLab, SketchUp, Blender, SolidWorks, or CATIA. The file can also be used to further study the aircraft in a \gls{acr:CAE} software, such as CD-adapco STAR-CCM+ or ANSYS suite.
 %
 %-------------------------------OPTIMIZATION------------------------------------
 \section{Optimization process}
+\label{par:Optimization}
 It has always been the engineer’s dream to have all aspects of analysis done in a relatively short time period so that many different configurations can be examined and the best suitable product can be delivered on time. Although this may still be a dream, actual design turn-around time has become shorter due to the use of mathematical optimization techniques which have been introduced into the design process.\cite{torenbeek2013advanced}
 
 \bigskip
