@@ -661,12 +661,12 @@ public class Fuselage extends AeroComponent {
 		case AGILE_DC1:
 			_deckNumber = 1;
 
-			_len_F         =  Amount.valueOf(31.95, 0.0, SI.METRE);
+			_len_F         =  Amount.valueOf(34., 0.0, SI.METRE);
 			_lenRatio_NF       = 0.1420;
 			_lenRatio_CF       = 0.6148;
 
-			_sectionCylinderWidth     = Amount.valueOf(3.24,SI.METRE);
-			_sectionCylinderHeight    = Amount.valueOf(3.24, SI.METRE);
+			_sectionCylinderWidth     = Amount.valueOf(3.,SI.METRE);
+			_sectionCylinderHeight    = Amount.valueOf(3., SI.METRE);
 
 			// Nose fineness ratio, _len_N/_diam_N
 			_lambda_N      = 1.4; 

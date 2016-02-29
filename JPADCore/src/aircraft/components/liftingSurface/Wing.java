@@ -232,10 +232,10 @@ public class Wing extends LiftingSurface{
 			break;
 			
 		case AGILE_DC1:
-			_surface = Amount.valueOf(76.38, SI.SQUARE_METRE);
-			_aspectRatio = 9.97;
-			_taperRatioEquivalent = 0.212;
-			_sweepQuarterChordEq = Amount.valueOf(Math.toRadians(19.4),SI.RADIAN);
+			_surface = Amount.valueOf(75, SI.SQUARE_METRE);
+			_aspectRatio = 9.5;
+			_taperRatioEquivalent = 0.25;
+			_sweepQuarterChordEq = Amount.valueOf(Math.toRadians(25.),SI.RADIAN);
 			_spanStationKink = 0.35;
 			_iw = Amount.valueOf(Math.toRadians(2.0), SI.RADIAN);
 			_twistKink = Amount.valueOf(Math.toRadians(-1.5),SI.RADIAN);
@@ -270,7 +270,7 @@ public class Wing extends LiftingSurface{
 			_compositeCorretionFactor = 0.1;
 
 			// A reference value chosen by the user
-			_massReference = Amount.valueOf(4669.0, SI.KILOGRAM);
+			_massReference = Amount.valueOf(3433.0, SI.KILOGRAM);
 
 			// Calibration constant (to account for slight weight changes due to composites etc...)
 			_massCorrectionFactor = 1.;
