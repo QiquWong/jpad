@@ -89,7 +89,7 @@ public class CalcTakeOff_Landing {
 	private Double vFailure;
 	private boolean isAborted;
 	
-	private double oswald, cD0;
+	private double oswald, cD0, cLalphaFlap, deltaCD0FlapLandinGears;
 
 	// Statistics to be collected at every phase: (initialization of the lists through the builder
 	private TakeOffResultsMap takeOffResults = new TakeOffResultsMap();
@@ -136,7 +136,7 @@ public class CalcTakeOff_Landing {
 	public CalcTakeOff_Landing(
 			Aircraft aircraft,
 			OperatingConditions theConditions,
-//			CalcHighLiftDevices highLiftCalculator,
+			CalcHighLiftDevices highLiftCalculator,
 			Amount<Duration> dtRot,
 			Amount<Duration> dtHold,
 			double kcLMax,
@@ -179,18 +179,161 @@ public class CalcTakeOff_Landing {
 		this.vWind = vWind;
 		this.alphaGround = alphaGround;
 		this.iw = iw;
+
+		this.oswald = aircraft.get_theAerodynamics().get_oswald();
+		this.cD0 = aircraft.get_theAerodynamics().get_cD0();
+		this.deltaCD0FlapLandinGears = highLiftCalculator.getDeltaCD() + aircraft.get_landingGear().get_deltaCD0();
+		
+		// CalcHighLiftDevices object to manage flap/slat effects
+		highLiftCalculator.calculateHighLiftDevicesEffects();
+		cLmaxTO = highLiftCalculator.getcL_Max_Flap();
+		cL0 = highLiftCalculator.calcCLatAlphaHighLiftDevice(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+		cLground = highLiftCalculator.calcCLatAlphaHighLiftDevice(getAlphaGround().plus(iw));
+		cLalphaFlap = highLiftCalculator.getcLalpha_new();
+		
+		// Reference velocities definition
+		vSTakeOff = Amount.valueOf(
+				SpeedCalc.calculateSpeedStall(
+						theConditions.get_altitude().getEstimatedValue(),
+						aircraft.get_weights().get_MTOW().getEstimatedValue(),
+						aircraft.get_wing().get_surface().getEstimatedValue(),
+						cLmaxTO
+						),
+				SI.METERS_PER_SECOND);
+		vRot = vSTakeOff.times(kRot);
+		vLO = vSTakeOff.times(kLO);
+		
+		System.out.println("\n-----------------------------------------------------------");
+		System.out.println("CLmaxTO = " + cLmaxTO);
+		System.out.println("VsTO = " + vSTakeOff);
+		System.out.println("VRot = " + vRot);
+		System.out.println("vLO = " + vLO);
+		System.out.println("CL0 = " + cL0);
+		System.out.println("CLground = " + cLground);
+		System.out.println("-----------------------------------------------------------\n");
+
+		// McCormick interpolated function --> See the excel file into JPAD DOCS
+		double hb = wingToGroundDistance.divide(aircraft.get_wing().get_span().times(Math.PI/4)).getEstimatedValue();
+		kGround = - 622.44*(Math.pow(hb, 5)) + 624.46*(Math.pow(hb, 4)) - 255.24*(Math.pow(hb, 3))
+				+ 47.105*(Math.pow(hb, 2)) - 0.6378*hb + 0.0055;
+		
+		// List initialization
+		this.time = new ArrayList<Amount<Duration>>();
+		this.speed = new ArrayList<Amount<Velocity>>();
+		this.thrust = new ArrayList<Amount<Force>>();
+		this.thrustHorizontal = new ArrayList<Amount<Force>>();
+		this.thrustVertical = new ArrayList<Amount<Force>>();
+		this.alpha = new ArrayList<Amount<Angle>>();
+		this.alphaDot = new ArrayList<Double>();
+		this.gamma = new ArrayList<Amount<Angle>>();
+		this.gammaDot = new ArrayList<Double>();
+		this.theta = new ArrayList<Amount<Angle>>();
+		this.cL = new ArrayList<Double>();
+		this.lift = new ArrayList<Amount<Force>>();
+		this.loadFactor = new ArrayList<Double>();
+		this.cD = new ArrayList<Double>();
+		this.drag = new ArrayList<Amount<Force>>();
+		this.friction = new ArrayList<Amount<Force>>();
+		this.totalForce = new ArrayList<Amount<Force>>();
+		this.acceleration = new ArrayList<Amount<Acceleration>>();
+		this.rateOfClimb = new ArrayList<Amount<Velocity>>();
+		this.groundDistance = new ArrayList<Amount<Length>>();
+		this.verticalDistance = new ArrayList<Amount<Length>>();
+		
+		takeOffResults.initialize();
+	}
+	
+	/*******************************************************************************
+	 * This builder is an overload of the previous one designed to allow the user 
+	 * to perform the take-off distance calculation without doing all flaps analysis.
+	 * This may come in handy when only few data are available.
+	 * 
+	 * @author Vittorio Trifari
+	 * @param aircraft
+	 * @param theConditions
+	 * @param dtRot time interval of the rotation phase
+	 * @param dtHold time interval of the constant CL phase
+	 * @param kcLMax percentage of the CLmaxTO not to be surpasses
+	 * @param kRot percentage of VstallTO which defines the rotation speed
+	 * @param kLO percentage of VstallTO which defines the lift-off speed
+	 * @param kFailure parameter which defines the drag increment due to engine failure
+	 * @param k1 linear correction factor of the parabolic drag polar at high CL
+	 * @param k2 quadratic correction factor of the parabolic drag polar at high CL
+	 * @param phi throttle setting
+	 * @param kAlphaDot coefficient which defines the decrease of alpha_dot during manouvering
+	 * @param alphaRed constant negative pitching angular velocity to be maintained after holding 
+	 * the CL constant
+	 * @param mu friction coefficient without brakes action
+	 * @param muBrake friction coefficient with brakes activated
+	 * @param wingToGroundDistance
+	 * @param obstacle
+	 * @param vWind
+	 * @param alphaGround
+	 * @param iw
+	 * @param cD0
+	 * @param oswald
+	 * @param cLmaxTO
+	 * @param cL0
+	 * @param cLalpha_flap
+	 * @param deltaCD0FlapLandingGears
+	 */
+	public CalcTakeOff_Landing(
+			Aircraft aircraft,
+			OperatingConditions theConditions,
+			Amount<Duration> dtRot,
+			Amount<Duration> dtHold,
+			double kcLMax,
+			double kRot,
+			double kLO,
+			double kFailure,
+			double k1,
+			double k2,
+			double phi,
+			double kAlphaDot,
+			double alphaRed,
+			double mu,
+			double muBrake,
+			Amount<Length> wingToGroundDistance,
+			Amount<Length> obstacle,
+			Amount<Velocity> vWind,
+			Amount<Angle> alphaGround,
+			Amount<Angle> iw,
+			double cD0,
+			double oswald,
+			double cLmaxTO,
+			double cL0,
+			double cLalpha_flap,
+			double deltaCD0FlapLandingGears
+			) {
+
+		// Required data
+		this.aircraft = aircraft;
+		this.theConditions = theConditions;
+		this.dtRot = dtRot;
+		this.dtHold = dtHold;
+		this.kcLMax = kcLMax;
+		this.kRot = kRot;
+		this.kLO = kLO;
+		this.kFailure = kFailure;
+		this.k1 = k1;
+		this.k2 = k2;
+		this.phi = phi;
+		this.kAlphaDot = kAlphaDot;
+		this.alphaRed = alphaRed;
+		this.mu = mu;
+		this.muBrake = muBrake;
+		this.wingToGroundDistance = wingToGroundDistance;
+		this.obstacle = obstacle;
+		this.vWind = vWind;
+		this.alphaGround = alphaGround;
+		this.iw = iw;
 		this.cD0 = cD0;
 		this.oswald = oswald;
-
-		// CalcHighLiftDevices object to manage flap/slat effects
-//		highLiftCalculator.calculateHighLiftDevicesEffects();
-//		cLmaxTO = highLiftCalculator.getcL_Max_Flap();
-//		cL0 = highLiftCalculator.calcCLatAlphaHighLiftDevice(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
-//		cLground = highLiftCalculator.calcCLatAlphaHighLiftDevice(getAlphaGround().plus(iw));
-
-		cLmaxTO = 2.1;
-		cL0 = 0.69; 
-		cLground = 0.864;
+		this.deltaCD0FlapLandinGears = deltaCD0FlapLandingGears;
+		this.cLmaxTO = cLmaxTO;
+		this.cL0 = cL0; 
+		this.cLalphaFlap = cLalpha_flap;
+		this.cLground = cL0 + (cLalpha_flap*iw.getEstimatedValue());
 		
 		// Reference velocities definition
 		vSTakeOff = Amount.valueOf(
@@ -1538,12 +1681,9 @@ public class CalcTakeOff_Landing {
 			g0 = AtmosphereCalc.g0.getEstimatedValue();
 			mu = CalcTakeOff_Landing.this.mu;
 			kAlpha = CalcTakeOff_Landing.this.kAlphaDot;
-//			cD0 = aircraft.get_theAerodynamics().get_cD0();
-			cD0 = 0.0187;
-//			deltaCD0 = highLiftCalculator.getDeltaCD() + aircraft.get_landingGear().get_deltaCD0();
-			deltaCD0 = 0.010;
-//			oswald = aircraft.get_theAerodynamics().get_oswald()+0.1;
-			oswald = 0.85;
+			cD0 = CalcTakeOff_Landing.this.getcD0();
+			deltaCD0 = CalcTakeOff_Landing.this.getDeltaCD0FlapLandinGears();
+			oswald = CalcTakeOff_Landing.this.getOswald();
 			ar = aircraft.get_wing().get_aspectRatio();
 			k1 = CalcTakeOff_Landing.this.getK1();
 			k2 = CalcTakeOff_Landing.this.getK2();
@@ -1552,8 +1692,7 @@ public class CalcTakeOff_Landing {
 
 			// alpha_dot_initial calculation
 			double cLatLiftOff = cLmaxTO/(Math.pow(kLO, 2));
-//			double alphaLiftOff = (cLatLiftOff - cL0)/highLiftCalculator.getcLalpha_new();
-			double alphaLiftOff = (cLatLiftOff - cL0)/0.087;
+			double alphaLiftOff = (cLatLiftOff - cL0)/CalcTakeOff_Landing.this.getcLalphaFlap();
 			alphaDotInitial = (((alphaLiftOff - iw.getEstimatedValue()) 
 					- CalcTakeOff_Landing.this.getAlphaGround().getEstimatedValue())
 					/(dtRot.getEstimatedValue())
@@ -1572,7 +1711,7 @@ public class CalcTakeOff_Landing {
 			alpha = alpha(t);
 			double speed = x[1];
 			gamma = x[2];
-
+			
 			if(!isAborted) {
 				if( t < tEndRot.getEstimatedValue()) {
 					xDot[0] = speed;
@@ -1618,40 +1757,40 @@ public class CalcTakeOff_Landing {
 
 			if (time < tFaiulre.getEstimatedValue())
 				theThrust =	ThrustCalc.calculateThrustDatabase(
-						aircraft.get_powerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
-						aircraft.get_powerPlant().get_engineNumber(),
-						phi,
-						aircraft.get_powerPlant().get_engineList().get(0).get_bpr(),
-						aircraft.get_powerPlant().get_engineType(),
+						CalcTakeOff_Landing.this.getAircraft().get_powerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
+						CalcTakeOff_Landing.this.getAircraft().get_powerPlant().get_engineNumber(),
+						CalcTakeOff_Landing.this.getPhi(),
+						CalcTakeOff_Landing.this.getAircraft().get_powerPlant().get_engineList().get(0).get_bpr(),
+						CalcTakeOff_Landing.this.getAircraft().get_powerPlant().get_engineType(),
 						EngineOperatingConditionEnum.TAKE_OFF,
-						theConditions.get_altitude().getEstimatedValue(),
+						CalcTakeOff_Landing.this.getTheConditions().get_altitude().getEstimatedValue(),
 						SpeedCalc.calculateMach(
-								theConditions.get_altitude().getEstimatedValue(),
+								CalcTakeOff_Landing.this.getTheConditions().get_altitude().getEstimatedValue(),
 								speed + 
-								(vWind*Math.cos(Amount.valueOf(
+								(CalcTakeOff_Landing.this.getvWind().getEstimatedValue()*Math.cos(Amount.valueOf(
 										gamma,
 										NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
 								)
 						);
 			else
 				theThrust =	ThrustCalc.calculateThrustDatabase(
-						aircraft.get_powerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
-						aircraft.get_powerPlant().get_engineNumber() - 1,
-						phi,
-						aircraft.get_powerPlant().get_engineList().get(0).get_bpr(),
-						aircraft.get_powerPlant().get_engineType(),
+						CalcTakeOff_Landing.this.getAircraft().get_powerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
+						CalcTakeOff_Landing.this.getAircraft().get_powerPlant().get_engineNumber() - 1,
+						CalcTakeOff_Landing.this.getPhi(),
+						CalcTakeOff_Landing.this.getAircraft().get_powerPlant().get_engineList().get(0).get_bpr(),
+						CalcTakeOff_Landing.this.getAircraft().get_powerPlant().get_engineType(),
 						EngineOperatingConditionEnum.TAKE_OFF,
-						theConditions.get_altitude().getEstimatedValue(),
+						CalcTakeOff_Landing.this.getTheConditions().get_altitude().getEstimatedValue(),
 						SpeedCalc.calculateMach(
-								theConditions.get_altitude().getEstimatedValue(),
+								CalcTakeOff_Landing.this.getTheConditions().get_altitude().getEstimatedValue(),
 								speed + 
-								(vWind*Math.cos(Amount.valueOf(
+								(CalcTakeOff_Landing.this.getvWind().getEstimatedValue()*Math.cos(Amount.valueOf(
 										gamma,
 										NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
 								)
 						);
 
-			System.out.println("Thrust: " + theThrust);
+//			System.out.println("Thrust: " + theThrust);
 			return theThrust;
 		}
 
@@ -1693,8 +1832,7 @@ public class CalcTakeOff_Landing {
 
 			if (time < tClimb.getEstimatedValue()) {
 				double cL0 = CalcTakeOff_Landing.this.cL0;
-//				double cLalpha = highLiftCalculator.getcLalpha_new();
-				double cLalpha = 0.087;
+				double cLalpha = CalcTakeOff_Landing.this.getcLalphaFlap();
 				double alphaWing = alpha + CalcTakeOff_Landing.this.getIw().getEstimatedValue();
 
 				return cL0 + (cLalpha*alphaWing);
@@ -2324,5 +2462,37 @@ public class CalcTakeOff_Landing {
 
 	public void settRec(Amount<Duration> tRec) {
 		this.tRec = tRec;
+	}
+
+	public double getOswald() {
+		return oswald;
+	}
+
+	public void setOswald(double oswald) {
+		this.oswald = oswald;
+	}
+
+	public double getcD0() {
+		return cD0;
+	}
+
+	public void setcD0(double cD0) {
+		this.cD0 = cD0;
+	}
+
+	public double getcLalphaFlap() {
+		return cLalphaFlap;
+	}
+
+	public void setcLalphaFlap(double cLalphaFlap) {
+		this.cLalphaFlap = cLalphaFlap;
+	}
+
+	public double getDeltaCD0FlapLandinGears() {
+		return deltaCD0FlapLandinGears;
+	}
+
+	public void setDeltaCD0FlapLandinGears(double deltaCD0FlapLandinGears) {
+		this.deltaCD0FlapLandinGears = deltaCD0FlapLandinGears;
 	}
 }

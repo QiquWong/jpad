@@ -10,12 +10,8 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.DoubleSummaryStatistics;
-import java.util.IntSummaryStatistics;
 import java.util.List;
-import java.util.OptionalDouble;
 import java.util.Stack;
 import java.util.stream.IntStream;
 
@@ -26,24 +22,18 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.poi.ss.formula.functions.T;
-import org.treez.core.atom.attribute.Section;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.coords.Coords;
 import org.treez.javafxd3.d3.core.Selection;
-import org.treez.javafxd3.d3.core.Value;
 import org.treez.javafxd3.d3.functions.AxisScaleFirstDatumFunction;
 import org.treez.javafxd3.d3.functions.AxisScaleSecondDatumFunction;
 import org.treez.javafxd3.d3.functions.AxisTransformPointDatumFunction;
-import org.treez.javafxd3.d3.functions.DatumFunction;
 import org.treez.javafxd3.d3.scales.LinearScale;
-import org.treez.javafxd3.d3.scales.QuantitativeScale;
 import org.treez.javafxd3.d3.svg.Area;
 import org.treez.javafxd3.d3.svg.InterpolationMode;
 import org.treez.javafxd3.d3.svg.Line;
 import org.treez.javafxd3.d3.svg.Symbol;
 import org.treez.javafxd3.d3.svg.SymbolType;
-import org.treez.javafxd3.d3.wrapper.JavaScriptObject;
 import org.treez.javafxd3.javafx.JavaFxD3Browser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -69,10 +59,10 @@ public class D3Plotter {
 	private Selection svgSelection;
 
 	// set margins
-	final Margin margin = new Margin(40, 20, 10, 60); // t r b l
+	final private Margin margin;
 
-	final int widthGraph = 700 - margin.left - margin.right;
-	final int heightGraph = 500 - margin.top - margin.bottom;
+	final int widthGraph;
+	final int heightGraph;
 
 	private int widthPageSVG;
 	private int heightPageSVG;
@@ -82,8 +72,8 @@ public class D3Plotter {
 
 	private String graphBackground = "lightblue";
 
-	private final double xtickPadding = 12.0;
-	private final double ytickPadding = 5.0;
+	private final double xtickPadding; // = 12.0;
+	private final double ytickPadding; // = 5.0;
 
 	private final int symbolSize = 64;
 	private String symbolStyle = "fill:red; stroke:blue; stroke-width:2";
@@ -92,8 +82,14 @@ public class D3Plotter {
 
 	private String areaStyle = "fill:green;";
 
+	private boolean showSymbols = true;
+	private boolean plotArea = false;
+	private boolean showLegend = true;
 
-	public class Margin {
+	final private List<Double[][]> listDataArray = new ArrayList<Double[][]>();
+
+
+	public static class Margin {
 		public final int top;
 		public final int right;
 		public final int bottom;
@@ -119,34 +115,53 @@ public class D3Plotter {
 	/*
 	 *  Constructor
 	 */
-	public D3Plotter(int wSVG, int hSVG) {
-		this.widthPageSVG = wSVG;
-		this.heightPageSVG = hSVG;
+	public D3Plotter(
+			int wSVG, int hSVG, // svg dimensions
+			int marginTop, int marginRight, int marginBottom, int marginLeft,  // plot margins, t r b l
+			double xtickPadding, double ytickPadding,
+			boolean showSymbols, boolean showLegend, boolean plotArea,
+			Double[][] dataArray
+			) {
+		widthPageSVG = wSVG;
+		heightPageSVG = hSVG;
+		margin = new Margin(marginTop, marginRight, marginBottom, marginLeft);
+
+		widthGraph = widthPageSVG - margin.left - margin.right;
+		heightGraph = heightPageSVG - margin.top - margin.bottom;
+
+		this.xtickPadding = xtickPadding;
+		this.ytickPadding = ytickPadding;
+
+		this.showSymbols = showSymbols;
+		this.showLegend = showLegend;
+		this.plotArea = plotArea;
+
+		this.listDataArray.add(dataArray);
 	}
 
-	public D3Plotter() {
-		this.widthPageSVG = widthGraph;
-		this.heightPageSVG = heightGraph;
-	}
+//	public D3Plotter() {
+//		this.widthPageSVG = widthGraph;
+//		this.heightPageSVG = heightGraph;
+//	}
 
 	/*
 	 * called in Runnable object
 	 */
 	public void createD3Content() {
 
+		if (listDataArray.size() == 0)
+			return;
 
-		Double[][] dataArray = {
-				{ 1.0, 0.0 },
-				{ 20.0, 15.5 },
-				{ 50.0, 10.0 },
-				{ 40.0, -10.0 },
-				{ 35.0, 18.0 }
-				};
+		System.out.println("D3Plotter :: createD3Content");
 
-		System.out.println(dataArray.length);
-//		OptionalDouble xMax = IntStream.range(0, dataArray.length)
-//			.mapToDouble(i -> dataArray[i][1])
-//			.max();
+		Double[][] dataArray = listDataArray.get(0);
+
+		// TODO
+		// see http://stackoverflow.com/questions/26050530/filling-a-multidimensional-array-using-a-stream
+		// to populate a longer list of 2D arrays
+
+
+//		System.out.println(dataArray.length);
 
 		//--------------------------------------------------------
 		// Find X- and Y- min/max values
@@ -173,20 +188,7 @@ public class D3Plotter {
 		double yMin = summaryStatisticsY.getMin();
 
 
-		// data that you want to plot, I've used separate arrays for x and y values
-		double[] xData1 = {5, 10, 25, 32, 40, 40, 15, 7};
-		double[] yData1 = {3, 17, 4, 10, 6, -20, -20.0, 0};
-
-		//double xMin = 0;
-		//double xMax = 50;
-		//double yMin = -30.0;
-		//double yMax = 30.0;
-
-		System.out.println("D3Plotter :: createD3Content");
-
-//		int widthSVG = 1200;
-//		int heightSVG = 800;
-
+		// Get the D3 object
 		d3 = browser.getD3();
 //		System.out.println("D3 version " + d3.version());
 		webEngine = d3.getWebEngine();
@@ -375,18 +377,18 @@ public class D3Plotter {
 				.attr("style", lineStyle);
 
 
-		//plot area beneath line
-		double yMin1 = yScale.apply(0.0).asDouble();
-		Area areaPathGenerator = d3 //
-			.svg() //
-			.area() //
-			.x(new AxisScaleFirstDatumFunction(xScale))
-			.y0(yMin1)
-			.y1(new AxisScaleSecondDatumFunction(yScale));
-		String areaPath = areaPathGenerator.generate(dataArray);
-
-		@SuppressWarnings("unused")
-		Selection area = xySelection //
+		if ( plotArea ) {
+			//plot area beneath line
+			double yMin1 = yScale.apply(0.0).asDouble();
+			Area areaPathGenerator = d3 //
+					.svg() //
+					.area() //
+					.x(new AxisScaleFirstDatumFunction(xScale))
+					.y0(yMin1)
+					.y1(new AxisScaleSecondDatumFunction(yScale));
+			String areaPath = areaPathGenerator.generate(dataArray);
+			@SuppressWarnings("unused")
+			Selection area = xySelection //
 			.append("path") //
 			.attr("id", "area") //
 			.attr("d", areaPath)
@@ -394,34 +396,46 @@ public class D3Plotter {
 			.attr("style", areaStyle)
 			.attr("opacity", "0.5")
 			;
+		}
 
-		//plot symbols
-		Symbol symbol = d3 //
-				.svg() //
-				.symbol();
-		symbol = symbol //
-				.size(symbolSize) //
-				.type(SymbolType.CIRCLE);
 
-		String symbolDString = symbol.generate();
+		if (showSymbols) {
+			//plot symbols
+			Symbol symbol = d3 //
+					.svg() //
+					.symbol();
+			symbol = symbol //
+					.size(symbolSize) //
+					.type(SymbolType.CIRCLE);
 
-		Selection symbolSelection = xySelection //
-				.append("g") //
-				.attr("id", "symbols") //
-				.attr("class", "symbols");
+			String symbolDString = symbol.generate();
 
-		@SuppressWarnings("unused")
-		Selection symbols = symbolSelection
-				.selectAll("path") //
-				.data(dataArray) //
-				.enter() //
-				.append("path") //
-				.attr("transform", new AxisTransformPointDatumFunction(xScale, yScale)) //
-				//.attrExpression("transform", "function(d, i) { return 'translate(' + d[0] + ',' + d[1] + ')'; }") //
-				.attr("d", symbolDString) //
-				.attr("style", symbolStyle);
+			Selection symbolSelection = xySelection //
+					.append("g") //
+					.attr("id", "symbols") //
+					.attr("class", "symbols");
+
+			@SuppressWarnings("unused")
+			Selection symbols = symbolSelection
+			.selectAll("path") //
+			.data(dataArray) //
+			.enter() //
+			.append("path") //
+			.attr("transform", new AxisTransformPointDatumFunction(xScale, yScale)) //
+			//.attrExpression("transform", "function(d, i) { return 'translate(' + d[0] + ',' + d[1] + ')'; }") //
+			.attr("d", symbolDString) //
+			.attr("style", symbolStyle);
+		}
+
+		if (showLegend)
+			putLegend();
+
 
 		//################################
+if (false) {
+		// data that you want to plot, I've used separate arrays for x and y values
+		double[] xData1 = {5, 10, 25, 32, 40, 40, 15, 7};
+		double[] yData1 = {3, 17, 4, 10, 6, -20, -20.0, 0};
 
 		// draw the graph object
 		Selection points1Selection = xySelection.append("svg:g");
@@ -487,19 +501,17 @@ public class D3Plotter {
 			.attr("fill", "gray")
 			.attr("fill-opacity", "0.2")
 			;
-
+}
 		// ###########################################################
 
 		// ###########################################################
 		// this is my playground ...
 
-		injectAdditionalJavascripts();
-		putLegend(dataArray);
-
+//		injectAdditionalJavascripts();
 
 	}
 
-	private void putLegend(Double[][] dataArray) {
+	private void putLegend() {
 
 		System.out.println("D3Plotter :: putLegend");
 
@@ -513,7 +525,7 @@ public class D3Plotter {
 //				  .attr("width", 100)
 				.attr("transform", "translate(" + 0.9*widthGraph + "," + 0.1*heightGraph + ")")
 				;
-		
+
 		String commandFill = getLegendCommandFill(
 				new ColorLegendDatumFunction(
 						webEngine, Arrays.asList("red", "blue", "green")));
@@ -547,7 +559,7 @@ public class D3Plotter {
 
 	}
 
-	
+
 	private String getLegendCommandFill(ColorLegendDatumFunction colorDatumFunction) {
 		JSObject d3JsObject = d3.getJsObject();
 		String funcName = createNewTemporaryInstanceName(); // see JavaScriptObject.java
@@ -555,7 +567,7 @@ public class D3Plotter {
 		d3JsObject.setMember(funcName, colorDatumFunction);
 		return "this.style('fill', function(d,i) {" //
 				+ "return d3." + funcName + ".apply(this, {datum:d}, i);" //
-				+ "})";	
+				+ "})";
 	}
 
 	private String getLegendCommandText(TextLegendDatumFunction textDatumFunction) {
@@ -565,9 +577,9 @@ public class D3Plotter {
 		d3JsObject.setMember(funcName, textDatumFunction);
 		return "this.style('text', function(d,i) {" //
 				+ "return d3." + funcName + ".apply(this, {datum:d}, i);" //
-				+ "})";	
+				+ "})";
 	}
-	
+
 	/**
 	 * If a css file exists that has the same name as the java/class file and
 	 * is located next to that file, the css file is loaded with this method.
