@@ -44,6 +44,7 @@ import com.google.common.io.CharStreams;
 
 import javafx.scene.web.WebEngine;
 import netscape.javascript.JSObject;
+import sandbox.adm.D3PlotterOptions;
 import standaloneutils.MyArrayUtils;
 
 public class D3Plotter {
@@ -75,7 +76,7 @@ public class D3Plotter {
 	private final double xtickPadding; // = 12.0;
 	private final double ytickPadding; // = 5.0;
 
-	private final int symbolSize = 64;
+	private int symbolSize = 64;
 	private String symbolStyle = "fill:red; stroke:blue; stroke-width:2";
 
 	private String lineStyle = "fill:none; stroke:red; stroke-width:2";
@@ -90,10 +91,10 @@ public class D3Plotter {
 
 
 	public static class Margin {
-		public final int top;
-		public final int right;
-		public final int bottom;
-		public final int left;
+		public int top;
+		public int right;
+		public int bottom;
+		public int left;
 		/**
 		 * Constructor
 		 *
@@ -135,6 +136,37 @@ public class D3Plotter {
 		this.showSymbols = showSymbols;
 		this.showLegend = showLegend;
 		this.plotArea = plotArea;
+
+		this.listDataArray.add(dataArray);
+	}
+
+	/*
+	 *  Constructor
+	 */
+	public D3Plotter(
+			D3PlotterOptions options,
+			Double[][] dataArray
+			) {
+		widthPageSVG = options.getWidthPageSVG();
+		heightPageSVG = options.getHeightPageSVG();
+		margin = options.getMargin();
+
+		widthGraph = options.getWidthGraph();
+		heightGraph = options.getHeightGraph();
+
+		this.symbolSize = options.getSymbolSize();
+		this.symbolStyle = options.getSymbolStyle();
+
+		this.lineStyle = options.getLineStyle();
+
+		this.areaStyle = options.getAreaStyle();
+
+		this.xtickPadding = options.getXtickPadding();
+		this.ytickPadding = options.getYtickPadding();
+
+		this.showSymbols = options.isShowSymbols();
+		this.showLegend = options.isShowLegend();
+		this.plotArea = options.isPlotArea();
 
 		this.listDataArray.add(dataArray);
 	}

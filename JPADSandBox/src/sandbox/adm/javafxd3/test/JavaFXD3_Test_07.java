@@ -16,6 +16,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import sandbox.adm.D3PlotterOptions;
 import writers.JPADStaticWriteUtils;
 
 public class JavaFXD3_Test_07  extends Application {
@@ -46,15 +47,28 @@ public class JavaFXD3_Test_07  extends Application {
 				{ 35.0, 18.0 }
 				};
 
+		D3PlotterOptions options = new D3PlotterOptions.D3PlotterOptionsBuilder()
+				.widthGraph(WIDTH).heightGraph(HEIGHT)
+				.plotArea(true)
+				.build();
+
+		System.out.println("Options:\n" + options);
+
+//		d3Plotter = new D3Plotter(
+//				WIDTH, HEIGHT, // svg dimensions
+//				40, 20, 50, 60, // plot margins, t r b l
+//				12.0, 8.0, // xtickPadding, ytickPadding
+//				true, // showSymbols
+//				true, // showLegend
+//				true, // plotArea
+//				dataArray
+//				);
+
 		d3Plotter = new D3Plotter(
-				WIDTH, HEIGHT, // svg dimensions
-				40, 20, 50, 60, // plot margins, t r b l
-				12.0, 8.0, // xtickPadding, ytickPadding
-				true, // showSymbols
-				true, // showLegend
-				true, // plotArea
+				options,
 				dataArray
 				);
+
 
 		//define d3 content as post loading hook
 		Runnable postLoadingHook = () -> {
