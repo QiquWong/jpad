@@ -41,6 +41,13 @@ public class D3PlotterOptions {
 	private boolean plotArea;
 	private boolean showLegend;
 
+	private boolean autoRangeX;
+	private boolean autoRangeY;
+	double xMin;
+	double xMax;
+	double yMin;
+	double yMax;
+
 	// Builder pattern via a nested public static class
 
 	public static class D3PlotterOptionsBuilder {
@@ -73,6 +80,14 @@ public class D3PlotterOptions {
 		private boolean _showSymbols = true;
 		private boolean _plotArea = false;
 		private boolean _showLegend = true;
+
+		private boolean _autoRangeX = true;
+		private boolean _autoRangeY = true;
+		double _xMin = 0.0;
+		double _xMax = 1.0;
+		double _yMin = 0.0;
+		double _yMax = 1.0;
+
 
 		public D3PlotterOptionsBuilder( /* required parameters here*/ ){
 		}
@@ -151,6 +166,64 @@ public class D3PlotterOptions {
 			return this;
 		}
 
+		public D3PlotterOptionsBuilder autoRangeX(boolean val) {
+			_autoRangeX = val;
+			return this;
+		}
+		public D3PlotterOptionsBuilder autoRangeY(boolean val) {
+			_autoRangeY = val;
+			return this;
+		}
+		public D3PlotterOptionsBuilder autoRange(boolean val) {
+			_autoRangeX = val;
+			_autoRangeY = val;
+			return this;
+		}
+
+		public D3PlotterOptionsBuilder xMin(double val) {
+			_autoRangeX = false;
+			_xMin = val;
+			return this;
+		}
+
+		public D3PlotterOptionsBuilder xMax(double val) {
+			_autoRangeX = false;
+			_xMax = val;
+			return this;
+		}
+
+		public D3PlotterOptionsBuilder yMin(double val) {
+			_autoRangeY = false;
+			_yMin = val;
+			return this;
+		}
+
+		public D3PlotterOptionsBuilder yMax(double val) {
+			_autoRangeY = false;
+			_yMax = val;
+			return this;
+		}
+
+		public D3PlotterOptionsBuilder xRange(double x1, double x2) {
+			_autoRangeX = false;
+			_xMin = x1; _xMax = x2;
+			return this;
+		}
+
+		public D3PlotterOptionsBuilder yRange(double y1, double y2) {
+			_autoRangeY = false;
+			_yMin = y1; _yMax = y2;
+			return this;
+		}
+
+		public D3PlotterOptionsBuilder axesRange(double x1, double x2, double y1, double y2) {
+			_autoRangeX = false;
+			_autoRangeY = false;
+			_xMin = x1; _xMax = x2;
+			_yMin = y1; _yMax = y2;
+			return this;
+		}
+
 		public D3PlotterOptions build() {
 			return new D3PlotterOptions(this);
 		}
@@ -182,6 +255,13 @@ public class D3PlotterOptions {
 		this.showSymbols = builder._showSymbols;
 		this.plotArea = builder._plotArea;
 		this.showLegend = builder._showLegend;
+
+		this.autoRangeX = builder._autoRangeX;
+		this.autoRangeY = builder._autoRangeY;
+		this.xMin = builder._xMin;
+		this.xMax = builder._xMax;
+		this.yMin = builder._yMin;
+		this.yMax = builder._yMax;
 
 	}
 
@@ -259,11 +339,30 @@ public class D3PlotterOptions {
 		return plotArea;
 	}
 
-
 	public boolean isShowLegend() {
 		return showLegend;
 	}
 
+	public boolean isAutoRangeX() {
+		return autoRangeX;
+	}
+
+	public boolean isAutoRangeY() {
+		return autoRangeY;
+	}
+
+	public double getXMin() {
+		return xMin;
+	}
+	public double getXMax() {
+		return xMax;
+	}
+	public double getYMin() {
+		return yMin;
+	}
+	public double getYMax() {
+		return yMax;
+	}
 
 
 
@@ -276,6 +375,8 @@ public class D3PlotterOptions {
 				+ "\tgraph background color: \"" + graphBackgroundColor + "\"\n" //
 				+ "\tx-axis labels padding: " + xtickPadding + "\n" //
 				+ "\ty-axis labels padding: " + ytickPadding + "\n" //
+				+ "\taxis auto-range x: " + autoRangeX + "\n" //
+				+ "\taxis auto-range y: " + autoRangeY + "\n" //
 				+ "\tsymbol size: " + symbolSize + "\n" //
 				+ "\tsymbol style: \"" + symbolStyle + "\"\n" //
 				+ "\tline style: \"" + lineStyle + "\"\n" //

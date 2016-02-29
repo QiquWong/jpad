@@ -40,7 +40,7 @@ public class JavaFXD3_Test_07  extends Application {
 		primaryStage.setTitle("treez/javafx-d3 - D3Plotter demo");
 
 		Double[][] dataArray = {
-				{ 1.0, 0.0 },
+				{ 0.0, 0.0 },
 				{ 20.0, 15.5 },
 				{ 50.0, 10.0 },
 				{ 40.0, -10.0 },
@@ -49,6 +49,8 @@ public class JavaFXD3_Test_07  extends Application {
 
 		D3PlotterOptions options = new D3PlotterOptions.D3PlotterOptionsBuilder()
 				.widthGraph(WIDTH).heightGraph(HEIGHT)
+				.xRange(-1.0, 100.0)
+				.yRange(-50.0, 100.0)
 				.plotArea(true)
 				.build();
 
