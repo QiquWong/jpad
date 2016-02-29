@@ -1,6 +1,7 @@
 /aircraft/
-<<<<<<< HEAD
+/cad/
 /calculators/
-=======
->>>>>>> 3641ad19ac16e621fd2b1e08e877fd7dce129d8b
+/database/
+/databasesIO/
 /standaloneutils/
+/writers/

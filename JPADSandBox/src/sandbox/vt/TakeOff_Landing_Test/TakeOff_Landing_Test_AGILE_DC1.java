@@ -108,6 +108,10 @@ public class TakeOff_Landing_Test_AGILE_DC1 {
 
 		double oswald = 0.85;
 		double cD0 = 0.0187;
+		double cLmaxTO = 2.1;
+		double cL0 = 0.69;
+		double cLalphaFlap = 0.087;
+		double deltaCD0FlapLandingGear = 0.007 + 0.010; 
 		
 		double phi = 1.0;
 		double alphaReductionRate = -3; // [deg/s]
@@ -119,7 +123,6 @@ public class TakeOff_Landing_Test_AGILE_DC1 {
 		CalcTakeOff_Landing theTakeOffLandingCalculator = new CalcTakeOff_Landing(
 				aircraft,
 				theCondition,
-//				highLiftCalculator,
 				dtRot,
 				dtHold,
 				kcLMax,
@@ -137,7 +140,13 @@ public class TakeOff_Landing_Test_AGILE_DC1 {
 				obstacle,
 				vWind,
 				alphaGround,
-				iw
+				iw,
+				cD0,
+				oswald,
+				cLmaxTO,
+				cL0,
+				cLalphaFlap,
+				deltaCD0FlapLandingGear
 				);
 
 		theTakeOffLandingCalculator.calculateTakeOffDistanceODE(null, false);
