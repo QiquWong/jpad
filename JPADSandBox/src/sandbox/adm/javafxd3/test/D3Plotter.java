@@ -61,34 +61,6 @@ public class D3Plotter {
 
 	private D3PlotterOptions options;
 
-//	// set margins
-//	final private Margin margin;
-//
-//	final int widthGraph;
-//	final int heightGraph;
-//
-//	private int widthPageSVG;
-//	private int heightPageSVG;
-//
-//	private Selection scaleLabel;
-//	private Selection translateLabel;
-//
-//	private String graphBackground = "lightblue";
-//
-//	private final double xtickPadding; // = 12.0;
-//	private final double ytickPadding; // = 5.0;
-//
-//	private int symbolSize = 64;
-//	private String symbolStyle = "fill:red; stroke:blue; stroke-width:2";
-//
-//	private String lineStyle = "fill:none; stroke:red; stroke-width:2";
-//
-//	private String areaStyle = "fill:green;";
-//
-//	private boolean showSymbols = true;
-//	private boolean plotArea = false;
-//	private boolean showLegend = true;
-
 	final private List<Double[][]> listDataArray = new ArrayList<Double[][]>();
 
 
@@ -118,66 +90,13 @@ public class D3Plotter {
 	/*
 	 *  Constructor
 	 */
-//	public D3Plotter(
-//			int wSVG, int hSVG, // svg dimensions
-//			int marginTop, int marginRight, int marginBottom, int marginLeft,  // plot margins, t r b l
-//			double xtickPadding, double ytickPadding,
-//			boolean showSymbols, boolean showLegend, boolean plotArea,
-//			Double[][] dataArray
-//			) {
-//		widthPageSVG = wSVG;
-//		heightPageSVG = hSVG;
-//		margin = new Margin(marginTop, marginRight, marginBottom, marginLeft);
-//
-//		widthGraph = widthPageSVG - margin.left - margin.right;
-//		heightGraph = heightPageSVG - margin.top - margin.bottom;
-//
-//		this.xtickPadding = xtickPadding;
-//		this.ytickPadding = ytickPadding;
-//
-//		this.showSymbols = showSymbols;
-//		this.showLegend = showLegend;
-//		this.plotArea = plotArea;
-//
-//		this.listDataArray.add(dataArray);
-//	}
-
-	/*
-	 *  Constructor
-	 */
 	public D3Plotter(
 			D3PlotterOptions options,
 			Double[][] dataArray
 			) {
-//		widthPageSVG = options.getWidthPageSVG();
-//		heightPageSVG = options.getHeightPageSVG();
-//		margin = options.getMargin();
-//
-//		widthGraph = options.getWidthGraph();
-//		heightGraph = options.getHeightGraph();
-//
-//		this.symbolSize = options.getSymbolSize();
-//		this.symbolStyle = options.getSymbolStyle();
-//
-//		this.lineStyle = options.getLineStyle();
-//
-//		this.areaStyle = options.getAreaStyle();
-//
-//		this.xtickPadding = options.getXtickPadding();
-//		this.ytickPadding = options.getYtickPadding();
-//
-//		this.showSymbols = options.isShowSymbols();
-//		this.showLegend = options.isShowLegend();
-//		this.plotArea = options.isPlotArea();
-
 		this.options = options;
 		this.listDataArray.add(dataArray);
 	}
-
-//	public D3Plotter() {
-//		this.widthPageSVG = widthGraph;
-//		this.heightPageSVG = heightGraph;
-//	}
 
 	/*
 	 * called in Runnable object
@@ -275,25 +194,40 @@ public class D3Plotter {
 				.attr("id", "graph") //
 				.attr("transform", "translate(" + options.getMargin().left + "," + options.getMargin().top + ")");
 
-		Selection graphRectSelection = graphSelection //
+		Selection graphRectSelection = graphSelection // only the filling area+opacity
 				.append("rect") //
 				.attr("width", options.getWidthGraph()) //
 				.attr("height", options.getHeightGraph()) //
-				.attr("fill", options.getGraphBackgroundColor());
+				.attr("fill", options.getGraphBackgroundColor())
+				.attr("opacity", options.getGraphBackgroundOpacity().toString())
+				;
+
+		String axisLineStyle = "stroke: " + options.getAxisLineColor() + "; stroke-width: " + options.getAxisLineStrokeWidth() +";";
+
+		Selection graphRectSelection2 = graphSelection // only the outline
+				.append("rect") //
+				.attr("width", options.getWidthGraph()) //
+				.attr("height", options.getHeightGraph()) //
+				.attr("fill", "none")
+				.attr("opacity", "1.0")
+				.attr("style", axisLineStyle) // "stroke: black; stroke-width: 3px;"
+				;
 
 		//x axis
 		Selection xAxisSelection = graphSelection //
 				.append("g") //
 				.attr("id", "" + "xAxis") //
 				.attr("class", "axis") //
-				.attr("transform", "translate(0," + options.getHeightGraph() + ")");
+				.attr("transform", "translate(0," + options.getHeightGraph() + ")")
+				;
 
 		// QuantitativeScale<?> xScale;
 
 		LinearScale xScale = d3.scale() //
 				.linear() //
 				.domain(xMin, xMax) //
-				.range(0.0, options.getWidthGraph());
+				.range(0.0, options.getWidthGraph())
+				;
 
 		// set the x axis
 		org.treez.javafxd3.d3.svg.Axis xAxis = d3.svg() //
@@ -310,8 +244,9 @@ public class D3Plotter {
 		xAxisSelection //
 				.selectAll("path, line") //
 				.style("fill", "none") //
-				.style("stroke", "#000")
-				.style("stroke-width", "1.2px") //
+				.style("stroke", options.getXGridLineColor()) // TODO
+				.style("stroke-width", options.getXGridLineStrokeWidth()) //
+				.style("stroke-dasharray",options.getXGridLineDashArray())
 				.style("font", "10px sans-serif")
 				.style("shape-rendering", "geometricPrecision"); // "crispEdges" // "geometricPrecision"
 
@@ -371,9 +306,9 @@ public class D3Plotter {
 		yAxisSelection //
 			.selectAll("path, line") //
 			.style("fill", "none") //
-			.style("stroke", "#000")
-			// .style("stroke-dasharray","15,10")
-			.style("stroke-width", "1.2px") //
+			.style("stroke", options.getYGridLineColor()) // TODO
+			.style("stroke-dasharray",options.getYGridLineDashArray())
+			.style("stroke-width", options.getYGridLineStrokeWidth()) //
 			.style("shape-rendering", "geometricPrecision"); // "crispEdges"
 
 
@@ -443,7 +378,7 @@ public class D3Plotter {
 			.attr("d", areaPath)
 			.attr("class", "area")
 			.attr("style", options.getAreaStyle())
-			.attr("opacity", "0.5")
+			.attr("opacity", options.getAreaOpacity())
 			;
 		}
 

@@ -39,6 +39,7 @@ public class JavaFXD3_Test_07  extends Application {
 		//set state title
 		primaryStage.setTitle("treez/javafx-d3 - D3Plotter demo");
 
+		// the data we want to plot [x,y]
 		Double[][] dataArray = {
 				{ 0.0, 0.0 },
 				{ 20.0, 15.5 },
@@ -49,22 +50,13 @@ public class JavaFXD3_Test_07  extends Application {
 
 		D3PlotterOptions options = new D3PlotterOptions.D3PlotterOptionsBuilder()
 				.widthGraph(WIDTH).heightGraph(HEIGHT)
-				.xRange(-1.0, 100.0)
-				.yRange(-50.0, 100.0)
-				.plotArea(true)
+				.xRange(-1.0, 60.0).yRange(-50.0, 60.0)
+				.axisLineColor("magenta").axisLineStrokeWidth("5px")
+				.plotArea(true).areaOpacity(0.7)
+				.graphBackgroundColor("yellow").graphBackgroundOpacity(0.2)
 				.build();
 
-		System.out.println("Options:\n" + options);
-
-//		d3Plotter = new D3Plotter(
-//				WIDTH, HEIGHT, // svg dimensions
-//				40, 20, 50, 60, // plot margins, t r b l
-//				12.0, 8.0, // xtickPadding, ytickPadding
-//				true, // showSymbols
-//				true, // showLegend
-//				true, // plotArea
-//				dataArray
-//				);
+		System.out.println("Plot options:\n" + options);
 
 		d3Plotter = new D3Plotter(
 				options,
