@@ -63,8 +63,6 @@ public class TakeOff_Landing_Test_AGILE_DC1 {
 		System.out.println("TakeOff_Landing_Test :: AGILE_DC1");
 		System.out.println("-----------------------------------------------------------\n");
 
-		TakeOff_Landing_Test_AGILE_DC1 main = new TakeOff_Landing_Test_AGILE_DC1();
-
 		//----------------------------------------------------------------------------------
 		// Default folders creation:
 		MyConfiguration.initWorkingDirectoryTree();
@@ -80,8 +78,8 @@ public class TakeOff_Landing_Test_AGILE_DC1 {
 		aircraft.set_name("AGILE_DC1");
 
 		aircraft.get_weights().set_MTOM(Amount.valueOf(42000, SI.KILOGRAM));
-		aircraft.get_wing().set_aspectRatio(9.5);
 		aircraft.get_wing().set_surface(Amount.valueOf(90, SI.SQUARE_METRE));
+		aircraft.get_wing().set_aspectRatio(9.5);
 		
 		ACAnalysisManager theAnalysis = new ACAnalysisManager(theCondition);
 		theAnalysis.updateGeometry(aircraft);
