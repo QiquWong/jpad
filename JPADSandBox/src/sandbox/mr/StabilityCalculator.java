@@ -87,15 +87,14 @@ public class StabilityCalculator {
 	 *
 	 * @author  Manuela Ruocco
 	 */
-	public double claculateCLCompleteAircraft (Aircraft aircraft,
+	public double calculateCLCompleteAircraft (Aircraft aircraft,
 			Amount<Angle> alphaBody,
 			MyAirfoil meanAirfoil,
 			Amount<Angle> deflection,
-			double chordRatio,
-			double etaRatio
+			double chordRatio
 			)
 	{
-
+		double etaRatio = aircraft.get_HTail().getAerodynamics().get_dynamicPressureRatio();
 		LSAerodynamicsManager.CalcCLAtAlpha theCLWingCalculator =
 				aircraft.get_wing().getAerodynamics()
 				.new CalcCLAtAlpha();

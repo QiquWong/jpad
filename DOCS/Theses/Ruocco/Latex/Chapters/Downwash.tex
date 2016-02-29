@@ -331,7 +331,7 @@ In the following listing is reported the Test Class used in order to evaluate th
 
 \noindent \\
 
-Below are the charts representing the results obtained by applying the method described in ATR 72.
+Below are the charts representing the results obtained by applying the method described at ATR 72 and BOEING 747-100B.
 
 \begin{figure}[H]
 \centering
@@ -344,30 +344,71 @@ Below are the charts representing the results obtained by applying the method de
 \centering
 \input{immagini/Downwashgradient.tikz}
 \caption{ATR 72 Downwash gradient vs $\alpha_{B}$.}
-\label{fig:ThrustDragATR}
+\label{fig:downwashgradATR}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \input{immagini/z.tikz}
 \caption{ATR 72 Distance between AC horizontal tail and vortex plane vs $\alpha_{B}$.}
-\label{fig:ThrustDragATR}
+\label{fig:zATR}
 \end{figure}
 
 
 \begin{lstlisting}[caption={{\footnotesize Downwash estimation - Results. ATR 72}},label= [style=\bfseries]{Listing}]
+
 -----Start of downwash calculation-----
-
-
 
 			DONE PLOTTING DOWNWASH ANGLE vs ALPHA BODY
 
-At alpha 1.9999999999999996 (deg) the downwash angle is (deg) = 1.1924014312949744
+At alpha 1.9999999999999996 (deg) the downwash angle is (deg) = 1.2696901686304403
 
  
 -----------angles-------------- 
 Angle of attack alpha body (deg) = 2.0
 Angle of incidence of horizontal tail (deg) 0.0
-Downwash Angle at Alpha Body (deg) 1.1924014312949744
-Angle of Attack of Horizontal Tail (deg) 0.807598568705025
+Downwash Angle at Alpha Body (deg) 1.2696901686304403
+Angle of Attack of Horizontal Tail (deg) 0.7303098313695591
 \end{lstlisting}
+
+
+\noindent \\ \\
+\begin{lstlisting}[caption={{\footnotesize Downwash estimation - Results. BOEING 747-100B}},label= [style=\bfseries]{Listing}]
+
+-----Start of downwash calculation-----
+
+			DONE PLOTTING DOWNWASH ANGLE vs ALPHA BODY
+
+At alpha 1.9999999999999996 (deg) the downwash angle is (deg) = 2.540913931771228
+
+ 
+-----------angles-------------- 
+Angle of attack alpha body (deg) = 2.0
+Angle of incidence of horizontal tail (deg) 0.0
+Downwash Angle at Alpha Body (deg) 2.540913931771228
+Angle of Attack of Horizontal Tail (deg) -0.5409139317712283
+\end{lstlisting}
+
+
+\begin{figure}[H]
+\centering
+\input{immagini/Epsilonalphaboeing.tikz}
+\caption{BOEING 747-100B Downwash angle vs $\alpha_{B}$.}
+\label{fig:epsilonboeing}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\input{immagini/Downwashgradientboeing.tikz}
+\caption{BOEING 747-100B  Downwash gradient vs $\alpha_{B}$.}
+\label{fig:downwashgradboeing}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\input{immagini/zboeing.tikz}
+\caption{BOEING 747-100B  Distance between AC horizontal tail and vortex plane vs $\alpha_{B}$.}
+\label{fig:zboeing}
+\end{figure}
+
+

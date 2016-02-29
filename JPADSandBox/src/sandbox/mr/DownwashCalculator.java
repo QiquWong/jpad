@@ -64,10 +64,11 @@ public class DownwashCalculator {
 		aspectRatio = aircraft.get_exposedWing().get_aspectRatio();
 
 		zHTailAC = aircraft.get_HTail().get_Z0().getEstimatedValue();
-		zWingAC = aircraft.get_wing().get_aerodynamicCenterZ().getEstimatedValue();
-		
+		//zWingAC = aircraft.get_wing().get_aerodynamicCenterZ().getEstimatedValue();
+		zWingAC = aircraft.get_wing().get_Z0().getEstimatedValue();
 		cRootExposedWing = aircraft.get_exposedWing().get_theAirfoilsListExposed()
 				.get(0).get_chordLocal();
+//		System.out.println(" c root exposed " + cRootExposedWing);
 		angleOfIncidenceExposed = aircraft.get_wing().get_iw().getEstimatedValue()
 				+ aircraft.get_exposedWing().get_twistDistributionExposed().get(0);
 		angleOfIncidenceExposedDeg = Amount.valueOf(
@@ -82,17 +83,29 @@ public class DownwashCalculator {
 		xACLRF = theXACCalculator.deYoungHarper() + aircraft.get_wing().get_xLEMacActualLRF().getEstimatedValue();
 		xACRootExposed = xACLRF - aircraft.get_wing().getXLEAtYActual(aircraft.get_fuselage().getWidthAtX(
 				aircraft.get_wing().get_xLEMacActualBRF().getEstimatedValue()).doubleValue());
+//		System.out.println(" zWing ac" + zWingAC);
+//		System.out.println( "geometric distance"  + (cRootExposedWing - xACLRF)* Math.sin(angleOfIncidenceExposed- alphaZeroLiftRootExposed));
 		
-		zTipEdgeWingRootChord = zWingAC - ((cRootExposedWing - xACLRF)* Math.sin(angleOfIncidenceExposed- alphaZeroLiftRootExposed));
+		if( Math.abs(zWingAC) > ((cRootExposedWing - xACLRF)* Math.sin(angleOfIncidenceExposed- alphaZeroLiftRootExposed)))
+			zTipEdgeWingRootChord =( Math.abs(zWingAC) - ((cRootExposedWing - xACLRF)* Math.sin(angleOfIncidenceExposed- alphaZeroLiftRootExposed)));
+		if( Math.abs(zWingAC )< ((cRootExposedWing - xACLRF)* Math.sin(angleOfIncidenceExposed- alphaZeroLiftRootExposed)))
+			zTipEdgeWingRootChord = ((cRootExposedWing - xACLRF)* Math.sin(angleOfIncidenceExposed- alphaZeroLiftRootExposed))- Math.abs(zWingAC);
+		
+		if(zWingAC < 0)
+			zTipEdgeWingRootChord = - zTipEdgeWingRootChord;
+		
 		xDistanceACHTailTEWingTemp = distAerodynamicCenter - ((cRootExposedWing - xACLRF)* Math.cos(angleOfIncidenceExposed- alphaZeroLiftRootExposed));
 		xDistanceACHTailTEWing = xDistanceACHTailTEWingTemp * Math.tan(angleOfIncidenceExposed - alphaZeroLiftRootExposed);
 		
+//		System.out.println(" x distance " + xDistanceACHTailTEWing);
 		
-		if ( zTipEdgeWingRootChord < 0 )
-			zDistanceACHTailTEWing =  zHTailAC ;
-		else
+//		if ( zTipEdgeWingRootChord < 0 )
+//			zDistanceACHTailTEWing =  zHTailAC ;
+//		else
 		zDistanceACHTailTEWing =  zHTailAC - zTipEdgeWingRootChord;
-		
+//		System.out.println(" z h tail " + zHTailAC);
+//		System.out.println(" z tip wing " + zTipEdgeWingRootChord);
+//		System.out.println(" z distance " + zDistanceACHTailTEWing);
 	}
 	
 	
@@ -291,9 +304,11 @@ public class DownwashCalculator {
 		double zFirst;
 		double zSecond ;
 		zFirst = zDistanceACHTailTEWing;
-		zSecond = xDistanceACHTailTEWingTemp * Math.tan(angleOfIncidenceExposed - alphaZeroLiftRootExposed);
+		zSecond = xDistanceACHTailTEWing;
 		zDistance = (zFirst + zSecond) * Math.cos(angleOfIncidenceExposed - alphaZeroLiftRootExposed);
+//		System.out.println("Zdistance " + zDistance);
 		return zDistance;
+		
 	}
 	
 	
