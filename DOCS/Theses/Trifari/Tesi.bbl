@@ -311,21 +311,6 @@
       \verb https://books.google.it/books?id=QJZTAAAAMAAJ
       \endverb
     \endentry
-    \entry{huwaldt:atmo}{online}{}
-      \name{author}{1}{}{%
-        {{hash=9cf3f33e86c0e23d134218c500bdd07d}{Huwaldt}{H\bibinitperiod}{J.}{J\bibinitperiod}{}{}{}{}}%
-      }
-      \strng{namehash}{9cf3f33e86c0e23d134218c500bdd07d}
-      \strng{fullhash}{9cf3f33e86c0e23d134218c500bdd07d}
-      \field{sortinit}{H}
-      \field{sortinithash}{82012198d5dfa657b8c4a168793268a6}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{1976 Standard Atmosphere Program}
-      \verb{url}
-      \verb http://thehuwaldtfamily.org/java/Applications/StdAtmosphere/StdAtmosphere.html
-      \endverb
-    \endentry
     \entry{janes}{book}{}
       \name{author}{2}{}{%
         {{hash=ccb94d9eb559bfd643161081e7378c24}{Jackson}{J\bibinitperiod}{P.}{P\bibinitperiod}{}{}{}{}}%
@@ -348,29 +333,6 @@
       \verb https://www.ihs.com/products/janes-all-the-worlds-aircraft-in-service.html
       \endverb
     \endentry
-    \entry{jenkinson1999civil}{book}{}
-      \name{author}{3}{}{%
-        {{hash=4b9a93731511ff22802a2da7b2f45a20}{Jenkinson}{J\bibinitperiod}{L.R.}{L\bibinitperiod}{}{}{}{}}%
-        {{hash=b7eeab8e46702bae7796173507984104}{Rhodes}{R\bibinitperiod}{D.}{D\bibinitperiod}{}{}{}{}}%
-        {{hash=db5f0c9a50c3393d2d4bdb6641d5ba0a}{Simpkin}{S\bibinitperiod}{P.}{P\bibinitperiod}{}{}{}{}}%
-      }
-      \list{publisher}{1}{%
-        {Arnold}%
-      }
-      \strng{namehash}{014de2007ec05be57eaaca102e3b4c5f}
-      \strng{fullhash}{014de2007ec05be57eaaca102e3b4c5f}
-      \field{sortinit}{J}
-      \field{sortinithash}{ec3950a647c092421b9fcca6d819504a}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{isbn}{9780340741528}
-      \field{series}{AIAA education series}
-      \field{title}{Civil jet aircraft design}
-      \field{year}{1999}
-      \verb{url}
-      \verb https://books.google.it/books?id=6tMeAQAAIAAJ
-      \endverb
-    \endentry
     \entry{args4j}{online}{}
       \name{author}{1}{}{%
         {{hash=2e8f18a1d63274a1eae7ecfcd8c5c6c9}{Kawaguchi}{K\bibinitperiod}{K.}{K\bibinitperiod}{}{}{}{}}%
@@ -385,20 +347,6 @@
       \verb{url}
       \verb http://args4j.kohsuke.org/
       \endverb
-    \endentry
-    \entry{stanford:kroo}{book}{}
-      \name{author}{2}{}{%
-        {{hash=58ced680c7c933ab452921a518c9027c}{Kroo}{K\bibinitperiod}{I.}{I\bibinitperiod}{}{}{}{}}%
-        {{hash=d3bc81e78b350e9db2d354c857f3497f}{Shevell}{S\bibinitperiod}{R.}{R\bibinitperiod}{}{}{}{}}%
-      }
-      \strng{namehash}{29b8d4b8c8cc0be35f0902f26481a4aa}
-      \strng{fullhash}{29b8d4b8c8cc0be35f0902f26481a4aa}
-      \field{sortinit}{K}
-      \field{sortinithash}{a7d5b3aec5a0890aae7baf85a209abfc}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{Aircraft Design: Synthesis and Analysis}
-      \field{year}{1999}
     \endentry
     \entry{Lausetti:decollo}{book}{}
       \name{author}{1}{}{%
@@ -489,61 +437,6 @@
       \field{year}{2009}
       \verb{url}
       \verb https://books.google.it/books?id=axPvAgAAQBAJ
-      \endverb
-    \endentry
-    \entry{raymer1992}{book}{}
-      \name{author}{1}{}{%
-        {{hash=93c3dbe92ab67dbce70cb2cf0c5738da}{Raymer}{R\bibinitperiod}{D.P.}{D\bibinitperiod}{}{}{}{}}%
-      }
-      \strng{namehash}{93c3dbe92ab67dbce70cb2cf0c5738da}
-      \strng{fullhash}{93c3dbe92ab67dbce70cb2cf0c5738da}
-      \field{sortinit}{R}
-      \field{sortinithash}{c7387613477035a752d935acfc3e3ea2}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{Aircraft Design: A Conceptual Approach}
-      \field{year}{1992}
-    \endentry
-    \entry{raymer2013aircraft}{book}{}
-      \name{author}{1}{}{%
-        {{hash=93c3dbe92ab67dbce70cb2cf0c5738da}{Raymer}{R\bibinitperiod}{D.P.}{D\bibinitperiod}{}{}{}{}}%
-      }
-      \list{publisher}{1}{%
-        {Amer Inst of Aeronautics \&}%
-      }
-      \strng{namehash}{93c3dbe92ab67dbce70cb2cf0c5738da}
-      \strng{fullhash}{93c3dbe92ab67dbce70cb2cf0c5738da}
-      \field{sortinit}{R}
-      \field{sortinithash}{c7387613477035a752d935acfc3e3ea2}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{isbn}{9781600869211}
-      \field{series}{AIAA Education Series}
-      \field{title}{Aircraft Design / RDS-Student: A Conceptual Approach}
-      \field{year}{2013}
-      \verb{url}
-      \verb https://books.google.it/books?id=bvxllgEACAAJ
-      \endverb
-    \endentry
-    \entry{sadraey2012aircraft}{book}{}
-      \name{author}{1}{}{%
-        {{hash=f37bdc36291a5f5f76bf75ec2ffd83b8}{Sadraey}{S\bibinitperiod}{M.H.}{M\bibinitperiod}{}{}{}{}}%
-      }
-      \list{publisher}{1}{%
-        {Wiley}%
-      }
-      \strng{namehash}{f37bdc36291a5f5f76bf75ec2ffd83b8}
-      \strng{fullhash}{f37bdc36291a5f5f76bf75ec2ffd83b8}
-      \field{sortinit}{S}
-      \field{sortinithash}{fd1e7c5ab79596b13dbbb67f8d70fb5a}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{isbn}{9781118352809}
-      \field{series}{Aerospace Series}
-      \field{title}{Aircraft Design: A Systems Engineering Approach}
-      \field{year}{2012}
-      \verb{url}
-      \verb https://books.google.it/books?id=VT-Tc3Tx5aEC
       \endverb
     \endentry
     \entry{sforza2014commercial}{book}{}

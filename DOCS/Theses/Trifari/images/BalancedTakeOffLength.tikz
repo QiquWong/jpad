@@ -13,7 +13,7 @@ ymin=16.343983261177346,
 ymax=3409.4029481001066,
 ylabel={Distance (m)},
 ymajorgrids,
-legend entries = {OEI\\Aborted\\}
+legend entries = {OEI Take-Off\\Aborted Take-Off\\}
 ]
 
 \addplot [

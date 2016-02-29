@@ -52,6 +52,5 @@
 \contentsline {section}{\numberline {A.1}Creation of a database using MATLAB}{118}{section.a.A.1}
 \contentsline {section}{\numberline {A.2}Reading data from an HDF database in JPAD}{121}{section.a.A.2}
 \contentsline {chapter}{Bibliography}{123}{section*.126}
-\contentsline {chapter}{Glossary}{126}{section*.128}
-\contentsline {chapter}{Acronyms}{129}{section*.130}
-\contentsline {chapter}{List of symbols}{131}{section*.132}
+\contentsline {chapter}{Glossary}{125}{section*.128}
+\contentsline {chapter}{Acronyms}{128}{section*.130}

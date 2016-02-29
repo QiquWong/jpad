@@ -13,9 +13,9 @@
          <Ultimate_load_factor from="input" unit="" varName="_nUltimate">3.7500</Ultimate_load_factor>
       </Performances>
       <Costs id="25">
-         <Airframe_cost from="input" unit="">38698684.0287</Airframe_cost>
-         <Total_investments from="input" unit="">42568598.5521</Total_investments>
-         <Single_Engine_cost from="input" unit="">17.7387</Single_Engine_cost>
+         <Airframe_cost from="input" unit="">38698683.8017</Airframe_cost>
+         <Total_investments from="input" unit="">42568598.8926</Total_investments>
+         <Single_Engine_cost from="input" unit="">17.9657</Single_Engine_cost>
          <Engine_maintenance_cost from="input" unit="">110.0000</Engine_maintenance_cost>
          <Fuel_volumetric_cost from="input" unit="">0.7500</Fuel_volumetric_cost>
          <Hour_volumetric_fuel_consumption from="input" unit="">1816.0000</Hour_volumetric_fuel_consumption>
@@ -588,7 +588,7 @@
             <Number_of_engines from="input" unit="" varName="_engineNumber">2</Number_of_engines>
             <Engines_equal from="input" unit="" varName="_engineEqual">false</Engines_equal>
             <Maximum_total_power_output unit="W">118264373.6820</Maximum_total_power_output>
-            <Maximum_total_thrust unit="N">117590.0729</Maximum_total_thrust>
+            <Maximum_total_thrust unit="N">137293.1000</Maximum_total_thrust>
             <Total_Reference_mass from="input" unit="kg" varName="_dryMassPublicDomain">1054.6930</Total_Reference_mass>
          </Power_plant_parameters>
          <Engine_1 id="8099" level="3">
@@ -597,9 +597,9 @@
             <Ycoordinate from="input" unit="m" varName="_Y0">0.0000</Ycoordinate>
             <Zcoordinate from="input" unit="m" varName="_Z0">0.0000</Zcoordinate>
             <Mounting_point from="input" unit="" varName="_mountingPoint">WING</Mounting_point>
-            <Maximum_thrust from="input" unit="N" varName="_t0">58795.0364</Maximum_thrust>
+            <Maximum_thrust from="input" unit="N" varName="_t0">68646.5500</Maximum_thrust>
             <Maximum_power_output from="input" unit="W" varName="_p0">59132186.8410</Maximum_power_output>
-            <BPR from="input" unit="" varName="_bpr">8.0000</BPR>
+            <BPR from="input" unit="" varName="_bpr">6.0000</BPR>
             <Dry_engine_mass_from_public_domain from="input" unit="kg" varName="_dryMassPublicDomain">527.3465</Dry_engine_mass_from_public_domain>
          </Engine_1>
          <Engine_2 id="8199" level="3">
@@ -608,9 +608,9 @@
             <Ycoordinate from="input" unit="m" varName="_Y0">0.0000</Ycoordinate>
             <Zcoordinate from="input" unit="m" varName="_Z0">0.0000</Zcoordinate>
             <Mounting_point from="input" unit="" varName="_mountingPoint">WING</Mounting_point>
-            <Maximum_thrust from="input" unit="N" varName="_t0">58795.0364</Maximum_thrust>
+            <Maximum_thrust from="input" unit="N" varName="_t0">68646.5500</Maximum_thrust>
             <Maximum_power_output from="input" unit="W" varName="_p0">59132186.8410</Maximum_power_output>
-            <BPR from="input" unit="" varName="_bpr">8.0000</BPR>
+            <BPR from="input" unit="" varName="_bpr">6.0000</BPR>
             <Dry_engine_mass_from_public_domain from="input" unit="kg" varName="_dryMassPublicDomain">527.3465</Dry_engine_mass_from_public_domain>
          </Engine_2>
       </PowerPlant>
@@ -652,11 +652,11 @@
             <CDRoughness unit="">0.006970</CDRoughness>
             <CDCoolings unit="">0.001382</CDCoolings>
             <CD0>
-               <Fuselage unit="">0.0103</Fuselage>
                <All unit="">0.1245</All>
                <Nacelle unit="">0.0969</Nacelle>
-               <Vertical_tail unit="">0.001172</Vertical_tail>
                <Horizontal_tail unit="">0.001597</Horizontal_tail>
+               <Fuselage unit="">0.0103</Fuselage>
+               <Vertical_tail unit="">0.001172</Vertical_tail>
                <Wing unit="">0.006238</Wing>
             </CD0>
             <CDWave unit="">not_initialized</CDWave>
@@ -776,8 +776,8 @@
                <Kundu unit="">187.5556</Kundu>
             </Ground_handling_charges>
             <Maintenance_costs>
-               <Jenkinson unit="">295.3784</Jenkinson>
-               <Kundu unit="">438.6807</Kundu>
+               <Jenkinson unit="">301.0923</Jenkinson>
+               <Kundu unit="">448.7813</Kundu>
                <Sforza unit="">406.3279</Sforza>
             </Maintenance_costs>
             <Fuel_and_oil_costs>
@@ -851,6 +851,8 @@
                <Percent_error unit="">5.9542</Percent_error>
                <Kroo unit="">not_initialized</Kroo>
                <Percent_error unit="">not_initialized</Percent_error>
+               <Raymer unit="kg">2600.0000</Raymer>
+               <Percent_error unit="">-44.313558</Percent_error>
                <Torenbeek_2013 unit="">not_initialized</Torenbeek_2013>
                <Percent_error unit="">not_initialized</Percent_error>
             </Weight_estimation_method_comparison>

@@ -1494,8 +1494,10 @@ public class LiftingSurface extends AeroComponent{
 			} break;
 
 			/* This method gives poor results
+			 * 
+			 * */
 			case RAYMER : { // page 403 (211 pdf) Raymer 
-				_methodsList.add(method);
+				methodsList.add(method);
 				_mass = Amount.valueOf(0.0051 * pow(aircraft.get_weights().
 						get_MTOW().to(NonSI.POUND_FORCE).times(aircraft.get_performances().
 								get_nUltimate()).getEstimatedValue(),
@@ -1509,14 +1511,15 @@ public class LiftingSurface extends AeroComponent{
 								to(SI.KILOGRAM);
 				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 			} break;
-			 *//*
+
 			case SADRAY : { // page 583 pdf Sadray Aircraft Design System Engineering Approach
 				// results very similar to Jenkinson
-				_methodsList.add(method);
+				methodsList.add(method);
 				Double _kRho = 0.0035;
 				_mass = Amount.valueOf(
 						_surface.getEstimatedValue()*
-						_meanAerodChordCk.getEstimatedValue()*
+						//_meanAerodChordCk.getEstimatedValue()*
+						aircraft.get_exposedWing().get_meanAerodChordActual().getEstimatedValue()* //
 						(_tc_root)*aircraft.get_weights().get_materialDensity().getEstimatedValue()*
 						_kRho*
 						pow((_aspectRatio*aircraft.get_performances().get_nUltimate())/
@@ -1524,10 +1527,11 @@ public class LiftingSurface extends AeroComponent{
 								pow(_taperRatioEquivalent, 0.04), SI.KILOGRAM);
 				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 			} break;
-			  */
+
 			/* The method gives an average 20 percent difference from real value 
+			 */
 		case TORENBEEK_1982 : {
-			_methodsList.add(method);
+			methodsList.add(method);
 			_mass = Amount.valueOf(
 					0.0017*
 					aircraft.get_weights().get_MZFW().to(NonSI.POUND_FORCE).getEstimatedValue()*
@@ -1544,8 +1548,8 @@ public class LiftingSurface extends AeroComponent{
 					, NonSI.POUND).to(SI.KILOGRAM);
 			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
-			 */
-			case TORENBEEK_2013 : { // page 253 pdf
+
+		case TORENBEEK_2013 : { // page 253 pdf
 				methodsList.add(method);
 
 				if (aircraft.get_powerPlant().get_engineType().equals(EngineTypeEnum.TURBOPROP)) {

@@ -322,7 +322,7 @@ public class Test_MR_07_LongitudinalStability {
 
 		double chordRatio = 0.3;
 		double deflectionElevator = 20.0; //deg
-
+		aircraft.get_HTail().getAerodynamics().set_dynamicPressureRatio(1); //T tail 
 
 		// -----------------------------------------------------------------------
 		// LIFT CHARACTERISTICS
@@ -629,13 +629,12 @@ public class Test_MR_07_LongitudinalStability {
 
 		double etaRatio = 1.0; // T tail
 		Amount<Angle> deflectionAngle = Amount.valueOf(20, NonSI.DEGREE_ANGLE);
-		double cLTotal = theStablityCalculator.claculateCLCompleteAircraft(
+		double cLTotal = theStablityCalculator.calculateCLCompleteAircraft(
 				aircraft,
 				alphaBody,
 				meanAirfoil,
 				deflectionAngle,
-				chordRatio,
-				etaRatio);
+				chordRatio);
 
 		System.out.println("\n the CL of aircraft at alpha body =(deg)" +
 				alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue() +
@@ -1037,7 +1036,8 @@ public class Test_MR_07_LongitudinalStability {
 		
 
 		System.out.println("\n\n cm ac wing-body  = " +  cMacWingBody );
-	}
+
+	} 
 
 }
 
