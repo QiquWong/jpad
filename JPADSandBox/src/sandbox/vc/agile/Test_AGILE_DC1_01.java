@@ -1,9 +1,6 @@
 package sandbox.vc.agile;
 
 import java.io.File;
-import java.util.List;
-import java.util.Map;
-
 import javax.measure.quantity.Mass;
 import javax.measure.unit.SI;
 
@@ -18,8 +15,6 @@ import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.DatabaseReaderEnum;
-import configuration.enumerations.MethodEnum;
-import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import javafx.util.Pair;
 import writers.JPADDataWriter;
 import writers.JPADWriteUtils;
@@ -30,11 +25,11 @@ public class Test_AGILE_DC1_01 {
 	public static void main(String[] args) {
 
 		// Initialize working directories
-//		MyConfiguration.initWorkingDirectoryTree();
 		MyConfiguration.initWorkingDirectoryTree(MyConfiguration.currentDirectoryString,
 												MyConfiguration.inputDirectory,
 												MyConfiguration.outputDirectory,
 												MyConfiguration.databaseDirectory);	
+		String folderName = "Test_AGILE_DC1_01";
 		
 		// Define the aircraft
 		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.AGILE_DC1);
@@ -42,7 +37,7 @@ public class Test_AGILE_DC1_01 {
 		LiftingSurface theWing = aircraft.get_wing();
 		
 		String exportFile = MyConfiguration.outputDirectory + File.separator + 
-				 "Test_AGILE_DC1_01" + File.separator + aircraft.getName();
+				folderName + File.separator + aircraft.getName();
 
 		// Set the operating conditions
 		OperatingConditions operatingConditions = new OperatingConditions();

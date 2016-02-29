@@ -1374,12 +1374,14 @@ public class LiftingSurface extends AeroComponent{
 		calculateMass(aircraft, conditions, MethodEnum.KROO);
 		calculateMass(aircraft, conditions, MethodEnum.JENKINSON);
 		calculateMass(aircraft, conditions, MethodEnum.TORENBEEK_2013);
+		calculateMass(aircraft, conditions, MethodEnum.TORENBEEK_1982);
 		calculateMass(aircraft, conditions, MethodEnum.RAYMER);
-		calculateMass(aircraft, conditions, MethodEnum.NICOLAI_2013);
-		calculateMass(aircraft, conditions, MethodEnum.HOWE);
-		calculateMass(aircraft, conditions, MethodEnum.TORENBEEK_1976);
+//		calculateMass(aircraft, conditions, MethodEnum.NICOLAI_2013);
+//		calculateMass(aircraft, conditions, MethodEnum.HOWE);
+//		calculateMass(aircraft, conditions, MethodEnum.TORENBEEK_1976);
+		calculateMass(aircraft, conditions, MethodEnum.SADRAY);
+		calculateMass(aircraft, conditions, MethodEnum.ROSKAM);
 	}
-
 	/** 
 	 * Calculate mass of the generic lifting surface
 	 * 
@@ -1404,8 +1406,9 @@ public class LiftingSurface extends AeroComponent{
 			switch (method) {
 
 			/* This method poor results
+			 * */
 			case ROSKAM : { // Roskam page 85 (pdf) part V
-				_methodsList.add(method);
+				methodsList.add(method);
 
 				System.out.println("---" + _sweepHalfChordEq.to(SI.RADIAN));
 				_mass = Amount.valueOf(
@@ -1424,11 +1427,11 @@ public class LiftingSurface extends AeroComponent{
 
 				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 			} break;
-//			*/
+//			
 			case KROO : { // page 430 Aircraft design synthesis
 				methodsList.add(method);
 
-				if (aircraft.get_powerPlant().get_engineType().equals(EngineTypeEnum.TURBOPROP)) {
+//				if (aircraft.get_powerPlant().get_engineType().equals(EngineTypeEnum.TURBOPROP)) {
 					_mass = Amount.valueOf((4.22*surface +
 							1.642e-6*
 							(aircraft.get_performances().get_nUltimate()*
@@ -1440,10 +1443,10 @@ public class LiftingSurface extends AeroComponent{
 									surface*(1 + _taperRatioEquivalent))),
 							NonSI.POUND).to(SI.KILOGRAM);
 					_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
-				} else {
-					_mass = null;
-					_massMap.put(method, null);
-				}
+//				} else {
+//					_mass = null;
+//					_massMap.put(method, null);
+//				}
 			} break;
 
 			case JENKINSON : { // page 134 Jenkinson - Civil Jet Aircraft Design
@@ -1519,7 +1522,7 @@ public class LiftingSurface extends AeroComponent{
 				_mass = Amount.valueOf(
 						_surface.getEstimatedValue()*
 						//_meanAerodChordCk.getEstimatedValue()*
-						aircraft.get_exposedWing().get_meanAerodChordActual().getEstimatedValue()* //
+						aircraft.get_wing().get_meanAerodChordActual().getEstimatedValue()* //
 						(_tc_root)*aircraft.get_weights().get_materialDensity().getEstimatedValue()*
 						_kRho*
 						pow((_aspectRatio*aircraft.get_performances().get_nUltimate())/
@@ -1552,7 +1555,7 @@ public class LiftingSurface extends AeroComponent{
 		case TORENBEEK_2013 : { // page 253 pdf
 				methodsList.add(method);
 
-				if (aircraft.get_powerPlant().get_engineType().equals(EngineTypeEnum.TURBOPROP)) {
+//				if (aircraft.get_powerPlant().get_engineType().equals(EngineTypeEnum.TURBOPROP)) {
 					_mass = Amount.valueOf(
 							(0.0013*
 									aircraft.get_performances().get_nUltimate()*
@@ -1570,10 +1573,10 @@ public class LiftingSurface extends AeroComponent{
 							AtmosphereCalc.g0.getEstimatedValue()
 							, SI.KILOGRAM);
 					_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
-				} else {
-					_mass = null;
-					_massMap.put(method, null);
-				}
+//				} else {
+//					_mass = null;
+//					_massMap.put(method, null);
+//				}
 
 			}
 
