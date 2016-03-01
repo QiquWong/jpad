@@ -7,11 +7,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Power;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.apache.commons.math3.linear.RRQRDecomposition;
 import org.jscience.physics.amount.Amount;
+
+import com.sun.org.apache.xml.internal.utils.ThreadControllerWrapper;
 
 import aircraft.OperatingConditions;
 import aircraft.auxiliary.airfoil.MyAirfoil;
@@ -144,7 +147,7 @@ public class StabilityCalculatorInduced {
 	
 	
 	/**
-	 * This method calculates the Pitching moment coefficient of a wing respect to a quarter of MAC
+	 * This class manages the calculation of the Pitching moment coefficient of a lifting surface respect to a quarter of MAC
 	 * starting from the lifting characteristics and moment ones of the airfoils.
 	 * 
 	 * @param aircraft
@@ -158,7 +161,7 @@ public class StabilityCalculatorInduced {
 	 * @author  Manuela Ruocco
 	 */
 
-public class CalcPitchingMoment{
+public class CalcLSPitchingMoment{
 	
 	// VARIABLE DECLARATION--------------------------------------
 	
@@ -177,7 +180,7 @@ public class CalcPitchingMoment{
 	
 	// BUILDER--------------------------------------
 	
-	public CalcPitchingMoment(LiftingSurface theLiftingSurface, OperatingConditions theConditions) {
+	public CalcLSPitchingMoment(LiftingSurface theLiftingSurface, OperatingConditions theConditions) {
 		
 		this.theLiftingSurface = theLiftingSurface;
 		this.theConditions = theConditions;
@@ -302,4 +305,64 @@ public class CalcPitchingMoment{
 
 }
 
+
+/**
+ * This class manages the calculation of the Pitching moment coefficient due to the power plant.
+ * The method that calculates the pitching moment slope respect CL recognize the aircraft engine type
+ *  
+ * 
+ * @param aircraft
+ * @param angle of attack between the flow direction and the fuselage reference line
+ * @param angle of deflection of the elevator in deg or radians
+ * @param MyAirfoil the mean airfoil of the wing
+ * @param chord ratio of elevator
+ * @param eta the pressure ratio. For T tail is 1. 
+ * 
+ *
+ * @author  Manuela Ruocco
+ */
+
+public class CalcPowerPlantPitchingMoment{
+	
+	double pitchingMomentDerThrust;
+
+	
+	// calcolo delle derivate per spinta e forza assiale per turboprop e turbofan
+	// plot
+	// 
+	
+	public double calcPitchingMomentDerThrust (Aircraft aircraft, 
+			OperatingConditions conditions, 
+			double etaEfficiency, double liftCoefficient){
+		
+		Amount<Power> power = aircraft.get_powerPlant().get_engineList().get(0).get_p0();
+		double engineNumber = aircraft.get_powerPlant().get_engineNumber();
+		double powerDouble = engineNumber * power.getEstimatedValue();
+		double density = conditions.get_densityCurrent().getEstimatedValue();
+		double surface = aircraft.get_wing().get_surface().getEstimatedValue();
+		double wingLoad = (liftCoefficient*(0.5 * density * Math.pow(
+				conditions.get_tas().getEstimatedValue(), 2))
+				*surface)/
+				surface;
+		
+		double meanAerodynamicChord = aircraft.get_wing().get_meanAerodChordEq().getEstimatedValue();
+		
+		double kFactor = (3 * powerDouble) /( 2 * Math.sqrt((2/density))) * Math.pow( wingLoad , (3/2));
+		
+		double thrustArm = aircraft.get_powerPlant().get_engineList().get(0).get_Z0().getEstimatedValue();
+		pitchingMomentDerThrust = kFactor* etaEfficiency * Math.sqrt(liftCoefficient) * (thrustArm/meanAerodynamicChord) / surface;
+		
+		return pitchingMomentDerThrust;
+	}
+
+	public double getPitchingMomentDerThrust() {
+		return pitchingMomentDerThrust;
+	}
+
+	public void setPitchingMomentDerThrust(double pitchingMomentDerThrust) {
+		this.pitchingMomentDerThrust = pitchingMomentDerThrust;
+	}
+
 }
+}
+
