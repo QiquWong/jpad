@@ -1,0 +1,974 @@
+package sandbox.vt.Landing_Test;
+
+import java.util.ArrayList;
+import java.util.List;
+import javax.measure.quantity.Acceleration;
+import javax.measure.quantity.Angle;
+import javax.measure.quantity.Duration;
+import javax.measure.quantity.Force;
+import javax.measure.quantity.Length;
+import javax.measure.quantity.Velocity;
+import javax.measure.unit.NonSI;
+import javax.measure.unit.SI;
+import org.apache.commons.math3.exception.DimensionMismatchException;
+import org.apache.commons.math3.exception.MaxCountExceededException;
+import org.apache.commons.math3.ode.FirstOrderDifferentialEquations;
+import org.apache.commons.math3.ode.FirstOrderIntegrator;
+import org.apache.commons.math3.ode.events.EventHandler;
+import org.apache.commons.math3.ode.nonstiff.HighamHall54Integrator;
+import org.apache.commons.math3.ode.sampling.StepHandler;
+import org.apache.commons.math3.ode.sampling.StepInterpolator;
+import org.jscience.physics.amount.Amount;
+import aircraft.OperatingConditions;
+import aircraft.components.Aircraft;
+import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcHighLiftDevices;
+import calculators.performance.ThrustCalc;
+import configuration.enumerations.EngineOperatingConditionEnum;
+import standaloneutils.atmosphere.AtmosphereCalc;
+import standaloneutils.atmosphere.SpeedCalc;
+
+/**
+ * This class have the purpose of calculating the required landing field length
+ * of a given aircraft by evaluating three main phases:
+ *
+ * - the airborne distance (from the obstacle altitude until the aircraft rotate the nose)
+ * - the flare distance (from the rotation until the aircraft touches the ground)
+ * - the ground roll distance (until the aircraft stops)
+ *
+ * the first two distances are evaluated using a simplified method which assumes that, in 
+ * the approach phase, the trajectory evolves with constant attitude following a line; while 
+ * the flare distance is calculated assuming that the aircraft follows a trajectory that is an
+ * arc of circle. The last distance is, instead, calculated solving the equation of motion during
+ * the decelerated ground roll (like the take-off the solution is obtained using an ODE integration
+ * method). 
+ *
+ * @author Vittorio Trifari
+ *
+ */
+
+public class CalcLanding {
+
+	//-------------------------------------------------------------------------------------
+	// VARIABLE DECLARATION
+
+	private Aircraft aircraft;
+	private OperatingConditions theConditions;
+	private CalcHighLiftDevices highLiftCalculator;
+	private Amount<Velocity> vSLanding, vA, vFlare, vTD, vWind;
+	private Amount<Length> wingToGroundDistance, obstacle, sApproach, sFlare, sGround, sTotal;
+	private Amount<Angle> alphaGround, iw;
+	private List<Double> loadFactor;
+	private List<Amount<Angle>> thetaApproach;
+	private List<Amount<Duration>> time;
+	private List<Amount<Velocity>> speed;
+	private List<Amount<Acceleration>> acceleration;
+	private List<Amount<Force>> thrust, lift, drag, friction, totalForce;
+	private List<Amount<Length>> groundDistance;
+	private double mu, muBrake, cLmaxLanding, kGround, cL0, cLground, kA, kFlare, kTD, phiRev;
+	private double oswald, cD0, cLalphaFlap, deltaCD0FlapLandinGears;
+	private int nFreeRoll;
+
+	//-------------------------------------------------------------------------------------
+	// BUILDER:
+
+	/**************************************************************************************
+	 * This builder has the purpose of pass input to the class fields and to initialize all
+	 * lists with the correct initial values in order to setup the landing field length 
+	 * calculation
+	 * 
+	 * @author Vittorio Trifari
+	 * @param aircraft
+	 * @param theConditions
+	 * @param highLiftCalculator instance of LSAerodynamicManager inner class for managing
+	 * 		  and slat effects
+	 * @param kA percentage of the stall speed in landing which defines the approach speed
+	 * @param kFlare percentage of the stall speed in landing which defines the flare speed
+	 * @param kTD percentage of the stall speed in landing which defines the touch-down speed
+	 * @param phiRev throttle setting for the reverse thrust
+	 * @param mu friction coefficient without brakes action
+	 * @param muBrake friction coefficient with brakes activated
+	 * @param wingToGroundDistance
+	 * @param obstacle
+	 * @param vWind
+	 * @param alphaGround
+	 * @param iw
+	 */
+	public CalcLanding(
+			Aircraft aircraft,
+			OperatingConditions theConditions,
+			CalcHighLiftDevices highLiftCalculator,
+			double kA,
+			double kFlare, 
+			double kTD,
+			double phiRev,
+			double mu,
+			double muBrake,
+			Amount<Length> wingToGroundDistance,
+			Amount<Length> obstacle,
+			Amount<Velocity> vWind,
+			Amount<Angle> alphaGround,
+			Amount<Angle> iw,
+			int nFreeRoll
+			) {
+
+		this.aircraft = aircraft;
+		this.theConditions = theConditions;
+		this.highLiftCalculator = highLiftCalculator;
+		this.kA = kA;
+		this.kFlare = kFlare;
+		this.kTD = kTD;
+		this.phiRev = phiRev;
+		this.mu = mu;
+		this.muBrake = muBrake;
+		this.wingToGroundDistance = wingToGroundDistance;
+		this.obstacle = obstacle;
+		this.vWind = vWind;
+		this.alphaGround = alphaGround;
+		this.iw = iw;
+		this.nFreeRoll = nFreeRoll;
+
+		this.oswald = aircraft.get_theAerodynamics().get_oswald();
+		this.cD0 = aircraft.get_theAerodynamics().get_cD0();
+
+		// CalcHighLiftDevices object to manage flap/slat effects
+		highLiftCalculator.calculateHighLiftDevicesEffects();
+		cLmaxLanding = highLiftCalculator.getcL_Max_Flap();
+		cL0 = highLiftCalculator.calcCLatAlphaHighLiftDevice(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+		cLground = highLiftCalculator.calcCLatAlphaHighLiftDevice(getAlphaGround().plus(iw));
+		cLalphaFlap = highLiftCalculator.getcLalpha_new();
+		this.deltaCD0FlapLandinGears = highLiftCalculator.getDeltaCD() + aircraft.get_landingGear().get_deltaCD0();
+
+		// Reference velocities definition
+		vSLanding = Amount.valueOf(
+				SpeedCalc.calculateSpeedStall(
+						theConditions.get_altitude().getEstimatedValue(),
+						aircraft.get_weights().get_MTOW().getEstimatedValue(),
+						aircraft.get_wing().get_surface().getEstimatedValue(),
+						cLmaxLanding
+						),
+				SI.METERS_PER_SECOND);
+		vA = vSLanding.times(kA);
+		vFlare = vSLanding.times(kFlare);
+		vTD = vSLanding.times(kTD);
+
+		System.out.println("\n-----------------------------------------------------------");
+		System.out.println("CLmaxLanding = " + cLmaxLanding);
+		System.out.println("CL0 = " + cL0);
+		System.out.println("CLground = " + cLground);
+		System.out.println("VsLanding = " + vSLanding);
+		System.out.println("V_Approach = " + vA);
+		System.out.println("V_Flare = " + vFlare);
+		System.out.println("V_TouchDown = " + vTD);
+		System.out.println("-----------------------------------------------------------\n");
+
+		// McCormick interpolated function --> See the excel file into JPAD DOCS
+		double hb = wingToGroundDistance.divide(aircraft.get_wing().get_span().times(Math.PI/4)).getEstimatedValue();
+		kGround = - 622.44*(Math.pow(hb, 5)) + 624.46*(Math.pow(hb, 4)) - 255.24*(Math.pow(hb, 3))
+				+ 47.105*(Math.pow(hb, 2)) - 0.6378*hb + 0.0055;
+
+		// List initialization
+		this.time = new ArrayList<Amount<Duration>>();
+		this.speed = new ArrayList<Amount<Velocity>>();
+		this.thrust = new ArrayList<Amount<Force>>();
+		this.lift = new ArrayList<Amount<Force>>();
+		this.loadFactor = new ArrayList<Double>();
+		this.drag = new ArrayList<Amount<Force>>();
+		this.friction = new ArrayList<Amount<Force>>();
+		this.totalForce = new ArrayList<Amount<Force>>();
+		this.acceleration = new ArrayList<Amount<Acceleration>>();
+		this.groundDistance = new ArrayList<Amount<Length>>();
+
+	}
+
+	/********************************************************************************************
+	 * This builder is an overload of the previous one designed to allow the user 
+	 * to perform the landing distance calculation without doing all flaps analysis.
+	 * This may come in handy when only few data are available.
+	 * 
+	 * @author Vittorio Trifari
+	 * @param aircraft
+	 * @param theConditions
+	 * @param kA
+	 * @param kFlare
+	 * @param kTD
+	 * @param phiRev
+	 * @param mu
+	 * @param muBrake
+	 * @param wingToGroundDistance
+	 * @param obstacle
+	 * @param vWind
+	 * @param alphaGround
+	 * @param iw
+	 * @param cD0
+	 * @param oswald
+	 * @param cLmaxLanding
+	 * @param cL0
+	 * @param cLalphaFlap
+	 * @param deltaCD0FlapLandingGears
+	 */
+	public CalcLanding(
+			Aircraft aircraft,
+			OperatingConditions theConditions,
+			double kA,
+			double kFlare, 
+			double kTD,
+			double phiRev,
+			double mu,
+			double muBrake,
+			Amount<Length> wingToGroundDistance,
+			Amount<Length> obstacle,
+			Amount<Velocity> vWind,
+			Amount<Angle> alphaGround,
+			Amount<Angle> iw,
+			double cD0,
+			double oswald,
+			double cLmaxLanding,
+			double cL0,
+			double cLalphaFlap,
+			double deltaCD0FlapLandingGears,
+			int nFreeRoll
+			) {
+
+		// Required data
+		this.aircraft = aircraft;
+		this.theConditions = theConditions;
+		this.kA = kA;
+		this.kFlare = kFlare;
+		this.kTD = kTD;
+		this.phiRev = phiRev;
+		this.mu = mu;
+		this.muBrake = muBrake;
+		this.wingToGroundDistance = wingToGroundDistance;
+		this.obstacle = obstacle;
+		this.vWind = vWind;
+		this.alphaGround = alphaGround;
+		this.iw = iw;
+		this.cD0 = cD0;
+		this.oswald = oswald;
+		this.cLmaxLanding = cLmaxLanding;
+		this.deltaCD0FlapLandinGears = deltaCD0FlapLandingGears;
+		this.cL0 = cL0; 
+		this.cLalphaFlap = cLalphaFlap;
+		this.nFreeRoll = nFreeRoll;
+
+		this.cLground = cL0 + (cLalphaFlap*iw.getEstimatedValue());
+
+		// Reference velocities definition
+		vSLanding = Amount.valueOf(
+				SpeedCalc.calculateSpeedStall(
+						theConditions.get_altitude().getEstimatedValue(),
+						aircraft.get_weights().get_MTOW().getEstimatedValue(),
+						aircraft.get_wing().get_surface().getEstimatedValue(),
+						cLmaxLanding
+						),
+				SI.METERS_PER_SECOND);
+		vA = vSLanding.times(kA);
+		vFlare = vSLanding.times(kFlare);
+		vTD = vSLanding.times(kTD);
+
+		System.out.println("\n-----------------------------------------------------------");
+		System.out.println("CLmaxLanding = " + cLmaxLanding);
+		System.out.println("CL0 = " + cL0);
+		System.out.println("CLground = " + cLground);
+		System.out.println("VsLanding = " + vSLanding);
+		System.out.println("V_Approach = " + vA);
+		System.out.println("V_Flare = " + vFlare);
+		System.out.println("V_TouchDown = " + vTD);
+		System.out.println("-----------------------------------------------------------\n");
+
+		// McCormick interpolated function --> See the excel file into JPAD DOCS
+		double hb = wingToGroundDistance.divide(aircraft.get_wing().get_span().times(Math.PI/4)).getEstimatedValue();
+		kGround = - 622.44*(Math.pow(hb, 5)) + 624.46*(Math.pow(hb, 4)) - 255.24*(Math.pow(hb, 3))
+				+ 47.105*(Math.pow(hb, 2)) - 0.6378*hb + 0.0055;
+
+		// List initialization
+		this.time = new ArrayList<Amount<Duration>>();
+		this.speed = new ArrayList<Amount<Velocity>>();
+		this.thrust = new ArrayList<Amount<Force>>();
+		this.lift = new ArrayList<Amount<Force>>();
+		this.loadFactor = new ArrayList<Double>();
+		this.drag = new ArrayList<Amount<Force>>();
+		this.friction = new ArrayList<Amount<Force>>();
+		this.totalForce = new ArrayList<Amount<Force>>();
+		this.acceleration = new ArrayList<Amount<Acceleration>>();
+		this.groundDistance = new ArrayList<Amount<Length>>();
+	}
+
+	//-------------------------------------------------------------------------------------
+	// METHODS:
+
+	/**************************************************************************************
+	 * This method is used to initialize all lists in order to perform a new calculation or
+	 * to setup the first one
+	 *
+	 * @author Vittorio Trifari
+	 */
+	public void initialize() {
+
+		// lists cleaning
+		time.clear();
+		speed.clear();
+		thrust.clear();
+		lift.clear();
+		loadFactor.clear();
+		drag.clear();
+		friction.clear();
+		totalForce.clear();
+		acceleration.clear();
+		groundDistance.clear();
+	}
+
+	/***************************************************************************************
+	 * This method performs the integration of the ground roll distance in landing
+	 * by solving a set of ODE with a HighamHall54Integrator.
+	 * The library used is the Apache Math3. 
+	 * 
+	 * see: https://commons.apache.org/proper/commons-math/userguide/ode.html
+	 * 
+	 * @author Vittorio Trifari
+	 */
+	public void calculateGroundRollLandingODE() {
+
+		System.out.println("---------------------------------------------------");
+		System.out.println("CalcLanding :: Ground Roll ODE integration\n\n");
+
+		FirstOrderIntegrator theIntegrator = new HighamHall54Integrator(
+				1e-6,
+				1,
+				1e-17,
+				1e-17
+				);
+		FirstOrderDifferentialEquations ode = new DynamicsEquationsLanding();
+
+		EventHandler ehCheckStop = new EventHandler() {
+			@Override
+			public void init(double t0, double[] y0, double t) {
+
+			}
+
+			@Override
+			public void resetState(double t, double[] y) {
+
+			}
+
+			// Discrete event, switching function
+			@Override
+			public double g(double t, double[] x) {
+				double speed = x[1];
+				return speed - 0.0;
+			}
+
+			@Override
+			public Action eventOccurred(double t, double[] x, boolean increasing) {
+				// Handle an event and choose what to do next.
+				System.out.println("\n\t\tEND OF THE LANDING GROUND ROLL");
+				System.out.println("\n\tswitching function changes sign at t = " + t);
+				System.out.println(
+						"\n\tx[0] = s = " + x[0] + " m" +
+								"\n\tx[1] = V = " + x[1] + " m/s"
+						);
+
+				System.out.println("\n---------------------------DONE!-------------------------------");
+				return  Action.STOP;
+			}
+		};
+		theIntegrator.addEventHandler(ehCheckStop, 1.0, 1e-6, 20);
+
+		// handle detailed info
+		StepHandler stepHandler = new StepHandler() {
+
+			public void init(double t0, double[] x0, double t) {
+			}
+
+			@Override
+			public void handleStep(StepInterpolator interpolator, boolean isLast) throws MaxCountExceededException {
+
+				double   t = interpolator.getCurrentTime();
+				double[] x = interpolator.getInterpolatedState();
+
+				//----------------------------------------------------------------------------------------
+				// PICKING UP ALL DATA AT EVERY STEP (RECOGNIZING IF THE TAKE-OFF IS CONTINUED OR ABORTED)
+				//----------------------------------------------------------------------------------------
+				// TIME:
+				CalcLanding.this.getTime().add(Amount.valueOf(t, SI.SECOND));
+				//----------------------------------------------------------------------------------------
+				// SPEED:
+				CalcLanding.this.getSpeed().add(Amount.valueOf(x[1], SI.METERS_PER_SECOND));
+				//----------------------------------------------------------------------------------------
+				// THRUST:
+				CalcLanding.this.getThrust().add(Amount.valueOf(
+							-((DynamicsEquationsLanding)ode).thrust(x[1]),
+							SI.NEWTON)
+							);
+				//--------------------------------------------------------------------------------
+				// FRICTION:
+				if(t < nFreeRoll)
+					CalcLanding.this.getFriction().add(Amount.valueOf(
+							CalcLanding.this.getMu()
+							*(((DynamicsEquationsLanding)ode).weight
+									- ((DynamicsEquationsLanding)ode).lift(
+											x[1])
+									),
+							SI.NEWTON)
+							);
+				else
+					CalcLanding.this.getFriction().add(Amount.valueOf(
+							CalcLanding.this.getMuBrake()
+							*(((DynamicsEquationsLanding)ode).weight
+									- ((DynamicsEquationsLanding)ode).lift(
+											x[1])
+									),
+							SI.NEWTON)
+							);
+				//----------------------------------------------------------------------------------------
+				// LIFT:
+				CalcLanding.this.getLift().add(Amount.valueOf(
+						((DynamicsEquationsLanding)ode).lift(x[1]),
+						SI.NEWTON)
+						);
+				//----------------------------------------------------------------------------------------
+				// DRAG:
+				CalcLanding.this.getDrag().add(Amount.valueOf(
+						((DynamicsEquationsLanding)ode).drag(x[1]),
+						SI.NEWTON)
+						);
+				//----------------------------------------------------------------------------------------
+				// TOTAL FORCE:
+				if(t < nFreeRoll)
+					CalcLanding.this.getTotalForce().add(Amount.valueOf(
+							 - ((DynamicsEquationsLanding)ode).thrust(x[1])
+							 - ((DynamicsEquationsLanding)ode).drag(x[1])
+							 - CalcLanding.this.getMu()*(((DynamicsEquationsLanding)ode).weight
+										- ((DynamicsEquationsLanding)ode).lift(x[1])),
+								SI.NEWTON)
+								);
+				else
+					CalcLanding.this.getTotalForce().add(Amount.valueOf(
+							 -((DynamicsEquationsLanding)ode).thrust(x[1])
+							 - ((DynamicsEquationsLanding)ode).drag(x[1])
+							 - CalcLanding.this.getMuBrake()*(((DynamicsEquationsLanding)ode).weight
+										- ((DynamicsEquationsLanding)ode).lift(x[1])),
+								SI.NEWTON)
+								);
+				//----------------------------------------------------------------------------------------
+				// LOAD FACTOR:
+				CalcLanding.this.getLoadFactor().add(
+						((DynamicsEquationsLanding)ode).lift(x[1])
+						/(((DynamicsEquationsLanding)ode).weight));
+				//----------------------------------------------------------------------------------------
+				// ACCELERATION:
+				if(t < nFreeRoll)
+					CalcLanding.this.getAcceleration().add(	
+							Amount.valueOf((AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquationsLanding)ode).weight)
+									*(- ((DynamicsEquationsLanding)ode).thrust(x[1])
+											- ((DynamicsEquationsLanding)ode).drag(x[1])
+											- CalcLanding.this.getMu()*(((DynamicsEquationsLanding)ode).weight
+													- ((DynamicsEquationsLanding)ode).lift(x[1]))),
+									SI.METERS_PER_SQUARE_SECOND)
+							);
+				else
+					CalcLanding.this.getAcceleration().add(	
+							Amount.valueOf((AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquationsLanding)ode).weight)
+									*(- ((DynamicsEquationsLanding)ode).thrust(x[1])
+											- ((DynamicsEquationsLanding)ode).drag(x[1])
+											- CalcLanding.this.getMuBrake()*(((DynamicsEquationsLanding)ode).weight
+													- ((DynamicsEquationsLanding)ode).lift(x[1]))),
+									SI.METERS_PER_SQUARE_SECOND)
+							);
+				
+				//----------------------------------------------------------------------------------------
+				// GROUND DISTANCE:
+				CalcLanding.this.getGroundDistance().add(Amount.valueOf(x[0],
+						SI.METER)
+						);
+				//----------------------------------------------------------------------------------------
+			}
+		};
+		theIntegrator.addStepHandler(stepHandler);
+		
+		double[] xAt0 = new double[] {0.0, vTD.getEstimatedValue()}; // initial state
+		theIntegrator.integrate(ode, 0.0, xAt0, 100, xAt0); // now xAt0 contains final state
+		
+		theIntegrator.clearEventHandlers();
+		theIntegrator.clearStepHandlers();
+		
+		System.out.println("\n---------------------------END!!-------------------------------");
+	}
+
+	//-------------------------------------------------------------------------------------
+	//										NESTED CLASS
+	//-------------------------------------------------------------------------------------
+	// ODE integration
+	// see: https://commons.apache.org/proper/commons-math/userguide/ode.html
+
+	public class DynamicsEquationsLanding implements FirstOrderDifferentialEquations {
+
+		double weight, g0, mu, cD0, deltaCD0, oswald, ar, kGround, vWind, alphaGround;
+
+		public DynamicsEquationsLanding() {
+
+			// constants and known values
+			weight = aircraft.get_weights().get_MTOW().getEstimatedValue();
+			g0 = AtmosphereCalc.g0.getEstimatedValue();
+			mu = CalcLanding.this.mu;
+			muBrake = CalcLanding.this.muBrake;
+			cD0 = CalcLanding.this.getcD0();
+			deltaCD0 = CalcLanding.this.getDeltaCD0FlapLandinGears();
+			oswald = CalcLanding.this.getOswald();
+			ar = aircraft.get_wing().get_aspectRatio();
+			kGround = CalcLanding.this.getkGround();
+			vWind = CalcLanding.this.getvWind().getEstimatedValue();
+			alphaGround = CalcLanding.this.getAlphaGround().getEstimatedValue();
+		}
+
+		@Override
+		public int getDimension() {
+			return 2;
+		}
+
+		@Override
+		public void computeDerivatives(double t, double[] x, double[] xDot)
+				throws MaxCountExceededException, DimensionMismatchException {
+
+			double speed = x[1];
+
+			if(t < CalcLanding.this.getnFreeRoll()) {
+				xDot[0] = speed;
+				xDot[1] = (g0/weight)*(thrust(speed) - drag(speed)
+						- (mu*(weight - lift(speed))));
+			}
+			else {
+				xDot[0] = speed;
+				xDot[1] = (g0/weight)*(thrust(speed) - drag(speed)
+						- (muBrake*(weight - lift(speed))));
+			}
+		}
+
+		public double thrust(double speed) {
+
+			double theThrust = 0.0;
+
+			theThrust =	ThrustCalc.calculateThrustDatabase(
+					CalcLanding.this.getAircraft().get_powerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
+					CalcLanding.this.getAircraft().get_powerPlant().get_engineNumber(),
+					CalcLanding.this.getPhiRev(),
+					CalcLanding.this.getAircraft().get_powerPlant().get_engineList().get(0).get_bpr(),
+					CalcLanding.this.getAircraft().get_powerPlant().get_engineType(),
+					EngineOperatingConditionEnum.TAKE_OFF,
+					CalcLanding.this.getTheConditions().get_altitude().getEstimatedValue(),
+					SpeedCalc.calculateMach(
+							CalcLanding.this.getTheConditions().get_altitude().getEstimatedValue(),
+							speed + 
+							CalcLanding.this.getvWind().getEstimatedValue()
+							)
+					);
+
+			return theThrust;
+		}
+
+		public double drag(double speed) {
+
+			double cD = cD0 + deltaCD0 + 
+					((CalcLanding.this.getcLground()/(Math.PI*ar*oswald))*kGround);
+
+			return 	0.5
+					*aircraft.get_wing().get_surface().getEstimatedValue()
+					*AtmosphereCalc.getDensity(
+							theConditions.get_altitude().getEstimatedValue())
+					*(Math.pow((speed + vWind), 2))
+					*cD;
+		}
+
+		public double lift(double speed) {
+
+			return 	0.5
+					*aircraft.get_wing().get_surface().getEstimatedValue()
+					*AtmosphereCalc.getDensity(
+							theConditions.get_altitude().getEstimatedValue())
+					*(Math.pow((speed + vWind), 2))
+					*CalcLanding.this.getcLground();
+		}
+	}
+	//-------------------------------------------------------------------------------------
+	//									END NESTED CLASS	
+	//-------------------------------------------------------------------------------------
+
+	//-------------------------------------------------------------------------------------
+	// GETTERS AND SETTERS:
+
+	public Aircraft getAircraft() {
+		return aircraft;
+	}
+	public void setAircraft(Aircraft aircraft) {
+		this.aircraft = aircraft;
+	}
+	public OperatingConditions getTheConditions() {
+		return theConditions;
+	}
+	public void setTheConditions(OperatingConditions theConditions) {
+		this.theConditions = theConditions;
+	}
+	public CalcHighLiftDevices getHighLiftCalculator() {
+		return highLiftCalculator;
+	}
+	public void setHighLiftCalculator(CalcHighLiftDevices highLiftCalculator) {
+		this.highLiftCalculator = highLiftCalculator;
+	}
+	public Amount<Velocity> getvSLanding() {
+		return vSLanding;
+	}
+	public void setvSLanding(Amount<Velocity> vSLanding) {
+		this.vSLanding = vSLanding;
+	}
+	public Amount<Velocity> getvA() {
+		return vA;
+	}
+	public void setvA(Amount<Velocity> vA) {
+		this.vA = vA;
+	}
+	public Amount<Velocity> getvFlare() {
+		return vFlare;
+	}
+	public void setvFlare(Amount<Velocity> vFlare) {
+		this.vFlare = vFlare;
+	}
+	public Amount<Velocity> getvTD() {
+		return vTD;
+	}
+	public void setvTD(Amount<Velocity> vTD) {
+		this.vTD = vTD;
+	}
+	public Amount<Velocity> getvWind() {
+		return vWind;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+	public void setvWind(Amount<Velocity> vWind) {
+		this.vWind = vWind;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+	public Amount<Length> getWingToGroundDistance() {
+		return wingToGroundDistance;
+	}
+	public void setWingToGroundDistance(Amount<Length> wingToGroundDistance) {
+		this.wingToGroundDistance = wingToGroundDistance;
+	}
+	public Amount<Length> getObstacle() {
+		return obstacle;
+	}
+	public void setObstacle(Amount<Length> obstacle) {
+		this.obstacle = obstacle;
+	}
+	public Amount<Angle> getAlphaGround() {
+		return alphaGround;
+	}
+	public void setAlphaGround(Amount<Angle> alphaGround) {
+		this.alphaGround = alphaGround;
+	}
+	public Amount<Angle> getIw() {
+		return iw;
+	}
+	public void setIw(Amount<Angle> iw) {
+		this.iw = iw;
+	}
+	public List<Double> getLoadFactor() {
+		return loadFactor;
+	}
+
+	public void setLoadFactor(List<Double> loadFactor) {
+		this.loadFactor = loadFactor;
+	}
+	public List<Amount<Angle>> getThetaApproach() {
+		return thetaApproach;
+	}
+	public void setThetaApproach(List<Amount<Angle>> thetaApproach) {
+		this.thetaApproach = thetaApproach;
+	}
+	public List<Amount<Duration>> getTime() {
+		return time;
+	}
+	public void setTime(List<Amount<Duration>> time) {
+		this.time = time;
+	}
+	public List<Amount<Velocity>> getSpeed() {
+		return speed;
+	}
+	public void setSpeed(List<Amount<Velocity>> speed) {
+		this.speed = speed;
+	}
+	public List<Amount<Acceleration>> getAcceleration() {
+		return acceleration;
+	}
+	public void setAcceleration(List<Amount<Acceleration>> acceleration) {
+		this.acceleration = acceleration;
+	}
+	public List<Amount<Force>> getThrust() {
+		return thrust;
+	}
+	public void setThrust(List<Amount<Force>> thrust) {
+		this.thrust = thrust;
+	}
+	public List<Amount<Force>> getLift() {
+		return lift;
+	}
+	public void setLift(List<Amount<Force>> lift) {
+		this.lift = lift;
+	}
+	public List<Amount<Force>> getDrag() {
+		return drag;
+	}
+	public void setDrag(List<Amount<Force>> drag) {
+		this.drag = drag;
+	}
+	public List<Amount<Force>> getFriction() {
+		return friction;
+	}
+	public void setFriction(List<Amount<Force>> friction) {
+		this.friction = friction;
+	}
+	public List<Amount<Force>> getTotalForce() {
+		return totalForce;
+	}
+	public void setTotalForce(List<Amount<Force>> totalForce) {
+		this.totalForce = totalForce;
+	}
+	public List<Amount<Length>> getGroundDistance() {
+		return groundDistance;
+	}
+	public void setGroundDistance(List<Amount<Length>> groundDistance) {
+		this.groundDistance = groundDistance;
+	}
+	public double getMu() {
+		return mu;
+	}
+	public void setMu(double mu) {
+		this.mu = mu;
+	}
+	public double getMuBrake() {
+		return muBrake;
+	}
+	public void setMuBrake(double muBrake) {
+		this.muBrake = muBrake;
+	}
+	public double getcLmaxLanding() {
+		return cLmaxLanding;
+	}
+	public void setcLmaxLanding(double cLmaxLanding) {
+		this.cLmaxLanding = cLmaxLanding;
+	}
+	public double getkGround() {
+		return kGround;
+	}
+	public void setkGround(double kGround) {
+		this.kGround = kGround;
+	}
+	public double getcL0() {
+		return cL0;
+	}
+	public void setcL0(double cL0) {
+		this.cL0 = cL0;
+	}
+	public double getcLground() {
+		return cLground;
+	}
+	public void setcLground(double cLground) {
+		this.cLground = cLground;
+	}
+	public double getkA() {
+		return kA;
+	}
+	public void setkA(double kA) {
+		this.kA = kA;
+	}
+	public double getkFlare() {
+		return kFlare;
+	}
+	public void setkFlare(double kFlare) {
+		this.kFlare = kFlare;
+	}
+	public double getkTD() {
+		return kTD;
+	}
+	public void setkTD(double kTD) {
+		this.kTD = kTD;
+	}
+	public double getPhiRev() {
+		return phiRev;
+	}
+	public void setPhiRev(double phiRev) {
+		this.phiRev = phiRev;
+	}
+	public double getOswald() {
+		return oswald;
+	}
+	public void setOswald(double oswald) {
+		this.oswald = oswald;
+	}
+	public double getcD0() {
+		return cD0;
+	}
+	public void setcD0(double cD0) {
+		this.cD0 = cD0;
+	}
+	public double getcLalphaFlap() {
+		return cLalphaFlap;
+	}
+	public void setcLalphaFlap(double cLalphaFlap) {
+		this.cLalphaFlap = cLalphaFlap;
+	}
+	public double getDeltaCD0FlapLandinGears() {
+		return deltaCD0FlapLandinGears;
+	}
+	public void setDeltaCD0FlapLandinGears(double deltaCD0FlapLandinGears) {
+		this.deltaCD0FlapLandinGears = deltaCD0FlapLandinGears;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+	public Amount<Length> getsApproach() {
+		return sApproach;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+	public void setsApproach(Amount<Length> sApproach) {
+		this.sApproach = sApproach;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+	public Amount<Length> getsFlare() {
+		return sFlare;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+	public void setsFlare(Amount<Length> sFlare) {
+		this.sFlare = sFlare;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+	public Amount<Length> getsGround() {
+		return sGround;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+	public void setsGround(Amount<Length> sGround) {
+		this.sGround = sGround;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+	public Amount<Length> getsTotal() {
+		return sTotal;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+	public void setsTotal(Amount<Length> sTotal) {
+		this.sTotal = sTotal;
+	}
+
+	public int getnFreeRoll() {
+		return nFreeRoll;
+	}
+
+	public void setnFreeRoll(int nFreeRoll) {
+		this.nFreeRoll = nFreeRoll;
+	}
+}
