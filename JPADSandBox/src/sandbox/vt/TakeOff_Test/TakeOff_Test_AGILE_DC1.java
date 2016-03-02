@@ -15,20 +15,11 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import aircraft.OperatingConditions;
-import aircraft.auxiliary.airfoil.MyAirfoil;
 import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
-import aircraft.components.liftingSurface.LSAerodynamicsManager;
-import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
-import configuration.enumerations.AnalysisTypeEnum;
-import configuration.enumerations.FlapTypeEnum;
-import configuration.enumerations.FoldersEnum;
-import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
-import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import standaloneutils.JPADXmlReader;
-import standaloneutils.customdata.CenterOfGravity;
 
 public class TakeOff_Test_AGILE_DC1 {
 
@@ -78,7 +69,7 @@ public class TakeOff_Test_AGILE_DC1 {
 		aircraft.set_name("AGILE_DC1");
 
 		aircraft.get_weights().set_MTOM(Amount.valueOf(42000, SI.KILOGRAM));
-		aircraft.get_wing().set_surface(Amount.valueOf(71.69, SI.SQUARE_METRE));
+		aircraft.get_wing().set_surface(Amount.valueOf(107.53, SI.SQUARE_METRE));
 		aircraft.get_wing().set_aspectRatio(9.5);
 		
 		ACAnalysisManager theAnalysis = new ACAnalysisManager(theCondition);
@@ -106,7 +97,7 @@ public class TakeOff_Test_AGILE_DC1 {
 
 		double oswald = 0.85;
 		double cD0 = 0.0187;
-		double cLmaxTO = 2.3;
+		double cLmaxTO = 2.1;
 		double cL0 = 0.69;
 		double cLalphaFlap = 0.087;
 		double deltaCD0FlapLandingGear = 0.007 + 0.010; 
