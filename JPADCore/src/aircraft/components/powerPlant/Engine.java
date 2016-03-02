@@ -251,7 +251,7 @@ public class Engine extends Component{
 			// Reference dry engine mass (from public domain data)
 			_dryMassPublicDomain = Amount.valueOf(1162.6, NonSI.POUND).to(SI.KILOGRAM);
 
-			_t0 = Amount.valueOf(7000*AtmosphereCalc.g0.getEstimatedValue(), SI.NEWTON);
+			_t0 = Amount.valueOf(6300*AtmosphereCalc.g0.getEstimatedValue(), SI.NEWTON);
 			
 			// Single engine maximum power output (from public domain data)
 			_p0 = Amount.valueOf(80397.37218, NonSI.HORSEPOWER).to(SI.WATT); // TODO: check

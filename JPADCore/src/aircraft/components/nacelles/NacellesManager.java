@@ -72,7 +72,7 @@ public class NacellesManager {
 		case AGILE_DC1:
 			_theAircraft = aircraft;
 			_nacellesNumber = 2;
-			_massReference = Amount.valueOf(719.9, SI.KILOGRAM);
+			_massReference = Amount.valueOf(380., SI.KILOGRAM); // ADAS
 			break;
 		}
 	}
@@ -171,6 +171,7 @@ public class NacellesManager {
 			_totalMass = _totalMass.plus(_nacellesList.get(i).getWeights().get_massEstimated());
 			_massReference = _massReference.plus(_nacellesList.get(i).getWeights().get_massReference());
 		}
+		
 
 		_percentTotalDifference = _totalMass.
 				minus(_massReference).
@@ -287,6 +288,14 @@ public class NacellesManager {
 
 	public List<Amount<Mass>> get_massList() {
 		return _massList;
+	}
+
+	public Amount<Mass> get_massReference() {
+		return _massReference;
+	}
+
+	public void set_massReference(Amount<Mass> _massReference) {
+		this._massReference = _massReference;
 	}
 
 }

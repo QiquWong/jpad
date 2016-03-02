@@ -1784,7 +1784,6 @@ public class CalcTakeOff {
 								)
 						);
 
-//			System.out.println("Thrust: " + theThrust);
 			return theThrust;
 		}
 
