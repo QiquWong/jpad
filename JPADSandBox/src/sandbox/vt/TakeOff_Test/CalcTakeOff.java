@@ -51,7 +51,7 @@ import writers.JPADStaticWriteUtils;
  *
  */
 
-public class CalcLanding {
+public class CalcTakeOff {
 
 	//-------------------------------------------------------------------------------------
 	// VARIABLE DECLARATION
@@ -127,7 +127,7 @@ public class CalcLanding {
 	 * @param alphaGround
 	 * @param iw
 	 */
-	public CalcLanding(
+	public CalcTakeOff(
 			Aircraft aircraft,
 			OperatingConditions theConditions,
 			CalcHighLiftDevices highLiftCalculator,
@@ -271,7 +271,7 @@ public class CalcLanding {
 	 * @param cLalphaFlap
 	 * @param deltaCD0FlapLandingGears
 	 */
-	public CalcLanding(
+	public CalcTakeOff(
 			Aircraft aircraft,
 			OperatingConditions theConditions,
 			Amount<Duration> dtRot,
@@ -474,7 +474,7 @@ public class CalcLanding {
 			public double g(double t, double[] x) {
 
 				if(t < tRec.getEstimatedValue())
-					return x[1] - CalcLanding.this.vFailure;
+					return x[1] - CalcTakeOff.this.vFailure;
 				else
 					return 10; // a generic positive value used to make the event trigger once
 			}
@@ -746,8 +746,8 @@ public class CalcLanding {
 				if(!isAborted) {
 					// CHECK ON LOAD FACTOR --> END ROTATION WHEN n=1
 					if((t > tRot.getEstimatedValue()) && (tEndRot.getEstimatedValue() == 10000.0) &&
-							(CalcLanding.this.getLoadFactor().get(CalcLanding.this.getLoadFactor().size()-1) > 1) &&
-							(CalcLanding.this.getLoadFactor().get(CalcLanding.this.getLoadFactor().size()-2) < 1)) {
+							(CalcTakeOff.this.getLoadFactor().get(CalcTakeOff.this.getLoadFactor().size()-1) > 1) &&
+							(CalcTakeOff.this.getLoadFactor().get(CalcTakeOff.this.getLoadFactor().size()-2) < 1)) {
 						System.out.println("\n\t\tEND OF ROTATION PHASE");
 						System.out.println(
 								"\n\tx[0] = s = " + x[0] + " m" +
@@ -788,8 +788,8 @@ public class CalcLanding {
 					}
 					// CHECK IF THE THRESHOLD CL IS REACHED --> FROM THIS POINT ON THE BAR IS LOCKED
 					if((t > tEndRot.getEstimatedValue()) && 
-							(CalcLanding.this.getcL().get(CalcLanding.this.getcL().size()-1) > kcLMax*cLmaxTO) &&
-							((CalcLanding.this.getcL().get(CalcLanding.this.getcL().size()-2) < kcLMax*cLmaxTO))) {
+							(CalcTakeOff.this.getcL().get(CalcTakeOff.this.getcL().size()-1) > kcLMax*cLmaxTO) &&
+							((CalcTakeOff.this.getcL().get(CalcTakeOff.this.getcL().size()-2) < kcLMax*cLmaxTO))) {
 						System.out.println("\n\t\tBEGIN BAR HOLDING");
 						System.out.println(
 								"\n\tCL = " + ((DynamicsEquationsLanding)ode).cL(
@@ -807,8 +807,8 @@ public class CalcLanding {
 					}
 					// CHECK ON LOAD FACTOR TO ENSTABLISH WHEN n=1 WHILE DECREASING ALPHA AND CL
 					if((t > tEndHold.getEstimatedValue()) && (tClimb.getEstimatedValue() == 10000.0) &&
-							(CalcLanding.this.getLoadFactor().get(CalcLanding.this.getLoadFactor().size()-1) < 1) &&
-							(CalcLanding.this.getLoadFactor().get(CalcLanding.this.getLoadFactor().size()-2) > 1)) {
+							(CalcTakeOff.this.getLoadFactor().get(CalcTakeOff.this.getLoadFactor().size()-1) < 1) &&
+							(CalcTakeOff.this.getLoadFactor().get(CalcTakeOff.this.getLoadFactor().size()-2) > 1)) {
 						System.out.println("\n\t\tLOAD FACTOR = 1 IN CLIMB");
 						System.out.println( 
 								"\n\tt = " + t + " s"
@@ -822,25 +822,25 @@ public class CalcLanding {
 				// PICKING UP ALL DATA AT EVERY STEP (RECOGNIZING IF THE TAKE-OFF IS CONTINUED OR ABORTED)
 				//----------------------------------------------------------------------------------------
 				// TIME:
-				CalcLanding.this.getTime().add(Amount.valueOf(t, SI.SECOND));
+				CalcTakeOff.this.getTime().add(Amount.valueOf(t, SI.SECOND));
 				//----------------------------------------------------------------------------------------
 				// SPEED:
-				CalcLanding.this.getSpeed().add(Amount.valueOf(x[1], SI.METERS_PER_SECOND));
+				CalcTakeOff.this.getSpeed().add(Amount.valueOf(x[1], SI.METERS_PER_SECOND));
 				//----------------------------------------------------------------------------------------
 				// THRUST:
 				if(!isAborted)
-					CalcLanding.this.getThrust().add(Amount.valueOf(
+					CalcTakeOff.this.getThrust().add(Amount.valueOf(
 							((DynamicsEquationsLanding)ode).thrust(x[1], x[2], t),
 							SI.NEWTON)
 							);
 				else {
 					if(t < tRec.getEstimatedValue())
-						CalcLanding.this.getThrust().add(Amount.valueOf(
+						CalcTakeOff.this.getThrust().add(Amount.valueOf(
 								((DynamicsEquationsLanding)ode).thrust(x[1], x[2], t),
 								SI.NEWTON)
 								);
 					else
-						CalcLanding.this.getThrust().add(Amount.valueOf(
+						CalcTakeOff.this.getThrust().add(Amount.valueOf(
 								0.0,
 								SI.NEWTON)
 								);
@@ -848,7 +848,7 @@ public class CalcLanding {
 				//----------------------------------------------------------------------------------------
 				// THRUST HORIZONTAL:
 				if(!isAborted)
-					CalcLanding.this.getThrustHorizontal().add(Amount.valueOf(
+					CalcTakeOff.this.getThrustHorizontal().add(Amount.valueOf(
 							((DynamicsEquationsLanding)ode).thrust(x[1], x[2], t)*Math.cos(
 									Amount.valueOf(
 											((DynamicsEquationsLanding)ode).alpha,
@@ -858,7 +858,7 @@ public class CalcLanding {
 							);
 				else {
 					if(t < tRec.getEstimatedValue())
-						CalcLanding.this.getThrustHorizontal().add(Amount.valueOf(
+						CalcTakeOff.this.getThrustHorizontal().add(Amount.valueOf(
 								((DynamicsEquationsLanding)ode).thrust(x[1], x[2], t)*Math.cos(
 										Amount.valueOf(
 												((DynamicsEquationsLanding)ode).alpha,
@@ -867,7 +867,7 @@ public class CalcLanding {
 								SI.NEWTON)
 								);
 					else
-						CalcLanding.this.getThrustHorizontal().add(Amount.valueOf(
+						CalcTakeOff.this.getThrustHorizontal().add(Amount.valueOf(
 								0.0,
 								SI.NEWTON)
 								);
@@ -875,7 +875,7 @@ public class CalcLanding {
 				//----------------------------------------------------------------------------------------
 				// THRUST VERTICAL:
 				if(!isAborted)
-					CalcLanding.this.getThrustVertical().add(Amount.valueOf(
+					CalcTakeOff.this.getThrustVertical().add(Amount.valueOf(
 							((DynamicsEquationsLanding)ode).thrust(x[1], x[2], t)*Math.sin(
 									Amount.valueOf(
 											((DynamicsEquationsLanding)ode).alpha,
@@ -885,7 +885,7 @@ public class CalcLanding {
 							);
 				else {
 					if(t < tRec.getEstimatedValue())
-						CalcLanding.this.getThrustVertical().add(Amount.valueOf(
+						CalcTakeOff.this.getThrustVertical().add(Amount.valueOf(
 								((DynamicsEquationsLanding)ode).thrust(x[1], x[2], t)*Math.sin(
 										Amount.valueOf(
 												((DynamicsEquationsLanding)ode).alpha,
@@ -894,7 +894,7 @@ public class CalcLanding {
 								SI.NEWTON)
 								);
 					else
-						CalcLanding.this.getThrustVertical().add(Amount.valueOf(
+						CalcTakeOff.this.getThrustVertical().add(Amount.valueOf(
 								0.0,
 								SI.NEWTON)
 								);
@@ -903,8 +903,8 @@ public class CalcLanding {
 				// FRICTION:
 				if(!isAborted) {
 					if(t < tEndRot.getEstimatedValue())
-						CalcLanding.this.getFriction().add(Amount.valueOf(
-								CalcLanding.this.getMu()
+						CalcTakeOff.this.getFriction().add(Amount.valueOf(
+								CalcTakeOff.this.getMu()
 								*(((DynamicsEquationsLanding)ode).weight
 										- ((DynamicsEquationsLanding)ode).lift(
 												x[1],
@@ -914,12 +914,12 @@ public class CalcLanding {
 								SI.NEWTON)
 								);
 					else
-						CalcLanding.this.getFriction().add(Amount.valueOf(0.0, SI.NEWTON));
+						CalcTakeOff.this.getFriction().add(Amount.valueOf(0.0, SI.NEWTON));
 				}
 				else {
 					if(t < tRec.getEstimatedValue())
-						CalcLanding.this.getFriction().add(Amount.valueOf(
-								CalcLanding.this.getMu()
+						CalcTakeOff.this.getFriction().add(Amount.valueOf(
+								CalcTakeOff.this.getMu()
 								*(((DynamicsEquationsLanding)ode).weight
 										- ((DynamicsEquationsLanding)ode).lift(
 												x[1],
@@ -929,8 +929,8 @@ public class CalcLanding {
 								SI.NEWTON)
 								);
 					else
-						CalcLanding.this.getFriction().add(Amount.valueOf(
-								CalcLanding.this.getMuBrake()
+						CalcTakeOff.this.getFriction().add(Amount.valueOf(
+								CalcTakeOff.this.getMuBrake()
 								*(((DynamicsEquationsLanding)ode).weight
 										- ((DynamicsEquationsLanding)ode).lift(
 												x[1],
@@ -942,7 +942,7 @@ public class CalcLanding {
 				}
 				//----------------------------------------------------------------------------------------
 				// LIFT:
-				CalcLanding.this.getLift().add(Amount.valueOf(
+				CalcTakeOff.this.getLift().add(Amount.valueOf(
 						((DynamicsEquationsLanding)ode).lift(
 								x[1],
 								((DynamicsEquationsLanding)ode).alpha,
@@ -952,7 +952,7 @@ public class CalcLanding {
 						);
 				//----------------------------------------------------------------------------------------
 				// DRAG:
-				CalcLanding.this.getDrag().add(Amount.valueOf(
+				CalcTakeOff.this.getDrag().add(Amount.valueOf(
 						((DynamicsEquationsLanding)ode).drag(
 								x[1],
 								((DynamicsEquationsLanding)ode).alpha,
@@ -963,7 +963,7 @@ public class CalcLanding {
 				//----------------------------------------------------------------------------------------
 				// TOTAL FORCE:
 				if(!isAborted) {
-					CalcLanding.this.getTotalForce().add(Amount.valueOf(
+					CalcTakeOff.this.getTotalForce().add(Amount.valueOf(
 							((DynamicsEquationsLanding)ode).thrust(x[1], x[2], t)*Math.cos(
 									Amount.valueOf(
 											((DynamicsEquationsLanding)ode).alpha,
@@ -974,7 +974,7 @@ public class CalcLanding {
 									((DynamicsEquationsLanding)ode).alpha,
 									x[2],
 									t)
-							- CalcLanding.this.getMu()*(((DynamicsEquationsLanding)ode).weight
+							- CalcTakeOff.this.getMu()*(((DynamicsEquationsLanding)ode).weight
 									- ((DynamicsEquationsLanding)ode).lift(
 											x[1],
 											((DynamicsEquationsLanding)ode).alpha,
@@ -989,7 +989,7 @@ public class CalcLanding {
 				}
 				else {
 					if(t < tRec.getEstimatedValue())
-						CalcLanding.this.getTotalForce().add(Amount.valueOf(
+						CalcTakeOff.this.getTotalForce().add(Amount.valueOf(
 								((DynamicsEquationsLanding)ode).thrust(x[1], x[2], t)*Math.cos(
 										Amount.valueOf(
 												((DynamicsEquationsLanding)ode).alpha,
@@ -1000,7 +1000,7 @@ public class CalcLanding {
 										((DynamicsEquationsLanding)ode).alpha,
 										x[2],
 										t)
-								- CalcLanding.this.getMu()*(((DynamicsEquationsLanding)ode).weight
+								- CalcTakeOff.this.getMu()*(((DynamicsEquationsLanding)ode).weight
 										- ((DynamicsEquationsLanding)ode).lift(
 												x[1],
 												((DynamicsEquationsLanding)ode).alpha,
@@ -1013,13 +1013,13 @@ public class CalcLanding {
 								SI.NEWTON)
 								);
 					else
-						CalcLanding.this.getTotalForce().add(Amount.valueOf(
+						CalcTakeOff.this.getTotalForce().add(Amount.valueOf(
 								- ((DynamicsEquationsLanding)ode).drag(
 										x[1],
 										((DynamicsEquationsLanding)ode).alpha,
 										x[2],
 										t)
-								- CalcLanding.this.getMuBrake()*(((DynamicsEquationsLanding)ode).weight
+								- CalcTakeOff.this.getMuBrake()*(((DynamicsEquationsLanding)ode).weight
 										- ((DynamicsEquationsLanding)ode).lift(
 												x[1],
 												((DynamicsEquationsLanding)ode).alpha,
@@ -1034,7 +1034,7 @@ public class CalcLanding {
 				}
 				//----------------------------------------------------------------------------------------
 				// LOAD FACTOR:
-				CalcLanding.this.getLoadFactor().add(
+				CalcTakeOff.this.getLoadFactor().add(
 						((DynamicsEquationsLanding)ode).lift(
 								x[1],
 								((DynamicsEquationsLanding)ode).alpha,
@@ -1047,7 +1047,7 @@ public class CalcLanding {
 						);
 				//----------------------------------------------------------------------------------------
 				// RATE OF CLIMB:
-				CalcLanding.this.getRateOfClimb().add(Amount.valueOf(
+				CalcTakeOff.this.getRateOfClimb().add(Amount.valueOf(
 						x[1]*Math.sin(
 								Amount.valueOf(
 										x[2],
@@ -1057,7 +1057,7 @@ public class CalcLanding {
 				//----------------------------------------------------------------------------------------
 				// ACCELERATION:
 				if(!isAborted)
-					CalcLanding.this.getAcceleration().add(Amount.valueOf(
+					CalcTakeOff.this.getAcceleration().add(Amount.valueOf(
 							(AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquationsLanding)ode).weight)
 							*(((DynamicsEquationsLanding)ode).thrust(x[1], x[2], t)*Math.cos(
 									Amount.valueOf(
@@ -1069,7 +1069,7 @@ public class CalcLanding {
 											((DynamicsEquationsLanding)ode).alpha,
 											x[2],
 											t)
-									- CalcLanding.this.getMu()*(((DynamicsEquationsLanding)ode).weight
+									- CalcTakeOff.this.getMu()*(((DynamicsEquationsLanding)ode).weight
 											- ((DynamicsEquationsLanding)ode).lift(
 													x[1],
 													((DynamicsEquationsLanding)ode).alpha,
@@ -1083,7 +1083,7 @@ public class CalcLanding {
 							);
 				else {
 					if(t < tRec.getEstimatedValue())
-						CalcLanding.this.getAcceleration().add(Amount.valueOf(
+						CalcTakeOff.this.getAcceleration().add(Amount.valueOf(
 								(AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquationsLanding)ode).weight)
 								*(((DynamicsEquationsLanding)ode).thrust(x[1], x[2], t)*Math.cos(
 										Amount.valueOf(
@@ -1095,7 +1095,7 @@ public class CalcLanding {
 												((DynamicsEquationsLanding)ode).alpha,
 												x[2],
 												t)
-										- CalcLanding.this.getMu()*(((DynamicsEquationsLanding)ode).weight
+										- CalcTakeOff.this.getMu()*(((DynamicsEquationsLanding)ode).weight
 												- ((DynamicsEquationsLanding)ode).lift(
 														x[1],
 														((DynamicsEquationsLanding)ode).alpha,
@@ -1108,14 +1108,14 @@ public class CalcLanding {
 								SI.METERS_PER_SQUARE_SECOND)
 								);
 					else
-						CalcLanding.this.getAcceleration().add(Amount.valueOf(
+						CalcTakeOff.this.getAcceleration().add(Amount.valueOf(
 								(AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquationsLanding)ode).weight)
 								*(- ((DynamicsEquationsLanding)ode).drag(
 										x[1],
 										((DynamicsEquationsLanding)ode).alpha,
 										x[2],
 										t)
-										- CalcLanding.this.getMuBrake()*(((DynamicsEquationsLanding)ode).weight
+										- CalcTakeOff.this.getMuBrake()*(((DynamicsEquationsLanding)ode).weight
 												- ((DynamicsEquationsLanding)ode).lift(
 														x[1],
 														((DynamicsEquationsLanding)ode).alpha,
@@ -1130,39 +1130,39 @@ public class CalcLanding {
 				}
 				//----------------------------------------------------------------------------------------
 				// GROUND DISTANCE:
-				CalcLanding.this.getGroundDistance().add(Amount.valueOf(
+				CalcTakeOff.this.getGroundDistance().add(Amount.valueOf(
 						x[0],
 						SI.METER)
 						);
 				//----------------------------------------------------------------------------------------
 				// VERTICAL DISTANCE:
-				CalcLanding.this.getVerticalDistance().add(Amount.valueOf(
+				CalcTakeOff.this.getVerticalDistance().add(Amount.valueOf(
 						x[3],
 						SI.METER)
 						);
 				//----------------------------------------------------------------------------------------
 				// ALPHA:
-				CalcLanding.this.getAlpha().add(Amount.valueOf(
+				CalcTakeOff.this.getAlpha().add(Amount.valueOf(
 						((DynamicsEquationsLanding)ode).alpha,
 						NonSI.DEGREE_ANGLE)
 						);
 				//----------------------------------------------------------------------------------------
 				// GAMMA:
-				CalcLanding.this.getGamma().add(Amount.valueOf(
+				CalcTakeOff.this.getGamma().add(Amount.valueOf(
 						x[2],
 						NonSI.DEGREE_ANGLE)
 						);
 				//----------------------------------------------------------------------------------------
 				// ALPHA DOT:
-				CalcLanding.this.getAlphaDot().add(
+				CalcTakeOff.this.getAlphaDot().add(
 						((DynamicsEquationsLanding)ode).alphaDot(t)
 						); 
 				//----------------------------------------------------------------------------------------
 				// GAMMA DOT:
 				if(t <= tEndRot.getEstimatedValue())
-					CalcLanding.this.getGammaDot().add(0.0);
+					CalcTakeOff.this.getGammaDot().add(0.0);
 				else
-					CalcLanding.this.getGammaDot().add(57.3*(AtmosphereCalc.g0.getEstimatedValue()/
+					CalcTakeOff.this.getGammaDot().add(57.3*(AtmosphereCalc.g0.getEstimatedValue()/
 							(((DynamicsEquationsLanding)ode).weight*x[1]))*(
 									((DynamicsEquationsLanding)ode).lift(
 											x[1],
@@ -1180,13 +1180,13 @@ public class CalcLanding {
 							);
 				//----------------------------------------------------------------------------------------
 				// THETA:
-				CalcLanding.this.getTheta().add(Amount.valueOf(
+				CalcTakeOff.this.getTheta().add(Amount.valueOf(
 						x[2] + ((DynamicsEquationsLanding)ode).alpha,
 						NonSI.DEGREE_ANGLE)
 						);
 				//----------------------------------------------------------------------------------------
 				// CL:
-				CalcLanding.this.getcL().add(
+				CalcTakeOff.this.getcL().add(
 						((DynamicsEquationsLanding)ode).cL(
 								x[1],
 								((DynamicsEquationsLanding)ode).alpha,
@@ -1196,7 +1196,7 @@ public class CalcLanding {
 						);
 				//----------------------------------------------------------------------------------------
 				// CD:
-				CalcLanding.this.getcD().add(
+				CalcTakeOff.this.getcD().add(
 						((DynamicsEquationsLanding)ode).cD0 
 						+ ((DynamicsEquationsLanding)ode).deltaCD0 
 						+ ((((DynamicsEquationsLanding)ode).cL(
@@ -1673,22 +1673,22 @@ public class CalcLanding {
 			// constants and known values
 			weight = aircraft.get_weights().get_MTOW().getEstimatedValue();
 			g0 = AtmosphereCalc.g0.getEstimatedValue();
-			mu = CalcLanding.this.mu;
-			kAlpha = CalcLanding.this.kAlphaDot;
-			cD0 = CalcLanding.this.getcD0();
-			deltaCD0 = CalcLanding.this.getDeltaCD0FlapLandinGears();
-			oswald = CalcLanding.this.getOswald();
+			mu = CalcTakeOff.this.mu;
+			kAlpha = CalcTakeOff.this.kAlphaDot;
+			cD0 = CalcTakeOff.this.getcD0();
+			deltaCD0 = CalcTakeOff.this.getDeltaCD0FlapLandinGears();
+			oswald = CalcTakeOff.this.getOswald();
 			ar = aircraft.get_wing().get_aspectRatio();
-			k1 = CalcLanding.this.getK1();
-			k2 = CalcLanding.this.getK2();
-			kGround = CalcLanding.this.getkGround();
-			vWind = CalcLanding.this.getvWind().getEstimatedValue();
+			k1 = CalcTakeOff.this.getK1();
+			k2 = CalcTakeOff.this.getK2();
+			kGround = CalcTakeOff.this.getkGround();
+			vWind = CalcTakeOff.this.getvWind().getEstimatedValue();
 
 			// alpha_dot_initial calculation
 			double cLatLiftOff = cLmaxTO/(Math.pow(kLO, 2));
-			double alphaLiftOff = (cLatLiftOff - cL0)/CalcLanding.this.getcLalphaFlap();
+			double alphaLiftOff = (cLatLiftOff - cL0)/CalcTakeOff.this.getcLalphaFlap();
 			alphaDotInitial = (((alphaLiftOff - iw.getEstimatedValue()) 
-					- CalcLanding.this.getAlphaGround().getEstimatedValue())
+					- CalcTakeOff.this.getAlphaGround().getEstimatedValue())
 					/(dtRot.getEstimatedValue())
 					);
 		}
@@ -1751,34 +1751,34 @@ public class CalcLanding {
 
 			if (time < tFaiulre.getEstimatedValue())
 				theThrust =	ThrustCalc.calculateThrustDatabase(
-						CalcLanding.this.getAircraft().get_powerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
-						CalcLanding.this.getAircraft().get_powerPlant().get_engineNumber(),
-						CalcLanding.this.getPhi(),
-						CalcLanding.this.getAircraft().get_powerPlant().get_engineList().get(0).get_bpr(),
-						CalcLanding.this.getAircraft().get_powerPlant().get_engineType(),
+						CalcTakeOff.this.getAircraft().get_powerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
+						CalcTakeOff.this.getAircraft().get_powerPlant().get_engineNumber(),
+						CalcTakeOff.this.getPhi(),
+						CalcTakeOff.this.getAircraft().get_powerPlant().get_engineList().get(0).get_bpr(),
+						CalcTakeOff.this.getAircraft().get_powerPlant().get_engineType(),
 						EngineOperatingConditionEnum.TAKE_OFF,
-						CalcLanding.this.getTheConditions().get_altitude().getEstimatedValue(),
+						CalcTakeOff.this.getTheConditions().get_altitude().getEstimatedValue(),
 						SpeedCalc.calculateMach(
-								CalcLanding.this.getTheConditions().get_altitude().getEstimatedValue(),
+								CalcTakeOff.this.getTheConditions().get_altitude().getEstimatedValue(),
 								speed + 
-								(CalcLanding.this.getvWind().getEstimatedValue()*Math.cos(Amount.valueOf(
+								(CalcTakeOff.this.getvWind().getEstimatedValue()*Math.cos(Amount.valueOf(
 										gamma,
 										NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
 								)
 						);
 			else
 				theThrust =	ThrustCalc.calculateThrustDatabase(
-						CalcLanding.this.getAircraft().get_powerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
-						CalcLanding.this.getAircraft().get_powerPlant().get_engineNumber() - 1,
-						CalcLanding.this.getPhi(),
-						CalcLanding.this.getAircraft().get_powerPlant().get_engineList().get(0).get_bpr(),
-						CalcLanding.this.getAircraft().get_powerPlant().get_engineType(),
+						CalcTakeOff.this.getAircraft().get_powerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
+						CalcTakeOff.this.getAircraft().get_powerPlant().get_engineNumber() - 1,
+						CalcTakeOff.this.getPhi(),
+						CalcTakeOff.this.getAircraft().get_powerPlant().get_engineList().get(0).get_bpr(),
+						CalcTakeOff.this.getAircraft().get_powerPlant().get_engineType(),
 						EngineOperatingConditionEnum.TAKE_OFF,
-						CalcLanding.this.getTheConditions().get_altitude().getEstimatedValue(),
+						CalcTakeOff.this.getTheConditions().get_altitude().getEstimatedValue(),
 						SpeedCalc.calculateMach(
-								CalcLanding.this.getTheConditions().get_altitude().getEstimatedValue(),
+								CalcTakeOff.this.getTheConditions().get_altitude().getEstimatedValue(),
 								speed + 
-								(CalcLanding.this.getvWind().getEstimatedValue()*Math.cos(Amount.valueOf(
+								(CalcTakeOff.this.getvWind().getEstimatedValue()*Math.cos(Amount.valueOf(
 										gamma,
 										NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
 								)
@@ -1825,16 +1825,16 @@ public class CalcLanding {
 		public double cL(double speed, double alpha, double gamma ,double time) {
 
 			if (time < tClimb.getEstimatedValue()) {
-				double cL0 = CalcLanding.this.cL0;
-				double cLalpha = CalcLanding.this.getcLalphaFlap();
-				double alphaWing = alpha + CalcLanding.this.getIw().getEstimatedValue();
+				double cL0 = CalcTakeOff.this.cL0;
+				double cLalpha = CalcTakeOff.this.getcLalphaFlap();
+				double alphaWing = alpha + CalcTakeOff.this.getIw().getEstimatedValue();
 
 				return cL0 + (cLalpha*alphaWing);
 			}
 			else
 				return (2*weight*Math.cos(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))/
-						(CalcLanding.this.getAircraft().get_wing().get_surface().getEstimatedValue()*
-								CalcLanding.this.getTheConditions().get_densityCurrent().getEstimatedValue()*
+						(CalcTakeOff.this.getAircraft().get_wing().get_surface().getEstimatedValue()*
+								CalcTakeOff.this.getTheConditions().get_densityCurrent().getEstimatedValue()*
 								Math.pow(speed, 2));
 		}
 
@@ -1860,8 +1860,8 @@ public class CalcLanding {
 				alphaDot = 0.0;
 			else {
 				if((time > tRot.getEstimatedValue()) && (time < tHold.getEstimatedValue())) {
-					alphaDot = alphaDotInitial*(1-(kAlpha*(CalcLanding.this.getAlpha().get(
-							CalcLanding.this.getAlpha().size()-1).getEstimatedValue()))
+					alphaDot = alphaDotInitial*(1-(kAlpha*(CalcTakeOff.this.getAlpha().get(
+							CalcTakeOff.this.getAlpha().size()-1).getEstimatedValue()))
 							);
 				}
 				else if((time > tEndHold.getEstimatedValue()) && (time < tClimb.getEstimatedValue())) {
@@ -1873,15 +1873,15 @@ public class CalcLanding {
 
 		public double alpha(double time) {
 
-			double alpha = CalcLanding.this.getAlphaGround().getEstimatedValue();
+			double alpha = CalcTakeOff.this.getAlphaGround().getEstimatedValue();
 
 			if(time > tRot.getEstimatedValue())
-				alpha = CalcLanding.this.getAlpha().get(
-						CalcLanding.this.getAlpha().size()-1).getEstimatedValue()
-				+(alphaDot(time)*(CalcLanding.this.getTime().get(
-						CalcLanding.this.getTime().size()-1).getEstimatedValue()
-						- CalcLanding.this.getTime().get(
-								CalcLanding.this.getTime().size()-2).getEstimatedValue()));
+				alpha = CalcTakeOff.this.getAlpha().get(
+						CalcTakeOff.this.getAlpha().size()-1).getEstimatedValue()
+				+(alphaDot(time)*(CalcTakeOff.this.getTime().get(
+						CalcTakeOff.this.getTime().size()-1).getEstimatedValue()
+						- CalcTakeOff.this.getTime().get(
+								CalcTakeOff.this.getTime().size()-2).getEstimatedValue()));
 
 			return alpha;
 		}

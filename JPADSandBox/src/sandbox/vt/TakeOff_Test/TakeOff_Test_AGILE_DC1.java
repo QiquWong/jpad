@@ -30,7 +30,7 @@ import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.customdata.CenterOfGravity;
 
-public class TakeOff_Landing_Test_AGILE_DC1 {
+public class TakeOff_Test_AGILE_DC1 {
 
 	private static long _startTimeCalculation, _startTimeGraph, _startTimeBalancedCalculation,
 						_startTimeBalancedGraph, _stopTimeBalancedGraph, _stopTimeCalculation,
@@ -53,14 +53,14 @@ public class TakeOff_Landing_Test_AGILE_DC1 {
 
 	//------------------------------------------------------------------------------------------
 	//BUILDER:
-	public TakeOff_Landing_Test_AGILE_DC1() {
+	public TakeOff_Test_AGILE_DC1() {
 		theCmdLineParser = new CmdLineParser(this);
 	}
 
 	public static void main(String[] args) throws CmdLineException, InstantiationException, IllegalAccessException {
 
 		System.out.println("-----------------------------------------------------------");
-		System.out.println("TakeOff_Landing_Test :: AGILE_DC1");
+		System.out.println("TakeOff_Test :: AGILE_DC1");
 		System.out.println("-----------------------------------------------------------\n");
 
 		//----------------------------------------------------------------------------------
@@ -85,7 +85,7 @@ public class TakeOff_Landing_Test_AGILE_DC1 {
 		theAnalysis.updateGeometry(aircraft);
 		
 		//----------------------------------------------------------------------------------
-		// TakeOff - Ground Roll Distance Test
+		// TakeOff Distance Test
 		//----------------------------------------------------------------------------------
 		_startTimeCalculation = System.currentTimeMillis();
 		Amount<Duration> dtRot = Amount.valueOf(3, SI.SECOND);
@@ -118,7 +118,7 @@ public class TakeOff_Landing_Test_AGILE_DC1 {
 		Amount<Velocity> vWind = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
 		Amount<Angle> alphaGround = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		Amount<Angle> iw = Amount.valueOf(2.0, NonSI.DEGREE_ANGLE);
-		CalcLanding theTakeOffLandingCalculator = new CalcLanding(
+		CalcTakeOff theTakeOffCalculator = new CalcTakeOff(
 				aircraft,
 				theCondition,
 				dtRot,
@@ -147,16 +147,16 @@ public class TakeOff_Landing_Test_AGILE_DC1 {
 				deltaCD0FlapLandingGear
 				);
 
-		theTakeOffLandingCalculator.calculateTakeOffDistanceODE(null, false);
+		theTakeOffCalculator.calculateTakeOffDistanceODE(null, false);
 		_stopTimeCalculation = System.currentTimeMillis();
 		_startTimeGraph = System.currentTimeMillis();
-		theTakeOffLandingCalculator.createTakeOffCharts();
+		theTakeOffCalculator.createTakeOffCharts();
 		_stopTimeGraph = System.currentTimeMillis();
 		_startTimeBalancedCalculation = System.currentTimeMillis();
-		theTakeOffLandingCalculator.calculateBalancedFieldLength();
+		theTakeOffCalculator.calculateBalancedFieldLength();
 		_stopTimeBalancedCalculation = System.currentTimeMillis();
 		_startTimeBalancedGraph = System.currentTimeMillis();
-		theTakeOffLandingCalculator.createBalancedFieldLengthChart();
+		theTakeOffCalculator.createBalancedFieldLengthChart();
 		_stopTimeBalancedGraph = System.currentTimeMillis();
 		_stopTimeTotal = System.currentTimeMillis();
 
@@ -174,8 +174,8 @@ public class TakeOff_Landing_Test_AGILE_DC1 {
 		System.out.println("\nGRAPHICS TIME = " + (get_elapsedTimeGraph()) + " millisenconds");
 		System.out.println("-----------------------------------------------------------\n");
 		System.out.println("\n-----------------------------------------------------------");
-		System.out.println("\nBALANCED FIELD LENGTH = " + theTakeOffLandingCalculator.getBalancedFieldLength());
-		System.out.println("\nDecision Speed (V1/VsTO) = " + theTakeOffLandingCalculator.getV1().divide(theTakeOffLandingCalculator.getvSTakeOff()));
+		System.out.println("\nBALANCED FIELD LENGTH = " + theTakeOffCalculator.getBalancedFieldLength());
+		System.out.println("\nDecision Speed (V1/VsTO) = " + theTakeOffCalculator.getV1().divide(theTakeOffCalculator.getvSTakeOff()));
 		System.out.println("-----------------------------------------------------------\n");
 	}
 

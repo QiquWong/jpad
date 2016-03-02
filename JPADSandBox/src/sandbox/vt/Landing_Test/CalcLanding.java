@@ -54,6 +54,7 @@ public class CalcLanding {
 	private Aircraft aircraft;
 	private OperatingConditions theConditions;
 	private CalcHighLiftDevices highLiftCalculator;
+	private Amount<Duration> nFreeRoll;
 	private Amount<Velocity> vSLanding, vA, vFlare, vTD, vWind;
 	private Amount<Length> wingToGroundDistance, obstacle, sApproach, sFlare, sGround, sTotal;
 	private Amount<Angle> alphaGround, iw;
@@ -66,7 +67,6 @@ public class CalcLanding {
 	private List<Amount<Length>> groundDistance;
 	private double mu, muBrake, cLmaxLanding, kGround, cL0, cLground, kA, kFlare, kTD, phiRev;
 	private double oswald, cD0, cLalphaFlap, deltaCD0FlapLandinGears;
-	private int nFreeRoll;
 
 	//-------------------------------------------------------------------------------------
 	// BUILDER:
@@ -108,7 +108,7 @@ public class CalcLanding {
 			Amount<Velocity> vWind,
 			Amount<Angle> alphaGround,
 			Amount<Angle> iw,
-			int nFreeRoll
+			Amount<Duration> nFreeRoll
 			) {
 
 		this.aircraft = aircraft;
@@ -226,7 +226,7 @@ public class CalcLanding {
 			double cL0,
 			double cLalphaFlap,
 			double deltaCD0FlapLandingGears,
-			int nFreeRoll
+			Amount<Duration> nFreeRoll
 			) {
 
 		// Required data
@@ -402,7 +402,7 @@ public class CalcLanding {
 							);
 				//--------------------------------------------------------------------------------
 				// FRICTION:
-				if(t < nFreeRoll)
+				if(t < nFreeRoll.getEstimatedValue())
 					CalcLanding.this.getFriction().add(Amount.valueOf(
 							CalcLanding.this.getMu()
 							*(((DynamicsEquationsLanding)ode).weight
@@ -434,7 +434,7 @@ public class CalcLanding {
 						);
 				//----------------------------------------------------------------------------------------
 				// TOTAL FORCE:
-				if(t < nFreeRoll)
+				if(t < nFreeRoll.getEstimatedValue())
 					CalcLanding.this.getTotalForce().add(Amount.valueOf(
 							 - ((DynamicsEquationsLanding)ode).thrust(x[1])
 							 - ((DynamicsEquationsLanding)ode).drag(x[1])
@@ -457,7 +457,7 @@ public class CalcLanding {
 						/(((DynamicsEquationsLanding)ode).weight));
 				//----------------------------------------------------------------------------------------
 				// ACCELERATION:
-				if(t < nFreeRoll)
+				if(t < nFreeRoll.getEstimatedValue())
 					CalcLanding.this.getAcceleration().add(	
 							Amount.valueOf((AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquationsLanding)ode).weight)
 									*(- ((DynamicsEquationsLanding)ode).thrust(x[1])
@@ -532,7 +532,7 @@ public class CalcLanding {
 
 			double speed = x[1];
 
-			if(t < CalcLanding.this.getnFreeRoll()) {
+			if(t < CalcLanding.this.getnFreeRoll().getEstimatedValue()) {
 				xDot[0] = speed;
 				xDot[1] = (g0/weight)*(thrust(speed) - drag(speed)
 						- (mu*(weight - lift(speed))));
@@ -641,33 +641,9 @@ public class CalcLanding {
 	public Amount<Velocity> getvWind() {
 		return vWind;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
 	public void setvWind(Amount<Velocity> vWind) {
 		this.vWind = vWind;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
 	public Amount<Length> getWingToGroundDistance() {
 		return wingToGroundDistance;
 	}
@@ -695,7 +671,6 @@ public class CalcLanding {
 	public List<Double> getLoadFactor() {
 		return loadFactor;
 	}
-
 	public void setLoadFactor(List<Double> loadFactor) {
 		this.loadFactor = loadFactor;
 	}
@@ -843,132 +818,34 @@ public class CalcLanding {
 	public void setDeltaCD0FlapLandinGears(double deltaCD0FlapLandinGears) {
 		this.deltaCD0FlapLandinGears = deltaCD0FlapLandinGears;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
 	public Amount<Length> getsApproach() {
 		return sApproach;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
 	public void setsApproach(Amount<Length> sApproach) {
 		this.sApproach = sApproach;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
 	public Amount<Length> getsFlare() {
 		return sFlare;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
 	public void setsFlare(Amount<Length> sFlare) {
 		this.sFlare = sFlare;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
 	public Amount<Length> getsGround() {
 		return sGround;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
 	public void setsGround(Amount<Length> sGround) {
 		this.sGround = sGround;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
 	public Amount<Length> getsTotal() {
 		return sTotal;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
 	public void setsTotal(Amount<Length> sTotal) {
 		this.sTotal = sTotal;
 	}
-
-	public int getnFreeRoll() {
+	public Amount<Duration> getnFreeRoll() {
 		return nFreeRoll;
 	}
-
-	public void setnFreeRoll(int nFreeRoll) {
+	public void setnFreeRoll(Amount<Duration> nFreeRoll) {
 		this.nFreeRoll = nFreeRoll;
 	}
 }
