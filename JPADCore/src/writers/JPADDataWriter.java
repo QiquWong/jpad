@@ -1382,8 +1382,8 @@ public class JPADDataWriter {
 
 		writeOutputNode("Reference_mass", nacelle.get_massReference(), weights);
 		writeOutputNode("All_nacelles_mass", nacelle.get_totalMass(), weights);
-		writeMethodsComparison(doc, _sheet, "Weight_estimation_methods_comparison", nacelle.getWeights().get_massMap(), nacelle.get_percentDifference(), weights);
-//		writeMethodsComparison(doc, _sheet, "Weight_estimation_methods_comparison", nacelle.getWeights().get_massMap(), nacelle.getWeights().get_percentDifference(), weights);
+//		writeMethodsComparison(doc, _sheet, "Weight_estimation_methods_comparison", nacelle.getWeights().get_massMap(), nacelle.get_percentDifference(), weights);
+		writeMethodsComparison(doc, _sheet, "Weight_estimation_methods_comparison", nacelle.getWeights().get_massMap(), nacelle.getWeights().get_percentDifference(), weights);
 		writeOutputNode("Estimated_mass", nacelle.get_massEstimated(), weights);
 
 		// --- Balance -------------------------

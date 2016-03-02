@@ -103,23 +103,35 @@ public class NacWeightsManager extends aircraft.componentmodel.componentcalcmana
 		}
 
 		/*
-		case KUNDU : { // page 287 Kundu - Aircraft Design. Mass in lb???
-			_methodsList.add(method);
-			if(aircraft.get_powerPlant().get_BPR()>4.) {
-				_mass = aircraft.get_powerPlant().
-						get_T0().divide(MyOperatingConditions.g0).to(SI.KILOGRAM).times(6.7);
+		 
+		public Amount<Mass> kundu(){ // page 287 Kundu - Aircraft Design. Mass in lb???
+			
+			if(_theNacelle.get_theEngine().get_bpr()>4.) {
+				_mass = _theAircraft.get_powerPlant().
+						get_T0Total().divide(AtmosphereCalc.g0).to(SI.KILOGRAM).times(6.7);
 			} else {
-				_mass = aircraft.get_powerPlant().
-						get_T0().divide(MyOperatingConditions.g0).to(SI.KILOGRAM).times(6.2);
+				_mass = _theAircraft.get_powerPlant().
+						get_T0Total().divide(AtmosphereCalc.g0).to(SI.KILOGRAM).times(6.2);
 			}
-			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
-		} break;
-		 */
-		//			case KROO : { // page 434 Stanford
-		//				_methodsList.add(method);
-		//				_mass = aircraft.get_powerPlant().get_massDryEngineReference().times(0.6);
-		//				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
-		//			} break;
+			
+			_methodsList.add(MethodEnum.KUNDU);
+			_massMap.put(MethodEnum.KUNDU, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+			return _mass;
+		} 
+		*/
+		
+		/*
+		 *  It includes The engine structural section, or nacelle group, and the propulsion group which includes the engines, engine exhaust,
+			reverser, starting, controls, lubricating, and fuel systems are handled together as the total propulsion
+			weight. Therefore is NOT applicable!
+		 
+		public Amount<Mass> kroo() { // page 434 Stanford
+			_methodsList.add(MethodEnum.KUNDU);
+			_mass = _theAircraft.get_powerPlant().get_dryMassPublicDomain().times(1.6);
+			_massMap.put(MethodEnum.KROO, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+			return _mass;
+		};
+		*/
 
 		public Amount<Mass> torenbeek1976 () {
 			_mass = Amount.valueOf(0.405*
@@ -296,6 +308,15 @@ public class NacWeightsManager extends aircraft.componentmodel.componentcalcmana
 	public void set_mass(Amount<Mass> _mass) {
 		this._mass = _mass;
 	}
+	
+	public Double[] get_percentDifference() {
+		return _percentDifference;
+	}
+	
+	public void set_percentDifference(Double[] _percentDifference) {
+		this._percentDifference =_percentDifference;
+	}
+	
 
 
 }
