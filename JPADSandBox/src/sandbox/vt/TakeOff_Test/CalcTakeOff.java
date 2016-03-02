@@ -1793,10 +1793,10 @@ public class CalcTakeOff {
 			double cD = 0.0;
 
 			if(cL < 1.2) {
-				cD = cD0 + deltaCD0 + ((cL/(Math.PI*ar*oswald))*kGround);
+				cD = cD0 + deltaCD0 + ((Math.pow(cL, 2)/(Math.PI*ar*oswald))*kGround);
 			}
 			else { 
-				cD = cD0 + deltaCD0 + ((cL/(Math.PI*ar*oswald))*kGround)
+				cD = cD0 + deltaCD0 + ((Math.pow(cL, 2)/(Math.PI*ar*oswald))*kGround)
 						+ (k1*(cL - 1.2)) + (k2*(Math.pow((cL - 1.2), 2))) ;
 			}
 

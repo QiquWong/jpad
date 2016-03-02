@@ -20,6 +20,7 @@ import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcHighLiftDevices;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
@@ -30,14 +31,14 @@ import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.customdata.CenterOfGravity;
 
-public class Landing_Test_TP {
+public class Landing_Test_TF {
 
 	private static long _startTimeCalculation, _startTimeGraph, _stopTimeCalculation,
-					    _stopTimeGraph, _stopTimeTotal,	_elapsedTimeTotal, 
-					    _elapsedTimeCalculation, _elapsedTimeGraph;
+	_stopTimeGraph, _stopTimeTotal,	_elapsedTimeTotal, 
+	_elapsedTimeCalculation, _elapsedTimeGraph;
 
-//	TODO: example of custom NON_SI unit
-//	private static Unit<? extends Quantity> angularRateUnit = (NonSI.DEGREE_ANGLE).divide((SI.SECOND));
+	//	TODO: example of custom NON_SI unit
+	//	private static Unit<? extends Quantity> angularRateUnit = (NonSI.DEGREE_ANGLE).divide((SI.SECOND));
 
 	//------------------------------------------------------------------------------------------
 	// VARIABLE DECLARATION:
@@ -54,17 +55,17 @@ public class Landing_Test_TP {
 
 	//------------------------------------------------------------------------------------------
 	//BUILDER:
-	public Landing_Test_TP() {
+	public Landing_Test_TF() {
 		theCmdLineParser = new CmdLineParser(this);
 	}
 
 	public static void main(String[] args) throws CmdLineException, InstantiationException, IllegalAccessException {
 
 		System.out.println("-----------------------------------------------------------");
-		System.out.println("Landing_Test :: ATR-72");
+		System.out.println("Landing_Test :: B747-100B");
 		System.out.println("-----------------------------------------------------------\n");
 
-		Landing_Test_TP main = new Landing_Test_TP();
+		Landing_Test_TF main = new Landing_Test_TF();
 
 		//----------------------------------------------------------------------------------
 		// Default folders creation:
@@ -85,8 +86,8 @@ public class Landing_Test_TP {
 		theCondition.set_machCurrent(0.15);
 		theCondition.calculate();
 
-		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.ATR72);
-		aircraft.set_name("ATR-72");
+		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.B747_100B);
+		aircraft.set_name("B747-100B");
 
 		LiftingSurface theWing = aircraft.get_wing();
 
@@ -97,13 +98,14 @@ public class Landing_Test_TP {
 		CenterOfGravity cgMTOM = new CenterOfGravity();
 
 		// x_cg in body-ref.-frame
-		cgMTOM.set_xBRF(Amount.valueOf(12.0, SI.METER));
+		cgMTOM.set_xBRF(Amount.valueOf(23.1, SI.METER));
 		cgMTOM.set_yBRF(Amount.valueOf(0.0, SI.METER));
-		cgMTOM.set_zBRF(Amount.valueOf(2.3, SI.METER));
+		cgMTOM.set_zBRF(Amount.valueOf(0.0, SI.METER));
 
 		aircraft.get_theBalance().set_cgMTOM(cgMTOM);
 		aircraft.get_HTail().calculateArms(aircraft);
 		aircraft.get_VTail().calculateArms(aircraft);
+
 
 		LSAerodynamicsManager theLSAnalysis = new LSAerodynamicsManager(
 				theCondition,
@@ -113,11 +115,12 @@ public class Landing_Test_TP {
 
 		theLSAnalysis.set_AerodynamicDatabaseReader(aeroDatabaseReader);
 
-		theAnalysis.doAnalysis(aircraft, AnalysisTypeEnum.AERODYNAMIC);
+		theAnalysis.doAnalysis(aircraft,AnalysisTypeEnum.AERODYNAMIC);
 
 		theLSAnalysis.setHighLiftDatabaseReader(highLiftDatabaseReader);
 		theWing.setAerodynamics(theLSAnalysis);
 
+		// -----------------------------------------------------------------------
 		// Define airfoil
 		System.out.println("\n \n-----------------------------------------------------");
 		System.out.println("AIRFOILS");
@@ -135,7 +138,6 @@ public class Landing_Test_TP {
 		System.out.println("CL max --> " + airfoilRoot.getAerodynamics().get_clMax());
 		System.out.println("LE sharpness parameter Root = " + airfoilRoot.getGeometry().get_deltaYPercent());
 
-
 		//AIRFOIL 2
 		double yLocKink = theWing.get_spanStationKink() * theWing.get_semispan().getEstimatedValue();
 		MyAirfoil airfoilKink = theWing.get_theAirfoilsList().get(1);
@@ -149,7 +151,6 @@ public class Landing_Test_TP {
 		System.out.println("CL max --> " + airfoilKink.getAerodynamics().get_clMax());
 		System.out.println("LE sharpness parameter Kink = " + airfoilKink.getGeometry().get_deltaYPercent());
 
-
 		//AIRFOIL 3
 		double yLocTip = theWing.get_semispan().getEstimatedValue();
 		MyAirfoil airfoilTip = theWing.get_theAirfoilsList().get(2);
@@ -161,7 +162,6 @@ public class Landing_Test_TP {
 		System.out.println("Tip maximum thickness = " + airfoilTip.getGeometry().get_maximumThicknessOverChord());
 		System.out.println("CL max --> " + airfoilTip.getAerodynamics().get_clMax());
 		System.out.println("LE sharpness parameter Tip = " + airfoilTip.getGeometry().get_deltaYPercent());
-
 
 		//--------------------------------------------------------------------------------------
 		// Assign airfoil
@@ -179,9 +179,15 @@ public class Landing_Test_TP {
 		// High Lift Devices Input
 		List<Double[]> deltaFlap = new ArrayList<Double[]>();
 		List<FlapTypeEnum> flapType = new ArrayList<FlapTypeEnum>();
-		List<Double> etaInFlap = new ArrayList<Double>();
-		List<Double> etaOutFlap = new ArrayList<Double>();
-		List<Double> cfc = new ArrayList<Double>();
+		List<Double> eta_in_flap = new ArrayList<Double>();
+		List<Double> eta_out_flap = new ArrayList<Double>();
+		List<Double> cf_c = new ArrayList<Double>();
+		List<Double> deltaSlat = new ArrayList<Double>();
+		List<Double> eta_in_slat = new ArrayList<Double>();
+		List<Double> eta_out_slat = new ArrayList<Double>();
+		List<Double> cs_c = new ArrayList<Double>();
+		List<Double> cExt_c_slat = new ArrayList<Double>();
+		List<Double> leRadius_c_slat = new ArrayList<Double>();
 
 		// XML reading phase:
 		// Arguments check
@@ -198,25 +204,31 @@ public class Landing_Test_TP {
 		System.out.println("-----------------------------------------------------------");
 		System.out.println("Initialize reading \n");
 
-		List<String> flapNumberProperty = reader.getXMLPropertiesByPath("//Flap_Number");
-		int flapNumber = Integer.valueOf(flapNumberProperty.get(0));
-		List<String> flapTypeProperty = reader.getXMLPropertiesByPath("//FlapType");
-		List<String> cfcProperty = reader.getXMLPropertiesByPath("//Cf_c");
-		List<String> deltaFlap1Property = reader.getXMLPropertiesByPath("//Delta_Flap1");
-		List<String> deltaFlap2Property = reader.getXMLPropertiesByPath("//Delta_Flap2");
-		List<String> etaInProperty = reader.getXMLPropertiesByPath("//Flap_inboard");
-		List<String> etaOutProperty = reader.getXMLPropertiesByPath("//Flap_outboard");
+		List<String> flapNumber_property = reader.getXMLPropertiesByPath("//Flap_Number");
+		int flapNumber = Integer.valueOf(flapNumber_property.get(0));
+		List<String> flapType_property = reader.getXMLPropertiesByPath("//FlapType");
+		List<String> cf_c_property = reader.getXMLPropertiesByPath("//Cf_C");
+		List<String> delta_flap1_property = reader.getXMLPropertiesByPath("//Delta_Flap1");
+		List<String> delta_flap2_property = reader.getXMLPropertiesByPath("//Delta_Flap2");
+		List<String> eta_in_flap_property = reader.getXMLPropertiesByPath("//Flap_inboard");
+		List<String> eta_out_flap_property = reader.getXMLPropertiesByPath("//Flap_outboard");
+		List<String> delta_slat_property = reader.getXMLPropertiesByPath("//Delta_Slat");
+		List<String> cs_c_property = reader.getXMLPropertiesByPath("//Cs_C");
+		List<String> cExt_c_slat_property = reader.getXMLPropertiesByPath("//cExt_c");
+		List<String> leRadius_c_slat_property = reader.getXMLPropertiesByPath("//LEradius_c_ratio");
+		List<String> eta_in_slat_property = reader.getXMLPropertiesByPath("//Slat_inboard");
+		List<String> eta_out_slat_property = reader.getXMLPropertiesByPath("//Slat_outboard");
 
-		for(int i=0; i<flapTypeProperty.size(); i++) {
-			if(flapTypeProperty.get(i).equals("SINGLE_SLOTTED"))
+		for(int i=0; i<flapType_property.size(); i++) {
+			if(flapType_property.get(i).equals("SINGLE_SLOTTED"))
 				flapType.add(FlapTypeEnum.SINGLE_SLOTTED);
-			else if(flapTypeProperty.get(i).equals("DOUBLE_SLOTTED"))
+			else if(flapType_property.get(i).equals("DOUBLE_SLOTTED"))
 				flapType.add(FlapTypeEnum.DOUBLE_SLOTTED);
-			else if(flapTypeProperty.get(i).equals("PLAIN"))
+			else if(flapType_property.get(i).equals("PLAIN"))
 				flapType.add(FlapTypeEnum.PLAIN);
-			else if(flapTypeProperty.get(i).equals("FOWLER"))
+			else if(flapType_property.get(i).equals("FOWLER"))
 				flapType.add(FlapTypeEnum.FOWLER);
-			else if(flapTypeProperty.get(i).equals("TRIPLE_SLOTTED"))
+			else if(flapType_property.get(i).equals("TRIPLE_SLOTTED"))
 				flapType.add(FlapTypeEnum.TRIPLE_SLOTTED);
 			else {
 				System.err.println("NO VALID FLAP TYPE!!");
@@ -224,23 +236,35 @@ public class Landing_Test_TP {
 			}
 		}
 
-		Double[] deltaFlap1Array = new Double[deltaFlap1Property.size()];
-		for(int i=0; i<deltaFlap1Array.length; i++)
-			deltaFlap1Array[i] = Double.valueOf(deltaFlap1Property.get(i));
+		Double[] deltaFlap1_array = new Double[delta_flap1_property.size()];
+		for(int i=0; i<deltaFlap1_array.length; i++)
+			deltaFlap1_array[i] = Double.valueOf(delta_flap1_property.get(i));
 
-		Double[] deltaFlap2Array = new Double[deltaFlap2Property.size()];
-		for(int i=0; i<deltaFlap1Array.length; i++)
-			deltaFlap2Array[i] = Double.valueOf(deltaFlap2Property.get(i));
+		Double[] deltaFlap2_array = new Double[delta_flap2_property.size()];
+		for(int i=0; i<deltaFlap1_array.length; i++)
+			deltaFlap2_array[i] = Double.valueOf(delta_flap2_property.get(i));
 
-		deltaFlap.add(deltaFlap1Array);
-		deltaFlap.add(deltaFlap2Array);
+		deltaFlap.add(deltaFlap1_array);
+		deltaFlap.add(deltaFlap2_array);
 
-		for(int i=0; i<cfcProperty.size(); i++)
-			cfc.add(Double.valueOf(cfcProperty.get(i)));
-		for(int i=0; i<etaInProperty.size(); i++)
-			etaInFlap.add(Double.valueOf(etaInProperty.get(i)));
-		for(int i=0; i<etaOutProperty.size(); i++)
-			etaOutFlap.add(Double.valueOf(etaOutProperty.get(i)));
+		for(int i=0; i<cf_c_property.size(); i++)
+			cf_c.add(Double.valueOf(cf_c_property.get(i)));
+		for(int i=0; i<eta_in_flap_property.size(); i++)
+			eta_in_flap.add(Double.valueOf(eta_in_flap_property.get(i)));
+		for(int i=0; i<eta_out_flap_property.size(); i++)
+			eta_out_flap.add(Double.valueOf(eta_out_flap_property.get(i)));
+		for(int i=0; i<delta_slat_property.size(); i++)
+			deltaSlat.add(Double.valueOf(delta_slat_property.get(i)));
+		for(int i=0; i<cs_c_property.size(); i++)
+			cs_c.add(Double.valueOf(cs_c_property.get(i)));
+		for(int i=0; i<cExt_c_slat_property.size(); i++)
+			cExt_c_slat.add(Double.valueOf(cExt_c_slat_property.get(i)));
+		for(int i=0; i<leRadius_c_slat_property.size(); i++)
+			leRadius_c_slat.add(Double.valueOf(leRadius_c_slat_property.get(i)));
+		for(int i=0; i<eta_in_slat_property.size(); i++)
+			eta_in_slat.add(Double.valueOf(eta_in_slat_property.get(i)));
+		for(int i=0; i<eta_out_slat_property.size(); i++)
+			eta_out_slat.add(Double.valueOf(eta_out_slat_property.get(i)));
 
 		LSAerodynamicsManager.CalcHighLiftDevices highLiftCalculator = theLSAnalysis
 				.new CalcHighLiftDevices(
@@ -248,15 +272,15 @@ public class Landing_Test_TP {
 						theCondition,
 						deltaFlap,
 						flapType,
-						null,
-						etaInFlap,
-						etaOutFlap,
-						null,
-						null,
-						cfc,
-						null,
-						null,
-						null
+						deltaSlat,
+						eta_in_flap,
+						eta_out_flap,
+						eta_in_slat,
+						eta_out_slat,
+						cf_c,
+						cs_c,
+						leRadius_c_slat,
+						cExt_c_slat
 						);
 
 //		highLiftCalculator.calculateHighLiftDevicesEffects();
