@@ -333,6 +333,23 @@ public class Test_MR_07_LongitudinalStability {
 		aircraft.get_powerPlant().get_engineList().get(0).set_Z0(zDistancePower);
 		double nBlade = 6;
 		double fanDiameter = 4; //m
+		Amount<Angle> deflectionAngle = Amount.valueOf(20, NonSI.DEGREE_ANGLE);
+		// elevator contribute
+
+		List<Double[]> deltaFlap = new ArrayList<Double[]>();
+		List<FlapTypeEnum> flapType = new ArrayList<FlapTypeEnum>();
+		List<Double> eta_in_flap = new ArrayList<Double>();
+		List<Double> eta_out_flap = new ArrayList<Double>();
+		List<Double> cf_c = new ArrayList<Double>();
+
+		Double[] deltaFlapDouble =  new Double [1];
+		deltaFlapDouble[0] = deflectionElevator;
+
+		deltaFlap.add(deltaFlapDouble);
+		flapType.add(FlapTypeEnum.PLAIN);
+		eta_in_flap.add(0.0);
+		eta_out_flap.add(1.0);
+		cf_c.add(chordRatio);
 
 		// -----------------------------------------------------------------------
 		// LIFT CHARACTERISTICS
@@ -576,44 +593,70 @@ public class Test_MR_07_LongitudinalStability {
 					" deg, the tau parameter is " + tau[i] );
 		}
 
+		double cLHTailwithDeflection = theCLHorizontalTailCalculator
+				.getCLHTailatAlphaBodyWithElevator(
+						chordRatio, 
+						alphaBody, 
+						deflectionAngle, 
+						downwashAmountRadiant,
+						deltaFlap,
+						flapType,
+						null,
+						eta_in_flap,
+						eta_out_flap,
+						null,
+						null,
+						cf_c,
+						null,
+						null,
+						null);
+		
+		System.out.println("\n\n For an elevator deflection of " + deflectionAngle.getEstimatedValue() +
+					" deg, the horizontal tail lifting coefficient is " + cLHTailwithDeflection);
+		
 		// Plot
 
-		Double [] cLVector = new Double[2];
-		double [] cLVectorTemp = new double[2];
-		Double [] alphaVector = new Double[2];
 		List<Double[]> cLListPlot = new ArrayList<Double[]>();
 		List<Double[]> alphaListPlot = new ArrayList<Double[]>();
-
-		// first value
-		double [] cLPlot = theLSHorizontalTail.get_cLArrayPlot();
-		double [] alphaPlot = theLSHorizontalTail.get_alphaArrayPlot();
-		Double [] cLPlotDouble = new Double [cLPlot.length];
-		Double [] alphaPlotDouble = new Double [alphaPlot.length];
-
-		for ( int k=0 ; k< cLPlot.length ; k++){
-			cLPlotDouble[k] = (Double)cLPlot[k];
-			alphaPlotDouble[k] = (Double)alphaPlot[k];
-		}
-		cLListPlot.add(cLPlotDouble);
-		alphaListPlot.add(alphaPlotDouble);
-
-		for (int j=1 ; j<nValueDelta ; j++ ){
-			cLVectorTemp = theCLHorizontalTailCalculator.calculateCLWithElevatorDeflection(
-					Amount.valueOf(deflectionArray[j], NonSI.DEGREE_ANGLE),
-					chordRatio);
-			cLVector[0] = (Double)cLVectorTemp[0];
-			cLVector[1] = (Double)cLVectorTemp[1];
-			cLListPlot.add(cLVector);
-
-			alphaVector = theCLHorizontalTailCalculator.getAlphaTailArrayDouble();
-			alphaListPlot.add(alphaVector);
-		}
-
 		List<String> legendStall  = new ArrayList<>();
-		legendStall.add("clean");
+		Double [] DeltaTemp = new Double[1];	
 
-		for (int j=1 ; j<nValueDelta ; j++){
-			legendStall.add("delta = (deg) " + deflectionArray[j]);
+		
+		
+		for (int j=0; j<nValueDelta; j++){
+		List<Double[]> deltaFlapList = new ArrayList<Double[]>();
+		DeltaTemp[0] = deflectionArray[j];
+		deltaFlapList.add( DeltaTemp);
+			
+		double[]  clArray = theCLHorizontalTailCalculator.calculateCLWithElevatorDeflection( 
+				deltaFlapList,
+				flapType,
+				null,
+				eta_in_flap,
+				eta_out_flap,
+				null,
+				null,
+				cf_c,
+				null,
+				null,
+				null);
+		double[] alphaArrayPlot = theCLHorizontalTailCalculator.getAlphaArrayHTailPlot();
+		
+		Double[] cLArrayDouble = new Double [clArray.length];
+		Double[] AlphaArrayDouble = new Double [clArray.length];
+		
+		for (int i=0; i<cLArrayDouble.length; i++){
+		cLArrayDouble[i] = (Double)clArray[i];
+		AlphaArrayDouble[i] = (Double)alphaArrayPlot[i];
+		}
+		
+		cLListPlot.add(cLArrayDouble);
+		alphaListPlot.add(AlphaArrayDouble);
+		
+	
+		if(j==0){
+		legendStall.add("clean");}
+		legendStall.add("delta = (deg) " + deflectionArray[j]);
 		}
 
 		MyChartToFileUtils.plotJFreeChart(alphaListPlot,
@@ -631,6 +674,53 @@ public class Test_MR_07_LongitudinalStability {
 
 		System.out.println("\n\n\t\t\tDONE PLOTTING CL vs ALPHA HORIZONTAL TAIL WITH ELEVATOR DEFLECTION");
 
+		
+	
+//		
+//		
+//		Double [] cLVector = new Double[2];
+//		double [] cLVectorTemp = new double[2];
+//		Double [] alphaVector = new Double[2];
+//		List<Double[]> cLListPlot = new ArrayList<Double[]>();
+//		List<Double[]> alphaListPlot = new ArrayList<Double[]>();
+//
+//		// first value
+//		double [] cLPlot = theLSHorizontalTail.get_cLArrayPlot();
+//		double [] alphaPlot = theLSHorizontalTail.get_alphaArrayPlot();
+//		Double [] cLPlotDouble = new Double [cLPlot.length];
+//		Double [] alphaPlotDouble = new Double [alphaPlot.length];
+//
+//		for ( int k=0 ; k< cLPlot.length ; k++){
+//			cLPlotDouble[k] = (Double)cLPlot[k];
+//			alphaPlotDouble[k] = (Double)alphaPlot[k];
+//		}
+//		cLListPlot.add(cLPlotDouble);
+//		alphaListPlot.add(alphaPlotDouble);
+//
+//		for (int j=1 ; j<nValueDelta ; j++ ){
+//			cLVectorTemp = theCLHorizontalTailCalculator.calculateCLWithElevatorDeflection(
+//					Amount.valueOf(deflectionArray[j], NonSI.DEGREE_ANGLE),
+//					deltaFlap,
+//					flapType,
+//					null,
+//					eta_in_flap,
+//					eta_out_flap,
+//					null,
+//					null,
+//					cf_c,
+//					null,
+//					null,
+//					null);
+//			
+//			cLVector[0] = (Double)cLVectorTemp[0];
+//			cLVector[1] = (Double)cLVectorTemp[1];
+//			cLListPlot.add(cLVector);
+//
+//			alphaVector = theCLHorizontalTailCalculator.getAlphaTailArrayDouble();
+//			alphaListPlot.add(alphaVector);
+//		}
+//
+//		
 
 
 		// ------------------Complete Aircraft---------------
@@ -638,13 +728,23 @@ public class Test_MR_07_LongitudinalStability {
 		System.out.println("\n-----Complete Aircraft-----\n" );
 
 		double etaRatio = 1.0; // T tail
-		Amount<Angle> deflectionAngle = Amount.valueOf(20, NonSI.DEGREE_ANGLE);
 		double cLTotal = theStablityCalculator.calculateCLCompleteAircraft(
 				aircraft,
 				alphaBody,
 				meanAirfoil,
 				deflectionAngle,
-				chordRatio);
+				chordRatio,
+				deltaFlap,
+				flapType,
+				null,
+				eta_in_flap,
+				eta_out_flap,
+				null,
+				null,
+				cf_c,
+				null,
+				null,
+				null);
 
 		System.out.println("\n the CL of aircraft at alpha body =(deg)" +
 				alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue() +
@@ -700,22 +800,7 @@ public class Test_MR_07_LongitudinalStability {
 		//				theLSHorizontalTail.PlotCDvsAlphaCurve(subfolderPath);
 		//				System.out.println("\n\n\t\t\tDONE PLOTTING CD vs ALPHA H TAIL CLEAN");
 
-		// elevator contribute
-
-		List<Double[]> deltaFlap = new ArrayList<Double[]>();
-		List<FlapTypeEnum> flapType = new ArrayList<FlapTypeEnum>();
-		List<Double> eta_in_flap = new ArrayList<Double>();
-		List<Double> eta_out_flap = new ArrayList<Double>();
-		List<Double> cf_c = new ArrayList<Double>();
-
-		Double[] deltaFlapDouble =  new Double [1];
-		deltaFlapDouble[0] = deflectionElevator;
-
-		deltaFlap.add(deltaFlapDouble);
-		flapType.add(FlapTypeEnum.PLAIN);
-		eta_in_flap.add(0.0);
-		eta_out_flap.add(horizontalTail.get_semispan().getEstimatedValue());
-		cf_c.add(chordRatio);
+	
 
 		LSAerodynamicsManager.CalcHighLiftDevices highLiftCalculator = theLSHorizontalTail
 				.new CalcHighLiftDevices(
@@ -918,14 +1003,15 @@ public class Test_MR_07_LongitudinalStability {
 		for (int i=0; i<numAlpha; i++){
 			cMVectorHTailAC[i] = theCMHTailCalculator.calculateCMIntegral(
 					Amount.valueOf(Math.toRadians(alphaArray.get(i)), SI.RADIAN), aCHtail);
-			alphaArraydouble[i] = alphaArray.get(i);
+//			cMVectorHTailAC[i] = theCMHTailCalculator.calculateCMIntegralACAirfoil(
+//					Amount.valueOf(Math.toRadians(alphaArray.get(i)), SI.RADIAN), aCHtail);
 
 		}
 
 
 		MyChartToFileUtils.plotNoLegend(
 				alphaArraydouble , cMVectorHTailAC,
-				null, null, null, null,
+				null, null, -0.1, 0.1,
 				"alpha", "CM",
 				"deg", "",
 				subfolderPath," Moment Coefficient vs alpha for HORIZONTAL TAIL at AC " );

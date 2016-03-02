@@ -308,6 +308,20 @@ public class Test_MR_07_LongitudinalStability_TurboFan {
 		double deflectionElevator = 20.0; //deg
 		aircraft.get_HTail().getAerodynamics().set_dynamicPressureRatio(0.85);  // h tail is in fuselage
 
+		List<Double[]> deltaFlap = new ArrayList<Double[]>();
+		List<FlapTypeEnum> flapType = new ArrayList<FlapTypeEnum>();
+		List<Double> eta_in_flap = new ArrayList<Double>();
+		List<Double> eta_out_flap = new ArrayList<Double>();
+		List<Double> cf_c = new ArrayList<Double>();
+
+		Double[] deltaFlapDouble =  new Double [1];
+		deltaFlapDouble[0] = deflectionElevator;
+
+		deltaFlap.add(deltaFlapDouble);
+		flapType.add(FlapTypeEnum.PLAIN);
+		eta_in_flap.add(0.0);
+		eta_out_flap.add(horizontalTail.get_semispan().getEstimatedValue());
+		cf_c.add(chordRatio);
 
 		// -----------------------------------------------------------------------
 		// LIFT CHARACTERISTICS
@@ -558,8 +572,17 @@ public class Test_MR_07_LongitudinalStability_TurboFan {
 
 		for (int j=1 ; j<nValueDelta ; j++ ){
 			cLVectorTemp = theCLHorizontalTailCalculator.calculateCLWithElevatorDeflection(
-					Amount.valueOf(deflectionArray[j], NonSI.DEGREE_ANGLE),
-					chordRatio);
+					deltaFlap,
+					flapType,
+					null,
+					eta_in_flap,
+					eta_out_flap,
+					null,
+					null,
+					cf_c,
+					null,
+					null,
+					null);
 			cLVector[0] = (Double)cLVectorTemp[0];
 			cLVector[1] = (Double)cLVectorTemp[1];
 			cLListPlot.add(cLVector);
@@ -603,7 +626,18 @@ public class Test_MR_07_LongitudinalStability_TurboFan {
 				alphaBody,
 				meanAirfoil,
 				deflectionAngle,
-				chordRatio);
+				chordRatio,
+				deltaFlap,
+				flapType,
+				null,
+				eta_in_flap,
+				eta_out_flap,
+				null,
+				null,
+				cf_c,
+				null,
+				null,
+				null);
 
 		System.out.println("\n the CL of aircraft at alpha body =(deg)" +
 				alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue() +
@@ -661,20 +695,7 @@ public class Test_MR_07_LongitudinalStability_TurboFan {
 
 		// elevator contribute
 
-		List<Double[]> deltaFlap = new ArrayList<Double[]>();
-		List<FlapTypeEnum> flapType = new ArrayList<FlapTypeEnum>();
-		List<Double> eta_in_flap = new ArrayList<Double>();
-		List<Double> eta_out_flap = new ArrayList<Double>();
-		List<Double> cf_c = new ArrayList<Double>();
 
-		Double[] deltaFlapDouble =  new Double [1];
-		deltaFlapDouble[0] = deflectionElevator;
-
-		deltaFlap.add(deltaFlapDouble);
-		flapType.add(FlapTypeEnum.PLAIN);
-		eta_in_flap.add(0.0);
-		eta_out_flap.add(horizontalTail.get_semispan().getEstimatedValue());
-		cf_c.add(chordRatio);
 
 		LSAerodynamicsManager.CalcHighLiftDevices highLiftCalculator = theLSHorizontalTail
 				.new CalcHighLiftDevices(

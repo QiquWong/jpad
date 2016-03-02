@@ -22,6 +22,8 @@ import aircraft.components.liftingSurface.LSAerodynamicsManager.MeanAirfoil;
 import database.databasefunctions.DatabaseReader;
 import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.enumerations.EngineTypeEnum;
+import configuration.enumerations.FlapTypeEnum;
+import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyMathUtils;
 import standaloneutils.customdata.MyArray;
@@ -93,7 +95,18 @@ public class StabilityCalculator {
 			Amount<Angle> alphaBody,
 			MyAirfoil meanAirfoil,
 			Amount<Angle> deflection,
-			double chordRatio
+			double chordRatio,
+			List<Double[]> deltaFlap,
+			List<FlapTypeEnum> flapType,
+			List<Double> deltaSlat,
+			List<Double> etaInFlap,
+			List<Double> etaOutFlap,
+			List<Double> etaInSlat,
+			List<Double> etaOutSlat, 
+			List<Double> cfc,
+			List<Double> csc,
+			List<Double> leRadiusSlatRatio,
+			List<Double> cExtcSlat
 			)
 	{
 		double etaRatio = aircraft.get_HTail().getAerodynamics().get_dynamicPressureRatio();
@@ -128,7 +141,13 @@ public class StabilityCalculator {
 		double downwash = theDownwashCalculator.getDownwashAtAlphaBody(alphaBody);
 		Amount<Angle> downwashAmount = Amount.valueOf(downwash, NonSI.DEGREE_ANGLE);
 
-		double cLHTail = theCLHorizontalTailCalculator.getCLHTailatAlphaBodyWithElevator(chordRatio, alphaBody, deflection, downwashAmount);
+		double cLHTail = theCLHorizontalTailCalculator
+				.getCLHTailatAlphaBodyWithElevator(
+						chordRatio, alphaBody, deflection, downwashAmount, 
+						deltaFlap, flapType,deltaSlat,
+						etaInFlap, etaOutFlap, etaInSlat, etaOutSlat, 
+						cfc, csc, leRadiusSlatRatio, cExtcSlat
+						);
 
 		System.out.println("the CL of horizontal Tail at alpha body =(deg)" +
 				alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue() +
@@ -160,6 +179,7 @@ public class StabilityCalculator {
 	}
 	
 	
+	
 	/**
 	 * This method calculates the Pitching moment coefficient of a wing respect a point of MAC.
 	 *
@@ -180,7 +200,7 @@ public class CalcPitchingMoment{
 	double meanAerodinamicChord, xMAC, yMAC;
 	double [] xLEActualArray, yArray, cMACAirfoils, pitchingMomentAirfoilsDueToLift,
 	liftForceAirfoils, cMAirfoilsDueToLift, armMomentAirfoils, pitchingMomentLiftingSurface, cMLiftingSurfaceArray,
-	yStationsNB, cLDistributionNB, chordLocal, xcPArrayLRF;
+	yStationsNB, cLDistributionNB, chordLocal, xcPArrayLRF, xACArrayLRF;
 	Double[] cLDistribution;
 	int nPointSemiSpan;
 	List<MyAirfoil> airfoilList = new ArrayList<MyAirfoil>();;
@@ -203,7 +223,7 @@ public class CalcPitchingMoment{
 		// initializing array
 		xLEActualArray = new double [nPointSemiSpan];
 		yArray = new double [nPointSemiSpan];
-		yArray = theLSManager.get_yStations();
+		yArray = MyArrayUtils.linspace(0., theLiftingSurface.get_span().getEstimatedValue()/2, nPointSemiSpan);
 		cMACAirfoils = new double [nPointSemiSpan];
 		cLDistribution = new Double [nPointSemiSpan];
 		pitchingMomentAirfoilsDueToLift = new double [nPointSemiSpan];
@@ -214,17 +234,19 @@ public class CalcPitchingMoment{
 		cMLiftingSurfaceArray = new double [nPointSemiSpan];
 		chordLocal = new double [nPointSemiSpan];
 		xcPArrayLRF = new double [nPointSemiSpan];
+		xACArrayLRF = new double [nPointSemiSpan];
 
 		for (int i=0; i<nPointSemiSpan ; i++){
 			xLEActualArray[i] = theLiftingSurface.getXLEAtYActual(yArray[i]);
 //			System.out.println("xle array " + Arrays.toString(xLEActualArray) );
-			airfoilList.add(i,LSAerodynamicsManager.calculateIntermediateAirfoil(
+			airfoilList.add(i,theLSManager.calculateIntermediateAirfoil(
 					theLiftingSurface, yArray[i]) );
 			chordLocal[i] = theLiftingSurface.getChordAtYActual(yArray[i]);
 //			System.out.println(" chord local " + Arrays.toString(chordLocal));
 			cMACAirfoils[i] = airfoilList.get(i).getAerodynamics().get_cmAC();
 //			System.out.println(" cm ac airfoil " + Arrays.toString(cMACAirfoils));
-
+			xACArrayLRF[i] = airfoilList.get(i).getAerodynamics().get_aerodynamicCenterX()*
+					chordLocal[i] + xLEActualArray[i];
 		}
 
 
@@ -346,7 +368,66 @@ public class CalcPitchingMoment{
 */
 	}
 
+	public double calculateCMIntegralACAirfoil (Amount<Angle> alphaLocal, double xPercentMAC){
+		if (alphaLocal.getUnit() == NonSI.DEGREE_ANGLE)
+			alphaLocal = alphaLocal.to(SI.RADIAN);
+//
+//		LSAerodynamicsManager.CalcLiftDistribution calculateLiftDistribution = theLSManager.getCalculateLiftDistribution();
+//		calculateLiftDistribution.getNasaBlackwell().calculate(alphaLocal);
+		//cLDistributionNB = calculateLiftDistribution.getNasaBlackwell().get_clTotalDistribution().toArray();
+//		yStationsNB = calculateLiftDistribution.getNasaBlackwell().getyStations();
 
+		//cLDistribution = MyMathUtils.getInterpolatedValue1DLinear(yStationsNB, cLDistributionNB, yArray);
+
+		double dynamicPressure = theConditions.get_dynamicPressure().getEstimatedValue();
+
+		for (int i=0 ; i<nPointSemiSpan ;  i++){
+			cLDistribution[i] = airfoilList.get(i).getAerodynamics().calculateClAtAlpha(
+					alphaLocal.getEstimatedValue()+
+					airfoilList.get(i).getGeometry().get_twist().getEstimatedValue());
+//			System.out.println(" cl distribution " + Arrays.toString(cLDistribution));
+			liftForceAirfoils [i] = cLDistribution[i] * dynamicPressure * chordLocal[i];
+//			System.out.println(" lift force " +  Arrays.toString(liftForceAirfoils));
+			xcPArrayLRF [i] = chordLocal[i] *(
+					airfoilList.get(i).getAerodynamics().get_aerodynamicCenterX() -
+					(cMACAirfoils[i]/cLDistribution[i]));
+//			System.out.println(" x cp " +   Arrays.toString(xcPArrayLRF));
+			armMomentAirfoils[i] = Math.abs(xMAC + (xPercentMAC * meanAerodinamicChord))-
+					 (xACArrayLRF[i]);
+//			System.out.println(" arm " +  Arrays.toString(armMomentAirfoils));
+//			if ( (xMAC + (xPercentMAC * meanAerodinamicChord)) > (xLEActualArray[i]+ xcPArrayLRF[i])){
+//			 armMomentAirfoils[i] = (xMAC + (xPercentMAC * meanAerodinamicChord))-
+//					 (xLEActualArray[i]+ xcPArrayLRF[i]);}
+//			if ( (xMAC + (xPercentMAC * meanAerodinamicChord)) < (xLEActualArray[i]+ xcPArrayLRF[i])){
+//				 armMomentAirfoils[i] = (xLEActualArray[i]+ xcPArrayLRF[i]) - 
+//						 (xMAC + (xPercentMAC * meanAerodinamicChord));}
+//			if((xMAC + (xPercentMAC * meanAerodinamicChord)) == (xLEActualArray[i]+ xcPArrayLRF[i])){
+//				armMomentAirfoils[i] = 0;
+//			}
+			pitchingMomentAirfoilsDueToLift [i] = liftForceAirfoils[i] * armMomentAirfoils[i]+
+					airfoilList.get(i).getAerodynamics().get_cmAC()*(dynamicPressure * Math.pow(chordLocal[i], 2)) ;
+			cMLiftingSurfaceArray[i] = pitchingMomentAirfoilsDueToLift [i]/
+					(dynamicPressure * Math.pow(chordLocal[i], 2));
+			//cMLiftingSurfaceArray[i] = cMACAirfoils[i] +  cMAirfoilsDueToLift[i];
+
+		}
+		//cMACAirfoils[cMACAirfoils.length-1] = 0;
+//		System.out.println(" cl " + Arrays.toString(cLDistribution));
+//		System.out.println(" lift " + Arrays.toString(liftForceAirfoils));
+//		System.out.println(" cm due to lift " + Arrays.toString(cMAirfoilsDueToLift));
+//		System.out.println(" cm airfoils " + Arrays.toString(cMACAirfoils));
+//		System.out.println(" cm total " + Arrays.toString(cMLiftingSurfaceArray));
+//		System.out.println(" Chord " + Arrays.toString(chordLocal));
+//		System.out.println(" arms " + Arrays.toString(armMomentAirfoils));
+//		System.out.println(" dynamic pressure " + dynamicPressure);
+//		System.out.println(" MAC " + meanAerodinamicChord);
+		double[] yStationsND = theLSManager.get_yStationsND();
+		double pitchingMomentCoefficient = MyMathUtils.integrate1DSimpsonSpline(yStationsND, cMLiftingSurfaceArray);
+
+//		System.out.println(" CM " + pitchingMomentCoefficient);
+
+		return pitchingMomentCoefficient;
+	}
 	public void plotCMatAlpha(Amount<Angle> alphaLocal, String subfolderPath){
 		calculateCMQuarterMACIntegral(alphaLocal);
 

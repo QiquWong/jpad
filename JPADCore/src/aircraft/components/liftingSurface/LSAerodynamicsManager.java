@@ -1143,6 +1143,18 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		private double cL;
 		private double alphaZeroLiftDeflection;
 		private double[] alphaTailArray;
+		int nPoints = 20;
+		
+		double [] alphaArrayHTailPlot = new double [nPoints];
+		
+		
+		public double[] getAlphaArrayHTailPlot() {
+			return alphaArrayHTailPlot;
+		}
+
+		public void setAlphaArrayHTailPlot(double[] alphaArrayHTailPlot) {
+			this.alphaArrayHTailPlot = alphaArrayHTailPlot;
+		}
 
 		public CalcCLAtAlpha() {
 
@@ -1347,34 +1359,141 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		// 5. the value of cl for each alpha is calculated with the formula :
 		//  cl alfa * (alfa + t delta e)
 
-		public double[] calculateCLWithElevatorDeflection (Amount<Angle> deflection, double chordRatio){
+		public double[] calculateCLWithElevatorDeflection (
+				List<Double[]> deltaFlap,
+				List<FlapTypeEnum> flapType,
+				List<Double> deltaSlat,
+				List<Double> etaInFlap,
+				List<Double> etaOutFlap,
+				List<Double> etaInSlat,
+				List<Double> etaOutSlat, 
+				List<Double> cfc,
+				List<Double> csc,
+				List<Double> leRadiusSlatRatio,
+				List<Double> cExtcSlat
+				) {
 
+			// variable declaration
+			Amount<Angle> deflection = Amount.valueOf(deltaFlap.get(0)[0], NonSI.DEGREE_ANGLE);
+			
 			if (deflection.getUnit() == SI.RADIAN){
 				deflection = deflection.to(NonSI.DEGREE_ANGLE);
 			}
 			double deflectionAngleDeg = deflection.getEstimatedValue();
 
+			int nPoints = 20;
 			double tauValue, cLLinearSlopeNoDeflection;
-			alphaTailArray = new double [2];
-			double[] cLArray = new double [2];
-
+			alphaTailArray = new double [nPoints];
+			double[] cLArray = new double [nPoints];
+			Amount<Angle> alphaActual;
+			double alphaStallElevator;
+		
+			
+			
+			//linear trait
 			StabilityCalculators theStablityCalculator = new StabilityCalculators();
-			tauValue = theStablityCalculator.calculateTauIndex(chordRatio, theAircraft, deflection);
+			tauValue = theStablityCalculator.calculateTauIndex(cfc.get(0), theAircraft, deflection);
 			cLLinearSlopeNoDeflection = getcLLinearSlopeNB()/57.3; //in deg 
 			alphaZeroLiftDeflection = - tauValue*deflectionAngleDeg;
-			alphaTailArray = MyArrayUtils.linspace(alphaZeroLiftDeflection, alphaZeroLiftDeflection + 13, 2);
+			alphaTailArray[0] = alphaZeroLiftDeflection;
+			double qValue = - cLLinearSlopeNoDeflection *  alphaZeroLiftDeflection;
+			double alphaTemp = 1;
+			
+			cLArray[0] = 0;
+			cLArray[1] = cLLinearSlopeNoDeflection * alphaTemp + qValue;
 
-			cLArray[0] = cLLinearSlopeNoDeflection * ( alphaTailArray[0] + tauValue * deflectionAngleDeg);
-			cLArray[1] = cLLinearSlopeNoDeflection * ( alphaTailArray[1] + tauValue * deflectionAngleDeg);
+			double clAlpha = (cLArray[1] - cLArray[0])/Math.abs(alphaTemp-alphaTailArray[0]);
+			
+			// non linear trait
+			
+			CalcHighLiftDevices theHighLiftCalculatorLiftEffects = new CalcHighLiftDevices(
+					theLiftingSurface, 
+					theOperatingConditions,
+					deltaFlap, 
+					flapType, 
+					deltaSlat, 
+					etaInFlap,
+					etaOutFlap,
+					etaInSlat,
+					etaOutSlat, 
+					cfc, 
+					csc, 
+					leRadiusSlatRatio, 
+					cExtcSlat);
+			
+			theHighLiftCalculatorLiftEffects.calculateHighLiftDevicesEffects();
+			
+			double deltaCLMaxElevator = theHighLiftCalculatorLiftEffects.getDeltaCLmax_flap();
+			double deltaAlphaMaxElevator = theHighLiftCalculatorLiftEffects.getDeltaAlphaMaxFlap();
+			CalcCLAtAlpha theCLCleanCalculator = new CalcCLAtAlpha();
+			
+			
+			MyAirfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
+			calcAlphaAndCLMax(meanAirfoil);
+			Amount<Angle> alphaMax = get_alphaMaxClean().to(NonSI.DEGREE_ANGLE);
+			double alphaStarClean = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
+			Amount<Angle> alphaStarCleanAmount = Amount.valueOf(alphaStarClean, SI.RADIAN);
+			double cLMax=get_cLMaxClean();
+			double cLStarClean = theCLCleanCalculator.nasaBlackwellCompleteCurve(alphaStarCleanAmount);
+			double cL0Elevator = cLArray[0];
+			double alphaStar = (cLStarClean - qValue)/clAlpha;
+			alphaStarClean = alphaStarClean*57.3;		
+			double cLMaxElevator = cLMax + deltaCLMaxElevator;
+			
+				alphaStallElevator = alphaMax.getEstimatedValue() + deltaAlphaMaxElevator;
+			
 
+			double alphaStarElevator; 
+
+				alphaStarElevator = (alphaStar + alphaStarClean)/2;
+
+			
+			cLArray[1] = cLLinearSlopeNoDeflection * (alphaStarElevator + tauValue * deflectionAngleDeg);
+			
+			double[][] matrixData = { {Math.pow(alphaStallElevator, 3), Math.pow(alphaStallElevator, 2)
+				, alphaStallElevator,1.0},
+					{3* Math.pow(alphaStallElevator, 2), 2*alphaStallElevator, 1.0, 0.0},
+					{3* Math.pow(alphaStarElevator, 2), 2*alphaStarElevator, 1.0, 0.0},
+					{Math.pow(alphaStarElevator, 3), Math.pow(alphaStarElevator, 2),alphaStarElevator,1.0}};
+			RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
+
+
+			double [] vector = {cLMaxElevator, 0,clAlpha, cLArray[1]};
+
+			double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
+
+			double a = solSystem[0];
+			double b = solSystem[1];
+			double c = solSystem[2];
+			double d = solSystem[3];
+
+			alphaTailArray = MyArrayUtils.linspace(alphaStarElevator,
+					alphaStallElevator+ 4,
+					nPoints-1);
+
+			double[] cLArrayHighLiftPlot = new double [nPoints];
+
+
+			for ( int i=0 ; i< alphaTailArray.length ; i++){
+				alphaActual = Amount.valueOf((alphaTailArray[i]), NonSI.DEGREE_ANGLE);
+				if (alphaActual.getEstimatedValue() <= alphaStarElevator) { 
+					cLArray[i+1] = clAlpha * alphaActual.getEstimatedValue() + qValue;}
+				else {
+					cLArray[i+1] = a * Math.pow(alphaActual.getEstimatedValue(), 3) + 
+							b * Math.pow(alphaActual.getEstimatedValue(), 2) + 
+							c * alphaActual.getEstimatedValue() + d;
+				}
+
+			}
+					
+			alphaArrayHTailPlot[0] = alphaZeroLiftDeflection;
+			for(int i=1; i<nPoints ; i++){
+				alphaArrayHTailPlot[i]= alphaTailArray[i-1];
+			}
+			
 			return cLArray;
 		}
-
-
-		public double[] getAlphaTailArray() {
-			return alphaTailArray;
-		}
-		
+	
 		public Double[] getAlphaTailArrayDouble() {
 			Double[]alphaTailArrayDouble = new Double [getAlphaTailArray().length];
 			for ( int i=0; i<getAlphaTailArray().length; i++){
@@ -1383,6 +1502,15 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			return alphaTailArrayDouble;
 		}
 
+		public double[] getAlphaTailArray() {
+			return alphaTailArray;
+		}
+
+		public void setAlphaTailArray(double[] alphaTailArray) {
+			this.alphaTailArray = alphaTailArray;
+		}
+
+		
 		/**
 		 * This method calculates CL of an horizontal tail at alpha given as input. This method calculates linear trait 
 		 * considering a known elevator deflection. It use the NasaBlackwell method in order to evaluate the slope of the linear trait
@@ -1401,7 +1529,19 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		public double getCLHTailatAlphaBodyWithElevator (double chordRatio,
 				Amount<Angle> alphaBody,
 				Amount<Angle> deflection,
-				Amount<Angle> downwashAngle){
+				Amount<Angle> downwashAngle,
+				List<Double[]> deltaFlap,
+				List<FlapTypeEnum> flapType,
+				List<Double> deltaSlat,
+				List<Double> etaInFlap,
+				List<Double> etaOutFlap,
+				List<Double> etaInSlat,
+				List<Double> etaOutSlat, 
+				List<Double> cfc,
+				List<Double> csc,
+				List<Double> leRadiusSlatRatio,
+				List<Double> cExtcSlat
+				){
 
 			if (alphaBody.getUnit() == SI.RADIAN)
 				alphaBody = alphaBody.to(NonSI.DEGREE_ANGLE);
@@ -1415,15 +1555,17 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			double deflectionAngleDeg = deflection.getEstimatedValue();
 			double alphaZeroLift = getAlphaZeroLiftDeflection();
 
-			double[] alphaLocalArray = new double [2];
-			alphaLocalArray = MyArrayUtils.linspace(alphaZeroLift, alphaZeroLift + 15, 2);
-
+			double[] alphaLocalArray = getAlphaArrayHTailPlot();
 
 			double alphaLocal = alphaBodyDouble 
 					- downwashAngleDeg 
 					+ theAircraft.get_HTail().get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue();
 
-			double[]  clArray = calculateCLWithElevatorDeflection(deflection, chordRatio);
+			double[]  clArray = calculateCLWithElevatorDeflection(
+					deltaFlap, flapType,deltaSlat,
+					etaInFlap, etaOutFlap, etaInSlat, etaOutSlat, 
+					 cfc, csc, leRadiusSlatRatio, cExtcSlat
+					);
 
 			double clAtAlpha = MyMathUtils.getInterpolatedValue1DLinear(alphaLocalArray, clArray, alphaLocal);
 

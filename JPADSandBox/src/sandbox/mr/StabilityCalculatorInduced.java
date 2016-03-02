@@ -130,19 +130,22 @@ public class StabilityCalculatorInduced {
 		double downwash = theDownwashCalculator.getDownwashAtAlphaBody(alphaBody);
 		Amount<Angle> downwashAmount = Amount.valueOf(downwash, NonSI.DEGREE_ANGLE);
 		
-		double cLHTail = theCLHorizontalTailCalculator.getCLHTailatAlphaBodyWithElevator(chordRatio, alphaBody, deflection, downwashAmount);
+//		double cLHTail = theCLHorizontalTailCalculator.getCLHTailatAlphaBodyWithElevator(
+//				chordRatio, alphaBody, deflection, downwashAmount,
+//				);
 		
-		System.out.println("the CL of horizontal Tail at alpha body =(deg)" + 
-				alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue() +
-				" for delta = (deg) "
-				+ deflection.getEstimatedValue() 
-				+ " is " + cLHTail);
+//		System.out.println("the CL of horizontal Tail at alpha body =(deg)" + 
+//				alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue() +
+//				" for delta = (deg) "
+//				+ deflection.getEstimatedValue() 
+//				+ " is " + cLHTail);
 		
 		double hTailSurface = aircraft.get_HTail().get_surface().getEstimatedValue();
 		double wingSurface = aircraft.get_wing().get_surface().getEstimatedValue();
 		
-		double cLTotal = cLWingBody + cLHTail * (hTailSurface / wingSurface ) * etaRatio;
-		return cLTotal;
+//		double cLTotal = cLWingBody + cLHTail * (hTailSurface / wingSurface ) * etaRatio;
+//		return cLTotal;
+		return 0.0;
 	}
 	
 	
