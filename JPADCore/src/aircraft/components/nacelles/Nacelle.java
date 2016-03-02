@@ -216,15 +216,15 @@ public class Nacelle extends Component{
 			break;
 			
 		case AGILE_DC1:
-			_length = Amount.valueOf(2.739,SI.METER);
-			_diameterMean = Amount.valueOf(1.226,SI.METER);
-			_diameterInlet = Amount.valueOf(1.226,SI.METER);
-			_diameterOutlet = Amount.valueOf(1.226,SI.METER);
+			_length = Amount.valueOf(3.,SI.METER);
+			_diameterMean = Amount.valueOf(1.816,SI.METER);
+			_diameterInlet = Amount.valueOf(1.538,SI.METER);
+			_diameterOutlet = Amount.valueOf(0.40,SI.METER); // "suitable" value
 
 			_roughness = Amount.valueOf(0.405 * Math.pow(10,-5), SI.METRE);
 			_heightFromGround = Amount.valueOf(3.6, SI.METER);
 
-			_surfaceWetted = Amount.valueOf(12.1, Area.UNIT); // ADAS
+			_surfaceWetted = Amount.valueOf(18., Area.UNIT); // ADAS
 
 			_massReference = Amount.valueOf(380., SI.KILOGRAM);//ADAS
 			_mountingPosition = MountingPosition.WING;
