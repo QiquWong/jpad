@@ -15,20 +15,14 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import aircraft.OperatingConditions;
-import aircraft.auxiliary.airfoil.MyAirfoil;
 import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
-import aircraft.components.liftingSurface.LSAerodynamicsManager;
-import aircraft.components.liftingSurface.LiftingSurface;
+import calculators.performance.ThrustCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
-import configuration.enumerations.AnalysisTypeEnum;
-import configuration.enumerations.FlapTypeEnum;
-import configuration.enumerations.FoldersEnum;
-import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
-import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
+import configuration.enumerations.EngineOperatingConditionEnum;
 import standaloneutils.JPADXmlReader;
-import standaloneutils.customdata.CenterOfGravity;
+import standaloneutils.atmosphere.SpeedCalc;
 
 public class TakeOff_Landing_Test_AGILE_DC1 {
 
@@ -78,7 +72,7 @@ public class TakeOff_Landing_Test_AGILE_DC1 {
 		aircraft.set_name("AGILE_DC1");
 
 		aircraft.get_weights().set_MTOM(Amount.valueOf(42000, SI.KILOGRAM));
-		aircraft.get_wing().set_surface(Amount.valueOf(90, SI.SQUARE_METRE));
+		aircraft.get_wing().set_surface(Amount.valueOf(71.69, SI.SQUARE_METRE));
 		aircraft.get_wing().set_aspectRatio(9.5);
 		
 		ACAnalysisManager theAnalysis = new ACAnalysisManager(theCondition);
@@ -92,8 +86,8 @@ public class TakeOff_Landing_Test_AGILE_DC1 {
 		Amount<Duration> dtHold = Amount.valueOf(0.5, SI.SECOND);
 		double mu = 0.025;
 		double muBrake = 0.3;
-		double kAlphaDot = 0.06; // [1/deg]
-		double kcLMax = 0.85;
+		double kAlphaDot = 0.01; // [1/deg]
+		double kcLMax = 0.8;
 		double kRot = 1.05;
 		double kLO = 1.1;
 		double kFailure = 1.0;
@@ -105,10 +99,10 @@ public class TakeOff_Landing_Test_AGILE_DC1 {
 		double k2 = 0.0;
 
 		double oswald = 0.85;
-		double cD0 = 0.0187;
-		double cLmaxTO = 2.1;
-		double cL0 = 0.69;
-		double cLalphaFlap = 0.087;
+		double cD0 = 0.0189;
+		double cLmaxTO = 2.19;
+		double cL0 = 0.62;
+		double cLalphaFlap = 0.084;
 		double deltaCD0FlapLandingGear = 0.007 + 0.010; 
 		
 		double phi = 1.0;
@@ -148,6 +142,24 @@ public class TakeOff_Landing_Test_AGILE_DC1 {
 				);
 
 		theTakeOffLandingCalculator.calculateTakeOffDistanceODE(null, false);
+		
+		double thrust07VLO = ThrustCalc.calculateThrustDatabase(
+				aircraft.get_powerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
+				aircraft.get_powerPlant().get_engineNumber(),
+				phi,
+				aircraft.get_powerPlant().get_engineList().get(0).get_bpr(),
+				aircraft.get_powerPlant().get_engineType(),
+				EngineOperatingConditionEnum.TAKE_OFF,
+				theCondition.get_altitude().getEstimatedValue(),
+				SpeedCalc.calculateMach(
+						theCondition.get_altitude().getEstimatedValue(),
+						0.7*theTakeOffLandingCalculator.getvLO().getEstimatedValue()
+						)
+				);
+		System.out.println("\n\n--------------------------------------------------------------");
+		System.out.println("\t\tTHRUST = " + thrust07VLO);
+		System.out.println("--------------------------------------------------------------\n\n");
+		
 		_stopTimeCalculation = System.currentTimeMillis();
 		_startTimeGraph = System.currentTimeMillis();
 		theTakeOffLandingCalculator.createTakeOffCharts();

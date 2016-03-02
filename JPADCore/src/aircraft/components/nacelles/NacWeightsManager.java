@@ -43,7 +43,8 @@ public class NacWeightsManager extends aircraft.componentmodel.componentcalcmana
 	public void initializeDependentData() {
 		_mass = Amount.valueOf(0., SI.KILOGRAM);
 		_massEstimated = Amount.valueOf(0., SI.KILOGRAM);
-		_massReference = Amount.valueOf(0., SI.KILOGRAM);
+//		_massReference = Amount.valueOf(0., SI.KILOGRAM);
+		_massReference = _theAircraft.get_theNacelles().get_massReference();
 	}
 	
 	
@@ -70,6 +71,7 @@ public class NacWeightsManager extends aircraft.componentmodel.componentcalcmana
 				_massMap,
 				_percentDifference,
 				100.).getFilteredMean(), SI.KILOGRAM);
+		
 	}
 
 	/** 

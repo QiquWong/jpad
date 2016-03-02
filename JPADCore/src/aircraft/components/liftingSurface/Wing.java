@@ -190,7 +190,7 @@ public class Wing extends LiftingSurface{
 			_taperRatioEquivalent = 0.284;
 			_sweepQuarterChordEq = Amount.valueOf(Math.toRadians(35.5),SI.RADIAN);
 			_spanStationKink = 0.431;
-			_iw = Amount.valueOf(Math.toRadians(2.0), SI.RADIAN);
+			_iw = Amount.valueOf(0., SI.RADIAN);
 			_twistKink = Amount.valueOf(Math.toRadians(-0.5),SI.RADIAN);
 			_twistTip = Amount.valueOf(Math.toRadians(-4.5),SI.RADIAN);
 			_dihedralInnerPanel = Amount.valueOf(Math.toRadians(2.002),SI.RADIAN);
@@ -270,7 +270,7 @@ public class Wing extends LiftingSurface{
 			_compositeCorretionFactor = 0.1;
 
 			// A reference value chosen by the user
-			_massReference = Amount.valueOf(3433.0, SI.KILOGRAM);
+			_massReference = Amount.valueOf(3433., SI.KILOGRAM);
 
 			// Calibration constant (to account for slight weight changes due to composites etc...)
 			_massCorrectionFactor = 1.;

@@ -79,8 +79,8 @@ public class Test_AGILE_DC1_01 {
 		
 //		Map<MethodEnum, Amount<Mass>> massMap = aircraft.get_fuselage().get_massMap();
 //		System.out.println("Mass map: " + massMap);
-		 Amount<Mass> nacelleMass = aircraft.get_theNacelles().get_totalMass();
-		System.out.println("Nacelles Mass: " + nacelleMass);
+//		 Amount<Mass> nacelleMass = aircraft.get_theNacelles().get_totalMass();
+//		System.out.println("Nacelles Mass: " + nacelleMass);
 		
 		JPADDataWriter _theWriteUtilities = new JPADDataWriter(
 				operatingConditions,

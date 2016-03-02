@@ -226,7 +226,7 @@ public class Nacelle extends Component{
 
 			_surfaceWetted = Amount.valueOf(12.1, Area.UNIT); // ADAS
 
-			_massReference = Amount.valueOf(395.95, SI.KILOGRAM);
+			_massReference = Amount.valueOf(380., SI.KILOGRAM);//ADAS
 			_mountingPosition = MountingPosition.WING;
 			
 			calculateSurfaceWetted();
@@ -413,7 +413,9 @@ public class Nacelle extends Component{
 
 
 	public Map<MethodEnum, Amount<Mass>> get_massMap() {
-		return _massMap;
+		System.out.println("weight.getMassMap: " + weights.get_massMap());
+		return weights.get_massMap();
+//		return _massMap;
 	}
 
 
@@ -428,6 +430,7 @@ public class Nacelle extends Component{
 
 
 	public Double[] get_percentDifference() {
+//		weights.;
 		return _percentDifference;
 	}
 

@@ -323,6 +323,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 		aircraft.get_VTail().calculateMass(aircraft, conditions);
 
 		aircraft.get_theNacelles().calculateMass();
+//		aircraft.          get_theNacelles().calculateMass();
 
 		aircraft.get_landingGear().calculateMass(aircraft, conditions);
 
@@ -334,6 +335,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 								aircraft.get_HTail().get_massEstimated()).plus(
 										aircraft.get_VTail().get_massEstimated()).plus(
 												aircraft.get_theNacelles().get_totalMass()).plus(
+//												aircraft.get_theNacelles().  getWeights()).plus(
 														aircraft.get_landingGear().get_massEstimated()));
 
 	}
