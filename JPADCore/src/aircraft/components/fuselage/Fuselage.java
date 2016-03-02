@@ -52,6 +52,7 @@ import aircraft.calculators.ACPerformanceManager;
 import aircraft.componentmodel.AeroComponent;
 import aircraft.components.Aircraft;
 import aircraft.components.LandingGear;
+import aircraft.components.nacelles.Nacelle;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
@@ -681,7 +682,7 @@ public class Fuselage extends AeroComponent {
 			_height_N      = Amount.valueOf(-0.1698*_sectionCylinderHeight.doubleValue(SI.METRE), SI.METRE);
 			_height_T      = Amount.valueOf( 0.262*(0.5*_sectionCylinderHeight.doubleValue(SI.METRE)), SI.METRE);
 
-			_massReference = Amount.valueOf(3340.0, SI.KILOGRAM);
+			_massReference = Amount.valueOf(6106.0, SI.KILOGRAM);
 			_pressurized = true;
 
 			// Section parameters
@@ -2571,6 +2572,11 @@ public class Fuselage extends AeroComponent {
 		calculateMass(aircraft, conditions, MethodEnum.RAYMER);
 		calculateMass(aircraft, conditions, MethodEnum.TORENBEEK_1976);
 		calculateMass(aircraft, conditions, MethodEnum.TORENBEEK_2013);
+		calculateMass(aircraft, conditions, MethodEnum.JENKINSON);
+		calculateMass(aircraft, conditions, MethodEnum.KROO);
+		calculateMass(aircraft, conditions, MethodEnum.SADRAY);
+		calculateMass(aircraft, conditions, MethodEnum.NICOLAI_1984);
+		calculateMass(aircraft, conditions, MethodEnum.ROSKAM);
 	}
 
 
@@ -2583,6 +2589,7 @@ public class Fuselage extends AeroComponent {
 		switch (method){
 
 		/* 80 percent difference from true mass for some aircraft 
+		 * */
 		case JENKINSON : { // page 150 Jenkinson - Civil Jet Aircraft Design
 			_methodsList.add(method);
 
@@ -2592,11 +2599,11 @@ public class Fuselage extends AeroComponent {
 				k = k + 0.08;
 			}
 
-			if (aircraft.get_nacelle().get_mounting() == MyNacelle.MountingPosition.FUSELAGE) {
+			if (aircraft.get_theNacelles().get_nacellesList().get(0).get_mounting() == Nacelle.MountingPosition.FUSELAGE) {
 				k = k + 0.04;
 			}
 
-			if (aircraft.get_landingGear().get_mounting() == MyLandingGear.MountingPosition.FUSELAGE) {
+			if (aircraft.get_landingGear().get_mounting() == LandingGear.MountingPosition.FUSELAGE) {
 				k = k + 0.07;
 			}
 
@@ -2608,7 +2615,7 @@ public class Fuselage extends AeroComponent {
 							1.5), SI.KILOGRAM);
 			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
-		 *//*
+//		 *//*
 		case NICOLAI_1984 : {
 			_methodsList.add(method);
 			_mass = Amount.valueOf(
@@ -2622,7 +2629,7 @@ public class Fuselage extends AeroComponent {
 									, SI.KILOGRAM);
 			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
-		  *//*
+//		  *//*
 		case ROSKAM : { // page 92 Roskam page 92 (pdf) part V (Nicolai 2013 is the same)
 			// TODO
 			double Kinlet = 1.0;
@@ -2637,13 +2644,14 @@ public class Fuselage extends AeroComponent {
 							NonSI.POUND).to(SI.KILOGRAM);
 			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), _mass.getUnit()));
 		} break;
-		   */
+//		   */
 		case RAYMER : { // page 403 Raymer - Aircraft Design a conceptual approach
 			_mass = calculateMassRaymer(aircraft);
 			_methodsList.add(method);
 			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
 		/* 18 % average difference from actual value
+		 * */
 		case SADRAY : { // page 585 Sadray Aircraft Design System Engineering Approach
 			_methodsList.add(method);
 			double Kinlet = 1.;
@@ -2657,9 +2665,10 @@ public class Fuselage extends AeroComponent {
 					SI.KILOGRAM);
 			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
-		 */
+//		 */
 		//		 The method gives poor results
 		/*
+		 * */
 		case KROO : { // page 432 Stanford University pdf
 			_methodsList.add(method);
 			double Ifuse;
@@ -2684,7 +2693,7 @@ public class Fuselage extends AeroComponent {
 					_sWet.to(MyUnits.FOOT2).getEstimatedValue(), NonSI.POUND).to(SI.KILOGRAM);
 			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
-		 */
+//		 */
 		case TORENBEEK_2013 : {
 			_mass = calculateMassTorenbeek2013(aircraft.get_performances().get_nUltimate());
 			_methodsList.add(method);

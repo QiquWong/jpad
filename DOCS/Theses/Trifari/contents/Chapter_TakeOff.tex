@@ -341,7 +341,7 @@ As expected, the take-off distance on the curve related to the continued take-of
 %------------------------- JAVA CLASS ARCHITECTURE ---------------------------
 \section{Java class architecture}
 %
-In this paragraph the implementation inside the \gls{JPAD} library of the calculation of the take-off distance, and of the related balanced field length, will be desribed; in particular, as in previous chapters, a dedicated Java class, named~\lstinline[language=Java]!CalcTakeOff_Landing!, has been created to manage all required methods.
+In this paragraph the implementation inside the \gls{JPAD} library of the calculation of the take-off distance, and of the related balanced field length, will be desribed; in particular, as in previous chapters, a dedicated Java class, named~\lstinline[language=Java]!CalcTakeOff!, has been created to manage all required methods.
 
 \bigskip
 \noindent
@@ -375,7 +375,7 @@ The first component to be described is the class constructor; the latter, in add
 \bottomrule
 \end{tabular}
 }
-\caption{\lstinline[language=Java]!CalcTakeOff_Landing! constructor input}
+\caption{\lstinline[language=Java]!CalcTakeOff! constructor input}
 \label{table:CalcTakeOffInput}
 \end{table}
 %
@@ -568,23 +568,23 @@ In conclusion, the class is completed by two methods in charge of plotting the c
 \begin{figure}[H]
 \centering
 \includegraphics[keepaspectratio, width=\textwidth]{TakeOff_Flowchart}
-\caption{\lstinline[language=Java]!CalcTakeOff_Landing! class flowchart}
+\caption{\lstinline[language=Java]!CalcTakeOff! class flowchart}
 \label{fig:CalcTakeOffFlowchart}
 \end{figure}
 %
 %----------------------- CASE STUDY : ATR72 AND B747 -------------------------
 \section{Case study: ATR-72}
-This conclusive paragraph has the aim of describing the Java class created to test the features implemented into \lstinline[language=Java]!CalcTakeOff_Landing! class; in particular a description of how to build the class will be provided in order to help a potential \gls{User:Developer} as well as the presentation and the comment of the most important charts created with the purpose of validating the results obtained. 
+This conclusive paragraph has the aim of describing the Java class created to test the features implemented into \lstinline[language=Java]!CalcTakeOff! class; in particular a description of how to build the class will be provided in order to help a potential \gls{User:Developer} as well as the presentation and the comment of the most important charts created with the purpose of validating the results obtained. 
 %
 Since the calculations are the same both for the B747-100B, both for the ATR-72, only the latter will be analyzed. 
 
 \noindent
-The first thing to do is to build the aircraft parametric model, and its analysis object, as described in paragraph \ref{par:DefaultAircraft}; then all information regarding high-lift devices have to be provided, in the same way of paragraph \ref{par:CaseStudyHighLift}, in order to allow the constructor of \lstinline[language=Java]!CalcTakeOff_Landing! class to evaluate their effects. 
+The first thing to do is to build the aircraft parametric model, and its analysis object, as described in paragraph \ref{par:DefaultAircraft}; then all information regarding high-lift devices have to be provided, in the same way of paragraph \ref{par:CaseStudyHighLift}, in order to allow the constructor of \lstinline[language=Java]!CalcTakeOff! class to evaluate their effects. 
 %
-At this point all the preliminary steps are completed and it's possible to create the \lstinline[language=Java]!CalcTakeOff_Landing! object giving as input all data from table \ref{table:CalcTakeOffInput}.
+At this point all the preliminary steps are completed and it's possible to create the \lstinline[language=Java]!CalcTakeOff! object giving as input all data from table \ref{table:CalcTakeOffInput}.
 
 \bigskip
-\begin{lstlisting}[caption={Input data and \lstinline!CalcTakeOff_Landing! object creation }, captionpos=b, tabsize=2]
+\begin{lstlisting}[caption={Input data and \lstinline!CalcTakeOff! object creation }, captionpos=b, tabsize=2]
 		Amount<Duration> dtRot = Amount.valueOf(3, SI.SECOND);
 		Amount<Duration> dtHold = Amount.valueOf(0.5, SI.SECOND);
 		double mu = 0.025;
@@ -605,7 +605,7 @@ At this point all the preliminary steps are completed and it's possible to creat
 		double k1 = 0.0;
 		double k2 = 0.0;
 	
-		CalcTakeOff_Landing theTakeOffLandingCalculator = new CalcTakeOff_Landing(
+		CalcTakeOff theTakeOffLandingCalculator = new CalcTakeOff(
 				aircraft,
 				theCondition,
 				highLiftCalculator,
