@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
@@ -142,7 +143,7 @@ public class Test_MR_07_LongitudinalStability {
 		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
 		String databaseFileName = "FusDes_database.h5";
 
-		
+
 		//--------------------------------------------------------------------------------------
 		FusAerodynamicsManager theFuselageManager = new FusAerodynamicsManager(theConditions, aircraft);
 
@@ -155,10 +156,10 @@ public class Test_MR_07_LongitudinalStability {
 		double xPositionPole	   = 0.5;
 		double fusSurfRatio = aircraft.get_fuselage().get_area_C().doubleValue(SI.SQUARE_METRE)/
 				aircraft.get_wing().get_surface().doubleValue(SI.SQUARE_METRE);
-		
+
 		FusDesDatabaseReader fusDesDatabaseReader = new FusDesDatabaseReader(databaseFolderPath, databaseFileName);
 		fusDesDatabaseReader.runAnalysis(noseFinenessRatio, windshieldAngle, finenessRatio, tailFinenessRatio, upsweepAngle, xPositionPole);
-		
+
 		//--------------------------------------------------------------------------------------
 		// Define airfoils
 
@@ -293,11 +294,15 @@ public class Test_MR_07_LongitudinalStability {
 		//		aircraft.get_HTail().calculateArms(aircraft);
 		//		aircraft.get_VTail().calculateArms(aircraft);
 		//
-		//		theAnalysis.doAnalysis(aircraft,
-		//				AnalysisTypeEnum.AERODYNAMIC
-		//				);
-		//
-		//
+		
+		
+		System.out.println("\nANALYSIS:");
+		theAnalysis.doAnalysis(aircraft,
+				AnalysisTypeEnum.WEIGHTS,
+				AnalysisTypeEnum.BALANCE
+				);
+
+
 		//--------------------------------------------------------------------------------------
 		// Exposed Wing
 
@@ -323,6 +328,11 @@ public class Test_MR_07_LongitudinalStability {
 		double chordRatio = 0.3;
 		double deflectionElevator = 20.0; //deg
 		aircraft.get_HTail().getAerodynamics().set_dynamicPressureRatio(1); //T tail 
+		double etaEfficiency = 0.85;
+		Amount<Length> zDistancePower = Amount.valueOf(1.98, SI.METER);
+		aircraft.get_powerPlant().get_engineList().get(0).set_Z0(zDistancePower);
+		double nBlade = 6;
+		double fanDiameter = 4; //m
 
 		// -----------------------------------------------------------------------
 		// LIFT CHARACTERISTICS
@@ -409,7 +419,7 @@ public class Test_MR_07_LongitudinalStability {
 		String [] legend = new String [4];
 		legend[0] = "CL max airfoil";
 		legend[1] = "CL distribution at alpha " 
-		+ Math.toDegrees( alphaAtCLMax.getEstimatedValue());
+				+ Math.toDegrees( alphaAtCLMax.getEstimatedValue());
 
 		MyChartToFileUtils.plot(
 				semiSpanAd,	clDistribution, // array to plot
@@ -667,9 +677,9 @@ public class Test_MR_07_LongitudinalStability {
 				+ alphaBody.to(NonSI.DEGREE_ANGLE)
 				+ " is " + cDIsolatedWing);
 
-//				System.out.println(" ...waiting for plotting");
-//				theLSAnalysis.PlotCDvsAlphaCurve(subfolderPath);
-//				System.out.println("\n\n\t\t\tDONE PLOTTING CD vs ALPHA WING");
+		//				System.out.println(" ...waiting for plotting");
+		//				theLSAnalysis.PlotCDvsAlphaCurve(subfolderPath);
+		//				System.out.println("\n\n\t\t\tDONE PLOTTING CD vs ALPHA WING");
 
 
 		// Horizontal Tail
@@ -686,9 +696,9 @@ public class Test_MR_07_LongitudinalStability {
 				+ " is " + cDHorizontalTail
 				);
 
-//				System.out.println(" ...waiting for plotting");
-//				theLSHorizontalTail.PlotCDvsAlphaCurve(subfolderPath);
-//				System.out.println("\n\n\t\t\tDONE PLOTTING CD vs ALPHA H TAIL CLEAN");
+		//				System.out.println(" ...waiting for plotting");
+		//				theLSHorizontalTail.PlotCDvsAlphaCurve(subfolderPath);
+		//				System.out.println("\n\n\t\t\tDONE PLOTTING CD vs ALPHA H TAIL CLEAN");
 
 		// elevator contribute
 
@@ -920,33 +930,33 @@ public class Test_MR_07_LongitudinalStability {
 				"deg", "",
 				subfolderPath," Moment Coefficient vs alpha for HORIZONTAL TAIL at AC " );
 		System.out.println("\n\n\t\t\tDONE PLOTTING CM vs ALPHA FOR HORIZONTAL TAIL");
-		
-		
-		
+
+
+
 		// Fuselage
 
 		System.out.println("\n ------------------- ");
 		System.out.println("|      FUSELAGE      |");
 		System.out.println(" ------------------- \n\n");
-		
+
 		//FusAerodynamicsManager fusAerodynamicsManager = new FusAerodynamicsManager(theConditions, aircraft);
-		
+
 		//MULTHOPP 
 		FusAerodynamicsManager.CalculateCm0 theCm0Calculator = theFuselageManager.new CalculateCm0();
-		
+
 		double Cm0 = theCm0Calculator.multhopp();
 
 		FusAerodynamicsManager.CalculateCmAlpha theCmAlphaCalculator = theFuselageManager.new CalculateCmAlpha();
-		
+
 		double CmAlpha = theCmAlphaCalculator.gilruth();
-		
-//		System.out.println(" Cm0 fuselage " + Cm0);
-//		System.out.println(" Cm alpha fuselage " + CmAlpha);
-		
-		
-		
+
+		//		System.out.println(" Cm0 fuselage " + Cm0);
+		//		System.out.println(" Cm alpha fuselage " + CmAlpha);
+
+
+
 		//UNINA METHOD
-		
+
 		double cM0Fuselage = -MomentCalc.calcCM0Fuselage(
 				fusDesDatabaseReader.getCM0FR(),
 				fusDesDatabaseReader.getdCMn(),
@@ -958,9 +968,9 @@ public class Test_MR_07_LongitudinalStability {
 				.get_wing()
 				.get_meanAerodChordActual()
 				.doubleValue(SI.METRE);
-		
-		
-		
+
+
+
 		double cMaFuselage = MomentCalc.calcCMAlphaFuselage(
 				fusDesDatabaseReader.getCMaFR(),
 				fusDesDatabaseReader.getdCMan(),
@@ -972,71 +982,103 @@ public class Test_MR_07_LongitudinalStability {
 				aircraft
 				.get_wing().get_meanAerodChordActual()
 				.doubleValue(SI.METRE);
-		
-//		System.out.println(" CM0 FR = "+ fusDesDatabaseReader.getCM0FR());
-//		System.out.println(" dCMn = "+ fusDesDatabaseReader.getdCMn());
-//		System.out.println(" dCMt = "+ fusDesDatabaseReader.getdCMt());
-		
-		
+
+		//		System.out.println(" CM0 FR = "+ fusDesDatabaseReader.getCM0FR());
+		//		System.out.println(" dCMn = "+ fusDesDatabaseReader.getdCMn());
+		//		System.out.println(" dCMt = "+ fusDesDatabaseReader.getdCMt());
+
+
 		// TODO fix the method!
-		
+
 		cM0Fuselage = -0.0361;
 		cMaFuselage = 0.0222;		
-		
+
 		System.out.println(" CM0 fuselage = "+ cM0Fuselage);
 		System.out.println(" CMalpha fuselage  = (1/deg) "+ cMaFuselage);
-	
+
 		// evaluate Cm0l
 
-		
-//	    System.out.println(" alpha zer lift " + alpha0LWing);
-//	    System.out.println(" finess ratio fuselage " + finenessRatio);
-//	    System.out.println(" nose " + noseFinenessRatio);
-//	    System.out.println(" tail "+ tailFinenessRatio);
-//	    System.out.println(" psi " + windshieldAngle);
-//	    System.out.println(" theta " + upsweepAngle);
-     
-		
-		
+
+		//	    System.out.println(" alpha zer lift " + alpha0LWing);
+		//	    System.out.println(" finess ratio fuselage " + finenessRatio);
+		//	    System.out.println(" nose " + noseFinenessRatio);
+		//	    System.out.println(" tail "+ tailFinenessRatio);
+		//	    System.out.println(" psi " + windshieldAngle);
+		//	    System.out.println(" theta " + upsweepAngle);
+
+
+
 		double cm0LiftFuselage = cMaFuselage * alpha0LWing.to(NonSI.DEGREE_ANGLE).getEstimatedValue() + cM0Fuselage;
-		
+
 		System.out.println(" CM0l fuselage = " + cm0LiftFuselage);
-		
+
 		// PLOT
-		
+
 		double [] alphaBodyPlotFuselage = {alpha0LWing.to(NonSI.DEGREE_ANGLE).getEstimatedValue(), 15};
 		double [] cMFuselage = new double [alphaBodyPlotFuselage.length];
-		
+
 		for (int i=0 ; i<cMFuselage.length ; i++)
-		cMFuselage[i] = cMaFuselage * alphaBodyPlotFuselage[i] + cM0Fuselage;
-		
+			cMFuselage[i] = cMaFuselage * alphaBodyPlotFuselage[i] + cM0Fuselage;
+
 		MyChartToFileUtils.plotNoLegend(
 				alphaBodyPlotFuselage , cMFuselage,
 				null, null, null, null,
 				"alpha_body", "CM_f",
 				"deg", "",
 				subfolderPath," Moment Coefficient vs alpha body for fuselage" );
-		
+
 		double clAlphaWing = theLSAnalysis.getcLLinearSlopeNB();
 		double deltaXACFuselage = theStablityCalculator.calcDeltaXACFuselage(cMaFuselage, cLAlphaWing);
 		System.out.println(" Delta XAC due to fuselage = " + deltaXACFuselage);
-		
-		
+
+
 		System.out.println("\n ------------------- ");
 		System.out.println("|      WING-BODY      |");
 		System.out.println(" ------------------- \n\n");
-		
+
 		double xACWingBody = deltaXACFuselage + ((aCWing * theWing.get_meanAerodChordActual().getEstimatedValue()) + theWing.get_xLEMacActualLRF().getEstimatedValue());
-		
+
 		System.out.println(" XAC wing (LRF) = " + (aCWing * theWing.get_meanAerodChordActual().getEstimatedValue()) + " m" );
 		System.out.println(" XAC wing body (LRF) = " + xACWingBody + " m" );
-		
-		
+
+
 		double cMacWingBody = cMACWing + cm0LiftFuselage; // use this 
-		
+
 
 		System.out.println("\n\n cm ac wing-body  = " +  cMacWingBody );
 
+
+		//power effects
+
+		System.out.println("\n ------------------- ");
+		System.out.println("|    POWER EFFECTS    |");
+		System.out.println(" ------------------- \n\n");
+
+
+		StabilityCalculator.CalcPowerPlantPitchingMoment theCMPowerEffectCalculator =
+				theStablityCalculator.new CalcPowerPlantPitchingMoment();
+
+		double thrustPitchEffectDerivative = theCMPowerEffectCalculator.calcPitchingMomentDerThrust(
+				aircraft, 
+				theConditions,
+				etaEfficiency,
+				cLTotal
+				); // derivative
+
+		System.out.println("Thrust pitching moment derivative " + thrustPitchEffectDerivative);
+
+		double clAlphaDeg = clAlphaWing/57.3;
+		double nonAxialPitchEffectDerivative = theCMPowerEffectCalculator.calcPitchingMomentDerNonAxial(
+				aircraft,
+				nBlade, 
+				fanDiameter,
+				clAlphaDeg);
+
+		System.out.println("Non axial pitching moment derivative " + nonAxialPitchEffectDerivative);
+
+
+		
+		
 	} 
 
 }

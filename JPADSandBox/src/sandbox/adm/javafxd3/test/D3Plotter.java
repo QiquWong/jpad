@@ -59,33 +59,7 @@ public class D3Plotter {
 
 	private Selection svgSelection;
 
-	// set margins
-	final private Margin margin;
-
-	final int widthGraph;
-	final int heightGraph;
-
-	private int widthPageSVG;
-	private int heightPageSVG;
-
-	private Selection scaleLabel;
-	private Selection translateLabel;
-
-	private String graphBackground = "lightblue";
-
-	private final double xtickPadding; // = 12.0;
-	private final double ytickPadding; // = 5.0;
-
-	private int symbolSize = 64;
-	private String symbolStyle = "fill:red; stroke:blue; stroke-width:2";
-
-	private String lineStyle = "fill:none; stroke:red; stroke-width:2";
-
-	private String areaStyle = "fill:green;";
-
-	private boolean showSymbols = true;
-	private boolean plotArea = false;
-	private boolean showLegend = true;
+	private D3PlotterOptions options;
 
 	final private List<Double[][]> listDataArray = new ArrayList<Double[][]>();
 
@@ -117,64 +91,12 @@ public class D3Plotter {
 	 *  Constructor
 	 */
 	public D3Plotter(
-			int wSVG, int hSVG, // svg dimensions
-			int marginTop, int marginRight, int marginBottom, int marginLeft,  // plot margins, t r b l
-			double xtickPadding, double ytickPadding,
-			boolean showSymbols, boolean showLegend, boolean plotArea,
-			Double[][] dataArray
-			) {
-		widthPageSVG = wSVG;
-		heightPageSVG = hSVG;
-		margin = new Margin(marginTop, marginRight, marginBottom, marginLeft);
-
-		widthGraph = widthPageSVG - margin.left - margin.right;
-		heightGraph = heightPageSVG - margin.top - margin.bottom;
-
-		this.xtickPadding = xtickPadding;
-		this.ytickPadding = ytickPadding;
-
-		this.showSymbols = showSymbols;
-		this.showLegend = showLegend;
-		this.plotArea = plotArea;
-
-		this.listDataArray.add(dataArray);
-	}
-
-	/*
-	 *  Constructor
-	 */
-	public D3Plotter(
 			D3PlotterOptions options,
 			Double[][] dataArray
 			) {
-		widthPageSVG = options.getWidthPageSVG();
-		heightPageSVG = options.getHeightPageSVG();
-		margin = options.getMargin();
-
-		widthGraph = options.getWidthGraph();
-		heightGraph = options.getHeightGraph();
-
-		this.symbolSize = options.getSymbolSize();
-		this.symbolStyle = options.getSymbolStyle();
-
-		this.lineStyle = options.getLineStyle();
-
-		this.areaStyle = options.getAreaStyle();
-
-		this.xtickPadding = options.getXtickPadding();
-		this.ytickPadding = options.getYtickPadding();
-
-		this.showSymbols = options.isShowSymbols();
-		this.showLegend = options.isShowLegend();
-		this.plotArea = options.isPlotArea();
-
+		this.options = options;
 		this.listDataArray.add(dataArray);
 	}
-
-//	public D3Plotter() {
-//		this.widthPageSVG = widthGraph;
-//		this.heightPageSVG = heightGraph;
-//	}
 
 	/*
 	 * called in Runnable object
@@ -207,8 +129,15 @@ public class D3Plotter {
 				.mapToDouble(v -> v)
 		        .summaryStatistics();
 
-		double xMax = summaryStatisticsX.getMax();
-		double xMin = summaryStatisticsX.getMin();
+		// X-axis range
+		double xMin, xMax;
+		if (options.isAutoRangeX()) {
+			xMin = summaryStatisticsX.getMin();
+			xMax = summaryStatisticsX.getMax();
+		} else {
+			xMin = options.getXMin();
+			xMax = options.getXMax();
+		}
 
 //		System.out.println(MyArrayUtils.extractColumnOf2DArrayToList(dataArray, 1));
 
@@ -216,8 +145,15 @@ public class D3Plotter {
 				.mapToDouble(v -> v)
 		        .summaryStatistics();
 
-		double yMax = summaryStatisticsY.getMax();
-		double yMin = summaryStatisticsY.getMin();
+		// X-axis range
+		double yMin, yMax;
+		if (options.isAutoRangeY()) {
+			yMin = summaryStatisticsY.getMin();
+			yMax = summaryStatisticsY.getMax();
+		} else {
+			yMin = options.getYMin();
+			yMax = options.getYMax();
+		}
 
 
 		// Get the D3 object
@@ -233,15 +169,15 @@ public class D3Plotter {
 
 		// svg
 		svgSelection = d3.select("svg")
-				.attr("width", widthPageSVG)
-				.attr("height", heightPageSVG);
+				.attr("width", options.getWidthPageSVG())
+				.attr("height", options.getHeightPageSVG());
 
 		//page
 		Selection pageSelection = svgSelection //
 				.append("g") //
 				.attr("id", "page")
-				.attr("width", widthPageSVG) //
-				.attr("height", widthPageSVG);
+				.attr("width", options.getWidthPageSVG()) //
+				.attr("height", options.getHeightPageSVG());
 
 		// Inject basic style attributes into svg node
 //		try {
@@ -256,36 +192,51 @@ public class D3Plotter {
 		Selection graphSelection = pageSelection //
 				.append("g") //
 				.attr("id", "graph") //
-				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+				.attr("transform", "translate(" + options.getMargin().left + "," + options.getMargin().top + ")");
 
-		Selection graphRectSelection = graphSelection //
+		Selection graphRectSelection = graphSelection // only the filling area+opacity
 				.append("rect") //
-				.attr("width", widthGraph) //
-				.attr("height", heightGraph) //
-				.attr("fill", graphBackground);
+				.attr("width", options.getWidthGraph()) //
+				.attr("height", options.getHeightGraph()) //
+				.attr("fill", options.getGraphBackgroundColor())
+				.attr("opacity", options.getGraphBackgroundOpacity().toString())
+				;
+
+		String axisLineStyle = "stroke: " + options.getAxisLineColor() + "; stroke-width: " + options.getAxisLineStrokeWidth() +";";
+
+		Selection graphRectSelection2 = graphSelection // only the outline
+				.append("rect") //
+				.attr("width", options.getWidthGraph()) //
+				.attr("height", options.getHeightGraph()) //
+				.attr("fill", "none")
+				.attr("opacity", "1.0")
+				.attr("style", axisLineStyle) // "stroke: black; stroke-width: 3px;"
+				;
 
 		//x axis
 		Selection xAxisSelection = graphSelection //
 				.append("g") //
 				.attr("id", "" + "xAxis") //
 				.attr("class", "axis") //
-				.attr("transform", "translate(0," + heightGraph + ")");
+				.attr("transform", "translate(0," + options.getHeightGraph() + ")")
+				;
 
 		// QuantitativeScale<?> xScale;
 
 		LinearScale xScale = d3.scale() //
 				.linear() //
 				.domain(xMin, xMax) //
-				.range(0.0, widthGraph);
+				.range(0.0, options.getWidthGraph())
+				;
 
 		// set the x axis
 		org.treez.javafxd3.d3.svg.Axis xAxis = d3.svg() //
 				.axis() //
 				.scale(xScale) //
 				.orient(org.treez.javafxd3.d3.svg.Axis.Orientation.BOTTOM) //
-				.tickSize(-heightGraph)
+				.tickSize(-options.getHeightGraph())
 				// .outerTickSize(10) // agodemar
-				.tickPadding(xtickPadding) // agodemar
+				.tickPadding(options.getXtickPadding()) // agodemar
 				;
 
 		xAxis.apply(xAxisSelection);
@@ -293,8 +244,9 @@ public class D3Plotter {
 		xAxisSelection //
 				.selectAll("path, line") //
 				.style("fill", "none") //
-				.style("stroke", "#000")
-				.style("stroke-width", "1.2px") //
+				.style("stroke", options.getXGridLineColor()) // TODO
+				.style("stroke-width", options.getXGridLineStrokeWidth()) //
+				.style("stroke-dasharray",options.getXGridLineDashArray())
 				.style("font", "10px sans-serif")
 				.style("shape-rendering", "geometricPrecision"); // "crispEdges" // "geometricPrecision"
 
@@ -336,15 +288,15 @@ public class D3Plotter {
 				.scale() //
 				.linear() //
 				.domain(yMin, yMax) //
-				.range(heightGraph, 0.0);
+				.range(options.getHeightGraph(), 0.0);
 
 		org.treez.javafxd3.d3.svg.Axis yAxis = d3 //
 				.svg() //
 				.axis() //
 				.scale(yScale)
 				.orient(org.treez.javafxd3.d3.svg.Axis.Orientation.LEFT)
-				.tickPadding(ytickPadding)
-				.tickSize(-widthGraph)
+				.tickPadding(options.getYtickPadding())
+				.tickSize(-options.getWidthGraph())
 				// .outerTickSize(10) // agodemar
 				// .tickPadding(5) // agodemar
 				;
@@ -354,9 +306,9 @@ public class D3Plotter {
 		yAxisSelection //
 			.selectAll("path, line") //
 			.style("fill", "none") //
-			.style("stroke", "#000")
-			// .style("stroke-dasharray","15,10")
-			.style("stroke-width", "1.2px") //
+			.style("stroke", options.getYGridLineColor()) // TODO
+			.style("stroke-dasharray",options.getYGridLineDashArray())
+			.style("stroke-width", options.getYGridLineStrokeWidth()) //
 			.style("shape-rendering", "geometricPrecision"); // "crispEdges"
 
 
@@ -364,16 +316,16 @@ public class D3Plotter {
 		svgSelection.append("text")
 		    .attr("class", "x label")
 		    .attr("text-anchor", "middle")
-		    .attr("x", margin.left + widthGraph/2)
-		    .attr("y", margin.top + heightGraph + 45) // NB: offset
+		    .attr("x", options.getMargin().left + options.getWidthGraph()/2)
+		    .attr("y", options.getMargin().top + options.getHeightGraph() + 45) // NB: offset
 		    .text("income per capita, inflation-adjusted (dollars)");
 
 		// Y-Axis label
 		svgSelection.append("text")
 		    .attr("class", "y label")
 		    .attr("text-anchor", "middle")
-		    .attr("x", -margin.top - heightGraph/2)
-		    .attr("y", margin.left/2 - 15) // NB: offset
+		    .attr("x", -options.getMargin().top - options.getHeightGraph()/2)
+		    .attr("y", options.getMargin().left/2 - 15) // NB: offset
 		    .attr("dy", ".75em")
 		    .attr("transform", "rotate(-90)")
 		    .text("life expectancy (years)");
@@ -382,8 +334,8 @@ public class D3Plotter {
 		svgSelection.append("text")
 	      .attr("class", "title")
 	      .attr("text-anchor", "middle")
-	      .attr("x", margin.left + widthGraph/2)
-	      .attr("y", (margin.top / 2) - 0)  // NB: offset
+	      .attr("x", options.getMargin().left + options.getWidthGraph()/2)
+	      .attr("y", (options.getMargin().top / 2) - 0)  // NB: offset
 	      .text("This is the title");
 
 
@@ -406,10 +358,10 @@ public class D3Plotter {
 				.attr("id", "line") //
 				.attr("d", linePathGenerator.generate(dataArray))
 				.attr("class", "line")
-				.attr("style", lineStyle);
+				.attr("style", options.getLineStyle());
 
 
-		if ( plotArea ) {
+		if ( options.isPlotArea() ) {
 			//plot area beneath line
 			double yMin1 = yScale.apply(0.0).asDouble();
 			Area areaPathGenerator = d3 //
@@ -425,19 +377,19 @@ public class D3Plotter {
 			.attr("id", "area") //
 			.attr("d", areaPath)
 			.attr("class", "area")
-			.attr("style", areaStyle)
-			.attr("opacity", "0.5")
+			.attr("style", options.getAreaStyle())
+			.attr("opacity", options.getAreaOpacity())
 			;
 		}
 
 
-		if (showSymbols) {
+		if (options.isShowSymbols()) {
 			//plot symbols
 			Symbol symbol = d3 //
 					.svg() //
 					.symbol();
 			symbol = symbol //
-					.size(symbolSize) //
+					.size(options.getSymbolSize()) //
 					.type(SymbolType.CIRCLE);
 
 			String symbolDString = symbol.generate();
@@ -456,10 +408,10 @@ public class D3Plotter {
 			.attr("transform", new AxisTransformPointDatumFunction(xScale, yScale)) //
 			//.attrExpression("transform", "function(d, i) { return 'translate(' + d[0] + ',' + d[1] + ')'; }") //
 			.attr("d", symbolDString) //
-			.attr("style", symbolStyle);
+			.attr("style", options.getSymbolStyle());
 		}
 
-		if (showLegend)
+		if (options.isShowLegend())
 			putLegend();
 
 
@@ -555,7 +507,7 @@ if (false) {
 //				  .attr("y", 25)
 //				  .attr("height", 100)
 //				  .attr("width", 100)
-				.attr("transform", "translate(" + 0.9*widthGraph + "," + 0.1*heightGraph + ")")
+				.attr("transform", "translate(" + 0.9*options.getWidthGraph() + "," + 0.1*options.getHeightGraph() + ")")
 				;
 
 		String commandFill = getLegendCommandFill(

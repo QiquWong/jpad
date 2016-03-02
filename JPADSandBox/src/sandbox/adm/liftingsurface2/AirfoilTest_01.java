@@ -17,7 +17,7 @@ import org.kohsuke.args4j.Option;
 import aircraft.components.liftingSurface.adm.Airfoil;
 import aircraft.components.liftingSurface.adm.Airfoil.AirfoilBuilder;
 import configuration.enumerations.AirfoilTypeEnum;
-import sandbox.vt.TakeOff_Landing_Test.TakeOff_Landing_Test_TP;
+import sandbox.vt.TakeOff_Test.TakeOff_Test_TP;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;
 
