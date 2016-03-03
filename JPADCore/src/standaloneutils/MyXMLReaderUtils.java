@@ -45,8 +45,8 @@ public class MyXMLReaderUtils {
 
 	/**
 	 * Overloaded method: read specified object, e.g. theFuselage
-	 * 
-	 * @param doc the parsed document 
+	 *
+	 * @param doc the parsed document
 	 * @param object the object which has to be populated
 	 * @param level the maximum inner level the method has to read from the xml
 	 * @param xpath
@@ -54,10 +54,10 @@ public class MyXMLReaderUtils {
 	 * @param childNodeV
 	 */
 	public static void recursiveRead(
-			Document doc, 
-			Object object, 
-			Integer level, 
-			XPath xpath, 
+			Document doc,
+			Object object,
+			Integer level,
+			XPath xpath,
 			Node mainNode,
 			Node ... childNodeV) {
 
@@ -78,11 +78,11 @@ public class MyXMLReaderUtils {
 	}
 
 	public static void recursiveReadCore(
-			Document doc, 
-			Object object, 
-			Integer level, 
-			XPath xpath, 
-			Node mainNode, 
+			Document doc,
+			Object object,
+			Integer level,
+			XPath xpath,
+			Node mainNode,
 			Node ... childNodeV) {
 
 		Node childNode;
@@ -103,14 +103,14 @@ public class MyXMLReaderUtils {
 			} else {
 				//				System.out.println("--- importing: " + childNode.getNodeName());
 
-				if (childNode.getFirstChild() != null 
+				if (childNode.getFirstChild() != null
 						&& !childNode.getFirstChild().hasChildNodes()){
 
 					String variablePath = getElementXpath((Element) childNode);
 					String source = getXMLPropertyByPath(doc, xpath, variablePath + "/@from");
 
 					if(source != null
-							&& !source.equals("") 
+							&& !source.equals("")
 							&& source.equals("input"))
 						readAllNodes(doc, object, xpath, getElementXpath((Element) childNode), MyConfiguration.notInitializedWarning);
 
@@ -137,30 +137,30 @@ public class MyXMLReaderUtils {
 		return count;
 	}
 
-	/** 
+	/**
 	 * Get the full path of an xml element, wherever it is
-	 * 
+	 *
 	 * @author Lorenzo Attanasio
 	 * @param elt
 	 * @return
 	 */
 	public static String getElementXpath(Element elt){
-		String path = ""; 
+		String path = "";
 
 		try{
 			for (; elt != null; elt = (Element) elt.getParentNode()){
 				int idx = getElementIndex(elt);
 				String xname = elt.getNodeName().toString();
-				path = "/" + xname + path;  
+				path = "/" + xname + path;
 			}
 		}catch(Exception ee){
 		}
-		return path;                            
+		return path;
 	}
 
-	/** 
+	/**
 	 * This method removes whitespace for easier xml navigation
-	 * 
+	 *
 	 * @author Lorenzo Attanasio
 	 * @param e
 	 */
@@ -168,8 +168,8 @@ public class MyXMLReaderUtils {
 		NodeList children = e.getChildNodes();
 		for (int i = children.getLength() - 1; i >= 0; i--) {
 			Node child = children.item(i);
-			if (child instanceof Text 
-					&& ((((Text) child).getData().trim().length() == 0) 
+			if (child instanceof Text
+					&& ((((Text) child).getData().trim().length() == 0)
 							| ((Text) child).getData().contains("!--"))) {
 				e.removeChild(child);
 			}
@@ -179,21 +179,21 @@ public class MyXMLReaderUtils {
 		}
 	}
 
-	/** 
+	/**
 	 * Set variables with the values read from xml file.
 	 * The method can read ONLY Integers, not primitive int.
-	 * 
+	 *
 	 * @author Lorenzo Attanasio
 	 * @param targetObject the Object to read (e.g., theFuselage)
 	 * @param xpath
 	 * @param variablePath full variable path in xml document
 	 * @param notInitializedWarning
-	 * 
+	 *
 	 */
 	private static void readAllNodes(
 			Document doc,
-			Object targetObject, 
-			XPath xpath, 
+			Object targetObject,
+			XPath xpath,
 			String variablePath, String notInitializedWarning) {
 
 		String value = getXMLPropertyByPath(doc, xpath, variablePath + "/text()");
@@ -218,11 +218,11 @@ public class MyXMLReaderUtils {
 		//						if (method.getName().equals("set" + varName)){
 		if (varName != null
 				&& source != null
-				&& !source.equals("") 
+				&& !source.equals("")
 				&& source.equals("input")) {
 			//				System.out.println(method.getName());
 			Field tempField = null;
-			String[] valueArr;			
+			String[] valueArr;
 			Double[] tempArrDouble;
 			Integer[] tempArrInt;
 
@@ -234,7 +234,7 @@ public class MyXMLReaderUtils {
 					tempField.setAccessible(true);
 
 					if (value.equals(notInitializedWarning)
-							|| value.equals("") 
+							|| value.equals("")
 							|| value.equals(" ")) {
 
 						tempField.set(targetObject, null);
@@ -258,14 +258,14 @@ public class MyXMLReaderUtils {
 						}
 
 						if (MyMiscUtils.isInteger(valueArr[0])) {
-							tempField.set(targetObject, tempArrInt);	
+							tempField.set(targetObject, tempArrInt);
 						} else {
-							tempField.set(targetObject, tempArrDouble);	
+							tempField.set(targetObject, tempArrDouble);
 						}
 
 					} else {
 
-						if (unit == null) // if "unit" attribute is not present, default to non-dimensional 
+						if (unit == null) // if "unit" attribute is not present, default to non-dimensional
 							unit = "";
 
 						// if variable is dimensionless its unit is ""
@@ -286,10 +286,10 @@ public class MyXMLReaderUtils {
 
 								// Check if value is integer
 								try {
-									tempField.set(targetObject, Integer.parseInt(value)); 
+									tempField.set(targetObject, Integer.parseInt(value));
 								} catch(NumberFormatException e) {
 									// If value is not an integer parse it as a double
-									tempField.set(targetObject, Double.parseDouble(value)); 
+									tempField.set(targetObject, Double.parseDouble(value));
 								}
 
 							}
@@ -316,10 +316,10 @@ public class MyXMLReaderUtils {
 		}
 	}
 
-	/** 
+	/**
 	 * Read a field from a class or from
 	 * its superclass(es) recursively
-	 * 
+	 *
 	 * @author Lorenzo Attanasio
 	 * @param targetClass
 	 * @param varName
@@ -410,9 +410,11 @@ public class MyXMLReaderUtils {
 			return null; // ??
 		}
 	} // end-of-getXMLPropertyByPath:
-	
-	
-	
+
+
+
+
+
 	/*
 	 * Get the list of property values for a given XPath expression
 	 * @param document
@@ -515,7 +517,7 @@ public class MyXMLReaderUtils {
 	 * @param xmlDoc     the Document object
 	 * @param xpath      the XPath object
 	 * @param expression XPath expression
-	 * @return           amount, dimensions according to unit attribute value 
+	 * @return           amount, dimensions according to unit attribute value
 	 */
 	public static Amount<?> getXMLAmountWithUnitByPath(Document xmlDoc, XPath xpath, String expression) {
 
@@ -533,7 +535,7 @@ public class MyXMLReaderUtils {
 			} catch (NumberFormatException | AmountException e) {
 				e.printStackTrace();
 				return null;
-			}			
+			}
 		} else
 			return null;
 	}
@@ -549,7 +551,7 @@ public class MyXMLReaderUtils {
 	 * @param xmlDoc     the Document object
 	 * @param xpath      the XPath object
 	 * @param expression XPath expression
-	 * @return           amount, dimensions according to unit attribute value 
+	 * @return           amount, dimensions according to unit attribute value
 	 */
 	public static Amount<Length> getXMLAmountLengthByPath(Document xmlDoc, XPath xpath, String expression) {
 
@@ -571,7 +573,7 @@ public class MyXMLReaderUtils {
 			} catch (NumberFormatException | AmountException e) {
 				e.printStackTrace();
 				return null;
-			}			
+			}
 		} else
 			return null;
 	}
@@ -587,8 +589,8 @@ public class MyXMLReaderUtils {
 	 * @param xmlDoc     the Document object
 	 * @param xpath      the XPath object
 	 * @param expression XPath expression
-	 * @return           amounts, dimensions according to unit attribute value 
-	 */	
+	 * @return           amounts, dimensions according to unit attribute value
+	 */
 	public static double[] getXMLAmountsLengthByPath(Document xmlDoc, XPath xpath, String expression) throws XPathExpressionException {
 
 		XPathExpression expr = null;
@@ -599,7 +601,7 @@ public class MyXMLReaderUtils {
 
 			e1.printStackTrace();
 		}
-		NodeList nodes = (NodeList) expr.evaluate(xmlDoc, XPathConstants.NODESET); 
+		NodeList nodes = (NodeList) expr.evaluate(xmlDoc, XPathConstants.NODESET);
 
 
 		List<String> list_elements = MyXMLReaderUtils.getXMLPropertiesByPath(xmlDoc, xpath, expression + "/text()");
@@ -624,9 +626,9 @@ public class MyXMLReaderUtils {
 
 
 
-					else 
+					else
 						quantity = Amount.valueOf(value, SI.METER);
-					System.out.println("Wing Span number " + (i+1) + "=" + quantity); // FIN QUI VA PER LA PRIMA ITERAZIONE 
+					System.out.println("Wing Span number " + (i+1) + "=" + quantity); // FIN QUI VA PER LA PRIMA ITERAZIONE
 
 
 					values [i]= quantity.to(SI.METRE).getEstimatedValue();
@@ -637,7 +639,7 @@ public class MyXMLReaderUtils {
 
 					values[i]=0;
 
-				}	}		
+				}	}
 			else
 
 				values[i]=0;}
@@ -653,7 +655,7 @@ public class MyXMLReaderUtils {
 	// getXMLAmountMassByPath
 	// etc
 
-	
+
 	public static Amount<Angle> getXMLAmountAngleByPath(Document xmlDoc, XPath xpath, String expression) {
 
 		String valueStr = MyXMLReaderUtils.getXMLPropertyByPath(xmlDoc, xpath, expression + "/text()");
@@ -681,14 +683,14 @@ public class MyXMLReaderUtils {
 			} catch (NumberFormatException | AmountException e) {
 				e.printStackTrace();
 				return null;
-			}			
+			}
 		} else
 			return null;
 	}
-	
-	
 
-	/** 
+
+
+	/**
 	 * Group together actions needed to import an xml document
 	 *
 	 * @author Lorenzo Attanasio
@@ -697,9 +699,9 @@ public class MyXMLReaderUtils {
 	 */
 	public static Document importDocument(String filenameWithPathAndExt){
 
-		if (filenameWithPathAndExt == null) return null; 
+		if (filenameWithPathAndExt == null) return null;
 
-		if (!filenameWithPathAndExt.endsWith(".xml") 
+		if (!filenameWithPathAndExt.endsWith(".xml")
 				&& !filenameWithPathAndExt.endsWith(".XML"))
 			filenameWithPathAndExt = filenameWithPathAndExt + ".xml";
 

@@ -1,5 +1,7 @@
 package aircraft.components.liftingSurface.adm;
 
+import java.util.List;
+
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 
@@ -34,5 +36,9 @@ public interface ILiftingSurface {
 	public Double getTaperRatio();
 
 	public LiftingSurface getEquivalentWing();
+
+	public List<LiftingSurfacePanel> getPanels();
+	public void addPanel(LiftingSurfacePanel panel);
+
 
 }

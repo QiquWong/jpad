@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-    <wing mirrored="TRUE">
+    <wing id="JPAD Test Wing DAF - 2016" mirrored="TRUE">
         <panels>
             <panel id="Inner panel">
                 <semispan unit="m">4.0</semispan>
                 <dihedral unit="deg">1.5</dihedral>
+                <sweep_leading_edge unit="deg">24</sweep_leading_edge>
                 <inner_section>
+                    <chord unit="m">3.0</chord>
                     <airfoil file="naca63209.xml"/>
                     <geometric_twist unit="deg">0.0</geometric_twist>
                 </inner_section>
                 <outer_section>
+                    <chord unit="m">1.5</chord>
                     <airfoil file="naca63209.xml"/>
                     <geometric_twist unit="deg">0.0</geometric_twist>
                 </outer_section>
@@ -17,7 +20,9 @@
             <panel id="Outer panel" linked_to="Inner panel">
                 <semispan unit="m">7.0</semispan>
                 <dihedral unit="deg">3.5</dihedral>
+                <sweep_leading_edge unit="deg">20</sweep_leading_edge>
                 <outer_section>
+                    <chord unit="m">1.2</chord>
                     <airfoil file="naca63209.xml"/>
                     <geometric_twist unit="deg">-2.5</geometric_twist>
                 </outer_section>
@@ -26,10 +31,10 @@
         <symmetric_flaps>
             <symmetric_flap id="Inner flap" type="SINGLE_SLOTTED">
                 <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">
-                    <value>0.15<value/>
+                    <value>0.15</value>
                 </inner_station_spanwise_position>
                 <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">
-                    <value>0.45<value/>
+                    <value>0.45</value>
                 </outer_station_spanwise_position>
                 <percent_chord value="40"/>
                 <min_deflection unit="deg">0.0</min_deflection>
@@ -45,10 +50,10 @@
         <asymmetric_flaps>
             <asymmetric_flap id="Aileron" type="PLAIN">
                 <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">
-                    <value>0.75<value/>
+                    <value>0.75</value>
                 </inner_station_spanwise_position>
                 <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">
-                    <value>0.97<value/>
+                    <value>0.97</value>
                 </outer_station_spanwise_position>
                 <percent_chord value="20"/>
                 <min_deflection unit="deg">-5.0</min_deflection>
@@ -59,10 +64,10 @@
         <spoilers>
             <spoiler id="Spoiler" type="SIMPLE">
                 <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">
-                    <value>0.75<value/>
+                    <value>0.75</value>
                 </inner_station_spanwise_position>
                 <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">
-                    <value>0.97<value/>
+                    <value>0.97</value>
                 </outer_station_spanwise_position>
                 <percent_chord value="20"/>
                 <max_deflection unit="deg">40.0</max_deflection>

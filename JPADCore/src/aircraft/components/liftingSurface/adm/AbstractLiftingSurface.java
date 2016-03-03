@@ -1,7 +1,9 @@
 package aircraft.components.liftingSurface.adm;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 
@@ -9,28 +11,32 @@ import org.jscience.physics.amount.Amount;
 
 public abstract class AbstractLiftingSurface implements ILiftingSurface {
 
-	private List<LiftingSurfacePanel> panels;
+	protected String id;
 
-	Amount<Length> x0;
-	Amount<Length> y0;
-	Amount<Length> z0;
+	protected List<LiftingSurfacePanel> panels;
 
-	Amount<Length> xPole;
-	Amount<Length> yPole;
-	Amount<Length> zPole;
+	// in BRF
+	protected Amount<Length> x0;
+	protected Amount<Length> y0;
+	protected Amount<Length> z0;
 
-	Amount<Length> meanAerodChord;
-	Amount<Length> meanAerodChordLeadingEdgeX;
-	Amount<Length> meanAerodChordLeadingEdgeY;
-	Amount<Length> meanAerodChordLeadingEdgeZ;
+	// in LRF
+	protected Amount<Length> xPole;
+	protected Amount<Length> yPole;
+	protected Amount<Length> zPole;
 
-	public Amount<Area> surfacePlanform;
-	public Amount<Area> surfaceWetted;
+	protected Amount<Length> meanAerodChord;
+	protected Amount<Length> meanAerodChordLeadingEdgeX;
+	protected Amount<Length> meanAerodChordLeadingEdgeY;
+	protected Amount<Length> meanAerodChordLeadingEdgeZ;
 
-	public Double aspectRatio;
-	public Double taperRatio;
+	protected Amount<Area> surfacePlanform;
+	protected Amount<Area> surfaceWetted;
 
-	private LiftingSurfacePanel equivalentWing;
+	protected Double aspectRatio;
+	protected Double taperRatio;
+
+	protected LiftingSurfacePanel equivalentWing;
 
 	public List<LiftingSurfacePanel> getPanels() {
 		return panels;
