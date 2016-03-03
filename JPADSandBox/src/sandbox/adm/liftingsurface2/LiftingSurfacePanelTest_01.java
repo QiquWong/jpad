@@ -44,7 +44,7 @@ public class LiftingSurfacePanelTest_01 {
 
 	public static void main(String[] args) throws CmdLineException, IOException {
 		System.out.println("--------------");
-		System.out.println("Airfoil test");
+		System.out.println("Wing panel test");
 		System.out.println("--------------");
 
 		LiftingSurfacePanelTest_01 theTestObject = new LiftingSurfacePanelTest_01();

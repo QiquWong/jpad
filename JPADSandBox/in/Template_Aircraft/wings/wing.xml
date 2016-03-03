@@ -32,13 +32,14 @@
                     <value>0.45<value/>
                 </outer_station_spanwise_position>
                 <percent_chord value="40"/>
-                <angle_range unit="deg">[0.0,40.0]</angle_range>
+                <min_deflection unit="deg">0.0</min_deflection>
+                <max_deflection unit="deg">40.0</max_deflection>
             </symmetric_flap>
         </symmetric_flaps>
         <slats>
             <slat linked_to="Inner flap" type="SINGLE">
                 <percent_chord value="10"/>
-                <angle_range unit="deg">[0.0,10.0]</angle_range>
+                <max_deflection unit="deg">10.0</max_deflection>
             </slat>
         </slats>
         <asymmetric_flaps>
@@ -50,9 +51,22 @@
                     <value>0.97<value/>
                 </outer_station_spanwise_position>
                 <percent_chord value="20"/>
-                <angle_range unit="deg">[-5.0,10.0]</angle_range>
+                <min_deflection unit="deg">-5.0</min_deflection>
+                <max_deflection unit="deg">10.0</max_deflection>
                 <differential_deflection_factor value="1.0"/>
             </asymmetric_flap>
         </asymmetric_flaps>
+        <spoilers>
+            <spoiler id="Spoiler" type="SIMPLE">
+                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">
+                    <value>0.75<value/>
+                </inner_station_spanwise_position>
+                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">
+                    <value>0.97<value/>
+                </outer_station_spanwise_position>
+                <percent_chord value="20"/>
+                <max_deflection unit="deg">40.0</max_deflection>
+            </spoiler>
+        </spoilers>
     </wing>
 </jpad_config>
