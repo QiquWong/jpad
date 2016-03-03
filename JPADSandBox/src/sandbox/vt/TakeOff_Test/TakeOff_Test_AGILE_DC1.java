@@ -68,8 +68,8 @@ public class TakeOff_Test_AGILE_DC1 {
 		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.AGILE_DC1);
 		aircraft.set_name("AGILE_DC1");
 
-		aircraft.get_weights().set_MTOM(Amount.valueOf(42000, SI.KILOGRAM));
-		aircraft.get_wing().set_surface(Amount.valueOf(107.53, SI.SQUARE_METRE));
+		aircraft.get_weights().set_MTOM(Amount.valueOf(38000, SI.KILOGRAM));
+		aircraft.get_wing().set_surface(Amount.valueOf(97.29, SI.SQUARE_METRE));
 		aircraft.get_wing().set_aspectRatio(9.5);
 		
 		ACAnalysisManager theAnalysis = new ACAnalysisManager(theCondition);
