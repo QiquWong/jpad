@@ -6,6 +6,10 @@ import java.io.PrintWriter;
 
 import javax.xml.transform.TransformerException;
 
+import org.treez.javafxd3.d3.behaviour.Zoom;
+import org.treez.javafxd3.d3.behaviour.Zoom.ZoomEventType;
+import org.treez.javafxd3.d3.core.Selection;
+import org.treez.javafxd3.d3.functions.DatumFunction;
 import org.treez.javafxd3.javafx.JavaFxD3Browser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -13,7 +17,10 @@ import org.w3c.dom.NodeList;
 
 import configuration.MyConfiguration;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import sandbox.adm.D3PlotterOptions;
@@ -25,6 +32,18 @@ public class JavaFXD3_Test_07  extends Application {
 
 	private final int WIDTH = 700;
 	private final int HEIGHT = 600;
+	
+	private static final double DELTA = 0.001d;
+
+	public static class NoopDatumFunction implements DatumFunction<Void> {
+		@Override
+		public Void apply(Object context, Object d, int index) {
+			return null;
+		}
+	}
+
+	private final NoopDatumFunction noopListener = new NoopDatumFunction();
+
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -88,6 +107,62 @@ public class JavaFXD3_Test_07  extends Application {
 		//create the scene
 		Scene scene = new Scene(browser, WIDTH+10, HEIGHT+10, Color.web("#666970"));
 		primaryStage.setScene(scene);
+		
+		// TODO manage keyboard events
+		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            public void handle(KeyEvent ke) {
+                System.out.println("Key Pressed: " + ke.getCode());
+        		////*
+                
+                Zoom zoom = d3Plotter.getD3().behavior().zoom();
+                zoom.center(10,10);
+                
+                System.out.println(zoom.size().get(0, Double.class));
+                System.out.println(zoom.size().get(1, Double.class));
+                
+                Selection body = d3Plotter.getD3().select("body");
+                zoom.event(body);
+        		zoom.event(body.transition());
+        		
+        		zoom.on(ZoomEventType.ZOOMSTART, noopListener);
+        		zoom.on(ZoomEventType.ZOOM, noopListener);
+        		zoom.on(ZoomEventType.ZOOMEND, noopListener);
+
+                switch (ke.getCode()) {
+				case PLUS:
+//                	browser.setScaleX(
+//                			browser.getScaleX()*1.2
+//                			);
+//                	browser.setScaleY(
+//                			browser.getScaleY()*1.2
+//                			);
+                	
+                	zoom.scale();
+            		zoom.scale(5.0);
+
+            		zoom.scaleExtent();
+            		zoom.scaleExtent(new Double[] { 5.0, 4.0 });
+            		zoom.translate();
+            		zoom.translate(new Double[] { 5.0, 6.0 });
+                	
+					break;
+				case MINUS:
+//                	browser.setScaleX(
+//                			browser.getScaleX()*0.80
+//                			);
+//                	browser.setScaleY(
+//                			browser.getScaleY()*0.80
+//                			);
+					break;
+				default:
+					break;
+				}
+        		///*/
+                browser.requestLayout();
+            }
+        });
+		
+		// SHOW THE SCEN FINALLY
 		primaryStage.show();
 
 	}
@@ -101,5 +176,5 @@ public class JavaFXD3_Test_07  extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
-
+	
 }

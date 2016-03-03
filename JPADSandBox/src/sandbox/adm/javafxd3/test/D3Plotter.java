@@ -784,7 +784,9 @@ if (false) {
 
 	}// injectMathJax
 
-
+	public D3 getD3() {
+		return d3;
+	}
 
 	public JavaFxD3Browser getBrowser(Runnable postLoadingHook, boolean debugMode) {
 		this.browser = new JavaFxD3Browser(postLoadingHook, debugMode);
