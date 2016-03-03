@@ -6,9 +6,9 @@ import javax.measure.quantity.Length;
 import org.jscience.physics.amount.Amount;
 
 public interface ILiftingSurface {
-	
+
 	public void calculateGeometry();
-	
+
 	Amount<Length>[] getXYZ0();
 	Amount<Length> getX0();
 	Amount<Length> getY0();
@@ -32,5 +32,7 @@ public interface ILiftingSurface {
 
 	public Double getAspectRatio();
 	public Double getTaperRatio();
+
+	public LiftingSurface getEquivalentWing();
 
 }
