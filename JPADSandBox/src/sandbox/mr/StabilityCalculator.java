@@ -197,10 +197,10 @@ public class CalcPitchingMoment{
 	LiftingSurface theLiftingSurface;
 	OperatingConditions theConditions;
 
-	double meanAerodinamicChord, xMAC, yMAC;
+	double meanAerodinamicChord, xMAC, yMAC, cLLocal, qValue, alphaLocalAirfoil;
 	double [] xLEActualArray, yArray, cMACAirfoils, pitchingMomentAirfoilsDueToLift,
 	liftForceAirfoils, cMAirfoilsDueToLift, armMomentAirfoils, pitchingMomentLiftingSurface, cMLiftingSurfaceArray,
-	yStationsNB, cLDistributionNB, chordLocal, xcPArrayLRF, xACArrayLRF;
+	yStationsNB, cLDistributionNB, chordLocal, xcPArrayLRF, xACArrayLRF, clNasaBlackwell;
 	Double[] cLDistribution;
 	int nPointSemiSpan;
 	List<MyAirfoil> airfoilList = new ArrayList<MyAirfoil>();;
@@ -268,10 +268,17 @@ public class CalcPitchingMoment{
 		//cLDistribution = MyMathUtils.getInterpolatedValue1DLinear(yStationsNB, cLDistributionNB, yArray);
 
 		double dynamicPressure = theConditions.get_dynamicPressure().getEstimatedValue();
-
+		
+		LSAerodynamicsManager.CalcLiftDistribution calculateLiftDistribution = theLSManager.getCalculateLiftDistribution();
+		clNasaBlackwell = calculateLiftDistribution.getNasaBlackwell().get_clTotalDistribution().toArray();
+		
 		for (int i=0 ; i<nPointSemiSpan ;  i++){
+			cLLocal = clNasaBlackwell[i];
+			qValue = airfoilList.get(i).getAerodynamics().calculateClAtAlpha(0.0);
+			alphaLocalAirfoil = (cLLocal-qValue)/airfoilList.get(i).getAerodynamics().get_clAlpha();
+			
 			cLDistribution[i] = airfoilList.get(i).getAerodynamics().calculateClAtAlpha(
-					alphaLocal.getEstimatedValue()+
+					alphaLocalAirfoil+
 					airfoilList.get(i).getGeometry().get_twist().getEstimatedValue());
 //			System.out.println(" cl distribution " + Arrays.toString(cLDistribution));
 			liftForceAirfoils [i] = cLDistribution[i] * dynamicPressure * chordLocal[i];
