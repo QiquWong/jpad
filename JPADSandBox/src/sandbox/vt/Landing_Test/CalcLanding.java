@@ -105,7 +105,6 @@ public class CalcLanding {
 			double kA,
 			double kFlare, 
 			double kTD,
-			double phiRev,
 			double mu,
 			double muBrake,
 			Amount<Length> wingToGroundDistance,
@@ -123,7 +122,6 @@ public class CalcLanding {
 		this.kA = kA;
 		this.kFlare = kFlare;
 		this.kTD = kTD;
-		this.phiRev = phiRev;
 		this.mu = mu;
 		this.muBrake = muBrake;
 		this.wingToGroundDistance = wingToGroundDistance;
@@ -220,7 +218,6 @@ public class CalcLanding {
 			double kA,
 			double kFlare, 
 			double kTD,
-			double phiRev,
 			double mu,
 			double muBrake,
 			Amount<Length> wingToGroundDistance,
@@ -244,7 +241,6 @@ public class CalcLanding {
 		this.kA = kA;
 		this.kFlare = kFlare;
 		this.kTD = kTD;
-		this.phiRev = phiRev;
 		this.mu = mu;
 		this.muBrake = muBrake;
 		this.wingToGroundDistance = wingToGroundDistance;
@@ -379,8 +375,10 @@ public class CalcLanding {
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public void calculateGroundRollLandingODE() {
+	public void calculateGroundRollLandingODE(double phiRev) {
 
+		this.phiRev = phiRev;
+		
 		System.out.println("---------------------------------------------------");
 		System.out.println("CalcLanding :: Ground Roll ODE integration\n\n");
 
@@ -728,10 +726,10 @@ public class CalcLanding {
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public void calculateLandingDistance() {
+	public void calculateLandingDistance(double phiRev) {
 		calculateApproachDistance();
 		calculateFlareDistance();
-		calculateGroundRollLandingODE();
+		calculateGroundRollLandingODE(phiRev);
 	}
 	
 	//-------------------------------------------------------------------------------------

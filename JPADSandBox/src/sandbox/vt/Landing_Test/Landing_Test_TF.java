@@ -361,7 +361,6 @@ public class Landing_Test_TF {
 				kA,
 				kFlare,
 				kTD,
-				phiRev,
 				mu,
 				muBrake,
 				wingToGroundDistance,
@@ -373,7 +372,7 @@ public class Landing_Test_TF {
 				nFreeRoll
 				);
 
-		theLandingCalculator.calculateLandingDistance();
+		theLandingCalculator.calculateLandingDistance(phiRev);
 		_stopTimeCalculation = System.currentTimeMillis();
 		_startTimeGraph = System.currentTimeMillis();
 		theLandingCalculator.createGroundRollCharts();
