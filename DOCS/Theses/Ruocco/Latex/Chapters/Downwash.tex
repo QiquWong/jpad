@@ -201,7 +201,7 @@ For each step the method is the same, but the difference is that the angle  $i_w
 
 \begin{figure}[H]
 \centering
-{\includegraphics[height=10.6cm]{Immagini/nonlinear_2.pdf}} 
+{\includegraphics[height=13cm]{Immagini/nonlinear_2.pdf}} 
 \caption{Flow chart of the calculation of non-linear downwash angle.}
 \label{flowchartangles}
 \end{figure} 
@@ -209,7 +209,6 @@ For each step the method is the same, but the difference is that the angle  $i_w
 
 \section{Case Study}
 
-In the following listing is reported the Test Class used in order to evaluate the variability of the downwash gradient with $\alpha_B$. First of all the test class is initialized, after an Aircraft object is defined with the related analysis classes.
 
 \begin{lstlisting}[frame=rbl,caption={{\footnotesize Downwash Test Class}},label= [style=\bfseries]{Listing}]
 
@@ -236,12 +235,11 @@ In the following listing is reported the Test Class used in order to evaluate th
 			System.out.println( "At alpha " + alphaBody
 					.to(NonSI.DEGREE_ANGLE)
 		.getEstimatedValue() + " (deg) the downwash angle is (deg) = " + downwash );
-	
-
 	}
-
 }
 \end{lstlisting}
+
+In the previous listing is reported the Test Class used in order to evaluate the variability of the downwash gradient with $\alpha_B$. First of all the test class is initialized, after an Aircraft object is defined with the related analysis classes.
 
 %import static java.lang.Math.toRadians;
 %import java.io.File;

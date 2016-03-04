@@ -528,11 +528,11 @@ public MyAerodynamics(MyAirfoil airf, String name) {
 		 geometry = airf.getGeometry();
 
 		 _alphaZeroLift = Amount.valueOf(Math.toRadians(0), SI.RADIAN); 
-		 _clAlpha = 6.92; 
-		 _alphaStar = Amount.valueOf(Math.toRadians(10),SI.RADIAN); // end-of-linearity 
-		 _clStar = 1.60 ; 
-		 _alphaStall = Amount.valueOf(Math.toRadians(20.1),SI.RADIAN); 
-		 _clMax = 1.2 ; //1.5;
+		 _clAlpha = 6.11; 
+		 _alphaStar = Amount.valueOf(Math.toRadians(12.1),SI.RADIAN); // end-of-linearity 
+		 _clStar = 1.3 ; 
+		 _alphaStall = Amount.valueOf(Math.toRadians(15),SI.RADIAN); 
+		 _clMax = 1.6 ; //1.5;
 
 		 _cdMin = 0.0055;
 		 _clAtCdMin = 0.0;

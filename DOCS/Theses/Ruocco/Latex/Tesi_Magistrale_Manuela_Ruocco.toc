@@ -79,8 +79,9 @@
 \contentsline {subsection}{\numberline {9.2.2}Additional drag due to elevator}{82}{subsection.9.2.2}
 \contentsline {section}{\numberline {9.3}Pitching Moments}{83}{section.9.3}
 \contentsline {subsection}{\numberline {9.3.1}Lifting surface}{84}{subsection.9.3.1}
-\contentsline {subsection}{\numberline {9.3.2}Fuselage}{85}{subsection.9.3.2}
-\contentsline {subsubsection}{Multhopp method}{85}{subsubsection*.89}
+\contentsline {subsection}{\numberline {9.3.2}Additional moment due to elevator}{85}{subsection.9.3.2}
+\contentsline {subsection}{\numberline {9.3.3}Fuselage}{85}{subsection.9.3.3}
+\contentsline {subsubsection}{Multhopp method}{86}{subsubsection*.89}
 \contentsline {subsubsection}{Fuselage Pitching moment prediction method}{87}{subsubsection*.93}
 \contentsline {section}{\numberline {9.4}Propulsors}{90}{section.9.4}
 \contentsline {subsection}{\numberline {9.4.1}Direct Effects}{90}{subsection.9.4.1}
