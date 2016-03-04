@@ -1,6 +1,7 @@
 package aircraft.components.liftingSurface.adm;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.measure.quantity.Angle;
@@ -8,14 +9,19 @@ import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+import javax.measure.unit.Unit;
+import javax.measure.unit.UnitFormat;
 
 import org.jscience.physics.amount.Amount;
+import org.jscience.physics.amount.AmountFormat;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import aircraft.components.liftingSurface.adm.LiftingSurfacePanel.LiftingSurfacePanelBuilder;
+import javolution.text.TypeFormat;
+import javolution.text.TextFormat.Cursor;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;
 
@@ -66,11 +72,10 @@ public class LiftingSurface extends AbstractLiftingSurface {
             		System.out.println("WARNING: panel not parsed. Unable to find the ID of linked_to attribute!");
             	}
             }
-
-
 		}
 
-
+		// Update panels' internal geometry variables
+		wing.calculateGeometry();
 
 		//---------------------------------------------------------------------------------
 		// SYMMETRIC FLAPS
@@ -90,6 +95,7 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		return wing;
 	}
 
+
 	@Override
 	public void addPanel(LiftingSurfacePanel panel) {
 		panels.add(panel);
@@ -97,7 +103,32 @@ public class LiftingSurface extends AbstractLiftingSurface {
 
 	@Override
 	public void calculateGeometry() {
-		// TODO Auto-generated method stub
+		// Update inner geometric variables of each panel
+		this.getPanels().stream()
+			.forEach(LiftingSurfacePanel::calculateGeometry);
+
+		// Total planform area
+		Double surfPlanform = this.getPanels().stream()
+				.mapToDouble(p -> p.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue())
+				.sum();
+		this.surfacePlanform = Amount.valueOf(surfPlanform,SI.SQUARE_METRE);
+
+		// Total wetted area
+		Double surfWetted = this.getPanels().stream()
+				.mapToDouble(p -> p.getSurfaceWetted().to(SI.SQUARE_METRE).getEstimatedValue())
+				.sum();
+		this.surfaceWetted = Amount.valueOf(surfWetted,SI.SQUARE_METRE);
+
+		// Semispan, span
+		Double bhalf = this.getPanels().stream()
+				.mapToDouble(p -> p.getSemiSpan().to(SI.METRE).getEstimatedValue())
+				.sum();
+		this.semiSpan = Amount.valueOf(bhalf,SI.METRE);
+		this.span = this.semiSpan.times(2.0);
+
+		// Aspect-ratio
+		this.aspectRatio = (this.span.pow(2)).divide(this.surfacePlanform).getEstimatedValue();
+
 
 	}
 
@@ -192,25 +223,64 @@ public class LiftingSurface extends AbstractLiftingSurface {
 	}
 
 	@Override
+	public Amount<Length> getSemiSpan() {
+		return this.semiSpan;
+	}
+	@Override
+	public Amount<Length> getSemiSpan(boolean recalculate) {
+		if (recalculate) this.calculateGeometry();
+		return this.semiSpan;
+	}
+
+	@Override
+	public Amount<Length> getSpan() {
+		return this.span;
+	}
+	@Override
+	public Amount<Length> getSpan(boolean recalculate) {
+		if (recalculate) this.calculateGeometry();
+		return this.span;
+	}
+
+	@Override
 	public Amount<Area> getSurfacePlanform() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.surfacePlanform;
+	}
+	@Override
+	public Amount<Area> getSurfacePlanform(boolean recalculate) {
+		if (recalculate) this.calculateGeometry();
+		return this.surfacePlanform;
 	}
 
 	@Override
 	public Amount<Area> getSurfaceWetted() {
-		// TODO Auto-generated method stub
-		return null;
+		return surfaceWetted;
+	}
+	@Override
+	public Amount<Area> getSurfaceWetted(boolean recalculate) {
+		if (recalculate) this.calculateGeometry();
+		return surfaceWetted;
 	}
 
 	@Override
 	public Double getAspectRatio() {
+		return this.aspectRatio;
+	}
+
+	@Override
+	public Double getAspectRatio(boolean recalculate) {
+		if (recalculate) this.calculateGeometry();
+		return this.aspectRatio;
+	}
+
+	@Override
+	public Double getTaperRatio() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Double getTaperRatio() {
+	public Double getTaperRatio(boolean recalculate) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -222,7 +292,64 @@ public class LiftingSurface extends AbstractLiftingSurface {
 	}
 
 	@Override
+	public Amount<Length> getMeanAerodChord(boolean recalculate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Amount<Length>[] getMeanAerodChordLeadingEdge(boolean recalculate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Amount<Length> getMeanAerodChordLeadingEdgeX(boolean recalculate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Amount<Length> getMeanAerodChordLeadingEdgeY(boolean recalculate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Amount<Length> getMeanAerodChordLeadingEdgeZ(boolean recalculate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public LiftingSurface getEquivalentWing(boolean recalculate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
 	public String toString() {
+
+		//============================================================================
+		// Trick to write the ".getEstimatedValue() + unit" format
+		// http://stackoverflow.com/questions/8514293/is-there-a-way-to-make-jscience-output-in-a-more-human-friendly-format
+		UnitFormat uf = UnitFormat.getInstance();
+		uf.label(NonSI.DEGREE_ANGLE, "deg");
+		AmountFormat.setInstance(new AmountFormat() {
+		    @Override
+		    public Appendable format(Amount<?> m, Appendable a) throws IOException {
+		        TypeFormat.format(m.getEstimatedValue(), -1, false, false, a);
+		        a.append(" ");
+		        return uf.format(m.getUnit(), a);
+		    }
+
+		    @Override
+		    public Amount<?> parse(CharSequence csq, Cursor c) throws IllegalArgumentException {
+		        throw new UnsupportedOperationException("Parsing not supported.");
+		    }
+		});
+		//============================================================================
+
 		StringBuilder sb = new StringBuilder()
 			.append("\t-------------------------------------\n")
 			.append("\tLifting surface\n")
@@ -233,6 +360,17 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		for (LiftingSurfacePanel panel : panels) {
 			sb.append(panel.toString());
 		}
+
+		sb
+			.append("\t=====================================\n")
+			.append("\tDerived data\n")
+			.append("\tSpan: " + this.getSpan().to(SI.METRE).toString() +"\n")
+			.append("\tSemi-span: " + this.getSemiSpan().to(SI.METRE).toString() +"\n")
+			.append("\tSurface of planform: " + this.getSurfacePlanform().to(SI.SQUARE_METRE).toString() +"\n")
+			.append("\tSurface wetted: " + this.getSurfaceWetted().to(SI.SQUARE_METRE).toString() + "\n")
+			.append("\tAspect-ratio: " + this.getAspectRatio() +"\n")
+			;
+
 		// TODO add more data in log message
 
 		return sb.toString();

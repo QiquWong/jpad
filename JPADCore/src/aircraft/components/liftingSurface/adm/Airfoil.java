@@ -1,5 +1,6 @@
 package aircraft.components.liftingSurface.adm;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -8,13 +9,17 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+import javax.measure.unit.UnitFormat;
 
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.jscience.physics.amount.Amount;
+import org.jscience.physics.amount.AmountFormat;
 
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.AirfoilTypeEnum;
+import javolution.text.TypeFormat;
+import javolution.text.TextFormat.Cursor;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;
 
@@ -648,6 +653,27 @@ public class Airfoil implements IAirfoil {
 
 	@Override
 	public String toString() {
+
+		//============================================================================
+		// Trick to write the ".getEstimatedValue() + unit" format
+		// http://stackoverflow.com/questions/8514293/is-there-a-way-to-make-jscience-output-in-a-more-human-friendly-format
+		UnitFormat uf = UnitFormat.getInstance();
+		uf.label(NonSI.DEGREE_ANGLE, "deg");
+		AmountFormat.setInstance(new AmountFormat() {
+		    @Override
+		    public Appendable format(Amount<?> m, Appendable a) throws IOException {
+		        TypeFormat.format(m.getEstimatedValue(), -1, false, false, a);
+		        a.append(" ");
+		        return uf.format(m.getUnit(), a);
+		    }
+
+		    @Override
+		    public Amount<?> parse(CharSequence csq, Cursor c) throws IllegalArgumentException {
+		        throw new UnsupportedOperationException("Parsing not supported.");
+		    }
+		});
+		//============================================================================
+
 		StringBuilder sb = new StringBuilder()
 				.append("\t-------------------------------------\n")
 				.append("\tAirfoil\n")
@@ -655,14 +681,14 @@ public class Airfoil implements IAirfoil {
 				.append("\tID: '" + _id + "'\n")
 				.append("\tType: " + _type + "\n")
 				.append("\tFamily: " + _family + "\n")
-				.append("\tc = " + _chord.to(SI.METER).getEstimatedValue() + " m\n")
+				.append("\tc = " + _chord.to(SI.METER).toString() + "\n")
 				.append("\tt/c = " + _thicknessToChordRatio + "\n")
 				.append("\tf/c = " + _camberRatio + "\n")
 				.append("\tr_le/c = " + _radiusLeadingEdgeNormalized + "\n")
-				.append("\tphi_te = " + _angleAtTrailingEdge.to(NonSI.DEGREE_ANGLE).getEstimatedValue() + " deg\n")
-				.append("\talpha_0l = " + _alphaZeroLift.to(NonSI.DEGREE_ANGLE).getEstimatedValue() + " deg\n")
-				.append("\talpha_star = " + _alphaEndLinearTrait.to(NonSI.DEGREE_ANGLE).getEstimatedValue() + " deg\n")
-				.append("\talpha_stall = " + _alphaStall.to(NonSI.DEGREE_ANGLE).getEstimatedValue() + " deg\n")
+				.append("\tphi_te = " + _angleAtTrailingEdge.to(NonSI.DEGREE_ANGLE).toString() + "\n")
+				.append("\talpha_0l = " + _alphaZeroLift.to(NonSI.DEGREE_ANGLE).toString() + "\n")
+				.append("\talpha_star = " + _alphaEndLinearTrait.to(NonSI.DEGREE_ANGLE).toString() + "\n")
+				.append("\talpha_stall = " + _alphaStall.to(NonSI.DEGREE_ANGLE).toString() + "\n")
 				.append("\tCl_star = " + _clAlphaLinearTrait + "\n")
 				.append("\tCd_min = " + _cdMin + "\n")
 				.append("\tCl @ Cd_min = " + _clAtCdMin + "\n")
