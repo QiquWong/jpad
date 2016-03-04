@@ -224,7 +224,7 @@ public class Nacelle extends Component{
 			_roughness = Amount.valueOf(0.405 * Math.pow(10,-5), SI.METRE);
 			_heightFromGround = Amount.valueOf(3.6, SI.METER);
 
-			_surfaceWetted = Amount.valueOf(18., Area.UNIT); // ADAS 12 m^2
+			_surfaceWetted = Amount.valueOf(15.8, Area.UNIT); // ADAS 12 m^2
 
 			_massReference = Amount.valueOf(380., SI.KILOGRAM);//ADAS
 			_mountingPosition = MountingPosition.WING;
@@ -255,9 +255,12 @@ public class Nacelle extends Component{
 	/**
 	 * Wetted surface is considered as two times the external surface
 	 * (the air flows both outside and inside)
+	 * 
+	 * BE CAREFUL! Only the external area of the nacelle is counted as wetted surtface [Roskam] 
 	 */
 	public void calculateSurfaceWetted() {
-		_surfaceWetted = _length.times(_diameterMean.times(Math.PI * 2)).to(SI.SQUARE_METRE);
+//		_surfaceWetted = _length.times(_diameterMean.times(Math.PI * 2)).to(SI.SQUARE_METRE);
+		_surfaceWetted = _length.times(_diameterMean.times(Math.PI)).to(SI.SQUARE_METRE); 
 	}
 
 	/**

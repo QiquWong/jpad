@@ -13,9 +13,9 @@
          <Ultimate_load_factor from="input" unit="" varName="_nUltimate">3.7500</Ultimate_load_factor>
       </Performances>
       <Costs id="25">
-         <Airframe_cost from="input" unit="">36409740.6610</Airframe_cost>
-         <Total_investments from="input" unit="">40050761.0356</Total_investments>
-         <Single_Engine_cost from="input" unit="">17.8109</Single_Engine_cost>
+         <Airframe_cost from="input" unit="">36017636.6880</Airframe_cost>
+         <Total_investments from="input" unit="">39619447.0675</Total_investments>
+         <Single_Engine_cost from="input" unit="">17.9657</Single_Engine_cost>
          <Engine_maintenance_cost from="input" unit="">110.0000</Engine_maintenance_cost>
          <Fuel_volumetric_cost from="input" unit="">0.7500</Fuel_volumetric_cost>
          <Hour_volumetric_fuel_consumption from="input" unit="">1816.0000</Hour_volumetric_fuel_consumption>
@@ -72,9 +72,9 @@
       </Configuration>
       <Weights id="20">
          <Material_density from="input" unit="kg/m³" varName="_materialDensity">2711.0000</Material_density>
-         <Maximum_zero_fuel_mass from="input" unit="kg" varName="_MZFM">29242.9794</Maximum_zero_fuel_mass>
-         <Maximum_landing_mass from="input" unit="kg" varName="_MLM">32438.6814</Maximum_landing_mass>
-         <Maximum_take_off_mass from="input" unit="kg" varName="_MTOM">36053.8827</Maximum_take_off_mass>
+         <Maximum_zero_fuel_mass from="input" unit="kg" varName="_MZFM">29075.1294</Maximum_zero_fuel_mass>
+         <Maximum_landing_mass from="input" unit="kg" varName="_MLM">32287.6164</Maximum_landing_mass>
+         <Maximum_take_off_mass from="input" unit="kg" varName="_MTOM">35890.5510</Maximum_take_off_mass>
       </Weights>
       <Balance id="22"/>
       <Fuselage id="0">
@@ -353,7 +353,7 @@
             <Mean_aerodynamic_chord_xLE_BRF unit="m">30.9999</Mean_aerodynamic_chord_xLE_BRF>
             <Mean_aerodynamic_chord_yLE_BRF unit="m">2.0071</Mean_aerodynamic_chord_yLE_BRF>
             <Mean_dihedral_angle unit="°">0.0000</Mean_dihedral_angle>
-            <AC_to_CG_distance unit="m">18.7663</AC_to_CG_distance>
+            <AC_to_CG_distance unit="m">18.6417</AC_to_CG_distance>
             <AC_to_Wing_AC_distance unit="m">17.6731</AC_to_Wing_AC_distance>
             <Volumetric_ratio unit="">1.4727</Volumetric_ratio>
             <Mean_maximum_thickness>
@@ -475,7 +475,7 @@
             <Mean_aerodynamic_chord_xLE_BRF unit="m">29.1970</Mean_aerodynamic_chord_xLE_BRF>
             <Mean_aerodynamic_chord_yLE_BRF unit="m">1.0526</Mean_aerodynamic_chord_yLE_BRF>
             <Mean_dihedral_angle unit="°">0.0000</Mean_dihedral_angle>
-            <AC_to_CG_distance unit="m">17.2484</AC_to_CG_distance>
+            <AC_to_CG_distance unit="m">17.1238</AC_to_CG_distance>
             <AC_to_Wing_AC_distance unit="m">16.1553</AC_to_Wing_AC_distance>
             <Volumetric_ratio unit="">0.1235</Volumetric_ratio>
             <Mean_maximum_thickness>
@@ -544,9 +544,9 @@
             <Lenght from="input" unit="m" varName="_length">3.0000</Lenght>
             <Mean_diameter from="input" unit="m" varName="_diameterMean">1.8160</Mean_diameter>
             <Inlet_diameter from="input" unit="m" varName="_diameterInlet">1.5380</Inlet_diameter>
-            <Outlet_diameter from="input" unit="m" varName="_diameterOutlet">0.4000</Outlet_diameter>
+            <Outlet_diameter from="input" unit="m" varName="_diameterOutlet">0.6000</Outlet_diameter>
             <Reference_mass from="input" unit="kg" varName="_massReference">380.0000</Reference_mass>
-            <Wetted_surface unit="m²">34.2308</Wetted_surface>
+            <Wetted_surface unit="m²">17.1154</Wetted_surface>
             <FormFactor unit="">1.7159</FormFactor>
          </Nacelle_1>
          <Nacelle_2 id="7199">
@@ -556,9 +556,9 @@
             <Lenght from="input" unit="m" varName="_length">3.0000</Lenght>
             <Mean_diameter from="input" unit="m" varName="_diameterMean">1.8160</Mean_diameter>
             <Inlet_diameter from="input" unit="m" varName="_diameterInlet">1.5380</Inlet_diameter>
-            <Outlet_diameter from="input" unit="m" varName="_diameterOutlet">0.4000</Outlet_diameter>
+            <Outlet_diameter from="input" unit="m" varName="_diameterOutlet">0.6000</Outlet_diameter>
             <Reference_mass from="input" unit="kg" varName="_massReference">380.0000</Reference_mass>
-            <Wetted_surface unit="m²">34.2308</Wetted_surface>
+            <Wetted_surface unit="m²">17.1154</Wetted_surface>
             <FormFactor unit="">1.7159</FormFactor>
          </Nacelle_2>
       </Nacelles>
@@ -588,7 +588,7 @@
             <Number_of_engines from="input" unit="" varName="_engineNumber">2</Number_of_engines>
             <Engines_equal from="input" unit="" varName="_engineEqual">false</Engines_equal>
             <Maximum_total_power_output unit="W">118264373.6820</Maximum_total_power_output>
-            <Maximum_total_thrust unit="N">123563.7900</Maximum_total_thrust>
+            <Maximum_total_thrust unit="N">137293.1000</Maximum_total_thrust>
             <Total_Reference_mass from="input" unit="kg" varName="_dryMassPublicDomain">1054.6930</Total_Reference_mass>
          </Power_plant_parameters>
          <Engine_1 id="8099" level="3">
@@ -597,7 +597,7 @@
             <Ycoordinate from="input" unit="m" varName="_Y0">0.0000</Ycoordinate>
             <Zcoordinate from="input" unit="m" varName="_Z0">0.0000</Zcoordinate>
             <Mounting_point from="input" unit="" varName="_mountingPoint">WING</Mounting_point>
-            <Maximum_thrust from="input" unit="N" varName="_t0">61781.8950</Maximum_thrust>
+            <Maximum_thrust from="input" unit="N" varName="_t0">68646.5500</Maximum_thrust>
             <Maximum_power_output from="input" unit="W" varName="_p0">59132186.8410</Maximum_power_output>
             <BPR from="input" unit="" varName="_bpr">6.0000</BPR>
             <Dry_engine_mass_from_public_domain from="input" unit="kg" varName="_dryMassPublicDomain">527.3465</Dry_engine_mass_from_public_domain>
@@ -608,7 +608,7 @@
             <Ycoordinate from="input" unit="m" varName="_Y0">0.0000</Ycoordinate>
             <Zcoordinate from="input" unit="m" varName="_Z0">0.0000</Zcoordinate>
             <Mounting_point from="input" unit="" varName="_mountingPoint">WING</Mounting_point>
-            <Maximum_thrust from="input" unit="N" varName="_t0">61781.8950</Maximum_thrust>
+            <Maximum_thrust from="input" unit="N" varName="_t0">68646.5500</Maximum_thrust>
             <Maximum_power_output from="input" unit="W" varName="_p0">59132186.8410</Maximum_power_output>
             <BPR from="input" unit="" varName="_bpr">6.0000</BPR>
             <Dry_engine_mass_from_public_domain from="input" unit="kg" varName="_dryMassPublicDomain">527.3465</Dry_engine_mass_from_public_domain>
@@ -647,42 +647,42 @@
       <Whole_configuration_aerodynamics>
          <Drag_Polar>
             <OswaldFactor unit="">0.6963</OswaldFactor>
-            <K_Excrescences unit="">0.0733</K_Excrescences>
-            <CDTotalCurrent unit="">0.1232</CDTotalCurrent>
-            <CDRoughness unit="">0.001548</CDRoughness>
-            <CDCoolings unit="">0.001520</CDCoolings>
+            <K_Excrescences unit="">0.0736</K_Excrescences>
+            <CDTotalCurrent unit="">0.1191</CDTotalCurrent>
+            <CDRoughness unit="">0.001324</CDRoughness>
+            <CDCoolings unit="">0.001352</CDCoolings>
             <CD0>
-               <Nacelle unit="">0.006402</Nacelle>
+               <Nacelle unit="">0.002669</Nacelle>
                <Fuselage unit="">0.0100</Fuselage>
-               <Wing unit="">0.006568</Wing>
-               <Vertical_tail unit="">0.001193</Vertical_tail>
-               <Horizontal_tail unit="">0.001626</Horizontal_tail>
-               <All unit="">0.0289</All>
+               <Wing unit="">0.006570</Wing>
+               <Vertical_tail unit="">0.001194</Vertical_tail>
+               <Horizontal_tail unit="">0.001627</Horizontal_tail>
+               <All unit="">0.0247</All>
             </CD0>
             <CDWave unit="">not_initialized</CDWave>
             <Maximum_efficiency_point>
-               <Efficiency unit="">14.1916</Efficiency>
-               <CD unit="">0.0516</CD>
-               <CL unit="">0.7322</CL>
-               <Drag unit="N">24913.7948</Drag>
-               <Speed unit="m/s">187.8802</Speed>
-               <Power unit="W">4680808.4732</Power>
+               <Efficiency unit="">15.3448</Efficiency>
+               <CD unit="">0.0441</CD>
+               <CL unit="">0.6772</CL>
+               <Drag unit="N">22937.1562</Drag>
+               <Speed unit="m/s">194.9213</Speed>
+               <Power unit="W">4470939.5765</Power>
             </Maximum_efficiency_point>
             <Minimum_power_required_point>
-               <Efficiency unit="">12.2903</Efficiency>
-               <CD unit="">0.1032</CD>
-               <CL unit="">1.2682</CL>
-               <Drag unit="N">24913.7948</Drag>
-               <Speed unit="m/s">142.7581</Speed>
-               <Power unit="W">4106860.2608</Power>
+               <Efficiency unit="">13.2890</Efficiency>
+               <CD unit="">0.0883</CD>
+               <CL unit="">1.1729</CL>
+               <Drag unit="N">22937.1562</Drag>
+               <Speed unit="m/s">148.1081</Speed>
+               <Power unit="W">3922724.9267</Power>
             </Minimum_power_required_point>
             <Maximum_range_point>
-               <Efficiency unit="">12.2903</Efficiency>
-               <CD unit="">0.0344</CD>
-               <CL unit="">0.4227</CL>
-               <Drag unit="N">28767.9722</Drag>
-               <Speed unit="m/s">247.2642</Speed>
-               <Power unit="W">7113290.6312</Power>
+               <Efficiency unit="">13.2890</Efficiency>
+               <CD unit="">0.0294</CD>
+               <CL unit="">0.3910</CL>
+               <Drag unit="N">26485.5466</Drag>
+               <Speed unit="m/s">256.5308</Speed>
+               <Power unit="W">6794358.8772</Power>
             </Maximum_range_point>
             <CD unit="">not_initialized</CD>
             <CL unit="">not_initialized</CL>
@@ -696,32 +696,32 @@
          </Static_stability>
       </Whole_configuration_aerodynamics>
       <Weights_Breakdown>
-         <Fuselage_mass unit="kg">4742.3750</Fuselage_mass>
-         <Wing_mass unit="kg">3371.2000</Wing_mass>
+         <Fuselage_mass unit="kg">4737.1250</Fuselage_mass>
+         <Wing_mass unit="kg">3361.6000</Wing_mass>
          <HTail_mass unit="kg">420.0000</HTail_mass>
          <VTail_mass unit="kg">337.0000</VTail_mass>
-         <Nacelles_mass unit="kg">854.0000</Nacelles_mass>
-         <Landing_gear_mass unit="kg">1496.0000</Landing_gear_mass>
-         <Structure_mass unit="kg">11220.5750</Structure_mass>
+         <Nacelles_mass unit="kg">707.3333</Nacelles_mass>
+         <Landing_gear_mass unit="kg">1489.6667</Landing_gear_mass>
+         <Structure_mass unit="kg">11052.7250</Structure_mass>
          <Power_plant_mass unit="kg">2325.2000</Power_plant_mass>
          <Systems_mass unit="kg">3120.3316</Systems_mass>
          <Furnishings_and_Equipment_mass unit="kg">1667.0000</Furnishings_and_Equipment_mass>
-         <Manufacturer_empty_mass unit="kg">18333.1066</Manufacturer_empty_mass>
+         <Manufacturer_empty_mass unit="kg">18165.2566</Manufacturer_empty_mass>
          <Crew_mass unit="kg">382.5727</Crew_mass>
          <Operating_Items_mass unit="kg">1347.3000</Operating_Items_mass>
-         <Operating_empty_mass unit="kg">20062.9794</Operating_empty_mass>
+         <Operating_empty_mass unit="kg">19895.1294</Operating_empty_mass>
          <Passengers_mass unit="kg">9180.0000</Passengers_mass>
-         <ZeroFuelMass unit="kg">29242.9794</ZeroFuelMass>
+         <ZeroFuelMass unit="kg">29075.1294</ZeroFuelMass>
       </Weights_Breakdown>
       <Balance>
-         <Xcg_structure_MAC unit="">-0.028980</Xcg_structure_MAC>
-         <Xcg_structure_BRF unit="m">13.0097</Xcg_structure_BRF>
-         <Xcg_structure_and_engines_MAC unit="">-0.759683</Xcg_structure_and_engines_MAC>
-         <Xcg_structure_and_engines_BRF unit="m">10.7765</Xcg_structure_and_engines_BRF>
-         <Xcg_MAC_MZFM unit="">-0.202601</Xcg_MAC_MZFM>
-         <Xcg_BRF_MZFM unit="m">12.4791</Xcg_BRF_MZFM>
-         <Xcg_MTOM_MAC unit="">-0.107686</Xcg_MTOM_MAC>
-         <Xcg_MTOM_BRF unit="m">12.7691</Xcg_MTOM_BRF>
+         <Xcg_structure_MAC unit="">0.0656</Xcg_structure_MAC>
+         <Xcg_structure_BRF unit="m">13.2988</Xcg_structure_BRF>
+         <Xcg_structure_and_engines_MAC unit="">-0.690686</Xcg_structure_and_engines_MAC>
+         <Xcg_structure_and_engines_BRF unit="m">10.9874</Xcg_structure_and_engines_BRF>
+         <Xcg_MAC_MZFM unit="">-0.152173</Xcg_MAC_MZFM>
+         <Xcg_BRF_MZFM unit="m">12.6332</Xcg_BRF_MZFM>
+         <Xcg_MTOM_MAC unit="">-0.066916</Xcg_MTOM_MAC>
+         <Xcg_MTOM_BRF unit="m">12.8937</Xcg_MTOM_BRF>
       </Balance>
       <Performances_Analysis>
          <Speeds>
@@ -733,52 +733,52 @@
          <Number_of_crew_members unit="">5.0000</Number_of_crew_members>
          <Furnishings_and_equipment_mass unit="kg">1667.0000</Furnishings_and_equipment_mass>
          <Cabin_Center_of_Gravity_X unit="m">16.2000</Cabin_Center_of_Gravity_X>
-         <Cabin_Center_of_Gravity_X_boarding_front_to_rear_window_seats unit="">[12.21911648748985 m, 12.18305080881992 m, 12.15559044935486 m, 12.13648317189171 m, 12.12548650186843 m, 12.12236725957123 m, 12.12690111898459 m, 12.13887219153031 m, 12.15807263307267 m, 12.18430227268651 m, 12.21736826179511 m, 12.25708474238556 m, 12.30327253310256 m, 12.35575883210636 m, 12.41437693565985 m, 12.47896597148172 m, 12.54937064596974 m, 12.62544100445951 m, 12.70703220374122 m, 12.79400429610937 m, 12.88622202426895 m, 12.98355462646671 m]</Cabin_Center_of_Gravity_X_boarding_front_to_rear_window_seats>
-         <Cabin_Center_of_Gravity_X_boarding_front_to_rear_aisle_seats unit="">[12.94083816410702 m, 12.90535870908161 m, 12.87694024691994 m, 12.85541242515030 m, 12.84061032744854 m, 12.83237425851199 m, 12.83054953906901 m, 12.83498631047147 m, 12.84553934835147 m, 12.86206788485558 m, 12.88443543899946 m, 12.91250965471332 m, 12.94616214617458 m, 12.98526835004800 m, 13.02970738427599 m, 13.07936191308291 m, 13.13411801787659 m, 13.19386507374869 m, 13.25849563129271 m, 13.32790530347439 m, 13.40199265730421 m, 13.48065911007603 m]</Cabin_Center_of_Gravity_X_boarding_front_to_rear_aisle_seats>
+         <Cabin_Center_of_Gravity_X_boarding_front_to_rear_window_seats unit="">[12.21874124302809 m, 12.18238117258286 m, 12.15470271259937 m, 12.13544932730345 m, 12.12437448961791 m, 12.12124119776804 m, 12.12582151963510 m, 12.13789616301730 m, 12.15725407009555 m, 12.18369203452858 m, 12.21701433971742 m, 12.25703241688659 m, 12.30356452172676 m, 12.35643542843386 m, 12.41547614006247 m, 12.48052361418754 m, 12.55142050293875 m, 12.62801490653665 m, 12.71016013951947 m, 12.79771450890473 m, 12.89054110358078 m, 12.98850759427066 m]</Cabin_Center_of_Gravity_X_boarding_front_to_rear_window_seats>
+         <Cabin_Center_of_Gravity_X_boarding_front_to_rear_aisle_seats unit="">[12.94545842273125 m, 12.90970073272966 m, 12.88105599401555 m, 12.85935145751783 m, 12.84441992321571 m, 12.83609951910525 m, 12.83423349064766 m, 12.83867000012399 m, 12.84926193535658 m, 12.86586672729116 m, 12.88834617596435 m, 12.91656628441031 m, 12.95039710008709 m, 12.98971256342868 m, 13.03439036315170 m, 13.08431179796811 m, 13.13936164437524 m, 13.19942803021403 m, 13.26440231370386 m, 13.33417896767921 m, 13.40865546876911 m, 13.48773219127488 m]</Cabin_Center_of_Gravity_X_boarding_front_to_rear_aisle_seats>
          <Cabin_Center_of_Gravity_X_boarding_front_to_rear_other_seats unit="">[]</Cabin_Center_of_Gravity_X_boarding_front_to_rear_other_seats>
-         <Cabin_Center_of_Gravity_X_boarding_rear_to_front_window_seats unit="">[12.38821914162009 m, 12.50194126770051 m, 12.60552560240277 m, 12.69926930241342 m, 12.78345802320506 m, 12.85836647013559 m, 12.92425891816005 m, 12.98138970222114 m, 13.03000368023022 m, 13.07033667040981 m, 13.10261586463878 m, 13.12706021932257 m, 13.14388082520119 m, 13.15328125740758 m, 13.15545790699576 m, 13.15060029507325 m, 13.13889137059342 m, 13.12050779279083 m, 13.09562019917567 m, 13.06439345994142 m, 13.02698691958263 m, 12.98355462646671 m]</Cabin_Center_of_Gravity_X_boarding_rear_to_front_window_seats>
-         <Cabin_Center_of_Gravity_X_boarding_rear_to_front_aisle_seats unit="">[13.07928303820532 m, 13.16690786569399 m, 13.24662619980543 m, 13.31862879143195 m, 13.38310030438072 m, 13.44021955625961 m, 13.49015974801363 m, 13.53308868273107 m, 13.56916897429999 m, 13.59855824646002 m, 13.62140932276159 m, 13.63787040791322 m, 13.64808526096911 m, 13.65219336078219 m, 13.65033006412257 m, 13.64262675683795 m, 13.62921099841067 m, 13.61020666024551 m, 13.58573405800306 m, 13.55591007827576 m, 13.52084829988678 m, 13.48065911007603 m]</Cabin_Center_of_Gravity_X_boarding_rear_to_front_aisle_seats>
+         <Cabin_Center_of_Gravity_X_boarding_rear_to_front_window_seats unit="">[12.38925609168653 m, 12.50390796217826 m, 12.60832056614303 m, 12.70279646704840 m, 12.78762642390280 m, 12.86308996138078 m, 12.92945590722159 m, 12.98698289907220 m, 13.03591986278242 m, 13.07650646401081 m, 13.10897353486267 m, 13.13354347715612 m, 13.15043064379620 m, 13.15984169963137 m, 13.16197596306849 m, 13.15702572963301 m, 13.14517657857760 m, 13.12660766356667 m, 13.10149198839317 m, 13.06999666861925 m, 13.03228317997209 m, 12.98850759427066 m]</Cabin_Center_of_Gravity_X_boarding_rear_to_front_window_seats>
+         <Cabin_Center_of_Gravity_X_boarding_rear_to_front_aisle_seats unit="">[13.08484842433031 m, 13.17302072540643 m, 13.25322450205459 m, 13.32565328226860 m, 13.39049437753091 m, 13.44792913043272 m, 13.49813315055167 m, 13.54127653923160 m, 13.57752410386875 m, 13.60703556227163 m, 13.62996573762679 m, 13.64646474457055 m, 13.65667816683645 m, 13.66074722691998 m, 13.65880894817614 m, 13.65099630974050 m, 13.63743839464180 m, 13.61826053145273 m, 13.59358442980516 m, 13.56352831007798 m, 13.52820702754758 m, 13.48773219127488 m]</Cabin_Center_of_Gravity_X_boarding_rear_to_front_aisle_seats>
          <Cabin_Center_of_Gravity_X_boarding_rear_to_front_other_seats unit="">[]</Cabin_Center_of_Gravity_X_boarding_rear_to_front_other_seats>
       </Configuration_Analysis>
       <Costs_Analysis>
          <Fixed_charges>
             <Depreciation>
-               <Jenkinson unit="">613.0219</Jenkinson>
-               <Kundu unit="">613.0219</Kundu>
-               <Sforza unit="">557.2920</Sforza>
+               <Jenkinson unit="">606.4201</Jenkinson>
+               <Kundu unit="">606.4201</Kundu>
+               <Sforza unit="">551.2904</Sforza>
             </Depreciation>
             <Interests>
-               <Jenkinson unit="">505.4025</Jenkinson>
-               <Kundu unit="">505.4025</Kundu>
+               <Jenkinson unit="">499.9597</Jenkinson>
+               <Kundu unit="">499.9597</Kundu>
             </Interests>
             <Insurance>
-               <Jenkinson unit="">43.3450</Jenkinson>
-               <Kundu unit="">43.3450</Kundu>
-               <Sforza unit="">43.3450</Sforza>
+               <Jenkinson unit="">42.8782</Jenkinson>
+               <Kundu unit="">42.8782</Kundu>
+               <Sforza unit="">42.8782</Sforza>
             </Insurance>
             <Crew>
                <Jenkinson unit="">901.5000</Jenkinson>
                <Kundu unit="">901.5000</Kundu>
-               <Sforza unit="">864.1403</Sforza>
+               <Sforza unit="">864.0147</Sforza>
             </Crew>
          </Fixed_charges>
          <Trip_charges>
             <Landing_fees>
-               <Jenkinson unit="">57.4558</Jenkinson>
-               <Kundu unit="">57.4558</Kundu>
+               <Jenkinson unit="">57.1955</Jenkinson>
+               <Kundu unit="">57.1955</Kundu>
             </Landing_fees>
             <Navigational_charges>
                <Jenkinson unit="">1152.3023</Jenkinson>
-               <Kundu unit="">303.6102</Kundu>
+               <Kundu unit="">302.9217</Kundu>
             </Navigational_charges>
             <Ground_handling_charges>
                <Jenkinson unit="">202.2658</Jenkinson>
                <Kundu unit="">187.5556</Kundu>
             </Ground_handling_charges>
             <Maintenance_costs>
-               <Jenkinson unit="">293.0917</Jenkinson>
-               <Kundu unit="">430.1051</Kundu>
-               <Sforza unit="">390.7920</Sforza>
+               <Jenkinson unit="">296.3850</Jenkinson>
+               <Kundu unit="">433.6501</Kundu>
+               <Sforza unit="">388.1260</Sforza>
             </Maintenance_costs>
             <Fuel_and_oil_costs>
                <Jenkinson unit="">2724.0000</Jenkinson>
@@ -801,14 +801,14 @@
             <Weight_estimation_methods_comparison>
                <Jenkinson unit="kg">6465.0000</Jenkinson>
                <Percent_error unit="">5.8795</Percent_error>
-               <Kroo unit="kg">4214.0000</Kroo>
-               <Percent_error unit="">-30.985915</Percent_error>
-               <Nicolai_1984 unit="kg">4039.0000</Nicolai_1984>
-               <Percent_error unit="">-33.851949</Percent_error>
-               <Raymer unit="kg">4317.0000</Raymer>
-               <Percent_error unit="">-29.299050</Percent_error>
-               <Roskam unit="kg">4830.0000</Roskam>
-               <Percent_error unit="">-20.897478</Percent_error>
+               <Kroo unit="kg">4208.0000</Kroo>
+               <Percent_error unit="">-31.084179</Percent_error>
+               <Nicolai_1984 unit="kg">4033.0000</Nicolai_1984>
+               <Percent_error unit="">-33.950213</Percent_error>
+               <Raymer unit="kg">4308.0000</Raymer>
+               <Percent_error unit="">-29.446446</Percent_error>
+               <Roskam unit="kg">4809.0000</Roskam>
+               <Percent_error unit="">-21.241402</Percent_error>
                <Sadray unit="kg">3694.0000</Sadray>
                <Percent_error unit="">-39.502129</Percent_error>
                <Torenbeek_1976 unit="kg">5203.0000</Torenbeek_1976>
@@ -816,7 +816,7 @@
                <Torenbeek_2013 unit="kg">5177.0000</Torenbeek_2013>
                <Percent_error unit="">-15.214543</Percent_error>
             </Weight_estimation_methods_comparison>
-            <Estimated_mass unit="kg">4742.3750</Estimated_mass>
+            <Estimated_mass unit="kg">4737.1250</Estimated_mass>
          </Weights>
          <Balance>
             <Xcg_estimation_method_comparison>
@@ -836,7 +836,7 @@
             <BaseDiameter unit="">0.1043</BaseDiameter>
             <FrictionCoefficient_Cf unit="">0.001859</FrictionCoefficient_Cf>
             <Cd0Parasite unit="">0.007614</Cd0Parasite>
-            <Cd0Base unit="">0.000005</Cd0Base>
+            <Cd0Base unit="">0.000000</Cd0Base>
             <Cd0Upsweep unit="">0.000430</Cd0Upsweep>
             <Cd0Windshield unit="">0.001400</Cd0Windshield>
             <Cd0 unit="">0.0100</Cd0>
@@ -857,22 +857,22 @@
             <Composite_correction_factor unit="">0.1000</Composite_correction_factor>
             <Mass_correction_factor unit="">1.0000</Mass_correction_factor>
             <Weight_estimation_method_comparison>
-               <Jenkinson unit="kg">4839.0000</Jenkinson>
-               <Percent_error unit="">40.9554</Percent_error>
-               <Kroo unit="kg">3968.0000</Kroo>
-               <Percent_error unit="">15.5840</Percent_error>
-               <Raymer unit="kg">2575.0000</Raymer>
-               <Percent_error unit="">-24.992718</Percent_error>
-               <Roskam unit="kg">3150.0000</Roskam>
-               <Percent_error unit="">-8.243519</Percent_error>
+               <Jenkinson unit="kg">4829.0000</Jenkinson>
+               <Percent_error unit="">40.6641</Percent_error>
+               <Kroo unit="kg">3956.0000</Kroo>
+               <Percent_error unit="">15.2345</Percent_error>
+               <Raymer unit="kg">2569.0000</Raymer>
+               <Percent_error unit="">-25.167492</Percent_error>
+               <Roskam unit="kg">3138.0000</Roskam>
+               <Percent_error unit="">-8.593067</Percent_error>
                <Sadray unit="kg">2793.0000</Sadray>
                <Percent_error unit="">-18.642587</Percent_error>
-               <Torenbeek_1982 unit="kg">3466.0000</Torenbeek_1982>
-               <Percent_error unit="">0.9613</Percent_error>
-               <Torenbeek_2013 unit="kg">3479.0000</Torenbeek_2013>
-               <Percent_error unit="">1.3399</Percent_error>
+               <Torenbeek_1982 unit="kg">3452.0000</Torenbeek_1982>
+               <Percent_error unit="">0.5535</Percent_error>
+               <Torenbeek_2013 unit="kg">3469.0000</Torenbeek_2013>
+               <Percent_error unit="">1.0486</Percent_error>
             </Weight_estimation_method_comparison>
-            <Estimated_mass unit="kg">3371.2000</Estimated_mass>
+            <Estimated_mass unit="kg">3361.6000</Estimated_mass>
          </Weights>
          <Balance>
             <Xcg_estimation_method_comparison>
@@ -916,7 +916,7 @@
             <CdWaveAtCurrentCL>
                <Lock_korn unit="">0.000047</Lock_korn>
             </CdWaveAtCurrentCL>
-            <Cd0 unit="">0.006568</Cd0>
+            <Cd0 unit="">0.006570</Cd0>
             <Current_lift_coefficient unit="">1.5559</Current_lift_coefficient>
             <Alpha_zero_lift>
                <Integral_mean_no_twist unit="">-0.065444</Integral_mean_no_twist>
@@ -937,7 +937,7 @@
                <Total unit="">-0.126270</Total>
             </CMac>
             <CMalpha>
-               <Anderson_compressible_subsonic unit="">-4.575147</Anderson_compressible_subsonic>
+               <Anderson_compressible_subsonic unit="">-4.053657</Anderson_compressible_subsonic>
                <Polhamus unit="">0.000000</Polhamus>
             </CMalpha>
             <Alpha unit="">[-2.00000000000000 °, 0.142857142857143 °, 2.28571428571429 °, 4.42857142857143 °, 6.57142857142857 °, 8.7142857142857 °, 10.8571428571429 °, 13.0000000000000 °, 15.1428571428571 °, 17.2857142857143 °, 19.4285714285714 °, 21.5714285714286 °, 23.7142857142857 °, 25.8571428571429 °, 28.0000000000000 °]</Alpha>
@@ -1085,8 +1085,8 @@
                <Percent_error unit="">-15.594855</Percent_error>
                <Kroo unit="kg">348.0000</Kroo>
                <Percent_error unit="">-30.064309</Percent_error>
-               <Raymer unit="kg">260.0000</Raymer>
-               <Percent_error unit="">-47.749196</Percent_error>
+               <Raymer unit="kg">259.0000</Raymer>
+               <Percent_error unit="">-47.950161</Percent_error>
             </Weight_estimation_method_comparison>
             <Estimated_mass unit="kg">420.0000</Estimated_mass>
          </Weights>
@@ -1118,7 +1118,7 @@
             <Critical_Mach_number>
                <Korn_mason unit="">0.8603</Korn_mason>
             </Critical_Mach_number>
-            <CG-ACtail_distance unit="m">18.7663</CG-ACtail_distance>
+            <CG-ACtail_distance unit="m">18.6417</CG-ACtail_distance>
             <ACwing-ACtail_distance unit="m">17.6731</ACwing-ACtail_distance>
             <VolumetricRatio_Vh unit="">1.4727</VolumetricRatio_Vh>
             <FrictionCoefficient_Cf unit="">0.002501</FrictionCoefficient_Cf>
@@ -1129,7 +1129,7 @@
             <CdWaveAtCurrentCL>
                <Lock_korn unit="">0.000000</Lock_korn>
             </CdWaveAtCurrentCL>
-            <Cd0 unit="">0.001626</Cd0>
+            <Cd0 unit="">0.001627</Cd0>
             <Current_lift_coefficient unit="">1.5012</Current_lift_coefficient>
             <Alpha_zero_lift>
                <Integral_mean_no_twist unit="">-0.065450</Integral_mean_no_twist>
@@ -1150,7 +1150,7 @@
                <Total unit="">-0.137439</Total>
             </CMac>
             <CMalpha>
-               <Anderson_compressible_subsonic unit="">-64.996272</Anderson_compressible_subsonic>
+               <Anderson_compressible_subsonic unit="">-64.564718</Anderson_compressible_subsonic>
                <Polhamus unit="">0.000000</Polhamus>
             </CMalpha>
             <Alpha unit="">[-2.00000000000000 °, 0.142857142857143 °, 2.28571428571429 °, 4.42857142857143 °, 6.57142857142857 °, 8.7142857142857 °, 10.8571428571429 °, 13.0000000000000 °, 15.1428571428571 °, 17.2857142857143 °, 19.4285714285714 °, 21.5714285714286 °, 23.7142857142857 °, 25.8571428571429 °, 28.0000000000000 °]</Alpha>
@@ -1325,7 +1325,7 @@
             <Critical_Mach_number>
                <Korn_mason unit="">0.9260</Korn_mason>
             </Critical_Mach_number>
-            <CG-ACtail_distance unit="m">17.2484</CG-ACtail_distance>
+            <CG-ACtail_distance unit="m">17.1238</CG-ACtail_distance>
             <ACwing-ACtail_distance unit="m">16.1553</ACwing-ACtail_distance>
             <VolumetricRatio_Vt unit="">0.1235</VolumetricRatio_Vt>
             <FrictionCoefficient_Cf unit="">0.002333</FrictionCoefficient_Cf>
@@ -1336,7 +1336,7 @@
             <CdWaveAtCurrentCL>
                <Lock_korn unit="">0.000000</Lock_korn>
             </CdWaveAtCurrentCL>
-            <Cd0 unit="">0.001193</Cd0>
+            <Cd0 unit="">0.001194</Cd0>
             <Current_lift_coefficient unit="">3.8108</Current_lift_coefficient>
             <Alpha_zero_lift>
                <Integral_mean_no_twist unit="">-0.085805</Integral_mean_no_twist>
@@ -1356,7 +1356,7 @@
                <Total unit="">-0.257832</Total>
             </CMac>
             <CMalpha>
-               <Anderson_compressible_subsonic unit="">-13.141909</Anderson_compressible_subsonic>
+               <Anderson_compressible_subsonic unit="">-13.046972</Anderson_compressible_subsonic>
                <Polhamus unit="">0.000000</Polhamus>
             </CMalpha>
             <Alpha unit="">[-2.00000000000000 °, 0.142857142857143 °, 2.28571428571429 °, 4.42857142857143 °, 6.57142857142857 °, 8.7142857142857 °, 10.8571428571429 °, 13.0000000000000 °, 15.1428571428571 °, 17.2857142857143 °, 19.4285714285714 °, 21.5714285714286 °, 23.7142857142857 °, 25.8571428571429 °, 28.0000000000000 °]</Alpha>
@@ -1497,12 +1497,12 @@
                <Reference_mass unit="kg">380.0000</Reference_mass>
                <All_nacelles_mass unit="">not_initialized</All_nacelles_mass>
                <Weight_estimation_methods_comparison>
-                  <Jenkinson unit="kg">420.0000</Jenkinson>
-                  <Percent_error unit="">10.5263</Percent_error>
-                  <Torenbeek_1976 unit="kg">515.0000</Torenbeek_1976>
-                  <Percent_error unit="">35.5263</Percent_error>
-                  <Torenbeek_1982 unit="kg">346.0000</Torenbeek_1982>
-                  <Percent_error unit="">-8.947368</Percent_error>
+                  <Jenkinson unit="kg">467.0000</Jenkinson>
+                  <Percent_error unit="">22.8947</Percent_error>
+                  <Torenbeek_1976 unit="kg">209.0000</Torenbeek_1976>
+                  <Percent_error unit="">-45.000000</Percent_error>
+                  <Torenbeek_1982 unit="kg">385.0000</Torenbeek_1982>
+                  <Percent_error unit="">1.3158</Percent_error>
                </Weight_estimation_methods_comparison>
                <Estimated_mass unit="">not_initialized</Estimated_mass>
             </Weights>
@@ -1516,9 +1516,9 @@
             </Balance>
             <Aerodynamics>
                <FrictionCoefficient_Cf unit="">0.002682</FrictionCoefficient_Cf>
-               <Cd0Parasite unit="">0.002100</Cd0Parasite>
-               <Cd0Base unit="">0.000947</Cd0Base>
-               <Cd0Nacelle unit="">0.003201</Cd0Nacelle>
+               <Cd0Parasite unit="">0.001050</Cd0Parasite>
+               <Cd0Base unit="">0.000207</Cd0Base>
+               <Cd0Nacelle unit="">0.001335</Cd0Nacelle>
             </Aerodynamics>
          </Nacelle_Analysis>
          <Nacelle_Analysis>
@@ -1526,12 +1526,12 @@
                <Reference_mass unit="kg">380.0000</Reference_mass>
                <All_nacelles_mass unit="">not_initialized</All_nacelles_mass>
                <Weight_estimation_methods_comparison>
-                  <Jenkinson unit="kg">420.0000</Jenkinson>
-                  <Percent_error unit="">10.5263</Percent_error>
-                  <Torenbeek_1976 unit="kg">515.0000</Torenbeek_1976>
-                  <Percent_error unit="">35.5263</Percent_error>
-                  <Torenbeek_1982 unit="kg">346.0000</Torenbeek_1982>
-                  <Percent_error unit="">-8.947368</Percent_error>
+                  <Jenkinson unit="kg">467.0000</Jenkinson>
+                  <Percent_error unit="">22.8947</Percent_error>
+                  <Torenbeek_1976 unit="kg">209.0000</Torenbeek_1976>
+                  <Percent_error unit="">-45.000000</Percent_error>
+                  <Torenbeek_1982 unit="kg">385.0000</Torenbeek_1982>
+                  <Percent_error unit="">1.3158</Percent_error>
                </Weight_estimation_methods_comparison>
                <Estimated_mass unit="">not_initialized</Estimated_mass>
             </Weights>
@@ -1545,27 +1545,27 @@
             </Balance>
             <Aerodynamics>
                <FrictionCoefficient_Cf unit="">0.002682</FrictionCoefficient_Cf>
-               <Cd0Parasite unit="">0.002100</Cd0Parasite>
-               <Cd0Base unit="">0.000947</Cd0Base>
-               <Cd0Nacelle unit="">0.003201</Cd0Nacelle>
+               <Cd0Parasite unit="">0.001050</Cd0Parasite>
+               <Cd0Base unit="">0.000207</Cd0Base>
+               <Cd0Nacelle unit="">0.001335</Cd0Nacelle>
             </Aerodynamics>
          </Nacelle_Analysis>
       </Nacelles_analysis>
       <Landing_gear_Analysis>
          <Weights>
             <Reference_mass unit="kg">1501.6000</Reference_mass>
-            <Mass unit="kg">1420.4455</Mass>
+            <Mass unit="kg">1413.9656</Mass>
             <Weight_estimation_method_comparison>
-               <Roskam unit="kg">1114.0000</Roskam>
-               <Percent_error unit="">-25.812467</Percent_error>
-               <Stanford unit="kg">1442.0000</Stanford>
-               <Percent_error unit="">-3.969100</Percent_error>
-               <Torenbeek_1982 unit="kg">1626.0000</Torenbeek_1982>
-               <Percent_error unit="">8.2845</Percent_error>
-               <Torenbeek_2013 unit="kg">1420.0000</Torenbeek_2013>
-               <Percent_error unit="">-5.434204</Percent_error>
+               <Roskam unit="kg">1110.0000</Roskam>
+               <Percent_error unit="">-26.078849</Percent_error>
+               <Stanford unit="kg">1436.0000</Stanford>
+               <Percent_error unit="">-4.368673</Percent_error>
+               <Torenbeek_1982 unit="kg">1619.0000</Torenbeek_1982>
+               <Percent_error unit="">7.8183</Percent_error>
+               <Torenbeek_2013 unit="kg">1414.0000</Torenbeek_2013>
+               <Percent_error unit="">-5.833777</Percent_error>
             </Weight_estimation_method_comparison>
-            <Estimated_mass unit="kg">1496.0000</Estimated_mass>
+            <Estimated_mass unit="kg">1489.6667</Estimated_mass>
          </Weights>
          <Balance>
             <Xcg_LRF unit="m">0.0000</Xcg_LRF>

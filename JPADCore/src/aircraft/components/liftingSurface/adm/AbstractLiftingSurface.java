@@ -14,6 +14,10 @@ public abstract class AbstractLiftingSurface implements ILiftingSurface {
 	protected String id;
 
 	protected List<LiftingSurfacePanel> panels;
+	protected List<SymmetricFlaps> symmetricFlaps;
+	protected List<Slats> slats;
+	protected List<AsymmetricFlaps> asymmetricFlaps;
+	protected List<Spoilers> spoilers;
 
 	// in BRF
 	protected Amount<Length> x0;
@@ -33,6 +37,7 @@ public abstract class AbstractLiftingSurface implements ILiftingSurface {
 	protected Amount<Area> surfacePlanform;
 	protected Amount<Area> surfaceWetted;
 
+	protected Amount<Length> semiSpan, span;
 	protected Double aspectRatio;
 	protected Double taperRatio;
 
@@ -40,6 +45,22 @@ public abstract class AbstractLiftingSurface implements ILiftingSurface {
 
 	public List<LiftingSurfacePanel> getPanels() {
 		return panels;
+	}
+
+	public List<SymmetricFlaps> getSymmetricFlaps() {
+		return symmetricFlaps;
+	}
+
+	public List<Slats> getSlats() {
+		return slats;
+	}
+
+	public List<AsymmetricFlaps> getAsymmetricFlaps() {
+		return asymmetricFlaps;
+	}
+
+	public List<Spoilers> getSpoilers() {
+		return spoilers;
 	}
 
 }

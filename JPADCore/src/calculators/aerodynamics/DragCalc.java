@@ -107,7 +107,7 @@ public class DragCalc {
 		// The bigger dbase the lower CdBase
 		switch(method){
 		case NICOLAI_2013 : {return 0.029 * Math.pow(dbase/d,3)/Math.sqrt(cd0Parasite);} // page 354 Nicolai pdf
-		case MATLAB : {return (0.029 * Math.pow(dbase/d,3)/(cd0Parasite*Math.pow((S_ref/(Math.PI*Math.pow(d,2)/4)),0.5))) * Math.pow(S_ref/(Math.PI*Math.pow(d,2)/4),-1);}
+		case MATLAB : {return (0.029 * Math.pow(dbase/d,3)/(Math.pow(cd0Parasite*(S_ref/(Math.PI*Math.pow(d,2)/4)),0.5))) * Math.pow(S_ref/(Math.PI*Math.pow(d,2)/4),-1);}
 		default : return 0.;
 		}
 	}
