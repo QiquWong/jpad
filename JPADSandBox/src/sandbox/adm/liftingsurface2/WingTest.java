@@ -45,7 +45,7 @@ public class WingTest {
 
 	public static void main(String[] args) throws CmdLineException, IOException {
 		System.out.println("--------------");
-		System.out.println("Wing panel test");
+		System.out.println("Wing test");
 		System.out.println("--------------");
 
 		WingTest theTestObject = new WingTest();
