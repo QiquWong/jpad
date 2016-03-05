@@ -368,10 +368,10 @@ public class Landing_Test_TP {
 		System.out.println("\n------------------------RESULTS----------------------------");
 		System.out.println("\nAIRBORNE DISTANCE = " + theLandingCalculator.getsApproach());
 		System.out.println("\nFLARE DISTANCE = " + theLandingCalculator.getsFlare());
-		System.out.println("\nGROUND ROLL DISTANCE = " + theLandingCalculator.getsGround());
-		System.out.println("\nTOTAL LANDING DISTANCE = " + (theLandingCalculator.getsApproach()
-				.plus(theLandingCalculator.getsFlare())
-				.plus(theLandingCalculator.getsGround())));
+		System.out.println("\nGROUND ROLL DISTANCE = " + (theLandingCalculator.getsGround()
+				.minus(theLandingCalculator.getsApproach())
+				.minus(theLandingCalculator.getsFlare())));
+		System.out.println("\nTOTAL LANDING DISTANCE = " + theLandingCalculator.getsGround());
 		System.out.println("-----------------------------------------------------------\n");	
 	}
 

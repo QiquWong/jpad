@@ -20,6 +20,7 @@ import org.apache.commons.math3.ode.nonstiff.HighamHall54Integrator;
 import org.apache.commons.math3.ode.sampling.StepHandler;
 import org.apache.commons.math3.ode.sampling.StepInterpolator;
 import org.jscience.physics.amount.Amount;
+import com.sun.org.apache.bcel.internal.generic.LNEG;
 import aircraft.OperatingConditions;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcHighLiftDevices;
@@ -27,9 +28,11 @@ import calculators.performance.ThrustCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.FoldersEnum;
+import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
+import standaloneutils.customdata.MyArray;
 import writers.JPADStaticWriteUtils;
 
 /**
@@ -68,7 +71,7 @@ public class CalcLanding {
 	private List<Amount<Velocity>> speed;
 	private List<Amount<Acceleration>> acceleration;
 	private List<Amount<Force>> thrust, lift, drag, friction, totalForce;
-	private List<Amount<Length>> groundDistance;
+	private List<Amount<Length>> landingDistance, verticalDistance;
 	private double mu, muBrake, cLmaxLanding, kGround, cL0, cLground, kA, kFlare, kTD, phiRev;
 	private double oswald, cD0, cLalphaFlap, deltaCD0FlapLandinGears;
 
@@ -181,7 +184,8 @@ public class CalcLanding {
 		this.friction = new ArrayList<Amount<Force>>();
 		this.totalForce = new ArrayList<Amount<Force>>();
 		this.acceleration = new ArrayList<Amount<Acceleration>>();
-		this.groundDistance = new ArrayList<Amount<Length>>();
+		this.landingDistance = new ArrayList<Amount<Length>>();
+		this.verticalDistance = new ArrayList<Amount<Length>>();
 
 	}
 
@@ -297,7 +301,8 @@ public class CalcLanding {
 		this.friction = new ArrayList<Amount<Force>>();
 		this.totalForce = new ArrayList<Amount<Force>>();
 		this.acceleration = new ArrayList<Amount<Acceleration>>();
-		this.groundDistance = new ArrayList<Amount<Length>>();
+		this.landingDistance = new ArrayList<Amount<Length>>();
+		this.verticalDistance = new ArrayList<Amount<Length>>();
 	}
 
 	//-------------------------------------------------------------------------------------
@@ -321,18 +326,21 @@ public class CalcLanding {
 		friction.clear();
 		totalForce.clear();
 		acceleration.clear();
-		groundDistance.clear();
+		landingDistance.clear();
+		verticalDistance.clear();
 	}
 
 	/**************************************************************************************
-	 * This method performs the calculation of the approach distance using a simplified
+	 * This method performs the calculation of the airborne distance using a simplified
 	 * method in which, known the angle thetaApproach in approach phase (about D/L-T/W), the 
-	 * distance is calculated as sApproach=(obstacle-hFlare)/tan(thetaApproach); where hFlare
-	 * is the altitude at which the aircraft start to rotate.
+	 * approach distance is calculated as sApproach=(obstacle-hFlare)/tan(thetaApproach); where
+	 * hFlare is the altitude at which the aircraft start to rotate. On the other hand, the
+	 * flare distance is calculated as sFlare=R*sin(thetaApproach), where R is the radius 
+	 * of the trajectory measured with the flare speed (vFlare) and assuming a load factor of 1.2.
 	 * 
 	 * @author Vittorio Triari
 	 */
-	public void calculateApproachDistance() {
+	public void calculateAirborneDistance() {
 		
 		double radius = Math.pow(this.vFlare.getEstimatedValue(),2)/(0.2*AtmosphereCalc.g0.getEstimatedValue());
 				
@@ -342,30 +350,46 @@ public class CalcLanding {
 				(this.obstacle.getEstimatedValue()-hFlare)/Math.tan(this.thetaApproach.to(SI.RADIAN).getEstimatedValue()),
 				SI.METER
 				);
-		
-	}
-	
-	/**************************************************************************************
-	 * This method performs the calculation of the approach distance using a simplified
-	 * method in which, known the angle thetaApproach in approach phase (about D/L-T/W), 
-	 * the flare distance is calculated, by assuming the trajectory during the rotation 
-	 * as circular, as sFlare=R*sin(thetaApproach), where R is the radius of the trajectory
-	 * measured with the flare speed (vFlare) and assuming a load factor of 1.2. 
-	 * 
-	 * @author Vittorio Trifari
-	 */
-	public void calculateFlareDistance() {
-		
-		double radius = Math.pow(this.vFlare.getEstimatedValue(),2)/(0.2*AtmosphereCalc.g0.getEstimatedValue());
-			
 		sFlare = Amount.valueOf(
 				radius*Math.sin(this.thetaApproach.to(SI.RADIAN).getEstimatedValue()),
 				SI.METER
 				);
 		
+		// DATA TO PLOT AT THE BEGINNING OF THE APPROACH PHASE
+		landingDistance.add(Amount.valueOf(0.0, SI.METER));
+		verticalDistance.add(obstacle);
+		speed.add(vA);
+
+		// DATA RELATED TO FLARE PHASE TO BE PLOT
+		double[] speedArray = MyArrayUtils.linspace(
+				vA.getEstimatedValue(),
+				vTD.getEstimatedValue(),
+				10);
+		double[] xDistance = MyArrayUtils.linspace(
+				sApproach.getEstimatedValue(),
+				sApproach.plus(sFlare).getEstimatedValue(),
+				10);
+		double[] yDistance = new double[xDistance.length];
+		
+		double a = -2*sApproach.plus(sFlare).getEstimatedValue();
+		double b = -2*radius;
+		double c = Math.pow(sApproach.plus(sFlare).getEstimatedValue(), 2);
+		
+		for(int i=0; i<xDistance.length; i++) {
+			yDistance[i] = -(Math.sqrt(
+					((Math.pow(b, 2))/4)
+					-c
+					-(a*xDistance[i])
+					-(Math.pow(xDistance[i], 2))))
+					-(b/2);
+			speed.add(Amount.valueOf(speedArray[i], SI.METERS_PER_SECOND));
+			landingDistance.add(Amount.valueOf(xDistance[i], SI.METER));
+			verticalDistance.add(Amount.valueOf(yDistance[i], SI.METER));
+		}
+		
 		System.out.println("\n---------------------------END!!-------------------------------");
 	}
-	
+		
 	/***************************************************************************************
 	 * This method performs the integration of the ground roll distance in landing
 	 * by solving a set of ODE with a HighamHall54Integrator.
@@ -527,22 +551,30 @@ public class CalcLanding {
 							);
 				
 				//----------------------------------------------------------------------------------------
-				// GROUND DISTANCE:
-				CalcLanding.this.getGroundDistance().add(Amount.valueOf(x[0],
+				// LANDING DISTANCE:
+				CalcLanding.this.getLandingDistance().add(Amount.valueOf(x[0],
 						SI.METER)
 						);
+				
+				//----------------------------------------------------------------------------------------
+				// LANDING DISTANCE:
+				CalcLanding.this.getVerticalDistance().add(Amount.valueOf(0.0, SI.METER));
+				
 				//----------------------------------------------------------------------------------------
 			}
 		};
 		theIntegrator.addStepHandler(stepHandler);
 		
-		double[] xAt0 = new double[] {0.0, vTD.getEstimatedValue()}; // initial state
+		double[] xAt0 = new double[] {
+				sApproach.plus(sFlare).getEstimatedValue(),
+				vTD.getEstimatedValue()
+				}; // initial state
 		theIntegrator.integrate(ode, 0.0, xAt0, 100, xAt0); // now xAt0 contains final state
 		
 		theIntegrator.clearEventHandlers();
 		theIntegrator.clearStepHandlers();
 		
-		this.sGround = this.groundDistance.get(this.groundDistance.size()-1);
+		this.sGround = this.landingDistance.get(this.landingDistance.size()-1);
 		
 		System.out.println("\n---------------------------END!!-------------------------------");
 	}
@@ -563,14 +595,18 @@ public class CalcLanding {
 		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "Landing_Performance" + File.separator);
 
 		// data setup
-		double[] time = new double[getTime().size()];
-		for(int i=0; i<time.length; i++)
-			time[i] = getTime().get(i).getEstimatedValue();
-
-		double[] groundDistance = new double[getGroundDistance().size()];
+		double[] groundDistance = new double[getLandingDistance().size()];
 		for(int i=0; i<groundDistance.length; i++)
-			groundDistance[i] = getGroundDistance().get(i).getEstimatedValue();
+			groundDistance[i] = getLandingDistance().get(i).getEstimatedValue();
+		
+		double[] groundRollDistance = new double[getLandingDistance().size()-11];
+		for(int i=0; i<groundRollDistance.length; i++)
+			groundRollDistance[i] = groundDistance[i+11];
 
+		double[] verticalDistance = new double[getVerticalDistance().size()];
+		for(int i=0; i<verticalDistance.length; i++)
+			verticalDistance[i] = getVerticalDistance().get(i).getEstimatedValue();
+		
 		double[] thrust = new double[getThrust().size()];
 		for(int i=0; i<thrust.length; i++)
 			thrust[i] = getThrust().get(i).getEstimatedValue();
@@ -606,71 +642,41 @@ public class CalcLanding {
 		double[] weight = new double[getTime().size()];
 		for(int i=0; i<weight.length; i++)
 			weight[i] = aircraft.get_weights().get_MTOW().getEstimatedValue();
-		
-		// speed v.s. time
-		MyChartToFileUtils.plotNoLegend(
-				time, speed,
-				0.0, null, 0.0, null,
-				"Time", "Speed", "s", "m/s",
-				subfolderPath, "Speed_evolution");
 
-		// speed v.s. ground distance
-		MyChartToFileUtils.plotNoLegend(
-				groundDistance, speed,
-				0.0, null, 0.0, null,
-				"Ground Distance", "Speed", "m", "m/s",
-				subfolderPath, "Speed_vs_GroundDistance");
-
-		// acceleration v.s. time
-		MyChartToFileUtils.plotNoLegend(
-				time, acceleration,
-				0.0, null, null, null,
-				"Time", "Acceleration", "s", "m/(s^2)",
-				subfolderPath, "Acceleration_evolution");
-
-		// acceleration v.s. time
-		MyChartToFileUtils.plotNoLegend(
-				groundDistance, acceleration,
-				0.0, null, null, null,
-				"Ground Distance", "Acceleration", "m", "m/(s^2)",
-				subfolderPath, "Acceleration_vs_GroundDistance");
-
-		// load factor v.s. time
-		MyChartToFileUtils.plotNoLegend(
-				time, loadFactor,
-				0.0, null, 0.0, null,
-				"Time", "Load Factor", "s", "",
-				subfolderPath, "LoadFactor_evolution");
-
-		// load factor v.s. ground distance
-		MyChartToFileUtils.plotNoLegend(
-				groundDistance, loadFactor,
-				0.0, null, 0.0, null,
-				"Ground distance", "Load Factor", "m", "",
-				subfolderPath, "LoadFactor_vs_GroundDistance");
-
-		// Horizontal Forces v.s. Time
-		double[][] xMatrix1 = new double[4][totalForce.length];
+		// landing trajectory and speed
+		double[][] xMatrix1 = new double[2][groundDistance.length];
 		for(int i=0; i<xMatrix1.length; i++)
-			xMatrix1[i] = time;
+			xMatrix1[i] = groundDistance;
 
-		double[][] yMatrix1 = new double[4][totalForce.length];
-		yMatrix1[0] = totalForce;
-		yMatrix1[1] = thrust;
-		yMatrix1[2] = drag;
-		yMatrix1[3] = friction;
+		double[][] yMatrix1 = new double[2][groundDistance.length];
+		yMatrix1[0] = verticalDistance;
+		yMatrix1[1] = speed;
 
 		MyChartToFileUtils.plot(
 				xMatrix1, yMatrix1,
-				0.0, null, null, null,
-				"Time", "Horizontal Forces", "s", "N",
-				new String[] {"Total Force", "Thrust", "Drag", "Friction"},
-				subfolderPath, "HorizontalForces_evolution");
+				0.0, null, -1.0, null,
+				"Ground Distance", "", "m", "",
+				new String[] {"Landing Trajectory", "Speed (m/s)"},
+				subfolderPath, "TrajectoryAndSpeed_vs_GroundDistance");
+		
+		// acceleration v.s. ground roll distance
+		MyChartToFileUtils.plotNoLegend(
+				groundRollDistance, acceleration,
+				sApproach.plus(sFlare).getEstimatedValue(), null, null, null,
+				"Ground Roll Distance", "Acceleration", "m", "m/(s^2)",
+				subfolderPath, "Acceleration_vs_GroundDistance");
 
-		// Horizontal Forces v.s. Ground Distance
+		// load factor v.s. ground roll distance
+		MyChartToFileUtils.plotNoLegend(
+				groundRollDistance, loadFactor,
+				sApproach.plus(sFlare).getEstimatedValue(), null, 0.0, null,
+				"Ground Roll distance", "Load Factor", "m", "",
+				subfolderPath, "LoadFactor_vs_GroundDistance");
+
+		// Horizontal Forces v.s. ground roll distance
 		double[][] xMatrix2 = new double[4][totalForce.length];
 		for(int i=0; i<xMatrix2.length; i++)
-			xMatrix2[i] = groundDistance;
+			xMatrix2[i] = groundRollDistance;
 
 		double[][] yMatrix2 = new double[4][totalForce.length];
 		yMatrix2[0] = totalForce;
@@ -680,15 +686,15 @@ public class CalcLanding {
 
 		MyChartToFileUtils.plot(
 				xMatrix2, yMatrix2,
-				0.0, null, null, null,
-				"Ground Distance", "Horizontal Forces", "m", "N",
+				sApproach.plus(sFlare).getEstimatedValue(), null, null, null,
+				"Ground Roll Distance", "Horizontal Forces", "m", "N",
 				new String[] {"Total Force", "Thrust", "Drag", "Friction"},
 				subfolderPath, "HorizontalForces_vs_GroundDistance");
 
-		// Vertical Forces v.s. Time
+		// Vertical Forces v.s. ground roll distance
 		double[][] xMatrix3 = new double[2][totalForce.length];
 		for(int i=0; i<xMatrix3.length; i++)
-			xMatrix3[i] = time;
+			xMatrix3[i] = groundRollDistance;
 
 		double[][] yMatrix3 = new double[2][totalForce.length];
 		yMatrix3[0] = lift;
@@ -696,24 +702,8 @@ public class CalcLanding {
 
 		MyChartToFileUtils.plot(
 				xMatrix3, yMatrix3,
-				0.0, null, null, null,
-				"Time", "Vertical Forces", "s", "N",
-				new String[] {"Lift", "Weight"},
-				subfolderPath, "VerticalForces_evolution");
-
-		// Vertical Forces v.s. ground distance
-		double[][] xMatrix4 = new double[2][totalForce.length];
-		for(int i=0; i<xMatrix4.length; i++)
-			xMatrix4[i] = groundDistance;
-
-		double[][] yMatrix4 = new double[2][totalForce.length];
-		yMatrix4[0] = lift;
-		yMatrix4[1] = weight;
-
-		MyChartToFileUtils.plot(
-				xMatrix4, yMatrix4,
-				0.0, null, null, null,
-				"Ground distance", "Vertical Forces", "m", "N",
+				sApproach.plus(sFlare).getEstimatedValue(), null, null, null,
+				"Ground Roll distance", "Vertical Forces", "m", "N",
 				new String[] {"Lift", "Weight"},
 				subfolderPath, "VerticalForces_vs_GroundDistance");
 		
@@ -727,8 +717,7 @@ public class CalcLanding {
 	 * @author Vittorio Trifari
 	 */
 	public void calculateLandingDistance(double phiRev) {
-		calculateApproachDistance();
-		calculateFlareDistance();
+		calculateAirborneDistance();
 		calculateGroundRollLandingODE(phiRev);
 	}
 	
@@ -960,12 +949,26 @@ public class CalcLanding {
 	public void setTotalForce(List<Amount<Force>> totalForce) {
 		this.totalForce = totalForce;
 	}
-	public List<Amount<Length>> getGroundDistance() {
-		return groundDistance;
+	public List<Amount<Length>> getLandingDistance() {
+		return landingDistance;
 	}
-	public void setGroundDistance(List<Amount<Length>> groundDistance) {
-		this.groundDistance = groundDistance;
+	public void setLandingDistance(List<Amount<Length>> landingDistance) {
+		this.landingDistance = landingDistance;
 	}
+	/**
+	 * @return the verticalDistance
+	 */
+	public List<Amount<Length>> getVerticalDistance() {
+		return verticalDistance;
+	}
+
+	/**
+	 * @param verticalDistance the verticalDistance to set
+	 */
+	public void setVerticalDistance(List<Amount<Length>> verticalDistance) {
+		this.verticalDistance = verticalDistance;
+	}
+
 	public double getMu() {
 		return mu;
 	}
