@@ -3,6 +3,9 @@ package aircraft.components.liftingSurface.adm;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
@@ -23,13 +26,29 @@ import aircraft.components.liftingSurface.adm.LiftingSurfacePanel.LiftingSurface
 import javolution.text.TypeFormat;
 import javolution.text.TextFormat.Cursor;
 import standaloneutils.JPADXmlReader;
+import standaloneutils.MyArrayUtils;
 import standaloneutils.MyXMLReaderUtils;
+import standaloneutils.customdata.MyArray;
 
 public class LiftingSurface extends AbstractLiftingSurface {
 
+	static final int _numberOfPointsChordDistribution = 30;
+
 	public LiftingSurface(String id) {
+		
 		this.id = id;
 		panels = new ArrayList<LiftingSurfacePanel>();
+
+		_eta = new MyArray(Unit.ONE);
+		_eta.setDouble(MyArrayUtils.linspace(0., 1., _numberOfPointsChordDistribution));
+
+		_yStationActual = new MyArray(SI.METER);
+		_chordsVsYActual = new MyArray(SI.METER);
+		_xLEvsYActual = new MyArray(SI.METER);
+		_xTEvsYActual = new MyArray(SI.METER);
+		
+
+		
 	}
 
 	public static LiftingSurface importFromXML(String pathToXML, String airfoilsDir) {
@@ -126,9 +145,21 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		this.semiSpan = Amount.valueOf(bhalf,SI.METRE);
 		this.span = this.semiSpan.times(2.0);
 
+		// Assign variables along span
+		calculateChordYAxisActual();
+		
 		// Aspect-ratio
 		this.aspectRatio = (this.span.pow(2)).divide(this.surfacePlanform).getEstimatedValue();
 
+		// Mean Aerodynamic Chord
+		Double mac = this.getPanels().stream()
+				.mapToDouble(p -> 
+					p.getMeanAerodynamicChord().to(SI.METRE).getEstimatedValue()
+					*p.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue())
+				.sum();
+		mac = mac / this.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue();
+		this.meanAerodynamicChord = Amount.valueOf(mac,SI.METRE);
+		
 
 	}
 
@@ -193,35 +224,64 @@ public class LiftingSurface extends AbstractLiftingSurface {
 	}
 
 	@Override
-	public Amount<Length> getMeanAerodChord() {
+	public Amount<Length> getMeanAerodynamicChord() {
+		return this.meanAerodynamicChord;
+	}
+
+	@Override
+	public Amount<Length> getMeanAerodynamicChord(boolean recalculate) {
+		if (recalculate) this.calculateGeometry();
+		return this.meanAerodynamicChord;
+	}
+
+	@Override
+	public Amount<Length>[] getMeanAerodynamicChordLeadingEdge() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Amount<Length>[] getMeanAerodChordLeadingEdge() {
+	public Amount<Length>[] getMeanAerodynamicChordLeadingEdge(boolean recalculate) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Amount<Length> getMeanAerodChordLeadingEdgeX() {
+	public Amount<Length> getMeanAerodynamicChordLeadingEdgeX() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Amount<Length> getMeanAerodChordLeadingEdgeY() {
+	public Amount<Length> getMeanAerodynamicChordLeadingEdgeX(boolean recalculate) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Amount<Length> getMeanAerodChordLeadingEdgeZ() {
+	public Amount<Length> getMeanAerodynamicChordLeadingEdgeY() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
+	public Amount<Length> getMeanAerodynamicChordLeadingEdgeY(boolean recalculate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Amount<Length> getMeanAerodynamicChordLeadingEdgeZ() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Amount<Length> getMeanAerodynamicChordLeadingEdgeZ(boolean recalculate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	@Override
 	public Amount<Length> getSemiSpan() {
 		return this.semiSpan;
@@ -291,35 +351,6 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		return null;
 	}
 
-	@Override
-	public Amount<Length> getMeanAerodChord(boolean recalculate) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Amount<Length>[] getMeanAerodChordLeadingEdge(boolean recalculate) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Amount<Length> getMeanAerodChordLeadingEdgeX(boolean recalculate) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Amount<Length> getMeanAerodChordLeadingEdgeY(boolean recalculate) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Amount<Length> getMeanAerodChordLeadingEdgeZ(boolean recalculate) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public LiftingSurface getEquivalentWing(boolean recalculate) {
@@ -327,6 +358,95 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		return null;
 	}
 
+	/**
+	 * Calculate Chord Distribution of the Actual Wing along y axis
+	 */
+	private void calculateChordYAxisActual() {
+
+		List<Double> chordsActualVsYList = new ArrayList<Double>();
+		List<Amount<Length>> _xLEvsY = new ArrayList<Amount<Length>>();
+		List<Amount<Length>> _xTEvsY = new ArrayList<Amount<Length>>();
+
+		_yStationActual.setRealVector(
+				_eta.getRealVector().mapMultiply(this.semiSpan.doubleValue(SI.METER)));
+
+		//======================================================
+		// Break points Y's
+		List<Amount<Length>> yBP = new ArrayList<>();
+		// root at symmetry plane
+		yBP.add(Amount.valueOf(0.0, SI.METRE));
+		// cumulate values and add
+		yBP.addAll(
+			IntStream.range(1, this.panels.size())
+				.mapToObj(i -> yBP.get(i-1).plus( panels.get(i).getSemiSpan()) )
+				.collect(Collectors.toList())
+			);
+		yBP.add(this.semiSpan);
+		// TODO make this yBP a member variable _yBreakPoints
+		
+		System.out.println("yBP_________________");
+		System.out.println(yBP);
+
+		//======================================================
+		// Set chords versus Y's 
+		// according to location within panels/yBP
+		
+//		chordsActualVsYList.addAll(
+//			IntStream.range(1, yBP.size())
+//				.mapToDouble(i -> {
+//					IntStream.range(0, _yStationActual.size())
+//						.mapToObj(i -> panels.get(index))
+//						.filter(
+//							p -> p.get
+//								)
+//					if ( ) { 
+//						
+//					}
+//				})
+//			};
+		
+		
+//		for (int i=0; i < _numberOfPointsChordDistribution; i++) {
+//
+//			if(_eta.get(i) <= _spanStationKink){
+//				_xLEvsY.add(Amount.valueOf(
+//						_xLERoot.doubleValue(SI.METER) +
+//						Math.tan(_sweepLEInnerPanel.doubleValue(SI.RADIAN)) * 
+//						_yStationActual.get(i)
+//						,SI.METER));
+//
+//				_xTEvsY.add(Amount.valueOf((_xLERoot.doubleValue(SI.METER)+
+//						_chordRoot.doubleValue(SI.METER))+
+//						Math.tan(_sweepTEInnerPanel.doubleValue(SI.RADIAN)) * 
+//						_yStationActual.get(i),SI.METER));
+//
+//			} else if(_spanStationKink !=1.) { // Handle simply tapered wing
+//				_xLEvsY.add(Amount.valueOf(_xLEKink.doubleValue(SI.METER) +
+//						Math.tan(_sweepLEOuterPanel.doubleValue(SI.RADIAN)) * 
+//						(_yStationActual.get(i)-
+//								_semiSpanInnerPanel.doubleValue(SI.METER)),SI.METER));
+//
+//				_xTEvsY.add(Amount.valueOf(_xTEKink.doubleValue(SI.METER) +
+//						Math.tan(_sweepTEOuterPanel.doubleValue(SI.RADIAN)) * 
+//						(_yStationActual.get(i) -
+//								_semiSpanInnerPanel.doubleValue(SI.METER)),SI.METER));
+//
+//			}
+//
+//			chordsActualVsYList.add(_xTEvsY.get(_xTEvsY.size()-1).doubleValue(SI.METER)-
+//					_xLEvsY.get(_xLEvsY.size()-1).doubleValue(SI.METER));
+//
+//		}
+//
+//		_chordsVsYActual.setList(chordsActualVsYList);
+//		_xLEvsYActual.setAmountList(_xLEvsY);
+//		_xTEvsYActual.setAmountList(_xTEvsY);
+
+	}
+
+	
+	
+	
 	@Override
 	public String toString() {
 
@@ -369,6 +489,7 @@ public class LiftingSurface extends AbstractLiftingSurface {
 			.append("\tSurface of planform: " + this.getSurfacePlanform().to(SI.SQUARE_METRE).toString() +"\n")
 			.append("\tSurface wetted: " + this.getSurfaceWetted().to(SI.SQUARE_METRE).toString() + "\n")
 			.append("\tAspect-ratio: " + this.getAspectRatio() +"\n")
+			.append("\tMean aerodynamic chord: " + this.getMeanAerodynamicChord() +"\n")
 			;
 
 		// TODO add more data in log message
