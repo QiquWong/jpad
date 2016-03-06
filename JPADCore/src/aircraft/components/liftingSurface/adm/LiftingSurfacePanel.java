@@ -27,6 +27,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import aircraft.components.liftingSurface.adm.Airfoil.AirfoilBuilder;
+import configuration.MyConfiguration;
 import javolution.text.TypeFormat;
 import javolution.text.TextFormat.Cursor;
 import standaloneutils.JPADGlobalData;
@@ -552,56 +553,38 @@ public class LiftingSurfacePanel implements ILiftingSurfacePanel {
 	@Override
 	public String toString() {
 
-		//============================================================================
-		// Trick to write the ".getEstimatedValue() + unit" format
-		// http://stackoverflow.com/questions/8514293/is-there-a-way-to-make-jscience-output-in-a-more-human-friendly-format
-		UnitFormat uf = UnitFormat.getInstance();
-		uf.label(NonSI.DEGREE_ANGLE, "deg");
-		AmountFormat.setInstance(new AmountFormat() {
-		    @Override
-		    public Appendable format(Amount<?> m, Appendable a) throws IOException {
-		        TypeFormat.format(m.getEstimatedValue(), -1, false, false, a);
-		        a.append(" ");
-		        return uf.format(m.getUnit(), a);
-		    }
-
-		    @Override
-		    public Amount<?> parse(CharSequence csq, Cursor c) throws IllegalArgumentException {
-		        throw new UnsupportedOperationException("Parsing not supported.");
-		    }
-		});
-		//============================================================================
+		MyConfiguration.customizeAmountOutput();
 
 		StringBuilder sb = new StringBuilder()
 			.append("\t-------------------------------------\n")
 			.append("\tLifting surface panel\n")
 			.append("\t-------------------------------------\n")
 			.append("\tID: '" + _id + "'\n")
-			.append("\tb = " + _span.to(SI.METER).toString() + "\n")
-			.append("\tb/2 = " + _semiSpan.to(SI.METER).toString() + "\n")
-			.append("\tLambda_LE = " + _sweepLeadingEdge.to(NonSI.DEGREE_ANGLE).toString() + "\n")
-			.append("\tLambda_c/4 = " + _sweepQuarterChord.to(NonSI.DEGREE_ANGLE).toString() + "\n")
-			.append("\tLambda_c/2 = " + _sweepHalfChord.to(NonSI.DEGREE_ANGLE).toString() + "\n")
-			.append("\tLambda_TE = " + _sweepTrailingEdge.to(NonSI.DEGREE_ANGLE).toString() + "\n")
+			.append("\tb = " + _span.to(SI.METER) + "\n")
+			.append("\tb/2 = " + _semiSpan.to(SI.METER) + "\n")
+			.append("\tLambda_LE = " + _sweepLeadingEdge.to(NonSI.DEGREE_ANGLE) + "\n")
+			.append("\tLambda_c/4 = " + _sweepQuarterChord.to(NonSI.DEGREE_ANGLE) + "\n")
+			.append("\tLambda_c/2 = " + _sweepHalfChord.to(NonSI.DEGREE_ANGLE) + "\n")
+			.append("\tLambda_TE = " + _sweepTrailingEdge.to(NonSI.DEGREE_ANGLE) + "\n")
 			.append("\t.....................................\n")
 			.append("\t                           panel root\n")
-			.append("\tc_r = " + _chordRoot.to(SI.METER).toString() + "\n")
+			.append("\tc_r = " + _chordRoot.to(SI.METER) + "\n")
 			.append(_airfoilRoot + "\n")
 			.append("\t.....................................\n")
 			.append("\t                            panel tip\n")
-			.append("\tc_t = " + _chordTip.to(SI.METER).toString() + "\n")
-			.append("\tepsilon_t = " + _twistGeometricTip.to(NonSI.DEGREE_ANGLE).toString() + "\n")
+			.append("\tc_t = " + _chordTip.to(SI.METER) + "\n")
+			.append("\tepsilon_t = " + _twistGeometricTip.to(NonSI.DEGREE_ANGLE) + "\n")
 			.append(_airfoilTip + "\n")
 			.append("\t.....................................\n")
 			.append("\t                   panel derived data\n")
-			.append("\tS = " + _surfacePlanform.to(SI.SQUARE_METRE).toString() + "\n")
-			.append("\tS_wet = " + _surfaceWetted.to(SI.SQUARE_METRE).toString() + "\n")
+			.append("\tS = " + _surfacePlanform.to(SI.SQUARE_METRE) + "\n")
+			.append("\tS_wet = " + _surfaceWetted.to(SI.SQUARE_METRE) + "\n")
 			.append("\tlambda = " + _taperRatio + "\n")
 			.append("\tAR = " + _aspectRatio + "\n")
-			.append("\tc_MAC = " + _meanAerodynamicChord.to(SI.METER).toString() + "\n")
-			.append("\tX_LE_MAC = " + _meanAerodynamicChordLeadingEdgeX.to(SI.METER).toString() + "\n")
-			.append("\tY_LE_MAC = " + _meanAerodynamicChordLeadingEdgeY.to(SI.METER).toString() + "\n")
-			.append("\tZ_LE_MAC = " + _meanAerodynamicChordLeadingEdgeZ.to(SI.METER).toString() + "\n")
+			.append("\tc_MAC = " + _meanAerodynamicChord.to(SI.METER) + "\n")
+			.append("\tX_LE_MAC = " + _meanAerodynamicChordLeadingEdgeX.to(SI.METER) + "\n")
+			.append("\tY_LE_MAC = " + _meanAerodynamicChordLeadingEdgeY.to(SI.METER) + "\n")
+			.append("\tZ_LE_MAC = " + _meanAerodynamicChordLeadingEdgeZ.to(SI.METER) + "\n")
 			;
 		return sb.toString();
 

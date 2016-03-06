@@ -3,7 +3,9 @@ package aircraft.components.liftingSurface.adm;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -23,6 +25,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import aircraft.components.liftingSurface.adm.LiftingSurfacePanel.LiftingSurfacePanelBuilder;
+import configuration.MyConfiguration;
 import javolution.text.TypeFormat;
 import javolution.text.TextFormat.Cursor;
 import standaloneutils.JPADXmlReader;
@@ -378,12 +381,13 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		// cumulate values and add
 		yBP.addAll(
 			IntStream.range(1, this.panels.size())
-				.mapToObj(i -> yBP.get(i-1).plus( panels.get(i).getSemiSpan()) )
+				.mapToObj(i -> yBP.get(i-1).plus( panels.get(i-1).getSemiSpan()) )
 				.collect(Collectors.toList())
 			);
 		yBP.add(this.semiSpan);
 		// TODO make this yBP a member variable _yBreakPoints
 		
+		MyConfiguration.customizeAmountOutput();
 		System.out.println("yBP_________________");
 		System.out.println(yBP);
 
@@ -391,11 +395,37 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		// Set chords versus Y's 
 		// according to location within panels/yBP
 		
+		Map<LiftingSurfacePanel, List<Amount<Length>>> panelToYStations = 
+			    new HashMap<LiftingSurfacePanel, List<Amount<Length>>>();
+		
+		panelToYStations.put(
+			panels.get(0),
+			_yStationActual.getList().stream()
+				.filter(y -> y < panels.get(0).getSemiSpan().getEstimatedValue())
+				.mapToDouble(y -> y)
+				.mapToObj(y -> Amount.valueOf(y, SI.METRE))
+				.collect(Collectors.toList())
+			);
+//		IntStream.range(1, panels.size())
+//			.mapToObj(i -> // Pair panel, y's
+//				_yStationActual.getList().stream()
+//					.filter(y -> ( y >= yBP.get(i).getEstimatedValue() ) && ( y <= yBP.get(i+1).getEstimatedValue() ) )
+//					.mapToDouble(y_ -> y_)
+//					.mapToObj(y__ -> Amount.valueOf(y__, SI.METRE))
+//					.collect(Collectors.toList())
+//					)
+//			.forEach(c -> panelToYStations.put(panels.get(i), value));
+//			;
+		
+		
+		System.out.println("Map: panel(0) ->\n" + panelToYStations.get(panels.get(0)));
+		System.out.println("Map: panel(1) ->\n" + panelToYStations.get(panels.get(1)));
+		
 //		chordsActualVsYList.addAll(
 //			IntStream.range(1, yBP.size())
 //				.mapToDouble(i -> {
 //					IntStream.range(0, _yStationActual.size())
-//						.mapToObj(i -> panels.get(index))
+//						.mapToObj(j -> panels.get(index))
 //						.filter(
 //							p -> p.get
 //								)
@@ -450,26 +480,8 @@ public class LiftingSurface extends AbstractLiftingSurface {
 	@Override
 	public String toString() {
 
-		//============================================================================
-		// Trick to write the ".getEstimatedValue() + unit" format
-		// http://stackoverflow.com/questions/8514293/is-there-a-way-to-make-jscience-output-in-a-more-human-friendly-format
-		UnitFormat uf = UnitFormat.getInstance();
-		uf.label(NonSI.DEGREE_ANGLE, "deg");
-		AmountFormat.setInstance(new AmountFormat() {
-		    @Override
-		    public Appendable format(Amount<?> m, Appendable a) throws IOException {
-		        TypeFormat.format(m.getEstimatedValue(), -1, false, false, a);
-		        a.append(" ");
-		        return uf.format(m.getUnit(), a);
-		    }
-
-		    @Override
-		    public Amount<?> parse(CharSequence csq, Cursor c) throws IllegalArgumentException {
-		        throw new UnsupportedOperationException("Parsing not supported.");
-		    }
-		});
-		//============================================================================
-
+		MyConfiguration.customizeAmountOutput();
+		
 		StringBuilder sb = new StringBuilder()
 			.append("\t-------------------------------------\n")
 			.append("\tLifting surface\n")
@@ -484,10 +496,10 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		sb
 			.append("\t=====================================\n")
 			.append("\tDerived data\n")
-			.append("\tSpan: " + this.getSpan().to(SI.METRE).toString() +"\n")
-			.append("\tSemi-span: " + this.getSemiSpan().to(SI.METRE).toString() +"\n")
-			.append("\tSurface of planform: " + this.getSurfacePlanform().to(SI.SQUARE_METRE).toString() +"\n")
-			.append("\tSurface wetted: " + this.getSurfaceWetted().to(SI.SQUARE_METRE).toString() + "\n")
+			.append("\tSpan: " + this.getSpan().to(SI.METRE) +"\n")
+			.append("\tSemi-span: " + this.getSemiSpan().to(SI.METRE) +"\n")
+			.append("\tSurface of planform: " + this.getSurfacePlanform().to(SI.SQUARE_METRE) +"\n")
+			.append("\tSurface wetted: " + this.getSurfaceWetted().to(SI.SQUARE_METRE) + "\n")
 			.append("\tAspect-ratio: " + this.getAspectRatio() +"\n")
 			.append("\tMean aerodynamic chord: " + this.getMeanAerodynamicChord() +"\n")
 			;
