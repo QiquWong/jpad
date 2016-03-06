@@ -461,7 +461,7 @@ public class CalcLanding {
 				double[] x = interpolator.getInterpolatedState();
 				
 				//----------------------------------------------------------------------------------------
-				// PICKING UP ALL DATA AT EVERY STEP (RECOGNIZING IF THE TAKE-OFF IS CONTINUED OR ABORTED)
+				// PICKING UP ALL DATA AT EVERY STEP 
 				//----------------------------------------------------------------------------------------
 				// TIME:
 				CalcLanding.this.getTime().add(Amount.valueOf(t, SI.SECOND));
@@ -574,7 +574,8 @@ public class CalcLanding {
 		theIntegrator.clearEventHandlers();
 		theIntegrator.clearStepHandlers();
 		
-		this.sGround = this.landingDistance.get(this.landingDistance.size()-1);
+		this.sTotal = this.landingDistance.get(this.landingDistance.size()-1);
+		this.sGround = this.sTotal.minus(this.sApproach).minus(this.sFlare);
 		
 		System.out.println("\n---------------------------END!!-------------------------------");
 	}
@@ -587,7 +588,7 @@ public class CalcLanding {
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException
 	 */
-	public void createGroundRollCharts() throws InstantiationException, IllegalAccessException {
+	public void createLandingCharts() throws InstantiationException, IllegalAccessException {
 
 		System.out.println("\n---------WRITING GROUND ROLL PERFORMANCE CHARTS TO FILE-----------");
 
@@ -760,12 +761,12 @@ public class CalcLanding {
 
 			if(t < CalcLanding.this.getnFreeRoll().getEstimatedValue()) {
 				xDot[0] = speed;
-				xDot[1] = (g0/weight)*(thrust(speed) - drag(speed)
+				xDot[1] = (g0/weight)*(-thrust(speed) - drag(speed)
 						- (mu*(weight - lift(speed))));
 			}
 			else {
 				xDot[0] = speed;
-				xDot[1] = (g0/weight)*(thrust(speed) - drag(speed)
+				xDot[1] = (g0/weight)*(-thrust(speed) - drag(speed)
 						- (muBrake*(weight - lift(speed))));
 			}
 		}
