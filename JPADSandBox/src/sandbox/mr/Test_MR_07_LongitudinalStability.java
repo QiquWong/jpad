@@ -401,7 +401,7 @@ public class Test_MR_07_LongitudinalStability {
 				.new CalcCLAtAlpha();
 		cLIsolatedWing = theCLWingCalculator.nasaBlackwellalphaBody(alphaBody);
 
-//		theLSAnalysis.PlotCLvsAlphaCurve(subfolderPath);
+		theLSAnalysis.PlotCLvsAlphaCurve(subfolderPath);
 		System.out.println("-------------------------------------");
 		System.out.println("CL of Isolated wing at alpha body = " + cLIsolatedWing);
 		System.out.println("\n \t \t \tWRITING CL vs ALPHA CHART TO FILE  ");
@@ -664,6 +664,7 @@ public class Test_MR_07_LongitudinalStability {
 	
 		if(j==0){
 		legendStall.add("clean");}
+		else
 		legendStall.add("delta = (deg) " + deflectionArray[j]);
 		}
 

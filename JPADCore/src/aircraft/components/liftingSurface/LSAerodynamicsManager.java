@@ -111,7 +111,6 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	private boolean subfolderPathCheck = true;
 	Amount<Angle> alphaStart, alphaEnd, _alphaMaxClean; 
 
-
 	AirfoilTypeEnum _airfoilType;
 
 	private MyArray alphaArray, cLArray, _alphaDistribution, _twistDistribution, _alpha0lDistribution,

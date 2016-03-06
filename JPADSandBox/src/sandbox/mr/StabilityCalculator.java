@@ -575,9 +575,11 @@ public class CalcPitchingMomentCG{
 	Aircraft theAircraft;
 	
 	int nValue = 30;
+	int nValueRed = 6;
 	double alphaFirst = -5.0;
 	double alphaEnd = 15.0;
 	double [] alphaBodyArray = MyArrayUtils.linspace(alphaFirst, alphaEnd, nValue);
+//	double [] alphaBodyArrayComplete = MyArrayUtils.linspace(alphaFirst, alphaEnd, nValue);
 	
 	double [] cMvsAlphaWingArray = new double [nValue];
 	double [] cMvsAlphaWingBodyArray = new double [nValue];
@@ -707,16 +709,25 @@ public class CalcPitchingMomentCG{
 			  cMACIsolatedWing[i] = theCMACCalculator.calculateCMIntegral(alphaWing, aCWing);
 			  
 			  
-//			  cMvsAlphaWingArray [i] = cNIsolatedWing[i] * (xW/theWing.get_meanAerodChordActual().getEstimatedValue())
-//					  + cCIsolatedWing[i]*(zW/theWing.get_meanAerodChordActual().getEstimatedValue())
+			  cMvsAlphaWingArray [i] = cNIsolatedWing[i] * (xW/theWing.get_meanAerodChordActual().getEstimatedValue())
+					  + cCIsolatedWing[i]*(zW/theWing.get_meanAerodChordActual().getEstimatedValue())
+					  + cMACIsolatedWing[i];
+//			  
+//			  cMvsAlphaWingArray [i] = cNIsolatedWing[i] * 0.05
+//					  + cCIsolatedWing[i]*0.1
 //					  + cMACIsolatedWing[i];
 			  
-			  cMvsAlphaWingArray [i] = cNIsolatedWing[i] * 0.05
-					  + cCIsolatedWing[i]*0.1
-					  + cMACIsolatedWing[i];
-			  
 			}
-		}
+//			for (int i=0; i<nValue ;i++){
+//				
+//			cMvsAlphaWingArray[i] = MyMathUtils
+//					.getInterpolatedValue1DSpline(alphaBodyArray, cMvsAlphaWingArray , alphaBodyArrayComplete[i]);
+//			cLIsolatedWing[i] =  MyMathUtils
+//					.getInterpolatedValue1DSpline(alphaBodyArray, cLIsolatedWing , alphaBodyArrayComplete[i]);
+//			cDIsolatedWing[i] =  MyMathUtils
+//					.getInterpolatedValue1DSpline(alphaBodyArray, cLIsolatedWing , alphaBodyArrayComplete[i]);
+//			}
+			}
 		if (component == ComponentEnum.HORIZONTAL_TAIL){
 			double aChTail;
 			
@@ -728,6 +739,11 @@ public class CalcPitchingMomentCG{
 					.new CalcCLAtAlpha();
 			LSAerodynamicsManager.CalcCDAtAlpha theCDhTailCalculator = theLSManager
 					.new CalcCDAtAlpha();
+			LSAerodynamicsManager.CalcHighLiftDevices theHighLiftCalc = theLSManager.new 	CalcHighLiftDevices(theHorizontalTail, theConditions,
+					deltaFlap, flapType,null,
+					eta_in_flap, eta_out_flap, null, null, 
+					cf_c, null, null, null
+					);
 			
 			CalcPitchingMomentAC theCMACCalculator = new CalcPitchingMomentAC(theHorizontalTail, theConditions);
 			DownwashCalculator theDownwashCalculator = new DownwashCalculator(theAircraft);
@@ -741,7 +757,7 @@ public class CalcPitchingMomentCG{
 			//						System.out.println(" xle brf mac " + theWing.get_xLEMacActualBRF().getEstimatedValue() );
 			double zH = -(zBRFcg - theHorizontalTail.get_aerodynamicCenterZ().getEstimatedValue());
 			
-			System.out.println(" volumetric ratio " + theHorizontalTail.get_volumetricRatio());
+	
 			for (int i=0 ; i<nValue ; i++){
 				 alphaBody = Amount.valueOf(Math.toRadians(alphaBodyArray[i]), SI.RADIAN);
 				  double downwashAngle = theDownwashCalculator.getDownwashAtAlphaBody(alphaBody);
@@ -767,6 +783,7 @@ public class CalcPitchingMomentCG{
 				  cDhTail[i] =  theCDhTailCalculator.integralFromCdAirfoil(
 						  alphaTail, MethodEnum.NASA_BLACKWELL, theLSManager);
 				
+				  cDhTail[i] = cDhTail[i] + theHighLiftCalc.getDeltaCD();
 					  
 				  cNhTail[i] =  cLhTail[i] * Math.cos(alphaTail.getEstimatedValue()) +
 						  cDhTail[i] * Math.sin(alphaTail.getEstimatedValue());
@@ -776,14 +793,20 @@ public class CalcPitchingMomentCG{
 				  
 				  
 				  cMAChTail[i] = theCMACCalculator.calculateCMIntegral(alphaTail, aChTail);
-				  
+				  cMAChTail[i] = cMAChTail[i] + theHighLiftCalc.getDeltaCM_c4();
 				  
 //				  cMvsAlphaWingArray [i] = cNIsolatedWing[i] * (xW/theWing.get_meanAerodChordActual().getEstimatedValue())
 //						  + cCIsolatedWing[i]*(zW/theWing.get_meanAerodChordActual().getEstimatedValue())
 //						  + cMACIsolatedWing[i];
 				  
 				  cMvsAlphaHTailArray [i] = -cNhTail[i] * theHorizontalTail.get_volumetricRatio() * 
-						  theHorizontalTail.getAerodynamics().get_dynamicPressureRatio();
+						  theHorizontalTail.getAerodynamics().get_dynamicPressureRatio()+
+						  cChTail[i]* theHorizontalTail.get_volumetricRatio() * 
+						  theHorizontalTail.getAerodynamics().get_dynamicPressureRatio() +
+						  cMAChTail[i] * theHorizontalTail.getAerodynamics().get_dynamicPressureRatio() * 
+						  (theHorizontalTail.get_surface().getEstimatedValue()/theAircraft.get_wing().get_surface().getEstimatedValue()) *
+						  (theHorizontalTail.get_meanAerodChordActual().getEstimatedValue()/theAircraft.get_wing().get_meanAerodChordActual().getEstimatedValue())
+						  ;
 				  
 			
 		}
@@ -845,14 +868,14 @@ public class CalcPitchingMomentCG{
 				  cMACWingBody[i] = theCMACCalculator.calculateCMIntegral(alphaWing, aCWing) +  cm0Fuselage;
 				  
 				  
-//				  cMvsAlphaWingArray [i] = cNIsolatedWing[i] * (xW/theWing.get_meanAerodChordActual().getEstimatedValue())
-//						  + cCIsolatedWing[i]*(zW/theWing.get_meanAerodChordActual().getEstimatedValue())
-//						  + cMACIsolatedWing[i];
-				  
-				  cMvsAlphaWingBodyArray [i] = cNWingBody[i] * 0.05
-						  + cCWingBody[i]*0.1
-						  + cMACWingBody[i];
-				  
+				  cMvsAlphaWingArray [i] = cNIsolatedWing[i] * (xW/theWing.get_meanAerodChordActual().getEstimatedValue())
+						  + cCIsolatedWing[i]*(zW/theWing.get_meanAerodChordActual().getEstimatedValue())
+						  + cMACIsolatedWing[i];
+//				  
+//				  cMvsAlphaWingBodyArray [i] = cNWingBody[i] * 0.05
+//						  + cCWingBody[i]*0.1
+//						  + cMACWingBody[i];
+//				  
 				}
 			}
 
@@ -928,10 +951,10 @@ public class CalcPitchingMomentCG{
 	
 	public void plotCMvsAlphaAircraft(String subfolderPath){
 		
-		System.out.println(" h tail " + Arrays.toString(cMvsAlphaHTailArray));
-		System.out.println(" wing " + Arrays.toString(cMvsAlphaWingArray));
-		System.out.println(" wing body " + Arrays.toString(cMvsAlphaWingBodyArray));
-		System.out.println(" thrust " + Arrays.toString(cMvsAlphaThrustArray));
+//		System.out.println(" h tail " + Arrays.toString(cMvsAlphaHTailArray));
+//		System.out.println(" wing " + Arrays.toString(cMvsAlphaWingArray));
+//		System.out.println(" wing body " + Arrays.toString(cMvsAlphaWingBodyArray));
+//		System.out.println(" thrust " + Arrays.toString(cMvsAlphaThrustArray));
 		MyChartToFileUtils.plotNoLegend(
 				alphaBodyArray , cMvsAlphaCompleteArray,
 				null, null, null, null,

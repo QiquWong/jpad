@@ -1223,7 +1223,10 @@ public class Test_MR_07_LongitudinalStability_NoPlot {
 //		theCMcgCalculator.calculateCMvsAlphaComponent(cgPosition, ComponentEnum.WING);
 //		theCMcgCalculator.plotCMvsAlphaComponent(subfolderPath, ComponentEnum.WING);
 //		
-		
+//		theCMcgCalculator.calculateCMvsAlphaComponent(ComponentEnum.WING);
+//		theCMcgCalculator.plotCMvsAlphaComponent(subfolderPath, ComponentEnum.WING);
+//		System.out.println("\n\n\t\t\tWRITING CM vs ALPHA CHART TO FILE ");
+//		
 		theCMcgCalculator.calculateCMvsAlphaAircraft();
 		theCMcgCalculator.plotCMvsAlphaAircraft(subfolderPath);
 		System.out.println("\n\n\t\t\tWRITING CM vs ALPHA CHART TO FILE ");
