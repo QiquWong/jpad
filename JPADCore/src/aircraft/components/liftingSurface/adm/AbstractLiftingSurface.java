@@ -6,8 +6,12 @@ import java.util.List;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
+import javax.measure.unit.SI;
+import javax.measure.unit.Unit;
 
 import org.jscience.physics.amount.Amount;
+
+import standaloneutils.customdata.MyArray;
 
 public abstract class AbstractLiftingSurface implements ILiftingSurface {
 
@@ -29,10 +33,10 @@ public abstract class AbstractLiftingSurface implements ILiftingSurface {
 	protected Amount<Length> yPole;
 	protected Amount<Length> zPole;
 
-	protected Amount<Length> meanAerodChord;
-	protected Amount<Length> meanAerodChordLeadingEdgeX;
-	protected Amount<Length> meanAerodChordLeadingEdgeY;
-	protected Amount<Length> meanAerodChordLeadingEdgeZ;
+	protected Amount<Length> meanAerodynamicChord;
+	protected Amount<Length> meanAerodynamicChordLeadingEdgeX;
+	protected Amount<Length> meanAerodynamicChordLeadingEdgeY;
+	protected Amount<Length> meanAerodynamicChordLeadingEdgeZ;
 
 	protected Amount<Area> surfacePlanform;
 	protected Amount<Area> surfaceWetted;
@@ -43,6 +47,17 @@ public abstract class AbstractLiftingSurface implements ILiftingSurface {
 
 	protected LiftingSurfacePanel equivalentWing;
 
+	//=======================================================================
+	
+	MyArray _eta;
+	MyArray _yStationActual;
+	MyArray _chordsVsYActual;
+	MyArray _xLEvsYActual;
+	MyArray _xTEvsYActual;
+
+	
+	//=======================================================================
+	
 	public List<LiftingSurfacePanel> getPanels() {
 		return panels;
 	}

@@ -502,9 +502,9 @@ public class LiftingSurfacePanel implements ILiftingSurfacePanel {
 		Amount<Angle> dihedral = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//dihedral");
 		Amount<Angle> sweepLeadingEdge = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//sweep_leading_edge");
 
-		Amount<Length> chordRoot = panel0.getChordRoot(); // from linked panel
+		Amount<Length> chordRoot = panel0.getChordTip(); // from linked panel
 
-		Airfoil airfoilRoot = panel0.getAirfoilRoot(); // from linked panel
+		Airfoil airfoilRoot = panel0.getAirfoilTip(); // from linked panel
 
 		Amount<Length> chordTip = MyXMLReaderUtils.getXMLAmountLengthByPath(doc, xpath, "//outer_section/chord");
 
@@ -585,7 +585,7 @@ public class LiftingSurfacePanel implements ILiftingSurfacePanel {
 			.append("\tLambda_TE = " + _sweepTrailingEdge.to(NonSI.DEGREE_ANGLE).toString() + "\n")
 			.append("\t.....................................\n")
 			.append("\t                           panel root\n")
-			.append("\tc_r = " + _chordRoot.to(SI.METER).toString() + " m\n")
+			.append("\tc_r = " + _chordRoot.to(SI.METER).toString() + "\n")
 			.append(_airfoilRoot + "\n")
 			.append("\t.....................................\n")
 			.append("\t                            panel tip\n")
