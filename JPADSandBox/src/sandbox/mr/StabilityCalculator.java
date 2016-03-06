@@ -17,6 +17,7 @@ import aircraft.auxiliary.airfoil.MyAirfoil;
 import aircraft.componentmodel.InnerCalculator;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
+import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCDAtAlpha;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.MeanAirfoil;
 import database.databasefunctions.DatabaseReader;
@@ -24,13 +25,17 @@ import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FlapTypeEnum;
+import configuration.enumerations.MethodEnum;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyMathUtils;
+import standaloneutils.customdata.CenterOfGravity;
 import standaloneutils.customdata.MyArray;
 
 public class StabilityCalculator {
 
+	double deltaACWingBody;
+	
 	/**
 	 * This method evaluates the tau factor reading external databases.
 	 *
@@ -176,22 +181,22 @@ public class StabilityCalculator {
 
 	public double calcDeltaXACFuselage (double cMaFuselage, double cLAlphaWing){
 	
-		return -(cMaFuselage/ (cLAlphaWing/57.3));
+		deltaACWingBody = -(cMaFuselage/ (cLAlphaWing/57.3));
+		return deltaACWingBody;
 	}
 	
 	
 	
 	/**
-	 * This method calculates the Pitching moment coefficient of a wing respect a point of MAC.
+	 * This method calculates the Pitching moment coefficient of a lifting surface
+	 *  respect a given point of MAC.
 	 *
-	 * @param Amount<Angle> alphaLocal
-	 * @param Double xPercentMAC
 	 *
 	 *
 	 * @author  Manuela Ruocco
 	 */
 
-public class CalcPitchingMoment{
+public class CalcPitchingMomentAC{
 
 	// VARIABLE DECLARATION--------------------------------------
 
@@ -209,7 +214,7 @@ public class CalcPitchingMoment{
 
 	// BUILDER--------------------------------------
 
-	public CalcPitchingMoment(LiftingSurface theLiftingSurface, OperatingConditions theConditions) {
+	public CalcPitchingMomentAC(LiftingSurface theLiftingSurface, OperatingConditions theConditions) {
 
 		this.theLiftingSurface = theLiftingSurface;
 		this.theConditions = theConditions;
@@ -553,6 +558,436 @@ public class CalcPitchingMoment{
 	}
 	
 }
+
+
+
+/**
+ * This class calculates the Pitching moment coefficient respect CG.
+ *
+ * @author  Manuela Ruocco
+ */
+
+public class CalcPitchingMomentCG{
+	
+	// Variable Declaration
+	
+	OperatingConditions theConditions;
+	Aircraft theAircraft;
+	
+	int nValue = 30;
+	double alphaFirst = -5.0;
+	double alphaEnd = 15.0;
+	double [] alphaBodyArray = MyArrayUtils.linspace(alphaFirst, alphaEnd, nValue);
+	
+	double [] cMvsAlphaWingArray = new double [nValue];
+	double [] cMvsAlphaWingBodyArray = new double [nValue];
+	double [] cMvsAlphaHTailArray = new double [nValue];
+	double [] cMvsAlphaThrustArray = new double [nValue];
+	double [] cMvsAlphaCompleteArray =new double [nValue];
+	
+	double cm0Fuselage;
+	double xBRFcg;
+	double zBRFcg;
+	 
+	Amount<Angle> alphaWing;
+	Amount<Angle> alphaBody;
+	Amount<Angle> alphaTail;
+	Amount<Angle> downwash;
+
+
+	List<Double[]> deltaFlap = new ArrayList<Double[]>();
+	List<FlapTypeEnum> flapType = new ArrayList<FlapTypeEnum>();
+	List<Double> eta_in_flap = new ArrayList<Double>();
+	List<Double> eta_out_flap = new ArrayList<Double>();
+	List<Double> cf_c = new ArrayList<Double>();
+	
+	double [] cLWingBody = new double [nValue];
+	double [] cDWingBody = new double [nValue];
+	double [] cNWingBody = new double [nValue];
+	double [] cCWingBody = new double [nValue];
+	double [] cMACWingBody = new double [nValue];
+	
+	double [] cLIsolatedWing = new double [nValue];
+	double [] cDIsolatedWing = new double [nValue];
+	double [] cNIsolatedWing = new double [nValue];
+	double [] cCIsolatedWing = new double [nValue];
+	double [] cMACIsolatedWing = new double [nValue];
+
+	double [] cLhTail = new double [nValue];
+	double [] cDhTail = new double [nValue];
+	double [] cNhTail = new double [nValue];
+	double [] cChTail = new double [nValue];
+	double [] cMAChTail = new double [nValue];
+	
+	public CalcPitchingMomentCG(CenterOfGravity cgPosition, OperatingConditions theConditions, Aircraft theAircraft,
+			List<Double[]> deltaFlap,
+			List<FlapTypeEnum> flapType,
+			List<Double> deltaSlat,
+			List<Double> etaInFlap,
+			List<Double> etaOutFlap,
+			List<Double> etaInSlat,
+			List<Double> etaOutSlat, 
+			List<Double> cfc,
+			List<Double> csc,
+			List<Double> leRadiusSlatRatio,
+			List<Double> cExtcSlat,
+			double cm0Fuselage
+			) {
+		
+		
+		this.theAircraft = theAircraft;
+		this.theConditions = theConditions;
+		this.deltaFlap = deltaFlap;
+		this.flapType = flapType;
+		this.eta_in_flap = etaInFlap;
+		this.eta_out_flap = etaOutFlap;
+		this.cf_c = cfc;
+		this.cm0Fuselage = cm0Fuselage;
+		
+		this.xBRFcg = cgPosition.get_xBRF().getEstimatedValue();
+		this.zBRFcg = cgPosition.get_zBRF().getEstimatedValue();
+	}
+	
+	/**
+	 * This method calculates the Pitching moment coefficient of a component respect CG.
+	 *
+	 * @author  Manuela Ruocco
+	 */
+	
+	public void calculateCMvsAlphaComponent(ComponentEnum component){
+		
+		if (component == ComponentEnum.WING){
+			double aCWing, acWingBody;
+	
+			LiftingSurface theWing = theAircraft.get_wing();
+			LSAerodynamicsManager theLSManager = theAircraft.get_wing().getAerodynamics();
+			LSAerodynamicsManager.CalcCLAtAlpha theCLWingCalculator = 
+					theLSManager
+					.new CalcCLAtAlpha();
+			LSAerodynamicsManager.CalcCDAtAlpha theCDWingCalculator = theLSManager
+					.new CalcCDAtAlpha();
+			
+			CalcPitchingMomentAC theCMACCalculator = new CalcPitchingMomentAC(theWing, theConditions);
+			
+			aCWing = theCMACCalculator.getACLiftingSurface();
+
+			// CG coordinates
+			
+			double xW = xBRFcg - (aCWing * theWing.get_meanAerodChordActual().getEstimatedValue() + 
+					theWing.get_xLEMacActualBRF().getEstimatedValue());
+//			System.out.println(" xle brf mac " + theWing.get_xLEMacActualBRF().getEstimatedValue() );
+			double zW = -(zBRFcg - theWing.get_aerodynamicCenterZ().getEstimatedValue());
+			
+//			System.out.println(" xw " + xW);
+//			System.out.println(" zW " + zW);
+//			
+//			System.out.println(" xc " + xW/theWing.get_meanAerodChordActual().getEstimatedValue());
+//			System.out.println(" zc " + zW/theWing.get_meanAerodChordActual().getEstimatedValue());
+			
+			for (int i=0 ; i<nValue ; i++){
+			  alphaWing = Amount.valueOf(
+					  Math.toRadians(alphaBodyArray[i]+ theWing.get_iw().to(NonSI.DEGREE_ANGLE)
+							  .getEstimatedValue()),
+					  SI.RADIAN);
+			  alphaBody = Amount.valueOf(Math.toRadians(alphaBodyArray[i]), SI.RADIAN);
+			  
+			  
+			  cLIsolatedWing[i] = theCLWingCalculator.nasaBlackwellalphaBody(alphaBody);
+			  cDIsolatedWing[i] =  theCDWingCalculator.integralFromCdAirfoil(
+						alphaWing, MethodEnum.NASA_BLACKWELL, theLSManager);
+			
+				  
+			  cNIsolatedWing[i] =  cLIsolatedWing[i] * Math.cos(alphaWing.getEstimatedValue()) +
+					  cDIsolatedWing[i] * Math.sin(alphaWing.getEstimatedValue());
+			  
+			  cCIsolatedWing[i] = cDIsolatedWing[i] * Math.cos(alphaWing.getEstimatedValue()) -
+					  cLIsolatedWing[i] * Math.sin(alphaWing.getEstimatedValue());
+			  
+			  
+			  cMACIsolatedWing[i] = theCMACCalculator.calculateCMIntegral(alphaWing, aCWing);
+			  
+			  
+//			  cMvsAlphaWingArray [i] = cNIsolatedWing[i] * (xW/theWing.get_meanAerodChordActual().getEstimatedValue())
+//					  + cCIsolatedWing[i]*(zW/theWing.get_meanAerodChordActual().getEstimatedValue())
+//					  + cMACIsolatedWing[i];
+			  
+			  cMvsAlphaWingArray [i] = cNIsolatedWing[i] * 0.05
+					  + cCIsolatedWing[i]*0.1
+					  + cMACIsolatedWing[i];
+			  
+			}
+		}
+		if (component == ComponentEnum.HORIZONTAL_TAIL){
+			double aChTail;
+			
+			
+			LiftingSurface theHorizontalTail = theAircraft.get_HTail();
+			LSAerodynamicsManager theLSManager = theAircraft.get_HTail().getAerodynamics();
+			LSAerodynamicsManager.CalcCLAtAlpha theCLhTailCalculator = 
+					theLSManager
+					.new CalcCLAtAlpha();
+			LSAerodynamicsManager.CalcCDAtAlpha theCDhTailCalculator = theLSManager
+					.new CalcCDAtAlpha();
+			
+			CalcPitchingMomentAC theCMACCalculator = new CalcPitchingMomentAC(theHorizontalTail, theConditions);
+			DownwashCalculator theDownwashCalculator = new DownwashCalculator(theAircraft);
+			theDownwashCalculator.calculateDownwashNonLinearDelft();
+			aChTail = theLSManager.getCalculateXAC().deYoungHarper();
+			
+			// CG coordinates
+
+			double xH = xBRFcg - (aChTail * theHorizontalTail.get_meanAerodChordActual().getEstimatedValue() + 
+					theHorizontalTail.get_xLEMacActualBRF().getEstimatedValue());
+			//						System.out.println(" xle brf mac " + theWing.get_xLEMacActualBRF().getEstimatedValue() );
+			double zH = -(zBRFcg - theHorizontalTail.get_aerodynamicCenterZ().getEstimatedValue());
+			
+			System.out.println(" volumetric ratio " + theHorizontalTail.get_volumetricRatio());
+			for (int i=0 ; i<nValue ; i++){
+				 alphaBody = Amount.valueOf(Math.toRadians(alphaBodyArray[i]), SI.RADIAN);
+				  double downwashAngle = theDownwashCalculator.getDownwashAtAlphaBody(alphaBody);
+				  
+				  downwash = Amount.valueOf(downwashAngle, NonSI.DEGREE_ANGLE);
+				  alphaTail = Amount.valueOf(Math.toRadians(alphaBodyArray[i]- downwashAngle
+						  +  theHorizontalTail.get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue()), SI.RADIAN);
+				
+				  double chordRatio = cf_c.get(0);
+				  Amount<Angle> deflection = Amount.valueOf(Math.toRadians(deltaFlap.get(0)[0]), SI.RADIAN);
+				 
+				  if (deflection.getEstimatedValue() == 0.0 ){
+					  cLhTail[i] = theCLhTailCalculator.nasaBlackwellCompleteCurve(alphaBody);
+				  }
+				  else{
+				  cLhTail[i] = theCLhTailCalculator.getCLHTailatAlphaBodyWithElevator(
+							chordRatio, alphaBody, deflection, downwash, 
+							deltaFlap, flapType,null,
+							eta_in_flap, eta_out_flap, null, null, 
+							cf_c, null, null, null
+							);}
+				  
+				  cDhTail[i] =  theCDhTailCalculator.integralFromCdAirfoil(
+						  alphaTail, MethodEnum.NASA_BLACKWELL, theLSManager);
+				
+					  
+				  cNhTail[i] =  cLhTail[i] * Math.cos(alphaTail.getEstimatedValue()) +
+						  cDhTail[i] * Math.sin(alphaTail.getEstimatedValue());
+				  
+				  cChTail[i] = cDhTail[i] * Math.cos(alphaTail.getEstimatedValue()) -
+						  cLhTail[i] * Math.sin(alphaTail.getEstimatedValue());
+				  
+				  
+				  cMAChTail[i] = theCMACCalculator.calculateCMIntegral(alphaTail, aChTail);
+				  
+				  
+//				  cMvsAlphaWingArray [i] = cNIsolatedWing[i] * (xW/theWing.get_meanAerodChordActual().getEstimatedValue())
+//						  + cCIsolatedWing[i]*(zW/theWing.get_meanAerodChordActual().getEstimatedValue())
+//						  + cMACIsolatedWing[i];
+				  
+				  cMvsAlphaHTailArray [i] = -cNhTail[i] * theHorizontalTail.get_volumetricRatio() * 
+						  theHorizontalTail.getAerodynamics().get_dynamicPressureRatio();
+				  
+			
+		}
+		}
+			if (component == ComponentEnum.WINGBODY){
+				
+				double aCWing, acWingBody;
+				
+
+				
+				LiftingSurface theWing = theAircraft.get_wing();
+				LSAerodynamicsManager theLSManager = theAircraft.get_wing().getAerodynamics();
+				LSAerodynamicsManager.CalcCLAtAlpha theCLWingCalculator = 
+						theLSManager
+						.new CalcCLAtAlpha();
+				LSAerodynamicsManager.CalcCDAtAlpha theCDWingCalculator = theLSManager
+						.new CalcCDAtAlpha();
+				
+				CalcPitchingMomentAC theCMACCalculator = new CalcPitchingMomentAC(theWing, theConditions);
+				
+				aCWing = theCMACCalculator.getACLiftingSurface() - deltaACWingBody;
+
+				// CG coordinates
+				
+				double xW = xBRFcg - (aCWing * theWing.get_meanAerodChordActual().getEstimatedValue() + 
+						theWing.get_xLEMacActualBRF().getEstimatedValue());
+//				System.out.println(" xle brf mac " + theWing.get_xLEMacActualBRF().getEstimatedValue() );
+				double zW = -(zBRFcg - theWing.get_aerodynamicCenterZ().getEstimatedValue());
+				
+//				System.out.println(" xw " + xW);
+//				System.out.println(" zW " + zW);
+//				
+//				System.out.println(" xc " + xW/theWing.get_meanAerodChordActual().getEstimatedValue());
+//				System.out.println(" zc " + zW/theWing.get_meanAerodChordActual().getEstimatedValue());
+				LSAerodynamicsManager.MeanAirfoil theMeanAirfoilCalculator = theLSManager.new MeanAirfoil();
+				MyAirfoil meanAirfoil = theMeanAirfoilCalculator.calculateMeanAirfoil(theWing);
+				
+				for (int i=0 ; i<nValue ; i++){
+				  alphaWing = Amount.valueOf(
+						  Math.toRadians(alphaBodyArray[i]+ theWing.get_iw().to(NonSI.DEGREE_ANGLE)
+								  .getEstimatedValue()),
+						  SI.RADIAN);
+				  alphaBody = Amount.valueOf(Math.toRadians(alphaBodyArray[i]), SI.RADIAN);
+				  
+				  
+				  cLWingBody[i] = theAircraft.get_theAerodynamics().calculateCLAtAlphaWingBody(alphaBody, meanAirfoil, false);
+				  
+				  cDWingBody[i] =  theCDWingCalculator.integralFromCdAirfoil(
+							alphaWing, MethodEnum.NASA_BLACKWELL, theLSManager);
+				
+					  
+				  cNWingBody[i] =  cLWingBody[i] * Math.cos(alphaWing.getEstimatedValue()) +
+						  cDWingBody[i] * Math.sin(alphaWing.getEstimatedValue());
+				  
+				  cCWingBody[i] = cDWingBody[i] * Math.cos(alphaWing.getEstimatedValue()) -
+						  cLWingBody[i] * Math.sin(alphaWing.getEstimatedValue());
+				  
+				  
+				  cMACWingBody[i] = theCMACCalculator.calculateCMIntegral(alphaWing, aCWing) +  cm0Fuselage;
+				  
+				  
+//				  cMvsAlphaWingArray [i] = cNIsolatedWing[i] * (xW/theWing.get_meanAerodChordActual().getEstimatedValue())
+//						  + cCIsolatedWing[i]*(zW/theWing.get_meanAerodChordActual().getEstimatedValue())
+//						  + cMACIsolatedWing[i];
+				  
+				  cMvsAlphaWingBodyArray [i] = cNWingBody[i] * 0.05
+						  + cCWingBody[i]*0.1
+						  + cMACWingBody[i];
+				  
+				}
+			}
+
+	
+	}
+	
+
+	public void calculateCMvsAlphaAircraft(){
+		
+		double [] cLTotal = new double[nValue];
+		double [] cDTotal = new double[nValue];
+		double [] thrustMoment = new double[nValue];
+		
+		calculateCMvsAlphaComponent(ComponentEnum.WINGBODY);
+		calculateCMvsAlphaComponent(ComponentEnum.WING);
+		calculateCMvsAlphaComponent(ComponentEnum.HORIZONTAL_TAIL);
+		CalcPowerPlantPitchingMoment thePowerMomentCalculator = new  CalcPowerPlantPitchingMoment();
+		
+		double hTailSurface = theAircraft.get_HTail().get_surface().getEstimatedValue();
+		double wingSurface = theAircraft.get_wing().get_surface().getEstimatedValue();
+		
+		for (int i=0 ; i<nValue; i++){
+		
+		cLTotal[i] = cLWingBody[i] + cLhTail[i] * (hTailSurface/wingSurface) *
+				theAircraft.get_HTail().getAerodynamics().get_dynamicPressureRatio();
+		
+		cDTotal[i] = cDWingBody[i] + cDhTail[i] * (hTailSurface/wingSurface) *
+				theAircraft.get_HTail().getAerodynamics().get_dynamicPressureRatio();
+		
+		thrustMoment [i] = thePowerMomentCalculator.calcPitchingMomentThrust(
+				theAircraft, theConditions, cLTotal[i], cDTotal[i]);
+		
+		 cMvsAlphaThrustArray[i] = thrustMoment[i]/(theConditions.get_dynamicPressure().getEstimatedValue()
+				 * theAircraft.get_wing().get_surface().getEstimatedValue() * 
+				 theAircraft.get_wing().get_meanAerodChordActual().getEstimatedValue());
+		 
+		 cMvsAlphaCompleteArray[i] = cMvsAlphaWingBodyArray [i] + cMvsAlphaHTailArray[i] + cMvsAlphaThrustArray[i];
+
+		}
+		
+		
+	}
+	
+	public void getCMvsAlphaComponent(Amount<Angle> alphaBody, ComponentEnum component){}
+	
+	public void getCMvsAlphaAircraft(Amount<Angle> alphaBody, ComponentEnum component){}
+	
+	public void plotCMvsAlphaComponent(String subfolderPath, ComponentEnum component){
+		
+		if (component == ComponentEnum.WING){
+			
+			MyChartToFileUtils.plotNoLegend(
+					alphaBodyArray , cMvsAlphaWingArray,
+					null, null, null, null,
+					"alpha_Body", "CM_CG",
+					"deg", "",
+					subfolderPath," Moment Coefficient vs alpha for Wing at CG aircraft" );
+		}
+		if (component == ComponentEnum.HORIZONTAL_TAIL){
+
+			MyChartToFileUtils.plotNoLegend(
+					alphaBodyArray , cMvsAlphaHTailArray,
+					null, null, null, null,
+					"alpha_Body", "CM_CG",
+					"deg", "",
+					subfolderPath," Moment Coefficient vs alpha for Horizontal Tail at CG aircraft" );
+		}
+
+		}
+		
+		
+	
+	
+	public void plotCMvsAlphaAircraft(String subfolderPath){
+		
+		System.out.println(" h tail " + Arrays.toString(cMvsAlphaHTailArray));
+		System.out.println(" wing " + Arrays.toString(cMvsAlphaWingArray));
+		System.out.println(" wing body " + Arrays.toString(cMvsAlphaWingBodyArray));
+		System.out.println(" thrust " + Arrays.toString(cMvsAlphaThrustArray));
+		MyChartToFileUtils.plotNoLegend(
+				alphaBodyArray , cMvsAlphaCompleteArray,
+				null, null, null, null,
+				"alpha_Body", "CM_CG",
+				"deg", "",
+				subfolderPath," Moment Coefficient (CG) vs alpha for aircraft" );
+		
+	}
+	
+
+
+	public double[] getAlphaBodyArray() {
+		return alphaBodyArray;
+	}
+	
+	public void setAlphaBodyArray(double[] alphaBodyArray) {
+		this.alphaBodyArray = alphaBodyArray;
+	}
+
+	public double[] getcMvsAlphaWingArray() {
+		return cMvsAlphaWingArray;
+	}
+
+	public double[] getcMvsAlphaWingBodyArray() {
+		return cMvsAlphaWingBodyArray;
+	}
+
+	public double[] getcMvsAlphaHTailArray() {
+		return cMvsAlphaHTailArray;
+	}
+
+	public double[] getcMvsAlphaThrustArray() {
+		return cMvsAlphaThrustArray;
+	}
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /**
  * This class manages the calculation of the Pitching moment coefficient due to the power plant.
