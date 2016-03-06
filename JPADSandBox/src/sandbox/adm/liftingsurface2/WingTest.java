@@ -64,7 +64,7 @@ public class WingTest {
 
 		System.out.println("The wing ...");
 
-		System.out.println(wing);
+		//System.out.println(wing);
 
 
 	}
