@@ -48,16 +48,17 @@ public abstract class AbstractLiftingSurface implements ILiftingSurface {
 	protected LiftingSurfacePanel equivalentWing;
 
 	//=======================================================================
-	
+
 	MyArray _eta;
+	List<Amount<Length>> _yBreakPoints;
 	MyArray _yStationActual;
 	MyArray _chordsVsYActual;
 	MyArray _xLEvsYActual;
 	MyArray _xTEvsYActual;
 
-	
+
 	//=======================================================================
-	
+
 	public List<LiftingSurfacePanel> getPanels() {
 		return panels;
 	}
