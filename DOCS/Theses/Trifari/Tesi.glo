@@ -1,60 +1,99 @@
 \glossaryentry{user developer?\glossentry{User:Developer}|setentrycounter[]{page}\glsnumberformat}{1}
-\glossaryentry{Federal Aviation Regulations?\glossentry{gls-FAR}|setentrycounter[]{page}\glsnumberformat}{4}
-\glossaryentry{Java Program toolchain for Aircraft Design?\glossentry{gls-JPAD}|setentrycounter[]{page}\glsnumberformat}{13}
-\glossaryentry{Aicraft Construction Reference Frame?\glossentry{gls-ACRF}|setentrycounter[]{page}\glsnumberformat}{14}
-\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{15}
-\glossaryentry{Map?\glossentry{Map}|setentrycounter[]{page}\glsnumberformat}{15}
-\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{15}
-\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{16}
-\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{16}
-\glossaryentry{Map?\glossentry{Map}|setentrycounter[]{page}\glsnumberformat}{16}
-\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{16}
-\glossaryentry{Interface?\glossentry{Interface}|setentrycounter[]{page}\glsnumberformat}{16}
-\glossaryentry{Interface?\glossentry{Interface}|setentrycounter[]{page}\glsnumberformat}{16}
-\glossaryentry{Interface?\glossentry{Interface}|setentrycounter[]{page}\glsnumberformat}{16}
-\glossaryentry{Interface?\glossentry{Interface}|setentrycounter[]{page}\glsnumberformat}{17}
-\glossaryentry{Interface?\glossentry{Interface}|setentrycounter[]{page}\glsnumberformat}{17}
-\glossaryentry{Interface?\glossentry{Interface}|setentrycounter[]{page}\glsnumberformat}{17}
-\glossaryentry{Interface?\glossentry{Interface}|setentrycounter[]{page}\glsnumberformat}{18}
-\glossaryentry{Interface?\glossentry{Interface}|setentrycounter[]{page}\glsnumberformat}{18}
-\glossaryentry{Interface?\glossentry{Interface}|setentrycounter[]{page}\glsnumberformat}{18}
+\glossaryentry{Java Program toolchain for Aircraft Design?\glossentry{gls-JPAD}|setentrycounter[]{page}\glsnumberformat}{3}
+\glossaryentry{Knowledge-Based Engineering?\glossentry{gls-KBE}|setentrycounter[]{page}\glsnumberformat}{5}
+\glossaryentry{Multi-disciplinary Design Optimization?\glossentry{gls-MDO}|setentrycounter[]{page}\glsnumberformat}{5}
+\glossaryentry{Integrated Development Environment?\glossentry{gls-IDE}|setentrycounter[]{page}\glsnumberformat}{9}
+\glossaryentry{user developer?\glossentry{User:Developer}|setentrycounter[]{page}\glsnumberformat}{10}
+\glossaryentry{Aicraft Construction Reference Frame?\glossentry{gls-ACRF}|setentrycounter[]{page}\glsnumberformat}{18}
 \glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{18}
-\glossaryentry{Interface?\glossentry{Interface}|setentrycounter[]{page}\glsnumberformat}{18}
-\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{19}
-\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{19}
-\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{19}
-\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{19}
-\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{21}
-\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{21}
-\glossaryentry{Interface?\glossentry{Interface}|setentrycounter[]{page}\glsnumberformat}{21}
-\glossaryentry{Autonomy Factor?\glossentry{gls-AF}|setentrycounter[]{page}\glsnumberformat}{40}
-\glossaryentry{Java Program toolchain for Aircraft Design?\glossentry{gls-JPAD}|setentrycounter[]{page}\glsnumberformat}{40}
-\glossaryentry{Aicraft Construction Reference Frame?\glossentry{gls-ACRF}|setentrycounter[]{page}\glsnumberformat}{40}
-\glossaryentry{Direct Operative Cost?\glossentry{gls-DOC}|setentrycounter[]{page}\glsnumberformat}{40}
-\glossaryentry{Hierarchical Data Format?\glossentry{gls-HDF}|setentrycounter[]{page}\glsnumberformat}{40}
-\glossaryentry{Federal Aviation Regulations?\glossentry{gls-FAR}|setentrycounter[]{page}\glsnumberformat}{40}
-\glossaryentry{True AirSpeed?\glossentry{gls-TAS}|setentrycounter[]{page}\glsnumberformat}{40}
-\glossaryentry{Portable Network Graphics?\glossentry{gls-PNG}|setentrycounter[]{page}\glsnumberformat}{40}
-\glossaryentry{TikZ?\glossentry{TiKZ}|setentrycounter[]{page}\glsnumberformat}{40}
-\glossaryentry{Knowledge-Based Engineering?\glossentry{gls-KBE}|setentrycounter[]{page}\glsnumberformat}{40}
-\glossaryentry{Integrated Development Environment?\glossentry{gls-IDE}|setentrycounter[]{page}\glsnumberformat}{40}
-\glossaryentry{Multi-disciplinary Design Optimization?\glossentry{gls-MDO}|setentrycounter[]{page}\glsnumberformat}{40}
-\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{40}
-\glossaryentry{Enumeration?\glossentry{Enum}|setentrycounter[]{page}\glsnumberformat}{40}
-\glossaryentry{static method?\glossentry{Static}|setentrycounter[]{page}\glsnumberformat}{40}
-\glossaryentry{Map?\glossentry{Map}|setentrycounter[]{page}\glsnumberformat}{40}
-\glossaryentry{Interface?\glossentry{Interface}|setentrycounter[]{page}\glsnumberformat}{40}
-\glossaryentry{DATCOM?\glossentry{DATCOM}|setentrycounter[]{page}\glsnumberformat}{40}
-\glossaryentry{parsing?\glossentry{parsing}|setentrycounter[]{page}\glsnumberformat}{40}
-\glossaryentry{user developer?\glossentry{User:Developer}|setentrycounter[]{page}\glsnumberformat}{40}
-\glossaryentry{Autonomy Factor?\glossentry{gls-AF}|setentrycounter[]{page}\glsnumberformat}{44}
-\glossaryentry{Aicraft Construction Reference Frame?\glossentry{gls-ACRF}|setentrycounter[]{page}\glsnumberformat}{44}
-\glossaryentry{Direct Operative Cost?\glossentry{gls-DOC}|setentrycounter[]{page}\glsnumberformat}{44}
-\glossaryentry{Federal Aviation Regulations?\glossentry{gls-FAR}|setentrycounter[]{page}\glsnumberformat}{44}
-\glossaryentry{Hierarchical Data Format?\glossentry{gls-HDF}|setentrycounter[]{page}\glsnumberformat}{44}
-\glossaryentry{Integrated Development Environment?\glossentry{gls-IDE}|setentrycounter[]{page}\glsnumberformat}{44}
-\glossaryentry{Java Program toolchain for Aircraft Design?\glossentry{gls-JPAD}|setentrycounter[]{page}\glsnumberformat}{44}
-\glossaryentry{Knowledge-Based Engineering?\glossentry{gls-KBE}|setentrycounter[]{page}\glsnumberformat}{44}
-\glossaryentry{Multi-disciplinary Design Optimization?\glossentry{gls-MDO}|setentrycounter[]{page}\glsnumberformat}{44}
-\glossaryentry{Portable Network Graphics?\glossentry{gls-PNG}|setentrycounter[]{page}\glsnumberformat}{44}
-\glossaryentry{True AirSpeed?\glossentry{gls-TAS}|setentrycounter[]{page}\glsnumberformat}{45}
+\glossaryentry{Hierarchical Data Format?\glossentry{gls-HDF}|setentrycounter[]{page}\glsnumberformat}{19}
+\glossaryentry{user developer?\glossentry{User:Developer}|setentrycounter[]{page}\glsnumberformat}{19}
+\glossaryentry{static method?\glossentry{Static}|setentrycounter[]{page}\glsnumberformat}{19}
+\glossaryentry{static method?\glossentry{Static}|setentrycounter[]{page}\glsnumberformat}{22}
+\glossaryentry{Enumeration?\glossentry{Enum}|setentrycounter[]{page}\glsnumberformat}{22}
+\glossaryentry{Map?\glossentry{Map}|setentrycounter[]{page}\glsnumberformat}{22}
+\glossaryentry{Enumeration?\glossentry{Enum}|setentrycounter[]{page}\glsnumberformat}{22}
+\glossaryentry{Direct Operative Cost?\glossentry{gls-DOC}|setentrycounter[]{page}\glsnumberformat}{32}
+\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{37}
+\glossaryentry{Portable Network Graphics?\glossentry{gls-PNG}|setentrycounter[]{page}\glsnumberformat}{38}
+\glossaryentry{TikZ?\glossentry{TiKZ}|setentrycounter[]{page}\glsnumberformat}{38}
+\glossaryentry{TikZ?\glossentry{TiKZ}|setentrycounter[]{page}\glsnumberformat}{38}
+\glossaryentry{Autonomy Factor?\glossentry{gls-AF}|setentrycounter[]{page}\glsnumberformat}{48}
+\glossaryentry{static method?\glossentry{Static}|setentrycounter[]{page}\glsnumberformat}{50}
+\glossaryentry{True AirSpeed?\glossentry{gls-TAS}|setentrycounter[]{page}\glsnumberformat}{50}
+\glossaryentry{static method?\glossentry{Static}|setentrycounter[]{page}\glsnumberformat}{50}
+\glossaryentry{Enumeration?\glossentry{Enum}|setentrycounter[]{page}\glsnumberformat}{50}
+\glossaryentry{Enumeration?\glossentry{Enum}|setentrycounter[]{page}\glsnumberformat}{51}
+\glossaryentry{Enumeration?\glossentry{Enum}|setentrycounter[]{page}\glsnumberformat}{51}
+\glossaryentry{TikZ?\glossentry{TiKZ}|setentrycounter[]{page}\glsnumberformat}{51}
+\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{51}
+\glossaryentry{Map?\glossentry{Map}|setentrycounter[]{page}\glsnumberformat}{51}
+\glossaryentry{Enumeration?\glossentry{Enum}|setentrycounter[]{page}\glsnumberformat}{53}
+\glossaryentry{Map?\glossentry{Map}|setentrycounter[]{page}\glsnumberformat}{53}
+\glossaryentry{Map?\glossentry{Map}|setentrycounter[]{page}\glsnumberformat}{53}
+\glossaryentry{Map?\glossentry{Map}|setentrycounter[]{page}\glsnumberformat}{53}
+\glossaryentry{DATCOM?\glossentry{DATCOM}|setentrycounter[]{page}\glsnumberformat}{68}
+\glossaryentry{DATCOM?\glossentry{DATCOM}|setentrycounter[]{page}\glsnumberformat}{70}
+\glossaryentry{DATCOM?\glossentry{DATCOM}|setentrycounter[]{page}\glsnumberformat}{70}
+\glossaryentry{DATCOM?\glossentry{DATCOM}|setentrycounter[]{page}\glsnumberformat}{72}
+\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{79}
+\glossaryentry{Enumeration?\glossentry{Enum}|setentrycounter[]{page}\glsnumberformat}{79}
+\glossaryentry{parsing?\glossentry{parsing}|setentrycounter[]{page}\glsnumberformat}{83}
+\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{83}
+\glossaryentry{Federal Aviation Regulations?\glossentry{gls-FAR}|setentrycounter[]{page}\glsnumberformat}{88}
+\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{99}
+\glossaryentry{Map?\glossentry{Map}|setentrycounter[]{page}\glsnumberformat}{99}
+\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{99}
+\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{99}
+\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{99}
+\glossaryentry{Map?\glossentry{Map}|setentrycounter[]{page}\glsnumberformat}{99}
+\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{99}
+\glossaryentry{Interface?\glossentry{Interface}|setentrycounter[]{page}\glsnumberformat}{99}
+\glossaryentry{Interface?\glossentry{Interface}|setentrycounter[]{page}\glsnumberformat}{100}
+\glossaryentry{Interface?\glossentry{Interface}|setentrycounter[]{page}\glsnumberformat}{101}
+\glossaryentry{Interface?\glossentry{Interface}|setentrycounter[]{page}\glsnumberformat}{101}
+\glossaryentry{Interface?\glossentry{Interface}|setentrycounter[]{page}\glsnumberformat}{101}
+\glossaryentry{Interface?\glossentry{Interface}|setentrycounter[]{page}\glsnumberformat}{101}
+\glossaryentry{Interface?\glossentry{Interface}|setentrycounter[]{page}\glsnumberformat}{102}
+\glossaryentry{Interface?\glossentry{Interface}|setentrycounter[]{page}\glsnumberformat}{102}
+\glossaryentry{Interface?\glossentry{Interface}|setentrycounter[]{page}\glsnumberformat}{102}
+\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{102}
+\glossaryentry{Interface?\glossentry{Interface}|setentrycounter[]{page}\glsnumberformat}{102}
+\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{103}
+\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{103}
+\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{103}
+\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{104}
+\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{105}
+\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{106}
+\glossaryentry{Interface?\glossentry{Interface}|setentrycounter[]{page}\glsnumberformat}{106}
+\glossaryentry{Autonomy Factor?\glossentry{gls-AF}|setentrycounter[]{page}\glsnumberformat}{135}
+\glossaryentry{Java Program toolchain for Aircraft Design?\glossentry{gls-JPAD}|setentrycounter[]{page}\glsnumberformat}{135}
+\glossaryentry{Aicraft Construction Reference Frame?\glossentry{gls-ACRF}|setentrycounter[]{page}\glsnumberformat}{135}
+\glossaryentry{Direct Operative Cost?\glossentry{gls-DOC}|setentrycounter[]{page}\glsnumberformat}{135}
+\glossaryentry{Hierarchical Data Format?\glossentry{gls-HDF}|setentrycounter[]{page}\glsnumberformat}{135}
+\glossaryentry{Federal Aviation Regulations?\glossentry{gls-FAR}|setentrycounter[]{page}\glsnumberformat}{135}
+\glossaryentry{True AirSpeed?\glossentry{gls-TAS}|setentrycounter[]{page}\glsnumberformat}{135}
+\glossaryentry{Portable Network Graphics?\glossentry{gls-PNG}|setentrycounter[]{page}\glsnumberformat}{135}
+\glossaryentry{TikZ?\glossentry{TiKZ}|setentrycounter[]{page}\glsnumberformat}{135}
+\glossaryentry{Knowledge-Based Engineering?\glossentry{gls-KBE}|setentrycounter[]{page}\glsnumberformat}{135}
+\glossaryentry{Integrated Development Environment?\glossentry{gls-IDE}|setentrycounter[]{page}\glsnumberformat}{135}
+\glossaryentry{Multi-disciplinary Design Optimization?\glossentry{gls-MDO}|setentrycounter[]{page}\glsnumberformat}{135}
+\glossaryentry{List?\glossentry{List}|setentrycounter[]{page}\glsnumberformat}{135}
+\glossaryentry{Enumeration?\glossentry{Enum}|setentrycounter[]{page}\glsnumberformat}{135}
+\glossaryentry{static method?\glossentry{Static}|setentrycounter[]{page}\glsnumberformat}{135}
+\glossaryentry{Map?\glossentry{Map}|setentrycounter[]{page}\glsnumberformat}{135}
+\glossaryentry{Interface?\glossentry{Interface}|setentrycounter[]{page}\glsnumberformat}{135}
+\glossaryentry{DATCOM?\glossentry{DATCOM}|setentrycounter[]{page}\glsnumberformat}{135}
+\glossaryentry{parsing?\glossentry{parsing}|setentrycounter[]{page}\glsnumberformat}{135}
+\glossaryentry{user developer?\glossentry{User:Developer}|setentrycounter[]{page}\glsnumberformat}{135}
+\glossaryentry{Autonomy Factor?\glossentry{gls-AF}|setentrycounter[]{page}\glsnumberformat}{139}
+\glossaryentry{Aicraft Construction Reference Frame?\glossentry{gls-ACRF}|setentrycounter[]{page}\glsnumberformat}{139}
+\glossaryentry{Direct Operative Cost?\glossentry{gls-DOC}|setentrycounter[]{page}\glsnumberformat}{139}
+\glossaryentry{Federal Aviation Regulations?\glossentry{gls-FAR}|setentrycounter[]{page}\glsnumberformat}{139}
+\glossaryentry{Hierarchical Data Format?\glossentry{gls-HDF}|setentrycounter[]{page}\glsnumberformat}{139}
+\glossaryentry{Integrated Development Environment?\glossentry{gls-IDE}|setentrycounter[]{page}\glsnumberformat}{139}
+\glossaryentry{Java Program toolchain for Aircraft Design?\glossentry{gls-JPAD}|setentrycounter[]{page}\glsnumberformat}{139}
+\glossaryentry{Knowledge-Based Engineering?\glossentry{gls-KBE}|setentrycounter[]{page}\glsnumberformat}{139}
+\glossaryentry{Multi-disciplinary Design Optimization?\glossentry{gls-MDO}|setentrycounter[]{page}\glsnumberformat}{139}
+\glossaryentry{Portable Network Graphics?\glossentry{gls-PNG}|setentrycounter[]{page}\glsnumberformat}{139}
+\glossaryentry{True AirSpeed?\glossentry{gls-TAS}|setentrycounter[]{page}\glsnumberformat}{140}

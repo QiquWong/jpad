@@ -736,7 +736,7 @@ Since the calculations are the same both for the B747-100B, both for the ATR-72,
 
 \bigskip
 \noindent
-The first thing to do is to build the aircraft parametric model, and its analysis object, as described in paragraph \ref{par:DefaultAircraft}; then all information regarding high-lift devices have to be provided, in the same way of paragraph \ref{par:CaseStudyHighLift}, in order to allow the constructors of \lstinline[language=Java]!CalcTakeOff! and \lstinline[language=Java]!CalcLanding! classes to evaluate their effects. 
+The first thing to do is to build the aircraft parametric model, and its analysis object, as described in paragraph \ref{par:DefaultAircraft}; then all information regarding high-lift devices have to be provided, in the same way of paragraph \ref{par:CaseStudyHighLift}, in order to allow the constructors of \lstinline[language=Java]!CalcTakeOff! and \lstinline[language=Java]!CalcLanding! classes to evaluate their effects (for the landing configuration the flaps deflection has been changed to \SI{45}{\degree} from the initial \SI{20}{\degree} related to the take-off). 
 %
 At this point all the preliminary steps are completed and it's possible to create \lstinline[language=Java]!CalcTakeOff! and \lstinline[language=Java]!CalcLanding! objects giving as input all data from tables \ref{table:CalcTakeOffInput} and \ref{table:CalcLandingInput}.
 
@@ -759,9 +759,8 @@ At this point all the preliminary steps are completed and it's possible to creat
 		Amount<Angle> alphaGround = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		Amount<Angle> iw = Amount.valueOf(2.0, NonSI.DEGREE_ANGLE);
 //		PARAMETERS USED TO CONSIDER THE PARABOLIC DRAG POLAR CORRECTION AT HIGH CL
-		double k1 = 0.0;
-		double k2 = 0.0;
-	
+		double k1 = 0.0, k2 = 0.0;
+		
 		CalcTakeOff theTakeOffLandingCalculator = new CalcTakeOff(
 				aircraft,
 				theCondition,
@@ -794,7 +793,7 @@ At this point all the preliminary steps are completed and it's possible to creat
 		double kA = 1.3; // [1/deg]
 		double kFlare = 1.23;
 		double kTD = 1.15;
-		double phiRev = 0.0; // can be different from zero for taking into account of the reverse thrust
+		double phiRev = 0.0; // this takes into account of the reverse thrust
 		Amount<Duration> nFreeRoll = Amount.valueOf(3, SI.SECOND);
 		Amount<Length> wingToGroundDistance = Amount.valueOf(4.0, SI.METER);
 		Amount<Length> obstacle = Amount.valueOf(50, NonSI.FOOT).to(SI.METER);
@@ -802,6 +801,7 @@ At this point all the preliminary steps are completed and it's possible to creat
 		Amount<Angle> alphaGround = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		Amount<Angle> iw = Amount.valueOf(2.0, NonSI.DEGREE_ANGLE);
 		Amount<Angle> thetaApproach = Amount.valueOf(3.0, NonSI.DEGREE_ANGLE);
+		
 		CalcLanding theLandingCalculator = new CalcLanding(
 				aircraft,
 				theCondition,
@@ -851,20 +851,20 @@ theTakeOffLandingCalculator.calculateBalancedFieldLength();
 theTakeOffLandingCalculator.createBalancedFieldLengthChart();
 \end{lstlisting}
 %
-Regarding the landing, if the user wants to calculate the total landing distance, he has only to call for the method \lstinline[language=Java]!calculateLandingDistance!, giving as input the wanted \lstinline[language=Java]!phiRev!; this will then call the methods \lstinline[language=Java]!calculateAirborneDistance! and \lstinline[language=Java]!calculateGroundRollLandingODE! as described in the flowchart of figure \ref{fig:CalcLandingFlowchart}. 
-%---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-%---------------------------------CONTINUE WITH THE PLOTTING METHOD AND USE LISTINGS TO DESCRIBE THE COMMAND---------------------------------------
-%---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-\bigskip
-\noindent
-The following pages show, firstly, a summary of take-off charts created in the three conditions of the listing \ref{lst:TakeOffScenarios} (by choosing a \lstinline[language=Java]!vFailure! of 30 $\si{\meter\per\second}$); after that, the output charts of the landing test will be reported in order to comment the main results.
+Regarding the landing, if the user wants to calculate the total landing distance, he has only to call for the method \lstinline[language=Java]!calculateLandingDistance!, giving as input the wanted \lstinline[language=Java]!phiRev!; this will then call the methods \lstinline[language=Java]!calculateAirborneDistance! and \lstinline[language=Java]!calculateGroundRollLandingODE! as described in the flowchart of figure \ref{fig:CalcLandingFlowchart}. Also in this case the previous call is used only to perform calculations so that, if the user wants to plot the results, the call that has to be made is to the method \lstinline[language=Java]!createLandingCharts!. The choice of separating the charts creation from the calculations derives from the willing of not to slow down these latter; in particular, because charts creation requires some time, a future iterative use of the calculation method will last longer if the method has to generate charts every time, with a negative effect upon a future optimization process.
 
 \bigskip
-\noindent
-Instead, in the listings below, are resumed the main results of the take-off \gls{acr:AOE} condition (together with the results of the \emph{balanced field length} calculation) and of the landing analysis.
+\begin{lstlisting}[caption={Landing calculations and charts plot}, captionpos=b, tabsize=2]
+// Calculation of the landing distance and its components
+theLandingCalculator.calculateLandingDistance(phiRev);
+// Results plot
+theLandingCalculator.createLandingCharts();
+\end{lstlisting}
+%
+In conclusion, the following pages show, firstly, a summary of take-off charts created in the three conditions of the listing \ref{lst:TakeOffScenarios} (by choosing a \lstinline[language=Java]!vFailure! of 30 $\si{\meter\per\second}$); after that, the output charts of the landing test will be reported in order to comment the main results. Instead, in the listings below, are resumed the main results of the take-off \gls{acr:AOE} condition (together with the results of the \emph{balanced field length} calculation) and of the landing analysis.
 
 \bigskip
-\begin{lstlisting}[caption={ATR-72 test results}, captionpos=b, tabsize=2]
+\begin{lstlisting}[caption={ATR-72 take-off test results}, captionpos=b, tabsize=2]
 CLmaxTO = 2.0212498531249747
 CL0 = 1.0741952614143324
 CLground = 1.2573301946144486
@@ -905,29 +905,53 @@ VLO = 60.1988743400169 m/s
 	x[1] = V = 66.79007719128757 m/s
 	x[2] = gamma = 2.707958902096113 deg
 	x[3] = altitude = 10.668000000000006 m
-
 	COLLECTING DATA AT THE END OF AIRBORNE PHASE ...
 ---------------------------DONE!-------------------------------
 BALANCED FIELD LENGTH = 1863.27447504457 m
 Decision Speed (V1/VsTO) = 1.04447828088380 
----------------------------END!!-------------------------------
+---------------------------END!!--------------------------------
 \end{lstlisting}
 
-%---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-%----------------------------------------------------------------PUT HERE THE LANDING RESULTS--------------------------------------------------------------------------
-%---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+\bigskip
+\begin{lstlisting}[caption={ATR-72 landing test results}, captionpos=b, tabsize=2]
+CLmaxLanding = 2.9499357749411175
+CL0 = 1.5390863614594144
+CLground = 1.7150043879106331
+VsLanding = 45.3001255420356 m/s
+V_Approach = 58.890163204646 m/s
+V_Flare = 55.719154416704 m/s
+V_TouchDown = 52.0951443733410 m/s
+-----------------------------------------------------------
+		END OF THE LANDING GROUND ROLL
+	switching function changes sign at t = 24.192677800708584
+	x[0] = s = 1071.2865561533845 m
+	x[1] = V = -1.0615119894197278E-13 m/s
+---------------------------DONE!-------------------------------
 
+
+
+------------------------RESULTS----------------------------
+AIRBORNE DISTANCE = 249.403167762090 m
+FLARE DISTANCE = 82.8435167233407 m
+GROUND ROLL DISTANCE = 739.03987166795 m
+TOTAL LANDING DISTANCE = 1071.28655615338 m
+-----------------------------------------------------------
+\end{lstlisting}
 %
-As can be seen the take-off distance required in \gls{acr:AOE} condition is about $\SI{1302}{\meter}$, at the maximum take-off weight of $\SI{23063.579}{\kilogram}$, within a time of about $\SI{33.75}{\second}$; while the \emph{balanced field lenght} is bigger than the AOE take-off distance of about the 30\%.  Moreover the \emph{decision speed} $V_1$ is bigger than the stalling speed $V_s$ and lower than the rotation speed $V_{\text{Rot}}$ as required by the \gls{FAR}-25 from table \ref{tab:Take:Off:Speeds:FAR25}.
-%
-These results are almost the same shown in the aircraft brochure available on the Internet, so that the calculation carried out results correct.
+As can be seen the take-off distance required in \gls{acr:AOE} condition is about $\SI{1302}{\meter}$, at the maximum take-off mass of $\SI{23063.579}{\kilogram}$ and at sea level in standard atmospheric conditions, within a time of about $\SI{33.75}{\second}$; while the \emph{balanced field lenght} is bigger than the AOE take-off distance of about the 30\%. Moreover the \emph{decision speed} $V_1$ is bigger than the stalling speed $V_s$ and lower than the rotation speed $V_{\text{Rot}}$ as required by the \gls{FAR}-25 from table \ref{tab:Take:Off:Speeds:FAR25}. These results are almost the same shown in the aircraft brochure available on the Internet, so that the calculation carried out results correct.
 
-%---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-%-----------------------------------------------------------------COMMENT LANDING RESULTS------------------------------------------------------------------------------
-%---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+\bigskip
+\noindent
+Regarding the landing test, the results obtained show that, at a maximum landing mass of $\SI{20757.221}{\kilogram}$ and at sea level in standard atmospheric conditions, the required landing distance is around $\SI{1071}{\meter}$ with a ground roll distance of about $\SI{739}{\meter}$ covered in $\SI{24}{\second}$. As expected the landing distance is lower than the take-off distance and is almost equal to the one proposed onto the ATR-72 brochure proving that the calculation method works.
 
+\bigskip
+\noindent
+Finally, with reference to the landing charts at the end of the chapter (from figure \ref{fig:Landing1} to \ref{fig:LandingEnd}), the reader can easly recognize the effect of the reverse thrust upon the landing distance; in particular, in case of \lstinline[language=Java]!phiRev!=0.25, the deceleration is bigger so that the speed decreases faster making the total landing distance shorter. It has also to be noted that during the air run, the speed is assumed to be constant during the approach phase for then decrease, with a linear trend, from the $V_A$ to the $V_{\text{TD}}$ during the flare phase. 
 %
 \clearpage
+%
+%
+%-------------------------------Take-Off Charts------------------------------------------
 %
 \begin{figure}[H]
 \centering
@@ -1130,7 +1154,55 @@ In conclusion of the take-off analysis, it's useful to highlight the effects tha
 \label{fig:RateOfClimbAlphaRED}
 \end{figure}
 %
-
-%---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-%--------------------------------------------------------------------INSERT LANDING CHARTS-.-----------------------------------------------------------------------------
-%---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+%--------------------------------Landing Charts------------------------------------------
+%
+\begin{figure}[!t]
+\centering
+\includegraphics[keepaspectratio, width=1.05\textwidth]{TrajectoryAndSpeed_vs_GroundDistance_LANDING}
+\caption{Landing trajectory and speed evolution with \lstinline[language=Java]!phiRev!=0.0 - ATR-72}
+\label{fig:Landing1}
+\end{figure}
+%
+\begin{figure}[!b]
+\centering
+\includegraphics[keepaspectratio, width=1.05\textwidth]{TrajectoryAndSpeed_vs_GroundDistance_LANDING_REV}
+\caption{Landing trajectory and speed evolution with \lstinline[language=Java]!phiRev!=0.25 - ATR-72}
+\end{figure}
+%
+\begin{figure}[!t]
+\centering
+\includegraphics[keepaspectratio, width=1.05\textwidth]{HorizontalForces_vs_GroundDistance_LANDING}
+\caption{Forces evolution in landing, during the ground run, with \lstinline[language=Java]!phiRev!=0.0 - ATR-72}
+\end{figure}
+%
+\begin{figure}[!b]
+\centering
+\includegraphics[keepaspectratio, width=1.05\textwidth]{HorizontalForces_vs_GroundDistance_LANDING_REV}
+\caption{Forces evolution in landing, during the ground run, with \lstinline[language=Java]!phiRev!=0.25 - ATR-72}
+\end{figure}
+%
+\begin{figure}[!t]
+\centering
+\input{images/Acceleration_vs_GroundDistance_LANDING.tikz}
+\caption{Acceleration evolution in landing, during the ground run, with \lstinline[language=Java]!phiRev!=0.0 - ATR-72}
+\end{figure}
+%
+\begin{figure}[!b]
+\centering
+\input{images/Acceleration_vs_GroundDistance_LANDING_REV.tikz}
+\caption{Acceleration evolution in landing, during the ground run, with \lstinline[language=Java]!phiRev!=0.25 - ATR-72}
+\end{figure}
+%
+\begin{figure}[!b]
+\centering
+\includegraphics[keepaspectratio, width=1.05\textwidth]{LoadFactor_vs_GroundDistance_LANDING}
+\caption{Load factor evolution in landing, during the ground run, with \lstinline[language=Java]!phiRev!=0.0 - ATR-72}
+\end{figure}
+%
+\begin{figure}[!b]
+\centering
+\includegraphics[keepaspectratio, width=1.05\textwidth]{LoadFactor_vs_GroundDistance_LANDING_REV}
+\caption{Load factor evolution in landing, during the ground run, with \lstinline[language=Java]!phiRev!=0.25 - ATR-72}
+\label{fig:LandingEnd}
+\end{figure}
+%
