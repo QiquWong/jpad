@@ -18,6 +18,7 @@ public class EngineDatabaseManager {
 		= new TurbopropEngineDatabaseReader(
 				System.getProperty("user.dir") + File.separator + MyConfiguration.databaseFolderPath, 
 				"TurbopropEngineDatabase.h5");
+	private static double kCorrectionSFC = 1.0;
 
 
 	/**
@@ -67,10 +68,10 @@ public class EngineDatabaseManager {
 			EngineOperatingConditionEnum engineOperatingCondition) {
 
 		if (engineType.equals(EngineTypeEnum.TURBOFAN)) {
-			return turbofanDatabaseReader.getSFC(mach, altitude, tT0Ratio, bpr, engineOperatingCondition); 
+			return kCorrectionSFC*turbofanDatabaseReader.getSFC(mach, altitude, tT0Ratio, bpr, engineOperatingCondition); 
 
 		} else {
-			return turbopropDatabaseReader.getSFC(mach, altitude, tT0Ratio, bpr, engineOperatingCondition);
+			return kCorrectionSFC*turbopropDatabaseReader.getSFC(mach, altitude, tT0Ratio, bpr, engineOperatingCondition);
 		}
 	}
 
@@ -80,6 +81,14 @@ public class EngineDatabaseManager {
 
 	public static void setEngineType(EngineTypeEnum engineType) {
 		EngineDatabaseManager.engineType = engineType;
+	}
+
+	public static double getkCorrectionSFC() {
+		return kCorrectionSFC;
+	}
+
+	public static void setkCorrectionSFC(double kCorrectionSFC) {
+		EngineDatabaseManager.kCorrectionSFC = kCorrectionSFC;
 	}
 
 }

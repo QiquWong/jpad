@@ -138,7 +138,7 @@ public class HTail extends LiftingSurface{
 			_spanStationKink = 1.0;  
 			_extensionLERootChordLinPanel = 0.;
 			_extensionTERootChordLinPanel = 0.;
-			_iw = Amount.valueOf(0., SI.RADIAN);
+			_iw = Amount.valueOf(Math.toRadians(-1.0), SI.RADIAN);
 			_twistKink = Amount.valueOf(Math.toRadians(0.0),SI.RADIAN);
 			_twistTip = Amount.valueOf(Math.toRadians(0.0),SI.RADIAN);
 			_dihedralInnerPanel = Amount.valueOf(Math.toRadians(0.0),SI.RADIAN);

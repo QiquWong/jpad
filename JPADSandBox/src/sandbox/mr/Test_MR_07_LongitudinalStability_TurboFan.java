@@ -50,7 +50,7 @@ import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import functions.Linspace;
 import javafx.util.Pair;
-import sandbox.mr.StabilityCalculator.CalcPitchingMoment;
+import sandbox.mr.StabilityCalculator.CalcPitchingMomentAC;
 import sandbox.mr.WingCalculator.MeanAirfoil;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
@@ -738,8 +738,8 @@ public class Test_MR_07_LongitudinalStability_TurboFan {
 
 		double cMWing;
 
-		StabilityCalculator.CalcPitchingMoment theCMCalculator = theStablityCalculator
-				.new CalcPitchingMoment(theWing, theConditions);
+		StabilityCalculator.CalcPitchingMomentAC theCMCalculator = theStablityCalculator
+				.new CalcPitchingMomentAC(theWing, theConditions);
 		cMWing = theCMCalculator.calculateCMQuarterMACIntegral(alphaWing);
 		System.out.println(" CM Wing at alpha " + alphaWing + " is " + cMWing);
 		//theCMCalculator.plotCMatAlpha(alphaWing, subfolderPath);

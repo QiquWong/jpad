@@ -17,6 +17,8 @@ import standaloneutils.atmosphere.SpeedCalc;
 
 public class ThrustCalc {
 
+	private static double kCorrection;
+	
 	/**
 	 * 
 	 * @param speed
@@ -134,8 +136,7 @@ public class ThrustCalc {
 	public static double calculateThrustDatabase(
 			double t0, double nEngine, double phi,
 			double bpr, EngineTypeEnum engineType, 
-			EngineOperatingConditionEnum flightCondition, double altitude, double mach
-			) {
+			EngineOperatingConditionEnum flightCondition, double altitude, double mach) {
 		
 		/*
 		 *  T/T0 from turbofan database is underpredicted.
@@ -143,7 +144,7 @@ public class ThrustCalc {
 		 *   (Determined thanks to a comparison with ADAS Performance Module)
 		 */
 		
-		double kCorrection = 1.0;
+		kCorrection = 1.0;
 		
 		if(flightCondition == EngineOperatingConditionEnum.CRUISE)
 			kCorrection = 1.43279165;	// FIXME: More in depth analysis required
@@ -257,5 +258,13 @@ public class ThrustCalc {
 	public static double calculateT0fromP0 (double p0, double p0T0ratio) {
 		
 		return p0*p0T0ratio;
+	}
+
+	public double getkCorrection() {
+		return kCorrection;
+	}
+
+	public void setkCorrection(double kCorrection) {
+		ThrustCalc.kCorrection = kCorrection;
 	}
 }

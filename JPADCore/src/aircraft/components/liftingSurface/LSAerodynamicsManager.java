@@ -111,7 +111,6 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	private boolean subfolderPathCheck = true;
 	Amount<Angle> alphaStart, alphaEnd, _alphaMaxClean; 
 
-
 	AirfoilTypeEnum _airfoilType;
 
 	private MyArray alphaArray, cLArray, _alphaDistribution, _twistDistribution, _alpha0lDistribution,
@@ -1387,7 +1386,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			double[] cLArray = new double [nPoints];
 			Amount<Angle> alphaActual;
 			double alphaStallElevator;
-		
+			double deltaCLMaxElevator;
 			
 			
 			//linear trait
@@ -1423,8 +1422,9 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			
 			theHighLiftCalculatorLiftEffects.calculateHighLiftDevicesEffects();
 			
-			double deltaCLMaxElevator = theHighLiftCalculatorLiftEffects.getDeltaCLmax_flap();
-			double deltaAlphaMaxElevator = theHighLiftCalculatorLiftEffects.getDeltaAlphaMaxFlap();
+			deltaCLMaxElevator = theHighLiftCalculatorLiftEffects.getDeltaCLmax_flap()*tauValue;
+			double deltaAlphaMaxElevator =-(tauValue * deflection.getEstimatedValue())/2;
+			double deltaAlphaMaxElevatordelta = theHighLiftCalculatorLiftEffects.getDeltaAlphaMaxFlap();
 			CalcCLAtAlpha theCLCleanCalculator = new CalcCLAtAlpha();
 			
 			

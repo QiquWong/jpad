@@ -40,6 +40,7 @@ import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLMaxClean;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLvsAlphaCurve;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcHighLiftDevices;
 import calculators.aerodynamics.MomentCalc;
+import calculators.geometry.LSGeometryCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
@@ -53,10 +54,12 @@ import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import functions.Linspace;
 import javafx.util.Pair;
-import sandbox.mr.StabilityCalculator.CalcPitchingMoment;
+import sandbox.mr.StabilityCalculator.CalcPitchingMomentAC;
+import sandbox.mr.StabilityCalculator.CalcPitchingMomentCG;
 import sandbox.mr.WingCalculator.MeanAirfoil;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
+import standaloneutils.MyMathUtils;
 import standaloneutils.customdata.CenterOfGravity;
 import standaloneutils.customdata.MyArray;
 import writers.JPADStaticWriteUtils;
@@ -115,7 +118,7 @@ public class Test_MR_07_LongitudinalStability {
 
 		Amount<Angle> alphaBody = theConditions.get_alphaCurrent();
 		Amount<Angle> alphaWing = Amount.valueOf(alphaBody.getEstimatedValue()+theWing.get_iw().getEstimatedValue(), SI.RADIAN);
-		System.out.println(" alpha body = " + alphaBody.to(NonSI.DEGREE_ANGLE));
+		System.out.println("Alpha body = " + alphaBody.to(NonSI.DEGREE_ANGLE)+"\n");
 
 
 		//--------------------------------------------------------------------------------------
@@ -350,7 +353,11 @@ public class Test_MR_07_LongitudinalStability {
 		eta_in_flap.add(0.0);
 		eta_out_flap.add(1.0);
 		cf_c.add(chordRatio);
-
+		
+		aircraft.get_theNacelles().get_nacellesList().get(0).get_cg().set_xBRF(Amount.valueOf(10, SI.METER));
+		aircraft.get_theNacelles().get_nacellesList().get(0).get_cg().set_zBRF(Amount.valueOf(0.5, SI.METER));
+		
+		
 		// -----------------------------------------------------------------------
 		// LIFT CHARACTERISTICS
 		// -----------------------------------------------------------------------
@@ -397,7 +404,7 @@ public class Test_MR_07_LongitudinalStability {
 		theLSAnalysis.PlotCLvsAlphaCurve(subfolderPath);
 		System.out.println("-------------------------------------");
 		System.out.println("CL of Isolated wing at alpha body = " + cLIsolatedWing);
-		System.out.println("\n \t \t \tDONE PLOTTING CL VS ALPHA CURVE  ");
+		System.out.println("\n \t \t \tWRITING CL vs ALPHA CHART TO FILE  ");
 
 		// -----------------------------------------------------------------------
 		// Using NASA-Blackwell method in order to estimate the lifting surface CLmax
@@ -463,9 +470,9 @@ public class Test_MR_07_LongitudinalStability {
 		System.out.println("-------------------------------------");
 		System.out.println(" CL of Wing Body at alpha body = " + cLWingBody);
 
+		System.out.println("\n \t \t \tWRITING CL VS ALPHA CHARTS TO FILE");
 		aircraft.get_theAerodynamics().PlotCLvsAlphaCurve(meanAirfoil, subfolderPath);
-		System.out.println("\n \t \t \tDONE PLOTTING CL VS ALPHA CURVE  ");
-
+		System.out.println("DONE");
 
 
 
@@ -481,10 +488,11 @@ public class Test_MR_07_LongitudinalStability {
 
 		theDownwashCalculator.calculateDownwashNonLinearDelft();
 
+		System.out.println("\n \t \t \tWRITING DOWNWASH ANGLE vs ALPHA BODY CHART TO FILE");
 		theDownwashCalculator.plotDownwashDelftWithPath(subfolderPath);
 		theDownwashCalculator.plotDownwashGradientDelftWithPath(subfolderPath);
 		theDownwashCalculator.plotZDistanceWithPath(subfolderPath);
-		System.out.println("\n\n\t\t\tDONE PLOTTING DOWNWASH ANGLE vs ALPHA BODY");
+		System.out.println("DONE");
 
 		double downwash = theDownwashCalculator.getDownwashAtAlphaBody(alphaBody);
 		Amount<Angle> downwashAmountRadiant = Amount.valueOf(Math.toRadians(downwash), SI.RADIAN);
@@ -506,7 +514,7 @@ public class Test_MR_07_LongitudinalStability {
 				- downwash +  horizontalTail.get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue();
 		Amount<Angle> alphaHorizontalTail = Amount.valueOf(Math.toRadians(angleHorizontalDouble), SI.RADIAN);
 		System.out.println("Angle of Attack of Horizontal Tail (deg) "
-				+ alphaHorizontalTail.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
+				+ angleHorizontalDouble);
 
 		LSAerodynamicsManager.CalcCLAtAlpha theCLHorizontalTailCalculator =
 				theLSHorizontalTail
@@ -569,8 +577,8 @@ public class Test_MR_07_LongitudinalStability {
 		LSAerodynamicsManager.CalcAlpha0L theAlphaZeroLiftCalculatorTail = theLSHorizontalTail.new CalcAlpha0L();
 		Amount<Angle> alpha0LTail = theAlphaZeroLiftCalculatorTail.integralMeanNoTwist();
 
-		System.out.println("\n\n\t\t\tDONE PLOTTING CL vs ALPHA HORIZONTAL TAIL");
-
+		System.out.println("\n\n\t\t\tWRITING CL vs ALPHA CHART TO FILE FOR horizontal tail");
+		System.out.println(" DONE ");
 
 
 		// TAU
@@ -656,6 +664,7 @@ public class Test_MR_07_LongitudinalStability {
 	
 		if(j==0){
 		legendStall.add("clean");}
+		else
 		legendStall.add("delta = (deg) " + deflectionArray[j]);
 		}
 
@@ -664,7 +673,7 @@ public class Test_MR_07_LongitudinalStability {
 				"CL vs alpha",
 				"alpha",
 				"CL",
-				-12.0, 22.0, 0.0,null,
+				null, null, null,null,
 				"deg",
 				"",
 				true,
@@ -672,12 +681,13 @@ public class Test_MR_07_LongitudinalStability {
 				subfolderPath,
 				"CL alpha Horizontal Tail with Elevator");
 
-		System.out.println("\n\n\t\t\tDONE PLOTTING CL vs ALPHA HORIZONTAL TAIL WITH ELEVATOR DEFLECTION");
+		System.out.println("\n\n\t\t\tWRITING CL vs ALPHA CHART TO FILE FOR horizontal  tail with elevator deflection");
+		
 
 		
 	
-//		
-//		
+		
+		
 //		Double [] cLVector = new Double[2];
 //		double [] cLVectorTemp = new double[2];
 //		Double [] alphaVector = new Double[2];
@@ -720,7 +730,7 @@ public class Test_MR_07_LongitudinalStability {
 //			alphaListPlot.add(alphaVector);
 //		}
 //
-//		
+//		System.out.println(" DONE ");
 
 
 		// ------------------Complete Aircraft---------------
@@ -777,9 +787,9 @@ public class Test_MR_07_LongitudinalStability {
 				+ alphaBody.to(NonSI.DEGREE_ANGLE)
 				+ " is " + cDIsolatedWing);
 
-		//				System.out.println(" ...waiting for plotting");
-		//				theLSAnalysis.PlotCDvsAlphaCurve(subfolderPath);
-		//				System.out.println("\n\n\t\t\tDONE PLOTTING CD vs ALPHA WING");
+						System.out.println(" ...waiting for plotting");
+						theLSAnalysis.PlotCDvsAlphaCurve(subfolderPath);
+						System.out.println("\n\n\t\t\tDONE");
 
 
 		// Horizontal Tail
@@ -796,9 +806,9 @@ public class Test_MR_07_LongitudinalStability {
 				+ " is " + cDHorizontalTail
 				);
 
-		//				System.out.println(" ...waiting for plotting");
-		//				theLSHorizontalTail.PlotCDvsAlphaCurve(subfolderPath);
-		//				System.out.println("\n\n\t\t\tDONE PLOTTING CD vs ALPHA H TAIL CLEAN");
+						System.out.println(" ...waiting for plotting");
+						theLSHorizontalTail.PlotCDvsAlphaCurve(subfolderPath);
+						System.out.println("\n\n\t\t\tDONE");
 
 	
 
@@ -851,20 +861,22 @@ public class Test_MR_07_LongitudinalStability {
 		System.out.println(" xLE_MAC wing is " + theWing.get_xLEMacActualLRF().getEstimatedValue() + " m" );
 		System.out.println(" MAC wing is " +  theWing.get_meanAerodChordActual().getEstimatedValue() + " m ");
 		System.out.println(" xAC wing is " + theLSAnalysis.getCalculateXAC().deYoungHarper() + " m ");
+		System.out.println(" xAC DeYoung Harper perc. MAC " + theLSAnalysis.getCalculateXAC().deYoungHarper()/
+				 theWing.get_meanAerodChordActual().getEstimatedValue());
 
 		double cMWing;
 
-		StabilityCalculator.CalcPitchingMoment theCMCalculator = theStablityCalculator
-				.new CalcPitchingMoment(theWing, theConditions);
+		StabilityCalculator.CalcPitchingMomentAC theCMCalculator = theStablityCalculator
+				.new CalcPitchingMomentAC(theWing, theConditions);
 		cMWing = theCMCalculator.calculateCMQuarterMACIntegral(alphaWing);
 
 
 		// PLOT
 
 		// at quarter of MAC
-		int numAlpha = 40;
+		int numAlpha = 50;
 		double [] alphaVectorCM = new double [numAlpha];
-		double alphaStart = 0;
+		double alphaStart = 0.1;
 		MyArray alphaArray = new MyArray();
 		alphaArray.setDouble(MyArrayUtils.linspace(
 				alphaStart, alphaStart+(numAlpha/2), numAlpha));
@@ -878,7 +890,7 @@ public class Test_MR_07_LongitudinalStability {
 
 		}
 
-
+		System.out.println("\n\n\t\t\tWRITING CM vs ALPHA CHART TO FILE FOR wing at c/4");
 		MyChartToFileUtils.plotNoLegend(
 				alphaArraydouble , cMVectorQuarter,
 				null, null, null, null,
@@ -886,7 +898,7 @@ public class Test_MR_07_LongitudinalStability {
 				"deg", "",
 				subfolderPath," Moment Coefficient vs alpha for Wing at quarter of MAC " );
 
-		System.out.println("\n\n\t\t\tDONE PLOTTING CM vs ALPHA FOR WING AT QUARTER OF CHORD");
+	
 
 
 		double aCWing = theCMCalculator.getACLiftingSurface();
@@ -904,6 +916,7 @@ public class Test_MR_07_LongitudinalStability {
 
 		}
 
+		System.out.println("\n\n\t\t\tWRITING CM vs ALPHA CHART TO FILE FOR wing at AC");
 
 		MyChartToFileUtils.plotNoLegend(
 				alphaArraydouble , cMVectorAC,
@@ -912,7 +925,6 @@ public class Test_MR_07_LongitudinalStability {
 				"deg", "",
 				subfolderPath," Moment Coefficient vs alpha for Wing at AC wing" );
 
-		System.out.println("\n\n\t\t\tDONE PLOTTING CM vs ALPHA FOR WING AT AC");
 
 
 		System.out.println("\n\n CM_quarter chord Wing at alpha " + alphaWing + " is " + cMWing);
@@ -968,14 +980,16 @@ public class Test_MR_07_LongitudinalStability {
 		System.out.println(" xLE_MAC horizontal tail is " + horizontalTail.get_xLEMacActualLRF().getEstimatedValue() + " m ");
 		System.out.println(" MAC horizontal tail is " +  horizontalTail.get_meanAerodChordActual().getEstimatedValue() + " m");
 		System.out.println(" xAC horizontal tail is " + theLSHorizontalTail.getCalculateXAC().deYoungHarper()+ " m");
-
+		System.out.println(" xAC DeYoung Harper perc. MAC " + theLSHorizontalTail.getCalculateXAC().deYoungHarper()/
+				 horizontalTail.get_meanAerodChordActual().getEstimatedValue());
 
 		double cMHTail;
 
-		StabilityCalculator.CalcPitchingMoment theCMHTailCalculator = theStablityCalculator
-				.new CalcPitchingMoment(horizontalTail, theConditions);
+		StabilityCalculator.CalcPitchingMomentAC theCMHTailCalculator = theStablityCalculator
+				.new CalcPitchingMomentAC(horizontalTail, theConditions);
+
 		cMHTail = theCMHTailCalculator.calculateCMQuarterMACIntegral(alphaHorizontalTail);
-		System.out.println(" CM Wing at alpha " + alphaHorizontalTail + " is " + cMHTail);
+		System.out.println("\n CM horizontal tail at alpha htail " + alphaHorizontalTail + " is " + cMHTail);
 
 		double [] cMVectorHTail = new double [numAlpha];
 
@@ -985,13 +999,14 @@ public class Test_MR_07_LongitudinalStability {
 
 		}
 
+		System.out.println("\n\n\t\t\tWRITING CM vs ALPHA CHART TO FILE FOR horizontal tail at c/4");
 		MyChartToFileUtils.plotNoLegend(
 				alphaArraydouble , cMVectorHTail,
 				null, null, null, null,
-				"alpha", "CM",
+				"alpha_h", "CM",
 				"deg", "",
 				subfolderPath," Moment Coefficient vs alpha for Horizontal Tail at quarter of MAC" );
-
+		
 
 		//AC
 
@@ -1002,23 +1017,31 @@ public class Test_MR_07_LongitudinalStability {
 
 		for (int i=0; i<numAlpha; i++){
 			cMVectorHTailAC[i] = theCMHTailCalculator.calculateCMIntegral(
-					Amount.valueOf(Math.toRadians(alphaArray.get(i)), SI.RADIAN), aCHtail);
+					Amount.valueOf(Math.toRadians(alphaArray.get(i)), SI.RADIAN), 0.28);
 //			cMVectorHTailAC[i] = theCMHTailCalculator.calculateCMIntegralACAirfoil(
 //					Amount.valueOf(Math.toRadians(alphaArray.get(i)), SI.RADIAN), aCHtail);
 
 		}
 
 
+		System.out.println("\n\n\t\t\tWRITING CM vs ALPHA CHART TO FILE FOR horizontal tail at AC");
+		
 		MyChartToFileUtils.plotNoLegend(
 				alphaArraydouble , cMVectorHTailAC,
 				null, null, -0.1, 0.1,
 				"alpha", "CM",
 				"deg", "",
 				subfolderPath," Moment Coefficient vs alpha for HORIZONTAL TAIL at AC " );
-		System.out.println("\n\n\t\t\tDONE PLOTTING CM vs ALPHA FOR HORIZONTAL TAIL");
 
 
+		// Delta CM due to delta_e 
+		
+		double deltacMHTail = highLiftCalculator.getDeltaCM_c4();
+		System.out.println("\n\nDelta Pitching moment coefficient due to an elevator deflection"
+				+ "of (deg) " + deflectionElevator + " is  " + deltacMHTail);
 
+		
+		
 		// Fuselage
 
 		System.out.println("\n ------------------- ");
@@ -1074,7 +1097,7 @@ public class Test_MR_07_LongitudinalStability {
 		//		System.out.println(" dCMt = "+ fusDesDatabaseReader.getdCMt());
 
 
-		// TODO fix the method!
+		// TODO fix the UNINA method!
 
 		cM0Fuselage = -0.0361;
 		cMaFuselage = 0.0222;		
@@ -1106,6 +1129,7 @@ public class Test_MR_07_LongitudinalStability {
 		for (int i=0 ; i<cMFuselage.length ; i++)
 			cMFuselage[i] = cMaFuselage * alphaBodyPlotFuselage[i] + cM0Fuselage;
 
+		System.out.println("\n\n\t\t\tWRITING CM vs ALPHA CHART TO FILE FOR fuselage");
 		MyChartToFileUtils.plotNoLegend(
 				alphaBodyPlotFuselage , cMFuselage,
 				null, null, null, null,
@@ -1115,15 +1139,18 @@ public class Test_MR_07_LongitudinalStability {
 
 		double clAlphaWing = theLSAnalysis.getcLLinearSlopeNB();
 		double deltaXACFuselage = theStablityCalculator.calcDeltaXACFuselage(cMaFuselage, cLAlphaWing);
-		System.out.println(" Delta XAC due to fuselage = " + deltaXACFuselage);
+		System.out.println(" Delta XAC due to fuselage (% chord )= " + deltaXACFuselage);
 
 
 		System.out.println("\n ------------------- ");
 		System.out.println("|      WING-BODY      |");
 		System.out.println(" ------------------- \n\n");
 
-		double xACWingBody = deltaXACFuselage + ((aCWing * theWing.get_meanAerodChordActual().getEstimatedValue()) + theWing.get_xLEMacActualLRF().getEstimatedValue());
+		double xACWingBody = deltaXACFuselage * theWing.get_meanAerodChordActual().getEstimatedValue() 
+				+ ((aCWing * theWing.get_meanAerodChordActual().getEstimatedValue()) + 
+						theWing.get_xLEMacActualLRF().getEstimatedValue());
 
+		
 		System.out.println(" XAC wing (LRF) = " + (aCWing * theWing.get_meanAerodChordActual().getEstimatedValue()) + " m" );
 		System.out.println(" XAC wing body (LRF) = " + xACWingBody + " m" );
 
@@ -1162,11 +1189,46 @@ public class Test_MR_07_LongitudinalStability {
 
 		System.out.println("Non axial pitching moment derivative " + nonAxialPitchEffectDerivative);
 
+		double momentThrust = theCMPowerEffectCalculator.calcPitchingMomentThrust(
+				aircraft, theConditions, cLTotal, cDTotal);
+		System.out.println("The pitching moment coefficient due to thrust is " + momentThrust);
+		
+		
+		// -----------------------------------------------------------------------
+		// LONGITUDINAL STABILITY
+		// -----------------------------------------------------------------------	
+		
+		System.out.println("\n ------------------- ");
+		System.out.println("|     CM VS alpha     |");
+		System.out.println(" ------------------- \n\n");
+		// PITCHING MOMENT COEFFICIENT VS ALPHA - COMPONENT 
+		CenterOfGravity cgPosition =  aircraft.get_theBalance().get_cgMZFM();
+		
+		deltaFlap.get(0)[0] = 0.0;
 
-		
-		
-	} 
+		StabilityCalculator.CalcPitchingMomentCG theCMcgCalculator = theStablityCalculator
+				.new CalcPitchingMomentCG(cgPosition, theConditions, aircraft,
+						deltaFlap, flapType, null, eta_in_flap,
+						eta_out_flap, null, 
+						null, cf_c, null,
+						null,null, cm0LiftFuselage);
+
+
+
+		//		System.out.println(" max aft " + aircraft.get_theBalance().get_xCoGMaxAftAtOEM());
+		//		System.out.println(" cg positions : -> x " + cgPosition.get_xBRF().getEstimatedValue() + 
+		//				" --> z " + cgPosition.get_zBRF().getEstimatedValue());
+
+		// Wing
+
+		//		theCMcgCalculator.calculateCMvsAlphaComponent(cgPosition, ComponentEnum.WING);
+		//		theCMcgCalculator.plotCMvsAlphaComponent(subfolderPath, ComponentEnum.WING);
+		//		
+
+		theCMcgCalculator.calculateCMvsAlphaAircraft();
+		theCMcgCalculator.plotCMvsAlphaAircraft(subfolderPath);
+		System.out.println("\n\n\t\t\tWRITING CM vs ALPHA CHART TO FILE ");
+
+	}
 
 }
-
-

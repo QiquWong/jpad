@@ -20,5 +20,6 @@ public enum ComponentEnum{
 	POWER_PLANT,
 	FUEL_TANK,
 	SYSTEMS, 
-	ENGINE;
+	ENGINE,
+	WINGBODY;
 }

@@ -417,6 +417,74 @@ If the slope is positive, the aerodynamic center is behind the quarter of the MA
 \end{figure}
 
 
+\subsection{Additional moment due to elevator}
+The horizontal tail is usually a symmetric section so that and $M_{ac_ht} = 0$ for $\delta_e = 0$. If there is a deflection of elevator it's necessary to consider a additional term. According to ~\cite{torenbeek1982synthesis}, the generalized expression, for airfoils, in (\ref{eqn:DeltaCm}) represents a useful starting point when experimental data are not available.
+%
+\begin{equation}
+\upDelta C_{m_{\frac{c}{4}}}=-\mu_1\ \upDelta C_{l\text{max}}\ \left(\dfrac{c'}{c}\right)^2-\dfrac{C_l}{4}\ \dfrac{c'}{c}\left(\dfrac{c'}{c}-1\right)+\left(C_{m_{\frac{c}{4}}}\right)_{\delta_f=0}\ \left[\left(\dfrac{c'}{c}\right)^2-1\right]
+\label{eqn:DeltaCm}
+\end{equation}
+%
+where extended chord $c'$, shown in figure~\ref{fig:DeltaCCf}, allows for the effects of the backward movement of the flap while it is being extended.
+%
+In equation this equation, the first contribution is due to the increased section camber and the factor $\mu_1$ is defined as follows according to Glauert's linear theory for small flap deflections.
+%
+\begin{equation}
+\mu_1=\dfrac{1}{2}\left(1-\dfrac{c_f}{c}\right)\dfrac{\sin\theta_f}{\pi-\left(\theta_f-\sin\theta_f\right)}
+\label{eqn:Mu1}
+\end{equation}
+%
+where $\theta_f$ is the one from equation (\ref{eqn:ThetaF}). This theoretical value of $\mu_1$ generally underpredicts the pitching moment coefficient; in fact it has been found that, for slotted flaps with, or without, Fowler movement, most data are on a single line, provided the second term of the equation (\ref{eqn:Mu1}), representing the theoretical rearward shift of the airfoil aerodynamic center, is halved. Furthermore, in the case of split and plain flaps, the flap angle is observed to exert a pronounced influence on $\mu_1$ as shown in figure~\ref{fig:Mu1}.
+
+The last term of the (\ref{eqn:Mu1}) is generally of a low order and can be ignored. This, together with the halving of the second term of the previous equation, leads to the following practical expression of $\upDelta C_{m_{\frac{c}{4}}}$.
+%
+\begin{equation}
+\upDelta C_{m_{\frac{c}{4}}}=-\mu_1\ \upDelta C_{l\text{max}}\ \left(\dfrac{c'}{c}\right)-\dfrac{C_l}{8}\ \dfrac{c'}{c}\left(\dfrac{c'}{c}-1\right)
+\label{eqn:DeltaCmPractical}
+\end{equation}
+
+\bigskip
+\noindent
+The obtained two-dimensional equation can, then, be converted into a three-dimensional one, which computes the pitching moment change on the entire wing, as follows.
+%
+\begin{equation}
+\upDelta C_{M_{\frac{c}{4}}}=\mu_2\ \upDelta C_{m_{\frac{c}{4}}}+0.7\ \dfrac{\AR}{1+\frac{2}{\AR}}\ \mu_3\ \upDelta C_{l_{\text{max}}}\ \tan\Lambda_{\frac{c}{4}}
+\label{eqn:DeltaCM}
+\end{equation}
+%
+where $\upDelta C_{m_{\frac{c}{4}}}$ is the one from (\ref{eqn:DeltaCmPractical}), provide that $C_l=C_L+\upDelta C_{l\text{max}}\ \left(1-\frac{S_{w,f}}{S}\right)$, and the correction factors $\mu_2$ and $\mu_3$ are the one shown in figures~\ref{fig:Mu2} and~\ref{fig:Mu3}. Making the appropriate substitutions, the following operational formula is, finally, obtained.
+%
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\linewidth]{Immagini/Mu1_Pitching_Moment}
+\caption{The pitching moment function $\mu_1$}
+\label{fig:Mu1}
+\end{figure}
+%
+\begin{figure}[H]
+\centering
+\begin{minipage}{.5\textwidth}
+\centering
+\includegraphics[width=1.1\linewidth]{Immagini/Mu2_Pitching_Moment}
+\captionof{figure}{The pitching moment function $\mu_2$}
+\label{fig:Mu2}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+\centering
+\includegraphics[width=0.94\linewidth]{Immagini/Mu3_Pitching_Moment}
+\captionof{figure}{The pitching moment function $\mu_3$}
+\label{fig:Mu3}
+\end{minipage}
+\end{figure}
+%
+\begin{equation}
+\begin{split}
+\upDelta C_{M_{\frac{c}{4}}}&=\mu_2\ \left\{-\mu_1\ \upDelta C_{L\text{max}}\ \dfrac{c'}{c}-\left[C_L+\upDelta C_{l\text{max}}\left(1-\dfrac{S_{w,f}}{S}\right)\right]\dfrac{1}{8}\ \dfrac{c'}{c}\left(\dfrac{c'}{c}-1\right)\right\}\\
+&\quad+0.7\ \dfrac{\AR}{1+\frac{\AR}{2}}\ \mu_3\ \upDelta C_{l\text{max}}\ \tan\Lambda_{\frac{c}{4}}
+\label{eqn:DeltaCMPractical}
+\end{split}
+\end{equation}
 
 
 \subsection{Fuselage}
@@ -468,14 +536,14 @@ C_{{M\alpha}_f}=\dfrac{1}{36.5\cdot S\cdot MAC}\cdot \left\{ \sum_{j=1}^{n_1} \!
 
 \begin{figure}[H]
 \centering
-\includegraphics[height=2.6cm]{Immagini/stripszero}
+\includegraphics[height=3.1cm]{Immagini/stripszero}
 \caption{Strips definition for the determination of $C_{M_{0_f}}$.}
 \label{wing}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[height=5.6cm]{Immagini/stripsalfa}
+\includegraphics[height=6.3cm]{Immagini/stripsalfa}
 \caption{Strips definition for the determination of $C_{{M\alpha}_f}$ .}
 \label{wing}
 \end{figure}
@@ -486,7 +554,7 @@ The parameter $K_2-K_1$ is a correction factor that is dependent on the value of
 
 \begin{figure}[H]
 \centering
-\includegraphics[height=3.7cm]{Immagini/kdue}
+\includegraphics[height=4.3cm]{Immagini/kdue}
 \caption{$K_2-K_1$ correction factor in function of fineness ratio.}
 \label{kfactor}
 \end{figure}
@@ -512,7 +580,7 @@ From a reference fuselage layout the nose, cabin (constant fuselage diameter), a
 
 \begin{figure}[H]
 \centering
-\includegraphics[height=4.1cm]{Immagini/fuselage}
+\includegraphics[height=4.6cm]{Immagini/fuselage}
 \caption{Main fuselage geometrical parameters.}
 \label{fusgeometry}
 \end{figure}

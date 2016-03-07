@@ -1,6 +1,7 @@
 package aircraft.components.liftingSurface.adm;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+import javax.measure.unit.UnitFormat;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -19,11 +21,15 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.jscience.physics.amount.Amount;
+import org.jscience.physics.amount.AmountFormat;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import aircraft.components.liftingSurface.adm.Airfoil.AirfoilBuilder;
+import configuration.MyConfiguration;
+import javolution.text.TypeFormat;
+import javolution.text.TextFormat.Cursor;
 import standaloneutils.JPADGlobalData;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;
@@ -497,9 +503,9 @@ public class LiftingSurfacePanel implements ILiftingSurfacePanel {
 		Amount<Angle> dihedral = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//dihedral");
 		Amount<Angle> sweepLeadingEdge = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//sweep_leading_edge");
 
-		Amount<Length> chordRoot = panel0.getChordRoot(); // from linked panel
+		Amount<Length> chordRoot = panel0.getChordTip(); // from linked panel
 
-		Airfoil airfoilRoot = panel0.getAirfoilRoot(); // from linked panel
+		Airfoil airfoilRoot = panel0.getAirfoilTip(); // from linked panel
 
 		Amount<Length> chordTip = MyXMLReaderUtils.getXMLAmountLengthByPath(doc, xpath, "//outer_section/chord");
 
@@ -546,36 +552,39 @@ public class LiftingSurfacePanel implements ILiftingSurfacePanel {
 
 	@Override
 	public String toString() {
+
+		MyConfiguration.customizeAmountOutput();
+
 		StringBuilder sb = new StringBuilder()
 			.append("\t-------------------------------------\n")
 			.append("\tLifting surface panel\n")
 			.append("\t-------------------------------------\n")
 			.append("\tID: '" + _id + "'\n")
-			.append("\tb = " + _span.to(SI.METER).getEstimatedValue() + " m\n")
-			.append("\tb/2 = " + _semiSpan.to(SI.METER).getEstimatedValue() + " m\n")
-			.append("\tLambda_LE = " + _sweepLeadingEdge.to(NonSI.DEGREE_ANGLE).getEstimatedValue() + " deg\n")
-			.append("\tLambda_c/4 = " + _sweepQuarterChord.to(NonSI.DEGREE_ANGLE).getEstimatedValue() + " deg\n")
-			.append("\tLambda_c/2 = " + _sweepHalfChord.to(NonSI.DEGREE_ANGLE).getEstimatedValue() + " deg\n")
-			.append("\tLambda_TE = " + _sweepTrailingEdge.to(NonSI.DEGREE_ANGLE).getEstimatedValue() + " deg\n")
+			.append("\tb = " + _span.to(SI.METER) + "\n")
+			.append("\tb/2 = " + _semiSpan.to(SI.METER) + "\n")
+			.append("\tLambda_LE = " + _sweepLeadingEdge.to(NonSI.DEGREE_ANGLE) + "\n")
+			.append("\tLambda_c/4 = " + _sweepQuarterChord.to(NonSI.DEGREE_ANGLE) + "\n")
+			.append("\tLambda_c/2 = " + _sweepHalfChord.to(NonSI.DEGREE_ANGLE) + "\n")
+			.append("\tLambda_TE = " + _sweepTrailingEdge.to(NonSI.DEGREE_ANGLE) + "\n")
 			.append("\t.....................................\n")
 			.append("\t                           panel root\n")
-			.append("\tc_r = " + _chordRoot.to(SI.METER).getEstimatedValue() + " m\n")
+			.append("\tc_r = " + _chordRoot.to(SI.METER) + "\n")
 			.append(_airfoilRoot + "\n")
 			.append("\t.....................................\n")
 			.append("\t                            panel tip\n")
-			.append("\tc_t = " + _chordTip.to(SI.METER).getEstimatedValue() + " m\n")
-			.append("\tepsilon_t = " + _twistGeometricTip.to(NonSI.DEGREE_ANGLE).getEstimatedValue() + " deg\n")
+			.append("\tc_t = " + _chordTip.to(SI.METER) + "\n")
+			.append("\tepsilon_t = " + _twistGeometricTip.to(NonSI.DEGREE_ANGLE) + "\n")
 			.append(_airfoilTip + "\n")
 			.append("\t.....................................\n")
 			.append("\t                   panel derived data\n")
-			.append("\tS = " + _surfacePlanform.to(SI.SQUARE_METRE).getEstimatedValue() + " m^2\n")
-			.append("\tS_wet = " + _surfaceWetted.to(SI.SQUARE_METRE).getEstimatedValue() + " m^2\n")
+			.append("\tS = " + _surfacePlanform.to(SI.SQUARE_METRE) + "\n")
+			.append("\tS_wet = " + _surfaceWetted.to(SI.SQUARE_METRE) + "\n")
 			.append("\tlambda = " + _taperRatio + "\n")
 			.append("\tAR = " + _aspectRatio + "\n")
-			.append("\tc_MAC = " + _meanAerodynamicChord.to(SI.METER).getEstimatedValue() + " m\n")
-			.append("\tX_LE_MAC = " + _meanAerodynamicChordLeadingEdgeX.to(SI.METER).getEstimatedValue() + " m\n")
-			.append("\tY_LE_MAC = " + _meanAerodynamicChordLeadingEdgeY.to(SI.METER).getEstimatedValue() + " m\n")
-			.append("\tZ_LE_MAC = " + _meanAerodynamicChordLeadingEdgeZ.to(SI.METER).getEstimatedValue() + " m\n")
+			.append("\tc_MAC = " + _meanAerodynamicChord.to(SI.METER) + "\n")
+			.append("\tX_LE_MAC = " + _meanAerodynamicChordLeadingEdgeX.to(SI.METER) + "\n")
+			.append("\tY_LE_MAC = " + _meanAerodynamicChordLeadingEdgeY.to(SI.METER) + "\n")
+			.append("\tZ_LE_MAC = " + _meanAerodynamicChordLeadingEdgeZ.to(SI.METER) + "\n")
 			;
 		return sb.toString();
 

@@ -148,11 +148,11 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 			 geometry = airf.getGeometry();
 
 			 _alphaZeroLift = Amount.valueOf(Math.toRadians(-1.2), SI.RADIAN); 
-			 _clAlpha = 7.22; 
+			 _clAlpha = 6.3; 
 			 _alphaStar = Amount.valueOf(Math.toRadians(9.5),SI.RADIAN); // end-of-linearity 
 			 _clStar = 1.3 ; 
 			 _alphaStall = Amount.valueOf(Math.toRadians(16.0),SI.RADIAN); 
-			 _clMax = 1.6; //1.8;
+			 _clMax = 1.7; //1.8;
 
 			 _cdMin = 0.00675;
 			 _clAtCdMin = 0.3;
@@ -182,7 +182,7 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 			 geometry = airf.getGeometry();
 
 			 _alphaZeroLift = Amount.valueOf(Math.toRadians(-1.1), SI.RADIAN); 
-			 _clAlpha = 7.05; 
+			 _clAlpha = 6.3; 
 			 _alphaStar = Amount.valueOf(Math.toRadians(10),SI.RADIAN); // end-of-linearity 
 			 _clStar = 1.2 ; 
 			 _alphaStall = Amount.valueOf(Math.toRadians(18.0),SI.RADIAN); 
@@ -193,7 +193,7 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 			 _kFactorDragPolar = 0.075;
 
 			 _aerodynamicCenterX = 0.243;
-			 _cmAC = -0.03;
+			 _cmAC = -0.02;
 			 _cmACStall = -0.07;
 			 _cmAlphaAC = 0. ;
 			 _cmAlphaLE = -0.1; //TODO, change this value
@@ -216,7 +216,7 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 			 geometry = airf.getGeometry();
 
 			 _alphaZeroLift = Amount.valueOf(Math.toRadians(-1.32), SI.RADIAN); 
-			 _clAlpha = 6.88; 
+			 _clAlpha = 6.3; 
 			 _alphaStar = Amount.valueOf(Math.toRadians(14),SI.RADIAN); // end-of-linearity 
 			 _clStar = 1.6 ; 
 			 _alphaStall = Amount.valueOf(Math.toRadians(18),SI.RADIAN); 
@@ -227,7 +227,7 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 			 _kFactorDragPolar = 0.075;
 
 			 _aerodynamicCenterX = 0.247;
-			 _cmAC = -0.021;
+			 _cmAC = -0.03;
 			 _cmACStall = -0.09;
 			 _cmAlphaAC = 0. ;
 			 _cmAlphaLE = -0.1; //TODO, change this value
@@ -528,11 +528,11 @@ public MyAerodynamics(MyAirfoil airf, String name) {
 		 geometry = airf.getGeometry();
 
 		 _alphaZeroLift = Amount.valueOf(Math.toRadians(0), SI.RADIAN); 
-		 _clAlpha = 6.92; 
-		 _alphaStar = Amount.valueOf(Math.toRadians(10),SI.RADIAN); // end-of-linearity 
-		 _clStar = 1.60 ; 
-		 _alphaStall = Amount.valueOf(Math.toRadians(20.1),SI.RADIAN); 
-		 _clMax = 1.2 ; //1.5;
+		 _clAlpha = 6.11; 
+		 _alphaStar = Amount.valueOf(Math.toRadians(12.1),SI.RADIAN); // end-of-linearity 
+		 _clStar = 1.3 ; 
+		 _alphaStall = Amount.valueOf(Math.toRadians(15),SI.RADIAN); 
+		 _clMax = 1.6 ; //1.5;
 
 		 _cdMin = 0.0055;
 		 _clAtCdMin = 0.0;

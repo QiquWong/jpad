@@ -79,24 +79,25 @@
 \contentsline {subsection}{\numberline {9.2.2}Additional drag due to elevator}{82}{subsection.9.2.2}
 \contentsline {section}{\numberline {9.3}Pitching Moments}{83}{section.9.3}
 \contentsline {subsection}{\numberline {9.3.1}Lifting surface}{84}{subsection.9.3.1}
-\contentsline {subsection}{\numberline {9.3.2}Fuselage}{85}{subsection.9.3.2}
-\contentsline {subsubsection}{Multhopp method}{85}{subsubsection*.89}
-\contentsline {subsubsection}{Fuselage Pitching moment prediction method}{87}{subsubsection*.93}
-\contentsline {section}{\numberline {9.4}Propulsors}{90}{section.9.4}
-\contentsline {subsection}{\numberline {9.4.1}Direct Effects}{90}{subsection.9.4.1}
-\contentsline {section}{\numberline {9.5}Stability Calculation}{91}{section.9.5}
-\contentsline {subsection}{\numberline {9.5.1}Neutral Point and Static Margin}{91}{subsection.9.5.1}
-\contentsline {section}{\numberline {9.6}Java Class Architecture}{91}{section.9.6}
-\contentsline {section}{\numberline {9.7}Case Study}{91}{section.9.7}
-\contentsline {chapter}{\numberline {10}Minor Works}{92}{chapter.10}
-\contentsline {section}{\numberline {10.1}Induced Angle of Attack}{92}{section.10.1}
-\contentsline {chapter}{\numberline {A}HDF dataset and database reader creation}{95}{Appendix.a.A}
-\contentsline {section}{\numberline {A.1}Chart Digitization}{95}{section.a.A.1}
-\contentsline {section}{\numberline {A.2}Creation of an HDF file with Matlab}{96}{section.a.A.2}
-\contentsline {chapter}{\numberline {B}Java Reference}{99}{Appendix.a.B}
-\contentsline {section}{\numberline {B.1}Packages}{99}{section.a.B.1}
-\contentsline {section}{\numberline {B.2}Documentation}{99}{section.a.B.2}
-\contentsline {chapter}{Glossary}{101}{section*.108}
-\contentsline {chapter}{Acronyms}{103}{section*.110}
-\contentsline {chapter}{List of symbols}{104}{section*.112}
-\contentsline {chapter}{Bibliography}{106}{section*.114}
+\contentsline {subsection}{\numberline {9.3.2}Additional moment due to elevator}{85}{subsection.9.3.2}
+\contentsline {subsection}{\numberline {9.3.3}Fuselage}{87}{subsection.9.3.3}
+\contentsline {subsubsection}{Multhopp method}{87}{subsubsection*.91}
+\contentsline {subsubsection}{Fuselage Pitching moment prediction method}{89}{subsubsection*.95}
+\contentsline {section}{\numberline {9.4}Propulsors}{92}{section.9.4}
+\contentsline {subsection}{\numberline {9.4.1}Direct Effects}{92}{subsection.9.4.1}
+\contentsline {section}{\numberline {9.5}Stability Calculation}{93}{section.9.5}
+\contentsline {subsection}{\numberline {9.5.1}Neutral Point and Static Margin}{93}{subsection.9.5.1}
+\contentsline {section}{\numberline {9.6}Java Class Architecture}{93}{section.9.6}
+\contentsline {section}{\numberline {9.7}Case Study}{93}{section.9.7}
+\contentsline {chapter}{\numberline {10}Minor Works}{94}{chapter.10}
+\contentsline {section}{\numberline {10.1}Induced Angle of Attack}{94}{section.10.1}
+\contentsline {chapter}{\numberline {A}HDF dataset and database reader creation}{97}{Appendix.a.A}
+\contentsline {section}{\numberline {A.1}Chart Digitization}{97}{section.a.A.1}
+\contentsline {section}{\numberline {A.2}Creation of an HDF file with Matlab}{98}{section.a.A.2}
+\contentsline {chapter}{\numberline {B}Java Reference}{101}{Appendix.a.B}
+\contentsline {section}{\numberline {B.1}Packages}{101}{section.a.B.1}
+\contentsline {section}{\numberline {B.2}Documentation}{101}{section.a.B.2}
+\contentsline {chapter}{Glossary}{103}{section*.110}
+\contentsline {chapter}{Acronyms}{105}{section*.112}
+\contentsline {chapter}{List of symbols}{106}{section*.114}
+\contentsline {chapter}{Bibliography}{108}{section*.116}

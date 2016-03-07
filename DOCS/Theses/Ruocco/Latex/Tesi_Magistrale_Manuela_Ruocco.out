@@ -70,22 +70,23 @@
 \BOOKMARK [2][-]{subsection.9.2.2}{Additional drag due to elevator}{section.9.2}% 70
 \BOOKMARK [1][-]{section.9.3}{Pitching Moments}{chapter.9}% 71
 \BOOKMARK [2][-]{subsection.9.3.1}{Lifting surface}{section.9.3}% 72
-\BOOKMARK [2][-]{subsection.9.3.2}{Fuselage}{section.9.3}% 73
-\BOOKMARK [1][-]{section.9.4}{Propulsors}{chapter.9}% 74
-\BOOKMARK [2][-]{subsection.9.4.1}{Direct Effects}{section.9.4}% 75
-\BOOKMARK [1][-]{section.9.5}{Stability Calculation}{chapter.9}% 76
-\BOOKMARK [2][-]{subsection.9.5.1}{Neutral Point and Static Margin}{section.9.5}% 77
-\BOOKMARK [1][-]{section.9.6}{Java Class Architecture}{chapter.9}% 78
-\BOOKMARK [1][-]{section.9.7}{Case Study}{chapter.9}% 79
-\BOOKMARK [0][-]{chapter.10}{Minor Works}{part.3}% 80
-\BOOKMARK [1][-]{section.10.1}{Induced Angle of Attack}{chapter.10}% 81
-\BOOKMARK [0][-]{Appendix.a.A}{HDF dataset and database reader creation}{part.3}% 82
-\BOOKMARK [1][-]{section.a.A.1}{Chart Digitization}{Appendix.a.A}% 83
-\BOOKMARK [1][-]{section.a.A.2}{Creation of an HDF file with Matlab}{Appendix.a.A}% 84
-\BOOKMARK [0][-]{Appendix.a.B}{Java Reference}{part.3}% 85
-\BOOKMARK [1][-]{section.a.B.1}{Packages}{Appendix.a.B}% 86
-\BOOKMARK [1][-]{section.a.B.2}{Documentation}{Appendix.a.B}% 87
-\BOOKMARK [0][-]{section*.108}{Glossary}{part.3}% 88
-\BOOKMARK [0][-]{section*.110}{Acronyms}{part.3}% 89
-\BOOKMARK [0][-]{section*.112}{List of symbols}{part.3}% 90
-\BOOKMARK [0][-]{section*.114}{Bibliography}{part.3}% 91
+\BOOKMARK [2][-]{subsection.9.3.2}{Additional moment due to elevator}{section.9.3}% 73
+\BOOKMARK [2][-]{subsection.9.3.3}{Fuselage}{section.9.3}% 74
+\BOOKMARK [1][-]{section.9.4}{Propulsors}{chapter.9}% 75
+\BOOKMARK [2][-]{subsection.9.4.1}{Direct Effects}{section.9.4}% 76
+\BOOKMARK [1][-]{section.9.5}{Stability Calculation}{chapter.9}% 77
+\BOOKMARK [2][-]{subsection.9.5.1}{Neutral Point and Static Margin}{section.9.5}% 78
+\BOOKMARK [1][-]{section.9.6}{Java Class Architecture}{chapter.9}% 79
+\BOOKMARK [1][-]{section.9.7}{Case Study}{chapter.9}% 80
+\BOOKMARK [0][-]{chapter.10}{Minor Works}{part.3}% 81
+\BOOKMARK [1][-]{section.10.1}{Induced Angle of Attack}{chapter.10}% 82
+\BOOKMARK [0][-]{Appendix.a.A}{HDF dataset and database reader creation}{part.3}% 83
+\BOOKMARK [1][-]{section.a.A.1}{Chart Digitization}{Appendix.a.A}% 84
+\BOOKMARK [1][-]{section.a.A.2}{Creation of an HDF file with Matlab}{Appendix.a.A}% 85
+\BOOKMARK [0][-]{Appendix.a.B}{Java Reference}{part.3}% 86
+\BOOKMARK [1][-]{section.a.B.1}{Packages}{Appendix.a.B}% 87
+\BOOKMARK [1][-]{section.a.B.2}{Documentation}{Appendix.a.B}% 88
+\BOOKMARK [0][-]{section*.110}{Glossary}{part.3}% 89
+\BOOKMARK [0][-]{section*.112}{Acronyms}{part.3}% 90
+\BOOKMARK [0][-]{section*.114}{List of symbols}{part.3}% 91
+\BOOKMARK [0][-]{section*.116}{Bibliography}{part.3}% 92

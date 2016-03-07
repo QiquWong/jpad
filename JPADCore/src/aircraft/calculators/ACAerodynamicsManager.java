@@ -507,7 +507,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 	 * @author Manuela Ruocco
 	 */
 
-	public double calculateCLAtAlphaWingBody(Amount<Angle> alphaBody, MyAirfoil meanAirfoil, boolean printCeck){
+	public double calculateCLAtAlphaWingBody(Amount<Angle> alphaBody, MyAirfoil meanAirfoil, boolean printCheck){
 		if (alphaBody.getUnit() == NonSI.DEGREE_ANGLE) 
 			alphaBody = alphaBody.to(SI.RADIAN);
 
@@ -543,14 +543,14 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		//System.out.println(" alpha max clean " + alphaMaxWingClean.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
 		//System.out.println(" cl max wing clean " + cLMaxWingClean);
 		//System.out.println(" cl alpha wing " + cLAlphaWing);
-		if (printCeck ==true){
+		if (printCheck ==true){
 		System.out.println("\n -----------WING BODY-------------- ");
 		System.out.println(" alpha max " + alphaMaxWingBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
 		System.out.println(" alpha star " + alphaStarDouble*57.3);
 		System.out.println(" cL max " + cLMaxWingClean);
 		System.out.println(" cL alpha wing body " + cLAlphaWingBody);
 		System.out.println(" alpha zero lift " + alphaZeroLift*57.3);
-		printCeck=false;
+		printCheck=false;
 		}
 
 		double alphaWing = alphaBody.getEstimatedValue() +
