@@ -491,9 +491,17 @@ public class Nacelle extends Component{
 		return balance;
 	}
 	
-//	public CenterOfGravity getCG() {
-//		return balance.get_cg();
-//	}
+	public Amount<Length> get_xCG() {
+		return balance.get_xCG();
+	}
+	
+	public Amount<Length> get_yCG() {
+		return balance.get_yCG();
+	}
+	
+	public Amount<Length> get_zCG() {
+		return balance.get_zCG();
+	}
 
 	public String get_id() {
 		return _id;

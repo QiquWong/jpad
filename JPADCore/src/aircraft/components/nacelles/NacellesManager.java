@@ -183,12 +183,16 @@ public class NacellesManager {
 
 	public CenterOfGravity calculateCG() {
 
+		
 		_totalCG = new CenterOfGravity();
+		
 		for(int i=0; i < _nacellesNumber; i++) {
 			_nacellesList.get(i).getBalance().calculateAll();
-			_cgList.add(_nacellesList.get(i).get_cg());
-//			_cgList.add(_nacellesList.get(i).getBalance().get_cg());
-			_totalCG = _totalCG.plus(_nacellesList.get(i).getBalance().get_cg()
+//			_cgList.add(_nacellesList.get(i).get_cg());
+			_cgList.add(_nacellesList.get(i).getBalance().get_NacBalanceManagerCG());
+//			_totalCG = _totalCG.plus(_nacellesList.get(i).getBalance().get_cg()
+			System.out.println("NacBalanceManagerCG() xBRF: "+ _nacellesList.get(i).getBalance().get_NacBalanceManagerCG().get_xBRF());
+			_totalCG = _totalCG.plus(_nacellesList.get(i).getBalance().get_NacBalanceManagerCG()
 					.times(_nacellesList.get(i).getWeights().get_massEstimated().doubleValue(SI.KILOGRAM)));
 		}
 

@@ -98,8 +98,9 @@ public class Test_CompleteAC_01 {
 		//--------------------- Analysis -----------------------------------------
 		
 		// Define the aircraft
-		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.AGILE_DC1);
-		aircraft.setName("AGILE_DC1");
+//		JPADXmlReader aircraft = new JPADXmlReader(inputFileName) ;
+		Aircraft aircraft = new Aircraft(AircraftEnum.ATR72);
+		aircraft.setName("ATR72");
 		LiftingSurface theWing = aircraft.get_wing();
 
 		// Set the operating conditions

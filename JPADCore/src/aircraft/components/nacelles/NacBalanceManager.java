@@ -9,6 +9,7 @@ import org.jscience.physics.amount.Amount;
 
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.MethodEnum;
+import standaloneutils.customdata.CenterOfGravity;
 import writers.JPADStaticWriteUtils;
 
 public class NacBalanceManager extends aircraft.componentmodel.componentcalcmanager.BalanceManager{
@@ -46,6 +47,7 @@ public class NacBalanceManager extends aircraft.componentmodel.componentcalcmana
 		// from old entries
 		_methodsList = new ArrayList<MethodEnum>();
 
+		initializeDependentData(); // Vincenzo
 		torenbeek();
 		
 		_methodsMap.put(AnalysisTypeEnum.BALANCE, _methodsList);
@@ -57,8 +59,12 @@ public class NacBalanceManager extends aircraft.componentmodel.componentcalcmana
 				_percentDifferenceXCG,
 				30.).getFilteredMean(), SI.METER));
 		
+//		System.out.println("_cg.get_xLRFref: " + _cg.get_xLRFref());
+//		System.out.println("_xCGMap" + _xCGMap);
+//		System.out.println("xCG LRF NacBalance: " + get_xCG());
+		
 		_cg.calculateCGinBRF();
-
+		
 	}
 	
 	public void torenbeek() {
@@ -66,5 +72,15 @@ public class NacBalanceManager extends aircraft.componentmodel.componentcalcmana
 		_xCG = _theNacelle.get_length().times(0.4);
 		_xCGMap.put(MethodEnum.TORENBEEK_1982, _xCG);	
 	}
+
+	
+	public CenterOfGravity get_NacBalanceManagerCG() {
+		return _cg;
+	}
+	
+	public Amount<Length> get_xCG() {
+		return _xCG;
+	}
+	
 
 }
