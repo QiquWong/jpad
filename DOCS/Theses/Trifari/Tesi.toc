@@ -43,7 +43,7 @@
 \contentsline {chapter}{\numberline {5}Take-off and Landing performance}{88}{chapter.5}
 \contentsline {section}{\numberline {5.1}Theoretical background}{88}{section.5.1}
 \contentsline {subsection}{\numberline {5.1.1}\gls {acr:AOE} take-off run}{89}{subsection.5.1.1}
-\contentsline {subsection}{\numberline {5.1.2}\gls {acr:OEI} take-off run and balanced field lenght}{94}{subsection.5.1.2}
+\contentsline {subsection}{\numberline {5.1.2}\gls {acr:OEI} take-off run and balanced field length}{94}{subsection.5.1.2}
 \contentsline {subsection}{\numberline {5.1.3}Landing distance calculation}{95}{subsection.5.1.3}
 \contentsline {section}{\numberline {5.2}Java class architecture}{97}{section.5.2}
 \contentsline {subsection}{\numberline {5.2.1}Take-Off}{97}{subsection.5.2.1}

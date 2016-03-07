@@ -12,8 +12,7 @@
 \glsgroupheading{D}\relax \glsresetentrylist %
 \glossentry{DATCOM}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{68}\delimN 
-		\setentrycounter[]{page}\glsnumberformat{70}\delimN 
-		\setentrycounter[]{page}\glsnumberformat{72}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{70\delimR 72}\delimN 
 		\setentrycounter[]{page}\glsnumberformat{135}}}%
 \glossentry{gls-DOC}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{32}\delimN 
@@ -83,7 +82,7 @@
 \glossentry{gls-PNG}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{38}\delimN 
 		\setentrycounter[]{page}\glsnumberformat{135}\delimN 
-		\setentrycounter[]{page}\glsnumberformat{139}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{140}}}\glsgroupskip
 \glsgroupheading{S}\relax \glsresetentrylist %
 \glossentry{Static}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{19}\delimN 

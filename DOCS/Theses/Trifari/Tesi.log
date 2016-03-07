@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.11.16)  7 MAR 2016 13:26
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.11.16)  7 MAR 2016 18:05
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -4671,21 +4671,21 @@ Package pdftex.def Info: images/organization.pdf used on input line 328.
 ve/texmf-local/tex/latex/mtpro2/umt2ms.fd
 File: umt2ms.fd 2006/05/03 v1.1 MathTimePro II Script (PCTeX/WaS)
 )
-[17] [18] <images/ATR-72.png, id=684, 1028.643pt x 639.5895pt>
+[17] [18] <images/ATR-72.png, id=689, 1028.643pt x 639.5895pt>
 File: images/ATR-72.png Graphic file (type png)
 
 <use images/ATR-72.png>
 Package pdftex.def Info: images/ATR-72.png used on input line 445.
 (pdftex.def)             Requested size: 352.90608pt x 219.42892pt.
 
-<images/B747-100B.png, id=688, 908.193pt x 528.17325pt>
+<images/B747-100B.png, id=693, 908.193pt x 528.17325pt>
 File: images/B747-100B.png Graphic file (type png)
 
 <use images/B747-100B.png>
 Package pdftex.def Info: images/B747-100B.png used on input line 456.
 (pdftex.def)             Requested size: 374.96397pt x 218.05951pt.
  [19] [20 <./images/ATR-72.png> <./images/B747-100B.png>] [21] [22] [23]
-<images/HowToCreateADefaultAircraftInJPAD3.pdf, id=740, 1896.08376pt x 1117.173
+<images/HowToCreateADefaultAircraftInJPAD3.pdf, id=745, 1896.08376pt x 1117.173
 75pt>
 File: images/HowToCreateADefaultAircraftInJPAD3.pdf Graphic file (type pdf)
  <use images/HowToCreateADefaultAircraftInJPAD3.pdf>
@@ -4693,7 +4693,7 @@ Package pdftex.def Info: images/HowToCreateADefaultAircraftInJPAD3.pdf used on
 input line 641.
 (pdftex.def)             Requested size: 720.51933pt x 424.53044pt.
 
-<images/HowToAssignDatabase.jpg, id=741, 1726.45pt x 840.13875pt>
+<images/HowToAssignDatabase.jpg, id=746, 1726.45pt x 840.13875pt>
 File: images/HowToAssignDatabase.jpg Graphic file (type jpg)
 
 <use images/HowToAssignDatabase.jpg>
@@ -4706,7 +4706,7 @@ oAssignDatabase.jpg>]
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 (hyperref)                removing `\gls' on input line 653.
 
-<images/gui/applicationStart.png, id=901, 1927.2pt x 1042.89626pt>
+<images/gui/applicationStart.png, id=906, 1927.2pt x 1042.89626pt>
 File: images/gui/applicationStart.png Graphic file (type png)
 
 <use images/gui/applicationStart.png>
@@ -4714,7 +4714,7 @@ Package pdftex.def Info: images/gui/applicationStart.png used on input line 663
 .
 (pdftex.def)             Requested size: 441.13094pt x 238.71533pt.
  [27 <./images/gui/applicationStart.png>]
-<images/gui/icons/FolderAirplane_32x32.png, id=915, 20.57687pt x 16.06pt>
+<images/gui/icons/FolderAirplane_32x32.png, id=920, 20.57687pt x 16.06pt>
 File: images/gui/icons/FolderAirplane_32x32.png Graphic file (type png)
 
 <use images/gui/icons/FolderAirplane_32x32.png>
@@ -4722,7 +4722,7 @@ Package pdftex.def Info: images/gui/icons/FolderAirplane_32x32.png used on inpu
 t line 684.
 (pdftex.def)             Requested size: 12.3462pt x 9.63606pt.
 
-<images/gui/createAnotherAircraft.png, id=916, 1445.4pt x 782.17218pt>
+<images/gui/createAnotherAircraft.png, id=921, 1445.4pt x 782.17218pt>
 File: images/gui/createAnotherAircraft.png Graphic file (type png)
 
 <use images/gui/createAnotherAircraft.png>
@@ -4730,14 +4730,14 @@ Package pdftex.def Info: images/gui/createAnotherAircraft.png used on input lin
 e 687.
 (pdftex.def)             Requested size: 410.24854pt x 222.0024pt.
 
-<images/gui/changeFusParam.png, id=917, 1445.4pt x 782.17218pt>
+<images/gui/changeFusParam.png, id=922, 1445.4pt x 782.17218pt>
 File: images/gui/changeFusParam.png Graphic file (type png)
 
 <use images/gui/changeFusParam.png>
 Package pdftex.def Info: images/gui/changeFusParam.png used on input line 695.
 (pdftex.def)             Requested size: 410.24854pt x 222.0024pt.
 
-<images/gui/icons/3DView_32x32.png, id=918, 7.7088pt x 7.7088pt>
+<images/gui/icons/3DView_32x32.png, id=923, 7.7088pt x 7.7088pt>
 File: images/gui/icons/3DView_32x32.png Graphic file (type png)
 
 <use images/gui/icons/3DView_32x32.png>
@@ -4745,7 +4745,7 @@ Package pdftex.def Info: images/gui/icons/3DView_32x32.png used on input line 6
 99.
 (pdftex.def)             Requested size: 9.25049pt x 9.25049pt.
 
-<images/gui/explore3D.png, id=919, 1445.4pt x 781.41937pt>
+<images/gui/explore3D.png, id=924, 1445.4pt x 781.41937pt>
 File: images/gui/explore3D.png Graphic file (type png)
 
 <use images/gui/explore3D.png>
@@ -4755,7 +4755,7 @@ Package pdftex.def Info: images/gui/explore3D.png used on input line 701.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<images/gui/icons/analysis_32x32.png, id=920, 24.09pt x 24.09pt>
+<images/gui/icons/analysis_32x32.png, id=925, 24.09pt x 24.09pt>
 File: images/gui/icons/analysis_32x32.png Graphic file (type png)
 
 <use images/gui/icons/analysis_32x32.png>
@@ -4765,7 +4765,7 @@ Package pdftex.def Info: images/gui/icons/analysis_32x32.png used on input line
  [28 <./images/gui/icons/FolderAirplane_32x32.png> <./images/gui/createAnotherA
 ircraft.png> <./images/gui/changeFusParam.png> <./images/gui/icons/3DView_32x32
 .png>]
-<images/gui/icons/Export_32x32.png, id=934, 30.42947pt x 30.42947pt>
+<images/gui/icons/Export_32x32.png, id=939, 30.42947pt x 30.42947pt>
 File: images/gui/icons/Export_32x32.png Graphic file (type png)
 
 <use images/gui/icons/Export_32x32.png>
@@ -4773,7 +4773,7 @@ Package pdftex.def Info: images/gui/icons/Export_32x32.png used on input line 7
 07.
 (pdftex.def)             Requested size: 12.17155pt x 12.17155pt.
 
-<images/gui/icons/cad_32x32.png, id=935, 12.63737pt x 12.63737pt>
+<images/gui/icons/cad_32x32.png, id=940, 12.63737pt x 12.63737pt>
 File: images/gui/icons/cad_32x32.png Graphic file (type png)
 
 <use images/gui/icons/cad_32x32.png>
@@ -4781,7 +4781,7 @@ Package pdftex.def Info: images/gui/icons/cad_32x32.png used on input line 709.
 
 (pdftex.def)             Requested size: 15.16475pt x 15.16475pt.
 
-<images/gui/icons/XML_32x32.png, id=936, 32.12pt x 32.12pt>
+<images/gui/icons/XML_32x32.png, id=941, 32.12pt x 32.12pt>
 File: images/gui/icons/XML_32x32.png Graphic file (type png)
 
 <use images/gui/icons/XML_32x32.png>
@@ -4789,14 +4789,14 @@ Package pdftex.def Info: images/gui/icons/XML_32x32.png used on input line 711.
 
 (pdftex.def)             Requested size: 12.84776pt x 12.84776pt.
 
-<images/gui/tabId.png, id=938, 194.22563pt x 19.57312pt>
+<images/gui/tabId.png, id=943, 194.22563pt x 19.57312pt>
 File: images/gui/tabId.png Graphic file (type png)
 
 <use images/gui/tabId.png>
 Package pdftex.def Info: images/gui/tabId.png used on input line 729.
 (pdftex.def)             Requested size: 227.62204pt x 22.93925pt.
 
-<images/gui/projectTreeMulti.png, id=939, 124.96687pt x 310.91156pt>
+<images/gui/projectTreeMulti.png, id=944, 124.96687pt x 310.91156pt>
 File: images/gui/projectTreeMulti.png Graphic file (type png)
 
 <use images/gui/projectTreeMulti.png>
@@ -4809,7 +4809,7 @@ ui/icons/XML_32x32.png> <./images/gui/tabId.png>] [30 <./images/gui/projectTree
 Multi.png>])
 (./contents/Chapter_PayloadRange.tex [31]
 Chapter 2.
-<images/Flexible_Payload_Range.png, id=981, 464.134pt x 356.532pt>
+<images/Flexible_Payload_Range.png, id=986, 464.134pt x 356.532pt>
 File: images/Flexible_Payload_Range.png Graphic file (type png)
 
 <use images/Flexible_Payload_Range.png>
@@ -4819,7 +4819,7 @@ Package pdftex.def Info: images/Flexible_Payload_Range.png used on input line 2
  [32
 
 ]
-<images/Payload_Range.png, id=991, 462.528pt x 358.941pt>
+<images/Payload_Range.png, id=996, 462.528pt x 358.941pt>
 File: images/Payload_Range.png Graphic file (type png)
 
 <use images/Payload_Range.png>
@@ -4876,7 +4876,7 @@ Underfull \hbox (badness 3758) in paragraph at lines 189--189
  []
 
 [36] [37]
-<images/PayloadRange_BestRange_Flowchart.png, id=1056, 1493.58pt x 943.525pt>
+<images/PayloadRange_BestRange_Flowchart.png, id=1061, 1493.58pt x 943.525pt>
 File: images/PayloadRange_BestRange_Flowchart.png Graphic file (type png)
 
 <use images/PayloadRange_BestRange_Flowchart.png>
@@ -4884,7 +4884,7 @@ Package pdftex.def Info: images/PayloadRange_BestRange_Flowchart.png used on in
 put line 250.
 (pdftex.def)             Requested size: 366.13948pt x 231.28802pt.
 
-<images/PayloadRange_MTOM_Flowchart.png, id=1057, 1494.58376pt x 744.7825pt>
+<images/PayloadRange_MTOM_Flowchart.png, id=1062, 1494.58376pt x 744.7825pt>
 File: images/PayloadRange_MTOM_Flowchart.png Graphic file (type png)
 
 <use images/PayloadRange_MTOM_Flowchart.png>
@@ -4916,7 +4916,7 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 [42] [43] [44]
 Chapter 3.
-<images/TDelta.pdf, id=1230, 473.18668pt x 436.7368pt>
+<images/TDelta.pdf, id=1235, 473.18668pt x 436.7368pt>
 File: images/TDelta.pdf Graphic file (type pdf)
  <use images/TDelta.pdf>
 Package pdftex.def Info: images/TDelta.pdf used on input line 29.
@@ -4924,7 +4924,7 @@ Package pdftex.def Info: images/TDelta.pdf used on input line 29.
 
 [45
 
-] <images/TDelta_SpecificRange.pdf, id=1238, 473.18668pt x 436.7368pt>
+] <images/TDelta_SpecificRange.pdf, id=1243, 473.18668pt x 436.7368pt>
 File: images/TDelta_SpecificRange.pdf Graphic file (type pdf)
 
 <use images/TDelta_SpecificRange.pdf>
@@ -4932,7 +4932,7 @@ Package pdftex.def Info: images/TDelta_SpecificRange.pdf used on input line 70.
 
 (pdftex.def)             Requested size: 220.56546pt x 203.5803pt.
 
-<images/DragDelta_SpecificRange.pdf, id=1241, 497.10266pt x 450.67346pt>
+<images/DragDelta_SpecificRange.pdf, id=1246, 497.10266pt x 450.67346pt>
 File: images/DragDelta_SpecificRange.pdf Graphic file (type pdf)
 
 <use images/DragDelta_SpecificRange.pdf>
@@ -4940,7 +4940,7 @@ Package pdftex.def Info: images/DragDelta_SpecificRange.pdf used on input line
 86.
 (pdftex.def)             Requested size: 220.56546pt x 199.96109pt.
  [46 <./images/TDelta.pdf>]
-<images/TDeltaDragDelta.png, id=1255, 497.057pt x 450.483pt>
+<images/TDeltaDragDelta.png, id=1260, 497.057pt x 450.483pt>
 File: images/TDeltaDragDelta.png Graphic file (type png)
 
 <use images/TDeltaDragDelta.png>
@@ -4950,14 +4950,14 @@ Package pdftex.def Info: images/TDeltaDragDelta.png used on input line 99.
 
 pdfTeX warning: pdflatex.exe (file ./images/DragDelta_SpecificRange.pdf): PDF i
 nclusion: multiple pdfs with page group included in a single page
->] <images/AutonomyFactor.pdf, id=1267, 573.95729pt x 469.14757pt>
+>] <images/AutonomyFactor.pdf, id=1272, 573.95729pt x 469.14757pt>
 File: images/AutonomyFactor.pdf Graphic file (type pdf)
 
 <use images/AutonomyFactor.pdf>
 Package pdftex.def Info: images/AutonomyFactor.pdf used on input line 138.
 (pdftex.def)             Requested size: 264.68124pt x 216.35454pt.
 
-<images/CruiseGrid.pdf, id=1273, 479.99796pt x 438.29077pt>
+<images/CruiseGrid.pdf, id=1278, 479.99796pt x 438.29077pt>
 File: images/CruiseGrid.pdf Graphic file (type pdf)
 
 <use images/CruiseGrid.pdf>
@@ -4968,7 +4968,7 @@ s/CruiseGrid.pdf
 
 pdfTeX warning: pdflatex.exe (file ./images/CruiseGrid.pdf): PDF inclusion: mul
 tiple pdfs with page group included in a single page
->] [50] <images/SpecificRange_Flowchart.png, id=1325, 1522.68875pt x 987.69pt>
+>] [50] <images/SpecificRange_Flowchart.png, id=1331, 1522.68875pt x 987.69pt>
 File: images/SpecificRange_Flowchart.png Graphic file (type png)
 
 <use images/SpecificRange_Flowchart.png>
@@ -5020,14 +5020,14 @@ Overfull \hbox (27.82321pt too wide) in paragraph at lines 1334--526
 Chapter 4.
 [61
 
-] <images/FlapEffects.png, id=1552, 801.99625pt x 916.42375pt>
+] <images/FlapEffects.png, id=1558, 801.99625pt x 916.42375pt>
 File: images/FlapEffects.png Graphic file (type png)
 
 <use images/FlapEffects.png>
 Package pdftex.def Info: images/FlapEffects.png used on input line 118.
 (pdftex.def)             Requested size: 198.50755pt x 226.82607pt.
 
-<images/SlatEffects.png, id=1553, 974.64125pt x 1004.75375pt>
+<images/SlatEffects.png, id=1559, 974.64125pt x 1004.75375pt>
 File: images/SlatEffects.png Graphic file (type png)
 
 <use images/SlatEffects.png>
@@ -5042,13 +5042,13 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
  [62] [63 <./images/FlapEffects.png> <./images/SlatEffects.png>]
-<images/Flap.png, id=1567, 558.085pt x 210.7875pt>
+<images/Flap.png, id=1573, 558.085pt x 210.7875pt>
 File: images/Flap.png Graphic file (type png)
  <use images/Flap.png>
 Package pdftex.def Info: images/Flap.png used on input line 152.
 (pdftex.def)             Requested size: 441.13094pt x 166.62001pt.
 
-<images/Slat.png, id=1568, 388.45125pt x 138.5175pt>
+<images/Slat.png, id=1574, 388.45125pt x 138.5175pt>
 File: images/Slat.png Graphic file (type png)
  <use images/Slat.png>
 Package pdftex.def Info: images/Slat.png used on input line 159.
@@ -5079,14 +5079,14 @@ Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 (hyperref)                removing `math shift' on input line 181.
 
-<images/Eta_Delta_Plain.png, id=1582, 634.16925pt x 457.71pt>
+<images/Eta_Delta_Plain.png, id=1588, 634.16925pt x 457.71pt>
 File: images/Eta_Delta_Plain.png Graphic file (type png)
 
 <use images/Eta_Delta_Plain.png>
 Package pdftex.def Info: images/Eta_Delta_Plain.png used on input line 216.
 (pdftex.def)             Requested size: 308.7903pt x 222.86908pt.
 
-<images/Eta_Delta.png, id=1583, 825.68475pt x 416.757pt>
+<images/Eta_Delta.png, id=1589, 825.68475pt x 416.757pt>
 File: images/Eta_Delta.png Graphic file (type png)
 
 <use images/Eta_Delta.png>
@@ -5094,19 +5094,19 @@ Package pdftex.def Info: images/Eta_Delta.png used on input line 225.
 (pdftex.def)             Requested size: 485.24672pt x 244.93062pt.
  [65 <./images/Slat.png>] [66 <./images/Eta_Delta_Plain.png> <./images/Eta_Delt
 a.png>]
-<images/DeltaC_Cf.png, id=1608, 998.5305pt x 454.69875pt>
+<images/DeltaC_Cf.png, id=1614, 998.5305pt x 454.69875pt>
 File: images/DeltaC_Cf.png Graphic file (type png)
 
 <use images/DeltaC_Cf.png>
 Package pdftex.def Info: images/DeltaC_Cf.png used on input line 259.
 (pdftex.def)             Requested size: 441.13094pt x 200.87982pt.
- <images/Kc.png, id=1611, 805.20825pt x 483.60675pt>
+ <images/Kc.png, id=1617, 805.20825pt x 483.60675pt>
 File: images/Kc.png Graphic file (type png)
 
 <use images/Kc.png>
 Package pdftex.def Info: images/Kc.png used on input line 277.
 (pdftex.def)             Requested size: 308.7903pt x 185.46231pt.
- <images/Kb.png, id=1612, 428.802pt x 377.0085pt>
+ <images/Kb.png, id=1618, 428.802pt x 377.0085pt>
 File: images/Kb.png Graphic file (type png)
 
 <use images/Kb.png>
@@ -5138,52 +5138,52 @@ Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 (hyperref)                removing `math shift' on input line 290.
 
 [67 <./images/DeltaC_Cf.png> <./images/Kc.png>]
-<images/DeltaClmax_Base.png, id=1632, 776.30025pt x 445.06274pt>
+<images/DeltaClmax_Base.png, id=1638, 776.30025pt x 445.06274pt>
 File: images/DeltaClmax_Base.png Graphic file (type png)
 
 <use images/DeltaClmax_Base.png>
 Package pdftex.def Info: images/DeltaClmax_Base.png used on input line 305.
 (pdftex.def)             Requested size: 352.90608pt x 202.32729pt.
 
-<images/K1.png, id=1633, 751.608pt x 418.56375pt>
+<images/K1.png, id=1639, 751.608pt x 418.56375pt>
 File: images/K1.png Graphic file (type png)
  <use images/K1.png>
 Package pdftex.def Info: images/K1.png used on input line 312.
 (pdftex.def)             Requested size: 352.90608pt x 196.53337pt.
 
-<images/K2.png, id=1634, 835.923pt x 468.5505pt>
+<images/K2.png, id=1640, 835.923pt x 468.5505pt>
 File: images/K2.png Graphic file (type png)
  <use images/K2.png>
 Package pdftex.def Info: images/K2.png used on input line 319.
 (pdftex.def)             Requested size: 352.90608pt x 197.81224pt.
  [68 <./images/Kb.png> <./images/DeltaClmax_Base.png>]
-<images/K3.png, id=1647, 826.287pt x 469.15276pt>
+<images/K3.png, id=1653, 826.287pt x 469.15276pt>
 File: images/K3.png Graphic file (type png)
  <use images/K3.png>
 Package pdftex.def Info: images/K3.png used on input line 326.
 (pdftex.def)             Requested size: 352.90608pt x 200.3716pt.
  [69 <./images/K1.png> <./images/K2.png> <./images/K3.png>]
-<images/DeltaCl_Ddelta.png, id=1661, 732.336pt x 472.164pt>
+<images/DeltaCl_Ddelta.png, id=1667, 732.336pt x 472.164pt>
 File: images/DeltaCl_Ddelta.png Graphic file (type png)
 
 <use images/DeltaCl_Ddelta.png>
 Package pdftex.def Info: images/DeltaCl_Ddelta.png used on input line 354.
 (pdftex.def)             Requested size: 352.90608pt x 227.53671pt.
 
-<images/Eta_max.png, id=1662, 705.837pt x 440.847pt>
+<images/Eta_max.png, id=1668, 705.837pt x 440.847pt>
 File: images/Eta_max.png Graphic file (type png)
  <use images/Eta_max.png>
 Package pdftex.def Info: images/Eta_max.png used on input line 361.
 (pdftex.def)             Requested size: 352.90608pt x 220.41623pt.
 
-<images/Eta_Delta_Slat.png, id=1663, 633.567pt x 396.2805pt>
+<images/Eta_Delta_Slat.png, id=1669, 633.567pt x 396.2805pt>
 File: images/Eta_Delta_Slat.png Graphic file (type png)
 
 <use images/Eta_Delta_Slat.png>
 Package pdftex.def Info: images/Eta_Delta_Slat.png used on input line 368.
 (pdftex.def)             Requested size: 352.90608pt x 220.7304pt.
  [70 <./images/DeltaCl_Ddelta.png>]
-<images/deltaSlat_c'c.png, id=1674, 553.46774pt x 238.491pt>
+<images/deltaSlat_c'c.png, id=1680, 553.46774pt x 238.491pt>
 File: images/deltaSlat_c'c.png Graphic file (type png)
 
 <use images/deltaSlat_c'c.png>
@@ -5191,7 +5191,7 @@ Package pdftex.def Info: images/deltaSlat_c'c.png used on input line 375.
 (pdftex.def)             Requested size: 352.90608pt x 152.07329pt.
  [71 <./images/Eta_max.png> <./images/Eta_Delta_Slat.png> <./images/deltaSlat_c
 'c.png>]
-<images/Swf.png, id=1686, 413.74574pt x 336.65775pt>
+<images/Swf.png, id=1694, 413.74574pt x 336.65775pt>
 File: images/Swf.png Graphic file (type png)
  <use images/Swf.png>
 Package pdftex.def Info: images/Swf.png used on input line 399.
@@ -5238,49 +5238,49 @@ Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 (hyperref)                removing `math shift' on input line 446.
 
-<images/DeltaAlphaMax.png, id=1703, 463.13025pt x 398.08725pt>
+<images/DeltaAlphaMax.png, id=1711, 463.13025pt x 398.08725pt>
 File: images/DeltaAlphaMax.png Graphic file (type png)
 
 <use images/DeltaAlphaMax.png>
 Package pdftex.def Info: images/DeltaAlphaMax.png used on input line 453.
 (pdftex.def)             Requested size: 264.68124pt x 227.50737pt.
  [73 <./images/DeltaAlphaMax.png>]
-<images/Delta1_Plain.png, id=1719, 431.81325pt x 373.99725pt>
+<images/Delta1_Plain.png, id=1727, 431.81325pt x 373.99725pt>
 File: images/Delta1_Plain.png Graphic file (type png)
 
 <use images/Delta1_Plain.png>
 Package pdftex.def Info: images/Delta1_Plain.png used on input line 480.
 (pdftex.def)             Requested size: 397.01514pt x 343.8819pt.
 
-<images/Delta2_Plain.png, id=1720, 399.29175pt x 348.70274pt>
+<images/Delta2_Plain.png, id=1728, 399.29175pt x 348.70274pt>
 File: images/Delta2_Plain.png Graphic file (type png)
 
 <use images/Delta2_Plain.png>
 Package pdftex.def Info: images/Delta2_Plain.png used on input line 487.
 (pdftex.def)             Requested size: 308.7903pt x 269.6725pt.
 
-<images/Delta1_Slotted.png, id=1721, 437.83575pt x 510.708pt>
+<images/Delta1_Slotted.png, id=1729, 437.83575pt x 510.708pt>
 File: images/Delta1_Slotted.png Graphic file (type png)
 
 <use images/Delta1_Slotted.png>
 Package pdftex.def Info: images/Delta1_Slotted.png used on input line 494.
 (pdftex.def)             Requested size: 308.7903pt x 360.19724pt.
  [74 <./images/Delta1_Plain.png>]
-<images/Delta2_Slotted.png, id=1734, 442.65375pt x 221.628pt>
+<images/Delta2_Slotted.png, id=1742, 442.65375pt x 221.628pt>
 File: images/Delta2_Slotted.png Graphic file (type png)
 
 <use images/Delta2_Slotted.png>
 Package pdftex.def Info: images/Delta2_Slotted.png used on input line 501.
 (pdftex.def)             Requested size: 308.7903pt x 154.61436pt.
  [75 <./images/Delta2_Plain.png> <./images/Delta1_Slotted.png>] <images/Delta3.
-png, id=1742, 413.74574pt x 368.577pt>
+png, id=1750, 413.74574pt x 368.577pt>
 File: images/Delta3.png Graphic file (type png)
 
 <use images/Delta3.png>
 Package pdftex.def Info: images/Delta3.png used on input line 520.
 (pdftex.def)             Requested size: 352.90608pt x 314.39423pt.
  [76 <./images/Delta2_Slotted.png> <./images/Delta3.png>] <images/Mu1_Pitching_
-Moment.png, id=1757, 463.13025pt x 317.988pt>
+Moment.png, id=1765, 463.13025pt x 317.988pt>
 File: images/Mu1_Pitching_Moment.png Graphic file (type png)
 
 <use images/Mu1_Pitching_Moment.png>
@@ -5288,7 +5288,7 @@ Package pdftex.def Info: images/Mu1_Pitching_Moment.png used on input line 547.
 
 (pdftex.def)             Requested size: 330.84819pt x 227.16075pt.
  [77 <./images/Mu1_Pitching_Moment.png>]
-<images/Mu2_Pitching_Moment.png, id=1771, 389.455pt x 454.69875pt>
+<images/Mu2_Pitching_Moment.png, id=1779, 389.455pt x 454.69875pt>
 File: images/Mu2_Pitching_Moment.png Graphic file (type png)
 
 <use images/Mu2_Pitching_Moment.png>
@@ -5300,7 +5300,7 @@ Overfull \hbox (22.05789pt too wide) in paragraph at lines 574--575
  [][] 
  []
 
-<images/Mu3_Pitching_Moment.png, id=1772, 297.11pt x 405.515pt>
+<images/Mu3_Pitching_Moment.png, id=1780, 297.11pt x 405.515pt>
 File: images/Mu3_Pitching_Moment.png Graphic file (type png)
 
 <use images/Mu3_Pitching_Moment.png>
@@ -5309,7 +5309,7 @@ Package pdftex.def Info: images/Mu3_Pitching_Moment.png used on input line 580.
 (pdftex.def)             Requested size: 207.33206pt x 282.99228pt.
  [78 <./images/Mu2_Pitching_Moment.png> <./images/Mu3_Pitching_Moment.png>] [79
 ]
-<images/HighLiftDevices_Flowchart.png, id=1801, 1824.8175pt x 1377.145pt>
+<images/HighLiftDevices_Flowchart.png, id=1809, 1824.8175pt x 1377.145pt>
 File: images/HighLiftDevices_Flowchart.png Graphic file (type png)
 
 <use images/HighLiftDevices_Flowchart.png>
@@ -5330,7 +5330,7 @@ Chapter 5.
 
 pdfTeX warning: pdflatex.exe (file ./images/TakeOffRun.pdf): PDF inclusion: fou
 nd PDF version <1.6>, but at most version <1.5> allowed
-<images/TakeOffRun.pdf, id=2059, 445.84827pt x 178.54102pt>
+<images/TakeOffRun.pdf, id=2067, 445.84827pt x 178.54102pt>
 File: images/TakeOffRun.pdf Graphic file (type pdf)
 
 <use images/TakeOffRun.pdf>
@@ -5344,14 +5344,14 @@ Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 [88
 
 ] [89 <./images/TakeOffRun.pdf>] [90]
-<images/McCormickGroundEffect.png, id=2151, 342.68025pt x 349.305pt>
+<images/McCormickGroundEffect.png, id=2159, 342.68025pt x 349.305pt>
 File: images/McCormickGroundEffect.png Graphic file (type png)
 
 <use images/McCormickGroundEffect.png>
 Package pdftex.def Info: images/McCormickGroundEffect.png used on input line 20
 9.
 (pdftex.def)             Requested size: 251.44786pt x 256.31235pt.
- [91 <./images/McCormickGroundEffect.png>] <images/GroundEffect.pdf, id=2160, 4
+ [91 <./images/McCormickGroundEffect.png>] <images/GroundEffect.pdf, id=2169, 4
 60.31238pt x 189.11964pt>
 File: images/GroundEffect.pdf Graphic file (type pdf)
 
@@ -5359,7 +5359,7 @@ File: images/GroundEffect.pdf Graphic file (type pdf)
 Package pdftex.def Info: images/GroundEffect.pdf used on input line 223.
 (pdftex.def)             Requested size: 441.13094pt x 181.24979pt.
  [92 <./images/GroundEffect.pdf>]
-<images/AlphaInputTakeOff.pdf, id=2329, 317.40582pt x 437.15433pt>
+<images/AlphaInputTakeOff.pdf, id=2337, 317.40582pt x 437.15433pt>
 File: images/AlphaInputTakeOff.pdf Graphic file (type pdf)
 
 <use images/AlphaInputTakeOff.pdf>
@@ -5370,7 +5370,7 @@ Package pdftex.def Info: images/AlphaInputTakeOff.pdf used on input line 268.
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 (hyperref)                removing `\gls' on input line 299.
 
-[94] <images/BalancedFieldLength.pdf, id=2358, 437.28938pt x 311.1125pt>
+[94] <images/BalancedFieldLength.pdf, id=2366, 437.28938pt x 311.1125pt>
 File: images/BalancedFieldLength.pdf Graphic file (type pdf)
 
 <use images/BalancedFieldLength.pdf>
@@ -5381,14 +5381,14 @@ Package pdftex.def Info: images/BalancedFieldLength.pdf used on input line 332.
 
 pdfTeX warning: pdflatex.exe (file ./images/LandingRun.pdf): PDF inclusion: fou
 nd PDF version <1.6>, but at most version <1.5> allowed
-<images/LandingRun.pdf, id=2361, 462.99574pt x 147.2712pt>
+<images/LandingRun.pdf, id=2370, 462.99574pt x 147.2712pt>
 File: images/LandingRun.pdf Graphic file (type pdf)
 
 <use images/LandingRun.pdf>
 Package pdftex.def Info: images/LandingRun.pdf used on input line 347.
 (pdftex.def)             Requested size: 427.89754pt x 136.1136pt.
 
-<images/LandingAirborne.png, id=2364, 2966.08125pt x 1669.23625pt>
+<images/LandingAirborne.png, id=2373, 2966.08125pt x 1669.23625pt>
 File: images/LandingAirborne.png Graphic file (type png)
 
 <use images/LandingAirborne.png>
@@ -5406,7 +5406,7 @@ Overfull \hbox (23.99998pt too wide) in paragraph at lines 578--588
  []
 
 [101] [102] [103]
-<images/TakeOff_Flowchart.pdf, id=2535, 1907.125pt x 1748.5325pt>
+<images/TakeOff_Flowchart.pdf, id=2544, 1907.125pt x 1748.5325pt>
 File: images/TakeOff_Flowchart.pdf Graphic file (type pdf)
 
 <use images/TakeOff_Flowchart.pdf>
@@ -5418,7 +5418,7 @@ Underfull \hbox (badness 2050) in paragraph at lines 699--699
  []
 
 [104 <./images/TakeOff_Flowchart.pdf>] [105]
-<images/Landing_Flowchart.pdf, id=2621, 1918.16624pt x 1551.7975pt>
+<images/Landing_Flowchart.pdf, id=2630, 1918.16624pt x 1551.7975pt>
 File: images/Landing_Flowchart.pdf Graphic file (type pdf)
 
 <use images/Landing_Flowchart.pdf>
@@ -5426,7 +5426,7 @@ Package pdftex.def Info: images/Landing_Flowchart.pdf used on input line 726.
 (pdftex.def)             Requested size: 441.13094pt x 356.85857pt.
  [106 <./images/Landing_Flowchart.pdf>]
 [107] [108] [109] [110] [111]
-<images/TakeOff_Trajectory_AOE.pdf, id=2889, 452.46742pt x 132.85133pt>
+<images/TakeOff_Trajectory_AOE.pdf, id=2899, 452.46742pt x 132.85133pt>
 File: images/TakeOff_Trajectory_AOE.pdf Graphic file (type pdf)
 
 <use images/TakeOff_Trajectory_AOE.pdf>
@@ -5438,7 +5438,7 @@ Overfull \hbox (44.11578pt too wide) in paragraph at lines 958--959
  [][] 
  []
 
-<images/Altitude_evolution_AOE.pdf, id=2890, 434.98509pt x 131.12286pt>
+<images/Altitude_evolution_AOE.pdf, id=2902, 434.98509pt x 131.12286pt>
 File: images/Altitude_evolution_AOE.pdf Graphic file (type pdf)
 
 <use images/Altitude_evolution_AOE.pdf>
@@ -5450,7 +5450,7 @@ Overfull \hbox (44.11578pt too wide) in paragraph at lines 964--965
  [][] 
  []
 
-<images/TakeOff_Trajectory_OEI.pdf, id=2891, 452.4654pt x 132.85133pt>
+<images/TakeOff_Trajectory_OEI.pdf, id=2905, 452.4654pt x 132.85133pt>
 File: images/TakeOff_Trajectory_OEI.pdf Graphic file (type pdf)
 
 <use images/TakeOff_Trajectory_OEI.pdf>
@@ -5462,7 +5462,7 @@ Overfull \hbox (44.11578pt too wide) in paragraph at lines 970--971
  [][] 
  []
 
-<images/Altitude_evolution_OEI.pdf, id=2892, 444.77869pt x 131.12286pt>
+<images/Altitude_evolution_OEI.pdf, id=2908, 444.77869pt x 131.12286pt>
 File: images/Altitude_evolution_OEI.pdf Graphic file (type pdf)
 
 <use images/Altitude_evolution_OEI.pdf>
@@ -5475,7 +5475,7 @@ Overfull \hbox (44.11578pt too wide) in paragraph at lines 976--977
  []
 
 
-<images/AngularVelocity_vs_GroundDistance_AOE.pdf, id=2893, 465.3375pt x 198.04
+<images/AngularVelocity_vs_GroundDistance_AOE.pdf, id=2911, 465.3375pt x 198.04
 388pt>
 File: images/AngularVelocity_vs_GroundDistance_AOE.pdf Graphic file (type pdf)
  <use images/AngularVelocity_vs_GroundDistance_AOE.pdf>
@@ -5487,7 +5487,7 @@ Overfull \hbox (44.11578pt too wide) in paragraph at lines 982--983
  [][] 
  []
 
-<images/Angles_vs_GroundDistance_AOE.pdf, id=2894, 455.60515pt x 198.04189pt>
+<images/Angles_vs_GroundDistance_AOE.pdf, id=2914, 455.60515pt x 198.04189pt>
 File: images/Angles_vs_GroundDistance_AOE.pdf Graphic file (type pdf)
 
 <use images/Angles_vs_GroundDistance_AOE.pdf>
@@ -5503,7 +5503,7 @@ Overfull \hbox (44.11578pt too wide) in paragraph at lines 988--989
 
  <./images/TakeOff_Trajectory_AOE.pdf> <./images/Altitude_evolution_AOE.pdf> <.
 /images/TakeOff_Trajectory_OEI.pdf> <./images/Altitude_evolution_OEI.pdf>]
-<images/CL_vs_GroundDistance_AOE.pdf, id=2933, 455.3592pt x 190.19557pt>
+<images/CL_vs_GroundDistance_AOE.pdf, id=2955, 455.3592pt x 190.19557pt>
 File: images/CL_vs_GroundDistance_AOE.pdf Graphic file (type pdf)
 
 <use images/CL_vs_GroundDistance_AOE.pdf>
@@ -5516,7 +5516,7 @@ Overfull \hbox (44.11578pt too wide) in paragraph at lines 994--995
  []
 
 
-<images/AngularVelocity_vs_GroundDistance_OEI.pdf, id=2934, 465.33548pt x 198.0
+<images/AngularVelocity_vs_GroundDistance_OEI.pdf, id=2958, 465.33548pt x 198.0
 4388pt>
 File: images/AngularVelocity_vs_GroundDistance_OEI.pdf Graphic file (type pdf)
  <use images/AngularVelocity_vs_GroundDistance_OEI.pdf>
@@ -5528,7 +5528,7 @@ Overfull \hbox (44.11578pt too wide) in paragraph at lines 1000--1001
  [][] 
  []
 
-<images/Angles_vs_GroundDistance_OEI.pdf, id=2935, 438.12483pt x 193.64445pt>
+<images/Angles_vs_GroundDistance_OEI.pdf, id=2961, 438.12483pt x 193.64445pt>
 File: images/Angles_vs_GroundDistance_OEI.pdf Graphic file (type pdf)
 
 <use images/Angles_vs_GroundDistance_OEI.pdf>
@@ -5542,7 +5542,7 @@ Overfull \hbox (22.05789pt too wide) in paragraph at lines 1006--1007
 
 [113 <./images/AngularVelocity_vs_GroundDistance_AOE.pdf> <./images/Angles_vs_G
 roundDistance_AOE.pdf> <./images/CL_vs_GroundDistance_AOE.pdf>]
-<images/CL_vs_GroundDistance_OEI.pdf, id=2978, 455.35823pt x 190.19656pt>
+<images/CL_vs_GroundDistance_OEI.pdf, id=3006, 455.35823pt x 190.19656pt>
 File: images/CL_vs_GroundDistance_OEI.pdf Graphic file (type pdf)
 
 <use images/CL_vs_GroundDistance_OEI.pdf>
@@ -5555,7 +5555,7 @@ Overfull \hbox (44.11578pt too wide) in paragraph at lines 1012--1013
  []
 
 
-<images/RateOfClimb_vs_GroundDistance_AOE.pdf, id=2979, 455.15544pt x 256.36678
+<images/RateOfClimb_vs_GroundDistance_AOE.pdf, id=3009, 455.15544pt x 256.36678
 pt>
 File: images/RateOfClimb_vs_GroundDistance_AOE.pdf Graphic file (type pdf)
  <use images/RateOfClimb_vs_GroundDistance_AOE.pdf>
@@ -5569,7 +5569,7 @@ Overfull \hbox (44.11578pt too wide) in paragraph at lines 1018--1019
 
 [114 <./images/AngularVelocity_vs_GroundDistance_OEI.pdf> <./images/Angles_vs_G
 roundDistance_OEI.pdf> <./images/CL_vs_GroundDistance_OEI.pdf>]
-<images/RateOfClimb_vs_GroundDistance_OEI.pdf, id=3018, 464.406pt x 264.21611pt
+<images/RateOfClimb_vs_GroundDistance_OEI.pdf, id=3050, 464.406pt x 264.21611pt
 >
 File: images/RateOfClimb_vs_GroundDistance_OEI.pdf Graphic file (type pdf)
  <use images/RateOfClimb_vs_GroundDistance_OEI.pdf>
@@ -5583,7 +5583,7 @@ Overfull \hbox (44.11578pt too wide) in paragraph at lines 1024--1025
 
 [115 <./images/RateOfClimb_vs_GroundDistance_AOE.pdf> <./images/RateOfClimb_vs_
 GroundDistance_OEI.pdf>]
-<images/LoadFactor_vs_GroundDistance_AOE.pdf, id=3045, 453.6679pt x 198.04189pt
+<images/LoadFactor_vs_GroundDistance_AOE.pdf, id=3079, 453.6679pt x 198.04189pt
 >
 File: images/LoadFactor_vs_GroundDistance_AOE.pdf Graphic file (type pdf)
  <use images/LoadFactor_vs_GroundDistance_AOE.pdf>
@@ -5596,7 +5596,7 @@ Overfull \hbox (30.88239pt too wide) in paragraph at lines 1032--1033
  []
 
 
-<images/LoadFactor_vs_GroundDistance_OEI.pdf, id=3046, 453.6659pt x 198.04189pt
+<images/LoadFactor_vs_GroundDistance_OEI.pdf, id=3082, 453.6659pt x 198.04189pt
 >
 File: images/LoadFactor_vs_GroundDistance_OEI.pdf Graphic file (type pdf)
  <use images/LoadFactor_vs_GroundDistance_OEI.pdf>
@@ -5609,7 +5609,7 @@ Overfull \hbox (30.88239pt too wide) in paragraph at lines 1038--1039
  []
 
 
-<images/LoadFactor_vs_GroundDistance_ABORTED.pdf, id=3047, 442.18802pt x 196.31
+<images/LoadFactor_vs_GroundDistance_ABORTED.pdf, id=3085, 442.18802pt x 196.31
 543pt>
 File: images/LoadFactor_vs_GroundDistance_ABORTED.pdf Graphic file (type pdf)
  <use images/LoadFactor_vs_GroundDistance_ABORTED.pdf>
@@ -5622,7 +5622,7 @@ Overfull \hbox (22.05789pt too wide) in paragraph at lines 1044--1045
  []
 
 
-<images/VerticalForces_vs_GroundDistance_AOE.pdf, id=3048, 462.34732pt x 198.90
+<images/VerticalForces_vs_GroundDistance_AOE.pdf, id=3086, 462.34732pt x 198.90
 51pt>
 File: images/VerticalForces_vs_GroundDistance_AOE.pdf Graphic file (type pdf)
  <use images/VerticalForces_vs_GroundDistance_AOE.pdf>
@@ -5635,7 +5635,7 @@ Overfull \hbox (44.11578pt too wide) in paragraph at lines 1050--1051
  []
 
 
-<images/VerticalForces_vs_GroundDistance_OEI.pdf, id=3049, 462.34933pt x 198.90
+<images/VerticalForces_vs_GroundDistance_OEI.pdf, id=3089, 462.34933pt x 198.90
 611pt>
 File: images/VerticalForces_vs_GroundDistance_OEI.pdf Graphic file (type pdf)
  <use images/VerticalForces_vs_GroundDistance_OEI.pdf>
@@ -5651,7 +5651,7 @@ Overfull \hbox (44.11578pt too wide) in paragraph at lines 1056--1057
 
  <./images/LoadFactor_vs_GroundDistance_AOE.pdf> <./images/LoadFactor_vs_Ground
 Distance_OEI.pdf> <./images/LoadFactor_vs_GroundDistance_ABORTED.pdf>]
-<images/VerticalForces_vs_GroundDistance_ABORTED.pdf, id=3079, 475.14111pt x 19
+<images/VerticalForces_vs_GroundDistance_ABORTED.pdf, id=3121, 475.14111pt x 19
 7.17764pt>
 File: images/VerticalForces_vs_GroundDistance_ABORTED.pdf Graphic file (type pd
 f)
@@ -5665,7 +5665,7 @@ Overfull \hbox (44.11578pt too wide) in paragraph at lines 1062--1063
  []
 
 
-<images/HorizontalForces_vs_GroundDistance_AOE.pdf, id=3080, 473.8262pt x 190.8
+<images/HorizontalForces_vs_GroundDistance_AOE.pdf, id=3122, 473.8262pt x 190.8
 1789pt>
 File: images/HorizontalForces_vs_GroundDistance_AOE.pdf Graphic file (type pdf)
 
@@ -5679,7 +5679,7 @@ Overfull \hbox (44.11578pt too wide) in paragraph at lines 1068--1069
  []
 
 
-<images/HorizontalForces_vs_GroundDistance_OEI.pdf, id=3081, 456.35193pt x 190.
+<images/HorizontalForces_vs_GroundDistance_OEI.pdf, id=3125, 456.35193pt x 190.
 81789pt>
 File: images/HorizontalForces_vs_GroundDistance_OEI.pdf Graphic file (type pdf)
 
@@ -5695,7 +5695,7 @@ Overfull \hbox (44.11578pt too wide) in paragraph at lines 1074--1075
 [117 <./images/VerticalForces_vs_GroundDistance_AOE.pdf> <./images/VerticalForc
 es_vs_GroundDistance_OEI.pdf> <./images/VerticalForces_vs_GroundDistance_ABORTE
 D.pdf>]
-<images/HorizontalForces_vs_GroundDistance_ABORTED.pdf, id=3110, 465.03035pt x 
+<images/HorizontalForces_vs_GroundDistance_ABORTED.pdf, id=3156, 465.03035pt x 
 197.18268pt>
 File: images/HorizontalForces_vs_GroundDistance_ABORTED.pdf Graphic file (type 
 pdf)
@@ -5721,7 +5721,7 @@ Overfull \hbox (16.7188pt too wide) in paragraph at lines 2978--1093
 [118 <./images/HorizontalForces_vs_GroundDistance_AOE.pdf> <./images/Horizontal
 Forces_vs_GroundDistance_OEI.pdf> <./images/HorizontalForces_vs_GroundDistance_
 ABORTED.pdf>] (./images/Acceleration_vs_GroundDistance_ABORTED.tikz)
-<images/Speed_vs_GroundDistance_AOE.pdf, id=3142, 452.9171pt x 190.19055pt>
+<images/Speed_vs_GroundDistance_AOE.pdf, id=3190, 452.9171pt x 190.19055pt>
 File: images/Speed_vs_GroundDistance_AOE.pdf Graphic file (type pdf)
 
 <use images/Speed_vs_GroundDistance_AOE.pdf>
@@ -5733,7 +5733,7 @@ Overfull \hbox (44.11578pt too wide) in paragraph at lines 1104--1105
  [][] 
  []
 
-<images/Speed_vs_GroundDistance_OEI.pdf, id=3143, 452.91609pt x 190.1986pt>
+<images/Speed_vs_GroundDistance_OEI.pdf, id=3193, 452.91609pt x 190.1986pt>
 File: images/Speed_vs_GroundDistance_OEI.pdf Graphic file (type pdf)
 
 <use images/Speed_vs_GroundDistance_OEI.pdf>
@@ -5746,7 +5746,7 @@ Overfull \hbox (44.11578pt too wide) in paragraph at lines 1110--1111
  []
 
 [119]
-<images/Speed_vs_GroundDistance_ABORTED.pdf, id=3151, 435.43779pt x 188.4641pt>
+<images/Speed_vs_GroundDistance_ABORTED.pdf, id=3203, 435.43779pt x 188.4641pt>
 File: images/Speed_vs_GroundDistance_ABORTED.pdf Graphic file (type pdf)
 <use images/Speed_vs_GroundDistance_ABORTED.pdf>
 Package pdftex.def Info: images/Speed_vs_GroundDistance_ABORTED.pdf used on inp
@@ -5764,7 +5764,7 @@ Overfull \hbox (20.64325pt too wide) in paragraph at lines 534--1123
 
 [120 <./images/Speed_vs_GroundDistance_AOE.pdf> <./images/Speed_vs_GroundDistan
 ce_OEI.pdf> <./images/Speed_vs_GroundDistance_ABORTED.pdf>]
-<images/Angles_vs_GroundDistance_KAlpha.pdf, id=3185, 455.60612pt x 198.04189pt
+<images/Angles_vs_GroundDistance_KAlpha.pdf, id=3238, 455.60612pt x 198.04189pt
 >
 File: images/Angles_vs_GroundDistance_KAlpha.pdf Graphic file (type pdf)
  <use images/Angles_vs_GroundDistance_KAlpha.pdf>
@@ -5777,7 +5777,7 @@ Overfull \hbox (30.88239pt too wide) in paragraph at lines 1131--1132
  []
 
 
-<images/CL_vs_GroundDistance_AlphaRED.pdf, id=3186, 455.35823pt x 190.19557pt>
+<images/CL_vs_GroundDistance_AlphaRED.pdf, id=3239, 455.35823pt x 190.19557pt>
 File: images/CL_vs_GroundDistance_AlphaRED.pdf Graphic file (type pdf)
 
 <use images/CL_vs_GroundDistance_AlphaRED.pdf>
@@ -5790,7 +5790,7 @@ Overfull \hbox (22.05789pt too wide) in paragraph at lines 1138--1139
  []
 
 
-<images/LoadFactor_vs_GroundDistance_AlphaRED.pdf, id=3187, 442.96292pt x 198.0
+<images/LoadFactor_vs_GroundDistance_AlphaRED.pdf, id=3240, 442.96292pt x 198.0
 4189pt>
 File: images/LoadFactor_vs_GroundDistance_AlphaRED.pdf Graphic file (type pdf)
  <use images/LoadFactor_vs_GroundDistance_AlphaRED.pdf>
@@ -5803,7 +5803,7 @@ Overfull \hbox (22.05789pt too wide) in paragraph at lines 1145--1146
  []
 
 [121 <./images/Angles_vs_GroundDistance_KAlpha.pdf>]
-<images/RateOfClimb_vs_GroundDistance_AlphaRED.pdf, id=3211, 435.76302pt x 198.
+<images/RateOfClimb_vs_GroundDistance_AlphaRED.pdf, id=3263, 435.76302pt x 198.
 03485pt>
 File: images/RateOfClimb_vs_GroundDistance_AlphaRED.pdf Graphic file (type pdf)
 
@@ -5817,7 +5817,7 @@ Overfull \hbox (22.05789pt too wide) in paragraph at lines 1152--1153
  []
 
 
-<images/TrajectoryAndSpeed_vs_GroundDistance_LANDING.pdf, id=3212, 434.00946pt 
+<images/TrajectoryAndSpeed_vs_GroundDistance_LANDING.pdf, id=3264, 434.00946pt 
 x 256.36578pt>
 File: images/TrajectoryAndSpeed_vs_GroundDistance_LANDING.pdf Graphic file (typ
 e pdf)
@@ -5832,7 +5832,7 @@ Overfull \hbox (22.05789pt too wide) in paragraph at lines 1161--1162
 
 [122 <./images/CL_vs_GroundDistance_AlphaRED.pdf> <./images/LoadFactor_vs_Groun
 dDistance_AlphaRED.pdf> <./images/RateOfClimb_vs_GroundDistance_AlphaRED.pdf>]
-<images/TrajectoryAndSpeed_vs_GroundDistance_LANDING_REV.pdf, id=3250, 434.0094
+<images/TrajectoryAndSpeed_vs_GroundDistance_LANDING_REV.pdf, id=3302, 434.0094
 6pt x 256.36578pt>
 File: images/TrajectoryAndSpeed_vs_GroundDistance_LANDING_REV.pdf Graphic file 
 (type pdf)
@@ -5847,7 +5847,7 @@ Overfull \hbox (22.05789pt too wide) in paragraph at lines 1168--1169
  []
 
 
-<images/HorizontalForces_vs_GroundDistance_LANDING.pdf, id=3251, 465.03537pt x 
+<images/HorizontalForces_vs_GroundDistance_LANDING.pdf, id=3303, 465.03537pt x 
 257.758pt>
 File: images/HorizontalForces_vs_GroundDistance_LANDING.pdf Graphic file (type 
 pdf)
@@ -5861,7 +5861,7 @@ Overfull \hbox (22.05789pt too wide) in paragraph at lines 1174--1175
  []
 
 
-<images/HorizontalForces_vs_GroundDistance_LANDING_REV.pdf, id=3252, 465.03537p
+<images/HorizontalForces_vs_GroundDistance_LANDING_REV.pdf, id=3304, 465.03537p
 t x 257.758pt>
 File: images/HorizontalForces_vs_GroundDistance_LANDING_REV.pdf Graphic file (t
 ype pdf)
@@ -5885,7 +5885,7 @@ Overfull \hbox (25.40579pt too wide) in paragraph at lines 70--1193
  []
 
 
-<images/LoadFactor_vs_GroundDistance_LANDING.pdf, id=3253, 453.66489pt x 264.21
+<images/LoadFactor_vs_GroundDistance_LANDING.pdf, id=3305, 453.66489pt x 264.21
 611pt>
 File: images/LoadFactor_vs_GroundDistance_LANDING.pdf Graphic file (type pdf)
  <use images/LoadFactor_vs_GroundDistance_LANDING.pdf>
@@ -5898,7 +5898,7 @@ Overfull \hbox (22.05789pt too wide) in paragraph at lines 1198--1199
  []
 
 
-<images/LoadFactor_vs_GroundDistance_LANDING_REV.pdf, id=3254, 453.66489pt x 26
+<images/LoadFactor_vs_GroundDistance_LANDING_REV.pdf, id=3306, 453.66489pt x 26
 4.21611pt>
 File: images/LoadFactor_vs_GroundDistance_LANDING_REV.pdf Graphic file (type pd
 f)
@@ -5931,7 +5931,7 @@ File: lstmisc.sty 2015/06/04 1.6 (Carsten Heinz)
 ) [129
 
 ] [130]
-<images/HDF_Dataset_creation.png, id=3412, 1266.7325pt x 612.2875pt>
+<images/HDF_Dataset_creation.png, id=3464, 1266.7325pt x 612.2875pt>
 File: images/HDF_Dataset_creation.png Graphic file (type png)
 
 <use images/HDF_Dataset_creation.png>
@@ -5939,14 +5939,14 @@ Package pdftex.def Info: images/HDF_Dataset_creation.png used on input line 122
 .
 (pdftex.def)             Requested size: 388.19737pt x 187.63965pt.
  [131 <./images/HDF_Dataset_creation.png (PNG copy)>] <images/deltaAlphaSforza.
-png, id=3447, 921.4425pt x 538.26094pt>
+png, id=3499, 921.4425pt x 538.26094pt>
 File: images/deltaAlphaSforza.png Graphic file (type png)
 
 <use images/deltaAlphaSforza.png>
 Package pdftex.def Info: images/deltaAlphaSforza.png used on input line 129.
 (pdftex.def)             Requested size: 242.62335pt x 141.7268pt.
 
-<images/DAlphaVsLambdaLEVsDy_MATLAB.png, id=3448, 421.575pt x 316.18124pt>
+<images/DAlphaVsLambdaLEVsDy_MATLAB.png, id=3500, 421.575pt x 316.18124pt>
 File: images/DAlphaVsLambdaLEVsDy_MATLAB.png Graphic file (type png)
 
 <use images/DAlphaVsLambdaLEVsDy_MATLAB.png>
@@ -6045,7 +6045,7 @@ File: italian.mld 2006/01/13
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 247.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 247.
 Package rerunfilecheck Info: File `Tesi.out' has not changed.
-(rerunfilecheck)             Checksum: 57EB570DCB11C75EB775D0C07FE5A979;3515.
+(rerunfilecheck)             Checksum: E54B3487B11F699CF88F3071CE14711A;3515.
 
 
 LaTeX Warning: There were multiply-defined labels.
@@ -6055,11 +6055,11 @@ Package logreq Info: Writing requests to 'Tesi.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 68559 strings out of 493054
- 1411828 string characters out of 6138326
- 3796007 words of memory out of 5000000
- 68872 multiletter control sequences out of 15000+600000
- 244412 words of font info for 224 fonts, out of 8000000 for 9000
+ 68632 strings out of 493054
+ 1413126 string characters out of 6138326
+ 3797247 words of memory out of 5000000
+ 68937 multiletter control sequences out of 15000+600000
+ 244755 words of font info for 227 fonts, out of 8000000 for 9000
  1142 hyphenation exceptions out of 8191
  61i,30n,107p,10382b,4233s stack positions out of 5000i,500n,10000p,200000b,80000s
 {c:/texlive/2015/texmf-dist/fonts/enc/dvips/newtx/ntx-ec-tlf-sc.enc}{c:/texli
@@ -6089,10 +6089,10 @@ ype1/public/tex-gyre/qtmb.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/te
 x-gyre/qtmr.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmri.p
 fb><c:/texlive/2015/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb><c:/texlive/
 2015/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb>
-Output written on Tesi.pdf (141 pages, 13139805 bytes).
+Output written on Tesi.pdf (141 pages, 13146539 bytes).
 PDF statistics:
- 3947 PDF objects out of 4296 (max. 8388607)
- 3481 compressed objects within 35 object streams
- 1465 named destinations out of 1728 (max. 500000)
+ 4000 PDF objects out of 4296 (max. 8388607)
+ 3511 compressed objects within 36 object streams
+ 1467 named destinations out of 1728 (max. 500000)
  40480 words of extra memory for PDF output out of 42996 (max. 10000000)
 

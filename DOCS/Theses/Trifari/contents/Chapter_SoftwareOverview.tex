@@ -22,11 +22,11 @@ Whenever possible, application results have been compared with values found in l
 %------------------------------- Aircraft Design -------------------------------
 \subsection{Aircraft design ovrewiev}
 Modern aerospace design begins with the desire of mankind to achieve powered, heavier-than-air flight. Early aerospace designs were characterized not only by a great deal of trial and error but also by a not inconsiderable amount of analysis. As the technologies used in aerospace applications
-have developed, the goals have become vastly more sophisticated. It is possible to view the first 75 years of aerospace design as a series of stages: first came the early pioneers, working at a time when many were skeptical about the benefits of flight or even if it was possible at all. Next came the phase where outstanding individuals dominated aeronautical science and design during the interwar and early postwar years. This was followed in the 1950s and 1960s by a greater emphasis on design teams and the massive expansion of the great aerospace companies that we recognize today. Following these stages, the advent of \gls{acr:CAE}, design and  manufacture in the mid-1970s transformed activities in aerospace with an increasing focus on faster design cycles, more accurate predictive capabilities and the rise of computer science. At the same time, the great drawing offices of the 1950s declined and fewer people were involved in the design of each individual component.\cite{gambardella}
+have developed, the goals have become vastly more sophisticated. It is possible to view the first 75 years of aerospace design as a series of stages: first came the early pioneers, working at a time when many were skeptical about the benefits of flight or even if it was possible at all. Next came the phase where outstanding individuals dominated aeronautical science and design during the inter-war and early post-war years. This was followed in the 1950s and 1960s by a greater emphasis on design teams and the massive expansion of the great aerospace companies that we recognize today. Following these stages, the advent of \gls{acr:CAE}, design and  manufacture in the mid-1970s transformed activities in aerospace with an increasing focus on faster design cycles, more accurate predictive capabilities and the rise of computer science. At the same time, the great drawing offices of the 1950s declined and fewer people were involved in the design of each individual component.\cite{gambardella}
 
 \bigskip
 \noindent
-Recent developments in information technology have had a major impact upon the aeronautical design process. Computer aided design techniques are used to produce digital data for, for example, application to numerically controlled machining. Virtual reality concepts are employed to visualise threedimensional installation and operational aspects, at least in part replacing full-scale mockups. While these procedures are particularly relevant to the detail phases of the design process their application commences as soon as a requirement is defined and numerical data are derived from it.\cite{howe2000aircraft}
+Recent developments in information technology have had a major impact upon the aeronautical design process. Computer aided design techniques are used to produce digital data for, for example, application to numerically controlled machining. Virtual reality concepts are employed to visualize three-dimensional installation and operational aspects, at least in part replacing full-scale mock-ups. While these procedures are particularly relevant to the detail phases of the design process their application commences as soon as a requirement is defined and numerical data are derived from it.\cite{howe2000aircraft}
 
 \bigskip
 \noindent
@@ -50,7 +50,7 @@ The driving parameters to accomplish this goal are the followings.
 \item Weight
 \end{itemize}
 %
-It should be emphasised that estimating the weight and aerodynamic characteristics with sufficient accuracy at an early stage of the design is really an art, but an important one and a crucial one; in fact, it determines the initial quality of the design.
+It should be emphasized that estimating the weight and aerodynamic characteristics with sufficient accuracy at an early stage of the design is really an art, but an important one and a crucial one; in fact, it determines the initial quality of the design.
 %
 The airworthiness requirements then require the aircraft to be safe, for example its flight handling characteristics (stability and control) must be satisfactory. The aircraft should also be reliable, which implies that:
 %
@@ -59,10 +59,10 @@ The airworthiness requirements then require the aircraft to be safe, for example
 \item Systems hall be reliable and sufficiently redundant
 \end{itemize}
 %
-In civil air transport, designing a family of aircraft has become a standard procedure. Two approaches can be recognised.
+In civil air transport, designing a family of aircraft has become a standard procedure. Two approaches can be recognized.
 %
 \begin{itemize}
-\item In the first approach, several versions of the aircraft are developed more or less simultaneously from the start of a programme. These different versions can have different take-off weights, fuselage lenghts, etc.
+\item In the first approach, several versions of the aircraft are developed more or less simultaneously from the start of a program. These different versions can have different take-off weights, fuselage lengths, etc.
 \item In the second approach, growth versions of the aircraft are developed (long) after the first development round has been completed. These growth versions usually have considerable modifications and associated costs
 \end{itemize}
 %
@@ -119,7 +119,7 @@ According to the TIOBE index, in terms of popularity, during the last year the J
 %--------------------------- INPUT FILE STRUCTURE ---------------------------
 \section{Input file structure}
 \label{par:InputFile}
-In order to read databases, or to read an entire aricraft parametric model, the input file type chosen is the XML. The file extension stands for \emph{eXtensible Markup Language} and is a markup language that defines a set of rules for encoding documents in a format which is both \emph{human-readable} and \emph{machine-readable}; moreover its design goals of emphasize simplicity, generality and usability across the Internet. XML is a textual data format with strong support via Unicode for different human languages and, although the design of XML focuses on documents, it is widely used for the representation of arbitrary data structures such as those used in web services. It is defined \emph{Markup Language} due to the use of tags that describes the content; while is considered \emph{extensible} because the markup symbols are unlimited and self-defining, so that it's possible to use a personal tag for each data. In this way to read an XML file results relatively simple.\cite{wiki:xml}
+In order to read databases, or to read an entire aircraft parametric model, the input file type chosen is the XML. The file extension stands for \emph{eXtensible Markup Language} and is a markup language that defines a set of rules for encoding documents in a format which is both \emph{human-readable} and \emph{machine-readable}; moreover its design goals of emphasize simplicity, generality and usability across the Internet. XML is a textual data format with strong support via Unicode for different human languages and, although the design of XML focuses on documents, it is widely used for the representation of arbitrary data structures such as those used in web services. It is defined \emph{Markup Language} due to the use of tags that describes the content; while is considered \emph{extensible} because the markup symbols are unlimited and self-defining, so that it's possible to use a personal tag for each data. In this way to read an XML file results relatively simple.\cite{wiki:xml}
 
 \bigskip
 \noindent
@@ -179,11 +179,11 @@ In order to simplify, for a potential \gls{User:Developer}, the definition of th
 
 \bigskip
 \noindent
-The guideline which has driven the design of this structure is that the user can manage different aircrafts models at the same time by assigning to each of them a related subfolder inside the input main folder. At this point, since the library purpose is also to perform optimization upon the aircraft geometry comparing many different configurations, inside the latter folder a series of subfolders have been created to manage each component that, moreover, can be present in many different versions; for example there can be many fuselages with different lengths in order to analyze a streched version of the initial baseline. 
+The guideline which has driven the design of this structure is that the user can manage different aircrafts models at the same time by assigning to each of them a related sub-folder inside the input main folder. At this point, since the library purpose is also to perform optimization upon the aircraft geometry comparing many different configurations, inside the latter folder a series of sub-folders have been created to manage each component that, moreover, can be present in many different versions; for example there can be many fuselages with different lengths in order to analyze a stretched version of the initial baseline. 
 
 \bigskip
 \noindent
-XML files are in charge of store all data realted to each component as well as call other XML files, of a lower level, in order to read their data; for example the wing XML file calls for airfoils XML files as shown in figure \ref{fig:inputJPAD}. The possibility of setting up a hierarchy among the different XML files comes in handy in order to reduce the dimension of each file; the idea, in fact, has been to confine data in different files which can be managed in a more intuitive way rather than having a single input file, divided into a lot of tags, that has the purpose of storing all aircraft's data. Moreover, having each component described, the user can simply work, at high level, by assembling the wanted aircraft through combining the chosen components XML files, as shown in listing \ref{lst:AircraftXML}.
+XML files are in charge of store all data related to each component as well as call other XML files, of a lower level, in order to read their data; for example the wing XML file calls for airfoils XML files as shown in figure \ref{fig:inputJPAD}. The possibility of setting up a hierarchy among the different XML files comes in handy in order to reduce the dimension of each file; the idea, in fact, has been to confine data in different files which can be managed in a more intuitive way rather than having a single input file, divided into a lot of tags, that has the purpose of storing all aircraft's data. Moreover, having each component described, the user can simply work, at high level, by assembling the wanted aircraft through combining the chosen components XML files, as shown in listing \ref{lst:AircraftXML}.
 
 \bigskip
 \begin{lstlisting}[caption={Prototype of the aircraft XML file}, captionpos=b, tabsize=6, language=XML, label={lst:AircraftXML}]
@@ -321,7 +321,7 @@ In this paragraph an overview of the library \gls{JPAD} will be presented. \gls{
 \end{figure}
 
 \noindent
-\gls{JPAD} library is actually divided into three package: \lstinline[language=Java]!JPADConfigs!, \lstinline[language=Java]!JPADCore! and \lstinline[language=Java]!JPADSandbox!. Each package is organized in several classes, or more packages, in order to have a clear and simple classification. The source code has been extensively commented following Javadoc practices; this enabled the developer to automatically generate documentation using Doxygen\cite{doxgen}.
+\gls{JPAD} library is actually divided into three package: \lstinline[language=Java]!JPADConfigs!, \lstinline[language=Java]!JPADCore! and \lstinline[language=Java]!JPADSandbox!. Each package is organized in several classes, or more packages, in order to have a clear and simple classification. The source code has been extensively commented following \emph{Javadoc} practices; this enabled the developer to automatically generate documentation using \emph{Doxygen}\cite{doxgen}.
 %
 \begin{figure}[!b]
 	\centering
@@ -362,7 +362,7 @@ Regarding aircraft's components, their organization inside the \lstinline[langua
 
 \bigskip
 \noindent
-Basic data for describing the fuselage are contained in the \lstinline[language=Java]!Fuselage! class. This holds all the fuselage overall properties, such as the length, maximum width and maximum height, length ratios between the nose and the tail parts length to the constant section part length, number of decks and so on. Other classes in the package manage the shape of fuselage sections and outlines (which define the fuselage shape in the xz and xy planes) and aerodynamics calculations \lstinline[language=Java]!FusAerodynamicsManager! class).
+Basic data for describing the fuselage are contained in the \lstinline[language=Java]!Fuselage! class. This holds all the fuselage overall properties, such as the length, maximum width and maximum height, length ratios between the nose and the tail parts length to the constant section part length, number of decks and so on. Other classes in the package manage the shape of fuselage sections and outlines (which define the fuselage shape in the x-z and x-y planes) and aerodynamics calculations \lstinline[language=Java]!FusAerodynamicsManager! class).
 
 \bigskip
 \noindent
@@ -373,7 +373,7 @@ The data relating to lifting surfaces are contained in the \lstinline[language=J
 The data relating to airfoils are handled by the \lstinline[language=Java]!Airfoil! class, that creates for each lifting surface three airfoils, located respectively at $\eta=0$, at the middle station and at $\eta=1$. An \lstinline[language=Java]!Airfoil! object holds the following quantities.
 %
 \begin{enumerate}
-	\item the position along the semispan, $\eta$;
+	\item the position along the semi-span, $\eta$;
 	\item twist value relative to root, $\epsilon_g$;
 	\item zero lift angle of attack, $\alphazlp$;
 	\item angle of attack value at the end of the linear part of $C_l(\alpha)$ curve, $\alphastar$;
@@ -381,7 +381,7 @@ The data relating to airfoils are handled by the \lstinline[language=Java]!Airfo
 	\item lift gradient of the linear part of $C_l(\alpha)$ curve, $\Clalphap$;
 	\item minimum drag coefficient, $C_{d\text{min}}$;
 	\item lift coefficient at $C_{d,min}$, $C_l@C_{d\text{min}}$;
-	\item lift cofficient at the end of linear part;
+	\item lift coefficient at the end of linear part;
 	\item maximum lift coefficient, $C_{l\text{max}}$
 	\item drag polar $K$ factor;
 	\item aerodynamic moment coefficient gradient, $C_{m_\alpha}$;
@@ -403,9 +403,9 @@ The power plant is defined in the package \lstinline[language=Java]!powerPlant! 
 Throughout the development of the application, great care has been given to the making of the CAD model for several reasons:
 %
 \begin{itemize}
-	\item It enables the user and the user developer to have an immediate feedback about the data provided to the application: if some geometrical parameter is wrong, the CAD model makes it impossible not noticing it
-	\item It allows the user to run a CFD analysis with an external program. The CAD model has been in fact built so that it is ready to be meshed by an external mesher without any further adjustment
-	\item It provides an accurate estimate of the wetted surface of each component
+	\item It enables the user and the user developer to have an immediate feedback about the data provided to the application: if some geometrical parameter is wrong, the \gls{acr:CAD} model makes it impossible not noticing it
+	\item It allows the user to run a \gls{acr:CFD} analysis with an external program. The \gls{acr:CAD} model has been in fact built so that it is ready to be meshed by an external mesher without any further adjustment
+	\item It provides an accurate estimate of the wet surface of each component
 \end{itemize}
 %
 The creation of the CAD model was made possible by the \emph{occjava} library, whose classes and methods have been used to build each component's model.
@@ -426,7 +426,7 @@ Each of these package contains calculators classes and concerning methods that i
 %
 %------------------------------- Database package ---------------------------------
 \subsection{\texttt{database} package}
-In order to manage a large quantity of data, it has been necessary to read data from charts available in literature; for such a reason an extensive database has been built over the years by several of colleagues to digitalize this data in order to exploit it in a computer program. The data has been stored in an \gls{HDF} file. In the \lstinline[language=Java]!database! package there are all the classes in charge of managing and reading the .h5 files. For more information regarding the creation of the database and its reading method inside \gls{JPAD} the reader can refer to appendix \ref{ch:hdf}. 
+In order to manage a large quantity of data, it has been necessary to read data from charts available in literature; for such a reason an extensive database has been built over the years by several of colleagues to digitize this data in order to exploit it in a computer program. The data has been stored in an \gls{HDF} file. In the \lstinline[language=Java]!database! package there are all the classes in charge of managing and reading the .h5 files. For more information regarding the creation of the database and its reading method inside \gls{JPAD} the reader can refer to appendix \ref{ch:hdf}. 
 %
 %------------------------------- Writers package ---------------------------------
 \subsection{\texttt{writers} package}
@@ -434,7 +434,7 @@ This package contains the class \lstinline[language=Java]!JPADDataWriter! and th
 %
 %----------------------------- DEFAULT AIRCRAFT ------------------------------
 \section{Aircraft model creation} \label{par:DefaultAircraft}
-In \gls{JPAD} it is possible to read an .xml file as input or generate an object whose data are written in the code. Both in the first and in the second case all needed variables are initialized with data relating the choosen aircraft. The difference between these two methods is that using an .xml file, user can define its own aircraft having a clear view about the needed data useful for the analysis. Contrariwise in order to perform test of program functionality, to use a default aircraft is the most simple way to generate a work object.
+In \gls{JPAD} it is possible to read an .xml file as input or generate an object whose data are written in the code. Both in the first and in the second case all needed variables are initialized with data relating the chosen aircraft. The difference between these two methods is that using an .xml file, user can define its own aircraft having a clear view about the needed data useful for the analysis. Contrariwise in order to perform test of program functionality, to use a default aircraft is the most simple way to generate a work object.
 
 \bigskip
 \noindent
@@ -449,7 +449,7 @@ Actually it is possible to define two different aircraft in order to test the fu
 
 \bigskip
 \noindent
-The ATR-72, made by the French-Italian aircraft manufacturer ATR, is a stretched variant of the original ATR-42 that entered in service in 1989; it’s powered by two turboprop engine and it’s used typically as a regional airliner. The main purpose of its design was to increase the seating capacity throughout the stretching of the fuselage by 4.5m, an increased wingspan, more powerful engines and an increased fuel capacity by approximately 10$\%$.\cite{wiki:atr72}
+The ATR-72, made by the French-Italian aircraft manufacturer ATR, is a stretched variant of the original ATR-42 that entered in service in 1989; it is powered by two turboprop engine and it is used typically as a regional airliner. The main purpose of its design was to increase the seating capacity throughout the stretching of the fuselage by 4.5m, an increased wingspan, more powerful engines and an increased fuel capacity by approximately 10$\%$.\cite{wiki:atr72}
 %
 \begin{figure}[!b]
 \centering
@@ -460,7 +460,7 @@ The ATR-72, made by the French-Italian aircraft manufacturer ATR, is a stretched
 
 \bigskip
 \noindent
-The Boeing 747 is a wide-body commercial jet airliner and cargo aircraft, often referred to by its original nickname, Jumbo Jet, or Queen of the Skies. Its distinctive hump upper deck along the forward part of the aircraft makes it among the world's most recognizable aircraft, and it was the first wide-body produced. Manufactured by Boeing's Commercial Airplane unit in the United States, the original version of the 747 had two and a half times greater capacity than the Boeing 707, one of the common large commercial aircraft of the 1960s. The four-engine 747 uses a double deck configuration for part of its length and it’s available in passenger and other versions. Boeing designed the 747's hump-like upper deck to serve as a first class lounge or extra seating, and to allow the aircraft to be easily converted to a cargo carrier by removing seats and installing a front cargo door. The 747-100B model was developed from the 747-100SR, using its stronger airframe and landing gear design; the type had an increased fuel capacity of $\SI{182000}{\liter}$, allowing for a 5000 nautical mile range with a typical 452 passengers payload, and an increased maximum take-off weight of $\SI{340000}{\kilogram}$ was offered; unlike the original 747-100, the 747-100B was offered with Pratt \& Whitney JT9D-7A, General Electric CF6-50, or Rolls-Royce RB211-524 turbofan engines.\cite{wiki:b747}
+The Boeing 747 is a wide-body commercial jet airliner and cargo aircraft, often referred to by its original nickname, Jumbo Jet, or Queen of the Skies. Its distinctive hump upper deck along the forward part of the aircraft makes it among the world's most recognizable aircraft, and it was the first wide-body produced. Manufactured by Boeing's Commercial Airplane unit in the United States, the original version of the 747 had two and a half times greater capacity than the Boeing 707, one of the common large commercial aircraft of the 1960s. The four-engine 747 uses a double deck configuration for part of its length and it is available in passenger and other versions. Boeing designed the 747's hump-like upper deck to serve as a first class lounge or extra seating, and to allow the aircraft to be easily converted to a cargo carrier by removing seats and installing a front cargo door. The 747-100B model was developed from the 747-100SR, using its stronger airframe and landing gear design; the type had an increased fuel capacity of $\SI{182000}{\liter}$, allowing for a 5000 nautical mile range with a typical 452 passengers payload, and an increased maximum take-off weight of $\SI{340000}{\kilogram}$ was offered; unlike the original 747-100, the 747-100B was offered with Pratt \& Whitney JT9D-7A, General Electric CF6-50, or Rolls-Royce RB211-524 turbofan engines.\cite{wiki:b747}
 
 %
 \begingroup
@@ -551,7 +551,7 @@ $\eta_{\text{p}}$ & 0.85 & 0.00 \\
 
 \bigskip
 \noindent
-In order to define a default aircraft in a test class, and use it to check the functionalities of the application, it is necessary to follow some steps. First of all it’s necessary to set up all default folders in order to make them achievable from any location inside the library; this is done with the static method \lstinline[language=Java]!initWorkingDirectoryTree! of the \lstinline[language=Java]!MyConfiguration! class located in \lstinline[language=Java]!JPADConfigs! package. In this way, every time the user wants to point at a specific folder, like the input or output directory, it’s necessary only to call the \gls{Static} \lstinline[language=Java]!getDir!, also from \lstinline[language=Java]!MyConfiguration! class, which reads the~folder name, from a dedicated \gls{Enum}, and associate it with the related directory from a \gls{Map} named \lstinline[language=Java]!mapPaths!.
+In order to define a default aircraft in a test class, and use it to check the functionalities of the application, it is necessary to follow some steps. First of all it is necessary to set up all default folders in order to make them achievable from any location inside the library; this is done with the static method \lstinline[language=Java]!initWorkingDirectoryTree! of the \lstinline[language=Java]!MyConfiguration! class located in \lstinline[language=Java]!JPADConfigs! package. In this way, every time the user wants to point at a specific folder, like the input or output directory, it is necessary only to call the \gls{Static} \lstinline[language=Java]!getDir!, also from \lstinline[language=Java]!MyConfiguration! class, which reads the~folder name, from a dedicated \gls{Enum}, and associate it with the related directory from a \gls{Map} named \lstinline[language=Java]!mapPaths!.
 
 \bigskip
 \noindent
@@ -559,7 +559,7 @@ The second step is the creation of an \lstinline[language=Java]!Aircraft! object
 
 \bigskip
 \noindent
-Afterwards it is necessary to set the operating conditions, such as the number of Mach of analysis or the altitude, by creating an object of the class \lstinline[language=Java]!OperatingConditions!. Each default aircraft has a set of default conditions but the user could easly change them by using the \emph{setters} methods of which the \lstinline[language=Java]!OperatingConditions! class is supplied.
+Afterwards it is necessary to set the operating conditions, such as the number of Mach of analysis or the altitude, by creating an object of the class \lstinline[language=Java]!OperatingConditions!. Each default aircraft has a set of default conditions but the user could easily change them by using the \emph{setters} methods of which the \lstinline[language=Java]!OperatingConditions! class is supplied.
 
 \bigskip
 \noindent
@@ -570,7 +570,7 @@ In order to manage all the aircraft related analysis it is necessary to define a
 The next step is to define and assign the needed databases. In order to read these databases, and obtain their useful data, it is necessary to define an object
 of the database reading class (see appendix \ref{par:Appendix2}) and associate it with the object of the analysis. Reading these data correctly is a crucial step; in fact, \gls{JPAD} allows to work with an \lstinline[language=Java]!Aircraft! object or only with an isolated \lstinline[language=Java]!LiftingSurface! object. The aircraft is usually composed of a fuselage, lifting surfaces, nacelle and power plant; furthermore, the aircraft and the wing are associated with different classes of calculation like \lstinline[language=Java]!ACAnalysisManager! or \lstinline[language=Java]!LSAerodynamicManager!. Since it is necessary that these databases are also visible from these classes, as well as the fact that both in aircraft and in wing there is a lifting surface object, databases relative to aerodynamic analysis are associated to \lstinline[language=Java]!LSAerodynamicManager!. 
 %
-In order to assign correctly this aerodynamic database and associate it to all analysis managers is necessary to practise the following order.
+In order to assign correctly this aerodynamic database and associate it to all analysis managers is necessary to practice the following order.
 \begin{enumerate}
 \item Define an \lstinline[language=Java]!Aircraft! Object. This command associates to the \lstinline[language=Java]!Aircraft! class an object that defines the aerodynamic. From the wing it is possible to obtain \lstinline[language=Java]!theWing!, that is a \lstinline[language=Java]!LiftingSurface! object
 \item Define an \lstinline[language=Java]!ACAnalysisManager! object. All the aircraft computations are managed by this class
@@ -588,11 +588,11 @@ The purpose of this structure is to have only a way to assign the aerodynamic da
 \item \lstinline[language=Java]!theACManagerObject.get_Database!
 \end{itemize}
 %
-Although is the most important, the aerodynamic database is not the only one to be considered. To perform the high-ligt devices effects analysis (see chapter \ref{chap:HighLift}), as well as to carry out the integration of the equation of motion durign the take-off run (see chapter \ref{chap:TakeOff}), also an high-lift devices database has to be read. Since the latter is strictly related to the wing, it has to be assigned to \lstinline[language=Java]!LSAerodynamicManager! as well.
+Although is the most important, the aerodynamic database is not the only one to be considered. To perform the high-ligt devices effects analysis (see chapter \ref{chap:HighLift}), as well as to carry out the integration of the equation of motion during the take-off run (see chapter \ref{chap:TakeOff}), also an high-lift devices database has to be read. Since the latter is strictly related to the wing, it has to be assigned to \lstinline[language=Java]!LSAerodynamicManager! as well.
 
 \bigskip
 \noindent
-The following listing shows a summary of the steps described previously in order to help a potential user to easly implement a test class inside \gls{JPAD}.
+The following listing shows a summary of the steps described previously in order to help a potential user to easily implement a test class inside \gls{JPAD}.
 
 \bigskip
 \begin{lstlisting}[caption={Generation of default aircraft}, captionpos=b, tabsize=2]
@@ -711,11 +711,11 @@ In developing the application we focused on making the user's typical work sessi
 	\item Save the current aircraft to an XML file \big(\includegraphics[scale=0.4]{images/gui/icons/XML_32x32.png}\big)
 \end{enumerate}
 %
-At this point the user could simply change the current configuration until the analysis results are satisfactory. The application can however help the user in finding such a configuration, since it can hold multiple configurations simultaneously, analyse all of them and compare them side by side. To accomplish this task, once the first aircraft has been created, the user should:
+At this point the user could simply change the current configuration until the analysis results are satisfactory. The application can however help the user in finding such a configuration, since it can hold multiple configurations simultaneously, analyze all of them and compare them side by side. To accomplish this task, once the first aircraft has been created, the user should:
 %
 \begin{enumerate}
 	\setlength{\itemsep}{\medspacing}
-	\item Import the aicraft previously saved or create an entirely new aircraft
+	\item Import the aircraft previously saved or create an entirely new aircraft
 	\item Change the aircraft parameters from the previous step and run a new analysis on it
 	\item Study the results and eventually change some of the parameters
 	\item Save every configuration and the corresponding results to file
@@ -748,25 +748,25 @@ The CAD model, once saved to a STEP or BRep file, can be imported in CAD suites 
 %-------------------------------OPTIMIZATION------------------------------------
 \section{Optimization process}
 \label{par:Optimization}
-It has always been the engineer’s dream to have all aspects of analysis done in a relatively short time period so that many different configurations can be examined and the best suitable product can be delivered on time. Although this may still be a dream, actual design turn-around time has become shorter due to the use of mathematical optimization techniques which have been introduced into the design process.\cite{torenbeek2013advanced}
+It has always been the engineers dream to have all aspects of analysis done in a relatively short time period so that many different configurations can be examined and the best suitable product can be delivered on time. Although this may still be a dream, actual design turn-around time has become shorter due to the use of mathematical optimization techniques which have been introduced into the design process.\cite{torenbeek2013advanced}
 
 \bigskip
 \noindent
-According to \cite{howe2000aircraft}, the optimisation of the configuration of the aircraft within the constraints imposed by the specification is an essential feature of the project definition process. Optimisation implies that the proposed design concept not only meets the specification, but does so when a target criterion has been imposed, usually the minimisation of mass or some aspect of costs.
+According to \cite{howe2000aircraft}, the optimization of the configuration of the aircraft within the constraints imposed by the specification is an essential feature of the project definition process. Optimization implies that the proposed design concept not only meets the specification, but does so when a target criterion has been imposed, usually the minimization of mass or some aspect of costs.
 %
-The basis of optimisation is a comparison of different design concepts and configuration variations within a given concept to determine the one which best meets the specification. Broadly the process is undertaken at two levels.
+The basis of optimization is a comparison of different design concepts and configuration variations within a given concept to determine the one which best meets the specification. Broadly the process is undertaken at two levels.
 %
 \begin{itemize}
 \item \textbf{Concept/configuration studies} At this level alternative concepts and configurations are investigated to establish the one which would seem best suited to meet the requirements. For example a military combat requirement might possibly be met by aircraft of conventional tail, foreplane or tailless layout. Mostly the configuration of transport aircraft is well established. This phase of the study may be included at the feasibility level.
-\item \textbf{Parametric studies within a given configuration} At this level the dominant parameters are varied to ascertain the best combination of them. These parameters include such items as wing geometry determined by aspect ratio, sweep, taper and thickness as well as variations in fuselage layout, powerplant installation and so on. The benefits of selecting near optimum values of certain parameters are "traded-off" against the implied penalties
+\item \textbf{Parametric studies within a given configuration} At this level the dominant parameters are varied to ascertain the best combination of them. These parameters include such items as wing geometry determined by aspect ratio, sweep, taper and thickness as well as variations in fuselage layout, power plant installation and so on. The benefits of selecting near optimum values of certain parameters are "traded-off" against the implied penalties
 imposed upon other parameters. The parametric studies may be commenced during feasibility investigations and certainly form a major part of the project definition phase. The two fundamental design characteristics which drive the parametric studies are:
 \begin{itemize}
 \item Wing loading, that is wing area as a function of take-off mass or weight
-\item Thrust or power loading, defined as the ratio of the basic powerplant to the aircraft mass or weight
+\item Thrust or power loading, defined as the ratio of the basic power plant to the aircraft mass or weight
 \end{itemize}
 \end{itemize}
 %
-It is, precisely, the latter type of optimization which will be the main feature to implement inside \gls{JPAD} in the near future. As all analysis modules inside the \lstinline[language=Java]!JPADCore! package will be completed and tested, the final purpose of the code will be to allow users to define a certain numbers of macroscopical geometrical parameters, along with a given objective function, and to receive as output the best set of the previous parameters which suits the wanted objective.
+It is, precisely, the latter type of optimization which will be the main feature to implement inside \gls{JPAD} in the near future. As all analysis modules inside the \lstinline[language=Java]!JPADCore! package will be completed and tested, the final purpose of the code will be to allow users to define a certain numbers of macroscopic geometrical parameters, along with a given objective function, and to receive as output the best set of the previous parameters which suits the wanted objective.
 
 
 
