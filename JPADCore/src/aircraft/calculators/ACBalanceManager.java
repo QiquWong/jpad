@@ -115,6 +115,8 @@ public class ACBalanceManager extends ACCalculatorManager {
 		_cgList.add(aircraft.get_VTail().get_cg());
 		_cgList.addAll(aircraft.get_theNacelles().get_cgList());
 		_cgList.add(aircraft.get_landingGear().get_cg());
+		
+		 _cgList.forEach(p-> System.out.println(p.get_xBRF()));
 
 		double prod = 0., sum = 0.;
 		for (int i=0; i < _cgList.size(); i++) {

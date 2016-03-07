@@ -84,8 +84,8 @@ public class Test_AGILE_DC1_01 {
 				aircraft, 
 				theAnalysis);
 
-		JPADChartWriter _theWriteCharts = new JPADChartWriter(aircraft);
-		_theWriteCharts.createCharts();
+//		JPADChartWriter _theWriteCharts = new JPADChartWriter(aircraft);
+//		_theWriteCharts.createCharts();
 
 		// +++++++++++++++++++++++++++++++++++++++++++++++
 		// STATIC FUNCTIONS - TO BE CALLED BEFORE WRITING CUSTOM XML FILES

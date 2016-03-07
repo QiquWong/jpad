@@ -538,9 +538,9 @@
       </VTail>
       <Nacelles id="7">
          <Nacelle_1 id="7099">
-            <Xcoordinate from="input" unit="m" varName="_X0">0.0000</Xcoordinate>
-            <Ycoordinate from="input" unit="m" varName="_Y0">0.0000</Ycoordinate>
-            <Zcoordinate from="input" unit="m" varName="_Z0">0.0000</Zcoordinate>
+            <Xcoordinate from="input" unit="m" varName="_X0">12.8910</Xcoordinate>
+            <Ycoordinate from="input" unit="m" varName="_Y0">4.9680</Ycoordinate>
+            <Zcoordinate from="input" unit="m" varName="_Z0">-1.7820</Zcoordinate>
             <Lenght from="input" unit="m" varName="_length">3.0000</Lenght>
             <Mean_diameter from="input" unit="m" varName="_diameterMean">1.8160</Mean_diameter>
             <Inlet_diameter from="input" unit="m" varName="_diameterInlet">1.5380</Inlet_diameter>
@@ -550,9 +550,9 @@
             <FormFactor unit="">1.7159</FormFactor>
          </Nacelle_1>
          <Nacelle_2 id="7199">
-            <Xcoordinate from="input" unit="m" varName="_X0">0.0000</Xcoordinate>
-            <Ycoordinate from="input" unit="m" varName="_Y0">0.0000</Ycoordinate>
-            <Zcoordinate from="input" unit="m" varName="_Z0">0.0000</Zcoordinate>
+            <Xcoordinate from="input" unit="m" varName="_X0">12.8910</Xcoordinate>
+            <Ycoordinate from="input" unit="m" varName="_Y0">-4.9680</Ycoordinate>
+            <Zcoordinate from="input" unit="m" varName="_Z0">-1.7820</Zcoordinate>
             <Lenght from="input" unit="m" varName="_length">3.0000</Lenght>
             <Mean_diameter from="input" unit="m" varName="_diameterMean">1.8160</Mean_diameter>
             <Inlet_diameter from="input" unit="m" varName="_diameterInlet">1.5380</Inlet_diameter>
@@ -593,9 +593,9 @@
          </Power_plant_parameters>
          <Engine_1 id="8099" level="3">
             <Type from="input" unit="" varName="_engineType">TURBOFAN</Type>
-            <Xcoordinate from="input" unit="m" varName="_X0">0.0000</Xcoordinate>
-            <Ycoordinate from="input" unit="m" varName="_Y0">0.0000</Ycoordinate>
-            <Zcoordinate from="input" unit="m" varName="_Z0">0.0000</Zcoordinate>
+            <Xcoordinate from="input" unit="m" varName="_X0">12.8910</Xcoordinate>
+            <Ycoordinate from="input" unit="m" varName="_Y0">4.8690</Ycoordinate>
+            <Zcoordinate from="input" unit="m" varName="_Z0">-1.7820</Zcoordinate>
             <Mounting_point from="input" unit="" varName="_mountingPoint">WING</Mounting_point>
             <Maximum_thrust from="input" unit="N" varName="_t0">68646.5500</Maximum_thrust>
             <Maximum_power_output from="input" unit="W" varName="_p0">59132186.8410</Maximum_power_output>
@@ -604,9 +604,9 @@
          </Engine_1>
          <Engine_2 id="8199" level="3">
             <Type from="input" unit="" varName="_engineType">TURBOFAN</Type>
-            <Xcoordinate from="input" unit="m" varName="_X0">0.0000</Xcoordinate>
-            <Ycoordinate from="input" unit="m" varName="_Y0">0.0000</Ycoordinate>
-            <Zcoordinate from="input" unit="m" varName="_Z0">0.0000</Zcoordinate>
+            <Xcoordinate from="input" unit="m" varName="_X0">12.8910</Xcoordinate>
+            <Ycoordinate from="input" unit="m" varName="_Y0">-4.8690</Ycoordinate>
+            <Zcoordinate from="input" unit="m" varName="_Z0">-1.7820</Zcoordinate>
             <Mounting_point from="input" unit="" varName="_mountingPoint">WING</Mounting_point>
             <Maximum_thrust from="input" unit="N" varName="_t0">68646.5500</Maximum_thrust>
             <Maximum_power_output from="input" unit="W" varName="_p0">59132186.8410</Maximum_power_output>
@@ -1510,9 +1510,9 @@
                <Xcg_LRF unit="m">0.0000</Xcg_LRF>
                <Ycg_LRF unit="m">0.0000</Ycg_LRF>
                <Zcg_LRF unit="m">0.0000</Zcg_LRF>
-               <Xcg_BRF unit="m">0.0000</Xcg_BRF>
-               <Ycg_BRF unit="m">0.0000</Ycg_BRF>
-               <Zcg_BRF unit="m">0.0000</Zcg_BRF>
+               <Xcg_BRF unit="m">12.8910</Xcg_BRF>
+               <Ycg_BRF unit="m">4.9680</Ycg_BRF>
+               <Zcg_BRF unit="m">-1.7820</Zcg_BRF>
             </Balance>
             <Aerodynamics>
                <FrictionCoefficient_Cf unit="">0.002682</FrictionCoefficient_Cf>
@@ -1539,9 +1539,9 @@
                <Xcg_LRF unit="m">0.0000</Xcg_LRF>
                <Ycg_LRF unit="m">0.0000</Ycg_LRF>
                <Zcg_LRF unit="m">0.0000</Zcg_LRF>
-               <Xcg_BRF unit="m">0.0000</Xcg_BRF>
-               <Ycg_BRF unit="m">0.0000</Ycg_BRF>
-               <Zcg_BRF unit="m">0.0000</Zcg_BRF>
+               <Xcg_BRF unit="m">12.8910</Xcg_BRF>
+               <Ycg_BRF unit="m">-4.9680</Ycg_BRF>
+               <Zcg_BRF unit="m">-1.7820</Zcg_BRF>
             </Balance>
             <Aerodynamics>
                <FrictionCoefficient_Cf unit="">0.002682</FrictionCoefficient_Cf>

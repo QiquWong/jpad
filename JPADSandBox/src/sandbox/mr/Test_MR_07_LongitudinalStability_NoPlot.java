@@ -1214,9 +1214,10 @@ public class Test_MR_07_LongitudinalStability_NoPlot {
 		
 					
 		
-//		System.out.println(" max aft " + aircraft.get_theBalance().get_xCoGMaxAftAtOEM());
-//		System.out.println(" cg positions : -> x " + cgPosition.get_xBRF().getEstimatedValue() + 
-//				" --> z " + cgPosition.get_zBRF().getEstimatedValue());
+		System.out.println(" max aft " + aircraft.get_theBalance().get_xCoGMaxAftAtOEM());
+		System.out.println(" cg positions : -> x " + cgPosition.get_xBRF().getEstimatedValue() + 
+				" --> z " + cgPosition.get_zBRF().getEstimatedValue());
+		
 		
 		// Wing
 		

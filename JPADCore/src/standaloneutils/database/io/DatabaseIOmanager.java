@@ -85,11 +85,11 @@ public class DatabaseIOmanager<E extends Enum<E>> {
 		this.valueList = valueList;
 	}
 
-	public List<Object> getValueObjList() {
-		return valueObjList;
-	}
-
-	public void setValueObjList(List<Object> valueObjList) {
-		this.valueObjList = valueObjList;
-	}
+//	public List<Object> getValueObjList() {
+//		return valueObjList;
+//	}
+//
+//	public void setValueObjList(List<Object> valueObjList) {
+//		this.valueObjList = valueObjList;
+//	}
 }
