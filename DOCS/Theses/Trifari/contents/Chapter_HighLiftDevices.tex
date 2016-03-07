@@ -780,14 +780,11 @@ After the input file has been parsed correctly, the reading process can start. T
 	List<Double> csc = new ArrayList<Double>();
 	List<Double> cExtcSlat = new ArrayList<Double>();
 	List<Double> leRadiusSlatRatio = new ArrayList<Double>();
-		
 	// XML reading phase:
 	// Arguments check
 	if (args.length == 0){
 		System.err.println("NO INPUT FILE GIVEN --> TERMINATING");
-		return;
-	}
-		
+		return;}
 	// Input file parsing
 	main.theCmdLineParser.parseArgument(args);
 	// Creation of the reader object
