@@ -53,8 +53,13 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		//
 		// assign eta's when the shape of the planform is loaded and no. panels are known
 
-		_yBreakPoints =  new ArrayList<>(); // new MyArray(SI.METER);
-		_yStationActual = new MyArray(SI.METER);
+		_yBreakPoints =  new ArrayList<Amount<Length>>(); // new MyArray(SI.METER);
+
+		_panelToYStations =
+			    new HashMap<LiftingSurfacePanel, List<Amount<Length>>>();
+
+		_yStationActual = new ArrayList<Amount<Length>>(); // new MyArray(SI.METER); // new MyArray(SI.METER);
+
 		_chordsVsYActual = new MyArray(SI.METER);
 		_xLEvsYActual = new MyArray(SI.METER);
 		_xTEvsYActual = new MyArray(SI.METER);
@@ -414,7 +419,7 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		// TODO make this yBP a member variable _yBreakPoints
 
 		MyConfiguration.customizeAmountOutput();
-//		System.out.println("yBP:" + yBP);
+		System.out.println("y Break-Points ->\n" + _yBreakPoints);
 
 		//======================================================
 		// Break points eta's
@@ -461,43 +466,42 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		// in the middle of each panel,
 		// and including break-point eta's
 
-		_yStationActual.setRealVector(
-				_eta.getRealVector().mapMultiply(this.semiSpan.doubleValue(SI.METER)));
+//		_yStationActual.setRealVector(
+//				_eta.getRealVector().mapMultiply(this.semiSpan.doubleValue(SI.METER)));
 
-		System.out.println("____________________");
+		_yStationActual = _eta.getList().stream()
+				.map(d -> this.semiSpan.times(d))
+				.collect(Collectors.toList());
 
 		//======================================================
 		// Map panels with lists of Y's
 		// for each panel Y's of inner and outer break-points
 		// are included, i.e. Y's are repeated
 
-		Map<LiftingSurfacePanel, List<Amount<Length>>> panelToYStations =
-			    new HashMap<LiftingSurfacePanel, List<Amount<Length>>>();
-
-		panelToYStations.put(
+		_panelToYStations.put(
 			panels.get(0),
-			_yStationActual.getList().stream()
-				.filter(y -> y < panels.get(0).getSemiSpan().getEstimatedValue())
-				.mapToDouble(y -> y)
-				.mapToObj(y -> Amount.valueOf(y, SI.METRE))
+			_yStationActual.stream()
+				.filter(y -> y.isLessThan( panels.get(0).getSemiSpan() ) || y.equals( panels.get(0).getSemiSpan()) )
 				.collect(Collectors.toList())
 			);
 
 		for (int i=0; i < panels.size(); i++) {
 			final int i_ = i;
-			panelToYStations.put(
+			_panelToYStations.put(
 				panels.get(i), // key
-				_yStationActual.getList().stream()
+				_yStationActual.stream()
+					.mapToDouble(a -> a.to(SI.METRE).getEstimatedValue())
 					.filter(y -> ( y >= _yBreakPoints.get(i_).getEstimatedValue() ) && ( y <= _yBreakPoints.get(i_+1).getEstimatedValue() ) )
-					.mapToDouble(y_ -> y_)
-					.mapToObj(y__ -> Amount.valueOf(y__, SI.METRE))
+					.mapToObj(y_ -> Amount.valueOf(y_, SI.METRE))
 					.collect(Collectors.toList()
 				) // value
 			);
 		}
 
-		System.out.println("Map: panel(0) ->\n" + panelToYStations.get(panels.get(0)));
-		System.out.println("Map: panel(1) ->\n" + panelToYStations.get(panels.get(1)));
+		System.out.println("=====================================================");
+		System.out.println("Map: panel(0) ->\n" + _panelToYStations.get(panels.get(0)));
+		System.out.println("Map: panel(1) ->\n" + _panelToYStations.get(panels.get(1)));
+		System.out.println("=====================================================");
 	}
 
 	/**

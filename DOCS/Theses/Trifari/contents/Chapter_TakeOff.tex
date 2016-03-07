@@ -29,22 +29,22 @@ This is the usual situation for take-off; subsequently, the modifications to saf
 %
 %-----------------------------AOE Take-Off subsection-----------------------------
 \subsection{\gls{acr:AOE} take-off run}
-In order to deal with the calculation of the take-off run distance, a smart strategy is to find out all the foundamentals variables, which describes completely the aircraft state in this phase, and so, to study the dynamic system in exam in a state-space representation.
+In order to deal with the calculation of the take-off run distance, a smart strategy is to find out all the fundamentals variables, which describes completely the aircraft state in this phase, and so, to study the dynamic system in exam in a state-space representation.
 %
 \noindent
 To find out these state variables it is necessary to analyze aircraft equations of motion during take-off phases, these latter described as follows.
 \begin{itemize}
-\item \textbf{Ground roll phase}: starting from standstill with brakes released and at maximum power output, the aircraft accelerates on the runway, with constant angle of attack, until it reaches a speed equals to the rotation speed V\textsubscript{Rot}; after that the following subphase begin.
+\item \textbf{Ground roll phase}: starting from standstill with brakes released and at maximum power output, the aircraft accelerates on the runway, with constant angle of attack, until it reaches a speed equals to the rotation speed V\textsubscript{Rot}; after that the following sub-phase begin.
 %
 \begin{itemize}
 \item \textbf{Rotation phase}: a short phase in which the pilot gives an assigned pitching law to lift the aircraft nose and, as a result, increasing the angle of attack. This phase ends when the load factor is equal to 1, meaning that the lift has reached the value of the maximum take-off weight, and the relative lift-off speed is indicated with V\textsubscript{LO}. 
 %
 \end{itemize}
 %
-\item \textbf{Airborne phase}: is the phases in which the aircraft, once it has lifted from the ground, gains altitude until it reaches the obstacle height of 35 \si{ft} (10.7 \si{\meter}) imposed by the \gls{FAR}-25. This phase begin at V\textsubscript{LO} and ends at the speed related to the obstacle overcoming, indicated with V\textsubscript{2}; furthermore it can be divided into the followngs two subphases:
+\item \textbf{Airborne phase}: is the phases in which the aircraft, once it has lifted from the ground, gains altitude until it reaches the obstacle height of 35 \si{ft} (10.7 \si{\meter}) imposed by the \gls{FAR}-25. This phase begin at V\textsubscript{LO} and ends at the speed related to the obstacle overcoming, indicated with V\textsubscript{2}; furthermore it can be divided into the followings two sub-phases:
 %
 \begin{itemize}
-\item \textbf{Transition phase}: in which the aircraft rotates in order to increase the climb angle ($\gamma$) with the result of increasing the angle of attack and the relative lift coefficient, which should not surpass a safety value of the 90\% of the maximumlift coefficient in take-off configuration. This sub-phase ends when the desidered climb speed is reached.
+\item \textbf{Transition phase}: in which the aircraft rotates in order to increase the climb angle ($\gamma$) with the result of increasing the angle of attack and the relative lift coefficient, which should not surpass a safety value of the 90\% of the maximum lift coefficient in take-off configuration. This sub-phase ends when the desired climb speed is reached.
 %
 \item \textbf{Climb-out to the obstacle phase}: in which the aircraft climbs at constant climb angle until the obstacle is surpassed.
 \end{itemize}
@@ -196,18 +196,18 @@ $V_2$ & take-off climb speed at \SI[round-precision=0]{35}{ft} & $> 1.20 \, V_\m
 \endgroup
 %
 \noindent
-It has to be highlithed that the drag coefficient $C_D$ that appears in (\ref{eq:Take:Off:System:Dynamics:RHS:functions:E}) can be modelled as:
+It has to be highlighted that the drag coefficient $C_D$ that appears in (\ref{eq:Take:Off:System:Dynamics:RHS:functions:E}) can be modeled as:
 %
 \begin{equation}\label{eq:CD:A}
 C_D = C_{D0} + \left(\upDelta C_{D0}\right)_{\text{flap}+\text{lg}} +  K_g\ \frac{C_L^2}{\pi \AR e}
 \end{equation}
 %
-with $\left(\upDelta C_{D0}\right)_{\text{flap}+\text{lg}}$ due to flap, as shown in subparagraph~\ref{subpar:DCD0}, and landing gears, which contribution is usually about $0.010 \div 0.015$; moreover $C_L$ is the one from the lift curve with flaps, and eventually slats, deflected. The term $K_g$ in (\ref{eq:CD:A}) incorporates the ground effect and it is calculated from~\cite{McCormick} using the (\ref{eqn:FifthOrderPoly}) which is a fifth order interpolating function of the  graph in fugure~\ref{fig:McCormickGroundEffect}, where the ratio $h_{\text{W}}/b$ is obtained dividing the height of wing above the ground by the wing span, usually between 0.1 and 0.2 when the aircraft is on the ground and assumed as $h_{\text{W}} \approx h$ durign the airborne.
+with $\left(\upDelta C_{D0}\right)_{\text{flap}+\text{lg}}$ due to flap, as shown in subparagraph~\ref{subpar:DCD0}, and landing gears, which contribution is usually about $0.010 \div 0.015$; moreover $C_L$ is the one from the lift curve with flaps, and eventually slats, deflected. The term $K_g$ in (\ref{eq:CD:A}) incorporates the ground effect and it is calculated from~\cite{McCormick} using the (\ref{eqn:FifthOrderPoly}) which is a fifth order interpolating function of the  graph in figure~\ref{fig:McCormickGroundEffect}, where the ratio $h_{\text{W}}/b$ is obtained dividing the height of wing above the ground by the wing span, usually between 0.1 and 0.2 when the aircraft is on the ground and assumed as $h_{\text{W}} \approx h$ during the airborne.
 %
 \begin{figure}[H]
 \centering
 \includegraphics[keepaspectratio, width=0.57\textwidth]{McCormickGroundEffect}
-\caption{Gorund effect parameter $K_g$ as function of the $h_{\text{W}}/b$ ratio}
+\caption{Ground effect parameter $K_g$ as function of the $h_{\text{W}}/b$ ratio}
 \label{fig:McCormickGroundEffect}
 \end{figure}
 %
@@ -289,18 +289,18 @@ where $\alpha_{\text{LO}}$ can be obtained from the lift curve of the wing, with
 
 \bigskip
 \noindent
-From this point on the pilot stops the pitching manouver and keeps the angle of attack constant for an assigned $\upDelta t_{\text{Hold}}$. During this time interval, the lift coefficient is high and, as a result, also the induced drag is high so that aircraft acceleration will reduce. 
+From this point on the pilot stops the pitching maneuver and keeps the angle of attack constant for an assigned $\upDelta t_{\text{Hold}}$. During this time interval, the lift coefficient is high and, as a result, also the induced drag is high so that aircraft acceleration will reduce. 
 %
 After this short time interval the pilot has to reduce the angle of attack in order to avoid the acceleration to decrease too much and so an assigned negative angular velocity $\dot\alpha_{\text{red}}$ is applied; the latter assumed to be constant for simplicity. 
 %
 Finally, since the decrease of $\alpha$ determines also a reduction in $C_L$, the time $t_{\text{climb}}$ will be reached when the load factor is reduced to 1; this means that a balance of the forces, perpendicular to the flight path, has been achieved and so the climb phase, at constant $\gamma$, can begin, leaving $\alpha$ constant and equal to last value reached. Moreover, from this time on, the lift value is constant and equal to $W\cdot\cos\gamma$, in order to maintain the load factor equal to 1; while the $C_L$ is derived from the lift value using the (\ref{eqn:Lift.Equation}).
 %
 %-----------------------------OEI Take-Off subsection-----------------------------
-\subsection{\gls{acr:OEI} take-off run and balanced field lenght}
+\subsection{\gls{acr:OEI} take-off run and balanced field length}
 \label{subpar:OEI}
 A good description of the take-off with one engine failure is proposed in \cite{sforza2014commercial}. Here it is explained that in the event of an engine failure during the take-off roll the pilot must decide whether to continue the take-off or, instead, abort the take-off and decelerate to a stop on the runway. Obviously, if the engine failure occurs when the aircraft is traveling very slowly, the aircraft should be kept on the ground and brought to a stop at some safe location off the runway. Conversely, if the engine failure occurs when the aircraft is close to the take-off speed the take-off should be continued. The designer must provide a means for deciding whether it is safer to abort the take-off or continue it.
 %
-The critical velocity, denoted as $V_{\text{act}}$, is the velocity at which action is taken, not that at which the decision to act is taken. The time between the recognition of an engine failure, which occurs at $V_{\text{ef}}$, and the critical velocity $V_{\text{act}}$, when action is taken is required to be more than one second. Generally this time period, which is set by the reaction time of the pilot, is taken to be about \SI{3}{\second}. If the pilot’s decision is to continue the take-off with one engine inoperative, the distance to the lift-off speed $V_{\text{LO}}$ and to the subsequent climb-out to 35 $\si{ft}$ height above the runway, will obviously be longer than with all engines operating.
+The critical velocity, denoted as $V_{\text{act}}$, is the velocity at which action is taken, not that at which the decision to act is taken. The time between the recognition of an engine failure, which occurs at $V_{\text{ef}}$, and the critical velocity $V_{\text{act}}$, when action is taken is required to be more than one second. Generally this time period, which is set by the reaction time of the pilot, is taken to be about \SI{3}{\second}. If the pilot decision is to continue the take-off with one engine inoperative, the distance to the lift-off speed $V_{\text{LO}}$ and to the subsequent climb-out to 35 $\si{ft}$ height above the runway, will obviously be longer than with all engines operating.
 
 \bigskip
 \noindent
@@ -308,7 +308,7 @@ The calculation of the take-off distance in this situation is quite the same as 
 
 \bigskip
 \noindent
-On the other hand, in the case of the aborted take-off the pilot will apply the necessary braking procedures in order to get the maximum permissible deceleration while maintaining adequate control of the airplane’s motion. The portion of the aborted take-off run up to the engine failure velocity $V_{\text{ef}}$ is calculated in the same way as that for the continued take-off, so that the distance is the same in both cases. 
+On the other hand, in the case of the aborted take-off the pilot will apply the necessary braking procedures in order to get the maximum permissible deceleration while maintaining adequate control of the airplane motion. The portion of the aborted take-off run up to the engine failure velocity $V_{\text{ef}}$ is calculated in the same way as that for the continued take-off, so that the distance is the same in both cases. 
 %
 From this point on, until the pilot reacts by activating brakes, there is only a discontinuity in thrust due to the failed engine; while, after the time interval in which the pilot decides to abort the take-off, the thrust is set to minimum (ideally zero) and the brakes action provides an higher friction coefficient. During this last phase, the equation (\ref{eq:Take:Off:System:Dynamics:RHS:functions:B}) changes in the following.
 %
@@ -336,7 +336,7 @@ engine fails as a function of critical velocity}
 \end{figure}
 %
 \noindent
-As expected, the take-off distance on the curve related to the continued take-off with one inoperative engine decreases with the failure speed, tending to the AOE condition; while the take-off distance on the other curve grows with the failure speed because the deceleration to stop the aircraft begins from an higher speed, requiring more distance to be dissipated.
+As expected, the take-off distance on the curve related to the continued take-off with one inoperative engine decreases with the failure speed, tending to the \gls{acr:AOE} condition; while the take-off distance on the other curve grows with the failure speed because the deceleration to stop the aircraft begins from an higher speed, requiring more distance to be dissipated.
 %
 %----------------------------------- Landing subsection---------------------------------------
 \subsection{Landing distance calculation}
@@ -351,7 +351,7 @@ Similar to the take-off, the landing phase can be considered as made up of two m
 
 \bigskip
 \noindent
-The air run may be considered to start at the an obstacle height of $\SI{50}{\foot}$, so that in an x-y coordinate system with x = 0 at y = $\SI{50}{\foot}$, the approach speed equals $V_A$, which, according to \gls{FAR}, must be at least 1.3 $V_s$ in landing configuration. The aircraft executes a gradual flare of large radius $R$, turning the pitch angle from $\theta$ around $\SI{2}{\degree}$ or $\SI{3}{\degree}$ down to zero at which time the aircraft has slowed to $V_{\text{Flare}}$, that is, to a value around $1.2\div1.25 V_s$ (in landing configuration) and settled onto the runway, ending the air run at x = $S_A+S_{\text{Flare}}$ as shown in figure \ref{fig:LANDairborne}. To calculate this distance the simpliest way is to assume that the flare rotation describes a circular trajectory and that $\theta_a$, during approach is small and almost equal to $\theta_f$. By using these hypotesis the two distances $S_A$ and $S_{\text{Flare}}$ can be calculated through a geometrical approach which follows the steps below. 
+The air run may be considered to start at the an obstacle height of $\SI{50}{\foot}$, so that in an x-y coordinate system with x = 0 at y = $\SI{50}{\foot}$, the approach speed equals $V_A$, which, according to \gls{FAR}, must be at least 1.3 $V_s$ in landing configuration. The aircraft executes a gradual flare of large radius $R$, turning the pitch angle from $\theta$ around $\SI{2}{\degree}$ or $\SI{3}{\degree}$ down to zero at which time the aircraft has slowed to $V_{\text{Flare}}$, that is, to a value around $1.2\div1.25 V_s$ (in landing configuration) and settled onto the runway, ending the air run at x = $S_A+S_{\text{Flare}}$ as shown in figure \ref{fig:LANDairborne}. To calculate this distance the simplest way is to assume that the flare rotation describes a circular trajectory and that $\theta_a$, during approach is small and almost equal to $\theta_f$. By using these hypotheses the two distances $S_A$ and $S_{\text{Flare}}$ can be calculated through a geometrical approach which follows the steps below. 
 %
 \begin{figure}[!b]
 \centering
@@ -362,7 +362,7 @@ The air run may be considered to start at the an obstacle height of $\SI{50}{\fo
 %
 \begin{itemize}
 %
-\item Assuming a load factor ($n$) of 1.2 and a $V_{\text{Flare}}$ equal to the mean value between $V_A=1.3\ V_s$ and $V_{\text{TD}}=1.15\ V_s$ ($V_{\text{Flare}}=1.23\ V_s$, the radius$R$ can be calcuated as 
+\item Assuming a load factor ($n$) of 1.2 and a $V_{\text{Flare}}$ equal to the mean value between $V_A=1.3\ V_s$ and $V_{\text{TD}}=1.15\ V_s$ ($V_{\text{Flare}}=1.23\ V_s$, the radius$R$ can be calculated as 
 \begin{equation}
 R=\dfrac{V^2}{g\left(n-1\right)}=\dfrac{V_{\text{Flare}}^2}{0.2\ g}
 \label{eqn:Landing:Airborne:A}
@@ -387,7 +387,7 @@ S_A=\dfrac{50-h_{\text{Flare}}}{\tan\theta_a}; \quad\quad S_{\text{Flare}}=R\sin
 
 \bigskip
 \noindent
-The ground run begins when the aircraft touches the ground and ends when the speed is equal to zero; the first part of the ground run is named \emph{free-roll distance}, which lasts around $\SI{3}{\second}$, and represents the distance covered while the pilot reduces the power to idle, retracts the flaps, deploys the spoilers, and applies the brakes. The second part of the ground run is almost the same described during the aborted take-off with the differece that now there is no engine failure and the focus is on the decelerated trait.
+The ground run begins when the aircraft touches the ground and ends when the speed is equal to zero; the first part of the ground run is named \emph{free-roll distance}, which lasts around $\SI{3}{\second}$, and represents the distance covered while the pilot reduces the power to idle, retracts the flaps, deploys the spoilers, and applies the brakes. The second part of the ground run is almost the same described during the aborted take-off with the difference that now there is no engine failure and the focus is on the decelerated trait.
 
 \bigskip
 \noindent
@@ -458,7 +458,7 @@ As in previous chapters, a dedicated Java class, named~\lstinline[language=Java]
 \lstinline[language=Java]!k1! & Linear correction factor of the parabolic drag polar at high $C_L$ \\  [0.2cm]
 \lstinline[language=Java]!k2! & Quadratic correction factor of the parabolic drag polar at high $C_L$ \\  [0.2cm]
 \lstinline[language=Java]!phi! & Throttle setting \\  [0.2cm]
-\lstinline[language=Java]!kAlphaDot! & A coefficient which defines the decrease of $\dot\alpha$ during manouvering \\ [0.2cm]
+\lstinline[language=Java]!kAlphaDot! & A coefficient which defines the decrease of $\dot\alpha$ during maneuvering \\ [0.2cm]
 \lstinline[language=Java]!alphaReductionRate! & A constant negative pitching angular velocity to be maintained after holding the $C_L$ constant \\ [0.2cm]
 \lstinline[language=Java]!mu! & The friction coefficient without brakes action \\ [0.2cm]
 \lstinline[language=Java]!muBrake! & The friction coefficient with brakes activated \\ [0.2cm]
@@ -476,14 +476,14 @@ As in previous chapters, a dedicated Java class, named~\lstinline[language=Java]
 %
 More in detail, the constructor evaluates, firstly, all high-lift devices effects, which data are supplied in the test class as explained in the paragraph~\ref{par:CalcHighLiftDevices}, by using the method~\lstinline[language=Java]!calculateHighLiftDevicesEffects! of the~\lstinline[language=Java]!CalcHighLiftDevices! class, described in the previous chapter in paragraph~\ref{par:CalcHighLiftDevices}. After that it's possible to define the maximum lift coefficient, $C_{L\text{max,TO}}$, the $C_{L0}$, with high-lift devices effects computed, and the lift coefficient during the ground roll phase, $C_{Lg}$, related to the constant angle of attack $\alpha_g$; in particular the last two quantities are calculated using the method~\lstinline[language=Java]!calcCLatAlphaHighLiftDevice!, of the~\lstinline[language=Java]!CalcHighLiftDevices! class, respectively with $\alpha_w=0\degree$ and  $\alpha_w=\alpha_g+i_w$.
 %
-With the $C_{L\text{max,TO}}$ known, the stalling speed in take-off configuration is calculated using the classical formula provieded below.
+With the $C_{L\text{max,TO}}$ known, the stalling speed in take-off configuration is calculated using the classical formula provided below.
 %
 \begin{equation}
 V_s=\sqrt{\dfrac{2W_{\text{TO}}}{\rho\ S\ C_{L\text{max,TO}}}}
 \label{eqn:Lift.Equation}
 \end{equation} 
 %
-From this speed, both the $V_{\text{Rot}}$ both the $V_{\text{LO}}$ are calculated multipling the $V_s$ by the two parameters, $k_{\text{Rot}}$ and $k_{\text{LO}}$, defined in table~\ref{table:CalcTakeOffInput}.
+From this speed, both the $V_{\text{Rot}}$ both the $V_{\text{LO}}$ are calculated multiplying the $V_s$ by the two parameters, $k_{\text{Rot}}$ and $k_{\text{LO}}$, defined in table~\ref{table:CalcTakeOffInput}.
 %
 At this point, the ratio $h_{\text{W}}/b$ and the ground effects correction parameter $K_g$ of the (\ref{eqn:FifthOrderPoly}) are calculated; while all the \gls{List}s, which will store all physical quantities of interest at every integration step, are initialized together with a custom \gls{Map}, named~\lstinline[language=Java]!TakeOffResultsMap!. The latter, in particular, has been created with the purpose of store the state vector, and all the related physical quantities, only at some key point during the take-off run, like the end of the ground roll phase, the end of the rotation phase and the end of the airborne phase.
 %
@@ -498,7 +498,7 @@ At this point, the ratio $h_{\text{W}}/b$ and the ground effects correction para
 \lstinline[language=Java]!frictionValue! & The friction, in  $\si{\newton}$, at the step to save\\  [0.2cm]
 \lstinline[language=Java]!liftValue! & The lift, in  $\si{\newton}$, at the step to save \\  [0.2cm]
 \lstinline[language=Java]!dragValue! & The drag, in  $\si{\newton}$, at the step to save \\  [0.2cm]
-\lstinline[language=Java]!totalForceValue! & The total force, in brakets in the equation (\ref{eq:Take:Off:System:Dynamics:RHS:functions:B}), at the step to save in  $\si{\newton}$ \\  [0.2cm]
+\lstinline[language=Java]!totalForceValue! & The total force, in brackets in the equation (\ref{eq:Take:Off:System:Dynamics:RHS:functions:B}), at the step to save in  $\si{\newton}$ \\  [0.2cm]
 \lstinline[language=Java]!loadFactorValue! & The load factor at the step to save \\  [0.2cm]
 \lstinline[language=Java]!speedValue! & The speed, in  $\si{\meter\per\second}$, at the step to save \\  [0.2cm]
 \lstinline[language=Java]!rateOfClimbValue! & The rate of climb from equation (\ref{eq:Take:Off:System:Dynamics:RHS:functions:D}), in  $\si{\meter\per\second}$, at the step to save \\  [0.2cm]
@@ -539,7 +539,7 @@ It has to be noted that all these preliminary calculations and \gls{List}s initi
 The most important method of the class is~\lstinline[language=Java]!calculateTakeOffDistanceODE! which is in charge of the resolution of the \gls{acr:ODE} set presented in (\ref{eq:Take:Off:System:Dynamics:RHS:functions}). This method accepts as input two parameters which are used to determine, firstly, if an engine failure has occurred during the take-off run, and then if the take-off run has to be aborted; these are:
 %
 \begin{itemize}
-\item \lstinline[language=Java]!vFailure!, a \lstinline[language=Java]!Double! value representing the failure speed in $\si{\meter\per\second}$. Can be set to \lstinline[language=Java]!null! if the user dosen't want to calculate the \gls{acr:OEI} take-off distance. 
+\item \lstinline[language=Java]!vFailure!, a \lstinline[language=Java]!Double! value representing the failure speed in $\si{\meter\per\second}$. Can be set to \lstinline[language=Java]!null! if the user doesn't want to calculate the \gls{acr:OEI} take-off distance. 
 \item \lstinline[language=Java]!isAborted!, a \lstinline[language=Java]!boolean! flag which is \lstinline[language=Java]!true! if the method has to calculate the aborted take-off distance.
 \end{itemize}
 %
@@ -547,7 +547,7 @@ After performing a check upon these two variables, the method knows which case i
 
 \bigskip
 \noindent
-More in detail, the \lstinline[language=Java]!HighamHall54Integrator! class implements a fifth order Higham and Hall integrator which uses seven functions evaluations per step and is supplied with stepsize control, automatic step initialization and continuous output. The latter has proven to be the best choise, among other possible integrators (viewables in \cite{apache:FirstOrderIntegrator}) which implement the previous \gls{Interface}, because it provides the better compromise between calculation time and accuracy using the following settings.
+More in detail, the \lstinline[language=Java]!HighamHall54Integrator! class implements a fifth order Higham and Hall integrator which uses seven functions evaluations per step and is supplied with stepsize control, automatic step initialization and continuous output. The latter has proven to be the best choice, among other possible integrators (described in \cite{apache:FirstOrderIntegrator}) which implement the previous \gls{Interface}, because it provides the better compromise between calculation time and accuracy using the following settings.
 
 \bigskip
 \begin{lstlisting}[caption={HighamHall54Integrator class object creation}, captionpos=b, tabsize=2]
@@ -559,17 +559,17 @@ FirstOrderIntegrator theIntegrator = new HighamHall54Integrator(
 				);
 \end{lstlisting}
 %
-Beside the integrator, the method needs the set of equation to integrate; these are passed to it through the object of a dedicated inner class, named \lstinline[language=Java]!DynamicsEquationsTakeOff!, which implements the \gls{Interface} \lstinline[language=Java]!FirstOrderDifferentialEquations! \cite{apache:FirstOrderDifferentialEquations}. Thus, the \lstinline[language=Java]!DynamicsEquationsTakeOff! class provides the set of \gls{acr:ODE} (\ref{eq:Take:Off:System:Dynamics:RHS:functions}) and, in particular, is supplied with a series of methods necessary to calculate the required physical quantities used into these equations and described in the previous paragraph. Furthermore, thanks to the use of the variable \lstinline[language=Java]!isAborted!, the class can easly switch the equations set in case of aborted take-off as shown in the subparagraph \ref{subpar:OEI}.
+Beside the integrator, the method needs the set of equation to integrate; these are passed to it through the object of a dedicated inner class, named \lstinline[language=Java]!DynamicsEquationsTakeOff!, which implements the \gls{Interface} \lstinline[language=Java]!FirstOrderDifferentialEquations! \cite{apache:FirstOrderDifferentialEquations}. Thus, the \lstinline[language=Java]!DynamicsEquationsTakeOff! class provides the set of \gls{acr:ODE} (\ref{eq:Take:Off:System:Dynamics:RHS:functions}) and, in particular, is supplied with a series of methods necessary to calculate the required physical quantities used into these equations and described in the previous paragraph. Furthermore, thanks to the use of the variable \lstinline[language=Java]!isAborted!, the class can easily switch the equations set in case of aborted take-off as shown in the subparagraph \ref{subpar:OEI}.
 
 \bigskip
 \noindent
-In order to take into account of particular events which can happen during the take-off run, the method \lstinline[language=Java]!calculateTakeOffDistanceODE! is supplied with several implementation of the \gls{Interface} \lstinline[language=Java]!EventHandler! \cite{apache:ode}. The latter, through the definition of a specific function, can determine the occurrence of the wanted event by monitoring whether the sign of the defined function changes. Moreover it allows to manage the time step at which the event has occurred, so that it's possible to save, into the~\lstinline[language=Java]!TakeOffResultsMap!, the state vector and all the physical quantities of interest. Each implementation of the \gls{Interface} can also impose one of the folllowing actions to the integrator.
+In order to take into account of particular events which can happen during the take-off run, the method \lstinline[language=Java]!calculateTakeOffDistanceODE! is supplied with several implementation of the \gls{Interface} \lstinline[language=Java]!EventHandler! \cite{apache:ode}. The latter, through the definition of a specific function, can determine the occurrence of the wanted event by monitoring whether the sign of the defined function changes. Moreover it allows to manage the time step at which the event has occurred, so that it's possible to save, into the~\lstinline[language=Java]!TakeOffResultsMap!, the state vector and all the physical quantities of interest. Each implementation of the \gls{Interface} can also impose one of the following actions to the integrator.
 %
 \begin{itemize}
 \item \textbf{CONTINUE}, the integration simply goes on
 \item \textbf{STOP}, the integration stops when the event triggers
 \item \textbf{RESET_STATE}, the state vector can be changed when the event triggers 
-\item \textbf{RESET_DERVATIVES}, the set of equation can be changed when the event triggers 
+\item \textbf{RESET_DERIVATIVES}, the set of equation can be changed when the event triggers 
 \end{itemize}
 %
 In the case in exam, six events are monitored by six implementation of the \lstinline[language=Java]!EventHandler! \gls{Interface} as shown below.
@@ -637,7 +637,7 @@ Each of these events is monitored by the value of the variable \lstinline[langua
 
 \bigskip
 \noindent
-The method is, finally, completed by assigning the initial state vector, calling the method \lstinline[language=Java]!integrate!, which is in charge of the integration process, and ereasing all the \lstinline[language=Java]!StepHandler! and \lstinline[language=Java]!EventHandler! implementations at the end of the process; this in order to make the method reusable later.
+The method is, finally, completed by assigning the initial state vector, calling the method \lstinline[language=Java]!integrate!, which is in charge of the integration process, and erasing all the \lstinline[language=Java]!StepHandler! and \lstinline[language=Java]!EventHandler! implementations at the end of the process; this in order to make the method reusable later.
 
 \bigskip
 \noindent
@@ -647,16 +647,16 @@ First of all an array of five values of possible failure speeds (between 2~$\si{
 
 \bigskip
 \noindent
-Each failure speed, \gls{acr:OEI} take-off distance and aborted take-off distance calculated this way, is then stored into a dedicated array so that it's possible to define an interpolating function for the two distances. More in detail, since five points are few to describe the curves in figure \ref{fig:BalancedFieldLength}, a new array of 250 values of failure speeds is defined useing the same constrain of the previous one; the latter is then used to build a spline interpolating function, for both the \gls{acr:OEI} take-off distance and aborted take-off distance, using the five points calculated previously.
+Each failure speed, \gls{acr:OEI} take-off distance and aborted take-off distance calculated this way, is then stored into a dedicated array so that it's possible to define an interpolating function for the two distances. More in detail, since five points are few to describe the curves in figure \ref{fig:BalancedFieldLength}, a new array of 250 values of failure speeds is defined using the same constrain of the previous one; the latter is then used to build a spline interpolating function, for both the \gls{acr:OEI} take-off distance and aborted take-off distance, using the five points calculated previously.
 %
-From the intersection of the last two interpolated curves is possible to define the \emph{balanced field length} and the \emph{decision speed} $V_1$ as shown in figure \ref{fig:BalancedFieldLength}. It should be noted that the choise of using interpolating functions and not to perform more times the calculation of the take-off distance in the two cases, derives from the will to speed up the calculation so that it's possible to have accurate results in less than one second. 
+From the intersection of the last two interpolated curves is possible to define the \emph{balanced field length} and the \emph{decision speed} $V_1$ as shown in figure \ref{fig:BalancedFieldLength}. It should be noted that the choice of using interpolating functions and not to perform more times the calculation of the take-off distance in the two cases, derives from the will to speed up the calculation so that it's possible to have accurate results in less than one second. 
 
 \bigskip
 \noindent
-In conclusion, the class is completed by two methods in charge of plotting the curves of interst from the related \gls{List}s and the \emph{balanced field length} chart; these are the followings.
+In conclusion, the class is completed by two methods in charge of plotting the curves of interest from the related \gls{List}s and the \emph{balanced field length} chart; these are the followings.
 %
 \begin{itemize}
-\item \lstinline[language=Java]!createTakeOffCharts!, provides the conversion of the previous \gls{List}s into \lstinline[language=Java]!double! arrays so that they can be managed by the plotting method; morever it uses the varaible \lstinline[language=Java]!isAborted! to determine which charts have to be plotted since some of them are useless in case of the aborted take-off
+\item \lstinline[language=Java]!createTakeOffCharts!, provides the conversion of the previous \gls{List}s into \lstinline[language=Java]!double! arrays so that they can be managed by the plotting method; moreover it uses the variable \lstinline[language=Java]!isAborted! to determine which charts have to be plotted since some of them are useless in case of the aborted take-off
 \item \lstinline[language=Java]!createBalancedFieldLengthChart!, provides the creation of the chart of figure \ref{fig:BalancedFieldLength} using the interpolated curves, on the y-axis, and the speed array with 250 values, on the x-axis 
 \end{itemize}
 %
@@ -703,15 +703,15 @@ The class in exam is named~\lstinline[language=Java]!CalcLanding! and, similarly
 
 \bigskip
 \noindent
-The first calculation method is~\lstinline[language=Java]!calculateAirborneDistance! which implements equations (\ref{eqn:Landing:Airborne:A}), (\ref{eqn:Landing:Airborne:B}) and (\ref{eqn:Landing:Airborne:C}) and populates the fields~\lstinline[language=Java]!sApproach! and~\lstinline[language=Java]!sFlare! with the calculated distances. Furthermore it begin to fill the~\lstinline[language=Java]!speed!,~\lstinline[language=Java]!landingDistance! and~\lstinline[language=Java]!verticalDistance! \gls{List}s in order to allow the plot of the trajecroty and the speed during the whole landing phase.
+The first calculation method is~\lstinline[language=Java]!calculateAirborneDistance! which implements equations (\ref{eqn:Landing:Airborne:A}), (\ref{eqn:Landing:Airborne:B}) and (\ref{eqn:Landing:Airborne:C}) and populates the fields~\lstinline[language=Java]!sApproach! and~\lstinline[language=Java]!sFlare! with the calculated distances. Furthermore it begin to fill the~\lstinline[language=Java]!speed!,~\lstinline[language=Java]!landingDistance! and~\lstinline[language=Java]!verticalDistance! \gls{List}s in order to allow the plot of the trajectory and the speed during the whole landing phase.
 
 \bigskip
 \noindent
-The second calculation method is~\lstinline[language=Java]!calculateGroundRollLandingODE!, which shares the same architecture of the method~\lstinline[language=Java]!calculateTakeOffDistanceODE! and accepts as input a~\lstinline[language=Java]!double! value, named~\lstinline[language=Java]!phiRev!, which represents the percentage of the thrust, calculated from the engine database, to be be used as reverese thrust in eqaution (\ref{eq:Take:Off:System:Dynamics:RHS:functions:B}). The~\lstinline[language=Java]!FirstOrderIntegrator! is still the~\lstinline[language=Java]!HighamHall54Integrator!, while the~\lstinline[language=Java]!FirstOrderDifferentialEquations! implementation is an instance of the nested class~\lstinline[language=Java]!DynamicsEquationsLanding! defined in the same way of the take-off class.
+The second calculation method is~\lstinline[language=Java]!calculateGroundRollLandingODE!, which shares the same architecture of the method~\lstinline[language=Java]!calculateTakeOffDistanceODE! and accepts as input a~\lstinline[language=Java]!double! value, named~\lstinline[language=Java]!phiRev!, which represents the percentage of the thrust, calculated from the engine database, to be be used as reverse thrust in equation (\ref{eq:Take:Off:System:Dynamics:RHS:functions:B}). The~\lstinline[language=Java]!FirstOrderIntegrator! is still the~\lstinline[language=Java]!HighamHall54Integrator!, while the~\lstinline[language=Java]!FirstOrderDifferentialEquations! implementation is an instance of the nested class~\lstinline[language=Java]!DynamicsEquationsLanding! defined in the same way of the take-off class.
 
 \bigskip
 \noindent
-In order to manage the only significant event, which is when the aircraft reaches a speed equal to zero, only one~\lstinline[language=Java]!EventHandler! has been implemented following the structure of \lstinline[language=Java]!ehCheckStop! defined for the aborted take-off run. Moreover all the physical quantities related to the ground run are stored in the related \gls{List}s at every integragtion step using the an istance of the \gls{Interface} \lstinline[language=Java]!StepHandler!.
+In order to manage the only significant event, which is when the aircraft reaches a speed equal to zero, only one~\lstinline[language=Java]!EventHandler! has been implemented following the structure of \lstinline[language=Java]!ehCheckStop! defined for the aborted take-off run. Moreover all the physical quantities related to the ground run are stored in the related \gls{List}s at every integration step using the an instance of the \gls{Interface} \lstinline[language=Java]!StepHandler!.
 
 \bigskip
 \noindent
@@ -821,7 +821,7 @@ At this point all the preliminary steps are completed and it's possible to creat
 				);
 \end{lstlisting}
 %
-Now, regarding the take-off, if the user wants to perform a single calculation of the take-off distance, he can call the method \lstinline[language=Java]!calculateTakeOffDistanceODE!, specifing the condition he wants to analyze. The possible situations are resumed below, where \lstinline[language=Java]!vFailure! is an assigned \lstinline[language=Java]!Double! value.
+Now, regarding the take-off, if the user wants to perform a single calculation of the take-off distance, he can call the method \lstinline[language=Java]!calculateTakeOffDistanceODE!, specifying the condition he wants to analyze. The possible situations are resumed below, where \lstinline[language=Java]!vFailure! is an assigned \lstinline[language=Java]!Double! value.
 
 \bigskip
 \begin{lstlisting}[caption={Possible scenarios of calculation of the take-off distance}, captionpos=b, tabsize=2, label={lst:TakeOffScenarios}]
@@ -938,7 +938,7 @@ TOTAL LANDING DISTANCE = 1071.28655615338 m
 -----------------------------------------------------------
 \end{lstlisting}
 %
-As can be seen the take-off distance required in \gls{acr:AOE} condition is about $\SI{1302}{\meter}$, at the maximum take-off mass of $\SI{23063.579}{\kilogram}$ and at sea level in standard atmospheric conditions, within a time of about $\SI{33.75}{\second}$; while the \emph{balanced field lenght} is bigger than the AOE take-off distance of about the 30\%. Moreover the \emph{decision speed} $V_1$ is bigger than the stalling speed $V_s$ and lower than the rotation speed $V_{\text{Rot}}$ as required by the \gls{FAR}-25 from table \ref{tab:Take:Off:Speeds:FAR25}. These results are almost the same shown in the aircraft brochure available on the Internet, so that the calculation carried out results correct.
+As can be seen the take-off distance required in \gls{acr:AOE} condition is about $\SI{1302}{\meter}$, at the maximum take-off mass of $\SI{23063.579}{\kilogram}$ and at sea level in standard atmospheric conditions, within a time of about $\SI{33.75}{\second}$; while the \emph{balanced field length} is bigger than the \gls{acr:AOE} take-off distance of about the 30\%. Moreover the \emph{decision speed} $V_1$ is bigger than the stalling speed $V_s$ and lower than the rotation speed $V_{\text{Rot}}$ as required by the \gls{FAR}-25 from table \ref{tab:Take:Off:Speeds:FAR25}. These results are almost the same shown in the aircraft brochure available on the Internet, so that the calculation carried out results correct.
 
 \bigskip
 \noindent
@@ -946,7 +946,7 @@ Regarding the landing test, the results obtained show that, at a maximum landing
 
 \bigskip
 \noindent
-Finally, with reference to the landing charts at the end of the chapter (from figure \ref{fig:Landing1} to \ref{fig:LandingEnd}), the reader can easly recognize the effect of the reverse thrust upon the landing distance; in particular, in case of \lstinline[language=Java]!phiRev!=0.25, the deceleration is bigger so that the speed decreases faster making the total landing distance shorter. It has also to be noted that during the air run, the speed is assumed to be constant during the approach phase for then decrease, with a linear trend, from the $V_A$ to the $V_{\text{TD}}$ during the flare phase. 
+Finally, with reference to the landing charts at the end of the chapter (from figure \ref{fig:Landing1} to \ref{fig:LandingEnd}), the reader can easily recognize the effect of the reverse thrust upon the landing distance; in particular, in case of \lstinline[language=Java]!phiRev!=0.25, the deceleration is bigger so that the speed decreases faster making the total landing distance shorter. It has also to be noted that during the air run, the speed is assumed to be constant during the approach phase for then decrease, with a linear trend, from the $V_A$ to the $V_{\text{TD}}$ during the flare phase. 
 %
 \clearpage
 %
@@ -956,73 +956,73 @@ Finally, with reference to the landing charts at the end of the chapter (from fi
 \begin{figure}[H]
 \centering
 \includegraphics[keepaspectratio, width=1.1\textwidth]{TakeOff_Trajectory_AOE}
-\caption{Take-off trajectory in AOE condition - ATR-72}
+\caption{Take-off trajectory in \gls{acr:AOE} condition - ATR-72}
 \end{figure}
 %
 \begin{figure}[H]
 \centering
 \includegraphics[keepaspectratio, width=1.1\textwidth]{Altitude_evolution_AOE}
-\caption{Altitude evolution in AOE condition - ATR-72}
+\caption{Altitude evolution in \gls{acr:AOE} condition - ATR-72}
 \end{figure}
 %
 \begin{figure}[H]
 \centering
 \includegraphics[keepaspectratio, width=1.1\textwidth]{TakeOff_Trajectory_OEI}
-\caption{Take-off trajectory in OEI condition - ATR-72}
+\caption{Take-off trajectory in \gls{acr:OEI} condition - ATR-72}
 \end{figure}
 %
 \begin{figure}[H]
 \centering
 \includegraphics[keepaspectratio, width=1.1\textwidth]{Altitude_evolution_OEI}
-\caption{Altitude evolution in OEI condition - ATR-72}
+\caption{Altitude evolution in \gls{acr:OEI} condition - ATR-72}
 \end{figure}
 %
 \begin{figure}[H]
 \centering
 \includegraphics[keepaspectratio, width=1.1\textwidth]{AngularVelocity_vs_GroundDistance_AOE}
-\caption{Angular velocities v.s. ground distance in AOE condition - ATR-72}
+\caption{Angular velocities v.s. ground distance in \gls{acr:AOE} condition - ATR-72}
 \end{figure}
 %
 \begin{figure}[H]
 \centering
 \includegraphics[keepaspectratio, width=1.1\textwidth]{Angles_vs_GroundDistance_AOE}
-\caption{Angles v.s. grpund distance in AOE condition - ATR-72}
+\caption{Angles v.s. ground distance in \gls{acr:AOE} condition - ATR-72}
 \end{figure}
 %
 \begin{figure}[H]
 \centering
 \includegraphics[keepaspectratio, width=1.1\textwidth]{CL_vs_GroundDistance_AOE}
-\caption{$C_L$ v.s. ground distance in AOE condition - ATR-72}
+\caption{$C_L$ v.s. ground distance in \gls{acr:AOE} condition - ATR-72}
 \end{figure}
 %
 \begin{figure}[H]
 \centering
 \includegraphics[keepaspectratio, width=1.1\textwidth]{AngularVelocity_vs_GroundDistance_OEI}
-\caption{Angular velocities v.s. ground distance in OEI condition - ATR-72}
+\caption{Angular velocities v.s. ground distance in \gls{acr:OEI} condition - ATR-72}
 \end{figure}
 %
 \begin{figure}[H]
 \centering
 \includegraphics[keepaspectratio, width=1.05\textwidth]{Angles_vs_GroundDistance_OEI}
-\caption{Angles v.s. ground distance in OEI condition - ATR-72}
+\caption{Angles v.s. ground distance in \gls{acr:OEI} condition - ATR-72}
 \end{figure}
 %
 \begin{figure}[H]
 \centering
 \includegraphics[keepaspectratio, width=1.1\textwidth]{CL_vs_GroundDistance_OEI}
-\caption{$C_L$ v.s. ground distance in OEI condition - ATR-72}
+\caption{$C_L$ v.s. ground distance in \gls{acr:OEI} condition - ATR-72}
 \end{figure}
 %
 \begin{figure}[!t]
 \centering
 \includegraphics[keepaspectratio, width=1.1\textwidth]{RateOfClimb_vs_GroundDistance_AOE}
-\caption{Rate of climb in AOE condition - ATR-72}
+\caption{Rate of climb in \gls{acr:AOE} condition - ATR-72}
 \end{figure}
 %
 \begin{figure}[!b]
 \centering
 \includegraphics[keepaspectratio, width=1.1\textwidth]{RateOfClimb_vs_GroundDistance_OEI}
-\caption{Rate of climb in OEI condition - ATR-72}
+\caption{Rate of climb in \gls{acr:OEI} condition - ATR-72}
 \end{figure}
 %
 \clearpage
@@ -1030,13 +1030,13 @@ Finally, with reference to the landing charts at the end of the chapter (from fi
 \begin{figure}[H]
 \centering
 \includegraphics[keepaspectratio, width=1.07\textwidth]{LoadFactor_vs_GroundDistance_AOE}
-\caption{Load factor in AOE condition - ATR-72}
+\caption{Load factor in \gls{acr:AOE} condition - ATR-72}
 \end{figure}
 %
 \begin{figure}[H]
 \centering
 \includegraphics[keepaspectratio, width=1.07\textwidth]{LoadFactor_vs_GroundDistance_OEI}
-\caption{Load factor in OEI condition - ATR-72}
+\caption{Load factor in \gls{acr:OEI} condition - ATR-72}
 \end{figure}
 %
 \begin{figure}[H]
@@ -1048,13 +1048,13 @@ Finally, with reference to the landing charts at the end of the chapter (from fi
 \begin{figure}[H]
 \centering
 \includegraphics[keepaspectratio, width=1.1\textwidth]{VerticalForces_vs_GroundDistance_AOE}
-\caption{Vertical forces in AOE condition - ATR-72}
+\caption{Vertical forces in \gls{acr:AOE} condition - ATR-72}
 \end{figure}
 %
 \begin{figure}[H]
 \centering
 \includegraphics[keepaspectratio, width=1.1\textwidth]{VerticalForces_vs_GroundDistance_OEI}
-\caption{Vertical forces in OEI condition - ATR-72}
+\caption{Vertical forces in \gls{acr:OEI} condition - ATR-72}
 \end{figure}
 %
 \begin{figure}[H]
@@ -1066,13 +1066,13 @@ Finally, with reference to the landing charts at the end of the chapter (from fi
 \begin{figure}[H]
 \centering
 \includegraphics[keepaspectratio, width=1.1\textwidth]{HorizontalForces_vs_GroundDistance_AOE}
-\caption{Horizontal forces in AOE condition - ATR-72}
+\caption{Horizontal forces in \gls{acr:AOE} condition - ATR-72}
 \end{figure}
 %
 \begin{figure}[H]
 \centering
 \includegraphics[keepaspectratio, width=1.1\textwidth]{HorizontalForces_vs_GroundDistance_OEI}
-\caption{Horizontal forces in OEI condition - ATR-72}
+\caption{Horizontal forces in \gls{acr:OEI} condition - ATR-72}
 \end{figure}
 %
 \begin{figure}[H]
@@ -1084,7 +1084,7 @@ Finally, with reference to the landing charts at the end of the chapter (from fi
 \begin{figure}[H]
 \centering
 \input{images/Acceleration_vs_GroundDistance_AOE.tikz}
-\caption{Acceleration v.s. ground distance in AOE condition - ATR-72}
+\caption{Acceleration v.s. ground distance in \gls{acr:AOE} condition - ATR-72}
 \end{figure}
 %
 \begin{figure}[H]
@@ -1102,13 +1102,13 @@ Finally, with reference to the landing charts at the end of the chapter (from fi
 \begin{figure}[H]
 \centering
 \includegraphics[keepaspectratio, width=1.1\textwidth]{Speed_vs_GroundDistance_AOE}
-\caption{Speed v.s. ground distance in AOE condition - ATR-72}
+\caption{Speed v.s. ground distance in \gls{acr:AOE} condition - ATR-72}
 \end{figure}
 %
 \begin{figure}[H]
 \centering
 \includegraphics[keepaspectratio, width=1.1\textwidth]{Speed_vs_GroundDistance_OEI}
-\caption{Speed v.s. ground distance in OEI condition - ATR-72}
+\caption{Speed v.s. ground distance in \gls{acr:OEI} condition - ATR-72}
 \end{figure}
 %
 \begin{figure}[H]
@@ -1124,7 +1124,7 @@ Finally, with reference to the landing charts at the end of the chapter (from fi
 \end{figure}
 %
 \noindent
-In conclusion of the take-off analysis, it's useful to highlight the effects that $k_{\alpha}$ and $\alpha_{\text{red}}$ have on the take-off run. The first one influences the rotation phase making the pilot's manouver faster as it grows; in particular, from figure \ref{fig:kAlphaEffects}, a faster rotation manouver makes $\alpha$ to rise faster reaching the limit angle (related to the $C_L$ limitation imposed) before with the effect of having a high drag for more time so that the take-off run is longer. The second parameter influences the airborne phase making the reduction in angle of attack faster as it grows; the result is that the load factor reaches the value of 1 later (eventually never) and so the rate of climb is higher making the airborne phase to be shorter with a lower value of the take-off run (see figures \ref{fig:CLAlphaRED}, \ref{fig:LoadFactorAlphaRED} and \ref{fig:RateOfClimbAlphaRED}).
+In conclusion of the take-off analysis, it's useful to highlight the effects that $k_{\alpha}$ and $\alpha_{\text{red}}$ have on the take-off run. The first one influences the rotation phase making the pilot's maneuver faster as it grows; in particular, from figure \ref{fig:kAlphaEffects}, a faster rotation maneuver makes $\alpha$ to rise faster reaching the limit angle (related to the $C_L$ limitation imposed) before with the effect of having a high drag for more time so that the take-off run is longer. The second parameter influences the airborne phase making the reduction in angle of attack faster as it grows; the result is that the load factor reaches the value of 1 later (eventually never) and so the rate of climb is higher making the airborne phase to be shorter with a lower value of the take-off run (see figures \ref{fig:CLAlphaRED}, \ref{fig:LoadFactorAlphaRED} and \ref{fig:RateOfClimbAlphaRED}).
 %
 \begin{figure}[!b]
 \centering

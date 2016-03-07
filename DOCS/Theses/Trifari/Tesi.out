@@ -34,7 +34,7 @@
 \BOOKMARK [0][-]{chapter.5}{Take-off and Landing performance}{}% 34
 \BOOKMARK [1][-]{section.5.1}{Theoretical background}{chapter.5}% 35
 \BOOKMARK [2][-]{subsection.5.1.1}{acr:AOE take-off run}{section.5.1}% 36
-\BOOKMARK [2][-]{subsection.5.1.2}{acr:OEI take-off run and balanced field lenght}{section.5.1}% 37
+\BOOKMARK [2][-]{subsection.5.1.2}{acr:OEI take-off run and balanced field length}{section.5.1}% 37
 \BOOKMARK [2][-]{subsection.5.1.3}{Landing distance calculation}{section.5.1}% 38
 \BOOKMARK [1][-]{section.5.2}{Java class architecture}{chapter.5}% 39
 \BOOKMARK [2][-]{subsection.5.2.1}{Take-Off}{section.5.2}% 40

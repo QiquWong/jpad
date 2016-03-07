@@ -2,6 +2,7 @@ package aircraft.components.liftingSurface.adm;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
@@ -50,8 +51,13 @@ public abstract class AbstractLiftingSurface implements ILiftingSurface {
 	//=======================================================================
 
 	MyArray _eta;
+
 	List<Amount<Length>> _yBreakPoints;
-	MyArray _yStationActual;
+
+	Map<LiftingSurfacePanel, List<Amount<Length>>> _panelToYStations;
+
+	List<Amount<Length>> _yStationActual; // MyArray _yStationActual;
+
 	MyArray _chordsVsYActual;
 	MyArray _xLEvsYActual;
 	MyArray _xTEvsYActual;
