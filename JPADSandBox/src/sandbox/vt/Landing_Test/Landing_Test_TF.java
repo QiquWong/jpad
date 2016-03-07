@@ -375,7 +375,7 @@ public class Landing_Test_TF {
 		theLandingCalculator.calculateLandingDistance(phiRev);
 		_stopTimeCalculation = System.currentTimeMillis();
 		_startTimeGraph = System.currentTimeMillis();
-		theLandingCalculator.createGroundRollCharts();
+		theLandingCalculator.createLandingCharts();
 		_stopTimeGraph = System.currentTimeMillis();
 		_stopTimeTotal = System.currentTimeMillis();
 

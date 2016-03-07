@@ -16,6 +16,7 @@ import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.DatabaseReaderEnum;
 import javafx.util.Pair;
+import writers.JPADChartWriter;
 import writers.JPADDataWriter;
 import writers.JPADWriteUtils;
 
@@ -83,8 +84,8 @@ public class Test_AGILE_DC1_01 {
 				aircraft, 
 				theAnalysis);
 
-//		_theWriteCharts = new MyChartWriter(aircraft);
-//		_theWriteCharts.createCharts();
+		JPADChartWriter _theWriteCharts = new JPADChartWriter(aircraft);
+		_theWriteCharts.createCharts();
 
 		// +++++++++++++++++++++++++++++++++++++++++++++++
 		// STATIC FUNCTIONS - TO BE CALLED BEFORE WRITING CUSTOM XML FILES

@@ -455,7 +455,7 @@ public class CalcTakeOff {
 				1e-17,
 				1e-17
 				);
-		FirstOrderDifferentialEquations ode = new DynamicsEquationsLanding();
+		FirstOrderDifferentialEquations ode = new DynamicsEquationsTakeOff();
 
 		EventHandler ehCheckFailure = new EventHandler() {
 
@@ -792,13 +792,13 @@ public class CalcTakeOff {
 							((CalcTakeOff.this.getcL().get(CalcTakeOff.this.getcL().size()-2) < kcLMax*cLmaxTO))) {
 						System.out.println("\n\t\tBEGIN BAR HOLDING");
 						System.out.println(
-								"\n\tCL = " + ((DynamicsEquationsLanding)ode).cL(
+								"\n\tCL = " + ((DynamicsEquationsTakeOff)ode).cL(
 										x[1],
-										((DynamicsEquationsLanding)ode).alpha,
+										((DynamicsEquationsTakeOff)ode).alpha,
 										x[2],
 										t
 										) + 
-								"\n\tAlpha Body = " + ((DynamicsEquationsLanding)ode).alpha + " °" + 
+								"\n\tAlpha Body = " + ((DynamicsEquationsTakeOff)ode).alpha + " °" + 
 								"\n\tt = " + t + " s"
 								);
 						System.out.println("\n---------------------------DONE!-------------------------------");
@@ -830,13 +830,13 @@ public class CalcTakeOff {
 				// THRUST:
 				if(!isAborted)
 					CalcTakeOff.this.getThrust().add(Amount.valueOf(
-							((DynamicsEquationsLanding)ode).thrust(x[1], x[2], t),
+							((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t),
 							SI.NEWTON)
 							);
 				else {
 					if(t < tRec.getEstimatedValue())
 						CalcTakeOff.this.getThrust().add(Amount.valueOf(
-								((DynamicsEquationsLanding)ode).thrust(x[1], x[2], t),
+								((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t),
 								SI.NEWTON)
 								);
 					else
@@ -849,9 +849,9 @@ public class CalcTakeOff {
 				// THRUST HORIZONTAL:
 				if(!isAborted)
 					CalcTakeOff.this.getThrustHorizontal().add(Amount.valueOf(
-							((DynamicsEquationsLanding)ode).thrust(x[1], x[2], t)*Math.cos(
+							((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
 									Amount.valueOf(
-											((DynamicsEquationsLanding)ode).alpha,
+											((DynamicsEquationsTakeOff)ode).alpha,
 											NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
 									),
 							SI.NEWTON)
@@ -859,9 +859,9 @@ public class CalcTakeOff {
 				else {
 					if(t < tRec.getEstimatedValue())
 						CalcTakeOff.this.getThrustHorizontal().add(Amount.valueOf(
-								((DynamicsEquationsLanding)ode).thrust(x[1], x[2], t)*Math.cos(
+								((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
 										Amount.valueOf(
-												((DynamicsEquationsLanding)ode).alpha,
+												((DynamicsEquationsTakeOff)ode).alpha,
 												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
 										),
 								SI.NEWTON)
@@ -876,9 +876,9 @@ public class CalcTakeOff {
 				// THRUST VERTICAL:
 				if(!isAborted)
 					CalcTakeOff.this.getThrustVertical().add(Amount.valueOf(
-							((DynamicsEquationsLanding)ode).thrust(x[1], x[2], t)*Math.sin(
+							((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.sin(
 									Amount.valueOf(
-											((DynamicsEquationsLanding)ode).alpha,
+											((DynamicsEquationsTakeOff)ode).alpha,
 											NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
 									),
 							SI.NEWTON)
@@ -886,9 +886,9 @@ public class CalcTakeOff {
 				else {
 					if(t < tRec.getEstimatedValue())
 						CalcTakeOff.this.getThrustVertical().add(Amount.valueOf(
-								((DynamicsEquationsLanding)ode).thrust(x[1], x[2], t)*Math.sin(
+								((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.sin(
 										Amount.valueOf(
-												((DynamicsEquationsLanding)ode).alpha,
+												((DynamicsEquationsTakeOff)ode).alpha,
 												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
 										),
 								SI.NEWTON)
@@ -905,10 +905,10 @@ public class CalcTakeOff {
 					if(t < tEndRot.getEstimatedValue())
 						CalcTakeOff.this.getFriction().add(Amount.valueOf(
 								CalcTakeOff.this.getMu()
-								*(((DynamicsEquationsLanding)ode).weight
-										- ((DynamicsEquationsLanding)ode).lift(
+								*(((DynamicsEquationsTakeOff)ode).weight
+										- ((DynamicsEquationsTakeOff)ode).lift(
 												x[1],
-												((DynamicsEquationsLanding)ode).alpha,
+												((DynamicsEquationsTakeOff)ode).alpha,
 												x[2],
 												t)),
 								SI.NEWTON)
@@ -920,10 +920,10 @@ public class CalcTakeOff {
 					if(t < tRec.getEstimatedValue())
 						CalcTakeOff.this.getFriction().add(Amount.valueOf(
 								CalcTakeOff.this.getMu()
-								*(((DynamicsEquationsLanding)ode).weight
-										- ((DynamicsEquationsLanding)ode).lift(
+								*(((DynamicsEquationsTakeOff)ode).weight
+										- ((DynamicsEquationsTakeOff)ode).lift(
 												x[1],
-												((DynamicsEquationsLanding)ode).alpha,
+												((DynamicsEquationsTakeOff)ode).alpha,
 												x[2],
 												t)),
 								SI.NEWTON)
@@ -931,10 +931,10 @@ public class CalcTakeOff {
 					else
 						CalcTakeOff.this.getFriction().add(Amount.valueOf(
 								CalcTakeOff.this.getMuBrake()
-								*(((DynamicsEquationsLanding)ode).weight
-										- ((DynamicsEquationsLanding)ode).lift(
+								*(((DynamicsEquationsTakeOff)ode).weight
+										- ((DynamicsEquationsTakeOff)ode).lift(
 												x[1],
-												((DynamicsEquationsLanding)ode).alpha,
+												((DynamicsEquationsTakeOff)ode).alpha,
 												x[2],
 												t)),
 								SI.NEWTON)
@@ -943,9 +943,9 @@ public class CalcTakeOff {
 				//----------------------------------------------------------------------------------------
 				// LIFT:
 				CalcTakeOff.this.getLift().add(Amount.valueOf(
-						((DynamicsEquationsLanding)ode).lift(
+						((DynamicsEquationsTakeOff)ode).lift(
 								x[1],
-								((DynamicsEquationsLanding)ode).alpha,
+								((DynamicsEquationsTakeOff)ode).alpha,
 								x[2],
 								t),
 						SI.NEWTON)
@@ -953,9 +953,9 @@ public class CalcTakeOff {
 				//----------------------------------------------------------------------------------------
 				// DRAG:
 				CalcTakeOff.this.getDrag().add(Amount.valueOf(
-						((DynamicsEquationsLanding)ode).drag(
+						((DynamicsEquationsTakeOff)ode).drag(
 								x[1],
-								((DynamicsEquationsLanding)ode).alpha,
+								((DynamicsEquationsTakeOff)ode).alpha,
 								x[2],
 								t),
 						SI.NEWTON)
@@ -964,23 +964,23 @@ public class CalcTakeOff {
 				// TOTAL FORCE:
 				if(!isAborted) {
 					CalcTakeOff.this.getTotalForce().add(Amount.valueOf(
-							((DynamicsEquationsLanding)ode).thrust(x[1], x[2], t)*Math.cos(
+							((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
 									Amount.valueOf(
-											((DynamicsEquationsLanding)ode).alpha,
+											((DynamicsEquationsTakeOff)ode).alpha,
 											NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
 									)
-							- ((DynamicsEquationsLanding)ode).drag(
+							- ((DynamicsEquationsTakeOff)ode).drag(
 									x[1],
-									((DynamicsEquationsLanding)ode).alpha,
+									((DynamicsEquationsTakeOff)ode).alpha,
 									x[2],
 									t)
-							- CalcTakeOff.this.getMu()*(((DynamicsEquationsLanding)ode).weight
-									- ((DynamicsEquationsLanding)ode).lift(
+							- CalcTakeOff.this.getMu()*(((DynamicsEquationsTakeOff)ode).weight
+									- ((DynamicsEquationsTakeOff)ode).lift(
 											x[1],
-											((DynamicsEquationsLanding)ode).alpha,
+											((DynamicsEquationsTakeOff)ode).alpha,
 											x[2],
 											t))
-							- ((DynamicsEquationsLanding)ode).weight*Math.sin(
+							- ((DynamicsEquationsTakeOff)ode).weight*Math.sin(
 									Amount.valueOf(
 											x[2],
 											NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()),
@@ -990,23 +990,23 @@ public class CalcTakeOff {
 				else {
 					if(t < tRec.getEstimatedValue())
 						CalcTakeOff.this.getTotalForce().add(Amount.valueOf(
-								((DynamicsEquationsLanding)ode).thrust(x[1], x[2], t)*Math.cos(
+								((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
 										Amount.valueOf(
-												((DynamicsEquationsLanding)ode).alpha,
+												((DynamicsEquationsTakeOff)ode).alpha,
 												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
 										)
-								- ((DynamicsEquationsLanding)ode).drag(
+								- ((DynamicsEquationsTakeOff)ode).drag(
 										x[1],
-										((DynamicsEquationsLanding)ode).alpha,
+										((DynamicsEquationsTakeOff)ode).alpha,
 										x[2],
 										t)
-								- CalcTakeOff.this.getMu()*(((DynamicsEquationsLanding)ode).weight
-										- ((DynamicsEquationsLanding)ode).lift(
+								- CalcTakeOff.this.getMu()*(((DynamicsEquationsTakeOff)ode).weight
+										- ((DynamicsEquationsTakeOff)ode).lift(
 												x[1],
-												((DynamicsEquationsLanding)ode).alpha,
+												((DynamicsEquationsTakeOff)ode).alpha,
 												x[2],
 												t))
-								- ((DynamicsEquationsLanding)ode).weight*Math.sin(
+								- ((DynamicsEquationsTakeOff)ode).weight*Math.sin(
 										Amount.valueOf(
 												x[2],
 												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()),
@@ -1014,18 +1014,18 @@ public class CalcTakeOff {
 								);
 					else
 						CalcTakeOff.this.getTotalForce().add(Amount.valueOf(
-								- ((DynamicsEquationsLanding)ode).drag(
+								- ((DynamicsEquationsTakeOff)ode).drag(
 										x[1],
-										((DynamicsEquationsLanding)ode).alpha,
+										((DynamicsEquationsTakeOff)ode).alpha,
 										x[2],
 										t)
-								- CalcTakeOff.this.getMuBrake()*(((DynamicsEquationsLanding)ode).weight
-										- ((DynamicsEquationsLanding)ode).lift(
+								- CalcTakeOff.this.getMuBrake()*(((DynamicsEquationsTakeOff)ode).weight
+										- ((DynamicsEquationsTakeOff)ode).lift(
 												x[1],
-												((DynamicsEquationsLanding)ode).alpha,
+												((DynamicsEquationsTakeOff)ode).alpha,
 												x[2],
 												t))
-								- ((DynamicsEquationsLanding)ode).weight*Math.sin(
+								- ((DynamicsEquationsTakeOff)ode).weight*Math.sin(
 										Amount.valueOf(
 												x[2],
 												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()),
@@ -1035,12 +1035,12 @@ public class CalcTakeOff {
 				//----------------------------------------------------------------------------------------
 				// LOAD FACTOR:
 				CalcTakeOff.this.getLoadFactor().add(
-						((DynamicsEquationsLanding)ode).lift(
+						((DynamicsEquationsTakeOff)ode).lift(
 								x[1],
-								((DynamicsEquationsLanding)ode).alpha,
+								((DynamicsEquationsTakeOff)ode).alpha,
 								x[2],
 								t)
-						/(((DynamicsEquationsLanding)ode).weight*Math.cos(
+						/(((DynamicsEquationsTakeOff)ode).weight*Math.cos(
 								Amount.valueOf(
 										x[2],
 										NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
@@ -1058,24 +1058,24 @@ public class CalcTakeOff {
 				// ACCELERATION:
 				if(!isAborted)
 					CalcTakeOff.this.getAcceleration().add(Amount.valueOf(
-							(AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquationsLanding)ode).weight)
-							*(((DynamicsEquationsLanding)ode).thrust(x[1], x[2], t)*Math.cos(
+							(AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquationsTakeOff)ode).weight)
+							*(((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
 									Amount.valueOf(
-											((DynamicsEquationsLanding)ode).alpha,
+											((DynamicsEquationsTakeOff)ode).alpha,
 											NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
 									)
-									- ((DynamicsEquationsLanding)ode).drag(
+									- ((DynamicsEquationsTakeOff)ode).drag(
 											x[1],
-											((DynamicsEquationsLanding)ode).alpha,
+											((DynamicsEquationsTakeOff)ode).alpha,
 											x[2],
 											t)
-									- CalcTakeOff.this.getMu()*(((DynamicsEquationsLanding)ode).weight
-											- ((DynamicsEquationsLanding)ode).lift(
+									- CalcTakeOff.this.getMu()*(((DynamicsEquationsTakeOff)ode).weight
+											- ((DynamicsEquationsTakeOff)ode).lift(
 													x[1],
-													((DynamicsEquationsLanding)ode).alpha,
+													((DynamicsEquationsTakeOff)ode).alpha,
 													x[2],
 													t))
-									- ((DynamicsEquationsLanding)ode).weight*Math.sin(
+									- ((DynamicsEquationsTakeOff)ode).weight*Math.sin(
 											Amount.valueOf(
 													x[2],
 													NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue())),
@@ -1084,24 +1084,24 @@ public class CalcTakeOff {
 				else {
 					if(t < tRec.getEstimatedValue())
 						CalcTakeOff.this.getAcceleration().add(Amount.valueOf(
-								(AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquationsLanding)ode).weight)
-								*(((DynamicsEquationsLanding)ode).thrust(x[1], x[2], t)*Math.cos(
+								(AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquationsTakeOff)ode).weight)
+								*(((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
 										Amount.valueOf(
-												((DynamicsEquationsLanding)ode).alpha,
+												((DynamicsEquationsTakeOff)ode).alpha,
 												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
 										)
-										- ((DynamicsEquationsLanding)ode).drag(
+										- ((DynamicsEquationsTakeOff)ode).drag(
 												x[1],
-												((DynamicsEquationsLanding)ode).alpha,
+												((DynamicsEquationsTakeOff)ode).alpha,
 												x[2],
 												t)
-										- CalcTakeOff.this.getMu()*(((DynamicsEquationsLanding)ode).weight
-												- ((DynamicsEquationsLanding)ode).lift(
+										- CalcTakeOff.this.getMu()*(((DynamicsEquationsTakeOff)ode).weight
+												- ((DynamicsEquationsTakeOff)ode).lift(
 														x[1],
-														((DynamicsEquationsLanding)ode).alpha,
+														((DynamicsEquationsTakeOff)ode).alpha,
 														x[2],
 														t))
-										- ((DynamicsEquationsLanding)ode).weight*Math.sin(
+										- ((DynamicsEquationsTakeOff)ode).weight*Math.sin(
 												Amount.valueOf(
 														x[2],
 														NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue())),
@@ -1109,19 +1109,19 @@ public class CalcTakeOff {
 								);
 					else
 						CalcTakeOff.this.getAcceleration().add(Amount.valueOf(
-								(AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquationsLanding)ode).weight)
-								*(- ((DynamicsEquationsLanding)ode).drag(
+								(AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquationsTakeOff)ode).weight)
+								*(- ((DynamicsEquationsTakeOff)ode).drag(
 										x[1],
-										((DynamicsEquationsLanding)ode).alpha,
+										((DynamicsEquationsTakeOff)ode).alpha,
 										x[2],
 										t)
-										- CalcTakeOff.this.getMuBrake()*(((DynamicsEquationsLanding)ode).weight
-												- ((DynamicsEquationsLanding)ode).lift(
+										- CalcTakeOff.this.getMuBrake()*(((DynamicsEquationsTakeOff)ode).weight
+												- ((DynamicsEquationsTakeOff)ode).lift(
 														x[1],
-														((DynamicsEquationsLanding)ode).alpha,
+														((DynamicsEquationsTakeOff)ode).alpha,
 														x[2],
 														t))
-										- ((DynamicsEquationsLanding)ode).weight*Math.sin(
+										- ((DynamicsEquationsTakeOff)ode).weight*Math.sin(
 												Amount.valueOf(
 														x[2],
 														NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue())),
@@ -1143,7 +1143,7 @@ public class CalcTakeOff {
 				//----------------------------------------------------------------------------------------
 				// ALPHA:
 				CalcTakeOff.this.getAlpha().add(Amount.valueOf(
-						((DynamicsEquationsLanding)ode).alpha,
+						((DynamicsEquationsTakeOff)ode).alpha,
 						NonSI.DEGREE_ANGLE)
 						);
 				//----------------------------------------------------------------------------------------
@@ -1155,7 +1155,7 @@ public class CalcTakeOff {
 				//----------------------------------------------------------------------------------------
 				// ALPHA DOT:
 				CalcTakeOff.this.getAlphaDot().add(
-						((DynamicsEquationsLanding)ode).alphaDot(t)
+						((DynamicsEquationsTakeOff)ode).alphaDot(t)
 						); 
 				//----------------------------------------------------------------------------------------
 				// GAMMA DOT:
@@ -1163,33 +1163,33 @@ public class CalcTakeOff {
 					CalcTakeOff.this.getGammaDot().add(0.0);
 				else
 					CalcTakeOff.this.getGammaDot().add(57.3*(AtmosphereCalc.g0.getEstimatedValue()/
-							(((DynamicsEquationsLanding)ode).weight*x[1]))*(
-									((DynamicsEquationsLanding)ode).lift(
+							(((DynamicsEquationsTakeOff)ode).weight*x[1]))*(
+									((DynamicsEquationsTakeOff)ode).lift(
 											x[1],
-											((DynamicsEquationsLanding)ode).alpha,
+											((DynamicsEquationsTakeOff)ode).alpha,
 											x[2],
 											t) 
-									+ (((DynamicsEquationsLanding)ode).thrust(x[1], x[2], t)*Math.sin(Amount.valueOf(
-											((DynamicsEquationsLanding)ode).alpha,
+									+ (((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.sin(Amount.valueOf(
+											((DynamicsEquationsTakeOff)ode).alpha,
 											NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue())
 											)
-									- ((DynamicsEquationsLanding)ode).weight*Math.cos(Amount.valueOf(
-											((DynamicsEquationsLanding)ode).gamma,
+									- ((DynamicsEquationsTakeOff)ode).weight*Math.cos(Amount.valueOf(
+											((DynamicsEquationsTakeOff)ode).gamma,
 											NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
 											))
 							);
 				//----------------------------------------------------------------------------------------
 				// THETA:
 				CalcTakeOff.this.getTheta().add(Amount.valueOf(
-						x[2] + ((DynamicsEquationsLanding)ode).alpha,
+						x[2] + ((DynamicsEquationsTakeOff)ode).alpha,
 						NonSI.DEGREE_ANGLE)
 						);
 				//----------------------------------------------------------------------------------------
 				// CL:
 				CalcTakeOff.this.getcL().add(
-						((DynamicsEquationsLanding)ode).cL(
+						((DynamicsEquationsTakeOff)ode).cL(
 								x[1],
-								((DynamicsEquationsLanding)ode).alpha,
+								((DynamicsEquationsTakeOff)ode).alpha,
 								x[2],
 								t
 								)
@@ -1197,17 +1197,17 @@ public class CalcTakeOff {
 				//----------------------------------------------------------------------------------------
 				// CD:
 				CalcTakeOff.this.getcD().add(
-						((DynamicsEquationsLanding)ode).cD0 
-						+ ((DynamicsEquationsLanding)ode).deltaCD0 
-						+ ((((DynamicsEquationsLanding)ode).cL(
+						((DynamicsEquationsTakeOff)ode).cD0 
+						+ ((DynamicsEquationsTakeOff)ode).deltaCD0 
+						+ ((((DynamicsEquationsTakeOff)ode).cL(
 								x[1],
-								((DynamicsEquationsLanding)ode).alpha,
+								((DynamicsEquationsTakeOff)ode).alpha,
 								x[2],
 								t
 								)
 								/(Math.PI
-										*((DynamicsEquationsLanding)ode).ar
-										*((DynamicsEquationsLanding)ode).oswald))
+										*((DynamicsEquationsTakeOff)ode).ar
+										*((DynamicsEquationsTakeOff)ode).oswald))
 								*kGround)
 						);
 				//----------------------------------------------------------------------------------------
@@ -1661,14 +1661,14 @@ public class CalcTakeOff {
 	// ODE integration
 	// see: https://commons.apache.org/proper/commons-math/userguide/ode.html
 
-	public class DynamicsEquationsLanding implements FirstOrderDifferentialEquations {
+	public class DynamicsEquationsTakeOff implements FirstOrderDifferentialEquations {
 
 		double weight, g0, mu, kAlpha, cD0, deltaCD0, oswald, ar, k1, k2, kGround, vWind, alphaDotInitial;
 
 		// visible variables
 		public double alpha, gamma;
 
-		public DynamicsEquationsLanding() {
+		public DynamicsEquationsTakeOff() {
 
 			// constants and known values
 			weight = aircraft.get_weights().get_MTOW().getEstimatedValue();

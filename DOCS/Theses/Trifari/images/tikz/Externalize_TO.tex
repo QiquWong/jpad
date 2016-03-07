@@ -1,122 +1,11 @@
-
-
 %------------------------------------------------PREAMBLE--------------------------------------------------
-%-----------------------------------------Units of measurements-------------------------------------------
-\usepackage{siunitx}
-\sisetup{
-  fixdp,dp=3,
-  load=derived,
-  unitsep=thin,
-  valuesep=thin,
-  decimalsymbol=comma,
-  % digitsep=thin,
-  % group-separator={},% ver. 2
-  % sepfour=false,
-  % round-mode = places,
-  % round-precision = 3
-}
-\input{_units}% load settings from ./_units.tex
-
-%--------------------------------------------------Float------------------------------------------------------
-\usepackage{float}
-   % I got this somewhere on the net:
-   \renewcommand{\textfraction}{0.15}
-   \renewcommand{\topfraction}{0.85}
-   \renewcommand{\bottomfraction}{0.65}
-   \renewcommand{\floatpagefraction}{0.60}
-
-\usepackage{morefloats}
-   
-\usepackage{placeins}
-
-\usepackage{caption}
-\captionsetup[figure]{
-    labelsep=space,%
-    font=small,labelfont={bf,sf,small},%
-    singlelinecheck=true%,%
-}
-\captionsetup[table]{
-    labelsep=space,%
-    font=small,labelfont={bf,sf,small},%bf,%
-    justification=raggedright,%
-    singlelinecheck=true,%
-    belowskip=0.5em%
-}
-\captionsetup[lstlisting]{
-    labelsep=space,%
-    font=small,labelfont={bf,sf,small},%
-    singlelinecheck=true%,%
-}
-
-\captionsetup[ctable]{
-    labelsep=space,%
-    font=small,labelfont={sf,bf,small},% bf
-    singlelinecheck=true,%
-    width=0.8\textwidth,%
-    belowskip=0.5em%
-}
-
-\usepackage{subcaption}% multiple figures in one floating object 
-\usepackage[innercaption,wide]{sidecap}
-
-%--------------------------------------------------Graph and related stuff------------------------------------------------------
-\usepackage{graphicx}
-\graphicspath{{images/}}
-\usepackage[export]{adjustbox}
-\usepackage{tikz}
-\usepackage{pgfplots}
-\pgfplotsset{compat=1.10}
-\usepackage{wrapfig}
-
-\newlength\figureheight
-\newlength\figurewidth
-\usepackage{relsize}
-\tikzset{
-	master/.style={
-		execute at end picture={
-			\coordinate (lower right) at (current bounding box.south east);
-			\coordinate (upper left) at (current bounding box.north west);
-		}
-	},
-	slave/.style={
-		execute at end picture={
-			\pgfresetboundingbox
-			\path (upper left) rectangle (lower right);
-		}
-	}
-}
-
-\usepackage{xcolor}
-\usepackage{color}
-
-\definecolor{black}{rgb}{0, 0, 0}
-\definecolor{pblue}{rgb}{0.13,0.13,1}
-\definecolor{pgreen}{rgb}{0,0.5,0}
-\definecolor{pred}{rgb}{0.9,0,0}
-\definecolor{pgrey}{rgb}{0.46,0.45,0.48}
-\definecolor{mydarkgreen}{rgb}{0.03,0.47,0.03}
-\definecolor{mydarkblue}{rgb}{0.07,0.08,0.4}
-\definecolor{mylightblue}{rgb}{.8, .8, 1}
-\definecolor{mylightgray}{rgb}{0.95,0.95,0.95}
-\definecolor{mymidgray}{rgb}{0.85,0.85,0.85}
-\definecolor{mydarkgray}{rgb}{0.35,0.35,0.35}
-\definecolor{myblue}{rgb}{.4,.4,1}
-\definecolor{colKeys}{rgb}{0,0,1}
-\definecolor{colIdentifier}{rgb}{0,0,0}
-\definecolor{colComments}{rgb}{0,0.5,1}
-\definecolor{colString}{rgb}{0.6,0.1,0.1}
-
-\usepackage{tikz}
-\usetikzlibrary{calc}
-\usetikzlibrary{positioning,trees,arrows}
-\usetikzlibrary{fpu}
-
-\usepackage{pgfplotstable}
+\input{_init}
+\documentclass[12pt,oneside]{book}
+\input{_preamble}
 
 %--------------------------------------------------Externalize------------------------------------------------------
-%\usepgfplotslibrary{external}
-%\tikzexternalize% activate externalization!
-
+\usepgfplotslibrary{external}
+\tikzexternalize% activate externalization!
 
 %------------------------------------------------DOCUMENT--------------------------------------------------
 \begin{document}
@@ -250,21 +139,21 @@
 %\end{figure}
 %%
 
-\begin{figure}
-\input{Acceleration_vs_GroundDistance_AOE.tikz}
-\caption{Speed v.s. ground distance in AOE condition - ATR-72}
-\end{figure}
+%\begin{figure}
+%\input{Acceleration_vs_GroundDistance_AOE.tikz}
+%\caption{Speed v.s. ground distance in AOE condition - ATR-72}
+%\end{figure}
+%%
+%\begin{figure}
+%\input{Acceleration_vs_GroundDistance_OEI.tikz}
+%\caption{Speed v.s. ground distance in AOE condition - ATR-72}
+%\end{figure}
+%%
+%\begin{figure}
+%\input{Acceleration_vs_GroundDistance_ABORTED.tikz}
+%\caption{Speed v.s. ground distance in AOE condition - ATR-72}
+%\end{figure}
 %
-\begin{figure}
-\input{Acceleration_vs_GroundDistance_OEI.tikz}
-\caption{Speed v.s. ground distance in AOE condition - ATR-72}
-\end{figure}
-%
-\begin{figure}
-\input{Acceleration_vs_GroundDistance_ABORTED.tikz}
-\caption{Speed v.s. ground distance in AOE condition - ATR-72}
-\end{figure}
-
 %\begin{figure}
 %\centering
 %\input{Speed_vs_GroundDistance_AOE.tikz}
@@ -286,6 +175,70 @@
 %
 %\begin{figure}
 %\input{BalancedTakeOffLength.tikz}
+%\end{figure}
+%%
+%\begin{figure}
+%\centering
+%\input{CL_vs_GroundDistance_AlphaRED.tikz}
+%\caption{Effect of $\alpha_{\text{red}}$ on the $C_L$ during the airborne phase - ATR-72}
+%\end{figure}
+%%
+%\begin{figure}
+%\centering
+%\input{LoadFactor_vs_GroundDistance_AlphaRED.tikz}
+%\caption{Effect of $\alpha_{\text{red}}$ on the load factor during the airborne phase - ATR-72}
+%\end{figure}
+%%
+%\begin{figure}
+%\centering
+%\input{RateOfClimb_vs_GroundDistance_AlphaRED.tikz}
+%\caption{Effect of $\alpha_{\text{red}}$ on the rate of climb during the airborne phase - ATR-72}
+%\end{figure}
+%%
+%\begin{figure}
+%\centering
+%\input{Angles_vs_GroundDistance_KAlpha.tikz}
+%\caption{Effect of $k_{\alpha}$ on the rotation phase - ATR-72}
+%\end{figure}
+%%
+\begin{figure}
+\centering
+\input{TrajectoryAndSpeed_vs_GroundDistance_LANDING.tikz}
+\end{figure}
+%
+\begin{figure}
+\centering
+\input{TrajectoryAndSpeed_vs_GroundDistance_LANDING_REV.tikz}
+\end{figure}
+%
+%\begin{figure}
+%\centering
+%\input{HorizontalForces_vs_GroundDistance_LANDING.tikz}
+%\end{figure}
+%%
+%\begin{figure}
+%\centering
+%\input{HorizontalForces_vs_GroundDistance_LANDING_REV.tikz}
+%\end{figure}
+%%
+%\begin{figure}
+%\centering
+%\input{Acceleration_vs_GroundDistance_LANDING.tikz}
+%\end{figure}
+%%
+%\begin{figure}
+%\centering
+%\input{Acceleration_vs_GroundDistance_LANDING_REV.tikz}
+%\end{figure}
+%%
+%\begin{figure}
+%\centering
+%\input{LoadFactor_vs_GroundDistance_LANDING.tikz}
+%\end{figure}
+%%
+%\begin{figure}
+%\centering
+%\input{LoadFactor_vs_GroundDistance_LANDING_REV.tikz}
 %\end{figure}
 %%
 \end{document}

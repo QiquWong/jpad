@@ -3,6 +3,8 @@ package aircraft.components.liftingSurface.adm;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +19,9 @@ import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 import javax.measure.unit.UnitFormat;
 
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.poi.util.SystemOutLogger;
 import org.jscience.physics.amount.Amount;
 import org.jscience.physics.amount.AmountFormat;
 import org.w3c.dom.Document;
@@ -35,7 +40,7 @@ import standaloneutils.customdata.MyArray;
 
 public class LiftingSurface extends AbstractLiftingSurface {
 
-	static final int _numberOfPointsChordDistribution = 30;
+	int _numberOfPointsChordDistribution = 30;
 
 	public LiftingSurface(String id) {
 		
@@ -43,14 +48,15 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		panels = new ArrayList<LiftingSurfacePanel>();
 
 		_eta = new MyArray(Unit.ONE);
-		_eta.setDouble(MyArrayUtils.linspace(0., 1., _numberOfPointsChordDistribution));
+		
+		//_eta.setDouble(MyArrayUtils.linspace(0., 1., _numberOfPointsChordDistribution));
+		//
+		// assign eta's when the shape of the planform is loaded and no. panels are known 
 
 		_yStationActual = new MyArray(SI.METER);
 		_chordsVsYActual = new MyArray(SI.METER);
 		_xLEvsYActual = new MyArray(SI.METER);
 		_xTEvsYActual = new MyArray(SI.METER);
-		
-
 		
 	}
 
@@ -370,15 +376,12 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		List<Amount<Length>> _xLEvsY = new ArrayList<Amount<Length>>();
 		List<Amount<Length>> _xTEvsY = new ArrayList<Amount<Length>>();
 
-		_yStationActual.setRealVector(
-				_eta.getRealVector().mapMultiply(this.semiSpan.doubleValue(SI.METER)));
-
 		//======================================================
 		// Break points Y's
 		List<Amount<Length>> yBP = new ArrayList<>();
 		// root at symmetry plane
 		yBP.add(Amount.valueOf(0.0, SI.METRE));
-		// cumulate values and add
+		// Accumulate values and add
 		yBP.addAll(
 			IntStream.range(1, this.panels.size())
 				.mapToObj(i -> yBP.get(i-1).plus( panels.get(i-1).getSemiSpan()) )
@@ -388,9 +391,44 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		// TODO make this yBP a member variable _yBreakPoints
 		
 		MyConfiguration.customizeAmountOutput();
-		System.out.println("yBP_________________");
-		System.out.println(yBP);
-
+//		System.out.println("yBP:" + yBP);
+		
+		List<Double> etaBP = yBP.stream()
+			.mapToDouble(y -> y.to(SI.METRE).getEstimatedValue()/this.semiSpan.to(SI.METRE).getEstimatedValue())
+			.boxed()
+			.collect(Collectors.toList())
+			;
+//		System.out.println(etaBP);
+		
+		List<Double> eta0 =
+			Arrays.asList(
+				ArrayUtils.toObject(
+						MyArrayUtils.linspace(0., 1., _numberOfPointsChordDistribution)
+				)
+			);
+//		System.out.println(eta0);
+		
+		List<Double> eta1 = ListUtils.union(eta0, etaBP);
+		Collections.sort(eta1);
+//		System.out.println(eta1);
+		
+		List<Double> eta2 = eta1.stream()
+			.distinct().collect(Collectors.toList()); 
+//		System.out.println(eta2);
+		
+		_numberOfPointsChordDistribution = eta2.size(); 
+		
+		// Now that break-points are known generate eta's, including
+		// break-point eta's
+		//_eta.setDouble(MyArrayUtils.linspace(0., 1., _numberOfPointsChordDistribution));
+		_eta.setList(eta2);
+//		System.out.println(_eta);
+		
+		_yStationActual.setRealVector(
+				_eta.getRealVector().mapMultiply(this.semiSpan.doubleValue(SI.METER)));
+		
+		System.out.println("____________________");
+		
 		//======================================================
 		// Set chords versus Y's 
 		// according to location within panels/yBP
@@ -406,17 +444,19 @@ public class LiftingSurface extends AbstractLiftingSurface {
 				.mapToObj(y -> Amount.valueOf(y, SI.METRE))
 				.collect(Collectors.toList())
 			);
-//		IntStream.range(1, panels.size())
-//			.mapToObj(i -> // Pair panel, y's
-//				_yStationActual.getList().stream()
-//					.filter(y -> ( y >= yBP.get(i).getEstimatedValue() ) && ( y <= yBP.get(i+1).getEstimatedValue() ) )
-//					.mapToDouble(y_ -> y_)
-//					.mapToObj(y__ -> Amount.valueOf(y__, SI.METRE))
-//					.collect(Collectors.toList())
-//					)
-//			.forEach(c -> panelToYStations.put(panels.get(i), value));
-//			;
 		
+		for (int i=0; i < panels.size(); i++) {
+			final int i_ = i;
+			panelToYStations.put(
+				panels.get(i), // key 
+				_yStationActual.getList().stream()
+					.filter(y -> ( y >= yBP.get(i_).getEstimatedValue() ) && ( y <= yBP.get(i_+1).getEstimatedValue() ) )
+					.mapToDouble(y_ -> y_)
+					.mapToObj(y__ -> Amount.valueOf(y__, SI.METRE))
+					.collect(Collectors.toList()
+				) // value
+			);
+		}
 		
 		System.out.println("Map: panel(0) ->\n" + panelToYStations.get(panels.get(0)));
 		System.out.println("Map: panel(1) ->\n" + panelToYStations.get(panels.get(1)));
