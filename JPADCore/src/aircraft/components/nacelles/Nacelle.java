@@ -20,6 +20,7 @@ import aircraft.components.powerPlant.Engine;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.MethodEnum;
+import standaloneutils.customdata.CenterOfGravity;
 
 /** 
  * The Nacelle is considered 
@@ -416,7 +417,7 @@ public class Nacelle extends Component{
 
 
 	public Map<MethodEnum, Amount<Mass>> get_massMap() {
-		System.out.println("weight.getMassMap: " + weights.get_massMap());
+//		System.out.println("weight.getMassMap: " + weights.get_massMap());
 		return weights.get_massMap();
 //		return _massMap;
 	}
@@ -489,6 +490,10 @@ public class Nacelle extends Component{
 		initializeBalance();
 		return balance;
 	}
+	
+//	public CenterOfGravity getCG() {
+//		return balance.get_cg();
+//	}
 
 	public String get_id() {
 		return _id;

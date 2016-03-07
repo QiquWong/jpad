@@ -113,9 +113,11 @@ public class NacellesManager {
 			
 		case AGILE_DC1:
 			_nacellesNumber = 2;
-			for(int i=0; i < _nacellesNumber; i++) {
-				_nacellesList.add(new Nacelle(aircraftName, "Nacelle_" + i, "", 0.0, 0.0, 0.0, _theAircraft));
-			}
+//			for(int i=0; i < _nacellesNumber; i++) {
+//				_nacellesList.add(new Nacelle(aircraftName, "Nacelle_" + i, "", 0.0, 0.0, 0.0, _theAircraft));
+				_nacellesList.add(new Nacelle(aircraftName, "Nacelle_1", "", 12.891, 4.968, -1.782, _theAircraft));
+				_nacellesList.add(new Nacelle(aircraftName, "Nacelle_2", "", 12.891, -4.968, -1.782, _theAircraft));
+//			}
 			break;
 		}
 
@@ -185,6 +187,7 @@ public class NacellesManager {
 		for(int i=0; i < _nacellesNumber; i++) {
 			_nacellesList.get(i).getBalance().calculateAll();
 			_cgList.add(_nacellesList.get(i).get_cg());
+//			_cgList.add(_nacellesList.get(i).getBalance().get_cg());
 			_totalCG = _totalCG.plus(_nacellesList.get(i).getBalance().get_cg()
 					.times(_nacellesList.get(i).getWeights().get_massEstimated().doubleValue(SI.KILOGRAM)));
 		}

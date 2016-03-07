@@ -174,9 +174,11 @@ public class PowerPlant extends Component{
 		case AGILE_DC1:
 			_engineNumber = 2;
 			_engineType = EngineTypeEnum.TURBOFAN;
-			for (int i=0; i < _engineNumber; i++) {
-				engineList.add(new Engine(aircraftName, "Engine_" + i, "", 0.0, 0.0, 0.0, _theAircraft));
-			}
+//			for (int i=0; i < _engineNumber; i++) {
+//				engineList.add(new Engine(aircraftName, "Engine_" + i, "", 0.0, 0.0, 0.0, _theAircraft));
+			engineList.add(new Engine(aircraftName, "Engine_1", "", 12.891, 4.869, -1.782, _theAircraft));
+			engineList.add(new Engine(aircraftName, "Engine_2", "", 12.891, -4.869, -1.782, _theAircraft));
+//			}
 			break;
 		}
 	}
