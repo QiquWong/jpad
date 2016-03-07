@@ -43,21 +43,22 @@ public class LiftingSurface extends AbstractLiftingSurface {
 	int _numberOfPointsChordDistribution = 30;
 
 	public LiftingSurface(String id) {
-		
+
 		this.id = id;
 		panels = new ArrayList<LiftingSurfacePanel>();
 
 		_eta = new MyArray(Unit.ONE);
-		
+
 		//_eta.setDouble(MyArrayUtils.linspace(0., 1., _numberOfPointsChordDistribution));
 		//
-		// assign eta's when the shape of the planform is loaded and no. panels are known 
+		// assign eta's when the shape of the planform is loaded and no. panels are known
 
+		_yBreakPoints =  new ArrayList<>(); // new MyArray(SI.METER);
 		_yStationActual = new MyArray(SI.METER);
 		_chordsVsYActual = new MyArray(SI.METER);
 		_xLEvsYActual = new MyArray(SI.METER);
 		_xTEvsYActual = new MyArray(SI.METER);
-		
+
 	}
 
 	public static LiftingSurface importFromXML(String pathToXML, String airfoilsDir) {
@@ -147,28 +148,30 @@ public class LiftingSurface extends AbstractLiftingSurface {
 				.sum();
 		this.surfaceWetted = Amount.valueOf(surfWetted,SI.SQUARE_METRE);
 
-		// Semispan, span
-		Double bhalf = this.getPanels().stream()
-				.mapToDouble(p -> p.getSemiSpan().to(SI.METRE).getEstimatedValue())
-				.sum();
-		this.semiSpan = Amount.valueOf(bhalf,SI.METRE);
-		this.span = this.semiSpan.times(2.0);
+		//======================================================
+		// Update semiSpan and span
+		calculateSpans();
 
-		// Assign variables along span
+		//======================================================
+		// Assign lists of Y's to each panel
+		mapPanelsToYActual();
+
+		//======================================================
+		// Map Y's to chord
 		calculateChordYAxisActual();
-		
+
 		// Aspect-ratio
 		this.aspectRatio = (this.span.pow(2)).divide(this.surfacePlanform).getEstimatedValue();
 
 		// Mean Aerodynamic Chord
 		Double mac = this.getPanels().stream()
-				.mapToDouble(p -> 
+				.mapToDouble(p ->
 					p.getMeanAerodynamicChord().to(SI.METRE).getEstimatedValue()
 					*p.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue())
 				.sum();
 		mac = mac / this.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue();
 		this.meanAerodynamicChord = Amount.valueOf(mac,SI.METRE);
-		
+
 
 	}
 
@@ -290,7 +293,7 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
 	public Amount<Length> getSemiSpan() {
 		return this.semiSpan;
@@ -368,9 +371,24 @@ public class LiftingSurface extends AbstractLiftingSurface {
 	}
 
 	/**
+	 * Calculate wing's span and semi-span according to current values
+	 * i.e. panels' semi-spans and dihedral angles
+	 */
+	private void calculateSpans() {
+		Double bhalf = this.getPanels().stream()
+				.mapToDouble(p ->
+					p.getSemiSpan().to(SI.METRE).getEstimatedValue()
+						*Math.cos(p.getDihedral().to(SI.RADIAN).getEstimatedValue())
+				)
+				.sum();
+		this.semiSpan = Amount.valueOf(bhalf,SI.METRE);
+		this.span = this.semiSpan.times(2.0);
+	}
+
+	/**
 	 * Calculate Chord Distribution of the Actual Wing along y axis
 	 */
-	private void calculateChordYAxisActual() {
+	private void mapPanelsToYActual() {
 
 		List<Double> chordsActualVsYList = new ArrayList<Double>();
 		List<Amount<Length>> _xLEvsY = new ArrayList<Amount<Length>>();
@@ -378,28 +396,42 @@ public class LiftingSurface extends AbstractLiftingSurface {
 
 		//======================================================
 		// Break points Y's
-		List<Amount<Length>> yBP = new ArrayList<>();
+
 		// root at symmetry plane
-		yBP.add(Amount.valueOf(0.0, SI.METRE));
+		_yBreakPoints.add(Amount.valueOf(0.0, SI.METRE));
 		// Accumulate values and add
-		yBP.addAll(
+		_yBreakPoints.addAll(
 			IntStream.range(1, this.panels.size())
-				.mapToObj(i -> yBP.get(i-1).plus( panels.get(i-1).getSemiSpan()) )
+				.mapToObj(i ->
+					_yBreakPoints.get(i-1).plus( // semiSpan * cos( dihedral )
+						panels.get(i-1).getSemiSpan()
+							.times(Math.cos(panels.get(i-1).getDihedral().to(SI.RADIAN).getEstimatedValue()))
+					)
+				)
 				.collect(Collectors.toList())
 			);
-		yBP.add(this.semiSpan);
+		_yBreakPoints.add(this.semiSpan);
 		// TODO make this yBP a member variable _yBreakPoints
-		
+
 		MyConfiguration.customizeAmountOutput();
 //		System.out.println("yBP:" + yBP);
-		
-		List<Double> etaBP = yBP.stream()
-			.mapToDouble(y -> y.to(SI.METRE).getEstimatedValue()/this.semiSpan.to(SI.METRE).getEstimatedValue())
+
+		//======================================================
+		// Break points eta's
+
+		List<Double> etaBP = _yBreakPoints.stream()
+			.mapToDouble(y ->
+				y.to(SI.METRE).getEstimatedValue()/this.semiSpan.to(SI.METRE).getEstimatedValue())
 			.boxed()
 			.collect(Collectors.toList())
 			;
 //		System.out.println(etaBP);
-		
+
+		//======================================================
+		// Eta's discretizing the whole planform,
+		// in the middle of each panel,
+		// and including break-point eta's
+
 		List<Double> eta0 =
 			Arrays.asList(
 				ArrayUtils.toObject(
@@ -407,35 +439,41 @@ public class LiftingSurface extends AbstractLiftingSurface {
 				)
 			);
 //		System.out.println(eta0);
-		
+
 		List<Double> eta1 = ListUtils.union(eta0, etaBP);
 		Collections.sort(eta1);
 //		System.out.println(eta1);
-		
+
 		List<Double> eta2 = eta1.stream()
-			.distinct().collect(Collectors.toList()); 
+			.distinct().collect(Collectors.toList());
 //		System.out.println(eta2);
-		
-		_numberOfPointsChordDistribution = eta2.size(); 
-		
+
+		_numberOfPointsChordDistribution = eta2.size();
+
 		// Now that break-points are known generate eta's, including
 		// break-point eta's
 		//_eta.setDouble(MyArrayUtils.linspace(0., 1., _numberOfPointsChordDistribution));
 		_eta.setList(eta2);
 //		System.out.println(_eta);
-		
+
+		//======================================================
+		// Y's discretizing the whole planform,
+		// in the middle of each panel,
+		// and including break-point eta's
+
 		_yStationActual.setRealVector(
 				_eta.getRealVector().mapMultiply(this.semiSpan.doubleValue(SI.METER)));
-		
+
 		System.out.println("____________________");
-		
+
 		//======================================================
-		// Set chords versus Y's 
-		// according to location within panels/yBP
-		
-		Map<LiftingSurfacePanel, List<Amount<Length>>> panelToYStations = 
+		// Map panels with lists of Y's
+		// for each panel Y's of inner and outer break-points
+		// are included, i.e. Y's are repeated
+
+		Map<LiftingSurfacePanel, List<Amount<Length>>> panelToYStations =
 			    new HashMap<LiftingSurfacePanel, List<Amount<Length>>>();
-		
+
 		panelToYStations.put(
 			panels.get(0),
 			_yStationActual.getList().stream()
@@ -444,23 +482,34 @@ public class LiftingSurface extends AbstractLiftingSurface {
 				.mapToObj(y -> Amount.valueOf(y, SI.METRE))
 				.collect(Collectors.toList())
 			);
-		
+
 		for (int i=0; i < panels.size(); i++) {
 			final int i_ = i;
 			panelToYStations.put(
-				panels.get(i), // key 
+				panels.get(i), // key
 				_yStationActual.getList().stream()
-					.filter(y -> ( y >= yBP.get(i_).getEstimatedValue() ) && ( y <= yBP.get(i_+1).getEstimatedValue() ) )
+					.filter(y -> ( y >= _yBreakPoints.get(i_).getEstimatedValue() ) && ( y <= _yBreakPoints.get(i_+1).getEstimatedValue() ) )
 					.mapToDouble(y_ -> y_)
 					.mapToObj(y__ -> Amount.valueOf(y__, SI.METRE))
 					.collect(Collectors.toList()
 				) // value
 			);
 		}
-		
+
 		System.out.println("Map: panel(0) ->\n" + panelToYStations.get(panels.get(0)));
 		System.out.println("Map: panel(1) ->\n" + panelToYStations.get(panels.get(1)));
-		
+	}
+
+	/**
+	 * Calculate Chord Distribution of the Actual Wing along y axis
+	 */
+	private void calculateChordYAxisActual() {
+
+		//======================================================
+		// Set chords versus Y's
+		// according to location within panels/yBP
+
+
 //		chordsActualVsYList.addAll(
 //			IntStream.range(1, yBP.size())
 //				.mapToDouble(i -> {
@@ -469,35 +518,35 @@ public class LiftingSurface extends AbstractLiftingSurface {
 //						.filter(
 //							p -> p.get
 //								)
-//					if ( ) { 
-//						
+//					if ( ) {
+//
 //					}
 //				})
 //			};
-		
-		
+
+
 //		for (int i=0; i < _numberOfPointsChordDistribution; i++) {
 //
 //			if(_eta.get(i) <= _spanStationKink){
 //				_xLEvsY.add(Amount.valueOf(
 //						_xLERoot.doubleValue(SI.METER) +
-//						Math.tan(_sweepLEInnerPanel.doubleValue(SI.RADIAN)) * 
+//						Math.tan(_sweepLEInnerPanel.doubleValue(SI.RADIAN)) *
 //						_yStationActual.get(i)
 //						,SI.METER));
 //
 //				_xTEvsY.add(Amount.valueOf((_xLERoot.doubleValue(SI.METER)+
 //						_chordRoot.doubleValue(SI.METER))+
-//						Math.tan(_sweepTEInnerPanel.doubleValue(SI.RADIAN)) * 
+//						Math.tan(_sweepTEInnerPanel.doubleValue(SI.RADIAN)) *
 //						_yStationActual.get(i),SI.METER));
 //
 //			} else if(_spanStationKink !=1.) { // Handle simply tapered wing
 //				_xLEvsY.add(Amount.valueOf(_xLEKink.doubleValue(SI.METER) +
-//						Math.tan(_sweepLEOuterPanel.doubleValue(SI.RADIAN)) * 
+//						Math.tan(_sweepLEOuterPanel.doubleValue(SI.RADIAN)) *
 //						(_yStationActual.get(i)-
 //								_semiSpanInnerPanel.doubleValue(SI.METER)),SI.METER));
 //
 //				_xTEvsY.add(Amount.valueOf(_xTEKink.doubleValue(SI.METER) +
-//						Math.tan(_sweepTEOuterPanel.doubleValue(SI.RADIAN)) * 
+//						Math.tan(_sweepTEOuterPanel.doubleValue(SI.RADIAN)) *
 //						(_yStationActual.get(i) -
 //								_semiSpanInnerPanel.doubleValue(SI.METER)),SI.METER));
 //
@@ -514,14 +563,14 @@ public class LiftingSurface extends AbstractLiftingSurface {
 
 	}
 
-	
-	
-	
+
+
+
 	@Override
 	public String toString() {
 
 		MyConfiguration.customizeAmountOutput();
-		
+
 		StringBuilder sb = new StringBuilder()
 			.append("\t-------------------------------------\n")
 			.append("\tLifting surface\n")

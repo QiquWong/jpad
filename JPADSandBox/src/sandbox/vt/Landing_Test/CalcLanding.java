@@ -735,7 +735,7 @@ public class CalcLanding {
 		public DynamicsEquationsLanding() {
 
 			// constants and known values
-			weight = aircraft.get_weights().get_MTOW().getEstimatedValue();
+			weight = aircraft.get_weights().get_MLW().getEstimatedValue();
 			g0 = AtmosphereCalc.g0.getEstimatedValue();
 			mu = CalcLanding.this.mu;
 			muBrake = CalcLanding.this.muBrake;

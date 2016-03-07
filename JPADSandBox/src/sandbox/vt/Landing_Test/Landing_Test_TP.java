@@ -322,7 +322,7 @@ public class Landing_Test_TP {
 		double kA = 1.3; // [1/deg]
 		double kFlare = 1.23;
 		double kTD = 1.15;
-		double phiRev = 0.0;
+		double phiRev = 0.25;
 		Amount<Duration> nFreeRoll = Amount.valueOf(3, SI.SECOND);
 		Amount<Length> wingToGroundDistance = Amount.valueOf(4.0, SI.METER);
 		Amount<Length> obstacle = Amount.valueOf(50, NonSI.FOOT).to(SI.METER);
