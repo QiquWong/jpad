@@ -446,26 +446,26 @@ As in previous chapters, a dedicated Java class, named~\lstinline[language=Java]
 \makebox[\linewidth]{
 \begin{tabular}{p{0.25\linewidth}p{0.7\linewidth}}
 \toprule
-\lstinline[language=Java]!aircraft! & An \lstinline[language=Java]!Aircraft! class object representing an aircraft parametric model \\ [0.2cm]
-\lstinline[language=Java]!theConditons! & An \lstinline[language=Java]!OperatingConditions! object representing aircraft flight conditions \\  [0.2cm]
-\lstinline[language=Java]!highLiftCalculator! & A \lstinline[language=Java]!CalcHighLiftDevices! object for managing flap and slat effects \\  [0.2cm]
-\lstinline[language=Java]!dtRot! & The assigned time interval of the rotation phase \\  [0.2cm]
-\lstinline[language=Java]!dtHold! & The assigned time interval of the constant $C_L$ phase\\  [0.2cm]
-\lstinline[language=Java]!kcLMax! & Percentage of the $C_{L\text{max,TO}}$ not to be surpasses \\  [0.2cm]
-\lstinline[language=Java]!kRot! & Percentage of $V_s$ which defines the rotation speed \\  [0.2cm]
-\lstinline[language=Java]!kLO! & Percentage of $V_s$ which defines the lift-off speed \\  [0.2cm]
-\lstinline[language=Java]!kFailure! & A parameter which defines the drag increment due to engine failure and the consequent rudder deflection\\  [0.2cm]
-\lstinline[language=Java]!k1! & Linear correction factor of the parabolic drag polar at high $C_L$ \\  [0.2cm]
-\lstinline[language=Java]!k2! & Quadratic correction factor of the parabolic drag polar at high $C_L$ \\  [0.2cm]
-\lstinline[language=Java]!phi! & Throttle setting \\  [0.2cm]
-\lstinline[language=Java]!kAlphaDot! & A coefficient which defines the decrease of $\dot\alpha$ during maneuvering \\ [0.2cm]
-\lstinline[language=Java]!alphaReductionRate! & A constant negative pitching angular velocity to be maintained after holding the $C_L$ constant \\ [0.2cm]
-\lstinline[language=Java]!mu! & The friction coefficient without brakes action \\ [0.2cm]
-\lstinline[language=Java]!muBrake! & The friction coefficient with brakes activated \\ [0.2cm]
-\lstinline[language=Java]!wingToGroundDistance! & The distance between the wing and the ground  \\ [0.2cm]
-\lstinline[language=Java]!obstacle! & A given altitude value to overcome which defines the airborne phase ending \\ [0.2cm]
-\lstinline[language=Java]!vWind! & The horizontal component of the wind speed, positive if opposite to the aircraft motion \\ [0.2cm]
-\lstinline[language=Java]!alphaGround! & The angle of attack, in the \gls{ACRF}, of the wing when the aircraft is on the ground \\ [0.2cm]
+\lstinline[language=Java]!aircraft! & An \lstinline[language=Java]!Aircraft! class object representing an aircraft parametric model \\ [0.18cm]
+\lstinline[language=Java]!theConditons! & An \lstinline[language=Java]!OperatingConditions! object representing aircraft flight conditions \\  [0.18cm]
+\lstinline[language=Java]!highLiftCalculator! & A \lstinline[language=Java]!CalcHighLiftDevices! object for managing flap and slat effects \\  [0.18cm]
+\lstinline[language=Java]!dtRot! & The assigned time interval of the rotation phase \\  [0.18cm]
+\lstinline[language=Java]!dtHold! & The assigned time interval of the constant $C_L$ phase\\  [0.18cm]
+\lstinline[language=Java]!kcLMax! & Percentage of the $C_{L\text{max,TO}}$ not to be surpasses \\  [0.18cm]
+\lstinline[language=Java]!kRot! & Percentage of $V_s$ which defines the rotation speed \\  [0.18cm]
+\lstinline[language=Java]!kLO! & Percentage of $V_s$ which defines the lift-off speed \\  [0.18cm]
+\lstinline[language=Java]!kFailure! & A parameter which defines the drag increment due to engine failure and the consequent rudder deflection\\  [0.18cm]
+\lstinline[language=Java]!k1! & Linear correction factor of the parabolic drag polar at high $C_L$ \\  [0.18cm]
+\lstinline[language=Java]!k2! & Quadratic correction factor of the parabolic drag polar at high $C_L$ \\  [0.18cm]
+\lstinline[language=Java]!phi! & Throttle setting \\  [0.18cm]
+\lstinline[language=Java]!kAlphaDot! & A coefficient which defines the decrease of $\dot\alpha$ during maneuvering \\ [0.18cm]
+\lstinline[language=Java]!alphaReductionRate! & A constant negative pitching angular velocity to be maintained after holding the $C_L$ constant \\ [0.18cm]
+\lstinline[language=Java]!mu! & The friction coefficient without brakes action \\ [0.18cm]
+\lstinline[language=Java]!muBrake! & The friction coefficient with brakes activated \\ [0.18cm]
+\lstinline[language=Java]!wingToGroundDistance! & The distance between the wing and the ground  \\ [0.18cm]
+\lstinline[language=Java]!obstacle! & A given altitude value to overcome which defines the airborne phase ending \\ [0.18cm]
+\lstinline[language=Java]!vWind! & The horizontal component of the wind speed, positive if opposite to the aircraft motion \\ [0.18cm]
+\lstinline[language=Java]!alphaGround! & The angle of attack, in the \gls{ACRF}, of the wing when the aircraft is on the ground \\ [0.18cm]
 \lstinline[language=Java]!iw! & The angle between the wing root chord and the \gls{ACRF} x-axis \\ 
 \bottomrule
 \end{tabular}
@@ -521,7 +521,7 @@ At this point, the ratio $h_{\text{W}}/b$ and the ground effects correction para
 
 \bigskip
 \noindent
-The~\lstinline[language=Java]!TakeOffResultsMap! class is made up of a builder, which accepts nothing as input and provides the initialization of all the \gls{List}s required to store the wanted data, and of other two method which are explained below.
+The~\lstinline[language=Java]!TakeOffResultsMap! class is made up of a constructor, which accepts nothing as input and provides the initialization of all the \gls{List}s required to store the wanted data, and of other two method which are explained below.
 %
 \begin{itemize}
 \item \lstinline[language=Java]!initialize!, which clears all the \gls{List}s in order to make them reusable for other calculations
@@ -946,7 +946,21 @@ Regarding the landing test, the results obtained show that, at a maximum landing
 
 \bigskip
 \noindent
-Finally, with reference to the landing charts at the end of the chapter (from figure \ref{fig:Landing1} to \ref{fig:LandingEnd}), the reader can easily recognize the effect of the reverse thrust upon the landing distance; in particular, in case of \lstinline[language=Java]!phiRev!=0.25, the deceleration is bigger so that the speed decreases faster making the total landing distance shorter. It has also to be noted that during the air run, the speed is assumed to be constant during the approach phase for then decrease, with a linear trend, from the $V_A$ to the $V_{\text{TD}}$ during the flare phase. 
+Finally, with reference to the landing charts at the end of the chapter (from figure \ref{fig:Landing1} to \ref{fig:LandingEnd}), the reader can easily recognize the effect of the reverse thrust upon the landing distance; in particular, in case of \lstinline[language=Java]!phiRev!=0.25, the deceleration is bigger so that the speed decreases faster making the total landing distance shorter (about the 18\%). It has also to be noted that during the air run, the speed is assumed to be constant during the approach phase for then decrease, with a linear trend, from the $V_A$ to the $V_{\text{TD}}$ during the flare phase. 
+%
+\begin{table}[H]
+\makebox[\linewidth]{
+\begin{tabular}{p{0.25\linewidth}p{0.2\linewidth}p{0.2\linewidth}p{0.2\textwidth}}
+\toprule
+\textbf{ } & \textbf{ATR-72} & \textbf{JPAD} & \textbf{Difference(\%)}\\
+\midrule
+\textbf{Take-Off field length @ ISA, SL, MTOW} & $\SI{1223}{\meter}$ & $\SI{1302}{\meter}$ & $\approx6.06$\%\\ [1.0cm]
+\textbf{Landing field length @ ISA, SL, MTOW} & $\SI{1048}{\meter}$ & $\SI{1071}{\meter}$ & $\approx2.15$\%\\
+\bottomrule
+\end{tabular}
+}
+\caption{Method results comparison with known data}
+\end{table}
 %
 \clearpage
 %

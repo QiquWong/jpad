@@ -9,11 +9,11 @@ height=0.65\textwidth,
 scaled ticks=false, tick label style={/pgf/number format/fixed},
 /pgfplots/xtick={0,400,...,3200},
 xmin=0.0,
-xmax=3100.0,
+xmax=3200.0,
 xlabel={Range (nmi)},
 xmajorgrids,
 ymin=0.0,
-ymax=77.76,
+ymax=78,
 ylabel={Payload (No. Pass)},
 ymajorgrids,
 legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
@@ -25,9 +25,9 @@ densely dashed
 ]
 table[row sep=crcr]{
 0.0	72.0\\
-829.1553643712685	72.0\\
-2056.9859351535097	52.0\\
-3021.021826278212	0.0\\
+855.2483015162777	72.0\\
+2121.7178382689494	52.0\\
+3116.0912620124313	0.0\\
 }node[right,pos=0.68] {Best Range};
 
 \addplot [
@@ -36,9 +36,9 @@ solid
 ]
 table[row sep=crcr]{
 0.0	72.0\\
-502.58657991049535	72.0\\
-1246.8272780900518	52.0\\
-1831.1707223355413	0.0\\
+547.2924082348525	72.0\\
+1357.7344301559629	52.0\\
+1994.0560981446222	0.0\\
 }node[left,pos=0.68] {Chosen Condition};
 \end{axis}
 \end{tikzpicture}%

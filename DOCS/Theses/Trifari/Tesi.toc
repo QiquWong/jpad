@@ -48,12 +48,12 @@
 \contentsline {section}{\numberline {5.2}Java class architecture}{97}{section.5.2}
 \contentsline {subsection}{\numberline {5.2.1}Take-Off}{97}{subsection.5.2.1}
 \contentsline {subsection}{\numberline {5.2.2}Landing}{104}{subsection.5.2.2}
-\contentsline {section}{\numberline {5.3}Case study: ATR-72}{107}{section.5.3}
-\contentsline {chapter}{Conclusions}{127}{chapter*.137}
-\contentsline {chapter}{Appendices}{}{section*.139}
+\contentsline {section}{\numberline {5.3}Case study: ATR-72}{106}{section.5.3}
+\contentsline {chapter}{Conclusions}{127}{chapter*.139}
+\contentsline {chapter}{Appendices}{}{section*.141}
 \contentsline {chapter}{\numberline {A}HDF databse creation and reading }{129}{Appendix.a.A}
 \contentsline {section}{\numberline {A.1}Creation of a database using MATLAB}{129}{section.a.A.1}
 \contentsline {section}{\numberline {A.2}Reading data from an HDF database in JPAD}{132}{section.a.A.2}
-\contentsline {chapter}{Bibliography}{134}{section*.142}
-\contentsline {chapter}{Glossary}{136}{section*.144}
-\contentsline {chapter}{Acronyms}{139}{section*.146}
+\contentsline {chapter}{Bibliography}{134}{section*.144}
+\contentsline {chapter}{Glossary}{136}{section*.146}
+\contentsline {chapter}{Acronyms}{139}{section*.148}

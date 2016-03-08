@@ -324,7 +324,6 @@ The first check that is implemented has the purpose of inspect whether or not th
 Current Mach is lower then critical Mach number.
 Current Mach = 0.43
 Critical Mach = 0.6659791543529567
-
 	 CHECK PASSED --> PROCEEDING TO CALCULATION 
 \end{lstlisting}
 
@@ -333,7 +332,6 @@ Critical Mach = 0.6659791543529567
 Current Mach is lower then critical Mach number.
 Current Mach = 0.84
 Critical Mach = 0.8490814607347361
-
 	 CHECK PASSED --> PROCEEDING TO CALCULATION 
 \end{lstlisting}
 
@@ -344,7 +342,6 @@ At this point, if the user wants to compare the chosen Mach number condition wit
 \bigskip
 \begin{lstlisting}[caption={Excerpt of the ATR-72 Payload-Range test - Payload-Range diagram evaluation and plot}, captionpos=b, tabsize=2]
 		// ----------------BEST RANGE CASE-------------------
-		System.out.println();
 		System.out.println("-------BEST RANGE CASE--------");
 		List<Amount<Length>> vRange_BR = test
 						.createRangeArray(
@@ -368,7 +365,6 @@ At this point, if the user wants to compare the chosen Mach number condition wit
 														test.getAltitude()),
 										true);		
 		// -------------USER CURRENT MACH-------------------
-		System.out.println();
 		System.out.println("------CURRENT MACH CASE-------");
 		List<Amount<Length>> vRange_CM = test
 						.createRangeArray(
@@ -400,8 +396,6 @@ At this point, if the user wants to compare the chosen Mach number condition wit
 										test.getCd0(),
 										test.getAltitude()),
 						test.getCurrentMach());
-	}
-} 
 \end{lstlisting}
 %
 \noindent
@@ -430,15 +424,13 @@ Otherwise, if it is the maximum take-off mass parameterization the wanted analys
 						test.getRangeMatrix(),
 						test.getPayloadMatrix()
 						);
-	}
-} 
 \end{lstlisting}
 
 \bigskip
 \noindent
 In conclusion, following pages shows a summary of input data used for each analyzed aircraft, together with their related results in terms of Payload-Range diagrams for both the chosen Mach number and best range comparison and max take-off mass parameterization. 
 %
-\begin{table}[!ht]
+\begin{table}[H]
 \makebox[\linewidth]{
 \begin{minipage}{6cm}
 \leftline{	
@@ -449,18 +441,17 @@ In conclusion, following pages shows a summary of input data used for each analy
 Range (point A) & 0 nmi \\
 Payload (point A) & 72 passengers \\
 \midrule
-Range (point B) & 502.587 nmi \\
+Range (point B) & 547.310 nmi \\
 Payload (point B) & 72 passengers \\
 \midrule
-Range (point C) & 1246.827 nmi \\
+Range (point C) & 1357.730 nmi \\
 Payload (point C) & 52 passengers \\
 \midrule
-Range (point D) & 1831.171 nmi \\
+Range (point D) & 1994.0560 nmi \\
 Payload (point D) & 0 passengers \\
 \midrule
 $C_L$ & 0.421 \\
-$C_D$ & 0.0388 \\
-Efficiency & 10.853 \\
+$C_D$ & 0.0356 \\
 SFC & 0.424 \\
 \bottomrule
 \end{tabular}
@@ -476,19 +467,18 @@ SFC & 0.424 \\
 Range (point A) & 0 nmi \\
 Payload (point A) & 550 passengers \\
 \midrule
-Range (point B) & 4714.449 nmi \\
+Range (point B) & 4993.586 nmi \\
 Payload (point B) & 550 passengers \\
 \midrule
-Range (point C) & 4715.799 nmi \\
+Range (point C) & 4995.0144 nmi \\
 Payload (point C) & 550 passengers \\
 \midrule
-Range (point D) & 6093.423 nmi \\
+Range (point D) & 6454.205 nmi \\
 Payload (point D) & 0 passengers \\
 \midrule
-$C_L$ & 0.385 \\
-$C_D$ & 0.0296 \\
-Efficiency & 13.00518 \\
-SFC & 0.626 \\
+$C_L$ &0.385 \\
+$C_D$ & 0.0277 \\
+SFC & 0.633 \\
 \bottomrule
 \end{tabular}
 }
@@ -498,25 +488,44 @@ SFC & 0.626 \\
 \label{table:Table6}
 \end{table}
 %
-\begin{figure}[!h]
+\begin{table}[H]
+\makebox[\linewidth]{
+\begin{tabular}{llllll}
+\toprule
+\textbf{ } & \textbf{ATR-72} &\textbf{ } &  \textbf{JPAD} &\textbf{ } & \textbf{Difference(\%)}\\
+\midrule
+\textbf{Range} & 890 nmi  & \textbf{ } &$\approx820$ nmi &\textbf{ } & $\approx7.865$\%\\
+\textbf{Payload} & 68 pass. at $\SI{95}{\kilogram}$ &\textbf{ } & 65 pass. at $\SI{99}{\kilogram}$ &\textbf{ } & \textbf{ }\\
+\midrule
+\textbf{ } & \textbf{B747-100B} &\textbf{ } & \textbf{JPAD} &\textbf{ } & \textbf{Difference(\%)} \\
+\midrule
+\textbf{Range} & $\approx5000$ nmi &\textbf{ } & 4714.5 nmi &\textbf{ } & $\approx5.71$\%\\
+\textbf{Payload} & 452 pass. at $\SI{95}{\kilogram}$ &\textbf{ } & 550 pass. at $\SI{99}{\kilogram}$ &\textbf{ } & \textbf{ }\\
+\bottomrule
+\end{tabular}
+}
+\caption{Method results comparison with known data}
+\end{table}
+%
+\begin{figure}[!t]
 \centering
 \input{images/PayloadRange_Mach_TP.tikz}
 \caption{ATR-72 Payload-Range - Chosen Mach number and best range comparison}
 \end{figure}
 %
-\begin{figure}[!h]
+\begin{figure}[!b]
 \centering
 \input{images/PayloadRange_MaxTakeOffMass_TP.tikz}
 \caption{ATR-72 Payload-Range - Maximum take-off mass parameterization}
 \end{figure}
 %
-\begin{figure}[!h]
+\begin{figure}[!t]
 \centering
 \input{images/PayloadRange_Mach_TF.tikz}
 \caption{B747-100B Payload-Range - Chosen Mach number and best range comparison}
 \end{figure}
 %
-\begin{figure}[!h]
+\begin{figure}[!b]
 \centering
 \input{images/PayloadRange_MaxTakeOffMass_TF.tikz}
 \caption{B747-100B Payload-Range - Maximum take-off mass parameterization}
