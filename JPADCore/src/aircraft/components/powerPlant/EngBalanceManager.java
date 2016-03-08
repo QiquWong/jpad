@@ -25,6 +25,8 @@ public class EngBalanceManager extends aircraft.componentmodel.componentcalcmana
 		_theEngine = engine;
 		initializeDependentData();
 		initializeInnerCalculators();
+		initializeDependentData();
+		calculateAll();
 	}
 	
 	

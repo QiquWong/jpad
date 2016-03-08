@@ -298,6 +298,8 @@ public class Test_MR_07_LongitudinalStability_NoPlot {
 		//		aircraft.get_VTail().calculateArms(aircraft);
 		//
 		
+		aircraft.get_landingGear().get_cg().set_xBRF(Amount.valueOf(0.35*(aircraft.get_fuselage().get_len_N().getEstimatedValue() +
+				aircraft.get_fuselage().get_len_C().getEstimatedValue()), SI.METER));
 		
 		System.out.println("\nANALYSIS:");
 		theAnalysis.doAnalysis(aircraft,
@@ -356,6 +358,7 @@ public class Test_MR_07_LongitudinalStability_NoPlot {
 		
 		aircraft.get_theNacelles().get_nacellesList().get(0).get_cg().set_xBRF(Amount.valueOf(10, SI.METER));
 		aircraft.get_theNacelles().get_nacellesList().get(0).get_cg().set_zBRF(Amount.valueOf(0.5, SI.METER));
+		
 		
 		
 		// -----------------------------------------------------------------------
@@ -1201,7 +1204,7 @@ public class Test_MR_07_LongitudinalStability_NoPlot {
 		System.out.println("|     CM VS alpha     |");
 		System.out.println(" ------------------- \n\n");
 		// PITCHING MOMENT COEFFICIENT VS ALPHA - COMPONENT 
-		CenterOfGravity cgPosition =  aircraft.get_theBalance().get_cgMZFM();
+		CenterOfGravity cgPosition =  aircraft.get_theBalance().get_cgMTOM();
 		
 		deltaFlap.get(0)[0] = 0.0;
 		
@@ -1230,6 +1233,7 @@ public class Test_MR_07_LongitudinalStability_NoPlot {
 //		
 		theCMcgCalculator.calculateCMvsAlphaAircraft();
 		theCMcgCalculator.plotCMvsAlphaAircraft(subfolderPath);
+		theCMcgCalculator.plotCMvsAlphaComponent(subfolderPath, ComponentEnum.HORIZONTAL_TAIL);
 		System.out.println("\n\n\t\t\tWRITING CM vs ALPHA CHART TO FILE ");
 }
 

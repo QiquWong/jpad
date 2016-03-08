@@ -43,6 +43,7 @@ public class PowerPlant extends Component{
 	_length;
 
 
+	private List<CenterOfGravity> _cgList = new ArrayList<CenterOfGravity>();
 	public static final List<Engine> engineList = new ArrayList<Engine>();
 	private EngineTypeEnum _engineType;
 	private Amount<Power> _P0Total;
@@ -159,9 +160,8 @@ public class PowerPlant extends Component{
 		case ATR72:
 			_engineNumber = 2;
 			_engineType = EngineTypeEnum.TURBOPROP;
-			for (int i=0; i < _engineNumber; i++) {
-				engineList.add(new Engine(aircraftName, "Engine_" + i, "", 0.0, 0.0, 0.0, _theAircraft));
-			}
+				engineList.add(new Engine(aircraftName, "Engine_1", "",8.6100, 4.0500, 1.3200, _theAircraft));
+				engineList.add(new Engine(aircraftName, "Engine_2", "",8.6100, -4.0500, 1.3200, _theAircraft));
 			break;
 		case B747_100B:
 			_engineNumber = 4;
@@ -238,8 +238,9 @@ public class PowerPlant extends Component{
 		_totalCG = new CenterOfGravity();		
 		for(int i=0; i < _engineNumber; i++) {
 			engineList.get(i).getBalance().calculateAll();
+			_cgList.add(engineList.get(i).getBalance().get_cg());
 			_totalCG = _totalCG.plus(engineList.get(i).getBalance().get_cg()
-					.times(engineList.get(i).getWeights().get_totalMass().doubleValue(SI.KILOGRAM)));
+					.times(engineList.get(i).get_totalMass().doubleValue(SI.KILOGRAM)));
 		}
 		
 		_totalCG = _totalCG.divide(_totalMass.doubleValue(SI.KILOGRAM));
@@ -454,6 +455,14 @@ public class PowerPlant extends Component{
 
 	public CenterOfGravity get_totalCG() {
 		return _totalCG;
+	}
+
+	public List<CenterOfGravity> get_cgList() {
+		return _cgList;
+	}
+
+	public void set_cgList(List<CenterOfGravity> _cgList) {
+		this._cgList = _cgList;
 	}
 
 }

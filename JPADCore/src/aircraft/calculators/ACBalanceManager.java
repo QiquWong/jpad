@@ -87,6 +87,7 @@ public class ACBalanceManager extends ACCalculatorManager {
 
 		aircraft.get_landingGear().calculateCG(aircraft, conditions);
 
+
 		// --- END OF STRUCTURE MASS-----------------------------------
 
 		aircraft.get_powerPlant().calculateCG();
@@ -139,10 +140,17 @@ public class ACBalanceManager extends ACCalculatorManager {
 		// Structure + engines CG
 		_cgStructureAndPower = new CenterOfGravity();
 
+		System.out.println("fuel tank cg " + aircraft.get_theFuelTank().get_cg().get_xBRF().getEstimatedValue());
+		double cgPowerPlantContribute =0.0;
+		
+		for(int i=0 ; i< aircraft.get_powerPlant().get_engineNumber(); i++){
+			cgPowerPlantContribute = cgPowerPlantContribute + (aircraft.get_powerPlant().get_cgList().get(i).get_xBRF().getEstimatedValue()*
+					aircraft.get_powerPlant().get_engineList().get(i).get_totalMass().getEstimatedValue());
+			System.out.println("Engine " + i + "cg " + aircraft.get_powerPlant().get_cgList().get(i).get_xBRF());
+		}
 		_cgStructureAndPower.set_xBRF(
 				Amount.valueOf(
-						(aircraft.get_powerPlant().get_totalCG().get_xBRF().getEstimatedValue()*
-								aircraft.get_powerPlant().get_totalMass().getEstimatedValue() + 
+						       (cgPowerPlantContribute+
 								aircraft.get_weights().get_structuralMass().getEstimatedValue()*
 								get_cgStructure().get_xBRF().getEstimatedValue())/
 								(aircraft.get_weights().get_structuralMass().getEstimatedValue() + 

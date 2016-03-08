@@ -99,9 +99,8 @@ public class NacellesManager {
 		
 		case ATR72:
 			_nacellesNumber = 2;
-			for(int i=0; i < _nacellesNumber; i++) {
-				_nacellesList.add(new Nacelle(aircraftName, "Nacelle_" + i, "", 0.0, 0.0, 0.0, _theAircraft));
-			}
+				_nacellesList.add(new Nacelle(aircraftName, "Nacelle_1", "", 8.6100, 4.0500, 1.3255, _theAircraft));
+				_nacellesList.add(new Nacelle(aircraftName, "Nacelle_2", "", 8.6100, 4.0500, 1.3255, _theAircraft));
 			break;
 			
 		case B747_100B:
@@ -183,16 +182,12 @@ public class NacellesManager {
 
 	public CenterOfGravity calculateCG() {
 
-		
 		_totalCG = new CenterOfGravity();
-		
 		for(int i=0; i < _nacellesNumber; i++) {
 			_nacellesList.get(i).getBalance().calculateAll();
 //			_cgList.add(_nacellesList.get(i).get_cg());
-			_cgList.add(_nacellesList.get(i).getBalance().get_NacBalanceManagerCG());
-//			_totalCG = _totalCG.plus(_nacellesList.get(i).getBalance().get_cg()
-			System.out.println("NacBalanceManagerCG() xBRF: "+ _nacellesList.get(i).getBalance().get_NacBalanceManagerCG().get_xBRF());
-			_totalCG = _totalCG.plus(_nacellesList.get(i).getBalance().get_NacBalanceManagerCG()
+			_cgList.add(_nacellesList.get(i).getBalance().get_cg());
+			_totalCG = _totalCG.plus(_nacellesList.get(i).getBalance().get_cg()
 					.times(_nacellesList.get(i).getWeights().get_massEstimated().doubleValue(SI.KILOGRAM)));
 		}
 

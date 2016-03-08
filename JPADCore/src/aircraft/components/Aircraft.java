@@ -702,13 +702,14 @@ public class Aircraft {
 
 	public void createPowerPlant() {
 
+		
 		_thePowerPlant = new PowerPlant(
 				"Power plant",
 				"Data taken from ...",
 				0.0, 0.0, 0.0,
 				this);
-		_componentsList.add(_thePowerPlant);
-	}
+		_componentsList.add(_thePowerPlant);}
+	
 
 	/**
 	 * Overload of the default creator that recognize aircraft name and sets it's values.
@@ -717,13 +718,37 @@ public class Aircraft {
 	 */
 	public void createPowerPlant(AircraftEnum aircraftName) {
 
+		switch(aircraftName) {
+		case ATR72:
 		_thePowerPlant = new PowerPlant(
 				aircraftName,
 				"Power plant",
 				"Data taken from ...",
-				0.0, 0.0, 0.0,
+				8.6100, 4.0500, 1.3255,
 				this);
 		_componentsList.add(_thePowerPlant);
+		break;
+
+		case B747_100B:
+			_thePowerPlant = new PowerPlant(
+					aircraftName,
+					"Power plant",
+					"Data taken from ...",
+					0.0, 0.0, 0.0,
+					this);
+			_componentsList.add(_thePowerPlant);
+			break;
+
+		case AGILE_DC1:
+			_thePowerPlant = new PowerPlant(
+					aircraftName,
+					"Power plant",
+					"Data taken from ...",
+					0.0,0.0,0.0,
+					this);
+			_componentsList.add(_thePowerPlant);
+			break;
+		}
 	}
 
 	public void createSystems() {

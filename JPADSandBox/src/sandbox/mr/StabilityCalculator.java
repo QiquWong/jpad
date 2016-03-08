@@ -752,8 +752,8 @@ public class CalcPitchingMomentCG{
 			
 			// CG coordinates
 
-			double xH = xBRFcg - (aChTail * theHorizontalTail.get_meanAerodChordActual().getEstimatedValue() + 
-					theHorizontalTail.get_xLEMacActualBRF().getEstimatedValue());
+			double xH = (aChTail * theHorizontalTail.get_meanAerodChordActual().getEstimatedValue() + 
+					theHorizontalTail.get_xLEMacActualBRF().getEstimatedValue()) - xBRFcg; 
 			//						System.out.println(" xle brf mac " + theWing.get_xLEMacActualBRF().getEstimatedValue() );
 			double zH = -(zBRFcg - theHorizontalTail.get_aerodynamicCenterZ().getEstimatedValue());
 			
@@ -799,9 +799,24 @@ public class CalcPitchingMomentCG{
 //						  + cCIsolatedWing[i]*(zW/theWing.get_meanAerodChordActual().getEstimatedValue())
 //						  + cMACIsolatedWing[i];
 				  
-				  cMvsAlphaHTailArray [i] = -cNhTail[i] * theHorizontalTail.get_volumetricRatio() * 
+//				  cMvsAlphaHTailArray [i] = -cNhTail[i] * theHorizontalTail.get_volumetricRatio() * 
+//						  theHorizontalTail.getAerodynamics().get_dynamicPressureRatio()+
+//						  cChTail[i]* theHorizontalTail.get_volumetricRatio() * 
+//						  theHorizontalTail.getAerodynamics().get_dynamicPressureRatio() +
+//						  cMAChTail[i] * theHorizontalTail.getAerodynamics().get_dynamicPressureRatio() * 
+//						  (theHorizontalTail.get_surface().getEstimatedValue()/theAircraft.get_wing().get_surface().getEstimatedValue()) *
+//						  (theHorizontalTail.get_meanAerodChordActual().getEstimatedValue()/theAircraft.get_wing().get_meanAerodChordActual().getEstimatedValue())
+//						  ;
+				  
+//				  System.out.println(" xh " + xH);
+				  
+				  cMvsAlphaHTailArray [i] = -cNhTail[i] * (theHorizontalTail.get_surface().getEstimatedValue()/
+						  theAircraft.get_wing().get_surface().getEstimatedValue())								
+						  * ( xH /theAircraft.get_wing().get_meanAerodChordActual().getEstimatedValue())*
 						  theHorizontalTail.getAerodynamics().get_dynamicPressureRatio()+
-						  cChTail[i]* theHorizontalTail.get_volumetricRatio() * 
+						  cChTail[i] * (theHorizontalTail.get_surface().getEstimatedValue()/
+								  theAircraft.get_wing().get_surface().getEstimatedValue())								
+								  * ( xH /theAircraft.get_wing().get_meanAerodChordActual().getEstimatedValue())*
 						  theHorizontalTail.getAerodynamics().get_dynamicPressureRatio() +
 						  cMAChTail[i] * theHorizontalTail.getAerodynamics().get_dynamicPressureRatio() * 
 						  (theHorizontalTail.get_surface().getEstimatedValue()/theAircraft.get_wing().get_surface().getEstimatedValue()) *
@@ -991,23 +1006,6 @@ public class CalcPitchingMomentCG{
 	}
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

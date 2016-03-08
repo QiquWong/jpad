@@ -207,6 +207,8 @@ public class LandingGear extends Component{
 		switch(method) {
 
 		// page 359 Sforza (2014) - Aircraft Design
+		
+		//TODO change this
 		case SFORZA : { 
 			_methodsList.add(method);
 			_xCG = Amount.valueOf(0.0, SI.METER);
