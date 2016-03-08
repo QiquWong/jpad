@@ -31,6 +31,7 @@ public class ACAnalysisManager {
 
 	// private MyAircraft _theAircraft;
 	private OperatingConditions _theOperatingConditions;
+
 	private ACPerformanceManager _thePerformances;
 	
 	private AerodynamicDatabaseReader _aerodynamicDatabaseReader;
@@ -368,6 +369,9 @@ public class ACAnalysisManager {
 
 	public void set_aerodynamicDatabaseReader(AerodynamicDatabaseReader _aerodynamicDatabaseReader) {
 		this._aerodynamicDatabaseReader = _aerodynamicDatabaseReader;
+	}
+	public void set_theOperatingConditions(OperatingConditions _theOperatingConditions) {
+		this._theOperatingConditions = _theOperatingConditions;
 	}
 	
 }

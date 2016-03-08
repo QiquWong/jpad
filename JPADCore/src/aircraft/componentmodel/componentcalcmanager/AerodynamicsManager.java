@@ -78,6 +78,14 @@ public abstract class AerodynamicsManager extends ComponentCalculator{
 		this._altitude = _altitude;
 	}
 
+	public OperatingConditions get_theOperatingConditions() {
+		return _theOperatingConditions;
+	}
+
+	public void set_theOperatingConditions(OperatingConditions _theOperatingConditions) {
+		this._theOperatingConditions = _theOperatingConditions;
+	}
+
 	
 
 }

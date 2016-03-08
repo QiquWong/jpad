@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<input>
+	<header>
+		<title>HighLiftDevices_Test_input</title>
+		<author>Vittorio Trifari</author>
+		<version>1.0</version>
+	</header>
+	<ATR72>
+		<Flap_Number unit="">2</Flap_Number>
+		<Flap1>
+			<FlapType unit="">SINGLE_SLOTTED</FlapType>
+			<Cf_c unit="">0.35</Cf_c>
+			<Delta_Flap1 unit="°">20</Delta_Flap1>
+			<Flap_inboard>0.08</Flap_inboard>
+			<Flap_outboard>0.3</Flap_outboard>
+		</Flap1>
+		<Flap2>
+			<FlapType unit="">SINGLE_SLOTTED</FlapType>
+			<Cf_c unit="">0.35</Cf_c>
+			<Delta_Flap2 unit="°">20</Delta_Flap2>
+			<Flap_inboard>0.3</Flap_inboard>
+			<Flap_outboard>0.8</Flap_outboard>
+		</Flap2>
+	</ATR72>
+</input>

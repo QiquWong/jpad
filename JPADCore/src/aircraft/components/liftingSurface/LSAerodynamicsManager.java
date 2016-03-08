@@ -5309,4 +5309,14 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		this.alphaZeroLiftWingClean = alphaZeroLiftWingClean;
 	}
 
+
+	public OperatingConditions getTheOperatingConditions() {
+		return theOperatingConditions;
+	}
+
+
+	public void setTheOperatingConditions(OperatingConditions theOperatingConditions) {
+		this.theOperatingConditions = theOperatingConditions;
+	}
+
 }

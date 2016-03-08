@@ -50,7 +50,7 @@ import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import functions.Linspace;
 import javafx.util.Pair;
-import sandbox.mr.StabilityCalculator.CalcPitchingMomentAC;
+import sandbox.mr.MyStabilityCalculator.CalcPitchingMomentAC;
 import sandbox.mr.WingCalculator.MeanAirfoil;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
@@ -533,7 +533,7 @@ public class Test_MR_07_LongitudinalStability_TurboFan {
 
 		System.out.println("\n-----START OF TAU CALCULATION-----\n" );
 
-		StabilityCalculator theStablityCalculator = new StabilityCalculator();
+		MyStabilityCalculator theStablityCalculator = new MyStabilityCalculator();
 
 		Amount<Angle> deflection;
 		int nValueDelta = 7;
@@ -738,7 +738,7 @@ public class Test_MR_07_LongitudinalStability_TurboFan {
 
 		double cMWing;
 
-		StabilityCalculator.CalcPitchingMomentAC theCMCalculator = theStablityCalculator
+		MyStabilityCalculator.CalcPitchingMomentAC theCMCalculator = theStablityCalculator
 				.new CalcPitchingMomentAC(theWing, theConditions);
 		cMWing = theCMCalculator.calculateCMQuarterMACIntegral(alphaWing);
 		System.out.println(" CM Wing at alpha " + alphaWing + " is " + cMWing);

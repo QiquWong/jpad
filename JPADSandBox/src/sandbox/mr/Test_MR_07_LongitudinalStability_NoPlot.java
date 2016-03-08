@@ -54,8 +54,8 @@ import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import functions.Linspace;
 import javafx.util.Pair;
-import sandbox.mr.StabilityCalculator.CalcPitchingMomentAC;
-import sandbox.mr.StabilityCalculator.CalcPitchingMomentCG;
+import sandbox.mr.MyStabilityCalculator.CalcPitchingMomentAC;
+import sandbox.mr.MyStabilityCalculator.CalcPitchingMomentCG;
 import sandbox.mr.WingCalculator.MeanAirfoil;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
@@ -588,7 +588,7 @@ public class Test_MR_07_LongitudinalStability_NoPlot {
 
 		System.out.println("\n-----START OF TAU CALCULATION-----\n" );
 
-		StabilityCalculator theStablityCalculator = new StabilityCalculator();
+		MyStabilityCalculator theStablityCalculator = new MyStabilityCalculator();
 
 		Amount<Angle> deflection;
 		int nValueDelta = 7;
@@ -868,7 +868,7 @@ public class Test_MR_07_LongitudinalStability_NoPlot {
 
 		double cMWing;
 
-		StabilityCalculator.CalcPitchingMomentAC theCMCalculator = theStablityCalculator
+		MyStabilityCalculator.CalcPitchingMomentAC theCMCalculator = theStablityCalculator
 				.new CalcPitchingMomentAC(theWing, theConditions);
 		cMWing = theCMCalculator.calculateCMQuarterMACIntegral(alphaWing);
 
@@ -987,7 +987,7 @@ public class Test_MR_07_LongitudinalStability_NoPlot {
 
 		double cMHTail;
 
-		StabilityCalculator.CalcPitchingMomentAC theCMHTailCalculator = theStablityCalculator
+		MyStabilityCalculator.CalcPitchingMomentAC theCMHTailCalculator = theStablityCalculator
 				.new CalcPitchingMomentAC(horizontalTail, theConditions);
 
 		cMHTail = theCMHTailCalculator.calculateCMQuarterMACIntegral(alphaHorizontalTail);
@@ -1170,7 +1170,7 @@ public class Test_MR_07_LongitudinalStability_NoPlot {
 		System.out.println(" ------------------- \n\n");
 
 
-		StabilityCalculator.CalcPowerPlantPitchingMoment theCMPowerEffectCalculator =
+		MyStabilityCalculator.CalcPowerPlantPitchingMoment theCMPowerEffectCalculator =
 				theStablityCalculator.new CalcPowerPlantPitchingMoment();
 
 		double thrustPitchEffectDerivative = theCMPowerEffectCalculator.calcPitchingMomentDerThrust(
@@ -1208,7 +1208,7 @@ public class Test_MR_07_LongitudinalStability_NoPlot {
 		
 		deltaFlap.get(0)[0] = 0.0;
 		
-		StabilityCalculator.CalcPitchingMomentCG theCMcgCalculator = theStablityCalculator
+		MyStabilityCalculator.CalcPitchingMomentCG theCMcgCalculator = theStablityCalculator
 				.new CalcPitchingMomentCG(cgPosition, theConditions, aircraft,
 						deltaFlap, flapType, null, eta_in_flap,
 						eta_out_flap, null, 

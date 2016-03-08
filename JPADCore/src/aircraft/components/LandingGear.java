@@ -211,7 +211,7 @@ public class LandingGear extends Component{
 		//TODO change this
 		case SFORZA : { 
 			_methodsList.add(method);
-			_xCG = Amount.valueOf(0.0, SI.METER);
+			_xCG = Amount.valueOf(0.0, SI.METER);		
 			_xCGMap.put(method, _xCG);
 		} break;
 
