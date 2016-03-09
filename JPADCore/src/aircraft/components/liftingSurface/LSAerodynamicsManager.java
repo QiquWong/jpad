@@ -376,8 +376,8 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		_vortexSemiSpan = _vortexSemiSpanToSemiSpanRatio * semispan;
 		_nPointsSemispanWise = (int) (1./(2*_vortexSemiSpanToSemiSpanRatio));
 
-		JPADStaticWriteUtils.logToConsole("\n_numberOfPointsSemispanWise: " + _nPointsSemispanWise 
-				+ "\nVortex semi span length: " + _vortexSemiSpan + "\n");
+//		JPADStaticWriteUtils.logToConsole("\n_numberOfPointsSemispanWise: " + _nPointsSemispanWise 
+//				+ "\nVortex semi span length: " + _vortexSemiSpan + "\n");
 
 		//		_yStations = MyMathUtils.linspace(
 		//				_vortexSemiSpan,
@@ -1784,6 +1784,76 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			return cL;
 		}
 
+		public double[] nasaBlackwellCompleteCurve(Amount<Angle> alphaMin, Amount<Angle> alphaMax, int nValue){
+
+			double [] cLActualArray = new double[nValue];
+			
+			if (alphaMin.getUnit() == NonSI.DEGREE_ANGLE){
+				alphaMin = alphaMin.to(SI.RADIAN);
+			}
+			
+			if (alphaMax.getUnit() == NonSI.DEGREE_ANGLE){
+				alphaMax = alphaMax.to(SI.RADIAN);
+			}
+			MyArray alphaArray = new MyArray();
+			alphaArray.linspace(alphaMin.getEstimatedValue(), alphaMax.getEstimatedValue(), nValue);
+			cLActualArray = LiftCalc.calculateCLvsAlphaArrayNasaBlackwell(getTheLiftingSurface(), alphaArray, nValue);
+			
+//			double [] cLActualArray = new double[nValue];
+//			CalcCLAtAlpha theClatAlphaCalculator = new CalcCLAtAlpha();
+//			double cLStar, cLTemp, qValue, a ,b ,c ,d;
+//			Amount<Angle> alphaTemp = Amount.valueOf(0.0, SI.RADIAN);
+//			MyAirfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
+//			double alphaStar = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
+//			Amount<Angle> alphaStarAmount = Amount.valueOf(alphaStar, SI.RADIAN);
+//			double alphaActual = 0;
+//			
+//			for (int i=0; i<nValue; i++ ){
+//			alphaActual = alphaArray.get(i);
+//			
+//			cLStarWing = theClatAlphaCalculator.nasaBlackwell(alphaStarAmount);
+//			cLTemp = theClatAlphaCalculator.nasaBlackwell(alphaTemp);
+//			if (alphaActual < alphaStar){    //linear trait
+//				cLLinearSlope = (cLStarWing - cLTemp)/alphaStar;
+//				//System.out.println("CL Linear Slope [1/rad] = " + cLLinearSlope);
+//				qValue = cLStarWing - cLLinearSlope*alphaStar;
+//				cLAlphaZero = qValue;
+//				alphaZeroLiftWingClean = -qValue/cLLinearSlope;
+//				cLActualArray[i] = cLLinearSlope * alphaActual+ qValue;
+//				//System.out.println(" CL Actual = " + cLActual );
+//			}
+//
+//			else {  // non linear trait
+//
+//				calcAlphaAndCLMax(meanAirfoil);
+//				double cLMax = get_cLMaxClean();
+//				alphaMax = get_alphaMaxClean();	
+//				double alphaMaxDouble = alphaMax.getEstimatedValue();
+//
+//				cLLinearSlope = (cLStarWing - cLTemp)/alphaStar;
+//				//System.out.println("CL Linear Slope [1/rad] = " + cLLinearSlope);
+//				double[][] matrixData = { {Math.pow(alphaMaxDouble, 3), Math.pow(alphaMaxDouble, 2), alphaMaxDouble,1.0},
+//						{3* Math.pow(alphaMaxDouble, 2), 2*alphaMaxDouble, 1.0, 0.0},
+//						{3* Math.pow(alphaStar, 2), 2*alphaStar, 1.0, 0.0},
+//						{Math.pow(alphaStar, 3), Math.pow(alphaStar, 2),alphaStar,1.0}};
+//				RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
+//				double [] vector = {cLMax, 0,cLLinearSlope, cLStarWing};
+//
+//				double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
+//
+//				a = solSystem[0];
+//				b = solSystem[1];
+//				c = solSystem[2];
+//				d = solSystem[3];
+//
+//				cLActualArray[i] = a * Math.pow(alphaActual, 3) + 
+//						b * Math.pow(alphaActual, 2) + 
+//						c * alphaActual + d;
+//			}
+//
+//			}
+			return cLActualArray;
+		}
 
 		/** 
 		 * Evaluate linear CL vs alpha curve of the lifting surface
@@ -3313,6 +3383,12 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		}
 
 		public Amount<Angle>  integralMeanWithTwist() {
+			
+//			System.out.println(" y stat " + _yStationsIntegral.length);
+//			System.out.println(" chord vs y " + _chordsVsY.size());
+//			System.out.println(" chord " + _chordsVsY.toString());
+//			System.out.println(" twist " + _twistDistribution.size());
+//			System.out.println("alpha zero lift " + _alpha0lDistribution.size());
 
 			_alpha0L = Amount.valueOf(
 					AnglesCalc.alpha0LintegralMeanWithTwist(surface, semispan, 

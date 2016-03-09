@@ -48,12 +48,13 @@ public class OperatingConditions {
 	private Amount<Temperature> _staticTemperature, _stagnationTemperature;
 
 
+
 	public OperatingConditions() {
 
 		_alphaCurrent = Amount.valueOf(Math.toRadians(5), SI.RADIAN);
 		_machCurrent = 0.43;
 		_altitude = Amount.valueOf(6000.0, SI.METER);
-
+		
 		_alpha = new Double[]{0., 1., 2., 3., 4., 5., 6.};
 		_cL = new Double[]{0., 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4};
 
@@ -271,6 +272,8 @@ public class OperatingConditions {
 	public static String getId() {
 		return _id;
 	}
+
+
 
 } // end of class
 

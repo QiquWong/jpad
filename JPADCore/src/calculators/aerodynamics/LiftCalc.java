@@ -9,13 +9,22 @@ import javax.measure.quantity.Angle;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
+import org.apache.commons.math3.linear.MatrixUtils;
+import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.util.MathArrays;
 import org.jscience.physics.amount.Amount;
 
+import aircraft.auxiliary.airfoil.MyAirfoil;
+import aircraft.components.liftingSurface.LSAerodynamicsManager;
+import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
+import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLvsAlphaCurve;
+import aircraft.components.liftingSurface.LSAerodynamicsManager.MeanAirfoil;
+import aircraft.components.liftingSurface.LiftingSurface;
 import calculators.geometry.LSGeometryCalc;
 import configuration.enumerations.EngineTypeEnum;
 import standaloneutils.MyMathUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
+import standaloneutils.customdata.MyArray;
 
 
 public class LiftCalc {
@@ -241,4 +250,66 @@ public class LiftCalc {
 		return cLclMax*kLS*kLambda*clMax*(1 - kOmega*cLAlpha*(-twist)/clMax);
 	}
 
+	
+	public static double[] calculateCLvsAlphaArrayNasaBlackwell(LiftingSurface theLiftingSurface, MyArray alphaArray, int nValue){
+		
+		LSAerodynamicsManager theLsManager = theLiftingSurface.getAerodynamics();
+		double [] cLActualArray = new double[nValue];
+		LSAerodynamicsManager.CalcCLAtAlpha theClatAlphaCalculator =theLsManager.new CalcCLAtAlpha();
+		double cLStar, cLTemp, qValue, a ,b ,c ,d;
+		Amount<Angle> alphaTemp = Amount.valueOf(0.0, SI.RADIAN);
+		LSAerodynamicsManager.MeanAirfoil theMeanAirfoilCalculator =theLsManager.new MeanAirfoil();
+		MyAirfoil meanAirfoil = theMeanAirfoilCalculator.calculateMeanAirfoil(theLiftingSurface);
+		double alphaStar = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
+		Amount<Angle> alphaStarAmount = Amount.valueOf(alphaStar, SI.RADIAN);
+		double alphaActual = 0;
+		Amount<Angle> alphaMax;
+		double cLStarWing, cLLinearSlope, cLAlphaZero, alphaZeroLiftWingClean;
+		for (int i=0; i<nValue; i++ ){
+		alphaActual = alphaArray.get(i);
+		
+		cLStarWing = theClatAlphaCalculator.nasaBlackwell(alphaStarAmount);
+		cLTemp = theClatAlphaCalculator.nasaBlackwell(alphaTemp);
+		if (alphaActual < alphaStar){    //linear trait
+			cLLinearSlope = (cLStarWing - cLTemp)/alphaStar;
+			//System.out.println("CL Linear Slope [1/rad] = " + cLLinearSlope);
+			qValue = cLStarWing - cLLinearSlope*alphaStar;
+			cLAlphaZero = qValue;
+			alphaZeroLiftWingClean = -qValue/cLLinearSlope;
+			cLActualArray[i] = cLLinearSlope * alphaActual+ qValue;
+			//System.out.println(" CL Actual = " + cLActual );
+		}
+
+		else {  // non linear trait
+
+			theLsManager.calcAlphaAndCLMax(meanAirfoil);
+			double cLMax = theLsManager.get_cLMaxClean();
+			alphaMax = theLsManager.get_alphaMaxClean();	
+			double alphaMaxDouble = alphaMax.getEstimatedValue();
+
+			cLLinearSlope = (cLStarWing - cLTemp)/alphaStar;
+			//System.out.println("CL Linear Slope [1/rad] = " + cLLinearSlope);
+			double[][] matrixData = { {Math.pow(alphaMaxDouble, 3), Math.pow(alphaMaxDouble, 2), alphaMaxDouble,1.0},
+					{3* Math.pow(alphaMaxDouble, 2), 2*alphaMaxDouble, 1.0, 0.0},
+					{3* Math.pow(alphaStar, 2), 2*alphaStar, 1.0, 0.0},
+					{Math.pow(alphaStar, 3), Math.pow(alphaStar, 2),alphaStar,1.0}};
+			RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
+			double [] vector = {cLMax, 0,cLLinearSlope, cLStarWing};
+
+			double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
+
+			a = solSystem[0];
+			b = solSystem[1];
+			c = solSystem[2];
+			d = solSystem[3];
+
+			cLActualArray[i] = a * Math.pow(alphaActual, 3) + 
+					b * Math.pow(alphaActual, 2) + 
+					c * alphaActual + d;
+		}
+
+		}
+		return cLActualArray;
+	}
+	
 }

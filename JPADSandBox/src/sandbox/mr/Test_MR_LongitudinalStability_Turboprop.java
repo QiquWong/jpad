@@ -149,7 +149,7 @@ public class Test_MR_LongitudinalStability_Turboprop {
 				theWing,
 				aircraft
 				);
-
+		
 		theWing.setAerodynamics(theLSAnalysis);
 
 
@@ -296,7 +296,6 @@ public class Test_MR_LongitudinalStability_Turboprop {
 
 
 
-
 		//--------------------------------------------------------------------------------------
 		// Mean Airfoil
 
@@ -329,8 +328,8 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		// READING XML FILE
 		// -----------------------------------------------------------------------
 
-		System.out.println("------------------------------------");
-		System.out.println("\n READING XML FILE... \n\n ");
+		System.out.println("\n\n------------------------------------");
+		System.out.println("\n READING XML FILE...  ");
 		System.out.println("\n------------------------------------");
 		
 		// Arguments check
@@ -359,10 +358,16 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		Amount<Length> fanDiameter = reader.getXMLAmountWithUnitByPath("//Fan_Diameter").to(SI.METER);
 		double etaEfficiency = Double.parseDouble(reader.getXMLPropertiesByPath("//Efficiency").get(0));
 		double nBlade = Double.parseDouble(reader.getXMLPropertiesByPath("//NBlade").get(0));
-
-		
+		double machTO = Double.parseDouble(reader.getXMLPropertiesByPath("//Mach_number_TO").get(0));
+		double machL = Double.parseDouble(reader.getXMLPropertiesByPath("//Mach_number_L").get(0));
+		double machCruise = Double.parseDouble(reader.getXMLPropertiesByPath("//Mach_number_cruise").get(0));
+			
 		aircraft.get_HTail().getAerodynamics().set_dynamicPressureRatio(dynamicPressureRatio);
 		double deflectionElevatorDouble = deflectionElevator.getEstimatedValue();
+		
+		aircraft.get_theAerodynamics().set_machCruise(machCruise);
+		aircraft.get_theAerodynamics().set_machTakeOFF(machTO);
+		aircraft.get_theAerodynamics().set_machLanding(machL);
 		
 		List<Double[]> deltaFlap = new ArrayList<Double[]>();
 		List<FlapTypeEnum> flapType = new ArrayList<FlapTypeEnum>();
@@ -380,19 +385,23 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		cf_c.add(chordRatio);
 		
 		aircraft.get_landingGear().set_X0(Amount.valueOf(0.4*aircraft.get_fuselage().get_len_T().getEstimatedValue(), SI.METER));
-		
-		
+
 		// -----------------------------------------------------------------------
 		// STABILITY 
 		// -----------------------------------------------------------------------
 		
-		ACStabilityManager theStabilityManager = new ACStabilityManager(aircraft, alpha0LWing,ConditionEnum.CRUISE , true);
+		
+		Amount<Angle> alphaBody = Amount.valueOf(Math.toRadians(2.0), SI.RADIAN);
+		Amount<Angle> alphaMin = Amount.valueOf(Math.toRadians(-5), SI.RADIAN);
+		Amount<Angle> alphaMax = Amount.valueOf(Math.toRadians(20), SI.RADIAN);
+		
+		ACStabilityManager theStabilityManager = new ACStabilityManager(aircraft, ConditionEnum.CRUISE ,
+				alphaMin, alphaMax, alphaBody , true, subfolderPath);
  
-
+		theStabilityManager.CalculateWingLiftCharacteristics();
 		
 		
-		
-		
+	
 		
 	}
 	

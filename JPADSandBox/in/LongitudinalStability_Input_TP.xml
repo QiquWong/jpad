@@ -19,6 +19,9 @@
 	</Engine_Data>
 	<Other_Data>
 			<Dynamic_Pressure_Ratio  unit="">1</Dynamic_Pressure_Ratio>
+			<Mach_number_TO unit="">0.2</Mach_number_TO>
+			<Mach_number_L unit="">0.2</Mach_number_L>
+			<Mach_number_cruise unit="">0.45</Mach_number_cruise>
 	</Other_Data>
 </input>
 
