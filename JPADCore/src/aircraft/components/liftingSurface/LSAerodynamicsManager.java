@@ -247,6 +247,8 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	public double cLStarWing;
 	private double alphaZeroLiftDeflection;
 	String subfolderPathCDAlpha;
+	public double[] cLActualArray;
+	public MyArray alphaArrayActual;
 	public LSAerodynamicsManager(OperatingConditions conditions, LiftingSurface liftingSurf, Aircraft ac) {
 
 		theOperatingConditions = conditions;
@@ -1201,70 +1203,75 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		}
 
 		/**
-		 * This method calculates CL at alpha given as input. This method calculates both linear trait and 
-		 * non linear trait. It use the NasaBlackwell method in order to evaluate the slope of the linear trait
-		 * and it builds the non-linear trait using a cubic interpolation. 
-		 * alpha is alpha wing in degree or radians 
+		 * This method calculates CL at alpha given as input. It interpolates the values of cl and alpha array filled before.
+		 * WARNING: it is necessary to call the method CalcCLvsAlphaCurve--> nasaBlackwellCompleteCurve before.
 		 * 
 		 * @author Manuela Ruocco
 		 *
 		 */		
 
 		public double nasaBlackwellCompleteCurve(Amount<Angle> alpha){
-
+			
 			if (alpha.getUnit() == NonSI.DEGREE_ANGLE) 
 				alpha = alpha.to(SI.RADIAN);
 
-			double cLStar, cLTemp, qValue, a ,b ,c ,d;
-			Amount<Angle> alphaTemp = Amount.valueOf(0.0, SI.RADIAN);
-			MyAirfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
-			double alphaStar = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
-			Amount<Angle> alphaStarAmount = Amount.valueOf(alphaStar, SI.RADIAN);
-
-			cLStarWing = nasaBlackwell(alphaStarAmount);
-			cLTemp = nasaBlackwell(alphaTemp);
-			if (alpha.getEstimatedValue() < alphaStar){    //linear trait
-				cLLinearSlope = (cLStarWing - cLTemp)/alphaStar;
-				//System.out.println("CL Linear Slope [1/rad] = " + cLLinearSlope);
-				qValue = cLStarWing - cLLinearSlope*alphaStar;
-				cLAlphaZero = qValue;
-				alphaZeroLiftWingClean = -qValue/cLLinearSlope;
-				double cLActual = cLLinearSlope * alpha.getEstimatedValue() + qValue;
-				//System.out.println(" CL Actual = " + cLActual );
-				return cLActual;
-			}
-
-			else {  // non linear trait
-
-				calcAlphaAndCLMax(meanAirfoil);
-				double cLMax = get_cLMaxClean();
-				Amount<Angle> alphaMax = get_alphaMaxClean();	
-				double alphaMaxDouble = alphaMax.getEstimatedValue();
-
-				cLLinearSlope = (cLStarWing - cLTemp)/alphaStar;
-				//System.out.println("CL Linear Slope [1/rad] = " + cLLinearSlope);
-				double[][] matrixData = { {Math.pow(alphaMaxDouble, 3), Math.pow(alphaMaxDouble, 2), alphaMaxDouble,1.0},
-						{3* Math.pow(alphaMaxDouble, 2), 2*alphaMaxDouble, 1.0, 0.0},
-						{3* Math.pow(alphaStar, 2), 2*alphaStar, 1.0, 0.0},
-						{Math.pow(alphaStar, 3), Math.pow(alphaStar, 2),alphaStar,1.0}};
-				RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
-				double [] vector = {cLMax, 0,cLLinearSlope, cLStarWing};
-
-				double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
-
-				a = solSystem[0];
-				b = solSystem[1];
-				c = solSystem[2];
-				d = solSystem[3];
-
-				double clActual = a * Math.pow(alpha.getEstimatedValue(), 3) + 
-						b * Math.pow(alpha.getEstimatedValue(), 2) + 
-						c * alpha.getEstimatedValue() + d;
-
-				
-				return clActual;
-
-			}							
+			double  [] clValue = getcLActualArray();
+			double [] alphaArray = getAlphaArrayActual();
+			
+			double cLAtAlpha = MyMathUtils.getInterpolatedValue1DLinear(alphaArray,clValue, alpha.getEstimatedValue());
+			return cLAtAlpha;
+			
+			
+//			double cLStar, cLTemp, qValue, a ,b ,c ,d;
+//			Amount<Angle> alphaTemp = Amount.valueOf(0.0, SI.RADIAN);
+//			MyAirfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
+//			double alphaStar = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
+//			Amount<Angle> alphaStarAmount = Amount.valueOf(alphaStar, SI.RADIAN);
+//
+//			cLStarWing = nasaBlackwell(alphaStarAmount);
+//			cLTemp = nasaBlackwell(alphaTemp);
+//			if (alpha.getEstimatedValue() < alphaStar){    //linear trait
+//				cLLinearSlope = (cLStarWing - cLTemp)/alphaStar;
+//				//System.out.println("CL Linear Slope [1/rad] = " + cLLinearSlope);
+//				qValue = cLStarWing - cLLinearSlope*alphaStar;
+//				cLAlphaZero = qValue;
+//				alphaZeroLiftWingClean = -qValue/cLLinearSlope;
+//				double cLActual = cLLinearSlope * alpha.getEstimatedValue() + qValue;
+//				//System.out.println(" CL Actual = " + cLActual );
+//				return cLActual;
+//			}
+//
+//			else {  // non linear trait
+//
+//				calcAlphaAndCLMax(meanAirfoil);
+//				double cLMax = get_cLMaxClean();
+//				Amount<Angle> alphaMax = get_alphaMaxClean();	
+//				double alphaMaxDouble = alphaMax.getEstimatedValue();
+//
+//				cLLinearSlope = (cLStarWing - cLTemp)/alphaStar;
+//				//System.out.println("CL Linear Slope [1/rad] = " + cLLinearSlope);
+//				double[][] matrixData = { {Math.pow(alphaMaxDouble, 3), Math.pow(alphaMaxDouble, 2), alphaMaxDouble,1.0},
+//						{3* Math.pow(alphaMaxDouble, 2), 2*alphaMaxDouble, 1.0, 0.0},
+//						{3* Math.pow(alphaStar, 2), 2*alphaStar, 1.0, 0.0},
+//						{Math.pow(alphaStar, 3), Math.pow(alphaStar, 2),alphaStar,1.0}};
+//				RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
+//				double [] vector = {cLMax, 0,cLLinearSlope, cLStarWing};
+//
+//				double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
+//
+//				a = solSystem[0];
+//				b = solSystem[1];
+//				c = solSystem[2];
+//				d = solSystem[3];
+//
+//				double clActual = a * Math.pow(alpha.getEstimatedValue(), 3) + 
+//						b * Math.pow(alpha.getEstimatedValue(), 2) + 
+//						c * alpha.getEstimatedValue() + d;
+//
+//				
+//				return clActual;
+//
+//			}							
 		}
 
 
@@ -1288,7 +1295,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		 * velocity and the reference line of fuselage.
 		 */		
 
-		public double nasaBlackwellalphaBody(Amount<Angle> alphaBody){
+		public double nasaBlackwellAlphaBody(Amount<Angle> alphaBody){
 			if (alphaBody.getUnit() == NonSI.DEGREE_ANGLE) 
 				alphaBody = alphaBody.to(SI.RADIAN);
 
@@ -1646,15 +1653,6 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 		}
 
-		System.out.println("\n -----------CLEAN-------------- ");
-		System.out.println(" alpha max " + alphaMaxDouble*57.3 + " (deg)");
-		System.out.println(" alpha star " + alphaStar*57.3 + " (deg)");
-		System.out.println(" cL max " + cLMax);
-		System.out.println(" cL star " + cLStar);
-		System.out.println(" cL alpha " + cLLinearSlope + " (1/rad)");
-
-
-
 
 		MyChartToFileUtils.plotNoLegend(
 				alphaArrayPlot,	cLArrayPlot, 
@@ -1786,7 +1784,9 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 		public double[] nasaBlackwellCompleteCurve(Amount<Angle> alphaMin, Amount<Angle> alphaMax, int nValue){
 
-			double [] cLActualArray = new double[nValue];
+			//double [] cLActualArray = new double[nValue];
+			alphaArrayActual =new MyArray();
+			cLActualArray = new double[nValue];
 			
 			if (alphaMin.getUnit() == NonSI.DEGREE_ANGLE){
 				alphaMin = alphaMin.to(SI.RADIAN);
@@ -1795,9 +1795,9 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			if (alphaMax.getUnit() == NonSI.DEGREE_ANGLE){
 				alphaMax = alphaMax.to(SI.RADIAN);
 			}
-			MyArray alphaArray = new MyArray();
-			alphaArray.linspace(alphaMin.getEstimatedValue(), alphaMax.getEstimatedValue(), nValue);
-			cLActualArray = LiftCalc.calculateCLvsAlphaArrayNasaBlackwell(getTheLiftingSurface(), alphaArray, nValue);
+			
+			alphaArrayActual.linspace(alphaMin.getEstimatedValue(), alphaMax.getEstimatedValue(), nValue);
+			cLActualArray = LiftCalc.calculateCLvsAlphaArrayNasaBlackwell(getTheLiftingSurface(), alphaArrayActual, nValue);
 			
 //			double [] cLActualArray = new double[nValue];
 //			CalcCLAtAlpha theClatAlphaCalculator = new CalcCLAtAlpha();
@@ -5394,5 +5394,22 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	public void setTheOperatingConditions(OperatingConditions theOperatingConditions) {
 		this.theOperatingConditions = theOperatingConditions;
 	}
+
+
+	public double[] getcLActualArray() {
+		return cLActualArray;
+	}
+
+
+	public void setcLActualArray(double[] cLActualArray) {
+		this.cLActualArray = cLActualArray;
+	}
+
+
+	public double[] getAlphaArrayActual() {
+		return alphaArrayActual.toArray();
+	}
+
+
 
 }

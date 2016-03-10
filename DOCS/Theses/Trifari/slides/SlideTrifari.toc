@@ -1,2 +1,3 @@
 \beamer@endinputifotherversion {3.36pt}
 \beamer@sectionintoc {1}{Introducing JPAD}{3}{0}{1}
+\beamer@sectionintoc {2}{The performance analysis module}{15}{0}{2}

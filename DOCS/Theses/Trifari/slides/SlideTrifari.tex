@@ -3,16 +3,21 @@
 %----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 %
 %-------------------Document definition---------------------
-\documentclass[11pt]{beamer}
+\documentclass[compress]{beamer} 
 \usepackage{helvet}
 \mode<presentation>
 %
 %---------------------Beamer theme-------------------------
 \usetheme{Antibes}{
 \usecolortheme{dolphin} % Beamer color theme
-\setbeamercovered{highly dynamic}
 }
 \useinnertheme{rounded}
+\useoutertheme[subsection=false]{miniframes}
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd{\slideentry}{\advance\beamer@tempdim by -.05cm}{\advance\beamer@tempdim by\beamer@vboxoffset\advance\beamer@tempdim by\beamer@boxsize\advance\beamer@tempdim by 1.2\pgflinewidth}{}{}
+\patchcmd{\slideentry}{\kern\beamer@tempdim}{\advance\beamer@tempdim by 2pt\advance\beamer@tempdim by\wd\beamer@sectionbox\kern\beamer@tempdim}{}{}
+\makeatother
 \newcommand*\MyBullet{%
   \item[\color{blue}\scalebox{0.9}{\textbullet}]}
 \setbeamertemplate{footline}[frame number]
@@ -21,6 +26,8 @@
 %---------------Encoding and other settings-----------------
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage{pgfplots}
+\usepackage{tikz}
 \usepackage{graphicx}
 \definecolor{mygold}{RGB}{255, 153, 0}
 \setbeamercolor{item}{bg=mygold,fg=mygold}
@@ -100,11 +107,19 @@ prof. Agostino De Marco &  M35/411 \\
 \tableofcontents
 \end{frame}
 %
+%----------------Current table of contents--------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Table of Contents}
+\section{Introducing JPAD}
+\tableofcontents[currentsection]
+\subsection{}
+\end{frame}
+%
 %-----------------------Frame 1-------------------------------
 \placelogotrue
 \placebackgroundfalse
 \begin{frame}{Introducing JPAD - {\Large\textcolor{mygold}{J}}ava {\Large\textcolor{mygold}{P}}rograms for {\Large\textcolor{mygold}{A}}ircraft {\Large\textcolor{mygold}{D}}esign}
-\section{Introducing JPAD}
 \Wider{
 \begin{itemize}
 \MyBullet A software toolchain for {\textcolor{mygold}{aircraft preliminary design}} and {\textcolor{mygold}{MDO}}
@@ -122,11 +137,11 @@ prof. Agostino De Marco &  M35/411 \\
 \begin{frame}{Main features}
 \Wider{
 \begin{itemize}
-\MyBullet Define parametric representations of a complete aircraft with XML configuration/input files.
-\MyBullet Generate CAD geometries of aircraft assembly and sub-components. Measure lengths, areas, volumes. 
-\MyBullet Perform various types of analysis (L0, L0.5, L1): Aerodynamics, Stability \& Control, Performance, Weight, Costs.
-\MyBullet Exports analysis results in XML and Excel formats. Produce useful output charts for each analysis. 
-\MyBullet Perform iterative analysis in order to reach an optimum configuration. (\emph{Work in progress}) 
+\MyBullet Define a {\textcolor{mygold}{parametric representations of a complete aircraft}} with XML configuration/input files.
+\MyBullet {\textcolor{mygold}{Generate CAD geometries}} of aircraft assembly and sub-components. Measure lengths, areas, volumes. 
+\MyBullet {\textcolor{mygold}{Perform various types of analysis}} (L0, L0.5, L1): \textbf{Aerodynamics}, \textbf{Stability \& Control}, \textbf{Performance}, \textbf{Weight \& Balance}, \textbf{Costs}.
+\MyBullet Exports {\textcolor{mygold}{analysis results}} in {\textcolor{mygold}{XML}} and {\textcolor{mygold}{Excel formats}}. Produce useful {\textcolor{mygold}{output charts}} for each analysis. 
+\MyBullet Perform iterative analysis in order to {\textcolor{mygold}{reach an optimum configuration}}. (\alert{Work in progress}) 
 \end{itemize}
 }
 \end{frame}
@@ -137,11 +152,11 @@ prof. Agostino De Marco &  M35/411 \\
 \begin{frame}{Java. Why?}
 \Wider{
 \begin{itemize}
-\MyBullet Language widely supported. This avoids the library to became obsolete due to the aging of the programming language used.
-\MyBullet The language promote the use of open source libraries, especially for I/O tasks and for complex mathematical operations.
-\MyBullet Widely supported GUI frameworks (SWT/JFace and JavaFX) and a GUI visual builders.
-\MyBullet Object-Oriented paradigm is naturally applied in the abstraction of typical Aircraft Design problems.
-\MyBullet Promotes modularity: easier to work with in an ever changing team.
+\MyBullet {\textcolor{mygold}{Language widely supported}}. This avoids the library to become obsolete due to the aging of the programming language used.
+\MyBullet The language promote the use of {\textcolor{mygold}{open source libraries}}, especially for I/O tasks and for complex mathematical operations.
+\MyBullet {\textcolor{mygold}{Widely supported GUI frameworks}} (SWT/JFace and JavaFX) and a GUI visual builders.
+\MyBullet {\textcolor{mygold}{Object-Oriented paradigm}} is naturally applied in the abstraction of typical Aircraft Design problems.
+\MyBullet Promotes {\textcolor{mygold}{modularity}}: easier to work with in an ever changing team.
 \end{itemize}
 }
 \end{frame}
@@ -153,7 +168,7 @@ prof. Agostino De Marco &  M35/411 \\
 \WiderImages{
 \begin{figure}[t]
 \centering
-\includegraphics[keepaspectratio, width=0.9\paperwidth]{images/LanguageTrend}
+\includegraphics[keepaspectratio, width=\paperwidth]{images/LanguageTrend}
 \end{figure}
 }
 \end{frame}
@@ -164,9 +179,9 @@ prof. Agostino De Marco &  M35/411 \\
 %
 \setbeamertemplate{background canvas}{
     \rule{0in}{3.4in}%
-    \rule{0.75in}{0in}%
+    \rule{0.56in}{0in}%
     \centering
-    \includegraphics[keepaspectratio, width=0.65\paperwidth]{images/flowchart3}
+    \includegraphics[keepaspectratio, width=0.7\paperwidth]{images/flowchart3}
 }
 %
 \begin{frame}{JPAD typical work session}
@@ -192,7 +207,7 @@ The input file type chosen is the {\textcolor{mygold}{XML}} (\emph{{\textcolor{m
 \placebackgroundfalse
 %
 \setbeamertemplate{background canvas}{
-    \rule{0in}{3.65in}%
+    \rule{0in}{3.4in}%
     \rule{0.385in}{0in}%
     \centering
     \includegraphics[keepaspectratio, width=0.52\paperwidth]{images/Folder_Tree}
@@ -201,32 +216,96 @@ The input file type chosen is the {\textcolor{mygold}{XML}} (\emph{{\textcolor{m
 \begin{frame}{Input file structure prototype}
 \begin{figure}[!t]
     \hspace*{6.56cm}
-    \vspace*{7cm}
+    \vspace*{2cm}
     \includegraphics[keepaspectratio, width=0.4\paperwidth]{images/XMLAircraft}
 \end{figure}
 \end{frame}
 \setbeamertemplate{background canvas}{ }
 %
 %-----------------------Frame 8-------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+\placelogotrue
+\placebackgroundfalse
+%
+\setbeamertemplate{background canvas}{
+    \rule{0in}{2.775in}%
+    \rule{2in}{0in}%
+    \centering
+    \includegraphics[keepaspectratio, width=0.6\paperwidth]{images/XLS}
+}
+%
+\begin{frame}{JPAD Output}
+\Wider{
+\begin{itemize}
+    \vspace*{-2cm}
+\MyBullet XML
+\MyBullet Microsoft Excel
+\MyBullet Charts
+\MyBullet CAD model
+\end{itemize}
+\begin{figure}[!t]
+    \hspace*{-7.7cm}
+    \vspace*{-3cm}
+    \includegraphics[keepaspectratio, width=0.4\paperwidth]{images/CAD}
+\end{figure}
+}
+\end{frame}
+%
+\setbeamertemplate{background canvas}{}
+%
+%-----------------------Frame 9-------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{ADOpT GUI}
+\Wider{
+\begin{itemize}
+	\MyBullet {\textcolor{mygold}{Menu bar}}, holds all the available actions.
+	\MyBullet {\textcolor{mygold}{Toolbar}}, holds the actions needed to interact with the application.
+	\MyBullet {\textcolor{mygold}{Project tree}}, provides access to all the aircraft components and the analysis results any time.
+	\MyBullet {\textcolor{mygold}{3D view}}, shows the CAD model which can be updated each time.
+	\MyBullet {\textcolor{mygold}{Log message window}}, tells the status of pending operations.
+	\MyBullet {\textcolor{mygold}{Tab folder}}, contains all the windows opened.
+\end{itemize}
+}
+\end{frame}
+%
+%-----------------------Frame 10-------------------------------
+\placelogotrue
+\placebackgroundfalse
+%
+\setbeamertemplate{background canvas}{
+    \rule{0in}{3.12in}%
+    \rule{0.1in}{0in}%
+    \centering
+    \includegraphics[keepaspectratio, width=0.95\paperwidth]{images/GUI}
+}
+%
+\begin{frame}{ADOpT GUI - Layout}
+\end{frame}
+\setbeamertemplate{background canvas}{ }
+%
+%-----------------------Frame 11-------------------------------
+\placelogotrue
+\placebackgroundfalse
+%
+\setbeamertemplate{background canvas}{
+    \rule{0in}{3.5in}%
+    \rule{0.3in}{0in}%
+    \centering
+    \includegraphics[keepaspectratio, width=0.94\paperwidth]{images/interface}
+}
+%
+\begin{frame}{Interoperability}
+\end{frame}
+\setbeamertemplate{background canvas}{ }
+%
+%----------------Current table of contents--------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Table of Contents}
+\section{The performance analysis module}
+\tableofcontents[currentsection]
+\subsection{}
+\end{frame}
+%
+%-----------------------Frame 12-------------------------------
 \end{document}

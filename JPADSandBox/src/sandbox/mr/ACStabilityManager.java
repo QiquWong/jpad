@@ -1,6 +1,8 @@
 package sandbox.mr;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
@@ -17,10 +19,15 @@ import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
+import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcHighLiftDevices;
 import configuration.enumerations.AircraftTypeEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ConditionEnum;
+import configuration.enumerations.FlapTypeEnum;
+import configuration.enumerations.MethodEnum;
 import functions.Linspace;
+import standaloneutils.JPADXmlReader;
+import standaloneutils.MyChartToFileUtils;
 import standaloneutils.customdata.CenterOfGravity;
 import standaloneutils.customdata.MyArray;
 
@@ -31,8 +38,9 @@ public class ACStabilityManager {
 	OperatingConditions theOperatingConditions = new OperatingConditions();
 	LSAerodynamicsManager theLSAnalysis;
 	LSAerodynamicsManager theLSHTailAnalysis;
+	ConditionEnum theCondition;
 	
-	int nValueAlpha = 30;
+	int nValueAlpha = 50;
 	
 	CenterOfGravity centerOfGravity = new CenterOfGravity();
 	Amount<Length> maxXaftCenterOfGravityBRF;
@@ -46,13 +54,24 @@ public class ACStabilityManager {
 	Fuselage theFuselage;
 	LiftingSurface theHTail;
 	String subfolderPath;
+	String pathXMLTakeOFF = null;
+	String pathXMLLanding = null;
 	boolean alphaCheck;
-	boolean plotCheck = true;
+	boolean plotCheck = false;
 	private double cLIsolatedWing;
 	
 	MyArray alphaStabilityArray = new MyArray();
 	private double[] cLWingArray;
 	
+
+	// High Lift Devices Input
+	List<Double[]> deltaFlap = new ArrayList<Double[]>();
+	List<FlapTypeEnum> flapType = new ArrayList<FlapTypeEnum>();
+	List<Double> etaInFlap = new ArrayList<Double>();
+	List<Double> etaOutFlap = new ArrayList<Double>();
+	List<Double> cfc = new ArrayList<Double>();
+
+			
 	// BUILDER--------------------------------------
 	
 	/**
@@ -68,13 +87,17 @@ public class ACStabilityManager {
 	 * @param When this check value is true will be draw all graphs
 	 */
 	public ACStabilityManager(Aircraft theAircraft, ConditionEnum theCondition,Amount<Angle> alphaMin, Amount<Angle> alphaMax,
-			Amount<Angle> alphaBody, boolean plotCheck, String subfolderPah){
+			Amount<Angle> alphaBody, boolean plotCheck, String subfolderPath, String pathXMLTakeOFF){
 
 		this.aircraft = theAircraft;
 		this.theWing = aircraft.get_wing();
 		this.theFuselage = aircraft.get_fuselage();
 		this.theHTail = aircraft.get_HTail();
 		this.subfolderPath = subfolderPath;
+		
+		this.theCondition = theCondition;
+		
+		this.pathXMLTakeOFF = pathXMLTakeOFF;
 		
 		this.alphaBody = alphaBody;
 		if (alphaBody==null){
@@ -225,8 +248,87 @@ public class ACStabilityManager {
 		System.out.println("|       WING        |");
 		System.out.println(" ------------------- \n\n");
 
+		
+		if (theCondition == ConditionEnum.TAKE_OFF){
+			// READ TAKE OFF DATA
+			
+			// Arguments check
+			if (pathXMLTakeOFF == null){
+				System.err.println("NO " + theCondition + " INPUT FILE GIVEN --> TERMINATING");
+				return;
+			}
 
-		System.out.println("\n \t Data: ");
+			JPADXmlReader reader = new JPADXmlReader(pathXMLTakeOFF);
+
+			System.out.println("-----------------------------------------------------------");
+			System.out.println("XML File Path : " + pathXMLTakeOFF);
+			System.out.println("-----------------------------------------------------------");
+			System.out.println("Initialize reading \n");
+
+			List<String> flapNumberProperty = reader.getXMLPropertiesByPath("//Flap_Number");
+			int flapNumber = Integer.valueOf(flapNumberProperty.get(0));
+			List<String> flapTypeProperty = reader.getXMLPropertiesByPath("//FlapType");
+			List<String> cfcProperty = reader.getXMLPropertiesByPath("//Cf_c");
+			List<String> deltaFlap1Property = reader.getXMLPropertiesByPath("//Delta_Flap1");
+			List<String> deltaFlap2Property = reader.getXMLPropertiesByPath("//Delta_Flap2");
+			List<String> etaInProperty = reader.getXMLPropertiesByPath("//Flap_inboard");
+			List<String> etaOutProperty = reader.getXMLPropertiesByPath("//Flap_outboard");
+
+			for(int i=0; i<flapTypeProperty.size(); i++) {
+				if(flapTypeProperty.get(i).equals("SINGLE_SLOTTED"))
+					flapType.add(FlapTypeEnum.SINGLE_SLOTTED);
+				else if(flapTypeProperty.get(i).equals("DOUBLE_SLOTTED"))
+					flapType.add(FlapTypeEnum.DOUBLE_SLOTTED);
+				else if(flapTypeProperty.get(i).equals("PLAIN"))
+					flapType.add(FlapTypeEnum.PLAIN);
+				else if(flapTypeProperty.get(i).equals("FOWLER"))
+					flapType.add(FlapTypeEnum.FOWLER);
+				else if(flapTypeProperty.get(i).equals("TRIPLE_SLOTTED"))
+					flapType.add(FlapTypeEnum.TRIPLE_SLOTTED);
+				else {
+					System.err.println("NO VALID FLAP TYPE!!");
+					return;
+				}
+			}
+
+			Double[] deltaFlap1Array = new Double[deltaFlap1Property.size()];
+			for(int i=0; i<deltaFlap1Array.length; i++)
+				deltaFlap1Array[i] = Double.valueOf(deltaFlap1Property.get(i));
+
+			Double[] deltaFlap2Array = new Double[deltaFlap2Property.size()];
+			for(int i=0; i<deltaFlap1Array.length; i++)
+				deltaFlap2Array[i] = Double.valueOf(deltaFlap2Property.get(i));
+
+			deltaFlap.add(deltaFlap1Array);
+			deltaFlap.add(deltaFlap2Array);
+
+			for(int i=0; i<cfcProperty.size(); i++)
+				cfc.add(Double.valueOf(cfcProperty.get(i)));
+			for(int i=0; i<etaInProperty.size(); i++)
+				etaInFlap.add(Double.valueOf(etaInProperty.get(i)));
+			for(int i=0; i<etaOutProperty.size(); i++)
+				etaOutFlap.add(Double.valueOf(etaOutProperty.get(i)));
+
+			LSAerodynamicsManager.CalcHighLiftDevices highLiftCalculator = theLSAnalysis
+					.new CalcHighLiftDevices(theWing,
+							theOperatingConditions,
+							deltaFlap,
+							flapType,
+							null,
+							etaInFlap, 
+							etaOutFlap,
+							null,
+							null,
+							cfc, 
+							null,
+							null,
+							null
+							);
+			
+			
+		}
+
+		System.out.println("\t Data: ");
 
 		// DATA
 		System.out.println("Angle of incidence of wing (deg) = " + ""
@@ -242,19 +344,75 @@ public class ACStabilityManager {
 		cLWingArray = theCLArrayCalculator.nasaBlackwellCompleteCurve(alphaMin, alphaMax, nValueAlpha);
 		System.out.println("CL wing Array " + Arrays.toString(cLWingArray) );
 		
+		
+		//CALCULATING CL AT ALPHA FOR WING
+		if(alphaCheck == true){
 		LSAerodynamicsManager.CalcCLAtAlpha theCLWingCalculator = theLSAnalysis.new CalcCLAtAlpha();
-		cLIsolatedWing = theCLWingCalculator.nasaBlackwellalphaBody(alphaBody);
-		System.out.println("CL of Isolated wing at alpha body = " + cLIsolatedWing);
+		cLIsolatedWing = theCLWingCalculator.nasaBlackwellAlphaBody(alphaBody);
+		System.out.println("\nCL of Isolated wing at alpha body = " + cLIsolatedWing);
+		}
 
 
-		//PLOT CL vs alpha
+		//PLOT CL VS ALPHA
 		if(plotCheck == true){
-			theLSAnalysis.PlotCLvsAlphaCurve(subfolderPath);
-			System.out.println("-------------------------------------");
-			System.out.println("\n \t \t \tWRITING CL vs ALPHA CHART TO FILE  ");
-
+			System.out.println("\n-------------------------------------");
+			System.out.println("\t \t \tWRITING CL vs ALPHA CHART TO FILE  ");
+			MyChartToFileUtils.plotNoLegend(
+					alphaStabilityArray.toArray(),cLWingArray, 
+					null, null , null , null ,					    // axis with limits
+					"alpha_W", "CL", "deg", "",	   				
+					subfolderPath, "CL vs Alpha clean " + theWing);
+			System.out.println("\t \t \tDONE  ");
+			
 			//PLOT stall path //TODO delete this
+			
+			System.out.println("\n-------------------------------------");
+			System.out.println("\t \t \tWRITING STALL PATH CHART TO FILE  ");
+			
+			LSAerodynamicsManager.CalcCLMaxClean theCLmaxAnalysis = theLSAnalysis.new CalcCLMaxClean();
+			MyArray clMaxAirfoil = theCLmaxAnalysis.getClAirfoils();
+			Amount<Angle> alphaWingStall = theLSAnalysis.get_alphaStall();
+			double alphaSecond = theLSAnalysis.getAlphaArray().get(3);
+			double alphaThird = theLSAnalysis.getAlphaArray().get(6);
+			MyArray clAlphaStall = theLSAnalysis.getcLMap()
+					.getCxyVsAlphaTable()
+					.get(MethodEnum.NASA_BLACKWELL ,alphaWingStall);
+			MyArray clSecond = theLSAnalysis.getcLMap()
+					.getCxyVsAlphaTable()
+					.get(MethodEnum.NASA_BLACKWELL ,Amount.valueOf(alphaSecond, SI.RADIAN));
+			MyArray clThird = theLSAnalysis.getcLMap()
+					.getCxyVsAlphaTable()
+					.get(MethodEnum.NASA_BLACKWELL ,Amount.valueOf(alphaThird, SI.RADIAN));
 
+			double [][] semiSpanAd = {
+					theLSAnalysis.get_yStationsND(), theLSAnalysis.get_yStationsND(),
+					theLSAnalysis.get_yStationsND(), theLSAnalysis.get_yStationsND(),
+					theLSAnalysis.get_yStationsND(), theLSAnalysis.get_yStationsND(),
+					theLSAnalysis.get_yStationsND(), theLSAnalysis.get_yStationsND()};
+
+			double [][] clDistribution = {
+					clMaxAirfoil.getRealVector().toArray(),
+					clSecond.getRealVector().toArray(),
+					clThird.getRealVector().toArray(),
+					clAlphaStall.getRealVector().toArray()};
+			
+			String [] legend = new String [4];
+			legend[0] = "CL max airfoil";
+			legend[1] = "CL distribution at alpha " 
+					+ Math.toDegrees( alphaSecond);
+			legend[2] = "CL distribution at alpha " 
+					+ Math.toDegrees( alphaThird);
+			legend[3] = "CL distribution at alpha " 
+					+ Math.toDegrees( alphaWingStall.getEstimatedValue());
+			
+			MyChartToFileUtils.plot(
+					semiSpanAd,	clDistribution, // array to plot
+					0.0, 1.0, 0.0, 2.0,					    // axis with limits
+					"eta", "CL", "", "",	    // label with unit
+					legend,					// legend
+					subfolderPath, "Stall Path of Wing ");			    // output informations
+			
+			System.out.println("\t \t \tDONE  ");
 		}
 
 
@@ -282,7 +440,11 @@ public class ACStabilityManager {
 		this.cLIsolatedWing = cLIsolatedWing;
 	}
 
-
+	
+	public double[] getAlphaStabilityArray() {
+		return alphaStabilityArray.toArray();
+	}
+	
 	public double[] getcLWingArray() {
 		return cLWingArray;
 	}

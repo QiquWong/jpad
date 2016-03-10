@@ -316,6 +316,7 @@ In this paragraph the implementation inside the JPAD library of the calculation 
 \lstinline[language=Java]!CalcCLAtAlpha! & Using a method of this class it's possible to evaluate the lift coefficient of a lifting surface at a given angle of attack. It's possible to use the following formulas: DLR equation, Anderson compressible subsonic equation and Nasa-Blackwell method. With the last method it's calculated both linear trait and non linear trait. In order to builds the non-linear trait a cubic interpolation is used.\\ \hline 
 \lstinline[language=Java]!CalcCLMaxClean! &This class contains some method that evaluatex the maximum lift coefficient of a lifting surface without hig-lift devices. It' possible to use Phillips and Alley method or stall path method in which the load distribution in evaluated with Nasa-Blackwell method.\\ \hline 
 \lstinline[language=Java]!plotCLvsAlphaCurve()! & This function plot CL vs Alpha curve of an isolated wing using 30 value of alpha between $\alpha = - 10.0^{\circ}$  deg and  $\alpha = \alpha + 2^{\circ}$.\\ \hline 
+\lstinline[language=Java]!CalcCLvsAlphaCurve!&The methods of this class, calculate CL at alpha given as input. It uses values of field filled before. So in order to evaluate the lift coefficient with this class it's necessary to call other method before.\\ \hline 
 \lstinline[language=Java]!calcAlphaAndCLMax! & This method calls all the needed method in order to evaluate the maximum lift coefficient and the stall angle.\\ \hline 
 \lstinline[language=Java]!CalcHighLiftDevices! & This method calculates the effects of high-lift devices on the lift characteristics.\\ \hline 
 \lstinline[language=Java]!CalcCLAlpha! & This class calculates the lift coefficient gradient of the whole lifting surface. It's possible to choose Polhamus formula,  Anderson equation, or Nasa-Blackwell method where the lift coefficient gradient is evaluated from two value of lift coefficient.\\ \hline 
@@ -330,7 +331,7 @@ In order to evaluate the lift coefficient of a lifting surface and to obtain the
 
 \begin{figure}[H]
 \centering
-{\includegraphics[height=14cm, angle=90]{Immagini/clflowchart.pdf}} 
+{\includegraphics[height=14.6cm, angle=90]{Immagini/clflowchart.pdf}} 
 \caption{Flow chart of lift estimation classes.}
 \label{fig:clalf}
 \end{figure}

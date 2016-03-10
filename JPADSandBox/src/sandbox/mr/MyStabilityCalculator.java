@@ -694,7 +694,7 @@ public class CalcPitchingMomentCG{
 			  alphaBody = Amount.valueOf(Math.toRadians(alphaBodyArray[i]), SI.RADIAN);
 			  
 			  
-			  cLIsolatedWing[i] = theCLWingCalculator.nasaBlackwellalphaBody(alphaBody);
+			  cLIsolatedWing[i] = theCLWingCalculator.nasaBlackwellAlphaBody(alphaBody);
 			  cDIsolatedWing[i] =  theCDWingCalculator.integralFromCdAirfoil(
 						alphaWing, MethodEnum.NASA_BLACKWELL, theLSManager);
 			

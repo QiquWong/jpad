@@ -253,10 +253,12 @@ public class LiftCalc {
 	
 	public static double[] calculateCLvsAlphaArrayNasaBlackwell(LiftingSurface theLiftingSurface, MyArray alphaArray, int nValue){
 		
+		double cLMax = 0;
+		double alphaMaxDouble = 0;
 		LSAerodynamicsManager theLsManager = theLiftingSurface.getAerodynamics();
 		double [] cLActualArray = new double[nValue];
 		LSAerodynamicsManager.CalcCLAtAlpha theClatAlphaCalculator =theLsManager.new CalcCLAtAlpha();
-		double cLStar, cLTemp, qValue, a ,b ,c ,d;
+		double cLStar = 0, cLTemp, qValue, a ,b ,c ,d;
 		Amount<Angle> alphaTemp = Amount.valueOf(0.0, SI.RADIAN);
 		LSAerodynamicsManager.MeanAirfoil theMeanAirfoilCalculator =theLsManager.new MeanAirfoil();
 		MyAirfoil meanAirfoil = theMeanAirfoilCalculator.calculateMeanAirfoil(theLiftingSurface);
@@ -264,7 +266,7 @@ public class LiftCalc {
 		Amount<Angle> alphaStarAmount = Amount.valueOf(alphaStar, SI.RADIAN);
 		double alphaActual = 0;
 		Amount<Angle> alphaMax;
-		double cLStarWing, cLLinearSlope, cLAlphaZero, alphaZeroLiftWingClean;
+		double cLStarWing=0, cLLinearSlope = 0, cLAlphaZero, alphaZeroLiftWingClean;
 		for (int i=0; i<nValue; i++ ){
 		alphaActual = alphaArray.get(i);
 		
@@ -283,9 +285,9 @@ public class LiftCalc {
 		else {  // non linear trait
 
 			theLsManager.calcAlphaAndCLMax(meanAirfoil);
-			double cLMax = theLsManager.get_cLMaxClean();
+			cLMax = theLsManager.get_cLMaxClean();
 			alphaMax = theLsManager.get_alphaMaxClean();	
-			double alphaMaxDouble = alphaMax.getEstimatedValue();
+			alphaMaxDouble = alphaMax.getEstimatedValue();
 
 			cLLinearSlope = (cLStarWing - cLTemp)/alphaStar;
 			//System.out.println("CL Linear Slope [1/rad] = " + cLLinearSlope);
@@ -309,6 +311,13 @@ public class LiftCalc {
 		}
 
 		}
+		System.out.println("\n -----------CLEAN-------------- ");
+		System.out.println(" alpha max " + alphaMaxDouble*57.3 + " (deg)");
+		System.out.println(" alpha star " + alphaStar*57.3 + " (deg)");
+		System.out.println(" cL max " + cLMax);
+		System.out.println(" cL star " + cLStarWing);
+		System.out.println(" cL alpha " + cLLinearSlope + " (1/rad)");
+		System.out.println("\n\n");
 		return cLActualArray;
 	}
 	
