@@ -89,6 +89,10 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		sW, sHT, depsdalpha = 0.,
 		dzH, dxH, niHT, etaHT,
 		xacWPercentMAC, xacWBRF, xa;
+	
+	private double _machTakeOFF;
+	private double _machLanding;
+	private double _machCruise;
 
 	private double _cLAlphaFixed;
 	private double _neutralPointXCoordinateMRF;
@@ -1024,6 +1028,30 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 
 	public void set_highLiftDatabaseReader(HighLiftDatabaseReader _highLiftDatabaseReader) {
 		this._highLiftDatabaseReader = _highLiftDatabaseReader;
+	}
+	
+	public double get_machTakeOFF() {
+		return _machTakeOFF;
+	}
+
+	public void set_machTakeOFF(double _machTakeOFF) {
+		this._machTakeOFF = _machTakeOFF;
+	}
+
+	public double get_machLanding() {
+		return _machLanding;
+	}
+
+	public void set_machLanding(double _machLanding) {
+		this._machLanding = _machLanding;
+	}
+
+	public double get_machCruise() {
+		return _machCruise;
+	}
+
+	public void set_machCruise(double _machCruise) {
+		this._machCruise = _machCruise;
 	}
 	
 } // end of class

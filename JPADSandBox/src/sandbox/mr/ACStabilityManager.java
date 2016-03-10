@@ -1,7 +1,11 @@
 package sandbox.mr;
 
+import java.util.Arrays;
+
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
+import javax.measure.unit.NonSI;
+import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
@@ -10,59 +14,102 @@ import aircraft.OperatingConditions;
 import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
 import aircraft.components.fuselage.Fuselage;
+import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
 import configuration.enumerations.AircraftTypeEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ConditionEnum;
+import functions.Linspace;
 import standaloneutils.customdata.CenterOfGravity;
+import standaloneutils.customdata.MyArray;
 
 public class ACStabilityManager {
 
 	// VARIABLE DECLARATION--------------------------------------
 	
 	OperatingConditions theOperatingConditions = new OperatingConditions();
+	LSAerodynamicsManager theLSAnalysis;
+	LSAerodynamicsManager theLSHTailAnalysis;
+	
+	int nValueAlpha = 30;
+	
 	CenterOfGravity centerOfGravity = new CenterOfGravity();
 	Amount<Length> maxXaftCenterOfGravityBRF;
 	Amount<Length> maxXforwCenterOfGravityBRF;
+	Amount<Angle> alphaBody = null;
+	Amount<Angle> alphaMin;
+	Amount<Angle> alphaMax;
 	
 	Aircraft aircraft;
 	LiftingSurface theWing;
 	Fuselage theFuselage;
 	LiftingSurface theHTail;
+	String subfolderPath;
+	boolean alphaCheck;
+	boolean plotCheck = true;
+	private double cLIsolatedWing;
+	
+	MyArray alphaStabilityArray = new MyArray();
+	private double[] cLWingArray;
 	
 	// BUILDER--------------------------------------
 	
-	public ACStabilityManager(Aircraft theAircraft,Amount<Angle> alphaBody, ConditionEnum theCondition, boolean plotCheck){
+	/**
+	 * This class manages the calculation of the longitudinal static stability of an aircraft.
+	 * 
+	 * @author Manuela Ruocco
+	 * @param the aircraft
+	 * @param the minimum value of alpha array. It can to be in degree or radian
+	 * @param the maximum value of alpha array. It can to be in degree or radian
+	 * @param the actual condition (take off, landing, cruise)
+	 * @param the angle of attack (alpha body) for the calculation of numerical value of CL, CD, CM. This value may be null. In this case the class calculates
+	 * only all stability characteristics at an array of alpha body
+	 * @param When this check value is true will be draw all graphs
+	 */
+	public ACStabilityManager(Aircraft theAircraft, ConditionEnum theCondition,Amount<Angle> alphaMin, Amount<Angle> alphaMax,
+			Amount<Angle> alphaBody, boolean plotCheck, String subfolderPah){
 
 		this.aircraft = theAircraft;
 		this.theWing = aircraft.get_wing();
 		this.theFuselage = aircraft.get_fuselage();
 		this.theHTail = aircraft.get_HTail();
+		this.subfolderPath = subfolderPath;
+		
+		this.alphaBody = alphaBody;
+		if (alphaBody==null){
+			alphaCheck = false;}
+		else
+			alphaCheck = true;
+		
+		if (alphaMin.getUnit() == SI.RADIAN){
+			alphaMin = alphaMin.to(NonSI.DEGREE_ANGLE);
+		}
+		
+		if (alphaMax.getUnit() == SI.RADIAN){
+			alphaMax = alphaMax.to(NonSI.DEGREE_ANGLE);
+		}
+		
+		this.alphaMin = alphaMin;
+		this.alphaMax = alphaMax;
+		
+		
+		alphaStabilityArray.linspace(alphaMin.getEstimatedValue(), alphaMax.getEstimatedValue(), nValueAlpha);
+		System.out.println(" alpha stability array " + alphaStabilityArray);
 		
 		//Set Operating Conditions and CG position 
 
 		switch (theCondition) {
 		case TAKE_OFF:
-			if (theAircraft.get_typeVehicle() == AircraftTypeEnum.TURBOPROP)
-				theOperatingConditions.set_machCurrent(0.2);
-			if (theAircraft.get_typeVehicle() == AircraftTypeEnum.JET)
-				theOperatingConditions.set_machCurrent(0.3);
+				theOperatingConditions.set_machCurrent(aircraft.get_theAerodynamics().get_machTakeOFF());
 			break;
 
 		case LANDING:	
-
-			if (theAircraft.get_typeVehicle() == AircraftTypeEnum.TURBOPROP)
-				theOperatingConditions.set_machCurrent(0.2);
-			if (theAircraft.get_typeVehicle() == AircraftTypeEnum.JET)
-				theOperatingConditions.set_machCurrent(0.3);
+				theOperatingConditions.set_machCurrent(aircraft.get_theAerodynamics().get_machLanding());
 			break;
 
 		case CRUISE:	
-
-			if (theAircraft.get_typeVehicle() == AircraftTypeEnum.TURBOPROP)
-				theOperatingConditions.set_machCurrent(0.45);
-			if (theAircraft.get_typeVehicle() == AircraftTypeEnum.JET)
-				theOperatingConditions.set_machCurrent(0.75);
+			theOperatingConditions.set_machCurrent(aircraft.get_theAerodynamics().get_machCruise());
 			break;
 		}
 		
@@ -70,7 +117,6 @@ public class ACStabilityManager {
 		
 		theWing.getAerodynamics().setTheOperatingConditions(theOperatingConditions);
 		theWing.getAerodynamics().initializeDataFromOperatingConditions(theOperatingConditions);
-		theWing.getAerodynamics().initializeDependentData();
 		theWing.getAerodynamics().initializeInnerCalculators();
 		
 		ACAnalysisManager theAnalysis = new ACAnalysisManager(theOperatingConditions);
@@ -81,15 +127,15 @@ public class ACStabilityManager {
 		
 		theHTail.getAerodynamics().setTheOperatingConditions(theOperatingConditions);
 		theHTail.getAerodynamics().initializeDataFromOperatingConditions(theOperatingConditions);
-		theHTail.getAerodynamics().initializeDependentData();
 		theHTail.getAerodynamics().initializeInnerCalculators();
 		
+		theLSAnalysis = theWing.getAerodynamics();
 		
 		
 		// do Analysis
 		
-		System.out.println("------------------------------------");
-		System.out.println("\nANALYSIS \n\n ");
+		System.out.println("\n\n-----------------------------------");
+		System.out.println("\nANALYSIS ");
 		System.out.println("\n------------------------------------");
 		theAnalysis.doAnalysis(aircraft,
 				AnalysisTypeEnum.WEIGHTS,
@@ -142,9 +188,129 @@ public class ACStabilityManager {
 		
 	}
 	
+	
 	public void CalculateAll(){
+		
+		// Lift Characteristics
+		CalculateLiftCharacteristics();
+		CalculateDragCharacteristics();
+		CalculateMomentCharacteristics();
+		
+		
 		// CL --> need to consider flap contributes
 		
 		//CL, CD, CM... 
 	}
+	
+	public void CalculateLiftCharacteristics(){
+		System.out.println("\n\n------------------------------------");
+		System.out.println("\n LIFT CHARACTERISTICS  ");
+		System.out.println("\n------------------------------------");
+		CalculateWingLiftCharacteristics();
+		
+	}
+
+	public void CalculateDragCharacteristics(){
+
+	}
+
+	public void CalculateMomentCharacteristics(){
+
+	}
+
+	public void CalculateWingLiftCharacteristics(){
+
+
+		System.out.println("\n ------------------- ");
+		System.out.println("|       WING        |");
+		System.out.println(" ------------------- \n\n");
+
+
+		System.out.println("\n \t Data: ");
+
+		// DATA
+		System.out.println("Angle of incidence of wing (deg) = " + ""
+				+  Math.ceil(theWing.get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue()));
+		if(alphaCheck == true){
+			System.out.println("Angle of attack alpha body (deg) = " + "" 
+					+ Math.ceil(alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue()));}
+
+
+		//ARRAY FILLING
+		LSAerodynamicsManager.CalcCLvsAlphaCurve theCLArrayCalculator = theLSAnalysis.new CalcCLvsAlphaCurve();
+		
+		cLWingArray = theCLArrayCalculator.nasaBlackwellCompleteCurve(alphaMin, alphaMax, nValueAlpha);
+		System.out.println("CL wing Array " + Arrays.toString(cLWingArray) );
+		
+		LSAerodynamicsManager.CalcCLAtAlpha theCLWingCalculator = theLSAnalysis.new CalcCLAtAlpha();
+		cLIsolatedWing = theCLWingCalculator.nasaBlackwellalphaBody(alphaBody);
+		System.out.println("CL of Isolated wing at alpha body = " + cLIsolatedWing);
+
+
+		//PLOT CL vs alpha
+		if(plotCheck == true){
+			theLSAnalysis.PlotCLvsAlphaCurve(subfolderPath);
+			System.out.println("-------------------------------------");
+			System.out.println("\n \t \t \tWRITING CL vs ALPHA CHART TO FILE  ");
+
+			//PLOT stall path //TODO delete this
+
+		}
+
+
+	}
+
+
+	public void CalculateFuselageLiftCharacteristics(){
+
+	}
+	public void CalculateWingBodyLiftCharacteristics(){
+
+	}
+
+
+
+
+
+	// GETTERS AND SETTERS
+	public double getcLIsolatedWing() {
+		return cLIsolatedWing;
+	}
+
+
+	public void setcLIsolatedWing(double cLIsolatedWing) {
+		this.cLIsolatedWing = cLIsolatedWing;
+	}
+
+
+	public double[] getcLWingArray() {
+		return cLWingArray;
+	}
+
+
+	public void setcLWingArray(double[] cLWingArray) {
+		this.cLWingArray = cLWingArray;
+	}
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

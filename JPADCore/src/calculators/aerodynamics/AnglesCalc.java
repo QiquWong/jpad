@@ -1,5 +1,7 @@
 package calculators.aerodynamics;
 
+import java.util.Arrays;
+
 import org.apache.commons.math3.util.MathArrays;
 
 import standaloneutils.MyArrayUtils;
@@ -57,6 +59,13 @@ public class AnglesCalc {
 	public static double alpha0LintegralMeanWithTwist(double surface, double semispan, 
 			double[] yStations, double[] chordVsY, double[] alpha0lVsY,
 			double[] twistVsY) {
+//		System.out.println(" y stat " + yStations.length);
+//		System.out.println(" chord vs y " + chordVsY.length);
+//		System.out.println(" twist " + twistVsY.length);
+//		System.out.println("alpha zero lift " + alpha0lVsY.length);
+//		System.out.println(" chord " + Arrays.toString(chordVsY));
+
+		
 		return (2/surface) * MyMathUtils.integrate1DSimpsonSpline(
 				yStations,
 				MathArrays.ebeMultiply(

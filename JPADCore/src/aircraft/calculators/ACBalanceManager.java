@@ -114,11 +114,22 @@ public class ACBalanceManager extends ACCalculatorManager {
 		_cgList.add(aircraft.get_wing().get_cg());
 		_cgList.add(aircraft.get_HTail().get_cg());
 		_cgList.add(aircraft.get_VTail().get_cg());
-		_cgList.addAll(aircraft.get_theNacelles().get_cgList());
 		_cgList.add(aircraft.get_landingGear().get_cg());
+		_cgList.addAll(aircraft.get_theNacelles().get_cgList());
 		
-		System.out.println("\n \nCG components location in BRF");
-		 _cgList.forEach(p-> System.out.println(p.get_xBRF()));
+		System.out.println("\n \nCG COMPONENTS LOCATION IN BRF");
+		System.out.println("fuselage --> " + _cgList.get(0).get_xBRF());
+		System.out.println("wing --> " + _cgList.get(1).get_xBRF());
+		System.out.println("HTail --> " + _cgList.get(2).get_xBRF());
+		System.out.println("VTail --> " + _cgList.get(3).get_xBRF());
+		System.out.println("Landing gear --> " + _cgList.get(4).get_xBRF());
+		for(int i=0 ;  i<aircraft.get_theNacelles().get_cgList().size() ; i++){
+		System.out.println("Nacelle  "+  i + " --> " + _cgList.get(i+5).get_xBRF());
+		}
+
+		
+		
+//		 _cgList.forEach(p-> System.out.println(p.get_xBRF()));
 
 		double prod = 0., sum = 0.;
 		for (int i=0; i < _cgList.size(); i++) {
@@ -141,13 +152,13 @@ public class ACBalanceManager extends ACCalculatorManager {
 		// Structure + engines CG
 		_cgStructureAndPower = new CenterOfGravity();
 
-		System.out.println("fuel tank cg " + aircraft.get_theFuelTank().get_cg().get_xBRF().getEstimatedValue());
+		System.out.println("fuel tank --> " + aircraft.get_theFuelTank().get_cg().get_xBRF().getEstimatedValue());
 		double cgPowerPlantContribute =0.0;
 		
 		for(int i=0 ; i< aircraft.get_powerPlant().get_engineNumber(); i++){
 			cgPowerPlantContribute = cgPowerPlantContribute + (aircraft.get_powerPlant().get_cgList().get(i).get_xBRF().getEstimatedValue()*
 					aircraft.get_powerPlant().get_engineList().get(i).get_totalMass().getEstimatedValue());
-			System.out.println("Engine " + i + " cg " + aircraft.get_powerPlant().get_cgList().get(i).get_xBRF());
+			System.out.println("Engine " + i + " --> " + aircraft.get_powerPlant().get_cgList().get(i).get_xBRF());
 		}
 		_cgStructureAndPower.set_xBRF(
 				Amount.valueOf(
