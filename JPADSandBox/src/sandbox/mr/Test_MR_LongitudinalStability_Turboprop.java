@@ -14,6 +14,7 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.apache.commons.math3.linear.RRQRDecomposition;
+import org.apache.xmlbeans.impl.schema.PathResourceLoader;
 import org.eclipse.nebula.visualization.widgets.figureparts.RoundScaledRamp.Threshold;
 import org.jscience.physics.amount.Amount;
 import org.kohsuke.args4j.Argument;
@@ -57,11 +58,25 @@ import writers.JPADStaticWriteUtils;
 
 public class Test_MR_LongitudinalStability_Turboprop {
 	
-	//------------------------------------------------------------------------------------------
+	
+
+		//------------------------------------------------------------------------------------------
 		// VARIABLE DECLARATION:
 		@Option(name = "-i", aliases = { "--input" }, required = false,
 				usage = "my input file")
 		private File _inputFile;
+		
+		//take off file
+		
+		@Option(name = "-to", aliases = { "--input_to" }, required = false,
+				usage = "my input TO file")
+		private File _inputFileTakeOff;
+		
+		//landing file
+		
+		@Option(name = "-land", aliases = { "--input_land" }, required = false,
+				usage = "my input LA file")
+		private File _inputFileLanding;
 
 		// declaration necessary for Concrete Object usage
 		public CmdLineParser theCmdLineParser;
@@ -340,6 +355,14 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		main.theCmdLineParser.parseArgument(args);
 		String path = main.get_inputFile().getAbsolutePath();
 		JPADXmlReader reader = new JPADXmlReader(path);
+		String pathTakeOff = null, pathLanding=null;
+		
+		if(args.length >0){
+			if(main.get_inputFileTakeOff()!= null)
+		pathTakeOff = main.get_inputFileTakeOff().getAbsolutePath();
+			if(main.get_inputFileLanding()!= null)
+		pathLanding = main.get_inputFileLanding().getAbsolutePath();
+			}
 
 		System.out.println("-----------------------------------------------------------");
 		System.out.println("XML File Path : " + path);
@@ -390,13 +413,15 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		// STABILITY 
 		// -----------------------------------------------------------------------
 		
+		System.out.println( "path take off " + pathTakeOff);
+		System.out.println( "path landing " + pathLanding);
 		
 		Amount<Angle> alphaBody = Amount.valueOf(Math.toRadians(2.0), SI.RADIAN);
 		Amount<Angle> alphaMin = Amount.valueOf(Math.toRadians(-5), SI.RADIAN);
 		Amount<Angle> alphaMax = Amount.valueOf(Math.toRadians(20), SI.RADIAN);
 		
-		ACStabilityManager theStabilityManager = new ACStabilityManager(aircraft, ConditionEnum.CRUISE ,
-				alphaMin, alphaMax, alphaBody , true, subfolderPath);
+		ACStabilityManager theStabilityManager = new ACStabilityManager(aircraft, ConditionEnum.TAKE_OFF ,
+				alphaMin, alphaMax, alphaBody , true, subfolderPath, pathTakeOff);
  
 		theStabilityManager.CalculateWingLiftCharacteristics();
 		
@@ -410,4 +435,25 @@ public class Test_MR_LongitudinalStability_Turboprop {
 	public File get_inputFile() {
 		return _inputFile;
 	}
+
+
+	public File get_inputFileTakeOff() {
+		return _inputFileTakeOff;
+	}
+
+
+	public void set_inputFileTakeOff(File _inputFileTakeOff) {
+		this._inputFileTakeOff = _inputFileTakeOff;
+	}
+
+
+	public File get_inputFileLanding() {
+		return _inputFileLanding;
+	}
+
+
+	public void set_inputFileLanding(File _inputFileLanding) {
+		this._inputFileLanding = _inputFileLanding;
+	}
+
 }

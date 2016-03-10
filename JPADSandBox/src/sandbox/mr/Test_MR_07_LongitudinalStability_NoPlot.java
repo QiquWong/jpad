@@ -402,7 +402,7 @@ public class Test_MR_07_LongitudinalStability_NoPlot {
 		LSAerodynamicsManager.CalcCLAtAlpha theCLWingCalculator = 
 				theLSAnalysis
 				.new CalcCLAtAlpha();
-		cLIsolatedWing = theCLWingCalculator.nasaBlackwellalphaBody(alphaBody);
+		cLIsolatedWing = theCLWingCalculator.nasaBlackwellAlphaBody(alphaBody);
 
 //		theLSAnalysis.PlotCLvsAlphaCurve(subfolderPath);
 		System.out.println("-------------------------------------");
