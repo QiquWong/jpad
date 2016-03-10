@@ -67,7 +67,9 @@ w = \frac{1}{4\pi} \sum_{n=1}^N \Gamma_N F'_{w,\nu_N}
 \end{equation}
 
 where $\Gamma$ is circulation strength, F is the downwash influence function, N are the vortex point and $\nu$ are the vortex points.\\
-In JPAD this effect is calculated in the class \texttt{AlphaEffective} by the method \texttt{calculateAlphaEffective}. This method has as output an array of value that indicates the effective angls of attack semi-spanwise using the equations introduced before. In order to evaluate these angles you must have as input the operating conditions. 
+In JPAD this effect is calculated in the class \texttt{AlphaEffective}.
+% by the method \texttt{calculateAlphaEffective}. 
+This method has as output an array of value that indicates the effective angls of attack semi-spanwise using the equations introduced before. In order to evaluate these angles you must have as input the operating conditions. 
 
 \begin{lstlisting}[frame=rbl,caption={{\footnotesize Effective angle of attack Test Class}},label= [style=\bfseries]{Listing}]
 
