@@ -56,7 +56,7 @@ public abstract class AbstractLiftingSurface implements ILiftingSurface {
 
 	List<Amount<Length>> _yBreakPoints;
 
-	Map<LiftingSurfacePanel, List<Amount<Length>>> _panelToYStations;
+//	Map<LiftingSurfacePanel, List<Amount<Length>>> _panelToYStations;
 	
 	List<
 			Tuple2<
@@ -74,9 +74,9 @@ public abstract class AbstractLiftingSurface implements ILiftingSurface {
 
 	List<Amount<Length>> _yStationActual; // MyArray _yStationActual;
 
-	MyArray _chordsVsYActual;
-	MyArray _xLEvsYActual;
-	MyArray _xTEvsYActual;
+//	MyArray _chordsVsYActual;
+//	MyArray _xLEvsYActual;
+//	MyArray _xTEvsYActual;
 
 
 	//=======================================================================

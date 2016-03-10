@@ -57,18 +57,16 @@ public class LiftingSurface extends AbstractLiftingSurface {
 
 		_yBreakPoints =  new ArrayList<Amount<Length>>(); // new MyArray(SI.METER);
 
-		_panelToYStations =
-			    new HashMap<LiftingSurfacePanel, List<Amount<Length>>>();
-		
-//		_panelToToYStationsChords = // initialize
+//		_panelToYStations =
+//			    new HashMap<LiftingSurfacePanel, List<Amount<Length>>>();
 		
 		_yStationActual = new ArrayList<Amount<Length>>(); // new MyArray(SI.METER); // new MyArray(SI.METER);
 
 		_panelToSpanwiseDiscretizedVariables = new ArrayList<>();
 		
-		_chordsVsYActual = new MyArray(SI.METER);
-		_xLEvsYActual = new MyArray(SI.METER);
-		_xTEvsYActual = new MyArray(SI.METER);
+//		_chordsVsYActual = new MyArray(SI.METER);
+//		_xLEvsYActual = new MyArray(SI.METER);
+//		_xTEvsYActual = new MyArray(SI.METER);
 
 	}
 
@@ -479,6 +477,7 @@ public class LiftingSurface extends AbstractLiftingSurface {
 				.map(d -> this.semiSpan.times(d))
 				.collect(Collectors.toList());
 
+/*		
 		//======================================================
 		// Map panels with lists of Y's
 		// for each panel Y's of inner and outer break-points
@@ -491,10 +490,36 @@ public class LiftingSurface extends AbstractLiftingSurface {
 				.filter(y -> y.isLessThan( panels.get(0).getSemiSpan() ) || y.equals( panels.get(0).getSemiSpan()) )
 				.collect(Collectors.toList())
 			);
+		
+		// All remaining panels (innermost panel excluded)
+		// Y's include only panel's tip breakpoint Y, 
+		// not including panel's root breakpoint Y
+		for (int i=1; i < panels.size(); i++) {
+			final int i_ = i;
+			_panelToYStations.put(
+				panels.get(i), // key
+				_yStationActual.stream()
+					.mapToDouble(a -> a.to(SI.METRE).getEstimatedValue())
+					.filter(y -> ( y > _yBreakPoints.get(i_).getEstimatedValue() ) && ( y <= _yBreakPoints.get(i_+1).getEstimatedValue() ) )
+					.mapToObj(y_ -> Amount.valueOf(y_, SI.METRE))
+					.collect(Collectors.toList()
+				) // value
+			);
+		}
 
+		System.out.println("=====================================================");
+		System.out.println("Map: panel(0) ->\n" + _panelToYStations.get(panels.get(0)));
+		System.out.println("Map: panel(1) ->\n" + _panelToYStations.get(panels.get(1)));
+		System.out.println("=====================================================");
+		
+*/
 		
 		// TODO experiment with Javaslang tuples
 		
+		//======================================================
+		// Map panels with lists of Y's, c, Xle, Yle, Zle, twist
+		// for each panel Y's of inner and outer break-points
+		// are included, i.e. Y's are repeated
 		
 		Tuple2<
 			List<LiftingSurfacePanel>,
@@ -506,6 +531,7 @@ public class LiftingSurface extends AbstractLiftingSurface {
 				p -> panels.get(0),
 				y -> Tuple.of(
 					y.stream()
+						// Innermost panel: Y's include 0 and panel's tip breakpoint Y
 						.filter(y_ -> y_.isLessThan( panels.get(0).getSemiSpan() ) || y_.equals( panels.get(0).getSemiSpan()) )
 						.collect(Collectors.toList())
 					,
@@ -537,33 +563,122 @@ public class LiftingSurface extends AbstractLiftingSurface {
 				)
 			);
 		
-		System.out.println("=====================================================");
-		System.out.println("Tuple: panel(0) ->\n" + _panelToSpanwiseDiscretizedVariables);
-
-		
-		
-		
-		
 		// All remaining panels (innermost panel excluded)
 		// Y's include only panel's tip breakpoint Y, 
 		// not including panel's root breakpoint Y
-		for (int i=0; i < panels.size(); i++) {
+		for (int i=1; i < panels.size(); i++) {
 			final int i_ = i;
-			_panelToYStations.put(
-				panels.get(i), // key
-				_yStationActual.stream()
-					.mapToDouble(a -> a.to(SI.METRE).getEstimatedValue())
-					.filter(y -> ( y > _yBreakPoints.get(i_).getEstimatedValue() ) && ( y <= _yBreakPoints.get(i_+1).getEstimatedValue() ) )
-					.mapToObj(y_ -> Amount.valueOf(y_, SI.METRE))
-					.collect(Collectors.toList()
-				) // value
-			);
-		}
+			_panelToSpanwiseDiscretizedVariables.add(
+				tuple0.map(
+					p -> panels.get(i_),
+					y -> Tuple.of(
+						y.stream()
+							.mapToDouble(a -> a.to(SI.METRE).getEstimatedValue())
+							.filter(y_ -> ( 
+									y_ > _yBreakPoints.get(i_).getEstimatedValue() ) 
+									&& ( y_ <= _yBreakPoints.get(i_+1).getEstimatedValue() ) 
+								)
+							.mapToObj(y_ -> Amount.valueOf(y_, SI.METRE))
+							.collect(Collectors.toList())
+						,
+						y.stream()
+							.mapToDouble(a -> a.to(SI.METRE).getEstimatedValue())
+							.filter(y_ -> ( 
+									y_ > _yBreakPoints.get(i_).getEstimatedValue() ) 
+									&& ( y_ <= _yBreakPoints.get(i_+1).getEstimatedValue() ) 
+								)
+							.mapToObj(y_ -> Amount.valueOf(0.0, SI.METRE))
+							.collect(Collectors.toList()) // initialize Chords 
+						, 
+						y.stream()
+							.mapToDouble(a -> a.to(SI.METRE).getEstimatedValue())
+							.filter(y_ -> ( 
+									y_ > _yBreakPoints.get(i_).getEstimatedValue() ) 
+									&& ( y_ <= _yBreakPoints.get(i_+1).getEstimatedValue() ) 
+								)
+							.mapToObj(y_ -> Amount.valueOf(0.0, SI.METRE))
+							.collect(Collectors.toList()) // initialize Xle 
+						, 
+						y.stream()
+							.mapToDouble(a -> a.to(SI.METRE).getEstimatedValue())
+							.filter(y_ -> ( 
+									y_ > _yBreakPoints.get(i_).getEstimatedValue() ) 
+									&& ( y_ <= _yBreakPoints.get(i_+1).getEstimatedValue() ) 
+								)
+							.mapToObj(y_ -> Amount.valueOf(0.0, SI.METRE))
+							.collect(Collectors.toList()) // initialize Yle 
+						, 
+						y.stream()
+							.mapToDouble(a -> a.to(SI.METRE).getEstimatedValue())
+							.filter(y_ -> ( 
+									y_ > _yBreakPoints.get(i_).getEstimatedValue() ) 
+									&& ( y_ <= _yBreakPoints.get(i_+1).getEstimatedValue() ) 
+								)
+							.mapToObj(y_ -> Amount.valueOf(0.0, SI.METRE))
+							.collect(Collectors.toList()) // initialize Zle 
+						, 
+						y.stream()
+							.mapToDouble(a -> a.to(SI.METRE).getEstimatedValue())
+							.filter(y_ -> ( 
+									y_ > _yBreakPoints.get(i_).getEstimatedValue() ) 
+									&& ( y_ <= _yBreakPoints.get(i_+1).getEstimatedValue() ) 
+								)
+							.mapToObj(y_ -> Amount.valueOf(0.0, SI.RADIAN))
+							.collect(Collectors.toList()) // initialize twists 
+						)
+					)
+				);
+		}// end-of for
 
 		System.out.println("=====================================================");
-		System.out.println("Map: panel(0) ->\n" + _panelToYStations.get(panels.get(0)));
-		System.out.println("Map: panel(1) ->\n" + _panelToYStations.get(panels.get(1)));
-		System.out.println("=====================================================");
+		System.out.println("List of Tuples ->");
+//		System.out.println(_panelToSpanwiseDiscretizedVariables);
+		
+		StringBuilder sb = new StringBuilder();
+		
+		// tweak one value 
+		_panelToSpanwiseDiscretizedVariables.get(0)
+			._2()._2() // chords
+			.set(0, Amount.valueOf(1.2, SI.METRE));
+		
+		_panelToSpanwiseDiscretizedVariables.stream()
+			.forEach( tup2 -> {
+				sb	
+				.append("=====================================================\n")
+				.append("Panel '" + tup2._1().getId() + "'\n")
+				.append("Ys: size ")
+				.append(
+					tup2
+						._2() // Tuple6
+						._1() // Ys
+						.size()
+					+ "\n"
+					)
+				.append(
+					tup2
+						._2() // Tuple6
+						._1() // Ys
+					+ "\n"
+					);
+				sb
+				.append("Chords: size ")
+				.append(
+					tup2
+						._2() // Tuple6
+						._2() // Chords
+						.size()
+					+ "\n"
+					)
+				.append(
+					tup2
+						._2() // Tuple6
+						._2() // Chords
+					);
+				System.out.println(sb.toString());
+			}	
+		);
+		
+		
 	}
 
 	/**
