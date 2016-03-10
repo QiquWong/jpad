@@ -31,6 +31,8 @@ import org.w3c.dom.NodeList;
 
 import aircraft.components.liftingSurface.adm.LiftingSurfacePanel.LiftingSurfacePanelBuilder;
 import configuration.MyConfiguration;
+import javaslang.Tuple;
+import javaslang.Tuple2;
 import javolution.text.TypeFormat;
 import javolution.text.TextFormat.Cursor;
 import standaloneutils.JPADXmlReader;
@@ -57,9 +59,13 @@ public class LiftingSurface extends AbstractLiftingSurface {
 
 		_panelToYStations =
 			    new HashMap<LiftingSurfacePanel, List<Amount<Length>>>();
-
+		
+//		_panelToToYStationsChords = // initialize
+		
 		_yStationActual = new ArrayList<Amount<Length>>(); // new MyArray(SI.METER); // new MyArray(SI.METER);
 
+		_panelToSpanwiseDiscretizedVariables = new ArrayList<>();
+		
 		_chordsVsYActual = new MyArray(SI.METER);
 		_xLEvsYActual = new MyArray(SI.METER);
 		_xTEvsYActual = new MyArray(SI.METER);
@@ -478,6 +484,7 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		// for each panel Y's of inner and outer break-points
 		// are included, i.e. Y's are repeated
 
+		// Innermost panel: Y's include 0 and panel's tip breakpoint Y
 		_panelToYStations.put(
 			panels.get(0),
 			_yStationActual.stream()
@@ -485,13 +492,68 @@ public class LiftingSurface extends AbstractLiftingSurface {
 				.collect(Collectors.toList())
 			);
 
+		
+		// TODO experiment with Javaslang tuples
+		
+		
+		Tuple2<
+			List<LiftingSurfacePanel>,
+			List<Amount<Length>>
+			> tuple0 = Tuple.of(panels, _yStationActual);
+		
+		_panelToSpanwiseDiscretizedVariables.add(
+			tuple0.map(
+				p -> panels.get(0),
+				y -> Tuple.of(
+					y.stream()
+						.filter(y_ -> y_.isLessThan( panels.get(0).getSemiSpan() ) || y_.equals( panels.get(0).getSemiSpan()) )
+						.collect(Collectors.toList())
+					,
+					y.stream()
+						.filter(y_ -> y_.isLessThan( panels.get(0).getSemiSpan() ) || y_.equals( panels.get(0).getSemiSpan()) )
+						.map(Y__ -> Amount.valueOf(0.0, SI.METRE))
+						.collect(Collectors.toList()) // initialize Chords 
+					, 
+					y.stream()
+						.filter(y_ -> y_.isLessThan( panels.get(0).getSemiSpan() ) || y_.equals( panels.get(0).getSemiSpan()) )
+						.map(Y__ -> Amount.valueOf(0.0, SI.METRE))
+						.collect(Collectors.toList()) // initialize Xle 
+					, 
+					y.stream()
+						.filter(y_ -> y_.isLessThan( panels.get(0).getSemiSpan() ) || y_.equals( panels.get(0).getSemiSpan()) )
+						.map(Y__ -> Amount.valueOf(0.0, SI.METRE))
+						.collect(Collectors.toList()) // initialize Yle 
+					, 
+					y.stream()
+						.filter(y_ -> y_.isLessThan( panels.get(0).getSemiSpan() ) || y_.equals( panels.get(0).getSemiSpan()) )
+						.map(Y__ -> Amount.valueOf(0.0, SI.METRE))
+						.collect(Collectors.toList()) // initialize Zle 
+					, 
+					y.stream()
+						.filter(y_ -> y_.isLessThan( panels.get(0).getSemiSpan() ) || y_.equals( panels.get(0).getSemiSpan()) )
+						.map(Y__ -> Amount.valueOf(0.0, SI.RADIAN))
+						.collect(Collectors.toList()) // initialize twists 
+					)
+				)
+			);
+		
+		System.out.println("=====================================================");
+		System.out.println("Tuple: panel(0) ->\n" + _panelToSpanwiseDiscretizedVariables);
+
+		
+		
+		
+		
+		// All remaining panels (innermost panel excluded)
+		// Y's include only panel's tip breakpoint Y, 
+		// not including panel's root breakpoint Y
 		for (int i=0; i < panels.size(); i++) {
 			final int i_ = i;
 			_panelToYStations.put(
 				panels.get(i), // key
 				_yStationActual.stream()
 					.mapToDouble(a -> a.to(SI.METRE).getEstimatedValue())
-					.filter(y -> ( y >= _yBreakPoints.get(i_).getEstimatedValue() ) && ( y <= _yBreakPoints.get(i_+1).getEstimatedValue() ) )
+					.filter(y -> ( y > _yBreakPoints.get(i_).getEstimatedValue() ) && ( y <= _yBreakPoints.get(i_+1).getEstimatedValue() ) )
 					.mapToObj(y_ -> Amount.valueOf(y_, SI.METRE))
 					.collect(Collectors.toList()
 				) // value
