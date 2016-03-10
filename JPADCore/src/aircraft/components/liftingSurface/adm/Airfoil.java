@@ -314,15 +314,15 @@ public class Airfoil implements IAirfoil {
 		private AirfoilFamilyEnum __family = AirfoilFamilyEnum.NACA65_209;
 
 		private RealMatrix __NormalizedCornerPointsXZ = MatrixUtils.createRealMatrix(30, 2);
-		private Amount<Length> __chord = Amount.valueOf(1.0,SI.METER);
+		private Amount<Length> __chord = Amount.valueOf(1.0,1e-8,SI.METER);
 		private Double __thicknessToChordRatio = 0.12;
 		private Double __camberRatio = 0.9;
 		private Double __radiusLeadingEdgeNormalized = 0.015;
-		private Amount<Angle> __angleAtTrailingEdge = Amount.valueOf(4.0,NonSI.DEGREE_ANGLE);
+		private Amount<Angle> __angleAtTrailingEdge = Amount.valueOf(4.0,1e-8,NonSI.DEGREE_ANGLE);
 
-		private Amount<Angle> __alphaZeroLift = Amount.valueOf(-1.5,NonSI.DEGREE_ANGLE);
-		private Amount<Angle> __alphaEndLinearTrait = Amount.valueOf(9.0,NonSI.DEGREE_ANGLE);;
-		private Amount<Angle> __alphaStall = Amount.valueOf(12.0,NonSI.DEGREE_ANGLE);;
+		private Amount<Angle> __alphaZeroLift = Amount.valueOf(-1.5,1e-8,NonSI.DEGREE_ANGLE);
+		private Amount<Angle> __alphaEndLinearTrait = Amount.valueOf(9.0,1e-8,NonSI.DEGREE_ANGLE);;
+		private Amount<Angle> __alphaStall = Amount.valueOf(12.0,1e-8,NonSI.DEGREE_ANGLE);;
 		private Double __clAlphaLinearTrait = 6.10;
 		private Double __cdMin = 0.002;
 		private Double __clAtCdMin = 0.10;
