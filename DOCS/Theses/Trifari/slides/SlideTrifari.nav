@@ -6,22 +6,39 @@
 \headcommand {\sectionentry {1}{Introducing JPAD}{3}{Introducing JPAD}{0}}
 \headcommand {\beamer@sectionpages {1}{2}}
 \headcommand {\beamer@subsectionpages {1}{2}}
-\headcommand {\slideentry {1}{0}{0}{3/3}{}{0}}
+\headcommand {\beamer@subsectionentry {0}{1}{1}{3}{}}\headcommand {\beamer@subsectionpages {3}{2}}
+\headcommand {\slideentry {1}{1}{0}{3/3}{}{0}}
 \headcommand {\beamer@framepages {3}{3}}
-\headcommand {\slideentry {1}{0}{1}{4/4}{}{0}}
+\headcommand {\slideentry {1}{1}{1}{4/4}{}{0}}
 \headcommand {\beamer@framepages {4}{4}}
-\headcommand {\slideentry {1}{0}{2}{5/5}{}{0}}
+\headcommand {\slideentry {1}{1}{2}{5/5}{}{0}}
 \headcommand {\beamer@framepages {5}{5}}
-\headcommand {\slideentry {1}{0}{3}{6/6}{}{0}}
+\headcommand {\slideentry {1}{1}{3}{6/6}{}{0}}
 \headcommand {\beamer@framepages {6}{6}}
-\headcommand {\slideentry {1}{0}{4}{7/7}{}{0}}
+\headcommand {\slideentry {1}{1}{4}{7/7}{}{0}}
 \headcommand {\beamer@framepages {7}{7}}
-\headcommand {\slideentry {1}{0}{5}{8/8}{}{0}}
+\headcommand {\slideentry {1}{1}{5}{8/8}{}{0}}
 \headcommand {\beamer@framepages {8}{8}}
-\headcommand {\slideentry {1}{0}{6}{9/9}{}{0}}
+\headcommand {\slideentry {1}{1}{6}{9/9}{}{0}}
 \headcommand {\beamer@framepages {9}{9}}
-\headcommand {\beamer@partpages {1}{9}}
-\headcommand {\beamer@subsectionpages {1}{9}}
-\headcommand {\beamer@sectionpages {1}{9}}
-\headcommand {\beamer@documentpages {9}}
-\headcommand {\def \inserttotalframenumber {9}}
+\headcommand {\slideentry {1}{1}{7}{10/10}{}{0}}
+\headcommand {\beamer@framepages {10}{10}}
+\headcommand {\slideentry {1}{1}{8}{11/11}{}{0}}
+\headcommand {\beamer@framepages {11}{11}}
+\headcommand {\slideentry {1}{1}{9}{12/12}{}{0}}
+\headcommand {\beamer@framepages {12}{12}}
+\headcommand {\slideentry {1}{1}{10}{13/13}{}{0}}
+\headcommand {\beamer@framepages {13}{13}}
+\headcommand {\slideentry {1}{1}{11}{14/14}{}{0}}
+\headcommand {\beamer@framepages {14}{14}}
+\headcommand {\sectionentry {2}{The performance analysis module}{15}{The performance analysis module}{0}}
+\headcommand {\beamer@sectionpages {1}{14}}
+\headcommand {\beamer@subsectionpages {1}{14}}
+\headcommand {\beamer@subsectionentry {0}{2}{1}{15}{}}\headcommand {\beamer@subsectionpages {15}{14}}
+\headcommand {\slideentry {2}{1}{0}{15/15}{}{0}}
+\headcommand {\beamer@framepages {15}{15}}
+\headcommand {\beamer@partpages {1}{15}}
+\headcommand {\beamer@subsectionpages {1}{15}}
+\headcommand {\beamer@sectionpages {1}{15}}
+\headcommand {\beamer@documentpages {15}}
+\headcommand {\def \inserttotalframenumber {15}}
