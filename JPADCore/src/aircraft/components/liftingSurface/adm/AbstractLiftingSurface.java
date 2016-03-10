@@ -13,6 +13,7 @@ import javax.measure.unit.Unit;
 import org.jscience.physics.amount.Amount;
 
 import javaslang.Tuple2;
+import javaslang.Tuple5;
 import javaslang.Tuple6;
 import standaloneutils.customdata.MyArray;
 
@@ -65,11 +66,10 @@ public abstract class AbstractLiftingSurface implements ILiftingSurface {
 	List<
 			Tuple2<
 				LiftingSurfacePanel,
-				Tuple6<
+				Tuple5<
 					List<Amount<Length>>, // Ys
 					List<Amount<Length>>, // chords
 					List<Amount<Length>>, // Xle
-					List<Amount<Length>>, // Yle
 					List<Amount<Length>>, // Zle
 					List<Amount<Angle>>   // twist
 					> 

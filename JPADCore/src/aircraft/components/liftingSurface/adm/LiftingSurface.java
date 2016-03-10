@@ -173,6 +173,10 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		// Map Y's to chord
 		calculateChordsAtYDiscretized();
 		
+		//======================================================
+		// Map Y's to (Xle, Zle)
+		calculateXZLEAtYDiscretized();
+		
 		reportPanesToSpanwiseDiscretizedVariables();
 
 		// Aspect-ratio
@@ -605,11 +609,6 @@ public class LiftingSurface extends AbstractLiftingSurface {
 					y.stream()
 						.filter(y_ -> y_.isLessThan( panels.get(0).getSemiSpan() ) || y_.equals( panels.get(0).getSemiSpan()) )
 						.map(Y__ -> Amount.valueOf(0.0, SI.METRE))
-						.collect(Collectors.toList()) // initialize Yle 
-					, 
-					y.stream()
-						.filter(y_ -> y_.isLessThan( panels.get(0).getSemiSpan() ) || y_.equals( panels.get(0).getSemiSpan()) )
-						.map(Y__ -> Amount.valueOf(0.0, SI.METRE))
 						.collect(Collectors.toList()) // initialize Zle 
 					, 
 					y.stream()
@@ -655,15 +654,6 @@ public class LiftingSurface extends AbstractLiftingSurface {
 								)
 							.mapToObj(y_ -> Amount.valueOf(0.0, SI.METRE))
 							.collect(Collectors.toList()) // initialize Xle 
-						, 
-						y.stream()
-							.mapToDouble(a -> a.to(SI.METRE).getEstimatedValue())
-							.filter(y_ -> ( 
-									y_ > _yBreakPoints.get(i_).getEstimatedValue() ) 
-									&& ( y_ <= _yBreakPoints.get(i_+1).getEstimatedValue() ) 
-								)
-							.mapToObj(y_ -> Amount.valueOf(0.0, SI.METRE))
-							.collect(Collectors.toList()) // initialize Yle 
 						, 
 						y.stream()
 							.mapToDouble(a -> a.to(SI.METRE).getEstimatedValue())
@@ -719,8 +709,52 @@ public class LiftingSurface extends AbstractLiftingSurface {
 
 	}
 
-	private void calculateXYZLEAtYDiscretized() {
-		//TODO implement this
+	private void calculateXZLEAtYDiscretized() {
+		
+		for (int k=0; k < _panelToSpanwiseDiscretizedVariables.size(); k++) {
+			LiftingSurfacePanel panel = _panelToSpanwiseDiscretizedVariables.get(k)._1();
+			Amount<Length> y0 = _yBreakPoints.get(k);
+			Amount<Length> x0 = _xLEBreakPoints.get(k);
+			Amount<Length> z0 = _zLEBreakPoints.get(k);
+			Amount<Angle> twist0 = _twistsBreakPoints.get(k);
+
+			List<Amount<Length>> vY = _panelToSpanwiseDiscretizedVariables.get(k)._2()._1(); // Ys
+			List<Amount<Length>> vC = _panelToSpanwiseDiscretizedVariables.get(k)._2()._2(); // Chords
+			List<Amount<Length>> vXLE = _panelToSpanwiseDiscretizedVariables.get(k)._2()._3(); // XLEs
+			List<Amount<Length>> vZLE = _panelToSpanwiseDiscretizedVariables.get(k)._2()._4(); // ZLEs
+			List<Amount<Angle>> vTwistsLE = _panelToSpanwiseDiscretizedVariables.get(k)._2()._5(); // Twists
+			
+			Amount<Angle> sweepLE = panel.getSweepLeadingEdge();
+			Amount<Angle> dihedral = panel.getDihedral();
+			
+			IntStream.range(0, vY.size())
+				.forEach(i -> {
+					// y := Y - y0
+					Amount<Length> y = vY.get(i).minus(y0);
+					// xle = x0 + y * tan(sweepLE)
+					Amount<Length> xle = 
+						x0.plus( 
+							y.times(Math.tan(sweepLE.to(SI.RADIAN).getEstimatedValue()))
+						);
+					// assign the xle
+					vXLE.set(i, xle);
+					// zle = z0 + y * tan(dihedral)
+					Amount<Length> zle = 
+							z0.plus( 
+								y.times(Math.tan(dihedral.to(SI.RADIAN).getEstimatedValue()))
+							);
+					vZLE.set(i, zle);
+					// 
+					// twist(y) = twist_r + (2/b)*(twist_t - twist_r)*y
+					Amount<Angle> twist = twist0.plus(
+						y.times(
+							panel.getTwistGeometricAtTip().minus(twist0)
+						).divide(panel.getSemiSpan())
+						);
+					// assign the chord
+					vTwistsLE.set(i, twist);
+				});
+		}
 	}	
 
 	private void reportPanesToSpanwiseDiscretizedVariables(){
@@ -746,7 +780,7 @@ public class LiftingSurface extends AbstractLiftingSurface {
 				.append("\n")
 				.append(
 					tup2
-						._2() // Tuple6
+						._2() // Tuple5
 						._1() // Ys
 					);
 				sb
@@ -754,14 +788,14 @@ public class LiftingSurface extends AbstractLiftingSurface {
 				.append("Chords: size ")
 				.append(
 					tup2
-						._2() // Tuple6
+						._2() // Tuple5
 						._2() // Chords
 						.size()
 					)
 				.append("\n")
 				.append(
 					tup2
-						._2() // Tuple6
+						._2() // Tuple5
 						._2() // Chords
 					);
 				sb
@@ -769,15 +803,47 @@ public class LiftingSurface extends AbstractLiftingSurface {
 				.append("Xle's: size ")
 				.append(
 					tup2
-						._2() // Tuple6
+						._2() // Tuple5
 						._3() // Xle's
 						.size()
 					)
 				.append("\n")
 				.append(
 					tup2
-						._2() // Tuple6
+						._2() // Tuple5
 						._3() // Xle's
+					)
+				;
+				sb
+				.append("\n")
+				.append("Zle's: size ")
+				.append(
+					tup2
+						._2() // Tuple5
+						._4() // Zle's
+						.size()
+					)
+				.append("\n")
+				.append(
+					tup2
+						._2() // Tuple5
+						._4() // Zle's
+					)
+				;
+				sb
+				.append("\n")
+				.append("Twists: size ")
+				.append(
+					tup2
+						._2() // Tuple5
+						._5() // Twists
+						.size()
+					)
+				.append("\n")
+				.append(
+					tup2
+						._2() // Tuple5
+						._5() // Twists
 					)
 				.append("\n")
 				;
