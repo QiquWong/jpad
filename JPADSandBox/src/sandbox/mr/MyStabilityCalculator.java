@@ -209,7 +209,7 @@ public class CalcPitchingMomentAC{
 	yStationsNB, cLDistributionNB, chordLocal, xcPArrayLRF, xACArrayLRF, clNasaBlackwell;
 	Double[] cLDistribution;
 	int nPointSemiSpan;
-	List<MyAirfoil> airfoilList = new ArrayList<MyAirfoil>();;
+	List<MyAirfoil> airfoilList = new ArrayList<MyAirfoil>();
 	LSAerodynamicsManager theLSManager;
 
 	// BUILDER--------------------------------------

@@ -33,6 +33,7 @@ import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcAlpha0L;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCDAtAlpha;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.MeanAirfoil;
+import calculators.aerodynamics.LiftCalc;
 import database.databasefunctions.DatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import javafx.util.Pair;
@@ -337,6 +338,16 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		System.out.println("Alpha Zero Lift Wing (deg) = " + alpha0LWing.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
 
 
+		// do Analysis
+		
+		System.out.println("\n\n-----------------------------------");
+		System.out.println("\nANALYSIS ");
+		System.out.println("\n------------------------------------");
+		theAnalysis.doAnalysis(aircraft,
+				AnalysisTypeEnum.WEIGHTS,
+				AnalysisTypeEnum.BALANCE
+				);
+		
 		
 		
 		// -----------------------------------------------------------------------
@@ -420,13 +431,40 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		Amount<Angle> alphaMin = Amount.valueOf(Math.toRadians(-5), SI.RADIAN);
 		Amount<Angle> alphaMax = Amount.valueOf(Math.toRadians(20), SI.RADIAN);
 		
-		ACStabilityManager theStabilityManager = new ACStabilityManager(aircraft, ConditionEnum.TAKE_OFF ,
+		ACStabilityManager theStabilityManager = new ACStabilityManager(aircraft, ConditionEnum.CRUISE ,
 				alphaMin, alphaMax, alphaBody , true, subfolderPath, pathTakeOff);
  
 		theStabilityManager.CalculateWingLiftCharacteristics();
 		
 		
 	
+		
+		//---------------------
+		System.out.println("\n\n ---------CL  vs Alpha Calc-------");
+		MyArray alphaArrayActual =new MyArray();
+		
+		int  nVal =50;
+		
+		double angle = Math.toRadians(17);
+		alphaArrayActual.linspace(-0.03, angle,  nVal);
+		double[] alphaArray = new double[ nVal];
+		double [] cLWing = LiftCalc.calculateCLArray(alphaArrayActual, theWing);
+		
+		for (int i=0; i< nVal; i++){
+			alphaArray[i] = Math.toDegrees(alphaArrayActual.get(i));
+		}
+		System.out.println(" alpha Array " + Arrays.toString(alphaArray) );
+		System.out.println(" cl "+  Arrays.toString(cLWing));
+		
+		MyChartToFileUtils.plotNoLegend(
+				alphaArray , cLWing,
+				null, null, null, null,
+				"alpha", "CL",
+				"deg", "",
+				subfolderPath," CL vs Alpha from Airfoils " );
+
+		
+		
 		
 	}
 	

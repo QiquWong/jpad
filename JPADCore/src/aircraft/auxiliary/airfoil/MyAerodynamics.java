@@ -88,6 +88,10 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 	private double _machCr, _cdw = 0., _machCurrent;
 	private MyGeometry geometry;
 	private MyAirfoil _theAirfoil;
+	private double[] clAirfoil;
+	
+	MyArray alphaArray =  new MyArray();
+
 
 	public MyAerodynamics(MyAirfoil airf, AircraftEnum aircraftName, AirfoilStationEnum station) {
 		switch (aircraftName) {
@@ -436,7 +440,7 @@ public MyAerodynamics(MyAirfoil airf, String name) {
 
 		 _cdMin = 0.00675;
 		 _clAtCdMin = 0.3;
-		 _kFactorDragPolar = 0.075;
+		 _kFactorDragPolar = 0.0035;
 
 		 _aerodynamicCenterX = 0.243;
 		 _cmAC = -0.083;
@@ -469,7 +473,7 @@ public MyAerodynamics(MyAirfoil airf, String name) {
 
 		 _cdMin = 0.00625;
 		 _clAtCdMin = 0.1;
-		 _kFactorDragPolar = 0.075;
+		 _kFactorDragPolar = 0.0035;
 
 		 _aerodynamicCenterX = 0.243;
 		 _cmAC = -0.0833;
@@ -502,7 +506,7 @@ public MyAerodynamics(MyAirfoil airf, String name) {
 
 		 _cdMin = 0.00575;
 		 _clAtCdMin = 0.23;
-		 _kFactorDragPolar = 0.075;
+		 _kFactorDragPolar = 0.0035;
 
 		 _aerodynamicCenterX = 0.247;
 		 _cmAC = -0.083;
@@ -675,9 +679,47 @@ public MyAerodynamics(MyAirfoil airf, String name) {
 
 
 	public  double calculateClAtAlpha (double alpha){
+		
+		double clActual= MyMathUtils.getInterpolatedValue1DLinear(alphaArray.toArray(), clAirfoil, alpha);
+		return clActual;
+//		double q = _clStar - _clAlpha * _alphaStar.getEstimatedValue();
+//		if ( alpha < _alphaStar.getEstimatedValue() ) {
+//			_clCurrentViscid = _clAlpha* alpha + q ;
+//		}
+//		else {
+//			double[][] matrixData = { {Math.pow(_alphaStall.getEstimatedValue(), 3),
+//				Math.pow(_alphaStall.getEstimatedValue(), 2), _alphaStall.getEstimatedValue(),1.0},
+//					{3* Math.pow(_alphaStall.getEstimatedValue(), 2), 2*_alphaStall.getEstimatedValue(), 1.0, 0.0},
+//					{3* Math.pow(_alphaStar.getEstimatedValue(), 2), 2*_alphaStar.getEstimatedValue(), 1.0, 0.0},
+//					{Math.pow(_alphaStar.getEstimatedValue(), 3), Math.pow(_alphaStar.getEstimatedValue(), 2),
+//						_alphaStar.getEstimatedValue(),1.0}};
+//			RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
+//			double [] vector = {_clMax, 0,_clAlpha, _clStar};
+//			double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
+//			double a = solSystem[0];
+//			double b = solSystem[1];
+//			double c = solSystem[2];
+//			double d = solSystem[3];
+//
+//			_clCurrentViscid = a * Math.pow(alpha,3) + b * Math.pow(alpha, 2) + c * alpha +d;  		
+//		}
+//		return _clCurrentViscid;
+	}
+
+	public  void calculateClvsAlpha (){
+		
+		int nValue = 50;
+		double alphaMin = Math.toRadians(-5);
+		double alphaMax = Math.toRadians(25);
+		alphaArray.linspace(alphaMin, alphaMax, nValue);
+		double alpha;
 		double q = _clStar - _clAlpha * _alphaStar.getEstimatedValue();
+		clAirfoil = new double [nValue];
+		for (int i=0; i<nValue; i++){
+	
+		alpha = alphaArray.get(i);	
 		if ( alpha < _alphaStar.getEstimatedValue() ) {
-			_clCurrentViscid = _clAlpha* alpha + q ;
+			clAirfoil[i] = _clAlpha* alpha + q ;
 		}
 		else {
 			double[][] matrixData = { {Math.pow(_alphaStall.getEstimatedValue(), 3),
@@ -694,11 +736,10 @@ public MyAerodynamics(MyAirfoil airf, String name) {
 			double c = solSystem[2];
 			double d = solSystem[3];
 
-			_clCurrentViscid = a * Math.pow(alpha,3) + b * Math.pow(alpha, 2) + c * alpha +d;  		
+			clAirfoil[i] = a * Math.pow(alpha,3) + b * Math.pow(alpha, 2) + c * alpha +d; }
 		}
-		return _clCurrentViscid;
+		
 	}
-
 	public void plotClvsAlpha(){
 
 		System.out.println("\n \n-----------------------------------------------------");
@@ -1169,6 +1210,22 @@ public MyAerodynamics(MyAirfoil airf, String name) {
 		String id = _theAirfoil.getId() + "aero" + nAero;
 		nAero++;
 		return id;
+	}
+
+	public double[] getClAirfoil() {
+		return clAirfoil;
+	}
+
+	public void setClAirfoil(double[] clAirfoil) {
+		this.clAirfoil = clAirfoil;
+	}
+
+	public MyArray getAlphaArray() {
+		return alphaArray;
+	}
+
+	public void setAlphaArray(MyArray alphaArray) {
+		this.alphaArray = alphaArray;
 	}
 	
 }
