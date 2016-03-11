@@ -13,11 +13,6 @@
 }
 \useinnertheme{rounded}
 \useoutertheme[subsection=false]{miniframes}
-\usepackage{etoolbox}
-\makeatletter
-\patchcmd{\slideentry}{\advance\beamer@tempdim by -.05cm}{\advance\beamer@tempdim by\beamer@vboxoffset\advance\beamer@tempdim by\beamer@boxsize\advance\beamer@tempdim by 1.2\pgflinewidth}{}{}
-\patchcmd{\slideentry}{\kern\beamer@tempdim}{\advance\beamer@tempdim by 2pt\advance\beamer@tempdim by\wd\beamer@sectionbox\kern\beamer@tempdim}{}{}
-\makeatother
 \newcommand*\MyBullet{%
   \item[\color{blue}\scalebox{0.9}{\textbullet}]}
 \setbeamertemplate{footline}[frame number]
@@ -26,37 +21,79 @@
 %---------------Encoding and other settings-----------------
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage{siunitx}
 \usepackage{pgfplots}
 \usepackage{tikz}
+\usetikzlibrary{tikzmark,fit,shapes.geometric}
 \usepackage{graphicx}
 \definecolor{mygold}{RGB}{255, 153, 0}
 \setbeamercolor{item}{bg=mygold,fg=mygold}
 \setbeamerfont{section number projected}{%
   family=\rmfamily,series=\bfseries,size=\normalsize}
 \setbeamercolor{section number projected}{bg=blue,fg=white}
+
 %
+%--------------------Beamer Blocks---------------------------
+\setbeamerfont{block title}{size=\scriptsize}
+%
+\newenvironment<>{varblock}[2][.9\textwidth]{%
+  \setlength{\textwidth}{#1}
+  \begin{actionenv}#3%
+    \def\insertblocktitle{#2}%
+    \par%
+    \usebeamertemplate{block begin}}
+  {\par%
+    \usebeamertemplate{block end}%
+  \end{actionenv}}
+%
+%-------------------------Caption---------------------------
+\usepackage{caption}
+\captionsetup[figure]{
+    labelsep=space,
+    font=small,labelfont={bf,sf,small},
+    singlelinecheck=false
+}
+\captionsetup[table]{
+    labelsep=space,
+    font=small,labelfont={bf,sf,small},
+    justification=raggedright,
+    singlelinecheck=true,
+    belowskip=0.5em
+}
+\captionsetup[lstlisting]{
+    labelsep=space,
+    font=small,labelfont={bf,sf,small},
+    singlelinecheck=true
+}
+\captionsetup[ctable]{
+    labelsep=space,
+    font=small,labelfont={sf,bf,small},
+    singlelinecheck=true,
+    width=0.8\textwidth,
+    belowskip=0.5em
+}
 %-----------------------If conditions--------------------------
 \newif\ifplacelogo
 \placelogotrue % set it to true
 \logo{
     \ifplacelogo
-    \includegraphics[keepaspectratio,width=2.5cm]{images/unina}~
-    \hspace{\dimexpr\paperwidth-5.5cm-5pt}
-    \includegraphics[keepaspectratio,width=2.8cm]{images/logo_DII}
+    \includegraphics[keepaspectratio,width=2cm]{images/unina}~
+    \hspace{\dimexpr\paperwidth-4.5cm-2pt}
+    \includegraphics[keepaspectratio,width=2.3cm]{images/logo_DII}
     \fi
 }
 \newif\ifplacebackground
 \placebackgroundtrue % set it to true
 \setbeamertemplate{background canvas}{
     \ifplacebackground
-    \rule{0in}{2.6in}%
+    \rule{0in}{2.45in}%
     \rule{1in}{0in}%
     \includegraphics[keepaspectratio, width=0.6\paperwidth]{images/unina_vettoriale_con_sigillo.png}
     \fi
 }
 %
 %-----------------------Larger Margin--------------------------
-\newcommand\Wider[2][3em]{
+\newcommand\Wider[2][4em]{
 \vspace*{-0.8cm}
 \makebox[\linewidth][c]{
   \begin{minipage}{\dimexpr\textwidth+#1\relax}
@@ -74,10 +111,28 @@
   }
 }
 %
+%-----------------------Footline-----------------------------------
+\setbeamertemplate{footline}
+{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.275\paperwidth,ht=2.25ex,dp=1ex,left]{author in head/foot}%
+    \usebeamerfont{author in head/foot}\insertshortauthor
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.473\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+    \usebeamerfont{title in head/foot}\insertshorttitle
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.26\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+    \insertframenumber{} / \inserttotalframenumber\hspace*{2ex} 
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+\makeatother
 %-----------------------Title Info--------------------------------
 \title{Development of a Java Framework for Parametric Aircraft Design\\
 \bigskip
 The Performance Analysis Module}
+\author[Vittorio Trifari - M53/411]{}
 \date{}
 %
 %----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -104,6 +159,7 @@ prof. Agostino De Marco &  M35/411 \\
 \placebackgroundfalse
 \begin{frame}
 \frametitle{Table of Contents}
+\vspace*{-1cm}
 \tableofcontents
 \end{frame}
 %
@@ -112,6 +168,7 @@ prof. Agostino De Marco &  M35/411 \\
 \placebackgroundfalse
 \begin{frame}{Table of Contents}
 \section{Introducing JPAD}
+\vspace*{-1cm}
 \tableofcontents[currentsection]
 \subsection{}
 \end{frame}
@@ -178,10 +235,10 @@ prof. Agostino De Marco &  M35/411 \\
 \placebackgroundfalse
 %
 \setbeamertemplate{background canvas}{
-    \rule{0in}{3.4in}%
-    \rule{0.56in}{0in}%
+    \rule{0in}{3.5in}%
+    \rule{0.53in}{0in}%
     \centering
-    \includegraphics[keepaspectratio, width=0.7\paperwidth]{images/flowchart3}
+    \includegraphics[keepaspectratio, width=0.73\paperwidth]{images/flowchart3}
 }
 %
 \begin{frame}{JPAD typical work session}
@@ -207,17 +264,17 @@ The input file type chosen is the {\textcolor{mygold}{XML}} (\emph{{\textcolor{m
 \placebackgroundfalse
 %
 \setbeamertemplate{background canvas}{
-    \rule{0in}{3.4in}%
-    \rule{0.385in}{0in}%
+    \rule{0in}{3.56in}%
+    \rule{0.12in}{0in}%
     \centering
-    \includegraphics[keepaspectratio, width=0.52\paperwidth]{images/Folder_Tree}
+    \includegraphics[keepaspectratio, width=0.55\paperwidth]{images/Folder_Tree}
 }
 %
 \begin{frame}{Input file structure prototype}
 \begin{figure}[!t]
-    \hspace*{6.56cm}
+    \hspace*{6.3cm}
     \vspace*{2cm}
-    \includegraphics[keepaspectratio, width=0.4\paperwidth]{images/XMLAircraft}
+    \includegraphics[keepaspectratio, width=0.415\paperwidth]{images/XMLAircraft}
 \end{figure}
 \end{frame}
 \setbeamertemplate{background canvas}{ }
@@ -302,10 +359,363 @@ The input file type chosen is the {\textcolor{mygold}{XML}} (\emph{{\textcolor{m
 \placelogotrue
 \placebackgroundfalse
 \begin{frame}{Table of Contents}
-\section{The performance analysis module}
+\section{Payload Range class}
+\vspace*{-1cm}
 \tableofcontents[currentsection]
 \subsection{}
 \end{frame}
 %
 %-----------------------Frame 12-------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Payload-Range chart construction}
+\Wider{
+\begin{columns}[onlytextwidth,t]
+\column{0.6\textwidth}
+\begin{itemize}
+    \vspace*{0.5cm}
+	\MyBullet {\textcolor{mygold}{Point A}}: Maximum payload at zero range. (\alert{Already known})
+	\MyBullet {\textcolor{mygold}{Point B}}: Range at maximum payload and maximum take-off weight.
+	\MyBullet {\textcolor{mygold}{Point C}}: Range at maximum take-off weight with maximum fuel in fuel tanks.
+	\MyBullet {\textcolor{mygold}{Point D}}: Range with maximum fuel in fuel tanks and no payload.
+\end{itemize}
+\column{0.4\textwidth}
+\begin{figure}[!t]
+    \vspace*{-0.2cm}
+    \includegraphics[keepaspectratio, width=0.4\paperwidth]{images/Payload_Range}
+\end{figure}
+\end{columns}
+\begin{center}
+    \vspace*{-0.35cm}
+\begin{minipage}{4cm}
+\begin{varblock}[6cm]{Breguet equation propeller aircraft}
+\centering
+\scalebox{0.8}{
+$R=603.5\left(\frac{\eta_{p}}{SFC}\right)\left(\frac{L}{D}\right)\ln\left(\frac{W_{i}}{W_{f}}\right)_{\text{cruise}}$
+}
+\end{varblock}
+%
+\begin{varblock}[6cm]{Breguet equation jet aircraft}
+\centering
+\scalebox{0.8}{
+$R=\left(\frac{V}{SFCJ}\right)\left(\frac{L}{D}\right)\ln\left(\frac{W_{i}}{W_{f}}\right)_{\text{cruise}}$
+}
+\end{varblock}
+\end{minipage}
+\end{center}
+}
+\end{frame}
+%
+%-----------------------Frame 13------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Payload-Range chart construction}
+\Wider{
+\begin{itemize}
+	\MyBullet {\textcolor{mygold}{Point B}}: $W_{TO,\text{max}}=W_{OE}+W_{\text{payload,max}}+\tikzmark{start1}W_{\text{fuel}}\tikzmark{end1}$
+		
+	\MyBullet {\textcolor{mygold}{Point C}}: $W_{TO,\text{max}}=W_{OE}+\tikzmark{start2}W_{\text{payload}}\tikzmark{end2}+W_{\text{fuel,max}}$
+	\MyBullet {\textcolor{mygold}{Point D}}: $\tikzmark{start3}W_{\text{TO}}\tikzmark{end3}=W_{\text{OE}}+W_{\text{fuel,max}}$
+		
+\end{itemize}
+\pause
+\begin{tikzpicture}[remember picture,overlay]
+\node[draw,line width=1pt,red,ellipse,inner ysep=7pt,fit={(pic cs:start1) (pic cs:end1)}] {};
+\end{tikzpicture} 
+\pause
+\begin{tikzpicture}[remember picture,overlay]
+\node[draw,line width=1pt,red,ellipse,inner ysep=7pt,fit={(pic cs:start2) (pic cs:end2)}] {};
+\end{tikzpicture} 
+\pause
+\begin{tikzpicture}[remember picture,overlay]
+\node[draw,line width=1pt,red,ellipse,inner ysep=7pt,fit={(pic cs:start3) (pic cs:end3)}] {};
+\end{tikzpicture} 
+\pause
+\begin{itemize}
+		\MyBullet $W_{\text{fuel}}=\left(1-M_{ff}\right)\cdot W_{TO}$
+		\MyBullet $M_{ff}=\frac{W_1}{W_{TO}}\cdot 
+	   		\frac{W_2}{W_{1}}\cdot
+			   \frac{W_3}{W_{2}}\cdot 
+			   \frac{W_4}{W_{3}}\cdot 
+			   {\textcolor{mygold}{\frac{W_5}{W_{4}}}}\cdot 
+			   \frac{W_6}{W_{5}}\cdot 
+			   \frac{W_7}{W_{6}}\cdot 
+			   \frac{W_8}{W_{7}}\cdot 
+			   \frac{W_9}{W_{8}}\cdot 
+			   \frac{W_{10}}{W_{9}}\cdot 
+			   \frac{W_{\text{final}}}{W_{10}}$
+\end{itemize}
+\pause
+\bigskip
+\begin{itemize}
+	\MyBullet For each point the couple Range-Payload can be calculated, where the payload for {\textcolor{mygold}{point C}} is obtained from the previous equations.
+\end{itemize}
+}
+\end{frame}
+%
+%-----------------------Frame 14------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Payload-Range Java class flowchart}
+\WiderImages{
+\begin{columns}[onlytextwidth,t]
+\column{0.5\textwidth}
+\begin{figure}
+\centering
+    \includegraphics[keepaspectratio, width=0.5\paperwidth]{images/PayloadRange_BestRange_Flowchart.png}
+    \captionsetup{labelformat=empty}
+    \caption{\scalebox{0.6}{\qquad\qquad \textbf{Flowchart for best range and chosen Mach conditions comparison}}}
+\end{figure}
+\column{0.5\textwidth}
+\begin{figure}
+\centering
+    \includegraphics[keepaspectratio, width=0.5\paperwidth]{images/PayloadRange_MTOM_Flowchart.png}
+    \captionsetup{labelformat=empty}
+    \caption{\scalebox{0.6}{\qquad\quad \textbf{Flowchart for maximum take-off mass parameterization}}}
+\end{figure}
+\end{columns}
+}
+\end{frame}
+%
+%-----------------------Frame 15------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Payload-Range Java class output}
+\Wider{
+  \vspace*{0.1cm}
+  \hspace*{0.9cm}
+\scalebox{0.8}{
+\begin{tabular}{|l||c|c|c|c|c|}
+\hline
+\textbf{ } & \textbf{ATR-72} &\textbf{ } &  \textbf{JPAD} &\textbf{ } & \textbf{Difference(\%)}\\
+\hline\hline
+\textbf{Range} & 890 nmi  & \textbf{ } &$\approx820$ nmi &\textbf{ } & $\approx7.8$\%\\
+\textbf{Payload} & 68 pass. at $\SI{95}{\kilogram}$ &\textbf{ } & 65 pass. at $\SI{99}{\kilogram}$ &\textbf{ } & \textbf{ }\\
+\hline
+\end{tabular}
+}
+}
+\WiderImages{
+\begin{columns}[onlytextwidth,t]
+\column{0.5\textwidth}
+\begin{figure}
+  \vspace*{-0.9cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.5\paperwidth]{images/ATRSpecsPR.PNG}
+    \captionsetup{labelformat=empty}
+    \caption{\scalebox{0.7}{\qquad\qquad \textbf{ATR 72-500 data} (MTOM optional $\SI{22800}{\kilogram}$)}}
+\end{figure}
+\column{0.5\textwidth}
+\begin{figure}
+  \vspace*{-0.8cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.5\paperwidth]{images/ATRJpadPR.PNG}
+    \captionsetup{labelformat=empty}
+\end{figure}
+\end{columns}
+}
+\end{frame}
+%
+%-----------------------Frame 15------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Payload-Range Java class output}
+\Wider{
+  \vspace*{-0.25cm}
+  \hspace*{0.9cm}
+\scalebox{0.8}{
+\begin{tabular}{|l||c|c|c|c|c|}
+\hline
+\textbf{ } & \textbf{B747-100B} &\textbf{ } &  \textbf{JPAD} &\textbf{ } & \textbf{Difference(\%)}\\
+\hline\hline
+\textbf{Range} & $\approx5200$ nmi &\textbf{ } & $\approx5300$ nmi &\textbf{ } & $\approx1.9$\%\\
+\textbf{Payload} & 452 pass. at $\SI{95}{\kilogram}$ &\textbf{ } & 434 pass. at $\SI{99}{\kilogram}$ &\textbf{ } & \textbf{ }\\
+\hline
+\end{tabular}
+}
+}
+\WiderImages{
+\begin{columns}[onlytextwidth,t]
+\column{0.5\textwidth}
+\begin{figure}
+  \vspace*{-0.4cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.49\paperwidth]{images/B747SpecsPR.PNG}
+    \captionsetup{labelformat=empty}
+\end{figure}
+\column{0.5\textwidth}
+\begin{figure}
+  \vspace*{-0.3cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.5\paperwidth]{images/B747JpadPR.PNG}
+    \captionsetup{labelformat=empty}
+\end{figure}
+\end{columns}
+}
+\end{frame}
+%----------------Current table of contents--------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Table of Contents}
+\section{Specific Range class}
+\vspace*{-1cm}
+\tableofcontents[currentsection]
+\subsection{}
+\end{frame}
+%
+%-----------------------Frame 16------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Specific Range and Cruise Grid chart}
+\Wider{
+\begin{columns}[onlytextwidth,t]
+\column{0.6\textwidth}
+\begin{itemize}
+    \vspace*{0.6cm}
+	\MyBullet {\textcolor{mygold}{Cruise grid chart}} is a very important tool for pilots because it allows to choose the correct speed, during the cruise phase, in order to follow some mission objectives like minimum fuel consumption or a fast cruise.
+	\MyBullet In {\textcolor{mygold}{Breguet equations}} the focus is on the {\textcolor{mygold}{autonomy factor A.F.}}.
+\end{itemize}
+\column{0.4\textwidth}
+\begin{figure}[!t]
+    \vspace*{-0.2cm}
+    \includegraphics[keepaspectratio, width=0.4\paperwidth]{images/CruiseGrid}
+\end{figure}
+\end{columns}
+%
+\begin{center}
+ \vspace*{-0.65cm}
+\begin{minipage}{4cm}
+\begin{varblock}[4cm]{Autonomy Factor Propeller}
+\centering
+\scalebox{0.8}{
+$A.F.=\left(\frac{\eta_{p}}{SFC}\right)\left(\frac{L}{D}\right)$ 
+}
+\end{varblock}
+%
+\begin{varblock}[4cm]{Autonomy Factor Jet}
+\centering
+\scalebox{0.8}{
+$A.F.=\left(\frac{V}{SFCJ}\right)\left(\frac{L}{D}\right)$
+}
+\end{varblock}
+\end{minipage}
+\end{center}
+}
+\end{frame}
+%
+%-----------------------Frame 17------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Specific Range calculation}
+\Wider{
+\begin{itemize}
+        \MyBullet From the aircraft weight in cruise condition the {\textcolor{mygold}{$C_L$}} can be calculated.
+        \MyBullet With this $C_L$ the related {\textcolor{mygold}{$C_D$}} can be calculated taking into account the wave drag, if present.
+        \MyBullet From engine database the {\textcolor{mygold}{SFC}} can be easily calculated in the given flight condition.
+        \MyBullet At a given speed, or with known propeller efficiency, the {\textcolor{mygold}{A.F.}} can be calculated.
+	\MyBullet The {\textcolor{mygold}{specific range}} can be calculated from the {\textcolor{mygold}{A.F. dividing it by the aircraft weight}} in cruise.
+	\MyBullet This can be done for {\textcolor{mygold}{several Mach numbers}}, between the maximum and minimum one from the flight envelope at that altitude, and {\textcolor{mygold}{several aircraft weights}}.
+\end{itemize}
+}
+\end{frame}
+%
+%-----------------------Frame 18------------------------------
+\placelogotrue
+\placebackgroundfalse
+%
+\setbeamertemplate{background canvas}{
+    \rule{0in}{3.12in}%
+    \rule{0.3in}{0in}%
+    \centering
+    \includegraphics[keepaspectratio, width=0.75\paperwidth]{images/SpecificRange_Flowchart.png}
+}
+%
+\begin{frame}{Specific Range Java class flowchart}
+\end{frame}
+\setbeamertemplate{background canvas}{ }
+%
+%-----------------------Frame 18------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Specific Range Java class output}
+\only<1>{
+\WiderImages{
+\begin{figure}
+  \vspace*{0.42cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.5\paperwidth]{images/DragThrustATR.PNG}
+    \captionsetup{labelformat=empty}
+\end{figure}
+\begin{figure}
+  \vspace*{-1.15cm}
+  \hspace*{-0.2cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.5\paperwidth]{images/DragThrustB747.PNG}
+    \captionsetup{labelformat=empty}
+\end{figure}
+}
+}
+\pause
+\only<2>{
+\WiderImages{
+\begin{figure}
+  \vspace*{0.38cm}
+    \hspace*{-0.2cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.495\paperwidth]{images/EfficiencyATR.PNG}
+    \captionsetup{labelformat=empty}
+\end{figure}
+\begin{figure}
+  \vspace*{-1.15cm}
+  \hspace*{-0.2cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.495\paperwidth]{images/EfficiencyB747.PNG}
+    \captionsetup{labelformat=empty}
+\end{figure}
+}
+}
+\pause
+\only<3>{
+\WiderImages{
+\begin{figure}
+  \vspace*{0.38cm}
+    \hspace*{-0.2cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.5\paperwidth]{images/CruiseGridATR.PNG}
+    \captionsetup{labelformat=empty}
+\end{figure}
+\begin{figure}
+  \vspace*{-1.08cm}
+  \hspace*{-0.2cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.51\paperwidth]{images/CruiseGridB747.PNG}
+    \captionsetup{labelformat=empty}
+\end{figure}
+}
+}
+\end{frame}
+%----------------Current table of contents--------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Table of Contents}
+\section{High Lift Devices class}
+\vspace*{-1cm}
+\tableofcontents[currentsection]
+\subsection{}
+\end{frame}
+%
+%-----------------------Frame ??------------------------------
+%
+%----------------Current table of contents--------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Table of Contents}
+\section{Take-Off and Landing classes}
+\vspace*{-1cm}
+\tableofcontents[currentsection]
+\subsection{}
+\end{frame}
+%
+%-----------------------Frame ??------------------------------
+%
 \end{document}
