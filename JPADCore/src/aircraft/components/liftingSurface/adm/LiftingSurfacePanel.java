@@ -127,6 +127,7 @@ public class LiftingSurfacePanel implements ILiftingSurfacePanel {
 						Math.tan( _sweepLeadingEdge.to(SI.RADIAN).getEstimatedValue() )
 						- (4./_aspectRatio)*
 						( x*(1 - _taperRatio)/(1 + _taperRatio)) ),
+			1e-9, // precision
 			SI.RADIAN);
 	}
 

@@ -55,8 +55,12 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		//
 		// assign eta's when the shape of the planform is loaded and no. panels are known
 
-		_yBreakPoints =  new ArrayList<Amount<Length>>(); // new MyArray(SI.METER);
-
+		_yBreakPoints =  new ArrayList<Amount<Length>>();
+		_xLEBreakPoints = new ArrayList<Amount<Length>>();
+		_zLEBreakPoints = new ArrayList<Amount<Length>>();
+		_chordsBreakPoints = new ArrayList<Amount<Length>>();
+		_twistsBreakPoints = new ArrayList<Amount<Angle>>();
+		
 //		_panelToYStations =
 //			    new HashMap<LiftingSurfacePanel, List<Amount<Length>>>();
 		
@@ -163,11 +167,17 @@ public class LiftingSurface extends AbstractLiftingSurface {
 
 		//======================================================
 		// Assign lists of Y's to each panel
-		mapPanelsToYActual();
+		mapPanelsToYDiscretized();
 
 		//======================================================
 		// Map Y's to chord
-		calculateChordYAxisActual();
+		calculateChordsAtYDiscretized();
+		
+		//======================================================
+		// Map Y's to (Xle, Zle)
+		calculateXZLEAtYDiscretized();
+		
+		reportPanesToSpanwiseDiscretizedVariables();
 
 		// Aspect-ratio
 		this.aspectRatio = (this.span.pow(2)).divide(this.surfacePlanform).getEstimatedValue();
@@ -397,7 +407,7 @@ public class LiftingSurface extends AbstractLiftingSurface {
 	/**
 	 * Calculate Chord Distribution of the Actual Wing along y axis
 	 */
-	private void mapPanelsToYActual() {
+	private void mapPanelsToYDiscretized() {
 
 		List<Double> chordsActualVsYList = new ArrayList<Double>();
 		List<Amount<Length>> _xLEvsY = new ArrayList<Amount<Length>>();
@@ -407,7 +417,7 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		// Break points Y's
 
 		// root at symmetry plane
-		_yBreakPoints.add(Amount.valueOf(0.0, SI.METRE));
+		_yBreakPoints.add(Amount.valueOf(0.0, 1e-8, SI.METRE));
 		// Accumulate values and add
 		_yBreakPoints.addAll(
 			IntStream.range(1, this.panels.size())
@@ -420,11 +430,62 @@ public class LiftingSurface extends AbstractLiftingSurface {
 				.collect(Collectors.toList())
 			);
 		_yBreakPoints.add(this.semiSpan);
-		// TODO make this yBP a member variable _yBreakPoints
 
 		MyConfiguration.customizeAmountOutput();
 		System.out.println("y Break-Points ->\n" + _yBreakPoints);
 
+		// Leading-edge x at breakpoints
+		_xLEBreakPoints.add(Amount.valueOf(0.0, 1e-8, SI.METRE));
+		for (int i = 1; i <= this.panels.size(); i++) {
+			Amount<Length> x0 = _xLEBreakPoints.get(i-1);
+			Amount<Length> y = _yBreakPoints.get(i).minus(_yBreakPoints.get(i-1));
+			Amount<Angle> sweepLE = panels.get(i-1).getSweepLeadingEdge();
+			_xLEBreakPoints.add(
+				x0.plus( 
+						y.times(Math.tan(sweepLE.to(SI.RADIAN).getEstimatedValue()))
+				));
+		}
+
+		MyConfiguration.customizeAmountOutput();
+		System.out.println("xLE Break-Points ->\n" + _xLEBreakPoints);
+
+		// Leading-edge z at breakpoints
+		_zLEBreakPoints.add(Amount.valueOf(0.0, 1e-8, SI.METRE));
+		for (int i = 1; i <= this.panels.size(); i++) {
+			Amount<Length> z0 = _zLEBreakPoints.get(i-1);
+			Amount<Length> y = _yBreakPoints.get(i).minus(_yBreakPoints.get(i-1));
+			Amount<Angle> dihedral = panels.get(i-1).getDihedral();
+			_zLEBreakPoints.add(
+				z0.plus( 
+						y.times(Math.tan(dihedral.to(SI.RADIAN).getEstimatedValue()))
+				));
+		}
+
+		MyConfiguration.customizeAmountOutput();
+		System.out.println("zLE Break-Points ->\n" + _zLEBreakPoints);
+		
+		// Chords at breakpoints
+		_chordsBreakPoints.add(panels.get(0).getChordRoot());
+		for (int i = 0; i < this.panels.size(); i++) {
+			_chordsBreakPoints.add(
+					panels.get(i).getChordTip()
+				);
+		}
+
+		MyConfiguration.customizeAmountOutput();
+		System.out.println("Chords Break-Points ->\n" + _chordsBreakPoints);
+
+		// Twists at breakpoints
+		_twistsBreakPoints.add(Amount.valueOf(0.0,1e-9,NonSI.DEGREE_ANGLE));
+		for (int i = 0; i < this.panels.size(); i++) {
+			_twistsBreakPoints.add(
+					panels.get(i).getTwistGeometricAtTip()
+				);
+		}
+
+		MyConfiguration.customizeAmountOutput();
+		System.out.println("Twists Break-Points ->\n" + _twistsBreakPoints);
+		
 		//======================================================
 		// Break points eta's
 
@@ -548,11 +609,6 @@ public class LiftingSurface extends AbstractLiftingSurface {
 					y.stream()
 						.filter(y_ -> y_.isLessThan( panels.get(0).getSemiSpan() ) || y_.equals( panels.get(0).getSemiSpan()) )
 						.map(Y__ -> Amount.valueOf(0.0, SI.METRE))
-						.collect(Collectors.toList()) // initialize Yle 
-					, 
-					y.stream()
-						.filter(y_ -> y_.isLessThan( panels.get(0).getSemiSpan() ) || y_.equals( panels.get(0).getSemiSpan()) )
-						.map(Y__ -> Amount.valueOf(0.0, SI.METRE))
 						.collect(Collectors.toList()) // initialize Zle 
 					, 
 					y.stream()
@@ -606,15 +662,6 @@ public class LiftingSurface extends AbstractLiftingSurface {
 									&& ( y_ <= _yBreakPoints.get(i_+1).getEstimatedValue() ) 
 								)
 							.mapToObj(y_ -> Amount.valueOf(0.0, SI.METRE))
-							.collect(Collectors.toList()) // initialize Yle 
-						, 
-						y.stream()
-							.mapToDouble(a -> a.to(SI.METRE).getEstimatedValue())
-							.filter(y_ -> ( 
-									y_ > _yBreakPoints.get(i_).getEstimatedValue() ) 
-									&& ( y_ <= _yBreakPoints.get(i_+1).getEstimatedValue() ) 
-								)
-							.mapToObj(y_ -> Amount.valueOf(0.0, SI.METRE))
 							.collect(Collectors.toList()) // initialize Zle 
 						, 
 						y.stream()
@@ -629,122 +676,184 @@ public class LiftingSurface extends AbstractLiftingSurface {
 					)
 				);
 		}// end-of for
-
-		System.out.println("=====================================================");
-		System.out.println("List of Tuples ->");
-//		System.out.println(_panelToSpanwiseDiscretizedVariables);
-		
-		StringBuilder sb = new StringBuilder();
-		
-		// tweak one value 
-		_panelToSpanwiseDiscretizedVariables.get(0)
-			._2()._2() // chords
-			.set(0, Amount.valueOf(1.2, SI.METRE));
-		
-		_panelToSpanwiseDiscretizedVariables.stream()
-			.forEach( tup2 -> {
-				sb	
-				.append("=====================================================\n")
-				.append("Panel '" + tup2._1().getId() + "'\n")
-				.append("Ys: size ")
-				.append(
-					tup2
-						._2() // Tuple6
-						._1() // Ys
-						.size()
-					+ "\n"
-					)
-				.append(
-					tup2
-						._2() // Tuple6
-						._1() // Ys
-					+ "\n"
-					);
-				sb
-				.append("Chords: size ")
-				.append(
-					tup2
-						._2() // Tuple6
-						._2() // Chords
-						.size()
-					+ "\n"
-					)
-				.append(
-					tup2
-						._2() // Tuple6
-						._2() // Chords
-					);
-				System.out.println(sb.toString());
-			}	
-		);
-		
 		
 	}
 
 	/**
 	 * Calculate Chord Distribution of the Actual Wing along y axis
 	 */
-	private void calculateChordYAxisActual() {
+	private void calculateChordsAtYDiscretized() {
 
 		//======================================================
 		// Set chords versus Y's
 		// according to location within panels/yBP
 
-
-//		chordsActualVsYList.addAll(
-//			IntStream.range(1, yBP.size())
-//				.mapToDouble(i -> {
-//					IntStream.range(0, _yStationActual.size())
-//						.mapToObj(j -> panels.get(index))
-//						.filter(
-//							p -> p.get
-//								)
-//					if ( ) {
-//
-//					}
-//				})
-//			};
-
-
-//		for (int i=0; i < _numberOfPointsChordDistribution; i++) {
-//
-//			if(_eta.get(i) <= _spanStationKink){
-//				_xLEvsY.add(Amount.valueOf(
-//						_xLERoot.doubleValue(SI.METER) +
-//						Math.tan(_sweepLEInnerPanel.doubleValue(SI.RADIAN)) *
-//						_yStationActual.get(i)
-//						,SI.METER));
-//
-//				_xTEvsY.add(Amount.valueOf((_xLERoot.doubleValue(SI.METER)+
-//						_chordRoot.doubleValue(SI.METER))+
-//						Math.tan(_sweepTEInnerPanel.doubleValue(SI.RADIAN)) *
-//						_yStationActual.get(i),SI.METER));
-//
-//			} else if(_spanStationKink !=1.) { // Handle simply tapered wing
-//				_xLEvsY.add(Amount.valueOf(_xLEKink.doubleValue(SI.METER) +
-//						Math.tan(_sweepLEOuterPanel.doubleValue(SI.RADIAN)) *
-//						(_yStationActual.get(i)-
-//								_semiSpanInnerPanel.doubleValue(SI.METER)),SI.METER));
-//
-//				_xTEvsY.add(Amount.valueOf(_xTEKink.doubleValue(SI.METER) +
-//						Math.tan(_sweepTEOuterPanel.doubleValue(SI.RADIAN)) *
-//						(_yStationActual.get(i) -
-//								_semiSpanInnerPanel.doubleValue(SI.METER)),SI.METER));
-//
-//			}
-//
-//			chordsActualVsYList.add(_xTEvsY.get(_xTEvsY.size()-1).doubleValue(SI.METER)-
-//					_xLEvsY.get(_xLEvsY.size()-1).doubleValue(SI.METER));
-//
-//		}
-//
-//		_chordsVsYActual.setList(chordsActualVsYList);
-//		_xLEvsYActual.setAmountList(_xLEvsY);
-//		_xTEvsYActual.setAmountList(_xTEvsY);
+		for (int k=0; k < _panelToSpanwiseDiscretizedVariables.size(); k++) {
+			LiftingSurfacePanel panel = _panelToSpanwiseDiscretizedVariables.get(k)._1();
+			Amount<Length> y0 = _yBreakPoints.get(k);
+			List<Amount<Length>> vY = _panelToSpanwiseDiscretizedVariables.get(k)._2()._1(); // Ys
+			List<Amount<Length>> vC = _panelToSpanwiseDiscretizedVariables.get(k)._2()._2(); // Chords
+			IntStream.range(0, vY.size())
+				.forEach(i -> {
+					Amount<Length> y = vY.get(i).minus(y0);
+					// c(y) = cr + (2/b)*(ct - cr)*y
+					Amount<Length> c = panel.getChordRoot().plus(
+						y.times(
+							panel.getChordTip().minus(panel.getChordRoot())
+						).divide(panel.getSemiSpan())
+						);
+					// assign the chord
+					vC.set(i, c);
+				});
+		}
 
 	}
 
+	private void calculateXZLEAtYDiscretized() {
+		
+		for (int k=0; k < _panelToSpanwiseDiscretizedVariables.size(); k++) {
+			LiftingSurfacePanel panel = _panelToSpanwiseDiscretizedVariables.get(k)._1();
+			Amount<Length> y0 = _yBreakPoints.get(k);
+			Amount<Length> x0 = _xLEBreakPoints.get(k);
+			Amount<Length> z0 = _zLEBreakPoints.get(k);
+			Amount<Angle> twist0 = _twistsBreakPoints.get(k);
 
+			List<Amount<Length>> vY = _panelToSpanwiseDiscretizedVariables.get(k)._2()._1(); // Ys
+			List<Amount<Length>> vC = _panelToSpanwiseDiscretizedVariables.get(k)._2()._2(); // Chords
+			List<Amount<Length>> vXLE = _panelToSpanwiseDiscretizedVariables.get(k)._2()._3(); // XLEs
+			List<Amount<Length>> vZLE = _panelToSpanwiseDiscretizedVariables.get(k)._2()._4(); // ZLEs
+			List<Amount<Angle>> vTwistsLE = _panelToSpanwiseDiscretizedVariables.get(k)._2()._5(); // Twists
+			
+			Amount<Angle> sweepLE = panel.getSweepLeadingEdge();
+			Amount<Angle> dihedral = panel.getDihedral();
+			
+			IntStream.range(0, vY.size())
+				.forEach(i -> {
+					// y := Y - y0
+					Amount<Length> y = vY.get(i).minus(y0);
+					// xle = x0 + y * tan(sweepLE)
+					Amount<Length> xle = 
+						x0.plus( 
+							y.times(Math.tan(sweepLE.to(SI.RADIAN).getEstimatedValue()))
+						);
+					// assign the xle
+					vXLE.set(i, xle);
+					// zle = z0 + y * tan(dihedral)
+					Amount<Length> zle = 
+							z0.plus( 
+								y.times(Math.tan(dihedral.to(SI.RADIAN).getEstimatedValue()))
+							);
+					vZLE.set(i, zle);
+					// 
+					// twist(y) = twist_r + (2/b)*(twist_t - twist_r)*y
+					Amount<Angle> twist = twist0.plus(
+						y.times(
+							panel.getTwistGeometricAtTip().minus(twist0)
+						).divide(panel.getSemiSpan())
+						);
+					// assign the chord
+					vTwistsLE.set(i, twist);
+				});
+		}
+	}	
+
+	private void reportPanesToSpanwiseDiscretizedVariables(){
+		
+		System.out.println("=====================================================");
+		System.out.println("List of Tuples, size " + _panelToSpanwiseDiscretizedVariables.size());
+//		System.out.println(_panelToSpanwiseDiscretizedVariables);
+		
+		_panelToSpanwiseDiscretizedVariables.stream()
+			.forEach( tup2 -> {
+				StringBuilder sb = new StringBuilder();
+				sb	
+				.append("=====================================================\n")
+				.append("Panel '" + tup2._1().getId() + "'")
+				.append("\n")
+				.append("Ys: size ")
+				.append(
+					tup2
+						._2() // Tuple6
+						._1() // Ys
+						.size()
+					)
+				.append("\n")
+				.append(
+					tup2
+						._2() // Tuple5
+						._1() // Ys
+					);
+				sb
+				.append("\n")
+				.append("Chords: size ")
+				.append(
+					tup2
+						._2() // Tuple5
+						._2() // Chords
+						.size()
+					)
+				.append("\n")
+				.append(
+					tup2
+						._2() // Tuple5
+						._2() // Chords
+					);
+				sb
+				.append("\n")
+				.append("Xle's: size ")
+				.append(
+					tup2
+						._2() // Tuple5
+						._3() // Xle's
+						.size()
+					)
+				.append("\n")
+				.append(
+					tup2
+						._2() // Tuple5
+						._3() // Xle's
+					)
+				;
+				sb
+				.append("\n")
+				.append("Zle's: size ")
+				.append(
+					tup2
+						._2() // Tuple5
+						._4() // Zle's
+						.size()
+					)
+				.append("\n")
+				.append(
+					tup2
+						._2() // Tuple5
+						._4() // Zle's
+					)
+				;
+				sb
+				.append("\n")
+				.append("Twists: size ")
+				.append(
+					tup2
+						._2() // Tuple5
+						._5() // Twists
+						.size()
+					)
+				.append("\n")
+				.append(
+					tup2
+						._2() // Tuple5
+						._5() // Twists
+					)
+				.append("\n")
+				;
+				
+				// spit out the string
+				System.out.println(sb.toString());
+			}	
+		);
+		
+	}
 
 
 	@Override

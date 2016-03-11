@@ -564,9 +564,9 @@ public class MyXMLReaderUtils {
 				Double value = Double.parseDouble(valueStr);
 				Amount<Length> quantity;
 				if (unitStr != null)
-					quantity = (Amount<Length>) Amount.valueOf(value, Unit.valueOf(unitStr));
+					quantity = (Amount<Length>) Amount.valueOf(value, 1e-9, Unit.valueOf(unitStr));
 				else
-					quantity = Amount.valueOf(value, SI.METER);
+					quantity = Amount.valueOf(value, 1e-8, SI.METER);
 
 				return quantity;
 
@@ -674,9 +674,9 @@ public class MyXMLReaderUtils {
 						unitStr = "°";
 						break;
 					}
-					quantity = (Amount<Angle>) Amount.valueOf(value, Unit.valueOf(unitStr));
+					quantity = (Amount<Angle>) Amount.valueOf(value, 1e-9, Unit.valueOf(unitStr));
 				} else
-					quantity = Amount.valueOf(value, SI.RADIAN);
+					quantity = Amount.valueOf(value, 1e-9, SI.RADIAN);
 
 				return quantity;
 

@@ -14,7 +14,7 @@
                 <outer_section>
                     <chord unit="m">1.5</chord>
                     <airfoil file="naca63209.xml"/>
-                    <geometric_twist unit="deg">0.0</geometric_twist>
+                    <geometric_twist unit="deg">-1.0</geometric_twist>
                 </outer_section>
             </panel>
             <panel id="Outer panel" linked_to="Inner panel">
