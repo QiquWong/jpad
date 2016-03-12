@@ -1,5 +1,8 @@
 package sandbox.adm;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
@@ -41,7 +44,6 @@ public class D3PlotterOptions {
 	private String yGridLineDashArray;
 	private String yGridLineStrokeWidth;
 
-
 	private int symbolSize;
 	private String symbolStyle;
 
@@ -61,6 +63,8 @@ public class D3PlotterOptions {
 	double xMax;
 	double yMin;
 	double yMax;
+	
+	List<String> legendItems;
 
 	// Builder pattern via a nested public static class
 
@@ -115,6 +119,9 @@ public class D3PlotterOptions {
 		double _yMin = 0.0;
 		double _yMax = 1.0;
 
+		List<String> _legendItems = new ArrayList<>();
+
+		
 		public D3PlotterOptionsBuilder( /* required parameters here*/ ){
 		}
 
@@ -300,6 +307,14 @@ public class D3PlotterOptions {
 			_yMin = y1; _yMax = y2;
 			return this;
 		}
+		
+		public D3PlotterOptionsBuilder legendItems(
+				String... items ) {
+			for (String s : items)
+				_legendItems.add(s);
+			return this;
+		}
+		
 
 		public D3PlotterOptions build() {
 			return new D3PlotterOptions(this);
@@ -342,7 +357,6 @@ public class D3PlotterOptions {
 		this.areaStyle = builder._areaStyle;
 		this.areaOpacity = builder._areaOpacity;
 
-
 		this.showSymbols = builder._showSymbols;
 		this.plotArea = builder._plotArea;
 		this.showLegend = builder._showLegend;
@@ -353,6 +367,8 @@ public class D3PlotterOptions {
 		this.xMax = builder._xMax;
 		this.yMin = builder._yMin;
 		this.yMax = builder._yMax;
+		
+		this.legendItems = builder._legendItems;
 
 	}
 
@@ -492,7 +508,9 @@ public class D3PlotterOptions {
 		return yMax;
 	}
 
-
+	public List<String> getLegendItems() {
+		return legendItems;
+	}
 
 	@Override public String toString() {
 		return

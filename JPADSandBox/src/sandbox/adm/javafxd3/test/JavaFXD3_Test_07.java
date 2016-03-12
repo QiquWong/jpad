@@ -44,7 +44,6 @@ public class JavaFXD3_Test_07  extends Application {
 
 	private final NoopDatumFunction noopListener = new NoopDatumFunction();
 
-
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
@@ -73,6 +72,7 @@ public class JavaFXD3_Test_07  extends Application {
 				.axisLineColor("magenta").axisLineStrokeWidth("5px")
 				.plotArea(true).areaOpacity(0.7)
 				.graphBackgroundColor("yellow").graphBackgroundOpacity(0.2)
+				.legendItems("Pippo1", "agodemar2", "crocco3")
 				.build();
 
 		System.out.println("Plot options:\n" + options);

@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.DoubleSummaryStatistics;
 import java.util.List;
 import java.util.Stack;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.xml.transform.OutputKeys;
@@ -22,6 +23,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.treez.javafxd3.d3.D3;
 import org.treez.javafxd3.d3.coords.Coords;
 import org.treez.javafxd3.d3.core.Selection;
@@ -500,6 +502,18 @@ if (false) {
 		System.out.println("D3Plotter :: putLegend");
 
 		// TODO
+		
+		// Count legend strings and arrange a counter vector accordingly
+		int nLegendItems = options.getLegendItems().size();
+		
+		if (nLegendItems == 0) return;
+		
+		int[] itemCounter = ArrayUtils.toPrimitive(
+			IntStream.range(0, nLegendItems)
+				.boxed()
+				.collect(Collectors.toList())
+				.toArray(new Integer[0])
+			);
 
 		Selection legend = svgSelection.append("g")
 				  .attr("class", "legend")
@@ -520,7 +534,7 @@ if (false) {
 //						webEngine, Arrays.asList("Ago", "dem", "ar")));
 
 		legend.selectAll("rect")
-	      .data(new int[]{1, 2, 3}) // legend item counter
+	      .data(itemCounter) // new int[]{1, 2, 3} legend item counter
 	      .enter()
 	      .append("rect")
 	      .attrExpression("y", "function(d, i){ return i *  20;}")
@@ -531,14 +545,17 @@ if (false) {
 	      ;
 
 		legend.selectAll("text")
-	      .data(new int[]{1, 2, 3}) // legend item counter
+	      .data(itemCounter) // new int[]{1, 2, 3} legend item counter
 	      .enter()
 	      .append("text")
 		  .attr("text-anchor", "start")
 	      .attr("x", 12)
 	      .attrExpression("y", "function(d, i){ return 10 + i *  20;}")
 	      //.text("pippo")
-	      .text(new TextLegendDatumFunction(webEngine, Arrays.asList("Ago", "dem", "ar")))
+	      .text(new TextLegendDatumFunction(
+	    		  webEngine, 
+	    		  options.getLegendItems() // Arrays.asList("Ago", "dem", "ar")
+	    		  ))
 	      ;
 
 	}
