@@ -56,6 +56,7 @@ public abstract class AbstractLiftingSurface implements ILiftingSurface {
 	MyArray _eta;
 
 	List<Amount<Length>> _yBreakPoints;
+	List<Double> _etaBP;
 	List<Amount<Length>> _xLEBreakPoints;
 	List<Amount<Length>> _zLEBreakPoints;
 	List<Amount<Length>> _chordsBreakPoints;

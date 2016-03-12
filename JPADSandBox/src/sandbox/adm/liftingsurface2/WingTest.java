@@ -61,11 +61,15 @@ public class WingTest {
 		System.out.println("--------------");
 
 		LiftingSurface wing = LiftingSurface.importFromXML(pathToXML, dirAirfoil);
+		wing.calculateGeometry(30);
 
 		System.out.println("The wing ...");
 
 		System.out.println(wing);
 
+		System.out.println("Details on panel discretization ...");
+		wing.reportPanelsToSpanwiseDiscretizedVariables();
+		
 
 	}
 

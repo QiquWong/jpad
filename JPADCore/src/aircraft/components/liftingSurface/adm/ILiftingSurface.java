@@ -2,6 +2,7 @@ package aircraft.components.liftingSurface.adm;
 
 import java.util.List;
 
+import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 
@@ -9,6 +10,7 @@ import org.jscience.physics.amount.Amount;
 
 public interface ILiftingSurface {
 
+	public void calculateGeometry(int numberSpanwiseStations);
 	public void calculateGeometry();
 
 	Amount<Length>[] getXYZ0();
@@ -23,6 +25,8 @@ public interface ILiftingSurface {
 	Amount<Length> getZPole();
 	void setXYZPole(Amount<Length> xp, Amount<Length> yp, Amount<Length> zp);
 
+	void discretizeGeometry(int numberSpanwiseStations);
+	
 	public Amount<Length> getMeanAerodynamicChord(boolean recalculate);
 	public Amount<Length> getMeanAerodynamicChord();
 
@@ -66,5 +70,15 @@ public interface ILiftingSurface {
 	public List<AsymmetricFlaps> getAsymmetricFlaps();
 
 	public List<Spoilers> getSpoilers();
+	
+	// 
+	
+	public List<Amount<Length>> getDiscretizedYs();
+	public List<Amount<Length>> getDiscretizedChords();
+	public List<Amount<Length>> getDiscretizedXle();
+	public List<Amount<Length>> getDiscretizedZle();
+	public List<Amount<Angle>> getDiscretizedTwists();
+	
+	public void reportPanelsToSpanwiseDiscretizedVariables();
 
 }

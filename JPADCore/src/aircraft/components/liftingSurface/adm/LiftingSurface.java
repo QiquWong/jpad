@@ -38,12 +38,13 @@ import javolution.text.TypeFormat;
 import javolution.text.TextFormat.Cursor;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
+import standaloneutils.MyMathUtils;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.customdata.MyArray;
 
 public class LiftingSurface extends AbstractLiftingSurface {
 
-	int _numberOfPointsChordDistribution = 30;
+	int _numberOfSpanwisePoints = 15;
 
 	public LiftingSurface(String id) {
 
@@ -57,6 +58,7 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		// assign eta's when the shape of the planform is loaded and no. panels are known
 
 		_yBreakPoints =  new ArrayList<Amount<Length>>();
+		_etaBP = new ArrayList<>();
 		_xLEBreakPoints = new ArrayList<Amount<Length>>();
 		_zLEBreakPoints = new ArrayList<Amount<Length>>();
 		_chordsBreakPoints = new ArrayList<Amount<Length>>();
@@ -110,7 +112,7 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		}
 
 		// Update panels' internal geometry variables
-		wing.calculateGeometry();
+		// wing.calculateGeometry(); // shouldn't care about discretization
 
 		//---------------------------------------------------------------------------------
 		// SYMMETRIC FLAPS
@@ -138,6 +140,11 @@ public class LiftingSurface extends AbstractLiftingSurface {
 
 	@Override
 	public void calculateGeometry() {
+		calculateGeometry(_numberOfSpanwisePoints);
+	}
+	
+	@Override
+	public void calculateGeometry(int numberSpanwiseStations) {
 		
 		System.out.println("[LiftingSurface] Calculating derived geometry parameters of wing ...");
 		
@@ -162,6 +169,103 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		calculateSpans();
 
 		//======================================================
+		// Calculate break-points
+		calculateVariablesAtBreakpoints();
+				
+		//======================================================
+		// Discretize the wing spanwise
+		discretizeGeometry(numberSpanwiseStations);
+		
+		//======================================================
+		// Aspect-ratio
+		this.aspectRatio = (this.span.pow(2)).divide(this.surfacePlanform).getEstimatedValue();
+
+		//======================================================
+		// Mean aerodynamic chord
+		calculateMAC();
+		
+		// TODO implement remaining functions here
+		
+		// xLE_MAC, y_LE_MAC
+		
+		
+
+	}
+	
+	private void calculateMAC() {
+
+		// Mean Aerodynamic Chord
+		
+		//======================================================
+		// Weighted sum on MACs of single panels
+//		Double mac0 = this.getPanels().stream()
+//				.mapToDouble(p ->
+//					p.getMeanAerodynamicChord().to(SI.METRE).getEstimatedValue()
+//					*p.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue())
+//				.sum();
+//		mac0 = mac0 / this.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue();
+//		this.meanAerodynamicChord = Amount.valueOf(mac0,SI.METRE);
+
+		//======================================================
+		// mac = (2/S) * int_0^(b/2) c^2 dy
+		Double mac = MyMathUtils.integrate1DSimpsonSpline(
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+					this.getDiscretizedYs()), // y
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+					this.getDiscretizedChords().stream()
+						.map(c -> c.pow(2))
+						.collect(Collectors.toList())
+				) // c^2
+			);
+		mac = 2.0 * mac / this.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue();
+		this.meanAerodynamicChord = Amount.valueOf(mac,1e-9,SI.METRE);
+		
+	}
+	
+	@Override
+	public void discretizeGeometry(int numberSpanwiseStations) {
+		//======================================================
+		// Eta's discretizing the whole planform,
+		// in the middle of each panel,
+		// and including break-point eta's
+
+		List<Double> eta0 =
+			Arrays.asList(
+				ArrayUtils.toObject(
+						MyArrayUtils.linspace(0., 1., numberSpanwiseStations)
+				)
+			);
+//		System.out.println(eta0);
+
+		List<Double> eta1 = ListUtils.union(eta0, _etaBP);
+		Collections.sort(eta1);
+//		System.out.println(eta1);
+
+		List<Double> eta2 = eta1.stream()
+			.distinct().collect(Collectors.toList());
+//		System.out.println(eta2);
+
+		_numberOfSpanwisePoints = eta2.size();
+
+		// Now that break-points are known generate eta's, including
+		// break-point eta's
+		//_eta.setDouble(MyArrayUtils.linspace(0., 1., _numberOfPointsChordDistribution));
+		_eta.setList(eta2);
+//		System.out.println(_eta);
+
+		//======================================================
+		// Y's discretizing the whole planform,
+		// in the middle of each panel,
+		// and including break-point eta's
+
+//		_yStationActual.setRealVector(
+//				_eta.getRealVector().mapMultiply(this.semiSpan.doubleValue(SI.METER)));
+
+		_yStationActual = _eta.getList().stream()
+				.map(d -> this.semiSpan.times(d))
+				.collect(Collectors.toList());
+
+		//======================================================
 		// Assign lists of Y's to each panel
 		mapPanelsToYDiscretized();
 
@@ -173,25 +277,12 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		// Map Y's to (Xle, Zle, twist)
 		calculateXZleTwistAtYDiscretized();
 		
-		reportPanelsToSpanwiseDiscretizedVariables();
+//		reportPanelsToSpanwiseDiscretizedVariables();
 
 		//======================================================
 		// fill the list of all discretized variables
-		calculateDiscretizedGeometry();
+		calculateDiscretizedGeometry();		
 		
-		// Aspect-ratio
-		this.aspectRatio = (this.span.pow(2)).divide(this.surfacePlanform).getEstimatedValue();
-
-		// Mean Aerodynamic Chord
-		Double mac = this.getPanels().stream()
-				.mapToDouble(p ->
-					p.getMeanAerodynamicChord().to(SI.METRE).getEstimatedValue()
-					*p.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue())
-				.sum();
-		mac = mac / this.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue();
-		this.meanAerodynamicChord = Amount.valueOf(mac,SI.METRE);
-
-
 	}
 
 	@Override
@@ -405,17 +496,9 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		this.span = this.semiSpan.times(2.0);
 	}
 
-	/**
-	 * Calculate Chord Distribution of the Actual Wing along y axis
-	 */
-	private void mapPanelsToYDiscretized() {
+	private void calculateVariablesAtBreakpoints() {
 		
-		System.out.println("[LiftingSurface] Map panels to spanwise discretized Ys ...");
-		
-		List<Double> chordsActualVsYList = new ArrayList<Double>();
-		List<Amount<Length>> _xLEvsY = new ArrayList<Amount<Length>>();
-		List<Amount<Length>> _xTEvsY = new ArrayList<Amount<Length>>();
-
+		System.out.println("[LiftingSurface] calculate variables at breakpoints ...");
 		//======================================================
 		// Break points Y's
 
@@ -492,55 +575,23 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		//======================================================
 		// Break points eta's
 
-		List<Double> etaBP = _yBreakPoints.stream()
+		_etaBP = _yBreakPoints.stream()
 			.mapToDouble(y ->
 				y.to(SI.METRE).getEstimatedValue()/this.semiSpan.to(SI.METRE).getEstimatedValue())
 			.boxed()
 			.collect(Collectors.toList())
 			;
 //		System.out.println(etaBP);
-
-		//======================================================
-		// Eta's discretizing the whole planform,
-		// in the middle of each panel,
-		// and including break-point eta's
-
-		List<Double> eta0 =
-			Arrays.asList(
-				ArrayUtils.toObject(
-						MyArrayUtils.linspace(0., 1., _numberOfPointsChordDistribution)
-				)
-			);
-//		System.out.println(eta0);
-
-		List<Double> eta1 = ListUtils.union(eta0, etaBP);
-		Collections.sort(eta1);
-//		System.out.println(eta1);
-
-		List<Double> eta2 = eta1.stream()
-			.distinct().collect(Collectors.toList());
-//		System.out.println(eta2);
-
-		_numberOfPointsChordDistribution = eta2.size();
-
-		// Now that break-points are known generate eta's, including
-		// break-point eta's
-		//_eta.setDouble(MyArrayUtils.linspace(0., 1., _numberOfPointsChordDistribution));
-		_eta.setList(eta2);
-//		System.out.println(_eta);
-
-		//======================================================
-		// Y's discretizing the whole planform,
-		// in the middle of each panel,
-		// and including break-point eta's
-
-//		_yStationActual.setRealVector(
-//				_eta.getRealVector().mapMultiply(this.semiSpan.doubleValue(SI.METER)));
-
-		_yStationActual = _eta.getList().stream()
-				.map(d -> this.semiSpan.times(d))
-				.collect(Collectors.toList());
-
+		
+	}	
+	
+	/**
+	 * Calculate Chord Distribution of the Actual Wing along y axis
+	 */
+	private void mapPanelsToYDiscretized() {
+		
+		System.out.println("[LiftingSurface] Map panels to spanwise discretized Ys ...");
+		
 		//======================================================
 		// Map panels with lists of Y's, c, Xle, Yle, Zle, twist
 		// for each panel Y's of inner and outer break-points
@@ -789,7 +840,7 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		
 	}
 	
-	private void reportPanelsToSpanwiseDiscretizedVariables(){
+	public void reportPanelsToSpanwiseDiscretizedVariables(){
 		
 		System.out.println("=====================================================");
 		System.out.println("List of Tuples, size " + _panelToSpanwiseDiscretizedVariables.size());
@@ -892,6 +943,8 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		System.out.println("=====================================================");
 		System.out.println("Spanwise discretized wing, size " + _spanwiseDiscretizedVariables.size());
 
+		System.out.println("Y, chord, Xle, Zle, twist");
+		
 		StringBuilder sb = new StringBuilder();
 
 		_spanwiseDiscretizedVariables.stream()
@@ -903,6 +956,56 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		// spit out the string
 		System.out.println(sb.toString());
 		
+	}
+	
+	@Override
+	public List<Amount<Length>> getDiscretizedYs() {
+		return _spanwiseDiscretizedVariables.stream()
+			.mapToDouble(t5 -> 
+				t5._1()
+				.to(SI.METRE).getEstimatedValue())
+			.mapToObj(y -> Amount.valueOf(y, 1e-8, SI.METRE))
+			.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<Amount<Length>> getDiscretizedChords() {
+		return _spanwiseDiscretizedVariables.stream()
+				.mapToDouble(t5 -> 
+					t5._2()
+					.to(SI.METRE).getEstimatedValue())
+				.mapToObj(y -> Amount.valueOf(y, 1e-8, SI.METRE))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<Amount<Length>> getDiscretizedXle() {
+		return _spanwiseDiscretizedVariables.stream()
+				.mapToDouble(t5 -> 
+					t5._3()
+					.to(SI.METRE).getEstimatedValue())
+				.mapToObj(y -> Amount.valueOf(y, 1e-8, SI.METRE))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<Amount<Length>> getDiscretizedZle() {
+		return _spanwiseDiscretizedVariables.stream()
+				.mapToDouble(t5 -> 
+					t5._4()
+					.to(SI.METRE).getEstimatedValue())
+				.mapToObj(y -> Amount.valueOf(y, 1e-8, SI.METRE))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<Amount<Angle>> getDiscretizedTwists() {
+		return _spanwiseDiscretizedVariables.stream()
+				.mapToDouble(t5 -> 
+					t5._5()
+					.to(SI.RADIAN).getEstimatedValue())
+				.mapToObj(y -> Amount.valueOf(y, 1e-9, SI.RADIAN))
+				.collect(Collectors.toList());
 	}
 	
 	@Override
