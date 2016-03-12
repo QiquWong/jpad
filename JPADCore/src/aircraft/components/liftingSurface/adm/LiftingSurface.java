@@ -33,6 +33,7 @@ import aircraft.components.liftingSurface.adm.LiftingSurfacePanel.LiftingSurface
 import configuration.MyConfiguration;
 import javaslang.Tuple;
 import javaslang.Tuple2;
+import javaslang.Tuple5;
 import javolution.text.TypeFormat;
 import javolution.text.TextFormat.Cursor;
 import standaloneutils.JPADXmlReader;
@@ -61,17 +62,9 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		_chordsBreakPoints = new ArrayList<Amount<Length>>();
 		_twistsBreakPoints = new ArrayList<Amount<Angle>>();
 		
-//		_panelToYStations =
-//			    new HashMap<LiftingSurfacePanel, List<Amount<Length>>>();
-		
-		_yStationActual = new ArrayList<Amount<Length>>(); // new MyArray(SI.METER); // new MyArray(SI.METER);
-
+		_yStationActual = new ArrayList<Amount<Length>>();
 		_panelToSpanwiseDiscretizedVariables = new ArrayList<>();
-		
-//		_chordsVsYActual = new MyArray(SI.METER);
-//		_xLEvsYActual = new MyArray(SI.METER);
-//		_xTEvsYActual = new MyArray(SI.METER);
-
+		_spanwiseDiscretizedVariables = new ArrayList<>();
 	}
 
 	public static LiftingSurface importFromXML(String pathToXML, String airfoilsDir) {
@@ -145,6 +138,9 @@ public class LiftingSurface extends AbstractLiftingSurface {
 
 	@Override
 	public void calculateGeometry() {
+		
+		System.out.println("[LiftingSurface] Calculating derived geometry parameters of wing ...");
+		
 		// Update inner geometric variables of each panel
 		this.getPanels().stream()
 			.forEach(LiftingSurfacePanel::calculateGeometry);
@@ -174,11 +170,15 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		calculateChordsAtYDiscretized();
 		
 		//======================================================
-		// Map Y's to (Xle, Zle)
-		calculateXZLEAtYDiscretized();
+		// Map Y's to (Xle, Zle, twist)
+		calculateXZleTwistAtYDiscretized();
 		
-		reportPanesToSpanwiseDiscretizedVariables();
+		reportPanelsToSpanwiseDiscretizedVariables();
 
+		//======================================================
+		// fill the list of all discretized variables
+		calculateDiscretizedGeometry();
+		
 		// Aspect-ratio
 		this.aspectRatio = (this.span.pow(2)).divide(this.surfacePlanform).getEstimatedValue();
 
@@ -394,6 +394,7 @@ public class LiftingSurface extends AbstractLiftingSurface {
 	 * i.e. panels' semi-spans and dihedral angles
 	 */
 	private void calculateSpans() {
+		System.out.println("[LiftingSurface] Wing span ...");
 		Double bhalf = this.getPanels().stream()
 				.mapToDouble(p ->
 					p.getSemiSpan().to(SI.METRE).getEstimatedValue()
@@ -408,7 +409,9 @@ public class LiftingSurface extends AbstractLiftingSurface {
 	 * Calculate Chord Distribution of the Actual Wing along y axis
 	 */
 	private void mapPanelsToYDiscretized() {
-
+		
+		System.out.println("[LiftingSurface] Map panels to spanwise discretized Ys ...");
+		
 		List<Double> chordsActualVsYList = new ArrayList<Double>();
 		List<Amount<Length>> _xLEvsY = new ArrayList<Amount<Length>>();
 		List<Amount<Length>> _xTEvsY = new ArrayList<Amount<Length>>();
@@ -538,45 +541,6 @@ public class LiftingSurface extends AbstractLiftingSurface {
 				.map(d -> this.semiSpan.times(d))
 				.collect(Collectors.toList());
 
-/*		
-		//======================================================
-		// Map panels with lists of Y's
-		// for each panel Y's of inner and outer break-points
-		// are included, i.e. Y's are repeated
-
-		// Innermost panel: Y's include 0 and panel's tip breakpoint Y
-		_panelToYStations.put(
-			panels.get(0),
-			_yStationActual.stream()
-				.filter(y -> y.isLessThan( panels.get(0).getSemiSpan() ) || y.equals( panels.get(0).getSemiSpan()) )
-				.collect(Collectors.toList())
-			);
-		
-		// All remaining panels (innermost panel excluded)
-		// Y's include only panel's tip breakpoint Y, 
-		// not including panel's root breakpoint Y
-		for (int i=1; i < panels.size(); i++) {
-			final int i_ = i;
-			_panelToYStations.put(
-				panels.get(i), // key
-				_yStationActual.stream()
-					.mapToDouble(a -> a.to(SI.METRE).getEstimatedValue())
-					.filter(y -> ( y > _yBreakPoints.get(i_).getEstimatedValue() ) && ( y <= _yBreakPoints.get(i_+1).getEstimatedValue() ) )
-					.mapToObj(y_ -> Amount.valueOf(y_, SI.METRE))
-					.collect(Collectors.toList()
-				) // value
-			);
-		}
-
-		System.out.println("=====================================================");
-		System.out.println("Map: panel(0) ->\n" + _panelToYStations.get(panels.get(0)));
-		System.out.println("Map: panel(1) ->\n" + _panelToYStations.get(panels.get(1)));
-		System.out.println("=====================================================");
-		
-*/
-		
-		// TODO experiment with Javaslang tuples
-		
 		//======================================================
 		// Map panels with lists of Y's, c, Xle, Yle, Zle, twist
 		// for each panel Y's of inner and outer break-points
@@ -684,6 +648,8 @@ public class LiftingSurface extends AbstractLiftingSurface {
 	 */
 	private void calculateChordsAtYDiscretized() {
 
+		System.out.println("[LiftingSurface] Map panels to spanwise discretized chords ...");
+
 		//======================================================
 		// Set chords versus Y's
 		// according to location within panels/yBP
@@ -709,7 +675,9 @@ public class LiftingSurface extends AbstractLiftingSurface {
 
 	}
 
-	private void calculateXZLEAtYDiscretized() {
+	private void calculateXZleTwistAtYDiscretized() {
+
+		System.out.println("[LiftingSurface] Map panels to spanwise discretized Xle, Yle, twist ...");
 		
 		for (int k=0; k < _panelToSpanwiseDiscretizedVariables.size(); k++) {
 			LiftingSurfacePanel panel = _panelToSpanwiseDiscretizedVariables.get(k)._1();
@@ -757,7 +725,71 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		}
 	}	
 
-	private void reportPanesToSpanwiseDiscretizedVariables(){
+	private void calculateDiscretizedGeometry() {
+		System.out.println("[LiftingSurface] Map Ys to spanwise discretized variables ...");
+		
+		List<Amount<Length>> vy = new ArrayList<>();
+		List<Amount<Length>> vc = new ArrayList<>();
+		List<Amount<Length>> vxle = new ArrayList<>();
+		List<Amount<Length>> vzle = new ArrayList<>();
+		List<Amount<Angle>> vtwist = new ArrayList<>();
+
+		for (int kp = 0; kp < _panelToSpanwiseDiscretizedVariables.size(); kp++) {
+			
+			// sublist indexing criteria 
+			int idxEndExcluded = _panelToSpanwiseDiscretizedVariables.get(kp)
+						._2()._1().size() 
+						- 1;
+			if (kp == (_panelToSpanwiseDiscretizedVariables.size() - 1))
+				idxEndExcluded += 1;
+			
+			// System.out.println("kp=" + kp + ", end=" + idxEndExcluded);
+						
+			vy.addAll(
+				_panelToSpanwiseDiscretizedVariables.get(kp)
+					._2()._1() // Ys
+					.subList(0, idxEndExcluded)
+					);
+			vc.addAll(
+					_panelToSpanwiseDiscretizedVariables.get(kp)
+						._2()._2() // Chords
+						.subList(0, idxEndExcluded)
+						);
+			vxle.addAll(
+					_panelToSpanwiseDiscretizedVariables.get(kp)
+						._2()._3() // Xle's
+						.subList(0, idxEndExcluded)
+						);
+			vzle.addAll(
+					_panelToSpanwiseDiscretizedVariables.get(kp)
+						._2()._4() // Zle's
+						.subList(0, idxEndExcluded)
+						);
+			vtwist.addAll(
+					_panelToSpanwiseDiscretizedVariables.get(kp)
+						._2()._5() // Twists
+						.subList(0, idxEndExcluded)
+						);
+		}
+//		System.out.println("== y ==> size: " + vy.size() + "\n" + vy);
+//		System.out.println("== c ==> size: " + vc.size() + "\n" + vc);
+
+		for(int i = 0; i < vy.size(); i++) {
+			_spanwiseDiscretizedVariables.add(
+				Tuple.of(
+					vy.get(i), 
+					vc.get(i),
+					vxle.get(i),
+					vzle.get(i),
+					vtwist.get(i)
+					)
+				);
+		}
+//		System.out.println("==*==> \n" + _spanwiseDiscretizedVariables);
+		
+	}
+	
+	private void reportPanelsToSpanwiseDiscretizedVariables(){
 		
 		System.out.println("=====================================================");
 		System.out.println("List of Tuples, size " + _panelToSpanwiseDiscretizedVariables.size());
@@ -855,7 +887,24 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		
 	}
 
+	private void reportDiscretizedVariables(){
+		
+		System.out.println("=====================================================");
+		System.out.println("Spanwise discretized wing, size " + _spanwiseDiscretizedVariables.size());
 
+		StringBuilder sb = new StringBuilder();
+
+		_spanwiseDiscretizedVariables.stream()
+			.forEach( t5 ->
+				sb.append(
+						t5.toString() + "\n"
+				)
+			);
+		// spit out the string
+		System.out.println(sb.toString());
+		
+	}
+	
 	@Override
 	public String toString() {
 
@@ -871,7 +920,9 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		for (LiftingSurfacePanel panel : panels) {
 			sb.append(panel.toString());
 		}
-
+		
+		reportDiscretizedVariables();
+		
 		sb
 			.append("\t=====================================\n")
 			.append("\tDerived data\n")

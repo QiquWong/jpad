@@ -61,28 +61,31 @@ public abstract class AbstractLiftingSurface implements ILiftingSurface {
 	List<Amount<Length>> _chordsBreakPoints;
 	List<Amount<Angle>> _twistsBreakPoints;
 
-//	Map<LiftingSurfacePanel, List<Amount<Length>>> _panelToYStations;
-	
+	List<Amount<Length>> _yStationActual;
+
 	List<
-			Tuple2<
-				LiftingSurfacePanel,
-				Tuple5<
-					List<Amount<Length>>, // Ys
-					List<Amount<Length>>, // chords
-					List<Amount<Length>>, // Xle
-					List<Amount<Length>>, // Zle
-					List<Amount<Angle>>   // twist
-					> 
-				>
+		Tuple2<
+			LiftingSurfacePanel,
+			Tuple5<
+				List<Amount<Length>>, // Ys
+				List<Amount<Length>>, // chords
+				List<Amount<Length>>, // Xle
+				List<Amount<Length>>, // Zle
+				List<Amount<Angle>>   // twist
+				> 
+			>
 		> _panelToSpanwiseDiscretizedVariables;
 
-	List<Amount<Length>> _yStationActual; // MyArray _yStationActual;
-
-//	MyArray _chordsVsYActual;
-//	MyArray _xLEvsYActual;
-//	MyArray _xTEvsYActual;
-
-
+	List<
+		Tuple5<
+			Amount<Length>, // Ys
+			Amount<Length>, // chords
+			Amount<Length>, // Xle
+			Amount<Length>, // Zle
+			Amount<Angle>   // twist
+			> 
+	> _spanwiseDiscretizedVariables; // only geometry
+	
 	//=======================================================================
 
 	public List<LiftingSurfacePanel> getPanels() {
