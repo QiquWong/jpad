@@ -697,28 +697,28 @@ As in previous chapters the test will be performed using ATR-72 and B747-100B ai
 The input XML file\cite{wiki:xml} has to provide all data from~\ref{table:CalcHighLiftConstructor}, except for the lifting surface model and the operating condition, and it is modeled as follows.
 
 \bigskip
-\begin{lstlisting}[caption={Example of high-lift devices XML input file for the B747-100B in take-off configuration}, captionpos=b, tabsize=6, language=XML]
+\begin{lstlisting}[caption={Example of high-lift devices XML input file for the B747-100B in landing configuration}, captionpos=b, tabsize=6, language=XML]
 <input>
 	<B747>
 		<Flap_Number unit="">2</Flap_Number>
 		<Flap1>
 			<FlapType unit="">DOUBLE_SLOTTED</FlapType>
-			<Cf_C unit="">0.1264</Cf_C>
-			<Delta_Flap1 unit="deg">15</Delta_Flap1>
-			<Delta_Flap1 unit="deg">5</Delta_Flap1>
-			<Flap_inboard>0.0995</Flap_inboard>
-			<Flap_outboard>0.3614</Flap_outboard>
+			<Cf_C unit="">0.25</Cf_C>
+			<Delta_Flap1 unit="deg">20</Delta_Flap1>
+			<Delta_Flap1 unit="deg">25</Delta_Flap1>
+			<Flap_inboard>0.11</Flap_inboard>
+			<Flap_outboard>0.38</Flap_outboard>
 		</Flap1>
 		<Flap2>
 			<FlapType unit="">DOUBLE_SLOTTED</FlapType>
-			<Cf_C unit="">0.2806</Cf_C>
-			<Delta_Flap2 unit="deg">15</Delta_Flap2>
-			<Delta_Flap2 unit="deg">5</Delta_Flap2>
-			<Flap_inboard unit="">0.4123</Flap_inboard>
-			<Flap_outboard unit="">0.6624</Flap_outboard>
+			<Cf_C unit="">0.25</Cf_C>
+			<Delta_Flap2 unit="deg">20</Delta_Flap2>
+			<Delta_Flap2 unit="deg">25</Delta_Flap2>
+			<Flap_inboard unit="">0.38</Flap_inboard>
+			<Flap_outboard unit="">0.72</Flap_outboard>
 		</Flap2>
 		<Slat1>
-			<Delta_Slat unit="deg">15</Delta_Slat>
+			<Delta_Slat unit="deg">5</Delta_Slat>
 			<Cs_C unit="">0.15</Cs_C>
 			<cExt_c unit="">1.1</cExt_c>
 			<LEradius_c_ratio unit="">0.0097</LEradius_c_ratio>
@@ -726,8 +726,8 @@ The input XML file\cite{wiki:xml} has to provide all data from~\ref{table:CalcHi
 			<Slat_outboard unit="">0.37</Slat_outboard>
 		</Slat1>
 		<Slat2>
-			<Delta_Slat unit="deg">15</Delta_Slat>
-			<Cs_C unit="">0.193</Cs_C>
+			<Delta_Slat unit="deg">5</Delta_Slat>
+			<Cs_C unit="">0.08</Cs_C>
 			<cExt_c unit="">1.1</cExt_c>
 			<LEradius_c_ratio unit="">0.0097</LEradius_c_ratio>
 			<Slat_inboard unit="">0.42</Slat_inboard>
@@ -746,15 +746,15 @@ The input XML file\cite{wiki:xml} has to provide all data from~\ref{table:CalcHi
 			<FlapType unit="">SINGLE_SLOTTED</FlapType>
 			<Cf_c unit="">0.35</Cf_c>
 			<Delta_Flap1 unit="deg">20</Delta_Flap1>
-			<Flap_inboard>0.0884</Flap_inboard>
-			<Flap_outboard>0.34575</Flap_outboard>
+			<Flap_inboard>0.08</Flap_inboard>
+			<Flap_outboard>0.3</Flap_outboard>
 		</Flap1>
 		<Flap2>
 			<FlapType unit="">SINGLE_SLOTTED</FlapType>
 			<Cf_c unit="">0.35</Cf_c>
 			<Delta_Flap2 unit="deg">20</Delta_Flap2>
-			<Flap_inboard>0.34575</Flap_inboard>
-			<Flap_outboard>0.82063</Flap_outboard>
+			<Flap_inboard>0.3</Flap_inboard>
+			<Flap_outboard>0.8</Flap_outboard>
 		</Flap2>
 	</ATR72>
 </input>
@@ -892,66 +892,61 @@ In conclusion, the following pages show the numerical and graphical results of t
 \begin{figure}[H]
 \centering
 \input{images/CLAlphaWingHighLift_ATR.tikz}
-\caption{ATR-72 lift curve with and without flaps deflected}
+\caption{ATR-72 lift curve with and without flaps deflected in take-off configuration}
 \label{fig:FlapATR}
 \end{figure}
 
 \bigskip
 \lstset{language=Java}
 \begin{lstlisting}[caption={ATR-72 test results}, captionpos=b, tabsize=2]
-deltaCl0_flap = 2.3939974237661317
-deltaCL0_flap = 0.9707980864918362
+deltaCl0_flap = 2.1605075094485655
+deltaCL0_flap = 0.8738425838254686
 deltaClmax_flap = 1.2122379635109801
-deltaCLmax_flap = 0.5352640320770878
-CLalpha_new = 0.09150912423296985 (1/deg)
+deltaCLmax_flap = 0.5277544458523655
+CLalpha_new = 0.09156156854219144 (1/deg)
 deltaAlphaMax = -1.9369466185196893 (deg)
-deltaCD = 0.01518722606307197
-deltaCMc_4 = -0.12338582743821447
-
- -----------CLEAN-------------- 
- alpha max 16.44529532754857 (deg)
- alpha star 10.918671750781748 (deg)
- CLmax 1.4934954072726092
- CLstar 1.0956477082461238
- CLalpha 5.189644003702159 (1/rad)
+deltaCD = 0.014892653891319598
+deltaCMc_4 = -0.12096191945250442
+-----------CLEAN-------------- 
+ alpha max 17.47365992627331 (deg)
+ CL max 1.5867506593021659
+ CL star 1.0956477082461238
+ CL alpha 5.189644003702159 (1/rad)
  -----------HIGH LIFT-------------- 
- alpha max 14.50713741489647 (deg)
- alpha star 5.55824828132392 (deg)
- Clmax 2.028759439349697
- Clstar 1.5861753654540678
- Clalpha 5.243472818549172 (1/rad)
+ alpha max = 15.536713307753615 (deg)
+ alpha star = 6.088751194317243 (deg)
+ CL max = 2.1145051051545316
+ CL star = 1.5380850401091668
+ CL alpha = 5.246477877467569 (1/rad)
 \end{lstlisting}
 %
 \begin{figure}[H]
 \centering
 \input{images/CLAlphaWingHighLift_B747.tikz}
-\caption{B747-100B lift curve with and without flaps and slats deflected}
+\caption{B747-100B lift curve with and without flaps and slats deflected in landing configuration}
 \label{fig:FlapATR}
 \end{figure}
 
 \bigskip
 \lstset{language=Java}
 \begin{lstlisting}[caption={B747-100B test results}, captionpos=b, tabsize=2]
-deltaCl0_flap = 2.275544332733731
-deltaCL0_flap = 0.687810914469225
-deltaClmax_flap = 0.6867057564174156
-deltaCLmax_flap = 0.24074371285515445
-deltaClmax_slat = 1.3986165535139938
-deltaCLmax_slat = 0.7307256446849437
-CLalpha_new = 0.07247171535879046 (1/deg)
-deltaAlphaMaxFlap = -1.9369466185196893 (deg)
-deltaCD = 0.006456897617521261
-
+deltaCl0_flap = 4.544596307925835
+deltaCL0_flap = 1.6252226278762703
+deltaClmax_flap = 3.1133331120490326
+deltaCLmax_flap = 1.3332544761560228
+CLalpha_new = 0.07136162925963688
+deltaAlphaMax = -6.846961024562918
+deltaCD = 0.05417437505739874
+deltaCMc_4 = -0.30491716366138855
  -----------CLEAN-------------- 
- alpha max 23.232964070877248 (deg)
- alpha star 10.32038751072542 (deg)
- CLmax 1.4686492856382116
- CLstar 0.8263686942120971
- CLalpha 4.121408852511741 (1/rad)
+ alpha max 23.231252824438855 (deg)
+ CL max 1.4686492856382116
+ CL star 0.8263686942120971
+ CL alpha = 4.0890213565771925 (1/rad)
  -----------HIGH LIFT-------------- 
- alpha max 27.00200178515614 (deg)
- alpha star 14.091414230062869 (deg)
- Clmax 2.4401186431783097
- Clstar 1.7930955427485755
- Clalpha 4.152629290058694 (1/rad)
+ alpha max = 21.940633456069815 (deg)
+ alpha star = 9.029673073536198 (deg)
+ CL max = 2.9907894015944554
+ CL star = 2.3536504772811107
+ CL alpha 4.121408852511741 (1/rad)
 \end{lstlisting}

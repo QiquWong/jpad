@@ -334,7 +334,7 @@ public class Landing_Test_TF {
 //			System.out.print(highLiftCalculator.getDeltaCM_c4_list().get(i) + " ");
 //
 //		System.out.println("\n\ndeltaCMc_4 = \n" + highLiftCalculator.getDeltaCM_c4());
-//
+//		
 //		highLiftCalculator.plotHighLiftCurve();
 
 		//----------------------------------------------------------------------------------

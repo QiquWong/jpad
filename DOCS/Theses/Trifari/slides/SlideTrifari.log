@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.11.16)  11 MAR 2016 17:57
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.11.16)  13 MAR 2016 20:07
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1775,7 +1775,7 @@ Overfull \hbox (146.91405pt too wide) in paragraph at lines 155--155
  [] 
  []
 
-<images/unina_vettoriale_con_sigillo.png, id=59, 6165.0325pt x 1139.25626pt>
+<images/unina_vettoriale_con_sigillo.png, id=64, 6165.0325pt x 1139.25626pt>
 File: images/unina_vettoriale_con_sigillo.png Graphic file (type png)
 
 <use images/unina_vettoriale_con_sigillo.png>
@@ -1798,13 +1798,13 @@ Overfull \hbox (2.91193pt too wide) has occurred while \output is active
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <10.95> not available
 (Font)              Font shape `T1/phv/b/n' tried instead on input line 2.
 )
-<images/unina.jpg, id=125, 564.60938pt x 257.46187pt>
+<images/unina.jpg, id=140, 564.60938pt x 257.46187pt>
 File: images/unina.jpg Graphic file (type jpg)
  <use images/unina.jpg>
 Package pdftex.def Info: images/unina.jpg used on input line 164.
 (pdftex.def)             Requested size: 56.9055pt x 25.94804pt.
 
-<images/logo_DII.png, id=126, 373.1541pt x 149.8398pt>
+<images/logo_DII.png, id=141, 373.1541pt x 149.8398pt>
 File: images/logo_DII.png Graphic file (type png)
 
 <use images/logo_DII.png>
@@ -1914,7 +1914,7 @@ Overfull \hbox (2.91193pt too wide) has occurred while \output is active
 
 [6
 
-] <images/LanguageTrend.png, id=291, 682.9515pt x 286.06876pt>
+] <images/LanguageTrend.png, id=331, 682.9515pt x 286.06876pt>
 File: images/LanguageTrend.png Graphic file (type png)
 
 <use images/LanguageTrend.png>
@@ -1946,7 +1946,7 @@ Overfull \hbox (2.91193pt too wide) has occurred while \output is active
 [7
 
  <./images/LanguageTrend.png>]
-<images/flowchart3.pdf, id=325, 845.1575pt x 654.445pt>
+<images/flowchart3.pdf, id=370, 845.1575pt x 654.445pt>
 File: images/flowchart3.pdf Graphic file (type pdf)
 
 <use images/flowchart3.pdf>
@@ -1993,7 +1993,7 @@ Overfull \hbox (2.91193pt too wide) has occurred while \output is active
 
 [9
 
-] <images/XMLAircraft.png, id=397, 421.575pt x 354.32375pt>
+] <images/XMLAircraft.png, id=452, 421.575pt x 354.32375pt>
 File: images/XMLAircraft.png Graphic file (type png)
 
 <use images/XMLAircraft.png>
@@ -2004,7 +2004,7 @@ Overfull \hbox (25.42259pt too wide) in paragraph at lines 279--279
  |  [] 
  []
 
-<images/Folder_Tree.pdf, id=398, 1521.685pt x 1630.09pt>
+<images/Folder_Tree.pdf, id=453, 1521.685pt x 1630.09pt>
 File: images/Folder_Tree.pdf Graphic file (type pdf)
 
 <use images/Folder_Tree.pdf>
@@ -2031,13 +2031,13 @@ Overfull \hbox (2.91193pt too wide) has occurred while \output is active
 [10
 
  <./images/Folder_Tree.pdf> <./images/XMLAircraft.png>]
-<images/CAD.png, id=443, 518.53725pt x 227.04825pt>
+<images/CAD.png, id=503, 518.53725pt x 227.04825pt>
 File: images/CAD.png Graphic file (type png)
  <use images/CAD.png>
 Package pdftex.def Info: images/CAD.png used on input line 308.
 (pdftex.def)             Requested size: 145.67592pt x 63.7844pt.
 
-<images/XLS.png, id=444, 659.46375pt x 455.90324pt>
+<images/XLS.png, id=504, 659.46375pt x 455.90324pt>
 File: images/XLS.png Graphic file (type png)
  <use images/XLS.png>
 Package pdftex.def Info: images/XLS.png used on input line 308.
@@ -2085,7 +2085,7 @@ Overfull \hbox (2.91193pt too wide) has occurred while \output is active
 
 [12
 
-] <images/GUI.png, id=507, 1558.82375pt x 812.03375pt>
+] <images/GUI.png, id=578, 1558.82375pt x 812.03375pt>
 File: images/GUI.png Graphic file (type png)
  <use images/GUI.png>
 Package pdftex.def Info: images/GUI.png used on input line 340.
@@ -2112,7 +2112,7 @@ Overfull \hbox (2.91193pt too wide) has occurred while \output is active
 [13
 
  <./images/GUI.png>]
-<images/interface.png, id=541, 535.09912pt x 306.84637pt>
+<images/interface.png, id=616, 535.09912pt x 306.84637pt>
 File: images/interface.png Graphic file (type png)
 
 <use images/interface.png>
@@ -2160,7 +2160,7 @@ Overfull \hbox (2.91193pt too wide) has occurred while \output is active
 
 [15
 
-] <images/Payload_Range.png, id=609, 462.528pt x 358.941pt>
+] <images/Payload_Range.png, id=695, 462.528pt x 358.941pt>
 File: images/Payload_Range.png Graphic file (type png)
 
 <use images/Payload_Range.png>
@@ -2355,7 +2355,7 @@ Overfull \hbox (2.91193pt too wide) has occurred while \output is active
 [22
 
 ]
-<images/PayloadRange_BestRange_Flowchart.png, id=836, 1493.58pt x 943.525pt>
+<images/PayloadRange_BestRange_Flowchart.png, id=957, 1493.58pt x 943.525pt>
 File: images/PayloadRange_BestRange_Flowchart.png Graphic file (type png)
 
 <use images/PayloadRange_BestRange_Flowchart.png>
@@ -2374,7 +2374,7 @@ Overfull \hbox (32.47815pt too wide) in paragraph at lines 478--478
 []|[]|  
  []
 
-<images/PayloadRange_MTOM_Flowchart.png, id=837, 1494.58376pt x 744.7825pt>
+<images/PayloadRange_MTOM_Flowchart.png, id=958, 1494.58376pt x 744.7825pt>
 File: images/PayloadRange_MTOM_Flowchart.png Graphic file (type png)
 
 <use images/PayloadRange_MTOM_Flowchart.png>
@@ -2408,7 +2408,7 @@ Overfull \hbox (2.91193pt too wide) has occurred while \output is active
 
  <./images/PayloadRange_BestRange_Flowchart.png (PNG copy)> <./images/PayloadRa
 nge_MTOM_Flowchart.png (PNG copy)>]
-<images/ATRSpecsPR.PNG, id=868, 564.30824pt x 386.04225pt>
+<images/ATRSpecsPR.PNG, id=994, 564.30824pt x 386.04225pt>
 File: images/ATRSpecsPR.PNG Graphic file (type png)
 
 <use images/ATRSpecsPR.PNG>
@@ -2423,7 +2423,7 @@ LaTeX Font Info:    Font shape `T1/phv/m/it' in size <10> not available
 (Font)              Font shape `T1/phv/m/sl' tried instead on input line 517.
 LaTeX Font Info:    Font shape `T1/phv/m/it' in size <7> not available
 (Font)              Font shape `T1/phv/m/sl' tried instead on input line 517.
-<images/ATRJpadPR.PNG, id=869, 641.9985pt x 423.984pt>
+<images/ATRJpadPR.PNG, id=995, 641.9985pt x 423.984pt>
 File: images/ATRJpadPR.PNG Graphic file (type png)
 
 <use images/ATRJpadPR.PNG>
@@ -2455,14 +2455,14 @@ Overfull \hbox (2.91193pt too wide) has occurred while \output is active
 [24
 
  <./images/ATRSpecsPR.PNG> <./images/ATRJpadPR.PNG>]
-<images/B747SpecsPR.PNG, id=902, 551.661pt x 455.301pt>
+<images/B747SpecsPR.PNG, id=1033, 551.661pt x 455.301pt>
 File: images/B747SpecsPR.PNG Graphic file (type png)
 
 <use images/B747SpecsPR.PNG>
 Package pdftex.def Info: images/B747SpecsPR.PNG used on input line 555.
 (pdftex.def)             Requested size: 178.45772pt x 147.28328pt.
 
-<images/B747JpadPR.PNG, id=903, 639.5895pt x 402.303pt>
+<images/B747JpadPR.PNG, id=1034, 639.5895pt x 402.303pt>
 File: images/B747JpadPR.PNG Graphic file (type png)
 
 <use images/B747JpadPR.PNG>
@@ -2515,7 +2515,7 @@ Overfull \hbox (2.91193pt too wide) has occurred while \output is active
 
 [26
 
-] <images/CruiseGrid.pdf, id=974, 476.27603pt x 438.2908pt>
+] <images/CruiseGrid.pdf, id=1115, 476.27603pt x 438.2908pt>
 File: images/CruiseGrid.pdf Graphic file (type pdf)
 
 <use images/CruiseGrid.pdf>
@@ -2568,7 +2568,7 @@ Overfull \hbox (2.91193pt too wide) has occurred while \output is active
 
 [28
 
-] <images/SpecificRange_Flowchart.png, id=1037, 1522.68875pt x 987.69pt>
+] <images/SpecificRange_Flowchart.png, id=1189, 1522.68875pt x 987.69pt>
 File: images/SpecificRange_Flowchart.png Graphic file (type png)
 
 <use images/SpecificRange_Flowchart.png>
@@ -2597,30 +2597,37 @@ Overfull \hbox (2.91193pt too wide) has occurred while \output is active
 [29
 
  <./images/SpecificRange_Flowchart.png (PNG copy)>]
-<images/DragThrustATR.PNG, id=1069, 536.60475pt x 330.63525pt>
+<images/DragThrustATR.PNG, id=1225, 536.60475pt x 330.63525pt>
 File: images/DragThrustATR.PNG Graphic file (type png)
 
 <use images/DragThrustATR.PNG>
-Package pdftex.def Info: images/DragThrustATR.PNG used on input line 696.
+Package pdftex.def Info: images/DragThrustATR.PNG used on input line 704.
 (pdftex.def)             Requested size: 182.09767pt x 112.2026pt.
 
-<images/DragThrustB747.PNG, id=1070, 533.5935pt x 328.8285pt>
+<images/DragThrustB747.PNG, id=1226, 533.5935pt x 328.8285pt>
 File: images/DragThrustB747.PNG Graphic file (type png)
 
 <use images/DragThrustB747.PNG>
-Package pdftex.def Info: images/DragThrustB747.PNG used on input line 696.
+Package pdftex.def Info: images/DragThrustB747.PNG used on input line 704.
 (pdftex.def)             Requested size: 182.09767pt x 112.21666pt.
 
-Overfull \vbox (1.76471pt too high) detected at line 696
+Overfull \vbox (1.76471pt too high) detected at line 704
  []
 
+<images/ATRB747CruiseCond.png, id=1227, 340.472pt x 390.258pt>
+File: images/ATRB747CruiseCond.png Graphic file (type png)
+
+<use images/ATRB747CruiseCond.png>
+Package pdftex.def Info: images/ATRB747CruiseCond.png used on input line 704.
+(pdftex.def)             Requested size: 83.76337pt x 96.01004pt.
 File: images/unina.jpg Graphic file (type jpg)
-<use images/unina.jpg>
-Package pdftex.def Info: images/unina.jpg used on input line 696.
+ <use images/unina.jpg>
+Package pdftex.def Info: images/unina.jpg used on input line 704.
 (pdftex.def)             Requested size: 56.9055pt x 25.94804pt.
 File: images/logo_DII.png Graphic file (type png)
- <use images/logo_DII.png>
-Package pdftex.def Info: images/logo_DII.png used on input line 696.
+
+<use images/logo_DII.png>
+Package pdftex.def Info: images/logo_DII.png used on input line 704.
 (pdftex.def)             Requested size: 65.44142pt x 26.27722pt.
 
 Overfull \hbox (92.55739pt too wide) has occurred while \output is active
@@ -2634,31 +2641,37 @@ Overfull \hbox (2.91193pt too wide) has occurred while \output is active
 
 [30
 
- <./images/DragThrustATR.PNG> <./images/DragThrustB747.PNG>]
-<images/EfficiencyATR.PNG, id=1104, 635.37375pt x 401.70074pt>
+ <./images/ATRB747CruiseCond.png> <./images/DragThrustATR.PNG> <./images/DragTh
+rustB747.PNG>]
+<images/EfficiencyATR.PNG, id=1268, 635.37375pt x 401.70074pt>
 File: images/EfficiencyATR.PNG Graphic file (type png)
 
 <use images/EfficiencyATR.PNG>
-Package pdftex.def Info: images/EfficiencyATR.PNG used on input line 696.
+Package pdftex.def Info: images/EfficiencyATR.PNG used on input line 704.
 (pdftex.def)             Requested size: 180.27492pt x 113.97102pt.
 
-<images/EfficiencyB747.PNG, id=1105, 634.7715pt x 399.29175pt>
+<images/EfficiencyB747.PNG, id=1269, 634.7715pt x 399.29175pt>
 File: images/EfficiencyB747.PNG Graphic file (type png)
 
 <use images/EfficiencyB747.PNG>
-Package pdftex.def Info: images/EfficiencyB747.PNG used on input line 696.
+Package pdftex.def Info: images/EfficiencyB747.PNG used on input line 704.
 (pdftex.def)             Requested size: 180.27492pt x 113.3972pt.
 
-Overfull \vbox (3.57574pt too high) detected at line 696
+Overfull \vbox (3.86012pt too high) detected at line 704
  []
 
+File: images/ATRB747CruiseCond.png Graphic file (type png)
+<use images/ATRB747CruiseCond.png>
+Package pdftex.def Info: images/ATRB747CruiseCond.png used on input line 704.
+(pdftex.def)             Requested size: 83.76337pt x 96.01004pt.
 File: images/unina.jpg Graphic file (type jpg)
-<use images/unina.jpg>
-Package pdftex.def Info: images/unina.jpg used on input line 696.
+ <use images/unina.jpg>
+Package pdftex.def Info: images/unina.jpg used on input line 704.
 (pdftex.def)             Requested size: 56.9055pt x 25.94804pt.
 File: images/logo_DII.png Graphic file (type png)
- <use images/logo_DII.png>
-Package pdftex.def Info: images/logo_DII.png used on input line 696.
+
+<use images/logo_DII.png>
+Package pdftex.def Info: images/logo_DII.png used on input line 704.
 (pdftex.def)             Requested size: 65.44142pt x 26.27722pt.
 
 Overfull \hbox (92.55739pt too wide) has occurred while \output is active
@@ -2673,30 +2686,35 @@ Overfull \hbox (2.91193pt too wide) has occurred while \output is active
 [31
 
  <./images/EfficiencyATR.PNG> <./images/EfficiencyB747.PNG>]
-<images/CruiseGridATR.PNG, id=1140, 651.03226pt x 407.121pt>
+<images/CruiseGridATR.PNG, id=1309, 651.03226pt x 407.121pt>
 File: images/CruiseGridATR.PNG Graphic file (type png)
 
 <use images/CruiseGridATR.PNG>
-Package pdftex.def Info: images/CruiseGridATR.PNG used on input line 696.
+Package pdftex.def Info: images/CruiseGridATR.PNG used on input line 704.
 (pdftex.def)             Requested size: 182.09767pt x 113.87506pt.
 
-<images/CruiseGridB747.PNG, id=1141, 659.46375pt x 400.49625pt>
+<images/CruiseGridB747.PNG, id=1310, 659.46375pt x 400.49625pt>
 File: images/CruiseGridB747.PNG Graphic file (type png)
 
 <use images/CruiseGridB747.PNG>
-Package pdftex.def Info: images/CruiseGridB747.PNG used on input line 696.
+Package pdftex.def Info: images/CruiseGridB747.PNG used on input line 704.
 (pdftex.def)             Requested size: 185.73763pt x 112.79817pt.
 
-Overfull \vbox (4.87222pt too high) detected at line 696
+Overfull \vbox (4.87222pt too high) detected at line 704
  []
 
+File: images/ATRB747CruiseCond.png Graphic file (type png)
+<use images/ATRB747CruiseCond.png>
+Package pdftex.def Info: images/ATRB747CruiseCond.png used on input line 704.
+(pdftex.def)             Requested size: 83.76337pt x 96.01004pt.
 File: images/unina.jpg Graphic file (type jpg)
-<use images/unina.jpg>
-Package pdftex.def Info: images/unina.jpg used on input line 696.
+ <use images/unina.jpg>
+Package pdftex.def Info: images/unina.jpg used on input line 704.
 (pdftex.def)             Requested size: 56.9055pt x 25.94804pt.
 File: images/logo_DII.png Graphic file (type png)
- <use images/logo_DII.png>
-Package pdftex.def Info: images/logo_DII.png used on input line 696.
+
+<use images/logo_DII.png>
+Package pdftex.def Info: images/logo_DII.png used on input line 704.
 (pdftex.def)             Requested size: 65.44142pt x 26.27722pt.
 
 Overfull \hbox (92.55739pt too wide) has occurred while \output is active
@@ -2714,11 +2732,11 @@ Overfull \hbox (2.91193pt too wide) has occurred while \output is active
 (./SlideTrifari.toc)
 File: images/unina.jpg Graphic file (type jpg)
  <use images/unina.jpg>
-Package pdftex.def Info: images/unina.jpg used on input line 705.
+Package pdftex.def Info: images/unina.jpg used on input line 715.
 (pdftex.def)             Requested size: 56.9055pt x 25.94804pt.
 File: images/logo_DII.png Graphic file (type png)
  <use images/logo_DII.png>
-Package pdftex.def Info: images/logo_DII.png used on input line 705.
+Package pdftex.def Info: images/logo_DII.png used on input line 715.
 (pdftex.def)             Requested size: 65.44142pt x 26.27722pt.
 
 Overfull \hbox (92.55739pt too wide) has occurred while \output is active
@@ -2732,14 +2750,34 @@ Overfull \hbox (2.91193pt too wide) has occurred while \output is active
 
 [33
 
-] (./SlideTrifari.toc)
+] <images/Flap.png, id=1390, 558.085pt x 210.7875pt>
+File: images/Flap.png Graphic file (type png)
+ <use images/Flap.png>
+Package pdftex.def Info: images/Flap.png used on input line 745.
+(pdftex.def)             Requested size: 218.51942pt x 82.53485pt.
+
+Overfull \hbox (39.60544pt too wide) in paragraph at lines 745--745
+ |  [] 
+ []
+
+<images/FlapEffects.png, id=1391, 801.99625pt x 916.42375pt>
+File: images/FlapEffects.png Graphic file (type png)
+
+<use images/FlapEffects.png>
+Package pdftex.def Info: images/FlapEffects.png used on input line 745.
+(pdftex.def)             Requested size: 162.0696pt x 185.18326pt.
+
+Overfull \hbox (4.49516pt too wide) in paragraph at lines 745--745
+ |  [] 
+ []
+
 File: images/unina.jpg Graphic file (type jpg)
- <use images/unina.jpg>
-Package pdftex.def Info: images/unina.jpg used on input line 717.
+<use images/unina.jpg>
+Package pdftex.def Info: images/unina.jpg used on input line 745.
 (pdftex.def)             Requested size: 56.9055pt x 25.94804pt.
 File: images/logo_DII.png Graphic file (type png)
  <use images/logo_DII.png>
-Package pdftex.def Info: images/logo_DII.png used on input line 717.
+Package pdftex.def Info: images/logo_DII.png used on input line 745.
 (pdftex.def)             Requested size: 65.44142pt x 26.27722pt.
 
 Overfull \hbox (92.55739pt too wide) has occurred while \output is active
@@ -2752,6 +2790,194 @@ Overfull \hbox (2.91193pt too wide) has occurred while \output is active
  []
 
 [34
+
+ <./images/Flap.png> <./images/FlapEffects.png>]
+<images/Slat.png, id=1429, 388.45125pt x 138.5175pt>
+File: images/Slat.png Graphic file (type png)
+ <use images/Slat.png>
+Package pdftex.def Info: images/Slat.png used on input line 775.
+(pdftex.def)             Requested size: 167.5323pt x 59.74101pt.
+
+Overfull \hbox (45.52382pt too wide) in paragraph at lines 775--775
+ |  [] 
+ []
+
+<images/SlatEffects.png, id=1430, 974.64125pt x 1004.75375pt>
+File: images/SlatEffects.png Graphic file (type png)
+
+<use images/SlatEffects.png>
+Package pdftex.def Info: images/SlatEffects.png used on input line 775.
+(pdftex.def)             Requested size: 163.8868pt x 168.95079pt.
+
+Overfull \hbox (3.46692pt too wide) in paragraph at lines 775--775
+ |  [] 
+ []
+
+
+Overfull \vbox (4.61145pt too high) detected at line 775
+ []
+
+File: images/unina.jpg Graphic file (type jpg)
+<use images/unina.jpg>
+Package pdftex.def Info: images/unina.jpg used on input line 775.
+(pdftex.def)             Requested size: 56.9055pt x 25.94804pt.
+File: images/logo_DII.png Graphic file (type png)
+ <use images/logo_DII.png>
+Package pdftex.def Info: images/logo_DII.png used on input line 775.
+(pdftex.def)             Requested size: 65.44142pt x 26.27722pt.
+
+Overfull \hbox (92.55739pt too wide) has occurred while \output is active
+ [][][][]  
+ []
+
+
+Overfull \hbox (2.91193pt too wide) has occurred while \output is active
+[][] 
+ []
+
+[35
+
+ <./images/Slat.png> <./images/SlatEffects.png>]
+LaTeX Font Info:    Font shape `OMS/phv/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 797.
+LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <7> not available
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 797.
+LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <5> not available
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 797.
+File: images/unina.jpg Graphic file (type jpg)
+ <use images/unina.jpg>
+Package pdftex.def Info: images/unina.jpg used on input line 797.
+(pdftex.def)             Requested size: 56.9055pt x 25.94804pt.
+File: images/logo_DII.png Graphic file (type png)
+
+<use images/logo_DII.png>
+Package pdftex.def Info: images/logo_DII.png used on input line 797.
+(pdftex.def)             Requested size: 65.44142pt x 26.27722pt.
+
+Overfull \hbox (92.55739pt too wide) has occurred while \output is active
+ [][][][]  
+ []
+
+
+Overfull \hbox (2.91193pt too wide) has occurred while \output is active
+[][] 
+ []
+
+[36
+
+] <images/HighLiftDevices_Flowchart.pdf, id=1505, 1824.8175pt x 1377.145pt>
+File: images/HighLiftDevices_Flowchart.pdf Graphic file (type pdf)
+
+<use images/HighLiftDevices_Flowchart.pdf>
+Package pdftex.def Info: images/HighLiftDevices_Flowchart.pdf used on input lin
+e 811.
+(pdftex.def)             Requested size: 284.07193pt x 214.37987pt.
+File: images/unina.jpg Graphic file (type jpg)
+ <use images/unina.jpg>
+Package pdftex.def Info: images/unina.jpg used on input line 811.
+(pdftex.def)             Requested size: 56.9055pt x 25.94804pt.
+File: images/logo_DII.png Graphic file (type png)
+
+<use images/logo_DII.png>
+Package pdftex.def Info: images/logo_DII.png used on input line 811.
+(pdftex.def)             Requested size: 65.44142pt x 26.27722pt.
+
+Overfull \hbox (92.55739pt too wide) has occurred while \output is active
+ [][][][]  
+ []
+
+
+Overfull \hbox (2.91193pt too wide) has occurred while \output is active
+[][] 
+ []
+
+[37
+
+ <./images/HighLiftDevices_Flowchart.pdf>]
+LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <8> not available
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 903.
+LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <6> not available
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 903.
+
+<images/ATRFlapTO.PNG, id=1599, 475.7775pt x 452.28975pt>
+File: images/ATRFlapTO.PNG Graphic file (type png)
+
+<use images/ATRFlapTO.PNG>
+Package pdftex.def Info: images/ATRFlapTO.PNG used on input line 903.
+(pdftex.def)             Requested size: 182.09767pt x 173.10724pt.
+File: images/unina.jpg Graphic file (type jpg)
+ <use images/unina.jpg>
+Package pdftex.def Info: images/unina.jpg used on input line 903.
+(pdftex.def)             Requested size: 56.9055pt x 25.94804pt.
+File: images/logo_DII.png Graphic file (type png)
+ <use images/logo_DII.png>
+Package pdftex.def Info: images/logo_DII.png used on input line 903.
+(pdftex.def)             Requested size: 65.44142pt x 26.27722pt.
+
+Overfull \hbox (92.55739pt too wide) has occurred while \output is active
+ [][][][]  
+ []
+
+
+Overfull \hbox (2.91193pt too wide) has occurred while \output is active
+[][] 
+ []
+
+[38
+
+ <./images/ATRFlapTO.PNG>]
+<images/B747FlapSlatLand.PNG, id=1639, 423.984pt x 445.665pt>
+File: images/B747FlapSlatLand.PNG Graphic file (type png)
+
+<use images/B747FlapSlatLand.PNG>
+Package pdftex.def Info: images/B747FlapSlatLand.PNG used on input line 903.
+(pdftex.def)             Requested size: 174.81221pt x 183.75748pt.
+
+Overfull \hbox (1.74399pt too wide) in paragraph at lines 903--903
+ |  [] 
+ []
+
+File: images/unina.jpg Graphic file (type jpg)
+<use images/unina.jpg>
+Package pdftex.def Info: images/unina.jpg used on input line 903.
+(pdftex.def)             Requested size: 56.9055pt x 25.94804pt.
+File: images/logo_DII.png Graphic file (type png)
+ <use images/logo_DII.png>
+Package pdftex.def Info: images/logo_DII.png used on input line 903.
+(pdftex.def)             Requested size: 65.44142pt x 26.27722pt.
+
+Overfull \hbox (92.55739pt too wide) has occurred while \output is active
+ [][][][]  
+ []
+
+
+Overfull \hbox (2.91193pt too wide) has occurred while \output is active
+[][] 
+ []
+
+[39
+
+ <./images/B747FlapSlatLand.PNG>] (./SlideTrifari.toc)
+File: images/unina.jpg Graphic file (type jpg)
+
+<use images/unina.jpg>
+Package pdftex.def Info: images/unina.jpg used on input line 913.
+(pdftex.def)             Requested size: 56.9055pt x 25.94804pt.
+File: images/logo_DII.png Graphic file (type png)
+ <use images/logo_DII.png>
+Package pdftex.def Info: images/logo_DII.png used on input line 913.
+(pdftex.def)             Requested size: 65.44142pt x 26.27722pt.
+
+Overfull \hbox (92.55739pt too wide) has occurred while \output is active
+ [][][][]  
+ []
+
+
+Overfull \hbox (2.91193pt too wide) has occurred while \output is active
+[][] 
+ []
+
+[40
 
 ]
 \tf@nav=\write6
@@ -2772,37 +2998,39 @@ See the caption package documentation for explanation.
 Package caption Warning: Unused \captionsetup[ctable] on input line 74.
 See the caption package documentation for explanation.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 721.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 721.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 917.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 917.
 (./SlideTrifari.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 721.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 721.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 917.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 917.
 Package rerunfilecheck Info: File `SlideTrifari.out' has not changed.
 (rerunfilecheck)             Checksum: C903E431C7872B8EB3C1E15FBF1C7F60;281.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 721.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 917.
  ) 
 Here is how much of TeX's memory you used:
- 40297 strings out of 493054
- 942042 string characters out of 6138326
- 1059875 words of memory out of 5000000
- 43015 multiletter control sequences out of 15000+600000
- 54195 words of font info for 78 fonts, out of 8000000 for 9000
+ 40400 strings out of 493054
+ 944244 string characters out of 6138326
+ 1066432 words of memory out of 5000000
+ 43093 multiletter control sequences out of 15000+600000
+ 66509 words of font info for 87 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 58i,19n,79p,10386b,1498s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 58i,21n,79p,10386b,1498s stack positions out of 5000i,500n,10000p,200000b,80000s
 {c:/texlive/2015/texmf-dist/fonts/enc/dvips/base/8r.enc}{c:/texlive/2015/texm
 f-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}<c:/texlive/2015/texmf-dist/fon
 ts/type1/public/amsfonts/cm/cmex10.pfb><c:/texlive/2015/texmf-dist/fonts/type1/
 public/amsfonts/cm/cmmi10.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/am
-sfonts/cm/cmmi8.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/
-cmss10.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pf
-b><c:/texlive/2015/texmf-dist/fonts/type1/public/cm-super/sfbx1095.pfb><c:/texl
-ive/2015/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb><c:/texlive/2015/texmf-
-dist/fonts/type1/urw/helvetic/uhvr8a.pfb><c:/texlive/2015/texmf-dist/fonts/type
-1/urw/helvetic/uhvro8a.pfb>
-Output written on SlideTrifari.pdf (34 pages, 4219251 bytes).
+sfonts/cm/cmmi7.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/
+cmmi8.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb
+><c:/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texl
+ive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb><c:/texlive/2015/t
+exmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb><c:/texlive/2015/texmf-dist/
+fonts/type1/public/cm-super/sfbx1095.pfb><c:/texlive/2015/texmf-dist/fonts/type
+1/urw/helvetic/uhvb8a.pfb><c:/texlive/2015/texmf-dist/fonts/type1/urw/helvetic/
+uhvr8a.pfb><c:/texlive/2015/texmf-dist/fonts/type1/urw/helvetic/uhvro8a.pfb>
+Output written on SlideTrifari.pdf (40 pages, 4898819 bytes).
 PDF statistics:
- 1300 PDF objects out of 1440 (max. 8388607)
- 1156 compressed objects within 12 object streams
- 79 named destinations out of 1000 (max. 500000)
- 231 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1784 PDF objects out of 2073 (max. 8388607)
+ 1588 compressed objects within 16 object streams
+ 91 named destinations out of 1000 (max. 500000)
+ 271 words of extra memory for PDF output out of 10000 (max. 10000000)
 

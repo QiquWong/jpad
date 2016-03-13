@@ -3,4 +3,4 @@
 \beamer@sectionintoc {2}{Payload Range class}{15}{0}{2}
 \beamer@sectionintoc {3}{Specific Range class}{26}{0}{3}
 \beamer@sectionintoc {4}{High Lift Devices class}{33}{0}{4}
-\beamer@sectionintoc {5}{Take-Off and Landing classes}{34}{0}{5}
+\beamer@sectionintoc {5}{Take-Off and Landing classes}{40}{0}{5}

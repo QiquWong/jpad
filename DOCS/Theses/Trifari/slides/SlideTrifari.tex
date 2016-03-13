@@ -516,7 +516,7 @@ $R=\left(\frac{V}{SFCJ}\right)\left(\frac{L}{D}\right)\ln\left(\frac{W_{i}}{W_{f
 }
 \end{frame}
 %
-%-----------------------Frame 15------------------------------
+%-----------------------Frame 16------------------------------
 \placelogotrue
 \placebackgroundfalse
 \begin{frame}{Payload-Range Java class output}
@@ -563,7 +563,7 @@ $R=\left(\frac{V}{SFCJ}\right)\left(\frac{L}{D}\right)\ln\left(\frac{W_{i}}{W_{f
 \subsection{}
 \end{frame}
 %
-%-----------------------Frame 16------------------------------
+%-----------------------Frame 17------------------------------
 \placelogotrue
 \placebackgroundfalse
 \begin{frame}{Specific Range and Cruise Grid chart}
@@ -603,7 +603,7 @@ $A.F.=\left(\frac{V}{SFCJ}\right)\left(\frac{L}{D}\right)$
 }
 \end{frame}
 %
-%-----------------------Frame 17------------------------------
+%-----------------------Frame 18------------------------------
 \placelogotrue
 \placebackgroundfalse
 \begin{frame}{Specific Range calculation}
@@ -619,7 +619,7 @@ $A.F.=\left(\frac{V}{SFCJ}\right)\left(\frac{L}{D}\right)$
 }
 \end{frame}
 %
-%-----------------------Frame 18------------------------------
+%-----------------------Frame 19------------------------------
 \placelogotrue
 \placebackgroundfalse
 %
@@ -634,9 +634,17 @@ $A.F.=\left(\frac{V}{SFCJ}\right)\left(\frac{L}{D}\right)$
 \end{frame}
 \setbeamertemplate{background canvas}{ }
 %
-%-----------------------Frame 18------------------------------
+%-----------------------Frame 20------------------------------
 \placelogotrue
 \placebackgroundfalse
+%
+\setbeamertemplate{background canvas}{
+    \rule{0in}{2.7in}%
+    \rule{3.8in}{0in}%
+    \centering
+    \includegraphics[keepaspectratio, width=0.23\paperwidth]{images/ATRB747CruiseCond.png}
+}
+%
 \begin{frame}{Specific Range Java class output}
 \only<1>{
 \WiderImages{
@@ -666,7 +674,7 @@ $A.F.=\left(\frac{V}{SFCJ}\right)\left(\frac{L}{D}\right)$
     \captionsetup{labelformat=empty}
 \end{figure}
 \begin{figure}
-  \vspace*{-1.15cm}
+  \vspace*{-1.14cm}
   \hspace*{-0.2cm}
 \centering
     \includegraphics[keepaspectratio, width=0.495\paperwidth]{images/EfficiencyB747.PNG}
@@ -694,6 +702,8 @@ $A.F.=\left(\frac{V}{SFCJ}\right)\left(\frac{L}{D}\right)$
 }
 }
 \end{frame}
+\setbeamertemplate{background canvas}{ }
+%
 %----------------Current table of contents--------------------
 \placelogotrue
 \placebackgroundfalse
@@ -704,7 +714,193 @@ $A.F.=\left(\frac{V}{SFCJ}\right)\left(\frac{L}{D}\right)$
 \subsection{}
 \end{frame}
 %
-%-----------------------Frame ??------------------------------
+%-----------------------Frame 21------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Trailing-edge devices effects}
+\Wider{
+\begin{columns}[onlytextwidth,t]
+\column{0.5\textwidth}
+	\begin{itemize}
+	\vspace*{0.8cm}
+	\MyBullet Higher $C_L$ at a given angle of attack and higher $C_{\text{Lmax}}$.
+	\MyBullet Lower stalling angle of attack.
+	\MyBullet Lower zero-lift angle due to increasing camber.
+	\end{itemize}
+\begin{figure}
+	\vspace*{0.3cm}
+	\hspace*{-0.2cm}
+	\centering
+	\includegraphics[keepaspectratio, width=0.6\paperwidth]{images/Flap}
+\end{figure}
+\column{0.5\textwidth}
+	\begin{figure}
+	\vspace*{-0.4cm}
+	\hspace*{0.55cm}
+	\centering
+    	\includegraphics[keepaspectratio, width=0.445\paperwidth]{images/FlapEffects}
+\end{figure}
+\end{columns}
+}
+\end{frame}
+%
+%-----------------------Frame 22------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Leading-edge devices effects}
+\Wider{
+\begin{columns}[onlytextwidth,t]
+\column{0.5\textwidth}
+	\begin{itemize}
+	\vspace*{0.8cm}
+	\MyBullet Extension of the linear trait of the lift curve with an increase of the stalling angle of attack and of the $C_{\text{Lmax}}$
+	\MyBullet Higher zero-lift angle caused by leading edge deflection which reduce the actual angle of attack.
+	\MyBullet Higher slope of the linear trait of the lift curve.
+	\end{itemize}
+\begin{figure}
+	\vspace*{-0.6cm}
+	\hspace*{1.8cm}
+	\centering
+	\includegraphics[keepaspectratio, width=0.46\paperwidth]{images/Slat}
+\end{figure}
+\column{0.5\textwidth}
+	\begin{figure}
+	\vspace*{-0.1cm}
+	\hspace*{0.45cm}
+	\centering
+    	\includegraphics[keepaspectratio, width=0.45\paperwidth]{images/SlatEffects}
+\end{figure}
+\end{columns}
+}
+\end{frame}
+%
+%-----------------------Frame 23------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Calculation methodologies}
+\Wider{
+\begin{itemize}
+	\MyBullet Charts, semi-empirical equations and experimental data have been used to evaluate high lift devices effects. (e.g.: \emph{Glauert’s linearized theory for thin airfoils with flaps, DATCOM, Young and Hufton experimental data})
+\end{itemize}
+\begin{itemize}
+	\MyBullet Effects to evaluate:
+	\begin{itemize}
+		\MyBullet  \textbf{{\textcolor{mygold}{\text{$\Delta$}$C_{l0}$, \text{$\Delta$}$C_{L0}$}}}
+		\MyBullet  \textbf{{\textcolor{mygold}{\text{$\Delta$}$C_{l\text{max}}$, \text{$\Delta$}$C_{L\text{max}}$}}}
+		\MyBullet   \textbf{{\textcolor{mygold}{$C_{L\alpha, \text{flap}}$}}}
+		\MyBullet  \textbf{{\textcolor{mygold}{\text{$\Delta$}$\alpha_{\text{stall,airfoil}}$, \text{$\Delta$}$\alpha_{\text{stall,wing}}$}}}
+		\MyBullet  \textbf{{\textcolor{mygold}{\text{$\Delta$}$C_{D\text{0}}$}}}
+		\MyBullet  \textbf{{\textcolor{mygold}{\text{$\Delta$}$C_{M\text{, c/4}}$}}}
+	\end{itemize}
+\end{itemize}
+}
+\end{frame}
+%
+%-----------------------Frame 24------------------------------
+\placelogotrue
+\placebackgroundfalse
+%
+\setbeamertemplate{background canvas}{
+    \rule{0in}{3.6in}%
+    \rule{0.12in}{0in}%
+    \centering
+    \includegraphics[keepaspectratio, width=0.78\paperwidth]{images/HighLiftDevices_Flowchart}
+}
+%
+\begin{frame}{High Lift Devices Java class flowchart}
+\end{frame}
+\setbeamertemplate{background canvas}{ }
+%
+%-----------------------Frame 25------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{High Lift Devices Java class output}
+\only<1>{
+\begin{columns}[onlytextwidth,t]
+\column{0.5\textwidth}
+\Wider{
+  \vspace*{-1.5cm}
+\textbf{\textcolor{mygold}{ATR-72 @ Take-Off}}
+\begin{itemize}
+	\MyBullet 2 Single slotted flap
+	\MyBullet $\frac{c_f}{c}=0.35$
+	\MyBullet $\delta_f=\SI{20}{\degree}$
+	\MyBullet $\eta_{\text{in, flap1}}=0.08;\ \eta_{\text{out, flap1}}=0.35$
+	\MyBullet $\eta_{\text{in, flap2}}=0.35;\ \eta_{\text{out, flap2}}=0.8$
+\end{itemize}
+\vspace*{0.15cm}
+\hspace*{0.15cm}
+\scalebox{0.95}{
+\begin{tabular}{|l||c|c|}
+\hline
+\textbf{ } & \textbf{No Flap} &  \textbf{Flap}\\
+\hline\hline
+\textbf{$\alpha_{\text{stall}}$} & $\SI{17.47}{\degree}$ & $\SI{15.54}{\degree}$\\
+\textbf{$C_{L\text{max}}$} & 1.59 & 2.11\\
+\textbf{$C_{L\text{star}}$} & 1.095 & 1.54\\
+\textbf{$C_{L\alpha}$} (1/rad) & 5.19 & 5.24\\
+\hline
+\end{tabular}
+}
+}
+\column{0.5\textwidth}
+\WiderImages{
+\begin{figure}
+  \vspace*{-1.38cm}
+  \hspace*{0.8cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.5\paperwidth]{images/ATRFlapTO.PNG}
+    \captionsetup{labelformat=empty}
+\end{figure}
+}
+\end{columns}
+}
+\pause
+\only<2>{
+\begin{columns}[onlytextwidth,t]
+\column{0.5\textwidth}
+\Wider{
+  \vspace*{-1cm}
+\textbf{\textcolor{mygold}{B747-100B @ Landing}}
+\begin{itemize}
+	\MyBullet 2 Double slotted flap + 2 Slat
+	\MyBullet $\frac{c_f}{c}=0.25;\quad \frac{c_s}{c}=0.15$
+	\MyBullet $\delta_f=\left(\SI{20}{\degree}+\SI{25}{\degree}\right);\quad \delta_s=\SI{5}{\degree}$
+	\MyBullet $\frac{c'}{c}_{\text{slat}}=1.1;\quad \frac{\text{LER}}{c}_{\text{slat}}=0.0097$
+	\MyBullet $\eta_{\text{in, flap1}}=0.11;\ \eta_{\text{out, flap1}}=0.38$
+	\MyBullet $\eta_{\text{in, flap2}}=0.38;\ \eta_{\text{out, flap2}}=0.72$
+	\MyBullet $\eta_{\text{in, slat1}}=0.14;\ \eta_{\text{out, slat1}}=0.37$
+	\MyBullet $\eta_{\text{in, slat2}}=0.42;\ \eta_{\text{out, slat}}=0.9$
+
+\end{itemize}
+\vspace*{0.15cm}
+\hspace*{1.55cm}
+\scalebox{0.8}{
+\begin{tabular}{|l||c|c|}
+\hline
+\textbf{ } & \textbf{No Flap} &  \textbf{Flap}\\
+\hline\hline
+\textbf{$\alpha_{\text{stall}}$} & $\SI{23.23}{\degree}$ & $\SI{21.94}{\degree}$\\
+\textbf{$C_{L\text{max}}$} & 1.47 & 2.99\\
+\textbf{$C_{L\text{star}}$} & 0.83 & 2.35\\
+\textbf{$C_{L\alpha}$} (1/rad) & 4.089 & 4.12\\
+\hline
+\end{tabular}
+}
+}
+\column{0.5\textwidth}
+\WiderImages{
+\begin{figure}
+  \vspace*{-1.1cm}
+  \hspace*{1.16cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.48\paperwidth]{images/B747FlapSlatLand.PNG}
+    \captionsetup{labelformat=empty}
+\end{figure}
+}
+\end{columns}
+}
+\end{frame}
 %
 %----------------Current table of contents--------------------
 \placelogotrue
@@ -716,6 +912,6 @@ $A.F.=\left(\frac{V}{SFCJ}\right)\left(\frac{L}{D}\right)$
 \subsection{}
 \end{frame}
 %
-%-----------------------Frame ??------------------------------
+%-----------------------Frame 26------------------------------
 %
 \end{document}
