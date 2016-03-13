@@ -594,9 +594,9 @@ public class ACStabilityManager {
 		cLWingBodyArray = aircraft.get_theAerodynamics().calculateCLvsAlphaWingBody(alphaMinWing, alphaMaxWing, nValueAlpha, theCondition);
 		
 	
-		System.out.println("Cl alpha Wing" + cLAlphaWing*57.3);
+		System.out.println("Cl alpha Wing " + cLAlphaWing*57.3);
 		cLAlphaWingBody = theFuselageManager.calculateCLAlphaFuselage(cLAlphaWing);
-		System.out.println("Cl alpha Wing Body" + cLAlphaWingBody*57.3);
+		System.out.println("Cl alpha Wing Body " + cLAlphaWingBody*57.3);
 		
 		//CALCULATING CL AT ALPHA FOR WING
 
@@ -611,6 +611,20 @@ public class ACStabilityManager {
 	}
 	
 	public void CalculateHTailLiftCharacteristics(){
+		
+		System.out.println("\n ------------------- ");
+		System.out.println("|  HORIZONTAL TAIL   |");
+		System.out.println(" ------------------- \n\n");
+		
+		// In order to evaluate the angle of attack of the horizzontal tail it's necessary to evaluate the downwash angle
+		
+		DownwashCalculator theDownwashCalculator = new DownwashCalculator(aircraft);
+		theDownwashCalculator.calculateDownwashNonLinearDelft();
+		theDownwashCalculator.plotDownwashDelftWithPath(subfolderPath);
+		
+		//ARRAY FILLING
+		//CALCULATING CL AT ALPHA FOR WING
+		//PLOT CL VS ALPHA
 		
 
 	}

@@ -1229,6 +1229,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			Amount<Angle> alphaTemp = Amount.valueOf(0.0, SI.RADIAN);
 			MyAirfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
 			double alphaStar = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
+			set_alphaStar(Amount.valueOf(alphaStar,SI.RADIAN));
 			Amount<Angle> alphaStarAmount = Amount.valueOf(alphaStar, SI.RADIAN);
 
 			cLStarWing = nasaBlackwell(alphaStarAmount);

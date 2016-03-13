@@ -210,7 +210,7 @@ public class LiftingSurface extends AeroComponent{
 
 	Amount<Length> _aerodynamicCenterX = null;
 	Amount<Length> _aerodynamicCenterY = Amount.valueOf(1.0, SI.METRE);
-	Amount<Length> _aerodynamicCenterZ = Amount.valueOf(1.0, SI.METRE);
+	Amount<Length> _aerodynamicCenterZ = Amount.valueOf(5.0, SI.METRE);
 
 	Amount<Length> _aerodynamicCenterXInnerPanel = null;
 	Amount<Length> _aerodynamicCenterYInnerPanel = null;

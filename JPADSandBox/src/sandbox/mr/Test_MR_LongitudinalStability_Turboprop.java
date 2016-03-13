@@ -436,6 +436,7 @@ public class Test_MR_LongitudinalStability_Turboprop {
  
 		theStabilityManager.CalculateWingLiftCharacteristics();
 		theStabilityManager.CalculateFuselageLiftCharacteristics();
+		theStabilityManager.CalculateHTailLiftCharacteristics();
 		
 		
 	
