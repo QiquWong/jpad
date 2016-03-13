@@ -34,6 +34,7 @@ import aircraft.calculators.ACAerodynamicsManager;
 import aircraft.componentmodel.AeroComponent;
 import aircraft.components.Aircraft;
 import aircraft.components.fuselage.Fuselage;
+import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcHighLiftDevices;
 import aircraft.components.nacelles.Nacelle;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AirfoilStationEnum;
@@ -103,6 +104,8 @@ public class LiftingSurface extends AeroComponent{
 	Amount<Angle> _dihedralMean = null;
 	MyArray _dihedral = new MyArray(SI.RADIAN);
 
+	CalcHighLiftDevices HigLiftCalculator;
+	
 	Amount<Length> 
 	_span = null, 
 
@@ -3605,6 +3608,14 @@ public class LiftingSurface extends AeroComponent{
 
 	public void set_twistDistribution(MyArray _twistDistribution) {
 		this._twistDistributionExposed = _twistDistribution;
+	}
+
+	public CalcHighLiftDevices getHigLiftCalculator() {
+		return HigLiftCalculator;
+	}
+
+	public void setHigLiftCalculator(CalcHighLiftDevices higLiftCalculator) {
+		HigLiftCalculator = higLiftCalculator;
 	}
 
 }

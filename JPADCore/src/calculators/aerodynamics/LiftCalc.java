@@ -20,6 +20,7 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.auxiliary.airfoil.MyAirfoil;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
+import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcAlpha0L;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLvsAlphaCurve;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.MeanAirfoil;
@@ -341,6 +342,9 @@ public class LiftCalc {
 		return cLActualArray;
 	}
 	
+	
+	
+	
 	public static double[] calculateCLvsAlphaHighLiftArrayNasaBlackwell(
 			LiftingSurface theLiftingSurface,
 			MyArray alphaArray, 
@@ -433,6 +437,17 @@ public class LiftCalc {
 	}
 	
 
+	// TO DO move here the cl wing body calculator
+	public static double[] calculateCLvsAlphaArrayWingBody(
+			LiftingSurface theLiftingSurface,
+			MyArray alphaArray,
+			int nValue,
+			boolean printResults
+			)
+	{
+		double[] xArray = {0.0, 0.0};
+	return xArray;
+	}
 
 	/**
 	 * 

@@ -51,8 +51,13 @@ public class ACStabilityManager {
 	Amount<Length> maxXaftCenterOfGravityBRF;
 	Amount<Length> maxXforwCenterOfGravityBRF;
 	Amount<Angle> alphaBody = null;
+	Amount<Angle> alphaWing = null;
 	Amount<Angle> alphaMin;
 	Amount<Angle> alphaMax;
+	Amount<Angle> alphaMinWing;
+	Amount<Angle> alphaMaxWing;
+	Amount<Angle> alphaMinHTail;
+	Amount<Angle> alphaMaxHtail;
 
 	Aircraft aircraft;
 	LiftingSurface theWing;
@@ -65,8 +70,11 @@ public class ACStabilityManager {
 	boolean plotCheck = false;
 
 
-	MyArray alphaStabilityArray = new MyArray();
+	MyArray alphaStabilityArray = new MyArray(); //alphaBody
 	MyArray alphaStabilityHLArray = new MyArray();
+	
+	MyArray alphaWingStabilityArray = new MyArray();
+	MyArray alphaWingStabilityHLArray = new MyArray();
 
 
 	//Output Values
@@ -74,13 +82,15 @@ public class ACStabilityManager {
 	double cLIsolatedWing;
 	double cLIsolatedWingTO;
 	double cLIsolatedWingLand;
+	double cLAlphaWing;
 	double cLAlphaWingBody;
 	double cLWingBody;
 
 	//Output Arrays
-	private double[] cLWingCleanArray;
-	private double[] cLWingTOArray;
-	private double[] cLWingLandingArray;
+	private double [] cLWingCleanArray;
+	private double [] cLWingTOArray;
+	private double [] cLWingLandingArray;
+	private double [] cLWingBodyArray;
 
 
 
@@ -97,7 +107,7 @@ public class ACStabilityManager {
 	List<Double> csc = new ArrayList<Double>();
 	List<Double> leRadiusCSlat = new ArrayList<Double>();
 	List<Double> cExtCSlat = new ArrayList<Double>();
-
+	
 
 
 	// BUILDER--------------------------------------
@@ -107,8 +117,9 @@ public class ACStabilityManager {
 	 * 
 	 * @author Manuela Ruocco
 	 * @param the aircraft
-	 * @param the minimum value of alpha array. It can to be in degree or radian. This value may to be null in order to execute
-	 * analysis only for an angle of attack. In this case the values of alpha max and alpha min wil bee alpha bosy +-1 deg
+	 * @param the minimum value of alpha array. It can to be in degree or radian.
+	 * This is an aLPHA BODY array. This value may to be null in order to execute
+	 * analysis only for an angle of attack. In this case the values of alpha max and alpha min wil be alpha body +-1 deg
 	 * @param the maximum value of alpha array. It can to be in degree or radian
 	 * @param the actual condition (take off, landing, cruise)
 	 * @param the angle of attack (alpha body) for the calculation of numerical value of CL, CD, CM. This value may be null. In this case the class calculates
@@ -137,10 +148,10 @@ public class ACStabilityManager {
 		if (alphaBody==null){
 			alphaCheck = false;}
 		else
-			if (alphaBody.getUnit() == NonSI.DEGREE_ANGLE){
+			{if (alphaBody.getUnit() == NonSI.DEGREE_ANGLE){
 				alphaBody = alphaBody.to(SI.RADIAN);
 			}
-		alphaCheck = true;
+		alphaCheck = true;}
 
 
 		if (alphaMin==null || alphaMax==null){
@@ -159,9 +170,18 @@ public class ACStabilityManager {
 		this.alphaMin = alphaMin;
 		this.alphaMax = alphaMax;
 
+		this.alphaMinWing =Amount.valueOf((
+				alphaMin.getEstimatedValue() + alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue()), NonSI.DEGREE_ANGLE);
+		this.alphaMaxWing =Amount.valueOf((
+				alphaMax.getEstimatedValue() + alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue()), NonSI.DEGREE_ANGLE);
+		
 
 		alphaStabilityArray.linspace(alphaMin.getEstimatedValue(), alphaMax.getEstimatedValue(), nValueAlpha);
 		alphaStabilityHLArray.linspace(alphaMin.getEstimatedValue(), alphaMax.getEstimatedValue()-2, nValueAlpha);
+		
+		alphaWingStabilityArray.linspace(alphaMinWing.getEstimatedValue(),alphaMaxWing.getEstimatedValue(), nValueAlpha);
+		alphaWingStabilityHLArray.linspace(alphaMinWing.getEstimatedValue(), alphaMaxWing.getEstimatedValue()-2, nValueAlpha);
+		
 		System.out.println(" alpha stability array " + alphaStabilityArray);
 
 		//Set Operating Conditions and CG position 
@@ -286,11 +306,13 @@ public class ACStabilityManager {
 		System.out.println("\t Data: ");
 
 		// DATA
-		System.out.println("Angle of incidence of wing (deg) = " + ""
-				+  Math.ceil(theWing.get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue()));
+		System.out.println("Angle of incidence of wing (deg) = " + theWing.get_iw().getEstimatedValue()*57.3);
 		if(alphaCheck == true){
 			System.out.println("Angle of attack alpha body (deg) = " + "" 
-					+ Math.ceil(alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue()));}
+					+ (alphaBody.getEstimatedValue()*57.3));
+			alphaWing = Amount.valueOf(
+					(alphaBody.getEstimatedValue() + theWing.get_iw().getEstimatedValue()), SI.RADIAN);
+			System.out.println("Angle of attack alpha Wing (deg) " + Math.toDegrees(alphaWing.getEstimatedValue()));}
 
 
 
@@ -384,23 +406,24 @@ public class ACStabilityManager {
 			System.out.println("\n -----------HIGH LIFT " + theCondition + "-------------- ");
 			System.out.println("deltaCL0_flap = " + highLiftCalculator.getDeltaCL0_flap());
 			System.out.println("deltaCLmax_flap = " + highLiftCalculator.getDeltaCLmax_flap());
-			System.out.println("cLalpha_new = " + highLiftCalculator.getcLalpha_new());
-			System.out.println("deltaAlphaMax = " + highLiftCalculator.getDeltaAlphaMaxFlap());
+			System.out.println("cLalpha_new = (1/rad) " + highLiftCalculator.getcLalpha_new()* 57.3);
+			System.out.println("deltaAlphaMax = (deg) " + highLiftCalculator.getDeltaAlphaMaxFlap());
 			System.out.println("deltaCD = " + highLiftCalculator.getDeltaCD());
 			System.out.println("deltaCMc_4 = " + highLiftCalculator.getDeltaCM_c4());
 			System.out.println("\n\n");
 
+			cLAlphaWing = highLiftCalculator.getcLalpha_new();
 
 			//ARRAY FILLING
 
 			if (pathXMLTakeOFF != null){
-				cLWingTOArray = highLiftCalculator.calcCLvsAlphaHighLiftDevices(alphaMin, 
+				cLWingTOArray = highLiftCalculator.calcCLvsAlphaBodyHighLiftDevices(alphaMin, 
 						Amount.valueOf((alphaMax.getEstimatedValue()-2), NonSI.DEGREE_ANGLE),
 						nValueAlpha);
 				System.out.println("CL wing " + theCondition + " Array " + Arrays.toString(cLWingTOArray ) );
 			}
 			if(pathXMLLanding != null){
-				cLWingLandingArray =  highLiftCalculator.calcCLvsAlphaHighLiftDevices(alphaMin,
+				cLWingLandingArray =  highLiftCalculator.calcCLvsAlphaBodyHighLiftDevices(alphaMin,
 						Amount.valueOf((alphaMax.getEstimatedValue()-2),NonSI.DEGREE_ANGLE),
 						nValueAlpha);
 				System.out.println("CL wing " + theCondition + " Array " + Arrays.toString(cLWingLandingArray) );
@@ -412,7 +435,7 @@ public class ACStabilityManager {
 			// CALCULATING CL AT ALPHA
 
 			if(alphaCheck == true){
-				cLIsolatedWingTO = highLiftCalculator.calcCLatAlphaHighLiftDevices(alphaBody);
+				cLIsolatedWingTO = highLiftCalculator.calcCLatAlphaHighLiftDevices(alphaWing);
 				System.out.println("\nCL of wing at " + theCondition + " at alpha body = " + cLIsolatedWingTO);
 			}
 
@@ -425,7 +448,7 @@ public class ACStabilityManager {
 
 			//clean vector
 			LSAerodynamicsManager.CalcCLvsAlphaCurve theCLArrayCalculator = theLSAnalysis.new CalcCLvsAlphaCurve();
-			cLWingCleanArray = theCLArrayCalculator.nasaBlackwellCompleteCurve(alphaMin, alphaMax, nValueAlpha, false);
+			cLWingCleanArray = theCLArrayCalculator.nasaBlackwellCompleteCurve(alphaMinWing, alphaMaxWing, nValueAlpha, false);
 
 
 			// filling lists
@@ -463,7 +486,7 @@ public class ACStabilityManager {
 			MyChartToFileUtils.plotJFreeChart(alphaHLListPlot,
 					cLHLListPlot,
 					"CL vs alpha " + theCondition.toString() ,
-					"alpha",
+					"alpha_Wing",
 					"CL",
 					null, null, null,null,
 					"deg",
@@ -484,7 +507,7 @@ public class ACStabilityManager {
 
 			cLWingCleanArray = theCLArrayCalculator.nasaBlackwellCompleteCurve(alphaMin, alphaMax, nValueAlpha, true);
 			System.out.println("CL wing Clean Array " + Arrays.toString(cLWingCleanArray) );
-
+			cLAlphaWing = theLSAnalysis.getcLLinearSlopeNB();
 
 			//CALCULATING CL AT ALPHA FOR WING
 			if(alphaCheck == true){
@@ -501,7 +524,7 @@ public class ACStabilityManager {
 				MyChartToFileUtils.plotNoLegend(
 						alphaStabilityArray.toArray(),cLWingCleanArray, 
 						null, null , null , null ,					    // axis with limits
-						"alpha_W", "CL", "deg", "",	   				
+						"alpha_Wing", "CL", "deg", "",	   				
 						subfolderPath, "CL vs Alpha clean Wing" );
 				System.out.println("\t \t \tDONE  ");
 
@@ -566,20 +589,29 @@ public class ACStabilityManager {
 		System.out.println("|     FUSELAGE       |");
 		System.out.println(" ------------------- \n\n");
 		
-		double cLAlphaWing = theLSAnalysis.getcLLinearSlopeNB();
-		System.out.println(" cl alpha " + cLAlphaWing);
+		
+		//ARRAY FILLING
+		cLWingBodyArray = aircraft.get_theAerodynamics().calculateCLvsAlphaWingBody(alphaMinWing, alphaMaxWing, nValueAlpha, theCondition);
+		
+	
+		System.out.println("Cl alpha Wing" + cLAlphaWing*57.3);
 		cLAlphaWingBody = theFuselageManager.calculateCLAlphaFuselage(cLAlphaWing);
+		System.out.println("Cl alpha Wing Body" + cLAlphaWingBody*57.3);
+		
+		//CALCULATING CL AT ALPHA FOR WING
 
-		cLWingBody = aircraft.get_theAerodynamics().calculateCLAtAlphaWingBody(alphaBody, meanAirfoil, true);
+		cLWingBody = aircraft.get_theAerodynamics().calculateCLAtAlphaWingBody(alphaBody, meanAirfoil, true, theCondition);
 		System.out.println("-------------------------------------");
 		System.out.println(" CL of Wing Body at alpha body = " + cLWingBody);
 
 		System.out.println("\n \t \t \tWRITING CL VS ALPHA CHARTS TO FILE");
-		aircraft.get_theAerodynamics().PlotCLvsAlphaCurve(meanAirfoil, subfolderPath);
+		aircraft.get_theAerodynamics().PlotCLvsAlphaCurve(meanAirfoil, subfolderPath, theCondition);
 		System.out.println("DONE");
 		
 	}
-	public void CalculateWingBodyLiftCharacteristics(){
+	
+	public void CalculateHTailLiftCharacteristics(){
+		
 
 	}
 
@@ -654,6 +686,36 @@ public class ACStabilityManager {
 
 	public void setcLWingBody(double cLWingBody) {
 		this.cLWingBody = cLWingBody;
+	}
+
+
+	public double[] getcLWingBodyArray() {
+		return cLWingBodyArray;
+	}
+
+
+	public Amount<Angle> getAlphaMin() {
+		return alphaMin;
+	}
+
+
+	public Amount<Angle> getAlphaMinWing() {
+		return alphaMinWing;
+	}
+
+
+	public Amount<Angle> getAlphaMaxWing() {
+		return alphaMaxWing;
+	}
+
+
+	public Amount<Angle> getAlphaMinHTail() {
+		return alphaMinHTail;
+	}
+
+
+	public Amount<Angle> getAlphaMaxHtail() {
+		return alphaMaxHtail;
 	}
 
 

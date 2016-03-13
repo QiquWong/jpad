@@ -27,9 +27,11 @@ import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.MeanAirfoil;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.DragCalc;
+import calculators.aerodynamics.LiftCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
+import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
@@ -116,6 +118,9 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 	private double[] [] alphaArrayPlotWingBody;
 	private double[] [] cLArrayPlotWingBody;
 	private String subfolderPathCLAlpha;
+	
+	MyArray alphaArrayActual;
+	double [] cLActualArray;
 	
 	private boolean subfolderPathCeck = true;
 
@@ -504,22 +509,24 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 	 * the CL vs Alpha curve of isolated wing and introducing an influence factor from fuselage.
 	 * see--> Sforza p.64
 	 * 
-	 * WARNING --> it is necessary to call LSAerodynamicsManager.CalcCLAtAlpha first
+	 * WARNING --> it is necessary to call LSAerodynamicsManager.CalcCLAtAlpha first and, eventually, CalcHighLiftDevices
 	 * 
 	 * @param Amount<Angle> alphaBody. It is the angle between the direction of asimptotic 
      * velocity and the reference line of fuselage.
 	 * @author Manuela Ruocco
 	 */
 
-	public double calculateCLAtAlphaWingBody(Amount<Angle> alphaBody, MyAirfoil meanAirfoil, boolean printCheck){
+	public double calculateCLAtAlphaWingBody(Amount<Angle> alphaBody, MyAirfoil meanAirfoil,
+			boolean printCheck, ConditionEnum theCondition){
 		if (alphaBody.getUnit() == NonSI.DEGREE_ANGLE) 
 			alphaBody = alphaBody.to(SI.RADIAN);
 
-		double cLAlphaWingBody, cLAlphaWing, cLMaxWingClean, cLZeroWing, alphaZeroLift,
-			cLZeroWingBody,alphaStarDouble, cLActual = 0, cLStar;
+		double cLAlphaWingBody = 0, cLAlphaWing=0, cLMaxWingClean=0, cLZeroWing=0, alphaZeroLift=0,
+			cLZeroWingBody,alphaStarDouble, cLActual = 0, cLStar = 0;
 		double a, b, c, d;
-		Amount<Angle> alphaMaxWingClean, alphaStar, alphaMaxWingBody;
+		Amount<Angle> alphaMaxWingClean = null, alphaStar, alphaMaxWingBody;
 		
+		if( theCondition == ConditionEnum.CRUISE){
 		alphaMaxWingClean =  _theAircraft.get_wing().getAerodynamics().get_alphaMaxClean();
 		cLMaxWingClean = _theAircraft.get_wing().getAerodynamics().get_cLMaxClean();
 		cLAlphaWing = _theAircraft.get_wing().getAerodynamics().getcLLinearSlopeNB();
@@ -534,7 +541,36 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 				.get_fuselage()
 				.getAerodynamics()
 				.calculateCLAlphaFuselage(cLAlphaWing);
+		}
+		
+		if (theCondition == ConditionEnum.LANDING || theCondition == ConditionEnum.TAKE_OFF){
+		
+			alphaMaxWingClean =  _theAircraft.get_wing().getAerodynamics().get_alphaMaxClean();
+			double deltaAlphaMax = Math.toRadians(_theAircraft.get_wing().getHigLiftCalculator().getDeltaAlphaMaxFlap());
+			alphaMaxWingClean = Amount.valueOf(alphaMaxWingClean.getEstimatedValue() + deltaAlphaMax ,SI.RADIAN);
 
+			cLMaxWingClean = _theAircraft.get_wing().getHigLiftCalculator().getcL_Max_Flap() +
+					_theAircraft.get_wing().getHigLiftCalculator().getDeltaCLmax_slat();
+			
+			cLAlphaWing = _theAircraft.get_wing().getHigLiftCalculator().getcLalpha_new()*57.3;
+			
+			//alphaStar = meanAirfoil.getAerodynamics().get_alphaStar();
+			cLStar = _theAircraft.get_wing().getAerodynamics().getcLStarWing();
+			LSAerodynamicsManager theManager = _theAircraft.get_wing().getAerodynamics();
+			LSAerodynamicsManager.CalcAlpha0L theAlphaZeroLiftCalculator = theManager.new CalcAlpha0L();
+	
+					
+//			alphaZeroLift = _theAircraft.get_wing().getAerodynamics().getAlphaZeroLiftWingClean();
+			cLZeroWing = _theAircraft.get_wing().getAerodynamics().getcLAlphaZero() +
+			_theAircraft.get_wing().getHigLiftCalculator().getDeltaCL0_flap();
+			cLAlphaWingBody = _theAircraft
+					.get_fuselage()
+					.getAerodynamics()
+					.calculateCLAlphaFuselage(cLAlphaWing);
+			
+			alphaZeroLift = - cLZeroWing/ cLAlphaWing;
+			
+		}
 		cLZeroWingBody = -cLAlphaWingBody * alphaZeroLift;
 
 		double alphaTempWing = (cLMaxWingClean - cLZeroWing)/cLAlphaWing;
@@ -546,15 +582,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		//System.out.println(" alpha max clean " + alphaMaxWingClean.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
 		//System.out.println(" cl max wing clean " + cLMaxWingClean);
 		//System.out.println(" cl alpha wing " + cLAlphaWing);
-		if (printCheck ==true){
-		System.out.println("\n -----------WING BODY-------------- ");
-		System.out.println(" alpha max " + alphaMaxWingBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
-		System.out.println(" alpha star " + alphaStarDouble*57.3);
-		System.out.println(" cL max " + cLMaxWingClean);
-		System.out.println(" cL alpha wing body " + cLAlphaWingBody);
-		System.out.println(" alpha zero lift " + alphaZeroLift*57.3);
-		printCheck=false;
-		}
+		
 
 		double alphaWing = alphaBody.getEstimatedValue() +
 				_theAircraft.get_wing().get_iw().getEstimatedValue();
@@ -598,34 +626,106 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 	}
 
 
+	public double[] calculateCLvsAlphaWingBody(
+			Amount<Angle> alphaMin, Amount<Angle> alphaMax, int nValue, ConditionEnum theCondition){
+
+		//double [] cLActualArray = new double[nValue];
+		alphaArrayActual =new MyArray();
+		cLActualArray = new double[nValue];
+		
+		if (alphaMin.getUnit() == NonSI.DEGREE_ANGLE){
+			alphaMin = alphaMin.to(SI.RADIAN);
+		}
+		
+		if (alphaMax.getUnit() == NonSI.DEGREE_ANGLE){
+			alphaMax = alphaMax.to(SI.RADIAN);
+		}
+		
+		Amount<Angle> alphaActual ;
+		alphaArrayActual.linspace(alphaMin.getEstimatedValue(), alphaMax.getEstimatedValue(), nValue);
+		LSAerodynamicsManager  theLSAnalysis = _theAircraft.get_wing().getAerodynamics();
+		LSAerodynamicsManager.MeanAirfoil theMeanAirfoilCalculator = theLSAnalysis.new MeanAirfoil();
+		MyAirfoil meanAirfoil = theMeanAirfoilCalculator.calculateMeanAirfoil(_theAircraft.get_wing());
+		alphaActual = Amount.valueOf(alphaArrayActual.get(0), SI.RADIAN); 
+		cLActualArray[0]= calculateCLAtAlphaWingBody(alphaActual, meanAirfoil, true, theCondition);
+		for (int i=1; i<alphaArrayActual.size(); i++){
+			alphaActual = Amount.valueOf(alphaArrayActual.get(i), SI.RADIAN); 
+			cLActualArray[i]= calculateCLAtAlphaWingBody(alphaActual, meanAirfoil, false, theCondition);
+		}
+			
+			// TODO move the calculator in lift calc
+//		cLActualArray = LiftCalc.calculateCLvsAlphaArrayWingBody(
+//				getTheLiftingSurface(), alphaArrayActual, nValue, printResults);
+		
+
+		return cLActualArray;
+	}
+
+	
 	/** 
 	 * This function plot CL vs Alpha curve (wing-body) using 30 value of alpha between alpha=- 2 deg and
 	 * alphaMax+2. 
 	 * 
 	 * @author Manuela Ruocco
 	 */
-	public void PlotCLvsAlphaCurve(MyAirfoil meanAirfoil){
+	public void PlotCLvsAlphaCurve(MyAirfoil meanAirfoil, ConditionEnum theCondition){
 		
-		double alphaFirst = -2.0 ;
+		
 		Amount<Angle> alphaActual;
+		double alphaFirst = 0;
 		Amount<Angle> alphaTemp = Amount.valueOf(0.0, SI.RADIAN);
 		int nPoints = 40;
-		double cLAlphaWingBody, cLAlphaWing, cLMaxWingClean, cLZeroWing, alphaZeroLift, cLZeroWingBody,
+		double cLAlphaWingBody = 0, cLAlphaWing = 0, cLMaxWingClean = 0, cLZeroWing = 0, alphaZeroLift = 0, cLZeroWingBody,
 		cLActual = 0, cLStar;
 		double aWB, bWB, cWB, dWB, a, b, c, d;
-		Amount<Angle> alphaMaxWingClean, alphaStar, alphaMaxWingBody;
+		Amount<Angle> alphaMaxWingClean = null, alphaStar = null, alphaMaxWingBody;
 
-		alphaMaxWingClean =  _theAircraft.get_wing().getAerodynamics().get_alphaMaxClean();
-		cLMaxWingClean = _theAircraft.get_wing().getAerodynamics().get_cLMaxClean();
-		cLAlphaWing = _theAircraft.get_wing().getAerodynamics().getcLLinearSlopeNB();
-		alphaStar = meanAirfoil.getAerodynamics().get_alphaStar();
-		alphaZeroLift = _theAircraft.get_wing().getAerodynamics().getAlphaZeroLiftWingClean();
-		cLZeroWing = _theAircraft.get_wing().getAerodynamics().getcLAlphaZero();
+		if( theCondition == ConditionEnum.CRUISE){
+			alphaFirst = -2.0 ;
+			alphaMaxWingClean =  _theAircraft.get_wing().getAerodynamics().get_alphaMaxClean();
+			cLMaxWingClean = _theAircraft.get_wing().getAerodynamics().get_cLMaxClean();
+			cLAlphaWing = _theAircraft.get_wing().getAerodynamics().getcLLinearSlopeNB();
+			alphaStar = meanAirfoil.getAerodynamics().get_alphaStar();
+			cLStar = _theAircraft.get_wing().getAerodynamics().getcLStarWing();
+			LSAerodynamicsManager theManager = _theAircraft.get_wing().getAerodynamics();
+			LSAerodynamicsManager.CalcAlpha0L theAlphaZeroLiftCalculator = theManager.new CalcAlpha0L();
+			alphaZeroLift = theAlphaZeroLiftCalculator.integralMeanExposedWithTwist().getEstimatedValue();
+//			alphaZeroLift = _theAircraft.get_wing().getAerodynamics().getAlphaZeroLiftWingClean();
+			cLZeroWing = _theAircraft.get_wing().getAerodynamics().getcLAlphaZero();
+			cLAlphaWingBody = _theAircraft
+					.get_fuselage()
+					.getAerodynamics()
+					.calculateCLAlphaFuselage(cLAlphaWing);
+			}
+			
+			if (theCondition == ConditionEnum.LANDING || theCondition == ConditionEnum.TAKE_OFF){
+				alphaFirst = -10.0 ;
+				alphaMaxWingClean =  _theAircraft.get_wing().getAerodynamics().get_alphaMaxClean();
+				double deltaAlphaMax = Math.toRadians(_theAircraft.get_wing().getHigLiftCalculator().getDeltaAlphaMaxFlap());
+				alphaMaxWingClean = Amount.valueOf(alphaMaxWingClean.getEstimatedValue() + deltaAlphaMax ,SI.RADIAN);
 
-		cLAlphaWingBody = _theAircraft
-				.get_fuselage()
-				.getAerodynamics()
-				.calculateCLAlphaFuselage(cLAlphaWing);
+				cLMaxWingClean = _theAircraft.get_wing().getHigLiftCalculator().getcL_Max_Flap() +
+						_theAircraft.get_wing().getHigLiftCalculator().getDeltaCLmax_slat();
+				
+				cLAlphaWing = Math.toDegrees(_theAircraft.get_wing().getHigLiftCalculator().getcLalpha_new());
+				
+				alphaStar = meanAirfoil.getAerodynamics().get_alphaStar();
+				cLStar = _theAircraft.get_wing().getAerodynamics().getcLStarWing();
+				LSAerodynamicsManager theManager = _theAircraft.get_wing().getAerodynamics();
+				LSAerodynamicsManager.CalcAlpha0L theAlphaZeroLiftCalculator = theManager.new CalcAlpha0L();
+		
+						
+//				alphaZeroLift = _theAircraft.get_wing().getAerodynamics().getAlphaZeroLiftWingClean();
+				cLZeroWing = _theAircraft.get_wing().getAerodynamics().getcLAlphaZero() +
+				_theAircraft.get_wing().getHigLiftCalculator().getDeltaCL0_flap();
+				cLAlphaWingBody = _theAircraft
+						.get_fuselage()
+						.getAerodynamics()
+						.calculateCLAlphaFuselage(cLAlphaWing);
+				
+				alphaZeroLift = - cLZeroWing/ cLAlphaWing;
+				
+			}
 
 		cLZeroWingBody = -cLAlphaWingBody * alphaZeroLift;
 
@@ -712,8 +812,8 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		MyChartToFileUtils.plot(
 				alphaArrayPlotWingBody,	cLArrayPlotWingBody, 
 				null, null , null , null ,					    // axis with limits
-				"alpha_W", "CL", "deg", "",legend, 	   				
-				subfolderPathCLAlpha, "CL vs Alpha wing body");
+				"alpha_Wing", "CL", "deg", "",legend, 	   				
+				subfolderPathCLAlpha, "CL vs Alpha wing body " + theCondition);
 	}
 
 	/** 
@@ -723,10 +823,10 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 	 * 
 	 * @author Manuela Ruocco
 	 */
-	public void PlotCLvsAlphaCurve(MyAirfoil meanAirfoil, String subfolderPath){
+	public void PlotCLvsAlphaCurve(MyAirfoil meanAirfoil, String subfolderPath, ConditionEnum theCondition){
 		this.subfolderPathCLAlpha = subfolderPath;
 		subfolderPathCeck = false;
-		PlotCLvsAlphaCurve(meanAirfoil);
+		PlotCLvsAlphaCurve(meanAirfoil, theCondition);
 		
 	};
 
@@ -1051,6 +1151,22 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 
 	public void set_machCruise(double _machCruise) {
 		this._machCruise = _machCruise;
+	}
+
+	public double[] getcLActualArray() {
+		return cLActualArray;
+	}
+
+	public void setcLActualArray(double[] cLActualArray) {
+		this.cLActualArray = cLActualArray;
+	}
+
+	public MyArray getAlphaArrayActual() {
+		return alphaArrayActual;
+	}
+
+	public void setAlphaArrayActual(MyArray alphaArrayActual) {
+		this.alphaArrayActual = alphaArrayActual;
 	}
 	
 } // end of class

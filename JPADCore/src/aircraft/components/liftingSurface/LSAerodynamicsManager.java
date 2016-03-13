@@ -2358,6 +2358,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				}
 			}
 
+			theLiftingSurface.setHigLiftCalculator(this);
 			calcAlphaAndCLMax(meanAirfoil);
 		}
 
@@ -2832,7 +2833,36 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				alphaMax = alphaMax.to(SI.RADIAN);
 			}
 			
-			alphaArrayActualHighLift.linspace(alphaMin.getEstimatedValue(), alphaMax.getEstimatedValue(), nValue);
+			alphaArrayActualHighLift.linspace(alphaMin.getEstimatedValue() , alphaMax.getEstimatedValue(), nValue);
+			cLActualArrayHighLift = LiftCalc.calculateCLvsAlphaHighLiftArrayNasaBlackwell(
+					getTheLiftingSurface(), 
+					alphaArrayActualHighLift,
+					nValue,
+					cLalphaNew,
+					deltaCL0Flap,
+					deltaAlphaMaxFlap,
+					cLMaxFlap,
+					deltaClmaxSlat);
+			
+			return cLActualArrayHighLift;
+		}
+		
+		public double[] calcCLvsAlphaBodyHighLiftDevices(Amount<Angle> alphaMin, Amount<Angle> alphaMax, int nValue){
+
+			//double [] cLActualArray = new double[nValue];
+			alphaArrayActualHighLift =new MyArray();
+			cLActualArray = new double[nValue];
+			
+			if (alphaMin.getUnit() == NonSI.DEGREE_ANGLE){
+				alphaMin = alphaMin.to(SI.RADIAN);
+			}
+			
+			if (alphaMax.getUnit() == NonSI.DEGREE_ANGLE){
+				alphaMax = alphaMax.to(SI.RADIAN);
+			}
+			
+			alphaArrayActualHighLift.linspace(alphaMin.getEstimatedValue() + theLiftingSurface.get_iw().getEstimatedValue() ,
+					alphaMax.getEstimatedValue() + theLiftingSurface.get_iw().getEstimatedValue(), nValue);
 			cLActualArrayHighLift = LiftCalc.calculateCLvsAlphaHighLiftArrayNasaBlackwell(
 					getTheLiftingSurface(), 
 					alphaArrayActualHighLift,
