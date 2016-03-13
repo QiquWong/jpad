@@ -313,8 +313,10 @@ public class TakeOff_Test_TP {
 //
 //		System.out.println("\n\ndeltaCMc_4 = \n" + highLiftCalculator.getDeltaCM_c4());
 //
+//		System.out.println("\n\ndeltaCMc_4 = \n" + highLiftCalculator.getDeltaCM_c4());
+//		
 //		highLiftCalculator.plotHighLiftCurve();
-
+	
 		//----------------------------------------------------------------------------------
 		// TakeOff Distance Test
 		//----------------------------------------------------------------------------------

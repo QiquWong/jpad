@@ -20,7 +20,7 @@
           <y:Geometry height="238.44052863436116" width="305.39317180616746" x="-183.63294879554545" y="-1304.2007360932703"/>
           <y:Fill color="#33CCCC" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="94.087890625" modelName="custom" textColor="#000000" visible="true" width="291.0068359375" x="7.193167934333701" y="72.17631900468052">CalcHighLiftDevices
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="94.087890625" modelName="custom" textColor="#000000" visible="true" width="291.0068359375" x="7.193167934333729" y="72.17631900468064">CalcHighLiftDevices
 
 Object<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
@@ -83,7 +83,7 @@ Object<y:LabelModel>
               <y:Geometry height="96.0" width="495.225128358799" x="275.0740838032964" y="-772.3525390625"/>
               <y:Fill color="#00FF00" transparent="false"/>
               <y:BorderStyle hasColor="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="64.05859375" modelName="custom" textColor="#000000" visible="true" width="420.2060546875" x="37.509536835649556" y="15.970703125">calcCLatAlphaHighLiftDevice
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="64.05859375" modelName="custom" textColor="#000000" visible="true" width="420.2060546875" x="37.50953683564944" y="15.970703125">calcCLatAlphaHighLiftDevice
 (Amount&lt;Angle&gt; alpha)<y:LabelModel>
                   <y:SmartNodeLabelModel distance="4.0"/>
                 </y:LabelModel>
@@ -190,12 +190,12 @@ Constructor<y:LabelModel>
               <y:Geometry height="219.69988986784153" width="362.4944933920708" x="973.8959184446294" y="-1020.0388000757164"/>
               <y:Fill color="#FFFF00" color2="#FFFF99" transparent="false"/>
               <y:BorderStyle color="#000000" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="184.17578125" modelName="custom" textColor="#000000" visible="true" width="242.9599609375" x="59.76726622728529" y="17.76205430892071">ΔCl0
-ΔCL0
-ΔClmax (flap/slat)
-ΔCLmax(flap/slat)
-CLα (flap)
-Δα stal (flap/slat)<y:LabelModel>
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="184.17578125" modelName="custom" textColor="#000000" visible="true" width="218.716796875" x="71.88884825853529" y="17.762054308920824">ΔCl0, ΔCL0
+ΔClmax, ΔCLmax
+CLα 
+Δα stall
+ΔCD0 
+ΔCM_C/4<y:LabelModel>
                   <y:SmartNodeLabelModel distance="4.0"/>
                 </y:LabelModel>
                 <y:ModelParameter>
@@ -211,7 +211,7 @@ CLα (flap)
               <y:Geometry height="117.09939427312781" width="467.17648678414116" x="921.5549217485942" y="-782.902236199064"/>
               <y:Fill color="#FFFF00" color2="#FFFF99" transparent="false"/>
               <y:BorderStyle color="#000000" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="64.05859375" modelName="custom" textColor="#000000" visible="true" width="423.5458984375" x="21.81529417332058" y="26.52040026156385">CL at a given angle of attack on
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="30" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="64.05859375" modelName="custom" textColor="#000000" visible="true" width="423.5458984375" x="21.815294173320467" y="26.520400261563964">CL at a given angle of attack on
 the lift curve with deflected flaps<y:LabelModel>
                   <y:SmartNodeLabelModel distance="4.0"/>
                 </y:LabelModel>
@@ -228,7 +228,7 @@ the lift curve with deflected flaps<y:LabelModel>
               <y:Geometry height="670.3404919236417" width="659.8160214880493" x="819.1651461856554" y="-648.3661679171253"/>
               <y:Fill color="#FFFF00" color2="#FFFF99" transparent="false"/>
               <y:BorderStyle color="#000000" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="25" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" modelName="custom" textColor="#000000" visible="true" width="4.0" x="327.90801074402464" y="333.17024596182085">
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Cambria Math" fontSize="25" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" modelName="custom" textColor="#000000" visible="true" width="4.0" x="327.9080107440245" y="333.17024596182085">
                 <y:LabelModel>
                   <y:SmartNodeLabelModel distance="4.0"/>
                 </y:LabelModel>
