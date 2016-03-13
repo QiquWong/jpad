@@ -57,7 +57,7 @@ In this thesis the drag coefficient of an isolated lifting surface is calculated
 \item To each profile correspond the lift coefficient at that station
 \item Starting from the CL, using a parabolic approximation for the drag polar, the CD is calculated with the following equation
 \begin{equation}
-CD = CD_{min} + (CL - CL_{CD_{min}})^2 + k
+CD = CD_{min} + (CL - CL_{CD_{min}})^2 \cdot k
 \end{equation}
 \item Known the drag distribution it is possible to calculate the drag coefficient of the lifting surface integrating
 \end{enumerate}
@@ -78,7 +78,7 @@ In this work the focus will be on the calculation of drag characteristics of a l
 
 \begin{figure}
 \centering
-{\includegraphics[height=11cm, angle=90]{immagini/dragflowchart.pdf}}
+{\includegraphics[height=12.9cm, angle=90]{immagini/dragflowchart.pdf}}
 \caption{Flow chart of drag estimation classes.}
 \label{fig:cd}
 \end{figure}
@@ -160,7 +160,7 @@ Following there are the summary diagrams of the results obtained for the ATR 72:
 \begin{figure}[H]
 \centering
 \input{immagini/CDalfa.tikz}
-\caption{ATR 72 CD vs Alpha_w at Mach 0.43 and Altitude: 6000 m.}
+\caption{ATR 72 CD vs Alpha_w at Mach 0.4. Parassite and Induced drag.}
 \label{fig:DragATR}
 \end{figure}
 
@@ -168,9 +168,24 @@ Following there are the summary diagrams of the results obtained for the ATR 72:
 \begin{figure}[H]
 \centering
 \input{immagini/polar.tikz}
-\caption{ATR 72 Parabolic Polar Drag at Mach 0.43 and Altitude: 6000 m.}
+\caption{ATR 72 Parabolic Polar Drag at Mach 0.43. Parassite and Induced drag.}
 \label{fig:DragATR}
 \end{figure}
+
+%\begin{figure}[H]
+%\centering
+%\input{immagini/CDalfa.tikz}
+%\caption{ATR 72 CD vs Alpha_w at Mach 0.4. Total drag.}
+%\label{fig:DragATR}
+%\end{figure}
+%
+%
+%\begin{figure}[H]
+%\centering
+%\input{immagini/polar.tikz}
+%\caption{ATR 72 Parabolic Polar Drag at Mach 0.43. Total drag.}
+%\label{fig:DragATR}
+%\end{figure}
 
 %
 %\begin{lstlisting}[caption={{\footnotesize Drag Characteristics of a Lifting Surface - Results. BOEING 747-100B}},label= [style=\bfseries]{Listing}]
@@ -198,7 +213,7 @@ Following there are the summary diagrams of the results obtained for the ATR 72:
 \begin{figure}[H]
 \centering
 \input{immagini/CDalfab.tikz}
-\caption{ATR 72 CD vs Alpha_w at Mach 0.84 and Altitude: 10000 m.}
+\caption{ATR 72 CD vs Alpha_w at Mach 0.84.  Parassite and Induced drag.}
 \label{fig:DragATR}
 \end{figure}
 
@@ -206,7 +221,22 @@ Following there are the summary diagrams of the results obtained for the ATR 72:
 \begin{figure}[H]
 \centering
 \input{immagini/polarb.tikz}
-\caption{ATR 72 Parabolic Polar Drag at Mach 0.84 and Altitude: 10000 m.}
+\caption{ATR 72 Parabolic Polar Drag at Mach 0.84.  Parassite and Induced drag.}
+\label{fig:DragATR}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\input{immagini/CDalfab.tikz}
+\caption{BOEING 747-100B CD vs Alpha_w at Mach 0.84. Total drag.}
+\label{fig:DragATR}
+\end{figure}
+
+
+\begin{figure}[H]
+\centering
+\input{immagini/polarb.tikz}
+\caption{BOENIG 747-100B Parabolic Polar Drag at Mach 0.84. Total drag.}
 \label{fig:DragATR}
 \end{figure}
 

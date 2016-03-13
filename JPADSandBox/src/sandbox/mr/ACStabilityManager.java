@@ -13,8 +13,10 @@ import org.jscience.physics.amount.Amount;
 
 
 import aircraft.OperatingConditions;
+import aircraft.auxiliary.airfoil.MyAirfoil;
 import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
+import aircraft.components.fuselage.FusAerodynamicsManager;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface;
@@ -38,8 +40,11 @@ public class ACStabilityManager {
 	OperatingConditions theOperatingConditions = new OperatingConditions();
 	LSAerodynamicsManager theLSAnalysis;
 	LSAerodynamicsManager theLSHTailAnalysis;
+	FusAerodynamicsManager theFuselageManager;
 	ConditionEnum theCondition;
 
+	MyAirfoil meanAirfoil;
+	
 	int nValueAlpha = 50;
 
 	CenterOfGravity centerOfGravity = new CenterOfGravity();
@@ -69,7 +74,8 @@ public class ACStabilityManager {
 	double cLIsolatedWing;
 	double cLIsolatedWingTO;
 	double cLIsolatedWingLand;
-
+	double cLAlphaWingBody;
+	double cLWingBody;
 
 	//Output Arrays
 	private double[] cLWingCleanArray;
@@ -109,18 +115,23 @@ public class ACStabilityManager {
 	 * only all stability characteristics at an array of alpha body
 	 * @param When this check value is true will be draw all graphs
 	 */
-	public ACStabilityManager(Aircraft theAircraft, ConditionEnum theCondition,Amount<Angle> alphaMin, Amount<Angle> alphaMax,
-			Amount<Angle> alphaBody, boolean plotCheck, String subfolderPath, String pathXMLTakeOFF){
+	public ACStabilityManager(MyAirfoil meanAirfoil, Aircraft theAircraft, ConditionEnum theCondition,Amount<Angle> alphaMin,
+			Amount<Angle> alphaMax, Amount<Angle> alphaBody, boolean plotCheck, String subfolderPath, String pathXMLTakeOFF){
 
 		this.aircraft = theAircraft;
 		this.theWing = aircraft.get_wing();
 		this.theFuselage = aircraft.get_fuselage();
 		this.theHTail = aircraft.get_HTail();
+		this.meanAirfoil = meanAirfoil;
 		this.subfolderPath = subfolderPath;
 
 		this.theCondition = theCondition;
 
 		this.pathXMLTakeOFF = pathXMLTakeOFF;
+		
+		this.plotCheck = plotCheck;
+		
+		
 
 		this.alphaBody = alphaBody;
 		if (alphaBody==null){
@@ -187,6 +198,7 @@ public class ACStabilityManager {
 
 		theLSAnalysis = theWing.getAerodynamics();
 
+		theFuselageManager = new FusAerodynamicsManager(theOperatingConditions, aircraft);
 
 		switch (theCondition) {
 		case TAKE_OFF:
@@ -549,7 +561,23 @@ public class ACStabilityManager {
 
 
 	public void CalculateFuselageLiftCharacteristics(){
+		
+		System.out.println("\n ------------------- ");
+		System.out.println("|     FUSELAGE       |");
+		System.out.println(" ------------------- \n\n");
+		
+		double cLAlphaWing = theLSAnalysis.getcLLinearSlopeNB();
+		System.out.println(" cl alpha " + cLAlphaWing);
+		cLAlphaWingBody = theFuselageManager.calculateCLAlphaFuselage(cLAlphaWing);
 
+		cLWingBody = aircraft.get_theAerodynamics().calculateCLAtAlphaWingBody(alphaBody, meanAirfoil, true);
+		System.out.println("-------------------------------------");
+		System.out.println(" CL of Wing Body at alpha body = " + cLWingBody);
+
+		System.out.println("\n \t \t \tWRITING CL VS ALPHA CHARTS TO FILE");
+		aircraft.get_theAerodynamics().PlotCLvsAlphaCurve(meanAirfoil, subfolderPath);
+		System.out.println("DONE");
+		
 	}
 	public void CalculateWingBodyLiftCharacteristics(){
 
@@ -606,6 +634,26 @@ public class ACStabilityManager {
 
 	public double[] getcLWingCleanArray() {
 		return cLWingCleanArray;
+	}
+
+
+	public double getcLAlphaWingBody() {
+		return cLAlphaWingBody;
+	}
+
+
+	public void setcLAlphaWingBody(double cLAlphaWingBody) {
+		this.cLAlphaWingBody = cLAlphaWingBody;
+	}
+
+
+	public double getcLWingBody() {
+		return cLWingBody;
+	}
+
+
+	public void setcLWingBody(double cLWingBody) {
+		this.cLWingBody = cLWingBody;
 	}
 
 

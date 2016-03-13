@@ -279,6 +279,7 @@ public class LiftCalc {
 		Amount<Angle> alphaMax;
 		double cLStarWing=0, cLLinearSlope = 0, cLAlphaZero, alphaZeroLiftWingClean;
 		cLStarWing = theClatAlphaCalculator.nasaBlackwell(alphaStarAmount);
+		theLiftingSurface.getAerodynamics().setcLStarWing(cLStarWing);
 		
 		for (int i=0; i<nValue; i++ ){
 		alphaActual = alphaArray.get(i);
@@ -287,10 +288,13 @@ public class LiftCalc {
 		cLTemp = theClatAlphaCalculator.nasaBlackwell(alphaTemp);
 		if (alphaActual < alphaStar){    //linear trait
 			cLLinearSlope = (cLStarWing - cLTemp)/alphaStar;
+			theLiftingSurface.getAerodynamics().setcLLinearSlopeNB(cLLinearSlope);
 			//System.out.println("CL Linear Slope [1/rad] = " + cLLinearSlope);
 			qValue = cLStarWing - cLLinearSlope*alphaStar;
 			cLAlphaZero = qValue;
+			theLiftingSurface.getAerodynamics().setcLAlphaZero(cLAlphaZero);
 			alphaZeroLiftWingClean = -qValue/cLLinearSlope;
+			theLiftingSurface.getAerodynamics().setAlphaZeroLiftWingClean(alphaZeroLiftWingClean);
 			cLActualArray[i] = cLLinearSlope * alphaActual+ qValue;
 			//System.out.println(" CL Actual = " + cLActual );
 		}
@@ -332,6 +336,8 @@ public class LiftCalc {
 		System.out.println(" cL star " + cLStarWing);
 		System.out.println(" cL alpha " + cLLinearSlope + " (1/rad)");
 		System.out.println("\n\n");}
+		printResults=false;
+		
 		return cLActualArray;
 	}
 	
@@ -443,7 +449,7 @@ public class LiftCalc {
 	 *
 	 */
 	@SuppressWarnings("static-access")
-	public static double[] calculateCLArray(MyArray alphaArray, LiftingSurface theLiftingSurface){
+	public static double[] calculateCLArraymodifiedStallPath(MyArray alphaArray, LiftingSurface theLiftingSurface){
 		
 	
 		// VARIABLE DECLARATION
@@ -481,9 +487,9 @@ public class LiftCalc {
 		clNasaBlackwell[clNasaBlackwell.length-1] = 0;
 
 		for (int i=0 ; i<nPointSemiSpan ;  i++){
-			cLDistributionInviscid[i] = clNasaBlackwell[ii];
+			cLDistributionInviscid[i] = clNasaBlackwell[i];
 //			System.out.println( " cl local " + cLLocal);
-			qValue = airfoilList.get(i).getAerodynamics().calculateClAtAlpha(0.0);
+			qValue = airfoilList.get(i).getAerodynamics().calculateClAtAlphaInterp(0.0);
 //			System.out.println(" qValue " + qValue );
 			alphaLocalAirfoil[i] = (cLDistributionInviscid[i]-qValue)/airfoilList.get(i).getAerodynamics().get_clAlpha();
 //			System.out.println(" alpha local airfoil " + alphaLocalAirfoil);

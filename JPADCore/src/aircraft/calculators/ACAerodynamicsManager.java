@@ -528,9 +528,8 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		LSAerodynamicsManager theManager = _theAircraft.get_wing().getAerodynamics();
 		LSAerodynamicsManager.CalcAlpha0L theAlphaZeroLiftCalculator = theManager.new CalcAlpha0L();
 		alphaZeroLift = theAlphaZeroLiftCalculator.integralMeanExposedWithTwist().getEstimatedValue();
-		//alphaZeroLift = _theAircraft.get_wing().getAerodynamics().getAlphaZeroLiftWingClean();
+//		alphaZeroLift = _theAircraft.get_wing().getAerodynamics().getAlphaZeroLiftWingClean();
 		cLZeroWing = _theAircraft.get_wing().getAerodynamics().getcLAlphaZero();
-
 		cLAlphaWingBody = _theAircraft
 				.get_fuselage()
 				.getAerodynamics()

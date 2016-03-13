@@ -2875,7 +2875,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			CalcCLvsAlphaCurve theCLvsAlphaCurve = new CalcCLvsAlphaCurve();
 			Amount<Angle> alphaMin = Amount.valueOf(Math.toRadians(-5), SI.RADIAN );
 			Amount<Angle> alphaMaxim = Amount.valueOf(Math.toRadians(20), SI.RADIAN );
-			theCLvsAlphaCurve.nasaBlackwellCompleteCurve(alphaMin, alphaMaxim, 50, true);
+			theCLvsAlphaCurve.nasaBlackwellCompleteCurve(alphaMin, alphaMaxim, 50, false);
 			CalcCLAtAlpha theCLCleanCalculator = new CalcCLAtAlpha();
 			double cLStarClean = theCLCleanCalculator.nasaBlackwellCompleteCurve(alphaStarCleanAmount);
 
@@ -4963,7 +4963,10 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 
 	public double getcLLinearSlopeNB() {
-		return cLLinearSlope;
+		CalcCLAlpha theLineraSlopeCalculator = new CalcCLAlpha();
+		CalcCLAtAlpha theCLCalculator = new CalcCLAtAlpha();
+		double cLLinearSlopeNB = theLineraSlopeCalculator.nasaBlackwell(theCLCalculator);
+		return cLLinearSlopeNB;
 	}
 
 

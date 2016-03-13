@@ -680,6 +680,34 @@ public MyAerodynamics(MyAirfoil airf, String name) {
 
 	public  double calculateClAtAlpha (double alpha){
 		
+//		double clActual= MyMathUtils.getInterpolatedValue1DLinear(alphaArray.toArray(), clAirfoil, alpha);
+//		return clActual;
+		double q = _clStar - _clAlpha * _alphaStar.getEstimatedValue();
+		if ( alpha < _alphaStar.getEstimatedValue() ) {
+			_clCurrentViscid = _clAlpha* alpha + q ;
+		}
+		else {
+			double[][] matrixData = { {Math.pow(_alphaStall.getEstimatedValue(), 3),
+				Math.pow(_alphaStall.getEstimatedValue(), 2), _alphaStall.getEstimatedValue(),1.0},
+					{3* Math.pow(_alphaStall.getEstimatedValue(), 2), 2*_alphaStall.getEstimatedValue(), 1.0, 0.0},
+					{3* Math.pow(_alphaStar.getEstimatedValue(), 2), 2*_alphaStar.getEstimatedValue(), 1.0, 0.0},
+					{Math.pow(_alphaStar.getEstimatedValue(), 3), Math.pow(_alphaStar.getEstimatedValue(), 2),
+						_alphaStar.getEstimatedValue(),1.0}};
+			RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
+			double [] vector = {_clMax, 0,_clAlpha, _clStar};
+			double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
+			double a = solSystem[0];
+			double b = solSystem[1];
+			double c = solSystem[2];
+			double d = solSystem[3];
+
+			_clCurrentViscid = a * Math.pow(alpha,3) + b * Math.pow(alpha, 2) + c * alpha +d;  		
+		}
+		return _clCurrentViscid;
+	}
+	
+public  double calculateClAtAlphaInterp (double alpha){
+		
 		double clActual= MyMathUtils.getInterpolatedValue1DLinear(alphaArray.toArray(), clAirfoil, alpha);
 		return clActual;
 //		double q = _clStar - _clAlpha * _alphaStar.getEstimatedValue();

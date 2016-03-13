@@ -431,10 +431,11 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		Amount<Angle> alphaMin = Amount.valueOf(Math.toRadians(-5), SI.RADIAN);
 		Amount<Angle> alphaMax = Amount.valueOf(Math.toRadians(20), SI.RADIAN);
 		
-		ACStabilityManager theStabilityManager = new ACStabilityManager(aircraft, ConditionEnum.CRUISE ,
+		ACStabilityManager theStabilityManager = new ACStabilityManager(meanAirfoil, aircraft, ConditionEnum.CRUISE ,
 				alphaMin, alphaMax, alphaBody , true, subfolderPath, pathTakeOff);
  
 		theStabilityManager.CalculateWingLiftCharacteristics();
+		theStabilityManager.CalculateFuselageLiftCharacteristics();
 		
 		
 	
@@ -445,16 +446,16 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		
 		int  nVal =50;
 		
-		double angle = Math.toRadians(17);
+		double angle = Math.toRadians(24);
 		alphaArrayActual.linspace(-0.03, angle,  nVal);
 		double[] alphaArray = new double[ nVal];
-		double [] cLWing = LiftCalc.calculateCLArray(alphaArrayActual, theWing);
+		double [] cLWing = LiftCalc.calculateCLArraymodifiedStallPath(alphaArrayActual, theWing);
 		
 		for (int i=0; i< nVal; i++){
 			alphaArray[i] = Math.toDegrees(alphaArrayActual.get(i));
 		}
-		System.out.println(" alpha Array " + Arrays.toString(alphaArray) );
-		System.out.println(" cl "+  Arrays.toString(cLWing));
+//		System.out.println(" alpha Array " + Arrays.toString(alphaArray) );
+//		System.out.println(" cl "+  Arrays.toString(cLWing));
 		
 		MyChartToFileUtils.plotNoLegend(
 				alphaArray , cLWing,

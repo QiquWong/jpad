@@ -399,6 +399,12 @@ public class Test_MR_07_LongitudinalStability {
 		LSAerodynamicsManager.CalcCLAtAlpha theCLWingCalculator = 
 				theLSAnalysis
 				.new CalcCLAtAlpha();
+
+		LSAerodynamicsManager.CalcCLvsAlphaCurve theCLvsaCalculator = 
+				theLSAnalysis
+				.new CalcCLvsAlphaCurve();
+		theCLvsaCalculator.nasaBlackwellCompleteCurve(Amount.valueOf(Math.toRadians(-10),  SI.RADIAN),
+				Amount.valueOf(Math.toRadians(20),  SI.RADIAN),50, true);
 		cLIsolatedWing = theCLWingCalculator.nasaBlackwellAlphaBody(alphaBody);
 
 		theLSAnalysis.PlotCLvsAlphaCurve(subfolderPath);
@@ -569,6 +575,12 @@ public class Test_MR_07_LongitudinalStability {
 
 		// CL calculation
 
+		LSAerodynamicsManager.CalcCLvsAlphaCurve theCLvsaCalculatorHT = 
+				theLSHorizontalTail
+				.new CalcCLvsAlphaCurve();
+		theCLvsaCalculatorHT.nasaBlackwellCompleteCurve(Amount.valueOf(Math.toRadians(-10),  SI.RADIAN),
+				Amount.valueOf(Math.toRadians(20),  SI.RADIAN),50, true);
+		
 		double cLHorizontalTail = theCLHorizontalTailCalculator.nasaBlackwellalphaBody(alphaBody, downwashAmountRadiant);
 
 		System.out.println("CL of horizontal tail at alpha body = " + cLHorizontalTail);
