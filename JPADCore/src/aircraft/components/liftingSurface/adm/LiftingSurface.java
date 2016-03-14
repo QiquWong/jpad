@@ -21,6 +21,10 @@ import javax.measure.unit.UnitFormat;
 
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.math3.analysis.UnivariateFunction;
+import org.apache.commons.math3.analysis.integration.TrapezoidIntegrator;
+import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
+import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 import org.apache.poi.util.SystemOutLogger;
 import org.jscience.physics.amount.Amount;
 import org.jscience.physics.amount.AmountFormat;
@@ -63,7 +67,7 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		_zLEBreakPoints = new ArrayList<Amount<Length>>();
 		_chordsBreakPoints = new ArrayList<Amount<Length>>();
 		_twistsBreakPoints = new ArrayList<Amount<Angle>>();
-		
+
 		_yStationActual = new ArrayList<Amount<Length>>();
 		_panelToSpanwiseDiscretizedVariables = new ArrayList<>();
 		_spanwiseDiscretizedVariables = new ArrayList<>();
@@ -142,12 +146,12 @@ public class LiftingSurface extends AbstractLiftingSurface {
 	public void calculateGeometry() {
 		calculateGeometry(_numberOfSpanwisePoints);
 	}
-	
+
 	@Override
 	public void calculateGeometry(int numberSpanwiseStations) {
-		
+
 		System.out.println("[LiftingSurface] Calculating derived geometry parameters of wing ...");
-		
+
 		// Update inner geometric variables of each panel
 		this.getPanels().stream()
 			.forEach(LiftingSurfacePanel::calculateGeometry);
@@ -171,11 +175,11 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		//======================================================
 		// Calculate break-points
 		calculateVariablesAtBreakpoints();
-				
+
 		//======================================================
 		// Discretize the wing spanwise
 		discretizeGeometry(numberSpanwiseStations);
-		
+
 		//======================================================
 		// Aspect-ratio
 		this.aspectRatio = (this.span.pow(2)).divide(this.surfacePlanform).getEstimatedValue();
@@ -183,19 +187,17 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		//======================================================
 		// Mean aerodynamic chord
 		calculateMAC();
-		
-		// TODO implement remaining functions here
-		
-		// xLE_MAC, y_LE_MAC
-		
-		
+
+		//======================================================
+		// Mean aerodynamic chord leading-edge coordinates
+		calculateXYZleMAC();
 
 	}
-	
+
 	private void calculateMAC() {
 
 		// Mean Aerodynamic Chord
-		
+
 		//======================================================
 		// Weighted sum on MACs of single panels
 //		Double mac0 = this.getPanels().stream()
@@ -219,9 +221,52 @@ public class LiftingSurface extends AbstractLiftingSurface {
 			);
 		mac = 2.0 * mac / this.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue();
 		this.meanAerodynamicChord = Amount.valueOf(mac,1e-9,SI.METRE);
-		
+
 	}
-	
+
+	private void calculateXYZleMAC() {
+
+		//======================================================
+		// x_le_mac = (2/S) * int_0^(b/2) xle(y) c(y) dy
+
+		Double xle = MyMathUtils.integrate1DSimpsonSpline(
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+					this.getDiscretizedXle()), // xle(y)
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+					this.getDiscretizedChords()
+				) // c
+			);
+		xle = 2.0 * xle / this.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue();
+		this.meanAerodynamicChordLeadingEdgeX = Amount.valueOf(xle,1e-9,SI.METRE);
+
+		//======================================================
+		// y_le_mac = (2/S) * int_0^(b/2) yle(y) c(y) dy
+
+		Double yle = MyMathUtils.integrate1DSimpsonSpline(
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+					this.getDiscretizedYs()), // yle(y)
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+					this.getDiscretizedChords()
+				) // c
+			);
+		yle = 2.0 * yle / this.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue();
+		this.meanAerodynamicChordLeadingEdgeY = Amount.valueOf(yle,1e-9,SI.METRE);
+
+		//======================================================
+		// z_le_mac = (2/S) * int_0^(b/2) zle(y) c(y) dy
+
+		Double zle = MyMathUtils.integrate1DSimpsonSpline(
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+					this.getDiscretizedZle()), // zle(y)
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+					this.getDiscretizedChords()
+				) // c
+			);
+		zle = 2.0 * zle / this.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue();
+		this.meanAerodynamicChordLeadingEdgeZ = Amount.valueOf(zle,1e-9,SI.METRE);
+
+	}
+
 	@Override
 	public void discretizeGeometry(int numberSpanwiseStations) {
 		//======================================================
@@ -272,17 +317,17 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		//======================================================
 		// Map Y's to chord
 		calculateChordsAtYDiscretized();
-		
+
 		//======================================================
 		// Map Y's to (Xle, Zle, twist)
 		calculateXZleTwistAtYDiscretized();
-		
+
 //		reportPanelsToSpanwiseDiscretizedVariables();
 
 		//======================================================
 		// fill the list of all discretized variables
-		calculateDiscretizedGeometry();		
-		
+		calculateDiscretizedGeometry();
+
 	}
 
 	@Override
@@ -357,51 +402,55 @@ public class LiftingSurface extends AbstractLiftingSurface {
 	}
 
 	@Override
-	public Amount<Length>[] getMeanAerodynamicChordLeadingEdge() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Amount<Length>> getMeanAerodynamicChordLeadingEdge() {
+		return Arrays.asList(
+				this.meanAerodynamicChordLeadingEdgeX,
+				this.meanAerodynamicChordLeadingEdgeY,
+				this.meanAerodynamicChordLeadingEdgeZ
+				);
 	}
 
 	@Override
-	public Amount<Length>[] getMeanAerodynamicChordLeadingEdge(boolean recalculate) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Amount<Length>> getMeanAerodynamicChordLeadingEdge(boolean recalculate) {
+		if (recalculate) this.calculateGeometry();
+		return Arrays.asList(
+				this.meanAerodynamicChordLeadingEdgeX,
+				this.meanAerodynamicChordLeadingEdgeY,
+				this.meanAerodynamicChordLeadingEdgeZ
+				);
 	}
 
 	@Override
 	public Amount<Length> getMeanAerodynamicChordLeadingEdgeX() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.meanAerodynamicChordLeadingEdgeX;
 	}
 
 	@Override
 	public Amount<Length> getMeanAerodynamicChordLeadingEdgeX(boolean recalculate) {
-		// TODO Auto-generated method stub
-		return null;
+		if (recalculate) this.calculateGeometry();
+		return this.meanAerodynamicChordLeadingEdgeX;
 	}
 
 	@Override
 	public Amount<Length> getMeanAerodynamicChordLeadingEdgeY() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.meanAerodynamicChordLeadingEdgeY;
 	}
 
 	@Override
 	public Amount<Length> getMeanAerodynamicChordLeadingEdgeY(boolean recalculate) {
-		// TODO Auto-generated method stub
-		return null;
+		if (recalculate) this.calculateGeometry();
+		return this.meanAerodynamicChordLeadingEdgeY;
 	}
 
 	@Override
 	public Amount<Length> getMeanAerodynamicChordLeadingEdgeZ() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.meanAerodynamicChordLeadingEdgeZ;
 	}
 
 	@Override
 	public Amount<Length> getMeanAerodynamicChordLeadingEdgeZ(boolean recalculate) {
-		// TODO Auto-generated method stub
-		return null;
+		if (recalculate) this.calculateGeometry();
+		return this.meanAerodynamicChordLeadingEdgeZ;
 	}
 
 	@Override
@@ -497,7 +546,7 @@ public class LiftingSurface extends AbstractLiftingSurface {
 	}
 
 	private void calculateVariablesAtBreakpoints() {
-		
+
 		System.out.println("[LiftingSurface] calculate variables at breakpoints ...");
 		//======================================================
 		// Break points Y's
@@ -527,7 +576,7 @@ public class LiftingSurface extends AbstractLiftingSurface {
 			Amount<Length> y = _yBreakPoints.get(i).minus(_yBreakPoints.get(i-1));
 			Amount<Angle> sweepLE = panels.get(i-1).getSweepLeadingEdge();
 			_xLEBreakPoints.add(
-				x0.plus( 
+				x0.plus(
 						y.times(Math.tan(sweepLE.to(SI.RADIAN).getEstimatedValue()))
 				));
 		}
@@ -542,14 +591,14 @@ public class LiftingSurface extends AbstractLiftingSurface {
 			Amount<Length> y = _yBreakPoints.get(i).minus(_yBreakPoints.get(i-1));
 			Amount<Angle> dihedral = panels.get(i-1).getDihedral();
 			_zLEBreakPoints.add(
-				z0.plus( 
+				z0.plus(
 						y.times(Math.tan(dihedral.to(SI.RADIAN).getEstimatedValue()))
 				));
 		}
 
 		MyConfiguration.customizeAmountOutput();
 		System.out.println("zLE Break-Points ->\n" + _zLEBreakPoints);
-		
+
 		// Chords at breakpoints
 		_chordsBreakPoints.add(panels.get(0).getChordRoot());
 		for (int i = 0; i < this.panels.size(); i++) {
@@ -571,7 +620,7 @@ public class LiftingSurface extends AbstractLiftingSurface {
 
 		MyConfiguration.customizeAmountOutput();
 		System.out.println("Twists Break-Points ->\n" + _twistsBreakPoints);
-		
+
 		//======================================================
 		// Break points eta's
 
@@ -582,26 +631,26 @@ public class LiftingSurface extends AbstractLiftingSurface {
 			.collect(Collectors.toList())
 			;
 //		System.out.println(etaBP);
-		
-	}	
-	
+
+	}
+
 	/**
 	 * Calculate Chord Distribution of the Actual Wing along y axis
 	 */
 	private void mapPanelsToYDiscretized() {
-		
+
 		System.out.println("[LiftingSurface] Map panels to spanwise discretized Ys ...");
-		
+
 		//======================================================
 		// Map panels with lists of Y's, c, Xle, Yle, Zle, twist
 		// for each panel Y's of inner and outer break-points
 		// are included, i.e. Y's are repeated
-		
+
 		Tuple2<
 			List<LiftingSurfacePanel>,
 			List<Amount<Length>>
 			> tuple0 = Tuple.of(panels, _yStationActual);
-		
+
 		_panelToSpanwiseDiscretizedVariables.add(
 			tuple0.map(
 				p -> panels.get(0),
@@ -614,28 +663,28 @@ public class LiftingSurface extends AbstractLiftingSurface {
 					y.stream()
 						.filter(y_ -> y_.isLessThan( panels.get(0).getSemiSpan() ) || y_.equals( panels.get(0).getSemiSpan()) )
 						.map(Y__ -> Amount.valueOf(0.0, SI.METRE))
-						.collect(Collectors.toList()) // initialize Chords 
-					, 
+						.collect(Collectors.toList()) // initialize Chords
+					,
 					y.stream()
 						.filter(y_ -> y_.isLessThan( panels.get(0).getSemiSpan() ) || y_.equals( panels.get(0).getSemiSpan()) )
 						.map(Y__ -> Amount.valueOf(0.0, SI.METRE))
-						.collect(Collectors.toList()) // initialize Xle 
-					, 
+						.collect(Collectors.toList()) // initialize Xle
+					,
 					y.stream()
 						.filter(y_ -> y_.isLessThan( panels.get(0).getSemiSpan() ) || y_.equals( panels.get(0).getSemiSpan()) )
 						.map(Y__ -> Amount.valueOf(0.0, SI.METRE))
-						.collect(Collectors.toList()) // initialize Zle 
-					, 
+						.collect(Collectors.toList()) // initialize Zle
+					,
 					y.stream()
 						.filter(y_ -> y_.isLessThan( panels.get(0).getSemiSpan() ) || y_.equals( panels.get(0).getSemiSpan()) )
 						.map(Y__ -> Amount.valueOf(0.0, SI.RADIAN))
-						.collect(Collectors.toList()) // initialize twists 
+						.collect(Collectors.toList()) // initialize twists
 					)
 				)
 			);
-		
+
 		// All remaining panels (innermost panel excluded)
-		// Y's include only panel's tip breakpoint Y, 
+		// Y's include only panel's tip breakpoint Y,
 		// not including panel's root breakpoint Y
 		for (int i=1; i < panels.size(); i++) {
 			final int i_ = i;
@@ -645,53 +694,53 @@ public class LiftingSurface extends AbstractLiftingSurface {
 					y -> Tuple.of(
 						y.stream()
 							.mapToDouble(a -> a.to(SI.METRE).getEstimatedValue())
-							.filter(y_ -> ( 
-									y_ > _yBreakPoints.get(i_).getEstimatedValue() ) 
-									&& ( y_ <= _yBreakPoints.get(i_+1).getEstimatedValue() ) 
+							.filter(y_ -> (
+									y_ > _yBreakPoints.get(i_).getEstimatedValue() )
+									&& ( y_ <= _yBreakPoints.get(i_+1).getEstimatedValue() )
 								)
 							.mapToObj(y_ -> Amount.valueOf(y_, SI.METRE))
 							.collect(Collectors.toList())
 						,
 						y.stream()
 							.mapToDouble(a -> a.to(SI.METRE).getEstimatedValue())
-							.filter(y_ -> ( 
-									y_ > _yBreakPoints.get(i_).getEstimatedValue() ) 
-									&& ( y_ <= _yBreakPoints.get(i_+1).getEstimatedValue() ) 
+							.filter(y_ -> (
+									y_ > _yBreakPoints.get(i_).getEstimatedValue() )
+									&& ( y_ <= _yBreakPoints.get(i_+1).getEstimatedValue() )
 								)
 							.mapToObj(y_ -> Amount.valueOf(0.0, SI.METRE))
-							.collect(Collectors.toList()) // initialize Chords 
-						, 
+							.collect(Collectors.toList()) // initialize Chords
+						,
 						y.stream()
 							.mapToDouble(a -> a.to(SI.METRE).getEstimatedValue())
-							.filter(y_ -> ( 
-									y_ > _yBreakPoints.get(i_).getEstimatedValue() ) 
-									&& ( y_ <= _yBreakPoints.get(i_+1).getEstimatedValue() ) 
+							.filter(y_ -> (
+									y_ > _yBreakPoints.get(i_).getEstimatedValue() )
+									&& ( y_ <= _yBreakPoints.get(i_+1).getEstimatedValue() )
 								)
 							.mapToObj(y_ -> Amount.valueOf(0.0, SI.METRE))
-							.collect(Collectors.toList()) // initialize Xle 
-						, 
+							.collect(Collectors.toList()) // initialize Xle
+						,
 						y.stream()
 							.mapToDouble(a -> a.to(SI.METRE).getEstimatedValue())
-							.filter(y_ -> ( 
-									y_ > _yBreakPoints.get(i_).getEstimatedValue() ) 
-									&& ( y_ <= _yBreakPoints.get(i_+1).getEstimatedValue() ) 
+							.filter(y_ -> (
+									y_ > _yBreakPoints.get(i_).getEstimatedValue() )
+									&& ( y_ <= _yBreakPoints.get(i_+1).getEstimatedValue() )
 								)
 							.mapToObj(y_ -> Amount.valueOf(0.0, SI.METRE))
-							.collect(Collectors.toList()) // initialize Zle 
-						, 
+							.collect(Collectors.toList()) // initialize Zle
+						,
 						y.stream()
 							.mapToDouble(a -> a.to(SI.METRE).getEstimatedValue())
-							.filter(y_ -> ( 
-									y_ > _yBreakPoints.get(i_).getEstimatedValue() ) 
-									&& ( y_ <= _yBreakPoints.get(i_+1).getEstimatedValue() ) 
+							.filter(y_ -> (
+									y_ > _yBreakPoints.get(i_).getEstimatedValue() )
+									&& ( y_ <= _yBreakPoints.get(i_+1).getEstimatedValue() )
 								)
 							.mapToObj(y_ -> Amount.valueOf(0.0, SI.RADIAN))
-							.collect(Collectors.toList()) // initialize twists 
+							.collect(Collectors.toList()) // initialize twists
 						)
 					)
 				);
 		}// end-of for
-		
+
 	}
 
 	/**
@@ -729,7 +778,7 @@ public class LiftingSurface extends AbstractLiftingSurface {
 	private void calculateXZleTwistAtYDiscretized() {
 
 		System.out.println("[LiftingSurface] Map panels to spanwise discretized Xle, Yle, twist ...");
-		
+
 		for (int k=0; k < _panelToSpanwiseDiscretizedVariables.size(); k++) {
 			LiftingSurfacePanel panel = _panelToSpanwiseDiscretizedVariables.get(k)._1();
 			Amount<Length> y0 = _yBreakPoints.get(k);
@@ -742,28 +791,28 @@ public class LiftingSurface extends AbstractLiftingSurface {
 			List<Amount<Length>> vXLE = _panelToSpanwiseDiscretizedVariables.get(k)._2()._3(); // XLEs
 			List<Amount<Length>> vZLE = _panelToSpanwiseDiscretizedVariables.get(k)._2()._4(); // ZLEs
 			List<Amount<Angle>> vTwistsLE = _panelToSpanwiseDiscretizedVariables.get(k)._2()._5(); // Twists
-			
+
 			Amount<Angle> sweepLE = panel.getSweepLeadingEdge();
 			Amount<Angle> dihedral = panel.getDihedral();
-			
+
 			IntStream.range(0, vY.size())
 				.forEach(i -> {
 					// y := Y - y0
 					Amount<Length> y = vY.get(i).minus(y0);
 					// xle = x0 + y * tan(sweepLE)
-					Amount<Length> xle = 
-						x0.plus( 
+					Amount<Length> xle =
+						x0.plus(
 							y.times(Math.tan(sweepLE.to(SI.RADIAN).getEstimatedValue()))
 						);
 					// assign the xle
 					vXLE.set(i, xle);
 					// zle = z0 + y * tan(dihedral)
-					Amount<Length> zle = 
-							z0.plus( 
+					Amount<Length> zle =
+							z0.plus(
 								y.times(Math.tan(dihedral.to(SI.RADIAN).getEstimatedValue()))
 							);
 					vZLE.set(i, zle);
-					// 
+					//
 					// twist(y) = twist_r + (2/b)*(twist_t - twist_r)*y
 					Amount<Angle> twist = twist0.plus(
 						y.times(
@@ -774,11 +823,11 @@ public class LiftingSurface extends AbstractLiftingSurface {
 					vTwistsLE.set(i, twist);
 				});
 		}
-	}	
+	}
 
 	private void calculateDiscretizedGeometry() {
 		System.out.println("[LiftingSurface] Map Ys to spanwise discretized variables ...");
-		
+
 		List<Amount<Length>> vy = new ArrayList<>();
 		List<Amount<Length>> vc = new ArrayList<>();
 		List<Amount<Length>> vxle = new ArrayList<>();
@@ -786,16 +835,16 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		List<Amount<Angle>> vtwist = new ArrayList<>();
 
 		for (int kp = 0; kp < _panelToSpanwiseDiscretizedVariables.size(); kp++) {
-			
-			// sublist indexing criteria 
+
+			// sublist indexing criteria
 			int idxEndExcluded = _panelToSpanwiseDiscretizedVariables.get(kp)
-						._2()._1().size() 
+						._2()._1().size()
 						- 1;
 			if (kp == (_panelToSpanwiseDiscretizedVariables.size() - 1))
 				idxEndExcluded += 1;
-			
+
 			// System.out.println("kp=" + kp + ", end=" + idxEndExcluded);
-						
+
 			vy.addAll(
 				_panelToSpanwiseDiscretizedVariables.get(kp)
 					._2()._1() // Ys
@@ -828,7 +877,7 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		for(int i = 0; i < vy.size(); i++) {
 			_spanwiseDiscretizedVariables.add(
 				Tuple.of(
-					vy.get(i), 
+					vy.get(i),
 					vc.get(i),
 					vxle.get(i),
 					vzle.get(i),
@@ -837,19 +886,19 @@ public class LiftingSurface extends AbstractLiftingSurface {
 				);
 		}
 //		System.out.println("==*==> \n" + _spanwiseDiscretizedVariables);
-		
+
 	}
-	
+
 	public void reportPanelsToSpanwiseDiscretizedVariables(){
-		
+
 		System.out.println("=====================================================");
 		System.out.println("List of Tuples, size " + _panelToSpanwiseDiscretizedVariables.size());
 //		System.out.println(_panelToSpanwiseDiscretizedVariables);
-		
+
 		_panelToSpanwiseDiscretizedVariables.stream()
 			.forEach( tup2 -> {
 				StringBuilder sb = new StringBuilder();
-				sb	
+				sb
 				.append("=====================================================\n")
 				.append("Panel '" + tup2._1().getId() + "'")
 				.append("\n")
@@ -930,21 +979,21 @@ public class LiftingSurface extends AbstractLiftingSurface {
 					)
 				.append("\n")
 				;
-				
+
 				// spit out the string
 				System.out.println(sb.toString());
-			}	
+			}
 		);
-		
+
 	}
 
 	private void reportDiscretizedVariables(){
-		
+
 		System.out.println("=====================================================");
 		System.out.println("Spanwise discretized wing, size " + _spanwiseDiscretizedVariables.size());
 
 		System.out.println("Y, chord, Xle, Zle, twist");
-		
+
 		StringBuilder sb = new StringBuilder();
 
 		_spanwiseDiscretizedVariables.stream()
@@ -955,13 +1004,13 @@ public class LiftingSurface extends AbstractLiftingSurface {
 			);
 		// spit out the string
 		System.out.println(sb.toString());
-		
+
 	}
-	
+
 	@Override
 	public List<Amount<Length>> getDiscretizedYs() {
 		return _spanwiseDiscretizedVariables.stream()
-			.mapToDouble(t5 -> 
+			.mapToDouble(t5 ->
 				t5._1()
 				.to(SI.METRE).getEstimatedValue())
 			.mapToObj(y -> Amount.valueOf(y, 1e-8, SI.METRE))
@@ -971,7 +1020,7 @@ public class LiftingSurface extends AbstractLiftingSurface {
 	@Override
 	public List<Amount<Length>> getDiscretizedChords() {
 		return _spanwiseDiscretizedVariables.stream()
-				.mapToDouble(t5 -> 
+				.mapToDouble(t5 ->
 					t5._2()
 					.to(SI.METRE).getEstimatedValue())
 				.mapToObj(y -> Amount.valueOf(y, 1e-8, SI.METRE))
@@ -981,7 +1030,7 @@ public class LiftingSurface extends AbstractLiftingSurface {
 	@Override
 	public List<Amount<Length>> getDiscretizedXle() {
 		return _spanwiseDiscretizedVariables.stream()
-				.mapToDouble(t5 -> 
+				.mapToDouble(t5 ->
 					t5._3()
 					.to(SI.METRE).getEstimatedValue())
 				.mapToObj(y -> Amount.valueOf(y, 1e-8, SI.METRE))
@@ -991,7 +1040,7 @@ public class LiftingSurface extends AbstractLiftingSurface {
 	@Override
 	public List<Amount<Length>> getDiscretizedZle() {
 		return _spanwiseDiscretizedVariables.stream()
-				.mapToDouble(t5 -> 
+				.mapToDouble(t5 ->
 					t5._4()
 					.to(SI.METRE).getEstimatedValue())
 				.mapToObj(y -> Amount.valueOf(y, 1e-8, SI.METRE))
@@ -1001,13 +1050,13 @@ public class LiftingSurface extends AbstractLiftingSurface {
 	@Override
 	public List<Amount<Angle>> getDiscretizedTwists() {
 		return _spanwiseDiscretizedVariables.stream()
-				.mapToDouble(t5 -> 
+				.mapToDouble(t5 ->
 					t5._5()
 					.to(SI.RADIAN).getEstimatedValue())
 				.mapToObj(y -> Amount.valueOf(y, 1e-9, SI.RADIAN))
 				.collect(Collectors.toList());
 	}
-	
+
 	@Override
 	public String toString() {
 
@@ -1023,18 +1072,19 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		for (LiftingSurfacePanel panel : panels) {
 			sb.append(panel.toString());
 		}
-		
+
 		reportDiscretizedVariables();
-		
+
 		sb
 			.append("\t=====================================\n")
-			.append("\tDerived data\n")
+			.append("\tOverall wing derived data\n")
 			.append("\tSpan: " + this.getSpan().to(SI.METRE) +"\n")
 			.append("\tSemi-span: " + this.getSemiSpan().to(SI.METRE) +"\n")
 			.append("\tSurface of planform: " + this.getSurfacePlanform().to(SI.SQUARE_METRE) +"\n")
 			.append("\tSurface wetted: " + this.getSurfaceWetted().to(SI.SQUARE_METRE) + "\n")
 			.append("\tAspect-ratio: " + this.getAspectRatio() +"\n")
 			.append("\tMean aerodynamic chord: " + this.getMeanAerodynamicChord() +"\n")
+			.append("\t(X,Y,Z)_le of mean aerodynamic chord: " + this.getMeanAerodynamicChordLeadingEdge() +"\n")
 			;
 
 		// TODO add more data in log message
