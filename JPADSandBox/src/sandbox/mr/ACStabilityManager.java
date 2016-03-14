@@ -594,9 +594,9 @@ public class ACStabilityManager {
 		cLWingBodyArray = aircraft.get_theAerodynamics().calculateCLvsAlphaWingBody(alphaMinWing, alphaMaxWing, nValueAlpha, theCondition);
 		
 	
-		System.out.println("Cl alpha Wing " + cLAlphaWing*57.3);
+		System.out.println("Cl alpha Wing " + cLAlphaWing);
 		cLAlphaWingBody = theFuselageManager.calculateCLAlphaFuselage(cLAlphaWing);
-		System.out.println("Cl alpha Wing Body " + cLAlphaWingBody*57.3);
+		System.out.println("Cl alpha Wing Body " + cLAlphaWingBody);
 		
 		//CALCULATING CL AT ALPHA FOR WING
 
@@ -621,6 +621,9 @@ public class ACStabilityManager {
 		DownwashCalculator theDownwashCalculator = new DownwashCalculator(aircraft);
 		theDownwashCalculator.calculateDownwashNonLinearDelft();
 		theDownwashCalculator.plotDownwashDelftWithPath(subfolderPath);
+		theDownwashCalculator.plotDownwashGradientDelftWithPath(subfolderPath);
+		theDownwashCalculator.plotZDistanceWithPath(subfolderPath);
+		theDownwashCalculator.plotXDistanceWithPath(subfolderPath);
 		
 		//ARRAY FILLING
 		//CALCULATING CL AT ALPHA FOR WING

@@ -1221,6 +1221,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			double [] alphaArray = getAlphaArrayActual();
 			
 			double cLAtAlpha = MyMathUtils.getInterpolatedValue1DLinear(alphaArray,clValue, alpha.getEstimatedValue());
+			
 			return cLAtAlpha;
 		}
 			

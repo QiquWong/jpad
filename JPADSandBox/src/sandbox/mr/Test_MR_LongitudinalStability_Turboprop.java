@@ -213,7 +213,7 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		MyAirfoil airfoilRoot = theWing.get_theAirfoilsList().get(0);
 		airfoilRoot.getGeometry().update(yLocRoot);  // define chord
 		airfoilRoot.getGeometry().set_maximumThicknessOverChord(0.18); //REPORT
-		airfoilRoot.getGeometry().set_deltaYPercent(0.192 *airfoilRoot.getGeometry().get_maximumThicknessOverChord()*100 );
+		airfoilRoot.getGeometry().set_deltaYPercent(4.5);
 		System.out.println("\n \n \t ROOT \nAirfoil Type: " + airfoilRoot.get_family());
 		System.out.println("Root Chord [m] = " + theWing.get_chordRoot().getEstimatedValue() );
 		System.out.println("Root maximum thickness = " + airfoilRoot.getGeometry().get_maximumThicknessOverChord());
@@ -225,8 +225,8 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		double yLocKink = theWing.get_spanStationKink() * theWing.get_semispan().getEstimatedValue();
 		MyAirfoil airfoilKink = theWing.get_theAirfoilsList().get(1);
 		airfoilKink.getGeometry().update(yLocKink);   // define chord
-		airfoilKink.getGeometry().set_maximumThicknessOverChord(0.15); //REPORT
-		airfoilKink.getGeometry().set_deltaYPercent(0.192 *airfoilKink.getGeometry().get_maximumThicknessOverChord()*100 );
+		airfoilKink.getGeometry().set_maximumThicknessOverChord(0.18); //REPORT
+		airfoilKink.getGeometry().set_deltaYPercent(4.5);
 		System.out.println("\n \n \t KINK \nAirfoil Type: " + airfoilKink.get_family());
 		System.out.println("Kink Station [m] = " + yLocKink);
 		System.out.println("Kink Chord [m] = " + theWing.get_chordKink().getEstimatedValue() );
@@ -239,8 +239,8 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		double yLocTip = theWing.get_semispan().getEstimatedValue();
 		MyAirfoil airfoilTip = theWing.get_theAirfoilsList().get(2);
 		airfoilTip.getGeometry().update(yLocRoot);  // define chord
-		airfoilTip.getGeometry().set_maximumThicknessOverChord(0.12); //REPORT
-		airfoilTip.getGeometry().set_deltaYPercent(0.192 *airfoilTip.getGeometry().get_maximumThicknessOverChord()*100 );
+		airfoilTip.getGeometry().set_maximumThicknessOverChord(0.15); //REPORT
+		airfoilTip.getGeometry().set_deltaYPercent(3.5);
 		System.out.println("\n \n \t TIP \nAirfoil Type: " + airfoilKink.get_family());
 		System.out.println("tip Chord [m] = " +theWing.get_chordTip().getEstimatedValue() );
 		System.out.println("Tip maximum thickness = " + airfoilTip.getGeometry().get_maximumThicknessOverChord());
@@ -270,12 +270,14 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		double yLocRootH = 0.0;
 		MyAirfoil airfoilRootHorizontalTail = new MyAirfoil(
 				horizontalTail, yLocRootH, "0012");
+		airfoilTip.getGeometry().set_deltaYPercent(3.0);
 		airfoilRootHorizontalTail.getGeometry().update(yLocRootH);  // define chord
 		airfoilRootHorizontalTail.getGeometry().set_maximumThicknessOverChord(0.12); //REPORT
 
 		double yLocTipH = aircraft.get_HTail().get_semispan().getEstimatedValue();
 		MyAirfoil airfoilTipHorizontalTail = new MyAirfoil(
 				horizontalTail, yLocTipH, "0012");
+		airfoilTip.getGeometry().set_deltaYPercent(3.0);
 		airfoilTipHorizontalTail.getGeometry().update(yLocTipH);  // define chord
 		airfoilTipHorizontalTail.getGeometry().set_maximumThicknessOverChord(0.12); //REPORT
 
@@ -431,7 +433,7 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		Amount<Angle> alphaMin = Amount.valueOf(Math.toRadians(-5), SI.RADIAN);
 		Amount<Angle> alphaMax = Amount.valueOf(Math.toRadians(20), SI.RADIAN);
 		
-		ACStabilityManager theStabilityManager = new ACStabilityManager(meanAirfoil, aircraft, ConditionEnum.TAKE_OFF ,
+		ACStabilityManager theStabilityManager = new ACStabilityManager(meanAirfoil, aircraft, ConditionEnum.CRUISE ,
 				alphaMin, alphaMax, alphaBody , true, subfolderPath, pathTakeOff);
  
 		theStabilityManager.CalculateWingLiftCharacteristics();

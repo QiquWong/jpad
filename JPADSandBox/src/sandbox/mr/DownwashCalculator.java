@@ -27,13 +27,13 @@ public class DownwashCalculator {
 
 	Aircraft aircraft;
 	
-	double zHTailAC, cRootExposedWing , angleOfIncidenceExposed, zWing, distAerodynamicCenter,
-	alphaZeroLiftRootExposed, xACLRF, xACRootExposed, angleOfIncidenceExposedDeg, semiWingSpan,
-	alphaZeroLiftRootExposedDeg, clAlfa, sweepQuarterChordEq, aspectRatio, zWingAC, zTipEdgeWingRootChord,
-	zDistanceACHTailTEWing, xDistanceACHTailTEWing, xDistanceACHTailTEWingTemp, alphaStar;
+//	double zHTailAC, cRootExposedWing , angleOfIncidenceExposed, zWing, distAerodynamicCenter,
+//	alphaZeroLiftRootExposed, xACLRF, xACRootExposed, angleOfIncidenceExposedDeg, semiWingSpan,
+//	alphaZeroLiftRootExposedDeg, clAlfa, sweepQuarterChordEq, aspectRatio, zWingAC, zTipEdgeWingRootChord,
+//	zDistanceACHTailTEWing, xDistanceACHTailTEWing, xDistanceACHTailTEWingTemp, alphaStar;
 	
 	double dValue, m0Value, x0Value, cRoot, zACWing, zACHtail, deltaZ, phiAngle,iw,alphaZeroLift,angle, zTemp, xTemp,
-	zDistanceZero, xDistanceZero ;
+	zDistanceZero, xDistanceZero, alphaStar, semiWingSpan, sweepQuarterChordEq, aspectRatio;
 	
 	private double[] downwashArray;
 	private double[] alphaAbsoluteArray ;
@@ -106,20 +106,22 @@ public class DownwashCalculator {
 		
 		
 		dValue = Math.sqrt((Math.pow(m0Value, 2)) 
-				+ (Math.pow(x0Value - ((3/4) * cRoot * Math.cos(theWing.get_iw().getEstimatedValue())), 2)));
+				+ (Math.pow(x0Value - ((0.75) * cRoot * Math.cos(theWing.get_iw().getEstimatedValue())), 2)));
 		
-		phiAngle = Math.atan(( m0Value)/(x0Value - ((3/4) * cRoot * Math.cos(theWing.get_iw().getEstimatedValue()))));
+		phiAngle = Math.atan(( m0Value)/(x0Value - ((0.75) * cRoot * Math.cos(theWing.get_iw().getEstimatedValue()))));
 		
 		
 		angle = phiAngle + iw - alphaZeroLift;
 		
 		zDistanceZero = dValue * Math.sin(angle);
-		xDistanceZero = (dValue * Math.cos(angle)) + ( (3/4) * cRoot * Math.cos(Math.abs(alphaZeroLift)));
+		xDistanceZero = (dValue * Math.cos(angle)) + ( (0.75) * cRoot * Math.cos(Math.abs(alphaZeroLift)));
+		
+		alphaStar = theWing.getAerodynamics().get_alphaStar().getEstimatedValue();
 		// Alpha Absolute array 
 		
-		double alphaFirst = -5.0;
+		double alphaFirst = 0.0;
 		double alphaLast = 20.0;
-		nValue = (int) Math.ceil(( alphaLast - alphaFirst ) * 2); //0.25 deg
+		nValue = (int) Math.ceil(( alphaLast - alphaFirst ) * 4); //0.25 deg
 
 		alphaAbsoluteArray =  MyArrayUtils.linspace(alphaFirst, alphaLast, nValue);
 		
@@ -132,21 +134,31 @@ public class DownwashCalculator {
 		
 		LSAerodynamicsManager theLSAnalysis = aircraft.get_wing().getAerodynamics();
 		LSAerodynamicsManager.CalcCLvsAlphaCurve theCLArrayCalculator = theLSAnalysis.new CalcCLvsAlphaCurve();
+	
+		
 		cLArray = theCLArrayCalculator.nasaBlackwellCompleteCurve(Amount.valueOf(alphaFirst + 
-				aircraft.get_wing().get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue(), NonSI.DEGREE_ANGLE), 
-				Amount.valueOf(alphaLast + aircraft.get_wing().get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue(), NonSI.DEGREE_ANGLE), nValue, false);
+				Math.toDegrees(alphaZeroLift), NonSI.DEGREE_ANGLE), 
+				Amount.valueOf(alphaLast + Math.toDegrees(alphaZeroLift), NonSI.DEGREE_ANGLE), nValue, false);
+	
+		
+		
 		
 		// cL alpha Array
 		
 		for (int i=0 ; i<alphaAbsoluteArray.length-1; i++){
-			if(alphaAbsoluteArray[i]< alphaStar){
+			if((alphaAbsoluteArray[i] + 
+					Math.toDegrees(alphaZeroLift))< Math.toDegrees(alphaStar)){
 			cLAlphaArray[i] = aircraft.get_wing().getAerodynamics().getcLLinearSlopeNB();}
 			else{
 			cLAlphaArray[i]=Math.toDegrees((((cLArray[i+1] - cLArray[i])/(alphaAbsoluteArray[i+1] - alphaAbsoluteArray [i]))+((cLArray[i+1] - cLArray[i])/
 					(alphaAbsoluteArray[i+1] - alphaAbsoluteArray [i])))/2);
+//				cLAlphaArray[i]=Math.toDegrees((cLArray[i+1] - cLArray[i])/(alphaAbsoluteArray[i+1] - alphaAbsoluteArray [i]));
 			}
 		}
-		cLAlphaArray[cLAlphaArray.length-1] = Math.toDegrees(((cLArray[cLAlphaArray.length-1] - cLArray[cLAlphaArray.length-2])/(alphaAbsoluteArray[cLAlphaArray.length-1] - alphaAbsoluteArray [cLAlphaArray.length-2])));
+		cLAlphaArray[cLAlphaArray.length-1] = cLAlphaArray[cLAlphaArray.length-2];
+		
+		
+	
 	}
 	
 	
@@ -193,7 +205,7 @@ public class DownwashCalculator {
 		double second= 1+Math.pow(rPow/(rPow+0.7915+5.0734*mpow),0.3113);
 		double third = 1-Math.sqrt(mpow/(1+mpow));
 
-		double downwashGradientLinearatZ=kFraction*(first+second*third)*(clAlpha/(Math.PI*aspectRatio));
+		double downwashGradientLinearatZ=kFraction*(first+second*third)*((clAlpha)/(Math.PI*aspectRatio));
 
 		return downwashGradientLinearatZ;
 
@@ -253,7 +265,7 @@ public class DownwashCalculator {
 		zDistanceArray[0] = zDistanceZero;
 		xDistanceArray[0] = xDistanceZero;
 		downwashGradientArray[0] = calculateDownwashGradientConstantDelft(zDistanceArray[0], xDistanceArray[0], cLAlphaArray[0]);
-		alphaBodyArray[0] = alphaAbsoluteArray[0]- angleOfIncidenceExposedDeg + alphaZeroLiftRootExposedDeg;
+		alphaBodyArray[0] = alphaAbsoluteArray[0]- Math.toDegrees(iw) + Math.toDegrees(alphaZeroLift);
 		
 		
 		// Other step
@@ -268,7 +280,7 @@ public class DownwashCalculator {
 			
 			zTemp = dValue * Math.sin(angle - i * deltaAlpha + epsilonTempRad);
 			xTemp = (dValue * Math.cos(angle - i*deltaAlpha + epsilonTempRad)) + 
-					( (3/4) * cRoot * Math.cos(Math.abs(alphaZeroLift - i*deltaAlpha + epsilonTempRad)));
+					( (0.74) * cRoot * Math.cos(Math.abs(alphaZeroLift - i*deltaAlpha + epsilonTempRad)));
 			
 			
 			downwashGradientArrayTemp = calculateDownwashGradientConstantDelft(zTemp, xTemp, cLAlphaArray[i]);
@@ -279,7 +291,7 @@ public class DownwashCalculator {
 			
 			zDistanceArray[i] = dValue * Math.sin(angle - i * deltaAlpha + downwashRad);
 			xDistanceArray[i] = (dValue * Math.cos(angle - i*deltaAlpha +downwashRad)) + 
-					( (3/4) * cRoot * Math.cos(Math.abs(alphaZeroLift - i*deltaAlpha + downwashRad)));
+					( (0.75) * cRoot * Math.cos(Math.abs(alphaZeroLift - i*deltaAlpha + downwashRad)));
 			
 			downwashGradientArray[i] = calculateDownwashGradientConstantDelft(zDistanceArray[i], xDistanceArray[i], cLAlphaArray[i]);
 			downwashArray[i] = downwashGradientArray[i] * alphaAbsoluteArray[i]; 
@@ -288,12 +300,12 @@ public class DownwashCalculator {
 			
 			zDistanceArray[i] = dValue * Math.sin(angle - i * deltaAlpha + downwashRad);
 			xDistanceArray[i] = (dValue * Math.cos(angle - i*deltaAlpha +downwashRad)) + 
-					( (3/4) * cRoot * Math.cos(Math.abs(alphaZeroLift - i*deltaAlpha + downwashRad)));
+					( (0.75) * cRoot * Math.cos(Math.abs(alphaZeroLift - i*deltaAlpha + downwashRad)));
 			
 			downwashGradientArray[i] = calculateDownwashGradientConstantDelft(zDistanceArray[i], xDistanceArray[i], cLAlphaArray[i]);
 			downwashArray[i] = downwashGradientArray[i] * alphaAbsoluteArray[i]; 
 			
-			alphaBodyArray[i] = alphaAbsoluteArray[i] - angleOfIncidenceExposedDeg + alphaZeroLiftRootExposedDeg;
+			alphaBodyArray[i] = alphaAbsoluteArray[i] - Math.toDegrees(iw) + Math.toDegrees(alphaZeroLift);
 			
 		}
 		System.out.println("\n Results -----");
@@ -349,18 +361,18 @@ public class DownwashCalculator {
 	// FIG E FORMULE
 	
 	
-	public double calculateZDistanceZeroLift(){
-		
-		double zDistance;
-		double zFirst;
-		double zSecond ;
-		zFirst = zDistanceACHTailTEWing;
-		zSecond = xDistanceACHTailTEWing;
-		zDistance = (zFirst + zSecond) * Math.cos(angleOfIncidenceExposed - alphaZeroLiftRootExposed);
-//		System.out.println("Zdistance " + zDistance);
-		return zDistance;
-		
-	}
+//	public double calculateZDistanceZeroLift(){
+//		
+//		double zDistance;
+//		double zFirst;
+//		double zSecond ;
+//		zFirst = zDistanceACHTailTEWing;
+//		zSecond = xDistanceACHTailTEWing;
+//		zDistance = (zFirst + zSecond) * Math.cos(angleOfIncidenceExposed - alphaZeroLiftRootExposed);
+////		System.out.println("Zdistance " + zDistance);
+//		return zDistance;
+//		
+//	}
 	
 	
 
@@ -368,12 +380,11 @@ public class DownwashCalculator {
 
 		downwashLinearArray  = new double [nValue] ;
 		
-		double vortexDistance = calculateZDistanceZeroLift();
 		double downwashGradientLinear = calculateDownwashGradientConstantDelft(zDistanceZero, xDistanceZero, cLAlphaArray[0]);
-		double xInitialLinear = - angleOfIncidenceExposedDeg + alphaZeroLiftRootExposedDeg;
+		double xInitialLinear = - Math.toDegrees(iw) + Math.toDegrees(alphaZeroLift);
 		double qValue = - downwashGradientLinear * xInitialLinear;		
 		for (int i=0 ; i<alphaAbsoluteArray.length ; i++){
-			downwashLinearArray[i] = downwashGradientLinear * alphaBodyArray [i]+ qValue;
+			downwashLinearArray[i] = downwashGradientLinear * alphaAbsoluteArray [i];
 		}
 
 		double [][] epsilonMatrix ={downwashLinearArray,downwashArray};
@@ -452,11 +463,11 @@ public class DownwashCalculator {
 
 		downwashLinearArray  = new double [nValue] ;
 		
-		double vortexDistance = calculateZDistanceZeroLift();
+
 		double[] zDistConstantArray = new double [alphaAbsoluteArray.length];
 		
 		for (int i=0 ; i<alphaAbsoluteArray.length ; i++){
-			zDistConstantArray[i] = vortexDistance;
+			zDistConstantArray[i] = zDistanceZero;
 		}
 
 		double [][] epsilonMatrix ={zDistConstantArray,zDistanceArray};
@@ -474,10 +485,10 @@ public class DownwashCalculator {
 		MyChartToFileUtils.plot(
 				alphaBodyArray, epsilonMatrix,
 				null, null, null, null,
-				"alpha_Body", "Z Distance",
+				"alpha_Body", "m Distance",
 				" deg ", "m",
 				legend,subfolderPath,
-				"Disytance AC z vs Alpha Body NEW");
+				"Disytance m Alpha Body ");
 
 
 	}
@@ -491,12 +502,54 @@ public class DownwashCalculator {
 	}
 	
 	
+	public void plotXDistance(){
+
+		downwashLinearArray  = new double [nValue] ;
+		
+
+		double[] xDistConstantArray = new double [alphaAbsoluteArray.length];
+		
+		for (int i=0 ; i<alphaAbsoluteArray.length ; i++){
+			xDistConstantArray[i] = xDistanceZero;
+		}
+
+		double [][] epsilonMatrix ={xDistConstantArray,xDistanceArray};
+
+
+
+		if(subfolderPathCeck)
+			subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "CL alpha WingBody " + File.separator);
+
+		String [] legend = new String [2];
+		legend[0] = "Downwash gradient: costant";
+		legend[1] = "Downwash gradient: non costant";
+
+
+		MyChartToFileUtils.plot(
+				alphaBodyArray, epsilonMatrix,
+				null, null, null, null,
+				"alpha_Body", "x Distance",
+				" deg ", "m",
+				legend,subfolderPath,
+				"Disytance x vs Alpha Body");
+
+
+	}
+
+
+	public void plotXDistanceWithPath(String subfolderPath){
+		this.subfolderPath = subfolderPath;
+		subfolderPathCeck = false;
+		plotXDistance();
+		subfolderPathCeck = true;
+	}
+	
+	
 	
 	
   // GETTERS ANS SETTERS	
 
 	public double getDownwashGradientLinear() {
-		double vortexDistance = calculateZDistanceZeroLift();
 		double downwashGradientLinear = calculateDownwashGradientConstantDelft(zDistanceZero,xDistanceZero, cLAlphaArray[0]);
 		return downwashGradientLinear;
 	}

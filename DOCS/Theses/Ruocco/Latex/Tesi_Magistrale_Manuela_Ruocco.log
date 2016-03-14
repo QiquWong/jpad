@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.12.21)  11 MAR 2016 18:12
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.12.21)  15 MAR 2016 00:20
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -4887,6 +4887,10 @@ Package biblatex Warning: No driver for entry type 'other'.
 (biblatex)                Using fallback driver on input line 259.
 
 
+Package biblatex Warning: No driver for entry type 'other'.
+(biblatex)                Using fallback driver on input line 259.
+
+
 Overfull \hbox (22.76648pt too wide) in paragraph at lines 259--259
 \T1/ntxtlf/m/it/12 miza-tion of Sub-sonic Civil Air-planes\T1/ntxtlf/m/n/12 . A
 erospace Se-ries. Wi-ley, 2013. \T1/ntxtlf/m/sc/12 isbn\T1/ntxtlf/m/n/12 : 9781
@@ -4930,10 +4934,10 @@ l'.
 
  ) 
 Here is how much of TeX's memory you used:
- 58893 strings out of 493054
- 1217067 string characters out of 6138326
- 1819860 words of memory out of 5000000
- 59984 multiletter control sequences out of 15000+600000
+ 58895 strings out of 493054
+ 1217103 string characters out of 6138326
+ 1819867 words of memory out of 5000000
+ 59985 multiletter control sequences out of 15000+600000
  161575 words of font info for 109 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  62i,20n,92p,10402b,3298s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -4960,11 +4964,11 @@ b><c:/texlive/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmb.pfb><c:/texlive/
 t/fonts/type1/public/tex-gyre/qtmri.pfb><c:/texlive/2015/texmf-dist/fonts/type1
 /urw/courier/ucrb8a.pfb><c:/texlive/2015/texmf-dist/fonts/type1/urw/courier/ucr
 r8a.pfb><c:/texlive/2015/texmf-dist/fonts/type1/urw/times/utmr8a.pfb>
-Output written on Tesi_Magistrale_Manuela_Ruocco.pdf (120 pages, 14557868 bytes
+Output written on Tesi_Magistrale_Manuela_Ruocco.pdf (120 pages, 14569526 bytes
 ).
 PDF statistics:
- 3484 PDF objects out of 3580 (max. 8388607)
- 2983 compressed objects within 30 object streams
- 1330 named destinations out of 1440 (max. 500000)
+ 3485 PDF objects out of 3580 (max. 8388607)
+ 2984 compressed objects within 30 object streams
+ 1331 named destinations out of 1440 (max. 500000)
  1209 words of extra memory for PDF output out of 10000 (max. 10000000)
 

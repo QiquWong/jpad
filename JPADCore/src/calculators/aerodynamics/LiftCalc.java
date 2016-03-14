@@ -18,6 +18,8 @@ import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.util.MathArrays;
 import org.jscience.physics.amount.Amount;
 
+import com.sun.org.apache.xml.internal.utils.ThreadControllerWrapper;
+
 import aircraft.auxiliary.airfoil.MyAirfoil;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcAlpha0L;
@@ -281,7 +283,7 @@ public class LiftCalc {
 		double cLStarWing=0, cLLinearSlope = 0, cLAlphaZero, alphaZeroLiftWingClean;
 		cLStarWing = theClatAlphaCalculator.nasaBlackwell(alphaStarAmount);
 		theLiftingSurface.getAerodynamics().setcLStarWing(cLStarWing);
-		
+		theLiftingSurface.getAerodynamics().set_alphaStar(Amount.valueOf(alphaStar,SI.RADIAN));
 		for (int i=0; i<nValue; i++ ){
 		alphaActual = alphaArray.get(i);
 		

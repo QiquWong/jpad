@@ -101,10 +101,10 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 				Aerodynamics(airf, AirfoilFamilyEnum.NACA23_018);
 				break;
 			case KINK:
-				Aerodynamics(airf, AirfoilFamilyEnum.NACA23_015) ;
+				Aerodynamics(airf, AirfoilFamilyEnum.NACA23_018) ;
 				break;
 			case TIP:
-				Aerodynamics(airf, AirfoilFamilyEnum.NACA23_012);
+				Aerodynamics(airf, AirfoilFamilyEnum.NACA23_015);
 				break;	
 			}
 			break;

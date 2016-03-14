@@ -1336,6 +1336,19 @@
       \field{type}{techreport}
       \field{year}{1939}
     \endentry
+    \entry{Slinger}{other}{}
+      \name{author}{1}{}{%
+        {{hash=d9c74ab1eef6cec781b538f6b5a16429}{Slingerland}{S\bibinitperiod}{R.}{R\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{d9c74ab1eef6cec781b538f6b5a16429}
+      \strng{fullhash}{d9c74ab1eef6cec781b538f6b5a16429}
+      \field{sortinit}{S}
+      \field{sortinithash}{fd1e7c5ab79596b13dbbb67f8d70fb5a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Prediction of Tail Downwash, Ground Effect and Minimum Unstick Speed of Jet Transport Aircraft}
+      \field{year}{2015}
+    \endentry
     \entry{javaoracle}{other}{}
       \field{sortinit}{T}
       \field{sortinithash}{423d138a005a533b47e6475e39378bf2}
