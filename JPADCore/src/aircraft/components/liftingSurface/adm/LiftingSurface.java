@@ -21,6 +21,10 @@ import javax.measure.unit.UnitFormat;
 
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.math3.analysis.UnivariateFunction;
+import org.apache.commons.math3.analysis.integration.TrapezoidIntegrator;
+import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
+import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 import org.apache.poi.util.SystemOutLogger;
 import org.jscience.physics.amount.Amount;
 import org.jscience.physics.amount.AmountFormat;
@@ -398,15 +402,22 @@ public class LiftingSurface extends AbstractLiftingSurface {
 	}
 
 	@Override
-	public Amount<Length>[] getMeanAerodynamicChordLeadingEdge() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Amount<Length>> getMeanAerodynamicChordLeadingEdge() {
+		return Arrays.asList(
+				this.meanAerodynamicChordLeadingEdgeX,
+				this.meanAerodynamicChordLeadingEdgeY,
+				this.meanAerodynamicChordLeadingEdgeZ
+				);
 	}
 
 	@Override
-	public Amount<Length>[] getMeanAerodynamicChordLeadingEdge(boolean recalculate) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Amount<Length>> getMeanAerodynamicChordLeadingEdge(boolean recalculate) {
+		if (recalculate) this.calculateGeometry();
+		return Arrays.asList(
+				this.meanAerodynamicChordLeadingEdgeX,
+				this.meanAerodynamicChordLeadingEdgeY,
+				this.meanAerodynamicChordLeadingEdgeZ
+				);
 	}
 
 	@Override
@@ -1073,9 +1084,7 @@ public class LiftingSurface extends AbstractLiftingSurface {
 			.append("\tSurface wetted: " + this.getSurfaceWetted().to(SI.SQUARE_METRE) + "\n")
 			.append("\tAspect-ratio: " + this.getAspectRatio() +"\n")
 			.append("\tMean aerodynamic chord: " + this.getMeanAerodynamicChord() +"\n")
-			.append("\tX_le of mean aerodynamic chord: " + this.getMeanAerodynamicChordLeadingEdgeX() +"\n")
-			.append("\tY_le of mean aerodynamic chord: " + this.getMeanAerodynamicChordLeadingEdgeY() +"\n")
-			.append("\tZ_le of mean aerodynamic chord: " + this.getMeanAerodynamicChordLeadingEdgeZ() +"\n")
+			.append("\t(X,Y,Z)_le of mean aerodynamic chord: " + this.getMeanAerodynamicChordLeadingEdge() +"\n")
 			;
 
 		// TODO add more data in log message

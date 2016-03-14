@@ -26,12 +26,12 @@ public interface ILiftingSurface {
 	void setXYZPole(Amount<Length> xp, Amount<Length> yp, Amount<Length> zp);
 
 	void discretizeGeometry(int numberSpanwiseStations);
-	
+
 	public Amount<Length> getMeanAerodynamicChord(boolean recalculate);
 	public Amount<Length> getMeanAerodynamicChord();
 
-	Amount<Length>[] getMeanAerodynamicChordLeadingEdge(boolean recalculate);
-	Amount<Length>[] getMeanAerodynamicChordLeadingEdge();
+	List<Amount<Length>> getMeanAerodynamicChordLeadingEdge(boolean recalculate);
+	List<Amount<Length>> getMeanAerodynamicChordLeadingEdge();
 
 	Amount<Length> getMeanAerodynamicChordLeadingEdgeX(boolean recalculate);
 	Amount<Length> getMeanAerodynamicChordLeadingEdgeX();
@@ -70,15 +70,15 @@ public interface ILiftingSurface {
 	public List<AsymmetricFlaps> getAsymmetricFlaps();
 
 	public List<Spoilers> getSpoilers();
-	
-	// 
-	
+
+	//
+
 	public List<Amount<Length>> getDiscretizedYs();
 	public List<Amount<Length>> getDiscretizedChords();
 	public List<Amount<Length>> getDiscretizedXle();
 	public List<Amount<Length>> getDiscretizedZle();
 	public List<Amount<Angle>> getDiscretizedTwists();
-	
+
 	public void reportPanelsToSpanwiseDiscretizedVariables();
 
 }
