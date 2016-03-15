@@ -433,7 +433,7 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		Amount<Angle> alphaMin = Amount.valueOf(Math.toRadians(-5), SI.RADIAN);
 		Amount<Angle> alphaMax = Amount.valueOf(Math.toRadians(20), SI.RADIAN);
 		
-		ACStabilityManager theStabilityManager = new ACStabilityManager(meanAirfoil, aircraft, ConditionEnum.CRUISE ,
+		ACStabilityManager theStabilityManager = new ACStabilityManager(meanAirfoil, aircraft, ConditionEnum.TAKE_OFF ,
 				alphaMin, alphaMax, alphaBody , true, subfolderPath, pathTakeOff);
  
 		theStabilityManager.CalculateWingLiftCharacteristics();
