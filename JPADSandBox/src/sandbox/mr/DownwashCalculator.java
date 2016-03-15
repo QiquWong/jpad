@@ -43,32 +43,7 @@ public class DownwashCalculator {
 	private double[] xDistanceArray;
 	private double[] downwashLinearArray;
 	
-	double [] alphaTryArray = {0,
-			1,
-			2,
-			3,
-			4,
-			5,
-			6,
-			7,
-			8,
-			9,
-			10,
-			11,
-			12,
-			13,
-			14,
-			15,
-			16,
-			17,
-			18,
-			19,
-			20,
-			21,
-			22,
-			23
 
-};
 	
 	private String subfolderPath;
 	private boolean subfolderPathCeck = true;
@@ -96,6 +71,7 @@ public class DownwashCalculator {
 		cRoot = theWing.get_chordRoot().getEstimatedValue();
 		semiWingSpan = theWing.get_semispan().getEstimatedValue();
 		sweepQuarterChordEq = theWing.get_sweepQuarterChordEq().getEstimatedValue();
+		double sweepqa = theWing.get_sweepQuarterChordEq().getEstimatedValue();
 		aspectRatio = theWing.get_aspectRatio();
 		
 		
@@ -343,20 +319,7 @@ public class DownwashCalculator {
 		System.out.println("m Distances  (m) " + Arrays.toString(zDistanceArray));	
 		System.out.println("x Distances (m) " + Arrays.toString(xDistanceArray));	
 		
-		Double [] xArrayNew = MyMathUtils.getInterpolatedValue1DLinear(alphaBodyArray, xDistanceArray, alphaTryArray);
-		Double [] mArrayNew = MyMathUtils.getInterpolatedValue1DLinear(alphaBodyArray,zDistanceArray, alphaTryArray);
-		
-		System.out.println(" ARRAY");
-		
-		for (int i=0 ; i<xArrayNew.length ; i++){
-			System.out.println(xArrayNew[i]);
-		}
-		
-		System.out.println(" array ");
 
-		for (int i=0 ; i<xArrayNew.length ; i++){
-			System.out.println(mArrayNew[i]);
-		}
 	}
 	
 	
