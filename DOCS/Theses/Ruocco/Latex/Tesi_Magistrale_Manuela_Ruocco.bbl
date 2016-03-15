@@ -594,6 +594,19 @@
       \field{title}{NACA TR 711 - Analysis And Prediction Of Longitudinal Stability of Airplanes}
       \warn{\item Datamodel: Entry 'NACATR711' (Tesi_Bibliography.bib): Invalid format '12.12.1940' of date field 'date' - ignoring}
     \endentry
+    \entry{uninagiordano}{other}{}
+      \name{author}{1}{}{%
+        {{hash=9169860916762570ed727b2254b051d3}{Giordano}{G\bibinitperiod}{Vincenzo}{V\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{9169860916762570ed727b2254b051d3}
+      \strng{fullhash}{9169860916762570ed727b2254b051d3}
+      \field{sortinit}{G}
+      \field{sortinithash}{1c854ef9177a91bf894e66485bdbd3ed}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Alcune considerazioni sul downwash dell'ala}
+      \field{year}{1966}
+    \endentry
     \entry{hdf}{online}{}
       \name{author}{1}{}{%
         {{hash=4a3fada39a22bb4e03a41c2f63ce6a3b}{Group}{G\bibinitperiod}{The\bibnamedelima HDF}{T\bibinitperiod\bibinitdelim H\bibinitperiod}{}{}{}{}}%

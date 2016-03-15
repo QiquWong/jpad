@@ -107,6 +107,7 @@ public class ACStabilityManager {
 	List<Double> csc = new ArrayList<Double>();
 	List<Double> leRadiusCSlat = new ArrayList<Double>();
 	List<Double> cExtCSlat = new ArrayList<Double>();
+	private double downwashAngleAtAlpha;
 	
 
 
@@ -620,10 +621,22 @@ public class ACStabilityManager {
 		
 		DownwashCalculator theDownwashCalculator = new DownwashCalculator(aircraft);
 		theDownwashCalculator.calculateDownwashNonLinearDelft();
+		downwashAngleAtAlpha = theDownwashCalculator.getDownwashAtAlphaBody(alphaBody);
 		theDownwashCalculator.plotDownwashDelftWithPath(subfolderPath);
 		theDownwashCalculator.plotDownwashGradientDelftWithPath(subfolderPath);
 		theDownwashCalculator.plotZDistanceWithPath(subfolderPath);
 		theDownwashCalculator.plotXDistanceWithPath(subfolderPath);
+		
+		System.out.println("\n \n-----------angles-------------- ");
+		System.out.println("Angle of attack alpha body (deg) = " + Math.ceil(alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue()));
+		System.out.println("Angle of incidence of horizontal tail (deg) " + aircraft.get_HTail().get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue());
+		System.out.println("Downwash Angle at Alpha Body (deg) " + downwashAngleAtAlpha );
+
+		double angleHorizontalDouble = alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue()
+				- downwashAngleAtAlpha +  aircraft.get_HTail().get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue();
+		Amount<Angle> alphaHorizontalTail = Amount.valueOf(Math.toRadians(angleHorizontalDouble), SI.RADIAN);
+		System.out.println("Angle of Attack of Horizontal Tail (deg) "
+				+ angleHorizontalDouble);
 		
 		//ARRAY FILLING
 		//CALCULATING CL AT ALPHA FOR WING
