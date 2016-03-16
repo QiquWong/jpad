@@ -86,7 +86,9 @@ public class TakeOff_Test_TF {
 
 		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.B747_100B);
 		aircraft.set_name("B747-100B");
-
+		
+		aircraft.get_weights().set_MTOM(Amount.valueOf(340194, SI.KILOGRAM));
+		
 		LiftingSurface theWing = aircraft.get_wing();
 
 		ACAnalysisManager theAnalysis = new ACAnalysisManager(theCondition);
@@ -347,10 +349,10 @@ public class TakeOff_Test_TF {
 		_startTimeCalculation = System.currentTimeMillis();
 		Amount<Duration> dtRot = Amount.valueOf(3, SI.SECOND);
 		Amount<Duration> dtHold = Amount.valueOf(0.5, SI.SECOND);
-		double mu = 0.025;
+		double mu = 0.03;
 		double muBrake = 0.3;
-		double kAlphaDot = 0.06; // [1/deg]
-		double kcLMax = 0.85;
+		double kAlphaDot = 0.04; // [1/deg]
+		double kcLMax = 0.9;
 		double kRot = 1.05;
 		double kLO = 1.1;
 		double kFailure = 1.1;
@@ -362,12 +364,12 @@ public class TakeOff_Test_TF {
 		double k2 = 0.0;
 
 		double phi = 1.0;
-		double alphaReductionRate = -3; // [deg/s]
+		double alphaReductionRate = -4; // [deg/s]
 		Amount<Length> wingToGroundDistance = Amount.valueOf(6.56, SI.METER);
 		Amount<Length> obstacle = Amount.valueOf(35, NonSI.FOOT).to(SI.METER);
 		Amount<Velocity> vWind = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
 		Amount<Angle> alphaGround = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
-		Amount<Angle> iw = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		Amount<Angle> iw = Amount.valueOf(3.0, NonSI.DEGREE_ANGLE);
 		CalcTakeOff theTakeOffCalculator = new CalcTakeOff(
 				aircraft,
 				theCondition,

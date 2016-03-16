@@ -150,7 +150,7 @@ public class CalcLanding {
 		vSLanding = Amount.valueOf(
 				SpeedCalc.calculateSpeedStall(
 						theConditions.get_altitude().getEstimatedValue(),
-						aircraft.get_weights().get_MTOW().getEstimatedValue(),
+						aircraft.get_weights().get_MLW().getEstimatedValue(),
 						aircraft.get_wing().get_surface().getEstimatedValue(),
 						cLmaxLanding
 						),
@@ -267,7 +267,7 @@ public class CalcLanding {
 		vSLanding = Amount.valueOf(
 				SpeedCalc.calculateSpeedStall(
 						theConditions.get_altitude().getEstimatedValue(),
-						aircraft.get_weights().get_MTOW().getEstimatedValue(),
+						aircraft.get_weights().get_MLW().getEstimatedValue(),
 						aircraft.get_wing().get_surface().getEstimatedValue(),
 						cLmaxLanding
 						),
@@ -460,6 +460,13 @@ public class CalcLanding {
 				double   t = interpolator.getCurrentTime();
 				double[] x = interpolator.getInterpolatedState();
 				
+				System.out.println("\n\n-----------------------------------------------------");
+				System.out.println("\t\tSTATEVECTOR");
+				System.out.println(
+						"\n\tx[0] = s = " + x[0] + " m" +
+						"\n\tx[1] = V = " + x[1] + " m/s");
+				System.out.println("-----------------------------------------------------\n\n");
+				
 				//----------------------------------------------------------------------------------------
 				// PICKING UP ALL DATA AT EVERY STEP 
 				//----------------------------------------------------------------------------------------
@@ -642,7 +649,7 @@ public class CalcLanding {
 
 		double[] weight = new double[getTime().size()];
 		for(int i=0; i<weight.length; i++)
-			weight[i] = aircraft.get_weights().get_MTOW().getEstimatedValue();
+			weight[i] = aircraft.get_weights().get_MLW().getEstimatedValue();
 
 		// landing trajectory and speed
 		double[][] xMatrix1 = new double[2][groundDistance.length];
@@ -730,7 +737,7 @@ public class CalcLanding {
 
 	public class DynamicsEquationsLanding implements FirstOrderDifferentialEquations {
 
-		double weight, g0, mu, cD0, deltaCD0, oswald, ar, kGround, vWind, alphaGround;
+		double weight, g0, mu, muBrake, cD0, deltaCD0, oswald, ar, kGround, cLground, vWind, alphaGround;
 
 		public DynamicsEquationsLanding() {
 
@@ -744,6 +751,7 @@ public class CalcLanding {
 			oswald = CalcLanding.this.getOswald();
 			ar = aircraft.get_wing().get_aspectRatio();
 			kGround = CalcLanding.this.getkGround();
+			cLground = CalcLanding.this.getcLground();
 			vWind = CalcLanding.this.getvWind().getEstimatedValue();
 			alphaGround = CalcLanding.this.getAlphaGround().getEstimatedValue();
 		}
@@ -796,7 +804,7 @@ public class CalcLanding {
 		public double drag(double speed) {
 
 			double cD = cD0 + deltaCD0 + 
-					((Math.pow(CalcLanding.this.getcLground(), 2)/(Math.PI*ar*oswald))*kGround);
+					((Math.pow(cLground, 2)/(Math.PI*ar*oswald))*kGround);
 
 			return 	0.5
 					*aircraft.get_wing().get_surface().getEstimatedValue()
