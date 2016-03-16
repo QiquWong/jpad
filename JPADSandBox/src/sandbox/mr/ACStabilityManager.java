@@ -190,14 +190,17 @@ public class ACStabilityManager {
 		switch (theCondition) {
 		case TAKE_OFF:
 			theOperatingConditions.set_machCurrent(aircraft.get_theAerodynamics().get_machTakeOFF());
+			theOperatingConditions.set_altitude(Amount.valueOf(0.0, SI.METER));
 			break;
 
 		case LANDING:	
 			theOperatingConditions.set_machCurrent(aircraft.get_theAerodynamics().get_machLanding());
+			theOperatingConditions.set_altitude(Amount.valueOf(0.0, SI.METER));
 			break;
 
 		case CRUISE:	
 			theOperatingConditions.set_machCurrent(aircraft.get_theAerodynamics().get_machCruise());
+			theOperatingConditions.set_altitude(aircraft.get_theAerodynamics().getCruiseAltitude());
 			break;
 		}
 

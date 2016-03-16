@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
@@ -118,6 +119,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 	private double[] [] alphaArrayPlotWingBody;
 	private double[] [] cLArrayPlotWingBody;
 	private String subfolderPathCLAlpha;
+	Amount<Length> cruiseAltitude;
 	
 	MyArray alphaArrayActual;
 	double [] cLActualArray;
@@ -1167,6 +1169,14 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 
 	public void setAlphaArrayActual(MyArray alphaArrayActual) {
 		this.alphaArrayActual = alphaArrayActual;
+	}
+
+	public Amount<Length> getCruiseAltitude() {
+		return cruiseAltitude;
+	}
+
+	public void setCruiseAltitude(Amount<Length> cruiseAltitude) {
+		this.cruiseAltitude = cruiseAltitude;
 	}
 	
 } // end of class

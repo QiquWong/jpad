@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<input>
+	<header>
+		<title>Longitudinal_Static_Stability_Test_ATR72</title>
+		<author>Manuela Ruocco</author>
+		<version>1.0</version>
+	</header>
+	<Elevator_Data>
+			<FlapType unit="">PLAIN</FlapType>
+			<Ce_c unit="">0.30</Ce_c>
+			<Deflection unit="°">20</Deflection>
+			<Elevator_inboard>0.1</Elevator_inboard>
+			<Elevator_outboard>0.85</Elevator_outboard>
+	</Elevator_Data>
+	<Other_Data>
+			<Dynamic_Pressure_Ratio  unit="">0.85</Dynamic_Pressure_Ratio>
+			<Mach_number_TO unit="">0.15</Mach_number_TO>
+			<Mach_number_L unit="">0.15</Mach_number_L>
+			<Mach_number_cruise unit="">0.85</Mach_number_cruise>
+			<Cruise_Altitude unit="m">10300</Cruise_Altitude>
+	</Other_Data>
+</input>

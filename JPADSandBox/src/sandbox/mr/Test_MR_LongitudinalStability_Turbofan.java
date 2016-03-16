@@ -144,9 +144,9 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		OperatingConditions theConditions = new OperatingConditions();
 		theConditions.set_alphaCurrent(Amount.valueOf(toRadians(2.), SI.RADIAN));
 		System.out.println("\n OPERATING CONDITIONS: ");
-		System.out.println("Altitude " + theConditions.get_altitude());
-		System.out.println("Mach number " + theConditions.get_machCurrent()+"\n");
-		System.out.println("Alpha Current " + theConditions.get_alphaCurrent().to(NonSI.DEGREE_ANGLE) + "\n");
+//		System.out.println("Altitude " + theConditions.get_altitude());
+//		System.out.println("Mach number " + theConditions.get_machCurrent()+"\n");
+//		System.out.println("Alpha Current " + theConditions.get_alphaCurrent().to(NonSI.DEGREE_ANGLE) + "\n");
 		
 		
 		
@@ -391,12 +391,10 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		Amount<Angle> deflectionElevator = reader.getXMLAmountWithUnitByPath("//Deflection").to(NonSI.DEGREE_ANGLE);
 		//double deflectionElevator = Double.parseDouble(reader.getXMLPropertyByPath("//Deflection"));
 		double dynamicPressureRatio = Double.parseDouble(reader.getXMLPropertiesByPath("//Dynamic_Pressure_Ratio").get(0));
-		Amount<Length> fanDiameter = reader.getXMLAmountWithUnitByPath("//Fan_Diameter").to(SI.METER);
-		double etaEfficiency = Double.parseDouble(reader.getXMLPropertiesByPath("//Efficiency").get(0));
-		double nBlade = Double.parseDouble(reader.getXMLPropertiesByPath("//NBlade").get(0));
 		double machTO = Double.parseDouble(reader.getXMLPropertiesByPath("//Mach_number_TO").get(0));
 		double machL = Double.parseDouble(reader.getXMLPropertiesByPath("//Mach_number_L").get(0));
 		double machCruise = Double.parseDouble(reader.getXMLPropertiesByPath("//Mach_number_cruise").get(0));
+		Amount<Length> cruiseAltitude = reader.getXMLAmountWithUnitByPath("//Cruise_Altitude").to(SI.METER);
 			
 		aircraft.get_HTail().getAerodynamics().set_dynamicPressureRatio(dynamicPressureRatio);
 		double deflectionElevatorDouble = deflectionElevator.getEstimatedValue();
@@ -404,6 +402,7 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		aircraft.get_theAerodynamics().set_machCruise(machCruise);
 		aircraft.get_theAerodynamics().set_machTakeOFF(machTO);
 		aircraft.get_theAerodynamics().set_machLanding(machL);
+		aircraft.get_theAerodynamics().setCruiseAltitude(cruiseAltitude);
 		
 		List<Double[]> deltaFlap = new ArrayList<Double[]>();
 		List<FlapTypeEnum> flapType = new ArrayList<FlapTypeEnum>();

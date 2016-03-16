@@ -105,9 +105,11 @@ public class NacellesManager {
 			
 		case B747_100B:
 			_nacellesNumber = 4;
-			for(int i=0; i < _nacellesNumber; i++) {
-				_nacellesList.add(new Nacelle(aircraftName, "Nacelle_" + i, "", 0.0, 0.0, 0.0, _theAircraft));
-			}
+				_nacellesList.add(new Nacelle(aircraftName, "Nacelle_1", "", 23.770, 11.820, -2.462, _theAircraft));
+				_nacellesList.add(new Nacelle(aircraftName, "Nacelle_2", "", 31.693, 21.951, -2.462, _theAircraft));
+				_nacellesList.add(new Nacelle(aircraftName, "Nacelle_3", "", 23.770, -11.820, -2.462, _theAircraft));
+				_nacellesList.add(new Nacelle(aircraftName, "Nacelle_4", "", 31.693, -21.951, -2.462, _theAircraft));
+				
 			break;
 			
 		case AGILE_DC1:

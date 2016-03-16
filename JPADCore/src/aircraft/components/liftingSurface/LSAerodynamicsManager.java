@@ -3007,8 +3007,8 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 			CalcCLAtAlpha theCLCleanCalculator = new CalcCLAtAlpha();
 
-			double cLStarClean = theCLCleanCalculator.nasaBlackwellCompleteCurve(alphaStarCleanAmount);
-			double cL0Clean =  theCLCleanCalculator.nasaBlackwellCompleteCurve(Amount.valueOf(0.0, SI.RADIAN));
+			double cLStarClean = theCLCleanCalculator.nasaBlackwellCompleteCurveValue(alphaStarCleanAmount);
+			double cL0Clean =  theCLCleanCalculator.nasaBlackwellCompleteCurveValue(Amount.valueOf(0.0, SI.RADIAN));
 			double cL0HighLift = cL0Clean + deltaCL0Flap;
 			double qValue = cL0HighLift;
 			double alphaStar = (cLStarClean - qValue)/cLAlphaFlap;
