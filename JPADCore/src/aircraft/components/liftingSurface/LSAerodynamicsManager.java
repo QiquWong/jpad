@@ -146,6 +146,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	/** AoA of the root chord of the lifting surface */
 	Amount<Angle> _alphaRootCurrent = null;
 	Amount<Angle> _alphaStar = null;
+	Amount<Angle> _alphaStarHigLift = null;
 	Amount<Angle> _alphaStall = null;
 
 	Double _machTransonicThreshold = null;
@@ -251,6 +252,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	public MyArray alphaArrayActual;
 	public MyArray alphaArrayActualHighLift;
 	public double[] cLActualArrayHighLift;
+	public String subfolderPathHL;
 	public LSAerodynamicsManager(OperatingConditions conditions, LiftingSurface liftingSurf, Aircraft ac) {
 
 		theOperatingConditions = conditions;
@@ -1340,7 +1342,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 					angleOfIncidence.getEstimatedValue()- downwash.getEstimatedValue()
 					,SI.RADIAN);
 
-			double cLWing = nasaBlackwellCompleteCurve(alphaWing);
+			double cLWing = nasaBlackwellCompleteCurveValue(alphaWing);
 			return cLWing;
 		}
 
@@ -1786,6 +1788,12 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 			return cL;
 		}
+		
+		/** 
+		 * Evaluate CL vs alpha array using alpha wing as input
+		 * 
+		 * @author Manuela Ruocco
+		 */
 
 		public double[] nasaBlackwellCompleteCurve(
 				Amount<Angle> alphaMin, Amount<Angle> alphaMax, int nValue, boolean printResults ){
@@ -1805,6 +1813,19 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			alphaArrayActual.linspace(alphaMin.getEstimatedValue(), alphaMax.getEstimatedValue(), nValue);
 			cLActualArray = LiftCalc.calculateCLvsAlphaArrayNasaBlackwell(
 					getTheLiftingSurface(), alphaArrayActual, nValue, printResults);
+			return cLActualArray;
+		}
+			
+			public double[] nasaBlackwellCompleteCurveArray(MyArray alphaArrayActual, boolean printResults ){
+
+				int nValue =alphaArrayActual.size();
+				cLActualArray = new double[nValue];
+				
+	
+				cLActualArray = LiftCalc.calculateCLvsAlphaArrayNasaBlackwell(
+						getTheLiftingSurface(), alphaArrayActual, nValue, printResults);
+				return cLActualArray;
+			}
 			
 //			double [] cLActualArray = new double[nValue];
 //			CalcCLAtAlpha theClatAlphaCalculator = new CalcCLAtAlpha();
@@ -1859,8 +1880,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 //			}
 //
 //			}
-			return cLActualArray;
-		}
+
 
 		/** 
 		 * Evaluate linear CL vs alpha curve of the lifting surface
@@ -2293,6 +2313,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		deltaAlphaMaxList,
 		deltaCDList,
 		deltaCMC4List;
+		private String subfolderPathHL;
 
 
 		//-------------------------------------------------------------------------------------
@@ -2940,7 +2961,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				alphaStarFlap = alphaMaxHighLift-(alphaMax.to(SI.RADIAN).getEstimatedValue()-alphaStarClean);
 
 			double cLStarFlap = cLAlphaFlap * alphaStarFlap + qValue;	
-
+			theWing.getAerodynamics().set_alphaStarHigLift(Amount.valueOf(alphaStarFlap, SI.RADIAN));
 
 			if (alpha.getEstimatedValue() < alphaStarFlap ){ 
 				double cLActual = cLAlphaFlap * alpha.getEstimatedValue() + qValue;	
@@ -2984,11 +3005,12 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 		public void plotHighLiftCurve() throws InstantiationException, IllegalAccessException{ 
 
-			plotCLvsAlphaCurve();
 
 			String folderPathHL = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR);
-			String subfolderPathHL = JPADStaticWriteUtils.createNewFolder(folderPathHL + "CL_vs_Alpha_Highlift" + File.separator);
-
+			if(subfolderPathCheck){
+				plotCLvsAlphaCurve();
+			subfolderPathHL = JPADStaticWriteUtils.createNewFolder(folderPathHL + "CL_vs_Alpha_Highlift" + File.separator);
+			}
 			double cLAlphaFlap = cLalphaNew*57.3; // need it in 1/rad
 			
 			Amount<Angle> alphaActual;
@@ -3041,6 +3063,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			else
 				alphaStarFlap = alphaMaxHighLift-(alphaMax.to(SI.RADIAN).getEstimatedValue()-alphaStarClean);
 
+			theWing.getAerodynamics().set_alphaStarHigLift(Amount.valueOf(alphaStarFlap, SI.RADIAN));
 			double cLStarFlap = cLAlphaFlap * alphaStarFlap + qValue;	
 
 			
@@ -3130,6 +3153,16 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			System.out.println("\n----------------------------DONE------------------------------");
 
 		}
+		
+		public void plotHighLiftCurve(String subfolderPath) throws InstantiationException, IllegalAccessException{
+			this.subfolderPathHL = subfolderPath;
+			subfolderPathCLAlpha = subfolderPath;
+			subfolderPathCheck = false;
+			plotCLvsAlphaCurve();
+			plotHighLiftCurve();
+			subfolderPathCheck = true;
+
+		};
 		//-------------------------------------------------------------------------------------
 		// GETTERS OF RESULTS:
 
@@ -5515,9 +5548,22 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	}
 
 
+	public Amount<Angle> get_alphaStarHigLift() {
+		return _alphaStarHigLift;
+	}
+
+
+	public void set_alphaStarHigLift(Amount<Angle> _alphaStarHigLift) {
+		this._alphaStarHigLift = _alphaStarHigLift;
+	}
+
+
 	public void setcLActualArrayHighLift(double[] cLActualArrayHighLift) {
 		this.cLActualArrayHighLift = cLActualArrayHighLift;
 	}
+
+
+	
 
 
 

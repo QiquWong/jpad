@@ -11,6 +11,7 @@ import configuration.enumerations.ComponentEnum;
 
 public class HTail extends LiftingSurface{
 
+
 	public HTail(ComponentEnum type) {
 		super(type);
 		// TODO Auto-generated constructor stub
@@ -144,6 +145,8 @@ public class HTail extends LiftingSurface{
 			_dihedralInnerPanel = Amount.valueOf(Math.toRadians(0.0),SI.RADIAN);
 			_dihedralOuterPanel = Amount.valueOf(Math.toRadians(0.0),SI.RADIAN);
 			_CeCt = 0.3; // Elevator to tail chord ratio
+			_etaIn = 0.1;
+			_etaOut = 0.9;
 			_deltaXWingFus = Amount.valueOf(_X0.getEstimatedValue(),SI.METER);
 			//			_deltaXWingFus = Amount.valueOf(24.6,SI.METER); // distance of wing apex (LE of xz plane chord) from fuselage nose = (0,0,0) point 
 			_xTransitionU = 0.12;
@@ -253,4 +256,6 @@ public class HTail extends LiftingSurface{
 	public String getObjectId() {
 		return id;
 	}
+
+	
 }

@@ -278,6 +278,7 @@ public class LiftCalc {
 		MyAirfoil meanAirfoil = theMeanAirfoilCalculator.calculateMeanAirfoil(theLiftingSurface);
 		double alphaStar = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
 		Amount<Angle> alphaStarAmount = Amount.valueOf(alphaStar, SI.RADIAN);
+		theLiftingSurface.getAerodynamics().set_alphaStar( alphaStarAmount);
 		double alphaActual = 0;
 		Amount<Angle> alphaMax;
 		double cLStarWing=0, cLLinearSlope = 0, cLAlphaZero, alphaZeroLiftWingClean;

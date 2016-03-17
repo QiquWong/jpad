@@ -137,7 +137,9 @@ public class LiftingSurface extends AeroComponent{
 	Amount<Length>_xLEMacActualLRF = null;
 	Amount<Length>_yLEMacActualLRF = null; 
 	Amount<Length> _deltaXWingFus = null;
-
+	double _etaIn;
+	double _etaOut;
+	
 	Double _tc_root, _tc_kink, _tc_tip;
 	Double _thicknessMean, _thicknessMax;
 	Double _k_c_wing;
@@ -3616,6 +3618,29 @@ public class LiftingSurface extends AeroComponent{
 
 	public void setHigLiftCalculator(CalcHighLiftDevices higLiftCalculator) {
 		HigLiftCalculator = higLiftCalculator;
+	}
+
+	public Double get_CeCt() {
+		return _CeCt;
+	}
+
+	public void set_CeCt(Double _CeCt) {
+		this._CeCt = _CeCt;
+	}
+	public double get_etaIn() {
+		return _etaIn;
+	}
+
+	public void set_etaIn(double _etaIn) {
+		this._etaIn = _etaIn;
+	}
+
+	public double get_etaOut() {
+		return _etaOut;
+	}
+
+	public void set_etaOut(double _etaOut) {
+		this._etaOut = _etaOut;
 	}
 
 }

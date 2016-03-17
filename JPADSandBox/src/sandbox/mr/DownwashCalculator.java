@@ -54,14 +54,16 @@ public class DownwashCalculator {
 	
 	String folderPath = MyConfiguration.currentDirectoryString + File.separator + "out" + File.separator;
 
-	private double[] cLAlphaArray;
+	private Double[] cLAlphaArray;
 	private double[] cLArray;
 	
 	
 	//BUILDER--------------------------------------
 
 	public DownwashCalculator(
-			Aircraft aircraft
+			Aircraft aircraft,
+			double[] clAlphaArrayTemp,
+			double[] alphaCLArray
 			) {
 
 		this.aircraft = aircraft;
@@ -127,40 +129,45 @@ public class DownwashCalculator {
 		nValue = (int) Math.ceil(( alphaLast - alphaFirst ) * 4); //0.25 deg
 
 		alphaAbsoluteArray =  MyArrayUtils.linspace(alphaFirst, alphaLast, nValue);
-		
+		double [] alphaWingArray =  new double [alphaAbsoluteArray.length];
+		for(int i=0; i< alphaAbsoluteArray.length; i++){
+			alphaWingArray[i] = alphaAbsoluteArray[i]+alphaZeroLift*57.3;
+		}
 		deltaAlpha = Amount.valueOf(
 				Math.toRadians(alphaAbsoluteArray[1] - alphaAbsoluteArray[0]), SI.RADIAN).getEstimatedValue();
 		
 	
-		cLAlphaArray = new double[alphaAbsoluteArray.length];
+		cLAlphaArray = new Double[alphaAbsoluteArray.length];
 		cLArray = new double[alphaAbsoluteArray.length];
 		
 		LSAerodynamicsManager theLSAnalysis = aircraft.get_wing().getAerodynamics();
 		LSAerodynamicsManager.CalcCLvsAlphaCurve theCLArrayCalculator = theLSAnalysis.new CalcCLvsAlphaCurve();
 	
 		
-		cLArray = theCLArrayCalculator.nasaBlackwellCompleteCurve(Amount.valueOf(alphaFirst + 
-				Math.toDegrees(alphaZeroLift), NonSI.DEGREE_ANGLE), 
-				Amount.valueOf(alphaLast + Math.toDegrees(alphaZeroLift), NonSI.DEGREE_ANGLE), nValue, false);
-	
+//		cLArray = theCLArrayCalculator.nasaBlackwellCompleteCurve(Amount.valueOf(alphaFirst + 
+//				Math.toDegrees(alphaZeroLift), NonSI.DEGREE_ANGLE), 
+//				Amount.valueOf(alphaLast + Math.toDegrees(alphaZeroLift), NonSI.DEGREE_ANGLE), nValue, false);
+//	
+//		
+//		
+//		
+//		// cL alpha Array
+//		
+//		for (int i=0 ; i<alphaAbsoluteArray.length-1; i++){
+//			if((alphaAbsoluteArray[i] + 
+//					Math.toDegrees(alphaZeroLift))< Math.toDegrees(alphaStar)){
+//			cLAlphaArray[i] = aircraft.get_wing().getAerodynamics().getcLLinearSlopeNB();}
+//			else{
+//			cLAlphaArray[i]=Math.toDegrees((((cLArray[i+1] - cLArray[i])/(alphaAbsoluteArray[i+1] - alphaAbsoluteArray [i]))+((cLArray[i+1] - cLArray[i])/
+//					(alphaAbsoluteArray[i+1] - alphaAbsoluteArray [i])))/2);
+////				cLAlphaArray[i]=Math.toDegrees((cLArray[i+1] - cLArray[i])/(alphaAbsoluteArray[i+1] - alphaAbsoluteArray [i]));
+//			}
+//		}
+//		cLAlphaArray[cLAlphaArray.length-1] = cLAlphaArray[cLAlphaArray.length-2];
+//		
+//		System.out.println(" cl alpha array = " + Arrays.toString(cLAlphaArray));
 		
-		
-		
-		// cL alpha Array
-		
-		for (int i=0 ; i<alphaAbsoluteArray.length-1; i++){
-			if((alphaAbsoluteArray[i] + 
-					Math.toDegrees(alphaZeroLift))< Math.toDegrees(alphaStar)){
-			cLAlphaArray[i] = aircraft.get_wing().getAerodynamics().getcLLinearSlopeNB();}
-			else{
-			cLAlphaArray[i]=Math.toDegrees((((cLArray[i+1] - cLArray[i])/(alphaAbsoluteArray[i+1] - alphaAbsoluteArray [i]))+((cLArray[i+1] - cLArray[i])/
-					(alphaAbsoluteArray[i+1] - alphaAbsoluteArray [i])))/2);
-//				cLAlphaArray[i]=Math.toDegrees((cLArray[i+1] - cLArray[i])/(alphaAbsoluteArray[i+1] - alphaAbsoluteArray [i]));
-			}
-		}
-		cLAlphaArray[cLAlphaArray.length-1] = cLAlphaArray[cLAlphaArray.length-2];
-		
-		
+		cLAlphaArray = MyMathUtils.getInterpolatedValue1DLinear( alphaCLArray, clAlphaArrayTemp, alphaWingArray);
 	
 	}
 	
@@ -311,7 +318,7 @@ public class DownwashCalculator {
 			alphaBodyArray[i] = alphaAbsoluteArray[i] - Math.toDegrees(iw) + Math.toDegrees(alphaZeroLift);
 			
 		}
-		System.out.println("\n Results -----");
+		System.out.println("\n Downwash Arrays");
 		System.out.println("DownwashGradient " + Arrays.toString(downwashGradientArray));
 		System.out.println("Downwash Angle (deg) " + Arrays.toString(downwashArray));
 		System.out.println("Alpha Absolute (deg) " + Arrays.toString(alphaAbsoluteArray));
@@ -556,6 +563,42 @@ public class DownwashCalculator {
 	public double getDownwashGradientLinear() {
 		double downwashGradientLinear = calculateDownwashGradientConstantDelft(zDistanceZero,xDistanceZero, cLAlphaArray[0]);
 		return downwashGradientLinear;
+	}
+
+
+
+	public double[] getAlphaAbsoluteArray() {
+		return alphaAbsoluteArray;
+	}
+
+
+
+	public void setAlphaAbsoluteArray(double[] alphaAbsoluteArray) {
+		this.alphaAbsoluteArray = alphaAbsoluteArray;
+	}
+
+
+
+	public double[] getDownwashArray() {
+		return downwashArray;
+	}
+
+
+
+	public void setDownwashArray(double[] downwashArray) {
+		this.downwashArray = downwashArray;
+	}
+
+
+
+	public double[] getAlphaBodyArray() {
+		return alphaBodyArray;
+	}
+
+
+
+	public void setAlphaBodyArray(double[] alphaBodyArray) {
+		this.alphaBodyArray = alphaBodyArray;
 	}
 
 

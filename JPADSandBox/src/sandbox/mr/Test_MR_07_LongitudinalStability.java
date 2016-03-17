@@ -535,6 +535,7 @@
 //		System.out.println("Starting evaluate stall path of horiontal tail");
 //		System.out.println("-----------------------------------------------------");
 //
+//		
 //
 //		LSAerodynamicsManager.CalcCLMaxClean theCLmaxHTailAnalysis = theLSHorizontalTail.new CalcCLMaxClean(); //is nested
 //		LSAerodynamicsManager.CalcCLvsAlphaCurve theCLHTailAnalysis = theLSHorizontalTail.new CalcCLvsAlphaCurve();
