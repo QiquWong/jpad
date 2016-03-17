@@ -84,15 +84,16 @@ public class Landing_Test_TF_Sensibility {
 		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.B747_100B);
 		aircraft.set_name("B747-100B");
 
+		aircraft.get_weights().set_MLW(Amount.valueOf(9.81*267916, SI.NEWTON));
+		
 		/*------------------------------------------------------------------------------------------
 		 * Possibility to change S, at fixed Weight,
 		 * in order to change the W/S ratio.
 		 */
-//		aircraft.get_wing().set_surface(Amount.valueOf(639, SI.SQUARE_METRE));
-//		aircraft.get_wing().set_surface(Amount.valueOf(568, SI.SQUARE_METRE));
-//		aircraft.get_wing().set_surface(Amount.valueOf(511, SI.SQUARE_METRE));
-		aircraft.get_wing().set_surface(Amount.valueOf(465, SI.SQUARE_METRE));
-//		aircraft.get_wing().set_surface(Amount.valueOf(426, SI.SQUARE_METRE));
+//		aircraft.get_wing().set_surface(Amount.valueOf(570, SI.SQUARE_METRE));
+//		aircraft.get_wing().set_surface(Amount.valueOf(513, SI.SQUARE_METRE));
+		aircraft.get_wing().set_surface(Amount.valueOf(466, SI.SQUARE_METRE));
+//		aircraft.get_wing().set_surface(Amount.valueOf(427, SI.SQUARE_METRE));
 		//------------------------------------------------------------------------------------------
 
 		LiftingSurface theWing = aircraft.get_wing();

@@ -88,6 +88,8 @@ public class Landing_Test_TF {
 
 		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.B747_100B);
 		aircraft.set_name("B747-100B");
+		
+		aircraft.get_weights().set_MLW(Amount.valueOf(9.81*267916, SI.NEWTON));
 
 		LiftingSurface theWing = aircraft.get_wing();
 
@@ -341,19 +343,19 @@ public class Landing_Test_TF {
 		// Landing - Ground Roll Distance Test
 		//----------------------------------------------------------------------------------
 		_startTimeCalculation = System.currentTimeMillis();
-		double mu = 0.025;
-		double muBrake = 0.3;
+		double mu = 0.03;
+		double muBrake = 0.4;
 		double kA = 1.3; // [1/deg]
 		double kFlare = 1.23;
 		double kTD = 1.15;
 		double phiRev = 0.0;
-		Amount<Duration> nFreeRoll = Amount.valueOf(2, SI.SECOND);
-		Amount<Length> wingToGroundDistance = Amount.valueOf(4.0, SI.METER);
+		Amount<Duration> nFreeRoll = Amount.valueOf(3, SI.SECOND);
+		Amount<Length> wingToGroundDistance = Amount.valueOf(6.56, SI.METER);
 		Amount<Length> obstacle = Amount.valueOf(50, NonSI.FOOT).to(SI.METER);
 		Amount<Velocity> vWind = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
 		Amount<Angle> alphaGround = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
-		Amount<Angle> iw = Amount.valueOf(2.0, NonSI.DEGREE_ANGLE);
-		Amount<Angle> thetaApproach = Amount.valueOf(3.0, NonSI.DEGREE_ANGLE);
+		Amount<Angle> iw = Amount.valueOf(3.0, NonSI.DEGREE_ANGLE);
+		Amount<Angle> thetaApproach = Amount.valueOf(3, NonSI.DEGREE_ANGLE);
 		CalcLanding theLandingCalculator = new CalcLanding(
 				aircraft,
 				theCondition,
