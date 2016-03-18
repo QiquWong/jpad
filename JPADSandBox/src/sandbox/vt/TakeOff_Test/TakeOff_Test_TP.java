@@ -138,7 +138,6 @@ public class TakeOff_Test_TP {
 		System.out.println("CL max --> " + airfoilRoot.getAerodynamics().get_clMax());
 		System.out.println("LE sharpness parameter Root = " + airfoilRoot.getGeometry().get_deltaYPercent());
 
-
 		//AIRFOIL 2
 		double yLocKink = theWing.get_spanStationKink() * theWing.get_semispan().getEstimatedValue();
 		MyAirfoil airfoilKink = theWing.get_theAirfoilsList().get(1);
@@ -152,18 +151,17 @@ public class TakeOff_Test_TP {
 		System.out.println("CL max --> " + airfoilKink.getAerodynamics().get_clMax());
 		System.out.println("LE sharpness parameter Kink = " + airfoilKink.getGeometry().get_deltaYPercent());
 
-
 		//AIRFOIL 3
 		double yLocTip = theWing.get_semispan().getEstimatedValue();
 		MyAirfoil airfoilTip = theWing.get_theAirfoilsList().get(2);
 		airfoilTip.getGeometry().update(yLocRoot);  // define chord
 		airfoilTip.getGeometry().set_maximumThicknessOverChord(0.15); //REPORT
-		airfoilTip.getGeometry().set_deltaYPercent(3.115);
+		airfoilTip.getGeometry().set_deltaYPercent(4.307);
 		System.out.println("\n \n \t TIP \nAirfoil Type: " + airfoilKink.get_family());
 		System.out.println("tip Chord [m] = " +theWing.get_chordTip().getEstimatedValue() );
 		System.out.println("Tip maximum thickness = " + airfoilTip.getGeometry().get_maximumThicknessOverChord());
 		System.out.println("CL max --> " + airfoilTip.getAerodynamics().get_clMax());
-		System.out.println("LE sharpness parameter Tip = " + airfoilTip.getGeometry().get_deltaYPercent()+ "\n");
+		System.out.println("LE sharpness parameter Tip = " + airfoilTip.getGeometry().get_deltaYPercent());
 
 		//--------------------------------------------------------------------------------------
 		// Assign airfoil
@@ -261,57 +259,57 @@ public class TakeOff_Test_TP {
 						null
 						);
 
-		//		highLiftCalculator.calculateHighLiftDevicesEffects();
-		//
-		//		//----------------------------------------------------------------------------------
-		//		// Results print
-		//		System.out.println("\ndeltaCl0_flap_list = ");
-		//		for(int i=0; i<highLiftCalculator.getDeltaCl0_flap_list().size(); i++)
-		//			System.out.print(highLiftCalculator.getDeltaCl0_flap_list().get(i) + " ");
-		//
-		//		System.out.println("\n\ndeltaCl0_flap = \n" + highLiftCalculator.getDeltaCl0_flap());
-		//
-		//		System.out.println("\n\ndeltaCL0_flap_list = ");
-		//		for(int i=0; i<highLiftCalculator.getDeltaCL0_flap_list().size(); i++)
-		//			System.out.print(highLiftCalculator.getDeltaCL0_flap_list().get(i) + " ");
-		//
-		//		System.out.println("\n\ndeltaCL0_flap = \n" + highLiftCalculator.getDeltaCL0_flap());
-		//
-		//		System.out.println("\n\ndeltaClmax_flap_list = ");
-		//		for(int i=0; i<highLiftCalculator.getDeltaClmax_flap_list().size(); i++)
-		//			System.out.print(highLiftCalculator.getDeltaClmax_flap_list().get(i) + " ");
-		//
-		//		System.out.println("\n\ndeltaClmax_flap = \n" + highLiftCalculator.getDeltaClmax_flap());
-		//
-		//		System.out.println("\n\ndeltaCLmax_flap_list = ");
-		//		for(int i=0; i<highLiftCalculator.getDeltaCLmax_flap_list().size(); i++)
-		//			System.out.print(highLiftCalculator.getDeltaCLmax_flap_list().get(i) + " ");
-		//
-		//		System.out.println("\n\ndeltaCLmax_flap = \n" + highLiftCalculator.getDeltaCLmax_flap());
-		//
-		//		System.out.println("\n\ncLalpha_new_list = ");
-		//		for(int i=0; i<highLiftCalculator.getcLalpha_new_list().size(); i++)
-		//			System.out.print(highLiftCalculator.getcLalpha_new_list().get(i) + " ");
-		//
-		//		System.out.println("\n\ncLalpha_new = \n" + highLiftCalculator.getcLalpha_new());
-		//
-		//		System.out.println("\n\ndeltaAlphaMax = \n" + highLiftCalculator.getDeltaAlphaMaxFlap());
-		//
-		//		System.out.println("\n\ndeltaCD_list = ");
-		//		for(int i=0; i<highLiftCalculator.getDeltaCD_list().size(); i++)
-		//			System.out.print(highLiftCalculator.getDeltaCD_list().get(i) + " ");
-		//
-		//		System.out.println("\n\ndeltaCD = \n" + highLiftCalculator.getDeltaCD());
-		//
-		//		System.out.println("\n\ndeltaCMc_4_list = ");
-		//		for(int i=0; i<highLiftCalculator.getDeltaCM_c4_list().size(); i++)
-		//			System.out.print(highLiftCalculator.getDeltaCM_c4_list().get(i) + " ");
-		//
-		//		System.out.println("\n\ndeltaCMc_4 = \n" + highLiftCalculator.getDeltaCM_c4());
-		//
-		//		System.out.println("\n\ndeltaCMc_4 = \n" + highLiftCalculator.getDeltaCM_c4());
-		//
-		//		highLiftCalculator.plotHighLiftCurve();
+//		highLiftCalculator.calculateHighLiftDevicesEffects();
+//
+//		//----------------------------------------------------------------------------------
+//		// Results print
+//		System.out.println("\ndeltaCl0_flap_list = ");
+//		for(int i=0; i<highLiftCalculator.getDeltaCl0_flap_list().size(); i++)
+//			System.out.print(highLiftCalculator.getDeltaCl0_flap_list().get(i) + " ");
+//
+//		System.out.println("\n\ndeltaCl0_flap = \n" + highLiftCalculator.getDeltaCl0_flap());
+//
+//		System.out.println("\n\ndeltaCL0_flap_list = ");
+//		for(int i=0; i<highLiftCalculator.getDeltaCL0_flap_list().size(); i++)
+//			System.out.print(highLiftCalculator.getDeltaCL0_flap_list().get(i) + " ");
+//
+//		System.out.println("\n\ndeltaCL0_flap = \n" + highLiftCalculator.getDeltaCL0_flap());
+//
+//		System.out.println("\n\ndeltaClmax_flap_list = ");
+//		for(int i=0; i<highLiftCalculator.getDeltaClmax_flap_list().size(); i++)
+//			System.out.print(highLiftCalculator.getDeltaClmax_flap_list().get(i) + " ");
+//
+//		System.out.println("\n\ndeltaClmax_flap = \n" + highLiftCalculator.getDeltaClmax_flap());
+//
+//		System.out.println("\n\ndeltaCLmax_flap_list = ");
+//		for(int i=0; i<highLiftCalculator.getDeltaCLmax_flap_list().size(); i++)
+//			System.out.print(highLiftCalculator.getDeltaCLmax_flap_list().get(i) + " ");
+//
+//		System.out.println("\n\ndeltaCLmax_flap = \n" + highLiftCalculator.getDeltaCLmax_flap());
+//
+//		System.out.println("\n\ncLalpha_new_list = ");
+//		for(int i=0; i<highLiftCalculator.getcLalpha_new_list().size(); i++)
+//			System.out.print(highLiftCalculator.getcLalpha_new_list().get(i) + " ");
+//
+//		System.out.println("\n\ncLalpha_new = \n" + highLiftCalculator.getcLalpha_new());
+//
+//		System.out.println("\n\ndeltaAlphaMax = \n" + highLiftCalculator.getDeltaAlphaMaxFlap());
+//
+//		System.out.println("\n\ndeltaCD_list = ");
+//		for(int i=0; i<highLiftCalculator.getDeltaCD_list().size(); i++)
+//			System.out.print(highLiftCalculator.getDeltaCD_list().get(i) + " ");
+//
+//		System.out.println("\n\ndeltaCD = \n" + highLiftCalculator.getDeltaCD());
+//
+//		System.out.println("\n\ndeltaCMc_4_list = ");
+//		for(int i=0; i<highLiftCalculator.getDeltaCM_c4_list().size(); i++)
+//			System.out.print(highLiftCalculator.getDeltaCM_c4_list().get(i) + " ");
+//
+//		System.out.println("\n\ndeltaCMc_4 = \n" + highLiftCalculator.getDeltaCM_c4());
+//
+//		System.out.println("\n\ndeltaCMc_4 = \n" + highLiftCalculator.getDeltaCM_c4());
+//
+//		highLiftCalculator.plotHighLiftCurve();
 
 		//----------------------------------------------------------------------------------
 		// TakeOff Distance Test

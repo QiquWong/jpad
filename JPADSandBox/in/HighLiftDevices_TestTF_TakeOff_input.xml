@@ -5,7 +5,7 @@
 		<author>Vittorio Trifari</author>
 		<version>1.0</version>
 	</header>	
-	<B747>
+<B747>
 		<Flap_Number unit="">2</Flap_Number>
 		<Flap1>
 			<FlapType unit="">TRIPLE_SLOTTED</FlapType>
@@ -18,7 +18,7 @@
 		</Flap1>
 		<Flap2>
 			<FlapType unit="">TRIPLE_SLOTTED</FlapType>
-			<Cf_C unit="">0.127</Cf_C>
+			<Cf_C unit="">0.13</Cf_C>
 			<Delta_Flap2 unit="°">5</Delta_Flap2>
 			<Delta_Flap2 unit="°">3</Delta_Flap2>
 			<Delta_Flap2 unit="°">2</Delta_Flap2>

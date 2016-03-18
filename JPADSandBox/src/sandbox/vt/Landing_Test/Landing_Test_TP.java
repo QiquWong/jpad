@@ -87,7 +87,7 @@ public class Landing_Test_TP {
 
 		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.ATR72);
 		aircraft.set_name("ATR-72");
-//		aircraft.get_weights().set_MLW(Amount.valueOf(22350*9.81, SI.NEWTON)); // optional MLW from brochure
+		//		aircraft.get_weights().set_MLW(Amount.valueOf(22350*9.81, SI.NEWTON)); // optional MLW from brochure
 
 		LiftingSurface theWing = aircraft.get_wing();
 
@@ -136,7 +136,6 @@ public class Landing_Test_TP {
 		System.out.println("CL max --> " + airfoilRoot.getAerodynamics().get_clMax());
 		System.out.println("LE sharpness parameter Root = " + airfoilRoot.getGeometry().get_deltaYPercent());
 
-
 		//AIRFOIL 2
 		double yLocKink = theWing.get_spanStationKink() * theWing.get_semispan().getEstimatedValue();
 		MyAirfoil airfoilKink = theWing.get_theAirfoilsList().get(1);
@@ -150,18 +149,17 @@ public class Landing_Test_TP {
 		System.out.println("CL max --> " + airfoilKink.getAerodynamics().get_clMax());
 		System.out.println("LE sharpness parameter Kink = " + airfoilKink.getGeometry().get_deltaYPercent());
 
-
 		//AIRFOIL 3
 		double yLocTip = theWing.get_semispan().getEstimatedValue();
 		MyAirfoil airfoilTip = theWing.get_theAirfoilsList().get(2);
 		airfoilTip.getGeometry().update(yLocRoot);  // define chord
 		airfoilTip.getGeometry().set_maximumThicknessOverChord(0.15); //REPORT
-		airfoilTip.getGeometry().set_deltaYPercent(3.115);
+		airfoilTip.getGeometry().set_deltaYPercent(4.307);
 		System.out.println("\n \n \t TIP \nAirfoil Type: " + airfoilKink.get_family());
 		System.out.println("tip Chord [m] = " +theWing.get_chordTip().getEstimatedValue() );
 		System.out.println("Tip maximum thickness = " + airfoilTip.getGeometry().get_maximumThicknessOverChord());
 		System.out.println("CL max --> " + airfoilTip.getAerodynamics().get_clMax());
-		System.out.println("LE sharpness parameter Tip = " + airfoilTip.getGeometry().get_deltaYPercent()+ "\n");
+		System.out.println("LE sharpness parameter Tip = " + airfoilTip.getGeometry().get_deltaYPercent());
 
 
 		//--------------------------------------------------------------------------------------

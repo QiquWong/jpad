@@ -10,7 +10,7 @@
 		<Flap1>
 			<FlapType unit="">TRIPLE_SLOTTED</FlapType>
 			<Cf_C unit="">0.13</Cf_C>
-			<Delta_Flap1 unit="°">10</Delta_Flap1>
+			<Delta_Flap1 unit="°">20</Delta_Flap1>
 			<Delta_Flap1 unit="°">10</Delta_Flap1>
 			<Delta_Flap1 unit="°">10</Delta_Flap1>
 			<Flap_inboard>0.104</Flap_inboard>
@@ -19,14 +19,14 @@
 		<Flap2>
 			<FlapType unit="">TRIPLE_SLOTTED</FlapType>
 			<Cf_C unit="">0.13</Cf_C>
-			<Delta_Flap2 unit="°">10</Delta_Flap2>
+			<Delta_Flap2 unit="°">20</Delta_Flap2>
 			<Delta_Flap2 unit="°">10</Delta_Flap2>
 			<Delta_Flap2 unit="°">10</Delta_Flap2>
 			<Flap_inboard unit="">0.411</Flap_inboard>
 			<Flap_outboard unit="">0.636</Flap_outboard>
 		</Flap2>
 		<Slat1>
-			<Delta_Slat unit="°">30</Delta_Slat>
+			<Delta_Slat unit="°">40</Delta_Slat>
 			<Cs_C unit="">0.09</Cs_C>
 			<cExt_c unit="">1.1</cExt_c>
 			<LEradius_c_ratio unit="">0.0097</LEradius_c_ratio>
@@ -34,7 +34,7 @@
 			<Slat_outboard unit="">0.364</Slat_outboard>
 		</Slat1>
 		<Slat2>
-			<Delta_Slat unit="°">30</Delta_Slat>
+			<Delta_Slat unit="°">40</Delta_Slat>
 			<Cs_C unit="">0.136</Cs_C>
 			<cExt_c unit="">1.1</cExt_c>
 			<LEradius_c_ratio unit="">0.0097</LEradius_c_ratio>
@@ -42,7 +42,7 @@
 			<Slat_outboard unit="">0.648</Slat_outboard>
 		</Slat2>
 		<Slat3>
-			<Delta_Slat unit="°">30</Delta_Slat>
+			<Delta_Slat unit="°">40</Delta_Slat>
 			<Cs_C unit="">0.187</Cs_C>
 			<cExt_c unit="">1.1</cExt_c>
 			<LEradius_c_ratio unit="">0.0097</LEradius_c_ratio>
