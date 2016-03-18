@@ -433,14 +433,13 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		
 		Amount<Angle> alphaBody = Amount.valueOf(Math.toRadians(2.0), SI.RADIAN);
 		Amount<Angle> alphaMin = Amount.valueOf(Math.toRadians(-5), SI.RADIAN);
-		Amount<Angle> alphaMax = Amount.valueOf(Math.toRadians(20), SI.RADIAN);
+		Amount<Angle> alphaMax = Amount.valueOf(Math.toRadians(25), SI.RADIAN);
 		
 		ACStabilityManager theStabilityManager = new ACStabilityManager(meanAirfoil, aircraft, ConditionEnum.CRUISE,
 				alphaMin, alphaMax, alphaBody , true, subfolderPath, pathTakeOff);
  
-		theStabilityManager.CalculateWingLiftCharacteristics();
-		theStabilityManager.CalculateFuselageLiftCharacteristics();
-		theStabilityManager.CalculateHTailLiftCharacteristics();
+		theStabilityManager.CalculateAll();
+		theStabilityManager.CalculateDragCharacteristics();
 		
 		
 	

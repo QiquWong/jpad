@@ -180,7 +180,7 @@ public class StabilityCalculator {
 			double cLMaxElevator = cLMaxClean + deltaCLMax;
 
 
-			alphaArrayWithTau = MyArrayUtils.linspace(alphaZeroLift-20 , alphaStallElevator+3 , nPoints);
+			alphaArrayWithTau = MyArrayUtils.linspace(alphaZeroLift , alphaStallElevator+1 , nPoints);
 			clHTailDeflected = new double [alphaArrayWithTau.length];
 
 			
@@ -188,15 +188,20 @@ public class StabilityCalculator {
 
 			double alpha;
 
-			double[][] matrixData = { {Math.pow(alphaStallElevator, 3), Math.pow(alphaStallElevator, 2)
-				, alphaStallElevator,1.0},
-					{3* Math.pow(alphaStallElevator, 2), 2*alphaStallElevator, 1.0, 0.0},
-					{3* Math.pow(alphaStarElevator, 2), 2*alphaStarElevator, 1.0, 0.0},
-					{Math.pow(alphaStarElevator, 3), Math.pow(alphaStarElevator, 2),alphaStarElevator,1.0}};
+			double[][] matrixData = {
+					{Math.pow(alphaStarElevator, 4), Math.pow(alphaStarElevator, 3),Math.pow(alphaStarElevator, 2), alphaStarElevator,1.0},
+					{4* Math.pow(alphaStarElevator, 3), 3*Math.pow(alphaStarElevator, 2), 2*alphaStarElevator,1.0, 0.0},
+					{12 *Math.pow(alphaStarElevator, 2), 6* alphaStarElevator, 2.0, 0.0, 0.0},
+					{Math.pow(alphaStallElevator, 4), Math.pow(alphaStallElevator, 3),Math.pow(alphaStallElevator, 2), alphaStallElevator,1.0},
+					{4* Math.pow(alphaStallElevator, 3), 3*Math.pow(alphaStallElevator, 2), 2*alphaStallElevator,1.0, 0.0}
+			};
+				
+				
+
 			RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
 
 
-			double [] vector = {cLMaxElevator, 0,clAlphaDeltaE, cLstarElevator};
+			double [] vector = {cLstarElevator,clAlphaDeltaE, 0,cLMaxElevator,0};
 
 			double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
 
@@ -204,6 +209,7 @@ public class StabilityCalculator {
 			double b = solSystem[1];
 			double c = solSystem[2];
 			double d = solSystem[3];
+			double e = solSystem[4];
 
 			for (int i=0; i<alphaArrayWithTau.length ; i++){
 
@@ -213,9 +219,9 @@ public class StabilityCalculator {
 				}
 
 				else{
-					clHTailDeflected[i] = a * Math.pow(alpha, 3) + 
-							b * Math.pow(alpha, 2) + 
-							c * alpha + d;
+					clHTailDeflected[i] = a *Math.pow(alpha, 4)+ b * Math.pow(alpha, 3) + 
+							c * Math.pow(alpha, 2) + 
+							d * alpha + e;
 
 				}
 			}
@@ -223,27 +229,29 @@ public class StabilityCalculator {
 			// calcolo prova
 						
 						double alphaTemp = alphaMaxClean;
-						double delta = 0.001;
+						double delta = 0.00001;
 						double diff = 10;
 						
-						while (Math.abs(diff) >0.0000001 ){
-						double[][] matrixDataAlpha = { { Math.pow(alphaStarElevator, 2)
+						while (Math.abs(diff) >0.00000001 ){
+						double[][] matrixDataAlpha = { { Math.pow(alphaStarElevator, 3), Math.pow(alphaStarElevator, 2)
 							, alphaStarElevator,1.0},
-								{ 2*alphaStarElevator, 1.0, 0.0},
-								{ 2*alphaTemp, 1.0, 0.0}};
+								{ 3 * Math.pow(alphaStarElevator, 2), 2*alphaStarElevator, 1.0, 0.0},
+								{6 * Math.pow(alphaStarElevator, 2), 2.0, 0.0, 0.0},
+								{3 * Math.pow(alphaTemp, 2), 2*alphaTemp, 1.0, 0.0}};
 						RealMatrix mAlpha = MatrixUtils.createRealMatrix(matrixDataAlpha);
 
 
-						double [] vectorAlpha = {cLstarElevator, clAlphaDeltaE,0};
+						double [] vectorAlpha = {cLstarElevator, clAlphaDeltaE,0,0};
 
 						double [] solSystemAlpha = MyMathUtils.solveLinearSystem(mAlpha ,vectorAlpha);
 
 						double aA = solSystemAlpha[0];
 						double bA = solSystemAlpha[1];
 						double cA = solSystemAlpha[2];
+						double dA = solSystemAlpha[3];
 
-						double cLConf =a * Math.pow(alphaTemp, 3) + 
-								b *Math.pow(alphaTemp,2) + c * alphaTemp + d;
+						double cLConf =a * Math.pow(alphaTemp, 4) + 
+								b * Math.pow(alphaTemp,3) + c * Math.pow(alphaTemp,2) + d * alphaTemp + e;
 						
 						diff = cLConf - cLMaxElevator;
 						
@@ -258,8 +266,8 @@ public class StabilityCalculator {
 						if (deltaE > 0 ){
 						double [] deltaAlphaMaxArray = {0,
 								-1.481,
-								-2.836999117,
-								-3.643,
+								-2.86,
+								-3.646,
 								-2.579,
 								-2.032,
 								-1.826};
@@ -278,8 +286,8 @@ public class StabilityCalculator {
 							double [] deltaAlphaMaxArray = {1.826,
 									2.032,
 									2.579,
-									3.643,
-									2.836999117,
+									3.646,
+									2.86,
 									1.481,
 									0};
 		
@@ -297,15 +305,15 @@ public class StabilityCalculator {
 					
 						alphaStallElevator = alphaMaxClean + deltaAlphaMax;
 						
-						double[][] matrixDataNew = { {Math.pow(alphaStallElevator, 3), Math.pow(alphaStallElevator, 2)
-							, alphaStallElevator,1.0},
-								{3* Math.pow(alphaStallElevator, 2), 2*alphaStallElevator, 1.0, 0.0},
-								{3* Math.pow(alphaStarElevator, 2), 2*alphaStarElevator, 1.0, 0.0},
-								{Math.pow(alphaStarElevator, 3), Math.pow(alphaStarElevator, 2),alphaStarElevator,1.0}};
+						double[][] matrixDataNew = { {Math.pow(alphaStarElevator, 4), Math.pow(alphaStarElevator, 3),Math.pow(alphaStarElevator, 2), alphaStarElevator,1.0},
+								{4* Math.pow(alphaStarElevator, 3), 3*Math.pow(alphaStarElevator, 2), 2*alphaStarElevator,1.0, 0.0},
+								{12 *Math.pow(alphaStarElevator, 2), 6* alphaStarElevator, 2.0, 0.0, 0.0},
+								{Math.pow(alphaStallElevator, 4), Math.pow(alphaStallElevator, 3),Math.pow(alphaStallElevator, 2), alphaStallElevator,1.0},
+								{4* Math.pow(alphaStallElevator, 3), 3*Math.pow(alphaStallElevator, 2), 2*alphaStallElevator,1.0, 0.0}};
 						RealMatrix mNew = MatrixUtils.createRealMatrix(matrixDataNew);
 
 
-						double [] vectormNew = {cLMaxElevator, 0,clAlphaDeltaE, cLstarElevator};
+						double [] vectormNew = { cLstarElevator, clAlphaDeltaE, 0.0, cLMaxElevator, 0};
 
 						double [] solSystemNew = MyMathUtils.solveLinearSystem(mNew,  vectormNew);
 
@@ -313,6 +321,7 @@ public class StabilityCalculator {
 						double bNew = solSystemNew[1];
 						double cNew = solSystemNew[2];
 						double dNew = solSystemNew[3];
+						double eNew = solSystemNew[4];
 
 						for (int i=0; i<alphaArrayWithTau.length ; i++){
 
@@ -322,9 +331,9 @@ public class StabilityCalculator {
 							}
 
 							else{
-								clHTailDeflected[i] = aNew * Math.pow(alpha, 3) + 
-										bNew * Math.pow(alpha, 2) + 
-										cNew * alpha + dNew;
+								clHTailDeflected[i] = aNew * Math.pow(alpha, 4) + 
+										bNew * Math.pow(alpha, 3) + 
+										cNew * Math.pow(alpha, 2) +dNew * alpha + eNew;
 
 							}
 						}	

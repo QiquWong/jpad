@@ -1025,6 +1025,10 @@ public class ACStabilityManager {
 		for (int i=0; i< cDWingCleanArray.length; i++){
 			cDWingCleanArray[i] =(double)cDWingTemp[i];
 		}
+		
+		// Induced Drag 
+		
+		
 
 
 		// value
