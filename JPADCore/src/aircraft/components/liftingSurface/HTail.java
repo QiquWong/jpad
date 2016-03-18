@@ -186,6 +186,8 @@ public class HTail extends LiftingSurface{
 			_dihedralInnerPanel = Amount.valueOf(Math.toRadians(2.0002),SI.RADIAN);
 			_dihedralOuterPanel = Amount.valueOf(Math.toRadians(0.0),SI.RADIAN);
 			_CeCt = 0.3; // Elevator to tail chord ratio
+			_etaIn = 0.1;
+			_etaOut = 0.9;
 			_deltaXWingFus = Amount.valueOf(_X0.getEstimatedValue(),SI.METER);
 			//			_deltaXWingFus = Amount.valueOf(24.6,SI.METER); // distance of wing apex (LE of xz plane chord) from fuselage nose = (0,0,0) point 
 			_xTransitionU = 0.12;

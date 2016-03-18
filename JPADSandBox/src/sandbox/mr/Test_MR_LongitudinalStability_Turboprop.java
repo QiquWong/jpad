@@ -443,10 +443,8 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		ACStabilityManager theStabilityManager = new ACStabilityManager(meanAirfoil, aircraft, ConditionEnum.CRUISE,
 				alphaMin, alphaMax, alphaBody , true, subfolderPath, pathTakeOff);
  
-		theStabilityManager.CalculateWingLiftCharacteristics();
-		theStabilityManager.CalculateFuselageLiftCharacteristics();
-		theStabilityManager.CalculateHTailLiftCharacteristics();
-		
+	theStabilityManager.CalculateAll();
+	theStabilityManager.CalculateDragCharacteristics();
 			
 		
 		//---------------------

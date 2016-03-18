@@ -384,10 +384,13 @@ public class Test_MR_LongitudinalStability_Turbofan {
 
 		
 		//Reading data
-		
 		double etaInboard = Double.parseDouble(reader.getXMLPropertiesByPath("//Elevator_inboard").get(0));
 		double etaOutboard = Double.parseDouble(reader.getXMLPropertiesByPath("//Elevator_outboard").get(0));
 		double chordRatio = Double.parseDouble(reader.getXMLPropertiesByPath("//Ce_c").get(0));
+		aircraft.get_HTail().set_CeCt(chordRatio);
+		aircraft.get_HTail().set_etaIn(etaInboard);
+		aircraft.get_HTail().set_etaOut(etaOutboard);
+		
 		Amount<Angle> deflectionElevator = reader.getXMLAmountWithUnitByPath("//Deflection").to(NonSI.DEGREE_ANGLE);
 		//double deflectionElevator = Double.parseDouble(reader.getXMLPropertyByPath("//Deflection"));
 		double dynamicPressureRatio = Double.parseDouble(reader.getXMLPropertiesByPath("//Dynamic_Pressure_Ratio").get(0));
@@ -432,7 +435,7 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		Amount<Angle> alphaMin = Amount.valueOf(Math.toRadians(-5), SI.RADIAN);
 		Amount<Angle> alphaMax = Amount.valueOf(Math.toRadians(20), SI.RADIAN);
 		
-		ACStabilityManager theStabilityManager = new ACStabilityManager(meanAirfoil, aircraft, ConditionEnum.TAKE_OFF,
+		ACStabilityManager theStabilityManager = new ACStabilityManager(meanAirfoil, aircraft, ConditionEnum.CRUISE,
 				alphaMin, alphaMax, alphaBody , true, subfolderPath, pathTakeOff);
  
 		theStabilityManager.CalculateWingLiftCharacteristics();

@@ -20,8 +20,10 @@ import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
 import aircraft.components.fuselage.FusAerodynamicsManager;
 import aircraft.components.fuselage.Fuselage;
+import aircraft.components.liftingSurface.HTail;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCDAtAlpha;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcHighLiftDevices;
 import configuration.enumerations.AeroConfigurationTypeEnum;
@@ -48,10 +50,10 @@ public class ACStabilityManager {
 	FusAerodynamicsManager theFuselageManager;
 	StabilityCalculator theStabilityCalculator = new StabilityCalculator();
 	ConditionEnum theCondition;
-	
+	DownwashCalculator theDownwashCalculator;
 
 	MyAirfoil meanAirfoil;
-	
+
 	int nValueAlpha = 50;
 
 	CenterOfGravity centerOfGravity = new CenterOfGravity();
@@ -65,6 +67,7 @@ public class ACStabilityManager {
 	Amount<Angle> alphaMaxWing;
 	Amount<Angle> alphaMinHTail;
 	Amount<Angle> alphaMaxHtail;
+	Amount<Angle> alphaHorizontalTail ;
 
 	Aircraft aircraft;
 	LiftingSurface theWing;
@@ -79,11 +82,11 @@ public class ACStabilityManager {
 
 	MyArray alphaStabilityArray = new MyArray(); //alphaBody
 	MyArray alphaStabilityHLArray = new MyArray();
-	
+
 	MyArray alphaWingStabilityArray = new MyArray();
 	MyArray alphaWingStabilityHLArray = new MyArray();
 
-	
+
 	Map<String,double[]> cLHTailMap = new HashMap< String, double[]>();
 	Map<String,double[]> alphaHTailMap = new HashMap< String, double[]>();
 
@@ -94,37 +97,37 @@ public class ACStabilityManager {
 	double cLIsolatedWingTO;
 	double cLIsolatedWingLand;
 	double cLWingBody;
-	
+
 	double cLMaxWingActual;
-	
+
 	double cLAlphaWingActual;
 	double cLAlphaHTailClean; 
 	double cLAlphaWingBody;
 	double cLAlphaTO;
 	double cLAlphaLand;
-	
+
 	double alphaMaxWingActual;
 	double alphaMaxTO;
 	double alphaMaxLand;
 	double alphaStarActual; // deg
 	double alphaStarHtail; 
-	
+
 
 	double cLMaxTO;
 	double cLMaxLand;
-	
-	
+
+
 	double [] cLWingActualArray;
-	
+
 
 	double [] deltaEArray = MyArrayUtils.linspace(-25, 5 , 7);
 
-	
+
 	String [] deltaEArrayString = new String [deltaEArray.length];
 
-	
-	
-	//Output Arrays
+
+
+	//Output Arrays // Correspond to alpha body array
 	private double [] cLWingCleanArray;
 	private double [] cLWingTOArray;
 	private double [] cLWingLandingArray;
@@ -133,9 +136,12 @@ public class ACStabilityManager {
 	private double [] cLHTailCleanArray;
 	private Double [] downwashAnglesArray;
 	private double [] tauIndexArray = new double [deltaEArray.length];
-	
-		
-	
+	private double [] cLCompleteAircraftdeltaEArray = new double [deltaEArray.length];
+	private double [] cDWingCleanArray;
+	private double [] cDHTailCleanArray;
+
+
+
 
 	// High Lift Devices Input
 	List<Double[]> deltaFlap = new ArrayList<Double[]>();
@@ -150,7 +156,8 @@ public class ACStabilityManager {
 	List<Double> leRadiusCSlat = new ArrayList<Double>();
 	List<Double> cExtCSlat = new ArrayList<Double>();
 	private double downwashAngleAtAlpha;
-	
+	private double[] alphaStabilityHTailArray;
+
 
 
 	// BUILDER--------------------------------------
@@ -182,24 +189,24 @@ public class ACStabilityManager {
 		this.theCondition = theCondition;
 
 		this.pathXMLTakeOFF = pathXMLTakeOFF;
-		
+
 		this.plotCheck = plotCheck;
-		
+
 		theLSAnalysis = theWing.getAerodynamics();
 		theLSHTailAnalysis = aircraft.get_HTail().getAerodynamics();
 
 		for (int i =0 ; i<deltaEArrayString.length; i++){
 			deltaEArrayString[i] = Double.toString(deltaEArray[i]);
-			}
-		
-	
+		}
+
+
 		this.alphaBody = alphaBody;
 		if (alphaBody==null){
 			alphaCheck = false;}
 		else
-			{if (alphaBody.getUnit() == NonSI.DEGREE_ANGLE){
-				alphaBody = alphaBody.to(SI.RADIAN);
-			}
+		{if (alphaBody.getUnit() == NonSI.DEGREE_ANGLE){
+			alphaBody = alphaBody.to(SI.RADIAN);
+		}
 		alphaCheck = true;}
 
 
@@ -223,13 +230,15 @@ public class ACStabilityManager {
 				alphaMin.getEstimatedValue() + theWing.get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue()), NonSI.DEGREE_ANGLE);
 		this.alphaMaxWing =Amount.valueOf((
 				alphaMax.getEstimatedValue() + theWing.get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue()), NonSI.DEGREE_ANGLE);
-		
+
 
 		alphaStabilityArray.linspace(alphaMin.getEstimatedValue(), alphaMax.getEstimatedValue(), nValueAlpha);
 		alphaStabilityHLArray.linspace(alphaMin.getEstimatedValue(), alphaMax.getEstimatedValue()-2, nValueAlpha);
-		
+
 		alphaWingStabilityArray.linspace(alphaMinWing.getEstimatedValue(),alphaMaxWing.getEstimatedValue(), nValueAlpha);
 		alphaWingStabilityHLArray.linspace(alphaMinWing.getEstimatedValue(), alphaMaxWing.getEstimatedValue()-2, nValueAlpha);
+
+		alphaStabilityHTailArray = new double [nValueAlpha];
 		
 		System.out.println(" alpha stability array " + alphaStabilityArray);
 
@@ -338,11 +347,19 @@ public class ACStabilityManager {
 		System.out.println("\n LIFT CHARACTERISTICS  ");
 		System.out.println("\n------------------------------------");
 		CalculateWingLiftCharacteristics();
+		CalculateFuselageLiftCharacteristics();
+		CalculateHTailLiftCharacteristics();
+		if (alphaCheck == true)
+			CalculateCompleteAircraftLiftCharacteristics();
 
 	}
 
 	public void CalculateDragCharacteristics(){
-
+		System.out.println("\n\n------------------------------------");
+		System.out.println("\n DRAG CHARACTERISTICS  ");
+		System.out.println("\n------------------------------------");
+		CalculateWingDragCharacteristics();
+		CalculateHTailDragCHaracteristics();
 	}
 
 	public void CalculateMomentCharacteristics(){
@@ -365,7 +382,7 @@ public class ACStabilityManager {
 					+ (alphaBody.getEstimatedValue()*57.3));
 			alphaWing = Amount.valueOf(
 					(alphaBody.getEstimatedValue() + theWing.get_iw().getEstimatedValue()), SI.RADIAN);
-			System.out.println("Angle of attack alpha Wing (deg) " + Math.toDegrees(alphaWing.getEstimatedValue()));}
+			System.out.println("Angle of attack alpha Wing (deg) = " + Math.toDegrees(alphaWing.getEstimatedValue()));}
 
 
 
@@ -433,9 +450,9 @@ public class ACStabilityManager {
 			for(int i=0; i<eta_out_property.size(); i++)
 				etaOutFlap.add(Double.valueOf(eta_out_property.get(i)));
 			System.out.println("------------------DONE-------------------\n\n");
-			
+
 			LSAerodynamicsManager.CalcHighLiftDevices highLiftCalculator ;
-			
+
 			if (aircraft.get_typeVehicle() == AircraftTypeEnum.TURBOPROP){
 				highLiftCalculator = theLSAnalysis
 						.new CalcHighLiftDevices(
@@ -478,7 +495,7 @@ public class ACStabilityManager {
 
 			// RESULTS
 
-			
+
 			System.out.println(" -----------CLEAN-------------- ");
 			System.out.println(" alpha max " + theLSAnalysis.get_alphaMaxClean().to(NonSI.DEGREE_ANGLE));
 			System.out.println(" alpha star " + theLSAnalysis.get_alphaStar().to(NonSI.DEGREE_ANGLE));
@@ -486,8 +503,8 @@ public class ACStabilityManager {
 			System.out.println(" cl star " + theLSAnalysis.getcLStarWing());
 			System.out.println(" cl alpha " + theLSAnalysis.getcLLinearSlopeNB() + " (1/rad)");
 			System.out.println("\n");
-			
-			
+
+
 			System.out.println("\n ----------- DELTA HIGH LIFT " + theCondition + "-------------- ");
 			System.out.println("deltaCL0_flap = " + highLiftCalculator.getDeltaCL0_flap());
 			System.out.println("deltaCLmax_flap = " + highLiftCalculator.getDeltaCLmax_flap());
@@ -503,21 +520,21 @@ public class ACStabilityManager {
 			cLMaxWingActual = theLSAnalysis.get_cLMaxClean() + highLiftCalculator.getDeltaCLmax_flap() + 
 					highLiftCalculator.getDeltaCLmax_slat();
 			cLAlphaWingActual =  highLiftCalculator.getcLalpha_new()* 57.3;
-			
+
 			if( theCondition == ConditionEnum.TAKE_OFF ){
 				alphaMaxTO = alphaMaxWingActual;
 				cLMaxTO = cLMaxWingActual;
 				cLAlphaTO = cLAlphaWingActual;
 			}
-			
+
 			if( theCondition == ConditionEnum.LANDING ){
 				alphaMaxLand = alphaMaxWingActual;
 				cLMaxLand = cLMaxWingActual;
 				cLAlphaLand = cLAlphaWingActual;
 			}
-			
-		
-//			cLAlphaWing = highLiftCalculator.getcLalpha_new();
+
+
+			//			cLAlphaWing = highLiftCalculator.getcLalpha_new();
 
 			//ARRAY FILLING
 
@@ -527,16 +544,16 @@ public class ACStabilityManager {
 						nValueAlpha);
 
 				cLWingActualArray = cLWingTOArray;
-				
+
 				System.out.println("CL wing " + theCondition + " Array " + Arrays.toString(cLWingTOArray ) );
 			}
 			if(pathXMLLanding != null){
 				cLWingLandingArray =  highLiftCalculator.calcCLvsAlphaBodyHighLiftDevices(alphaMin,
 						Amount.valueOf((alphaMax.getEstimatedValue()),NonSI.DEGREE_ANGLE),
 						nValueAlpha);
-				
+
 				cLWingActualArray = cLWingLandingArray;
-				
+
 				System.out.println("CL wing " + theCondition + " Array " + Arrays.toString(cLWingLandingArray) );
 			}
 
@@ -550,63 +567,63 @@ public class ACStabilityManager {
 				System.out.println("\nCL of wing at " + theCondition + " at alpha body = " + cLIsolatedWingTO + "\n");
 			}
 
-//			//PLOT CL VS ALPHA
+			//			//PLOT CL VS ALPHA
 			highLiftCalculator.plotHighLiftCurve(subfolderPath);
-//
-//			//initializing
-//			List<Double[]> cLHLListPlot = new ArrayList<Double[]>();
-//			List<Double[]> alphaHLListPlot = new ArrayList<Double[]>();
-//			List<String> legendCLvsAlphaHighLift  = new ArrayList<>();	
-//
-//			//clean vector
-//			LSAerodynamicsManager.CalcCLvsAlphaCurve theCLArrayCalculator = theLSAnalysis.new CalcCLvsAlphaCurve();
-//			cLWingCleanArray = theCLArrayCalculator.nasaBlackwellCompleteCurve(alphaMinWing, alphaMaxWing, nValueAlpha, false);
-//
-//
-//			// filling lists
-//
-//			Double[] cLWingCleanArrayDouble = new Double[cLWingCleanArray.length];
-//			Double[] cLWingHLArrayDouble = new Double[cLWingTOArray.length];
-//			Double [] alphaArrayDouble = new Double[cLWingCleanArray.length];
-//
-//			for (int i=0; i<cLWingCleanArray.length; i++){
-//				cLWingCleanArrayDouble[i] = (Double)cLWingCleanArray[i];
-//				alphaArrayDouble[i] = (Double)alphaStabilityArray.toArray()[i];
-//			}
-//			cLHLListPlot.add(0,cLWingCleanArrayDouble);
-//			alphaHLListPlot.add(0,alphaArrayDouble);
-//			legendCLvsAlphaHighLift.add("clean");
-//
-//			if (pathXMLTakeOFF != null){
-//				for (int i=0; i<cLWingTOArray.length; i++){
-//					cLWingHLArrayDouble[i] = (Double)cLWingTOArray[i];
-//					alphaArrayDouble[i] = (Double)alphaStabilityHLArray.toArray()[i];
-//					}}
-//			if	(pathXMLLanding != null){
-//				for (int i=0; i<cLWingTOArray.length; i++){
-//					cLWingHLArrayDouble[i] = (Double)cLWingLandingArray[i];
-//					alphaArrayDouble[i] = (Double)alphaStabilityHLArray.toArray()[i];
-//					}}
-//
-//			cLHLListPlot.add(1,cLWingHLArrayDouble);
-//			alphaHLListPlot.add(1,alphaArrayDouble);
-//			legendCLvsAlphaHighLift.add(theCondition.toString());
-//
-//
-//
-//
-//			MyChartToFileUtils.plotJFreeChart(alphaHLListPlot,
-//					cLHLListPlot,
-//					"CL vs alpha " + theCondition.toString() ,
-//					"alpha_Wing",
-//					"CL",
-//					null, null, null,null,
-//					"deg",
-//					"",
-//					true,
-//					legendCLvsAlphaHighLift,
-//					subfolderPath,
-//					"CL vs alpha wing clean and " + theCondition.toString());
+			//
+			//			//initializing
+			//			List<Double[]> cLHLListPlot = new ArrayList<Double[]>();
+			//			List<Double[]> alphaHLListPlot = new ArrayList<Double[]>();
+			//			List<String> legendCLvsAlphaHighLift  = new ArrayList<>();	
+			//
+			//			//clean vector
+			//			LSAerodynamicsManager.CalcCLvsAlphaCurve theCLArrayCalculator = theLSAnalysis.new CalcCLvsAlphaCurve();
+			//			cLWingCleanArray = theCLArrayCalculator.nasaBlackwellCompleteCurve(alphaMinWing, alphaMaxWing, nValueAlpha, false);
+			//
+			//
+			//			// filling lists
+			//
+			//			Double[] cLWingCleanArrayDouble = new Double[cLWingCleanArray.length];
+			//			Double[] cLWingHLArrayDouble = new Double[cLWingTOArray.length];
+			//			Double [] alphaArrayDouble = new Double[cLWingCleanArray.length];
+			//
+			//			for (int i=0; i<cLWingCleanArray.length; i++){
+			//				cLWingCleanArrayDouble[i] = (Double)cLWingCleanArray[i];
+			//				alphaArrayDouble[i] = (Double)alphaStabilityArray.toArray()[i];
+			//			}
+			//			cLHLListPlot.add(0,cLWingCleanArrayDouble);
+			//			alphaHLListPlot.add(0,alphaArrayDouble);
+			//			legendCLvsAlphaHighLift.add("clean");
+			//
+			//			if (pathXMLTakeOFF != null){
+			//				for (int i=0; i<cLWingTOArray.length; i++){
+			//					cLWingHLArrayDouble[i] = (Double)cLWingTOArray[i];
+			//					alphaArrayDouble[i] = (Double)alphaStabilityHLArray.toArray()[i];
+			//					}}
+			//			if	(pathXMLLanding != null){
+			//				for (int i=0; i<cLWingTOArray.length; i++){
+			//					cLWingHLArrayDouble[i] = (Double)cLWingLandingArray[i];
+			//					alphaArrayDouble[i] = (Double)alphaStabilityHLArray.toArray()[i];
+			//					}}
+			//
+			//			cLHLListPlot.add(1,cLWingHLArrayDouble);
+			//			alphaHLListPlot.add(1,alphaArrayDouble);
+			//			legendCLvsAlphaHighLift.add(theCondition.toString());
+			//
+			//
+			//
+			//
+			//			MyChartToFileUtils.plotJFreeChart(alphaHLListPlot,
+			//					cLHLListPlot,
+			//					"CL vs alpha " + theCondition.toString() ,
+			//					"alpha_Wing",
+			//					"CL",
+			//					null, null, null,null,
+			//					"deg",
+			//					"",
+			//					true,
+			//					legendCLvsAlphaHighLift,
+			//					subfolderPath,
+			//					"CL vs alpha wing clean and " + theCondition.toString());
 
 			System.out.println("\n\n\t\t\tWRITING CL vs ALPHA CHART TO FILE for wing");
 
@@ -622,7 +639,7 @@ public class ACStabilityManager {
 			System.out.println("CL wing Clean Array " + Arrays.toString(cLWingCleanArray) );
 			cLAlphaWingActual = theLSAnalysis.getcLLinearSlopeNB();
 			alphaStarActual = theWing.getAerodynamics().get_alphaStar().to(NonSI.DEGREE_ANGLE).getEstimatedValue();
-			
+
 			//CALCULATING CL AT ALPHA FOR WING
 			if(alphaCheck == true){
 				LSAerodynamicsManager.CalcCLAtAlpha theCLWingCalculator = theLSAnalysis.new CalcCLAtAlpha();
@@ -630,7 +647,7 @@ public class ACStabilityManager {
 				System.out.println("\nCL of Isolated wing at alpha body = " + cLIsolatedWing);
 			}
 
-			
+
 
 			//PLOT CL VS ALPHA
 			if(plotCheck == true){
@@ -699,11 +716,11 @@ public class ACStabilityManager {
 		double alphaStarDeg = theWing.getAerodynamics().get_alphaStar().to(NonSI.DEGREE_ANGLE).getEstimatedValue();
 		for (int i=0 ; i<alphaWingStabilityArray.size()-1; i++){
 			if(alphaWingStabilityArray.get(i) < alphaStarActual){
-			cLAlphaArray[i] = aircraft.get_wing().getAerodynamics().getcLLinearSlopeNB();}
+				cLAlphaArray[i] = aircraft.get_wing().getAerodynamics().getcLLinearSlopeNB();}
 			else{
-			cLAlphaArray[i]=Math.toDegrees((((cLWingActualArray[i+1] - cLWingActualArray[i])/(alphaWingStabilityArray.get(i+1) - alphaWingStabilityArray.get(i)))+((cLWingActualArray[i+1] - cLWingActualArray[i])/
-					(alphaWingStabilityArray.get(i+1) - alphaWingStabilityArray.get(i))))/2);
-//				cLAlphaArray[i]=Math.toDegrees((cLArray[i+1] - cLArray[i])/(alphaAbsoluteArray[i+1] - alphaAbsoluteArray [i]));
+				cLAlphaArray[i]=Math.toDegrees((((cLWingActualArray[i+1] - cLWingActualArray[i])/(alphaWingStabilityArray.get(i+1) - alphaWingStabilityArray.get(i)))+((cLWingActualArray[i+1] - cLWingActualArray[i])/
+						(alphaWingStabilityArray.get(i+1) - alphaWingStabilityArray.get(i))))/2);
+				//				cLAlphaArray[i]=Math.toDegrees((cLArray[i+1] - cLArray[i])/(alphaAbsoluteArray[i+1] - alphaAbsoluteArray [i]));
 			}
 		}
 		cLAlphaArray[cLAlphaArray.length-1] = cLAlphaArray[cLAlphaArray.length-2];
@@ -711,20 +728,20 @@ public class ACStabilityManager {
 
 
 	public void CalculateFuselageLiftCharacteristics(){
-		
+
 		System.out.println("\n ------------------- ");
 		System.out.println("|     FUSELAGE       |");
 		System.out.println(" ------------------- \n\n");
-		
-		
+
+
 		//ARRAY FILLING
 		cLWingBodyArray = aircraft.get_theAerodynamics().calculateCLvsAlphaWingBody(alphaMinWing, alphaMaxWing, nValueAlpha, theCondition);
-		
-	
+
+
 		System.out.println("Cl alpha Wing " + cLAlphaWingActual);
 		cLAlphaWingBody = theFuselageManager.calculateCLAlphaFuselage(cLAlphaWingActual);
 		System.out.println("Cl alpha Wing Body " + cLAlphaWingBody);
-		
+
 		//CALCULATING CL AT ALPHA FOR WING
 
 		cLWingBody = aircraft.get_theAerodynamics().calculateCLAtAlphaWingBody(alphaBody, meanAirfoil, true, theCondition);
@@ -732,37 +749,37 @@ public class ACStabilityManager {
 		System.out.println(" CL of Wing Body at alpha body = " + cLWingBody);
 
 		if(plotCheck == true){
-		System.out.println("\n \t \t \tWRITING CL VS ALPHA CHARTS TO FILE");
-		aircraft.get_theAerodynamics().PlotCLvsAlphaCurve(meanAirfoil, subfolderPath, theCondition);
-		System.out.println("DONE");
+			System.out.println("\n \t \t \tWRITING CL VS ALPHA CHARTS TO FILE");
+			aircraft.get_theAerodynamics().PlotCLvsAlphaCurve(meanAirfoil, subfolderPath, theCondition);
+			System.out.println("DONE");
 		}
-		
+
 	}
-	
+
 	public void CalculateHTailLiftCharacteristics() throws InstantiationException, IllegalAccessException{
-		
+
 		System.out.println("\n ------------------- ");
 		System.out.println("|  HORIZONTAL TAIL   |");
 		System.out.println(" ------------------- \n\n");
-		
+
 		// In order to evaluate the angle of attack of the horizzontal tail it's necessary to evaluate the downwash angle
 		System.out.println(" DOWNWASH CALCULATION... \n");
-		
-		DownwashCalculator theDownwashCalculator = new DownwashCalculator(aircraft, cLAlphaArray, alphaWingStabilityArray.toArray());
+
+		theDownwashCalculator = new DownwashCalculator(aircraft, cLAlphaArray, alphaWingStabilityArray.toArray());
 		theDownwashCalculator.calculateDownwashNonLinearDelft();
 		downwashAngleAtAlpha = theDownwashCalculator.getDownwashAtAlphaBody(alphaBody);
-		
+
 		downwashAnglesArray = MyMathUtils.getInterpolatedValue1DLinear(theDownwashCalculator.getAlphaBodyArray(), 
 				theDownwashCalculator.getDownwashArray(),
 				alphaStabilityArray.toArray());
-		
-		
+
+
 		if (plotCheck == true ){
-		theDownwashCalculator.plotDownwashDelftWithPath(subfolderPath);
-		theDownwashCalculator.plotDownwashGradientDelftWithPath(subfolderPath);
-		theDownwashCalculator.plotZDistanceWithPath(subfolderPath);
-		theDownwashCalculator.plotXDistanceWithPath(subfolderPath);}
-		
+			theDownwashCalculator.plotDownwashDelftWithPath(subfolderPath);
+			theDownwashCalculator.plotDownwashGradientDelftWithPath(subfolderPath);
+			theDownwashCalculator.plotZDistanceWithPath(subfolderPath);
+			theDownwashCalculator.plotXDistanceWithPath(subfolderPath);}
+
 		System.out.println("\n \n-----------angles-------------- ");
 		System.out.println("Angle of attack alpha body (deg) = " + Math.ceil(alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue()));
 		System.out.println("Angle of incidence of horizontal tail (deg) " + aircraft.get_HTail().get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue());
@@ -770,13 +787,13 @@ public class ACStabilityManager {
 
 		double angleHorizontalDouble = alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue()
 				- downwashAngleAtAlpha +  aircraft.get_HTail().get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue();
-		Amount<Angle> alphaHorizontalTail = Amount.valueOf(Math.toRadians(angleHorizontalDouble), SI.RADIAN);
+		alphaHorizontalTail = Amount.valueOf(Math.toRadians(angleHorizontalDouble), SI.RADIAN);
 		System.out.println("Angle of Attack of Horizontal Tail (deg) "
 				+ angleHorizontalDouble);
-		
+
 		//CLEAN 
-		
-		
+
+
 		LSAerodynamicsManager.CalcCLvsAlphaCurve theCLHTailArrayCalculator = theLSHTailAnalysis.new CalcCLvsAlphaCurve();
 		LSAerodynamicsManager.CalcCLAtAlpha theCLHtailCalculator = theLSHTailAnalysis.new CalcCLAtAlpha();
 
@@ -784,60 +801,61 @@ public class ACStabilityManager {
 		cLHTailCleanArray = new double [alphaStabilityArray.size()];
 		double [] alphaActualHTailArray =  new double [alphaStabilityArray.size()];
 		for (int i=0; i<alphaStabilityArray.size(); i++){
+			alphaStabilityHTailArray [i] = alphaStabilityArray.get(i)-downwashAnglesArray[i] + theHTail.get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue();
+			
 			alphaActualHtail = Amount.valueOf(Math.toRadians(alphaStabilityArray.get(i)) - 
 					Math.toRadians(downwashAnglesArray[i]) 
 					+ theHTail.get_iw().getEstimatedValue(), SI.RADIAN);
 			alphaActualHTailArray[i] = alphaActualHtail.to(NonSI.DEGREE_ANGLE).getEstimatedValue();
 			cLHTailCleanArray[i] =  theCLHtailCalculator.nasaBlackwellCompleteCurveValue(alphaActualHtail);
 		}
-			
+
 		System.out.println("CL horizontal tail Clean Array " + Arrays.toString(cLWingCleanArray) );
 		cLAlphaHTailClean = theLSHTailAnalysis.getcLLinearSlopeNB();
 		alphaStarHtail = theLSHTailAnalysis.get_alphaStar().to(NonSI.DEGREE_ANGLE).getEstimatedValue();
-		
-		
+
+
 		//TAU (-5 --> 30)
-		
+
 		System.out.println("\n-----START OF TAU CALCULATION-----\n" );
 		System.out.println("Delta_e vector --> " + Arrays.toString(deltaEArray));
-		
+
 		Amount<Angle> deflection;
 		double chordRatio = theHTail.get_CeCt();
 		for(int i=0; i<deltaEArray.length; i++){
-	
-		deflection = Amount.valueOf((deltaEArray[i]), NonSI.DEGREE_ANGLE);
-		tauIndexArray[i] = theStabilityCalculator.calculateTauIndex(chordRatio, aircraft, deflection);
+
+			deflection = Amount.valueOf((deltaEArray[i]), NonSI.DEGREE_ANGLE);
+			tauIndexArray[i] = theStabilityCalculator.calculateTauIndex(chordRatio, aircraft, deflection);
 		}
-		
+
 		System.out.println(" Tau Array " + Arrays.toString(tauIndexArray));
-	
-		
+
+
 		int nValueHtail = 20;
 		double[] cLHTailArrayTemp = new double[nValueHtail];
-		
+
 		StabilityCalculator.CalcCLHTail theCLTauCalculator = theStabilityCalculator.new CalcCLHTail();
 		for (int i=0; i<deltaEArray.length; i++){
-			
+
 			cLHTailArrayTemp = theCLTauCalculator.cLHtailWithElevatorDeflection(theHTail, theOperatingConditions, 
-					deltaEArray[i], tauIndexArray[ tauIndexArray.length-i-1],
+					deltaEArray[deltaEArray.length-i-1], tauIndexArray[ tauIndexArray.length-i-1],
 					cLHTailCleanArray, alphaActualHTailArray );
 			cLHTailMap.put(deltaEArrayString[ tauIndexArray.length-i-1], cLHTailArrayTemp);
 			alphaHTailMap.put(deltaEArrayString[ tauIndexArray.length-i-1], theCLTauCalculator.getAlphaArrayWithTau());
 		}
-		
-		//CALCULATING CL AT ALPHA FOR WING
-		
-		
+
+
+
 		//PLOT 
 		if (plotCheck ==  true){
-			
+
 			// Stall Path Plot
-			
+
 			LSAerodynamicsManager.CalcCLMaxClean theCLmaxHTailAnalysis = theLSHTailAnalysis.new CalcCLMaxClean(); //is nested
 			LSAerodynamicsManager.CalcCLvsAlphaCurve theCLHTailAnalysis = theLSHTailAnalysis.new CalcCLvsAlphaCurve();
-			
+
 			Amount<Angle >alphaHTailAtCLMax = theLSHTailAnalysis.get_alphaStall();
-			
+
 			System.out.println("\n \n \t \t WRITING CHART TO FILE. Stall path. ");
 			System.out.println("-----------------------------------------------------");
 
@@ -846,7 +864,7 @@ public class ACStabilityManager {
 
 			double alphaSecond = theLSAnalysis.getAlphaArray().get(3);
 			double alphaThird = theLSAnalysis.getAlphaArray().get(6);
-			
+
 			MyArray clAlphaStall = theLSHTailAnalysis.getcLMap()
 					.getCxyVsAlphaTable()
 					.get(MethodEnum.NASA_BLACKWELL ,alphaHTailAtCLMax);
@@ -875,7 +893,7 @@ public class ACStabilityManager {
 					+ Math.toDegrees( alphaThird);
 			legendHtail[3] = "CL distribution at alpha " 
 					+ Math.toDegrees( alphaHTailAtCLMax.getEstimatedValue());
-			
+
 
 			MyChartToFileUtils.plot(
 					semiSpanAdHTail, clDistributionHTail, // array to plot
@@ -886,11 +904,11 @@ public class ACStabilityManager {
 
 			System.out.println("-----------------------------------------------------");
 			System.out.println("\t \t DONE ");
-			
-			
-			
+
+
+
 			//CL VS Alpha clean
-			
+
 			System.out.println("\n-------------------------------------");
 			System.out.println("\t \t \tWRITING CL vs ALPHA CHART TO FILE  ");
 			MyChartToFileUtils.plotNoLegend(
@@ -899,18 +917,18 @@ public class ACStabilityManager {
 					"alpha_Wing", "CL", "deg", "",	   				
 					subfolderPath, "CL vs Alpha Horizontal tail Clean" );
 			System.out.println("\t \t \tDONE  ");
-			
-			
-			
+
+
+
 			// CL vs alpha with delta e deflection
-			
+
 			List<Double[]> cLListPlot = new ArrayList<Double[]>();
 			List<Double[]> alphaListPlot = new ArrayList<Double[]>();
 			List<String> legendStall  = new ArrayList<>();
-			
+
 			Double [] clArray;
 			Double [] alphaArray;
-			
+
 			for( int j=0; j< deltaEArray.length; j++){
 				String key = deltaEArrayString[j];
 				clArray = new Double [cLHTailMap.get(key).length];
@@ -923,31 +941,172 @@ public class ACStabilityManager {
 				alphaListPlot.add(alphaArray);
 				legendStall.add(key);
 			}
-		
 
-				MyChartToFileUtils.plotJFreeChart(alphaListPlot,
-						cLListPlot,
-						"CL vs alpha",
-						"alpha",
-						"CL",
-						null, null, null,null,
-						"deg",
-						"",
-						true,
-						legendStall,
-						subfolderPath,
-						"CL alpha Horizontal Tail with Elevator");
 
-				System.out.println("\n\n\t\t\tWRITING CL vs ALPHA CHART TO FILE FOR horizontal  tail with elevator deflection");
-			
+			MyChartToFileUtils.plotJFreeChart(alphaListPlot,
+					cLListPlot,
+					"CL vs alpha",
+					"alpha",
+					"CL",
+					null, null, 0.0,null,
+					"deg",
+					"",
+					true,
+					legendStall,
+					subfolderPath,
+					"CL alpha Horizontal Tail with Elevator");
+
+			System.out.println("\n\n\t\t\tWRITING CL vs ALPHA CHART TO FILE FOR horizontal  tail with elevator deflection");
+
 		}
-		
 
+
+	}
+
+
+	public void CalculateCompleteAircraftLiftCharacteristics(){
+		System.out.println("\n-----Complete Aircraft-----\n" );
+
+		double cLWingBodyActual;
+		double cLHtailActual;
+		System.out.println(" alpha body " + alphaBody.to(NonSI.DEGREE_ANGLE));
+		for (int i = 0; i<deltaEArray.length; i++){
+			System.out.println(" elevator deflection " + deltaEArray[i]);
+
+			cLWingBodyActual = MyMathUtils.getInterpolatedValue1DLinear(alphaStabilityArray.toArray(),
+					cLWingBodyArray, alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
+
+			System.out.println(" cL wing body " +  cLWingBodyActual);
+
+			double[] cLHtailarray =  cLHTailMap.get(deltaEArrayString[i]);
+			double alphaAngle = alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue()- theDownwashCalculator.getDownwashAtAlphaBody(alphaBody)
+					+ theHTail.get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue();
+
+			cLHtailActual = MyMathUtils.getInterpolatedValue1DLinear(alphaHTailMap.get(deltaEArrayString[i]),
+					cLHtailarray,
+					alphaAngle);
+
+
+			System.out.println(" cL horizontal tail  " +  cLHtailActual);
+
+
+			cLCompleteAircraftdeltaEArray [i] =  cLWingBodyActual + cLHtailActual;
+
+			System.out.println("\n the CL of aircraft at alpha body =(deg)" +
+					alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue() +
+					" for delta = (deg) "
+					+ deltaEArray[i]
+							+ " is " + cLCompleteAircraftdeltaEArray [i]);
+		}
 	}
 
 
 
 
+	public void  CalculateWingDragCharacteristics(){
+		System.out.println("\n ------------------- ");
+		System.out.println("|       WING        |");
+		System.out.println(" ------------------- \n\n");
+
+
+		// parassite Drag
+
+		// Array
+
+		LSAerodynamicsManager.CalcCdvsAlpha theCDWingArrayCalculator = theLSAnalysis
+				.new CalcCdvsAlpha();
+
+		LSAerodynamicsManager.CalcCDAtAlpha theCDWingCalculator = theLSAnalysis
+				.new CalcCDAtAlpha();
+
+		cDWingCleanArray = new double [nValueAlpha];
+
+		Double [] cDWingTemp =  theCDWingArrayCalculator.calculateCDParassiteFromAirfoil(alphaMinWing, alphaMaxWing, nValueAlpha);
+		for (int i=0; i< cDWingCleanArray.length; i++){
+			cDWingCleanArray[i] =(double)cDWingTemp[i];
+		}
+
+
+		// value
+
+		if(alphaCheck ==true){
+
+			double cDIsolatedWing = theCDWingCalculator.integralFromCdAirfoil(
+					alphaWing, MethodEnum.NASA_BLACKWELL, theLSAnalysis);
+			System.out.println(" CD of Wing at alpha body = "
+					+ alphaBody.to(NonSI.DEGREE_ANGLE)
+					+ " is " + cDIsolatedWing);
+
+		}
+		
+		// plot
+		
+		if( plotCheck == true){
+		
+			System.out.println("\n-------------------------------------");
+			System.out.println("\t \t \tWRITING CD vs ALPHA CHART TO FILE  ");
+		
+			MyChartToFileUtils.plotNoLegend(
+					alphaWingStabilityArray.toArray(),cDWingCleanArray, 
+					null, null, null, null,
+					"alpha_w", "CD_parassite",
+					"deg", "",
+					subfolderPath, "Parassite Drag vs Alpha Wing for WING ");
+			
+			System.out.println("\n\n\t\t\tDONE");
+		
+
+			System.out.println("\n-------------------------------------");
+			System.out.println("\t \t \tWRITING CL vs CD CHART TO FILE  ");
+			
+		MyChartToFileUtils.plotNoLegend(
+				cDWingCleanArray, cLWingCleanArray,
+				null, null, null, null,
+				"CL", "CD_parassite",
+				"", "",
+				subfolderPath, "Parassite Drag vs CL for WING ");
+		
+		System.out.println("\n\n\t\t\tDONE");}
+		}
+
+	
+
+
+	public void  CalculateHTailDragCHaracteristics(){
+
+		System.out.println("\n ------------------- ");
+		System.out.println("|  HORIZONTAL TAIL   |");
+		System.out.println(" ------------------- \n\n");
+		
+		
+
+		// Array
+
+		LSAerodynamicsManager.CalcCdvsAlpha theCDHtailArrayCalculator = theLSHTailAnalysis
+				.new CalcCdvsAlpha();
+
+		LSAerodynamicsManager.CalcCDAtAlpha theCDhTAILCalculator = theLSHTailAnalysis
+				.new CalcCDAtAlpha();
+
+		cDHTailCleanArray= new double [nValueAlpha];
+
+		Double [] cDWingTemp =  theCDHtailArrayCalculator.calculateCDParassiteFromAirfoil(Amount.valueOf(
+				alphaStabilityHTailArray[0],NonSI.DEGREE_ANGLE), Amount.valueOf(
+				alphaStabilityHTailArray[alphaStabilityHTailArray.length-1], NonSI.DEGREE_ANGLE), nValueAlpha);
+		for (int i=0; i< cDWingCleanArray.length; i++){
+			cDWingCleanArray[i] =(double)cDWingTemp[i];
+		}
+
+
+		LSAerodynamicsManager.CalcCDAtAlpha theCDHTailCalculator = theLSHTailAnalysis.new CalcCDAtAlpha();
+		double cDHorizontalTail = theCDHTailCalculator.integralFromCdAirfoil(
+				alphaHorizontalTail, MethodEnum.NASA_BLACKWELL, theLSAnalysis);
+		System.out.println("\n CD of Horizontal Tail with no defection at alpha body = (deg) "
+				+ alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue()
+				+ " is " + cDHorizontalTail
+				);
+
+	}
 
 	// GETTERS AND SETTERS
 	//----------------------------------------------------------
@@ -1079,7 +1238,7 @@ public class ACStabilityManager {
 	}
 
 
-		public double[] getcLHTailCleanArray() {
+	public double[] getcLHTailCleanArray() {
 		return cLHTailCleanArray;
 	}
 
@@ -1111,6 +1270,21 @@ public class ACStabilityManager {
 
 	public void setTauIndexArray(double[] tauIndexArray) {
 		this.tauIndexArray = tauIndexArray;
+	}
+
+
+	public double[] getcLCompleteAircraftdeltaEArray() {
+		return cLCompleteAircraftdeltaEArray;
+	}
+
+
+	public double[] getcDWingCleanArray() {
+		return cDWingCleanArray;
+	}
+
+
+	public void setcDWingCleanArray(double[] cDWingCleanArray) {
+		this.cDWingCleanArray = cDWingCleanArray;
 	}
 
 

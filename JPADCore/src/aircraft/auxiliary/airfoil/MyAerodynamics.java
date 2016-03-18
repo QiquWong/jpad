@@ -160,7 +160,7 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 
 			 _cdMin = 0.00675;
 			 _clAtCdMin = 0.3;
-			 _kFactorDragPolar = 0.075;
+			 _kFactorDragPolar = 0.004;
 
 			 _aerodynamicCenterX = 0.243;
 			 _cmAC = -0.02;
@@ -194,7 +194,7 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 
 			 _cdMin = 0.00625;
 			 _clAtCdMin = 0.1;
-			 _kFactorDragPolar = 0.075;
+			 _kFactorDragPolar = 0.004;
 
 			 _aerodynamicCenterX = 0.243;
 			 _cmAC = -0.02;
@@ -228,7 +228,7 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 
 			 _cdMin = 0.00575;
 			 _clAtCdMin = 0.23;
-			 _kFactorDragPolar = 0.075;
+			 _kFactorDragPolar = 0.004;
 
 			 _aerodynamicCenterX = 0.247;
 			 _cmAC = -0.03;
@@ -262,7 +262,7 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 
 			_cdMin = 0.025;
 			_clAtCdMin = 0.2;
-			_kFactorDragPolar = 0.075;
+			_kFactorDragPolar = 0.0035;
 
 			_aerodynamicCenterX = 0.25;
 			_cmAC = -0.07;
@@ -295,7 +295,7 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 
 			_cdMin = 0.025;
 			_clAtCdMin = 0.2;
-			_kFactorDragPolar = 0.075;
+			_kFactorDragPolar = 0.0035;
 
 			_aerodynamicCenterX = 0.25;
 			_cmAC = -0.07;
@@ -329,7 +329,7 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 
 			 _cdMin = 0.0055;
 			 _clAtCdMin = 0.0;
-			 _kFactorDragPolar = 0.075;
+			 _kFactorDragPolar = 0.0035;
 
 			 _aerodynamicCenterX = 0.25;
 			 _cmAC = 0.0;
@@ -540,7 +540,7 @@ public MyAerodynamics(MyAirfoil airf, String name) {
 
 		 _cdMin = 0.0055;
 		 _clAtCdMin = 0.0;
-		 _kFactorDragPolar = 0.075;
+		 _kFactorDragPolar = 0.0035;
 
 		 _aerodynamicCenterX = 0.25;
 		 _cmAC = 0.0;
@@ -850,6 +850,19 @@ public  double calculateClAtAlphaInterp (double alpha){
 		double cdAirfoil;
 		double clAirfoil = calculateClAtAlpha(alpha.getEstimatedValue());
 		cdAirfoil = get_cdMin() + Math.pow(( clAirfoil - get_clAtCdMin()), 2)*get_kFactorDragPolar();
+		return cdAirfoil;
+
+	}
+	
+	public double calculateCdAtClLinear(double cl) {
+		double qValue =   _clStar - _clAlpha * _alphaStar.getEstimatedValue();
+		Amount<Angle> alpha;
+		double alphaTemp;
+		alphaTemp = (cl - qValue)/_clAlpha;
+
+		alpha = Amount.valueOf(alphaTemp, SI.RADIAN);
+		
+		double cdAirfoil = calculateCdAtAlpha(alpha);
 		return cdAirfoil;
 
 	}
