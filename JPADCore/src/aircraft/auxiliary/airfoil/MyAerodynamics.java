@@ -413,7 +413,7 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 		
 		_cdMin = 0.025;
 		_clAtCdMin = 0.2;
-		_kFactorDragPolar = 0.075;
+		_kFactorDragPolar = 0.0035;
 
 		_aerodynamicCenterX = 0.25;
 		_cmAC = -0.07;
@@ -583,7 +583,7 @@ public MyAerodynamics(MyAirfoil airf, String name) {
 
 		_cdMin = 0.025;
 		_clAtCdMin = 0.2;
-		_kFactorDragPolar = 0.075;
+		_kFactorDragPolar = 0.0035;
 
 		_aerodynamicCenterX = 0.25;
 		_cmAC = -0.07;
@@ -616,7 +616,7 @@ public MyAerodynamics(MyAirfoil airf, String name) {
 
 		_cdMin = 0.025;
 		_clAtCdMin = 0.2;
-		_kFactorDragPolar = 0.075;
+		_kFactorDragPolar = 0.0035;
 
 		_aerodynamicCenterX = 0.25;
 		_cmAC = -0.07;

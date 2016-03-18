@@ -53,7 +53,9 @@ public class ACStabilityManager {
 	ConditionEnum theCondition;
 	DownwashCalculator theDownwashCalculator;
 	LSAerodynamicsManager.CalcCLAtAlpha theCLWingCalculator;
-	
+	LSAerodynamicsManager.CalcHighLiftDevices highLiftWingCalculator ;
+
+
 	MyAirfoil meanAirfoil;
 
 	int nValueAlpha = 50;
@@ -91,6 +93,9 @@ public class ACStabilityManager {
 
 	Map<String,double[]> cLHTailMap = new HashMap< String, double[]>();
 	Map<String,double[]> alphaHTailMap = new HashMap< String, double[]>();
+	
+	Map<String,double[]> cDHTailMap = new HashMap< String, double[]>();
+	Map<String,double[]> alphacDHTailMap = new HashMap< String, double[]>();
 
 
 	//Output Values
@@ -139,11 +144,14 @@ public class ACStabilityManager {
 	private Double [] downwashAnglesArray;
 	private double [] tauIndexArray = new double [deltaEArray.length];
 	private double [] cLCompleteAircraftdeltaEArray = new double [deltaEArray.length];
-	
+
 	private double [] parassiteCDWingCleanArray;
 	private double [] parassiteCDHTailCleanArray;
 	private double [] inducedCDWingArray;
+	private double [] inducedCDHTailArray;
 	private double [] cDWingCleanArray;
+	private double [] cDWingTakeOffArray;
+	private double [] cDWingLandingArray;
 	private double [] cDHTailCleanArray;
 	private double [] cD0WingPolarArray;
 	private double [] cDiWingPolarArray;
@@ -249,7 +257,7 @@ public class ACStabilityManager {
 		alphaWingStabilityHLArray.linspace(alphaMinWing.getEstimatedValue(), alphaMaxWing.getEstimatedValue()-2, nValueAlpha);
 
 		alphaStabilityHTailArray = new double [nValueAlpha];
-		
+
 		System.out.println(" alpha stability array " + alphaStabilityArray);
 
 		//Set Operating Conditions and CG position 
@@ -461,10 +469,8 @@ public class ACStabilityManager {
 				etaOutFlap.add(Double.valueOf(eta_out_property.get(i)));
 			System.out.println("------------------DONE-------------------\n\n");
 
-			LSAerodynamicsManager.CalcHighLiftDevices highLiftCalculator ;
-
 			if (aircraft.get_typeVehicle() == AircraftTypeEnum.TURBOPROP){
-				highLiftCalculator = theLSAnalysis
+				highLiftWingCalculator = theLSAnalysis
 						.new CalcHighLiftDevices(
 								theWing,
 								theOperatingConditions,
@@ -482,7 +488,7 @@ public class ACStabilityManager {
 								);
 			}
 			else{
-				highLiftCalculator = theLSAnalysis
+				highLiftWingCalculator = theLSAnalysis
 						.new CalcHighLiftDevices(
 								theWing,
 								theOperatingConditions,
@@ -499,8 +505,8 @@ public class ACStabilityManager {
 								cExtCSlat
 								);
 			}
-			highLiftCalculator.calculateHighLiftDevicesEffects();
-			highLiftCalculator.calcCLatAlphaHighLiftDevice(Amount.valueOf(Math.toRadians(2.0), SI.RADIAN));
+			highLiftWingCalculator.calculateHighLiftDevicesEffects();
+			highLiftWingCalculator.calcCLatAlphaHighLiftDevice(Amount.valueOf(Math.toRadians(2.0), SI.RADIAN));
 			alphaStarActual = theWing.getAerodynamics().get_alphaStarHigLift().to(NonSI.DEGREE_ANGLE).getEstimatedValue();
 
 			// RESULTS
@@ -516,20 +522,20 @@ public class ACStabilityManager {
 
 
 			System.out.println("\n ----------- DELTA HIGH LIFT " + theCondition + "-------------- ");
-			System.out.println("deltaCL0_flap = " + highLiftCalculator.getDeltaCL0_flap());
-			System.out.println("deltaCLmax_flap = " + highLiftCalculator.getDeltaCLmax_flap());
-			System.out.println("deltaCLmax_slat = " + highLiftCalculator.getDeltaCLmax_slat());
-			System.out.println("cLalpha_new = (1/rad) " + highLiftCalculator.getcLalpha_new()* 57.3);
-			System.out.println("deltaAlphaMax = (deg) " + highLiftCalculator.getDeltaAlphaMaxFlap());
-			System.out.println("deltaCD = " + highLiftCalculator.getDeltaCD());
-			System.out.println("deltaCMc_4 = " + highLiftCalculator.getDeltaCM_c4());
+			System.out.println("deltaCL0_flap = " + highLiftWingCalculator.getDeltaCL0_flap());
+			System.out.println("deltaCLmax_flap = " + highLiftWingCalculator.getDeltaCLmax_flap());
+			System.out.println("deltaCLmax_slat = " + highLiftWingCalculator.getDeltaCLmax_slat());
+			System.out.println("cLalpha_new = (1/rad) " + highLiftWingCalculator.getcLalpha_new()* 57.3);
+			System.out.println("deltaAlphaMax = (deg) " + highLiftWingCalculator.getDeltaAlphaMaxFlap());
+			System.out.println("deltaCD = " + highLiftWingCalculator.getDeltaCD());
+			System.out.println("deltaCMc_4 = " + highLiftWingCalculator.getDeltaCM_c4());
 			System.out.println("\n\n");
 
 			alphaMaxWingActual = theLSAnalysis.get_alphaMaxClean().to(NonSI.DEGREE_ANGLE).getEstimatedValue() 
-					+ highLiftCalculator.getDeltaAlphaMaxFlap();
-			cLMaxWingActual = theLSAnalysis.get_cLMaxClean() + highLiftCalculator.getDeltaCLmax_flap() + 
-					highLiftCalculator.getDeltaCLmax_slat();
-			cLAlphaWingActual =  highLiftCalculator.getcLalpha_new()* 57.3;
+					+ highLiftWingCalculator.getDeltaAlphaMaxFlap();
+			cLMaxWingActual = theLSAnalysis.get_cLMaxClean() + highLiftWingCalculator.getDeltaCLmax_flap() + 
+					highLiftWingCalculator.getDeltaCLmax_slat();
+			cLAlphaWingActual =  highLiftWingCalculator.getcLalpha_new()* 57.3;
 
 			if( theCondition == ConditionEnum.TAKE_OFF ){
 				alphaMaxTO = alphaMaxWingActual;
@@ -549,7 +555,7 @@ public class ACStabilityManager {
 			//ARRAY FILLING
 
 			if (pathXMLTakeOFF != null){
-				cLWingTOArray = highLiftCalculator.calcCLvsAlphaBodyHighLiftDevices(alphaMin, 
+				cLWingTOArray = highLiftWingCalculator.calcCLvsAlphaBodyHighLiftDevices(alphaMin, 
 						Amount.valueOf((alphaMax.getEstimatedValue()), NonSI.DEGREE_ANGLE),
 						nValueAlpha);
 
@@ -558,7 +564,7 @@ public class ACStabilityManager {
 				System.out.println("CL wing " + theCondition + " Array " + Arrays.toString(cLWingTOArray ) );
 			}
 			if(pathXMLLanding != null){
-				cLWingLandingArray =  highLiftCalculator.calcCLvsAlphaBodyHighLiftDevices(alphaMin,
+				cLWingLandingArray =  highLiftWingCalculator.calcCLvsAlphaBodyHighLiftDevices(alphaMin,
 						Amount.valueOf((alphaMax.getEstimatedValue()),NonSI.DEGREE_ANGLE),
 						nValueAlpha);
 
@@ -573,12 +579,12 @@ public class ACStabilityManager {
 			// CALCULATING CL AT ALPHA
 
 			if(alphaCheck == true){
-				cLIsolatedWingTO = highLiftCalculator.calcCLatAlphaHighLiftDevices(alphaWing);
+				cLIsolatedWingTO = highLiftWingCalculator.calcCLatAlphaHighLiftDevices(alphaWing);
 				System.out.println("\nCL of wing at " + theCondition + " at alpha body = " + cLIsolatedWingTO + "\n");
 			}
 
 			//			//PLOT CL VS ALPHA
-			highLiftCalculator.plotHighLiftCurve(subfolderPath);
+			highLiftWingCalculator.plotHighLiftCurve(subfolderPath);
 			//
 			//			//initializing
 			//			List<Double[]> cLHLListPlot = new ArrayList<Double[]>();
@@ -652,7 +658,7 @@ public class ACStabilityManager {
 
 			//CALCULATING CL AT ALPHA FOR WING
 			if(alphaCheck == true){
-				 theCLWingCalculator = theLSAnalysis.new CalcCLAtAlpha();
+				theCLWingCalculator = theLSAnalysis.new CalcCLAtAlpha();
 				cLIsolatedWing = theCLWingCalculator.nasaBlackwellAlphaBody(alphaBody);
 				System.out.println("\nCL of Isolated wing at alpha body = " + cLIsolatedWing);
 			}
@@ -812,7 +818,7 @@ public class ACStabilityManager {
 		double [] alphaActualHTailArray =  new double [alphaStabilityArray.size()];
 		for (int i=0; i<alphaStabilityArray.size(); i++){
 			alphaStabilityHTailArray [i] = alphaStabilityArray.get(i)-downwashAnglesArray[i] + theHTail.get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue();
-			
+
 			alphaActualHtail = Amount.valueOf(Math.toRadians(alphaStabilityArray.get(i)) - 
 					Math.toRadians(downwashAnglesArray[i]) 
 					+ theHTail.get_iw().getEstimatedValue(), SI.RADIAN);
@@ -1019,9 +1025,10 @@ public class ACStabilityManager {
 		System.out.println(" ------------------- \n\n");
 
 
-		// parassite Drag
-
+		//-----------------------------------------------CDairfoil+ CL*alpha_i
 		// Array
+
+		// parassite Drag
 
 		LSAerodynamicsManager.CalcCdvsAlpha theCDWingArrayCalculator = theLSAnalysis
 				.new CalcCdvsAlpha();
@@ -1035,43 +1042,61 @@ public class ACStabilityManager {
 		for (int i=0; i< parassiteCDWingCleanArray.length; i++){
 			parassiteCDWingCleanArray[i] =(double)cDWingTemp[i];
 		}
-		
+
 		// Induced Drag 
-		
+
 		inducedCDWingArray = theCDWingArrayCalculator.calculateCDInduced(alphaMinWing, alphaMaxWing, nValueAlpha);
 
 		// Total drag
-		
+
 		cDWingCleanArray = new double [nValueAlpha];
 		for (int i = 0; i<nValueAlpha; i++){
-		cDWingCleanArray[i] = parassiteCDWingCleanArray[i]+ inducedCDWingArray[i];
+			cDWingCleanArray[i] = parassiteCDWingCleanArray[i]+ inducedCDWingArray[i];
 		}
-		
+
+		if (theCondition == ConditionEnum.TAKE_OFF || theCondition == ConditionEnum.LANDING){
+
+			for (int i = 0; i<nValueAlpha; i++){
+				cDWingCleanArray[i] = parassiteCDWingCleanArray[i]+ inducedCDWingArray[i] + highLiftWingCalculator.getDeltaCD();
+			}
+
+			if ( theCondition == ConditionEnum.TAKE_OFF ){
+				cDWingTakeOffArray = new double [cDWingCleanArray.length];
+				cDWingTakeOffArray = cDWingCleanArray;
+			}
+
+			if (theCondition == ConditionEnum.LANDING){
+				cDWingLandingArray = new double [cDWingCleanArray.length];
+				cDWingLandingArray = cDWingCleanArray;
+			}
+		}
+
+		//-----------------------------------------------CD0+ CL^"/PI AR e
 
 		// Total Drag with Parabolic interpolation
-		
+
 		theWing.calculateFormFactor(theWing.getAerodynamics().calculateCompressibility(theOperatingConditions.get_machCurrent()));
 		double cD0WingPolar= theWing.getAerodynamics().calculateCd0Parasite();
-		
+
 		double oswaldFactor = aircraft.get_theAerodynamics().calculateOswald(
 				theOperatingConditions.get_machCurrent(), MethodEnum.HOWE);
 		System.out.println("oswald factor " + oswaldFactor);
-		
+
 		cD0WingPolarArray = new double [alphaStabilityArray.size()];
 		cDiWingPolarArray = new double [alphaStabilityArray.size()];
 		cDWaweWingPolarArray = new double [alphaStabilityArray.size()];
 		cDWingPolarArray = new double [alphaStabilityArray.size()];
-		
+
 		for (int i=0; i<alphaStabilityArray.size(); i++){
-			
-		double cLLocal = theCLWingCalculator.nasaBlackwellAlphaBody(Amount.valueOf(Math.toRadians (alphaStabilityArray.get(i)), SI.RADIAN));	
-		cD0WingPolarArray[i] = cD0WingPolar;
-		cDiWingPolarArray[i] = (Math.pow(cLLocal, 2))/(Math.PI * theWing.get_aspectRatio() * oswaldFactor);
-		cDWaweWingPolarArray[i] = theWing.getAerodynamics().getCalculateCdWaveDrag().lockKorn(cLLocal, theOperatingConditions.get_machCurrent());
-		
-		cDWingPolarArray[i] = cD0WingPolar + cDiWingPolarArray[i] + cDWaweWingPolarArray[i];
+
+			double cLLocal = theCLWingCalculator.nasaBlackwellAlphaBody(Amount.valueOf(Math.toRadians (alphaStabilityArray.get(i)), SI.RADIAN));	
+			cD0WingPolarArray[i] = cD0WingPolar;
+			cDiWingPolarArray[i] = (Math.pow(cLLocal, 2))/(Math.PI * theWing.get_aspectRatio() * oswaldFactor);
+			cDWaweWingPolarArray[i] = theWing.getAerodynamics().getCalculateCdWaveDrag().lockKorn(cLLocal, theOperatingConditions.get_machCurrent());
+
+			cDWingPolarArray[i] = cD0WingPolar + cDiWingPolarArray[i] + cDWaweWingPolarArray[i];
 		}
-		
+
 		// value
 
 		if(alphaCheck ==true){
@@ -1083,106 +1108,106 @@ public class ACStabilityManager {
 					+ " is " + cDIsolatedWing);
 
 		}
-		
+
 		// plot
-		
+
 		if( plotCheck == true){
-		
+
 			System.out.println("\n-------------------------------------");
 			System.out.println("\t \t \tWRITING CD vs ALPHA CHART TO FILE  ");
-		
+
 			MyChartToFileUtils.plotNoLegend(
 					alphaWingStabilityArray.toArray(),parassiteCDWingCleanArray, 
 					null, null, null, null,
 					"alpha_w", "CD_parassite",
 					"deg", "",
 					subfolderPath, "Parassite Drag coefficient vs Alpha Wing for WING ");
-			
+
 			System.out.println("\n\n\t\t\tDONE");
-		
+
 
 			System.out.println("\n-------------------------------------");
 			System.out.println("\t \t \tWRITING PARASSITE CD vs CL CHART TO FILE  ");
-			
-		MyChartToFileUtils.plotNoLegend(
-				parassiteCDWingCleanArray, cLWingCleanArray,
-				null, null, null, null,
-				"CD_parassite", "CL" ,
-				"", "",
-				subfolderPath, "Parassite Drag coefficient vs CL for WING ");
-		
-		System.out.println("\n\n\t\t\tDONE");
-		
-		System.out.println("\n-------------------------------------");
-		System.out.println("\t \t \tWRITING INDUCED CD vs CL CHART TO FILE  ");
-		
-		MyChartToFileUtils.plotNoLegend(
-				alphaWingStabilityArray.toArray(),inducedCDWingArray, 
-				null, null, null, null,
-				"alpha_w", "CD_induced",
-				"deg", "",
-				subfolderPath, "Induced Drag coefficient vs Alpha Wing for WING ");
-		System.out.println("\n\n\t\t\tDONE");
-	
-	System.out.println("\n-------------------------------------");
-	System.out.println("\t \t \tWRITING TOTAL CD vs CL CHART TO FILE  ");
-	
-		double [][] theCDWingMatrix = {parassiteCDWingCleanArray, inducedCDWingArray, cDWingCleanArray};
-		double [][] theAlphaCDMatrix = { alphaWingStabilityArray.toArray(), alphaWingStabilityArray.toArray(), alphaWingStabilityArray.toArray()};
-		String [] legend = {"parassite Drag Cefficient", "induced Drag Coefficient", "Total Drag Coefficient"};
-		
-		MyChartToFileUtils.plot(
-				theAlphaCDMatrix, theCDWingMatrix, 
-				null, null, null, null,
-				"alpha_w", "CD",
-				"deg", "",
-				legend,
-				subfolderPath, "Total Drag coefficient vs Alpha Wing for WING ");
 
-		System.out.println(" \n\n\t\tDONE");
-		
-		System.out.println("\n-------------------------------------");
-		System.out.println("\t \t \tWRITING TOTAL CD POLAR vs CL CHART TO FILE  ");
-		
-		
+			MyChartToFileUtils.plotNoLegend(
+					parassiteCDWingCleanArray, cLWingCleanArray,
+					null, null, null, null,
+					"CD_parassite", "CL" ,
+					"", "",
+					subfolderPath, "Parassite Drag coefficient vs CL for WING ");
 
-		double [][] theCDPolarWingMatrix = {cD0WingPolarArray, cDiWingPolarArray, cDWaweWingPolarArray, cDWingPolarArray};
-		double [][] theAlphaPolarCDMatrix = { alphaWingStabilityArray.toArray(), 
-				alphaWingStabilityArray.toArray(), alphaWingStabilityArray.toArray(), alphaWingStabilityArray.toArray()};
-		
-		String [] legendPolar = {"CD0", "CDi", "CDw", "CD"};
-		
-		MyChartToFileUtils.plot(
-				theAlphaPolarCDMatrix, theCDPolarWingMatrix, 
-				null, null, null, null,
-				"alpha_w", "CD",
-				"deg", "",
-				legendPolar,
-				subfolderPath, "Drag coefficient contributes vs Alpha Wing for WING ");
-		
-		
-		double [][] theCDMatrix = {cDWingCleanArray, cDWingPolarArray};
-		double [][] theAlphaMatrix = { alphaWingStabilityArray.toArray(), 
-				alphaWingStabilityArray.toArray()};
-		
-		String [] legendCD = {"from airfoils", "Polar method"};
-		
-		MyChartToFileUtils.plot(
-				theAlphaMatrix, theCDMatrix, 
-				null, null, null, null,
-				"alpha_w", "CD",
-				"deg", "",
-				legendPolar,
-				subfolderPath, "Comparison of CD estimation");
-		
-		
-		
-		
-		}
-		
+			System.out.println("\n\n\t\t\tDONE");
+
+			System.out.println("\n-------------------------------------");
+			System.out.println("\t \t \tWRITING INDUCED CD vs CL CHART TO FILE  ");
+
+			MyChartToFileUtils.plotNoLegend(
+					alphaWingStabilityArray.toArray(),inducedCDWingArray, 
+					null, null, null, null,
+					"alpha_w", "CD_induced",
+					"deg", "",
+					subfolderPath, "Induced Drag coefficient vs Alpha Wing for WING ");
+			System.out.println("\n\n\t\t\tDONE");
+
+			System.out.println("\n-------------------------------------");
+			System.out.println("\t \t \tWRITING TOTAL CD vs CL CHART TO FILE  ");
+
+			double [][] theCDWingMatrix = {parassiteCDWingCleanArray, inducedCDWingArray, cDWingCleanArray};
+			double [][] theAlphaCDMatrix = { alphaWingStabilityArray.toArray(), alphaWingStabilityArray.toArray(), alphaWingStabilityArray.toArray()};
+			String [] legend = {"parassite Drag Cefficient", "induced Drag Coefficient", "Total Drag Coefficient"};
+
+			MyChartToFileUtils.plot(
+					theAlphaCDMatrix, theCDWingMatrix, 
+					null, null, null, null,
+					"alpha_w", "CD",
+					"deg", "",
+					legend,
+					subfolderPath, "Total Drag coefficient vs Alpha Wing for WING ");
+
+			System.out.println(" \n\n\t\tDONE");
+
+			System.out.println("\n-------------------------------------");
+			System.out.println("\t \t \tWRITING TOTAL CD POLAR vs CL CHART TO FILE  ");
+
+
+
+			double [][] theCDPolarWingMatrix = {cD0WingPolarArray, cDiWingPolarArray, cDWaweWingPolarArray, cDWingPolarArray};
+			double [][] theAlphaPolarCDMatrix = { alphaWingStabilityArray.toArray(), 
+					alphaWingStabilityArray.toArray(), alphaWingStabilityArray.toArray(), alphaWingStabilityArray.toArray()};
+
+			String [] legendPolar = {"CD0", "CDi", "CDw", "CD"};
+
+			MyChartToFileUtils.plot(
+					theAlphaPolarCDMatrix, theCDPolarWingMatrix, 
+					null, null, null, null,
+					"alpha_w", "CD",
+					"deg", "",
+					legendPolar,
+					subfolderPath, "Drag coefficient contributes vs Alpha Wing for WING ");
+
+
+			double [][] theCDMatrix = {cDWingCleanArray, cDWingPolarArray};
+			double [][] theAlphaMatrix = { alphaWingStabilityArray.toArray(), 
+					alphaWingStabilityArray.toArray()};
+
+			String [] legendCD = {"from airfoils", "Polar method"};
+
+			MyChartToFileUtils.plot(
+					theAlphaMatrix, theCDMatrix, 
+					null, null, null, null,
+					"alpha_w", "CD",
+					"deg", "",
+					legendPolar,
+					subfolderPath, "Comparison of CD estimation");
+
+
+
+
 		}
 
-	
+	}
+
+
 
 
 	public void  CalculateHTailDragCHaracteristics(){
@@ -1190,8 +1215,8 @@ public class ACStabilityManager {
 		System.out.println("\n ------------------- ");
 		System.out.println("|  HORIZONTAL TAIL   |");
 		System.out.println(" ------------------- \n\n");
-		
-		
+
+
 
 		// Array
 
@@ -1203,21 +1228,87 @@ public class ACStabilityManager {
 
 		parassiteCDHTailCleanArray= new double [nValueAlpha];
 
-		Double [] cDWingTemp =  theCDHtailArrayCalculator.calculateCDParassiteFromAirfoil(Amount.valueOf(
-				alphaStabilityHTailArray[0],NonSI.DEGREE_ANGLE), Amount.valueOf(
-				alphaStabilityHTailArray[alphaStabilityHTailArray.length-1], NonSI.DEGREE_ANGLE), nValueAlpha);
+		Double [] cDWingTemp =  theCDHtailArrayCalculator.calculateCDParassiteFromAirfoil(alphaMin,alphaMax, nValueAlpha);
 		for (int i=0; i< parassiteCDWingCleanArray.length; i++){
-			parassiteCDWingCleanArray[i] =(double)cDWingTemp[i];
+			parassiteCDHTailCleanArray[i] =(double)cDWingTemp[i];
 		}
 
+		// Induced Drag 
+		inducedCDHTailArray = new double [nValueAlpha];
+		
+		inducedCDHTailArray = theCDHtailArrayCalculator.calculateCDInduced(alphaMin,alphaMax, nValueAlpha);
 
-		LSAerodynamicsManager.CalcCDAtAlpha theCDHTailCalculator = theLSHTailAnalysis.new CalcCDAtAlpha();
-		double cDHorizontalTail = theCDHTailCalculator.integralFromCdAirfoil(
-				alphaHorizontalTail, MethodEnum.NASA_BLACKWELL, theLSAnalysis);
-		System.out.println("\n CD of Horizontal Tail with no defection at alpha body = (deg) "
-				+ alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue()
-				+ " is " + cDHorizontalTail
-				);
+		// Total drag
+
+		cDHTailCleanArray = new double [nValueAlpha];
+		for (int i = 0; i<nValueAlpha; i++){
+			cDHTailCleanArray[i] = parassiteCDHTailCleanArray[i]+inducedCDHTailArray[i];
+		}
+
+	
+		// tau Map
+		
+		CalcHighLiftDevices theHighLiftTailalculator;
+		double [] cDHtailwithTau = new double [alphaStabilityArray.size()];
+		
+		List<Double[]> deltaFlapHTail = new ArrayList<Double[]>();
+	
+		List<FlapTypeEnum> flapTypeHtail = new ArrayList<FlapTypeEnum>();
+		List<Double> etaInFlapHtail = new ArrayList<Double>();
+		List<Double> etaOutFlapHtail = new ArrayList<Double>();
+	
+		List<Double> cfc = new ArrayList<Double>();
+// todo --> fix this
+		for (int i = 0; i<tauIndexArray.length; i++){
+			theHighLiftTailalculator = theLSHTailAnalysis
+					.new CalcHighLiftDevices(
+							theHTail,
+							theOperatingConditions,
+							deltaFlap,
+							flapType,
+							null,
+							etaInFlap,
+							etaOutFlap,
+							etaInSlat,
+							etaOutSlat,
+							cfc,
+							csc,
+							leRadiusCSlat,
+							cExtCSlat
+							);
+		
+//		cDHTailMap.put(deltaEArrayString[ tauIndexArray.length-i-1], cLHTailArrayTemp);
+		
+		}
+		// value
+
+		if(alphaCheck == true){
+			LSAerodynamicsManager.CalcCDAtAlpha theCDHTailCalculator = theLSHTailAnalysis.new CalcCDAtAlpha();
+			double cDHorizontalTail = theCDHTailCalculator.integralFromCdAirfoil(
+					alphaHorizontalTail, MethodEnum.NASA_BLACKWELL, theLSAnalysis);
+			System.out.println("\n CD of Horizontal Tail with no defection at alpha body = (deg) "
+					+ alphaBody.to(NonSI.DEGREE_ANGLE).getEstimatedValue()
+					+ " is " + cDHorizontalTail
+					);
+		}
+		
+		// plot
+		
+		if (plotCheck = true){
+			
+			System.out.println("\n-------------------------------------");
+			System.out.println("\t \t \tWRITING Total CD vs CL CHART TO FILE  ");
+
+			
+			MyChartToFileUtils.plotNoLegend(
+					alphaStabilityArray.toArray(),cDHTailCleanArray, 
+					null, null, null, null,
+					"alpha_h", "CD_induced",
+					"deg", "",
+					subfolderPath, "Total Drag coefficient vs Alpha for horizontal TAIL, clean ");
+			
+			System.out.println("\n\n\t\t\tDONE");
+		}
 
 	}
 
