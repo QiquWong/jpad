@@ -444,7 +444,7 @@ public class Test_MR_LongitudinalStability_Turboprop {
 				alphaMin, alphaMax, alphaBody , true, subfolderPath, pathTakeOff);
  
 	theStabilityManager.CalculateAll();
-	theStabilityManager.CalculateDragCharacteristics();
+
 			
 		
 		//---------------------

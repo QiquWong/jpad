@@ -36,6 +36,7 @@ import aircraft.components.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface;
+import calculators.aerodynamics.AlphaEffective;
 import calculators.aerodynamics.NasaBlackwell;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLMaxClean;

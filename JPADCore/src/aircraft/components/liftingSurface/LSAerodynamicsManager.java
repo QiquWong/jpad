@@ -41,6 +41,7 @@ import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLMaxClean;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLvsAlphaCurve;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.MeanAirfoil;
 import calculators.aerodynamics.AerodynamicCalc;
+import calculators.aerodynamics.AlphaEffective;
 import calculators.aerodynamics.AnglesCalc;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
@@ -4126,13 +4127,66 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			return cDArray;
 		
 	}
+		public double[] calculateCDInduced(Amount<Angle> alphaMin,
+				Amount<Angle> alphaMax,
+				int nValue){
+
+			if (alphaMin.getUnit() == NonSI.DEGREE_ANGLE)
+				alphaMin= alphaMin.to(SI.RADIAN);
+			
+			if (alphaMax.getUnit() == NonSI.DEGREE_ANGLE)
+				alphaMax= alphaMax.to(SI.RADIAN);
+			
+			double[] clDistribution; 
+			AlphaEffective theAlphaInducedCalculator = new AlphaEffective(getTheLiftingSurface().getAerodynamics(),
+					getTheLiftingSurface(), theOperatingConditions);
+			
+			CalcLiftDistribution calculateLiftDistribution = getTheLiftingSurface().getAerodynamics().getCalculateLiftDistribution();
+			
+			double[] alphaCDInduced =  MyArrayUtils.linspace(
+					alphaMin.getEstimatedValue(),
+					alphaMax.getEstimatedValue(),
+					nValue); // array in rad
+			
+			MyAirfoil intermediateAirfoil;
+			Amount<Angle> alphaActual;
+			double[] cdDistribution, cDDistribution;
+			Double []  alphaInduced;
+			cDDistribution = new double[nValue];
+			
+			for (int ii=0; ii<alphaCDInduced.length; ii++){
+				alphaActual = Amount.valueOf(alphaCDInduced[ii], SI.RADIAN);
+				calculateLiftDistribution.getNasaBlackwell().calculate(alphaActual);
+				clDistribution = calculateLiftDistribution.getNasaBlackwell().get_clTotalDistribution().toArray();
+				int nValueNasaBlackwell = clDistribution.length;
+				alphaInduced = new Double [nValueNasaBlackwell];
+				cdDistribution = new double [nValueNasaBlackwell];
+				double[] yLoc = new double [nValueNasaBlackwell];
+				double [] yLocNonDm = MyArrayUtils.linspace(0, 1,nValueNasaBlackwell );
+				clDistribution[clDistribution.length-1] = 0;
+				yLoc = MyArrayUtils.linspace(0, getTheLiftingSurface().get_semispan().getEstimatedValue(),nValueNasaBlackwell );
+				theAlphaInducedCalculator.calculateAlphaEffective(alphaActual);
+				double [] alphaInducedTemp = theAlphaInducedCalculator.getAlphaInduced();
+				alphaInduced = MyMathUtils.getInterpolatedValue1DLinear(
+						theAlphaInducedCalculator.getyStationsActual(), alphaInducedTemp, yLoc);
+				for (int i = 0; i<nValueNasaBlackwell; i++ ){
+				
+				cdDistribution[i] =  clDistribution[i] * (double) alphaInduced[i];
+				}
+				
+				cDDistribution[ii] = MyMathUtils.integrate1DTrapezoidLinear(yLocNonDm, cdDistribution,0, 1);
+			}
+			
+			
+			
+			return cDDistribution;
+		}
 	}
 	/**
 	 * This class calculates the cd distribution among the semispan 
 	 * 
 	 * @author Manuela Ruocco
 	 */
-
 
 	public class CalcCdDistribution {
 

@@ -33,6 +33,7 @@ import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.MethodEnum;
 import functions.Linspace;
+import jmatrix.Matrix;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
@@ -51,7 +52,8 @@ public class ACStabilityManager {
 	StabilityCalculator theStabilityCalculator = new StabilityCalculator();
 	ConditionEnum theCondition;
 	DownwashCalculator theDownwashCalculator;
-
+	LSAerodynamicsManager.CalcCLAtAlpha theCLWingCalculator;
+	
 	MyAirfoil meanAirfoil;
 
 	int nValueAlpha = 50;
@@ -137,8 +139,16 @@ public class ACStabilityManager {
 	private Double [] downwashAnglesArray;
 	private double [] tauIndexArray = new double [deltaEArray.length];
 	private double [] cLCompleteAircraftdeltaEArray = new double [deltaEArray.length];
+	
+	private double [] parassiteCDWingCleanArray;
+	private double [] parassiteCDHTailCleanArray;
+	private double [] inducedCDWingArray;
 	private double [] cDWingCleanArray;
 	private double [] cDHTailCleanArray;
+	private double [] cD0WingPolarArray;
+	private double [] cDiWingPolarArray;
+	private double [] cDWaweWingPolarArray;
+	private double [] cDWingPolarArray;
 
 
 
@@ -642,7 +652,7 @@ public class ACStabilityManager {
 
 			//CALCULATING CL AT ALPHA FOR WING
 			if(alphaCheck == true){
-				LSAerodynamicsManager.CalcCLAtAlpha theCLWingCalculator = theLSAnalysis.new CalcCLAtAlpha();
+				 theCLWingCalculator = theLSAnalysis.new CalcCLAtAlpha();
 				cLIsolatedWing = theCLWingCalculator.nasaBlackwellAlphaBody(alphaBody);
 				System.out.println("\nCL of Isolated wing at alpha body = " + cLIsolatedWing);
 			}
@@ -1019,18 +1029,49 @@ public class ACStabilityManager {
 		LSAerodynamicsManager.CalcCDAtAlpha theCDWingCalculator = theLSAnalysis
 				.new CalcCDAtAlpha();
 
-		cDWingCleanArray = new double [nValueAlpha];
+		parassiteCDWingCleanArray = new double [nValueAlpha];
 
 		Double [] cDWingTemp =  theCDWingArrayCalculator.calculateCDParassiteFromAirfoil(alphaMinWing, alphaMaxWing, nValueAlpha);
-		for (int i=0; i< cDWingCleanArray.length; i++){
-			cDWingCleanArray[i] =(double)cDWingTemp[i];
+		for (int i=0; i< parassiteCDWingCleanArray.length; i++){
+			parassiteCDWingCleanArray[i] =(double)cDWingTemp[i];
 		}
 		
 		// Induced Drag 
 		
+		inducedCDWingArray = theCDWingArrayCalculator.calculateCDInduced(alphaMinWing, alphaMaxWing, nValueAlpha);
+
+		// Total drag
+		
+		cDWingCleanArray = new double [nValueAlpha];
+		for (int i = 0; i<nValueAlpha; i++){
+		cDWingCleanArray[i] = parassiteCDWingCleanArray[i]+ inducedCDWingArray[i];
+		}
 		
 
-
+		// Total Drag with Parabolic interpolation
+		
+		theWing.calculateFormFactor(theWing.getAerodynamics().calculateCompressibility(theOperatingConditions.get_machCurrent()));
+		double cD0WingPolar= theWing.getAerodynamics().calculateCd0Parasite();
+		
+		double oswaldFactor = aircraft.get_theAerodynamics().calculateOswald(
+				theOperatingConditions.get_machCurrent(), MethodEnum.HOWE);
+		System.out.println("oswald factor " + oswaldFactor);
+		
+		cD0WingPolarArray = new double [alphaStabilityArray.size()];
+		cDiWingPolarArray = new double [alphaStabilityArray.size()];
+		cDWaweWingPolarArray = new double [alphaStabilityArray.size()];
+		cDWingPolarArray = new double [alphaStabilityArray.size()];
+		
+		for (int i=0; i<alphaStabilityArray.size(); i++){
+			
+		double cLLocal = theCLWingCalculator.nasaBlackwellAlphaBody(Amount.valueOf(Math.toRadians (alphaStabilityArray.get(i)), SI.RADIAN));	
+		cD0WingPolarArray[i] = cD0WingPolar;
+		cDiWingPolarArray[i] = (Math.pow(cLLocal, 2))/(Math.PI * theWing.get_aspectRatio() * oswaldFactor);
+		cDWaweWingPolarArray[i] = theWing.getAerodynamics().getCalculateCdWaveDrag().lockKorn(cLLocal, theOperatingConditions.get_machCurrent());
+		
+		cDWingPolarArray[i] = cD0WingPolar + cDiWingPolarArray[i] + cDWaweWingPolarArray[i];
+		}
+		
 		// value
 
 		if(alphaCheck ==true){
@@ -1051,26 +1092,94 @@ public class ACStabilityManager {
 			System.out.println("\t \t \tWRITING CD vs ALPHA CHART TO FILE  ");
 		
 			MyChartToFileUtils.plotNoLegend(
-					alphaWingStabilityArray.toArray(),cDWingCleanArray, 
+					alphaWingStabilityArray.toArray(),parassiteCDWingCleanArray, 
 					null, null, null, null,
 					"alpha_w", "CD_parassite",
 					"deg", "",
-					subfolderPath, "Parassite Drag vs Alpha Wing for WING ");
+					subfolderPath, "Parassite Drag coefficient vs Alpha Wing for WING ");
 			
 			System.out.println("\n\n\t\t\tDONE");
 		
 
 			System.out.println("\n-------------------------------------");
-			System.out.println("\t \t \tWRITING CL vs CD CHART TO FILE  ");
+			System.out.println("\t \t \tWRITING PARASSITE CD vs CL CHART TO FILE  ");
 			
 		MyChartToFileUtils.plotNoLegend(
-				cDWingCleanArray, cLWingCleanArray,
+				parassiteCDWingCleanArray, cLWingCleanArray,
 				null, null, null, null,
-				"CL", "CD_parassite",
+				"CD_parassite", "CL" ,
 				"", "",
-				subfolderPath, "Parassite Drag vs CL for WING ");
+				subfolderPath, "Parassite Drag coefficient vs CL for WING ");
 		
-		System.out.println("\n\n\t\t\tDONE");}
+		System.out.println("\n\n\t\t\tDONE");
+		
+		System.out.println("\n-------------------------------------");
+		System.out.println("\t \t \tWRITING INDUCED CD vs CL CHART TO FILE  ");
+		
+		MyChartToFileUtils.plotNoLegend(
+				alphaWingStabilityArray.toArray(),inducedCDWingArray, 
+				null, null, null, null,
+				"alpha_w", "CD_induced",
+				"deg", "",
+				subfolderPath, "Induced Drag coefficient vs Alpha Wing for WING ");
+		System.out.println("\n\n\t\t\tDONE");
+	
+	System.out.println("\n-------------------------------------");
+	System.out.println("\t \t \tWRITING TOTAL CD vs CL CHART TO FILE  ");
+	
+		double [][] theCDWingMatrix = {parassiteCDWingCleanArray, inducedCDWingArray, cDWingCleanArray};
+		double [][] theAlphaCDMatrix = { alphaWingStabilityArray.toArray(), alphaWingStabilityArray.toArray(), alphaWingStabilityArray.toArray()};
+		String [] legend = {"parassite Drag Cefficient", "induced Drag Coefficient", "Total Drag Coefficient"};
+		
+		MyChartToFileUtils.plot(
+				theAlphaCDMatrix, theCDWingMatrix, 
+				null, null, null, null,
+				"alpha_w", "CD",
+				"deg", "",
+				legend,
+				subfolderPath, "Total Drag coefficient vs Alpha Wing for WING ");
+
+		System.out.println(" \n\n\t\tDONE");
+		
+		System.out.println("\n-------------------------------------");
+		System.out.println("\t \t \tWRITING TOTAL CD POLAR vs CL CHART TO FILE  ");
+		
+		
+
+		double [][] theCDPolarWingMatrix = {cD0WingPolarArray, cDiWingPolarArray, cDWaweWingPolarArray, cDWingPolarArray};
+		double [][] theAlphaPolarCDMatrix = { alphaWingStabilityArray.toArray(), 
+				alphaWingStabilityArray.toArray(), alphaWingStabilityArray.toArray(), alphaWingStabilityArray.toArray()};
+		
+		String [] legendPolar = {"CD0", "CDi", "CDw", "CD"};
+		
+		MyChartToFileUtils.plot(
+				theAlphaPolarCDMatrix, theCDPolarWingMatrix, 
+				null, null, null, null,
+				"alpha_w", "CD",
+				"deg", "",
+				legendPolar,
+				subfolderPath, "Drag coefficient contributes vs Alpha Wing for WING ");
+		
+		
+		double [][] theCDMatrix = {cDWingCleanArray, cDWingPolarArray};
+		double [][] theAlphaMatrix = { alphaWingStabilityArray.toArray(), 
+				alphaWingStabilityArray.toArray()};
+		
+		String [] legendCD = {"from airfoils", "Polar method"};
+		
+		MyChartToFileUtils.plot(
+				theAlphaMatrix, theCDMatrix, 
+				null, null, null, null,
+				"alpha_w", "CD",
+				"deg", "",
+				legendPolar,
+				subfolderPath, "Comparison of CD estimation");
+		
+		
+		
+		
+		}
+		
 		}
 
 	
@@ -1092,13 +1201,13 @@ public class ACStabilityManager {
 		LSAerodynamicsManager.CalcCDAtAlpha theCDhTAILCalculator = theLSHTailAnalysis
 				.new CalcCDAtAlpha();
 
-		cDHTailCleanArray= new double [nValueAlpha];
+		parassiteCDHTailCleanArray= new double [nValueAlpha];
 
 		Double [] cDWingTemp =  theCDHtailArrayCalculator.calculateCDParassiteFromAirfoil(Amount.valueOf(
 				alphaStabilityHTailArray[0],NonSI.DEGREE_ANGLE), Amount.valueOf(
 				alphaStabilityHTailArray[alphaStabilityHTailArray.length-1], NonSI.DEGREE_ANGLE), nValueAlpha);
-		for (int i=0; i< cDWingCleanArray.length; i++){
-			cDWingCleanArray[i] =(double)cDWingTemp[i];
+		for (int i=0; i< parassiteCDWingCleanArray.length; i++){
+			parassiteCDWingCleanArray[i] =(double)cDWingTemp[i];
 		}
 
 
@@ -1283,12 +1392,32 @@ public class ACStabilityManager {
 
 
 	public double[] getcDWingCleanArray() {
-		return cDWingCleanArray;
+		return parassiteCDWingCleanArray;
 	}
 
 
 	public void setcDWingCleanArray(double[] cDWingCleanArray) {
-		this.cDWingCleanArray = cDWingCleanArray;
+		this.parassiteCDWingCleanArray = cDWingCleanArray;
+	}
+
+
+	public double[] getParassiteCDWingCleanArray() {
+		return parassiteCDWingCleanArray;
+	}
+
+
+	public double[] getParassiteCDHTailCleanArray() {
+		return parassiteCDHTailCleanArray;
+	}
+
+
+	public double[] getcDWingInducedArray() {
+		return inducedCDWingArray;
+	}
+
+
+	public double[] getcDHTailCleanArray() {
+		return cDHTailCleanArray;
 	}
 
 

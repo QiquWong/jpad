@@ -165,7 +165,7 @@ public class StabilityCalculator {
 			double deltaAlphaMax;
 
 		
-			deltaAlphaMax = -(tauValue * deltaE)*tauValue + deltaE/57.3+6.6*tauValue*deltaE/57.3;
+			deltaAlphaMax = theHighLiftCalculator.getDeltaAlphaMaxFlap();
 
 			
 			double deltaCLMax;
@@ -176,11 +176,11 @@ public class StabilityCalculator {
 			else
 				deltaCLMax = theHighLiftCalculator.getDeltaCLmax_flap();
 
-			double alphaStallElevator = alphaMaxClean + deltaAlphaMax;
 			double cLMaxElevator = cLMaxClean + deltaCLMax;
+			double alphaStallElevator = ((cLMaxElevator - qValue)/clAlphaDeltaE)+ deltaAlphaMax;
 
 
-			alphaArrayWithTau = MyArrayUtils.linspace(alphaZeroLift , alphaStallElevator+1 , nPoints);
+			alphaArrayWithTau = MyArrayUtils.linspace(alphaZeroLift , alphaStallElevator+1.9 , nPoints);
 			clHTailDeflected = new double [alphaArrayWithTau.length];
 
 			
@@ -226,117 +226,7 @@ public class StabilityCalculator {
 				}
 			}
 			
-			// calcolo prova
-						
-						double alphaTemp = alphaMaxClean;
-						double delta = 0.00001;
-						double diff = 10;
-						
-						while (Math.abs(diff) >0.00000001 ){
-						double[][] matrixDataAlpha = { { Math.pow(alphaStarElevator, 3), Math.pow(alphaStarElevator, 2)
-							, alphaStarElevator,1.0},
-								{ 3 * Math.pow(alphaStarElevator, 2), 2*alphaStarElevator, 1.0, 0.0},
-								{6 * Math.pow(alphaStarElevator, 2), 2.0, 0.0, 0.0},
-								{3 * Math.pow(alphaTemp, 2), 2*alphaTemp, 1.0, 0.0}};
-						RealMatrix mAlpha = MatrixUtils.createRealMatrix(matrixDataAlpha);
-
-
-						double [] vectorAlpha = {cLstarElevator, clAlphaDeltaE,0,0};
-
-						double [] solSystemAlpha = MyMathUtils.solveLinearSystem(mAlpha ,vectorAlpha);
-
-						double aA = solSystemAlpha[0];
-						double bA = solSystemAlpha[1];
-						double cA = solSystemAlpha[2];
-						double dA = solSystemAlpha[3];
-
-						double cLConf =a * Math.pow(alphaTemp, 4) + 
-								b * Math.pow(alphaTemp,3) + c * Math.pow(alphaTemp,2) + d * alphaTemp + e;
-						
-						diff = cLConf - cLMaxElevator;
-						
-							if(deltaE > 0)
-								alphaTemp = alphaTemp - delta; 
-							else
-								alphaTemp = alphaTemp + delta;
-						}
-						System.out.println(" delta e " + deltaE + " alpha max " + alphaTemp);
-						
-						
-						if (deltaE > 0 ){
-						double [] deltaAlphaMaxArray = {0,
-								-1.481,
-								-2.86,
-								-3.646,
-								-2.579,
-								-2.032,
-								-1.826};
-						
-						double[] alphaDeltaArray ={0,
-								5,
-								10,
-								15,
-								20,
-								25,
-								30};
-						deltaAlphaMax = MyMathUtils.getInterpolatedValue1DLinear(alphaDeltaArray ,deltaAlphaMaxArray, deltaE);
-						}
-						
-						if (deltaE < 0 ){
-							double [] deltaAlphaMaxArray = {1.826,
-									2.032,
-									2.579,
-									3.646,
-									2.86,
-									1.481,
-									0};
-		
-							
-						double [] alphaDeltaArray = {-30,
-								-25,
-								-20,
-								-15,
-								-10,
-								-5,
-								0};
-						
-						deltaAlphaMax = MyMathUtils.getInterpolatedValue1DSpline(alphaDeltaArray ,deltaAlphaMaxArray, deltaE);}
-						
-					
-						alphaStallElevator = alphaMaxClean + deltaAlphaMax;
-						
-						double[][] matrixDataNew = { {Math.pow(alphaStarElevator, 4), Math.pow(alphaStarElevator, 3),Math.pow(alphaStarElevator, 2), alphaStarElevator,1.0},
-								{4* Math.pow(alphaStarElevator, 3), 3*Math.pow(alphaStarElevator, 2), 2*alphaStarElevator,1.0, 0.0},
-								{12 *Math.pow(alphaStarElevator, 2), 6* alphaStarElevator, 2.0, 0.0, 0.0},
-								{Math.pow(alphaStallElevator, 4), Math.pow(alphaStallElevator, 3),Math.pow(alphaStallElevator, 2), alphaStallElevator,1.0},
-								{4* Math.pow(alphaStallElevator, 3), 3*Math.pow(alphaStallElevator, 2), 2*alphaStallElevator,1.0, 0.0}};
-						RealMatrix mNew = MatrixUtils.createRealMatrix(matrixDataNew);
-
-
-						double [] vectormNew = { cLstarElevator, clAlphaDeltaE, 0.0, cLMaxElevator, 0};
-
-						double [] solSystemNew = MyMathUtils.solveLinearSystem(mNew,  vectormNew);
-
-						double aNew = solSystemNew[0];
-						double bNew = solSystemNew[1];
-						double cNew = solSystemNew[2];
-						double dNew = solSystemNew[3];
-						double eNew = solSystemNew[4];
-
-						for (int i=0; i<alphaArrayWithTau.length ; i++){
-
-							alpha = alphaArrayWithTau[i];
-							if (alpha < alphaStarElevator){
-								clHTailDeflected[i] = clAlphaDeltaE * alpha + qValue;
-							}
-
-							else{
-								clHTailDeflected[i] = aNew * Math.pow(alpha, 4) + 
-										bNew * Math.pow(alpha, 3) + 
-										cNew * Math.pow(alpha, 2) +dNew * alpha + eNew;
-
-							}
-						}	
+			
 					
 
 						
