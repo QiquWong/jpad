@@ -87,7 +87,7 @@ public class MyGeometry extends AuxiliaryComponentCalculator{
 		_maximumThicknessOverChord = 0.15;
 		_thicknessOverChordUnit = 0.12; 
 		_radiusLE = 0.030195; 
-//		_deltaYPercent = 0.192 *_maximumThicknessOverChord*100 ;
+		_deltaYPercent =_theAirfoil.getAerodynamics().get__deltaYPercent();
 		_anglePhiTE = Amount.valueOf(0,SI.RADIAN); 
 		_twist = Amount.valueOf(0.0,SI.RADIAN);
 

@@ -241,7 +241,7 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		airfoilTip.getGeometry().update(yLocRoot);  // define chord
 		airfoilTip.getGeometry().set_maximumThicknessOverChord(0.15); //REPORT
 		airfoilTip.getGeometry().set_deltaYPercent(2.9);
-		System.out.println("\n \n \t TIP \nAirfoil Type: " + airfoilKink.get_family());
+		System.out.println("\n \n \t TIP \nAirfoil Type: " + airfoilTip.get_family());
 		System.out.println("tip Chord [m] = " +theWing.get_chordTip().getEstimatedValue() );
 		System.out.println("Tip maximum thickness = " + airfoilTip.getGeometry().get_maximumThicknessOverChord());
 		System.out.println("CL max --> " + airfoilTip.getAerodynamics().get_clMax());

@@ -91,8 +91,9 @@ public class MyAirfoil {
 		_type = AirfoilTypeEnum.CONVENTIONAL;
 		
 		_theLiftingSurface = ls;
-		geometry = new MyGeometry(this, yLoc);
 		aerodynamics = new MyAerodynamics(this, name);
+		geometry = new MyGeometry(this, yLoc);
+		
 	}
 	
 	/**
@@ -111,8 +112,9 @@ public class MyAirfoil {
 			_type = AirfoilTypeEnum.CONVENTIONAL;
 
 			_theLiftingSurface = ls;
-			geometry = new MyGeometry(this, yLoc);
 			aerodynamics = new MyAerodynamics(this);
+			geometry = new MyGeometry(this, yLoc);
+			
 			break;
 		
 		// TODO: put inside Geometry and Aerodynamics B747-100B correct data (actually there are the same data in both ATR-72 and B747-100B
@@ -121,8 +123,9 @@ public class MyAirfoil {
 			_type = AirfoilTypeEnum.MODERN_SUPERCRITICAL;
 
 			_theLiftingSurface = ls;
-			geometry = new MyGeometry(this, yLoc);
 			aerodynamics = new MyAerodynamics(this);
+			geometry = new MyGeometry(this, yLoc);
+			
 			break;
 			
 		case AGILE_DC1:
@@ -130,8 +133,9 @@ public class MyAirfoil {
 			_type = AirfoilTypeEnum.MODERN_SUPERCRITICAL; //TODO: have to check
 
 			_theLiftingSurface = ls;
-			geometry = new MyGeometry(this, yLoc);
 			aerodynamics = new MyAerodynamics(this);
+			geometry = new MyGeometry(this, yLoc);
+			
 			break;
 		}
 	}
@@ -151,8 +155,9 @@ public class MyAirfoil {
 			_type = AirfoilTypeEnum.CONVENTIONAL;
 
 			_theLiftingSurface = ls;
-			geometry = new MyGeometry(this, yLoc);
 			aerodynamics = new MyAerodynamics(this, aircraftName, station);
+			geometry = new MyGeometry(this, yLoc);
+			
 			break;
 		
 		// TODO: put inside Geometry and Aerodynamics B747-100B correct data (actually there are the same data in both ATR-72 and B747-100B
@@ -185,8 +190,9 @@ public class MyAirfoil {
 	
 	public MyAirfoil(LiftingSurface ls) {
 		_theLiftingSurface = ls;
-		geometry = new MyGeometry(this, 10000.0);
 		aerodynamics = new MyAerodynamics(this);
+		geometry = new MyGeometry(this, 10000.0);
+		
 		_type = AirfoilTypeEnum.CONVENTIONAL;
 	}
 	

@@ -180,7 +180,7 @@ public class StabilityCalculator {
 			double alphaStallElevator = ((cLMaxElevator - qValue)/clAlphaDeltaE)+ deltaAlphaMax;
 
 
-			alphaArrayWithTau = MyArrayUtils.linspace(alphaZeroLift , alphaStallElevator+1.9 , nPoints);
+			alphaArrayWithTau = MyArrayUtils.linspace(alphaZeroLift-10 , alphaStallElevator+1.9 , nPoints);
 			clHTailDeflected = new double [alphaArrayWithTau.length];
 
 			

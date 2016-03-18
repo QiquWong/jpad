@@ -110,7 +110,8 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		System.out.println("\nInitializing test class...");
 		String folderPath = MyConfiguration.currentDirectoryString + File.separator + "out" + File.separator;
 		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "Longitudinal_Static_Stability_Turboprop" + File.separator);
-
+		String subfolderPathTakeOFF = JPADStaticWriteUtils.createNewFolder(folderPath + "Longitudinal_Static_Stability_Turboprop_TakeOff" + File.separator);
+		
 		//----------------------------------------------------------------------------------
 		// Default folders creation:
 
@@ -241,7 +242,7 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		airfoilTip.getGeometry().update(yLocRoot);  // define chord
 		airfoilTip.getGeometry().set_maximumThicknessOverChord(0.15); //REPORT
 		airfoilTip.getGeometry().set_deltaYPercent(3.5);
-		System.out.println("\n \n \t TIP \nAirfoil Type: " + airfoilKink.get_family());
+		System.out.println("\n \n \t TIP \nAirfoil Type: " + airfoilTip.get_family());
 		System.out.println("tip Chord [m] = " +theWing.get_chordTip().getEstimatedValue() );
 		System.out.println("Tip maximum thickness = " + airfoilTip.getGeometry().get_maximumThicknessOverChord());
 		System.out.println("CL max --> " + airfoilTip.getAerodynamics().get_clMax());
@@ -270,7 +271,8 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		double yLocRootH = 0.0;
 		MyAirfoil airfoilRootHorizontalTail = new MyAirfoil(
 				horizontalTail, yLocRootH, "0012");
-		airfoilTip.getGeometry().set_deltaYPercent(3.0);
+		airfoilRoot.getAerodynamics().set__deltaYPercent(3.0);
+		airfoilTip.getAerodynamics().set__deltaYPercent(3.0);
 		airfoilRootHorizontalTail.getGeometry().update(yLocRootH);  // define chord
 		airfoilRootHorizontalTail.getGeometry().set_maximumThicknessOverChord(0.12); //REPORT
 
@@ -438,13 +440,16 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		
 		Amount<Angle> alphaBody = Amount.valueOf(Math.toRadians(2.0), SI.RADIAN);
 		Amount<Angle> alphaMin = Amount.valueOf(Math.toRadians(-5), SI.RADIAN);
-		Amount<Angle> alphaMax = Amount.valueOf(Math.toRadians(20), SI.RADIAN);
+		Amount<Angle> alphaMax = Amount.valueOf(Math.toRadians(22), SI.RADIAN);
 		
 		ACStabilityManager theStabilityManager = new ACStabilityManager(meanAirfoil, aircraft, ConditionEnum.CRUISE,
 				alphaMin, alphaMax, alphaBody , true, subfolderPath, pathTakeOff);
+		
+//		ACStabilityManager theStabilityManagerTakeOFF = new ACStabilityManager(meanAirfoil, aircraft, ConditionEnum.TAKE_OFF,
+//				alphaMin, alphaMax, alphaBody , true, subfolderPathTakeOFF, pathTakeOff);
  
 	theStabilityManager.CalculateAll();
-
+//	theStabilityManagerTakeOFF.CalculateAll();
 			
 		
 		//---------------------

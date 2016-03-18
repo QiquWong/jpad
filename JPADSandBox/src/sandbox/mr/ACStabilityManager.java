@@ -1056,25 +1056,27 @@ public class ACStabilityManager {
 
 		if (theCondition == ConditionEnum.TAKE_OFF || theCondition == ConditionEnum.LANDING){
 
+			double deltaCD  = highLiftWingCalculator.getDeltaCD();
+			cDWingTakeOffArray = new double [cDWingCleanArray.length];
+			cDWingLandingArray = new double [cDWingCleanArray.length];
 			for (int i = 0; i<nValueAlpha; i++){
-				cDWingCleanArray[i] = parassiteCDWingCleanArray[i]+ inducedCDWingArray[i] + highLiftWingCalculator.getDeltaCD();
-			}
-
+		
 			if ( theCondition == ConditionEnum.TAKE_OFF ){
-				cDWingTakeOffArray = new double [cDWingCleanArray.length];
-				cDWingTakeOffArray = cDWingCleanArray;
+				
+				cDWingTakeOffArray[i] =  cDWingCleanArray[i] + deltaCD;
 			}
 
 			if (theCondition == ConditionEnum.LANDING){
-				cDWingLandingArray = new double [cDWingCleanArray.length];
-				cDWingLandingArray = cDWingCleanArray;
+			
+				cDWingLandingArray[i] =   cDWingCleanArray[i] + deltaCD;
 			}
 		}
-
+		}
 		//-----------------------------------------------CD0+ CL^"/PI AR e
 
 		// Total Drag with Parabolic interpolation
 
+		if (theCondition == ConditionEnum.CRUISE){
 		theWing.calculateFormFactor(theWing.getAerodynamics().calculateCompressibility(theOperatingConditions.get_machCurrent()));
 		double cD0WingPolar= theWing.getAerodynamics().calculateCd0Parasite();
 
@@ -1095,7 +1097,7 @@ public class ACStabilityManager {
 			cDWaweWingPolarArray[i] = theWing.getAerodynamics().getCalculateCdWaveDrag().lockKorn(cLLocal, theOperatingConditions.get_machCurrent());
 
 			cDWingPolarArray[i] = cD0WingPolar + cDiWingPolarArray[i] + cDWaweWingPolarArray[i];
-		}
+		}}
 
 		// value
 
@@ -1116,6 +1118,35 @@ public class ACStabilityManager {
 			System.out.println("\n-------------------------------------");
 			System.out.println("\t \t \tWRITING CD vs ALPHA CHART TO FILE  ");
 
+			if (theCondition == ConditionEnum.TAKE_OFF ){
+				
+				double [][] theCDWingMatrix = {cDWingCleanArray,cDWingTakeOffArray };
+				double [][] theAlphaCDMatrix = { alphaWingStabilityArray.toArray(), alphaWingStabilityArray.toArray()};
+				String [] legend = {"Wing clean Drag coefficient", " Wing Drag coefficient with high lift devices "};
+
+				MyChartToFileUtils.plot(
+						theAlphaCDMatrix, theCDWingMatrix, 
+						null, null, null, null,
+						"alpha_w", "CD",
+						"deg", "",
+						legend,
+						subfolderPath, "Total Drag coefficient vs Alpha Wing for WING ");}
+			
+			if (theCondition == ConditionEnum.LANDING){
+				double [][] theCDWingMatrix = {cDWingCleanArray,cDWingLandingArray};
+				double [][] theAlphaCDMatrix = { alphaWingStabilityArray.toArray(), alphaWingStabilityArray.toArray()};
+				String [] legend = {"Wing clean Drag coefficient", " Wing Drag coefficient with high lift devices "};
+
+				MyChartToFileUtils.plot(
+						theAlphaCDMatrix, theCDWingMatrix, 
+						null, null, null, null,
+						"alpha_w", "CD",
+						"deg", "",
+						legend,
+						subfolderPath, "Total Drag coefficient vs Alpha Wing for WING ");
+			}
+			
+			if (theCondition == ConditionEnum.CRUISE){
 			MyChartToFileUtils.plotNoLegend(
 					alphaWingStabilityArray.toArray(),parassiteCDWingCleanArray, 
 					null, null, null, null,
@@ -1166,6 +1197,8 @@ public class ACStabilityManager {
 
 			System.out.println(" \n\n\t\tDONE");
 
+			
+			if (theCondition == ConditionEnum.CRUISE){
 			System.out.println("\n-------------------------------------");
 			System.out.println("\t \t \tWRITING TOTAL CD POLAR vs CL CHART TO FILE  ");
 
@@ -1199,8 +1232,8 @@ public class ACStabilityManager {
 					"deg", "",
 					legendPolar,
 					subfolderPath, "Comparison of CD estimation");
-
-
+			}
+			}
 
 
 		}
@@ -1251,34 +1284,54 @@ public class ACStabilityManager {
 		CalcHighLiftDevices theHighLiftTailalculator;
 		double [] cDHtailwithTau = new double [alphaStabilityArray.size()];
 		
-		List<Double[]> deltaFlapHTail = new ArrayList<Double[]>();
-	
 		List<FlapTypeEnum> flapTypeHtail = new ArrayList<FlapTypeEnum>();
 		List<Double> etaInFlapHtail = new ArrayList<Double>();
 		List<Double> etaOutFlapHtail = new ArrayList<Double>();
 	
-		List<Double> cfc = new ArrayList<Double>();
-// todo --> fix this
+		List<Double> cfcHtail = new ArrayList<Double>();
+		flapTypeHtail.add(FlapTypeEnum.PLAIN);
+		Double [] deltaArray = new Double [1];
+		double [] cdTemp = new double [nValueAlpha];
+		etaInFlapHtail.add(
+				theHTail.get_etaIn());
+		
+		etaOutFlapHtail.add(
+				theHTail.get_etaOut());
+		
+		cfcHtail.add(theHTail.get_CeCt());
+		
 		for (int i = 0; i<tauIndexArray.length; i++){
+			List<Double[]> deltaFlapHTail = new ArrayList<Double[]>();
+			
+			if ( deltaEArray[i] > 0)
+			deltaArray[0] = deltaEArray[i];
+			else
+				deltaArray[0] = -deltaEArray[i];
+			deltaFlapHTail.add(0,deltaArray);
+			
 			theHighLiftTailalculator = theLSHTailAnalysis
 					.new CalcHighLiftDevices(
 							theHTail,
 							theOperatingConditions,
-							deltaFlap,
-							flapType,
+							deltaFlapHTail,
+							flapTypeHtail,
 							null,
-							etaInFlap,
-							etaOutFlap,
-							etaInSlat,
-							etaOutSlat,
-							cfc,
-							csc,
-							leRadiusCSlat,
-							cExtCSlat
+							etaInFlapHtail,
+							etaOutFlapHtail,
+							null,
+							null,
+							cfcHtail,
+							null,
+							null,
+							null
 							);
-		
-//		cDHTailMap.put(deltaEArrayString[ tauIndexArray.length-i-1], cLHTailArrayTemp);
-		
+		theHighLiftTailalculator.calculateHighLiftDevicesEffects();
+		double delta = theHighLiftTailalculator.getDeltaCD();
+		for (int j=0; j<nValueAlpha; j++){
+		cdTemp[j] = cDHTailCleanArray[j] + delta;}
+		cDHTailMap.put(deltaEArrayString[i], cdTemp);
+		alphacDHTailMap.put(deltaEArrayString[i],alphaStabilityArray.toArray()); // these are alpha wing
+		cdTemp =  new double [nValueAlpha];
 		}
 		// value
 
@@ -1306,6 +1359,30 @@ public class ACStabilityManager {
 					"alpha_h", "CD_induced",
 					"deg", "",
 					subfolderPath, "Total Drag coefficient vs Alpha for horizontal TAIL, clean ");
+			
+			
+			double [][] alphaMatrix = {alphaStabilityArray.toArray(), alphaStabilityArray.toArray(), 
+					alphaStabilityArray.toArray(), alphaStabilityArray.toArray(),
+					alphaStabilityArray.toArray(),alphaStabilityArray.toArray(),
+					alphaStabilityArray.toArray()};
+			double [][] cDTauArray = {cDHTailMap.get(deltaEArrayString[0]),cDHTailMap.get(deltaEArrayString[1]),
+					cDHTailMap.get(deltaEArrayString[2]), cDHTailMap.get(deltaEArrayString[3]),
+					cDHTailMap.get(deltaEArrayString[4]), cDHTailMap.get(deltaEArrayString[5]),
+					cDHTailMap.get(deltaEArrayString[6]) };
+			
+			String [] legendCD = new String[deltaArray.length];
+			for ( int i=0; i<deltaArray.length; i++){
+				legendCD[i] = deltaEArrayString[i];
+			}
+			
+			MyChartToFileUtils.plot(
+					alphaMatrix,cDTauArray, 
+					null, null, null, null,
+					"alpha_h", "CD",
+					"deg", "",
+					deltaEArrayString,
+					subfolderPath, "Total Drag coefficient vs Alpha for horizontal TAIL with deltae deflection");
+			
 			
 			System.out.println("\n\n\t\t\tDONE");
 		}

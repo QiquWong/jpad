@@ -551,7 +551,8 @@ public MyAerodynamics(MyAirfoil airf, String name) {
 		 _cdMin = 0.0055;
 		 _clAtCdMin = 0.0;
 		 _kFactorDragPolar = 0.0035;
-
+		 _deltaYPercent = 3.0;
+		 
 		 _aerodynamicCenterX = 0.25;
 		 _cmAC = 0.0;
 		 _cmACStall = -0.09;
