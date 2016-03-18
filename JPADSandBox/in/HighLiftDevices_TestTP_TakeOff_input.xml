@@ -10,15 +10,15 @@
 		<Flap1>
 			<FlapType unit="">SINGLE_SLOTTED</FlapType>
 			<Cf_c unit="">0.35</Cf_c>
-			<Delta_Flap1 unit="°">20</Delta_Flap1>
+			<Delta_Flap1 unit="°">22</Delta_Flap1>
 			<Flap_inboard>0.08</Flap_inboard>
-			<Flap_outboard>0.3</Flap_outboard>
+			<Flap_outboard>0.35</Flap_outboard>
 		</Flap1>
 		<Flap2>
 			<FlapType unit="">SINGLE_SLOTTED</FlapType>
-			<Cf_c unit="">0.35</Cf_c>
-			<Delta_Flap2 unit="°">20</Delta_Flap2>
-			<Flap_inboard>0.3</Flap_inboard>
+			<Cf_c unit="">0.38</Cf_c>
+			<Delta_Flap2 unit="°">22</Delta_Flap2>
+			<Flap_inboard>0.35</Flap_inboard>
 			<Flap_outboard>0.8</Flap_outboard>
 		</Flap2>
 	</ATR72>

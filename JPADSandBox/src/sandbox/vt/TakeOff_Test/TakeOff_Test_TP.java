@@ -33,13 +33,13 @@ import standaloneutils.customdata.CenterOfGravity;
 public class TakeOff_Test_TP {
 
 	private static long _startTimeCalculation, _startTimeGraph, _startTimeBalancedCalculation,
-					    _startTimeBalancedGraph, _stopTimeBalancedGraph, _stopTimeCalculation,
-					    _stopTimeGraph, _stopTimeBalancedCalculation, _stopTimeTotal,
-						_elapsedTimeTotal, _elapsedTimeCalculation, _elapsedTimeGraph,
-						_elapsedTimeBalancedCalculation, _elapsedTimeBalancedGraph;
+	_startTimeBalancedGraph, _stopTimeBalancedGraph, _stopTimeCalculation,
+	_stopTimeGraph, _stopTimeBalancedCalculation, _stopTimeTotal,
+	_elapsedTimeTotal, _elapsedTimeCalculation, _elapsedTimeGraph,
+	_elapsedTimeBalancedCalculation, _elapsedTimeBalancedGraph;
 
-//	TODO: example of custom NON_SI unit
-//	private static Unit<? extends Quantity> angularRateUnit = (NonSI.DEGREE_ANGLE).divide((SI.SECOND));
+	//	TODO: example of custom NON_SI unit
+	//	private static Unit<? extends Quantity> angularRateUnit = (NonSI.DEGREE_ANGLE).divide((SI.SECOND));
 
 	//------------------------------------------------------------------------------------------
 	// VARIABLE DECLARATION:
@@ -89,6 +89,7 @@ public class TakeOff_Test_TP {
 
 		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.ATR72);
 		aircraft.set_name("ATR-72");
+		aircraft.get_weights().set_MTOM(Amount.valueOf(22500, SI.KILOGRAM)); // optional weight brochure
 
 		LiftingSurface theWing = aircraft.get_wing();
 
@@ -130,7 +131,7 @@ public class TakeOff_Test_TP {
 		MyAirfoil airfoilRoot = theWing.get_theAirfoilsList().get(0);
 		airfoilRoot.getGeometry().update(yLocRoot);  // define chord
 		airfoilRoot.getGeometry().set_maximumThicknessOverChord(0.18); //REPORT
-		airfoilRoot.getGeometry().set_deltaYPercent(0.192 *airfoilRoot.getGeometry().get_maximumThicknessOverChord()*100 );
+		airfoilRoot.getGeometry().set_deltaYPercent(4.5);
 		System.out.println("\n \n \t ROOT \nAirfoil Type: " + airfoilRoot.get_family());
 		System.out.println("Root Chord [m] = " + theWing.get_chordRoot().getEstimatedValue() );
 		System.out.println("Root maximum thickness = " + airfoilRoot.getGeometry().get_maximumThicknessOverChord());
@@ -142,8 +143,8 @@ public class TakeOff_Test_TP {
 		double yLocKink = theWing.get_spanStationKink() * theWing.get_semispan().getEstimatedValue();
 		MyAirfoil airfoilKink = theWing.get_theAirfoilsList().get(1);
 		airfoilKink.getGeometry().update(yLocKink);   // define chord
-		airfoilKink.getGeometry().set_maximumThicknessOverChord(0.15); //REPORT
-		airfoilKink.getGeometry().set_deltaYPercent(0.192 *airfoilKink.getGeometry().get_maximumThicknessOverChord()*100 );
+		airfoilKink.getGeometry().set_maximumThicknessOverChord(0.18); //REPORT
+		airfoilKink.getGeometry().set_deltaYPercent(4.5);
 		System.out.println("\n \n \t KINK \nAirfoil Type: " + airfoilKink.get_family());
 		System.out.println("Kink Station [m] = " + yLocKink);
 		System.out.println("Kink Chord [m] = " + theWing.get_chordKink().getEstimatedValue() );
@@ -156,14 +157,13 @@ public class TakeOff_Test_TP {
 		double yLocTip = theWing.get_semispan().getEstimatedValue();
 		MyAirfoil airfoilTip = theWing.get_theAirfoilsList().get(2);
 		airfoilTip.getGeometry().update(yLocRoot);  // define chord
-		airfoilTip.getGeometry().set_maximumThicknessOverChord(0.12); //REPORT
-		airfoilTip.getGeometry().set_deltaYPercent(0.192 *airfoilTip.getGeometry().get_maximumThicknessOverChord()*100 );
+		airfoilTip.getGeometry().set_maximumThicknessOverChord(0.15); //REPORT
+		airfoilTip.getGeometry().set_deltaYPercent(3.115);
 		System.out.println("\n \n \t TIP \nAirfoil Type: " + airfoilKink.get_family());
 		System.out.println("tip Chord [m] = " +theWing.get_chordTip().getEstimatedValue() );
 		System.out.println("Tip maximum thickness = " + airfoilTip.getGeometry().get_maximumThicknessOverChord());
 		System.out.println("CL max --> " + airfoilTip.getAerodynamics().get_clMax());
-		System.out.println("LE sharpness parameter Tip = " + airfoilTip.getGeometry().get_deltaYPercent());
-
+		System.out.println("LE sharpness parameter Tip = " + airfoilTip.getGeometry().get_deltaYPercent()+ "\n");
 
 		//--------------------------------------------------------------------------------------
 		// Assign airfoil
@@ -261,79 +261,75 @@ public class TakeOff_Test_TP {
 						null
 						);
 
-//		highLiftCalculator.calculateHighLiftDevicesEffects();
-//
-//		//----------------------------------------------------------------------------------
-//		// Results print
-//		System.out.println("\ndeltaCl0_flap_list = ");
-//		for(int i=0; i<highLiftCalculator.getDeltaCl0_flap_list().size(); i++)
-//			System.out.print(highLiftCalculator.getDeltaCl0_flap_list().get(i) + " ");
-//
-//		System.out.println("\n\ndeltaCl0_flap = \n" + highLiftCalculator.getDeltaCl0_flap());
-//
-//		System.out.println("\n\ndeltaCL0_flap_list = ");
-//		for(int i=0; i<highLiftCalculator.getDeltaCL0_flap_list().size(); i++)
-//			System.out.print(highLiftCalculator.getDeltaCL0_flap_list().get(i) + " ");
-//
-//		System.out.println("\n\ndeltaCL0_flap = \n" + highLiftCalculator.getDeltaCL0_flap());
-//
-//		System.out.println("\n\ndeltaClmax_flap_list = ");
-//		for(int i=0; i<highLiftCalculator.getDeltaClmax_flap_list().size(); i++)
-//			System.out.print(highLiftCalculator.getDeltaClmax_flap_list().get(i) + " ");
-//
-//		System.out.println("\n\ndeltaClmax_flap = \n" + highLiftCalculator.getDeltaClmax_flap());
-//
-//		System.out.println("\n\ndeltaCLmax_flap_list = ");
-//		for(int i=0; i<highLiftCalculator.getDeltaCLmax_flap_list().size(); i++)
-//			System.out.print(highLiftCalculator.getDeltaCLmax_flap_list().get(i) + " ");
-//
-//		System.out.println("\n\ndeltaCLmax_flap = \n" + highLiftCalculator.getDeltaCLmax_flap());
-//
-//		System.out.println("\n\ncLalpha_new_list = ");
-//		for(int i=0; i<highLiftCalculator.getcLalpha_new_list().size(); i++)
-//			System.out.print(highLiftCalculator.getcLalpha_new_list().get(i) + " ");
-//
-//		System.out.println("\n\ncLalpha_new = \n" + highLiftCalculator.getcLalpha_new());
-//
-//		System.out.println("\n\ndeltaAlphaMax_list = ");
-//		for(int i=0; i<highLiftCalculator.getDeltaAlphaMax_list().size(); i++)
-//			System.out.print(highLiftCalculator.getDeltaAlphaMax_list().get(i) + " ");
-//
-//		System.out.println("\n\ndeltaAlphaMax = \n" + highLiftCalculator.getDeltaAlphaMaxFlap());
-//
-//		System.out.println("\n\ndeltaCD_list = ");
-//		for(int i=0; i<highLiftCalculator.getDeltaCD_list().size(); i++)
-//			System.out.print(highLiftCalculator.getDeltaCD_list().get(i) + " ");
-//
-//		System.out.println("\n\ndeltaCD = \n" + highLiftCalculator.getDeltaCD());
-//
-//		System.out.println("\n\ndeltaCMc_4_list = ");
-//		for(int i=0; i<highLiftCalculator.getDeltaCM_c4_list().size(); i++)
-//			System.out.print(highLiftCalculator.getDeltaCM_c4_list().get(i) + " ");
-//
-//		System.out.println("\n\ndeltaCMc_4 = \n" + highLiftCalculator.getDeltaCM_c4());
-//
-//		System.out.println("\n\ndeltaCMc_4 = \n" + highLiftCalculator.getDeltaCM_c4());
-//		
-//		highLiftCalculator.plotHighLiftCurve();
-	
+		//		highLiftCalculator.calculateHighLiftDevicesEffects();
+		//
+		//		//----------------------------------------------------------------------------------
+		//		// Results print
+		//		System.out.println("\ndeltaCl0_flap_list = ");
+		//		for(int i=0; i<highLiftCalculator.getDeltaCl0_flap_list().size(); i++)
+		//			System.out.print(highLiftCalculator.getDeltaCl0_flap_list().get(i) + " ");
+		//
+		//		System.out.println("\n\ndeltaCl0_flap = \n" + highLiftCalculator.getDeltaCl0_flap());
+		//
+		//		System.out.println("\n\ndeltaCL0_flap_list = ");
+		//		for(int i=0; i<highLiftCalculator.getDeltaCL0_flap_list().size(); i++)
+		//			System.out.print(highLiftCalculator.getDeltaCL0_flap_list().get(i) + " ");
+		//
+		//		System.out.println("\n\ndeltaCL0_flap = \n" + highLiftCalculator.getDeltaCL0_flap());
+		//
+		//		System.out.println("\n\ndeltaClmax_flap_list = ");
+		//		for(int i=0; i<highLiftCalculator.getDeltaClmax_flap_list().size(); i++)
+		//			System.out.print(highLiftCalculator.getDeltaClmax_flap_list().get(i) + " ");
+		//
+		//		System.out.println("\n\ndeltaClmax_flap = \n" + highLiftCalculator.getDeltaClmax_flap());
+		//
+		//		System.out.println("\n\ndeltaCLmax_flap_list = ");
+		//		for(int i=0; i<highLiftCalculator.getDeltaCLmax_flap_list().size(); i++)
+		//			System.out.print(highLiftCalculator.getDeltaCLmax_flap_list().get(i) + " ");
+		//
+		//		System.out.println("\n\ndeltaCLmax_flap = \n" + highLiftCalculator.getDeltaCLmax_flap());
+		//
+		//		System.out.println("\n\ncLalpha_new_list = ");
+		//		for(int i=0; i<highLiftCalculator.getcLalpha_new_list().size(); i++)
+		//			System.out.print(highLiftCalculator.getcLalpha_new_list().get(i) + " ");
+		//
+		//		System.out.println("\n\ncLalpha_new = \n" + highLiftCalculator.getcLalpha_new());
+		//
+		//		System.out.println("\n\ndeltaAlphaMax = \n" + highLiftCalculator.getDeltaAlphaMaxFlap());
+		//
+		//		System.out.println("\n\ndeltaCD_list = ");
+		//		for(int i=0; i<highLiftCalculator.getDeltaCD_list().size(); i++)
+		//			System.out.print(highLiftCalculator.getDeltaCD_list().get(i) + " ");
+		//
+		//		System.out.println("\n\ndeltaCD = \n" + highLiftCalculator.getDeltaCD());
+		//
+		//		System.out.println("\n\ndeltaCMc_4_list = ");
+		//		for(int i=0; i<highLiftCalculator.getDeltaCM_c4_list().size(); i++)
+		//			System.out.print(highLiftCalculator.getDeltaCM_c4_list().get(i) + " ");
+		//
+		//		System.out.println("\n\ndeltaCMc_4 = \n" + highLiftCalculator.getDeltaCM_c4());
+		//
+		//		System.out.println("\n\ndeltaCMc_4 = \n" + highLiftCalculator.getDeltaCM_c4());
+		//
+		//		highLiftCalculator.plotHighLiftCurve();
+
 		//----------------------------------------------------------------------------------
 		// TakeOff Distance Test
 		//----------------------------------------------------------------------------------
 		_startTimeCalculation = System.currentTimeMillis();
 		Amount<Duration> dtRot = Amount.valueOf(3, SI.SECOND);
 		Amount<Duration> dtHold = Amount.valueOf(0.5, SI.SECOND);
-		double mu = 0.025;
-		double muBrake = 0.3;
+		double mu = 0.03;
+		double muBrake = 0.5;
 		double kAlphaDot = 0.05; // [1/deg]
 		double kcLMax = 0.85;
 		double kRot = 1.05;
-		double kLO = 1.1;
+		double kLO = 1.13;
 		double kFailure = 1.1;
 
-//		PARAMETERS USED TO CONSIDER THE PARABOLIC DRAG POLAR CORRECTION AT HIGH CL
-//		double k1 = 0.078;
-//		double k2 = 0.365;
+		//		PARAMETERS USED TO CONSIDER THE PARABOLIC DRAG POLAR CORRECTION AT HIGH CL
+		//		double k1 = 0.078;
+		//		double k2 = 0.365;
 		double k1 = 0.0;
 		double k2 = 0.0;
 
@@ -343,7 +339,7 @@ public class TakeOff_Test_TP {
 		Amount<Length> obstacle = Amount.valueOf(35, NonSI.FOOT).to(SI.METER);
 		Amount<Velocity> vWind = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
 		Amount<Angle> alphaGround = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
-		Amount<Angle> iw = Amount.valueOf(2.0, NonSI.DEGREE_ANGLE);
+		Amount<Angle> iw = Amount.valueOf(1.5, NonSI.DEGREE_ANGLE);
 		CalcTakeOff theTakeOffCalculator = new CalcTakeOff(
 				aircraft,
 				theCondition,

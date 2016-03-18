@@ -349,10 +349,6 @@ public class Test_MR_Wing_06bis {
 
 		System.out.println("\n\ncLalpha_new = \n" + highLiftCalculator.getcLalpha_new());
 
-		System.out.println("\n\ndeltaAlphaMax_list = ");
-		for(int i=0; i<highLiftCalculator.getDeltaAlphaMax_list().size(); i++)
-			System.out.print(highLiftCalculator.getDeltaAlphaMax_list().get(i) + " ");
-
 		System.out.println("\n\ndeltaAlphaMax = \n" + highLiftCalculator.getDeltaAlphaMaxFlap());
 
 		System.out.println("\n\ndeltaCD_list = ");

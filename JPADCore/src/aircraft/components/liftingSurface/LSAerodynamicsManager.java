@@ -2287,7 +2287,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		private List<Double> flapTypeIndex, deltaSlat, etaInFlap, etaOutFlap, 
 		etaInSlat, etaOutSlat, cfc, csc, leRadiusSlatRatio, cExtcSlat;
 		private final List<Double> deltaFlapRef;
-		private List<FlapTypeEnum> flapType;
+		private List<FlapTypeEnum> flapType; 
 
 		//to evaluate:
 		private double deltaCl0Flap = 0,
@@ -2298,7 +2298,6 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				deltaCLmaxSlat = 0,
 				cLalphaNew = 0,
 				deltaAlphaMaxFlap = 0,
-				deltaAlphaMaxSlat = 0,
 				deltaCD = 0,
 				deltaCMC4 = 0,
 				cLMaxFlap;
@@ -2310,7 +2309,6 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		deltaClmaxSlatList,
 		deltaCLmaxSlatList,
 		cLalphaNewList,
-		deltaAlphaMaxList,
 		deltaCDList,
 		deltaCMC4List;
 		private String subfolderPathHL;
@@ -2381,6 +2379,11 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				}
 			}
 
+			deltaAlphaMaxFlap = get_AerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(
+					getTheLiftingSurface()
+					.get_sweepLEEquivalent().to(NonSI.DEGREE_ANGLE).getEstimatedValue(),
+					meanAirfoil.getGeometry().get_deltaYPercent());
+			
 			theLiftingSurface.setHigLiftCalculator(this);
 			calcAlphaAndCLMax(meanAirfoil);
 		}
@@ -2589,14 +2592,16 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 						.getKbVsFlapSpanRatio(etaInFlap.get(i), etaOutFlap.get(i))	
 						);
 
+			CalcCLAlpha calcLinearSlope = new CalcCLAlpha();
+			double cLLinearSlope = calcLinearSlope.nasaBlackwell(new CalcCLAtAlpha());
+			
 			deltaCL0FlapList = new ArrayList<Double>();
 			for(int i=0; i<flapTypeIndex.size(); i++)
 				deltaCL0FlapList.add(
 						kb.get(i).doubleValue()
 						*kc.get(i).doubleValue()
 						*deltaCl0FlapList.get(i).doubleValue()
-						*(theWing.getAerodynamics().getCalculateCLAlpha().integralMean2D())
-						/meanAirfoil.getAerodynamics().get_clAlpha()
+						*((cLLinearSlope)/meanAirfoil.getAerodynamics().get_clAlpha())
 						);
 
 			for(int i=0; i<flapTypeIndex.size(); i++)
@@ -2665,8 +2670,6 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			}
 			//---------------------------------------------------------------
 			// new CLalpha
-			CalcCLAlpha calcLinearSlope = new CalcCLAlpha();
-			double cLLinearSlope = calcLinearSlope.nasaBlackwell(new CalcCLAtAlpha());
 			
 			cLalphaNewList = new ArrayList<Double>();
 			List<Double> swf = new ArrayList<Double>();
@@ -2687,18 +2690,6 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				cLalphaNew += cLalphaNewList.get(i)*swf.get(i);
 
 			cLalphaNew /= swfTot;
-
-			//---------------------------------------------------------------
-			// Delta alpha max (flap)
-			deltaAlphaMaxList = new ArrayList<Double>();
-			for(int i=0; i<flapTypeIndex.size(); i++)
-				deltaAlphaMaxList.add(theWing
-						.getAerodynamics()
-						.getHighLiftDatabaseReader()
-						.getDeltaAlphaMaxVsDeltaFlap(deltaFlapTotal[i]));
-
-			for(int i=0; i<flapTypeIndex.size(); i++)
-				deltaAlphaMaxFlap += deltaAlphaMaxList.get(i).doubleValue();
 
 			//---------------------------------------------------------------
 			// deltaCD
@@ -2854,7 +2845,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			
 			if (alphaMax.getUnit() == NonSI.DEGREE_ANGLE){
 				alphaMax = alphaMax.to(SI.RADIAN);
-			}
+			} 
 			
 			alphaArrayActualHighLift.linspace(alphaMin.getEstimatedValue() , alphaMax.getEstimatedValue(), nValue);
 			cLActualArrayHighLift = LiftCalc.calculateCLvsAlphaHighLiftArrayNasaBlackwell(
@@ -2942,14 +2933,11 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			
 			double alphaMaxHighLift;
 
-			if(deltaSlat == null)
-				alphaMaxHighLift = alphaMax.getEstimatedValue() + deltaAlphaMaxFlap;
-			else
-				alphaMaxHighLift = ((cLMaxFlap-cL0HighLift)/cLalphaNew) 
-									+ get_AerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(
-											getTheLiftingSurface()
-											.get_sweepLEEquivalent().to(NonSI.DEGREE_ANGLE).getEstimatedValue(),
-											meanAirfoil.getGeometry().get_deltaYPercent());
+			alphaMaxHighLift = ((cLMaxFlap-cL0HighLift)/cLalphaNew) 
+								+ get_AerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(
+										getTheLiftingSurface()
+										.get_sweepLEEquivalent().to(NonSI.DEGREE_ANGLE).getEstimatedValue(),
+										meanAirfoil.getGeometry().get_deltaYPercent());
 			
 			alphaMaxHighLift = Amount.valueOf(toRadians(alphaMaxHighLift), SI.RADIAN).getEstimatedValue();
 
@@ -3041,14 +3029,11 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 			double alphaMaxHighLift;
 
-			if(deltaSlat == null)
-				alphaMaxHighLift = alphaMax.getEstimatedValue() + deltaAlphaMaxFlap;
-			else
-				alphaMaxHighLift = ((cLMaxFlap-cL0HighLift)/cLalphaNew) 
-									+ get_AerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(
-											getTheLiftingSurface()
-											.get_sweepLEEquivalent().to(NonSI.DEGREE_ANGLE).getEstimatedValue(),
-											meanAirfoil.getGeometry().get_deltaYPercent());
+			alphaMaxHighLift = ((cLMaxFlap-cL0HighLift)/cLalphaNew) 
+								+ get_AerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(
+										getTheLiftingSurface()
+										.get_sweepLEEquivalent().to(NonSI.DEGREE_ANGLE).getEstimatedValue(),
+										meanAirfoil.getGeometry().get_deltaYPercent());
 			
 			alphaMaxHighLift = Amount.valueOf(toRadians(alphaMaxHighLift), SI.RADIAN).getEstimatedValue();
 			double alphaMaxHighLiftDegree =  
@@ -3222,28 +3207,12 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			return cLalphaNew;
 		}
 
-		public ArrayList<Double> getDeltaAlphaMax_list() {
-			return deltaAlphaMaxList;
-		}
-
-		public void setDeltaAlphaMax_list(ArrayList<Double> deltaAlphaMax_list) {
-			this.deltaAlphaMaxList = deltaAlphaMax_list;
-		}
-
 		public double getDeltaAlphaMaxFlap() {
 			return deltaAlphaMaxFlap;
 		}
 
-		public void setDeltaAlphaMaxFlap(double deltaAlphaMax) {
-			this.deltaAlphaMaxFlap = deltaAlphaMax;
-		}
-
-		public double getDeltaAlphaMaxSlat() {
-			return deltaAlphaMaxSlat;
-		}
-
-		public void setDeltaAlphaMaxSlat(double deltaAlphaMaxSlat) {
-			this.deltaAlphaMaxSlat = deltaAlphaMaxSlat;
+		public void setDeltaAlphaMaxFlap(double deltaAlphaMaxFlap) {
+			this.deltaAlphaMaxFlap = deltaAlphaMaxFlap;
 		}
 
 		public ArrayList<Double> getDeltaCD_list() {

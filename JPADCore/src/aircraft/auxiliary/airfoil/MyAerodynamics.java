@@ -68,6 +68,8 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 	private Double _clAlpha; 
 	private Double _clStar; 
 	private Double _clMax;
+	
+	private Double _deltaYPercent;
 
 	private Double _cdMin;
 	private Double _clAtCdMin;
@@ -158,6 +160,8 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 			 _alphaStall = Amount.valueOf(Math.toRadians(16.0),SI.RADIAN); 
 			 _clMax = 1.7; //1.8;
 
+			 _deltaYPercent = 4.5;
+			 
 			 _cdMin = 0.00675;
 			 _clAtCdMin = 0.3;
 			 _kFactorDragPolar = 0.004;
@@ -192,6 +196,8 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 			 _alphaStall = Amount.valueOf(Math.toRadians(18.0),SI.RADIAN); 
 			 _clMax = 1.72; //1.6;
 
+			 _deltaYPercent = 4.307;
+			 
 			 _cdMin = 0.00625;
 			 _clAtCdMin = 0.1;
 			 _kFactorDragPolar = 0.004;
@@ -226,6 +232,8 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 			 _alphaStall = Amount.valueOf(Math.toRadians(18),SI.RADIAN); 
 			 _clMax = 1.8 ; //1.5;
 
+			 _deltaYPercent = 3.115;
+			 
 			 _cdMin = 0.00575;
 			 _clAtCdMin = 0.23;
 			 _kFactorDragPolar = 0.004;
@@ -327,6 +335,8 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 			 _alphaStall = Amount.valueOf(Math.toRadians(20.1),SI.RADIAN); 
 			 _clMax = 1.86 ; //1.5;
 
+			 _deltaYPercent = 3.115;
+			 
 			 _cdMin = 0.0055;
 			 _clAtCdMin = 0.0;
 			 _kFactorDragPolar = 0.0035;
@@ -399,8 +409,8 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 		_alphaStar = Amount.valueOf(Math.toRadians(10.0),SI.RADIAN); // end-of-linearity 
 		_clStar = 0.8; 
 		_alphaStall = Amount.valueOf(Math.toRadians(13.0),SI.RADIAN); 
-		_clMax = 1.03;
-
+		_clMax = 1.03; 
+		
 		_cdMin = 0.025;
 		_clAtCdMin = 0.2;
 		_kFactorDragPolar = 0.075;
@@ -1116,6 +1126,14 @@ public  double calculateClAtAlphaInterp (double alpha){
 
 	public void set_clMax(Double _clMax) {
 		this._clMax = _clMax;
+	}
+
+	public Double get__deltaYPercent() {
+		return _deltaYPercent;
+	}
+
+	public void set__deltaYPercent(Double __deltaYPercent) {
+		this._deltaYPercent = __deltaYPercent;
 	}
 
 	public Double get_cdMin() {

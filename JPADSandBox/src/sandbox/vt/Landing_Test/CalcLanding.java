@@ -459,14 +459,7 @@ public class CalcLanding {
 
 				double   t = interpolator.getCurrentTime();
 				double[] x = interpolator.getInterpolatedState();
-				
-				System.out.println("\n\n-----------------------------------------------------");
-				System.out.println("\t\tSTATEVECTOR");
-				System.out.println(
-						"\n\tx[0] = s = " + x[0] + " m" +
-						"\n\tx[1] = V = " + x[1] + " m/s");
-				System.out.println("-----------------------------------------------------\n\n");
-				
+							
 				//----------------------------------------------------------------------------------------
 				// PICKING UP ALL DATA AT EVERY STEP 
 				//----------------------------------------------------------------------------------------
