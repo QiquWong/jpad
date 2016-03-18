@@ -83,13 +83,13 @@ public class LandingGear extends Component{
 		case ATR72:
 			_mounting = MountingPosition.FUSELAGE;
 			_massReference = Amount.valueOf(675.8, SI.KILOGRAM);
-			set_deltaCD0(0.010);
+			set_deltaCD0(0.008);
 			break;
 			
 		case B747_100B:
 			_mounting = MountingPosition.FUSELAGE;
 			_massReference = Amount.valueOf(13900.0, SI.KILOGRAM);
-			set_deltaCD0(0.010);
+			set_deltaCD0(0.020);
 			break;
 			
 		case AGILE_DC1:
