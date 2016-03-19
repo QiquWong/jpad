@@ -118,8 +118,7 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		MyConfiguration.initWorkingDirectoryTree();
 		
 		
-		
-		
+	
 		// -----------------------------------------------------------------------
 		// DEFINITION OF DEFAULT AIRCRAFT
 		// -----------------------------------------------------------------------
@@ -135,8 +134,7 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		LiftingSurface theWing = aircraft.get_wing();
 		LiftingSurface horizontalTail = aircraft.get_HTail();
 		
-		
-		
+
 		
 		// -----------------------------------------------------------------------
 		// OPERATING CONDITIONS

@@ -81,6 +81,7 @@ public class MyAirfoil {
 		_theLiftingSurface = ls;
 		geometry = new MyGeometry(this, yLoc);
 		aerodynamics = new MyAerodynamics(this);
+	
 	}
 	
 	public MyAirfoil(LiftingSurface ls, Double yLoc, String name) {
@@ -91,8 +92,8 @@ public class MyAirfoil {
 		_type = AirfoilTypeEnum.CONVENTIONAL;
 		
 		_theLiftingSurface = ls;
-		aerodynamics = new MyAerodynamics(this, name);
 		geometry = new MyGeometry(this, yLoc);
+		aerodynamics = new MyAerodynamics(this, name);
 		
 	}
 	
@@ -112,8 +113,8 @@ public class MyAirfoil {
 			_type = AirfoilTypeEnum.CONVENTIONAL;
 
 			_theLiftingSurface = ls;
-			aerodynamics = new MyAerodynamics(this);
 			geometry = new MyGeometry(this, yLoc);
+			aerodynamics = new MyAerodynamics(this);
 			
 			break;
 		
@@ -123,8 +124,8 @@ public class MyAirfoil {
 			_type = AirfoilTypeEnum.MODERN_SUPERCRITICAL;
 
 			_theLiftingSurface = ls;
-			aerodynamics = new MyAerodynamics(this);
 			geometry = new MyGeometry(this, yLoc);
+			aerodynamics = new MyAerodynamics(this);
 			
 			break;
 			
@@ -133,8 +134,8 @@ public class MyAirfoil {
 			_type = AirfoilTypeEnum.MODERN_SUPERCRITICAL; //TODO: have to check
 
 			_theLiftingSurface = ls;
-			aerodynamics = new MyAerodynamics(this);
 			geometry = new MyGeometry(this, yLoc);
+			aerodynamics = new MyAerodynamics(this);
 			
 			break;
 		}
@@ -155,8 +156,8 @@ public class MyAirfoil {
 			_type = AirfoilTypeEnum.CONVENTIONAL;
 
 			_theLiftingSurface = ls;
-			aerodynamics = new MyAerodynamics(this, aircraftName, station);
 			geometry = new MyGeometry(this, yLoc);
+			aerodynamics = new MyAerodynamics(this, aircraftName, station);
 			
 			break;
 		
