@@ -1,0 +1,33 @@
+% CL vs Alpha stall path 
+\begin{tikzpicture}
+
+\begin{axis}[
+width=\figurewidth,
+height=\figureheight,
+scaled ticks=false, tick label style={/pgf/number format/fixed},
+xmin=0.0,
+xmax=25.92,
+xlabel={alpha (deg)},
+xmajorgrids,
+ymin=0.36741225426030966,
+ymax=2.0191974155953396,
+ylabel={CL },
+ymajorgrids,
+legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
+]
+
+\addplot [
+color=black,
+solid
+]
+table[row sep=crcr]{
+0.0	0.3993611459351192\\
+8.0	1.1331935497299308\\
+16.0	1.8137675235768755\\
+18.0	1.8696272366623514\\
+20.0	1.8211375144807604\\
+22.0	1.6385755348570847\\
+24.0	1.292218475616302\\
+};
+\end{axis}
+\end{tikzpicture}%

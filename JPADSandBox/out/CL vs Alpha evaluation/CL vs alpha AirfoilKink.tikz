@@ -1,0 +1,47 @@
+%CL vs alpha AirfoilKink
+\begin{tikzpicture}
+
+\begin{axis}[
+width=\figurewidth,
+height=\figureheight,
+scaled ticks=false, tick label style={/pgf/number format/fixed},
+xmin=-6.48,
+xmax=27.0,
+xlabel={alpha (deg)},
+xmajorgrids,
+ymin=-0.2632579579451381,
+ymax=2.181168,
+ylabel={CL },
+ymajorgrids,
+legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
+]
+
+\addplot [
+color=black,
+solid
+]
+table[row sep=crcr]{
+-6.0	-0.24375736846772045\\
+-4.0	-0.017562697409255423\\
+-2.0	0.20863197364920966\\
+0.0	0.43482664470767474\\
+2.0	0.6610213157661398\\
+4.0	0.8872159868246049\\
+6.0	1.1134106578830698\\
+8.0	1.339605328941535\\
+10.0	1.5657999999999999\\
+12.0	1.7577597894774173\\
+14.0	1.8883977631620947\\
+15.0	1.9340716694115407\\
+16.0	1.9684358421080632\\
+17.0	1.9928305213834165\\
+18.0	2.0085959473693547\\
+20.0	2.0196\\
+21.0	2.0175191069082152\\
+22.0	2.012169921054032\\
+23.0	2.0048926825692024\\
+24.0	1.9970276315854814\\
+25.0	1.9899150082346213\\
+};
+\end{axis}
+\end{tikzpicture}%

@@ -1958,7 +1958,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 
 		public double phillipsAndAlley(EngineTypeEnum engineType) {
-			double result = LiftCalc.calculateCLmaxPhillipsAndAlley(
+			double result = LiftCalc.calculateCLmaxPhillipsAndAlley( //5.07
 					getTheLiftingSurface().get_clMaxVsY().getMean() , calculateCLAlpha.andersonSweptCompressibleSubsonic(), 
 					taperRatioEq, getTheLiftingSurface().get_sweepLEEquivalent().getEstimatedValue(), 
 					ar, getTheLiftingSurface().get_twistTip().getEstimatedValue(),

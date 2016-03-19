@@ -11,7 +11,6 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import com.google.common.collect.TreeBasedTable;
 
 import aircraft.OperatingConditions;
 import aircraft.auxiliary.airfoil.MyAerodynamics;
@@ -22,9 +21,11 @@ import aircraft.components.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface;
+import calculators.aerodynamics.LiftCalc;
 import calculators.aerodynamics.NasaBlackwell;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLMaxClean;
+import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLvsAlphaCurve;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcLiftDistribution;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcXAC;
 import configuration.MyConfiguration;
@@ -61,7 +62,7 @@ public class Test_MR_CLalpha {
 		// Generate default Wing
 		// -----------------------------------------------------------------------
 
-		
+
 		// Wing
 		double xAw = 11.0; //meter 
 		double yAw = 0.0;
@@ -73,6 +74,7 @@ public class Test_MR_CLalpha {
 				xAw, yAw, zAw, iw, 
 				ComponentEnum.WING
 				); 
+
 
 		theWing.calculateGeometry();
 		theWing.getGeometry().calculateAll();
@@ -98,13 +100,109 @@ public class Test_MR_CLalpha {
 		cg.calculateCGinBRF();
 		theWing.set_cg(cg);
 
-
 		// -----------------------------------------------------------------------
 		// Operating Condition
 		// -----------------------------------------------------------------------
 
 		OperatingConditions theOperatingConditions = new OperatingConditions();				
 
+		
+		// -----------------------------------------------------------------------
+		// Set Wing Data
+		// -----------------------------------------------------------------------
+
+		theWing.set_surface(Amount.valueOf(75.5,SI.SQUARE_METRE));
+		theWing.set_chordRoot(Amount.valueOf(2.92194, SI.METER));
+		theWing.set_chordKink(Amount.valueOf(2.92194, SI.METER));
+		theWing.set_chordRoot(Amount.valueOf(2.92194, SI.METER));
+		theWing.set_aspectRatio(12.0);
+		theWing.set_spanStationKink(0.33);
+		theWing.set_taperRatioCrankedWing(0.57);
+		theWing.set_iw(Amount.valueOf(0.0,SI.RADIAN));
+		theWing.set_sweepQuarterChordEq(Amount.valueOf(Math.toRadians(2.0), SI.RADIAN));
+		theWing.set_twistTip( Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
+		theWing.set_twistKink( Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
+		theWing.set_tc_root(0.18);
+		theWing.set_tc_kink(0.18);
+		theWing.set_tc_tip(0.136);
+		
+		
+		System.out.println("\n\n-----------------------------");
+		System.out.println("|          WING             |");
+		System.out.println("-----------------------------");
+
+		System.out.println("\n\nRoot Chord " + theWing.get_chordRoot());
+		System.out.println("Root Kink " + theWing.get_chordRoot());
+		System.out.println("Tip Chord " + theWing.get_chordTip());
+		System.out.println("Aspect Ratio " + theWing.get_aspectRatio());
+	
+		
+		// -----------------------------------------------------------------------
+		// Set Airfoils Data
+		// -----------------------------------------------------------------------
+
+		
+		System.out.println("\n\n-----------------------------");
+		System.out.println("|        AIRFOILS           |");
+		System.out.println("-----------------------------");
+		
+		
+		MyAirfoil airfoilRoot = theWing.get_theAirfoilsList().get(0);
+		airfoilRoot.getGeometry().set_deltaYPercent(5.5);
+		airfoilRoot.getGeometry().set_maximumThicknessOverChord(0.18);
+		airfoilRoot.getAerodynamics().set_alphaZeroLift( Amount.valueOf(Math.toRadians(-4.6), SI.RADIAN));
+		airfoilRoot.getAerodynamics().set_clAlpha(6.48);
+		airfoilRoot.getAerodynamics().set_alphaStar(Amount.valueOf(Math.toRadians(10.0),SI.RADIAN));
+		airfoilRoot.getAerodynamics().set_clStar(1.5658);
+		airfoilRoot.getAerodynamics().set_alphaStall( Amount.valueOf(Math.toRadians(20.0), SI.RADIAN));
+		airfoilRoot.getAerodynamics().set_clMax(2.0196);
+		System.out.println("\n \n \t ROOT \n");
+		System.out.println("Maximum thickness " + airfoilRoot.getGeometry().get_maximumThicknessOverChord());
+		System.out.println("CL max --> " + airfoilRoot.getAerodynamics().get_clMax());	
+		System.out.println("alpha max --> " + airfoilRoot.getAerodynamics().get_alphaStall().to(NonSI.DEGREE_ANGLE));			
+		System.out.println("LE sharpness parameter Root " + airfoilRoot.getGeometry().get_deltaYPercent());
+
+
+		MyAirfoil airfoilKink = theWing.get_theAirfoilsList().get(1);
+		airfoilKink.getGeometry().set_deltaYPercent(5.5);
+		airfoilRoot.getGeometry().set_maximumThicknessOverChord(0.18);
+		airfoilKink.getAerodynamics().set_alphaZeroLift( Amount.valueOf(Math.toRadians(-4.6), SI.RADIAN));
+		airfoilKink.getAerodynamics().set_clAlpha(6.48);
+		airfoilKink.getAerodynamics().set_alphaStar(Amount.valueOf(Math.toRadians(10.0),SI.RADIAN));
+		airfoilKink.getAerodynamics().set_clStar(1.5658);
+		airfoilKink.getAerodynamics().set_alphaStall( Amount.valueOf(Math.toRadians(20.0), SI.RADIAN));
+		airfoilKink.getAerodynamics().set_clMax(2.0196);
+		System.out.println("\n \n \t KINK \n");
+		System.out.println("Maximum thickness " + airfoilKink.getGeometry().get_maximumThicknessOverChord());
+		System.out.println("CL max --> " + airfoilKink.getAerodynamics().get_clMax());	
+		System.out.println("alpha max --> " + airfoilKink.getAerodynamics().get_alphaStall().to(NonSI.DEGREE_ANGLE));			
+		System.out.println("LE sharpness parameter Root " + airfoilKink.getGeometry().get_deltaYPercent());
+		
+
+		MyAirfoil airfoilTip = theWing.get_theAirfoilsList().get(2);
+		airfoilTip.getGeometry().set_deltaYPercent(4.5);
+		airfoilTip.getGeometry().set_maximumThicknessOverChord(0.136);
+		airfoilTip.getAerodynamics().set_alphaZeroLift( Amount.valueOf(Math.toRadians(-3.68), SI.RADIAN));
+		airfoilTip.getAerodynamics().set_clAlpha(6.72);
+		airfoilTip.getAerodynamics().set_alphaStar(Amount.valueOf(Math.toRadians(8.0),SI.RADIAN));
+		airfoilTip.getAerodynamics().set_clStar(1.3);
+		airfoilTip.getAerodynamics().set_alphaStall( Amount.valueOf(Math.toRadians(17.5), SI.RADIAN));
+		airfoilTip.getAerodynamics().set_clMax(2.15);
+		System.out.println("\n \n \t TIP \n");
+		System.out.println("Maximum thickness " + airfoilTip.getGeometry().get_maximumThicknessOverChord());
+		System.out.println("CL max --> " + airfoilTip.getAerodynamics().get_clMax());	
+		System.out.println("alpha max --> " + airfoilTip.getAerodynamics().get_alphaStall().to(NonSI.DEGREE_ANGLE));			
+		System.out.println("LE sharpness parameter Root " + airfoilTip.getGeometry().get_deltaYPercent());
+
+
+		// -----------------------------------------------------------------------
+		// Set Operating Condition Data
+		// -----------------------------------------------------------------------
+
+
+		theOperatingConditions.set_machCurrent(0.23);
+
+		
 		System.out.println("\n \n-----------------------------------------------------");
 		System.out.println("Operating condition");
 		System.out.println("-----------------------------------------------------");
@@ -112,7 +210,18 @@ public class Test_MR_CLalpha {
 		System.out.println("\tAltitude: " + theOperatingConditions.get_altitude());
 		System.out.println("----------------------");
 
+		
+		
 
+		// -----------------------------------------------------------------------
+		// Update Data
+		// -----------------------------------------------------------------------
+		theWing.calculateGeometry();
+	    theWing.getGeometry().calculateAll();
+	    theWing.updateAirfoilsGeometry();
+		
+		
+		
 		// allocate manager
 		LSAerodynamicsManager theLSAnalysis = new LSAerodynamicsManager ( 
 				theOperatingConditions,
@@ -120,14 +229,15 @@ public class Test_MR_CLalpha {
 				);
 
 		theWing.setAerodynamics(theLSAnalysis);
-
+		theLSAnalysis.initializeDependentData();
+		
 
 		// Assign all default folders
 		MyConfiguration.initWorkingDirectoryTree();
 
 		//--------------------------------------------------------------------------------------
 		// Set databases
-		
+
 		theLSAnalysis.setDatabaseReaders(
 				new Pair(DatabaseReaderEnum.AERODYNAMIC,
 						"Aerodynamic_Database_Ultimate.h5"),
@@ -135,93 +245,135 @@ public class Test_MR_CLalpha {
 				);
 
 
+		//------------- CL CALCULATORS
+		
+		// Airfoils
+		
+		airfoilRoot.getAerodynamics().plotClvsAlpha(subfolderPath, "Root");
+		airfoilKink.getAerodynamics().plotClvsAlpha(subfolderPath, "Kink");
+		airfoilTip.getAerodynamics().plotClvsAlpha(subfolderPath, "Tip");
+		
 
-		// -----------------------------------------------------------------------
-		// Define airfoil
-		// -----------------------------------------------------------------------
+		// Wing 
+		  
+		double [] alphaArrayTemp = {0,
+				8,
+				16,
+				18,
+				20,
+				22,
+				24};
+		
+		MyArray alphaArrayActual = new MyArray();
+		
+		
+		
+		for (int i=0; i<alphaArrayTemp.length;i++){
+			alphaArrayActual.set(i, Math.toRadians(alphaArrayTemp[i]));}
+			
+		// stall path
+		
+		LSAerodynamicsManager.CalcCLvsAlphaCurve theCLArrayCalculator = theLSAnalysis.new CalcCLvsAlphaCurve();
+
+		double [] cLWingCleanArray = theCLArrayCalculator.nasaBlackwellCompleteCurveArray(alphaArrayActual, false);
+		
+		System.out.println("\n \n-----------------------------------------------------");
+		System.out.println("WRITING TO CHART CL vs ALPHA CURVE stall path");
+		System.out.println("-----------------------------------------------------");
+		
+		MyChartToFileUtils.plotNoLegend(
+				alphaArrayTemp , cLWingCleanArray,
+				null, null, null, null,
+				"alpha", "CL",
+				"deg", "",
+				subfolderPath," CL vs Alpha stall path " );
+		
+		System.out.println("\n \n-----------------------------------------------------");
+		System.out.println("DONE");
+		System.out.println("-----------------------------------------------------");
+		
+		
+		// Modified Stall Path 
+		
+		
+			
+		double [] cLWing = LiftCalc.calculateCLArraymodifiedStallPath(alphaArrayActual, theWing);
+	
+//		System.out.println(" alpha Array " + Arrays.toString(alphaArray) );
+//		System.out.println(" cl "+  Arrays.toString(cLWing));
 
 		System.out.println("\n \n-----------------------------------------------------");
-		System.out.println("AIRFOIL");
+		System.out.println("WRITING TO CHART CL vs ALPHA CURVE stall path mod.");
 		System.out.println("-----------------------------------------------------");
+		
+		MyChartToFileUtils.plotNoLegend(
+				alphaArrayTemp , cLWing,
+				null, null, null, null,
+				"alpha", "CL",
+				"deg", "",
+				subfolderPath," CL vs Alpha from modified stall path " );
+		
+		System.out.println("\n \n-----------------------------------------------------");
+		System.out.println("DONE");
+		System.out.println("-----------------------------------------------------");		
+		
 
+		// cl max
+		
+	//	double clMaxPhilipps = theLSAnalysis.getCalculateCLMaxClean().phillipsAndAlley();
+		
+//		System.out.println(" cl max philips " + clMaxPhilipps); //1.91
+		
+		
+		
+		// stall path
+		
+		System.out.println("\n-------------------------------------");
+		System.out.println("\t \t \tWRITING STALL PATH CHART TO FILE  ");
 
+		LSAerodynamicsManager.CalcCLMaxClean theCLmaxAnalysis = theLSAnalysis.new CalcCLMaxClean();
+		MyArray clMaxAirfoil = theCLmaxAnalysis.getClAirfoils();
+		Amount<javax.measure.quantity.Angle> alphaWingStall = theLSAnalysis.get_alphaStall();
+		double alphaSecond = theLSAnalysis.getAlphaArray().get(3);
+		double alphaThird = theLSAnalysis.getAlphaArray().get(6);
+		MyArray clAlphaStall = theLSAnalysis.getcLMap()
+				.getCxyVsAlphaTable()
+				.get(MethodEnum.NASA_BLACKWELL ,alphaWingStall);
+		MyArray clSecond = theLSAnalysis.getcLMap()
+				.getCxyVsAlphaTable()
+				.get(MethodEnum.NASA_BLACKWELL ,Amount.valueOf(alphaSecond, SI.RADIAN));
+		MyArray clThird = theLSAnalysis.getcLMap()
+				.getCxyVsAlphaTable()
+				.get(MethodEnum.NASA_BLACKWELL ,Amount.valueOf(alphaThird, SI.RADIAN));
 
-		//AIRFOIL 1
-		double yLocRoot = 0.0;
-		MyAirfoil airfoilRoot = new MyAirfoil(theWing, yLocRoot, "23-018");
-		airfoilRoot.getGeometry().update(yLocRoot);  // define chord
-		airfoilRoot.getGeometry().set_maximumThicknessOverChord(0.18); //REPORT
-		airfoilRoot.getGeometry().set_deltaYPercent(0.192 *airfoilRoot.getGeometry().get_maximumThicknessOverChord()*100 );
-		System.out.println("\n \n \t ROOT \nAirfoil Type: " + airfoilRoot.get_family());
-		System.out.println("Root Chord " + theWing.get_chordRoot().getEstimatedValue() );
-		System.out.println("Root maximum thickness " + airfoilRoot.getGeometry().get_maximumThicknessOverChord());
-		System.out.println("CL max --> " + airfoilRoot.getAerodynamics().get_clMax());		
-		System.out.println("LE sharpness parameter Root " + airfoilRoot.getGeometry().get_deltaYPercent());
+		double [][] semiSpanAd = {
+				theLSAnalysis.get_yStationsND(), theLSAnalysis.get_yStationsND(),
+				theLSAnalysis.get_yStationsND(), theLSAnalysis.get_yStationsND(),
+				theLSAnalysis.get_yStationsND(), theLSAnalysis.get_yStationsND(),
+				theLSAnalysis.get_yStationsND(), theLSAnalysis.get_yStationsND()};
 
+		double [][] clDistribution = {
+				clMaxAirfoil.getRealVector().toArray(),
+				clSecond.getRealVector().toArray(),
+				clThird.getRealVector().toArray(),
+				clAlphaStall.getRealVector().toArray()};
 
-		//		airfoilRoot.getAerodynamics().set_alphaZeroLift(Amount.valueOf(Math.toRadians(-1.2), SI.RADIAN));
-		//		airfoilRoot.getAerodynamics().set_alphaStar(Amount.valueOf(Math.toRadians(10.0),SI.RADIAN));
-		//		airfoilRoot.getAerodynamics().set_alphaStall(Amount.valueOf(Math.toRadians(12.0),SI.RADIAN));
-		//		airfoilRoot.getAerodynamics().set_clAlpha(6.07);
-		airfoilRoot.getAerodynamics().set_clMax(1.8);
-		//		airfoilRoot.getAerodynamics().set_clStar(1.06);
+		String [] legend = new String [4];
+		legend[0] = "CL max airfoil";
+		legend[1] = "CL distribution at alpha " 
+				+ Math.toDegrees( alphaSecond);
+		legend[2] = "CL distribution at alpha " 
+				+ Math.toDegrees( alphaThird);
+		legend[3] = "CL distribution at alpha " 
+				+ Math.toDegrees( alphaWingStall.getEstimatedValue());
 
+		MyChartToFileUtils.plot(
+				semiSpanAd,	clDistribution, // array to plot
+				0.0, 1.0, 0.0, 2.6,					    // axis with limits
+				"eta", "CL", "", "",	    // label with unit
+				legend,					// legend
+				subfolderPath, "Stall Path of Wing ");			    // output informations
 
-
-		//AIRFOIL 2
-		double yLocKink = theWing.get_spanStationKink() * theWing.get_semispan().getEstimatedValue();
-		MyAirfoil airfoilKink = new MyAirfoil(theWing, yLocKink, "23-015");
-		airfoilKink.getGeometry().update(yLocKink);   // define chord
-		airfoilKink.getGeometry().set_maximumThicknessOverChord(0.15); //REPORT
-		airfoilKink.getGeometry().set_deltaYPercent(0.192 *airfoilKink.getGeometry().get_maximumThicknessOverChord()*100 );
-		System.out.println("\n \n \t KINK \nAirfoil Type: " + airfoilKink.get_family());
-		System.out.println("Kink Station " + yLocKink);
-		System.out.println("Kink Chord " + theWing.get_chordKink().getEstimatedValue() );
-		System.out.println("Kink maximum thickness " + airfoilKink.getGeometry().get_maximumThicknessOverChord());
-		System.out.println("CL max --> " + airfoilRoot.getAerodynamics().get_clMax());
-		System.out.println("LE sharpness parameter Kink " + airfoilKink.getGeometry().get_deltaYPercent());
-
-		//		airfoilKink.getAerodynamics().set_alphaZeroLift(Amount.valueOf(Math.toRadians(-1.2), SI.RADIAN));
-		//		airfoilKink.getAerodynamics().set_alphaStar(Amount.valueOf(Math.toRadians(10.0),SI.RADIAN));
-		//		airfoilKink.getAerodynamics().set_alphaStall(Amount.valueOf(Math.toRadians(12.0),SI.RADIAN));
-		//		airfoilKink.getAerodynamics().set_clAlpha(6.07);
-		airfoilKink.getAerodynamics().set_clMax(1.8);
-		//		airfoilKink.getAerodynamics().set_clStar(1.06);
-
-
-		//AIRFOIL 3
-		double yLocTip = theWing.get_semispan().getEstimatedValue();
-		MyAirfoil airfoilTip = new MyAirfoil(theWing, yLocTip, "23-012");
-		airfoilTip.getGeometry().update(yLocRoot);  // define chord
-		airfoilTip.getGeometry().set_maximumThicknessOverChord(0.12); //REPORT
-		//		airfoilTip.getAerodynamics().set_clMax(1.0);
-		airfoilTip.getGeometry().set_deltaYPercent(0.192 *airfoilTip.getGeometry().get_maximumThicknessOverChord()*100 );
-		System.out.println("\n \n \t TIP \nAirfoil Type: " + airfoilKink.get_family());
-		System.out.println("tip Chord " +theWing.get_chordTip().getEstimatedValue() );
-		System.out.println("Tip maximum thickness " + airfoilTip.getGeometry().get_maximumThicknessOverChord());
-		System.out.println("CL max --> " + airfoilRoot.getAerodynamics().get_clMax());
-		System.out.println("LE sharpness parameter Tip " + airfoilTip.getGeometry().get_deltaYPercent());
-
-		//		airfoilTip.getAerodynamics().set_alphaZeroLift(Amount.valueOf(Math.toRadians(-1.6), SI.RADIAN));
-		//		airfoilTip.getAerodynamics().set_alphaStar(Amount.valueOf(Math.toRadians(6.0),SI.RADIAN));
-		//		airfoilTip.getAerodynamics().set_alphaStall(Amount.valueOf(Math.toRadians(12.0),SI.RADIAN));
-		//		airfoilTip.getAerodynamics().set_clAlpha(6.01);
-		airfoilTip.getAerodynamics().set_clMax(1.6);
-		//		airfoilTip.getAerodynamics().set_clStar(0.63);
-
-		// -----------------------------------------------------------------------
-		// Assign airfoil
-		// -----------------------------------------------------------------------
-
-
-		List<MyAirfoil> myAirfoilList = new ArrayList<MyAirfoil>();
-		myAirfoilList.add(0, airfoilRoot);
-		myAirfoilList.add(1, airfoilKink);
-		myAirfoilList.add(2, airfoilTip);
-		theWing.set_theAirfoilsList(myAirfoilList);
-		theWing.updateAirfoilsGeometry(); 
-
-
-
+		System.out.println("\t \t \tDONE  ");
 	}
 }

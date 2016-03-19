@@ -239,7 +239,7 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		MyAirfoil airfoilTip = theWing.get_theAirfoilsList().get(2);
 		airfoilTip.getGeometry().update(yLocRoot);  // define chord
 		airfoilTip.getGeometry().set_maximumThicknessOverChord(0.15); //REPORT
-		airfoilTip.getGeometry().set_deltaYPercent(3.5);
+		airfoilTip.getGeometry().set_deltaYPercent(3.7);
 		System.out.println("\n \n \t TIP \nAirfoil Type: " + airfoilTip.get_family());
 		System.out.println("tip Chord [m] = " +theWing.get_chordTip().getEstimatedValue() );
 		System.out.println("Tip maximum thickness = " + airfoilTip.getGeometry().get_maximumThicknessOverChord());
