@@ -334,6 +334,8 @@ public class TakeOff_Test_TF {
 //			System.out.print(highLiftCalculator.getDeltaCD_list().get(i) + " ");
 //
 //		System.out.println("\n\ndeltaCD = \n" + highLiftCalculator.getDeltaCD());
+//		
+//		System.out.println("\n\ndeltaCMc_4 = \n" + highLiftCalculator.getDeltaCM_c4());
 //
 //		highLiftCalculator.plotHighLiftCurve();
 

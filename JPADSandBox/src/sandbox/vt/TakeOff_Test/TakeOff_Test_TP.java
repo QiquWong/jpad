@@ -307,8 +307,6 @@ public class TakeOff_Test_TP {
 //
 //		System.out.println("\n\ndeltaCMc_4 = \n" + highLiftCalculator.getDeltaCM_c4());
 //
-//		System.out.println("\n\ndeltaCMc_4 = \n" + highLiftCalculator.getDeltaCM_c4());
-//
 //		highLiftCalculator.plotHighLiftCurve();
 
 		//----------------------------------------------------------------------------------
@@ -322,7 +320,7 @@ public class TakeOff_Test_TP {
 		double kAlphaDot = 0.05; // [1/deg]
 		double kcLMax = 0.85;
 		double kRot = 1.05;
-		double kLO = 1.13;
+		double kLO = 1.1;
 		double kFailure = 1.1;
 
 		//		PARAMETERS USED TO CONSIDER THE PARABOLIC DRAG POLAR CORRECTION AT HIGH CL
@@ -362,7 +360,7 @@ public class TakeOff_Test_TP {
 				iw
 				);
 
-		theTakeOffCalculator.calculateTakeOffDistanceODE(null, false);
+		theTakeOffCalculator.calculateTakeOffDistanceODE(null ,false);
 		_stopTimeCalculation = System.currentTimeMillis();
 		_startTimeGraph = System.currentTimeMillis();
 		theTakeOffCalculator.createTakeOffCharts();
