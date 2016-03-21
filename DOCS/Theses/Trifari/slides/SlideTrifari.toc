@@ -1,6 +1,6 @@
 \beamer@endinputifotherversion {3.36pt}
 \beamer@sectionintoc {1}{Introducing JPAD}{3}{0}{1}
 \beamer@sectionintoc {2}{Payload Range class}{15}{0}{2}
-\beamer@sectionintoc {3}{Specific Range class}{26}{0}{3}
-\beamer@sectionintoc {4}{High Lift Devices class}{33}{0}{4}
-\beamer@sectionintoc {5}{Take-Off and Landing classes}{40}{0}{5}
+\beamer@sectionintoc {3}{Specific Range class}{27}{0}{3}
+\beamer@sectionintoc {4}{High Lift Devices class}{34}{0}{4}
+\beamer@sectionintoc {5}{Take-Off and Landing classes}{41}{0}{5}

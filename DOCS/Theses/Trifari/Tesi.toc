@@ -38,8 +38,8 @@
 \contentsline {subsection}{\numberline {4.1.3}$C_{l\alpha , \text {flap}}$ and $C_{L\alpha , \text {flap}}$ calculation}{73}{subsection.4.1.3}
 \contentsline {subsection}{\numberline {4.1.4}$\upDelta \alpha _{\text {stall}}$ calculation for trailing edge and leading edge devices}{73}{subsection.4.1.4}
 \contentsline {subsection}{\numberline {4.1.5}Further effects calculations}{74}{subsection.4.1.5}
-\contentsline {section}{\numberline {4.2}Java class architecture}{78}{section.4.2}
-\contentsline {section}{\numberline {4.3}Case study: ATR-72 and B747-100B}{81}{section.4.3}
+\contentsline {section}{\numberline {4.2}Java class architecture}{79}{section.4.2}
+\contentsline {section}{\numberline {4.3}Case study: ATR-72 and B747-100B}{82}{section.4.3}
 \contentsline {chapter}{\numberline {5}Take-off and Landing performance}{88}{chapter.5}
 \contentsline {section}{\numberline {5.1}Theoretical background}{88}{section.5.1}
 \contentsline {subsection}{\numberline {5.1.1}\gls {acr:AOE} take-off run}{89}{subsection.5.1.1}
@@ -49,11 +49,11 @@
 \contentsline {subsection}{\numberline {5.2.1}Take-Off}{97}{subsection.5.2.1}
 \contentsline {subsection}{\numberline {5.2.2}Landing}{104}{subsection.5.2.2}
 \contentsline {section}{\numberline {5.3}Case study: ATR-72}{106}{section.5.3}
-\contentsline {chapter}{Conclusions}{127}{chapter*.139}
-\contentsline {chapter}{Appendices}{}{section*.141}
+\contentsline {chapter}{Conclusions}{127}{chapter*.140}
+\contentsline {chapter}{Appendices}{}{section*.142}
 \contentsline {chapter}{\numberline {A}HDF databse creation and reading }{129}{Appendix.a.A}
 \contentsline {section}{\numberline {A.1}Creation of a database using MATLAB}{129}{section.a.A.1}
 \contentsline {section}{\numberline {A.2}Reading data from an HDF database in JPAD}{132}{section.a.A.2}
-\contentsline {chapter}{Bibliography}{134}{section*.144}
-\contentsline {chapter}{Glossary}{136}{section*.146}
-\contentsline {chapter}{Acronyms}{139}{section*.148}
+\contentsline {chapter}{Bibliography}{134}{section*.145}
+\contentsline {chapter}{Glossary}{136}{section*.147}
+\contentsline {chapter}{Acronyms}{139}{section*.149}

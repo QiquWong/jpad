@@ -1,7 +1,7 @@
 This is makeindex, version 2.15 [TeX Live 2015/W32TeX] (kpathsea + Thai support).
 Scanning style file ./Tesi.ist.............................done (29 attributes redefined, 0 ignored).
 Scanning input file Tesi.glo....done (100 entries accepted, 0 rejected).
-Sorting entries....done (744 comparisons).
-Generating output file Tesi.gls....done (107 lines written, 0 warnings).
+Sorting entries....done (738 comparisons).
+Generating output file Tesi.gls....done (108 lines written, 0 warnings).
 Output written in Tesi.gls.
 Transcript written in Tesi.glg.

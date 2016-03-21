@@ -446,27 +446,28 @@ C_{L\alpha_{\left(\text{flap down}\right)}}=C_{L\alpha}\ \left\{1+\dfrac{\upDelt
 \subsection{$\upDelta\alpha_{\text{stall}}$ calculation for trailing edge and leading edge devices}
 As explained previously, trailing edge devices contribute to lower the stalling angle of attack, while leading edge devices do the opposite providing an higher $\alpha_{\text{stall}}$. 
 %
-In order to compute these two effects, a reference to~\cite{nicolai2010fundamentals} has been done. In particular, for trailing edge devices, data from~\cite{abbott} suggest the following curve where the $\upDelta\alpha_{\text{stall}}$ is negative and is function of flap deflection.
+In order to compute these two effects, a reference to~\cite{nicolai2010fundamentals} has been done; in particular, the value of $\upDelta\alpha_{\text{stall}}$ is taken as the same used in the construction of the clean wing lift curve; the latter shown in figure~\ref{fig:DeltaAlphaMaxFlap}.
 %
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.6\linewidth]{DeltaAlphaMax}
-\caption{Decrease in stall angle with fl ap defl ection}
+\includegraphics[width=0.8\linewidth]{DeltaAlphaMaxFlap}
+\caption{$\upDelta\alpha_{\text{stall}}$ as function of the sweep angle and of the leading edge sharpness parameter $\frac{\upDelta y}{c}$}
 \label{fig:DeltaAlphaMaxFlap}
 \end{figure}
 %
 \noindent
-Since there are no precise methods for predicting leading edge devices effects on $\alpha_{\text{stall}}$, references to experimental data are the only way to follow. 
+where the airfoil leading edge sharpness parameter, $\frac{\upDelta y}{c}$, can be estimated from the following chart.
 %
-In order to build the lift curve with flaps and slats effects, this value of $\upDelta\alpha_{\text{stall}}$ is taken as the same used in the construction of the clean wing lift curve; the latter shown in figure~\ref{fig:DeltaAlphaMaxClean}.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\linewidth]{DeltaY}
+\caption{Variation of LE sharpness parameter with airfoil thickness ratio}
+\label{fig:DeltaY}
+\end{figure}
 %
 %---------------------------  DeltaCD0 & DeltaCM subsection--------------------------------
 \subsection{Further effects calculations}\label{subpar:DCD0}
-High-lift devices influence not only the lift curve but also the wing drag polar, in particular the $C_{D0}$, and the wing pitching moment. Further calculations are, therefore, necessary to predict these latter.
-
-\bigskip
-\noindent
-Regarding the $\upDelta C_{D0}$ provided by high-lift devices, the reader can refer to~\cite{Young:Flaps}. Proceeding on much the same lines as in the analysis of lift coefficient increments, Young and Hufton assumed that  $\upDelta C_D0$ can be calculated as follow for a full-span flap.
+High-lift devices influence not only the lift curve but also the wing drag polar, in particular the $C_{D0}$, and the wing pitching moment. Further calculations are, therefore, necessary to predict these latter. Regarding the $\upDelta C_{D0}$ provided by high-lift devices, the reader can refer to~\cite{Young:Flaps}. Proceeding on much the same lines as in the analysis of lift coefficient increments, Young and Hufton assumed that  $\upDelta C_D0$ can be calculated as follow for a full-span flap.
 %
 \begin{equation}
 \upDelta C_{D0}=\delta_1\left(c_f/c\right)\cdot\delta_2\left(\delta_f\right)
@@ -475,7 +476,7 @@ Regarding the $\upDelta C_{D0}$ provided by high-lift devices, the reader can re
 %
 where $\delta_1$ and $\delta_2$ are functions that were determined from experimental data. Their related curves are shown in figure~\ref{fig:Delta1Plain} and~\ref{fig:Delta2Plain}, for plain flap, and, in figure~\ref{fig:Delta1Slotted} and~\ref{fig:Delta2Slotted}, for slotted flaps.
 %
-\begin{figure}[!b]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.9\linewidth]{Delta1_Plain}
 \caption{The functions $\delta_1\left(c_f/c\right)$ for split and plain flaps}
@@ -515,15 +516,13 @@ Hence, to determine the increment for a part-span flap it's necessary to multipl
 \label{eqn:DeltaCD0PartSpan}
 \end{equation}
 %
-\begin{figure}[!b]
+\begin{figure}[!t]
 \centering
-\includegraphics[width=0.8\linewidth]{Delta3}
+\includegraphics[width=0.7\linewidth]{Delta3}
 \caption{The functions $\delta_3\left(b_f/b\right)$ for slotted flaps}
 \label{fig:Delta3}
 \end{figure}
-
-\bigskip
-\noindent
+%
 The last, but not least, effect to be predict refers to the pitching moment of the airfoil and of the wing. Following the guideline proposed in~\cite{torenbeek1982synthesis}, the generalized expression, for airfoils, in (\ref{eqn:DeltaCm}) represents a useful starting point when experimental data are not available.
 %
 \begin{equation}
@@ -542,15 +541,15 @@ In equation this equation, the first contribution is due to the increased sectio
 %
 where $\theta_f$ is the one from equation (\ref{eqn:ThetaF}). This theoretical value of $\mu_1$ generally underestimate the pitching moment coefficient; in fact it has been found that, for slotted flaps with, or without, Fowler movement, most data are on a single line, provided the second term of the equation (\ref{eqn:Mu1}), representing the theoretical rearward shift of the airfoil aerodynamic center, is halved. Furthermore, in the case of split and plain flaps, the flap angle is observed to exert a pronounced influence on $\mu_1$ as shown in figure~\ref{fig:Mu1}.
 %
-\begin{figure}[!b]
+\begin{figure}[!t]
 \centering
-\includegraphics[width=0.75\linewidth]{Mu1_Pitching_Moment}
+\includegraphics[width=0.7\linewidth]{Mu1_Pitching_Moment}
 \caption{The pitching moment function $\mu_1$}
 \label{fig:Mu1}
 \end{figure}
 %
 The last term of the (\ref{eqn:Mu1}) is generally of a low order and can be ignored. This, together with the halving of the second term of the previous equation, leads to the following practical expression of $\upDelta C_{m_{\frac{c}{4}}}$.
-%
+
 \begin{equation}
 \upDelta C_{m_{\frac{c}{4}}}=-\mu_1\ \upDelta C_{l\text{max}}\ \left(\dfrac{c'}{c}\right)-\dfrac{C_l}{8}\ \dfrac{c'}{c}\left(\dfrac{c'}{c}-1\right)
 \label{eqn:DeltaCmPractical}
@@ -565,9 +564,10 @@ The obtained two-dimensional equation can, then, be converted into a three-dimen
 \label{eqn:DeltaCM}
 \end{equation}
 %
-where $\upDelta C_{m_{\frac{c}{4}}}$ is the one from (\ref{eqn:DeltaCmPractical}), provide that $C_l=C_L+\upDelta C_{l\text{max}}\ \left(1-\frac{S_{w,f}}{S}\right)$, and the correction factors $\mu_2$ and $\mu_3$ are the one shown in figures~\ref{fig:Mu2} and~\ref{fig:Mu3}. Making the appropriate substitutions, the following operational formula is, finally, obtained.
-%
-\begin{figure}[!t]
+where $\upDelta C_{m_{\frac{c}{4}}}$ is the one from (\ref{eqn:DeltaCmPractical}), provide that $C_l=C_L+\upDelta C_{l\text{max}}\left(1-\frac{S_{w,f}}{S}\right)$, and the correction factors $\mu_2$ and $\mu_3$ are the one shown in figures~\ref{fig:Mu2} and~\ref{fig:Mu3}.
+
+\bigskip
+\begin{figure}[H]
 \centering
 \begin{minipage}{.5\textwidth}
 \centering
@@ -582,6 +582,9 @@ where $\upDelta C_{m_{\frac{c}{4}}}$ is the one from (\ref{eqn:DeltaCmPractical}
 \label{fig:Mu3}
 \end{minipage}
 \end{figure}
+
+\noindent
+Making the appropriate substitutions, the following operational formula is, finally, obtained.
 %
 \begin{equation}
 \begin{split}
@@ -594,11 +597,7 @@ where $\upDelta C_{m_{\frac{c}{4}}}$ is the one from (\ref{eqn:DeltaCmPractical}
 %------------------------- JAVA CLASS ARCHITECTURE ---------------------------
 \section{Java class architecture}
 \label{par:CalcHighLiftDevices}
-The main purpose of this paragraph is to provide a comprehensive description of how all semi-empirical methods, presented previously, are implemented and used inside the Java class created to manage high-lift devices effects upon wings. Because of the great number of charts from which some important data have to be derived, an external database, containing all the digitized curves shown in previous paragraph figures, has been created following the procedure explained in appendix~\ref{par:Appendix1}.
-
-\bigskip
-\noindent
-This database, named~\lstinline[language=Java]!HighLiftDatabase!, is then read by a dedicated class created inside the database package of~\lstinline[language=Java]!JPADCore! which name is~\lstinline[language=Java]!HighLiftDatabaseReader!; the latter, in particular, has been built up following the guideline of appendix~\ref{par:Appendix2}.
+The main purpose of this paragraph is to provide a comprehensive description of how all semi-empirical methods, presented previously, are implemented and used inside the Java class created to manage high-lift devices effects upon wings. Because of the great number of charts from which some important data have to be derived, an external database, containing all the digitized curves shown in previous paragraph figures, has been created following the procedure explained in appendix~\ref{par:Appendix1}. This database, named~\lstinline[language=Java]!HighLiftDatabase!, is then read by a dedicated class created inside the database package of~\lstinline[language=Java]!JPADCore! which name is~\lstinline[language=Java]!HighLiftDatabaseReader!; the latter, in particular, has been built up following the guideline of appendix~\ref{par:Appendix2}.
 
 \bigskip
 \noindent
@@ -637,7 +636,7 @@ Triple slotted & 50° & 5.0 \\
 \label{table:AvailableFlaps}
 \end{table}
 %
-\begin{table}[!t]
+\begin{table}[!b]
 \makebox[\linewidth]{
 \begin{tabular}{p{0.2\linewidth}p{0.8\linewidth}}
 \toprule
@@ -660,11 +659,10 @@ Triple slotted & 50° & 5.0 \\
 \caption{~\lstinline[language=Java]!CalcHighLiftDevices! constructor input}
 \label{table:CalcHighLiftConstructor}
 \end{table}
+%
+\lstinline[language=Java]!CalcHighLiftDevices! class is also made up of three main methods each of which in charge of a specific task. 
 
 \bigskip
-\noindent
-\lstinline[language=Java]!CalcHighLiftDevices! class is also made up of three main methods each of which in charge of a specific task. 
-%
 \noindent
 The first one is~\lstinline[language=Java]!calculateHighLiftDevicesEffects! which implements all formulas explained in paragraph~\ref{sec:theoryFlapSlat} using input data derived from the constructor, and shown in table~\ref{table:CalcHighLiftConstructor}. This method is defined~\lstinline[language=Java]!void! so that it returns nothing as output; in fact, the latter has only to provide the required calculations leaving to the user the output data retrieval using the appropriate \emph{getter} methods of which the class is provided. 
 
@@ -673,8 +671,6 @@ The first one is~\lstinline[language=Java]!calculateHighLiftDevicesEffects! whic
 The second one is~\lstinline[language=Java]!calcCLatAlphaHighLiftDevice!, which requires firstly to perform the analysis of \lstinline[language=Java]!calculateHighLiftDevicesEffects!; it calculates the lift coefficient at a given angle of attack for a wing with high-lift devices deflected. This method calculates both linear trait and non-linear trait of the curve using the NASA Blackwell method for the slope of the linear trait and a cubic interpolation for the non-linear one. 
 %
 In particular it sums up the effect of $\upDelta C_{L0}$ to the clean wing $C_{L0}$ in order to obtain the new value with deflected high-lift devices, then it replaces the clean wing $C_{L\alpha}$ with the new one calculated with the previous method; assuming also that the angle of attack at the end of the linear trait is taken as the mean of the old one, related to the mean airfoil, and the one calculated at the same $C_L^*$ but on the new curve, the new $C_L^*$  can be evaluated completing the calculations of the linear trait parameters. From this point on, $\upDelta C_{L\text{max}}$ and $\upDelta\alpha_{\text{stall}}$ are summed to the clean curve $C_{L\text{max}}$ and $\alpha_{\text{stall}}$ calculated into the constructor; then a cubic interpolation, starting from the end of linear trait, allows to build the non-linear one.
-%
-The method accept as input an angle of attack which is then compared with $\alpha^*$ calculated previously for the flapped curve; if this is lower the methods calculates the required lift coefficient using the linear trait, otherwise it uses the non-linear one.
 
 \bigskip
 \noindent
@@ -682,7 +678,7 @@ The third, and last, method is~\lstinline[language=Java]!plotHighLiftCurve!. It 
 %
 \begin{figure}[H]
   \centering
-  \includegraphics[width=1.15\linewidth]{HighLiftDevices_Flowchart}
+  \includegraphics[width=1.07\linewidth]{HighLiftDevices_Flowchart}
   \caption{~\lstinline[language=Java]!CalcHighLiftDevices! class flowchart}
   \label{fig:CalcHighLiftFlowchart}
 \end{figure}
@@ -694,45 +690,55 @@ The last task to be done is to show an application of the~\lstinline[language=Ja
 %
 As in previous chapters the test will be performed using ATR-72 and B747-100B aircraft models, built up as explained in paragraph~\ref{par:DefaultAircraft}. These aircraft models doesn't have high-lift devices input data embedded, so that they have to be assigned from an external XML file; this choice has been taken because the user may want to try different high-lift devices setups without changing the aircraft model on which these latter will be applied.
 %
-The input XML file\cite{wiki:xml} has to provide all data from~\ref{table:CalcHighLiftConstructor}, except for the lifting surface model and the operating condition, and it is modeled as follows.
+The input XML file\cite{wiki:xml} has to provide all data from table~\ref{table:CalcHighLiftConstructor}, except for the lifting surface model and the operating condition, and it is modeled as follows.
 
 \bigskip
-\begin{lstlisting}[caption={Example of high-lift devices XML input file for the B747-100B in landing configuration}, captionpos=b, tabsize=6, language=XML]
+\begin{lstlisting}[caption={Example of high-lift devices XML input file for the B747-100B in take-off configuration}, captionpos=b, tabsize=6, language=XML]
 <input>
 	<B747>
 		<Flap_Number unit="">2</Flap_Number>
 		<Flap1>
-			<FlapType unit="">DOUBLE_SLOTTED</FlapType>
-			<Cf_C unit="">0.25</Cf_C>
-			<Delta_Flap1 unit="deg">20</Delta_Flap1>
-			<Delta_Flap1 unit="deg">25</Delta_Flap1>
-			<Flap_inboard>0.11</Flap_inboard>
-			<Flap_outboard>0.38</Flap_outboard>
+			<FlapType unit="">TRIPLE_SLOTTED</FlapType>
+			<Cf_C unit="">0.18</Cf_C>
+			<Delta_Flap1 unit="deg">5</Delta_Flap1>
+			<Delta_Flap1 unit="deg">3</Delta_Flap1>
+			<Delta_Flap1 unit="deg">2</Delta_Flap1>
+			<Flap_inboard>0.104</Flap_inboard>
+			<Flap_outboard>0.357</Flap_outboard>
 		</Flap1>
 		<Flap2>
-			<FlapType unit="">DOUBLE_SLOTTED</FlapType>
-			<Cf_C unit="">0.25</Cf_C>
-			<Delta_Flap2 unit="deg">20</Delta_Flap2>
-			<Delta_Flap2 unit="deg">25</Delta_Flap2>
-			<Flap_inboard unit="">0.38</Flap_inboard>
-			<Flap_outboard unit="">0.72</Flap_outboard>
+			<FlapType unit="">TRIPLE_SLOTTED</FlapType>
+			<Cf_C unit="">0.18</Cf_C>
+			<Delta_Flap2 unit="deg">5</Delta_Flap2>
+			<Delta_Flap2 unit="deg">3</Delta_Flap2>
+			<Delta_Flap2 unit="deg">2</Delta_Flap2>
+			<Flap_inboard unit="">0.411</Flap_inboard>
+			<Flap_outboard unit="">0.636</Flap_outboard>
 		</Flap2>
 		<Slat1>
-			<Delta_Slat unit="deg">5</Delta_Slat>
-			<Cs_C unit="">0.15</Cs_C>
+			<Delta_Slat unit="deg">10</Delta_Slat>
+			<Cs_C unit="">0.09</Cs_C>
 			<cExt_c unit="">1.1</cExt_c>
 			<LEradius_c_ratio unit="">0.0097</LEradius_c_ratio>
-			<Slat_inboard unit="">0.14</Slat_inboard>
-			<Slat_outboard unit="">0.37</Slat_outboard>
+			<Slat_inboard unit="">0.192</Slat_inboard>
+			<Slat_outboard unit="">0.364</Slat_outboard>
 		</Slat1>
 		<Slat2>
-			<Delta_Slat unit="deg">5</Delta_Slat>
-			<Cs_C unit="">0.08</Cs_C>
+			<Delta_Slat unit="deg">10</Delta_Slat>
+			<Cs_C unit="">0.136</Cs_C>
 			<cExt_c unit="">1.1</cExt_c>
 			<LEradius_c_ratio unit="">0.0097</LEradius_c_ratio>
-			<Slat_inboard unit="">0.42</Slat_inboard>
-			<Slat_outboard unit="">0.9</Slat_outboard>
+			<Slat_inboard unit="">0.414</Slat_inboard>
+			<Slat_outboard unit="">0.648</Slat_outboard>
 		</Slat2>
+		<Slat3>
+			<Delta_Slat unit="deg">10</Delta_Slat>
+			<Cs_C unit="">0.187</Cs_C>
+			<cExt_c unit="">1.1</cExt_c>
+			<LEradius_c_ratio unit="">0.0097</LEradius_c_ratio>
+			<Slat_inboard unit="">0.692</Slat_inboard>
+			<Slat_outboard unit="">0.961</Slat_outboard>
+		</Slat3>
 	</B747>
 </input>
 \end{lstlisting}
@@ -744,16 +750,16 @@ The input XML file\cite{wiki:xml} has to provide all data from~\ref{table:CalcHi
 		<Flap_Number unit="">2</Flap_Number>
 		<Flap1>
 			<FlapType unit="">SINGLE_SLOTTED</FlapType>
-			<Cf_c unit="">0.35</Cf_c>
+			<Cf_c unit="">0.38</Cf_c>
 			<Delta_Flap1 unit="deg">20</Delta_Flap1>
 			<Flap_inboard>0.08</Flap_inboard>
-			<Flap_outboard>0.3</Flap_outboard>
+			<Flap_outboard>0.35</Flap_outboard>
 		</Flap1>
 		<Flap2>
 			<FlapType unit="">SINGLE_SLOTTED</FlapType>
-			<Cf_c unit="">0.35</Cf_c>
+			<Cf_c unit="">0.38</Cf_c>
 			<Delta_Flap2 unit="deg">20</Delta_Flap2>
-			<Flap_inboard>0.3</Flap_inboard>
+			<Flap_inboard>0.35</Flap_inboard>
 			<Flap_outboard>0.8</Flap_outboard>
 		</Flap2>
 	</ATR72>
@@ -856,11 +862,7 @@ After the input file has been parsed correctly, the reading process can start. T
 
 \bigskip
 \noindent
-It's important to highlight that~\lstinline[language=Java]!JPADXmlReader! methods can return an~\lstinline[language=Java]!Amount!\cite{jscienceAmount} or a~\lstinline[language=Java]!String! for each data read this way so that a post-reading management is necessary in order to have data in correct types.
-
-\bigskip
-\noindent
-At this point all the required data are ready for use; now the user just have to create the object of the class~\lstinline[language=Java]!CalcHighLiftDevices! and call its methods as described in figure~\ref{fig:CalcHighLiftFlowchart}.
+It's important to highlight that~\lstinline[language=Java]!JPADXmlReader! methods can return an~\lstinline[language=Java]!Amount!\cite{jscienceAmount} or a~\lstinline[language=Java]!String! for each data read this way so that a post-reading management is necessary in order to have data in correct types. At this point all the required data are ready for use; now the user just have to create the object of the class~\lstinline[language=Java]!CalcHighLiftDevices! and call its methods as described in figure~\ref{fig:CalcHighLiftFlowchart}.
 %
 It has to be noted that, since~\lstinline[language=Java]!CalcHighLiftDevices! is a class nested into~\lstinline[language=Java]!LSAerodynamicsManager!, the creation of the required object is a little bit different from the usual; in particular an object of~\lstinline[language=Java]!LSAerodynamicsManager!, named~\lstinline[language=Java]!theLSAnalysis! in the example below, has to be created first and then the~\lstinline[language=Java]!CalcHighLiftDevices! one can be created as follows.
 
@@ -887,7 +889,7 @@ It has to be noted that, since~\lstinline[language=Java]!CalcHighLiftDevices! is
 
 \bigskip
 \noindent
-In conclusion, the following pages show the numerical and graphical results of the described tests, applied to the two aircraft, mentioned at the beginning of paragraph, in take-off configuration.
+In conclusion, numerical and graphical results of the described tests, applied to the two aircraft mentioned at the beginning of paragraph, are shown.
 %
 \begin{figure}[H]
 \centering
@@ -899,54 +901,54 @@ In conclusion, the following pages show the numerical and graphical results of t
 \bigskip
 \lstset{language=Java}
 \begin{lstlisting}[caption={ATR-72 test results}, captionpos=b, tabsize=2]
-deltaCl0_flap = 2.1605075094485655
-deltaCL0_flap = 0.8738425838254686
+deltaCl0_flap = 2.263493753740178
+deltaCL0_flap = 0.7527037903308272
 deltaClmax_flap = 1.2122379635109801
-deltaCLmax_flap = 0.5277544458523655
-CLalpha_new = 0.09156156854219144 (1/deg)
-deltaAlphaMax = -1.9369466185196893 (deg)
-deltaCD = 0.014892653891319598
-deltaCMc_4 = -0.12096191945250442
+deltaCLmax_flap = 0.5249013462746028
+CLalpha_new = 0.09139075701076349 (1/deg)
+deltaCD = 0.017691818247996084
+deltaCMc_4 = -0.12100839839572519
 -----------CLEAN-------------- 
  alpha max 17.47365992627331 (deg)
  CL max 1.5867506593021659
  CL star 1.0956477082461238
  CL alpha 5.189644003702159 (1/rad)
  -----------HIGH LIFT-------------- 
- alpha max = 15.536713307753615 (deg)
- alpha star = 6.088751194317243 (deg)
- CL max = 2.1145051051545316
- CL star = 1.5380850401091668
- CL alpha = 5.246477877467569 (1/rad)
+ alpha max 15.81817306525097 (deg)
+ alpha star 5.46618283533877 (deg)
+ CL max 2.1091586072792454
+ CL star 1.3586008009300286
+ CL alpha 5.236690376716748 (1/rad)
 \end{lstlisting}
 %
 \begin{figure}[H]
 \centering
 \input{images/CLAlphaWingHighLift_B747.tikz}
-\caption{B747-100B lift curve with and without flaps and slats deflected in landing configuration}
+\caption{B747-100B lift curve with and without flaps and slats deflected in take-off configuration}
 \label{fig:FlapATR}
 \end{figure}
 
 \bigskip
 \lstset{language=Java}
 \begin{lstlisting}[caption={B747-100B test results}, captionpos=b, tabsize=2]
-deltaCl0_flap = 4.544596307925835
-deltaCL0_flap = 1.6252226278762703
-deltaClmax_flap = 3.1133331120490326
-deltaCLmax_flap = 1.3332544761560228
-CLalpha_new = 0.07136162925963688
-deltaAlphaMax = -6.846961024562918
-deltaCD = 0.05417437505739874
-deltaCMc_4 = -0.30491716366138855
+deltaCl0_flap = 1.042568723557796
+deltaCL0_flap = 0.2003564365099298
+deltaClmax_flap = 0.1414975497068864
+deltaCLmax_flap = 0.046423506957770616
+deltaClmax_slat = 1.270544480012824
+deltaCLmax_slat = 0.4010166637261424
+CLalpha_new = 0.07307826951197416 (1/deg)
+deltaCD = 0.001877785467928246
+deltaCMc_4 = -0.01156502154181518
  -----------CLEAN-------------- 
  alpha max 23.231252824438855 (deg)
  CL max 1.4686492856382116
  CL star 0.8263686942120971
  CL alpha = 4.0890213565771925 (1/rad)
  -----------HIGH LIFT-------------- 
- alpha max = 21.940633456069815 (deg)
- alpha star = 9.029673073536198 (deg)
- CL max = 2.9907894015944554
- CL star = 2.3536504772811107
- CL alpha 4.121408852511741 (1/rad)
+ alpha max 24.766400107580708 (deg)
+ alpha star 13.39981443481873 (deg)
+ CL max 1.9160894563221245
+ CL star 1.2636473543834792
+ CL alpha 4.187384843036119 (1/rad)
 \end{lstlisting}

@@ -24,6 +24,15 @@
 \usepackage{siunitx}
 \usepackage{pgfplots}
 \usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{cancel}
+\usepackage{textcomp}% additional glyphs
+\usepackage{pifont} % for dingbats
+\usepackage{marvosym} % for \Keyboard, etc
+\usepackage%
+   [TM]% NOTE: needs version 2012 _and_ fonts/tfm/public/aspectratio/*.tfm
+   {ar}% original package by Claudio Beccari (based on Computer Modern Roman)
 \usetikzlibrary{tikzmark,fit,shapes.geometric}
 \usepackage{graphicx}
 \definecolor{mygold}{RGB}{255, 153, 0}
@@ -77,8 +86,8 @@
 \placelogotrue % set it to true
 \logo{
     \ifplacelogo
-    \includegraphics[keepaspectratio,width=2cm]{images/unina}~
-    \hspace{\dimexpr\paperwidth-4.5cm-2pt}
+    \includegraphics[keepaspectratio,width=1cm]{images/unina}~
+    \hspace{\dimexpr\paperwidth-3.6cm-2pt}
     \includegraphics[keepaspectratio,width=2.3cm]{images/logo_DII}
     \fi
 }
@@ -86,9 +95,9 @@
 \placebackgroundtrue % set it to true
 \setbeamertemplate{background canvas}{
     \ifplacebackground
-    \rule{0in}{2.45in}%
-    \rule{1in}{0in}%
-    \includegraphics[keepaspectratio, width=0.6\paperwidth]{images/unina_vettoriale_con_sigillo.png}
+    \rule{0in}{2.8in}%
+    \rule{1.27in}{0in}%
+    \includegraphics[keepaspectratio, width=0.45\paperwidth]{images/unina_vettoriale_con_sigillo}
     \fi
 }
 %
@@ -264,16 +273,16 @@ The input file type chosen is the {\textcolor{mygold}{XML}} (\emph{{\textcolor{m
 \placebackgroundfalse
 %
 \setbeamertemplate{background canvas}{
-    \rule{0in}{3.56in}%
-    \rule{0.12in}{0in}%
+    \rule{0in}{3.6in}%
+    \rule{0.07in}{0in}%
     \centering
     \includegraphics[keepaspectratio, width=0.55\paperwidth]{images/Folder_Tree}
 }
 %
 \begin{frame}{Input file structure prototype}
 \begin{figure}[!t]
-    \hspace*{6.3cm}
-    \vspace*{2cm}
+    \hspace*{6.2cm}
+    \vspace*{1.7cm}
     \includegraphics[keepaspectratio, width=0.415\paperwidth]{images/XMLAircraft}
 \end{figure}
 \end{frame}
@@ -458,22 +467,22 @@ $R=\left(\frac{V}{SFCJ}\right)\left(\frac{L}{D}\right)\ln\left(\frac{W_{i}}{W_{f
 \placebackgroundfalse
 \begin{frame}{Payload-Range Java class flowchart}
 \WiderImages{
-\begin{columns}[onlytextwidth,t]
-\column{0.5\textwidth}
+\only<1>{
 \begin{figure}
 \centering
-    \includegraphics[keepaspectratio, width=0.5\paperwidth]{images/PayloadRange_BestRange_Flowchart.png}
+    \includegraphics[keepaspectratio, width=0.73\paperwidth]{images/PayloadRange_BestRange_Flowchart.png}
     \captionsetup{labelformat=empty}
-    \caption{\scalebox{0.6}{\qquad\qquad \textbf{Flowchart for best range and chosen Mach conditions comparison}}}
+    \caption{\scalebox{0.8}{\qquad\qquad\qquad \textbf{Flowchart for best range and chosen Mach conditions comparison}}}
 \end{figure}
-\column{0.5\textwidth}
+}
+\only<2>{
 \begin{figure}
 \centering
-    \includegraphics[keepaspectratio, width=0.5\paperwidth]{images/PayloadRange_MTOM_Flowchart.png}
+    \includegraphics[keepaspectratio, width=0.8\paperwidth]{images/PayloadRange_MTOM_Flowchart.png}
     \captionsetup{labelformat=empty}
-    \caption{\scalebox{0.6}{\qquad\quad \textbf{Flowchart for maximum take-off mass parameterization}}}
+    \caption{\scalebox{0.8}{\qquad\qquad\qquad\qquad\qquad \textbf{Flowchart for maximum take-off mass parameterization}}}
 \end{figure}
-\end{columns}
+}
 }
 \end{frame}
 %
@@ -540,7 +549,7 @@ $R=\left(\frac{V}{SFCJ}\right)\left(\frac{L}{D}\right)\ln\left(\frac{W_{i}}{W_{f
 \begin{figure}
   \vspace*{-0.4cm}
 \centering
-    \includegraphics[keepaspectratio, width=0.49\paperwidth]{images/B747SpecsPR.PNG}
+    \includegraphics[keepaspectratio, width=0.47\paperwidth]{images/B747SpecsPR.PNG}
     \captionsetup{labelformat=empty}
 \end{figure}
 \column{0.5\textwidth}
@@ -650,13 +659,14 @@ $A.F.=\left(\frac{V}{SFCJ}\right)\left(\frac{L}{D}\right)$
 \WiderImages{
 \begin{figure}
   \vspace*{0.42cm}
+    \hspace*{-0.7cm}
 \centering
     \includegraphics[keepaspectratio, width=0.5\paperwidth]{images/DragThrustATR.PNG}
     \captionsetup{labelformat=empty}
 \end{figure}
 \begin{figure}
   \vspace*{-1.15cm}
-  \hspace*{-0.2cm}
+  \hspace*{-0.7cm}
 \centering
     \includegraphics[keepaspectratio, width=0.5\paperwidth]{images/DragThrustB747.PNG}
     \captionsetup{labelformat=empty}
@@ -802,7 +812,7 @@ $A.F.=\left(\frac{V}{SFCJ}\right)\left(\frac{L}{D}\right)$
 %
 \setbeamertemplate{background canvas}{
     \rule{0in}{3.6in}%
-    \rule{0.12in}{0in}%
+    \rule{0.19in}{0in}%
     \centering
     \includegraphics[keepaspectratio, width=0.78\paperwidth]{images/HighLiftDevices_Flowchart}
 }
@@ -871,7 +881,6 @@ $A.F.=\left(\frac{V}{SFCJ}\right)\left(\frac{L}{D}\right)$
 	\MyBullet $\eta_{\text{in, flap2}}=0.38;\ \eta_{\text{out, flap2}}=0.72$
 	\MyBullet $\eta_{\text{in, slat1}}=0.14;\ \eta_{\text{out, slat1}}=0.37$
 	\MyBullet $\eta_{\text{in, slat2}}=0.42;\ \eta_{\text{out, slat}}=0.9$
-
 \end{itemize}
 \vspace*{0.15cm}
 \hspace*{1.55cm}
@@ -913,5 +922,252 @@ $A.F.=\left(\frac{V}{SFCJ}\right)\left(\frac{L}{D}\right)$
 \end{frame}
 %
 %-----------------------Frame 26------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{ODE set for the AOE take-off distance calculation}
+\Wider{
+\only<1>{
+\vspace*{0.8cm}
+\textcolor{mygold}{State space representation $\qquad\dot{\vec{x}} = \vec{f}\big(\, \vec{x}\,;\,u \,\big)$}
+\vspace*{-0.3cm}
+\begin{align*}
+\scalebox{0.8}{$
+    \left\{\begin{array}{c}\dot{s}\\[2pt] \dot{V} \\[2pt] \dot{\gamma} \\[2pt] \dot{h} \end{array}\right\}
+= 
+    \left\{\begin{array}{l}
+       f_1 \big(\, s,\, V,\, \gamma,\, h \,; \, \alpha \big) \\[4pt]
+       f_2 \big(\, s,\, V,\, \gamma,\, h \,; \, \alpha \big) \\[4pt]
+       f_3 \big(\, s,\, V,\, \gamma,\, h \,; \, \alpha \big) \\[4pt]
+       f_4 \big(\, s,\, V,\, \gamma,\, h \,; \, \alpha \big)
+    \end{array}\right\}
+\quad
+    \text{with}\quad
+   \left\{\begin{array}{l} x_1 = s\\[2pt] x_2 = V \\[2pt] x_3 = \gamma \\[2pt] x_4 = h \end{array}\right\}
+\quad
+    \text{and}\quad
+    u = \alpha
+$}
+\end{align*}
+\vspace*{-0.5cm}
+\begin{itemize}
+	\MyBullet \scalebox{0.8}{$f_1 \big(\, \vec{x}\,,\,u \,\big) =  x_2$}
+	\MyBullet \scalebox{0.8}{$f_2 \big(\, \vec{x}\,,\,u \,\big) =
+  \dfrac{g}{W}
+    \left\{
+      \begin{array}{l@{\rule{2em}{0pt}}l} 
+         \scalebox{0.8}{$
+         T(x_2) - D(x_2,u) - \mu \big[ W - L(x_2,u) \big]$}
+          & \text{if} \;\, \mathcal{S}(x_2 , u) < 1
+        \\[1em]
+         \scalebox{0.8}{$
+         T(x_2) \cos u - D(x_2,u) - W \sin x_3$}
+          & \text{if} \;\, \mathcal{S}(x_2 , u) \geq 1
+      \end{array}\right\}$}
+	\MyBullet \scalebox{0.8}{$f_3 \big(\, \vec{x}\,,\,u \,\big) =
+  \dfrac{g}{W\,x_2}
+   \left\{
+      \begin{array}{l@{\rule{2em}{0pt}}l} 
+       \scalebox{0.8}{$
+        0 $}
+          & \text{if} \;\, \mathcal{S}(x_2 , u) < 1
+        \\[1em]
+         \scalebox{0.8}{$
+        L(x_2,u) + T(x_2)\sin u - W \cos x_3$}
+          & \text{if} \;\, \mathcal{S}(x_2 , u) \geq 1
+      \end{array}
+    \right\}$}
+	\MyBullet \scalebox{0.8}{$f_4 \big(\, \vec{x}\,,\,u \,\big) =  x_2 \, \sin x_3$}
+\end{itemize}
+\begin{center}
+	\scalebox{0.8}{$\mathcal{S}(x_2 , u) = \dfrac{L(x_2,u)}{W \cos x_3}$}
+\end{center}
+}
+\only<2>{
+\vspace*{0.2cm}
+\textcolor{mygold}{State vector and input $\quad {\vec{x}} = \left\{x_1 = s;\ x_2 = V;\ x_3 = \gamma;\ x_4 = h\right\};\ u=\alpha$}
+\begin{columns}[onlytextwidth,t]
+\column{0.7\textwidth}
+\begin{itemize}
+	\vspace*{-0.3cm}
+	\MyBullet $T(x_2)$ is read from the engine database related to the take-off setting.
+	\MyBullet $D(x_2,u) = \dfrac{1}{2} \, \rho \, \big( x_2 + V_{\text{w}}\cos x_3 \big)^2 \,S \, C_D\big( u \big)$ 
+	\begin{itemize}
+	\vspace*{0.cm}
+		\MyBullet $C_D\big(u\big) = C_{D0} + \left(\text{$\Delta$}C_{D0}\right)_{\text{flap}+\text{lg}} +  K_g\ \dfrac{C_L^2}{\pi\AR e}$
+		\begin{itemize}
+		\vspace*{0.2cm}
+			\MyBullet $K_g=-622.44x^5+624.46x^4-255.24x^3+47.105x^2-0.6378x+0.0055$
+		\end{itemize}
+		\vspace*{0.2cm}
+	\end{itemize}
+	\MyBullet $L(x_2,u) = \dfrac{1}{2} \, \rho \, \big( x_2 + V_{\text{w}}\cos x_3 \big)^2 \,S \, C_L\big( u \big)$
+	\begin{itemize}
+	\vspace*{0.1cm}
+		\MyBullet $C_L\big(u\big)$ is the one from the lift curve with flaps, and eventually slats, deflected.
+	\end{itemize}
+\end{itemize}
+\column{0.3\textwidth}
+\WiderImages{
+\begin{figure}
+  \vspace*{0.5cm}
+  \hspace*{-0.5cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.79\textwidth]{images/McCormickGroundEffect.PNG}
+    \captionsetup{labelformat=empty}
+\end{figure}
+}
+\end{columns}
+}
+\only<3>{
+\begin{columns}[onlytextwidth,t]
+\column{0.4\textwidth}
+\vspace*{-6.5cm}
+\begin{align*}
+\scalebox{0.8}{$
+u (t) =
+    \left\{
+      \begin{array}{l@{\rule{2em}{0pt}}l} 
+       \alert{\alpha_{\text{g}}}
+          & \text{if} \;\, t < t_{\text{Rot}}
+        \\[1em]
+        \alpha_1(t)
+          & \text{if} \;\, t \geq t_{\text{Rot}}
+      \end{array}
+    \right\}$}
+\end{align*}
+\begin{align*}
+	\alpha_1(t) = \dot\alpha(t)\ dt
+\end{align*}
+\begin{align*}
+\scalebox{0.8}{$
+\dot\alpha (t) =
+    \left\{
+      \begin{array}{l@{\rule{2em}{0pt}}l} 
+      \alert{\dot\alpha_0}\ \left(1-\alert{k_\alpha}\ \alpha\right)
+          & \text{if} \;\, t_{\text{Rot}} \leq t < t_{\text{Hold}}
+        \\[1em]
+        0
+          & \text{if} \;\, t_{\text{Hold}} \leq t < t_{\text{Hold}}+\text{$\Delta$}t_{\text{Hold}}
+          \\[1em]
+	\alert{\dot\alpha_{\text{red}}}
+          & \text{if} \;\,  t_{\text{Hold}}+\text{$\Delta$}t_{\text{Hold}} \leq t < t_{\text{climb}}
+          \\[1em]
+        0
+          & \text{if} \;\,  t \geq t_{\text{climb}} 
+      \end{array}
+    \right\}$}
+\end{align*}
+\column{0.4\textwidth}
+\centering
+\hspace{-0.5cm}
+    \includegraphics[keepaspectratio, width=0.9\textwidth]{images/AlphaInputTakeOff}
+    \captionsetup{labelformat=empty}
+\end{columns}
+}
+}
+\end{frame}
+%
+%-----------------------Frame 27------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{ODE set modification for the take-off in OEI condition}
+\Wider{
+\vspace*{0.2cm}
+\textcolor{mygold}{OEI continued take-off}
+\begin{itemize}
+	\MyBullet There is a discontinuity in thrust at a specific failure speed $V_{ef}$.
+	\MyBullet $T(x_2)$ is still read from the database but considering a number of engines reduced by one from the time $t_{ef}$ at which the engine failure occurs.
+\end{itemize}
+\textcolor{mygold}{OEI aborted take-off}
+\begin{itemize}
+	\MyBullet The take-off run, up to the engine failure speed $V_{ef}$, is the same as the continued take-off one.
+	\MyBullet The pilot reacts at a time $t_{\text{act}}$ (generally $\SI{3}{\second}$ after $t_{ef}$) setting $T(x_2)$ to 0 and activating brakes. The equation $f_2$ changes in the following.
+\end{itemize}
+\begin{align*}
+	f_2 \big(\, \vec{x}\,,\,u \,\big) =\frac{g}{W}\ \big\{ - D(x_2,u) - \mu_{\text{brakes}} \big[ W - L(x_2,u) \big]\big\} 
+\end{align*}
+}
+\end{frame}
+%
+%-----------------------Frame 28------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Landing distance calculation}
+\Wider{
+\only<1>{
+\vspace*{1cm}
+\textbf{\textcolor{mygold}{Air run}}
+\begin{itemize}
+	\MyBullet $\big[n=1.2$, $V_{\text{Flare}}=1.23\ V_s\big]\ \textcolor{mygold}{\rightarrow\ R=\dfrac{V^2}{g\left(n-1\right)}=\dfrac{V_{\text{Flare}}^2}{0.2\ g}}$
+	\MyBullet $\big[\theta_a\approx\SI{2}{\degree}\div\SI{3}{\degree}\big]\ \textcolor{mygold}{\rightarrow\ h_{\text{Flare}}=R\left(1-\cos\theta_a\right)}$
+	\MyBullet $\big[\theta_a$, $R$, $h_{\text{Flare}}\big]\ \alert{\rightarrow\ S_A=\dfrac{50-h_{\text{Flare}}}{\tan\theta_a}; \quad S_{\text{Flare}}=R\sin\theta_a}$
+\end{itemize}
+\begin{center}
+	\vspace*{-0.5cm}
+	\includegraphics[keepaspectratio, width=0.6\textwidth]{images/LandingAirborne}
+\end{center}
+}
+\only<2>{
+\textbf{\textcolor{mygold}{Ground run}}
+\begin{align*}
+\scalebox{0.9}{$
+    \left\{\begin{array}{c}\dot{s}\\[2pt] \dot{V}\end{array}\right\}
+= 
+    \left\{\begin{array}{l}
+       f_1 \big(\, s,\, V\big) \\[4pt]
+       f_2 \big(\, s,\, V\big) \\
+    \end{array}\right\}
+\quad
+    \text{with}\quad
+   \left\{\begin{array}{l} x_1 = s\\[2pt] x_2 = V\end{array}\right\}
+$}
+\end{align*}
+\vspace*{-0.5cm}
+\begin{itemize}
+	\MyBullet \scalebox{0.9}{$f_1 \big(\, \vec{x}\,,\,u \,\big) =  x_2$}
+	\MyBullet \scalebox{0.9}{$f_2 \big(\, \vec{x}\,\big) =
+  \frac{g}{W}
+    \left\{
+      \begin{array}{l@{\rule{2em}{0pt}}l} 
+        -T_{\text{Rev}}(x_2) - D(x_2) - \mu \big[ W - L(x_2) \big]
+          & \text{if} \;\, t \leq t_{\text{fr}}
+        \\[1em]
+	-T_{\text{Rev}}(x_2) - D(x_2) - \mu_{\text{brakes}} \big[ W - L(x_2) \big]
+          & \text{if} \;\, t > t_{\text{fr}}
+      \end{array}
+    \right\}$}
+\end{itemize}
+\vspace*{0.5cm}
+\textcolor{mygold}{$t_{fr}$} is related to the end of the \textcolor{mygold}{\emph{free-roll distance}} (which represents the distance covered while the pilot reduces the power to idle, retracts the flaps, deploys the spoilers, and applies the brakes) and it’s set at \textcolor{mygold}{$\SI{3}{\second}$}.
+}
+}
+\end{frame}
+%
+%-----------------------Frame 29------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Take-Off Java class flowchart}
+\vspace*{-0.35cm}
+	\begin{center}
+		\rule{-0.11in}{0in}%
+		\includegraphics[keepaspectratio, width=0.79\textwidth]{images/TakeOff_Flowchart}
+	\end{center}
+\end{frame}
+%
+%-----------------------Frame 30------------------------------
+\placelogotrue
+\placebackgroundfalse
+%
+\setbeamertemplate{background canvas}{
+    \rule{0in}{3.65in}%
+    \rule{0.5in}{0in}%
+    \centering
+    \includegraphics[keepaspectratio, width=0.9\textwidth]{images/Landing_Flowchart}
+}
+%
+\begin{frame}{Landing Java class flowchart}
+\end{frame}
+%
+\setbeamertemplate{background canvas}{ }
 %
 \end{document}
