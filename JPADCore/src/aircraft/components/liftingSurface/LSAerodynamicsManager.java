@@ -4057,7 +4057,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	//	}
 
 	
-	public class CalcCdvsAlpha {
+public class CalcCdvsAlpha {
 		
 		public Double[] calculateCDParasiteFromAirfoil(Amount<Angle> alphaMin,
 				Amount<Angle> alphaMax,
@@ -4183,7 +4183,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		}
 	}
 	/**
-	 * This class calculates the cd distribution among the semispan 
+	 * This class calculates the cd distribution along the semispan 
 	 * 
 	 * @author Manuela Ruocco
 	 */
