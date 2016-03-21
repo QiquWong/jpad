@@ -3187,6 +3187,9 @@ public class LiftingSurface extends AeroComponent{
 		return _sweepHalfChordEq;
 	}
 
+	public void set_sweepHalfChordEq(Amount<Angle> _sweepHalfChordEq) {
+		this._sweepHalfChordEq = _sweepHalfChordEq;
+	}
 
 	public Double getTc_root() {
 		return _tc_root;
@@ -3477,6 +3480,9 @@ public class LiftingSurface extends AeroComponent{
 		return _alpha0VsY;
 	}
 
+	public void set_alpha0VsY(MyArray _alpha0VsY) {
+		this._alpha0VsY = _alpha0VsY;
+	}
 
 	public Amount<Length> get_semispan() {
 		return _semispan;
@@ -3536,8 +3542,16 @@ public class LiftingSurface extends AeroComponent{
 		return _etaAirfoil;
 	}
 
+	public void set_etaAirfoil(MyArray _etaAirfoil) {
+		this._etaAirfoil = _etaAirfoil;
+	}
+	
 	public Double get_maxThicknessMean() {
 		return _maxThicknessMean;
+	}
+	
+	public void set_maxThicknessMean(Double _maxThicknessMean) {
+		this._maxThicknessMean = _maxThicknessMean;
 	}
 
 	public MyArray get_yStationEq() {
