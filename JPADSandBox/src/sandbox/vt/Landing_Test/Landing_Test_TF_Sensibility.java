@@ -57,7 +57,7 @@ public class Landing_Test_TF_Sensibility {
 	public static void main(String[] args) throws CmdLineException, InstantiationException, IllegalAccessException {
 
 		System.out.println("-----------------------------------------------------------");
-		System.out.println("TakeOff_Test :: B747-100B -- Sesnsibility (W/S),(T/W)");
+		System.out.println("TakeOff_Test :: B747-100B -- Sesnsibility (W/S)");
 		System.out.println("-----------------------------------------------------------\n");
 
 		Landing_Test_TF_Sensibility main = new Landing_Test_TF_Sensibility();
@@ -91,8 +91,8 @@ public class Landing_Test_TF_Sensibility {
 		 * in order to change the W/S ratio.
 		 */
 //		aircraft.get_wing().set_surface(Amount.valueOf(570, SI.SQUARE_METRE));
-//		aircraft.get_wing().set_surface(Amount.valueOf(513, SI.SQUARE_METRE));
-		aircraft.get_wing().set_surface(Amount.valueOf(466, SI.SQUARE_METRE));
+		aircraft.get_wing().set_surface(Amount.valueOf(513, SI.SQUARE_METRE));
+//		aircraft.get_wing().set_surface(Amount.valueOf(466, SI.SQUARE_METRE));
 //		aircraft.get_wing().set_surface(Amount.valueOf(427, SI.SQUARE_METRE));
 		//------------------------------------------------------------------------------------------
 
@@ -138,7 +138,7 @@ public class Landing_Test_TF_Sensibility {
 		MyAirfoil airfoilRoot = theWing.get_theAirfoilsList().get(0);
 		airfoilRoot.getGeometry().update(yLocRoot);  // define chord
 		airfoilRoot.getGeometry().set_maximumThicknessOverChord(0.18); //REPORT
-		airfoilRoot.getGeometry().set_deltaYPercent(0.192 *airfoilRoot.getGeometry().get_maximumThicknessOverChord()*100 );
+		airfoilRoot.getGeometry().set_deltaYPercent(4.5);
 		System.out.println("\n \n \t ROOT \nAirfoil Type: " + airfoilRoot.get_family());
 		System.out.println("Root Chord [m] = " + theWing.get_chordRoot().getEstimatedValue() );
 		System.out.println("Root maximum thickness = " + airfoilRoot.getGeometry().get_maximumThicknessOverChord());
@@ -149,8 +149,8 @@ public class Landing_Test_TF_Sensibility {
 		double yLocKink = theWing.get_spanStationKink() * theWing.get_semispan().getEstimatedValue();
 		MyAirfoil airfoilKink = theWing.get_theAirfoilsList().get(1);
 		airfoilKink.getGeometry().update(yLocKink);   // define chord
-		airfoilKink.getGeometry().set_maximumThicknessOverChord(0.15); //REPORT
-		airfoilKink.getGeometry().set_deltaYPercent(0.192 *airfoilKink.getGeometry().get_maximumThicknessOverChord()*100 );
+		airfoilKink.getGeometry().set_maximumThicknessOverChord(0.18); //REPORT
+		airfoilKink.getGeometry().set_deltaYPercent(4.5);
 		System.out.println("\n \n \t KINK \nAirfoil Type: " + airfoilKink.get_family());
 		System.out.println("Kink Station [m] = " + yLocKink);
 		System.out.println("Kink Chord [m] = " + theWing.get_chordKink().getEstimatedValue() );
@@ -162,8 +162,8 @@ public class Landing_Test_TF_Sensibility {
 		double yLocTip = theWing.get_semispan().getEstimatedValue();
 		MyAirfoil airfoilTip = theWing.get_theAirfoilsList().get(2);
 		airfoilTip.getGeometry().update(yLocRoot);  // define chord
-		airfoilTip.getGeometry().set_maximumThicknessOverChord(0.12); //REPORT
-		airfoilTip.getGeometry().set_deltaYPercent(0.192 *airfoilTip.getGeometry().get_maximumThicknessOverChord()*100 );
+		airfoilTip.getGeometry().set_maximumThicknessOverChord(0.15); //REPORT
+		airfoilTip.getGeometry().set_deltaYPercent(4.307);
 		System.out.println("\n \n \t TIP \nAirfoil Type: " + airfoilKink.get_family());
 		System.out.println("tip Chord [m] = " +theWing.get_chordTip().getEstimatedValue() );
 		System.out.println("Tip maximum thickness = " + airfoilTip.getGeometry().get_maximumThicknessOverChord());
@@ -354,18 +354,18 @@ public class Landing_Test_TF_Sensibility {
 		// Landing - Ground Roll Distance Test
 		//----------------------------------------------------------------------------------
 		_startTimeCalculation = System.currentTimeMillis();
-		double mu = 0.025;
-		double muBrake = 0.3;
+		double mu = 0.03;
+		double muBrake = 0.4;
 		double kA = 1.3; // [1/deg]
 		double kFlare = 1.23;
 		double kTD = 1.15;
 		double phiRev = 0.0;
-		Amount<Duration> nFreeRoll = Amount.valueOf(2, SI.SECOND);
-		Amount<Length> wingToGroundDistance = Amount.valueOf(4.0, SI.METER);
+		Amount<Duration> nFreeRoll = Amount.valueOf(3, SI.SECOND);
+		Amount<Length> wingToGroundDistance = Amount.valueOf(6.56, SI.METER);
 		Amount<Length> obstacle = Amount.valueOf(50, NonSI.FOOT).to(SI.METER);
 		Amount<Velocity> vWind = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
 		Amount<Angle> alphaGround = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
-		Amount<Angle> iw = Amount.valueOf(2.0, NonSI.DEGREE_ANGLE);
+		Amount<Angle> iw = Amount.valueOf(3.0, NonSI.DEGREE_ANGLE);
 		Amount<Angle> thetaApproach = Amount.valueOf(3.0, NonSI.DEGREE_ANGLE);
 		CalcLanding theLandingCalculator = new CalcLanding(
 				aircraft,

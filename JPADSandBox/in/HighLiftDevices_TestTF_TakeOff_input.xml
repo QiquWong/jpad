@@ -9,7 +9,7 @@
 		<Flap_Number unit="">2</Flap_Number>
 		<Flap1>
 			<FlapType unit="">TRIPLE_SLOTTED</FlapType>
-			<Cf_C unit="">0.13</Cf_C>
+			<Cf_C unit="">0.18</Cf_C>
 			<Delta_Flap1 unit="°">5</Delta_Flap1>
 			<Delta_Flap1 unit="°">3</Delta_Flap1>
 			<Delta_Flap1 unit="°">2</Delta_Flap1>
@@ -18,7 +18,7 @@
 		</Flap1>
 		<Flap2>
 			<FlapType unit="">TRIPLE_SLOTTED</FlapType>
-			<Cf_C unit="">0.13</Cf_C>
+			<Cf_C unit="">0.18</Cf_C>
 			<Delta_Flap2 unit="°">5</Delta_Flap2>
 			<Delta_Flap2 unit="°">3</Delta_Flap2>
 			<Delta_Flap2 unit="°">2</Delta_Flap2>

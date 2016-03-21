@@ -87,7 +87,7 @@ public class Landing_Test_TP {
 
 		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.ATR72);
 		aircraft.set_name("ATR-72");
-		//		aircraft.get_weights().set_MLW(Amount.valueOf(22350*9.81, SI.NEWTON)); // optional MLW from brochure
+//		aircraft.get_weights().set_MLW(Amount.valueOf(22350*9.81, SI.NEWTON)); // optional MLW from brochure
 
 		LiftingSurface theWing = aircraft.get_wing();
 

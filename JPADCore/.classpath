@@ -80,6 +80,6 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/gtmat/gtmat.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JPADConfigs"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jfxchartext-1.0/jfxchartext-1.0.jar"/>
-	<classpathentry kind="var" path="LIBRARY_FOLDER/javaslang/javaslang-2.0.0-RC5.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/javaslang/javaslang-2.0.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

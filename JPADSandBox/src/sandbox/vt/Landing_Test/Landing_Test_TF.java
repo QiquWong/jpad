@@ -349,7 +349,7 @@ public class Landing_Test_TF {
 		Amount<Velocity> vWind = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
 		Amount<Angle> alphaGround = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		Amount<Angle> iw = Amount.valueOf(3.0, NonSI.DEGREE_ANGLE);
-		Amount<Angle> thetaApproach = Amount.valueOf(3, NonSI.DEGREE_ANGLE);
+		Amount<Angle> thetaApproach = Amount.valueOf(3.0, NonSI.DEGREE_ANGLE);
 		CalcLanding theLandingCalculator = new CalcLanding(
 				aircraft,
 				theCondition,
