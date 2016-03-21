@@ -32,6 +32,7 @@ import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcAlpha0L;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCDAtAlpha;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
+import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLvsAlphaCurve;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.MeanAirfoil;
 import calculators.aerodynamics.LiftCalc;
 import database.databasefunctions.DatabaseReader;
@@ -440,16 +441,73 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		Amount<Angle> alphaMin = Amount.valueOf(Math.toRadians(-5), SI.RADIAN);
 		Amount<Angle> alphaMax = Amount.valueOf(Math.toRadians(22), SI.RADIAN);
 		
+//		Amount<Angle> alphaMin = Amount.valueOf(Math.toRadians(-6), SI.RADIAN);
+//		Amount<Angle> alphaMax = Amount.valueOf(Math.toRadians(25), SI.RADIAN);
+		
 		ACStabilityManager theStabilityManager = new ACStabilityManager(meanAirfoil, aircraft, ConditionEnum.CRUISE,
 				alphaMin, alphaMax, alphaBody , true, subfolderPath, pathTakeOff);
 		
-//		ACStabilityManager theStabilityManagerTakeOFF = new ACStabilityManager(meanAirfoil, aircraft, ConditionEnum.TAKE_OFF,
-//				alphaMin, alphaMax, alphaBody , true, subfolderPathTakeOFF, pathTakeOff);
+		ACStabilityManager theStabilityManagerTakeOFF = new ACStabilityManager(meanAirfoil, aircraft, ConditionEnum.TAKE_OFF,
+				alphaMin, alphaMax, alphaBody , true, subfolderPathTakeOFF, pathTakeOff);
  
 	theStabilityManager.CalculateAll();
-//	theStabilityManagerTakeOFF.CalculateAll();
+	theStabilityManagerTakeOFF.CalculateAll();
 			
+
 		
+		// CL ANALYSIS
+		
+		
+	double reRoot = theConditions.calculateRe(theWing.get_chordRoot().getEstimatedValue(),1);
+	System.out.println( "Reynolds number root station " + reRoot);
+	double reKink = theConditions.calculateRe(theWing.get_chordKink().getEstimatedValue(),1);
+	System.out.println( "Reynolds number kink station " + reKink);
+	double reTip = theConditions.calculateRe(theWing.get_chordTip().getEstimatedValue(),1);
+	System.out.println( "Reynolds number tip station " + reTip);
+	
+	String subfolderPathAirfoil = JPADStaticWriteUtils.createNewFolder(folderPath + "Wing airfoil data" + File.separator);
+	
+	airfoilRoot.getAerodynamics().plotClvsAlpha(subfolderPathAirfoil, "Root");
+	airfoilKink.getAerodynamics().plotClvsAlpha(subfolderPathAirfoil, "Kink");
+	airfoilTip.getAerodynamics().plotClvsAlpha(subfolderPathAirfoil, "Tip");
+		
+	
+	LSAerodynamicsManager.CalcCLvsAlphaCurve theCLArrayCalculator = theLSAnalysis.new CalcCLvsAlphaCurve();
+	double [] cLWingCleanArray = theCLArrayCalculator.nasaBlackwellCompleteCurve(alphaMin,alphaMax,60, false);
+	
+	double[] alphaArrayCL = MyArrayUtils.linspace(alphaMin.getEstimatedValue(), alphaMax.getEstimatedValue(), 60);
+	
+	System.out.println("\n \n-----------------------------------------------------");
+	System.out.println("WRITING TO CHART CL vs ALPHA CURVE stall path");
+	System.out.println("-----------------------------------------------------");
+	
+	double [] alphaArrayCLDeg = new double [60];
+
+	for (int i=0; i<60; i++){
+		alphaArrayCLDeg[i] = Math.toDegrees(alphaArrayCL[i]);
+	}
+	MyChartToFileUtils.plotNoLegend(
+			alphaArrayCLDeg , cLWingCleanArray,
+			null, null, null, null,
+			"alpha", "CL",
+			"deg", "",
+			subfolderPathAirfoil," CL vs Alpha stall path " );
+	
+	System.out.println("\n \n-----------------------------------------------------");
+	System.out.println("DONE");
+	System.out.println("-----------------------------------------------------");
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 		//---------------------
 		System.out.println("\n\n ---------CL  vs Alpha Calc-------");
 		MyArray alphaArrayActual =new MyArray();
@@ -466,6 +524,7 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		}
 //		System.out.println(" alpha Array " + Arrays.toString(alphaArray) );
 //		System.out.println(" cl "+  Arrays.toString(cLWing));
+		
 		
 		MyChartToFileUtils.plotNoLegend(
 				alphaArray , cLWing,

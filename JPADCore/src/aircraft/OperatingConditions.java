@@ -122,10 +122,10 @@ public class OperatingConditions {
 
 	public Double calculateRe(double lenght, double roughness){
 		double re = _densityCurrent.getEstimatedValue()*_tas.getEstimatedValue()*lenght/_mu.getEstimatedValue();
-
-		if (calculateReCutOff(lenght, roughness) < re) {
-			re = calculateReCutOff(lenght, roughness);
-		}
+//
+//		if (calculateReCutOff(lenght, roughness) < re) {
+//			re = calculateReCutOff(lenght, roughness);
+//		}
 
 		return re;
 	}

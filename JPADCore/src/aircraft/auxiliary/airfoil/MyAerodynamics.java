@@ -158,7 +158,7 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 			 _alphaStar = Amount.valueOf(Math.toRadians(9.5),SI.RADIAN); // end-of-linearity 
 			 _clStar = 1.3 ; 
 			 _alphaStall = Amount.valueOf(Math.toRadians(16.0),SI.RADIAN); 
-			 _clMax = 1.7; //1.8;
+			 _clMax = 1.65; //1.8;
 
 			 _deltaYPercent = 4.5;
 			 
@@ -194,7 +194,7 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 			 _alphaStar = Amount.valueOf(Math.toRadians(10),SI.RADIAN); // end-of-linearity 
 			 _clStar = 1.2 ; 
 			 _alphaStall = Amount.valueOf(Math.toRadians(18.0),SI.RADIAN); 
-			 _clMax = 1.72; //1.6;
+			 _clMax = 1.7; //1.6;
 
 			 _deltaYPercent = 4.307;
 			 
@@ -784,89 +784,89 @@ public  double calculateClAtAlphaInterp (double alpha){
 		System.out.println("\n \n-----------------------------------------------------");
 		System.out.println("STARTING PLOT AIRFOIL CL vs ALPHA CURVE " + name);
 		System.out.println("-----------------------------------------------------");
-//
-//		MyArray alphaArray = new MyArray();
-//		int _numberOfAlpha = 21;
-//		double [] clArray = new double [_numberOfAlpha];
-//		double [] alphaArrayDeg = new double [_numberOfAlpha];
-//		
 
-//		Amount<Angle> alphaActualAmount;
-//
-////		Amount<Angle> alphaStart = Amount.valueOf(toRadians(-6.), SI.RADIAN);
-////		Amount<Angle> alphaEnd = Amount.valueOf(
-////				toRadians(get_alphaStall()
-////						.to(NonSI.DEGREE_ANGLE)
-////						.getEstimatedValue()+2), SI.RADIAN);
-//		
-//		
-//		Amount<Angle> alphaStart = Amount.valueOf(toRadians(-6.), SI.RADIAN);
-//		Amount<Angle> alphaEnd = Amount.valueOf(toRadians(25.0), SI.RADIAN);
-//		
-//		
-//		alphaArray.setDouble(MyArrayUtils.linspace(
-//				alphaStart.getEstimatedValue(), 
-//				alphaEnd.getEstimatedValue(), 
-//				_numberOfAlpha));
-//
-//	
-//		for (int i=0 ; i<_numberOfAlpha ; i++){
-//			alphaActualAmount = Amount.valueOf( alphaArray.get(i), SI.RADIAN); 
-//			clArray[i] = calculateClAtAlpha(alphaActualAmount.getEstimatedValue());
-//			alphaArrayDeg [i] = alphaActualAmount.to(NonSI.DEGREE_ANGLE).getEstimatedValue();
-//		}
-//
-//		MyChartToFileUtils.plotNoLegend
-//		(alphaArrayDeg , clArray,null , null  ,
-//				null ,null , "alpha", "CL", "deg" , "", subfolderPath, "CL vs alpha Airfoil" + name);
+		MyArray alphaArray = new MyArray();
+		int _numberOfAlpha = 60;
+		double [] clArray = new double [_numberOfAlpha];
+		double [] alphaArrayDeg = new double [_numberOfAlpha];
 		
 
-		
 		Amount<Angle> alphaActualAmount;
 
-
+//		Amount<Angle> alphaStart = Amount.valueOf(toRadians(-6.), SI.RADIAN);
+//		Amount<Angle> alphaEnd = Amount.valueOf(
+//				toRadians(get_alphaStall()
+//						.to(NonSI.DEGREE_ANGLE)
+//						.getEstimatedValue()+2), SI.RADIAN);
 		
 		
-		double [] alphaArrayRad = {-6,
-				-4,
-				-2,
-				0,
-				2,
-				4,
-				6,
-				8,
-				10,
-				12,
-				14,
-				15,
-				16,
-				17,
-				18,
-				20,
-				21,
-				22,
-				23,
-				24,
-				25};
+		Amount<Angle> alphaStart = Amount.valueOf(toRadians(-6.), SI.RADIAN);
+		Amount<Angle> alphaEnd = Amount.valueOf(toRadians(25.0), SI.RADIAN);
 		
-		double [] clArray = new double [alphaArrayRad.length];
-		double [] alphaArrayDeg = new double [alphaArrayRad.length];
-		double [] alphaArray = new double [alphaArrayRad.length];
 		
-		for (int i=0 ; i< alphaArrayRad.length ; i++){
-			alphaArray[i] = Math.toRadians(alphaArrayRad[i]);
-		}
+		alphaArray.setDouble(MyArrayUtils.linspace(
+				alphaStart.getEstimatedValue(), 
+				alphaEnd.getEstimatedValue(), 
+				_numberOfAlpha));
 
 	
-		for (int i=0 ; i<alphaArrayRad.length; i++){
-			alphaActualAmount = Amount.valueOf( alphaArray[i], SI.RADIAN); 
+		for (int i=0 ; i<_numberOfAlpha ; i++){
+			alphaActualAmount = Amount.valueOf( alphaArray.get(i), SI.RADIAN); 
 			clArray[i] = calculateClAtAlpha(alphaActualAmount.getEstimatedValue());
 			alphaArrayDeg [i] = alphaActualAmount.to(NonSI.DEGREE_ANGLE).getEstimatedValue();
 		}
 
 		MyChartToFileUtils.plotNoLegend
-		(alphaArrayRad , clArray,null , null  ,
+		(alphaArrayDeg , clArray,null , null  ,
 				null ,null , "alpha", "CL", "deg" , "", subfolderPath, "CL vs alpha Airfoil" + name);
+		
+
+		
+//		Amount<Angle> alphaActualAmount;
+//
+//
+//		
+//		
+//		double [] alphaArrayRad = {-6,
+//				-4,
+//				-2,
+//				0,
+//				2,
+//				4,
+//				6,
+//				8,
+//				10,
+//				12,
+//				14,
+//				15,
+//				16,
+//				17,
+//				18,
+//				20,
+//				21,
+//				22,
+//				23,
+//				24,
+//				25};
+//		
+//		double [] clArray = new double [alphaArrayRad.length];
+//		double [] alphaArrayDeg = new double [alphaArrayRad.length];
+//		double [] alphaArray = new double [alphaArrayRad.length];
+//		
+//		for (int i=0 ; i< alphaArrayRad.length ; i++){
+//			alphaArray[i] = Math.toRadians(alphaArrayRad[i]);
+//		}
+//
+//	
+//		for (int i=0 ; i<alphaArrayRad.length; i++){
+//			alphaActualAmount = Amount.valueOf( alphaArray[i], SI.RADIAN); 
+//			clArray[i] = calculateClAtAlpha(alphaActualAmount.getEstimatedValue());
+//			alphaArrayDeg [i] = alphaActualAmount.to(NonSI.DEGREE_ANGLE).getEstimatedValue();
+//		}
+//
+//		MyChartToFileUtils.plotNoLegend
+//		(alphaArrayRad , clArray,null , null  ,
+//				null ,null , "alpha", "CL", "deg" , "", subfolderPath, "CL vs alpha Airfoil" + name);
 
 
 		System.out.println("-----------------------------------------------------");	

@@ -4059,7 +4059,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	
 	public class CalcCdvsAlpha {
 		
-		public Double[] calculateCDParassiteFromAirfoil(Amount<Angle> alphaMin,
+		public Double[] calculateCDParasiteFromAirfoil(Amount<Angle> alphaMin,
 				Amount<Angle> alphaMax,
 				int nValue){
 			

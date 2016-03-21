@@ -145,8 +145,8 @@ public class ACStabilityManager {
 	private double [] tauIndexArray = new double [deltaEArray.length];
 	private double [] cLCompleteAircraftdeltaEArray = new double [deltaEArray.length];
 
-	private double [] parassiteCDWingCleanArray;
-	private double [] parassiteCDHTailCleanArray;
+	private double [] parasiteCDWingCleanArray;
+	private double [] parasiteCDHTailCleanArray;
 	private double [] inducedCDWingArray;
 	private double [] inducedCDHTailArray;
 	private double [] cDWingCleanArray;
@@ -1028,7 +1028,7 @@ public class ACStabilityManager {
 		//-----------------------------------------------CDairfoil+ CL*alpha_i
 		// Array
 
-		// parassite Drag
+		// parasite Drag
 
 		LSAerodynamicsManager.CalcCdvsAlpha theCDWingArrayCalculator = theLSAnalysis
 				.new CalcCdvsAlpha();
@@ -1036,11 +1036,11 @@ public class ACStabilityManager {
 		LSAerodynamicsManager.CalcCDAtAlpha theCDWingCalculator = theLSAnalysis
 				.new CalcCDAtAlpha();
 
-		parassiteCDWingCleanArray = new double [nValueAlpha];
+		parasiteCDWingCleanArray = new double [nValueAlpha];
 
-		Double [] cDWingTemp =  theCDWingArrayCalculator.calculateCDParassiteFromAirfoil(alphaMinWing, alphaMaxWing, nValueAlpha);
-		for (int i=0; i< parassiteCDWingCleanArray.length; i++){
-			parassiteCDWingCleanArray[i] =(double)cDWingTemp[i];
+		Double [] cDWingTemp =  theCDWingArrayCalculator.calculateCDParasiteFromAirfoil(alphaMinWing, alphaMaxWing, nValueAlpha);
+		for (int i=0; i< parasiteCDWingCleanArray.length; i++){
+			parasiteCDWingCleanArray[i] =(double)cDWingTemp[i];
 		}
 
 		// Induced Drag 
@@ -1051,7 +1051,7 @@ public class ACStabilityManager {
 
 		cDWingCleanArray = new double [nValueAlpha];
 		for (int i = 0; i<nValueAlpha; i++){
-			cDWingCleanArray[i] = parassiteCDWingCleanArray[i]+ inducedCDWingArray[i];
+			cDWingCleanArray[i] = parasiteCDWingCleanArray[i]+ inducedCDWingArray[i];
 		}
 
 		if (theCondition == ConditionEnum.TAKE_OFF || theCondition == ConditionEnum.LANDING){
@@ -1148,24 +1148,24 @@ public class ACStabilityManager {
 			
 			if (theCondition == ConditionEnum.CRUISE){
 			MyChartToFileUtils.plotNoLegend(
-					alphaWingStabilityArray.toArray(),parassiteCDWingCleanArray, 
+					alphaWingStabilityArray.toArray(),parasiteCDWingCleanArray, 
 					null, null, null, null,
-					"alpha_w", "CD_parassite",
+					"alpha_w", "CD_parasite",
 					"deg", "",
-					subfolderPath, "Parassite Drag coefficient vs Alpha Wing for WING ");
+					subfolderPath, "Parasite Drag coefficient vs Alpha Wing for WING ");
 
 			System.out.println("\n\n\t\t\tDONE");
 
 
 			System.out.println("\n-------------------------------------");
-			System.out.println("\t \t \tWRITING PARASSITE CD vs CL CHART TO FILE  ");
+			System.out.println("\t \t \tWRITING PARASITE CD vs CL CHART TO FILE  ");
 
 			MyChartToFileUtils.plotNoLegend(
-					parassiteCDWingCleanArray, cLWingCleanArray,
+					parasiteCDWingCleanArray, cLWingCleanArray,
 					null, null, null, null,
-					"CD_parassite", "CL" ,
+					"CD_parasite", "CL" ,
 					"", "",
-					subfolderPath, "Parassite Drag coefficient vs CL for WING ");
+					subfolderPath, "Parasite Drag coefficient vs CL for WING ");
 
 			System.out.println("\n\n\t\t\tDONE");
 
@@ -1183,9 +1183,9 @@ public class ACStabilityManager {
 			System.out.println("\n-------------------------------------");
 			System.out.println("\t \t \tWRITING TOTAL CD vs CL CHART TO FILE  ");
 
-			double [][] theCDWingMatrix = {parassiteCDWingCleanArray, inducedCDWingArray, cDWingCleanArray};
+			double [][] theCDWingMatrix = {parasiteCDWingCleanArray, inducedCDWingArray, cDWingCleanArray};
 			double [][] theAlphaCDMatrix = { alphaWingStabilityArray.toArray(), alphaWingStabilityArray.toArray(), alphaWingStabilityArray.toArray()};
-			String [] legend = {"parassite Drag Cefficient", "induced Drag Coefficient", "Total Drag Coefficient"};
+			String [] legend = {"parasite Drag Cefficient", "induced Drag Coefficient", "Total Drag Coefficient"};
 
 			MyChartToFileUtils.plot(
 					theAlphaCDMatrix, theCDWingMatrix, 
@@ -1230,7 +1230,7 @@ public class ACStabilityManager {
 					null, null, null, null,
 					"alpha_w", "CD",
 					"deg", "",
-					legendPolar,
+					legendCD,
 					subfolderPath, "Comparison of CD estimation");
 			}
 			}
@@ -1259,11 +1259,11 @@ public class ACStabilityManager {
 		LSAerodynamicsManager.CalcCDAtAlpha theCDhTAILCalculator = theLSHTailAnalysis
 				.new CalcCDAtAlpha();
 
-		parassiteCDHTailCleanArray= new double [nValueAlpha];
+		parasiteCDHTailCleanArray= new double [nValueAlpha];
 
-		Double [] cDWingTemp =  theCDHtailArrayCalculator.calculateCDParassiteFromAirfoil(alphaMin,alphaMax, nValueAlpha);
-		for (int i=0; i< parassiteCDWingCleanArray.length; i++){
-			parassiteCDHTailCleanArray[i] =(double)cDWingTemp[i];
+		Double [] cDWingTemp =  theCDHtailArrayCalculator.calculateCDParasiteFromAirfoil(alphaMin,alphaMax, nValueAlpha);
+		for (int i=0; i< parasiteCDWingCleanArray.length; i++){
+			parasiteCDHTailCleanArray[i] =(double)cDWingTemp[i];
 		}
 
 		// Induced Drag 
@@ -1275,7 +1275,7 @@ public class ACStabilityManager {
 
 		cDHTailCleanArray = new double [nValueAlpha];
 		for (int i = 0; i<nValueAlpha; i++){
-			cDHTailCleanArray[i] = parassiteCDHTailCleanArray[i]+inducedCDHTailArray[i];
+			cDHTailCleanArray[i] = parasiteCDHTailCleanArray[i]+inducedCDHTailArray[i];
 		}
 
 	
@@ -1560,22 +1560,22 @@ public class ACStabilityManager {
 
 
 	public double[] getcDWingCleanArray() {
-		return parassiteCDWingCleanArray;
+		return parasiteCDWingCleanArray;
 	}
 
 
 	public void setcDWingCleanArray(double[] cDWingCleanArray) {
-		this.parassiteCDWingCleanArray = cDWingCleanArray;
+		this.parasiteCDWingCleanArray = cDWingCleanArray;
 	}
 
 
-	public double[] getParassiteCDWingCleanArray() {
-		return parassiteCDWingCleanArray;
+	public double[] getParasiteCDWingCleanArray() {
+		return parasiteCDWingCleanArray;
 	}
 
 
-	public double[] getParassiteCDHTailCleanArray() {
-		return parassiteCDHTailCleanArray;
+	public double[] getParasiteCDHTailCleanArray() {
+		return parasiteCDHTailCleanArray;
 	}
 
 

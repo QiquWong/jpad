@@ -342,17 +342,36 @@ In order to evaluate the lift coefficient of a lifting surface and to obtain the
 The last task to be done is to show an application of the calculation of lift characteristics of a lifting surface in order
 to validate the calculation performed as well as to give a useful example of use. In previous chapters two aircraft were introduced:
 ATR-72 and B747-100B. On these two aircraft analyzes we were made, the results of which are shown below.\\
-First of all it's necessary to define working directory and the work object as explained in the previous chapter, then it's possible to do the analysis and the procedure is shown below.
+
+\subsection{ATR-72}
+
+In order to correctly use the lift modulus of JPAD it's necessary to set the correct Reynolds number of airfoils and, consequently, the correct value of $CL_{MAX}$. Referring to \cite{Abbott} the value for ATR 72 are the following
+
+\begin{center}
+\captionof{table}{Airfoils $CL_{MAX}$ for ATR-72. Mach number = 0.42}
+	\begin{tabular}{ | l | l | l | l |}
+		\hline
+		Station & Airfoil & Reynolds Number & $CL_{max}$ \\ \hline
+		Root & NACA 23018 & $1.35 \cdot 10^7$ & 1.65 \\ \hline
+		Kink & NACA 23018 &  $1.35 \cdot 10^7$ & 1.65 \\ \hline
+		Tip & NACA 23015 & $9.47 \cdot 10^6$ & 1.7 \\
+		\hline
+	\end{tabular}
+\end{center}
+
+
+\begin{figure}[H]
+	\centering
+	{\includegraphics[height=6.9cm]{Immagini/ATR_Topview.pdf}} 
+	\caption{Lift curve for ATR-72 airfoils and wing.}
+	\label{fig:clalf}
+\end{figure}
 
 \begin{lstlisting}[frame=rbl,caption={{\footnotesize Lift Characteristics of a Lifting Surface - Test Class}},label= [style=\bfseries]{Listing}]
 
 System.out.println("\n\n------------------------------------");
 System.out.println("\n LIFT CHARACTERISTICS  ");
 System.out.println("\n------------------------------------");
-
-
-double cLIsolatedWing;
-double cLAlphaWingBody;
 
 
 System.out.println("\n ------------------- ");
@@ -401,7 +420,7 @@ LSAerodynamicsManager.CalcCLvsAlphaCurve theCLAnalysis
        = theLSAnalysis.new CalcCLvsAlphaCurve();
 theCLAnalysis.nasaBlackwell();
 theCLmaxAnalysis.nasaBlackwell();
-Amount<javax.measure.quantity.Angle> alphaAtCLMax = theLSAnalysis.get_alphaStall();
+Amount<Angle> alphaAtCLMax = theLSAnalysis.get_alphaStall();
 double clMax = theCLWingCalculator.nasaBlackwell(alphaAtCLMax);
 
 
@@ -482,6 +501,122 @@ CL of Isolated wing at alpha body = 0.5045422247468523
 \end{lstlisting}
 
 
+\noindent \\
+
+\begin{figure}[H]
+\centering
+\input{immagini/stallpathatr.tikz}
+\caption{ATR 72 Stall Path of wing at Mach 0.43.}
+\label{fig:stallATR}
+\end{figure}
+
+
+\begin{figure}[H]
+\centering
+\input{immagini/clalfaatr.tikz}
+\caption{ATR 72 CL vs Alpha_w at Mach 0.43.}
+\label{fig:clATR}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\input{immagini/clalfamach.tikz}
+\caption{ATR-72 lift curve. Variation with Mach number.}
+\label{fig:clATR}
+\end{figure}
+
+
+
+
+\begin{center}
+\captionof{table}{High-lift devices geometrical data for ATR72}
+	\begin{tabular}{| l | l | l | l | l |}
+	\hline
+		 Number of Flap & Type &  $\eta$ in &  $\eta$ out &   $\frac{c_{f}}{c} $   \\ \hline
+		1  & Single Slotted& 0.08  & 0.35 &  0.38 \\ \hline
+		2  & Single Slotted& 0.35 & 0.8 & 0.38 \\ \hline
+		\hline
+	\end{tabular}
+\end{center}
+
+
+\begin{center}
+\captionof{table}{High-lift devices data for ATR72}
+	\begin{tabular}{ | l | l | l |}
+		\hline
+		Configuration &  $\delta_{f_1}$ & $\delta_{f_2}$  \\ \hline
+		Take off &  $22^{\circ}$ &  $22^{\circ}$\\ \hline
+		Landing  &  $40^{\circ}$ &  $40^{\circ}$\\ \hline
+		\hline
+	\end{tabular}
+\end{center}
+
+
+
+\begin{figure}[H]
+\centering
+\input{immagini/CLAlphaWingHighLift_ATR.tikz}
+\caption{ATR-72 lift curve with and without flaps in take-off configuration.}
+\label{fig:clATR}
+\end{figure}
+
+
+\begin{lstlisting}[caption={{\footnotesize Wing Lift characteristic results for TAKE-OFF. ATR-72, M=0.2 }},label= [style=\bfseries]{Listing}]
+
+ -----------CLEAN-------------- 
+ alpha max 17.8116610484647 (deg)
+ alpha star 9.6267723716381 (deg)
+ cl max 1.5370911540497318
+ cl star 0.9854862505109439
+ cl alpha 5.227776418346189 (1/rad)
+
+ ----------- DELTA HIGH LIFT TAKE_OFF-------------- 
+deltaCL0_flap = 0.80887111935885
+deltaCLmax_flap = 0.6053024400694088
+deltaCLmax_slat = 0.0
+cLalpha_new = (1/rad) 5.26834311032201
+deltaAlphaMax = (deg) 2.139367521679026
+deltaCD = 0.022631019249350154
+deltaCMc_4 = -0.14067311296011697
+
+-----------HIGH LIFT-------------- 
+ alpha max 15.47805767446944 (deg)
+ alpha star 5.191658954896691 (deg)
+ cl max 2.1423935941191408
+ cl star 1.393329795148776
+ cl alpha 5.26834311032201 (1/rad)
+
+
+CL wing TAKE_OFF Array [0.594167494459124, 0.6448337842917097, 0.6955000741242955...]
+
+CL of wing at TAKE_OFF at alpha body = 1.2378170282582692
+
+\end{lstlisting}
+
+
+\subsection{BOEING 747-100B}
+
+
+\begin{center}
+\captionof{table}{Airfoils $CL_{MAX}$ for BOEING 747-100B. Mach number = 0.84}
+	\begin{tabular}{ | l | l | l | l |}
+		\hline
+		Station & Airfoil & Reynolds Number & $CL_{max}$ \\ \hline
+		Root & NACA 23018 & $1.35 \cdot 10^7$ & 1.65 \\ \hline
+		Kink & NACA 23018 &  $1.35 \cdot 10^7$ & 1.65 \\ \hline
+		Tip & NACA 23015 & $9.47 \cdot 10^6$ & 1.7 \\
+		\hline
+	\end{tabular}
+\end{center}
+
+
+\begin{figure}[H]
+	\centering
+	{\includegraphics[height=6.9cm]{Immagini/BOEING_Topview.pdf}} 
+	\caption{Lift curve for BOEING 747-100B airfoils and wing.}
+	\label{fig:clalf}
+\end{figure}
+
 \begin{lstlisting}[caption={{\footnotesize Lift Characteristics of a Lifting Surface - Results. BOEING 747-100B}},label= [style=\bfseries]{Listing}]
 ------------------------------------
 
@@ -494,75 +629,33 @@ CL of Isolated wing at alpha body = 0.5045422247468523
  ------------------- 
 
 
-
- 	 Data: 
-Angle of attack alpha body (deg) = 2.0
-Angle of incidence of wing (deg) = 0.0
-
- 
------------------------------------------------------
-Starting evaluate stall path of wing
------------------------------------------------------
+	 Data: 
+Angle of incidence of wing (deg) = 1.500110492089126
+Angle of attack alpha body (deg) = 2.000147322785501
+Angle of attack alpha Wing (deg) = 3.4999999999999996
 
  -----------CLEAN-------------- 
- alpha max 17.862869870680967 (deg)
- alpha star 10.32038751072542 (deg)
- cL max 1.4116038303729044
- cL star 1.077679099283923
- cL alpha 5.375380327859693 (1/rad)
+ alpha max 17.81297308022476 (deg)
+ alpha star 9.627481493098728 (deg)
+ cL max 1.5370911540497318
+ cL star 0.9854862505109439
+ cL alpha 5.2277764183461874 (1/rad)
+
+
+CL wing Clean Array [-0.2122255467040544, -0.16194939163113703, ....]
+
+CL of Isolated wing at alpha body = 0.4264678307037476
+
 -------------------------------------
-CL of Isolated wing at alpha body = 0.29714759091882836
+	 	 	WRITING CL vs ALPHA CHART TO FILE  
+	 	 	DONE  
 
- 	 	 	DONE PLOTTING CL VS ALPHA CURVE  
+-------------------------------------
+	 	 	WRITING STALL PATH CHART TO FILE  
+	 	 	DONE  
 
- 
- 	 	 WRITING CHART TO FILE. Stall path. 
------------------------------------------------------
-	 	 DONE 
 \end{lstlisting}
 
-\begin{figure}[H]
-\centering
-\input{immagini/clalfaatr.tikz}
-\caption{ATR 72 CL vs Alpha_w at Mach 0.43.}
-\label{fig:clATR}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\input{immagini/CLAlphaWingHighLift_ATR.tikz}
-\caption{ATR-72 lift curve with and without flaps in take-off configuration.}
-\label{fig:clATR}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\input{immagini/clalfamach.tikz}
-\caption{ATR-72 lift curve. Variation with Mach number.}
-\label{fig:clATR}
-\end{figure}
-
-
-\begin{figure}[H]
-\centering
-\input{immagini/stallpathatr.tikz}
-\caption{ATR 72 Stall Path of wing at Mach 0.43.}
-\label{fig:stallATR}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\input{immagini/clalfaboeing.tikz}
-\caption{BOEING 747-100B CL vs Alpha_w at Mach 0.84.}
-\label{fig:clB}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\input{immagini/CLAlphaWingHighLift_B747.tikz}
-\caption{BOEING 747-100B  lift curve with and without flaps in take-off configuration.}
-\label{fig:clATR}
-\end{figure}
 
 \begin{figure}[H]
 \centering
@@ -572,6 +665,75 @@ CL of Isolated wing at alpha body = 0.29714759091882836
 \end{figure}
 
 
+
+\begin{figure}[H]
+\centering
+\input{immagini/clalfaboeing.tikz}
+\caption{BOEING 747-100B CL vs Alpha_w at Mach 0.84.}
+\label{fig:clB}
+\end{figure}
+
+
+
+\begin{center}
+\captionof{table}{High-lift devices geometrical data for BOEING 747-100B. Flap.}
+	\begin{tabular}{| l | l | l | l | l |}
+		\hline
+		 Number of Flap & Type &  $\eta$ in &  $\eta$ out &   $\frac{c_{f}}{c} $  \\ \hline
+				1  & Triple Slotted&  0.104  & 0.357  & 0.13 \\ \hline 
+		         2& Triple Slotted & 0.411 & 0.636 &0.13\\ \hline 
+		\hline
+	\end{tabular}
+\end{center}
+
+
+\begin{center}
+\captionof{table}{High-lift devices geometrical data for BOEING 747-100B. Slat.}
+	\begin{tabular}{| l | l | l | l | l |}
+		\hline
+		 Number of Slat &  $\eta$ in &  $\eta$ out &   $\frac{c_{ext}}{c} $ & $\frac{c_{s}}{c} $   \\ \hline
+				1 & 0.192  & 0.364  &1.1 & 0.09\\ \hline 
+		         2 & 0.414  & 0.648  &1.1& 0.136\\ \hline 
+		         3 & 0.692  & 0.961  &1.1& 0.187\\ \hline 
+		\hline
+	\end{tabular}
+\end{center}
+
+
+\begin{center}
+\captionof{table}{High-lift devices data for  BOEING 747-100B}
+	\begin{tabular}{ | l | l | l | l | l | l |}
+		\hline
+		Configuration &  $\delta_{f_1}$ & $\delta_{f_2}$ &  $\delta_{s_1}$ & $\delta_{s_2}$& $\delta_{s_3}$ \\ \hline
+		Take off &  $5^{\circ}$, $3^{\circ}$, $2^{\circ}$ & $5^{\circ}$, $3^{\circ}$, $2^{\circ}$ & $10^{\circ}$ &  $10^{\circ}$ &  $10^{\circ}$\\ \hline
+		Landing  &    $20^{\circ}$, $10^{\circ}$, $10^{\circ}$ & $20^{\circ}$, $10^{\circ}$, $10^{\circ}$ & $40^{\circ}$ &  $40^{\circ}$ &  $40^{\circ}$\\ \hline
+		\hline
+	\end{tabular}
+\end{center}
+
+
+\begin{figure}[H]
+\centering
+\input{immagini/CLAlphaWingHighLift_B747.tikz}
+\caption{BOEING 747-100B  lift curve with and without flaps in take-off configuration.}
+\label{fig:clATR}
+\end{figure}
+
+
+\section{Results Comparison}
+% tabelle excel
+
+\begin{center}
+\captionof{table}{Lift results comparison}
+	\begin{tabular}{| l | l | l | l | l |}
+		\hline
+		 Method  & $C_{L_{MAX}}$ & $\alpha_{stall}$ &  $C_{L_{\alpha}} \; (1/rad)$ & $\alpha_{zl}$  \\ \hline
+		 Stall Path  & 0.08  & 0.35 & 0.355 & 0.8  \\ \hline
+		 Phillips And Alley  & 0.08  & 0.35 & 0.355 & 0.8\\ \hline
+		 CFD  & 0.08  & 0.35 & 0.355 & 0.8   \\ \hline
+		\hline
+	\end{tabular}
+\end{center}
 
 	 	 
 % metti variabilita del cl con mach
