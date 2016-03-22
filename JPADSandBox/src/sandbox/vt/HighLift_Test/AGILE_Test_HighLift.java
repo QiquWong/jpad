@@ -14,15 +14,11 @@ import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
-import org.treez.javafxd3.d3.scales.ThresholdScale;
 
 import aircraft.OperatingConditions;
 import aircraft.auxiliary.airfoil.MyAirfoil;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface;
-import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
-import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLMaxClean;
-import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLvsAlphaCurve;
 import configuration.MyConfiguration;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FlapTypeEnum;
@@ -30,8 +26,6 @@ import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
-import sandbox.mr.WingCalculator;
-import sandbox.mr.WingCalculator.MeanAirfoil;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
@@ -55,11 +49,14 @@ public class AGILE_Test_HighLift {
 	private List<String> arguments = new ArrayList<String>();
 
 	//------------------------------------------------------------------------------------------
-	//BUILDER:
+	// BUILDER:
 	public AGILE_Test_HighLift() {
 		theCmdLineParser = new CmdLineParser(this);
 	}
 
+	//------------------------------------------------------------------------------------------
+	// MAIN:
+	@SuppressWarnings("unused")
 	public static void main(String[] args) throws CmdLineException, InstantiationException, IllegalAccessException {
 
 		System.out.println("-----------------------------------------------------------");
@@ -152,6 +149,7 @@ public class AGILE_Test_HighLift {
 		airfoilRoot.getAerodynamics().set_clMax(2.293);
 		airfoilRoot.getGeometry().set_maximumThicknessOverChord(0.161);
 		airfoilRoot.getGeometry().set_radiusLE(0.03892);
+		airfoilRoot.getGeometry().set_deltaYPercent(0.0);
 		// the followings are not necessaries to the high lift devices effects analysis
 		airfoilRoot.getAerodynamics().set_alphaZeroLift(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 		airfoilRoot.getAerodynamics().set_cdMin(0.0);
@@ -166,7 +164,6 @@ public class AGILE_Test_HighLift {
 		airfoilRoot.getGeometry().set_twist(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 		airfoilRoot.getGeometry().set_anglePhiTE(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 		airfoilRoot.getGeometry().set_thicknessOverChordUnit(0.0);
-		airfoilRoot.getGeometry().set_deltaYPercent(0.0);
 
 		//AIRFOIL KINK
 		double yLocKink = 5.148;	
@@ -178,6 +175,7 @@ public class AGILE_Test_HighLift {
 		airfoilKink.getAerodynamics().set_clMax(2.187);
 		airfoilKink.getGeometry().set_maximumThicknessOverChord(0.149);
 		airfoilKink.getGeometry().set_radiusLE(0.04265);
+		airfoilKink.getGeometry().set_deltaYPercent(0.0);
 		// the followings are not necessaries to the high lift devices effects analysis
 		airfoilKink.getAerodynamics().set_alphaZeroLift(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 		airfoilKink.getAerodynamics().set_cdMin(0.0);
@@ -192,7 +190,6 @@ public class AGILE_Test_HighLift {
 		airfoilKink.getGeometry().set_twist(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 		airfoilKink.getGeometry().set_anglePhiTE(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 		airfoilKink.getGeometry().set_thicknessOverChordUnit(0.0);
-		airfoilKink.getGeometry().set_deltaYPercent(0.0);
 
 		//AIRFOIL TIP
 		double yLocTip = 14.3;	
@@ -204,6 +201,7 @@ public class AGILE_Test_HighLift {
 		airfoilTip.getAerodynamics().set_clMax(1.9419);
 		airfoilTip.getGeometry().set_maximumThicknessOverChord(0.119);
 		airfoilTip.getGeometry().set_radiusLE(0.01011);
+		airfoilTip.getGeometry().set_deltaYPercent(0.0);
 		// the followings are not necessaries to the high lift devices effects analysis
 		airfoilTip.getAerodynamics().set_alphaZeroLift(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 		airfoilTip.getAerodynamics().set_cdMin(0.0);
@@ -218,7 +216,6 @@ public class AGILE_Test_HighLift {
 		airfoilTip.getGeometry().set_twist(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 		airfoilTip.getGeometry().set_anglePhiTE(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 		airfoilTip.getGeometry().set_thicknessOverChordUnit(0.0);
-		airfoilTip.getGeometry().set_deltaYPercent(0.0);
 
 		// ASSIGN AIRFOILS:
 		List<MyAirfoil> myAirfoilList = new ArrayList<MyAirfoil>();
@@ -316,7 +313,6 @@ public class AGILE_Test_HighLift {
 		List<String> delta_slat_property = reader.getXMLPropertiesByPath("//Delta_Slat");
 		List<String> cs_c_property = reader.getXMLPropertiesByPath("//Cs_C");
 		List<String> cExt_c_slat_property = reader.getXMLPropertiesByPath("//cExt_c");
-		List<String> leRadius_c_slat_property = reader.getXMLPropertiesByPath("//LEradius_c_ratio");
 		List<String> eta_in_slat_property = reader.getXMLPropertiesByPath("//Slat_inboard");
 		List<String> eta_out_slat_property = reader.getXMLPropertiesByPath("//Slat_outboard");
 
@@ -362,8 +358,11 @@ public class AGILE_Test_HighLift {
 			cs_c.add(Double.valueOf(cs_c_property.get(i)));
 		for(int i=0; i<cExt_c_slat_property.size(); i++)
 			cExt_c_slat.add(Double.valueOf(cExt_c_slat_property.get(i)));
-		for(int i=0; i<leRadius_c_slat_property.size(); i++)
-			leRadius_c_slat.add(Double.valueOf(leRadius_c_slat_property.get(i)));
+		for(int i=0; i<delta_slat_property.size(); i++)
+			leRadius_c_slat.add(Double.valueOf(
+					(meanAirfoil.getGeometry().get_radiusLE()/theWing.get_meanAerodChordEq().getEstimatedValue())/
+					(meanAirfoil.getGeometry().get_maximumThicknessOverChord())
+					));
 		for(int i=0; i<eta_in_slat_property.size(); i++)
 			eta_in_slat.add(Double.valueOf(eta_in_slat_property.get(i)));
 		for(int i=0; i<eta_out_slat_property.size(); i++)
@@ -438,11 +437,6 @@ public class AGILE_Test_HighLift {
 		for (int i=0; i<alphaArrayTemp.length;i++){
 			alphaArrayActual.set(i, Math.toRadians(alphaArrayTemp[i]));}
 			
-		LSAerodynamicsManager.CalcCLvsAlphaCurve theCLArrayCalculator = 
-				theLSAnalysis.new CalcCLvsAlphaCurve();
-
-		double [] cLWingCleanArray = theCLArrayCalculator.nasaBlackwellCompleteCurveArray(alphaArrayActual, false);
-		
 		System.out.println("-----------------------------------------------------");
 		System.out.println("WRITING TO CHART CL vs ALPHA CURVE CLEAN");
 		System.out.println("-----------------------------------------------------");

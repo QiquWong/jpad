@@ -33,7 +33,6 @@
 			<Delta_Slat unit="°">20</Delta_Slat>
 			<Cs_C unit="">0.166</Cs_C>
 			<cExt_c unit="">1.1</cExt_c>
-			<LEradius_c_ratio unit="">0.0566</LEradius_c_ratio>
 			<Slat_inboard unit="">0.364</Slat_inboard>
 			<Slat_outboard unit="">0.564</Slat_outboard>
 		</Slat2>
@@ -41,7 +40,6 @@
 			<Delta_Slat unit="°">20</Delta_Slat>
 			<Cs_C unit="">0.223</Cs_C>
 			<cExt_c unit="">1.1</cExt_c>
-			<LEradius_c_ratio unit="">0.0566</LEradius_c_ratio>
 			<Slat_inboard unit="">0.564</Slat_inboard>
 			<Slat_outboard unit="">0.764</Slat_outboard>
 		</Slat3>
@@ -49,7 +47,6 @@
 			<Delta_Slat unit="°">20</Delta_Slat>
 			<Cs_C unit="">0.299</Cs_C>
 			<cExt_c unit="">1.1</cExt_c>
-			<LEradius_c_ratio unit="">0.0566</LEradius_c_ratio>
 			<Slat_inboard unit="">0.764</Slat_inboard>
 			<Slat_outboard unit="">0.948</Slat_outboard>
 		</Slat4>
