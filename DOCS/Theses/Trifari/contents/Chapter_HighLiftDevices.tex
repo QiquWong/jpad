@@ -952,3 +952,34 @@ deltaCMc_4 = -0.01156502154181518
  CL star 1.2636473543834792
  CL alpha 4.187384843036119 (1/rad)
 \end{lstlisting}
+%
+\subsection{Input data sensibility analysis}
+%
+In this subsection it's shown how the~\lstinline[language=Java]!CalcHighLiftDevices! class behaves with different input parameters. In particular it is interesting to analyze the effect on the lift curve of the following input data.
+%
+\begin{itemize}
+\item Trailing edge devices deflection $\delta_f$
+\item Trailing edge devices chord ratio $\frac{c_f}{c}$ 
+\item Devices type 
+\item Leading edge devices deflection $\delta_s$
+\end{itemize}
+%
+For each of these, one parameter will be modified leaving unchanged the other three. The following figures show these effects on the B747-100B having assumed as a baseline the following condition.
+%
+\begin{table}[H]
+\makebox[\linewidth]{
+\begin{tabular}{lcc|lcc}
+\toprule
+\textbf{Input data} &\textbf{} & \textbf{} &\textbf{Baseline results} &\textbf{}  & \textbf{} \\
+\midrule
+\textbf{Variables} & \textbf{} & \textbf{Value} & \textbf{Variables} & \textbf{} & \textbf{Value}\\
+\midrule
+$\delta_f$ &  \textbf{} & 30°  & $C_{L\text{max}}$ &  \textbf{} & 2.55 \\
+$\frac{c_f}{c}$ &  \textbf{} & 0.18 & $\alpha_{\text{max}}$ &  \textbf{} & 28° \\
+Trailing edge devices type &  \textbf{} & Triple Slotted & \textbf{ } &  \textbf{} & \textbf{} \\
+$\delta_s$ &  \textbf{} & 15° & \textbf{ } &  \textbf{} & \textbf{} \\
+\bottomrule
+\end{tabular}
+}
+\caption{Summary of the baseline input data and results}
+\end{table}

@@ -1,9 +1,12 @@
 package sandbox.vt.HighLift_Test;
 
+import static java.lang.Math.toRadians;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.measure.quantity.Angle;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
@@ -11,18 +14,24 @@ import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
+
 import aircraft.OperatingConditions;
 import aircraft.auxiliary.airfoil.MyAirfoil;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
-import aircraft.components.liftingSurface.Wing;
+import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.MyConfiguration;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.FoldersEnum;
+import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import standaloneutils.JPADXmlReader;
+import standaloneutils.MyArrayUtils;
+import standaloneutils.MyChartToFileUtils;
+import standaloneutils.customdata.CenterOfGravity;
 import standaloneutils.customdata.MyArray;
+import writers.JPADStaticWriteUtils;
 
 public class AGILE_Test_HighLift {
 
@@ -40,12 +49,15 @@ public class AGILE_Test_HighLift {
 	private List<String> arguments = new ArrayList<String>();
 
 	//------------------------------------------------------------------------------------------
-	//BUILDER:
+	// BUILDER:
 	public AGILE_Test_HighLift() {
 		theCmdLineParser = new CmdLineParser(this);
 	}
 
-	public static void main(String[] args) throws CmdLineException {
+	//------------------------------------------------------------------------------------------
+	// MAIN:
+	@SuppressWarnings("unused")
+	public static void main(String[] args) throws CmdLineException, InstantiationException, IllegalAccessException {
 
 		System.out.println("-----------------------------------------------------------");
 		System.out.println("HighLiftDevices_Test :: AGILE DC1");
@@ -56,57 +68,77 @@ public class AGILE_Test_HighLift {
 		//----------------------------------------------------------------------------------
 		// DEFAULT FOLDERS CREATION:
 		MyConfiguration.initWorkingDirectoryTree();
-
-		//------------------------------------------------------------------------------------
-		// SETTING UP DATABASE:
-		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
-		String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
-		String highLiftDatabaseFileName = "HighLiftDatabase.h5";
-		AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
-		HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
+		String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR) + File.separator;
+		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "AGILE_DC1" + File.separator);
 
 		//--------------------------------------------------------------------------------------
 		// DEFINE OPERATING CONDITIONS, THE WING AND THE WING ANALYZER OBJECTS:
-		OperatingConditions theCondition = new OperatingConditions();
-		// landing conditions:
-		theCondition.set_altitude(Amount.valueOf(0.0, SI.METER));
-		theCondition.set_machCurrent(0.15);
-		theCondition.calculate();
-		
-		Wing theWing = new Wing(ComponentEnum.WING);
-		theWing.set_aspectRatio(9.57);
-		theWing.set_chordRootEquivalentWing(Amount.valueOf(4.92, SI.METER));
-		theWing.set_chordRoot(theWing.get_chordRootEquivalentWing());
-		theWing.set_chordKink(Amount.valueOf(0.0, SI.METER)); // TODO: set this
-		theWing.set_chordTip(Amount.valueOf(0.0, SI.METER));  // TODO: set this
+
+		// OPERATING CONDITIONS:
+		OperatingConditions theConditions = new OperatingConditions();
+		// TakeOff/Landing conditions:
+		theConditions.set_altitude(Amount.valueOf(0.0, SI.METER));
+		theConditions.set_machCurrent(0.15);
+		theConditions.calculate();
+
+		// WING DEFINITION (the position is set to zero because is an isolated wing)
+		double xAw = 0.0; 
+		double yAw = 0.0;
+		double zAw = 0.0;
+		double iw = 0.0;
+		LiftingSurface theWing = new LiftingSurface(
+				"Wing", // name
+				"Data from AC_ATR_72_REV05.pdf", 
+				xAw, yAw, zAw, iw, 
+				ComponentEnum.WING
+				); 
+		theWing.calculateGeometry();
+		theWing.getGeometry().calculateAll();
+
+		// Center of Gravity initialization (set to zero because it is not necessary)
+		double xCgLocal= 0.0; 
+		double yCgLocal= 0.0;
+		double zCgLocal= 0.0;
+		CenterOfGravity cg = new CenterOfGravity(
+				Amount.valueOf(xCgLocal, SI.METER), // coordinates in LRF
+				Amount.valueOf(yCgLocal, SI.METER),
+				Amount.valueOf(zCgLocal, SI.METER),
+				Amount.valueOf(xAw, SI.METER), // origin of LRF in BRF 
+				Amount.valueOf(yAw, SI.METER),
+				Amount.valueOf(zAw, SI.METER),
+				Amount.valueOf(0.0, SI.METER),// origin of BRF
+				Amount.valueOf(0.0, SI.METER),
+				Amount.valueOf(0.0, SI.METER)
+				);
+		cg.calculateCGinBRF();
+		theWing.set_cg(cg);
+
+		// update of the wing with new model parameters
+		theWing.set_surface(Amount.valueOf(82.7, SI.SQUARE_METRE));
+		theWing.set_aspectRatio(9.54);
 		theWing.set_taperRatioEquivalent(0.218);
+		theWing.set_spanStationKink(0.4);
+		theWing.set_iw(Amount.valueOf(0.0,SI.RADIAN));
+		theWing.set_twistKink( Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
+		theWing.set_twistTip( Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
+		theWing.set_dihedralInnerPanel(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+		theWing.set_dihedralOuterPanel(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+		theWing.set_chordRoot(Amount.valueOf(4.84, SI.METER));
+		theWing.set_chordKink(Amount.valueOf(2.3982, SI.METER)); 
+		theWing.set_chordTip(Amount.valueOf(1.05, SI.METER)); 
+		theWing.set_tc_root(0.18);
+		theWing.set_tc_kink(0.18);
+		theWing.set_tc_tip(0.136);
+		// theWing.set_chordRootEquivalentWing(Amount.valueOf(4.84, SI.METER));
 		theWing.set_sweepQuarterChordEq(Amount.valueOf(26.2, NonSI.DEGREE_ANGLE));
-		theWing.set_sweepLEEquivalent(Amount.valueOf(26.2, NonSI.DEGREE_ANGLE)); // TODO: set this
-		theWing.set_surface(Amount.valueOf(85.51, SI.SQUARE_METRE));
-		theWing.set_span(Amount.valueOf(28.6, SI.METER));
-		theWing.set_maxThicknessMean(0.142);
-		theWing.set_meanAerodChordEq(Amount.valueOf(3.8, SI.METER));
-		// data needed to initialize theLSAnalysis object
-		theWing.set_surfaceWetted(Amount.valueOf(0.0, SI.SQUARE_METRE));
-		theWing.set_semispan(theWing.get_span().divide(2));
-		theWing.set_dihedralMean(Amount.valueOf(0.0, SI.RADIAN));
-		theWing.set_sweepHalfChordEq(Amount.valueOf(0.0, SI.RADIAN));
-		theWing.set_twistVsY(new MyArray());
-		theWing.set_alpha0VsY(new MyArray());
-		theWing.set_etaAirfoil(new MyArray());
-		theWing.set_yStationActual(new MyArray());
-		theWing.set_chordsVsYActual(new MyArray());
-		
-		LSAerodynamicsManager theLSAnalysis = new LSAerodynamicsManager(theWing);
-		// Assigning database to theLSAnalysis
-		theLSAnalysis.setHighLiftDatabaseReader(highLiftDatabaseReader);
-		theLSAnalysis.set_AerodynamicDatabaseReader(aeroDatabaseReader);
-		// Assigning the LSAnalysis to theWing Aerodynamics
-		theWing.setAerodynamics(theLSAnalysis);
-		
-		//--------------------------------------------------------------------------------------
-		// DEFINE AIRFOILS (initialize and set data):
-		
+		theWing.set_sweepLEEquivalent(
+				theWing.calculateSweep(
+						theWing.get_sweepQuarterChordEq().getEstimatedValue(),
+						0.0,
+						0.25)
+				); 
+
+		//AIRFOILS DEFINITION (initialize and set data):
 		//AIRFOIL ROOT
 		double yLocRoot = 0.0;		
 		MyAirfoil airfoilRoot = new MyAirfoil(theWing, yLocRoot);
@@ -117,6 +149,7 @@ public class AGILE_Test_HighLift {
 		airfoilRoot.getAerodynamics().set_clMax(2.293);
 		airfoilRoot.getGeometry().set_maximumThicknessOverChord(0.161);
 		airfoilRoot.getGeometry().set_radiusLE(0.03892);
+		airfoilRoot.getGeometry().set_deltaYPercent(0.0);
 		// the followings are not necessaries to the high lift devices effects analysis
 		airfoilRoot.getAerodynamics().set_alphaZeroLift(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 		airfoilRoot.getAerodynamics().set_cdMin(0.0);
@@ -131,7 +164,6 @@ public class AGILE_Test_HighLift {
 		airfoilRoot.getGeometry().set_twist(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 		airfoilRoot.getGeometry().set_anglePhiTE(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 		airfoilRoot.getGeometry().set_thicknessOverChordUnit(0.0);
-		airfoilRoot.getGeometry().set_deltaYPercent(0.0);
 
 		//AIRFOIL KINK
 		double yLocKink = 5.148;	
@@ -143,6 +175,7 @@ public class AGILE_Test_HighLift {
 		airfoilKink.getAerodynamics().set_clMax(2.187);
 		airfoilKink.getGeometry().set_maximumThicknessOverChord(0.149);
 		airfoilKink.getGeometry().set_radiusLE(0.04265);
+		airfoilKink.getGeometry().set_deltaYPercent(0.0);
 		// the followings are not necessaries to the high lift devices effects analysis
 		airfoilKink.getAerodynamics().set_alphaZeroLift(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 		airfoilKink.getAerodynamics().set_cdMin(0.0);
@@ -157,8 +190,7 @@ public class AGILE_Test_HighLift {
 		airfoilKink.getGeometry().set_twist(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 		airfoilKink.getGeometry().set_anglePhiTE(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 		airfoilKink.getGeometry().set_thicknessOverChordUnit(0.0);
-		airfoilKink.getGeometry().set_deltaYPercent(0.0);
-		
+
 		//AIRFOIL TIP
 		double yLocTip = 14.3;	
 		MyAirfoil airfoilTip = new MyAirfoil(theWing, yLocTip);
@@ -169,6 +201,7 @@ public class AGILE_Test_HighLift {
 		airfoilTip.getAerodynamics().set_clMax(1.9419);
 		airfoilTip.getGeometry().set_maximumThicknessOverChord(0.119);
 		airfoilTip.getGeometry().set_radiusLE(0.01011);
+		airfoilTip.getGeometry().set_deltaYPercent(0.0);
 		// the followings are not necessaries to the high lift devices effects analysis
 		airfoilTip.getAerodynamics().set_alphaZeroLift(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 		airfoilTip.getAerodynamics().set_cdMin(0.0);
@@ -183,15 +216,56 @@ public class AGILE_Test_HighLift {
 		airfoilTip.getGeometry().set_twist(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 		airfoilTip.getGeometry().set_anglePhiTE(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 		airfoilTip.getGeometry().set_thicknessOverChordUnit(0.0);
-		airfoilTip.getGeometry().set_deltaYPercent(0.0);
-		
-		//--------------------------------------------------------------------------------------
-		// Assign airfoil
+
+		// ASSIGN AIRFOILS:
 		List<MyAirfoil> myAirfoilList = new ArrayList<MyAirfoil>();
 		myAirfoilList.add(0, airfoilRoot);
 		myAirfoilList.add(1, airfoilKink);
 		myAirfoilList.add(2, airfoilTip);
 		theWing.set_theAirfoilsList(myAirfoilList);
+
+		// WING ANALYZER:
+		LSAerodynamicsManager theLSAnalysis = new LSAerodynamicsManager ( 
+				theConditions,
+				theWing
+				);
+		theWing.setAerodynamics(theLSAnalysis);
+		theLSAnalysis.initializeDependentData();
+
+		// MEAN AIRFOIL:
+		System.out.println("\n \n-----------------------------------------------------");
+		System.out.println("Starting evaluate the mean airfoil characteristics");
+		System.out.println("-----------------------------------------------------");
+
+		MyAirfoil meanAirfoil = theWing
+				.getAerodynamics()
+				.new MeanAirfoil()
+				.calculateMeanAirfoil(
+						theWing
+						);
+
+		double meanAlphaStar = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
+		System.out.println("\nThe mean alpha star is [rad] = " + meanAlphaStar);
+		double alphaStarDeg = Math.toDegrees(meanAlphaStar);
+		System.out.println("The mean alpha star is [deg] = " + alphaStarDeg);
+		double meanLESharpnessParameter = meanAirfoil.getGeometry().get_deltaYPercent();
+		Amount<Angle> deltaAlphaMax;
+		
+		//------------------------------------------------------------------------------------
+		// SETTING UP DATABASE:
+		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
+		String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
+		String highLiftDatabaseFileName = "HighLiftDatabase.h5";
+		AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
+		HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
+		theLSAnalysis.set_AerodynamicDatabaseReader(aeroDatabaseReader);
+		theLSAnalysis.setHighLiftDatabaseReader(highLiftDatabaseReader);
+
+		//------------------------------------------------------------------------------------
+		// UPDATE DATA
+		theWing.calculateGeometry();
+		theWing.getGeometry().calculateAll();
+		theWing.updateAirfoilsGeometry();
 
 		//----------------------------------------------------------------------------------
 		// INITIALIZING HIGH LIFT DEVICES INPUT DATA
@@ -209,7 +283,7 @@ public class AGILE_Test_HighLift {
 
 		//----------------------------------------------------------------------------------
 		// XML READING PHASE
-		
+
 		// Arguments check
 		if (args.length == 0){
 			System.err.println("NO INPUT FILE GIVEN --> TERMINATING");
@@ -217,11 +291,11 @@ public class AGILE_Test_HighLift {
 		}
 		// Input file parsing
 		main.theCmdLineParser.parseArgument(args);
-		
+
 		// Creation of the reader object
 		String path = main.get_inputFile().getAbsolutePath();
 		JPADXmlReader reader = new JPADXmlReader(path);
-		
+
 		System.out.println("-----------------------------------------------------------");
 		System.out.println("XML File Path : " + path);
 		System.out.println("-----------------------------------------------------------");
@@ -239,7 +313,6 @@ public class AGILE_Test_HighLift {
 		List<String> delta_slat_property = reader.getXMLPropertiesByPath("//Delta_Slat");
 		List<String> cs_c_property = reader.getXMLPropertiesByPath("//Cs_C");
 		List<String> cExt_c_slat_property = reader.getXMLPropertiesByPath("//cExt_c");
-		List<String> leRadius_c_slat_property = reader.getXMLPropertiesByPath("//LEradius_c_ratio");
 		List<String> eta_in_slat_property = reader.getXMLPropertiesByPath("//Slat_inboard");
 		List<String> eta_out_slat_property = reader.getXMLPropertiesByPath("//Slat_outboard");
 
@@ -285,19 +358,95 @@ public class AGILE_Test_HighLift {
 			cs_c.add(Double.valueOf(cs_c_property.get(i)));
 		for(int i=0; i<cExt_c_slat_property.size(); i++)
 			cExt_c_slat.add(Double.valueOf(cExt_c_slat_property.get(i)));
-		for(int i=0; i<leRadius_c_slat_property.size(); i++)
-			leRadius_c_slat.add(Double.valueOf(leRadius_c_slat_property.get(i)));
+		for(int i=0; i<delta_slat_property.size(); i++)
+			leRadius_c_slat.add(Double.valueOf(
+					(meanAirfoil.getGeometry().get_radiusLE()/theWing.get_meanAerodChordEq().getEstimatedValue())/
+					(meanAirfoil.getGeometry().get_maximumThicknessOverChord())
+					));
 		for(int i=0; i<eta_in_slat_property.size(); i++)
 			eta_in_slat.add(Double.valueOf(eta_in_slat_property.get(i)));
 		for(int i=0; i<eta_out_slat_property.size(); i++)
 			eta_out_slat.add(Double.valueOf(eta_out_slat_property.get(i)));
 
 		//----------------------------------------------------------------------------------
+		// WING ANALYSIS 
+		System.out.println("\n-----------------------------------------------------");
+		System.out.println("STARTING EVALUATE CL MAX CLEAN WING");
+		System.out.println("-----------------------------------------------------");
+
+		LSAerodynamicsManager.CalcCLMaxClean theCLmaxAnalysis = theLSAnalysis.new CalcCLMaxClean(); //is nested
+		LSAerodynamicsManager.CalcCLvsAlphaCurve theCLAnalysis = theLSAnalysis.new CalcCLvsAlphaCurve();
+		LSAerodynamicsManager.CalcCLAtAlpha theCLatAlpha= theLSAnalysis.new CalcCLAtAlpha();
+		System.out.println("Evaluate CL distribution using Nasa-Blackwell method");
+
+		theCLAnalysis.nasaBlackwell(); //it's possible to set alpha values
+		System.out.println("\nEvaluate CL max using CL distribution");
+
+		theCLmaxAnalysis.nasaBlackwell();
+		Amount<Angle> alphaAtCLMax = theLSAnalysis.get_alphaStall();
+		System.out.println("\n\nalpha CL max : " + alphaAtCLMax.to(NonSI.DEGREE_ANGLE));
+		double clMax = theCLatAlpha.nasaBlackwell(alphaAtCLMax);
+		System.out.println("cL " + clMax);		
+		
+		System.out.println("\n-----------------------------------------------------");
+		System.out.println("WRITING CHART TO FILE. Evaluating CL_MAX ");
+		System.out.println("-----------------------------------------------------");
+
+		// interpolation of CL MAX_airfoil
+		MyArray clMaxAirfoil = theCLmaxAnalysis.getClAirfoils();
+		System.out.println("CL max airfoil " + clMaxAirfoil);
+
+		MyArray clAlphaThird = theLSAnalysis.getcLMap().getCxyVsAlphaTable().get(MethodEnum.NASA_BLACKWELL ,alphaAtCLMax);
+		System.out.println("CL distribution at alpha " + alphaAtCLMax + " --> " + clAlphaThird );
+		double [][] semiSpanAd = {theLSAnalysis.get_yStationsND(), theLSAnalysis.get_yStationsND()};
+		double [][] clDistribution = {clMaxAirfoil.getRealVector().toArray(), clAlphaThird.getRealVector().toArray()};
+		String [] legend = new String [4];
+		legend[0] = "CL max airfoil";
+		legend[1] = "CL distribution at alpha " + Math.toDegrees( alphaAtCLMax.getEstimatedValue());
+
+		MyChartToFileUtils.plot(
+				semiSpanAd,	clDistribution,		// array to plot
+				0.0, 1.0, null, null,			// axis with limits
+				"eta", "CL", "", "",	    	// label with unit
+				legend,							// legend
+				subfolderPath, "Stall Path");	// output informations
+
+		System.out.println("-----------------------------------------------------");
+
+		System.out.println("\n-----------------------------------------------------");
+		System.out.println("STARTING EVALUATE DELTA ALPHA MAX");
+		System.out.println("-----------------------------------------------------");
+		
+		System.out.println("the mean LE sharpness parameter is : " + meanLESharpnessParameter);
+		System.out.println("the LE sweep angle is " +  theWing.get_sweepLEEquivalent().to(NonSI.DEGREE_ANGLE));
+		deltaAlphaMax = Amount.valueOf(toRadians (theLSAnalysis.get_AerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(theWing.get_sweepLEEquivalent().to(NonSI.DEGREE_ANGLE).getEstimatedValue() ,
+				meanLESharpnessParameter )), SI.RADIAN);
+		
+		System.out.println("Delta  alpha max " + deltaAlphaMax.to(NonSI.DEGREE_ANGLE));
+		Amount<Angle> alphaAtCLMaxNew =  Amount.valueOf((alphaAtCLMax.getEstimatedValue() + deltaAlphaMax.getEstimatedValue()), SI.RADIAN);
+		System.out.println( "Alpha max " + alphaAtCLMaxNew.to(NonSI.DEGREE_ANGLE));
+			
+		System.out.println("\n-----------------------------------------------------");
+		System.out.println("STARTING EVALUATE WING LIFT CURVE");
+		System.out.println("-----------------------------------------------------");
+		
+		double [] alphaArrayTemp = MyArrayUtils.linspace(-3, 26, 30);
+		
+		MyArray alphaArrayActual = new MyArray();
+		
+		for (int i=0; i<alphaArrayTemp.length;i++){
+			alphaArrayActual.set(i, Math.toRadians(alphaArrayTemp[i]));}
+			
+		System.out.println("-----------------------------------------------------");
+		System.out.println("WRITING TO CHART CL vs ALPHA CURVE CLEAN");
+		System.out.println("-----------------------------------------------------");
+				
+		//----------------------------------------------------------------------------------
 		// CREATING HIGH LIFT ANALYZER OBJECT:
 		LSAerodynamicsManager.CalcHighLiftDevices highLiftCalculator = theLSAnalysis
 				.new CalcHighLiftDevices(
 						theWing,
-						theCondition,
+						theConditions,
 						deltaFlap,
 						flapType,
 						deltaSlat,
@@ -313,13 +462,15 @@ public class AGILE_Test_HighLift {
 
 		//----------------------------------------------------------------------------------
 		// ANALYSIS OF HIGH LIFT DEVICES EFFECTS:
-		
-		// FIXME: Fix the nasaBlackwell null pointer in CalcCLAlpha
 		highLiftCalculator.calculateHighLiftDevicesEffects();
 
 		//----------------------------------------------------------------------------------
 		// RESULTS OF HIGH LIFT DEVICES ANALYSIS:
-		System.out.println("\ndeltaCl0_flap_list = ");
+		System.out.println("\n-----------------------------------------------------");
+		System.out.println("STARTING EVALUATE HIGH LIFE DEVICES EFFECTS");
+		System.out.println("-----------------------------------------------------");
+		
+		System.out.println("deltaCl0_flap_list = ");
 		for(int i=0; i<highLiftCalculator.getDeltaCl0_flap_list().size(); i++)
 			System.out.print(highLiftCalculator.getDeltaCl0_flap_list().get(i) + " ");
 
@@ -372,6 +523,16 @@ public class AGILE_Test_HighLift {
 			System.out.print(highLiftCalculator.getDeltaCM_c4_list().get(i) + " ");
 
 		System.out.println("\n\ndeltaCMc_4 = \n" + highLiftCalculator.getDeltaCM_c4());
+		
+		System.out.println("\n-----------------------------------------------------");
+		System.out.println("WRITING TO CHART CL vs ALPHA CURVE HIGH LIFT");
+		System.out.println("-----------------------------------------------------");
+		
+		highLiftCalculator.plotHighLiftCurve(subfolderPath);
+		
+		System.out.println("-----------------------------------------------------");
+		System.out.println("DONE");
+		System.out.println("-----------------------------------------------------");
 	}
 
 	//------------------------------------------------------------------------------------------
