@@ -76,26 +76,33 @@ public class AGILE_Test_HighLift {
 		Wing theWing = new Wing(ComponentEnum.WING);
 		theWing.set_aspectRatio(9.57);
 		theWing.set_chordRootEquivalentWing(Amount.valueOf(4.92, SI.METER));
+		theWing.set_chordRoot(theWing.get_chordRootEquivalentWing());
+		theWing.set_chordKink(Amount.valueOf(0.0, SI.METER)); // TODO: set this
+		theWing.set_chordTip(Amount.valueOf(0.0, SI.METER));  // TODO: set this
 		theWing.set_taperRatioEquivalent(0.218);
 		theWing.set_sweepQuarterChordEq(Amount.valueOf(26.2, NonSI.DEGREE_ANGLE));
+		theWing.set_sweepLEEquivalent(Amount.valueOf(26.2, NonSI.DEGREE_ANGLE)); // TODO: set this
 		theWing.set_surface(Amount.valueOf(85.51, SI.SQUARE_METRE));
 		theWing.set_span(Amount.valueOf(28.6, SI.METER));
 		theWing.set_maxThicknessMean(0.142);
 		theWing.set_meanAerodChordEq(Amount.valueOf(3.8, SI.METER));
 		// data needed to initialize theLSAnalysis object
 		theWing.set_surfaceWetted(Amount.valueOf(0.0, SI.SQUARE_METRE));
-		theWing.set_semispan(Amount.valueOf(0.0, SI.METER));
-		theWing.set_chordRoot(Amount.valueOf(0.0, SI.METER));
+		theWing.set_semispan(theWing.get_span().divide(2));
 		theWing.set_dihedralMean(Amount.valueOf(0.0, SI.RADIAN));
 		theWing.set_sweepHalfChordEq(Amount.valueOf(0.0, SI.RADIAN));
 		theWing.set_twistVsY(new MyArray());
 		theWing.set_alpha0VsY(new MyArray());
 		theWing.set_etaAirfoil(new MyArray());
+		theWing.set_yStationActual(new MyArray());
+		theWing.set_chordsVsYActual(new MyArray());
 		
-		LSAerodynamicsManager theLSAnalysis = new LSAerodynamicsManager(theCondition, theWing);
+		LSAerodynamicsManager theLSAnalysis = new LSAerodynamicsManager(theWing);
 		// Assigning database to theLSAnalysis
 		theLSAnalysis.setHighLiftDatabaseReader(highLiftDatabaseReader);
 		theLSAnalysis.set_AerodynamicDatabaseReader(aeroDatabaseReader);
+		// Assigning the LSAnalysis to theWing Aerodynamics
+		theWing.setAerodynamics(theLSAnalysis);
 		
 		//--------------------------------------------------------------------------------------
 		// DEFINE AIRFOILS (initialize and set data):
@@ -125,7 +132,6 @@ public class AGILE_Test_HighLift {
 		airfoilRoot.getGeometry().set_anglePhiTE(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 		airfoilRoot.getGeometry().set_thicknessOverChordUnit(0.0);
 		airfoilRoot.getGeometry().set_deltaYPercent(0.0);
-		airfoilRoot.getGeometry().update(yLocRoot);
 
 		//AIRFOIL KINK
 		double yLocKink = 5.148;	
@@ -152,7 +158,6 @@ public class AGILE_Test_HighLift {
 		airfoilKink.getGeometry().set_anglePhiTE(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 		airfoilKink.getGeometry().set_thicknessOverChordUnit(0.0);
 		airfoilKink.getGeometry().set_deltaYPercent(0.0);
-		airfoilKink.getGeometry().update(yLocRoot);
 		
 		//AIRFOIL TIP
 		double yLocTip = 14.3;	
@@ -179,7 +184,6 @@ public class AGILE_Test_HighLift {
 		airfoilTip.getGeometry().set_anglePhiTE(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 		airfoilTip.getGeometry().set_thicknessOverChordUnit(0.0);
 		airfoilTip.getGeometry().set_deltaYPercent(0.0);
-		airfoilTip.getGeometry().update(yLocRoot);
 		
 		//--------------------------------------------------------------------------------------
 		// Assign airfoil
@@ -188,7 +192,6 @@ public class AGILE_Test_HighLift {
 		myAirfoilList.add(1, airfoilKink);
 		myAirfoilList.add(2, airfoilTip);
 		theWing.set_theAirfoilsList(myAirfoilList);
-		theWing.updateAirfoilsGeometry();
 
 		//----------------------------------------------------------------------------------
 		// INITIALIZING HIGH LIFT DEVICES INPUT DATA
@@ -310,6 +313,8 @@ public class AGILE_Test_HighLift {
 
 		//----------------------------------------------------------------------------------
 		// ANALYSIS OF HIGH LIFT DEVICES EFFECTS:
+		
+		// FIXME: Fix the nasaBlackwell null pointer in CalcCLAlpha
 		highLiftCalculator.calculateHighLiftDevicesEffects();
 
 		//----------------------------------------------------------------------------------

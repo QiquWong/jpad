@@ -300,7 +300,13 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		initializeInnerCalculators();
 	}
 
+	public LSAerodynamicsManager(LiftingSurface liftingSurf) {
 
+		setTheLiftingSurface(liftingSurf);
+		getTheLiftingSurface().setAerodynamics(this);
+
+		initializeDataFromLiftingSurface(liftingSurf);
+	}
 
 
 	public void initializeAircraftData(double surfaceReference) {
@@ -2393,7 +2399,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 					meanAirfoil.getGeometry().get_deltaYPercent());
 			
 			theLiftingSurface.setHigLiftCalculator(this);
-			calcAlphaAndCLMax(meanAirfoil);
+//			calcAlphaAndCLMax(meanAirfoil);
 		}
 
 		//-------------------------------------------------------------------------------------

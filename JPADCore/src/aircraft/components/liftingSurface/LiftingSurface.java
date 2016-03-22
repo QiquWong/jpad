@@ -3561,6 +3561,10 @@ public class LiftingSurface extends AeroComponent{
 	public MyArray get_yStationActual() {
 		return _yStationActual;
 	}
+	
+	public void set_yStationActual(MyArray _yStationActual) {
+		this._yStationActual = _yStationActual;
+	}
 
 	public MyArray get_xLEvsYActual() {
 		return _xLEvsYActual;
@@ -3580,6 +3584,10 @@ public class LiftingSurface extends AeroComponent{
 
 	public MyArray get_chordsVsYActual() {
 		return _chordsVsYActual;
+	}
+	
+	public void set_chordsVsYActual(MyArray _chordsVsYActual) {
+		this._chordsVsYActual = _chordsVsYActual;
 	}
 
 	public MyArray get_yStationsAirfoil() {
