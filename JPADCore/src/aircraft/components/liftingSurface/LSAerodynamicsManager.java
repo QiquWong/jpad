@@ -2399,7 +2399,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 					meanAirfoil.getGeometry().get_deltaYPercent());
 			
 			theLiftingSurface.setHigLiftCalculator(this);
-//			calcAlphaAndCLMax(meanAirfoil);
+			calcAlphaAndCLMax(meanAirfoil);
 		}
 
 		//-------------------------------------------------------------------------------------
