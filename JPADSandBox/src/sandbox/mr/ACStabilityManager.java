@@ -127,7 +127,9 @@ public class ACStabilityManager {
 	double [] cLWingActualArray;
 
 
-	double [] deltaEArray = MyArrayUtils.linspace(-25, 5 , 7);
+	double deltaMin = -25;
+	double deltaMax = 5;
+	double [] deltaEArray = MyArrayUtils.linspace(deltaMin, deltaMax , 7);
 
 
 	String [] deltaEArrayString = new String [deltaEArray.length];
@@ -194,8 +196,8 @@ public class ACStabilityManager {
 	 * only all stability characteristics at an array of alpha body
 	 * @param When this check value is true will be draw all graphs
 	 */
-	public ACStabilityManager(MyAirfoil meanAirfoil, Aircraft theAircraft, ConditionEnum theCondition,Amount<Angle> alphaMin,
-			Amount<Angle> alphaMax, Amount<Angle> alphaBody, boolean plotCheck, String subfolderPath, String pathXMLTakeOFF){
+	public ACStabilityManager(MyAirfoil meanAirfoil, Aircraft theAircraft, ConditionEnum theCondition, Amount<Angle> alphaMin,
+			Amount<Angle> alphaMax, Amount<Angle> alphaBody, boolean plotCheck, String subfolderPath, String pathXMLHighLift){
 
 		this.aircraft = theAircraft;
 		this.theWing = aircraft.get_wing();
@@ -206,7 +208,12 @@ public class ACStabilityManager {
 
 		this.theCondition = theCondition;
 
-		this.pathXMLTakeOFF = pathXMLTakeOFF;
+		if (theCondition == ConditionEnum.TAKE_OFF)
+		this.pathXMLTakeOFF = pathXMLHighLift;
+		
+		if(theCondition == ConditionEnum.LANDING)
+			this.pathXMLLanding = pathXMLHighLift;
+		
 
 		this.plotCheck = plotCheck;
 
@@ -347,10 +354,10 @@ public class ACStabilityManager {
 	}
 
 
-	public void CalculateAll() throws InstantiationException, IllegalAccessException{
+	public void calculateAll() throws InstantiationException, IllegalAccessException{
 
 		// Lift Characteristics
-		CalculateLiftCharacteristics();
+		calculateLiftCharacteristics();
 		CalculateDragCharacteristics();
 		CalculateMomentCharacteristics();
 
@@ -360,7 +367,7 @@ public class ACStabilityManager {
 		//CL, CD, CM... 
 	}
 
-	public void CalculateLiftCharacteristics() throws InstantiationException, IllegalAccessException {
+	public void calculateLiftCharacteristics() throws InstantiationException, IllegalAccessException {
 		System.out.println("\n\n------------------------------------");
 		System.out.println("\n LIFT CHARACTERISTICS  ");
 		System.out.println("\n------------------------------------");
@@ -1404,6 +1411,10 @@ public class ACStabilityManager {
 			System.out.println("\n\n\t\t\tDONE");
 		}
 
+	}
+	
+	public void calculateDeltaEArray(){
+		 this.deltaEArray = MyArrayUtils.linspace(deltaMin, deltaMax , 7);
 	}
 
 	// GETTERS AND SETTERS

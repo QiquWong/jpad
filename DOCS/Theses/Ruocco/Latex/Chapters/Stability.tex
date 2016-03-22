@@ -255,18 +255,59 @@ The evaluation of tau is made by reading of external database, considering the f
 \centering
 \begin{minipage}{.5\textwidth}
 \centering
-\includegraphics[height=5.3cm]{Immagini/Eta_Delta_Plain.png}
+\includegraphics[height=5.4cm]{Immagini/Eta_Delta_Plain.png}
 \captionof{figure}{2D efficiency correction for elevator.}
 \label{efficiency}
 \end{minipage}%
 \begin{minipage}{.5\textwidth}
 \centering
-\includegraphics[height=5.3cm]{Immagini/alfadelta.png}
+\includegraphics[height=5.4cm]{Immagini/alfadelta.png}
 \captionof{figure}{$\frac{d \alpha_{0l}}{d \delta_e}$ 2D and 3D correction.}
 \label{eff2}
 \end{minipage}
 \label{fig:effects}
 \end{figure}
+
+\noindent \\
+The construction of the $C_L$ vs $\alpha$ curve is made as follows for each value of elevator deflection.
+\begin{enumerate}
+	\item It's necessary to know the value of $C_{L_{\alpha}}$ and $\alpha_{0L}$ clean
+	\item The  $\alpha_{{0L}_{\delta_e}}$ is obtained starting from the $\tau$ value
+	\begin{equation}
+	\alpha_{{0L}_{\delta_e}} = \alpha_{{0L}_{clean}} - (\tau \delta_e)
+	\end{equation}
+	\item In order to evaluate the variation in $C_{L\alpha}$ due to elevator deflection, references to~\cite{torenbeek1982synthesis} have been made. In particular, Torenbeek provides the following equation which approximates the results of the exact theory fairly accurately and is in qualitative agreement with experimental data. 
+	%
+	\begin{equation}
+	C_{l\alpha_{\left(\text{flap down}\right)}}=C_{l\alpha}\ \left[\dfrac{c'}{c}\ \left(1-\dfrac{c_f}{c'}\ \sin^2\delta_f\right)\right]
+	\label{eqn:ClalphaFlap}
+	\end{equation}
+	%
+	\noindent
+	This equation is then corrected for the three-dimensional wing as follows.
+	%
+	\begin{equation}
+	C_{L\alpha_{\left(\text{flap down}\right)}}=C_{L\alpha}\ \left\{1+\dfrac{\upDelta C_{L0}}{\upDelta C_{l0}}\ \left[\left(\dfrac{c'}{c}\ \left(1-\dfrac{c_f}{c'}\sin^2\delta_f\right)-1\right)\right]\right\}
+	\label{eqn:ClalphaFlap}
+	\end{equation}
+	\item The new value of $C_{L_0}$ is obtained from the following equation
+	\begin{equation}
+	C_{L_0} = - C_{L\alpha_{\delta_e}} \alpha_{{0L}_{\delta_e}}
+	\end{equation}
+	\item The $\upDelta$ is obtained from High Lift modulus. An empirical method for predicting airfoil maximum lift increments for plain and slotted flaps is presented in DATCOM and will be followed from~\cite{sforza2014commercial}.
+	%
+	The maximum lift increment provided to an airfoil by the deflection of a trailing edge flap is given by the (\ref{eqn:DeltaClmaxFlap}).
+	%
+	\begin{equation}
+	\upDelta C_{l\text{max}}=k_1\ k_2\ k_3\ \left(\upDelta C_{l\text{max}}\right)_{\text{base}}
+	\label{eqn:DeltaClmaxFlap}
+	\end{equation}
+	%
+	\noindent
+	Here $\left(\upDelta C_{l\text{max}}\right)_{\text{base}}$ is the section maximum lift increment for 25 percent-chord flaps at the reference flap-deflection angle. The quantity $k_1$ is a factor accounting for flap-chord-to-airfoil-chord ratios, $\frac{c_{f}}{c}$, other than 0.25. The quantity $k_2$ is a factor accounting for flap deflections other than the reference value. Finally, $k_3$ is a factor accounting for flap motion as a function of flap deflection.
+	\item The value of $\alpha_{stall}$ is obtained considering the same $\upDelta$ of clean lifting surface between the linear $\alpha_{max}$  and non linear $\alpha_{stall}$ .
+\end{enumerate}
+
 
 %\begin{figure}[H]
 %\centering
@@ -305,6 +346,7 @@ For an aircraft with no canard, the formula is the following:
 C_L = C_{L_{wb}} + \frac{S_t}{S_w} \eta_t C_{L_{t}}
 \end{equation}
 
+\noindent \\ 
 Where $\eta_t$ is the ratio of dynamic pressure, called {\itshape tail efficiency factor}. In fact the dynamic pressure seen by horizontal tail differ from the free stream dynamic pressure due to two main reasons: the combination wing-fuselage and the presence of the propeller. The dynamic pressure of the tail depends on the location of the tail. If the tail is in the wake of the wing-body, the local dynamic pressure will be less than the free-stream because the flow gradually loses its kinetic energy. While if the tail is in the slipstream of propeller, the local dynamic pressure may increase due to the power absorbed by the propeller.
 
 
@@ -330,7 +372,7 @@ As widely expressed in the CHAPT  \ref{ch:wingdrag}, the drag coefficient of a l
 CD = CD_{min} + (CL - CL_{CD_{min}})^2 \cdot k
 \end{equation}
 
-For each station, known the semi-spanwise lift distribution, it's possible to calculate the local lift coefficient of the intermediate airfoil and, consequently, the drag coefficient. After the drag coefficient of the entire lifting surface is calculated with an integral.
+For each station, known the semi-spanwise lift distribution, it's possible to calculate the local lift coefficient of the intermediate airfoil and, consequently, the drag parasite coefficient. The induced drag is calculated starting from induced angle of attack. After the drag coefficient of the entire lifting surface is calculated with an integral.
 
 \subsection{Additional drag due to elevator}
 
@@ -701,17 +743,186 @@ While to have equilibrium of moments the trim equation must be equal to zero.
 C_{M_{c.g.}} = 0
 \end{equation}
 The aircraft can, in general, be trimmed, that is, put into an equilibrium state where the combined lift of the wing and the tail balances the weight while the moment about the center of gravity is zero. The horizontal tail is movable, either all movable or a portion (called the elevator on an aft tail) is movable. In this way, the horizontal tail can cause the aircraft to rotate from one equilibrium (trimmed) condition to another.\cite{nicolai2010fundamentals}\\
-The aircraft is said to be statically stable if the response of the aircraft to a disturbance in angle of attack is to tend to return to the original equilibrium position.
+ The aircraft is said to be statically stable if the response of the aircraft to a disturbance in angle of attack is to tend to return to the original equilibrium position.
 As mentioned the criterion for static stability in an aircraft is that the derivative of $C_{M_{c.g.}}$ respect to $\alpha$ is negative. This means that if an aircraft with $CM_{\alpha} < 0 $is in equilibrium (trimmed) at a positive $\alpha$ and suddenly $\alpha$ is increased the aircraft will generate a negative moment to push the nose down toward the
 original equilibrium.
 
 \subsection{Neutral Point and Static Margin}
 
-It is possible now to find the aerodynamic center of the aircraft, or, as it’s usually called, the neutral point, by setting the derivative of the moment coefficient with respect to angle of attack in Eq. \ref{eqstabilitytrim} equal to zero. In this case we assume the control stick is fixed so that the horizontal tail acts without any deflection of the control surface, that is, without deflecting the elevator. The center of gravity location which satisfies this
-condition is called the neutral point.\\
+It is possible now to find the aerodynamic center of the aircraft, or, as it’s usually called, the neutral point, by setting the derivative of the moment coefficient with respect to angle of attack in Eq. \ref{eqstabilitytrim} equal to zero. In this case we assume the control stick is fixed so that the horizontal tail acts without any deflection of the control surface, that is, without deflecting the elevator.\\ The center of gravity location which satisfies thiscondition is called the neutral point.\\
 The difference between the position of the center of gravity and the neutral point is called the static margin. It expresses how far the center of gravity of the airplane is forward of the neutral point, expressed as a fraction of the mean aerodynamic chord. The larger this quantity, the more stable the aircraft and the less maneuverable it is. However, with greater stability the pilot workload decreases because fewer control inputs are required to keep a particular course. The airplane is said to be stiffer as the static margin increases. Typical commercial aircraft have a static margin of around $5–10\%$. When the static margin is zero the  airplane is neutrally stable, while if the static margin is negative the aircraft is statically unstable.
 
 \section{Java Class Architecture}
+In order to manage all required methods a manager stability class has been created, named \texttt{ACStabilityManager}. This is a complex class that defines and assigns all the useful data for the stability analysis having the operative condition as input. This class call various method for the other class described in the previous chapter in order to evaluate he moment respect to the center of gravity of the aircraft. This moment, in fact, is obtained starting from the forces acting on the aircraft's components.\\
+Depending on the value of plot check the Class draws some chart useful for the knowledge of output data. 
+\noindent \\
+
+\begin{longtable} {lp{0.5\columnwidth}}
+\caption{\texttt{ACStabilityManager} input variables.}
+\label{tab:long}\\
+\toprule
+\multicolumn{1}{l}{{\bfseries Input Variable}} & \multicolumn{1}{r}{{\bfseries Description}}\\
+\midrule
+\endfirsthead
+%
+\multicolumn{2}{l}%
+  {\relsize{-1}({\itshape continued from previous page})}\\
+\toprule
+\multicolumn{1}{l}{{\bfseries Input Variable}} & \multicolumn{1}{r}{{\bfseries Description}}\\
+\endhead
+%
+\midrule \multicolumn{2}{r}{{\relsize{-1}\itshape continued on next page}}\\
+\endfoot
+%
+\bottomrule
+\endlastfoot
+%
+		\toprule
+		\lstinline[language=Java]!Aircraft! - the Aircraft & The object of analysis.\\ \hline 
+		\lstinline[language=Java]!MyAirfoil! - Mean Airfoil & In order to make computing faster the mean airfoil is calculated in the test class. \\ \hline 
+		\lstinline[language=Java]!ConditionEnum! - the Operative Condition &  In JPAD is defined an enumeration of operating condition: TAKE-OFF, CRUISE and LANDING. Giving the condition as input, the builder of the stability manager automatically calculates all the parameters (such as Mach number or high-lift devices deflection). \\ \hline 
+		\lstinline[language=Java]!Amount<Angle>! - alpha Min, alpha Max & These are the first and the last value of the $\alpha_b$ array for witch will be made the analysis. They can to be in degree or radian. These values may to be null in order to execute analysis only for an angle of attack. In this case the values of alpha max and alpha min wil be alpha body $\pm 1^{\circ}$. It's possible to set the number of values with a setter.\\ \hline 
+		\lstinline[language=Java]!Amount<Angle>! - alpha Body & Is the angle of attack (alpha body) for the calculation of numerical value of CL, CD, CM. This value may be null. In this case the class calculates only all stability characteristics at an array of alpha body\\ \hline 
+		\lstinline[language=Java]!boolean! - plot Check & This is a check value in order to make charts or not.\\ \hline 
+		\lstinline[language=Java]!String! - subfolder Path & This is the folder path where the charts will be saved.\\ \hline 
+		\lstinline[language=Java]!String! -path XML HighLift & This is the path of the input file for high-lift data in take off condition or landing.\\ \hline 
+		\bottomrule
+\end{longtable}
+
+
+\begin{center}
+	\captionof{table}{Output charts for the class \texttt{ACStabilityManager}.}
+	\begin{tabular}{| l | l | l |}
+		\hline
+		&  Cl vs $\alpha$ - airfoils.\\ 
+		&CL vs $\alpha_w$ - wing.\\ 
+		& Stall path - wing.\\  
+		&CD parasite vs $\alpha_w$ - wing.\\  
+		&CD induced vs $\alpha_w$ - wing.\\ 
+		&CD total vs $\alpha_w$ - wing.\\  
+		&CL vs $\alpha_h$ - horizontal Tail. With elevator deflections.\\ 
+		&CD total vs $\alpha_h$ - horizontal Tail. With elevator deflections.\\ 
+		&Stall path - horizontal Tail.\\ 
+		{\bfseries Clean}		 &CL vs $\alpha_w$ - wing-body.\\  
+		&CL vs $\alpha_w$ - Total. With elevator Deflection.\\  
+		&Downwash gradient vs $\alpha_b$ - linear and non-linear.\\  
+		&Downwash angle vs $\alpha_b$ - linear and non-linear.\\ 
+		&Cm vs $\alpha\_b$ - respect to c/4 of MAC for wing. \\  
+		&Cm vs $\alpha\_b$ - respect to ac for wing. \\
+		&Cm vs $\alpha\_b$ - respect to c/4 of MAC for horizontal Tail. \\ \
+		&Cm vs $\alpha\_b$ - respect to ac for horizontal Tail. \\ 
+		&Cm vs $\alpha\_b$ - for fuselage. \\ 
+		&Cm vs $\alpha\_b$ - respect to cg for aircraft. With elevator deflections. \\ 
+		&Cm vs $\alpha\_b$ - respect to ac for wing. \\ 
+		& $\delta_{ee}$ vs $\alpha\_b$  \\ 
+		& Neutral Point vs $C_{L_{tot}}$  \\ \hline 	
+		&	 The same for cruise \\ 	
+		{\bfseries Take Off -  Landing}	 	& CL vs $\alpha_w$ - wing. Whith High Lift devices effects. \\ 
+		&	 CD total vs $\alpha_w$ - wing. With high lift devices effects.\\ \hline   
+		\hline
+	\end{tabular}
+\end{center}
+
+The class \texttt{ACStabilityManager} contains different methods in order to evaluate Lift, Drag and Moments contributes. All methods and related functionality are expressed in the following table.
+
+\begin{longtable} {lp{0.5\columnwidth}}
+\caption{Methods of the class \texttt{ACStabilityManager}.}
+\label{tab:long}\\
+\toprule
+\multicolumn{1}{l}{{\bfseries Method }} & \multicolumn{1}{r}{{\bfseries Description}}\\
+\midrule
+\endfirsthead
+%
+\multicolumn{2}{l}%
+  {\relsize{-1}({\itshape continued from previous page})}\\
+\toprule
+\multicolumn{1}{l}{{\bfseries Method}} & \multicolumn{1}{r}{{\bfseries Description}}\\
+\endhead
+%
+\midrule \multicolumn{2}{r}{{\relsize{-1}\itshape continued on next page}}\\
+\endfoot
+%
+\bottomrule
+\endlastfoot
+%
+		\toprule
+		\lstinline[language=Java]!ACStabilityManager!& It is the builder of the class. It initialize all useful data\\ \hline 
+		\lstinline[language=Java]!calculateAll! & This method call all the other methods of the class in ordet to valculate lift, drag and pitching moment characteristics of the component. \\ \hline 
+		\lstinline[language=Java]!calculateLiftCharacteristics()!& This method call the methods related to the lift calculation that fill the array and, eventually, produce charts.\\ \hline 
+		\lstinline[language=Java]!calculateDragCharacteristics()! &  The same of previous for drag.\\ \hline 
+		\lstinline[language=Java]!calculateMomentCharacteristics()!  & The same of previous for pitching moment.\\ \hline 
+		\lstinline[language=Java]!calculateWingLiftCharacteristics()!  & This method uses methods of lift calculation classes in order to fill the lift arrays for wing both in cruise and in take off or landing.\\ \hline
+		\lstinline[language=Java]!calculateHTailLiftCharacteristics()!  & This method uses methods of lift calculation classes in order to fill the lift arrays for wing both in cruise and in take off or landing.\\ \hline
+		\lstinline[language=Java]!calculateFuselageLiftCharacteristics()!  & This method uses methods of lift calculation classes in order to correct the lift coefficient of an isolated wing.\\ \hline 
+		\lstinline[language=Java]!calculateWingDragCharacteristics! & This method uses methods of lift calculation classes in order to fill the lift arrays for wing both in cruise and in take off or landing.\\\hline 
+		\lstinline[language=Java]!calculateHTailDragCHaracteristics! & The same of previous for horizontal tail. This method consider also the elevator deflections.\\\hline 
+		\lstinline[language=Java]!calculateWingMomentCharacteristics()!& This method call the methods related to the pitching moment calculation that fill the array and, eventually, produce charts.\\ \hline \\
+		\lstinline[language=Java]!calculateHTailMomentCharacteristics()!& The same of previous for horizontal tail.\\ \hline 
+		\lstinline[language=Java]!calculateFuselageMomentCharacteristics()!& The same of previous for fuselage.\\ \hline 
+		\lstinline[language=Java]!calculatePowerEfects!& This method introduces power effect on the stability.\\ \hline
+		\lstinline[language=Java]!deltaEElevatorCalculator!& This method calculates the deflection of the elevator at alpha.\\ \hline 
+		\lstinline[language=Java]!calculateMoment()!& This method calculates the pitching moment of the entire aircraft respect to the center of gravity.\\ \hline 
+		\lstinline[language=Java]!neutralPointCalculator!& This method calculates the neutral point and eventually draws the charts.\\ \hline 
+		\bottomrule
+	\end{longtable}
+
+\subsection{Focus on the class methods}
+The first method of the class is the builder. An important function is carried out by this method that assigns all the useful data. The main purposes of the builder are the following
+
+\begin{enumerate}
+	\item It's defines an array of $\alpha_b$. This is an array of nValue in Deg. The number of elements is settable by the user.
+	\item According to the condition it sets the Mach number. The Cruise, take Off and Landing Mach numbers are defined in the aircraft aerodynamic manager \texttt{ACAerodynamicManager}. In this way it's possible to access to the value from the aircraft object.
+	\item The operating condition (such as altitude and Mach number) are defined according to the flight condition.
+	\item The center of gravity is defined starting from the correct weight of the aircraft. In particular:
+	\begin{itemize}
+		\item Take Off $\rightarrow$ MTOW
+		\item Cruise $\rightarrow$ $\frac{(MTOW + MZFW)}{2}$
+		\item Landing $\rightarrow$  MZFW
+	\end{itemize}
+\end{enumerate}
+
+
+
+ All the other methods are structured in order to obtain the following results:
+\begin{enumerate}
+	\item Array filling
+	\item Value at $\alpha_b$
+	\item Charts
+\end{enumerate}
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=8.3cm]{Immagini/acclass}
+	\caption{Methods in ACStabilityManager class.}
+	\label{acc}
+\end{figure}
+
+
+The value for the $\alpha_b$ array are saved in array which can be read via getter methods.
+
+\begin{lstlisting}[frame=rbl,caption={{\footnotesize Some of Output Array}},label= [style=\bfseries]{Listing}]
+
+ //Output Arrays // Correspond to alpha body array
+ 
+private double [] cLWingCleanArray;
+private double [] cLWingTOArray;
+private double [] cLWingLandingArray;
+private double [] cLWingBodyArray;
+private double [] cLAlphaArray;
+private double [] cLHTailCleanArray;
+private Double [] downwashAnglesArray;
+private double [] tauIndexArray = new double [deltaEArray.length];
+private double [] cLCompleteAircraftdeltaEArray = new double [deltaEArray.length];
+
+private double [] parasiteCDWingCleanArray;
+private double [] parasiteCDHTailCleanArray;
+private double [] inducedCDWingArray;
+private double [] inducedCDHTailArray;
+private double [] cDWingCleanArray;
+\end{lstlisting}
+
+
+The results for the horizontal tail are obtained for an array of elevator deflections which value can be set by the user. Consequently the resultant values for the horizontal tail are organized in a Map.
+
 
 %spiega la classse per il calcolo del cl del piano di coda con deflessione dell'equilibratore ( vedi doc di calculateCLWithElevatorDeflection in lsaerodynamic manager)
 %
@@ -737,6 +948,9 @@ The difference between the position of the center of gravity and the neutral poi
  % per l' ala scrivi le grandezze geometriche con foto
  
 \section{Case Study}
+Several graps used in this modulus are presented in previous chapter. So, following, there will be only the new results.
 
-% stallpathhtailboeing.tikz
-% stallpathhtailatr.tikz
+\subsection{ATR 72}
+%cl vs alpha h tail al variare di delta e
+% momento ala... come scritti sul quaderno
+\subsection{Boeing 747-100B}

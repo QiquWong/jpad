@@ -1,7 +1,7 @@
 This is makeindex, version 2.15 [TeX Live 2015/W32TeX] (kpathsea + Thai support).
 Scanning style file ./Tesi_Magistrale_Manuela_Ruocco.ist.............................done (29 attributes redefined, 0 ignored).
-Scanning input file Tesi_Magistrale_Manuela_Ruocco.sbl....done (35 entries accepted, 0 rejected).
-Sorting entries....done (189 comparisons).
-Generating output file Tesi_Magistrale_Manuela_Ruocco.sym....done (82 lines written, 0 warnings).
-Output written in Tesi_Magistrale_Manuela_Ruocco.sym.
+Scanning input file Tesi_Magistrale_Manuela_Ruocco.glo....done (19 entries accepted, 0 rejected).
+Sorting entries....done (90 comparisons).
+Generating output file Tesi_Magistrale_Manuela_Ruocco.gls....done (44 lines written, 0 warnings).
+Output written in Tesi_Magistrale_Manuela_Ruocco.gls.
 Transcript written in Tesi_Magistrale_Manuela_Ruocco.glg.

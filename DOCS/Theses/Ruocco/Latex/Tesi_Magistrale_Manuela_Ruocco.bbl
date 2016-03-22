@@ -19,20 +19,6 @@
 
 \refsection{0}
   \sortlist{nty}{nty}
-    \entry{adoptunina}{other}{}
-      \list{institution}{1}{%
-        {University of Naples Federico II}%
-      }
-      \list{location}{1}{%
-        {Naples}%
-      }
-      \field{sortinit}{A}
-      \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
-      \field{labeltitlesource}{title}
-      \field{title}{A Java desktop application for Aircraft Preliminary Design}
-      \field{year}{2015}
-      \warn{\item Name "A. De Marco, F. Nicolosi, L. Attanasio, P. Della Vecchia" has too many commas: skipping name}
-    \endentry
     \entry{Abbott}{book}{}
       \name{author}{2}{}{%
         {{hash=087710b71c28cc5ac0484e71ab8d1d55}{Abbott}{A\bibinitperiod}{I.\bibnamedelimi H.}{I\bibinitperiod\bibinitdelim H\bibinitperiod}{}{}{}{}}%
@@ -50,38 +36,6 @@
       \field{title}{Theory of Airfoil Sections}
       \field{year}{1959}
     \endentry
-    \entry{xstream}{online}{}
-      \name{author}{1}{}{%
-        {{hash=3a57198ed5da0935fbc6b62de6570826}{al.}{a\bibinitperiod}{Joe\bibnamedelima Walnes}{J\bibinitperiod\bibinitdelim W\bibinitperiod}{et}{e\bibinitperiod}{}{}}%
-      }
-      \strng{namehash}{3a57198ed5da0935fbc6b62de6570826}
-      \strng{fullhash}{3a57198ed5da0935fbc6b62de6570826}
-      \field{sortinit}{a}
-      \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{XStream}
-      \verb{url}
-      \verb http://xstream.codehaus.org/
-      \endverb
-      \warn{\item Datamodel: Entry 'xstream' (Tesi_Bibliography.bib): Invalid format '01.24.15' of date field 'date' - ignoring}
-    \endentry
-    \entry{occjava}{online}{}
-      \name{author}{1}{}{%
-        {{hash=97b13b579d0a93995cd2ae82f1dc9834}{Alleon}{A\bibinitperiod}{Guillaume}{G\bibinitperiod}{}{}{}{}}%
-      }
-      \strng{namehash}{97b13b579d0a93995cd2ae82f1dc9834}
-      \strng{fullhash}{97b13b579d0a93995cd2ae82f1dc9834}
-      \field{sortinit}{A}
-      \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{occjava}
-      \verb{url}
-      \verb http://jcae.sourceforge.net/occjava.html
-      \endverb
-      \warn{\item Datamodel: Entry 'occjava' (Tesi_Bibliography.bib): Invalid format '01.16.2015' of date field 'date' - ignoring}
-    \endentry
     \entry{attanasio}{thesis}{}
       \name{author}{1}{}{%
         {{hash=16469682b233c4ccda7a388f3cb3a68c}{Attanasio}{A\bibinitperiod}{L.}{L\bibinitperiod}{}{}{}{}}%
@@ -98,26 +52,6 @@
       \field{title}{Development of a Java Application for Parametric Aircraft Design}
       \field{type}{Master thesis}
       \field{year}{2014}
-    \endentry
-    \entry{fuselageunina}{other}{}
-      \name{author}{1}{}{%
-        {{hash=16469682b233c4ccda7a388f3cb3a68c}{Attanasio}{A\bibinitperiod}{L.}{L\bibinitperiod}{}{}{}{}}%
-      }
-      \list{institution}{1}{%
-        {University of Naples Federico II}%
-      }
-      \list{location}{1}{%
-        {Naples}%
-      }
-      \strng{namehash}{16469682b233c4ccda7a388f3cb3a68c}
-      \strng{fullhash}{16469682b233c4ccda7a388f3cb3a68c}
-      \field{sortinit}{A}
-      \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{Fuselage aerodynamic prediction methods}
-      \field{year}{2015}
-      \warn{\item Name "F. Nicolosi, P. Della Vecchia, D. Ciliberti, V.Cusati" has too many commas: skipping name}
     \endentry
     \entry{wiki:atr}{online}{}
       \name{author}{1}{}{%
@@ -151,26 +85,6 @@
       \endverb
       \warn{\item Datamodel: Entry 'wiki:boeing' (Tesi_Bibliography.bib): Invalid format '4.02.16' of date field 'date' - ignoring}
     \endentry
-    \entry{ESDU:CrankedWings:Properties}{other}{}
-      \name{author}{1}{}{%
-        {{hash=7da2a74e066e90281bae34a5d86abefd}{Authors}{A\bibinitperiod}{Various}{V\bibinitperiod}{}{}{}{}}%
-      }
-      \list{institution}{1}{%
-        {Engineering Science Data Unit}%
-      }
-      \list{location}{1}{%
-        {London}%
-      }
-      \strng{namehash}{7da2a74e066e90281bae34a5d86abefd}
-      \strng{fullhash}{7da2a74e066e90281bae34a5d86abefd}
-      \field{sortinit}{A}
-      \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{number}{Number 76003}
-      \field{title}{ESDU-76003. Geometrical properties of cranked and straight tapered wing planforms}
-      \field{year}{2001}
-    \endentry
     \entry{wiki:xml}{online}{}
       \name{author}{1}{}{%
         {{hash=7da2a74e066e90281bae34a5d86abefd}{Authors}{A\bibinitperiod}{Various}{V\bibinitperiod}{}{}{}{}}%
@@ -186,22 +100,6 @@
       \verb https://en.wikipedia.org/wiki/XML
       \endverb
       \warn{\item Datamodel: Entry 'wiki:xml' (Tesi_Bibliography.bib): Invalid format '23.01.15' of date field 'date' - ignoring}
-    \endentry
-    \entry{guava}{online}{}
-      \name{author}{1}{}{%
-        {{hash=7da2a74e066e90281bae34a5d86abefd}{Authors}{A\bibinitperiod}{Various}{V\bibinitperiod}{}{}{}{}}%
-      }
-      \strng{namehash}{7da2a74e066e90281bae34a5d86abefd}
-      \strng{fullhash}{7da2a74e066e90281bae34a5d86abefd}
-      \field{sortinit}{A}
-      \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{Guava}
-      \verb{url}
-      \verb https://github.com/google/guava
-      \endverb
-      \warn{\item Datamodel: Entry 'guava' (Tesi_Bibliography.bib): Invalid format '01.16.2015' of date field 'date' - ignoring}
     \endentry
     \entry{induced}{online}{}
       \name{author}{1}{}{%
@@ -234,38 +132,6 @@
       \verb https://en.wikipedia.org/wiki/Java_(programming_language)
       \endverb
       \warn{\item Datamodel: Entry 'wiki:java' (Tesi_Bibliography.bib): Invalid format '17.02.16' of date field 'date' - ignoring}
-    \endentry
-    \entry{jface}{online}{}
-      \name{author}{1}{}{%
-        {{hash=7da2a74e066e90281bae34a5d86abefd}{Authors}{A\bibinitperiod}{Various}{V\bibinitperiod}{}{}{}{}}%
-      }
-      \strng{namehash}{7da2a74e066e90281bae34a5d86abefd}
-      \strng{fullhash}{7da2a74e066e90281bae34a5d86abefd}
-      \field{sortinit}{A}
-      \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{JFace}
-      \verb{url}
-      \verb https://wiki.eclipse.org/JFace
-      \endverb
-      \warn{\item Datamodel: Entry 'jface' (Tesi_Bibliography.bib): Invalid format '01.24.2015' of date field 'date' - ignoring}
-    \endentry
-    \entry{wiki:mvc}{online}{}
-      \name{author}{1}{}{%
-        {{hash=7da2a74e066e90281bae34a5d86abefd}{Authors}{A\bibinitperiod}{Various}{V\bibinitperiod}{}{}{}{}}%
-      }
-      \strng{namehash}{7da2a74e066e90281bae34a5d86abefd}
-      \strng{fullhash}{7da2a74e066e90281bae34a5d86abefd}
-      \field{sortinit}{A}
-      \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{Model View Controller}
-      \verb{url}
-      \verb https://en.wikipedia.org/wiki/Model%C3%A2%C2%80%C2%93view%C3%A2%C2%80%C2%93controller
-      \endverb
-      \warn{\item Datamodel: Entry 'wiki:mvc' (Tesi_Bibliography.bib): Invalid format '01.25.2015' of date field 'date' - ignoring}
     \endentry
     \entry{plotdigitizer}{online}{}
       \name{author}{1}{}{%
@@ -315,22 +181,6 @@
       \verb https://www.grc.nasa.gov/www/K-12/airplane/liftco.html
       \endverb
     \endentry
-    \entry{swt}{online}{}
-      \name{author}{1}{}{%
-        {{hash=7da2a74e066e90281bae34a5d86abefd}{Authors}{A\bibinitperiod}{Various}{V\bibinitperiod}{}{}{}{}}%
-      }
-      \strng{namehash}{7da2a74e066e90281bae34a5d86abefd}
-      \strng{fullhash}{7da2a74e066e90281bae34a5d86abefd}
-      \field{sortinit}{A}
-      \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{The Standard Widget Toolkit}
-      \verb{url}
-      \verb https://www.eclipse.org/swt/
-      \endverb
-      \warn{\item Datamodel: Entry 'swt' (Tesi_Bibliography.bib): Invalid format '01.16.2015' of date field 'date' - ignoring}
-    \endentry
     \entry{adapco}{online}{}
       \name{author}{1}{}{%
         {{hash=7da2a74e066e90281bae34a5d86abefd}{Authors}{A\bibinitperiod}{Various}{V\bibinitperiod}{}{}{}{}}%
@@ -345,54 +195,6 @@
       \verb{url}
       \verb http://www.cd-adapco.com/
       \endverb
-    \endentry
-    \entry{windowBuilder}{online}{}
-      \name{author}{1}{}{%
-        {{hash=7da2a74e066e90281bae34a5d86abefd}{Authors}{A\bibinitperiod}{Various}{V\bibinitperiod}{}{}{}{}}%
-      }
-      \strng{namehash}{7da2a74e066e90281bae34a5d86abefd}
-      \strng{fullhash}{7da2a74e066e90281bae34a5d86abefd}
-      \field{sortinit}{A}
-      \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{Window Builder}
-      \verb{url}
-      \verb https://eclipse.org/windowbuilder/
-      \endverb
-      \warn{\item Datamodel: Entry 'windowBuilder' (Tesi_Bibliography.bib): Invalid format '01.16.2015' of date field 'date' - ignoring}
-    \endentry
-    \entry{reflectutils}{online}{}
-      \name{author}{1}{}{%
-        {{hash=aec03309bff4a6755dcbcecb33d2b403}{Azeckoski}{A\bibinitperiod}{}{}{}{}{}{}}%
-      }
-      \strng{namehash}{aec03309bff4a6755dcbcecb33d2b403}
-      \strng{fullhash}{aec03309bff4a6755dcbcecb33d2b403}
-      \field{sortinit}{A}
-      \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{ReflectUtils}
-      \verb{url}
-      \verb https://code.google.com/p/reflectutils/
-      \endverb
-      \warn{\item Datamodel: Entry 'reflectutils' (Tesi_Bibliography.bib): Invalid format '01.16.2015' of date field 'date' - ignoring}
-    \endentry
-    \entry{graphviz}{online}{}
-      \name{author}{1}{}{%
-        {{hash=7b28476144725fce1d9a4b552b3ed845}{Bilgin}{B\bibinitperiod}{A.\bibnamedelimi et\bibnamedelima al.}{A\bibinitperiod\bibinitdelim e\bibinitperiod\bibinitdelim a\bibinitperiod}{}{}{}{}}%
-      }
-      \strng{namehash}{7b28476144725fce1d9a4b552b3ed845}
-      \strng{fullhash}{7b28476144725fce1d9a4b552b3ed845}
-      \field{sortinit}{B}
-      \field{sortinithash}{4ecbea03efd0532989d3836d1a048c32}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{Graphviz}
-      \verb{url}
-      \verb http://www.graphviz.org/
-      \endverb
-      \warn{\item Datamodel: Entry 'graphviz' (Tesi_Bibliography.bib): Invalid format '02.02.2015' of date field 'date' - ignoring}
     \endentry
     \entry{NASA:Blackwell}{other}{}
       \name{author}{1}{}{%
@@ -430,45 +232,6 @@
       \field{title}{Volume II. Flying Qualities Phase. Chapter 5: Longitudinal Static Stability.}
       \field{year}{OCT 1990}
     \endentry
-    \entry{Calcara}{book}{}
-      \name{author}{1}{}{%
-        {{hash=f7aa02988a849f20d5bc672418c62716}{Calcara}{C\bibinitperiod}{M.}{M\bibinitperiod}{}{}{}{}}%
-      }
-      \list{location}{1}{%
-        {Napoli}%
-      }
-      \list{publisher}{1}{%
-        {Edizioni CUEN}%
-      }
-      \strng{namehash}{f7aa02988a849f20d5bc672418c62716}
-      \strng{fullhash}{f7aa02988a849f20d5bc672418c62716}
-      \field{sortinit}{C}
-      \field{sortinithash}{59f25d509f3381b07695554a9f35ecb2}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{isbn}{9788871460062}
-      \field{title}{Elementi di dinamica del velivolo}
-      \field{year}{1988}
-      \verb{url}
-      \verb http://books.google.it/books?id=HqBoAQAACAAJ
-      \endverb
-    \endentry
-    \entry{jscience}{online}{}
-      \name{author}{1}{}{%
-        {{hash=577c772e504efcfcc6e0b45594b8de24}{Dautelle}{D\bibinitperiod}{Jean-Marie}{J\bibinithyphendelim M\bibinitperiod}{}{}{}{}}%
-      }
-      \strng{namehash}{577c772e504efcfcc6e0b45594b8de24}
-      \strng{fullhash}{577c772e504efcfcc6e0b45594b8de24}
-      \field{sortinit}{D}
-      \field{sortinithash}{78f7c4753a2004675f316a80bdb31742}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{Jscience}
-      \verb{url}
-      \verb http://jscience.org/
-      \endverb
-      \warn{\item Datamodel: Entry 'jscience' (Tesi_Bibliography.bib): Invalid format '2015.01.05' of date field 'date' - ignoring}
-    \endentry
     \entry{XFoil:website}{other}{}
       \name{author}{2}{}{%
         {{hash=169b25015254192954d272e85b4141a6}{Drela}{D\bibinitperiod}{M.}{M\bibinitperiod}{}{}{}{}}%
@@ -502,66 +265,6 @@
       \field{title}{BEHIND ADAS 1.0}
       \field{year}{2011}
     \endentry
-    \entry{apacheCommonsMath}{online}{}
-      \name{author}{1}{}{%
-        {{hash=ffe4cf17ca8c1f982178700c0396c583}{Foundation}{F\bibinitperiod}{The\bibnamedelimb Apache\bibnamedelima Software}{T\bibinitperiod\bibinitdelim A\bibinitperiod\bibinitdelim S\bibinitperiod}{}{}{}{}}%
-      }
-      \strng{namehash}{ffe4cf17ca8c1f982178700c0396c583}
-      \strng{fullhash}{ffe4cf17ca8c1f982178700c0396c583}
-      \field{sortinit}{F}
-      \field{sortinithash}{c6a7d9913bbd7b20ea954441c0460b78}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{Apache Commons Math}
-      \verb{url}
-      \verb http://commons.apache.org/proper/commons-math/
-      \endverb
-      \warn{\item Datamodel: Entry 'apacheCommonsMath' (Tesi_Bibliography.bib): Invalid format '01.16.2015' of date field 'date' - ignoring}
-    \endentry
-    \entry{apachePOI}{online}{}
-      \name{author}{1}{}{%
-        {{hash=ffe4cf17ca8c1f982178700c0396c583}{Foundation}{F\bibinitperiod}{The\bibnamedelimb Apache\bibnamedelima Software}{T\bibinitperiod\bibinitdelim A\bibinitperiod\bibinitdelim S\bibinitperiod}{}{}{}{}}%
-      }
-      \strng{namehash}{ffe4cf17ca8c1f982178700c0396c583}
-      \strng{fullhash}{ffe4cf17ca8c1f982178700c0396c583}
-      \field{sortinit}{F}
-      \field{sortinithash}{c6a7d9913bbd7b20ea954441c0460b78}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{Apache POI}
-      \verb{url}
-      \verb http://poi.apache.org/
-      \endverb
-      \warn{\item Datamodel: Entry 'apachePOI' (Tesi_Bibliography.bib): Invalid format '01.16.2015' of date field 'date' - ignoring}
-    \endentry
-    \entry{apache}{online}{}
-      \name{author}{1}{}{%
-        {{hash=ffe4cf17ca8c1f982178700c0396c583}{Foundation}{F\bibinitperiod}{The\bibnamedelimb Apache\bibnamedelima Software}{T\bibinitperiod\bibinitdelim A\bibinitperiod\bibinitdelim S\bibinitperiod}{}{}{}{}}%
-      }
-      \strng{namehash}{ffe4cf17ca8c1f982178700c0396c583}
-      \strng{fullhash}{ffe4cf17ca8c1f982178700c0396c583}
-      \field{sortinit}{F}
-      \field{sortinithash}{c6a7d9913bbd7b20ea954441c0460b78}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{Apache projects}
-      \verb{url}
-      \verb http://www.apache.org/
-      \endverb
-      \warn{\item Datamodel: Entry 'apache' (Tesi_Bibliography.bib): Invalid format '01.16.15' of date field 'date' - ignoring}
-    \endentry
-    \entry{gur}{article}{}
-      \list{publisher}{1}{%
-        {Journal of Aircraft}%
-      }
-      \field{sortinit}{F}
-      \field{sortinithash}{c6a7d9913bbd7b20ea954441c0460b78}
-      \field{labeltitlesource}{title}
-      \field{series}{Journal of Aircraft 47 (4)}
-      \field{title}{Full-configuration drag estimation}
-      \field{year}{2010}
-      \warn{\item Name "Gur, O., Mason, W.H., Schetz, J.A." has too many commas: skipping name}
-    \endentry
     \entry{gambardella}{thesis}{}
       \name{author}{1}{}{%
         {{hash=cc9b934b91d32cfb58373c7b06601052}{Gambardella}{G\bibinitperiod}{D.}{D\bibinitperiod}{}{}{}{}}%
@@ -594,20 +297,6 @@
       \verb http://www.jfree.org/jfreechart/
       \endverb
       \warn{\item Datamodel: Entry 'jfreechart' (Tesi_Bibliography.bib): Invalid format '01.16.2015' of date field 'date' - ignoring}
-    \endentry
-    \entry{NACATR711}{manual}{}
-      \name{author}{2}{}{%
-        {{hash=37facf4265994b71648b890ec64a43c9}{Gilruth}{G\bibinitperiod}{R.R}{R\bibinitperiod}{}{}{}{}}%
-        {{hash=a12b89a0fbb0aed23fff502476d7c79b}{White}{W\bibinitperiod}{M.D.}{M\bibinitperiod}{}{}{}{}}%
-      }
-      \strng{namehash}{0ffc280cb6f8547f57a4a1eadeb088b4}
-      \strng{fullhash}{0ffc280cb6f8547f57a4a1eadeb088b4}
-      \field{sortinit}{G}
-      \field{sortinithash}{1c854ef9177a91bf894e66485bdbd3ed}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{NACA TR 711 - Analysis And Prediction Of Longitudinal Stability of Airplanes}
-      \warn{\item Datamodel: Entry 'NACATR711' (Tesi_Bibliography.bib): Invalid format '12.12.1940' of date field 'date' - ignoring}
     \endentry
     \entry{uninagiordano}{other}{}
       \name{author}{1}{}{%
@@ -654,45 +343,6 @@
       \verb http://www.mh-aerotools.de/airfoils/javafoil.htm
       \endverb
     \endentry
-    \entry{hilton1951high}{book}{}
-      \name{author}{1}{}{%
-        {{hash=8870ba735beab90427263c4a46389153}{Hilton}{H\bibinitperiod}{W.F.}{W\bibinitperiod}{}{}{}{}}%
-      }
-      \list{publisher}{1}{%
-        {Longmans, Green}%
-      }
-      \strng{namehash}{8870ba735beab90427263c4a46389153}
-      \strng{fullhash}{8870ba735beab90427263c4a46389153}
-      \field{sortinit}{H}
-      \field{sortinithash}{82012198d5dfa657b8c4a168793268a6}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{High-speed Aerodynamics}
-      \field{year}{1951}
-      \verb{url}
-      \verb https://books.google.it/books?id=%5C_RRFAAAAMAAJ
-      \endverb
-    \endentry
-    \entry{DATCOM}{other}{}
-      \true{moreauthor}
-      \name{author}{1}{}{%
-        {{hash=921cd1a3441b5c38befc868516b6853d}{Hoak}{H\bibinitperiod}{D.\bibnamedelimi E.}{D\bibinitperiod\bibinitdelim E\bibinitperiod}{}{}{}{}}%
-      }
-      \list{institution}{1}{%
-        {Air Force Wright Aeronautical Laboratories}%
-      }
-      \strng{namehash}{1048ab995e092dbe07d863282b1a51b6}
-      \strng{fullhash}{1048ab995e092dbe07d863282b1a51b6}
-      \field{sortinit}{H}
-      \field{sortinithash}{82012198d5dfa657b8c4a168793268a6}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{note}{(Revised 1978)}
-      \field{number}{TR-83-3048}
-      \field{title}{The USAF Stability and Control DATCOM}
-      \field{type}{techreport}
-      \field{year}{1960}
-    \endentry
     \entry{howe2000aircraft}{book}{}
       \name{author}{1}{}{%
         {{hash=bcd070b18e34c8795189c9573db5b837}{Howe}{H\bibinitperiod}{D.}{D\bibinitperiod}{}{}{}{}}%
@@ -729,41 +379,6 @@
       \field{labeltitlesource}{title}
       \field{title}{Aircraft Loading and Structural Layout}
       \field{year}{2004}
-    \endentry
-    \entry{huwaldt:atmo}{online}{}
-      \name{author}{1}{}{%
-        {{hash=9cf3f33e86c0e23d134218c500bdd07d}{Huwaldt}{H\bibinitperiod}{J.}{J\bibinitperiod}{}{}{}{}}%
-      }
-      \strng{namehash}{9cf3f33e86c0e23d134218c500bdd07d}
-      \strng{fullhash}{9cf3f33e86c0e23d134218c500bdd07d}
-      \field{sortinit}{H}
-      \field{sortinithash}{82012198d5dfa657b8c4a168793268a6}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{1976 Standard Atmosphere Program}
-      \verb{url}
-      \verb http://thehuwaldtfamily.org/java/Applications/StdAtmosphere/StdAtmosphere.html
-      \endverb
-      \warn{\item Datamodel: Entry 'huwaldt:atmo' (Tesi_Bibliography.bib): Invalid format '01.16.2015' of date field 'date' - ignoring}
-    \endentry
-    \entry{Jacobs:NACA:Rep:540}{other}{}
-      \name{author}{2}{}{%
-        {{hash=59c845940a432df8281d048311cf8285}{Jacobs}{J\bibinitperiod}{E.\bibnamedelimi N.}{E\bibinitperiod\bibinitdelim N\bibinitperiod}{}{}{}{}}%
-        {{hash=4574cb3a4e95d270f8ac33dcf18ed9f3}{Ward}{W\bibinitperiod}{K.\bibnamedelimi E.}{K\bibinitperiod\bibinitdelim E\bibinitperiod}{}{}{}{}}%
-      }
-      \list{institution}{1}{%
-        {NASA Langley Research Center}%
-      }
-      \strng{namehash}{32b76dcc32e57399072a09aaba810d81}
-      \strng{fullhash}{32b76dcc32e57399072a09aaba810d81}
-      \field{sortinit}{J}
-      \field{sortinithash}{ec3950a647c092421b9fcca6d819504a}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{number}{NACA-TR-540}
-      \field{title}{Interference of wing and fuselage from tests of 209 combinations in the NACA variable-density tunnel}
-      \field{type}{techreport}
-      \field{year}{1936}
     \endentry
     \entry{jenkinson1999civil}{book}{}
       \name{author}{3}{}{%
@@ -819,20 +434,6 @@
       \endverb
       \warn{\item Datamodel: Entry 'args4j' (Tesi_Bibliography.bib): Invalid format '01.28.15' of date field 'date' - ignoring}
     \endentry
-    \entry{stanford:kroo}{book}{}
-      \name{author}{2}{}{%
-        {{hash=58ced680c7c933ab452921a518c9027c}{Kroo}{K\bibinitperiod}{I.}{I\bibinitperiod}{}{}{}{}}%
-        {{hash=d3bc81e78b350e9db2d354c857f3497f}{Shevell}{S\bibinitperiod}{R.}{R\bibinitperiod}{}{}{}{}}%
-      }
-      \strng{namehash}{29b8d4b8c8cc0be35f0902f26481a4aa}
-      \strng{fullhash}{29b8d4b8c8cc0be35f0902f26481a4aa}
-      \field{sortinit}{K}
-      \field{sortinithash}{a7d5b3aec5a0890aae7baf85a209abfc}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{Aircraft Design: Synthesis and Analysis}
-      \field{year}{1999}
-    \endentry
     \entry{kundu}{book}{}
       \name{author}{1}{}{%
         {{hash=77ed73acccd07b5d03dc285043a68b7d}{Kundu}{K\bibinitperiod}{Ajoy\bibnamedelima Kumar}{A\bibinitperiod\bibinitdelim K\bibinitperiod}{}{}{}{}}%
@@ -849,39 +450,27 @@
       \field{title}{Aircraft Design}
       \field{year}{2010}
     \endentry
-    \entry{jlatexmath}{online}{}
-      \name{author}{2}{}{%
-        {{hash=9f27eac75141939b0951230f9254faf8}{Ledru}{L\bibinitperiod}{S.}{S\bibinitperiod}{}{}{}{}}%
-        {{hash=5716dc3d3bb457b843b8227884628aa9}{Denizet}{D\bibinitperiod}{C.}{C\bibinitperiod}{}{}{}{}}%
+    \entry{adoptunina}{other}{}
+      \name{author}{4}{}{%
+        {{hash=3e6734fb41f8cf09eb2fbf5cb9d8fc64}{Marco}{M\bibinitperiod}{A.\bibnamedelimi De}{A\bibinitperiod\bibinitdelim D\bibinitperiod}{}{}{}{}}%
+        {{hash=17d7540fa988e76824185545af56573d}{Nicolosi}{N\bibinitperiod}{F.}{F\bibinitperiod}{}{}{}{}}%
+        {{hash=16469682b233c4ccda7a388f3cb3a68c}{Attanasio}{A\bibinitperiod}{L.}{L\bibinitperiod}{}{}{}{}}%
+        {{hash=5a2a66781c04b8fabe160d426decf2bf}{Vecchia}{V\bibinitperiod}{P.\bibnamedelimi Della}{P\bibinitperiod\bibinitdelim D\bibinitperiod}{}{}{}{}}%
       }
-      \strng{namehash}{8ed53b626ca9e20ada111bfe05aa934b}
-      \strng{fullhash}{8ed53b626ca9e20ada111bfe05aa934b}
-      \field{sortinit}{L}
-      \field{sortinithash}{872351f18d0f736066eda0bf18bfa4f7}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{JLatexMath}
-      \verb{url}
-      \verb http://forge.scilab.org/index.php/p/jlatexmath/
-      \endverb
-      \warn{\item Datamodel: Entry 'jlatexmath' (Tesi_Bibliography.bib): Invalid format '01.16.2015' of date field 'date' - ignoring}
-    \endentry
-    \entry{mason}{article}{}
-      \name{author}{1}{}{%
-        {{hash=2c72016aae936b7cddbe3840cb96338d}{Mason}{M\bibinitperiod}{W.H.}{W\bibinitperiod}{}{}{}{}}%
+      \list{institution}{1}{%
+        {University of Naples Federico II}%
       }
-      \list{publisher}{1}{%
-        {AIAA}%
+      \list{location}{1}{%
+        {Naples}%
       }
-      \strng{namehash}{2c72016aae936b7cddbe3840cb96338d}
-      \strng{fullhash}{2c72016aae936b7cddbe3840cb96338d}
+      \strng{namehash}{fce921b09979e1f9d39b22770603717b}
+      \strng{fullhash}{7937d1c245ff9d583bd662cdd2c372a5}
       \field{sortinit}{M}
       \field{sortinithash}{2684bec41e9697b92699b46491061da2}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{series}{AIAA/AHS/ASEE}
-      \field{title}{Analytic Models for Technology Integration in Aircraft Design}
-      \field{year}{1990}
+      \field{title}{A Java desktop application for Aircraft Preliminary Design}
+      \field{year}{2015}
     \endentry
     \entry{McCormick}{book}{}
       \name{author}{1}{}{%
@@ -912,41 +501,6 @@
       \field{title}{Aircraft conceptual design}
       \field{year}{2012}
     \endentry
-    \entry{Multhopp:A}{other}{}
-      \name{author}{1}{}{%
-        {{hash=ec344729899444fd729b5bc30f40ab4d}{Multhopp}{M\bibinitperiod}{H.}{H\bibinitperiod}{}{}{}{}}%
-      }
-      \list{institution}{1}{%
-        {National Advisory Committee for Aeronautics}%
-      }
-      \strng{namehash}{ec344729899444fd729b5bc30f40ab4d}
-      \strng{fullhash}{ec344729899444fd729b5bc30f40ab4d}
-      \field{sortinit}{M}
-      \field{sortinithash}{2684bec41e9697b92699b46491061da2}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{number}{NASA TM-1036}
-      \field{title}{Aerodynamics of Fuselage}
-      \field{year}{1942}
-    \endentry
-    \entry{Munk:A}{other}{}
-      \name{author}{1}{}{%
-        {{hash=4524b73b51fe30a04775ca16ed23c42e}{Munk}{M\bibinitperiod}{M.\bibnamedelimi M.}{M\bibinitperiod\bibinitdelim M\bibinitperiod}{}{}{}{}}%
-      }
-      \list{institution}{1}{%
-        {National Advisory Committee for Aeronautics}%
-      }
-      \strng{namehash}{4524b73b51fe30a04775ca16ed23c42e}
-      \strng{fullhash}{4524b73b51fe30a04775ca16ed23c42e}
-      \field{sortinit}{M}
-      \field{sortinithash}{2684bec41e9697b92699b46491061da2}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{number}{NASA TR 184}
-      \field{title}{Aerodynamic Forces of Airship Hulls}
-      \field{type}{techreport}
-      \field{year}{1924}
-    \endentry
     \entry{Book:Napolitano:2011}{book}{}
       \name{author}{1}{}{%
         {{hash=9aa997e92905702a0aa93d604c8f332b}{Napolitano}{N\bibinitperiod}{Marcello\bibnamedelima R.}{M\bibinitperiod\bibinitdelim R\bibinitperiod}{}{}{}{}}%
@@ -965,43 +519,6 @@
       \field{year}{2012}
       \verb{url}
       \verb http://www.amazon.com/Aircraft-Dynamics-From-Modeling-Simulation/dp/0470626674
-      \endverb
-    \endentry
-    \entry{Nelson}{book}{}
-      \name{author}{1}{}{%
-        {{hash=3cb584de572054a948bcedf7bcecea86}{Nelson}{N\bibinitperiod}{R.}{R\bibinitperiod}{}{}{}{}}%
-      }
-      \list{publisher}{1}{%
-        {McGraw-Hill}%
-      }
-      \strng{namehash}{3cb584de572054a948bcedf7bcecea86}
-      \strng{fullhash}{3cb584de572054a948bcedf7bcecea86}
-      \field{sortinit}{N}
-      \field{sortinithash}{925374ca63e7594de7fafdb83e64d41d}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{Flight Stability and Automatic Control}
-      \field{year}{1989}
-    \endentry
-    \entry{nelson1998flight}{book}{}
-      \name{author}{1}{}{%
-        {{hash=99fe5378707a239e973973086dbbe991}{Nelson}{N\bibinitperiod}{R.C.}{R\bibinitperiod}{}{}{}{}}%
-      }
-      \list{publisher}{1}{%
-        {McGraw-Hill International Editions}%
-      }
-      \strng{namehash}{99fe5378707a239e973973086dbbe991}
-      \strng{fullhash}{99fe5378707a239e973973086dbbe991}
-      \field{sortinit}{N}
-      \field{sortinithash}{925374ca63e7594de7fafdb83e64d41d}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{isbn}{9780071158381}
-      \field{series}{Aerospace Science \& Technology}
-      \field{title}{Flight Stability and Automatic Control}
-      \field{year}{1998}
-      \verb{url}
-      \verb https://books.google.it/books?id=Uzs8PgAACAAJ
       \endverb
     \endentry
     \entry{nicolai2010fundamentals}{book}{}
@@ -1028,21 +545,28 @@
       \verb https://books.google.it/books?id=qA0oAQAAMAAJ
       \endverb
     \endentry
-    \entry{DLR:Scholz}{article}{}
-      \name{author}{2}{}{%
-        {{hash=772885984a38b5de783e4cb0e672ee02}{Nita}{N\bibinitperiod}{M.}{M\bibinitperiod}{}{}{}{}}%
-        {{hash=240d4b668c1d9b13385287bba76e2d11}{Scholz}{S\bibinitperiod}{D.}{D\bibinitperiod}{}{}{}{}}%
+    \entry{fuselageunina}{other}{}
+      \name{author}{5}{}{%
+        {{hash=17d7540fa988e76824185545af56573d}{Nicolosi}{N\bibinitperiod}{F.}{F\bibinitperiod}{}{}{}{}}%
+        {{hash=5a2a66781c04b8fabe160d426decf2bf}{Vecchia}{V\bibinitperiod}{P.\bibnamedelimi Della}{P\bibinitperiod\bibinitdelim D\bibinitperiod}{}{}{}{}}%
+        {{hash=49f57671ef424a03532b147ccaabb82e}{Ciliberti}{C\bibinitperiod}{D.}{D\bibinitperiod}{}{}{}{}}%
+        {{hash=da84f9d2454ddc91e033c52a7421f064}{V.Cusati}{V\bibinitperiod}{}{}{}{}{}{}}%
+        {{hash=16469682b233c4ccda7a388f3cb3a68c}{Attanasio}{A\bibinitperiod}{L.}{L\bibinitperiod}{}{}{}{}}%
       }
-      \strng{namehash}{683717d21d59cebe42e3730c0e8843b8}
-      \strng{fullhash}{683717d21d59cebe42e3730c0e8843b8}
+      \list{institution}{1}{%
+        {University of Naples Federico II}%
+      }
+      \list{location}{1}{%
+        {Naples}%
+      }
+      \strng{namehash}{d260ccca2001181b09f1363e57476739}
+      \strng{fullhash}{04fe9d3564495a24803db2e1b8ce790d}
       \field{sortinit}{N}
       \field{sortinithash}{925374ca63e7594de7fafdb83e64d41d}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{none}
-      \field{title}{Estimating Oswald Factor From Basic Aircraft Geometrical Parameters}
-      \field{year}{2012}
-      \warn{\item Datamodel: Entry 'DLR:Scholz' (Tesi_Bibliography.bib): Invalid format '02/01/2015' of date field 'date' - ignoring}
+      \field{title}{Fuselage aerodynamic prediction methods}
+      \field{year}{2015}
     \endentry
     \entry{obert2009aerodynamic}{book}{}
       \name{author}{1}{}{%
@@ -1101,25 +625,6 @@
       \verb http://books.google.it/books?id=DHxTAAAAMAAJ
       \endverb
     \endentry
-    \entry{Phillips:JoA:2004}{article}{}
-      \name{author}{1}{}{%
-        {{hash=00f974594fa1fbc2d23c067862a6dbbf}{Phillips}{P\bibinitperiod}{W.\bibnamedelimi F.}{W\bibinitperiod\bibinitdelim F\bibinitperiod}{}{}{}{}}%
-      }
-      \strng{namehash}{00f974594fa1fbc2d23c067862a6dbbf}
-      \strng{fullhash}{00f974594fa1fbc2d23c067862a6dbbf}
-      \field{sortinit}{P}
-      \field{sortinithash}{c0a4896d0e424f9ca4d7f14f2b3428e7}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{endmonth}{02}
-      \field{endyear}{2004}
-      \field{journaltitle}{Journal of Aircraft}
-      \field{month}{01}
-      \field{number}{No. 1}
-      \field{title}{Lifting-Line Analysis for Twisted Wings and Washout-Optimized Wings}
-      \field{volume}{Vol. 41}
-      \field{year}{2004}
-    \endentry
     \entry{philips}{book}{}
       \name{author}{1}{}{%
         {{hash=63fc570f2eed4b27e55799d580637c2f}{Phillips}{P\bibinitperiod}{Warren\bibnamedelima F.}{W\bibinitperiod\bibinitdelim F\bibinitperiod}{}{}{}{}}%
@@ -1138,40 +643,6 @@
       \field{year}{2004}
       \verb{url}
       \verb https://books.google.it/books/about/Mechanics_of_Flight.html?id=6-_iGbJHM-8C&redir_esc=y
-      \endverb
-    \endentry
-    \entry{raymer1992}{book}{}
-      \name{author}{1}{}{%
-        {{hash=93c3dbe92ab67dbce70cb2cf0c5738da}{Raymer}{R\bibinitperiod}{D.P.}{D\bibinitperiod}{}{}{}{}}%
-      }
-      \strng{namehash}{93c3dbe92ab67dbce70cb2cf0c5738da}
-      \strng{fullhash}{93c3dbe92ab67dbce70cb2cf0c5738da}
-      \field{sortinit}{R}
-      \field{sortinithash}{c7387613477035a752d935acfc3e3ea2}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{Aircraft Design: A Conceptual Approach}
-      \field{year}{1992}
-    \endentry
-    \entry{raymer2013aircraft}{book}{}
-      \name{author}{1}{}{%
-        {{hash=93c3dbe92ab67dbce70cb2cf0c5738da}{Raymer}{R\bibinitperiod}{D.P.}{D\bibinitperiod}{}{}{}{}}%
-      }
-      \list{publisher}{1}{%
-        {Amer Inst of Aeronautics \&}%
-      }
-      \strng{namehash}{93c3dbe92ab67dbce70cb2cf0c5738da}
-      \strng{fullhash}{93c3dbe92ab67dbce70cb2cf0c5738da}
-      \field{sortinit}{R}
-      \field{sortinithash}{c7387613477035a752d935acfc3e3ea2}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{isbn}{9781600869211}
-      \field{series}{AIAA Education Series}
-      \field{title}{Aircraft Design / RDS-Student: A Conceptual Approach}
-      \field{year}{2013}
-      \verb{url}
-      \verb https://books.google.it/books?id=bvxllgEACAAJ
       \endverb
     \endentry
     \entry{roskam1999airplane}{book}{}
@@ -1218,43 +689,6 @@
       \verb https://books.google.it/books?id=GIHHFkd829cC
       \endverb
     \endentry
-    \entry{RoskamFlightDynamics}{book}{}
-      \name{author}{1}{}{%
-        {{hash=f21425413dd55dbd465800547a46b61c}{Roskam}{R\bibinitperiod}{J.}{J\bibinitperiod}{}{}{}{}}%
-      }
-      \list{publisher}{1}{%
-        {DARcorporation}%
-      }
-      \strng{namehash}{f21425413dd55dbd465800547a46b61c}
-      \strng{fullhash}{f21425413dd55dbd465800547a46b61c}
-      \field{sortinit}{R}
-      \field{sortinithash}{c7387613477035a752d935acfc3e3ea2}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{Airplane Flight Dynamics and Automatic Flight Controls}
-      \field{year}{2001}
-    \endentry
-    \entry{Book:Roskam:Airplane:Flight:Dynamics:2003}{book}{}
-      \name{author}{1}{}{%
-        {{hash=f21425413dd55dbd465800547a46b61c}{Roskam}{R\bibinitperiod}{J.}{J\bibinitperiod}{}{}{}{}}%
-      }
-      \list{publisher}{1}{%
-        {Darcorporation}%
-      }
-      \strng{namehash}{f21425413dd55dbd465800547a46b61c}
-      \strng{fullhash}{f21425413dd55dbd465800547a46b61c}
-      \field{sortinit}{R}
-      \field{sortinithash}{c7387613477035a752d935acfc3e3ea2}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{isbn}{9781884885181}
-      \field{series}{Airplane Flight Dynamics and Automatic Flight Controls}
-      \field{title}{Airplane Flight Dynamics and Automatic Flight Controls}
-      \field{year}{2003}
-      \verb{url}
-      \verb http://books.google.it/books?id=pWUAzy87zLYC
-      \endverb
-    \endentry
     \entry{roskammethods}{book}{}
       \name{author}{1}{}{%
         {{hash=f21425413dd55dbd465800547a46b61c}{Roskam}{R\bibinitperiod}{J.}{J\bibinitperiod}{}{}{}{}}%
@@ -1270,43 +704,6 @@
       \field{labeltitlesource}{title}
       \field{title}{Methods for Estimating Stability and Control Derivatives of Conventional Subsonic Airplanes}
       \field{year}{1971}
-    \endentry
-    \entry{sadraey2012aircraft}{book}{}
-      \name{author}{1}{}{%
-        {{hash=f37bdc36291a5f5f76bf75ec2ffd83b8}{Sadraey}{S\bibinitperiod}{M.H.}{M\bibinitperiod}{}{}{}{}}%
-      }
-      \list{publisher}{1}{%
-        {Wiley}%
-      }
-      \strng{namehash}{f37bdc36291a5f5f76bf75ec2ffd83b8}
-      \strng{fullhash}{f37bdc36291a5f5f76bf75ec2ffd83b8}
-      \field{sortinit}{S}
-      \field{sortinithash}{fd1e7c5ab79596b13dbbb67f8d70fb5a}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{isbn}{9781118352809}
-      \field{series}{Aerospace Series}
-      \field{title}{Aircraft Design: A Systems Engineering Approach}
-      \field{year}{2012}
-      \verb{url}
-      \verb https://books.google.it/books?id=VT-Tc3Tx5aEC
-      \endverb
-    \endentry
-    \entry{opencascade}{online}{}
-      \name{author}{1}{}{%
-        {{hash=abcfd3255d49f02c41794aa6e3be203a}{S.A.S.}{S\bibinitperiod}{OPEN\bibnamedelima CASCADE}{O\bibinitperiod\bibinitdelim C\bibinitperiod}{}{}{}{}}%
-      }
-      \strng{namehash}{abcfd3255d49f02c41794aa6e3be203a}
-      \strng{fullhash}{abcfd3255d49f02c41794aa6e3be203a}
-      \field{sortinit}{S}
-      \field{sortinithash}{fd1e7c5ab79596b13dbbb67f8d70fb5a}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{OpenCASCADE}
-      \verb{url}
-      \verb http://www.opencascade.org/
-      \endverb
-      \warn{\item Datamodel: Entry 'opencascade' (Tesi_Bibliography.bib): Invalid format '01.16.2015' of date field 'date' - ignoring}
     \endentry
     \entry{schimidth}{book}{}
       \name{author}{1}{}{%
@@ -1469,26 +866,6 @@
       \verb{url}
       \verb www.doxygen.org
       \endverb
-    \endentry
-    \entry{Datcom:User:Manual}{manual}{}
-      \name{author}{2}{}{%
-        {{hash=a4f5657b77db5532169db8e0aafd05c4}{Vukelich}{V\bibinitperiod}{S.\bibnamedelimi R.}{S\bibinitperiod\bibinitdelim R\bibinitperiod}{}{}{}{}}%
-        {{hash=0dd762f822b76cdf39099157f975628c}{Williams}{W\bibinitperiod}{J.\bibnamedelimi E.}{J\bibinitperiod\bibinitdelim E\bibinitperiod}{}{}{}{}}%
-      }
-      \list{organization}{1}{%
-        {Updated by Public Domain Aeronautical Software 1999}%
-      }
-      \strng{namehash}{cb06462ec11ea0a86cc6474234a51934}
-      \strng{fullhash}{cb06462ec11ea0a86cc6474234a51934}
-      \field{sortinit}{V}
-      \field{sortinithash}{d18f5ce25ce0b5ca7f924e3f6c04870e}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{addendum}{Volume I}
-      \field{month}{04}
-      \field{number}{AFFDL-TR-79-3032}
-      \field{title}{The USAF Stability and Control Digital Datcom}
-      \field{year}{1979}
     \endentry
     \entry{Young:Flaps}{other}{}
       \name{author}{1}{}{%

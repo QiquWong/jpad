@@ -72,6 +72,7 @@ public class NasaBlackwell {
 	private double alphaCurrent;
 	private double [][] influenceFactor;
 	private double [] gamma;
+	double [][] influenceMatrix;
 
 	Amount<Angle> alphaInitial;
 
@@ -365,7 +366,7 @@ public class NasaBlackwell {
 	 */
 	private void buildInfluenceMatrix() {
 
-		double [][] influenceMatrix = new double[nPointsSemispanWise][nPointsSemispanWise];
+		influenceMatrix = new double[nPointsSemispanWise][nPointsSemispanWise];
 
 		// i = row counter; in a row the control point is fixed
 		for(int i=0; i < nPointsSemispanWise; i++) {
@@ -517,6 +518,7 @@ public class NasaBlackwell {
 		}
 
 		calculate(alpha);
+		
 		gamma = get_gammaDistribution().toArray();
 //		System.out.println(" gamma " + Arrays.toString(gamma));
 
@@ -589,6 +591,18 @@ public class NasaBlackwell {
 
 	public MyArray get_clTotalDistribution() {
 		return _clTotalDistribution;
+	}
+
+
+
+	public double[][] getInfluenceMatrix() {
+		return influenceMatrix;
+	}
+
+
+
+	public void setInfluenceMatrix(double[][] influenceMatrix) {
+		this.influenceMatrix = influenceMatrix;
 	}
 
 } // end of NasaBlackwell

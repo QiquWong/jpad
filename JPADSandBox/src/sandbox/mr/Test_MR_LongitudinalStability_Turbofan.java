@@ -36,6 +36,8 @@ import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLvsAlphaCur
 import aircraft.components.liftingSurface.LSAerodynamicsManager.MeanAirfoil;
 import calculators.aerodynamics.LiftCalc;
 import database.databasefunctions.DatabaseReader;
+import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
+import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import javafx.util.Pair;
 import aircraft.components.liftingSurface.LiftingSurface;
@@ -169,6 +171,15 @@ public class Test_MR_LongitudinalStability_Turbofan {
 
 		theWing.setAerodynamics(theLSAnalysis);
 
+		//------------------------------------------------------------------------------------
+		// Setup database(s)
+		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
+		String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
+		String highLiftDatabaseFileName = "HighLiftDatabase.h5";
+		AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
+		HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
+
+
 
 		//--------------------------------------------------------------------------------------
 		// Set databases
@@ -179,7 +190,7 @@ public class Test_MR_LongitudinalStability_Turbofan {
 				);
 
 		// Set database directory	
-		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
+		String databaseFolderPathFus = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
 		String databaseFileName = "FusDes_database.h5";
 
 
@@ -196,7 +207,7 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		double fusSurfRatio = aircraft.get_fuselage().get_area_C().doubleValue(SI.SQUARE_METRE)/
 				aircraft.get_wing().get_surface().doubleValue(SI.SQUARE_METRE);
 
-		FusDesDatabaseReader fusDesDatabaseReader = new FusDesDatabaseReader(databaseFolderPath, databaseFileName);
+		FusDesDatabaseReader fusDesDatabaseReader = new FusDesDatabaseReader(databaseFolderPathFus, databaseFileName);
 		fusDesDatabaseReader.runAnalysis(noseFinenessRatio, windshieldAngle, finenessRatio, tailFinenessRatio, upsweepAngle, xPositionPole);
 
 
@@ -377,10 +388,14 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		System.out.println("\n------------------------------------");
 		theAnalysis.doAnalysis(aircraft,
 				AnalysisTypeEnum.WEIGHTS,
-				AnalysisTypeEnum.BALANCE
+				AnalysisTypeEnum.BALANCE,
+				AnalysisTypeEnum.AERODYNAMIC
 				);
 
-
+		theLSAnalysis.setHighLiftDatabaseReader(highLiftDatabaseReader);
+		theLSHorizontalTail.setHighLiftDatabaseReader(highLiftDatabaseReader);
+		theWing.setAerodynamics(theLSAnalysis);
+		horizontalTail.setAerodynamics(theLSHorizontalTail);
 
 		// -----------------------------------------------------------------------
 		// READING XML FILE
@@ -468,7 +483,7 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		ACStabilityManager theStabilityManager = new ACStabilityManager(meanAirfoil, aircraft, ConditionEnum.CRUISE,
 				alphaMin, alphaMax, alphaBody , true, subfolderPath, pathTakeOff);
 
-		theStabilityManager.CalculateAll();
+		theStabilityManager.calculateAll();
 		theStabilityManager.CalculateDragCharacteristics();
 
 

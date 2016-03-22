@@ -104,8 +104,8 @@ public class AlphaEffective {
 		influenceFactor = theCalculator.getInfluenceFactor();
 		gamma = theCalculator.getGamma();
 
-		//velocity = theOperatingConditions.get_tas().getEstimatedValue(); //meters per second
-		velocity = SpeedCalc.calculateTAS(mach, altitude);
+		velocity = theOperatingConditions.get_tas().getEstimatedValue(); //meters per second
+		//velocity = SpeedCalc.calculateTAS(mach, altitude);
 
 
 		Double[] twistDistribution = MyMathUtils.getInterpolatedValue1DLinear(
