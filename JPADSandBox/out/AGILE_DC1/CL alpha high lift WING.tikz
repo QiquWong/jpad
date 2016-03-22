@@ -1,4 +1,4 @@
-%CL alpha Wing High Lift
+%CL alpha high lift WING
 \begin{tikzpicture}
 
 \begin{axis}[

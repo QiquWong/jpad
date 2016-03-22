@@ -3078,9 +3078,9 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			System.out.println(" -----------HIGH LIFT-------------- ");
 			System.out.println(" alpha max " + alphaMaxHighLiftDegree + " (deg)");
 			System.out.println(" alpha star " + alphaStarFlap*57.3 + " (deg)");
-			System.out.println(" cl max " + cLMaxFlap);
-			System.out.println(" cl star " + cLStarFlap);
-			System.out.println(" cl alpha " + cLAlphaFlap + " (1/rad)");
+			System.out.println(" cL max " + cLMaxFlap);
+			System.out.println(" cL star " + cLStarFlap);
+			System.out.println(" cL alpha " + cLAlphaFlap + " (1/rad)");
 
 			double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
 
@@ -3147,7 +3147,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 					true,
 					legend,
 					subfolderPathHL,
-					"CL alpha Wing High Lift");
+					"CL alpha high lift WING");
 
 			System.out.println("\n----------------------------DONE------------------------------");
 

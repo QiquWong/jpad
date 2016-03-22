@@ -60,6 +60,7 @@ public class Test_MR_Wing_06bis {
 	}
 
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void main(String[] args) throws InstantiationException, IllegalAccessException, CmdLineException {
 
 		Test_MR_Wing_06bis main = new Test_MR_Wing_06bis();
