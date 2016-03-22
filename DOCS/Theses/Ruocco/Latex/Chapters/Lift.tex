@@ -348,13 +348,13 @@ ATR-72 and B747-100B. On these two aircraft analyzes we were made, the results o
 In order to correctly use the lift modulus of JPAD it's necessary to set the correct Reynolds number of airfoils and, consequently, the correct value of $CL_{MAX}$. Referring to \cite{Abbott} the value for ATR 72 are the following
 
 \begin{center}
-\captionof{table}{Airfoils $CL_{MAX}$ for ATR-72. Mach number = 0.42}
+\captionof{table}{Airfoils $CL_{MAX}$ for ATR-72. Mach number = 0.2}
 	\begin{tabular}{ | l | l | l | l |}
 		\hline
 		Station & Airfoil & Reynolds Number & $CL_{max}$ \\ \hline
-		Root & NACA 23018 & $1.35 \cdot 10^7$ & 1.65 \\ \hline
-		Kink & NACA 23018 &  $1.35 \cdot 10^7$ & 1.65 \\ \hline
-		Tip & NACA 23015 & $9.47 \cdot 10^6$ & 1.7 \\
+		Root & NACA 23018 & $6.28 \cdot 10^6$ & 1.65 \\ \hline
+		Kink & NACA 23018 &  $6.28 \cdot 10^6$ & 1.65 \\ \hline
+		Tip & NACA 23015 & $4.41 \cdot 10^6$ & 1.7 \\
 		\hline
 	\end{tabular}
 \end{center}
@@ -362,8 +362,8 @@ In order to correctly use the lift modulus of JPAD it's necessary to set the cor
 
 \begin{figure}[H]
 	\centering
-	{\includegraphics[height=6.9cm]{Immagini/ATR_Topview.pdf}} 
-	\caption{Lift curve for ATR-72 airfoils and wing.}
+	{\includegraphics[height=6.8cm]{Immagini/ATR_Topview.pdf}} 
+	\caption{Lift curve for ATR-72 airfoils and wing for M=0.2.}
 	\label{fig:clalf}
 \end{figure}
 
@@ -447,6 +447,7 @@ System.out.println("\n \n \t \t WRITING CHART TO FILE. Stall path. ");
 		legend[1] = "CL distribution at alpha " 
 		+ Math.toDegrees( alphaAtCLMax.getEstimatedValue());
 
+
 MyChartToFileUtils.plot(
 		semiSpanAd,	clDistribution, // array to plot
 		0.0, 1.0, 0.0, 2.0,					
@@ -461,7 +462,7 @@ System.out.println("\t \t DONE ");
 \end{lstlisting}
 
 
-\begin{lstlisting}[caption={{\footnotesize Lift Characteristics of a Lifting Surface - Results. ATR-72}},label= [style=\bfseries]{Listing}]
+\begin{lstlisting}[caption={{\footnotesize Lift Characteristics of a Lifting Surface - Results for M=0.42. ATR-72}},label= [style=\bfseries]{Listing}]
 ------------------------------------
 
  LIFT CHARACTERISTICS  
@@ -471,9 +472,6 @@ System.out.println("\t \t DONE ");
  ------------------- 
 |       WING        |
  ------------------- 
-
-
-
  	 Data: 
 Angle of attack alpha body (deg) = 2.0
 Angle of incidence of wing (deg) = 2.0
@@ -596,28 +594,28 @@ CL of wing at TAKE_OFF at alpha body = 1.2378170282582692
 
 \subsection{BOEING 747-100B}
 
+\begin{figure}[H]
+	\centering
+	{\includegraphics[height=6.9cm]{Immagini/BOEING_Topview.pdf}} 
+	\caption{Lift curve for BOEING 747-100B similar airfoils and wing.}
+	\label{fig:clalf}
+\end{figure}
 
 \begin{center}
 \captionof{table}{Airfoils $CL_{MAX}$ for BOEING 747-100B. Mach number = 0.84}
 	\begin{tabular}{ | l | l | l | l |}
 		\hline
 		Station & Airfoil & Reynolds Number & $CL_{max}$ \\ \hline
-		Root & NACA 23018 & $1.35 \cdot 10^7$ & 1.65 \\ \hline
-		Kink & NACA 23018 &  $1.35 \cdot 10^7$ & 1.65 \\ \hline
-		Tip & NACA 23015 & $9.47 \cdot 10^6$ & 1.7 \\
+		Root & similar to BAC root 747 & $3.67 \cdot 10^7$ & 1.7 \\ \hline
+		Kink & similar to BAC kink 747 &  $2.18 \cdot 10^7$ & 1.73 \\ \hline
+		Tip & similar to BAC tip 747 & $9.53 \cdot 10^6$ & 1.82 \\
 		\hline
 	\end{tabular}
 \end{center}
 
 
-\begin{figure}[H]
-	\centering
-	{\includegraphics[height=6.9cm]{Immagini/BOEING_Topview.pdf}} 
-	\caption{Lift curve for BOEING 747-100B airfoils and wing.}
-	\label{fig:clalf}
-\end{figure}
 
-\begin{lstlisting}[caption={{\footnotesize Lift Characteristics of a Lifting Surface - Results. BOEING 747-100B}},label= [style=\bfseries]{Listing}]
+\begin{lstlisting}[caption={{\footnotesize Lift Characteristics of a Lifting Surface - Results. BOEING 747-100B for M=0.85}},label= [style=\bfseries]{Listing}]
 ------------------------------------
 
  LIFT CHARACTERISTICS  
@@ -635,16 +633,17 @@ Angle of attack alpha body (deg) = 2.000147322785501
 Angle of attack alpha Wing (deg) = 3.4999999999999996
 
  -----------CLEAN-------------- 
- alpha max 17.81297308022476 (deg)
- alpha star 9.627481493098728 (deg)
- cL max 1.5370911540497318
- cL star 0.9854862505109439
- cL alpha 5.2277764183461874 (1/rad)
+ alpha max 15.632268822248909 (deg)
+ alpha star 9.749010907718121 (deg)
+ cL max 1.3961111386040277
+ cL star 1.0698441603187268
+ cL alpha 5.4275479968166955 (1/rad)
 
 
-CL wing Clean Array [-0.2122255467040544, -0.16194939163113703, ....]
 
-CL of Isolated wing at alpha body = 0.4264678307037476
+CL wing Clean Array [-0.18514784517157623, -0.12715075362802075, ...]
+
+CL of Isolated wing at alpha body = 0.4779522348097419
 
 -------------------------------------
 	 	 	WRITING CL vs ALPHA CHART TO FILE  
@@ -665,23 +664,13 @@ CL of Isolated wing at alpha body = 0.4264678307037476
 \end{figure}
 
 
-
-\begin{figure}[H]
-\centering
-\input{immagini/clalfaboeing.tikz}
-\caption{BOEING 747-100B CL vs Alpha_w at Mach 0.84.}
-\label{fig:clB}
-\end{figure}
-
-
-
 \begin{center}
 \captionof{table}{High-lift devices geometrical data for BOEING 747-100B. Flap.}
 	\begin{tabular}{| l | l | l | l | l |}
 		\hline
 		 Number of Flap & Type &  $\eta$ in &  $\eta$ out &   $\frac{c_{f}}{c} $  \\ \hline
-				1  & Triple Slotted&  0.104  & 0.357  & 0.13 \\ \hline 
-		         2& Triple Slotted & 0.411 & 0.636 &0.13\\ \hline 
+				1  & Triple Slotted&  0.104  & 0.357  & 0.18 \\ \hline 
+		         2& Triple Slotted & 0.411 & 0.636 &0.18\\ \hline 
 		\hline
 	\end{tabular}
 \end{center}
@@ -706,7 +695,7 @@ CL of Isolated wing at alpha body = 0.4264678307037476
 		\hline
 		Configuration &  $\delta_{f_1}$ & $\delta_{f_2}$ &  $\delta_{s_1}$ & $\delta_{s_2}$& $\delta_{s_3}$ \\ \hline
 		Take off &  $5^{\circ}$, $3^{\circ}$, $2^{\circ}$ & $5^{\circ}$, $3^{\circ}$, $2^{\circ}$ & $10^{\circ}$ &  $10^{\circ}$ &  $10^{\circ}$\\ \hline
-		Landing  &    $20^{\circ}$, $10^{\circ}$, $10^{\circ}$ & $20^{\circ}$, $10^{\circ}$, $10^{\circ}$ & $40^{\circ}$ &  $40^{\circ}$ &  $40^{\circ}$\\ \hline
+		Landing  &    $10^{\circ}$, $10^{\circ}$, $10^{\circ}$ & $10^{\circ}$, $10^{\circ}$, $10^{\circ}$ & $20^{\circ}$ &  $20^{\circ}$ &  $20^{\circ}$\\ \hline
 		\hline
 	\end{tabular}
 \end{center}
@@ -719,21 +708,146 @@ CL of Isolated wing at alpha body = 0.4264678307037476
 \label{fig:clATR}
 \end{figure}
 
+\begin{lstlisting}[caption={{\footnotesize Wing Lift characteristic results for TAKE-OFF. BOEING 747-100B, M=0.2 }},label= [style=\bfseries]{Listing}]
+
+
+-----------CLEAN-------------- 
+ alpha max 21.1765973230843 (deg)
+ alpha star 9.7482928348910 (deg)
+ cl max 1.4597134105954703
+ cl star 0.8130642471456172
+ cl alpha 4.121408852511737 (1/rad)
+
+
+ ----------- DELTA HIGH LIFT TAKE_OFF-------------- 
+deltaCL0_flap = 0.5985742466275841
+deltaCLmax_flap = 0.6272563565428977
+deltaCLmax_slat = 0.0
+cLalpha_new = (1/rad) 4.153009870215378
+deltaAlphaMax = (deg) 2.4385950909414857
+deltaCD = 0.023580578759700432
+deltaCMc_4 = -0.12074049808439227
+
+
+ -----------HIGH LIFT-------------- 
+ alpha max 21.431119618227623 (deg)
+ alpha star 10.003551951328152 (deg)
+ cl max 2.086969767138368
+ cl star 1.4354638015005163
+ cl alpha 4.153009870215378 (1/rad)
+ 
+ CL of wing at TAKE_OFF at alpha body 2 (deg) = 0.9641157258005986
+\end{lstlisting}
+
+\section{Modified Stall Path}
+
+In order to evaluate the lift curve of a wing another method has been implemented. This is a modification of Stall Path Method that uses the Nasa-Blackwell lift distribution also for the non linear trait. As known NB method does not see the viscous phenomena. The modified stall path method is based on the consideration that the lift distribution obtained from Nasa-Blackwell is the distribution that you would get if the airfoil's lift moved along the linear lift curve.\\
+The process is the following.
+
+\begin{enumerate}
+	\item For each angle of attack the lift distribution using Nasa-Blackwell method has been evaluated
+	\item For each of n point along the semi-span the local value of $C_L$ is obtained 
+	\item Each of these n points corresponds to an intermediate airfoil with its own lift curve
+	\item With the local value of $C_l$  it's possible to enter in the linear lift chart obtaining the angle of attack of the airfoil
+	\item Using this angle of attack it's possible to enter in the lift curve of the airfoil and derive the local $C_l$
+	\item In this way a new lift distribution is obtained that considers the bidimensional non linearity.
+	\item The wing $C_L$ is obtained integrating the new lift distribution.
+\end{enumerate}
+
+\begin{figure}[H]
+	\centering
+	{\includegraphics[height=9 cm]{Immagini/stallpathmodified.pdf}} 
+	\caption{Flow chart of the modified stall path method.}
+	\label{fig:spmm}
+\end{figure}
 
 \section{Results Comparison}
-% tabelle excel
+In order to compare and validate the results an analysis on a wing has been done with different method.
 
 \begin{center}
-\captionof{table}{Lift results comparison}
+\captionof{table}{Airfoils Data}
 	\begin{tabular}{| l | l | l | l | l |}
 		\hline
-		 Method  & $C_{L_{MAX}}$ & $\alpha_{stall}$ &  $C_{L_{\alpha}} \; (1/rad)$ & $\alpha_{zl}$  \\ \hline
-		 Stall Path  & 0.08  & 0.35 & 0.355 & 0.8  \\ \hline
-		 Phillips And Alley  & 0.08  & 0.35 & 0.355 & 0.8\\ \hline
-		 CFD  & 0.08  & 0.35 & 0.355 & 0.8   \\ \hline
+		 Station & t7c & $C_{l_{max}}$ & $C_{l_{\alpha}}$ & $\alpha_{stall}$ \\ \hline
+		 Root & $0.18$ &  1.90  &  $6.48 (1/rad)$ & $ 18^{\circ} $  \\ \hline
+		 Kink & $0.18$ & 1.90  &  $6.48 (1/rad)$ & $ 18^{\circ} $  \\ \hline
+		 Tip & $0.18$ &  2.1  &  $6.72 (1/rad)$ & $ 17.5^{\circ} $  \\ \hline
+		\hline
+	\end{tabular}
+\end{center}
+\begin{center}
+\captionof{table}{Wing Data}
+	\begin{tabular}{| l | l | l | l | l |  l |}
+		\hline
+		  Span & Aspect Ratio & Cr & Ck & Cr & Ad. station kink  \\ \hline
+		  31  m & 12 & 2.9 m & 2.9 m & 1.65 m & 0.33\\ \hline
+		\hline
+	\end{tabular}
+\end{center}
+\begin{center}
+\captionof{table}{Mission Data}
+	\begin{tabular}{| l | l |}
+		\hline
+		  Reynolds Number & Mach Number\\ \hline
+		  $13 \cdot 10^6$  & 0.2   \\ \hline
 		\hline
 	\end{tabular}
 \end{center}
 
+
+The analysis has been done with the following methods :
+
+\begin{itemize}
+\item Stall Path
+\item Modified Stall Path
+\item Philipps and Alley
+\item CFD
+\end{itemize}
+
+{\bfseries Phillips and Alley}present a method for estimating the maximum wing lift that is based on the classical lifting line theory discussed in Appendix C. Their approach involves providing correction factors for the effects of twist and sweep-back on the span loading of unswept, untwisted, tapered wings. The correction factors are developed with the aid of CFD panel method computations for a variety of conventional wing planforms. Curves for the correction factors are presented for a number of specific taper and aspect ratiosa long with the general method for calculating these effects for other wing geometry. \cite{sforza2014commercial}
+
+\begin{equation}
+C_{L_{max}} = \left ( \frac{C_L}{c_{l_{max}}}\right)_{\Gamma =0 , \epsilon =0} K_{LS} K_{L\Gamma c_{l_{max}}} \left ( 1 - \frac { K_{L \epsilon} C_{L,\alpha \epsilon}}{c_{l_{max}}} \right) 
+\end{equation}
+
+Where $K_{LS}$ is a stall factor
+
+\begin{equation}
+K_{LS}=1 + (0.0042 \AR -0.066) \left (1+2.3 \frac{C_{L_{\alpha}}}{ c_{l_{max}}} \right )
+\end{equation}
+
+\noindent \\
+{\bfseries Computational Fluid Dynamics (CFD)} is a methodology that allows engineers to predict the performance of their designs when exposed to fluid flow, either internal flow (such as the flow of air and gasoline through an engine manifold) or external flow (such as the aerodynamic flow past an automobile or the hydrodynamic flow past a boat). CFD software programs can simulate problems involving gases, liquids and solids and multi-phase problems that depend on the interaction of any number of the above. CFD is used in the design of almost every major product. Reducing uncertainty in the design process, and resulting in higher quality products and designs, with greater robustness that better meet customer requirements.CD-adapco is the world's largest independent CFD focused provider of engineering simulation software, support and services. \cite{adapco}
+
+
+\begin{figure}[H]
+	\centering
+	{\includegraphics[height=4.9 cm]{Immagini/comparisonairfoil.png}} 
+	\caption{Comparison of wing lift curve of airfoils.}
+	\label{fig:met}
+\end{figure}
 	 	 
-% metti variabilita del cl con mach
+
+
+	 	 
+\begin{figure}[H]
+	\centering
+	{\includegraphics[height=9 cm]{Immagini/clmaxcomparison}} 
+	\caption{Comparison of wing lift curve of wing.}
+	\label{fig:met}
+\end{figure}
+	 	 
+	 	 
+\begin{center}
+\captionof{table}{Lift results comparison}
+	\begin{tabular}{| l | l | l |}
+		\hline
+		 Method  & $C_{L_{MAX}}$ & $\alpha_{stall}$   \\ \hline
+		 Stall Path  & 1.75  & $17.1 ^{\circ}$  \\ \hline
+		 Modified Stall Path  & 1.86   & $20 ^{\circ}$  \\ \hline
+		 Phillips And Alley  & 1.83  & n.e.\\ \hline
+		 CFD  & 1.7  & $19.8 ^{\circ}$   \\ \hline
+		\hline
+	\end{tabular}
+\end{center}
+

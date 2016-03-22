@@ -751,7 +751,7 @@ public class ACStabilityManager {
 
 
 		//ARRAY FILLING
-		cLWingBodyArray = aircraft.get_theAerodynamics().calculateCLvsAlphaWingBody(alphaMinWing, alphaMaxWing, nValueAlpha, theCondition);
+		cLWingBodyArray = aircraft.get_theAerodynamics().calculateCLvsAlphaWingBody(alphaMin, alphaMax, nValueAlpha, theCondition);
 
 
 		System.out.println("Cl alpha Wing " + cLAlphaWingActual);
@@ -766,7 +766,24 @@ public class ACStabilityManager {
 
 		if(plotCheck == true){
 			System.out.println("\n \t \t \tWRITING CL VS ALPHA CHARTS TO FILE");
-			aircraft.get_theAerodynamics().PlotCLvsAlphaCurve(meanAirfoil, subfolderPath, theCondition);
+			
+			double [][] alpha = {
+					alphaStabilityArray.toArray(), alphaStabilityArray.toArray()};
+
+			double [][] clDistribution = {cLWingActualArray,cLWingBodyArray };
+
+			String [] legend = new String [4];
+			legend[0] = " Wing";
+			legend[1] = "Wing Body ";
+
+
+			MyChartToFileUtils.plot(
+					alpha, clDistribution, // array to plot
+					null,null,null, null,					    // axis with limits
+					"alpha", "CL", "", "",	    // label with unit
+					legend,					// legend
+					subfolderPath, "CL vs Alpha wing and wing body");			
+			
 			System.out.println("DONE");
 		}
 
@@ -1356,7 +1373,7 @@ public class ACStabilityManager {
 			MyChartToFileUtils.plotNoLegend(
 					alphaStabilityArray.toArray(),cDHTailCleanArray, 
 					null, null, null, null,
-					"alpha_h", "CD_induced",
+					"alpha_h", "CD",
 					"deg", "",
 					subfolderPath, "Total Drag coefficient vs Alpha for horizontal TAIL, clean ");
 			

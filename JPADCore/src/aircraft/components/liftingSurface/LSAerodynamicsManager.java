@@ -1943,8 +1943,15 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			} else {
 				engineType = EngineTypeEnum.TURBOPROP;
 			}
+//			result = LiftCalc.calculateCLmaxPhillipsAndAlley(
+//					getTheLiftingSurface().get_clMaxVsY().getMean() , calculateCLAlpha.andersonSweptCompressibleSubsonic(), 
+//					taperRatioEq, getTheLiftingSurface().get_sweepLEEquivalent().getEstimatedValue(), 
+//					ar, getTheLiftingSurface().get_twistTip().getEstimatedValue(),
+//					engineType
+//					);
+			
 			result = LiftCalc.calculateCLmaxPhillipsAndAlley(
-					getTheLiftingSurface().get_clMaxVsY().getMean() , calculateCLAlpha.andersonSweptCompressibleSubsonic(), 
+					getTheLiftingSurface().get_clMaxVsY().getMean() , 5.25, 
 					taperRatioEq, getTheLiftingSurface().get_sweepLEEquivalent().getEstimatedValue(), 
 					ar, getTheLiftingSurface().get_twistTip().getEstimatedValue(),
 					engineType

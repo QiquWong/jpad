@@ -331,6 +331,21 @@
       \endverb
       \warn{\item Datamodel: Entry 'swt' (Tesi_Bibliography.bib): Invalid format '01.16.2015' of date field 'date' - ignoring}
     \endentry
+    \entry{adapco}{online}{}
+      \name{author}{1}{}{%
+        {{hash=7da2a74e066e90281bae34a5d86abefd}{Authors}{A\bibinitperiod}{Various}{V\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{7da2a74e066e90281bae34a5d86abefd}
+      \strng{fullhash}{7da2a74e066e90281bae34a5d86abefd}
+      \field{sortinit}{A}
+      \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{What is CFD?}
+      \verb{url}
+      \verb http://www.cd-adapco.com/
+      \endverb
+    \endentry
     \entry{windowBuilder}{online}{}
       \name{author}{1}{}{%
         {{hash=7da2a74e066e90281bae34a5d86abefd}{Authors}{A\bibinitperiod}{Various}{V\bibinitperiod}{}{}{}{}}%

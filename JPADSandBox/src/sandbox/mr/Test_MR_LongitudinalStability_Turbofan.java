@@ -32,6 +32,7 @@ import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcAlpha0L;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCDAtAlpha;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
+import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLvsAlphaCurve;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.MeanAirfoil;
 import calculators.aerodynamics.LiftCalc;
 import database.databasefunctions.DatabaseReader;
@@ -58,39 +59,39 @@ import writers.JPADStaticWriteUtils;
 
 
 public class Test_MR_LongitudinalStability_Turbofan {
-	
-	
 
-		//------------------------------------------------------------------------------------------
-		// VARIABLE DECLARATION:
-		@Option(name = "-i", aliases = { "--input" }, required = false,
-				usage = "my input file")
-		private File _inputFile;
-		
-		//take off file
-		
-		@Option(name = "-to", aliases = { "--input_to" }, required = false,
-				usage = "my input TO file")
-		private File _inputFileTakeOff;
-		
-		//landing file
-		
-		@Option(name = "-land", aliases = { "--input_land" }, required = false,
-				usage = "my input LA file")
-		private File _inputFileLanding;
 
-		// declaration necessary for Concrete Object usage
-		public CmdLineParser theCmdLineParser;
-		public JPADXmlReader reader;
 
-		@Argument
-		private List<String> arguments = new ArrayList<String>();
+	//------------------------------------------------------------------------------------------
+	// VARIABLE DECLARATION:
+	@Option(name = "-i", aliases = { "--input" }, required = false,
+			usage = "my input file")
+	private File _inputFile;
 
-		//------------------------------------------------------------------------------------------
-		//BUILDER:
-		public Test_MR_LongitudinalStability_Turbofan() {
-			theCmdLineParser = new CmdLineParser(this);
-		}
+	//take off file
+
+	@Option(name = "-to", aliases = { "--input_to" }, required = false,
+			usage = "my input TO file")
+	private File _inputFileTakeOff;
+
+	//landing file
+
+	@Option(name = "-land", aliases = { "--input_land" }, required = false,
+			usage = "my input LA file")
+	private File _inputFileLanding;
+
+	// declaration necessary for Concrete Object usage
+	public CmdLineParser theCmdLineParser;
+	public JPADXmlReader reader;
+
+	@Argument
+	private List<String> arguments = new ArrayList<String>();
+
+	//------------------------------------------------------------------------------------------
+	//BUILDER:
+	public Test_MR_LongitudinalStability_Turbofan() {
+		theCmdLineParser = new CmdLineParser(this);
+	}
 
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -101,8 +102,8 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		System.out.println("\n------------------------------------");
 
 		Test_MR_LongitudinalStability_Turbofan main = new Test_MR_LongitudinalStability_Turbofan();
-		
-		
+
+
 		// -----------------------------------------------------------------------
 		// INITIALIZE TEST CLASS
 		// -----------------------------------------------------------------------
@@ -115,14 +116,14 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		// Default folders creation:
 
 		MyConfiguration.initWorkingDirectoryTree();
-		
-		
-		
-		
+
+
+
+
 		// -----------------------------------------------------------------------
 		// DEFINITION OF DEFAULT AIRCRAFT
 		// -----------------------------------------------------------------------
-		
+
 		//------------------------------------------------------------------------------------
 		// Default Aircraft
 		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.B747_100B);
@@ -133,29 +134,29 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		// Wing and Tail
 		LiftingSurface theWing = aircraft.get_wing();
 		LiftingSurface horizontalTail = aircraft.get_HTail();
-		
-		
-		
-		
+
+
+
+
 		// -----------------------------------------------------------------------
 		// OPERATING CONDITIONS
 		// -----------------------------------------------------------------------
-		
+
 		OperatingConditions theConditions = new OperatingConditions();
 		theConditions.set_alphaCurrent(Amount.valueOf(toRadians(2.), SI.RADIAN));
 		System.out.println("\n OPERATING CONDITIONS: ");
-//		System.out.println("Altitude " + theConditions.get_altitude());
-//		System.out.println("Mach number " + theConditions.get_machCurrent()+"\n");
-//		System.out.println("Alpha Current " + theConditions.get_alphaCurrent().to(NonSI.DEGREE_ANGLE) + "\n");
-		
-		
-		
-		
-		
+		//		System.out.println("Altitude " + theConditions.get_altitude());
+		//		System.out.println("Mach number " + theConditions.get_machCurrent()+"\n");
+		//		System.out.println("Alpha Current " + theConditions.get_alphaCurrent().to(NonSI.DEGREE_ANGLE) + "\n");
+
+
+
+
+
 		// -----------------------------------------------------------------------
 		// ANALYSIS MANAGERS AND DATABASES DEFINITION
 		// -----------------------------------------------------------------------
-		
+
 		//--------------------------------------------------------------------------------------
 		// Aerodynamic managers
 		ACAnalysisManager theAnalysis = new ACAnalysisManager(theConditions);
@@ -165,7 +166,7 @@ public class Test_MR_LongitudinalStability_Turbofan {
 				theWing,
 				aircraft
 				);
-		
+
 		theWing.setAerodynamics(theLSAnalysis);
 
 
@@ -197,15 +198,15 @@ public class Test_MR_LongitudinalStability_Turbofan {
 
 		FusDesDatabaseReader fusDesDatabaseReader = new FusDesDatabaseReader(databaseFolderPath, databaseFileName);
 		fusDesDatabaseReader.runAnalysis(noseFinenessRatio, windshieldAngle, finenessRatio, tailFinenessRatio, upsweepAngle, xPositionPole);
-		
-		
-		
-		
+
+
+
+
 		// -----------------------------------------------------------------------
 		// AIRFOILS
 		// -----------------------------------------------------------------------
 
-		
+
 		System.out.println("\nWING AIRFOILS:");
 
 		//AIRFOIL 1
@@ -213,7 +214,16 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		MyAirfoil airfoilRoot = theWing.get_theAirfoilsList().get(0);
 		airfoilRoot.getGeometry().update(yLocRoot);  // define chord
 		airfoilRoot.getGeometry().set_maximumThicknessOverChord(0.18); //REPORT
-		airfoilRoot.getGeometry().set_deltaYPercent(4.2);
+		airfoilRoot.getGeometry().set_deltaYPercent(4.6);
+		
+		airfoilRoot.getAerodynamics().set_alphaZeroLift( Amount.valueOf(Math.toRadians(-1), SI.RADIAN));
+		airfoilRoot.getAerodynamics().set_clAlpha(6.44);
+		airfoilRoot.getAerodynamics().set_alphaStar(Amount.valueOf(Math.toRadians(10.0),SI.RADIAN));
+		airfoilRoot.getAerodynamics().set_clStar(1.233);
+		airfoilRoot.getAerodynamics().set_alphaStall( Amount.valueOf(Math.toRadians(17), SI.RADIAN));
+		airfoilRoot.getAerodynamics().set_clMax(1.7);
+		airfoilRoot.getAerodynamics().set_kFactorDragPolar(0.01);
+		
 		System.out.println("\n \n \t ROOT \nAirfoil Type: " + airfoilRoot.get_family());
 		System.out.println("Root Chord [m] = " + theWing.get_chordRoot().getEstimatedValue() );
 		System.out.println("Root maximum thickness = " + airfoilRoot.getGeometry().get_maximumThicknessOverChord());
@@ -227,6 +237,15 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		airfoilKink.getGeometry().update(yLocKink);   // define chord
 		airfoilKink.getGeometry().set_maximumThicknessOverChord(0.18); //REPORT
 		airfoilKink.getGeometry().set_deltaYPercent(4.2);
+		
+		airfoilKink.getAerodynamics().set_alphaZeroLift( Amount.valueOf(Math.toRadians(-1.55), SI.RADIAN));
+		airfoilKink.getAerodynamics().set_clAlpha(5.59);
+		airfoilKink.getAerodynamics().set_alphaStar(Amount.valueOf(Math.toRadians(10.0),SI.RADIAN));
+		airfoilKink.getAerodynamics().set_clStar(1.12);
+		airfoilKink.getAerodynamics().set_alphaStall( Amount.valueOf(Math.toRadians(18.6), SI.RADIAN));
+		airfoilKink.getAerodynamics().set_clMax(1.73);
+		airfoilRoot.getAerodynamics().set_kFactorDragPolar(0.01);
+
 		System.out.println("\n \n \t KINK \nAirfoil Type: " + airfoilKink.get_family());
 		System.out.println("Kink Station [m] = " + yLocKink);
 		System.out.println("Kink Chord [m] = " + theWing.get_chordKink().getEstimatedValue() );
@@ -241,6 +260,16 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		airfoilTip.getGeometry().update(yLocRoot);  // define chord
 		airfoilTip.getGeometry().set_maximumThicknessOverChord(0.15); //REPORT
 		airfoilTip.getGeometry().set_deltaYPercent(3.0);
+		
+		airfoilTip.getAerodynamics().set_alphaZeroLift( Amount.valueOf(Math.toRadians(-2.55), SI.RADIAN));
+		airfoilTip.getAerodynamics().set_clAlpha(6.08);
+		airfoilTip.getAerodynamics().set_alphaStar(Amount.valueOf(Math.toRadians(8.0),SI.RADIAN));
+		airfoilTip.getAerodynamics().set_clStar(1.119);
+		airfoilTip.getAerodynamics().set_alphaStall( Amount.valueOf(Math.toRadians(17), SI.RADIAN));
+		airfoilTip.getAerodynamics().set_clMax(1.82);
+		airfoilRoot.getAerodynamics().set_kFactorDragPolar(0.01);
+			
+
 		System.out.println("\n \n \t TIP \nAirfoil Type: " + airfoilTip.get_family());
 		System.out.println("tip Chord [m] = " +theWing.get_chordTip().getEstimatedValue() );
 		System.out.println("Tip maximum thickness = " + airfoilTip.getGeometry().get_maximumThicknessOverChord());
@@ -260,6 +289,7 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		theLSAnalysis.initializeDependentData();
 		aircraft.get_exposedWing().set_theAirfoilsList(myAirfoilList);
 		aircraft.get_exposedWing().updateAirfoilsGeometryExposedWing( aircraft);
+
 
 
 		//--------------------------------------------------------------------------------------
@@ -321,7 +351,7 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		MyAirfoil meanAirfoil = theMeanAirfoilCalculator.calculateMeanAirfoil(theWing);
 
 
-		
+
 		//--------------------------------------------------------------------------------------
 		// Exposed Wing
 
@@ -341,7 +371,7 @@ public class Test_MR_LongitudinalStability_Turbofan {
 
 
 		// do Analysis
-		
+
 		System.out.println("\n\n-----------------------------------");
 		System.out.println("\nANALYSIS ");
 		System.out.println("\n------------------------------------");
@@ -349,9 +379,9 @@ public class Test_MR_LongitudinalStability_Turbofan {
 				AnalysisTypeEnum.WEIGHTS,
 				AnalysisTypeEnum.BALANCE
 				);
-		
-		
-		
+
+
+
 		// -----------------------------------------------------------------------
 		// READING XML FILE
 		// -----------------------------------------------------------------------
@@ -359,7 +389,7 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		System.out.println("\n\n------------------------------------");
 		System.out.println("\n READING XML FILE...  ");
 		System.out.println("\n------------------------------------");
-		
+
 		// Arguments check
 		if (args.length == 0){
 			System.err.println("NO INPUT FILE GIVEN --> TERMINATING");
@@ -369,20 +399,20 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		String path = main.get_inputFile().getAbsolutePath();
 		JPADXmlReader reader = new JPADXmlReader(path);
 		String pathTakeOff = null, pathLanding=null;
-		
+
 		if(args.length >0){
 			if(main.get_inputFileTakeOff()!= null)
-		pathTakeOff = main.get_inputFileTakeOff().getAbsolutePath();
+				pathTakeOff = main.get_inputFileTakeOff().getAbsolutePath();
 			if(main.get_inputFileLanding()!= null)
-		pathLanding = main.get_inputFileLanding().getAbsolutePath();
-			}
+				pathLanding = main.get_inputFileLanding().getAbsolutePath();
+		}
 
 		System.out.println("-----------------------------------------------------------");
 		System.out.println("XML File Path : " + path);
 		System.out.println("-----------------------------------------------------------");
 		System.out.println("Initialize reading \n");
 
-		
+
 		//Reading data
 		double etaInboard = Double.parseDouble(reader.getXMLPropertiesByPath("//Elevator_inboard").get(0));
 		double etaOutboard = Double.parseDouble(reader.getXMLPropertiesByPath("//Elevator_outboard").get(0));
@@ -390,7 +420,7 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		aircraft.get_HTail().set_CeCt(chordRatio);
 		aircraft.get_HTail().set_etaIn(etaInboard);
 		aircraft.get_HTail().set_etaOut(etaOutboard);
-		
+
 		Amount<Angle> deflectionElevator = reader.getXMLAmountWithUnitByPath("//Deflection").to(NonSI.DEGREE_ANGLE);
 		//double deflectionElevator = Double.parseDouble(reader.getXMLPropertyByPath("//Deflection"));
 		double dynamicPressureRatio = Double.parseDouble(reader.getXMLPropertiesByPath("//Dynamic_Pressure_Ratio").get(0));
@@ -398,15 +428,15 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		double machL = Double.parseDouble(reader.getXMLPropertiesByPath("//Mach_number_L").get(0));
 		double machCruise = Double.parseDouble(reader.getXMLPropertiesByPath("//Mach_number_cruise").get(0));
 		Amount<Length> cruiseAltitude = reader.getXMLAmountWithUnitByPath("//Cruise_Altitude").to(SI.METER);
-			
+
 		aircraft.get_HTail().getAerodynamics().set_dynamicPressureRatio(dynamicPressureRatio);
 		double deflectionElevatorDouble = deflectionElevator.getEstimatedValue();
-		
+
 		aircraft.get_theAerodynamics().set_machCruise(machCruise);
 		aircraft.get_theAerodynamics().set_machTakeOFF(machTO);
 		aircraft.get_theAerodynamics().set_machLanding(machL);
 		aircraft.get_theAerodynamics().setCruiseAltitude(cruiseAltitude);
-		
+
 		List<Double[]> deltaFlap = new ArrayList<Double[]>();
 		List<FlapTypeEnum> flapType = new ArrayList<FlapTypeEnum>();
 		List<Double> eta_in_flap = new ArrayList<Double>();
@@ -421,46 +451,46 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		eta_in_flap.add(etaInboard);
 		eta_out_flap.add(etaOutboard);
 		cf_c.add(chordRatio);
-		
+
 		aircraft.get_landingGear().set_X0(Amount.valueOf(0.4*aircraft.get_fuselage().get_len_T().getEstimatedValue(), SI.METER));
 
 		// -----------------------------------------------------------------------
 		// STABILITY 
 		// -----------------------------------------------------------------------
-		
+
 		System.out.println( "path take off " + pathTakeOff);
 		System.out.println( "path landing " + pathLanding);
-		
+
 		Amount<Angle> alphaBody = Amount.valueOf(Math.toRadians(2.0), SI.RADIAN);
 		Amount<Angle> alphaMin = Amount.valueOf(Math.toRadians(-5), SI.RADIAN);
 		Amount<Angle> alphaMax = Amount.valueOf(Math.toRadians(25), SI.RADIAN);
-		
+
 		ACStabilityManager theStabilityManager = new ACStabilityManager(meanAirfoil, aircraft, ConditionEnum.CRUISE,
 				alphaMin, alphaMax, alphaBody , true, subfolderPath, pathTakeOff);
- 
+
 		theStabilityManager.CalculateAll();
 		theStabilityManager.CalculateDragCharacteristics();
-		
-		
-	
-		
+
+
+
+
 		//---------------------
 		System.out.println("\n\n ---------CL  vs Alpha Calc-------");
 		MyArray alphaArrayActual =new MyArray();
-		
+
 		int  nVal =50;
-		
+
 		double angle = Math.toRadians(24);
 		alphaArrayActual.linspace(-0.03, angle,  nVal);
 		double[] alphaArray = new double[ nVal];
 		double [] cLWing = LiftCalc.calculateCLArraymodifiedStallPath(alphaArrayActual, theWing);
-		
+
 		for (int i=0; i< nVal; i++){
 			alphaArray[i] = Math.toDegrees(alphaArrayActual.get(i));
 		}
-//		System.out.println(" alpha Array " + Arrays.toString(alphaArray) );
-//		System.out.println(" cl "+  Arrays.toString(cLWing));
-		
+		//		System.out.println(" alpha Array " + Arrays.toString(alphaArray) );
+		//		System.out.println(" cl "+  Arrays.toString(cLWing));
+
 		MyChartToFileUtils.plotNoLegend(
 				alphaArray , cLWing,
 				null, null, null, null,
@@ -468,11 +498,60 @@ public class Test_MR_LongitudinalStability_Turbofan {
 				"deg", "",
 				subfolderPath," CL vs Alpha from Airfoils " );
 
+
+		//---------------------
+		//PLOT
+		//---------------------
+		
+		String subfolderPathAirfoil = JPADStaticWriteUtils.createNewFolder(folderPath + "Wing airfoil data BOEING" + File.separator);
+		
+		theConditions.set_machCurrent(0.2);
+		theConditions.calculate();
 		
 		
+		//Reynold number
 		
-	}
+		double reRoot = theConditions.calculateRe(theWing.get_chordRoot().getEstimatedValue(),1);
+		System.out.println( "Reynolds number root station " + reRoot);
+		double reKink = theConditions.calculateRe(theWing.get_chordKink().getEstimatedValue(),1);
+		System.out.println( "Reynolds number kink station " + reKink);
+		double reTip = theConditions.calculateRe(theWing.get_chordTip().getEstimatedValue(),1);
+		System.out.println( "Reynolds number tip station " + reTip);
+		
+		
+		// Airfoil plot
+		airfoilRoot.getAerodynamics().plotClvsAlpha(subfolderPathAirfoil, "root");
+		airfoilKink.getAerodynamics().plotClvsAlpha(subfolderPathAirfoil, "Kink");
+		airfoilTip.getAerodynamics().plotClvsAlpha(subfolderPathAirfoil, "Tip");
 	
+		
+		LSAerodynamicsManager.CalcCLvsAlphaCurve theCLArrayCalculator = theLSAnalysis.new CalcCLvsAlphaCurve();
+		double [] cLWingCleanArray = theCLArrayCalculator.nasaBlackwellCompleteCurve(alphaMin,alphaMax,60, false);
+		
+		double[] alphaArrayCL = MyArrayUtils.linspace(alphaMin.getEstimatedValue(), alphaMax.getEstimatedValue(), 60);
+		
+		System.out.println("\n \n-----------------------------------------------------");
+		System.out.println("WRITING TO CHART CL vs ALPHA CURVE stall path");
+		System.out.println("-----------------------------------------------------");
+		
+		double [] alphaArrayCLDeg = new double [60];
+
+		for (int i=0; i<60; i++){
+			alphaArrayCLDeg[i] = Math.toDegrees(alphaArrayCL[i]);
+		}
+		MyChartToFileUtils.plotNoLegend(
+				alphaArrayCLDeg , cLWingCleanArray,
+				null, null, null, null,
+				"alpha", "CL",
+				"deg", "",
+				subfolderPathAirfoil," CL vs Alpha stall path " );
+		
+		System.out.println("\n \n-----------------------------------------------------");
+		System.out.println("DONE");
+		System.out.println("-----------------------------------------------------");
+
+	}
+
 	//------------------------------------------------------------------------------------------
 	// GETTERS & SETTERS:
 	public File get_inputFile() {

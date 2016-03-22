@@ -536,13 +536,14 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		cLStar = _theAircraft.get_wing().getAerodynamics().getcLStarWing();
 		LSAerodynamicsManager theManager = _theAircraft.get_wing().getAerodynamics();
 		LSAerodynamicsManager.CalcAlpha0L theAlphaZeroLiftCalculator = theManager.new CalcAlpha0L();
-		alphaZeroLift = theAlphaZeroLiftCalculator.integralMeanExposedWithTwist().getEstimatedValue();
-//		alphaZeroLift = _theAircraft.get_wing().getAerodynamics().getAlphaZeroLiftWingClean();
-		cLZeroWing = _theAircraft.get_wing().getAerodynamics().getcLAlphaZero();
+//		alphaZeroLift = theAlphaZeroLiftCalculator.integralMeanExposedWithTwist().getEstimatedValue();
+		alphaZeroLift = _theAircraft.get_wing().getAerodynamics().getAlphaZeroLiftWingClean();
+		
 		cLAlphaWingBody = _theAircraft
 				.get_fuselage()
 				.getAerodynamics()
 				.calculateCLAlphaFuselage(cLAlphaWing);
+		cLZeroWingBody = -cLAlphaWingBody * alphaZeroLift;
 		}
 		
 		if (theCondition == ConditionEnum.LANDING || theCondition == ConditionEnum.TAKE_OFF){
@@ -578,7 +579,8 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		double alphaTempWing = (cLMaxWingClean - cLZeroWing)/cLAlphaWing;
 		double alphaTempWingBody = (cLMaxWingClean - cLZeroWingBody)/cLAlphaWingBody;
 		double deltaAlphaTemp = alphaTempWing - alphaTempWingBody;
-		alphaMaxWingBody = Amount.valueOf(alphaMaxWingClean.getEstimatedValue() - Math.abs(deltaAlphaTemp), SI.RADIAN);
+		//alphaMaxWingBody = Amount.valueOf(alphaMaxWingClean.getEstimatedValue() - Math.abs(deltaAlphaTemp), SI.RADIAN);
+		alphaMaxWingBody = alphaMaxWingClean;
 		alphaStarDouble = (cLStar-cLZeroWingBody)/cLAlphaWingBody;
 
 		//System.out.println(" alpha max clean " + alphaMaxWingClean.to(NonSI.DEGREE_ANGLE).getEstimatedValue());

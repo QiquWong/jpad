@@ -152,10 +152,10 @@ public class Test_MR_CLalpha {
 		airfoilRoot.getGeometry().set_maximumThicknessOverChord(0.18);
 		airfoilRoot.getAerodynamics().set_alphaZeroLift( Amount.valueOf(Math.toRadians(-4.6), SI.RADIAN));
 		airfoilRoot.getAerodynamics().set_clAlpha(6.48);
-		airfoilRoot.getAerodynamics().set_alphaStar(Amount.valueOf(Math.toRadians(10.0),SI.RADIAN));
-		airfoilRoot.getAerodynamics().set_clStar(1.5658);
-		airfoilRoot.getAerodynamics().set_alphaStall( Amount.valueOf(Math.toRadians(20.0), SI.RADIAN));
-		airfoilRoot.getAerodynamics().set_clMax(2.0196);
+		airfoilRoot.getAerodynamics().set_alphaStar(Amount.valueOf(Math.toRadians(9),SI.RADIAN));
+		airfoilRoot.getAerodynamics().set_clStar(1.53);
+		airfoilRoot.getAerodynamics().set_alphaStall( Amount.valueOf(Math.toRadians(18.0), SI.RADIAN));
+		airfoilRoot.getAerodynamics().set_clMax(1.9);
 		System.out.println("\n \n \t ROOT \n");
 		System.out.println("Maximum thickness " + airfoilRoot.getGeometry().get_maximumThicknessOverChord());
 		System.out.println("CL max --> " + airfoilRoot.getAerodynamics().get_clMax());	
@@ -168,10 +168,10 @@ public class Test_MR_CLalpha {
 		airfoilRoot.getGeometry().set_maximumThicknessOverChord(0.18);
 		airfoilKink.getAerodynamics().set_alphaZeroLift( Amount.valueOf(Math.toRadians(-4.6), SI.RADIAN));
 		airfoilKink.getAerodynamics().set_clAlpha(6.48);
-		airfoilKink.getAerodynamics().set_alphaStar(Amount.valueOf(Math.toRadians(10.0),SI.RADIAN));
-		airfoilKink.getAerodynamics().set_clStar(1.5658);
-		airfoilKink.getAerodynamics().set_alphaStall( Amount.valueOf(Math.toRadians(20.0), SI.RADIAN));
-		airfoilKink.getAerodynamics().set_clMax(2.0196);
+		airfoilKink.getAerodynamics().set_alphaStar(Amount.valueOf(Math.toRadians(9),SI.RADIAN));
+		airfoilKink.getAerodynamics().set_clStar(1.53);
+		airfoilKink.getAerodynamics().set_alphaStall( Amount.valueOf(Math.toRadians(18.0), SI.RADIAN));
+		airfoilKink.getAerodynamics().set_clMax(1.9);
 		System.out.println("\n \n \t KINK \n");
 		System.out.println("Maximum thickness " + airfoilKink.getGeometry().get_maximumThicknessOverChord());
 		System.out.println("CL max --> " + airfoilKink.getAerodynamics().get_clMax());	
@@ -184,10 +184,10 @@ public class Test_MR_CLalpha {
 		airfoilTip.getGeometry().set_maximumThicknessOverChord(0.136);
 		airfoilTip.getAerodynamics().set_alphaZeroLift( Amount.valueOf(Math.toRadians(-3.68), SI.RADIAN));
 		airfoilTip.getAerodynamics().set_clAlpha(6.72);
-		airfoilTip.getAerodynamics().set_alphaStar(Amount.valueOf(Math.toRadians(8.0),SI.RADIAN));
-		airfoilTip.getAerodynamics().set_clStar(1.3);
+		airfoilTip.getAerodynamics().set_alphaStar(Amount.valueOf(Math.toRadians(7.5),SI.RADIAN));
+		airfoilTip.getAerodynamics().set_clStar(1.31);
 		airfoilTip.getAerodynamics().set_alphaStall( Amount.valueOf(Math.toRadians(17.5), SI.RADIAN));
-		airfoilTip.getAerodynamics().set_clMax(2.15);
+		airfoilTip.getAerodynamics().set_clMax(2.1);
 		System.out.println("\n \n \t TIP \n");
 		System.out.println("Maximum thickness " + airfoilTip.getGeometry().get_maximumThicknessOverChord());
 		System.out.println("CL max --> " + airfoilTip.getAerodynamics().get_clMax());	
@@ -320,9 +320,9 @@ public class Test_MR_CLalpha {
 
 		// cl max
 		
-	//	double clMaxPhilipps = theLSAnalysis.getCalculateCLMaxClean().phillipsAndAlley();
+		double clMaxPhilipps = theLSAnalysis.getCalculateCLMaxClean().phillipsAndAlley();
 		
-//		System.out.println(" cl max philips " + clMaxPhilipps); //1.91
+		System.out.println(" cl max philips " + clMaxPhilipps); //1.91
 		
 		
 		

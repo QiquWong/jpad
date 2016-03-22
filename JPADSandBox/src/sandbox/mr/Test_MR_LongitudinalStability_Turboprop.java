@@ -214,6 +214,8 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		airfoilRoot.getGeometry().update(yLocRoot);  // define chord
 		airfoilRoot.getGeometry().set_maximumThicknessOverChord(0.18); //REPORT
 		airfoilRoot.getGeometry().set_deltaYPercent(4.5);
+		
+
 		System.out.println("\n \n \t ROOT \nAirfoil Type: " + airfoilRoot.get_family());
 		System.out.println("Root Chord [m] = " + theWing.get_chordRoot().getEstimatedValue() );
 		System.out.println("Root maximum thickness = " + airfoilRoot.getGeometry().get_maximumThicknessOverChord());
@@ -227,6 +229,9 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		airfoilKink.getGeometry().update(yLocKink);   // define chord
 		airfoilKink.getGeometry().set_maximumThicknessOverChord(0.18); //REPORT
 		airfoilKink.getGeometry().set_deltaYPercent(4.5);
+
+
+		
 		System.out.println("\n \n \t KINK \nAirfoil Type: " + airfoilKink.get_family());
 		System.out.println("Kink Station [m] = " + yLocKink);
 		System.out.println("Kink Chord [m] = " + theWing.get_chordKink().getEstimatedValue() );
@@ -241,6 +246,8 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		airfoilTip.getGeometry().update(yLocRoot);  // define chord
 		airfoilTip.getGeometry().set_maximumThicknessOverChord(0.15); //REPORT
 		airfoilTip.getGeometry().set_deltaYPercent(3.7);
+		
+
 		System.out.println("\n \n \t TIP \nAirfoil Type: " + airfoilTip.get_family());
 		System.out.println("tip Chord [m] = " +theWing.get_chordTip().getEstimatedValue() );
 		System.out.println("Tip maximum thickness = " + airfoilTip.getGeometry().get_maximumThicknessOverChord());
@@ -451,13 +458,15 @@ public class Test_MR_LongitudinalStability_Turboprop {
 				alphaMin, alphaMax, alphaBody , true, subfolderPathTakeOFF, pathTakeOff);
  
 	theStabilityManager.CalculateAll();
-	theStabilityManagerTakeOFF.CalculateAll();
+	//theStabilityManagerTakeOFF.CalculateAll();
 			
 
 		
 		// CL ANALYSIS
 		
 		
+	theConditions.set_machCurrent(0.2);
+	theConditions.calculate();
 	double reRoot = theConditions.calculateRe(theWing.get_chordRoot().getEstimatedValue(),1);
 	System.out.println( "Reynolds number root station " + reRoot);
 	double reKink = theConditions.calculateRe(theWing.get_chordKink().getEstimatedValue(),1);

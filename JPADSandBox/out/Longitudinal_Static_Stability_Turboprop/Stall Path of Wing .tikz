@@ -10,10 +10,10 @@ xmax=1.0,
 xlabel={eta },
 xmajorgrids,
 ymin=0.0,
-ymax=3.0,
+ymax=2.0,
 ylabel={CL },
 ymajorgrids,
-legend style={at={(1.03,0.9)},anchor=west,draw=black,fill=white,legend cell align=left}
+legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
 ]
 
 \addplot [
