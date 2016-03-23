@@ -728,9 +728,9 @@ To allow the calculation of the total landing distance, without forcing the user
 \label{fig:CalcLandingFlowchart}
 \end{figure}
 %
-%----------------------- CASE STUDY : ATR72 AND B747 -------------------------
+%----------------------- CASE STUDY : ATR72 -------------------------
 \section{Case study: ATR-72}
-This conclusive paragraph has the aim of describing the Java class created to test the features implemented into \lstinline[language=Java]!CalcTakeOff! class and \lstinline[language=Java]!CalcLanding! classes; in particular a description of how to build these classes as well as a presentation, with comments, of the most important charts created, will be provided. 
+This paragraph has the aim of describing the Java class created to test the features implemented into \lstinline[language=Java]!CalcTakeOff! class and \lstinline[language=Java]!CalcLanding! classes; in particular a description of how to build these classes as well as a presentation, with comments, of the most important charts created, will be provided. 
 %
 Since the calculations are the same both for the B747-100B, both for the ATR-72, only the latter will be analyzed. 
 
@@ -1219,3 +1219,17 @@ In conclusion of the take-off analysis, it's useful to highlight the effects tha
 \label{fig:LandingEnd}
 \end{figure}
 %
+%----------------------- CASE STUDY : B747-100B SENSIBILITY ANALYSIS -------------------------
+%
+\clearpage
+%
+\section{Case study: B747-100B}
+%
+In conclusion, after having shown that the classes \lstinline[language=Java]!CalcTakeOff! and \lstinline[language=Java]!CalcLanding! work correctly, it's interesting to examine how these classes behaves when analyzing a transport jet such as the B747-100B. In particular, the analysis that will be shown and commented will regard a sensibility analysis of the \gls{FAR}-25 take-off and field length with respect to two main design parameters like the wing loading $\frac{W}{S}$, for both take-off and landing, and the thrust ratio $\frac{T}{W}$, for the take-off only.
+
+\bigskip
+\noindent
+Starting from the flight manual data regarding the maximum take-off and landing weight, and knowing the wing geometry, the two wing loadings, in both take-off and landing conditions, has been derived. From these values a variation of these latter from a -10\% to a +20\% has been assigned obtaining the following results.  
+%
+
+

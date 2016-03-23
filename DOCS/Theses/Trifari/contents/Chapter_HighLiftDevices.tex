@@ -953,7 +953,7 @@ deltaCMc_4 = -0.01156502154181518
  CL alpha 4.187384843036119 (1/rad)
 \end{lstlisting}
 %
-\subsection{Input data sensibility analysis}
+\subsection{Sensibility analysis}
 %
 In this subsection it's shown how the~\lstinline[language=Java]!CalcHighLiftDevices! class behaves with different input parameters. In particular it is interesting to analyze the effect on the lift curve of the following input data.
 %
@@ -983,3 +983,30 @@ $\delta_s$ &  \textbf{} & 15° & \textbf{ } &  \textbf{} & \textbf{} \\
 }
 \caption{Summary of the baseline input data and results}
 \end{table}
+%
+\begin{figure}[H]
+\centering
+\input{images/CLAlphaHighLift_DELTA_FLAP_EFFECT.tikz}
+\caption{Effects of different $\delta_f$ upon the lift curve of the B747-100B}
+\end{figure}
+%
+\begin{figure}[H]
+\centering
+\input{images/CLAlphaHighLift_CFC_EFFECT.tikz}
+\caption{Effects of different $\frac{c_f}{c}$ upon the lift curve of the B747-100B}
+\end{figure}
+%
+\begin{figure}[H]
+\centering
+\input{images/CLAlphaHighLift_FLAPTYPE_EFFECT.tikz}
+\caption{Effects of different trailing edge devices upon the lift curve of the B747-100B}
+\end{figure}
+%
+\begin{figure}[H]
+\centering
+\input{images/CLAlphaHighLift_DELTA_SLAT_EFFECT.tikz}
+\caption{Effects of different $\delta_s$ upon the lift curve of the B747-100B}
+\end{figure}
+%
+\noindent
+As can be seen the code is able to manage different high lift devices settings with good results; for example the more the flap is deflected, the more the $C_{L\text{max}}$ grows; also the effect of the $\frac{c_f}{c}$ ratio is modeled well, in fact, more flap chord allows to achieve higher $C_{L\text{max}}$. Finally it has to be noted the effect of slats deflection; the latter, in fact, influences not only the $C_{L\text{max}}$ but also the $\alpha_{\text{stall}}$ increasing them when the deflection is bigger.
