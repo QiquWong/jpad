@@ -41,7 +41,7 @@ When a wing passes through the air, it creates a perturbation, which leads to a 
 
 \begin{figure}[H]
 \centering
-{\includegraphics[height=3.9cm]{Immagini/induced}} 
+{\includegraphics[height=4.3cm]{Immagini/induced}} 
 \caption{Definitions of induced end effective angles of attack.}
 \end{figure}
 
@@ -57,7 +57,7 @@ The induced angle of attack is in eq. \ref{eq:alp},  where w is the vertical dow
 
 \begin{figure}[H]
 \centering
-{\includegraphics[height=1.6cm]{Immagini/atg}} 
+{\includegraphics[height=1.8cm]{Immagini/atg}} 
 \caption{Geometrical representation of induced angle of attack.}
 \end{figure}
 
@@ -87,17 +87,50 @@ double[] alphaEffective;
 
 AlphaEffective theAlphaCalculator = new AlphaEffective(
 		theLSAnalysis, theWing, theOperatingConditions);
-Amount<javax.measure.quantity.Angle> inputAngle = 
+Amount<Angle> inputAngle = 
 		Amount.valueOf(toRadians(8.), SI.RADIAN);
 
 alphaEffective = theAlphaCalculator.calculateAlphaEffective(inputAngle);
 
-System.out.println("\n \n-----------------------------------------------------");
-System.out.println(" alpha --> " + inputAngle);
-System.out.println(" alpha effective --> " + Arrays.toString(alphaEffective));
-
-System.out.println("\n \n-----------------------------------------------------");
-System.out.println("DONE");
-System.out.println("-----------------------------------------------------");
+double [] alphaInduced = theAlphaCalculator.getAlphaInduced;
 
 \end{lstlisting}
+
+\section{Case Study}
+
+\begin{figure}[H]
+   	\centering
+   	\begin{tikzpicture}
+   	\begin{axis}[grid=major,xmin=-0,xmax=1, ymin=-12, ymax=14, xlabel=$ \frac{2y}{b}$, ylabel=$\alpha_i$ (deg),width=11.9cm,
+   	ytick={ -12, -10, -8, -6, -4, -2, 0, 2, 4, 6, 8, 10, 12, 14},
+   	 yticklabels={$-12$,$ -10$, $-8$, $-6$, $-4$, $-2$, $0$,$ 2$, $4$, $6$, $8$, $10$, $12$, $14$}, legend pos=north west]
+	\addplot[black,solid] table[x=eta,y=menodue]{immagini/alfaiATR.txt};
+	\addplot[black,dotted] table[x=eta,y=zero]{immagini/alfaiATR.txt};
+	\addplot [black,dashdotted] table[x=eta,y=tre]{immagini/alfaiATR.txt};
+	\addplot [black,mark=triangle*] table[x=eta,y=dieci]{immagini/alfaiATR.txt};
+   	\legend{$\alpha_w = -2^{\circ}$,$\alpha_w = 0^{\circ}$,$\alpha_w = 3^{\circ}$,$\alpha_w = 10^{\circ}$},
+   	legend style={at={(0.03,0.86)},anchor=west,draw=black,fill=white,legend cell align=left},
+   	\end{axis}
+   	\end{tikzpicture}
+	\caption{Distribution of induced angle of attack along semi-span. ATR 72. M=0.43}
+   \label{fig:alphai}
+   	\end{figure}
+  	
+   	
+\begin{figure}[H]
+   	\centering
+   	\begin{tikzpicture}
+   	\begin{axis}[grid=major,xmin=-0,xmax=1, ymin=-18, ymax=18, xlabel=$ \frac{2y}{b}$, ylabel=$\alpha_i$ (deg),width=11.9cm,
+   	ytick={-18,-16,-14, -12, -10, -8, -6, -4, -2, 0, 2, 4, 6, 8, 10, 12, 14,16,18},
+   	yticklabels={$-18$, $-16$,$-14$,$-12$,$ -10$, $-8$, $-6$, $-4$, $-2$, $0$,$ 2$, $4$, $6$, $8$, $10$, $12$, $14$,$16$,$18$}, legend pos=north west]
+	\addplot[black,solid] table[x=eta,y=menodue]{immagini/alfaiBoeing.txt};
+	\addplot[black,dotted] table[x=eta,y=zero]{immagini/alfaiBoeing.txt};
+	\addplot [black,dashdotted] table[x=eta,y=tre]{immagini/alfaiBoeing.txt};
+	\addplot [black,mark=triangle*] table[x=eta,y=dieci]{immagini/alfaiBoeing.txt};
+   	\legend{$\alpha_w = -2^{\circ}$,$\alpha_w = 0^{\circ}$,$\alpha_w = 3^{\circ}$,$\alpha_w = 10^{\circ}$},
+   	legend style={at={(0.03,0.86)},anchor=west,draw=black,fill=white,legend cell align=left},
+   	\end{axis}
+   	\end{tikzpicture}
+	\caption{Distribution of induced angle of attack along semi-span. BOEING 747-100B. M=0.75}
+   \label{fig:alphai}
+   	\end{figure}

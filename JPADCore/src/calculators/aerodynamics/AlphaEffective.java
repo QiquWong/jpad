@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.measure.quantity.Angle;
+import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
@@ -91,9 +92,9 @@ public class AlphaEffective {
 		alphaInduced = new double [numberOfPoints];
 		double [] verticalVelocity = new double [numberOfPoints];
 		double summ =0.0 ;
-		int lowerLimit = 0, upperLimit=(numberOfPoints-1)/2;
+		int lowerLimit = 0, upperLimit=(numberOfPoints-1);
 
-
+//System.out.println("\n alpha " + alphaInitial.to(NonSI.DEGREE_ANGLE));
 		NasaBlackwell theCalculator = new NasaBlackwell(
 				semispan, surface, yStationsActual,
 				chordsVsYActual, xLEvsYActual,
@@ -124,9 +125,11 @@ public class AlphaEffective {
 //			System.out.println("\nVertical velocity " + verticalVelocity[i] );
 //			System.out.println("Velocity " + velocity);
 
-			alphaInduced [i] = Math.atan(verticalVelocity [i] /velocity);
+			alphaInduced [i] = Math.atan(verticalVelocity [i] /velocity)/2;
 
-//			System.out.println("alpha induced " + alphaInduced[i]);
+//			System.out.println( alphaInduced[i]);
+		//	System.out.println( yStationsActual[i]/semispan);
+			
 //			System.out.println(" alpha actual " + alphaInitial.getEstimatedValue());
 
 

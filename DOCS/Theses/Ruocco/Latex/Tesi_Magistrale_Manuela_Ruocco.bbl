@@ -216,6 +216,26 @@
       \field{title}{A Finite-Step Method for Calculation of Theoretical Load Distributions for Arbitrary Lifting-Surface Arrangements at Subsonic Speeds}
       \field{year}{1969}
     \endentry
+    \entry{javareference}{book}{}
+      \name{author}{1}{}{%
+        {{hash=1ed19910037a7d172b35a673f22111d8}{Budd}{B\bibinitperiod}{Timothy}{T\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {Addison-Wesley}%
+      }
+      \strng{namehash}{1ed19910037a7d172b35a673f22111d8}
+      \strng{fullhash}{1ed19910037a7d172b35a673f22111d8}
+      \field{sortinit}{B}
+      \field{sortinithash}{4ecbea03efd0532989d3836d1a048c32}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{0201760312}
+      \field{title}{An Introduction to Object-Oriented Programming}
+      \field{year}{2002}
+      \verb{url}
+      \verb http://web.engr.oregonstate.edu/~budd/Books/oopintro3e/
+      \endverb
+    \endentry
     \entry{airf}{book}{}
       \name{author}{1}{}{%
         {{hash=ee03da9700c2026e5ea2fb1abb66589a}{CA}{C\bibinitperiod}{AIR\bibnamedelimb FORCE\bibnamedelimb TEST\bibnamedelimb PILOT\bibnamedelimb SCHOOL\bibnamedelimb EDWARDS\bibnamedelima AFB}{A\bibinitperiod\bibinitdelim F\bibinitperiod\bibinitdelim T\bibinitperiod\bibinitdelim P\bibinitperiod\bibinitdelim S\bibinitperiod\bibinitdelim E\bibinitperiod\bibinitdelim A\bibinitperiod}{}{}{}{}}%

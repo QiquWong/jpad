@@ -113,6 +113,8 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		System.out.println("\nInitializing test class...");
 		String folderPath = MyConfiguration.currentDirectoryString + File.separator + "out" + File.separator;
 		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "Longitudinal_Static_Stability_Turbofan" + File.separator);
+		
+		String subfolderPathto = JPADStaticWriteUtils.createNewFolder(folderPath + "Longitudinal_Static_Stability_Turbofan_TO" + File.separator);
 
 		//----------------------------------------------------------------------------------
 		// Default folders creation:
@@ -235,6 +237,11 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		airfoilRoot.getAerodynamics().set_clMax(1.7);
 		airfoilRoot.getAerodynamics().set_kFactorDragPolar(0.01);
 		
+		airfoilRoot.getAerodynamics().set_cdMin(0.005);
+		airfoilRoot.getAerodynamics().set_clAtCdMin(0.01);
+		airfoilRoot.getAerodynamics().set_cmAC(-0.07);
+		airfoilRoot.getAerodynamics().set_kFactorDragPolar(0.005);
+		
 		System.out.println("\n \n \t ROOT \nAirfoil Type: " + airfoilRoot.get_family());
 		System.out.println("Root Chord [m] = " + theWing.get_chordRoot().getEstimatedValue() );
 		System.out.println("Root maximum thickness = " + airfoilRoot.getGeometry().get_maximumThicknessOverChord());
@@ -255,8 +262,13 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		airfoilKink.getAerodynamics().set_clStar(1.12);
 		airfoilKink.getAerodynamics().set_alphaStall( Amount.valueOf(Math.toRadians(18.6), SI.RADIAN));
 		airfoilKink.getAerodynamics().set_clMax(1.73);
-		airfoilRoot.getAerodynamics().set_kFactorDragPolar(0.01);
+//		airfoilRoot.getAerodynamics().set_kFactorDragPolar(0.01);
 
+		airfoilKink.getAerodynamics().set_cdMin(0.005);
+		airfoilKink.getAerodynamics().set_clAtCdMin(0.01);
+		airfoilKink.getAerodynamics().set_cmAC(-0.07);
+		airfoilKink.getAerodynamics().set_kFactorDragPolar(0.005);
+		
 		System.out.println("\n \n \t KINK \nAirfoil Type: " + airfoilKink.get_family());
 		System.out.println("Kink Station [m] = " + yLocKink);
 		System.out.println("Kink Chord [m] = " + theWing.get_chordKink().getEstimatedValue() );
@@ -278,8 +290,12 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		airfoilTip.getAerodynamics().set_clStar(1.119);
 		airfoilTip.getAerodynamics().set_alphaStall( Amount.valueOf(Math.toRadians(17), SI.RADIAN));
 		airfoilTip.getAerodynamics().set_clMax(1.82);
-		airfoilRoot.getAerodynamics().set_kFactorDragPolar(0.01);
+//		airfoilRoot.getAerodynamics().set_kFactorDragPolar(0.01);
 			
+		airfoilTip.getAerodynamics().set_cdMin(0.005);
+		airfoilTip.getAerodynamics().set_clAtCdMin(0.01);
+		airfoilTip.getAerodynamics().set_cmAC(-0.07);
+		airfoilTip.getAerodynamics().set_kFactorDragPolar(0.005);
 
 		System.out.println("\n \n \t TIP \nAirfoil Type: " + airfoilTip.get_family());
 		System.out.println("tip Chord [m] = " +theWing.get_chordTip().getEstimatedValue() );
@@ -482,9 +498,13 @@ public class Test_MR_LongitudinalStability_Turbofan {
 
 		ACStabilityManager theStabilityManager = new ACStabilityManager(meanAirfoil, aircraft, ConditionEnum.CRUISE,
 				alphaMin, alphaMax, alphaBody , true, subfolderPath, pathTakeOff);
+		
+		ACStabilityManager theStabilityManagerTO = new ACStabilityManager(meanAirfoil, aircraft, ConditionEnum.TAKE_OFF,
+				alphaMin, alphaMax, alphaBody , true, subfolderPathto, pathTakeOff);
 
 		theStabilityManager.calculateAll();
-		theStabilityManager.CalculateDragCharacteristics();
+		theStabilityManagerTO.calculateAll();
+//		theStabilityManager.CalculateDragCharacteristics();
 
 
 

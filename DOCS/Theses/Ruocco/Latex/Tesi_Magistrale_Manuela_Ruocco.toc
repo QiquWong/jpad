@@ -69,51 +69,57 @@
 \contentsline {subsubsection}{Induced Drag}{64}{subsubsection*.60}
 \contentsline {section}{\numberline {7.2}Java Class Architecture}{65}{section.7.2}
 \contentsline {section}{\numberline {7.3}Case Study}{68}{section.7.3}
-\contentsline {chapter}{\numberline {8}Downwash Estimation}{73}{chapter.8}
-\contentsline {section}{\numberline {8.1}Theoretical background}{73}{section.8.1}
-\contentsline {section}{\numberline {8.2}Java Class Architecture}{75}{section.8.2}
-\contentsline {subsection}{\numberline {8.2.1}Constant Downwash Gradient}{77}{subsection.8.2.1}
-\contentsline {subsection}{\numberline {8.2.2}Variable Downwash Gradient}{77}{subsection.8.2.2}
-\contentsline {section}{\numberline {8.3}Case Study}{80}{section.8.3}
-\contentsline {section}{\numberline {8.4}Results Comparison}{84}{section.8.4}
-\contentsline {subsection}{\numberline {8.4.1}Slingerland Method }{84}{subsection.8.4.1}
-\contentsline {subsection}{\numberline {8.4.2}Giordano Method }{85}{subsection.8.4.2}
-\contentsline {section}{\numberline {8.5}Roskam Method}{87}{section.8.5}
-\contentsline {subsection}{\numberline {8.5.1} Results}{88}{subsection.8.5.1}
-\contentsline {chapter}{\numberline {9}Aircraft Longitudinal Static Stability}{89}{chapter.9}
-\contentsline {section}{\numberline {9.1}Aerodynamic Lift}{91}{section.9.1}
-\contentsline {subsection}{\numberline {9.1.1}Wing}{92}{subsection.9.1.1}
-\contentsline {subsection}{\numberline {9.1.2}Fuselage}{92}{subsection.9.1.2}
-\contentsline {subsection}{\numberline {9.1.3}Horizontal Tail}{94}{subsection.9.1.3}
-\contentsline {subsubsection}{Elevator index of effectiveness}{95}{subsubsection*.98}
-\contentsline {subsection}{\numberline {9.1.4}Complete Aircraft}{97}{subsection.9.1.4}
-\contentsline {section}{\numberline {9.2}Aerodynamic Drag}{97}{section.9.2}
-\contentsline {subsection}{\numberline {9.2.1}Drag of a lifting surface}{98}{subsection.9.2.1}
-\contentsline {subsection}{\numberline {9.2.2}Additional drag due to elevator}{98}{subsection.9.2.2}
-\contentsline {section}{\numberline {9.3}Pitching Moments}{99}{section.9.3}
-\contentsline {subsection}{\numberline {9.3.1}Lifting surface}{100}{subsection.9.3.1}
-\contentsline {subsection}{\numberline {9.3.2}Additional moment due to elevator}{101}{subsection.9.3.2}
-\contentsline {subsection}{\numberline {9.3.3}Fuselage}{103}{subsection.9.3.3}
-\contentsline {subsubsection}{Multhopp method}{103}{subsubsection*.109}
-\contentsline {subsubsection}{Fuselage Pitching moment prediction method}{105}{subsubsection*.113}
-\contentsline {section}{\numberline {9.4}Propulsors}{108}{section.9.4}
-\contentsline {subsection}{\numberline {9.4.1}Direct Effects}{108}{subsection.9.4.1}
-\contentsline {section}{\numberline {9.5}Stability Calculation}{109}{section.9.5}
-\contentsline {subsection}{\numberline {9.5.1}Neutral Point and Static Margin}{109}{subsection.9.5.1}
-\contentsline {section}{\numberline {9.6}Java Class Architecture}{110}{section.9.6}
-\contentsline {subsection}{\numberline {9.6.1}Focus on the class methods}{112}{subsection.9.6.1}
-\contentsline {section}{\numberline {9.7}Case Study}{114}{section.9.7}
-\contentsline {subsection}{\numberline {9.7.1}ATR 72}{114}{subsection.9.7.1}
-\contentsline {subsection}{\numberline {9.7.2}Boeing 747-100B}{114}{subsection.9.7.2}
-\contentsline {chapter}{\numberline {10}Induced Angle of Attack}{115}{chapter.10}
-\contentsline {section}{\numberline {10.1}Induced Angle of Attack}{115}{section.10.1}
-\contentsline {chapter}{\numberline {A}HDF dataset and database reader creation}{118}{Appendix.a.A}
-\contentsline {section}{\numberline {A.1}Chart Digitization}{118}{section.a.A.1}
-\contentsline {section}{\numberline {A.2}Creation of an HDF file with Matlab}{119}{section.a.A.2}
-\contentsline {chapter}{\numberline {B}Java Reference}{122}{Appendix.a.B}
-\contentsline {section}{\numberline {B.1}Packages}{122}{section.a.B.1}
-\contentsline {section}{\numberline {B.2}Documentation}{122}{section.a.B.2}
-\contentsline {chapter}{Glossary}{124}{section*.129}
-\contentsline {chapter}{Acronyms}{126}{section*.131}
-\contentsline {chapter}{List of symbols}{127}{section*.133}
-\contentsline {chapter}{Bibliography}{129}{section*.135}
+\contentsline {subsection}{\numberline {7.3.1}ATR-72}{69}{subsection.7.3.1}
+\contentsline {subsection}{\numberline {7.3.2}BOEING 747-100B}{73}{subsection.7.3.2}
+\contentsline {chapter}{\numberline {8}Downwash Estimation}{77}{chapter.8}
+\contentsline {section}{\numberline {8.1}Theoretical background}{77}{section.8.1}
+\contentsline {section}{\numberline {8.2}Java Class Architecture}{79}{section.8.2}
+\contentsline {subsection}{\numberline {8.2.1}Constant Downwash Gradient}{81}{subsection.8.2.1}
+\contentsline {subsection}{\numberline {8.2.2}Variable Downwash Gradient}{81}{subsection.8.2.2}
+\contentsline {section}{\numberline {8.3}Case Study}{84}{section.8.3}
+\contentsline {subsection}{\numberline {8.3.1}ATR-72}{85}{subsection.8.3.1}
+\contentsline {subsection}{\numberline {8.3.2}BOEING 747-100B}{86}{subsection.8.3.2}
+\contentsline {section}{\numberline {8.4}Results Comparison}{88}{section.8.4}
+\contentsline {subsection}{\numberline {8.4.1}Slingerland Method }{88}{subsection.8.4.1}
+\contentsline {subsection}{\numberline {8.4.2}Giordano Method }{89}{subsection.8.4.2}
+\contentsline {section}{\numberline {8.5}Roskam Method}{91}{section.8.5}
+\contentsline {subsection}{\numberline {8.5.1} Results}{92}{subsection.8.5.1}
+\contentsline {chapter}{\numberline {9}Aircraft Longitudinal Static Stability}{93}{chapter.9}
+\contentsline {section}{\numberline {9.1}Aerodynamic Lift}{95}{section.9.1}
+\contentsline {subsection}{\numberline {9.1.1}Wing}{96}{subsection.9.1.1}
+\contentsline {subsection}{\numberline {9.1.2}Fuselage}{96}{subsection.9.1.2}
+\contentsline {subsection}{\numberline {9.1.3}Horizontal Tail}{98}{subsection.9.1.3}
+\contentsline {subsubsection}{Elevator index of effectiveness}{99}{subsubsection*.105}
+\contentsline {subsection}{\numberline {9.1.4}Complete Aircraft}{101}{subsection.9.1.4}
+\contentsline {section}{\numberline {9.2}Aerodynamic Drag}{101}{section.9.2}
+\contentsline {subsection}{\numberline {9.2.1}Drag of a lifting surface}{102}{subsection.9.2.1}
+\contentsline {subsection}{\numberline {9.2.2}Additional drag due to elevator}{102}{subsection.9.2.2}
+\contentsline {section}{\numberline {9.3}Pitching Moments}{103}{section.9.3}
+\contentsline {subsection}{\numberline {9.3.1}Lifting surface}{104}{subsection.9.3.1}
+\contentsline {subsection}{\numberline {9.3.2}Additional moment due to elevator}{105}{subsection.9.3.2}
+\contentsline {subsection}{\numberline {9.3.3}Fuselage}{107}{subsection.9.3.3}
+\contentsline {subsubsection}{Multhopp method}{107}{subsubsection*.116}
+\contentsline {subsubsection}{Fuselage Pitching moment prediction method}{109}{subsubsection*.120}
+\contentsline {section}{\numberline {9.4}Propulsors}{112}{section.9.4}
+\contentsline {subsection}{\numberline {9.4.1}Direct Effects}{112}{subsection.9.4.1}
+\contentsline {section}{\numberline {9.5}Stability Calculation}{113}{section.9.5}
+\contentsline {subsection}{\numberline {9.5.1}Neutral Point and Static Margin}{113}{subsection.9.5.1}
+\contentsline {section}{\numberline {9.6}Java Class Architecture}{114}{section.9.6}
+\contentsline {subsection}{\numberline {9.6.1}Focus on the class methods}{116}{subsection.9.6.1}
+\contentsline {section}{\numberline {9.7}Case Study}{118}{section.9.7}
+\contentsline {subsection}{\numberline {9.7.1}ATR 72}{118}{subsection.9.7.1}
+\contentsline {subsection}{\numberline {9.7.2}Boeing 747-100B}{118}{subsection.9.7.2}
+\contentsline {chapter}{\numberline {10}Induced Angle of Attack}{119}{chapter.10}
+\contentsline {section}{\numberline {10.1}Induced Angle of Attack}{119}{section.10.1}
+\contentsline {section}{\numberline {10.2}Case Study}{121}{section.10.2}
+\contentsline {chapter}{\numberline {A}HDF dataset and database reader creation}{123}{Appendix.a.A}
+\contentsline {section}{\numberline {A.1}Chart Digitization}{123}{section.a.A.1}
+\contentsline {section}{\numberline {A.2}Creation of an HDF file with Matlab}{124}{section.a.A.2}
+\contentsline {chapter}{\numberline {B}Java Reference}{127}{Appendix.a.B}
+\contentsline {section}{\numberline {B.1}Object and Class in Java}{127}{section.a.B.1}
+\contentsline {section}{\numberline {B.2}Packages}{127}{section.a.B.2}
+\contentsline {section}{\numberline {B.3}Documentation}{128}{section.a.B.3}
+\contentsline {chapter}{Glossary}{130}{section*.137}
+\contentsline {chapter}{Acronyms}{132}{section*.139}
+\contentsline {chapter}{List of symbols}{133}{section*.141}
+\contentsline {chapter}{Bibliography}{135}{section*.143}

@@ -58,7 +58,7 @@ public class ACStabilityManager {
 
 	MyAirfoil meanAirfoil;
 
-	int nValueAlpha = 50;
+	int nValueAlpha = 61;
 
 	CenterOfGravity centerOfGravity = new CenterOfGravity();
 	Amount<Length> maxXaftCenterOfGravityBRF;

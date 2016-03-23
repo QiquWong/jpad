@@ -4150,12 +4150,13 @@ public class CalcCdvsAlpha {
 			if (alphaMax.getUnit() == NonSI.DEGREE_ANGLE)
 				alphaMax= alphaMax.to(SI.RADIAN);
 			
-			double[] clDistribution; 
+			double[] clDistributionInviscid; 
 			AlphaEffective theAlphaInducedCalculator = new AlphaEffective(getTheLiftingSurface().getAerodynamics(),
 					getTheLiftingSurface(), theOperatingConditions);
-			
+			List<MyAirfoil> airfoilList = new ArrayList<MyAirfoil>();
 			CalcLiftDistribution calculateLiftDistribution = getTheLiftingSurface().getAerodynamics().getCalculateLiftDistribution();
-			
+			int nPointSemiSpan = get_nPointsSemispanWise();
+			double [] clDisributionReal = new double [nPointSemiSpan];
 			double[] alphaCDInduced =  MyArrayUtils.linspace(
 					alphaMin.getEstimatedValue(),
 					alphaMax.getEstimatedValue(),
@@ -4166,25 +4167,45 @@ public class CalcCdvsAlpha {
 			double[] cdDistribution, cDDistribution;
 			Double []  alphaInduced;
 			cDDistribution = new double[nValue];
+			double [] yArray = MyArrayUtils.linspace(0., theLiftingSurface.get_span().getEstimatedValue()/2, nPointSemiSpan);
+			double [] alphaLocalAirfoil = new double [nPointSemiSpan];
+			
+			for (int j=0 ; j<nPointSemiSpan; j++){
+				airfoilList.add(j,calculateIntermediateAirfoil(
+						theLiftingSurface, yArray[j]) );
+				airfoilList.get(j).getAerodynamics().calculateClvsAlpha();}
 			
 			for (int ii=0; ii<alphaCDInduced.length; ii++){
 				alphaActual = Amount.valueOf(alphaCDInduced[ii], SI.RADIAN);
 				calculateLiftDistribution.getNasaBlackwell().calculate(alphaActual);
-				clDistribution = calculateLiftDistribution.getNasaBlackwell().get_clTotalDistribution().toArray();
-				int nValueNasaBlackwell = clDistribution.length;
+				clDistributionInviscid = calculateLiftDistribution.getNasaBlackwell().get_clTotalDistribution().toArray();
+				int nValueNasaBlackwell = clDistributionInviscid.length;
 				alphaInduced = new Double [nValueNasaBlackwell];
 				cdDistribution = new double [nValueNasaBlackwell];
 				double[] yLoc = new double [nValueNasaBlackwell];
 				double [] yLocNonDm = MyArrayUtils.linspace(0, 1,nValueNasaBlackwell );
-				clDistribution[clDistribution.length-1] = 0;
+				clDistributionInviscid[clDistributionInviscid.length-1] = 0;
 				yLoc = MyArrayUtils.linspace(0, getTheLiftingSurface().get_semispan().getEstimatedValue(),nValueNasaBlackwell );
 				theAlphaInducedCalculator.calculateAlphaEffective(alphaActual);
 				double [] alphaInducedTemp = theAlphaInducedCalculator.getAlphaInduced();
 				alphaInduced = MyMathUtils.getInterpolatedValue1DLinear(
 						theAlphaInducedCalculator.getyStationsActual(), alphaInducedTemp, yLoc);
+				
+				double qValue;
+				for (int i=0 ; i<nPointSemiSpan ;  i++){
+
+
+					qValue = airfoilList.get(i).getAerodynamics().calculateClAtAlphaInterp(0.0);
+//					System.out.println(" qValue " + qValue );
+					alphaLocalAirfoil[i] = (clDistributionInviscid[i]-qValue)/airfoilList.get(i).getAerodynamics().get_clAlpha();
+//					System.out.println(" alpha local airfoil " + alphaLocalAirfoil);
+					clDisributionReal[i] = airfoilList.get(i).getAerodynamics().calculateClAtAlpha(
+							 //alphaLocal.getEstimatedValue()+
+							alphaLocalAirfoil[i]);}
+				
 				for (int i = 0; i<nValueNasaBlackwell; i++ ){
 				
-				cdDistribution[i] =  clDistribution[i] * (double) alphaInduced[i];
+				cdDistribution[i] =  clDisributionReal[i] * (double) alphaInduced[i];
 				}
 				
 				cDDistribution[ii] = MyMathUtils.integrate1DTrapezoidLinear(yLocNonDm, cdDistribution,0, 1);

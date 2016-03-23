@@ -345,6 +345,8 @@ In the previous listing is reported the Test Class used in order to evaluate the
 
 Below are the charts representing the results obtained by applying the method described at ATR 72 and BOEING 747-100B.
 
+\subsection{ATR-72}
+
 \begin{figure}[H]
 \centering
 \input{immagini/Epsilonalpha.tikz}
@@ -366,8 +368,20 @@ Below are the charts representing the results obtained by applying the method de
 \label{fig:zATR}
 \end{figure}
 
-\noindent \\ \\ 
+\begin{lstlisting}[caption={{\footnotesize Downwash estimation - Results. ATR 72}},label= [style=\bfseries]{Listing}]
+-----Start of downwash calculation-----
 
+			DONE PLOTTING DOWNWASH ANGLE vs ALPHA BODY
+
+At alpha 1.9999999999999996 (deg) the downwash angle is (deg) = 1.1242568216721218
+-----------angles-------------- 
+Angle of attack alpha body (deg) = 2.0
+Angle of incidence of horizontal tail (deg) 0.0
+Downwash Angle at Alpha Body (deg) 1.1242568216721218
+Angle of Attack of Horizontal Tail (deg) 0.8757431783278777
+\end{lstlisting}
+
+\subsection{BOEING 747-100B}
 \begin{figure}[H]
 \centering
 \input{immagini/Epsilonalphaboeing.tikz}
@@ -392,23 +406,6 @@ Below are the charts representing the results obtained by applying the method de
 \end{figure}
 
 \newpage
-\begin{lstlisting}[caption={{\footnotesize Downwash estimation - Results. ATR 72}},label= [style=\bfseries]{Listing}]
-
------Start of downwash calculation-----
-
-			DONE PLOTTING DOWNWASH ANGLE vs ALPHA BODY
-
-At alpha 1.9999999999999996 (deg) the downwash angle is (deg) = 1.1242568216721218
-
- 
- 
------------angles-------------- 
-Angle of attack alpha body (deg) = 2.0
-Angle of incidence of horizontal tail (deg) 0.0
-Downwash Angle at Alpha Body (deg) 1.1242568216721218
-Angle of Attack of Horizontal Tail (deg) 0.8757431783278777
-\end{lstlisting}
-
 
 \begin{lstlisting}[caption={{\footnotesize Downwash estimation - Results. BOEING 747-100B}},label= [style=\bfseries]{Listing}]
 
@@ -483,7 +480,7 @@ Known the value of the dowhwash gradient for each angle of attack it's possible 
 \end{equation}
 \begin{figure}[H]
 \centering
-{\includegraphics[height=9cm]{immagini/Giord80.jpg}} 
+{\includegraphics[height=9cm]{immagini/chartGiordano}} 
 \caption{Chart for the evaluation of $\Phi$ for $x=80$}
 \label{giordanodata}
 \end{figure} 

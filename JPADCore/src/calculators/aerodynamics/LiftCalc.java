@@ -515,9 +515,9 @@ public class LiftCalc {
 					 //alphaLocal.getEstimatedValue()+
 					alphaLocalAirfoil[i]);
 //					airfoilList.get(i).getGeometry().get_twist().getEstimatedValue());
-			
-			cLWingActual = MyMathUtils.integrate1DSimpsonSpline(yArrayND, clDisributionReal);
 		}
+			cLWingActual = MyMathUtils.integrate1DSimpsonSpline(yArrayND, clDisributionReal);
+		
 		cLWingArray[ii] = cLWingActual;
 		}
 			

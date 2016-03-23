@@ -16,7 +16,7 @@
 			<Dynamic_Pressure_Ratio  unit="">0.85</Dynamic_Pressure_Ratio>
 			<Mach_number_TO unit="">0.15</Mach_number_TO>
 			<Mach_number_L unit="">0.15</Mach_number_L>
-			<Mach_number_cruise unit="">0.7</Mach_number_cruise>
+			<Mach_number_cruise unit="">0.75</Mach_number_cruise>
 			<Cruise_Altitude unit="m">10300</Cruise_Altitude>
 	</Other_Data>
 </input>

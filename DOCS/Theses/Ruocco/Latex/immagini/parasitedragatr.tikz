@@ -2,16 +2,17 @@
 \begin{tikzpicture}
 
 \begin{axis}[
-width=16.01cm,
-height=10.3cm,
+width=14.01cm,
+height=9.3cm,
 scaled ticks=false,tick label style={/pgf/number format/precision=3},
 xmin=0.005,
-xmax=0.014,
+xmax=0.013,
 xtick={0.005,0.006,0.007,0.008,0.009,0.010,0.011,0.012,0.013, 0.014},
-xlabel={CD},
+xticklabels={0.005,0.006,0.007,0.008,0.009,0.010,0.011,0.012,0.013, 0.014},
+xlabel={$CD_p$},
 xmajorgrids,
 ymin=-0.2,
-ymax=1.8,
+ymax=1.6,
 ylabel={CL },
 ymajorgrids,
 ]

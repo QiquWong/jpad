@@ -463,7 +463,7 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		
 		Amount<Angle> alphaBody = Amount.valueOf(Math.toRadians(2.0), SI.RADIAN);
 		Amount<Angle> alphaMin = Amount.valueOf(Math.toRadians(-5), SI.RADIAN);
-		Amount<Angle> alphaMax = Amount.valueOf(Math.toRadians(22), SI.RADIAN);
+		Amount<Angle> alphaMax = Amount.valueOf(Math.toRadians(23), SI.RADIAN);
 		
 //		Amount<Angle> alphaMin = Amount.valueOf(Math.toRadians(-6), SI.RADIAN);
 //		Amount<Angle> alphaMax = Amount.valueOf(Math.toRadians(25), SI.RADIAN);
@@ -475,8 +475,7 @@ public class Test_MR_LongitudinalStability_Turboprop {
 				alphaMin, alphaMax, alphaBody , true, subfolderPathTakeOFF, pathTakeOff);
  
 	theStabilityManager.calculateAll();
-	//theStabilityManagerTakeOFF.CalculateAll();
-			
+//	theStabilityManagerTakeOFF.calculateAll();
 
 		
 		// CL ANALYSIS

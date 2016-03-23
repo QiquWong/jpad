@@ -1,30 +1,30 @@
 \pagestyle{pippo}
 \chapter{Java Reference}
+\label{ch:jr}
+\markboth{Java Reference}{}
 
+\section{Object and Class in Java}
+Object oriented programming scales very well, from the most trivial of problems to the most complex tasks. It provides a form of abstraction that resonates with techniques people use to solve problems in their everyday life. And for most of the dominant ob ject-oriented languages there are an increasingly large number of
+libraries that assist in the development of applications for many domains.\cite{javareference}\\
 
-%\section{Inheritance, Overriding and Polymorphism}
-%An extensive usage of inheritance, overriding and polymorphism has been made throughout the application.
-%
-%\medskip
-%Java inheritance can be defined as the process where one object acquires the properties of another. With the use of inheritance the information is made manageable in a hierarchical order. Inheritance has been used several times to define superclass-subclass relationship in order to ease the management of the instances of the subclasses and to group together a set of properties that each subclass must have. Some of the methods defined in the superclass are overridden by the subclasses to execute the proper action accordingly to the run-time object type.
-%
-%Polymorphism is the ability of an object to take on many forms. The most common use of polymorphism in OOP occurs when a parent class reference is used to refer to a child class object. Any Java object that can pass more than one IS-A test is considered to be polymorphic. In Java, all Java objects are polymorphic since any object will pass the IS-A test for their own type and for the class Object.
-%Polymorphism has been exploited in the design of methods which had to perform an action that could be valid for more than one object type. In such a case, the method signature contains a parameter which is of the superclass type; when invoking the method elsewhere in the application with a subclass instance as an argument at compile time, the compiler uses the method in the superclass to validate the statement in the "client" method. At run time, however, the JVM invokes the method which is defined in the subclass which overrides the superclass method. This behaviour is referred to as virtual method invocation, and the methods are referred to as virtual methods.
-%
-%\medskip
-%In this way it was possible to define a single method which was suitable for several objects types instead of defining a different method for each component or using the instanceof operator.
+An entity that has state and behavior is known as an object. It can be physical or logical (tengible and intengible). The example of integible object is banking system.
+
+An object has three characteristics:
+
+\begin{itemize}
+\item {\bfseries State}: represents data (value) of an object.
+\item {\bfseries Behavior}: represents the behavior (functionality) of an object such as deposit, withdraw etc.
+\item {\bfseries Identity}: Object identity is typically implemented via a unique ID. The value of the ID is not visible to the external user. But,it is used internally by the JVM to identify each object uniquely.
+\end{itemize}
+
+Object is an instance of a class. Class is a template or blueprint from which objects are created. So object is the instance (result) of a class.
 
 \section{Packages}\label{sec:package}
 A Java package is a mechanism for organizing Java classes into namespaces, providing modular programming. Java packages can be stored in compressed files called JAR files, allowing classes to be downloaded faster as groups rather than individually. Programmers also typically use packages to organize classes belonging to the same category or providing similar functionality.
 
 A package provides a unique namespace for the types it contains.
 In general, a namespace is a container for a set of identifiers (also known as symbols, names). Namespaces provide a level of direction to specific identifiers, thus making it possible to distinguish between identifiers with the same exact name. For example, a surname could be thought of as a namespace that makes it possible to distinguish people who have the same given name. In computer programming, namespaces are typically employed for the purpose of grouping symbols and identifiers around a particular functionality.
-
 \section{Documentation}
 The doc comments, which are a particular type of comments provided by Java, are automatically recognized by the most popular IDE programs; this helps the developer to quickly get an idea of the actions performed by each method, the parameter which has to be passed to it and the what it returns to the user.
 
-%It is important to know that the only possible way to access an object is through a reference variable. A reference variable can be of only one type. Once declared, the type of a reference variable cannot be changed.
-%The reference variable can be reassigned to other objects provided that it is not declared final. The type of the reference variable would determine the methods that it can invoke on the object.
-%A reference variable can refer to any object of its declared type or any subtype of its declared type. A reference variable can be declared as a class or interface type.
-%
-%All methods in Java behave in this manner, whereby an overridden method is invoked at run time, no matter what data type the reference is that was used in the source code at compile time.
+

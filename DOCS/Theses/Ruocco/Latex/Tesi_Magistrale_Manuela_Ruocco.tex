@@ -201,7 +201,7 @@
 
 
 % some configuration commands by package appendix
-\cleardoublepage \phantomsection
+%\cleardoublepage \phantomsection
 \renewcommand{\chaptername}{Appendix}
 %\renewcommand{\appendixtocname}{Appendices}
 %\renewcommand{\appendixpagename}{Appendices}
@@ -212,16 +212,14 @@
 %
 % Here we include the appendix material of the book
 %
+\pagestyle{pippo}
 \begin{appendices}% needs package appendix
 \pagestyle{pippo}
 \input{Tesi_Appendices}
-%
+\newpage
+\thispagestyle{empty}
 \end{appendices}
-
-
-
 \backmatter % materiale finale( bibliografia, risorse utilizzate)
-
 % -----------------------------------------------------------------------------------------
 %                                                                L I S T A   D E I   S I M B O L I   E   G L O S S A R I O 
 % -----------------------------------------------------------------------------------------
