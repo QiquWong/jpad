@@ -1231,5 +1231,49 @@ In conclusion, after having shown that the classes \lstinline[language=Java]!Cal
 \noindent
 Starting from the flight manual data regarding the maximum take-off and landing weight, and knowing the wing geometry, the two wing loadings, in both take-off and landing conditions, has been derived. From these values a variation of these latter from a -10\% to a +20\% has been assigned obtaining the following results.  
 %
-
+\begin{table}[H]
+  \centering
+    \begin{tabular}{lr|c|c}
+    \toprule
+    \textbf{Model Data} &  \textbf{} & \textbf{W/S variation range in take-off} & \textbf{W/S variation range in landing} \\
+    \midrule
+    \textbf{W\textsubscript{TO}} & 750000$\si{\lb}$ & 123 lb/$\si{\square\foot}$ & 97 lb/$\si{\square\foot}$ \\
+    \textbf{W\textsubscript{LND}} & 590654$\si{\lb}$ & 136 lb/$\si{\square\foot}$ & 107 lb/$\si{\square\foot}$ \\
+    \textbf{S} & $\SI{5500}{\square\foot}$ & 150 lb/$\si{\square\foot}$ & 118 lb/$\si{\square\foot}$ \\
+    \textbf{W/S\textsubscript{TO}} & 136 lb/$\si{\square\foot}$ & 164 lb/$\si{\square\foot}$ & 129 lb/$\si{\square\foot}$ \\
+    \textbf{W/S\textsubscript{LND}} & 107 lb/$\si{\square\foot}$ & \textbf{ } & \textbf{ } \\
+    \bottomrule
+    \end{tabular}
+    \caption{Wing loading variation in take-off and landing starting from the B747-100B data}
+    \label{tab:WS}
+\end{table}
+%
+\noindent
+Regarding the thrust ratio $\frac{T}{W}$, the public data for the B747-100B engines suggest a static thrust of $\SI{204000}{\newton}$ which, compared with the maximum take-off weight, leads to a $\frac{T}{W}=0.272\si{lb}/\si{lb}$. From this value the same variation made for the wing loading has been imposed obtaining the following results.
+%
+\begin{table}[H]
+  \centering
+    \begin{tabular}{lr}
+    \toprule
+    \multicolumn{2}{c}{\textbf{Model Data}} \\
+    \midrule
+    \textbf{W\textsubscript{TO}} & 750000 lb \\
+    \textbf{T0 (x1 Eng)} & 204000 N \\
+    \textbf{T/W} & 0.272 N/lb \\
+    \midrule
+    \multicolumn{2}{c}{\textbf{T/W variation range}} \\
+    \midrule
+    \multicolumn{1}{c}{\textbf{T/W}} & \multicolumn{1}{c}{\textbf{T0}} \\
+    0.245 N/lb & 183600 N \\
+    0.272 N/lb & 204000 N \\
+    0.299 N/lb & 224400 N \\
+    0.326 N/lb & 244800 N \\
+    \bottomrule
+    \end{tabular}%
+  \caption{Thrust ratio variation in take-off starting from the B747-100B data}
+  \label{tab:TW}
+\end{table}%
+%
+\noindent
+In order to implement these variations of the wing loading and of the thrust ratio, the aircraft weight has been assumed constant, while the wing area and the static thrust of the engine have been modified for each case following the guideline exposed in table \ref{tab:WS} and \ref{tab:TW}.
 

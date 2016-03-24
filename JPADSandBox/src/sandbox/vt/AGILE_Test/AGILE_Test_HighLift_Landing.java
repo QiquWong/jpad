@@ -230,6 +230,9 @@ public class AGILE_Test_HighLift_Landing {
 				);
 		theWing.setAerodynamics(theLSAnalysis);
 		theLSAnalysis.initializeDependentData();
+		
+		theWing.calculateGeometry();
+		theWing.getGeometry().calculateAll();
 
 		// MEAN AIRFOIL:
 		System.out.println("\n \n-----------------------------------------------------");

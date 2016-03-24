@@ -17,9 +17,13 @@ import org.kohsuke.args4j.Option;
 
 import aircraft.OperatingConditions;
 import aircraft.auxiliary.airfoil.MyAirfoil;
+import aircraft.calculators.ACAnalysisManager;
+import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.MyConfiguration;
+import configuration.enumerations.AircraftEnum;
+import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.FoldersEnum;
@@ -71,6 +75,14 @@ public class AGILE_Test_HighLift_TakeOff {
 		String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR) + File.separator;
 		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "AGILE_DC1" + File.separator);
 
+		//------------------------------------------------------------------------------------
+		// SETTING UP DATABASE:
+		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
+		String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
+		String highLiftDatabaseFileName = "HighLiftDatabase.h5";
+		AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
+		HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
+		
 		//--------------------------------------------------------------------------------------
 		// DEFINE OPERATING CONDITIONS, THE WING AND THE WING ANALYZER OBJECTS:
 
@@ -81,46 +93,93 @@ public class AGILE_Test_HighLift_TakeOff {
 		theConditions.set_machCurrent(0.15);
 		theConditions.calculate();
 
+		// AIRCRAFT CREATION:
+		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.B747_100B);
+		aircraft.set_name("B747-100B");
+		
+		aircraft.get_weights().set_MTOM(Amount.valueOf(340194, SI.KILOGRAM));
+		
+		LiftingSurface theWing = aircraft.get_wing();
+
+		ACAnalysisManager theAnalysis = new ACAnalysisManager(theConditions);
+		theAnalysis.updateGeometry(aircraft);
+
+		// Set the CoG(Bypass the Balance analysis allowing to perform Aerodynamic analysis only)
+		CenterOfGravity cgMTOM = new CenterOfGravity();
+
+		// x_cg in body-ref.-frame
+		cgMTOM.set_xBRF(Amount.valueOf(23.1, SI.METER));
+		cgMTOM.set_yBRF(Amount.valueOf(0.0, SI.METER));
+		cgMTOM.set_zBRF(Amount.valueOf(0.0, SI.METER));
+
+		aircraft.get_theBalance().set_cgMTOM(cgMTOM);
+		aircraft.get_HTail().calculateArms(aircraft);
+		aircraft.get_VTail().calculateArms(aircraft);
+
+
+		LSAerodynamicsManager theLSAnalysis = new LSAerodynamicsManager(
+				theConditions,
+				theWing,
+				aircraft
+				);
+		theLSAnalysis.set_AerodynamicDatabaseReader(aeroDatabaseReader);
+		theAnalysis.doAnalysis(aircraft,AnalysisTypeEnum.AERODYNAMIC);
+		theLSAnalysis.setHighLiftDatabaseReader(highLiftDatabaseReader);
+		theWing.setAerodynamics(theLSAnalysis);
+		
+		
+//		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.B747_100B);
+//		aircraft.set_name("B747-100B");
+		
 		// WING DEFINITION (the position is set to zero because is an isolated wing)
-		double xAw = 0.0; 
-		double yAw = 0.0;
-		double zAw = 0.0;
-		double iw = 0.0;
-		LiftingSurface theWing = new LiftingSurface(
-				"Wing", // name
-				"Data from AC_ATR_72_REV05.pdf", 
-				xAw, yAw, zAw, iw, 
-				ComponentEnum.WING
-				); 
-		theWing.calculateGeometry();
-		theWing.getGeometry().calculateAll();
+//		double xAw = 0.0; 
+//		double yAw = 0.0;
+//		double zAw = 0.0;
+//		double iw = 0.0;
+//		LiftingSurface theWing = new LiftingSurface(
+//				"Wing", // name
+//				"Data from AC_ATR_72_REV05.pdf", 
+//				xAw, yAw, zAw, iw, 
+//				ComponentEnum.WING
+//				); 
+//		LiftingSurface theWing = aircraft.get_wing();
+//		theWing.calculateGeometry();
+//		theWing.getGeometry().calculateAll();
 
 		// Center of Gravity initialization (set to zero because it is not necessary)
-		double xCgLocal= 0.0; 
-		double yCgLocal= 0.0;
-		double zCgLocal= 0.0;
-		CenterOfGravity cg = new CenterOfGravity(
-				Amount.valueOf(xCgLocal, SI.METER), // coordinates in LRF
-				Amount.valueOf(yCgLocal, SI.METER),
-				Amount.valueOf(zCgLocal, SI.METER),
-				Amount.valueOf(xAw, SI.METER), // origin of LRF in BRF 
-				Amount.valueOf(yAw, SI.METER),
-				Amount.valueOf(zAw, SI.METER),
-				Amount.valueOf(0.0, SI.METER),// origin of BRF
-				Amount.valueOf(0.0, SI.METER),
-				Amount.valueOf(0.0, SI.METER)
-				);
-		cg.calculateCGinBRF();
-		theWing.set_cg(cg);
+//		double xCgLocal= 0.0; 
+//		double yCgLocal= 0.0;
+//		double zCgLocal= 0.0;
+//		CenterOfGravity cg = new CenterOfGravity(
+//				Amount.valueOf(xCgLocal, SI.METER), // coordinates in LRF
+//				Amount.valueOf(yCgLocal, SI.METER),
+//				Amount.valueOf(zCgLocal, SI.METER),
+//				Amount.valueOf(xAw, SI.METER), // origin of LRF in BRF 
+//				Amount.valueOf(yAw, SI.METER),
+//				Amount.valueOf(zAw, SI.METER),
+//				Amount.valueOf(0.0, SI.METER),// origin of BRF
+//				Amount.valueOf(0.0, SI.METER),
+//				Amount.valueOf(0.0, SI.METER)
+//				);
+//		cg.calculateCGinBRF();
+//		theWing.set_cg(cg);
 
 		// update of the wing with new model parameters
 		theWing.set_surface(Amount.valueOf(82.7, SI.SQUARE_METRE));
 		theWing.set_aspectRatio(9.54);
 		theWing.set_taperRatioEquivalent(0.217);
+		theWing.set_taperRatioInnerPanel(0.425);
+		theWing.set_taperRatioOuterPanel(0.387);
+		theWing.set_taperRatioCrankedWing(0.1645);
 		theWing.set_spanStationKink(0.398);
-		theWing.set_iw(Amount.valueOf(0.0,SI.RADIAN));
-		theWing.set_twistKink( Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
-		theWing.set_twistTip( Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
+		theWing.set_extensionLERootChordLinPanel(0.086);
+		theWing.set_extensionTERootChordLinPanel(0.244);
+//		theWing.set_iw(Amount.valueOf(Math.toRadians(2.5),SI.RADIAN));
+//		theWing.set_twistKink(Amount.valueOf(Math.toRadians(1.1),SI.RADIAN));
+//		theWing.set_twistTip(Amount.valueOf(Math.toRadians(-4.0),SI.RADIAN));
+		theWing.set_iw(Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
+		theWing.set_twistKink(Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
+		theWing.set_twistTip(Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
 		theWing.set_dihedralInnerPanel(Amount.valueOf(Math.toRadians(6.0), SI.RADIAN));
 		theWing.set_dihedralOuterPanel(Amount.valueOf(Math.toRadians(6.0), SI.RADIAN));
 		theWing.set_chordRoot(Amount.valueOf(6.39, SI.METER));
@@ -149,6 +208,7 @@ public class AGILE_Test_HighLift_TakeOff {
 		airfoilRoot.getGeometry().set_maximumThicknessOverChord(0.161);
 		airfoilRoot.getGeometry().set_radiusLE(0.03892);
 		airfoilRoot.getGeometry().set_deltaYPercent(4.375);
+		airfoilRoot.set_chordLocal(6.39);
 		// the followings are not necessaries to the high lift devices effects analysis
 		airfoilRoot.getAerodynamics().set_alphaZeroLift(Amount.valueOf(Math.toRadians(-2.0046), SI.RADIAN));
 		airfoilRoot.getAerodynamics().set_cdMin(0.0059);
@@ -175,6 +235,7 @@ public class AGILE_Test_HighLift_TakeOff {
 		airfoilKink.getGeometry().set_maximumThicknessOverChord(0.149);
 		airfoilKink.getGeometry().set_radiusLE(0.04265);
 		airfoilKink.getGeometry().set_deltaYPercent(3.88);
+		airfoilKink.set_chordLocal(2.716);
 		// the followings are not necessaries to the high lift devices effects analysis
 		airfoilKink.getAerodynamics().set_alphaZeroLift(Amount.valueOf(Math.toRadians(-1.6467), SI.RADIAN));
 		airfoilKink.getAerodynamics().set_cdMin(0.00566);
@@ -201,6 +262,7 @@ public class AGILE_Test_HighLift_TakeOff {
 		airfoilTip.getGeometry().set_maximumThicknessOverChord(0.119);
 		airfoilTip.getGeometry().set_radiusLE(0.01011);
 		airfoilTip.getGeometry().set_deltaYPercent(2.92);
+		airfoilTip.set_chordLocal(1.051);
 		// the followings are not necessaries to the high lift devices effects analysis
 		airfoilTip.getAerodynamics().set_alphaZeroLift(Amount.valueOf(Math.toRadians(-3.19), SI.RADIAN));
 		airfoilTip.getAerodynamics().set_cdMin(0.0);
@@ -224,13 +286,19 @@ public class AGILE_Test_HighLift_TakeOff {
 		theWing.set_theAirfoilsList(myAirfoilList);
 
 		// WING ANALYZER:
-		LSAerodynamicsManager theLSAnalysis = new LSAerodynamicsManager ( 
-				theConditions,
-				theWing
-				);
-		theWing.setAerodynamics(theLSAnalysis);
-		theLSAnalysis.initializeDependentData();
+//		LSAerodynamicsManager theLSAnalysis = new LSAerodynamicsManager ( 
+//				theConditions,
+//				theWing
+//				);
+//		theWing.setAerodynamics(theLSAnalysis);
+//		theLSAnalysis.initializeDependentData();
 
+		//------------------------------------------------------------------------------------
+		// UPDATE DATA
+		theWing.calculateGeometry();
+		theWing.getGeometry().calculateAll();
+		theWing.updateAirfoilsGeometry();
+		
 		// MEAN AIRFOIL:
 		System.out.println("\n \n-----------------------------------------------------");
 		System.out.println("Starting evaluate the mean airfoil characteristics");
@@ -249,22 +317,6 @@ public class AGILE_Test_HighLift_TakeOff {
 		System.out.println("The mean alpha star is [deg] = " + alphaStarDeg);
 		double meanLESharpnessParameter = meanAirfoil.getGeometry().get_deltaYPercent();
 		Amount<Angle> deltaAlphaMax;
-
-		//------------------------------------------------------------------------------------
-		// SETTING UP DATABASE:
-		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
-		String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
-		String highLiftDatabaseFileName = "HighLiftDatabase.h5";
-		AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
-		HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
-		theLSAnalysis.set_AerodynamicDatabaseReader(aeroDatabaseReader);
-		theLSAnalysis.setHighLiftDatabaseReader(highLiftDatabaseReader);
-
-		//------------------------------------------------------------------------------------
-		// UPDATE DATA
-		theWing.calculateGeometry();
-		theWing.getGeometry().calculateAll();
-		theWing.updateAirfoilsGeometry();
 
 		//----------------------------------------------------------------------------------
 		// INITIALIZING HIGH LIFT DEVICES INPUT DATA
