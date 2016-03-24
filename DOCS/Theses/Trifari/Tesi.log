@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.11.16)  23 MAR 2016 20:21
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.11.16)  24 MAR 2016 13:39
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -5921,8 +5921,12 @@ dDistance_AlphaRED.pdf> <./images/RateOfClimb_vs_GroundDistance_AlphaRED.pdf>]
 ectoryAndSpeed_vs_GroundDistance_LANDING_REV.pdf>] [127 <./images/HorizontalFor
 ces_vs_GroundDistance_LANDING.pdf> <./images/HorizontalForces_vs_GroundDistance
 _LANDING_REV.pdf>] [128] [129 <./images/LoadFactor_vs_GroundDistance_LANDING.pd
-f> <./images/LoadFactor_vs_GroundDistance_LANDING_REV.pdf>])
-(./contents/Conclusions.tex [130
+f> <./images/LoadFactor_vs_GroundDistance_LANDING_REV.pdf>]
+Overfull \hbox (30.94499pt too wide) in paragraph at lines 1236--1247
+ [][] 
+ []
+
+) (./contents/Conclusions.tex [130
 
 ])) [131
 
@@ -5940,7 +5944,7 @@ File: lstmisc.sty 2015/06/04 1.6 (Carsten Heinz)
 ) [133
 
 ] [134]
-<images/HDF_Dataset_creation.png, id=3549, 1266.7325pt x 612.2875pt>
+<images/HDF_Dataset_creation.png, id=3553, 1266.7325pt x 612.2875pt>
 File: images/HDF_Dataset_creation.png Graphic file (type png)
 
 <use images/HDF_Dataset_creation.png>
@@ -5948,14 +5952,14 @@ Package pdftex.def Info: images/HDF_Dataset_creation.png used on input line 122
 .
 (pdftex.def)             Requested size: 388.19737pt x 187.63965pt.
  [135 <./images/HDF_Dataset_creation.png (PNG copy)>] <images/deltaAlphaSforza.
-png, id=3585, 921.4425pt x 538.26094pt>
+png, id=3589, 921.4425pt x 538.26094pt>
 File: images/deltaAlphaSforza.png Graphic file (type png)
 
 <use images/deltaAlphaSforza.png>
 Package pdftex.def Info: images/deltaAlphaSforza.png used on input line 129.
 (pdftex.def)             Requested size: 242.62335pt x 141.7268pt.
 
-<images/DAlphaVsLambdaLEVsDy_MATLAB.png, id=3586, 421.575pt x 316.18124pt>
+<images/DAlphaVsLambdaLEVsDy_MATLAB.png, id=3590, 421.575pt x 316.18124pt>
 File: images/DAlphaVsLambdaLEVsDy_MATLAB.png Graphic file (type png)
 
 <use images/DAlphaVsLambdaLEVsDy_MATLAB.png>
@@ -6050,11 +6054,16 @@ Package minitoc Info: I0010
 
 (c:/texlive/2015/texmf-dist/tex/latex/minitoc/italian.mld
 File: italian.mld 2006/01/13
-))
+)
+
+Package mparhack Warning: Marginpars may have changed.
+(mparhack)                Rerun to get them right.
+
+)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 247.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 247.
 Package rerunfilecheck Info: File `Tesi.out' has not changed.
-(rerunfilecheck)             Checksum: 5CDFE6784A62D246744A58A1487D288D;3657.
+(rerunfilecheck)             Checksum: 666528882910602016FFE617DC043CAB;3657.
 
 
 LaTeX Warning: There were multiply-defined labels.
@@ -6064,10 +6073,10 @@ Package logreq Info: Writing requests to 'Tesi.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 68731 strings out of 493054
- 1415290 string characters out of 6138326
- 3644208 words of memory out of 5000000
- 69007 multiletter control sequences out of 15000+600000
+ 68761 strings out of 493054
+ 1415896 string characters out of 6138326
+ 3644416 words of memory out of 5000000
+ 69035 multiletter control sequences out of 15000+600000
  244884 words of font info for 228 fonts, out of 8000000 for 9000
  1142 hyphenation exceptions out of 8191
  61i,30n,107p,10382b,4233s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -6098,10 +6107,10 @@ ype1/public/tex-gyre/qtmb.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/te
 x-gyre/qtmr.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmri.p
 fb><c:/texlive/2015/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb><c:/texlive/
 2015/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb>
-Output written on Tesi.pdf (145 pages, 13349231 bytes).
+Output written on Tesi.pdf (145 pages, 13351650 bytes).
 PDF statistics:
- 4091 PDF objects out of 4296 (max. 8388607)
- 3577 compressed objects within 36 object streams
- 1477 named destinations out of 1728 (max. 500000)
+ 4095 PDF objects out of 4296 (max. 8388607)
+ 3581 compressed objects within 36 object streams
+ 1479 named destinations out of 1728 (max. 500000)
  40501 words of extra memory for PDF output out of 42996 (max. 10000000)
 

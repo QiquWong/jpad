@@ -805,7 +805,7 @@ public class LiftingSurface extends AeroComponent{
 		// Cranked wing <==> _extensionLE/TERootChordLinPanel !=0 and _spanStationKink!=1.0 (if branch)
 		// Constant chord (inner panel) + simply tapered (outer panel) wing <==> _extensionLE/TERootChordLinPanel = 0 and _spanStationKink!=1.0 (else branch)
 		// Simply tapered wing <==> _extensionLE/TERootChordLinPanel = 0 and _spanStationKink=1.0 (if branch)
-		if (((_extensionLERootChordLinPanel != 0.0 | _extensionTERootChordLinPanel != 0.0) | _spanStationKink==1.0)){
+		if (((_extensionLERootChordLinPanel != 0.0 | _extensionTERootChordLinPanel != 0.0) | _spanStationKink!=1.0)){
 			_chordRoot = Amount.valueOf(_chordLinPanel.doubleValue(SI.METER) *  
 					(1 + _extensionLERootChordLinPanel + _extensionTERootChordLinPanel),SI.METER);
 			_chordKink = Amount.valueOf(_chordLinPanel.doubleValue(SI.METER) * 

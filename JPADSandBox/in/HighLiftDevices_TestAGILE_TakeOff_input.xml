@@ -9,7 +9,7 @@
 		<Flap_Number unit="">2</Flap_Number>
 		<Flap1>
 			<FlapType unit="">FOWLER</FlapType>
-			<Cf_C unit="">0.3</Cf_C>
+			<Cf_C unit="">0.33</Cf_C>
 			<Delta_Flap1 unit="°">15</Delta_Flap1>
 			<Flap_inboard>0.132</Flap_inboard>
 			<Flap_outboard>0.398</Flap_outboard>
