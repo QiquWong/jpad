@@ -159,6 +159,15 @@ public class ACStabilityManager {
 	private double [] cDiWingPolarArray;
 	private double [] cDWaweWingPolarArray;
 	private double [] cDWingPolarArray;
+	
+	private double [] cmQuarterChordWingArray; 
+	private double [] cmACWingArray; 
+	private double [] cmQuarterChordHtailArray; 
+	private double [] cmACHtailArray; 
+	private double [] cmFuselageArray; 
+	
+	
+	double aCWing;
 
 
 
@@ -388,7 +397,15 @@ public class ACStabilityManager {
 	}
 
 	public void CalculateMomentCharacteristics(){
-
+		System.out.println("\n\n------------------------------------");
+		System.out.println("\n PITCHING MOMENT  ");
+		System.out.println("\n------------------------------------");
+		
+		calculateWingMomentCharacteristics();
+		calculateHTailMomentCharacteristics();
+		calculateFuselageMomentCharacteristics();
+		calculatePowerEffects();
+		calculateMoment();
 	}
 
 	public void CalculateWingLiftCharacteristics() throws InstantiationException, IllegalAccessException {
@@ -1413,6 +1430,95 @@ public class ACStabilityManager {
 
 	}
 	
+	public void calculateWingMomentCharacteristics(){
+		
+		System.out.println("\n\tData:");
+		System.out.println(" xLE_MAC wing is " + theWing.get_xLEMacActualLRF().getEstimatedValue() + " m" );
+		System.out.println(" MAC wing is " +  theWing.get_meanAerodChordActual().getEstimatedValue() + " m ");
+		System.out.println(" xAC wing is " + theLSAnalysis.getCalculateXAC().deYoungHarper() + " m ");
+		System.out.println(" xAC DeYoung Harper perc. MAC " + theLSAnalysis.getCalculateXAC().deYoungHarper()/
+				 theWing.get_meanAerodChordActual().getEstimatedValue());
+		
+		
+		StabilityCalculator.CalcPitchingMomentAC pitchingMomentCalculatorWing = 
+				theStabilityCalculator.new CalcPitchingMomentAC(theWing, theOperatingConditions);
+		
+		
+		// Array
+		
+		 // At Quarter of MAC 
+		
+		cmQuarterChordWingArray = new double[nValueAlpha];
+		Amount<Angle> alphaWingActual;
+		
+		for ( int i=0; i< nValueAlpha; i++){
+			alphaWingActual = Amount.valueOf(
+					alphaStabilityArray.get(i)+theWing.get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue(),
+					NonSI.DEGREE_ANGLE);
+			cmQuarterChordWingArray[i] = pitchingMomentCalculatorWing.calculateCMQuarterMACIntegral(alphaWingActual);
+		}
+		
+		if (theCondition == ConditionEnum.TAKE_OFF || theCondition == ConditionEnum.LANDING){
+			for(int i=0; i<nValueAlpha; i++){
+				cmQuarterChordWingArray [i] = cmQuarterChordWingArray[i] + highLiftWingCalculator.getDeltaCM_c4();
+			}
+		}
+		
+		
+		//aerodynamic center
+		aCWing = pitchingMomentCalculatorWing.getACLiftingSurface();
+		System.out.println("AC WING percent MAC is " + aCWing);
+//	
+//		aCWing = 0.721;
+		cmACWingArray = new double[nValueAlpha];
+		for ( int i=0; i< nValueAlpha; i++){
+			alphaWingActual = Amount.valueOf(
+					alphaStabilityArray.get(i)+theWing.get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue(),
+					NonSI.DEGREE_ANGLE);
+			cmACWingArray[i] = pitchingMomentCalculatorWing.calculateCMIntegral(alphaWingActual, aCWing);
+		}
+		
+		if (theCondition == ConditionEnum.TAKE_OFF || theCondition == ConditionEnum.LANDING){
+			for(int i=0; i<nValueAlpha; i++){
+				cmACWingArray [i] = cmACWingArray[i] + highLiftWingCalculator.getDeltaCM_c4();
+			}
+		}
+		
+		
+		// Plot
+		
+		if (plotCheck == true){
+		System.out.println("\n\n\t\t\tWRITING CM vs ALPHA CHART TO FILE FOR wing at c/4");
+		MyChartToFileUtils.plotNoLegend(
+				alphaStabilityArray.toArray() ,cmQuarterChordWingArray,
+				null, null, null, null,
+				"alpha_b", "CM_w",
+				"deg", "",
+				subfolderPath," Moment Coefficient vs alpha for Wing respect to quarter of MAC " );
+		System.out.println("\n\n\t\t\tDONE");
+		
+		System.out.println("\n\n\t\t\tWRITING CM vs ALPHA CHART TO FILE FOR wing at aerodynamic Center");
+		MyChartToFileUtils.plotNoLegend(
+				alphaStabilityArray.toArray() ,cmACWingArray,
+				null, null, null, null,
+				"alpha_b", "CM_w",
+				"deg", "",
+				subfolderPath," Moment Coefficient vs alpha for Wing respect to A C " );
+		System.out.println("\n\n\t\t\tDONE");
+		
+		}
+	}
+	
+	
+	
+	
+	
+	public void calculateHTailMomentCharacteristics(){}
+	public void calculateFuselageMomentCharacteristics(){}
+	public void calculatePowerEffects(){}
+	public void calculateMoment(){}
+	
+	
 	public void calculateDeltaEArray(){
 		 this.deltaEArray = MyArrayUtils.linspace(deltaMin, deltaMax , 7);
 	}
@@ -1614,6 +1720,36 @@ public class ACStabilityManager {
 
 	public double[] getcDHTailCleanArray() {
 		return cDHTailCleanArray;
+	}
+
+
+	public double getaCWing() {
+		return aCWing;
+	}
+
+
+	public void setaCWing(double aCWing) {
+		this.aCWing = aCWing;
+	}
+
+
+	public double[] getCmQuarterChordWingArray() {
+		return cmQuarterChordWingArray;
+	}
+
+
+	public double[] getCmACWingArray() {
+		return cmACWingArray;
+	}
+
+
+	public double[] getCmQuarterChordHtailArray() {
+		return cmQuarterChordHtailArray;
+	}
+
+
+	public double[] getCmFuselageArray() {
+		return cmFuselageArray;
 	}
 
 

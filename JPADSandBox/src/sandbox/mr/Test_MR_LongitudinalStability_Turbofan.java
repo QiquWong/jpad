@@ -239,7 +239,7 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		
 		airfoilRoot.getAerodynamics().set_cdMin(0.005);
 		airfoilRoot.getAerodynamics().set_clAtCdMin(0.01);
-		airfoilRoot.getAerodynamics().set_cmAC(-0.07);
+		airfoilRoot.getAerodynamics().set_cmAC(-0.03);
 		airfoilRoot.getAerodynamics().set_kFactorDragPolar(0.005);
 		
 		System.out.println("\n \n \t ROOT \nAirfoil Type: " + airfoilRoot.get_family());
@@ -266,7 +266,7 @@ public class Test_MR_LongitudinalStability_Turbofan {
 
 		airfoilKink.getAerodynamics().set_cdMin(0.005);
 		airfoilKink.getAerodynamics().set_clAtCdMin(0.01);
-		airfoilKink.getAerodynamics().set_cmAC(-0.07);
+		airfoilKink.getAerodynamics().set_cmAC(-0.04);
 		airfoilKink.getAerodynamics().set_kFactorDragPolar(0.005);
 		
 		System.out.println("\n \n \t KINK \nAirfoil Type: " + airfoilKink.get_family());
@@ -294,7 +294,7 @@ public class Test_MR_LongitudinalStability_Turbofan {
 			
 		airfoilTip.getAerodynamics().set_cdMin(0.005);
 		airfoilTip.getAerodynamics().set_clAtCdMin(0.01);
-		airfoilTip.getAerodynamics().set_cmAC(-0.07);
+		airfoilTip.getAerodynamics().set_cmAC(-0.05);
 		airfoilTip.getAerodynamics().set_kFactorDragPolar(0.005);
 
 		System.out.println("\n \n \t TIP \nAirfoil Type: " + airfoilTip.get_family());
@@ -502,8 +502,9 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		ACStabilityManager theStabilityManagerTO = new ACStabilityManager(meanAirfoil, aircraft, ConditionEnum.TAKE_OFF,
 				alphaMin, alphaMax, alphaBody , true, subfolderPathto, pathTakeOff);
 
-		theStabilityManager.calculateAll();
-		theStabilityManagerTO.calculateAll();
+//		theStabilityManager.calculateAll();
+		theStabilityManager.calculateWingMomentCharacteristics();
+//		theStabilityManagerTO.calculateAll();
 //		theStabilityManager.CalculateDragCharacteristics();
 
 

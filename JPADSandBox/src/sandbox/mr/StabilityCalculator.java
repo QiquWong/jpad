@@ -1,6 +1,7 @@
 package sandbox.mr;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.measure.quantity.Angle;
@@ -12,14 +13,18 @@ import org.apache.commons.math3.linear.RealMatrix;
 import org.jscience.physics.amount.Amount;
 
 import com.sun.org.apache.xml.internal.utils.ThreadControllerWrapper;
+import com.sun.xml.internal.bind.v2.runtime.output.StAXExStreamWriterOutput;
 
 import aircraft.OperatingConditions;
 import aircraft.auxiliary.airfoil.MyAirfoil;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LSAerodynamicsManager.MeanAirfoil;
+import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FlapTypeEnum;
 import standaloneutils.MyArrayUtils;
+import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyMathUtils;
 
 public class StabilityCalculator {
@@ -239,5 +244,352 @@ public class StabilityCalculator {
 		}
 
 	}
+	
+	
+	/**
+	 * This method calculates the Pitching moment coefficient of a lifting surface
+	 *  respect a given point of MAC.
+	 *
+	 *
+	 *
+	 * @author  Manuela Ruocco
+	 */
+
+public class CalcPitchingMomentAC{
+
+	// VARIABLE DECLARATION--------------------------------------
+
+	LiftingSurface theLiftingSurface;
+	OperatingConditions theConditions;
+
+	double meanAerodinamicChord, xMAC, yMAC, cLLocal, qValue, alphaLocalAirfoil;
+	double [] xLEActualArray, yArray, cMACAirfoils, pitchingMomentAirfoilsDueToLift,
+	liftForceAirfoils, cMAirfoilsDueToLift, armMomentAirfoils, pitchingMomentLiftingSurface, cMLiftingSurfaceArray,
+	yStationsNB, cLDistributionNB, chordLocal, xcPArrayLRF, xACArrayLRF, clNasaBlackwell;
+	Double[] cLDistribution;
+	int nPointSemiSpan;
+	List<MyAirfoil> airfoilList = new ArrayList<MyAirfoil>();
+	LSAerodynamicsManager theLSManager;
+
+	// BUILDER--------------------------------------
+
+	@SuppressWarnings("static-access")
+	public CalcPitchingMomentAC(LiftingSurface theLiftingSurface, OperatingConditions theConditions) {
+
+		this.theLiftingSurface = theLiftingSurface;
+		this.theConditions = theConditions;
+
+		theLSManager = theLiftingSurface.getAerodynamics();
+
+		meanAerodinamicChord = theLiftingSurface.get_meanAerodChordActual().getEstimatedValue();
+		xMAC = theLiftingSurface.get_xLEMacActualLRF().getEstimatedValue();
+		nPointSemiSpan = theLSManager.get_nPointsSemispanWise();
+
+
+		// initializing array
+		xLEActualArray = new double [nPointSemiSpan];
+		yArray = new double [nPointSemiSpan];
+		yArray = MyArrayUtils.linspace(0., theLiftingSurface.get_span().getEstimatedValue()/2, nPointSemiSpan);
+		cMACAirfoils = new double [nPointSemiSpan];
+		cLDistribution = new Double [nPointSemiSpan];
+		pitchingMomentAirfoilsDueToLift = new double [nPointSemiSpan];
+		cMAirfoilsDueToLift = new double [nPointSemiSpan];
+		liftForceAirfoils = new double [nPointSemiSpan];
+		armMomentAirfoils = new double [nPointSemiSpan];
+		pitchingMomentLiftingSurface = new double [nPointSemiSpan];
+		cMLiftingSurfaceArray = new double [nPointSemiSpan];
+		chordLocal = new double [nPointSemiSpan];
+		xcPArrayLRF = new double [nPointSemiSpan];
+		xACArrayLRF = new double [nPointSemiSpan];
+
+		for (int i=0; i<nPointSemiSpan ; i++){
+			xLEActualArray[i] = theLiftingSurface.getXLEAtYActual(yArray[i]);
+//			System.out.println("xle array " + Arrays.toString(xLEActualArray) );
+			airfoilList.add(i,theLSManager.calculateIntermediateAirfoil(
+					theLiftingSurface, yArray[i]) );
+			chordLocal[i] = theLiftingSurface.getChordAtYActual(yArray[i]);
+//			System.out.println(" chord local " + Arrays.toString(chordLocal));
+			cMACAirfoils[i] = airfoilList.get(i).getAerodynamics().get_cmAC();
+//			System.out.println(" cm ac airfoil " + Arrays.toString(cMACAirfoils));
+			xACArrayLRF[i] = airfoilList.get(i).getAerodynamics().get_aerodynamicCenterX()*
+					chordLocal[i] + xLEActualArray[i];
+//			System.out.println(chordLocal[i] );
+		}
+
+	
+
+	}
+
+
+	//METHODS--------------------------------------
+
+	public double calculateCMIntegral (Amount<Angle> alphaLocal, double xPercentMAC){
+		if (alphaLocal.getUnit() == NonSI.DEGREE_ANGLE)
+			alphaLocal = alphaLocal.to(SI.RADIAN);
+//		System.out.println("\nalpha " + alphaLocal.to(NonSI.DEGREE_ANGLE));
+//
+//		LSAerodynamicsManager.CalcLiftDistribution calculateLiftDistribution = theLSManager.getCalculateLiftDistribution();
+//		calculateLiftDistribution.getNasaBlackwell().calculate(alphaLocal);
+		//cLDistributionNB = calculateLiftDistribution.getNasaBlackwell().get_clTotalDistribution().toArray();
+//		yStationsNB = calculateLiftDistribution.getNasaBlackwell().getyStations();
+
+		//cLDistribution = MyMathUtils.getInterpolatedValue1DLinear(yStationsNB, cLDistributionNB, yArray);
+
+		double dynamicPressure = theConditions.get_dynamicPressure().getEstimatedValue();
+		
+		LSAerodynamicsManager.CalcLiftDistribution calculateLiftDistribution = theLSManager.getCalculateLiftDistribution();
+		calculateLiftDistribution.getNasaBlackwell().calculate(alphaLocal);
+		clNasaBlackwell = calculateLiftDistribution.getNasaBlackwell().get_clTotalDistribution().toArray();
+//		System.out.println(" x mac " + xMAC);
+//		System.out.println("\n\n alpha input " + alphaLocal.getEstimatedValue()*57.3);
+		for (int i=0 ; i<nPointSemiSpan ;  i++){
+			cLLocal = clNasaBlackwell[i];
+//			System.out.println( " cl local " + cLLocal);
+			qValue = airfoilList.get(i).getAerodynamics().calculateClAtAlpha(0.0);
+//			System.out.println(" qValue " + qValue );
+			alphaLocalAirfoil = (cLLocal-qValue)/airfoilList.get(i).getAerodynamics().get_clAlpha();
+//			System.out.println(" alpha local airfoil " + alphaLocalAirfoil);
+			cLDistribution[i] = airfoilList.get(i).getAerodynamics().calculateClAtAlpha(
+					 //alphaLocal.getEstimatedValue()+
+					alphaLocalAirfoil+
+					airfoilList.get(i).getGeometry().get_twist().getEstimatedValue());
+//			System.out.println(" cl local " + cLDistribution[i]);
+//			System.out.println(" cl distribution " + Arrays.toString(cLDistribution));
+			if(theLiftingSurface.get_type().equals(ComponentEnum.HORIZONTAL_TAIL)){
+				liftForceAirfoils [i] = cLDistribution[i] * dynamicPressure *
+						theLiftingSurface.getAerodynamics().get_dynamicPressureRatio()*
+						theLiftingSurface.get_meanGeometricChord().getEstimatedValue();
+			}
+			else
+			liftForceAirfoils [i] = cLDistribution[i] * dynamicPressure * chordLocal[i];
+//			System.out.println(liftForceAirfoils[i]);
+//			if((cLDistribution[i]) > 0 ){
+			xcPArrayLRF [i] = chordLocal[i] *(
+					airfoilList.get(i).getAerodynamics().get_aerodynamicCenterX() -
+					(cMACAirfoils[i]/cLDistribution[i]));
+//			System.out.println(xLEActualArray[i]+ xcPArrayLRF[i]);
+//			}
+//			else{xcPArrayLRF [i] = chordLocal[i] *(
+//					-airfoilList.get(i).getAerodynamics().get_aerodynamicCenterX() +
+//					(cMACAirfoils[i]/cLDistribution[i]));
+	
+//			}
+//			System.out.println(" x cp " +   Arrays.toString(xcPArrayLRF));
+			armMomentAirfoils[i] = (xMAC + (xPercentMAC * meanAerodinamicChord))-
+					 (xLEActualArray[i]+ xcPArrayLRF[i]);
+			if ( i ==nPointSemiSpan-1){
+				armMomentAirfoils[i] = 0;
+			}
+//			System.out.println(  armMomentAirfoils[i]);
+//			if ( (xMAC + (xPercentMAC * meanAerodinamicChord)) > (xLEActualArray[i]+ xcPArrayLRF[i])){
+//			 armMomentAirfoils[i] = (xMAC + (xPercentMAC * meanAerodinamicChord))-
+//					 (xLEActualArray[i]+ xcPArrayLRF[i]);}
+//			if ( (xMAC + (xPercentMAC * meanAerodinamicChord)) < (xLEActualArray[i]+ xcPArrayLRF[i])){
+//				 armMomentAirfoils[i] = (xLEActualArray[i]+ xcPArrayLRF[i]) - 
+//						 (xMAC + (xPercentMAC * meanAerodinamicChord));}
+//			if((xMAC + (xPercentMAC * meanAerodinamicChord)) == (xLEActualArray[i]+ xcPArrayLRF[i])){
+//				armMomentAirfoils[i] = 0;
+//			}
+			pitchingMomentAirfoilsDueToLift [i] = liftForceAirfoils[i] * armMomentAirfoils[i];
+			
+			if(theLiftingSurface.get_type().equals(ComponentEnum.HORIZONTAL_TAIL)){
+			cMLiftingSurfaceArray[i] = pitchingMomentAirfoilsDueToLift [i]/
+					(dynamicPressure * 
+							theLiftingSurface.getAerodynamics().get_dynamicPressureRatio()*
+							Math.pow(theLiftingSurface.get_meanGeometricChord().getEstimatedValue(), 2));}
+			else{
+				cMLiftingSurfaceArray[i] = pitchingMomentAirfoilsDueToLift [i]/
+				(dynamicPressure * Math.pow(theLiftingSurface.get_meanGeometricChord().getEstimatedValue(), 2));}
+				
+			cMLiftingSurfaceArray[cMLiftingSurfaceArray.length-1] = 0;
+			//cMLiftingSurfaceArray[i] = cMACAirfoils[i] +  cMAirfoilsDueToLift[i];
+
+		}
+		//cMACAirfoils[cMACAirfoils.length-1] = 0;
+//		System.out.println(" cm airfoils " + Arrays.toString(cMACAirfoils));
+//		System.out.println(" cl " + Arrays.toString(cLDistribution));
+//		System.out.println(" x cp " +   Arrays.toString(xcPArrayLRF));
+//		System.out.println(" lift " + Arrays.toString(liftForceAirfoils));
+//		System.out.println(" cm due to lift " + Arrays.toString(cMAirfoilsDueToLift));
+	
+//		System.out.println(" cm total " + Arrays.toString(cMLiftingSurfaceArray));
+//		System.out.println(" Chord " + Arrays.toString(chordLocal));
+//		System.out.println(" arms " + Arrays.toString(armMomentAirfoils));
+//		System.out.println(" dynamic pressure " + dynamicPressure);
+//		System.out.println(" MAC " + meanAerodinamicChord);
+
+		double[] yStationsND = theLSManager.get_yStationsND();
+		double pitchingMomentCoefficient = MyMathUtils.integrate1DSimpsonSpline(yStationsND, cMLiftingSurfaceArray);
+
+//		System.out.println(" CM " + pitchingMomentCoefficient);
+
+		return pitchingMomentCoefficient;
+	}
+
+
+
+	public double calculateCMQuarterMACIntegral (Amount<Angle> alphaLocal){
+		return calculateCMIntegral (alphaLocal, 0.25);
+
+	}
+
+	public double calculateCMIntegralACAirfoil (Amount<Angle> alphaLocal, double xPercentMAC){
+		if (alphaLocal.getUnit() == NonSI.DEGREE_ANGLE)
+			alphaLocal = alphaLocal.to(SI.RADIAN);
+//
+//		LSAerodynamicsManager.CalcLiftDistribution calculateLiftDistribution = theLSManager.getCalculateLiftDistribution();
+//		calculateLiftDistribution.getNasaBlackwell().calculate(alphaLocal);
+		//cLDistributionNB = calculateLiftDistribution.getNasaBlackwell().get_clTotalDistribution().toArray();
+//		yStationsNB = calculateLiftDistribution.getNasaBlackwell().getyStations();
+
+		//cLDistribution = MyMathUtils.getInterpolatedValue1DLinear(yStationsNB, cLDistributionNB, yArray);
+
+		double dynamicPressure = theConditions.get_dynamicPressure().getEstimatedValue();
+
+		for (int i=0 ; i<nPointSemiSpan ;  i++){
+			cLDistribution[i] = airfoilList.get(i).getAerodynamics().calculateClAtAlpha(
+					alphaLocal.getEstimatedValue()+
+					airfoilList.get(i).getGeometry().get_twist().getEstimatedValue());
+//			System.out.println(" cl distribution " + Arrays.toString(cLDistribution));
+			liftForceAirfoils [i] = cLDistribution[i] * dynamicPressure * theLiftingSurface.get_meanGeometricChord().getEstimatedValue();
+//			System.out.println(" lift force " +  Arrays.toString(liftForceAirfoils));
+			xcPArrayLRF [i] = chordLocal[i] *(
+					airfoilList.get(i).getAerodynamics().get_aerodynamicCenterX() -
+					(cMACAirfoils[i]/cLDistribution[i]));
+//			System.out.println(" x cp " +   Arrays.toString(xcPArrayLRF));
+			armMomentAirfoils[i] = Math.abs(xMAC + (xPercentMAC * meanAerodinamicChord))-
+					 (xACArrayLRF[i]);
+//			System.out.println(" arm " +  Arrays.toString(armMomentAirfoils));
+//			if ( (xMAC + (xPercentMAC * meanAerodinamicChord)) > (xLEActualArray[i]+ xcPArrayLRF[i])){
+//			 armMomentAirfoils[i] = (xMAC + (xPercentMAC * meanAerodinamicChord))-
+//					 (xLEActualArray[i]+ xcPArrayLRF[i]);}
+//			if ( (xMAC + (xPercentMAC * meanAerodinamicChord)) < (xLEActualArray[i]+ xcPArrayLRF[i])){
+//				 armMomentAirfoils[i] = (xLEActualArray[i]+ xcPArrayLRF[i]) - 
+//						 (xMAC + (xPercentMAC * meanAerodinamicChord));}
+//			if((xMAC + (xPercentMAC * meanAerodinamicChord)) == (xLEActualArray[i]+ xcPArrayLRF[i])){
+//				armMomentAirfoils[i] = 0;
+//			}
+			pitchingMomentAirfoilsDueToLift [i] = liftForceAirfoils[i] * armMomentAirfoils[i]+
+					airfoilList.get(i).getAerodynamics().get_cmAC()*(dynamicPressure * Math.pow(chordLocal[i], 2)) ;
+			cMLiftingSurfaceArray[i] = pitchingMomentAirfoilsDueToLift [i]/
+					(dynamicPressure * Math.pow(theLiftingSurface.get_meanGeometricChord().getEstimatedValue(), 2));
+			//cMLiftingSurfaceArray[i] = cMACAirfoils[i] +  cMAirfoilsDueToLift[i];
+
+		}
+		//cMACAirfoils[cMACAirfoils.length-1] = 0;
+//		System.out.println(" cl " + Arrays.toString(cLDistribution));
+//		System.out.println(" lift " + Arrays.toString(liftForceAirfoils));
+//		System.out.println(" cm due to lift " + Arrays.toString(cMAirfoilsDueToLift));
+//		System.out.println(" cm airfoils " + Arrays.toString(cMACAirfoils));
+//		System.out.println(" cm total " + Arrays.toString(cMLiftingSurfaceArray));
+//		System.out.println(" Chord " + Arrays.toString(chordLocal));
+//		System.out.println(" arms " + Arrays.toString(armMomentAirfoils));
+//		System.out.println(" dynamic pressure " + dynamicPressure);
+//		System.out.println(" MAC " + meanAerodinamicChord);
+		double[] yStationsND = theLSManager.get_yStationsND();
+		double pitchingMomentCoefficient = MyMathUtils.integrate1DSimpsonSpline(yStationsND, cMLiftingSurfaceArray);
+
+//		System.out.println(" CM " + pitchingMomentCoefficient);
+
+		return pitchingMomentCoefficient;
+	}
+	public void plotCMatAlpha(Amount<Angle> alphaLocal, String subfolderPath){
+		calculateCMQuarterMACIntegral(alphaLocal);
+
+		double[] yStationsND = theLSManager.get_yStationsND();
+		MyChartToFileUtils.plotNoLegend(
+				yStationsND , cMLiftingSurfaceArray,
+				null, null, null, null,
+				"eta stat.", "CM",
+				"", "",
+				subfolderPath," Moment Coefficient distribution for " + theLiftingSurface.get_type() );
+
+
+
+	}
+
+
+	/**
+	 * This method calculates AC of a lifting surface as a percentage of MAC 
+	 *
+	 * @return Double xPercentMAC
+	 *
+	 *
+	 * @author  Manuela Ruocco
+	 */
+	
+	
+	public double getACLiftingSurface(){
+		double cMTempAlphaFirst;
+		double cMTempAlphaSecond;
+		double cMDiff;
+		double percent = 0.25;
+		
+		Amount<Angle> alphaFirst;
+		Amount<Angle> alphaSecond;
+		
+		LSAerodynamicsManager.MeanAirfoil theMeanAirfoilCalculator = theLiftingSurface.getAerodynamics().new MeanAirfoil();
+		MyAirfoil meanAirfoil = theMeanAirfoilCalculator.calculateMeanAirfoil(theLiftingSurface);
+	
+		alphaFirst = Amount.valueOf(1.0, NonSI.DEGREE_ANGLE);
+		alphaSecond= Amount.valueOf(2.0, NonSI.DEGREE_ANGLE);
+//		alphaSecond = Amount.valueOf(
+//				meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue()/2,
+//				SI.RADIAN);
+//		
+		cMTempAlphaFirst = calculateCMIntegral ( alphaFirst, percent);
+		cMTempAlphaSecond = calculateCMIntegral ( alphaSecond, percent);
+		
+		cMDiff = cMTempAlphaSecond-cMTempAlphaFirst;
+//		System.out.println(" cm first " + cMTempAlphaFirst);
+//		System.out.println(" cm second " + cMTempAlphaSecond);
+//		System.out.println("cm diff " + cMDiff);
+		while ( Math.abs(cMDiff) > 0.00003){
+			   if ((cMTempAlphaFirst > 0 & cMTempAlphaSecond <0) || ( (cMTempAlphaSecond - cMTempAlphaFirst) < 0)){
+
+				percent = percent + 0.0001;	
+				System.out.println(" percent " + percent);
+				cMTempAlphaFirst = calculateCMIntegral ( alphaFirst, percent);
+				cMTempAlphaSecond = calculateCMIntegral ( alphaSecond, percent);
+				cMDiff = cMTempAlphaSecond-cMTempAlphaFirst;
+//				System.out.println(" first");
+//				System.out.println(" cm first " + cMTempAlphaFirst);
+//				System.out.println(" cm second " + cMTempAlphaSecond);
+//				System.out.println("cm diff " + cMDiff);
+			}
+			
+				if ((cMTempAlphaFirst < 0 & cMTempAlphaSecond > 0) || ( (cMTempAlphaSecond - cMTempAlphaFirst) > 0)){
+
+					percent = percent - 0.0001;	
+//					System.out.println(" percent " + percent);
+					cMTempAlphaFirst = calculateCMIntegral ( alphaFirst, percent);
+					cMTempAlphaSecond = calculateCMIntegral ( alphaSecond, percent);	
+					cMDiff = cMTempAlphaSecond-cMTempAlphaFirst;
+//					System.out.println("second");
+//					System.out.println(" cm first " + cMTempAlphaFirst);
+//					System.out.println(" cm second " + cMTempAlphaSecond);
+//					System.out.println("cm diff " + cMDiff);
+//				}
+				}}
+				
+		return percent;
+		
+		
+	}
+	
+	
+	
+	public double[] getcMLiftingSurfaceArray() {
+		return cMLiftingSurfaceArray;
+	}
+
+
+	public double[] getyArray() {
+		return yArray;
+	}
+	
+}
+
+
 }
 

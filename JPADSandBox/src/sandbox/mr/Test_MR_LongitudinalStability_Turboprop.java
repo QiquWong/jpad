@@ -480,7 +480,7 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		
 		// CL ANALYSIS
 		
-		
+System.out.println(" \nAirfoils analysis-----------");		
 	theConditions.set_machCurrent(0.2);
 	theConditions.calculate();
 	double reRoot = theConditions.calculateRe(theWing.get_chordRoot().getEstimatedValue(),1);
@@ -511,16 +511,16 @@ public class Test_MR_LongitudinalStability_Turboprop {
 	for (int i=0; i<60; i++){
 		alphaArrayCLDeg[i] = Math.toDegrees(alphaArrayCL[i]);
 	}
-	MyChartToFileUtils.plotNoLegend(
-			alphaArrayCLDeg , cLWingCleanArray,
-			null, null, null, null,
-			"alpha", "CL",
-			"deg", "",
-			subfolderPathAirfoil," CL vs Alpha stall path " );
-	
-	System.out.println("\n \n-----------------------------------------------------");
-	System.out.println("DONE");
-	System.out.println("-----------------------------------------------------");
+//	MyChartToFileUtils.plotNoLegend(
+//			alphaArrayCLDeg , cLWingCleanArray,
+//			null, null, null, null,
+//			"alpha", "CL",
+//			"deg", "",
+//			subfolderPathAirfoil," CL vs Alpha stall path " );
+//	
+//	System.out.println("\n \n-----------------------------------------------------");
+//	System.out.println("DONE");
+//	System.out.println("-----------------------------------------------------");
 	
 	
 	
