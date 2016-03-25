@@ -36,9 +36,6 @@ public class Landing_Test_TP {
 	_stopTimeGraph, _stopTimeTotal,	_elapsedTimeTotal, 
 	_elapsedTimeCalculation, _elapsedTimeGraph;
 
-	//	TODO: example of custom NON_SI unit
-	//	private static Unit<? extends Quantity> angularRateUnit = (NonSI.DEGREE_ANGLE).divide((SI.SECOND));
-
 	//------------------------------------------------------------------------------------------
 	// VARIABLE DECLARATION:
 	@Option(name = "-i", aliases = { "--input" }, required = false,
@@ -322,6 +319,8 @@ public class Landing_Test_TP {
 		double kFlare = 1.23;
 		double kTD = 1.15;
 		double phiRev = 0.25;
+		double deltaCD0LandingGear = 0.015; // see chart Nicolai pag.273 pdf
+		double deltaCD0Spioler = 0.0065; // see Nicolai pag.280 pdf
 		Amount<Duration> nFreeRoll = Amount.valueOf(3, SI.SECOND);
 		Amount<Length> wingToGroundDistance = Amount.valueOf(4.0, SI.METER);
 		Amount<Length> obstacle = Amount.valueOf(50, NonSI.FOOT).to(SI.METER);
@@ -338,6 +337,8 @@ public class Landing_Test_TP {
 				kTD,
 				mu,
 				muBrake,
+				deltaCD0LandingGear,
+				deltaCD0Spioler,
 				wingToGroundDistance,
 				obstacle,
 				vWind,
@@ -369,6 +370,7 @@ public class Landing_Test_TP {
 		System.out.println("\nFLARE DISTANCE = " + theLandingCalculator.getsFlare());
 		System.out.println("\nGROUND ROLL DISTANCE = " + theLandingCalculator.getsGround());
 		System.out.println("\nTOTAL LANDING DISTANCE = " + theLandingCalculator.getsTotal());
+		System.out.println("\nFAR-25 FIELD LENGTH = " + (theLandingCalculator.getsTotal().divide(0.6)));
 		System.out.println("-----------------------------------------------------------\n");	
 	}
 

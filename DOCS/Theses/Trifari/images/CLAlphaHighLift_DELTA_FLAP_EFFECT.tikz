@@ -17,7 +17,7 @@ legend entries = {Clean\\$\delta_{\text{flap}}=\SI{30}{\degree}$\\$\delta_{\text
 
 \addplot [
 color=black,
-dashed
+densely dotted
 ]
 table[row sep=crcr]{
 -10.0	-0.6352658757762881\\

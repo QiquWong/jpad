@@ -334,6 +334,7 @@ public class TakeOff_Test_TP {
 
 		double phi = 1.0;
 		double alphaReductionRate = -3; // [deg/s]
+		double deltaCD0LandingGear = 0.014; // see chart Nicolai pag.273 pdf
 		Amount<Length> wingToGroundDistance = Amount.valueOf(4.0, SI.METER);
 		Amount<Length> obstacle = Amount.valueOf(35, NonSI.FOOT).to(SI.METER);
 		Amount<Velocity> vWind = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
@@ -356,6 +357,7 @@ public class TakeOff_Test_TP {
 				alphaReductionRate,
 				mu,
 				muBrake,
+				deltaCD0LandingGear,
 				wingToGroundDistance,
 				obstacle,
 				vWind,
@@ -364,6 +366,7 @@ public class TakeOff_Test_TP {
 				);
 
 		theTakeOffCalculator.calculateTakeOffDistanceODE(null ,false);
+		Amount<Length> takeOffDistance = theTakeOffCalculator.getGroundDistance().get(theTakeOffCalculator.getGroundDistance().size()-1);
 		_stopTimeCalculation = System.currentTimeMillis();
 		_startTimeGraph = System.currentTimeMillis();
 		theTakeOffCalculator.createTakeOffCharts();
@@ -390,6 +393,8 @@ public class TakeOff_Test_TP {
 		System.out.println("\nGRAPHICS TIME = " + (get_elapsedTimeGraph()) + " millisenconds");
 		System.out.println("-----------------------------------------------------------\n");
 		System.out.println("\n-----------------------------------------------------------");
+		System.out.println("\nTAKE-OFF DISTANCE = " + takeOffDistance);
+		System.out.println("\nFAR-25 TAKE-OFF FIELD LENGTH = " + takeOffDistance.times(1.15));
 		System.out.println("\nBALANCED FIELD LENGTH = " + theTakeOffCalculator.getBalancedFieldLength());
 		System.out.println("\nDecision Speed (V1/VsTO) = " + theTakeOffCalculator.getV1().divide(theTakeOffCalculator.getvSTakeOff()));
 		System.out.println("-----------------------------------------------------------\n");

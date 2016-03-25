@@ -2279,12 +2279,13 @@
     <bcf:citekey order="39">nicolai2010fundamentals</bcf:citekey>
     <bcf:citekey order="40">sforza2014commercial</bcf:citekey>
     <bcf:citekey order="41">sforza2014commercial</bcf:citekey>
-    <bcf:citekey order="42">apache:ode</bcf:citekey>
-    <bcf:citekey order="43">apache:FirstOrderIntegrator</bcf:citekey>
-    <bcf:citekey order="44">apache:FirstOrderDifferentialEquations</bcf:citekey>
-    <bcf:citekey order="45">apache:ode</bcf:citekey>
+    <bcf:citekey order="42">nicolai2010fundamentals</bcf:citekey>
+    <bcf:citekey order="43">apache:ode</bcf:citekey>
+    <bcf:citekey order="44">apache:FirstOrderIntegrator</bcf:citekey>
+    <bcf:citekey order="45">apache:FirstOrderDifferentialEquations</bcf:citekey>
     <bcf:citekey order="46">apache:ode</bcf:citekey>
-    <bcf:citekey order="47">hdf</bcf:citekey>
+    <bcf:citekey order="47">apache:ode</bcf:citekey>
+    <bcf:citekey order="48">hdf</bcf:citekey>
     <bcf:citekey order="0">*</bcf:citekey>
   </bcf:section>
   <bcf:sortlist section="0" name="nty" type="entry" sortscheme="nty">

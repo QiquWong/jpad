@@ -17,7 +17,7 @@ legend entries = {Clean\\Triple Slotted\\Double Slotted\\Single Slotted\\Fowler\
 
 \addplot [
 color=black,
-dashed
+densely dotted
 ]
 table[row sep=crcr]{
 -10.0	-0.6352658757762881\\
@@ -292,7 +292,7 @@ table[row sep=crcr]{
 
 \addplot [
 color=black,
-densely dashdotted
+dashdotdotted
 ]
 table[row sep=crcr]{
 -13.0	-0.5298322787040721\\

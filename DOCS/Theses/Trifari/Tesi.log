@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.11.16)  24 MAR 2016 13:39
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.11.16)  25 MAR 2016 20:13
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -5335,7 +5335,7 @@ Chapter 5.
 
 pdfTeX warning: pdflatex.exe (file ./images/TakeOffRun.pdf): PDF inclusion: fou
 nd PDF version <1.6>, but at most version <1.5> allowed
-<images/TakeOffRun.pdf, id=2150, 445.84827pt x 178.54102pt>
+<images/TakeOffRun.pdf, id=2151, 445.84827pt x 178.54102pt>
 File: images/TakeOffRun.pdf Graphic file (type pdf)
 
 <use images/TakeOffRun.pdf>
@@ -5349,14 +5349,14 @@ Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 [91
 
 ] [92 <./images/TakeOffRun.pdf>] [93]
-<images/McCormickGroundEffect.png, id=2242, 342.68025pt x 349.305pt>
+<images/McCormickGroundEffect.png, id=2243, 342.68025pt x 349.305pt>
 File: images/McCormickGroundEffect.png Graphic file (type png)
 
 <use images/McCormickGroundEffect.png>
 Package pdftex.def Info: images/McCormickGroundEffect.png used on input line 20
 9.
 (pdftex.def)             Requested size: 251.44786pt x 256.31235pt.
- [94 <./images/McCormickGroundEffect.png>] <images/GroundEffect.pdf, id=2251, 4
+ [94 <./images/McCormickGroundEffect.png>] <images/GroundEffect.pdf, id=2252, 4
 60.31238pt x 189.11964pt>
 File: images/GroundEffect.pdf Graphic file (type pdf)
 
@@ -5364,7 +5364,7 @@ File: images/GroundEffect.pdf Graphic file (type pdf)
 Package pdftex.def Info: images/GroundEffect.pdf used on input line 223.
 (pdftex.def)             Requested size: 441.13094pt x 181.24979pt.
  [95 <./images/GroundEffect.pdf>]
-<images/AlphaInputTakeOff.pdf, id=2420, 317.40582pt x 437.15433pt>
+<images/AlphaInputTakeOff.pdf, id=2421, 317.40582pt x 437.15433pt>
 File: images/AlphaInputTakeOff.pdf Graphic file (type pdf)
 
 <use images/AlphaInputTakeOff.pdf>
@@ -5375,7 +5375,7 @@ Package pdftex.def Info: images/AlphaInputTakeOff.pdf used on input line 268.
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 (hyperref)                removing `\gls' on input line 299.
 
-[97] <images/BalancedFieldLength.pdf, id=2450, 437.28938pt x 311.1125pt>
+[97] <images/BalancedFieldLength.pdf, id=2451, 437.28938pt x 311.1125pt>
 File: images/BalancedFieldLength.pdf Graphic file (type pdf)
 
 <use images/BalancedFieldLength.pdf>
@@ -5386,14 +5386,14 @@ Package pdftex.def Info: images/BalancedFieldLength.pdf used on input line 332.
 
 pdfTeX warning: pdflatex.exe (file ./images/LandingRun.pdf): PDF inclusion: fou
 nd PDF version <1.6>, but at most version <1.5> allowed
-<images/LandingRun.pdf, id=2454, 462.99574pt x 147.2712pt>
+<images/LandingRun.pdf, id=2455, 462.99574pt x 147.2712pt>
 File: images/LandingRun.pdf Graphic file (type pdf)
 
 <use images/LandingRun.pdf>
 Package pdftex.def Info: images/LandingRun.pdf used on input line 347.
 (pdftex.def)             Requested size: 427.89754pt x 136.1136pt.
 
-<images/LandingAirborne.png, id=2457, 2966.08125pt x 1669.23625pt>
+<images/LandingAirborne.png, id=2458, 2966.08125pt x 1669.23625pt>
 File: images/LandingAirborne.png Graphic file (type png)
 
 <use images/LandingAirborne.png>
@@ -5411,7 +5411,7 @@ Overfull \hbox (23.99998pt too wide) in paragraph at lines 578--588
  []
 
 [104] [105] [106]
-<images/TakeOff_Flowchart.pdf, id=2627, 1907.125pt x 1748.5325pt>
+<images/TakeOff_Flowchart.pdf, id=2629, 1907.125pt x 1748.5325pt>
 File: images/TakeOff_Flowchart.pdf Graphic file (type pdf)
 
 <use images/TakeOff_Flowchart.pdf>
@@ -5423,514 +5423,514 @@ Underfull \hbox (badness 2050) in paragraph at lines 699--699
  []
 
 [107 <./images/TakeOff_Flowchart.pdf>] [108]
-<images/Landing_Flowchart.pdf, id=2713, 1918.16624pt x 1551.7975pt>
+<images/Landing_Flowchart.pdf, id=2715, 1918.16624pt x 1551.7975pt>
 File: images/Landing_Flowchart.pdf Graphic file (type pdf)
 
 <use images/Landing_Flowchart.pdf>
 Package pdftex.def Info: images/Landing_Flowchart.pdf used on input line 726.
 (pdftex.def)             Requested size: 441.13094pt x 356.85857pt.
  [109 <./images/Landing_Flowchart.pdf>]
-[110] [111] [112] [113] [114]
-<images/TakeOff_Trajectory_AOE.pdf, id=2983, 452.46843pt x 132.85133pt>
+[110] [111] [112] [113] [114] [115]
+<images/TakeOff_Trajectory_AOE.pdf, id=2989, 452.46843pt x 132.85133pt>
 File: images/TakeOff_Trajectory_AOE.pdf Graphic file (type pdf)
 
 <use images/TakeOff_Trajectory_AOE.pdf>
 Package pdftex.def Info: images/TakeOff_Trajectory_AOE.pdf used on input line 9
-71.
+80.
 (pdftex.def)             Requested size: 480.8311pt x 141.18661pt.
 
-Overfull \hbox (39.70016pt too wide) in paragraph at lines 971--972
+Overfull \hbox (39.70016pt too wide) in paragraph at lines 980--981
  [][] 
  []
 
-<images/Altitude_evolution_AOE.pdf, id=2986, 444.78671pt x 131.12286pt>
+<images/Altitude_evolution_AOE.pdf, id=2992, 444.78671pt x 131.12286pt>
 File: images/Altitude_evolution_AOE.pdf Graphic file (type pdf)
 
 <use images/Altitude_evolution_AOE.pdf>
 Package pdftex.def Info: images/Altitude_evolution_AOE.pdf used on input line 9
-77.
+86.
 (pdftex.def)             Requested size: 480.8311pt x 141.74861pt.
 
-Overfull \hbox (39.70016pt too wide) in paragraph at lines 977--978
+Overfull \hbox (39.70016pt too wide) in paragraph at lines 986--987
  [][] 
  []
 
-<images/TakeOff_Trajectory_OEI.pdf, id=2989, 434.98811pt x 132.85133pt>
+<images/TakeOff_Trajectory_OEI.pdf, id=2995, 434.98811pt x 132.85133pt>
 File: images/TakeOff_Trajectory_OEI.pdf Graphic file (type pdf)
 
 <use images/TakeOff_Trajectory_OEI.pdf>
 Package pdftex.def Info: images/TakeOff_Trajectory_OEI.pdf used on input line 9
-83.
+92.
 (pdftex.def)             Requested size: 480.8311pt x 146.85857pt.
 
-Overfull \hbox (39.70016pt too wide) in paragraph at lines 983--984
+Overfull \hbox (39.70016pt too wide) in paragraph at lines 992--993
  [][] 
  []
 
-<images/Altitude_evolution_OEI.pdf, id=2992, 444.7817pt x 131.12286pt>
+<images/Altitude_evolution_OEI.pdf, id=2998, 444.7817pt x 131.12286pt>
 File: images/Altitude_evolution_OEI.pdf Graphic file (type pdf)
 
 <use images/Altitude_evolution_OEI.pdf>
 Package pdftex.def Info: images/Altitude_evolution_OEI.pdf used on input line 9
-89.
+98.
 (pdftex.def)             Requested size: 480.8311pt x 141.75862pt.
 
-Overfull \hbox (39.70016pt too wide) in paragraph at lines 989--990
+Overfull \hbox (39.70016pt too wide) in paragraph at lines 998--999
  [][] 
  []
 
 
-<images/AngularVelocity_vs_GroundDistance_AOE.pdf, id=2995, 465.3375pt x 198.04
+<images/AngularVelocity_vs_GroundDistance_AOE.pdf, id=3001, 465.3375pt x 198.04
 189pt>
 File: images/AngularVelocity_vs_GroundDistance_AOE.pdf Graphic file (type pdf)
  <use images/AngularVelocity_vs_GroundDistance_AOE.pdf>
 Package pdftex.def Info: images/AngularVelocity_vs_GroundDistance_AOE.pdf used 
-on input line 995.
+on input line 1004.
 (pdftex.def)             Requested size: 485.24672pt x 206.52377pt.
 
-Overfull \hbox (44.11578pt too wide) in paragraph at lines 995--996
+Overfull \hbox (44.11578pt too wide) in paragraph at lines 1004--1005
  [][] 
  []
 
-<images/Angles_vs_GroundDistance_AOE.pdf, id=2998, 455.60515pt x 198.04189pt>
+<images/Angles_vs_GroundDistance_AOE.pdf, id=3004, 455.60515pt x 198.04189pt>
 File: images/Angles_vs_GroundDistance_AOE.pdf Graphic file (type pdf)
 
 <use images/Angles_vs_GroundDistance_AOE.pdf>
 Package pdftex.def Info: images/Angles_vs_GroundDistance_AOE.pdf used on input 
-line 1001.
+line 1010.
 (pdftex.def)             Requested size: 485.24672pt x 210.92966pt.
 
-Overfull \hbox (44.11578pt too wide) in paragraph at lines 1001--1002
+Overfull \hbox (44.11578pt too wide) in paragraph at lines 1010--1011
  [][] 
  []
 
-[115
+[116
 
  <./images/TakeOff_Trajectory_AOE.pdf> <./images/Altitude_evolution_AOE.pdf> <.
 /images/TakeOff_Trajectory_OEI.pdf> <./images/Altitude_evolution_OEI.pdf>]
-<images/CL_vs_GroundDistance_AOE.pdf, id=3039, 455.36021pt x 190.1986pt>
+<images/CL_vs_GroundDistance_AOE.pdf, id=3045, 455.36021pt x 190.1986pt>
 File: images/CL_vs_GroundDistance_AOE.pdf Graphic file (type pdf)
 
 <use images/CL_vs_GroundDistance_AOE.pdf>
 Package pdftex.def Info: images/CL_vs_GroundDistance_AOE.pdf used on input line
- 1007.
+ 1016.
 (pdftex.def)             Requested size: 485.24672pt x 202.68625pt.
 
-Overfull \hbox (44.11578pt too wide) in paragraph at lines 1007--1008
+Overfull \hbox (44.11578pt too wide) in paragraph at lines 1016--1017
  [][] 
  []
 
 
-<images/AngularVelocity_vs_GroundDistance_OEI.pdf, id=3042, 447.85718pt x 198.0
+<images/AngularVelocity_vs_GroundDistance_OEI.pdf, id=3048, 447.85718pt x 198.0
 4088pt>
 File: images/AngularVelocity_vs_GroundDistance_OEI.pdf Graphic file (type pdf)
  <use images/AngularVelocity_vs_GroundDistance_OEI.pdf>
 Package pdftex.def Info: images/AngularVelocity_vs_GroundDistance_OEI.pdf used 
-on input line 1013.
+on input line 1022.
 (pdftex.def)             Requested size: 463.18883pt x 204.82443pt.
 
-Overfull \hbox (22.05789pt too wide) in paragraph at lines 1013--1014
+Overfull \hbox (22.05789pt too wide) in paragraph at lines 1022--1023
  [][] 
  []
 
-<images/Angles_vs_GroundDistance_OEI.pdf, id=3045, 455.60515pt x 198.04288pt>
+<images/Angles_vs_GroundDistance_OEI.pdf, id=3051, 455.60515pt x 198.04288pt>
 File: images/Angles_vs_GroundDistance_OEI.pdf Graphic file (type pdf)
 
 <use images/Angles_vs_GroundDistance_OEI.pdf>
 Package pdftex.def Info: images/Angles_vs_GroundDistance_OEI.pdf used on input 
-line 1019.
+line 1028.
 (pdftex.def)             Requested size: 485.24672pt x 210.93073pt.
 
-Overfull \hbox (44.11578pt too wide) in paragraph at lines 1019--1020
+Overfull \hbox (44.11578pt too wide) in paragraph at lines 1028--1029
  [][] 
  []
 
-[116 <./images/AngularVelocity_vs_GroundDistance_AOE.pdf> <./images/Angles_vs_G
+[117 <./images/AngularVelocity_vs_GroundDistance_AOE.pdf> <./images/Angles_vs_G
 roundDistance_AOE.pdf> <./images/CL_vs_GroundDistance_AOE.pdf>]
-<images/CL_vs_GroundDistance_OEI.pdf, id=3089, 437.8799pt x 190.19055pt>
+<images/CL_vs_GroundDistance_OEI.pdf, id=3095, 437.8799pt x 190.19055pt>
 File: images/CL_vs_GroundDistance_OEI.pdf Graphic file (type pdf)
 
 <use images/CL_vs_GroundDistance_OEI.pdf>
 Package pdftex.def Info: images/CL_vs_GroundDistance_OEI.pdf used on input line
- 1025.
+ 1034.
 (pdftex.def)             Requested size: 463.18883pt x 201.18312pt.
 
-Overfull \hbox (22.05789pt too wide) in paragraph at lines 1025--1026
+Overfull \hbox (22.05789pt too wide) in paragraph at lines 1034--1035
  [][] 
  []
 
 
-<images/RateOfClimb_vs_GroundDistance_AOE.pdf, id=3092, 455.15645pt x 264.21611
+<images/RateOfClimb_vs_GroundDistance_AOE.pdf, id=3098, 455.15645pt x 264.21611
 pt>
 File: images/RateOfClimb_vs_GroundDistance_AOE.pdf Graphic file (type pdf)
  <use images/RateOfClimb_vs_GroundDistance_AOE.pdf>
 Package pdftex.def Info: images/RateOfClimb_vs_GroundDistance_AOE.pdf used on i
-nput line 1031.
+nput line 1040.
 (pdftex.def)             Requested size: 485.24672pt x 281.70055pt.
 
-Overfull \hbox (44.11578pt too wide) in paragraph at lines 1031--1032
+Overfull \hbox (44.11578pt too wide) in paragraph at lines 1040--1041
  [][] 
  []
 
-[117 <./images/AngularVelocity_vs_GroundDistance_OEI.pdf> <./images/Angles_vs_G
+[118 <./images/AngularVelocity_vs_GroundDistance_OEI.pdf> <./images/Angles_vs_G
 roundDistance_OEI.pdf> <./images/CL_vs_GroundDistance_OEI.pdf>]
-<images/RateOfClimb_vs_GroundDistance_OEI.pdf, id=3133, 438.23924pt x 256.36478
+<images/RateOfClimb_vs_GroundDistance_OEI.pdf, id=3139, 438.23924pt x 256.36478
 pt>
 File: images/RateOfClimb_vs_GroundDistance_OEI.pdf Graphic file (type pdf)
  <use images/RateOfClimb_vs_GroundDistance_OEI.pdf>
 Package pdftex.def Info: images/RateOfClimb_vs_GroundDistance_OEI.pdf used on i
-nput line 1037.
+nput line 1046.
 (pdftex.def)             Requested size: 472.01332pt x 276.1344pt.
 
-Overfull \hbox (30.88239pt too wide) in paragraph at lines 1037--1038
+Overfull \hbox (30.88239pt too wide) in paragraph at lines 1046--1047
  [][] 
  []
 
-[118 <./images/RateOfClimb_vs_GroundDistance_AOE.pdf> <./images/RateOfClimb_vs_
+[119 <./images/RateOfClimb_vs_GroundDistance_AOE.pdf> <./images/RateOfClimb_vs_
 GroundDistance_OEI.pdf>]
-<images/LoadFactor_vs_GroundDistance_AOE.pdf, id=3159, 453.6679pt x 198.04189pt
+<images/LoadFactor_vs_GroundDistance_AOE.pdf, id=3165, 453.6679pt x 198.04189pt
 >
 File: images/LoadFactor_vs_GroundDistance_AOE.pdf Graphic file (type pdf)
  <use images/LoadFactor_vs_GroundDistance_AOE.pdf>
 Package pdftex.def Info: images/LoadFactor_vs_GroundDistance_AOE.pdf used on in
-put line 1045.
+put line 1054.
 (pdftex.def)             Requested size: 472.01332pt x 206.05235pt.
 
-Overfull \hbox (30.88239pt too wide) in paragraph at lines 1045--1046
+Overfull \hbox (30.88239pt too wide) in paragraph at lines 1054--1055
  [][] 
  []
 
 
-<images/LoadFactor_vs_GroundDistance_OEI.pdf, id=3162, 436.1876pt x 198.04189pt
+<images/LoadFactor_vs_GroundDistance_OEI.pdf, id=3168, 436.1876pt x 198.04189pt
 >
 File: images/LoadFactor_vs_GroundDistance_OEI.pdf Graphic file (type pdf)
  <use images/LoadFactor_vs_GroundDistance_OEI.pdf>
 Package pdftex.def Info: images/LoadFactor_vs_GroundDistance_OEI.pdf used on in
-put line 1051.
+put line 1060.
 (pdftex.def)             Requested size: 454.36432pt x 206.3062pt.
 
-Overfull \hbox (13.23338pt too wide) in paragraph at lines 1051--1052
+Overfull \hbox (13.23338pt too wide) in paragraph at lines 1060--1061
  [][] 
  []
 
 
-<images/LoadFactor_vs_GroundDistance_ABORTED.pdf, id=3165, 442.186pt x 196.3154
+<images/LoadFactor_vs_GroundDistance_ABORTED.pdf, id=3171, 442.186pt x 196.3154
 3pt>
 File: images/LoadFactor_vs_GroundDistance_ABORTED.pdf Graphic file (type pdf)
  <use images/LoadFactor_vs_GroundDistance_ABORTED.pdf>
 Package pdftex.def Info: images/LoadFactor_vs_GroundDistance_ABORTED.pdf used o
-n input line 1057.
+n input line 1066.
 (pdftex.def)             Requested size: 454.36432pt x 201.73384pt.
 
-Overfull \hbox (13.23338pt too wide) in paragraph at lines 1057--1058
+Overfull \hbox (13.23338pt too wide) in paragraph at lines 1066--1067
  [][] 
  []
 
 
-<images/VerticalForces_vs_GroundDistance_AOE.pdf, id=3166, 462.34833pt x 198.90
+<images/VerticalForces_vs_GroundDistance_AOE.pdf, id=3172, 462.34833pt x 198.90
 51pt>
 File: images/VerticalForces_vs_GroundDistance_AOE.pdf Graphic file (type pdf)
  <use images/VerticalForces_vs_GroundDistance_AOE.pdf>
 Package pdftex.def Info: images/VerticalForces_vs_GroundDistance_AOE.pdf used o
-n input line 1063.
+n input line 1072.
 (pdftex.def)             Requested size: 467.5977pt x 201.16269pt.
 
-Overfull \hbox (26.46677pt too wide) in paragraph at lines 1063--1064
+Overfull \hbox (26.46677pt too wide) in paragraph at lines 1072--1073
  [][] 
  []
 
 
-<images/VerticalForces_vs_GroundDistance_OEI.pdf, id=3169, 479.8256pt x 198.906
+<images/VerticalForces_vs_GroundDistance_OEI.pdf, id=3175, 479.8256pt x 198.906
 11pt>
 File: images/VerticalForces_vs_GroundDistance_OEI.pdf Graphic file (type pdf)
  <use images/VerticalForces_vs_GroundDistance_OEI.pdf>
 Package pdftex.def Info: images/VerticalForces_vs_GroundDistance_OEI.pdf used o
-n input line 1069.
+n input line 1078.
 (pdftex.def)             Requested size: 485.24672pt x 201.15762pt.
 
-Overfull \hbox (44.11578pt too wide) in paragraph at lines 1069--1070
+Overfull \hbox (44.11578pt too wide) in paragraph at lines 1078--1079
  [][] 
  []
 
-[119
+[120
 
  <./images/LoadFactor_vs_GroundDistance_AOE.pdf> <./images/LoadFactor_vs_Ground
 Distance_OEI.pdf> <./images/LoadFactor_vs_GroundDistance_ABORTED.pdf>]
-<images/VerticalForces_vs_GroundDistance_ABORTED.pdf, id=3200, 462.34431pt x 19
+<images/VerticalForces_vs_GroundDistance_ABORTED.pdf, id=3207, 462.34431pt x 19
 7.17764pt>
 File: images/VerticalForces_vs_GroundDistance_ABORTED.pdf Graphic file (type pd
 f)
  <use images/VerticalForces_vs_GroundDistance_ABORTED.pdf>
 Package pdftex.def Info: images/VerticalForces_vs_GroundDistance_ABORTED.pdf us
-ed on input line 1075.
+ed on input line 1084.
 (pdftex.def)             Requested size: 467.5977pt x 199.43065pt.
 
-Overfull \hbox (26.46677pt too wide) in paragraph at lines 1075--1076
+Overfull \hbox (26.46677pt too wide) in paragraph at lines 1084--1085
  [][] 
  []
 
 
-<images/HorizontalForces_vs_GroundDistance_AOE.pdf, id=3201, 473.82823pt x 190.
+<images/HorizontalForces_vs_GroundDistance_AOE.pdf, id=3208, 473.82823pt x 190.
 81789pt>
 File: images/HorizontalForces_vs_GroundDistance_AOE.pdf Graphic file (type pdf)
 
  <use images/HorizontalForces_vs_GroundDistance_AOE.pdf>
 Package pdftex.def Info: images/HorizontalForces_vs_GroundDistance_AOE.pdf used
- on input line 1081.
+ on input line 1090.
 (pdftex.def)             Requested size: 485.24672pt x 195.42072pt.
 
-Overfull \hbox (44.11578pt too wide) in paragraph at lines 1081--1082
+Overfull \hbox (44.11578pt too wide) in paragraph at lines 1090--1091
  [][] 
  []
 
 
-<images/HorizontalForces_vs_GroundDistance_OEI.pdf, id=3204, 456.34792pt x 190.
+<images/HorizontalForces_vs_GroundDistance_OEI.pdf, id=3211, 456.34792pt x 190.
 81789pt>
 File: images/HorizontalForces_vs_GroundDistance_OEI.pdf Graphic file (type pdf)
 
  <use images/HorizontalForces_vs_GroundDistance_OEI.pdf>
 Package pdftex.def Info: images/HorizontalForces_vs_GroundDistance_OEI.pdf used
- on input line 1087.
+ on input line 1096.
 (pdftex.def)             Requested size: 467.5977pt x 195.52261pt.
 
-Overfull \hbox (26.46677pt too wide) in paragraph at lines 1087--1088
+Overfull \hbox (26.46677pt too wide) in paragraph at lines 1096--1097
  [][] 
  []
 
-[120 <./images/VerticalForces_vs_GroundDistance_AOE.pdf> <./images/VerticalForc
+[121 <./images/VerticalForces_vs_GroundDistance_AOE.pdf> <./images/VerticalForc
 es_vs_GroundDistance_OEI.pdf> <./images/VerticalForces_vs_GroundDistance_ABORTE
 D.pdf>]
-<images/HorizontalForces_vs_GroundDistance_ABORTED.pdf, id=3237, 471.03177pt x 
+<images/HorizontalForces_vs_GroundDistance_ABORTED.pdf, id=3243, 471.03177pt x 
 188.4631pt>
 File: images/HorizontalForces_vs_GroundDistance_ABORTED.pdf Graphic file (type 
 pdf)
  <use images/HorizontalForces_vs_GroundDistance_ABORTED.pdf>
 Package pdftex.def Info: images/HorizontalForces_vs_GroundDistance_ABORTED.pdf 
-used on input line 1093.
+used on input line 1102.
 (pdftex.def)             Requested size: 467.5977pt x 187.09953pt.
 
-Overfull \hbox (26.46677pt too wide) in paragraph at lines 1093--1094
+Overfull \hbox (26.46677pt too wide) in paragraph at lines 1102--1103
  [][] 
  []
 
 (./images/Acceleration_vs_GroundDistance_AOE.tikz)
-Overfull \hbox (16.72124pt too wide) in paragraph at lines 2704--1100
+Overfull \hbox (16.72124pt too wide) in paragraph at lines 2704--1109
  [][] 
  []
 
-(./images/Acceleration_vs_GroundDistance_OEI.tikz) [121 <./images/HorizontalFor
+(./images/Acceleration_vs_GroundDistance_OEI.tikz) [122 <./images/HorizontalFor
 ces_vs_GroundDistance_AOE.pdf> <./images/HorizontalForces_vs_GroundDistance_OEI
 .pdf> <./images/HorizontalForces_vs_GroundDistance_ABORTED.pdf>]
 (./images/Acceleration_vs_GroundDistance_ABORTED.tikz)
-Overfull \hbox (10.99724pt too wide) in paragraph at lines 1636--1112
+Overfull \hbox (10.99724pt too wide) in paragraph at lines 1636--1121
  [][] 
  []
 
-<images/Speed_vs_GroundDistance_AOE.pdf, id=3271, 452.9181pt x 190.19055pt>
+<images/Speed_vs_GroundDistance_AOE.pdf, id=3277, 452.9181pt x 190.19055pt>
 File: images/Speed_vs_GroundDistance_AOE.pdf Graphic file (type pdf)
 
 <use images/Speed_vs_GroundDistance_AOE.pdf>
 Package pdftex.def Info: images/Speed_vs_GroundDistance_AOE.pdf used on input l
-ine 1117.
+ine 1126.
 (pdftex.def)             Requested size: 485.24672pt x 203.76886pt.
 
-Overfull \hbox (44.11578pt too wide) in paragraph at lines 1117--1118
+Overfull \hbox (44.11578pt too wide) in paragraph at lines 1126--1127
  [][] 
  []
 
-<images/Speed_vs_GroundDistance_OEI.pdf, id=3274, 435.43779pt x 190.1986pt>
+<images/Speed_vs_GroundDistance_OEI.pdf, id=3280, 435.43779pt x 190.1986pt>
 File: images/Speed_vs_GroundDistance_OEI.pdf Graphic file (type pdf)
 
 <use images/Speed_vs_GroundDistance_OEI.pdf>
 Package pdftex.def Info: images/Speed_vs_GroundDistance_OEI.pdf used on input l
-ine 1123.
+ine 1132.
 (pdftex.def)             Requested size: 467.5977pt x 204.25923pt.
 
-Overfull \hbox (26.46677pt too wide) in paragraph at lines 1123--1124
+Overfull \hbox (26.46677pt too wide) in paragraph at lines 1132--1133
  [][] 
  []
 
-[122]
-<images/Speed_vs_GroundDistance_ABORTED.pdf, id=3284, 448.23862pt x 188.4641pt>
+[123]
+<images/Speed_vs_GroundDistance_ABORTED.pdf, id=3290, 448.23862pt x 188.4641pt>
 File: images/Speed_vs_GroundDistance_ABORTED.pdf Graphic file (type pdf)
 <use images/Speed_vs_GroundDistance_ABORTED.pdf>
 Package pdftex.def Info: images/Speed_vs_GroundDistance_ABORTED.pdf used on inp
-ut line 1129.
+ut line 1138.
 (pdftex.def)             Requested size: 485.24672pt x 204.0328pt.
 
-Overfull \hbox (44.11578pt too wide) in paragraph at lines 1129--1130
+Overfull \hbox (44.11578pt too wide) in paragraph at lines 1138--1139
  [][] 
  []
 
 (./images/BalancedTakeOffLength.tikz)
-Overfull \hbox (20.64325pt too wide) in paragraph at lines 533--1136
+Overfull \hbox (20.64325pt too wide) in paragraph at lines 533--1145
  [][] 
  []
 
-[123 <./images/Speed_vs_GroundDistance_AOE.pdf> <./images/Speed_vs_GroundDistan
+[124 <./images/Speed_vs_GroundDistance_AOE.pdf> <./images/Speed_vs_GroundDistan
 ce_OEI.pdf> <./images/Speed_vs_GroundDistance_ABORTED.pdf>]
-<images/Angles_vs_GroundDistance_KAlpha.pdf, id=3317, 455.60612pt x 198.04189pt
+<images/Angles_vs_GroundDistance_KAlpha.pdf, id=3323, 455.60612pt x 198.04189pt
 >
 File: images/Angles_vs_GroundDistance_KAlpha.pdf Graphic file (type pdf)
  <use images/Angles_vs_GroundDistance_KAlpha.pdf>
 Package pdftex.def Info: images/Angles_vs_GroundDistance_KAlpha.pdf used on inp
-ut line 1144.
+ut line 1153.
 (pdftex.def)             Requested size: 472.01332pt x 205.17601pt.
 
-Overfull \hbox (30.88239pt too wide) in paragraph at lines 1144--1145
+Overfull \hbox (30.88239pt too wide) in paragraph at lines 1153--1154
  [][] 
  []
 
-<images/CL_vs_GroundDistance_AlphaRED.pdf, id=3318, 455.35823pt x 190.1986pt>
+<images/CL_vs_GroundDistance_AlphaRED.pdf, id=3324, 455.35823pt x 190.1986pt>
 File: images/CL_vs_GroundDistance_AlphaRED.pdf Graphic file (type pdf)
 
 <use images/CL_vs_GroundDistance_AlphaRED.pdf>
 Package pdftex.def Info: images/CL_vs_GroundDistance_AlphaRED.pdf used on input
- line 1151.
+ line 1160.
 (pdftex.def)             Requested size: 463.18883pt x 193.47469pt.
 
-Overfull \hbox (22.05789pt too wide) in paragraph at lines 1151--1152
+Overfull \hbox (22.05789pt too wide) in paragraph at lines 1160--1161
  [][] 
  []
 
 
-<images/LoadFactor_vs_GroundDistance_AlphaRED.pdf, id=3319, 442.96292pt x 198.0
+<images/LoadFactor_vs_GroundDistance_AlphaRED.pdf, id=3325, 442.96292pt x 198.0
 4189pt>
 File: images/LoadFactor_vs_GroundDistance_AlphaRED.pdf Graphic file (type pdf)
  <use images/LoadFactor_vs_GroundDistance_AlphaRED.pdf>
 Package pdftex.def Info: images/LoadFactor_vs_GroundDistance_AlphaRED.pdf used 
-on input line 1158.
+on input line 1167.
 (pdftex.def)             Requested size: 463.18883pt x 207.0949pt.
 
-Overfull \hbox (22.05789pt too wide) in paragraph at lines 1158--1159
+Overfull \hbox (22.05789pt too wide) in paragraph at lines 1167--1168
  [][] 
  []
 
-[124 <./images/Angles_vs_GroundDistance_KAlpha.pdf>]
-<images/RateOfClimb_vs_GroundDistance_AlphaRED.pdf, id=3342, 435.76302pt x 190.
+[125 <./images/Angles_vs_GroundDistance_KAlpha.pdf>]
+<images/RateOfClimb_vs_GroundDistance_AlphaRED.pdf, id=3349, 435.76302pt x 190.
 18954pt>
 File: images/RateOfClimb_vs_GroundDistance_AlphaRED.pdf Graphic file (type pdf)
 
  <use images/RateOfClimb_vs_GroundDistance_AlphaRED.pdf>
 Package pdftex.def Info: images/RateOfClimb_vs_GroundDistance_AlphaRED.pdf used
- on input line 1165.
+ on input line 1174.
 (pdftex.def)             Requested size: 463.18883pt x 202.16295pt.
-
-Overfull \hbox (22.05789pt too wide) in paragraph at lines 1165--1166
- [][] 
- []
-
-
-<images/TrajectoryAndSpeed_vs_GroundDistance_LANDING.pdf, id=3343, 416.52814pt 
-x 254.63733pt>
-File: images/TrajectoryAndSpeed_vs_GroundDistance_LANDING.pdf Graphic file (typ
-e pdf)
- <use images/TrajectoryAndSpeed_vs_GroundDistance_LANDING.pdf>
-Package pdftex.def Info: images/TrajectoryAndSpeed_vs_GroundDistance_LANDING.pd
-f used on input line 1174.
-(pdftex.def)             Requested size: 463.18883pt x 283.17918pt.
 
 Overfull \hbox (22.05789pt too wide) in paragraph at lines 1174--1175
  [][] 
  []
 
 
-<images/TrajectoryAndSpeed_vs_GroundDistance_LANDING_REV.pdf, id=3344, 416.5281
+<images/TrajectoryAndSpeed_vs_GroundDistance_LANDING.pdf, id=3350, 416.52814pt 
+x 254.63733pt>
+File: images/TrajectoryAndSpeed_vs_GroundDistance_LANDING.pdf Graphic file (typ
+e pdf)
+ <use images/TrajectoryAndSpeed_vs_GroundDistance_LANDING.pdf>
+Package pdftex.def Info: images/TrajectoryAndSpeed_vs_GroundDistance_LANDING.pd
+f used on input line 1183.
+(pdftex.def)             Requested size: 463.18883pt x 283.17918pt.
+
+Overfull \hbox (22.05789pt too wide) in paragraph at lines 1183--1184
+ [][] 
+ []
+
+
+<images/TrajectoryAndSpeed_vs_GroundDistance_LANDING_REV.pdf, id=3351, 416.5281
 4pt x 254.63733pt>
 File: images/TrajectoryAndSpeed_vs_GroundDistance_LANDING_REV.pdf Graphic file 
 (type pdf)
 
 <use images/TrajectoryAndSpeed_vs_GroundDistance_LANDING_REV.pdf>
 Package pdftex.def Info: images/TrajectoryAndSpeed_vs_GroundDistance_LANDING_RE
-V.pdf used on input line 1181.
+V.pdf used on input line 1190.
 (pdftex.def)             Requested size: 463.18883pt x 283.17918pt.
 
-Overfull \hbox (22.05789pt too wide) in paragraph at lines 1181--1182
+Overfull \hbox (22.05789pt too wide) in paragraph at lines 1190--1191
  [][] 
  []
 
 
-<images/HorizontalForces_vs_GroundDistance_LANDING.pdf, id=3345, 488.5181pt x 2
+<images/HorizontalForces_vs_GroundDistance_LANDING.pdf, id=3352, 488.5181pt x 2
 56.36478pt>
 File: images/HorizontalForces_vs_GroundDistance_LANDING.pdf Graphic file (type 
 pdf)
  <use images/HorizontalForces_vs_GroundDistance_LANDING.pdf>
 Package pdftex.def Info: images/HorizontalForces_vs_GroundDistance_LANDING.pdf 
-used on input line 1187.
+used on input line 1196.
 (pdftex.def)             Requested size: 485.24672pt x 254.65466pt.
 
-Overfull \hbox (44.11578pt too wide) in paragraph at lines 1187--1188
+Overfull \hbox (44.11578pt too wide) in paragraph at lines 1196--1197
  [][] 
  []
 
 
-<images/HorizontalForces_vs_GroundDistance_LANDING_REV.pdf, id=3346, 488.5181pt
+<images/HorizontalForces_vs_GroundDistance_LANDING_REV.pdf, id=3353, 488.5181pt
  x 256.36478pt>
 File: images/HorizontalForces_vs_GroundDistance_LANDING_REV.pdf Graphic file (t
 ype pdf)
 
 <use images/HorizontalForces_vs_GroundDistance_LANDING_REV.pdf>
 Package pdftex.def Info: images/HorizontalForces_vs_GroundDistance_LANDING_REV.
-pdf used on input line 1193.
+pdf used on input line 1202.
 (pdftex.def)             Requested size: 485.24672pt x 254.65466pt.
 
-Overfull \hbox (44.11578pt too wide) in paragraph at lines 1193--1194
+Overfull \hbox (44.11578pt too wide) in paragraph at lines 1202--1203
  [][] 
  []
 
 (./images/Acceleration_vs_GroundDistance_LANDING.tikz)
-Overfull \hbox (10.99689pt too wide) in paragraph at lines 64--1200
+Overfull \hbox (10.99689pt too wide) in paragraph at lines 64--1209
  [][] 
  []
 
 (./images/Acceleration_vs_GroundDistance_LANDING_REV.tikz)
-Overfull \hbox (10.99687pt too wide) in paragraph at lines 76--1206
+Overfull \hbox (10.99687pt too wide) in paragraph at lines 76--1215
  [][] 
  []
 
 
-<images/LoadFactor_vs_GroundDistance_LANDING.pdf, id=3347, 436.1866pt x 262.485
+<images/LoadFactor_vs_GroundDistance_LANDING.pdf, id=3354, 436.1866pt x 262.485
 64pt>
 File: images/LoadFactor_vs_GroundDistance_LANDING.pdf Graphic file (type pdf)
  <use images/LoadFactor_vs_GroundDistance_LANDING.pdf>
 Package pdftex.def Info: images/LoadFactor_vs_GroundDistance_LANDING.pdf used o
-n input line 1211.
+n input line 1220.
 (pdftex.def)             Requested size: 454.36432pt x 273.43922pt.
 
-Overfull \hbox (13.23338pt too wide) in paragraph at lines 1211--1212
+Overfull \hbox (13.23338pt too wide) in paragraph at lines 1220--1221
  [][] 
  []
 
 
-<images/LoadFactor_vs_GroundDistance_LANDING_REV.pdf, id=3348, 436.1866pt x 262
+<images/LoadFactor_vs_GroundDistance_LANDING_REV.pdf, id=3355, 436.1866pt x 262
 .48564pt>
 File: images/LoadFactor_vs_GroundDistance_LANDING_REV.pdf Graphic file (type pd
 f)
  <use images/LoadFactor_vs_GroundDistance_LANDING_REV.pdf>
 Package pdftex.def Info: images/LoadFactor_vs_GroundDistance_LANDING_REV.pdf us
-ed on input line 1217.
+ed on input line 1226.
 (pdftex.def)             Requested size: 454.36432pt x 273.43922pt.
 
-Overfull \hbox (13.23338pt too wide) in paragraph at lines 1217--1218
+Overfull \hbox (13.23338pt too wide) in paragraph at lines 1226--1227
  [][] 
  []
 
-[125 <./images/CL_vs_GroundDistance_AlphaRED.pdf> <./images/LoadFactor_vs_Groun
+[126 <./images/CL_vs_GroundDistance_AlphaRED.pdf> <./images/LoadFactor_vs_Groun
 dDistance_AlphaRED.pdf> <./images/RateOfClimb_vs_GroundDistance_AlphaRED.pdf>]
-[126 <./images/TrajectoryAndSpeed_vs_GroundDistance_LANDING.pdf> <./images/Traj
-ectoryAndSpeed_vs_GroundDistance_LANDING_REV.pdf>] [127 <./images/HorizontalFor
+[127 <./images/TrajectoryAndSpeed_vs_GroundDistance_LANDING.pdf> <./images/Traj
+ectoryAndSpeed_vs_GroundDistance_LANDING_REV.pdf>] [128 <./images/HorizontalFor
 ces_vs_GroundDistance_LANDING.pdf> <./images/HorizontalForces_vs_GroundDistance
-_LANDING_REV.pdf>] [128] [129 <./images/LoadFactor_vs_GroundDistance_LANDING.pd
+_LANDING_REV.pdf>] [129] [130 <./images/LoadFactor_vs_GroundDistance_LANDING.pd
 f> <./images/LoadFactor_vs_GroundDistance_LANDING_REV.pdf>]
-Overfull \hbox (30.94499pt too wide) in paragraph at lines 1236--1247
+Overfull \hbox (30.94499pt too wide) in paragraph at lines 1245--1256
  [][] 
  []
 
-) (./contents/Conclusions.tex [130
+) (./contents/Conclusions.tex [131
 
-])) [131
+])) [132
 
-] [132
+] [133
 
 
 ] (./Tesi_Appendices.tex
@@ -5941,25 +5941,25 @@ File: lstlang1.sty 2015/06/04 1.6 listings language file
 )
 (c:/texlive/2015/texmf-dist/tex/latex/listings/lstmisc.sty
 File: lstmisc.sty 2015/06/04 1.6 (Carsten Heinz)
-) [133
+) [134
 
-] [134]
-<images/HDF_Dataset_creation.png, id=3553, 1266.7325pt x 612.2875pt>
+] [135]
+<images/HDF_Dataset_creation.png, id=3560, 1266.7325pt x 612.2875pt>
 File: images/HDF_Dataset_creation.png Graphic file (type png)
 
 <use images/HDF_Dataset_creation.png>
 Package pdftex.def Info: images/HDF_Dataset_creation.png used on input line 122
 .
 (pdftex.def)             Requested size: 388.19737pt x 187.63965pt.
- [135 <./images/HDF_Dataset_creation.png (PNG copy)>] <images/deltaAlphaSforza.
-png, id=3589, 921.4425pt x 538.26094pt>
+ [136 <./images/HDF_Dataset_creation.png (PNG copy)>] <images/deltaAlphaSforza.
+png, id=3595, 921.4425pt x 538.26094pt>
 File: images/deltaAlphaSforza.png Graphic file (type png)
 
 <use images/deltaAlphaSforza.png>
 Package pdftex.def Info: images/deltaAlphaSforza.png used on input line 129.
 (pdftex.def)             Requested size: 242.62335pt x 141.7268pt.
 
-<images/DAlphaVsLambdaLEVsDy_MATLAB.png, id=3590, 421.575pt x 316.18124pt>
+<images/DAlphaVsLambdaLEVsDy_MATLAB.png, id=3596, 421.575pt x 316.18124pt>
 File: images/DAlphaVsLambdaLEVsDy_MATLAB.png Graphic file (type png)
 
 <use images/DAlphaVsLambdaLEVsDy_MATLAB.png>
@@ -5971,10 +5971,10 @@ Overfull \hbox (44.11577pt too wide) in paragraph at lines 129--130
  [][][] 
  []
 
-[136
+[137
 
  <./images/deltaAlphaSforza.png> <./images/DAlphaVsLambdaLEVsDy_MATLAB.png (PNG
- copy)>])) [137]
+ copy)>])) [138]
 
 Package biblatex Warning: No driver for entry type 'other'.
 (biblatex)                Using fallback driver on input line 184.
@@ -5986,7 +5986,7 @@ Package microtype Info: Character `029' is missing
 Package biblatex Warning: No driver for entry type 'other'.
 (biblatex)                Using fallback driver on input line 184.
 
-[138
+[139
 
 
 ]
@@ -5999,11 +5999,11 @@ Package glossaries Warning: Deprecated command \glossarystyle.
  I recommend you switch to \setglossarystyle unless you want to maintain backwa
 rd compatibility on input line 192.
 
-[139] (./Tesi.gls [140
+[140] (./Tesi.gls [141
 
 
 
-] [141]) [142] (./Tesi.acr [143
+] [142]) [143] (./Tesi.acr [144
 
 
 
@@ -6031,7 +6031,7 @@ Package minitoc(hints) Warning: W0024
 (minitoc(hints))                Some hints have been written 
 (minitoc(hints))                in the Tesi.log file.
 
-[144]
+[145]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 247.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 247.
  (./Tesi.aux
@@ -6054,12 +6054,7 @@ Package minitoc Info: I0010
 
 (c:/texlive/2015/texmf-dist/tex/latex/minitoc/italian.mld
 File: italian.mld 2006/01/13
-)
-
-Package mparhack Warning: Marginpars may have changed.
-(mparhack)                Rerun to get them right.
-
-)
+))
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 247.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 247.
 Package rerunfilecheck Info: File `Tesi.out' has not changed.
@@ -6073,10 +6068,10 @@ Package logreq Info: Writing requests to 'Tesi.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 68761 strings out of 493054
- 1415896 string characters out of 6138326
- 3644416 words of memory out of 5000000
- 69035 multiletter control sequences out of 15000+600000
+ 68745 strings out of 493054
+ 1415522 string characters out of 6138326
+ 3644716 words of memory out of 5000000
+ 69018 multiletter control sequences out of 15000+600000
  244884 words of font info for 228 fonts, out of 8000000 for 9000
  1142 hyphenation exceptions out of 8191
  61i,30n,107p,10382b,4233s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -6107,10 +6102,10 @@ ype1/public/tex-gyre/qtmb.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/te
 x-gyre/qtmr.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmri.p
 fb><c:/texlive/2015/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb><c:/texlive/
 2015/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb>
-Output written on Tesi.pdf (145 pages, 13351650 bytes).
+Output written on Tesi.pdf (146 pages, 13352929 bytes).
 PDF statistics:
- 4095 PDF objects out of 4296 (max. 8388607)
- 3581 compressed objects within 36 object streams
- 1479 named destinations out of 1728 (max. 500000)
+ 4101 PDF objects out of 4296 (max. 8388607)
+ 3586 compressed objects within 36 object streams
+ 1480 named destinations out of 1728 (max. 500000)
  40501 words of extra memory for PDF output out of 42996 (max. 10000000)
 

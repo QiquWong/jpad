@@ -93,7 +93,6 @@ public class Landing_Test_TF_Sensibility {
 //		aircraft.get_wing().set_surface(Amount.valueOf(570, SI.SQUARE_METRE));
 		aircraft.get_wing().set_surface(Amount.valueOf(513, SI.SQUARE_METRE));
 //		aircraft.get_wing().set_surface(Amount.valueOf(466, SI.SQUARE_METRE));
-//		aircraft.get_wing().set_surface(Amount.valueOf(427, SI.SQUARE_METRE));
 		//------------------------------------------------------------------------------------------
 
 		LiftingSurface theWing = aircraft.get_wing();
@@ -360,6 +359,8 @@ public class Landing_Test_TF_Sensibility {
 		double kFlare = 1.23;
 		double kTD = 1.15;
 		double phiRev = 0.0;
+		double deltaCD0LandingGear = 0.014;
+		double deltaCD0Spioler = 0.0065; // see Nicolai pag.280 pdf
 		Amount<Duration> nFreeRoll = Amount.valueOf(3, SI.SECOND);
 		Amount<Length> wingToGroundDistance = Amount.valueOf(6.56, SI.METER);
 		Amount<Length> obstacle = Amount.valueOf(50, NonSI.FOOT).to(SI.METER);
@@ -376,6 +377,8 @@ public class Landing_Test_TF_Sensibility {
 				kTD,
 				mu,
 				muBrake,
+				deltaCD0LandingGear,
+				deltaCD0Spioler,
 				wingToGroundDistance,
 				obstacle,
 				vWind,
@@ -406,9 +409,8 @@ public class Landing_Test_TF_Sensibility {
 		System.out.println("\nAIRBORNE DISTANCE = " + theLandingCalculator.getsApproach());
 		System.out.println("\nFLARE DISTANCE = " + theLandingCalculator.getsFlare());
 		System.out.println("\nGROUND ROLL DISTANCE = " + theLandingCalculator.getsGround());
-		System.out.println("\nTOTAL LANDING DISTANCE = " + (theLandingCalculator.getsApproach()
-				.plus(theLandingCalculator.getsFlare())
-				.plus(theLandingCalculator.getsGround())));
+		System.out.println("\nTOTAL LANDING DISTANCE = " + theLandingCalculator.getsTotal());
+		System.out.println("\nFAR-25 FIELD LENGTH = " + (theLandingCalculator.getsTotal().divide(0.6)));
 		System.out.println("-----------------------------------------------------------\n");	
 	}
 

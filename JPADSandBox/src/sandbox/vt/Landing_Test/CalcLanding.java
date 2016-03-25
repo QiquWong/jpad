@@ -11,6 +11,7 @@ import javax.measure.quantity.Length;
 import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+
 import org.apache.commons.math3.exception.DimensionMismatchException;
 import org.apache.commons.math3.exception.MaxCountExceededException;
 import org.apache.commons.math3.ode.FirstOrderDifferentialEquations;
@@ -20,7 +21,6 @@ import org.apache.commons.math3.ode.nonstiff.HighamHall54Integrator;
 import org.apache.commons.math3.ode.sampling.StepHandler;
 import org.apache.commons.math3.ode.sampling.StepInterpolator;
 import org.jscience.physics.amount.Amount;
-import com.sun.org.apache.bcel.internal.generic.LNEG;
 import aircraft.OperatingConditions;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcHighLiftDevices;
@@ -32,7 +32,6 @@ import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
-import standaloneutils.customdata.MyArray;
 import writers.JPADStaticWriteUtils;
 
 /**
@@ -73,7 +72,7 @@ public class CalcLanding {
 	private List<Amount<Force>> thrust, lift, drag, friction, totalForce;
 	private List<Amount<Length>> landingDistance, verticalDistance;
 	private double mu, muBrake, cLmaxLanding, kGround, cL0, cLground, kA, kFlare, kTD, phiRev;
-	private double oswald, cD0, cLalphaFlap, deltaCD0FlapLandinGears;
+	private double oswald, cD0, cLalphaFlap, deltaCD0Spoiler, deltaCD0LandignGear, deltaCD0FlapLandinGearsSpoilers;
 
 	//-------------------------------------------------------------------------------------
 	// BUILDER:
@@ -110,6 +109,8 @@ public class CalcLanding {
 			double kTD,
 			double mu,
 			double muBrake,
+			double deltaCD0LandingGear,
+			double deltaCD0Spoiler,
 			Amount<Length> wingToGroundDistance,
 			Amount<Length> obstacle,
 			Amount<Velocity> vWind,
@@ -134,7 +135,9 @@ public class CalcLanding {
 		this.iw = iw;
 		this.thetaApproach = thetaApproach;
 		this.nFreeRoll = nFreeRoll;
-
+		this.deltaCD0LandignGear = deltaCD0LandingGear;
+		this.deltaCD0Spoiler = deltaCD0Spoiler;
+		
 		this.oswald = aircraft.get_theAerodynamics().get_oswald();
 		this.cD0 = aircraft.get_theAerodynamics().get_cD0();
 
@@ -144,7 +147,7 @@ public class CalcLanding {
 		cL0 = highLiftCalculator.calcCLatAlphaHighLiftDevice(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 		cLground = highLiftCalculator.calcCLatAlphaHighLiftDevice(getAlphaGround().plus(iw));
 		cLalphaFlap = highLiftCalculator.getcLalpha_new();
-		this.deltaCD0FlapLandinGears = highLiftCalculator.getDeltaCD() + aircraft.get_landingGear().get_deltaCD0();
+		this.deltaCD0FlapLandinGearsSpoilers = highLiftCalculator.getDeltaCD() + this.deltaCD0LandignGear + this.deltaCD0Spoiler;
 
 		// Reference velocities definition
 		vSLanding = Amount.valueOf(
@@ -159,20 +162,26 @@ public class CalcLanding {
 		vFlare = vSLanding.times(kFlare);
 		vTD = vSLanding.times(kTD);
 
+		// McCormick interpolated function --> See the excel file into JPAD DOCS
+		double hb = wingToGroundDistance.divide(aircraft.get_wing().get_span().times(Math.PI/4)).getEstimatedValue();
+		kGround = - 622.44*(Math.pow(hb, 5)) + 624.46*(Math.pow(hb, 4)) - 255.24*(Math.pow(hb, 3))
+				+ 47.105*(Math.pow(hb, 2)) - 0.6378*hb + 0.0055;
+		
 		System.out.println("\n-----------------------------------------------------------");
 		System.out.println("CLmaxLanding = " + cLmaxLanding);
 		System.out.println("CL0 = " + cL0);
 		System.out.println("CLground = " + cLground);
+		System.out.println("CD0 clean = " + cD0);
+		System.out.println("Delta CD0 flap = " + highLiftCalculator.getDeltaCD());
+		System.out.println("Delta CD0 landing gears = " + this.deltaCD0LandignGear);
+		System.out.println("CD0 Landing = " + (cD0 + deltaCD0FlapLandinGearsSpoilers));
+		System.out.println("Delta CD induced Landing = " + ((Math.pow(cLground, 2)*kGround)
+				/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald())));
 		System.out.println("VsLanding = " + vSLanding);
 		System.out.println("V_Approach = " + vA);
 		System.out.println("V_Flare = " + vFlare);
 		System.out.println("V_TouchDown = " + vTD);
 		System.out.println("-----------------------------------------------------------\n");
-
-		// McCormick interpolated function --> See the excel file into JPAD DOCS
-		double hb = wingToGroundDistance.divide(aircraft.get_wing().get_span().times(Math.PI/4)).getEstimatedValue();
-		kGround = - 622.44*(Math.pow(hb, 5)) + 624.46*(Math.pow(hb, 4)) - 255.24*(Math.pow(hb, 3))
-				+ 47.105*(Math.pow(hb, 2)) - 0.6378*hb + 0.0055;
 
 		// List initialization
 		this.time = new ArrayList<Amount<Duration>>();
@@ -256,11 +265,11 @@ public class CalcLanding {
 		this.cD0 = cD0;
 		this.oswald = oswald;
 		this.cLmaxLanding = cLmaxLanding;
-		this.deltaCD0FlapLandinGears = deltaCD0FlapLandingGears;
+		this.deltaCD0FlapLandinGearsSpoilers = deltaCD0FlapLandingGears;
 		this.cL0 = cL0; 
 		this.cLalphaFlap = cLalphaFlap;
 		this.nFreeRoll = nFreeRoll;
-
+		
 		this.cLground = cL0 + (cLalphaFlap*iw.getEstimatedValue());
 
 		// Reference velocities definition
@@ -740,7 +749,7 @@ public class CalcLanding {
 			mu = CalcLanding.this.mu;
 			muBrake = CalcLanding.this.muBrake;
 			cD0 = CalcLanding.this.getcD0();
-			deltaCD0 = CalcLanding.this.getDeltaCD0FlapLandinGears();
+			deltaCD0 = CalcLanding.this.getDeltaCD0FlapLandinGearsSpoilers();
 			oswald = CalcLanding.this.getOswald();
 			ar = aircraft.get_wing().get_aspectRatio();
 			kGround = CalcLanding.this.getkGround();
@@ -1049,11 +1058,11 @@ public class CalcLanding {
 	public void setcLalphaFlap(double cLalphaFlap) {
 		this.cLalphaFlap = cLalphaFlap;
 	}
-	public double getDeltaCD0FlapLandinGears() {
-		return deltaCD0FlapLandinGears;
+	public double getDeltaCD0FlapLandinGearsSpoilers() {
+		return deltaCD0FlapLandinGearsSpoilers;
 	}
-	public void setDeltaCD0FlapLandinGears(double deltaCD0FlapLandinGears) {
-		this.deltaCD0FlapLandinGears = deltaCD0FlapLandinGears;
+	public void setDeltaCD0FlapLandinGearsSpoliers(double deltaCD0FlapLandinGearsSpoilers) {
+		this.deltaCD0FlapLandinGearsSpoilers = deltaCD0FlapLandinGearsSpoilers;
 	}
 	public Amount<Length> getsApproach() {
 		return sApproach;
@@ -1090,5 +1099,21 @@ public class CalcLanding {
 	}
 	public void setThetaApproach(Amount<Angle> thetaApproach) {
 		this.thetaApproach = thetaApproach;
+	}
+
+	public double getDeltaCD0LandignGear() {
+		return deltaCD0LandignGear;
+	}
+
+	public void setDeltaCD0LandignGear(double deltaCD0LandignGear) {
+		this.deltaCD0LandignGear = deltaCD0LandignGear;
+	}
+
+	public double getDeltaCD0Spoiler() {
+		return deltaCD0Spoiler;
+	}
+
+	public void setDeltaCD0Spoiler(double deltaCD0Spoiler) {
+		this.deltaCD0Spoiler = deltaCD0Spoiler;
 	}
 }

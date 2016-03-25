@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.8.0_77"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/commons-lang/commons-lang3-3.3.2.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/commons-math/commons-math3-3.5.jar"/>
 	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.core.commands_3.7.0.v20150422-0725.jar"/>

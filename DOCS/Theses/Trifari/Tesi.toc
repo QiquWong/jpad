@@ -49,13 +49,13 @@
 \contentsline {section}{\numberline {5.2}Java class architecture}{100}{section.5.2}
 \contentsline {subsection}{\numberline {5.2.1}Take-Off}{100}{subsection.5.2.1}
 \contentsline {subsection}{\numberline {5.2.2}Landing}{107}{subsection.5.2.2}
-\contentsline {section}{\numberline {5.3}Case study: ATR-72}{109}{section.5.3}
-\contentsline {section}{\numberline {5.4}Case study: B747-100B}{130}{section.5.4}
-\contentsline {chapter}{Conclusions}{131}{chapter*.147}
+\contentsline {section}{\numberline {5.3}Case study: ATR-72}{110}{section.5.3}
+\contentsline {section}{\numberline {5.4}Case study: B747-100B}{131}{section.5.4}
+\contentsline {chapter}{Conclusions}{132}{chapter*.147}
 \contentsline {chapter}{Appendices}{}{section*.149}
-\contentsline {chapter}{\numberline {A}HDF databse creation and reading }{133}{Appendix.a.A}
-\contentsline {section}{\numberline {A.1}Creation of a database using MATLAB}{133}{section.a.A.1}
-\contentsline {section}{\numberline {A.2}Reading data from an HDF database in JPAD}{136}{section.a.A.2}
-\contentsline {chapter}{Bibliography}{138}{section*.152}
-\contentsline {chapter}{Glossary}{140}{section*.154}
-\contentsline {chapter}{Acronyms}{143}{section*.156}
+\contentsline {chapter}{\numberline {A}HDF databse creation and reading }{134}{Appendix.a.A}
+\contentsline {section}{\numberline {A.1}Creation of a database using MATLAB}{134}{section.a.A.1}
+\contentsline {section}{\numberline {A.2}Reading data from an HDF database in JPAD}{137}{section.a.A.2}
+\contentsline {chapter}{Bibliography}{139}{section*.152}
+\contentsline {chapter}{Glossary}{141}{section*.154}
+\contentsline {chapter}{Acronyms}{144}{section*.156}

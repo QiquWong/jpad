@@ -418,7 +418,7 @@ f_2 \big(\, \vec{x}\,\big) =
   \frac{g}{W}
     \LEFTRIGHT\lcbrace.{
       \begin{array}{l@{\rule{2em}{0pt}}l} 
-        -T_{\text{Rev}}(x_2) - D(x_2) - \mu \big[ W - L(x_2) \big]
+       - D(x_2) - \mu \big[ W - L(x_2) \big]
           & \text{if} \;\, t \leqslant t_{\text{fr}}
         \\[1em]
 	-T_{\text{Rev}}(x_2) - D(x_2) - \mu_{\text{brakes}} \big[ W - L(x_2) \big]
@@ -428,7 +428,7 @@ f_2 \big(\, \vec{x}\,\big) =
 \end{equation}
 \end{subequations}
 %
-The drag and lift values are calculated in the same way of the take-off ground roll, while $T_{\text{Rev}}$ is a reverse thrust produced by thrust reversers, for jet engine, or by a particular regulation of the blade pass, for a propeller engine. The latter is usually neglected for the ground distance calculation because it helps the deceleration of the aircraft, but for more clarity, it has been considered in the equation. Furthermore the instant $t_{\text{fr}}$ is related to the end of the \emph{free-roll distance} and it's set at \SI{3}{\second} as explained before.
+The drag and lift values are calculated in the same way of the take-off ground roll with the difference that now also the spoilers contribute is added (this can be set with a value between $0.006\div 0.007$ as explained in \cite{nicolai2010fundamentals}), while $T_{\text{Rev}}$ is a reverse thrust produced by thrust reversers, for jet engine, or by a particular regulation of the blade pass, for a propeller engine. The latter is usually neglected for the ground distance calculation because it helps the deceleration of the aircraft, but for more clarity, it has been considered in the equation. Furthermore the instant $t_{\text{fr}}$ is related to the end of the \emph{free-roll distance} and it is decide by the user. During this short time, the thrust is not really zero but it is the one calculated with engines in idle setting; however, since this little contribution is usually of the same magnitude of the rolling resistance of the landing gears, these two terms have both been neglected.
 
 \bigskip
 \noindent
@@ -961,6 +961,15 @@ Finally, with reference to the landing charts at the end of the chapter (from fi
 \caption{Method results comparison with known data}
 \end{table}
 %
+\noindent
+The major uncertainty in landing may be attributed to some unknown parameters assumed in this deterministic calculation; the most important of these parameters are the following.
+%
+\begin{itemize}
+	\item $\mu_{\text{brake}}$, which value should not be higher than 0.3 for a touch-down speed lower than $\SI{50}{\meter\per\second}$, but can be bigger than 0.3 for those aircraft that land at an higher speed and that are provided with anti-skid devices. On the other hand, it has to be noted that the value of $\mu_{\text{brake}}$ should not be too high in order to avoid heavy decelerations which could result unpleasant for passengers and pilots.
+	\item $t_{fr}$, that is the \emph{free-roll time}, which make the ground roll to be shorter as it decreases.
+	\item $\upDelta C_{D0}$ due to landing gears and spoilers, which are usually very difficult to estimate in a preliminary design phase.
+\end{itemize}
+%
 \clearpage
 %
 %
@@ -1229,7 +1238,7 @@ In conclusion, after having shown that the classes \lstinline[language=Java]!Cal
 
 \bigskip
 \noindent
-Starting from the flight manual data regarding the maximum take-off and landing weight, and knowing the wing geometry, the two wing loadings, in both take-off and landing conditions, has been derived. From these values a variation of these latter from a -10\% to a +20\% has been assigned obtaining the following results.  
+Starting from the flight manual data regarding the maximum take-off and landing weight, and knowing the wing geometry, the two wing loadings, in both take-off and landing conditions, has been derived. At this values a variation of these latter, from a -10\% to a +20\% for the take-off and from a -10\% to a +10\% for the landing, has been assigned obtaining the following results.  
 %
 \begin{table}[H]
   \centering
@@ -1240,7 +1249,7 @@ Starting from the flight manual data regarding the maximum take-off and landing 
     \textbf{W\textsubscript{TO}} & 750000$\si{\lb}$ & 123 lb/$\si{\square\foot}$ & 97 lb/$\si{\square\foot}$ \\
     \textbf{W\textsubscript{LND}} & 590654$\si{\lb}$ & 136 lb/$\si{\square\foot}$ & 107 lb/$\si{\square\foot}$ \\
     \textbf{S} & $\SI{5500}{\square\foot}$ & 150 lb/$\si{\square\foot}$ & 118 lb/$\si{\square\foot}$ \\
-    \textbf{W/S\textsubscript{TO}} & 136 lb/$\si{\square\foot}$ & 164 lb/$\si{\square\foot}$ & 129 lb/$\si{\square\foot}$ \\
+    \textbf{W/S\textsubscript{TO}} & 136 lb/$\si{\square\foot}$ & 164 lb/$\si{\square\foot}$ & \textbf{ } \\
     \textbf{W/S\textsubscript{LND}} & 107 lb/$\si{\square\foot}$ & \textbf{ } & \textbf{ } \\
     \bottomrule
     \end{tabular}
@@ -1249,7 +1258,7 @@ Starting from the flight manual data regarding the maximum take-off and landing 
 \end{table}
 %
 \noindent
-Regarding the thrust ratio $\frac{T}{W}$, the public data for the B747-100B engines suggest a static thrust of $\SI{204000}{\newton}$ which, compared with the maximum take-off weight, leads to a $\frac{T}{W}=0.272\si{lb}/\si{lb}$. From this value the same variation made for the wing loading has been imposed obtaining the following results.
+Regarding the thrust ratio $\frac{T}{W}$, the public data for the B747-100B engines suggest a static thrust of $\SI{204000}{\newton}$ which, compared with the maximum take-off weight, leads to a $\frac{T}{W}=0.272\ \si{\newton}/\si{lb}$. From this value the same variation made for the wing loading has been imposed obtaining the following results.
 %
 \begin{table}[H]
   \centering

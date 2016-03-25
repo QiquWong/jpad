@@ -83,7 +83,7 @@ public class CalcTakeOff {
 	private Double vFailure;
 	private boolean isAborted;
 	
-	private double oswald, cD0, cLalphaFlap, deltaCD0FlapLandinGears;
+	private double oswald, cD0, cLalphaFlap, deltaCD0LandingGear, deltaCD0FlapLandinGears;
 
 	// Statistics to be collected at every phase: (initialization of the lists through the builder
 	private TakeOffResultsMap takeOffResults = new TakeOffResultsMap();
@@ -144,6 +144,7 @@ public class CalcTakeOff {
 			double alphaRed,
 			double mu,
 			double muBrake,
+			double deltaCD0LandingGear,
 			Amount<Length> wingToGroundDistance,
 			Amount<Length> obstacle,
 			Amount<Velocity> vWind,
@@ -173,7 +174,8 @@ public class CalcTakeOff {
 		this.vWind = vWind;
 		this.alphaGround = alphaGround;
 		this.iw = iw;
-
+		this.deltaCD0LandingGear = deltaCD0LandingGear;
+		
 		this.oswald = aircraft.get_theAerodynamics().get_oswald();
 		this.cD0 = aircraft.get_theAerodynamics().get_cD0();
 		
@@ -183,7 +185,7 @@ public class CalcTakeOff {
 		cL0 = highLiftCalculator.calcCLatAlphaHighLiftDevice(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 		cLground = highLiftCalculator.calcCLatAlphaHighLiftDevice(getAlphaGround().plus(iw));
 		cLalphaFlap = highLiftCalculator.getcLalpha_new();
-		this.deltaCD0FlapLandinGears = highLiftCalculator.getDeltaCD() + aircraft.get_landingGear().get_deltaCD0();
+		this.deltaCD0FlapLandinGears = highLiftCalculator.getDeltaCD() + this.deltaCD0LandingGear;
 		
 		// Reference velocities definition
 		vSTakeOff = Amount.valueOf(
@@ -197,20 +199,26 @@ public class CalcTakeOff {
 		vRot = vSTakeOff.times(kRot);
 		vLO = vSTakeOff.times(kLO);
 		
-		System.out.println("\n-----------------------------------------------------------");
-		System.out.println("CLmaxTO = " + cLmaxTO);
-		System.out.println("CL0 = " + cL0);
-		System.out.println("CLground = " + cLground);
-		System.out.println("VsTO = " + vSTakeOff);
-		System.out.println("VRot = " + vRot);
-		System.out.println("VLO = " + vLO);
-		System.out.println("-----------------------------------------------------------\n");
-
 		// McCormick interpolated function --> See the excel file into JPAD DOCS
 		double hb = wingToGroundDistance.divide(aircraft.get_wing().get_span().times(Math.PI/4)).getEstimatedValue();
 		kGround = - 622.44*(Math.pow(hb, 5)) + 624.46*(Math.pow(hb, 4)) - 255.24*(Math.pow(hb, 3))
 				+ 47.105*(Math.pow(hb, 2)) - 0.6378*hb + 0.0055;
 		
+		System.out.println("\n-----------------------------------------------------------");
+		System.out.println("CLmaxTO = " + cLmaxTO);
+		System.out.println("CL0 = " + cL0);
+		System.out.println("CLground = " + cLground);
+		System.out.println("CD0 clean = " + cD0);
+		System.out.println("Delta CD0 flap = " + highLiftCalculator.getDeltaCD());
+		System.out.println("Delta CD0 landing gears = " + this.deltaCD0LandingGear);
+		System.out.println("CD0 TakeOff = " + (cD0 + deltaCD0FlapLandinGears));
+		System.out.println("Delta CD induced Landing = " + ((Math.pow(cLground, 2)*kGround)
+				/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald())));
+		System.out.println("VsTO = " + vSTakeOff);
+		System.out.println("VRot = " + vRot);
+		System.out.println("VLO = " + vLO);
+		System.out.println("-----------------------------------------------------------\n");
+
 		// List initialization
 		this.time = new ArrayList<Amount<Duration>>();
 		this.speed = new ArrayList<Amount<Velocity>>();
@@ -343,11 +351,14 @@ public class CalcTakeOff {
 		
 		System.out.println("\n-----------------------------------------------------------");
 		System.out.println("CLmaxTO = " + cLmaxTO);
+		System.out.println("CL0 = " + cL0);
+		System.out.println("CLground = " + cLground);
+		System.out.println("CD0 clean = " + cD0);
+		System.out.println("Delta CD0 flap + landing gears = " + this.deltaCD0FlapLandinGears);
+		System.out.println("CD0 TakeOff = " + (cD0 + deltaCD0FlapLandinGears));
 		System.out.println("VsTO = " + vSTakeOff);
 		System.out.println("VRot = " + vRot);
 		System.out.println("vLO = " + vLO);
-		System.out.println("CL0 = " + cL0);
-		System.out.println("CLground = " + cLground);
 		System.out.println("-----------------------------------------------------------\n");
 
 		// McCormick interpolated function --> See the excel file into JPAD DOCS
@@ -2487,5 +2498,13 @@ public class CalcTakeOff {
 
 	public void setDeltaCD0FlapLandinGears(double deltaCD0FlapLandinGears) {
 		this.deltaCD0FlapLandinGears = deltaCD0FlapLandinGears;
+	}
+
+	public double getDeltaCD0LandingGear() {
+		return deltaCD0LandingGear;
+	}
+
+	public void setDeltaCD0LandingGear(double deltaCD0LandingGear) {
+		this.deltaCD0LandingGear = deltaCD0LandingGear;
 	}
 }

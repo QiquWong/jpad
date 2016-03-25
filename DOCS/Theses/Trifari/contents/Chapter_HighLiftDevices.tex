@@ -987,26 +987,27 @@ $\delta_s$ &  \textbf{} & 15° & \textbf{ } &  \textbf{} & \textbf{} \\
 \begin{figure}[H]
 \centering
 \input{images/CLAlphaHighLift_DELTA_FLAP_EFFECT.tikz}
-\caption{Effects of different $\delta_f$ upon the lift curve of the B747-100B}
+\caption{Effects of different $\delta_f$ upon the lift curve of the B747-100B with $\frac{c_f}{c}=0.18$, Triple slotted flaps and $\delta_s=\SI{15}{\degree}$}
 \end{figure}
 %
 \begin{figure}[H]
 \centering
 \input{images/CLAlphaHighLift_CFC_EFFECT.tikz}
-\caption{Effects of different $\frac{c_f}{c}$ upon the lift curve of the B747-100B}
+\caption{Effects of different $\frac{c_f}{c}$ upon the lift curve of the B747-100B with $\delta_f=\SI{30}{\degree}$, Triple slotted flaps and $\delta_s=\SI{15}{\degree}$}
 \end{figure}
 %
 \begin{figure}[H]
 \centering
 \input{images/CLAlphaHighLift_FLAPTYPE_EFFECT.tikz}
-\caption{Effects of different trailing edge devices upon the lift curve of the B747-100B}
+\caption{Effects of different trailing edge devices upon the lift curve of the B747-100B with $\delta_f=\SI{30}{\degree}$, $\frac{c_f}{c}=0.18$ and $\delta_s=\SI{15}{\degree}$}
 \end{figure}
 %
 \begin{figure}[H]
 \centering
 \input{images/CLAlphaHighLift_DELTA_SLAT_EFFECT.tikz}
-\caption{Effects of different $\delta_s$ upon the lift curve of the B747-100B}
+\caption{Effects of different $\delta_s$ upon the lift curve of the B747-100B with $\delta_f=\SI{30}{\degree}$, $\frac{c_f}{c}=0.18$ and Triple slotted flaps}
+\label{fig:SlatSensibility}
 \end{figure}
 %
 \noindent
-As can be seen the code is able to manage different high lift devices settings with good results; for example the more the flap is deflected, the more the $C_{L\text{max}}$ grows; also the effect of the $\frac{c_f}{c}$ ratio is modeled well, in fact, more flap chord allows to achieve higher $C_{L\text{max}}$. Finally it has to be noted the effect of slats deflection; the latter, in fact, influences not only the $C_{L\text{max}}$ but also the $\alpha_{\text{stall}}$ increasing them when the deflection is bigger.
+As can be seen the code is able to manage different high lift devices settings with good results; for example the more the flap is deflected, the more the $C_{L\text{max}}$ grows; also the effect of the $\frac{c_f}{c}$ ratio is modeled well, in fact, more flap chord allows to achieve higher $C_{L\text{max}}$. Finally it has to be noted the effect of slats deflection; the latter, in fact, influences not only the $C_{L\text{max}}$ but also the $\alpha_{\text{stall}}$ increasing them when the deflection is bigger. This effect becomes gradually smaller with increasing slats deflection becoming null, and then negative, for slats deflection angles between 25° and 30°, as shown in figure \ref{fig:SlatSensibility}.
