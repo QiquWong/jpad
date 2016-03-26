@@ -212,7 +212,7 @@ public class CalcTakeOff {
 		System.out.println("Delta CD0 flap = " + highLiftCalculator.getDeltaCD());
 		System.out.println("Delta CD0 landing gears = " + this.deltaCD0LandingGear);
 		System.out.println("CD0 TakeOff = " + (cD0 + deltaCD0FlapLandinGears));
-		System.out.println("Delta CD induced Landing = " + ((Math.pow(cLground, 2)*kGround)
+		System.out.println("Induced CD TakeOff = " + ((Math.pow(cLground, 2)*kGround)
 				/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald())));
 		System.out.println("VsTO = " + vSTakeOff);
 		System.out.println("VRot = " + vRot);

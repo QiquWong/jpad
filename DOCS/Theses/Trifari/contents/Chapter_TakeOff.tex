@@ -428,7 +428,7 @@ f_2 \big(\, \vec{x}\,\big) =
 \end{equation}
 \end{subequations}
 %
-The drag and lift values are calculated in the same way of the take-off ground roll with the difference that now also the spoilers contribute is added (this can be set with a value between $0.006\div 0.007$ as explained in \cite{nicolai2010fundamentals}), while $T_{\text{Rev}}$ is a reverse thrust produced by thrust reversers, for jet engine, or by a particular regulation of the blade pass, for a propeller engine. The latter is usually neglected for the ground distance calculation because it helps the deceleration of the aircraft, but for more clarity, it has been considered in the equation. Furthermore the instant $t_{\text{fr}}$ is related to the end of the \emph{free-roll distance} and it is decide by the user. During this short time, the thrust is not really zero but it is the one calculated with engines in idle setting; however, since this little contribution is usually of the same magnitude of the rolling resistance of the landing gears, these two terms have both been neglected.
+The drag and lift values are calculated in the same way of the take-off ground roll with the difference that now also the spoilers contribute is added (this can be calculated as explained in \cite{Lausetti:decollo}), while $T_{\text{Rev}}$ is a reverse thrust produced by thrust reversers, for jet engine, or by a particular regulation of the blade pass, for a propeller engine. The latter is usually neglected for the ground distance calculation because it helps the deceleration of the aircraft, but for more clarity, it has been considered in the equation. Furthermore the instant $t_{\text{fr}}$ is related to the end of the \emph{free-roll distance} and it is decide by the user. During this short time, the thrust is not really zero but it is the one calculated with engines in idle setting; however, since this little contribution is usually of the same magnitude of the rolling resistance of the landing gears, these two terms have both been neglected.
 
 \bigskip
 \noindent
@@ -736,64 +736,68 @@ Since the calculations are the same both for the B747-100B, both for the ATR-72,
 
 \bigskip
 \noindent
-The first thing to do is to build the aircraft parametric model, and its analysis object, as described in paragraph \ref{par:DefaultAircraft}; then all information regarding high-lift devices have to be provided, in the same way of paragraph \ref{par:CaseStudyHighLift}, in order to allow the constructors of \lstinline[language=Java]!CalcTakeOff! and \lstinline[language=Java]!CalcLanding! classes to evaluate their effects (for the landing configuration the flaps deflection has been changed to \SI{35}{\degree} from the initial \SI{20}{\degree} related to the take-off). 
+The first thing to do is to build the aircraft parametric model, and its analysis object, as described in paragraph \ref{par:DefaultAircraft}; then all information regarding high-lift devices have to be provided, in the same way of paragraph \ref{par:CaseStudyHighLift}, in order to allow the constructors of \lstinline[language=Java]!CalcTakeOff! and \lstinline[language=Java]!CalcLanding! classes to evaluate their effects (for the landing configuration the flaps deflection has been changed to \SI{40}{\degree} from the initial \SI{20}{\degree} related to the take-off). 
 %
 At this point all the preliminary steps are completed and it's possible to create \lstinline[language=Java]!CalcTakeOff! and \lstinline[language=Java]!CalcLanding! objects giving as input all data from tables \ref{table:CalcTakeOffInput} and \ref{table:CalcLandingInput}.
 
 \bigskip
 \begin{lstlisting}[caption={Input data and \lstinline!CalcTakeOff! object creation}, captionpos=b, tabsize=2]
 	Amount<Duration> dtRot = Amount.valueOf(3, SI.SECOND);
-		Amount<Duration> dtHold = Amount.valueOf(0.5, SI.SECOND);
-		double mu = 0.03;
-		double muBrake = 0.5;
-		double kAlphaDot = 0.05; // [1/deg]
-		double kcLMax = 0.85;
-		double kRot = 1.05;
-		double kLO = 1.13;
-		double kFailure = 1.1;
-		double phi = 1.0;
-		double alphaReductionRate = -3; // [deg/s]
-		Amount<Length> wingToGroundDistance = Amount.valueOf(4.0, SI.METER);
-		Amount<Length> obstacle = Amount.valueOf(35, NonSI.FOOT).to(SI.METER);
-		Amount<Velocity> vWind = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
-		Amount<Angle> alphaGround = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
-		Amount<Angle> iw = Amount.valueOf(1.5, NonSI.DEGREE_ANGLE);
-//		PARAMETERS USED TO CONSIDER THE PARABOLIC DRAG POLAR CORRECTION AT HIGH CL
-		double k1 = 0.0,  k2 = 0.0;
-
-		CalcTakeOff theTakeOffCalculator = new CalcTakeOff(
-				aircraft,
-				theCondition,
-				highLiftCalculator,
-				dtRot,
-				dtHold,
-				kcLMax,
-				kRot,
-				kLO,
-				kFailure,
-				k1,
-				k2,
-				phi,
-				kAlphaDot,
-				alphaReductionRate,
-				mu,
-				muBrake,
-				wingToGroundDistance,
-				obstacle,
-				vWind,
-				alphaGround,
-				iw
-				);
+	Amount<Duration> dtHold = Amount.valueOf(0.5, SI.SECOND);
+	double mu = 0.03;
+	double muBrake = 0.5;
+	double kAlphaDot = 0.05; // [1/deg]
+	double kcLMax = 0.85;
+	double kRot = 1.05;
+	double kLO = 1.13;
+	double kFailure = 1.1;
+	double phi = 1.0;
+	double alphaReductionRate = -3; // [deg/s]
+	double deltaCD0LandingGear = 0.014; 
+	Amount<Length> wingToGroundDistance = Amount.valueOf(4.0, SI.METER);
+	Amount<Length> obstacle = Amount.valueOf(35, NonSI.FOOT).to(SI.METER);
+	Amount<Velocity> vWind = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
+	Amount<Angle> alphaGround = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+	Amount<Angle> iw = Amount.valueOf(1.5, NonSI.DEGREE_ANGLE);
+	// PARAMETERS USED TO CONSIDER THE PARABOLIC DRAG POLAR CORRECTION AT HIGH CL
+	double k1 = 0.0;
+	double k2 = 0.0;
+	
+	CalcTakeOff theTakeOffCalculator = new CalcTakeOff(
+			aircraft,
+			theCondition,
+			highLiftCalculator,
+			dtRot,
+			dtHold,
+			kcLMax,
+			kRot,
+			kLO,
+			kFailure,
+			k1,
+			k2,
+			phi,
+			kAlphaDot,
+			alphaReductionRate,
+			mu,
+			muBrake,
+			deltaCD0LandingGear,
+			wingToGroundDistance,
+			obstacle,
+			vWind,
+			alphaGround,
+			iw
+			);
 \end{lstlisting}
 
-\bigskip
 \begin{lstlisting}[caption={Input data and \lstinline!CalcLanding! object creation}, captionpos=b, tabsize=2]
 		double mu = 0.03;
 		double muBrake = 0.5;
-		double kA = 1.3; 
+		double kA = 1.3; // [1/deg]
 		double kFlare = 1.23;
 		double kTD = 1.15;
-		double phiRev = 0.25; // this takes into account of the reverse thrust
+		double phiRev = 0.25;
+		double deltaCD0LandingGear = 0.015; 
+		double deltaCD0Spioler = 0.011; 
 		Amount<Duration> nFreeRoll = Amount.valueOf(3, SI.SECOND);
 		Amount<Length> wingToGroundDistance = Amount.valueOf(4.0, SI.METER);
 		Amount<Length> obstacle = Amount.valueOf(50, NonSI.FOOT).to(SI.METER);
@@ -811,6 +815,8 @@ At this point all the preliminary steps are completed and it's possible to creat
 				kTD,
 				mu,
 				muBrake,
+				deltaCD0LandingGear,
+				deltaCD0Spioler,
 				wingToGroundDistance,
 				obstacle,
 				vWind,
@@ -865,87 +871,99 @@ In conclusion, the following pages show, firstly, a summary of take-off charts c
 
 \bigskip
 \begin{lstlisting}[caption={ATR-72 take-off test results}, captionpos=b, tabsize=2]
-CLmaxTO = 2.1091586072792454
-CL0 = 0.8590422136491769
-CLground = 0.9961384471209911
-VsTO = 52.9150212923735 m/s
-VRot = 55.5607723569922 m/s
-VLO = 58.2065234216109 m/s
+CLmaxTO = 2.12717088905566
+CL0 = 0.880743598138551
+CLground = 1.021324960515202
+CD0 clean = 0.028167656358365194
+Delta CD0 flap = 0.01805279587998847
+Delta CD0 landing gears = 0.014
+CD0 TakeOff = 0.060220452238353664
+Induced CD TakeOff = 0.017423907265226173
+VsTO = 52.6905102869375 m/s
+VRot = 55.3250358012844 m/s
+VLO = 59.5402766242394 m/s
 -----------------------------------------------------------------
 END OF GROUND ROLL PHASE
-	switching function changes sign at t = 24.430078891752537
-	x[0] = s = 733.8211736644284 m
-	x[1] = V = 55.56077235699221 m/s
+	switching function changes sign at t = 24.453807368556195
+	x[0] = s = 733.2314687363687 m
+	x[1] = V = 55.32503580128442 m/s
 	x[2] = gamma = 0.0 deg
 	x[3] = altitude = 0.0 m
 	COLLECTING DATA AT THE END OF GROUND ROLL PHASE ...
 ---------------------------DONE!-------------------------------
 		END OF ROTATION PHASE
-	x[0] = s = 914.3532544050485 m
-	x[1] = V = 60.489952274002775 m/s
+	x[0] = s = 929.320864677137 m
+	x[1] = V = 60.560605106172744 m/s
 	x[2] = gamma = 0.0 deg
 	x[3] = altitude = 0.0 m
-	t = 27.539416529357993 s
+	t = 27.835480710042685 s
 	COLLECTING DATA AT THE END OF ROTATION PHASE ...
 ---------------------------DONE!-------------------------------
 		BEGIN BAR HOLDING
-	CL = 1.7935218357497547
-	Alpha Body = 8.725099918917621 deg
-	t = 28.636788979040784 s
+	CL = 1.8093338757611503
+	Alpha Body = 8.408767383982735 deg
+	t = 29.212336033445645 s
 ---------------------------DONE!-------------------------------
 		END BAR HOLDING
-	switching function changes sign at t = 29.13678897904078
+	switching function changes sign at t = 29.71233603344564
 ---------------------------DONE!-------------------------------
 		LOAD FACTOR = 1 IN CLIMB
-	t = 30.376509808862576 s
+	t = 30.997681710147788 s
 ---------------------------DONE!-------------------------------
 		END OF AIRBORNE PHASE
-	switching function changes sign at t = 31.67335982642885
-	x[0] = s = 1174.0481557092937 m
-	x[1] = V = 64.63429207083055 m/s
-	x[2] = gamma = 3.6602788184585298 deg
-	x[3] = altitude = 10.668000000000085 m
+	switching function changes sign at t = 31.745288640438233
+	x[0] = s = 1174.3560430425969 m
+	x[1] = V = 64.18445774650083 m/s
+	x[2] = gamma = 4.232183307802324 deg
+	x[3] = altitude = 10.668000001539014 m
 	COLLECTING DATA AT THE END OF AIRBORNE PHASE ...
 ---------------------------DONE!-------------------------------
-BALANCED FIELD LENGTH = 1473.19533306467 m
-Decision Speed (V1/VsTO) = 1.08720236687736 
+TAKE-OFF DISTANCE = 1174.35604304260 m
+FAR-25 TAKE-OFF FIELD LENGTH = 1350.50944949899 m
+BALANCED FIELD LENGTH = 1474.34998035282 m
+Decision Speed (V1/VsTO) = 1.08614287145224 
 ---------------------------END!!--------------------------------
 \end{lstlisting}
 
 \bigskip
 \begin{lstlisting}[caption={ATR-72 landing test results}, captionpos=b, tabsize=2]
-CLmaxLanding = 2.670748822673163
-CL0 = 1.2382555592182927
-CLground = 1.3732629910434984
-VsLanding = 45.1658739107583 m/s
-V_Approach = 58.7156360839858 m/s
-V_Flare = 55.5540249102327 m/s
-V_TouchDown = 51.9407549973720 m/s
+CLmaxLanding = 2.7979402115074885
+CL0 = 1.339189575194369
+CLground = 1.476369944426427
+CD0 clean = 0.028167656358365194
+Delta CD0 flap = 0.08062389718538344
+Delta CD0 landing gears = 0.015
+Delta CD0 spoilers = 0.011
+CD0 Landing = 0.13479155354374864
+Induced CD Landing = 0.03640894123107033
+VsLanding = 44.1273376325072 m/s
+V_Approach = 57.3655389222594 m/s
+V_Flare = 54.276625287984 m/s
+V_TouchDown = 50.7464382773833 m/s
 -----------------------------------------------------------------
 		END OF THE LANDING GROUND ROLL
-	switching function changes sign at t = 13.118579222455088
-	x[0] = s = 688.5412017736963 m
-	x[1] = V = -4.125172425872847E-15 m/s
+	switching function changes sign at t = 12.639114071801083
+	x[0] = s = 658.8273823577272 m
+	x[1] = V = -1.4328815911568427E-15 m/s
 ---------------------------DONE!-------------------------------
-
-
 ------------------------RESULTS------------------------------
-AIRBORNE DISTANCE = 163.126451534253 m
-FLARE DISTANCE = 109.7652587941347 m
-GROUND ROLL DISTANCE = 415.64949144531 m
-TOTAL LANDING DISTANCE = 688.541201773696 m
+AIRBORNE DISTANCE = 165.618315108166 m
+FLARE DISTANCE = 104.7754467694299 m
+GROUND ROLL DISTANCE = 388.43362048013 m
+TOTAL LANDING DISTANCE = 658.827382357727 m
+FAR-25 FIELD LENGTH = 1098.04563726288 m
 -----------------------------------------------------------------
 \end{lstlisting}
 %
-As can be seen the take-off distance required in \gls{acr:AOE} condition is about $\SI{1174}{\meter}$, at the maximum take-off mass of $\SI{22500}{\kilogram}$ and at sea level in standard atmospheric conditions, within a time of about $\SI{31.6}{\second}$; while the \emph{balanced field length} is bigger than the \gls{acr:AOE} take-off distance of about the 20\%. Moreover the \emph{decision speed} $V_1$ is bigger than the stalling speed $V_s$ as required by the \gls{FAR}-25 from table \ref{tab:Take:Off:Speeds:FAR25}. Comparing the \emph{FAR-25 take-off field lenght}, which is the 15\% bigger than the one calculated, with the take-off field length shown on the public brochure of the ATR 72-500, the two number are different of about the 4\%, validating, this way, the calculation made.  
+As can be seen the take-off distance required in \gls{acr:AOE} condition is about $\SI{1174}{\meter}$, at the maximum take-off mass of $\SI{22500}{\kilogram}$ and at sea level in standard atmospheric conditions, within a time of about $\SI{32}{\second}$; while the \emph{balanced field length} is bigger than the \gls{acr:AOE} take-off distance of about the 20\%. Moreover the \emph{decision speed} $V_1$ is bigger than the stalling speed $V_s$ as required by the \gls{FAR}-25 from table \ref{tab:Take:Off:Speeds:FAR25}. Comparing the \emph{FAR-25 take-off field lenght}, which is the 15\% bigger than the one calculated, with the take-off field length shown on the public brochure of the ATR 72-500, the two number are different of about the 4\%, validating, this way, the calculation made.  
 
 \bigskip
 \noindent
-Regarding the landing test, the results obtained show that, at the maximum landing weight and at sea level in standard atmospheric conditions, the calculated landing distance is around $\SI{689}{\meter}$ with a ground roll distance of about $\SI{416}{\meter}$ covered in about $\SI{13}{\second}$. Deriving the \emph{FAR-25 landing field length}, which is obtained dividing the distance calculated by 0.6, this results to be similar to the one proposed onto the ATR 72-500 brochure proving that the calculation method works; in particular, the difference between the two distances is around the 7\%.
+Regarding the landing test, the results obtained show that, at the maximum landing weight and at sea level in standard atmospheric conditions, the calculated landing distance is around $\SI{689}{\meter}$ with a ground roll distance of about $\SI{416}{\meter}$ covered in about $\SI{13}{\second}$. Deriving the \emph{FAR-25 landing field length}, which is obtained dividing the distance calculated by 0.6, this results to be similar to the one proposed onto the ATR 72-500 brochure proving that the calculation method works; in particular, the difference between the two distances is around the 3\%.
 
 \bigskip
 \noindent
-Finally, with reference to the landing charts at the end of the chapter (from figure \ref{fig:Landing1} to \ref{fig:LandingEnd}), the reader can easily recognize the effect of the reverse thrust upon the landing distance; in particular, in case of \lstinline[language=Java]!phiRev!=0.25, the deceleration is bigger so that the speed decreases faster making the total landing distance shorter (about the 12\%). It has also to be noted that during the air run, the speed is assumed to be constant during the approach phase for then decrease, with a linear trend, from the $V_A$ to the $V_{\text{TD}}$ during the flare phase. 
+Finally, with reference to the landing charts at the end of the chapter (from figure \ref{fig:Landing1} to \ref{fig:LandingEnd}), the reader can easily recognize the effect of the reverse thrust upon the landing distance; in particular, in case of \lstinline[language=Java]!phiRev!=0.25, the deceleration is bigger so that the speed decreases faster making the total landing distance shorter (about the 11\%). It has also to be noted that during the air run, the speed is assumed to be constant during the approach phase for then decrease, with a linear trend, from the $V_A$ to the $V_{\text{TD}}$ during the flare phase. 
 %
 \begin{table}[H]
 \makebox[\linewidth]{
@@ -954,7 +972,7 @@ Finally, with reference to the landing charts at the end of the chapter (from fi
 \textbf{ } & \textbf{ATR-72} & \textbf{JPAD} & \textbf{Difference(\%)}\\
 \midrule
 \textbf{FAR-25 Take-Off field length @ ISA, SL, MTOW} & $\SI{1300}{\meter}$ & $\SI{1350}{\meter}$ & $\approx3.7$\%\\ [1.0cm]
-\textbf{FAR-25 Landing field length @ ISA, SL, MTOW} & $\SI{1067}{\meter}$ & $\SI{1147}{\meter}$ & $\approx6.97$\%\\
+\textbf{FAR-25 Landing field length @ ISA, SL, MTOW} & $\SI{1067}{\meter}$ & $\SI{1098}{\meter}$ & $\approx2.82$\%\\
 \bottomrule
 \end{tabular}
 }
@@ -962,7 +980,7 @@ Finally, with reference to the landing charts at the end of the chapter (from fi
 \end{table}
 %
 \noindent
-The major uncertainty in landing may be attributed to some unknown parameters assumed in this deterministic calculation; the most important of these parameters are the following.
+The uncertainties in take-off and landing field length may be attributed to some unknown parameters assumed in this deterministic calculation; the most important of these parameters are the followings.
 %
 \begin{itemize}
 	\item $\mu_{\text{brake}}$, which value should not be higher than 0.3 for a touch-down speed lower than $\SI{50}{\meter\per\second}$, but can be bigger than 0.3 for those aircraft that land at an higher speed and that are provided with anti-skid devices. On the other hand, it has to be noted that the value of $\mu_{\text{brake}}$ should not be too high in order to avoid heavy decelerations which could result unpleasant for passengers and pilots.
@@ -1234,7 +1252,11 @@ In conclusion of the take-off analysis, it's useful to highlight the effects tha
 %
 \section{Case study: B747-100B}
 %
-In conclusion, after having shown that the classes \lstinline[language=Java]!CalcTakeOff! and \lstinline[language=Java]!CalcLanding! work correctly, it's interesting to examine how these classes behaves when analyzing a transport jet such as the B747-100B. In particular, the analysis that will be shown and commented will regard a sensibility analysis of the \gls{FAR}-25 take-off and field length with respect to two main design parameters like the wing loading $\frac{W}{S}$, for both take-off and landing, and the thrust ratio $\frac{T}{W}$, for the take-off only.
+In conclusion, after having shown that the classes \lstinline[language=Java]!CalcTakeOff! and \lstinline[language=Java]!CalcLanding! work correctly, it's interesting to examine how these classes behaves when analyzing a transport jet such as the B747-100B. 
+%
+%----------------------- W/S and T/W sensibility analysis -------------------------
+\subsection{Take-off and landing sensibility analysis}
+The analysis that will be shown and commented in this subsection will regard a sensibility analysis of the \gls{FAR}-25 take-off and field length with respect to two main design parameters like the wing loading $\frac{W}{S}$, for both take-off and landing, and the thrust ratio $\frac{T}{W}$, for the take-off only.
 
 \bigskip
 \noindent
@@ -1242,6 +1264,7 @@ Starting from the flight manual data regarding the maximum take-off and landing 
 %
 \begin{table}[H]
   \centering
+  \adjustbox{max width=\textwidth}{
     \begin{tabular}{lr|c|c}
     \toprule
     \textbf{Model Data} &  \textbf{} & \textbf{W/S variation range in take-off} & \textbf{W/S variation range in landing} \\
@@ -1253,12 +1276,13 @@ Starting from the flight manual data regarding the maximum take-off and landing 
     \textbf{W/S\textsubscript{LND}} & 107 lb/$\si{\square\foot}$ & \textbf{ } & \textbf{ } \\
     \bottomrule
     \end{tabular}
+    }
     \caption{Wing loading variation in take-off and landing starting from the B747-100B data}
     \label{tab:WS}
 \end{table}
 %
 \noindent
-Regarding the thrust ratio $\frac{T}{W}$, the public data for the B747-100B engines suggest a static thrust of $\SI{204000}{\newton}$ which, compared with the maximum take-off weight, leads to a $\frac{T}{W}=0.272\ \si{\newton}/\si{lb}$. From this value the same variation made for the wing loading has been imposed obtaining the following results.
+Regarding the thrust ratio $\frac{T}{W}$, the public data for the B747-100B engines suggest a static thrust of $\SI{204000}{\newton}$ per engine which, compared with the maximum take-off weight, leads to a $\frac{T}{W}=0.272\ \si{\newton}/\si{lb}$. From this value the same variation made for the wing loading has been imposed obtaining the following results.
 %
 \begin{table}[H]
   \centering
@@ -1285,4 +1309,190 @@ Regarding the thrust ratio $\frac{T}{W}$, the public data for the B747-100B engi
 %
 \noindent
 In order to implement these variations of the wing loading and of the thrust ratio, the aircraft weight has been assumed constant, while the wing area and the static thrust of the engine have been modified for each case following the guideline exposed in table \ref{tab:WS} and \ref{tab:TW}.
+%
+\noindent
+At this point the methods of the class \lstinline[language=Java]!CalcTakeOff! are invoked for each of the previous scenarios allowing to determine, in each case, the value of the take-off field length and of the related \gls{FAR}-25 take-off field length; the latter obtained by increasing the calculated take-off distance by 15\%. These values are then compared with the \emph{statistical field length}, calculated using the following preliminary design equation that is function of the statistical parameter named TOP\textsubscript{25}.
+%
+\begin{equation}
+\text{TOP}_{25}=\dfrac{\left(\dfrac{W}{S}\right)_{\text{TO}}}{\sigma\cdot C_{L\text{max,TO}}\cdot\left(\dfrac{T}{W}\right)_{\text{TO}}}; \qquad S_{\text{TO,FL}}=37.5\cdot \text{TOP}_{25}
+\end{equation}
+%
+The analysis results shown below highlight a very little difference (less than the 5\%) between the \lstinline[language=Java]!CalcTakeOff! class output and the statistical data, validating this way the calculation implemented inside the \gls{JPAD} class. Moreover, as a second check, the \gls{FAR}-25 take-off field length, obtained using the wing loading and the thrust ratio of the baseline model, have been compared with the take-off field length shown upon the B747-100B flight manual; also in this case the difference between the two data is small (less than the 7\%) proving the good quality of the calculations made. The latter result is excellent if you think that the difference between a flight test and another, which led to the take-off field length reported into the flight manual, has a scatter of 5\%.  
 
+\bigskip\bigskip
+\begin{table}[H]
+  \centering
+  \adjustbox{max width=\textwidth}{
+    \begin{tabular}{r|r|r|r|r|r|r}
+    \toprule
+    \multicolumn{7}{c}{\textbf{Take-Off analysis at SL with $C_{L\text{max,TO}}=1.91$}} \\
+    \midrule
+    \multicolumn{1}{c}{\textbf{W/S}} & \multicolumn{1}{c}{\textbf{T/W}} & \multicolumn{1}{c}{\textbf{TO distance}} & \multicolumn{1}{c}{\textbf{FAR-25 TO FL}} & \multicolumn{1}{c}{\textbf{TOP 25}} & \multicolumn{1}{c}{\textbf{Statistical FL}} & \multicolumn{1}{c}{\textbf{Difference (\%)}} \\
+    \midrule
+    123 lb/$\si{\square\foot}$ & 0.245 N/lb & 2505.38 m & \textbf{2881.19 m} & 261.63 & \textbf{2990.42 m} & \textbf{3.65\%} \\
+    136 lb/$\si{\square\foot}$ & 0.245 N/lb & 2791.10 m & \textbf{3209.76 m} & 290.70 & \textbf{3322.69 m} & \textbf{3.40\%} \\
+    150 lb/$\si{\square\foot}$ & 0.245 N/lb & 3076.82 m & \textbf{3538.35 m} & 319.77 & \textbf{3654.96 m} & \textbf{3.19\%}\\
+    164 lb/$\si{\square\foot}$ & 0.245 N/lb & 3371.01 m & \textbf{3876.66 m} & 348.84 & \textbf{3987.23 m} & \textbf{2.77\%}\\
+    \midrule
+    123 lb/$\si{\square\foot}$ & 0.272 N/lb & 2242.39 m & \textbf{2578.75 m} & 235.47 & \textbf{2691.38 m} & \textbf{4.18\%}\\
+    \textbf{136 lb/$\si{\square\foot}$} & \textbf{0.272 N/lb} & \textbf{2493.63 m} & \textbf{2867.67 m} & \textbf{261.63} & \textbf{2990.42 m} & \textbf{4.10\%}\\
+    150 lb/$\si{\square\foot}$ & 0.272 N/lb & 2744.71 m & \textbf{3156.41 m} & 287.79 & \textbf{3289.46 m} & \textbf{4.04\%}\\
+    164 lb/$\si{\square\foot}$& 0.272 N/lb & 3001.81 m & \textbf{3452.08 m} & 313.96 & \textbf{3588.51 m} & \textbf{3.80\%}\\
+    \midrule
+    123 lb/$\si{\square\foot}$ & 0.299 N/lb & 2029.94 m & \textbf{2334.43 m} & 214.06  & \textbf{2446.71 m} & \textbf{4.59\%}\\
+    136 lb/$\si{\square\foot}$ & 0.299 N/lb & 2255.07 m & \textbf{2593.33 m} & 237.84 & \textbf{2718.57 m} & \textbf{4.61\%} \\
+    150 lb/$\si{\square\foot}$ & 0.299 N/lb & 2479.6 m & \textbf{2851.56 m} & 261.63 & \textbf{2990.42 m} & \textbf{4.64\%} \\
+    164 lb/$\si{\square\foot}$ & 0.299 N/lb & 2709.62 m & \textbf{3116.06 m} & 285.41  & \textbf{3262.28 m} & \textbf{4.48\%}\\
+    \midrule
+    123 lb/$\si{\square\foot}$& 0.326 N/lb & 1857.56 m & \textbf{2136.19 m} & 196.22 & \textbf{2242.82 m} & \textbf{4.75\%} \\
+    136 lb/$\si{\square\foot}$ & 0.326 N/lb & 2062.14 m & \textbf{2371.47 m} & 218.02 & \textbf{2492.02 m} & \textbf{4.84\%} \\
+    150 lb/$\si{\square\foot}$ & 0.326 N/lb & 2265.03 m & \textbf{2604.78 m} & 239.83 & \textbf{2741.22 m} & \textbf{4.98\%} \\
+    164 lb/$\si{\square\foot}$ & 0.326 N/lb & 2473.63 m & \textbf{2844.67 m} & 261.63 & \textbf{2990.42 m} & \textbf{4.87\%} \\
+    \midrule
+    \midrule
+    \multicolumn{3}{c}{\textbf{FAR-25 FL @ baseline W/S and T/W}} & \multicolumn{3}{c}{\textbf{Flight manual}} & \multicolumn{1}{c}{\textbf{Difference (\%)}}\\
+    \midrule
+     \multicolumn{3}{c}{\textbf{2867.67 m}} &  \multicolumn{3}{c}{\textbf{3080 m}} &  \multicolumn{1}{c}{\textbf{6.89\%}}\\
+    \bottomrule
+    \end{tabular}
+    }
+      \caption{Take-off sensibility analysis results}
+      \label{tab:TakeOffExcel}
+\end{table}
+%
+\clearpage
+%
+\begin{figure}[H]
+\centering
+\includegraphics[keepaspectratio, width=0.9\textwidth]{JPAD_TakeOff_Sensibility_B747_TW_0245}
+\caption{\gls{JPAD} take-off field length compared with the statistical field length - T/W=0.245}
+\end{figure}
+%
+\begin{figure}[H]
+\centering
+\includegraphics[keepaspectratio, width=0.9\textwidth]{JPAD_TakeOff_Sensibility_B747_TW_0272}
+\caption{\gls{JPAD} take-off field length compared with the statistical field length - T/W=0.272}
+\end{figure}
+%
+\begin{figure}[H]
+\centering
+\includegraphics[keepaspectratio, width=0.9\textwidth]{JPAD_TakeOff_Sensibility_B747_TW_0299}
+\caption{\gls{JPAD} take-off field length compared with the statistical field length - T/W=0.299}
+\end{figure}
+%
+\begin{figure}[H]
+\centering
+\includegraphics[keepaspectratio, width=0.9\textwidth]{JPAD_TakeOff_Sensibility_B747_TW_0313}
+\caption{\gls{JPAD} take-off field length compared with the statistical field length - T/W=0.313}
+\end{figure}
+%
+\clearpage
+%
+\noindent
+The same analysis has been led for the landing field length, with the following differences.
+%
+\begin{itemize}
+\item The \gls{FAR}-25 landing field length is calculated as the the total landing distance calculated divided by 0.6 
+\item The statistical field length is now obtained using the following preliminary design equation with $V_a$ in kts and $S_{\text{LND,FL}}$ in ft.
+	\begin{equation}
+		S_{\text{LND,FL}}=0.3\cdot V_{a}^2; \quad \text{where} \quad V_a=1.3\cdot V_{s\text{LND}}
+	\end{equation}
+\end{itemize}
+%
+Also in this case, a second comparison with the flight manual data has been performed; however, since the latter shows two different landing conditions (25° and 30° of flaps deflection), the whole landing analysis has been done for both of them.
+%
+\begin{table}[htbp]
+  \centering
+    \adjustbox{max width=\textwidth}{
+    \begin{tabular}{r|r|r|r|r|r}
+    \toprule
+    \multicolumn{6}{c}{\textbf{Landing analysis at SL with $C_{L\text{max,TO}}=2.55$ ($\delta_f=\SI{30}{\degree}$ and $\delta_s=\SI{15}{\degree}$)}} \\
+    \midrule
+    \multicolumn{1}{c}{\textbf{W/S}} & \multicolumn{1}{c}{\textbf{LND distance (m)}} & \multicolumn{1}{c}{\textbf{FAR-25 LND FL}} & \multicolumn{1}{c}{\textbf{$V_a$}} & \multicolumn{1}{c}{\textbf{Statistical FL}} & \multicolumn{1}{c}{\textbf{Difference (\%)}} \\
+        \midrule
+    96 lb/$\si{\square\foot}$ & 1075.05 m & \textbf{1791.74 m} & 70.69 m/s & \textbf{1726.63 m} & \textbf{3.77\%}\\
+    \textbf{107 lb/$\si{\square\foot}$} & \textbf{1152.87 m} & \textbf{1921.45 m} & \textbf{74.52 m/s} & \textbf{1918.47 m}& \textbf{0.16\%}\\
+    118 lb/$\si{\square\foot}$ & 1230.77 m & \textbf{2051.29 m} & 78.18 m/s & \textbf{2111.97 m} & \textbf{2.87\%}\\
+        \midrule
+        \midrule
+        \multicolumn{2}{c}{\textbf{FAR-25 FL @ baseline W/S}} & \multicolumn{2}{c}{\textbf{Flight manual}} & \multicolumn{2}{c}{\textbf{Difference (\%)}}\\
+    \midrule
+     \multicolumn{2}{c}{\textbf{1921.45 m}} &  \multicolumn{2}{c}{\textbf{1930 m}} &  \multicolumn{2}{c}{\textbf{0.44\%}}\\
+	\bottomrule
+    \end{tabular}
+    }
+  \caption{Landing sensibility analysis results with $\delta_{\text{flap}}=\SI{30}{\degree}$}
+  \label{tab:LandExcel2p55}
+\end{table}
+%
+\begin{table}[htbp]
+  \centering
+    \adjustbox{max width=\textwidth}{
+    \begin{tabular}{r|r|r|r|r|r}
+    \toprule
+    \multicolumn{6}{c}{\textbf{Landing analysis at SL with $C_{L\text{max,TO}}=2.43$ ($\delta_f=\SI{25}{\degree}$ and $\delta_s=\SI{15}{\degree}$)}} \\
+    \midrule
+    \multicolumn{1}{c}{\textbf{W/S}} & \multicolumn{1}{c}{\textbf{LND distance (m)}} & \multicolumn{1}{c}{\textbf{FAR-25 LND FL}} & \multicolumn{1}{c}{\textbf{$V_a$}} & \multicolumn{1}{c}{\textbf{Statistical FL}} & \multicolumn{1}{c}{\textbf{Difference (\%)}} \\
+        \midrule
+    96 lb/$\si{\square\foot}$ & 1100.18 m & \textbf{1833.63 m} & 72.36 m/s & \textbf{1809.06 m} & \textbf{1.36\%}\\
+    \textbf{107 lb/$\si{\square\foot}$} & \textbf{1180.64 m} & \textbf{1967.73 m} & \textbf{76.27 m/s} & \textbf{2010.06 m}& \textbf{2.11\%}\\
+    118 lb/$\si{\square\foot}$ & 1261.20 m & \textbf{2102.00 m} & 80.03 m/s & \textbf{2212.79 m} & \textbf{5.01\%}\\
+        \midrule
+        \midrule
+        \multicolumn{2}{c}{\textbf{FAR-25 FL @ baseline W/S}} & \multicolumn{2}{c}{\textbf{Flight manual}} & \multicolumn{2}{c}{\textbf{Difference (\%)}}\\
+    \midrule
+     \multicolumn{2}{c}{\textbf{1967.73 m}} &  \multicolumn{2}{c}{\textbf{2080 m}} &  \multicolumn{2}{c}{\textbf{5.40\%}}\\
+	\bottomrule
+    \end{tabular}
+    }
+  \caption{Landing sensibility analysis results with $\delta_{\text{flap}}=\SI{25}{\degree}$}
+  \label{tab:LandExcel2p43}
+\end{table}
+
+\noindent
+The analysis results show an excellent accordance with the statistical data denoting a maximum difference of about the 5\%. Regarding the comparison with the  flight manual, the case of 30° of flaps deflection, which is the most realistic situation since is related to a $C_{L\text{max,LND}}=2.55$, gives a result even better by showing a difference almost nothing with the \gls{JPAD} output.
+
+\bigskip
+\noindent
+It has to be noted that \gls{JPAD} estimate a lower effect of the wing loading if compared with the statistical trend but this can be caused by the fact that the latter is obtained comparing different aircrafts, with different wing loadings, with their related landing field length; instead, in this case, is always the same aircraft that is compared with the statistical results at different wing loadings. Two different aircrafts, with the same wing loading, can have different wights so that the landing distance is obviously different as shown in figure \ref{fig:LandingWSAircraft}.
+%
+\clearpage
+%
+\begin{figure}[H]
+\centering
+\includegraphics[keepaspectratio, width=0.9\textwidth]{JPAD_TakeOff_Sensibility_B747_30deg}
+\caption{\gls{JPAD} landing field length compared with the statistical field length - $\delta_f=\SI{30}{\degree}$}
+\end{figure}
+%
+\begin{figure}[H]
+\centering
+\includegraphics[keepaspectratio, width=0.9\textwidth]{JPAD_TakeOff_Sensibility_B747_25deg}
+\caption{\gls{JPAD} landing field length compared with the statistical field length - $\delta_f=\SI{25}{\degree}$}
+\label{fig:LandingWS25}
+\end{figure}
+%
+\begin{figure}[H]
+\centering
+\includegraphics[keepaspectratio, width=\textwidth]{JPAD_TakeOff_Sensibility_B747_WS}
+\caption{\gls{JPAD} landing field length compared with the statistical field length and other similar aircraft as function of the wing loading W/S}
+\label{fig:LandingWSAircraft}
+\end{figure}
+%
+\begin{figure}[H]
+\centering
+\includegraphics[keepaspectratio, width=\textwidth]{JPAD_TakeOff_Sensibility_B747_Va}
+\caption{\gls{JPAD} landing field length compared with the statistical field length and other similar aircraft as function of the approach speed $V_a$}
+\label{fig:LandingVa}
+\end{figure}
+%
+\clearpage
+%
+\noindent
+From figure \ref{fig:LandingWS25} it's possible to deduce that the major difference between the \gls{JPAD} output and the statistical data, at the real wing loading, may be due to the fact that a lower $C_{L\text{max}}$ implies a bigger stall speed; this influences the approach speed and the touch-down speed that will be greater, making the landing run longer, since there is more speed to dissipate. Having, for example, more drag with different spoilers configuration or more braking action from the landing gear, could fix this difference.
+
+\bigskip
+\noindent
+Finally, figure \ref{fig:LandingVa} shows that the statistical landing field length, built up using the approach speed, is indeed a good regression of different couples of approach speeds and landing field length related to different aircraft of the same category of the one in exam.
+%
+%----------------------- Field length altitude sensibility analysis -------------------------
+\subsection{Effect of field length altitude upon the take-off distance}

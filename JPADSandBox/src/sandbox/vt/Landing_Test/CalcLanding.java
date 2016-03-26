@@ -174,8 +174,9 @@ public class CalcLanding {
 		System.out.println("CD0 clean = " + cD0);
 		System.out.println("Delta CD0 flap = " + highLiftCalculator.getDeltaCD());
 		System.out.println("Delta CD0 landing gears = " + this.deltaCD0LandignGear);
+		System.out.println("Delta CD0 spoilers = " + this.deltaCD0Spoiler);
 		System.out.println("CD0 Landing = " + (cD0 + deltaCD0FlapLandinGearsSpoilers));
-		System.out.println("Delta CD induced Landing = " + ((Math.pow(cLground, 2)*kGround)
+		System.out.println("Induced CD Landing = " + ((Math.pow(cLground, 2)*kGround)
 				/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald())));
 		System.out.println("VsLanding = " + vSLanding);
 		System.out.println("V_Approach = " + vA);

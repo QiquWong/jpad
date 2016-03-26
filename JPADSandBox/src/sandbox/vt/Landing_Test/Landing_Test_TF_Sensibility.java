@@ -360,7 +360,7 @@ public class Landing_Test_TF_Sensibility {
 		double kTD = 1.15;
 		double phiRev = 0.0;
 		double deltaCD0LandingGear = 0.014;
-		double deltaCD0Spioler = 0.0065; // see Nicolai pag.280 pdf
+		double deltaCD0Spioler = 0.07; // calculated using data from "Decollo e Atterramento"
 		Amount<Duration> nFreeRoll = Amount.valueOf(3, SI.SECOND);
 		Amount<Length> wingToGroundDistance = Amount.valueOf(6.56, SI.METER);
 		Amount<Length> obstacle = Amount.valueOf(50, NonSI.FOOT).to(SI.METER);

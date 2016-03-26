@@ -94,14 +94,14 @@ public class TakeOff_Test_TF_Sensibility {
 		 * in order to change the W/S and T/W ratios.
 		 */
 //		aircraft.get_wing().set_surface(Amount.valueOf(568, SI.SQUARE_METRE));
-		aircraft.get_wing().set_surface(Amount.valueOf(511, SI.SQUARE_METRE));
+//		aircraft.get_wing().set_surface(Amount.valueOf(511, SI.SQUARE_METRE));
 //		aircraft.get_wing().set_surface(Amount.valueOf(465, SI.SQUARE_METRE));
-//		aircraft.get_wing().set_surface(Amount.valueOf(426, SI.SQUARE_METRE));
+		aircraft.get_wing().set_surface(Amount.valueOf(426, SI.SQUARE_METRE));
 		
 //		aircraft.get_powerPlant().get_engineList().get(0).set_t0(Amount.valueOf(183600, SI.NEWTON));
-		aircraft.get_powerPlant().get_engineList().get(0).set_t0(Amount.valueOf(204000, SI.NEWTON));
+//		aircraft.get_powerPlant().get_engineList().get(0).set_t0(Amount.valueOf(204000, SI.NEWTON));
 //		aircraft.get_powerPlant().get_engineList().get(0).set_t0(Amount.valueOf(224400, SI.NEWTON));
-//		aircraft.get_powerPlant().get_engineList().get(0).set_t0(Amount.valueOf(244800, SI.NEWTON));
+		aircraft.get_powerPlant().get_engineList().get(0).set_t0(Amount.valueOf(244800, SI.NEWTON));
 		//------------------------------------------------------------------------------------------
 		
 		LiftingSurface theWing = aircraft.get_wing();
@@ -366,7 +366,7 @@ public class TakeOff_Test_TF_Sensibility {
 		Amount<Duration> dtHold = Amount.valueOf(0.5, SI.SECOND);
 		double mu = 0.03;
 		double muBrake = 0.4;
-		double kAlphaDot = 0.04; // [1/deg]
+		double kAlphaDot = 0.03; // [1/deg]
 		double kcLMax = 0.9;
 		double kRot = 1.05;
 		double kLO = 1.1;
