@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.11.16)  26 MAR 2016 20:22
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2016.3.28)  28 MAR 2016 22:42
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -5978,29 +5978,99 @@ Package pdftex.def Info: images/JPAD_TakeOff_Sensibility_B747_25deg.png used on
  input line 1469.
 (pdftex.def)             Requested size: 397.01514pt x 307.18202pt.
 
-<images/JPAD_TakeOff_Sensibility_B747_WS.png, id=3568, 496.4949pt x 326.4195pt>
+<images/JPAD_TakeOff_Sensibility_B747_WS.png, id=3568, 660.066pt x 448.074pt>
 File: images/JPAD_TakeOff_Sensibility_B747_WS.png Graphic file (type png)
+
 <use images/JPAD_TakeOff_Sensibility_B747_WS.png>
 Package pdftex.def Info: images/JPAD_TakeOff_Sensibility_B747_WS.png used on in
 put line 1476.
-(pdftex.def)             Requested size: 441.13094pt x 290.03427pt.
+(pdftex.def)             Requested size: 441.13094pt x 299.4491pt.
 
-<images/JPAD_TakeOff_Sensibility_B747_Va.png, id=3571, 496.4949pt x 326.1786pt>
+<images/JPAD_TakeOff_Sensibility_B747_Va.png, id=3571, 655.85025pt x 442.0515pt
+>
 File: images/JPAD_TakeOff_Sensibility_B747_Va.png Graphic file (type png)
-<use images/JPAD_TakeOff_Sensibility_B747_Va.png>
+ <use images/JPAD_TakeOff_Sensibility_B747_Va.png>
 Package pdftex.def Info: images/JPAD_TakeOff_Sensibility_B747_Va.png used on in
 put line 1483.
-(pdftex.def)             Requested size: 441.13094pt x 289.82024pt.
+(pdftex.def)             Requested size: 441.13094pt x 297.32639pt.
  [136
 
  <./images/JPAD_TakeOff_Sensibility_B747_30deg.png> <./images/JPAD_TakeOff_Sens
-ibility_B747_25deg.png>]
-[137 <./images/JPAD_TakeOff_Sensibility_B747_WS.png> <./images/JPAD_TakeOff_Sen
-sibility_B747_Va.png>]) (./contents/Conclusions.tex [138
+ibility_B747_25deg.png>] [137 <./images/JPAD_TakeOff_Sensibility_B747_WS.png> <
+./images/JPAD_TakeOff_Sensibility_B747_Va.png>] [138
 
-])) [139
+]
+<images/TakeOff_Trajectory_B747.png, id=3598, 745.5855pt x 376.7676pt>
+File: images/TakeOff_Trajectory_B747.png Graphic file (type png)
 
-] [140
+<use images/TakeOff_Trajectory_B747.png>
+Package pdftex.def Info: images/TakeOff_Trajectory_B747.png used on input line 
+1518.
+(pdftex.def)             Requested size: 397.01514pt x 200.6287pt.
+
+<images/Altitude_Evolution_B747.png, id=3599, 496.254pt x 250.2951pt>
+File: images/Altitude_Evolution_B747.png Graphic file (type png)
+
+<use images/Altitude_Evolution_B747.png>
+Package pdftex.def Info: images/Altitude_Evolution_B747.png used on input line 
+1525.
+(pdftex.def)             Requested size: 397.01514pt x 200.24016pt.
+
+<images/Speed_Evolution_B747.png, id=3600, 496.254pt x 250.2951pt>
+File: images/Speed_Evolution_B747.png Graphic file (type png)
+
+<use images/Speed_Evolution_B747.png>
+Package pdftex.def Info: images/Speed_Evolution_B747.png used on input line 153
+2.
+(pdftex.def)             Requested size: 397.01514pt x 200.24016pt.
+
+<images/CL_Evolution_B747.png, id=3601, 496.254pt x 250.2951pt>
+File: images/CL_Evolution_B747.png Graphic file (type png)
+
+<use images/CL_Evolution_B747.png>
+Package pdftex.def Info: images/CL_Evolution_B747.png used on input line 1539.
+(pdftex.def)             Requested size: 397.01514pt x 200.24016pt.
+
+<images/LoadFactor_Evolution_B747.png, id=3602, 496.254pt x 250.2951pt>
+File: images/LoadFactor_Evolution_B747.png Graphic file (type png)
+
+<use images/LoadFactor_Evolution_B747.png>
+Package pdftex.def Info: images/LoadFactor_Evolution_B747.png used on input lin
+e 1546.
+(pdftex.def)             Requested size: 397.01514pt x 200.24016pt.
+ [139
+
+ <./images/TakeOff_Trajectory_B747.png> <./images/Altitude_Evolution_B747.png> 
+<./images/Speed_Evolution_B747.png>] <images/Acceleration_Evolution_B747.png, i
+d=3613, 496.254pt x 250.2951pt>
+File: images/Acceleration_Evolution_B747.png Graphic file (type png)
+
+<use images/Acceleration_Evolution_B747.png>
+Package pdftex.def Info: images/Acceleration_Evolution_B747.png used on input l
+ine 1553.
+(pdftex.def)             Requested size: 397.01514pt x 200.24016pt.
+
+<images/HorizontalForces_Evolution_B747.png, id=3614, 498.1812pt x 330.2739pt>
+File: images/HorizontalForces_Evolution_B747.png Graphic file (type png)
+
+<use images/HorizontalForces_Evolution_B747.png>
+Package pdftex.def Info: images/HorizontalForces_Evolution_B747.png used on inp
+ut line 1560.
+(pdftex.def)             Requested size: 441.13094pt x 292.4612pt.
+
+<images/VerticalForces_Evolution_B747.png, id=3615, 496.4949pt x 328.3467pt>
+File: images/VerticalForces_Evolution_B747.png Graphic file (type png)
+
+<use images/VerticalForces_Evolution_B747.png>
+Package pdftex.def Info: images/VerticalForces_Evolution_B747.png used on input
+ line 1567.
+(pdftex.def)             Requested size: 441.13094pt x 291.74666pt.
+ [140 <./images/CL_Evolution_B747.png> <./images/LoadFactor_Evolution_B747.png>
+ <./images/Acceleration_Evolution_B747.png>]) (./contents/Conclusions.tex [141 
+<./images/HorizontalForces_Evolution_B747.png> <./images/VerticalForces_Evoluti
+on_B747.png>])) [142
+
+] [143
 
 
 ]
@@ -6011,25 +6081,25 @@ File: lstlang1.sty 2015/06/04 1.6 listings language file
 )
 (c:/texlive/2015/texmf-dist/tex/latex/listings/lstmisc.sty
 File: lstmisc.sty 2015/06/04 1.6 (Carsten Heinz)
-) [141
+) [144
 
-] [142]
-<images/HDF_Dataset_creation.png, id=3682, 1266.7325pt x 612.2875pt>
+] [145]
+<images/HDF_Dataset_creation.png, id=3720, 1266.7325pt x 612.2875pt>
 File: images/HDF_Dataset_creation.png Graphic file (type png)
 
 <use images/HDF_Dataset_creation.png>
 Package pdftex.def Info: images/HDF_Dataset_creation.png used on input line 122
 .
 (pdftex.def)             Requested size: 388.19737pt x 187.63965pt.
- [143 <./images/HDF_Dataset_creation.png (PNG copy)>] <images/deltaAlphaSforza.
-png, id=3718, 921.4425pt x 538.26094pt>
+ [146 <./images/HDF_Dataset_creation.png (PNG copy)>] <images/deltaAlphaSforza.
+png, id=3755, 921.4425pt x 538.26094pt>
 File: images/deltaAlphaSforza.png Graphic file (type png)
 
 <use images/deltaAlphaSforza.png>
 Package pdftex.def Info: images/deltaAlphaSforza.png used on input line 129.
 (pdftex.def)             Requested size: 242.62335pt x 141.7268pt.
 
-<images/DAlphaVsLambdaLEVsDy_MATLAB.png, id=3719, 421.575pt x 316.18124pt>
+<images/DAlphaVsLambdaLEVsDy_MATLAB.png, id=3756, 421.575pt x 316.18124pt>
 File: images/DAlphaVsLambdaLEVsDy_MATLAB.png Graphic file (type png)
 
 <use images/DAlphaVsLambdaLEVsDy_MATLAB.png>
@@ -6041,10 +6111,10 @@ Overfull \hbox (44.11577pt too wide) in paragraph at lines 129--130
  [][][] 
  []
 
-[144
+[147
 
  <./images/deltaAlphaSforza.png> <./images/DAlphaVsLambdaLEVsDy_MATLAB.png (PNG
- copy)>])) [145]
+ copy)>])) [148]
 
 Package biblatex Warning: No driver for entry type 'other'.
 (biblatex)                Using fallback driver on input line 184.
@@ -6056,7 +6126,7 @@ Package microtype Info: Character `029' is missing
 Package biblatex Warning: No driver for entry type 'other'.
 (biblatex)                Using fallback driver on input line 184.
 
-[146
+[149
 
 
 ]
@@ -6069,11 +6139,11 @@ Package glossaries Warning: Deprecated command \glossarystyle.
  I recommend you switch to \setglossarystyle unless you want to maintain backwa
 rd compatibility on input line 192.
 
-[147] (./Tesi.gls [148
+[150] (./Tesi.gls [151
 
 
 
-] [149]) [150] (./Tesi.acr [151
+] [152]) [153] (./Tesi.acr [154
 
 
 
@@ -6101,7 +6171,7 @@ Package minitoc(hints) Warning: W0024
 (minitoc(hints))                Some hints have been written 
 (minitoc(hints))                in the Tesi.log file.
 
-[152]
+[155]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 247.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 247.
  (./Tesi.aux
@@ -6124,16 +6194,11 @@ Package minitoc Info: I0010
 
 (c:/texlive/2015/texmf-dist/tex/latex/minitoc/italian.mld
 File: italian.mld 2006/01/13
-)
-
-Package mparhack Warning: Marginpars may have changed.
-(mparhack)                Rerun to get them right.
-
-)
+))
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 247.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 247.
 Package rerunfilecheck Info: File `Tesi.out' has not changed.
-(rerunfilecheck)             Checksum: F6A5B5958BE3FF15AC7BD36AD2F57346;3864.
+(rerunfilecheck)             Checksum: 87B3D82B91CF7E1D1ECCBBC292782A9B;3864.
 
 
 LaTeX Warning: There were multiply-defined labels.
@@ -6143,10 +6208,10 @@ Package logreq Info: Writing requests to 'Tesi.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 68904 strings out of 493054
- 1419567 string characters out of 6138326
- 3645973 words of memory out of 5000000
- 69126 multiletter control sequences out of 15000+600000
+ 68942 strings out of 493054
+ 1420937 string characters out of 6138327
+ 3646183 words of memory out of 5000000
+ 69145 multiletter control sequences out of 15000+600000
  245013 words of font info for 229 fonts, out of 8000000 for 9000
  1142 hyphenation exceptions out of 8191
  61i,30n,107p,10382b,4233s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -6177,10 +6242,10 @@ ype1/public/tex-gyre/qtmb.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/te
 x-gyre/qtmr.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmri.p
 fb><c:/texlive/2015/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb><c:/texlive/
 2015/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb>
-Output written on Tesi.pdf (153 pages, 14388624 bytes).
+Output written on Tesi.pdf (156 pages, 14884997 bytes).
 PDF statistics:
- 4231 PDF objects out of 4296 (max. 8388607)
- 3684 compressed objects within 37 object streams
- 1521 named destinations out of 1728 (max. 500000)
- 40557 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 4270 PDF objects out of 4296 (max. 8388607)
+ 3703 compressed objects within 38 object streams
+ 1532 named destinations out of 1728 (max. 500000)
+ 40597 words of extra memory for PDF output out of 42996 (max. 10000000)
 

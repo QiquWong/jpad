@@ -1256,7 +1256,7 @@ In conclusion, after having shown that the classes \lstinline[language=Java]!Cal
 %
 %----------------------- W/S and T/W sensibility analysis -------------------------
 \subsection{Take-off and landing sensibility analysis}
-The analysis that will be shown and commented in this subsection will regard a sensibility analysis of the \gls{FAR}-25 take-off and field length with respect to two main design parameters like the wing loading $\frac{W}{S}$, for both take-off and landing, and the thrust ratio $\frac{T}{W}$, for the take-off only.
+The analysis that will be shown and commented in this subsection will regard a sensibility analysis of the \gls{FAR}-25 take-off and landing field length with respect to two main design parameters like the wing loading $\frac{W}{S}$, for both take-off and landing, and the thrust ratio $\frac{T}{W}$, for the take-off only.
 
 \bigskip
 \noindent
@@ -1492,7 +1492,79 @@ From figure \ref{fig:LandingWS25} it's possible to deduce that the major differe
 
 \bigskip
 \noindent
-Finally, figure \ref{fig:LandingVa} shows that the statistical landing field length, built up using the approach speed, is indeed a good regression of different couples of approach speeds and landing field length related to different aircraft of the same category of the one in exam.
+Finally, figure \ref{fig:LandingVa} shows that the statistical landing field length, calculated using the approach speed, is indeed a good regression of different couples of approach speeds and landing field length related to different aircraft of the same category of the one in exam.
 %
 %----------------------- Field length altitude sensibility analysis -------------------------
 \subsection{Effect of field length altitude upon the take-off distance}
+%
+The last check to perform upon the \lstinline[language=Java]!CalcTakeOff! regards the field length altitude effect on the take-off distance. Altitude plays an important role as it influences some key parameters like:
+%
+\begin{itemize}
+\item The thrust provided by the engines, which decreases with altitude.
+\item The air density, which influences all aerodynamic forces; the higher is the altitude, the lower is the density and so lower are the aerodynamic forces.
+\item The stall speed, which is a main reference in determining the key points of the take-off run; in particular, this speed grows with decreasing density making the take-off run longer.
+\end{itemize}
+%
+%In order to validate the \lstinline[language=Java]!CalcTakeOff! class results, a comparison between its output and the flight manual of the B747-100B has been made showing the following results.
+%%
+%%----------------------- INSERT COMPARISON TABLE -------------------------
+%
+The following pages show some comparisons of the main take-off physical quantities between the case of a sea level altitude and the case of 2000 ft (610 m) and 4000 ft (1219m) of field length altitude. As expected the take-off distance grows with increasing altitude.
+%
+\clearpage
+%
+\begin{figure}[H]
+\centering
+\includegraphics[keepaspectratio, width=0.9\textwidth]{TakeOff_Trajectory_B747.png}
+\caption{Take-off trajectory comparison at different filed altitudes - B747-100B}
+\end{figure}
+%
+%
+\begin{figure}[H]
+\centering
+\includegraphics[keepaspectratio, width=0.9\textwidth]{Altitude_Evolution_B747.png}
+\caption{Altitude evolution with time at different filed altitudes - B747-100B}
+\end{figure}
+%
+%
+\begin{figure}[H]
+\centering
+\includegraphics[keepaspectratio, width=0.9\textwidth]{Speed_Evolution_B747.png}
+\caption{Speed evolution with the take-off distance at different filed altitudes - B747-100B}
+\end{figure}
+%
+%
+\begin{figure}[H]
+\centering
+\includegraphics[keepaspectratio, width=0.9\textwidth]{CL_Evolution_B747.png}
+\caption{$C_L$ evolution with the take-off distance at different filed altitudes - B747-100B}
+\end{figure}
+%
+%
+\begin{figure}[H]
+\centering
+\includegraphics[keepaspectratio, width=0.9\textwidth]{LoadFactor_Evolution_B747.png}
+\caption{Load factor evolution with the take-off distance at different filed altitudes - B747-100B}
+\end{figure}
+%
+%
+\begin{figure}[H]
+\centering
+\includegraphics[keepaspectratio, width=0.9\textwidth]{Acceleration_Evolution_B747.png}
+\caption{Acceleration evolution with the take-off distance at different filed altitudes - B747-100B}
+\end{figure}
+%
+%
+\begin{figure}[H]
+\centering
+\includegraphics[keepaspectratio, width=\textwidth]{HorizontalForces_Evolution_B747.png}
+\caption{Horizontal forces evolution with the take-off distance at different filed altitudes - B747-100B}
+\end{figure}
+%
+%
+\begin{figure}[H]
+\centering
+\includegraphics[keepaspectratio, width=\textwidth]{VerticalForces_Evolution_B747.png}
+\caption{Vertical forces evolution with the take-off distance at different filed altitudes - B747-100B}
+\end{figure}
+%

@@ -752,7 +752,7 @@ public class CalcTakeOff {
 
 				double   t = interpolator.getCurrentTime();
 				double[] x = interpolator.getInterpolatedState();
-
+				
 				// CHECK TO BE DONE ONLY IF isAborted IS FALSE!!
 				if(!isAborted) {
 					// CHECK ON LOAD FACTOR --> END ROTATION WHEN n=1
@@ -1674,7 +1674,7 @@ public class CalcTakeOff {
 
 	public class DynamicsEquationsTakeOff implements FirstOrderDifferentialEquations {
 
-		double weight, g0, mu, kAlpha, cD0, deltaCD0, oswald, ar, k1, k2, kGround, vWind, alphaDotInitial;
+		double weight, altitude, g0, mu, kAlpha, cD0, deltaCD0, oswald, ar, k1, k2, kGround, vWind, alphaDotInitial;
 
 		// visible variables
 		public double alpha, gamma;
@@ -1694,6 +1694,7 @@ public class CalcTakeOff {
 			k2 = CalcTakeOff.this.getK2();
 			kGround = CalcTakeOff.this.getkGround();
 			vWind = CalcTakeOff.this.getvWind().getEstimatedValue();
+			altitude = CalcTakeOff.this.getTheConditions().get_altitude().getEstimatedValue();
 
 			// alpha_dot_initial calculation
 			double cLatLiftOff = cLmaxTO/(Math.pow(kLO, 2));
@@ -1768,9 +1769,9 @@ public class CalcTakeOff {
 						CalcTakeOff.this.getAircraft().get_powerPlant().get_engineList().get(0).get_bpr(),
 						CalcTakeOff.this.getAircraft().get_powerPlant().get_engineType(),
 						EngineOperatingConditionEnum.TAKE_OFF,
-						CalcTakeOff.this.getTheConditions().get_altitude().getEstimatedValue(),
+						altitude,
 						SpeedCalc.calculateMach(
-								CalcTakeOff.this.getTheConditions().get_altitude().getEstimatedValue(),
+								altitude,
 								speed + 
 								(CalcTakeOff.this.getvWind().getEstimatedValue()*Math.cos(Amount.valueOf(
 										gamma,
@@ -1785,9 +1786,9 @@ public class CalcTakeOff {
 						CalcTakeOff.this.getAircraft().get_powerPlant().get_engineList().get(0).get_bpr(),
 						CalcTakeOff.this.getAircraft().get_powerPlant().get_engineType(),
 						EngineOperatingConditionEnum.TAKE_OFF,
-						CalcTakeOff.this.getTheConditions().get_altitude().getEstimatedValue(),
+						altitude,
 						SpeedCalc.calculateMach(
-								CalcTakeOff.this.getTheConditions().get_altitude().getEstimatedValue(),
+								altitude,
 								speed + 
 								(CalcTakeOff.this.getvWind().getEstimatedValue()*Math.cos(Amount.valueOf(
 										gamma,
@@ -1825,7 +1826,7 @@ public class CalcTakeOff {
 			return 	0.5
 					*aircraft.get_wing().get_surface().getEstimatedValue()
 					*AtmosphereCalc.getDensity(
-							theConditions.get_altitude().getEstimatedValue())
+							altitude)
 					*(Math.pow(speed + (vWind*Math.cos(Amount.valueOf(
 							gamma,
 							NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue())), 2))
@@ -1844,7 +1845,8 @@ public class CalcTakeOff {
 			else
 				return (2*weight*Math.cos(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))/
 						(CalcTakeOff.this.getAircraft().get_wing().get_surface().getEstimatedValue()*
-								CalcTakeOff.this.getTheConditions().get_densityCurrent().getEstimatedValue()*
+								AtmosphereCalc.getDensity(
+										altitude)*
 								Math.pow(speed, 2));
 		}
 
@@ -1855,7 +1857,7 @@ public class CalcTakeOff {
 			return 	0.5
 					*aircraft.get_wing().get_surface().getEstimatedValue()
 					*AtmosphereCalc.getDensity(
-							theConditions.get_altitude().getEstimatedValue())
+							altitude)
 					*(Math.pow(speed + (vWind*Math.cos(Amount.valueOf(
 							gamma,
 							NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue())), 2))
