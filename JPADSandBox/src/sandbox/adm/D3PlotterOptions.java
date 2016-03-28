@@ -56,6 +56,7 @@ public class D3PlotterOptions {
 	private boolean showSymbols;
 	private boolean plotArea;
 	private boolean showLegend;
+	private boolean autoLegend;
 
 	private boolean autoRangeX;
 	private boolean autoRangeY;
@@ -111,6 +112,7 @@ public class D3PlotterOptions {
 		private boolean _showSymbols = true;
 		private boolean _plotArea = false;
 		private boolean _showLegend = true;
+		private boolean _autoLegend = true;
 
 		private boolean _autoRangeX = true;
 		private boolean _autoRangeY = true;
@@ -249,6 +251,10 @@ public class D3PlotterOptions {
 			_showLegend = val;
 			return this;
 		}
+		public D3PlotterOptionsBuilder autoLegend(boolean val) {
+			_autoLegend = val;
+			return this;
+		}
 
 		public D3PlotterOptionsBuilder autoRangeX(boolean val) {
 			_autoRangeX = val;
@@ -312,6 +318,9 @@ public class D3PlotterOptions {
 				String... items ) {
 			for (String s : items)
 				_legendItems.add(s);
+			
+			// if user passes strings, auto-legend feature is disabled
+			_autoLegend = false;
 			return this;
 		}
 		
@@ -360,6 +369,7 @@ public class D3PlotterOptions {
 		this.showSymbols = builder._showSymbols;
 		this.plotArea = builder._plotArea;
 		this.showLegend = builder._showLegend;
+		this.autoLegend = builder._autoLegend;
 
 		this.autoRangeX = builder._autoRangeX;
 		this.autoRangeY = builder._autoRangeY;
@@ -487,6 +497,10 @@ public class D3PlotterOptions {
 		return showLegend;
 	}
 
+	public boolean isAutoLegend() {
+		return autoLegend;
+	}
+	
 	public boolean isAutoRangeX() {
 		return autoRangeX;
 	}
@@ -538,6 +552,7 @@ public class D3PlotterOptions {
 				+ "\tshow symbols: " + showSymbols + "\n" //
 				+ "\tplot area: " + plotArea + "\n" //
 				+ "\tshow legend: " + showLegend + "\n" //
+				+ "\tauto legend: " + autoLegend + "\n" //
 				;
 	}
 

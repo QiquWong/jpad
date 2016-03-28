@@ -101,6 +101,18 @@ public class D3Plotter {
 	}
 
 	/*
+	 *  Constructor
+	 */
+	public D3Plotter(
+			D3PlotterOptions options,
+			List<Double[][]> listDataArray
+			) {
+		this.options = options;
+		this.listDataArray.addAll(listDataArray);
+	}	
+	
+	
+	/*
 	 * called in Runnable object
 	 */
 	public void createD3Content() {
@@ -110,64 +122,16 @@ public class D3Plotter {
 
 		System.out.println("D3Plotter :: createD3Content");
 
-		Double[][] dataArray = listDataArray.get(0);
-
-		// TODO
-		// see http://stackoverflow.com/questions/26050530/filling-a-multidimensional-array-using-a-stream
-		// to populate a longer list of 2D arrays
-
-
-//		System.out.println(dataArray.length);
-
-		//--------------------------------------------------------
-		// Find X- and Y- min/max values
-
-//		List<List<Double>> dataList = MyArrayUtils.convert2DArrayToList(dataArray);
-//		System.out.println(dataList);
-
-//		System.out.println(MyArrayUtils.extractColumnOf2DArrayToList(dataArray, 0));
-
-		DoubleSummaryStatistics summaryStatisticsX = MyArrayUtils.extractColumnOf2DArrayToList(dataArray, 0).stream()
-				.mapToDouble(v -> v)
-		        .summaryStatistics();
-
-		// X-axis range
-		double xMin, xMax;
-		if (options.isAutoRangeX()) {
-			xMin = summaryStatisticsX.getMin();
-			xMax = summaryStatisticsX.getMax();
-		} else {
-			xMin = options.getXMin();
-			xMax = options.getXMax();
-		}
-
-//		System.out.println(MyArrayUtils.extractColumnOf2DArrayToList(dataArray, 1));
-
-		DoubleSummaryStatistics summaryStatisticsY = MyArrayUtils.extractColumnOf2DArrayToList(dataArray, 1).stream()
-				.mapToDouble(v -> v)
-		        .summaryStatistics();
-
-		// X-axis range
-		double yMin, yMax;
-		if (options.isAutoRangeY()) {
-			yMin = summaryStatisticsY.getMin();
-			yMax = summaryStatisticsY.getMax();
-		} else {
-			yMin = options.getYMin();
-			yMax = options.getYMax();
-		}
-
-
 		// Get the D3 object
 		d3 = browser.getD3();
-//		System.out.println("D3 version " + d3.version());
+		//		System.out.println("D3 version " + d3.version());
 		webEngine = d3.getWebEngine();
 
-//		injectStuffInHeadNode();
-//		injectMathJax();
+		//		injectStuffInHeadNode();
+		//		injectMathJax();
 
 		// apply CSS
-//		loadCssForThisClass();
+		//		loadCssForThisClass();
 
 		// svg
 		svgSelection = d3.select("svg")
@@ -182,13 +146,13 @@ public class D3Plotter {
 				.attr("height", options.getHeightPageSVG());
 
 		// Inject basic style attributes into svg node
-//		try {
-//
-//			injectStyleInSVG();
-//
-//		} catch (TransformerException e) {
-//			e.printStackTrace();
-//		}
+		//		try {
+		//
+		//			injectStyleInSVG();
+		//
+		//		} catch (TransformerException e) {
+		//			e.printStackTrace();
+		//		}
 
 		//graph
 		Selection graphSelection = pageSelection //
@@ -222,6 +186,53 @@ public class D3Plotter {
 				.attr("class", "axis") //
 				.attr("transform", "translate(0," + options.getHeightGraph() + ")")
 				;
+		
+		
+		// Go through the list of data couples and plot
+		// detect axis limits
+		double xMin, xMax;
+		double yMin, yMax;
+		xMin = 1.0e15; xMax = -1.0e15; // initialize so that they will change
+		yMin = 1.0e15; yMax = -1.0e15;
+
+		for (Double[][] dataArray : listDataArray) {
+			//--------------------------------------------------------
+			// Find X- and Y- min/max values
+
+			//		List<List<Double>> dataList = MyArrayUtils.convert2DArrayToList(dataArray);
+			//		System.out.println(dataList);
+
+			//		System.out.println(MyArrayUtils.extractColumnOf2DArrayToList(dataArray, 0));
+
+			DoubleSummaryStatistics summaryStatisticsX = MyArrayUtils.extractColumnOf2DArrayToList(dataArray, 0).stream()
+					.mapToDouble(v -> v)
+					.summaryStatistics();
+
+			// X-axis range
+			if (options.isAutoRangeX()) {
+				xMin = Math.min(xMin, summaryStatisticsX.getMin());
+				xMax = Math.max(xMax, summaryStatisticsX.getMax());
+			} else {
+				xMin = options.getXMin();
+				xMax = options.getXMax();
+			}
+
+			//		System.out.println(MyArrayUtils.extractColumnOf2DArrayToList(dataArray, 1));
+
+			DoubleSummaryStatistics summaryStatisticsY = MyArrayUtils.extractColumnOf2DArrayToList(dataArray, 1).stream()
+					.mapToDouble(v -> v)
+					.summaryStatistics();
+
+			// Y-axis range
+			if (options.isAutoRangeY()) {
+				yMin = Math.min(yMin, summaryStatisticsY.getMin());
+				yMax = Math.max(yMax, summaryStatisticsY.getMax());
+			} else {
+				yMin = options.getYMin();
+				yMax = options.getYMax();
+			}
+		
+		}		
 
 		// QuantitativeScale<?> xScale;
 
@@ -244,41 +255,41 @@ public class D3Plotter {
 		xAxis.apply(xAxisSelection);
 
 		xAxisSelection //
-				.selectAll("path, line") //
-				.style("fill", "none") //
-				.style("stroke", options.getXGridLineColor()) // TODO
-				.style("stroke-width", options.getXGridLineStrokeWidth()) //
-				.style("stroke-dasharray",options.getXGridLineDashArray())
-				.style("font", "10px sans-serif")
-				.style("shape-rendering", "geometricPrecision"); // "crispEdges" // "geometricPrecision"
+		.selectAll("path, line") //
+		.style("fill", "none") //
+		.style("stroke", options.getXGridLineColor()) // TODO
+		.style("stroke-width", options.getXGridLineStrokeWidth()) //
+		.style("stroke-dasharray",options.getXGridLineDashArray())
+		.style("font", "10px sans-serif")
+		.style("shape-rendering", "geometricPrecision"); // "crispEdges" // "geometricPrecision"
 
-//		if (logXScale) {
-//			//major ticks
-//			xAxisSelection //
-//			.selectAll(".tick:nth-child(1)") //
-//			.classed("major", true);
-//
-//			xAxisSelection //
-//			.selectAll(".tick:nth-child(9n+1)") //
-//			.classed("major", true);
-//
-//			Selection majorTickLines = xAxisSelection //
-//					.selectAll(".major") //
-//					.selectAll("line");
-//
-//			Selection minorTickLines = xAxisSelection //
-//					.selectAll(".tick:not(.major)") //
-//					.selectAll("line");
-//
-//			majorTickLines //
-//			.style("stroke", "blue") //
-//			.attr("y2", "+" + 20);
-//
-//			minorTickLines //
-//			.style("stroke", "red")
-//			.attr("y2", "+" + 10);
-//
-//		}
+		//		if (logXScale) {
+		//			//major ticks
+		//			xAxisSelection //
+		//			.selectAll(".tick:nth-child(1)") //
+		//			.classed("major", true);
+		//
+		//			xAxisSelection //
+		//			.selectAll(".tick:nth-child(9n+1)") //
+		//			.classed("major", true);
+		//
+		//			Selection majorTickLines = xAxisSelection //
+		//					.selectAll(".major") //
+		//					.selectAll("line");
+		//
+		//			Selection minorTickLines = xAxisSelection //
+		//					.selectAll(".tick:not(.major)") //
+		//					.selectAll("line");
+		//
+		//			majorTickLines //
+		//			.style("stroke", "blue") //
+		//			.attr("y2", "+" + 20);
+		//
+		//			minorTickLines //
+		//			.style("stroke", "red")
+		//			.attr("y2", "+" + 10);
+		//
+		//		}
 
 		//y axis
 		Selection yAxisSelection = graphSelection //
@@ -306,118 +317,124 @@ public class D3Plotter {
 		yAxis.apply(yAxisSelection);
 
 		yAxisSelection //
-			.selectAll("path, line") //
-			.style("fill", "none") //
-			.style("stroke", options.getYGridLineColor()) // TODO
-			.style("stroke-dasharray",options.getYGridLineDashArray())
-			.style("stroke-width", options.getYGridLineStrokeWidth()) //
-			.style("shape-rendering", "geometricPrecision"); // "crispEdges"
+		.selectAll("path, line") //
+		.style("fill", "none") //
+		.style("stroke", options.getYGridLineColor()) // TODO
+		.style("stroke-dasharray",options.getYGridLineDashArray())
+		.style("stroke-width", options.getYGridLineStrokeWidth()) //
+		.style("shape-rendering", "geometricPrecision"); // "crispEdges"
 
 
 		// X-axis Label
 		svgSelection.append("text")
-		    .attr("class", "x label")
-		    .attr("text-anchor", "middle")
-		    .attr("x", options.getMargin().left + options.getWidthGraph()/2)
-		    .attr("y", options.getMargin().top + options.getHeightGraph() + 45) // NB: offset
-		    .text("income per capita, inflation-adjusted (dollars)");
+		.attr("class", "x label")
+		.attr("text-anchor", "middle")
+		.attr("x", options.getMargin().left + options.getWidthGraph()/2)
+		.attr("y", options.getMargin().top + options.getHeightGraph() + 45) // NB: offset
+		.text("income per capita, inflation-adjusted (dollars)");
 
 		// Y-Axis label
 		svgSelection.append("text")
-		    .attr("class", "y label")
-		    .attr("text-anchor", "middle")
-		    .attr("x", -options.getMargin().top - options.getHeightGraph()/2)
-		    .attr("y", options.getMargin().left/2 - 15) // NB: offset
-		    .attr("dy", ".75em")
-		    .attr("transform", "rotate(-90)")
-		    .text("life expectancy (years)");
+		.attr("class", "y label")
+		.attr("text-anchor", "middle")
+		.attr("x", -options.getMargin().top - options.getHeightGraph()/2)
+		.attr("y", options.getMargin().left/2 - 15) // NB: offset
+		.attr("dy", ".75em")
+		.attr("transform", "rotate(-90)")
+		.text("life expectancy (years)");
 
 		// Title
 		svgSelection.append("text")
-	      .attr("class", "title")
-	      .attr("text-anchor", "middle")
-	      .attr("x", options.getMargin().left + options.getWidthGraph()/2)
-	      .attr("y", (options.getMargin().top / 2) - 0)  // NB: offset
-	      .text("This is the title");
+		.attr("class", "title")
+		.attr("text-anchor", "middle")
+		.attr("x", options.getMargin().left + options.getWidthGraph()/2)
+		.attr("y", (options.getMargin().top / 2) - 0)  // NB: offset
+		.text("This is the title");
+		
+		
+		// go through the list of data couples and plot 
+		for (Double[][] dataArray : listDataArray) {
 
-
-		//xy plot
-		Selection xySelection = graphSelection //
-			.append("g") //
-			.attr("id", "xy") //
-			.attr("class", "xy");
-
-
-		//plot line
-		org.treez.javafxd3.d3.svg.Line linePathGenerator = d3 //
-			.svg()//
-			.line()
-			.x(new AxisScaleFirstDatumFunction(xScale))
-			.y(new AxisScaleSecondDatumFunction(yScale));
-
-		Selection line = xySelection //
-				.append("path") //
-				.attr("id", "line") //
-				.attr("d", linePathGenerator.generate(dataArray))
-				.attr("class", "line")
-				.attr("style", options.getLineStyle());
-
-
-		if ( options.isPlotArea() ) {
-			//plot area beneath line
-			double yMin1 = yScale.apply(0.0).asDouble();
-			Area areaPathGenerator = d3 //
-					.svg() //
-					.area() //
-					.x(new AxisScaleFirstDatumFunction(xScale))
-					.y0(yMin1)
-					.y1(new AxisScaleSecondDatumFunction(yScale));
-			String areaPath = areaPathGenerator.generate(dataArray);
-			@SuppressWarnings("unused")
-			Selection area = xySelection //
-			.append("path") //
-			.attr("id", "area") //
-			.attr("d", areaPath)
-			.attr("class", "area")
-			.attr("style", options.getAreaStyle())
-			.attr("opacity", options.getAreaOpacity())
-			;
-		}
-
-
-		if (options.isShowSymbols()) {
-			//plot symbols
-			Symbol symbol = d3 //
-					.svg() //
-					.symbol();
-			symbol = symbol //
-					.size(options.getSymbolSize()) //
-					.type(SymbolType.CIRCLE);
-
-			String symbolDString = symbol.generate();
-
-			Selection symbolSelection = xySelection //
+			//xy plot
+			Selection xySelection = graphSelection //
 					.append("g") //
-					.attr("id", "symbols") //
-					.attr("class", "symbols");
+					.attr("id", "xy") //
+					.attr("class", "xy");
 
-			@SuppressWarnings("unused")
-			Selection symbols = symbolSelection
-			.selectAll("path") //
-			.data(dataArray) //
-			.enter() //
-			.append("path") //
-			.attr("transform", new AxisTransformPointDatumFunction(xScale, yScale)) //
-			//.attrExpression("transform", "function(d, i) { return 'translate(' + d[0] + ',' + d[1] + ')'; }") //
-			.attr("d", symbolDString) //
-			.attr("style", options.getSymbolStyle());
+
+			//plot line
+			org.treez.javafxd3.d3.svg.Line linePathGenerator = d3 //
+					.svg()//
+					.line()
+					.x(new AxisScaleFirstDatumFunction(xScale))
+					.y(new AxisScaleSecondDatumFunction(yScale));
+
+			Selection line = xySelection //
+					.append("path") //
+					.attr("id", "line") //
+					.attr("d", linePathGenerator.generate(dataArray))
+					.attr("class", "line")
+					.attr("style", options.getLineStyle());
+
+
+			if ( options.isPlotArea() ) {
+				//plot area beneath line
+				double yMin1 = yScale.apply(0.0).asDouble();
+				Area areaPathGenerator = d3 //
+						.svg() //
+						.area() //
+						.x(new AxisScaleFirstDatumFunction(xScale))
+						.y0(yMin1)
+						.y1(new AxisScaleSecondDatumFunction(yScale));
+				String areaPath = areaPathGenerator.generate(dataArray);
+				@SuppressWarnings("unused")
+				Selection area = xySelection //
+				.append("path") //
+				.attr("id", "area") //
+				.attr("d", areaPath)
+				.attr("class", "area")
+				.attr("style", options.getAreaStyle())
+				.attr("opacity", options.getAreaOpacity())
+				;
+			}
+
+
+			if (options.isShowSymbols()) {
+				//plot symbols
+				Symbol symbol = d3 //
+						.svg() //
+						.symbol();
+				symbol = symbol //
+						.size(options.getSymbolSize()) //
+						.type(SymbolType.CIRCLE);
+
+				String symbolDString = symbol.generate();
+
+				Selection symbolSelection = xySelection //
+						.append("g") //
+						.attr("id", "symbols") //
+						.attr("class", "symbols");
+
+				@SuppressWarnings("unused")
+				Selection symbols = symbolSelection
+				.selectAll("path") //
+				.data(dataArray) //
+				.enter() //
+				.append("path") //
+				.attr("transform", new AxisTransformPointDatumFunction(xScale, yScale)) //
+				//.attrExpression("transform", "function(d, i) { return 'translate(' + d[0] + ',' + d[1] + ')'; }") //
+				.attr("d", symbolDString) //
+				.attr("style", options.getSymbolStyle());
+			}
+
 		}
-
+		
 		if (options.isShowLegend())
 			putLegend();
 
 
 		//################################
+/*
 if (false) {
 		// data that you want to plot, I've used separate arrays for x and y values
 		double[] xData1 = {5, 10, 25, 32, 40, 40, 15, 7};
@@ -487,7 +504,8 @@ if (false) {
 			.attr("fill", "gray")
 			.attr("fill-opacity", "0.2")
 			;
-}
+} // if-false
+*/
 		// ###########################################################
 
 		// ###########################################################
@@ -503,6 +521,21 @@ if (false) {
 
 		// TODO
 		
+		if (options.isAutoLegend()) {
+			// resize legend items list
+			options.getLegendItems().clear();
+			
+			IntStream.range(0, listDataArray.size())
+				.forEach(i -> {
+					StringBuilder sb = new StringBuilder()
+							.append("data set ")
+							.append(i);
+					options.getLegendItems().add(sb.toString());
+				}
+			);
+			
+		}
+		
 		// Count legend strings and arrange a counter vector accordingly
 		int nLegendItems = options.getLegendItems().size();
 		
@@ -515,31 +548,49 @@ if (false) {
 				.toArray(new Integer[0])
 			);
 
+		double xPercentLegendPos = 0.9; // from left
+		double yPercentLegendPos = 0.1; // from top
+		StringBuilder sbLegendTransform = new StringBuilder();
+		sbLegendTransform
+			.append("translate(")
+				.append(xPercentLegendPos*options.getWidthGraph())
+				.append(",")
+				.append(0.1*options.getHeightGraph())
+			.append(")")
+			;
+		
 		Selection legend = svgSelection.append("g")
 				  .attr("class", "legend")
 //				  .attr("x", widthGraph - 65)
 //				  .attr("y", 25)
 //				  .attr("height", 100)
 //				  .attr("width", 100)
-				.attr("transform", "translate(" + 0.9*options.getWidthGraph() + "," + 0.1*options.getHeightGraph() + ")")
+				.attr("transform", sbLegendTransform.toString())
 				;
 
 		String commandFill = getLegendCommandFill(
 				new ColorLegendDatumFunction(
-						webEngine, Arrays.asList("red", "blue", "green")));
+						webEngine, Arrays.asList(
+								"red", "blue", "green", "magenta", "blueviolet", "darkcyan", "crimson",
+								"darkorchid", "orange", "orangered" 
+								// add here the rest -> https://www.w3.org/TR/SVG/types.html#ColorKeywords 
+								)));
 		// System.out.println(commandFill);
 
 //		String commandText = getLegendCommandText(
 //				new TextLegendDatumFunction(
 //						webEngine, Arrays.asList("Ago", "dem", "ar")));
 
+		int rectHeight = 10, rectWidth = 10;
+		int xOffset = 18, yOffsetMultiplier = 22, y0 = 10;
+		
 		legend.selectAll("rect")
 	      .data(itemCounter) // new int[]{1, 2, 3} legend item counter
 	      .enter()
 	      .append("rect")
-	      .attrExpression("y", "function(d, i){ return i *  20;}")
-	      .attr("width", 10)
-	      .attr("height", 10)
+	      .attrExpression("y", "function(d, i){ return i * " + yOffsetMultiplier + ";}")
+	      .attr("width", rectWidth)
+	      .attr("height", rectHeight)
 	      //.style("fill","green")
 	      .evalForJsObject(commandFill) // .style("fill", new ColorLegendDatumFunction(webEngine))
 	      ;
@@ -549,8 +600,8 @@ if (false) {
 	      .enter()
 	      .append("text")
 		  .attr("text-anchor", "start")
-	      .attr("x", 12)
-	      .attrExpression("y", "function(d, i){ return 10 + i *  20;}")
+	      .attr("x", xOffset) // right offset wrt symbol
+	      .attrExpression("y", "function(d, i){ return " + rectHeight + " + i * " + yOffsetMultiplier + ";}")
 	      //.text("pippo")
 	      .text(new TextLegendDatumFunction(
 	    		  webEngine, 

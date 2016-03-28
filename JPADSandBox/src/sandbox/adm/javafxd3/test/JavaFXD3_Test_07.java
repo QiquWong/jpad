@@ -3,6 +3,8 @@ package sandbox.adm.javafxd3.test;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.transform.TransformerException;
 
@@ -57,8 +59,10 @@ public class JavaFXD3_Test_07  extends Application {
 		//set state title
 		primaryStage.setTitle("treez/javafx-d3 - D3Plotter demo");
 
+		List<Double[][]> listDataArray = new ArrayList<Double[][]>();
+		
 		// the data we want to plot [x,y]
-		Double[][] dataArray = {
+		Double[][] dataArray1 = {
 				{ 0.0, 0.0 },
 				{ 20.0, 15.5 },
 				{ 50.0, 10.0 },
@@ -66,20 +70,31 @@ public class JavaFXD3_Test_07  extends Application {
 				{ 35.0, 18.0 }
 				};
 
+		Double[][] dataArray2 = {
+				{ 5.0, 0.0 },
+				{ 10.0, -5.5 },
+				{ 50.0, -10.0 },
+				{ 40.0, 0.0 },
+				{ 35.0, -8.0 }
+				};
+		
+		listDataArray.add(dataArray1);
+		listDataArray.add(dataArray2);
+		
 		D3PlotterOptions options = new D3PlotterOptions.D3PlotterOptionsBuilder()
 				.widthGraph(WIDTH).heightGraph(HEIGHT)
 				.xRange(-1.0, 60.0).yRange(-50.0, 60.0)
 				.axisLineColor("magenta").axisLineStrokeWidth("5px")
 				.plotArea(true).areaOpacity(0.7)
 				.graphBackgroundColor("yellow").graphBackgroundOpacity(0.2)
-				.legendItems("Pippo1", "agodemar2", "crocco3")
+				//.legendItems("Pippo1", "agodemar2", "crocco3")
 				.build();
 
 		System.out.println("Plot options:\n" + options);
 
 		d3Plotter = new D3Plotter(
 				options,
-				dataArray
+				listDataArray
 				);
 
 

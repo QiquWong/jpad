@@ -244,6 +244,34 @@
                      style="fill:red; stroke:blue; stroke-width:2"/>
             </g>
          </g>
+         <g id="xy" class="xy">
+            <path id="line"
+                  d="M60.98360655737705,278.1818181818182L111.8032786885246,303.6818181818182L518.360655737705,324.54545454545456L416.72131147540983,278.1818181818182L365.90163934426226,315.27272727272725"
+                  class="line"
+                  style="fill:none; stroke:red; stroke-width:2"/>
+            <path id="area"
+                  d="M60.98360655737705,278.1818181818182L111.8032786885246,303.6818181818182L518.360655737705,324.54545454545456L416.72131147540983,278.1818181818182L365.90163934426226,315.27272727272725L365.90163934426226,278.1818181818182L416.72131147540983,278.1818181818182L518.360655737705,278.1818181818182L111.8032786885246,278.1818181818182L60.98360655737705,278.1818181818182Z"
+                  class="area"
+                  style="fill:green;"
+                  opacity="0.7"/>
+            <g id="symbols" class="symbols">
+               <path transform="translate(60.98360655737705,278.1818181818182)"
+                     d="M0,4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,-4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,4.51351666838205Z"
+                     style="fill:red; stroke:blue; stroke-width:2"/>
+               <path transform="translate(111.8032786885246,303.6818181818182)"
+                     d="M0,4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,-4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,4.51351666838205Z"
+                     style="fill:red; stroke:blue; stroke-width:2"/>
+               <path transform="translate(518.360655737705,324.54545454545456)"
+                     d="M0,4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,-4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,4.51351666838205Z"
+                     style="fill:red; stroke:blue; stroke-width:2"/>
+               <path transform="translate(416.72131147540983,278.1818181818182)"
+                     d="M0,4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,-4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,4.51351666838205Z"
+                     style="fill:red; stroke:blue; stroke-width:2"/>
+               <path transform="translate(365.90163934426226,315.27272727272725)"
+                     d="M0,4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,-4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,4.51351666838205Z"
+                     style="fill:red; stroke:blue; stroke-width:2"/>
+            </g>
+         </g>
       </g>
    </g>
    <text class="x label" text-anchor="middle" x="370" y="595">income per capita, inflation-adjusted (dollars)</text>
@@ -256,10 +284,8 @@
    <text class="title" text-anchor="middle" x="370" y="20">This is the title</text>
    <g class="legend" transform="translate(558.0,51.0)">
       <rect y="0" width="10" height="10" style="fill: #ff0000;"/>
-      <rect y="20" width="10" height="10" style="fill: #0000ff;"/>
-      <rect y="40" width="10" height="10" style="fill: #008000;"/>
-      <text text-anchor="start" x="12" y="10">Pippo1</text>
-      <text text-anchor="start" x="12" y="30">agodemar2</text>
-      <text text-anchor="start" x="12" y="50">crocco3</text>
+      <rect y="22" width="10" height="10" style="fill: #0000ff;"/>
+      <text text-anchor="start" x="18" y="10">data set 0</text>
+      <text text-anchor="start" x="18" y="32">data set 1</text>
    </g>
 </svg>
