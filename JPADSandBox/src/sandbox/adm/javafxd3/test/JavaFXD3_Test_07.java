@@ -13,6 +13,7 @@ import org.treez.javafxd3.d3.behaviour.Zoom.ZoomEventType;
 import org.treez.javafxd3.d3.core.Selection;
 import org.treez.javafxd3.d3.functions.DatumFunction;
 import org.treez.javafxd3.javafx.JavaFxD3Browser;
+import org.treez.javafxd3.d3.svg.SymbolType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -85,8 +86,32 @@ public class JavaFXD3_Test_07  extends Application {
 				.widthGraph(WIDTH).heightGraph(HEIGHT)
 				.xRange(-1.0, 60.0).yRange(-50.0, 60.0)
 				.axisLineColor("magenta").axisLineStrokeWidth("5px")
-				.plotArea(true).areaOpacity(0.7)
 				.graphBackgroundColor("yellow").graphBackgroundOpacity(0.2)
+//				.symbolType(SymbolType.TRIANGLE_UP)
+				.symbolTypes(
+						SymbolType.CIRCLE,
+						SymbolType.TRIANGLE_UP
+						)
+//				.symbolStyle("fill:yellow; stroke:green; stroke-width:2")
+				.symbolStyles(
+						"fill:cyan; stroke:green; stroke-width:2",
+						"fill:blue; stroke:red; stroke-width:2"
+						)
+//				.lineStyle(
+//						"fill:none; stroke:orange; stroke-dasharray: 15px, 8px; stroke-width:2"
+//						)
+				.lineStyles(
+						"fill:none; stroke:red; stroke-width:2",
+						"fill:none; stroke:magenta; stroke-dasharray: 15px, 2px; stroke-width:2"
+						)
+//				.plotArea(true)
+				.plotAreas(false,true)
+				.areaStyle("fill:orange;")
+				// TODO
+//				.areaStyles("fill:orange;","fill:yellow;")
+				.areaOpacity(0.7)
+				// TODO
+//				.areaOpacities(0.7,0.5)
 				//.legendItems("Pippo1", "agodemar2", "crocco3")
 				.build();
 

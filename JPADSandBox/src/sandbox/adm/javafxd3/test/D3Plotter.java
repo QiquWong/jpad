@@ -324,7 +324,6 @@ public class D3Plotter {
 		.style("stroke-width", options.getYGridLineStrokeWidth()) //
 		.style("shape-rendering", "geometricPrecision"); // "crispEdges"
 
-
 		// X-axis Label
 		svgSelection.append("text")
 		.attr("class", "x label")
@@ -350,11 +349,12 @@ public class D3Plotter {
 		.attr("x", options.getMargin().left + options.getWidthGraph()/2)
 		.attr("y", (options.getMargin().top / 2) - 0)  // NB: offset
 		.text("This is the title");
-		
-		
-		// go through the list of data couples and plot 
-		for (Double[][] dataArray : listDataArray) {
 
+		// go through the list of data couples and plot 
+		for (int kLine = 0; kLine < listDataArray.size(); kLine++) {
+
+			Double[][] dataArray = listDataArray.get(kLine);
+			
 			//xy plot
 			Selection xySelection = graphSelection //
 					.append("g") //
@@ -369,15 +369,42 @@ public class D3Plotter {
 					.x(new AxisScaleFirstDatumFunction(xScale))
 					.y(new AxisScaleSecondDatumFunction(yScale));
 
+			// line style
+			String lineStyle = "";
+			if (options.isAutoLineStyle())
+				lineStyle = options.getLineStyle();
+			else {
+				int kk;
+				if (kLine < options.getLineStyles().size())
+					kk = kLine;
+				else
+					kk = kLine % options.getLineStyles().size();
+				
+				lineStyle = options.getLineStyles().get(kk);
+			}
+			
 			Selection line = xySelection //
 					.append("path") //
 					.attr("id", "line") //
 					.attr("d", linePathGenerator.generate(dataArray))
 					.attr("class", "line")
-					.attr("style", options.getLineStyle());
+					.attr("style", lineStyle); // options.getLineStyle()
 
+			// plot area?
+			boolean plotArea;
+			if (options.isAutoPlotArea())
+				plotArea = options.isPlotArea();
+			else {
+				int kk;
+				if (kLine < options.getPlotAreas().size())
+					kk = kLine;
+				else
+					kk = kLine % options.getPlotAreas().size();
+				
+				plotArea = options.getPlotAreas().get(kk);
+			}
 
-			if ( options.isPlotArea() ) {
+			if ( plotArea ) {
 				//plot area beneath line
 				double yMin1 = yScale.apply(0.0).asDouble();
 				Area areaPathGenerator = d3 //
@@ -400,14 +427,43 @@ public class D3Plotter {
 
 
 			if (options.isShowSymbols()) {
-				//plot symbols
+				
+				// symbols type
+				
+				SymbolType symbolType;
+				if (options.isAutoSymbolType())
+					symbolType = options.getSymbolType();
+				else {
+					int kk;
+					if (kLine < options.getSymbolTypes().size())
+						kk = kLine;
+					else
+						kk = kLine % options.getSymbolTypes().size();
+					
+					symbolType = options.getSymbolTypes().get(kk);
+				}
+				
 				Symbol symbol = d3 //
 						.svg() //
 						.symbol();
 				symbol = symbol //
 						.size(options.getSymbolSize()) //
-						.type(SymbolType.CIRCLE);
-
+						.type(symbolType); // SymbolType.CIRCLE
+				
+				// style
+				String symbolStyle = "";
+				if (options.isAutoSymbolStyle())
+					symbolStyle = options.getSymbolStyle();
+				else {
+					int kk;
+					if (kLine < options.getSymbolStyles().size())
+						kk = kLine;
+					else
+						kk = kLine % options.getSymbolStyles().size();
+					
+					symbolStyle = options.getSymbolStyles().get(kk);
+				}
+				
 				String symbolDString = symbol.generate();
 
 				Selection symbolSelection = xySelection //
@@ -424,7 +480,7 @@ public class D3Plotter {
 				.attr("transform", new AxisTransformPointDatumFunction(xScale, yScale)) //
 				//.attrExpression("transform", "function(d, i) { return 'translate(' + d[0] + ',' + d[1] + ')'; }") //
 				.attr("d", symbolDString) //
-				.attr("style", options.getSymbolStyle());
+				.attr("style", symbolStyle); // options.getSymbolStyle()
 			}
 
 		}
@@ -532,8 +588,7 @@ if (false) {
 							.append(i);
 					options.getLegendItems().add(sb.toString());
 				}
-			);
-			
+			);	
 		}
 		
 		// Count legend strings and arrange a counter vector accordingly
@@ -548,6 +603,7 @@ if (false) {
 				.toArray(new Integer[0])
 			);
 
+		// placing the legend
 		double xPercentLegendPos = 0.9; // from left
 		double yPercentLegendPos = 0.1; // from top
 		StringBuilder sbLegendTransform = new StringBuilder();
@@ -555,7 +611,7 @@ if (false) {
 			.append("translate(")
 				.append(xPercentLegendPos*options.getWidthGraph())
 				.append(",")
-				.append(0.1*options.getHeightGraph())
+				.append(yPercentLegendPos*options.getHeightGraph())
 			.append(")")
 			;
 		

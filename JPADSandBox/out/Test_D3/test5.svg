@@ -123,7 +123,7 @@
             <g class="tick" transform="translate(0,510)" style="opacity: 1;">
                <line x2="620"
                      y2="0"
-                     style="fill: none; stroke: #ff0000; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+                     style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
                <text dy=".32em" x="-8" y="0" style="text-anchor: end;">-50</text>
             </g>
             <g class="tick"
@@ -131,7 +131,7 @@
                style="opacity: 1;">
                <line x2="620"
                      y2="0"
-                     style="fill: none; stroke: #ff0000; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+                     style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
                <text dy=".32em" x="-8" y="0" style="text-anchor: end;">-40</text>
             </g>
             <g class="tick"
@@ -139,7 +139,7 @@
                style="opacity: 1;">
                <line x2="620"
                      y2="0"
-                     style="fill: none; stroke: #ff0000; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+                     style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
                <text dy=".32em" x="-8" y="0" style="text-anchor: end;">-30</text>
             </g>
             <g class="tick"
@@ -147,7 +147,7 @@
                style="opacity: 1;">
                <line x2="620"
                      y2="0"
-                     style="fill: none; stroke: #ff0000; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+                     style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
                <text dy=".32em" x="-8" y="0" style="text-anchor: end;">-20</text>
             </g>
             <g class="tick"
@@ -155,7 +155,7 @@
                style="opacity: 1;">
                <line x2="620"
                      y2="0"
-                     style="fill: none; stroke: #ff0000; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+                     style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
                <text dy=".32em" x="-8" y="0" style="text-anchor: end;">-10</text>
             </g>
             <g class="tick"
@@ -163,7 +163,7 @@
                style="opacity: 1;">
                <line x2="620"
                      y2="0"
-                     style="fill: none; stroke: #ff0000; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+                     style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
                <text dy=".32em" x="-8" y="0" style="text-anchor: end;">0</text>
             </g>
             <g class="tick"
@@ -171,7 +171,7 @@
                style="opacity: 1;">
                <line x2="620"
                      y2="0"
-                     style="fill: none; stroke: #ff0000; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+                     style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
                <text dy=".32em" x="-8" y="0" style="text-anchor: end;">10</text>
             </g>
             <g class="tick"
@@ -179,7 +179,7 @@
                style="opacity: 1;">
                <line x2="620"
                      y2="0"
-                     style="fill: none; stroke: #ff0000; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+                     style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
                <text dy=".32em" x="-8" y="0" style="text-anchor: end;">20</text>
             </g>
             <g class="tick"
@@ -187,7 +187,7 @@
                style="opacity: 1;">
                <line x2="620"
                      y2="0"
-                     style="fill: none; stroke: #ff0000; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+                     style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
                <text dy=".32em" x="-8" y="0" style="text-anchor: end;">30</text>
             </g>
             <g class="tick"
@@ -195,7 +195,7 @@
                style="opacity: 1;">
                <line x2="620"
                      y2="0"
-                     style="fill: none; stroke: #ff0000; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+                     style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
                <text dy=".32em" x="-8" y="0" style="text-anchor: end;">40</text>
             </g>
             <g class="tick"
@@ -203,73 +203,68 @@
                style="opacity: 1;">
                <line x2="620"
                      y2="0"
-                     style="fill: none; stroke: #ff0000; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+                     style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
                <text dy=".32em" x="-8" y="0" style="text-anchor: end;">50</text>
             </g>
             <g class="tick" transform="translate(0,0)" style="opacity: 1;">
                <line x2="620"
                      y2="0"
-                     style="fill: none; stroke: #ff0000; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+                     style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
                <text dy=".32em" x="-8" y="0" style="text-anchor: end;">60</text>
             </g>
             <path class="domain"
                   d="M620,0H0V510H620"
-                  style="fill: none; stroke: #ff0000; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+                  style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
          </g>
          <g id="xy" class="xy">
             <path id="line"
                   d="M10.163934426229508,278.1818181818182L213.44262295081967,206.3181818181818L518.360655737705,231.81818181818184L416.72131147540983,324.54545454545456L365.90163934426226,194.72727272727275"
                   class="line"
                   style="fill:none; stroke:red; stroke-width:2"/>
-            <path id="area"
-                  d="M10.163934426229508,278.1818181818182L213.44262295081967,206.3181818181818L518.360655737705,231.81818181818184L416.72131147540983,324.54545454545456L365.90163934426226,194.72727272727275L365.90163934426226,278.1818181818182L416.72131147540983,278.1818181818182L518.360655737705,278.1818181818182L213.44262295081967,278.1818181818182L10.163934426229508,278.1818181818182Z"
-                  class="area"
-                  style="fill:green;"
-                  opacity="0.7"/>
             <g id="symbols" class="symbols">
                <path transform="translate(10.163934426229508,278.1818181818182)"
                      d="M0,4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,-4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,4.51351666838205Z"
-                     style="fill:red; stroke:blue; stroke-width:2"/>
+                     style="fill:cyan; stroke:green; stroke-width:2"/>
                <path transform="translate(213.44262295081967,206.3181818181818)"
                      d="M0,4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,-4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,4.51351666838205Z"
-                     style="fill:red; stroke:blue; stroke-width:2"/>
+                     style="fill:cyan; stroke:green; stroke-width:2"/>
                <path transform="translate(518.360655737705,231.81818181818184)"
                      d="M0,4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,-4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,4.51351666838205Z"
-                     style="fill:red; stroke:blue; stroke-width:2"/>
+                     style="fill:cyan; stroke:green; stroke-width:2"/>
                <path transform="translate(416.72131147540983,324.54545454545456)"
                      d="M0,4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,-4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,4.51351666838205Z"
-                     style="fill:red; stroke:blue; stroke-width:2"/>
+                     style="fill:cyan; stroke:green; stroke-width:2"/>
                <path transform="translate(365.90163934426226,194.72727272727275)"
                      d="M0,4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,-4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,4.51351666838205Z"
-                     style="fill:red; stroke:blue; stroke-width:2"/>
+                     style="fill:cyan; stroke:green; stroke-width:2"/>
             </g>
          </g>
          <g id="xy" class="xy">
             <path id="line"
                   d="M60.98360655737705,278.1818181818182L111.8032786885246,303.6818181818182L518.360655737705,324.54545454545456L416.72131147540983,278.1818181818182L365.90163934426226,315.27272727272725"
                   class="line"
-                  style="fill:none; stroke:red; stroke-width:2"/>
+                  style="fill:none; stroke:magenta; stroke-dasharray: 15px, 2px; stroke-width:2"/>
             <path id="area"
                   d="M60.98360655737705,278.1818181818182L111.8032786885246,303.6818181818182L518.360655737705,324.54545454545456L416.72131147540983,278.1818181818182L365.90163934426226,315.27272727272725L365.90163934426226,278.1818181818182L416.72131147540983,278.1818181818182L518.360655737705,278.1818181818182L111.8032786885246,278.1818181818182L60.98360655737705,278.1818181818182Z"
                   class="area"
-                  style="fill:green;"
+                  style="fill:orange;"
                   opacity="0.7"/>
             <g id="symbols" class="symbols">
                <path transform="translate(60.98360655737705,278.1818181818182)"
-                     d="M0,4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,-4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,4.51351666838205Z"
-                     style="fill:red; stroke:blue; stroke-width:2"/>
+                     d="M0,-5.26429605180997L6.078685485212741,5.26429605180997 -6.078685485212741,5.26429605180997Z"
+                     style="fill:blue; stroke:red; stroke-width:2"/>
                <path transform="translate(111.8032786885246,303.6818181818182)"
-                     d="M0,4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,-4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,4.51351666838205Z"
-                     style="fill:red; stroke:blue; stroke-width:2"/>
+                     d="M0,-5.26429605180997L6.078685485212741,5.26429605180997 -6.078685485212741,5.26429605180997Z"
+                     style="fill:blue; stroke:red; stroke-width:2"/>
                <path transform="translate(518.360655737705,324.54545454545456)"
-                     d="M0,4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,-4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,4.51351666838205Z"
-                     style="fill:red; stroke:blue; stroke-width:2"/>
+                     d="M0,-5.26429605180997L6.078685485212741,5.26429605180997 -6.078685485212741,5.26429605180997Z"
+                     style="fill:blue; stroke:red; stroke-width:2"/>
                <path transform="translate(416.72131147540983,278.1818181818182)"
-                     d="M0,4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,-4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,4.51351666838205Z"
-                     style="fill:red; stroke:blue; stroke-width:2"/>
+                     d="M0,-5.26429605180997L6.078685485212741,5.26429605180997 -6.078685485212741,5.26429605180997Z"
+                     style="fill:blue; stroke:red; stroke-width:2"/>
                <path transform="translate(365.90163934426226,315.27272727272725)"
-                     d="M0,4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,-4.51351666838205A4.51351666838205,4.51351666838205 0 1,1 0,4.51351666838205Z"
-                     style="fill:red; stroke:blue; stroke-width:2"/>
+                     d="M0,-5.26429605180997L6.078685485212741,5.26429605180997 -6.078685485212741,5.26429605180997Z"
+                     style="fill:blue; stroke:red; stroke-width:2"/>
             </g>
          </g>
       </g>
