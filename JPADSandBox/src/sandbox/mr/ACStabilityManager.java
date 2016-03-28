@@ -1088,6 +1088,15 @@ public class ACStabilityManager {
 
 		inducedCDWingArray = theCDWingArrayCalculator.calculateCDInduced(alphaMinWing, alphaMaxWing, nValueAlpha);
 
+//		System.out.println(" cd induced");
+//		for(int i=0 ; i<inducedCDWingArray.length; i++){
+//			System.out.println(inducedCDWingArray[i]);
+//		}
+//		
+//		System.out.println(" cl array ");
+//		for(int i =0; i<inducedCDWingArray.length; i++){
+//		System.out.println(cLWingCleanArray[i]);
+//		}
 		// Total drag
 
 		cDWingCleanArray = new double [nValueAlpha];
@@ -1122,9 +1131,7 @@ public class ACStabilityManager {
 		double cD0WingPolar= theWing.getAerodynamics().calculateCd0Parasite();
 
 
-		double oswaldFactor = aircraft.get_theAerodynamics().calculateOswald(
-				theOperatingConditions.get_machCurrent(), MethodEnum.HOWE);
-		System.out.println("oswald factor " + oswaldFactor);
+
 
 		cD0WingPolarArray = new double [alphaStabilityArray.size()];
 		cDiWingPolarArray = new double [alphaStabilityArray.size()];
@@ -1135,7 +1142,7 @@ public class ACStabilityManager {
 
 			double cLLocal = theCLWingCalculator.nasaBlackwellAlphaBody(Amount.valueOf(Math.toRadians (alphaStabilityArray.get(i)), SI.RADIAN));	
 			cD0WingPolarArray[i] = cD0WingPolar;
-			cDiWingPolarArray[i] = (Math.pow(cLLocal, 2))/(Math.PI * theWing.get_aspectRatio() * oswaldFactor);
+			cDiWingPolarArray[i] = (Math.pow(cLLocal, 2))/(Math.PI * theWing.get_aspectRatio())*(1+theWing.getDeltaFactorDrag());
 			cDWaweWingPolarArray[i] = theWing.getAerodynamics().getCalculateCdWaveDrag().lockKorn(cLLocal, theOperatingConditions.get_machCurrent());
 
 			cDWingPolarArray[i] = cD0WingPolar + cDiWingPolarArray[i] + cDWaweWingPolarArray[i];

@@ -50,6 +50,7 @@ Referring to \cite{Slinger} the equation used in order to evaluate the downwash 
  \frac{0.4876}{\sqrt{r^2 + 0.6319 + m_{tv}^2}}  +\\
 & \left [1+{ \left( \frac{r^2}{r^2 + 0.7915 + 5.0734 m_{tv}^2} \right) }^{0.3113}  \right ]    \left \{ 1- \sqrt{\frac{m_{tv}^2}{1+m_{tv}^2}} \right \}      \Biggl )    \frac{C_{L_{{\alpha}_w}}}{\pi \AR}
 \end{split}
+\label{eqPerkinsDownwash}
 \end{equation}
 
 \noindent \\
@@ -62,7 +63,7 @@ Considering a variable downwash gradient the changing parameters are``$r \frac{b
 \label{PerkinsDownwash}
 \end{figure} 
 
-The two $K_{\epsilon}$ terms in the eq~\ref{PerkinsDownwash} accounting for the wing sweep angle effect are defined as follow ( where $\Lambda $ expressed in radians):
+The two $K_{\epsilon}$ terms in the eq~\ref{eqPerkinsDownwash} accounting for the wing sweep angle effect are defined as follow ( where $\Lambda $ expressed in radians):
 
 \begin{equation}
 K_{\epsilon \Lambda} = \frac{ 0.1124 + 0.1265 \Lambda + 0.1766 \Lambda^2}{r^2} + \frac{0.1024}{r} +2
@@ -448,10 +449,10 @@ This is the method explained in the previous sections and this is the method tha
 \end{figure} 
 
 
-\subsection {Giordano Method }
+\subsection {NACA Modified Method }
 This method has been explained by Prof. Vincenzo Giordano\cite{uninagiordano}  based on the results obtained in NACA Report -648 \cite{Jacobs:NACA:Rep:648}.
 The downwash behind a wing is mainly a function of the wing loading and is a manifestation of the associated vortex system. A first approximation to the downwash is obtained by assuming the sheet to originate at the quarter-chord line and to extend unchanged indefinitely downstream, the vortex system thereby consisting of elementary U-vortices (or horseshoe vorticcs). The actual sheet, however, does not extend unaltered from the lifting line to infinity because, as a result of the air motions that the vortex system itself creates, it is rapidly displaced downward and deformed. Inasmuch as the downwash depends to a predominant extent on the trailing vortex sheet, a vertical displacement of the sheet causes a vertical displacement of the entire downwash pattern by the same amount. \\ \\
-Giordano introduces a function $\Phi$ useful in order to evaluate the downwash gradient and the downwash angle.
+This method introduces a function $\Phi$ useful in order to evaluate the downwash gradient and the downwash angle.
 \begin{equation}
 \Phi = \Phi ( \AR , \lambda, \alpha)
 \end{equation}
@@ -488,7 +489,7 @@ Known the value of the dowhwash gradient for each angle of attack it's possible 
 \begin{figure}[H]
 \centering
 {\includegraphics[height=6.6cm]{immagini/giord1.png}} 
-\caption{Input and output values of Giordano method.}
+\caption{Input and output values of NACA method.}
 \label{giordanodata2}
 \end{figure} 
 

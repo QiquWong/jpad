@@ -18,5 +18,6 @@
 			<Mach_number_L unit="">0.15</Mach_number_L>
 			<Mach_number_cruise unit="">0.75</Mach_number_cruise>
 			<Cruise_Altitude unit="m">10300</Cruise_Altitude>
+			<deltaFactorDrag unit="">0.00514</deltaFactorDrag>
 	</Other_Data>
 </input>

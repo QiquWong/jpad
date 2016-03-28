@@ -103,6 +103,9 @@ public class LiftingSurface extends AeroComponent{
 	Amount<Angle> _dihedralOuterPanel = null;
 	Amount<Angle> _dihedralMean = null;
 	MyArray _dihedral = new MyArray(SI.RADIAN);
+	double deltaFactorDrag;
+
+	
 
 	CalcHighLiftDevices HigLiftCalculator;
 	
@@ -3663,6 +3666,13 @@ public class LiftingSurface extends AeroComponent{
 
 	public void set_etaOut(double _etaOut) {
 		this._etaOut = _etaOut;
+	}
+	public double getDeltaFactorDrag() {
+		return deltaFactorDrag;
+	}
+
+	public void setDeltaFactorDrag(double deltaFactorDrag) {
+		this.deltaFactorDrag = deltaFactorDrag;
 	}
 
 }

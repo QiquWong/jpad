@@ -458,6 +458,8 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		double machTO = Double.parseDouble(reader.getXMLPropertiesByPath("//Mach_number_TO").get(0));
 		double machL = Double.parseDouble(reader.getXMLPropertiesByPath("//Mach_number_L").get(0));
 		double machCruise = Double.parseDouble(reader.getXMLPropertiesByPath("//Mach_number_cruise").get(0));
+		double deltaDrag = Double.parseDouble(reader.getXMLPropertiesByPath("//deltaFactorDrag").get(0));
+		theWing.setDeltaFactorDrag(deltaDrag);
 		Amount<Length> cruiseAltitude = reader.getXMLAmountWithUnitByPath("//Cruise_Altitude").to(SI.METER);
 
 		aircraft.get_HTail().getAerodynamics().set_dynamicPressureRatio(dynamicPressureRatio);
@@ -506,7 +508,8 @@ public class Test_MR_LongitudinalStability_Turbofan {
 
 		theStabilityManagerTO.calculateAll();
 
-
+		System.out.println("taper ratio equivalent " + theWing.get_taperRatioEquivalent()) ;	
+		System.out.println(" aspect ratio eq " + theWing.get_aspectRatio());
 
 
 

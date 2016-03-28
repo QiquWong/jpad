@@ -55,7 +55,7 @@ It's possible to evaluate the contributes using different methods.
 Part of the parasite drag depends on the angle of attack and, consequently, on the CL; while part is constant and it's called $CD_0$. So the contributes of $CD$ which varies with the cl consist of the induced drag (due to vortex) and a part of parasite drag, not considering wave effects. It's possible to approximate the drag polar of a wing as a parabola where the $CD_0$ is the origin. It's important to note that using the parabolic approximation the $CD_0$ is the coefficient drag value at $CL=0$ but this is not properly correct.
 
 \begin{equation}
-CD = CD_0 + KCL^2 = CD_0 + \frac{CL^2}{\pi \AR e}
+CD = CD_0 + KCL^2 = CD_0 + \frac{CL^2}{\pi \AR}(1+\delta)
 \end{equation}
 
 In order to evaluate the zero lift drag coefficient it's possible to introduce the concept of equivalent parasite area f. This is the area of a thin plate that has the same drag of the wing.
@@ -77,6 +77,13 @@ Therefore it is possible to obtain the zero lift drag coefficient by eq. \ref{cd
 \begin{equation}
 CD_0 =  C_{f_{e}} \left( \frac{S_{wet}}{S}\right)
 \end{equation}
+ In order to evaluate the induced drag it's possible to use the following chart entering in it with the equivalent wing. This $\delta$ parameter is the correction factor for non elliptical wings
+\begin{figure}[H]
+	\centering
+	{\includegraphics[height=8cm]{Immagini/deltainduceddrag}} 
+	\caption{Delta factor for induced drag.}
+	\label{deltadrag}
+\end{figure}
 
 
 \subsection{Case 2: Parasite Drag and Induced Drag}
@@ -84,20 +91,20 @@ It's possible to evaluate the parasite drag starting from the airfoils while the
 
 \subsubsection{Parasite Drag}
 \begin{enumerate}
-	\item First of all the load distribution at a given angle of attack has been calculated
-	\item Fifty points along the semispan are defined
-	\item For each point, an intermediate profile is calculated
-	\item To each profile correspond the lift coefficient at that station
-	\item Starting from the CL, using a parabolic approximation for the drag polar, the CD is calculated with the following equation
+	\item First of all the load distribution at a given angle of attack is calculated.
+\item Fifty points are defined along the semi-span.
+\item An intermediate profile is calculated for each point.
+\item The lift coefficient at each station corresponds to a profile.
+\item Starting from the Cl and using a parabolic approximation for the drag polar, the Cd is calculated with the following equation
 	\begin{equation}
-	CD = CD_{min} + (CL - CL_{CD_{min}})^2 \cdot k
+	Cd = Cd_{min} + (Cl - Cl_{(Cd_{min})})^2 \cdot k
 	\end{equation}
 	\item Known the drag distribution it is possible to calculate the drag coefficient of the lifting surface integrating
 	\end{enumerate}
 	
 	In the tool it is possible to choose the method used to calculate the load distribution. In particular it's possible to use Shrenk or Nasa-Blackwell method.\\
 {\bfseries Schrenk Method} is based on an elliptical lifting coefficient distribution span wise hypothesis on the wing. This method also assumes that the pressure distribution is proportional to the wing area. 
-	The {\bfseries Nasa-Blackwell}, as mentioned, is a numerical method for calculating the subsonic load distribution for arbitrary lifting surface arrangements at a fixed angle of attack. \ref{ch:worklift}
+	The {\bfseries Nasa-Blackwell}, as mentioned, is a numerical method for calculating the subsonic load distribution for arbitrary lifting surface arrangements at a fixed angle of attack. (CAP . \ref{ch:worklift})
 
 
 \subsubsection{Induced Drag}
@@ -111,14 +118,14 @@ CD_i = CL \alpha_i
 So it's necessary to evaluate the induced angle of attack along the semi-span(CHAP. \ref{ch:iaoa}).
 	
 \begin{enumerate}
-	\item First of all the load distribution at a given angle of attack has been calculated
-	\item At given angle of attack is calculated the distribution of induced angle of attack
-	\item Fifty points along the semispan are defined
-	\item To each profile correspond the lift coefficient at that station and it's possible to evaluate the local drag coefficien
+	\item The load distribution at a given angle of attack is calculated.
+	\item The distribution of induced angle at a given angle of attack is calculated.
+	\item Fifty points are defined along the semi-span.
+	\item he lift coefficient at each station corresponds to local profile and it’s possible to evaluate the drag coefficient.
 	\begin{equation}
 	Cd =Cl \alpha_i
 	\end{equation}
-	\item Known the drag distribution it is possible to calculate the drag coefficient of the lifting surface integrating
+	\item Known the drag distribution it is possible to calculate the drag coefficient of the lifting surface integrating.
 \end{enumerate}
 
 
@@ -126,7 +133,9 @@ So it's necessary to evaluate the induced angle of attack along the semi-span(CH
 \section{Java Class Architecture}
 
 In this paragraph the implementation inside the JPAD library of the calculation of the wing drag characteristics will be described. In this library there are several methods relating to the calculation of drag, which are summarized in the table below, all contained in \texttt{LSAerodynamicManager} class. As mentioned the drag may be broken down in different way: using a causal breakdown or a component breakdown, so there are various methods that evaluate the different contributions. In order to have a clear organization of the class, the methods relating to the calculations of the same items are organized in nested classes in  \texttt{LSAerodynamicManager}.\\ 
-
+As mentioned it's possible to evaluate the drag coefficient in JPAD using different methods. \\
+The first method is to evaluate the zero lift drag coefficient using the nested class \texttt{calculate} \texttt{CD0Total}. In order to evaluate the induced drag it's possible to evaluate the CL of the wing and the oswald factor from an aerodynamic analysis.\\
+The second method is to evaluate th CD0 as the zero lift defining an object of the class  \texttt{CalcCDAtAlpha}. This class evaluates the drag coefficient of a lifting surface. This method calls a method of an other class \texttt{CalcCdDistribution} in order to evaluate the Cd distribution at alpha. The drag coefficient distribution is calculated starting from the lift distribution and using a parabolic approximation for the lifting surface polar by the class \texttt{CalculateCd}.  In order to evaluate the induced drag it's necessary to use the method \texttt{calculateCDInduced} that calculate the wing lift distribution using NasaBlackwell method and the induced angle of attack using the methods of the class \texttt{AlphaEffective}.\\
 \begin{table}[H]
 \begin{tabular}{p{7cm}p{7.5cm}}
 \toprule
@@ -144,14 +153,10 @@ In this paragraph the implementation inside the JPAD library of the calculation 
 \label{table:Table2}
 \end{table}
 
-As mentioned it's possible to evaluate the drag coefficient in JPAD using different methods. \\
-The first method is to evaluate the zero lift drag coefficient using the nested class \texttt{calculate} \texttt{CD0Total}. In order to evaluate the induced drag it's possible to evaluate the CL of the wing and the oswald factor from an aerodynamic analysis.\\
-The second method is to evaluate th CD0 as the zero lift defining an object of the class  \texttt{CalcCDAtAlpha}. This class evaluates the drag coefficient of a lifting surface. This method calls a method of an other class \texttt{CalcCdDistribution} in order to evaluate the Cd distribution at alpha. The drag coefficient distribution is calculated starting from the lift distribution and using a parabolic approximation for the lifting surface polar by the class \texttt{CalculateCd}.  In order to evaluate the induced drag it's necessary to use the method \texttt{calculateCDInduced} that calculate the wing lift distribution using NasaBlackwell method and the induced angle of attack using the methods of the class \texttt{AlphaEffective}.\\
-The process are shown in following figures.
 \noindent\\
 \begin{figure}[H]
 \centering
-{\includegraphics[height=7cm,  angle=90]{immagini/dragflowchartcd0.pdf}}
+{\includegraphics[height=7cm]{immagini/dragflowchartcd0.pdf}}
 \caption{Flow chart of drag estimation classes. Case 1.}
 \label{fig:cd}
 \end{figure}
@@ -317,6 +322,13 @@ Following there are the summary diagrams of the results obtained for the ATR 72.
 
 \begin{figure}[H]
 \centering
+\input{immagini/cdicl2ATR.tikz}
+\caption{ATR 72 $CD_i$ vs $C_L^2$  at Mach 0.4.}
+\label{fig:DragATR}
+\end{figure}
+
+\begin{figure}[H]
+\centering
 \input{immagini/totaldragcoefficient.tikz}
 \caption{ATR 72 CD vs $\alpha_w$\  at Mach 0.4. Drag Coefficients calculated as case 2.}
 \label{fig:DragATR}
@@ -345,6 +357,7 @@ Following there are the summary diagrams of the results obtained for the ATR 72.
 \end{figure}
 
 
+
 \subsection{BOEING 747-100B}
 
 \begin{figure}[H]
@@ -365,6 +378,13 @@ Following there are the summary diagrams of the results obtained for the ATR 72.
 \centering
 \input{immagini/induceddragboeing.tikz}
 \caption{BOEING 747-100B CD vs $\alpha_w$ at Mach 0.75. Induced Drag.}
+\label{fig:DragATR}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\input{immagini/cdicl2BOEING.tikz}
+\caption{BOEING 747-100B $CD_i$ vs $C_L^2$  at Mach 0.75.}
 \label{fig:DragATR}
 \end{figure}
 
