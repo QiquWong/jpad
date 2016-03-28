@@ -1121,6 +1121,7 @@ public class ACStabilityManager {
 		theWing.calculateFormFactor(theWing.getAerodynamics().calculateCompressibility(theOperatingConditions.get_machCurrent()));
 		double cD0WingPolar= theWing.getAerodynamics().calculateCd0Parasite();
 
+
 		double oswaldFactor = aircraft.get_theAerodynamics().calculateOswald(
 				theOperatingConditions.get_machCurrent(), MethodEnum.HOWE);
 		System.out.println("oswald factor " + oswaldFactor);

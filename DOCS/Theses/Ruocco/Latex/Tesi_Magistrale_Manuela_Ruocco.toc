@@ -31,7 +31,7 @@
 \contentsline {subsection}{\numberline {2.3.3}Optimization Process}{20}{subsection.2.3.3}
 \contentsline {part}{II\hspace {1em}Development of Application}{21}{part.2}
 \contentsline {chapter}{\numberline {3}Introdution to Java}{22}{chapter.3}
-\contentsline {section}{\numberline {3.1}The java Language}{22}{section.3.1}
+\contentsline {section}{\numberline {3.1}The Java Language}{22}{section.3.1}
 \contentsline {section}{\numberline {3.2}Java choice}{23}{section.3.2}
 \contentsline {chapter}{\numberline {4}Work Object}{25}{chapter.4}
 \contentsline {section}{\numberline {4.1}Introduction}{25}{section.4.1}

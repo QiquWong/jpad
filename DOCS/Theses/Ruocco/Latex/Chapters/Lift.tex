@@ -36,7 +36,7 @@ Following it will be explain the theory behind how these contributions have been
 In order to evaluate the linear trait of the wing lift curve, it's been used the Nasa-Blackwell method.\\ The {\bfseries Nasa-Blackwell} is a numerical method for calculating the subsonic load distribution for arbitrary lifting surface arrangements at a fixed angle of attack. The method is suitable for swept wings, non-planar wings, wing with pylons and/or end-plates; it can be also used to study the aerodynamic interaction of the wing and the horizontal tail. The method has been implemented because its results, as shown in the report, were in good agreement with the experimental results.
 The lifting surfaces are divided in several rectangular horse-shoe vortices along the span; one horseshoe vortex along the chord is used, that is, the midpoints of the vortices are placed only at points along the quarter-chord lines. An equal number of control points are located along the three-quarter-chord lines. The velocity from the total vortex system is equated to the component of free-stream velocity normal to the lifting surface chord at each control point. Application of this tangent-flow boundary condition for a symmetrical loading provides a set of N simultaneous equations in the N unknown circulation strengths. Solution of this set of equations provides the loading distributions over the lifting surfaces. Mach number effect is introduced through a Prandtl-Glauert correction. Further details can be found in \cite{NASA:Blackwell}.
 
-In this way it's calculated the Zero Lift angle using the integral of the load distribution and the linear trait slope starting from the value of CL at $\alpha =  0^{\circ}$ and $\alpha = 2^{\circ}$.
+In this way  the Zero Lift angle it's calculated using the integral of the load distribution and the linear trait slope starting from the value of CL at $\alpha =  0^{\circ}$ and $\alpha = 2^{\circ}$.
 
 \begin{equation}
 CL_{\alpha}= \frac{CL|_2 - CL|_0}{\upDelta \alpha}
@@ -100,7 +100,7 @@ In particular, for a wing defined by three airfoils, the end of linearity angle 
 
 \subsection{Maximum Lift Coefficient}
 
-In order to estimate the maximum lift coefficient for a clean wing it's been used the Nasa-Blackwell method. %With this method is evaluated the lift distribution of a wing and the lift coefficient through an integral. 
+In order to evauate the maximum lift coefficient the Stall Path Method has been used. The load distribution is calculated using Nasa-Blackwell method.
 
 \begin{figure}[H]
 \centering
@@ -194,12 +194,12 @@ Instead,  if there is a point of intersectionat $\alpha_{new}$ the new value of 
 \subsection{Stall Angle of Attack}
 
 Nasa-Blackwell is an inviscid method for calculating the subsonic aerodynamic load distributions for arbitrary lifting-surface arrangements. This means that it doesn't see the non linear trait of the lift curve. So in correspondence of the value of $C_{L_{MAX}}$ calculated, the angle of attack obtained from the Nasa-Blackwell method is not correct because it is the maximum angle of attack that you would get if you reach the max $C_L$ linearly.\\
-Obtained the maximum cl is therefore necessary to calculate the $\upDelta \alpha$ from the following graph. So first it’s evaluated the angle of attack at maximum lift coefficient through the linear trend of the lift line, then it’s added to this angle the increment evaluated by the diagram in fig. \ref{fig:dealpha}. , this is valid strictly for wing with high taper ratio without twist, with unique airfoil type and Mach number included between 0.2 and 0.6.
+So first it’s evaluated the angle of attack at maximum lift coefficient through the linear trend of the lift line, then it’s added to this angle the increment evaluated by the diagram in fig. \ref{fig:dealpha}. , this is valid strictly for wing with high taper ratio without twist, with unique airfoil type and Mach number included between 0.2 and 0.6.
 
 
 \begin{figure}[H]
 \centering
-{\includegraphics[height=6cm]{Immagini/deltaAlphaSforza.png}} 
+{\includegraphics[height=6.3cm]{Immagini/deltaAlphaSforza.png}} 
 \caption{Diagram useful for evaluation of $\upDelta \alpha$.}
 \label{fig:dealpha}
 \end{figure}
@@ -348,7 +348,7 @@ ATR-72 and B747-100B. On these two aircraft analyzes we were made, the results o
 In order to correctly use the lift modulus of JPAD it's necessary to set the correct Reynolds number of airfoils and, consequently, the correct value of $CL_{MAX}$. Referring to \cite{Abbott} the value for ATR 72 are the following
 
 \begin{center}
-\captionof{table}{Airfoils $CL_{MAX}$ for ATR-72. Mach number = 0.2}
+\captionof{table}{Airfoils $CL_{MAX}$ for ATR-72. Mach number = 0.4}
 	\begin{tabular}{ | l | l | l | l |}
 		\hline
 		Station & Airfoil & Reynolds Number & $CL_{max}$ \\ \hline
@@ -462,7 +462,7 @@ System.out.println("\t \t DONE ");
 \end{lstlisting}
 
 
-\begin{lstlisting}[caption={{\footnotesize Lift Characteristics of a Lifting Surface - Results for M=0.42. ATR-72}},label= [style=\bfseries]{Listing}]
+\begin{lstlisting}[caption={{\footnotesize Lift Characteristics of a Lifting Surface - Results for M=0.2. ATR-72}},label= [style=\bfseries]{Listing}]
 ------------------------------------
 
  LIFT CHARACTERISTICS  
@@ -504,7 +504,7 @@ CL of Isolated wing at alpha body = 0.5045422247468523
 \begin{figure}[H]
 \centering
 \input{immagini/stallpathatr.tikz}
-\caption{ATR 72 Stall Path of wing at Mach 0.43.}
+\caption{ATR 72 Stall Path of wing at Mach 0.2.}
 \label{fig:stallATR}
 \end{figure}
 
@@ -512,7 +512,7 @@ CL of Isolated wing at alpha body = 0.5045422247468523
 \begin{figure}[H]
 \centering
 \input{immagini/clalfaatr.tikz}
-\caption{ATR 72 CL vs Alpha_w at Mach 0.43.}
+\caption{ATR 72 CL vs Alpha_w at Mach 0.2.}
 \label{fig:clATR}
 \end{figure}
 
@@ -615,7 +615,7 @@ CL of wing at TAKE_OFF at alpha body = 1.2378170282582692
 
 
 
-\begin{lstlisting}[caption={{\footnotesize Lift Characteristics of a Lifting Surface - Results. BOEING 747-100B for M=0.85}},label= [style=\bfseries]{Listing}]
+\begin{lstlisting}[caption={{\footnotesize Lift Characteristics of a Lifting Surface - Results. BOEING 747-100B for M=0.84}},label= [style=\bfseries]{Listing}]
 ------------------------------------
 
  LIFT CHARACTERISTICS  
@@ -768,7 +768,7 @@ In order to compare and validate the results an analysis on a wing has been done
 \captionof{table}{Airfoils Data}
 	\begin{tabular}{| l | l | l | l | l |}
 		\hline
-		 Station & t7c & $C_{l_{max}}$ & $C_{l_{\alpha}}$ & $\alpha_{stall}$ \\ \hline
+		 Station & t/c & $C_{l_{max}}$ & $C_{l_{\alpha}}$ & $\alpha_{stall}$ \\ \hline
 		 Root & $0.18$ &  1.90  &  $6.48 (1/rad)$ & $ 18^{\circ} $  \\ \hline
 		 Kink & $0.18$ & 1.90  &  $6.48 (1/rad)$ & $ 18^{\circ} $  \\ \hline
 		 Tip & $0.18$ &  2.1  &  $6.72 (1/rad)$ & $ 17.5^{\circ} $  \\ \hline

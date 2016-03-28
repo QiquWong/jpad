@@ -532,7 +532,7 @@ public class CalcPitchingMomentAC{
 		MyAirfoil meanAirfoil = theMeanAirfoilCalculator.calculateMeanAirfoil(theLiftingSurface);
 	
 		alphaFirst = Amount.valueOf(1.0, NonSI.DEGREE_ANGLE);
-		alphaSecond= Amount.valueOf(2.0, NonSI.DEGREE_ANGLE);
+		alphaSecond= Amount.valueOf(4.0, NonSI.DEGREE_ANGLE);
 //		alphaSecond = Amount.valueOf(
 //				meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue()/2,
 //				SI.RADIAN);
@@ -544,7 +544,7 @@ public class CalcPitchingMomentAC{
 //		System.out.println(" cm first " + cMTempAlphaFirst);
 //		System.out.println(" cm second " + cMTempAlphaSecond);
 //		System.out.println("cm diff " + cMDiff);
-		while ( Math.abs(cMDiff) > 0.00003){
+		while ( Math.abs(cMDiff) > 0.000003){
 			   if ((cMTempAlphaFirst > 0 & cMTempAlphaSecond <0) || ( (cMTempAlphaSecond - cMTempAlphaFirst) < 0)){
 
 				percent = percent + 0.0001;	

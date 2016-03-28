@@ -502,10 +502,10 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		ACStabilityManager theStabilityManagerTO = new ACStabilityManager(meanAirfoil, aircraft, ConditionEnum.TAKE_OFF,
 				alphaMin, alphaMax, alphaBody , true, subfolderPathto, pathTakeOff);
 
-//		theStabilityManager.calculateAll();
-		theStabilityManager.calculateWingMomentCharacteristics();
-//		theStabilityManagerTO.calculateAll();
-//		theStabilityManager.CalculateDragCharacteristics();
+		theStabilityManager.calculateAll();
+
+		theStabilityManagerTO.calculateAll();
+
 
 
 
