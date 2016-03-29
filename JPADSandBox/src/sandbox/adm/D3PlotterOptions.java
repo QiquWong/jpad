@@ -33,6 +33,10 @@ public class D3PlotterOptions {
 	private String yGridLineColor;
 	private String yGridLineDashArray;
 	private String yGridLineStrokeWidth;
+	
+	private boolean showGrid;
+	private boolean showXGrid;
+	private boolean showYGrid;
 
 	private boolean autoRangeX;
 	private boolean autoRangeY;
@@ -41,6 +45,10 @@ public class D3PlotterOptions {
 	double yMin;
 	double yMax;
 
+	private String title;
+	private String xLabel;
+	private String yLabel;
+	
 	private int symbolSize;
 	private SymbolType symbolType;
 	private boolean autoSymbolType;
@@ -108,6 +116,10 @@ public class D3PlotterOptions {
 		private String _yGridLineDashArray = "15,2";
 		private String _yGridLineStrokeWidth = "0.8px";
 
+		private boolean _showGrid = true;
+		private boolean _showXGrid = true;
+		private boolean _showYGrid = true;
+		
 		private boolean _autoRangeX = true;
 		private boolean _autoRangeY = true;
 		double _xMin = 0.0;
@@ -115,6 +127,10 @@ public class D3PlotterOptions {
 		double _yMin = 0.0;
 		double _yMax = 1.0;
 
+		private String _title = "This is the title";
+		private String _xLabel = "x";
+		private String _yLabel = "y";
+		
 		private int _symbolSize = 64;
 		private SymbolType _symbolType = SymbolType.CIRCLE;
 		private boolean _autoSymbolType = true;
@@ -138,7 +154,6 @@ public class D3PlotterOptions {
 		private boolean _showSymbols = true;
 		private boolean _showLegend = true;
 		private boolean _autoLegend = true;
-
 
 		private List<String> _legendItems = new ArrayList<>();
 
@@ -233,6 +248,38 @@ public class D3PlotterOptions {
 			return this;
 		}
 
+		public D3PlotterOptionsBuilder showGrid(boolean b) {
+			_showGrid = b;
+			_showXGrid = b;
+			_showYGrid = b;
+			return this;
+		}
+
+		public D3PlotterOptionsBuilder showXGrid(boolean b) {
+			_showXGrid = b;
+			return this;
+		}
+
+		public D3PlotterOptionsBuilder showYGrid(boolean b) {
+			_showYGrid = b;
+			return this;
+		}
+		
+		public D3PlotterOptionsBuilder title(String val) {
+			_title = val;
+			return this;
+		}
+
+		public D3PlotterOptionsBuilder xLabel(String val) {
+			_xLabel = val;
+			return this;
+		}
+
+		public D3PlotterOptionsBuilder yLabel(String val) {
+			_yLabel = val;
+			return this;
+		}
+		
 		public D3PlotterOptionsBuilder symbolSize(int s) {
 			_symbolSize = s;
 			return this;
@@ -425,6 +472,10 @@ public class D3PlotterOptions {
 		this.yGridLineDashArray = builder._yGridLineDashArray;
 		this.yGridLineStrokeWidth = builder._yGridLineStrokeWidth;
 
+		this.showGrid = builder._showGrid;
+		this.showXGrid = builder._showXGrid;
+		this.showYGrid = builder._showYGrid;
+		
 		this.symbolSize = builder._symbolSize;
 		this.symbolType = builder._symbolType;
 		this.listSymbolType = builder._listSymbolType;
@@ -455,6 +506,10 @@ public class D3PlotterOptions {
 		this.xMax = builder._xMax;
 		this.yMin = builder._yMin;
 		this.yMax = builder._yMax;
+
+		this.title = builder._title;
+		this.xLabel = builder._xLabel;
+		this.yLabel = builder._yLabel;
 		
 		this.listLegendItems = builder._legendItems;
 
@@ -484,7 +539,6 @@ public class D3PlotterOptions {
 		return heightPageSVG;
 	}
 
-
 	public String getGraphBackgroundColor() {
 		return graphBackgroundColor;
 	}
@@ -496,7 +550,6 @@ public class D3PlotterOptions {
 	public double getXtickPadding() {
 		return xtickPadding;
 	}
-
 
 	public double getYtickPadding() {
 		return ytickPadding;
@@ -534,10 +587,33 @@ public class D3PlotterOptions {
 		return yGridLineStrokeWidth;
 	}
 
+	public boolean isShowGrid() {
+		return showGrid;
+	}
+	
+	public boolean isShowXGrid() {
+		return showXGrid;
+	}
+	
+	public boolean isShowYGrid() {
+		return showYGrid;
+	}	
+
+	public String getTitle() {
+		return title;
+	}
+
+	public String getXLabel() {
+		return xLabel;
+	}
+	
+	public String getYLabel() {
+		return yLabel;
+	}
+
 	public int getSymbolSize() {
 		return symbolSize;
 	}
-
 
 	public SymbolType getSymbolType() {
 		return symbolType;
@@ -550,7 +626,6 @@ public class D3PlotterOptions {
 	public List<SymbolType> getSymbolTypes() {
 		return listSymbolType;
 	}
-	
 	
 	public String getSymbolStyle() {
 		return symbolStyle;
@@ -654,10 +729,16 @@ public class D3PlotterOptions {
 				.append("\ty-axis grid line stroke (color): \"" + yGridLineColor + "\"\n") //
 				.append("\ty-axis grid line stroke-width: \"" + yGridLineStrokeWidth + "\"\n") //
 				.append("\ty-axis grid line dash-array: \"" + yGridLineDashArray + "\"\n") //
+				.append("\tshow grid: " + showGrid + "\n") //
+				.append("\tshow x-grid: " + showXGrid + "\n") //
+				.append("\tshow y-grid: " + showYGrid + "\n") //
 				.append("\tx-axis labels padding: " + xtickPadding + "\n") //
 				.append("\ty-axis labels padding: " + ytickPadding + "\n") //
 				.append("\taxis auto-range x: " + autoRangeX + "\n") //
 				.append("\taxis auto-range y: " + autoRangeY + "\n") //
+				.append("\tPlot title: " + title + "\n") //
+				.append("\tPlot x label: " + xLabel + "\n") //
+				.append("\tPlot y label: " + yLabel + "\n") //
 				.append("\tsymbol size: " + symbolSize + "\n") //
 				.append("\tsymbol type: \"" + symbolType + "\"\n") //
 				.append("\tauto symbol type: \"" + autoSymbolType + "\"\n") //
