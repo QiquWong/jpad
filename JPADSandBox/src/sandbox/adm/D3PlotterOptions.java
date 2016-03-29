@@ -50,6 +50,9 @@ public class D3PlotterOptions {
 	private String yLabel;
 	
 	private int symbolSize;
+	private List<Integer> listSymbolSize;
+	private boolean autoSymbolSize;
+	
 	private SymbolType symbolType;
 	private boolean autoSymbolType;
 	private List<SymbolType> listSymbolType;
@@ -57,7 +60,9 @@ public class D3PlotterOptions {
 	private boolean autoSymbolStyle;
 	private List<String> listSymbolStyle;
 
-	private int lineSize;
+//	private int lineSize;
+//	private List<Integer> listLineSize;
+//	private boolean autoLineSize;
 	private String lineStyle;
 	private boolean autoLineStyle;
 	private List<String> listLineStyle;
@@ -66,23 +71,21 @@ public class D3PlotterOptions {
 	private List<Boolean> listPlotArea;
 	private boolean  autoPlotArea;
 	private String areaStyle;
+	private boolean autoAreaStyle;
+	private List<String> listAreaStyle;
 	private Double areaOpacity;
+	private List<Double> listAreaOpacity;
+	private boolean autoAreaOpacity;
 
 	private boolean showSymbols;
+	private List<Boolean> listShowSymbols;
+	private boolean autoShowSymbols;
 
 	private boolean showLegend;
 	private boolean autoLegend;
 	
 	private List<String> listLegendItems;
 
-	// TODO: make list of settings to be used for multi-line plots
-	
-	private List<Integer> listSymbolSize;
-	private List<Integer> listLineSize;
-	private List<String> listAreaStyle;
-
-	private List<Boolean> listShowSymbols;
-	
 	// Builder pattern via a nested public static class
 
 	public static class D3PlotterOptionsBuilder {
@@ -132,6 +135,8 @@ public class D3PlotterOptions {
 		private String _yLabel = "y";
 		
 		private int _symbolSize = 64;
+		private List<Integer> _listSymbolSize = new ArrayList<>();
+		private boolean _autoSymbolSize = true;
 		private SymbolType _symbolType = SymbolType.CIRCLE;
 		private boolean _autoSymbolType = true;
 		private List<SymbolType> _listSymbolType = new ArrayList<>();
@@ -140,7 +145,9 @@ public class D3PlotterOptions {
 		private boolean _autoSymbolStyle = true;
 		private List<String> _listSymbolStyle = new ArrayList<>();
 
-		private int _lineSize = 4;
+//		private int _lineSize = 4;
+//		private List<Integer> _listLineSize = new ArrayList<>();
+//		private boolean _autoLineSize = true;
 		private String _lineStyle = "fill:none; stroke:black; stroke-width:2";
 		private boolean _autoLineStyle = true;
 		private List<String> _listLineStyle = new ArrayList<>();
@@ -149,19 +156,21 @@ public class D3PlotterOptions {
 		private List<Boolean> _listPlotArea = new ArrayList<>();
 		private boolean _autoPlotArea = true;
 		private String _areaStyle = "fill:green;";
+		private List<String> _listAreaStyle = new ArrayList<>();
+		private boolean _autoAreaStyle = true;
 		private Double _areaOpacity = 0.8;
+		private List<Double> _listAreaOpacity = new ArrayList<>();
+		private boolean _autoAreaOpacity = true;
 
 		private boolean _showSymbols = true;
+		private List<Boolean> _listShowSymbols = new ArrayList<>();
+		private boolean _autoShowSymbols = true;
+
 		private boolean _showLegend = true;
 		private boolean _autoLegend = true;
 
 		private List<String> _legendItems = new ArrayList<>();
 
-		private List<Integer> _listSymbolSize = new ArrayList<>();
-		private List<Integer> _listLineSize = new ArrayList<>();
-		private List<Double> _listAreaOpacity = new ArrayList<>();
-		private List<String> _listAreaStyle = new ArrayList<>();
-		private List<Boolean> _listShowSymbols = new ArrayList<>();
 		
 		public D3PlotterOptionsBuilder( /* required parameters here*/ ){
 		}
@@ -295,10 +304,19 @@ public class D3PlotterOptions {
 			return this;
 		}
 
-		public D3PlotterOptionsBuilder lineSize(int s) {
-			_lineSize = s;
-			return this;
-		}
+//		public D3PlotterOptionsBuilder lineSize(int s) {
+//			_lineSize = s;
+//			return this;
+//		}
+//		public D3PlotterOptionsBuilder lineSizes(
+//				Integer... sizes ) {
+//			for (Integer s : sizes)
+//				_listLineSize.add(s);
+//			
+//			// if user passes strings, auto-* feature is disabled
+//			_autoLineSize = false;
+//			return this;
+//		}
 
 		public D3PlotterOptionsBuilder lineStyle(String style) {
 			_lineStyle = style;
@@ -318,7 +336,8 @@ public class D3PlotterOptions {
 		public D3PlotterOptionsBuilder showSymbols(boolean val) {
 			_showSymbols = val;
 			return this;
-		}
+		}		
+		
 		public D3PlotterOptionsBuilder plotArea(boolean val) {
 			_plotArea = val;
 			return this;
@@ -405,11 +424,21 @@ public class D3PlotterOptions {
 			for (String s : items)
 				_legendItems.add(s);
 			
-			// if user passes strings, auto-legend feature is disabled
+			// if user passes strings, auto-* feature is disabled
 			_autoLegend = false;
 			return this;
 		}
 
+		public D3PlotterOptionsBuilder symbolSizes(
+				Integer... sizes) {
+			for (Integer s : sizes)
+				_listSymbolSize.add(s);
+			
+			// if user passes strings, auto-* feature is disabled
+			_autoSymbolSize = false;
+			return this;
+		}
+		
 		public D3PlotterOptionsBuilder symbolTypes(
 				SymbolType... types ) {
 			for (SymbolType t : types)
@@ -430,6 +459,16 @@ public class D3PlotterOptions {
 			return this;
 		}
 
+		public D3PlotterOptionsBuilder showSymbols(
+				Boolean... dos ) {
+			for (Boolean b : dos)
+				_listShowSymbols.add(b);
+			
+			// if user passes strings, auto-legend feature is disabled
+			_autoShowSymbols = false;
+			return this;
+		}
+		
 		public D3PlotterOptionsBuilder lineStyles(
 				String... styles ) {
 			for (String s : styles)
@@ -437,6 +476,26 @@ public class D3PlotterOptions {
 			
 			// if user passes strings, auto-* feature is disabled
 			_autoLineStyle = false;
+			return this;
+		}
+
+		public D3PlotterOptionsBuilder areaStyles(
+				String... styles ) {
+			for (String s : styles)
+				_listAreaStyle.add(s);
+			
+			// if user passes strings, auto-* feature is disabled
+			_autoAreaStyle = false;
+			return this;
+		}
+		
+		public D3PlotterOptionsBuilder areaOpacities(
+				Double... opacities ) {
+			for (Double o : opacities)
+				_listAreaOpacity.add(o);
+			
+			// if user passes strings, auto-* feature is disabled
+			_autoAreaOpacity = false;
 			return this;
 		}
 		
@@ -477,6 +536,9 @@ public class D3PlotterOptions {
 		this.showYGrid = builder._showYGrid;
 		
 		this.symbolSize = builder._symbolSize;
+		this.listSymbolSize = builder._listSymbolSize;
+		this.autoSymbolSize = builder._autoSymbolSize;
+		
 		this.symbolType = builder._symbolType;
 		this.listSymbolType = builder._listSymbolType;
 		this.autoSymbolType = builder._autoSymbolType;
@@ -484,19 +546,29 @@ public class D3PlotterOptions {
 		this.autoSymbolStyle = builder._autoSymbolStyle;
 		this.listSymbolStyle = builder._listSymbolStyle;
 
-		this.lineSize = builder._lineSize;
+		this.showSymbols = builder._showSymbols;
+		this.listShowSymbols = builder._listShowSymbols;
+
+//		this.lineSize = builder._lineSize;
+//		this.listLineSize = builder._listLineSize;
+//		this.autoLineSize = builder._autoLineSize;
+		
 		this.lineStyle = builder._lineStyle;
 		this.autoLineStyle = builder._autoLineStyle;
 		this.listLineStyle = builder._listLineStyle;
 
+		this.plotArea = builder._plotArea;
 		this.autoPlotArea = builder._autoPlotArea;		
 		this.listPlotArea = builder._listPlotArea;		
 		
 		this.areaStyle = builder._areaStyle;
+		this.autoAreaStyle = builder._autoAreaStyle;
+		this.listAreaStyle = builder._listAreaStyle;
 		this.areaOpacity = builder._areaOpacity;
+		this.listAreaOpacity = builder._listAreaOpacity;
+		this.autoAreaOpacity = builder._autoAreaOpacity;
 
-		this.showSymbols = builder._showSymbols;
-		this.plotArea = builder._plotArea;
+		this.listLegendItems = builder._legendItems;
 		this.showLegend = builder._showLegend;
 		this.autoLegend = builder._autoLegend;
 
@@ -511,7 +583,6 @@ public class D3PlotterOptions {
 		this.xLabel = builder._xLabel;
 		this.yLabel = builder._yLabel;
 		
-		this.listLegendItems = builder._legendItems;
 
 	}
 
@@ -611,10 +682,22 @@ public class D3PlotterOptions {
 		return yLabel;
 	}
 
+	public boolean isAutoShowSymbols() {
+		return autoShowSymbols;
+	}	
+
 	public int getSymbolSize() {
 		return symbolSize;
 	}
 
+	public boolean isAutoSymbolSize() {
+		return autoSymbolSize;
+	}	
+
+	public List<Integer> getSymbolSizes() {
+		return listSymbolSize;
+	}
+	
 	public SymbolType getSymbolType() {
 		return symbolType;
 	}
@@ -631,18 +714,31 @@ public class D3PlotterOptions {
 		return symbolStyle;
 	}
 
+	public boolean isShowSymbols() {
+		return showSymbols;
+	}
+
 	public boolean isAutoSymbolStyle() {
 		return autoSymbolStyle;
 	}	
+
+	public List<Boolean> getShowSymbols() {
+		return listShowSymbols;
+	}
 	
 	public List<String> getSymbolStyles() {
 		return listSymbolStyle;
 	}
 
-	public int getLineSize() {
-		return lineSize;
-	}
-
+//	public int getLineSize() {
+//		return lineSize;
+//	}
+//	public boolean isAutoLineSize() {
+//		return autoLineSize;
+//	}	
+//	public List<Integer> getLineSizes() {
+//		return listLineSize;
+//	}
 
 	public String getLineStyle() {
 		return lineStyle;
@@ -660,15 +756,26 @@ public class D3PlotterOptions {
 		return areaStyle;
 	}
 
+	public List<String> getAreaStyles() {
+		return listAreaStyle;
+	}
+
+	public boolean isAutoAreaStyle() {
+		return autoAreaStyle;
+	}	
+	
 	public Double getAreaOpacity() {
 		return areaOpacity;
 	}
 
-	public boolean isShowSymbols() {
-		return showSymbols;
+	public List<Double> getAreaOpacities() {
+		return listAreaOpacity;
 	}
 
-
+	public boolean isAutoAreaOpacity() {
+		return autoAreaOpacity;
+	}	
+	
 	public boolean isPlotArea() {
 		return plotArea;
 	}
@@ -739,20 +846,32 @@ public class D3PlotterOptions {
 				.append("\tPlot title: " + title + "\n") //
 				.append("\tPlot x label: " + xLabel + "\n") //
 				.append("\tPlot y label: " + yLabel + "\n") //
+				.append("\tshow symbols: " + showSymbols + "\n") //
+				.append("\tauto show symbols: " + autoShowSymbols + "\n") //
+				.append("\tshow flags for symbols: " + listShowSymbols + "\n") //
 				.append("\tsymbol size: " + symbolSize + "\n") //
-				.append("\tsymbol type: \"" + symbolType + "\"\n") //
-				.append("\tauto symbol type: \"" + autoSymbolType + "\"\n") //
+				.append("\tauto symbol size: " + autoSymbolSize + "\n") //
+				.append("\tsymbol sizes: " + listSymbolSize + "\n") //
+				.append("\tsymbol type: " + symbolType + "\n") //
+				.append("\tauto symbol type: " + autoSymbolType + "\n") //
 				.append("\tsymbol types: " + listSymbolType + "\n") //
 				.append("\tsymbol style: \"" + symbolStyle + "\"\n") //
-				.append("\tauto symbol style: \"" + autoSymbolStyle + "\"\n") //
+				.append("\tauto symbol style: " + autoSymbolStyle + "\n") //
 				.append("\tsymbol styles: " + listSymbolStyle + "\n") //
 				.append("\tline style: \"" + lineStyle + "\"\n") //
-				.append("\tauto line style: \"" + autoLineStyle + "\"\n") //
+				.append("\tauto line style: " + autoLineStyle + "\n") //
 				.append("\tline styles: " + listLineStyle + "\n") //
+//				.append("\tline size: " + lineSize + "\n") //
+//				.append("\tauto line size: " + autoLineSize + "\n") //
+//				.append("\tline sizes: " + listLineSize + "\n") //
 				.append("\tarea style: \"" + areaStyle + "\"\n") //
-				.append("\tshow symbols: " + showSymbols + "\n") //
+				.append("\tauto area style: " + autoAreaStyle + "\n") //
+				.append("\tarea styles: " + listAreaStyle + "\n") //
+				.append("\tarea opacity: " + areaOpacity + "\n") //
+				.append("\tauto area opacity: " + autoAreaOpacity + "\n") //
+				.append("\tarea opacities: " + listAreaOpacity + "\n") //
 				.append("\tplot area: " + plotArea + "\n") //
-				.append("\tauto plot area: \"" + autoPlotArea + "\"\n") //
+				.append("\tauto plot area: " + autoPlotArea + "\n") //
 				.append("\tplot areas: " + listPlotArea + "\n") //
 				.append("\tshow legend: " + showLegend + "\n") //
 				.append("\tauto legend: " + autoLegend + "\n") //

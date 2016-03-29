@@ -107,6 +107,7 @@ public class JavaFXD3_Test_08 extends Application {
 		
 		System.out.println("##################\n\n");
 		
+		Double[][] dataTopView = wing.getDiscretizedTopViewAsArray();
 		
 		//--------------------------------------------------
 		System.out.println("Initializing test class...");
@@ -121,11 +122,18 @@ public class JavaFXD3_Test_08 extends Application {
 		List<Double[][]> listDataArray = new ArrayList<Double[][]>();
 		
 		listDataArray.add(dataChordsVsY);
-		listDataArray.add(dataXleVsY);
+		// listDataArray.add(dataXleVsY);
+		listDataArray.add(dataTopView);
+		
+		double yMax = 1.05*wing.getSemiSpan().doubleValue(SI.METRE);
+		double yMin = -0.05*wing.getSemiSpan().doubleValue(SI.METRE);
+		double xMax = yMax;
+		double xMin = yMin;
 		
 		D3PlotterOptions options = new D3PlotterOptions.D3PlotterOptionsBuilder()
 				.widthGraph(WIDTH).heightGraph(HEIGHT)
-				.xRange(-1.0, 12.0).yRange(12.0, -1.0)
+				.xRange(xMin, xMax)
+				.yRange(yMax, yMin)
 				.axisLineColor("darkblue").axisLineStrokeWidth("2px")
 				.graphBackgroundColor("yellow").graphBackgroundOpacity(0.2)
 				.title("Wing data representation")
@@ -133,33 +141,33 @@ public class JavaFXD3_Test_08 extends Application {
 				.yLabel("y (m)")
 				.showXGrid(true)
 				.showYGrid(true)
-				.symbolType(SymbolType.CIRCLE)
-//				.symbolTypes(
-//						SymbolType.CIRCLE,
-//						SymbolType.TRIANGLE_UP
-//						)
-				.symbolSize(20)
-				.symbolStyle("fill:yellow; stroke:green; stroke-width:2")
-//				.symbolStyles(
-//						"fill:cyan; stroke:green; stroke-width:2",
-//						"fill:blue; stroke:red; stroke-width:2"
-//						)
-				.lineStyle(
-						// "fill:none; stroke:darkgreen; stroke-dasharray: 15px,2px; stroke-width:2"
-						"fill:none; stroke:darkgreen; stroke-width:3"
+//				.symbolType(SymbolType.CIRCLE)
+				.symbolTypes(
+						SymbolType.TRIANGLE_UP,
+						SymbolType.CIRCLE
 						)
-//				.lineStyles(
-//						"fill:none; stroke:red; stroke-width:2",
-//						"fill:none; stroke:magenta; stroke-dasharray: 15px, 2px; stroke-width:2"
+//				.symbolSize(20)
+				.symbolSizes(20,10)
+				.showSymbols(false,true) // NOTE: overloaded function
+//				.symbolStyle("fill:yellow; stroke:green; stroke-width:2")
+				.symbolStyles(
+						"fill:blue; stroke:red; stroke-width:2",
+						"fill:cyan; stroke:green; stroke-width:2"
+						)
+//				.lineStyle(
+//						// "fill:none; stroke:darkgreen; stroke-dasharray: 15px,2px; stroke-width:2"
+//						"fill:none; stroke:darkgreen; stroke-width:3"
 //						)
-				.plotArea(false)
-//				.plotAreas(false,true)
-				.areaStyle("fill:orange;")
-				// TODO
-//				.areaStyles("fill:orange;","fill:yellow;")
-				.areaOpacity(0.7)
-				// TODO
-//				.areaOpacities(0.7,0.5)
+				.lineStyles(
+						"fill:none; stroke:magenta; stroke-dasharray: 15px, 2px; stroke-width:2",
+						"fill:none; stroke:darkblue; stroke-width:2"
+						)
+//				.plotArea(false)
+				.plotAreas(true,true)
+//				.areaStyle("fill:orange;")
+				.areaStyles("fill:orange;","fill:yellow;")
+//				.areaOpacity(0.7)
+				.areaOpacities(0.50,0.20)
 				//.legendItems("Pippo1", "agodemar2", "crocco3")
 				.build();
 

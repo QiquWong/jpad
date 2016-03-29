@@ -5,11 +5,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Deque;
+import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
@@ -1045,6 +1050,59 @@ public class LiftingSurface extends AbstractLiftingSurface {
 					.to(SI.METRE).getEstimatedValue())
 				.mapToObj(y -> Amount.valueOf(y, 1e-8, SI.METRE))
 				.collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<
+		Tuple2<
+			Amount<Length>, // Ys
+			Amount<Length>  // Xs
+			>
+		> getDiscretizedTopViewAsList() {
+
+		List<Tuple2<Amount<Length>,Amount<Length>>> listYX = new ArrayList<>();
+		
+		// leading edge (straight)
+		IntStream.range(0, _spanwiseDiscretizedVariables.size())
+			.forEach(i -> {
+				listYX.add(Tuple.of(
+						_spanwiseDiscretizedVariables.get(i)._1(), // y
+						_spanwiseDiscretizedVariables.get(i)._3()  // xle
+						)
+					);
+			});
+		
+		// trailing edge, reverse order
+		int num = _spanwiseDiscretizedVariables.size() - 1;
+		IntStream.rangeClosed(0, num)
+			.forEach(i -> {
+				listYX.add(Tuple.of(
+						_spanwiseDiscretizedVariables.get(num - i)._1(),
+						_spanwiseDiscretizedVariables.get(num - i)._3() // xle
+							.plus(
+								_spanwiseDiscretizedVariables.get(num - i)._2() // + chord
+							)
+						)
+					);
+			});
+		
+		return listYX;
+	}
+	
+	@Override
+	public Double[][] getDiscretizedTopViewAsArray() {
+		// see: 
+		// http://stackoverflow.com/questions/26050530/filling-a-multidimensional-array-using-a-stream/26053236#26053236
+		
+		List<Tuple2<Amount<Length>,Amount<Length>>> listYX = getDiscretizedTopViewAsList();
+		
+		Double[][] array = new Double[listYX.size()][2];
+		IntStream.range(0, listYX.size())
+			.forEach(i -> {
+				array[i][0] = listYX.get(i)._1().doubleValue(SI.METRE);
+				array[i][1] = listYX.get(i)._2().doubleValue(SI.METRE);
+			});
+		return array;
 	}
 
 	@Override

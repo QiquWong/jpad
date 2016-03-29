@@ -269,8 +269,6 @@ public class JavaFXD3_Test_05 extends Application {
 			.scale(y) //
 			.orient(Orientation.LEFT);
 		
-		
-		
 		main.append("g") //
 			.attr("transform", "translate(0,0)") //
 			.attr("class", "main axis date") //

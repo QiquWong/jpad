@@ -425,7 +425,7 @@ public class D3Plotter {
 					.attr("id", "line") //
 					.attr("d", linePathGenerator.generate(dataArray))
 					.attr("class", "line")
-					.attr("style", lineStyle); // options.getLineStyle()
+					.attr("style", lineStyle);
 
 			// plot area?
 			boolean plotArea;
@@ -441,6 +441,31 @@ public class D3Plotter {
 				plotArea = options.getPlotAreas().get(kk);
 			}
 
+			String areaStyle;
+			if (options.isAutoAreaStyle())
+				areaStyle = options.getAreaStyle();
+			else {
+				int kk;
+				if (kLine < options.getAreaStyles().size())
+					kk = kLine;
+				else
+					kk = kLine % options.getAreaStyles().size();
+				
+				areaStyle = options.getAreaStyles().get(kk);
+			}
+			Double opacity;
+			if (options.isAutoAreaOpacity())
+				opacity = options.getAreaOpacity();
+			else {
+				int kk;
+				if (kLine < options.getAreaOpacities().size())
+					kk = kLine;
+				else
+					kk = kLine % options.getAreaOpacities().size();
+				
+				opacity = options.getAreaOpacities().get(kk);
+			}
+			
 			if ( plotArea ) {
 				//plot area beneath line
 				double yMin1 = yScale.apply(0.0).asDouble();
@@ -457,13 +482,26 @@ public class D3Plotter {
 				.attr("id", "area") //
 				.attr("d", areaPath)
 				.attr("class", "area")
-				.attr("style", options.getAreaStyle())
-				.attr("opacity", options.getAreaOpacity())
+				.attr("style", areaStyle)
+				.attr("opacity", opacity)
 				;
+			}
+			
+			boolean showSymbols;
+			if (options.isAutoShowSymbols()) { 
+				showSymbols = options.isShowSymbols();
+			} else {
+				int kk;
+				if (kLine < options.getShowSymbols().size())
+					kk = kLine;
+				else
+					kk = kLine % options.getShowSymbols().size();
+				
+				showSymbols = options.getShowSymbols().get(kk);
 			}
 
 
-			if (options.isShowSymbols()) {
+			if (showSymbols) {
 				
 				// symbols type
 				
@@ -479,16 +517,29 @@ public class D3Plotter {
 					
 					symbolType = options.getSymbolTypes().get(kk);
 				}
+
+				int symbolSize;
+				if (options.isAutoSymbolSize())
+					symbolSize = options.getSymbolSize();
+				else {
+					int kk;
+					if (kLine < options.getSymbolSizes().size())
+						kk = kLine;
+					else
+						kk = kLine % options.getSymbolSizes().size();
+					
+					symbolSize = options.getSymbolSizes().get(kk);
+				}
 				
 				Symbol symbol = d3 //
 						.svg() //
 						.symbol();
 				symbol = symbol //
-						.size(options.getSymbolSize()) //
+						.size(symbolSize) //
 						.type(symbolType); // SymbolType.CIRCLE
 				
 				// style
-				String symbolStyle = "";
+				String symbolStyle;
 				if (options.isAutoSymbolStyle())
 					symbolStyle = options.getSymbolStyle();
 				else {

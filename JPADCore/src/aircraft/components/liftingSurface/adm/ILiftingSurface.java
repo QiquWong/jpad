@@ -8,6 +8,9 @@ import javax.measure.quantity.Length;
 
 import org.jscience.physics.amount.Amount;
 
+import javaslang.Tuple2;
+import javaslang.Tuple5;
+
 public interface ILiftingSurface {
 
 	public void calculateGeometry(int numberSpanwiseStations);
@@ -78,6 +81,16 @@ public interface ILiftingSurface {
 	public List<Amount<Length>> getDiscretizedXle();
 	public List<Amount<Length>> getDiscretizedZle();
 	public List<Amount<Angle>> getDiscretizedTwists();
+	
+	public List<
+		Tuple2<
+			Amount<Length>, // Xs
+			Amount<Length>  // Ys
+			>
+		> getDiscretizedTopViewAsList();
+	
+	public Double[][] getDiscretizedTopViewAsArray();
+
 
 	public void reportPanelsToSpanwiseDiscretizedVariables();
 
