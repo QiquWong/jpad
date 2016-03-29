@@ -548,7 +548,7 @@ public class CalcPitchingMomentAC{
 			   if ((cMTempAlphaFirst > 0 & cMTempAlphaSecond <0) || ( (cMTempAlphaSecond - cMTempAlphaFirst) < 0)){
 
 				percent = percent + 0.0001;	
-				System.out.println(" percent " + percent);
+     			System.out.println(" percent " + percent);
 				cMTempAlphaFirst = calculateCMIntegral ( alphaFirst, percent);
 				cMTempAlphaSecond = calculateCMIntegral ( alphaSecond, percent);
 				cMDiff = cMTempAlphaSecond-cMTempAlphaFirst;
