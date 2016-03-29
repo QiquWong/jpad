@@ -477,12 +477,17 @@ public class Test_MR_LongitudinalStability_Turboprop {
 				alphaMin, alphaMax, alphaBody , true, subfolderPathTakeOFF, pathTakeOff);
  
 	theStabilityManager.calculateAll();
-	theStabilityManagerTakeOFF.calculateAll();
+//	theStabilityManagerTakeOFF.calculateAll();
 		
 //		System.out.println("taper ratio equivalent " + theWing.get_taperRatioEquivalent()) ;	
 //		System.out.println(" aspect ratio eq " + theWing.get_aspectRatio());
 
-		
+System.out.println( "apertura " + theWing.get_span());		
+System.out.println(" chord root " + theWing.get_chordRoot());
+System.out.println(" chord root " + theWing.get_chordKink());
+System.out.println(" chord root " + theWing.get_chordTip());
+
+
 		// CL ANALYSIS
 		
 System.out.println(" \nAirfoils analysis-----------");		

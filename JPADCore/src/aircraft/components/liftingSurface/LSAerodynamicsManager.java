@@ -4177,6 +4177,7 @@ public class CalcCdvsAlpha {
 			
 			for (int ii=0; ii<alphaCDInduced.length; ii++){
 				alphaActual = Amount.valueOf(alphaCDInduced[ii], SI.RADIAN);
+				System.out.println("\n alpha Actual " + alphaActual.to(NonSI.DEGREE_ANGLE));
 				calculateLiftDistribution.getNasaBlackwell().calculate(alphaActual);
 				clDistributionInviscid = calculateLiftDistribution.getNasaBlackwell().get_clTotalDistribution().toArray();
 				int nValueNasaBlackwell = clDistributionInviscid.length;

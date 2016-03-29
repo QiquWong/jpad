@@ -94,7 +94,7 @@ public class AlphaEffective {
 		double summ =0.0 ;
 		int lowerLimit = 0, upperLimit=(numberOfPoints-1);
 
-//System.out.println("\n alpha " + alphaInitial.to(NonSI.DEGREE_ANGLE));
+//	System.out.println("\n alpha " + alphaInitial.to(NonSI.DEGREE_ANGLE));
 		NasaBlackwell theCalculator = new NasaBlackwell(
 				semispan, surface, yStationsActual,
 				chordsVsYActual, xLEvsYActual,

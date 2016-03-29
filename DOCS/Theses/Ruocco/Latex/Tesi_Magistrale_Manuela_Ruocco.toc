@@ -89,7 +89,7 @@
 \contentsline {subsection}{\numberline {9.1.1}Wing}{97}{subsection.9.1.1}
 \contentsline {subsection}{\numberline {9.1.2}Fuselage}{97}{subsection.9.1.2}
 \contentsline {subsection}{\numberline {9.1.3}Horizontal Tail}{99}{subsection.9.1.3}
-\contentsline {subsubsection}{Elevator index of effectiveness}{100}{subsubsection*.108}
+\contentsline {subsubsection}{Elevator index of effectiveness}{100}{subsubsection*.109}
 \contentsline {subsection}{\numberline {9.1.4}Complete Aircraft}{102}{subsection.9.1.4}
 \contentsline {section}{\numberline {9.2}Aerodynamic Drag}{102}{section.9.2}
 \contentsline {subsection}{\numberline {9.2.1}Drag of a lifting surface}{103}{subsection.9.2.1}
@@ -98,8 +98,8 @@
 \contentsline {subsection}{\numberline {9.3.1}Lifting surface}{105}{subsection.9.3.1}
 \contentsline {subsection}{\numberline {9.3.2}Additional moment due to elevator}{106}{subsection.9.3.2}
 \contentsline {subsection}{\numberline {9.3.3}Fuselage}{108}{subsection.9.3.3}
-\contentsline {subsubsection}{Multhopp method}{108}{subsubsection*.119}
-\contentsline {subsubsection}{Fuselage Pitching moment prediction method}{110}{subsubsection*.123}
+\contentsline {subsubsection}{Multhopp method}{108}{subsubsection*.120}
+\contentsline {subsubsection}{Fuselage Pitching moment prediction method}{110}{subsubsection*.124}
 \contentsline {section}{\numberline {9.4}Propulsors}{113}{section.9.4}
 \contentsline {subsection}{\numberline {9.4.1}Direct Effects}{113}{subsection.9.4.1}
 \contentsline {section}{\numberline {9.5}Stability Calculation}{114}{section.9.5}
@@ -119,7 +119,7 @@
 \contentsline {section}{\numberline {B.1}Object and Class in Java}{128}{section.a.B.1}
 \contentsline {section}{\numberline {B.2}Packages}{128}{section.a.B.2}
 \contentsline {section}{\numberline {B.3}Documentation}{129}{section.a.B.3}
-\contentsline {chapter}{Glossary}{131}{section*.140}
-\contentsline {chapter}{Acronyms}{133}{section*.142}
-\contentsline {chapter}{List of symbols}{134}{section*.144}
-\contentsline {chapter}{Bibliography}{136}{section*.146}
+\contentsline {chapter}{Glossary}{131}{section*.141}
+\contentsline {chapter}{Acronyms}{133}{section*.143}
+\contentsline {chapter}{List of symbols}{134}{section*.145}
+\contentsline {chapter}{Bibliography}{136}{section*.147}

@@ -749,6 +749,47 @@ public class ACStabilityManager {
 						subfolderPath, "Stall Path of Wing ");			    // output informations
 
 				System.out.println("\t \t \tDONE  ");
+				double[] AlphaArr = {0,
+						0.03448276,
+						0.06896552,
+						0.10344828,
+						0.13793104,
+						0.1724138,
+						0.20689656,
+						0.24137932,
+						0.27586208,
+						0.31034484,
+						0.3448276,
+						0.37931036,
+						0.41379312,
+						0.44827588,
+						0.48275864,
+						0.5172414,
+						0.55172416,
+						0.58620692,
+						0.62068968,
+						0.65517244,
+						0.6896552,
+						0.72413796,
+						0.75862072,
+						0.79310348,
+						0.82758624,
+						0.862069,
+						0.89655176,
+						0.93103452,
+						0.96551728,
+						1.00000004};
+				
+
+				double alphabis = theLSAnalysis.getAlphaArray().get(5);
+				System.out.println(" alpha IS " + alphabis);
+				theLSAnalysis.getCalculateLiftDistribution().getNasaBlackwell().calculate(Amount.valueOf(Math.toRadians(10),SI.RADIAN));
+				double [] clnew = theLSAnalysis.getCalculateLiftDistribution().getNasaBlackwell().get_clTotalDistribution().toArray();
+				Double [] clInt = MyMathUtils.getInterpolatedValue1DLinear(theLSAnalysis.get_yStationsND(), clnew, AlphaArr);
+				for(int i = 0; i<clInt.length; i++){
+					System.out.println(clInt[i]);
+				}
+				
 			}
 		}
 
@@ -1088,15 +1129,21 @@ public class ACStabilityManager {
 
 		inducedCDWingArray = theCDWingArrayCalculator.calculateCDInduced(alphaMinWing, alphaMaxWing, nValueAlpha);
 
-//		System.out.println(" cd induced");
-//		for(int i=0 ; i<inducedCDWingArray.length; i++){
-//			System.out.println(inducedCDWingArray[i]);
-//		}
-//		
+		System.out.println(" cd induced");
+		for(int i=0 ; i<inducedCDWingArray.length; i++){
+			System.out.println(inducedCDWingArray[i]);
+		}
+		
 //		System.out.println(" cl array ");
 //		for(int i =0; i<inducedCDWingArray.length; i++){
 //		System.out.println(cLWingCleanArray[i]);
 //		}
+		
+		System.out.println(" alphaArray ");
+		for(int i =0; i<inducedCDWingArray.length; i++){
+		System.out.println(alphaWingStabilityArray.get(i));
+		}
+		
 		// Total drag
 
 		cDWingCleanArray = new double [nValueAlpha];

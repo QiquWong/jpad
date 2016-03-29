@@ -241,6 +241,8 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		airfoilRoot.getAerodynamics().set_clAtCdMin(0.01);
 		airfoilRoot.getAerodynamics().set_cmAC(-0.03);
 		airfoilRoot.getAerodynamics().set_kFactorDragPolar(0.005);
+
+		
 		
 		System.out.println("\n \n \t ROOT \nAirfoil Type: " + airfoilRoot.get_family());
 		System.out.println("Root Chord [m] = " + theWing.get_chordRoot().getEstimatedValue() );
@@ -268,6 +270,7 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		airfoilKink.getAerodynamics().set_clAtCdMin(0.01);
 		airfoilKink.getAerodynamics().set_cmAC(-0.04);
 		airfoilKink.getAerodynamics().set_kFactorDragPolar(0.005);
+
 		
 		System.out.println("\n \n \t KINK \nAirfoil Type: " + airfoilKink.get_family());
 		System.out.println("Kink Station [m] = " + yLocKink);
@@ -296,7 +299,6 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		airfoilTip.getAerodynamics().set_clAtCdMin(0.01);
 		airfoilTip.getAerodynamics().set_cmAC(-0.05);
 		airfoilTip.getAerodynamics().set_kFactorDragPolar(0.005);
-
 		System.out.println("\n \n \t TIP \nAirfoil Type: " + airfoilTip.get_family());
 		System.out.println("tip Chord [m] = " +theWing.get_chordTip().getEstimatedValue() );
 		System.out.println("Tip maximum thickness = " + airfoilTip.getGeometry().get_maximumThicknessOverChord());
@@ -506,10 +508,17 @@ public class Test_MR_LongitudinalStability_Turbofan {
 
 		theStabilityManager.calculateAll();
 
-		theStabilityManagerTO.calculateAll();
+//		theStabilityManagerTO.calculateAll();
 
+		System.out.println( "apertura " + theWing.get_span());		
+		System.out.println(" chord root " + theWing.get_chordRoot());
+		System.out.println(" chord root " + theWing.get_chordKink());
+		System.out.println(" chord root " + theWing.get_chordTip());
 		System.out.println("taper ratio equivalent " + theWing.get_taperRatioEquivalent()) ;	
 		System.out.println(" aspect ratio eq " + theWing.get_aspectRatio());
+		System.out.println(" x le 1 " + theWing.getXLEAtYActual(0.0));
+		System.out.println(" xle 2 " + theWing.get_xLEKink());
+		System.out.println(" xle 3 " + theWing.get_xLETip());
 
 
 
