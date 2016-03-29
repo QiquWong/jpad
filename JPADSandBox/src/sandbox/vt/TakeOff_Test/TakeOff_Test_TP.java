@@ -310,6 +310,12 @@ public class TakeOff_Test_TP {
 //
 //		System.out.println("\n\ndeltaCMc_4 = \n" + highLiftCalculator.getDeltaCM_c4());
 //
+//		System.out.println("--------------CLEAN----------------");
+//		System.out.println(" alpha max " + theWing.getAerodynamics().get_alphaStall().to(NonSI.DEGREE_ANGLE));
+//		System.out.println(" alpha star " + theWing.getAerodynamics().get_alphaStar().to(NonSI.DEGREE_ANGLE));
+//		System.out.println(" cL max" + theWing.getAerodynamics().get_cLMaxClean());
+//		System.out.println(" cL star " + theWing.getAerodynamics().getcLStarWing());
+//		
 //		highLiftCalculator.plotHighLiftCurve();
 
 		//----------------------------------------------------------------------------------

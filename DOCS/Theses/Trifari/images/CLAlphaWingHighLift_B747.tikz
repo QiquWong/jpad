@@ -3,7 +3,7 @@
 
 \begin{axis}[
 width=0.8\textwidth,
-height=0.9\textwidth,
+height=0.85\textwidth,
 scaled ticks=false, tick label style={/pgf/number format/fixed},
 xmin=-14.0,
 xmax=30,

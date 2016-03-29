@@ -117,10 +117,18 @@ public class AGILE_Test_HighLift_Landing {
 		theWing.set_surface(Amount.valueOf(82.7, SI.SQUARE_METRE));
 		theWing.set_aspectRatio(9.54);
 		theWing.set_taperRatioEquivalent(0.217);
+		theWing.set_taperRatioInnerPanel(0.425);
+		theWing.set_taperRatioOuterPanel(0.387);
+		theWing.set_taperRatioCrankedWing(0.1645);
 		theWing.set_spanStationKink(0.398);
-		theWing.set_iw(Amount.valueOf(0.0,SI.RADIAN));
-		theWing.set_twistKink( Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
-		theWing.set_twistTip( Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
+		theWing.set_extensionLERootChordLinPanel(0.086);
+		theWing.set_extensionTERootChordLinPanel(0.59);
+		theWing.set_iw(Amount.valueOf(Math.toRadians(2.5),SI.RADIAN));
+		theWing.set_twistKink(Amount.valueOf(Math.toRadians(1.1),SI.RADIAN));
+		theWing.set_twistTip(Amount.valueOf(Math.toRadians(-4.0),SI.RADIAN));
+		theWing.set_iw(Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
+		theWing.set_twistKink(Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
+		theWing.set_twistTip(Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
 		theWing.set_dihedralInnerPanel(Amount.valueOf(Math.toRadians(6.0), SI.RADIAN));
 		theWing.set_dihedralOuterPanel(Amount.valueOf(Math.toRadians(6.0), SI.RADIAN));
 		theWing.set_chordRoot(Amount.valueOf(6.39, SI.METER));
@@ -136,7 +144,7 @@ public class AGILE_Test_HighLift_Landing {
 						0.0,
 						0.25)
 				); 
-
+		
 		//AIRFOILS DEFINITION (initialize and set data):
 		//AIRFOIL ROOT
 		double yLocRoot = 0.0;		
@@ -149,6 +157,7 @@ public class AGILE_Test_HighLift_Landing {
 		airfoilRoot.getGeometry().set_maximumThicknessOverChord(0.161);
 		airfoilRoot.getGeometry().set_radiusLE(0.03892);
 		airfoilRoot.getGeometry().set_deltaYPercent(4.375);
+		airfoilRoot.set_chordLocal(6.39);
 		// the followings are not necessaries to the high lift devices effects analysis
 		airfoilRoot.getAerodynamics().set_alphaZeroLift(Amount.valueOf(Math.toRadians(-2.0046), SI.RADIAN));
 		airfoilRoot.getAerodynamics().set_cdMin(0.0059);
@@ -175,6 +184,7 @@ public class AGILE_Test_HighLift_Landing {
 		airfoilKink.getGeometry().set_maximumThicknessOverChord(0.149);
 		airfoilKink.getGeometry().set_radiusLE(0.04265);
 		airfoilKink.getGeometry().set_deltaYPercent(3.88);
+		airfoilKink.set_chordLocal(2.716);
 		// the followings are not necessaries to the high lift devices effects analysis
 		airfoilKink.getAerodynamics().set_alphaZeroLift(Amount.valueOf(Math.toRadians(-1.6467), SI.RADIAN));
 		airfoilKink.getAerodynamics().set_cdMin(0.00566);
@@ -201,6 +211,7 @@ public class AGILE_Test_HighLift_Landing {
 		airfoilTip.getGeometry().set_maximumThicknessOverChord(0.119);
 		airfoilTip.getGeometry().set_radiusLE(0.01011);
 		airfoilTip.getGeometry().set_deltaYPercent(2.92);
+		airfoilTip.set_chordLocal(1.051);
 		// the followings are not necessaries to the high lift devices effects analysis
 		airfoilTip.getAerodynamics().set_alphaZeroLift(Amount.valueOf(Math.toRadians(-3.19), SI.RADIAN));
 		airfoilTip.getAerodynamics().set_cdMin(0.0);

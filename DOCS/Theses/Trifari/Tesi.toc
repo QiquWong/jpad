@@ -58,6 +58,10 @@
 \contentsline {chapter}{\numberline {A}HDF databse creation and reading }{144}{Appendix.a.A}
 \contentsline {section}{\numberline {A.1}Creation of a database using MATLAB}{144}{section.a.A.1}
 \contentsline {section}{\numberline {A.2}Reading data from an HDF database in JPAD}{147}{section.a.A.2}
-\contentsline {chapter}{Bibliography}{149}{section*.171}
-\contentsline {chapter}{Glossary}{151}{section*.173}
-\contentsline {chapter}{Acronyms}{154}{section*.175}
+\contentsline {chapter}{\numberline {B}Flaps, landing gears and spoilers effects on drag}{149}{Appendix.a.B}
+\contentsline {section}{\numberline {B.1}$\upDelta C_{D0,\text {flap}}$ calculation methods comparison}{149}{section.a.B.1}
+\contentsline {section}{\numberline {B.2}$\upDelta C_{D0,\text {landing gear}}$ evaluation}{153}{section.a.B.2}
+\contentsline {section}{\numberline {B.3}$\upDelta C_{D0,\text {spoiler}}$ calculation methods comparison}{154}{section.a.B.3}
+\contentsline {chapter}{Bibliography}{157}{section*.183}
+\contentsline {chapter}{Glossary}{159}{section*.185}
+\contentsline {chapter}{Acronyms}{162}{section*.187}

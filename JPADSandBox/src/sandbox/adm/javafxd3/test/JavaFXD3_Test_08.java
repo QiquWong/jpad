@@ -4,7 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
+import javax.measure.quantity.Length;
+import javax.measure.unit.SI;
+
+import org.jscience.physics.amount.Amount;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -22,8 +27,7 @@ import sandbox.adm.D3PlotterOptions;
 import standaloneutils.JPADXmlReader;
 import writers.JPADStaticWriteUtils;
 
-public class JavaFXD3_Test_08 extends Application {
-
+class MyArgument {
 	@Option(name = "-i", aliases = { "--input" }, required = true,
 			usage = "my input file")
 	private File _inputFile;
@@ -32,23 +36,30 @@ public class JavaFXD3_Test_08 extends Application {
 			usage = "airfoil directory path")
 	private File _airfoilDirectory;
 
-	// declaration necessary for Concrete Object usage
-	public CmdLineParser theCmdLineParser;
-	public JPADXmlReader reader;
-
+	// receives other command line parameters than options
 	@Argument
-	private List<String> arguments = new ArrayList<String>();
+	public List<String> arguments = new ArrayList<String>();
+	
+	public File getInputFile() {
+		return _inputFile;
+	}
+
+	public File getAirfoilDirectory() {
+		return _airfoilDirectory;
+	}
+	
+}
+
+public class JavaFXD3_Test_08 extends Application {
+
+	// declaration necessary for Concrete Object usage
+	public static CmdLineParser theCmdLineParser;
+	public static JPADXmlReader reader;
 
 	//-------------------------------------------------------------
-	private LiftingSurface theWing;
-	
-	public LiftingSurface getTheWing() {
-		return theWing;
-	}
 
-	public void setTheWing(LiftingSurface wing) {
-		this.theWing = wing;
-	}
+	public static LiftingSurface theWing;
+	
 	//-------------------------------------------------------------
 
 	private D3Plotter d3Plotter;
@@ -66,7 +77,7 @@ public class JavaFXD3_Test_08 extends Application {
 		System.out.println("\n\n##################");
 		System.out.println("function start :: getting the wing object ...");
 
-		LiftingSurface wing = this.getTheWing();
+		LiftingSurface wing = JavaFXD3_Test_08.theWing;
 		if (wing == null) {
 			System.out.println("wing object null, returning.");
 			return;
@@ -77,8 +88,26 @@ public class JavaFXD3_Test_08 extends Application {
 		System.out.println("Details on panel discretization ...");
 		wing.reportPanelsToSpanwiseDiscretizedVariables();
 		
+		//--------------------------------------------------
+		// get data vectors from wing discretization
+		List<Amount<Length>> vY = wing.getDiscretizedYs();
+		int nY = vY.size();
+		List<Amount<Length>> vChords = wing.getDiscretizedChords();
+		List<Amount<Length>> vXle = wing.getDiscretizedXle();
+		
+		Double[][] dataChordsVsY = new Double[nY][2];
+		Double[][] dataXleVsY = new Double[nY][2];
+		IntStream.range(0, nY)
+			.forEach(i -> {
+				dataChordsVsY[i][0] = vY.get(i).doubleValue(SI.METRE);
+				dataChordsVsY[i][1] = vChords.get(i).doubleValue(SI.METRE);
+				dataXleVsY[i][0] = vY.get(i).doubleValue(SI.METRE);
+				dataXleVsY[i][1] = vXle.get(i).doubleValue(SI.METRE);
+				});
+		
 		System.out.println("##################\n\n");
 		
+		Double[][] dataTopView = wing.getDiscretizedTopViewAsArray();
 		
 		//--------------------------------------------------
 		System.out.println("Initializing test class...");
@@ -92,56 +121,53 @@ public class JavaFXD3_Test_08 extends Application {
 
 		List<Double[][]> listDataArray = new ArrayList<Double[][]>();
 		
-		// the data we want to plot [x,y]
-		Double[][] dataArray1 = {
-				{ 0.0, 0.0 },
-				{ 20.0, 15.5 },
-				{ 50.0, 10.0 },
-				{ 40.0, -10.0 },
-				{ 35.0, 18.0 }
-				};
-
-		Double[][] dataArray2 = {
-				{ 5.0, 0.0 },
-				{ 10.0, -5.5 },
-				{ 50.0, -10.0 },
-				{ 40.0, 0.0 },
-				{ 35.0, -8.0 }
-				};
+		listDataArray.add(dataChordsVsY);
+		// listDataArray.add(dataXleVsY);
+		listDataArray.add(dataTopView);
 		
-		listDataArray.add(dataArray1);
-		listDataArray.add(dataArray2);
+		double yMax = 1.05*wing.getSemiSpan().doubleValue(SI.METRE);
+		double yMin = -0.05*wing.getSemiSpan().doubleValue(SI.METRE);
+		double xMax = yMax;
+		double xMin = yMin;
 		
 		D3PlotterOptions options = new D3PlotterOptions.D3PlotterOptionsBuilder()
 				.widthGraph(WIDTH).heightGraph(HEIGHT)
-				.xRange(-1.0, 60.0).yRange(-50.0, 60.0)
-				.axisLineColor("magenta").axisLineStrokeWidth("5px")
+				.xRange(xMin, xMax)
+				.yRange(yMax, yMin)
+				.axisLineColor("darkblue").axisLineStrokeWidth("2px")
 				.graphBackgroundColor("yellow").graphBackgroundOpacity(0.2)
-//				.symbolType(SymbolType.TRIANGLE_UP)
+				.title("Wing data representation")
+				.xLabel("x (m)")
+				.yLabel("y (m)")
+				.showXGrid(true)
+				.showYGrid(true)
+//				.symbolType(SymbolType.CIRCLE)
 				.symbolTypes(
-						SymbolType.CIRCLE,
-						SymbolType.TRIANGLE_UP
+						SymbolType.TRIANGLE_UP,
+						SymbolType.CIRCLE
 						)
+//				.symbolSize(20)
+				.symbolSizes(20,10)
+				.showSymbols(false,true) // NOTE: overloaded function
 //				.symbolStyle("fill:yellow; stroke:green; stroke-width:2")
 				.symbolStyles(
-						"fill:cyan; stroke:green; stroke-width:2",
-						"fill:blue; stroke:red; stroke-width:2"
+						"fill:blue; stroke:red; stroke-width:2",
+						"fill:cyan; stroke:green; stroke-width:2"
 						)
 //				.lineStyle(
-//						"fill:none; stroke:orange; stroke-dasharray: 15px, 8px; stroke-width:2"
+//						// "fill:none; stroke:darkgreen; stroke-dasharray: 15px,2px; stroke-width:2"
+//						"fill:none; stroke:darkgreen; stroke-width:3"
 //						)
 				.lineStyles(
-						"fill:none; stroke:red; stroke-width:2",
-						"fill:none; stroke:magenta; stroke-dasharray: 15px, 2px; stroke-width:2"
+						"fill:none; stroke:magenta; stroke-dasharray: 15px, 2px; stroke-width:2",
+						"fill:none; stroke:darkblue; stroke-width:2"
 						)
-//				.plotArea(true)
-				.plotAreas(false,true)
-				.areaStyle("fill:orange;")
-				// TODO
-//				.areaStyles("fill:orange;","fill:yellow;")
-				.areaOpacity(0.7)
-				// TODO
-//				.areaOpacities(0.7,0.5)
+//				.plotArea(false)
+				.plotAreas(true,true)
+//				.areaStyle("fill:orange;")
+				.areaStyles("fill:orange;","fill:yellow;")
+//				.areaOpacity(0.7)
+				.areaOpacities(0.50,0.20)
 				//.legendItems("Pippo1", "agodemar2", "crocco3")
 				.build();
 
@@ -183,53 +209,55 @@ public class JavaFXD3_Test_08 extends Application {
 
 	}
 	
-	public JavaFXD3_Test_08() {
-		theCmdLineParser = new CmdLineParser(this);
-	}
-	public File getInputFile() {
-		return _inputFile;
-	}
-
-	public File getAirfoilDirectory() {
-		return _airfoilDirectory;
-	}
-
 	/**
 	 * Main
 	 *
 	 * @param args
 	 */
-	public static void main(String[] args) throws CmdLineException, IOException {
+	public static void main(String[] args) {
+		
+		// TODO: check out this as an alternative
+		// https://blog.codecentric.de/en/2015/09/javafx-how-to-easily-implement-application-preloader-2/
 		
 		System.out.println("--------------");
 		System.out.println("Wing test / D3");
 		System.out.println("--------------");
 
-		JavaFXD3_Test_08 theTestObject = new JavaFXD3_Test_08();
+		MyArgument va = new MyArgument();
+	    JavaFXD3_Test_08.theCmdLineParser = new CmdLineParser(va);
 
-		theTestObject.theCmdLineParser.parseArgument(args);
+	    // populate the wing static object in the class
+	    // befor launching the JavaFX application thread (launch --> start ...)
+	    try {
+	    	JavaFXD3_Test_08.theCmdLineParser.parseArgument(args);
+	    	String pathToXML = va.getInputFile().getAbsolutePath();
+	    	System.out.println("INPUT ===> " + pathToXML);
 
-		String pathToXML = theTestObject.getInputFile().getAbsolutePath();
-		System.out.println("INPUT ===> " + pathToXML);
+	    	String dirAirfoil = va.getAirfoilDirectory().getCanonicalPath();
+	    	System.out.println("AIRFOILS ===> " + dirAirfoil);
 
-		String dirAirfoil = theTestObject.getAirfoilDirectory().getCanonicalPath();
-		System.out.println("AIRFOILS ===> " + dirAirfoil);
+	    	System.out.println("--------------");
 
-		System.out.println("--------------");
+	    	// This wing static object is available in the scope of
+	    	// the Application.start method
+	    	JavaFXD3_Test_08.theWing = LiftingSurface.importFromXML(pathToXML, dirAirfoil);
+	    	JavaFXD3_Test_08.theWing.calculateGeometry(30);
 
-		LiftingSurface wing = LiftingSurface.importFromXML(pathToXML, dirAirfoil);
-		wing.calculateGeometry(30);
-		
-		// pass the wing to the test object
-		theTestObject.setTheWing(wing);
+//	    	System.out.println("The wing ...");
+//	    	System.out.println(JavaFXD3_Test_08.theWing);
+//	    	System.out.println("Details on panel discretization ...");
+//	    	JavaFXD3_Test_08.theWing.reportPanelsToSpanwiseDiscretizedVariables();
 
-//		System.out.println("The wing ...");
-//		System.out.println(wing);
-//		System.out.println("Details on panel discretization ...");
-//		wing.reportPanelsToSpanwiseDiscretizedVariables();
-		
-		// JavaFX ...
-		launch(args);
+	    } catch (CmdLineException | IOException e) {
+	    	System.err.println("Error: " + e.getMessage());
+	    	JavaFXD3_Test_08.theCmdLineParser.printUsage(System.err);
+	    	System.err.println();
+	    	System.err.println("  Must launch this app with proper command line arguments.");
+	    	return;
+	    }	    
+
+	    // JavaFX ...
+	    launch(args);
 	}
-	
+
 }

@@ -242,12 +242,29 @@ public class D3Plotter {
 				.range(0.0, options.getWidthGraph())
 				;
 
+		// setting up the y-gridlines/yticks
+		int xTickSize;
+		String xTickStrokeWidth;
+		String xTickStrokeColor;
+		String xGridLineDashArray;
+		if (options.isShowXGrid()) {
+			xTickSize = -options.getHeightGraph();
+			xTickStrokeWidth = options.getXGridLineStrokeWidth();
+			xTickStrokeColor = options.getXGridLineColor();
+			xGridLineDashArray = options.getXGridLineDashArray();
+		} else {
+			xTickSize = 5;
+			xTickStrokeWidth = options.getAxisLineStrokeWidth();
+			xTickStrokeColor = options.getAxisLineColor();
+			xGridLineDashArray = "5000,2";
+		}
+		
 		// set the x axis
 		org.treez.javafxd3.d3.svg.Axis xAxis = d3.svg() //
 				.axis() //
 				.scale(xScale) //
 				.orient(org.treez.javafxd3.d3.svg.Axis.Orientation.BOTTOM) //
-				.tickSize(-options.getHeightGraph())
+				.tickSize(xTickSize)
 				// .outerTickSize(10) // agodemar
 				.tickPadding(options.getXtickPadding()) // agodemar
 				;
@@ -257,11 +274,12 @@ public class D3Plotter {
 		xAxisSelection //
 		.selectAll("path, line") //
 		.style("fill", "none") //
-		.style("stroke", options.getXGridLineColor()) // TODO
-		.style("stroke-width", options.getXGridLineStrokeWidth()) //
-		.style("stroke-dasharray",options.getXGridLineDashArray())
+		.style("stroke", xTickStrokeColor) //
+		.style("stroke-width", xTickStrokeWidth) //
+		.style("stroke-dasharray",xGridLineDashArray)
 		.style("font", "10px sans-serif")
 		.style("shape-rendering", "geometricPrecision"); // "crispEdges" // "geometricPrecision"
+		
 
 		//		if (logXScale) {
 		//			//major ticks
@@ -303,13 +321,31 @@ public class D3Plotter {
 				.domain(yMin, yMax) //
 				.range(options.getHeightGraph(), 0.0);
 
+
+		// setting up the y-gridlines/yticks
+		int yTickSize;
+		String yTickStrokeWidth;
+		String yTickStrokeColor;
+		String yGridLineDashArray;
+		if (options.isShowYGrid()) {
+			yTickSize = -options.getWidthGraph();
+			yTickStrokeWidth = options.getYGridLineStrokeWidth();
+			yTickStrokeColor = options.getYGridLineColor();
+			yGridLineDashArray = options.getYGridLineDashArray();
+		} else {
+			yTickSize = 5;
+			yTickStrokeWidth = options.getAxisLineStrokeWidth();
+			yTickStrokeColor = options.getAxisLineColor();
+			yGridLineDashArray = "5000,2";
+		}
+		
 		org.treez.javafxd3.d3.svg.Axis yAxis = d3 //
 				.svg() //
 				.axis() //
 				.scale(yScale)
 				.orient(org.treez.javafxd3.d3.svg.Axis.Orientation.LEFT)
 				.tickPadding(options.getYtickPadding())
-				.tickSize(-options.getWidthGraph())
+				.tickSize(yTickSize)
 				// .outerTickSize(10) // agodemar
 				// .tickPadding(5) // agodemar
 				;
@@ -319,10 +355,11 @@ public class D3Plotter {
 		yAxisSelection //
 		.selectAll("path, line") //
 		.style("fill", "none") //
-		.style("stroke", options.getYGridLineColor()) // TODO
-		.style("stroke-dasharray",options.getYGridLineDashArray())
-		.style("stroke-width", options.getYGridLineStrokeWidth()) //
+		.style("stroke", yTickStrokeColor) //
+		.style("stroke-dasharray",yGridLineDashArray)
+		.style("stroke-width", yTickStrokeWidth) //
 		.style("shape-rendering", "geometricPrecision"); // "crispEdges"
+
 
 		// X-axis Label
 		svgSelection.append("text")
@@ -330,17 +367,17 @@ public class D3Plotter {
 		.attr("text-anchor", "middle")
 		.attr("x", options.getMargin().left + options.getWidthGraph()/2)
 		.attr("y", options.getMargin().top + options.getHeightGraph() + 45) // NB: offset
-		.text("income per capita, inflation-adjusted (dollars)");
+		.text(options.getXLabel());
 
 		// Y-Axis label
 		svgSelection.append("text")
 		.attr("class", "y label")
 		.attr("text-anchor", "middle")
 		.attr("x", -options.getMargin().top - options.getHeightGraph()/2)
-		.attr("y", options.getMargin().left/2 - 15) // NB: offset
+		.attr("y", options.getMargin().left/2 - 25) // NB: offset
 		.attr("dy", ".75em")
 		.attr("transform", "rotate(-90)")
-		.text("life expectancy (years)");
+		.text(options.getYLabel());
 
 		// Title
 		svgSelection.append("text")
@@ -348,7 +385,7 @@ public class D3Plotter {
 		.attr("text-anchor", "middle")
 		.attr("x", options.getMargin().left + options.getWidthGraph()/2)
 		.attr("y", (options.getMargin().top / 2) - 0)  // NB: offset
-		.text("This is the title");
+		.text(options.getTitle());
 
 		// go through the list of data couples and plot 
 		for (int kLine = 0; kLine < listDataArray.size(); kLine++) {
@@ -388,7 +425,7 @@ public class D3Plotter {
 					.attr("id", "line") //
 					.attr("d", linePathGenerator.generate(dataArray))
 					.attr("class", "line")
-					.attr("style", lineStyle); // options.getLineStyle()
+					.attr("style", lineStyle);
 
 			// plot area?
 			boolean plotArea;
@@ -404,6 +441,31 @@ public class D3Plotter {
 				plotArea = options.getPlotAreas().get(kk);
 			}
 
+			String areaStyle;
+			if (options.isAutoAreaStyle())
+				areaStyle = options.getAreaStyle();
+			else {
+				int kk;
+				if (kLine < options.getAreaStyles().size())
+					kk = kLine;
+				else
+					kk = kLine % options.getAreaStyles().size();
+				
+				areaStyle = options.getAreaStyles().get(kk);
+			}
+			Double opacity;
+			if (options.isAutoAreaOpacity())
+				opacity = options.getAreaOpacity();
+			else {
+				int kk;
+				if (kLine < options.getAreaOpacities().size())
+					kk = kLine;
+				else
+					kk = kLine % options.getAreaOpacities().size();
+				
+				opacity = options.getAreaOpacities().get(kk);
+			}
+			
 			if ( plotArea ) {
 				//plot area beneath line
 				double yMin1 = yScale.apply(0.0).asDouble();
@@ -420,13 +482,26 @@ public class D3Plotter {
 				.attr("id", "area") //
 				.attr("d", areaPath)
 				.attr("class", "area")
-				.attr("style", options.getAreaStyle())
-				.attr("opacity", options.getAreaOpacity())
+				.attr("style", areaStyle)
+				.attr("opacity", opacity)
 				;
+			}
+			
+			boolean showSymbols;
+			if (options.isAutoShowSymbols()) { 
+				showSymbols = options.isShowSymbols();
+			} else {
+				int kk;
+				if (kLine < options.getShowSymbols().size())
+					kk = kLine;
+				else
+					kk = kLine % options.getShowSymbols().size();
+				
+				showSymbols = options.getShowSymbols().get(kk);
 			}
 
 
-			if (options.isShowSymbols()) {
+			if (showSymbols) {
 				
 				// symbols type
 				
@@ -442,16 +517,29 @@ public class D3Plotter {
 					
 					symbolType = options.getSymbolTypes().get(kk);
 				}
+
+				int symbolSize;
+				if (options.isAutoSymbolSize())
+					symbolSize = options.getSymbolSize();
+				else {
+					int kk;
+					if (kLine < options.getSymbolSizes().size())
+						kk = kLine;
+					else
+						kk = kLine % options.getSymbolSizes().size();
+					
+					symbolSize = options.getSymbolSizes().get(kk);
+				}
 				
 				Symbol symbol = d3 //
 						.svg() //
 						.symbol();
 				symbol = symbol //
-						.size(options.getSymbolSize()) //
+						.size(symbolSize) //
 						.type(symbolType); // SymbolType.CIRCLE
 				
 				// style
-				String symbolStyle = "";
+				String symbolStyle;
 				if (options.isAutoSymbolStyle())
 					symbolStyle = options.getSymbolStyle();
 				else {
