@@ -26,12 +26,16 @@ import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCDAtAlpha;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcHighLiftDevices;
+import calculators.aerodynamics.MomentCalc;
+import configuration.MyConfiguration;
 import configuration.enumerations.AeroConfigurationTypeEnum;
 import configuration.enumerations.AircraftTypeEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.FlapTypeEnum;
+import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
+import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import functions.Linspace;
 import jmatrix.Matrix;
 import standaloneutils.JPADXmlReader;
@@ -54,8 +58,18 @@ public class ACStabilityManager {
 	DownwashCalculator theDownwashCalculator;
 	LSAerodynamicsManager.CalcCLAtAlpha theCLWingCalculator;
 	LSAerodynamicsManager.CalcHighLiftDevices highLiftWingCalculator ;
-
-
+	CalcHighLiftDevices theHighLiftTailalculator;
+	FusDesDatabaseReader fusDesDatabaseReader;
+	
+	double finenessRatio ;
+	double noseFinenessRatio ;
+	double tailFinenessRatio;
+	double upsweepAngle;
+	double windshieldAngle;
+	double xPositionPole;
+	double fusSurfRatio;
+	double clAlphaWing;
+	
 	MyAirfoil meanAirfoil;
 
 	int nValueAlpha = 61;
@@ -96,6 +110,9 @@ public class ACStabilityManager {
 	
 	Map<String,double[]> cDHTailMap = new HashMap< String, double[]>();
 	Map<String,double[]> alphacDHTailMap = new HashMap< String, double[]>();
+	
+	Map<String,double[]> cMHTailMap = new HashMap< String, double[]>();
+	Map<String,double[]> alphacMHTailMap = new HashMap< String, double[]>();
 
 
 	//Output Values
@@ -165,11 +182,13 @@ public class ACStabilityManager {
 	private double [] cmQuarterChordHtailArray; 
 	private double [] cmACHtailArray; 
 	private double [] cmFuselageArray; 
+	private double [] cMacWingBody;
 	
-	
+	double cm0LiftFuselage;
 	double aCWing;
-
-
+	double aCHTail;
+	double acWingBody;
+	double xACWingBody; //dimens
 
 
 	// High Lift Devices Input
@@ -359,6 +378,29 @@ public class ACStabilityManager {
 		maxXaftCenterOfGravityBRF = Amount.valueOf((centerOfGravity.get_xBRF().getEstimatedValue()*(1+0.1)), centerOfGravity.get_xBRF().getUnit());
 		maxXforwCenterOfGravityBRF = Amount.valueOf((centerOfGravity.get_xBRF().getEstimatedValue()*(1-0.1)), centerOfGravity.get_xBRF().getUnit());
 
+		
+		// Set database directory	
+		String databaseFolderPathfus = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
+		String databaseFileName = "FusDes_database.h5";
+
+
+		//--------------------------------------------------------------------------------------
+		theFuselageManager = new FusAerodynamicsManager(theOperatingConditions, aircraft);
+
+
+		finenessRatio       = aircraft.get_fuselage().get_lambda_F().doubleValue();
+		noseFinenessRatio   = aircraft.get_fuselage().get_lambda_N().doubleValue();
+		tailFinenessRatio   = aircraft.get_fuselage().get_lambda_T().doubleValue();
+		upsweepAngle 	   = aircraft.get_fuselage().get_upsweepAngle().getEstimatedValue();
+		windshieldAngle     = aircraft.get_fuselage().get_windshieldAngle().getEstimatedValue();
+		xPositionPole	   = 0.5;
+		fusSurfRatio = aircraft.get_fuselage().get_area_C().doubleValue(SI.SQUARE_METRE)/
+				aircraft.get_wing().get_surface().doubleValue(SI.SQUARE_METRE);
+
+		fusDesDatabaseReader = new FusDesDatabaseReader(databaseFolderPathfus, databaseFileName);
+		fusDesDatabaseReader.runAnalysis(noseFinenessRatio, windshieldAngle, finenessRatio, tailFinenessRatio, upsweepAngle, xPositionPole);
+		
+		
 
 	}
 
@@ -404,7 +446,9 @@ public class ACStabilityManager {
 		calculateWingMomentCharacteristics();
 		calculateHTailMomentCharacteristics();
 		calculateFuselageMomentCharacteristics();
+		if (aircraft.get_typeVehicle()==AircraftTypeEnum.TURBOPROP){
 		calculatePowerEffects();
+		}
 		calculateMoment();
 	}
 
@@ -680,6 +724,7 @@ public class ACStabilityManager {
 			cLAlphaWingActual = theLSAnalysis.getcLLinearSlopeNB();
 			alphaStarActual = theWing.getAerodynamics().get_alphaStar().to(NonSI.DEGREE_ANGLE).getEstimatedValue();
 
+		
 			//CALCULATING CL AT ALPHA FOR WING
 			if(alphaCheck == true){
 				theCLWingCalculator = theLSAnalysis.new CalcCLAtAlpha();
@@ -749,46 +794,46 @@ public class ACStabilityManager {
 						subfolderPath, "Stall Path of Wing ");			    // output informations
 
 				System.out.println("\t \t \tDONE  ");
-				double[] AlphaArr = {0,
-						0.03448276,
-						0.06896552,
-						0.10344828,
-						0.13793104,
-						0.1724138,
-						0.20689656,
-						0.24137932,
-						0.27586208,
-						0.31034484,
-						0.3448276,
-						0.37931036,
-						0.41379312,
-						0.44827588,
-						0.48275864,
-						0.5172414,
-						0.55172416,
-						0.58620692,
-						0.62068968,
-						0.65517244,
-						0.6896552,
-						0.72413796,
-						0.75862072,
-						0.79310348,
-						0.82758624,
-						0.862069,
-						0.89655176,
-						0.93103452,
-						0.96551728,
-						1.00000004};
-				
-
-				double alphabis = theLSAnalysis.getAlphaArray().get(5);
-				System.out.println(" alpha IS " + alphabis);
-				theLSAnalysis.getCalculateLiftDistribution().getNasaBlackwell().calculate(Amount.valueOf(Math.toRadians(10),SI.RADIAN));
-				double [] clnew = theLSAnalysis.getCalculateLiftDistribution().getNasaBlackwell().get_clTotalDistribution().toArray();
-				Double [] clInt = MyMathUtils.getInterpolatedValue1DLinear(theLSAnalysis.get_yStationsND(), clnew, AlphaArr);
-				for(int i = 0; i<clInt.length; i++){
-					System.out.println(clInt[i]);
-				}
+//				double[] AlphaArr = {0,
+//						0.03448276,
+//						0.06896552,
+//						0.10344828,
+//						0.13793104,
+//						0.1724138,
+//						0.20689656,
+//						0.24137932,
+//						0.27586208,
+//						0.31034484,
+//						0.3448276,
+//						0.37931036,
+//						0.41379312,
+//						0.44827588,
+//						0.48275864,
+//						0.5172414,
+//						0.55172416,
+//						0.58620692,
+//						0.62068968,
+//						0.65517244,
+//						0.6896552,
+//						0.72413796,
+//						0.75862072,
+//						0.79310348,
+//						0.82758624,
+//						0.862069,
+//						0.89655176,
+//						0.93103452,
+//						0.96551728,
+//						1.00000004};
+//				
+//
+//				double alphabis = theLSAnalysis.getAlphaArray().get(5);
+//				System.out.println(" alpha IS " + alphabis);
+//				theLSAnalysis.getCalculateLiftDistribution().getNasaBlackwell().calculate(Amount.valueOf(Math.toRadians(10),SI.RADIAN));
+//				double [] clnew = theLSAnalysis.getCalculateLiftDistribution().getNasaBlackwell().get_clTotalDistribution().toArray();
+//				Double [] clInt = MyMathUtils.getInterpolatedValue1DLinear(theLSAnalysis.get_yStationsND(), clnew, AlphaArr);
+//				for(int i = 0; i<clInt.length; i++){
+//					System.out.println(clInt[i]);
+//				}
 				
 			}
 		}
@@ -1129,20 +1174,20 @@ public class ACStabilityManager {
 
 		inducedCDWingArray = theCDWingArrayCalculator.calculateCDInduced(alphaMinWing, alphaMaxWing, nValueAlpha);
 
-		System.out.println(" cd induced");
-		for(int i=0 ; i<inducedCDWingArray.length; i++){
-			System.out.println(inducedCDWingArray[i]);
-		}
+//		System.out.println(" cd induced");
+//		for(int i=0 ; i<inducedCDWingArray.length; i++){
+//			System.out.println(inducedCDWingArray[i]);
+//		}
 		
 //		System.out.println(" cl array ");
 //		for(int i =0; i<inducedCDWingArray.length; i++){
 //		System.out.println(cLWingCleanArray[i]);
 //		}
 		
-		System.out.println(" alphaArray ");
-		for(int i =0; i<inducedCDWingArray.length; i++){
-		System.out.println(alphaWingStabilityArray.get(i));
-		}
+//		System.out.println(" alphaArray ");
+//		for(int i =0; i<inducedCDWingArray.length; i++){
+//		System.out.println(alphaWingStabilityArray.get(i));
+//		}
 		
 		// Total drag
 
@@ -1377,7 +1422,7 @@ public class ACStabilityManager {
 	
 		// tau Map
 		
-		CalcHighLiftDevices theHighLiftTailalculator;
+		
 		double [] cDHtailwithTau = new double [alphaStabilityArray.size()];
 		
 		List<FlapTypeEnum> flapTypeHtail = new ArrayList<FlapTypeEnum>();
@@ -1486,6 +1531,9 @@ public class ACStabilityManager {
 	}
 	
 	public void calculateWingMomentCharacteristics(){
+		System.out.println("\n ------------------- ");
+		System.out.println("|       WING        |");
+		System.out.println(" ------------------- \n\n");
 		
 		System.out.println("\n\tData:");
 		System.out.println(" xLE_MAC wing is " + theWing.get_xLEMacActualLRF().getEstimatedValue() + " m" );
@@ -1568,9 +1616,302 @@ public class ACStabilityManager {
 	
 	
 	
-	public void calculateHTailMomentCharacteristics(){}
-	public void calculateFuselageMomentCharacteristics(){}
-	public void calculatePowerEffects(){}
+	public void calculateHTailMomentCharacteristics(){
+		
+		System.out.println("\n ------------------- ");
+		System.out.println("|  HORIZONTAL TAIL   |");
+		System.out.println(" ------------------- \n\n");
+		
+		System.out.println("\n\tData:");
+		System.out.println(" xLE_MAC h tail is " + theHTail.get_xLEMacActualLRF().getEstimatedValue() + " m" );
+		System.out.println(" MAC h tail is " +   theHTail.get_meanAerodChordActual().getEstimatedValue() + " m ");
+		System.out.println(" xAC h tail is " + theLSHTailAnalysis.getCalculateXAC().deYoungHarper() + " m ");
+		System.out.println(" xAC DeYoung Harper perc. MAC " + theLSHTailAnalysis.getCalculateXAC().deYoungHarper()/
+				 theHTail.get_meanAerodChordActual().getEstimatedValue());
+		
+		
+		StabilityCalculator.CalcPitchingMomentAC pitchingMomentCalculatorHTail = 
+				theStabilityCalculator.new CalcPitchingMomentAC(theHTail, theOperatingConditions);
+		
+
+		// Array
+
+		// At Quarter of MAC 
+
+		cmQuarterChordHtailArray = new double[nValueAlpha];
+		Amount<Angle> alphaHTailActual;
+
+		for ( int i=0; i< nValueAlpha; i++){
+			alphaHTailActual = Amount.valueOf(
+					alphaStabilityArray.get(i)- downwashAnglesArray[i] +theHTail.get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue(),
+					NonSI.DEGREE_ANGLE);
+			cmQuarterChordHtailArray[i] = pitchingMomentCalculatorHTail.calculateCMQuarterMACIntegral(alphaHTailActual);
+		}
+
+
+
+		//aerodynamic center
+		aCHTail = pitchingMomentCalculatorHTail.getACLiftingSurface();
+		System.out.println("AC H TAIL percent MAC is " + aCHTail);
+
+		
+		cmACHtailArray = new double[nValueAlpha];
+		for ( int i=0; i< nValueAlpha; i++){
+			alphaHTailActual = Amount.valueOf(
+					alphaStabilityArray.get(i)- downwashAnglesArray[i] +theHTail.get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue(),
+					NonSI.DEGREE_ANGLE);
+			cmACHtailArray[i] = pitchingMomentCalculatorHTail.calculateCMIntegral(alphaHTailActual, aCHTail);
+		}
+
+		// Elevator Deflection
+		// tau Map
+		
+		
+				double [] cDHtailwithTau = new double [alphaStabilityArray.size()];
+				
+				List<FlapTypeEnum> flapTypeHtail = new ArrayList<FlapTypeEnum>();
+				List<Double> etaInFlapHtail = new ArrayList<Double>();
+				List<Double> etaOutFlapHtail = new ArrayList<Double>();
+			
+				List<Double> cfcHtail = new ArrayList<Double>();
+				flapTypeHtail.add(FlapTypeEnum.PLAIN);
+				Double [] deltaArray = new Double [1];
+				double [] cdTemp = new double [nValueAlpha];
+				etaInFlapHtail.add(
+						theHTail.get_etaIn());
+				
+				etaOutFlapHtail.add(
+						theHTail.get_etaOut());
+				
+				cfcHtail.add(theHTail.get_CeCt());
+				
+				for (int i = 0; i<tauIndexArray.length; i++){
+					List<Double[]> deltaFlapHTail = new ArrayList<Double[]>();
+					
+					if ( deltaEArray[i] > 0)
+					deltaArray[0] = deltaEArray[i];
+					else
+						deltaArray[0] = -deltaEArray[i];
+					deltaFlapHTail.add(0,deltaArray);
+					
+					theHighLiftTailalculator = theLSHTailAnalysis
+							.new CalcHighLiftDevices(
+									theHTail,
+									theOperatingConditions,
+									deltaFlapHTail,
+									flapTypeHtail,
+									null,
+									etaInFlapHtail,
+									etaOutFlapHtail,
+									null,
+									null,
+									cfcHtail,
+									null,
+									null,
+									null
+									);
+				theHighLiftTailalculator.calculateHighLiftDevicesEffects();
+				
+		double [] cmTemp = new double [nValueAlpha];
+		double delta = theHighLiftTailalculator.getDeltaCM_c4();
+		if(deltaEArray[i] < 0){
+			delta= - delta;
+		}
+		for (int j=0; j<nValueAlpha; j++){
+			cmTemp[j] = cmACHtailArray[j] + delta;}
+		cMHTailMap.put(deltaEArrayString[i], cmTemp);
+		alphacMHTailMap.put(deltaEArrayString[i],alphaStabilityArray.toArray()); // these are alpha wing
+		cdTemp =  new double [nValueAlpha];}
+		
+		
+		// Plot
+		
+				if (plotCheck == true){
+				System.out.println("\n\n\t\t\tWRITING CM vs ALPHA CHART TO FILE FOR horizontal tail at c/4");
+				MyChartToFileUtils.plotNoLegend(
+						alphaStabilityArray.toArray() ,cmQuarterChordHtailArray,
+						null, null, null, null,
+						"alpha_b", "CM_h",
+						"deg", "",
+						subfolderPath," Moment Coefficient vs alpha for Horizontal Tail respect to quarter of MAC " );
+				System.out.println("\n\n\t\t\tDONE");
+				
+				System.out.println("\n\n\t\t\tWRITING CM vs ALPHA CHART TO FILE FOR ht at aerodynamic Center");
+				MyChartToFileUtils.plotNoLegend(
+						alphaStabilityArray.toArray() ,cmACHtailArray,
+						null, null, -0.01, 0.01,
+						"alpha_b", "CM_w",
+						"deg", "",
+						subfolderPath," Moment Coefficient vs alpha for horizontal tail respect to A C " );
+				System.out.println("\n\n\t\t\tDONE");
+				
+				
+				System.out.println("\n-------------------------------------");
+				System.out.println("\t \t \tWRITING CM CHART TO FILE  ");
+		
+				double [][] alphaMatrix = {alphaStabilityArray.toArray(), alphaStabilityArray.toArray(), 
+						alphaStabilityArray.toArray(), alphaStabilityArray.toArray(),
+						alphaStabilityArray.toArray(),alphaStabilityArray.toArray(),
+						alphaStabilityArray.toArray()};
+				double [][] cMTauArray = {cMHTailMap.get(deltaEArrayString[0]),cMHTailMap.get(deltaEArrayString[1]),
+						cMHTailMap.get(deltaEArrayString[2]), cMHTailMap.get(deltaEArrayString[3]),
+						cMHTailMap.get(deltaEArrayString[4]), cMHTailMap.get(deltaEArrayString[5]),
+						cMHTailMap.get(deltaEArrayString[6]) };
+				
+				String [] legendCM = new String[deltaArray.length];
+				for ( int i=0; i<deltaArray.length; i++){
+					legendCM[i] = deltaEArrayString[i];
+				}
+				
+				MyChartToFileUtils.plot(
+						alphaMatrix,cMTauArray, 
+						null, null, null, null,
+						"alpha_h", "CM",
+						"deg", "",
+						deltaEArrayString,
+						subfolderPath, "Total Moment coefficient vs Alpha for horizontal TAIL with deltae deflection");
+				
+				
+				System.out.println("\n\n\t\t\tDONE");
+				
+				}
+		
+				
+	}
+	public void calculateFuselageMomentCharacteristics(){
+		
+		System.out.println("\n ------------------- ");
+		System.out.println("|      FUSELAGE      |");
+		System.out.println(" ------------------- \n\n");
+		
+		//UNINA METHOD
+
+				double cM0Fuselage = -MomentCalc.calcCM0Fuselage(
+						fusDesDatabaseReader.getCM0FR(),
+						fusDesDatabaseReader.getdCMn(),
+						fusDesDatabaseReader.getdCMt())* 
+						fusSurfRatio*aircraft.get_fuselage()
+						.get__diam_C()
+						.doubleValue(SI.METER)/
+						aircraft
+						.get_wing()
+						.get_meanAerodChordActual()
+						.doubleValue(SI.METRE);
+
+
+
+				double cMaFuselage = MomentCalc.calcCMAlphaFuselage(
+						fusDesDatabaseReader.getCMaFR(),
+						fusDesDatabaseReader.getdCMan(),
+						fusDesDatabaseReader.getdCMat())* 
+						fusSurfRatio*aircraft
+						.get_fuselage()
+						.get__diam_C()
+						.doubleValue(SI.METER)/
+						aircraft
+						.get_wing().get_meanAerodChordActual()
+						.doubleValue(SI.METRE);
+
+				//		System.out.println(" CM0 FR = "+ fusDesDatabaseReader.getCM0FR());
+				//		System.out.println(" dCMn = "+ fusDesDatabaseReader.getdCMn());
+				//		System.out.println(" dCMt = "+ fusDesDatabaseReader.getdCMt());
+
+
+				// TODO fix the UNINA method!
+
+				if(aircraft.get_typeVehicle() == AircraftTypeEnum.TURBOPROP){
+				cM0Fuselage = -0.0361;
+				}
+				
+				if(aircraft.get_typeVehicle() == AircraftTypeEnum.JET){
+					cM0Fuselage =	-0.03;
+					}
+
+				System.out.println(" CM0 fuselage = "+ cM0Fuselage);
+				System.out.println(" CMalpha fuselage  = (1/deg) "+ cMaFuselage);
+				
+				
+			   cm0LiftFuselage = cMaFuselage * theWing.getAerodynamics().getAlphaZeroLiftWingClean() + cM0Fuselage;
+
+				System.out.println(" CM0l fuselage = " + cm0LiftFuselage);
+
+				
+				
+				// PLOT
+
+				if( plotCheck == true){
+				cmFuselageArray = new double [alphaStabilityArray.size()];
+
+				for (int i=0 ; i<cmFuselageArray.length ; i++)
+					cmFuselageArray[i] = cMaFuselage * alphaStabilityArray.get(i) + cM0Fuselage;
+
+				System.out.println("\n\n\t\t\tWRITING CM vs ALPHA CHART TO FILE FOR fuselage");
+				MyChartToFileUtils.plotNoLegend(
+						alphaStabilityArray.toArray() , cmFuselageArray,
+						null, null, null, null,
+						"alpha_body", "CM_f",
+						"deg", "",
+						subfolderPath," Moment Coefficient vs alpha body for fuselage" );
+				}
+				
+				// delta xac
+				clAlphaWing = theLSAnalysis.getcLLinearSlopeNB();
+				
+		
+				double deltaXACFuselage = theStabilityCalculator.calcDeltaXACFuselage(cMaFuselage, clAlphaWing);
+				System.out.println(" Delta XAC due to fuselage (% chord )= " + deltaXACFuselage);
+				
+				
+				xACWingBody = deltaXACFuselage * theWing.get_meanAerodChordActual().getEstimatedValue() 
+						+ ((aCWing * theWing.get_meanAerodChordActual().getEstimatedValue()) + 
+								theWing.get_xLEMacActualLRF().getEstimatedValue());
+
+				
+				System.out.println(" XAC wing (LRF) = " + (aCWing * theWing.get_meanAerodChordActual().getEstimatedValue()) + " m" );
+				System.out.println(" XAC wing body (LRF) = " + xACWingBody + " m" );
+
+
+				cMacWingBody = new double[alphaStabilityArray.size()];
+				for (int i=0 ; i< alphaStabilityArray.size(); i++){		
+					 cMacWingBody[i] = cmACWingArray[i] + cm0LiftFuselage; // use this 
+				}
+
+				System.out.println("\n\n cm ac wing-body  = " +  Arrays.toString(cMacWingBody) );
+	}
+	public void calculatePowerEffects(){
+		
+		System.out.println("\n ------------------- ");
+		System.out.println("|    POWER EFFECTS    |");
+		System.out.println(" ------------------- \n\n");
+
+
+		StabilityCalculator.CalcPowerPlantPitchingMoment theCMPowerEffectCalculator =
+				theStabilityCalculator.new CalcPowerPlantPitchingMoment();
+
+		double thrustPitchEffectDerivative = theCMPowerEffectCalculator.calcPitchingMomentDerThrust(
+				aircraft, 
+				theOperatingConditions,
+				aircraft.get_powerPlant().getEtaEfficiency(),
+				cLWingBody
+				); // derivative
+
+		System.out.println("Thrust pitching moment derivative " + thrustPitchEffectDerivative);
+
+		double clAlphaDeg = clAlphaWing/57.3;
+		double nonAxialPitchEffectDerivative = theCMPowerEffectCalculator.calcPitchingMomentDerNonAxial(
+				aircraft,
+				aircraft.get_powerPlant().getnBlade(), 
+				aircraft.get_powerPlant().getFanDiameter().getEstimatedValue(),
+				clAlphaDeg);
+
+		System.out.println("Non axial pitching moment derivative " + nonAxialPitchEffectDerivative);
+
+		double momentThrust = theCMPowerEffectCalculator.calcPitchingMomentThrust(
+				aircraft, theOperatingConditions, cLWingBody, 0.02);
+		System.out.println("The pitching moment coefficient due to thrust is " + momentThrust);
+		
+		
+	}
 	public void calculateMoment(){}
 	
 	
@@ -1805,6 +2146,26 @@ public class ACStabilityManager {
 
 	public double[] getCmFuselageArray() {
 		return cmFuselageArray;
+	}
+
+
+	public double getCm0LiftFuselage() {
+		return cm0LiftFuselage;
+	}
+
+
+	public void setCm0LiftFuselage(double cm0LiftFuselage) {
+		this.cm0LiftFuselage = cm0LiftFuselage;
+	}
+
+
+	public double[] getcMacWingBody() {
+		return cMacWingBody;
+	}
+
+
+	public void setcMacWingBody(double[] cMacWingBody) {
+		this.cMacWingBody = cMacWingBody;
 	}
 
 

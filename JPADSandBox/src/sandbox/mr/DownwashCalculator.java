@@ -295,7 +295,8 @@ public class DownwashCalculator {
 			
 			downwashGradientArrayTemp = calculateDownwashGradientConstantDelft(zTemp, xTemp, cLAlphaArray[i]);
 			
-			downwashArray[i] = downwashGradientArrayTemp * alphaAbsoluteArray[i]; 
+//			downwashArray[i] = downwashGradientArrayTemp * alphaAbsoluteArray[i]; 
+			downwashArray[i] = downwashArray[i-1] + downwashGradientArrayTemp * deltaAlpha*57.3; 
 			downwashRad = Amount.valueOf(
 					Math.toRadians(downwashArray[i]), SI.RADIAN).getEstimatedValue();
 			
@@ -304,7 +305,8 @@ public class DownwashCalculator {
 					( (0.75) * cRoot * Math.cos(Math.abs(alphaZeroLift - i*deltaAlpha + downwashRad)));
 			
 			downwashGradientArray[i] = calculateDownwashGradientConstantDelft(zDistanceArray[i], xDistanceArray[i], cLAlphaArray[i]);
-			downwashArray[i] = downwashGradientArray[i] * alphaAbsoluteArray[i]; 
+//			downwashArray[i] = downwashGradientArray[i] * alphaAbsoluteArray[i]; 
+			downwashArray[i] = downwashArray[i-1] + downwashGradientArray[i] * deltaAlpha*57.3; 
 			downwashRad = Amount.valueOf(
 					Math.toRadians(downwashArray[i]), SI.RADIAN).getEstimatedValue();
 			
@@ -313,7 +315,8 @@ public class DownwashCalculator {
 					( (0.75) * cRoot * Math.cos(Math.abs(alphaZeroLift - i*deltaAlpha + downwashRad)));
 			
 			downwashGradientArray[i] = calculateDownwashGradientConstantDelft(zDistanceArray[i], xDistanceArray[i], cLAlphaArray[i]);
-			downwashArray[i] = downwashGradientArray[i] * alphaAbsoluteArray[i]; 
+//			downwashArray[i] = downwashGradientArray[i] * alphaAbsoluteArray[i]; 
+			downwashArray[i] = downwashArray[i-1] + downwashGradientArray[i] * deltaAlpha*57.3; 
 			
 			alphaBodyArray[i] = alphaAbsoluteArray[i] - Math.toDegrees(iw) + Math.toDegrees(alphaZeroLift);
 			
@@ -325,6 +328,34 @@ public class DownwashCalculator {
 		System.out.println("Alpha Body (deg)" + Arrays.toString(alphaBodyArray));
 		System.out.println("m Distances  (m) " + Arrays.toString(zDistanceArray));	
 		System.out.println("x Distances (m) " + Arrays.toString(xDistanceArray));	
+		
+//double[] alphatry ={0,
+//		1,
+//		2,
+//		3,
+//		4,
+//		5,
+//		6,
+//		7,
+//		8,
+//		9,
+//		10,
+//		11,
+//		12,
+//		13,
+//		14,
+//		15,
+//		16,
+//		17,
+//		18,
+//		19,
+//		20
+//};
+//
+//	Double [] alphatemp = MyMathUtils.getInterpolatedValue1DLinear(alphaAbsoluteArray, downwashArray, alphatry);
+//		for( int i=0; i<alphatemp.length;i++){
+//			System.out.println(alphatemp[i]);
+//		}
 		
 
 	}

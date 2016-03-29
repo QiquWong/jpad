@@ -187,29 +187,6 @@ public class Test_MR_LongitudinalStability_Turboprop {
 						"Aerodynamic_Database_Ultimate.h5"),
 				new Pair(DatabaseReaderEnum.HIGHLIFT, "HighLiftDatabase.h5")
 				);
-
-		// Set database directory	
-		String databaseFolderPathfus = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
-		String databaseFileName = "FusDes_database.h5";
-
-
-		//--------------------------------------------------------------------------------------
-		FusAerodynamicsManager theFuselageManager = new FusAerodynamicsManager(theConditions, aircraft);
-
-
-		double finenessRatio       = aircraft.get_fuselage().get_lambda_F().doubleValue();
-		double noseFinenessRatio   = aircraft.get_fuselage().get_lambda_N().doubleValue();
-		double tailFinenessRatio   = aircraft.get_fuselage().get_lambda_T().doubleValue();
-		double upsweepAngle 	   = aircraft.get_fuselage().get_upsweepAngle().getEstimatedValue();
-		double windshieldAngle     = aircraft.get_fuselage().get_windshieldAngle().getEstimatedValue();
-		double xPositionPole	   = 0.5;
-		double fusSurfRatio = aircraft.get_fuselage().get_area_C().doubleValue(SI.SQUARE_METRE)/
-				aircraft.get_wing().get_surface().doubleValue(SI.SQUARE_METRE);
-
-		FusDesDatabaseReader fusDesDatabaseReader = new FusDesDatabaseReader(databaseFolderPathfus, databaseFileName);
-		fusDesDatabaseReader.runAnalysis(noseFinenessRatio, windshieldAngle, finenessRatio, tailFinenessRatio, upsweepAngle, xPositionPole);
-		
-		
 		
 		
 		// -----------------------------------------------------------------------
@@ -432,6 +409,9 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		
 		
 		aircraft.get_HTail().getAerodynamics().set_dynamicPressureRatio(dynamicPressureRatio);
+		aircraft.get_powerPlant().setEtaEfficiency(etaEfficiency);
+		aircraft.get_powerPlant().setnBlade(nBlade);
+		aircraft.get_powerPlant().setFanDiameter(fanDiameter);
 		double deflectionElevatorDouble = deflectionElevator.getEstimatedValue();
 		
 		aircraft.get_theAerodynamics().set_machCruise(machCruise);
@@ -479,18 +459,11 @@ public class Test_MR_LongitudinalStability_Turboprop {
 	theStabilityManager.calculateAll();
 //	theStabilityManagerTakeOFF.calculateAll();
 		
-//		System.out.println("taper ratio equivalent " + theWing.get_taperRatioEquivalent()) ;	
-//		System.out.println(" aspect ratio eq " + theWing.get_aspectRatio());
-
-System.out.println( "apertura " + theWing.get_span());		
-System.out.println(" chord root " + theWing.get_chordRoot());
-System.out.println(" chord root " + theWing.get_chordKink());
-System.out.println(" chord root " + theWing.get_chordTip());
 
 
 		// CL ANALYSIS
 		
-System.out.println(" \nAirfoils analysis-----------");		
+	System.out.println(" \nAirfoils analysis-----------");		
 	theConditions.set_machCurrent(0.2);
 	theConditions.calculate();
 	double reRoot = theConditions.calculateRe(theWing.get_chordRoot().getEstimatedValue(),1);

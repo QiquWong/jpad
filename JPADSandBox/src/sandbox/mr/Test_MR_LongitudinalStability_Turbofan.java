@@ -498,7 +498,7 @@ public class Test_MR_LongitudinalStability_Turbofan {
 
 		Amount<Angle> alphaBody = Amount.valueOf(Math.toRadians(2.0), SI.RADIAN);
 		Amount<Angle> alphaMin = Amount.valueOf(Math.toRadians(-5), SI.RADIAN);
-		Amount<Angle> alphaMax = Amount.valueOf(Math.toRadians(25), SI.RADIAN);
+		Amount<Angle> alphaMax = Amount.valueOf(Math.toRadians(30), SI.RADIAN);
 
 		ACStabilityManager theStabilityManager = new ACStabilityManager(meanAirfoil, aircraft, ConditionEnum.CRUISE,
 				alphaMin, alphaMax, alphaBody , true, subfolderPath, pathTakeOff);
@@ -510,15 +510,15 @@ public class Test_MR_LongitudinalStability_Turbofan {
 
 //		theStabilityManagerTO.calculateAll();
 
-		System.out.println( "apertura " + theWing.get_span());		
-		System.out.println(" chord root " + theWing.get_chordRoot());
-		System.out.println(" chord root " + theWing.get_chordKink());
-		System.out.println(" chord root " + theWing.get_chordTip());
-		System.out.println("taper ratio equivalent " + theWing.get_taperRatioEquivalent()) ;	
-		System.out.println(" aspect ratio eq " + theWing.get_aspectRatio());
-		System.out.println(" x le 1 " + theWing.getXLEAtYActual(0.0));
-		System.out.println(" xle 2 " + theWing.get_xLEKink());
-		System.out.println(" xle 3 " + theWing.get_xLETip());
+//		System.out.println( "apertura " + theWing.get_span());		
+//		System.out.println(" chord root " + theWing.get_chordRoot());
+//		System.out.println(" chord root " + theWing.get_chordKink());
+//		System.out.println(" chord root " + theWing.get_chordTip());
+//		System.out.println("taper ratio equivalent " + theWing.get_taperRatioEquivalent()) ;	
+//		System.out.println(" aspect ratio eq " + theWing.get_aspectRatio());
+//		System.out.println(" x le 1 " + theWing.getXLEAtYActual(0.0));
+//		System.out.println(" xle 2 " + theWing.get_xLEKink());
+//		System.out.println(" xle 3 " + theWing.get_xLETip());
 
 
 

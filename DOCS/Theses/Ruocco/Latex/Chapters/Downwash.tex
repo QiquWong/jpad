@@ -33,7 +33,7 @@ The main effect of this vortex system is to deflect the airflow behind the wing 
 
 As consequence of the downwash behind the wing, the local angle of attack on the horizontal tail is reduced by  $\epsilon$. In order to evaluate the flow direction behind the wing, an other important parameter is the change in downwash angle with angle of attack, that is the {\itshape Downwash Gradient } $\frac{d\epsilon}{d\alpha}$.\\
 This parameter depends principally on the location of the horizontal tail with respect to the wing and the vortex plane. As first approximation this value could be considered constant in alpha, but more accurately it's possible to evaluate this dependence considering the reference variable for the calculation of the distances. 
-Both if the vertical distance is considered as constant and it is considered variable with alpha, starting from the downwash gradient, the downwash angle is :
+If the vertical distance is considered constant, starting from the downwash gradient, the downwash angle is :
 
 \begin{equation}
 \epsilon = \frac {d \epsilon}{d \alpha_w} (\alpha_w - \alpha_{0_w})
@@ -195,11 +195,11 @@ The \texttt{calculateDownwashNonLinearDelft} method works uses these distances a
 
 \begin{itemize}
 \item $\alpha_a|_i = i \upDelta \alpha$ 
-\item $\epsilon_{temp}= \frac{d\epsilon}{d\alpha} |_{i-1} *  \alpha_a |_i $%\right |_{i}$ 
+\item $\epsilon_{temp}= \epsilon_{i-1} + \frac{d\epsilon}{d\alpha} |_{i-1} *  \upDelta \alpha |_i $%\right |_{i}$ 
 \item  $m  \frac{b}{2}| _{temp} $  is calculated considering the temporary value of downwash angle.
 \item  $r  \frac{b}{2}| _{temp} $  is calculated considering the temporary value of downwash angle.
 \item $\frac{d\epsilon}{d\alpha}|_{temp}$  is calculated using the formula and the temporary value of distance.
-\item $\epsilon_{i}=  \frac{d\epsilon}{d\alpha}_{temp} *  \alpha_a |_i $ 
+\item $\epsilon_{i}=  \epsilon_{i-1} + \frac{d\epsilon}{d\alpha}_{temp} * \upDelta  \alpha|_i $ 
 \item  $m  \frac{b}{2}| _{i} $  is calculated considering the new value of downwash angle.
 \item  $r \frac{b}{2}| _{i} $  is calculated considering the new value of downwash angle.
 \item $\frac{d\epsilon}{d\alpha}|_{i}$  is updated.
@@ -339,28 +339,10 @@ In the previous listing is reported the Test Class used in order to evaluate the
 %	                     
 %	double cLIsolatedWing = theCLWingCalculator
 %	                      .nasaBlackwellCompleteCurve(alphaBody);
-
-
-
-\noindent \\
-
+\noindent\\
 Below are the charts representing the results obtained by applying the method described at ATR 72 and BOEING 747-100B.
 
 \subsection{ATR-72}
-
-\begin{figure}[H]
-\centering
-\input{immagini/Epsilonalpha.tikz}
-\caption{ATR 72 Downwash angle vs $\alpha_{B}$.}
-\label{fig:epsilon}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\input{immagini/Downwashgradient.tikz}
-\caption{ATR 72 Downwash gradient vs $\alpha_{B}$.}
-\label{fig:downwashgradATR}
-\end{figure}
 
 \begin{figure}[H]
 \centering
@@ -368,6 +350,31 @@ Below are the charts representing the results obtained by applying the method de
 \caption{ATR 72 Distance between AC horizontal tail and vortex plane vs $\alpha_{B}$.}
 \label{fig:zATR}
 \end{figure}
+\noindent \\
+\begin{figure}[H]
+\centering
+\input{immagini/zDistance.tikz}
+\caption{ATR 72 distance between AC horizontal tail and AC of wing along the m direction vs $\alpha_{B}$.}
+\label{fig:mATR}
+\end{figure}
+
+
+\begin{figure}[H]
+\centering
+\input{immagini/Downwashgradient.tikz}
+\caption{ATR 72 Downwash gradient vs $\alpha_{B}$.M=0.4}
+\label{fig:downwashgradATR}
+\end{figure}
+\noindent \\\\
+\begin{figure}[H]
+\centering
+\input{immagini/Epsilonalpha.tikz}
+\caption{ATR 72 Downwash angle vs $\alpha_{B}$. M=0.4.}
+\label{fig:epsilon}
+\end{figure}
+
+
+
 
 \begin{lstlisting}[caption={{\footnotesize Downwash estimation - Results. ATR 72}},label= [style=\bfseries]{Listing}]
 -----Start of downwash calculation-----
@@ -385,10 +392,18 @@ Angle of Attack of Horizontal Tail (deg) 0.8757431783278777
 \subsection{BOEING 747-100B}
 \begin{figure}[H]
 \centering
-\input{immagini/Epsilonalphaboeing.tikz}
-\caption{BOEING 747-100B Downwash angle vs $\alpha_{B}$.}
-\label{fig:epsilonboeing}
+\input{immagini/mDistanceBOEING.tikz}
+\caption{BOEING 747-100B Distance between AC horizontal tail and vortex plane vs $\alpha_{B}$.}
+\label{fig:zATR}
 \end{figure}
+\noindent \\
+\begin{figure}[H]
+\centering
+\input{immagini/zdistanceboeing.tikz}
+\caption{BOEING 747-100B distance between AC horizontal tail and AC of wing along the m direction vs $\alpha_{B}$.}
+\label{fig:zboeing}
+\end{figure}
+
 
 \begin{figure}[H]
 \centering
@@ -396,15 +411,17 @@ Angle of Attack of Horizontal Tail (deg) 0.8757431783278777
 \caption{BOEING 747-100B  Downwash gradient vs $\alpha_{B}$.}
 \label{fig:downwashgradboeing}
 \end{figure}
-
 \noindent \\ \\ 
-
 \begin{figure}[H]
 \centering
-\input{immagini/mdistanceboeing.tikz}
-\caption{BOEING 747-100B  Distance between AC horizontal tail and vortex plane vs $\alpha_{B}$.}
-\label{fig:zboeing}
+\input{immagini/Epsilonalphaboeing.tikz}
+\caption{BOEING 747-100B Downwash angle vs $\alpha_{B}$.}
+\label{fig:epsilonboeing}
 \end{figure}
+
+
+
+
 
 \newpage
 
@@ -439,11 +456,16 @@ In order to compare the achieved results three method of downwash estimation has
 
 \subsection {Slingerland Method }
 
-This is the method explained in the previous sections and this is the method that has been implemented in JPAD. This method has been presented in a master thesis by Mr. R. Slingerland, in TU Delft University.In order to evaluate the downwash, a model has been developed that computes the lift, drag and pitching moment in ground effect, utilizing Prandtl''s lifting-line theory. As a by-product also the downwash in free air at the tail is determined. This model is innovative in the sense that it uses closed form expressions to include the vortex sheet relaxation, wing sweep and dihedral, the interaction of the wing- and flap vortices and the contribution of the rear fuselage-mounted nacelles. The equation presented in the relative section is valid also for sweeped wing.
+This is the method explained in the previous sections and this is the method that has been implemented in JPAD. This method has been presented in a master thesis by Mr. R. Slingerland, in TU Delft University.In order to evaluate the downwash, a model has been developed that computes the lift, drag and pitching moment in ground effect, utilizing Prandtl's lifting-line theory. As a by-product also the downwash in free air at the tail is determined. This model is innovative in the sense that it uses closed form expressions to include the vortex sheet relaxation, wing sweep and dihedral, the interaction of the wing- and flap vortices and the contribution of the rear fuselage-mounted nacelles. The equation presented in the relative section is valid also for sweeped wing.
 
 \begin{figure}[H]
 \centering
-{\includegraphics[height=16cm]{immagini/delft}} 
+{\includegraphics[height=7cm]{immagini/delft}} 
+\label{delftdata}
+\end{figure} 
+\begin{figure}[H]
+\centering
+{\includegraphics[height=7cm]{immagini/delftdata}} 
 \caption{Data used for the calculation of downwash using Delft method.}
 \label{delftdata}
 \end{figure} 

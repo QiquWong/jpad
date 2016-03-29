@@ -80,6 +80,9 @@ public class PowerPlant extends Component{
 	private Aircraft _theAircraft;
 	private CenterOfGravity _totalCG;
 
+	private double etaEfficiency;
+	private double nBlade;
+	Amount<Length> fanDiameter;
 
 	public PowerPlant(String name, String description, double x, double y,double z){
 
@@ -468,4 +471,29 @@ public class PowerPlant extends Component{
 		this._cgList = _cgList;
 	}
 
+	public double getEtaEfficiency() {
+		return etaEfficiency;
+	}
+
+	public void setEtaEfficiency(double etaEfficiency) {
+		this.etaEfficiency = etaEfficiency;
+	}
+
+	public double getnBlade() {
+		return nBlade;
+	}
+
+	public void setnBlade(double nBlade) {
+		this.nBlade = nBlade;
+	}
+
+	public Amount<Length> getFanDiameter() {
+		return fanDiameter;
+	}
+
+	public void setFanDiameter(Amount<Length> fanDiameter) {
+		this.fanDiameter = fanDiameter;
+	}
+
+	
 }

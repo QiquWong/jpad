@@ -13,7 +13,7 @@ ymax=0.12,
 ylabel={CD},
 ymajorgrids,
 legend style={at={(0.03,0.9)},anchor=west,draw=black,fill=white,legend cell align=left},
-legend entries = {JPAD (Nasa-Blackwell Method)\\Multhopp\\}
+legend entries = {JPAD (Nasa-Blackwell Method)\\Weissinger\\}
 ]
 \addplot [
 color=black,

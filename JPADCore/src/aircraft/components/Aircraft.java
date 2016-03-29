@@ -79,6 +79,7 @@ public class Aircraft {
 	private NacellesManager _theNacelles;
 	private ACAerodynamicsManager _theAerodynamics;
 	private MyCosts _theCosts;
+	
 
 
 	/**

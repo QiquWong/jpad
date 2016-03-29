@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Power;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
@@ -22,6 +23,7 @@ import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.MeanAirfoil;
 import configuration.enumerations.ComponentEnum;
+import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FlapTypeEnum;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
@@ -75,7 +77,136 @@ public class StabilityCalculator {
 		return tauIndex;
 	}
 
+	/**
+	 * This method calculates the shift of aerodynamic center due to fuselage 
+	 *
+	 * @param cMaFuselage (1/deg)
+	 * @param cLalphaWing (1/rad)
+	 *
+	 *
+	 * @author  Manuela Ruocco
+	 */
 
+	public double calcDeltaXACFuselage (double cMaFuselage, double cLAlphaWing){
+	
+		double deltaACWingBody = -(cMaFuselage/ (cLAlphaWing/57.3));
+		return deltaACWingBody;
+	}
+	
+	
+	public class CalcPowerPlantPitchingMoment{
+		
+		double pitchingMomentDerThrust;
+		double dCmnddCL = 0;
+		
+		public double calcPitchingMomentDerThrust (Aircraft aircraft, 
+				OperatingConditions conditions, 
+				double etaEfficiency, double liftCoefficient){
+			
+			Amount<Power> power = aircraft.get_powerPlant().get_engineList().get(0).get_p0();
+			double engineNumber = aircraft.get_powerPlant().get_engineNumber();
+			double powerDouble = engineNumber * power.getEstimatedValue();
+			double density = conditions.get_densityCurrent().getEstimatedValue();
+
+			double surface = aircraft.get_wing().get_surface().getEstimatedValue();
+			double wingLoad = (liftCoefficient*0.5 * density*Math.pow(
+					conditions.get_tas().getEstimatedValue(), 2)/9.81);
+
+			double meanAerodynamicChord = aircraft.get_wing().get_meanAerodChordEq().getEstimatedValue();
+//			System.out.println(" lift coefficient " + liftCoefficient);
+			double kFactor = (3 * powerDouble) /( 2 * Math.sqrt((2/density))) * Math.pow( wingLoad , (3/2));
+			kFactor = 0.2;
+			double thrustArm = aircraft.get_powerPlant().get_engineList().get(0).get_Z0().getEstimatedValue();
+			pitchingMomentDerThrust = kFactor* Math.sqrt(liftCoefficient) * (thrustArm/meanAerodynamicChord) / surface;
+			
+			return pitchingMomentDerThrust;
+		}
+		
+		public double calcPitchingMomentThrust (Aircraft aircraft, 
+				OperatingConditions conditions, 
+				double cLTotal, double cDTotal){
+			
+			double weight = (aircraft.get_weights().get_MTOW().getEstimatedValue()
+					- aircraft.get_weights().get_MZFW().getEstimatedValue())/2;
+			double dynamicPressureatCL  =  weight/(aircraft.get_wing().get_surface().getEstimatedValue() * cLTotal);
+			double thrustTotal = dynamicPressureatCL * aircraft.get_wing().get_surface().getEstimatedValue()* cDTotal;
+			double distance = -aircraft
+					.get_theNacelles()
+					.get_nacellesList()
+					.get(0).get_cg().get_zBRF().getEstimatedValue();
+			double pitchingMoment = thrustTotal * distance; 
+			double pitchingMomentCoefficient = pitchingMoment/(
+					conditions.get_dynamicPressure().getEstimatedValue()
+					* aircraft.get_wing().get_surface().getEstimatedValue() * 
+					aircraft.get_wing().get_meanAerodChordActual().getEstimatedValue()); // t/qSc
+			return pitchingMomentCoefficient;
+			
+			
+		}
+		
+		
+		public double calcPitchingMomentDerNonAxial (Aircraft aircraft, 
+				double nBlades, double diameter,
+				double clAlpha){
+			
+			if( aircraft.get_powerPlant().get_engineType() == EngineTypeEnum.TURBOPROP){
+			double dCndAlpha=0.0;
+			
+			if(nBlades == 2)
+				dCndAlpha = 0.0024; // 1/deg
+			
+			if(nBlades == 4)
+				dCndAlpha = 0.0040; // 1/deg
+			
+			if(nBlades == 6)
+				dCndAlpha = 0.0065; // 1/deg
+			
+			double surfaceP = Math.PI * Math.pow(diameter/2, 2);
+			double surface = aircraft.get_wing().get_surface().getEstimatedValue();
+			double surfaceRatio = surfaceP/surface;
+//			System.out.println(" surface ratio " + surfaceRatio);
+			double numProp = aircraft.get_powerPlant().get_engineNumber();
+		
+			double distance = Math.abs(aircraft
+					.get_theNacelles()
+					.get_nacellesList()
+					.get(0).get_cg().get_xBRF().getEstimatedValue()-
+					aircraft.get_theBalance().get_xCoGMeanAtOEM().doubleValue());
+//			System.out.println(" nac " +aircraft
+//					.get_theNacelles().get_cgList().get(0).get_xBRF().getEstimatedValue());
+//			System.out.println(" x cg "+aircraft.get_theBalance().get_xCoGMeanAtOEM().doubleValue());
+//			System.out.println(" xcgg " + distance);
+			// set this
+			double meanAerodynamicChord = aircraft.get_wing().get_meanAerodChordActual().getEstimatedValue();
+			//double depsdalpha = 1.5;
+			double position = -distance/aircraft.get_wing().getChordAtYActual(0.0);
+			// System.out.println(" position " + position);
+			double depsdalpha = aircraft
+					.get_theAerodynamics()
+					.get_aerodynamicDatabaseReader()
+					.getD_Alpha_d_Delta_2d_d_Alpha_d_Delta_3D_VS_aspectRatio(
+							position,
+							aircraft.get_wing().get_aspectRatio()
+							);
+			dCmnddCL = dCndAlpha * surfaceRatio * 
+					(distance / meanAerodynamicChord) * (depsdalpha/clAlpha) * numProp;
+			}
+			
+			
+			return dCmnddCL;
+			
+		}
+
+		public double getPitchingMomentDerThrust() {
+			return pitchingMomentDerThrust;
+		}
+
+		public void setPitchingMomentDerThrust(double pitchingMomentDerThrust) {
+			this.pitchingMomentDerThrust = pitchingMomentDerThrust;
+		}
+	}
+	
+	
 	public class CalcCLHTail{
 
 		// VARIABLE DECLARATION--------------------------------------
@@ -358,7 +489,7 @@ public class CalcPitchingMomentAC{
 			if(theLiftingSurface.get_type().equals(ComponentEnum.HORIZONTAL_TAIL)){
 				liftForceAirfoils [i] = cLDistribution[i] * dynamicPressure *
 						theLiftingSurface.getAerodynamics().get_dynamicPressureRatio()*
-						theLiftingSurface.get_meanGeometricChord().getEstimatedValue();
+						chordLocal[i];
 			}
 			else
 			liftForceAirfoils [i] = cLDistribution[i] * dynamicPressure * chordLocal[i];
@@ -396,10 +527,10 @@ public class CalcPitchingMomentAC{
 			cMLiftingSurfaceArray[i] = pitchingMomentAirfoilsDueToLift [i]/
 					(dynamicPressure * 
 							theLiftingSurface.getAerodynamics().get_dynamicPressureRatio()*
-							Math.pow(theLiftingSurface.get_meanGeometricChord().getEstimatedValue(), 2));}
+							Math.pow(theLiftingSurface.get_meanAerodChordActual().getEstimatedValue(), 2));}
 			else{
 				cMLiftingSurfaceArray[i] = pitchingMomentAirfoilsDueToLift [i]/
-				(dynamicPressure * Math.pow(theLiftingSurface.get_meanGeometricChord().getEstimatedValue(), 2));}
+				(dynamicPressure * Math.pow(theLiftingSurface.get_meanAerodChordActual().getEstimatedValue(), 2));}
 				
 			cMLiftingSurfaceArray[cMLiftingSurfaceArray.length-1] = 0;
 			//cMLiftingSurfaceArray[i] = cMACAirfoils[i] +  cMAirfoilsDueToLift[i];
@@ -548,7 +679,7 @@ public class CalcPitchingMomentAC{
 			   if ((cMTempAlphaFirst > 0 & cMTempAlphaSecond <0) || ( (cMTempAlphaSecond - cMTempAlphaFirst) < 0)){
 
 				percent = percent + 0.0001;	
-     			System.out.println(" percent " + percent);
+//     			System.out.println(" percent " + percent);
 				cMTempAlphaFirst = calculateCMIntegral ( alphaFirst, percent);
 				cMTempAlphaSecond = calculateCMIntegral ( alphaSecond, percent);
 				cMDiff = cMTempAlphaSecond-cMTempAlphaFirst;
@@ -576,8 +707,7 @@ public class CalcPitchingMomentAC{
 		
 		
 	}
-	
-	
+
 	
 	public double[] getcMLiftingSurfaceArray() {
 		return cMLiftingSurfaceArray;
