@@ -2286,6 +2286,13 @@
     <bcf:citekey order="46">apache:ode</bcf:citekey>
     <bcf:citekey order="47">apache:ode</bcf:citekey>
     <bcf:citekey order="48">hdf</bcf:citekey>
+    <bcf:citekey order="49">sforza2014commercial</bcf:citekey>
+    <bcf:citekey order="50">nicolai2010fundamentals</bcf:citekey>
+    <bcf:citekey order="51">Young:Flaps</bcf:citekey>
+    <bcf:citekey order="52">Young:Flaps</bcf:citekey>
+    <bcf:citekey order="53">nicolai2010fundamentals</bcf:citekey>
+    <bcf:citekey order="54">roskamAirplane</bcf:citekey>
+    <bcf:citekey order="55">Lausetti:decollo</bcf:citekey>
     <bcf:citekey order="0">*</bcf:citekey>
   </bcf:section>
   <bcf:sortlist section="0" name="nty" type="entry" sortscheme="nty">

@@ -48,6 +48,10 @@
 \BOOKMARK [0][-]{Appendix.a.A}{HDF databse creation and reading }{}% 48
 \BOOKMARK [1][-]{section.a.A.1}{Creation of a database using MATLAB}{Appendix.a.A}% 49
 \BOOKMARK [1][-]{section.a.A.2}{Reading data from an HDF database in JPAD}{Appendix.a.A}% 50
-\BOOKMARK [0][-]{section*.171}{Bibliography}{}% 51
-\BOOKMARK [0][-]{section*.173}{Glossary}{}% 52
-\BOOKMARK [0][-]{section*.175}{Acronyms}{}% 53
+\BOOKMARK [0][-]{Appendix.a.B}{Flaps, landing gears and spoilers effects on drag}{}% 51
+\BOOKMARK [1][-]{section.a.B.1}{C_D0,flap calculation methods comparison}{Appendix.a.B}% 52
+\BOOKMARK [1][-]{section.a.B.2}{C_D0,landing gear evaluation}{Appendix.a.B}% 53
+\BOOKMARK [1][-]{section.a.B.3}{C_D0,spoiler calculation methods comparison}{Appendix.a.B}% 54
+\BOOKMARK [0][-]{section*.183}{Bibliography}{}% 55
+\BOOKMARK [0][-]{section*.185}{Glossary}{}% 56
+\BOOKMARK [0][-]{section*.187}{Acronyms}{}% 57

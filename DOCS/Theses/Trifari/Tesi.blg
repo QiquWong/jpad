@@ -1,19 +1,19 @@
 [0] Config.pm:327> INFO - This is Biber 2.2
 [0] Config.pm:330> INFO - Logfile is 'Tesi.blg'
-[97] biber-MSWIN:283> INFO - === 
-[97] Biber.pm:334> INFO - Reading 'Tesi.bcf'
-[226] Biber.pm:674> INFO - Using all citekeys in bib section 0
-[730] Biber.pm:3054> INFO - Processing section 0
-[1436] Biber.pm:3193> INFO - Looking for bibtex format file 'Tesi_Bibliography.bib' for section 0
-[1551] bibtex.pm:1072> INFO - Decoding LaTeX character macros into UTF-8
-[1554] bibtex.pm:935> INFO - Found BibTeX data source 'Tesi_Bibliography.bib'
-[1559] Utils.pm:147> WARN - Datamodel: Entry 'jscienceAmount' (Tesi_Bibliography.bib): Invalid format '2015.01.05' of date field 'date' - ignoring
-[1703] Utils.pm:147> WARN - Name "A. De Marco, F. Nicolosi, L. Attanasio, P. Della Vecchia" has too many commas: skipping name
-[2049] Utils.pm:147> WARN - The field 'author' in entry 'adoptunina' cannot be null, deleting it
-[2519] UCollate.pm:66> INFO - Overriding locale 'it-IT' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[2519] UCollate.pm:66> INFO - Overriding locale 'it-IT' defaults 'variable = shifted' with 'variable = non-ignorable'
-[2519] Biber.pm:2931> INFO - Sorting list 'nty' of type 'entry' with scheme 'nty' and locale 'it-IT'
-[2520] Biber.pm:2935> INFO - No sort tailoring available for locale 'it-IT'
-[2612] bbl.pm:505> INFO - Writing 'Tesi.bbl' with encoding 'UTF-8'
-[2616] bbl.pm:596> INFO - Output to Tesi.bbl
-[2616] Biber.pm:107> INFO - WARNINGS: 3
+[45] biber-MSWIN:283> INFO - === 
+[45] Biber.pm:334> INFO - Reading 'Tesi.bcf'
+[168] Biber.pm:674> INFO - Using all citekeys in bib section 0
+[197] Biber.pm:3054> INFO - Processing section 0
+[222] Biber.pm:3193> INFO - Looking for bibtex format file 'Tesi_Bibliography.bib' for section 0
+[227] bibtex.pm:1072> INFO - Decoding LaTeX character macros into UTF-8
+[230] bibtex.pm:935> INFO - Found BibTeX data source 'Tesi_Bibliography.bib'
+[271] Utils.pm:147> WARN - Name "A. De Marco, F. Nicolosi, L. Attanasio, P. Della Vecchia" has too many commas: skipping name
+[280] Utils.pm:147> WARN - Datamodel: Entry 'jscienceAmount' (Tesi_Bibliography.bib): Invalid format '2015.01.05' of date field 'date' - ignoring
+[294] Utils.pm:147> WARN - The field 'author' in entry 'adoptunina' cannot be null, deleting it
+[735] UCollate.pm:66> INFO - Overriding locale 'it-IT' defaults 'variable = shifted' with 'variable = non-ignorable'
+[735] UCollate.pm:66> INFO - Overriding locale 'it-IT' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[735] Biber.pm:2931> INFO - Sorting list 'nty' of type 'entry' with scheme 'nty' and locale 'it-IT'
+[736] Biber.pm:2935> INFO - No sort tailoring available for locale 'it-IT'
+[828] bbl.pm:505> INFO - Writing 'Tesi.bbl' with encoding 'UTF-8'
+[832] bbl.pm:596> INFO - Output to Tesi.bbl
+[833] Biber.pm:107> INFO - WARNINGS: 3

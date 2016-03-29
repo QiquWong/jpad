@@ -158,7 +158,7 @@ The Performance Analysis Module}
 \begin{tabular}{p{0.7\linewidth}p{0.7\linewidth}}
 Relatori: &  Candidato: \\
 prof. Fabrizio Nicolosi & Vittorio Trifari \\
-prof. Agostino De Marco &  M35/411 \\
+prof. Agostino De Marco &  M53/411 \\
 \end{tabular}
 \end{table}
 \end{frame}
@@ -833,7 +833,7 @@ $A.F.=\left(\frac{V}{SFCJ}\right)\left(\frac{L}{D}\right)$
 \textbf{\textcolor{mygold}{ATR-72 @ Take-Off}}
 \begin{itemize}
 	\MyBullet 2 Single slotted flap
-	\MyBullet $\frac{c_f}{c}=0.35$
+	\MyBullet $\frac{c_f}{c}=0.38$
 	\MyBullet $\delta_f=\SI{20}{\degree}$
 	\MyBullet $\eta_{\text{in, flap1}}=0.08;\ \eta_{\text{out, flap1}}=0.35$
 	\MyBullet $\eta_{\text{in, flap2}}=0.35;\ \eta_{\text{out, flap2}}=0.8$
@@ -845,9 +845,9 @@ $A.F.=\left(\frac{V}{SFCJ}\right)\left(\frac{L}{D}\right)$
 \hline
 \textbf{ } & \textbf{No Flap} &  \textbf{Flap}\\
 \hline\hline
-\textbf{$\alpha_{\text{stall}}$} & $\SI{17.47}{\degree}$ & $\SI{15.54}{\degree}$\\
-\textbf{$C_{L\text{max}}$} & 1.59 & 2.11\\
-\textbf{$C_{L\text{star}}$} & 1.095 & 1.54\\
+\textbf{$\alpha_{\text{stall}}$} & $\SI{18.46}{\degree}$ & $\SI{15.82}{\degree}$\\
+\textbf{$C_{L\text{max}}$} & 1.58 & 2.11\\
+\textbf{$C_{L\text{star}}$} & 0.98 & 1.36\\
 \textbf{$C_{L\alpha}$} (1/rad) & 5.19 & 5.24\\
 \hline
 \end{tabular}
@@ -859,7 +859,7 @@ $A.F.=\left(\frac{V}{SFCJ}\right)\left(\frac{L}{D}\right)$
   \vspace*{-1.38cm}
   \hspace*{0.8cm}
 \centering
-    \includegraphics[keepaspectratio, width=0.5\paperwidth]{images/ATRFlapTO.PNG}
+    \includegraphics[keepaspectratio, width=0.5\paperwidth]{images/ATRFlapTO}
     \captionsetup{labelformat=empty}
 \end{figure}
 }
@@ -868,46 +868,157 @@ $A.F.=\left(\frac{V}{SFCJ}\right)\left(\frac{L}{D}\right)$
 \pause
 \only<2>{
 \begin{columns}[onlytextwidth,t]
-\column{0.5\textwidth}
+\column{0.6\textwidth}
 \Wider{
-  \vspace*{-1cm}
+  \vspace*{-0.95cm}
 \textbf{\textcolor{mygold}{B747-100B @ Landing}}
 \begin{itemize}
-	\MyBullet 2 Double slotted flap + 2 Slat
-	\MyBullet $\frac{c_f}{c}=0.25;\quad \frac{c_s}{c}=0.15$
-	\MyBullet $\delta_f=\left(\SI{20}{\degree}+\SI{25}{\degree}\right);\quad \delta_s=\SI{5}{\degree}$
-	\MyBullet $\frac{c'}{c}_{\text{slat}}=1.1;\quad \frac{\text{LER}}{c}_{\text{slat}}=0.0097$
-	\MyBullet $\eta_{\text{in, flap1}}=0.11;\ \eta_{\text{out, flap1}}=0.38$
-	\MyBullet $\eta_{\text{in, flap2}}=0.38;\ \eta_{\text{out, flap2}}=0.72$
-	\MyBullet $\eta_{\text{in, slat1}}=0.14;\ \eta_{\text{out, slat1}}=0.37$
-	\MyBullet $\eta_{\text{in, slat2}}=0.42;\ \eta_{\text{out, slat}}=0.9$
+	\MyBullet \scalebox{0.85}{2 Triple slotted flap + 3 Krueger slat}
+	\MyBullet \scalebox{0.85}{$\frac{c_f}{c}=\big[0.18, \quad 0.18\big]$}
+	\MyBullet \scalebox{0.85}{$\frac{c_s}{c}=\big[0.09,\quad 0.136,\quad 0.187\big]$}
+	\MyBullet \scalebox{0.85}{$\delta_f=\SI{30}{\degree};\quad \delta_s=\SI{15}{\degree}$}
+	\MyBullet \scalebox{0.85}{$\frac{c'}{c}_{\text{slat}}=1.1$}
+	\MyBullet \scalebox{0.85}{$\eta_{\text{in, flap}}=\big[0.104,\quad 0.411\big]$}
+	\MyBullet \scalebox{0.85}{$\eta_{\text{out, flap}}=\big[0.357,\quad 0.636\big]$}
+	\MyBullet \scalebox{0.85}{$\eta_{\text{in, slat}}=\big[0.192,\quad 0.414, \quad 0.692\big]$}
+	\MyBullet \scalebox{0.85}{$\eta_{\text{out, slat}}=\big[0.364,\quad 0.648, \quad 0.961\big]$}
 \end{itemize}
-\vspace*{0.15cm}
-\hspace*{1.55cm}
-\scalebox{0.8}{
+\vspace*{-0.05cm}
+\hspace*{2.8cm}
+\scalebox{0.75}{
 \begin{tabular}{|l||c|c|}
 \hline
 \textbf{ } & \textbf{No Flap} &  \textbf{Flap}\\
 \hline\hline
-\textbf{$\alpha_{\text{stall}}$} & $\SI{23.23}{\degree}$ & $\SI{21.94}{\degree}$\\
-\textbf{$C_{L\text{max}}$} & 1.47 & 2.99\\
-\textbf{$C_{L\text{star}}$} & 0.83 & 2.35\\
-\textbf{$C_{L\alpha}$} (1/rad) & 4.089 & 4.12\\
+\textbf{$\alpha_{\text{stall}}$} & $\SI{21.59}{\degree}$ & $\SI{27.91}{\degree}$\\
+\textbf{$C_{L\text{max}}$} & 1.46 & 2.55\\
+\textbf{$C_{L\text{star}}$} & 0.83 & 1.90\\
+\textbf{$C_{L\alpha}$} (1/rad) & 4.121 & 4.186\\
 \hline
 \end{tabular}
 }
 }
-\column{0.5\textwidth}
+\column{0.4\textwidth}
 \WiderImages{
 \begin{figure}
-  \vspace*{-1.1cm}
-  \hspace*{1.16cm}
+  \vspace*{-1.cm}
+  \hspace*{-.1cm}
 \centering
-    \includegraphics[keepaspectratio, width=0.48\paperwidth]{images/B747FlapSlatLand.PNG}
+    \includegraphics[keepaspectratio, width=0.48\paperwidth]{images/B747FlapSlatLand}
     \captionsetup{labelformat=empty}
 \end{figure}
 }
 \end{columns}
+}
+\end{frame}
+%
+%-----------------------Frame 26------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{High lift devices effect - sensibility analysis}
+\only<1>{
+\vspace*{-0.3cm}
+\hspace*{0.6cm}
+\scalebox{0.65}{
+\begin{tabular}{lcc|lcc}
+\hline
+\textbf{\textcolor{mygold}{Input data B747-100B @ Landing}} &\textbf{} & \textbf{} &\textbf{\textcolor{mygold}{Baseline results}} &\textbf{}  & \textbf{} \\
+\hline
+\textbf{Variables} & \textbf{} & \textbf{Value} & \textbf{Variables} & \textbf{} & \textbf{Value}\\
+\hline
+$\delta_f$ &  \textbf{} & 30°  & $C_{L\text{max}}$ &  \textbf{} & 2.55 \\
+$\frac{c_f}{c}$ &  \textbf{} & 0.18 & $\alpha_{\text{max}}$ &  \textbf{} & 28° \\
+Trailing edge devices type &  \textbf{} & Triple Slotted & \textbf{ } &  \textbf{} & \textbf{} \\
+$\delta_s$ &  \textbf{} & 15° & \textbf{ } &  \textbf{} & \textbf{} \\
+\hline
+\end{tabular}
+}
+\WiderImages{
+\begin{figure}
+  \hspace*{-.5cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.49\paperwidth]{images/DeltaFlap_Sensibility.PNG}
+    \captionsetup{labelformat=empty}
+\end{figure}
+}
+}
+\only<2>{
+\vspace*{-0.3cm}
+\hspace*{0.6cm}
+\scalebox{0.65}{
+\begin{tabular}{lcc|lcc}
+\hline
+\textbf{\textcolor{mygold}{Input data B747-100B @ Landing}} &\textbf{} & \textbf{} &\textbf{\textcolor{mygold}{Baseline results}} &\textbf{}  & \textbf{} \\
+\hline
+\textbf{Variables} & \textbf{} & \textbf{Value} & \textbf{Variables} & \textbf{} & \textbf{Value}\\
+\hline
+$\delta_f$ &  \textbf{} & 30°  & $C_{L\text{max}}$ &  \textbf{} & 2.55 \\
+$\frac{c_f}{c}$ &  \textbf{} & 0.18 & $\alpha_{\text{max}}$ &  \textbf{} & 28° \\
+Trailing edge devices type &  \textbf{} & Triple Slotted & \textbf{ } &  \textbf{} & \textbf{} \\
+$\delta_s$ &  \textbf{} & 15° & \textbf{ } &  \textbf{} & \textbf{} \\
+\hline
+\end{tabular}
+}
+\WiderImages{
+\begin{figure}
+  \hspace*{-.5cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.49\paperwidth]{images/CFC_Sensibility}
+    \captionsetup{labelformat=empty}
+\end{figure}
+}
+}
+\only<3>{
+\vspace*{-0.3cm}
+\hspace*{0.6cm}
+\scalebox{0.65}{
+\begin{tabular}{lcc|lcc}
+\hline
+\textbf{\textcolor{mygold}{Input data B747-100B @ Landing}} &\textbf{} & \textbf{} &\textbf{\textcolor{mygold}{Baseline results}} &\textbf{}  & \textbf{} \\
+\hline
+\textbf{Variables} & \textbf{} & \textbf{Value} & \textbf{Variables} & \textbf{} & \textbf{Value}\\
+\hline
+$\delta_f$ &  \textbf{} & 30°  & $C_{L\text{max}}$ &  \textbf{} & 2.55 \\
+$\frac{c_f}{c}$ &  \textbf{} & 0.18 & $\alpha_{\text{max}}$ &  \textbf{} & 28° \\
+Trailing edge devices type &  \textbf{} & Triple Slotted & \textbf{ } &  \textbf{} & \textbf{} \\
+$\delta_s$ &  \textbf{} & 15° & \textbf{ } &  \textbf{} & \textbf{} \\
+\hline
+\end{tabular}
+}
+\WiderImages{
+\begin{figure}
+  \hspace*{-.5cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.49\paperwidth]{images/FlapType_Sensibility.PNG}
+    \captionsetup{labelformat=empty}
+\end{figure}
+}
+}
+\only<4>{
+\vspace*{-0.3cm}
+\hspace*{0.6cm}
+\scalebox{0.65}{
+\begin{tabular}{lcc|lcc}
+\hline
+\textbf{\textcolor{mygold}{Input data B747-100B @ Landing}} &\textbf{} & \textbf{} &\textbf{\textcolor{mygold}{Baseline results}} &\textbf{}  & \textbf{} \\
+\hline
+\textbf{Variables} & \textbf{} & \textbf{Value} & \textbf{Variables} & \textbf{} & \textbf{Value}\\
+\hline
+$\delta_f$ &  \textbf{} & 30°  & $C_{L\text{max}}$ &  \textbf{} & 2.55 \\
+$\frac{c_f}{c}$ &  \textbf{} & 0.18 & $\alpha_{\text{max}}$ &  \textbf{} & 28° \\
+Trailing edge devices type &  \textbf{} & Triple Slotted & \textbf{ } &  \textbf{} & \textbf{} \\
+$\delta_s$ &  \textbf{} & 15° & \textbf{ } &  \textbf{} & \textbf{} \\
+\hline
+\end{tabular}
+}
+\WiderImages{
+\begin{figure}
+  \hspace*{-.5cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.47\paperwidth]{images/DeltaSlat_Sensibility.PNG}
+    \captionsetup{labelformat=empty}
+\end{figure}
+}
 }
 \end{frame}
 %
@@ -921,7 +1032,7 @@ $A.F.=\left(\frac{V}{SFCJ}\right)\left(\frac{L}{D}\right)$
 \subsection{}
 \end{frame}
 %
-%-----------------------Frame 26------------------------------
+%-----------------------Frame 27------------------------------
 \placelogotrue
 \placebackgroundfalse
 \begin{frame}{ODE set for the AOE take-off distance calculation}
@@ -1067,7 +1178,7 @@ u (t) =
 }
 \end{frame}
 %
-%-----------------------Frame 27------------------------------
+%-----------------------Frame 28------------------------------
 \placelogotrue
 \placebackgroundfalse
 \begin{frame}{ODE set modification for the take-off in OEI condition}
@@ -1089,7 +1200,7 @@ u (t) =
 }
 \end{frame}
 %
-%-----------------------Frame 28------------------------------
+%-----------------------Frame 29------------------------------
 \placelogotrue
 \placebackgroundfalse
 \begin{frame}{Landing distance calculation}
@@ -1143,7 +1254,7 @@ $}
 }
 \end{frame}
 %
-%-----------------------Frame 29------------------------------
+%-----------------------Frame 30------------------------------
 \placelogotrue
 \placebackgroundfalse
 \begin{frame}{Take-Off Java class flowchart}
@@ -1154,7 +1265,7 @@ $}
 	\end{center}
 \end{frame}
 %
-%-----------------------Frame 30------------------------------
+%-----------------------Frame 31------------------------------
 \placelogotrue
 \placebackgroundfalse
 %

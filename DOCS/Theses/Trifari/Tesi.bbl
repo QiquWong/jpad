@@ -439,6 +439,28 @@
       \verb https://books.google.it/books?id=axPvAgAAQBAJ
       \endverb
     \endentry
+    \entry{roskamAirplane}{book}{}
+      \name{author}{1}{}{%
+        {{hash=f21425413dd55dbd465800547a46b61c}{Roskam}{R\bibinitperiod}{J.}{J\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {DARcorporation}%
+      }
+      \strng{namehash}{f21425413dd55dbd465800547a46b61c}
+      \strng{fullhash}{f21425413dd55dbd465800547a46b61c}
+      \field{sortinit}{R}
+      \field{sortinithash}{c7387613477035a752d935acfc3e3ea2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{1884885527}
+      \field{number}{pt. 6}
+      \field{series}{Airplane Design}
+      \field{title}{Airplane Design}
+      \field{year}{2000}
+      \verb{url}
+      \verb https://www.google.it/search?tbm=bks&hl=it&q=Airplane+Design,+Parte+6
+      \endverb
+    \endentry
     \entry{sforza2014commercial}{book}{}
       \name{author}{1}{}{%
         {{hash=e47195ee2eb4aeaf3209156cfb4e2a52}{Sforza}{S\bibinitperiod}{P.M.}{P\bibinitperiod}{}{}{}{}}%
