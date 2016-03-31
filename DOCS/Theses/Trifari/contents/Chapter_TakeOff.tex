@@ -972,7 +972,7 @@ Finally, with reference to the landing charts at the end of the chapter (from fi
 \textbf{ } & \textbf{ATR-72} & \textbf{JPAD} & \textbf{Difference(\%)}\\
 \midrule
 \textbf{FAR-25 Take-Off field length @ ISA, SL, MTOW} & $\SI{1300}{\meter}$ & $\SI{1350}{\meter}$ & $\approx3.7$\%\\ [1.0cm]
-\textbf{FAR-25 Landing field length @ ISA, SL, MTOW} & $\SI{1067}{\meter}$ & $\SI{1098}{\meter}$ & $\approx2.82$\%\\
+\textbf{FAR-25 Landing field length @ ISA, SL, MLW} & $\SI{1067}{\meter}$ & $\SI{1098}{\meter}$ & $\approx2.82$\%\\
 \bottomrule
 \end{tabular}
 }
@@ -1504,10 +1504,6 @@ The last check to perform upon the \lstinline[language=Java]!CalcTakeOff! regard
 \item The air density, which influences all aerodynamic forces; the higher is the altitude, the lower is the density and so lower are the aerodynamic forces.
 \item The stall speed, which is a main reference in determining the key points of the take-off run; in particular, this speed grows with decreasing density making the take-off run longer.
 \end{itemize}
-%
-%In order to validate the \lstinline[language=Java]!CalcTakeOff! class results, a comparison between its output and the flight manual of the B747-100B has been made showing the following results.
-%%
-%%----------------------- INSERT COMPARISON TABLE -------------------------
 %
 The following pages show some comparisons of the main take-off physical quantities between the case of a sea level altitude and the case of 2000 ft (610 m) and 4000 ft (1219m) of field length altitude. As expected the take-off distance grows with increasing altitude.
 %
