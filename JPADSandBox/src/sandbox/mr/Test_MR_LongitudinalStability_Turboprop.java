@@ -459,6 +459,7 @@ public class Test_MR_LongitudinalStability_Turboprop {
 	theStabilityManager.calculateAll();
 //	theStabilityManagerTakeOFF.calculateAll();
 		
+		
 
 
 		// CL ANALYSIS
@@ -504,12 +505,6 @@ public class Test_MR_LongitudinalStability_Turboprop {
 //	System.out.println("\n \n-----------------------------------------------------");
 //	System.out.println("DONE");
 //	System.out.println("-----------------------------------------------------");
-	
-	
-	
-	
-	
-	
 	
 	
 	

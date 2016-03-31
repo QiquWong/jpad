@@ -772,6 +772,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 		//		System.out.println("------" + checkBasicLoad());
 	}
+	
 
 
 	public class CalcBasicLoad extends InnerCalculator {

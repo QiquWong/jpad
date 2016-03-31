@@ -83,7 +83,7 @@
 \contentsline {subsection}{\numberline {8.4.1}Slingerland Method }{90}{subsection.8.4.1}
 \contentsline {subsection}{\numberline {8.4.2}NACA Modified Method }{91}{subsection.8.4.2}
 \contentsline {section}{\numberline {8.5}Roskam Method}{93}{section.8.5}
-\contentsline {subsection}{\numberline {8.5.1} Results}{93}{subsection.8.5.1}
+\contentsline {subsection}{\numberline {8.5.1}Results}{93}{subsection.8.5.1}
 \contentsline {chapter}{\numberline {9}Aircraft Longitudinal Static Stability}{95}{chapter.9}
 \contentsline {section}{\numberline {9.1}Aerodynamic Lift}{97}{section.9.1}
 \contentsline {subsection}{\numberline {9.1.1}Wing}{98}{subsection.9.1.1}
@@ -102,24 +102,26 @@
 \contentsline {subsubsection}{Fuselage Pitching moment prediction method}{111}{subsubsection*.127}
 \contentsline {section}{\numberline {9.4}Propulsors}{114}{section.9.4}
 \contentsline {subsection}{\numberline {9.4.1}Direct Effects}{114}{subsection.9.4.1}
+\contentsline {subsubsection}{Pitching moment due to thrust effect}{114}{subsubsection*.135}
+\contentsline {subsubsection}{Pitching moment due to non axial effect}{114}{subsubsection*.136}
 \contentsline {section}{\numberline {9.5}Stability Calculation}{115}{section.9.5}
-\contentsline {subsection}{\numberline {9.5.1}Neutral Point and Static Margin}{115}{subsection.9.5.1}
-\contentsline {section}{\numberline {9.6}Java Class Architecture}{116}{section.9.6}
-\contentsline {subsection}{\numberline {9.6.1}Focus on the class methods}{118}{subsection.9.6.1}
+\contentsline {subsection}{\numberline {9.5.1}Neutral Point and Static Margin}{116}{subsection.9.5.1}
+\contentsline {subsection}{\numberline {9.5.2}Pendular Stability}{116}{subsection.9.5.2}
+\contentsline {section}{\numberline {9.6}Java Class Architecture}{117}{section.9.6}
+\contentsline {subsection}{\numberline {9.6.1}Focus on the class methods}{119}{subsection.9.6.1}
 \contentsline {section}{\numberline {9.7}Case Study}{120}{section.9.7}
-\contentsline {subsection}{\numberline {9.7.1}ATR 72}{120}{subsection.9.7.1}
-\contentsline {subsection}{\numberline {9.7.2}Boeing 747-100B}{120}{subsection.9.7.2}
-\contentsline {chapter}{\numberline {10}Induced Angle of Attack}{121}{chapter.10}
-\contentsline {section}{\numberline {10.1}Induced Angle of Attack}{121}{section.10.1}
-\contentsline {section}{\numberline {10.2}Case Study}{123}{section.10.2}
-\contentsline {chapter}{\numberline {A}HDF dataset and database reader creation}{125}{Appendix.a.A}
-\contentsline {section}{\numberline {A.1}Chart Digitization}{125}{section.a.A.1}
-\contentsline {section}{\numberline {A.2}Creation of an HDF file with Matlab}{126}{section.a.A.2}
-\contentsline {chapter}{\numberline {B}Java Reference}{129}{Appendix.a.B}
-\contentsline {section}{\numberline {B.1}Object and Class in Java}{129}{section.a.B.1}
-\contentsline {section}{\numberline {B.2}Packages}{129}{section.a.B.2}
-\contentsline {section}{\numberline {B.3}Documentation}{130}{section.a.B.3}
-\contentsline {chapter}{Glossary}{132}{section*.144}
-\contentsline {chapter}{Acronyms}{134}{section*.146}
-\contentsline {chapter}{List of symbols}{135}{section*.148}
-\contentsline {chapter}{Bibliography}{137}{section*.150}
+\contentsline {subsection}{\numberline {9.7.1}ATR 72}{121}{subsection.9.7.1}
+\contentsline {chapter}{\numberline {10}Induced Angle of Attack}{129}{chapter.10}
+\contentsline {section}{\numberline {10.1}Induced Angle of Attack}{129}{section.10.1}
+\contentsline {section}{\numberline {10.2}Case Study}{131}{section.10.2}
+\contentsline {chapter}{\numberline {A}HDF dataset and database reader creation}{133}{Appendix.a.A}
+\contentsline {section}{\numberline {A.1}Chart Digitization}{133}{section.a.A.1}
+\contentsline {section}{\numberline {A.2}Creation of an HDF file with Matlab}{134}{section.a.A.2}
+\contentsline {chapter}{\numberline {B}Java Reference}{137}{Appendix.a.B}
+\contentsline {section}{\numberline {B.1}Object and Class in Java}{137}{section.a.B.1}
+\contentsline {section}{\numberline {B.2}Packages}{137}{section.a.B.2}
+\contentsline {section}{\numberline {B.3}Documentation}{138}{section.a.B.3}
+\contentsline {chapter}{Glossary}{140}{section*.162}
+\contentsline {chapter}{Acronyms}{142}{section*.164}
+\contentsline {chapter}{List of symbols}{143}{section*.166}
+\contentsline {chapter}{Bibliography}{145}{section*.168}

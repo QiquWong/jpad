@@ -73,7 +73,7 @@
 \BOOKMARK [2][-]{subsection.8.4.1}{Slingerland Method }{section.8.4}% 73
 \BOOKMARK [2][-]{subsection.8.4.2}{NACA Modified Method }{section.8.4}% 74
 \BOOKMARK [1][-]{section.8.5}{Roskam Method}{chapter.8}% 75
-\BOOKMARK [2][-]{subsection.8.5.1}{ Results}{section.8.5}% 76
+\BOOKMARK [2][-]{subsection.8.5.1}{Results}{section.8.5}% 76
 \BOOKMARK [0][-]{chapter.9}{Aircraft Longitudinal Static Stability}{part.3}% 77
 \BOOKMARK [1][-]{section.9.1}{Aerodynamic Lift}{chapter.9}% 78
 \BOOKMARK [2][-]{subsection.9.1.1}{Wing}{section.9.1}% 79
@@ -91,11 +91,11 @@
 \BOOKMARK [2][-]{subsection.9.4.1}{Direct Effects}{section.9.4}% 91
 \BOOKMARK [1][-]{section.9.5}{Stability Calculation}{chapter.9}% 92
 \BOOKMARK [2][-]{subsection.9.5.1}{Neutral Point and Static Margin}{section.9.5}% 93
-\BOOKMARK [1][-]{section.9.6}{Java Class Architecture}{chapter.9}% 94
-\BOOKMARK [2][-]{subsection.9.6.1}{Focus on the class methods}{section.9.6}% 95
-\BOOKMARK [1][-]{section.9.7}{Case Study}{chapter.9}% 96
-\BOOKMARK [2][-]{subsection.9.7.1}{ATR 72}{section.9.7}% 97
-\BOOKMARK [2][-]{subsection.9.7.2}{Boeing 747-100B}{section.9.7}% 98
+\BOOKMARK [2][-]{subsection.9.5.2}{Pendular Stability}{section.9.5}% 94
+\BOOKMARK [1][-]{section.9.6}{Java Class Architecture}{chapter.9}% 95
+\BOOKMARK [2][-]{subsection.9.6.1}{Focus on the class methods}{section.9.6}% 96
+\BOOKMARK [1][-]{section.9.7}{Case Study}{chapter.9}% 97
+\BOOKMARK [2][-]{subsection.9.7.1}{ATR 72}{section.9.7}% 98
 \BOOKMARK [0][-]{chapter.10}{Induced Angle of Attack}{part.3}% 99
 \BOOKMARK [1][-]{section.10.1}{Induced Angle of Attack}{chapter.10}% 100
 \BOOKMARK [1][-]{section.10.2}{Case Study}{chapter.10}% 101
@@ -106,7 +106,7 @@
 \BOOKMARK [1][-]{section.a.B.1}{Object and Class in Java}{Appendix.a.B}% 106
 \BOOKMARK [1][-]{section.a.B.2}{Packages}{Appendix.a.B}% 107
 \BOOKMARK [1][-]{section.a.B.3}{Documentation}{Appendix.a.B}% 108
-\BOOKMARK [0][-]{section*.144}{Glossary}{part.3}% 109
-\BOOKMARK [0][-]{section*.146}{Acronyms}{part.3}% 110
-\BOOKMARK [0][-]{section*.148}{List of symbols}{part.3}% 111
-\BOOKMARK [0][-]{section*.150}{Bibliography}{part.3}% 112
+\BOOKMARK [0][-]{section*.162}{Glossary}{part.3}% 109
+\BOOKMARK [0][-]{section*.164}{Acronyms}{part.3}% 110
+\BOOKMARK [0][-]{section*.166}{List of symbols}{part.3}% 111
+\BOOKMARK [0][-]{section*.168}{Bibliography}{part.3}% 112

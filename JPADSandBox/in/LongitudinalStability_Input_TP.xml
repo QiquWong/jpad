@@ -14,7 +14,7 @@
 	</Elevator_Data>
 	<Engine_Data>
 			<Efficiency unit="">0.85</Efficiency>
-			<NBlade unit="">6</NBlade>
+			<NBlade unit="">4</NBlade>
 			<Fan_Diameter unit="m">4</Fan_Diameter>
 	</Engine_Data>
 	<Other_Data>

@@ -122,21 +122,18 @@ public class StabilityCalculator {
 			return pitchingMomentDerThrust;
 		}
 		
-		public double calcPitchingMomentThrust (Aircraft aircraft, 
-				OperatingConditions conditions, 
-				double cLTotal, double cDTotal){
+		public double calcPitchingMomentThrust (Aircraft aircraft, double weight,
+				double cLTotal, double cDTotal, double zCG){
 			
-			double weight = (aircraft.get_weights().get_MTOW().getEstimatedValue()
-					- aircraft.get_weights().get_MZFW().getEstimatedValue())/2;
 			double dynamicPressureatCL  =  weight/(aircraft.get_wing().get_surface().getEstimatedValue() * cLTotal);
 			double thrustTotal = dynamicPressureatCL * aircraft.get_wing().get_surface().getEstimatedValue()* cDTotal;
-			double distance = -aircraft
+			double distance = aircraft
 					.get_theNacelles()
 					.get_nacellesList()
 					.get(0).get_cg().get_zBRF().getEstimatedValue();
 			double pitchingMoment = thrustTotal * distance; 
 			double pitchingMomentCoefficient = pitchingMoment/(
-					conditions.get_dynamicPressure().getEstimatedValue()
+					dynamicPressureatCL
 					* aircraft.get_wing().get_surface().getEstimatedValue() * 
 					aircraft.get_wing().get_meanAerodChordActual().getEstimatedValue()); // t/qSc
 			return pitchingMomentCoefficient;
@@ -147,7 +144,7 @@ public class StabilityCalculator {
 		
 		public double calcPitchingMomentDerNonAxial (Aircraft aircraft, 
 				double nBlades, double diameter,
-				double clAlpha){
+				double clAlpha, double xCG){
 			
 			if( aircraft.get_powerPlant().get_engineType() == EngineTypeEnum.TURBOPROP){
 			double dCndAlpha=0.0;
@@ -167,12 +164,16 @@ public class StabilityCalculator {
 //			System.out.println(" surface ratio " + surfaceRatio);
 			double numProp = aircraft.get_powerPlant().get_engineNumber();
 		
-			double distance = Math.abs(aircraft
+			double nacDistance = aircraft
 					.get_theNacelles()
 					.get_nacellesList()
-					.get(0).get_cg().get_xBRF().getEstimatedValue()-
-					aircraft.get_theBalance().get_xCoGMeanAtOEM().doubleValue());
-//			System.out.println(" nac " +aircraft
+					.get(0).get_cg().get_xBRF().getEstimatedValue();
+			double distance =xCG - aircraft
+					.get_theNacelles()
+					.get_nacellesList()
+					.get(0).get_cg().get_xBRF().getEstimatedValue()
+					;
+//		System.out.println(" nac " +aircraft
 //					.get_theNacelles().get_cgList().get(0).get_xBRF().getEstimatedValue());
 //			System.out.println(" x cg "+aircraft.get_theBalance().get_xCoGMeanAtOEM().doubleValue());
 //			System.out.println(" xcgg " + distance);

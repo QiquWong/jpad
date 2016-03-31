@@ -2,10 +2,10 @@
 \chapter{HDF dataset and database reader creation}
 \label{ch:hdigitalizer}
 \markboth{HDF dataset and database reader creation}{}
-In a tool for preliminary design phase of an aircraft, it's very important to have aviable database. It's possible to create database starting from graphics using external software. In this appendix will be explained the step required in order to digitalize the graphics, create an HDF dataset and set up the database-reader class in Jpad.
+In a tool for preliminary design phase of an aircraft, it's very important to have available database. It's possible to create database starting from graphics using external software. In this appendix will be explained the step required in order to digitalize the graphics, create an HDF dataset and set up the database-reader class in Jpad.
 
 \section{Chart Digitization}
-The first step required for create a dataset is to digitalize a chart. Often data is found presented in reports and references as functional X-Y type scatter or line plots. In order to use this data, it must somehow be digitized. This is made with an external software, such as {\itshape Plot Digitizer}. Plot Digitizer is a Java program used to digitize scanned plots of functional data. This program will allow you to take a scanned image of a plot (in GIF, JPEG, or PNG format) and quickly digitize values off the plot just by clicking the mouse on each data point.\cite{plotdigitizer}
+The first step required for create a dataset is to digitalize a chart. Often data are presented in reports and references as functional X-Y type scatter or line plots. In order to use this data, it must somehow be digitized. This is made with an external software, such as {\itshape Plot Digitizer}. Plot Digitizer is a Java program used to digitize scanned plots of functional data. This program will allow you to take a scanned image of a plot (in GIF, JPEG, or PNG format) and quickly digitize values off the plot just by clicking the mouse on each data point.\cite{plotdigitizer}
 
 \begin{figure}[H]
 \centering
@@ -15,7 +15,7 @@ The first step required for create a dataset is to digitalize a chart. Often dat
 \end{figure} 
 
 
-In order to digitize a chart, first of all it's necessary to calibrate the axis. Plot Digitizer works with both linear and logarithmic axis scales. After it's possible to digitize a curve simply click o it. The values obtained can then be saved to a tex file or .csv file.
+In order to digitize a chart, first of all it's necessary to calibrate the axis. Plot Digitizer works with both linear and logarithmic axis scales. After it's possible to digitize a curve simply click on it. The values obtained can then be saved to a tex file or .csv file.
 
 
 \section{Creation of an HDF file with Matlab}
@@ -160,7 +160,7 @@ h5write(hdfFileName, '/DAlphaVsLambdaLEVsDy/var_1', lambdaLEVector_deg');
 \end{lstlisting}
 
 \noindent \\ \\ 
-This script plot the graph after digitization. In this way it's possible to compare the initial graph and the digitized one.
+This script draws the graph after digitization. In this way it's possible to compare the initial graph and the digitized one.
 
 
  \begin{figure}[H]
