@@ -2118,12 +2118,22 @@ public class ACStabilityManager {
 
 		// Total
 
+		
 		double [] cMTotalCleanArray = new double [nValueAlpha];
+		if( aircraft.get_typeVehicle()==AircraftTypeEnum.JET){
+			
+			for(int i=0; i<nValueAlpha; i++){
+				cMTotalCleanArray[i] = cMWingArray[i] + cMHorizontalTailCleanArray [i] + cmFuselageArray[i];
+			}
+		}
+		
+		else{
+		
 		for(int i=0; i<nValueAlpha; i++){
 			cMTotalCleanArray[i] = cMWingArray[i] + cMHorizontalTailCleanArray [i] + cmFuselageArray[i]
 					+ momentThrust[i] + momentNonAxialThrust[i];
 		}
-
+		}
 
 		// Equation 
 
@@ -2199,13 +2209,14 @@ public class ACStabilityManager {
 
 
 		System.out.println(" cm " + Arrays.toString(cMTotalRespectToCGMap.get(deltaEArrayString[1])));
+		if(aircraft.get_typeVehicle() != AircraftTypeEnum.JET){
 		MyChartToFileUtils.plot(
 				alphaThrust,	cmThrus, // array to plot
 				null, 20.0, null, null,					    // axis with limits
 				"alpha", "CM_{tot}", "", "",	    // label with unit
 				legendThrust,					// legend
 				subfolderPath, "CM thrust contributes");			    // output informations
-
+		}
 		System.out.println("\t \t \tDONE  ");
 
 
@@ -2330,6 +2341,7 @@ public class ACStabilityManager {
 
 		// All
 
+		if(aircraft.get_typeVehicle() != AircraftTypeEnum.JET){
 		double [][] alphaArrays = {alphaStabilityArray.toArray(),alphaStabilityArray.toArray(),
 				alphaStabilityArray.toArray(),alphaStabilityArray.toArray(), alphaStabilityArray.toArray(),
 				alphaStabilityArray.toArray(),alphaStabilityArray.toArray()};
@@ -2358,6 +2370,37 @@ public class ACStabilityManager {
 				subfolderPath, "Contributes CM total ");			    // output informations
 
 		System.out.println("\t \t \tDONE  ");
+		}
+		
+		else{
+			double [][] alphaArrays = {alphaStabilityArray.toArray(),alphaStabilityArray.toArray(),
+					alphaStabilityArray.toArray(),alphaStabilityArray.toArray(), 
+					alphaStabilityArray.toArray()};
+
+			double [][] cmArrays = {cMWingArray, cMWingNoPendular, cMHorizontalTailCleanArray,
+					cmFuselageArray, cMHorizontalTailArraywithDrag};
+
+			String [] legendArrays = new String [5];
+
+
+			legendArrays[0] = "Isolated Wing";
+			legendArrays[1] = "Isolated wing zcg =0 ";
+			legendArrays[2] = " Horizontal Tail";
+			legendArrays[3] = "Fuselage";
+			legendArrays[4] = " Horizontal Tail with drag";
+			
+
+
+//			System.out.println(" cm " + Arrays.toString(cMTotalRespectToCGMap.get(deltaEArrayString[1])));
+			MyChartToFileUtils.plot(
+					alphaArrays,cmArrays, // array to plot
+					null, 20.0, null, null,					    // axis with limits
+					"alpha", "CM", "", "",	    // label with unit
+					legendArrays,					// legend
+					subfolderPath, "Contributes CM total ");			    // output informations
+
+			System.out.println("\t \t \tDONE  ");
+		}
 
 	}
 

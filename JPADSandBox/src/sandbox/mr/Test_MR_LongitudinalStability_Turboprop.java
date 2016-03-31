@@ -457,7 +457,7 @@ public class Test_MR_LongitudinalStability_Turboprop {
 				alphaMin, alphaMax, alphaBody , true, subfolderPathTakeOFF, pathTakeOff);
  
 	theStabilityManager.calculateAll();
-//	theStabilityManagerTakeOFF.calculateAll();
+	theStabilityManagerTakeOFF.calculateAll();
 		
 		
 

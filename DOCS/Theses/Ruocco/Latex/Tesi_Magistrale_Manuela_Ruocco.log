@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.12.21)  31 MAR 2016 06:07
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2015.12.21)  31 MAR 2016 12:01
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2344,6 +2344,12 @@ LaTeX Warning: Label `fig:met' multiply defined.
 LaTeX Warning: Label `fig:met@cref' multiply defined.
 
 
+LaTeX Warning: Label `fig:met' multiply defined.
+
+
+LaTeX Warning: Label `fig:met@cref' multiply defined.
+
+
 LaTeX Warning: Label `table:Table2' multiply defined.
 
 
@@ -2674,6 +2680,30 @@ LaTeX Warning: Label `fig:stallATR' multiply defined.
 LaTeX Warning: Label `fig:stallATR@cref' multiply defined.
 
 
+LaTeX Warning: Label `fig:stallATR' multiply defined.
+
+
+LaTeX Warning: Label `fig:stallATR@cref' multiply defined.
+
+
+LaTeX Warning: Label `fig:stallATR' multiply defined.
+
+
+LaTeX Warning: Label `fig:stallATR@cref' multiply defined.
+
+
+LaTeX Warning: Label `fig:stallATR' multiply defined.
+
+
+LaTeX Warning: Label `fig:stallATR@cref' multiply defined.
+
+
+LaTeX Warning: Label `fig:stallATR' multiply defined.
+
+
+LaTeX Warning: Label `fig:stallATR@cref' multiply defined.
+
+
 LaTeX Warning: Label `[style' multiply defined.
 
 
@@ -2912,7 +2942,7 @@ File: t1qhv.fd 2009/09/25 v1.2 font definition file for T1/qhv
 (c:/texlive/2015/texmf-dist/tex/latex/newtx/t1ntxtt.fd
 File: t1ntxtt.fd 2012/04/20 v3.1
 )
-<Tesi_Magistrale_Manuela_Ruocco-frn.pdf, id=457, 597.50829pt x 845.0471pt>
+<Tesi_Magistrale_Manuela_Ruocco-frn.pdf, id=461, 597.50829pt x 845.0471pt>
 File: Tesi_Magistrale_Manuela_Ruocco-frn.pdf Graphic file (type pdf)
 
 <use Tesi_Magistrale_Manuela_Ruocco-frn.pdf>
@@ -3096,7 +3126,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[3] <Immagini/Process_Design_Torenbeek.jpg, id=682, 848.4197pt x 456.20438pt>
+[3] <Immagini/Process_Design_Torenbeek.jpg, id=687, 848.4197pt x 456.20438pt>
 File: Immagini/Process_Design_Torenbeek.jpg Graphic file (type jpg)
 
 <use Immagini/Process_Design_Torenbeek.jpg>
@@ -3111,21 +3141,21 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  This may cause the page layout to be inconsistent, however.
 
 [4 <./Immagini/Process_Design_Torenbeek.jpg>]
-<Immagini/tradeoff.png, id=693, 513.117pt x 311.06212pt>
+<Immagini/tradeoff.png, id=698, 513.117pt x 311.06212pt>
 File: Immagini/tradeoff.png Graphic file (type png)
 
 <use Immagini/tradeoff.png>
 Package pdftex.def Info: Immagini/tradeoff.png used on input line 73.
 (pdftex.def)             Requested size: 370.79846pt x 224.7766pt.
 
-<Immagini/componentfunction.png, id=697, 410.43338pt x 144.54pt>
+<Immagini/componentfunction.png, id=702, 410.43338pt x 144.54pt>
 File: Immagini/componentfunction.png Graphic file (type png)
 
 <use Immagini/componentfunction.png>
 Package pdftex.def Info: Immagini/componentfunction.png used on input line 83.
 (pdftex.def)             Requested size: 395.90916pt x 139.41832pt.
 
-<Immagini/Fishbone.jpg, id=704, 1017.04968pt x 605.26125pt>
+<Immagini/Fishbone.jpg, id=709, 1017.04968pt x 605.26125pt>
 File: Immagini/Fishbone.jpg Graphic file (type jpg)
 
 <use Immagini/Fishbone.jpg>
@@ -3163,7 +3193,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
 
 [7]
 Chapter 2.
-<Immagini/flowchart3.pdf, id=733, 845.1575pt x 654.445pt>
+<Immagini/flowchart3.pdf, id=738, 845.1575pt x 654.445pt>
 File: Immagini/flowchart3.pdf Graphic file (type pdf)
 
 <use Immagini/flowchart3.pdf>
@@ -3172,7 +3202,7 @@ Package pdftex.def Info: Immagini/flowchart3.pdf used on input line 15.
  [8
 
  <./Immagini/flowchart3.pdf>]
-<Immagini/organization.pdf, id=751, 1768.6075pt x 826.08624pt>
+<Immagini/organization.pdf, id=756, 1768.6075pt x 826.08624pt>
 File: Immagini/organization.pdf Graphic file (type pdf)
 
 <use Immagini/organization.pdf>
@@ -3249,7 +3279,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[12] <Immagini/gui/applicationStart.png, id=818, 1927.2pt x 1042.89626pt>
+[12] <Immagini/gui/applicationStart.png, id=823, 1927.2pt x 1042.89626pt>
 File: Immagini/gui/applicationStart.png Graphic file (type png)
 
 <use Immagini/gui/applicationStart.png>
@@ -3257,7 +3287,7 @@ Package pdftex.def Info: Immagini/gui/applicationStart.png used on input line 1
 41.
 (pdftex.def)             Requested size: 368.02443pt x 199.16928pt.
 
-<Immagini/gui/icons/FolderAirplane_32x32.png, id=819, 20.57687pt x 16.06pt>
+<Immagini/gui/icons/FolderAirplane_32x32.png, id=824, 20.57687pt x 16.06pt>
 File: Immagini/gui/icons/FolderAirplane_32x32.png Graphic file (type png)
 
 <use Immagini/gui/icons/FolderAirplane_32x32.png>
@@ -3265,7 +3295,7 @@ Package pdftex.def Info: Immagini/gui/icons/FolderAirplane_32x32.png used on in
 put line 150.
 (pdftex.def)             Requested size: 12.3462pt x 9.63606pt.
 
-<Immagini/gui/changeFusParam.png, id=820, 1445.4pt x 782.17218pt>
+<Immagini/gui/changeFusParam.png, id=825, 1445.4pt x 782.17218pt>
 File: Immagini/gui/changeFusParam.png Graphic file (type png)
 
 <use Immagini/gui/changeFusParam.png>
@@ -3280,7 +3310,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  This may cause the page layout to be inconsistent, however.
 
 [13 <./Immagini/gui/applicationStart.png> <./Immagini/gui/icons/FolderAirplane_
-32x32.png>] <Immagini/gui/icons/3DView_32x32.png, id=836, 7.7088pt x 7.7088pt>
+32x32.png>] <Immagini/gui/icons/3DView_32x32.png, id=841, 7.7088pt x 7.7088pt>
 File: Immagini/gui/icons/3DView_32x32.png Graphic file (type png)
 
 <use Immagini/gui/icons/3DView_32x32.png>
@@ -3288,14 +3318,14 @@ Package pdftex.def Info: Immagini/gui/icons/3DView_32x32.png used on input line
  158.
 (pdftex.def)             Requested size: 9.25049pt x 9.25049pt.
 
-<Immagini/gui/cad1.png, id=837, 1443.14156pt x 780.66656pt>
+<Immagini/gui/cad1.png, id=842, 1443.14156pt x 780.66656pt>
 File: Immagini/gui/cad1.png Graphic file (type png)
 
 <use Immagini/gui/cad1.png>
 Package pdftex.def Info: Immagini/gui/cad1.png used on input line 161.
 (pdftex.def)             Requested size: 368.18341pt x 199.16928pt.
 
-<Immagini/gui/icons/analysis_32x32.png, id=838, 24.09pt x 24.09pt>
+<Immagini/gui/icons/analysis_32x32.png, id=843, 24.09pt x 24.09pt>
 File: Immagini/gui/icons/analysis_32x32.png Graphic file (type png)
 
 <use Immagini/gui/icons/analysis_32x32.png>
@@ -3303,7 +3333,7 @@ Package pdftex.def Info: Immagini/gui/icons/analysis_32x32.png used on input li
 ne 164.
 (pdftex.def)             Requested size: 12.04495pt x 12.04495pt.
 
-<Immagini/gui/icons/Export_32x32.png, id=839, 30.42947pt x 30.42947pt>
+<Immagini/gui/icons/Export_32x32.png, id=844, 30.42947pt x 30.42947pt>
 File: Immagini/gui/icons/Export_32x32.png Graphic file (type png)
 
 <use Immagini/gui/icons/Export_32x32.png>
@@ -3311,7 +3341,7 @@ Package pdftex.def Info: Immagini/gui/icons/Export_32x32.png used on input line
  166.
 (pdftex.def)             Requested size: 12.17155pt x 12.17155pt.
 
-<Immagini/gui/icons/cad_32x32.png, id=840, 12.63737pt x 12.63737pt>
+<Immagini/gui/icons/cad_32x32.png, id=845, 12.63737pt x 12.63737pt>
 File: Immagini/gui/icons/cad_32x32.png Graphic file (type png)
 
 <use Immagini/gui/icons/cad_32x32.png>
@@ -3319,7 +3349,7 @@ Package pdftex.def Info: Immagini/gui/icons/cad_32x32.png used on input line 16
 8.
 (pdftex.def)             Requested size: 15.16475pt x 15.16475pt.
 
-<Immagini/gui/icons/XML_32x32.png, id=841, 32.12pt x 32.12pt>
+<Immagini/gui/icons/XML_32x32.png, id=846, 32.12pt x 32.12pt>
 File: Immagini/gui/icons/XML_32x32.png Graphic file (type png)
 
 <use Immagini/gui/icons/XML_32x32.png>
@@ -3337,14 +3367,14 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  <./Immagini/gui/cad1.png> <./Immagini/gui/icons/analysis_32x32.png> <./Immagin
 i/gui/icons/Export_32x32.png> <./Immagini/gui/icons/cad_32x32.png> <./Immagini/
 gui/icons/XML_32x32.png>]
-<Immagini/gui/cad3.png, id=859, 1263.97218pt x 758.835pt>
+<Immagini/gui/cad3.png, id=864, 1263.97218pt x 758.835pt>
 File: Immagini/gui/cad3.png Graphic file (type png)
 
 <use Immagini/gui/cad3.png>
 Package pdftex.def Info: Immagini/gui/cad3.png used on input line 185.
 (pdftex.def)             Requested size: 379.13672pt x 227.62204pt.
 
-<Immagini/gui/projectTreeMulti.png, id=861, 124.96687pt x 310.91156pt>
+<Immagini/gui/projectTreeMulti.png, id=866, 124.96687pt x 310.91156pt>
 File: Immagini/gui/projectTreeMulti.png Graphic file (type png)
 
 <use Immagini/gui/projectTreeMulti.png>
@@ -3352,7 +3382,7 @@ Package pdftex.def Info: Immagini/gui/projectTreeMulti.png used on input line 2
 02.
 (pdftex.def)             Requested size: 91.4901pt x 227.62204pt.
 
-<Immagini/gui/tabId.png, id=862, 194.22563pt x 19.57312pt>
+<Immagini/gui/tabId.png, id=867, 194.22563pt x 19.57312pt>
 File: Immagini/gui/tabId.png Graphic file (type png)
 
 <use Immagini/gui/tabId.png>
@@ -3369,7 +3399,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  This may cause the page layout to be inconsistent, however.
 
 [15 <./Immagini/gui/cad3.png> <./Immagini/gui/projectTreeMulti.png>]
-<Immagini/gui/CADfuselageTailBAD2.png, id=879, 1312.905pt x 589.4522pt>
+<Immagini/gui/CADfuselageTailBAD2.png, id=884, 1312.905pt x 589.4522pt>
 File: Immagini/gui/CADfuselageTailBAD2.png Graphic file (type png)
 
 <use Immagini/gui/CADfuselageTailBAD2.png>
@@ -3377,7 +3407,7 @@ Package pdftex.def Info: Immagini/gui/CADfuselageTailBAD2.png used on input lin
 e 222.
 (pdftex.def)             Requested size: 170.71652pt x 76.64046pt.
 
-<Immagini/gui/CADfuselageTailOK.png, id=880, 1388.93906pt x 569.87906pt>
+<Immagini/gui/CADfuselageTailOK.png, id=885, 1388.93906pt x 569.87906pt>
 File: Immagini/gui/CADfuselageTailOK.png Graphic file (type png)
 
 <use Immagini/gui/CADfuselageTailOK.png>
@@ -3385,14 +3415,14 @@ Package pdftex.def Info: Immagini/gui/CADfuselageTailOK.png used on input line
 229.
 (pdftex.def)             Requested size: 170.71652pt x 70.0434pt.
 
-<Immagini/gui/CADfuselage.png, id=881, 1310.64656pt x 353.06906pt>
+<Immagini/gui/CADfuselage.png, id=886, 1310.64656pt x 353.06906pt>
 File: Immagini/gui/CADfuselage.png Graphic file (type png)
 
 <use Immagini/gui/CADfuselage.png>
 Package pdftex.def Info: Immagini/gui/CADfuselage.png used on input line 237.
 (pdftex.def)             Requested size: 341.43306pt x 91.97357pt.
 
-<Immagini/interface.png, id=882, 535.09912pt x 306.84637pt>
+<Immagini/interface.png, id=887, 535.09912pt x 306.84637pt>
 File: Immagini/interface.png Graphic file (type png)
 
 <use Immagini/interface.png>
@@ -3407,7 +3437,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
 
 [16 <./Immagini/gui/tabId.png> <./Immagini/gui/CADfuselageTailBAD2.png> <./Imma
 gini/gui/CADfuselageTailOK.png> <./Immagini/gui/CADfuselage.png>]
-<Immagini/suave/flowchartBoeing1.png, id=894, 612.78937pt x 364.66237pt>
+<Immagini/suave/flowchartBoeing1.png, id=899, 612.78937pt x 364.66237pt>
 File: Immagini/suave/flowchartBoeing1.png Graphic file (type png)
 
 <use Immagini/suave/flowchartBoeing1.png>
@@ -3415,7 +3445,7 @@ Package pdftex.def Info: Immagini/suave/flowchartBoeing1.png used on input line
  265.
 (pdftex.def)             Requested size: 312.9803pt x 186.24799pt.
 
-<Immagini/Folder_Tree.pdf, id=895, 1521.685pt x 1630.09pt>
+<Immagini/Folder_Tree.pdf, id=900, 1521.685pt x 1630.09pt>
 File: Immagini/Folder_Tree.pdf Graphic file (type pdf)
 
 <use Immagini/Folder_Tree.pdf>
@@ -3469,7 +3499,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
 Chapter 3.
 [22
 
-] <Immagini/trend.png, id=1082, 680.84363pt x 334.54988pt>
+] <Immagini/trend.png, id=1087, 680.84363pt x 334.54988pt>
 File: Immagini/trend.png Graphic file (type png)
 
 <use Immagini/trend.png>
@@ -3496,7 +3526,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 23--24
 
  []
 
-<Immagini/xml1.jpg, id=1105, 135.50626pt x 11.29219pt>
+<Immagini/xml1.jpg, id=1110, 135.50626pt x 11.29219pt>
 File: Immagini/xml1.jpg Graphic file (type jpg)
  <use Immagini/xml1.jpg>
 Package pdftex.def Info: Immagini/xml1.jpg used on input line 27.
@@ -3509,7 +3539,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 31--32
 
  []
 
-<Immagini/xml2.jpg, id=1111, 338.76563pt x 14.30344pt>
+<Immagini/xml2.jpg, id=1116, 338.76563pt x 14.30344pt>
 File: Immagini/xml2.jpg Graphic file (type jpg)
  <use Immagini/xml2.jpg>
 Package pdftex.def Info: Immagini/xml2.jpg used on input line 35.
@@ -3529,7 +3559,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 57--58
 
  []
 
-<Immagini/atr72mod.jpg, id=1113, 477.58424pt x 166.52213pt>
+<Immagini/atr72mod.jpg, id=1118, 477.58424pt x 166.52213pt>
 File: Immagini/atr72mod.jpg Graphic file (type jpg)
 
 <use Immagini/atr72mod.jpg>
@@ -3543,7 +3573,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  This may cause the page layout to be inconsistent, however.
 
 [26 <./Immagini/xml1.jpg> <./Immagini/xml2.jpg> <./Immagini/atr72mod.jpg>]
-<Immagini/boeing.jpg, id=1126, 960.88988pt x 323.70938pt>
+<Immagini/boeing.jpg, id=1131, 960.88988pt x 323.70938pt>
 File: Immagini/boeing.jpg Graphic file (type jpg)
 
 <use Immagini/boeing.jpg>
@@ -3566,7 +3596,7 @@ Package Listings Warning: Text dropped after begin of listing on input line 99.
 
 
 
-<immagini/HowToCreateADefaultAircraftInJPAD3.pdf, id=1134, 1896.08376pt x 1117.
+<immagini/HowToCreateADefaultAircraftInJPAD3.pdf, id=1139, 1896.08376pt x 1117.
 17375pt>
 File: immagini/HowToCreateADefaultAircraftInJPAD3.pdf Graphic file (type pdf)
  <use immagini/HowToCreateADefaultAircraftInJPAD3.pdf>
@@ -3638,7 +3668,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
 Package Listings Warning: Text dropped after begin of listing on input line 378
 .
 
-<immagini/HowToAssignDatabase.jpg, id=1433, 1726.45pt x 840.13875pt>
+<immagini/HowToAssignDatabase.jpg, id=1438, 1726.45pt x 840.13875pt>
 File: immagini/HowToAssignDatabase.jpg Graphic file (type jpg)
 
 <use immagini/HowToAssignDatabase.jpg>
@@ -3668,14 +3698,14 @@ File: ts1ntxtlf.fd 2015/01/18 v1.0 fd file for TS1/ntxtlf
 ) [36
 
 ]
-<Immagini/ATR-72.png, id=1482, 1028.643pt x 639.5895pt>
+<Immagini/ATR-72.png, id=1487, 1028.643pt x 639.5895pt>
 File: Immagini/ATR-72.png Graphic file (type png)
 
 <use Immagini/ATR-72.png>
 Package pdftex.def Info: Immagini/ATR-72.png used on input line 106.
 (pdftex.def)             Requested size: 292.86809pt x 182.09746pt.
 
-<Immagini/B747-100B.png, id=1483, 908.193pt x 528.17325pt>
+<Immagini/B747-100B.png, id=1488, 908.193pt x 528.17325pt>
 File: Immagini/B747-100B.png Graphic file (type png)
 
 <use Immagini/B747-100B.png>
@@ -3715,14 +3745,14 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[40] <Immagini/influencearea.png, id=1517, 240.59888pt x 152.06813pt>
+[40] <Immagini/influencearea.png, id=1522, 240.59888pt x 152.06813pt>
 File: Immagini/influencearea.png Graphic file (type png)
 
 <use Immagini/influencearea.png>
 Package pdftex.def Info: Immagini/influencearea.png used on input line 78.
 (pdftex.def)             Requested size: 135.05383pt x 85.35826pt.
 
-<Immagini/Loading_Stall_Path_A.pdf, id=1518, 1569.09712pt x 761.19649pt>
+<Immagini/Loading_Stall_Path_A.pdf, id=1523, 1569.09712pt x 761.19649pt>
 File: Immagini/Loading_Stall_Path_A.pdf Graphic file (type pdf)
 
 <use Immagini/Loading_Stall_Path_A.pdf>
@@ -3737,7 +3767,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  This may cause the page layout to be inconsistent, however.
 
 [41 <./Immagini/influencearea.png> <./Immagini/Loading_Stall_Path_A.pdf>]
-<Immagini/Loading_Stall_Path_B.pdf, id=1552, 1324.63608pt x 769.91791pt>
+<Immagini/Loading_Stall_Path_B.pdf, id=1557, 1324.63608pt x 769.91791pt>
 File: Immagini/Loading_Stall_Path_B.pdf Graphic file (type pdf)
 
 <use Immagini/Loading_Stall_Path_B.pdf>
@@ -3745,7 +3775,7 @@ Package pdftex.def Info: Immagini/Loading_Stall_Path_B.pdf used on input line 1
 67.
 (pdftex.def)             Requested size: 293.70483pt x 170.71652pt.
 
-<Immagini/Loading_Stall_Path_D.pdf, id=1553, 1324.63608pt x 769.91791pt>
+<Immagini/Loading_Stall_Path_D.pdf, id=1558, 1324.63608pt x 769.91791pt>
 File: Immagini/Loading_Stall_Path_D.pdf Graphic file (type pdf)
 
 <use Immagini/Loading_Stall_Path_D.pdf>
@@ -3808,7 +3838,7 @@ n.6.1.8}) has been already used, duplicate ignored
                                                   
 l.179 
        <./Immagini/Loading_Stall_Path_B.pdf>]
-<Immagini/Loading_Stall_Path_E.pdf, id=1585, 1324.63608pt x 769.91791pt>
+<Immagini/Loading_Stall_Path_E.pdf, id=1590, 1324.63608pt x 769.91791pt>
 File: Immagini/Loading_Stall_Path_E.pdf Graphic file (type pdf)
 
 <use Immagini/Loading_Stall_Path_E.pdf>
@@ -3819,7 +3849,7 @@ Package pdftex.def Info: Immagini/Loading_Stall_Path_E.pdf used on input line 1
 
 pdfTeX warning: pdflatex.exe (file ./Immagini/wing_loading_B.pdf): PDF inclusio
 n: found PDF version <1.6>, but at most version <1.5> allowed
-<Immagini/wing_loading_B.pdf, id=1586, 714.7815pt x 372.82687pt>
+<Immagini/wing_loading_B.pdf, id=1591, 714.7815pt x 372.82687pt>
 File: Immagini/wing_loading_B.pdf Graphic file (type pdf)
 
 <use Immagini/wing_loading_B.pdf>
@@ -3841,7 +3871,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
 pdfTeX warning: pdflatex.exe (file ./Immagini/Loading_Stall_Path_E.pdf): PDF in
 clusion: multiple pdfs with page group included in a single page
 > <./Immagini/wing_loading_B.pdf, page is rotated 90 degrees>]
-<Immagini/deltaAlphaSforza.png, id=1653, 326.4195pt x 187.902pt>
+<Immagini/deltaAlphaSforza.png, id=1658, 326.4195pt x 187.902pt>
 File: Immagini/deltaAlphaSforza.png Graphic file (type png)
 
 <use Immagini/deltaAlphaSforza.png>
@@ -3868,7 +3898,7 @@ er (name{equation.6.1.8}) has been already used, duplicate ignored
                    \relax 
 l.212 \begin{equation}
                       
-<Immagini/Wing_CL_Vs_alpha_curve.pdf, id=1654, 867.80057pt x 758.0983pt>
+<Immagini/Wing_CL_Vs_alpha_curve.pdf, id=1659, 867.80057pt x 758.0983pt>
 File: Immagini/Wing_CL_Vs_alpha_curve.pdf Graphic file (type pdf)
 
 <use Immagini/Wing_CL_Vs_alpha_curve.pdf>
@@ -3883,14 +3913,14 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  This may cause the page layout to be inconsistent, however.
 
 [44 <./Immagini/deltaAlphaSforza.png>]
-<Immagini/clamach.png, id=1664, 280.6485pt x 194.82788pt>
+<Immagini/clamach.png, id=1669, 280.6485pt x 194.82788pt>
 File: Immagini/clamach.png Graphic file (type png)
 
 <use Immagini/clamach.png>
 Package pdftex.def Info: Immagini/clamach.png used on input line 258.
 (pdftex.def)             Requested size: 229.53801pt x 159.3356pt.
 
-<Immagini/declmach.png, id=1665, 298.41487pt x 196.03238pt>
+<Immagini/declmach.png, id=1670, 298.41487pt x 196.03238pt>
 File: Immagini/declmach.png Graphic file (type png)
 
 <use Immagini/declmach.png>
@@ -3904,7 +3934,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  This may cause the page layout to be inconsistent, however.
 
 [45 <./Immagini/Wing_CL_Vs_alpha_curve.pdf> <./Immagini/clamach.png>]
-<Immagini/highlift.png, id=1684, 265.59225pt x 362.5545pt>
+<Immagini/highlift.png, id=1689, 265.59225pt x 362.5545pt>
 File: Immagini/highlift.png Graphic file (type png)
 
 <use Immagini/highlift.png>
@@ -3918,7 +3948,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  This may cause the page layout to be inconsistent, however.
 
 [46 <./Immagini/declmach.png> <./Immagini/highlift.png>]
-<Immagini/Airfoil_Cl_Vs_alpha_curve_flap_slat.pdf, id=1695, 1030.32425pt x 1036
+<Immagini/Airfoil_Cl_Vs_alpha_curve_flap_slat.pdf, id=1700, 1030.32425pt x 1036
 .3144pt>
 File: Immagini/Airfoil_Cl_Vs_alpha_curve_flap_slat.pdf Graphic file (type pdf)
  <use Immagini/Airfoil_Cl_Vs_alpha_curve_flap_slat.pdf>
@@ -3939,7 +3969,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[48] <Immagini/clflowchart.pdf, id=1710, 1407.2575pt x 1009.7725pt>
+[48] <Immagini/clflowchart.pdf, id=1715, 1407.2575pt x 1009.7725pt>
 File: Immagini/clflowchart.pdf Graphic file (type pdf)
 
 <use Immagini/clflowchart.pdf>
@@ -3962,7 +3992,7 @@ Package caption Warning: The option `hypcap=true' will be ignored for this
 (caption)                particular \caption on input line 349.
 See the caption package documentation for explanation.
 
-<Immagini/ATR_Topview.pdf, id=1818, 2683.8464pt x 1109.7418pt>
+<Immagini/ATR_Topview.pdf, id=1823, 2683.8464pt x 1109.7418pt>
 File: Immagini/ATR_Topview.pdf Graphic file (type pdf)
 
 <use Immagini/ATR_Topview.pdf>
@@ -4041,7 +4071,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[54] <Immagini/BOEING_Topview.pdf, id=2007, 2683.8464pt x 1109.7418pt>
+[54] <Immagini/BOEING_Topview.pdf, id=2012, 2683.8464pt x 1109.7418pt>
 File: Immagini/BOEING_Topview.pdf Graphic file (type pdf)
 
 <use Immagini/BOEING_Topview.pdf>
@@ -4104,7 +4134,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[57] <Immagini/stallpathmodified.pdf, id=2123, 714.7815pt x 372.8269pt>
+[57] <Immagini/stallpathmodified.pdf, id=2128, 714.7815pt x 372.8269pt>
 File: Immagini/stallpathmodified.pdf Graphic file (type pdf)
 
 <use Immagini/stallpathmodified.pdf>
@@ -4138,13 +4168,10 @@ Package caption Warning: The option `hypcap=true' will be ignored for this
 (caption)                particular \caption on input line 786.
 See the caption package documentation for explanation.
 
-<Immagini/comparisonairfoil.png, id=2158, 673.76718pt x 213.42235pt>
-File: Immagini/comparisonairfoil.png Graphic file (type png)
 
-<use Immagini/comparisonairfoil.png>
-Package pdftex.def Info: Immagini/comparisonairfoil.png used on input line 823.
+Underfull \hbox (badness 10000) in paragraph at lines 817--820
 
-(pdftex.def)             Requested size: 440.16414pt x 139.41832pt.
+ []
 
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -4152,17 +4179,51 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[59] <Immagini/clmaxcomparison.png, id=2169, 500.62032pt x 337.26pt>
-File: Immagini/clmaxcomparison.png Graphic file (type png)
+[59] <Immagini/comparisonairfoil.png, id=2173, 673.76718pt x 213.42235pt>
+File: Immagini/comparisonairfoil.png Graphic file (type png)
 
-<use Immagini/clmaxcomparison.png>
-Package pdftex.def Info: Immagini/clmaxcomparison.png used on input line 833.
-(pdftex.def)             Requested size: 380.11636pt x 256.0748pt.
+<use Immagini/comparisonairfoil.png>
+Package pdftex.def Info: Immagini/comparisonairfoil.png used on input line 824.
+
+(pdftex.def)             Requested size: 440.16414pt x 139.41832pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 829--830
+
+ []
+
+<Immagini/clmaxcomparison1.png, id=2174, 596.2275pt x 388.82765pt>
+File: Immagini/clmaxcomparison1.png Graphic file (type png)
+
+<use Immagini/clmaxcomparison1.png>
+Package pdftex.def Info: Immagini/clmaxcomparison1.png used on input line 834.
+(pdftex.def)             Requested size: 431.94pt x 281.6821pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 840--841
+
+ []
 
 
 Package caption Warning: The option `hypcap=true' will be ignored for this
-(caption)                particular \caption on input line 840.
+(caption)                particular \caption on input line 842.
 See the caption package documentation for explanation.
+
+
+Package Fancyhdr Warning: \headheight is too small (12.0pt): 
+ Make it at least 14.49998pt.
+ We now make it that large for the rest of the document.
+ This may cause the page layout to be inconsistent, however.
+
+[60 <./Immagini/comparisonairfoil.png> <./Immagini/clmaxcomparison1.png>]
+<Immagini/referencepercent.png, id=2184, 496.85625pt x 82.43297pt>
+File: Immagini/referencepercent.png Graphic file (type png)
+
+<use Immagini/referencepercent.png>
+Package pdftex.def Info: Immagini/referencepercent.png used on input line 857.
+(pdftex.def)             Requested size: 451.04816pt x 74.83089pt.
+
+Overfull \hbox (10.03043pt too wide) in paragraph at lines 857--858
+ [][] 
+ []
 
 ) (./Chapters/Drag.tex
 
@@ -4171,21 +4232,21 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[60 <./Immagini/comparisonairfoil.png> <./Immagini/clmaxcomparison.png>]
+[61 <./Immagini/referencepercent.png>]
 Chapter 7.
 
 Underfull \hbox (badness 10000) in paragraph at lines 11--12
 
  []
 
-<Immagini/component.png, id=2180, 423.68288pt x 199.04362pt>
+<Immagini/component.png, id=2192, 423.68288pt x 199.04362pt>
 File: Immagini/component.png Graphic file (type png)
 
 <use Immagini/component.png>
 Package pdftex.def Info: Immagini/component.png used on input line 22.
 (pdftex.def)             Requested size: 387.63371pt x 182.09746pt.
 
-<Immagini/dragcomponentlast.pdf, id=2181, 975.645pt x 546.04pt>
+<Immagini/dragcomponentlast.pdf, id=2193, 975.645pt x 546.04pt>
 File: Immagini/dragcomponentlast.pdf Graphic file (type pdf)
 
 <use Immagini/dragcomponentlast.pdf>
@@ -4201,10 +4262,10 @@ Underfull \hbox (badness 10000) in paragraph at lines 25--30
 
  []
 
-[61
+[62
 
  <./Immagini/component.png>]
-<Immagini/dragco.pdf, id=2187, 1250.6725pt x 291.0875pt>
+<Immagini/dragco.pdf, id=2199, 1250.6725pt x 291.0875pt>
 File: Immagini/dragco.pdf Graphic file (type pdf)
 
 <use Immagini/dragco.pdf>
@@ -4221,12 +4282,12 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[62 <./Immagini/dragcomponentlast.pdf>]
+[63 <./Immagini/dragcomponentlast.pdf>]
 Underfull \hbox (badness 10000) in paragraph at lines 42--44
 
  []
 
-<Immagini/dragfactors.pdf, id=2247, 697.60625pt x 352.31625pt>
+<Immagini/dragfactors.pdf, id=2259, 697.60625pt x 352.31625pt>
 File: Immagini/dragfactors.pdf Graphic file (type pdf)
 
 <use Immagini/dragfactors.pdf>
@@ -4255,8 +4316,8 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[63 <./Immagini/dragco.pdf> <./Immagini/dragfactors.pdf>]
-<Immagini/deltainduceddrag.png, id=2330, 484.43484pt x 395.60297pt>
+[64 <./Immagini/dragco.pdf> <./Immagini/dragfactors.pdf>]
+<Immagini/deltainduceddrag.png, id=2343, 484.43484pt x 395.60297pt>
 File: Immagini/deltainduceddrag.png Graphic file (type png)
 
 <use Immagini/deltainduceddrag.png>
@@ -4269,7 +4330,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[64 <./Immagini/deltainduceddrag.png>]
+[65 <./Immagini/deltainduceddrag.png>]
 Underfull \hbox (badness 10000) in paragraph at lines 135--154
 
  []
@@ -4280,7 +4341,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[65] <immagini/dragflowchartcd0.pdf, id=2362, 1003.75pt x 441.65pt>
+[66] <immagini/dragflowchartcd0.pdf, id=2374, 1003.75pt x 441.65pt>
 File: immagini/dragflowchartcd0.pdf Graphic file (type pdf)
 
 <use immagini/dragflowchartcd0.pdf>
@@ -4296,7 +4357,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 156--162
 
  []
 
-<immagini/dragflowchart3.pdf, id=2363, 1607.00375pt x 883.3pt>
+<immagini/dragflowchart3.pdf, id=2375, 1607.00375pt x 883.3pt>
 File: immagini/dragflowchart3.pdf Graphic file (type pdf)
 
 <use immagini/dragflowchart3.pdf>
@@ -4309,7 +4370,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[66 <./immagini/dragflowchartcd0.pdf>]
+[67 <./immagini/dragflowchartcd0.pdf>]
 Underfull \hbox (badness 10000) in paragraph at lines 176--179
 
  []
@@ -4320,7 +4381,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[67 <./immagini/dragflowchart3.pdf>]
+[68 <./immagini/dragflowchart3.pdf>]
 
 Package Listings Warning: Text dropped after begin of listing on input line 179
 .
@@ -4336,7 +4397,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[68]
+[69]
 Underfull \hbox (badness 10000) in paragraph at lines 295--296
 
  []
@@ -4358,7 +4419,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[69] (./immagini/induceddragatr.tikz)
+[70] (./immagini/induceddragatr.tikz)
 Underfull \hbox (badness 10000) in paragraph at lines 315--321
 
  []
@@ -4375,7 +4436,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[70] (./immagini/totaldragcoefficient.tikz) (./immagini/totaldragcd0atr.tikz)
+[71] (./immagini/totaldragcoefficient.tikz) (./immagini/totaldragcd0atr.tikz)
 Underfull \hbox (badness 10000) in paragraph at lines 336--342
 
  []
@@ -4386,7 +4447,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[71] (./immagini/comparisonatr.tikz) (./immagini/dragflap.tikz)
+[72] (./immagini/comparisonatr.tikz) (./immagini/dragflap.tikz)
 Underfull \hbox (badness 10000) in paragraph at lines 351--357
 
  []
@@ -4397,14 +4458,14 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[72] (./immagini/parasitedragboeing.tikz) (./immagini/parasitedragboeing2.tikz)
+[73] (./immagini/parasitedragboeing.tikz) (./immagini/parasitedragboeing2.tikz)
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
  Make it at least 14.49998pt.
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[73] (./immagini/induceddragboeing.tikz)
+[74] (./immagini/induceddragboeing.tikz)
 Underfull \hbox (badness 10000) in paragraph at lines 376--382
 
  []
@@ -4421,7 +4482,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[74] (./immagini/totaldragcoefficientboeing.tikz)
+[75] (./immagini/totaldragcoefficientboeing.tikz)
 (./immagini/totaldragcd0boeing.tikz)
 Underfull \hbox (badness 10000) in paragraph at lines 397--403
 
@@ -4438,7 +4499,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[75] (./immagini/comparisonboeing.tikz) (./immagini/dragflapboeing.tikz)
+[76] (./immagini/comparisonboeing.tikz) (./immagini/dragflapboeing.tikz)
 Underfull \hbox (badness 10000) in paragraph at lines 411--417
 
  []
@@ -4454,14 +4515,14 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[76] (./immagini/cdicomparisonBOEING.tikz)) (./Chapters/Downwash.tex
+[77] (./immagini/cdicomparisonBOEING.tikz)) (./Chapters/Downwash.tex
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
  Make it at least 14.49998pt.
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[77]
+[78]
 Chapter 8.
 
 Underfull \hbox (badness 10000) in paragraph at lines 15--16
@@ -4472,7 +4533,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 15--16
 
 pdfTeX warning: pdflatex.exe (file ./Immagini/wing_vortex_sheet3.pdf): PDF incl
 usion: found PDF version <1.6>, but at most version <1.5> allowed
-<Immagini/wing_vortex_sheet3.pdf, id=2640, 771.49246pt x 287.62234pt>
+<Immagini/wing_vortex_sheet3.pdf, id=2653, 771.49246pt x 287.62234pt>
 File: Immagini/wing_vortex_sheet3.pdf Graphic file (type pdf)
 
 <use Immagini/wing_vortex_sheet3.pdf>
@@ -4484,10 +4545,10 @@ Underfull \hbox (badness 10000) in paragraph at lines 25--26
 
  []
 
-[78
+[79
 
  <./Immagini/wing_vortex_sheet3.pdf, page is rotated 90 degrees>]
-<Immagini/wing_upwash_downwash.pdf, id=2663, 525.10081pt x 171.98553pt>
+<Immagini/wing_upwash_downwash.pdf, id=2675, 525.10081pt x 171.98553pt>
 File: Immagini/wing_upwash_downwash.pdf Graphic file (type pdf)
 
 <use Immagini/wing_upwash_downwash.pdf>
@@ -4510,8 +4571,8 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[79 <./Immagini/wing_upwash_downwash.pdf>]
-<Immagini/wing_htail_Roskam_eng.pdf, id=2686, 471.02675pt x 212.31522pt>
+[80 <./Immagini/wing_upwash_downwash.pdf>]
+<Immagini/wing_htail_Roskam_eng.pdf, id=2698, 471.02675pt x 212.31522pt>
 File: Immagini/wing_htail_Roskam_eng.pdf Graphic file (type pdf)
 
 <use Immagini/wing_htail_Roskam_eng.pdf>
@@ -4534,8 +4595,8 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[80 <./Immagini/wing_htail_Roskam_eng.pdf>]
-<Immagini/Wing_Alpha_Zero_List.pdf, id=2709, 1366.74751pt x 546.22006pt>
+[81 <./Immagini/wing_htail_Roskam_eng.pdf>]
+<Immagini/Wing_Alpha_Zero_List.pdf, id=2721, 1366.74751pt x 546.22006pt>
 File: Immagini/Wing_Alpha_Zero_List.pdf Graphic file (type pdf)
 
 <use Immagini/Wing_Alpha_Zero_List.pdf>
@@ -4549,8 +4610,8 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[81 <./Immagini/Wing_Alpha_Zero_List.pdf>]
-<Immagini/linearDownwash_2.pdf, id=2725, 1000.73875pt x 490.83376pt>
+[82 <./Immagini/Wing_Alpha_Zero_List.pdf>]
+<Immagini/linearDownwash_2.pdf, id=2738, 1000.73875pt x 490.83376pt>
 File: Immagini/linearDownwash_2.pdf Graphic file (type pdf)
 
 <use Immagini/linearDownwash_2.pdf>
@@ -4567,8 +4628,8 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[82 <./Immagini/linearDownwash_2.pdf>]
-<Immagini/arms_definitions_mod.pdf, id=2760, 2683.8464pt x 1109.7418pt>
+[83 <./Immagini/linearDownwash_2.pdf>]
+<Immagini/arms_definitions_mod.pdf, id=2772, 2683.8464pt x 1109.7418pt>
 File: Immagini/arms_definitions_mod.pdf Graphic file (type pdf)
 
 <use Immagini/arms_definitions_mod.pdf>
@@ -4586,12 +4647,12 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[83 <./Immagini/arms_definitions_mod.pdf>]
+[84 <./Immagini/arms_definitions_mod.pdf>]
 Underfull \hbox (badness 10000) in paragraph at lines 211--213
 
  []
 
-<Immagini/nonlinear_2.pdf, id=2779, 937.5025pt x 733.74126pt>
+<Immagini/nonlinear_2.pdf, id=2791, 937.5025pt x 733.74126pt>
 File: Immagini/nonlinear_2.pdf Graphic file (type pdf)
 
 <use Immagini/nonlinear_2.pdf>
@@ -4608,7 +4669,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[84]
+[85]
 
 Package Listings Warning: Text dropped after begin of listing on input line 228
 .
@@ -4626,7 +4687,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[85 <./Immagini/nonlinear_2.pdf>] (./immagini/mDistance.tikz)
+[86 <./Immagini/nonlinear_2.pdf>] (./immagini/mDistance.tikz)
 (./immagini/zDistance.tikz)
 Underfull \hbox (badness 10000) in paragraph at lines 353--359
 
@@ -4639,7 +4700,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[86] (./immagini/Epsilonalpha.tikz)
+[87] (./immagini/Epsilonalpha.tikz)
 Underfull \hbox (badness 10000) in paragraph at lines 368--374
 
  []
@@ -4655,7 +4716,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[87]
+[88]
 
 Package Listings Warning: Text dropped after begin of listing on input line 379
 .
@@ -4672,7 +4733,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[88] (./immagini/Epsilonalphaboeing.tikz)
+[89] (./immagini/Epsilonalphaboeing.tikz)
 Underfull \hbox (badness 10000) in paragraph at lines 414--420
 
  []
@@ -4688,26 +4749,26 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[89]
+[90]
 
 Package Listings Warning: Text dropped after begin of listing on input line 428
 .
 
-<Immagini/datadownwash.png, id=2881, 657.2053pt x 48.55641pt>
+<Immagini/datadownwash.png, id=2894, 657.2053pt x 48.55641pt>
 File: Immagini/datadownwash.png Graphic file (type png)
 
 <use Immagini/datadownwash.png>
 Package pdftex.def Info: Immagini/datadownwash.png used on input line 452.
 (pdftex.def)             Requested size: 423.62842pt x 31.2982pt.
 
-<immagini/delft.png, id=2882, 483.30562pt x 303.00703pt>
+<immagini/delft.png, id=2895, 483.30562pt x 303.00703pt>
 File: immagini/delft.png Graphic file (type png)
 
 <use immagini/delft.png>
 Package pdftex.def Info: immagini/delft.png used on input line 463.
 (pdftex.def)             Requested size: 317.68475pt x 199.16928pt.
 
-<immagini/delftdata.png, id=2883, 504.38437pt x 304.13625pt>
+<immagini/delftdata.png, id=2896, 504.38437pt x 304.13625pt>
 File: immagini/delftdata.png Graphic file (type png)
 
 <use immagini/delftdata.png>
@@ -4720,7 +4781,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[90 <./Immagini/datadownwash.png> <./immagini/delft.png>]
+[91 <./Immagini/datadownwash.png> <./immagini/delft.png>]
 Underfull \hbox (badness 10000) in paragraph at lines 475--478
 
  []
@@ -4736,15 +4797,15 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[91 <./immagini/delftdata.png>]
-<immagini/chartGiordano.png, id=2923, 649.30078pt x 487.8225pt>
+[92 <./immagini/delftdata.png>]
+<immagini/chartGiordano.png, id=2935, 649.30078pt x 487.8225pt>
 File: immagini/chartGiordano.png Graphic file (type png)
 
 <use immagini/chartGiordano.png>
 Package pdftex.def Info: immagini/chartGiordano.png used on input line 506.
 (pdftex.def)             Requested size: 340.83847pt x 256.0748pt.
 
-<immagini/giord1.png, id=2924, 758.45859pt x 319.56891pt>
+<immagini/giord1.png, id=2936, 758.45859pt x 319.56891pt>
 File: immagini/giord1.png Graphic file (type png)
 
 <use immagini/giord1.png>
@@ -4761,15 +4822,15 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[92 <./immagini/chartGiordano.png> <./immagini/giord1.png>]
-<immagini/roskam1.png, id=2936, 586.06453pt x 317.31047pt>
+[93 <./immagini/chartGiordano.png> <./immagini/giord1.png>]
+<immagini/roskam1.png, id=2948, 586.06453pt x 317.31047pt>
 File: immagini/roskam1.png Graphic file (type png)
 
 <use immagini/roskam1.png>
 Package pdftex.def Info: immagini/roskam1.png used on input line 541.
 (pdftex.def)             Requested size: 367.87227pt x 199.16928pt.
 
-<immagini/downwashcomparison1.png, id=2937, 409.1536pt x 268.75406pt>
+<immagini/downwashcomparison1.png, id=2949, 409.1536pt x 268.75406pt>
 File: immagini/downwashcomparison1.png Graphic file (type png)
 
 <use immagini/downwashcomparison1.png>
@@ -4783,8 +4844,8 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[93 <./immagini/roskam1.png>]
-<immagini/downwashcomparison2.png, id=2948, 397.1086pt x 267.62485pt>
+[94 <./immagini/roskam1.png>]
+<immagini/downwashcomparison2.png, id=2961, 397.1086pt x 267.62485pt>
 File: immagini/downwashcomparison2.png Graphic file (type png)
 
 <use immagini/downwashcomparison2.png>
@@ -4798,9 +4859,9 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[94 <./immagini/downwashcomparison1.png> <./immagini/downwashcomparison2.png>]
+[95 <./immagini/downwashcomparison1.png> <./immagini/downwashcomparison2.png>]
 Chapter 9.
-<Immagini/stability.png, id=2959, 605.8635pt x 337.86224pt>
+<Immagini/stability.png, id=2971, 605.8635pt x 337.86224pt>
 File: Immagini/stability.png Graphic file (type png)
 
 <use Immagini/stability.png>
@@ -4816,10 +4877,10 @@ Underfull \hbox (badness 10000) in paragraph at lines 21--25
 
  []
 
-[95
+[96
 
  <./Immagini/stability.png>]
-<immagini/Longitudinal_Stability_Definitions_nc.pdf, id=2969, 4210.33916pt x 24
+<immagini/Longitudinal_Stability_Definitions_nc.pdf, id=2981, 4210.33916pt x 24
 39.12941pt>
 File: immagini/Longitudinal_Stability_Definitions_nc.pdf Graphic file (type pdf
 )
@@ -4843,8 +4904,8 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[96 <./immagini/Longitudinal_Stability_Definitions_nc.pdf>]
-<immagini/cm.png, id=2987, 522.753pt x 320.99925pt>
+[97 <./immagini/Longitudinal_Stability_Definitions_nc.pdf>]
+<immagini/cm.png, id=2999, 522.753pt x 320.99925pt>
 File: immagini/cm.png Graphic file (type png)
  <use immagini/cm.png>
 Package pdftex.def Info: immagini/cm.png used on input line 55.
@@ -4856,7 +4917,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[97 <./immagini/cm.png>]
+[98 <./immagini/cm.png>]
 Underfull \hbox (badness 10000) in paragraph at lines 79--80
 
  []
@@ -4866,7 +4927,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 79--80
 
  []
 
-<Immagini/wf.pdf, id=2996, 452.69125pt x 496.15361pt>
+<Immagini/wf.pdf, id=3008, 452.69125pt x 496.15361pt>
 File: Immagini/wf.pdf Graphic file (type pdf)
  <use Immagini/wf.pdf>
 Package pdftex.def Info: Immagini/wf.pdf used on input line 91.
@@ -4878,13 +4939,13 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[98 <./Immagini/wf.pdf>]
+[99 <./Immagini/wf.pdf>]
 
 pdfTeX warning: pdflatex.exe (file ./Immagini/wing_fuselage_front_view_interfer
 ence.pdf): PDF inclusion: found PDF version <1.6>, but at most version <1.5> al
 lowed
 
-<Immagini/wing_fuselage_front_view_interference.pdf, id=3017, 554.7673pt x 343.
+<Immagini/wing_fuselage_front_view_interference.pdf, id=3030, 554.7673pt x 343.
 2825pt>
 File: Immagini/wing_fuselage_front_view_interference.pdf Graphic file (type pdf
 )
@@ -4897,7 +4958,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 118--121
 
  []
 
-<Immagini/WingBody_CL_Vs_alpha_curve.pdf, id=3020, 919.28957pt x 758.0983pt>
+<Immagini/WingBody_CL_Vs_alpha_curve.pdf, id=3033, 919.28957pt x 758.0983pt>
 File: Immagini/WingBody_CL_Vs_alpha_curve.pdf Graphic file (type pdf)
 
 <use Immagini/WingBody_CL_Vs_alpha_curve.pdf>
@@ -4911,8 +4972,8 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[99 <./Immagini/wing_fuselage_front_view_interference.pdf>]
-<Immagini/horizontal_tail_profile_deltaE.pdf, id=3041, 528.43787pt x 130.07799p
+[100 <./Immagini/wing_fuselage_front_view_interference.pdf>]
+<Immagini/horizontal_tail_profile_deltaE.pdf, id=3054, 528.43787pt x 130.07799p
 t>
 File: Immagini/horizontal_tail_profile_deltaE.pdf Graphic file (type pdf)
  <use Immagini/horizontal_tail_profile_deltaE.pdf>
@@ -4926,15 +4987,15 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[100 <./Immagini/WingBody_CL_Vs_alpha_curve.pdf>]
-<Immagini/taude.png, id=3056, 512.51476pt x 358.33875pt>
+[101 <./Immagini/WingBody_CL_Vs_alpha_curve.pdf>]
+<Immagini/taude.png, id=3068, 512.51476pt x 358.33875pt>
 File: Immagini/taude.png Graphic file (type png)
 
 <use Immagini/taude.png>
 Package pdftex.def Info: Immagini/taude.png used on input line 207.
 (pdftex.def)             Requested size: 215.68484pt x 150.79968pt.
 
-<Immagini/taudeltae.png, id=3057, 542.32613pt x 361.65112pt>
+<Immagini/taudeltae.png, id=3069, 542.32613pt x 361.65112pt>
 File: Immagini/taudeltae.png Graphic file (type png)
 
 <use Immagini/taudeltae.png>
@@ -4945,14 +5006,14 @@ Overfull \hbox (5.62805pt too wide) in paragraph at lines 213--214
  [][] 
  []
 
-<Immagini/Eta_Delta_Plain.png, id=3058, 634.16925pt x 457.71pt>
+<Immagini/Eta_Delta_Plain.png, id=3070, 634.16925pt x 457.71pt>
 File: Immagini/Eta_Delta_Plain.png Graphic file (type png)
 
 <use Immagini/Eta_Delta_Plain.png>
 Package pdftex.def Info: Immagini/Eta_Delta_Plain.png used on input line 257.
 (pdftex.def)             Requested size: 212.8762pt x 153.6447pt.
 
-<Immagini/alfadelta.png, id=3059, 396.88275pt x 336.65775pt>
+<Immagini/alfadelta.png, id=3071, 396.88275pt x 336.65775pt>
 File: Immagini/alfadelta.png Graphic file (type png)
 
 <use Immagini/alfadelta.png>
@@ -4965,7 +5026,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[101 <./Immagini/horizontal_tail_profile_deltaE.pdf> <./Immagini/taude.png> <./
+[102 <./Immagini/horizontal_tail_profile_deltaE.pdf> <./Immagini/taude.png> <./
 Immagini/taudeltae.png>]
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -4973,8 +5034,8 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[102 <./Immagini/Eta_Delta_Plain.png> <./Immagini/alfadelta.png>]
-<Immagini/dragcomponent.png, id=3098, 553.16663pt x 230.0595pt>
+[103 <./Immagini/Eta_Delta_Plain.png> <./Immagini/alfadelta.png>]
+<Immagini/dragcomponent.png, id=3110, 553.16663pt x 230.0595pt>
 File: Immagini/dragcomponent.png Graphic file (type png)
 
 <use Immagini/dragcomponent.png>
@@ -4987,14 +5048,14 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[103] <Immagini/Delta1_Plain.png, id=3112, 431.81325pt x 373.99725pt>
+[104] <Immagini/Delta1_Plain.png, id=3124, 431.81325pt x 373.99725pt>
 File: Immagini/Delta1_Plain.png Graphic file (type png)
 
 <use Immagini/Delta1_Plain.png>
 Package pdftex.def Info: Immagini/Delta1_Plain.png used on input line 393.
 (pdftex.def)             Requested size: 259.53139pt x 224.7766pt.
 
-<Immagini/Delta2_Plain.png, id=3113, 399.29175pt x 348.70274pt>
+<Immagini/Delta2_Plain.png, id=3125, 399.29175pt x 348.70274pt>
 File: Immagini/Delta2_Plain.png Graphic file (type png)
 
 <use Immagini/Delta2_Plain.png>
@@ -5007,15 +5068,15 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[104 <./Immagini/dragcomponent.png>]
+[105 <./Immagini/dragcomponent.png>]
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
  Make it at least 14.49998pt.
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[105 <./Immagini/Delta1_Plain.png> <./Immagini/Delta2_Plain.png>]
-<Immagini/wing_topview_1_new.pdf, id=3131, 456.36646pt x 233.45956pt>
+[106 <./Immagini/Delta1_Plain.png> <./Immagini/Delta2_Plain.png>]
+<Immagini/wing_topview_1_new.pdf, id=3144, 456.36646pt x 233.45956pt>
 File: Immagini/wing_topview_1_new.pdf Graphic file (type pdf)
 
 <use Immagini/wing_topview_1_new.pdf>
@@ -5029,15 +5090,15 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[106]
+[107]
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
  Make it at least 14.49998pt.
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[107 <./Immagini/wing_topview_1_new.pdf>]
-<Immagini/Mu1_Pitching_Moment.png, id=3167, 463.13025pt x 317.988pt>
+[108 <./Immagini/wing_topview_1_new.pdf>]
+<Immagini/Mu1_Pitching_Moment.png, id=3179, 463.13025pt x 317.988pt>
 File: Immagini/Mu1_Pitching_Moment.png Graphic file (type png)
 
 <use Immagini/Mu1_Pitching_Moment.png>
@@ -5045,7 +5106,7 @@ Package pdftex.def Info: Immagini/Mu1_Pitching_Moment.png used on input line 50
 2.
 (pdftex.def)             Requested size: 330.76329pt x 227.10252pt.
 
-<Immagini/Mu2_Pitching_Moment.png, id=3168, 389.455pt x 454.69875pt>
+<Immagini/Mu2_Pitching_Moment.png, id=3180, 389.455pt x 454.69875pt>
 File: Immagini/Mu2_Pitching_Moment.png Graphic file (type png)
 
 <use Immagini/Mu2_Pitching_Moment.png>
@@ -5057,7 +5118,7 @@ Overfull \hbox (22.05223pt too wide) in paragraph at lines 511--512
  [][] 
  []
 
-<Immagini/Mu3_Pitching_Moment.png, id=3169, 297.11pt x 405.515pt>
+<Immagini/Mu3_Pitching_Moment.png, id=3181, 297.11pt x 405.515pt>
 File: Immagini/Mu3_Pitching_Moment.png Graphic file (type png)
 
 <use Immagini/Mu3_Pitching_Moment.png>
@@ -5071,9 +5132,9 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[108 <./Immagini/Mu1_Pitching_Moment.png> <./Immagini/Mu2_Pitching_Moment.png> 
+[109 <./Immagini/Mu1_Pitching_Moment.png> <./Immagini/Mu2_Pitching_Moment.png> 
 <./Immagini/Mu3_Pitching_Moment.png>]
-<Immagini/fuse.png, id=3179, 500.16862pt x 202.05487pt>
+<Immagini/fuse.png, id=3191, 500.16862pt x 202.05487pt>
 File: Immagini/fuse.png Graphic file (type png)
 
 <use Immagini/fuse.png>
@@ -5090,22 +5151,22 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[109 <./Immagini/fuse.png>]
-<Immagini/stripszero.png, id=3194, 479.99326pt x 143.3355pt>
+[110 <./Immagini/fuse.png>]
+<Immagini/stripszero.png, id=3206, 479.99326pt x 143.3355pt>
 File: Immagini/stripszero.png Graphic file (type png)
 
 <use Immagini/stripszero.png>
 Package pdftex.def Info: Immagini/stripszero.png used on input line 581.
 (pdftex.def)             Requested size: 295.38086pt x 88.2037pt.
 
-<Immagini/stripsalfa.png, id=3195, 423.38174pt x 321.90262pt>
+<Immagini/stripsalfa.png, id=3207, 423.38174pt x 321.90262pt>
 File: Immagini/stripsalfa.png Graphic file (type png)
 
 <use Immagini/stripsalfa.png>
 Package pdftex.def Info: Immagini/stripsalfa.png used on input line 588.
 (pdftex.def)             Requested size: 235.76779pt x 179.25244pt.
 
-<Immagini/kdue.png, id=3197, 152.36925pt x 74.679pt>
+<Immagini/kdue.png, id=3209, 152.36925pt x 74.679pt>
 File: Immagini/kdue.png Graphic file (type png)
  <use Immagini/kdue.png>
 Package pdftex.def Info: Immagini/kdue.png used on input line 599.
@@ -5117,8 +5178,8 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[110 <./Immagini/stripszero.png> <./Immagini/stripsalfa.png> <./Immagini/kdue.p
-ng>] <Immagini/fuselage.png, id=3211, 264.08662pt x 81.906pt>
+[111 <./Immagini/stripszero.png> <./Immagini/stripsalfa.png> <./Immagini/kdue.p
+ng>] <Immagini/fuselage.png, id=3223, 264.08662pt x 81.906pt>
 File: Immagini/fuselage.png Graphic file (type png)
 
 <use Immagini/fuselage.png>
@@ -5129,14 +5190,14 @@ Underfull \hbox (badness 10000) in paragraph at lines 641--642
 
  []
 
-<Immagini/fuselage1.png, id=3213, 553.76888pt x 273.12038pt>
+<Immagini/fuselage1.png, id=3225, 553.76888pt x 273.12038pt>
 File: Immagini/fuselage1.png Graphic file (type png)
 
 <use Immagini/fuselage1.png>
 Package pdftex.def Info: Immagini/fuselage1.png used on input line 648.
 (pdftex.def)             Requested size: 369.2234pt x 182.09746pt.
 
-<Immagini/fuselage2.png, id=3214, 587.19376pt x 279.444pt>
+<Immagini/fuselage2.png, id=3226, 587.19376pt x 279.444pt>
 File: Immagini/fuselage2.png Graphic file (type png)
 
 <use Immagini/fuselage2.png>
@@ -5149,22 +5210,22 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[111 <./Immagini/fuselage.png>]
-<Immagini/fuselage3.png, id=3225, 600.74437pt x 268.90463pt>
+[112 <./Immagini/fuselage.png>]
+<Immagini/fuselage3.png, id=3238, 600.74437pt x 268.90463pt>
 File: Immagini/fuselage3.png Graphic file (type png)
 
 <use Immagini/fuselage3.png>
 Package pdftex.def Info: Immagini/fuselage3.png used on input line 660.
 (pdftex.def)             Requested size: 406.83244pt x 182.09746pt.
 
-<Immagini/fuselage4.png, id=3226, 577.85887pt x 271.91588pt>
+<Immagini/fuselage4.png, id=3239, 577.85887pt x 271.91588pt>
 File: Immagini/fuselage4.png Graphic file (type png)
 
 <use Immagini/fuselage4.png>
 Package pdftex.def Info: Immagini/fuselage4.png used on input line 666.
 (pdftex.def)             Requested size: 386.98708pt x 182.09746pt.
 
-<Immagini/fuselage5.png, id=3227, 575.44987pt x 266.1945pt>
+<Immagini/fuselage5.png, id=3240, 575.44987pt x 266.1945pt>
 File: Immagini/fuselage5.png Graphic file (type png)
 
 <use Immagini/fuselage5.png>
@@ -5177,8 +5238,8 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[112 <./Immagini/fuselage1.png> <./Immagini/fuselage2.png> <./Immagini/fuselage
-3.png>] <Immagini/fuselage6.png, id=3239, 597.432pt x 265.89337pt>
+[113 <./Immagini/fuselage1.png> <./Immagini/fuselage2.png> <./Immagini/fuselage
+3.png>] <Immagini/fuselage6.png, id=3251, 597.432pt x 265.89337pt>
 File: Immagini/fuselage6.png Graphic file (type png)
 
 <use Immagini/fuselage6.png>
@@ -5191,7 +5252,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[113 <./Immagini/fuselage4.png> <./Immagini/fuselage5.png> <./Immagini/fuselage
+[114 <./Immagini/fuselage4.png> <./Immagini/fuselage5.png> <./Immagini/fuselage
 6.png>]
 Underfull \hbox (badness 10000) in paragraph at lines 695--698
 
@@ -5206,7 +5267,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 720--721
 
 pdfTeX warning: pdflatex.exe (file ./Immagini/wing_up-downwash.pdf): PDF inclus
 ion: found PDF version <1.6>, but at most version <1.5> allowed
-<Immagini/wing_up-downwash.pdf, id=3251, 507.8975pt x 288.1435pt>
+<Immagini/wing_up-downwash.pdf, id=3263, 507.8975pt x 288.1435pt>
 File: Immagini/wing_up-downwash.pdf Graphic file (type pdf)
 
 <use Immagini/wing_up-downwash.pdf>
@@ -5219,7 +5280,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[114]
+[115]
 Overfull \hbox (16.83287pt too wide) detected at line 746
 [][]\LMP1/mtt/m/it/12 C[] \LMP2/ntxtlf/m/n/12 D \LMP1/mtt/m/it/12 C[][] \LMP2/n
 txtlf/m/n/12 C \LMP1/mtt/m/it/12 C[][] \LMP2/ntxtlf/m/n/12 C \LMP1/mtt/m/it/12 
@@ -5239,11 +5300,11 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[115 <./Immagini/wing_up-downwash.pdf>]
+[116 <./Immagini/wing_up-downwash.pdf>]
 
 LaTeX Warning: Command \textendash invalid in math mode on input line 768.
 
-<Immagini/pendular.png, id=3290, 523.5811pt x 367.3725pt>
+<Immagini/pendular.png, id=3302, 523.5811pt x 367.3725pt>
 File: Immagini/pendular.png Graphic file (type png)
 
 <use Immagini/pendular.png>
@@ -5260,7 +5321,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[116 <./Immagini/pendular.png>]
+[117 <./Immagini/pendular.png>]
 Underfull \hbox (badness 10000) in paragraph at lines 781--784
 
  []
@@ -5275,7 +5336,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[117]
+[118]
 Underfull \vbox (badness 10000) detected at line 860
  []
 
@@ -5290,7 +5351,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[118]
+[119]
 Overfull \hbox (31.67227pt too wide) in paragraph at lines 900--901
 \T1/ntxtlf/m/n/12 Mach num-bers are de-fined in the air-craft aero-dy-namic man
 -ager \T1/pcr/m/n/12 ACAerodynamicManager\T1/ntxtlf/m/n/12 .
@@ -5302,7 +5363,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[119] <Immagini/acclass.pdf, id=3319, 955.57pt x 551.05875pt>
+[120] <Immagini/acclass.pdf, id=3331, 955.57pt x 551.05875pt>
 File: Immagini/acclass.pdf Graphic file (type pdf)
 
 <use Immagini/acclass.pdf>
@@ -5320,7 +5381,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[120 <./Immagini/acclass.pdf>] (./immagini/cmacATR.tikz)
+[121 <./Immagini/acclass.pdf>] (./immagini/cmacATR.tikz)
 Underfull \hbox (badness 10000) in paragraph at lines 987--993
 
  []
@@ -5332,7 +5393,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[121] (./immagini/cmachTailATR.tikz)
+[122] (./immagini/cmachTailATR.tikz)
 Underfull \hbox (badness 10000) in paragraph at lines 1000--1006
 
  []
@@ -5344,7 +5405,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[122] (./immagini/cdalfatailATR.tikz)
+[123] (./immagini/cdalfatailATR.tikz)
 Underfull \hbox (badness 10000) in paragraph at lines 1013--1019
 
  []
@@ -5356,7 +5417,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[123] (./immagini/cltotalfatailATR.tikz)
+[124] (./immagini/cltotalfatailATR.tikz)
 Underfull \hbox (badness 10000) in paragraph at lines 1026--1032
 
  []
@@ -5368,7 +5429,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[124] (./immagini/thrusts.tikz)
+[125] (./immagini/thrusts.tikz)
 Underfull \hbox (badness 10000) in paragraph at lines 1045--1051
 
  []
@@ -5380,7 +5441,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[125] (./immagini/cmclAtr.tikz)
+[126] (./immagini/cmclAtr.tikz)
 Underfull \hbox (badness 10000) in paragraph at lines 1058--1064
 
  []
@@ -5392,23 +5453,51 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[126] (./immagini/noatr.tikz)) (./Chapters/works.tex
+[127] (./immagini/noatr.tikz)
+Underfull \hbox (badness 10000) in paragraph at lines 1071--1077
+
+ []
+
+(./immagini/cmtottakeofATR.tikz)
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
  Make it at least 14.49998pt.
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[127]
+[128] (./immagini/cmcltakeoff.tikz)
+Underfull \hbox (badness 10000) in paragraph at lines 1084--1090
+
+ []
+
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
  Make it at least 14.49998pt.
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[128]
+[129] (./immagini/cmquarterBOEING.tikz) (./immagini/cmacBOEING.tikz)
+Underfull \hbox (badness 10000) in paragraph at lines 1100--1106
+
+ []
+
+) (./Chapters/works.tex
+
+Package Fancyhdr Warning: \headheight is too small (12.0pt): 
+ Make it at least 14.49998pt.
+ We now make it that large for the rest of the document.
+ This may cause the page layout to be inconsistent, however.
+
+[130]
+
+Package Fancyhdr Warning: \headheight is too small (12.0pt): 
+ Make it at least 14.49998pt.
+ We now make it that large for the rest of the document.
+ This may cause the page layout to be inconsistent, however.
+
+[131]
 Chapter 10.
-<Immagini/induced.png, id=3499, 369.17924pt x 117.73987pt>
+<Immagini/induced.png, id=3524, 369.17924pt x 117.73987pt>
 File: Immagini/induced.png Graphic file (type png)
 
 <use Immagini/induced.png>
@@ -5419,10 +5508,10 @@ Underfull \hbox (badness 10000) in paragraph at lines 48--49
 
  []
 
-[129
+[132
 
  <./Immagini/induced.png>]
-<Immagini/atg.png, id=3508, 251.13824pt x 80.09924pt>
+<Immagini/atg.png, id=3533, 251.13824pt x 80.09924pt>
 File: Immagini/atg.png Graphic file (type png)
  <use Immagini/atg.png>
 Package pdftex.def Info: Immagini/atg.png used on input line 60.
@@ -5525,7 +5614,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[130 <./Immagini/atg.png>]
+[133 <./Immagini/atg.png>]
 PGFPlots: reading {immagini/alfaiBoeing.txt}
 PGFPlots: reading {immagini/alfaiBoeing.txt}
 PGFPlots: reading {immagini/alfaiBoeing.txt}
@@ -5620,17 +5709,17 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[131]) (./Tesi_Appendices.tex (./appendices/HDF.tex [132
+[134]) (./Tesi_Appendices.tex (./appendices/HDF.tex [135
 
 ]
 Appendix A.
-<Immagini/digitize.png, id=3552, 405.9165pt x 313.47113pt>
+<Immagini/digitize.png, id=3576, 405.9165pt x 313.47113pt>
 File: Immagini/digitize.png Graphic file (type png)
 
 <use Immagini/digitize.png>
 Package pdftex.def Info: Immagini/digitize.png used on input line 12.
 (pdftex.def)             Requested size: 291.06425pt x 224.7766pt.
- [133
+ [136
 
  <./Immagini/digitize.png>]
 (c:/texlive/2015/texmf-dist/tex/latex/listings/lstlang1.sty
@@ -5646,7 +5735,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[134]
+[137]
 Underfull \hbox (badness 10000) in paragraph at lines 162--164
 
  []
@@ -5657,7 +5746,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[135] <Immagini/digitize2.png, id=3702, 544.434pt x 227.6505pt>
+[138] <Immagini/digitize2.png, id=3727, 544.434pt x 227.6505pt>
 File: Immagini/digitize2.png Graphic file (type png)
 
 <use Immagini/digitize2.png>
@@ -5670,14 +5759,14 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[136 <./Immagini/digitize2.png>]
+[139 <./Immagini/digitize2.png>]
 Appendix B.
 
 Underfull \hbox (badness 10000) in paragraph at lines 7--9
 
  []
 
-[137
+[140
 
 ]))
 
@@ -5686,15 +5775,15 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[138]
+[141]
 
 Package glossaries Warning: Deprecated command \glossarystyle.
  I recommend you switch to \setglossarystyle unless you want to maintain backwa
 rd compatibility on input line 227.
 
-[139
+[142
 
-] (./Tesi_Magistrale_Manuela_Ruocco.gls [140
+] (./Tesi_Magistrale_Manuela_Ruocco.gls [143
 
 
 
@@ -5705,12 +5794,12 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[141] (./Tesi_Magistrale_Manuela_Ruocco.acr) [142
+[144] (./Tesi_Magistrale_Manuela_Ruocco.acr) [145
 
 
 
 ]
-(./Tesi_Magistrale_Manuela_Ruocco.sym [143
+(./Tesi_Magistrale_Manuela_Ruocco.sym [146
 
 
 
@@ -5721,7 +5810,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[144]
+[147]
 Overfull \hbox (4.48705pt too wide) in paragraph at lines 257--257
 []\T1/ntxtlf/m/n/12 Various Au-thors. \T1/ntxtlf/m/it/12 Boe-ing 747. Air-craft
  de-scrip-tion\T1/ntxtlf/m/n/12 . \T1/ntxtlf/m/sc/12 url\T1/ntxtlf/m/n/12 : [][
@@ -5751,7 +5840,7 @@ Package biblatex Warning: No driver for entry type 'other'.
 Package biblatex Warning: No driver for entry type 'other'.
 (biblatex)                Using fallback driver on input line 257.
 
-[145
+[148
 
 
 ]
@@ -5805,7 +5894,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[146]
+[149]
 Overfull \hbox (24.357pt too wide) in paragraph at lines 257--257
 \T1/ntxtlf/m/n/12 9780124199774. \T1/ntxtlf/m/sc/12 url\T1/ntxtlf/m/n/12 : [][]
 $\T1/pcr/m/n/12 https : / / books . google . it / books ? id = knhHAgAAQBAJ$[][
@@ -5845,7 +5934,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[147]
+[150]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 259.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 259.
  (./Tesi_Magistrale_Manuela_Ruocco.aux)
@@ -5853,7 +5942,7 @@ Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 259.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 259.
 Package rerunfilecheck Info: File `Tesi_Magistrale_Manuela_Ruocco.out' has not 
 changed.
-(rerunfilecheck)             Checksum: 1E622B39CF2B9B5D257D80FF934D0E4E;7768.
+(rerunfilecheck)             Checksum: C3C8D08085C59943D14D88D2E2F46C1D;7838.
 
 
 LaTeX Warning: There were multiply-defined labels.
@@ -5864,10 +5953,10 @@ l'.
 
  ) 
 Here is how much of TeX's memory you used:
- 59657 strings out of 493054
- 1231688 string characters out of 6138326
- 1825183 words of memory out of 5000000
- 60369 multiletter control sequences out of 15000+600000
+ 59723 strings out of 493054
+ 1233003 string characters out of 6138326
+ 1825241 words of memory out of 5000000
+ 60413 multiletter control sequences out of 15000+600000
  162211 words of font info for 112 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  62i,20n,100p,10402b,3298s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -5894,11 +5983,11 @@ b><c:/texlive/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmb.pfb><c:/texlive/
 t/fonts/type1/public/tex-gyre/qtmri.pfb><c:/texlive/2015/texmf-dist/fonts/type1
 /urw/courier/ucrb8a.pfb><c:/texlive/2015/texmf-dist/fonts/type1/urw/courier/ucr
 r8a.pfb><c:/texlive/2015/texmf-dist/fonts/type1/urw/times/utmr8a.pfb>
-Output written on Tesi_Magistrale_Manuela_Ruocco.pdf (156 pages, 16764018 bytes
+Output written on Tesi_Magistrale_Manuela_Ruocco.pdf (159 pages, 16815535 bytes
 ).
 PDF statistics:
- 4280 PDF objects out of 4296 (max. 8388607)
- 3612 compressed objects within 37 object streams
- 1600 named destinations out of 1728 (max. 500000)
- 1459 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 4307 PDF objects out of 5155 (max. 8388607)
+ 3634 compressed objects within 37 object streams
+ 1609 named destinations out of 1728 (max. 500000)
+ 1472 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -815,7 +815,8 @@ K_{LS}=1 + (0.0042 \AR -0.066) \left (1+2.3 \frac{C_{L_{\alpha}}}{ c_{l_{max}}} 
 \end{equation}
 
 \noindent \\
-{\bfseries Computational Fluid Dynamics (CFD)} is a methodology that allows engineers to predict the performance of their designs when exposed to fluid flow, either internal flow (such as the flow of air and gasoline through an engine manifold) or external flow (such as the aerodynamic flow past an automobile or the hydrodynamic flow past a boat). CFD software programs can simulate problems involving gases, liquids and solids and multi-phase problems that depend on the interaction of any number of the above. CFD is used in the design of almost every major product, reducing uncertainty in the design process, and resulting in higher quality products and designs, with greater robustness that better meet customer requirements. CD-adapco is the world's largest independent CFD focused provider of engineering simulation software, support and services. \cite{adapco}
+{\bfseries Computational Fluid Dynamics (CFD)} is a methodology that allows engineers to predict the performance of their designs when exposed to fluid flow, either internal flow (such as the flow of air and gasoline through an engine manifold) or external flow (such as the aerodynamic flow past an automobile or the hydrodynamic flow past a boat). CFD software programs can simulate problems involving gases, liquids and solids and multi-phase problems that depend on the interaction of any number of the above. CFD is used in the design of almost every major product, reducing uncertainty in the design process, and resulting in higher quality products and designs, with greater robustness that better meet customer requirements. CD-adapco is the world's largest independent CFD focused provider of engineering simulation software, support and services. \cite{adapco} \\ \\
+Considering the reduction of $CL_{max}$ due to flow separation and other tridimensional effects, an additional modification has been implemented starting from the Stall Path method and the Modified Stall Path Method. The used value for $CL_{max}$ is obtained from the traditional Stall Path method, while the value of $\alpha_{max}$ is obtained from the modified Stall Path Method. In this way a small percentual error has been obtained.
 
 
 \begin{figure}[H]
@@ -825,27 +826,36 @@ K_{LS}=1 + (0.0042 \AR -0.066) \left (1+2.3 \frac{C_{L_{\alpha}}}{ c_{l_{max}}} 
 	\label{fig:met}
 \end{figure}
 	 	 
-
+\noindent \\
 
 	 	 
 \begin{figure}[H]
 	\centering
-	{\includegraphics[height=9 cm]{Immagini/clmaxcomparison}} 
+	{\includegraphics[height=9.9 cm]{Immagini/clmaxcomparison1.png}} 
 	\caption{Comparison of wing lift curve of wing.}
 	\label{fig:met}
 \end{figure}
 	 	 
 	 	 
+\noindent \\
 \begin{center}
 \captionof{table}{Lift results comparison}
-	\begin{tabular}{| l | l | l |}
+	\begin{tabular}{| l | l | l | }
 		\hline
 		 Method  & $C_{L_{MAX}}$ & $\alpha_{stall}$   \\ \hline
-		 Stall Path  & 1.75  & $17.1 ^{\circ}$  \\ \hline
-		 Modified Stall Path  & 1.86   & $20 ^{\circ}$  \\ \hline
+		 Stall Path  &1.766  & $17.1 ^{\circ}$  \\ \hline
+		 Modified Stall Path  & 1.86   & $19.5^{\circ}$  \\ \hline
+		 Modified Stall Path II  & 1.766  & $19.5^{\circ}$  \\ \hline
 		 Phillips And Alley  & 1.83  & n.e.\\ \hline
-		 CFD  & 1.7  & $19.8 ^{\circ}$   \\ \hline
+		 CFD  & 1.699  & $19.6 ^{\circ}$   \\ \hline
 		\hline
 	\end{tabular}
 \end{center}
+
+\begin{figure}[H]
+	\centering
+	{\includegraphics[height=2.63cm]{Immagini/referencepercent.png}} 
+	\caption{Percentage Error.}
+	\label{fig:met}
+\end{figure}
 
