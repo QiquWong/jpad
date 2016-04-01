@@ -69,7 +69,7 @@ public class AGILE_Test_HighLift_TakeOff {
 		// DEFAULT FOLDERS CREATION:
 		MyConfiguration.initWorkingDirectoryTree();
 		String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR) + File.separator;
-		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "AGILE_DC1_MR" + File.separator);
+		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "AGILE_DC1" + File.separator);
 		
 		//--------------------------------------------------------------------------------------
 		// DEFINE OPERATING CONDITIONS, THE WING AND THE WING ANALYZER OBJECTS:
@@ -89,6 +89,11 @@ public class AGILE_Test_HighLift_TakeOff {
 
 		LiftingSurface theWing = aircraft.get_wing();
 		
+		System.out.println("TWIST KINK (BEFORE)= " + theWing.get_twistKink());
+		System.out.println("TWIST KINK AirfoilList(BEFORE)= " + theWing.get_theAirfoilsList().get(1).getGeometry().get_twist());
+		System.out.println("TWIST TIP (BEFORE)= " + theWing.get_twistTip());
+		System.out.println("TWIST TIP AirfoilList(BEFORE)= " + theWing.get_theAirfoilsList().get(2).getGeometry().get_twist());
+		
 		// update of the wing with new model parameters
 		theWing.set_surface(Amount.valueOf(82.7, SI.SQUARE_METRE));
 		theWing.set_aspectRatio(9.54);
@@ -97,19 +102,27 @@ public class AGILE_Test_HighLift_TakeOff {
 		theWing.set_taperRatioOuterPanel(0.387);
 		theWing.set_taperRatioCrankedWing(0.1645);
 		theWing.set_spanStationKink(0.398);
-		theWing.set_extensionLERootChordLinPanel(0.086);
-		theWing.set_extensionTERootChordLinPanel(0.59);
+		theWing.set_extensionLERootChordLinPanel(0.16886);
+		theWing.set_extensionTERootChordLinPanel(0.505361);
+//		theWing.set_iw(Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
+//		theWing.set_twistKink(Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
+//		theWing.set_twistTip(Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
 		theWing.set_iw(Amount.valueOf(Math.toRadians(2.5),SI.RADIAN));
-		theWing.set_twistKink(Amount.valueOf(Math.toRadians(-1.4),SI.RADIAN));
-		theWing.set_twistTip(Amount.valueOf(Math.toRadians(-6.5),SI.RADIAN));
+//		theWing.set_twistKink(Amount.valueOf(Math.toRadians(-1.592),SI.RADIAN));
+//		theWing.set_twistTip(Amount.valueOf(Math.toRadians(-4),SI.RADIAN));
 		theWing.set_dihedralInnerPanel(Amount.valueOf(Math.toRadians(6.0), SI.RADIAN));
 		theWing.set_dihedralOuterPanel(Amount.valueOf(Math.toRadians(6.0), SI.RADIAN));
+		MyArray _dihedral = new MyArray(new double[] {theWing.get_dihedralInnerPanel().getEstimatedValue(), theWing.get_dihedralOuterPanel().getEstimatedValue()});
+		theWing.set_dihedral(_dihedral);
 		theWing.set_chordRoot(Amount.valueOf(6.39, SI.METER));
 		theWing.set_chordKink(Amount.valueOf(2.716, SI.METER)); 
 		theWing.set_chordTip(Amount.valueOf(1.051, SI.METER)); 
 		theWing.set_tc_root(0.161);
 		theWing.set_tc_kink(0.149);
 		theWing.set_tc_tip(0.119);
+		theWing.set_xLERoot(Amount.valueOf(0.0, SI.METER));
+		theWing.set_xLEKink(Amount.valueOf(3.707, SI.METER));
+		theWing.set_xLETip(Amount.valueOf(8.305, SI.METER));
 		theWing.set_sweepQuarterChordEq(Amount.valueOf(26.3, NonSI.DEGREE_ANGLE));
 		theWing.set_sweepLEEquivalent(
 				theWing.calculateSweep(
@@ -117,7 +130,8 @@ public class AGILE_Test_HighLift_TakeOff {
 						0.0,
 						0.25)
 				); 
-
+		
+		
 		//AIRFOILS DEFINITION (initialize and set data):
 		//AIRFOIL ROOT
 		double yLocRoot = 0.0;		
@@ -131,6 +145,7 @@ public class AGILE_Test_HighLift_TakeOff {
 		airfoilRoot.getGeometry().set_radiusLE(0.03892);
 		airfoilRoot.getGeometry().set_deltaYPercent(4.375);
 		airfoilRoot.set_chordLocal(6.39);
+		airfoilRoot.getGeometry().set_twist(Amount.valueOf(Math.toRadians(0.0), SI.RADIAN));
 		// the followings are not necessaries to the high lift devices effects analysis
 		airfoilRoot.getAerodynamics().set_alphaZeroLift(Amount.valueOf(Math.toRadians(-1.9864), SI.RADIAN));
 		airfoilRoot.getAerodynamics().set_cdMin(0.0);
@@ -158,6 +173,7 @@ public class AGILE_Test_HighLift_TakeOff {
 		airfoilKink.getGeometry().set_radiusLE(0.04265);
 		airfoilKink.getGeometry().set_deltaYPercent(3.88);
 		airfoilKink.set_chordLocal(2.716);
+		airfoilKink.getGeometry().set_twist(Amount.valueOf(Math.toRadians(-1.592), SI.RADIAN));
 		// the followings are not necessaries to the high lift devices effects analysis
 		airfoilKink.getAerodynamics().set_alphaZeroLift(Amount.valueOf(Math.toRadians(-1.6289), SI.RADIAN));
 		airfoilKink.getAerodynamics().set_cdMin(0.0);
@@ -185,6 +201,7 @@ public class AGILE_Test_HighLift_TakeOff {
 		airfoilTip.getGeometry().set_radiusLE(0.01011);
 		airfoilTip.getGeometry().set_deltaYPercent(2.92);
 		airfoilTip.set_chordLocal(1.051);
+		airfoilTip.getGeometry().set_twist(Amount.valueOf(Math.toRadians(-4.0), SI.RADIAN));
 		// the followings are not necessaries to the high lift devices effects analysis
 		airfoilTip.getAerodynamics().set_alphaZeroLift(Amount.valueOf(Math.toRadians(-3.1795), SI.RADIAN));
 		airfoilTip.getAerodynamics().set_cdMin(0.0);
@@ -206,7 +223,22 @@ public class AGILE_Test_HighLift_TakeOff {
 		myAirfoilList.add(1, airfoilKink);
 		myAirfoilList.add(2, airfoilTip);
 		theWing.set_theAirfoilsList(myAirfoilList);
+		theWing.get_theAirfoilsList().get(1).getGeometry().set_twist(Amount.valueOf(Math.toRadians(-1.592), SI.RADIAN));
+		theWing.get_theAirfoilsList().get(2).getGeometry().set_twist(Amount.valueOf(Math.toRadians(-4.0), SI.RADIAN));
+//		theWing.get_theAirfoilsList().get(1).getGeometry().set_twist(Amount.valueOf(Math.toRadians(0.0), SI.RADIAN));
+//		theWing.get_theAirfoilsList().get(2).getGeometry().set_twist(Amount.valueOf(Math.toRadians(0.0), SI.RADIAN));
 
+		System.out.println("\nTWIST KINK (AFTER)= " + theWing.get_twistKink());
+		System.out.println("TWIST KINK AirfoilList(AFTER)= " + theWing.get_theAirfoilsList().get(1).getGeometry().get_twist());
+		System.out.println("TWIST TIP (AFTER)= " + theWing.get_twistTip());
+		System.out.println("TWIST TIP AirfoilList(AFTER)= " + theWing.get_theAirfoilsList().get(2).getGeometry().get_twist() + "\n");
+
+		//------------------------------------------------------------------------------------
+		// UPDATE DATA
+		theWing.calculateGeometry();
+		theWing.getGeometry().calculateAll();
+		theWing.updateAirfoilsGeometry();
+		
 		// WING ANALYZER:
 		LSAerodynamicsManager theLSAnalysis = new LSAerodynamicsManager ( 
 				theConditions,
@@ -214,12 +246,6 @@ public class AGILE_Test_HighLift_TakeOff {
 				);
 		theWing.setAerodynamics(theLSAnalysis);
 		theLSAnalysis.initializeDependentData();
-
-		//------------------------------------------------------------------------------------
-		// UPDATE DATA
-		theWing.calculateGeometry();
-		theWing.getGeometry().calculateAll();
-		theWing.updateAirfoilsGeometry();
 		
 		// MEAN AIRFOIL:
 		System.out.println("\n \n-----------------------------------------------------");

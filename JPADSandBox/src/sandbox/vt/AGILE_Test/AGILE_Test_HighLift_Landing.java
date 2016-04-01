@@ -108,10 +108,12 @@ public class AGILE_Test_HighLift_Landing {
 //		theWing.set_twistKink(Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
 //		theWing.set_twistTip(Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
 		theWing.set_iw(Amount.valueOf(Math.toRadians(2.5),SI.RADIAN));
-		theWing.set_twistKink(Amount.valueOf(Math.toRadians(-1.592),SI.RADIAN));
-		theWing.set_twistTip(Amount.valueOf(Math.toRadians(-4),SI.RADIAN));
+//		theWing.set_twistKink(Amount.valueOf(Math.toRadians(-1.592),SI.RADIAN));
+//		theWing.set_twistTip(Amount.valueOf(Math.toRadians(-4),SI.RADIAN));
 		theWing.set_dihedralInnerPanel(Amount.valueOf(Math.toRadians(6.0), SI.RADIAN));
 		theWing.set_dihedralOuterPanel(Amount.valueOf(Math.toRadians(6.0), SI.RADIAN));
+		MyArray _dihedral = new MyArray(new double[] {theWing.get_dihedralInnerPanel().getEstimatedValue(), theWing.get_dihedralOuterPanel().getEstimatedValue()});
+		theWing.set_dihedral(_dihedral);
 		theWing.set_chordRoot(Amount.valueOf(6.39, SI.METER));
 		theWing.set_chordKink(Amount.valueOf(2.716, SI.METER)); 
 		theWing.set_chordTip(Amount.valueOf(1.051, SI.METER)); 
@@ -230,6 +232,12 @@ public class AGILE_Test_HighLift_Landing {
 		System.out.println("TWIST KINK AirfoilList(AFTER)= " + theWing.get_theAirfoilsList().get(1).getGeometry().get_twist());
 		System.out.println("TWIST TIP (AFTER)= " + theWing.get_twistTip());
 		System.out.println("TWIST TIP AirfoilList(AFTER)= " + theWing.get_theAirfoilsList().get(2).getGeometry().get_twist() + "\n");
+
+		//------------------------------------------------------------------------------------
+		// UPDATE DATA
+		theWing.calculateGeometry();
+		theWing.getGeometry().calculateAll();
+		theWing.updateAirfoilsGeometry();
 		
 		// WING ANALYZER:
 		LSAerodynamicsManager theLSAnalysis = new LSAerodynamicsManager ( 
@@ -238,12 +246,6 @@ public class AGILE_Test_HighLift_Landing {
 				);
 		theWing.setAerodynamics(theLSAnalysis);
 		theLSAnalysis.initializeDependentData();
-
-		//------------------------------------------------------------------------------------
-		// UPDATE DATA
-		theWing.calculateGeometry();
-		theWing.getGeometry().calculateAll();
-		theWing.updateAirfoilsGeometry();
 		
 		// MEAN AIRFOIL:
 		System.out.println("\n \n-----------------------------------------------------");
