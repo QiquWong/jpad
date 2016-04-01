@@ -9,20 +9,20 @@
 		<Flap_Number unit="">2</Flap_Number>
 		<Flap1>
 			<FlapType unit="">FOWLER</FlapType>
-			<Cf_C unit="">0.33</Cf_C>
+			<Cf_C unit="">0.3</Cf_C>
 			<Delta_Flap1 unit="°">40</Delta_Flap1>
-			<Flap_inboard>0.132</Flap_inboard>
-			<Flap_outboard>0.398</Flap_outboard>
+			<Flap_inboard>0.12</Flap_inboard>
+			<Flap_outboard>0.396</Flap_outboard>
 		</Flap1>
 		<Flap2>
 			<FlapType unit="">FOWLER</FlapType>
-			<Cf_C unit="">0.33</Cf_C>
+			<Cf_C unit="">0.3</Cf_C>
 			<Delta_Flap2 unit="°">40</Delta_Flap2>
-			<Flap_inboard unit="">0.398</Flap_inboard>
+			<Flap_inboard unit="">0.4</Flap_inboard>
 			<Flap_outboard unit="">0.75</Flap_outboard>
 		</Flap2>
 		<Slat1>
-			<Delta_Slat unit="°">20</Delta_Slat>
+			<Delta_Slat unit="°">25</Delta_Slat>
 			<Cs_C unit="">0.134</Cs_C>
 			<cExt_c unit="">1.1</cExt_c>
 			<LEradius_c_ratio unit="">0.0566</LEradius_c_ratio>
@@ -30,21 +30,21 @@
 			<Slat_outboard unit="">0.292</Slat_outboard>
 		</Slat1>
 		<Slat2>
-			<Delta_Slat unit="°">20</Delta_Slat>
+			<Delta_Slat unit="°">25</Delta_Slat>
 			<Cs_C unit="">0.166</Cs_C>
 			<cExt_c unit="">1.1</cExt_c>
 			<Slat_inboard unit="">0.364</Slat_inboard>
 			<Slat_outboard unit="">0.564</Slat_outboard>
 		</Slat2>
 		<Slat3>
-			<Delta_Slat unit="°">20</Delta_Slat>
+			<Delta_Slat unit="°">25</Delta_Slat>
 			<Cs_C unit="">0.223</Cs_C>
 			<cExt_c unit="">1.1</cExt_c>
 			<Slat_inboard unit="">0.564</Slat_inboard>
 			<Slat_outboard unit="">0.764</Slat_outboard>
 		</Slat3>
 		<Slat4>
-			<Delta_Slat unit="°">20</Delta_Slat>
+			<Delta_Slat unit="°">25</Delta_Slat>
 			<Cs_C unit="">0.299</Cs_C>
 			<cExt_c unit="">1.1</cExt_c>
 			<Slat_inboard unit="">0.764</Slat_inboard>

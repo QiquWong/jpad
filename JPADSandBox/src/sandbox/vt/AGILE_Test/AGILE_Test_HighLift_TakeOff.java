@@ -89,11 +89,6 @@ public class AGILE_Test_HighLift_TakeOff {
 
 		LiftingSurface theWing = aircraft.get_wing();
 		
-		System.out.println("TWIST KINK (BEFORE)= " + theWing.get_twistKink());
-		System.out.println("TWIST KINK AirfoilList(BEFORE)= " + theWing.get_theAirfoilsList().get(1).getGeometry().get_twist());
-		System.out.println("TWIST TIP (BEFORE)= " + theWing.get_twistTip());
-		System.out.println("TWIST TIP AirfoilList(BEFORE)= " + theWing.get_theAirfoilsList().get(2).getGeometry().get_twist());
-		
 		// update of the wing with new model parameters
 		theWing.set_surface(Amount.valueOf(82.7, SI.SQUARE_METRE));
 		theWing.set_aspectRatio(9.54);
@@ -137,10 +132,10 @@ public class AGILE_Test_HighLift_TakeOff {
 		double yLocRoot = 0.0;		
 		MyAirfoil airfoilRoot = new MyAirfoil(theWing, yLocRoot);
 		airfoilRoot.getAerodynamics().set_clAlpha(7.0336);
-		airfoilRoot.getAerodynamics().set_clStar(1.3812);
+		airfoilRoot.getAerodynamics().set_clStar(1.2);
 		airfoilRoot.getAerodynamics().set_alphaStar(Amount.valueOf(Math.toRadians(9.5), SI.RADIAN));
 		airfoilRoot.getAerodynamics().set_alphaStall(Amount.valueOf(Math.toRadians(22.5), SI.RADIAN));
-		airfoilRoot.getAerodynamics().set_clMax(2.3176);
+		airfoilRoot.getAerodynamics().set_clMax(2.0);
 		airfoilRoot.getGeometry().set_maximumThicknessOverChord(0.161);
 		airfoilRoot.getGeometry().set_radiusLE(0.03892);
 		airfoilRoot.getGeometry().set_deltaYPercent(4.375);
@@ -165,10 +160,10 @@ public class AGILE_Test_HighLift_TakeOff {
 		double yLocKink = 5.5919;	
 		MyAirfoil airfoilKink = new MyAirfoil(theWing, yLocKink);
 		airfoilKink.getAerodynamics().set_clAlpha(6.9533);
-		airfoilKink.getAerodynamics().set_clStar(1.2085);
+		airfoilKink.getAerodynamics().set_clStar(1.2);
 		airfoilKink.getAerodynamics().set_alphaStar(Amount.valueOf(Math.toRadians(8.5), SI.RADIAN));
 		airfoilKink.getAerodynamics().set_alphaStall(Amount.valueOf(Math.toRadians(21.0), SI.RADIAN));
-		airfoilKink.getAerodynamics().set_clMax(2.1626);
+		airfoilKink.getAerodynamics().set_clMax(2.0);
 		airfoilKink.getGeometry().set_maximumThicknessOverChord(0.149);
 		airfoilKink.getGeometry().set_radiusLE(0.04265);
 		airfoilKink.getGeometry().set_deltaYPercent(3.88);
@@ -193,10 +188,10 @@ public class AGILE_Test_HighLift_TakeOff {
 		double yLocTip = 14.05;	
 		MyAirfoil airfoilTip = new MyAirfoil(theWing, yLocTip);
 		airfoilTip.getAerodynamics().set_clAlpha(6.6210);
-		airfoilTip.getAerodynamics().set_clStar(1.2696);
+		airfoilTip.getAerodynamics().set_clStar(1.15);
 		airfoilTip.getAerodynamics().set_alphaStar(Amount.valueOf(Math.toRadians(8.0), NonSI.DEGREE_ANGLE));
 		airfoilTip.getAerodynamics().set_alphaStall(Amount.valueOf(Math.toRadians(15.5), NonSI.DEGREE_ANGLE));
-		airfoilTip.getAerodynamics().set_clMax(1.8333);
+		airfoilTip.getAerodynamics().set_clMax(1.8);
 		airfoilTip.getGeometry().set_maximumThicknessOverChord(0.119);
 		airfoilTip.getGeometry().set_radiusLE(0.01011);
 		airfoilTip.getGeometry().set_deltaYPercent(2.92);
@@ -223,15 +218,10 @@ public class AGILE_Test_HighLift_TakeOff {
 		myAirfoilList.add(1, airfoilKink);
 		myAirfoilList.add(2, airfoilTip);
 		theWing.set_theAirfoilsList(myAirfoilList);
-		theWing.get_theAirfoilsList().get(1).getGeometry().set_twist(Amount.valueOf(Math.toRadians(-1.592), SI.RADIAN));
-		theWing.get_theAirfoilsList().get(2).getGeometry().set_twist(Amount.valueOf(Math.toRadians(-4.0), SI.RADIAN));
+		theWing.get_theAirfoilsList().get(1).getGeometry().set_twist(Amount.valueOf(Math.toRadians(-1.0), SI.RADIAN));
+		theWing.get_theAirfoilsList().get(2).getGeometry().set_twist(Amount.valueOf(Math.toRadians(-5.0), SI.RADIAN));
 //		theWing.get_theAirfoilsList().get(1).getGeometry().set_twist(Amount.valueOf(Math.toRadians(0.0), SI.RADIAN));
 //		theWing.get_theAirfoilsList().get(2).getGeometry().set_twist(Amount.valueOf(Math.toRadians(0.0), SI.RADIAN));
-
-		System.out.println("\nTWIST KINK (AFTER)= " + theWing.get_twistKink());
-		System.out.println("TWIST KINK AirfoilList(AFTER)= " + theWing.get_theAirfoilsList().get(1).getGeometry().get_twist());
-		System.out.println("TWIST TIP (AFTER)= " + theWing.get_twistTip());
-		System.out.println("TWIST TIP AirfoilList(AFTER)= " + theWing.get_theAirfoilsList().get(2).getGeometry().get_twist() + "\n");
 
 		//------------------------------------------------------------------------------------
 		// UPDATE DATA
