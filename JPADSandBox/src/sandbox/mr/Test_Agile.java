@@ -22,7 +22,6 @@ import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
-import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
@@ -31,7 +30,6 @@ import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
-import standaloneutils.customdata.CenterOfGravity;
 import standaloneutils.customdata.MyArray;
 import writers.JPADStaticWriteUtils;
 
@@ -102,11 +100,8 @@ public class Test_Agile {
 		theWing.set_extensionLERootChordLinPanel(0.086);
 		theWing.set_extensionTERootChordLinPanel(0.59);
 		theWing.set_iw(Amount.valueOf(Math.toRadians(2.5),SI.RADIAN));
-		theWing.set_twistKink(Amount.valueOf(Math.toRadians(1.1),SI.RADIAN));
-		theWing.set_twistTip(Amount.valueOf(Math.toRadians(-4.0),SI.RADIAN));
-		theWing.set_iw(Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
-		theWing.set_twistKink(Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
-		theWing.set_twistTip(Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
+		theWing.set_twistKink(Amount.valueOf(Math.toRadians(-1.4),SI.RADIAN));
+		theWing.set_twistTip(Amount.valueOf(Math.toRadians(-6.5),SI.RADIAN));
 		theWing.set_dihedralInnerPanel(Amount.valueOf(Math.toRadians(6.0), SI.RADIAN));
 		theWing.set_dihedralOuterPanel(Amount.valueOf(Math.toRadians(6.0), SI.RADIAN));
 		theWing.set_chordRoot(Amount.valueOf(6.39, SI.METER));
@@ -127,19 +122,19 @@ public class Test_Agile {
 		//AIRFOIL ROOT
 		double yLocRoot = 0.0;		
 		MyAirfoil airfoilRoot = new MyAirfoil(theWing, yLocRoot);
-		airfoilRoot.getAerodynamics().set_clAlpha(6.867405);
-		airfoilRoot.getAerodynamics().set_clStar(1.3994);
-		airfoilRoot.getAerodynamics().set_alphaStar(Amount.valueOf(Math.toRadians(10.0), SI.RADIAN));
-		airfoilRoot.getAerodynamics().set_alphaStall(Amount.valueOf(Math.toRadians(24.5), SI.RADIAN));
-		airfoilRoot.getAerodynamics().set_clMax(2.34);
+		airfoilRoot.getAerodynamics().set_clAlpha(7.0336);
+		airfoilRoot.getAerodynamics().set_clStar(1.3812);
+		airfoilRoot.getAerodynamics().set_alphaStar(Amount.valueOf(Math.toRadians(9.5), SI.RADIAN));
+		airfoilRoot.getAerodynamics().set_alphaStall(Amount.valueOf(Math.toRadians(22.5), SI.RADIAN));
+		airfoilRoot.getAerodynamics().set_clMax(2.3176);
 		airfoilRoot.getGeometry().set_maximumThicknessOverChord(0.161);
 		airfoilRoot.getGeometry().set_radiusLE(0.03892);
 		airfoilRoot.getGeometry().set_deltaYPercent(4.375);
 		airfoilRoot.set_chordLocal(6.39);
 		// the followings are not necessaries to the high lift devices effects analysis
-		airfoilRoot.getAerodynamics().set_alphaZeroLift(Amount.valueOf(Math.toRadians(-2.0046), SI.RADIAN));
-		airfoilRoot.getAerodynamics().set_cdMin(0.0059);
-		airfoilRoot.getAerodynamics().set_clAtCdMin(-0.0059);
+		airfoilRoot.getAerodynamics().set_alphaZeroLift(Amount.valueOf(Math.toRadians(-1.9864), SI.RADIAN));
+		airfoilRoot.getAerodynamics().set_cdMin(0.0);
+		airfoilRoot.getAerodynamics().set_clAtCdMin(0.0);
 		airfoilRoot.getAerodynamics().set_kFactorDragPolar(0.0);
 		airfoilRoot.getAerodynamics().set_aerodynamicCenterX(0.0);
 		airfoilRoot.getAerodynamics().set_cmAC(0.0);
@@ -148,25 +143,25 @@ public class Test_Agile {
 		airfoilRoot.getAerodynamics().set_reynoldsCruise(0.0);
 		airfoilRoot.getAerodynamics().set_reynoldsNumberStall(0.0);
 		airfoilRoot.getGeometry().set_twist(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
-		airfoilRoot.getGeometry().set_anglePhiTE(Amount.valueOf(Math.toRadians(13.53), SI.RADIAN));
+		airfoilRoot.getGeometry().set_anglePhiTE(Amount.valueOf(Math.toRadians(0.0), SI.RADIAN));
 		airfoilRoot.getGeometry().set_thicknessOverChordUnit(0.0);
 
 		//AIRFOIL KINK
 		double yLocKink = 5.5919;	
 		MyAirfoil airfoilKink = new MyAirfoil(theWing, yLocKink);
-		airfoilKink.getAerodynamics().set_clAlpha(6.79005);
-		airfoilKink.getAerodynamics().set_clStar(1.2328);
-		airfoilKink.getAerodynamics().set_alphaStar(Amount.valueOf(Math.toRadians(9.0), SI.RADIAN));
-		airfoilKink.getAerodynamics().set_alphaStall(Amount.valueOf(Math.toRadians(23.0), SI.RADIAN));
-		airfoilKink.getAerodynamics().set_clMax(2.2022);
+		airfoilKink.getAerodynamics().set_clAlpha(6.9533);
+		airfoilKink.getAerodynamics().set_clStar(1.2085);
+		airfoilKink.getAerodynamics().set_alphaStar(Amount.valueOf(Math.toRadians(8.5), SI.RADIAN));
+		airfoilKink.getAerodynamics().set_alphaStall(Amount.valueOf(Math.toRadians(21.0), SI.RADIAN));
+		airfoilKink.getAerodynamics().set_clMax(2.1626);
 		airfoilKink.getGeometry().set_maximumThicknessOverChord(0.149);
 		airfoilKink.getGeometry().set_radiusLE(0.04265);
 		airfoilKink.getGeometry().set_deltaYPercent(3.88);
 		airfoilKink.set_chordLocal(2.716);
 		// the followings are not necessaries to the high lift devices effects analysis
-		airfoilKink.getAerodynamics().set_alphaZeroLift(Amount.valueOf(Math.toRadians(-1.6467), SI.RADIAN));
-		airfoilKink.getAerodynamics().set_cdMin(0.00566);
-		airfoilKink.getAerodynamics().set_clAtCdMin(-0.3312);
+		airfoilKink.getAerodynamics().set_alphaZeroLift(Amount.valueOf(Math.toRadians(-1.6289), SI.RADIAN));
+		airfoilKink.getAerodynamics().set_cdMin(0.0);
+		airfoilKink.getAerodynamics().set_clAtCdMin(0.0);
 		airfoilKink.getAerodynamics().set_kFactorDragPolar(0.0);
 		airfoilKink.getAerodynamics().set_aerodynamicCenterX(0.0);
 		airfoilKink.getAerodynamics().set_cmAC(0.0);
@@ -181,17 +176,17 @@ public class Test_Agile {
 		//AIRFOIL TIP
 		double yLocTip = 14.05;	
 		MyAirfoil airfoilTip = new MyAirfoil(theWing, yLocTip);
-		airfoilTip.getAerodynamics().set_clAlpha(6.40041);
-		airfoilTip.getAerodynamics().set_clStar(1.3908);
-		airfoilTip.getAerodynamics().set_alphaStar(Amount.valueOf(Math.toRadians(9.5), NonSI.DEGREE_ANGLE));
-		airfoilTip.getAerodynamics().set_alphaStall(Amount.valueOf(Math.toRadians(18.5), NonSI.DEGREE_ANGLE));
-		airfoilTip.getAerodynamics().set_clMax(1.9378);
+		airfoilTip.getAerodynamics().set_clAlpha(6.6210);
+		airfoilTip.getAerodynamics().set_clStar(1.2696);
+		airfoilTip.getAerodynamics().set_alphaStar(Amount.valueOf(Math.toRadians(8.0), NonSI.DEGREE_ANGLE));
+		airfoilTip.getAerodynamics().set_alphaStall(Amount.valueOf(Math.toRadians(15.5), NonSI.DEGREE_ANGLE));
+		airfoilTip.getAerodynamics().set_clMax(1.8333);
 		airfoilTip.getGeometry().set_maximumThicknessOverChord(0.119);
 		airfoilTip.getGeometry().set_radiusLE(0.01011);
 		airfoilTip.getGeometry().set_deltaYPercent(2.92);
 		airfoilTip.set_chordLocal(1.051);
 		// the followings are not necessaries to the high lift devices effects analysis
-		airfoilTip.getAerodynamics().set_alphaZeroLift(Amount.valueOf(Math.toRadians(-3.19), SI.RADIAN));
+		airfoilTip.getAerodynamics().set_alphaZeroLift(Amount.valueOf(Math.toRadians(-3.1795), SI.RADIAN));
 		airfoilTip.getAerodynamics().set_cdMin(0.0);
 		airfoilTip.getAerodynamics().set_clAtCdMin(0.0);
 		airfoilTip.getAerodynamics().set_kFactorDragPolar(0.0);
