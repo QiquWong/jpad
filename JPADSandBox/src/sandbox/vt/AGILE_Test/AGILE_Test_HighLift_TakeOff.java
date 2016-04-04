@@ -99,12 +99,16 @@ public class AGILE_Test_HighLift_TakeOff {
 		theWing.set_spanStationKink(0.398);
 		theWing.set_extensionLERootChordLinPanel(0.16886);
 		theWing.set_extensionTERootChordLinPanel(0.505361);
+		theWing.set_iw(Amount.valueOf(Math.toRadians(2.5),SI.RADIAN));
+		//-------------------------------------------------------------------
+		// TODO: Eliminate
 //		theWing.set_iw(Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
 //		theWing.set_twistKink(Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
 //		theWing.set_twistTip(Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
-		theWing.set_iw(Amount.valueOf(Math.toRadians(2.5),SI.RADIAN));
-//		theWing.set_twistKink(Amount.valueOf(Math.toRadians(-1.592),SI.RADIAN));
-//		theWing.set_twistTip(Amount.valueOf(Math.toRadians(-4),SI.RADIAN));
+//		theWing.set_twistKink(Amount.valueOf(Math.toRadians(-1.99),SI.RADIAN));
+//		theWing.set_twistTip(Amount.valueOf(Math.toRadians(-5),SI.RADIAN));
+		//--------------------------------------------------------------------
+		
 		theWing.set_dihedralInnerPanel(Amount.valueOf(Math.toRadians(6.0), SI.RADIAN));
 		theWing.set_dihedralOuterPanel(Amount.valueOf(Math.toRadians(6.0), SI.RADIAN));
 		MyArray _dihedral = new MyArray(new double[] {theWing.get_dihedralInnerPanel().getEstimatedValue(), theWing.get_dihedralOuterPanel().getEstimatedValue()});

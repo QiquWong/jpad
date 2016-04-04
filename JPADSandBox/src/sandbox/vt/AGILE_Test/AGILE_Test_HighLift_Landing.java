@@ -99,12 +99,14 @@ public class AGILE_Test_HighLift_Landing {
 		theWing.set_spanStationKink(0.398);
 		theWing.set_extensionLERootChordLinPanel(0.16886);
 		theWing.set_extensionTERootChordLinPanel(0.505361);
+		theWing.set_iw(Amount.valueOf(Math.toRadians(2.5),SI.RADIAN));
+		//TODO: Eliminate
 //		theWing.set_iw(Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
 //		theWing.set_twistKink(Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
 //		theWing.set_twistTip(Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
-		theWing.set_iw(Amount.valueOf(Math.toRadians(2.5),SI.RADIAN));
 //		theWing.set_twistKink(Amount.valueOf(Math.toRadians(-1.592),SI.RADIAN));
 //		theWing.set_twistTip(Amount.valueOf(Math.toRadians(-4),SI.RADIAN));
+		//--------------------------------------------------------
 		theWing.set_dihedralInnerPanel(Amount.valueOf(Math.toRadians(6.0), SI.RADIAN));
 		theWing.set_dihedralOuterPanel(Amount.valueOf(Math.toRadians(6.0), SI.RADIAN));
 		MyArray _dihedral = new MyArray(new double[] {theWing.get_dihedralInnerPanel().getEstimatedValue(), theWing.get_dihedralOuterPanel().getEstimatedValue()});
@@ -218,10 +220,10 @@ public class AGILE_Test_HighLift_Landing {
 		myAirfoilList.add(1, airfoilKink);
 		myAirfoilList.add(2, airfoilTip);
 		theWing.set_theAirfoilsList(myAirfoilList);
-		theWing.get_theAirfoilsList().get(1).getGeometry().set_twist(Amount.valueOf(Math.toRadians(-1.0), SI.RADIAN));
-		theWing.get_theAirfoilsList().get(2).getGeometry().set_twist(Amount.valueOf(Math.toRadians(-5.0), SI.RADIAN));
-//		theWing.get_theAirfoilsList().get(1).getGeometry().set_twist(Amount.valueOf(Math.toRadians(0.0), SI.RADIAN));
-//		theWing.get_theAirfoilsList().get(2).getGeometry().set_twist(Amount.valueOf(Math.toRadians(0.0), SI.RADIAN));
+//		theWing.get_theAirfoilsList().get(1).getGeometry().set_twist(Amount.valueOf(Math.toRadians(-1.0), SI.RADIAN));
+//		theWing.get_theAirfoilsList().get(2).getGeometry().set_twist(Amount.valueOf(Math.toRadians(-5.0), SI.RADIAN));
+		theWing.get_theAirfoilsList().get(1).getGeometry().set_twist(Amount.valueOf(Math.toRadians(0.0), SI.RADIAN));
+		theWing.get_theAirfoilsList().get(2).getGeometry().set_twist(Amount.valueOf(Math.toRadians(0.0), SI.RADIAN));
 
 		//------------------------------------------------------------------------------------
 		// UPDATE DATA
