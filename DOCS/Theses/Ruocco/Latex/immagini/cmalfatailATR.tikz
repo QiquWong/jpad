@@ -11,7 +11,7 @@ xlabel={$\alpha_{h}$ (deg)},
 xmajorgrids,
 ymin=-0.025,
 ymax=0.1,
-ylabel={CM},
+ylabel={$C_M$},
 ymajorgrids,
 legend style={at={(0.03,0.8)},anchor=west,draw=black,fill=white,legend cell align=left},
 legend entries = {$\delta = -25^{\circ}$\\$\delta = -20^{\circ}$\\$\delta = -15^{\circ}$\\$\delta = -10^{\circ}$\\$\delta = -5^{\circ}$\\$\delta = 0^{\circ}$\\$\delta = 5^{\circ}$\\}

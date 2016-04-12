@@ -1,0 +1,259 @@
+\documentclass[a4paper,12pt,oneside]{book}
+%\documentclass[a4paper,12pt,twoside,openright]{book}
+
+\usepackage[utf8]{inputenc}
+
+\usepackage[T1]{fontenc}
+\usepackage[full]{textcomp}
+
+%-------------------------------------------------------------------------------------
+% MathTime Professional 2
+
+\usepackage{newtxtext} % set Times as the default text font
+
+% The following loads mtpro and defines some common MTPro options [2, 4]
+
+\usepackage[complete,%
+   subscriptcorrection,slantedGreek,nofontinfo,%
+   mtpcal,mtpscr,% mtpluscal,%mtpcal,%
+   mtphrd]{mtpro2}
+
+%% see mtp2.tex
+
+% Options for blackboard bold fonts [2.9]:
+%   mtphrb - holey roman bold        mtpbb - blackboard bold
+%   mtphrd - holey roman bold dark   mtpbbd - blackboard bold dark
+%   mtphbi - holey bold italic       mtpbbi - blackboard bold italic
+
+% Options for alternate character sets [2.6, 2.7]:
+%   mtpcal - assigns Math Script to the math alphabets \mathcal and \mathbcal,
+%   overwriting the default math calligraphic typeface
+%   mtpccal - assigns Math Curly to the math alphabets \mathcal and \mathbcal,
+%   overwriting the default math calligraphic typeface
+%   mtpscr - assigns Math Script to the new math alphabets \mathscr and \mathbscr,
+%       leaving \mathcal unchanged
+%   mtpfrak - assigns Math Fraktur to a new math alphabet \mathfrak
+
+% Options for AMS symbols
+%   amssymbols - makes the mtpro2 AMS symbols available
+
+% Optionally load the following package to use heavy symbols in place of bold symbols
+%\usepackage{bm}
+
+%----------------------------------------------------------------------
+% font for Aspect Ratio
+
+%\usepackage{ar}% original package by Claudio Beccari (based on Computer Modern Roman)
+\usepackage[TM]{ar}% AR ligature based on Times font design
+%\newcommand{\AR}{{\ARtm}}
+%\newcommand{\ARb}{{\ARtmb}}
+
+
+
+
+\usepackage[english,italian]{babel}
+\usepackage{csquotes}
+\usepackage{indentfirst}    % per avere líndentazione prima dei capitoli
+\usepackage{geometry}
+\geometry{a4paper, top=20mm, bottom=20mm, left=35mm, right=20mm }
+\raggedbottom  % per non riempire tutta la pagina stirando il testo. puo lasciare spazi vuoti alla fine di una pagina
+\linespread{1} 
+
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{pgfplots}
+\usepackage{caption}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{setspace}
+\usepackage{booktabs}
+
+% \usepackage{amsmath}
+%----------------------------------------------------------------------
+% math
+
+\usepackage[intlimits]{mathtools}
+
+\usepackage{siunitx}
+\usepackage{subfig}
+\usepackage{rotating}
+\usepackage{float}
+\usepackage{fancyhdr}
+\usepackage{floatflt}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{wrapfig}
+\usepackage{lipsum}
+\usepackage[nouppercase, swapnames]{frontespizio}
+\usepackage{adjustbox}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{cancel}
+\usepackage{listings}
+\usepackage{lipsum}
+\usepackage{courier}
+\usepackage{xcolor}
+\usepackage{relsize}
+\usepackage{titlesec} 
+\usepackage{appendix}
+\usepackage{biblatex}
+\usepackage{xspace}
+    
+%------------------------------------------------------------------------------------------
+% LOCAL USER-DEFINED MACROS & SETTINGS
+%------------------------------------------------------------------------------------------
+
+\input{Macros}
+\input{Settings}
+
+%------------------------------------------------------------------------------------------
+%                                                              GLOSSARY
+%------------------------------------------------------------------------------------------
+
+\input{glossary}
+
+
+
+%------------------------------------------------------------------------------------------
+%                                                              B E G I N    D O C U M E N T
+\begin{document}
+%\selectlanguage{english}
+
+
+
+%------------------------------------------------------------------------------------------
+%                                                                F R O N T E S P I Z I O  (non in indice)
+%------------------------------------------------------------------------------------------
+\begin{frontespizio}
+
+\Universita{Napoli Federico II}
+\Divisione{Scuola Politecnica e delle Scienze di Base}
+\Corso[Laurea Magistrale]{Ingegneria Aerospaziale}
+\Logo[3cm]{immagini/logounina.pdf}
+\Titoletto{Tesi di Laurea Magistrale \\ in \\ Ingegneria Aerospaziale}
+\Titolo{ Development of a Java-Based Framework for \\ Aircraft Preliminary Design}
+\Sottotitolo{Wing Aerodynamic Analysis Module,\\ Aircraft Longitudinal Static Stability Module }
+\Candidato{Manuela Ruocco \\ Matricola M53/408}
+%/NRelatore{Relatori}
+\Relatore{Prof. Ing. Fabrizio Nicolosi }
+\Relatore{Prof. Ing. Agostino De Marco}
+
+\Annoaccademico{2014/2015}
+\end{frontespizio}
+%------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+% -----------------------------------------------------------------------------------------
+%                                                                    D E D I C A  (non in indice)
+% -----------------------------------------------------------------------------------------
+
+\newpage\null\thispagestyle{empty}\newpage\thispagestyle{empty}
+%\null\vspace{\stretch{1}}
+%\begin{flushright}
+%\textit{Dedica}
+%\end{flushright}
+%\vspace{\stretch{2}}\null
+%\cleardoublepage
+
+
+\frontmatter  %materiale iniziale (indice, lista simboli)
+
+% -----------------------------------------------------------------------------------------
+%                                                                   S O M M A R I O  (non in indice)
+% -----------------------------------------------------------------------------------------
+
+\input{Abstract}
+
+\input{Acknowledgements}
+
+
+% -----------------------------------------------------------------------------------------
+%                                                                   INDICE  (non in indice)
+% -----------------------------------------------------------------------------------------
+
+\tableofcontents %INDICE
+
+
+
+% -----------------------------------------------------------------------------------------
+%                                                                  R I N G R A Z I A M E N T I   (non in indice)
+% -----------------------------------------------------------------------------------------
+
+
+
+\mainmatter  %materiale del corpo centrale 
+
+
+
+% -----------------------------------------------------------------------------------------
+%                                                                 C A P I T O L I
+% -----------------------------------------------------------------------------------------
+
+\pagestyle{fancy}
+\input{Chapters/contents}
+\input{Conclusions}
+% -----------------------------------------------------------------------------------------
+%                                                                A P P E N D I C I
+% -----------------------------------------------------------------------------------------
+
+
+% some configuration commands by package appendix
+%\cleardoublepage \phantomsection
+\renewcommand{\chaptername}{Appendix}
+%\renewcommand{\appendixtocname}{Appendices}
+%\renewcommand{\appendixpagename}{Appendices}
+%\appendixpage
+%\noappendicestocpagenum
+%\addappheadtotoc
+%\pagestyle{myAppendixPageStyle}
+%
+% Here we include the appendix material of the book
+%
+\pagestyle{pippo}
+\begin{appendices}% needs package appendix
+\pagestyle{pippo}
+\input{Tesi_Appendices}
+\newpage
+\thispagestyle{empty}
+\end{appendices}
+\backmatter % materiale finale( bibliografia, risorse utilizzate)
+% -----------------------------------------------------------------------------------------
+%                                                                L I S T A   D E I   S I M B O L I   E   G L O S S A R I O 
+% -----------------------------------------------------------------------------------------
+\glsaddall
+\glossarystyle{list}
+\markboth{}{}
+\cleardoublepage
+\pagestyle{pippo}
+\printglossary[type=main]
+
+\markboth{}{}
+\cleardoublepage
+\pagestyle{pippo}
+\printglossary[type=\acronymtype]
+
+\markboth{}{}
+\cleardoublepage
+\pagestyle{pippo}
+\printglossary[type=symbols]
+
+\newpage
+\thispagestyle{empty}
+% -----------------------------------------------------------------------------------------
+%                                                               A C R O N I M I 
+% -----------------------------------------------------------------------------------------
+
+% -----------------------------------------------------------------------------------------
+%                                                               B I B L I O G R A F I A
+% -----------------------------------------------------------------------------------------
+
+\cleardoublepage \phantomsection
+\addcontentsline{toc}{chapter}{Bibliography}
+\nocite{*}
+%\printbibheading[title={Bibliography}]
+\printbibliography[heading=myBibliography]% needs biblatex, see myBibliography in _preamble.tex
+
+\end{document}
