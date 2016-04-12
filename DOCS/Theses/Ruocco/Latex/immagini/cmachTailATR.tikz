@@ -10,7 +10,7 @@ xlabel={$\alpha$},
 xmajorgrids,
 ymin=-0.01,
 ymax=0.01,
-ylabel={CM},
+ylabel={C_M},
 ymajorgrids,
 ]
 \addplot [
