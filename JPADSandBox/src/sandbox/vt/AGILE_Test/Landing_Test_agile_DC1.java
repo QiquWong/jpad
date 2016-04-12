@@ -1,12 +1,12 @@
 package sandbox.vt.AGILE_Test;
 
-import static java.lang.Math.toRadians;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Duration;
+import javax.measure.quantity.Length;
+import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
@@ -14,26 +14,32 @@ import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
-
 import aircraft.OperatingConditions;
 import aircraft.auxiliary.airfoil.MyAirfoil;
+import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
+import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.FoldersEnum;
-import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
+import sandbox.vt.Landing_Test.CalcLanding;
 import standaloneutils.JPADXmlReader;
-import standaloneutils.MyArrayUtils;
-import standaloneutils.MyChartToFileUtils;
+import standaloneutils.customdata.CenterOfGravity;
 import standaloneutils.customdata.MyArray;
-import writers.JPADStaticWriteUtils;
 
-public class AGILE_Test_HighLift_Landing {
+public class Landing_Test_agile_DC1 {
+
+	private static long _startTimeCalculation, _startTimeGraph, _stopTimeCalculation,
+	_stopTimeGraph, _stopTimeTotal,	_elapsedTimeTotal, 
+	_elapsedTimeCalculation, _elapsedTimeGraph;
+
+	//	TODO: example of custom NON_SI unit
+	//	private static Unit<? extends Quantity> angularRateUnit = (NonSI.DEGREE_ANGLE).divide((SI.SECOND));
 
 	//------------------------------------------------------------------------------------------
 	// VARIABLE DECLARATION:
@@ -49,46 +55,45 @@ public class AGILE_Test_HighLift_Landing {
 	private List<String> arguments = new ArrayList<String>();
 
 	//------------------------------------------------------------------------------------------
-	// BUILDER:
-	public AGILE_Test_HighLift_Landing() {
+	//BUILDER:
+	public Landing_Test_agile_DC1() {
 		theCmdLineParser = new CmdLineParser(this);
 	}
 
-	//------------------------------------------------------------------------------------------
-	// MAIN:
-	@SuppressWarnings("unused")
 	public static void main(String[] args) throws CmdLineException, InstantiationException, IllegalAccessException {
 
 		System.out.println("-----------------------------------------------------------");
-		System.out.println("HighLiftDevices_Test :: AGILE DC1");
+		System.out.println("Landing_Test :: agile-dc1");
 		System.out.println("-----------------------------------------------------------\n");
 
-		AGILE_Test_HighLift_Landing main = new AGILE_Test_HighLift_Landing();
+		Landing_Test_agile_DC1 main = new Landing_Test_agile_DC1();
 
 		//----------------------------------------------------------------------------------
-		// DEFAULT FOLDERS CREATION:
+		// Default folders creation:
 		MyConfiguration.initWorkingDirectoryTree();
-		String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR) + File.separator;
-		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "AGILE_DC1" + File.separator);
-		
-		//--------------------------------------------------------------------------------------
-		// DEFINE OPERATING CONDITIONS, THE WING AND THE WING ANALYZER OBJECTS:
-
-		// OPERATING CONDITIONS:
-		OperatingConditions theConditions = new OperatingConditions();
-		// TakeOff/Landing conditions:
-		theConditions.set_altitude(Amount.valueOf(0.0, SI.METER));
-		theConditions.set_machCurrent(0.2);
-		theConditions.calculate();
 
 		//------------------------------------------------------------------------------------
-		// Default Aircraft
+		// Setup database(s)
+		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
+		String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
+		String highLiftDatabaseFileName = "HighLiftDatabase.h5";
+		AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
+		HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
+
+		//------------------------------------------------------------------------------------
+		// Operating Condition / Aircraft / AnalysisManager (geometry calculations)
+		OperatingConditions theCondition = new OperatingConditions();
+		theCondition.set_altitude(Amount.valueOf(0.0, SI.METER));
+		theCondition.set_machCurrent(0.15);
+		theCondition.calculate();
+
 		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.AGILE_DC1);
-		aircraft.set_name("Agile DC1");
-		System.out.println("\nDefault aircraft: " + aircraft.get_name() + "\n");
+		aircraft.set_name("AGILE-DC1");
+
+		aircraft.get_weights().set_MLW(Amount.valueOf(9.81*33788, SI.NEWTON)); // 85% MTOM Bombardier
 
 		LiftingSurface theWing = aircraft.get_wing();
-		
+
 		// update of the wing with new model parameters
 		theWing.set_surface(Amount.valueOf(82.7, SI.SQUARE_METRE));
 		theWing.set_aspectRatio(9.54);
@@ -101,11 +106,11 @@ public class AGILE_Test_HighLift_Landing {
 		theWing.set_extensionTERootChordLinPanel(0.505361);
 		theWing.set_iw(Amount.valueOf(Math.toRadians(2.5),SI.RADIAN));
 		//TODO: Eliminate
-//		theWing.set_iw(Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
-//		theWing.set_twistKink(Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
-//		theWing.set_twistTip(Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
-//		theWing.set_twistKink(Amount.valueOf(Math.toRadians(-1.592),SI.RADIAN));
-//		theWing.set_twistTip(Amount.valueOf(Math.toRadians(-4),SI.RADIAN));
+		//				theWing.set_iw(Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
+		//				theWing.set_twistKink(Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
+		//				theWing.set_twistTip(Amount.valueOf(Math.toRadians(0.0),SI.RADIAN));
+		//				theWing.set_twistKink(Amount.valueOf(Math.toRadians(-1.592),SI.RADIAN));
+		//				theWing.set_twistTip(Amount.valueOf(Math.toRadians(-4),SI.RADIAN));
 		//--------------------------------------------------------
 		theWing.set_dihedralInnerPanel(Amount.valueOf(Math.toRadians(6.0), SI.RADIAN));
 		theWing.set_dihedralOuterPanel(Amount.valueOf(Math.toRadians(6.0), SI.RADIAN));
@@ -127,8 +132,8 @@ public class AGILE_Test_HighLift_Landing {
 						0.0,
 						0.25)
 				); 
-		
-		
+
+
 		//AIRFOILS DEFINITION (initialize and set data):
 		//AIRFOIL ROOT
 		double yLocRoot = 0.0;		
@@ -222,23 +227,42 @@ public class AGILE_Test_HighLift_Landing {
 		theWing.set_theAirfoilsList(myAirfoilList);
 		theWing.get_theAirfoilsList().get(1).getGeometry().set_twist(Amount.valueOf(Math.toRadians(-1.0), SI.RADIAN));
 		theWing.get_theAirfoilsList().get(2).getGeometry().set_twist(Amount.valueOf(Math.toRadians(-5.0), SI.RADIAN));
-//		theWing.get_theAirfoilsList().get(1).getGeometry().set_twist(Amount.valueOf(Math.toRadians(0.0), SI.RADIAN));
-//		theWing.get_theAirfoilsList().get(2).getGeometry().set_twist(Amount.valueOf(Math.toRadians(0.0), SI.RADIAN));
+		//				theWing.get_theAirfoilsList().get(1).getGeometry().set_twist(Amount.valueOf(Math.toRadians(0.0), SI.RADIAN));
+		//				theWing.get_theAirfoilsList().get(2).getGeometry().set_twist(Amount.valueOf(Math.toRadians(0.0), SI.RADIAN));
 
 		//------------------------------------------------------------------------------------
 		// UPDATE DATA
 		theWing.calculateGeometry();
 		theWing.getGeometry().calculateAll();
 		theWing.updateAirfoilsGeometry();
-		
-		// WING ANALYZER:
-		LSAerodynamicsManager theLSAnalysis = new LSAerodynamicsManager ( 
-				theConditions,
-				theWing
+
+		ACAnalysisManager theAnalysis = new ACAnalysisManager(theCondition);
+		theAnalysis.updateGeometry(aircraft);
+
+		// Set the CoG(Bypass the Balance analysis allowing to perform Aerodynamic analysis only)
+		CenterOfGravity cgMTOM = new CenterOfGravity();
+
+		// x_cg in body-ref.-frame
+		cgMTOM.set_xBRF(Amount.valueOf(23.1, SI.METER));
+		cgMTOM.set_yBRF(Amount.valueOf(0.0, SI.METER));
+		cgMTOM.set_zBRF(Amount.valueOf(0.0, SI.METER));
+
+		aircraft.get_theBalance().set_cgMTOM(cgMTOM);
+		aircraft.get_HTail().calculateArms(aircraft);
+		aircraft.get_VTail().calculateArms(aircraft);
+
+		LSAerodynamicsManager theLSAnalysis = new LSAerodynamicsManager(
+				theCondition,
+				theWing,
+				aircraft
 				);
+
+		theLSAnalysis.set_AerodynamicDatabaseReader(aeroDatabaseReader);
+		theAnalysis.doAnalysis(aircraft,AnalysisTypeEnum.AERODYNAMIC);
+		theLSAnalysis.setHighLiftDatabaseReader(highLiftDatabaseReader);
+
 		theWing.setAerodynamics(theLSAnalysis);
-		theLSAnalysis.initializeDependentData();
-		
+
 		// MEAN AIRFOIL:
 		System.out.println("\n \n-----------------------------------------------------");
 		System.out.println("Starting evaluate the mean airfoil characteristics");
@@ -258,16 +282,6 @@ public class AGILE_Test_HighLift_Landing {
 		double meanLESharpnessParameter = meanAirfoil.getGeometry().get_deltaYPercent();
 		Amount<Angle> deltaAlphaMax;
 
-		//------------------------------------------------------------------------------------
-		// SETTING UP DATABASE:
-		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
-		String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
-		String highLiftDatabaseFileName = "HighLiftDatabase.h5";
-		AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
-		HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
-		theLSAnalysis.set_AerodynamicDatabaseReader(aeroDatabaseReader);
-		theLSAnalysis.setHighLiftDatabaseReader(highLiftDatabaseReader);
-		
 		//----------------------------------------------------------------------------------
 		// INITIALIZING HIGH LIFT DEVICES INPUT DATA
 		List<Double[]> deltaFlap = new ArrayList<Double[]>();
@@ -369,85 +383,10 @@ public class AGILE_Test_HighLift_Landing {
 		for(int i=0; i<eta_out_slat_property.size(); i++)
 			eta_out_slat.add(Double.valueOf(eta_out_slat_property.get(i)));
 
-		//----------------------------------------------------------------------------------
-		// WING ANALYSIS 
-		System.out.println("\n-----------------------------------------------------");
-		System.out.println("STARTING EVALUATE CL MAX CLEAN WING");
-		System.out.println("-----------------------------------------------------");
-
-		LSAerodynamicsManager.CalcCLMaxClean theCLmaxAnalysis = theLSAnalysis.new CalcCLMaxClean(); //is nested
-		LSAerodynamicsManager.CalcCLvsAlphaCurve theCLAnalysis = theLSAnalysis.new CalcCLvsAlphaCurve();
-		LSAerodynamicsManager.CalcCLAtAlpha theCLatAlpha= theLSAnalysis.new CalcCLAtAlpha();
-		System.out.println("Evaluate CL distribution using Nasa-Blackwell method");
-
-		theCLAnalysis.nasaBlackwell(); //it's possible to set alpha values
-		System.out.println("\nEvaluate CL max using CL distribution");
-
-		theCLmaxAnalysis.nasaBlackwell();
-		Amount<Angle> alphaAtCLMax = theLSAnalysis.get_alphaStall();
-		System.out.println("\n\nalpha CL max : " + alphaAtCLMax.to(NonSI.DEGREE_ANGLE));
-		double clMax = theCLatAlpha.nasaBlackwell(alphaAtCLMax);
-		System.out.println("cL " + clMax);		
-
-		System.out.println("\n-----------------------------------------------------");
-		System.out.println("WRITING CHART TO FILE. Evaluating CL_MAX ");
-		System.out.println("-----------------------------------------------------");
-
-		// interpolation of CL MAX_airfoil
-		MyArray clMaxAirfoil = theCLmaxAnalysis.getClAirfoils();
-		System.out.println("CL max airfoil " + clMaxAirfoil);
-
-		MyArray clAlphaThird = theLSAnalysis.getcLMap().getCxyVsAlphaTable().get(MethodEnum.NASA_BLACKWELL ,alphaAtCLMax);
-		System.out.println("CL distribution at alpha " + alphaAtCLMax + " --> " + clAlphaThird );
-		double [][] semiSpanAd = {theLSAnalysis.get_yStationsND(), theLSAnalysis.get_yStationsND()};
-		double [][] clDistribution = {clMaxAirfoil.getRealVector().toArray(), clAlphaThird.getRealVector().toArray()};
-		String [] legend = new String [4];
-		legend[0] = "CL max airfoil";
-		legend[1] = "CL distribution at alpha " + Math.toDegrees( alphaAtCLMax.getEstimatedValue());
-
-		MyChartToFileUtils.plot(
-				semiSpanAd,	clDistribution,		// array to plot
-				0.0, 1.0, null, null,			// axis with limits
-				"eta", "CL", "", "",	    	// label with unit
-				legend,							// legend
-				subfolderPath, "Stall Path");	// output informations
-
-		System.out.println("-----------------------------------------------------");
-
-		System.out.println("\n-----------------------------------------------------");
-		System.out.println("STARTING EVALUATE DELTA ALPHA MAX");
-		System.out.println("-----------------------------------------------------");
-
-		System.out.println("the mean LE sharpness parameter is : " + meanLESharpnessParameter);
-		System.out.println("the LE sweep angle is " +  theWing.get_sweepLEEquivalent().to(NonSI.DEGREE_ANGLE));
-		deltaAlphaMax = Amount.valueOf(toRadians (theLSAnalysis.get_AerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(theWing.get_sweepLEEquivalent().to(NonSI.DEGREE_ANGLE).getEstimatedValue() ,
-				meanLESharpnessParameter )), SI.RADIAN);
-
-		System.out.println("Delta  alpha max " + deltaAlphaMax.to(NonSI.DEGREE_ANGLE));
-		Amount<Angle> alphaAtCLMaxNew =  Amount.valueOf((alphaAtCLMax.getEstimatedValue() + deltaAlphaMax.getEstimatedValue()), SI.RADIAN);
-		System.out.println( "Alpha max " + alphaAtCLMaxNew.to(NonSI.DEGREE_ANGLE));
-
-		System.out.println("\n-----------------------------------------------------");
-		System.out.println("STARTING EVALUATE WING LIFT CURVE");
-		System.out.println("-----------------------------------------------------");
-
-		double [] alphaArrayTemp = MyArrayUtils.linspace(-3, 26, 30);
-
-		MyArray alphaArrayActual = new MyArray();
-
-		for (int i=0; i<alphaArrayTemp.length;i++){
-			alphaArrayActual.set(i, Math.toRadians(alphaArrayTemp[i]));}
-
-		System.out.println("-----------------------------------------------------");
-		System.out.println("WRITING TO CHART CL vs ALPHA CURVE CLEAN");
-		System.out.println("-----------------------------------------------------");
-
-		//----------------------------------------------------------------------------------
-		// CREATING HIGH LIFT ANALYZER OBJECT:
 		LSAerodynamicsManager.CalcHighLiftDevices highLiftCalculator = theLSAnalysis
 				.new CalcHighLiftDevices(
-						theWing,
-						theConditions,
+						aircraft.get_wing(),
+						theCondition,
 						deltaFlap,
 						flapType,
 						deltaSlat,
@@ -461,84 +400,141 @@ public class AGILE_Test_HighLift_Landing {
 						cExt_c_slat
 						);
 
-		//----------------------------------------------------------------------------------
-		// ANALYSIS OF HIGH LIFT DEVICES EFFECTS:
-		highLiftCalculator.calculateHighLiftDevicesEffects();
+		//		highLiftCalculator.calculateHighLiftDevicesEffects();
+		//
+		//		//----------------------------------------------------------------------------------
+		//		// Results print
+		//		System.out.println("\ndeltaCl0_flap_list = ");
+		//		for(int i=0; i<highLiftCalculator.getDeltaCl0_flap_list().size(); i++)
+		//			System.out.print(highLiftCalculator.getDeltaCl0_flap_list().get(i) + " ");
+		//
+		//		System.out.println("\n\ndeltaCl0_flap = \n" + highLiftCalculator.getDeltaCl0_flap());
+		//
+		//		System.out.println("\n\ndeltaCL0_flap_list = ");
+		//		for(int i=0; i<highLiftCalculator.getDeltaCL0_flap_list().size(); i++)
+		//			System.out.print(highLiftCalculator.getDeltaCL0_flap_list().get(i) + " ");
+		//
+		//		System.out.println("\n\ndeltaCL0_flap = \n" + highLiftCalculator.getDeltaCL0_flap());
+		//
+		//		System.out.println("\n\ndeltaClmax_flap_list = ");
+		//		for(int i=0; i<highLiftCalculator.getDeltaClmax_flap_list().size(); i++)
+		//			System.out.print(highLiftCalculator.getDeltaClmax_flap_list().get(i) + " ");
+		//
+		//		System.out.println("\n\ndeltaClmax_flap = \n" + highLiftCalculator.getDeltaClmax_flap());
+		//
+		//		System.out.println("\n\ndeltaCLmax_flap_list = ");
+		//		for(int i=0; i<highLiftCalculator.getDeltaCLmax_flap_list().size(); i++)
+		//			System.out.print(highLiftCalculator.getDeltaCLmax_flap_list().get(i) + " ");
+		//
+		//		System.out.println("\n\ndeltaCLmax_flap = \n" + highLiftCalculator.getDeltaCLmax_flap());
+		//
+		//		System.out.println("\n\ncLalpha_new_list = ");
+		//		for(int i=0; i<highLiftCalculator.getcLalpha_new_list().size(); i++)
+		//			System.out.print(highLiftCalculator.getcLalpha_new_list().get(i) + " ");
+		//
+		//		System.out.println("\n\ncLalpha_new = \n" + highLiftCalculator.getcLalpha_new());
+		//
+		//		System.out.println("\n\ndeltaCD_list = ");
+		//		for(int i=0; i<highLiftCalculator.getDeltaCD_list().size(); i++)
+		//			System.out.print(highLiftCalculator.getDeltaCD_list().get(i) + " ");
+		//
+		//		System.out.println("\n\ndeltaCD = \n" + highLiftCalculator.getDeltaCD());
+		//
+		//		System.out.println("\n\ndeltaCMc_4_list = ");
+		//		for(int i=0; i<highLiftCalculator.getDeltaCM_c4_list().size(); i++)
+		//			System.out.print(highLiftCalculator.getDeltaCM_c4_list().get(i) + " ");
+		//
+		//		System.out.println("\n\ndeltaCMc_4 = \n" + highLiftCalculator.getDeltaCM_c4());
+		//
+		//		System.out.println("--------------CLEAN----------------");
+		//		System.out.println(" alpha max " + theWing.getAerodynamics().get_alphaStall().to(NonSI.DEGREE_ANGLE));
+		//		System.out.println(" alpha star " + theWing.getAerodynamics().get_alphaStar().to(NonSI.DEGREE_ANGLE));
+		//		System.out.println(" cL max" + theWing.getAerodynamics().get_cLMaxClean());
+		//		System.out.println(" cL star " + theWing.getAerodynamics().getcLStarWing());
+		//		
+		//		highLiftCalculator.plotHighLiftCurve();
 
 		//----------------------------------------------------------------------------------
-		// RESULTS OF HIGH LIFT DEVICES ANALYSIS:
-		System.out.println("\n-----------------------------------------------------");
-		System.out.println("STARTING EVALUATE HIGH LIFE DEVICES EFFECTS");
-		System.out.println("-----------------------------------------------------");
+		// Landing - Ground Roll Distance Test
+		//----------------------------------------------------------------------------------
+		_startTimeCalculation = System.currentTimeMillis();
+		double mu = 0.03;
+		double muBrake = 0.4;
+		double kA = 1.3; // [1/deg]
+		double kFlare = 1.23;
+		double kTD = 1.15;
+		double phiRev = 0.0;
+		double deltaCD0LandingGear = 0.014; // see chart Nicolai pag.273 pdf
+		double deltaCD0Spioler = 0.07; // calculated using data from "Decollo e Atterramento"
+		Amount<Duration> nFreeRoll = Amount.valueOf(2, SI.SECOND);
+		Amount<Length> wingToGroundDistance = Amount.valueOf(6.56, SI.METER);
+		Amount<Length> obstacle = Amount.valueOf(50, NonSI.FOOT).to(SI.METER);
+		Amount<Velocity> vWind = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
+		Amount<Angle> alphaGround = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		Amount<Angle> iw = Amount.valueOf(3.0, NonSI.DEGREE_ANGLE);
+		Amount<Angle> thetaApproach = Amount.valueOf(3.0, NonSI.DEGREE_ANGLE);
 
-		System.out.println("deltaCl0_flap_list = ");
-		for(int i=0; i<highLiftCalculator.getDeltaCl0_flap_list().size(); i++)
-			System.out.print(highLiftCalculator.getDeltaCl0_flap_list().get(i) + " ");
+		CalcLanding theLandingCalculator = new CalcLanding(
+				aircraft,
+				theCondition,
+				highLiftCalculator,
+				kA,
+				kFlare,
+				kTD,
+				mu,
+				muBrake,
+				deltaCD0LandingGear,
+				deltaCD0Spioler,
+				wingToGroundDistance,
+				obstacle,
+				vWind,
+				alphaGround,
+				iw,
+				thetaApproach,
+				nFreeRoll
+				);
 
-		System.out.println("\n\ndeltaCl0_flap = \n" + highLiftCalculator.getDeltaCl0_flap());
+		theLandingCalculator.calculateLandingDistance(phiRev);
+		_stopTimeCalculation = System.currentTimeMillis();
+		_startTimeGraph = System.currentTimeMillis();
+		theLandingCalculator.createLandingCharts();
+		_stopTimeGraph = System.currentTimeMillis();
+		_stopTimeTotal = System.currentTimeMillis();
 
-		System.out.println("\n\ndeltaCL0_flap_list = ");
-		for(int i=0; i<highLiftCalculator.getDeltaCL0_flap_list().size(); i++)
-			System.out.print(highLiftCalculator.getDeltaCL0_flap_list().get(i) + " ");
+		_elapsedTimeTotal = _stopTimeTotal - _startTimeCalculation;
+		_elapsedTimeCalculation = _stopTimeCalculation - _startTimeCalculation;
+		_elapsedTimeGraph = _stopTimeGraph - _startTimeGraph;
 
-		System.out.println("\n\ndeltaCL0_flap = \n" + highLiftCalculator.getDeltaCL0_flap());
+		System.out.println("\n------------------COMPUTATIONAL TIME-----------------------");
+		System.out.println("\nANALYSIS TIME = " + (get_elapsedTime()) + " millisenconds");
+		System.out.println("\nCALCULATION TIME = " + (get_elapsedTimeCalculation()) + " millisenconds");
+		System.out.println("\nGRAPHICS TIME = " + (get_elapsedTimeGraph()) + " millisenconds");
+		System.out.println("-----------------------------------------------------------\n");
 
-		System.out.println("\n\ndeltaClmax_flap_list = ");
-		for(int i=0; i<highLiftCalculator.getDeltaClmax_flap_list().size(); i++)
-			System.out.print(highLiftCalculator.getDeltaClmax_flap_list().get(i) + " ");
-
-		System.out.println("\n\ndeltaClmax_flap = \n" + highLiftCalculator.getDeltaClmax_flap());
-
-		System.out.println("\n\ndeltaCLmax_flap_list = ");
-		for(int i=0; i<highLiftCalculator.getDeltaCLmax_flap_list().size(); i++)
-			System.out.print(highLiftCalculator.getDeltaCLmax_flap_list().get(i) + " ");
-
-		System.out.println("\n\ndeltaCLmax_flap = \n" + highLiftCalculator.getDeltaCLmax_flap());
-
-		System.out.println("\n\ndeltaClmax_slat_list = ");
-		for(int i=0; i<highLiftCalculator.getDeltaClmax_slat_list().size(); i++)
-			System.out.print(highLiftCalculator.getDeltaClmax_slat_list().get(i) + " ");
-
-		System.out.println("\n\ndeltaClmax_slat = \n" + highLiftCalculator.getDeltaClmax_slat());
-
-		System.out.println("\n\ndeltaCLmax_slat_list = ");
-		for(int i=0; i<highLiftCalculator.getDeltaCLmax_slat_list().size(); i++)
-			System.out.print(highLiftCalculator.getDeltaCLmax_slat_list().get(i) + " ");
-
-		System.out.println("\n\ndeltaCLmax_slat = \n" + highLiftCalculator.getDeltaCLmax_slat());
-
-		System.out.println("\n\ncLalpha_new_list = ");
-		for(int i=0; i<highLiftCalculator.getcLalpha_new_list().size(); i++)
-			System.out.print(highLiftCalculator.getcLalpha_new_list().get(i) + " ");
-
-		System.out.println("\n\ncLalpha_new = \n" + highLiftCalculator.getcLalpha_new());
-
-		System.out.println("\n\ndeltaCD_list = ");
-		for(int i=0; i<highLiftCalculator.getDeltaCD_list().size(); i++)
-			System.out.print(highLiftCalculator.getDeltaCD_list().get(i) + " ");
-
-		System.out.println("\n\ndeltaCD = \n" + highLiftCalculator.getDeltaCD());
-
-		System.out.println("\n\ndeltaCMc_4_list = ");
-		for(int i=0; i<highLiftCalculator.getDeltaCM_c4_list().size(); i++)
-			System.out.print(highLiftCalculator.getDeltaCM_c4_list().get(i) + " ");
-
-		System.out.println("\n\ndeltaCMc_4 = \n" + highLiftCalculator.getDeltaCM_c4());
-
-		System.out.println("\n-----------------------------------------------------");
-		System.out.println("WRITING TO CHART CL vs ALPHA CURVE HIGH LIFT");
-		System.out.println("-----------------------------------------------------");
-
-		highLiftCalculator.plotHighLiftCurve(subfolderPath);
-
-		System.out.println("-----------------------------------------------------");
-		System.out.println("DONE");
-		System.out.println("-----------------------------------------------------");
+		System.out.println("\n------------------------RESULTS----------------------------");
+		System.out.println("\nAIRBORNE DISTANCE = " + theLandingCalculator.getsApproach());
+		System.out.println("\nFLARE DISTANCE = " + theLandingCalculator.getsFlare());
+		System.out.println("\nGROUND ROLL DISTANCE = " + theLandingCalculator.getsGround());
+		System.out.println("\nTOTAL LANDING DISTANCE = " + theLandingCalculator.getsTotal());
+		System.out.println("\nFAR-25 FIELD LENGTH = " + (theLandingCalculator.getsTotal().divide(0.6)));
+		System.out.println("-----------------------------------------------------------\n");	
 	}
 
 	//------------------------------------------------------------------------------------------
 	// GETTERS & SETTERS:
 	public File get_inputFile() {
 		return _inputFile;
+	}
+
+	public static long get_elapsedTime() {
+		return _elapsedTimeTotal;
+	}
+
+	public static long get_elapsedTimeGraph() {
+		return _elapsedTimeGraph;
+	}
+
+	public static long get_elapsedTimeCalculation() {
+		return _elapsedTimeCalculation;
 	}
 }

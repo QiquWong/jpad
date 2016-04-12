@@ -139,6 +139,7 @@ public class TakeOff_Test_AGILE_DC1 {
 				);
 
 		theTakeOffCalculator.calculateTakeOffDistanceODE(null, false);
+		Amount<Length> takeOffDistance = theTakeOffCalculator.getGroundDistance().get(theTakeOffCalculator.getGroundDistance().size()-1);
 		_stopTimeCalculation = System.currentTimeMillis();
 		_startTimeGraph = System.currentTimeMillis();
 		theTakeOffCalculator.createTakeOffCharts();
@@ -165,6 +166,8 @@ public class TakeOff_Test_AGILE_DC1 {
 		System.out.println("\nGRAPHICS TIME = " + (get_elapsedTimeGraph()) + " millisenconds");
 		System.out.println("-----------------------------------------------------------\n");
 		System.out.println("\n-----------------------------------------------------------");
+		System.out.println("\nTAKE-OFF DISTANCE = " + takeOffDistance);
+		System.out.println("\nFAR-25 TAKE-OFF FIELD LENGTH = " + takeOffDistance.times(1.15));
 		System.out.println("\nBALANCED FIELD LENGTH = " + theTakeOffCalculator.getBalancedFieldLength());
 		System.out.println("\nDecision Speed (V1/VsTO) = " + theTakeOffCalculator.getV1().divide(theTakeOffCalculator.getvSTakeOff()));
 		System.out.println("-----------------------------------------------------------\n");
