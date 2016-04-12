@@ -2503,11 +2503,16 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 			List<Double> k1 = new ArrayList<Double>();
 			for(int i=0; i<flapTypeIndex.size(); i++)
-				k1.add(theWing
-						.getAerodynamics()
-						.getHighLiftDatabaseReader()
-						.getK1vsFlapChordRatio(cfc.get(i), flapTypeIndex.get(i))
-						);
+				if (cfc.get(i) <= 0.24)
+					k1.add(theWing
+							.getAerodynamics()
+							.getHighLiftDatabaseReader()
+							.getK1vsFlapChordRatio(cfc.get(i), flapTypeIndex.get(i))
+							);
+				else if ((cfc.get(i) > 0.24) && ((flapTypeIndex.get(i) == 2) || (flapTypeIndex.get(i) == 4) || (flapTypeIndex.get(i) == 5)))
+					k1.add(0.04*(cfc.get(i)*100));
+				else if ((cfc.get(i) > 0.24) && ((flapTypeIndex.get(i) == 1) || (flapTypeIndex.get(i) == 3) ))
+					k1.add(1.0);
 
 
 			List<Double> k2 = new ArrayList<Double>();

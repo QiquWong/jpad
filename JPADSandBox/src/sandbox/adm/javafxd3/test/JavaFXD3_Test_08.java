@@ -243,10 +243,10 @@ public class JavaFXD3_Test_08 extends Application {
 	    	JavaFXD3_Test_08.theWing = LiftingSurface.importFromXML(pathToXML, dirAirfoil);
 	    	JavaFXD3_Test_08.theWing.calculateGeometry(30);
 
-//	    	System.out.println("The wing ...");
-//	    	System.out.println(JavaFXD3_Test_08.theWing);
-//	    	System.out.println("Details on panel discretization ...");
-//	    	JavaFXD3_Test_08.theWing.reportPanelsToSpanwiseDiscretizedVariables();
+	    	System.out.println("The wing ...");
+	    	System.out.println(JavaFXD3_Test_08.theWing);
+	    	System.out.println("Details on panel discretization ...");
+	    	JavaFXD3_Test_08.theWing.reportPanelsToSpanwiseDiscretizedVariables();
 
 	    } catch (CmdLineException | IOException e) {
 	    	System.err.println("Error: " + e.getMessage());
