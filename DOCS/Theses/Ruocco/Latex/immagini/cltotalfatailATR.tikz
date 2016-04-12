@@ -11,7 +11,7 @@ xlabel={$\alpha_{b}$ (deg)},
 xmajorgrids,
 ymin=-0.5,
 ymax=2,
-ylabel={$CL_{tot}$},
+ylabel={$C_{L_{tot}}$},
 ymajorgrids,
 legend style={at={(0.03,0.8)},anchor=west,draw=black,fill=white,legend cell align=left},
 legend entries = {$\delta = -25^{\circ}$\\$\delta = -20^{\circ}$\\$\delta = -15^{\circ}$\\$\delta = -10^{\circ}$\\$\delta = -5^{\circ}$\\$\delta = 0^{\circ}$\\$\delta = 5^{\circ}$\\}

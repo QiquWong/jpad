@@ -11,7 +11,7 @@ xlabel={$\alpha_{b}$ (deg)},
 xmajorgrids,
 ymin=-1.6,
 ymax=0.5,
-ylabel={$CM_{cg}$},
+ylabel={$C_{M_{cg}}$},
 ymajorgrids,
 legend style={at={(0.03,0.3)},anchor=west,draw=black,fill=white,legend cell align=left},
 legend entries = {Wing\\Horizontal Tail \\Fuselage\\Thrust\\Non Axial force(thrust)\\}
