@@ -1252,7 +1252,7 @@ public class CalcTakeOff {
 		failureSpeedArray = MyArrayUtils.linspace(
 				2.0,
 				vLO.getEstimatedValue(),
-				5);
+				250);
 		// continued take-off array
 		continuedTakeOffArray = new double[failureSpeedArray.length];
 		// aborted take-off array
