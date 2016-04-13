@@ -445,7 +445,9 @@ public class ACStabilityManager {
 		fusDesDatabaseReader = new FusDesDatabaseReader(databaseFolderPathfus, databaseFileName);
 		fusDesDatabaseReader.runAnalysis(noseFinenessRatio, windshieldAngle, finenessRatio, tailFinenessRatio, upsweepAngle, xPositionPole);
 
-
+		System.out.println("\n\n------------------------------------");
+		System.out.println("\n CONDITION : " + theCondition);
+		System.out.println("\n------------------------------------");
 
 	}
 
@@ -1139,7 +1141,7 @@ public class ACStabilityManager {
 					"CL vs alpha",
 					"alpha",
 					"CL",
-					null, null, 0.0,null,
+					null, null, 0.0 ,null,
 					"deg",
 					"",
 					true,
@@ -2011,6 +2013,10 @@ public class ACStabilityManager {
 	}
 	public void calculateMoment(){
 
+		System.out.println("\n ------------------- ");
+		System.out.println("|   PITCHING MOMENTS   |");
+		System.out.println(" ------------------- \n\n");
+		
 		double xCG = centerOfGravity.get_xBRF().getEstimatedValue();
 		double zCG = centerOfGravity.get_zBRF().getEstimatedValue();
 		double mac = theWing.get_meanAerodChordActual().getEstimatedValue();
@@ -2018,11 +2024,12 @@ public class ACStabilityManager {
 		double LRF = (theWing.get_xLEMacActualBRF().getEstimatedValue());
 		double ZLRF = theWing.get_zCG().getEstimatedValue();
 		xCGc = (xCG-LRF)/theWing.get_meanAerodChordActual().getEstimatedValue();
-		System.out.println(" LRFF" + LRF);
-		System.out.println(" xcg " + xCG);
-		System.out.println(" mean aerodynamic chord " + theWing.get_meanAerodChordActual().getEstimatedValue());
-		System.out.println(" x cg ad " + (xCG-LRF)/theWing.get_meanAerodChordActual().getEstimatedValue());
-		System.out.println(" z cg ad " + (zCG-ZLRF)/theWing.get_meanAerodChordActual().getEstimatedValue());
+		System.out.println(" LRF " + LRF);
+		System.out.println(" xcg LRF " + xCG);
+		System.out.println(" mean aerodynamic chord (m) " + theWing.get_meanAerodChordActual().getEstimatedValue());
+		System.out.println(" x cg ad. (MAC) " + (xCG-LRF)/theWing.get_meanAerodChordActual().getEstimatedValue());
+		System.out.println(" z cg ad. (MAC) " + (zCG-ZLRF)/theWing.get_meanAerodChordActual().getEstimatedValue());
+		
 		// WING
 
 		// Normal and tangential components
@@ -2176,6 +2183,7 @@ public class ACStabilityManager {
 			cMHorizTailRespectToCGMap.put(tauKey, cMHTailTemp);
 			cLTotMap.put(tauKey, cLTot);
 		
+			System.out.println("alpha " + Arrays.toString(alphaHTailMap.get(tauKey)));
 			System.out.println("cl " + Arrays.toString(cl));
 			System.out.println("cd " + Arrays.toString(cd));
 			System.out.println("cm " + Arrays.toString(cm));
@@ -2208,7 +2216,7 @@ public class ACStabilityManager {
 		legendThrust[1] = "non axial";
 
 
-		System.out.println(" cm " + Arrays.toString(cMTotalRespectToCGMap.get(deltaEArrayString[1])));
+//		System.out.println(" cm " + Arrays.toString(cMTotalRespectToCGMap.get(deltaEArrayString[1])));
 		if(aircraft.get_typeVehicle() != AircraftTypeEnum.JET){
 		MyChartToFileUtils.plot(
 				alphaThrust,	cmThrus, // array to plot
@@ -2261,7 +2269,7 @@ public class ACStabilityManager {
 			legend[i] = deltaEArrayString[i];
 		}
 
-		System.out.println(" cm " + Arrays.toString(cMTotalRespectToCGMap.get(deltaEArrayString[1])));
+//		System.out.println(" cm " + Arrays.toString(cMTotalRespectToCGMap.get(deltaEArrayString[1])));
 		MyChartToFileUtils.plot(
 				alpha,	cm, // array to plot
 				0.0, 20.0, null, null,					    // axis with limits
@@ -2286,7 +2294,7 @@ public class ACStabilityManager {
 			legend[i] = deltaEArrayString[i];
 		}
 
-		System.out.println(" cm " + Arrays.toString(cMTotalRespectToCGMap.get(deltaEArrayString[1])));
+//		System.out.println(" cm " + Arrays.toString(cMTotalRespectToCGMap.get(deltaEArrayString[1])));
 		MyChartToFileUtils.plot(
 				alphatail,	cmHtail, // array to plot
 				0.0, 20.0, null, null,					    // axis with limits
@@ -2302,12 +2310,13 @@ public class ACStabilityManager {
 				cLTotMap.get(deltaEArrayString[4]), cLTotMap.get(deltaEArrayString[5]),
 				cLTotMap.get(deltaEArrayString[6])};
 
+
 		double [][] cmcl = {cMTotalRespectToCGMap.get(deltaEArrayString[0]),cMTotalRespectToCGMap.get(deltaEArrayString[1]),
 				cMTotalRespectToCGMap.get(deltaEArrayString[2]), cMTotalRespectToCGMap.get(deltaEArrayString[3]),
 				cMTotalRespectToCGMap.get(deltaEArrayString[4]), cMTotalRespectToCGMap.get(deltaEArrayString[5]),
 				cMTotalRespectToCGMap.get(deltaEArrayString[6])};
 
-		System.out.println(" cm " + Arrays.toString(cMTotalRespectToCGMap.get(deltaEArrayString[1])));
+//		System.out.println(" cm " + Arrays.toString(cMTotalRespectToCGMap.get(deltaEArrayString[1])));
 		MyChartToFileUtils.plot(
 				cl,	cmcl, // array to plot
 				0.0, null, null, null,					    // axis with limits
@@ -2330,7 +2339,7 @@ public class ACStabilityManager {
 //		System.out.println(" cm " + Arrays.toString(cMTotalRespectToCGMap.get(deltaEArrayString[1])));
 		MyChartToFileUtils.plot(
 				alphaTot,	clTot, // array to plot
-				0.0, null, null, null,					    // axis with limits
+				null, null, null, null,					    // axis with limits
 				"alpha", "CL tot", "", "",	    // label with unit
 				legend,					// legend
 				subfolderPath, "CL tot vs alpha body ");			    // output informations

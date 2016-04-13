@@ -456,7 +456,7 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		ACStabilityManager theStabilityManagerTakeOFF = new ACStabilityManager(meanAirfoil, aircraft, ConditionEnum.TAKE_OFF,
 				alphaMin, alphaMax, alphaBody , true, subfolderPathTakeOFF, pathTakeOff);
  
-	theStabilityManager.calculateAll();
+//	theStabilityManager.calculateAll();
 	theStabilityManagerTakeOFF.calculateAll();
 		
 		
