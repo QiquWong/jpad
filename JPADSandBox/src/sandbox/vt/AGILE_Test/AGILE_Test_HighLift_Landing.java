@@ -220,10 +220,10 @@ public class AGILE_Test_HighLift_Landing {
 		myAirfoilList.add(1, airfoilKink);
 		myAirfoilList.add(2, airfoilTip);
 		theWing.set_theAirfoilsList(myAirfoilList);
-//		theWing.get_theAirfoilsList().get(1).getGeometry().set_twist(Amount.valueOf(Math.toRadians(-1.0), SI.RADIAN));
-//		theWing.get_theAirfoilsList().get(2).getGeometry().set_twist(Amount.valueOf(Math.toRadians(-5.0), SI.RADIAN));
-		theWing.get_theAirfoilsList().get(1).getGeometry().set_twist(Amount.valueOf(Math.toRadians(0.0), SI.RADIAN));
-		theWing.get_theAirfoilsList().get(2).getGeometry().set_twist(Amount.valueOf(Math.toRadians(0.0), SI.RADIAN));
+		theWing.get_theAirfoilsList().get(1).getGeometry().set_twist(Amount.valueOf(Math.toRadians(-1.0), SI.RADIAN));
+		theWing.get_theAirfoilsList().get(2).getGeometry().set_twist(Amount.valueOf(Math.toRadians(-5.0), SI.RADIAN));
+//		theWing.get_theAirfoilsList().get(1).getGeometry().set_twist(Amount.valueOf(Math.toRadians(0.0), SI.RADIAN));
+//		theWing.get_theAirfoilsList().get(2).getGeometry().set_twist(Amount.valueOf(Math.toRadians(0.0), SI.RADIAN));
 
 		//------------------------------------------------------------------------------------
 		// UPDATE DATA

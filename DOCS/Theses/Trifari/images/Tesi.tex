@@ -1,0 +1,255 @@
+%******************************************************************************************
+%
+% AUTHOR:           Agostino De Marco
+% DESCRIPTION:      This is "Tesi.tex", the master source file of a thesis manuscript
+%                   When compiled with pdflatex creates a PDF document "Tesi.pdf".
+% USAGE:            Use the following command line:
+%                   $ pfdlatex Tesi
+%
+%******************************************************************************************
+
+%------------------------------------------------------------------------------------------
+% Meta-commands for the TeXworks editor
+%
+% !TEX encoding = UTF-8
+% !TEX program = pdflatex
+%------------------------------------------------------------------------------------------
+
+%------------------------------------------------------------------------------------------
+% INITIAL DEFINITIONS
+%------------------------------------------------------------------------------------------
+
+\input{_init}% plain TeX initial definitions in ./_init.tex
+
+%------------------------------------------------------------------------------------------
+% LaTeX STARTING DECLARATION
+%------------------------------------------------------------------------------------------
+
+\documentclass[12pt,oneside]{book}
+
+%------------------------------------------------------------------------------------------
+% PREAMBLE
+%------------------------------------------------------------------------------------------
+
+\input{_preamble}% all preamble settings in ./_preamble.tex
+
+%------------------------------------------------------------------------------------------
+% LOCAL USER-DEFINED MACROS & SETTINGS
+
+\input{_local_macros}
+
+%------------------------------------------------------------------------------------------
+% Stuff related to package glossaries
+% loaded here after _local_macros.tex to make all custom definition
+% known by the glossary code
+
+\input{_glossary}
+
+%------------------------------------------------------------------------------------------
+%                                                              B E G I N    D O C U M E N T
+%
+\begin{document}
+\selectlanguage{english}
+
+%------------------------------------------------------------------------------------------
+%                                                                   F R O N T E S P I Z I O
+\begin{frontespizio}
+\begin{Preambolo*}
+\usepackage{newtxtext}
+\renewcommand{\frontlogosep}{30pt}
+%\renewcommand{\frontinstitutionfont}{\fontsize{15}{10}\bfseries }
+%\renewcommand{\frontdivisionfont}{\fontsize{15}{18}\mdseries }
+\renewcommand{\fronttitlefont}{\fontsize{23}{24}\bfseries }
+%\renewcommand{\frontfootfont}{\fontsize{15}{17}\bfseries }
+%\renewcommand{\frontfixednamesfont}{\fontsize{15}{20}\mdseries }
+%\renewcommand{\frontnamesfont}{\fontsize{15}{20}\bfseries }
+%\renewcommand{\frontsmallfont}{\fontsize{15}{15}\bfseries }
+\renewcommand{\frontpretitlefont}{\fontsize{14}{16}\mdseries }
+\end{Preambolo*}
+\Margini {3cm}{2.5cm}{3cm}{2cm}
+\Istituzione {Universit\`a degli Studi di Napoli Federico II\\[0.5\baselineskip ] \textsc {Scuola Politecnica e delle Scienze di Base} }
+\Logo [3.5cm]{logounina.pdf}
+\Dipartimento {Ingegneria Industriale}
+\Corso [Laurea]{Ingegneria Aerospaziale}
+\Titoletto {Tesi di Laurea Magistrale\\ in\\ Ingegneria Aerospaziale ed Astronautica}
+\Titolo {Development of a Java Framework for Parametric Aircraft Design \\ \bigskip\bigskip The Performance Analysis Module }
+\Sottotitolo {\mbox{}\\[5pt]}
+\NCandidato {Candidato}
+\Candidato [M53/411]{Vittorio~Trifari} % \rule{0pt}{1.3em}
+\NRelatore {Relatori}{}
+\Relatore {\begin{tabular}{@{}l@{}}Prof.~Fabrizio~Nicolosi\\ Prof.~Agostino~De~Marco\end{tabular}}
+\Piede {Anno Accademico 2014/2015}
+\end{frontespizio}
+%------------------------------------------------------------------------------------------------------------------------------------------
+
+% -----------------------------------------------------------------------------------------
+%                                                                             S U M M A R Y
+
+%\newpage\null\thispagestyle{empty}\newpage\thispagestyle{empty}
+%
+%\newgeometry{left=3cm,right=3cm}
+%\vspace*{2cm}
+%\begin{center}
+%\textit{A mia madre, per aver sempre posto la nostra famiglia prima di ogni altra cosa}
+%
+%\medskip
+%\textit{A mio padre, per avermi insegnato a non arrendermi}
+%\end{center}
+%\vspace*{\fill}
+
+\restoregeometry
+%\clearpage
+
+\selectlanguage{english}
+\begin{abstract}
+This thesis has the main purpose of providing a comprehensive overview about the development, in Java, of a software dedicated to the preliminary design of an aircraft, focusing on the performance analysis module.
+
+The point of view from which this subject will be observed expects first to define methodologies and theoretical aspects necessary for the examined performance calculation for then to show, in more detail, the implementation of these latter within the software; this will be seen both from the point of view of the developer, through a detailed explanation of the architecture of the different calculation modules, both of a potential \gls{User:Developer}, by showing some commented examples of use supplied with graphical and numerical results suitable, among other things, also to the validation of calculations performed.
+\end{abstract}
+
+\selectlanguage{italian}
+\begin{abstract}
+Questo lavoro di tesi ha lo scopo principale di fornire una panoramica esaustiva circa lo sviluppo, in ambiente Java, di un software dedicato al progetto preliminare di un aeromobile, concentrandosi sull'aspetto dell'analisi delle performance.
+
+Il punto di vista con il quale verrà affrontato questo argomento prevede dapprima di inquadrare le metodologie e gli aspetti teorici necessari per la stima delle performance in esame per poi mostrare, più nel dettaglio, l'implementazione di questi ultimi all'interno del software; ciò sia dal punto di vista dello sviluppatore, attraverso la spiegazione dettagliata dell'architettura dei vari moduli di calcolo, sia dal punto di vista di un potenziale utente, tramite alcuni esempi d'uso commentati e corredati di risultati grafici e numerici atti, tra l'altro, anche alla validazione dei calcoli svolti. 
+\end{abstract}
+\selectlanguage{english}
+
+%------------------------------------------------------------------------------------------
+%                                                                       T I T L E   P A G E
+%
+%\input{CoverPage}
+%\input{TitlePage}
+%
+%------------------------------------------------------------------------------------------
+%                                                               C O P Y R I G H T   P A G E
+%
+%
+%\clearpage
+%\input{CopyrightPage}
+%\frontmatter
+%
+%
+% -----------------------------------------------------------------------------------------
+%                                                         T A B L E   O F   C O N T E N T S
+%
+\tableofcontents
+%
+% -----------------------------------------------------------------------------------------
+%                                                 I N T R O D U C T O R Y   M A T E R I A L
+%
+%\input{Acknowledgements}
+%\input{Preface}
+
+%\markboth{}{}
+%\cleardoublepage
+
+% -----------------------------------------------------------------------------------------
+%                                                                M A I N    C O N T E N T S
+\mainmatter
+\pagestyle{myBookPageStyle}
+%
+% Here we include the core material of the book
+%
+\input{Tesi_Contents}
+%
+%% reset the material handled by package background
+\makeatletter
+\renewcommand{\bg@material}{}%
+\makeatother
+
+% -----------------------------------------------------------------------------------------
+%                                                                       A P P E N D I C E S
+% some configuration commands by package appendix
+\clearpage \phantomsection
+\renewcommand{\chaptername}{Appendix}
+\renewcommand{\appendixtocname}{Appendices}
+\renewcommand{\appendixpagename}{Appendices}
+\appendixpage
+\noappendicestocpagenum
+\addappheadtotoc
+\pagestyle{myAppendixPageStyle}
+
+%Here we include the appendix material of the book
+
+\begin{appendices}% needs package appendix
+
+\input{Tesi_Appendices}
+
+\end{appendices}
+%
+%
+% -----------------------------------------------------------------------------------------
+%                                                                     B I B L I O G R P H Y
+\clearpage \phantomsection
+\addcontentsline{toc}{chapter}{Bibliography}
+\pagestyle{myBibliographyPageStyle}
+\nocite{*}
+%\printbibheading[title={Bibliography}]
+\printbibliography[heading=myBibliography]% needs biblatex, see myBibliography in _preamble.tex
+
+% -----------------------------------------------------------------------------------------
+%                                       P R I N T   G L O S S A R Y   and   A C R O N Y M S
+%
+% add all the entries to the glossaries without referencing each one explicitly
+\glsaddall
+%
+\glossarystyle{list}%    can choose other style for displying glossaries
+% styles -->   list, listdotted, long, longragged, super, tree
+%
+%\printglossaries
+%%%
+%%%  other possible uses:
+%%%
+%
+\markboth{}{}
+\clearpage
+\pagestyle{myGlossaryPageStyle}
+\printglossary[type=main]% the default glossary is printed
+%
+\markboth{}{}
+\clearpage
+\pagestyle{myAcronymsPageStyle}
+\printglossary[type=\acronymtype]
+%
+\markboth{}{}
+\clearpage
+\pagestyle{myListOfSymbolsPageStyle}
+\printglossary[type=symbols]
+
+% -----------------------------------------------------------------------------------------
+%                                                                                 I N D E X
+%\markboth{}{}
+%\cleardoublepage
+%\pagestyle{myIndexPageStyle}
+%
+%\indexnote{%
+%In the index we have many voices, of various types. The page number on the right
+%reveals where those terms appear in the book.%{\parfillskip=0pt\par}
+%
+%\medskip\noindent
+%\blindtext% this is just some dummy text
+%
+%\medskip
+%{\color{red}
+%The index---and index entries---should be the very last thing to work at when writing a book!
+%So, do not worry about what you see below. These items are going to change many times before
+%the final version of the document is released.}
+%}% end-of-indexnote
+%
+%\phantomsection
+%\printindex
+%
+%\markboth{}{}
+%\cleardoublepage
+%
+% -----------------------------------------------------------------------------------------
+%                                                                       T O   D O   L I S T
+%
+%\listoftodos[List of TO-DOs and comments]
+%
+
+\end{document}
+%---------------------------------------------------------------------------------------------------
+%                                                                                                                                 E N D    D O C U M E N T
+%

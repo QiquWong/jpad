@@ -1,0 +1,78 @@
+%******************************************************************************************
+%
+% AUTHOR:           Agostino De Marco
+% DESCRIPTION:      This is "_lst_reset.tex", an auxiliary LaTeX source file.
+%                   Reset all settings related to package listings.
+%                   The XML language is selected.
+%
+%******************************************************************************************
+
+%------------------------------------------------------------------------------------------
+% Meta-commands for the TeXworks editor
+%
+% !TeX root = ./Libro_MS.tex
+% !TEX encoding = UTF-8
+% !TEX program = pdflatex
+%------------------------------------------------------------------------------------------
+
+% language --> REVERT TO XML
+% morekeywords, emph, etc --> VOID
+
+\lstset{%
+    language=xml,%
+    breaklines=true,%
+    tabsize=3,%
+    showstringspaces=false,%
+    aboveskip=3pt,%
+    belowskip=3pt,%
+    inputencoding=utf8,
+    extendedchars=true,
+    literate={à}{{\`a}}1 {è}{{\`e}}1 {é}{{\'e}}1 {ì}{{\`\i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1,
+    frame=none,% single,   
+    %===========================================================
+    %framesep=3pt,% expand outward.
+    %framerule=0.4pt,% expand outward.
+    %xleftmargin=3.4pt,% make the frame fits in the text area. 
+    %xrightmargin=3.4pt,% make the frame fits in the text area.
+    %=========================================================== 
+    rulecolor=\color{red}%
+}
+\lstset{
+   morekeywords={%
+      %
+      % TO DO: put more keywords here
+      %
+   },%
+   % see http://tex.stackexchange.com/questions/27074/how-to-emphasize-with-in-a-listing-an-identifier-containing-a-digit
+   otherkeywords={%
+      %
+      % TO DO: put keywords with digits here
+      %
+   },%
+   morekeywords=[2]{%
+      %
+      % TO DO: put more keywords 2 here
+      %
+   },%
+   keywordstyle=[2]{\color{mydarkgreen}\bfseries},%
+   morekeywords=[3]{%
+      %
+      % TO DO: put more keywords 3 here
+      %
+   },%
+   keywordstyle=[3]{\color{red}\bfseries},%
+   %
+   emph={%
+      %
+      % TO DO: put more emphasized words here
+      %
+   },
+   emphstyle={\color{mydarkblue}\bfseries},%
+   emph=[2]{%
+      %
+      % TO DO: put more emphasized words 2 here
+      %
+   },
+   emphstyle=[2]{\color{mydarkblue}\bfseries}% \sffamily ??
+}
+

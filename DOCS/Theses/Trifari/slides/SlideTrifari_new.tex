@@ -1,0 +1,1607 @@
+%###################################################################################################
+%--------------------------------------------------------------------------PREAMBLE--------------------------------------------------------------------------------------
+%###################################################################################################
+%
+%-------------------Document definition---------------------
+\documentclass[compress]{beamer} 
+\usepackage{helvet}
+\mode<presentation>
+%
+%---------------------Beamer theme-------------------------
+\usetheme{Antibes}{
+\usecolortheme{dolphin} % Beamer color theme
+}
+\useinnertheme{rounded}
+\useoutertheme[subsection=false]{miniframes}
+\newcommand*\MyBullet{%
+  \item[\color{blue}\scalebox{0.9}{\textbullet}]}
+\setbeamertemplate{footline}[frame number]
+\setbeamertemplate{navigation symbols}{}
+%
+%---------------Encoding and other settings-----------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{siunitx}
+\usepackage{pgfplots}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{cancel}
+\usepackage{textcomp}% additional glyphs
+\usepackage{pifont} % for dingbats
+\usepackage{marvosym} % for \Keyboard, etc
+\usepackage%
+   [TM]% NOTE: needs version 2012 _and_ fonts/tfm/public/aspectratio/*.tfm
+   {ar}% original package by Claudio Beccari (based on Computer Modern Roman)
+\usetikzlibrary{tikzmark,fit,shapes.geometric}
+\usepackage{graphicx}
+\definecolor{mygold}{RGB}{255, 153, 0}
+\setbeamercolor{item}{bg=mygold,fg=mygold}
+\setbeamerfont{section number projected}{%
+  family=\rmfamily,series=\bfseries,size=\normalsize}
+\setbeamercolor{section number projected}{bg=blue,fg=white}
+
+%
+%--------------------Beamer Blocks---------------------------
+\setbeamerfont{block title}{size=\scriptsize}
+%
+\newenvironment<>{varblock}[2][.9\textwidth]{%
+  \setlength{\textwidth}{#1}
+  \begin{actionenv}#3%
+    \def\insertblocktitle{#2}%
+    \par%
+    \usebeamertemplate{block begin}}
+  {\par%
+    \usebeamertemplate{block end}%
+  \end{actionenv}}
+%
+%-------------------------Caption---------------------------
+\usepackage{caption}
+\captionsetup[figure]{
+    labelsep=space,
+    font=small,labelfont={bf,sf,small},
+    singlelinecheck=false
+}
+\captionsetup[table]{
+    labelsep=space,
+    font=small,labelfont={bf,sf,small},
+    justification=raggedright,
+    singlelinecheck=true,
+    belowskip=0.5em
+}
+\captionsetup[lstlisting]{
+    labelsep=space,
+    font=small,labelfont={bf,sf,small},
+    singlelinecheck=true
+}
+\captionsetup[ctable]{
+    labelsep=space,
+    font=small,labelfont={sf,bf,small},
+    singlelinecheck=true,
+    width=0.8\textwidth,
+    belowskip=0.5em
+}
+%-----------------------If conditions--------------------------
+\newif\ifplacelogo
+\placelogotrue % set it to true
+\logo{
+    \ifplacelogo
+    \includegraphics[keepaspectratio,width=1cm]{images/unina}~
+    \hspace{\dimexpr\paperwidth-3.6cm-2pt}
+    \includegraphics[keepaspectratio,width=2.3cm]{images/logo_DII}
+    \fi
+}
+\newif\ifplacebackground
+\placebackgroundtrue % set it to true
+\setbeamertemplate{background canvas}{
+    \ifplacebackground
+    \rule{0in}{2.8in}%
+    \rule{1.27in}{0in}%
+    \includegraphics[keepaspectratio, width=0.45\paperwidth]{images/unina_vettoriale_con_sigillo}
+    \fi
+}
+%
+%-----------------------Larger Margin--------------------------
+\newcommand\Wider[2][4em]{
+\vspace*{-0.8cm}
+\makebox[\linewidth][c]{
+  \begin{minipage}{\dimexpr\textwidth+#1\relax}
+  \raggedright#2
+  \end{minipage}
+  }
+}
+%
+\newcommand\WiderImages[2][5em]{
+\vspace*{-0.5cm}
+\makebox[\linewidth][c]{
+  \begin{minipage}{\dimexpr\textwidth+#1\relax}
+  \raggedright#2
+  \end{minipage}
+  }
+}
+%
+%-----------------------Footline-----------------------------------
+\setbeamertemplate{footline}
+{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.275\paperwidth,ht=2.25ex,dp=1ex,left]{author in head/foot}%
+    \usebeamerfont{author in head/foot}\insertshortauthor
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.473\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+    \usebeamerfont{title in head/foot}\insertshorttitle
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.26\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+    \insertframenumber{} / \inserttotalframenumber\hspace*{2ex} 
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+\makeatother
+%-----------------------Title Info--------------------------------
+\title{Development of a Java Framework for Parametric Aircraft Design\\
+\bigskip
+The Performance Analysis Module}
+\author[\ Vittorio Trifari - M53/411]{}
+\date{}
+%
+%###################################################################################################
+%--------------------------------------------------------------------------DOCUMENT--------------------------------------------------------------------------------------
+%###################################################################################################
+\begin{document}
+%
+%-----------------------Title Frame---------------------------
+\placelogofalse
+\placebackgroundtrue
+\begin{frame}
+\titlepage
+\begin{table}
+\begin{tabular}{p{0.7\linewidth}p{0.7\linewidth}}
+Relatori: &  Candidato: \\
+prof. Fabrizio Nicolosi & Vittorio Trifari \\
+prof. Agostino De Marco &  M53/411 \\
+\end{tabular}
+\end{table}
+\end{frame}
+%
+%--------------------Table of contents-----------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}
+\frametitle{Table of Contents}
+\vspace*{-1cm}
+\tableofcontents
+\end{frame}
+%
+%----------------Current table of contents--------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Table of Contents}
+\section{Introducing JPAD}
+\vspace*{-1cm}
+\tableofcontents[currentsection]
+\subsection{}
+\end{frame}
+%
+%-----------------------Frame 1-------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Introducing JPAD - {\Large\textcolor{mygold}{J}}ava {\Large\textcolor{mygold}{P}}rograms for {\Large\textcolor{mygold}{A}}ircraft {\Large\textcolor{mygold}{D}}esign}
+\Wider{
+\begin{itemize}
+\MyBullet A software toolchain for {\textcolor{mygold}{aircraft preliminary design}} and {\textcolor{mygold}{MDO}}
+\MyBullet A modern, user friendly, {\textcolor{mygold}{modular framework}}.
+\MyBullet Support for {\textcolor{mygold}{simultaneous management/analysis of several aircraft}} and/or ‘varied’ configurations of the same aircraft.
+\MyBullet Conceived for {\textcolor{mygold}{collaborative design}} activities.
+\MyBullet {\textcolor{mygold}{Interoperability}} with other tools/disciplines (CAD/CFD/FEM analysis).
+\end{itemize}
+}
+\end{frame}
+%
+%-----------------------Frame 2-------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Main features}
+\Wider{
+\begin{itemize}
+\MyBullet Define a {\textcolor{mygold}{parametric representations of a complete aircraft}} with XML configuration/input files.
+\MyBullet {\textcolor{mygold}{Generate CAD geometries}} of aircraft assembly and sub-components. Measure lengths, areas, volumes. 
+\MyBullet {\textcolor{mygold}{Perform various types of analysis}} (L0, L0.5, L1): \textbf{Aerodynamics}, \textbf{Stability \& Control}, \textbf{Performance}, \textbf{Weight \& Balance}, \textbf{Costs}.
+\MyBullet Exports {\textcolor{mygold}{analysis results}} in {\textcolor{mygold}{XML}} and {\textcolor{mygold}{Excel formats}}. Produce useful {\textcolor{mygold}{output charts}} for each analysis. 
+\MyBullet Perform iterative analysis in order to {\textcolor{mygold}{reach an optimum configuration}}. (\alert{Work in progress}) 
+\end{itemize}
+}
+\end{frame}
+%
+%-----------------------Frame 3-------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Java. Why?}
+\Wider{
+\begin{itemize}
+\MyBullet {\textcolor{mygold}{Language widely supported}}. This avoids the library to become obsolete due to the aging of the programming language used.
+\MyBullet The language promote the use of {\textcolor{mygold}{open source libraries}}, especially for I/O tasks and for complex mathematical operations.
+\MyBullet {\textcolor{mygold}{Widely supported GUI frameworks}} (SWT/JFace and JavaFX) and a GUI visual builders.
+\MyBullet {\textcolor{mygold}{Object-Oriented paradigm}} is naturally applied in the abstraction of typical Aircraft Design problems.
+\MyBullet Promotes {\textcolor{mygold}{modularity}}: easier to work with in an ever changing team.
+\end{itemize}
+}
+\end{frame}
+%
+%-----------------------Frame 4-------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{TIOBE Programming Community Index}
+\WiderImages{
+\begin{figure}[t]
+\centering
+\includegraphics[keepaspectratio, width=\paperwidth]{images/LanguageTrend}
+\end{figure}
+}
+\end{frame}
+%
+%-----------------------Frame 5-------------------------------
+\placelogotrue
+\placebackgroundfalse
+%
+\setbeamertemplate{background canvas}{
+    \rule{0in}{3.5in}%
+    \rule{0.53in}{0in}%
+    \centering
+    \includegraphics[keepaspectratio, width=0.73\paperwidth]{images/flowchart3}
+}
+%
+\begin{frame}{JPAD typical work session}
+\end{frame}
+\setbeamertemplate{background canvas}{ }
+%
+%-----------------------Frame 6-------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Input file}
+\Wider{
+The input file type chosen is the {\textcolor{mygold}{XML}} (\emph{{\textcolor{mygold}{eXtensible Markup Language}}}). It is a markup language that defines a set of rules for encoding documents in a format which is both \emph{{\textcolor{mygold}{human-readable}}} and \emph{{\textcolor{mygold}{machine-readable}}}; moreover its design goals of emphasize simplicity, generality and usability across the Internet.
+%
+\begin{itemize}
+\MyBullet \emph{{\textcolor{mygold}{Markup Language}}} due to the use of tags that describes the content.
+\MyBullet \emph{{\textcolor{mygold}{extensible}}} because the markup symbols are unlimited and self-defining, so that it is possible to use a personal tag for each data.
+\end{itemize}
+}
+\end{frame}
+%
+%-----------------------Frame 7-------------------------------
+\placelogotrue
+\placebackgroundfalse
+%
+\setbeamertemplate{background canvas}{
+    \rule{0in}{3.6in}%
+    \rule{0.07in}{0in}%
+    \centering
+    \includegraphics[keepaspectratio, width=0.55\paperwidth]{images/Folder_Tree}
+}
+%
+\begin{frame}{Input file structure prototype}
+\begin{figure}[!t]
+    \hspace*{6.2cm}
+    \vspace*{1.7cm}
+    \includegraphics[keepaspectratio, width=0.415\paperwidth]{images/XMLAircraft}
+\end{figure}
+\end{frame}
+\setbeamertemplate{background canvas}{ }
+%
+%-----------------------Frame 8-------------------------------
+\placelogotrue
+\placebackgroundfalse
+%
+\setbeamertemplate{background canvas}{
+    \rule{0in}{2.775in}%
+    \rule{2in}{0in}%
+    \centering
+    \includegraphics[keepaspectratio, width=0.6\paperwidth]{images/XLS}
+}
+%
+\begin{frame}{JPAD Output}
+\Wider{
+\begin{itemize}
+    \vspace*{-2cm}
+\MyBullet XML
+\MyBullet Microsoft Excel
+\MyBullet Charts
+\MyBullet CAD model
+\end{itemize}
+\begin{figure}[!t]
+    \hspace*{-7.7cm}
+    \vspace*{-3cm}
+    \includegraphics[keepaspectratio, width=0.4\paperwidth]{images/CAD}
+\end{figure}
+}
+\end{frame}
+%
+\setbeamertemplate{background canvas}{}
+%
+%----------------Current table of contents--------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Table of Contents}
+\section{Payload Range class}
+\vspace*{-1cm}
+\tableofcontents[currentsection]
+\subsection{}
+\end{frame}
+%
+%-----------------------Frame 12-------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Payload-Range chart construction}
+\Wider{
+\begin{columns}[onlytextwidth,t]
+\column{0.6\textwidth}
+\begin{itemize}
+    \vspace*{0.5cm}
+	\MyBullet {\textcolor{mygold}{Point A}}: Maximum payload at zero range. (\alert{Already known})
+	\MyBullet {\textcolor{mygold}{Point B}}: Range at maximum payload and maximum take-off weight.
+	\MyBullet {\textcolor{mygold}{Point C}}: Range at maximum take-off weight with maximum fuel in fuel tanks.
+	\MyBullet {\textcolor{mygold}{Point D}}: Range with maximum fuel in fuel tanks and no payload.
+\end{itemize}
+\column{0.4\textwidth}
+\begin{figure}[!t]
+    \vspace*{-0.2cm}
+    \includegraphics[keepaspectratio, width=0.4\paperwidth]{images/Payload_Range}
+\end{figure}
+\end{columns}
+\begin{center}
+    \vspace*{-0.35cm}
+\begin{minipage}{4cm}
+\begin{varblock}[6cm]{Breguet equation propeller aircraft}
+\centering
+\scalebox{0.8}{
+$R=603.5\left(\frac{\eta_{p}}{SFC}\right)\left(\frac{L}{D}\right)\ln\left(\frac{W_{i}}{W_{f}}\right)_{\text{cruise}}$
+}
+\end{varblock}
+%
+\begin{varblock}[6cm]{Breguet equation jet aircraft}
+\centering
+\scalebox{0.8}{
+$R=\left(\frac{V}{SFCJ}\right)\left(\frac{L}{D}\right)\ln\left(\frac{W_{i}}{W_{f}}\right)_{\text{cruise}}$
+}
+\end{varblock}
+\end{minipage}
+\end{center}
+}
+\end{frame}
+%-----------------------Frame 14------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Payload-Range Java class flowchart}
+\WiderImages{
+\only<1>{
+\begin{figure}
+\centering
+    \includegraphics[keepaspectratio, width=0.73\paperwidth]{images/PayloadRange_BestRange_Flowchart.png}
+    \captionsetup{labelformat=empty}
+    \caption{\scalebox{0.8}{\qquad\qquad\qquad \textbf{Flowchart for best range and chosen Mach conditions comparison}}}
+\end{figure}
+}
+\only<2>{
+\begin{figure}
+\centering
+    \includegraphics[keepaspectratio, width=0.8\paperwidth]{images/PayloadRange_MTOM_Flowchart.png}
+    \captionsetup{labelformat=empty}
+    \caption{\scalebox{0.8}{\qquad\qquad\qquad\qquad\qquad \textbf{Flowchart for maximum take-off mass parameterization}}}
+\end{figure}
+}
+}
+\end{frame}
+%
+%-----------------------Frame 15------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Payload-Range Java class output}
+\Wider{
+  \vspace*{0.1cm}
+  \hspace*{0.4cm}
+\scalebox{0.8}{
+\begin{tabular}{|l||c|c|c|c|c|}
+\hline
+\textbf{ } & \textbf{ATR-72 \ (optional weight)} &\textbf{ } &  \textbf{JPAD} &\textbf{ } & \textbf{Difference(\%)}\\
+\hline\hline
+\textbf{Range} & 890 nmi  & \textbf{ } &$\approx820$ nmi &\textbf{ } & $\approx7.8$\%\\
+\textbf{Payload} & 68 pass. at $\SI{95}{\kilogram}$ &\textbf{ } & 65 pass. at $\SI{99}{\kilogram}$ &\textbf{ } & \textbf{ }\\
+\hline
+\end{tabular}
+}
+}
+\WiderImages{
+\begin{columns}[onlytextwidth,t]
+\column{0.5\textwidth}
+\begin{figure}
+  \vspace*{-0.9cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.5\paperwidth]{images/ATRSpecsPR.PNG}
+    \captionsetup{labelformat=empty}
+\end{figure}
+\column{0.5\textwidth}
+\begin{figure}
+  \vspace*{-0.8cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.5\paperwidth]{images/ATRJpadPR.PNG}
+    \captionsetup{labelformat=empty}
+\end{figure}
+\end{columns}
+}
+\end{frame}
+%
+%-----------------------Frame 16------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Payload-Range Java class output}
+\Wider{
+  \vspace*{-0.25cm}
+  \hspace*{0.9cm}
+\scalebox{0.8}{
+\begin{tabular}{|l||c|c|c|c|c|}
+\hline
+\textbf{ } & \textbf{B747-100B} &\textbf{ } &  \textbf{JPAD} &\textbf{ } & \textbf{Difference(\%)}\\
+\hline\hline
+\textbf{Range} & $\approx5200$ nmi &\textbf{ } & $\approx5300$ nmi &\textbf{ } & $\approx1.9$\%\\
+\textbf{Payload} & 452 pass. at $\SI{95}{\kilogram}$ &\textbf{ } & 434 pass. at $\SI{99}{\kilogram}$ &\textbf{ } & \textbf{ }\\
+\hline
+\end{tabular}
+}
+}
+\WiderImages{
+\begin{columns}[onlytextwidth,t]
+\column{0.5\textwidth}
+\begin{figure}
+  \vspace*{-0.4cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.47\paperwidth]{images/B747SpecsPR.PNG}
+    \captionsetup{labelformat=empty}
+\end{figure}
+\column{0.5\textwidth}
+\begin{figure}
+  \vspace*{-0.3cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.5\paperwidth]{images/B747JpadPR.PNG}
+    \captionsetup{labelformat=empty}
+\end{figure}
+\end{columns}
+}
+\end{frame}
+%----------------Current table of contents--------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Table of Contents}
+\section{Specific Range class}
+\vspace*{-1cm}
+\tableofcontents[currentsection]
+\subsection{}
+\end{frame}
+%
+%-----------------------Frame 17------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Specific Range and Cruise Grid chart}
+\Wider{
+\begin{columns}[onlytextwidth,t]
+\column{0.6\textwidth}
+\begin{itemize}
+    \vspace*{0.6cm}
+	\MyBullet {\textcolor{mygold}{Cruise grid chart}} is a very important tool for pilots because it allows to choose the correct speed, during the cruise phase, in order to follow some mission objectives like minimum fuel consumption or a fast cruise.
+	\MyBullet In {\textcolor{mygold}{Breguet equations}} the focus is on the {\textcolor{mygold}{autonomy factor A.F.}}.
+\end{itemize}
+\column{0.4\textwidth}
+\begin{figure}[!t]
+    \vspace*{-0.2cm}
+    \includegraphics[keepaspectratio, width=0.4\paperwidth]{images/CruiseGrid}
+\end{figure}
+\end{columns}
+%
+\begin{center}
+ \vspace*{-0.65cm}
+\begin{minipage}{4cm}
+\begin{varblock}[4cm]{Autonomy Factor Propeller}
+\centering
+\scalebox{0.8}{
+$A.F.=\left(\frac{\eta_{p}}{SFC}\right)\left(\frac{L}{D}\right)$ 
+}
+\end{varblock}
+%
+\begin{varblock}[4cm]{Autonomy Factor Jet}
+\centering
+\scalebox{0.8}{
+$A.F.=\left(\frac{V}{SFCJ}\right)\left(\frac{L}{D}\right)$
+}
+\end{varblock}
+\end{minipage}
+\end{center}
+}
+\end{frame}
+%-----------------------Frame 19------------------------------
+\placelogotrue
+\placebackgroundfalse
+%
+\setbeamertemplate{background canvas}{
+    \rule{0in}{3.12in}%
+    \rule{0.3in}{0in}%
+    \centering
+    \includegraphics[keepaspectratio, width=0.75\paperwidth]{images/SpecificRange_Flowchart.png}
+}
+%
+\begin{frame}{Specific Range Java class flowchart}
+\end{frame}
+\setbeamertemplate{background canvas}{ }
+%
+%-----------------------Frame 20------------------------------
+\placelogotrue
+\placebackgroundfalse
+%
+\setbeamertemplate{background canvas}{
+    \rule{0in}{2.7in}%
+    \rule{3.8in}{0in}%
+    \centering
+    \includegraphics[keepaspectratio, width=0.23\paperwidth]{images/ATRB747CruiseCond.png}
+}
+%
+\begin{frame}{Specific Range Java class output}
+\only<1>{
+\WiderImages{
+\begin{figure}
+  \vspace*{0.42cm}
+    \hspace*{-0.7cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.5\paperwidth]{images/DragThrustATR.PNG}
+    \captionsetup{labelformat=empty}
+\end{figure}
+\begin{figure}
+  \vspace*{-1.15cm}
+  \hspace*{-0.7cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.5\paperwidth]{images/DragThrustB747.PNG}
+    \captionsetup{labelformat=empty}
+\end{figure}
+}
+}
+\pause
+\only<2>{
+\WiderImages{
+\begin{figure}
+  \vspace*{0.38cm}
+    \hspace*{-0.2cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.495\paperwidth]{images/EfficiencyATR.PNG}
+    \captionsetup{labelformat=empty}
+\end{figure}
+\begin{figure}
+  \vspace*{-1.14cm}
+  \hspace*{-0.2cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.495\paperwidth]{images/EfficiencyB747.PNG}
+    \captionsetup{labelformat=empty}
+\end{figure}
+}
+}
+\pause
+\only<3>{
+\WiderImages{
+\begin{figure}
+  \vspace*{0.38cm}
+    \hspace*{-0.2cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.5\paperwidth]{images/CruiseGridATR.PNG}
+    \captionsetup{labelformat=empty}
+\end{figure}
+\begin{figure}
+  \vspace*{-1.08cm}
+  \hspace*{-0.2cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.51\paperwidth]{images/CruiseGridB747.PNG}
+    \captionsetup{labelformat=empty}
+\end{figure}
+}
+}
+\end{frame}
+\setbeamertemplate{background canvas}{ }
+%
+%----------------Current table of contents--------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Table of Contents}
+\section{High Lift Devices class}
+\vspace*{-1cm}
+\tableofcontents[currentsection]
+\subsection{}
+\end{frame}
+%
+%-----------------------Frame 21------------------------------
+%\placelogotrue
+%\placebackgroundfalse
+%\begin{frame}{Trailing-edge devices effects}
+%\Wider{
+%\begin{columns}[onlytextwidth,t]
+%\column{0.5\textwidth}
+%	\begin{itemize}
+%	\vspace*{0.8cm}
+%	\MyBullet Higher $C_L$ at a given angle of attack and higher $C_{\text{Lmax}}$.
+%	\MyBullet Lower stalling angle of attack.
+%	\MyBullet Lower zero-lift angle due to increasing camber.
+%	\end{itemize}
+%\begin{figure}
+%	\vspace*{0.3cm}
+%	\hspace*{-0.2cm}
+%	\centering
+%	\includegraphics[keepaspectratio, width=0.6\paperwidth]{images/Flap}
+%\end{figure}
+%\column{0.5\textwidth}
+%	\begin{figure}
+%	\vspace*{-0.4cm}
+%	\hspace*{0.55cm}
+%	\centering
+%    	\includegraphics[keepaspectratio, width=0.445\paperwidth]{images/FlapEffects}
+%\end{figure}
+%\end{columns}
+%}
+%\end{frame}
+%%
+%%-----------------------Frame 22------------------------------
+%\placelogotrue
+%\placebackgroundfalse
+%\begin{frame}{Leading-edge devices effects}
+%\Wider{
+%\begin{columns}[onlytextwidth,t]
+%\column{0.5\textwidth}
+%	\begin{itemize}
+%	\vspace*{0.8cm}
+%	\MyBullet Extension of the linear trait of the lift curve with an increase of the stalling angle of attack and of the $C_{\text{Lmax}}$
+%	\MyBullet Higher zero-lift angle caused by leading edge deflection which reduce the actual angle of attack.
+%	\MyBullet Higher slope of the linear trait of the lift curve.
+%	\end{itemize}
+%\begin{figure}
+%	\vspace*{-0.6cm}
+%	\hspace*{1.8cm}
+%	\centering
+%	\includegraphics[keepaspectratio, width=0.46\paperwidth]{images/Slat}
+%\end{figure}
+%\column{0.5\textwidth}
+%	\begin{figure}
+%	\vspace*{-0.1cm}
+%	\hspace*{0.45cm}
+%	\centering
+%    	\includegraphics[keepaspectratio, width=0.45\paperwidth]{images/SlatEffects}
+%\end{figure}
+%\end{columns}
+%}
+%\end{frame}
+%%
+%-----------------------Frame 23------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Calculation methodologies}
+\Wider{
+\begin{itemize}
+	\MyBullet Charts, semi-empirical equations and experimental data have been used to evaluate high lift devices effects. (e.g.: \emph{Glauert’s linearized theory for thin airfoils with flaps, DATCOM, Young and Hufton experimental data})
+\end{itemize}
+\begin{itemize}
+	\MyBullet Effects to evaluate:
+	\begin{itemize}
+		\MyBullet  \textbf{{\textcolor{mygold}{\text{$\Delta$}$C_{l0}$, \text{$\Delta$}$C_{L0}$}}}
+		\MyBullet  \textbf{{\textcolor{mygold}{\text{$\Delta$}$C_{l\text{max}}$, \text{$\Delta$}$C_{L\text{max}}$}}}
+		\MyBullet   \textbf{{\textcolor{mygold}{$C_{L\alpha, \text{flap}}$}}}
+		\MyBullet  \textbf{{\textcolor{mygold}{\text{$\Delta$}$\alpha_{\text{stall,wing}}$}}}
+		\MyBullet  \textbf{{\textcolor{mygold}{\text{$\Delta$}$C_{D\text{0}}$}}}
+		\MyBullet  \textbf{{\textcolor{mygold}{\text{$\Delta$}$C_{M\text{, c/4}}$}}}
+	\end{itemize}
+\end{itemize}
+}
+\end{frame}
+%
+%-----------------------Frame 24------------------------------
+\placelogotrue
+\placebackgroundfalse
+%
+\setbeamertemplate{background canvas}{
+    \rule{0in}{3.6in}%
+    \rule{0.19in}{0in}%
+    \centering
+    \includegraphics[keepaspectratio, width=0.78\paperwidth]{images/HighLiftDevices_Flowchart}
+}
+%
+\begin{frame}{High Lift Devices Java class flowchart}
+\end{frame}
+\setbeamertemplate{background canvas}{ }
+%
+%-----------------------Frame 25------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{High Lift Devices Java class output}
+\only<1>{
+\begin{columns}[onlytextwidth,t]
+\column{0.5\textwidth}
+\Wider{
+  \vspace*{-1.5cm}
+\textbf{\textcolor{mygold}{ATR-72 @ Take-Off}}
+\begin{itemize}
+	\MyBullet 2 Single slotted flap
+	\MyBullet $\frac{c_f}{c}=0.35$
+	\MyBullet $\delta_f=\SI{20}{\degree}$
+	\MyBullet $\eta_{\text{in, flap1}}=0.08;\ \eta_{\text{out, flap1}}=0.35$
+	\MyBullet $\eta_{\text{in, flap2}}=0.35;\ \eta_{\text{out, flap2}}=0.8$
+\end{itemize}
+\vspace*{0.15cm}
+\hspace*{0.15cm}
+\scalebox{0.95}{
+\begin{tabular}{|l||c|c|}
+\hline
+\textbf{ } & \textbf{No Flap} &  \textbf{Flap}\\
+\hline\hline
+\textbf{$\alpha_{\text{stall}}$} & $\SI{18.46}{\degree}$ & $\SI{15.82}{\degree}$\\
+\textbf{$C_{L\text{max}}$} & 1.58 & 2.11\\
+\textbf{$C_{L\text{star}}$} & 0.98 & 1.36\\
+\textbf{$C_{L\alpha}$} (1/rad) & 5.19 & 5.24\\
+\hline
+\end{tabular}
+}
+}
+\column{0.5\textwidth}
+\WiderImages{
+\begin{figure}
+  \vspace*{-1.38cm}
+  \hspace*{0.8cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.5\paperwidth]{images/ATRFlapTO}
+    \captionsetup{labelformat=empty}
+\end{figure}
+}
+\end{columns}
+}
+\pause
+\only<2>{
+\begin{columns}[onlytextwidth,t]
+\column{0.6\textwidth}
+\Wider{
+  \vspace*{-0.95cm}
+\textbf{\textcolor{mygold}{B747-100B @ Landing}}
+\begin{itemize}
+	\MyBullet \scalebox{0.85}{2 Triple slotted flap + 3 Krueger slat}
+	\MyBullet \scalebox{0.85}{$\frac{c_f}{c}=\big[0.18, \quad 0.18\big]$}
+	\MyBullet \scalebox{0.85}{$\frac{c_s}{c}=\big[0.09,\quad 0.136,\quad 0.187\big]$}
+	\MyBullet \scalebox{0.85}{$\delta_f=\SI{30}{\degree};\quad \delta_s=\SI{15}{\degree}$}
+	\MyBullet \scalebox{0.85}{$\frac{c'}{c}_{\text{slat}}=1.1$}
+	\MyBullet \scalebox{0.85}{$\eta_{\text{in, flap}}=\big[0.104,\quad 0.411\big]$}
+	\MyBullet \scalebox{0.85}{$\eta_{\text{out, flap}}=\big[0.357,\quad 0.636\big]$}
+	\MyBullet \scalebox{0.85}{$\eta_{\text{in, slat}}=\big[0.192,\quad 0.414, \quad 0.692\big]$}
+	\MyBullet \scalebox{0.85}{$\eta_{\text{out, slat}}=\big[0.364,\quad 0.648, \quad 0.961\big]$}
+\end{itemize}
+\vspace*{-0.05cm}
+\hspace*{2.8cm}
+\scalebox{0.75}{
+\begin{tabular}{|l||c|c|}
+\hline
+\textbf{ } & \textbf{No Flap} &  \textbf{Flap}\\
+\hline\hline
+\textbf{$\alpha_{\text{stall}}$} & $\SI{21.59}{\degree}$ & $\SI{27.91}{\degree}$\\
+\textbf{$C_{L\text{max}}$} & 1.46 & 2.55\\
+\textbf{$C_{L\text{star}}$} & 0.83 & 1.90\\
+\textbf{$C_{L\alpha}$} (1/rad) & 4.121 & 4.186\\
+\hline
+\end{tabular}
+}
+}
+\column{0.4\textwidth}
+\WiderImages{
+\begin{figure}
+  \vspace*{-1.cm}
+  \hspace*{-.1cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.48\paperwidth]{images/B747FlapSlatLand}
+    \captionsetup{labelformat=empty}
+\end{figure}
+}
+\end{columns}
+}
+\end{frame}
+%
+%-----------------------Frame 26------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{High lift devices effect - sensibility analysis}
+\only<1>{
+\vspace*{-0.3cm}
+\hspace*{0.6cm}
+\scalebox{0.65}{
+\begin{tabular}{lcc|lcc}
+\hline
+\textbf{\textcolor{mygold}{Input data B747-100B @ Landing}} &\textbf{} & \textbf{} &\textbf{\textcolor{mygold}{Baseline results}} &\textbf{}  & \textbf{} \\
+\hline
+\textbf{Variables} & \textbf{} & \textbf{Value} & \textbf{Variables} & \textbf{} & \textbf{Value}\\
+\hline
+$\delta_f$ &  \textbf{} & 30°  & $C_{L\text{max}}$ &  \textbf{} & 2.55 \\
+$\frac{c_f}{c}$ &  \textbf{} & 0.18 & $\alpha_{\text{max}}$ &  \textbf{} & 28° \\
+Trailing edge devices type &  \textbf{} & Triple Slotted & \textbf{ } &  \textbf{} & \textbf{} \\
+$\delta_s$ &  \textbf{} & 15° & \textbf{ } &  \textbf{} & \textbf{} \\
+\hline
+\end{tabular}
+}
+\WiderImages{
+\begin{figure}
+  \hspace*{-.5cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.49\paperwidth]{images/DeltaFlap_Sensibility.PNG}
+    \captionsetup{labelformat=empty}
+\end{figure}
+}
+}
+\only<2>{
+\vspace*{-0.3cm}
+\hspace*{0.6cm}
+\scalebox{0.65}{
+\begin{tabular}{lcc|lcc}
+\hline
+\textbf{\textcolor{mygold}{Input data B747-100B @ Landing}} &\textbf{} & \textbf{} &\textbf{\textcolor{mygold}{Baseline results}} &\textbf{}  & \textbf{} \\
+\hline
+\textbf{Variables} & \textbf{} & \textbf{Value} & \textbf{Variables} & \textbf{} & \textbf{Value}\\
+\hline
+$\delta_f$ &  \textbf{} & 30°  & $C_{L\text{max}}$ &  \textbf{} & 2.55 \\
+$\frac{c_f}{c}$ &  \textbf{} & 0.18 & $\alpha_{\text{max}}$ &  \textbf{} & 28° \\
+Trailing edge devices type &  \textbf{} & Triple Slotted & \textbf{ } &  \textbf{} & \textbf{} \\
+$\delta_s$ &  \textbf{} & 15° & \textbf{ } &  \textbf{} & \textbf{} \\
+\hline
+\end{tabular}
+}
+\WiderImages{
+\begin{figure}
+  \hspace*{-.5cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.49\paperwidth]{images/CFC_Sensibility}
+    \captionsetup{labelformat=empty}
+\end{figure}
+}
+}
+\only<3>{
+\vspace*{-0.3cm}
+\hspace*{0.6cm}
+\scalebox{0.65}{
+\begin{tabular}{lcc|lcc}
+\hline
+\textbf{\textcolor{mygold}{Input data B747-100B @ Landing}} &\textbf{} & \textbf{} &\textbf{\textcolor{mygold}{Baseline results}} &\textbf{}  & \textbf{} \\
+\hline
+\textbf{Variables} & \textbf{} & \textbf{Value} & \textbf{Variables} & \textbf{} & \textbf{Value}\\
+\hline
+$\delta_f$ &  \textbf{} & 30°  & $C_{L\text{max}}$ &  \textbf{} & 2.55 \\
+$\frac{c_f}{c}$ &  \textbf{} & 0.18 & $\alpha_{\text{max}}$ &  \textbf{} & 28° \\
+Trailing edge devices type &  \textbf{} & Triple Slotted & \textbf{ } &  \textbf{} & \textbf{} \\
+$\delta_s$ &  \textbf{} & 15° & \textbf{ } &  \textbf{} & \textbf{} \\
+\hline
+\end{tabular}
+}
+\WiderImages{
+\begin{figure}
+  \hspace*{-.5cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.49\paperwidth]{images/FlapType_Sensibility.PNG}
+    \captionsetup{labelformat=empty}
+\end{figure}
+}
+}
+\only<4>{
+\vspace*{-0.3cm}
+\hspace*{0.6cm}
+\scalebox{0.65}{
+\begin{tabular}{lcc|lcc}
+\hline
+\textbf{\textcolor{mygold}{Input data B747-100B @ Landing}} &\textbf{} & \textbf{} &\textbf{\textcolor{mygold}{Baseline results}} &\textbf{}  & \textbf{} \\
+\hline
+\textbf{Variables} & \textbf{} & \textbf{Value} & \textbf{Variables} & \textbf{} & \textbf{Value}\\
+\hline
+$\delta_f$ &  \textbf{} & 30°  & $C_{L\text{max}}$ &  \textbf{} & 2.55 \\
+$\frac{c_f}{c}$ &  \textbf{} & 0.18 & $\alpha_{\text{max}}$ &  \textbf{} & 28° \\
+Trailing edge devices type &  \textbf{} & Triple Slotted & \textbf{ } &  \textbf{} & \textbf{} \\
+$\delta_s$ &  \textbf{} & 15° & \textbf{ } &  \textbf{} & \textbf{} \\
+\hline
+\end{tabular}
+}
+\WiderImages{
+\begin{figure}
+  \hspace*{-.5cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.47\paperwidth]{images/DeltaSlat_Sensibility.PNG}
+    \captionsetup{labelformat=empty}
+\end{figure}
+}
+}
+\end{frame}
+%
+%----------------Current table of contents--------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Table of Contents}
+\section{Take-Off and Landing classes}
+\vspace*{-1cm}
+\tableofcontents[currentsection]
+\subsection{}
+\end{frame}
+%
+%-----------------------Frame 27------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Take-off run description}
+\WiderImages{
+\begin{figure}
+\vspace*{.5cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.75\paperwidth]{images/TakeOffRun}
+    \captionsetup{labelformat=empty}
+\end{figure}
+}
+\end{frame}
+%-----------------------Frame 28------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{ODE set for the AOE take-off distance calculation}
+\Wider{
+\only<1>{
+\vspace*{0.8cm}
+\textbf{\textcolor{mygold}{State space representation $\qquad\dot{\vec{x}} = \vec{f}\big(\, \vec{x}\,;\,u \,\big)$}}
+\vspace*{-0.3cm}
+\begin{align*}
+\scalebox{0.8}{$
+    \left\{\begin{array}{c}\dot{s}\\[2pt] \dot{V} \\[2pt] \dot{\gamma} \\[2pt] \dot{h} \end{array}\right\}
+= 
+    \left\{\begin{array}{l}
+       f_1 \big(\, s,\, V,\, \gamma,\, h \,; \, \alpha \big) \\[4pt]
+       f_2 \big(\, s,\, V,\, \gamma,\, h \,; \, \alpha \big) \\[4pt]
+       f_3 \big(\, s,\, V,\, \gamma,\, h \,; \, \alpha \big) \\[4pt]
+       f_4 \big(\, s,\, V,\, \gamma,\, h \,; \, \alpha \big)
+    \end{array}\right\}
+\quad
+    \text{with}\quad
+   \left\{\begin{array}{l} \alert{x_1 = s}\\[2pt] \alert{x_2 = V} \\[2pt] \alert{x_3 = \gamma} \\[2pt] \alert{x_4 = h} \end{array}\right\}
+\quad
+    \text{and}\quad
+    \alert{u = \alpha}
+$}
+\end{align*}
+\vspace*{-0.5cm}
+\begin{itemize}
+	\MyBullet \scalebox{0.8}{$f_1 \big(\, \vec{x}\,,\,u \,\big) =  x_2$}
+	\MyBullet \scalebox{0.8}{$f_2 \big(\, \vec{x}\,,\,u \,\big) =
+  \dfrac{g}{W}
+    \left\{
+      \begin{array}{l@{\rule{2em}{0pt}}l} 
+         \scalebox{0.8}{$
+         T(x_2) - D(x_2,u) - \mu \big[ W - L(x_2,u) \big]$}
+          & \text{if} \;\, \mathcal{S}(x_2 , u) < 1
+        \\[1em]
+         \scalebox{0.8}{$
+         T(x_2) \cos u - D(x_2,u) - W \sin x_3$}
+          & \text{if} \;\, \mathcal{S}(x_2 , u) \geq 1
+      \end{array}\right\}$}
+	\MyBullet \scalebox{0.8}{$f_3 \big(\, \vec{x}\,,\,u \,\big) =
+  \dfrac{g}{W\,x_2}
+   \left\{
+      \begin{array}{l@{\rule{2em}{0pt}}l} 
+       \scalebox{0.8}{$
+        0 $}
+          & \text{if} \;\, \mathcal{S}(x_2 , u) < 1
+        \\[1em]
+         \scalebox{0.8}{$
+        L(x_2,u) + T(x_2)\sin u - W \cos x_3$}
+          & \text{if} \;\, \mathcal{S}(x_2 , u) \geq 1
+      \end{array}
+    \right\}$}
+	\MyBullet \scalebox{0.8}{$f_4 \big(\, \vec{x}\,,\,u \,\big) =  x_2 \, \sin x_3$}
+\end{itemize}
+\begin{center}
+	\scalebox{0.8}{$\mathcal{S}(x_2 , u) = \dfrac{L(x_2,u)}{W \cos x_3}$}
+\end{center}
+}
+\only<2>{
+\vspace*{0.2cm}
+\textbf{\textcolor{mygold}{State vector and input} \alert{$\quad {\vec{x}} = \left\{x_1 = s;\ x_2 = V;\ x_3 = \gamma;\ x_4 = h\right\};\ u=\alpha$}}
+\begin{columns}[onlytextwidth,t]
+\column{0.7\textwidth}
+\begin{itemize}
+	\vspace*{-0.3cm}
+	\MyBullet \alert{$T(x_2)$} is read from the engine database related to the take-off setting.
+	\MyBullet $\alert{D(x_2,u)} = \dfrac{1}{2} \, \rho \, \big( x_2 + V_{\text{w}}\cos x_3 \big)^2 \,S \, C_D\big( u \big)$ 
+	\begin{itemize}
+	\vspace*{0.cm}
+		\MyBullet $\alert{C_D\big(u\big)} = C_{D0} + \left(\text{$\Delta$}C_{D0}\right)_{\text{flap}+\text{lg}} +  K_g\ \dfrac{C_L^2}{\pi\AR e}$
+		\begin{itemize}
+		\vspace*{0.2cm}
+			\MyBullet $K_g=-622.44x^5+624.46x^4-255.24x^3+47.105x^2-0.6378x+0.0055$
+		\end{itemize}
+		\vspace*{0.2cm}
+	\end{itemize}
+	\MyBullet $\alert{L(x_2,u)} = \dfrac{1}{2} \, \rho \, \big( x_2 + V_{\text{w}}\cos x_3 \big)^2 \,S \, C_L\big( u \big)$
+	\begin{itemize}
+	\vspace*{0.1cm}
+		\MyBullet $\alert{C_L\big(u\big)}$ is the one from the lift curve with flaps, and eventually slats, deflected.
+	\end{itemize}
+\end{itemize}
+\column{0.3\textwidth}
+\WiderImages{
+\begin{figure}
+  \vspace*{0.5cm}
+  \hspace*{-0.5cm}
+\centering
+    \includegraphics[keepaspectratio, width=0.79\textwidth]{images/McCormickGroundEffect.PNG}
+    \captionsetup{labelformat=empty}
+\end{figure}
+}
+\end{columns}
+}
+\only<3>{
+\begin{columns}[onlytextwidth,t]
+\column{0.4\textwidth}
+\vspace*{-6.5cm}
+\begin{align*}
+\scalebox{0.8}{$
+u (t) =
+    \left\{
+      \begin{array}{l@{\rule{2em}{0pt}}l} 
+       \alert{\alpha_{\text{g}}}
+          & \text{if} \;\, t < t_{\text{Rot}}
+        \\[1em]
+        \alpha_1(t)
+          & \text{if} \;\, t \geq t_{\text{Rot}}
+      \end{array}
+    \right\}$}
+\end{align*}
+\begin{align*}
+	\alpha_1(t) = \dot\alpha(t)\ dt
+\end{align*}
+\begin{align*}
+\scalebox{0.8}{$
+\dot\alpha (t) =
+    \left\{
+      \begin{array}{l@{\rule{2em}{0pt}}l} 
+      \alert{\dot\alpha_0}\ \left(1-\alert{k_\alpha}\ \alpha\right)
+          & \text{if} \;\, t_{\text{Rot}} \leq t < t_{\text{Hold}}
+        \\[1em]
+        0
+          & \text{if} \;\, t_{\text{Hold}} \leq t < t_{\text{Hold}}+\text{$\Delta$}t_{\text{Hold}}
+          \\[1em]
+	\alert{\dot\alpha_{\text{red}}}
+          & \text{if} \;\,  t_{\text{Hold}}+\text{$\Delta$}t_{\text{Hold}} \leq t < t_{\text{climb}}
+          \\[1em]
+        0
+          & \text{if} \;\,  t \geq t_{\text{climb}} 
+      \end{array}
+    \right\}$}
+\end{align*}
+\column{0.4\textwidth}
+\centering
+\hspace{-0.5cm}
+    \includegraphics[keepaspectratio, width=0.9\textwidth]{images/AlphaInputTakeOff}
+    \captionsetup{labelformat=empty}
+\end{columns}
+}
+}
+\end{frame}
+%
+%-----------------------Frame 29------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{ODE set modification for the take-off in OEI condition}
+\Wider{
+\vspace*{0.2cm}
+\textcolor{mygold}{OEI continued take-off}
+\begin{itemize}
+	\MyBullet There is a discontinuity in thrust at a specific failure speed $V_{ef}$.
+	\MyBullet $T(x_2)$ is still read from the database but considering a number of engines reduced by one from the time $t_{ef}$ at which the engine failure occurs.
+\end{itemize}
+\textcolor{mygold}{OEI aborted take-off}
+\begin{itemize}
+	\MyBullet The take-off run, up to the engine failure speed $V_{ef}$, is the same as the continued take-off one.
+	\MyBullet The pilot reacts at a time $t_{\text{act}}$ (generally $\SI{3}{\second}$ after $t_{ef}$) setting $T(x_2)$ to 0 and activating brakes. The equation $f_2$ changes in the following.
+\end{itemize}
+\begin{align*}
+	f_2 \big(\, \vec{x}\,,\,u \,\big) =\frac{g}{W}\ \big\{ - D(x_2,u) - \mu_{\text{brakes}} \big[ W - L(x_2,u) \big]\big\} 
+\end{align*}
+}
+\end{frame}
+%
+%-----------------------Frame 30------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Take-Off Java class flowchart}
+\vspace*{-0.35cm}
+	\begin{center}
+		\rule{-0.11in}{0in}%
+		\includegraphics[keepaspectratio, width=0.79\textwidth]{images/TakeOff_Flowchart}
+	\end{center}
+\end{frame}
+%
+%-----------------------Frame 31------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Take-Off Java class output}
+%
+\only<1>{
+\Wider{
+%
+\begin{itemize}
+	\MyBullet \textbf{\textcolor{mygold}{ATR-72 and B747-100B analysis results}}
+	\begin{itemize}
+		\MyBullet ATR-72 MTOW = 22500 kg
+		\MyBullet B747-100B MTOW = 340194 kg
+		\MyBullet ISA condition
+		\MyBullet Sea Level
+	\end{itemize}
+\end{itemize}
+%
+\vspace*{0.5cm}
+\hspace*{-0.1cm}
+\scalebox{0.9}{
+\begin{tabular}{p{0.2\linewidth}|p{0.5\linewidth}p{0.2\linewidth}p{0.2\textwidth}}
+\hline
+ & \multicolumn{1}{c}{\textbf{Flight manual or brochure data}} & \multicolumn{1}{c}{\textbf{JPAD}} & \multicolumn{1}{c}{\textbf{Difference(\%)}}\\
+\hline
+\textbf{ATR-72 \newline FAR-25 FL} & \multicolumn{1}{c}{$\SI{1300}{\meter}$} & \multicolumn{1}{c}{$\SI{1350}{\meter}$} & \multicolumn{1}{c}{3.7\%}\\ [1cm]
+\textbf{B747-100B \newline FAR-25 FL} & \multicolumn{1}{c}{$\SI{3080}{\meter}$} & \multicolumn{1}{c}{$\SI{2868}{\meter}$} & \multicolumn{1}{c}{6.89\%}\\
+\hline
+\end{tabular}
+}
+}
+}
+%
+\only<2>{
+\Wider{
+%
+\begin{itemize}
+	\vspace*{0.5cm}
+	\MyBullet \textbf{\textcolor{mygold}{B747-100B W/S and T/W sensibility analysis}}
+\end{itemize}
+\vspace*{-1cm}
+\begin{columns}[onlytextwidth,t]
+\column{0.5\textwidth}
+\begin{figure}[H]
+\centering
+\includegraphics[keepaspectratio, width=1.1\textwidth]{images/JPAD_TakeOff_Sensibility_B747_TW_0245}
+\end{figure}
+\column{0.4\textwidth}
+\vspace*{1cm}
+\begin{align*}
+\text{TOP}_{25}=\dfrac{\left(\dfrac{W}{S}\right)_{\text{TO}}}{\sigma\cdot C_{L\text{max,TO}}\cdot\left(\dfrac{T}{W}\right)_{\text{TO}}} 
+\end{align*}
+\begin{align*}
+S_{\text{TO,FL}}=37.5\cdot \text{TOP}_{25}
+\end{align*}
+\end{columns}
+\begin{align*}
+\alert{\text{Difference}\left(\%\right)=3.40\%}
+\end{align*}
+}
+}
+%
+\only<3>{
+\Wider{
+%
+\begin{itemize}
+	\vspace*{0.5cm}
+	\MyBullet \textbf{\textcolor{mygold}{B747-100B W/S and T/W sensibility analysis}}
+\end{itemize}
+\vspace*{-1cm}
+\begin{columns}[onlytextwidth,t]
+\column{0.5\textwidth}
+\begin{figure}[H]
+\centering
+\includegraphics[keepaspectratio, width=1.1\textwidth]{images/JPAD_TakeOff_Sensibility_B747_TW_0272}
+\end{figure}
+\column{0.4\textwidth}
+\vspace*{1cm}
+\begin{align*}
+\text{TOP}_{25}=\dfrac{\left(\dfrac{W}{S}\right)_{\text{TO}}}{\sigma\cdot C_{L\text{max,TO}}\cdot\left(\dfrac{T}{W}\right)_{\text{TO}}} 
+\end{align*}
+\begin{align*}
+S_{\text{TO,FL}}=37.5\cdot \text{TOP}_{25}
+\end{align*}
+\end{columns}
+\begin{align*}
+\alert{\text{Difference}\left(\%\right)=4.10\%}
+\end{align*}
+}
+}
+%
+\only<4>{
+\Wider{
+%
+\begin{itemize}
+	\vspace*{0.5cm}
+	\MyBullet \textbf{\textcolor{mygold}{B747-100B W/S and T/W sensibility analysis}}
+\end{itemize}
+\vspace*{-1cm}
+\begin{columns}[onlytextwidth,t]
+\column{0.5\textwidth}
+\begin{figure}[H]
+\centering
+\includegraphics[keepaspectratio, width=1.1\textwidth]{images/JPAD_TakeOff_Sensibility_B747_TW_0299}
+\end{figure}
+\column{0.4\textwidth}
+\vspace*{1cm}
+\begin{align*}
+\text{TOP}_{25}=\dfrac{\left(\dfrac{W}{S}\right)_{\text{TO}}}{\sigma\cdot C_{L\text{max,TO}}\cdot\left(\dfrac{T}{W}\right)_{\text{TO}}} 
+\end{align*}
+\begin{align*}
+S_{\text{TO,FL}}=37.5\cdot \text{TOP}_{25}
+\end{align*}
+\end{columns}
+\begin{align*}
+\alert{\text{Difference}\left(\%\right)=4.61\%}
+\end{align*}
+}
+}
+%
+\only<5>{
+\Wider{
+%
+\begin{itemize}
+	\vspace*{0.5cm}
+	\MyBullet \textbf{\textcolor{mygold}{B747-100B W/S and T/W sensibility analysis}}
+\end{itemize}
+\vspace*{-1cm}
+\begin{columns}[onlytextwidth,t]
+\column{0.5\textwidth}
+\begin{figure}[H]
+\centering
+\includegraphics[keepaspectratio, width=1.1\textwidth]{images/JPAD_TakeOff_Sensibility_B747_TW_0313}
+\end{figure}
+\column{0.4\textwidth}
+\vspace*{1cm}
+\begin{align*}
+\text{TOP}_{25}=\dfrac{\left(\dfrac{W}{S}\right)_{\text{TO}}}{\sigma\cdot C_{L\text{max,TO}}\cdot\left(\dfrac{T}{W}\right)_{\text{TO}}} 
+\end{align*}
+\begin{align*}
+S_{\text{TO,FL}}=37.5\cdot \text{TOP}_{25}
+\end{align*}
+\end{columns}
+\begin{align*}
+\alert{\text{Difference}\left(\%\right)=4.84\%}
+\end{align*}
+}
+}
+%
+\only<6>{
+\Wider{
+%
+\begin{itemize}
+	\MyBullet \textbf{\textcolor{mygold}{B747-100B Take-off run (SL, 2000ft, 4000ft)}}
+\end{itemize}
+%
+\begin{figure}[H]
+\centering
+\includegraphics[keepaspectratio, width=0.85\textwidth]{images/TakeOff_Trajectory_B747.png}
+\end{figure}
+}
+}
+%
+\only<7>{
+\Wider{
+%
+\begin{itemize}
+	\MyBullet \textbf{\textcolor{mygold}{B747-100B Take-off run (SL, 2000ft, 4000ft)}}
+\end{itemize}
+%
+\begin{figure}[H]
+\centering
+\includegraphics[keepaspectratio, width=0.85\textwidth]{images/Speed_Evolution_B747.png}
+\end{figure}
+}
+}
+%
+\only<8>{
+\Wider{
+%
+\begin{itemize}
+	\MyBullet \textbf{\textcolor{mygold}{B747-100B Take-off run (SL, 2000ft, 4000ft)}}
+\end{itemize}
+%
+\begin{figure}[H]
+\centering
+\includegraphics[keepaspectratio, width=0.85\textwidth]{images/CL_Evolution_B747.png}
+\end{figure}
+}
+}
+%
+\only<9>{
+\Wider{
+%
+\begin{itemize}
+	\MyBullet \textbf{\textcolor{mygold}{B747-100B Take-off run (SL, 2000ft, 4000ft)}}
+\end{itemize}
+%
+\begin{figure}[H]
+\centering
+\includegraphics[keepaspectratio, width=0.85\textwidth]{images/LoadFactor_Evolution_B747.png}
+\end{figure}
+}
+}
+%
+\only<10>{
+\Wider{
+%
+\begin{itemize}
+	\MyBullet \textbf{\textcolor{mygold}{B747-100B Take-off run (SL, 2000ft, 4000ft)}}
+\end{itemize}
+%
+\begin{figure}[H]
+\centering
+\includegraphics[keepaspectratio, width=0.85\textwidth]{images/Acceleration_Evolution_B747.png}
+\end{figure}
+}
+}
+%
+\only<11>{
+\Wider{
+%
+\begin{itemize}
+\vspace*{0.7cm}
+	\MyBullet \textbf{\textcolor{mygold}{B747-100B Take-off run (SL, 2000ft, 4000ft)}}
+\end{itemize}
+%
+\begin{figure}[H]
+\centering
+\vspace*{-0.35cm}
+\hspace*{-1.1cm}
+\includegraphics[keepaspectratio, width=0.75\textwidth]{images/HorizontalForces_Evolution_B747.png}
+\end{figure}
+}
+}
+%
+\only<12>{
+\Wider{
+%
+\begin{itemize}
+\vspace*{0.5cm}
+	\MyBullet \textbf{\textcolor{mygold}{B747-100B balanced field length}}
+\end{itemize}
+%
+\begin{figure}[H]
+\centering
+\vspace*{-0.45cm}
+\hspace*{-1.1cm}
+\includegraphics[keepaspectratio, width=0.75\textwidth]{images/BFL_B747.png}
+\end{figure}
+}
+}
+%
+\end{frame}
+%-----------------------Frame 32------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Landing distance calculation}
+\Wider{
+%
+\only<1>{
+\vspace*{1cm}
+\textbf{\textcolor{mygold}{Air run}}
+\begin{itemize}
+	\MyBullet $\big[n=1.2$, $V_{\text{Flare}}=1.23\ V_s\big]\ \textcolor{mygold}{\rightarrow\ R=\dfrac{V^2}{g\left(n-1\right)}=\dfrac{V_{\text{Flare}}^2}{0.2\ g}}$
+	\MyBullet $\big[\theta_a\approx\SI{2}{\degree}\div\SI{3}{\degree}\big]\ \textcolor{mygold}{\rightarrow\ h_{\text{Flare}}=R\left(1-\cos\theta_a\right)}$
+	\MyBullet $\big[\theta_a$, $R$, $h_{\text{Flare}}\big]\ \alert{\rightarrow\ S_A=\dfrac{50-h_{\text{Flare}}}{\tan\theta_a}; \quad S_{\text{Flare}}=R\sin\theta_a}$
+\end{itemize}
+\begin{center}
+	\vspace*{-0.5cm}
+	\includegraphics[keepaspectratio, width=0.6\textwidth]{images/LandingAirborne}
+\end{center}
+}
+%
+\only<2>{
+\textbf{\textcolor{mygold}{Ground run}}
+\begin{align*}
+\scalebox{0.9}{$
+    \left\{\begin{array}{c}\dot{s}\\[2pt] \dot{V}\end{array}\right\}
+= 
+    \left\{\begin{array}{l}
+       f_1 \big(\, s,\, V\big) \\[4pt]
+       f_2 \big(\, s,\, V\big) \\
+    \end{array}\right\}
+\quad
+    \text{with}\quad
+   \left\{\begin{array}{l} x_1 = s\\[2pt] x_2 = V\end{array}\right\}
+$}
+\end{align*}
+\vspace*{-0.5cm}
+\begin{itemize}
+	\MyBullet \scalebox{0.9}{$f_1 \big(\, \vec{x}\,,\,u \,\big) =  x_2$}
+	\MyBullet \scalebox{0.9}{$f_2 \big(\, \vec{x}\,\big) =
+  \frac{g}{W}
+    \left\{
+      \begin{array}{l@{\rule{2em}{0pt}}l} 
+         - D(x_2) - \mu \big[ W - L(x_2) \big]
+          & \text{if} \;\, t \leq t_{\text{fr}}
+        \\[1em]
+	-T_{\text{Rev}}(x_2) - D(x_2) - \mu_{\text{brakes}} \big[ W - L(x_2) \big]
+          & \text{if} \;\, t > t_{\text{fr}}
+      \end{array}
+    \right\}$}
+\end{itemize}
+\vspace*{0.5cm}
+\textcolor{mygold}{$t_{fr}$} is related to the end of the \textcolor{mygold}{\emph{free-roll distance}} (which represents the distance covered while the pilot reduces the power to idle, retracts the flaps, deploys the spoilers, and applies the brakes) and it’s set at \textcolor{mygold}{$\SI{3}{\second}$}.
+}
+}
+\end{frame}
+%
+%-----------------------Frame 33------------------------------
+\placelogotrue
+\placebackgroundfalse
+%
+\setbeamertemplate{background canvas}{
+    \rule{0in}{3.65in}%
+    \rule{0.5in}{0in}%
+    \centering
+    \includegraphics[keepaspectratio, width=0.9\textwidth]{images/Landing_Flowchart}
+}
+%
+\begin{frame}{Landing Java class flowchart}
+\end{frame}
+%
+\setbeamertemplate{background canvas}{ }
+%
+%-----------------------Frame 34------------------------------
+\placelogotrue
+\placebackgroundfalse
+\begin{frame}{Landing Java class output}
+%
+\only<1>{
+\Wider{
+%
+\begin{itemize}
+	\MyBullet \textbf{\textcolor{mygold}{ATR-72 and B747-100B analysis results}}
+	\begin{itemize}
+		\MyBullet ATR-72 MLW = 20757 kg
+		\MyBullet B747-100B MLW = 267916 kg
+		\MyBullet ISA condition
+		\MyBullet Sea Level
+	\end{itemize}
+\end{itemize}
+%
+\vspace*{-0.1cm}
+\hspace*{-0.1cm}
+\scalebox{0.8}{
+\begin{tabular}{p{0.3\linewidth}|p{0.5\linewidth}p{0.2\linewidth}p{0.2\textwidth}}
+\hline
+ & \multicolumn{1}{c}{\textbf{Flight manual or brochure data}} & \multicolumn{1}{c}{\textbf{JPAD}} & \multicolumn{1}{c}{\textbf{Difference(\%)}}\\
+\hline
+\textbf{ATR-72 \newline$\delta_{\text{flap}}=\SI{40}{\degree} \newline C_{L\text{max}}=2.78$} & \multicolumn{1}{c}{$\SI{1067}{\meter}$} & \multicolumn{1}{c}{$\SI{1098}{\meter}$} & \multicolumn{1}{c}{2.82\%}\\ [.3cm]
+\hline
+\textbf{B747-100B \newline$\delta_{\text{flap}}=\SI{30}{\degree} \newline C_{L\text{max}}=2.55$} & \multicolumn{1}{c}{$\SI{1930}{\meter}$} & \multicolumn{1}{c}{$\SI{1921}{\meter}$} & \multicolumn{1}{c}{0.44\%}\\ [0.3cm]
+\hline
+\textbf{B747-100B \newline$\delta_{\text{flap}}=\SI{25}{\degree}\newline C_{L\text{max}}=2.43$} & \multicolumn{1}{c}{$\SI{2080}{\meter}$} & \multicolumn{1}{c}{$\SI{1968}{\meter}$} & \multicolumn{1}{c}{5.40\%}\\
+\hline
+\end{tabular}
+}
+}
+}
+%
+\only<2>{
+\Wider{
+%
+\begin{itemize}
+	\vspace*{0.5cm}
+	\MyBullet \textbf{\textcolor{mygold}{B747-100B W/S sensibility analysis}}
+\end{itemize}
+\vspace*{-1cm}
+\begin{columns}[onlytextwidth,t]
+\column{0.5\textwidth}
+\begin{figure}[H]
+\centering
+\includegraphics[keepaspectratio, width=1.1\textwidth]{images/JPAD_TakeOff_Sensibility_B747_30deg}
+\end{figure}
+\column{0.4\textwidth}
+\vspace*{1cm}
+\begin{align*}
+S_{\text{LND,FL}}=0.3\cdot V_{a}^2
+\end{align*}
+\begin{align*}
+V_a=1.3\cdot V_{s\text{LND}}
+\end{align*}
+\end{columns}
+\begin{align*}
+\alert{\text{Difference}\left(\%\right)=0.16\%}
+\end{align*}
+}
+}
+%
+\only<3>{
+\Wider{
+%
+\begin{itemize}
+	\vspace*{0.5cm}
+	\MyBullet \textbf{\textcolor{mygold}{B747-100B W/S sensibility analysis}}
+\end{itemize}
+\vspace*{-1cm}
+\begin{columns}[onlytextwidth,t]
+\column{0.5\textwidth}
+\begin{figure}[H]
+\centering
+\includegraphics[keepaspectratio, width=1.1\textwidth]{images/JPAD_TakeOff_Sensibility_B747_25deg}
+\end{figure}
+\column{0.4\textwidth}
+\vspace*{1cm}
+\begin{align*}
+S_{\text{LND,FL}}=0.3\cdot V_{a}^2
+\end{align*}
+\begin{align*}
+V_a=1.3\cdot V_{s\text{LND}}
+\end{align*}
+\end{columns}
+\begin{align*}
+\alert{\text{Difference}\left(\%\right)=2.11\%}
+\end{align*}
+}
+}
+%
+\only<4>{
+\Wider{
+%
+\begin{itemize}
+\vspace*{0.7cm}
+	\MyBullet \textbf{\textcolor{mygold}{B747-100B Landing run charts}}
+\end{itemize}
+%
+\begin{figure}[H]
+\centering
+\vspace*{-0.35cm}
+\hspace*{-1.1cm}
+\includegraphics[keepaspectratio, width=0.75\textwidth]{images/TrajectoryAndSpeed_vs_GroundDistance_LANDING_B747.pdf}
+\end{figure}
+}
+}
+%
+\only<5>{
+\Wider{
+%
+\begin{itemize}
+\vspace*{0.7cm}
+	\MyBullet \textbf{\textcolor{mygold}{B747-100B Landing run charts}}
+\end{itemize}
+%
+\begin{figure}[H]
+\centering
+\vspace*{-0.35cm}
+\hspace*{-1.1cm}
+\includegraphics[keepaspectratio, width=0.8\textwidth]{images/HorizontalForces_vs_GroundDistance_LANDING_B747.pdf}
+\end{figure}
+}
+}
+%
+\only<6>{
+\Wider{
+%
+\begin{itemize}
+\vspace*{0.7cm}
+	\MyBullet \textbf{\textcolor{mygold}{B747-100B Landing run charts}}
+\end{itemize}
+%
+\begin{figure}[H]
+\centering
+\vspace*{-0.35cm}
+\hspace*{-1.1cm}
+\includegraphics[keepaspectratio, width=0.75\textwidth]{images/Acceleration_vs_GroundDistance_LANDING_B747.pdf}
+\end{figure}
+}
+}
+%
+\end{frame}
+%
+%-----------------------Acknowledgments---------------------
+\placelogofalse
+\placebackgroundfalse
+%
+\setbeamertemplate{background canvas}{
+    \rule{0in}{3.65in}%
+    \rule{-0.3in}{0in}%
+    \centering
+    \includegraphics[keepaspectratio, width=1.3\textwidth]{images/Acknowledgment}
+}
+%
+\section{}
+\begin{frame}
+\end{frame}
+%
+\setbeamertemplate{background canvas}{ }
+%
+\end{document}
