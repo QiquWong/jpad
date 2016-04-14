@@ -24,7 +24,7 @@ import configuration.enumerations.FusDesDatabaseEnum;
 import database.databasefunctions.DatabaseReader;
 import database.databasefunctions.aerodynamics.AerodynamicsDatabaseManager;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
-import standaloneutils.database.io.DatabaseFileReader;
+import standaloneutils.database.io.InputFileReader;
 import standaloneutils.database.io.DatabaseFileWriter;
 import standaloneutils.database.io.DatabaseIOmanager;
 
@@ -163,12 +163,12 @@ public class FusDesDatabaseCalc {
 
 		DatabaseIOmanager<FusDesDatabaseEnum> inputManager = initializeInputTree();
 
-		DatabaseFileReader<FusDesDatabaseEnum> _fusDesDatabaseFileReader = 
-				new DatabaseFileReader<FusDesDatabaseEnum>(
+		InputFileReader<FusDesDatabaseEnum> _fusDesDatabaseFileReader = 
+				new InputFileReader<FusDesDatabaseEnum>(
 						filenamewithPathAndExt, inputManager.getTagList());
 
 
-		List<Amount> valueList = _fusDesDatabaseFileReader.readDatabase();
+		List<Amount> valueList = _fusDesDatabaseFileReader.readAmounts();
 		inputManager.setValueList(valueList);
 
 		return inputManager;

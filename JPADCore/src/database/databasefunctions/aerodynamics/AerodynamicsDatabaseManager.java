@@ -11,7 +11,7 @@ import database.databasefunctions.DatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import standaloneutils.MyXMLReaderUtils;
-import standaloneutils.database.io.DatabaseFileReader;
+import standaloneutils.database.io.InputFileReader;
 import standaloneutils.database.io.DatabaseIOmanager;
 import writers.JPADStaticWriteUtils;
 

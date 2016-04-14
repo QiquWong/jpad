@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2016.3.28)  3 APR 2016 13:59
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2016.3.28)  14 APR 2016 19:21
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -5112,12 +5112,12 @@ File: images/Kc.png Graphic file (type png)
 <use images/Kc.png>
 Package pdftex.def Info: images/Kc.png used on input line 277.
 (pdftex.def)             Requested size: 308.7903pt x 185.46231pt.
- <images/Kb.png, id=1651, 428.802pt x 377.0085pt>
+ <images/Kb.png, id=1651, 584.1825pt x 544.434pt>
 File: images/Kb.png Graphic file (type png)
 
 <use images/Kb.png>
 Package pdftex.def Info: images/Kb.png used on input line 284.
-(pdftex.def)             Requested size: 220.56546pt x 193.9228pt.
+(pdftex.def)             Requested size: 242.62335pt x 226.11035pt.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
@@ -5149,7 +5149,7 @@ File: images/DeltaClmax_Base.png Graphic file (type png)
 
 <use images/DeltaClmax_Base.png>
 Package pdftex.def Info: images/DeltaClmax_Base.png used on input line 305.
-(pdftex.def)             Requested size: 352.90608pt x 202.32729pt.
+(pdftex.def)             Requested size: 295.55692pt x 169.44478pt.
 
 <images/K1.png, id=1672, 751.608pt x 418.56375pt>
 File: images/K1.png Graphic file (type png)
@@ -6338,7 +6338,7 @@ ype1/public/tex-gyre/qtmb.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/te
 x-gyre/qtmr.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmri.p
 fb><c:/texlive/2015/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb><c:/texlive/
 2015/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb>
-Output written on Tesi.pdf (164 pages, 15373100 bytes).
+Output written on Tesi.pdf (164 pages, 15281003 bytes).
 PDF statistics:
  4388 PDF objects out of 5155 (max. 8388607)
  3799 compressed objects within 38 object streams
