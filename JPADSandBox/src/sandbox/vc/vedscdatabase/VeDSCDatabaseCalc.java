@@ -16,7 +16,7 @@ import configuration.enumerations.VeDSCDatabaseEnum;
 import database.databasefunctions.aerodynamics.AerodynamicsDatabaseManager;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
-import standaloneutils.database.io.DatabaseFileReader;
+import standaloneutils.database.io.InputFileReader;
 import standaloneutils.database.io.DatabaseFileWriter;
 import standaloneutils.database.io.DatabaseIOmanager;
 
@@ -114,10 +114,10 @@ public static DatabaseIOmanager<VeDSCDatabaseEnum> readFromFile(String filenamew
 		
 		DatabaseIOmanager<VeDSCDatabaseEnum> inputManager = initializeInputTree();
 		
-		DatabaseFileReader<VeDSCDatabaseEnum> databaseReader = new DatabaseFileReader<VeDSCDatabaseEnum>(
+		InputFileReader<VeDSCDatabaseEnum> databaseReader = new InputFileReader<VeDSCDatabaseEnum>(
 				filenamewithPathAndExt, inputManager.getTagList());
 
-		List<Amount> valueList = databaseReader.readDatabase();
+		List<Amount> valueList = databaseReader.readAmounts();
 		inputManager.setValueList(valueList);
 		return inputManager;
 	}

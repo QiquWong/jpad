@@ -205,7 +205,7 @@ Known this value, it's possible to evaluate the theoretical $\Delta c_{l0}$ whic
 with $C_{l\alpha}$ equals to the linear slope of the llift curve of the airfoil, and $\delta_{f}$ the flap angular deflection. For large flap deflections and for the separation at large flap angles due to viscosity, linear theory is in error when compared with exact one, for this reason we assume the effectiveness factor $\eta_\delta$, so the formulation becomes the following.
 %
 \begin{equation}
-\Delta C_{l0}=\alpha_\delta\ C_{l\alpha}\ \delta_f\ \eta_\delta
+\Delta C_{l0}'=\alpha_\delta\ C_{l\alpha}\ \delta_f\ \eta_\delta
 \label{eqn:DeltaCl0EtaDelta}
 \end{equation}
 %
@@ -281,7 +281,7 @@ where $C_{L\alpha}$ and $C_{l\alpha}$ are respectively the lift curve slopes of 
 %
 \begin{figure}[!t]
   \centering
-  \includegraphics[width=0.5\linewidth, angle=359]{Kb}
+  \includegraphics[width=0.55\linewidth]{Kb}
   \caption{$K_b$ as function of flap span to wing span ratio ($\frac{b_f}{b}$)}
   \label{fig:Kb}
 \end{figure}
@@ -302,7 +302,7 @@ Here $\left(\upDelta C_{l\text{max}}\right)_{\text{base}}$ is the section maximu
 %
 \begin{figure}[!b]
   \centering
-  \includegraphics[width=0.8\linewidth]{DeltaClmax_Base}
+  \includegraphics[width=0.67\linewidth]{DeltaClmax_Base}
   \caption{$\left(\upDelta C_{l\text{max}}\right)_{\text{base}}$ DATCOM chart}
   \label{fig:DeltaClmaxBase}
 \end{figure}
@@ -390,7 +390,7 @@ Regarding trailing edge devices, the \gls{DATCOM} method provides the following 
 Here $\upDelta C_{l\text{max}}$ is the increment in lift coefficient due to flap deflection as defined in (\ref{eqn:DeltaClmaxFlap}) while the quantity $\frac{S_{w,f}}{S}$ is the ratio of wing area affected by the trailing edge flap deflection (including both port and starboard wings) to the total wing area, as shown in figure~\ref{fig:Swf}; the wing area affected by the flap may be written as in (\ref{eqn:Swf}).
 %
 \begin{equation}
-S_{w,f}=\left(\dfrac{b}{2}\right)\ c_r\ \left[2-\left(1-\lambda\right)\ \left(\eta_i-\eta_o\right)\right]\ \left(\eta_i-\eta_o\right)
+S_{w,f}=\dfrac{1}{2}\cdot\left(c\left(\eta_{\text{in}}\right)+c\left(\eta_{\text{out}}\right)\right)\cdot\left(\eta_{\text{out}}-\eta_{\text{in}}\right)
 \label{eqn:Swf}
 \end{equation}
 %
@@ -402,7 +402,7 @@ S_{w,f}=\left(\dfrac{b}{2}\right)\ c_r\ \left[2-\left(1-\lambda\right)\ \left(\e
 \end{figure}
 %
 \noindent
-In the (\ref{eqn:Swf}) the quantity $\lambda = \frac{c_t}{c_r}$ is the taper ratio, b is the wingspan while $\eta_i$ and $\eta_o$ are, respectively, the non-dimensional inboard location and the outboard location of the flap. If the flaps do not extend continuously along the trailing edge then the affected area for each may be calculated independently and added together.
+In the (\ref{eqn:Swf}) the quantity $c\left(\eta\right)$ is the value of the wing chord at a specific station, while $\eta_i$ and $\eta_o$ are, respectively, the non-dimensional inboard location and the outboard location of the flap. If the flaps do not extend continuously along the trailing edge then the affected area for each may be calculated independently and added together.
 
 \bigskip
 \noindent

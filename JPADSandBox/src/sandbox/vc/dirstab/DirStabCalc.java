@@ -20,7 +20,7 @@ import configuration.enumerations.cNbetaContributionsEnum;
 import database.databasefunctions.aerodynamics.AerodynamicsDatabaseManager;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
-import standaloneutils.database.io.DatabaseFileReader;
+import standaloneutils.database.io.InputFileReader;
 import standaloneutils.database.io.DatabaseFileWriter;
 import standaloneutils.database.io.DatabaseIOmanager;
 
@@ -168,12 +168,14 @@ public class DirStabCalc {
 
 		DatabaseIOmanager<DirStabEnum> inputManager = initializeInputTree();
 
-		DatabaseFileReader<DirStabEnum> _dirStabDatabaseFileReader = 
-				new DatabaseFileReader<DirStabEnum>(
+		InputFileReader<DirStabEnum> _dirStabDatabaseFileReader = 
+				new InputFileReader<DirStabEnum>(
 						filenamewithPathAndExt, inputManager.getTagList());
 
 
-		List<Amount> valueList = _dirStabDatabaseFileReader.readDatabase();
+		// TODO: Change the read method
+		
+		List<Amount> valueList = _dirStabDatabaseFileReader.readAmounts();
 		inputManager.setValueList(valueList);
 
 		return inputManager;

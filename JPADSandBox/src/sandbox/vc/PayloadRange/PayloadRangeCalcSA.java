@@ -41,7 +41,7 @@ import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
-import standaloneutils.database.io.DatabaseFileReader;
+import standaloneutils.database.io.InputFileReader;
 import standaloneutils.database.io.DatabaseFileWriter;
 import standaloneutils.database.io.DatabaseIOmanager;
 import writers.JPADStaticWriteUtils;
@@ -203,10 +203,10 @@ public class PayloadRangeCalcSA {
 
 		DatabaseIOmanager<PayloadRangeEnum> inputManager = initializeInputTree();
 
-		DatabaseFileReader<PayloadRangeEnum> payloadRangeFileReader = 
-				new DatabaseFileReader<PayloadRangeEnum>(filenamewithPathAndExt, inputManager.getTagList());
+		InputFileReader<PayloadRangeEnum> payloadRangeFileReader = 
+				new InputFileReader<PayloadRangeEnum>(filenamewithPathAndExt, inputManager.getTagList());
 
-		List<Amount> valueList = payloadRangeFileReader.readDatabase();
+		List<Amount> valueList = payloadRangeFileReader.readAmounts();
 		inputManager.setValueList(valueList);
 
 		return inputManager;

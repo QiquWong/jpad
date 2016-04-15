@@ -18,6 +18,7 @@ public class DatabaseIOmanager<E extends Enum<E>> {
 
 	private List<E> tagList = new ArrayList<E>();
 	private List<Amount> valueList = new ArrayList<Amount>();
+	private List<String> stringList = new ArrayList<String>();
 	private List<Object> valueObjList = new ArrayList<Object>();
 	private List<String> descriptionList = new ArrayList<String>();
 	
@@ -35,6 +36,22 @@ public class DatabaseIOmanager<E extends Enum<E>> {
 	public void addElement(E tagName, Amount value, String description) {
 		tagList.add(tagName);
 		valueList.add(value);
+		descriptionList.add(description);
+	}
+	
+	/**
+	 * Overload of the previous method that accepts input data as String. These have then to be 
+	 * converted to the wanted type.
+	 * 
+	 * @author Vittorio Trifari & Manuela Ruocco
+	 * 
+	 * @param tagName
+	 * @param valueString
+	 * @param description
+	 */
+	public void addElement(E tagName, String valueString, String description) {
+		tagList.add(tagName);
+		stringList.add(valueString);
 		descriptionList.add(description);
 	}
 	
