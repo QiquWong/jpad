@@ -1,3 +1,4 @@
+package sandbox.mr.StabilityTest;
 //// This is the Test class for Longitudinal Stability. The object of analysis is an aircraft.
 ////
 //// The reference angle of attack is alphaBody, that is the angle between the direction of asimptotic

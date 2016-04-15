@@ -18,6 +18,7 @@ import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.FuelFractionDatabaseReader;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
+import sandbox.mr.StabilityTest.DownwashCalculator_03;
 import standaloneutils.customdata.CenterOfGravity;
 
 // This class testing the class DownwashCalculator using a default aircraft.

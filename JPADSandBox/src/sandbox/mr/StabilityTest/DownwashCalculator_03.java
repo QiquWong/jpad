@@ -1,4 +1,4 @@
-package sandbox.mr;
+package sandbox.mr.StabilityTest;
 
 import java.io.File;
 

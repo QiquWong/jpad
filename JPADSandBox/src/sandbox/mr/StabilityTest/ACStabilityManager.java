@@ -1,4 +1,4 @@
-package sandbox.mr;
+package sandbox.mr.StabilityTest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -236,6 +236,7 @@ public class ACStabilityManager {
 	private double downwashAngleAtAlpha;
 	private double[] alphaStabilityHTailArray;
 	private double xCGc;
+	private String pathXMLHighLift;
 
 
 
@@ -275,6 +276,7 @@ public class ACStabilityManager {
 
 
 		this.plotCheck = plotCheck;
+		this.pathXMLHighLift = pathXMLHighLift;
 
 		theLSAnalysis = theWing.getAerodynamics();
 		theLSHTailAnalysis = aircraft.get_HTail().getAerodynamics();
@@ -476,6 +478,7 @@ public class ACStabilityManager {
 
 	}
 
+	
 	public void CalculateDragCharacteristics(){
 		System.out.println("\n\n------------------------------------");
 		System.out.println("\n DRAG CHARACTERISTICS  ");
@@ -497,7 +500,7 @@ public class ACStabilityManager {
 			calculatePowerEffects();
 		}
 		calculateMoment();
-		calculatedeltaEEquilibrium();
+//		calculatedeltaEEquilibrium();
 		neutralPointCalculator();
 	}
 
@@ -534,7 +537,7 @@ public class ACStabilityManager {
 				return;
 			}
 
-			JPADXmlReader reader = new JPADXmlReader(pathXMLTakeOFF);
+			JPADXmlReader reader = new JPADXmlReader(pathXMLHighLift);
 
 			System.out.println("-----------------------------------------------------------");
 			System.out.println("XML File Path : " + pathXMLTakeOFF);
@@ -544,7 +547,7 @@ public class ACStabilityManager {
 			List<String> flapNumber_property = reader.getXMLPropertiesByPath("//Flap_Number");
 			int flapNumber = Integer.valueOf(flapNumber_property.get(0));
 			List<String> flapType_property = reader.getXMLPropertiesByPath("//FlapType");
-			List<String> cf_c_property = reader.getXMLPropertiesByPath("//Cf_c");
+			List<String> cf_c_property = reader.getXMLPropertiesByPath("//Cf_C");
 			List<String> delta_flap1_property = reader.getXMLPropertiesByPath("//Delta_Flap1");
 			List<String> delta_flap2_property = reader.getXMLPropertiesByPath("//Delta_Flap2");
 			List<String> eta_in_property = reader.getXMLPropertiesByPath("//Flap_inboard");
