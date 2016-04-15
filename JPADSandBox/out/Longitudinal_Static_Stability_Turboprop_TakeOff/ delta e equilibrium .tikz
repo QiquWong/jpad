@@ -1,0 +1,33 @@
+% delta e equilibrium 
+\begin{tikzpicture}
+
+\begin{axis}[
+width=\figurewidth,
+height=\figureheight,
+scaled ticks=false, tick label style={/pgf/number format/fixed},
+xmin=-2.3759999999999986,
+xmax=19.799999999999997,
+xlabel={alpha_body (deg)},
+xmajorgrids,
+ymin=-27.0,
+ymax=5.4,
+ylabel={deltaee },
+ymajorgrids,
+legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
+]
+
+\addplot [
+color=black,
+solid
+]
+table[row sep=crcr]{
+-2.1999999999999984	5.0\\
+-2.1999999999999984	0.0\\
+6.666666666666669	-5.0\\
+14.133333333333336	-10.0\\
+18.33333333333333	-15.0\\
+0.0	-20.0\\
+0.0	-25.0\\
+};
+\end{axis}
+\end{tikzpicture}%
