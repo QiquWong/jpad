@@ -66,6 +66,7 @@ import database.databasefunctions.engine.EngineDatabaseReader;
 import database.databasefunctions.engine.TurbofanEngineDatabaseReader;
 import database.databasefunctions.engine.TurbopropEngineDatabaseReader;
 import javafx.util.Pair;
+import standaloneutils.GeometryCalc;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyMathUtils;
@@ -2639,6 +2640,22 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 								*(etaInFlap.get(i)-etaOutFlap.get(i))
 								)
 						);
+			
+//			List<Double> flapSurface = new ArrayList<Double>();
+//			for(int i=0; i<flapTypeIndex.size(); i++)
+//				flapSurface.add(
+//						((GeometryCalc.getChordAtYActual(
+//								theWing.get_yStationActual().toArray(),
+//								theWing.get_chordsVsYActual().toArray(),
+//								Double.valueOf(etaInFlap.get(i)*theWing.get_span().divide(2).getEstimatedValue())
+//								)
+//						+ GeometryCalc.getChordAtYActual(
+//								theWing.get_yStationActual().toArray(),
+//								theWing.get_chordsVsYActual().toArray(),
+//								Double.valueOf(etaOutFlap.get(i)*theWing.get_span().divide(2).getEstimatedValue())
+//								)
+//						)*((etaOutFlap.get(i)-etaInFlap.get(i))*theWing.get_span().divide(2).getEstimatedValue()))
+//						);
 
 			List<Double> kLambdaFlap = new ArrayList<Double>();
 			for(int i=0; i<flapTypeIndex.size(); i++)
@@ -2677,6 +2694,22 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 									*(etaInSlat.get(i)-etaOutSlat.get(i))
 									)
 							);
+				
+//				List<Double> slatSurface = new ArrayList<Double>();
+//				for(int i=0; i<deltaSlat.size(); i++)
+//						slatSurface.add(
+//								((GeometryCalc.getChordAtYActual(
+//										theWing.get_yStationActual().toArray(),
+//										theWing.get_chordsVsYActual().toArray(),
+//										Double.valueOf(etaInSlat.get(i)*theWing.get_span().divide(2).getEstimatedValue())
+//										)
+//								+ GeometryCalc.getChordAtYActual(
+//										theWing.get_yStationActual().toArray(),
+//										theWing.get_chordsVsYActual().toArray(),
+//										Double.valueOf(etaOutSlat.get(i)*theWing.get_span().divide(2).getEstimatedValue())
+//										)
+//								)*((etaOutSlat.get(i)-etaInSlat.get(i))*theWing.get_span().divide(2).getEstimatedValue()))
+//							);
 
 				deltaCLmaxSlatList = new ArrayList<Double>();
 				for(int i=0; i<deltaSlat.size(); i++)
