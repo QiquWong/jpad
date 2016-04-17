@@ -41,7 +41,7 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 		k1VsFlapChordRatio = database.interpolate2DFromDatasetFunction("K1_vs_FlapChordRatio");
 		k2VsDeltaFlap = database.interpolate2DFromDatasetFunction("K2_vs_deltaf");
 		k3VsDfDfRef = database.interpolate2DFromDatasetFunction("K3_vs_df_dfRef");
-		kbVsFlapSpanRatio = database.interpolate1DFromDatasetFunction("Kb_vs_flapSpanRatio");
+		kbVsFlapSpanRatio = database.interpolate2DFromDatasetFunction("Kb_vs_flapSpanRatio");
 		kcVsAR = database.interpolate2DFromDatasetFunction("Kc_vs_AR_vs_alphaDelta");
 		deltaAlphaMaxVsDeltaFlap = database.interpolate1DFromDatasetFunction("DeltaAlphaMax_vs_DeltaFlap");
 		mu1VsCfCFirstSlottedFowler = database.interpolate1DFromDatasetFunction("Mu_1_pitching_moment_Slotted_Fowler");
@@ -197,10 +197,11 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 	 * @param b wing span
 	 * @param etaIn adimensional position of the flap inner station
 	 * @param etaOut adimensional position of the flap inner station
+	 * @param taperRatio
 	 * @return the interpolated value of the curve at that flap span ratio
 	 */
-	public double getKbVsFlapSpanRatio(double etaIn, double etaOut) {
-		return kbVsFlapSpanRatio.value(etaOut)-kbVsFlapSpanRatio.value(etaIn);
+	public double getKbVsFlapSpanRatio(double etaIn, double etaOut, double taperRatio) {
+		return kbVsFlapSpanRatio.value(etaOut, taperRatio)-kbVsFlapSpanRatio.value(etaIn, taperRatio);
 	}
 	
 	/**

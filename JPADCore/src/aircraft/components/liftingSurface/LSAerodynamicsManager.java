@@ -2504,17 +2504,22 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 			List<Double> k1 = new ArrayList<Double>();
 			for(int i=0; i<flapTypeIndex.size(); i++)
-				if (cfc.get(i) <= 0.24)
+				if (cfc.get(i) <= 0.30)
 					k1.add(theWing
 							.getAerodynamics()
 							.getHighLiftDatabaseReader()
 							.getK1vsFlapChordRatio(cfc.get(i), flapTypeIndex.get(i))
 							);
-				else if ((cfc.get(i) > 0.24) && ((flapTypeIndex.get(i) == 2) || (flapTypeIndex.get(i) == 4) || (flapTypeIndex.get(i) == 5)))
+				else if ((cfc.get(i) > 0.30) && ((flapTypeIndex.get(i) == 2) || (flapTypeIndex.get(i) == 4) || (flapTypeIndex.get(i) == 5)))
 					k1.add(0.04*(cfc.get(i)*100));
-				else if ((cfc.get(i) > 0.24) && ((flapTypeIndex.get(i) == 1) || (flapTypeIndex.get(i) == 3) ))
-					k1.add(1.0);
-
+				else if ((cfc.get(i) > 0.30) && ((flapTypeIndex.get(i) == 1) || (flapTypeIndex.get(i) == 3) ))
+					k1.add((608.31*Math.pow(cfc.get(i), 5))
+							-(626.15*Math.pow(cfc.get(i), 4))
+							+(263.4*Math.pow(cfc.get(i), 3))
+							-(62.946*Math.pow(cfc.get(i), 2))
+							-(10.638*cfc.get(i))
+							+0.0064
+							);
 
 			List<Double> k2 = new ArrayList<Double>();
 			for(int i=0; i<flapTypeIndex.size(); i++)
@@ -2610,7 +2615,10 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				kb.add(theWing
 						.getAerodynamics()
 						.getHighLiftDatabaseReader()
-						.getKbVsFlapSpanRatio(etaInFlap.get(i), etaOutFlap.get(i))	
+						.getKbVsFlapSpanRatio(
+								etaInFlap.get(i),
+								etaOutFlap.get(i),
+								theWing.get_taperRatioEquivalent())	
 						);
 
 			CalcCLAlpha calcLinearSlope = new CalcCLAlpha();

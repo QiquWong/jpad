@@ -8,7 +8,7 @@ K1fowler = importdata('K12slotFowler.mat');
 K1_3slot = importdata('K12slotFowler.mat');
 
 nPoints = 50;
-Cf_c_Vector = transpose(linspace(0, 24, nPoints));
+Cf_c_Vector = transpose(linspace(0, 30, nPoints));
 
 %% 1-Slot  (1)
 smoothingParameter = 0.999999;
@@ -110,7 +110,7 @@ xlabel('c_f/c (%)'); ylabel('K1');
  title('K1 coefficient variation with flap chord ratio');
  legend('1-Slot', '2-Slot', 'Plain Flap', 'Fowler', '3-Slot');
  
- axis([0 24 0 1.2]);
+ axis([0 30 0 1.2]);
  grid on;
  %% preparing output to HDF
  
