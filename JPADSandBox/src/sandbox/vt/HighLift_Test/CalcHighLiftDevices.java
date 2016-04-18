@@ -317,7 +317,10 @@ public class CalcHighLiftDevices {
 			kb.add(aircraft
 					.get_theAerodynamics()
 					.get_highLiftDatabaseReader()
-					.getKbVsFlapSpanRatio(eta_in_flap.get(i), eta_out_flap.get(i))	
+					//.getKbVsFlapSpanRatio(eta_in_flap.get(i), eta_out_flap.get(i))
+					.getKbVsFlapSpanRatio( // agodemar
+							eta_in_flap.get(i), eta_out_flap.get(i),
+							aircraft.get_wing().get_taperRatioEquivalent())
 					);
 		
 		deltaCL0_flap_list = new ArrayList<Double>();
