@@ -22,6 +22,8 @@ import com.google.common.io.Files;
 
 import aircraft.OperatingConditions;
 import aircraft.components.Aircraft;
+import calculators.performance.PayloadRangeCalc;
+import calculators.performance.SpecificRangeCalc;
 import calculators.performance.ThrustCalc;
 import calculators.performance.customdata.ThrustMap;
 import configuration.MyConfiguration;
@@ -32,8 +34,6 @@ import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.cNbetaContributionsEnum;
 import sandbox.vc.dirstab.DirStabCalc;
-import sandbox.vt.PayloadRange_Test.PayloadRangeCalc;
-import sandbox.vt.SpecificRange_Test.SpecificRangeCalc;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;

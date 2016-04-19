@@ -20,6 +20,7 @@ import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface;
+import calculators.performance.LandingCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
@@ -368,7 +369,7 @@ public class Landing_Test_TF_Sensibility {
 		Amount<Angle> alphaGround = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		Amount<Angle> iw = Amount.valueOf(3.0, NonSI.DEGREE_ANGLE);
 		Amount<Angle> thetaApproach = Amount.valueOf(3.0, NonSI.DEGREE_ANGLE);
-		CalcLanding theLandingCalculator = new CalcLanding(
+		LandingCalc theLandingCalculator = new LandingCalc(
 				aircraft,
 				theCondition,
 				highLiftCalculator,

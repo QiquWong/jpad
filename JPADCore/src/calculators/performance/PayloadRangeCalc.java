@@ -1,4 +1,4 @@
-package sandbox.vt.PayloadRange_Test;
+package calculators.performance;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -17,7 +17,6 @@ import aircraft.components.Aircraft;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
-import calculators.performance.RangeCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.AirplaneType;
@@ -118,7 +117,7 @@ public class PayloadRangeCalc{
 	};
 	
 	// Builder used in case of a given aircraft object
-	PayloadRangeCalc(
+	public PayloadRangeCalc(
 			OperatingConditions theConditions,
 			Aircraft theAircraft,
 			AirplaneType type){

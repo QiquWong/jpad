@@ -14,6 +14,7 @@ import org.kohsuke.args4j.Option;
 import calculators.aerodynamics.DragCalc;
 import calculators.geometry.LSGeometryCalc;
 import calculators.performance.PerformanceCalcUtils;
+import calculators.performance.SpecificRangeCalc;
 import calculators.performance.ThrustCalc;
 import calculators.performance.customdata.DragMap;
 import calculators.performance.customdata.DragThrustIntersectionMap;

@@ -12,6 +12,7 @@ import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface;
 import calculators.aerodynamics.DragCalc;
 import calculators.performance.PerformanceCalcUtils;
+import calculators.performance.SpecificRangeCalc;
 import calculators.performance.ThrustCalc;
 import calculators.performance.customdata.DragMap;
 import calculators.performance.customdata.DragThrustIntersectionMap;

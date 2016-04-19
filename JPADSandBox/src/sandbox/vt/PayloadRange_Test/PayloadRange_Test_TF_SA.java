@@ -15,6 +15,7 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import aircraft.calculators.ACAerodynamicsManager;
 import calculators.geometry.LSGeometryCalc;
+import calculators.performance.PayloadRangeCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.AirplaneType;

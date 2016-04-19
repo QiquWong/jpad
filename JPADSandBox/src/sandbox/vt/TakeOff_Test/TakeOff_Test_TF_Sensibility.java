@@ -20,6 +20,7 @@ import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface;
+import calculators.performance.TakeOffCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
@@ -386,7 +387,7 @@ public class TakeOff_Test_TF_Sensibility {
 		Amount<Velocity> vWind = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
 		Amount<Angle> alphaGround = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		Amount<Angle> iw = Amount.valueOf(3.0, NonSI.DEGREE_ANGLE);
-		CalcTakeOff theTakeOffCalculator = new CalcTakeOff(
+		TakeOffCalc theTakeOffCalculator = new TakeOffCalc(
 				aircraft,
 				theCondition,
 				highLiftCalculator,
