@@ -547,7 +547,7 @@ public class ACStabilityManager {
 			List<String> flapNumber_property = reader.getXMLPropertiesByPath("//Flap_Number");
 			int flapNumber = Integer.valueOf(flapNumber_property.get(0));
 			List<String> flapType_property = reader.getXMLPropertiesByPath("//FlapType");
-			List<String> cf_c_property = reader.getXMLPropertiesByPath("//Cf_C");
+			List<String> cf_c_property = reader.getXMLPropertiesByPath("//Cf_c");
 			List<String> delta_flap1_property = reader.getXMLPropertiesByPath("//Delta_Flap1");
 			List<String> delta_flap2_property = reader.getXMLPropertiesByPath("//Delta_Flap2");
 			List<String> eta_in_property = reader.getXMLPropertiesByPath("//Flap_inboard");
