@@ -120,7 +120,7 @@ public class AGILE_Test_HighLift_Landing {
 		theWing.set_xLERoot(Amount.valueOf(0.0, SI.METER));
 		theWing.set_xLEKink(Amount.valueOf(3.707, SI.METER));
 		theWing.set_xLETip(Amount.valueOf(8.305, SI.METER));
-		theWing.set_sweepQuarterChordEq(Amount.valueOf(26.3, NonSI.DEGREE_ANGLE));
+		theWing.set_sweepQuarterChordEq(Amount.valueOf(toRadians(26.3), SI.RADIAN));
 		theWing.set_sweepLEEquivalent(
 				theWing.calculateSweep(
 						theWing.get_sweepQuarterChordEq().getEstimatedValue(),
@@ -368,7 +368,7 @@ public class AGILE_Test_HighLift_Landing {
 			eta_in_slat.add(Double.valueOf(eta_in_slat_property.get(i)));
 		for(int i=0; i<eta_out_slat_property.size(); i++)
 			eta_out_slat.add(Double.valueOf(eta_out_slat_property.get(i)));
-
+		
 		//----------------------------------------------------------------------------------
 		// WING ANALYSIS 
 		System.out.println("\n-----------------------------------------------------");

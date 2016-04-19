@@ -390,7 +390,7 @@ Regarding trailing edge devices, the \gls{DATCOM} method provides the following 
 Here $\upDelta C_{l\text{max}}$ is the increment in lift coefficient due to flap deflection as defined in (\ref{eqn:DeltaClmaxFlap}) while the quantity $\frac{S_{w,f}}{S}$ is the ratio of wing area affected by the trailing edge flap deflection (including both port and starboard wings) to the total wing area, as shown in figure~\ref{fig:Swf}; the wing area affected by the flap may be written as in (\ref{eqn:Swf}).
 %
 \begin{equation}
-S_{w,f}=\dfrac{1}{2}\cdot\left(c\left(\eta_{\text{in}}\right)+c\left(\eta_{\text{out}}\right)\right)\cdot\left(\eta_{\text{out}}-\eta_{\text{in}}\right)\cdot\dfrac{b}{2}
+S_{w,f}=\left(\dfrac{b}{2}\right)c_r\left[2-\left(1-\lambda\right)\left(\eta_{\text{in}}-\eta_{\text{out}}\right)\right]\left(\eta_{\text{in}}-\eta_{\text{out}}\right)
 \label{eqn:Swf}
 \end{equation}
 %
@@ -402,7 +402,7 @@ S_{w,f}=\dfrac{1}{2}\cdot\left(c\left(\eta_{\text{in}}\right)+c\left(\eta_{\text
 \end{figure}
 %
 \noindent
-In the (\ref{eqn:Swf}) the quantity $c\left(\eta\right)$ is the value of the wing chord at a specific station, while $\eta_i$ and $\eta_o$ are, respectively, the non-dimensional inboard location and the outboard location of the flap. If the flaps do not extend continuously along the trailing edge then the affected area for each may be calculated independently and added together.
+In the (\ref{eqn:Swf}) the quantity $\lambda=\frac{c_t}{c_r}$ is the taper ratio and b is the wingspan; while $\eta_i$ and $\eta_o$ are, respectively, the non-dimensional inboard location and the outboard location of the flap. If the flaps do not extend continuously along the trailing edge then the affected area for each may be calculated independently and added together.
 
 \bigskip
 \noindent

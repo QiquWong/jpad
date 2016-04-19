@@ -1,6 +1,8 @@
 package sandbox.vt.TakeOff_Test;
 
 import java.io.File;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import javax.measure.quantity.Acceleration;
@@ -1248,11 +1250,19 @@ public class CalcTakeOff {
 	 */
 	public void calculateBalancedFieldLength() {
 
+		final PrintStream originalOut = System.out;
+		PrintStream filterStream = new PrintStream(new OutputStream() {
+		    public void write(int b) {
+		         // write nothing
+		    }
+		});
+		System.setOut(filterStream);
+		
 		// failure speed array
 		failureSpeedArray = MyArrayUtils.linspace(
 				2.0,
 				vLO.getEstimatedValue(),
-				250);
+				120);
 		// continued take-off array
 		continuedTakeOffArray = new double[failureSpeedArray.length];
 		// aborted take-off array
@@ -1268,32 +1278,35 @@ public class CalcTakeOff {
 			abortedTakeOffArray[i] = getGroundDistance().get(groundDistance.size()-1).getEstimatedValue();
 		}
 
-		// interpolation of the two arrays
-		failureSpeedArrayFitted = MyArrayUtils.linspace(
-				2.0,
-				vLO.getEstimatedValue(),
-				250);
-		continuedTakeOffFitted.interpolate(failureSpeedArray, continuedTakeOffArray);
-		abortedTakeOffFitted.interpolate(failureSpeedArray, abortedTakeOffArray);
-
-		// values extraction from the polynomial spline functions
-		continuedTakeOffSplineValues = new double[failureSpeedArrayFitted.length];
-		abortedTakeOffSplineValues = new double[failureSpeedArrayFitted.length];
-
-		for(int i=0; i<failureSpeedArrayFitted.length; i++){
-			continuedTakeOffSplineValues[i] = continuedTakeOffFitted.value(failureSpeedArrayFitted[i]);
-			abortedTakeOffSplineValues[i] = abortedTakeOffFitted.value(failureSpeedArrayFitted[i]);
-		}
+//		// interpolation of the two arrays
+//		failureSpeedArrayFitted = MyArrayUtils.linspace(
+//				2.0,
+//				vLO.getEstimatedValue(),
+//				250);
+//		continuedTakeOffFitted.interpolate(failureSpeedArray, continuedTakeOffArray);
+//		abortedTakeOffFitted.interpolate(failureSpeedArray, abortedTakeOffArray);
+//
+//		// values extraction from the polynomial spline functions
+//		continuedTakeOffSplineValues = new double[failureSpeedArrayFitted.length];
+//		abortedTakeOffSplineValues = new double[failureSpeedArrayFitted.length];
+//
+//		for(int i=0; i<failureSpeedArrayFitted.length; i++){
+//			continuedTakeOffSplineValues[i] = continuedTakeOffFitted.value(failureSpeedArrayFitted[i]);
+//			abortedTakeOffSplineValues[i] = abortedTakeOffFitted.value(failureSpeedArrayFitted[i]);
+//		}
 
 		// arrays intersection
 		double[] intersection = MyArrayUtils.intersectArraysSimple(
-				continuedTakeOffSplineValues,
-				abortedTakeOffSplineValues);
+				continuedTakeOffArray,
+				abortedTakeOffArray);
 		for(int i=0; i<intersection.length; i++)
 			if(intersection[i] != 0.0) {
 				balancedFieldLength = Amount.valueOf(intersection[i], SI.METER);
-				v1 = Amount.valueOf(failureSpeedArrayFitted[i], SI.METERS_PER_SECOND);
+				v1 = Amount.valueOf(failureSpeedArray[i], SI.METERS_PER_SECOND);
 			}
+		
+		// write again
+		System.setOut(originalOut);
 	}
 
 	/**************************************************************************************
@@ -1648,13 +1661,13 @@ public class CalcTakeOff {
 		String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR);
 		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "Take-Off_Performance" + File.separator);
 
-		for(int i=0; i<failureSpeedArrayFitted.length; i++)
-			failureSpeedArrayFitted[i] = failureSpeedArrayFitted[i]/vSTakeOff.getEstimatedValue();
+		for(int i=0; i<failureSpeedArray.length; i++)
+			failureSpeedArray[i] = failureSpeedArray[i]/vSTakeOff.getEstimatedValue();
 
 		double[][] xArray = new double[][]
-				{failureSpeedArrayFitted, failureSpeedArrayFitted};
+				{failureSpeedArray, failureSpeedArray};
 		double[][] yArray = new double[][]
-				{continuedTakeOffSplineValues, abortedTakeOffSplineValues};
+				{continuedTakeOffArray, abortedTakeOffArray};
 
 		MyChartToFileUtils.plot(
 				xArray, yArray,
