@@ -45,7 +45,7 @@ class TestGroovy_02 {
 		templateCode = FileUtils.readFileToString(new File(templatePath))
 
 		//println "Template Code: '$templateCode'"
-		
+
 		def binding = getBinding(dexTaskState)
 		def engine = new SimpleTemplateEngine()
 		def template = engine.createTemplate(templateCode).make(binding)
@@ -53,7 +53,7 @@ class TestGroovy_02 {
 
 		println "Template output: '$output'"
 		// TODO: add libraries jboss.netty.* ...
-		
+
 
 	}
 

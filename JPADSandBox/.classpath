@@ -117,5 +117,6 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/dex/xstream-1.4.7.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/dex/dex-javafx.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/commons-io/commons-io-2.4.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/dex/selenium/selenium-server-standalone-2.42.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
