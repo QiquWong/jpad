@@ -5,9 +5,14 @@ import groovy.text.SimpleTemplateEngine
 import javafx.scene.web.WebEngine
 import javafx.scene.web.WebView
 
+import com.dexvis.dex.DexData
+import com.dexvis.dex.wf.DexEnvironment
+import com.dexvis.dex.wf.DexTask
 import com.dexvis.dex.wf.DexTaskState
 import com.dexvis.javafx.scene.control.DexFileChooser
 import org.apache.commons.io.FileUtils
+
+import au.com.bytecode.opencsv.CSVReader
 
 import com.thoughtworks.xstream.annotations.XStreamOmitField
 
@@ -15,59 +20,72 @@ class TestGroovy_02 {
 
 	// !!!!! see WebTask.groovy
 
-	@XStreamOmitField
-	private String templatePath = ""
-	@XStreamOmitField
-	private String templateCode = "Insert template code here..."
-	@XStreamOmitField
-	private String output = ""
-
-	//	@XStreamOmitField
-	//	private WebView wv = new WebView()
-	//	@XStreamOmitField
-	//	protected WebEngine we = wv.getEngine()
-	@XStreamOmitField
-	private boolean saveDynamic = false;
-
-	@XStreamOmitField
-	private static DexFileChooser htmlChooser = null
-
-	// State of this task, initialize to start.
-	@XStreamOmitField
-	private DexTaskState dexTaskState = new DexTaskState();
-
 	public TestGroovy_02() {
 
-		this.templatePath = "web/c3/LineChart.gtmpl"
+		String templatePath = "web/c3/LineChart.gtmpl"
 
-		println "Template: ${templatePath}"
+		String csvFilePath = "in/groovy/quartet.csv" // "in/groovy/gc.csv"
 
-		templateCode = FileUtils.readFileToString(new File(templatePath))
+		println "Template file: ${templatePath}"
 
-		//println "Template Code: '$templateCode'"
+		String templateCode = FileUtils.readFileToString(new File(templatePath))
 
-		def binding = getBinding(dexTaskState)
-		def engine = new SimpleTemplateEngine()
-		def template = engine.createTemplate(templateCode).make(binding)
-		output = template.toString()
+		println "-----------------------------------------------"
+		println "Template Code:\n\n'$templateCode'"
 
-		println "Template output: '$output'"
-		// TODO: add libraries jboss.netty.* ...
+		println "-----------------------------------------------"
 
+		CSVReader reader = new CSVReader(new FileReader(csvFilePath))
 
-	}
+		// read header row and the rest of CSV data
+		def List<String>       header
+		def List<List<String>> data
+		header = reader.readNext().collect{ it }
+		data = []
+		List<String> row
+		int rowLimit = Integer.MAX_VALUE
+		boolean limit = false
+		int rowNum = 0;
 
-	public Map getBinding(DexTaskState state)
-	{
+		while (((row = reader.readNext()) != null) && ((limit == false) || (limit && rowNum < rowLimit))) {
+			data << row.collect() { it }
+			rowNum++;
+		}
+
+		println header
+		data.each{ println it }
+
+		DexData dexData = new DexData(header, data)
+		DexTaskState state = new DexTaskState(dexData)
+
 		def curDir = new File(".")
+		def myMap = [:]
+		myMap["state"] = state
+		myMap["dexData"] = dexData
+		myMap["data"] = data
+		myMap["header"] = header
+		myMap["basedir"] = curDir.toURI().toURL().toExternalForm()
 
-		return [
-			"state":state,
-			"dexData":state.dexData,
-			"data":state.dexData.data,
-			"header":state.dexData.header,
-			"basedir" : curDir.toURI().toURL().toExternalForm()
-		]
+		def engine = new SimpleTemplateEngine()
+		def template = engine.createTemplate(templateCode).make(myMap)
+		String output = template.toString()
+		// println "Template output: $output" No!!!
+
+		File outputFile = new File("out/Test_groovy/output.html");
+		FileUtils.writeStringToFile(outputFile, output)
+
+/*
+ * Need to set the JavaFX stage and put the webview in it ...
+ *
+
+		WebView wv = new WebView()
+		WebEngine we = wv.getEngine()
+		//println "Loading: '${outputFile.toURI().toURL().toExternalForm()}'"
+		//we?.load(outputFile.toURI().toURL().toExternalForm())
+		we?.loadContent(output)
+*/
+
+
 	}
 
 	static void main(def args){
