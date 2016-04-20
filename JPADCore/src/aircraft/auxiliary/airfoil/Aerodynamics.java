@@ -23,7 +23,7 @@ import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLMaxClean;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcLiftDistribution;
 import configuration.MyConfiguration;
-import configuration.enumerations.AirfoilFamilyEnum;
+import configuration.enumerations.AirfoilEnum;
 import configuration.enumerations.AirfoilStationEnum;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.MethodEnum;
@@ -74,7 +74,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 	private Double _mExponentDragPolar;
 
 	private Double _machCr0;
-	private static Map<AirfoilFamilyEnum, Double> _kWaveDragMap = new HashMap<AirfoilFamilyEnum, Double> ();
+	private static Map<AirfoilEnum, Double> _kWaveDragMap = new HashMap<AirfoilEnum, Double> ();
 
 	private Double _aerodynamicCenterX;
 	private Double _cmAC;
@@ -127,7 +127,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 		 case "23-018":
 			 _id = airf.getId() + "1" + idCounter + "99";
 				idCounter++;
-			 airf.set_family(AirfoilFamilyEnum.NACA23_018);	
+			 airf.set_family(AirfoilEnum.NACA23_018);	
 			 _theAirfoil = airf;
 			 geometry = airf.getGeometry();
 
@@ -158,7 +158,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			 break;
 
 		 case "23-015":
-			 airf.set_family(AirfoilFamilyEnum.NACA23_015);	
+			 airf.set_family(AirfoilEnum.NACA23_015);	
 			 _id = airf.getId() + "1" + idCounter + "99";
 				idCounter++;
 				
@@ -192,7 +192,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			 break;
 			 
 		 case "23-012":
-			 airf.set_family(AirfoilFamilyEnum.NACA23_012);	
+			 airf.set_family(AirfoilEnum.NACA23_012);	
 			 _id = airf.getId() + "1" + idCounter + "99";
 				idCounter++;
 				
@@ -1006,7 +1006,7 @@ public Aerodynamics(Airfoil airf, String name) {
 		this._machCurrent = _machCurrent;
 	}
 
-	public static Map<AirfoilFamilyEnum, Double> get_kWaveDragMap() {
+	public static Map<AirfoilEnum, Double> get_kWaveDragMap() {
 		return _kWaveDragMap;
 	}
 

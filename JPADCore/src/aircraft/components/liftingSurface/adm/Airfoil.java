@@ -17,7 +17,7 @@ import org.jscience.physics.amount.Amount;
 import org.jscience.physics.amount.AmountFormat;
 
 import configuration.MyConfiguration;
-import configuration.enumerations.AirfoilFamilyEnum;
+import configuration.enumerations.AirfoilEnum;
 import configuration.enumerations.AirfoilTypeEnum;
 import javolution.text.TypeFormat;
 import javolution.text.TextFormat.Cursor;
@@ -28,7 +28,7 @@ public class Airfoil implements IAirfoil {
 
 	private String _id;
 	private AirfoilTypeEnum _type;
-	private AirfoilFamilyEnum _family;
+	private AirfoilEnum _family;
 	private RealMatrix _NormalizedCornerPointsXZ;
 	private Amount<Length> _chord;
 	private Double _thicknessToChordRatio;
@@ -73,12 +73,12 @@ public class Airfoil implements IAirfoil {
 	}
 
 	@Override
-	public AirfoilFamilyEnum getFamily() {
+	public AirfoilEnum getFamily() {
 		return _family;
 	}
 
 	@Override
-	public void setFamily(AirfoilFamilyEnum fam) {
+	public void setFamily(AirfoilEnum fam) {
 		_family = fam;
 	}
 
@@ -311,7 +311,7 @@ public class Airfoil implements IAirfoil {
 
 		// optional, set to default values
 		private AirfoilTypeEnum __type = AirfoilTypeEnum.CONVENTIONAL;
-		private AirfoilFamilyEnum __family = AirfoilFamilyEnum.NACA65_209;
+		private AirfoilEnum __family = AirfoilEnum.NACA65_209;
 
 		private RealMatrix __NormalizedCornerPointsXZ = MatrixUtils.createRealMatrix(30, 2);
 		private Amount<Length> __chord = Amount.valueOf(1.0,1e-8,SI.METER);
@@ -346,7 +346,7 @@ public class Airfoil implements IAirfoil {
 			return this;
 		}
 
-		public AirfoilBuilder family(AirfoilFamilyEnum fam) {
+		public AirfoilBuilder family(AirfoilEnum fam) {
 			__family = fam;
 			return this;
 		}

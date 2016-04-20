@@ -5,7 +5,7 @@ import javax.measure.quantity.Length;
 
 import org.jscience.physics.amount.Amount;
 
-import configuration.enumerations.AirfoilFamilyEnum;
+import configuration.enumerations.AirfoilEnum;
 import configuration.enumerations.AirfoilTypeEnum;
 
 public interface IAirfoil {
@@ -16,8 +16,8 @@ public interface IAirfoil {
 	AirfoilTypeEnum getType();
 	void setType(AirfoilTypeEnum type);
 	
-	AirfoilFamilyEnum getFamily();
-	void setFamily(AirfoilFamilyEnum fam);
+	AirfoilEnum getFamily();
+	void setFamily(AirfoilEnum fam);
 
 	double[][] getNormalizedCornerPointsXZ();
 	void setNormalizedCornerPointsXZ(double[][] xz);

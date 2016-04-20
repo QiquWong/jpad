@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import aircraft.components.liftingSurface.LiftingSurface;
-import configuration.enumerations.AirfoilFamilyEnum;
+import configuration.enumerations.AirfoilEnum;
 import configuration.enumerations.AirfoilStationEnum;
 import configuration.enumerations.AirfoilTypeEnum;
 
@@ -20,9 +20,9 @@ public class Airfoil {
 	private String _xmlName;
 	public static final Integer _xmlLevel = 3;
 
-	private static Map<AirfoilFamilyEnum, Double> _kWaveDragMap = new HashMap<AirfoilFamilyEnum, Double> ();
+	private static Map<AirfoilEnum, Double> _kWaveDragMap = new HashMap<AirfoilEnum, Double> ();
 
-	AirfoilFamilyEnum _family;
+	AirfoilEnum _family;
 	AirfoilTypeEnum _type;
 	Geometry geometry;
 	Aerodynamics aerodynamics;
@@ -74,7 +74,7 @@ public class Airfoil {
 
 		_id = ls.getObjectId() + idCounter + "99";
 		idCounter++;
-		_family = AirfoilFamilyEnum.NACA63_209;
+		_family = AirfoilEnum.NACA63_209;
 		_type = AirfoilTypeEnum.CONVENTIONAL;
 		
 		_theLiftingSurface = ls;
@@ -86,7 +86,7 @@ public class Airfoil {
 
 		_id = ls.getObjectId() + idCounter + "99";
 		idCounter++;
-		_family = AirfoilFamilyEnum.NACA63_209;
+		_family = AirfoilEnum.NACA63_209;
 		_type = AirfoilTypeEnum.CONVENTIONAL;
 		
 		_theLiftingSurface = ls;
@@ -106,7 +106,7 @@ public class Airfoil {
 		
 		switch(aircraftName) {
 		case "ATR-72":
-			_family = AirfoilFamilyEnum.NACA63_209;
+			_family = AirfoilEnum.NACA63_209;
 			_type = AirfoilTypeEnum.CONVENTIONAL;
 
 			_theLiftingSurface = ls;
@@ -116,7 +116,7 @@ public class Airfoil {
 		
 		// TODO: put inside Geometry and Aerodynamics B747-100B correct data (actually there are the same data in both ATR-72 and B747-100B
 		case "B747-100B":
-			_family = AirfoilFamilyEnum.NACA63_209;
+			_family = AirfoilEnum.NACA63_209;
 			_type = AirfoilTypeEnum.MODERN_SUPERCRITICAL;
 
 			_theLiftingSurface = ls;
@@ -147,7 +147,7 @@ public class Airfoil {
 		
 		// TODO: put inside Geometry and Aerodynamics B747-100B correct data (actually there are the same data in both ATR-72 and B747-100B
 		case "B747-100B":
-			_family = AirfoilFamilyEnum.NACA63_209;
+			_family = AirfoilEnum.NACA63_209;
 			_type = AirfoilTypeEnum.MODERN_SUPERCRITICAL;
 
 			_theLiftingSurface = ls;
@@ -189,13 +189,13 @@ public class Airfoil {
 
 	public static void populateKWaveDragMap() {
 
-		_kWaveDragMap.put(AirfoilFamilyEnum.NACA63_209, 0.095);
-		_kWaveDragMap.put(AirfoilFamilyEnum.NACA64_208, 0.080);
-		_kWaveDragMap.put(AirfoilFamilyEnum.NACA65_209, 0.071);
-		_kWaveDragMap.put(AirfoilFamilyEnum.NACA66_209, 0.050);
-		_kWaveDragMap.put(AirfoilFamilyEnum.NACA63_412, 0.080);
-		_kWaveDragMap.put(AirfoilFamilyEnum.NACA64_412, 0.068);
-		_kWaveDragMap.put(AirfoilFamilyEnum.NACA65_410, 0.066);
+		_kWaveDragMap.put(AirfoilEnum.NACA63_209, 0.095);
+		_kWaveDragMap.put(AirfoilEnum.NACA64_208, 0.080);
+		_kWaveDragMap.put(AirfoilEnum.NACA65_209, 0.071);
+		_kWaveDragMap.put(AirfoilEnum.NACA66_209, 0.050);
+		_kWaveDragMap.put(AirfoilEnum.NACA63_412, 0.080);
+		_kWaveDragMap.put(AirfoilEnum.NACA64_412, 0.068);
+		_kWaveDragMap.put(AirfoilEnum.NACA65_410, 0.066);
 	}
 
 	public String get_xmlName() {
@@ -206,11 +206,11 @@ public class Airfoil {
 		this._xmlName = _xmlDescription;
 	}
 
-	public Map<AirfoilFamilyEnum, Double> get_kWaveDragMap() {
+	public Map<AirfoilEnum, Double> get_kWaveDragMap() {
 		return _kWaveDragMap;
 	}
 
-	public void set_kWaveDragMap(Map<AirfoilFamilyEnum, Double> kWaveDragMap) {
+	public void set_kWaveDragMap(Map<AirfoilEnum, Double> kWaveDragMap) {
 		_kWaveDragMap = kWaveDragMap;
 	}
 
@@ -230,7 +230,7 @@ public class Airfoil {
 		return aerodynamics;
 	}
 
-	public AirfoilFamilyEnum get_family() {
+	public AirfoilEnum get_family() {
 		return _family;
 	}
 
@@ -238,7 +238,7 @@ public class Airfoil {
 		this.aerodynamics = aerodynamics;
 	}
 
-	public void set_family(AirfoilFamilyEnum _family) {
+	public void set_family(AirfoilEnum _family) {
 		this._family = _family;
 	}
 

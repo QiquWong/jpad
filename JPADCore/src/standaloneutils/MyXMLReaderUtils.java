@@ -36,7 +36,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
 import configuration.MyConfiguration;
-import configuration.enumerations.AirfoilFamilyEnum;
+import configuration.enumerations.AirfoilEnum;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.EngineTypeEnum;
@@ -278,8 +278,8 @@ public class MyXMLReaderUtils {
 								tempField.set(targetObject, EngineTypeEnum.valueOf(value));
 							} else if (MyMiscUtils.isInEnum(value, EngineMountingPositionEnum.class)) {
 								tempField.set(targetObject, EngineMountingPositionEnum.valueOf(value));
-							} else if (MyMiscUtils.isInEnum(value, AirfoilFamilyEnum.class)) {
-								tempField.set(targetObject, AirfoilFamilyEnum.valueOf(value));
+							} else if (MyMiscUtils.isInEnum(value, AirfoilEnum.class)) {
+								tempField.set(targetObject, AirfoilEnum.valueOf(value));
 							} else if (MyMiscUtils.isInEnum(value, AirfoilTypeEnum.class)) {
 								tempField.set(targetObject, AirfoilTypeEnum.valueOf(value));
 							} else {

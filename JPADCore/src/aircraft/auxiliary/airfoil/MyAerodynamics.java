@@ -24,7 +24,7 @@ import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLMaxClean;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcLiftDistribution;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
-import configuration.enumerations.AirfoilFamilyEnum;
+import configuration.enumerations.AirfoilEnum;
 import configuration.enumerations.AirfoilStationEnum;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.MethodEnum;
@@ -77,7 +77,7 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 	private Double _mExponentDragPolar;
 
 	private Double _machCr0;
-	private static Map<AirfoilFamilyEnum, Double> _kWaveDragMap = new HashMap<AirfoilFamilyEnum, Double> ();
+	private static Map<AirfoilEnum, Double> _kWaveDragMap = new HashMap<AirfoilEnum, Double> ();
 
 	private Double _aerodynamicCenterX;
 	private Double _cmAC;
@@ -100,13 +100,13 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 		case ATR72:
 			switch (station) {
 			case ROOT:
-				Aerodynamics(airf, AirfoilFamilyEnum.NACA23_018);
+				Aerodynamics(airf, AirfoilEnum.NACA23_018);
 				break;
 			case KINK:
-				Aerodynamics(airf, AirfoilFamilyEnum.NACA23_018) ;
+				Aerodynamics(airf, AirfoilEnum.NACA23_018) ;
 				break;
 			case TIP:
-				Aerodynamics(airf, AirfoilFamilyEnum.NACA23_015);
+				Aerodynamics(airf, AirfoilEnum.NACA23_015);
 				break;	
 			}
 			break;
@@ -114,13 +114,13 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 			//TODO implement this 
 			switch (station) {
 			case ROOT:
-				Aerodynamics(airf, AirfoilFamilyEnum.NACA23_018);
+				Aerodynamics(airf, AirfoilEnum.NACA23_018);
 				break;
 			case KINK:
-				Aerodynamics(airf, AirfoilFamilyEnum.NACA23_015) ;
+				Aerodynamics(airf, AirfoilEnum.NACA23_015) ;
 				break;
 			case TIP:
-				Aerodynamics(airf, AirfoilFamilyEnum.NACA23_012);
+				Aerodynamics(airf, AirfoilEnum.NACA23_012);
 				break;	
 				
 			}
@@ -129,13 +129,13 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 		case AGILE_DC1:
 			switch (station) {
 			case ROOT:
-				Aerodynamics(airf, AirfoilFamilyEnum.DFVLR_R4); //TODO: It should be Ha5 airfoil
+				Aerodynamics(airf, AirfoilEnum.DFVLR_R4); //TODO: It should be Ha5 airfoil
 				break;
 			case KINK:
-				Aerodynamics(airf, AirfoilFamilyEnum.DFVLR_R4) ;
+				Aerodynamics(airf, AirfoilEnum.DFVLR_R4) ;
 				break;
 			case TIP:
-				Aerodynamics(airf, AirfoilFamilyEnum.DFVLR_R4);
+				Aerodynamics(airf, AirfoilEnum.DFVLR_R4);
 				break;
 			}
 
@@ -143,13 +143,13 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 		
 	}
 
-	private void Aerodynamics(MyAirfoil airf, AirfoilFamilyEnum airfoilName) {
+	private void Aerodynamics(MyAirfoil airf, AirfoilEnum airfoilName) {
 		 switch (airfoilName) {
 		 
 		 case NACA23_018:
 			 _id = airf.getId() + "1" + idCounter + "99";
 				idCounter++;
-			 airf.set_family(AirfoilFamilyEnum.NACA23_018);	
+			 airf.set_family(AirfoilEnum.NACA23_018);	
 			 _theAirfoil = airf;
 			 geometry = airf.getGeometry();
 
@@ -182,7 +182,7 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 			 break;
 
 		 case NACA23_015:
-			 airf.set_family(AirfoilFamilyEnum.NACA23_015);	
+			 airf.set_family(AirfoilEnum.NACA23_015);	
 			 _id = airf.getId() + "1" + idCounter + "99";
 				idCounter++;
 				
@@ -218,7 +218,7 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 			 break;
 			 
 		 case NACA23_012:
-			 airf.set_family(AirfoilFamilyEnum.NACA23_012);	
+			 airf.set_family(AirfoilEnum.NACA23_012);	
 			 _id = airf.getId() + "1" + idCounter + "99";
 				idCounter++;
 				
@@ -321,7 +321,7 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 			break;
 			
 		 case NACA0012:
-			 airf.set_family(AirfoilFamilyEnum.NACA0012);	
+			 airf.set_family(AirfoilEnum.NACA0012);	
 			 _id = airf.getId() + "1" + idCounter + "99";
 				idCounter++;
 				
@@ -357,7 +357,7 @@ public class MyAerodynamics extends AuxiliaryComponentCalculator{
 			 break;	
 			 
 		 case DFVLR_R4:
-			 airf.set_family(AirfoilFamilyEnum.DFVLR_R4);	
+			 airf.set_family(AirfoilEnum.DFVLR_R4);	
 			 _id = airf.getId() + "1" + idCounter + "99";
 				idCounter++;
 				
@@ -534,7 +534,7 @@ public MyAerodynamics(MyAirfoil airf, String name) {
 		 break;	
 		 
 	 case "0012":
-		 airf.set_family(AirfoilFamilyEnum.NACA0012);	
+		 airf.set_family(AirfoilEnum.NACA0012);	
 		 _id = airf.getId() + "1" + idCounter + "99";
 			idCounter++;
 			
@@ -1309,7 +1309,7 @@ public  double calculateClAtAlphaInterp (double alpha){
 		this._machCurrent = _machCurrent;
 	}
 
-	public static Map<AirfoilFamilyEnum, Double> get_kWaveDragMap() {
+	public static Map<AirfoilEnum, Double> get_kWaveDragMap() {
 		return _kWaveDragMap;
 	}
 
