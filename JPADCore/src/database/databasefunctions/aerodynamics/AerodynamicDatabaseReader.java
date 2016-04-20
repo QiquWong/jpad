@@ -10,9 +10,9 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 	 x_bar_ac_w_x_ac_over_root_chord_vs_tan_L_LE_over_beta_AR_times_tan_L_LE_lambda,
 	 x_bar_ac_w_k1_vs_lambda, x_bar_ac_w_k2_vs_L_LE_AR_lambda,
 	 d_Alpha_Vs_LambdaLE_VsDy, d_Alpha_d_Delta_2d_VS_cf_c, d_Alpha_d_Delta_2d_d_Alpha_d_Delta_3D_VS_aspectRatio,
-	 d_epsilon_d_alpha_VS_position_aspectRatio;
+	 d_epsilon_d_alpha_VS_position_aspectRatio, deltaYvsThicknessRatio;
 	
-	double cM0_b_k2_minus_k1, ar_v_eff_c2, x_bar_ac_w_k1, x_bar_ac_w_k2, x_bar_ac_w_xac_cr, d_Alpha_Vs_LambdaLE;
+	double cM0_b_k2_minus_k1, ar_v_eff_c2, x_bar_ac_w_k1, x_bar_ac_w_k2, x_bar_ac_w_xac_cr, d_Alpha_Vs_LambdaLE, deltaYvsThickness;
  
 	public AerodynamicDatabaseReader(String databaseFolderPath, String databaseFileName) {
 
@@ -42,7 +42,7 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 		d_Alpha_d_Delta_2d_d_Alpha_d_Delta_3D_VS_aspectRatio = database.interpolate2DFromDatasetFunction("DAlphaDdeltavsAspectratio");
 		
 		d_epsilon_d_alpha_VS_position_aspectRatio = database.interpolate2DFromDatasetFunction("upwashvsposition");
-		
+		deltaYvsThicknessRatio  =database.interpolate2DFromDatasetFunction("DeltaYvsThicknessRatio");
 		
 		//TODO Insert other aerodynamic functions (see "Aerodynamic_Database_Ultimate.h5")
 	}
@@ -151,7 +151,9 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 		return d_epsilon_d_alpha_VS_position_aspectRatio.value(position, aspectRatio);
 	}
 	
-
+	public double getDeltaYvsThickness (double tc, int airfoilFamily) {
+		return deltaYvsThicknessRatio.value(tc, airfoilFamily);
+	}
 
 //
 //	/**
