@@ -18,6 +18,8 @@ public class DatabaseIOmanager<E extends Enum<E>> {
 
 	private List<E> tagList = new ArrayList<E>();
 	private List<Amount> valueList = new ArrayList<Amount>();
+	private List<List<Double>> doubleListList = new ArrayList<List<Double>>();
+	
 	private List<String> stringList = new ArrayList<String>();
 	private List<Object> valueObjList = new ArrayList<Object>();
 	private List<String> descriptionList = new ArrayList<String>();
