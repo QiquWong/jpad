@@ -153,7 +153,7 @@ public class PayloadRangeCalc{
 		oswald = theAircraft.get_theAerodynamics().calculateOswald(currentMach, MethodEnum.HOWE);
 		cl = LiftCalc.calcCLatAlphaLinearDLR(
 				theConditions.get_alphaCurrent().getEstimatedValue(),
-				ar
+				theAircraft.get_wing().get_aspectRatio()
 				);
 	
 		
@@ -1896,6 +1896,10 @@ public class PayloadRangeCalc{
 
 	public Amount<Mass> getPaxSingleMass() {
 		return paxSingleMass;
+	}
+
+	public void setPaxSingleMass(Amount<Mass> paxSingleMass) {
+		this.paxSingleMass = paxSingleMass;
 	}
 
 	public double getnPassActual() {

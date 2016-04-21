@@ -663,7 +663,7 @@ public class Configuration {
 	public Double get_maxPax() {
 		return _maxPax;
 	}
-
+	
 	public void set_maxPax(Double _maxPax) {
 		this._maxPax = _maxPax;
 	}

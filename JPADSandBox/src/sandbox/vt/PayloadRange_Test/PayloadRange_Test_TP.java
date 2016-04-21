@@ -54,6 +54,9 @@ public class PayloadRange_Test_TP{
 		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.ATR72);
 		aircraft.set_name("ATR-72");
 		aircraft.get_theFuelTank().setFuelFractionDatabase(fuelFractionReader);
+		aircraft.get_weights().set_OEM(Amount.valueOf(12950, SI.KILOGRAM));
+		aircraft.get_weights().set_MTOM(Amount.valueOf(22500, SI.KILOGRAM));
+		aircraft.get_configuration().set_maxPax(77.0);
 
 		LiftingSurface theWing = aircraft.get_wing();
 
@@ -91,7 +94,8 @@ public class PayloadRange_Test_TP{
 				theCondition,
 				aircraft,
 				AirplaneType.TURBOPROP_REGIONAL);
-
+		test.setPaxSingleMass(Amount.valueOf(95, SI.KILOGRAM));
+		
 		// -----------------------CRITICAL MACH NUMBER CHECK----------------------------
 
 		boolean check = test.checkCriticalMach(theCondition.get_machCurrent());
