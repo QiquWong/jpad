@@ -56,12 +56,39 @@ public class LiftingSurface extends AbstractLiftingSurface {
 	int _numberOfSpanwisePoints = 15;
 
 	public LiftingSurface(String id) {
-
 		this.id = id;
+		resetData();
+	}
+
+	// use this to generate the equivalent wing or a simple wing
+	public LiftingSurface(String id, LiftingSurfacePanel panel) {
+		this.id = id;
+		resetData();
+
+		panels.add(panel);
+
+		//---------------------------------------------------------------------------------
+		// SYMMETRIC FLAPS
+		// TODO
+
+		//---------------------------------------------------------------------------------
+		// SYMMETRIC SLATS
+		// TODO
+
+		//---------------------------------------------------------------------------------
+		// ASYMMETRIC FLAPS
+		// TODO
+
+		//---------------------------------------------------------------------------------
+		// SPOILERS
+		// TODO
+
+	}
+
+	private void resetData() {
 		panels = new ArrayList<LiftingSurfacePanel>();
 
 		_eta = new MyArray(Unit.ONE);
-
 		//_eta.setDouble(MyArrayUtils.linspace(0., 1., _numberOfPointsChordDistribution));
 		//
 		// assign eta's when the shape of the planform is loaded and no. panels are known
@@ -122,25 +149,31 @@ public class LiftingSurface extends AbstractLiftingSurface {
 
 		// Update panels' internal geometry variables
 		// wing.calculateGeometry(); // shouldn't care about discretization
+		// for now the user calculates the geometry from the outside of the class
+		// via the wing object:
+		//
+		//     theWing.calculateGeometry(30);
 
 		//---------------------------------------------------------------------------------
 		// SYMMETRIC FLAPS
-
+		// TODO
 
 		//---------------------------------------------------------------------------------
 		// SYMMETRIC SLATS
+		// TODO
 
 		//---------------------------------------------------------------------------------
 		// ASYMMETRIC FLAPS
+		// TODO
 
 		//---------------------------------------------------------------------------------
 		// SPOILERS
+		// TODO
 
 
 
 		return wing;
 	}
-
 
 	@Override
 	public void addPanel(LiftingSurfacePanel panel) {
@@ -336,63 +369,57 @@ public class LiftingSurface extends AbstractLiftingSurface {
 	}
 
 	@Override
-	public Amount<Length>[] getXYZ0() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Amount<Length>> getXYZ0() {
+		return Arrays.asList(this.x0, this.y0, this.z0);
 	}
 
 	@Override
 	public Amount<Length> getX0() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.x0;
 	}
 
 	@Override
 	public Amount<Length> getY0() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.y0;
 	}
 
 	@Override
 	public Amount<Length> getZ0() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.z0;
 	}
 
 	@Override
 	public void setXYZ0(Amount<Length> x0, Amount<Length> y0, Amount<Length> z0) {
-		// TODO Auto-generated method stub
-
+		this.x0 = x0;
+		this.y0 = y0;
+		this.z0 = z0;
 	}
 
 	@Override
-	public Amount<Length>[] getXYZPole() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Amount<Length>> getXYZPole() {
+		return Arrays.asList(this.xPole, this.yPole, this.zPole);
 	}
 
 	@Override
 	public Amount<Length> getXPole() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.xPole;
 	}
 
 	@Override
 	public Amount<Length> getYPole() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.yPole;
 	}
 
 	@Override
 	public Amount<Length> getZPole() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.zPole;
 	}
 
 	@Override
 	public void setXYZPole(Amount<Length> xp, Amount<Length> yp, Amount<Length> zp) {
-		// TODO Auto-generated method stub
-
+		this.xPole = xp;
+		this.yPole = yp;
+		this.zPole = zp;
 	}
 
 	@Override
@@ -511,14 +538,13 @@ public class LiftingSurface extends AbstractLiftingSurface {
 
 	@Override
 	public Double getTaperRatio() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.taperRatio;
 	}
 
 	@Override
 	public Double getTaperRatio(boolean recalculate) {
-		// TODO Auto-generated method stub
-		return null;
+		if (recalculate) this.calculateGeometry();
+		return this.taperRatio;
 	}
 
 	@Override
@@ -1051,7 +1077,7 @@ public class LiftingSurface extends AbstractLiftingSurface {
 				.mapToObj(y -> Amount.valueOf(y, 1e-8, SI.METRE))
 				.collect(Collectors.toList());
 	}
-	
+
 	@Override
 	public List<
 		Tuple2<
@@ -1061,7 +1087,7 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		> getDiscretizedTopViewAsList() {
 
 		List<Tuple2<Amount<Length>,Amount<Length>>> listYX = new ArrayList<>();
-		
+
 		// leading edge (straight)
 		IntStream.range(0, _spanwiseDiscretizedVariables.size())
 			.forEach(i -> {
@@ -1071,7 +1097,7 @@ public class LiftingSurface extends AbstractLiftingSurface {
 						)
 					);
 			});
-		
+
 		// trailing edge, reverse order
 		int num = _spanwiseDiscretizedVariables.size() - 1;
 		IntStream.rangeClosed(0, num)
@@ -1085,17 +1111,17 @@ public class LiftingSurface extends AbstractLiftingSurface {
 						)
 					);
 			});
-		
+
 		return listYX;
 	}
-	
+
 	@Override
 	public Double[][] getDiscretizedTopViewAsArray() {
-		// see: 
+		// see:
 		// http://stackoverflow.com/questions/26050530/filling-a-multidimensional-array-using-a-stream/26053236#26053236
-		
+
 		List<Tuple2<Amount<Length>,Amount<Length>>> listYX = getDiscretizedTopViewAsList();
-		
+
 		Double[][] array = new Double[listYX.size()][2];
 		IntStream.range(0, listYX.size())
 			.forEach(i -> {
