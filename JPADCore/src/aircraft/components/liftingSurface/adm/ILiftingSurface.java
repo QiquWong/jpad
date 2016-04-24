@@ -66,7 +66,7 @@ public interface ILiftingSurface {
 	public List<LiftingSurfacePanel> getPanels();
 	public void addPanel(LiftingSurfacePanel panel);
 
-	public List<SymmetricFlaps> getSymmetricFlaps();
+	public List<SymmetricFlap> getSymmetricFlaps();
 
 	public List<Slats> getSlats();
 

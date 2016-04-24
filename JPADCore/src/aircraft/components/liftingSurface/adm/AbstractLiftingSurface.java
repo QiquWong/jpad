@@ -22,7 +22,7 @@ public abstract class AbstractLiftingSurface implements ILiftingSurface {
 	protected String id;
 
 	protected List<LiftingSurfacePanel> panels;
-	protected List<SymmetricFlaps> symmetricFlaps;
+	protected List<SymmetricFlap> symmetricFlaps;
 	protected List<Slats> slats;
 	protected List<AsymmetricFlaps> asymmetricFlaps;
 	protected List<Spoilers> spoilers;
@@ -93,7 +93,7 @@ public abstract class AbstractLiftingSurface implements ILiftingSurface {
 		return panels;
 	}
 
-	public List<SymmetricFlaps> getSymmetricFlaps() {
+	public List<SymmetricFlap> getSymmetricFlaps() {
 		return symmetricFlaps;
 	}
 

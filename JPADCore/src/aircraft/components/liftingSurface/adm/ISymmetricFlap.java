@@ -1,5 +1,5 @@
 package aircraft.components.liftingSurface.adm;
 
-public interface ISymmetricFlaps {
+public interface ISymmetricFlap {
 
 }
