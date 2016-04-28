@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2016.3.28)  18 APR 2016 11:01
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/W32TeX) (preloaded format=pdflatex 2016.3.28)  28 APR 2016 12:46
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -6290,7 +6290,12 @@ Package minitoc Info: I0010
 
 (c:/texlive/2015/texmf-dist/tex/latex/minitoc/italian.mld
 File: italian.mld 2006/01/13
-))
+)
+
+Package mparhack Warning: Marginpars may have changed.
+(mparhack)                Rerun to get them right.
+
+)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 247.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 247.
 Package rerunfilecheck Info: File `Tesi.out' has not changed.
@@ -6304,10 +6309,10 @@ Package logreq Info: Writing requests to 'Tesi.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 69089 strings out of 493054
- 1423859 string characters out of 6138327
- 3648481 words of memory out of 5000000
- 69250 multiletter control sequences out of 15000+600000
+ 69111 strings out of 493054
+ 1424348 string characters out of 6138327
+ 3648421 words of memory out of 5000000
+ 69272 multiletter control sequences out of 15000+600000
  279211 words of font info for 251 fonts, out of 8000000 for 9000
  1142 hyphenation exceptions out of 8191
  61i,30n,107p,10382b,4233s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -6338,7 +6343,7 @@ ype1/public/tex-gyre/qtmb.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/te
 x-gyre/qtmr.pfb><c:/texlive/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmri.p
 fb><c:/texlive/2015/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb><c:/texlive/
 2015/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb>
-Output written on Tesi.pdf (164 pages, 15276418 bytes).
+Output written on Tesi.pdf (164 pages, 15292360 bytes).
 PDF statistics:
  4388 PDF objects out of 5155 (max. 8388607)
  3799 compressed objects within 38 object streams
