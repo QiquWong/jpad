@@ -27,32 +27,44 @@ public class HighLiftDevicesCalc {
 	 */
 	public static DatabaseIOmanager<HighLiftExexutableEnum> initializeInputTree() {
 
+		// FLIGHT CONDITION:
 		inputManager.addElement(HighLiftExexutableEnum.AlphaCurrent, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), "Wing current angle of attack");
-		inputManager.addElement(HighLiftExexutableEnum.AlphaMaxClean, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), "Stall angle of attack of the wing in clean configuration");
-		inputManager.addElement(HighLiftExexutableEnum.AlphaStarClean, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), "Angle of attack related to the beginning of the non-linear trait of the wing lift curve in clean configuration");
+		
+		// WING:
+		// Geometry
 		inputManager.addElement(HighLiftExexutableEnum.AspectRatio, Amount.valueOf(0.0, Unit.ONE), "Wing aspect ratio");
-		inputManager.addElement(HighLiftExexutableEnum.CextCSlat, new ArrayList<Double>(), "List of ratios between the airfoil chord with active slat and the clean airfoil chord");
-		inputManager.addElement(HighLiftExexutableEnum.Cfc, new ArrayList<Double>(), "List of flap chord ratios");
-		inputManager.addElement(HighLiftExexutableEnum.ClAlphaMeanAirfoil, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE.inverse()), "Slope of the lift curve of the mean airfoil");
-		inputManager.addElement(HighLiftExexutableEnum.CL0Clean, Amount.valueOf(0.0, Unit.ONE), "CL at alpha 0 deg related to the wing in clean configuration");
-		inputManager.addElement(HighLiftExexutableEnum.CLAlphaClean, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE.inverse()), "Slope of the lift curve of the wing in clean configuration");
-		inputManager.addElement(HighLiftExexutableEnum.CLmaxClean, Amount.valueOf(0.0, Unit.ONE), "Maximum lift coefficient of the wing in clean configuration");
-		inputManager.addElement(HighLiftExexutableEnum.CLStarClean, Amount.valueOf(0.0, Unit.ONE), "Lift coefficient related to end of the linear trait of the lift curve in clean configuration");
-		inputManager.addElement(HighLiftExexutableEnum.Csc, new ArrayList<Double>(), "List of slat chord ratios");
-		inputManager.addElement(HighLiftExexutableEnum.DeltaYPercent, Amount.valueOf(0.0, Unit.ONE), "LE sharpness parameter of the mean airfoil");
-		inputManager.addElement(HighLiftExexutableEnum.LERadiusMeanAirfoil, Amount.valueOf(0.0, Unit.ONE), "LE radius of the mean airfoil");
-		inputManager.addElement(HighLiftExexutableEnum.EtaInFlap, new ArrayList<Double>(), "List of flap inboard stations");
-		inputManager.addElement(HighLiftExexutableEnum.EtaOutFlap, new ArrayList<Double>(), "List of flap outboard stations");
-		inputManager.addElement(HighLiftExexutableEnum.EtaInSlat, new ArrayList<Double>(), "List of slat inboard stations");
-		inputManager.addElement(HighLiftExexutableEnum.EtaOutSlat, new ArrayList<Double>(), "List of slat outboard stations");
-		inputManager.addElementStringList(HighLiftExexutableEnum.FlapType, new ArrayList<String>(), "List of flaps types");
-		inputManager.addElementDoubleArray(HighLiftExexutableEnum.DeltaFlap, new ArrayList<Double[]>(), "List of array of flaps deflections");
-		inputManager.addElement(HighLiftExexutableEnum.DeltaSlat, new ArrayList<Double>(), "List of slats deflections");
-		inputManager.addElement(HighLiftExexutableEnum.MaxThicknessMeanAirfoil, Amount.valueOf(0.0, Unit.ONE), "Maximum thickness of the mean airfoil");
 		inputManager.addElement(HighLiftExexutableEnum.Span, Amount.valueOf(0.0, SI.METER), "Wing span");
 		inputManager.addElement(HighLiftExexutableEnum.Surface, Amount.valueOf(0.0, SI.SQUARE_METRE), "Wing area");
 		inputManager.addElement(HighLiftExexutableEnum.SweepQuarterChordEq, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), "Sweep angle of the equivalent wing at c/4");
 		inputManager.addElement(HighLiftExexutableEnum.TaperRatioEq, Amount.valueOf(0.0, Unit.ONE), "Taper ratio of the equivalent wing");
+		inputManager.addElement(HighLiftExexutableEnum.DeltaYPercent, Amount.valueOf(0.0, Unit.ONE), "LE sharpness parameter of the mean airfoil");
+		
+		// Clean configuration parameters
+		inputManager.addElement(HighLiftExexutableEnum.AlphaMaxClean, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), "Stall angle of attack of the wing in clean configuration");
+		inputManager.addElement(HighLiftExexutableEnum.AlphaStarClean, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), "Angle of attack related to the beginning of the non-linear trait of the wing lift curve in clean configuration");
+		inputManager.addElement(HighLiftExexutableEnum.CL0Clean, Amount.valueOf(0.0, Unit.ONE), "CL at alpha 0 deg related to the wing in clean configuration");
+		inputManager.addElement(HighLiftExexutableEnum.CLAlphaClean, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE.inverse()), "Slope of the lift curve of the wing in clean configuration");
+		inputManager.addElement(HighLiftExexutableEnum.CLmaxClean, Amount.valueOf(0.0, Unit.ONE), "Maximum lift coefficient of the wing in clean configuration");
+		inputManager.addElement(HighLiftExexutableEnum.CLStarClean, Amount.valueOf(0.0, Unit.ONE), "Lift coefficient related to end of the linear trait of the lift curve in clean configuration");
+		
+		// Mean airfoil
+		inputManager.addElement(HighLiftExexutableEnum.ClAlphaMeanAirfoil, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE.inverse()), "Slope of the lift curve of the mean airfoil");
+		inputManager.addElement(HighLiftExexutableEnum.LERadiusMeanAirfoil, Amount.valueOf(0.0, Unit.ONE), "LE radius of the mean airfoil");
+		inputManager.addElement(HighLiftExexutableEnum.MaxThicknessMeanAirfoil, Amount.valueOf(0.0, Unit.ONE), "Maximum thickness of the mean airfoil");
+		
+		// FLAPS DATA:	
+		inputManager.addElementStringList(HighLiftExexutableEnum.FlapType, new ArrayList<String>(), "List of flaps types");
+		inputManager.addElement(HighLiftExexutableEnum.Cfc, new ArrayList<Double>(), "List of flap chord ratios");
+		inputManager.addElementDoubleArray(HighLiftExexutableEnum.DeltaFlap, new ArrayList<Double[]>(), "List of array of flaps deflections");
+		inputManager.addElement(HighLiftExexutableEnum.EtaInFlap, new ArrayList<Double>(), "List of flap inboard stations");
+		inputManager.addElement(HighLiftExexutableEnum.EtaOutFlap, new ArrayList<Double>(), "List of flap outboard stations");
+		
+		// SLATS DATA:
+		inputManager.addElement(HighLiftExexutableEnum.DeltaSlat, new ArrayList<Double>(), "List of slats deflections");
+		inputManager.addElement(HighLiftExexutableEnum.Csc, new ArrayList<Double>(), "List of slat chord ratios");
+		inputManager.addElement(HighLiftExexutableEnum.CextCSlat, new ArrayList<Double>(), "List of ratios between the airfoil chord with active slat and the clean airfoil chord");
+		inputManager.addElement(HighLiftExexutableEnum.EtaInSlat, new ArrayList<Double>(), "List of slat inboard stations");
+		inputManager.addElement(HighLiftExexutableEnum.EtaOutSlat, new ArrayList<Double>(), "List of slat outboard stations");
 
 		return inputManager;
 	}

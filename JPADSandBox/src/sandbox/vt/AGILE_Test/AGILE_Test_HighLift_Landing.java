@@ -90,13 +90,13 @@ public class AGILE_Test_HighLift_Landing {
 		LiftingSurface theWing = aircraft.get_wing();
 		
 		// update of the wing with new model parameters
-		theWing.set_surface(Amount.valueOf(82.7, SI.SQUARE_METRE));
-		theWing.set_aspectRatio(9.54);
+		theWing.set_surface(Amount.valueOf(83.15, SI.SQUARE_METRE));
+		theWing.set_aspectRatio(9.43);
 		theWing.set_taperRatioEquivalent(0.217);
 		theWing.set_taperRatioInnerPanel(0.425);
 		theWing.set_taperRatioOuterPanel(0.387);
 		theWing.set_taperRatioCrankedWing(0.1645);
-		theWing.set_spanStationKink(0.398);
+		theWing.set_spanStationKink(0.399);
 		theWing.set_extensionLERootChordLinPanel(0.16886);
 		theWing.set_extensionTERootChordLinPanel(0.505361);
 		theWing.set_iw(Amount.valueOf(Math.toRadians(2.5),SI.RADIAN));
@@ -120,7 +120,7 @@ public class AGILE_Test_HighLift_Landing {
 		theWing.set_xLERoot(Amount.valueOf(0.0, SI.METER));
 		theWing.set_xLEKink(Amount.valueOf(3.707, SI.METER));
 		theWing.set_xLETip(Amount.valueOf(8.305, SI.METER));
-		theWing.set_sweepQuarterChordEq(Amount.valueOf(toRadians(26.3), SI.RADIAN));
+		theWing.set_sweepQuarterChordEq(Amount.valueOf(toRadians(26.4), SI.RADIAN));
 		theWing.set_sweepLEEquivalent(
 				theWing.calculateSweep(
 						theWing.get_sweepQuarterChordEq().getEstimatedValue(),

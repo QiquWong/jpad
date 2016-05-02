@@ -89,9 +89,9 @@ public class DatabaseIOmanager<E extends Enum<E>> {
 	 * @param description
 	 */
 	public void addElementStringList(E tagName, List<String> valueString, String description) {
-		tagListString.add(tagName);
+		tagListListString.add(tagName);
 		stringListList.add(valueString);
-		descriptionListString.add(description);
+		descriptionListListString.add(description);
 	}
 	
 	/**
@@ -223,6 +223,22 @@ public class DatabaseIOmanager<E extends Enum<E>> {
 		return valueList.get(tagList.indexOf(tagName));
 	}
 
+	public String getString(E tagName) {
+		return stringList.get(tagListString.indexOf(tagName));
+	}
+
+	public List<String> getStringFromList(E tagName) {
+		return stringListList.get(tagListListString.indexOf(tagName));
+	}
+	
+	public List<Double> getDoubleFromList (E tagName) {
+		return doubleListList.get(tagListListDouble.indexOf(tagName));
+	}
+	
+	public List<Double[]> getDoubleArrayFromList (E tagName) {
+		return doubleVecListList.get(tagVecListListDouble.indexOf(tagName));
+	}
+	
 	public void setValue(String tagName, Amount value) {
 		valueList.set(tagList.indexOf(tagName), value);
 	}

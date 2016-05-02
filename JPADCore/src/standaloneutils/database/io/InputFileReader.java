@@ -56,22 +56,22 @@ public class InputFileReader<E extends Enum<E>> {
 		List<Amount> valueList = new ArrayList<Amount>();
 		Document doc = MyXMLReaderUtils.importDocument(filenameWithPathAndExt);
 
-		//		System.out.println("tagList.size is : "+tagList.size());
+				System.out.println("tagList.size is : "+tagList.size());
 
 		for (int i=0; i<tagList.size(); i++) {
-			//			System.out.println("Tag: "+tagList.get(i).name() );
+						System.out.println("Tag: "+tagList.get(i).name() );
 
 			childNodes = doc.getElementsByTagName(tagList.get(i).name()).item(0).getChildNodes();
-//						System.out.println("\t"+doc.getElementsByTagName(tagList.get(i).name()).item(0).getChildNodes());
-//						System.out.println("Childs number: "+ childNodes.getLength());
+						System.out.println("\t"+doc.getElementsByTagName(tagList.get(i).name()).item(0).getChildNodes());
+						System.out.println("Childs number: "+ childNodes.getLength());
 
 			for (int j=0; j<childNodes.getLength(); j++) {
-				//				System.out.println("Childs node name: " + childNodes.item(j).getNodeName());
+								System.out.println("Childs node name: " + childNodes.item(j).getNodeName());
 				if(childNodes.item(j).getNodeName().equalsIgnoreCase("value")) {
 
 					if (childNodes.item(j).hasAttributes()) {
 						unitStr = childNodes.item(j).getAttributes().getNamedItem("unit").getNodeValue();
-						//					System.out.println(childNodes.item(j).getNodeName() + " " + childNodes.item(j).getTextContent() + " " + unitStr);
+											System.out.println(childNodes.item(j).getNodeName() + " " + childNodes.item(j).getTextContent() + " " + unitStr);
 
 						if (!unitStr.contains("/")) {
 							valueList.add(i, 
@@ -119,12 +119,19 @@ public class InputFileReader<E extends Enum<E>> {
 		List<String> stringList = new ArrayList<String>();
 		Document doc = MyXMLReaderUtils.importDocument(filenameWithPathAndExt);
 		
-		for (int i=0; i<tagList.size(); i++) {
+		System.out.println("tagList.size is : "+tagList.size());
 		
+		for (int i=0; i<tagList.size(); i++) {
+			
+			System.out.println("Tag: "+tagList.get(i).name() );
 			childNodes = doc.getElementsByTagName(tagList.get(i).name()).item(0).getChildNodes();
+			
+			System.out.println("\t"+doc.getElementsByTagName(tagList.get(i).name()).item(0).getChildNodes());
+			System.out.println("Childs number: "+ childNodes.getLength());
 			
 			for (int j=0; j<childNodes.getLength(); j++) {
 			
+				System.out.println("Childs node name: " + childNodes.item(j).getNodeName());
 				if(childNodes.item(j).getNodeName().equalsIgnoreCase("value")) {
 					
 					stringList.add(childNodes.item(j).getTextContent());
@@ -156,9 +163,32 @@ public class InputFileReader<E extends Enum<E>> {
 		
 		NodeList childNodes;
 		List<List<String>> stringListList = new ArrayList<List<String>>();
+		List<String> stringListTemp = new ArrayList<String>();
 		Document doc = MyXMLReaderUtils.importDocument(filenameWithPathAndExt);
 		
-		// TODO: Complete this
+		System.out.println("tagList.size is : "+tagList.size());
+		
+		for (int i=0; i<tagList.size(); i++) {
+			
+			stringListTemp.clear();
+			
+			System.out.println("Tag: "+tagList.get(i).name() );
+			childNodes = doc.getElementsByTagName(tagList.get(i).name()).item(0).getChildNodes();
+			
+			System.out.println("\t"+doc.getElementsByTagName(tagList.get(i).name()).item(0).getChildNodes());
+			System.out.println("Childs number: "+ childNodes.getLength());
+			
+			for (int j=0; j<childNodes.getLength(); j++) {
+			
+				if(childNodes.item(j).getNodeName().equalsIgnoreCase("value")) {
+					
+					System.out.println("Childs node name: " + childNodes.item(j).getNodeName());
+					stringListTemp.add(childNodes.item(j).getTextContent());
+				}
+			}
+			
+			stringListList.add(i, stringListTemp);
+		}
 		
 		return stringListList;
 	}
@@ -183,9 +213,35 @@ public class InputFileReader<E extends Enum<E>> {
 		
 		NodeList childNodes;
 		List<List<Double>> doubleListList = new ArrayList<List<Double>>();
+		List<String> stringListTemp = new ArrayList<String>();
+		List<Double> doubleListTemp = new ArrayList<Double>();
 		Document doc = MyXMLReaderUtils.importDocument(filenameWithPathAndExt);
 		
-		// TODO: complete this
+		System.out.println("tagList.size is : "+tagList.size());
+		
+		for (int i=0; i<tagList.size(); i++) {
+			
+			stringListTemp.clear();
+			doubleListTemp.clear();
+			
+			System.out.println("Tag: "+tagList.get(i).name() );
+			childNodes = doc.getElementsByTagName(tagList.get(i).name()).item(0).getChildNodes();
+			
+			System.out.println("\t"+doc.getElementsByTagName(tagList.get(i).name()).item(0).getChildNodes());
+			System.out.println("Childs number: "+ childNodes.getLength());
+			
+			for (int j=0; j<childNodes.getLength(); j++) {
+			
+				if(childNodes.item(j).getNodeName().equalsIgnoreCase("value")) {
+					
+					System.out.println("Childs node name: " + childNodes.item(j).getNodeName());
+					stringListTemp.add(childNodes.item(j).getTextContent());
+					doubleListTemp.add(Double.valueOf(stringListTemp.get(j)));
+				}
+			}
+			
+			doubleListList.add(i, doubleListTemp);
+		}
 		
 		return doubleListList;
 	}

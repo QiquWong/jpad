@@ -5,32 +5,45 @@ public enum HighLiftExexutableEnum {
 	/*
 	 * Input variable names
 	 */
+	
+	//FLIGHT CONDITION:
 	AlphaCurrent,
-	AlphaMaxClean,
-	AlphaStarClean,
+	
+	//WING:
+	//Geometry
 	AspectRatio,
-	CextCSlat,
-	Cfc,
-	ClAlphaMeanAirfoil,
-	CL0Clean,
-	CLAlphaClean,
-	CLmaxClean,
-	CLStarClean,
-	Csc,
-	DeltaYPercent,
-	EtaInFlap,
-	EtaOutFlap,
-	EtaInSlat,
-	EtaOutSlat,
-	FlapType,
-	DeltaFlap,
-	DeltaSlat,
-	LERadiusMeanAirfoil,
-	MaxThicknessMeanAirfoil,
 	Span,
 	Surface,
 	SweepQuarterChordEq,
 	TaperRatioEq,
+	DeltaYPercent,
+	
+	//Clean configuration parameters
+	AlphaMaxClean,
+	AlphaStarClean,
+	CL0Clean,
+	CLAlphaClean,
+	CLmaxClean,
+	CLStarClean,
+	
+	//Mean airfoil
+	ClAlphaMeanAirfoil,
+	LERadiusMeanAirfoil,
+	MaxThicknessMeanAirfoil,
+	
+	//FLAPS DATA:
+	FlapType,
+	DeltaFlap,
+	Cfc,
+	EtaInFlap,
+	EtaOutFlap,
+	
+	// SLATS DATA:
+	DeltaSlat,
+	Csc,
+	CextCSlat,
+	EtaInSlat,
+	EtaOutSlat,
 	
 	/*
 	 * Output variable names
