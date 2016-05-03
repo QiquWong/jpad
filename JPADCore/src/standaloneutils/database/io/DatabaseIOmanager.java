@@ -32,14 +32,9 @@ public class DatabaseIOmanager<E extends Enum<E>> {
 	private List<String> descriptionListListString = new ArrayList<String>();
 	
 	// Component of the IOmanager in case of List<Double>:
-	private List<E> tagListListDouble = new ArrayList<E>();
-	private List<List<Double>> doubleListList = new ArrayList<List<Double>>();
-	private List<String> descriptionListListDouble = new ArrayList<String>();
-	
-	// Component of the IOmanager in case of List<Double[]>:
-	private List<E> tagVecListListDouble = new ArrayList<E>();
-	private List<List<Double[]>> doubleVecListList = new ArrayList<List<Double[]>>();
-	private List<String> descriptionVecListListDouble = new ArrayList<String>();
+	private List<E> tagListVecDouble = new ArrayList<E>();
+	private List<Double[]> doubleVecList = new ArrayList<Double[]>();
+	private List<String> descriptionListVecDouble = new ArrayList<String>();
 	
 	// Component of the IOmanager in case of Objects:
 	private List<E> tagObjList = new ArrayList<E>();
@@ -103,25 +98,10 @@ public class DatabaseIOmanager<E extends Enum<E>> {
 	 * @param valueString
 	 * @param description
 	 */
-	public void addElement(E tagName, List<Double> listOfValues, String description) {
-		tagListListDouble.add(tagName);
-		doubleListList.add(listOfValues);
-		descriptionListListDouble.add(description);
-	}
-	
-	/**
-	 * Overload of the previous method that accepts input data as Lists of Double arrays.
-	 * 
-	 * @author Vittorio Trifari & Manuela Ruocco
-	 * 
-	 * @param tagName
-	 * @param valueString
-	 * @param description
-	 */
-	public void addElementDoubleArray(E tagName, List<Double[]> listOfDoubleVec, String description) {
-		tagVecListListDouble.add(tagName);
-		doubleVecListList.add(listOfDoubleVec);
-		descriptionVecListListDouble.add(description);
+	public void addElement(E tagName, Double[] listOfValues, String description) {
+		tagListVecDouble.add(tagName);
+		doubleVecList.add(listOfValues);
+		descriptionListVecDouble.add(description);
 	}
 	
 //	/**
@@ -163,20 +143,12 @@ public class DatabaseIOmanager<E extends Enum<E>> {
 		this.stringListList = stringListList;
 	}
 
-	public List<List<Double>> getDoubleListList() {
-		return doubleListList;
+	public List<Double[]> getDoubleListList() {
+		return doubleVecList;
 	}
 
-	public void setDoubleListList(List<List<Double>> doubleListList) {
-		this.doubleListList = doubleListList;
-	}
-
-	public List<List<Double[]>> getDoubleVecListList() {
-		return doubleVecListList;
-	}
-
-	public void setDoubleVecListList(List<List<Double[]>> doubleVecListList) {
-		this.doubleVecListList = doubleVecListList;
+	public void setDoubleVecList(List<Double[]> doubleVecList) {
+		this.doubleVecList = doubleVecList;
 	}
 
 	public List<E> getTagListString() {
@@ -196,19 +168,11 @@ public class DatabaseIOmanager<E extends Enum<E>> {
 	}
 
 	public List<E> getTagListListDouble() {
-		return tagListListDouble;
+		return tagListVecDouble;
 	}
 
 	public List<String> getDescriptionListListDouble() {
-		return descriptionListListDouble;
-	}
-
-	public List<E> getTagVecListListDouble() {
-		return tagVecListListDouble;
-	}
-
-	public List<String> getDescriptionVecListListDouble() {
-		return descriptionVecListListDouble;
+		return descriptionListVecDouble;
 	}
 
 	public List<E> getTagObjList() {
@@ -231,12 +195,8 @@ public class DatabaseIOmanager<E extends Enum<E>> {
 		return stringListList.get(tagListListString.indexOf(tagName));
 	}
 	
-	public List<Double> getDoubleFromList (E tagName) {
-		return doubleListList.get(tagListListDouble.indexOf(tagName));
-	}
-	
-	public List<Double[]> getDoubleArrayFromList (E tagName) {
-		return doubleVecListList.get(tagVecListListDouble.indexOf(tagName));
+	public Double[] getDoubleFromList (E tagName) {
+		return doubleVecList.get(tagListVecDouble.indexOf(tagName));
 	}
 	
 	public void setValue(String tagName, Amount value) {

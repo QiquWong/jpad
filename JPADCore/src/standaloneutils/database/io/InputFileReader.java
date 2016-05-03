@@ -198,7 +198,7 @@ public class InputFileReader<E extends Enum<E>> {
 	 * 
 	 * @return
 	 */
-	public List<List<Double>> readDoubleLists() {
+	public List<Double[]> readDoubleLists() {
 		return readDoubleLists(filenameWithPathAndExt, tagList);
 	}
 	
@@ -209,12 +209,12 @@ public class InputFileReader<E extends Enum<E>> {
 	 * @param tagList
 	 * @return
 	 */
-	public static <E extends Enum<E>> List<List<Double>> readDoubleLists(String filenameWithPathAndExt, List<E> tagList) {
+	public static <E extends Enum<E>> List<Double[]> readDoubleLists(String filenameWithPathAndExt, List<E> tagList) {
 		
 		NodeList childNodes;
-		List<List<Double>> doubleListList = new ArrayList<List<Double>>();
+		List<Double[]> doubleVecList = new ArrayList<>();
 		List<String> stringListTemp = new ArrayList<String>();
-		List<Double> doubleListTemp = new ArrayList<Double>();
+		List<Double> valueTempList = new ArrayList<Double>();
 		Document doc = MyXMLReaderUtils.importDocument(filenameWithPathAndExt);
 		
 		System.out.println("tagList.size is : "+tagList.size());
@@ -222,7 +222,7 @@ public class InputFileReader<E extends Enum<E>> {
 		for (int i=0; i<tagList.size(); i++) {
 			
 			stringListTemp.clear();
-			doubleListTemp.clear();
+			valueTempList.clear();
 			
 			System.out.println("Tag: "+tagList.get(i).name() );
 			childNodes = doc.getElementsByTagName(tagList.get(i).name()).item(0).getChildNodes();
@@ -236,41 +236,21 @@ public class InputFileReader<E extends Enum<E>> {
 					
 					System.out.println("Childs node name: " + childNodes.item(j).getNodeName());
 					stringListTemp.add(childNodes.item(j).getTextContent());
-					doubleListTemp.add(Double.valueOf(stringListTemp.get(j)));
-				}
+											
+					};
 			}
 			
-			doubleListList.add(i, doubleListTemp);
+			Double[] tempValue = new Double[stringListTemp.size()];
+			
+			for(int k=0; k<tempValue.length; k++){
+				
+				tempValue[k] = Double.valueOf(stringListTemp.get(k));
+			}
+			
+			doubleVecList.add(i, tempValue);
 		}
 		
-		return doubleListList;
-	}
-	
-	/********************************************************************************************
-	 * @author Vittorio Trifari
-	 * 
-	 * @return
-	 */
-	public List<List<Double[]>> readDoubleVecLists() {
-		return readDoubleVecLists(filenameWithPathAndExt, tagList);
-	}
-	
-	/********************************************************************************************
-	 * @author Vittorio Trifari
-	 * 
-	 * @param filenameWithPathAndExt
-	 * @param tagList
-	 * @return
-	 */
-	public static <E extends Enum<E>> List<List<Double[]>> readDoubleVecLists(String filenameWithPathAndExt, List<E> tagList) {
-
-		NodeList childNodes;
-		List<List<Double[]>> doubleVecListList = new ArrayList<List<Double[]>>();
-		Document doc = MyXMLReaderUtils.importDocument(filenameWithPathAndExt);
-
-		// TODO: complete this
-
-		return doubleVecListList;
+		return doubleVecList;
 	}
 	
 //	/********************************************************************************************

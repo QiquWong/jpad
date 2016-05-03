@@ -82,8 +82,8 @@
 			<description unit="">List of flap chord ratios.</description>
 		</Cfc>
 		<DeltaFlap>
-			<value unit="">20.0,10.0</value>
-			<value unit="">20.0,10.0</value>
+			<value unit="">30.0</value>
+			<value unit="">30.0</value>
 			<description unit="">List of array of flaps deflections.</description>
 		</DeltaFlap>
 		<EtaInFlap>
