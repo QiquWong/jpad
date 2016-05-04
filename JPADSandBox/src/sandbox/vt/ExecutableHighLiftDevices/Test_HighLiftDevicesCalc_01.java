@@ -38,7 +38,7 @@ public class Test_HighLiftDevicesCalc_01 {
 	public static void main(String[] args) throws CmdLineException, ParserConfigurationException {
 		
 		System.out.println("--------------");
-		System.out.println("High lift devices executable :: test 02");
+		System.out.println("High lift devices executable :: test");
 		System.out.println("--------------");
 		
 		Test_HighLiftDevicesCalc_01 theTestObject = new Test_HighLiftDevicesCalc_01();

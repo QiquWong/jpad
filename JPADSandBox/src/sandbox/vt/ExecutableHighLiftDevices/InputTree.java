@@ -2,15 +2,13 @@ package sandbox.vt.ExecutableHighLiftDevices;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
-
 import org.jscience.physics.amount.Amount;
-
+import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.FlapTypeEnum;
 
 public class InputTree {
@@ -22,19 +20,23 @@ public class InputTree {
 						  sweepQuarteChordEq,
 						  alphaMaxClean,
 						  alphaStarClean;
-	private Amount<Length> span;
+	private Amount<?>cLAlphaClean,
+					 clAlphaMeanAirfoil;
+	private Amount<Length> span,
+						   meanAirfoilChord,
+						   LERadiusMeanAirfoil,
+						   rootChordEquivalentWing;
 	private Amount<Area> surface;
 	private double aspectRatio,
 	               taperRatioEq,
-	               deltaYPercent,
 	               cL0Clean,
+	               cl0MeanAirfoil,
 	               cLmaxClean,
 	               cLstarClean,
-	               cLAlphaClean,
-				   clAlphaMeanAirfoil,
-				   LERadiusMeanAirfoil,
 	               maxthicknessMeanAirfoil;
+	private int flapsNumber, slatsNumber;
 	private List<FlapTypeEnum> flapType;
+	private AirfoilFamilyEnum meanAirfoilFamily;
 	private List<Double> cfc,
 	                     csc,
 	                     cExtCSlat,
@@ -55,23 +57,29 @@ public class InputTree {
 		alphaMaxClean = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		alphaStarClean = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		
+		cLAlphaClean = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE.inverse());
+		clAlphaMeanAirfoil = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE.inverse());
+		
 		span = Amount.valueOf(0.0, SI.METER);
+		meanAirfoilChord = Amount.valueOf(0.0, SI.METER);
+		LERadiusMeanAirfoil = Amount.valueOf(0.0, SI.METER);
+		rootChordEquivalentWing = Amount.valueOf(0.0, SI.METER);
 		
 		surface = Amount.valueOf(0.0, SI.SQUARE_METRE);
 		
 		aspectRatio = 0.0;
 		taperRatioEq = 0.0;
-		deltaYPercent = 0.0;
 		cL0Clean = 0.0;
+		cl0MeanAirfoil = 0.0;
 		cLmaxClean = 0.0;
 		cLstarClean = 0.0;
-		cLAlphaClean = 0.0;
-		clAlphaMeanAirfoil = 0.0;
-		LERadiusMeanAirfoil = 0.0;
 		maxthicknessMeanAirfoil = 0.0;
 		
-		flapType = new ArrayList<FlapTypeEnum>();
+		flapsNumber = 0;
+		slatsNumber = 0;
 		
+		flapType = new ArrayList<FlapTypeEnum>();
+				
 		cfc = new ArrayList<Double>();
 		csc = new ArrayList<Double>();
 		cExtCSlat = new ArrayList<Double>();
@@ -150,14 +158,6 @@ public class InputTree {
 		this.taperRatioEq = taperRatioEq;
 	}
 
-	public double getDeltaYPercent() {
-		return deltaYPercent;
-	}
-
-	public void setDeltaYPercent(double deltaYPercent) {
-		this.deltaYPercent = deltaYPercent;
-	}
-
 	public double getcL0Clean() {
 		return cL0Clean;
 	}
@@ -182,27 +182,27 @@ public class InputTree {
 		this.cLstarClean = cLstarClean;
 	}
 
-	public double getcLAlphaClean() {
+	public Amount<?> getcLAlphaClean() {
 		return cLAlphaClean;
 	}
 
-	public void setcLAlphaClean(double cLAlphaClean) {
+	public void setcLAlphaClean(Amount<?> cLAlphaClean) {
 		this.cLAlphaClean = cLAlphaClean;
 	}
 
-	public double getClAlphaMeanAirfoil() {
+	public Amount<?> getClAlphaMeanAirfoil() {
 		return clAlphaMeanAirfoil;
 	}
 
-	public void setClAlphaMeanAirfoil(double clAlphaMeanAirfoil) {
+	public void setClAlphaMeanAirfoil(Amount<?> clAlphaMeanAirfoil) {
 		this.clAlphaMeanAirfoil = clAlphaMeanAirfoil;
 	}
 
-	public double getLERadiusMeanAirfoil() {
+	public Amount<Length> getLERadiusMeanAirfoil() {
 		return LERadiusMeanAirfoil;
 	}
 
-	public void setLERadiusMeanAirfoil(double lERadiusMeanAirfoil) {
+	public void setLERadiusMeanAirfoil(Amount<Length> lERadiusMeanAirfoil) {
 		LERadiusMeanAirfoil = lERadiusMeanAirfoil;
 	}
 
@@ -292,5 +292,53 @@ public class InputTree {
 
 	public void setEtaOutSlat(List<Double> etaOutSlat) {
 		this.etaOutSlat = etaOutSlat;
+	}
+
+	public AirfoilFamilyEnum getMeanAirfoilFamily() {
+		return meanAirfoilFamily;
+	}
+
+	public void setMeanAirfoilFamily(AirfoilFamilyEnum meanAirfoilFamily) {
+		this.meanAirfoilFamily = meanAirfoilFamily;
+	}
+
+	public int getFlapsNumber() {
+		return flapsNumber;
+	}
+
+	public void setFlapsNumber(int flapsNumber) {
+		this.flapsNumber = flapsNumber;
+	}
+
+	public int getSlatsNumber() {
+		return slatsNumber;
+	}
+
+	public void setSlatsNumber(int slatsNumber) {
+		this.slatsNumber = slatsNumber;
+	}
+
+	public double getCl0MeanAirfoil() {
+		return cl0MeanAirfoil;
+	}
+
+	public void setCl0MeanAirfoil(double cl0MeanAirfoil) {
+		this.cl0MeanAirfoil = cl0MeanAirfoil;
+	}
+
+	public Amount<Length> getMeanAirfoilChord() {
+		return meanAirfoilChord;
+	}
+
+	public void setMeanAirfoilChord(Amount<Length> meanAirfoilChord) {
+		this.meanAirfoilChord = meanAirfoilChord;
+	}
+
+	public Amount<Length> getRootChordEquivalentWing() {
+		return rootChordEquivalentWing;
+	}
+
+	public void setRootChordEquivalentWing(Amount<Length> rootChordEquivalentWing) {
+		this.rootChordEquivalentWing = rootChordEquivalentWing;
 	} 
 }
