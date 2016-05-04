@@ -11,6 +11,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
+import configuration.MyConfiguration;
 import standaloneutils.JPADXmlReader;
 
 public class Test_HighLiftDevicesCalc_01 {
@@ -22,6 +23,10 @@ public class Test_HighLiftDevicesCalc_01 {
 			usage = "my input file")
 	private File _inputFile;
 
+	@Option(name = "-d", aliases = { "--database-path" }, required = true,
+			usage = "path for database files")
+	private File _databasePath;
+	
 	// declaration necessary for Concrete Object usage
 	public CmdLineParser theCmdLineParser;
 	public JPADXmlReader reader;
@@ -41,15 +46,30 @@ public class Test_HighLiftDevicesCalc_01 {
 		System.out.println("High lift devices executable :: test");
 		System.out.println("--------------");
 		
+		
 		Test_HighLiftDevicesCalc_01 theTestObject = new Test_HighLiftDevicesCalc_01();
 		theTestObject.theCmdLineParser.parseArgument(args);
 		
+		String databaseDirectoryAbsolutePath = theTestObject.get_databasePath().getAbsolutePath();
+		
+		// Set the folders tree
+		MyConfiguration.initWorkingDirectoryTree(MyConfiguration.currentDirectoryString,
+				MyConfiguration.inputDirectory, 
+				MyConfiguration.outputDirectory,
+				databaseDirectoryAbsolutePath); // coming from main arguments
+
 		String pathToXML = theTestObject.get_inputFile().getAbsolutePath();
 		System.out.println("INPUT ===> " + pathToXML);
 		
 		System.out.println("--------------");
 		
 		HighLiftDevicesCalc.importFromXML(pathToXML);
+		HighLiftDevicesCalc.executeStandAloneHighLiftDevicesCalc(
+				HighLiftDevicesCalc.getInput(),
+				databaseDirectoryAbsolutePath,
+				"HighLiftDatabase.h5",
+				"Aerodynamic_Database_Ultimate.h5"
+				);
 	}
 
 	//------------------------------------------------------------------------------------------
@@ -62,5 +82,12 @@ public class Test_HighLiftDevicesCalc_01 {
 	public void set_inputFile(File _inputFile) {
 		this._inputFile = _inputFile;
 	}
-	
+
+	public File get_databasePath() {
+		return _databasePath;
+	}
+
+	public void set_databasePath(File _databasePath) {
+		this._databasePath = _databasePath;
+	}
 }

@@ -40,12 +40,12 @@ public class InputTree {
 	private List<Double> cfc,
 	                     csc,
 	                     cExtCSlat,
-	                     deltaFlap,
-	                     deltaSlat,
 	                     etaInFlap,
 	                     etaOutFlap,
 	                     etaInSlat,
 	                     etaOutSlat;
+	private List<Amount<Angle>> deltaFlap,
+    							deltaSlat;
 	
 	//------------------------------------------------------------------------------------------
 	// BUILDER:
@@ -83,8 +83,8 @@ public class InputTree {
 		cfc = new ArrayList<Double>();
 		csc = new ArrayList<Double>();
 		cExtCSlat = new ArrayList<Double>();
-		deltaFlap = new ArrayList<Double>();
-		deltaSlat = new ArrayList<Double>();
+		deltaFlap = new ArrayList<Amount<Angle>>();
+		deltaSlat = new ArrayList<Amount<Angle>>();
 		etaInFlap = new ArrayList<Double>();
 		etaOutFlap = new ArrayList<Double>();
 		etaInSlat = new ArrayList<Double>();
@@ -246,19 +246,19 @@ public class InputTree {
 		this.cExtCSlat = cExtCSlat;
 	}
 
-	public List<Double> getDeltaFlap() {
+	public List<Amount<Angle>> getDeltaFlap() {
 		return deltaFlap;
 	}
 
-	public void setDeltaFlap(List<Double> deltaFlap) {
+	public void setDeltaFlap(List<Amount<Angle>> deltaFlap) {
 		this.deltaFlap = deltaFlap;
 	}
 
-	public List<Double> getDeltaSlat() {
+	public List<Amount<Angle>> getDeltaSlat() {
 		return deltaSlat;
 	}
 
-	public void setDeltaSlat(List<Double> deltaSlat) {
+	public void setDeltaSlat(List<Amount<Angle>> deltaSlat) {
 		this.deltaSlat = deltaSlat;
 	}
 
