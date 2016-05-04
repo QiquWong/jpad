@@ -370,8 +370,8 @@ public class HighLiftTestATR {
 //				null,
 //				null);
 //		System.out.println("DONE");
-	Double chordInnerFlap1 = MyMathUtils.getInterpolatedValue1DLinear(theLSAnalysis.get_yStationsND(),
-			vy, x0)
+//	Double chordInnerFlap1 = MyMathUtils.getInterpolatedValue1DLinear(theLSAnalysis.get_yStationsND(),
+//			vy, x0)
 	}
 
 	
