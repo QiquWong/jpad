@@ -4,8 +4,8 @@
                 <altitude unit="m">6000</altitude>
                 <mach_number unit="">0.2</mach_number>
                 <number_of_alpha unit="">11</number_of_alpha>
-                <alpha_initial unit="deg">0.0</alpha_initial>
-                <alpha_final unit="deg">10.0</alpha_final>
+                <alpha_initial unit="°">0.0</alpha_initial>
+                <alpha_final unit="°">10.0</alpha_final>
         </operating_conditions>
        <wing>
             <global>
@@ -16,7 +16,7 @@
              </global>
             <distribution>
                 <number_of_given_sections unit="">3</number_of_given_sections>
-                <mean_airfoil_type unit="">NACA_4_Digit</mean_airfoil_type>
+                <mean_airfoil_type unit="">NACA_4_DIGIT</mean_airfoil_type>
                    <geometry>
                     <chord_distribution unit="">[6.39, 2.72, 1.05]</chord_distribution>
                     <x_le_distribution unit="">[0.0, 3.71, 8.31]</x_le_distribution>
@@ -24,9 +24,9 @@
                     <dihedral_distribution unit="">[0.0, 2.72, 8.5]</dihedral_distribution>
                     </geometry>
                     <aerodynamics>
-                    <alpha_zero_lift_distribution unit="deg">[-1.98, -1.63, -3.18]</alpha_zero_lift_distribution>
-                   <alpha_star_distribution unit="deg">[8.0, 8.0, 8.0]</alpha_star_distribution>
-                   <maximum_lift_coefficient_distribution unit="deg">[-1.98, -1.63, -3.18]</maximum_lift_coefficient_distribution>
+                    <alpha_zero_lift_distribution unit="°">[-1.98, -1.63, -3.18]</alpha_zero_lift_distribution>
+                   <alpha_star_distribution unit="°">[8.0, 8.0, 8.0]</alpha_star_distribution>
+                   <maximum_lift_coefficient_distribution unit="°">[-1.98, -1.63, -3.18]</maximum_lift_coefficient_distribution>
                     </aerodynamics>
              </distribution>
         </wing>

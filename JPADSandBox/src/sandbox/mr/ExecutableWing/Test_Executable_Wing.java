@@ -49,7 +49,7 @@ public class Test_Executable_Wing {
 		
 		System.out.println("--------------");
 		
-//		HighLiftDevicesCalc.importFromXML(pathToXML);
+		ReaderWriterWing.importFromXML(pathToXML);
 	}
 
 	//------------------------------------------------------------------------------------------

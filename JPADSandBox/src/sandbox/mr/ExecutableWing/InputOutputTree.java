@@ -38,10 +38,16 @@ public class InputOutputTree {
 				numberOfSections;
 	
 	private AirfoilFamilyEnum meanAirfoilFamily;
-	private List<Double> chordDistribution,
+	private List<Amount> chordDistribution,
 						 xLEDistribution,
 						 dihedralDistribution,
-						 twistDistribution;
+						 twistDistribution,
+						 alphaZeroLiftDistribution,
+						 alphaStarDistribution;
+
+
+	private List<Double> maximumliftCoefficientDistribution;
+	
 	
 	// OUTPUT 
 	
@@ -78,10 +84,10 @@ public class InputOutputTree {
 		
 		surface = Amount.valueOf(0.0, SI.SQUARE_METRE);
 		
-		chordDistribution = new ArrayList<Double>();
-		xLEDistribution = new ArrayList<Double>();
-		dihedralDistribution = new ArrayList<Double>();
-		twistDistribution = new ArrayList<Double>();
+		chordDistribution = new ArrayList<Amount>();
+		xLEDistribution = new ArrayList<Amount>();
+		dihedralDistribution = new ArrayList<Amount>();
+		twistDistribution = new ArrayList<Amount>();
 	
 		machNumber = 0.0;
 		aspectRatio = 0.0;
@@ -228,45 +234,69 @@ public class InputOutputTree {
 	}
 
 
-	public List<Double> getChordDistribution() {
+	public List<Amount> getChordDistribution() {
 		return chordDistribution;
 	}
 
 
-	public void setChordDistribution(List<Double> chordDistribution) {
+	public void setChordDistribution(List<Amount> chordDistribution) {
 		this.chordDistribution = chordDistribution;
 	}
 
 
-	public List<Double> getxLEDistribution() {
+	public List<Amount> getxLEDistribution() {
 		return xLEDistribution;
 	}
 
 
-	public void setxLEDistribution(List<Double> xLEDistribution) {
+	public void setxLEDistribution(List<Amount> xLEDistribution) {
 		this.xLEDistribution = xLEDistribution;
 	}
 
 
-	public List<Double> getDihedralDistribution() {
+	public List<Amount> getDihedralDistribution() {
 		return dihedralDistribution;
 	}
 
 
-	public void setDihedralDistribution(List<Double> dihedralDistribution) {
+	public void setDihedralDistribution(List<Amount> dihedralDistribution) {
 		this.dihedralDistribution = dihedralDistribution;
 	}
 
 
-	public List<Double> getTwistDistribution() {
+	public List<Amount> getTwistDistribution() {
 		return twistDistribution;
 	}
 
 
-	public void setTwistDistribution(List<Double> twistDistribution) {
+	public void setTwistDistribution(List<Amount> twistDistribution) {
 		this.twistDistribution = twistDistribution;
 	}
 
+
+	public List<Amount> getAlphaZeroLiftDistribution() {
+		return alphaZeroLiftDistribution;
+	}
+
+	public void setAlphaZeroLiftDistribution(List<Amount> alphaZeroLiftDistribution) {
+		this.alphaZeroLiftDistribution = alphaZeroLiftDistribution;
+	}
+
+	public List<Amount> getAlphaStarDistribution() {
+		return alphaStarDistribution;
+	}
+
+	public void setAlphaStarDistribution(List<Amount> alphaStarDistribution) {
+		this.alphaStarDistribution = alphaStarDistribution;
+	}
+
+	public List<Double> getMaximumliftCoefficientDistribution() {
+		return maximumliftCoefficientDistribution;
+	}
+
+	public void setMaximumliftCoefficientDistribution(List<Double> maximumliftCoefficientDistribution) {
+		this.maximumliftCoefficientDistribution = maximumliftCoefficientDistribution;
+	}
 
 	public Amount<Length> getSpan() {
 		return span;
