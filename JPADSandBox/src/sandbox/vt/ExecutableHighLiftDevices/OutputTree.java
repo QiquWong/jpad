@@ -16,22 +16,22 @@ public class OutputTree {
 						 deltaCLmaxFlapList,
 						 deltaClmaxSlatList,
 						 deltaCLmaxSlatList,
-						 cLalphaNewList,
 						 deltaCDList,
 						 deltaCMC4List;
+	private List<Amount<?>> cLalphaNewList;
 	private double deltaCl0Flap,
 				   deltaCL0Flap,
 				   deltaClmaxFlap,
 				   deltaCLmaxFlap,
 				   deltaClmaxSlat,
 				   deltaCLmaxSlat,
-				   cLalphaNew,
 				   deltaCD,
 				   deltaCMC4,
 				   cLmaxFlapSlat,
 				   cLStarFlapSlat;
 	private Amount<Angle> alphaMaxFlapSlat,
 						  alphaStarFlapSlat;
+	private Amount<?> cLalphaNew;
 	
 	//------------------------------------------------------------------------------------------
 	// BUILDER:
@@ -44,7 +44,7 @@ public class OutputTree {
 		deltaCLmaxFlapList = new ArrayList<Double>();
 		deltaClmaxSlatList = new ArrayList<Double>();
 		deltaCLmaxSlatList = new ArrayList<Double>();
-		cLalphaNewList = new ArrayList<Double>();
+		cLalphaNewList = new ArrayList<Amount<?>>();
 		deltaCDList = new ArrayList<Double>();
 		deltaCMC4List = new ArrayList<Double>();		
 	}
@@ -100,11 +100,11 @@ public class OutputTree {
 		this.deltaCLmaxSlatList = deltaCLmaxSlatList;
 	}
 
-	public List<Double> getcLalphaNewList() {
+	public List<Amount<?>> getcLalphaNewList() {
 		return cLalphaNewList;
 	}
 
-	public void setcLalphaNewList(List<Double> cLalphaNewList) {
+	public void setcLalphaNewList(List<Amount<?>> cLalphaNewList) {
 		this.cLalphaNewList = cLalphaNewList;
 	}
 
@@ -172,11 +172,11 @@ public class OutputTree {
 		this.deltaCLmaxSlat = deltaCLmaxSlat;
 	}
 
-	public double getcLalphaNew() {
+	public Amount<?> getcLalphaNew() {
 		return cLalphaNew;
 	}
 
-	public void setcLalphaNew(double cLalphaNew) {
+	public void setcLalphaNew(Amount<?> cLalphaNew) {
 		this.cLalphaNew = cLalphaNew;
 	}
 

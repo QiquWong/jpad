@@ -65,7 +65,6 @@ public class Test_HighLiftDevicesCalc_01 {
 		
 		HighLiftDevicesCalc.importFromXML(pathToXML);
 		HighLiftDevicesCalc.executeStandAloneHighLiftDevicesCalc(
-				HighLiftDevicesCalc.getInput(),
 				databaseDirectoryAbsolutePath,
 				"HighLiftDatabase.h5",
 				"Aerodynamic_Database_Ultimate.h5"

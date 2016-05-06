@@ -1,18 +1,31 @@
 package sandbox.vt.ExecutableHighLiftDevices;
 
+import static java.lang.Math.toRadians;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import javax.measure.quantity.Angle;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.xml.parsers.ParserConfigurationException;
+import org.apache.commons.math3.linear.MatrixUtils;
+import org.apache.commons.math3.linear.RealMatrix;
 import org.jscience.physics.amount.Amount;
 import org.w3c.dom.NodeList;
+import calculators.geometry.LSGeometryCalc;
+import configuration.MyConfiguration;
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.FlapTypeEnum;
+import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import standaloneutils.JPADXmlReader;
+import standaloneutils.MyArrayUtils;
+import standaloneutils.MyChartToFileUtils;
+import standaloneutils.MyMathUtils;
 import standaloneutils.MyXMLReaderUtils;
+import standaloneutils.customdata.MyArray;
+import writers.JPADStaticWriteUtils;
 
 public class HighLiftDevicesCalc {
 
@@ -45,7 +58,7 @@ public class HighLiftDevicesCalc {
 		List<String> alphaCurrentProperty = reader.getXMLPropertiesByPath("//flight_condition/alpha_current");
 		input.setAlphaCurrent(Amount.valueOf(Double.valueOf(alphaCurrentProperty.get(0)), NonSI.DEGREE_ANGLE));
 
-		System.out.println("\tAlpha current = " + input.getAlphaCurrent() + "\n");
+		System.out.println("\tAlpha current = " + input.getAlphaCurrent().getEstimatedValue() + " " + input.getAlphaCurrent().getUnit() + "\n");
 
 		//---------------------------------------------------------------------------------
 		// WING:	
@@ -131,18 +144,19 @@ public class HighLiftDevicesCalc {
 		//---------------------------------------------------------------------------------------
 		// Print data:
 		System.out.println("\tAspect Ratio = " + input.getAspectRatio());
-		System.out.println("\tSpan = " + input.getSpan());
-		System.out.println("\tSurface = " + input.getSurface());
-		System.out.println("\tSweep quarter chord equivalent wing = " + input.getSweepQuarteChordEq());
+		System.out.println("\tSpan = " + input.getSpan().getEstimatedValue() + " " + input.getSpan().getUnit());
+		System.out.println("\tSurface = " + input.getSurface().getEstimatedValue() + " " + input.getSurface().getUnit());
+		System.out.println("\tSweep quarter chord equivalent wing = " + input.getSweepQuarteChordEq().getEstimatedValue() + " " + input.getSweepQuarteChordEq().getUnit());
 		System.out.println("\tTaper ratio equivalent wing = " + input.getTaperRatioEq());
-		System.out.println("\n\tAlpha stall clean = " + input.getAlphaMaxClean());
-		System.out.println("\tAlpha star clean = " + input.getAlphaStarClean());
+		System.out.println("\n\tAlpha stall clean = " + input.getAlphaMaxClean().getEstimatedValue() + " " + input.getAlphaMaxClean().getUnit());
+		System.out.println("\tAlpha star clean = " + input.getAlphaStarClean().getEstimatedValue() + " " + input.getAlphaStarClean().getUnit());
 		System.out.println("\tCL0 clean = " + input.getcL0Clean());
-		System.out.println("\tCLalpha clean = " + input.getcLAlphaClean());
+		System.out.println("\tCLalpha clean = " + input.getcLAlphaClean().getEstimatedValue() + " " + input.getcLAlphaClean().getUnit());
 		System.out.println("\tCLmax clean = " + input.getcLmaxClean());
 		System.out.println("\tCLstar clean = " + input.getcLstarClean());
-		System.out.println("\n\tClalpha mean airfoil = " + input.getClAlphaMeanAirfoil());
-		System.out.println("\tLeading edge radius mean airfoil = " + input.getLERadiusMeanAirfoil());
+		System.out.println("\n\tClalpha mean airfoil = " + input.getClAlphaMeanAirfoil().getEstimatedValue() + " " + input.getClAlphaMeanAirfoil().getUnit());
+		System.out.println("\n\tCl0 mean airfoil = " + input.getCl0MeanAirfoil());
+		System.out.println("\tLeading edge radius mean airfoil = " + input.getLERadiusMeanAirfoil().getEstimatedValue() + " " + input.getLERadiusMeanAirfoil().getUnit());
 		System.out.println("\tMax thickness mean airfoil = " + input.getMaxthicknessMeanAirfoil());
 		System.out.println("\tMean airfoil family = " + input.getMeanAirfoilFamily() + "\n");
 		
@@ -159,7 +173,10 @@ public class HighLiftDevicesCalc {
 
 		System.out.println("\tFlaps Types = " +  input.getFlapType());
 		System.out.println("\tFlaps chord ratios = " +  input.getCfc());
-		System.out.println("\tFlaps deflections = " +  input.getDeltaFlap());
+		System.out.print("\tFlaps deflections = [");
+		for(int i=0; i<input.getDeltaFlap().size(); i++)
+			System.out.print(" " +  input.getDeltaFlap().get(i).getEstimatedValue() + " " + input.getDeltaFlap().get(i).getUnit());
+		System.out.print("]\n");
 		System.out.println("\tFlaps inboard station = " +  input.getEtaInFlap());
 		System.out.println("\tFlaps outboard station = " +  input.getEtaOutFlap() + "\n");
 		
@@ -173,12 +190,17 @@ public class HighLiftDevicesCalc {
 		System.out.println("Slats found: " + input.getSlatsNumber());
 		
 		importSlatFromXML(input, reader);
-		
-		System.out.println("\tSlats deflections = " +  input.getDeltaSlat());
+
+		System.out.print("\tSlats deflections = [");
+		for(int i=0; i<input.getDeltaSlat().size(); i++)
+			System.out.print(" " +  input.getDeltaSlat().get(i).getEstimatedValue() + " " + input.getDeltaSlat().get(i).getUnit());
+		System.out.print("]\n");
 		System.out.println("\tSlats chord ratios = " +  input.getCsc());
 		System.out.println("\tSlats extension ratios = " +  input.getcExtCSlat());
 		System.out.println("\tSlats inboard stations = " +  input.getEtaInSlat());
 		System.out.println("\tSlats outboard stations = " +  input.getEtaOutSlat() + "\n");
+	
+		System.out.println("--------------------DONE--------------------------");
 	}
 
 	/***************************************************************************************
@@ -268,7 +290,6 @@ public class HighLiftDevicesCalc {
 	}
 	
 	public static void executeStandAloneHighLiftDevicesCalc (
-			InputTree input,
 			String databaseFolderPath,
 			String highLiftDatabaseFileName,
 			String aerodynamicDatabaseFileName
@@ -313,7 +334,8 @@ public class HighLiftDevicesCalc {
 		
 		//--------------------------------------------
 		// CALCULATION OF HIGH LIFT DEVICES EFFECTS:
-		System.out.println("\nCalculating high lift devices effects...\n");
+		System.out.println("\nCalculating high lift devices effects...");
+		System.out.println("\n-----------HIGH LIFT DEVICES EFFECTS-------------- ");
 		
 		//---------------------------------------------
 		// deltaCl0 (flap)
@@ -571,11 +593,13 @@ public class HighLiftDevicesCalc {
 		
 		List<Double> swf = new ArrayList<Double>();
 		for(int i=0; i<input.getFlapsNumber(); i++) {
-			output.getcLalphaNewList().add(
-					input.getcLAlphaClean().getEstimatedValue()
+			output.getcLalphaNewList().add(Amount.valueOf(
+					(input.getcLAlphaClean().getEstimatedValue()
 					*(1+((output.getDeltaCL0FlapList().get(i)/output.getDeltaCl0FlapList().get(i))
 							*(cFirstCFlap.get(i)*(1-((input.getCfc().get(i))*(1/cFirstCFlap.get(i))
-									*Math.pow(Math.sin(input.getDeltaFlap().get(i).to(SI.RADIAN).getEstimatedValue()), 2)))-1))));
+									*Math.pow(Math.sin(input.getDeltaFlap().get(i).to(SI.RADIAN).getEstimatedValue()), 2)))-1))))
+					, NonSI.DEGREE_ANGLE.inverse())
+					);
 			swf.add(flapSurface.get(i)/input.getSurface().getEstimatedValue());
 		}
 
@@ -585,11 +609,11 @@ public class HighLiftDevicesCalc {
 
 		double cLalphaNewTemp = 0.0;
 		for(int i=0; i<input.getFlapsNumber(); i++)
-			cLalphaNewTemp += output.getcLalphaNewList().get(i)*swf.get(i);
+			cLalphaNewTemp += output.getcLalphaNewList().get(i).getEstimatedValue()*swf.get(i);
 
 		cLalphaNewTemp /= swfTot;
 		
-		output.setcLalphaNew(cLalphaNewTemp);
+		output.setcLalphaNew(Amount.valueOf(cLalphaNewTemp, NonSI.DEGREE_ANGLE.inverse()));
 
 		//---------------------------------------------------------------
 		// deltaCD
@@ -641,119 +665,388 @@ public class HighLiftDevicesCalc {
 
 		//---------------------------------------------------------------
 		// deltaCM_c/4
-//		List<Double> mu1 = new ArrayList<Double>();
-//		for (int i=0; i<input.getFlapsNumber(); i++)
-//			if(flapTypeIndex.get(i) == 3.0)
-//				mu1.add(
-//						highLiftDatabaseReader
-//						.getMu1VsCfCFirstPlain(
-//								(input.getCfc().get(i))*(1/cFirstCFlap.get(i)),
-//								input.getDeltaFlap().get(i).getEstimatedValue()
-//								)
-//						);
-//			else
-//				mu1.add(highLiftDatabaseReader
-//						.getMu1VsCfCFirstSlottedFowler((input.getCfc().get(i))*(1/cFirstCFlap.get(i)))
-//						);
-//
-//		List<Double> mu2 = new ArrayList<Double>();
-//		for(int i=0; i<input.getFlapsNumber(); i++)
-//			mu2.add(highLiftDatabaseReader
-//					.getMu2VsBfB(
-//							input.getEtaInFlap().get(i),
-//							input.getEtaOutFlap().get(i),
-//							input.getTaperRatioEq()
-//							)
-//					);
-//
-//		List<Double> mu3 = new ArrayList<Double>();
-//		for(int i=0; i<input.getFlapsNumber(); i++)
-//			mu3.add(highLiftDatabaseReader
-//					.getMu3VsBfB(
-//							input.getEtaInFlap().get(i),
-//							input.getEtaOutFlap().get(i),
-//							input.getTaperRatioEq()
-//							)
-//					);
-//
-//		// FIXME: method calcCLatAlphaHighLiftDevice 
-//		
-//		double cL = calcCLatAlphaHighLiftDevice(input.getAlphaCurrent().getEstimatedValue());
-//		for(int i=0; i<input.getFlapsNumber(); i++)
-//			output.getDeltaCMC4List().add(
-//					(mu2.get(i)*(-(mu1.get(i)*output.getDeltaClmaxFlapList().get(i)
-//							*cFirstCFlap.get(i))-(cFirstCFlap.get(i)
-//									*((cFirstCFlap.get(i))-1)
-//									*(cL + (output.getDeltaClmaxFlapList().get(i)
-//											*(1-(flapSurface.get(i)/input.getSurface().getEstimatedValue()))))
-//									*(1/8)))) + (0.7*(input.getAspectRatio()/(1+(input.getAspectRatio()/2)))
-//											*mu3.get(i)*output.getDeltaClmaxFlapList().get(i)
-//											*Math.tan(input.getSweepQuarteChordEq().to(SI.RADIAN).getEstimatedValue()))
-//					);
-//
-//		double deltaCMC4Temp = 0.0;
-//		for(int i=0; i<flapTypeIndex.size(); i++)
-//			deltaCMC4Temp += output.getDeltaCMC4List().get(i);
-//		
-//		output.setDeltaCMC4(deltaCMC4Temp);
+		List<Double> mu1 = new ArrayList<Double>();
+		for (int i=0; i<input.getFlapsNumber(); i++)
+			if(flapTypeIndex.get(i) == 3.0)
+				mu1.add(
+						highLiftDatabaseReader
+						.getMu1VsCfCFirstPlain(
+								(input.getCfc().get(i))*(1/cFirstCFlap.get(i)),
+								input.getDeltaFlap().get(i).getEstimatedValue()
+								)
+						);
+			else
+				mu1.add(highLiftDatabaseReader
+						.getMu1VsCfCFirstSlottedFowler((input.getCfc().get(i))*(1/cFirstCFlap.get(i)))
+						);
+
+		List<Double> mu2 = new ArrayList<Double>();
+		for(int i=0; i<input.getFlapsNumber(); i++)
+			mu2.add(highLiftDatabaseReader
+					.getMu2VsBfB(
+							input.getEtaInFlap().get(i),
+							input.getEtaOutFlap().get(i),
+							input.getTaperRatioEq()
+							)
+					);
+
+		List<Double> mu3 = new ArrayList<Double>();
+		for(int i=0; i<input.getFlapsNumber(); i++)
+			mu3.add(highLiftDatabaseReader
+					.getMu3VsBfB(
+							input.getEtaInFlap().get(i),
+							input.getEtaOutFlap().get(i),
+							input.getTaperRatioEq()
+							)
+					);
+
+		
+		double cL = calcCLatAlphaHighLiftDevice(input.getAlphaCurrent(), aeroDatabaseReader);
+		for(int i=0; i<input.getFlapsNumber(); i++)
+			output.getDeltaCMC4List().add(
+					(mu2.get(i)*(-(mu1.get(i)*output.getDeltaClmaxFlapList().get(i)
+							*cFirstCFlap.get(i))-(cFirstCFlap.get(i)
+									*((cFirstCFlap.get(i))-1)
+									*(cL + (output.getDeltaClmaxFlapList().get(i)
+											*(1-(flapSurface.get(i)/input.getSurface().getEstimatedValue()))))
+									*(1/8)))) + (0.7*(input.getAspectRatio()/(1+(input.getAspectRatio()/2)))
+											*mu3.get(i)*output.getDeltaClmaxFlapList().get(i)
+											*Math.tan(input.getSweepQuarteChordEq().to(SI.RADIAN).getEstimatedValue()))
+					);
+
+		double deltaCMC4Temp = 0.0;
+		for(int i=0; i<flapTypeIndex.size(); i++)
+			deltaCMC4Temp += output.getDeltaCMC4List().get(i);
+		
+		output.setDeltaCMC4(deltaCMC4Temp);
 		
 		//---------------------------------------------------------------
 		// PRINT HIGH LIFT DEVICES EFFECTS:
 		//---------------------------------------------------------------
 		System.out.println("\ndeltaCl0_flap_list = ");
 		for(int i=0; i<output.getDeltaCl0FlapList().size(); i++)
-			System.out.print(output.getDeltaCl0FlapList().get(i) + " ");
+			System.out.println(output.getDeltaCl0FlapList().get(i));
 
-		System.out.println("\n\ndeltaCl0_flap = \n" + output.getDeltaCL0Flap());
+		System.out.println("\ndeltaCl0_flap = \n" + output.getDeltaCL0Flap());
 
 		System.out.println("\ndeltaCL0_flap_list = ");
 		for(int i=0; i<output.getDeltaCL0FlapList().size(); i++)
-			System.out.print(output.getDeltaCL0FlapList().get(i) + " ");
+			System.out.println(output.getDeltaCL0FlapList().get(i));
 
-		System.out.println("\n\ndeltaCL0_flap = \n" + output.getDeltaCL0Flap());
+		System.out.println("\ndeltaCL0_flap = \n" + output.getDeltaCL0Flap());
 
 		System.out.println("\ndeltaClmax_flap_list = ");
 		for(int i=0; i<output.getDeltaClmaxFlapList().size(); i++)
-			System.out.print(output.getDeltaClmaxFlapList().get(i) + " ");
+			System.out.println(output.getDeltaClmaxFlapList().get(i));
 
-		System.out.println("\n\ndeltaClmax_flap = \n" + output.getDeltaClmaxFlap());
+		System.out.println("\ndeltaClmax_flap = \n" + output.getDeltaClmaxFlap());
 
 		System.out.println("\ndeltaCLmax_flap_list = ");
 		for(int i=0; i<output.getDeltaCLmaxFlapList().size(); i++)
-			System.out.print(output.getDeltaCLmaxFlapList().get(i) + " ");
+			System.out.println(output.getDeltaCLmaxFlapList().get(i));
 
-		System.out.println("\n\ndeltaCLmax_flap = \n" + output.getDeltaCLmaxFlap());
+		System.out.println("\ndeltaCLmax_flap = \n" + output.getDeltaCLmaxFlap());
 		
 		System.out.println("\ndeltaClmax_slat_list = ");
 		for(int i=0; i<output.getDeltaClmaxSlatList().size(); i++)
-			System.out.print(output.getDeltaClmaxSlatList().get(i) + " ");
+			System.out.println(output.getDeltaClmaxSlatList().get(i));
 
-		System.out.println("\n\ndeltaClmax_slat = \n" + output.getDeltaClmaxSlat());
+		System.out.println("\ndeltaClmax_slat = \n" + output.getDeltaClmaxSlat());
 
 		System.out.println("\ndeltaCLmax_slat_list = ");
 		for(int i=0; i<output.getDeltaCLmaxSlatList().size(); i++)
-			System.out.print(output.getDeltaCLmaxSlatList().get(i) + " ");
+			System.out.println(output.getDeltaCLmaxSlatList().get(i));
 
-		System.out.println("\n\ndeltaCLmax_slat = \n" + output.getDeltaCLmaxSlat());
+		System.out.println("\ndeltaCLmax_slat = \n" + output.getDeltaCLmaxSlat());
 
 		System.out.println("\ncLalpha_new_list = ");
 		for(int i=0; i<output.getcLalphaNewList().size(); i++)
-			System.out.print(output.getcLalphaNewList().get(i) + " ");
+			System.out.println(output.getcLalphaNewList().get(i).getEstimatedValue() + " " + output.getcLalphaNewList().get(i).getUnit());
 
-		System.out.println("\n\ncLalpha_new = \n" + output.getcLalphaNew());
+		System.out.println("\ncLalpha_new = \n" + output.getcLalphaNew().getEstimatedValue() + " " + output.getcLalphaNew().getUnit());
 
 		System.out.println("\ndeltaCD_list = ");
 		for(int i=0; i<output.getDeltaCDList().size(); i++)
-			System.out.print(output.getDeltaCDList().get(i) + " ");
+			System.out.println(output.getDeltaCDList().get(i));
 
-		System.out.println("\n\ndeltaCD = \n" + output.getDeltaCD());
+		System.out.println("\ndeltaCD = \n" + output.getDeltaCD());
 
-//		System.out.println("\ndeltaCMc_4_list = ");
-//		for(int i=0; i<output.getDeltaCMC4List().size(); i++)
-//			System.out.print(output.getDeltaCMC4List().get(i) + " ");
-//
-//		System.out.println("\n\ndeltaCMc_4 = \n" + output.getDeltaCMC4());
+		System.out.println("\ndeltaCMc_4_list = ");
+		for(int i=0; i<output.getDeltaCMC4List().size(); i++)
+			System.out.println(output.getDeltaCMC4List().get(i));
+
+		System.out.println("\ndeltaCMc_4 = \n" + output.getDeltaCMC4());
 		
+		System.out.println("------------------DONE----------------------");
+		
+		try {
+			plotCurves(aeroDatabaseReader);
+		} catch (InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/********************************************************************************************
+	 * This method calculates CL at alpha given as input for a wing with high lift devices.
+	 * This method calculates both linear trait and non linear trait. 
+	 * It use the NasaBlackwell method in order to evaluate the slope of the linear trait
+	 * and it builds the non-linear trait using a cubic interpolation. 
+	 * 
+	 * @author Vittorio Trifari
+	 * 
+	 * @param alpha the actual angle of attack (radians or degree)
+	 * @return
+	 */
+	private static double calcCLatAlphaHighLiftDevice(
+			Amount<Angle> alpha,
+			AerodynamicDatabaseReader aeroDatabaseReader){
+
+		if (alpha.getUnit() == NonSI.DEGREE_ANGLE) 
+			alpha = alpha.to(SI.RADIAN);
+
+		Amount<?> cLAlphaFlap = output.getcLalphaNew().to(SI.RADIAN.inverse());
+		Amount<Angle> alphaStarCleanAmount = input.getAlphaStarClean().to(SI.RADIAN);
+		double cLStarClean = input.getcLstarClean();
+		double cL0Clean =  input.getcL0Clean();
+		double cL0HighLift = cL0Clean + output.getDeltaCL0Flap();
+		double qValue = cL0HighLift;
+		double alphaStar = (cLStarClean - qValue)/cLAlphaFlap.getEstimatedValue();
+		double cLMaxClean = input.getcLmaxClean();
+		Amount<Angle> alphaMax = input.getAlphaMaxClean().to(SI.RADIAN);	
+		double cLMaxFlap = cLMaxClean + output.getDeltaCLmaxFlap() + output.getDeltaCLmaxSlat();
+
+		output.setcLmaxFlapSlat(cLMaxFlap);
+		
+		double alphaMaxHighLift;
+
+		//recognizing airfoil family
+		int airfoilFamilyIndex = 0;
+		if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_4_Digit) 
+			airfoilFamilyIndex = 1;
+		else if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_5_Digit)
+			airfoilFamilyIndex = 2;
+		else if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_63_Series)
+			airfoilFamilyIndex = 3;
+		else if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_64_Series)
+			airfoilFamilyIndex = 4;
+		else if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_65_Series)
+			airfoilFamilyIndex = 5;
+		else if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_66_Series)
+			airfoilFamilyIndex = 6;
+		else if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.BICONVEX)
+			airfoilFamilyIndex = 7;
+		else if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.DOUBLE_WEDGE)
+			airfoilFamilyIndex = 8;
+		
+		double sharpnessParameterLE = aeroDatabaseReader.getDeltaYvsThickness(input.getMaxthicknessMeanAirfoil(), airfoilFamilyIndex);
+		
+		alphaMaxHighLift = ((cLMaxFlap-cL0HighLift)/cLAlphaFlap.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()) 
+				+ (aeroDatabaseReader.getD_Alpha_Vs_LambdaLE_VsDy(
+						LSGeometryCalc.calculateSweep(input.getAspectRatio(), input.getTaperRatioEq(), input.getSweepQuarteChordEq().getEstimatedValue(), 0.0, 0.25).getEstimatedValue(),
+						sharpnessParameterLE));
+
+		Amount<Angle> alphaMaxHighLiftAmount = Amount.valueOf(alphaMaxHighLift, NonSI.DEGREE_ANGLE);
+
+		output.setAlphaMaxFlapSlat(alphaMaxHighLiftAmount.to(NonSI.DEGREE_ANGLE));
+		
+		double alphaStarFlap; 
+
+		if(input.getSlatsNumber() == 0.0)
+			alphaStarFlap = (alphaStar + alphaStarCleanAmount.getEstimatedValue())/2;
+		else
+			alphaStarFlap = alphaMaxHighLift-(alphaMax.to(NonSI.DEGREE_ANGLE).getEstimatedValue()-alphaStarCleanAmount.to(NonSI.DEGREE_ANGLE).getEstimatedValue());
+
+		double cLStarFlap = cLAlphaFlap.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue() * alphaStarFlap + qValue;	
+		output.setcLStarFlapSlat(cLStarFlap);
+		output.setAlphaStarFlapSlat(Amount.valueOf(alphaStarFlap,NonSI.DEGREE_ANGLE));
+
+		if (alpha.getEstimatedValue() < alphaStarFlap ){ 
+			double cLActual = cLAlphaFlap.getEstimatedValue() * alpha.getEstimatedValue() + qValue;	
+			return cLActual;
+		}
+		else{
+			double[][] matrixData = { {Math.pow(alphaMaxHighLift, 3), Math.pow(alphaMaxHighLift, 2)
+				, alphaMaxHighLift,1.0},
+					{3* Math.pow(alphaMaxHighLift, 2), 2*alphaMaxHighLift, 1.0, 0.0},
+					{3* Math.pow(alphaStarFlap, 2), 2*alphaStarFlap, 1.0, 0.0},
+					{Math.pow(alphaStarFlap, 3), Math.pow(alphaStarFlap, 2),alphaStarFlap,1.0}};
+			RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
+
+
+			double [] vector = {cLMaxFlap, 0, cLAlphaFlap.getEstimatedValue(), cLStarFlap};
+
+			double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
+
+			double a = solSystem[0];
+			double b = solSystem[1];
+			double c = solSystem[2];
+			double d = solSystem[3];
+
+			double clActual = a * Math.pow(alpha.getEstimatedValue(), 3) + 
+					b * Math.pow(alpha.getEstimatedValue(), 2) + 
+					c * alpha.getEstimatedValue() + d;
+
+			return clActual;
+		}
+	}
+	
+	private static void plotCurves(AerodynamicDatabaseReader aeroDatabaseReader) throws InstantiationException, IllegalAccessException{ 
+
+		String folderPathHL = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR);
+			
+		double alphaCleanFirst = -10.0;
+		Amount<Angle> alphaActual;
+		int nPoints = 40;
+		Amount<Angle> alphaStarClean = input.getAlphaStarClean();
+		double cLStarClean = input.getcLstarClean();
+		double cLalphaClean = input.getcLAlphaClean().getEstimatedValue();
+		double cL0Clean = cLStarClean - cLalphaClean*alphaStarClean.getEstimatedValue();
+
+		double cLMaxClean = input.getcLmaxClean();
+		Amount<Angle> alphaMaxClean = input.getAlphaMaxClean();
+		
+		double[] alphaArrayPlot = new double[nPoints];
+ 		double[] cLCleanArrayPlot = new double[nPoints]; 
+		
+		alphaArrayPlot = MyArrayUtils.linspace(alphaCleanFirst, alphaMaxClean.getEstimatedValue() + 2, nPoints);
+		cLCleanArrayPlot = new double [nPoints];
+
+		double[][] matrixDataClean = { {Math.pow(alphaMaxClean.to(SI.RADIAN).getEstimatedValue(), 3),
+			Math.pow(alphaMaxClean.to(SI.RADIAN).getEstimatedValue(), 2),
+			alphaMaxClean.to(SI.RADIAN).getEstimatedValue(),1.0},
+				{3* Math.pow(alphaMaxClean.to(SI.RADIAN).getEstimatedValue(), 2),
+				2*alphaMaxClean.to(SI.RADIAN).getEstimatedValue(), 1.0, 0.0},
+				{3* Math.pow(alphaStarClean.to(SI.RADIAN).getEstimatedValue(), 2),
+					2*alphaStarClean.to(SI.RADIAN).getEstimatedValue(), 1.0, 0.0},
+				{Math.pow(alphaStarClean.to(SI.RADIAN).getEstimatedValue(), 3),
+						Math.pow(alphaStarClean.to(SI.RADIAN).getEstimatedValue(), 2),
+						alphaStarClean.to(SI.RADIAN).getEstimatedValue(),1.0}};
+		
+		RealMatrix mc = MatrixUtils.createRealMatrix(matrixDataClean);
+		double [] vectorClean = {cLMaxClean, 0, cLalphaClean, cLStarClean};
+
+		double [] solSystemC = MyMathUtils.solveLinearSystem(mc, vectorClean);
+
+		double aC = solSystemC[0];
+		double bC = solSystemC[1];
+		double cC = solSystemC[2];
+		double dC = solSystemC[3];
+
+		for ( int i=0 ; i< alphaArrayPlot.length ; i++){
+			alphaActual = Amount.valueOf(toRadians(alphaArrayPlot[i]), SI.RADIAN);
+			if (alphaActual.getEstimatedValue() < alphaStarClean.getEstimatedValue()) { 
+				cLCleanArrayPlot[i] = cLalphaClean*alphaActual.getEstimatedValue() + cL0Clean;}
+			else {
+				cLCleanArrayPlot[i] = aC * Math.pow(alphaActual.getEstimatedValue(), 3) + 
+						bC * Math.pow(alphaActual.getEstimatedValue(), 2) + 
+						cC * alphaActual.getEstimatedValue() + dC;
+			}
+		}
+
+		double[] alphaCleanArrayPlot = new double[nPoints];
+		double[] cLArrayHighLiftPlot = new double [nPoints];
+
+		double alphaHighLiftFirst = -13.0;
+		
+		double cL0HighLift = input.getcL0Clean() + output.getDeltaCL0Flap();
+		
+		double alphaMaxHighLift = output.getAlphaMaxFlapSlat().getEstimatedValue();
+
+		double alphaStarFlap = output.getAlphaStarFlapSlat().getEstimatedValue(); 
+
+		double cLStarFlap = output.getcLalphaNew().getEstimatedValue() * alphaStarFlap + cL0HighLift;	
+		
+		double[][] matrixDataHighLift = { {Math.pow(alphaMaxHighLift, 3), Math.pow(alphaMaxHighLift, 2)
+			, alphaMaxHighLift,1.0},
+				{3* Math.pow(alphaMaxHighLift, 2), 2*alphaMaxHighLift, 1.0, 0.0},
+				{3* Math.pow(alphaStarFlap, 2), 2*alphaStarFlap, 1.0, 0.0},
+				{Math.pow(alphaStarFlap, 3), Math.pow(alphaStarFlap, 2),alphaStarFlap,1.0}};
+		RealMatrix mhl = MatrixUtils.createRealMatrix(matrixDataHighLift);
+
+
+		double [] vectorHighLift = {output.getcLmaxFlapSlat(), 0, output.getcLalphaNew().getEstimatedValue(), cLStarFlap};
+		
+		System.out.println(" \n-----------CLEAN CONFIGURATION-------------- ");
+		System.out.println(" Alpha max = " + input.getAlphaMaxClean().getEstimatedValue() + " " + input.getAlphaMaxClean().getUnit());
+		System.out.println(" Alpha star = " + input.getAlphaStarClean().getEstimatedValue() + " " + input.getAlphaStarClean().getUnit());
+		System.out.println(" CL max = " + input.getcLmaxClean());
+		System.out.println(" CL star = " + input.getcLstarClean());
+		System.out.println(" CL alpha = " + input.getcLAlphaClean().getEstimatedValue() + " " + input.getcLAlphaClean().getUnit());
+		
+		System.out.println(" \n-----------HIGH LIFT DEVICES ON-------------- ");
+		System.out.println(" Alpha max = " + output.getAlphaMaxFlapSlat().getEstimatedValue() + " " + output.getAlphaMaxFlapSlat().getUnit());
+		System.out.println(" Alpha star = " + output.getAlphaStarFlapSlat().getEstimatedValue() + " " + output.getAlphaStarFlapSlat().getUnit());
+		System.out.println(" CL max = " + output.getcLmaxFlapSlat());
+		System.out.println(" CL star = " + output.getcLStarFlapSlat());
+		System.out.println(" CL alpha = " + output.getcLalphaNew().getEstimatedValue() + " " + output.getcLalphaNew().getUnit());
+
+		double [] solSystemHL = MyMathUtils.solveLinearSystem(mhl, vectorHighLift);
+
+		double aHL = solSystemHL[0];
+		double bHL = solSystemHL[1];
+		double cHL = solSystemHL[2];
+		double dHL = solSystemHL[3];
+
+		double[] alphaArrayHighLiftPlot = MyArrayUtils.linspace(alphaHighLiftFirst,
+				alphaMaxHighLift + 4,
+				nPoints);
+
+		for ( int i=0 ; i< alphaArrayHighLiftPlot.length ; i++){
+			alphaActual = Amount.valueOf(toRadians(alphaArrayHighLiftPlot[i]), SI.RADIAN);
+			if (alphaActual.getEstimatedValue() <= alphaStarFlap) { 
+				cLArrayHighLiftPlot[i] = output.getcLalphaNew().getEstimatedValue() * alphaActual.getEstimatedValue() + cL0HighLift;}
+			else {
+				cLArrayHighLiftPlot[i] = aHL * Math.pow(alphaActual.getEstimatedValue(), 3) + 
+						bHL * Math.pow(alphaActual.getEstimatedValue(), 2) + 
+						cHL * alphaActual.getEstimatedValue() + dHL;
+			}
+		}
+
+		// Convert from double to Double in order to use JFreeChart to plot.
+		
+		List<Double[]> cLListPlot = new ArrayList<>(); 
+		List<Double[]> alphaListPlot = new ArrayList<>(); 
+		
+		MyArray alphaArrayCleanMyArray = new MyArray(alphaCleanArrayPlot);
+		Double[] alphaArrayCleanDouble = alphaArrayCleanMyArray.getdDouble();
+
+		MyArray alphaArrayHighLiftMyArray = new MyArray(alphaArrayHighLiftPlot);
+		Double[] alphaArrayHighLiftDouble = alphaArrayHighLiftMyArray.getdDouble();
+
+		MyArray cLArrayCleanMyArray = new MyArray(cLCleanArrayPlot);
+		Double[] cLArrayCleanDouble = cLArrayCleanMyArray.getdDouble();
+
+		MyArray cLArrayHighLiftMyArray = new MyArray(cLArrayHighLiftPlot);
+		Double[] cLArrayHighLiftDouble = cLArrayHighLiftMyArray.getdDouble();
+
+
+		alphaListPlot.add(alphaArrayCleanDouble);
+		alphaListPlot.add(alphaArrayHighLiftDouble);
+
+		cLListPlot.add(cLArrayCleanDouble);
+		cLListPlot.add(cLArrayHighLiftDouble);
+
+		List<String> legend  = new ArrayList<>(); 
+
+		legend.add("clean");
+		legend.add("high lift");
+
+		System.out.println(" \n-----------WRITING CHART TO FILE-------------- ");
+		
+		MyChartToFileUtils.plotJFreeChart(alphaListPlot, 
+				cLListPlot,
+				"CL vs alpha",
+				"alpha", 
+				"CL",
+				null, null, null, null,
+				"deg",
+				"",
+				true,
+				legend,
+				JPADStaticWriteUtils.createNewFolder(folderPathHL + "High Lift Charts" + File.separator),
+				"CL curve high lift");
+
+		System.out.println(" \n-------------------DONE----------------------- ");
 	}
 	
 	//------------------------------------------------------------------------------------------
