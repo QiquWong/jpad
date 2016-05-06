@@ -26,6 +26,7 @@ public class ReaderWriterWing {
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
 
 		System.out.println("Reading input file data ...\n");
+		
 
 		//---------------------------------------------------------------------------------
 		// OPERATING CONDITION:
@@ -93,49 +94,141 @@ public class ReaderWriterWing {
 			
 		}
 		
-		List<String> chordDistribution = reader.getXMLPropertiesByPath("//chord_distribution");
+		List<String> chordDistribution = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//chord_distribution").get(0));
 		for(int i=0; i<chordDistribution.size(); i++)
 			input.getChordDistribution().add(Amount.valueOf(Double.valueOf(chordDistribution.get(i)), SI.METER));
+
 		
-		List<String> xleDistribution = reader.getXMLPropertiesByPath("//x_le_distribution");
+		List<String> xleDistribution = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//x_le_distribution").get(0));
 		for(int i=0; i<xleDistribution.size(); i++)
 			input.getxLEDistribution().add(Amount.valueOf(Double.valueOf(xleDistribution.get(i)), SI.METER));
 		
-		List<String> twistDistribution = reader.getXMLPropertiesByPath("//twist_distribution");
+		List<String> twistDistribution = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//twist_distribution").get(0));
 		for(int i=0; i<twistDistribution.size(); i++)
-			input.getxLEDistribution().add(Amount.valueOf(Double.valueOf(twistDistribution.get(i)), NonSI.DEGREE_ANGLE));
+			input.getTwistDistribution().add(Amount.valueOf(Double.valueOf(twistDistribution.get(i)), NonSI.DEGREE_ANGLE));
 		
-		List<String> dihedralDistribution  = reader.getXMLPropertiesByPath("//dihedral_distribution");
+		List<String> dihedralDistribution  = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//dihedral_distribution").get(0));
 		for(int i=0; i<dihedralDistribution.size(); i++)
-			input.getDihedralDistribution().add(Amount.valueOf(Double.valueOf(dihedralDistribution.get(i)), SI.METER));
-		
-		
-		
-		List<String> alphaZeroLiftDistribution = reader.getXMLPropertiesByPath("//alpha_zero_lift_distribution");
+			input.getDihedralDistribution().add(Amount.valueOf(Double.valueOf(dihedralDistribution.get(i)), NonSI.DEGREE_ANGLE));
+				
+		List<String> alphaZeroLiftDistribution = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//alpha_zero_lift_distribution").get(0));
 		for(int i=0; i<alphaZeroLiftDistribution.size(); i++)
 			input.getAlphaZeroLiftDistribution().add(Amount.valueOf(Double.valueOf(alphaZeroLiftDistribution.get(i)), NonSI.DEGREE_ANGLE));
 		
-		List<String> alphaStarDistribution = reader.getXMLPropertiesByPath("//alpha_star_distribution");
+		List<String> alphaStarDistribution = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//alpha_star_distribution").get(0));
 		for(int i=0; i<alphaStarDistribution.size(); i++)
 			input.getAlphaStarDistribution().add(Amount.valueOf(Double.valueOf(alphaStarDistribution.get(i)), NonSI.DEGREE_ANGLE));
 		
-		List<String> clMaxDistribution = reader.getXMLPropertiesByPath("//maximum_lift_coefficient_distribution");
+		List<String> clMaxDistribution = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//maximum_lift_coefficient_distribution").get(0));
 		for(int i=0; i<clMaxDistribution.size(); i++)
 			input.getMaximumliftCoefficientDistribution().add(Double.valueOf(clMaxDistribution.get(i)));
 	
 		
 
+	// WARNINGS
+		
+		if ( input.getNumberOfSections() != input.getChordDistribution().size()){
+			 System.err.println("WARNING! the number of declared section differs from the number of chords. ( number of section = " + input.getNumberOfSections()
+			 + " ; number of chords = " + input.getChordDistribution().size() + " )");
+		}
+		
+		if ( input.getNumberOfSections() != input.getxLEDistribution().size()){
+			 System.err.println("WARNING! the number of declared section differs from the number of XLE values. ( number of section = " + input.getNumberOfSections()
+			 + " ; number of XLE values = " + input.getxLEDistribution().size()+ " )");
+		}
+		
+		if ( input.getNumberOfSections() != input.getTwistDistribution().size()){
+			 System.err.println("WARNING! the number of declared section differs from the number of twist angles. ( number of section = " + input.getNumberOfSections()
+			 + " ; number of twist angles = " + input.getTwistDistribution().size()+ " )");
+		}
+		
+		if ( input.getNumberOfSections() != input.getDihedralDistribution().size()){
+			 System.err.println("WARNING! the number of declared section differs from the number of dihedral angles. ( number of section = " + input.getNumberOfSections()
+			 + " ; number of dihedral angles = " + input.getDihedralDistribution().size()+ " )");
+		}
+		
+		if ( input.getNumberOfSections() != input.getAlphaZeroLiftDistribution().size()){
+			 System.err.println("WARNING! the number of declared section differs from the number of zero lift angles. ( number of section = " + input.getNumberOfSections()
+			 + " ; number of zero lift angles = " + input.getAlphaZeroLiftDistribution().size()+ " )");
+		}
+		
+		if ( input.getNumberOfSections() != input.getAlphaStarDistribution().size()){
+			 System.err.println("WARNING! the number of declared section differs from the number of end of linearity angles. ( number of section = " + input.getNumberOfSections()
+			 + " ; number of end of linearity angles = " + input.getAlphaStarDistribution().size()+ " )");
+		}
+		
+		
+		if ( input.getNumberOfSections() != input.getMaximumliftCoefficientDistribution().size()){
+			 System.err.println("WARNING! the number of declared section differs from the number of cl max. ( number of section = " + input.getNumberOfSections()
+			 + " ; number of cl max = " + input.getMaximumliftCoefficientDistribution().size()+ " )");
+		}
 	// PRINT
 		
-		System.out.println("INPUT DATA\n\n");
+		if(input.getNumberOfSections() == input.getChordDistribution().size() &&
+				input.getNumberOfSections() == input.getxLEDistribution().size() &&
+				input.getNumberOfSections() == input.getTwistDistribution().size() &&
+				input.getNumberOfSections() == input.getDihedralDistribution().size() &&
+				input.getNumberOfSections() == input.getAlphaZeroLiftDistribution().size() &&
+				input.getNumberOfSections() == input.getAlphaStarDistribution().size() &&
+				input.getNumberOfSections() == input.getMaximumliftCoefficientDistribution().size() ){
+		System.out.println("\n\nINPUT DATA\n\n");
 		
 		System.out.println("Operating Conditions");
 		System.out.println("-------------------------------------");
-		System.out.println("Altitude: " + input.getAltitude());
+		System.out.println("Altitude : " + input.getAltitude().getEstimatedValue()+ " " + input.getAltitude().getUnit());
+		System.out.println("Mach Number : " + input.getMachNumber());
 		
-		System.out.println("\nChord distribution: ");
-		for(int i=0; i<input.getChordDistribution().size(); i++)
-			System.out.print(input.getChordDistribution().get(i) + " ");
+		System.out.println("\nAlpha Values");
+		System.out.println("-------------------------------------");
+		System.out.println("Number of Alpha : " + input.getNumberOfAlpha());
+		System.out.println("Alpha Initial : " + input.getAlphaInitial().getEstimatedValue()+ " " + input.getAlphaInitial().getUnit());
+		System.out.println("Alpha Final : " + input.getAlphaFinal().getEstimatedValue()+ " " + input.getAlphaFinal().getUnit());
+		
+		System.out.println("\nWing");
+		System.out.println("-------------------------------------");
+		System.out.println("Surface : " + input.getSurface().getEstimatedValue()+ " " + input.getSurface().getUnit());
+		System.out.println("Aspect Ratio : " + input.getAspectRatio());
+		System.out.println("Number of point along semi-span : " + input.getNumberOfPointSemispan());
+		System.out.println("Adimensional kink station : " + input.getAdimensionalKinkStation());
+		
+		System.out.println("\nDistribution");
+		System.out.println("-------------------------------------");
+		System.out.println("Number of given stations : " + input.getNumberOfSections());
+		
+		System.out.println("\nMean airoil type : " + input.getMeanAirfoilFamily());
 
+		System.out.print("\nChord distribution : [");
+		for(int i=0; i<input.getChordDistribution().size(); i++)
+			System.out.print("  " +input.getChordDistribution().get(i).getEstimatedValue() + "  ");
+			System.out.println("] " + input.getChordDistribution().get(0).getUnit() );
+		
+		System.out.print("X LE distribution : [");
+		for(int i=0; i<input.getxLEDistribution().size(); i++)
+			System.out.print("  " +input.getxLEDistribution().get(i).getEstimatedValue()+ " ");
+		    System.out.println("] " + input.getxLEDistribution().get(0).getUnit() );
+		
+		System.out.print("Twist distribution : [");
+		for(int i=0; i<input.getTwistDistribution().size(); i++)
+			System.out.print("  " +input.getTwistDistribution().get(i).getEstimatedValue()+ " ");
+			System.out.println("] " + input.getTwistDistribution().get(0).getUnit() );
+			
+		System.out.print("Dihedral distribution : [");
+		for(int i=0; i<input.getDihedralDistribution().size(); i++)
+			System.out.print("  " +input.getDihedralDistribution().get(i).getEstimatedValue()+ " ");
+			System.out.println("] " + input.getDihedralDistribution().get(0).getUnit() );
+			
+		System.out.print("Alpha zero lift distribution : [");
+		for(int i=0; i<input.getAlphaZeroLiftDistribution().size(); i++)
+			System.out.print("  " +input.getAlphaZeroLiftDistribution().get(i).getEstimatedValue()+ " ");
+			System.out.println("] " + input.getAlphaZeroLiftDistribution().get(0).getUnit() );
+			
+		System.out.print("Alpha Star distribution: [");
+		for(int i=0; i<input.getAlphaStarDistribution().size(); i++)
+			System.out.print("  " +input.getAlphaStarDistribution().get(i).getEstimatedValue()+ " ");
+			System.out.println("] " + input.getAlphaStarDistribution().get(0).getUnit() );	
+			
+		System.out.print("Cl max distribution : ");
+			System.out.print(input.getMaximumliftCoefficientDistribution());
+		}
 	}
 }

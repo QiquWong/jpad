@@ -88,7 +88,11 @@ public class InputOutputTree {
 		xLEDistribution = new ArrayList<Amount>();
 		dihedralDistribution = new ArrayList<Amount>();
 		twistDistribution = new ArrayList<Amount>();
-	
+		
+		alphaZeroLiftDistribution = new ArrayList<Amount>();
+		alphaStarDistribution = new ArrayList<Amount>();
+		maximumliftCoefficientDistribution = new ArrayList<Double>();
+		
 		machNumber = 0.0;
 		aspectRatio = 0.0;
 		adimensionalKinkStation = 0.0;

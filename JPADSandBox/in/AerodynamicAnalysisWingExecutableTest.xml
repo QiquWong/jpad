@@ -14,19 +14,19 @@
                 <number_of_point_semispan unit="">100</number_of_point_semispan>
                 <adimensional_kink_station unit="">0.399</adimensional_kink_station>
              </global>
-            <distribution>
+             <distribution>
                 <number_of_given_sections unit="">3</number_of_given_sections>
                 <mean_airfoil_type unit="">NACA_4_DIGIT</mean_airfoil_type>
                    <geometry>
-                    <chord_distribution unit="">[6.39, 2.72, 1.05]</chord_distribution>
-                    <x_le_distribution unit="">[0.0, 3.71, 8.31]</x_le_distribution>
-                    <twist_distribution unit="">[6.39, 2.72, 1.05]</twist_distribution>
-                    <dihedral_distribution unit="">[0.0, 2.72, 8.5]</dihedral_distribution>
+						<chord_distribution unit="m">[6.39, 2.72, 1.05]</chord_distribution>
+						<x_le_distribution unit="m">[0.0, 3.71, 8.31]</x_le_distribution>
+						<twist_distribution unit="°">[0, -2, -6]</twist_distribution>
+						<dihedral_distribution unit="°">[0.0, 2.72, 8.5]</dihedral_distribution>
                     </geometry>
                     <aerodynamics>
-                    <alpha_zero_lift_distribution unit="°">[-1.98, -1.63, -3.18]</alpha_zero_lift_distribution>
-                   <alpha_star_distribution unit="°">[8.0, 8.0, 8.0]</alpha_star_distribution>
-                   <maximum_lift_coefficient_distribution unit="°">[-1.98, -1.63, -3.18]</maximum_lift_coefficient_distribution>
+						<alpha_zero_lift_distribution unit="°">[-1.98, -1.63, -3.18]</alpha_zero_lift_distribution>
+						<alpha_star_distribution unit="°">[8.0, 8.0, 8.0]</alpha_star_distribution>
+						<maximum_lift_coefficient_distribution unit="°">[-1.98, -1.63, -3.18]</maximum_lift_coefficient_distribution>
                     </aerodynamics>
              </distribution>
         </wing>

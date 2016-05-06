@@ -2,6 +2,7 @@ package standaloneutils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.measure.quantity.Angle;
@@ -358,6 +359,64 @@ public class JPADXmlReader {
 		importAircraft(aircraft, importFile + ext);
 	}
 
+	/**
+	 * This static method reads arrays from xml. This method accepts a String as input that is the complete array. 
+	 * 
+	 * @author Manuela Ruocco
+	 */
+	public static List<String> readArrayFromXML(String inputString){
+		
+		List<String> outputStrings = new ArrayList<String>();
+		String tempString = new String();
+		int n, m;
+		
+		inputString = inputString.trim();
+		
+		int openParenthesisCheck = inputString.indexOf('[');
+		
+		if ( openParenthesisCheck == -1){
+			inputString = "[" + inputString;
+		}
+		
+		int closeParenthesisCheck = inputString.indexOf(']');
+		
+		if ( closeParenthesisCheck == -1){
+			inputString = inputString + "]";
+		}
+		
+		// First value
+		
+		n = inputString.indexOf(',');
+		
+		tempString = inputString.substring(1, n);
+		tempString = tempString.trim();
+		
+		outputStrings.add(tempString);
+		
+		
+		// Following values
+		
+		while ( n!= -1 ){
+			
+			m = n;
+			tempString = new String();
+			
+			n = inputString.indexOf(',', m+1);
+			if( n != -1){
+			tempString = inputString.substring(m+1, n);}
+			
+			else{
+				int k = inputString.indexOf(']');
+			tempString = inputString.substring(m+1, k)	;
+			}
+			tempString = tempString.trim();
+			
+			outputStrings.add(tempString);
+		}
+		return outputStrings;
+}
+	
+	
 	public Document getXmlDoc() {
 		return _xmlDoc;
 	}
