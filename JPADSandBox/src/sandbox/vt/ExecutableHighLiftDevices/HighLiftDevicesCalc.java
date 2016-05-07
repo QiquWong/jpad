@@ -10,6 +10,7 @@ import javax.measure.unit.SI;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.jasper.tagplugins.jstl.core.Out;
 import org.jscience.physics.amount.Amount;
 import org.w3c.dom.NodeList;
 import calculators.geometry.LSGeometryCalc;
@@ -24,7 +25,6 @@ import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyMathUtils;
 import standaloneutils.MyXMLReaderUtils;
-import standaloneutils.customdata.MyArray;
 import writers.JPADStaticWriteUtils;
 
 public class HighLiftDevicesCalc {
@@ -727,7 +727,7 @@ public class HighLiftDevicesCalc {
 		for(int i=0; i<output.getDeltaCl0FlapList().size(); i++)
 			System.out.println(output.getDeltaCl0FlapList().get(i));
 
-		System.out.println("\ndeltaCl0_flap = \n" + output.getDeltaCL0Flap());
+		System.out.println("\ndeltaCl0_flap = \n" + output.getDeltaCl0Flap());
 
 		System.out.println("\ndeltaCL0_flap_list = ");
 		for(int i=0; i<output.getDeltaCL0FlapList().size(); i++)
@@ -893,34 +893,39 @@ public class HighLiftDevicesCalc {
 	private static void plotCurves(AerodynamicDatabaseReader aeroDatabaseReader) throws InstantiationException, IllegalAccessException{ 
 
 		String folderPathHL = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR);
-			
+		
+		//--------------------------------------------------------------------------------------
+		// BUILDING CLEAN CURVE:
+		//--------------------------------------------------------------------------------------
 		double alphaCleanFirst = -10.0;
 		Amount<Angle> alphaActual;
+		
 		int nPoints = 40;
-		Amount<Angle> alphaStarClean = input.getAlphaStarClean();
+		
+		Amount<Angle> alphaStarClean = input.getAlphaStarClean().to(SI.RADIAN);
 		double cLStarClean = input.getcLstarClean();
-		double cLalphaClean = input.getcLAlphaClean().getEstimatedValue();
+		double cLalphaClean = input.getcLAlphaClean().to(SI.RADIAN.inverse()).getEstimatedValue();
 		double cL0Clean = cLStarClean - cLalphaClean*alphaStarClean.getEstimatedValue();
 
 		double cLMaxClean = input.getcLmaxClean();
-		Amount<Angle> alphaMaxClean = input.getAlphaMaxClean();
+		Amount<Angle> alphaMaxClean = input.getAlphaMaxClean().to(SI.RADIAN);
 		
-		double[] alphaArrayPlot = new double[nPoints];
- 		double[] cLCleanArrayPlot = new double[nPoints]; 
+		Double[] alphaCleanArrayPlot = new Double[nPoints];
+ 		Double[] cLCleanArrayPlot = new Double[nPoints]; 
 		
-		alphaArrayPlot = MyArrayUtils.linspace(alphaCleanFirst, alphaMaxClean.getEstimatedValue() + 2, nPoints);
-		cLCleanArrayPlot = new double [nPoints];
+		alphaCleanArrayPlot = MyArrayUtils.linspaceDouble(alphaCleanFirst, alphaMaxClean.to(NonSI.DEGREE_ANGLE).getEstimatedValue() + 2, nPoints);
+		cLCleanArrayPlot = new Double [nPoints];
 
-		double[][] matrixDataClean = { {Math.pow(alphaMaxClean.to(SI.RADIAN).getEstimatedValue(), 3),
-			Math.pow(alphaMaxClean.to(SI.RADIAN).getEstimatedValue(), 2),
-			alphaMaxClean.to(SI.RADIAN).getEstimatedValue(),1.0},
-				{3* Math.pow(alphaMaxClean.to(SI.RADIAN).getEstimatedValue(), 2),
-				2*alphaMaxClean.to(SI.RADIAN).getEstimatedValue(), 1.0, 0.0},
-				{3* Math.pow(alphaStarClean.to(SI.RADIAN).getEstimatedValue(), 2),
-					2*alphaStarClean.to(SI.RADIAN).getEstimatedValue(), 1.0, 0.0},
-				{Math.pow(alphaStarClean.to(SI.RADIAN).getEstimatedValue(), 3),
-						Math.pow(alphaStarClean.to(SI.RADIAN).getEstimatedValue(), 2),
-						alphaStarClean.to(SI.RADIAN).getEstimatedValue(),1.0}};
+		double[][] matrixDataClean = { {Math.pow(alphaMaxClean.getEstimatedValue(), 3),
+			Math.pow(alphaMaxClean.getEstimatedValue(), 2),
+			alphaMaxClean.getEstimatedValue(),1.0},
+				{3* Math.pow(alphaMaxClean.getEstimatedValue(), 2),
+				2*alphaMaxClean.getEstimatedValue(), 1.0, 0.0},
+				{3* Math.pow(alphaStarClean.getEstimatedValue(), 2),
+					2*alphaStarClean.getEstimatedValue(), 1.0, 0.0},
+				{Math.pow(alphaStarClean.getEstimatedValue(), 3),
+						Math.pow(alphaStarClean.getEstimatedValue(), 2),
+						alphaStarClean.getEstimatedValue(),1.0}};
 		
 		RealMatrix mc = MatrixUtils.createRealMatrix(matrixDataClean);
 		double [] vectorClean = {cLMaxClean, 0, cLalphaClean, cLStarClean};
@@ -932,8 +937,8 @@ public class HighLiftDevicesCalc {
 		double cC = solSystemC[2];
 		double dC = solSystemC[3];
 
-		for ( int i=0 ; i< alphaArrayPlot.length ; i++){
-			alphaActual = Amount.valueOf(toRadians(alphaArrayPlot[i]), SI.RADIAN);
+		for ( int i=0 ; i< alphaCleanArrayPlot.length ; i++){
+			alphaActual = Amount.valueOf(toRadians(alphaCleanArrayPlot[i]), SI.RADIAN);
 			if (alphaActual.getEstimatedValue() < alphaStarClean.getEstimatedValue()) { 
 				cLCleanArrayPlot[i] = cLalphaClean*alphaActual.getEstimatedValue() + cL0Clean;}
 			else {
@@ -943,28 +948,57 @@ public class HighLiftDevicesCalc {
 			}
 		}
 
-		double[] alphaCleanArrayPlot = new double[nPoints];
-		double[] cLArrayHighLiftPlot = new double [nPoints];
-
+		//--------------------------------------------------------------------------------------
+		// BUILDING HIGH LIFT CURVE:
+		//--------------------------------------------------------------------------------------
 		double alphaHighLiftFirst = -13.0;
+		Amount<Angle> alphaHighLiftActual;
 		
-		double cL0HighLift = input.getcL0Clean() + output.getDeltaCL0Flap();
+		Amount<Angle> alphaStarHighLift = output.getAlphaStarFlapSlat().to(SI.RADIAN);
+		double cLStarHighLift = output.getcLStarFlapSlat();
+		double cLalphaHighLift = output.getcLalphaNew().to(SI.RADIAN.inverse()).getEstimatedValue();
+		double cL0HighLift = cLStarHighLift - cLalphaHighLift*alphaStarHighLift.getEstimatedValue();
 		
-		double alphaMaxHighLift = output.getAlphaMaxFlapSlat().getEstimatedValue();
+		double cLMaxHighLift = output.getcLmaxFlapSlat();
+		Amount<Angle> alphaMaxHighLift = output.getAlphaMaxFlapSlat().to(SI.RADIAN);
+		
+		Double[] alphaHighLiftArrayPlot = new Double[nPoints];
+		Double[] cLArrayHighLiftPlot = new Double [nPoints];
 
-		double alphaStarFlap = output.getAlphaStarFlapSlat().getEstimatedValue(); 
-
-		double cLStarFlap = output.getcLalphaNew().getEstimatedValue() * alphaStarFlap + cL0HighLift;	
+		alphaHighLiftArrayPlot = MyArrayUtils.linspaceDouble(alphaHighLiftFirst, alphaMaxHighLift.to(NonSI.DEGREE_ANGLE).getEstimatedValue() + 4, nPoints);
+		cLArrayHighLiftPlot = new Double [nPoints];
 		
-		double[][] matrixDataHighLift = { {Math.pow(alphaMaxHighLift, 3), Math.pow(alphaMaxHighLift, 2)
-			, alphaMaxHighLift,1.0},
-				{3* Math.pow(alphaMaxHighLift, 2), 2*alphaMaxHighLift, 1.0, 0.0},
-				{3* Math.pow(alphaStarFlap, 2), 2*alphaStarFlap, 1.0, 0.0},
-				{Math.pow(alphaStarFlap, 3), Math.pow(alphaStarFlap, 2),alphaStarFlap,1.0}};
+		double[][] matrixDataHighLift = { {Math.pow(alphaMaxHighLift.getEstimatedValue(), 3),
+			Math.pow(alphaMaxHighLift.getEstimatedValue(), 2),
+			alphaMaxHighLift.getEstimatedValue(),1.0},
+				{3* Math.pow(alphaMaxHighLift.getEstimatedValue(), 2),
+				2*alphaMaxHighLift.getEstimatedValue(), 1.0, 0.0},
+				{3* Math.pow(alphaStarHighLift.getEstimatedValue(), 2),
+					2*alphaStarHighLift.getEstimatedValue(), 1.0, 0.0},
+				{Math.pow(alphaStarHighLift.getEstimatedValue(), 3),
+						Math.pow(alphaStarHighLift.getEstimatedValue(), 2),
+						alphaStarHighLift.getEstimatedValue(),1.0}};
+		
 		RealMatrix mhl = MatrixUtils.createRealMatrix(matrixDataHighLift);
+		double [] vectorHighLift = {cLMaxHighLift, 0, cLalphaHighLift, cLStarHighLift};
 
+		double [] solSystemHL = MyMathUtils.solveLinearSystem(mhl, vectorHighLift);
 
-		double [] vectorHighLift = {output.getcLmaxFlapSlat(), 0, output.getcLalphaNew().getEstimatedValue(), cLStarFlap};
+		double aHL = solSystemHL[0];
+		double bHL = solSystemHL[1];
+		double cHL = solSystemHL[2];
+		double dHL = solSystemHL[3];
+
+		for ( int i=0 ; i< alphaHighLiftArrayPlot.length ; i++){
+			alphaHighLiftActual = Amount.valueOf(toRadians(alphaHighLiftArrayPlot[i]), SI.RADIAN);
+			if (alphaHighLiftActual.getEstimatedValue() < alphaStarHighLift.getEstimatedValue()) { 
+				cLArrayHighLiftPlot[i] = cLalphaHighLift*alphaHighLiftActual.getEstimatedValue() + cL0HighLift;}
+			else {
+				cLArrayHighLiftPlot[i] = aHL * Math.pow(alphaHighLiftActual.getEstimatedValue(), 3) + 
+						bHL * Math.pow(alphaHighLiftActual.getEstimatedValue(), 2) + 
+						cHL * alphaHighLiftActual.getEstimatedValue() + dHL;
+			}
+		}
 		
 		System.out.println(" \n-----------CLEAN CONFIGURATION-------------- ");
 		System.out.println(" Alpha max = " + input.getAlphaMaxClean().getEstimatedValue() + " " + input.getAlphaMaxClean().getUnit());
@@ -980,51 +1014,17 @@ public class HighLiftDevicesCalc {
 		System.out.println(" CL star = " + output.getcLStarFlapSlat());
 		System.out.println(" CL alpha = " + output.getcLalphaNew().getEstimatedValue() + " " + output.getcLalphaNew().getUnit());
 
-		double [] solSystemHL = MyMathUtils.solveLinearSystem(mhl, vectorHighLift);
-
-		double aHL = solSystemHL[0];
-		double bHL = solSystemHL[1];
-		double cHL = solSystemHL[2];
-		double dHL = solSystemHL[3];
-
-		double[] alphaArrayHighLiftPlot = MyArrayUtils.linspace(alphaHighLiftFirst,
-				alphaMaxHighLift + 4,
-				nPoints);
-
-		for ( int i=0 ; i< alphaArrayHighLiftPlot.length ; i++){
-			alphaActual = Amount.valueOf(toRadians(alphaArrayHighLiftPlot[i]), SI.RADIAN);
-			if (alphaActual.getEstimatedValue() <= alphaStarFlap) { 
-				cLArrayHighLiftPlot[i] = output.getcLalphaNew().getEstimatedValue() * alphaActual.getEstimatedValue() + cL0HighLift;}
-			else {
-				cLArrayHighLiftPlot[i] = aHL * Math.pow(alphaActual.getEstimatedValue(), 3) + 
-						bHL * Math.pow(alphaActual.getEstimatedValue(), 2) + 
-						cHL * alphaActual.getEstimatedValue() + dHL;
-			}
-		}
-
+		//--------------------------------------------------------------------------------------
 		// Convert from double to Double in order to use JFreeChart to plot.
 		
 		List<Double[]> cLListPlot = new ArrayList<>(); 
-		List<Double[]> alphaListPlot = new ArrayList<>(); 
-		
-		MyArray alphaArrayCleanMyArray = new MyArray(alphaCleanArrayPlot);
-		Double[] alphaArrayCleanDouble = alphaArrayCleanMyArray.getdDouble();
+		List<Double[]> alphaListPlot = new ArrayList<>();
 
-		MyArray alphaArrayHighLiftMyArray = new MyArray(alphaArrayHighLiftPlot);
-		Double[] alphaArrayHighLiftDouble = alphaArrayHighLiftMyArray.getdDouble();
+		alphaListPlot.add(alphaCleanArrayPlot);
+		alphaListPlot.add(alphaHighLiftArrayPlot);
 
-		MyArray cLArrayCleanMyArray = new MyArray(cLCleanArrayPlot);
-		Double[] cLArrayCleanDouble = cLArrayCleanMyArray.getdDouble();
-
-		MyArray cLArrayHighLiftMyArray = new MyArray(cLArrayHighLiftPlot);
-		Double[] cLArrayHighLiftDouble = cLArrayHighLiftMyArray.getdDouble();
-
-
-		alphaListPlot.add(alphaArrayCleanDouble);
-		alphaListPlot.add(alphaArrayHighLiftDouble);
-
-		cLListPlot.add(cLArrayCleanDouble);
-		cLListPlot.add(cLArrayHighLiftDouble);
+		cLListPlot.add(cLCleanArrayPlot);
+		cLListPlot.add(cLArrayHighLiftPlot);
 
 		List<String> legend  = new ArrayList<>(); 
 
@@ -1047,6 +1047,19 @@ public class HighLiftDevicesCalc {
 				"CL curve high lift");
 
 		System.out.println(" \n-------------------DONE----------------------- ");
+	}
+	
+	/*******************************************************************************************
+	 * This method is in charge of writing all input data collected inside the object of the 
+	 * OutputTree class on a XML file.
+	 * 
+	 * @author Vittorio Trifari
+	 * 
+	 * @param output object of the OutputTree class which holds all output data
+	 */
+	public static void writeToXML(OutputTree output) {
+		
+		
 	}
 	
 	//------------------------------------------------------------------------------------------

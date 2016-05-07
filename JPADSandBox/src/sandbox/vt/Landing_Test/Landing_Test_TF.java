@@ -313,6 +313,20 @@ public class Landing_Test_TF {
 
 		System.out.println("\n\ndeltaCLmax_flap = \n" + highLiftCalculator.getDeltaCLmax_flap());
 
+		System.out.println("\n\ndeltaClmax_flap = \n" + highLiftCalculator.getDeltaClmax_flap());
+
+		System.out.println("\n\ndeltaClmax_slat_list = ");
+		for(int i=0; i<highLiftCalculator.getDeltaClmax_slat_list().size(); i++)
+			System.out.print(highLiftCalculator.getDeltaClmax_slat_list().get(i) + " ");
+
+		System.out.println("\n\ndeltaClmax_slat = \n" + highLiftCalculator.getDeltaClmax_slat());
+		
+		System.out.println("\n\ndeltaCLmax_slat_list = ");
+		for(int i=0; i<highLiftCalculator.getDeltaCLmax_slat_list().size(); i++)
+			System.out.print(highLiftCalculator.getDeltaCLmax_slat_list().get(i) + " ");
+
+		System.out.println("\n\ndeltaCLmax_slat = \n" + highLiftCalculator.getDeltaCLmax_slat());
+		
 		System.out.println("\n\ncLalpha_new_list = ");
 		for(int i=0; i<highLiftCalculator.getcLalpha_new_list().size(); i++)
 			System.out.print(highLiftCalculator.getcLalpha_new_list().get(i) + " ");

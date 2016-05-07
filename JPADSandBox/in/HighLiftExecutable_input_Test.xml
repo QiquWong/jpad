@@ -23,8 +23,8 @@
                         </clean_configuration_parameters>
                         <mean_airfoil>
                                 <clalpha_mean_airfoil unit = "">0.1099</clalpha_mean_airfoil>
-                                <cl0_mean_airfoil unit = "">-0.12</cl0_mean_airfoil>
-                                <leading_edge_radius_mean_airfoil unit = "m">0.0174</leading_edge_radius_mean_airfoil>
+                                <cl0_mean_airfoil unit = "">0.15</cl0_mean_airfoil>
+                                <leading_edge_radius_mean_airfoil unit = "m">0.1164</leading_edge_radius_mean_airfoil>
                                 <mean_airfoil_chord unit = "m">12.0</mean_airfoil_chord>
                                 <max_thickness_mean_airfoil unit = "">0.15</max_thickness_mean_airfoil>
                                 <airfoil_family>NACA_63_SERIES</airfoil_family>
