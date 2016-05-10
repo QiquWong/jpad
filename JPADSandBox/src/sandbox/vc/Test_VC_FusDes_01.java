@@ -3,6 +3,8 @@ package sandbox.vc;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
+import org.jscience.physics.amount.Amount;
+
 import aircraft.OperatingConditions;
 import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
@@ -12,6 +14,7 @@ import calculators.aerodynamics.MomentCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
+import net.sf.saxon.expr.instruct.ValueOf;
 
 public class Test_VC_FusDes_01 {
 
@@ -51,7 +54,9 @@ public class Test_VC_FusDes_01 {
 		double finenessRatio       = theAircraft.get_fuselage().get_lambda_F().doubleValue();
 		double noseFinenessRatio   = theAircraft.get_fuselage().get_lambda_N().doubleValue();
 		double tailFinenessRatio   = theAircraft.get_fuselage().get_lambda_T().doubleValue();
+		theAircraft.get_fuselage().set_upsweepAngle(Amount.valueOf(14, NonSI.DEGREE_ANGLE));
 		double upsweepAngle 	   = theAircraft.get_fuselage().get_upsweepAngle().doubleValue(NonSI.DEGREE_ANGLE);
+		theAircraft.get_fuselage().set_windshieldAngle(Amount.valueOf(40, NonSI.DEGREE_ANGLE));
 		double windshieldAngle     = theAircraft.get_fuselage().get_windshieldAngle().doubleValue(NonSI.DEGREE_ANGLE);
 		double xPositionPole	   = 0.5;
 
@@ -125,40 +130,10 @@ public class Test_VC_FusDes_01 {
 			      theAircraft.get_wing().get_meanAerodChordActual().doubleValue(SI.METRE));
 		System.out.println("CMn: " + fusDesDatabaseReader.getdCMn());
 		System.out.println("CMt: " + fusDesDatabaseReader.getdCMt());
-		System.out.println("CM0 fuselge: " + cM0Fuselage);		// - 0.0361 (-0.2180)
-		System.out.println("CMalfa fuselge: " + cMaFuselage); 	// 0.0222 (0.2243)
+		System.out.println("CM0 fuselge: " + cM0Fuselage);		// - 0.0361 (-0.2180) --> NOT COMPARABLE because of fuselage geometric differences (nose and tail contributions cause errors)
+		System.out.println("CMalfa fuselge: " + cMaFuselage); 	// 0.0222 (0.2243) --> NOT COMPARABLE because of fuselage geometric differences (nose and tail contributions cause errors)
 		System.out.println("CNb fuselge: " + cNbFuselage);    	// -.0022 (-.0021 cfd)
 		System.out.println("-------------------");
-
-		/* // Gotta create this object
-				ACAnalysisManager theAnalysis = new ACAnalysisManager(theOperatingConditions);
-				// Gotta call this method first
-				theAnalysis.updateGeometry(theAircraft);
-				theAnalysis.doAnalysis(theAircraft, 
-						AnalysisTypeEnum.AERODYNAMIC, 
-						AnalysisTypeEnum.BALANCE,
-						AnalysisTypeEnum.WEIGHTS,
-						AnalysisTypeEnum.PERFORMANCES,
-						AnalysisTypeEnum.COSTS);
-				// do pass these parameters in this sequence
-
-
-				System.out.println("----------------------");
-
-				// TODO: fix this ??
-				JPADGlobalData.setTheCurrentAircraft(theAircraft);
-				JPADGlobalData.setTheCurrentAnalysis(theAnalysis);
-				JPADWriteUtils.buildXmlTree(theAircraft, theOperatingConditions);
-
-				JPADDataWriter theWriter = new JPADDataWriter(
-						theOperatingConditions, theAircraft, theAnalysis);
-
-				String xmlFileFolderPath = 
-						MyConfiguration.currentDirectoryString;		
-				String xmlFilePath = xmlFileFolderPath + File.separator + "pippo.xml";
-
-				System.out.println("Exporting to file: " + xmlFilePath);
-				theWriter.exportToXMLfile(xmlFilePath);*/
 
 	}// end-of-main
 

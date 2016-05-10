@@ -4619,4 +4619,12 @@ public class Fuselage extends AeroComponent {
 	public Amount<Angle> get_windshieldAngle() {
 		return _windshieldAngle;
 	}
+
+	public void set_upsweepAngle(Amount<Angle> _upsweepAngle) {
+		this._upsweepAngle = _upsweepAngle;
+	}
+
+	public void set_windshieldAngle(Amount<Angle> _windshieldAngle) {
+		this._windshieldAngle = _windshieldAngle;
+	}
 } // end of class
