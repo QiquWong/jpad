@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <high_lift_executable>
-        <input>
+        <INPUT>
                 <flight_condition>
                         <alpha_current unit = "°">5.0</alpha_current>
                 </flight_condition>
@@ -22,7 +22,7 @@
                                 <cLStar_clean unit = "">0.826</cLStar_clean>
                         </clean_configuration_parameters>
                         <mean_airfoil>
-                                <clalpha_mean_airfoil unit = "">0.1099</clalpha_mean_airfoil>
+                                <cl_alpha_mean_airfoil unit = "">0.1099</cl_alpha_mean_airfoil>
                                 <cl0_mean_airfoil unit = "">0.15</cl0_mean_airfoil>
                                 <leading_edge_radius_mean_airfoil unit = "m">0.1164</leading_edge_radius_mean_airfoil>
                                 <mean_airfoil_chord unit = "m">12.0</mean_airfoil_chord>
@@ -36,14 +36,14 @@
                                 <flap_chord_ratio unit = "">0.18</flap_chord_ratio>
                                 <flap_deflection unit = "°">30</flap_deflection>
                                 <flap_non_dimensional_inner_station>0.104</flap_non_dimensional_inner_station>
-                                <flap_non_dimensional_outern_station>0.357</flap_non_dimensional_outern_station>
+                                <flap_non_dimensional_outer_station>0.357</flap_non_dimensional_outer_station>
                         </flap>
                         <flap id = "2">
                                 <flap_type>TRIPLE_SLOTTED</flap_type>
                                 <flap_chord_ratio unit = "">0.18</flap_chord_ratio>
                                 <flap_deflection unit = "°">30</flap_deflection>
                                 <flap_non_dimensional_inner_station>0.411</flap_non_dimensional_inner_station>
-                                <flap_non_dimensional_outern_station>0.636</flap_non_dimensional_outern_station>
+                                <flap_non_dimensional_outer_station>0.636</flap_non_dimensional_outer_station>
                         </flap>
                 </flaps>
                 <slats>
@@ -52,22 +52,22 @@
                                 <slat_chord_ratio unit = "">0.09</slat_chord_ratio>
                                 <slat_extension_ratio unit = "">1.1</slat_extension_ratio>
                                 <slat_non_dimensional_inner_station unit = "">0.192</slat_non_dimensional_inner_station>
-                                <slat_non_dimensional_outern_station unit = "">0.364</slat_non_dimensional_outern_station>
+                                <slat_non_dimensional_outer_station unit = "">0.364</slat_non_dimensional_outer_station>
                         </slat>
                         <slat id = "2">
                                 <slat_deflection unit = "°">15</slat_deflection>
                                 <slat_chord_ratio unit = "">0.136</slat_chord_ratio>
                                 <slat_extension_ratio unit = "">1.1</slat_extension_ratio>
                                 <slat_non_dimensional_inner_station unit = "">0.414</slat_non_dimensional_inner_station>
-                                <slat_non_dimensional_outern_station unit = "">0.648</slat_non_dimensional_outern_station>
+                                <slat_non_dimensional_outer_station unit = "">0.648</slat_non_dimensional_outer_station>
                         </slat>
                         <slat id = "3">
                                 <slat_deflection unit = "°">15</slat_deflection>
                                 <slat_chord_ratio unit = "">0.187</slat_chord_ratio>
                                 <slat_extension_ratio unit = "">1.1</slat_extension_ratio>
                                 <slat_non_dimensional_inner_station unit = "">0.692</slat_non_dimensional_inner_station>
-                                <slat_non_dimensional_outern_station unit = "">0.961</slat_non_dimensional_outern_station>
+                                <slat_non_dimensional_outer_station unit = "">0.961</slat_non_dimensional_outer_station>
                         </slat>
                 </slats>
-        </input>
+        </INPUT>
 </high_lift_executable>
