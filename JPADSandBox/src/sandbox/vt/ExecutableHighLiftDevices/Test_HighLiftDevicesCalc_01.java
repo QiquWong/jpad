@@ -12,6 +12,7 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import configuration.MyConfiguration;
+import configuration.enumerations.FoldersEnum;
 import standaloneutils.JPADXmlReader;
 
 public class Test_HighLiftDevicesCalc_01 {
@@ -59,6 +60,8 @@ public class Test_HighLiftDevicesCalc_01 {
 				databaseDirectoryAbsolutePath); // coming from main arguments
 
 		String pathToXML = theTestObject.get_inputFile().getAbsolutePath();
+		String filenameWithPathAndExt = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR) + 
+				"High Lift Charts" + File.separator + "HighLiftDevices_Output.xml"; 
 		System.out.println("INPUT ===> " + pathToXML);
 		
 		System.out.println("--------------");
@@ -69,6 +72,7 @@ public class Test_HighLiftDevicesCalc_01 {
 				"HighLiftDatabase.h5",
 				"Aerodynamic_Database_Ultimate.h5"
 				);
+		HighLiftDevicesCalc.writeToXML(HighLiftDevicesCalc.getOutput(), filenameWithPathAndExt);
 	}
 
 	//------------------------------------------------------------------------------------------
