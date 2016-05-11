@@ -1096,75 +1096,41 @@ public class HighLiftDevicesCalc {
 		org.w3c.dom.Element flightConditionsElement = doc.createElement("flight_condition");
 		inputRootElement.appendChild(flightConditionsElement);
 
-		org.w3c.dom.Element alphaCurrentElement = doc.createElement("alpha_current");
-		flightConditionsElement.appendChild(alphaCurrentElement);
-		
+		JPADStaticWriteUtils.writeSingleNode("alpha_current", input.getAlphaCurrent(), flightConditionsElement, doc);
+				
 		org.w3c.dom.Element wingDataElement = doc.createElement("wing");
 		inputRootElement.appendChild(wingDataElement);
 		
 		org.w3c.dom.Element geometryDataElement = doc.createElement("geometry");
 		wingDataElement.appendChild(geometryDataElement);
 		
-		org.w3c.dom.Element aspectRatioDataElement = doc.createElement("aspect_ratio");
-		geometryDataElement.appendChild(aspectRatioDataElement);
-		
-		org.w3c.dom.Element spanDataElement = doc.createElement("span");
-		geometryDataElement.appendChild(spanDataElement);
-		
-		org.w3c.dom.Element surfaceDataElement = doc.createElement("surface");
-		geometryDataElement.appendChild(surfaceDataElement);
-		
-		org.w3c.dom.Element rootChordEqDataElement = doc.createElement("root_chord_equivalent_wing");
-		geometryDataElement.appendChild(rootChordEqDataElement);
-		
-		org.w3c.dom.Element sweepC4EqDataElement = doc.createElement("sweep_quarter_chord_equivalent_wing");
-		geometryDataElement.appendChild(sweepC4EqDataElement);
-		
-		org.w3c.dom.Element taperRatioEqDataElement = doc.createElement("taper_ratio_equivalent_wing");
-		geometryDataElement.appendChild(taperRatioEqDataElement);
+		JPADStaticWriteUtils.writeSingleNode("aspect_ratio", input.getAspectRatio(), geometryDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("span", input.getSpan(), geometryDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("surface", input.getSurface(), geometryDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("root_chord_equivalent_wing", input.getRootChordEquivalentWing(), geometryDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("sweep_quarter_chord_equivalent_wing", input.getSweepQuarteChordEq(), geometryDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("taper_ratio_equivalent_wing", input.getTaperRatioEq(), geometryDataElement, doc);
 		
 		org.w3c.dom.Element cleanConfigurationDataElement = doc.createElement("clean_configuration_parameters");
 		wingDataElement.appendChild(cleanConfigurationDataElement);
 		
-		org.w3c.dom.Element alphaStalCleanDataElement = doc.createElement("alpha_stall_clean");
-		cleanConfigurationDataElement.appendChild(alphaStalCleanDataElement);
-		
-		org.w3c.dom.Element alphaStarCleanDataElement = doc.createElement("alpha_star_clean");
-		cleanConfigurationDataElement.appendChild(alphaStarCleanDataElement);
-
-		org.w3c.dom.Element cL0CleanDataElement = doc.createElement("cL0_clean");
-		cleanConfigurationDataElement.appendChild(cL0CleanDataElement);
-		
-		org.w3c.dom.Element cLAlphaCleanDataElement = doc.createElement("cLalpha_clean");
-		cleanConfigurationDataElement.appendChild(cLAlphaCleanDataElement);
-		
-		org.w3c.dom.Element cLmaxCleanDataElement = doc.createElement("cLmax_clean");
-		cleanConfigurationDataElement.appendChild(cLmaxCleanDataElement);
-		
-		org.w3c.dom.Element cLStarCleanDataElement = doc.createElement("cLStar_clean");
-		cleanConfigurationDataElement.appendChild(cLStarCleanDataElement);
-		
+		JPADStaticWriteUtils.writeSingleNode("alpha_stall_clean", input.getAlphaMaxClean(), cleanConfigurationDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("alpha_star_clean", input.getAlphaStarClean(), cleanConfigurationDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL0_clean", input.getcL0Clean(), cleanConfigurationDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cLalpha_clean", input.getcLAlphaClean(), cleanConfigurationDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cLmax_clean", input.getcLmaxClean(), cleanConfigurationDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cLStar_clean", input.getcLstarClean(), cleanConfigurationDataElement, doc);
+				
 		org.w3c.dom.Element meanAirfoilDataElement = doc.createElement("mean_airfoil");
 		wingDataElement.appendChild(meanAirfoilDataElement);
 		
-		org.w3c.dom.Element clalphaMeanAirfoilDataElement = doc.createElement("cl_alpha_mean_airfoil");
-		meanAirfoilDataElement.appendChild(clalphaMeanAirfoilDataElement);
-		
-		org.w3c.dom.Element cl0MeanAirfoilDataElement = doc.createElement("cl0_mean_airfoil");
-		meanAirfoilDataElement.appendChild(cl0MeanAirfoilDataElement);
-		
-		org.w3c.dom.Element leadingEdgeRadiusMeanAirfoilDataElement = doc.createElement("leading_edge_radius_mean_airfoil");
-		meanAirfoilDataElement.appendChild(leadingEdgeRadiusMeanAirfoilDataElement);
-		
-		org.w3c.dom.Element meanAirfoilChordDataElement = doc.createElement("mean_airfoil_chord");
-		meanAirfoilDataElement.appendChild(meanAirfoilChordDataElement);
-		
-		org.w3c.dom.Element maxThicknessMeanAirfoilDataElement = doc.createElement("max_thickness_mean_airfoil");
-		meanAirfoilDataElement.appendChild(maxThicknessMeanAirfoilDataElement);
-		
-		org.w3c.dom.Element airfoilFamilyDataElement = doc.createElement("airfoil_family");
-		meanAirfoilDataElement.appendChild(airfoilFamilyDataElement);
-		
+		JPADStaticWriteUtils.writeSingleNode("cl_alpha_mean_airfoil", input.getClAlphaMeanAirfoil(), meanAirfoilDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cl0_mean_airfoil", input.getCl0MeanAirfoil(), meanAirfoilDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("leading_edge_radius_mean_airfoil", input.getLERadiusMeanAirfoil(), meanAirfoilDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("mean_airfoil_chord", input.getMeanAirfoilChord(), meanAirfoilDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("max_thickness_mean_airfoil", input.getMaxthicknessMeanAirfoil(), meanAirfoilDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("airfoil_family", input.getMeanAirfoilFamily(), meanAirfoilDataElement, doc);
+
 		org.w3c.dom.Element flapsDataElement = doc.createElement("flaps");
 		inputRootElement.appendChild(flapsDataElement);
 		
@@ -1173,20 +1139,12 @@ public class HighLiftDevicesCalc {
 			org.w3c.dom.Element currentFlapDataElement = doc.createElement("flap_" + (i+1));
 			flapsDataElement.appendChild(currentFlapDataElement);
 			
-			org.w3c.dom.Element currentFlapTypeElement = doc.createElement("flap_type");
-			currentFlapDataElement.appendChild(currentFlapTypeElement);
-			
-			org.w3c.dom.Element currentFlapChordRatioElement = doc.createElement("flap_chord_ratio");
-			currentFlapDataElement.appendChild(currentFlapChordRatioElement);
-			
-			org.w3c.dom.Element currentFlapDeflectionElement = doc.createElement("flap_deflection");
-			currentFlapDataElement.appendChild(currentFlapDeflectionElement);
+			JPADStaticWriteUtils.writeSingleNode("flap_type", input.getFlapType().get(i), currentFlapDataElement, doc);
+			JPADStaticWriteUtils.writeSingleNode("flap_chord_ratio", input.getCfc().get(i), currentFlapDataElement, doc);
+			JPADStaticWriteUtils.writeSingleNode("flap_deflection", input.getDeltaFlap().get(i), currentFlapDataElement, doc);
+			JPADStaticWriteUtils.writeSingleNode("flap_non_dimensional_inner_station", input.getEtaInFlap().get(i), currentFlapDataElement, doc);
+			JPADStaticWriteUtils.writeSingleNode("flap_non_dimensional_outer_station", input.getEtaOutFlap().get(i), currentFlapDataElement, doc);
 		
-			org.w3c.dom.Element currentFlapEtaInElement = doc.createElement("flap_non_dimensional_inner_station");
-			currentFlapDataElement.appendChild(currentFlapEtaInElement);
-			
-			org.w3c.dom.Element currentFlapEtaOutElement = doc.createElement("flap_non_dimensional_outer_station");
-			currentFlapDataElement.appendChild(currentFlapEtaOutElement);
 		}
 		
 		org.w3c.dom.Element slatsDataElement = doc.createElement("slats");
@@ -1197,20 +1155,12 @@ public class HighLiftDevicesCalc {
 			org.w3c.dom.Element currentSlatDataElement = doc.createElement("slat_" + (i+1));
 			slatsDataElement.appendChild(currentSlatDataElement);
 
-			org.w3c.dom.Element currentSlatDeflectionElement = doc.createElement("slat_deflection");
-			currentSlatDataElement.appendChild(currentSlatDeflectionElement);
-
-			org.w3c.dom.Element currentSlatChordRatioElement = doc.createElement("slat_chord_ratio");
-			currentSlatDataElement.appendChild(currentSlatChordRatioElement);
-
-			org.w3c.dom.Element currentSlatExtensionRatioElement = doc.createElement("slat_extension_ratio");
-			currentSlatDataElement.appendChild(currentSlatExtensionRatioElement);
-
-			org.w3c.dom.Element currentSlatEtaInElement = doc.createElement("slat_non_dimensional_inner_station");
-			currentSlatDataElement.appendChild(currentSlatEtaInElement);
-
-			org.w3c.dom.Element currentSlatEtaOutElement = doc.createElement("slat_non_dimensional_outer_station");
-			currentSlatDataElement.appendChild(currentSlatEtaOutElement);
+			JPADStaticWriteUtils.writeSingleNode("slat_deflection", input.getDeltaSlat().get(i), currentSlatDataElement, doc);
+			JPADStaticWriteUtils.writeSingleNode("slat_chord_ratio", input.getCsc().get(i), currentSlatDataElement, doc);
+			JPADStaticWriteUtils.writeSingleNode("slat_extension_ratio", input.getcExtCSlat().get(i), currentSlatDataElement, doc);
+			JPADStaticWriteUtils.writeSingleNode("slat_non_dimensional_inner_station", input.getEtaInSlat().get(i), currentSlatDataElement, doc);
+			JPADStaticWriteUtils.writeSingleNode("slat_non_dimensional_outer_station", input.getEtaOutSlat().get(i), currentSlatDataElement, doc);
+			
 		}
 		
 		//--------------------------------------------------------------------------------------
@@ -1222,71 +1172,32 @@ public class HighLiftDevicesCalc {
 		org.w3c.dom.Element highLiftDevicesEffectsElement = doc.createElement("high_lift_devices_effects");
 		outputRootElement.appendChild(highLiftDevicesEffectsElement);
 		
-		org.w3c.dom.Element deltaCl0ListElement = doc.createElement("delta_Cl0_of_each_flap");
-		highLiftDevicesEffectsElement.appendChild(deltaCl0ListElement);
-		
-		org.w3c.dom.Element deltaCl0Element = doc.createElement("delta_Cl0_total_due_to_flaps");
-		highLiftDevicesEffectsElement.appendChild(deltaCl0Element);
-		
-		org.w3c.dom.Element deltaClmaxListElement = doc.createElement("delta_Clmax_of_each_flap");
-		highLiftDevicesEffectsElement.appendChild(deltaClmaxListElement);
-		
-		org.w3c.dom.Element deltaClmaxElement = doc.createElement("delta_Clmax_total_due_to_flaps");
-		highLiftDevicesEffectsElement.appendChild(deltaClmaxElement);
-		
-		org.w3c.dom.Element deltaClmaxSlatListElement = doc.createElement("delta_Clmax_of_each_slat");
-		highLiftDevicesEffectsElement.appendChild(deltaClmaxSlatListElement);
-		
-		org.w3c.dom.Element deltaClmaxSlatElement = doc.createElement("delta_Clmax_total_due_to_slats");
-		highLiftDevicesEffectsElement.appendChild(deltaClmaxSlatElement);
-		
-		org.w3c.dom.Element deltaCL0ListElement = doc.createElement("delta_CL0_of_each_flap");
-		highLiftDevicesEffectsElement.appendChild(deltaCL0ListElement);
-		
-		org.w3c.dom.Element deltaCL0Element = doc.createElement("delta_CL0_total_due_to_flaps");
-		highLiftDevicesEffectsElement.appendChild(deltaCL0Element);
-		
-		org.w3c.dom.Element deltaCLmaxListElement = doc.createElement("delta_CLmax_of_each_flap");
-		highLiftDevicesEffectsElement.appendChild(deltaCLmaxListElement);
-		
-		org.w3c.dom.Element deltaCLmaxElement = doc.createElement("delta_CLmax_total_due_to_flaps");
-		highLiftDevicesEffectsElement.appendChild(deltaCLmaxElement);
-		
-		org.w3c.dom.Element deltaCLmaxSlatListElement = doc.createElement("delta_CLmax_of_each_slat");
-		highLiftDevicesEffectsElement.appendChild(deltaCLmaxSlatListElement);
-		
-		org.w3c.dom.Element deltaCLmaxSlatElement = doc.createElement("delta_CLmax_total_due_to_slats");
-		highLiftDevicesEffectsElement.appendChild(deltaCLmaxSlatElement);
-		
-		org.w3c.dom.Element deltaCD0ListElement = doc.createElement("delta_CD0_of_each_flap");
-		highLiftDevicesEffectsElement.appendChild(deltaCD0ListElement);
-		
-		org.w3c.dom.Element deltaCD0Element = doc.createElement("delta_CD0_total");
-		highLiftDevicesEffectsElement.appendChild(deltaCD0Element);
-		
-		org.w3c.dom.Element deltaCMc4ListElement = doc.createElement("delta_CM_c4_of_each_flap");
-		highLiftDevicesEffectsElement.appendChild(deltaCMc4ListElement);
-		
-		org.w3c.dom.Element deltaCMc4Element = doc.createElement("delta_CM_c4_total");
-		highLiftDevicesEffectsElement.appendChild(deltaCMc4Element);
+		JPADStaticWriteUtils.writeSingleNode("delta_Cl0_of_each_flap", output.getDeltaCl0FlapList(), highLiftDevicesEffectsElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("delta_Cl0_total_due_to_flaps", output.getDeltaCl0Flap(), highLiftDevicesEffectsElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("delta_Clmax_of_each_flap", output.getDeltaClmaxFlapList(), highLiftDevicesEffectsElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("delta_Clmax_total_due_to_flaps", output.getDeltaClmaxFlap(), highLiftDevicesEffectsElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("delta_Clmax_of_each_slat", output.getDeltaClmaxSlatList(), highLiftDevicesEffectsElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("delta_Clmax_total_due_to_slats", output.getDeltaClmaxSlat(), highLiftDevicesEffectsElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("delta_CL0_of_each_flap", output.getDeltaCL0FlapList(), highLiftDevicesEffectsElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("delta_CL0_total_due_to_flaps", output.getDeltaCL0Flap(), highLiftDevicesEffectsElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("delta_CLmax_of_each_flap", output.getDeltaCLmaxFlapList(), highLiftDevicesEffectsElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("delta_CLmax_total_due_to_flaps", output.getDeltaCLmaxFlap(), highLiftDevicesEffectsElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("delta_CLmax_of_each_slat", output.getDeltaCLmaxSlatList(), highLiftDevicesEffectsElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("delta_CLmax_total_due_to_slats", output.getDeltaCLmaxSlat(), highLiftDevicesEffectsElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("delta_CD0_of_each_flap", output.getDeltaCDList(), highLiftDevicesEffectsElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("delta_CD0_total", output.getDeltaCD(), highLiftDevicesEffectsElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("delta_CM_c4_of_each_flap", output.getDeltaCMC4List(), highLiftDevicesEffectsElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("delta_CM_c4_total", output.getDeltaCMC4(), highLiftDevicesEffectsElement, doc);
 		
 		org.w3c.dom.Element highLiftGlobalData = doc.createElement("global_high_lift_devices_effects");
 		outputRootElement.appendChild(highLiftGlobalData);
 		
-		org.w3c.dom.Element alphaMaxHighLiftElement = doc.createElement("alpha_max_high_lift");
-		highLiftGlobalData.appendChild(alphaMaxHighLiftElement);
+		JPADStaticWriteUtils.writeSingleNode("alpha_max_high_lift", output.getAlphaMaxFlapSlat(), highLiftGlobalData, doc);
+		JPADStaticWriteUtils.writeSingleNode("alpha_star_high_lift", output.getAlphaStarFlapSlat(), highLiftGlobalData, doc);
+		JPADStaticWriteUtils.writeSingleNode("cLmax_high_lift", output.getcLmaxFlapSlat(), highLiftGlobalData, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL_star_high_lift", output.getcLStarFlapSlat(), highLiftGlobalData, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL_alpha_high_lift", output.getcLalphaNew(), highLiftGlobalData, doc);
 		
-		org.w3c.dom.Element alphaStarHighLiftElement = doc.createElement("alpha_star_high_lift");
-		highLiftGlobalData.appendChild(alphaStarHighLiftElement);
-		
-		org.w3c.dom.Element cLmaxHighLiftElement = doc.createElement("cLmax_high_lift");
-		highLiftGlobalData.appendChild(cLmaxHighLiftElement);
-		
-		org.w3c.dom.Element cLstarHighLiftElement = doc.createElement("cL_star_high_lift");
-		highLiftGlobalData.appendChild(cLstarHighLiftElement);
-		
-		org.w3c.dom.Element cLalphaHighLiftElement = doc.createElement("cL_alpha_high_lift");
-		highLiftGlobalData.appendChild(cLalphaHighLiftElement);
 	}
 	
 	//------------------------------------------------------------------------------------------
