@@ -1980,7 +1980,7 @@ public class MyChartToFileUtils {
 			traceCounter = 0;
 			styleIdx = 0;
 			colorIdx = 0;
-
+			
 			Map<Object, Object> innerMap = m.getValue();
 			if (m.getKey() instanceof MethodEnum) {
 				initializeTikz(
@@ -1996,7 +1996,9 @@ public class MyChartToFileUtils {
 			for (Entry<Object, Object > mm : innerMap.entrySet()){
 				if (mm.getKey() instanceof Amount
 						&& mm.getValue() instanceof MyArray) {
-
+					
+					System.out.println("Alpha map: "+ mm.getKey().toString());
+					
 					Amount<?> amount = (Amount<?>) mm.getKey();
 					MyArray myArray = (MyArray) mm.getValue();
 
@@ -2014,7 +2016,7 @@ public class MyChartToFileUtils {
 								myArray.toArray(),
 								legendName + " = " 
 										+ BigDecimal.valueOf(
-												(amount.getEstimatedValue())).round(new MathContext(3)));
+												(amount.getEstimatedValue())).round(new MathContext(6)));
 				} 
 			}
 

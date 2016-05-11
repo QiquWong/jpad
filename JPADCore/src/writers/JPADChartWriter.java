@@ -85,6 +85,9 @@ public class JPADChartWriter {
 			// TODO: modify nasa Blackwell method to support vertical tail
 			if (!liftingSurface.get_type().equals(ComponentEnum.VERTICAL_TAIL)) {
 
+				
+				System.out.println("cLMap: "+ liftingSurface.getAerodynamics().getcLMap().getCxyVsAlphaTable().toString());
+				
 				new MyChartToFileUtils().createGraphFromTable(
 						liftingSurface.getAerodynamics().get_yStationsND(),
 						liftingSurface.getAerodynamics().getcLMap().getCxyVsAlphaTable(),

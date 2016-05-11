@@ -463,6 +463,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				alphaStart.getEstimatedValue(), 
 				alphaEnd.getEstimatedValue(), 
 				_numberOfAlpha));
+		System.out.println("alpha array: "+ alphaArray.toString());
 		//		alphaArray.setDouble(new double[]{toRadians(3.), toRadians(5.), toRadians(7.), toRadians(9.)});
 	}
 
@@ -1210,7 +1211,8 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			cL = calculateLiftDistribution.getNasaBlackwell().get_cLEvaluated();
 			_cLCurrent = cL;
 
-			//JPADStaticWriteUtils.logToConsole("\nAlpha " + alpha + "\nCL: " + cL + "\n");
+			JPADStaticWriteUtils.logToConsole("\nAlpha " + alpha + "\nCL: " + cL + "\n");
+			System.out.println("cLmap: "+ cLMap.getCxyVsAlphaTable().toString());
 
 			return cL;
 		}
@@ -2055,9 +2057,9 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 										diffCLappOld = 0;
 										while ( diffCL > accuracy){
 											calculateCLAtAlpha.nasaBlackwell(alphaNewAmount);
-											cLMap.getCxyVsAlphaTable().put(MethodEnum.NASA_BLACKWELL,
-													alphaNewAmount, calculateLiftDistribution.getNasaBlackwell()
-													.get_clTotalDistribution());
+//											cLMap.getCxyVsAlphaTable().put(MethodEnum.NASA_BLACKWELL,
+//													alphaNewAmount, calculateLiftDistribution.getNasaBlackwell()
+//													.get_clTotalDistribution());
 											diffCL = 0;
 
 											for (int m =0; m< _nPointsSemispanWise; m++) {
@@ -2145,9 +2147,9 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 									diffCLappOld = 0;
 									while ( diffCL > accuracy){
 										calculateCLAtAlpha.nasaBlackwell(alphaNewAmount);
-										cLMap.getCxyVsAlphaTable().put(MethodEnum.NASA_BLACKWELL,
-												alphaNewAmount, calculateLiftDistribution.getNasaBlackwell()
-												.get_clTotalDistribution());
+//										cLMap.getCxyVsAlphaTable().put(MethodEnum.NASA_BLACKWELL,
+//												alphaNewAmount, calculateLiftDistribution.getNasaBlackwell()
+//												.get_clTotalDistribution());
 										diffCL = 0;
 
 										for (int m =0; m< _nPointsSemispanWise; m++) {
@@ -2192,9 +2194,9 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 									}
 									alphaAtCLMax = Amount.valueOf(alphaNew, SI.RADIAN);
-									cLMap.getcXMaxMap().put(MethodEnum.NASA_BLACKWELL, (
-											cLMap.getcXVsAlphaTable()
-											.get(MethodEnum.NASA_BLACKWELL, alphaAtCLMax)))	;
+//									cLMap.getcXMaxMap().put(MethodEnum.NASA_BLACKWELL, (
+//											cLMap.getcXVsAlphaTable()
+//											.get(MethodEnum.NASA_BLACKWELL, alphaAtCLMax)))	;
 
 
 								}

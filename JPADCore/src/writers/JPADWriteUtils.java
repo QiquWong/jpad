@@ -115,6 +115,7 @@ public class JPADWriteUtils {
 	public static String createImagesFolder(String folderName) {
 
 		String currentFolderImagesDirectory = MyConfiguration.currentDirectory
+				+ File.separator
 				+ folderName 
 				+ File.separator;
 
