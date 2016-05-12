@@ -1189,14 +1189,19 @@ public class HighLiftDevicesCalc {
 		JPADStaticWriteUtils.writeSingleNode("delta_CM_c4_of_each_flap", output.getDeltaCMC4List(), highLiftDevicesEffectsElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("delta_CM_c4_total", output.getDeltaCMC4(), highLiftDevicesEffectsElement, doc);
 		
-		org.w3c.dom.Element highLiftGlobalData = doc.createElement("global_high_lift_devices_effects");
-		outputRootElement.appendChild(highLiftGlobalData);
+		org.w3c.dom.Element highLiftGlobalDataElement = doc.createElement("global_high_lift_devices_effects");
+		outputRootElement.appendChild(highLiftGlobalDataElement);
 		
-		JPADStaticWriteUtils.writeSingleNode("alpha_max_high_lift", output.getAlphaMaxFlapSlat(), highLiftGlobalData, doc);
-		JPADStaticWriteUtils.writeSingleNode("alpha_star_high_lift", output.getAlphaStarFlapSlat(), highLiftGlobalData, doc);
-		JPADStaticWriteUtils.writeSingleNode("cLmax_high_lift", output.getcLmaxFlapSlat(), highLiftGlobalData, doc);
-		JPADStaticWriteUtils.writeSingleNode("cL_star_high_lift", output.getcLStarFlapSlat(), highLiftGlobalData, doc);
-		JPADStaticWriteUtils.writeSingleNode("cL_alpha_high_lift", output.getcLalphaNew(), highLiftGlobalData, doc);
+		JPADStaticWriteUtils.writeSingleNode("alpha_max_high_lift", output.getAlphaMaxFlapSlat(), highLiftGlobalDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("alpha_star_high_lift", output.getAlphaStarFlapSlat(), highLiftGlobalDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cLmax_high_lift", output.getcLmaxFlapSlat(), highLiftGlobalDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL_star_high_lift", output.getcLStarFlapSlat(), highLiftGlobalDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL_alpha_high_lift", output.getcLalphaNew(), highLiftGlobalDataElement, doc);
+		
+		org.w3c.dom.Element highLiftCurveDataElement = doc.createElement("high_lift_curve_point");
+		outputRootElement.appendChild(highLiftCurveDataElement);
+		
+		
 		
 	}
 	
