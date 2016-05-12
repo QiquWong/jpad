@@ -27,7 +27,7 @@
                     <aerodynamics>
 						<alpha_zero_lift_distribution unit="°">[-1.98, -1.63, -3.18]</alpha_zero_lift_distribution>
 						<alpha_star_distribution unit="°">[8.0, 8.0, 8.0]</alpha_star_distribution>
-						<maximum_lift_coefficient_distribution>[-1.98, -1.63, -3.18]</maximum_lift_coefficient_distribution>
+						<maximum_lift_coefficient_distribution>[1.6, 1.6,1.7]</maximum_lift_coefficient_distribution>
                     </aerodynamics>
              </distribution>
         </wing>

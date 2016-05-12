@@ -19,9 +19,10 @@ import standaloneutils.MyXMLReaderUtils;
 
 public class ReaderWriterWing {
 	
-	public static void importFromXML(String pathToXML) throws ParserConfigurationException {
+	InputOutputTree input = new InputOutputTree();
 
-		InputOutputTree input = new InputOutputTree();
+	public void importFromXML(String pathToXML) throws ParserConfigurationException {
+
 
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
 
@@ -234,6 +235,17 @@ public class ReaderWriterWing {
 			
 		System.out.print("Cl max distribution : ");
 			System.out.print(input.getMaximumliftCoefficientDistribution());
+			
+		System.out.print("\nAdimentional stations :");
+		 	System.out.println(input.getyAdimensionalStationInput());
 		}
+	}
+
+	public InputOutputTree getInput() {
+		return input;
+	}
+
+	public void setInput(InputOutputTree input) {
+		this.input = input;
 	}
 }
