@@ -30,6 +30,7 @@ public class ReaderWriterWing {
 
 		//---------------------------------------------------------------------------------
 		// OPERATING CONDITION:
+		
 //		List<String> altitude = reader.getXMLPropertiesByPath("//altitude");
 //		input.setAltitude(Amount.valueOf(Double.valueOf(altitude.get(0)), SI.METER));	
 		
@@ -97,7 +98,11 @@ public class ReaderWriterWing {
 		List<String> chordDistribution = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//chord_distribution").get(0));
 		for(int i=0; i<chordDistribution.size(); i++)
 			input.getChordDistribution().add(Amount.valueOf(Double.valueOf(chordDistribution.get(i)), SI.METER));
-
+		
+		List<String> yAdimensionalStationIput = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//y_adimensional_stations").get(0));
+		for(int i=0; i<yAdimensionalStationIput.size(); i++)
+			input.getyAdimensionalStationInput().add(Double.valueOf(yAdimensionalStationIput.get(i)));
+	
 		
 		List<String> xleDistribution = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//x_le_distribution").get(0));
 		for(int i=0; i<xleDistribution.size(); i++)

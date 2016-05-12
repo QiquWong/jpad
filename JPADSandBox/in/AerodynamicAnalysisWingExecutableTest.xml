@@ -2,22 +2,23 @@
 <wing_executable>
         <operating_conditions>
                 <altitude unit="m">6000</altitude>
-                <mach_number unit="">0.2</mach_number>
-                <number_of_alpha unit="">11</number_of_alpha>
+                <mach_number>0.2</mach_number>
+                <number_of_alpha>11</number_of_alpha>
                 <alpha_initial unit="°">0.0</alpha_initial>
                 <alpha_final unit="°">10.0</alpha_final>
         </operating_conditions>
        <wing>
             <global>
                 <surface unit="m²">83.15</surface>
-                <aspect_ratio unit="">9.43</aspect_ratio>
-                <number_of_point_semispan unit="">100</number_of_point_semispan>
-                <adimensional_kink_station unit="">0.399</adimensional_kink_station>
+                <aspect_ratio>9.43</aspect_ratio>
+                <number_of_point_semispan>100</number_of_point_semispan>
+                <adimensional_kink_station>0.399</adimensional_kink_station>
              </global>
              <distribution>
-                <number_of_given_sections unit="">3</number_of_given_sections>
-                <mean_airfoil_type unit="">NACA_4_DIGIT</mean_airfoil_type>
+                <number_of_given_sections>3</number_of_given_sections>
+                <mean_airfoil_type>NACA_4_DIGIT</mean_airfoil_type>
                    <geometry>
+						<y_adimensional_stations>[0, 0.399, 1]</y_adimensional_stations>
 						<chord_distribution unit="m">[6.39, 2.72, 1.05]</chord_distribution>
 						<x_le_distribution unit="m">[0.0, 3.71, 8.31]</x_le_distribution>
 						<twist_distribution unit="°">[0, -2, -6]</twist_distribution>
@@ -26,7 +27,7 @@
                     <aerodynamics>
 						<alpha_zero_lift_distribution unit="°">[-1.98, -1.63, -3.18]</alpha_zero_lift_distribution>
 						<alpha_star_distribution unit="°">[8.0, 8.0, 8.0]</alpha_star_distribution>
-						<maximum_lift_coefficient_distribution unit="°">[-1.98, -1.63, -3.18]</maximum_lift_coefficient_distribution>
+						<maximum_lift_coefficient_distribution>[-1.98, -1.63, -3.18]</maximum_lift_coefficient_distribution>
                     </aerodynamics>
              </distribution>
         </wing>

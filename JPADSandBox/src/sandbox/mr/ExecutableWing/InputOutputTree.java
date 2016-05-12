@@ -46,7 +46,8 @@ public class InputOutputTree {
 						 alphaStarDistribution;
 
 
-	private List<Double> maximumliftCoefficientDistribution;
+	private List<Double> maximumliftCoefficientDistribution,
+						 yAdimensionalStationInput;
 	
 	
 	// OUTPUT 
@@ -92,6 +93,7 @@ public class InputOutputTree {
 		alphaZeroLiftDistribution = new ArrayList<Amount>();
 		alphaStarDistribution = new ArrayList<Amount>();
 		maximumliftCoefficientDistribution = new ArrayList<Double>();
+		yAdimensionalStationInput = new ArrayList<Double>();
 		
 		machNumber = 0.0;
 		aspectRatio = 0.0;
@@ -101,10 +103,13 @@ public class InputOutputTree {
 		numberOfPointSemispan = 0;
 		numberOfSections = 0;
 		
-
 	}
+	
+	
 	// Poi un metodo inizializza gli output
 
+	
+	
 	//------------------------------------------------------------------------------------------
 	// GETTERS & SETTERS:
 	
@@ -404,6 +409,16 @@ public class InputOutputTree {
 
 	public double[] getcLVsAlphaVector() {
 		return cLVsAlphaVector;
+	}
+
+
+	public List<Double> getyAdimensionalStationInput() {
+		return yAdimensionalStationInput;
+	}
+
+
+	public void setyAdimensionalStationInput(List<Double> yAdimensionalStationInput) {
+		this.yAdimensionalStationInput = yAdimensionalStationInput;
 	}
 
 
