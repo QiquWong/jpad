@@ -10,7 +10,10 @@ import org.jscience.physics.amount.Amount;
 
 public interface IFuselage {
 
-	public void calculateGeometry(int numberSpanwiseStations);
+	public void calculateGeometry(
+			int np_N, int np_C, int np_T, // no. points @ Nose/Cabin/Tail
+			int np_SecUp, int np_SecLow   // no. points @ Upper/Lower section
+			);
 	public void calculateGeometry();
 
 	List<Amount<Length>> getXYZ0();
@@ -27,20 +30,20 @@ public interface IFuselage {
 
 	int getDeckNumber();
 	void setDeckNumber(int dn);
-	
+
 	Amount<Length> getLength();
 	void setLength(Amount<Length> len);
-	
+
 	Amount<Mass> getMassReference();
 	void setMassReference(Amount<Mass> massRef);
-	
+
 	void discretizeGeometry(int numberSpanwiseStations);
 
 	public Amount<Area> getSurfaceWetted(boolean recalculate);
 	public Amount<Area> getSurfaceWetted();
-	
+
 	public List<Amount<Length>> getDiscretizedYs();
 	//TODO: add section, etc...
-	
-	
+
+
 }

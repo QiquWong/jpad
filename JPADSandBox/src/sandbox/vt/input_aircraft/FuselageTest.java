@@ -51,7 +51,13 @@ public class FuselageTest {
 		System.out.println("--------------");
 
 		Fuselage fuselage = Fuselage.importFromXML(pathToXML);
-		fuselage.calculateGeometry(30);
+
+		fuselage.calculateGeometry(
+				20,    // No. points in nose trunk
+				5,     // No. points in cylindrical trunk
+				15,    // No. points in tail trunk
+				10, 10 // No. points in upper/lower cyl. trunk section
+				);
 
 		System.out.println("The fuselage ...");
 
