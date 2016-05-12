@@ -49,8 +49,9 @@ public class Test_Executable_Wing {
 		
 		System.out.println("--------------");
 		
-		ReaderWriterWing.importFromXML(pathToXML);
-		
+		ReaderWriterWing theReader = new ReaderWriterWing();
+		theReader.importFromXML(pathToXML);
+		WingAerodynamicCalc.calculateAll(theReader.getInput());
 		
 	}
 
