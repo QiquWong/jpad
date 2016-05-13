@@ -3,6 +3,7 @@ package sandbox.vt.ExecutableHighLiftDevices;
 import static java.lang.Math.toRadians;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.measure.quantity.Angle;
 import javax.measure.unit.NonSI;
@@ -1019,14 +1020,11 @@ public class HighLiftDevicesCalc {
 		//--------------------------------------------------------------------------------------
 		// Convert from double to Double in order to use JFreeChart to plot.
 		
-		List<Double[]> cLListPlot = new ArrayList<>(); 
-		List<Double[]> alphaListPlot = new ArrayList<>();
+		output.getAlphaListPlot().add(alphaCleanArrayPlot);
+		output.getAlphaListPlot().add(alphaHighLiftArrayPlot);
 
-		alphaListPlot.add(alphaCleanArrayPlot);
-		alphaListPlot.add(alphaHighLiftArrayPlot);
-
-		cLListPlot.add(cLCleanArrayPlot);
-		cLListPlot.add(cLArrayHighLiftPlot);
+		output.getcLListPlot().add(cLCleanArrayPlot);
+		output.getcLListPlot().add(cLArrayHighLiftPlot);
 
 		List<String> legend  = new ArrayList<>(); 
 
@@ -1035,8 +1033,9 @@ public class HighLiftDevicesCalc {
 
 		System.out.println(" \n-----------WRITING CHART TO FILE-------------- ");
 		
-		MyChartToFileUtils.plotJFreeChart(alphaListPlot, 
-				cLListPlot,
+		MyChartToFileUtils.plotJFreeChart(
+				output.getAlphaListPlot(), 
+				output.getcLListPlot(),
 				"CL vs alpha",
 				"alpha", 
 				"CL",
@@ -1201,7 +1200,10 @@ public class HighLiftDevicesCalc {
 		org.w3c.dom.Element highLiftCurveDataElement = doc.createElement("high_lift_curve_point");
 		outputRootElement.appendChild(highLiftCurveDataElement);
 		
-		
+		JPADStaticWriteUtils.writeSingleNode("alpha_array_clean", Arrays.toString(output.getAlphaListPlot().get(0)), highLiftCurveDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL_array_clean", Arrays.toString(output.getcLListPlot().get(0)), highLiftCurveDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("alpha_array_high_lift", Arrays.toString(output.getAlphaListPlot().get(1)), highLiftCurveDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL_array_high_lift", Arrays.toString(output.getcLListPlot().get(1)), highLiftCurveDataElement, doc);
 		
 	}
 	

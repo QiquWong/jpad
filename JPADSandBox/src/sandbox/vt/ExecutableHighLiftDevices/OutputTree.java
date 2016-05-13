@@ -32,12 +32,15 @@ public class OutputTree {
 	private Amount<Angle> alphaMaxFlapSlat,
 						  alphaStarFlapSlat;
 	private Amount<?> cLalphaNew;
+	private List<Double[]> cLListPlot, alphaListPlot;
 	
 	//------------------------------------------------------------------------------------------
 	// BUILDER:
 	
 	public OutputTree() {
 	
+		alphaListPlot = new ArrayList<Double[]>();
+		cLListPlot = new ArrayList<Double[]>();
 		deltaCl0FlapList = new ArrayList<Double>();
 		deltaCL0FlapList = new ArrayList<Double>();
 		deltaClmaxFlapList = new ArrayList<Double>();
@@ -46,7 +49,7 @@ public class OutputTree {
 		deltaCLmaxSlatList = new ArrayList<Double>();
 		cLalphaNewList = new ArrayList<Amount<?>>();
 		deltaCDList = new ArrayList<Double>();
-		deltaCMC4List = new ArrayList<Double>();		
+		deltaCMC4List = new ArrayList<Double>();	
 	}
 
 	//------------------------------------------------------------------------------------------
@@ -226,5 +229,21 @@ public class OutputTree {
 
 	public void setAlphaStarFlapSlat(Amount<Angle> alphaStarFlapSlat) {
 		this.alphaStarFlapSlat = alphaStarFlapSlat;
+	}
+
+	public List<Double[]> getcLListPlot() {
+		return cLListPlot;
+	}
+
+	public void setcLListPlot(List<Double[]> cLListPlot) {
+		this.cLListPlot = cLListPlot;
+	}
+
+	public List<Double[]> getAlphaListPlot() {
+		return alphaListPlot;
+	}
+
+	public void setAlphaListPlot(List<Double[]> alphaListPlot) {
+		this.alphaListPlot = alphaListPlot;
 	}
 }
