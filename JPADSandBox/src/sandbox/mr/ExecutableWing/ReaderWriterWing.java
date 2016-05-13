@@ -168,6 +168,12 @@ public class ReaderWriterWing {
 			 System.err.println("WARNING! the number of declared section differs from the number of cl max. ( number of section = " + input.getNumberOfSections()
 			 + " ; number of cl max = " + input.getMaximumliftCoefficientDistribution().size()+ " )");
 		}
+		
+	// OTHER VALUES
+		double span = Math.sqrt(input.getAspectRatio() * input.getSurface().getEstimatedValue());
+		input.setSpan(Amount.valueOf(span, SI.METER));
+		input.setSemiSpan(Amount.valueOf(span/2, SI.METER));
+		
 	// PRINT
 		
 		if(input.getNumberOfSections() == input.getChordDistribution().size() &&
@@ -196,7 +202,7 @@ public class ReaderWriterWing {
 		System.out.println("Aspect Ratio : " + input.getAspectRatio());
 		System.out.println("Number of point along semi-span : " + input.getNumberOfPointSemispan());
 		System.out.println("Adimensional kink station : " + input.getAdimensionalKinkStation());
-		
+		System.out.println("Span : " + input.getSpan().getEstimatedValue()+ " " + input.getSpan().getUnit());
 		System.out.println("\nDistribution");
 		System.out.println("-------------------------------------");
 		System.out.println("Number of given stations : " + input.getNumberOfSections());

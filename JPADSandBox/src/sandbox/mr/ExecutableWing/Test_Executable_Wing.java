@@ -11,6 +11,10 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
+import aircraft.OperatingConditions;
+import aircraft.components.Aircraft;
+import aircraft.components.liftingSurface.LSAerodynamicsManager;
+import configuration.enumerations.AircraftEnum;
 import standaloneutils.JPADXmlReader;
 
 public class Test_Executable_Wing {

@@ -22,7 +22,7 @@
 						<chord_distribution unit="m">[6.39, 2.72, 1.05]</chord_distribution>
 						<x_le_distribution unit="m">[0.0, 3.71, 8.31]</x_le_distribution>
 						<twist_distribution unit="°">[0, -2, -6]</twist_distribution>
-						<dihedral_distribution unit="°">[0.0, 2.72, 8.5]</dihedral_distribution>
+						<dihedral_distribution unit="°">[0.0, 0.0, 0.0]</dihedral_distribution>
                     </geometry>
                     <aerodynamics>
 						<alpha_zero_lift_distribution unit="°">[-1.98, -1.63, -3.18]</alpha_zero_lift_distribution>
