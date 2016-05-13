@@ -60,7 +60,7 @@ import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
 import database.databasefunctions.DatabaseReader;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
-import database.databasefunctions.aerodynamics.AerodynamicsDatabaseManager;
+import database.databasefunctions.aerodynamics.DatabaseManager;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.engine.EngineDatabaseReader;
 import database.databasefunctions.engine.TurbofanEngineDatabaseReader;

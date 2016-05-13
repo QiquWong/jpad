@@ -16,7 +16,7 @@ import calculators.geometry.LSGeometryCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.DirStabEnum;
 import configuration.enumerations.FoldersEnum;
-import database.databasefunctions.aerodynamics.AerodynamicsDatabaseManager;
+import database.databasefunctions.aerodynamics.DatabaseManager;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 
@@ -47,10 +47,10 @@ public class StabilityDerivatives {
 	verticalTailSpan = AC.get_VTail().get_span();
 	wingPosition = AC.get_wing().get_positionRelativeToAttachment();
 	
-	veDSCDatabaseReader = AerodynamicsDatabaseManager.initializeVeDSC(new VeDSCDatabaseReader(
+	veDSCDatabaseReader = DatabaseManager.initializeVeDSC(new VeDSCDatabaseReader(
 			MyConfiguration.getDir(FoldersEnum.DATABASE_DIR), veDSCDatabaseFileName));
 
-	fusDesDatabaseReader = AerodynamicsDatabaseManager.initializeFusDes(new FusDesDatabaseReader(
+	fusDesDatabaseReader = DatabaseManager.initializeFusDes(new FusDesDatabaseReader(
 			MyConfiguration.getDir(FoldersEnum.DATABASE_DIR), fusDesDatabaseFileName));
 
 	veDSCDatabaseReader.runAnalysis(wingAspectRatio,

@@ -13,7 +13,7 @@ import calculators.geometry.LSGeometryCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.FusDesDatabaseEnum;
 import configuration.enumerations.VeDSCDatabaseEnum;
-import database.databasefunctions.aerodynamics.AerodynamicsDatabaseManager;
+import database.databasefunctions.aerodynamics.DatabaseManager;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import standaloneutils.database.io.InputFileReader;
@@ -152,7 +152,7 @@ public static DatabaseIOmanager<VeDSCDatabaseEnum> readFromFile(String filenamew
 		
 		DatabaseIOmanager<VeDSCDatabaseEnum> inputManager = readFromFile(inputFileWithPathAndExt);
 		
-		VeDSCDatabaseReader veDSCDatabaseReader = AerodynamicsDatabaseManager.initializeVeDSC(
+		VeDSCDatabaseReader veDSCDatabaseReader = DatabaseManager.initializeVeDSC(
 				new VeDSCDatabaseReader(MyConfiguration.databaseDirectory, databaseFileName));
 		
 		veDSCDatabaseReader.runAnalysis(

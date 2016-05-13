@@ -22,7 +22,7 @@ import configuration.MyConfiguration;
 import configuration.enumerations.DirStabEnum;
 import configuration.enumerations.FusDesDatabaseEnum;
 import database.databasefunctions.DatabaseReader;
-import database.databasefunctions.aerodynamics.AerodynamicsDatabaseManager;
+import database.databasefunctions.aerodynamics.DatabaseManager;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import standaloneutils.database.io.InputFileReader;
 import standaloneutils.database.io.DatabaseFileWriter;
@@ -197,7 +197,7 @@ public class FusDesDatabaseCalc {
 
 		DatabaseIOmanager<FusDesDatabaseEnum> inputManager = readFromFile(inputFileNamewithPathAndExt); 
 
-		FusDesDatabaseReader fusDesDatabaseReader = AerodynamicsDatabaseManager.initializeFusDes(new FusDesDatabaseReader(
+		FusDesDatabaseReader fusDesDatabaseReader = DatabaseManager.initializeFusDes(new FusDesDatabaseReader(
 				MyConfiguration.databaseDirectory, databaseFileName));
 
 

@@ -26,6 +26,7 @@ import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
+import database.databasefunctions.aerodynamics.DatabaseManager;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
@@ -308,9 +309,14 @@ public class HighLiftDevicesCalc {
 		
 		//------------------------------------------------------------------------------------
 		// Setup database(s)
-		AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
-		HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
-
+		AerodynamicDatabaseReader aeroDatabaseReader = DatabaseManager.initializeAeroDatabase(new AerodynamicDatabaseReader(
+				databaseFolderPath,	aerodynamicDatabaseFileName),
+				databaseFolderPath);
+		
+		HighLiftDatabaseReader highLiftDatabaseReader = DatabaseManager.initializeHighLiftDatabase(new HighLiftDatabaseReader(
+				databaseFolderPath, highLiftDatabaseFileName),
+				databaseFolderPath);
+				
 		//------------------------------------------------------------------------------------
 		// Managing flaps types:
 		List<Double> flapTypeIndex = new ArrayList<Double>();

@@ -5,7 +5,7 @@ import org.jscience.physics.amount.Amount;
 import com.sun.javafx.geom.transform.BaseTransform.Degree;
 
 import calculators.geometry.LSGeometryCalc;
-import database.databasefunctions.aerodynamics.AerodynamicsDatabaseManager;
+import database.databasefunctions.aerodynamics.DatabaseManager;
 import jahuwaldt.tools.units.Degrees;
 //import databasesIO.vedscdatabase.VeDSCDatabaseCalc;
 

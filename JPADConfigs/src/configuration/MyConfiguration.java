@@ -85,6 +85,18 @@ public class MyConfiguration {
 	public static final String interpolaterFusDesDatabaseSerializedName = "interpolaterFusDesDatabase.xml"; 
 	public static final String interpolaterFusDesatabaseSerializedFullName = 
 			interpolaterFusDesDatabaseSerializedDirectory + File.separator + interpolaterFusDesDatabaseSerializedName;
+	
+	public static final String interpolaterAerodynamicDatabaseSerializedDirectory = databaseDirectory + File.separator + "serializedDatabase" 
+			+ File.separator; 
+	public static final String interpolaterAerodynamicDatabaseSerializedName = "interpolaterAerodynamicDatabase.xml"; 
+	public static final String interpolaterAerodynamicDatabaseSerializedFullName = 
+			interpolaterAerodynamicDatabaseSerializedDirectory + File.separator + interpolaterAerodynamicDatabaseSerializedName;
+	
+	public static final String interpolaterHighLiftDatabaseSerializedDirectory = databaseDirectory + File.separator + "serializedDatabase" 
+			+ File.separator; 
+	public static final String interpolaterHighLiftDatabaseSerializedName = "interpolaterHighLiftDatabase.xml"; 
+	public static final String interpolaterHighLiftDatabaseSerializedFullName = 
+			interpolaterHighLiftDatabaseSerializedDirectory + File.separator + interpolaterHighLiftDatabaseSerializedName;
 
 	private static HashMap<FoldersEnum, String>  mapPaths = new HashMap<FoldersEnum, String>();
 
