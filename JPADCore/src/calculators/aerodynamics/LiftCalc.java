@@ -551,7 +551,7 @@ public class LiftCalc {
 		double diffCLapp = 0;
 		boolean _findStall = false;
 		Amount<Angle> alphaNewAmount;
-		private boolean found = false;
+		//private boolean found = false;
 		
 //		
 //		for(int i =0; i< _nPointsSemispanWise; i++) {
