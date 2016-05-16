@@ -62,8 +62,6 @@ public class HighLiftDevicesCalc {
 		List<String> alphaCurrentProperty = reader.getXMLPropertiesByPath("//flight_condition/alpha_current");
 		input.setAlphaCurrent(Amount.valueOf(Double.valueOf(alphaCurrentProperty.get(0)), NonSI.DEGREE_ANGLE));
 
-		System.out.println("\tAlpha current = " + input.getAlphaCurrent().getEstimatedValue() + " " + input.getAlphaCurrent().getUnit() + "\n");
-
 		//---------------------------------------------------------------------------------
 		// WING:	
 		//---------------------------------------------------------------------------------------
@@ -147,6 +145,7 @@ public class HighLiftDevicesCalc {
 		
 		//---------------------------------------------------------------------------------------
 		// Print data:
+		System.out.println("\tAlpha current = " + input.getAlphaCurrent().getEstimatedValue() + " " + input.getAlphaCurrent().getUnit() + "\n");
 		System.out.println("\tAspect Ratio = " + input.getAspectRatio());
 		System.out.println("\tSpan = " + input.getSpan().getEstimatedValue() + " " + input.getSpan().getUnit());
 		System.out.println("\tSurface = " + input.getSurface().getEstimatedValue() + " " + input.getSurface().getUnit());

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<take_off_executable charts="FALSE">
+        <INPUT>
+                <ground_conditions>
+                        <alpha unit="°">0.0</alpha>
+						<wind_speed unit = "m/s">0.0</wind_speed>
+						<altitude unit = "m">0.0</altitude>
+                </ground_conditions>
+                <aircraft_data>
+				        <take_off_mass unit = "kg">42000</take_off_mass>
+                        <wing>
+						    <geometry>
+                                <aspect_ratio>9.5</aspect_ratio>
+                                <span unit = "m">28.01</span>
+                                <surface unit = "m²">83.15</surface>
+                                <distance_from_ground unit = "m">6.51</distance_from_ground>
+                                <angle_of_incidence unit = "°">3.0</angle_of_incidence>
+							</geometry>
+							<aerodynamic_data>
+							    <oswald>0.85</oswald>
+							    <cD0_clean>0.0187</cD0_clean>
+								<delta_cD0_flap>0.010</delta_cD0_flap>
+								<delta_cD0_landing_gears>0.007</delta_cD0_landing_gears>
+								<cL_max_take_off>2.3</cL_max_take_off>
+								<cL0_take_off>0.69</cL0_take_off>
+								<cL_alpha_take_off>0.087</cL_alpha_take_off>
+							</aerodynamic_data>
+                        </wing>
+                        <engine>
+						    <static_thrust unit = "N">34251</static_thrust>
+							<number_of_engines>2</number_of_engines>
+							<slope_of_thrust_vs_speed_curve>-0.1</slope_of_thrust_vs_speed_curve>
+						</engine>
+                </aircraft_data>
+        </INPUT>
+</take_off_executable>
