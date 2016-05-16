@@ -41,7 +41,7 @@ public class Test_Executable_Wing {
 
 	//------------------------------------------------------------------------------------------
 	// MAIN:
-	public static void main(String[] args) throws CmdLineException, ParserConfigurationException {
+	public static void main(String[] args) throws CmdLineException, ParserConfigurationException, InstantiationException, IllegalAccessException {
 		
 		System.out.println("--------------");
 		System.out.println("Wing aerodynamic Analysis");

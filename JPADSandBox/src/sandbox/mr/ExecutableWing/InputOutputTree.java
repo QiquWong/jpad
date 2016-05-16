@@ -29,7 +29,8 @@ public class InputOutputTree {
 
 	private Amount<Area> surface;
 
-	private double machNumber,
+	private double  meanThickness,
+	machNumber,
 	aspectRatio,
 	adimensionalKinkStation;
 
@@ -59,18 +60,18 @@ public class InputOutputTree {
 	alphaStar,
 	alphaStall;
 
-	private int numberOfAlphaCL = 50;
+	int numberOfAlphaCL = 50;
 
-	private double meanThickness,
-	clAlpha,
-	clStar,
-	clMax,
+	private double
+	cLZero,
+	cLAlpha,
+	cLStar,
+	cLMax,
 	deltaAlpha;
 
-	private List<double[]> clVsEtaVectors; // la lunghezza del vettore dipende dal numero di punti lungo la semiapertura,
-	// la lunghezza di elementi della lista è il numero di valori di alfa che si danno in input
+	private List<Double[]> clVsEtaVectors; 
 
-	private double [] cLVsAlphaVector;  // number of element = numberOfAlphaCL
+	double [] cLVsAlphaVector, alphaVector, yStationsAdimensional;  // number of element = numberOfAlphaCL
 
 
 	//------------------------------------------------------------------------------------------
@@ -106,12 +107,16 @@ public class InputOutputTree {
 		numberOfPointSemispan = 0;
 		numberOfSections = 0;
 
+		cLVsAlphaVector = new double [numberOfAlphaCL];
+		alphaVector = new double [numberOfAlphaCL];
 	}
 
 
-	// Poi un metodo inizializza gli output
-
-
+	public void buildOutput(){
+		
+		yStationsAdimensional =  new double [numberOfPointSemispan];
+		clVsEtaVectors = new ArrayList<Double[]>();
+	}
 
 	//------------------------------------------------------------------------------------------
 	// GETTERS & SETTERS:
@@ -371,41 +376,41 @@ public class InputOutputTree {
 
 
 	public double getClAlpha() {
-		return clAlpha;
+		return cLAlpha;
 	}
 
 
 	public void setClAlpha(double clAlpha) {
-		this.clAlpha = clAlpha;
+		this.cLAlpha = clAlpha;
 	}
 
 
 	public double getClStar() {
-		return clStar;
+		return cLStar;
 	}
 
 
 	public void setClStar(double clStar) {
-		this.clStar = clStar;
+		this.cLStar = clStar;
 	}
 
 
 	public double getClMax() {
-		return clMax;
+		return cLMax;
 	}
 
 
 	public void setClMax(double clMax) {
-		this.clMax = clMax;
+		this.cLMax = clMax;
 	}
 
 
-	public List<double[]> getClVsEtaVectors() {
+	public List<Double[]> getClVsEtaVectors() {
 		return clVsEtaVectors;
 	}
 
 
-	public void setClVsEtaVectors(List<double[]> clVsEtaVectors) {
+	public void setClVsEtaVectors(List<Double[]> clVsEtaVectors) {
 		this.clVsEtaVectors = clVsEtaVectors;
 	}
 
@@ -447,6 +452,38 @@ public class InputOutputTree {
 
 	public void setDeltaAlpha(double deltaAlpha) {
 		this.deltaAlpha = deltaAlpha;
+	}
+
+
+	public double getcLZero() {
+		return cLZero;
+	}
+
+
+	public void setcLZero(double cLZero) {
+		this.cLZero = cLZero;
+	}
+
+
+
+	public double[] getAlphaVector() {
+		return alphaVector;
+	}
+
+
+
+	public void setAlphaVector(double[] alphaVector) {
+		this.alphaVector = alphaVector;
+	}
+
+
+	public double[] getyStationsAdimensional() {
+		return yStationsAdimensional;
+	}
+
+
+	public void setyStationsAdimensional(double[] yStationsAdimensional) {
+		this.yStationsAdimensional = yStationsAdimensional;
 	}
 
 

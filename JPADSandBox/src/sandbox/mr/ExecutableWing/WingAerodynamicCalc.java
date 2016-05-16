@@ -3,7 +3,9 @@ package sandbox.mr.ExecutableWing;
 import static java.lang.Math.toRadians;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.measure.quantity.Angle;
 import javax.measure.unit.NonSI;
@@ -27,7 +29,9 @@ import writers.JPADStaticWriteUtils;
 
 public class WingAerodynamicCalc {
 
-	public static void calculateAll(InputOutputTree input){
+	private static Double[] alphaDistributionArray;
+
+	public static void calculateAll(InputOutputTree input) throws InstantiationException, IllegalAccessException{
 
 
 		// distribution
@@ -169,28 +173,30 @@ public class WingAerodynamicCalc {
 		theNasaBlackwellCalculator.calculate(alphaFirst);
 		double [] clDistribution = theNasaBlackwellCalculator.get_clTotalDistribution().toArray();
 		double cLFirst = theNasaBlackwellCalculator.get_cLEvaluated();//MyMathUtils.integrate1DTrapezoidLinear(yStationActual, clDistribution, 0, 1);
-		System.out.println("\n\n cL alpha 2 " + cLFirst);
+		//System.out.println("\n\n cL alpha 2 " + cLFirst);
 
 		theNasaBlackwellCalculator.calculate(alphaSecond);
 		double cLSecond = theNasaBlackwellCalculator.get_cLEvaluated();
-		System.out.println(" cL alpha 4 " + cLSecond);
+		//System.out.println(" cL alpha 4 " + cLSecond);
 
 		double cLAlpha = (cLSecond - cLFirst)/(alphaSecond.getEstimatedValue()-alphaFirst.getEstimatedValue()); // 1/rad
-		input.setClAlpha(cLAlpha);
+		input.setClAlpha(Math.toRadians(cLAlpha));
 
 		System.out.println(" \n ");
-		System.out.println(" cL ALPHA " + cLAlpha);
+		//		System.out.println(" cL ALPHA " + cLAlpha);
 
 
 		Amount<Angle> alphaZero = Amount.valueOf(0.0, SI.RADIAN);
 
 		theNasaBlackwellCalculator.calculate(alphaZero);
 		double cLZero = theNasaBlackwellCalculator.get_cLEvaluated();
-		System.out.println(" cl zero " + cLZero);
+		input.setcLZero(cLZero);
+		//		System.out.println(" cl zero " + cLZero);
 
 		double alphaZeroLift = -(cLZero)/cLAlpha;
 		input.setAlphaZeroLift(Amount.valueOf(Math.toDegrees(alphaZeroLift), NonSI.DEGREE_ANGLE));
-		System.out.println(" alpha zero lift (deg) " + Math.toDegrees(alphaZeroLift));
+
+		//		System.out.println(" alpha zero lift (deg) " + Math.toDegrees(alphaZeroLift));
 
 
 		// alpha Star
@@ -219,14 +225,16 @@ public class WingAerodynamicCalc {
 
 		double alphaStar =  alphaStarRoot * kRoot + alphaStarKink * kKink + alphaStarTip * kTip;
 
-
-		System.out.println(" alpha star (deg) " + Math.toDegrees(alphaStar));
+		input.setAlphaStar(Amount.valueOf(Math.toDegrees(alphaStar), NonSI.DEGREE_ANGLE));
+		//		System.out.println(" alpha star (deg) " + Math.toDegrees(alphaStar));
 
 		Amount<Angle> alphaStarAmount = Amount.valueOf(alphaStar, SI.RADIAN);
 
 		theNasaBlackwellCalculator.calculate(alphaStarAmount);
 		double cLStar = theNasaBlackwellCalculator.get_cLEvaluated();
-		System.out.println(" cL star " + cLStar);
+		input.setClStar(cLStar);
+
+		//		System.out.println(" cL star " + cLStar);
 
 		// cl Max
 
@@ -244,24 +252,25 @@ public class WingAerodynamicCalc {
 				input.getMachNumber(),
 				input.getAltitude().getEstimatedValue());
 
-		System.out.println(" cl max " + cLMax);
+		input.setClMax(cLMax);
+		//		System.out.println(" cl max " + cLMax);
 
 		// alpha stall
 		double alphaStall = ((cLMax-cLZero)/Math.toRadians(cLAlpha) + input.getDeltaAlpha());
 
-		System.out.println(" alpha Stall (deg) = " +  alphaStall);
+		input.setAlphaStall(Amount.valueOf(alphaStall, NonSI.DEGREE_ANGLE));
+		//		System.out.println(" alpha Stall (deg) = " +  alphaStall);
 
 
 
 		// RESULTS
 
-//		System.out.println(" \n-----------CLEAN CONFIGURATION-------------- ");
-//		System.out.println(" Alpha max = " + input.getAlphaMaxClean().getEstimatedValue() + " " + input.getAlphaMaxClean().getUnit());
-//		System.out.println(" Alpha star = " + input.getAlphaStarClean().getEstimatedValue() + " " + input.getAlphaStarClean().getUnit());
-//		System.out.println(" CL max = " + input.getcLmaxClean());
-//		System.out.println(" CL star = " + input.getcLstarClean());
-//		System.out.println(" CL alpha = " + input.getcLAlphaClean().getEstimatedValue() + " " + input.getcLAlphaClean().getUnit());
-
+		System.out.println(" \n-----------WING RESULTS-------------- ");
+		System.out.println(" Alpha stall = " + input.getAlphaStall().getEstimatedValue() + " " + input.getAlphaStall().getUnit());
+		System.out.println(" Alpha star = " + input.getAlphaStar().getEstimatedValue() + " " + input.getAlphaStar().getUnit());
+		System.out.println(" CL max = " + input.getClMax());
+		System.out.println(" CL star = " + input.getClStar());
+		System.out.println(" CL alpha = " + input.getClAlpha() + " (1/deg)");
 
 
 
@@ -271,7 +280,7 @@ public class WingAerodynamicCalc {
 		double alphaCleanFirst = -10.0;
 		Amount<Angle> alphaActual;
 
-		int nPoints = 40;
+		int nPoints = input.getNumberOfAlphaCL();
 
 		Amount<Angle> alphaStarClean = alphaStarAmount.to(NonSI.DEGREE_ANGLE); //deg
 		double cLStarClean = cLStar;
@@ -285,7 +294,7 @@ public class WingAerodynamicCalc {
 		double[] cLCleanArrayPlot = new double[nPoints]; 
 
 		Double [] alphaCleanArrayPlotDouble = MyArrayUtils.linspaceDouble(alphaCleanFirst, alphaMaxClean.getEstimatedValue() + 2, nPoints);
-		
+
 		for (int i=0; i<alphaCleanArrayPlotDouble.length; i++){
 			alphaCleanArrayPlot[i] = alphaCleanArrayPlotDouble[i];
 		}
@@ -313,7 +322,7 @@ public class WingAerodynamicCalc {
 		double dC = solSystemC[3];
 
 		for ( int i=0 ; i< alphaCleanArrayPlot.length ; i++){
-			alphaActual = Amount.valueOf(toRadians(alphaCleanArrayPlot[i]), SI.RADIAN);
+			alphaActual = Amount.valueOf(alphaCleanArrayPlot[i], NonSI.DEGREE_ANGLE);
 			if (alphaActual.getEstimatedValue() < alphaStarClean.getEstimatedValue()) { 
 				cLCleanArrayPlot[i] = cLalphaClean*alphaActual.getEstimatedValue() + cL0Clean;}
 			else {
@@ -324,10 +333,43 @@ public class WingAerodynamicCalc {
 		}
 
 
-		String folderPathHL = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR);
+		input.setcLVsAlphaVector(cLCleanArrayPlot);
+		input.setAlphaVector(alphaCleanArrayPlot);
+
+		input.buildOutput();
 		
-	System.out.println(" \n-----------WRITING CHART TO FILE-------------- ");
+		// SET ARRAY 
 		
+		if (input.getNumberOfAlpha() !=0 ){
+			
+			// alpha array
+			
+			
+			alphaDistributionArray  = new Double [input.getNumberOfAlpha()];
+			
+			alphaDistributionArray = MyArrayUtils.linspaceDouble(
+					input.getAlphaInitial().getEstimatedValue(), input.getAlphaFinal().getEstimatedValue(), input.getNumberOfAlpha());
+		
+			
+			for (int i=0; i<input.getNumberOfAlpha(); i++){
+				
+				Amount<Angle> alphaAngle = Amount.valueOf(Math.toRadians(alphaDistributionArray[i]), SI.RADIAN);
+				theNasaBlackwellCalculator.calculate(alphaAngle);
+				double [] clDistributionArray = theNasaBlackwellCalculator.get_clTotalDistribution().toArray();
+				Double [] clDistributionDouble = new Double [ clDistributionArray .length];
+				for (int j=0; j<clDistributionArray.length; j++){
+					clDistributionDouble [j] =  clDistributionArray[j];
+				}
+				input.getClVsEtaVectors().set(i, (clDistributionDouble));			
+				
+			}
+		}
+		// PLOT
+		
+		String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR);
+
+		System.out.println(" \n-----------WRITING CHART TO FILE. CL VS ALPHA-------------- ");
+
 		MyChartToFileUtils.plotNoLegend(
 				alphaCleanArrayPlot, 
 				cLCleanArrayPlot,
@@ -337,10 +379,48 @@ public class WingAerodynamicCalc {
 				null,
 				"alpha", "CL",
 				"deg", "",
-				JPADStaticWriteUtils.createNewFolder(folderPathHL + "Wing Charts" + File.separator),
+				JPADStaticWriteUtils.createNewFolder(folderPath + "Wing Charts" + File.separator),
 				"CL curve high lift");
 
 		System.out.println(" \n-------------------DONE----------------------- ");
+
+		if ( input.getNumberOfAlpha() !=0){
+		List<Double[]> yVector = new ArrayList<Double[]>();
+		List<String> legend  = new ArrayList<>(); 
 		
+		Double [] yStationDouble = new Double [yStationActual.length];
+		
+		for (int i=0; i<yStationActual.length; i++){
+			yStationDouble[i] = yStationActual[i];
+		}
+		for (int i=0; i<input.getNumberOfAlpha(); i++){
+			
+		yVector.add(i, yStationDouble);
+		legend.add("alpha " + alphaDistributionArray[i]);
+		}
+
+		
+
+		System.out.println(" \n-----------WRITING CHART TO FILE . STALL PATH-------------- ");
+		
+		MyChartToFileUtils.plotJFreeChart(
+				yVector, 
+				input.getClVsEtaVectors(),
+				"CL vs alpha",
+				"eta", 
+				"CL",
+				null, null, null, null,
+				"",
+				"",
+				true,
+				legend,
+				JPADStaticWriteUtils.createNewFolder(folderPath + "cl distribution" + File.separator),
+				"Cl vs eta");
+
+		System.out.println(" \n-------------------DONE----------------------- ");
+		
+	
+		}
+
 	}
 }
