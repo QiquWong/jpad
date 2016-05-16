@@ -1704,7 +1704,8 @@ public class Fuselage implements IFuselage {
 	public static Fuselage importFromXML(String pathToXML) {
 
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
-
+		
+		
 		System.out.println("Reading fuselage data ...");
 
 		String id = MyXMLReaderUtils
@@ -1712,9 +1713,55 @@ public class Fuselage implements IFuselage {
 						reader.getXmlDoc(), reader.getXpath(),
 						"//fuselage/@id");
 
+		// GLOBAL DATA
+		String deckProp = reader.getXMLPropertyByPath("//global_data/deck_number");
+		Integer deckNum = Integer.valueOf(deckProp);
 		Amount<Length> len = reader.getXMLAmountLengthByPath("//global_data/length");
-
-		// create the wing panel via its builder
+		String refMassProp = reader.getXMLPropertyByPath("//global_data/mass_reference");
+		Amount refMass = Amount.valueOf(Double.valueOf(refMassProp), SI.KILOGRAM);
+		
+		// NOSE TRUNK
+		String lenRatioNoseProp = reader.getXMLPropertyByPath("//nose_trunk/length_ratio");
+		Double lenRatioNose = Double.valueOf(lenRatioNoseProp);
+		String finenessRatioNoseProp = reader.getXMLPropertyByPath("//nose_trunk/fineness_ratio");
+		Double finenessRatioNose = Double.valueOf(finenessRatioNoseProp);
+		String tipHeightOffsetNoseProp = reader.getXMLPropertyByPath("//nose_trunk/tip_height_offset");
+		Double tipHeightOffsetNose = Double.valueOf(tipHeightOffsetNoseProp);
+		String dxCapPercentNoseProp = reader.getXMLPropertyByPath("//nose_trunk/dx_cap_percent");
+		Double dxCapPercentNose = Double.valueOf(dxCapPercentNoseProp);
+		String windshieldType = reader.getXMLPropertyByPath("//nose_trunk/windshield_type");
+		Amount<Length> windshieldWidth = reader.getXMLAmountLengthByPath("//nose_trunk/windshield_width");
+		Amount<Length> windshieldHeight = reader.getXMLAmountLengthByPath("//nose_trunk/windshield_height");
+		String midSectionLowerToTotalHeightRatioProp = reader.getXMLPropertyByPath("//nose_trunk/mid_section_lower_to_total_height_ratio");
+		Double midSectionLowerToTotalHeightRatio = Double.valueOf(midSectionLowerToTotalHeightRatioProp);
+		String midSectionRhoUpperNoseProp = reader.getXMLPropertyByPath("//nose_trunk/mid_section_rho_upper");
+		Double midSectionRhoUpperNose = Double.valueOf(midSectionRhoUpperNoseProp);
+		String midSectionRhoLowerNoseProp = reader.getXMLPropertyByPath("//nose_trunk/mid_section_rho_lower");
+		Double midSectionRhoLowerNose = Double.valueOf(midSectionRhoLowerNoseProp);
+		
+		// CYLINDRICAL TRUNK
+		String lenRatioCylProp = reader.getXMLPropertyByPath("//cylindrical_trunk/length_ratio");
+		Double lenRatioCyl = Double.valueOf(lenRatioCylProp);
+		Amount<Length> sectionWidth = reader.getXMLAmountLengthByPath("//cylindrical_trunk/section_width");
+		Amount<Length> sectionHeight = reader.getXMLAmountLengthByPath("//cylindrical_trunk/section_height");
+		Amount<Length> heightFromGround = reader.getXMLAmountLengthByPath("//cylindrical_trunk/height_from_ground");
+		String sectionLowerToTotalHeightRatioProp = reader.getXMLPropertyByPath("//cylindrical_trunk/section_lower_to_total_height_ratio");
+		Double sectionLowerToTotalHeightRatio = Double.valueOf(sectionLowerToTotalHeightRatioProp);
+		String sectionRhoUpperProp = reader.getXMLPropertyByPath("//cylindrical_trunk/section_rho_upper");
+		Double sectionRhoUpper = Double.valueOf(sectionRhoUpperProp);
+		String sectionRhoLowerProp = reader.getXMLPropertyByPath("//cylindrical_trunk/section_rho_lower");
+		Double sectionRhoLower = Double.valueOf(sectionRhoUpperProp);
+		
+		// TAIL TRUNK
+		Amount<Length> tipHeightOffsetTail = reader.getXMLAmountLengthByPath("//tail_trunk/tip_height_offset");
+		String dxCapPercentTailProp = reader.getXMLPropertyByPath("//tail_trunk/dx_cap_percent");
+		Double dxCapPercentTail = Double.valueOf(dxCapPercentTailProp);
+		String midSectionRhoUpperTailProp = reader.getXMLPropertyByPath("//tail_trunk/mid_section_rho_upper");
+		Double midSectionRhoUpperTail = Double.valueOf(midSectionRhoUpperTailProp);
+		String midSectionRhoLowerTailProp = reader.getXMLPropertyByPath("//tail_trunk/mid_section_rho_lower");
+		Double midSectionRhoLowerTail = Double.valueOf(midSectionRhoLowerTailProp);
+		
+		// create the fuselage via its builder
 		Fuselage fuselage = new FuselageBuilder(id)
 				.length(len)
 				.build();
@@ -1964,8 +2011,19 @@ public class Fuselage implements IFuselage {
 			}
 			// --- END OF INPUT DATA ------------------------------------------
 		}
+		
+		
+		public FuselageBuilder deckNumber(Int len) {
+			_lenF = len;
+			return this;
+		}
 
 		public FuselageBuilder length(Amount<Length> len) {
+			_lenF = len;
+			return this;
+		}
+		
+		public FuselageBuilder deckNumber(Int len) {
 			_lenF = len;
 			return this;
 		}
@@ -2064,5 +2122,705 @@ public class Fuselage implements IFuselage {
 // TODO add discretized data output
 				;
 		return sb.toString();
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public Boolean getPressurized() {
+		return pressurized;
+	}
+
+	public void setPressurized(Boolean pressurized) {
+		this.pressurized = pressurized;
+	}
+
+	public Amount<Length> getLenF() {
+		return lenF;
+	}
+
+	public void setLenF(Amount<Length> lenF) {
+		this.lenF = lenF;
+	}
+
+	public Amount<Length> getLenN() {
+		return lenN;
+	}
+
+	public void setLenN(Amount<Length> lenN) {
+		this.lenN = lenN;
+	}
+
+	public Amount<Length> getLenC() {
+		return lenC;
+	}
+
+	public void setLenC(Amount<Length> lenC) {
+		this.lenC = lenC;
+	}
+
+	public Amount<Length> getLenT() {
+		return lenT;
+	}
+
+	public void setLenT(Amount<Length> lenT) {
+		this.lenT = lenT;
+	}
+
+	public Amount<Length> getSectionCylinderHeight() {
+		return sectionCylinderHeight;
+	}
+
+	public void setSectionCylinderHeight(Amount<Length> sectionCylinderHeight) {
+		this.sectionCylinderHeight = sectionCylinderHeight;
+	}
+
+	public Amount<Length> getEquivalentDiameterCylinderGM() {
+		return equivalentDiameterCylinderGM;
+	}
+
+	public void setEquivalentDiameterCylinderGM(Amount<Length> equivalentDiameterCylinderGM) {
+		this.equivalentDiameterCylinderGM = equivalentDiameterCylinderGM;
+	}
+
+	public Amount<Length> getEquivalentDiameterGM() {
+		return equivalentDiameterGM;
+	}
+
+	public void setEquivalentDiameterGM(Amount<Length> equivalentDiameterGM) {
+		this.equivalentDiameterGM = equivalentDiameterGM;
+	}
+
+	public Amount<Length> getEquivalentDiameterCylinderAM() {
+		return equivalentDiameterCylinderAM;
+	}
+
+	public void setEquivalentDiameterCylinderAM(Amount<Length> equivalentDiameterCylinderAM) {
+		this.equivalentDiameterCylinderAM = equivalentDiameterCylinderAM;
+	}
+
+	public Amount<Area> getAreaC() {
+		return areaC;
+	}
+
+	public void setAreaC(Amount<Area> areaC) {
+		this.areaC = areaC;
+	}
+
+	public Amount<Area> getWindshieldArea() {
+		return windshieldArea;
+	}
+
+	public void setWindshieldArea(Amount<Area> windshieldArea) {
+		this.windshieldArea = windshieldArea;
+	}
+
+	public String getWindshieldType() {
+		return windshieldType;
+	}
+
+	public void setWindshieldType(String windshieldType) {
+		this.windshieldType = windshieldType;
+	}
+
+	public Amount<Area> getsWetNose() {
+		return sWetNose;
+	}
+
+	public void setsWetNose(Amount<Area> sWetNose) {
+		this.sWetNose = sWetNose;
+	}
+
+	public Amount<Area> getsWetTail() {
+		return sWetTail;
+	}
+
+	public void setsWetTail(Amount<Area> sWetTail) {
+		this.sWetTail = sWetTail;
+	}
+
+	public Amount<Area> getsWetC() {
+		return sWetC;
+	}
+
+	public void setsWetC(Amount<Area> sWetC) {
+		this.sWetC = sWetC;
+	}
+
+	public Amount<Area> getsFront() {
+		return sFront;
+	}
+
+	public void setsFront(Amount<Area> sFront) {
+		this.sFront = sFront;
+	}
+
+	public Amount<Area> getsWet() {
+		return sWet;
+	}
+
+	public void setsWet(Amount<Area> sWet) {
+		this.sWet = sWet;
+	}
+
+	public Amount<Length> getHeightFromGround() {
+		return heightFromGround;
+	}
+
+	public void setHeightFromGround(Amount<Length> heightFromGround) {
+		this.heightFromGround = heightFromGround;
+	}
+
+	public Amount<Angle> getPhi1() {
+		return phi1;
+	}
+
+	public void setPhi1(Amount<Angle> phi1) {
+		this.phi1 = phi1;
+	}
+
+	public Amount<Angle> getPhi2() {
+		return phi2;
+	}
+
+	public void setPhi2(Amount<Angle> phi2) {
+		this.phi2 = phi2;
+	}
+
+	public Amount<Angle> getPhi3() {
+		return phi3;
+	}
+
+	public void setPhi3(Amount<Angle> phi3) {
+		this.phi3 = phi3;
+	}
+
+	public Amount<Angle> getPhiN() {
+		return phiN;
+	}
+
+	public void setPhiN(Amount<Angle> phiN) {
+		this.phiN = phiN;
+	}
+
+	public Amount<Angle> getPhiT() {
+		return phiT;
+	}
+
+	public void setPhiT(Amount<Angle> phiT) {
+		this.phiT = phiT;
+	}
+
+	public Amount<Length> getHeightN() {
+		return heightN;
+	}
+
+	public void setHeightN(Amount<Length> heightN) {
+		this.heightN = heightN;
+	}
+
+	public Amount<Length> getHeightT() {
+		return heightT;
+	}
+
+	public void setHeightT(Amount<Length> heightT) {
+		this.heightT = heightT;
+	}
+
+	public Amount<Angle> getUpsweepAngle() {
+		return upsweepAngle;
+	}
+
+	public void setUpsweepAngle(Amount<Angle> upsweepAngle) {
+		this.upsweepAngle = upsweepAngle;
+	}
+
+	public Amount<Angle> getWindshieldAngle() {
+		return windshieldAngle;
+	}
+
+	public void setWindshieldAngle(Amount<Angle> windshieldAngle) {
+		this.windshieldAngle = windshieldAngle;
+	}
+
+	public Amount<Length> getRoughness() {
+		return roughness;
+	}
+
+	public void setRoughness(Amount<Length> roughness) {
+		this.roughness = roughness;
+	}
+
+	public Double getLambdaF() {
+		return lambdaF;
+	}
+
+	public void setLambdaF(Double lambdaF) {
+		this.lambdaF = lambdaF;
+	}
+
+	public Double getLambdaN() {
+		return lambdaN;
+	}
+
+	public void setLambdaN(Double lambdaN) {
+		this.lambdaN = lambdaN;
+	}
+
+	public Double getLambdaC() {
+		return lambdaC;
+	}
+
+	public void setLambdaC(Double lambdaC) {
+		this.lambdaC = lambdaC;
+	}
+
+	public Double getLambdaT() {
+		return lambdaT;
+	}
+
+	public void setLambdaT(Double lambdaT) {
+		this.lambdaT = lambdaT;
+	}
+
+	public Double getLenRatioNF() {
+		return lenRatioNF;
+	}
+
+	public void setLenRatioNF(Double lenRatioNF) {
+		this.lenRatioNF = lenRatioNF;
+	}
+
+	public Double getLenRatioCF() {
+		return lenRatioCF;
+	}
+
+	public void setLenRatioCF(Double lenRatioCF) {
+		this.lenRatioCF = lenRatioCF;
+	}
+
+	public Double getLenRatioTF() {
+		return lenRatioTF;
+	}
+
+	public void setLenRatioTF(Double lenRatioTF) {
+		this.lenRatioTF = lenRatioTF;
+	}
+
+	public Double getFormFactor() {
+		return formFactor;
+	}
+
+	public void setFormFactor(Double formFactor) {
+		this.formFactor = formFactor;
+	}
+
+	public Amount<Length> getSectionCylinderWidth() {
+		return sectionCylinderWidth;
+	}
+
+	public void setSectionCylinderWidth(Amount<Length> sectionCylinderWidth) {
+		this.sectionCylinderWidth = sectionCylinderWidth;
+	}
+
+	public Amount<Length> getWindshieldHeight() {
+		return windshieldHeight;
+	}
+
+	public void setWindshieldHeight(Amount<Length> windshieldHeight) {
+		this.windshieldHeight = windshieldHeight;
+	}
+
+	public Amount<Length> getWindshieldWidth() {
+		return windshieldWidth;
+	}
+
+	public void setWindshieldWidth(Amount<Length> windshieldWidth) {
+		this.windshieldWidth = windshieldWidth;
+	}
+
+	public Amount<Length> getDxNoseCap() {
+		return dxNoseCap;
+	}
+
+	public void setDxNoseCap(Amount<Length> dxNoseCap) {
+		this.dxNoseCap = dxNoseCap;
+	}
+
+	public Amount<Length> getDxTailCap() {
+		return dxTailCap;
+	}
+
+	public void setDxTailCap(Amount<Length> dxTailCap) {
+		this.dxTailCap = dxTailCap;
+	}
+
+	public Double getSectionCylinderLowerToTotalHeightRatio() {
+		return sectionCylinderLowerToTotalHeightRatio;
+	}
+
+	public void setSectionCylinderLowerToTotalHeightRatio(Double sectionCylinderLowerToTotalHeightRatio) {
+		this.sectionCylinderLowerToTotalHeightRatio = sectionCylinderLowerToTotalHeightRatio;
+	}
+
+	public Double getSectionNoseMidLowerToTotalHeightRatio() {
+		return sectionNoseMidLowerToTotalHeightRatio;
+	}
+
+	public void setSectionNoseMidLowerToTotalHeightRatio(Double sectionNoseMidLowerToTotalHeightRatio) {
+		this.sectionNoseMidLowerToTotalHeightRatio = sectionNoseMidLowerToTotalHeightRatio;
+	}
+
+	public Double getSectionTailMidLowerToTotalHeightRatio() {
+		return sectionTailMidLowerToTotalHeightRatio;
+	}
+
+	public void setSectionTailMidLowerToTotalHeightRatio(Double sectionTailMidLowerToTotalHeightRatio) {
+		this.sectionTailMidLowerToTotalHeightRatio = sectionTailMidLowerToTotalHeightRatio;
+	}
+
+	public Double getSectionCylinderRhoUpper() {
+		return sectionCylinderRhoUpper;
+	}
+
+	public void setSectionCylinderRhoUpper(Double sectionCylinderRhoUpper) {
+		this.sectionCylinderRhoUpper = sectionCylinderRhoUpper;
+	}
+
+	public Double getSectionCylinderRhoLower() {
+		return sectionCylinderRhoLower;
+	}
+
+	public void setSectionCylinderRhoLower(Double sectionCylinderRhoLower) {
+		this.sectionCylinderRhoLower = sectionCylinderRhoLower;
+	}
+
+	public Double getSectionMidNoseRhoUpper() {
+		return sectionMidNoseRhoUpper;
+	}
+
+	public void setSectionMidNoseRhoUpper(Double sectionMidNoseRhoUpper) {
+		this.sectionMidNoseRhoUpper = sectionMidNoseRhoUpper;
+	}
+
+	public Double getSectionMidNoseRhoLower() {
+		return sectionMidNoseRhoLower;
+	}
+
+	public void setSectionMidNoseRhoLower(Double sectionMidNoseRhoLower) {
+		this.sectionMidNoseRhoLower = sectionMidNoseRhoLower;
+	}
+
+	public Double getSectionMidTailRhoUpper() {
+		return sectionMidTailRhoUpper;
+	}
+
+	public void setSectionMidTailRhoUpper(Double sectionMidTailRhoUpper) {
+		this.sectionMidTailRhoUpper = sectionMidTailRhoUpper;
+	}
+
+	public Double getSectionMidTailRhoLower() {
+		return sectionMidTailRhoLower;
+	}
+
+	public void setSectionMidTailRhoLower(Double sectionMidTailRhoLower) {
+		this.sectionMidTailRhoLower = sectionMidTailRhoLower;
+	}
+
+	public int getNpN() {
+		return npN;
+	}
+
+	public void setNpN(int npN) {
+		this.npN = npN;
+	}
+
+	public int getNpC() {
+		return npC;
+	}
+
+	public void setNpC(int npC) {
+		this.npC = npC;
+	}
+
+	public int getNpT() {
+		return npT;
+	}
+
+	public void setNpT(int npT) {
+		this.npT = npT;
+	}
+
+	public int getNpSecUp() {
+		return npSecUp;
+	}
+
+	public void setNpSecUp(int npSecUp) {
+		this.npSecUp = npSecUp;
+	}
+
+	public int getNpSecLow() {
+		return npSecLow;
+	}
+
+	public void setNpSecLow(int npSecLow) {
+		this.npSecLow = npSecLow;
+	}
+
+	public double getDeltaXNose() {
+		return deltaXNose;
+	}
+
+	public void setDeltaXNose(double deltaXNose) {
+		this.deltaXNose = deltaXNose;
+	}
+
+	public double getDeltaXCylinder() {
+		return deltaXCylinder;
+	}
+
+	public void setDeltaXCylinder(double deltaXCylinder) {
+		this.deltaXCylinder = deltaXCylinder;
+	}
+
+	public double getDeltaXTail() {
+		return deltaXTail;
+	}
+
+	public void setDeltaXTail(double deltaXTail) {
+		this.deltaXTail = deltaXTail;
+	}
+
+	public double getDxNoseCapPercent() {
+		return dxNoseCapPercent;
+	}
+
+	public void setDxNoseCapPercent(double dxNoseCapPercent) {
+		this.dxNoseCapPercent = dxNoseCapPercent;
+	}
+
+	public double getDxTailCapPercent() {
+		return dxTailCapPercent;
+	}
+
+	public void setDxTailCapPercent(double dxTailCapPercent) {
+		this.dxTailCapPercent = dxTailCapPercent;
+	}
+
+	public List<Double> getOutlineXZUpperCurveX() {
+		return outlineXZUpperCurveX;
+	}
+
+	public void setOutlineXZUpperCurveX(List<Double> outlineXZUpperCurveX) {
+		this.outlineXZUpperCurveX = outlineXZUpperCurveX;
+	}
+
+	public List<Double> getOutlineXZUpperCurveZ() {
+		return outlineXZUpperCurveZ;
+	}
+
+	public void setOutlineXZUpperCurveZ(List<Double> outlineXZUpperCurveZ) {
+		this.outlineXZUpperCurveZ = outlineXZUpperCurveZ;
+	}
+
+	public List<Double> getOutlineXZLowerCurveX() {
+		return outlineXZLowerCurveX;
+	}
+
+	public void setOutlineXZLowerCurveX(List<Double> outlineXZLowerCurveX) {
+		this.outlineXZLowerCurveX = outlineXZLowerCurveX;
+	}
+
+	public List<Double> getOutlineXZLowerCurveZ() {
+		return outlineXZLowerCurveZ;
+	}
+
+	public void setOutlineXZLowerCurveZ(List<Double> outlineXZLowerCurveZ) {
+		this.outlineXZLowerCurveZ = outlineXZLowerCurveZ;
+	}
+
+	public List<Double> getOutlineXZCamberLineX() {
+		return outlineXZCamberLineX;
+	}
+
+	public void setOutlineXZCamberLineX(List<Double> outlineXZCamberLineX) {
+		this.outlineXZCamberLineX = outlineXZCamberLineX;
+	}
+
+	public List<Double> getOutlineXZCamberLineZ() {
+		return outlineXZCamberLineZ;
+	}
+
+	public void setOutlineXZCamberLineZ(List<Double> outlineXZCamberLineZ) {
+		this.outlineXZCamberLineZ = outlineXZCamberLineZ;
+	}
+
+	public List<Double> getOutlineXYSideRCurveX() {
+		return outlineXYSideRCurveX;
+	}
+
+	public void setOutlineXYSideRCurveX(List<Double> outlineXYSideRCurveX) {
+		this.outlineXYSideRCurveX = outlineXYSideRCurveX;
+	}
+
+	public List<Double> getOutlineXYSideRCurveY() {
+		return outlineXYSideRCurveY;
+	}
+
+	public void setOutlineXYSideRCurveY(List<Double> outlineXYSideRCurveY) {
+		this.outlineXYSideRCurveY = outlineXYSideRCurveY;
+	}
+
+	public List<Double> getOutlineXYSideRCurveZ() {
+		return outlineXYSideRCurveZ;
+	}
+
+	public void setOutlineXYSideRCurveZ(List<Double> outlineXYSideRCurveZ) {
+		this.outlineXYSideRCurveZ = outlineXYSideRCurveZ;
+	}
+
+	public List<Double> getOutlineXYSideLCurveX() {
+		return outlineXYSideLCurveX;
+	}
+
+	public void setOutlineXYSideLCurveX(List<Double> outlineXYSideLCurveX) {
+		this.outlineXYSideLCurveX = outlineXYSideLCurveX;
+	}
+
+	public List<Double> getOutlineXYSideLCurveY() {
+		return outlineXYSideLCurveY;
+	}
+
+	public void setOutlineXYSideLCurveY(List<Double> outlineXYSideLCurveY) {
+		this.outlineXYSideLCurveY = outlineXYSideLCurveY;
+	}
+
+	public List<Double> getOutlineXYSideLCurveZ() {
+		return outlineXYSideLCurveZ;
+	}
+
+	public void setOutlineXYSideLCurveZ(List<Double> outlineXYSideLCurveZ) {
+		this.outlineXYSideLCurveZ = outlineXYSideLCurveZ;
+	}
+
+	public List<Double> getSectionUpperCurveY() {
+		return sectionUpperCurveY;
+	}
+
+	public void setSectionUpperCurveY(List<Double> sectionUpperCurveY) {
+		this.sectionUpperCurveY = sectionUpperCurveY;
+	}
+
+	public List<Double> getSectionUpperCurveZ() {
+		return sectionUpperCurveZ;
+	}
+
+	public void setSectionUpperCurveZ(List<Double> sectionUpperCurveZ) {
+		this.sectionUpperCurveZ = sectionUpperCurveZ;
+	}
+
+	public List<Double> getSectionLowerCurveY() {
+		return sectionLowerCurveY;
+	}
+
+	public void setSectionLowerCurveY(List<Double> sectionLowerCurveY) {
+		this.sectionLowerCurveY = sectionLowerCurveY;
+	}
+
+	public List<Double> getSectionLowerCurveZ() {
+		return sectionLowerCurveZ;
+	}
+
+	public void setSectionLowerCurveZ(List<Double> sectionLowerCurveZ) {
+		this.sectionLowerCurveZ = sectionLowerCurveZ;
+	}
+
+	public List<MyFuselageCurvesSection> getSectionsYZ() {
+		return sectionsYZ;
+	}
+
+	public void setSectionsYZ(List<MyFuselageCurvesSection> sectionsYZ) {
+		this.sectionsYZ = sectionsYZ;
+	}
+
+	public List<Amount<Length>> getSectionsYZStations() {
+		return sectionsYZStations;
+	}
+
+	public void setSectionsYZStations(List<Amount<Length>> sectionsYZStations) {
+		this.sectionsYZStations = sectionsYZStations;
+	}
+
+	public List<List<Double>> getSectionUpperCurvesY() {
+		return sectionUpperCurvesY;
+	}
+
+	public void setSectionUpperCurvesY(List<List<Double>> sectionUpperCurvesY) {
+		this.sectionUpperCurvesY = sectionUpperCurvesY;
+	}
+
+	public List<List<Double>> getSectionUpperCurvesZ() {
+		return sectionUpperCurvesZ;
+	}
+
+	public void setSectionUpperCurvesZ(List<List<Double>> sectionUpperCurvesZ) {
+		this.sectionUpperCurvesZ = sectionUpperCurvesZ;
+	}
+
+	public List<List<Double>> getSectionLowerCurvesY() {
+		return sectionLowerCurvesY;
+	}
+
+	public void setSectionLowerCurvesY(List<List<Double>> sectionLowerCurvesY) {
+		this.sectionLowerCurvesY = sectionLowerCurvesY;
+	}
+
+	public List<List<Double>> getSectionLowerCurvesZ() {
+		return sectionLowerCurvesZ;
+	}
+
+	public void setSectionLowerCurvesZ(List<List<Double>> sectionLowerCurvesZ) {
+		this.sectionLowerCurvesZ = sectionLowerCurvesZ;
+	}
+
+	public int getIDX_SECTION_YZ_NOSE_TIP() {
+		return IDX_SECTION_YZ_NOSE_TIP;
+	}
+
+	public int getIDX_SECTION_YZ_NOSE_CAP() {
+		return IDX_SECTION_YZ_NOSE_CAP;
+	}
+
+	public int getIDX_SECTION_YZ_MID_NOSE() {
+		return IDX_SECTION_YZ_MID_NOSE;
+	}
+
+	public int getIDX_SECTION_YZ_CYLINDER_1() {
+		return IDX_SECTION_YZ_CYLINDER_1;
+	}
+
+	public int getIDX_SECTION_YZ_CYLINDER_2() {
+		return IDX_SECTION_YZ_CYLINDER_2;
+	}
+
+	public int getIDX_SECTION_YZ_MID_TAIL() {
+		return IDX_SECTION_YZ_MID_TAIL;
+	}
+
+	public int getIDX_SECTION_YZ_TAIL_CAP() {
+		return IDX_SECTION_YZ_TAIL_CAP;
+	}
+
+	public int getIDX_SECTION_YZ_TAIL_TIP() {
+		return IDX_SECTION_YZ_TAIL_TIP;
+	}
+
+	public int getNUM_SECTIONS_YZ() {
+		return NUM_SECTIONS_YZ;
 	}
 }
