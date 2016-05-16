@@ -11,10 +11,8 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import aircraft.OperatingConditions;
-import aircraft.components.Aircraft;
-import aircraft.components.liftingSurface.LSAerodynamicsManager;
-import configuration.enumerations.AircraftEnum;
+import configuration.MyConfiguration;
+import configuration.enumerations.FoldersEnum;
 import standaloneutils.JPADXmlReader;
 
 public class Test_Executable_Wing {
@@ -25,6 +23,10 @@ public class Test_Executable_Wing {
 	@Option(name = "-i", aliases = { "--input" }, required = true,
 			usage = "my input file")
 	private File _inputFile;
+	
+	@Option(name = "-d", aliases = { "--database-path" }, required = true,
+			usage = "path for database files")
+	private File _databasePath;
 
 	// declaration necessary for Concrete Object usage
 	public CmdLineParser theCmdLineParser;
@@ -48,13 +50,25 @@ public class Test_Executable_Wing {
 		Test_Executable_Wing theTestObject = new Test_Executable_Wing();
 		theTestObject.theCmdLineParser.parseArgument(args);
 		
-		String pathToXML = theTestObject.get_inputFile().getAbsolutePath();
+		String databaseDirectoryAbsolutePath = theTestObject.get_databasePath().getAbsolutePath();
+		
+		// Set the folders tree
+				MyConfiguration.initWorkingDirectoryTree(MyConfiguration.currentDirectoryString,
+						MyConfiguration.inputDirectory, 
+						MyConfiguration.outputDirectory,
+						databaseDirectoryAbsolutePath); // coming from main arguments
+
+				String pathToXML = theTestObject.get_inputFile().getAbsolutePath();
+				String filenameWithPathAndExt = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR) + 
+						"Wing Charts" + File.separator + "WingAerodynamics_Output.xml"; 
+				
+
 		System.out.println("INPUT ===> " + pathToXML);
 		
 		System.out.println("--------------");
 		
 		ReaderWriterWing theReader = new ReaderWriterWing();
-		theReader.importFromXML(pathToXML);
+		theReader.importFromXML(pathToXML,databaseDirectoryAbsolutePath , "Aerodynamic_Database_Ultimate.h5");
 		WingAerodynamicCalc.calculateAll(theReader.getInput());
 		
 	}
@@ -70,4 +84,11 @@ public class Test_Executable_Wing {
 		this._inputFile = _inputFile;
 	}
 	
+	public File get_databasePath() {
+		return _databasePath;
+	}
+
+	public void set_databasePath(File _databasePath) {
+		this._databasePath = _databasePath;
+	}
 }

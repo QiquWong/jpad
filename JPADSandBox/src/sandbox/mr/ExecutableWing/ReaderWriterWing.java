@@ -12,7 +12,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.jscience.physics.amount.Amount;
 import org.w3c.dom.NodeList;
 
+import calculators.geometry.LSGeometryCalc;
 import configuration.enumerations.AirfoilFamilyEnum;
+import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
+import database.databasefunctions.aerodynamics.DatabaseManager;
 import sandbox.vt.ExecutableHighLiftDevices.InputTree;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;
@@ -21,19 +24,23 @@ public class ReaderWriterWing {
 	
 	InputOutputTree input = new InputOutputTree();
 
-	public void importFromXML(String pathToXML) throws ParserConfigurationException {
+	public void importFromXML(String pathToXML, String databaseFolderPath, String aerodynamicDatabaseFileName) throws ParserConfigurationException {
 
 
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
 
 		System.out.println("Reading input file data ...\n");
 		
+		//------------------------------------------------------------------------------------
+		// Setup database(s)
+		AerodynamicDatabaseReader aeroDatabaseReader = DatabaseManager.initializeAeroDatabase(new AerodynamicDatabaseReader(
+				databaseFolderPath,	aerodynamicDatabaseFileName),
+				databaseFolderPath);
+
 
 		//---------------------------------------------------------------------------------
 		// OPERATING CONDITION:
 		
-//		List<String> altitude = reader.getXMLPropertiesByPath("//altitude");
-//		input.setAltitude(Amount.valueOf(Double.valueOf(altitude.get(0)), SI.METER));	
 		
 		Amount<Length> altitude = reader.getXMLAmountWithUnitByPath("//altitude").to(SI.METER);
 		input.setAltitude(altitude);
@@ -66,6 +73,9 @@ public class ReaderWriterWing {
 		double adimensionalKinkStation = Double.parseDouble(reader.getXMLPropertiesByPath("//adimensional_kink_station ").get(0));
 		input.setAdimensionalKinkStation(adimensionalKinkStation);
 		
+		double meanAirfoilThickness = Double.parseDouble(reader.getXMLPropertiesByPath("//max_thickness_mean_airfoil").get(0));
+		input.setMeanThickness(meanAirfoilThickness);
+		
 		
 		//-------------------------------------------------------------------------------------
 		//DISTRIBUTION
@@ -73,7 +83,7 @@ public class ReaderWriterWing {
 		int numberOfSection =  (int)Double.parseDouble(reader.getXMLPropertiesByPath("//number_of_given_sections").get(0));
 		input.setNumberOfSections(numberOfSection);
 		
-		List<String> airfoilFamilyProperty = reader.getXMLPropertiesByPath("//mean_airfoil_type");
+		List<String> airfoilFamilyProperty = reader.getXMLPropertiesByPath("//airfoil_family");
 		if(airfoilFamilyProperty.get(0).equals("NACA_4_DIGIT"))
 			input.setMeanAirfoilFamily(AirfoilFamilyEnum.NACA_4_Digit);
 		else if(airfoilFamilyProperty.get(0).equals("NACA_5_DIGIT"))
@@ -95,6 +105,30 @@ public class ReaderWriterWing {
 			return;
 			
 		}
+		
+		//recognizing airfoil family
+				int airfoilFamilyIndex = 0;
+				if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_4_Digit) 
+					airfoilFamilyIndex = 1;
+				else if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_5_Digit)
+					airfoilFamilyIndex = 2;
+				else if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_63_Series)
+					airfoilFamilyIndex = 3;
+				else if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_64_Series)
+					airfoilFamilyIndex = 4;
+				else if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_65_Series)
+					airfoilFamilyIndex = 5;
+				else if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_66_Series)
+					airfoilFamilyIndex = 6;
+				else if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.BICONVEX)
+					airfoilFamilyIndex = 7;
+				else if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.DOUBLE_WEDGE)
+					airfoilFamilyIndex = 8;
+				
+				
+		double sharpnessParameterLE = aeroDatabaseReader.getDeltaYvsThickness(input.getMeanThickness(), airfoilFamilyIndex);
+				
+				
 		
 		List<String> chordDistribution = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//chord_distribution").get(0));
 		for(int i=0; i<chordDistribution.size(); i++)
@@ -174,6 +208,15 @@ public class ReaderWriterWing {
 		input.setSpan(Amount.valueOf(span, SI.METER));
 		input.setSemiSpan(Amount.valueOf(span/2, SI.METER));
 		
+	// delta alpha	
+		
+		double tgAngle =input.getxLEDistribution().get(input.getNumberOfSections()-1).getEstimatedValue()/input.getSemiSpan().getEstimatedValue();
+		double sweepLE =Math.toDegrees(Math.atan(tgAngle));
+		double deltaAlpha = aeroDatabaseReader.getD_Alpha_Vs_LambdaLE_VsDy(sweepLE,sharpnessParameterLE);
+		
+		input.setDeltaAlpha(deltaAlpha);
+		
+		
 	// PRINT
 		
 		if(input.getNumberOfSections() == input.getChordDistribution().size() &&
@@ -208,7 +251,8 @@ public class ReaderWriterWing {
 		System.out.println("Number of given stations : " + input.getNumberOfSections());
 		
 		System.out.println("\nMean airoil type : " + input.getMeanAirfoilFamily());
-
+        System.out.println("Mean airfoil thickness : " + input.getMeanThickness());
+		
 		System.out.print("\nChord distribution : [");
 		for(int i=0; i<input.getChordDistribution().size(); i++)
 			System.out.print("  " +input.getChordDistribution().get(i).getEstimatedValue() + "  ");

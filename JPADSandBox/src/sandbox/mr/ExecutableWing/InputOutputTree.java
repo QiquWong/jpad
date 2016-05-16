@@ -17,102 +17,105 @@ import configuration.enumerations.FlapTypeEnum;
 public class InputOutputTree {
 	//------------------------------------------------------------------------------------------
 	// VARIABLE DECLARATION:
-	
+
 	// INPUT
-	
+
 	private Amount<Angle> alphaCurrent,
-						  alphaInitial,
-						  alphaFinal,
-						  sweepLE;
-	
+	alphaInitial,
+	alphaFinal,
+	sweepLE;
+
 	private Amount<Length> altitude;
-	
+
 	private Amount<Area> surface;
-	
+
 	private double machNumber,
-				   aspectRatio,
-				   adimensionalKinkStation;
-				   
+	aspectRatio,
+	adimensionalKinkStation;
+
 	private int numberOfAlpha,
-				numberOfPointSemispan,
-				numberOfSections;
-	
+	numberOfPointSemispan,
+	numberOfSections;
+
 	private AirfoilFamilyEnum meanAirfoilFamily;
 	private List<Amount> chordDistribution,
-						 xLEDistribution,
-						 dihedralDistribution,
-						 twistDistribution,
-						 alphaZeroLiftDistribution,
-						 alphaStarDistribution;
+	xLEDistribution,
+	dihedralDistribution,
+	twistDistribution,
+	alphaZeroLiftDistribution,
+	alphaStarDistribution;
 
 
 	private List<Double> maximumliftCoefficientDistribution,
-						 yAdimensionalStationInput;
-	
-	
+	yAdimensionalStationInput;
+
+
 	// OUTPUT 
-	
+
 	private Amount<Length> span,
-						   semiSpan;
-	
+	semiSpan;
+
 	private Amount<Angle> alphaZeroLift,
-	                      alphaStar,
-	                      alphaStall;
-	
+	alphaStar,
+	alphaStall;
+
 	private int numberOfAlphaCL = 50;
-	
-	private double clAlpha,
-				   clStar,
-				   clMax;
-	
+
+	private double meanThickness,
+	clAlpha,
+	clStar,
+	clMax,
+	deltaAlpha;
+
 	private List<double[]> clVsEtaVectors; // la lunghezza del vettore dipende dal numero di punti lungo la semiapertura,
 	// la lunghezza di elementi della lista è il numero di valori di alfa che si danno in input
-	
+
 	private double [] cLVsAlphaVector;  // number of element = numberOfAlphaCL
-	
-	
+
+
 	//------------------------------------------------------------------------------------------
 	// BUILDER:
-	
+
 	public InputOutputTree() {
 
 		alphaCurrent = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		alphaInitial = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		alphaFinal = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		sweepLE = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
-		
+
 		altitude = Amount.valueOf(0.0, SI.METER);
-		
+
 		surface = Amount.valueOf(0.0, SI.SQUARE_METRE);
-		
+
 		chordDistribution = new ArrayList<Amount>();
 		xLEDistribution = new ArrayList<Amount>();
 		dihedralDistribution = new ArrayList<Amount>();
 		twistDistribution = new ArrayList<Amount>();
-		
+
 		alphaZeroLiftDistribution = new ArrayList<Amount>();
 		alphaStarDistribution = new ArrayList<Amount>();
 		maximumliftCoefficientDistribution = new ArrayList<Double>();
 		yAdimensionalStationInput = new ArrayList<Double>();
-		
+
 		machNumber = 0.0;
 		aspectRatio = 0.0;
 		adimensionalKinkStation = 0.0;
-		
+		meanThickness = 0.0;
+
 		numberOfAlpha = 0;
 		numberOfPointSemispan = 0;
 		numberOfSections = 0;
-		
+
 	}
-	
-	
+
+
 	// Poi un metodo inizializza gli output
 
-	
-	
+
+
 	//------------------------------------------------------------------------------------------
 	// GETTERS & SETTERS:
-	
+
 	public Amount<Angle> getAlphaCurrent() {
 		return alphaCurrent;
 	}
@@ -425,6 +428,26 @@ public class InputOutputTree {
 	public void setcLVsAlphaVector(double[] cLVsAlphaVector) {
 		this.cLVsAlphaVector = cLVsAlphaVector;
 	}
-	
+
+
+	public double getMeanThickness() {
+		return meanThickness;
+	}
+
+
+	public void setMeanThickness(double meanThickness) {
+		this.meanThickness = meanThickness;
+	}
+
+
+	public double getDeltaAlpha() {
+		return deltaAlpha;
+	}
+
+
+	public void setDeltaAlpha(double deltaAlpha) {
+		this.deltaAlpha = deltaAlpha;
+	}
+
 
 }

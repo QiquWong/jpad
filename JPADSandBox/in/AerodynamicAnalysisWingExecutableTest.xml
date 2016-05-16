@@ -16,7 +16,8 @@
              </global>
              <distribution>
                 <number_of_given_sections>3</number_of_given_sections>
-                <mean_airfoil_type>NACA_4_DIGIT</mean_airfoil_type>
+                <airfoil_family>NACA_4_DIGIT</airfoil_family>
+				<max_thickness_mean_airfoil>0.15</max_thickness_mean_airfoil>
                    <geometry>
 						<y_adimensional_stations>[0, 0.399, 1]</y_adimensional_stations>
 						<chord_distribution unit="m">[6.39, 2.72, 1.05]</chord_distribution>

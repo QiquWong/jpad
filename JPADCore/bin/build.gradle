@@ -1,0 +1,92 @@
+/*
+ *
+ * gradle :JPADConfigs:jar
+ * gradle :JPADUtils:pre_config
+ * gradle :JPADUtils:jar
+ *
+ */
+
+apply plugin: 'java'
+//apply plugin: 'application'
+
+compileJava.enabled = true
+archivesBaseName = 'jpad-utils'
+// version = '1.0'
+// mainClassName = 'it.unina.adopt.main.ADOPT_GUI'
+
+/*
+evaluationDependsOn(':JPADConfigs')
+task jar(dependsOn: ':JPADConfigs:jar', ':JPADUtils:pre_configure') << {
+	println '>>>>>>>>>>>>>>>> JPADUtils'
+}
+*/
+
+sourceSets {
+	main {
+		java {
+			srcDir 'src'
+		}
+		resources {
+			srcDir 'src/resources'
+		}
+	}
+}
+
+repositories {
+	flatDir {
+		dirs 'build/libs'
+	}
+}
+
+configurations {
+	compile
+	runtime
+}
+
+dependencies {
+    compile fileTree('build/libs').filter {
+		it.name.endsWith('.jar')
+	}
+}
+
+pre_configure.doLast {
+	println "[:JPADUtils:pre_configure]"
+	// println "execEnvironmentVariables = " + project.execEnvironmentVariables
+	
+	//-----------------------------------------------------------------------------
+	// COPY DLL/LIB files in build dir
+	
+	println "- copying *.dll/*.lib files to /build/libs"
+	println "- OccJava native libs ..."
+	copy{
+		from dllOccJavaFileTree.files
+		into 'build/libs'
+	}
+	copy{
+		from libOccJavaFileTree.files
+		into 'build/libs'
+	}
+	println "- HDF native libs ..."
+	copy{
+		from dllHdfFileTree.files
+		into 'build/libs'
+	}
+	copy{
+		from libHdfFileTree.files
+		into 'build/libs'
+	}
+	println "- copying *.jar files to /build/libs"
+	copy{
+		from jars_JPADUtils
+		into 'build/libs'
+	}
+	println project.jpadDir
+	println file(project.jpadDir + '/JPADConfigs/build/libs/jpad-configs.jar')
+	copy{
+		from file(project.jpadDir + '/JPADConfigs/build/libs/jpad-configs.jar')
+		into 'build/libs'
+	}
+	println "- done."
+	println "----------------------------------------------------------"
+	
+}
