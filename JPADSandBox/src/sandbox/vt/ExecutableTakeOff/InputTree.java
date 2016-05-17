@@ -33,7 +33,11 @@ public class InputTree {
 	private Amount<?> cLalphaFlap;
 	private Amount<Force> t0;
 	private int nEngine;
-	private double kT; // slope of the thrust v.s. speed curve in take-off setting.
+	private double[] netThrust;
+	private double[] machArray;
+	
+	// boolean flag concerning charts and engine model:
+	private boolean charts, engineModel;
 	
 	//------------------------------------------------------------------------------------------
 	// BUILDER:
@@ -58,8 +62,6 @@ public class InputTree {
 		cLalphaFlap = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE.inverse());
 		t0 = Amount.valueOf(0.0, SI.NEWTON);
 		nEngine = 0;
-		kT = 0.0;
-						
 	}
 
 	//------------------------------------------------------------------------------------------
@@ -209,12 +211,35 @@ public class InputTree {
 		this.nEngine = nEngine;
 	}
 
-	public double getkT() {
-		return kT;
+	public boolean isCharts() {
+		return charts;
 	}
 
-	public void setkT(double kT) {
-		this.kT = kT;
+	public void setCharts(boolean charts) {
+		this.charts = charts;
 	}
-	
+
+	public boolean isEngineModel() {
+		return engineModel;
+	}
+
+	public void setEngineModel(boolean engineModel) {
+		this.engineModel = engineModel;
+	}
+
+	public double[] getNetThrust() {
+		return netThrust;
+	}
+
+	public double[] getMachArray() {
+		return machArray;
+	}
+
+	public void setNetThrust(double[] netThrust) {
+		this.netThrust = netThrust;
+	}
+
+	public void setMachArray(double[] machArray) {
+		this.machArray = machArray;
+	}
 }

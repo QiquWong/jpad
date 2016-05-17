@@ -1,8 +1,11 @@
 package sandbox.vt.ExecutableTakeOff;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.measure.quantity.Acceleration;
 import javax.measure.quantity.Angle;
@@ -12,6 +15,8 @@ import javax.measure.quantity.Length;
 import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.math3.exception.DimensionMismatchException;
 import org.apache.commons.math3.exception.MaxCountExceededException;
@@ -21,15 +26,26 @@ import org.apache.commons.math3.ode.events.EventHandler;
 import org.apache.commons.math3.ode.nonstiff.HighamHall54Integrator;
 import org.apache.commons.math3.ode.sampling.StepHandler;
 import org.apache.commons.math3.ode.sampling.StepInterpolator;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.jscience.physics.amount.Amount;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import configuration.MyConfiguration;
 import configuration.enumerations.FoldersEnum;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyInterpolatingFunction;
+import standaloneutils.MyXLSWriteUtils;
+import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
+import standaloneutils.customdata.MyArray;
 import writers.JPADStaticWriteUtils;
 
 public class TakeOffManager {
@@ -61,11 +77,29 @@ public class TakeOffManager {
 		System.out.println("Reading input file data ...\n");
 		
 		//---------------------------------------------------------------------------------
-		// CHARTS FLAG:
+		// CHARTS AND ENGINE MODEL FLAGS:
 		//---------------------------------------------------------------------------------
+		NodeList nodelistRoot = MyXMLReaderUtils
+				.getXMLNodeListByPath(reader.getXmlDoc(), "//take_off_executable");
+		Node nodeRoot  = nodelistRoot.item(0); 
+		Element elementRoot = (Element) nodeRoot;
+
+		// charts:		
+		if(elementRoot.getAttribute("charts").equalsIgnoreCase("TRUE"))
+			input.setCharts(true);
+		else
+			input.setCharts(false);
 		
-		// TODO: RECOGNIZE THE "CHARTS" FLAG FROM THE XML!! 
+		System.out.println("\tCHARTS CREATION : " + input.isCharts());
 		
+		// engine model:
+		if(elementRoot.getAttribute("simplified_thrust_model").equalsIgnoreCase("TRUE"))
+			input.setEngineModel(true);
+		else
+			input.setEngineModel(false);
+
+		System.out.println("\tSIMPLIFIED ENGINE MODEL : " + input.isEngineModel() + "\n");
+
 		//---------------------------------------------------------------------------------
 		// GROUND CONDITION:
 		//---------------------------------------------------------------------------------
@@ -134,10 +168,17 @@ public class TakeOffManager {
 
 		List<String> nEngineProperty = reader.getXMLPropertiesByPath("//engine/number_of_engines");
 		input.setnEngine(Integer.valueOf(nEngineProperty.get(0)));
-
-		List<String> kTProperty = reader.getXMLPropertiesByPath("//engine/slope_of_thrust_vs_speed_curve");
-		input.setkT(Double.valueOf(kTProperty.get(0)));
-
+		
+		List<String> machArrayProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//engine/mach_array").get(0));
+		input.setMachArray(new double[machArrayProperty.size()]);
+		for(int i=0; i<machArrayProperty.size(); i++)
+			input.getMachArray()[i] = Double.valueOf(machArrayProperty.get(i));
+		
+		List<String> netThrustProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//engine/net_thrust_array_single_engine").get(0));
+		input.setNetThrust(new double[netThrustProperty.size()]);
+		for(int i=0; i<netThrustProperty.size(); i++)
+			input.getNetThrust()[i] = Double.valueOf(netThrustProperty.get(i));
+			
 		//---------------------------------------------------------------------------------------
 		// Print data:
 		System.out.println("\tAlpha body at ground = " + input.getAlphaGround().getEstimatedValue() + " " + input.getAlphaGround().getUnit());
@@ -158,32 +199,36 @@ public class TakeOffManager {
 		System.out.println("\tCLalpha take-off = " + input.getcLalphaFlap().getEstimatedValue() + " " + input.getcLalphaFlap().getUnit() + "\n");
 		System.out.println("\tStatic thrust = " + input.getT0().getEstimatedValue() + " " + input.getT0().getUnit());
 		System.out.println("\tNumber of engines = " + input.getnEngine());
-		System.out.println("\tSlope of the thrust v.s. speed curve = " + input.getkT() + "\n");
+		System.out.println("\tMach array = " + Arrays.toString(input.getMachArray()));
+		System.out.println("\tNet thrust array = " + Arrays.toString(input.getNetThrust()));
 	}
 
-	public static void executeStandAloneTakeOffCalculator() {
+	public static void executeStandAloneTakeOffCalculator() throws InstantiationException, IllegalAccessException {
 		
 		Amount<Duration> dtRot = Amount.valueOf(3, SI.SECOND);
 		Amount<Duration> dtHold = Amount.valueOf(0.5, SI.SECOND);
-		double mu = 0.025;
-		double muBrake = 0.3;
-		double kAlphaDot = 0.02; // [1/deg]
-		double kcLMax = 0.8;
+		double mu = 0.03;
+		double muBrake = 0.4;
+		double kAlphaDot = 0.04; // [1/deg]
+		double kcLMax = 0.85;
 		double kRot = 1.05;
 		double kLO = 1.1;
-		double kFailure = 1.0;
+		double kFailure = 1.1;
 
-//		PARAMETERS USED TO CONSIDER THE PARABOLIC DRAG POLAR CORRECTION AT HIGH CL
+		// PARAMETERS USED TO CONSIDER THE PARABOLIC DRAG POLAR CORRECTION AT HIGH CL
 		double k1 = 0.0;
 		double k2 = 0.0;
 
 		double phi = 1.0;
-		double alphaReductionRate = -3; // [deg/s]
+		double alphaReductionRate = -4; // [deg/s]
 		Amount<Length> obstacle = Amount.valueOf(35, NonSI.FOOT).to(SI.METER);
 		
 		TakeOffManager theTakeOffManager = new TakeOffManager();
 		
+		output = new OutputTree();
+		
 		TakeOffCalculator theTakeOffCalculator = theTakeOffManager.new TakeOffCalculator(
+				output,
 				dtRot,
 				dtHold,
 				kcLMax,
@@ -202,26 +247,187 @@ public class TakeOffManager {
 				
 		theTakeOffCalculator.calculateTakeOffDistanceODE(null, false);
 		
-		try {
+		if(input.isCharts())
 			theTakeOffCalculator.createTakeOffCharts();
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
 		theTakeOffCalculator.calculateBalancedFieldLength();
-		theTakeOffCalculator.createBalancedFieldLengthChart();
-
+		
+		if(input.isCharts())
+			theTakeOffCalculator.createBalancedFieldLengthChart();
 		System.out.println("\n-----------------------------------------------------------");
-		System.out.println("\nTAKE-OFF DISTANCE = " + output.getTakeOffDistanceAOE().getEstimatedValue() + " " + output.getTakeOffDistanceAOE().getUnit());
-		System.out.println("\nFAR-25 TAKE-OFF FIELD LENGTH = " + output.getTakeOffDistanceFAR25().getEstimatedValue() + " " + output.getTakeOffDistanceFAR25().getUnit());
-		System.out.println("\nBALANCED FIELD LENGTH = " + output.getBalancedFieldLength().getEstimatedValue() + " " + output.getBalancedFieldLength().getUnit());
-		System.out.println("\nV1 = " + output.getV1().getEstimatedValue() + " " + output.getV1().getUnit());
-		System.out.println("\nV2 = " + output.getV2().getEstimatedValue() + " " + output.getV2().getUnit());
+		System.out.println("			RESULTS				 ");
+		System.out.println("-----------------------------------------------------------");
+		System.out.println("TAKE-OFF DISTANCE = " + output.getTakeOffDistanceAOE().getEstimatedValue() + " " + output.getTakeOffDistanceAOE().getUnit());
+		System.out.println("FAR-25 TAKE-OFF FIELD LENGTH = " + output.getTakeOffDistanceFAR25().getEstimatedValue() + " " + output.getTakeOffDistanceFAR25().getUnit());
+		System.out.println("BALANCED FIELD LENGTH = " + output.getBalancedFieldLength().getEstimatedValue() + " " + output.getBalancedFieldLength().getUnit());
+		System.out.println("V1 = " + output.getV1().getEstimatedValue() + " " + output.getV1().getUnit());
+		System.out.println("V2 = " + output.getV2().getEstimatedValue() + " " + output.getV2().getUnit());
 		System.out.println("-----------------------------------------------------------\n");
+	}
+	
+	/*******************************************************************************************
+	 * This method is in charge of writing all input data collected inside the object of the 
+	 * OutputTree class on a XML file.
+	 * 
+	 * @author Vittorio Trifari
+	 * 
+	 * @param output object of the OutputTree class which holds all output data
+	 * @throws IOException 
+	 * @throws InvalidFormatException 
+	 */
+	public static void writeAllOutput(OutputTree output, String filenameWithPathAndExt) throws InvalidFormatException, IOException {
+		
+		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+		
+		try {
+			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+			Document doc = docBuilder.newDocument();
+			
+			defineXmlTree(doc, docBuilder);
+			createXls(filenameWithPathAndExt);
+			
+			JPADStaticWriteUtils.writeDocumentToXml(doc, filenameWithPathAndExt + ".xml");
+
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/*******************************************************************************************
+	 * This method defines the XML tree structure and fill it with results form the OutputTree
+	 * object
+	 * 
+	 * @author Vittorio Trifari
+	 */
+	private static void defineXmlTree(Document doc, DocumentBuilder docBuilder) {
+		
+		org.w3c.dom.Element rootElement = doc.createElement("TakeOff_Executable");
+		doc.appendChild(rootElement);
+		
+		//--------------------------------------------------------------------------------------
+		// INPUT
+		//--------------------------------------------------------------------------------------
+		org.w3c.dom.Element inputRootElement = doc.createElement("INPUT");
+		rootElement.appendChild(inputRootElement);
+
+		org.w3c.dom.Element groundConditionsElement = doc.createElement("ground_conditions");
+		inputRootElement.appendChild(groundConditionsElement);
+
+		JPADStaticWriteUtils.writeSingleNode("alpha", input.getAlphaGround(), groundConditionsElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("wind_speed", input.getvWind(), groundConditionsElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("altitude", input.getAltitude(), groundConditionsElement, doc);
+				
+		org.w3c.dom.Element aircraftDataElement = doc.createElement("aircraft_data");
+		inputRootElement.appendChild(aircraftDataElement);
+		
+		JPADStaticWriteUtils.writeSingleNode("take_off_mass", input.getTakeOffMass(), aircraftDataElement, doc);
+		
+		org.w3c.dom.Element wingDataElement = doc.createElement("wing");
+		aircraftDataElement.appendChild(wingDataElement);
+		
+		org.w3c.dom.Element geometryDataElement = doc.createElement("geometry");
+		wingDataElement.appendChild(geometryDataElement);
+		
+		JPADStaticWriteUtils.writeSingleNode("aspect_ratio", input.getAspectRatio(), geometryDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("span", input.getWingSpan(), geometryDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("surface", input.getWingSurface(), geometryDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("distance_from_ground", input.getWingToGroundDistance(), geometryDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("angle_of_incidence", input.getIw(), geometryDataElement, doc);
+		
+		org.w3c.dom.Element aerodynamicDataElement = doc.createElement("aerodynamic_data");
+		wingDataElement.appendChild(aerodynamicDataElement);
+		
+		JPADStaticWriteUtils.writeSingleNode("oswald", input.getOswald(), aerodynamicDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cD0_clean", input.getcD0Clean(), aerodynamicDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("delta_cD0_flap", input.getDeltaCD0Flap(), aerodynamicDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("delta_cD0_landing_gears", input.getDeltaCD0LandingGear(), aerodynamicDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL_max_take_off", input.getcLmaxTO(), aerodynamicDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL0_take_off", input.getcL0TO(), aerodynamicDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL_alpha_take_off", input.getcLalphaFlap(), aerodynamicDataElement, doc);
+				
+		org.w3c.dom.Element engineDataElement = doc.createElement("engine");
+		aircraftDataElement.appendChild(engineDataElement);
+		
+		JPADStaticWriteUtils.writeSingleNode("static_thrust", input.getT0(), engineDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("number_of_engines", input.getnEngine(), engineDataElement, doc);
+	
+		if(!input.isEngineModel()) {
+		JPADStaticWriteUtils.writeSingleNode("net_thrust_array_single_engine", input.getNetThrust(), engineDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("mach_array", input.getMachArray(), engineDataElement, doc);
+		}
+		
+		//--------------------------------------------------------------------------------------
+		// OUTPUT
+		//--------------------------------------------------------------------------------------
+		org.w3c.dom.Element outputRootElement = doc.createElement("OUTPUT");
+		rootElement.appendChild(outputRootElement);
+		
+		org.w3c.dom.Element distanceElement = doc.createElement("distances");
+		outputRootElement.appendChild(distanceElement);
+		
+		JPADStaticWriteUtils.writeSingleNode("ground_roll_distance", output.getGroundRoll(), distanceElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("rotation_distance", output.getRotation(), distanceElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("airborne_distance", output.getAirborne(), distanceElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("take_off_distance_AOE", output.getTakeOffDistanceAOE(), distanceElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("take_off_distance_FAR25", output.getTakeOffDistanceFAR25(), distanceElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("balanced_field_length", output.getBalancedFieldLength(), distanceElement, doc);
+		
+		org.w3c.dom.Element speedElement = doc.createElement("speeds");
+		outputRootElement.appendChild(speedElement);
+		
+		JPADStaticWriteUtils.writeSingleNode("stall_speed_take_off", output.getVsT0(), speedElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("decision_speed", output.getV1(), speedElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("rotation_speed", output.getvRot(), speedElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("lift_off_speed", output.getvLO(), speedElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("take_off_safety_speed", output.getV2(), speedElement, doc);
+		
+	}
+	
+	/*******************************************************************************************
+	 * This method defines the XML tree structure and fill it with results form the OutputTree
+	 * object
+	 * 
+	 * @author Vittorio Trifari
+	 * @throws IOException 
+	 * @throws InvalidFormatException 
+	 */
+	private static void createXls(String filenameWithPathAndExt) throws InvalidFormatException, IOException {
+				
+		File outputXls = new File(filenameWithPathAndExt + ".xls");
+		
+		new WorkbookFactory();
+		Workbook workbookExport = WorkbookFactory.create(outputXls);
+		
+		Sheet sheet = MyXLSWriteUtils.createNewSheet("Acceleration", "TakeOff", workbookExport);
+		
+		List<String> xlsArraysDescription = new ArrayList<String>();
+		xlsArraysDescription.add("Time");
+		xlsArraysDescription.add("Space");
+		xlsArraysDescription.add("Acceleration");
+		
+		MyArray timeArray = new MyArray();
+		timeArray.setAmountList(output.getTime());
+		MyArray distenceArray = new MyArray();
+		timeArray.setAmountList(output.getGroundDistance());
+		MyArray accelerationArray = new MyArray();
+		timeArray.setAmountList(output.getAcceleration());
+		
+		List<MyArray> xlsArraysList = new ArrayList<MyArray>();
+		xlsArraysList.add(timeArray);
+		xlsArraysList.add(distenceArray);
+		xlsArraysList.add(accelerationArray);
+		
+		List<String> xlsArraysUnit = new ArrayList<String>();
+		xlsArraysUnit.add("s");
+		xlsArraysUnit.add("m");
+		xlsArraysUnit.add("m/(s^2)");
+		
+		JPADStaticWriteUtils.writeAllArraysToXls(
+				sheet,
+				xlsArraysDescription,
+				xlsArraysList,
+				xlsArraysUnit
+				);
 	}
 	
 	//---------------------------------------------------------------------------------------------
@@ -232,6 +438,8 @@ public class TakeOffManager {
 		
 		//-------------------------------------------------------------------------------------
 		// VARIABLE DECLARATION
+		
+		private OutputTree output;
 		
 		private Amount<Duration> dtRot, dtHold,	
 		dtRec = Amount.valueOf(1.5, SI.SECOND),
@@ -257,6 +465,7 @@ public class TakeOffManager {
 		private boolean isAborted;
 		
 		// Interpolated function for balanced field length calculation
+		MyInterpolatingFunction netThrustArrayFitted = new MyInterpolatingFunction();
 		MyInterpolatingFunction continuedTakeOffFitted = new MyInterpolatingFunction();
 		MyInterpolatingFunction abortedTakeOffFitted = new MyInterpolatingFunction();
 		// integration index
@@ -297,6 +506,7 @@ public class TakeOffManager {
 		 * @param deltaCD0FlapLandingGears
 		 */
 		public TakeOffCalculator(
+				OutputTree output,
 				Amount<Duration> dtRot,
 				Amount<Duration> dtHold,
 				double kcLMax,
@@ -329,7 +539,8 @@ public class TakeOffManager {
 			this.muBrake = muBrake;
 			this.obstacle = obstacle;
 			this.cLground = input.getcL0TO() + (input.getcLalphaFlap().getEstimatedValue()*input.getIw().getEstimatedValue());
-
+			this.output = output;
+			
 			this.alphaDot = output.getAlphaDot();
 			this.gammaDot = output.getGammaDot();
 			this.cL = output.getcL();
@@ -371,16 +582,34 @@ public class TakeOffManager {
 			System.out.println("CD0 clean = " + input.getcD0Clean());
 			System.out.println("Delta CD0 flap + landing gears = " + (input.getDeltaCD0Flap()+input.getDeltaCD0LandingGear()));
 			System.out.println("CD0 TakeOff = " + (input.getcD0Clean() + input.getDeltaCD0Flap() + input.getDeltaCD0LandingGear()));
-			System.out.println("VsTO = " + vSTakeOff);
-			System.out.println("VRot = " + vRot);
-			System.out.println("vLO = " + vLO);
+			System.out.println("VsTO = " + vSTakeOff.getEstimatedValue() + " " + vSTakeOff.getUnit());
+			System.out.println("VRot = " + vRot.getEstimatedValue() + " " + vRot.getUnit());
+			System.out.println("vLO = " + vLO.getEstimatedValue() + " " +vLO.getUnit());
 			System.out.println("-----------------------------------------------------------\n");
 
+			output.setVsT0(vSTakeOff);
+			output.setvRot(vRot);
+			output.setvLO(vLO);
+			
 			// McCormick interpolated function --> See the excel file into JPAD DOCS
 			double hb = input.getWingToGroundDistance().divide(input.getWingSpan().times(Math.PI/4)).getEstimatedValue();
 			kGround = - 622.44*(Math.pow(hb, 5)) + 624.46*(Math.pow(hb, 4)) - 255.24*(Math.pow(hb, 3))
 					+ 47.105*(Math.pow(hb, 2)) - 0.6378*hb + 0.0055;
 
+			// check on machArray and netThrust length
+			if(input.getMachArray().length != input.getNetThrust().length) {
+				System.err.println("WARNING!! MACH ARRAY AND NET THRUST DO NOT HAVE THE SAME SIZE\n\n");
+				return;
+			}
+			
+			double[] speedArrayInterpolation = new double[input.getMachArray().length];
+			// interpolation of the net thrust:
+			for (int i=0; i<input.getMachArray().length; i++)
+				speedArrayInterpolation[i] = SpeedCalc.calculateTAS(input.getMachArray()[i], input.getAltitude().getEstimatedValue());
+				
+			netThrustArrayFitted.interpolate(speedArrayInterpolation, input.getNetThrust());
+			
+			System.out.println("T(V=10 m/s) = " + netThrustArrayFitted.value(10.0));
 		}
 
 		/**************************************************************************************
@@ -473,7 +702,7 @@ public class TakeOffManager {
 				public double g(double t, double[] x) {
 
 					if(t < tRec.getEstimatedValue())
-						return x[1] - TakeOffCalculator.this.vFailure;
+						return x[1] - TakeOffCalculator.this.getvFailure();
 					else
 						return 10; // a generic positive value used to make the event trigger once
 				}
@@ -531,7 +760,8 @@ public class TakeOffManager {
 					// COLLECTING DATA IN TakeOffResultsMap
 					System.out.println("\n\tCOLLECTING DATA AT THE END OF GROUND ROLL PHASE ...");
 					
-					output.setGroundRoll(groundDistance.get(groundDistance.size()-1));
+					if(output.getGroundRoll().getEstimatedValue() == 0.0)
+						output.setGroundRoll(groundDistance.get(groundDistance.size()-1));
 					
 					System.out.println("\n---------------------------DONE!-------------------------------");
 					return  Action.CONTINUE;
@@ -603,10 +833,14 @@ public class TakeOffManager {
 					// COLLECTING DATA IN TakeOffResultsMap
 					System.out.println("\n\tCOLLECTING DATA AT THE END OF AIRBORNE PHASE ...");
 
-					output.setAirborne(groundDistance.get(groundDistance.size()-1).minus(output.getRotation()));
-					output.setTakeOffDistanceAOE(groundDistance.get(groundDistance.size()-1));
-					output.setTakeOffDistanceFAR25(output.getTakeOffDistanceAOE().times(1.15));
-					output.setV2(speed.get(speed.size()-1));
+					if(output.getAirborne().getEstimatedValue() == 0.0)
+						output.setAirborne(groundDistance.get(groundDistance.size()-1).minus(output.getRotation()).minus(output.getGroundRoll()));
+					if(output.getTakeOffDistanceAOE().getEstimatedValue() == 0.0)
+						output.setTakeOffDistanceAOE(groundDistance.get(groundDistance.size()-1));
+					if(output.getTakeOffDistanceFAR25().getEstimatedValue() == 0.0)
+						output.setTakeOffDistanceFAR25(output.getTakeOffDistanceAOE().times(1.15));
+					if(output.getV2().getEstimatedValue() == 0.0)
+						output.setV2(speed.get(speed.size()-1));
 					
 					System.out.println("\n---------------------------DONE!-------------------------------");
 					return  Action.STOP;
@@ -688,7 +922,7 @@ public class TakeOffManager {
 				theIntegrator.addEventHandler(ehCheckFailure, 1.0, 1e-3, 20);
 				theIntegrator.addEventHandler(ehCheckBrakes, 1.0, 1e-3, 20);
 				theIntegrator.addEventHandler(ehCheckStop, 1.0, 1e-6, 20);
-			}
+		 	}
 
 			// handle detailed info
 			StepHandler stepHandler = new StepHandler() {
@@ -706,8 +940,8 @@ public class TakeOffManager {
 					if(!isAborted) {
 						// CHECK ON LOAD FACTOR --> END ROTATION WHEN n=1
 						if((t > tRot.getEstimatedValue()) && (tEndRot.getEstimatedValue() == 10000.0) &&
-								(TakeOffCalculator.this.getLoadFactor().get(TakeOffCalculator.this.getLoadFactor().size()-1) > 1) &&
-								(TakeOffCalculator.this.getLoadFactor().get(TakeOffCalculator.this.getLoadFactor().size()-2) < 1)) {
+								(loadFactor.get(loadFactor.size()-1) > 1) &&
+								(loadFactor.get(loadFactor.size()-2) < 1)) {
 							System.out.println("\n\t\tEND OF ROTATION PHASE");
 							System.out.println(
 									"\n\tx[0] = s = " + x[0] + " m" +
@@ -719,7 +953,8 @@ public class TakeOffManager {
 							// COLLECTING DATA IN TakeOffResultsMap
 							System.out.println("\n\tCOLLECTING DATA AT THE END OF ROTATION PHASE ...");
 							
-							output.setRotation(groundDistance.get(groundDistance.size()-1).minus(output.getGroundRoll()));
+							if(output.getRotation().getEstimatedValue() == 0.0)
+								output.setRotation(groundDistance.get(groundDistance.size()-1).minus(output.getGroundRoll()));
 							
 							System.out.println("\n---------------------------DONE!-------------------------------");
 
@@ -1201,23 +1436,6 @@ public class TakeOffManager {
 				abortedTakeOffArray[i] = getGroundDistance().get(groundDistance.size()-1).getEstimatedValue();
 			}
 
-			//			// interpolation of the two arrays
-			//			failureSpeedArrayFitted = MyArrayUtils.linspace(
-			//					2.0,
-			//					vLO.getEstimatedValue(),
-			//					250);
-			//			continuedTakeOffFitted.interpolate(failureSpeedArray, continuedTakeOffArray);
-			//			abortedTakeOffFitted.interpolate(failureSpeedArray, abortedTakeOffArray);
-			//
-			//			// values extraction from the polynomial spline functions
-			//			continuedTakeOffSplineValues = new double[failureSpeedArrayFitted.length];
-			//			abortedTakeOffSplineValues = new double[failureSpeedArrayFitted.length];
-			//
-			//			for(int i=0; i<failureSpeedArrayFitted.length; i++){
-			//				continuedTakeOffSplineValues[i] = continuedTakeOffFitted.value(failureSpeedArrayFitted[i]);
-			//				abortedTakeOffSplineValues[i] = abortedTakeOffFitted.value(failureSpeedArrayFitted[i]);
-			//			}
-
 			// arrays intersection
 			double[] intersection = MyArrayUtils.intersectArraysSimple(
 					continuedTakeOffArray,
@@ -1245,7 +1463,7 @@ public class TakeOffManager {
 			System.out.println("\n---------WRITING TAKE-OFF PERFORMANCE CHARTS TO FILE-----------");
 
 			String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR);
-			String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "Take-Off_Performance" + File.separator);
+			String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "Take-off charts" + File.separator);
 
 			// data setup
 			double[] time = new double[getTime().size()];
@@ -1582,7 +1800,7 @@ public class TakeOffManager {
 			System.out.println("\n-------WRITING BALANCED TAKE-OFF DISTANCE CHART TO FILE--------");
 
 			String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR);
-			String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "Take-Off_Performance" + File.separator);
+			String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "Take-Off charts" + File.separator);
 
 			for(int i=0; i<failureSpeedArray.length; i++)
 				failureSpeedArray[i] = failureSpeedArray[i]/vSTakeOff.getEstimatedValue();
@@ -1697,42 +1915,22 @@ public class TakeOffManager {
 
 				double theThrust = 0.0;
 				
-				// TODO: ADD NEW THRUST MODEL!!
-				
-//				if (time < tFaiulre.getEstimatedValue())
-//					theThrust =	ThrustCalc.calculateThrustDatabase(
-//							TakeOffManager.this.getAircraft().get_powerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
-//							TakeOffManager.this.getAircraft().get_powerPlant().get_engineNumber(),
-//							TakeOffManager.this.getPhi(),
-//							TakeOffManager.this.getAircraft().get_powerPlant().get_engineList().get(0).get_bpr(),
-//							TakeOffManager.this.getAircraft().get_powerPlant().get_engineType(),
-//							EngineOperatingConditionEnum.TAKE_OFF,
-//							altitude,
-//							SpeedCalc.calculateMach(
-//									altitude,
-//									speed + 
-//									(TakeOffManager.this.getvWind().getEstimatedValue()*Math.cos(Amount.valueOf(
-//											gamma,
-//											NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
-//									)
-//							);
-//				else
-//					theThrust =	ThrustCalc.calculateThrustDatabase(
-//							TakeOffManager.this.getAircraft().get_powerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
-//							TakeOffManager.this.getAircraft().get_powerPlant().get_engineNumber() - 1,
-//							TakeOffManager.this.getPhi(),
-//							TakeOffManager.this.getAircraft().get_powerPlant().get_engineList().get(0).get_bpr(),
-//							TakeOffManager.this.getAircraft().get_powerPlant().get_engineType(),
-//							EngineOperatingConditionEnum.TAKE_OFF,
-//							altitude,
-//							SpeedCalc.calculateMach(
-//									altitude,
-//									speed + 
-//									(TakeOffManager.this.getvWind().getEstimatedValue()*Math.cos(Amount.valueOf(
-//											gamma,
-//											NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
-//									)
-//							);
+				if (time < tFaiulre.getEstimatedValue()) {
+					if(input.isEngineModel()) {
+						double thrustRatio = 1-(0.00252*speed)+(0.00000434*(Math.pow(speed, 2)));  // simplified thrust model for a turbofan
+						theThrust = input.getnEngine()*input.getT0().getEstimatedValue()*thrustRatio;
+					}
+					else
+						theThrust = netThrustArrayFitted.value(speed)*input.getnEngine();
+				}
+				else {
+					if(input.isEngineModel()) {
+						double thrustRatio = 1-(0.00252*speed)+(0.00000434*(Math.pow(speed, 2)));  // simplified thrust model for a turbofan
+						theThrust = (input.getnEngine()-1)*input.getT0().getEstimatedValue()*thrustRatio;
+					}
+					else
+						theThrust = netThrustArrayFitted.value(speed)*(input.getnEngine()-1);
+				}
 
 				return theThrust;
 			}
@@ -2331,4 +2529,20 @@ public class TakeOffManager {
 	//-------------------------------------------------------------------------------------
 	//								END OUTER NESTED CLASS	
 	//-------------------------------------------------------------------------------------
+
+	public static InputTree getInput() {
+		return input;
+	}
+
+	public static OutputTree getOutput() {
+		return output;
+	}
+
+	public static void setInput(InputTree input) {
+		TakeOffManager.input = input;
+	}
+
+	public static void setOutput(OutputTree output) {
+		TakeOffManager.output = output;
+	}
 }

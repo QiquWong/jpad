@@ -204,8 +204,7 @@ public class Fuselage implements IFuselage {
 
 		// clean all points before recalculating
 		clearOutlines();
-
-		calculateGeometry();
+//		calculateGeometry();
 	}
 
 	@Override

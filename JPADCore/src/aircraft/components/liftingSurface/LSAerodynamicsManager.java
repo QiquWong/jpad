@@ -1211,8 +1211,8 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			cL = calculateLiftDistribution.getNasaBlackwell().get_cLEvaluated();
 			_cLCurrent = cL;
 
-			JPADStaticWriteUtils.logToConsole("\nAlpha " + alpha + "\nCL: " + cL + "\n");
-			System.out.println("cLmap: "+ cLMap.getCxyVsAlphaTable().toString());
+//			JPADStaticWriteUtils.logToConsole("\nAlpha " + alpha + "\nCL: " + cL + "\n");
+//			System.out.println("cLmap: "+ cLMap.getCxyVsAlphaTable().toString());
 
 			return cL;
 		}

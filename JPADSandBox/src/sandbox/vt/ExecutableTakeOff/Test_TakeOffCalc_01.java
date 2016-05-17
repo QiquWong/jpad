@@ -1,11 +1,12 @@
 package sandbox.vt.ExecutableTakeOff;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -13,8 +14,6 @@ import org.kohsuke.args4j.Option;
 
 import configuration.MyConfiguration;
 import configuration.enumerations.FoldersEnum;
-import sandbox.vt.ExecutableHighLiftDevices.HighLiftDevicesCalc;
-import sandbox.vt.ExecutableHighLiftDevices.Test_HighLiftDevicesCalc_01;
 import standaloneutils.JPADXmlReader;
 
 public class Test_TakeOffCalc_01 {
@@ -39,7 +38,7 @@ public class Test_TakeOffCalc_01 {
 
 	//------------------------------------------------------------------------------------------
 	// MAIN:
-	public static void main(String[] args) throws CmdLineException, ParserConfigurationException {
+	public static void main(String[] args) throws CmdLineException, ParserConfigurationException, InstantiationException, IllegalAccessException, InvalidFormatException, IOException {
 
 		System.out.println("--------------");
 		System.out.println("Take-off executable :: test");
@@ -49,12 +48,23 @@ public class Test_TakeOffCalc_01 {
 		Test_TakeOffCalc_01 theTestObject = new Test_TakeOffCalc_01();
 		theTestObject.theCmdLineParser.parseArgument(args);
 
+		// Set the folders tree
+		MyConfiguration.initWorkingDirectoryTree(
+				MyConfiguration.currentDirectoryString,
+				MyConfiguration.inputDirectory, 
+				MyConfiguration.outputDirectory);
+		
 		String pathToXML = theTestObject.get_inputFile().getAbsolutePath();
+		String filenameWithPathAndExt = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR) + 
+				"Take-Off charts" + File.separator + "TakeOff_Output"; 
+		
 		System.out.println("INPUT ===> " + pathToXML);
 
 		System.out.println("--------------");
 
 		TakeOffManager.importFromXML(pathToXML);
+		TakeOffManager.executeStandAloneTakeOffCalculator();
+		TakeOffManager.writeAllOutput(TakeOffManager.getOutput(), filenameWithPathAndExt);
 	}
 
 	//------------------------------------------------------------------------------------------

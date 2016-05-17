@@ -8,6 +8,8 @@ import javax.measure.quantity.Duration;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Velocity;
+import javax.measure.unit.SI;
+
 import org.jscience.physics.amount.Amount;
 
 public class OutputTree {
@@ -22,7 +24,7 @@ public class OutputTree {
 						   groundRoll,
 						   rotation,
 						   airborne;
-	private Amount<Velocity> v1, v2;
+	private Amount<Velocity> vsT0, vRot, vLO, v1, v2;
 	
 	// physical quantities lists:
 	private List<Double> alphaDot,
@@ -51,6 +53,19 @@ public class OutputTree {
 	// BUILDER:
 	
 	public OutputTree() {
+		
+		takeOffDistanceAOE = Amount.valueOf(0.0, SI.METER);
+		takeOffDistanceFAR25 = Amount.valueOf(0.0, SI.METER);
+		balancedFieldLength = Amount.valueOf(0.0, SI.METER);
+		groundRoll = Amount.valueOf(0.0, SI.METER);
+		rotation = Amount.valueOf(0.0, SI.METER);
+		airborne = Amount.valueOf(0.0, SI.METER);
+		
+		vsT0 = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
+		vRot = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
+		vLO = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
+		v1 = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
+		v2 = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
 		
 		alphaDot = new ArrayList<Double>();
 		gammaDot = new ArrayList<Double>();
@@ -125,6 +140,30 @@ public class OutputTree {
 
 	public void setAirborne(Amount<Length> airborne) {
 		this.airborne = airborne;
+	}
+
+	public Amount<Velocity> getVsT0() {
+		return vsT0;
+	}
+
+	public Amount<Velocity> getvRot() {
+		return vRot;
+	}
+
+	public Amount<Velocity> getvLO() {
+		return vLO;
+	}
+
+	public void setVsT0(Amount<Velocity> vsT0) {
+		this.vsT0 = vsT0;
+	}
+
+	public void setvRot(Amount<Velocity> vRot) {
+		this.vRot = vRot;
+	}
+
+	public void setvLO(Amount<Velocity> vLO) {
+		this.vLO = vLO;
 	}
 
 	public Amount<Velocity> getV1() {
