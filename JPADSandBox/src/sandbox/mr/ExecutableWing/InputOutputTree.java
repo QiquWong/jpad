@@ -73,7 +73,8 @@ public class InputOutputTree {
 
 	double [] cLVsAlphaVector, alphaVector, yStationsAdimensional;  // number of element = numberOfAlphaCL
 
-
+	double [] alphaDistributionArray;
+	
 	//------------------------------------------------------------------------------------------
 	// BUILDER:
 
@@ -116,6 +117,7 @@ public class InputOutputTree {
 		
 		yStationsAdimensional =  new double [numberOfPointSemispan];
 		clVsEtaVectors = new ArrayList<Double[]>();
+		alphaDistributionArray = new double [numberOfAlpha];
 	}
 
 	//------------------------------------------------------------------------------------------
@@ -484,6 +486,16 @@ public class InputOutputTree {
 
 	public void setyStationsAdimensional(double[] yStationsAdimensional) {
 		this.yStationsAdimensional = yStationsAdimensional;
+	}
+
+
+	public double[] getAlphaDistributionArray() {
+		return alphaDistributionArray;
+	}
+
+
+	public void setAlphaDistributionArray(double[] alphaDistributionArray) {
+		this.alphaDistributionArray = alphaDistributionArray;
 	}
 
 

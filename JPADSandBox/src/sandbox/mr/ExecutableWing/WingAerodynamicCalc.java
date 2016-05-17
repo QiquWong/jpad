@@ -256,7 +256,8 @@ public class WingAerodynamicCalc {
 		//		System.out.println(" cl max " + cLMax);
 
 		// alpha stall
-		double alphaStall = ((cLMax-cLZero)/Math.toRadians(cLAlpha) + input.getDeltaAlpha());
+		double alphaMax = ((cLMax-cLZero)/Math.toRadians(cLAlpha));
+		double alphaStall = alphaMax + input.getDeltaAlpha();
 
 		input.setAlphaStall(Amount.valueOf(alphaStall, NonSI.DEGREE_ANGLE));
 		//		System.out.println(" alpha Stall (deg) = " +  alphaStall);
@@ -353,6 +354,7 @@ public class WingAerodynamicCalc {
 			
 			for (int i=0; i<input.getNumberOfAlpha(); i++){
 				
+				input.getAlphaDistributionArray()[i] = alphaDistributionArray[i];
 				Amount<Angle> alphaAngle = Amount.valueOf(Math.toRadians(alphaDistributionArray[i]), SI.RADIAN);
 				theNasaBlackwellCalculator.calculate(alphaAngle);
 				double [] clDistributionArray = theNasaBlackwellCalculator.get_clTotalDistribution().toArray();
@@ -360,7 +362,7 @@ public class WingAerodynamicCalc {
 				for (int j=0; j<clDistributionArray.length; j++){
 					clDistributionDouble [j] =  clDistributionArray[j];
 				}
-				input.getClVsEtaVectors().set(i, (clDistributionDouble));			
+				input.getClVsEtaVectors().add(i, (clDistributionDouble));			
 				
 			}
 		}
@@ -401,7 +403,7 @@ public class WingAerodynamicCalc {
 
 		
 
-		System.out.println(" \n-----------WRITING CHART TO FILE . STALL PATH-------------- ");
+		System.out.println(" \n-----------WRITING CHART TO FILE . Cl distribution-------------- ");
 		
 		MyChartToFileUtils.plotJFreeChart(
 				yVector, 
@@ -414,13 +416,59 @@ public class WingAerodynamicCalc {
 				"",
 				true,
 				legend,
-				JPADStaticWriteUtils.createNewFolder(folderPath + "cl distribution" + File.separator),
+				JPADStaticWriteUtils.createNewFolder(folderPath + "Wing Charts" + File.separator),
 				"Cl vs eta");
 
 		System.out.println(" \n-------------------DONE----------------------- ");
 		
 	
 		}
+		
+		List<Double[]> yVector = new ArrayList<Double[]>();
+		List<Double[]> clVector = new ArrayList<Double[]>();
+		List<String> legend  = new ArrayList<>(); 
+		Double [] yStationDouble = new Double [yStationActual.length];
+		Double [] clMaxDouble = new Double [clMaxActual.size()];
+		Double [] clMaxArrayDouble = new Double [clMaxActual.size()];
+		
+		for (int i=0; i< yStationActual.length; i++){
+			yStationDouble[i] = yStationActual[i];
+		}
+		for (int i=0; i<2; i++){
+			yVector.add(i, yStationDouble);
+		}
+
+		legend.add(0,"cl max airfoils ");
+		legend.add(1, "cl distribution at alpha " + alphaMax);
+		
+		theNasaBlackwellCalculator.calculate(Amount.valueOf(Math.toRadians(alphaMax), SI.RADIAN));
+		double [] clMaxArray =theNasaBlackwellCalculator.get_clTotalDistribution().toArray();
+	
+		for (int i =0; i<clMaxActual.size(); i++){
+			clMaxDouble [i] =clMaxActual.get(i);
+			clMaxArrayDouble[i] = clMaxArray[i];
+		}
+		
+		clVector.add(clMaxDouble);
+		clVector.add(clMaxArrayDouble);
+
+		System.out.println(" \n-----------WRITING CHART TO FILE . STALL PATH-------------- ");
+		
+		MyChartToFileUtils.plotJFreeChart(
+				yVector, 
+				clVector,
+				"CL vs alpha",
+				"eta", 
+				"CL",
+				null, null, null, null,
+				"",
+				"",
+				true,
+				legend,
+				JPADStaticWriteUtils.createNewFolder(folderPath + "Wing Charts" + File.separator),
+				"Stall path");
+
+		System.out.println(" \n-------------------DONE----------------------- ");
 
 	}
 }
