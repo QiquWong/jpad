@@ -12,6 +12,7 @@ import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+import javax.measure.unit.Unit;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.analysis.UnivariateFunction;
@@ -1533,7 +1534,8 @@ public class Fuselage implements IFuselage {
 			            .reduce((i,j) -> vXNose.get(i)-xw > 0 ? i : j)
 			            .getAsInt();  // or throw
 
-				windshieldAngle = Amount.valueOf(Math.atan((vZNose.get(idxXw)-zw)/(vXNose.get(idxXw)-xw)), SI.RADIAN).to(NonSI.DEGREE_ANGLE);
+				windshieldAngle = Amount.valueOf(Math.atan((vZNose.get(idxXw)-zw)/(vXNose.get(idxXw)-xw)), SI.RADIAN)
+						.to(NonSI.DEGREE_ANGLE);
 
 //				System.out.println("---");
 //				System.out.println("Windshield angle:" + _windshieldAngle.to(NonSI.DEGREE_ANGLE));
@@ -1712,58 +1714,101 @@ public class Fuselage implements IFuselage {
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
 						"//fuselage/@id");
+		String pressProp = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//fuselage/@pressurized");
+		Boolean pressurized = Boolean.valueOf(pressProp);
 
+		
 		// GLOBAL DATA
-		String deckProp = reader.getXMLPropertyByPath("//global_data/deck_number");
-		Integer deckNum = Integer.valueOf(deckProp);
+		List<String> deckProp = reader.getXMLPropertiesByPath("//global_data/deck_number");
+		Integer deckNum = Integer.valueOf(deckProp.get(0));
+//		Amount<?> deckNum = reader.getXMLAmountWithUnitByPath("//global_data/deck_number").to(Unit.ONE);
+		
 		Amount<Length> len = reader.getXMLAmountLengthByPath("//global_data/length");
-		String refMassProp = reader.getXMLPropertyByPath("//global_data/mass_reference");
-		Amount refMass = Amount.valueOf(Double.valueOf(refMassProp), SI.KILOGRAM);
+		List<String> refMassProp = reader.getXMLPropertiesByPath("//global_data/mass_reference");
+		Amount massReference = Amount.valueOf(Double.valueOf(refMassProp.get(0)), SI.KILOGRAM);
+		Amount<Length> roughness = reader.getXMLAmountLengthByPath("//global_data/roughness");
 		
 		// NOSE TRUNK
-		String lenRatioNoseProp = reader.getXMLPropertyByPath("//nose_trunk/length_ratio");
-		Double lenRatioNose = Double.valueOf(lenRatioNoseProp);
-		String finenessRatioNoseProp = reader.getXMLPropertyByPath("//nose_trunk/fineness_ratio");
-		Double finenessRatioNose = Double.valueOf(finenessRatioNoseProp);
-		String tipHeightOffsetNoseProp = reader.getXMLPropertyByPath("//nose_trunk/tip_height_offset");
-		Double tipHeightOffsetNose = Double.valueOf(tipHeightOffsetNoseProp);
-		String dxCapPercentNoseProp = reader.getXMLPropertyByPath("//nose_trunk/dx_cap_percent");
-		Double dxCapPercentNose = Double.valueOf(dxCapPercentNoseProp);
-		String windshieldType = reader.getXMLPropertyByPath("//nose_trunk/windshield_type");
+		List<String> lenRatioNoseProp = reader.getXMLPropertiesByPath("//nose_trunk/length_ratio");
+		Double lenRatioNF = Double.valueOf(lenRatioNoseProp.get(0));
+		List<String> finenessRatioNoseProp = reader.getXMLPropertiesByPath("//nose_trunk/fineness_ratio");
+		Double lambdaN = Double.valueOf(finenessRatioNoseProp.get(0));
+		Amount<Length> heightN = reader.getXMLAmountLengthByPath("//nose_trunk/tip_height_offset");
+		
+		List<String>  dxCapPercentNoseProp = reader.getXMLPropertiesByPath("//nose_trunk/dx_cap_percent");
+		Double dxNoseCapPercent = Double.valueOf(dxCapPercentNoseProp.get(0));
+		
+		List<String>  windshieldType = reader.getXMLPropertiesByPath("//nose_trunk/windshield_type");
 		Amount<Length> windshieldWidth = reader.getXMLAmountLengthByPath("//nose_trunk/windshield_width");
 		Amount<Length> windshieldHeight = reader.getXMLAmountLengthByPath("//nose_trunk/windshield_height");
-		String midSectionLowerToTotalHeightRatioProp = reader.getXMLPropertyByPath("//nose_trunk/mid_section_lower_to_total_height_ratio");
-		Double midSectionLowerToTotalHeightRatio = Double.valueOf(midSectionLowerToTotalHeightRatioProp);
-		String midSectionRhoUpperNoseProp = reader.getXMLPropertyByPath("//nose_trunk/mid_section_rho_upper");
-		Double midSectionRhoUpperNose = Double.valueOf(midSectionRhoUpperNoseProp);
-		String midSectionRhoLowerNoseProp = reader.getXMLPropertyByPath("//nose_trunk/mid_section_rho_lower");
-		Double midSectionRhoLowerNose = Double.valueOf(midSectionRhoLowerNoseProp);
+		List<String>  midSectionLowerToTotalHeightRatioProp = reader.getXMLPropertiesByPath("//nose_trunk/mid_section_lower_to_total_height_ratio");
+		Double sectionNoseMidLowerToTotalHeightRatio = Double.valueOf(midSectionLowerToTotalHeightRatioProp.get(0));
+		List<String>  midSectionRhoUpperNoseProp = reader.getXMLPropertiesByPath("//nose_trunk/mid_section_rho_upper");
+		Double sectionMidNoseRhoUpper = Double.valueOf(midSectionRhoUpperNoseProp.get(0));
+		List<String>  midSectionRhoLowerNoseProp = reader.getXMLPropertiesByPath("//nose_trunk/mid_section_rho_lower");
+		Double sectionMidNoseRhoLower = Double.valueOf(midSectionRhoLowerNoseProp.get(0));
 		
 		// CYLINDRICAL TRUNK
-		String lenRatioCylProp = reader.getXMLPropertyByPath("//cylindrical_trunk/length_ratio");
-		Double lenRatioCyl = Double.valueOf(lenRatioCylProp);
-		Amount<Length> sectionWidth = reader.getXMLAmountLengthByPath("//cylindrical_trunk/section_width");
-		Amount<Length> sectionHeight = reader.getXMLAmountLengthByPath("//cylindrical_trunk/section_height");
+		List<String>  lenRatioCylProp = reader.getXMLPropertiesByPath("//cylindrical_trunk/length_ratio");
+		Double lenRatioCF = Double.valueOf(lenRatioCylProp.get(0));
+		Amount<Length> sectionCylinderWidth = reader.getXMLAmountLengthByPath("//cylindrical_trunk/section_width");
+		Amount<Length> sectionCylinderHeight = reader.getXMLAmountLengthByPath("//cylindrical_trunk/section_height");
 		Amount<Length> heightFromGround = reader.getXMLAmountLengthByPath("//cylindrical_trunk/height_from_ground");
-		String sectionLowerToTotalHeightRatioProp = reader.getXMLPropertyByPath("//cylindrical_trunk/section_lower_to_total_height_ratio");
-		Double sectionLowerToTotalHeightRatio = Double.valueOf(sectionLowerToTotalHeightRatioProp);
-		String sectionRhoUpperProp = reader.getXMLPropertyByPath("//cylindrical_trunk/section_rho_upper");
-		Double sectionRhoUpper = Double.valueOf(sectionRhoUpperProp);
-		String sectionRhoLowerProp = reader.getXMLPropertyByPath("//cylindrical_trunk/section_rho_lower");
-		Double sectionRhoLower = Double.valueOf(sectionRhoUpperProp);
+		List<String>  sectionLowerToTotalHeightRatioProp = reader.getXMLPropertiesByPath("//cylindrical_trunk/section_lower_to_total_height_ratio");
+		Double sectionCylinderLowerToTotalHeightRatio = Double.valueOf(sectionLowerToTotalHeightRatioProp.get(0));
+		List<String>  sectionRhoUpperProp = reader.getXMLPropertiesByPath("//cylindrical_trunk/section_rho_upper");
+		Double sectionCylinderRhoUpper = Double.valueOf(sectionRhoUpperProp.get(0));
+		List<String>  sectionRhoLowerProp = reader.getXMLPropertiesByPath("//cylindrical_trunk/section_rho_lower");
+		Double sectionCylinderRhoLower = Double.valueOf(sectionRhoUpperProp.get(0));
 		
 		// TAIL TRUNK
-		Amount<Length> tipHeightOffsetTail = reader.getXMLAmountLengthByPath("//tail_trunk/tip_height_offset");
-		String dxCapPercentTailProp = reader.getXMLPropertyByPath("//tail_trunk/dx_cap_percent");
-		Double dxCapPercentTail = Double.valueOf(dxCapPercentTailProp);
-		String midSectionRhoUpperTailProp = reader.getXMLPropertyByPath("//tail_trunk/mid_section_rho_upper");
-		Double midSectionRhoUpperTail = Double.valueOf(midSectionRhoUpperTailProp);
-		String midSectionRhoLowerTailProp = reader.getXMLPropertyByPath("//tail_trunk/mid_section_rho_lower");
-		Double midSectionRhoLowerTail = Double.valueOf(midSectionRhoLowerTailProp);
+		Amount<Length> heightT = reader.getXMLAmountLengthByPath("//tail_trunk/tip_height_offset");
+		List<String>  dxCapPercentTailProp = reader.getXMLPropertiesByPath("//tail_trunk/dx_cap_percent");
+		Double dxTailCapPercent = Double.valueOf(dxCapPercentTailProp.get(0));
+		List<String>  sectionTailMidLowerToTotalHeightRatioProp = reader.getXMLPropertiesByPath("//tail_trunk/mid_section_lower_to_total_height_ratio");
+		Double sectionTailMidLowerToTotalHeightRatio = Double.valueOf(sectionTailMidLowerToTotalHeightRatioProp.get(0));
+		List<String>  midSectionRhoUpperTailProp = reader.getXMLPropertiesByPath("//tail_trunk/mid_section_rho_upper");
+		Double sectionMidTailRhoUpper = Double.valueOf(midSectionRhoUpperTailProp.get(0));
+		List<String>  midSectionRhoLowerTailProp = reader.getXMLPropertiesByPath("//tail_trunk/mid_section_rho_lower");
+		Double sectionMidTailRhoLower = Double.valueOf(midSectionRhoLowerTailProp.get(0));
 		
 		// create the fuselage via its builder
 		Fuselage fuselage = new FuselageBuilder(id)
+				// TOP LEVEL
+				.pressurized(pressurized)
+				//GLOBAL DATA
 				.length(len)
+				.deckNumber(deckNum)
+				.massReference(massReference)
+				.roughness(roughness)
+				// NOSE TRUNK
+				.dxNoseCapPercent(dxNoseCapPercent)
+				.heightN(heightN)
+				.lenRatioNF(lenRatioNF)
+				.lambdaN(lambdaN)
+				.sectionMidNoseRhoLower(sectionMidNoseRhoLower)
+				.sectionMidNoseRhoUpper(sectionMidNoseRhoUpper)
+				.sectionNoseMidLowerToTotalHeightRatio(sectionNoseMidLowerToTotalHeightRatio)
+				.windshieldHeight(windshieldHeight)
+				.windshieldWidth(windshieldWidth)
+				// CYLINDRICAL TRUNK
+				.lenRatioCF(lenRatioCF)
+				.sectionCylinderHeight(sectionCylinderHeight)
+				.sectionCylinderWidth(sectionCylinderWidth)
+				.heightFromGround(heightFromGround)
+				.sectionCylinderLowerToTotalHeightRatio(sectionCylinderLowerToTotalHeightRatio)
+				.sectionCylinderRhoLower(sectionCylinderRhoLower)
+				.sectionCylinderRhoUpper(sectionCylinderRhoUpper)
+				// TAIL TRUNK
+				.heightT(heightT)
+				.dxTailCapPercent(dxTailCapPercent)
+				.sectionMidTailRhoLower(sectionMidTailRhoLower)
+				.sectionMidTailRhoUpper(sectionMidTailRhoUpper)
+				.sectionTailMidLowerToTotalHeightRatio(sectionTailMidLowerToTotalHeightRatio)
+				//
 				.build();
 
 		return fuselage;
@@ -2013,8 +2058,8 @@ public class Fuselage implements IFuselage {
 		}
 		
 		
-		public FuselageBuilder deckNumber(Int len) {
-			_lenF = len;
+		public FuselageBuilder deckNumber(Integer deckNum) {
+			_deckNumber = deckNum;
 			return this;
 		}
 
@@ -2023,11 +2068,131 @@ public class Fuselage implements IFuselage {
 			return this;
 		}
 		
-		public FuselageBuilder deckNumber(Int len) {
-			_lenF = len;
+		public FuselageBuilder massReference(Amount<Mass> massReference) {
+			_massReference = massReference;
 			return this;
 		}
 
+		public FuselageBuilder pressurized(Boolean pressurized){
+			_pressurized = pressurized;
+			return this;
+		}
+		
+		public FuselageBuilder lenRatioNF(Double lenRatioNF) {
+			_lenRatioNF = lenRatioNF;
+			return this;
+		}
+		
+		public FuselageBuilder lenRatioCF(Double lenRatioCF) {
+			_lenRatioCF = lenRatioCF;
+			return this;
+		}
+		
+		public FuselageBuilder sectionCylinderWidth(Amount<Length> sectionCylinderWidth) {
+			_sectionCylinderWidth = sectionCylinderWidth;
+			return this;
+		}
+		
+		public FuselageBuilder sectionCylinderHeight(Amount<Length> sectionCylinderHeight) {
+			_sectionCylinderHeight = sectionCylinderHeight;
+			return this;
+		}
+		
+		public FuselageBuilder lambdaN(Double lambdaN) {
+			_lambdaN = lambdaN;
+			return this;
+		}
+		
+		public FuselageBuilder heightFromGround(Amount<Length> heightFromGround) {
+			_heightFromGround = heightFromGround;
+			return this;
+		}
+		
+		public FuselageBuilder roughness(Amount<Length> roughness) {
+			_roughness = roughness;
+			return this;
+		}
+		
+		public FuselageBuilder heightN(Amount<Length> heightN) {
+			_heightN = heightN;
+			return this;
+		}
+		
+		public FuselageBuilder heightT(Amount<Length> heightT) {
+			_heightT = heightT;
+			return this;
+		}
+		
+		public FuselageBuilder dxNoseCapPercent(double dxNoseCapPercent) {
+			_dxNoseCapPercent = dxNoseCapPercent;
+			return this;
+		}
+		
+		public FuselageBuilder dxTailCapPercent(double dxTailCapPercent) {
+			_dxTailCapPercent = dxTailCapPercent;
+			return this;
+		}
+		
+		public FuselageBuilder windshieldType(String windshieldType) {
+			_windshieldType = windshieldType;
+			return this;
+		}
+		
+		public FuselageBuilder windshieldHeight(Amount<Length> windshieldHeight) {
+			_windshieldHeight = windshieldHeight;
+			return this;
+		}
+		
+		public FuselageBuilder windshieldWidth(Amount<Length> windshieldWidth) {
+			_windshieldWidth = windshieldWidth;
+			return this;
+		}
+		
+		public FuselageBuilder sectionCylinderLowerToTotalHeightRatio(Double sectionCylinderLowerToTotalHeightRatio) {
+			_sectionCylinderLowerToTotalHeightRatio = sectionCylinderLowerToTotalHeightRatio;
+			return this;
+		}
+		
+		public FuselageBuilder sectionCylinderRhoUpper(Double sectionCylinderRhoUpper) {
+			_sectionCylinderRhoUpper = sectionCylinderRhoUpper;
+			return this;
+		}
+		
+		public FuselageBuilder sectionCylinderRhoLower(Double sectionCylinderRhoLower) {
+			_sectionCylinderRhoLower = sectionCylinderRhoLower;
+			return this;
+		}
+		
+		public FuselageBuilder sectionNoseMidLowerToTotalHeightRatio(Double sectionNoseMidLowerToTotalHeightRatio) {
+			_sectionNoseMidLowerToTotalHeightRatio = sectionNoseMidLowerToTotalHeightRatio;
+			return this;
+		}
+		
+		public FuselageBuilder sectionTailMidLowerToTotalHeightRatio(Double sectionTailMidLowerToTotalHeightRatio) {
+			_sectionTailMidLowerToTotalHeightRatio = sectionTailMidLowerToTotalHeightRatio;
+			return this;
+		}
+		
+		public FuselageBuilder sectionMidNoseRhoUpper(Double sectionMidNoseRhoUpper) {
+			_sectionMidNoseRhoUpper = sectionMidNoseRhoUpper;
+			return this;
+		}
+		
+		public FuselageBuilder sectionMidTailRhoUpper(Double sectionMidTailRhoUpper) {
+			_sectionMidTailRhoUpper = sectionMidTailRhoUpper;
+			return this;
+		}
+		
+		public FuselageBuilder sectionMidNoseRhoLower(Double sectionMidNoseRhoLower) {
+			_sectionMidNoseRhoLower = sectionMidNoseRhoLower;
+			return this;
+		}
+		
+		public FuselageBuilder sectionMidTailRhoLower(Double sectionMidTailRhoLower) {
+			_sectionMidTailRhoLower = sectionMidTailRhoLower;
+			return this;
+		}
+		
 		public Fuselage build() {
 			return new Fuselage(this);
 		}

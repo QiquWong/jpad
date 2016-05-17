@@ -2,9 +2,10 @@
 <jpad_config>
     <fuselage id="JPAD Test Fuselage DAF - 2016" pressurized="TRUE">
         <global_data>
-			<deck_number>1.0</deck_number>
+			<deck_number>1</deck_number>
 			<length unit="m">30.0</length> 
 			<mass_reference unit="kg">3340</mass_reference>
+			<roughness unit="m">0.405e-5</roughness>
 		</global_data>
 		<nose_trunk>
             <length_ratio>0.2</length_ratio>
@@ -14,12 +15,12 @@
             <windshield_type>ROUND</windshield_type>
             <windshield_width unit="m">2.5</windshield_width>
             <windshield_height unit="m">0.8</windshield_height>
-            <mid_section_lower_to_total_height_ratio>0.5</mid_section_lower_to_total_height_ratio>
+            <mid_section_lower_to_total_height_ratio>0.4</mid_section_lower_to_total_height_ratio>
             <mid_section_rho_upper>0.2</mid_section_rho_upper>
             <mid_section_rho_lower>0.3</mid_section_rho_lower>
         </nose_trunk>
 		<cylindrical_trunk>
-            <length_ratio>1.2</length_ratio>
+            <length_ratio>0.62</length_ratio>
 			<section_width unit="m">2.0</section_width>
 			<section_height unit="m">2.0</section_height>
 			<height_from_ground unit="m">0.66</height_from_ground>

@@ -51,16 +51,16 @@ public class FuselageTest {
 
 		System.out.println("--------------");
 
-//		Fuselage fuselage = Fuselage.importFromXML(pathToXML);
-//
-//		fuselage.calculateGeometry(
-//				20,    // No. points in nose trunk
-//				5,     // No. points in cylindrical trunk
-//				15,    // No. points in tail trunk
-//				10, 10 // No. points in upper/lower cyl. trunk section
-//				);
+		Fuselage fuselage = Fuselage.importFromXML(pathToXML);
 
-		Fuselage fuselage = new Fuselage.FuselageBuilder("pippo", AircraftEnum.B747_100B).build();
+		fuselage.calculateGeometry(
+				20,    // No. points in nose trunk
+				5,     // No. points in cylindrical trunk
+				15,    // No. points in tail trunk
+				10, 10 // No. points in upper/lower cyl. trunk section
+				);
+
+//		Fuselage fuselage = new Fuselage.FuselageBuilder("pippo", AircraftEnum.B747_100B).build();
 		
 		System.out.println("The fuselage ...");
 
