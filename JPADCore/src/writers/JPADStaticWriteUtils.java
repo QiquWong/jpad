@@ -325,6 +325,42 @@ public class JPADStaticWriteUtils {
 	}
 
 	/**
+	 * This method is an overload of the previous that accepts a string and the unit as input in order to write an array whit unit.
+	 * 
+	 * @author Manuela Ruocco
+	 *
+	 * @param valueToWrite
+	 * @param unit
+	 * @return
+	 */
+	public static String[] prepareSingleVariableToWrite(List<Amount> inputList, String unit) {
+
+		String arrayToWrite = new String();
+	
+		arrayToWrite = " [ " ;
+		for (int i=0; i<inputList.size() -1 ; i++){
+			arrayToWrite = arrayToWrite + inputList.get(i).getEstimatedValue() + " , ";
+		}
+		arrayToWrite = arrayToWrite + inputList.get(inputList.size()-1).getEstimatedValue();
+		arrayToWrite = arrayToWrite + " ]";
+		
+		String[] str = new String[2];
+		str[0] = arrayToWrite;
+		str[1] = unit;
+
+		return str;
+	}
+	
+	public static String[] prepareSingleVariableToWrite(String inputList, String unit) {
+		
+		String[] str = new String[2];
+		str[0] = inputList;
+		str[1] = unit;
+
+		return str;
+	}
+	
+	/**
 	 * 
 	 * @author Lorenzo Attanasio
 	 *
@@ -495,11 +531,69 @@ public class JPADStaticWriteUtils {
 
 	public static List<Object> writeSingleNode(
 			String tagName, 
+			List<Amount> valueToWrite, 
+			Element father,
+			Document doc, 
+			boolean input,
+			String unit) {
+
+		String[] str = new String[2];
+
+		str = prepareSingleVariableToWrite(valueToWrite, unit);
+
+		return finalizeNode(str, tagName, father, doc, input);
+	}
+	
+	public static List<Object> writeSingleNode(
+			String tagName, 
+			String valueToWrite, 
+			Element father,
+			Document doc, 
+			boolean input,
+			String unit) {
+
+		String[] str = new String[2];
+
+		str = prepareSingleVariableToWrite(valueToWrite, unit);
+
+		return finalizeNode(str, tagName, father, doc, input);
+	}
+	
+	public static List<Object> writeSingleNode(
+			String tagName, 
 			Object valueToWrite, 
 			Element father,
 			Document doc) {
 
 		return writeSingleNode(tagName, valueToWrite, father, doc, false);
+	}
+	
+	/**
+	 * 
+	 * @author Manuela Ruocco
+	 *
+	 * overload 
+	 * 
+	 */
+	
+	public static List<Object> writeSingleNode(
+			String tagName, 
+			List<Amount> valueToWrite, 
+			Element father,
+			Document doc,
+			String unit) {
+
+		return writeSingleNode(tagName, valueToWrite, father, doc, false, unit);
+	}
+	
+	public static List<Object> writeSingleNode(
+			String tagName, 
+			String valueToWrite, 
+			Element father,
+			Document doc,
+			String unit) {
+
+		return writeSingleNode(tagName, valueToWrite, father, doc, false, unit);
 	}
 
 	/**
