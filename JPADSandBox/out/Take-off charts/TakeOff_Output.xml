@@ -36,9 +36,9 @@
       <distances>
          <ground_roll_distance unit="m">1314.9350</ground_roll_distance>
          <rotation_distance unit="m">288.2232</rotation_distance>
-         <airborne_distance unit="m">296.9935</airborne_distance>
-         <take_off_distance_AOE unit="m">1900.1516</take_off_distance_AOE>
-         <take_off_distance_FAR25 unit="m">2185.1744</take_off_distance_FAR25>
+         <airborne_distance unit="m">296.9785</airborne_distance>
+         <take_off_distance_AOE unit="m">1900.1367</take_off_distance_AOE>
+         <take_off_distance_FAR25 unit="m">2185.1572</take_off_distance_FAR25>
          <balanced_field_length unit="m">2086.3934</balanced_field_length>
       </distances>
       <speeds>
@@ -46,7 +46,7 @@
          <decision_speed unit="m/s">67.0527</decision_speed>
          <rotation_speed unit="m/s">67.8859</rotation_speed>
          <lift_off_speed unit="m/s">71.1185</lift_off_speed>
-         <take_off_safety_speed unit="m/s">76.8861</take_off_safety_speed>
+         <take_off_safety_speed unit="m/s">76.8874</take_off_safety_speed>
       </speeds>
    </OUTPUT>
 </TakeOff_Executable>

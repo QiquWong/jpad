@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<take_off_executable charts="TRUE" simplified_thrust_model="TRUE">
+<take_off_executable charts="FALSE" simplified_thrust_model="TRUE">
         <INPUT>
                 <ground_conditions>
                         <alpha unit="°">0.0</alpha>

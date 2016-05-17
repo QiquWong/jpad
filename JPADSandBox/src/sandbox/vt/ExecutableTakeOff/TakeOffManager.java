@@ -1,6 +1,7 @@
 package sandbox.vt.ExecutableTakeOff;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -26,10 +27,11 @@ import org.apache.commons.math3.ode.events.EventHandler;
 import org.apache.commons.math3.ode.nonstiff.HighamHall54Integrator;
 import org.apache.commons.math3.ode.sampling.StepHandler;
 import org.apache.commons.math3.ode.sampling.StepInterpolator;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jscience.physics.amount.Amount;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -41,7 +43,6 @@ import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyInterpolatingFunction;
-import standaloneutils.MyXLSWriteUtils;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
@@ -254,6 +255,7 @@ public class TakeOffManager {
 		
 		if(input.isCharts())
 			theTakeOffCalculator.createBalancedFieldLengthChart();
+		
 		System.out.println("\n-----------------------------------------------------------");
 		System.out.println("			RESULTS				 ");
 		System.out.println("-----------------------------------------------------------");
@@ -283,7 +285,7 @@ public class TakeOffManager {
 			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 			Document doc = docBuilder.newDocument();
 			
-			defineXmlTree(doc, docBuilder);
+			createXml(doc, docBuilder);
 			createXls(filenameWithPathAndExt);
 			
 			JPADStaticWriteUtils.writeDocumentToXml(doc, filenameWithPathAndExt + ".xml");
@@ -299,7 +301,7 @@ public class TakeOffManager {
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	private static void defineXmlTree(Document doc, DocumentBuilder docBuilder) {
+	private static void createXml(Document doc, DocumentBuilder docBuilder) {
 		
 		org.w3c.dom.Element rootElement = doc.createElement("TakeOff_Executable");
 		doc.appendChild(rootElement);
@@ -392,13 +394,28 @@ public class TakeOffManager {
 	 * @throws InvalidFormatException 
 	 */
 	private static void createXls(String filenameWithPathAndExt) throws InvalidFormatException, IOException {
-				
-		File outputXls = new File(filenameWithPathAndExt + ".xls");
 		
-		new WorkbookFactory();
-		Workbook workbookExport = WorkbookFactory.create(outputXls);
+		Workbook wb;
+		File outputFile = new File(filenameWithPathAndExt + ".xlsx");
+		if (outputFile.exists()) { 
+		   outputFile.delete();		
+		   System.out.println("Deleting the old .xls file ...");
+		} 
 		
-		Sheet sheet = MyXLSWriteUtils.createNewSheet("Acceleration", "TakeOff", workbookExport);
+		if (outputFile.getName().endsWith(".xls")) {
+			wb = new HSSFWorkbook();
+		}
+		else if (outputFile.getName().endsWith(".xlsx")) {
+			wb = new XSSFWorkbook();
+		}
+		else {
+			throw new IllegalArgumentException("I don't know how to create that kind of new file");
+		}
+		
+		// TODO: CREATE OTHER SHEETS!!
+		// FIXME: OUTPUT LISTS READ THE LAST RUN VALUES...THEY HAVE TO READ THE FIRST RUN VALUES!
+		
+		Sheet sheet = wb.createSheet("Acceleration");
 		
 		List<String> xlsArraysDescription = new ArrayList<String>();
 		xlsArraysDescription.add("Time");
@@ -408,9 +425,9 @@ public class TakeOffManager {
 		MyArray timeArray = new MyArray();
 		timeArray.setAmountList(output.getTime());
 		MyArray distenceArray = new MyArray();
-		timeArray.setAmountList(output.getGroundDistance());
+		distenceArray.setAmountList(output.getGroundDistance());
 		MyArray accelerationArray = new MyArray();
-		timeArray.setAmountList(output.getAcceleration());
+		accelerationArray.setAmountList(output.getAcceleration());
 		
 		List<MyArray> xlsArraysList = new ArrayList<MyArray>();
 		xlsArraysList.add(timeArray);
@@ -428,6 +445,11 @@ public class TakeOffManager {
 				xlsArraysList,
 				xlsArraysUnit
 				);
+		
+		FileOutputStream fileOut = new FileOutputStream(filenameWithPathAndExt + ".xlsx");
+        wb.write(fileOut);
+        fileOut.close();
+        System.out.println("Your excel file has been generated!");
 	}
 	
 	//---------------------------------------------------------------------------------------------
@@ -609,7 +631,6 @@ public class TakeOffManager {
 				
 			netThrustArrayFitted.interpolate(speedArrayInterpolation, input.getNetThrust());
 			
-			System.out.println("T(V=10 m/s) = " + netThrustArrayFitted.value(10.0));
 		}
 
 		/**************************************************************************************
