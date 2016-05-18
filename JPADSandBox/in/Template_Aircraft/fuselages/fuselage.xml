@@ -8,7 +8,7 @@
 			<roughness unit="m">0.405e-5</roughness>
 		</global_data>
 		<nose_trunk>
-            <length_ratio>0.2</length_ratio>
+            <length_ratio>0.20</length_ratio>
 			<fineness_ratio>1.2</fineness_ratio>
 			<tip_height_offset unit="m">-0.15</tip_height_offset>
             <dx_cap_percent>0.075</dx_cap_percent>
@@ -20,7 +20,7 @@
             <mid_section_rho_lower>0.3</mid_section_rho_lower>
         </nose_trunk>
 		<cylindrical_trunk>
-            <length_ratio>0.62</length_ratio>
+            <length_ratio>0.51</length_ratio>
 			<section_width unit="m">2.0</section_width>
 			<section_height unit="m">2.0</section_height>
 			<height_from_ground unit="m">0.66</height_from_ground>

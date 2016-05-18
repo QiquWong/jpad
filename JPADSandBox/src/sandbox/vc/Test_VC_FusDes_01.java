@@ -128,8 +128,10 @@ public class Test_VC_FusDes_01 {
 		System.out.println("CM0 FR: " + fusDesDatabaseReader.getCM0FR());
 		System.out.println("CM0 FR Sw mac: " + fusDesDatabaseReader.getCM0FR()*fusSurfRatio*theAircraft.get_fuselage().get__diam_C().doubleValue(SI.METER)/
 			      theAircraft.get_wing().get_meanAerodChordActual().doubleValue(SI.METRE));
-		System.out.println("CMn: " + fusDesDatabaseReader.getdCMn());
-		System.out.println("CMt: " + fusDesDatabaseReader.getdCMt());
+		System.out.println("CMn Sw mac: " + fusDesDatabaseReader.getdCMn()*fusSurfRatio*theAircraft.get_fuselage().get__diam_C().doubleValue(SI.METER)/
+				  theAircraft.get_wing().get_meanAerodChordActual().doubleValue(SI.METRE));
+		System.out.println("CMt Sw mac: " + fusDesDatabaseReader.getdCMt()*fusSurfRatio*theAircraft.get_fuselage().get__diam_C().doubleValue(SI.METER)/
+			      theAircraft.get_wing().get_meanAerodChordActual().doubleValue(SI.METRE));
 		System.out.println("CM0 fuselge: " + cM0Fuselage);		// - 0.0361 (-0.2180) --> NOT COMPARABLE because of fuselage geometric differences (nose and tail contributions cause errors)
 		System.out.println("CMalfa fuselge: " + cMaFuselage); 	// 0.0222 (0.2243) --> NOT COMPARABLE because of fuselage geometric differences (nose and tail contributions cause errors)
 		System.out.println("CNb fuselge: " + cNbFuselage);    	// -.0022 (-.0021 cfd)

@@ -1420,7 +1420,7 @@ public class Fuselage implements IFuselage {
 
 		// values filtered as x >= l_N + l_C
 		List<Double> vX = new ArrayList<Double>();
-		outlineXZLowerCurveX.stream().filter(x -> x >= x0 ).distinct().forEach(vX::add);
+		outlineXZLowerCurveX.stream().filter(x -> x > x0 ).distinct().forEach(vX::add);
 //		vX.stream().forEach(e -> System.out.println(e));
 
 		// index of first x in _outlineXZLowerCurveX >= x0
@@ -1505,8 +1505,8 @@ public class Fuselage implements IFuselage {
 
 				// generate a vector of constant z = z_min + 0.75*d_C, same size of vZNose, or vXNose
 				// It's better to take the value of z at 0.60*d_C (for the methodology)
-//				Double z1Nose = _outlineXZLowerCurveZ.get(9) + 0.75*_sectionCylinderHeight.doubleValue(SI.METER);
-				Double z1Nose = outlineXZLowerCurveZ.get(9) + 0.60*sectionCylinderHeight.doubleValue(SI.METER);
+				Double z1Nose = outlineXZLowerCurveZ.get(9) + 0.75*sectionCylinderHeight.doubleValue(SI.METER);
+//				Double z1Nose = outlineXZLowerCurveZ.get(9) + 0.60*sectionCylinderHeight.doubleValue(SI.METER);
 				List<Double> vZ1Nose = new ArrayList<Double>();
 				vZNose.stream().map(z -> z1Nose).forEach(vZ1Nose::add);
 
