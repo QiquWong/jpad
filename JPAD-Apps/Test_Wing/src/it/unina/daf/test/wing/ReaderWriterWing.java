@@ -383,10 +383,10 @@ public class ReaderWriterWing {
 		outputRootElement.appendChild(highLiftDevicesEffectsElement);
 		
 		JPADStaticWriteUtils.writeSingleNode("alpha_zero_lift", input.getAlphaZeroLift(), highLiftDevicesEffectsElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("cl_alpha", Amount.valueOf(Double.valueOf(input.getClAlpha()), NonSI.DEGREE_ANGLE.inverse()), highLiftDevicesEffectsElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("cl_star", input.getClStar(), highLiftDevicesEffectsElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL_alpha", Amount.valueOf(Double.valueOf(input.getClAlpha()), NonSI.DEGREE_ANGLE.inverse()), highLiftDevicesEffectsElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL_star", input.getClStar(), highLiftDevicesEffectsElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("alpha_star", input.getAlphaStar(), highLiftDevicesEffectsElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("cl_max", input.getClMax(), highLiftDevicesEffectsElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL_max", input.getClMax(), highLiftDevicesEffectsElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("alpha_stall", input.getAlphaStall(), highLiftDevicesEffectsElement, doc);
 		
 		org.w3c.dom.Element highLiftGlobalDataElement = doc.createElement("cL_vs_alpha_curve");
