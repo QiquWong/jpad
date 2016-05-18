@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<TOP_Calculator>
+    <INPUT>
+        <ground_conditions>
+            <alpha unit="°">0.0000</alpha>
+            <wind_speed unit="m/s">0.0000</wind_speed>
+            <altitude unit="m">0.0000</altitude>
+        </ground_conditions>
+        <aircraft_data>
+            <take_off_mass unit="kg">340194.0000</take_off_mass>
+            <wing>
+                <geometry>
+                    <aspect_ratio unit="">6.9600</aspect_ratio>
+                    <span unit="m">59.6300</span>
+                    <surface unit="m²">511.0000</surface>
+                    <distance_from_ground unit="m">6.5600</distance_from_ground>
+                    <angle_of_incidence unit="°">3.0000</angle_of_incidence>
+                </geometry>
+                <aerodynamic_data>
+                    <oswald unit="">0.6780</oswald>
+                    <cD0_clean unit="">0.0165</cD0_clean>
+                    <delta_cD0_flap unit="">0.002000</delta_cD0_flap>
+                    <delta_cD0_landing_gears unit="">0.0240</delta_cD0_landing_gears>
+                    <cL_max_take_off unit="">1.9100</cL_max_take_off>
+                    <cL0_take_off unit="">0.2970</cL0_take_off>
+                    <cL_alpha_take_off unit="1/°">0.0732</cL_alpha_take_off>
+                </aerodynamic_data>
+            </wing>
+            <engine>
+                <static_thrust unit="N">204000.0000</static_thrust>
+                <number_of_engines unit="">4</number_of_engines>
+            </engine>
+        </aircraft_data>
+    </INPUT>
+    <OUTPUT>
+        <distances>
+            <ground_roll_distance unit="m">1786.5268</ground_roll_distance>
+            <rotation_distance unit="m">344.1123</rotation_distance>
+            <airborne_distance unit="m">420.1876</airborne_distance>
+            <take_off_distance_AOE unit="m">2550.8267</take_off_distance_AOE>
+            <take_off_distance_FAR25 unit="m">2933.4507</take_off_distance_FAR25>
+            <balanced_field_length unit="m">2750.2900</balanced_field_length>
+        </distances>
+        <speeds>
+            <stall_speed_take_off unit="m/s">74.7039</stall_speed_take_off>
+            <decision_speed unit="m/s">77.4582</decision_speed>
+            <rotation_speed unit="m/s">78.4391</rotation_speed>
+            <lift_off_speed unit="m/s">82.1743</lift_off_speed>
+            <take_off_safety_speed unit="m/s">89.2943</take_off_safety_speed>
+        </speeds>
+    </OUTPUT>
+</TOP_Calculator>

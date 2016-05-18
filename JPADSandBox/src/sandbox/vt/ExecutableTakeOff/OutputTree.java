@@ -48,6 +48,9 @@ public class OutputTree {
 								totalForce;
 	private List<Amount<Length>> groundDistance,
 								 verticalDistance;
+	private double[] failureSpeedArray,
+		             continuedTakeOffArray,
+		             abortedTakeOffArray;
 	
 	//------------------------------------------------------------------------------------------
 	// BUILDER:
@@ -204,6 +207,30 @@ public class OutputTree {
 
 	public void setcL(List<Double> cL) {
 		this.cL = cL;
+	}
+
+	public double[] getFailureSpeedArray() {
+		return failureSpeedArray;
+	}
+
+	public double[] getContinuedTakeOffArray() {
+		return continuedTakeOffArray;
+	}
+
+	public double[] getAbortedTakeOffArray() {
+		return abortedTakeOffArray;
+	}
+
+	public void setFailureSpeedArray(double[] failureSpeedArray) {
+		this.failureSpeedArray = failureSpeedArray;
+	}
+
+	public void setContinuedTakeOffArray(double[] continuedTakeOffArray) {
+		this.continuedTakeOffArray = continuedTakeOffArray;
+	}
+
+	public void setAbortedTakeOffArray(double[] abortedTakeOffArray) {
+		this.abortedTakeOffArray = abortedTakeOffArray;
 	}
 
 	public List<Double> getcD() {

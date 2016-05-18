@@ -229,7 +229,6 @@ public class TakeOffManager {
 		output = new OutputTree();
 		
 		TakeOffCalculator theTakeOffCalculator = theTakeOffManager.new TakeOffCalculator(
-				output,
 				dtRot,
 				dtHold,
 				kcLMax,
@@ -295,7 +294,7 @@ public class TakeOffManager {
 		}
 	}
 	
-	/*******************************************************************************************
+	/********************************************************************************************
 	 * This method defines the XML tree structure and fill it with results form the OutputTree
 	 * object
 	 * 
@@ -385,13 +384,15 @@ public class TakeOffManager {
 		
 	}
 	
-	/*******************************************************************************************
-	 * This method defines the XML tree structure and fill it with results form the OutputTree
+	/********************************************************************************************
+	 * This method creates and fills the XLS output file using the results form the OutputTree
 	 * object
 	 * 
 	 * @author Vittorio Trifari
-	 * @throws IOException 
-	 * @throws InvalidFormatException 
+	 * 
+	 * @param filenameWithPathAndExt
+	 * @throws InvalidFormatException
+	 * @throws IOException
 	 */
 	private static void createXls(String filenameWithPathAndExt) throws InvalidFormatException, IOException {
 		
@@ -412,56 +413,426 @@ public class TakeOffManager {
 			throw new IllegalArgumentException("I don't know how to create that kind of new file");
 		}
 		
-		// TODO: CREATE OTHER SHEETS!!
-		// FIXME: OUTPUT LISTS READ THE LAST RUN VALUES...THEY HAVE TO READ THE FIRST RUN VALUES!
-		
-		Sheet sheet = wb.createSheet("Acceleration");
-		
-		List<String> xlsArraysDescription = new ArrayList<String>();
-		xlsArraysDescription.add("Time");
-		xlsArraysDescription.add("Space");
-		xlsArraysDescription.add("Acceleration");
-		
+		// Arrays always present:
 		MyArray timeArray = new MyArray();
 		timeArray.setAmountList(output.getTime());
-		MyArray distenceArray = new MyArray();
-		distenceArray.setAmountList(output.getGroundDistance());
+		MyArray groundDistenceArray = new MyArray();
+		groundDistenceArray.setAmountList(output.getGroundDistance());
+		
+		//---------------------------------------------------------------------------------------
+		// ACCELERATION:
+		Sheet sheetAcceleration = wb.createSheet("Acceleration");
+		
+		List<String> xlsAccelerationDescription = new ArrayList<String>();
+		xlsAccelerationDescription.add("Time");
+		xlsAccelerationDescription.add("Space");
+		xlsAccelerationDescription.add("Acceleration");
+		
 		MyArray accelerationArray = new MyArray();
 		accelerationArray.setAmountList(output.getAcceleration());
 		
-		List<MyArray> xlsArraysList = new ArrayList<MyArray>();
-		xlsArraysList.add(timeArray);
-		xlsArraysList.add(distenceArray);
-		xlsArraysList.add(accelerationArray);
+		List<MyArray> xlsAccelerationList = new ArrayList<MyArray>();
+		xlsAccelerationList.add(timeArray);
+		xlsAccelerationList.add(groundDistenceArray);
+		xlsAccelerationList.add(accelerationArray);
 		
-		List<String> xlsArraysUnit = new ArrayList<String>();
-		xlsArraysUnit.add("s");
-		xlsArraysUnit.add("m");
-		xlsArraysUnit.add("m/(s^2)");
+		List<String> xlsAccelerationUnit = new ArrayList<String>();
+		xlsAccelerationUnit.add("s");
+		xlsAccelerationUnit.add("m");
+		xlsAccelerationUnit.add("m/(s^2)");
 		
 		JPADStaticWriteUtils.writeAllArraysToXls(
-				sheet,
-				xlsArraysDescription,
-				xlsArraysList,
-				xlsArraysUnit
+				sheetAcceleration,
+				xlsAccelerationDescription,
+				xlsAccelerationList,
+				xlsAccelerationUnit
 				);
 		
+		//---------------------------------------------------------------------------------------
+		// TAKE OFF TRAJECTORY:
+		Sheet sheetTrajectory = wb.createSheet("Take-off trajectory");
+		
+		List<String> xlsTrajectoryDescription = new ArrayList<String>();
+		xlsTrajectoryDescription.add("Time");
+		xlsTrajectoryDescription.add("Space");
+		xlsTrajectoryDescription.add("Acceleration");
+		
+		MyArray trajectoryArray = new MyArray();
+		trajectoryArray.setAmountList(output.getVerticalDistance());
+		
+		List<MyArray> xlsTrajectoryList = new ArrayList<MyArray>();
+		xlsTrajectoryList.add(timeArray);
+		xlsTrajectoryList.add(groundDistenceArray);
+		xlsTrajectoryList.add(trajectoryArray);
+		
+		List<String> xlsTrajectoryUnit = new ArrayList<String>();
+		xlsTrajectoryUnit.add("s");
+		xlsTrajectoryUnit.add("m");
+		xlsTrajectoryUnit.add("m");
+		
+		JPADStaticWriteUtils.writeAllArraysToXls(
+				sheetTrajectory,
+				xlsTrajectoryDescription,
+				xlsTrajectoryList,
+				xlsTrajectoryUnit
+				);
+		
+		//---------------------------------------------------------------------------------------
+		// ANGLES:
+		Sheet sheetAngles = wb.createSheet("Angles");
+
+		List<String> xlsAnglesDescription = new ArrayList<String>();
+		xlsAnglesDescription.add("Time");
+		xlsAnglesDescription.add("Space");
+		xlsAnglesDescription.add("Alpha");
+		xlsAnglesDescription.add("Gamma");
+		xlsAnglesDescription.add("Theta");
+
+		MyArray alphaArray = new MyArray();
+		alphaArray.setAmountList(output.getAlpha());
+		MyArray gammaArray = new MyArray();
+		gammaArray.setAmountList(output.getGamma());
+		MyArray thetaArray = new MyArray();
+		thetaArray.setAmountList(output.getTheta());
+
+		List<MyArray> xlsAnglesList = new ArrayList<MyArray>();
+		xlsAnglesList.add(timeArray);
+		xlsAnglesList.add(groundDistenceArray);
+		xlsAnglesList.add(alphaArray);
+		xlsAnglesList.add(gammaArray);
+		xlsAnglesList.add(thetaArray);
+
+		List<String> xlsAnglesUnit = new ArrayList<String>();
+		xlsAnglesUnit.add("s");
+		xlsAnglesUnit.add("m");
+		xlsAnglesUnit.add("deg");
+		xlsAnglesUnit.add("deg");
+		xlsAnglesUnit.add("deg");
+
+		JPADStaticWriteUtils.writeAllArraysToXls(
+				sheetAngles,
+				xlsAnglesDescription,
+				xlsAnglesList,
+				xlsAnglesUnit
+				);
+
+		//---------------------------------------------------------------------------------------
+		// ANGULAR VELOCITIES:
+		Sheet sheetAngularVelocities = wb.createSheet("Angular velocities");
+
+		List<String> xlsAngularVelocitiesDescription = new ArrayList<String>();
+		xlsAngularVelocitiesDescription.add("Time");
+		xlsAngularVelocitiesDescription.add("Space");
+		xlsAngularVelocitiesDescription.add("Alpha");
+		xlsAngularVelocitiesDescription.add("Gamma");
+		xlsAngularVelocitiesDescription.add("Theta");
+
+		MyArray alphaDotArray = new MyArray();
+		alphaDotArray.setList(output.getAlphaDot());
+		MyArray gammaDotArray = new MyArray();
+		gammaArray.setList(output.getGammaDot());
+
+		List<MyArray> xlsAngularVelocitiesList = new ArrayList<MyArray>();
+		xlsAngularVelocitiesList.add(timeArray);
+		xlsAngularVelocitiesList.add(groundDistenceArray);
+		xlsAngularVelocitiesList.add(alphaDotArray);
+		xlsAngularVelocitiesList.add(gammaDotArray);
+
+		List<String> xlsAngularVelocitiesUnit = new ArrayList<String>();
+		xlsAngularVelocitiesUnit.add("s");
+		xlsAngularVelocitiesUnit.add("m");
+		xlsAngularVelocitiesUnit.add("deg/s");
+		xlsAngularVelocitiesUnit.add("deg/s");
+		xlsAngularVelocitiesUnit.add("deg/s");
+
+		JPADStaticWriteUtils.writeAllArraysToXls(
+				sheetAngularVelocities,
+				xlsAngularVelocitiesDescription,
+				xlsAngularVelocitiesList,
+				xlsAngularVelocitiesUnit
+				);
+
+		//---------------------------------------------------------------------------------------
+		// CL:
+		Sheet sheetCL = wb.createSheet("CL");
+
+		List<String> xlsCLDescription = new ArrayList<String>();
+		xlsCLDescription.add("Time");
+		xlsCLDescription.add("Space");
+		xlsCLDescription.add("CL");
+
+		MyArray cLArray = new MyArray();
+		cLArray.setList(output.getcL());
+
+		List<MyArray> xlsCLList = new ArrayList<MyArray>();
+		xlsCLList.add(timeArray);
+		xlsCLList.add(groundDistenceArray);
+		xlsCLList.add(cLArray);
+
+		List<String> xlsCLUnit = new ArrayList<String>();
+		xlsCLUnit.add("s");
+		xlsCLUnit.add("m");
+		xlsCLUnit.add(" ");
+
+		JPADStaticWriteUtils.writeAllArraysToXls(
+				sheetCL,
+				xlsCLDescription,
+				xlsCLList,
+				xlsCLUnit
+				);
+		
+		//---------------------------------------------------------------------------------------
+		// CD:
+		Sheet sheetCD = wb.createSheet("CD");
+
+		List<String> xlsCDDescription = new ArrayList<String>();
+		xlsCDDescription.add("Time");
+		xlsCDDescription.add("Space");
+		xlsCDDescription.add("CD");
+
+		MyArray cDArray = new MyArray();
+		cDArray.setList(output.getcD());
+
+		List<MyArray> xlsCDList = new ArrayList<MyArray>();
+		xlsCDList.add(timeArray);
+		xlsCDList.add(groundDistenceArray);
+		xlsCDList.add(cDArray);
+
+		List<String> xlsCDUnit = new ArrayList<String>();
+		xlsCDUnit.add("s");
+		xlsCDUnit.add("m");
+		xlsCDUnit.add(" ");
+
+		JPADStaticWriteUtils.writeAllArraysToXls(
+				sheetCD,
+				xlsCDDescription,
+				xlsCDList,
+				xlsCDUnit
+				);
+
+		//---------------------------------------------------------------------------------------
+		// LOAD FACTOR:
+		Sheet sheetLoadFactor = wb.createSheet("Load factor");
+
+		List<String> xlsLoadFactorDescription = new ArrayList<String>();
+		xlsLoadFactorDescription.add("Time");
+		xlsLoadFactorDescription.add("Space");
+		xlsLoadFactorDescription.add("Load factor");
+
+		MyArray loadFactorArray = new MyArray();
+		loadFactorArray.setList(output.getLoadFactor());
+
+		List<MyArray> xlsLoadFactorList = new ArrayList<MyArray>();
+		xlsLoadFactorList.add(timeArray);
+		xlsLoadFactorList.add(groundDistenceArray);
+		xlsLoadFactorList.add(loadFactorArray);
+
+		List<String> xlsLoadFactorUnit = new ArrayList<String>();
+		xlsLoadFactorUnit.add("s");
+		xlsLoadFactorUnit.add("m");
+		xlsLoadFactorUnit.add(" ");
+
+		JPADStaticWriteUtils.writeAllArraysToXls(
+				sheetLoadFactor,
+				xlsLoadFactorDescription,
+				xlsLoadFactorList,
+				xlsLoadFactorUnit
+				);
+
+		//---------------------------------------------------------------------------------------
+		// RATE OF CLIMB:
+		Sheet sheetRateOfClimb = wb.createSheet("Rate of climb");
+
+		List<String> xlsRateOfClimbDescription = new ArrayList<String>();
+		xlsRateOfClimbDescription.add("Time");
+		xlsRateOfClimbDescription.add("Space");
+		xlsRateOfClimbDescription.add("Rate of climb");
+
+		MyArray rateOfClimbArray = new MyArray();
+		rateOfClimbArray.setAmountList(output.getRateOfClimb());
+
+		List<MyArray> xlsRateOfClimbList = new ArrayList<MyArray>();
+		xlsRateOfClimbList.add(timeArray);
+		xlsRateOfClimbList.add(groundDistenceArray);
+		xlsRateOfClimbList.add(rateOfClimbArray);
+
+		List<String> xlsRateOfClimbUnit = new ArrayList<String>();
+		xlsRateOfClimbUnit.add("s");
+		xlsRateOfClimbUnit.add("m");
+		xlsRateOfClimbUnit.add("m/s");
+
+		JPADStaticWriteUtils.writeAllArraysToXls(
+				sheetRateOfClimb,
+				xlsRateOfClimbDescription,
+				xlsRateOfClimbList,
+				xlsRateOfClimbUnit
+				);
+		
+		//---------------------------------------------------------------------------------------
+		// SPEED:
+		Sheet sheetSpeed = wb.createSheet("Speed");
+
+		List<String> xlsSpeedDescription = new ArrayList<String>();
+		xlsSpeedDescription.add("Time");
+		xlsSpeedDescription.add("Space");
+		xlsSpeedDescription.add("Speed");
+
+		MyArray speedArray = new MyArray();
+		speedArray.setAmountList(output.getSpeed());
+
+		List<MyArray> xlsSpeedList = new ArrayList<MyArray>();
+		xlsSpeedList.add(timeArray);
+		xlsSpeedList.add(groundDistenceArray);
+		xlsSpeedList.add(speedArray);
+
+		List<String> xlsSpeedUnit = new ArrayList<String>();
+		xlsSpeedUnit.add("s");
+		xlsSpeedUnit.add("m");
+		xlsSpeedUnit.add("m/s");
+
+		JPADStaticWriteUtils.writeAllArraysToXls(
+				sheetSpeed,
+				xlsSpeedDescription,
+				xlsSpeedList,
+				xlsSpeedUnit
+				);
+
+		//---------------------------------------------------------------------------------------
+		// HORIZONTAL FORCES:
+		Sheet sheetHorizontalForces = wb.createSheet("Horizontal forces");
+
+		List<String> xlsHorizontalForcesDescription = new ArrayList<String>();
+		xlsHorizontalForcesDescription.add("Time");
+		xlsHorizontalForcesDescription.add("Space");
+		xlsHorizontalForcesDescription.add("Total force");
+		xlsHorizontalForcesDescription.add("T*cos(alpha)");
+		xlsHorizontalForcesDescription.add("Drag");
+		xlsHorizontalForcesDescription.add("Friction");
+		xlsHorizontalForcesDescription.add("W*sin(gamma)");
+
+		MyArray totalForceArray = new MyArray();
+		totalForceArray.setAmountList(output.getTotalForce());
+		MyArray thrustArray = new MyArray();
+		thrustArray.setAmountList(output.getThrustHorizontal());
+		MyArray dragArray = new MyArray();
+		dragArray.setAmountList(output.getDrag());
+		MyArray frictionArray = new MyArray();
+		frictionArray.setAmountList(output.getFriction());
+		MyArray weightHorizontalArray = new MyArray();
+		weightHorizontalArray.setAmountList(output.getGamma());
+		weightHorizontalArray.times((input.getTakeOffMass().times(AtmosphereCalc.g0).getEstimatedValue()));
+		
+		List<MyArray> xlsHorizontalForcesList = new ArrayList<MyArray>();
+		xlsHorizontalForcesList.add(timeArray);
+		xlsHorizontalForcesList.add(groundDistenceArray);
+		xlsHorizontalForcesList.add(totalForceArray);
+		xlsHorizontalForcesList.add(thrustArray);
+		xlsHorizontalForcesList.add(dragArray);
+		xlsHorizontalForcesList.add(frictionArray);
+		xlsHorizontalForcesList.add(weightHorizontalArray);
+
+		List<String> xlsHorizontalForcesUnit = new ArrayList<String>();
+		xlsHorizontalForcesUnit.add("s");
+		xlsHorizontalForcesUnit.add("m");
+		xlsHorizontalForcesUnit.add("N");
+		xlsHorizontalForcesUnit.add("N");
+		xlsHorizontalForcesUnit.add("N");
+		xlsHorizontalForcesUnit.add("N");
+		xlsHorizontalForcesUnit.add("N");
+
+		JPADStaticWriteUtils.writeAllArraysToXls(
+				sheetHorizontalForces,
+				xlsHorizontalForcesDescription,
+				xlsHorizontalForcesList,
+				xlsHorizontalForcesUnit
+				);
+
+		//---------------------------------------------------------------------------------------
+		// VERTICAL FORCES:
+		Sheet sheetVerticalForces = wb.createSheet("Vertical forces");
+
+		List<String> xlsVerticalForcesDescription = new ArrayList<String>();
+		xlsVerticalForcesDescription.add("Time");
+		xlsVerticalForcesDescription.add("Space");
+		xlsVerticalForcesDescription.add("Lift");
+		xlsVerticalForcesDescription.add("T*sin(alpha)");
+		xlsVerticalForcesDescription.add("W*cos(gamma)");
+
+		MyArray liftArray = new MyArray();
+		liftArray.setAmountList(output.getLift());
+		MyArray thrustVerticalArray = new MyArray();
+		thrustVerticalArray.setAmountList(output.getThrustVertical());
+		MyArray weightVerticalArray = new MyArray();
+		weightVerticalArray.setAmountList(output.getGamma());
+		weightVerticalArray.times((input.getTakeOffMass().times(AtmosphereCalc.g0).getEstimatedValue()));
+
+		List<MyArray> xlsVerticalForcesList = new ArrayList<MyArray>();
+		xlsVerticalForcesList.add(timeArray);
+		xlsVerticalForcesList.add(groundDistenceArray);
+		xlsVerticalForcesList.add(liftArray);
+		xlsVerticalForcesList.add(thrustVerticalArray);
+		xlsVerticalForcesList.add(weightVerticalArray);
+
+		List<String> xlsVerticalForcesUnit = new ArrayList<String>();
+		xlsVerticalForcesUnit.add("s");
+		xlsVerticalForcesUnit.add("m");
+		xlsVerticalForcesUnit.add("N");
+		xlsVerticalForcesUnit.add("N");
+		xlsVerticalForcesUnit.add("N");
+
+		JPADStaticWriteUtils.writeAllArraysToXls(
+				sheetVerticalForces,
+				xlsVerticalForcesDescription,
+				xlsVerticalForcesList,
+				xlsVerticalForcesUnit
+				);
+
+		//---------------------------------------------------------------------------------------
+		// BALANCED FIELD LENGTH:
+		Sheet sheetBalancedFieldLength = wb.createSheet("Balanced field length");
+
+		List<String> xlsBalancedFieldLengthDescription = new ArrayList<String>();
+		xlsBalancedFieldLengthDescription.add("Speed");
+		xlsBalancedFieldLengthDescription.add("Take-off OEI");
+		xlsBalancedFieldLengthDescription.add("Aborted take-off");
+
+		MyArray failureSpeedArray = new MyArray(output.getFailureSpeedArray());
+		MyArray takeOffOEIArray = new MyArray(output.getContinuedTakeOffArray());
+		MyArray abortedTakeOffArray = new MyArray(output.getAbortedTakeOffArray());
+		
+		List<MyArray> xlsBalancedFieldLengthList = new ArrayList<MyArray>();
+		xlsBalancedFieldLengthList.add(failureSpeedArray);
+		xlsBalancedFieldLengthList.add(takeOffOEIArray);
+		xlsBalancedFieldLengthList.add(abortedTakeOffArray);
+
+		List<String> xlsBalancedFieldLengthUnit = new ArrayList<String>();
+		xlsBalancedFieldLengthUnit.add("m/s");
+		xlsBalancedFieldLengthUnit.add("m");
+		xlsBalancedFieldLengthUnit.add("m");
+
+		JPADStaticWriteUtils.writeAllArraysToXls(
+				sheetBalancedFieldLength,
+				xlsBalancedFieldLengthDescription,
+				xlsBalancedFieldLengthList,
+				xlsBalancedFieldLengthUnit
+				);
+		
+		//---------------------------------------------------------------------------------------
+		// OUTPUT FILE CREATION:
 		FileOutputStream fileOut = new FileOutputStream(filenameWithPathAndExt + ".xlsx");
-        wb.write(fileOut);
-        fileOut.close();
-        System.out.println("Your excel file has been generated!");
+		wb.write(fileOut);
+		fileOut.close();
+		System.out.println("Your excel file has been generated!");
 	}
-	
+
 	//---------------------------------------------------------------------------------------------
 	// NESTED CLASS IN CHARGE OF THE TAKE-OFF DISTANCE CALCULATION
 	//---------------------------------------------------------------------------------------------
 
 	public class TakeOffCalculator {
-		
+
 		//-------------------------------------------------------------------------------------
 		// VARIABLE DECLARATION
-		
-		private OutputTree output;
 		
 		private Amount<Duration> dtRot, dtHold,	
 		dtRec = Amount.valueOf(1.5, SI.SECOND),
@@ -484,7 +855,7 @@ public class TakeOffManager {
 		private double kAlphaDot, kcLMax, kRot, kLO, phi, mu, muBrake, kGround, alphaDotInitial,
 		alphaRed, cLground, kFailure, k1, k2;
 		private Double vFailure;
-		private boolean isAborted;
+		private boolean isAborted, populateOutput;
 		
 		// Interpolated function for balanced field length calculation
 		MyInterpolatingFunction netThrustArrayFitted = new MyInterpolatingFunction();
@@ -528,7 +899,6 @@ public class TakeOffManager {
 		 * @param deltaCD0FlapLandingGears
 		 */
 		public TakeOffCalculator(
-				OutputTree output,
 				Amount<Duration> dtRot,
 				Amount<Duration> dtHold,
 				double kcLMax,
@@ -561,29 +931,28 @@ public class TakeOffManager {
 			this.muBrake = muBrake;
 			this.obstacle = obstacle;
 			this.cLground = input.getcL0TO() + (input.getcLalphaFlap().getEstimatedValue()*input.getIw().getEstimatedValue());
-			this.output = output;
 			
-			this.alphaDot = output.getAlphaDot();
-			this.gammaDot = output.getGammaDot();
-			this.cL = output.getcL();
-			this.cD = output.getcD();
-			this.loadFactor = output.getLoadFactor();
-			this.alpha = output.getAlpha();
-			this.theta = output.getTheta();
-			this.gamma = output.getGamma();
-			this.time = output.getTime();
-			this.speed = output.getSpeed();
-			this.rateOfClimb = output.getRateOfClimb();
-			this.acceleration = output.getAcceleration();
-			this.thrust = output.getThrust();
-			this.thrustHorizontal = output.getThrustHorizontal();
-			this.thrustVertical = output.getThrustVertical();
-			this.lift = output.getLift();
-			this.drag = output.getDrag();
-			this.friction = output.getFriction();
-			this.totalForce = output.getTotalForce();
-			this.groundDistance = output.getGroundDistance();
-			this.verticalDistance = output.getVerticalDistance();
+			this.alphaDot = new ArrayList<Double>();
+			this.gammaDot = new ArrayList<Double>();
+			this.cL = new ArrayList<Double>();
+			this.cD = new ArrayList<Double>();
+			this.loadFactor = new ArrayList<Double>();
+			this.alpha = new ArrayList<Amount<Angle>>();
+			this.theta = new ArrayList<Amount<Angle>>();
+			this.gamma = new ArrayList<Amount<Angle>>();
+			this.time = new ArrayList<Amount<Duration>>();
+			this.speed = new ArrayList<Amount<Velocity>>();
+			this.rateOfClimb = new ArrayList<Amount<Velocity>>();
+			this.acceleration = new ArrayList<Amount<Acceleration>>();
+			this.thrust = new ArrayList<Amount<Force>>();
+			this.thrustHorizontal = new ArrayList<Amount<Force>>();
+			this.thrustVertical = new ArrayList<Amount<Force>>();
+			this.lift = new ArrayList<Amount<Force>>();
+			this.drag = new ArrayList<Amount<Force>>();
+			this.friction = new ArrayList<Amount<Force>>();
+			this.totalForce = new ArrayList<Amount<Force>>();
+			this.groundDistance = new ArrayList<Amount<Length>>();
+			this.verticalDistance = new ArrayList<Amount<Length>>();
 			
 			// Reference velocities definition
 			vSTakeOff = Amount.valueOf(
@@ -631,6 +1000,9 @@ public class TakeOffManager {
 				
 			netThrustArrayFitted.interpolate(speedArrayInterpolation, input.getNetThrust());
 			
+			// populateOutput set initially to TRUE...
+			populateOutput = true;
+			
 		}
 
 		/**************************************************************************************
@@ -642,27 +1014,27 @@ public class TakeOffManager {
 		public void initialize() {
 
 			// lists cleaning
-			output.getTime().clear();
-			output.getSpeed().clear();
-			output.getThrust().clear();
-			output.getThrustHorizontal().clear();
-			output.getThrustVertical().clear();
-			output.getAlpha().clear();
-			output.getAlphaDot().clear();
-			output.getGamma().clear();
-			output.getGammaDot().clear();
-			output.getTheta().clear();
-			output.getcL().clear();
-			output.getLift().clear();
-			output.getLoadFactor().clear();
-			output.getcD().clear();
-			output.getDrag().clear();
-			output.getFriction().clear();
-			output.getTotalForce().clear();
-			output.getAcceleration().clear();
-			output.getRateOfClimb().clear();
-			output.getGroundDistance().clear();
-			output.getVerticalDistance().clear();
+			this.time.clear();
+			this.speed.clear();
+			this.thrust.clear();
+			this.thrustHorizontal.clear();
+			this.thrustVertical.clear();
+			this.alpha.clear();
+			this.alphaDot.clear();
+			this.gamma.clear();
+			this.gammaDot.clear();
+			this.theta.clear();
+			this.cL.clear();
+			this.lift.clear();
+			this.loadFactor.clear();
+			this.cD.clear();
+			this.drag.clear();
+			this.friction.clear();
+			this.totalForce.clear();
+			this.acceleration.clear();
+			this.rateOfClimb.clear();
+			this.groundDistance.clear();
+			this.verticalDistance.clear();
 
 			tHold = Amount.valueOf(10000.0, SI.SECOND); // initialization to an impossible time
 			tEndHold = Amount.valueOf(10000.0, SI.SECOND); // initialization to an impossible time
@@ -1018,31 +1390,57 @@ public class TakeOffManager {
 					//----------------------------------------------------------------------------------------
 					// TIME:
 					time.add(Amount.valueOf(t, SI.SECOND));
+					
+					if(populateOutput)
+						output.getTime().add(Amount.valueOf(t, SI.SECOND));
+					
 					//----------------------------------------------------------------------------------------
 					// SPEED:
 					speed.add(Amount.valueOf(x[1], SI.METERS_PER_SECOND));
+					
+					if(populateOutput)
+						output.getSpeed().add(Amount.valueOf(x[1], SI.METERS_PER_SECOND));
+						
 					//----------------------------------------------------------------------------------------
 					// THRUST:
-					if(!isAborted)
+					if(!isAborted) {
 						thrust.add(Amount.valueOf(
 								((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t),
 								SI.NEWTON)
 								);
+						if(populateOutput)
+							output.getThrust().add(Amount.valueOf(
+									((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t),
+									SI.NEWTON)
+									);
+					}
 					else {
-						if(t < tRec.getEstimatedValue())
+						if(t < tRec.getEstimatedValue()) {
 							thrust.add(Amount.valueOf(
 									((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t),
 									SI.NEWTON)
 									);
-						else
+							if(populateOutput)
+								output.getThrust().add(Amount.valueOf(
+										((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t),
+										SI.NEWTON)
+										);
+						}
+						else {
 							thrust.add(Amount.valueOf(
 									0.0,
 									SI.NEWTON)
 									);
+							if(populateOutput)
+								output.getThrust().add(Amount.valueOf(
+										0.0,
+										SI.NEWTON)
+										);
+						}
 					}
 					//----------------------------------------------------------------------------------------
 					// THRUST HORIZONTAL:
-					if(!isAborted)
+					if(!isAborted) {
 						thrustHorizontal.add(Amount.valueOf(
 								((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
 										Amount.valueOf(
@@ -1051,8 +1449,18 @@ public class TakeOffManager {
 										),
 								SI.NEWTON)
 								);
+						if(populateOutput)
+							output.getThrustHorizontal().add(Amount.valueOf(
+									((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
+											Amount.valueOf(
+													((DynamicsEquationsTakeOff)ode).alpha,
+													NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
+											),
+									SI.NEWTON)
+									);
+					}
 					else {
-						if(t < tRec.getEstimatedValue())
+						if(t < tRec.getEstimatedValue()) {
 							thrustHorizontal.add(Amount.valueOf(
 									((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
 											Amount.valueOf(
@@ -1061,15 +1469,31 @@ public class TakeOffManager {
 											),
 									SI.NEWTON)
 									);
-						else
+							if(populateOutput)
+								output.getThrustHorizontal().add(Amount.valueOf(
+										((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
+												Amount.valueOf(
+														((DynamicsEquationsTakeOff)ode).alpha,
+														NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
+												),
+										SI.NEWTON)
+										);
+						}
+						else {
 							thrustHorizontal.add(Amount.valueOf(
 									0.0,
 									SI.NEWTON)
 									);
+							if(populateOutput)
+								output.getThrustHorizontal().add(Amount.valueOf(
+										0.0,
+										SI.NEWTON)
+										);
+						}
 					}
 					//----------------------------------------------------------------------------------------
 					// THRUST VERTICAL:
-					if(!isAborted)
+					if(!isAborted) {
 						thrustVertical.add(Amount.valueOf(
 								((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.sin(
 										Amount.valueOf(
@@ -1078,8 +1502,18 @@ public class TakeOffManager {
 										),
 								SI.NEWTON)
 								);
+						if(populateOutput)
+							output.getThrustVertical().add(Amount.valueOf(
+								((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.sin(
+										Amount.valueOf(
+												((DynamicsEquationsTakeOff)ode).alpha,
+												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
+										),
+								SI.NEWTON)
+								);
+					}
 					else {
-						if(t < tRec.getEstimatedValue())
+						if(t < tRec.getEstimatedValue()) {
 							thrustVertical.add(Amount.valueOf(
 									((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.sin(
 											Amount.valueOf(
@@ -1088,16 +1522,32 @@ public class TakeOffManager {
 											),
 									SI.NEWTON)
 									);
-						else
+							if(populateOutput)
+								output.getThrustVertical().add(Amount.valueOf(
+										((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.sin(
+												Amount.valueOf(
+														((DynamicsEquationsTakeOff)ode).alpha,
+														NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
+												),
+										SI.NEWTON)
+										);
+						}
+						else {
 							thrustVertical.add(Amount.valueOf(
 									0.0,
 									SI.NEWTON)
 									);
+							if(populateOutput)
+								output.getThrustVertical().add(Amount.valueOf(
+										0.0,
+										SI.NEWTON)
+										);
+						}
 					}
 					//--------------------------------------------------------------------------------
 					// FRICTION:
 					if(!isAborted) {
-						if(t < tEndRot.getEstimatedValue())
+						if(t < tEndRot.getEstimatedValue()) {
 							friction.add(Amount.valueOf(
 									mu*(((DynamicsEquationsTakeOff)ode).weight
 											- ((DynamicsEquationsTakeOff)ode).lift(
@@ -1107,11 +1557,25 @@ public class TakeOffManager {
 													t)),
 									SI.NEWTON)
 									);
-						else
+							if(populateOutput)
+								output.getFriction().add(Amount.valueOf(
+										mu*(((DynamicsEquationsTakeOff)ode).weight
+												- ((DynamicsEquationsTakeOff)ode).lift(
+														x[1],
+														((DynamicsEquationsTakeOff)ode).alpha,
+														x[2],
+														t)),
+										SI.NEWTON)
+										);
+						}
+						else {
 							friction.add(Amount.valueOf(0.0, SI.NEWTON));
+							if(populateOutput)
+								output.getFriction().add(Amount.valueOf(0.0, SI.NEWTON));
+						}
 					}
 					else {
-						if(t < tRec.getEstimatedValue())
+						if(t < tRec.getEstimatedValue()) {
 							friction.add(Amount.valueOf(
 									mu*(((DynamicsEquationsTakeOff)ode).weight
 											- ((DynamicsEquationsTakeOff)ode).lift(
@@ -1121,7 +1585,18 @@ public class TakeOffManager {
 													t)),
 									SI.NEWTON)
 									);
-						else
+							if(populateOutput)
+								output.getFriction().add(Amount.valueOf(
+										mu*(((DynamicsEquationsTakeOff)ode).weight
+												- ((DynamicsEquationsTakeOff)ode).lift(
+														x[1],
+														((DynamicsEquationsTakeOff)ode).alpha,
+														x[2],
+														t)),
+										SI.NEWTON)
+										);
+						}
+						else {
 							friction.add(Amount.valueOf(
 									muBrake*(((DynamicsEquationsTakeOff)ode).weight
 											- ((DynamicsEquationsTakeOff)ode).lift(
@@ -1131,6 +1606,17 @@ public class TakeOffManager {
 													t)),
 									SI.NEWTON)
 									);
+							if(populateOutput)
+								output.getFriction().add(Amount.valueOf(
+										muBrake*(((DynamicsEquationsTakeOff)ode).weight
+												- ((DynamicsEquationsTakeOff)ode).lift(
+														x[1],
+														((DynamicsEquationsTakeOff)ode).alpha,
+														x[2],
+														t)),
+										SI.NEWTON)
+										);
+						}
 					}
 					//----------------------------------------------------------------------------------------
 					// LIFT:
@@ -1142,6 +1628,17 @@ public class TakeOffManager {
 									t),
 							SI.NEWTON)
 							);
+					
+					if(populateOutput)
+						output.getLift().add(Amount.valueOf(
+								((DynamicsEquationsTakeOff)ode).lift(
+										x[1],
+										((DynamicsEquationsTakeOff)ode).alpha,
+										x[2],
+										t),
+								SI.NEWTON)
+								);
+					
 					//----------------------------------------------------------------------------------------
 					// DRAG:
 					drag.add(Amount.valueOf(
@@ -1152,6 +1649,17 @@ public class TakeOffManager {
 									t),
 							SI.NEWTON)
 							);
+					
+					if(populateOutput)
+						output.getDrag().add(Amount.valueOf(
+								((DynamicsEquationsTakeOff)ode).drag(
+										x[1],
+										((DynamicsEquationsTakeOff)ode).alpha,
+										x[2],
+										t),
+								SI.NEWTON)
+								);
+					
 					//----------------------------------------------------------------------------------------
 					// TOTAL FORCE:
 					if(!isAborted) {
@@ -1178,9 +1686,33 @@ public class TakeOffManager {
 												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()),
 								SI.NEWTON)
 								);
+						if(populateOutput)
+							output.getTotalForce().add(Amount.valueOf(
+									((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
+											Amount.valueOf(
+													((DynamicsEquationsTakeOff)ode).alpha,
+													NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
+											)
+									- ((DynamicsEquationsTakeOff)ode).drag(
+											x[1],
+											((DynamicsEquationsTakeOff)ode).alpha,
+											x[2],
+											t)
+									- mu*(((DynamicsEquationsTakeOff)ode).weight
+											- ((DynamicsEquationsTakeOff)ode).lift(
+													x[1],
+													((DynamicsEquationsTakeOff)ode).alpha,
+													x[2],
+													t))
+									- ((DynamicsEquationsTakeOff)ode).weight*Math.sin(
+											Amount.valueOf(
+													x[2],
+													NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()),
+									SI.NEWTON)
+									);
 					}
 					else {
-						if(t < tRec.getEstimatedValue())
+						if(t < tRec.getEstimatedValue()) {
 							totalForce.add(Amount.valueOf(
 									((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
 											Amount.valueOf(
@@ -1204,7 +1736,32 @@ public class TakeOffManager {
 													NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()),
 									SI.NEWTON)
 									);
-						else
+							if(populateOutput)
+								output.getTotalForce().add(Amount.valueOf(
+										((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
+												Amount.valueOf(
+														((DynamicsEquationsTakeOff)ode).alpha,
+														NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
+												)
+										- ((DynamicsEquationsTakeOff)ode).drag(
+												x[1],
+												((DynamicsEquationsTakeOff)ode).alpha,
+												x[2],
+												t)
+										- mu*(((DynamicsEquationsTakeOff)ode).weight
+												- ((DynamicsEquationsTakeOff)ode).lift(
+														x[1],
+														((DynamicsEquationsTakeOff)ode).alpha,
+														x[2],
+														t))
+										- ((DynamicsEquationsTakeOff)ode).weight*Math.sin(
+												Amount.valueOf(
+														x[2],
+														NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()),
+										SI.NEWTON)
+										);
+						}
+						else {
 							totalForce.add(Amount.valueOf(
 									- ((DynamicsEquationsTakeOff)ode).drag(
 											x[1],
@@ -1223,6 +1780,26 @@ public class TakeOffManager {
 													NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()),
 									SI.NEWTON)
 									);
+							if(populateOutput)
+								output.getTotalForce().add(Amount.valueOf(
+										- ((DynamicsEquationsTakeOff)ode).drag(
+												x[1],
+												((DynamicsEquationsTakeOff)ode).alpha,
+												x[2],
+												t)
+										- muBrake*(((DynamicsEquationsTakeOff)ode).weight
+												- ((DynamicsEquationsTakeOff)ode).lift(
+														x[1],
+														((DynamicsEquationsTakeOff)ode).alpha,
+														x[2],
+														t))
+										- ((DynamicsEquationsTakeOff)ode).weight*Math.sin(
+												Amount.valueOf(
+														x[2],
+														NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()),
+										SI.NEWTON)
+										);
+						}
 					}
 					//----------------------------------------------------------------------------------------
 					// LOAD FACTOR:
@@ -1237,6 +1814,20 @@ public class TakeOffManager {
 											x[2],
 											NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
 							);
+					
+					if(populateOutput)
+						output.getLoadFactor().add(
+								((DynamicsEquationsTakeOff)ode).lift(
+										x[1],
+										((DynamicsEquationsTakeOff)ode).alpha,
+										x[2],
+										t)
+								/(((DynamicsEquationsTakeOff)ode).weight*Math.cos(
+										Amount.valueOf(
+												x[2],
+												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
+								);
+					
 					//----------------------------------------------------------------------------------------
 					// RATE OF CLIMB:
 					rateOfClimb.add(Amount.valueOf(
@@ -1246,9 +1837,19 @@ public class TakeOffManager {
 											NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()),
 							SI.METERS_PER_SECOND)
 							);
+					
+					if(populateOutput)
+						output.getRateOfClimb().add(Amount.valueOf(
+								x[1]*Math.sin(
+										Amount.valueOf(
+												x[2],
+												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()),
+								SI.METERS_PER_SECOND)
+								);
+					
 					//----------------------------------------------------------------------------------------
 					// ACCELERATION:
-					if(!isAborted)
+					if(!isAborted) {
 						acceleration.add(Amount.valueOf(
 								(AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquationsTakeOff)ode).weight)
 								*(((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
@@ -1273,8 +1874,34 @@ public class TakeOffManager {
 														NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue())),
 								SI.METERS_PER_SQUARE_SECOND)
 								);
+						if(populateOutput)
+							output.getAcceleration().add(Amount.valueOf(
+									(AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquationsTakeOff)ode).weight)
+									*(((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
+											Amount.valueOf(
+													((DynamicsEquationsTakeOff)ode).alpha,
+													NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
+											)
+											- ((DynamicsEquationsTakeOff)ode).drag(
+													x[1],
+													((DynamicsEquationsTakeOff)ode).alpha,
+													x[2],
+													t)
+											- mu*(((DynamicsEquationsTakeOff)ode).weight
+													- ((DynamicsEquationsTakeOff)ode).lift(
+															x[1],
+															((DynamicsEquationsTakeOff)ode).alpha,
+															x[2],
+															t))
+											- ((DynamicsEquationsTakeOff)ode).weight*Math.sin(
+													Amount.valueOf(
+															x[2],
+															NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue())),
+									SI.METERS_PER_SQUARE_SECOND)
+									);
+					}
 					else {
-						if(t < tRec.getEstimatedValue())
+						if(t < tRec.getEstimatedValue()) {
 							acceleration.add(Amount.valueOf(
 									(AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquationsTakeOff)ode).weight)
 									*(((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
@@ -1299,7 +1926,33 @@ public class TakeOffManager {
 															NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue())),
 									SI.METERS_PER_SQUARE_SECOND)
 									);
-						else
+							if(populateOutput)
+								output.getAcceleration().add(Amount.valueOf(
+										(AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquationsTakeOff)ode).weight)
+										*(((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
+												Amount.valueOf(
+														((DynamicsEquationsTakeOff)ode).alpha,
+														NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
+												)
+												- ((DynamicsEquationsTakeOff)ode).drag(
+														x[1],
+														((DynamicsEquationsTakeOff)ode).alpha,
+														x[2],
+														t)
+												- mu*(((DynamicsEquationsTakeOff)ode).weight
+														- ((DynamicsEquationsTakeOff)ode).lift(
+																x[1],
+																((DynamicsEquationsTakeOff)ode).alpha,
+																x[2],
+																t))
+												- ((DynamicsEquationsTakeOff)ode).weight*Math.sin(
+														Amount.valueOf(
+																x[2],
+																NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue())),
+										SI.METERS_PER_SQUARE_SECOND)
+										);
+						}
+						else {
 							acceleration.add(Amount.valueOf(
 									(AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquationsTakeOff)ode).weight)
 									*(- ((DynamicsEquationsTakeOff)ode).drag(
@@ -1319,6 +1972,27 @@ public class TakeOffManager {
 															NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue())),
 									SI.METERS_PER_SQUARE_SECOND)
 									);
+							if(populateOutput)
+								output.getAcceleration().add(Amount.valueOf(
+										(AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquationsTakeOff)ode).weight)
+										*(- ((DynamicsEquationsTakeOff)ode).drag(
+												x[1],
+												((DynamicsEquationsTakeOff)ode).alpha,
+												x[2],
+												t)
+												- muBrake*(((DynamicsEquationsTakeOff)ode).weight
+														- ((DynamicsEquationsTakeOff)ode).lift(
+																x[1],
+																((DynamicsEquationsTakeOff)ode).alpha,
+																x[2],
+																t))
+												- ((DynamicsEquationsTakeOff)ode).weight*Math.sin(
+														Amount.valueOf(
+																x[2],
+																NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue())),
+										SI.METERS_PER_SQUARE_SECOND)
+										);
+						}
 					}
 					//----------------------------------------------------------------------------------------
 					// GROUND DISTANCE:
@@ -1326,34 +2000,71 @@ public class TakeOffManager {
 							x[0],
 							SI.METER)
 							);
+					
+					if(populateOutput)
+						output.getGroundDistance().add(Amount.valueOf(
+								x[0],
+								SI.METER)
+								);
+					
 					//----------------------------------------------------------------------------------------
 					// VERTICAL DISTANCE:
 					verticalDistance.add(Amount.valueOf(
 							x[3],
 							SI.METER)
 							);
+					
+					if(populateOutput)
+						output.getVerticalDistance().add(Amount.valueOf(
+								x[3],
+								SI.METER)
+								);
+					
 					//----------------------------------------------------------------------------------------
 					// ALPHA:
 					alpha.add(Amount.valueOf(
 							((DynamicsEquationsTakeOff)ode).alpha,
 							NonSI.DEGREE_ANGLE)
 							);
+					
+					if(populateOutput)
+						output.getAlpha().add(Amount.valueOf(
+								((DynamicsEquationsTakeOff)ode).alpha,
+								NonSI.DEGREE_ANGLE)
+								);
+					
 					//----------------------------------------------------------------------------------------
 					// GAMMA:
 					gamma.add(Amount.valueOf(
 							x[2],
 							NonSI.DEGREE_ANGLE)
 							);
+					
+					if(populateOutput)
+						output.getGamma().add(Amount.valueOf(
+								x[2],
+								NonSI.DEGREE_ANGLE)
+								);
+					
 					//----------------------------------------------------------------------------------------
 					// ALPHA DOT:
 					alphaDot.add(
 							((DynamicsEquationsTakeOff)ode).alphaDot(t)
 							); 
+					
+					if(populateOutput)
+						output.getAlphaDot().add(
+								((DynamicsEquationsTakeOff)ode).alphaDot(t)
+								);
+					
 					//----------------------------------------------------------------------------------------
 					// GAMMA DOT:
-					if(t <= tEndRot.getEstimatedValue())
+					if(t <= tEndRot.getEstimatedValue()) {
 						gammaDot.add(0.0);
-					else
+						if(populateOutput)
+							output.getGammaDot().add(0.0);
+					}
+					else {
 						gammaDot.add(57.3*(AtmosphereCalc.g0.getEstimatedValue()/
 								(((DynamicsEquationsTakeOff)ode).weight*x[1]))*(
 										((DynamicsEquationsTakeOff)ode).lift(
@@ -1370,12 +2081,37 @@ public class TakeOffManager {
 												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
 												))
 								);
+						if(populateOutput)
+							output.getGammaDot().add(57.3*(AtmosphereCalc.g0.getEstimatedValue()/
+									(((DynamicsEquationsTakeOff)ode).weight*x[1]))*(
+											((DynamicsEquationsTakeOff)ode).lift(
+													x[1],
+													((DynamicsEquationsTakeOff)ode).alpha,
+													x[2],
+													t) 
+											+ (((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.sin(Amount.valueOf(
+													((DynamicsEquationsTakeOff)ode).alpha,
+													NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue())
+													)
+											- ((DynamicsEquationsTakeOff)ode).weight*Math.cos(Amount.valueOf(
+													((DynamicsEquationsTakeOff)ode).gamma,
+													NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
+													))
+									);
+					}
 					//----------------------------------------------------------------------------------------
 					// THETA:
 					theta.add(Amount.valueOf(
 							x[2] + ((DynamicsEquationsTakeOff)ode).alpha,
 							NonSI.DEGREE_ANGLE)
 							);
+					
+					if(populateOutput)
+						output.getTheta().add(Amount.valueOf(
+								x[2] + ((DynamicsEquationsTakeOff)ode).alpha,
+								NonSI.DEGREE_ANGLE)
+								);
+					
 					//----------------------------------------------------------------------------------------
 					// CL:
 					cL.add(
@@ -1386,6 +2122,17 @@ public class TakeOffManager {
 									t
 									)
 							);
+					
+					if(populateOutput)
+						output.getcL().add(
+								((DynamicsEquationsTakeOff)ode).cL(
+										x[1],
+										((DynamicsEquationsTakeOff)ode).alpha,
+										x[2],
+										t
+										)
+								);
+					
 					//----------------------------------------------------------------------------------------
 					// CD:
 					cD.add(
@@ -1402,6 +2149,23 @@ public class TakeOffManager {
 											*((DynamicsEquationsTakeOff)ode).oswald))
 									*kGround)
 							);
+					
+					if(populateOutput)
+						output.getcD().add(
+								((DynamicsEquationsTakeOff)ode).cD0 
+								+ ((DynamicsEquationsTakeOff)ode).deltaCD0 
+								+ ((((DynamicsEquationsTakeOff)ode).cL(
+										x[1],
+										((DynamicsEquationsTakeOff)ode).alpha,
+										x[2],
+										t
+										)
+										/(Math.PI
+												*((DynamicsEquationsTakeOff)ode).ar
+												*((DynamicsEquationsTakeOff)ode).oswald))
+										*kGround)
+								);
+					
 					//----------------------------------------------------------------------------------------
 				}
 			};
@@ -1410,6 +2174,9 @@ public class TakeOffManager {
 			double[] xAt0 = new double[] {0.0, 0.0, 0.0, 0.0}; // initial state
 			theIntegrator.integrate(ode, 0.0, xAt0, 100, xAt0); // now xAt0 contains final state
 
+			// populateOutput set to FALSE in order to not fill the output object again.
+			populateOutput = false;
+			
 			theIntegrator.clearEventHandlers();
 			theIntegrator.clearStepHandlers();
 
@@ -1457,6 +2224,10 @@ public class TakeOffManager {
 				abortedTakeOffArray[i] = getGroundDistance().get(groundDistance.size()-1).getEstimatedValue();
 			}
 
+			output.setFailureSpeedArray(failureSpeedArray);
+			output.setContinuedTakeOffArray(continuedTakeOffArray);
+			output.setAbortedTakeOffArray(abortedTakeOffArray);
+			
 			// arrays intersection
 			double[] intersection = MyArrayUtils.intersectArraysSimple(
 					continuedTakeOffArray,
@@ -1484,7 +2255,7 @@ public class TakeOffManager {
 			System.out.println("\n---------WRITING TAKE-OFF PERFORMANCE CHARTS TO FILE-----------");
 
 			String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR);
-			String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "Take-off charts" + File.separator);
+			String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "Take-off_executable" + File.separator);
 
 			// data setup
 			double[] time = new double[getTime().size()];
@@ -1821,8 +2592,8 @@ public class TakeOffManager {
 			System.out.println("\n-------WRITING BALANCED TAKE-OFF DISTANCE CHART TO FILE--------");
 
 			String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR);
-			String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "Take-Off charts" + File.separator);
-
+			String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "Take-off_executable" + File.separator);
+			
 			for(int i=0; i<failureSpeedArray.length; i++)
 				failureSpeedArray[i] = failureSpeedArray[i]/vSTakeOff.getEstimatedValue();
 
@@ -2545,6 +3316,14 @@ public class TakeOffManager {
 
 		public void settFaiulre(Amount<Duration> tFaiulre) {
 			this.tFaiulre = tFaiulre;
+		}
+
+		public boolean isPopulateOutput() {
+			return populateOutput;
+		}
+
+		public void setPopulateOutput(boolean populateOutput) {
+			this.populateOutput = populateOutput;
 		}
 	}
 	//-------------------------------------------------------------------------------------
