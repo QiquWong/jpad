@@ -241,7 +241,7 @@ public class JavaFXD3_Test_08 extends Application {
 	    	// This wing static object is available in the scope of
 	    	// the Application.start method
 	    	JavaFXD3_Test_08.theWing = LiftingSurface.importFromXML(pathToXML, dirAirfoil);
-	    	JavaFXD3_Test_08.theWing.calculateGeometry(30);
+	    	JavaFXD3_Test_08.theWing.calculateGeometry(50);
 
 	    	System.out.println("The wing ...");
 	    	System.out.println(JavaFXD3_Test_08.theWing);

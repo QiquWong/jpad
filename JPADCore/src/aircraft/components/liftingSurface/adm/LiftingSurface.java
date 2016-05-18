@@ -257,7 +257,7 @@ public class LiftingSurface extends AbstractLiftingSurface {
 						.collect(Collectors.toList())
 				) // c^2
 			);
-		mac = 2.0 * mac / this.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue();
+		mac = 2.0 * mac / this.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue(); // *= 2/S
 		this.meanAerodynamicChord = Amount.valueOf(mac,1e-9,SI.METRE);
 
 	}
@@ -267,12 +267,21 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		//======================================================
 		// x_le_mac = (2/S) * int_0^(b/2) xle(y) c(y) dy
 
+		Tuple2<
+			List<Amount<Length>>, // Xle
+			List<Amount<Length>>  // c
+		> xleTimeCTuple = Tuple.of(this.getDiscretizedXle(), this.getDiscretizedChords());
+		
+		List<Double> xleTimeC = IntStream.range(0, this.getDiscretizedYs().size())
+				.mapToObj(i -> 
+					xleTimeCTuple._1.get(i).doubleValue(SI.METRE)
+					*xleTimeCTuple._2.get(i).doubleValue(SI.METRE)) // xle * c
+				.collect(Collectors.toList());
+		
 		Double xle = MyMathUtils.integrate1DSimpsonSpline(
 				MyArrayUtils.convertListOfAmountTodoubleArray(
-					this.getDiscretizedXle()), // xle(y)
-				MyArrayUtils.convertListOfAmountTodoubleArray(
-					this.getDiscretizedChords()
-				) // c
+						this.getDiscretizedYs()), // y
+				MyArrayUtils.convertToDoublePrimitive(xleTimeC) // xle * c
 			);
 		xle = 2.0 * xle / this.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue();
 		this.meanAerodynamicChordLeadingEdgeX = Amount.valueOf(xle,1e-9,SI.METRE);
@@ -280,29 +289,46 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		//======================================================
 		// y_le_mac = (2/S) * int_0^(b/2) yle(y) c(y) dy
 
+		Tuple2<
+			List<Amount<Length>>, // Xle
+			List<Amount<Length>>  // c
+		> yTimeCTuple = Tuple.of(this.getDiscretizedYs(), this.getDiscretizedChords());
+
+		List<Double> yTimeC = IntStream.range(0, this.getDiscretizedYs().size())
+				.mapToObj(i -> 
+					yTimeCTuple._1.get(i).doubleValue(SI.METRE)
+					*yTimeCTuple._2.get(i).doubleValue(SI.METRE)) // y * c
+				.collect(Collectors.toList());
+		
 		Double yle = MyMathUtils.integrate1DSimpsonSpline(
 				MyArrayUtils.convertListOfAmountTodoubleArray(
-					this.getDiscretizedYs()), // yle(y)
-				MyArrayUtils.convertListOfAmountTodoubleArray(
-					this.getDiscretizedChords()
-				) // c
+						this.getDiscretizedYs()), // y
+				MyArrayUtils.convertToDoublePrimitive(yTimeC) // y * c
 			);
-		yle = 2.0 * yle / this.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue();
+		yle = 2.0 * yle / this.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue(); // *= 2/S
 		this.meanAerodynamicChordLeadingEdgeY = Amount.valueOf(yle,1e-9,SI.METRE);
 
 		//======================================================
 		// z_le_mac = (2/S) * int_0^(b/2) zle(y) c(y) dy
 
+		Tuple2<
+			List<Amount<Length>>, // Xle
+			List<Amount<Length>>  // c
+		> zTimeCTuple = Tuple.of(this.getDiscretizedZle(), this.getDiscretizedChords());
+
+	List<Double> zTimeC = IntStream.range(0, this.getDiscretizedYs().size())
+			.mapToObj(i -> 
+				zTimeCTuple._1.get(i).doubleValue(SI.METRE)
+				*zTimeCTuple._2.get(i).doubleValue(SI.METRE)) // z * c
+			.collect(Collectors.toList());
+		
 		Double zle = MyMathUtils.integrate1DSimpsonSpline(
 				MyArrayUtils.convertListOfAmountTodoubleArray(
-					this.getDiscretizedZle()), // zle(y)
-				MyArrayUtils.convertListOfAmountTodoubleArray(
-					this.getDiscretizedChords()
-				) // c
+						this.getDiscretizedYs()), // z
+				MyArrayUtils.convertToDoublePrimitive(zTimeC) // z * c
 			);
-		zle = 2.0 * zle / this.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue();
+		zle = 2.0 * zle / this.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue(); // *= 2/S
 		this.meanAerodynamicChordLeadingEdgeZ = Amount.valueOf(zle,1e-9,SI.METRE);
-
 	}
 
 	@Override
@@ -347,7 +373,7 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		_yStationActual = _eta.getList().stream()
 				.map(d -> this.semiSpan.times(d))
 				.collect(Collectors.toList());
-
+		
 		//======================================================
 		// Assign lists of Y's to each panel
 		mapPanelsToYDiscretized();
@@ -868,38 +894,39 @@ public class LiftingSurface extends AbstractLiftingSurface {
 		for (int kp = 0; kp < _panelToSpanwiseDiscretizedVariables.size(); kp++) {
 
 			// sublist indexing criteria
-			int idxEndExcluded = _panelToSpanwiseDiscretizedVariables.get(kp)
+			int idxEnd = _panelToSpanwiseDiscretizedVariables.get(kp)
 						._2()._1().size()
-						- 1;
-			if (kp == (_panelToSpanwiseDiscretizedVariables.size() - 1))
-				idxEndExcluded += 1;
+						// - 1 not necessary
+						;
+//			if (kp == (_panelToSpanwiseDiscretizedVariables.size() - 1))
+//				idxEnd += 1;
 
 			// System.out.println("kp=" + kp + ", end=" + idxEndExcluded);
 
 			vy.addAll(
 				_panelToSpanwiseDiscretizedVariables.get(kp)
 					._2()._1() // Ys
-					.subList(0, idxEndExcluded)
+					.subList(0, idxEnd)
 					);
 			vc.addAll(
 					_panelToSpanwiseDiscretizedVariables.get(kp)
 						._2()._2() // Chords
-						.subList(0, idxEndExcluded)
+						.subList(0, idxEnd)
 						);
 			vxle.addAll(
 					_panelToSpanwiseDiscretizedVariables.get(kp)
 						._2()._3() // Xle's
-						.subList(0, idxEndExcluded)
+						.subList(0, idxEnd)
 						);
 			vzle.addAll(
 					_panelToSpanwiseDiscretizedVariables.get(kp)
 						._2()._4() // Zle's
-						.subList(0, idxEndExcluded)
+						.subList(0, idxEnd)
 						);
 			vtwist.addAll(
 					_panelToSpanwiseDiscretizedVariables.get(kp)
 						._2()._5() // Twists
-						.subList(0, idxEndExcluded)
+						.subList(0, idxEnd)
 						);
 		}
 //		System.out.println("== y ==> size: " + vy.size() + "\n" + vy);
