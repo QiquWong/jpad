@@ -1093,7 +1093,7 @@ public class HighLiftDevicesCalc {
 	 */
 	private static void defineXmlTree(Document doc, DocumentBuilder docBuilder) {
 		
-		org.w3c.dom.Element rootElement = doc.createElement("High_Lift_Executable");
+		org.w3c.dom.Element rootElement = doc.createElement("HiLDE_Calculator");
 		doc.appendChild(rootElement);
 		
 		//--------------------------------------------------------------------------------------

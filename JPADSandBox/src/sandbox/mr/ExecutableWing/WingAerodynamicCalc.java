@@ -468,7 +468,7 @@ public class WingAerodynamicCalc {
 				JPADStaticWriteUtils.createNewFolder(folderPath + "Wing Charts" + File.separator),
 				"Stall path");
 
-		System.out.println(" \n-------------------DONE----------------------- ");
+		System.out.println(" \n-------------------DONE----------------------- \n");
 
 	}
 }
