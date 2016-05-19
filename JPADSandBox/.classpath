@@ -7,13 +7,13 @@
 	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.core.commands_3.7.0.v20150422-0725.jar"/>
 	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.equinox.common_3.7.0.v20150402-1709.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/args4j/args4j-2.0.21.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.draw2d_3.10.1.201508170204.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.core.runtime_3.11.1.v20150903-1804.jar"/>
+	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.draw2d_3.10.0.201506010206.jar"/>
+	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.core.runtime_3.11.0.v20150405-1723.jar"/>
 	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.equinox.registry_3.6.0.v20150318-1503.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.osgi_3.10.102.v20160118-1700.jar"/>
+	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.osgi_3.10.100.v20150529-1857.jar"/>
 	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.text_3.5.400.v20150505-1044.jar"/>
 	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.ui.forms_3.6.200.v20150506-2029.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.ui.workbench_3.107.1.v20160120-2131.jar"/>
+	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.ui.workbench_3.107.0.v20150510-1732.jar"/>
 	<classpathentry kind="var" path="ECLIPSE_FOLDER/com.ibm.icu_54.1.1.v201501272100.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/igeo/igeo.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jahuwaldt/jahuwaldt.aero.jar"/>
@@ -21,7 +21,7 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jdom/jdom-2.0.5.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jlatexmath/jlatexmath-1.0.3.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jscience-4.3/jscience.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.jface_3.11.1.v20160128-1644.jar"/>
+	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.jface_3.11.0.v20150602-1400.jar"/>
 	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.jface.text_3.10.0.v20150603-1752.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/nebula/org.eclipse.nebula.visualization.widgets_1.0.0.201401291008.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/nebula/org.eclipse.nebula.visualization.xygraph_1.0.0.201401291008.jar"/>
@@ -30,7 +30,7 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/processing/library/gluegen-rt.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/processing/library/jogl-all.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/unit-api/unit-api-0.6.1.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.swt.win32.win32.x86_64_3.104.2.v20160212-1350.jar"/>
+	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.swt.win32.win32.x86_64_3.104.0.v20150528-0211.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/uomo/org.eclipse.uomo.core_0.7.0.201306062021.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/uomo/org.eclipse.uomo.ucum_0.7.0.201306062021.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/uomo/org.eclipse.uomo.ui_0.7.0.201306062021.jar"/>
