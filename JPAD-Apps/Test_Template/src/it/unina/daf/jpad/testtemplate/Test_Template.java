@@ -61,27 +61,8 @@ public class Test_Template {
 		theTestObject.theCmdLineParser.parseArgument(args);
 		
 		String databaseDirectoryAbsolutePath = theTestObject.get_databasePath().getAbsolutePath();
-		
-		// Set the folders tree
-		MyConfiguration.initWorkingDirectoryTree();
-		MyConfiguration.initWorkingDirectoryTree(
-				MyConfiguration.currentDirectoryString, // <-- same level as src directory
-				AppIO.getInputDirectory(),              // <-- from config/config.xml or AppIO defaults
-				AppIO.getOutputDirectory(),             // <-- from config/config.xml or AppIO defaults
-				databaseDirectoryAbsolutePath           // <-- from main arguments
-		);
-
-		System.out.println("** Configuration initialized:");
-		System.out.println("Inputs read from dir: " + MyConfiguration.getDir(FoldersEnum.INPUT_DIR));
-		System.out.println("Outputs written in dir: " + MyConfiguration.outputDirectory);
-		System.out.println("Databases read in dir: " + MyConfiguration.databaseDirectory);
-		System.out.println("TODO: CHECK the above strings^^^^^^\n\n");
-		System.out.println("Output file name: " + AppIO.getOutputFilename());
-		System.out.println("Output file full path: " + AppIO.getOutputFilenameFullPath());
-		System.out.println("Output charts written in dir: " + AppIO.getOutputChartDirectory());
-		System.out.println("-------------------------------------");
-		
-		
+		// TODO use setter
+		// AppIO.setDatabaseDirectory(databaseDirectoryAbsolutePath);
 	}
 
 }
