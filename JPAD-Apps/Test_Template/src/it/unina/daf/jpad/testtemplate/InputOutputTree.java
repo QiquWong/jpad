@@ -84,7 +84,18 @@ public class InputOutputTree {
 		Amount<Length> altitude = reader.getXMLAmountWithUnitByPath("//altitude").to(SI.METER);
 		this.altitude = altitude;
 		
+		double machNumber =  Double.parseDouble(reader.getXMLPropertiesByPath("//mach_number").get(0));
+		this.machNumber = machNumber;
 		
+		Amount<Angle> alpha = reader.getXMLAmountWithUnitByPath("//alpha").to(NonSI.DEGREE_ANGLE);
+		this.alpha = alpha;
+
+		Amount<Angle> sweepLE = reader.getXMLAmountWithUnitByPath("//sweep_LE").to(NonSI.DEGREE_ANGLE);
+		this.sweepLE = sweepLE;
+
+		int numberOfPointSemispan =  (int)Double.parseDouble(reader.getXMLPropertiesByPath("//number_of_points_semispan").get(0));
+		this.numberOfPointSemispan = numberOfPointSemispan;
+
 	}
 
 	public void buildOutput(){

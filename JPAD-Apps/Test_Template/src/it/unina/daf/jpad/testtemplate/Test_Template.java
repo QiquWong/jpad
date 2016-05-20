@@ -119,7 +119,16 @@ public class Test_Template {
 			logMessage
 				.append("\nAltitude: ")
 					.append(AppIO.getInputOutputTree().getAltitude())
+				.append("\nMach number: ")
+					.append(AppIO.getInputOutputTree().getMachNumber())
+				.append("\nAlpha: ")
+					.append(AppIO.getInputOutputTree().getAlpha())
+				.append("\nSweep LE: ")
+					.append(AppIO.getInputOutputTree().getSweepLE())
+				.append("\nNo. points in semispan: ")
+					.append(AppIO.getInputOutputTree().getNumberOfPointSemispan())
 				;
+			
 			System.out.println(logMessage);
 			
 		} catch (ParserConfigurationException e) {

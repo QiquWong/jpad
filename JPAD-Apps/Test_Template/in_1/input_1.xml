@@ -3,8 +3,10 @@
     <operating_conditions>
         <altitude unit="m">6000</altitude>
         <mach_number>0.2</mach_number>
-        <number_of_alpha>7</number_of_alpha>
-        <alpha_initial unit="°">0.0</alpha_initial>
-        <alpha_final unit="°">10.0</alpha_final>
+        <alpha unit="°">0.0</alpha>
     </operating_conditions>
+    <geometry>
+        <sweep_LE unit="deg">23.0</sweep_LE>
+        <number_of_points_semispan>50</number_of_points_semispan>
+    </geometry>
 </jpad_app_input>
