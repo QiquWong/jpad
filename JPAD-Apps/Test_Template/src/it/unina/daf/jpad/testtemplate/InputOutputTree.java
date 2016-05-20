@@ -14,6 +14,7 @@ import org.jscience.physics.amount.Amount;
 
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.FlapTypeEnum;
+import standaloneutils.JPADXmlReader;
 
 public class InputOutputTree {
 	//------------------------------------------------------------------------------------------
@@ -70,7 +71,19 @@ public class InputOutputTree {
 			String databaseFolderPath, String aerodynamicDatabaseFileName
 			) throws ParserConfigurationException {
 		
-		System.out.println("########### pippo!");
+		System.out.println("Reading input file data ...\n");
+		JPADXmlReader reader = new JPADXmlReader(pathToXML);
+		
+		//------------------------------------------------------------------------------------
+		// Setup database(s)
+		// TODO
+		
+		//------------------------------------------------------------------------------------
+		// read data
+		
+		Amount<Length> altitude = reader.getXMLAmountWithUnitByPath("//altitude").to(SI.METER);
+		this.altitude = altitude;
+		
 		
 	}
 

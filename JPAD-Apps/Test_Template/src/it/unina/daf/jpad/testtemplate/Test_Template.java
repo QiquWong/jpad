@@ -98,7 +98,7 @@ public class Test_Template {
 		//=================================================================
 		AppIO.initWorkingDirectoryTree();
 		
-		
+		AppIO.customizeAmountOutput();
 		//=================================================================
 		// Read data
 		//=================================================================
@@ -114,6 +114,13 @@ public class Test_Template {
 			AppIO.getInputOutputTree().importFromXML(
 					AppIO.getInputFilenameFullPath(), "", ""
 					);
+			
+			logMessage.setLength(0); // clearing the buffer
+			logMessage
+				.append("\nAltitude: ")
+					.append(AppIO.getInputOutputTree().getAltitude())
+				;
+			System.out.println(logMessage);
 			
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_app_config>
     <input_dir value="in_1"/>
-    <input_file value="input_1.xml"/>
+    <input_file value="input_1.xml" pathtype="relative"/>
     <output_dir value="out_1"/>
     <output_file value="output_1.xml"/>
     <output_chart_dir value="chart_1"/>

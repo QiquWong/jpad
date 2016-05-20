@@ -1,18 +1,24 @@
 package it.unina.daf.jpad.testtemplate;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 
 import javax.measure.quantity.Length;
+import javax.measure.unit.NonSI;
+import javax.measure.unit.UnitFormat;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.jscience.physics.amount.Amount;
+import org.jscience.physics.amount.AmountFormat;
 
 import configuration.enumerations.FoldersEnum;
 import javaslang.Tuple2;
+import javolution.text.TypeFormat;
+import javolution.text.TextFormat.Cursor;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.JPADXmlReader.Status;
@@ -172,6 +178,39 @@ public class AppIO {
 
 	}
 
+	/**
+	 * 
+	 * Customize output format of Amount variables
+	 * 
+	 * @author Agostino De Marco
+	 */
+
+	public static void customizeAmountOutput(){
+		
+		//============================================================================
+		// Trick to write the ".getEstimatedValue() + unit" format
+		// http://stackoverflow.com/questions/8514293/is-there-a-way-to-make-jscience-output-in-a-more-human-friendly-format
+		UnitFormat uf = UnitFormat.getInstance();
+		
+		// Customize labels
+		uf.label(NonSI.DEGREE_ANGLE, "deg"); // instead of default '°' symbol
+		
+		
+		AmountFormat.setInstance(new AmountFormat() {
+		    @Override
+		    public Appendable format(Amount<?> m, Appendable a) throws IOException {
+		        TypeFormat.format(m.getEstimatedValue(), -1, false, false, a);
+		        a.append(" ");
+		        return uf.format(m.getUnit(), a);
+		    }
+
+		    @Override
+		    public Amount<?> parse(CharSequence csq, Cursor c) throws IllegalArgumentException {
+		        throw new UnsupportedOperationException("Parsing not supported.");
+		    }
+		});
+	}	
+	
 	public static String createNewFolder(String path) {
 		File folder = new File(path);
 
