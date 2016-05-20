@@ -477,7 +477,7 @@ public class HighLiftDevicesCalc {
 			for(int i=0; i<input.getSlatsNumber(); i++)
 				etaMaxSlat.add(highLiftDatabaseReader
 						.getEtaMaxVsLEradiusTicknessRatio(
-								input.getLERadiusMeanAirfoil().divide(input.getMeanAirfoilChord()).getEstimatedValue(),
+								(input.getLERadiusMeanAirfoil().divide(input.getMeanAirfoilChord())).divide(input.getMaxthicknessMeanAirfoil()).getEstimatedValue(),
 								input.getMaxthicknessMeanAirfoil())
 						);
 
@@ -553,8 +553,8 @@ public class HighLiftDevicesCalc {
 		List<Double> kLambdaFlap = new ArrayList<Double>();
 		for(int i=0; i<input.getFlapsNumber(); i++)
 			kLambdaFlap.add(
-					Math.pow(Math.cos(input.getSweepQuarteChordEq().to(SI.RADIAN).getEstimatedValue()),0.75)
-					*(1-(0.08*Math.pow(Math.cos(input.getSweepQuarteChordEq().to(SI.RADIAN).getEstimatedValue()), 2)))
+					Math.pow(Math.cos(input.getSweepQuarteChordEq().getEstimatedValue()),0.75)
+					*(1-(0.08*Math.pow(Math.cos(input.getSweepQuarteChordEq().getEstimatedValue()), 2)))
 					);
 
 		for(int i=0; i<flapTypeIndex.size(); i++)
@@ -576,8 +576,8 @@ public class HighLiftDevicesCalc {
 			List<Double> kLambdaSlat = new ArrayList<Double>();
 			for(int i=0; i<input.getSlatsNumber(); i++)
 				kLambdaSlat.add(
-						Math.pow(Math.cos(input.getSweepQuarteChordEq().to(SI.RADIAN).getEstimatedValue()),0.75)
-						*(1-(0.08*Math.pow(Math.cos(input.getSweepQuarteChordEq().to(SI.RADIAN).getEstimatedValue()), 2)))
+						Math.pow(Math.cos(input.getSweepQuarteChordEq().getEstimatedValue()),0.75)
+						*(1-(0.08*Math.pow(Math.cos(input.getSweepQuarteChordEq().getEstimatedValue()), 2)))
 						);
 
 			List<Double> slatSurface = new ArrayList<Double>();
@@ -724,7 +724,7 @@ public class HighLiftDevicesCalc {
 											*(1-(flapSurface.get(i)/input.getSurface().getEstimatedValue()))))
 									*(1/8)))) + (0.7*(input.getAspectRatio()/(1+(input.getAspectRatio()/2)))
 											*mu3.get(i)*output.getDeltaClmaxFlapList().get(i)
-											*Math.tan(input.getSweepQuarteChordEq().to(SI.RADIAN).getEstimatedValue()))
+											*Math.tan(input.getSweepQuarteChordEq().getEstimatedValue()))
 					);
 
 		double deltaCMC4Temp = 0.0;

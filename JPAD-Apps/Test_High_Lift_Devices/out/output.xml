@@ -6,101 +6,108 @@
         </flight_condition>
         <wing>
             <geometry>
-                <aspect_ratio unit="">6.9600</aspect_ratio>
-                <span unit="m">59.6390</span>
-                <surface unit="m²">511.0000</surface>
-                <root_chord_equivalent_wing unit="m">13.3460</root_chord_equivalent_wing>
-                <sweep_quarter_chord_equivalent_wing unit="°">35.5000</sweep_quarter_chord_equivalent_wing>
-                <taper_ratio_equivalent_wing unit="">0.2840</taper_ratio_equivalent_wing>
+                <aspect_ratio unit="">9.5400</aspect_ratio>
+                <span unit="m">28.0100</span>
+                <surface unit="m²">82.7000</surface>
+                <root_chord_equivalent_wing unit="m">4.8400</root_chord_equivalent_wing>
+                <sweep_quarter_chord_equivalent_wing unit="°">26.3000</sweep_quarter_chord_equivalent_wing>
+                <taper_ratio_equivalent_wing unit="">0.2170</taper_ratio_equivalent_wing>
             </geometry>
             <clean_configuration_parameters>
-                <alpha_stall_clean unit="°">21.5900</alpha_stall_clean>
-                <alpha_star_clean unit="°">10.3200</alpha_star_clean>
-                <cL0_clean unit="">0.0840</cL0_clean>
-                <cLalpha_clean unit="1/°">0.0719</cLalpha_clean>
-                <cLmax_clean unit="">1.4600</cLmax_clean>
-                <cLStar_clean unit="">0.8260</cLStar_clean>
+                <alpha_stall_clean unit="°">21.2600</alpha_stall_clean>
+                <alpha_star_clean unit="°">8.8800</alpha_star_clean>
+                <cL0_clean unit="">0.005110</cL0_clean>
+                <cLalpha_clean unit="1/°">0.0800</cLalpha_clean>
+                <cLmax_clean unit="">1.5800</cLmax_clean>
+                <cLStar_clean unit="">0.7620</cLStar_clean>
             </clean_configuration_parameters>
             <mean_airfoil>
-                <cl_alpha_mean_airfoil unit="1/°">0.1099</cl_alpha_mean_airfoil>
-                <cl0_mean_airfoil unit="">0.1500</cl0_mean_airfoil>
-                <leading_edge_radius_mean_airfoil unit="m">0.1164</leading_edge_radius_mean_airfoil>
-                <mean_airfoil_chord unit="m">12.0000</mean_airfoil_chord>
+                <cl_alpha_mean_airfoil unit="1/°">0.1210</cl_alpha_mean_airfoil>
+                <cl0_mean_airfoil unit="">0.2350</cl0_mean_airfoil>
+                <leading_edge_radius_mean_airfoil unit="m">0.0375</leading_edge_radius_mean_airfoil>
+                <mean_airfoil_chord unit="m">3.3500</mean_airfoil_chord>
                 <max_thickness_mean_airfoil unit="">0.1500</max_thickness_mean_airfoil>
-                <airfoil_family unit="">NACA_63_Series</airfoil_family>
+                <airfoil_family unit="">NACA_5_Digit</airfoil_family>
             </mean_airfoil>
         </wing>
         <flaps>
             <flap_1>
-                <flap_type unit="">TRIPLE_SLOTTED</flap_type>
-                <flap_chord_ratio unit="">0.1800</flap_chord_ratio>
+                <flap_type unit="">FOWLER</flap_type>
+                <flap_chord_ratio unit="">0.3000</flap_chord_ratio>
                 <flap_deflection unit="°">30.0000</flap_deflection>
-                <flap_non_dimensional_inner_station unit="">0.1040</flap_non_dimensional_inner_station>
-                <flap_non_dimensional_outer_station unit="">0.3570</flap_non_dimensional_outer_station>
+                <flap_non_dimensional_inner_station unit="">0.1200</flap_non_dimensional_inner_station>
+                <flap_non_dimensional_outer_station unit="">0.3990</flap_non_dimensional_outer_station>
             </flap_1>
             <flap_2>
-                <flap_type unit="">TRIPLE_SLOTTED</flap_type>
-                <flap_chord_ratio unit="">0.1800</flap_chord_ratio>
+                <flap_type unit="">FOWLER</flap_type>
+                <flap_chord_ratio unit="">0.3000</flap_chord_ratio>
                 <flap_deflection unit="°">30.0000</flap_deflection>
-                <flap_non_dimensional_inner_station unit="">0.4110</flap_non_dimensional_inner_station>
-                <flap_non_dimensional_outer_station unit="">0.6360</flap_non_dimensional_outer_station>
+                <flap_non_dimensional_inner_station unit="">0.4000</flap_non_dimensional_inner_station>
+                <flap_non_dimensional_outer_station unit="">0.7500</flap_non_dimensional_outer_station>
             </flap_2>
         </flaps>
         <slats>
             <slat_1>
-                <slat_deflection unit="°">15.0000</slat_deflection>
-                <slat_chord_ratio unit="">0.0900</slat_chord_ratio>
+                <slat_deflection unit="°">25.0000</slat_deflection>
+                <slat_chord_ratio unit="">0.1340</slat_chord_ratio>
                 <slat_extension_ratio unit="">1.1000</slat_extension_ratio>
-                <slat_non_dimensional_inner_station unit="">0.1920</slat_non_dimensional_inner_station>
-                <slat_non_dimensional_outer_station unit="">0.3640</slat_non_dimensional_outer_station>
+                <slat_non_dimensional_inner_station unit="">0.1260</slat_non_dimensional_inner_station>
+                <slat_non_dimensional_outer_station unit="">0.2920</slat_non_dimensional_outer_station>
             </slat_1>
             <slat_2>
-                <slat_deflection unit="°">15.0000</slat_deflection>
-                <slat_chord_ratio unit="">0.1360</slat_chord_ratio>
+                <slat_deflection unit="°">25.0000</slat_deflection>
+                <slat_chord_ratio unit="">0.1660</slat_chord_ratio>
                 <slat_extension_ratio unit="">1.1000</slat_extension_ratio>
-                <slat_non_dimensional_inner_station unit="">0.4140</slat_non_dimensional_inner_station>
-                <slat_non_dimensional_outer_station unit="">0.6480</slat_non_dimensional_outer_station>
+                <slat_non_dimensional_inner_station unit="">0.3640</slat_non_dimensional_inner_station>
+                <slat_non_dimensional_outer_station unit="">0.5640</slat_non_dimensional_outer_station>
             </slat_2>
             <slat_3>
-                <slat_deflection unit="°">15.0000</slat_deflection>
-                <slat_chord_ratio unit="">0.1870</slat_chord_ratio>
+                <slat_deflection unit="°">25.0000</slat_deflection>
+                <slat_chord_ratio unit="">0.2230</slat_chord_ratio>
                 <slat_extension_ratio unit="">1.1000</slat_extension_ratio>
-                <slat_non_dimensional_inner_station unit="">0.6920</slat_non_dimensional_inner_station>
-                <slat_non_dimensional_outer_station unit="">0.9610</slat_non_dimensional_outer_station>
+                <slat_non_dimensional_inner_station unit="">0.5640</slat_non_dimensional_inner_station>
+                <slat_non_dimensional_outer_station unit="">0.7640</slat_non_dimensional_outer_station>
             </slat_3>
+            <slat_4>
+                <slat_deflection unit="°">25.0000</slat_deflection>
+                <slat_chord_ratio unit="">0.2990</slat_chord_ratio>
+                <slat_extension_ratio unit="">1.1000</slat_extension_ratio>
+                <slat_non_dimensional_inner_station unit="">0.7640</slat_non_dimensional_inner_station>
+                <slat_non_dimensional_outer_station unit="">0.9480</slat_non_dimensional_outer_station>
+            </slat_4>
         </slats>
     </INPUT>
     <OUTPUT>
         <high_lift_devices_effects>
-            <delta_Cl0_of_each_flap unit="">[1.5624538186987855, 1.5624538186987855]</delta_Cl0_of_each_flap>
-            <delta_Cl0_total_due_to_flaps unit="">3.1249</delta_Cl0_total_due_to_flaps>
-            <delta_Clmax_of_each_flap unit="">[0.7389029107368523, 0.7389029107368523]</delta_Clmax_of_each_flap>
-            <delta_Clmax_total_due_to_flaps unit="">1.4778</delta_Clmax_total_due_to_flaps>
-            <delta_Clmax_of_each_slat unit="">[0.5263022246944725, 0.6391045712109031, 0.724577453130443]</delta_Clmax_of_each_slat>
-            <delta_Clmax_total_due_to_slats unit="">1.8900</delta_Clmax_total_due_to_slats>
-            <delta_CL0_of_each_flap unit="">[0.3634676987056978, 0.2583848933010656]</delta_CL0_of_each_flap>
-            <delta_CL0_total_due_to_flaps unit="">0.6219</delta_CL0_total_due_to_flaps>
-            <delta_CLmax_of_each_flap unit="">[0.25773754819344724, 0.2271064234092769]</delta_CLmax_of_each_flap>
-            <delta_CLmax_total_due_to_flaps unit="">0.4848</delta_CLmax_total_due_to_flaps>
-            <delta_CLmax_of_each_slat unit="">[0.12148688563230717, 0.2048992470505589, 0.2701356840966841]</delta_CLmax_of_each_slat>
-            <delta_CLmax_total_due_to_slats unit="">0.5965</delta_CLmax_total_due_to_slats>
-            <delta_CD0_of_each_flap unit="">[0.006515482995220567, 0.005837005972513988]</delta_CD0_of_each_flap>
-            <delta_CD0_total unit="">0.0124</delta_CD0_total>
-            <delta_CM_c4_of_each_flap unit="">[-0.06801861916533225, -0.0602890266142814]</delta_CM_c4_of_each_flap>
-            <delta_CM_c4_total unit="">-0.128308</delta_CM_c4_total>
+            <delta_Cl0_of_each_flap unit="">[2.222354711740599, 2.222354711740599]</delta_Cl0_of_each_flap>
+            <delta_Cl0_total_due_to_flaps unit="">4.4447</delta_Cl0_total_due_to_flaps>
+            <delta_Clmax_of_each_flap unit="">[1.549248539105812, 1.549248539105812]</delta_Clmax_of_each_flap>
+            <delta_Clmax_total_due_to_flaps unit="">3.0985</delta_Clmax_total_due_to_flaps>
+            <delta_Clmax_of_each_slat unit="">[0.3978630076940982, 0.43395969387695377, 0.4832001592302122, 0.5304470799351922]</delta_Clmax_of_each_slat>
+            <delta_Clmax_total_due_to_slats unit="">1.8455</delta_Clmax_total_due_to_slats>
+            <delta_CL0_of_each_flap unit="">[0.5509747751382567, 0.5177840548285666]</delta_CL0_of_each_flap>
+            <delta_CL0_total_due_to_flaps unit="">1.0688</delta_CL0_total_due_to_flaps>
+            <delta_CLmax_of_each_flap unit="">[0.38506409661430724, 0.49516035093579813]</delta_CLmax_of_each_flap>
+            <delta_CLmax_total_due_to_flaps unit="">0.8802</delta_CLmax_total_due_to_flaps>
+            <delta_CLmax_of_each_slat unit="">[0.05649024785460162, 0.07516327654161596, 0.08369189052721403, 0.08403417956088241]</delta_CLmax_of_each_slat>
+            <delta_CLmax_total_due_to_slats unit="">0.2994</delta_CLmax_total_due_to_slats>
+            <delta_CD0_of_each_flap unit="">[0.014781941969677179, 0.018031259705004767]</delta_CD0_of_each_flap>
+            <delta_CD0_total unit="">0.0328</delta_CD0_total>
+            <delta_CM_c4_of_each_flap unit="">[-0.009003738711218373, -0.037813951583949235]</delta_CM_c4_of_each_flap>
+            <delta_CM_c4_total unit="">-0.046818</delta_CM_c4_total>
         </high_lift_devices_effects>
         <global_high_lift_devices_effects>
-            <alpha_max_high_lift unit="°">26.7194</alpha_max_high_lift>
-            <alpha_star_high_lift unit="°">15.4494</alpha_star_high_lift>
-            <cLmax_high_lift unit="">2.5414</cLmax_high_lift>
-            <cL_star_high_lift unit="">1.8346</cL_star_high_lift>
-            <cL_alpha_high_lift unit="1/°">0.0731</cL_alpha_high_lift>
+            <alpha_max_high_lift unit="°">22.7086</alpha_max_high_lift>
+            <alpha_star_high_lift unit="°">10.3286</alpha_star_high_lift>
+            <cLmax_high_lift unit="">2.7596</cLmax_high_lift>
+            <cL_star_high_lift unit="">1.9191</cL_star_high_lift>
+            <cL_alpha_high_lift unit="1/°">0.0818</cL_alpha_high_lift>
         </global_high_lift_devices_effects>
         <high_lift_curve_point>
-            <alpha_array_clean unit="">[-10.0, -9.138717948717948, -8.277435897435897, -7.416153846153845, -6.554871794871794, -5.693589743589742, -4.83230769230769, -3.9710256410256393, -3.109743589743588, -2.248461538461537, -1.3871794871794858, -0.5258974358974347, 0.3353846153846165, 1.1966666666666677, 2.057948717948719, 2.91923076923077, 3.780512820512821, 4.641794871794872, 5.503076923076923, 6.364358974358975, 7.225641025641027, 8.086923076923078, 8.94820512820513, 9.809487179487181, 10.670769230769233, 11.532051282051285, 12.393333333333336, 13.254615384615388, 14.11589743589744, 14.977179487179491, 15.838461538461543, 16.699743589743594, 17.561025641025644, 18.422307692307694, 19.283589743589744, 20.144871794871793, 21.006153846153843, 21.867435897435893, 22.728717948717943, 23.589999999999996]</alpha_array_clean>
-            <cL_array_clean unit="">[-0.6350079999999998, -0.5730818205128203, -0.5111556410256407, -0.4492294615384612, -0.38730328205128184, -0.3253771025641023, -0.2634509230769228, -0.20152474358974326, -0.13959856410256388, -0.07767238461538442, -0.015746205128204946, 0.04617997435897453, 0.10810615384615399, 0.17003233333333345, 0.2319585128205129, 0.2938846923076924, 0.35581087179487186, 0.4177370512820513, 0.4796632307692308, 0.5415894102564103, 0.6035155897435899, 0.6654417692307694, 0.7273679487179489, 0.7892941282051283, 0.8514790789221085, 0.9158316166484837, 0.9817459466897759, 1.0479963688099594, 1.113357182773009, 1.1766026883428997, 1.2365071852836036, 1.2918449733590975, 1.3413903523333546, 1.3839176219703497, 1.4182010820340567, 1.4430150322884505, 1.457133772497505, 1.459331602425195, 1.448382821835495, 1.4230617304923778]</cL_array_clean>
-            <alpha_array_high_lift unit="">[-13.0, -11.878990480134583, -10.757980960269165, -9.636971440403748, -8.51596192053833, -7.3949524006729135, -6.273942880807496, -5.152933360942079, -4.031923841076662, -2.910914321211244, -1.789904801345826, -0.6688952814804083, 0.4521142383850094, 1.5731237582504272, 2.694133278115845, 3.8151427979812627, 4.93615231784668, 6.057161837712098, 7.178171357577515, 8.299180877442932, 9.42019039730835, 10.541199917173767, 11.662209437039184, 12.783218956904602, 13.904228476770019, 15.025237996635436, 16.146247516500853, 17.26725703636627, 18.388266556231688, 19.509276076097105, 20.630285595962523, 21.75129511582794, 22.872304635693357, 23.993314155558775, 25.114323675424192, 26.23533319528961, 27.356342715155026, 28.477352235020444, 29.59836175488586, 30.7193712747513]</alpha_array_high_lift>
-            <cL_array_high_lift unit="">[-0.2439020070721165, -0.16200324191031756, -0.0801044767485185, 0.0017942884132805537, 0.0836930535750795, 0.16559181873687856, 0.24749058389867756, 0.3293893490604766, 0.4112881142222756, 0.4931868793840747, 0.5750856445458737, 0.6569844097076728, 0.7388831748694719, 0.8207819400312709, 0.9026807051930699, 0.9845794703548689, 1.066478235516668, 1.148377000678467, 1.230275765840266, 1.3121745310020652, 1.3940732961638642, 1.475972061325663, 1.5578708264874621, 1.639769591649261, 1.7216683568110602, 1.8035671219728588, 1.887137569000282, 1.9772126663723157, 2.0710094038334, 2.1650423936878815, 2.2558262482401026, 2.3398755797944077, 2.4137050006551424, 2.473829123126652, 2.5167625595132814, 2.539019922119373, 2.537115823249277, 2.5075648752073314, 2.4468816902978827, 2.3515808808252765]</cL_array_high_lift>
+            <alpha_array_clean unit="">[-10.0, -9.147179487179487, -8.294358974358975, -7.441538461538462, -6.5887179487179495, -5.735897435897437, -4.883076923076924, -4.030256410256412, -3.177435897435899, -2.3246153846153863, -1.4717948717948737, -0.6189743589743609, 0.23384615384615182, 1.0866666666666647, 1.9394871794871773, 2.79230769230769, 3.6451282051282026, 4.497948717948716, 5.350769230769228, 6.203589743589741, 7.0564102564102535, 7.909230769230766, 8.76205128205128, 9.614871794871792, 10.467692307692305, 11.320512820512818, 12.17333333333333, 13.026153846153843, 13.878974358974355, 14.731794871794868, 15.58461538461538, 16.437435897435893, 17.290256410256408, 18.143076923076922, 18.995897435897437, 19.84871794871795, 20.701538461538465, 21.55435897435898, 22.407179487179494, 23.259999999999998]</alpha_array_clean>
+            <cL_array_clean unit="">[-0.7483999999999995, -0.6801743589743585, -0.6119487179487177, -0.5437230769230766, -0.47549743589743565, -0.4072717948717946, -0.3390461538461536, -0.27082051282051267, -0.20259487179487168, -0.13436923076923063, -0.06614358974358965, 0.002082051282051342, 0.07030769230769233, 0.13853333333333334, 0.20675897435897433, 0.2749846153846154, 0.3432102564102563, 0.41143589743589737, 0.4796615384615384, 0.5478871794871794, 0.6161128205128203, 0.6843384615384613, 0.7525641025641023, 0.8223220610568548, 0.8954364291185193, 0.970684449360938, 1.0467998534350806, 1.1225163729919156, 1.1965677396824117, 1.2676876851575365, 1.3346099410682608, 1.396068239065551, 1.4507963108003779, 1.4975278879237082, 1.5349967020865116, 1.5619364849397575, 1.5770809681344127, 1.5791638833214479, 1.56691896215183, 1.5390799362765297]</cL_array_clean>
+            <alpha_array_high_lift unit="">[-13.0, -11.981831361337484, -10.963662722674968, -9.945494084012452, -8.927325445349936, -7.909156806687421, -6.890988168024906, -5.872819529362391, -4.854650890699876, -3.836482252037361, -2.818313613374846, -1.8001449747123306, -0.7819763360498153, 0.23619230261269997, 1.2543609412752152, 2.2725295799377303, 3.2906982186002454, 4.30886685726276, 5.3270354959252755, 6.3452041345877905, 7.363372773250306, 8.38154141191282, 9.399710050575337, 10.417878689237853, 11.436047327900368, 12.454215966562884, 13.4723846052254, 14.490553243887916, 15.508721882550432, 16.526890521212948, 17.545059159875464, 18.56322779853798, 19.581396437200496, 20.599565075863012, 21.617733714525528, 22.635902353188044, 23.65407099185056, 24.672239630513076, 25.69040826917559, 26.708576907838093]</alpha_array_high_lift>
+            <cL_array_high_lift unit="">[0.010072117671618974, 0.0933893830847935, 0.17670664849796802, 0.26002391391114243, 0.34334117932431696, 0.42665844473749137, 0.5099757101506659, 0.5932929755638402, 0.6766102409770145, 0.759927506390189, 0.8432447718033634, 0.9265620372165378, 1.0098793026297124, 1.0931965680428868, 1.1765138334560612, 1.2598310988692356, 1.3431483642824098, 1.4264656296955842, 1.5097828951087586, 1.5931001605219333, 1.6764174259351075, 1.7597346913482819, 1.8430519567614563, 1.9263947539922779, 2.013173513328496, 2.104230135889172, 2.1973349550933197, 2.2902583043599516, 2.38077051710808, 2.4666419267567194, 2.545642866724882, 2.6155436704315806, 2.6741146712958273, 2.719126202736637, 2.7483485981730222, 2.7595521910239946, 2.7505073147085684, 2.7189843026457567, 2.6627534882545723, 2.5795852049540295]</cL_array_high_lift>
         </high_lift_curve_point>
     </OUTPUT>
 </HiLDE_Calculator>

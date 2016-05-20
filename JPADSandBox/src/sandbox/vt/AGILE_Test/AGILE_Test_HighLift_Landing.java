@@ -90,8 +90,8 @@ public class AGILE_Test_HighLift_Landing {
 		LiftingSurface theWing = aircraft.get_wing();
 		
 		// update of the wing with new model parameters
-		theWing.set_surface(Amount.valueOf(83.15, SI.SQUARE_METRE));
-		theWing.set_aspectRatio(9.43);
+		theWing.set_surface(Amount.valueOf(82.7, SI.SQUARE_METRE));
+		theWing.set_aspectRatio(9.54);
 		theWing.set_taperRatioEquivalent(0.217);
 		theWing.set_taperRatioInnerPanel(0.425);
 		theWing.set_taperRatioOuterPanel(0.387);
