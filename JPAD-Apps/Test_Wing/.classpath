@@ -2,9 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="output" path="bin"/>
-	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/args4j-2.0.21.jar"/>
-	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/args4j-2.0.21-javadoc.jar"/>
 	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/commons-lang3-3.3.2.jar"/>
 	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/commons-lang3-3.3.2-javadoc.jar"/>
 	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/commons-math3-3.2.jar"/>
@@ -25,8 +22,6 @@
 	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/jcommon-1.0.23.jar"/>
 	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/jfreechart-1.0.19.jar"/>
 	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/jfreesvg-2.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/JPADConfigs_v_17052016.jar"/>
-	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/JPADCore_v_17052016.jar"/>
 	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/jscience.jar"/>
 	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/jsr275_0.9.4_mod.jar"/>
 	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/junit-4.11.jar"/>
@@ -40,4 +35,9 @@
 	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/jahuwaldt.aero.jar"/>
 	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/jahuwaldt.tools.math.jar"/>
 	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/AeroLS.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/args4j-2.0.21.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/args4j-2.0.21-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/JPADCore_v_19052016.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/JPADConfigs_v_19052016.jar"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>

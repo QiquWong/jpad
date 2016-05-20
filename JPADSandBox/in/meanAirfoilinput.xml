@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wing_executable>
+   <number_of_input_sections>6</number_of_input_sections>
+      <geometry>
+         <maximum_thickness>[0.18, 0.15, 0.13 , 0.15 , 0.15, 0.13]</maximum_thickness>
+      </geometry>
+      <aerodynamic>
+         <alpha_zero_lift unit="°">[-2.6, -2.6, -2.6 , -2.6, -2.6, -2.6]</alpha_zero_lift>
+         <lift_coefficient_slope>[0.10, 0.10, 0.10, 0.10, 0.10, 0.10]</lift_coefficient_slope>
+         <end_of_linearity_lift_coefficient>[0.8, 0.8, 0.8, 0.8, 0.8, 0.8]</end_of_linearity_lift_coefficient>
+         <angle_of_stall unit="°">[20, 20, 20, 20, 20, 20]</angle_of_stall>
+         <maximum_lift_coefficient>[1.8, 1.8, 1.8, 1.8, 1.8, 1.8]</maximum_lift_coefficient>
+         <aerodynamic_center>[0.25, 0.25, 0.25, 0.25, 0.25, 0.25]</aerodynamic_center>
+       </aerodynamic>
+       <other>
+          <other_values>[0.18, 0.15, 0.13, 0.18, 0.15, 0.13]</other_values>
+        </other>
+</wing_executable>
