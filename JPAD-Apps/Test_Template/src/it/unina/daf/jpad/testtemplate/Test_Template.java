@@ -1,9 +1,16 @@
 package it.unina.daf.jpad.testtemplate;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -58,19 +65,6 @@ public class Test_Template {
 		try {
 			
 			AppIO.parseConfig();
-			
-//			StringBuilder message = new StringBuilder()
-//					//.append("-------------------------------------\n")
-//					.append("Inputs read from dir: " + AppIO.getInputDirectory() +"\n")
-//					.append("Databases read from dir: " 
-//							+ AppIO.getDirectory(AppIO.FoldersEnum.DATABASE_DIR) +"\n")
-//					.append("Outputs written in dir: " + AppIO.getOutputDirectory() +"\n")
-//					.append("Output file name: " + AppIO.getOutputFilename() +"\n")
-//					.append("Output file full path: " + AppIO.getOutputFilenameFullPath() +"\n")
-//					.append("Output charts written in dir: " + AppIO.getOutputChartDirectory() +"\n")
-//					.append("-------------------------------------\n")
-//					;
-//			System.out.println(message);
 			
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
@@ -135,6 +129,51 @@ public class Test_Template {
 			e.printStackTrace();
 		}
 		
+		//=================================================================
+		// execute an external command, and pass parameters
+		//=================================================================
+		// http://stackoverflow.com/questions/13991007/execute-external-program-in-java
+		// http://www.rgagnon.com/javadetails/java-0014.html
+		
+		try {
+		    List<String> command = new ArrayList<String>();
+		    command.add(System.getenv("windir") +"\\system32\\"+"tree.com");
+		    command.add("/A");
+//		    command.add("dir");
+//		    command.add("/D");
+
+		    ProcessBuilder builder = new ProcessBuilder(command);
+		    Map<String, String> environ = builder.environment();
+		    builder.directory(
+		    		new File(
+		    				// System.getenv("temp")
+		    				AppIO.getDirectory(AppIO.FoldersEnum.CURRENT_DIR)
+		    			));
+
+		    System.out.println("Directory: " + 
+		    		// System.getenv("temp") 
+		    		AppIO.getDirectory(AppIO.FoldersEnum.CURRENT_DIR)
+		    );
+		    System.out.println(
+		    		"Command>" +
+		    			// command.stream().collect(Collectors.joining())
+		    			String.join(" ", command)
+		    );
+		    
+		    final Process process = builder.start();
+		    InputStream is = process.getInputStream();
+		    InputStreamReader isr = new InputStreamReader(is);
+		    BufferedReader br = new BufferedReader(isr);
+		    String line;
+		    while ((line = br.readLine()) != null) {
+		      System.out.println(line);
+		    }
+		    System.out.println("Program terminated!");	
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				
 	} // end-of-main
 
 }
