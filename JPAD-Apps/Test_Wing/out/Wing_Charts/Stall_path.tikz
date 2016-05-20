@@ -1,4 +1,4 @@
-%Stall path
+%Stall_path
 \begin{tikzpicture}
 
 \begin{axis}[

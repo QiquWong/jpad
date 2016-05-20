@@ -387,6 +387,9 @@ public class JPADXmlReader {
 		// First value
 		
 		n = inputString.indexOf(',');
+		if ( n == -1){
+			n = inputString.indexOf(';');
+		}
 		
 		tempString = inputString.substring(1, n);
 		tempString = tempString.trim();
@@ -402,6 +405,9 @@ public class JPADXmlReader {
 			tempString = new String();
 			
 			n = inputString.indexOf(',', m+1);
+			if ( n == -1){
+				n = inputString.indexOf(';', m+1);
+			}
 			if( n != -1){
 			tempString = inputString.substring(m+1, n);}
 			

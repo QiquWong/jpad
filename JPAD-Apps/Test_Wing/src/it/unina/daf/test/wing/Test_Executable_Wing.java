@@ -59,8 +59,7 @@ public class Test_Executable_Wing {
 						databaseDirectoryAbsolutePath); // coming from main arguments
 
 				String pathToXML = theTestObject.get_inputFile().getAbsolutePath();
-				String filenameWithPathAndExt = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR) + 
-						"Wing Charts" + File.separator + "WingAerodynamics_Output.xml"; 
+				String filenameWithPathAndExt = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR)+ "WingAerodynamics_Output.xml"; 
 				
 
 		System.out.println("INPUT ===> " + pathToXML);

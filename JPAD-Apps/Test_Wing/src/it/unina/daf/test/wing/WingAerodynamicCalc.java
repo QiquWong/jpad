@@ -381,8 +381,8 @@ public class WingAerodynamicCalc {
 				null,
 				"alpha", "CL",
 				"deg", "",
-				JPADStaticWriteUtils.createNewFolder(folderPath + "Wing Charts" + File.separator),
-				"CL curve high lift");
+				JPADStaticWriteUtils.createNewFolder(folderPath + "Wing_Charts" + File.separator),
+				"CL_curve_clean");
 
 		System.out.println(" \n-------------------DONE----------------------- ");
 
@@ -416,8 +416,8 @@ public class WingAerodynamicCalc {
 				"",
 				true,
 				legend,
-				JPADStaticWriteUtils.createNewFolder(folderPath + "Wing Charts" + File.separator),
-				"Cl vs eta");
+				JPADStaticWriteUtils.createNewFolder(folderPath + "Wing_Charts" + File.separator),
+				"Cl_vs_eta");
 
 		System.out.println(" \n-------------------DONE----------------------- ");
 		
@@ -465,8 +465,8 @@ public class WingAerodynamicCalc {
 				"",
 				true,
 				legend,
-				JPADStaticWriteUtils.createNewFolder(folderPath + "Wing Charts" + File.separator),
-				"Stall path");
+				JPADStaticWriteUtils.createNewFolder(folderPath + "Wing_Charts" + File.separator),
+				"Stall_path");
 
 		System.out.println(" \n-------------------DONE----------------------- \n");
 

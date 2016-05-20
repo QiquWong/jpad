@@ -37,10 +37,10 @@
     <OUTPUT>
         <wing_aerodynamic_characteristics>
             <alpha_zero_lift unit="°">0.0528</alpha_zero_lift>
-            <cl_alpha unit="1/°">0.0798</cl_alpha>
-            <cl_star unit="">0.6317</cl_star>
+            <cL_alpha unit="1/°">0.0798</cL_alpha>
+            <cL_star unit="">0.6317</cL_star>
             <alpha_star unit="°">7.9703</alpha_star>
-            <cl_max unit="">1.3007</cl_max>
+            <cL_max unit="">1.3007</cL_max>
             <alpha_stall unit="°">18.6235</alpha_stall>
         </wing_aerodynamic_characteristics>
         <cL_vs_alpha_curve>

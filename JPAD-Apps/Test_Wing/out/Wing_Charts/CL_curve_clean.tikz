@@ -1,4 +1,4 @@
-%CL curve high lift
+%CL_curve_clean
 \begin{tikzpicture}
 
 \begin{axis}[
