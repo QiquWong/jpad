@@ -19,6 +19,15 @@ import standaloneutils.JPADXmlReader.Status;
 
 public class AppIO {
 
+	// Software info
+	public final double version = 1.0;
+	public final String name = "JPAD-App Test Template";
+	public final String description = 
+			"Template for an application that uses JPADCore.jar, " +
+			"configures via config/config.xml and accepts command line arguments";
+	public final String release = "pre-alpha";
+	
+	// Standard folders
 	public enum FoldersEnum {	
 		CURRENT_DIR,	
 		INPUT_DIR,
@@ -27,8 +36,11 @@ public class AppIO {
 		OUTPUT_CHART_DIR;
 	}
 	
+	// Folders' ids mapped to actual path strings
 	private static HashMap<FoldersEnum, String> mapPaths = new HashMap<FoldersEnum, String>();
 
+	// Variables to manage folder config/set/get features
+	
 	public static final String currentDirectoryString = System.getProperty("user.dir");
 	
 	private static String inputDir = "in";
@@ -49,7 +61,8 @@ public class AppIO {
 	private static String outputChartDir = "out" + File.separator + "charts";
 	private static String outputChartDirectory;
 	
-	static InputOutputTree input = new InputOutputTree();
+	// I/O variable management
+	private static InputOutputTree inputOutputTree = new InputOutputTree();
 
 	/**
 	 * Read the file <user-dir>/config/config.xml
@@ -324,6 +337,10 @@ public class AppIO {
 	}
 	public static void setOutputChartDirectory(String outputChartDirectory) {
 		AppIO.outputChartDirectory = outputChartDirectory;
+	}
+
+	public static InputOutputTree getInputOutputTree() {
+		return inputOutputTree;
 	}
 	
 }

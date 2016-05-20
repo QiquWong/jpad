@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_app_input>
+    <operating_conditions>
+        <altitude unit="m">6000</altitude>
+        <mach_number>0.2</mach_number>
+        <number_of_alpha>7</number_of_alpha>
+        <alpha_initial unit="°">0.0</alpha_initial>
+        <alpha_final unit="°">10.0</alpha_final>
+    </operating_conditions>
+</jpad_app_input>

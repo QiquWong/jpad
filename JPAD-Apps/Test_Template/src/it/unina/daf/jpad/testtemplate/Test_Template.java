@@ -97,6 +97,28 @@ public class Test_Template {
 		// THIRD, initialize the directory tree, i.e. create all the folders
 		//=================================================================
 		AppIO.initWorkingDirectoryTree();
-	}
+		
+		
+		//=================================================================
+		// Read data
+		//=================================================================
+		try {
+
+			logMessage.setLength(0); // clearing the buffer
+			logMessage
+				.append("\nReading data from file ")
+					.append(AppIO.getInputFilenameFullPath())
+				;
+			System.out.println(logMessage);
+			
+			AppIO.getInputOutputTree().importFromXML(
+					AppIO.getInputFilenameFullPath(), "", ""
+					);
+			
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		}
+		
+	} // end-of-main
 
 }

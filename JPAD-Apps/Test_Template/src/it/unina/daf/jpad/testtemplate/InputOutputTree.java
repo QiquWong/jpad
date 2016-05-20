@@ -8,6 +8,7 @@ import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.jscience.physics.amount.Amount;
 
@@ -64,6 +65,14 @@ public class InputOutputTree {
 		testInputList = new ArrayList<>();
 	}
 
+	public void importFromXML(
+			String pathToXML, 
+			String databaseFolderPath, String aerodynamicDatabaseFileName
+			) throws ParserConfigurationException {
+		
+		System.out.println("########### pippo!");
+		
+	}
 
 	public void buildOutput(){
 		
