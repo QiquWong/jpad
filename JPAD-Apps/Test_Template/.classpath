@@ -33,5 +33,6 @@
 	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER_TEST_TEMPLATE/poi-ooxml-3.10.1-20140818.jar"/>
 	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER_TEST_TEMPLATE/poi-ooxml-schemas-3.10.1-20140818.jar"/>
 	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER_TEST_TEMPLATE/servlet.jar"/>
+	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER_TEST_TEMPLATE/javaslang-2.0.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

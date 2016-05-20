@@ -14,11 +14,16 @@ import org.kohsuke.args4j.Option;
 
 import configuration.MyConfiguration;
 import configuration.enumerations.FoldersEnum;
+import javaslang.Tuple;
 import standaloneutils.JPADXmlReader;
 
 public class Test_Template {
 	
-	@Option(name = "-d", aliases = { "--database-path" }, required = false, // change ti true if needed
+	@Option(name = "-i", aliases = { "--input-dir" }, required = false, // if given, overrides the default & config
+			usage = "my input file")
+	private File _inputPath;
+
+	@Option(name = "-d", aliases = { "--database-dir" }, required = false, // if given, overrides the default & config
 			usage = "path for database files")
 	private File _databasePath;
 	
@@ -40,29 +45,58 @@ public class Test_Template {
 	
 	public static void main(String[] args) throws CmdLineException {
 
+		StringBuffer logMessage = new StringBuffer()
+				.append("-------------------------------------\n")
+				.append("Test application template\n")
+				.append("-------------------------------------\n")
+				;
+		System.out.println(logMessage);
+		
 		//=================================================================
-		// Get config file settings
+		// FIRST, get config file settings
 		//=================================================================
 		try {
 			
 			AppIO.parseConfig();
 			
-			System.out.println("Inputs read from dir: " + AppIO.getInputDirectory());
-			System.out.println("Outputs written in dir: " + AppIO.getOutputDirectory());
-			System.out.println("Output file name: " + AppIO.getOutputFilename());
-			System.out.println("Output file full path: " + AppIO.getOutputFilenameFullPath());
-			System.out.println("Output charts written in dir: " + AppIO.getOutputChartDirectory());
+//			StringBuilder message = new StringBuilder()
+//					//.append("-------------------------------------\n")
+//					.append("Inputs read from dir: " + AppIO.getInputDirectory() +"\n")
+//					.append("Databases read from dir: " 
+//							+ AppIO.getDirectory(AppIO.FoldersEnum.DATABASE_DIR) +"\n")
+//					.append("Outputs written in dir: " + AppIO.getOutputDirectory() +"\n")
+//					.append("Output file name: " + AppIO.getOutputFilename() +"\n")
+//					.append("Output file full path: " + AppIO.getOutputFilenameFullPath() +"\n")
+//					.append("Output charts written in dir: " + AppIO.getOutputChartDirectory() +"\n")
+//					.append("-------------------------------------\n")
+//					;
+//			System.out.println(message);
 			
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		}
 		
+		//=================================================================
+		// SECOND, parse command line and override configs
+		//=================================================================
 		Test_Template theTestObject = new Test_Template();
 		theTestObject.theCmdLineParser.parseArgument(args);
 		
 		String databaseDirectoryAbsolutePath = theTestObject.get_databasePath().getAbsolutePath();
-		// TODO use setter
-		// AppIO.setDatabaseDirectory(databaseDirectoryAbsolutePath);
+		
+		AppIO.putWorkingDirectoryTree(
+				Tuple.of(AppIO.FoldersEnum.DATABASE_DIR,databaseDirectoryAbsolutePath));
+		
+		logMessage.setLength(0); // clearing the buffer
+		logMessage
+			.append("\n~ REPORT ~\n\n")
+			.append(AppIO.reportAll());
+		System.out.println(logMessage);
+		
+		//=================================================================
+		// THIRD, initialize the directory tree, i.e. create all the folders
+		//=================================================================
+		AppIO.initWorkingDirectoryTree();
 	}
 
 }
