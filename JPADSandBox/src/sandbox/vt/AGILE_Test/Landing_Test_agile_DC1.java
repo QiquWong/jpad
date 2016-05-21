@@ -125,7 +125,7 @@ public class Landing_Test_agile_DC1 {
 		theWing.set_xLERoot(Amount.valueOf(0.0, SI.METER));
 		theWing.set_xLEKink(Amount.valueOf(3.707, SI.METER));
 		theWing.set_xLETip(Amount.valueOf(8.305, SI.METER));
-		theWing.set_sweepQuarterChordEq(Amount.valueOf(26.3, NonSI.DEGREE_ANGLE));
+		theWing.set_sweepQuarterChordEq(Amount.valueOf(25.1, NonSI.DEGREE_ANGLE).to(SI.RADIAN));
 		theWing.set_sweepLEEquivalent(
 				theWing.calculateSweep(
 						theWing.get_sweepQuarterChordEq().getEstimatedValue(),

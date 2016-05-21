@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<take_off_executable charts="FALSE" simplified_thrust_model="FALSE">
+        <INPUT>
+                <ground_conditions>
+                        <alpha unit="°">0.0</alpha>
+						<wind_speed unit = "m/s">0.0</wind_speed>
+						<altitude unit = "m">0.0</altitude>
+                </ground_conditions>
+                <aircraft_data>
+				        <take_off_mass unit = "kg">45045.0</take_off_mass>
+                        <wing>
+						    <geometry>
+                                <aspect_ratio>9.43</aspect_ratio>
+                                <span unit = "m">28.01</span>
+                                <surface unit = "m²">83.15</surface>
+                                <distance_from_ground unit = "m">6.56</distance_from_ground>
+                                <angle_of_incidence unit = "°">3.0</angle_of_incidence>
+							</geometry>
+							<aerodynamic_data>
+							    <oswald>0.8</oswald>
+							    <cD0_clean>0.0165</cD0_clean>
+								<delta_cD0_flap>0.002</delta_cD0_flap>
+								<delta_cD0_landing_gears>0.015</delta_cD0_landing_gears>
+								<cL_max_take_off>2.1</cL_max_take_off>
+								<cL0_take_off>0.297</cL0_take_off>
+								<cL_alpha_take_off>0.07318</cL_alpha_take_off>
+							</aerodynamic_data>
+                        </wing>
+                        <engine>
+						    <static_thrust unit = "N">204000.0</static_thrust>
+							<number_of_engines>2</number_of_engines>
+							   <!--USE THE FOLLOWING TWO TAGS ONLY IF THE ENGINE MODEL IS KNOWN AND THE ATTRIBUTE "simplified_thrust_model" IS SET TO FALSE-->
+							<net_thrust_array_single_engine unit = "N">[68512.2, 65392.6, 62587.6, 60069.3, 57812.7, 55796.0, 53716.7, 51772.9, 50045.6]</net_thrust_array_single_engine>
+							<mach_array>[0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4]</mach_array>
+						</engine>
+                </aircraft_data>
+        </INPUT>
+</take_off_executable>

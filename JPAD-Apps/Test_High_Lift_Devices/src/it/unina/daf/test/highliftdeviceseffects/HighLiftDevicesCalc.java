@@ -553,8 +553,8 @@ public class HighLiftDevicesCalc {
 		List<Double> kLambdaFlap = new ArrayList<Double>();
 		for(int i=0; i<input.getFlapsNumber(); i++)
 			kLambdaFlap.add(
-					Math.pow(Math.cos(input.getSweepQuarteChordEq().getEstimatedValue()),0.75)
-					*(1-(0.08*Math.pow(Math.cos(input.getSweepQuarteChordEq().getEstimatedValue()), 2)))
+					Math.pow(Math.cos(input.getSweepQuarteChordEq().to(SI.RADIAN).getEstimatedValue()),0.75)
+					*(1-(0.08*Math.pow(Math.cos(input.getSweepQuarteChordEq().to(SI.RADIAN).getEstimatedValue()), 2)))
 					);
 
 		for(int i=0; i<flapTypeIndex.size(); i++)
@@ -576,8 +576,8 @@ public class HighLiftDevicesCalc {
 			List<Double> kLambdaSlat = new ArrayList<Double>();
 			for(int i=0; i<input.getSlatsNumber(); i++)
 				kLambdaSlat.add(
-						Math.pow(Math.cos(input.getSweepQuarteChordEq().getEstimatedValue()),0.75)
-						*(1-(0.08*Math.pow(Math.cos(input.getSweepQuarteChordEq().getEstimatedValue()), 2)))
+						Math.pow(Math.cos(input.getSweepQuarteChordEq().to(SI.RADIAN).getEstimatedValue()),0.75)
+						*(1-(0.08*Math.pow(Math.cos(input.getSweepQuarteChordEq().to(SI.RADIAN).getEstimatedValue()), 2)))
 						);
 
 			List<Double> slatSurface = new ArrayList<Double>();

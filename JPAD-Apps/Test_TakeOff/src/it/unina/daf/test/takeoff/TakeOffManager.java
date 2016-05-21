@@ -353,8 +353,8 @@ public class TakeOffManager {
 		JPADStaticWriteUtils.writeSingleNode("number_of_engines", input.getnEngine(), engineDataElement, doc);
 	
 		if(!input.isEngineModel()) {
-		JPADStaticWriteUtils.writeSingleNode("net_thrust_array_single_engine", input.getNetThrust(), engineDataElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("mach_array", input.getMachArray(), engineDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("net_thrust_array_single_engine", Arrays.toString(input.getNetThrust()), engineDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("mach_array", Arrays.toString(input.getMachArray()), engineDataElement, doc);
 		}
 		
 		//--------------------------------------------------------------------------------------
