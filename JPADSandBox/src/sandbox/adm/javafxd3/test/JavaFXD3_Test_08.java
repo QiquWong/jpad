@@ -125,6 +125,17 @@ public class JavaFXD3_Test_08 extends Application {
 		// listDataArray.add(dataXleVsY);
 		listDataArray.add(dataTopView);
 		
+		List<Double[][]> listAuxDataArray = new ArrayList<Double[][]>();
+		
+		Double[][] xyMAC = new Double[2][2];
+		xyMAC[0][0] = wing.getMeanAerodynamicChordLeadingEdgeY().doubleValue(SI.METRE);
+		xyMAC[0][1] = wing.getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METRE);
+		xyMAC[1][0] = xyMAC[0][0];
+		xyMAC[1][1] = xyMAC[0][1] + wing.getMeanAerodynamicChord().doubleValue(SI.METRE);
+		listAuxDataArray.add(xyMAC);
+		
+		listDataArray.add(xyMAC);
+		
 		double yMax = 1.05*wing.getSemiSpan().doubleValue(SI.METRE);
 		double yMin = -0.05*wing.getSemiSpan().doubleValue(SI.METRE);
 		double xMax = yMax;
@@ -135,7 +146,7 @@ public class JavaFXD3_Test_08 extends Application {
 				.xRange(xMin, xMax)
 				.yRange(yMax, yMin)
 				.axisLineColor("darkblue").axisLineStrokeWidth("2px")
-				.graphBackgroundColor("yellow").graphBackgroundOpacity(0.2)
+				.graphBackgroundColor("blue").graphBackgroundOpacity(0.1)
 				.title("Wing data representation")
 				.xLabel("x (m)")
 				.yLabel("y (m)")
@@ -144,15 +155,17 @@ public class JavaFXD3_Test_08 extends Application {
 //				.symbolType(SymbolType.CIRCLE)
 				.symbolTypes(
 						SymbolType.TRIANGLE_UP,
+						SymbolType.CIRCLE,
 						SymbolType.CIRCLE
 						)
 //				.symbolSize(20)
 				.symbolSizes(20,10)
-				.showSymbols(false,true) // NOTE: overloaded function
+				.showSymbols(false,true,true) // NOTE: overloaded function
 //				.symbolStyle("fill:yellow; stroke:green; stroke-width:2")
 				.symbolStyles(
 						"fill:blue; stroke:red; stroke-width:2",
-						"fill:cyan; stroke:green; stroke-width:2"
+						"fill:cyan; stroke:green; stroke-width:2",
+						"fill:cyan; stroke:black; stroke-width:3"
 						)
 //				.lineStyle(
 //						// "fill:none; stroke:darkgreen; stroke-dasharray: 15px,2px; stroke-width:2"
@@ -160,15 +173,24 @@ public class JavaFXD3_Test_08 extends Application {
 //						)
 				.lineStyles(
 						"fill:none; stroke:magenta; stroke-dasharray: 15px, 2px; stroke-width:2",
-						"fill:none; stroke:darkblue; stroke-width:2"
+						"fill:none; stroke:darkblue; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:3"
 						)
 //				.plotArea(false)
-				.plotAreas(true,true)
+				.plotAreas(false,true)
 //				.areaStyle("fill:orange;")
 				.areaStyles("fill:orange;","fill:yellow;")
 //				.areaOpacity(0.7)
-				.areaOpacities(0.50,0.20)
+				.areaOpacities(0.50,0.70)
 				//.legendItems("Pippo1", "agodemar2", "crocco3")
+//				.showSymbolsAux(false, false) // NOTE: overloaded function
+//				.symbolSizesAux(10)
+//				.symbolTypesAux(
+//						SymbolType.CIRCLE
+//						)
+//				.symbolStylesAux(
+//						"fill:blue; stroke:red; stroke-width:2"
+//						)
 				.build();
 
 		System.out.println("Plot options:\n" + options);
@@ -176,6 +198,7 @@ public class JavaFXD3_Test_08 extends Application {
 		d3Plotter = new D3Plotter(
 				options,
 				listDataArray
+				//,	listAuxDataArray // not subject to limits-check
 				);
 
 
@@ -241,12 +264,12 @@ public class JavaFXD3_Test_08 extends Application {
 	    	// This wing static object is available in the scope of
 	    	// the Application.start method
 	    	JavaFXD3_Test_08.theWing = LiftingSurfaceCreator.importFromXML(pathToXML, dirAirfoil);
-	    	JavaFXD3_Test_08.theWing.calculateGeometry(50);
+	    	JavaFXD3_Test_08.theWing.calculateGeometry(30);
 
-	    	System.out.println("The wing ...");
-	    	System.out.println(JavaFXD3_Test_08.theWing);
-	    	System.out.println("Details on panel discretization ...");
-	    	JavaFXD3_Test_08.theWing.reportPanelsToSpanwiseDiscretizedVariables();
+//	    	System.out.println("The wing ...");
+//	    	System.out.println(JavaFXD3_Test_08.theWing);
+//	    	System.out.println("Details on panel discretization ...");
+//	    	JavaFXD3_Test_08.theWing.reportPanelsToSpanwiseDiscretizedVariables();
 
 	    } catch (CmdLineException | IOException e) {
 	    	System.err.println("Error: " + e.getMessage());

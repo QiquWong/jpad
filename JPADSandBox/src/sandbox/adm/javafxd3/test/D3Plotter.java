@@ -64,6 +64,8 @@ public class D3Plotter {
 	private D3PlotterOptions options;
 
 	final private List<Double[][]> listDataArray = new ArrayList<Double[][]>();
+	
+	final private List<Double[][]> listAuxDataArray = new ArrayList<Double[][]>();
 
 
 	public static class Margin {
@@ -109,6 +111,16 @@ public class D3Plotter {
 			) {
 		this.options = options;
 		this.listDataArray.addAll(listDataArray);
+	}	
+
+	public D3Plotter(
+			D3PlotterOptions options,
+			List<Double[][]> listDataArray,
+			List<Double[][]> listAuxDataArray
+			) {
+		this.options = options;
+		this.listDataArray.addAll(listDataArray);
+		this.listAuxDataArray.addAll(listAuxDataArray);
 	}	
 	
 	
@@ -572,6 +584,133 @@ public class D3Plotter {
 			}
 
 		}
+		
+		// go through the list of auxiliary data couples and plot 
+		for (int kLine = 0; kLine < listAuxDataArray.size(); kLine++) {
+
+			Double[][] dataArray = listAuxDataArray.get(kLine);
+			
+			//xy plot
+			Selection xySelection = graphSelection //
+					.append("g") //
+					.attr("id", "xy") //
+					.attr("class", "xy");
+
+
+			//plot line
+			org.treez.javafxd3.d3.svg.Line linePathGenerator = d3 //
+					.svg()//
+					.line()
+					.x(new AxisScaleFirstDatumFunction(xScale))
+					.y(new AxisScaleSecondDatumFunction(yScale));
+
+			// line style
+			String lineStyle = "";
+			if (options.isAutoLineStyleAux())
+				lineStyle = options.getLineStyleAux();
+			else {
+				int kk;
+				if (kLine < options.getLineStylesAux().size())
+					kk = kLine;
+				else
+					kk = kLine % options.getLineStylesAux().size();
+				
+				lineStyle = options.getLineStylesAux().get(kk);
+			}
+			
+			Selection line = xySelection //
+					.append("path") //
+					.attr("id", "line") //
+					.attr("d", linePathGenerator.generate(dataArray))
+					.attr("class", "line")
+					.attr("style", lineStyle);
+
+			boolean showSymbols;
+			if (options.isAutoShowSymbolsAux()) { 
+				showSymbols = options.isShowSymbolsAux();
+			} else {
+				int kk;
+				if (kLine < options.getShowSymbolsAux().size())
+					kk = kLine;
+				else
+					kk = kLine % options.getShowSymbolsAux().size();
+				
+				showSymbols = options.getShowSymbolsAux().get(kk);
+			}
+
+
+			if (showSymbols) {
+				
+				// symbols type
+				
+				SymbolType symbolType;
+				if (options.isAutoSymbolTypeAux())
+					symbolType = options.getSymbolTypeAux();
+				else {
+					int kk;
+					if (kLine < options.getSymbolTypesAux().size())
+						kk = kLine;
+					else
+						kk = kLine % options.getSymbolTypesAux().size();
+					
+					symbolType = options.getSymbolTypesAux().get(kk);
+				}
+
+				int symbolSize;
+				if (options.isAutoSymbolSizeAux())
+					symbolSize = options.getSymbolSizeAux();
+				else {
+					int kk;
+					if (kLine < options.getSymbolSizesAux().size())
+						kk = kLine;
+					else
+						kk = kLine % options.getSymbolSizesAux().size();
+					
+					symbolSize = options.getSymbolSizesAux().get(kk);
+				}
+				
+				Symbol symbol = d3 //
+						.svg() //
+						.symbol();
+				symbol = symbol //
+						.size(symbolSize) //
+						.type(symbolType); // SymbolType.CIRCLE
+				
+				// style
+				String symbolStyle;
+				if (options.isAutoSymbolStyleAux())
+					symbolStyle = options.getSymbolStyleAux();
+				else {
+					int kk;
+					if (kLine < options.getSymbolStylesAux().size())
+						kk = kLine;
+					else
+						kk = kLine % options.getSymbolStylesAux().size();
+					
+					symbolStyle = options.getSymbolStylesAux().get(kk);
+				}
+				
+				String symbolDString = symbol.generate();
+
+				Selection symbolSelection = xySelection //
+						.append("g") //
+						.attr("id", "symbols") //
+						.attr("class", "symbols");
+
+				@SuppressWarnings("unused")
+				Selection symbols = symbolSelection
+				.selectAll("path") //
+				.data(dataArray) //
+				.enter() //
+				.append("path") //
+				.attr("transform", new AxisTransformPointDatumFunction(xScale, yScale)) //
+				//.attrExpression("transform", "function(d, i) { return 'translate(' + d[0] + ',' + d[1] + ')'; }") //
+				.attr("d", symbolDString) //
+				.attr("style", symbolStyle); // options.getSymbolStyle()
+			}
+
+		}
+		
 		
 		if (options.isShowLegend())
 			putLegend();

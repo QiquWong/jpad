@@ -170,8 +170,6 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		// SPOILERS
 		// TODO
 
-
-
 		return wing;
 	}
 

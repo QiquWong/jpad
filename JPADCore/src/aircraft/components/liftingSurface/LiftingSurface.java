@@ -5,7 +5,6 @@ import static java.lang.Math.pow;
 import static java.lang.Math.round;
 import static java.lang.Math.sqrt;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +29,6 @@ import org.jscience.physics.amount.AmountFormat;
 
 import aircraft.OperatingConditions;
 import aircraft.auxiliary.airfoil.MyAirfoil;
-import aircraft.calculators.ACAerodynamicsManager;
 import aircraft.componentmodel.AeroComponent;
 import aircraft.components.Aircraft;
 import aircraft.components.fuselage.Fuselage;
@@ -43,7 +41,6 @@ import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
-import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
 import standaloneutils.MyUnits;
@@ -657,19 +654,6 @@ public class LiftingSurface extends AeroComponent{
 	} // end of constructor
 
 
-	// Import from file
-	public LiftingSurface(
-			File xmlFile, 
-			String name, String description, Double x, Double y, Double z, Fuselage fuselage, Double riggingAngle) { 
-
-		super(name, description, x, y, z, ComponentEnum.WING);
-		_cg = new CenterOfGravity(_X0, _Y0, _Z0);
-
-		//		importFromXMLFile(xmlFile); // may overwrite: name, description 	
-
-	}
-
-
 	public LiftingSurface(ComponentEnum type) {
 		super("New lifting surface", "Default lifting surface", 0.0, 0.0, 0.0, type);
 		_description = "Default lifting surface (" + type.name() + ")";
@@ -679,10 +663,29 @@ public class LiftingSurface extends AeroComponent{
 		initializeDefaultSurface(type);
 	}
 
+	// Import from file
+	public LiftingSurface(
+			String pathToXML, String airfoilsDir, 
+			String name, String description, Double x, Double y, Double z,
+			ComponentEnum type // example: ComponentEnum.WING
+			) { 		
+		super(name, description, x, y, z, type);
+		
+		if (
+			!type.equals(ComponentEnum.WING) &&
+			!type.equals(ComponentEnum.HORIZONTAL_TAIL) &&
+			!type.equals(ComponentEnum.VERTICAL_TAIL) &&
+			!type.equals(ComponentEnum.CANARD) 
+			)
+			throw new IllegalArgumentException("type must be a WING | HORIZONTAL_TAIL | VERTICAL_TAIL | CANARD ."); 
+		
+		_cg = new CenterOfGravity(_X0, _Y0, _Z0);
+		importFromXML(pathToXML, airfoilsDir);
+	}
 	
 	
-	public LiftingSurfaceCreator importFromXML(String pathToXML, String airfoilsDir) {
-		return LiftingSurfaceCreator.importFromXML(pathToXML, airfoilsDir);
+	private void importFromXML(String pathToXML, String airfoilsDir) {
+		theLiftingSurfaceCreator = LiftingSurfaceCreator.importFromXML(pathToXML, airfoilsDir);
 	}
 	
 	
