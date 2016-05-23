@@ -10,6 +10,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
+import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.Wing;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator;
@@ -62,31 +63,20 @@ public class WingTest {
 
 		System.out.println("--------------");
 
+		LiftingSurface wing = new LiftingSurface(
+				pathToXML, dirAirfoil,
+				"Wing", // name
+				"Test wing ",
+				11.0, 0.0, 1.6,
+				ComponentEnum.WING
+				);
 		
-//		_theWing = new Wing(
-//				aircraftName,
-//				"Wing", // name
-//				"Data from AC_ATR_72_REV05.pdf",
-//				11.0, 0.0, 1.6,
-//				ComponentEnum.WING,
-//				_theFuselage,
-//				_theNacelle,
-//				_theHTail,
-//				_theVTail
-//				);
-
+		wing.getTheLiftingSurfaceCreator().calculateGeometry(30);
+		System.out.println("The wing ...");
+		System.out.println(wing.getTheLiftingSurfaceCreator());
 		
-		
-		
-//		LiftingSurfaceCreator wing = LiftingSurfaceCreator.importFromXML(pathToXML, dirAirfoil);
-//		wing.calculateGeometry(30);
-//
-//		System.out.println("The wing ...");
-//
-//		System.out.println(wing);
-//
-//		System.out.println("Details on panel discretization ...");
-//		wing.reportPanelsToSpanwiseDiscretizedVariables();
+		System.out.println("Details on panel discretization ...");
+		wing.getTheLiftingSurfaceCreator().reportPanelsToSpanwiseDiscretizedVariables();
 		
 
 	}

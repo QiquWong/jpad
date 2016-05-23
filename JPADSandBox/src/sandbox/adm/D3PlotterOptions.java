@@ -60,12 +60,28 @@ public class D3PlotterOptions {
 	private boolean autoSymbolStyle;
 	private List<String> listSymbolStyle;
 
+	private int symbolSizeAux;
+	private List<Integer> listSymbolSizeAux;
+	private boolean autoSymbolSizeAux;
+	
+	private SymbolType symbolTypeAux;
+	private boolean autoSymbolTypeAux;
+	private List<SymbolType> listSymbolTypeAux;
+	private String symbolStyleAux;
+	private boolean autoSymbolStyleAux;
+	private List<String> listSymbolStyleAux;
+	
+	
 //	private int lineSize;
 //	private List<Integer> listLineSize;
 //	private boolean autoLineSize;
 	private String lineStyle;
 	private boolean autoLineStyle;
 	private List<String> listLineStyle;
+
+	private String lineStyleAux;
+	private boolean autoLineStyleAux;
+	private List<String> listLineStyleAux;
 	
 	private boolean plotArea;
 	private List<Boolean> listPlotArea;
@@ -81,6 +97,10 @@ public class D3PlotterOptions {
 	private List<Boolean> listShowSymbols;
 	private boolean autoShowSymbols;
 
+	private boolean showSymbolsAux;
+	private List<Boolean> listShowSymbolsAux;
+	private boolean autoShowSymbolsAux;
+	
 	private boolean showLegend;
 	private boolean autoLegend;
 	
@@ -145,12 +165,28 @@ public class D3PlotterOptions {
 		private boolean _autoSymbolStyle = true;
 		private List<String> _listSymbolStyle = new ArrayList<>();
 
+		private int _symbolSizeAux = 64;
+		private List<Integer> _listSymbolSizeAux = new ArrayList<>();
+		private boolean _autoSymbolSizeAux = true;
+		private SymbolType _symbolTypeAux = SymbolType.CIRCLE;
+		private boolean _autoSymbolTypeAux = true;
+		private List<SymbolType> _listSymbolTypeAux = new ArrayList<>();
+		
+		private String _symbolStyleAux = "fill:red; stroke:blue; stroke-width:2";
+		private boolean _autoSymbolStyleAux = true;
+		private List<String> _listSymbolStyleAux = new ArrayList<>();
+		
+		
 //		private int _lineSize = 4;
 //		private List<Integer> _listLineSize = new ArrayList<>();
 //		private boolean _autoLineSize = true;
 		private String _lineStyle = "fill:none; stroke:black; stroke-width:2";
 		private boolean _autoLineStyle = true;
 		private List<String> _listLineStyle = new ArrayList<>();
+
+		private String _lineStyleAux = "fill:none; stroke:black; stroke-width:2";
+		private boolean _autoLineStyleAux = true;
+		private List<String> _listLineStyleAux = new ArrayList<>();
 		
 		private boolean _plotArea = false;
 		private List<Boolean> _listPlotArea = new ArrayList<>();
@@ -166,6 +202,10 @@ public class D3PlotterOptions {
 		private List<Boolean> _listShowSymbols = new ArrayList<>();
 		private boolean _autoShowSymbols = true;
 
+		private boolean _showSymbolsAux = true;
+		private List<Boolean> _listShowSymbolsAux = new ArrayList<>();
+		private boolean _autoShowSymbolsAux = true;
+		
 		private boolean _showLegend = true;
 		private boolean _autoLegend = true;
 
@@ -304,6 +344,22 @@ public class D3PlotterOptions {
 			return this;
 		}
 
+		public D3PlotterOptionsBuilder symbolSizeAux(int s) {
+			_symbolSizeAux = s;
+			return this;
+		}
+
+		public D3PlotterOptionsBuilder symbolTypeAux(SymbolType t) {
+			_symbolTypeAux = t;
+			return this;
+		}
+		
+		public D3PlotterOptionsBuilder symbolStyleAux(String style) {
+			_symbolStyleAux = style;
+			return this;
+		}
+		
+		
 //		public D3PlotterOptionsBuilder lineSize(int s) {
 //			_lineSize = s;
 //			return this;
@@ -323,6 +379,11 @@ public class D3PlotterOptions {
 			return this;
 		}
 
+		public D3PlotterOptionsBuilder lineStyleAux(String style) {
+			_lineStyleAux = style;
+			return this;
+		}
+		
 		public D3PlotterOptionsBuilder areaStyle(String style) {
 			_areaStyle = style;
 			return this;
@@ -335,6 +396,13 @@ public class D3PlotterOptions {
 
 		public D3PlotterOptionsBuilder showSymbols(boolean val) {
 			_showSymbols = val;
+			_listShowSymbols.add(val);
+			return this;
+		}		
+
+		public D3PlotterOptionsBuilder showSymbolsAux(boolean val) {
+			_showSymbolsAux = val;
+			_listShowSymbolsAux.add(val);
 			return this;
 		}		
 		
@@ -469,6 +537,46 @@ public class D3PlotterOptions {
 			return this;
 		}
 		
+		public D3PlotterOptionsBuilder symbolSizesAux(
+				Integer... sizes) {
+			for (Integer s : sizes)
+				_listSymbolSizeAux.add(s);
+			
+			// if user passes strings, auto-* feature is disabled
+			_autoSymbolSizeAux = false;
+			return this;
+		}
+		
+		public D3PlotterOptionsBuilder symbolTypesAux(
+				SymbolType... types ) {
+			for (SymbolType t : types)
+				_listSymbolTypeAux.add(t);
+			
+			// if user passes strings, auto-* feature is disabled
+			_autoSymbolTypeAux = false;
+			return this;
+		}
+		
+		public D3PlotterOptionsBuilder symbolStylesAux(
+				String... styles ) {
+			for (String s : styles)
+				_listSymbolStyleAux.add(s);
+			
+			// if user passes strings, auto-* feature is disabled
+			_autoSymbolStyleAux = false;
+			return this;
+		}
+
+		public D3PlotterOptionsBuilder showSymbolsAux(
+				Boolean... dos ) {
+			for (Boolean b : dos)
+				_listShowSymbolsAux.add(b);
+			
+			// if user passes strings, auto-legend feature is disabled
+			_autoShowSymbolsAux = false;
+			return this;
+		}
+		
 		public D3PlotterOptionsBuilder lineStyles(
 				String... styles ) {
 			for (String s : styles)
@@ -479,6 +587,16 @@ public class D3PlotterOptions {
 			return this;
 		}
 
+		public D3PlotterOptionsBuilder lineStylesAux(
+				String... styles ) {
+			for (String s : styles)
+				_listLineStyleAux.add(s);
+			
+			// if user passes strings, auto-* feature is disabled
+			_autoLineStyleAux = false;
+			return this;
+		}
+		
 		public D3PlotterOptionsBuilder areaStyles(
 				String... styles ) {
 			for (String s : styles)
@@ -548,7 +666,21 @@ public class D3PlotterOptions {
 
 		this.showSymbols = builder._showSymbols;
 		this.listShowSymbols = builder._listShowSymbols;
+		
+		this.symbolSizeAux = builder._symbolSizeAux;
+		this.listSymbolSizeAux = builder._listSymbolSizeAux;
+		this.autoSymbolSizeAux = builder._autoSymbolSizeAux;
+		
+		this.symbolTypeAux = builder._symbolTypeAux;
+		this.listSymbolTypeAux = builder._listSymbolTypeAux;
+		this.autoSymbolTypeAux = builder._autoSymbolTypeAux;
+		this.symbolStyleAux = builder._symbolStyleAux;
+		this.autoSymbolStyleAux = builder._autoSymbolStyleAux;
+		this.listSymbolStyleAux = builder._listSymbolStyleAux;
 
+		this.showSymbolsAux = builder._showSymbolsAux;
+		this.listShowSymbolsAux = builder._listShowSymbolsAux;
+		
 //		this.lineSize = builder._lineSize;
 //		this.listLineSize = builder._listLineSize;
 //		this.autoLineSize = builder._autoLineSize;
@@ -557,6 +689,10 @@ public class D3PlotterOptions {
 		this.autoLineStyle = builder._autoLineStyle;
 		this.listLineStyle = builder._listLineStyle;
 
+		this.lineStyleAux = builder._lineStyleAux;
+		this.autoLineStyleAux = builder._autoLineStyleAux;
+		this.listLineStyleAux = builder._listLineStyleAux;
+		
 		this.plotArea = builder._plotArea;
 		this.autoPlotArea = builder._autoPlotArea;		
 		this.listPlotArea = builder._listPlotArea;		
@@ -730,6 +866,54 @@ public class D3PlotterOptions {
 		return listSymbolStyle;
 	}
 
+	public boolean isAutoShowSymbolsAux() {
+		return autoShowSymbolsAux;
+	}	
+
+	public int getSymbolSizeAux() {
+		return symbolSizeAux;
+	}
+
+	public boolean isAutoSymbolSizeAux() {
+		return autoSymbolSizeAux;
+	}	
+
+	public List<Integer> getSymbolSizesAux() {
+		return listSymbolSizeAux;
+	}
+	
+	public SymbolType getSymbolTypeAux() {
+		return symbolTypeAux;
+	}
+
+	public boolean isAutoSymbolTypeAux() {
+		return autoSymbolTypeAux;
+	}	
+
+	public List<SymbolType> getSymbolTypesAux() {
+		return listSymbolTypeAux;
+	}
+	
+	public String getSymbolStyleAux() {
+		return symbolStyleAux;
+	}
+
+	public boolean isShowSymbolsAux() {
+		return showSymbolsAux;
+	}
+
+	public boolean isAutoSymbolStyleAux() {
+		return autoSymbolStyleAux;
+	}	
+
+	public List<Boolean> getShowSymbolsAux() {
+		return listShowSymbolsAux;
+	}
+	
+	public List<String> getSymbolStylesAux() {
+		return listSymbolStyleAux;
+	}
+	
 //	public int getLineSize() {
 //		return lineSize;
 //	}
@@ -750,6 +934,18 @@ public class D3PlotterOptions {
 
 	public List<String> getLineStyles() {
 		return listLineStyle;
+	}
+
+	public String getLineStyleAux() {
+		return lineStyleAux;
+	}
+
+	public boolean isAutoLineStyleAux() {
+		return autoLineStyleAux;
+	}	
+
+	public List<String> getLineStylesAux() {
+		return listLineStyleAux;
 	}
 	
 	public String getAreaStyle() {
@@ -858,12 +1054,29 @@ public class D3PlotterOptions {
 				.append("\tsymbol style: \"" + symbolStyle + "\"\n") //
 				.append("\tauto symbol style: " + autoSymbolStyle + "\n") //
 				.append("\tsymbol styles: " + listSymbolStyle + "\n") //
+
+				.append("\tshow symbols aux: " + showSymbolsAux + "\n") //
+				.append("\tauto show symbols aux: " + autoShowSymbolsAux + "\n") //
+				.append("\tshow flags for symbols aux: " + listShowSymbolsAux + "\n") //
+				.append("\tsymbol size aux: " + symbolSizeAux + "\n") //
+				.append("\tauto symbol size aux: " + autoSymbolSizeAux + "\n") //
+				.append("\tsymbol sizes aux: " + listSymbolSizeAux + "\n") //
+				.append("\tsymbol type aux: " + symbolTypeAux + "\n") //
+				.append("\tauto symbol type aux: " + autoSymbolTypeAux + "\n") //
+				.append("\tsymbol types aux: " + listSymbolTypeAux + "\n") //
+				.append("\tsymbol style aux: \"" + symbolStyleAux + "\"\n") //
+				.append("\tauto symbol style aux: " + autoSymbolStyleAux + "\n") //
+				.append("\tsymbol styles aux: " + listSymbolStyleAux + "\n") //
+				
 				.append("\tline style: \"" + lineStyle + "\"\n") //
 				.append("\tauto line style: " + autoLineStyle + "\n") //
 				.append("\tline styles: " + listLineStyle + "\n") //
 //				.append("\tline size: " + lineSize + "\n") //
 //				.append("\tauto line size: " + autoLineSize + "\n") //
 //				.append("\tline sizes: " + listLineSize + "\n") //
+				.append("\tline style aux: \"" + lineStyleAux + "\"\n") //
+				.append("\tauto line style aux: " + autoLineStyleAux + "\n") //
+				.append("\tline styles aux: " + listLineStyleAux + "\n") //
 				.append("\tarea style: \"" + areaStyle + "\"\n") //
 				.append("\tauto area style: " + autoAreaStyle + "\n") //
 				.append("\tarea styles: " + listAreaStyle + "\n") //
