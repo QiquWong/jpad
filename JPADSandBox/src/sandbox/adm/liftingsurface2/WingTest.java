@@ -10,8 +10,8 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import aircraft.components.liftingSurface.adm.LiftingSurface;
-import aircraft.components.liftingSurface.adm.LiftingSurfacePanel;
+import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
+import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator;
 import standaloneutils.JPADXmlReader;
 
 public class WingTest {
@@ -60,7 +60,7 @@ public class WingTest {
 
 		System.out.println("--------------");
 
-		LiftingSurface wing = LiftingSurface.importFromXML(pathToXML, dirAirfoil);
+		LiftingSurfaceCreator wing = LiftingSurfaceCreator.importFromXML(pathToXML, dirAirfoil);
 		wing.calculateGeometry(30);
 
 		System.out.println("The wing ...");

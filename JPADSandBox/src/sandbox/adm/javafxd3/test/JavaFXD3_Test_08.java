@@ -17,7 +17,7 @@ import org.kohsuke.args4j.Option;
 import org.treez.javafxd3.d3.svg.SymbolType;
 import org.treez.javafxd3.javafx.JavaFxD3Browser;
 
-import aircraft.components.liftingSurface.adm.LiftingSurface;
+import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import configuration.MyConfiguration;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -58,7 +58,7 @@ public class JavaFXD3_Test_08 extends Application {
 
 	//-------------------------------------------------------------
 
-	public static LiftingSurface theWing;
+	public static LiftingSurfaceCreator theWing;
 	
 	//-------------------------------------------------------------
 
@@ -77,7 +77,7 @@ public class JavaFXD3_Test_08 extends Application {
 		System.out.println("\n\n##################");
 		System.out.println("function start :: getting the wing object ...");
 
-		LiftingSurface wing = JavaFXD3_Test_08.theWing;
+		LiftingSurfaceCreator wing = JavaFXD3_Test_08.theWing;
 		if (wing == null) {
 			System.out.println("wing object null, returning.");
 			return;
@@ -240,7 +240,7 @@ public class JavaFXD3_Test_08 extends Application {
 
 	    	// This wing static object is available in the scope of
 	    	// the Application.start method
-	    	JavaFXD3_Test_08.theWing = LiftingSurface.importFromXML(pathToXML, dirAirfoil);
+	    	JavaFXD3_Test_08.theWing = LiftingSurfaceCreator.importFromXML(pathToXML, dirAirfoil);
 	    	JavaFXD3_Test_08.theWing.calculateGeometry(50);
 
 	    	System.out.println("The wing ...");

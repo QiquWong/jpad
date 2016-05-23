@@ -29,7 +29,7 @@ import processing.core.PVector;
 
 /**
  * Build the CAD model of a generic lifting surface
- * once given a LiftingSurface object.
+ * once given a LiftingSurfaceCreator object.
  * 
  * @author Lorenzo Attanasio
  *

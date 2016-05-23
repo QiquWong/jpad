@@ -7,7 +7,7 @@ import javax.measure.unit.Unit;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.fuselage.Fuselage;
-import aircraft.components.liftingSurface.adm.LiftingSurface;
+import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import configuration.enumerations.DirStabEnum;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;

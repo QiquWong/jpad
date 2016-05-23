@@ -80,7 +80,7 @@ public class Test_MR_06_Wing {
 		//		double yAw = 0.0;
 		//		double zAw = 1.6;
 		//		double iw = 0.0;
-		//		LiftingSurface theWing = new LiftingSurface(
+		//		LiftingSurfaceCreator theWing = new LiftingSurfaceCreator(
 		//				"Wing", // name
 		//				"Data from AC_ATR_72_REV05.pdf",
 		//				xAw, yAw, zAw, iw,

@@ -14,8 +14,8 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import aircraft.components.liftingSurface.adm.Airfoil;
-import aircraft.components.liftingSurface.adm.Airfoil.AirfoilBuilder;
+import aircraft.components.liftingSurface.creator.Airfoil;
+import aircraft.components.liftingSurface.creator.Airfoil.AirfoilBuilder;
 import configuration.enumerations.AirfoilTypeEnum;
 import sandbox.vt.TakeOff_Test.TakeOff_Test_TP;
 import standaloneutils.JPADXmlReader;

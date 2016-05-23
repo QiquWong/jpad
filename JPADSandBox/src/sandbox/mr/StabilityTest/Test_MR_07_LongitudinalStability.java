@@ -110,8 +110,8 @@ package sandbox.mr.StabilityTest;
 //
 //		//------------------------------------------------------------------------------------
 //		// Wing and Tail
-//		LiftingSurface theWing = aircraft.get_wing();
-//		LiftingSurface horizontalTail = aircraft.get_HTail();
+//		LiftingSurfaceCreator theWing = aircraft.get_wing();
+//		LiftingSurfaceCreator horizontalTail = aircraft.get_HTail();
 //
 //
 //		//--------------------------------------------------------------------------------------

@@ -11,7 +11,7 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import aircraft.components.fuselage.vt.Fuselage;
-import aircraft.components.liftingSurface.adm.LiftingSurface;
+import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import configuration.enumerations.AircraftEnum;
 import sandbox.adm.liftingsurface2.WingTest;
 import standaloneutils.JPADXmlReader;

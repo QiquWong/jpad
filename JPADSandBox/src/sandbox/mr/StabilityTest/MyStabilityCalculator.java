@@ -201,7 +201,7 @@ package sandbox.mr.StabilityTest;
 //
 //	// VARIABLE DECLARATION--------------------------------------
 //
-//	LiftingSurface theLiftingSurface;
+//	LiftingSurfaceCreator theLiftingSurface;
 //	OperatingConditions theConditions;
 //
 //	double meanAerodinamicChord, xMAC, yMAC, cLLocal, qValue, alphaLocalAirfoil;
@@ -215,7 +215,7 @@ package sandbox.mr.StabilityTest;
 //
 //	// BUILDER--------------------------------------
 //
-//	public CalcPitchingMomentAC(LiftingSurface theLiftingSurface, OperatingConditions theConditions) {
+//	public CalcPitchingMomentAC(LiftingSurfaceCreator theLiftingSurface, OperatingConditions theConditions) {
 //
 //		this.theLiftingSurface = theLiftingSurface;
 //		this.theConditions = theConditions;
@@ -662,7 +662,7 @@ package sandbox.mr.StabilityTest;
 //		if (component == ComponentEnum.WING){
 //			double aCWing, acWingBody;
 //	
-//			LiftingSurface theWing = theAircraft.get_wing();
+//			LiftingSurfaceCreator theWing = theAircraft.get_wing();
 //			LSAerodynamicsManager theLSManager = theAircraft.get_wing().getAerodynamics();
 //			LSAerodynamicsManager.CalcCLAtAlpha theCLWingCalculator = 
 //					theLSManager
@@ -733,7 +733,7 @@ package sandbox.mr.StabilityTest;
 //			double aChTail;
 //			
 //			
-//			LiftingSurface theHorizontalTail = theAircraft.get_HTail();
+//			LiftingSurfaceCreator theHorizontalTail = theAircraft.get_HTail();
 //			LSAerodynamicsManager theLSManager = theAircraft.get_HTail().getAerodynamics();
 //			LSAerodynamicsManager.CalcCLAtAlpha theCLhTailCalculator = 
 //					theLSManager
@@ -833,7 +833,7 @@ package sandbox.mr.StabilityTest;
 //				
 //
 //				
-//				LiftingSurface theWing = theAircraft.get_wing();
+//				LiftingSurfaceCreator theWing = theAircraft.get_wing();
 //				LSAerodynamicsManager theLSManager = theAircraft.get_wing().getAerodynamics();
 //				LSAerodynamicsManager.CalcCLAtAlpha theCLWingCalculator = 
 //						theLSManager

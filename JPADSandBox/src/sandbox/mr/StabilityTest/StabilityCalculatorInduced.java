@@ -169,7 +169,7 @@ package sandbox.mr.StabilityTest;
 //	
 //	// VARIABLE DECLARATION--------------------------------------
 //	
-//	LiftingSurface theLiftingSurface;
+//	LiftingSurfaceCreator theLiftingSurface;
 //	OperatingConditions theConditions;
 //	AlphaEffective theAlphaCalculator;
 //	
@@ -184,7 +184,7 @@ package sandbox.mr.StabilityTest;
 //	
 //	// BUILDER--------------------------------------
 //	
-//	public CalcLSPitchingMoment(LiftingSurface theLiftingSurface, OperatingConditions theConditions) {
+//	public CalcLSPitchingMoment(LiftingSurfaceCreator theLiftingSurface, OperatingConditions theConditions) {
 //		
 //		this.theLiftingSurface = theLiftingSurface;
 //		this.theConditions = theConditions;

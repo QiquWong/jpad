@@ -35,6 +35,7 @@ import aircraft.componentmodel.AeroComponent;
 import aircraft.components.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcHighLiftDevices;
+import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import aircraft.components.nacelles.Nacelle;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AirfoilStationEnum;
@@ -65,6 +66,12 @@ public class LiftingSurface extends AeroComponent{
 	Amount<Length> _zApexConstructionAxes = null;
 	Double _positionRelativeToAttachment = null; // 1.0 = high wing aircraft, 0.0 = low wing
 
+	
+	//=========================================================
+	// the creator object
+	
+	private LiftingSurfaceCreator theLiftingSurfaceCreator;
+	
 	public final int IDX_SECTION_ROOT = 0;
 	public final int IDX_SECTION_KINK = 1;
 	public final int IDX_SECTION_TIP = 2;
@@ -672,6 +679,13 @@ public class LiftingSurface extends AeroComponent{
 		initializeDefaultSurface(type);
 	}
 
+	
+	
+	public LiftingSurfaceCreator importFromXML(String pathToXML, String airfoilsDir) {
+		return LiftingSurfaceCreator.importFromXML(pathToXML, airfoilsDir);
+	}
+	
+	
 	public void calculateGeometry(){
 
 		buildPlanform();
@@ -3673,6 +3687,10 @@ public class LiftingSurface extends AeroComponent{
 
 	public void setDeltaFactorDrag(double deltaFactorDrag) {
 		this.deltaFactorDrag = deltaFactorDrag;
+	}
+
+	public LiftingSurfaceCreator getTheLiftingSurfaceCreator() {
+		return theLiftingSurfaceCreator;
 	}
 
 }

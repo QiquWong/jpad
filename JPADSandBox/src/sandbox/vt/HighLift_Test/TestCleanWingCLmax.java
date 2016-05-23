@@ -71,7 +71,7 @@ public class TestCleanWingCLmax {
 //		Aircraft aircraft = Aircraft.createDefaultAircraft("ATR-72");
 //		aircraft.set_name("ATR-72");
 //
-//		LiftingSurface theWing = aircraft.get_wing();
+//		LiftingSurfaceCreator theWing = aircraft.get_wing();
 //
 //		ACAnalysisManager theAnalysis = new ACAnalysisManager(theCondition);
 //		theAnalysis.updateGeometry(aircraft);

@@ -928,7 +928,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		 * 
 		 * @author Manuela Ruocco 
 		 * @param Amount<Angle> alpha
-		 * @param LiftingSurface theWing
+		 * @param LiftingSurfaceCreator theWing
 		 */  
 
 
