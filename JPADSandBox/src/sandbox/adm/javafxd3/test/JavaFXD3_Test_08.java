@@ -134,6 +134,8 @@ public class JavaFXD3_Test_08 extends Application {
 		xyMAC[1][1] = xyMAC[0][1] + wing.getMeanAerodynamicChord().doubleValue(SI.METRE);
 		listAuxDataArray.add(xyMAC);
 		
+		listDataArray.add(xyMAC);
+		
 		double yMax = 1.05*wing.getSemiSpan().doubleValue(SI.METRE);
 		double yMin = -0.05*wing.getSemiSpan().doubleValue(SI.METRE);
 		double xMax = yMax;
@@ -153,15 +155,17 @@ public class JavaFXD3_Test_08 extends Application {
 //				.symbolType(SymbolType.CIRCLE)
 				.symbolTypes(
 						SymbolType.TRIANGLE_UP,
+						SymbolType.CIRCLE,
 						SymbolType.CIRCLE
 						)
 //				.symbolSize(20)
 				.symbolSizes(20,10)
-				.showSymbols(false,true) // NOTE: overloaded function
+				.showSymbols(false,true,true) // NOTE: overloaded function
 //				.symbolStyle("fill:yellow; stroke:green; stroke-width:2")
 				.symbolStyles(
 						"fill:blue; stroke:red; stroke-width:2",
-						"fill:cyan; stroke:green; stroke-width:2"
+						"fill:cyan; stroke:green; stroke-width:2",
+						"fill:cyan; stroke:black; stroke-width:3"
 						)
 //				.lineStyle(
 //						// "fill:none; stroke:darkgreen; stroke-dasharray: 15px,2px; stroke-width:2"
@@ -169,7 +173,8 @@ public class JavaFXD3_Test_08 extends Application {
 //						)
 				.lineStyles(
 						"fill:none; stroke:magenta; stroke-dasharray: 15px, 2px; stroke-width:2",
-						"fill:none; stroke:darkblue; stroke-width:2"
+						"fill:none; stroke:darkblue; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:3"
 						)
 //				.plotArea(false)
 				.plotAreas(false,true)
@@ -178,22 +183,22 @@ public class JavaFXD3_Test_08 extends Application {
 //				.areaOpacity(0.7)
 				.areaOpacities(0.50,0.70)
 				//.legendItems("Pippo1", "agodemar2", "crocco3")
-				.showSymbolsAux(true, false) // NOTE: overloaded function
-				.symbolSizesAux(10)
-				.symbolTypesAux(
-						SymbolType.CIRCLE
-						)
-				.symbolStyles(
-						"fill:blue; stroke:red; stroke-width:2"
-						)
+//				.showSymbolsAux(false, false) // NOTE: overloaded function
+//				.symbolSizesAux(10)
+//				.symbolTypesAux(
+//						SymbolType.CIRCLE
+//						)
+//				.symbolStylesAux(
+//						"fill:blue; stroke:red; stroke-width:2"
+//						)
 				.build();
 
 		System.out.println("Plot options:\n" + options);
 
 		d3Plotter = new D3Plotter(
 				options,
-				listDataArray,
-				listAuxDataArray
+				listDataArray
+				//,	listAuxDataArray // not subject to limits-check
 				);
 
 

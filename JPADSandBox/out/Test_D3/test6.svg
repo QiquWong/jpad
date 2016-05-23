@@ -423,14 +423,14 @@
             <path id="line"
                   d="M265.82199898269783,104.31451890373611L265.82199898269783,181.60531294074102"
                   class="line"
-                  style="fill:none; stroke:black; stroke-width:2"/>
+                  style="fill:none; stroke:black; stroke-width:3"/>
             <g id="symbols" class="symbols">
                <path transform="translate(265.82199898269783,104.31451890373611)"
-                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
-                     style="fill:red; stroke:blue; stroke-width:2"/>
+                     d="M0,2.5231325220201604A2.5231325220201604,2.5231325220201604 0 1,1 0,-2.5231325220201604A2.5231325220201604,2.5231325220201604 0 1,1 0,2.5231325220201604Z"
+                     style="fill:cyan; stroke:black; stroke-width:3"/>
                <path transform="translate(265.82199898269783,181.60531294074102)"
-                     d="M0,1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,-1.7841241161527712A1.7841241161527712,1.7841241161527712 0 1,1 0,1.7841241161527712Z"
-                     style="fill:red; stroke:blue; stroke-width:2"/>
+                     d="M0,2.5231325220201604A2.5231325220201604,2.5231325220201604 0 1,1 0,-2.5231325220201604A2.5231325220201604,2.5231325220201604 0 1,1 0,2.5231325220201604Z"
+                     style="fill:cyan; stroke:black; stroke-width:3"/>
             </g>
          </g>
       </g>
@@ -446,7 +446,9 @@
    <g class="legend" transform="translate(558.0,51.0)">
       <rect y="0" width="10" height="10" style="fill: #ff0000;"/>
       <rect y="22" width="10" height="10" style="fill: #0000ff;"/>
+      <rect y="44" width="10" height="10" style="fill: #008000;"/>
       <text text-anchor="start" x="18" y="10">data set 0</text>
       <text text-anchor="start" x="18" y="32">data set 1</text>
+      <text text-anchor="start" x="18" y="54">data set 2</text>
    </g>
 </svg>
