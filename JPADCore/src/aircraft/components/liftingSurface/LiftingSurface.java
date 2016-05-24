@@ -666,7 +666,8 @@ public class LiftingSurface extends AeroComponent{
 	// Import from file
 	public LiftingSurface(
 			String pathToXML, String airfoilsDir, 
-			String name, String description, Double x, Double y, Double z,
+			String name, String description, 
+			Double x, Double y, Double z, // lifting surface apex wrt BRF
 			ComponentEnum type // example: ComponentEnum.WING
 			) { 		
 		super(name, description, x, y, z, type);
@@ -679,7 +680,8 @@ public class LiftingSurface extends AeroComponent{
 			)
 			throw new IllegalArgumentException("type must be a WING | HORIZONTAL_TAIL | VERTICAL_TAIL | CANARD ."); 
 		
-		_cg = new CenterOfGravity(_X0, _Y0, _Z0);
+		_cg = new CenterOfGravity(_X0, _Y0, _Z0); // set the cg initially at the origin
+		
 		importFromXML(pathToXML, airfoilsDir);
 	}
 	
@@ -890,7 +892,7 @@ public class LiftingSurface extends AeroComponent{
 		}
 
 
-		// Semi surfaces of inner and outer panels
+		// Semi surfaces of inner and outer _panels
 		if((_extensionLERootChordLinPanel != 0.0 | _extensionTERootChordLinPanel != 0.0)){
 			_semiSurfaceInnerPanel = Amount.valueOf((_chordRoot.doubleValue(SI.METER)+_chordKink.doubleValue(SI.METER)) * 
 					_semiSpanInnerPanel.doubleValue(SI.METER)/2, SI.SQUARE_METRE);

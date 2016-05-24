@@ -66,7 +66,7 @@ public class WingTest {
 		LiftingSurface wing = new LiftingSurface(
 				pathToXML, dirAirfoil,
 				"Wing", // name
-				"Test wing ",
+				"Test wing ", // description
 				11.0, 0.0, 1.6,
 				ComponentEnum.WING
 				);

@@ -351,6 +351,8 @@ public class Airfoil implements IAirfoil {
 			return this;
 		}
 
+		// TODO: implement default airfoil construction according to designation. Example: AirfoilNameEnum.NACA2412
+		
 		public AirfoilBuilder cornerPointsXZNormalized(double[][] xz) {
 			__NormalizedCornerPointsXZ = MatrixUtils.createRealMatrix(xz);
 			return this;

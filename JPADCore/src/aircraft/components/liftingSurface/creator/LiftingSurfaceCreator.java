@@ -38,8 +38,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import aircraft.components.liftingSurface.creator.Airfoil.AirfoilBuilder;
 import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator.LiftingSurfacePanelBuilder;
 import configuration.MyConfiguration;
+import configuration.enumerations.AircraftEnum;
+import configuration.enumerations.AirfoilTypeEnum;
 import javaslang.Tuple;
 import javaslang.Tuple2;
 import javaslang.Tuple5;
@@ -57,15 +60,20 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	public LiftingSurfaceCreator(String id) {
 		this.id = id;
+		_panels = new ArrayList<LiftingSurfacePanelCreator>();
 		resetData();
 	}
 
 	// use this to generate the equivalent wing or a simple wing
 	public LiftingSurfaceCreator(String id, LiftingSurfacePanelCreator panel) {
 		this.id = id;
+		_panels = new ArrayList<LiftingSurfacePanelCreator>();
+
 		resetData();
 
-		panels.add(panel);
+		_panels.add(panel);
+		
+		this.calculateGeometry(30);
 
 		//---------------------------------------------------------------------------------
 		// SYMMETRIC FLAPS
@@ -85,13 +93,196 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	}
 
+	// Builder pattern via a nested public static class
+
+	public static class LiftingSurfaceCreatorBuilder {
+		
+		// required parameters
+		private String __id;
+
+		// optional parameters ... defaults
+		// ...
+
+		private List<LiftingSurfacePanelCreator> __panels = new ArrayList<LiftingSurfacePanelCreator>();
+
+		private MyArray __eta = new MyArray(Unit.ONE);
+
+		private List<Amount<Length>> __yBreakPoints =  new ArrayList<Amount<Length>>();
+		private List<Double> __etaBP = new ArrayList<>();
+		private List<Amount<Length>> __xLEBreakPoints = new ArrayList<Amount<Length>>();
+		private List<Amount<Length>> __zLEBreakPoints = new ArrayList<Amount<Length>>();
+		private List<Amount<Length>> __chordsBreakPoints = new ArrayList<Amount<Length>>();
+		private List<Amount<Angle>> __twistsBreakPoints = new ArrayList<Amount<Angle>>();
+
+		private List<Amount<Length>> __yStationActual = new ArrayList<Amount<Length>>();
+		private List<
+			Tuple2<
+				LiftingSurfacePanelCreator,
+				Tuple5<
+					List<Amount<Length>>, // Ys
+					List<Amount<Length>>, // chords
+					List<Amount<Length>>, // Xle
+					List<Amount<Length>>, // Zle
+					List<Amount<Angle>>   // twist
+					> 
+				>
+			> __panelToSpanwiseDiscretizedVariables = new ArrayList<>();
+		private List<
+			Tuple5<
+				Amount<Length>, // Ys
+				Amount<Length>, // chords
+				Amount<Length>, // Xle
+				Amount<Length>, // Zle
+				Amount<Angle>   // twist
+				> 
+			> __spanwiseDiscretizedVariables = new ArrayList<>();
+		
+		
+		
+		public LiftingSurfaceCreatorBuilder(String id) {
+			this.__id = id;
+			this.initializeDefaultVariables(AircraftEnum.ATR72);
+		}
+
+		public LiftingSurfaceCreatorBuilder(String id, AircraftEnum aircraftName) {
+			this.__id = id;
+			this.initializeDefaultVariables(aircraftName);
+		}
+		
+		public LiftingSurfaceCreator build() {
+			return new LiftingSurfaceCreator(this);
+		}
+
+		private void initializeDefaultVariables(AircraftEnum aircraftName) {
+			// init variables - Reference aircraft:
+			AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
+
+			// --- INPUT DATA ------------------------------------------
+
+			switch(aircraftName) {
+			case ATR72:
+				
+				Airfoil airfoil1 = new AirfoilBuilder("ATR72 wing, root airfoil")
+					.type(AirfoilTypeEnum.CONVENTIONAL)
+					.thicknessToChordRatio(0.18)
+					.camberRatio(0.09)
+					.radiusLeadingEdgeNormalized(0.01)
+					.alphaZeroLift(Amount.valueOf(-1.2, NonSI.DEGREE_ANGLE))
+					.alphaEndLinearTrait(Amount.valueOf(9.5, NonSI.DEGREE_ANGLE))
+					.alphaStall(Amount.valueOf(16.0, NonSI.DEGREE_ANGLE))
+					.clAlphaLinearTrait(6.22)
+					.cdMin(0.00675)
+					.clAtCdMin(0.3)
+					.clAtAlphaZero(0.13)
+					.clEndLinearTrait(1.3)
+					.clMax(1.7)
+					.kFactorDragPolar(0.075)
+					.mExponentDragPolar(2.0)
+					.cmAlphaQuarterChord(0.043) // Clalpha * (c/4 - xac/c) 
+					.xACNormalized(0.243)
+					.cmAC(-0.083)
+					.cmACAtStall(-0.09)
+					.machCritical(0.656)
+					.build();
+				
+				LiftingSurfacePanelCreator panel1 =
+				new LiftingSurfacePanelBuilder(
+					"ATR72 wing, inner panel",
+					Amount.valueOf(2.5759,SI.METER), // chordRoot, 
+					Amount.valueOf(2.5759,SI.METER), // chordTip,
+					airfoil1, // airfoilRoot, 
+					airfoil1, // airfoilTip,
+					Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), // twistGeometricTip,
+					Amount.valueOf(4.7,SI.METER), // semiSpan, 
+					Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), // sweepLeadingEdge, 
+					Amount.valueOf(0.0, NonSI.DEGREE_ANGLE) // dihedral
+					)
+				.build();
+
+				Airfoil airfoil2 = new AirfoilBuilder("ATR72 wing, tip airfoil")
+						.type(AirfoilTypeEnum.CONVENTIONAL)
+						.thicknessToChordRatio(0.15)
+						.camberRatio(0.09)
+						.radiusLeadingEdgeNormalized(0.01)
+						.alphaZeroLift(Amount.valueOf(-1.1, NonSI.DEGREE_ANGLE))
+						.alphaEndLinearTrait(Amount.valueOf(10.0, NonSI.DEGREE_ANGLE))
+						.alphaStall(Amount.valueOf(18.0, NonSI.DEGREE_ANGLE))
+						.clAlphaLinearTrait(6.02)
+						.cdMin(0.00625)
+						.clAtCdMin(0.1)
+						.clAtAlphaZero(0.115)
+						.clEndLinearTrait(1.2)
+						.clMax(1.72)
+						.kFactorDragPolar(0.075)
+						.mExponentDragPolar(2.0)
+						.cmAlphaQuarterChord(0.04214) // Clalpha * (c/4 - xac/c) 
+						.xACNormalized(0.243)
+						.cmAC(-0.0833)
+						.cmACAtStall(-0.07)
+						.machCritical(0.695)
+						.build();
+					
+					LiftingSurfacePanelCreator panel2 =
+					new LiftingSurfacePanelBuilder(
+						"ATR72 wing, outer panel",
+						Amount.valueOf(2.5759,SI.METER), // chordRoot, 
+						Amount.valueOf(1.5906,SI.METER), // chordTip,
+						airfoil1, // airfoilRoot, 
+						airfoil2, // airfoilTip,
+						Amount.valueOf(-2.0, NonSI.DEGREE_ANGLE), // twistGeometricTip,
+						Amount.valueOf(8.83,SI.METER), // semiSpan, 
+						Amount.valueOf(4.3, NonSI.DEGREE_ANGLE), // sweepLeadingEdge, 
+						Amount.valueOf(0.0, NonSI.DEGREE_ANGLE) // dihedral
+						)
+					.build();
+				
+					LiftingSurfaceCreator wing = new LiftingSurfaceCreator("ATR72 wing");
+					
+					__panels.add(panel1);
+					__panels.add(panel2);
+				
+				break;
+
+			case B747_100B:
+				// TODO
+				break;
+
+			case AGILE_DC1:
+				// TODO
+				break;
+			}
+			// --- END OF INPUT DATA ------------------------------------------
+			
+		}
+		
+	}
+	
+	private LiftingSurfaceCreator(LiftingSurfaceCreatorBuilder builder){ // defaults to ATR72 fuselage
+		
+		this.id = builder.__id;
+		this._panels = builder.__panels;
+
+		this._eta = builder.__eta;
+		this._yBreakPoints = builder.__yBreakPoints;
+		this._etaBP = builder.__etaBP;
+		this._xLEBreakPoints = builder.__xLEBreakPoints;
+		this._zLEBreakPoints = builder.__zLEBreakPoints;
+		this._chordsBreakPoints = builder.__chordsBreakPoints;
+		this._twistsBreakPoints = builder.__twistsBreakPoints;
+		this._yStationActual = builder.__yStationActual;
+		this._panelToSpanwiseDiscretizedVariables = builder.__panelToSpanwiseDiscretizedVariables;
+		this._spanwiseDiscretizedVariables = builder.__spanwiseDiscretizedVariables;
+
+		this.calculateGeometry(30);
+
+	}
+
 	private void resetData() {
-		panels = new ArrayList<LiftingSurfacePanelCreator>();
 
 		_eta = new MyArray(Unit.ONE);
 		//_eta.setDouble(MyArrayUtils.linspace(0., 1., _numberOfPointsChordDistribution));
 		//
-		// assign eta's when the shape of the planform is loaded and no. panels are known
+		// assign eta's when the shape of the planform is loaded and no. _panels are known
 
 		_yBreakPoints =  new ArrayList<Amount<Length>>();
 		_etaBP = new ArrayList<>();
@@ -122,7 +313,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		// PANELS
 
 		NodeList nodelistPanel = MyXMLReaderUtils
-				.getXMLNodeListByPath(reader.getXmlDoc(), "//panels/panel");
+				.getXMLNodeListByPath(reader.getXmlDoc(), "//_panels/panel");
 
 		System.out.println("Panels found: " + nodelistPanel.getLength());
 
@@ -147,7 +338,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
             }
 		}
 
-		// Update panels' internal geometry variables
+		// Update _panels' internal geometry variables
 		// wing.calculateGeometry(); // shouldn't care about discretization
 		// for now the user calculates the geometry from the outside of the class
 		// via the wing object:
@@ -175,7 +366,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	@Override
 	public void addPanel(LiftingSurfacePanelCreator panel) {
-		panels.add(panel);
+		_panels.add(panel);
 	}
 
 	@Override
@@ -188,6 +379,8 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 		System.out.println("[LiftingSurfaceCreator] Calculating derived geometry parameters of wing ...");
 
+		resetData();
+		
 		// Update inner geometric variables of each panel
 		this.getPanels().stream()
 			.forEach(LiftingSurfacePanelCreator::calculateGeometry);
@@ -235,7 +428,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		// Mean Aerodynamic Chord
 
 		//======================================================
-		// Weighted sum on MACs of single panels
+		// Weighted sum on MACs of single _panels
 //		Double mac0 = this.getPanels().stream()
 //				.mapToDouble(p ->
 //					p.getMeanAerodynamicChord().to(SI.METRE).getEstimatedValue()
@@ -573,8 +766,57 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	@Override
 	public LiftingSurfaceCreator getEquivalentWing() {
-		// TODO Auto-generated method stub
+		
+		// 1
+		
+		//======================================================
+		// A_1 = int_0^(b/2) xle(y) c(y) dy
+
+		Double integral1 = MyMathUtils.integrate1DSimpsonSpline(
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+					this.getDiscretizedYs()), // y
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+					this.getDiscretizedXle()) // xle(y)
+			);
+		int nSec = this.getDiscretizedXle().size();
+		Double xleAtTip = this.getDiscretizedXle().get(nSec - 1).doubleValue(SI.METER);
+		Double area1 = semiSpan.doubleValue(SI.METER) * xleAtTip - integral1;
+		Double a1 = xleAtTip - 2.0*(area1 / semiSpan.doubleValue(SI.METER));
+
+		//======================================================
+		// A_2 = int_0^(b/2) xle(y) + c(y) dy
+
+
+		Tuple2<
+			List<Amount<Length>>, // Xle
+			List<Amount<Length>>  // c
+			> xlePlusCTuple = Tuple.of(this.getDiscretizedXle(), this.getDiscretizedChords());
+
+		List<Double> xlePlusC = IntStream.range(0, this.getDiscretizedYs().size())
+				.mapToObj(i -> 
+					xlePlusCTuple._1.get(i).doubleValue(SI.METRE)
+					+ xlePlusCTuple._2.get(i).doubleValue(SI.METRE)) // xle + c
+				.collect(Collectors.toList());
+
+		Double integral2 = MyMathUtils.integrate1DSimpsonSpline(
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						this.getDiscretizedYs()), // y
+				MyArrayUtils.convertToDoublePrimitive(xlePlusC) // xle + c
+				);
+		Double xteAtRoot = this.getPanels().get(0).getChordRoot().doubleValue(SI.METER);
+		int nPan = this.getPanels().size();
+		Double xteAtTip = xleAtTip + this.getPanels().get(nPan - 1).getChordTip().doubleValue(SI.METER);
+		
+		Double area2 = semiSpan.doubleValue(SI.METER) * ( xteAtRoot - 2.0*xteAtTip ) - integral2;
+		Double a2 = this.getPanels().get(0).getChordRoot().doubleValue(SI.METER)
+				- xteAtTip - 2.0 *(area2 / semiSpan.doubleValue(SI.METER));
+		
+		// TODO: calculate equivalent wing parameters 
+
 		return null;
+		
+		
+		
 	}
 
 
@@ -586,7 +828,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	/**
 	 * Calculate wing's span and semi-span according to current values
-	 * i.e. panels' semi-spans and dihedral angles
+	 * i.e. _panels' semi-spans and dihedral angles
 	 */
 	private void calculateSpans() {
 		System.out.println("[LiftingSurfaceCreator] Wing span ...");
@@ -610,11 +852,11 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		_yBreakPoints.add(Amount.valueOf(0.0, 1e-8, SI.METRE));
 		// Accumulate values and add
 		_yBreakPoints.addAll(
-			IntStream.range(1, this.panels.size())
+			IntStream.range(1, this._panels.size())
 				.mapToObj(i ->
 					_yBreakPoints.get(i-1).plus( // semiSpan * cos( dihedral )
-						panels.get(i-1).getSemiSpan()
-							.times(Math.cos(panels.get(i-1).getDihedral().to(SI.RADIAN).getEstimatedValue()))
+						_panels.get(i-1).getSemiSpan()
+							.times(Math.cos(_panels.get(i-1).getDihedral().to(SI.RADIAN).getEstimatedValue()))
 					)
 				)
 				.collect(Collectors.toList())
@@ -626,10 +868,10 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 		// Leading-edge x at breakpoints
 		_xLEBreakPoints.add(Amount.valueOf(0.0, 1e-8, SI.METRE));
-		for (int i = 1; i <= this.panels.size(); i++) {
+		for (int i = 1; i <= this._panels.size(); i++) {
 			Amount<Length> x0 = _xLEBreakPoints.get(i-1);
 			Amount<Length> y = _yBreakPoints.get(i).minus(_yBreakPoints.get(i-1));
-			Amount<Angle> sweepLE = panels.get(i-1).getSweepLeadingEdge();
+			Amount<Angle> sweepLE = _panels.get(i-1).getSweepLeadingEdge();
 			_xLEBreakPoints.add(
 				x0.plus(
 						y.times(Math.tan(sweepLE.to(SI.RADIAN).getEstimatedValue()))
@@ -641,10 +883,10 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 		// Leading-edge z at breakpoints
 		_zLEBreakPoints.add(Amount.valueOf(0.0, 1e-8, SI.METRE));
-		for (int i = 1; i <= this.panels.size(); i++) {
+		for (int i = 1; i <= this._panels.size(); i++) {
 			Amount<Length> z0 = _zLEBreakPoints.get(i-1);
 			Amount<Length> y = _yBreakPoints.get(i).minus(_yBreakPoints.get(i-1));
-			Amount<Angle> dihedral = panels.get(i-1).getDihedral();
+			Amount<Angle> dihedral = _panels.get(i-1).getDihedral();
 			_zLEBreakPoints.add(
 				z0.plus(
 						y.times(Math.tan(dihedral.to(SI.RADIAN).getEstimatedValue()))
@@ -655,10 +897,10 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		System.out.println("zLE Break-Points ->\n" + _zLEBreakPoints);
 
 		// Chords at breakpoints
-		_chordsBreakPoints.add(panels.get(0).getChordRoot());
-		for (int i = 0; i < this.panels.size(); i++) {
+		_chordsBreakPoints.add(_panels.get(0).getChordRoot());
+		for (int i = 0; i < this._panels.size(); i++) {
 			_chordsBreakPoints.add(
-					panels.get(i).getChordTip()
+					_panels.get(i).getChordTip()
 				);
 		}
 
@@ -667,9 +909,9 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 		// Twists at breakpoints
 		_twistsBreakPoints.add(Amount.valueOf(0.0,1e-9,NonSI.DEGREE_ANGLE));
-		for (int i = 0; i < this.panels.size(); i++) {
+		for (int i = 0; i < this._panels.size(); i++) {
 			_twistsBreakPoints.add(
-					panels.get(i).getTwistGeometricAtTip()
+					_panels.get(i).getTwistGeometricAtTip()
 				);
 		}
 
@@ -694,58 +936,58 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 	 */
 	private void mapPanelsToYDiscretized() {
 
-		System.out.println("[LiftingSurfaceCreator] Map panels to spanwise discretized Ys ...");
+		System.out.println("[LiftingSurfaceCreator] Map _panels to spanwise discretized Ys ...");
 
 		//======================================================
-		// Map panels with lists of Y's, c, Xle, Yle, Zle, twist
+		// Map _panels with lists of Y's, c, Xle, Yle, Zle, twist
 		// for each panel Y's of inner and outer break-points
 		// are included, i.e. Y's are repeated
 
 		Tuple2<
 			List<LiftingSurfacePanelCreator>,
 			List<Amount<Length>>
-			> tuple0 = Tuple.of(panels, _yStationActual);
+			> tuple0 = Tuple.of(_panels, _yStationActual);
 
 		_panelToSpanwiseDiscretizedVariables.add(
 			tuple0.map(
-				p -> panels.get(0),
+				p -> _panels.get(0),
 				y -> Tuple.of(
 					y.stream()
 						// Innermost panel: Y's include 0 and panel's tip breakpoint Y
-						.filter(y_ -> y_.isLessThan( panels.get(0).getSemiSpan() ) || y_.equals( panels.get(0).getSemiSpan()) )
+						.filter(y_ -> y_.isLessThan( _panels.get(0).getSemiSpan() ) || y_.equals( _panels.get(0).getSemiSpan()) )
 						.collect(Collectors.toList())
 					,
 					y.stream()
-						.filter(y_ -> y_.isLessThan( panels.get(0).getSemiSpan() ) || y_.equals( panels.get(0).getSemiSpan()) )
+						.filter(y_ -> y_.isLessThan( _panels.get(0).getSemiSpan() ) || y_.equals( _panels.get(0).getSemiSpan()) )
 						.map(Y__ -> Amount.valueOf(0.0, SI.METRE))
 						.collect(Collectors.toList()) // initialize Chords
 					,
 					y.stream()
-						.filter(y_ -> y_.isLessThan( panels.get(0).getSemiSpan() ) || y_.equals( panels.get(0).getSemiSpan()) )
+						.filter(y_ -> y_.isLessThan( _panels.get(0).getSemiSpan() ) || y_.equals( _panels.get(0).getSemiSpan()) )
 						.map(Y__ -> Amount.valueOf(0.0, SI.METRE))
 						.collect(Collectors.toList()) // initialize Xle
 					,
 					y.stream()
-						.filter(y_ -> y_.isLessThan( panels.get(0).getSemiSpan() ) || y_.equals( panels.get(0).getSemiSpan()) )
+						.filter(y_ -> y_.isLessThan( _panels.get(0).getSemiSpan() ) || y_.equals( _panels.get(0).getSemiSpan()) )
 						.map(Y__ -> Amount.valueOf(0.0, SI.METRE))
 						.collect(Collectors.toList()) // initialize Zle
 					,
 					y.stream()
-						.filter(y_ -> y_.isLessThan( panels.get(0).getSemiSpan() ) || y_.equals( panels.get(0).getSemiSpan()) )
+						.filter(y_ -> y_.isLessThan( _panels.get(0).getSemiSpan() ) || y_.equals( _panels.get(0).getSemiSpan()) )
 						.map(Y__ -> Amount.valueOf(0.0, SI.RADIAN))
 						.collect(Collectors.toList()) // initialize twists
 					)
 				)
 			);
 
-		// All remaining panels (innermost panel excluded)
+		// All remaining _panels (innermost panel excluded)
 		// Y's include only panel's tip breakpoint Y,
 		// not including panel's root breakpoint Y
-		for (int i=1; i < panels.size(); i++) {
+		for (int i=1; i < _panels.size(); i++) {
 			final int i_ = i;
 			_panelToSpanwiseDiscretizedVariables.add(
 				tuple0.map(
-					p -> panels.get(i_),
+					p -> _panels.get(i_),
 					y -> Tuple.of(
 						y.stream()
 							.mapToDouble(a -> a.to(SI.METRE).getEstimatedValue())
@@ -803,11 +1045,11 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 	 */
 	private void calculateChordsAtYDiscretized() {
 
-		System.out.println("[LiftingSurfaceCreator] Map panels to spanwise discretized chords ...");
+		System.out.println("[LiftingSurfaceCreator] Map _panels to spanwise discretized chords ...");
 
 		//======================================================
 		// Set chords versus Y's
-		// according to location within panels/yBP
+		// according to location within _panels/yBP
 
 		for (int k=0; k < _panelToSpanwiseDiscretizedVariables.size(); k++) {
 			LiftingSurfacePanelCreator panel = _panelToSpanwiseDiscretizedVariables.get(k)._1();
@@ -832,7 +1074,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	private void calculateXZleTwistAtYDiscretized() {
 
-		System.out.println("[LiftingSurfaceCreator] Map panels to spanwise discretized Xle, Yle, twist ...");
+		System.out.println("[LiftingSurfaceCreator] Map _panels to spanwise discretized Xle, Yle, twist ...");
 
 		for (int k=0; k < _panelToSpanwiseDiscretizedVariables.size(); k++) {
 			LiftingSurfacePanelCreator panel = _panelToSpanwiseDiscretizedVariables.get(k)._1();
@@ -1176,9 +1418,9 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 			.append("\tLifting surface\n")
 			.append("\t-------------------------------------\n")
 			.append("\tID: '" + id + "'\n")
-			.append("\tNo. panels " + panels.size() + "\n")
+			.append("\tNo. _panels " + _panels.size() + "\n")
 			;
-		for (LiftingSurfacePanelCreator panel : panels) {
+		for (LiftingSurfacePanelCreator panel : _panels) {
 			sb.append(panel.toString());
 		}
 

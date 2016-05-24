@@ -19,6 +19,7 @@ import org.treez.javafxd3.javafx.JavaFxD3Browser;
 
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import configuration.MyConfiguration;
+import configuration.enumerations.AircraftEnum;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
@@ -258,8 +259,19 @@ public class JavaFXD3_Test_08 extends Application {
 
 	    	// This wing static object is available in the scope of
 	    	// the Application.start method
-	    	JavaFXD3_Test_08.theWing = LiftingSurfaceCreator.importFromXML(pathToXML, dirAirfoil);
-	    	JavaFXD3_Test_08.theWing.calculateGeometry(30);
+	    	
+	    	// JavaFXD3_Test_08.theWing = LiftingSurfaceCreator.importFromXML(pathToXML, dirAirfoil);
+	    	// JavaFXD3_Test_08.theWing.calculateGeometry(30);
+	    	
+	    	
+	    	
+	    	
+	    	JavaFXD3_Test_08.theWing = new LiftingSurfaceCreator
+	    			.LiftingSurfaceCreatorBuilder("Test ATR42 wing", AircraftEnum.ATR72)
+	    			.build();
+	    	JavaFXD3_Test_08.theWing.calculateGeometry(40);
+	    	
+	    	
 
 //	    	System.out.println("The wing ...");
 //	    	System.out.println(JavaFXD3_Test_08.theWing);

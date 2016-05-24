@@ -1,4 +1,4 @@
-package aircraft.components.fuselage.vt;
+package aircraft.components.fuselage.creator;
 
 import java.util.ArrayList;
 import java.util.Collections;
