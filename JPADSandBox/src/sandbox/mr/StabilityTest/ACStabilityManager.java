@@ -23,7 +23,7 @@ import aircraft.components.fuselage.FusAerodynamicsManager;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.HTail;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
-import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LiftingSurface2Panels;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCDAtAlpha;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcHighLiftDevices;
@@ -92,9 +92,9 @@ public class ACStabilityManager {
 	Amount<Force> weight;
 
 	Aircraft aircraft;
-	LiftingSurface theWing;
+	LiftingSurface2Panels theWing;
 	Fuselage theFuselage;
-	LiftingSurface theHTail;
+	LiftingSurface2Panels theHTail;
 	String subfolderPath;
 	String pathXMLTakeOFF = null;
 	String pathXMLLanding = null;

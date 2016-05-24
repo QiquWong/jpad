@@ -10,7 +10,7 @@ import aircraft.OperatingConditions;
 import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
-import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LiftingSurface2Panels;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
@@ -35,7 +35,7 @@ public class Test_AGILE_DC1_01 {
 		// Define the aircraft
 		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.AGILE_DC1);
 		aircraft.setName("AGILE_DC1");
-		LiftingSurface theWing = aircraft.get_wing();
+		LiftingSurface2Panels theWing = aircraft.get_wing();
 		
 		String exportFile = MyConfiguration.outputDirectory + File.separator + 
 				folderName + File.separator + aircraft.getName();

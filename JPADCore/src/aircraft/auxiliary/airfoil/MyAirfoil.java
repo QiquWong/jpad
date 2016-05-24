@@ -3,7 +3,7 @@ package aircraft.auxiliary.airfoil;
 import java.util.HashMap;
 import java.util.Map;
 
-import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LiftingSurface2Panels;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AirfoilEnum;
 import configuration.enumerations.AirfoilStationEnum;
@@ -28,7 +28,7 @@ public class MyAirfoil {
 	MyGeometry geometry;
 	MyAerodynamics aerodynamics;
 	double _chordLocal;
-	private LiftingSurface _theLiftingSurface;
+	private LiftingSurface2Panels _theLiftingSurface;
 
 	//	public MyAirfoil( 
 	//			Double yLoc,
@@ -71,7 +71,7 @@ public class MyAirfoil {
 	/** 
 	 * Initialize an airfoil with default values
 	 */
-	public MyAirfoil(LiftingSurface ls, Double yLoc) {
+	public MyAirfoil(LiftingSurface2Panels ls, Double yLoc) {
 
 		_id = ls.getObjectId() + idCounter + "99";
 		idCounter++;
@@ -84,7 +84,7 @@ public class MyAirfoil {
 	
 	}
 	
-	public MyAirfoil(LiftingSurface ls, Double yLoc, String name) {
+	public MyAirfoil(LiftingSurface2Panels ls, Double yLoc, String name) {
 
 		_id = ls.getObjectId() + idCounter + "99";
 		idCounter++;
@@ -102,7 +102,7 @@ public class MyAirfoil {
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public MyAirfoil(AircraftEnum aircraftName, LiftingSurface ls, Double yLoc) {
+	public MyAirfoil(AircraftEnum aircraftName, LiftingSurface2Panels ls, Double yLoc) {
 
 		_id = ls.getObjectId() + idCounter + "99";
 		idCounter++;
@@ -146,7 +146,7 @@ public class MyAirfoil {
 	 * 
 	 * @author Manuela Ruocco
 	 */
-	public MyAirfoil(AircraftEnum aircraftName, AirfoilStationEnum station, LiftingSurface ls, Double yLoc) {
+	public MyAirfoil(AircraftEnum aircraftName, AirfoilStationEnum station, LiftingSurface2Panels ls, Double yLoc) {
 
 		_id = ls.getObjectId() + idCounter + "99";
 		idCounter++;
@@ -189,7 +189,7 @@ public class MyAirfoil {
 		_type = AirfoilTypeEnum.CONVENTIONAL;
 	}
 	
-	public MyAirfoil(LiftingSurface ls) {
+	public MyAirfoil(LiftingSurface2Panels ls) {
 		_theLiftingSurface = ls;
 		aerodynamics = new MyAerodynamics(this);
 		geometry = new MyGeometry(this, 10000.0);
@@ -198,13 +198,13 @@ public class MyAirfoil {
 	}
 	
 	
-	public void initialize(LiftingSurface ls, double yLoc) {
+	public void initialize(LiftingSurface2Panels ls, double yLoc) {
 		_theLiftingSurface = ls;
 		initializeGeometry(ls, yLoc);	
 		initializeAerodynamics();
 	}
 
-	public void initializeGeometry(LiftingSurface ls, double yLoc) {
+	public void initializeGeometry(LiftingSurface2Panels ls, double yLoc) {
 		_chordLocal = _theLiftingSurface.getChordAtYActual(yLoc);
 	}
 
@@ -285,7 +285,7 @@ public class MyAirfoil {
 		this._chordLocal = _chordLocal;
 	}
 
-	public LiftingSurface get_theLiftingSurface() {
+	public LiftingSurface2Panels get_theLiftingSurface() {
 		return _theLiftingSurface;
 	}
 

@@ -313,7 +313,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		// PANELS
 
 		NodeList nodelistPanel = MyXMLReaderUtils
-				.getXMLNodeListByPath(reader.getXmlDoc(), "//_panels/panel");
+				.getXMLNodeListByPath(reader.getXmlDoc(), "//panels/panel");
 
 		System.out.println("Panels found: " + nodelistPanel.getLength());
 
@@ -767,10 +767,11 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 	@Override
 	public LiftingSurfaceCreator getEquivalentWing() {
 		
-		// 1
+		// Equivalent wing calculation --> sheet reference
 		
 		//======================================================
-		// A_1 = int_0^(b/2) xle(y) c(y) dy
+		// A_1 = ((b/2)*xle(b/2)) - int_0^(b/2) xle(y) dy
+		// a_1 = xle(b/2) - (2*A_1/(b/2))
 
 		Double integral1 = MyMathUtils.integrate1DSimpsonSpline(
 				MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -781,11 +782,12 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		int nSec = this.getDiscretizedXle().size();
 		Double xleAtTip = this.getDiscretizedXle().get(nSec - 1).doubleValue(SI.METER);
 		Double area1 = semiSpan.doubleValue(SI.METER) * xleAtTip - integral1;
+		
 		Double a1 = xleAtTip - 2.0*(area1 / semiSpan.doubleValue(SI.METER));
 
 		//======================================================
-		// A_2 = int_0^(b/2) xle(y) + c(y) dy
-
+		// A_2 = ((b/2)*(xte(0)-2*xte(b/2)) - int_0^(b/2) [xle(y) + c(y)] dy
+		// a_2 = chord_root - xte(b/2) - (2*A_2/(b/2))
 
 		Tuple2<
 			List<Amount<Length>>, // Xle
@@ -808,11 +810,16 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		Double xteAtTip = xleAtTip + this.getPanels().get(nPan - 1).getChordTip().doubleValue(SI.METER);
 		
 		Double area2 = semiSpan.doubleValue(SI.METER) * ( xteAtRoot - 2.0*xteAtTip ) - integral2;
+		
 		Double a2 = this.getPanels().get(0).getChordRoot().doubleValue(SI.METER)
 				- xteAtTip - 2.0 *(area2 / semiSpan.doubleValue(SI.METER));
 		
 		// TODO: calculate equivalent wing parameters 
-
+		//======================================================
+		// Equivalent wing parameters:
+		
+		
+		
 		return null;
 		
 		

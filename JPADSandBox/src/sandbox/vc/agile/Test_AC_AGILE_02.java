@@ -24,7 +24,7 @@ import aircraft.OperatingConditions;
 import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
-import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LiftingSurface2Panels;
 import calculators.performance.PayloadRangeCalc;
 import calculators.performance.SpecificRangeCalc;
 import calculators.performance.ThrustCalc;
@@ -78,7 +78,7 @@ public class Test_AC_AGILE_02 {
 		
 		// Initialize Aircraft with default parameters
 		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.B747_100B); 
-		LiftingSurface theWing = aircraft.get_wing();
+		LiftingSurface2Panels theWing = aircraft.get_wing();
 		
 		OperatingConditions operatingConditions = new OperatingConditions();
 		operatingConditions.set_altitude(Amount.valueOf(0.000, SI.METER));

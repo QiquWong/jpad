@@ -8,7 +8,7 @@ import aircraft.OperatingConditions;
 import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
-import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LiftingSurface2Panels;
 import calculators.performance.PayloadRangeCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
@@ -58,7 +58,7 @@ public class PayloadRange_Test_TP{
 		aircraft.get_weights().set_MTOM(Amount.valueOf(22500, SI.KILOGRAM));
 		aircraft.get_configuration().set_maxPax(77.0);
 
-		LiftingSurface theWing = aircraft.get_wing();
+		LiftingSurface2Panels theWing = aircraft.get_wing();
 
 		ACAnalysisManager theAnalysis = new ACAnalysisManager(theCondition);
 		theAnalysis.updateGeometry(aircraft);

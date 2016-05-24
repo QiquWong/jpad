@@ -85,7 +85,7 @@ import writers.JPADStaticWriteUtils;
 public class LSAerodynamicsManager extends AerodynamicsManager{
 
 	OperatingConditions theOperatingConditions;
-	private LiftingSurface theLiftingSurface;
+	private LiftingSurface2Panels theLiftingSurface;
 	Aircraft theAircraft;
 
 	private AerodynamicDatabaseReader _aerodynamicDatabaseReader;
@@ -255,7 +255,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	public MyArray alphaArrayActualHighLift;
 	public double[] cLActualArrayHighLift;
 	public String subfolderPathHL;
-	public LSAerodynamicsManager(OperatingConditions conditions, LiftingSurface liftingSurf, Aircraft ac) {
+	public LSAerodynamicsManager(OperatingConditions conditions, LiftingSurface2Panels liftingSurf, Aircraft ac) {
 
 		theOperatingConditions = conditions;
 		setTheLiftingSurface(liftingSurf);
@@ -275,7 +275,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	}
 
 
-	public LSAerodynamicsManager(OperatingConditions conditions, LiftingSurface liftingSurf, Aircraft ac, AerodynamicDatabaseReader adbr) {
+	public LSAerodynamicsManager(OperatingConditions conditions, LiftingSurface2Panels liftingSurf, Aircraft ac, AerodynamicDatabaseReader adbr) {
 
 		theOperatingConditions = conditions;
 		setTheLiftingSurface(liftingSurf);
@@ -289,7 +289,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		initializeInnerCalculators();
 	}
 
-	public LSAerodynamicsManager(OperatingConditions conditions, LiftingSurface liftingSurf) {
+	public LSAerodynamicsManager(OperatingConditions conditions, LiftingSurface2Panels liftingSurf) {
 
 		theOperatingConditions = conditions;
 		setTheLiftingSurface(liftingSurf);
@@ -301,7 +301,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		initializeInnerCalculators();
 	}
 
-	public LSAerodynamicsManager(LiftingSurface liftingSurf) {
+	public LSAerodynamicsManager(LiftingSurface2Panels liftingSurf) {
 
 		setTheLiftingSurface(liftingSurf);
 		getTheLiftingSurface().setAerodynamics(this);
@@ -347,7 +347,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		this.etaAirfoil = etaAirfoil;	
 	}
 
-	public void initializeDataFromLiftingSurface(LiftingSurface ls) {
+	public void initializeDataFromLiftingSurface(LiftingSurface2Panels ls) {
 		initializeLiftingSurfaceData(
 				ls.get_type(), 
 				ls.get_surface().doubleValue(SI.SQUARE_METRE), 
@@ -932,7 +932,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		 */  
 
 
-		public void airfoilLiftDistribution (Amount<Angle> alpha, LiftingSurface theWing){
+		public void airfoilLiftDistribution (Amount<Angle> alpha, LiftingSurface2Panels theWing){
 			double [] clLocalAirfoil = new double [_nPointsSemispanWise];
 			MyAirfoil intermediateAirfoil;
 			double alphaDouble = alpha.getEstimatedValue();
@@ -2298,7 +2298,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		//-------------------------------------------------------------------------------------
 		// VARIABLE DECLARATION:
 
-		private LiftingSurface theWing;
+		private LiftingSurface2Panels theWing;
 		private OperatingConditions theConditions;
 		private MyAirfoil meanAirfoil;
 		private List<Double[]> deltaFlap; 	    
@@ -2336,7 +2336,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		// BUILDER:
 
 		public CalcHighLiftDevices(
-				LiftingSurface theWing,
+				LiftingSurface2Panels theWing,
 				OperatingConditions theConditions,
 				List<Double[]> deltaFlap,
 				List<FlapTypeEnum> flapType,
@@ -4248,7 +4248,7 @@ public class CalcCdvsAlpha {
 			MyAirfoil airfoilActual;
 			double yActual;
 			cdDistributionNasaBlackwell = new double [_nPointsSemispanWise];
-			LiftingSurface theLS = getTheLiftingSurface();
+			LiftingSurface2Panels theLS = getTheLiftingSurface();
 
 			for (int i=0 ; i<_nPointsSemispanWise ; i++){
 				yActual = get_yStations()[i];
@@ -4604,7 +4604,7 @@ public class CalcCdvsAlpha {
 
 
 
-		public MyAirfoil calculateMeanAirfoil (LiftingSurface theWing){
+		public MyAirfoil calculateMeanAirfoil (LiftingSurface2Panels theWing){
 
 			MyAirfoil meanAirfoil = new MyAirfoil(theWing);
 
@@ -5065,7 +5065,7 @@ public class CalcCdvsAlpha {
 	 * @param Dimensional station where the airfoil is located.
 	 */ 
 
-	public static MyAirfoil calculateIntermediateAirfoil (LiftingSurface theWing, double yLoc){
+	public static MyAirfoil calculateIntermediateAirfoil (LiftingSurface2Panels theWing, double yLoc){
 
 		MyAirfoil intermediateAirfoil = new MyAirfoil(theWing);
 
@@ -5507,11 +5507,11 @@ public class CalcCdvsAlpha {
 		return calculateCLMaxClean;
 	}
 
-	public LiftingSurface getTheLiftingSurface() {
+	public LiftingSurface2Panels getTheLiftingSurface() {
 		return theLiftingSurface;
 	}
 
-	public void setTheLiftingSurface(LiftingSurface theLiftingSurface) {
+	public void setTheLiftingSurface(LiftingSurface2Panels theLiftingSurface) {
 		this.theLiftingSurface = theLiftingSurface;
 	}
 

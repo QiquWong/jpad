@@ -21,7 +21,7 @@ import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
-import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LiftingSurface2Panels;
 import calculators.aerodynamics.NasaBlackwell;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLMaxClean;
@@ -65,7 +65,7 @@ public class Test_MR_O6c_CLMAX {
 		double yAw = 0.0;
 		double zAw = 1.6;
 		double iw = 0.0;
-		LiftingSurface theWing = new LiftingSurface(
+		LiftingSurface2Panels theWing = new LiftingSurface2Panels(
 				"Wing", // name
 				"Data from AC_ATR_72_REV05.pdf", 
 				xAw, yAw, zAw, iw, 

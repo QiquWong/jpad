@@ -13,7 +13,7 @@ import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLvsAlphaCurve;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcXAC;
-import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LiftingSurface2Panels;
 import configuration.MyConfiguration;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
@@ -68,7 +68,7 @@ public class DownwashCalculator {
 
 		this.aircraft = aircraft;
 
-		LiftingSurface theWing = aircraft.get_wing();
+		LiftingSurface2Panels theWing = aircraft.get_wing();
 		
 		cRoot = theWing.get_chordRoot().getEstimatedValue();
 		semiWingSpan = theWing.get_semispan().getEstimatedValue();

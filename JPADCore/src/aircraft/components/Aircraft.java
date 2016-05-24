@@ -18,7 +18,7 @@ import aircraft.componentmodel.Component;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.Canard;
 import aircraft.components.liftingSurface.HTail;
-import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LiftingSurface2Panels;
 import aircraft.components.liftingSurface.VTail;
 import aircraft.components.liftingSurface.Wing;
 import aircraft.components.nacelles.Nacelle;
@@ -53,7 +53,7 @@ public class Aircraft {
 	private AeroConfigurationTypeEnum _type = AeroConfigurationTypeEnum.EMPTY;
 	private List<String> _components = new ArrayList<String>();
 	private List<Component> _componentsList = new ArrayList<Component>();
-	private List<LiftingSurface> _liftingSurfaceList = new ArrayList<LiftingSurface>();
+	private List<LiftingSurface2Panels> _liftingSurfaceList = new ArrayList<LiftingSurface2Panels>();
 
 	private Fuselage _theFuselage = null;
 	private Wing _theWing = null;
@@ -1074,7 +1074,7 @@ public class Aircraft {
 		return _theNacelles;
 	}
 
-	public List<LiftingSurface> get_liftingSurfaceList() {
+	public List<LiftingSurface2Panels> get_liftingSurfaceList() {
 		return _liftingSurfaceList;
 	}
 

@@ -9,7 +9,7 @@ import aircraft.OperatingConditions;
 import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
-import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LiftingSurface2Panels;
 import calculators.aerodynamics.DragCalc;
 import calculators.performance.PerformanceCalcUtils;
 import calculators.performance.SpecificRangeCalc;
@@ -60,7 +60,7 @@ public class SpecificRange_Test_TP {
 		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.ATR72);
 		aircraft.set_name("ATR-72");
 
-		LiftingSurface theWing = aircraft.get_wing();
+		LiftingSurface2Panels theWing = aircraft.get_wing();
 
 		ACAnalysisManager theAnalysis = new ACAnalysisManager(theCondition);
 		theAnalysis.updateGeometry(aircraft);

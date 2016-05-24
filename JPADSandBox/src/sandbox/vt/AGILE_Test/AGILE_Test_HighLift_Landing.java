@@ -19,7 +19,7 @@ import aircraft.OperatingConditions;
 import aircraft.auxiliary.airfoil.MyAirfoil;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
-import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LiftingSurface2Panels;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.FlapTypeEnum;
@@ -87,7 +87,7 @@ public class AGILE_Test_HighLift_Landing {
 		aircraft.set_name("Agile DC1");
 		System.out.println("\nDefault aircraft: " + aircraft.get_name() + "\n");
 
-		LiftingSurface theWing = aircraft.get_wing();
+		LiftingSurface2Panels theWing = aircraft.get_wing();
 		
 		// update of the wing with new model parameters
 		theWing.set_surface(Amount.valueOf(82.7, SI.SQUARE_METRE));

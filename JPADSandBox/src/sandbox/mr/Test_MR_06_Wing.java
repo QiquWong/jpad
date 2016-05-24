@@ -35,7 +35,7 @@ import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
-import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LiftingSurface2Panels;
 import calculators.aerodynamics.AlphaEffective;
 import calculators.aerodynamics.NasaBlackwell;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
@@ -144,7 +144,7 @@ public class Test_MR_06_Wing {
 		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.B747_100B);
 		aircraft.set_name("B747-100B");
 
-		LiftingSurface theWing = aircraft.get_wing();
+		LiftingSurface2Panels theWing = aircraft.get_wing();
 
 		ACAnalysisManager theAnalysis = new ACAnalysisManager(theOperatingConditions);
 		theAnalysis.updateGeometry(aircraft);

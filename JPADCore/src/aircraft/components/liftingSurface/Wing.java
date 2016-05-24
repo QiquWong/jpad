@@ -10,7 +10,7 @@ import aircraft.components.nacelles.Nacelle;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ComponentEnum;
 
-public class Wing extends LiftingSurface{
+public class Wing extends LiftingSurface2Panels{
 
 	public Wing(ComponentEnum type) {
 		super(type);
@@ -25,7 +25,7 @@ public class Wing extends LiftingSurface{
 			ComponentEnum type, 
 			Fuselage theFuselage,
 			Nacelle theNacelle,
-			LiftingSurface ... liftingSurface) {
+			LiftingSurface2Panels ... liftingSurface) {
 
 		super(name, 
 				description, 
@@ -57,7 +57,7 @@ public class Wing extends LiftingSurface{
 			ComponentEnum type, 
 			Fuselage theFuselage,
 			Nacelle theNacelle,
-			LiftingSurface ... liftingSurface) {
+			LiftingSurface2Panels ... liftingSurface) {
 
 		super(name, 
 				description, 

@@ -40,7 +40,7 @@ import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import javafx.util.Pair;
-import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LiftingSurface2Panels;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
@@ -134,8 +134,8 @@ public class Test_MR_LongitudinalStability_Turboprop {
 
 		//------------------------------------------------------------------------------------
 		// Wing and Tail
-		LiftingSurface theWing = aircraft.get_wing();
-		LiftingSurface horizontalTail = aircraft.get_HTail();
+		LiftingSurface2Panels theWing = aircraft.get_wing();
+		LiftingSurface2Panels horizontalTail = aircraft.get_HTail();
 		
 
 		

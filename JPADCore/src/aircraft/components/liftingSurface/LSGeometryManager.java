@@ -19,7 +19,7 @@ import standaloneutils.customdata.MyArray;
  */
 public class LSGeometryManager extends aircraft.componentmodel.componentcalcmanager.GeometryManager{
 
-	private LiftingSurface liftingSurface;
+	private LiftingSurface2Panels liftingSurface;
 	
 	private MyArray
 	_chordsVsY = new MyArray(SI.METER), 
@@ -31,7 +31,7 @@ public class LSGeometryManager extends aircraft.componentmodel.componentcalcmana
 
 	private MyArray _yStations;
 
-	public LSGeometryManager(LiftingSurface liftingSurf) {
+	public LSGeometryManager(LiftingSurface2Panels liftingSurf) {
 		liftingSurface = liftingSurf;
 		initializeDependentData();
 		initializeInnerCalculators();
@@ -74,7 +74,7 @@ public class LSGeometryManager extends aircraft.componentmodel.componentcalcmana
 	 */
 	public void calculateEllipticChordDistribution() {
 		MyArray ones = new MyArray(Unit.ONE);
-		ones.fillOnes(LiftingSurface._numberOfPointsChordDistribution);
+		ones.fillOnes(LiftingSurface2Panels._numberOfPointsChordDistribution);
 
 		liftingSurface._ellChordVsY.setDouble(
 				MyArray.createArray(

@@ -51,7 +51,7 @@ import aircraft.components.FuelTank;
 import aircraft.components.LandingGear;
 import aircraft.components.Systems;
 import aircraft.components.fuselage.Fuselage;
-import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LiftingSurface2Panels;
 import aircraft.components.nacelles.Nacelle;
 import aircraft.components.nacelles.NacellesManager;
 import aircraft.components.powerPlant.Engine;
@@ -819,7 +819,7 @@ public class JPADDataWriter {
 	}
 
 
-	private void writeLiftingSurface(Element initiator, LiftingSurface liftingSurface){
+	private void writeLiftingSurface(Element initiator, LiftingSurface2Panels liftingSurface){
 
 		_sheet = commonOperations(liftingSurface, initiator, true);
 
@@ -829,7 +829,7 @@ public class JPADDataWriter {
 
 	}
 
-	private void writeLiftingSurfaceEquivalentInput(LiftingSurface liftingSurface, Element initiator) {
+	private void writeLiftingSurfaceEquivalentInput(LiftingSurface2Panels liftingSurface, Element initiator) {
 		Element equivalent_parameters = doc.createElement("Equivalent_lifting_surface_parameters");
 		initiator.appendChild(equivalent_parameters);
 
@@ -868,7 +868,7 @@ public class JPADDataWriter {
 		writeOutputNode("Root_chord", liftingSurface.get_chordRootEquivalentWing(), equivalent_parameters);
 	}
 
-	private void writeLiftingSurfaceActualInput(LiftingSurface liftingSurface, Element initiator) {
+	private void writeLiftingSurfaceActualInput(LiftingSurface2Panels liftingSurface, Element initiator) {
 
 		Element actual_parameters = doc.createElement("Actual_lifting_surface_parameters");
 		initiator.appendChild(actual_parameters);
@@ -927,7 +927,7 @@ public class JPADDataWriter {
 	 * @param liftingSurface
 	 * @param analysisNode
 	 */
-	private void writeLiftingSurfaceOutput(LiftingSurface liftingSurface, Element analysisNode) {
+	private void writeLiftingSurfaceOutput(LiftingSurface2Panels liftingSurface, Element analysisNode) {
 
 		Element analysis = JPADStaticWriteUtils.addSubElement(doc, _sheet, WordUtils.capitalizeFully(liftingSurface.get_type().name()) + "_Analysis", analysisNode);
 
@@ -1111,7 +1111,7 @@ public class JPADDataWriter {
 	 */
 	private void writeAirfoil(
 			MyAirfoil airfoil, 
-			LiftingSurface liftingSurface, 
+			LiftingSurface2Panels liftingSurface, 
 			Element parentInitiator) {
 
 		Element airfoilParam = addElementToSubElement(JPADGlobalData.getTheXmlTree().getDescription(airfoil), parentInitiator);

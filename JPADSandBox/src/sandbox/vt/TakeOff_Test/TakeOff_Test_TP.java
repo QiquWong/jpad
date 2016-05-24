@@ -19,7 +19,7 @@ import aircraft.auxiliary.airfoil.MyAirfoil;
 import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
-import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LiftingSurface2Panels;
 import calculators.performance.TakeOffCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
@@ -92,7 +92,7 @@ public class TakeOff_Test_TP {
 		aircraft.set_name("ATR-72");
 		aircraft.get_weights().set_MTOM(Amount.valueOf(22500, SI.KILOGRAM)); // optional weight brochure
 
-		LiftingSurface theWing = aircraft.get_wing();
+		LiftingSurface2Panels theWing = aircraft.get_wing();
 
 		ACAnalysisManager theAnalysis = new ACAnalysisManager(theCondition);
 		theAnalysis.updateGeometry(aircraft);

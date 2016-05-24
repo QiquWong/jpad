@@ -19,7 +19,7 @@ import aircraft.components.Systems;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.Canard;
 import aircraft.components.liftingSurface.HTail;
-import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LiftingSurface2Panels;
 import aircraft.components.liftingSurface.VTail;
 import aircraft.components.liftingSurface.Wing;
 import aircraft.components.nacelles.Nacelle;
@@ -264,7 +264,7 @@ public class JPADWriteUtils {
 
 	}
 
-	private static void addAirfoilsToXMLNew(LiftingSurface liftingSurface, String fatherId) {
+	private static void addAirfoilsToXMLNew(LiftingSurface2Panels liftingSurface, String fatherId) {
 		if (liftingSurface != null) {
 			for (int k=0; k < liftingSurface.get_numberOfAirfoils(); k++) {
 				MyAirfoil tempAirfoil = liftingSurface.get_theAirfoilsList().get(k);
@@ -275,7 +275,7 @@ public class JPADWriteUtils {
 		}
 	}
 
-	private static void addAirfoilsToXML(LiftingSurface liftingSurface, String fatherId) {
+	private static void addAirfoilsToXML(LiftingSurface2Panels liftingSurface, String fatherId) {
 
 		if (liftingSurface != null) {
 			for (int k=0; k < liftingSurface.get_numberOfAirfoils(); k++) {

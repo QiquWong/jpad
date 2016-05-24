@@ -19,7 +19,7 @@ import aircraft.auxiliary.airfoil.MyAirfoil;
 import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
-import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LiftingSurface2Panels;
 import calculators.performance.LandingCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
@@ -91,7 +91,7 @@ public class Landing_Test_TF {
 
 		aircraft.get_weights().set_MLW(Amount.valueOf(9.81*267916, SI.NEWTON));
 
-		LiftingSurface theWing = aircraft.get_wing();
+		LiftingSurface2Panels theWing = aircraft.get_wing();
 
 		ACAnalysisManager theAnalysis = new ACAnalysisManager(theCondition);
 		theAnalysis.updateGeometry(aircraft);

@@ -23,7 +23,7 @@ import aircraft.OperatingConditions;
 import aircraft.auxiliary.airfoil.MyAirfoil;
 import aircraft.componentmodel.InnerCalculator;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
-import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LiftingSurface2Panels;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
 import configuration.MyConfiguration;
 import configuration.enumerations.MethodEnum;
@@ -447,7 +447,7 @@ public class WingCalculator {
 
 
 
-		public MyAirfoil calculateMeanAirfoil (LiftingSurface theWing , MyAirfoil airfoilRoot, 
+		public MyAirfoil calculateMeanAirfoil (LiftingSurface2Panels theWing , MyAirfoil airfoilRoot, 
 				MyAirfoil airfoilKink, MyAirfoil airfoilTip){
 
 			MyAirfoil meanAirfoil = new MyAirfoil(theWing);
@@ -714,7 +714,7 @@ public class WingCalculator {
 		 * @param Dimensional station where the airfoil is located.
 		 */ 
 
-		public MyAirfoil calculateIntermediateAirfoil (LiftingSurface theWing , MyAirfoil airfoilRoot, 
+		public MyAirfoil calculateIntermediateAirfoil (LiftingSurface2Panels theWing , MyAirfoil airfoilRoot, 
 				MyAirfoil airfoilKink, MyAirfoil airfoilTip, double yLoc){
 
 			MyAirfoil intermediateAirfoil = new MyAirfoil(theWing);

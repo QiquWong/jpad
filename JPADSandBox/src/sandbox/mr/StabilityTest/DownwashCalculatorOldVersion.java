@@ -14,7 +14,7 @@ import org.jscience.physics.amount.Amount;
 import aircraft.OperatingConditions;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
-import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LiftingSurface2Panels;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcXAC;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.MeanAirfoil;
 import configuration.MyConfiguration;

@@ -22,7 +22,7 @@ import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
 import aircraft.components.fuselage.FusAerodynamicsManager;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
-import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LiftingSurface2Panels;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.MeanAirfoil;
 import calculators.aerodynamics.LiftCalc;
 import configuration.MyConfiguration;
@@ -117,8 +117,8 @@ public class Agile_Test_CLmaxTrim {
 
 		//------------------------------------------------------------------------------------
 		// Wing and Tail
-		LiftingSurface theWing = aircraft.get_wing();
-		LiftingSurface horizontalTail = aircraft.get_HTail();
+		LiftingSurface2Panels theWing = aircraft.get_wing();
+		LiftingSurface2Panels horizontalTail = aircraft.get_HTail();
 
 
 		// update of the wing with new model parameters

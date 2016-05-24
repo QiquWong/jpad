@@ -19,7 +19,7 @@ import aircraft.auxiliary.airfoil.MyAirfoil;
 import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
-import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LiftingSurface2Panels;
 import calculators.performance.LandingCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
@@ -87,7 +87,7 @@ public class Landing_Test_TP {
 		aircraft.set_name("ATR-72");
 //		aircraft.get_weights().set_MLW(Amount.valueOf(22350*9.81, SI.NEWTON)); // optional MLW from brochure
 
-		LiftingSurface theWing = aircraft.get_wing();
+		LiftingSurface2Panels theWing = aircraft.get_wing();
 
 		ACAnalysisManager theAnalysis = new ACAnalysisManager(theCondition);
 		theAnalysis.updateGeometry(aircraft);

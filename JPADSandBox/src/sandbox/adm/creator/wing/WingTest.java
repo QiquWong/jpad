@@ -10,7 +10,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LiftingSurface2Panels;
 import aircraft.components.liftingSurface.Wing;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator;
@@ -63,7 +63,7 @@ public class WingTest {
 
 		System.out.println("--------------");
 
-		LiftingSurface wing = new LiftingSurface(
+		LiftingSurface2Panels wing = new LiftingSurface2Panels(
 				pathToXML, dirAirfoil,
 				"Wing", // name
 				"Test wing ", // description

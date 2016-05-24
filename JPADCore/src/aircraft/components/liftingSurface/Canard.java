@@ -8,7 +8,7 @@ import aircraft.components.fuselage.Fuselage;
 import aircraft.components.nacelles.Nacelle;
 import configuration.enumerations.ComponentEnum;
 
-public class Canard extends LiftingSurface{
+public class Canard extends LiftingSurface2Panels{
 
 	public Canard(ComponentEnum type) {
 		super(type);
@@ -23,7 +23,7 @@ public class Canard extends LiftingSurface{
 			ComponentEnum type, 
 			Fuselage theFuselage,
 			Nacelle theNacelle,
-			LiftingSurface ... liftingSurface) {
+			LiftingSurface2Panels ... liftingSurface) {
 		
 		super(name, 
 				description, 

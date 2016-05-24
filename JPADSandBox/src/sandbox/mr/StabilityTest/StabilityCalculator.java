@@ -20,7 +20,7 @@ import aircraft.OperatingConditions;
 import aircraft.auxiliary.airfoil.MyAirfoil;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
-import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LiftingSurface2Panels;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.MeanAirfoil;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineTypeEnum;
@@ -212,14 +212,14 @@ public class StabilityCalculator {
 
 		// VARIABLE DECLARATION--------------------------------------
 
-		LiftingSurface theLiftingSurface;
+		LiftingSurface2Panels theLiftingSurface;
 		OperatingConditions theConditions;
 
 		double [] alphaArrayWithTau, clHTailDeflected;
 		Double [] cLHtailCleanExtended;
 
 
-		public double[] cLHtailWithElevatorDeflection(LiftingSurface hTail,
+		public double[] cLHtailWithElevatorDeflection(LiftingSurface2Panels hTail,
 				OperatingConditions theOperatingCondition, 
 				double deltaE, double tauValue, double[] cLCleanArray, double[] alphaTailArray){
 
@@ -391,7 +391,7 @@ public class CalcPitchingMomentAC{
 
 	// VARIABLE DECLARATION--------------------------------------
 
-	LiftingSurface theLiftingSurface;
+	LiftingSurface2Panels theLiftingSurface;
 	OperatingConditions theConditions;
 
 	double meanAerodinamicChord, xMAC, yMAC, cLLocal, qValue, alphaLocalAirfoil;
@@ -406,7 +406,7 @@ public class CalcPitchingMomentAC{
 	// BUILDER--------------------------------------
 
 	@SuppressWarnings("static-access")
-	public CalcPitchingMomentAC(LiftingSurface theLiftingSurface, OperatingConditions theConditions) {
+	public CalcPitchingMomentAC(LiftingSurface2Panels theLiftingSurface, OperatingConditions theConditions) {
 
 		this.theLiftingSurface = theLiftingSurface;
 		this.theConditions = theConditions;

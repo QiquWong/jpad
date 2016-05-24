@@ -9,7 +9,7 @@ import aircraft.components.nacelles.Nacelle;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ComponentEnum;
 
-public class HTail extends LiftingSurface{
+public class HTail extends LiftingSurface2Panels{
 
 
 	public HTail(ComponentEnum type) {
@@ -25,7 +25,7 @@ public class HTail extends LiftingSurface{
 			ComponentEnum type, 
 			Fuselage theFuselage,
 			Nacelle theNacelle,
-			LiftingSurface ... liftingSurface) {
+			LiftingSurface2Panels ... liftingSurface) {
 		
 		super(name, 
 				description, 
@@ -56,7 +56,7 @@ public class HTail extends LiftingSurface{
 			ComponentEnum type, 
 			Fuselage theFuselage,
 			Nacelle theNacelle,
-			LiftingSurface ... liftingSurface) {
+			LiftingSurface2Panels ... liftingSurface) {
 		
 		super(name, 
 				description, 

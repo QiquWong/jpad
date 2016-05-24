@@ -18,7 +18,7 @@ import aircraft.OperatingConditions;
 import aircraft.auxiliary.SeatsBlock;
 import aircraft.auxiliary.SeatsBlock.CGboarding;
 import aircraft.components.fuselage.Fuselage;
-import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LiftingSurface2Panels;
 import aircraft.components.nacelles.Nacelle;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
@@ -44,7 +44,7 @@ public class Configuration {
 	
 	private static final String _id = "11";
 	private Fuselage _theFuselage;
-	private LiftingSurface _theWing, _theHTail, _theVTail;
+	private LiftingSurface2Panels _theWing, _theHTail, _theVTail;
 	private Nacelle _theNacelle;
 	private SeatsBlock _seatsBlockRight, _seatsBlockLeft, _seatsBlockCenter;
 
@@ -628,15 +628,15 @@ public class Configuration {
 		return _theFuselage;
 	}
 
-	public LiftingSurface get_wing() {
+	public LiftingSurface2Panels get_wing() {
 		return _theWing;
 	}
 
-	public LiftingSurface get_HTail() {
+	public LiftingSurface2Panels get_HTail() {
 		return _theHTail;
 	}
 
-	public LiftingSurface get_VTail() {
+	public LiftingSurface2Panels get_VTail() {
 		return _theVTail;
 	}
 

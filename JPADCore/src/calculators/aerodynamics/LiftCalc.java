@@ -26,7 +26,7 @@ import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcAlpha0L;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLvsAlphaCurve;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.MeanAirfoil;
-import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.LiftingSurface2Panels;
 import calculators.geometry.LSGeometryCalc;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
@@ -261,7 +261,7 @@ public class LiftCalc {
 
 
 	public static double[] calculateCLvsAlphaArrayNasaBlackwell(
-			LiftingSurface theLiftingSurface,
+			LiftingSurface2Panels theLiftingSurface,
 			MyArray alphaArray,
 			int nValue,
 			boolean printResults
@@ -350,7 +350,7 @@ public class LiftCalc {
 
 
 	public static double[] calculateCLvsAlphaHighLiftArrayNasaBlackwell(
-			LiftingSurface theLiftingSurface,
+			LiftingSurface2Panels theLiftingSurface,
 			MyArray alphaArray, 
 			int nValue,
 			double cLalphaNew,
@@ -443,7 +443,7 @@ public class LiftCalc {
 
 	// TO DO move here the cl wing body calculator
 	public static double[] calculateCLvsAlphaArrayWingBody(
-			LiftingSurface theLiftingSurface,
+			LiftingSurface2Panels theLiftingSurface,
 			MyArray alphaArray,
 			int nValue,
 			boolean printResults
@@ -468,7 +468,7 @@ public class LiftCalc {
 	 *
 	 */
 	@SuppressWarnings("static-access")
-	public static double[] calculateCLArraymodifiedStallPath(MyArray alphaArray, LiftingSurface theLiftingSurface){
+	public static double[] calculateCLArraymodifiedStallPath(MyArray alphaArray, LiftingSurface2Panels theLiftingSurface){
 
 
 		// VARIABLE DECLARATION
