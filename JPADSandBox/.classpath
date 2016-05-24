@@ -7,7 +7,6 @@
 	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.core.commands_3.7.0.v20150422-0725.jar"/>
 	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.equinox.common_3.7.0.v20150402-1709.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/args4j/args4j-2.0.21.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.draw2d_3.10.0.201506010206.jar"/>
 	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.core.runtime_3.11.1.v20150903-1804.jar"/>
 	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.equinox.registry_3.6.0.v20150318-1503.jar"/>
 	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.osgi_3.10.102.v20160118-1700.jar"/>
@@ -21,7 +20,7 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jdom/jdom-2.0.5.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jlatexmath/jlatexmath-1.0.3.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jscience-4.3/jscience.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.jface_3.11.0.v20150602-1400.jar"/>
+	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.jface_3.11.1.v20160128-1644.jar"/>
 	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.jface.text_3.10.0.v20150603-1752.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/nebula/org.eclipse.nebula.visualization.widgets_1.0.0.201401291008.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/nebula/org.eclipse.nebula.visualization.xygraph_1.0.0.201401291008.jar"/>
@@ -60,7 +59,6 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/poi/poi-ooxml-3.10.1-20140818.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/reflectUtils/reflectutils-0.9.16.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/xstream/xstream-1.4.7.jar"/>
-	<classpathentry kind="var" path="JAVA_JDK/jre/lib/jfxswt.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jfreechart/jfreechart-1.0.19.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jfreechart/jfreesvg-2.0.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jfreechart/jcommon-1.0.23.jar"/>
