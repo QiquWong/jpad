@@ -153,13 +153,13 @@ public class JavaFXD3_Test_10 extends Application {
 		listDataArray.add(dataOutlineXZLowerCurve);
 		listDataArray.add(dataOutlineXZCamberLine);
 
-		double xMax = 1.05*fuselageCreator.getLenF().doubleValue(SI.METRE);
-		double xMin = -0.05*fuselageCreator.getLenF().doubleValue(SI.METRE);
+		double xMax = 1.20*fuselageCreator.getLenF().doubleValue(SI.METRE);
+		double xMin = -0.20*fuselageCreator.getLenF().doubleValue(SI.METRE);
 		double yMax = xMax;
 		double yMin = xMin;
 
 		D3PlotterOptions options = new D3PlotterOptions.D3PlotterOptionsBuilder()
-				.widthSVG(2*WIDTH).heightSVG(2*HEIGHT)
+				.widthSVG(1*WIDTH).heightSVG(1*HEIGHT)
 				// .widthGraph(WIDTH).heightGraph(HEIGHT)
 				.xRange(xMin, xMax)
 				.yRange(yMin, yMax)
