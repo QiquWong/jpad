@@ -10,7 +10,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import aircraft.components.fuselage.creator.Fuselage;
+import aircraft.components.fuselage.creator.FuselageCreator;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import configuration.enumerations.AircraftEnum;
 import sandbox.adm.liftingsurface2.WingTest;
@@ -39,7 +39,7 @@ public class FuselageTest {
 
 	public static void main(String[] args) throws CmdLineException, IOException {
 		System.out.println("--------------");
-		System.out.println("Fuselage test");
+		System.out.println("FuselageCreator test");
 		System.out.println("--------------");
 
 		FuselageTest theTestObject = new FuselageTest();
@@ -51,7 +51,7 @@ public class FuselageTest {
 
 		System.out.println("--------------");
 
-		Fuselage fuselage = Fuselage.importFromXML(pathToXML);
+		FuselageCreator fuselage = FuselageCreator.importFromXML(pathToXML);
 
 		fuselage.calculateGeometry(
 				20,    // No. points in nose trunk
@@ -60,7 +60,7 @@ public class FuselageTest {
 				10, 10 // No. points in upper/lower cyl. trunk section
 				);
 
-//		Fuselage fuselage = new Fuselage.FuselageBuilder("pippo", AircraftEnum.B747_100B).build();
+//		FuselageCreator fuselage = new FuselageCreator.FuselageBuilder("pippo", AircraftEnum.B747_100B).build();
 		
 		System.out.println("The fuselage ...");
 

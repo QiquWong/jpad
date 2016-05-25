@@ -8,7 +8,7 @@ import javax.measure.quantity.Mass;
 
 import org.jscience.physics.amount.Amount;
 
-public interface IFuselage {
+public interface IFuselageCreator {
 
 	public void calculateGeometry(
 			int np_N, int np_C, int np_T, // no. points @ Nose/Cabin/Tail

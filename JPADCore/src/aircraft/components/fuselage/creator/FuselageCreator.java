@@ -34,7 +34,7 @@ import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
 import standaloneutils.MyXMLReaderUtils;
 
-public class Fuselage implements IFuselage {
+public class FuselageCreator implements IFuselageCreator {
 
 	private String id;
 	private int deckNumber;
@@ -42,10 +42,10 @@ public class Fuselage implements IFuselage {
 
 	private Boolean pressurized;
 
-	// Fuselage overall length
+	// FuselageCreator overall length
 	private Amount<Length> lenF;
 
-	// Fuselage nose length
+	// FuselageCreator nose length
 	private Amount<Length> lenN;
 
 	private Amount<Length> lenC;
@@ -94,7 +94,7 @@ public class Fuselage implements IFuselage {
 	private Double lenRatioTF;
 	private Double formFactor;
 
-	// Fuselage section parameters
+	// FuselageCreator section parameters
 
 	// Width and height
 	private Amount<Length> sectionCylinderWidth;
@@ -182,7 +182,7 @@ public class Fuselage implements IFuselage {
 	List<List<Double>> sectionLowerCurvesZ = new ArrayList<List<Double>>();
 
 	// Constructor
-//	public Fuselage(String id) {
+//	public FuselageCreator(String id) {
 //		this.id = id;
 //	}
 	// build via FuselageBuilder
@@ -204,7 +204,7 @@ public class Fuselage implements IFuselage {
 
 		// clean all points before recalculating
 		clearOutlines();
-//		calculateGeometry();
+		calculateGeometry();
 	}
 
 	@Override
@@ -259,7 +259,7 @@ public class Fuselage implements IFuselage {
 						sectionCylinderWidth.getEstimatedValue(),sectionCylinderHeight.getEstimatedValue())
 						,SI.METRE);
 
-		// Whole Fuselage fineness ratio
+		// Whole FuselageCreator fineness ratio
 		lambdaF = lenF.getEstimatedValue()/equivalentDiameterCylinderGM.getEstimatedValue(); // _len_F/_diam_C;
 
 		// cylindrical section base area
@@ -273,7 +273,7 @@ public class Fuselage implements IFuselage {
 		//		_reynolds = _theOperatingConditions.calculateRe(_len_F.getEstimatedValue(), _roughness.getEstimatedValue());
 
 		calculateUpsweepAngle();
-		calculateWindshieldAngle();
+		// calculateWindshieldAngle(); // TODO: agodemar, check this
 
 		// --- END OF OUTPUT DATA -----------------------------------------
 
@@ -300,7 +300,7 @@ public class Fuselage implements IFuselage {
 		Double l_C = lenC.doubleValue(SI.METRE);
 		Double l_T = lenT.doubleValue(SI.METRE);
 		Double d_C = sectionCylinderHeight.doubleValue(SI.METRE);
-		Double h_N = heightN.doubleValue(SI.METRE); // Fuselage origin O_T at nose (>0, when below the cylindrical midline)
+		Double h_N = heightN.doubleValue(SI.METRE); // FuselageCreator origin O_T at nose (>0, when below the cylindrical midline)
 		Double h_T = heightT.doubleValue(SI.METRE);
 		Double w_B = sectionCylinderWidth.doubleValue(SI.METRE);
 		Double a   = sectionCylinderLowerToTotalHeightRatio.doubleValue();
@@ -1401,7 +1401,7 @@ public class Fuselage implements IFuselage {
 	 * the horizontal line and the tangent to tail contour is equal to  0.26 of fuselage height (taken from
 	 * the bottom-line).
 	 *
-	 * see Fuselage Aerodynamic Prediction Methods
+	 * see FuselageCreator Aerodynamic Prediction Methods
 	 * DOI: 10.2514/6.2015-2257
 	 *
 	 * @author Vincenzo Cusati
@@ -1475,7 +1475,7 @@ public class Fuselage implements IFuselage {
 	 * the horizontal line and the tangent to tail contour is equal to  0.75 of fuselage height (taken from
 	 * the bottom-line).
 	 *
-	 * see Fuselage Aerodynamic Prediction Methods
+	 * see FuselageCreator Aerodynamic Prediction Methods
 	 * DOI: 10.2514/6.2015-2257
 	 *
 	 * @author Vincenzo Cusati
@@ -1702,7 +1702,7 @@ public class Fuselage implements IFuselage {
 		return null;
 	}
 
-	public static Fuselage importFromXML(String pathToXML) {
+	public static FuselageCreator importFromXML(String pathToXML) {
 
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
 		
@@ -1775,7 +1775,7 @@ public class Fuselage implements IFuselage {
 		Double sectionMidTailRhoLower = Double.valueOf(midSectionRhoLowerTailProp.get(0));
 		
 		// create the fuselage via its builder
-		Fuselage fuselage = new FuselageBuilder(id)
+		FuselageCreator fuselage = new FuselageBuilder(id)
 				// TOP LEVEL
 				.pressurized(pressurized)
 				//GLOBAL DATA
@@ -1825,7 +1825,7 @@ public class Fuselage implements IFuselage {
 
 		private Boolean _pressurized;
 
-		// Fuselage overall length
+		// FuselageCreator overall length
 		private Amount<Length> _lenF;
 
 		private Amount<Length> _lenN;
@@ -1852,7 +1852,7 @@ public class Fuselage implements IFuselage {
 		private Double _lenRatioTF;
 		private Double _formFactor;
 
-		// Fuselage section parameters
+		// FuselageCreator section parameters
 
 		// Width and height
 		private Amount<Length> _sectionCylinderWidth;
@@ -1925,7 +1925,7 @@ public class Fuselage implements IFuselage {
 				// Height from ground of lowest part of fuselage
 				_heightFromGround = Amount.valueOf(0.66, SI.METER);
 
-				// Fuselage Roughness
+				// FuselageCreator Roughness
 				_roughness = Amount.valueOf(0.405e-5, SI.METRE);
 
 				// positive if nose tip higher than cylindrical part ref. line (in XZ plane)
@@ -1973,7 +1973,7 @@ public class Fuselage implements IFuselage {
 				// Height from ground of lowest part of fuselage
 				_heightFromGround = Amount.valueOf(2.1, SI.METER);
 
-				// Fuselage Roughness
+				// FuselageCreator Roughness
 				_roughness = Amount.valueOf(0.405e-5, SI.METRE);
 
 				// positive if nose tip higher than cylindrical part ref. line (in XZ plane)
@@ -2021,7 +2021,7 @@ public class Fuselage implements IFuselage {
 				// Height from ground of lowest part of fuselage
 				_heightFromGround = Amount.valueOf(4.25, SI.METER);
 
-				// Fuselage Roughness
+				// FuselageCreator Roughness
 				_roughness = Amount.valueOf(0.405e-5, SI.METRE);
 
 				// positive if nose tip higher than cylindrical part ref. line (in XZ plane)
@@ -2192,12 +2192,12 @@ public class Fuselage implements IFuselage {
 			return this;
 		}
 		
-		public Fuselage build() {
-			return new Fuselage(this);
+		public FuselageCreator build() {
+			return new FuselageCreator(this);
 		}
 	}
 
-	private Fuselage(FuselageBuilder builder) {
+	private FuselageCreator(FuselageBuilder builder) {
 		this.id = builder._id;
 		this.deckNumber = builder._deckNumber;
 		this.massReference = builder._massReference;
@@ -2780,6 +2780,12 @@ public class Fuselage implements IFuselage {
 		return outlineXZUpperCurveX;
 	}
 
+	public List<Amount<Length>> getOutlineXZUpperCurveAmountX() {
+		return outlineXZUpperCurveX.stream()
+				.map(x -> Amount.valueOf(x, SI.METER))
+				.collect(Collectors.toList());
+	}
+	
 	public void setOutlineXZUpperCurveX(List<Double> outlineXZUpperCurveX) {
 		this.outlineXZUpperCurveX = outlineXZUpperCurveX;
 	}
@@ -2788,12 +2794,24 @@ public class Fuselage implements IFuselage {
 		return outlineXZUpperCurveZ;
 	}
 
+	public List<Amount<Length>> getOutlineXZUpperCurveAmountZ() {
+		return outlineXZUpperCurveZ.stream()
+				.map(z -> Amount.valueOf(z, SI.METER))
+				.collect(Collectors.toList());
+	}
+	
 	public void setOutlineXZUpperCurveZ(List<Double> outlineXZUpperCurveZ) {
 		this.outlineXZUpperCurveZ = outlineXZUpperCurveZ;
 	}
 
 	public List<Double> getOutlineXZLowerCurveX() {
 		return outlineXZLowerCurveX;
+	}
+
+	public List<Amount<Length>> getOutlineXZLowerCurveAmountX() {
+		return outlineXZLowerCurveX.stream()
+				.map(x -> Amount.valueOf(x, SI.METER))
+				.collect(Collectors.toList());
 	}
 
 	public void setOutlineXZLowerCurveX(List<Double> outlineXZLowerCurveX) {
@@ -2804,6 +2822,12 @@ public class Fuselage implements IFuselage {
 		return outlineXZLowerCurveZ;
 	}
 
+	public List<Amount<Length>> getOutlineXZLowerCurveAmountZ() {
+		return outlineXZLowerCurveZ.stream()
+				.map(z -> Amount.valueOf(z, SI.METER))
+				.collect(Collectors.toList());
+	}
+	
 	public void setOutlineXZLowerCurveZ(List<Double> outlineXZLowerCurveZ) {
 		this.outlineXZLowerCurveZ = outlineXZLowerCurveZ;
 	}
@@ -2812,6 +2836,12 @@ public class Fuselage implements IFuselage {
 		return outlineXZCamberLineX;
 	}
 
+	public List<Amount<Length>> getOutlineXZCamberLineAmountX() {
+		return outlineXZCamberLineX.stream()
+				.map(x -> Amount.valueOf(x, SI.METER))
+				.collect(Collectors.toList());
+	}
+	
 	public void setOutlineXZCamberLineX(List<Double> outlineXZCamberLineX) {
 		this.outlineXZCamberLineX = outlineXZCamberLineX;
 	}
@@ -2820,6 +2850,12 @@ public class Fuselage implements IFuselage {
 		return outlineXZCamberLineZ;
 	}
 
+	public List<Amount<Length>> getOutlineXZCamberLineAmountZ() {
+		return outlineXZCamberLineZ.stream()
+				.map(z -> Amount.valueOf(z, SI.METER))
+				.collect(Collectors.toList());
+	}
+	
 	public void setOutlineXZCamberLineZ(List<Double> outlineXZCamberLineZ) {
 		this.outlineXZCamberLineZ = outlineXZCamberLineZ;
 	}
@@ -2828,6 +2864,12 @@ public class Fuselage implements IFuselage {
 		return outlineXYSideRCurveX;
 	}
 
+	public List<Amount<Length>> getOutlineXYSideRCurveAmountX() {
+		return outlineXYSideRCurveX.stream()
+				.map(x -> Amount.valueOf(x, SI.METER))
+				.collect(Collectors.toList());
+	}
+	
 	public void setOutlineXYSideRCurveX(List<Double> outlineXYSideRCurveX) {
 		this.outlineXYSideRCurveX = outlineXYSideRCurveX;
 	}
@@ -2836,6 +2878,12 @@ public class Fuselage implements IFuselage {
 		return outlineXYSideRCurveY;
 	}
 
+	public List<Amount<Length>> getOutlineXYSideRCurveAmountY() {
+		return outlineXYSideRCurveY.stream()
+				.map(y -> Amount.valueOf(y, SI.METER))
+				.collect(Collectors.toList());
+	}
+	
 	public void setOutlineXYSideRCurveY(List<Double> outlineXYSideRCurveY) {
 		this.outlineXYSideRCurveY = outlineXYSideRCurveY;
 	}
@@ -2844,6 +2892,12 @@ public class Fuselage implements IFuselage {
 		return outlineXYSideRCurveZ;
 	}
 
+	public List<Amount<Length>> getOutlineXYSideRCurveAmountZ() {
+		return outlineXYSideRCurveZ.stream()
+				.map(z -> Amount.valueOf(z, SI.METER))
+				.collect(Collectors.toList());
+	}
+	
 	public void setOutlineXYSideRCurveZ(List<Double> outlineXYSideRCurveZ) {
 		this.outlineXYSideRCurveZ = outlineXYSideRCurveZ;
 	}
@@ -2852,6 +2906,12 @@ public class Fuselage implements IFuselage {
 		return outlineXYSideLCurveX;
 	}
 
+	public List<Amount<Length>> getOutlineXYSideLCurveAmountX() {
+		return outlineXYSideLCurveX.stream()
+				.map(x -> Amount.valueOf(x, SI.METER))
+				.collect(Collectors.toList());
+	}
+	
 	public void setOutlineXYSideLCurveX(List<Double> outlineXYSideLCurveX) {
 		this.outlineXYSideLCurveX = outlineXYSideLCurveX;
 	}
@@ -2860,6 +2920,12 @@ public class Fuselage implements IFuselage {
 		return outlineXYSideLCurveY;
 	}
 
+	public List<Amount<Length>> getOutlineXYSideLCurveAmountY() {
+		return outlineXYSideLCurveY.stream()
+				.map(y -> Amount.valueOf(y, SI.METER))
+				.collect(Collectors.toList());
+	}
+	
 	public void setOutlineXYSideLCurveY(List<Double> outlineXYSideLCurveY) {
 		this.outlineXYSideLCurveY = outlineXYSideLCurveY;
 	}
@@ -2868,6 +2934,12 @@ public class Fuselage implements IFuselage {
 		return outlineXYSideLCurveZ;
 	}
 
+	public List<Amount<Length>> getOutlineXYSideLCurveAmountZ() {
+		return outlineXYSideLCurveZ.stream()
+				.map(z -> Amount.valueOf(z, SI.METER))
+				.collect(Collectors.toList());
+	}
+	
 	public void setOutlineXYSideLCurveZ(List<Double> outlineXYSideLCurveZ) {
 		this.outlineXYSideLCurveZ = outlineXYSideLCurveZ;
 	}
@@ -2876,6 +2948,12 @@ public class Fuselage implements IFuselage {
 		return sectionUpperCurveY;
 	}
 
+	public List<Amount<Length>> getSectionUpperCurveAmountY() {
+		return sectionUpperCurveY.stream()
+				.map(y -> Amount.valueOf(y, SI.METER))
+				.collect(Collectors.toList());
+	}
+	
 	public void setSectionUpperCurveY(List<Double> sectionUpperCurveY) {
 		this.sectionUpperCurveY = sectionUpperCurveY;
 	}
@@ -2884,6 +2962,12 @@ public class Fuselage implements IFuselage {
 		return sectionUpperCurveZ;
 	}
 
+	public List<Amount<Length>> getSectionUpperCurveAmountZ() {
+		return sectionUpperCurveZ.stream()
+				.map(z -> Amount.valueOf(z, SI.METER))
+				.collect(Collectors.toList());
+	}
+	
 	public void setSectionUpperCurveZ(List<Double> sectionUpperCurveZ) {
 		this.sectionUpperCurveZ = sectionUpperCurveZ;
 	}
@@ -2892,6 +2976,12 @@ public class Fuselage implements IFuselage {
 		return sectionLowerCurveY;
 	}
 
+	public List<Amount<Length>> getSectionLowerCurveAmountY() {
+		return sectionLowerCurveY.stream()
+				.map(y -> Amount.valueOf(y, SI.METER))
+				.collect(Collectors.toList());
+	}
+	
 	public void setSectionLowerCurveY(List<Double> sectionLowerCurveY) {
 		this.sectionLowerCurveY = sectionLowerCurveY;
 	}
@@ -2900,6 +2990,12 @@ public class Fuselage implements IFuselage {
 		return sectionLowerCurveZ;
 	}
 
+	public List<Amount<Length>> getSectionLowerCurveAmountZ() {
+		return sectionLowerCurveZ.stream()
+				.map(z -> Amount.valueOf(z, SI.METER))
+				.collect(Collectors.toList());
+	}
+	
 	public void setSectionLowerCurveZ(List<Double> sectionLowerCurveZ) {
 		this.sectionLowerCurveZ = sectionLowerCurveZ;
 	}

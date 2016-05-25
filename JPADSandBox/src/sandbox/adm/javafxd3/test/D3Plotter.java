@@ -211,10 +211,9 @@ public class D3Plotter {
 			//--------------------------------------------------------
 			// Find X- and Y- min/max values
 
-			//		List<List<Double>> dataList = MyArrayUtils.convert2DArrayToList(dataArray);
-			//		System.out.println(dataList);
-
-			//		System.out.println(MyArrayUtils.extractColumnOf2DArrayToList(dataArray, 0));
+//			List<List<Double>> dataList = MyArrayUtils.convert2DArrayToList(dataArray);
+//			System.out.println(dataList);
+//			System.out.println(MyArrayUtils.extractColumnOf2DArrayToList(dataArray, 0));
 
 			DoubleSummaryStatistics summaryStatisticsX = MyArrayUtils.extractColumnOf2DArrayToList(dataArray, 0).stream()
 					.mapToDouble(v -> v)

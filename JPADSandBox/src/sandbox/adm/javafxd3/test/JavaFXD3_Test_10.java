@@ -17,6 +17,7 @@ import org.kohsuke.args4j.Option;
 import org.treez.javafxd3.d3.svg.SymbolType;
 import org.treez.javafxd3.javafx.JavaFxD3Browser;
 
+import aircraft.components.fuselage.creator.FuselageCreator;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.LiftingSurface.LiftingSurfaceBuilder;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
@@ -29,16 +30,17 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import sandbox.adm.D3PlotterOptions;
 import standaloneutils.JPADXmlReader;
+import standaloneutils.MyArrayUtils;
 import writers.JPADStaticWriteUtils;
 
-class MyArgumentTest09 {
+class MyArgumentTest10 {
 	@Option(name = "-i", aliases = { "--input" }, required = true,
 			usage = "my input file")
 	private File _inputFile;
 
-	@Option(name = "-da", aliases = { "--dir-airfoils" }, required = true,
-			usage = "airfoil directory path")
-	private File _airfoilDirectory;
+//	@Option(name = "-da", aliases = { "--dir-airfoils" }, required = true,
+//			usage = "airfoil directory path")
+//	private File _airfoilDirectory;
 
 	// receives other command line parameters than options
 	@Argument
@@ -48,13 +50,13 @@ class MyArgumentTest09 {
 		return _inputFile;
 	}
 
-	public File getAirfoilDirectory() {
-		return _airfoilDirectory;
-	}
+//	public File getAirfoilDirectory() {
+//		return _airfoilDirectory;
+//	}
 
 }
 
-public class JavaFXD3_Test_09 extends Application {
+public class JavaFXD3_Test_10 extends Application {
 
 	// declaration necessary for Concrete Object usage
 	public static CmdLineParser theCmdLineParser;
@@ -62,14 +64,14 @@ public class JavaFXD3_Test_09 extends Application {
 
 	//-------------------------------------------------------------
 
-	public static LiftingSurface theWing;
+	public static FuselageCreator theFuselageCreator;
 
 	//-------------------------------------------------------------
 
 	private D3Plotter d3Plotter;
 
-	private final int WIDTH = 700;
-	private final int HEIGHT = 600;
+	private final int WIDTH = 900;
+	private final int HEIGHT = 800;
 
 	private static final double DELTA = 0.001d;
 
@@ -79,39 +81,61 @@ public class JavaFXD3_Test_09 extends Application {
 		//--------------------------------------------------
 		// get the wing object
 		System.out.println("\n\n##################");
-		System.out.println("function start :: getting the wing object ...");
+		System.out.println("function start :: getting the fuselage object ...");
 
-		LiftingSurface wing = JavaFXD3_Test_09.theWing;
-		if (wing == null) {
+		FuselageCreator fuselageCreator = JavaFXD3_Test_10.theFuselageCreator;
+		if (fuselageCreator == null) {
 			System.out.println("wing object null, returning.");
 			return;
 		}
 
-		System.out.println("The wing ...");
-		System.out.println(wing);
-		System.out.println("Details on panel discretization ...");
-		wing.getLiftingSurfaceCreator().reportPanelsToSpanwiseDiscretizedVariables();
-
 		//--------------------------------------------------
-		// get data vectors from wing discretization
-		List<Amount<Length>> vY = wing.getLiftingSurfaceCreator().getDiscretizedYs();
-		int nY = vY.size();
-		List<Amount<Length>> vChords = wing.getLiftingSurfaceCreator().getDiscretizedChords();
-		List<Amount<Length>> vXle = wing.getLiftingSurfaceCreator().getDiscretizedXle();
+		// get data vectors from fuselage discretization
+		//--------------------------------------------------
 
-		Double[][] dataChordsVsY = new Double[nY][2];
-		Double[][] dataXleVsY = new Double[nY][2];
-		IntStream.range(0, nY)
+		// upper curve, sideview
+		List<Amount<Length>> vX1 = fuselageCreator.getOutlineXZUpperCurveAmountX();
+		int nX1 = vX1.size();
+		List<Amount<Length>> vZ1 = fuselageCreator.getOutlineXZUpperCurveAmountZ();
+
+		Double[][] dataOutlineXZUpperCurve = new Double[nX1][2];
+		IntStream.range(0, nX1)
 		.forEach(i -> {
-			dataChordsVsY[i][0] = vY.get(i).doubleValue(SI.METRE);
-			dataChordsVsY[i][1] = vChords.get(i).doubleValue(SI.METRE);
-			dataXleVsY[i][0] = vY.get(i).doubleValue(SI.METRE);
-			dataXleVsY[i][1] = vXle.get(i).doubleValue(SI.METRE);
+			dataOutlineXZUpperCurve[i][0] = vX1.get(i).doubleValue(SI.METRE);
+			dataOutlineXZUpperCurve[i][1] = vZ1.get(i).doubleValue(SI.METRE);
 		});
 
-		System.out.println("##################\n\n");
+		// lower curve, sideview
+		List<Amount<Length>> vX2 = fuselageCreator.getOutlineXZLowerCurveAmountX();
+		int nX2 = vX2.size();
+		List<Amount<Length>> vZ2 = fuselageCreator.getOutlineXZLowerCurveAmountZ();
 
-		Double[][] dataTopView = wing.getLiftingSurfaceCreator().getDiscretizedTopViewAsArray();
+		Double[][] dataOutlineXZLowerCurve = new Double[nX2][2];
+		IntStream.range(0, nX2)
+		.forEach(i -> {
+			dataOutlineXZLowerCurve[i][0] = vX2.get(i).doubleValue(SI.METRE);
+			dataOutlineXZLowerCurve[i][1] = vZ2.get(i).doubleValue(SI.METRE);
+		});
+
+		// camberline, sideview
+		List<Amount<Length>> vX3 = fuselageCreator.getOutlineXZCamberLineAmountX();
+		int nX3 = vX3.size();
+		List<Amount<Length>> vZ3 = fuselageCreator.getOutlineXZCamberLineAmountZ();
+		
+		Double[][] dataOutlineXZCamberLine = new Double[nX3][2];
+		IntStream.range(0, nX3)
+		.forEach(i -> {
+			dataOutlineXZCamberLine[i][0] = vX3.get(i).doubleValue(SI.METRE);
+			dataOutlineXZCamberLine[i][1] = vZ3.get(i).doubleValue(SI.METRE);
+		});
+		
+
+		System.out.println("\n\n##################\n\n");
+
+		System.out.println("No. points in curves: " + nX1 +", "+ nX2 + ", " + nX3);
+		// System.out.println(MyArrayUtils.extractColumnOf2DArrayToList(dataOutlineXZCamberLine, 0));
+		
+		System.out.println("\n\n##################\n\n");
 
 		//--------------------------------------------------
 		System.out.println("Initializing test class...");
@@ -125,63 +149,53 @@ public class JavaFXD3_Test_09 extends Application {
 
 		List<Double[][]> listDataArray = new ArrayList<Double[][]>();
 
-		listDataArray.add(dataChordsVsY);
-		// listDataArray.add(dataXleVsY);
-		listDataArray.add(dataTopView);
+		listDataArray.add(dataOutlineXZUpperCurve);
+		listDataArray.add(dataOutlineXZLowerCurve);
+		listDataArray.add(dataOutlineXZCamberLine);
 
-		List<Double[][]> listAuxDataArray = new ArrayList<Double[][]>();
-
-		Double[][] xyMAC = new Double[2][2];
-		xyMAC[0][0] = wing.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeY().doubleValue(SI.METRE);
-		xyMAC[0][1] = wing.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METRE);
-		xyMAC[1][0] = xyMAC[0][0];
-		xyMAC[1][1] = xyMAC[0][1] + wing.getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METRE);
-		listAuxDataArray.add(xyMAC);
-
-		listDataArray.add(xyMAC);
-
-		double yMax = 1.05*wing.getSemiSpan().doubleValue(SI.METRE);
-		double yMin = -0.05*wing.getSemiSpan().doubleValue(SI.METRE);
-		double xMax = yMax;
-		double xMin = yMin;
+		double xMax = 1.05*fuselageCreator.getLenF().doubleValue(SI.METRE);
+		double xMin = -0.05*fuselageCreator.getLenF().doubleValue(SI.METRE);
+		double yMax = xMax;
+		double yMin = xMin;
 
 		D3PlotterOptions options = new D3PlotterOptions.D3PlotterOptionsBuilder()
-				.widthGraph(WIDTH).heightGraph(HEIGHT)
+				.widthSVG(2*WIDTH).heightSVG(2*HEIGHT)
+				// .widthGraph(WIDTH).heightGraph(HEIGHT)
 				.xRange(xMin, xMax)
-				.yRange(yMax, yMin)
+				.yRange(yMin, yMax)
 				.axisLineColor("darkblue").axisLineStrokeWidth("2px")
-				.graphBackgroundColor("blue").graphBackgroundOpacity(0.1)
-				.title("Wing data representation")
+				.graphBackgroundColor("blue").graphBackgroundOpacity(0.05)
+				.title("Fuselage representation")
 				.xLabel("x (m)")
-				.yLabel("y (m)")
+				.yLabel("z (m)")
 				.showXGrid(true)
 				.showYGrid(true)
 				//				.symbolType(SymbolType.CIRCLE)
 				.symbolTypes(
-						SymbolType.TRIANGLE_UP,
+						SymbolType.CIRCLE,
 						SymbolType.CIRCLE,
 						SymbolType.CIRCLE
 						)
 				//				.symbolSize(20)
-				.symbolSizes(20,10)
-				.showSymbols(false,true,true) // NOTE: overloaded function
+				.symbolSizes(10,10,10)
+				.showSymbols(true,true,true) // NOTE: overloaded function
 				//				.symbolStyle("fill:yellow; stroke:green; stroke-width:2")
 				.symbolStyles(
-						"fill:blue; stroke:red; stroke-width:2",
-						"fill:cyan; stroke:green; stroke-width:2",
-						"fill:cyan; stroke:black; stroke-width:3"
+						"fill:blue; stroke:red; stroke-width:1",
+						"fill:cyan; stroke:green; stroke-width:1",
+						"fill:cyan; stroke:black; stroke-width:1"
 						)
 				//				.lineStyle(
 				//						// "fill:none; stroke:darkgreen; stroke-dasharray: 15px,2px; stroke-width:2"
 				//						"fill:none; stroke:darkgreen; stroke-width:3"
 				//						)
 				.lineStyles(
-						"fill:none; stroke:magenta; stroke-dasharray: 15px, 2px; stroke-width:2",
 						"fill:none; stroke:darkblue; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:3"
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:magenta; stroke-dasharray: 15px, 2px; stroke-width:1"
 						)
-				//				.plotArea(false)
-				.plotAreas(false,true)
+				.plotArea(false)
+				//.plotAreas(false,false,false)
 				//				.areaStyle("fill:orange;")
 				.areaStyles("fill:orange;","fill:yellow;")
 				//				.areaOpacity(0.7)
@@ -197,7 +211,7 @@ public class JavaFXD3_Test_09 extends Application {
 				//						)
 				.build();
 
-		System.out.println("Plot options:\n" + options);
+//		System.out.println("Plot options:\n" + options);
 
 		d3Plotter = new D3Plotter(
 				options,
@@ -246,54 +260,42 @@ public class JavaFXD3_Test_09 extends Application {
 		// TODO: check out this as an alternative
 		// https://blog.codecentric.de/en/2015/09/javafx-how-to-easily-implement-application-preloader-2/
 
-		System.out.println("--------------");
-		System.out.println("Wing test / D3");
-		System.out.println("--------------");
+		System.out.println("----------------------");
+		System.out.println("Fuselage test / D3");
+		System.out.println("----------------------");
 
-		MyArgumentTest09 va = new MyArgumentTest09();
-		JavaFXD3_Test_09.theCmdLineParser = new CmdLineParser(va);
+		MyArgumentTest10 va = new MyArgumentTest10();
+		JavaFXD3_Test_10.theCmdLineParser = new CmdLineParser(va);
 
 		// populate the wing static object in the class
 		// before launching the JavaFX application thread (launch --> start ...)
 		try {
-			JavaFXD3_Test_09.theCmdLineParser.parseArgument(args);
+			JavaFXD3_Test_10.theCmdLineParser.parseArgument(args);
 			String pathToXML = va.getInputFile().getAbsolutePath();
 			System.out.println("INPUT ===> " + pathToXML);
-
-			String dirAirfoil = va.getAirfoilDirectory().getCanonicalPath();
-			System.out.println("AIRFOILS ===> " + dirAirfoil);
 
 			System.out.println("--------------");
 
 			// This wing static object is available in the scope of
 			// the Application.start method
 
-			//			// read LiftingSurface from xml ...
-			//			theWing = new LiftingSurfaceBuilder("MyWing", ComponentEnum.WING)
-			//					.liftingSurfaceCreator(
-			//							LiftingSurfaceCreator.importFromXML(pathToXML, dirAirfoil)
-			//							)
-			//					.build();
+			// Read fuselage from xml ...
+			theFuselageCreator = FuselageCreator.importFromXML(pathToXML);
+					
+			JavaFXD3_Test_10.theFuselageCreator.calculateGeometry(
+					20,    // No. points in nose trunk
+					5,     // No. points in cylindrical trunk
+					15,    // No. points in tail trunk
+					10, 10 // No. points in upper/lower cyl. trunk section
+					);
 
-			// default LiftingSurface ...
-			theWing = new LiftingSurfaceBuilder("MyWing", ComponentEnum.WING)
-					.liftingSurfaceCreator(
-						new LiftingSurfaceCreator
-							.LiftingSurfaceCreatorBuilder("Test ATR72 wing", AircraftEnum.ATR72)
-							.build()
-					)
-					.build();
+			System.out.println("The fuselage ...");
+			System.out.println(JavaFXD3_Test_10.theFuselageCreator);
+			System.out.println("Details on discretization ...");
 
-			JavaFXD3_Test_09.theWing.calculateGeometry(40);
-
-			System.out.println("The wing ...");
-			System.out.println(JavaFXD3_Test_09.theWing);
-			System.out.println("Details on panel discretization ...");
-			JavaFXD3_Test_09.theWing.getLiftingSurfaceCreator().reportPanelsToSpanwiseDiscretizedVariables();
-
-		} catch (CmdLineException | IOException e) {
+		} catch (CmdLineException e) {
 			System.err.println("Error: " + e.getMessage());
-			JavaFXD3_Test_09.theCmdLineParser.printUsage(System.err);
+			JavaFXD3_Test_10.theCmdLineParser.printUsage(System.err);
 			System.err.println();
 			System.err.println("  Must launch this app with proper command line arguments.");
 			return;
@@ -304,4 +306,3 @@ public class JavaFXD3_Test_09 extends Application {
 	}
 
 }
-

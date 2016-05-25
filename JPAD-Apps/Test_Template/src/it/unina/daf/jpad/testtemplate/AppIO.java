@@ -87,7 +87,7 @@ public class AppIO {
 					.append(reader.getStatus()).append("\n")
 				.append("-------------------------------------")
 				;
-		
+
 		if (reader.getStatus().equals(Status.PARSED_OK)) {
 			
 			try {

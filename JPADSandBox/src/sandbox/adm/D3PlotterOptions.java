@@ -225,6 +225,18 @@ public class D3PlotterOptions {
 			return this;
 		}
 
+		public D3PlotterOptionsBuilder widthSVG(int w) {
+			_widthPageSVG = w;
+			_widthGraph = _widthPageSVG - _margin.left - _margin.right;
+			return this;
+		}
+
+		public D3PlotterOptionsBuilder heightSVG(int h) {
+			_heightPageSVG = h;
+			_heightGraph = _heightPageSVG - _margin.top - _margin.bottom;
+			return this;
+		}
+		
 		public D3PlotterOptionsBuilder widthGraph(int w) {
 			_widthGraph = w;
 			_widthGraph = _widthPageSVG - _margin.left - _margin.right;
