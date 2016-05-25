@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wing_executable>
+        <operating_conditions>
+                <altitude unit="m">0.0</altitude>
+                <mach_number>0.0</mach_number>
+                <number_of_alpha>1</number_of_alpha>
+                <alpha_initial unit="°">2.0</alpha_initial>
+                <alpha_final unit="°">3.0</alpha_final>
+        </operating_conditions>
+       <wing>
+            <global>
+                <surface unit="m²">83.15</surface>
+                <aspect_ratio>9.43</aspect_ratio>
+                <number_of_point_semispan>100</number_of_point_semispan>
+                <adimensional_kink_station>0.399</adimensional_kink_station>
+             </global>
+             <distribution>
+                <number_of_given_sections>8</number_of_given_sections>
+                <airfoil_family>NACA_65_SERIES</airfoil_family>
+				<max_thickness_mean_airfoil>0.151</max_thickness_mean_airfoil>
+                   <geometry>
+						<y_adimensional_stations>[ 0, 0.12, 0.13, 0.399, 0.4, 0.75, 0.76, 1 ]</y_adimensional_stations>
+						<chord_distribution unit="m">[6.39, 5.28 , 5.19  , 2.707 ,  2.71 , 1.74 , 1.71 , 1.05 ]</chord_distribution>
+						<x_le_distribution unit="m">[ 0 , 1.12 , 1.21 , 3.708 , 3.71 , 6.39 , 6.47 , 8.31 ]</x_le_distribution>
+						<twist_distribution unit="°">[0, 0, 0 ,0 , 0 ,0 ,0 ,0 ]</twist_distribution>
+						<dihedral_distribution unit="°">[0, 0, 0 ,0 , 0 ,0 ,0 ,0 ]</dihedral_distribution>
+                    </geometry>
+                    <aerodynamics>
+						<alpha_zero_lift_distribution unit="°">[-1.98, -1.874, -16.269 ,-17.992 ,-1.64 ,-2.54 ,-2.56, -3.18 ]</alpha_zero_lift_distribution>
+						<alpha_star_distribution unit="°">[9.5, 9.191, 9.174, 8.5, 8.49, 8.20, 8.19, 8.0]</alpha_star_distribution>
+						<maximum_lift_coefficient_distribution>[2.0, 2.0, 2.0, 2.0, 1.99, 1.88, 1.87, 1.8]</maximum_lift_coefficient_distribution>
+                    </aerodynamics>
+             </distribution>
+        </wing>
+		<flaps>
+                        <flap id = "1">
+                                <flap_type>FOWLER</flap_type>
+                                <flap_chord_ratio>0.285</flap_chord_ratio>
+                                <flap_deflection unit = "°">40</flap_deflection>
+                                <flap_non_dimensional_inner_station>0.12</flap_non_dimensional_inner_station>
+                                <flap_non_dimensional_outer_station>0.4</flap_non_dimensional_outer_station>
+                        </flap>
+                        <flap id = "2">
+                                <flap_type>FOWLER</flap_type>
+                                <flap_chord_ratio>0.32</flap_chord_ratio>
+                                <flap_deflection unit = "°">40</flap_deflection>
+                                <flap_non_dimensional_inner_station>0.4</flap_non_dimensional_inner_station>
+                                <flap_non_dimensional_outer_station>0.75</flap_non_dimensional_outer_station>
+                        </flap>
+                </flaps>
+                <slats>
+                        <slat id = "1">
+                                <slat_deflection unit = "°">0</slat_deflection>
+                                <slat_chord_ratio>0.134</slat_chord_ratio>
+                                <slat_extension_ratio>1.1</slat_extension_ratio>
+                                <slat_non_dimensional_inner_station>0.126</slat_non_dimensional_inner_station>
+                                <slat_non_dimensional_outer_station>0.292</slat_non_dimensional_outer_station>
+                        </slat>
+                        <slat id = "2">
+                                <slat_deflection unit = "°">0</slat_deflection>
+                                <slat_chord_ratio unit = "">0.166</slat_chord_ratio>
+                                <slat_extension_ratio>1.1</slat_extension_ratio>
+                                <slat_non_dimensional_inner_station>0.364</slat_non_dimensional_inner_station>
+                                <slat_non_dimensional_outer_station>0.564</slat_non_dimensional_outer_station>
+                        </slat>
+                        <slat id = "3">
+                                <slat_deflection unit = "°">0</slat_deflection>
+                                <slat_chord_ratio>0.223</slat_chord_ratio>
+                                <slat_extension_ratio>1.1</slat_extension_ratio>
+                                <slat_non_dimensional_inner_station>0.564</slat_non_dimensional_inner_station>
+                                <slat_non_dimensional_outer_station>0.764</slat_non_dimensional_outer_station>
+                        </slat>
+						<slat id = "4">
+                                <slat_deflection unit = "°">0</slat_deflection>
+                                <slat_chord_ratio>0.299</slat_chord_ratio>
+                                <slat_extension_ratio>1.1</slat_extension_ratio>
+                                <slat_non_dimensional_inner_station>0.764</slat_non_dimensional_inner_station>
+                                <slat_non_dimensional_outer_station>0.948</slat_non_dimensional_outer_station>
+                        </slat>
+                </slats>
+</wing_executable>
