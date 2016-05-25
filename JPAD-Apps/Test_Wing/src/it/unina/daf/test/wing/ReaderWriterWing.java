@@ -22,6 +22,7 @@ import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.DatabaseManager;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
+import standaloneutils.MyMathUtils;
 import standaloneutils.MyXMLReaderUtils;
 import writers.JPADStaticWriteUtils;
 
@@ -294,6 +295,23 @@ public class ReaderWriterWing {
 		System.out.print("\nAdimentional stations :");
 		 	System.out.println(input.getyAdimensionalStationInput());
 		}
+		
+		double [] yInput = new double [input.getNumberOfSections()];
+		double [] alphaStar = new double [input.getNumberOfSections()];
+		double [] cLMax = new double [input.getNumberOfSections()];
+		
+		double [] yNew  = {0, 0.12, 0.13, 0.399, 0.4, 0.75, 0.76, 1 };
+		
+		for (int i=0; i<input.getNumberOfSections(); i++){
+			yInput[i] = input.getyAdimensionalStationInput().get(i);
+			alphaStar[i] = input.getAlphaStarDistribution().get(i).getEstimatedValue();
+			cLMax[i] = (double)input.getMaximumliftCoefficientDistribution().get(i);
+		}
+		Double[] alphastar = MyMathUtils.getInterpolatedValue1DLinear(yInput,alphaStar, yNew);
+		Double[] cLMaxext = MyMathUtils.getInterpolatedValue1DLinear(yInput,cLMax, yNew);
+		
+		System.out.println(" alpha star " + Arrays.toString(alphastar));
+		System.out.println(" cl max ext " + Arrays.toString(cLMaxext));
 	}
 	
 	

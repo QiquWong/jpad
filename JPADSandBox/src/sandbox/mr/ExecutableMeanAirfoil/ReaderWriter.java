@@ -37,140 +37,37 @@
 //
 //		System.out.println("Reading input file data ...\n");
 //		
-//		//------------------------------------------------------------------------------------
-//		// Setup database(s)
-//		AerodynamicDatabaseReader aeroDatabaseReader = DatabaseManager.initializeAeroDatabase(new AerodynamicDatabaseReader(
-//				databaseFolderPath,	aerodynamicDatabaseFileName),
-//				databaseFolderPath);
-//
 //
 //		//---------------------------------------------------------------------------------
 //		
-//		double numberOfSection =  Double.parseDouble(reader.getXMLPropertiesByPath("//number_of_input_sections").get(0));
-//		input.setMachNumber(machNumber);
+//		int numberOfSection =  (int) Double.parseDouble(reader.getXMLPropertiesByPath("//number_of_input_sections").get(0));
+//		input.setNumberOfSection(numberOfSection);
 //		
+//		List<String> maximumThickness = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//maximum_thickness").get(0));
+//		for(int i=0; i<maximumThickness.size(); i++)
+//			input.getMaximumThickness().add(Double.valueOf(maximumThickness.get(i)));
 //		
-//		Amount<Length> altitude = reader.getXMLAmountWithUnitByPath("//altitude").to(SI.METER);
-//		input.setAltitude(altitude);
-//	
-//		double machNumber =  Double.parseDouble(reader.getXMLPropertiesByPath("//number_of_input_sections").get(0));
-//		input.setMachNumber(machNumber);
-//
-//		int numberOfAlpha =  (int)Double.parseDouble(reader.getXMLPropertiesByPath("//number_of_alpha").get(0));
-//		input.setNumberOfAlpha(numberOfAlpha);
+//		List<String> leadingEdgeRadius = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//leading_edge_radius").get(0));
+//		for(int i=0; i<leadingEdgeRadius.size(); i++)
+//			input.getLeadingEdgeRdius().add(Double.valueOf(leadingEdgeRadius.get(i)));
 //		
-//		Amount<Angle> alphaInitial = reader.getXMLAmountWithUnitByPath("//alpha_initial").to(NonSI.DEGREE_ANGLE);
-//		input.setAlphaInitial(alphaInitial);
+//		List<String> alphaZeroLift = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//alpha_zero_lift").get(0));
+//		for(int i=0; i<alphaZeroLift.size(); i++)
+//			input.getAlphaZeroLift().add(Amount.valueOf(Double.valueOf(alphaZeroLift.get(i)), NonSI.DEGREE_ANGLE));
 //		
-//		Amount<Angle> alphaFinal = reader.getXMLAmountWithUnitByPath("//alpha_final").to(NonSI.DEGREE_ANGLE);
-//		input.setAlphaFinal(alphaFinal);
+//		List<String> clZero = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//cl_zero").get(0));
+//		for(int i=0; i<clZero.size(); i++)
+//			input.getClZero().add(Double.valueOf(maximumThickness.get(i)));
 //		
+//		List<String> clAlpha = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//cl_zero").get(0));
+//		for(int i=0; i<clAlpha.size(); i++)
+//			input.getLiftCoefficientSlope().add(Double.valueOf(clAlpha.get(i)));
 //		
-//		//----------------------------------------------------------------------------------
-//		// GLOBAL
-//		
-//		Amount<Area> surface = reader.getXMLAmountWithUnitByPath("//surface").to(SI.SQUARE_METRE);
-//		input.setSurface(surface);
-//		
-//		double aspectRatio = Double.parseDouble(reader.getXMLPropertiesByPath("//aspect_ratio").get(0));
-//		input.setAspectRatio(aspectRatio);
-//		
-//		int numberOfPointSemispan =  (int)Double.parseDouble(reader.getXMLPropertiesByPath("//number_of_point_semispan").get(0));
-//		input.setNumberOfPointSemispan(numberOfPointSemispan);
-//		
-//		double adimensionalKinkStation = Double.parseDouble(reader.getXMLPropertiesByPath("//adimensional_kink_station ").get(0));
-//		input.setAdimensionalKinkStation(adimensionalKinkStation);
-//		
-//		double meanAirfoilThickness = Double.parseDouble(reader.getXMLPropertiesByPath("//max_thickness_mean_airfoil").get(0));
-//		input.setMeanThickness(meanAirfoilThickness);
-//		
-//		
-//		//-------------------------------------------------------------------------------------
-//		//DISTRIBUTION
-//		
-//		int numberOfSection =  (int)Double.parseDouble(reader.getXMLPropertiesByPath("//number_of_given_sections").get(0));
-//		input.setNumberOfSections(numberOfSection);
-//		
-//		List<String> airfoilFamilyProperty = reader.getXMLPropertiesByPath("//airfoil_family");
-//		if(airfoilFamilyProperty.get(0).equals("NACA_4_DIGIT"))
-//			input.setMeanAirfoilFamily(AirfoilFamilyEnum.NACA_4_Digit);
-//		else if(airfoilFamilyProperty.get(0).equals("NACA_5_DIGIT"))
-//			input.setMeanAirfoilFamily(AirfoilFamilyEnum.NACA_5_Digit);
-//		else if(airfoilFamilyProperty.get(0).equals("NACA_63_SERIES"))
-//			input.setMeanAirfoilFamily(AirfoilFamilyEnum.NACA_63_Series);
-//		else if(airfoilFamilyProperty.get(0).equals("NACA_64_SERIES"))
-//			input.setMeanAirfoilFamily(AirfoilFamilyEnum.NACA_64_Series);
-//		else if(airfoilFamilyProperty.get(0).equals("NACA_65_SERIES"))
-//			input.setMeanAirfoilFamily(AirfoilFamilyEnum.NACA_65_Series);
-//		else if(airfoilFamilyProperty.get(0).equals("NACA_66_SERIES"))
-//			input.setMeanAirfoilFamily(AirfoilFamilyEnum.NACA_66_Series);
-//		else if(airfoilFamilyProperty.get(0).equals("BICONVEX"))
-//			input.setMeanAirfoilFamily(AirfoilFamilyEnum.BICONVEX);
-//		else if(airfoilFamilyProperty.get(0).equals("DOUBLE_WEDGE"))
-//			input.setMeanAirfoilFamily(AirfoilFamilyEnum.DOUBLE_WEDGE);
-//		else {
-//			System.err.println("NO VALID FAMILY TYPE!!");
-//			return;
-//			
-//		}
-//		
-//		//recognizing airfoil family
-//				int airfoilFamilyIndex = 0;
-//				if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_4_Digit) 
-//					airfoilFamilyIndex = 1;
-//				else if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_5_Digit)
-//					airfoilFamilyIndex = 2;
-//				else if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_63_Series)
-//					airfoilFamilyIndex = 3;
-//				else if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_64_Series)
-//					airfoilFamilyIndex = 4;
-//				else if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_65_Series)
-//					airfoilFamilyIndex = 5;
-//				else if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_66_Series)
-//					airfoilFamilyIndex = 6;
-//				else if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.BICONVEX)
-//					airfoilFamilyIndex = 7;
-//				else if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.DOUBLE_WEDGE)
-//					airfoilFamilyIndex = 8;
-//				
-//				
-//		double sharpnessParameterLE = aeroDatabaseReader.getDeltaYvsThickness(input.getMeanThickness(), airfoilFamilyIndex);
-//				
-//				
-//		
-//		List<String> chordDistribution = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//chord_distribution").get(0));
-//		for(int i=0; i<chordDistribution.size(); i++)
-//			input.getChordDistribution().add(Amount.valueOf(Double.valueOf(chordDistribution.get(i)), SI.METER));
 //		
 //		List<String> yAdimensionalStationIput = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//y_adimensional_stations").get(0));
 //		for(int i=0; i<yAdimensionalStationIput.size(); i++)
 //			input.getyAdimensionalStationInput().add(Double.valueOf(yAdimensionalStationIput.get(i)));
-//	
 //		
-//		List<String> xleDistribution = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//x_le_distribution").get(0));
-//		for(int i=0; i<xleDistribution.size(); i++)
-//			input.getxLEDistribution().add(Amount.valueOf(Double.valueOf(xleDistribution.get(i)), SI.METER));
-//		
-//		List<String> twistDistribution = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//twist_distribution").get(0));
-//		for(int i=0; i<twistDistribution.size(); i++)
-//			input.getTwistDistribution().add(Amount.valueOf(Double.valueOf(twistDistribution.get(i)), NonSI.DEGREE_ANGLE));
-//		
-//		List<String> dihedralDistribution  = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//dihedral_distribution").get(0));
-//		for(int i=0; i<dihedralDistribution.size(); i++)
-//			input.getDihedralDistribution().add(Amount.valueOf(Double.valueOf(dihedralDistribution.get(i)), NonSI.DEGREE_ANGLE));
-//				
-//		List<String> alphaZeroLiftDistribution = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//alpha_zero_lift_distribution").get(0));
-//		for(int i=0; i<alphaZeroLiftDistribution.size(); i++)
-//			input.getAlphaZeroLiftDistribution().add(Amount.valueOf(Double.valueOf(alphaZeroLiftDistribution.get(i)), NonSI.DEGREE_ANGLE));
-//		
-//		List<String> alphaStarDistribution = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//alpha_star_distribution").get(0));
-//		for(int i=0; i<alphaStarDistribution.size(); i++)
-//			input.getAlphaStarDistribution().add(Amount.valueOf(Double.valueOf(alphaStarDistribution.get(i)), NonSI.DEGREE_ANGLE));
-//		
-//		List<String> clMaxDistribution = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//maximum_lift_coefficient_distribution").get(0));
-//		for(int i=0; i<clMaxDistribution.size(); i++)
-//			input.getMaximumliftCoefficientDistribution().add(Double.valueOf(clMaxDistribution.get(i)));
-//	
 //		
 //
 //	// WARNINGS

@@ -1,0 +1,49 @@
+%Stall_path
+\begin{tikzpicture}
+
+\begin{axis}[
+width=\figurewidth,
+height=\figureheight,
+scaled ticks=false, tick label style={/pgf/number format/fixed},
+xmin=0.0,
+xmax=1.0,
+xlabel={eta },
+xmajorgrids,
+ymin=0.0,
+ymax=1.7,
+ylabel={CL },
+ymajorgrids,
+legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
+]
+
+\addplot [
+color=black,
+solid
+]
+table[row sep=crcr]{
+0.0	1.6\\
+0.14285714285714285	1.6\\
+0.2857142857142857	1.6\\
+0.42857142857142855	1.604920370810554\\
+0.5714285714285714	1.6286902781079153\\
+0.7142857142857142	1.652460185405277\\
+0.857142857142857	1.6762300927026383\\
+1.0	1.7\\
+};
+
+\addplot [
+color=black,
+densely dashed
+]
+table[row sep=crcr]{
+0.0	1.0541552014088558\\
+0.14285714285714285	1.1673970702791476\\
+0.2857142857142857	1.3807968583442727\\
+0.42857142857142855	1.6048612113825258\\
+0.5714285714285714	1.5938726089548383\\
+0.7142857142857142	1.5797481332847612\\
+0.857142857142857	1.5392483471666254\\
+1.0	0.0\\
+};
+\end{axis}
+\end{tikzpicture}%

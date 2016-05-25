@@ -351,6 +351,120 @@ public class JPADStaticWriteUtils {
 		return str;
 	}
 	
+	/**
+	 * This method is an overload of the previous that accepts a string and the unit as input in order to write an array whit unit.
+	 * 
+	 * @author Manuela Ruocco
+	 *
+	 * @param valueToWrite
+	 * @param unit
+	 * @return
+	 */
+
+	public static String[] prepareSingleVariableToWriteCPACSFormat(Object inputList, String unit) {
+
+		String arrayToWrite = new String();
+		String[] str = new String[2];
+		if (inputList instanceof double []){
+			
+			double [] inputListdouble = (double [] )inputList;
+			
+		arrayToWrite = "" ;
+		for (int i=0; i<inputListdouble.length -1 ; i++){
+			arrayToWrite = arrayToWrite + inputListdouble[i] + ";";
+		}
+		arrayToWrite = arrayToWrite + inputListdouble[inputListdouble.length-1];
+		arrayToWrite = arrayToWrite + "";
+		
+		str[0] = arrayToWrite;
+		str[1] = unit;
+		}
+		
+		if (inputList instanceof Double[]){
+			
+			Double [] inputListdouble = (Double [] )inputList;
+			
+		arrayToWrite = "" ;
+		for (int i=0; i<inputListdouble.length -1 ; i++){
+			arrayToWrite = arrayToWrite + inputListdouble[i] + ";";
+		}
+		arrayToWrite = arrayToWrite + inputListdouble[inputListdouble.length-1];
+		arrayToWrite = arrayToWrite + "";
+		
+		str[0] = arrayToWrite;
+		str[1] = unit;
+		}
+		
+   if (inputList instanceof List<?> ){
+			
+			List<Amount> inputListdouble = (List)inputList;
+			
+		arrayToWrite = "" ;
+		for (int i=0; i<inputListdouble.size() -1 ; i++){
+			arrayToWrite = arrayToWrite + inputListdouble.get(i).getEstimatedValue() + ";";
+		}
+		arrayToWrite = arrayToWrite + inputListdouble.get(inputListdouble.size()-1).getEstimatedValue();
+		arrayToWrite = arrayToWrite + "";
+		
+		str[0] = arrayToWrite;
+		str[1] = unit;
+		}
+		
+		return str;
+	}
+	
+	public static String[] prepareSingleVariableToWriteCPACSFormat(Object inputList) {
+
+		String arrayToWrite = new String();
+		String[] str = new String[2];
+		if (inputList instanceof double [] 	){
+			
+			double [] inputListdouble = (double [] )inputList;
+			
+		arrayToWrite = "" ;
+		for (int i=0; i<inputListdouble.length -1 ; i++){
+			arrayToWrite = arrayToWrite + inputListdouble[i] + ";";
+		}
+		arrayToWrite = arrayToWrite + inputListdouble[inputListdouble.length-1];
+		arrayToWrite = arrayToWrite + "";
+		
+		str[0] = arrayToWrite;
+		str[1] = "";
+		}
+		
+		if (inputList instanceof Double[]){
+			
+			Double [] inputListdouble = (Double [] )inputList;
+			
+		arrayToWrite = "" ;
+		for (int i=0; i<inputListdouble.length -1 ; i++){
+			arrayToWrite = arrayToWrite + inputListdouble[i] + ";";
+		}
+		arrayToWrite = arrayToWrite + inputListdouble[inputListdouble.length-1];
+		arrayToWrite = arrayToWrite + "";
+		
+		str[0] = arrayToWrite;
+		str[1] = "";
+		}
+		
+         if (inputList instanceof List<?> ){
+			
+			List<Double> inputListdouble = (List)inputList;
+			
+		arrayToWrite = "" ;
+		for (int i=0; i<inputListdouble.size() -1 ; i++){
+			arrayToWrite = arrayToWrite + inputListdouble.get(i) + ";";
+		}
+		arrayToWrite = arrayToWrite + inputListdouble.get(inputListdouble.size()-1);
+		arrayToWrite = arrayToWrite + "";
+		
+		str[0] = arrayToWrite;
+		str[1] = "";
+		}
+		
+		return str;
+	}
+	
 	public static String[] prepareSingleVariableToWrite(String inputList, String unit) {
 		
 		String[] str = new String[2];
@@ -544,6 +658,35 @@ public class JPADStaticWriteUtils {
 		return finalizeNode(str, tagName, father, doc, input);
 	}
 	
+	public static List<Object> writeSingleNodeCPACSFormat(
+			String tagName, 
+			Object valueToWrite, 
+			Element father,
+			Document doc, 
+			boolean input,
+			String unit) {
+
+		String[] str = new String[2];
+
+		str = prepareSingleVariableToWriteCPACSFormat(valueToWrite, unit);
+
+		return finalizeNode(str, tagName, father, doc, input);
+	}
+	
+	public static List<Object> writeSingleNodeCPACSFormat(
+			String tagName, 
+			Object valueToWrite, 
+			Element father,
+			Document doc, 
+			boolean input) {
+
+		String[] str = new String[2];
+
+		str = prepareSingleVariableToWriteCPACSFormat(valueToWrite);
+
+		return finalizeNode(str, tagName, father, doc, input);
+	}
+	
 	public static List<Object> writeSingleNode(
 			String tagName, 
 			String valueToWrite, 
@@ -584,6 +727,25 @@ public class JPADStaticWriteUtils {
 			String unit) {
 
 		return writeSingleNode(tagName, valueToWrite, father, doc, false, unit);
+	}
+	
+	public static List<Object> writeSingleNodeCPASCFormat(
+			String tagName, 
+			Object valueToWrite, 
+			Element father,
+			Document doc,
+			String unit) {
+
+		return writeSingleNodeCPACSFormat(tagName, valueToWrite, father, doc, false, unit);
+	}
+	
+	public static List<Object> writeSingleNodeCPASCFormat(
+			String tagName, 
+			Object valueToWrite, 
+			Element father,
+			Document doc) {
+
+		return writeSingleNodeCPACSFormat(tagName, valueToWrite, father, doc, false);
 	}
 	
 	public static List<Object> writeSingleNode(
