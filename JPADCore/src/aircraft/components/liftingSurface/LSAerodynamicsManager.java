@@ -2519,7 +2519,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 							-(626.15*Math.pow(cfc.get(i), 4))
 							+(263.4*Math.pow(cfc.get(i), 3))
 							-(62.946*Math.pow(cfc.get(i), 2))
-							-(10.638*cfc.get(i))
+							+(10.638*cfc.get(i))
 							+0.0064
 							);
 
@@ -2646,8 +2646,8 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 						Math.abs(
 								theWing.get_span().getEstimatedValue()							
 								/2*theWing.get_chordRootEquivalentWing().getEstimatedValue()
-								*(2-((1-theWing.get_taperRatioEquivalent())*(etaInFlap.get(i)-etaOutFlap.get(i))))
-								*(etaInFlap.get(i)-etaOutFlap.get(i))
+								*(2-((1-theWing.get_taperRatioEquivalent())*(etaInFlap.get(i)+etaOutFlap.get(i))))
+								*(etaOutFlap.get(i)-etaInFlap.get(i))
 								)
 						);
 
@@ -2684,8 +2684,8 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 					slatSurface.add(
 							Math.abs(theWing.get_span().getEstimatedValue()
 									/2*theWing.get_chordRootEquivalentWing().getEstimatedValue()
-									*(2-(1-theWing.get_taperRatioEquivalent())*(etaInSlat.get(i)-etaOutSlat.get(i)))
-									*(etaInSlat.get(i)-etaOutSlat.get(i))
+									*(2-(1-theWing.get_taperRatioEquivalent())*(etaInSlat.get(i)+etaOutSlat.get(i)))
+									*(etaOutSlat.get(i)-etaInSlat.get(i))
 									)
 							);
 				

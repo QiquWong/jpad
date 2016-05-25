@@ -11,8 +11,8 @@
 	<classpathentry kind="lib" path="C:/Users/Vittorio/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/jcommon-1.0.23.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Vittorio/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/jfreechart-1.0.19.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Vittorio/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/jfreesvg-2.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Vittorio/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/JPADConfigs_v_19052016.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Vittorio/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/JPADCore_v_19052016.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Vittorio/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/JPADConfigs_v_25052016.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Vittorio/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/JPADCore_v_25052016.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Vittorio/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/jscience.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Vittorio/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/slf4j-api-1.7.5.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Vittorio/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/slf4j-nop-1.7.5.jar"/>

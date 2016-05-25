@@ -540,8 +540,8 @@ public class HighLiftDevicesCalc {
 					Math.abs(
 							input.getSpan().getEstimatedValue()							
 							/2*input.getRootChordEquivalentWing().getEstimatedValue()
-							*(2-((1-input.getTaperRatioEq())*(input.getEtaInFlap().get(i)-input.getEtaOutFlap().get(i))))
-							*(input.getEtaInFlap().get(i)-input.getEtaOutFlap().get(i))
+							*(2-((1-input.getTaperRatioEq())*(input.getEtaInFlap().get(i)+input.getEtaOutFlap().get(i))))
+							*(input.getEtaOutFlap().get(i)-input.getEtaInFlap().get(i))
 							)
 					);
 		
@@ -580,8 +580,8 @@ public class HighLiftDevicesCalc {
 				slatSurface.add(
 						Math.abs(input.getSpan().getEstimatedValue()
 								/2*input.getRootChordEquivalentWing().getEstimatedValue()
-								*(2-(1-input.getTaperRatioEq())*(input.getEtaInSlat().get(i)-input.getEtaOutSlat().get(i)))
-								*(input.getEtaInSlat().get(i)-input.getEtaOutSlat().get(i))
+								*(2-(1-input.getTaperRatioEq())*(input.getEtaInSlat().get(i)+input.getEtaOutSlat().get(i)))
+								*(input.getEtaOutSlat().get(i)-input.getEtaInSlat().get(i))
 								)
 						);
 			

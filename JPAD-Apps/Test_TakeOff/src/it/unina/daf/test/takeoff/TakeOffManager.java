@@ -91,15 +91,7 @@ public class TakeOffManager {
 		else
 			input.setCharts(false);
 		
-		System.out.println("\tCHARTS CREATION : " + input.isCharts());
-		
-		// engine model:
-		if(elementRoot.getAttribute("simplified_thrust_model").equalsIgnoreCase("TRUE"))
-			input.setEngineModel(true);
-		else
-			input.setEngineModel(false);
-
-		System.out.println("\tSIMPLIFIED ENGINE MODEL : " + input.isEngineModel() + "\n");
+		System.out.println("\tCHARTS CREATION : " + input.isCharts());		
 
 		//---------------------------------------------------------------------------------
 		// GROUND CONDITION:
@@ -175,6 +167,12 @@ public class TakeOffManager {
 		for(int i=0; i<machArrayProperty.size(); i++)
 			input.getMachArray()[i] = Double.valueOf(machArrayProperty.get(i));
 		
+		List<String> simplifiedThrustModelProperty = reader.getXMLPropertiesByPath("//engine/simplified_thrust_model");
+		if(simplifiedThrustModelProperty.get(0).equalsIgnoreCase("TRUE"))
+			input.setEngineModel(true);
+		else
+			input.setEngineModel(false);	
+		
 		List<String> netThrustProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//engine/net_thrust_array_single_engine").get(0));
 		input.setNetThrust(new double[netThrustProperty.size()]);
 		for(int i=0; i<netThrustProperty.size(); i++)
@@ -182,6 +180,7 @@ public class TakeOffManager {
 			
 		//---------------------------------------------------------------------------------------
 		// Print data:
+		System.out.println("\tSIMPLIFIED ENGINE MODEL : " + input.isEngineModel() + "\n");
 		System.out.println("\tAlpha body at ground = " + input.getAlphaGround().getEstimatedValue() + " " + input.getAlphaGround().getUnit());
 		System.out.println("\tWind speed = " + input.getvWind().getEstimatedValue() + " " + input.getvWind().getUnit());
 		System.out.println("\tField altitude = " + input.getAltitude().getEstimatedValue() + " " + input.getAltitude().getUnit() + "\n");
@@ -353,8 +352,8 @@ public class TakeOffManager {
 		JPADStaticWriteUtils.writeSingleNode("number_of_engines", input.getnEngine(), engineDataElement, doc);
 	
 		if(!input.isEngineModel()) {
-		JPADStaticWriteUtils.writeSingleNode("net_thrust_array_single_engine", Arrays.toString(input.getNetThrust()), engineDataElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("mach_array", Arrays.toString(input.getMachArray()), engineDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("net_thrust_array_single_engine", input.getNetThrust(), engineDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("mach_array", input.getMachArray(), engineDataElement, doc);
 		}
 		
 		//--------------------------------------------------------------------------------------

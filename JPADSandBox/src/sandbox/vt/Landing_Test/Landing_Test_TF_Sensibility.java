@@ -92,8 +92,8 @@ public class Landing_Test_TF_Sensibility {
 		 * in order to change the W/S ratio.
 		 */
 //		aircraft.get_wing().set_surface(Amount.valueOf(570, SI.SQUARE_METRE));
-		aircraft.get_wing().set_surface(Amount.valueOf(513, SI.SQUARE_METRE));
-//		aircraft.get_wing().set_surface(Amount.valueOf(466, SI.SQUARE_METRE));
+//		aircraft.get_wing().set_surface(Amount.valueOf(513, SI.SQUARE_METRE));
+		aircraft.get_wing().set_surface(Amount.valueOf(466, SI.SQUARE_METRE));
 		//------------------------------------------------------------------------------------------
 
 		LiftingSurface2Panels theWing = aircraft.get_wing();

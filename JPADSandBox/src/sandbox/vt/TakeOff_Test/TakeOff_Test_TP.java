@@ -340,7 +340,7 @@ public class TakeOff_Test_TP {
 		double k2 = 0.0;
 
 		double phi = 1.0;
-		double alphaReductionRate = -3; // [deg/s]
+		double alphaReductionRate = -5; // [deg/s]
 		double deltaCD0LandingGear = 0.014; // see chart Nicolai pag.273 pdf
 		Amount<Length> wingToGroundDistance = Amount.valueOf(4.0, SI.METER);
 		Amount<Length> obstacle = Amount.valueOf(35, NonSI.FOOT).to(SI.METER);

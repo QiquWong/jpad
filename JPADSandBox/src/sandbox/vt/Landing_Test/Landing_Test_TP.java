@@ -256,65 +256,61 @@ public class Landing_Test_TP {
 						null
 						);
 
-		//		highLiftCalculator.calculateHighLiftDevicesEffects();
-		//
-		//		//----------------------------------------------------------------------------------
-		//		// Results print
-		//		System.out.println("\ndeltaCl0_flap_list = ");
-		//		for(int i=0; i<highLiftCalculator.getDeltaCl0_flap_list().size(); i++)
-		//			System.out.print(highLiftCalculator.getDeltaCl0_flap_list().get(i) + " ");
-		//
-		//		System.out.println("\n\ndeltaCl0_flap = \n" + highLiftCalculator.getDeltaCl0_flap());
-		//
-		//		System.out.println("\n\ndeltaCL0_flap_list = ");
-		//		for(int i=0; i<highLiftCalculator.getDeltaCL0_flap_list().size(); i++)
-		//			System.out.print(highLiftCalculator.getDeltaCL0_flap_list().get(i) + " ");
-		//
-		//		System.out.println("\n\ndeltaCL0_flap = \n" + highLiftCalculator.getDeltaCL0_flap());
-		//
-		//		System.out.println("\n\ndeltaClmax_flap_list = ");
-		//		for(int i=0; i<highLiftCalculator.getDeltaClmax_flap_list().size(); i++)
-		//			System.out.print(highLiftCalculator.getDeltaClmax_flap_list().get(i) + " ");
-		//
-		//		System.out.println("\n\ndeltaClmax_flap = \n" + highLiftCalculator.getDeltaClmax_flap());
-		//
-		//		System.out.println("\n\ndeltaCLmax_flap_list = ");
-		//		for(int i=0; i<highLiftCalculator.getDeltaCLmax_flap_list().size(); i++)
-		//			System.out.print(highLiftCalculator.getDeltaCLmax_flap_list().get(i) + " ");
-		//
-		//		System.out.println("\n\ndeltaCLmax_flap = \n" + highLiftCalculator.getDeltaCLmax_flap());
-		//
-		//		System.out.println("\n\ncLalpha_new_list = ");
-		//		for(int i=0; i<highLiftCalculator.getcLalpha_new_list().size(); i++)
-		//			System.out.print(highLiftCalculator.getcLalpha_new_list().get(i) + " ");
-		//
-		//		System.out.println("\n\ncLalpha_new = \n" + highLiftCalculator.getcLalpha_new());
-		//
-		//		System.out.println("\n\ndeltaAlphaMax_list = ");
-		//		for(int i=0; i<highLiftCalculator.getDeltaAlphaMax_list().size(); i++)
-		//			System.out.print(highLiftCalculator.getDeltaAlphaMax_list().get(i) + " ");
-		//
-		//		System.out.println("\n\ndeltaAlphaMax = \n" + highLiftCalculator.getDeltaAlphaMaxFlap());
-		//
-		//		System.out.println("\n\ndeltaCD_list = ");
-		//		for(int i=0; i<highLiftCalculator.getDeltaCD_list().size(); i++)
-		//			System.out.print(highLiftCalculator.getDeltaCD_list().get(i) + " ");
-		//
-		//		System.out.println("\n\ndeltaCD = \n" + highLiftCalculator.getDeltaCD());
-		//
-		//		System.out.println("\n\ndeltaCMc_4_list = ");
-		//		for(int i=0; i<highLiftCalculator.getDeltaCM_c4_list().size(); i++)
-		//			System.out.print(highLiftCalculator.getDeltaCM_c4_list().get(i) + " ");
-		//
-		//		System.out.println("\n\ndeltaCMc_4 = \n" + highLiftCalculator.getDeltaCM_c4());
-		//
-		//		System.out.println("--------------CLEAN----------------");
-		//		System.out.println(" alpha max " + theWing.getAerodynamics().get_alphaStall().to(NonSI.DEGREE_ANGLE));
-		//		System.out.println(" alpha star " + theWing.getAerodynamics().get_alphaStar().to(NonSI.DEGREE_ANGLE));
-		//		System.out.println(" cL max" + theWing.getAerodynamics().get_cLMaxClean());
-		//		System.out.println(" cL star " + theWing.getAerodynamics().getcLStarWing());
-		//		
-		//		highLiftCalculator.plotHighLiftCurve();
+//		highLiftCalculator.calculateHighLiftDevicesEffects();
+//
+//		//----------------------------------------------------------------------------------
+//		// Results print
+//		System.out.println("\ndeltaCl0_flap_list = ");
+//		for(int i=0; i<highLiftCalculator.getDeltaCl0_flap_list().size(); i++)
+//			System.out.print(highLiftCalculator.getDeltaCl0_flap_list().get(i) + " ");
+//
+//		System.out.println("\n\ndeltaCl0_flap = \n" + highLiftCalculator.getDeltaCl0_flap());
+//
+//		System.out.println("\n\ndeltaCL0_flap_list = ");
+//		for(int i=0; i<highLiftCalculator.getDeltaCL0_flap_list().size(); i++)
+//			System.out.print(highLiftCalculator.getDeltaCL0_flap_list().get(i) + " ");
+//
+//		System.out.println("\n\ndeltaCL0_flap = \n" + highLiftCalculator.getDeltaCL0_flap());
+//
+//		System.out.println("\n\ndeltaClmax_flap_list = ");
+//		for(int i=0; i<highLiftCalculator.getDeltaClmax_flap_list().size(); i++)
+//			System.out.print(highLiftCalculator.getDeltaClmax_flap_list().get(i) + " ");
+//
+//		System.out.println("\n\ndeltaClmax_flap = \n" + highLiftCalculator.getDeltaClmax_flap());
+//
+//		System.out.println("\n\ndeltaCLmax_flap_list = ");
+//		for(int i=0; i<highLiftCalculator.getDeltaCLmax_flap_list().size(); i++)
+//			System.out.print(highLiftCalculator.getDeltaCLmax_flap_list().get(i) + " ");
+//
+//		System.out.println("\n\ndeltaCLmax_flap = \n" + highLiftCalculator.getDeltaCLmax_flap());
+//
+//		System.out.println("\n\ncLalpha_new_list = ");
+//		for(int i=0; i<highLiftCalculator.getcLalpha_new_list().size(); i++)
+//			System.out.print(highLiftCalculator.getcLalpha_new_list().get(i) + " ");
+//
+//		System.out.println("\n\ncLalpha_new = \n" + highLiftCalculator.getcLalpha_new());
+//
+//		System.out.println("\n\ndeltaAlphaMax = \n" + highLiftCalculator.getDeltaAlphaMaxFlap());
+//
+//		System.out.println("\n\ndeltaCD_list = ");
+//		for(int i=0; i<highLiftCalculator.getDeltaCD_list().size(); i++)
+//			System.out.print(highLiftCalculator.getDeltaCD_list().get(i) + " ");
+//
+//		System.out.println("\n\ndeltaCD = \n" + highLiftCalculator.getDeltaCD());
+//
+//		System.out.println("\n\ndeltaCMc_4_list = ");
+//		for(int i=0; i<highLiftCalculator.getDeltaCM_c4_list().size(); i++)
+//			System.out.print(highLiftCalculator.getDeltaCM_c4_list().get(i) + " ");
+//
+//		System.out.println("\n\ndeltaCMc_4 = \n" + highLiftCalculator.getDeltaCM_c4());
+//
+//		System.out.println("--------------CLEAN----------------");
+//		System.out.println(" alpha max " + theWing.getAerodynamics().get_alphaStall().to(NonSI.DEGREE_ANGLE));
+//		System.out.println(" alpha star " + theWing.getAerodynamics().get_alphaStar().to(NonSI.DEGREE_ANGLE));
+//		System.out.println(" cL max" + theWing.getAerodynamics().get_cLMaxClean());
+//		System.out.println(" cL star " + theWing.getAerodynamics().getcLStarWing());
+//
+//		highLiftCalculator.plotHighLiftCurve();
 
 		//----------------------------------------------------------------------------------
 		// Landing - Ground Roll Distance Test
@@ -325,7 +321,7 @@ public class Landing_Test_TP {
 		double kA = 1.3; // [1/deg]
 		double kFlare = 1.23;
 		double kTD = 1.15;
-		double phiRev = 0.0;
+		double phiRev = 0.25;
 		double deltaCD0LandingGear = 0.015; // see chart Nicolai pag.273 pdf
 		double deltaCD0Spioler = 0.0110; // Calculated using Roskam (part IV) pag. 141-142 pdf
 		Amount<Duration> nFreeRoll = Amount.valueOf(3, SI.SECOND);

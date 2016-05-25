@@ -4,7 +4,6 @@ import static java.lang.Math.toRadians;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.measure.quantity.Angle;
@@ -545,8 +544,8 @@ public class HighLiftDevicesCalc {
 					Math.abs(
 							input.getSpan().getEstimatedValue()							
 							/2*input.getRootChordEquivalentWing().getEstimatedValue()
-							*(2-((1-input.getTaperRatioEq())*(input.getEtaInFlap().get(i)-input.getEtaOutFlap().get(i))))
-							*(input.getEtaInFlap().get(i)-input.getEtaOutFlap().get(i))
+							*(2-((1-input.getTaperRatioEq())*(input.getEtaInFlap().get(i)+input.getEtaOutFlap().get(i))))
+							*(input.getEtaOutFlap().get(i)-input.getEtaInFlap().get(i))
 							)
 					);
 		
@@ -585,8 +584,8 @@ public class HighLiftDevicesCalc {
 				slatSurface.add(
 						Math.abs(input.getSpan().getEstimatedValue()
 								/2*input.getRootChordEquivalentWing().getEstimatedValue()
-								*(2-(1-input.getTaperRatioEq())*(input.getEtaInSlat().get(i)-input.getEtaOutSlat().get(i)))
-								*(input.getEtaInSlat().get(i)-input.getEtaOutSlat().get(i))
+								*(2-(1-input.getTaperRatioEq())*(input.getEtaInSlat().get(i)+input.getEtaOutSlat().get(i)))
+								*(input.getEtaOutSlat().get(i)-input.getEtaInSlat().get(i))
 								)
 						);
 			
@@ -1181,21 +1180,21 @@ public class HighLiftDevicesCalc {
 		org.w3c.dom.Element highLiftDevicesEffectsElement = doc.createElement("high_lift_devices_effects");
 		outputRootElement.appendChild(highLiftDevicesEffectsElement);
 		
-		JPADStaticWriteUtils.writeSingleNode("delta_Cl0_of_each_flap", output.getDeltaCl0FlapList(), highLiftDevicesEffectsElement, doc);
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("delta_Cl0_of_each_flap", output.getDeltaCl0FlapList(), highLiftDevicesEffectsElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("delta_Cl0_total_due_to_flaps", output.getDeltaCl0Flap(), highLiftDevicesEffectsElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("delta_Clmax_of_each_flap", output.getDeltaClmaxFlapList(), highLiftDevicesEffectsElement, doc);
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("delta_Clmax_of_each_flap", output.getDeltaClmaxFlapList(), highLiftDevicesEffectsElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("delta_Clmax_total_due_to_flaps", output.getDeltaClmaxFlap(), highLiftDevicesEffectsElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("delta_Clmax_of_each_slat", output.getDeltaClmaxSlatList(), highLiftDevicesEffectsElement, doc);
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("delta_Clmax_of_each_slat", output.getDeltaClmaxSlatList(), highLiftDevicesEffectsElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("delta_Clmax_total_due_to_slats", output.getDeltaClmaxSlat(), highLiftDevicesEffectsElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("delta_CL0_of_each_flap", output.getDeltaCL0FlapList(), highLiftDevicesEffectsElement, doc);
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("delta_CL0_of_each_flap", output.getDeltaCL0FlapList(), highLiftDevicesEffectsElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("delta_CL0_total_due_to_flaps", output.getDeltaCL0Flap(), highLiftDevicesEffectsElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("delta_CLmax_of_each_flap", output.getDeltaCLmaxFlapList(), highLiftDevicesEffectsElement, doc);
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("delta_CLmax_of_each_flap", output.getDeltaCLmaxFlapList(), highLiftDevicesEffectsElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("delta_CLmax_total_due_to_flaps", output.getDeltaCLmaxFlap(), highLiftDevicesEffectsElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("delta_CLmax_of_each_slat", output.getDeltaCLmaxSlatList(), highLiftDevicesEffectsElement, doc);
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("delta_CLmax_of_each_slat", output.getDeltaCLmaxSlatList(), highLiftDevicesEffectsElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("delta_CLmax_total_due_to_slats", output.getDeltaCLmaxSlat(), highLiftDevicesEffectsElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("delta_CD0_of_each_flap", output.getDeltaCDList(), highLiftDevicesEffectsElement, doc);
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("delta_CD0_of_each_flap", output.getDeltaCDList(), highLiftDevicesEffectsElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("delta_CD0_total", output.getDeltaCD(), highLiftDevicesEffectsElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("delta_CM_c4_of_each_flap", output.getDeltaCMC4List(), highLiftDevicesEffectsElement, doc);
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("delta_CM_c4_of_each_flap", output.getDeltaCMC4List(), highLiftDevicesEffectsElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("delta_CM_c4_total", output.getDeltaCMC4(), highLiftDevicesEffectsElement, doc);
 		
 		org.w3c.dom.Element highLiftGlobalDataElement = doc.createElement("global_high_lift_devices_effects");
@@ -1210,10 +1209,10 @@ public class HighLiftDevicesCalc {
 		org.w3c.dom.Element highLiftCurveDataElement = doc.createElement("high_lift_curve_point");
 		outputRootElement.appendChild(highLiftCurveDataElement);
 		
-		JPADStaticWriteUtils.writeSingleNode("alpha_array_clean", Arrays.toString(output.getAlphaListPlot().get(0)), highLiftCurveDataElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("cL_array_clean", Arrays.toString(output.getcLListPlot().get(0)), highLiftCurveDataElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("alpha_array_high_lift", Arrays.toString(output.getAlphaListPlot().get(1)), highLiftCurveDataElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("cL_array_high_lift", Arrays.toString(output.getcLListPlot().get(1)), highLiftCurveDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("alpha_array_clean", output.getAlphaListPlot().get(0), highLiftCurveDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("cL_array_clean", output.getcLListPlot().get(0), highLiftCurveDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("alpha_array_high_lift", output.getAlphaListPlot().get(1), highLiftCurveDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("cL_array_high_lift", output.getcLListPlot().get(1), highLiftCurveDataElement, doc);
 		
 	}
 	

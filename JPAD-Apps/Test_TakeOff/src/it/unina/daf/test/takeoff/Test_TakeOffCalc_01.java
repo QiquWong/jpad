@@ -56,7 +56,7 @@ public class Test_TakeOffCalc_01 {
 		
 		String pathToXML = theTestObject.get_inputFile().getAbsolutePath();
 		String filenameWithPathAndExt = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR) + 
-				File.separator + "TakeOff_Output"; 
+				File.separator + "TakeOffPerf_Output"; 
 		
 		System.out.println("INPUT ===> " + pathToXML);
 

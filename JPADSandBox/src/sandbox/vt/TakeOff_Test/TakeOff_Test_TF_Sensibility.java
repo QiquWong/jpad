@@ -94,15 +94,15 @@ public class TakeOff_Test_TF_Sensibility {
 		 * Possibility to change S and T0, at fixed Weight,
 		 * in order to change the W/S and T/W ratios.
 		 */
-//		aircraft.get_wing().set_surface(Amount.valueOf(568, SI.SQUARE_METRE));
+		aircraft.get_wing().set_surface(Amount.valueOf(568, SI.SQUARE_METRE));
 //		aircraft.get_wing().set_surface(Amount.valueOf(511, SI.SQUARE_METRE));
 //		aircraft.get_wing().set_surface(Amount.valueOf(465, SI.SQUARE_METRE));
-		aircraft.get_wing().set_surface(Amount.valueOf(426, SI.SQUARE_METRE));
+//		aircraft.get_wing().set_surface(Amount.valueOf(426, SI.SQUARE_METRE));
 		
-//		aircraft.get_powerPlant().get_engineList().get(0).set_t0(Amount.valueOf(183600, SI.NEWTON));
+		aircraft.get_powerPlant().get_engineList().get(0).set_t0(Amount.valueOf(183600, SI.NEWTON));
 //		aircraft.get_powerPlant().get_engineList().get(0).set_t0(Amount.valueOf(204000, SI.NEWTON));
 //		aircraft.get_powerPlant().get_engineList().get(0).set_t0(Amount.valueOf(224400, SI.NEWTON));
-		aircraft.get_powerPlant().get_engineList().get(0).set_t0(Amount.valueOf(244800, SI.NEWTON));
+//		aircraft.get_powerPlant().get_engineList().get(0).set_t0(Amount.valueOf(244800, SI.NEWTON));
 		//------------------------------------------------------------------------------------------
 		
 		LiftingSurface2Panels theWing = aircraft.get_wing();

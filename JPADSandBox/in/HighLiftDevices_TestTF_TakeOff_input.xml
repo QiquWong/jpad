@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <input>
 	<header>
-		<title>HighLiftDevices_Test_TakeOff_input</title>
+		<title>HighLiftDevices_Test_Landing_input</title>
 		<author>Vittorio Trifari</author>
 		<version>1.0</version>
 	</header>	
-<B747>
+	<B747>
 		<Flap_Number unit="">2</Flap_Number>
 		<Flap1>
 			<FlapType unit="">TRIPLE_SLOTTED</FlapType>
-			<Cf_C unit="">0.19</Cf_C>
+			<Cf_C unit="">0.25</Cf_C>
+			<Delta_Flap1 unit="°">10</Delta_Flap1>
 			<Delta_Flap1 unit="°">5</Delta_Flap1>
-			<Delta_Flap1 unit="°">3</Delta_Flap1>
-			<Delta_Flap1 unit="°">2</Delta_Flap1>
+			<Delta_Flap1 unit="°">5</Delta_Flap1>
 			<Flap_inboard>0.104</Flap_inboard>
-			<Flap_outboard>0.357</Flap_outboard>
+			<Flap_outboard>0.36</Flap_outboard>
 		</Flap1>
 		<Flap2>
 			<FlapType unit="">TRIPLE_SLOTTED</FlapType>
-			<Cf_C unit="">0.19</Cf_C>
+			<Cf_C unit="">0.25</Cf_C>
+			<Delta_Flap2 unit="°">10</Delta_Flap2>
 			<Delta_Flap2 unit="°">5</Delta_Flap2>
-			<Delta_Flap2 unit="°">3</Delta_Flap2>
-			<Delta_Flap2 unit="°">2</Delta_Flap2>
-			<Flap_inboard unit="">0.411</Flap_inboard>
-			<Flap_outboard unit="">0.636</Flap_outboard>
+			<Delta_Flap2 unit="°">5</Delta_Flap2>
+			<Flap_inboard unit="">0.4</Flap_inboard>
+			<Flap_outboard unit="">0.65</Flap_outboard>
 		</Flap2>
-		<Slat1>
-			<Delta_Slat unit="°">10</Delta_Slat>
-			<Cs_C unit="">0.09</Cs_C>
+				<Slat1>
+			<Delta_Slat unit="°">15</Delta_Slat>
+			<Cs_C unit="">0.1</Cs_C>
 			<cExt_c unit="">1.1</cExt_c>
 			<LEradius_c_ratio unit="">0.0097</LEradius_c_ratio>
 			<Slat_inboard unit="">0.192</Slat_inboard>
 			<Slat_outboard unit="">0.364</Slat_outboard>
 		</Slat1>
 		<Slat2>
-			<Delta_Slat unit="°">10</Delta_Slat>
+			<Delta_Slat unit="°">15</Delta_Slat>
 			<Cs_C unit="">0.136</Cs_C>
 			<cExt_c unit="">1.1</cExt_c>
 			<LEradius_c_ratio unit="">0.0097</LEradius_c_ratio>
@@ -42,7 +42,7 @@
 			<Slat_outboard unit="">0.648</Slat_outboard>
 		</Slat2>
 		<Slat3>
-			<Delta_Slat unit="°">10</Delta_Slat>
+			<Delta_Slat unit="°">15</Delta_Slat>
 			<Cs_C unit="">0.187</Cs_C>
 			<cExt_c unit="">1.1</cExt_c>
 			<LEradius_c_ratio unit="">0.0097</LEradius_c_ratio>
