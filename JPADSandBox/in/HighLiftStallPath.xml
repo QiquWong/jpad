@@ -27,8 +27,10 @@
                     </geometry>
                     <aerodynamics>
 						<alpha_zero_lift_distribution unit="°">[-1.98, -1.874, -16.269 ,-17.992 ,-1.64 ,-2.54 ,-2.56, -3.18 ]</alpha_zero_lift_distribution>
+						<lift_coefficient_linear_slope>[-1.98, -1.874, -16.269 ,-17.992 ,-1.64 ,-2.54 ,-2.56, -3.18 ]</lift_coefficient_linear_slope>
 						<alpha_star_distribution unit="°">[9.5, 9.191, 9.174, 8.5, 8.49, 8.20, 8.19, 8.0]</alpha_star_distribution>
 						<maximum_lift_coefficient_distribution>[2.0, 2.0, 2.0, 2.0, 1.99, 1.88, 1.87, 1.8]</maximum_lift_coefficient_distribution>
+						<cl0>[-1.98, -1.874, -16.269 ,-17.992 ,-1.64 ,-2.54 ,-2.56, -3.18 ]</cl0>
                     </aerodynamics>
              </distribution>
         </wing>

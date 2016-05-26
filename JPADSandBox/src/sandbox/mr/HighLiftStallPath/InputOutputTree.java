@@ -49,7 +49,9 @@ public class InputOutputTree {
 	private int flapsNumber, slatsNumber;
 	
 	private List<Double> maximumliftCoefficientDistribution,
-	yAdimensionalStationInput;
+	yAdimensionalStationInput,
+	clalphaDistribution,
+	clZeroDistribution;
 
 	private List<FlapTypeEnum> flapType;
 
@@ -71,21 +73,31 @@ public class InputOutputTree {
 	private Amount<Length> span,
 	semiSpan;
 
-	private Amount<Angle> alphaZeroLift,
-	alphaStar,
-	alphaStall;
+	private Amount<Angle> alphaZeroLiftClean,
+	alphaStarClean,
+	alphaStallClean,
+	alphaZeroLiftHL,
+	alphaStarCleanHL,
+	alphaStallCleanHL;
 
 	int numberOfAlphaCL = 50;
 
 	private double
-	cLZero,
-	cLAlpha,
-	cLStar,
-	cLMax,
-	deltaAlpha;
-
+	cLZeroClean,
+	cLAlphaClean,
+	cLStarClean,
+	cLMaxClean,
+	deltaAlphaClean,
+	cLZeroHL,
+	cLAlphaHL,
+	cLStarHL,
+	cLMaxHL,
+	deltaAlphaHL;
+	
+	List<Double> clMaxCleanArray, clMaxHighLiftArray, clmaxairfoils, etaStations;
+	
+	
 	private List<Double[]> clVsEtaVectors; 
-
 	double [] cLVsAlphaVector, alphaVector, yStationsAdimensional, clMaxVector;  // number of element = numberOfAlphaCL
 
 	double [] alphaDistributionArray;
@@ -115,6 +127,9 @@ public class InputOutputTree {
 		maximumliftCoefficientDistribution = new ArrayList<Double>();
 		yAdimensionalStationInput = new ArrayList<Double>();
 
+		clalphaDistribution  = new ArrayList<Double>();
+		clZeroDistribution  = new ArrayList<Double>();
+		
 		cfc = new ArrayList<Double>();
         csc = new ArrayList<Double>();
         cExtCSlat = new ArrayList<Double>();
@@ -371,32 +386,32 @@ public class InputOutputTree {
 
 
 	public Amount<Angle> getAlphaZeroLift() {
-		return alphaZeroLift;
+		return alphaZeroLiftClean;
 	}
 
 
 	public void setAlphaZeroLift(Amount<Angle> alphaZeroLift) {
-		this.alphaZeroLift = alphaZeroLift;
+		this.alphaZeroLiftClean = alphaZeroLift;
 	}
 
 
 	public Amount<Angle> getAlphaStar() {
-		return alphaStar;
+		return alphaStarClean;
 	}
 
 
 	public void setAlphaStar(Amount<Angle> alphaStar) {
-		this.alphaStar = alphaStar;
+		this.alphaStarClean = alphaStar;
 	}
 
 
 	public Amount<Angle> getAlphaStall() {
-		return alphaStall;
+		return alphaStallClean;
 	}
 
 
 	public void setAlphaStall(Amount<Angle> alphaStall) {
-		this.alphaStall = alphaStall;
+		this.alphaStallClean = alphaStall;
 	}
 
 
@@ -411,32 +426,32 @@ public class InputOutputTree {
 
 
 	public double getClAlpha() {
-		return cLAlpha;
+		return cLAlphaClean;
 	}
 
 
 	public void setClAlpha(double clAlpha) {
-		this.cLAlpha = clAlpha;
+		this.cLAlphaClean = clAlpha;
 	}
 
 
 	public double getClStar() {
-		return cLStar;
+		return cLStarClean;
 	}
 
 
 	public void setClStar(double clStar) {
-		this.cLStar = clStar;
+		this.cLStarClean = clStar;
 	}
 
 
 	public double getClMax() {
-		return cLMax;
+		return cLMaxClean;
 	}
 
 
 	public void setClMax(double clMax) {
-		this.cLMax = clMax;
+		this.cLMaxClean = clMax;
 	}
 
 
@@ -481,22 +496,22 @@ public class InputOutputTree {
 
 
 	public double getDeltaAlpha() {
-		return deltaAlpha;
+		return deltaAlphaClean;
 	}
 
 
 	public void setDeltaAlpha(double deltaAlpha) {
-		this.deltaAlpha = deltaAlpha;
+		this.deltaAlphaClean = deltaAlpha;
 	}
 
 
 	public double getcLZero() {
-		return cLZero;
+		return cLZeroClean;
 	}
 
 
 	public void setcLZero(double cLZero) {
-		this.cLZero = cLZero;
+		this.cLZeroClean = cLZero;
 	}
 
 
@@ -633,32 +648,32 @@ public class InputOutputTree {
 
 
 	public double getcLAlpha() {
-		return cLAlpha;
+		return cLAlphaClean;
 	}
 
 
 	public void setcLAlpha(double cLAlpha) {
-		this.cLAlpha = cLAlpha;
+		this.cLAlphaClean = cLAlpha;
 	}
 
 
 	public double getcLStar() {
-		return cLStar;
+		return cLStarClean;
 	}
 
 
 	public void setcLStar(double cLStar) {
-		this.cLStar = cLStar;
+		this.cLStarClean = cLStar;
 	}
 
 
 	public double getcLMax() {
-		return cLMax;
+		return cLMaxClean;
 	}
 
 
 	public void setcLMax(double cLMax) {
-		this.cLMax = cLMax;
+		this.cLMaxClean = cLMax;
 	}
 
 
@@ -689,6 +704,226 @@ public class InputOutputTree {
 
 	public void setSlatsNumber(int slatsNumber) {
 		this.slatsNumber = slatsNumber;
+	}
+
+
+	public List<Double> getClalphaDistribution() {
+		return clalphaDistribution;
+	}
+
+
+	public void setClalphaDistribution(List<Double> clalphaDistribution) {
+		this.clalphaDistribution = clalphaDistribution;
+	}
+
+
+	public List<Double> getClZeroDistribution() {
+		return clZeroDistribution;
+	}
+
+
+	public void setClZeroDistribution(List<Double> clZeroDistribution) {
+		this.clZeroDistribution = clZeroDistribution;
+	}
+
+
+	public Amount<Angle> getAlphaZeroLiftClean() {
+		return alphaZeroLiftClean;
+	}
+
+
+	public void setAlphaZeroLiftClean(Amount<Angle> alphaZeroLiftClean) {
+		this.alphaZeroLiftClean = alphaZeroLiftClean;
+	}
+
+
+	public Amount<Angle> getAlphaStarClean() {
+		return alphaStarClean;
+	}
+
+
+	public void setAlphaStarClean(Amount<Angle> alphaStarClean) {
+		this.alphaStarClean = alphaStarClean;
+	}
+
+
+	public Amount<Angle> getAlphaStallClean() {
+		return alphaStallClean;
+	}
+
+
+	public void setAlphaStallClean(Amount<Angle> alphaStallClean) {
+		this.alphaStallClean = alphaStallClean;
+	}
+
+
+	public double getcLZeroClean() {
+		return cLZeroClean;
+	}
+
+
+	public void setcLZeroClean(double cLZeroClean) {
+		this.cLZeroClean = cLZeroClean;
+	}
+
+
+	public double getcLAlphaClean() {
+		return cLAlphaClean;
+	}
+
+
+	public void setcLAlphaClean(double cLAlphaClean) {
+		this.cLAlphaClean = cLAlphaClean;
+	}
+
+
+	public double getcLStarClean() {
+		return cLStarClean;
+	}
+
+
+	public void setcLStarClean(double cLStarClean) {
+		this.cLStarClean = cLStarClean;
+	}
+
+
+	public double getcLMaxClean() {
+		return cLMaxClean;
+	}
+
+
+	public void setcLMaxClean(double cLMaxClean) {
+		this.cLMaxClean = cLMaxClean;
+	}
+
+
+	public double getDeltaAlphaClean() {
+		return deltaAlphaClean;
+	}
+
+
+	public void setDeltaAlphaClean(double deltaAlphaClean) {
+		this.deltaAlphaClean = deltaAlphaClean;
+	}
+
+
+	public double getcLZeroHL() {
+		return cLZeroHL;
+	}
+
+
+	public void setcLZeroHL(double cLZeroHL) {
+		this.cLZeroHL = cLZeroHL;
+	}
+
+
+	public double getcLAlphaHL() {
+		return cLAlphaHL;
+	}
+
+
+	public void setcLAlphaHL(double cLAlphaHL) {
+		this.cLAlphaHL = cLAlphaHL;
+	}
+
+
+	public double getcLStarHL() {
+		return cLStarHL;
+	}
+
+
+	public void setcLStarHL(double cLStarHL) {
+		this.cLStarHL = cLStarHL;
+	}
+
+
+	public double getcLMaxHL() {
+		return cLMaxHL;
+	}
+
+
+	public void setcLMaxHL(double cLMaxHL) {
+		this.cLMaxHL = cLMaxHL;
+	}
+
+
+	public double getDeltaAlphaHL() {
+		return deltaAlphaHL;
+	}
+
+
+	public void setDeltaAlphaHL(double deltaAlphaHL) {
+		this.deltaAlphaHL = deltaAlphaHL;
+	}
+
+
+	public Amount<Angle> getAlphaZeroLiftHL() {
+		return alphaZeroLiftHL;
+	}
+
+
+	public void setAlphaZeroLiftHL(Amount<Angle> alphaZeroLiftHL) {
+		this.alphaZeroLiftHL = alphaZeroLiftHL;
+	}
+
+
+	public Amount<Angle> getAlphaStarCleanHL() {
+		return alphaStarCleanHL;
+	}
+
+
+	public void setAlphaStarCleanHL(Amount<Angle> alphaStarCleanHL) {
+		this.alphaStarCleanHL = alphaStarCleanHL;
+	}
+
+
+	public Amount<Angle> getAlphaStallCleanHL() {
+		return alphaStallCleanHL;
+	}
+
+
+	public void setAlphaStallCleanHL(Amount<Angle> alphaStallCleanHL) {
+		this.alphaStallCleanHL = alphaStallCleanHL;
+	}
+
+
+	public List<Double> getClMaxCleanArray() {
+		return clMaxCleanArray;
+	}
+
+
+	public void setClMaxCleanArray(List<Double> clMaxCleanArray) {
+		this.clMaxCleanArray = clMaxCleanArray;
+	}
+
+
+	public List<Double> getClMaxHighLiftArray() {
+		return clMaxHighLiftArray;
+	}
+
+
+	public void setClMaxHighLiftArray(List<Double> clMaxHighLiftArray) {
+		this.clMaxHighLiftArray = clMaxHighLiftArray;
+	}
+
+
+	public List<Double> getClmaxairfoils() {
+		return clmaxairfoils;
+	}
+
+
+	public void setClmaxairfoils(List<Double> clmaxairfoils) {
+		this.clmaxairfoils = clmaxairfoils;
+	}
+
+
+	public List<Double> getEtaStations() {
+		return etaStations;
+	}
+
+
+	public void setEtaStations(List<Double> etaStations) {
+		this.etaStations = etaStations;
 	}
 
 
