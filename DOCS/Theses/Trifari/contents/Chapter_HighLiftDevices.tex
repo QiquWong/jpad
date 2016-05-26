@@ -390,7 +390,7 @@ Regarding trailing edge devices, the \gls{DATCOM} method provides the following 
 Here $\upDelta C_{l\text{max}}$ is the increment in lift coefficient due to flap deflection as defined in (\ref{eqn:DeltaClmaxFlap}) while the quantity $\frac{S_{w,f}}{S}$ is the ratio of wing area affected by the trailing edge flap deflection (including both port and starboard wings) to the total wing area, as shown in figure~\ref{fig:Swf}; the wing area affected by the flap may be written as in (\ref{eqn:Swf}).
 %
 \begin{equation}
-S_{w,f}=\left(\dfrac{b}{2}\right)c_r\left[2-\left(1-\lambda\right)\left(\eta_{\text{in}}-\eta_{\text{out}}\right)\right]\left(\eta_{\text{in}}-\eta_{\text{out}}\right)
+S_{w,f}=\left(\dfrac{b}{2}\right)c_r\left[2-\left(1-\lambda\right)\left(\eta_{\text{in}}+\eta_{\text{out}}\right)\right]\left(\eta_{\text{out}}-\eta_{\text{in}}\right)
 \label{eqn:Swf}
 \end{equation}
 %
@@ -699,32 +699,32 @@ The input XML file\cite{wiki:xml} has to provide all data from table~\ref{table:
 		<Flap_Number unit="">2</Flap_Number>
 		<Flap1>
 			<FlapType unit="">TRIPLE_SLOTTED</FlapType>
-			<Cf_C unit="">0.18</Cf_C>
+			<Cf_C unit="">0.25</Cf_C>
+			<Delta_Flap1 unit="deg">10</Delta_Flap1>
 			<Delta_Flap1 unit="deg">5</Delta_Flap1>
-			<Delta_Flap1 unit="deg">3</Delta_Flap1>
-			<Delta_Flap1 unit="deg">2</Delta_Flap1>
+			<Delta_Flap1 unit="deg">5</Delta_Flap1>
 			<Flap_inboard>0.104</Flap_inboard>
-			<Flap_outboard>0.357</Flap_outboard>
+			<Flap_outboard>0.36</Flap_outboard>
 		</Flap1>
 		<Flap2>
 			<FlapType unit="">TRIPLE_SLOTTED</FlapType>
-			<Cf_C unit="">0.18</Cf_C>
+			<Cf_C unit="">0.25</Cf_C>
+			<Delta_Flap2 unit="deg">10</Delta_Flap2>
+			<Delta_Flap2 unit="'deg'>5</Delta_Flap2>
 			<Delta_Flap2 unit="deg">5</Delta_Flap2>
-			<Delta_Flap2 unit="deg">3</Delta_Flap2>
-			<Delta_Flap2 unit="deg">2</Delta_Flap2>
-			<Flap_inboard unit="">0.411</Flap_inboard>
-			<Flap_outboard unit="">0.636</Flap_outboard>
+			<Flap_inboard unit="">0.4</Flap_inboard>
+			<Flap_outboard unit="">0.65</Flap_outboard>
 		</Flap2>
-		<Slat1>
-			<Delta_Slat unit="deg">10</Delta_Slat>
-			<Cs_C unit="">0.09</Cs_C>
+				<Slat1>
+			<Delta_Slat unit="deg">15</Delta_Slat>
+			<Cs_C unit="">0.1</Cs_C>
 			<cExt_c unit="">1.1</cExt_c>
 			<LEradius_c_ratio unit="">0.0097</LEradius_c_ratio>
 			<Slat_inboard unit="">0.192</Slat_inboard>
 			<Slat_outboard unit="">0.364</Slat_outboard>
 		</Slat1>
 		<Slat2>
-			<Delta_Slat unit="deg">10</Delta_Slat>
+			<Delta_Slat unit="deg">15</Delta_Slat>
 			<Cs_C unit="">0.136</Cs_C>
 			<cExt_c unit="">1.1</cExt_c>
 			<LEradius_c_ratio unit="">0.0097</LEradius_c_ratio>
@@ -732,7 +732,7 @@ The input XML file\cite{wiki:xml} has to provide all data from table~\ref{table:
 			<Slat_outboard unit="">0.648</Slat_outboard>
 		</Slat2>
 		<Slat3>
-			<Delta_Slat unit="deg">10</Delta_Slat>
+			<Delta_Slat unit="deg">15</Delta_Slat>
 			<Cs_C unit="">0.187</Cs_C>
 			<cExt_c unit="">1.1</cExt_c>
 			<LEradius_c_ratio unit="">0.0097</LEradius_c_ratio>
@@ -750,14 +750,14 @@ The input XML file\cite{wiki:xml} has to provide all data from table~\ref{table:
 		<Flap_Number unit="">2</Flap_Number>
 		<Flap1>
 			<FlapType unit="">SINGLE_SLOTTED</FlapType>
-			<Cf_c unit="">0.38</Cf_c>
+			<Cf_c unit="">0.35</Cf_c>
 			<Delta_Flap1 unit="deg">20</Delta_Flap1>
 			<Flap_inboard>0.08</Flap_inboard>
 			<Flap_outboard>0.35</Flap_outboard>
 		</Flap1>
 		<Flap2>
 			<FlapType unit="">SINGLE_SLOTTED</FlapType>
-			<Cf_c unit="">0.38</Cf_c>
+			<Cf_c unit="">0.35</Cf_c>
 			<Delta_Flap2 unit="deg">20</Delta_Flap2>
 			<Flap_inboard>0.35</Flap_inboard>
 			<Flap_outboard>0.8</Flap_outboard>
@@ -901,23 +901,24 @@ In conclusion, numerical and graphical results of the described tests, applied t
 \bigskip
 \lstset{language=Java}
 \begin{lstlisting}[caption={ATR-72 test results}, captionpos=b, tabsize=2]
-deltaCl0_flap = 2.263493753740178
-deltaCL0_flap = 0.7527037903308272
-deltaClmax_flap = 1.2122379635109801
-deltaCLmax_flap = 0.5249013462746028
-CLalpha_new = 0.09139075701076349 (1/deg)
-deltaCD = 0.017691818247996084
-deltaCMc_4 = -0.12100839839572519
------------CLEAN-------------- 
- alpha max 18.456192298464735 (deg)
- CL max 1.5842572610046424
- CL star 0.9782965664494722
- CL alpha 5.189644003702157 (1/rad)
+deltaCl0_flap = 2.172981203979777
+deltaCL0_flap = 0.724319798015853
+deltaClmax_flap = 1.3582164451145418
+deltaCLmax_flap = 0.46177228256884406
+cLalpha_new = 0.09132163744419602
+deltaCD = 0.014971631059778487
+deltaCMc_4 = -0.1363967641940515
+--------------CLEAN----------------
+ alpha max = 16.3168247767857 (deg)
+ alpha star = 9.6267723716381 (deg)
+ CL max = 1.5842572610046424
+ CL star = 0.9782965664494722
  -----------HIGH LIFT-------------- 
- alpha max 15.81817306525097 (deg)
- CL max 2.1091586072792454
- CL star 1.3586008009300286
- CL alpha 5.236690376716748 (1/rad)
+ alpha max = 15.44805707492933 (deg)
+ alpha star = 5.622083376221805 (deg)
+ CL max = 2.0460295435734865
+ CL star = 1.3440760810985717
+ CL alpha = 5.232729825552432 (1/rad)
 \end{lstlisting}
 %
 \begin{figure}[H]
@@ -930,25 +931,26 @@ deltaCMc_4 = -0.12100839839572519
 \bigskip
 \lstset{language=Java}
 \begin{lstlisting}[caption={B747-100B test results}, captionpos=b, tabsize=2]
-deltaCl0_flap = 1.042568723557796
-deltaCL0_flap = 0.2003564365099298
-deltaClmax_flap = 0.1414975497068864
-deltaCLmax_flap = 0.046423506957770616
-deltaClmax_slat = 1.270544480012824
-deltaCLmax_slat = 0.4010166637261424
-CLalpha_new = 0.07307826951197416 (1/deg)
-deltaCD = 0.001877785467928246
-deltaCMc_4 = -0.01156502154181518
- -----------CLEAN-------------- 
- alpha max 21.588846207012903 (deg)
- CL max 1.4615744853062498
- CL star 0.8263686942120971
- CL alpha 4.121408852511741 (1/rad)
+deltaCl0_flap = 2.5290368840811523
+deltaCL0_flap = 0.5203305851595639
+deltaClmax_flap = 0.9405065455430581
+deltaCLmax_flap = 0.21966744994085435
+deltaClmax_slat = 1.9183683261845126
+deltaCLmax_slat = 0.3143779520534695
+cLalpha_new = 0.07373983724243685
+deltaCD = 0.008030013686156273
+deltaCMc_4 = -0.08156562521437385
+--------------CLEAN----------------
+ alpha max = 19.1502511160714 (deg)
+ alpha star = 10.3196273526020 (deg)
+ CL max = 1.4615744853062498
+ CL star = 0.8263686942120971
  -----------HIGH LIFT-------------- 
- alpha max 24.766400107580708 (deg)
- CL max 1.9160894563221245
- CL star 1.2636473543834792
- CL alpha 4.187384843036119 (1/rad)
+ alpha max = 21.305379816429568 (deg)
+ alpha star = 10.036900239612963 (deg)
+ CL max = 1.9956198873005737
+ CL star = 1.3445056424426238
+ CL alpha = 4.225292673991631 (1/rad)
 \end{lstlisting}
 %
 \subsection{Sensibility analysis}
@@ -972,10 +974,10 @@ For each of these, one parameter will be modified leaving unchanged the other th
 \midrule
 \textbf{Variables} & \textbf{} & \textbf{Value} & \textbf{Variables} & \textbf{} & \textbf{Value}\\
 \midrule
-$\delta_f$ &  \textbf{} & 30°  & $C_{L\text{max}}$ &  \textbf{} & 2.55 \\
-$\frac{c_f}{c}$ &  \textbf{} & 0.18 & $\alpha_{\text{max}}$ &  \textbf{} & 28° \\
+$\delta_f$ &  \textbf{} & 30°  & $C_{L\text{max}}$ &  \textbf{} & 2.37 \\
+$\frac{c_f}{c}$ &  \textbf{} & 0.25 & $\alpha_{\text{max}}$ &  \textbf{} & 23° \\
 Trailing edge devices type &  \textbf{} & Triple Slotted & \textbf{ } &  \textbf{} & \textbf{} \\
-$\delta_s$ &  \textbf{} & 15° & \textbf{ } &  \textbf{} & \textbf{} \\
+$\delta_s$ &  \textbf{} & 25° & \textbf{ } &  \textbf{} & \textbf{} \\
 \bottomrule
 \end{tabular}
 }
@@ -985,25 +987,25 @@ $\delta_s$ &  \textbf{} & 15° & \textbf{ } &  \textbf{} & \textbf{} \\
 \begin{figure}[H]
 \centering
 \input{images/CLAlphaHighLift_DELTA_FLAP_EFFECT.tikz}
-\caption{Effects of different $\delta_f$ upon the lift curve of the B747-100B with $\frac{c_f}{c}=0.18$, Triple slotted flaps and $\delta_s=\SI{15}{\degree}$}
+\caption{Effects of different $\delta_f$ upon the lift curve of the B747-100B with $\frac{c_f}{c}=0.25$, Triple slotted flaps and $\delta_s=\SI{25}{\degree}$}
 \end{figure}
 %
 \begin{figure}[H]
 \centering
 \input{images/CLAlphaHighLift_CFC_EFFECT.tikz}
-\caption{Effects of different $\frac{c_f}{c}$ upon the lift curve of the B747-100B with $\delta_f=\SI{30}{\degree}$, Triple slotted flaps and $\delta_s=\SI{15}{\degree}$}
+\caption{Effects of different $\frac{c_f}{c}$ upon the lift curve of the B747-100B with $\delta_f=\SI{30}{\degree}$, Triple slotted flaps and $\delta_s=\SI{25}{\degree}$}
 \end{figure}
 %
 \begin{figure}[H]
 \centering
 \input{images/CLAlphaHighLift_FLAPTYPE_EFFECT.tikz}
-\caption{Effects of different trailing edge devices upon the lift curve of the B747-100B with $\delta_f=\SI{30}{\degree}$, $\frac{c_f}{c}=0.18$ and $\delta_s=\SI{15}{\degree}$}
+\caption{Effects of different trailing edge devices upon the lift curve of the B747-100B with $\delta_f=\SI{30}{\degree}$, $\frac{c_f}{c}=0.25$ and $\delta_s=\SI{25}{\degree}$}
 \end{figure}
 %
 \begin{figure}[H]
 \centering
 \input{images/CLAlphaHighLift_DELTA_SLAT_EFFECT.tikz}
-\caption{Effects of different $\delta_s$ upon the lift curve of the B747-100B with $\delta_f=\SI{30}{\degree}$, $\frac{c_f}{c}=0.18$ and Triple slotted flaps}
+\caption{Effects of different $\delta_s$ upon the lift curve of the B747-100B with $\delta_f=\SI{30}{\degree}$, $\frac{c_f}{c}=0.25$ and Triple slotted flaps}
 \label{fig:SlatSensibility}
 \end{figure}
 %

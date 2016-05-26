@@ -8,7 +8,7 @@
 	<B747>
 		<Flap_Number unit="">2</Flap_Number>
 		<Flap1>
-			<FlapType unit="">PLAIN</FlapType>
+			<FlapType unit="">TRIPLE_SLOTTED</FlapType>
 			<Cf_C unit="">0.25</Cf_C>
 			<Delta_Flap1 unit="°">10</Delta_Flap1>
 			<Delta_Flap1 unit="°">10</Delta_Flap1>
@@ -17,7 +17,7 @@
 			<Flap_outboard>0.36</Flap_outboard>
 		</Flap1>
 		<Flap2>
-			<FlapType unit="">PLAIN</FlapType>
+			<FlapType unit="">TRIPLE_SLOTTED</FlapType>
 			<Cf_C unit="">0.25</Cf_C>
 			<Delta_Flap2 unit="°">10</Delta_Flap2>
 			<Delta_Flap2 unit="°">10</Delta_Flap2>

@@ -1,75 +1,99 @@
-//package sandbox.mr.ExecutableMeanAirfoil;
-//
-//import java.util.Arrays;
-//import java.util.List;
-//
-//import javax.measure.quantity.Angle;
-//import javax.measure.quantity.Area;
-//import javax.measure.quantity.Length;
-//import javax.measure.unit.NonSI;
-//import javax.measure.unit.SI;
-//import javax.xml.parsers.DocumentBuilder;
-//import javax.xml.parsers.DocumentBuilderFactory;
-//import javax.xml.parsers.ParserConfigurationException;
-//
-//import org.jscience.physics.amount.Amount;
-//import org.w3c.dom.Document;
-//import org.w3c.dom.NodeList;
-//
-//import calculators.geometry.LSGeometryCalc;
-//import configuration.enumerations.AirfoilFamilyEnum;
-//import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
-//import database.databasefunctions.aerodynamics.DatabaseManager;
-//import sandbox.vt.ExecutableHighLiftDevices.InputTree;
-//import sandbox.vt.ExecutableHighLiftDevices.OutputTree;
-//import standaloneutils.JPADXmlReader;
-//import standaloneutils.MyXMLReaderUtils;
-//import writers.JPADStaticWriteUtils;
-//
-//public class ReaderWriter {
-//	
-//	static InputOutputTree input = new InputOutputTree();
-//
-//	public void importFromXML(String pathToXML, String databaseFolderPath, String aerodynamicDatabaseFileName) throws ParserConfigurationException {
-//
-//
-//		JPADXmlReader reader = new JPADXmlReader(pathToXML);
-//
-//		System.out.println("Reading input file data ...\n");
-//		
-//
-//		//---------------------------------------------------------------------------------
-//		
-//		int numberOfSection =  (int) Double.parseDouble(reader.getXMLPropertiesByPath("//number_of_input_sections").get(0));
-//		input.setNumberOfSection(numberOfSection);
-//		
-//		List<String> maximumThickness = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//maximum_thickness").get(0));
-//		for(int i=0; i<maximumThickness.size(); i++)
-//			input.getMaximumThickness().add(Double.valueOf(maximumThickness.get(i)));
-//		
-//		List<String> leadingEdgeRadius = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//leading_edge_radius").get(0));
-//		for(int i=0; i<leadingEdgeRadius.size(); i++)
-//			input.getLeadingEdgeRdius().add(Double.valueOf(leadingEdgeRadius.get(i)));
-//		
-//		List<String> alphaZeroLift = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//alpha_zero_lift").get(0));
-//		for(int i=0; i<alphaZeroLift.size(); i++)
-//			input.getAlphaZeroLift().add(Amount.valueOf(Double.valueOf(alphaZeroLift.get(i)), NonSI.DEGREE_ANGLE));
-//		
-//		List<String> clZero = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//cl_zero").get(0));
-//		for(int i=0; i<clZero.size(); i++)
-//			input.getClZero().add(Double.valueOf(maximumThickness.get(i)));
-//		
-//		List<String> clAlpha = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//cl_zero").get(0));
-//		for(int i=0; i<clAlpha.size(); i++)
-//			input.getLiftCoefficientSlope().add(Double.valueOf(clAlpha.get(i)));
-//		
-//		
-//		List<String> yAdimensionalStationIput = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//y_adimensional_stations").get(0));
-//		for(int i=0; i<yAdimensionalStationIput.size(); i++)
-//			input.getyAdimensionalStationInput().add(Double.valueOf(yAdimensionalStationIput.get(i)));
-//		
-//		
-//
+package sandbox.mr.ExecutableMeanAirfoil;
+
+import java.util.Arrays;
+import java.util.List;
+
+import javax.measure.quantity.Angle;
+import javax.measure.quantity.Area;
+import javax.measure.quantity.Length;
+import javax.measure.unit.NonSI;
+import javax.measure.unit.SI;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.jscience.physics.amount.Amount;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+
+import calculators.geometry.LSGeometryCalc;
+import configuration.enumerations.AirfoilFamilyEnum;
+import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
+import database.databasefunctions.aerodynamics.DatabaseManager;
+import sandbox.vt.ExecutableHighLiftDevices.InputTree;
+import sandbox.vt.ExecutableHighLiftDevices.OutputTree;
+import standaloneutils.JPADXmlReader;
+import standaloneutils.MyXMLReaderUtils;
+import writers.JPADStaticWriteUtils;
+
+public class ReaderWriter {
+	
+	static InputOutputTree input = new InputOutputTree();
+
+	public void importFromXML(String pathToXML, String databaseFolderPath, String aerodynamicDatabaseFileName) throws ParserConfigurationException {
+
+		JPADXmlReader reader = new JPADXmlReader(pathToXML);
+
+		System.out.println("Reading input file data ...\n");
+
+		//---------------------------------------------------------------------------------
+		
+		List<String> numberOfSectionProperty =  reader.getXMLPropertiesByPath("//number_of_input_sections");
+		input.setNumberOfSection(Integer.valueOf(numberOfSectionProperty.get(0)));
+
+		//---------------------------------------------------------------------------------
+		// GEOMETRY
+		
+		List<String> maximumThicknessProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//geometry/maximum_thickness").get(0));
+		for(int i=0; i<maximumThicknessProperty.size(); i++)
+			input.getMaximumThicknessArray().add(Double.valueOf(maximumThicknessProperty.get(i)));
+		
+		List<String> leadingEdgeRadiusProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//geometry/leading_edge_radius").get(0));
+		for(int i=0; i<leadingEdgeRadiusProperty.size(); i++)
+			input.getRadiusLEArray().add(Amount.valueOf(Double.valueOf(leadingEdgeRadiusProperty.get(i)),SI.METER));
+		
+		List<String> phiTrailingEdgeProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//geometry/trailing_edge_angle").get(0));
+		for(int i=0; i<phiTrailingEdgeProperty.size(); i++)
+			input.getPhiTEArray().add(Amount.valueOf(Double.valueOf(phiTrailingEdgeProperty.get(i)),NonSI.DEGREE_ANGLE));
+		
+		List<String> chordsProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//geometry/chords").get(0));
+		for(int i=0; i<chordsProperty.size(); i++)
+			input.getChordsArray().add(Amount.valueOf(Double.valueOf(chordsProperty.get(i)),SI.METER));
+		
+		//----------------------------------------------------------------------------------
+		// AERODYNAMICS
+		
+		List<String> alphaZeroLiftProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//aerodynamic/alpha_zero_lift").get(0));
+		for(int i=0; i<alphaZeroLiftProperty.size(); i++)
+			input.getAlphaZeroLiftArray().add(Amount.valueOf(Double.valueOf(alphaZeroLiftProperty.get(i)), NonSI.DEGREE_ANGLE));
+		
+		List<String> alphaStarProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//aerodynamic/angle_of_end_linearity").get(0));
+		for(int i=0; i<alphaStarProperty.size(); i++)
+			input.getAlphaStarArray().add(Amount.valueOf(Double.valueOf(alphaStarProperty.get(i)), NonSI.DEGREE_ANGLE));
+		
+		List<String> alphaStllProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//aerodynamic/angle_of_stall").get(0));
+		for(int i=0; i<alphaStllProperty.size(); i++)
+			input.getAngleOfStallArray().add(Amount.valueOf(Double.valueOf(alphaStllProperty.get(i)), NonSI.DEGREE_ANGLE));
+		
+		List<String> clZeroProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//aerodynamic/lift_coefficient_alpha_zero").get(0));
+		for(int i=0; i<clZeroProperty.size(); i++)
+			input.getCl0Array().add(Double.valueOf(clZeroProperty.get(i)));
+		
+		List<String> clStarProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//aerodynamic/lift_coefficient_end_linearity").get(0));
+		for(int i=0; i<clStarProperty.size(); i++)
+			input.getClStarArray().add(Double.valueOf(clStarProperty.get(i)));
+		
+		List<String> clMaxProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//aerodynamic/maximum_lift_coefficient").get(0));
+		for(int i=0; i<clMaxProperty.size(); i++)
+			input.getClmaxArray().add(Double.valueOf(clMaxProperty.get(i)));
+		
+		List<String> clAlphaProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//cl_zero").get(0));
+		for(int i=0; i<clAlphaProperty.size(); i++)
+			input.getClAlphaArray().add(Amount.valueOf(Double.valueOf(clAlphaProperty.get(i)), NonSI.DEGREE_ANGLE.inverse()));
+		
+		// TODO: COMPLETE ME !!
+			
+
 //	// WARNINGS
 //		
 //		if ( input.getNumberOfSections() != input.getChordDistribution().size()){
@@ -314,5 +338,5 @@
 //
 //	public void setInput(InputOutputTree input) {
 //		this.input = input;
-//	}
-//}
+	}
+}

@@ -2,17 +2,9 @@ package sandbox.mr.ExecutableMeanAirfoil;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.measure.quantity.Angle;
-import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
-import javax.measure.unit.NonSI;
-import javax.measure.unit.SI;
-
 import org.jscience.physics.amount.Amount;
-
-import configuration.enumerations.AirfoilFamilyEnum;
-import configuration.enumerations.FlapTypeEnum;
 
 public class InputOutputTree {
 	//------------------------------------------------------------------------------------------
@@ -22,236 +14,378 @@ public class InputOutputTree {
 
 	private int numberOfSection;
 
-	private List<Amount> alphaZeroLift, angleOfStall;
+	private List<Amount<Angle>> alphaZeroLiftArray,
+								angleOfStallArray,
+								alphaStarArray,
+								phiTEArray;
 
-	private List<Double> maximumThickness, liftCoefficientSlope, endOfLinearityCl,
-	maximumLiftCoefficient, aerodynamicCenter, otherValues, clZero, leadingEdgeRdius;
+	private List<Double> clStarArray, 
+						 cl0Array,
+						 clmaxArray,
+						 cdminArray,
+						 clAtCdminArray,
+						 kFactorDragPolarArray,
+						 xacArray,
+						 cmACArray,
+						 cmACstallArray,
+						 maximumThicknessArray,
+						 otherValuesArray;
+
+	private List<Amount<Length>> chordsArray,
+								 radiusLEArray;
+
+	private List<Amount<?>> clAlphaArray;
 
 	// OUTPUT 
+
+	private Amount<Angle> alphaZeroLift,
+						  angleOfStall,
+						  alphaStar,
+						  phiTE; 
+
+	private Double clStar, 
+			       cl0,
+				   clmax,
+			       cdmin,
+				   clAtCdmin,
+				   kFactorDragPolar,
+				   xac,
+				   cmAC,
+				   cmACstall,
+				   maximumThickness,
+				   otherValues;
 	
-	private Amount<Angle> alphaZeroLiftMean, angleOfStallMean;
+	private Amount<Length> chords,
+					       radiusLE;
 
-	private double maximumThicknessMean, liftCoefficientSlopeMean, endOfLinearityClMean,
-	maximumLiftCoefficientMean, aerodynamicCenterMean, otherValuesMean;
-
+	private Amount<?> clAlpha;
+	
 	//------------------------------------------------------------------------------------------
 	// BUILDER:
 
 	public InputOutputTree() {
-		
-		alphaZeroLift = new ArrayList<Amount>();
-		angleOfStall = new ArrayList<Amount>();
-		
-		maximumThickness = new ArrayList<Double>();
-		liftCoefficientSlope = new ArrayList<Double>();
-		endOfLinearityCl = new ArrayList<Double>();
-		maximumLiftCoefficient = new ArrayList<Double>();
-		aerodynamicCenter = new ArrayList<Double>();
-		otherValues = new ArrayList<Double>();
-		clZero = new ArrayList<Double>();
-		leadingEdgeRdius = new ArrayList<Double>();
 
-		alphaZeroLiftMean = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
-		angleOfStallMean = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		alphaZeroLiftArray = new ArrayList<Amount<Angle>>();
+		angleOfStallArray = new ArrayList<Amount<Angle>>();
+		alphaStarArray = new ArrayList<Amount<Angle>>();
+		phiTEArray = new ArrayList<Amount<Angle>>();
+		
+		clStarArray = new ArrayList<Double>();
+		cl0Array = new ArrayList<Double>();
+		clmaxArray = new ArrayList<Double>();
+		cdminArray = new ArrayList<Double>();
+		clAtCdminArray = new ArrayList<Double>();
+		kFactorDragPolarArray = new ArrayList<Double>();
+		xacArray = new ArrayList<Double>();
+		cmACArray = new ArrayList<Double>();
+		cmACstallArray = new ArrayList<Double>();
+		maximumThicknessArray = new ArrayList<Double>();
+		otherValuesArray = new ArrayList<Double>();
+
+		radiusLEArray = new ArrayList<Amount<Length>>();
+		chordsArray = new ArrayList<Amount<Length>>();
+		
+		clAlphaArray = new ArrayList<Amount<?>>();
 
 	}
 
-
-	public void buildOutput(){}
-
-
+	//------------------------------------------------------------------------------------------
+	// GETTERS AND SETTERS:
+	
 	public int getNumberOfSection() {
 		return numberOfSection;
 	}
 
+	public List<Amount<Angle>> getAlphaZeroLiftArray() {
+		return alphaZeroLiftArray;
+	}
+
+	public List<Amount<Angle>> getAngleOfStallArray() {
+		return angleOfStallArray;
+	}
+
+	public List<Amount<Angle>> getAlphaStarArray() {
+		return alphaStarArray;
+	}
+
+	public List<Amount<Angle>> getPhiTEArray() {
+		return phiTEArray;
+	}
+
+	public List<Double> getClStarArray() {
+		return clStarArray;
+	}
+
+	public List<Double> getCl0Array() {
+		return cl0Array;
+	}
+
+	public List<Double> getClmaxArray() {
+		return clmaxArray;
+	}
+
+	public List<Double> getCdminArray() {
+		return cdminArray;
+	}
+
+	public List<Double> getClAtCdminArray() {
+		return clAtCdminArray;
+	}
+
+	public List<Double> getkFactorDragPolarArray() {
+		return kFactorDragPolarArray;
+	}
+
+	public List<Double> getXacArray() {
+		return xacArray;
+	}
+
+	public List<Double> getCmACArray() {
+		return cmACArray;
+	}
+
+	public List<Double> getCmACstallArray() {
+		return cmACstallArray;
+	}
+
+	public List<Double> getMaximumThicknessArray() {
+		return maximumThicknessArray;
+	}
+
+	public List<Double> getOtherValuesArray() {
+		return otherValuesArray;
+	}
+
+	public List<Amount<Length>> getChordsArray() {
+		return chordsArray;
+	}
+
+	public List<Amount<Length>> getRadiusLEArray() {
+		return radiusLEArray;
+	}
+
+	public List<Amount<?>> getClAlphaArray() {
+		return clAlphaArray;
+	}
+
+	public Amount<Angle> getAlphaZeroLift() {
+		return alphaZeroLift;
+	}
+
+	public Amount<Angle> getAngleOfStall() {
+		return angleOfStall;
+	}
+
+	public Amount<Angle> getAlphaStar() {
+		return alphaStar;
+	}
+
+	public Amount<Angle> getPhiTE() {
+		return phiTE;
+	}
+
+	public Double getClStar() {
+		return clStar;
+	}
+
+	public Double getCl0() {
+		return cl0;
+	}
+
+	public Double getClmax() {
+		return clmax;
+	}
+
+	public Double getCdmin() {
+		return cdmin;
+	}
+
+	public Double getClAtCdmin() {
+		return clAtCdmin;
+	}
+
+	public Double getkFactorDragPolar() {
+		return kFactorDragPolar;
+	}
+
+	public Double getXac() {
+		return xac;
+	}
+
+	public Double getCmAC() {
+		return cmAC;
+	}
+
+	public Double getCmACstall() {
+		return cmACstall;
+	}
+
+	public Double getMaximumThickness() {
+		return maximumThickness;
+	}
+
+	public Double getOtherValues() {
+		return otherValues;
+	}
+
+	public Amount<Length> getChords() {
+		return chords;
+	}
+
+	public Amount<Length> getRadiusLE() {
+		return radiusLE;
+	}
+
+	public Amount<?> getClAlpha() {
+		return clAlpha;
+	}
 
 	public void setNumberOfSection(int numberOfSection) {
 		this.numberOfSection = numberOfSection;
 	}
 
-
-	public List<Amount> getAlphaZeroLift() {
-		return alphaZeroLift;
+	public void setAlphaZeroLiftArray(List<Amount<Angle>> alphaZeroLiftArray) {
+		this.alphaZeroLiftArray = alphaZeroLiftArray;
 	}
 
+	public void setAngleOfStallArray(List<Amount<Angle>> angleOfStallArray) {
+		this.angleOfStallArray = angleOfStallArray;
+	}
 
-	public void setAlphaZeroLift(List<Amount> alphaZeroLift) {
+	public void setAlphaStarArray(List<Amount<Angle>> alphaStarArray) {
+		this.alphaStarArray = alphaStarArray;
+	}
+
+	public void setPhiTEArray(List<Amount<Angle>> phiTEArray) {
+		this.phiTEArray = phiTEArray;
+	}
+
+	public void setClStarArray(List<Double> clStarArray) {
+		this.clStarArray = clStarArray;
+	}
+
+	public void setCl0Array(List<Double> cl0Array) {
+		this.cl0Array = cl0Array;
+	}
+
+	public void setClmaxArray(List<Double> clmaxArray) {
+		this.clmaxArray = clmaxArray;
+	}
+
+	public void setCdminArray(List<Double> cdminArray) {
+		this.cdminArray = cdminArray;
+	}
+
+	public void setClAtCdminArray(List<Double> clAtCdminArray) {
+		this.clAtCdminArray = clAtCdminArray;
+	}
+
+	public void setkFactorDragPolarArray(List<Double> kFactorDragPolarArray) {
+		this.kFactorDragPolarArray = kFactorDragPolarArray;
+	}
+
+	public void setXacArray(List<Double> xacArray) {
+		this.xacArray = xacArray;
+	}
+
+	public void setCmACArray(List<Double> cmACArray) {
+		this.cmACArray = cmACArray;
+	}
+
+	public void setCmACstallArray(List<Double> cmACstallArray) {
+		this.cmACstallArray = cmACstallArray;
+	}
+
+	public void setMaximumThicknessArray(List<Double> maximumThicknessArray) {
+		this.maximumThicknessArray = maximumThicknessArray;
+	}
+
+	public void setOtherValuesArray(List<Double> otherValuesArray) {
+		this.otherValuesArray = otherValuesArray;
+	}
+
+	public void setChordsArray(List<Amount<Length>> chordsArray) {
+		this.chordsArray = chordsArray;
+	}
+
+	public void setRadiusLEArray(List<Amount<Length>> radiusLEArray) {
+		this.radiusLEArray = radiusLEArray;
+	}
+
+	public void setClAlphaArray(List<Amount<?>> clAlphaArray) {
+		this.clAlphaArray = clAlphaArray;
+	}
+
+	public void setAlphaZeroLift(Amount<Angle> alphaZeroLift) {
 		this.alphaZeroLift = alphaZeroLift;
 	}
 
-
-	public List<Amount> getAngleOfStall() {
-		return angleOfStall;
-	}
-
-
-	public void setAngleOfStall(List<Amount> angleOfStall) {
+	public void setAngleOfStall(Amount<Angle> angleOfStall) {
 		this.angleOfStall = angleOfStall;
 	}
 
-
-	public List<Double> getMaximumThickness() {
-		return maximumThickness;
+	public void setAlphaStar(Amount<Angle> alphaStar) {
+		this.alphaStar = alphaStar;
 	}
 
+	public void setPhiTE(Amount<Angle> phiTE) {
+		this.phiTE = phiTE;
+	}
 
-	public void setMaximumThickness(List<Double> maximumThickness) {
+	public void setClStar(Double clStar) {
+		this.clStar = clStar;
+	}
+
+	public void setCl0(Double cl0) {
+		this.cl0 = cl0;
+	}
+
+	public void setClmax(Double clmax) {
+		this.clmax = clmax;
+	}
+
+	public void setCdmin(Double cdmin) {
+		this.cdmin = cdmin;
+	}
+
+	public void setClAtCdmin(Double clAtCdmin) {
+		this.clAtCdmin = clAtCdmin;
+	}
+
+	public void setkFactorDragPolar(Double kFactorDragPolar) {
+		this.kFactorDragPolar = kFactorDragPolar;
+	}
+
+	public void setXac(Double xac) {
+		this.xac = xac;
+	}
+
+	public void setCmAC(Double cmAC) {
+		this.cmAC = cmAC;
+	}
+
+	public void setCmACstall(Double cmACstall) {
+		this.cmACstall = cmACstall;
+	}
+
+	public void setMaximumThickness(Double maximumThickness) {
 		this.maximumThickness = maximumThickness;
 	}
 
-
-	public List<Double> getLiftCoefficientSlope() {
-		return liftCoefficientSlope;
-	}
-
-
-	public void setLiftCoefficientSlope(List<Double> liftCoefficientSlope) {
-		this.liftCoefficientSlope = liftCoefficientSlope;
-	}
-
-
-	public List<Double> getEndOfLinearityCl() {
-		return endOfLinearityCl;
-	}
-
-
-	public void setEndOfLinearityCl(List<Double> endOfLinearityCl) {
-		this.endOfLinearityCl = endOfLinearityCl;
-	}
-
-
-	public List<Double> getMaximumLiftCoefficient() {
-		return maximumLiftCoefficient;
-	}
-
-
-	public void setMaximumLiftCoefficient(List<Double> maximumLiftCoefficient) {
-		this.maximumLiftCoefficient = maximumLiftCoefficient;
-	}
-
-
-	public List<Double> getAerodynamicCenter() {
-		return aerodynamicCenter;
-	}
-
-
-	public void setAerodynamicCenter(List<Double> aerodynamicCenter) {
-		this.aerodynamicCenter = aerodynamicCenter;
-	}
-
-
-	public List<Double> getOtherValues() {
-		return otherValues;
-	}
-
-
-	public void setOtherValues(List<Double> otherValues) {
+	public void setOtherValues(Double otherValues) {
 		this.otherValues = otherValues;
 	}
 
-
-	public Amount<Angle> getAlphaZeroLiftMean() {
-		return alphaZeroLiftMean;
+	public void setChords(Amount<Length> chords) {
+		this.chords = chords;
 	}
 
-
-	public void setAlphaZeroLiftMean(Amount<Angle> alphaZeroLiftMean) {
-		this.alphaZeroLiftMean = alphaZeroLiftMean;
+	public void setRadiusLE(Amount<Length> radiusLE) {
+		this.radiusLE = radiusLE;
 	}
 
-
-	public Amount<Angle> getAngleOfStallMean() {
-		return angleOfStallMean;
+	public void setClAlpha(Amount<?> clAlpha) {
+		this.clAlpha = clAlpha;
 	}
-
-
-	public void setAngleOfStallMean(Amount<Angle> angleOfStallMean) {
-		this.angleOfStallMean = angleOfStallMean;
-	}
-
-
-	public double getMaximumThicknessMean() {
-		return maximumThicknessMean;
-	}
-
-
-	public void setMaximumThicknessMean(double maximumThicknessMean) {
-		this.maximumThicknessMean = maximumThicknessMean;
-	}
-
-
-	public double getLiftCoefficientSlopeMean() {
-		return liftCoefficientSlopeMean;
-	}
-
-
-	public void setLiftCoefficientSlopeMean(double liftCoefficientSlopeMean) {
-		this.liftCoefficientSlopeMean = liftCoefficientSlopeMean;
-	}
-
-
-	public double getEndOfLinearityClMean() {
-		return endOfLinearityClMean;
-	}
-
-
-	public void setEndOfLinearityClMean(double endOfLinearityClMean) {
-		this.endOfLinearityClMean = endOfLinearityClMean;
-	}
-
-
-	public double getMaximumLiftCoefficientMean() {
-		return maximumLiftCoefficientMean;
-	}
-
-
-	public void setMaximumLiftCoefficientMean(double maximumLiftCoefficientMean) {
-		this.maximumLiftCoefficientMean = maximumLiftCoefficientMean;
-	}
-
-
-	public double getAerodynamicCenterMean() {
-		return aerodynamicCenterMean;
-	}
-
-
-	public void setAerodynamicCenterMean(double aerodynamicCenterMean) {
-		this.aerodynamicCenterMean = aerodynamicCenterMean;
-	}
-
-
-	public double getOtherValuesMean() {
-		return otherValuesMean;
-	}
-
-
-	public void setOtherValuesMean(double otherValuesMean) {
-		this.otherValuesMean = otherValuesMean;
-	}
-
-
-	public List<Double> getClZero() {
-		return clZero;
-	}
-
-
-	public void setClZero(List<Double> clZero) {
-		this.clZero = clZero;
-	}
-
-
-	public List<Double> getLeadingEdgeRdius() {
-		return leadingEdgeRdius;
-	}
-
-
-	public void setLeadingEdgeRdius(List<Double> leadingEdgeRdius) {
-		this.leadingEdgeRdius = leadingEdgeRdius;
-	}
-
-	//------------------------------------------------------------------------------------------
-	// GETTERS & SETTERS:
-
-
-
+	
 }
