@@ -162,22 +162,27 @@ public class TakeOffManager {
 		List<String> nEngineProperty = reader.getXMLPropertiesByPath("//engine/number_of_engines");
 		input.setnEngine(Integer.valueOf(nEngineProperty.get(0)));
 		
-		List<String> machArrayProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//engine/mach_array").get(0));
-		input.setMachArray(new double[machArrayProperty.size()]);
-		for(int i=0; i<machArrayProperty.size(); i++)
-			input.getMachArray()[i] = Double.valueOf(machArrayProperty.get(i));
-		
 		List<String> simplifiedThrustModelProperty = reader.getXMLPropertiesByPath("//engine/simplified_thrust_model");
 		if(simplifiedThrustModelProperty.get(0).equalsIgnoreCase("TRUE"))
 			input.setEngineModel(true);
 		else
-			input.setEngineModel(false);	
+			input.setEngineModel(false);
 		
-		List<String> netThrustProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//engine/net_thrust_array_single_engine").get(0));
-		input.setNetThrust(new double[netThrustProperty.size()]);
-		for(int i=0; i<netThrustProperty.size(); i++)
-			input.getNetThrust()[i] = Double.valueOf(netThrustProperty.get(i));
+		// check on the flag engine model
+		if(!input.isEngineModel()) {
 			
+			List<String> machArrayProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//engine/mach_array").get(0));
+			input.setMachArray(new double[machArrayProperty.size()]);
+			for(int i=0; i<machArrayProperty.size(); i++)
+				input.getMachArray()[i] = Double.valueOf(machArrayProperty.get(i));
+
+			List<String> netThrustProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//engine/net_thrust_array_single_engine").get(0));
+			input.setNetThrust(new double[netThrustProperty.size()]);
+			for(int i=0; i<netThrustProperty.size(); i++)
+				input.getNetThrust()[i] = Double.valueOf(netThrustProperty.get(i));
+			
+		}	
+		
 		//---------------------------------------------------------------------------------------
 		// Print data:
 		System.out.println("\tSIMPLIFIED ENGINE MODEL : " + input.isEngineModel() + "\n");
@@ -199,8 +204,10 @@ public class TakeOffManager {
 		System.out.println("\tCLalpha take-off = " + input.getcLalphaFlap().getEstimatedValue() + " " + input.getcLalphaFlap().getUnit() + "\n");
 		System.out.println("\tStatic thrust = " + input.getT0().getEstimatedValue() + " " + input.getT0().getUnit());
 		System.out.println("\tNumber of engines = " + input.getnEngine());
-		System.out.println("\tMach array = " + Arrays.toString(input.getMachArray()));
-		System.out.println("\tNet thrust array = " + Arrays.toString(input.getNetThrust()));
+		if(!input.isEngineModel()) {
+			System.out.println("\tMach array = " + Arrays.toString(input.getMachArray()));
+			System.out.println("\tNet thrust array = " + Arrays.toString(input.getNetThrust()));
+		}
 	}
 
 	public static void executeStandAloneTakeOffCalculator() throws InstantiationException, IllegalAccessException {
@@ -352,7 +359,7 @@ public class TakeOffManager {
 		JPADStaticWriteUtils.writeSingleNode("number_of_engines", input.getnEngine(), engineDataElement, doc);
 	
 		if(!input.isEngineModel()) {
-		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("net_thrust_array_single_engine", input.getNetThrust(), engineDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("net_thrust_array_single_engine", input.getNetThrust(), engineDataElement, doc, "N");
 		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("mach_array", input.getMachArray(), engineDataElement, doc);
 		}
 		
@@ -986,18 +993,20 @@ public class TakeOffManager {
 			kGround = - 622.44*(Math.pow(hb, 5)) + 624.46*(Math.pow(hb, 4)) - 255.24*(Math.pow(hb, 3))
 					+ 47.105*(Math.pow(hb, 2)) - 0.6378*hb + 0.0055;
 
-			// check on machArray and netThrust length
-			if(input.getMachArray().length != input.getNetThrust().length) {
-				System.err.println("WARNING!! MACH ARRAY AND NET THRUST DO NOT HAVE THE SAME SIZE\n\n");
-				return;
+			if(!input.isEngineModel()) {
+				// check on machArray and netThrust length
+				if(input.getMachArray().length != input.getNetThrust().length) {
+					System.err.println("WARNING!! MACH ARRAY AND NET THRUST DO NOT HAVE THE SAME SIZE\n\n");
+					return;
+				}
+
+				double[] speedArrayInterpolation = new double[input.getMachArray().length];
+				// interpolation of the net thrust:
+				for (int i=0; i<input.getMachArray().length; i++)
+					speedArrayInterpolation[i] = SpeedCalc.calculateTAS(input.getMachArray()[i], input.getAltitude().getEstimatedValue());
+
+				netThrustArrayFitted.interpolate(speedArrayInterpolation, input.getNetThrust());
 			}
-			
-			double[] speedArrayInterpolation = new double[input.getMachArray().length];
-			// interpolation of the net thrust:
-			for (int i=0; i<input.getMachArray().length; i++)
-				speedArrayInterpolation[i] = SpeedCalc.calculateTAS(input.getMachArray()[i], input.getAltitude().getEstimatedValue());
-				
-			netThrustArrayFitted.interpolate(speedArrayInterpolation, input.getNetThrust());
 			
 			// populateOutput set initially to TRUE...
 			populateOutput = true;

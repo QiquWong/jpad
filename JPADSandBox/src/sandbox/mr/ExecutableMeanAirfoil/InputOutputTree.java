@@ -3,6 +3,7 @@ package sandbox.mr.ExecutableMeanAirfoil;
 import java.util.ArrayList;
 import java.util.List;
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 import org.jscience.physics.amount.Amount;
 
@@ -13,13 +14,18 @@ public class InputOutputTree {
 	// INPUT
 
 	private int numberOfSection;
+	
+	private Amount<Length> wingSpan;
+	
+	private Amount<Area> wingSurface;
 
 	private List<Amount<Angle>> alphaZeroLiftArray,
 								angleOfStallArray,
 								alphaStarArray,
 								phiTEArray;
 
-	private List<Double> clStarArray, 
+	private List<Double> etaStations,
+						 clStarArray, 
 						 cl0Array,
 						 clmaxArray,
 						 cdminArray,
@@ -38,6 +44,10 @@ public class InputOutputTree {
 
 	// OUTPUT 
 
+	private List<Double> influenceCoefficients;
+	
+	private List<Amount<Area>> influenceAreas;
+	
 	private Amount<Angle> alphaZeroLift,
 						  angleOfStall,
 						  alphaStar,
@@ -70,6 +80,7 @@ public class InputOutputTree {
 		alphaStarArray = new ArrayList<Amount<Angle>>();
 		phiTEArray = new ArrayList<Amount<Angle>>();
 		
+		etaStations = new ArrayList<Double>();
 		clStarArray = new ArrayList<Double>();
 		cl0Array = new ArrayList<Double>();
 		clmaxArray = new ArrayList<Double>();
@@ -87,6 +98,8 @@ public class InputOutputTree {
 		
 		clAlphaArray = new ArrayList<Amount<?>>();
 
+		setInfluenceCoefficients(new ArrayList<Double>());
+		setInfluenceAreas(new ArrayList<Amount<Area>>());
 	}
 
 	//------------------------------------------------------------------------------------------
@@ -386,6 +399,46 @@ public class InputOutputTree {
 
 	public void setClAlpha(Amount<?> clAlpha) {
 		this.clAlpha = clAlpha;
+	}
+
+	public List<Double> getEtaStations() {
+		return etaStations;
+	}
+
+	public void setEtaStations(List<Double> etaStations) {
+		this.etaStations = etaStations;
+	}
+
+	public Amount<Length> getWingSpan() {
+		return wingSpan;
+	}
+
+	public void setWingSpan(Amount<Length> wingSpan) {
+		this.wingSpan = wingSpan;
+	}
+
+	public Amount<Area> getWingSurface() {
+		return wingSurface;
+	}
+
+	public void setWingSurface(Amount<Area> wingSurface) {
+		this.wingSurface = wingSurface;
+	}
+
+	public List<Double> getInfluenceCoefficients() {
+		return influenceCoefficients;
+	}
+
+	public void setInfluenceCoefficients(List<Double> influenceCoefficients) {
+		this.influenceCoefficients = influenceCoefficients;
+	}
+
+	public List<Amount<Area>> getInfluenceAreas() {
+		return influenceAreas;
+	}
+
+	public void setInfluenceAreas(List<Amount<Area>> influenceAreas) {
+		this.influenceAreas = influenceAreas;
 	}
 	
 }

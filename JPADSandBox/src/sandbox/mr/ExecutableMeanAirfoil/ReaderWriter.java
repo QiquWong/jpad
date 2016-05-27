@@ -1,342 +1,566 @@
 package sandbox.mr.ExecutableMeanAirfoil;
 
-import java.util.Arrays;
 import java.util.List;
-
-import javax.measure.quantity.Angle;
-import javax.measure.quantity.Area;
-import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.jscience.physics.amount.Amount;
+import org.jscience.physics.amount.AmountFormat;
 import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-
-import calculators.geometry.LSGeometryCalc;
-import configuration.enumerations.AirfoilFamilyEnum;
-import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
-import database.databasefunctions.aerodynamics.DatabaseManager;
-import sandbox.vt.ExecutableHighLiftDevices.InputTree;
-import sandbox.vt.ExecutableHighLiftDevices.OutputTree;
 import standaloneutils.JPADXmlReader;
-import standaloneutils.MyXMLReaderUtils;
 import writers.JPADStaticWriteUtils;
 
 public class ReaderWriter {
-	
-	static InputOutputTree input = new InputOutputTree();
 
-	public void importFromXML(String pathToXML, String databaseFolderPath, String aerodynamicDatabaseFileName) throws ParserConfigurationException {
+	static InputOutputTree inputOutput = new InputOutputTree();
+
+	public static void importFromXML(String pathToXML) throws ParserConfigurationException {
+
+		AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
 
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
 
 		System.out.println("Reading input file data ...\n");
 
 		//---------------------------------------------------------------------------------
-		
-		List<String> numberOfSectionProperty =  reader.getXMLPropertiesByPath("//number_of_input_sections");
-		input.setNumberOfSection(Integer.valueOf(numberOfSectionProperty.get(0)));
+		// GLOBAL DATA
+
+		List<String> numberOfSectionProperty =  reader.getXMLPropertiesByPath("//global_data/number_of_input_sections");
+		inputOutput.setNumberOfSection(Integer.valueOf(numberOfSectionProperty.get(0)));
+
+		List<String> wingSpanProperty =  reader.getXMLPropertiesByPath("//global_data/wing_span");
+		inputOutput.setWingSpan(Amount.valueOf(Double.valueOf(wingSpanProperty.get(0)), SI.METER));
+
+		List<String> wingSurfaceProperty =  reader.getXMLPropertiesByPath("//global_data/wing_surface");
+		inputOutput.setWingSurface(Amount.valueOf(Double.valueOf(wingSurfaceProperty.get(0)), SI.SQUARE_METRE));
 
 		//---------------------------------------------------------------------------------
 		// GEOMETRY
-		
-		List<String> maximumThicknessProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//geometry/maximum_thickness").get(0));
-		for(int i=0; i<maximumThicknessProperty.size(); i++)
-			input.getMaximumThicknessArray().add(Double.valueOf(maximumThicknessProperty.get(i)));
-		
-		List<String> leadingEdgeRadiusProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//geometry/leading_edge_radius").get(0));
-		for(int i=0; i<leadingEdgeRadiusProperty.size(); i++)
-			input.getRadiusLEArray().add(Amount.valueOf(Double.valueOf(leadingEdgeRadiusProperty.get(i)),SI.METER));
-		
-		List<String> phiTrailingEdgeProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//geometry/trailing_edge_angle").get(0));
-		for(int i=0; i<phiTrailingEdgeProperty.size(); i++)
-			input.getPhiTEArray().add(Amount.valueOf(Double.valueOf(phiTrailingEdgeProperty.get(i)),NonSI.DEGREE_ANGLE));
-		
+
+		List<String> etaStationsProperty =  JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//geometry/eta_stations").get(0));
+		for(int i=0; i<etaStationsProperty.size(); i++)
+			inputOutput.getEtaStations().add(Double.valueOf(etaStationsProperty.get(i)));
+
 		List<String> chordsProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//geometry/chords").get(0));
 		for(int i=0; i<chordsProperty.size(); i++)
-			input.getChordsArray().add(Amount.valueOf(Double.valueOf(chordsProperty.get(i)),SI.METER));
-		
+			inputOutput.getChordsArray().add(Amount.valueOf(Double.valueOf(chordsProperty.get(i)),SI.METER));
+
+		// this is used to evaluate if the tag is empty or not ...
+		List<String> maximumThicknessTemp = reader.getXMLPropertiesByPath("//geometry/maximum_thickness");
+		// this is used to read the tag value if it isn't empty ...
+		if(!maximumThicknessTemp.isEmpty()) {
+			List<String> maximumThicknessProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//geometry/maximum_thickness").get(0));
+			for(int i=0; i<maximumThicknessProperty.size(); i++)
+				inputOutput.getMaximumThicknessArray().add(Double.valueOf(maximumThicknessProperty.get(i)));
+		}
+
+		// this is used to evaluate if the tag is empty or not ...
+		List<String> leadingEdgeRadiusTemp = reader.getXMLPropertiesByPath("//geometry/leading_edge_radius");
+		// this is used to read the tag value if it isn't empty ...
+		if(!leadingEdgeRadiusTemp.isEmpty()) {
+			List<String> leadingEdgeRadiusProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//geometry/leading_edge_radius").get(0));
+			for(int i=0; i<leadingEdgeRadiusProperty.size(); i++)
+				inputOutput.getRadiusLEArray().add(Amount.valueOf(Double.valueOf(leadingEdgeRadiusProperty.get(i)),SI.METER));
+		}
+
+		// this is used to evaluate if the tag is empty or not ...
+		List<String> phiTrailingEdgeTemp = reader.getXMLPropertiesByPath("//geometry/trailing_edge_angle");
+		// this is used to read the tag value if it isn't empty ...
+		if(!phiTrailingEdgeTemp.isEmpty()) {
+			List<String> phiTrailingEdgeProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//geometry/trailing_edge_angle").get(0));
+			for(int i=0; i<phiTrailingEdgeProperty.size(); i++)
+				inputOutput.getPhiTEArray().add(Amount.valueOf(Double.valueOf(phiTrailingEdgeProperty.get(i)),NonSI.DEGREE_ANGLE));
+		}
+
 		//----------------------------------------------------------------------------------
 		// AERODYNAMICS
-		
-		List<String> alphaZeroLiftProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//aerodynamic/alpha_zero_lift").get(0));
-		for(int i=0; i<alphaZeroLiftProperty.size(); i++)
-			input.getAlphaZeroLiftArray().add(Amount.valueOf(Double.valueOf(alphaZeroLiftProperty.get(i)), NonSI.DEGREE_ANGLE));
-		
-		List<String> alphaStarProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//aerodynamic/angle_of_end_linearity").get(0));
-		for(int i=0; i<alphaStarProperty.size(); i++)
-			input.getAlphaStarArray().add(Amount.valueOf(Double.valueOf(alphaStarProperty.get(i)), NonSI.DEGREE_ANGLE));
-		
-		List<String> alphaStllProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//aerodynamic/angle_of_stall").get(0));
-		for(int i=0; i<alphaStllProperty.size(); i++)
-			input.getAngleOfStallArray().add(Amount.valueOf(Double.valueOf(alphaStllProperty.get(i)), NonSI.DEGREE_ANGLE));
-		
-		List<String> clZeroProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//aerodynamic/lift_coefficient_alpha_zero").get(0));
-		for(int i=0; i<clZeroProperty.size(); i++)
-			input.getCl0Array().add(Double.valueOf(clZeroProperty.get(i)));
-		
-		List<String> clStarProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//aerodynamic/lift_coefficient_end_linearity").get(0));
-		for(int i=0; i<clStarProperty.size(); i++)
-			input.getClStarArray().add(Double.valueOf(clStarProperty.get(i)));
-		
-		List<String> clMaxProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//aerodynamic/maximum_lift_coefficient").get(0));
-		for(int i=0; i<clMaxProperty.size(); i++)
-			input.getClmaxArray().add(Double.valueOf(clMaxProperty.get(i)));
-		
-		List<String> clAlphaProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//cl_zero").get(0));
-		for(int i=0; i<clAlphaProperty.size(); i++)
-			input.getClAlphaArray().add(Amount.valueOf(Double.valueOf(clAlphaProperty.get(i)), NonSI.DEGREE_ANGLE.inverse()));
-		
-		// TODO: COMPLETE ME !!
-			
 
-//	// WARNINGS
-//		
-//		if ( input.getNumberOfSections() != input.getChordDistribution().size()){
-//			 System.err.println("WARNING! the number of declared section differs from the number of chords. ( number of section = " + input.getNumberOfSections()
-//			 + " ; number of chords = " + input.getChordDistribution().size() + " )");
-//		}
-//		
-//		if ( input.getNumberOfSections() != input.getxLEDistribution().size()){
-//			 System.err.println("WARNING! the number of declared section differs from the number of XLE values. ( number of section = " + input.getNumberOfSections()
-//			 + " ; number of XLE values = " + input.getxLEDistribution().size()+ " )");
-//		}
-//		
-//		if ( input.getNumberOfSections() != input.getTwistDistribution().size()){
-//			 System.err.println("WARNING! the number of declared section differs from the number of twist angles. ( number of section = " + input.getNumberOfSections()
-//			 + " ; number of twist angles = " + input.getTwistDistribution().size()+ " )");
-//		}
-//		
-//		if ( input.getNumberOfSections() != input.getDihedralDistribution().size()){
-//			 System.err.println("WARNING! the number of declared section differs from the number of dihedral angles. ( number of section = " + input.getNumberOfSections()
-//			 + " ; number of dihedral angles = " + input.getDihedralDistribution().size()+ " )");
-//		}
-//		
-//		if ( input.getNumberOfSections() != input.getAlphaZeroLiftDistribution().size()){
-//			 System.err.println("WARNING! the number of declared section differs from the number of zero lift angles. ( number of section = " + input.getNumberOfSections()
-//			 + " ; number of zero lift angles = " + input.getAlphaZeroLiftDistribution().size()+ " )");
-//		}
-//		
-//		if ( input.getNumberOfSections() != input.getAlphaStarDistribution().size()){
-//			 System.err.println("WARNING! the number of declared section differs from the number of end of linearity angles. ( number of section = " + input.getNumberOfSections()
-//			 + " ; number of end of linearity angles = " + input.getAlphaStarDistribution().size()+ " )");
-//		}
-//		
-//		
-//		if ( input.getNumberOfSections() != input.getMaximumliftCoefficientDistribution().size()){
-//			 System.err.println("WARNING! the number of declared section differs from the number of cl max. ( number of section = " + input.getNumberOfSections()
-//			 + " ; number of cl max = " + input.getMaximumliftCoefficientDistribution().size()+ " )");
-//		}
-//		
-//	// OTHER VALUES
-//		double span = Math.sqrt(input.getAspectRatio() * input.getSurface().getEstimatedValue());
-//		input.setSpan(Amount.valueOf(span, SI.METER));
-//		input.setSemiSpan(Amount.valueOf(span/2, SI.METER));
-//		
-//	// delta alpha	
-//		
-//		double tgAngle =input.getxLEDistribution().get(input.getNumberOfSections()-1).getEstimatedValue()/input.getSemiSpan().getEstimatedValue();
-//		double sweepLE =Math.toDegrees(Math.atan(tgAngle));
-//		double deltaAlpha = aeroDatabaseReader.getD_Alpha_Vs_LambdaLE_VsDy(sweepLE,sharpnessParameterLE);
-//		
-//		input.setDeltaAlpha(deltaAlpha);
-//		
-//		
-//	// PRINT
-//		
-//		if(input.getNumberOfSections() == input.getChordDistribution().size() &&
-//				input.getNumberOfSections() == input.getxLEDistribution().size() &&
-//				input.getNumberOfSections() == input.getTwistDistribution().size() &&
-//				input.getNumberOfSections() == input.getDihedralDistribution().size() &&
-//				input.getNumberOfSections() == input.getAlphaZeroLiftDistribution().size() &&
-//				input.getNumberOfSections() == input.getAlphaStarDistribution().size() &&
-//				input.getNumberOfSections() == input.getMaximumliftCoefficientDistribution().size() ){
-//		System.out.println("\n\nINPUT DATA\n\n");
-//		
-//		System.out.println("Operating Conditions");
-//		System.out.println("-------------------------------------");
-//		System.out.println("Altitude : " + input.getAltitude().getEstimatedValue()+ " " + input.getAltitude().getUnit());
-//		System.out.println("Mach Number : " + input.getMachNumber());
-//		
-//		System.out.println("\nAlpha Values");
-//		System.out.println("-------------------------------------");
-//		System.out.println("Number of Alpha : " + input.getNumberOfAlpha());
-//		System.out.println("Alpha Initial : " + input.getAlphaInitial().getEstimatedValue()+ " " + input.getAlphaInitial().getUnit());
-//		System.out.println("Alpha Final : " + input.getAlphaFinal().getEstimatedValue()+ " " + input.getAlphaFinal().getUnit());
-//		
-//		System.out.println("\nWing");
-//		System.out.println("-------------------------------------");
-//		System.out.println("Surface : " + input.getSurface().getEstimatedValue()+ " " + input.getSurface().getUnit());
-//		System.out.println("Aspect Ratio : " + input.getAspectRatio());
-//		System.out.println("Number of point along semi-span : " + input.getNumberOfPointSemispan());
-//		System.out.println("Adimensional kink station : " + input.getAdimensionalKinkStation());
-//		System.out.println("Span : " + input.getSpan().getEstimatedValue()+ " " + input.getSpan().getUnit());
-//		System.out.println("\nDistribution");
-//		System.out.println("-------------------------------------");
-//		System.out.println("Number of given stations : " + input.getNumberOfSections());
-//		
-//		System.out.println("\nMean airoil type : " + input.getMeanAirfoilFamily());
-//        System.out.println("Mean airfoil thickness : " + input.getMeanThickness());
-//		
-//		System.out.print("\nChord distribution : [");
-//		for(int i=0; i<input.getChordDistribution().size(); i++)
-//			System.out.print("  " +input.getChordDistribution().get(i).getEstimatedValue() + "  ");
-//			System.out.println("] " + input.getChordDistribution().get(0).getUnit() );
-//		
-//		System.out.print("X LE distribution : [");
-//		for(int i=0; i<input.getxLEDistribution().size(); i++)
-//			System.out.print("  " +input.getxLEDistribution().get(i).getEstimatedValue()+ " ");
-//		    System.out.println("] " + input.getxLEDistribution().get(0).getUnit() );
-//		
-//		System.out.print("Twist distribution : [");
-//		for(int i=0; i<input.getTwistDistribution().size(); i++)
-//			System.out.print("  " +input.getTwistDistribution().get(i).getEstimatedValue()+ " ");
-//			System.out.println("] " + input.getTwistDistribution().get(0).getUnit() );
-//			
-//		System.out.print("Dihedral distribution : [");
-//		for(int i=0; i<input.getDihedralDistribution().size(); i++)
-//			System.out.print("  " +input.getDihedralDistribution().get(i).getEstimatedValue()+ " ");
-//			System.out.println("] " + input.getDihedralDistribution().get(0).getUnit() );
-//			
-//		System.out.print("Alpha zero lift distribution : [");
-//		for(int i=0; i<input.getAlphaZeroLiftDistribution().size(); i++)
-//			System.out.print("  " +input.getAlphaZeroLiftDistribution().get(i).getEstimatedValue()+ " ");
-//			System.out.println("] " + input.getAlphaZeroLiftDistribution().get(0).getUnit() );
-//			
-//		System.out.print("Alpha Star distribution: [");
-//		for(int i=0; i<input.getAlphaStarDistribution().size(); i++)
-//			System.out.print("  " +input.getAlphaStarDistribution().get(i).getEstimatedValue()+ " ");
-//			System.out.println("] " + input.getAlphaStarDistribution().get(0).getUnit() );	
-//			
-//		System.out.print("Cl max distribution : ");
-//			System.out.print(input.getMaximumliftCoefficientDistribution());
-//			
-//		System.out.print("\nAdimentional stations :");
-//		 	System.out.println(input.getyAdimensionalStationInput());
-//		}
-//	}
-//	
-//	
-//	
-//	public static void writeToXML(String filenameWithPathAndExt) {
-//		
-//		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-//		
-//		try {
-//			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-//			Document doc = docBuilder.newDocument();
-//			
-//			defineXmlTree(doc, docBuilder);
-//			
-//			JPADStaticWriteUtils.writeDocumentToXml(doc, filenameWithPathAndExt);
-//
-//		} catch (ParserConfigurationException e) {
-//			e.printStackTrace();
-//		}
-//	}
-//	
-//	
-//	private static void defineXmlTree(Document doc, DocumentBuilder docBuilder) {
-//		
-//		org.w3c.dom.Element rootElement = doc.createElement("Wing_aerodynamic_executable");
-//		doc.appendChild(rootElement);
-//		
-//		//--------------------------------------------------------------------------------------
-//		// INPUT
-//		//--------------------------------------------------------------------------------------
-//		org.w3c.dom.Element inputRootElement = doc.createElement("INPUT");
-//		rootElement.appendChild(inputRootElement);
-//
-//		org.w3c.dom.Element flightConditionsElement = doc.createElement("operating_conditions");
-//		inputRootElement.appendChild(flightConditionsElement);
-//
-//		JPADStaticWriteUtils.writeSingleNode("altitude", input.getAltitude(), flightConditionsElement, doc);
-//		JPADStaticWriteUtils.writeSingleNode("mach_number", input.getMachNumber(), flightConditionsElement, doc);
-//		JPADStaticWriteUtils.writeSingleNode("number_of_alpha", input.getNumberOfAlpha(), flightConditionsElement, doc);
-//		if (input.getNumberOfAlpha()!=0){
-//		JPADStaticWriteUtils.writeSingleNode("alpha_initial", input.getAlphaInitial(), flightConditionsElement, doc);
-//		JPADStaticWriteUtils.writeSingleNode("alpha_final", input.getAlphaFinal(), flightConditionsElement, doc);
-//		}
-//				
-//		org.w3c.dom.Element wingDataElement = doc.createElement("wing");
-//		inputRootElement.appendChild(wingDataElement);
-//		
-//		org.w3c.dom.Element geometryDataElement = doc.createElement("global");
-//		wingDataElement.appendChild(geometryDataElement);
-//		
-//		JPADStaticWriteUtils.writeSingleNode("surface", input.getSurface(), geometryDataElement, doc);
-//		JPADStaticWriteUtils.writeSingleNode("aspect_ratio", input.getAspectRatio(), geometryDataElement, doc);
-//		JPADStaticWriteUtils.writeSingleNode("number_of_point_semispan", input.getNumberOfPointSemispan(), geometryDataElement, doc);
-//		JPADStaticWriteUtils.writeSingleNode("adimensional_kink_station", input.getAdimensionalKinkStation(), geometryDataElement, doc);
-//		
-//		
-//		org.w3c.dom.Element cleanConfigurationDataElement = doc.createElement("distibution");
-//		wingDataElement.appendChild(cleanConfigurationDataElement);
-//		
-//		JPADStaticWriteUtils.writeSingleNode("number_of_given_sections", input.getNumberOfSections(), cleanConfigurationDataElement, doc);
-//		JPADStaticWriteUtils.writeSingleNode("airfoil_family", input.getMeanAirfoilFamily(), cleanConfigurationDataElement, doc);
-//		JPADStaticWriteUtils.writeSingleNode("max_thickness_mean_airfoil", input.getMeanThickness(), cleanConfigurationDataElement, doc);
-//		
-//		org.w3c.dom.Element childDistribution = doc.createElement("geometry");
-//		cleanConfigurationDataElement.appendChild(childDistribution);
-//		
-//		JPADStaticWriteUtils.writeSingleNode("y_adimensional_stations", input.getyAdimensionalStationInput(),childDistribution, doc);
-//		JPADStaticWriteUtils.writeSingleNode("chord_distribution", input.getChordDistribution(), childDistribution, doc, input.getChordDistribution().get(0).getUnit().toString());
-//		JPADStaticWriteUtils.writeSingleNode("x_le_distribution", input.getxLEDistribution(), childDistribution, doc, input.getxLEDistribution().get(0).getUnit().toString());
-//		JPADStaticWriteUtils.writeSingleNode("twist_distribution", input.getTwistDistribution(), childDistribution, doc, input.getTwistDistribution().get(0).getUnit().toString());
-//		JPADStaticWriteUtils.writeSingleNode("dihedral_distribution", input.getDihedralDistribution(), childDistribution, doc,  input.getDihedralDistribution().get(0).getUnit().toString());
-//		
-//		org.w3c.dom.Element childDistributionNew = doc.createElement("aerodynamics");
-//		cleanConfigurationDataElement.appendChild(childDistributionNew);
-//		
-//		JPADStaticWriteUtils.writeSingleNode("alpha_zero_lift_distribution", input.getAlphaZeroLiftDistribution(), childDistributionNew, doc,  input.getAlphaZeroLiftDistribution().get(0).getUnit().toString());
-//		JPADStaticWriteUtils.writeSingleNode("alpha_star_distribution", input.getAlphaStarDistribution(), childDistributionNew, doc,  input.getAlphaStarDistribution().get(0).getUnit().toString());
-//		JPADStaticWriteUtils.writeSingleNode("maximum_lift_coefficient_distribution", input.getMaximumliftCoefficientDistribution(), childDistributionNew, doc);
-//		
-//		//--------------------------------------------------------------------------------------
-//		// OUTPUT
-//		//--------------------------------------------------------------------------------------
-//		org.w3c.dom.Element outputRootElement = doc.createElement("OUTPUT");
-//		rootElement.appendChild(outputRootElement);
-//		
-//		org.w3c.dom.Element highLiftDevicesEffectsElement = doc.createElement("wing_aerodynamic_characteristics");
-//		outputRootElement.appendChild(highLiftDevicesEffectsElement);
-//		
-//		JPADStaticWriteUtils.writeSingleNode("alpha_zero_lift", input.getAlphaZeroLift(), highLiftDevicesEffectsElement, doc);
-//		JPADStaticWriteUtils.writeSingleNode("cl_alpha", Amount.valueOf(Double.valueOf(input.getClAlpha()), NonSI.DEGREE_ANGLE.inverse()), highLiftDevicesEffectsElement, doc);
-//		JPADStaticWriteUtils.writeSingleNode("cl_star", input.getClStar(), highLiftDevicesEffectsElement, doc);
-//		JPADStaticWriteUtils.writeSingleNode("alpha_star", input.getAlphaStar(), highLiftDevicesEffectsElement, doc);
-//		JPADStaticWriteUtils.writeSingleNode("cl_max", input.getClMax(), highLiftDevicesEffectsElement, doc);
-//		JPADStaticWriteUtils.writeSingleNode("alpha_stall", input.getAlphaStall(), highLiftDevicesEffectsElement, doc);
-//		
-//		org.w3c.dom.Element highLiftGlobalDataElement = doc.createElement("cL_vs_alpha_curve");
-//		outputRootElement.appendChild(highLiftGlobalDataElement);
-//		
-//		JPADStaticWriteUtils.writeSingleNode("cL_array", Arrays.toString(input.getcLVsAlphaVector()), highLiftGlobalDataElement, doc);
-//		JPADStaticWriteUtils.writeSingleNode("alpha_array", Arrays.toString(input.getAlphaVector()), highLiftGlobalDataElement, doc, "°");
-//	
-//		
-//		org.w3c.dom.Element highLiftCurveDataElement = doc.createElement("distribution");
-//		outputRootElement.appendChild(highLiftCurveDataElement);
-//		
-//		JPADStaticWriteUtils.writeSingleNode("eta", Arrays.toString(input.getyStationsAdimensional()), highLiftCurveDataElement, doc);
-//		
-//		if (input.getNumberOfAlpha()!=0){
-//		for (int i=0; i<input.getNumberOfAlpha(); i++){
-//		JPADStaticWriteUtils.writeSingleNode("cl_at_alpha_" + input.getAlphaDistributionArray()[i], Arrays.toString(input.getClVsEtaVectors().get(i)), highLiftCurveDataElement, doc);
-//		}
-//		}
-//	}
-//
-//	public InputOutputTree getInput() {
-//		return input;
-//	}
-//
-//	public void setInput(InputOutputTree input) {
-//		this.input = input;
+		// this is used to evaluate if the tag is empty or not ...
+		List<String> alphaZeroLiftTemp = reader.getXMLPropertiesByPath("//aerodynamic/alpha_zero_lift");
+		// this is used to read the tag value if it isn't empty ...
+		if(!alphaZeroLiftTemp.isEmpty()) {
+			List<String> alphaZeroLiftProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//aerodynamic/alpha_zero_lift").get(0));
+			for(int i=0; i<alphaZeroLiftProperty.size(); i++)
+				inputOutput.getAlphaZeroLiftArray().add(Amount.valueOf(Double.valueOf(alphaZeroLiftProperty.get(i)), NonSI.DEGREE_ANGLE));
+		}
+
+		// this is used to evaluate if the tag is empty or not ...
+		List<String> alphaStarTemp = reader.getXMLPropertiesByPath("//aerodynamic/angle_of_end_linearity");
+		// this is used to read the tag value if it isn't empty ...
+		if(!alphaStarTemp.isEmpty()) {
+			List<String> alphaStarProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//aerodynamic/angle_of_end_linearity").get(0));
+			for(int i=0; i<alphaStarProperty.size(); i++)
+				inputOutput.getAlphaStarArray().add(Amount.valueOf(Double.valueOf(alphaStarProperty.get(i)), NonSI.DEGREE_ANGLE));
+		}
+
+		// this is used to evaluate if the tag is empty or not ...
+		List<String> alphaStallTemp = reader.getXMLPropertiesByPath("//aerodynamic/angle_of_stall");
+		// this is used to read the tag value if it isn't empty ...
+		if(!alphaStallTemp.isEmpty()) {
+			List<String> alphaStllProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//aerodynamic/angle_of_stall").get(0));
+			for(int i=0; i<alphaStllProperty.size(); i++)
+				inputOutput.getAngleOfStallArray().add(Amount.valueOf(Double.valueOf(alphaStllProperty.get(i)), NonSI.DEGREE_ANGLE));
+		}
+
+		// this is used to evaluate if the tag is empty or not ...
+		List<String> clZeroTemp = reader.getXMLPropertiesByPath("//aerodynamic/lift_coefficient_alpha_zero");
+		// this is used to read the tag value if it isn't empty ...
+		if(!clZeroTemp.isEmpty()) {
+			List<String> clZeroProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//aerodynamic/lift_coefficient_alpha_zero").get(0));
+			for(int i=0; i<clZeroProperty.size(); i++)
+				inputOutput.getCl0Array().add(Double.valueOf(clZeroProperty.get(i)));
+		}
+
+		// this is used to evaluate if the tag is empty or not ...
+		List<String> clStarTemp = reader.getXMLPropertiesByPath("//aerodynamic/lift_coefficient_end_linearity");
+		// this is used to read the tag value if it isn't empty ...
+		if(!clStarTemp.isEmpty()) {
+			List<String> clStarProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//aerodynamic/lift_coefficient_end_linearity").get(0));
+			for(int i=0; i<clStarProperty.size(); i++)
+				inputOutput.getClStarArray().add(Double.valueOf(clStarProperty.get(i)));
+		}
+
+		// this is used to evaluate if the tag is empty or not ...
+		List<String> clMaxTemp = reader.getXMLPropertiesByPath("//aerodynamic/maximum_lift_coefficient");
+		// this is used to read the tag value if it isn't empty ...
+		if(!clMaxTemp.isEmpty()) {
+			List<String> clMaxProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//aerodynamic/maximum_lift_coefficient").get(0));
+			for(int i=0; i<clMaxProperty.size(); i++)
+				inputOutput.getClmaxArray().add(Double.valueOf(clMaxProperty.get(i)));
+		}
+
+		// this is used to evaluate if the tag is empty or not ...
+		List<String> clAlphaTemp = reader.getXMLPropertiesByPath("//aerodynamic/lift_curve_slope");
+		// this is used to read the tag value if it isn't empty ...
+		if(!clAlphaTemp.isEmpty()) {
+			List<String> clAlphaProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//aerodynamic/lift_curve_slope").get(0));
+			for(int i=0; i<clAlphaProperty.size(); i++)
+				inputOutput.getClAlphaArray().add(Amount.valueOf(Double.valueOf(clAlphaProperty.get(i)), NonSI.DEGREE_ANGLE.inverse()));
+		}
+
+		// this is used to evaluate if the tag is empty or not ...
+		List<String> cdMinTemp = reader.getXMLPropertiesByPath("//aerodynamic/minimum_drag_coefficient");
+		// this is used to read the tag value if it isn't empty ...
+		if(!cdMinTemp.isEmpty()) {
+			List<String> cdMinProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//aerodynamic/minimum_drag_coefficient").get(0));
+			for(int i=0; i<cdMinProperty.size(); i++)
+				inputOutput.getCdminArray().add(Double.valueOf(cdMinProperty.get(i)));
+		}
+
+		// this is used to evaluate if the tag is empty or not ...
+		List<String> clCdMinTemp = reader.getXMLPropertiesByPath("//aerodynamic/lift_coefficient_at_minimum_drag");
+		// this is used to read the tag value if it isn't empty ...
+		if(!clCdMinTemp.isEmpty()) {
+			List<String> clCdMinProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//aerodynamic/lift_coefficient_at_minimum_drag").get(0));
+			for(int i=0; i<clCdMinProperty.size(); i++)
+				inputOutput.getClAtCdminArray().add(Double.valueOf(clCdMinProperty.get(i)));
+		}
+
+		// this is used to evaluate if the tag is empty or not ...
+		List<String> kFactorDragPolarTemp = reader.getXMLPropertiesByPath("//aerodynamic/k_factor_drag_polar");
+		// this is used to read the tag value if it isn't empty ...
+		if(!kFactorDragPolarTemp.isEmpty()) {
+			List<String> kFactorDragPolarProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//aerodynamic/k_factor_drag_polar").get(0));
+			for(int i=0; i<kFactorDragPolarProperty.size(); i++)
+				inputOutput.getkFactorDragPolarArray().add(Double.valueOf(kFactorDragPolarProperty.get(i)));
+		}
+
+		// this is used to evaluate if the tag is empty or not ...
+		List<String> xACTemp = reader.getXMLPropertiesByPath("//aerodynamic/aerodynamic_center");
+		// this is used to read the tag value if it isn't empty ...
+		if(!xACTemp.isEmpty()) {
+			List<String> xACProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//aerodynamic/aerodynamic_center").get(0));
+			for(int i=0; i<xACProperty.size(); i++)
+				inputOutput.getXacArray().add(Double.valueOf(xACProperty.get(i)));
+		}
+
+		// this is used to evaluate if the tag is empty or not ...
+		List<String> cmACTemp = reader.getXMLPropertiesByPath("//aerodynamic/pitching_moment_coefficient_aerodynamic_center");
+		// this is used to read the tag value if it isn't empty ...
+		if(!cmACTemp.isEmpty()) {
+			List<String> cmACProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//aerodynamic/pitching_moment_coefficient_aerodynamic_center").get(0));
+			for(int i=0; i<cmACProperty.size(); i++)
+				inputOutput.getCmACArray().add(Double.valueOf(cmACProperty.get(i)));
+		}
+
+		// this is used to evaluate if the tag is empty or not ...
+		List<String> cmACStallTemp = reader.getXMLPropertiesByPath("//aerodynamic/stall_pitching_moment_coefficient_aerodynamic_center");
+		// this is used to read the tag value if it isn't empty ...
+		if(!cmACStallTemp.isEmpty()) {
+			List<String> cmACStallProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//aerodynamic/stall_pitching_moment_coefficient_aerodynamic_center").get(0));
+			for(int i=0; i<cmACStallProperty.size(); i++)
+				inputOutput.getCmACstallArray().add(Double.valueOf(cmACStallProperty.get(i)));
+		}
+
+		//----------------------------------------------------------------------------------
+		// OTHER
+
+		// this is used to evaluate if the other values tag is empty or not ...
+		List<String> otherValuesTemp = reader.getXMLPropertiesByPath("//other/other_values");
+		// this is used to read the other values tag if it isn't empty ...
+		if(!otherValuesTemp.isEmpty()) {
+			List<String> otherValuesProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//other/other_values").get(0));
+			for(int i=0; i<otherValuesProperty.size(); i++)
+				inputOutput.getOtherValuesArray().add(Double.valueOf(otherValuesProperty.get(i)));
+		}
+
+		//----------------------------------------------------------------------------------
+		// WARNINGS
+
+		if ( inputOutput.getNumberOfSection() != inputOutput.getEtaStations().size()) {
+			System.err.println("WARNING! number of sections is not the same as the eta station array length. ( number of sections = " + inputOutput.getNumberOfSection()
+			+ " ; number of eta stations = " + inputOutput.getEtaStations().size() + " )");
+			return;
+		}
+
+		if ( inputOutput.getNumberOfSection() != inputOutput.getChordsArray().size()) {
+			System.err.println("WARNING! number of sections is not the same as the chords array length. ( number of sections = " + inputOutput.getNumberOfSection()
+			+ " ; number of chords = " + inputOutput.getChordsArray().size() + " )");
+			return;
+		}
+
+		if(!cmACStallTemp.isEmpty()) {
+			if ( inputOutput.getNumberOfSection() != inputOutput.getMaximumThicknessArray().size()) {
+				System.err.println("WARNING! number of sections is not the same as the maximum thickness array length. ( number of sections = " + inputOutput.getNumberOfSection()
+				+ " ; number of maximum thickness = " + inputOutput.getMaximumThicknessArray().size() + " )");
+				return;
+			}
+		}
+
+		if(!leadingEdgeRadiusTemp.isEmpty()){
+			if ( inputOutput.getNumberOfSection() != inputOutput.getRadiusLEArray().size()) {
+				System.err.println("WARNING! number of sections is not the same as the leading edge radius array length. ( number of sections = " + inputOutput.getNumberOfSection()
+				+ " ; number of leading edge radius = " + inputOutput.getRadiusLEArray().size() + " )");
+				return;
+			}
+		}
+
+		if(!phiTrailingEdgeTemp.isEmpty()) {
+			if ( inputOutput.getNumberOfSection() != inputOutput.getPhiTEArray().size()) {
+				System.err.println("WARNING! number of sections is not the same as the trailing edge angle array length. ( number of sections = " + inputOutput.getNumberOfSection()
+				+ " ; number of trailing edge angles = " + inputOutput.getPhiTEArray().size() + " )");
+				return;
+			}
+		}
+
+		if(!alphaZeroLiftTemp.isEmpty()) {
+			if ( inputOutput.getNumberOfSection() != inputOutput.getAlphaZeroLiftArray().size()) {
+				System.err.println("WARNING! number of sections is not the same as the alpha zero lift array length. ( number of sections = " + inputOutput.getNumberOfSection()
+				+ " ; number of alpha zero lift = " + inputOutput.getAlphaZeroLiftArray().size() + " )");
+				return;
+			}
+		}
+
+		if(!alphaStarTemp.isEmpty()) {
+			if ( inputOutput.getNumberOfSection() != inputOutput.getAlphaStarArray().size()) {
+				System.err.println("WARNING! number of sections is not the same as the alpha star array length. ( number of section = " + inputOutput.getNumberOfSection()
+				+ " ; number of alpha star = " + inputOutput.getAlphaStarArray().size()+ " )");
+				return;
+			}
+		}
+
+		if(!alphaStallTemp.isEmpty()) {
+			if ( inputOutput.getNumberOfSection() != inputOutput.getAngleOfStallArray().size()) {
+				System.err.println("WARNING! number of sections is not the same as the stall angles of attack array length. ( number of section = " + inputOutput.getNumberOfSection()
+				+ " ; number of stall angles of attack = " + inputOutput.getAngleOfStallArray().size()+ " )");
+				return;
+			}
+		}
+
+		if(!clZeroTemp.isEmpty()) {
+			if ( inputOutput.getNumberOfSection() != inputOutput.getCl0Array().size()) {
+				System.err.println("WARNING! number of sections is not the same as the length of the lift coefficient at alpha zero array. ( number of section = " + inputOutput.getNumberOfSection()
+				+ " ; number of cl0 = " + inputOutput.getCl0Array().size()+ " )");
+				return;
+			}
+		}
+
+		if(!clStarTemp.isEmpty()) {
+			if ( inputOutput.getNumberOfSection() != inputOutput.getClStarArray().size()) {
+				System.err.println("WARNING! number of sections is not the same as the length of the lift coefficient of end linearity array. ( number of section = " + inputOutput.getNumberOfSection()
+				+ " ; number of cl star = " + inputOutput.getClStarArray().size()+ " )");
+				return;
+			}
+		}
+
+		if(!clMaxTemp.isEmpty()) {
+			if ( inputOutput.getNumberOfSection() != inputOutput.getClmaxArray().size()) {
+				System.err.println("WARNING! number of sections is not the same as the length of the maximum lif coefficient array. ( number of section = " + inputOutput.getNumberOfSection()
+				+ " ; number of cl max = " + inputOutput.getClmaxArray().size()+ " )");
+				return;
+			}
+		}
+
+		if(!clAlphaTemp.isEmpty()) {
+			if ( inputOutput.getNumberOfSection() != inputOutput.getClAlphaArray().size()) {
+				System.err.println("WARNING! number of sections is not the same as the length of the lift curve slope array. ( number of section = " + inputOutput.getNumberOfSection()
+				+ " ; number of cl alpha = " + inputOutput.getClAlphaArray().size()+ " )");
+				return;
+			}
+		}
+
+		if(!cdMinTemp.isEmpty()) {
+			if ( inputOutput.getNumberOfSection() != inputOutput.getCdminArray().size()) {
+				System.err.println("WARNING! number of sections is not the same as the minimum drag coefficient array length. ( number of sections = " + inputOutput.getNumberOfSection()
+				+ " ; number of cd min = " + inputOutput.getCdminArray().size() + " )");
+				return;
+			}
+		}
+
+		if(!clCdMinTemp.isEmpty()) {
+			if ( inputOutput.getNumberOfSection() != inputOutput.getClAtCdminArray().size()) {
+				System.err.println("WARNING! number of sections is not the same as the length of the lift coefficient at minimum drag array. ( number of sections = " + inputOutput.getNumberOfSection()
+				+ " ; number of cl at cd min = " + inputOutput.getClAtCdminArray().size() + " )");
+				return;
+			}
+		}
+
+		if(!kFactorDragPolarTemp.isEmpty()) {
+			if ( inputOutput.getNumberOfSection() != inputOutput.getkFactorDragPolarArray().size()) {
+				System.err.println("WARNING! number of sections is not the same as the k factor drag polar array length. ( number of sections = " + inputOutput.getNumberOfSection()
+				+ " ; number of k factors = " + inputOutput.getkFactorDragPolarArray().size() + " )");
+				return;
+			}
+		}
+
+		if(!xACTemp.isEmpty()) {
+			if ( inputOutput.getNumberOfSection() != inputOutput.getXacArray().size()) {
+				System.err.println("WARNING! number of sections is not the same as the aerodynamic center array length. ( number of sections = " + inputOutput.getNumberOfSection()
+				+ " ; number of x_ac = " + inputOutput.getXacArray().size() + " )");
+				return;
+			}
+		}
+
+		if(!cmACTemp.isEmpty()) {
+			if ( inputOutput.getNumberOfSection() != inputOutput.getCmACArray().size()) {
+				System.err.println("WARNING! number of sections is not the same as the length of the pitching moment coefficient at aerodynamic center array. ( number of sections = " + inputOutput.getNumberOfSection()
+				+ " ; number of cm_ac = " + inputOutput.getCmACArray().size() + " )");
+				return;
+			}
+		}
+
+		if(!cmACStallTemp.isEmpty()) {
+			if ( inputOutput.getNumberOfSection() != inputOutput.getCmACstallArray().size()) {
+				System.err.println("WARNING! number of sections is not the same as the length of the stall pitching moment coefficient at aerodynamic center array. ( number of sections = " + inputOutput.getNumberOfSection()
+				+ " ; number of cm_ac at stall = " + inputOutput.getCmACstallArray().size() + " )");
+				return;
+			}
+		}
+
+		if(!otherValuesTemp.isEmpty()) {
+			if ( inputOutput.getNumberOfSection() != inputOutput.getOtherValuesArray().size()) {
+				System.err.println("WARNING! number of sections is not the same as the other values array length. ( number of sections = " + inputOutput.getNumberOfSection()
+				+ " ; number of other values = " + inputOutput.getOtherValuesArray().size() + " )");
+				return;
+			}
+		}
+
+		//-----------------------------------------------------------------------------------
+		// PRINT VALUES:
+		System.out.println("\n\t\tINPUT DATA");
+
+		System.out.println("Global data :");
+		System.out.println("\tNumber of sections = " + inputOutput.getNumberOfSection());
+		System.out.println("\tWing span = " + inputOutput.getWingSpan());
+		System.out.println("\tWing surface = " + inputOutput.getWingSurface());
+
+		System.out.println("Geometry : ");
+		System.out.println("\tEta stations = " + inputOutput.getEtaStations() + "\n");
+		System.out.println("\tChords array = " + inputOutput.getChordsArray() + "\n");
+		if(!cmACStallTemp.isEmpty())
+			System.out.println("\tMaximum thickness array = " + inputOutput.getMaximumThicknessArray());
+		if(!leadingEdgeRadiusTemp.isEmpty())
+			System.out.println("\tLeading edge radius array = " + inputOutput.getRadiusLEArray());
+		if(!phiTrailingEdgeTemp.isEmpty())
+			System.out.println("\tTrailing edge angle array = " + inputOutput.getPhiTEArray());
+
+		System.out.println("Aerodynamic : ");
+		if(!alphaZeroLiftTemp.isEmpty())
+			System.out.println("\tAlpha zero lift array = " + inputOutput.getAlphaZeroLiftArray());
+		if(!alphaStarTemp.isEmpty())
+			System.out.println("\tAlpha star array = " + inputOutput.getAlphaStarArray());
+		if(!alphaStallTemp.isEmpty())
+			System.out.println("\tAlpha stall array = " + inputOutput.getAngleOfStallArray());
+		if(!clZeroTemp.isEmpty())
+			System.out.println("\tLift coefficients at alpha zero = " + inputOutput.getCl0Array());
+		if(!clStarTemp.isEmpty())
+			System.out.println("\tLift coefficients at end linearity = " + inputOutput.getClStarArray());
+		if(!clMaxTemp.isEmpty())
+			System.out.println("\tMaximum lift coefficients = " + inputOutput.getClmaxArray());
+		if(!clAlphaTemp.isEmpty())
+			System.out.println("\tLift curve slopes = " + inputOutput.getClAlphaArray());
+		if(!cdMinTemp.isEmpty())
+			System.out.println("\tMinimum drag coefficients = " + inputOutput.getCdminArray());
+		if(!clCdMinTemp.isEmpty())
+			System.out.println("\tLift coefficients at minimum drag = " + inputOutput.getClAtCdminArray());
+		if(!kFactorDragPolarTemp.isEmpty())
+			System.out.println("\tK factors drag polar = " + inputOutput.getkFactorDragPolarArray());
+		if(!xACTemp.isEmpty())
+			System.out.println("\tAerodynamic centers = " + inputOutput.getXacArray());
+		if(!cmACTemp.isEmpty())
+			System.out.println("\tPitching moment coefficients at aerodynamic center = " + inputOutput.getCmACArray());
+		if(!cmACStallTemp.isEmpty())
+			System.out.println("\tStall pitching moment coefficients at aerodynamic center = " + inputOutput.getCmACstallArray() + "\n");
+
+		if(!otherValuesTemp.isEmpty()) {
+			System.out.println("Other values : ");
+			System.out.println("\tOther values array = " + inputOutput.getOtherValuesArray() + "\n");
+		}
+	}
+
+	public static void writeToXML(String filenameWithPathAndExt) {
+
+		AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
+
+		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+
+		try {
+			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+			Document doc = docBuilder.newDocument();
+
+			defineXmlTree(doc, docBuilder);
+
+			JPADStaticWriteUtils.writeDocumentToXml(doc, filenameWithPathAndExt);
+
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void defineXmlTree(Document doc, DocumentBuilder docBuilder) {
+
+		AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
+
+		org.w3c.dom.Element rootElement = doc.createElement("MAGA_Calculator");
+		doc.appendChild(rootElement);
+
+		//--------------------------------------------------------------------------------------
+		// INPUT
+		//--------------------------------------------------------------------------------------
+		org.w3c.dom.Element inputRootElement = doc.createElement("INPUT");
+		rootElement.appendChild(inputRootElement);
+
+		org.w3c.dom.Element globalDataElement = doc.createElement("global_data");
+		inputRootElement.appendChild(globalDataElement);
+
+		JPADStaticWriteUtils.writeSingleNode("number_of_input_sections", inputOutput.getNumberOfSection(), globalDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("wing_span", inputOutput.getWingSpan(), globalDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("wing_surface", inputOutput.getWingSurface(), globalDataElement, doc);
+
+		org.w3c.dom.Element geometryDataElement = doc.createElement("geometry");
+		inputRootElement.appendChild(geometryDataElement);
+
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("eta_stations", inputOutput.getEtaStations(), geometryDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("chords", inputOutput.getChordsArray(), geometryDataElement, doc, "m");
+		if(!inputOutput.getMaximumThicknessArray().isEmpty())
+			JPADStaticWriteUtils.writeSingleNodeCPASCFormat("maximum_thickness", inputOutput.getMaximumThicknessArray(), geometryDataElement, doc);
+		if(!inputOutput.getRadiusLEArray().isEmpty())
+			JPADStaticWriteUtils.writeSingleNodeCPASCFormat("leading_edge_radius", inputOutput.getRadiusLEArray(), geometryDataElement, doc, "m");
+		if(!inputOutput.getPhiTEArray().isEmpty())
+			JPADStaticWriteUtils.writeSingleNodeCPASCFormat("trailing_edge_angle", inputOutput.getPhiTEArray(), geometryDataElement, doc, "deg");
+
+		org.w3c.dom.Element aerodynamicDataElement = doc.createElement("aerodynamic");
+		inputRootElement.appendChild(aerodynamicDataElement);
+
+		if(!inputOutput.getAlphaZeroLiftArray().isEmpty())
+			JPADStaticWriteUtils.writeSingleNodeCPASCFormat("alpha_zero_lift", inputOutput.getAlphaZeroLiftArray(), aerodynamicDataElement, doc, "deg");
+		if(!inputOutput.getAlphaStarArray().isEmpty())
+			JPADStaticWriteUtils.writeSingleNodeCPASCFormat("angle_of_end_linearity", inputOutput.getAlphaStarArray(), aerodynamicDataElement, doc, "deg");
+		if(!inputOutput.getAngleOfStallArray().isEmpty())
+			JPADStaticWriteUtils.writeSingleNodeCPASCFormat("angle_of_stall", inputOutput.getAngleOfStallArray(), aerodynamicDataElement, doc, "deg");
+		if(!inputOutput.getCl0Array().isEmpty())
+			JPADStaticWriteUtils.writeSingleNodeCPASCFormat("lift_coefficient_alpha_zero", inputOutput.getCl0Array(), aerodynamicDataElement, doc);
+		if(!inputOutput.getClStarArray().isEmpty())
+			JPADStaticWriteUtils.writeSingleNodeCPASCFormat("lift_coefficient_end_linearity", inputOutput.getClStarArray(), aerodynamicDataElement, doc);
+		if(!inputOutput.getClmaxArray().isEmpty())
+			JPADStaticWriteUtils.writeSingleNodeCPASCFormat("maximum_lift_coefficient", inputOutput.getClmaxArray(), aerodynamicDataElement, doc);
+		if(!inputOutput.getClAlphaArray().isEmpty())
+			JPADStaticWriteUtils.writeSingleNodeCPASCFormat("lift_curve_slope", inputOutput.getClAlphaArray(), aerodynamicDataElement, doc, "1/deg");
+		if(!inputOutput.getCdminArray().isEmpty())
+			JPADStaticWriteUtils.writeSingleNodeCPASCFormat("minimum_drag_coefficient", inputOutput.getCdminArray(), aerodynamicDataElement, doc);
+		if(!inputOutput.getClAtCdminArray().isEmpty())
+			JPADStaticWriteUtils.writeSingleNodeCPASCFormat("lift_coefficient_at_minimum_drag", inputOutput.getClAtCdminArray(), aerodynamicDataElement, doc);
+		if(!inputOutput.getkFactorDragPolarArray().isEmpty())
+			JPADStaticWriteUtils.writeSingleNodeCPASCFormat("k_factor_drag_polar", inputOutput.getkFactorDragPolarArray(), aerodynamicDataElement, doc);
+		if(!inputOutput.getXacArray().isEmpty())
+			JPADStaticWriteUtils.writeSingleNodeCPASCFormat("aerodynamic_center", inputOutput.getXacArray(), aerodynamicDataElement, doc);
+		if(!inputOutput.getCmACArray().isEmpty())
+			JPADStaticWriteUtils.writeSingleNodeCPASCFormat("pitching_moment_coefficient_aerodynamic_center", inputOutput.getCmACArray(), aerodynamicDataElement, doc);
+		if(!inputOutput.getCmACstallArray().isEmpty())
+			JPADStaticWriteUtils.writeSingleNodeCPASCFormat("stall_pitching_moment_coefficient_aerodynamic_center", inputOutput.getCmACstallArray(), aerodynamicDataElement, doc);
+
+		if(!inputOutput.getOtherValuesArray().isEmpty()) {
+			org.w3c.dom.Element otherValuesElement = doc.createElement("other");
+			inputRootElement.appendChild(otherValuesElement);
+
+			JPADStaticWriteUtils.writeSingleNodeCPASCFormat("other_values", inputOutput.getOtherValuesArray(), otherValuesElement, doc);
+		}
+
+		//--------------------------------------------------------------------------------------
+		// OUTPUT
+		//--------------------------------------------------------------------------------------
+		org.w3c.dom.Element outputRootElement = doc.createElement("OUTPUT");
+		rootElement.appendChild(outputRootElement);
+
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("influence_aeras", inputOutput.getInfluenceAreas(), outputRootElement, doc, "m²");
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("influence_coefficients", inputOutput.getInfluenceCoefficients(), outputRootElement, doc);
+
+		org.w3c.dom.Element meanAirfoilGeometryElement = doc.createElement("mean_airfoil_geometry_data");
+		outputRootElement.appendChild(meanAirfoilGeometryElement);
+
+		JPADStaticWriteUtils.writeSingleNode("mean_airfoil_chord", inputOutput.getChords(), meanAirfoilGeometryElement, doc);
+		if(!inputOutput.getMaximumThicknessArray().isEmpty())
+			JPADStaticWriteUtils.writeSingleNode("max_thickness_mean_airfoil", inputOutput.getMaximumThickness(), meanAirfoilGeometryElement, doc);
+		if(!inputOutput.getRadiusLEArray().isEmpty())
+			JPADStaticWriteUtils.writeSingleNode("leading_edge_radius_mean_airfoil", inputOutput.getRadiusLE(), meanAirfoilGeometryElement, doc);
+		if(!inputOutput.getPhiTEArray().isEmpty())
+			JPADStaticWriteUtils.writeSingleNode("trailing_edge_angle_mean_airfoil", inputOutput.getPhiTE(), meanAirfoilGeometryElement, doc);
+
+		org.w3c.dom.Element meanAirfoilAerodynamicElement = doc.createElement("mean_airfoil_aerodynamic_data");
+		outputRootElement.appendChild(meanAirfoilAerodynamicElement);
+
+		if(!inputOutput.getAlphaZeroLiftArray().isEmpty())
+			JPADStaticWriteUtils.writeSingleNode("alpha_zero_lift_mean_airfoil", inputOutput.getAlphaZeroLift(), meanAirfoilAerodynamicElement, doc);
+		if(!inputOutput.getAlphaStarArray().isEmpty())
+			JPADStaticWriteUtils.writeSingleNode("alpha_star_mean_airfoil", inputOutput.getAlphaStar(), meanAirfoilAerodynamicElement, doc);
+		if(!inputOutput.getAngleOfStallArray().isEmpty())
+			JPADStaticWriteUtils.writeSingleNode("alpha_stall_mean_airfoil", inputOutput.getAngleOfStall(), meanAirfoilAerodynamicElement, doc);
+		if(!inputOutput.getCl0Array().isEmpty())
+			JPADStaticWriteUtils.writeSingleNode("cl0_mean_airfoil", inputOutput.getCl0(), meanAirfoilAerodynamicElement, doc);
+		if(!inputOutput.getClStarArray().isEmpty())
+			JPADStaticWriteUtils.writeSingleNode("cl_star_mean_airfoil", inputOutput.getClStar(), meanAirfoilAerodynamicElement, doc);
+		if(!inputOutput.getClmaxArray().isEmpty())
+			JPADStaticWriteUtils.writeSingleNode("cl_max_mean_airfoil", inputOutput.getClmax(), meanAirfoilAerodynamicElement, doc);
+		if(!inputOutput.getClAlphaArray().isEmpty())
+			JPADStaticWriteUtils.writeSingleNode("cl_alpha_mean_airfoil", inputOutput.getClAlpha(), meanAirfoilAerodynamicElement, doc);
+		if(!inputOutput.getCdminArray().isEmpty())
+			JPADStaticWriteUtils.writeSingleNode("cd_min_mean_airfoil", inputOutput.getCdmin(), meanAirfoilAerodynamicElement, doc);
+		if(!inputOutput.getClAtCdminArray().isEmpty())
+			JPADStaticWriteUtils.writeSingleNode("cl_at_cd_min_mean_airfoil", inputOutput.getClAtCdmin(), meanAirfoilAerodynamicElement, doc);
+		if(!inputOutput.getkFactorDragPolarArray().isEmpty())
+			JPADStaticWriteUtils.writeSingleNode("k_factor_drag_polar_mean_airfoil", inputOutput.getkFactorDragPolar(), meanAirfoilAerodynamicElement, doc);
+		if(!inputOutput.getXacArray().isEmpty())
+			JPADStaticWriteUtils.writeSingleNode("x_ac_mean_airfoil", inputOutput.getXac(), meanAirfoilAerodynamicElement, doc);
+		if(!inputOutput.getCmACArray().isEmpty())
+			JPADStaticWriteUtils.writeSingleNode("cm_ac_mean_airfoil", inputOutput.getCmAC(), meanAirfoilAerodynamicElement, doc);
+		if(!inputOutput.getCmACstallArray().isEmpty())
+			JPADStaticWriteUtils.writeSingleNode("cm_ac_stall_mean_airfoil", inputOutput.getCmACstall(), meanAirfoilAerodynamicElement, doc);
+
+		if(!inputOutput.getOtherValuesArray().isEmpty()) {
+			org.w3c.dom.Element meanAirfoilOtherValuesElement = doc.createElement("mean_airfoil_other_values");
+			outputRootElement.appendChild(meanAirfoilOtherValuesElement);
+
+			JPADStaticWriteUtils.writeSingleNode("other_values_mean_airfoil", inputOutput.getOtherValues(), meanAirfoilOtherValuesElement, doc);
+		}
+	}
+
+	public static InputOutputTree getInputOutput() {
+		return inputOutput;
+	}
+
+	public static void setInputOutput(InputOutputTree input) {
+		ReaderWriter.inputOutput = input;
 	}
 }

@@ -60,10 +60,9 @@ public class Test_Mean_Airfoil {
 
 		System.out.println("--------------");
 
-		//		ReaderWriter theReader = new ReaderWriter();
-		//		theReader.importFromXML(pathToXML,databaseDirectoryAbsolutePath , "Aerodynamic_Database_Ultimate.h5");
-		//		MeanAirfoilCalc.calculateAll(theReader.getInput());
-		//		theReader.writeToXML(filenameWithPathAndExt);
+				ReaderWriter.importFromXML(pathToXML);
+				MeanAirfoilCalc.executeStandAlone(ReaderWriter.getInputOutput());
+				ReaderWriter.writeToXML(filenameWithPathAndExt);
 
 	}
 

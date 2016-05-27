@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MAGA_Calculator>
+   <INPUT>
+      <global_data>
+         <number_of_input_sections unit="">6</number_of_input_sections>
+         <wing_span unit="m">28.0100</wing_span>
+         <wing_surface unit="m²">82.5000</wing_surface>
+      </global_data>
+      <geometry>
+         <eta_stations unit="">0.0;0.12;0.399;0.4;0.75;1.0</eta_stations>
+         <chords unit="m">6.389999999999999;5.279999999999999;2.7199999999999998;2.707;1.7399999999999998;1.0499999999999998</chords>
+         <maximum_thickness unit="">0.18;0.15;0.13;0.15;0.15;0.13</maximum_thickness>
+         <leading_edge_radius unit="m">0.18;0.14999999999999997;0.13;0.14999999999999997;0.14999999999999997;0.13</leading_edge_radius>
+         <trailing_edge_angle unit="deg">0.0;0.0;0.0;0.0;0.0;0.0</trailing_edge_angle>
+      </geometry>
+      <aerodynamic>
+         <alpha_zero_lift unit="deg">-2.5999999999999996;-2.3999999999999995;-2.2;-2.0;-1.7999999999999998;-1.6</alpha_zero_lift>
+         <angle_of_end_linearity unit="deg">5.0;6.0;7.0;8.0;9.0;10.0</angle_of_end_linearity>
+         <angle_of_stall unit="deg">18.0;18.5;19.0;19.5;20.0;20.5</angle_of_stall>
+         <lift_coefficient_alpha_zero unit="">0.1;0.11;0.12;0.13;0.14;0.15</lift_coefficient_alpha_zero>
+         <lift_coefficient_end_linearity unit="">0.8;0.85;0.9;0.95;1.0;1.05</lift_coefficient_end_linearity>
+         <maximum_lift_coefficient unit="">1.8;1.85;1.9;1.95;2.0;2.05</maximum_lift_coefficient>
+         <lift_curve_slope unit="1/deg">0.1;0.10499999999999998;0.10999999999999999;0.11499999999999999;0.12;0.125</lift_curve_slope>
+         <minimum_drag_coefficient unit="">0.007;0.0075;0.008;0.0085;0.009;0.0095</minimum_drag_coefficient>
+         <lift_coefficient_at_minimum_drag unit="">0.11;0.12;0.13;0.14;0.15;0.16</lift_coefficient_at_minimum_drag>
+         <k_factor_drag_polar unit="">0.1;0.105;0.11;0.115;0.12;0.125</k_factor_drag_polar>
+         <aerodynamic_center unit="">0.225;0.23;0.235;0.24;0.245;0.25</aerodynamic_center>
+         <pitching_moment_coefficient_aerodynamic_center unit="">-0.07;-0.072;-0.074;-0.076;-0.078;-0.08</pitching_moment_coefficient_aerodynamic_center>
+         <stall_pitching_moment_coefficient_aerodynamic_center unit="">-0.08;-0.082;-0.084;-0.086;-0.088;-0.09</stall_pitching_moment_coefficient_aerodynamic_center>
+      </aerodynamic>
+      <other>
+         <other_values unit="">0.18;0.15;0.13;0.18;0.15;0.13</other_values>
+      </other>
+   </INPUT>
+   <OUTPUT>
+      <influence_aeras unit="m²">5.369516999999998;14.752306799999996;5.333103999999999;6.6534743925;7.310609999999997;1.838156249999999</influence_aeras>
+      <influence_coefficients unit="">0.13017010909090904;0.3576316799999999;0.12928736969696966;0.1612963489090909;0.17722690909090902;0.04456136363636361</influence_coefficients>
+      <mean_airfoil_geometry_data>
+         <mean_airfoil_chord unit="m">3.8635</mean_airfoil_chord>
+         <max_thickness_mean_airfoil unit="">0.1505</max_thickness_mean_airfoil>
+         <leading_edge_radius_mean_airfoil unit="m">0.1505</leading_edge_radius_mean_airfoil>
+         <trailing_edge_angle_mean_airfoil unit="°">0.0000</trailing_edge_angle_mean_airfoil>
+      </mean_airfoil_geometry_data>
+      <mean_airfoil_aerodynamic_data>
+         <alpha_zero_lift_mean_airfoil unit="°">-2.1941</alpha_zero_lift_mean_airfoil>
+         <alpha_star_mean_airfoil unit="°">7.0327</alpha_star_mean_airfoil>
+         <alpha_stall_mean_airfoil unit="°">19.0190</alpha_stall_mean_airfoil>
+         <cl0_mean_airfoil unit="">0.1203</cl0_mean_airfoil>
+         <cl_star_mean_airfoil unit="">0.9017</cl_star_mean_airfoil>
+         <cl_max_mean_airfoil unit="">1.9019</cl_max_mean_airfoil>
+         <cl_alpha_mean_airfoil unit="1/°">0.1102</cl_alpha_mean_airfoil>
+         <cd_min_mean_airfoil unit="">0.008017</cd_min_mean_airfoil>
+         <cl_at_cd_min_mean_airfoil unit="">0.1303</cl_at_cd_min_mean_airfoil>
+         <k_factor_drag_polar_mean_airfoil unit="">0.1102</k_factor_drag_polar_mean_airfoil>
+         <x_ac_mean_airfoil unit="">0.2352</x_ac_mean_airfoil>
+         <cm_ac_mean_airfoil unit="">-0.074076</cm_ac_mean_airfoil>
+         <cm_ac_stall_mean_airfoil unit="">-0.084078</cm_ac_stall_mean_airfoil>
+      </mean_airfoil_aerodynamic_data>
+      <mean_airfoil_other_values>
+         <other_values_mean_airfoil unit="">0.1553</other_values_mean_airfoil>
+      </mean_airfoil_other_values>
+   </OUTPUT>
+</MAGA_Calculator>
