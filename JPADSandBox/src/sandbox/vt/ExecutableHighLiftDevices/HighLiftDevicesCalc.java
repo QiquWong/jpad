@@ -307,16 +307,16 @@ public class HighLiftDevicesCalc {
 		AerodynamicDatabaseReader aeroDatabaseReader = DatabaseManager.initializeAeroDatabase(new AerodynamicDatabaseReader(
 				databaseFolderPath,	aerodynamicDatabaseFileName),
 				databaseFolderPath);
-
+	
 		HighLiftDatabaseReader highLiftDatabaseReader = DatabaseManager.initializeHighLiftDatabase(new HighLiftDatabaseReader(
 				databaseFolderPath, highLiftDatabaseFileName),
 				databaseFolderPath);
-
+	
 		//------------------------------------------------------------------------------------
 		// Managing flaps types:
 		List<Double> flapTypeIndex = new ArrayList<Double>();
 		List<Double> deltaFlapRef = new ArrayList<Double>();
-
+	
 		for(int i=0; i<input.getFlapType().size(); i++) {
 			if(input.getFlapType().get(i) == FlapTypeEnum.SINGLE_SLOTTED) {
 				flapTypeIndex.add(1.0);
@@ -350,11 +350,11 @@ public class HighLiftDevicesCalc {
 		List<Double> thetaF = new ArrayList<Double>();
 		for(int i=0; i<input.getFlapsNumber(); i++) 
 			thetaF.add(Math.acos((2*input.getCfc().get(i))-1));
-
+	
 		List<Double> alphaDelta = new ArrayList<Double>();
 		for(int i=0; i<thetaF.size(); i++)
 			alphaDelta.add(1-((thetaF.get(i)-Math.sin(thetaF.get(i)))/Math.PI));
-
+	
 		List<Double> etaDeltaFlap = new ArrayList<Double>();
 		for(int i=0; i<input.getFlapsNumber(); i++) {
 			if(flapTypeIndex.get(i) == 3.0)
@@ -367,7 +367,7 @@ public class HighLiftDevicesCalc {
 						.getEtaDeltaVsDeltaFlap(input.getDeltaFlap().get(i).getEstimatedValue(), flapTypeIndex.get(i))
 						);
 		}
-
+	
 		List<Double> deltaCl0First = new ArrayList<Double>();
 		for(int i=0; i<input.getFlapsNumber(); i++)
 			deltaCl0First.add(
@@ -376,30 +376,30 @@ public class HighLiftDevicesCalc {
 					*input.getDeltaFlap().get(i).getEstimatedValue()
 					*input.getClAlphaMeanAirfoil().getEstimatedValue()
 					);
-
+	
 		List<Double> deltaCCfFlap = new ArrayList<Double>();
 		for(int i=0; i<input.getFlapsNumber(); i++)
 			deltaCCfFlap.add(
 					highLiftDatabaseReader
 					.getDeltaCCfVsDeltaFlap(input.getDeltaFlap().get(i).getEstimatedValue(), flapTypeIndex.get(i))
 					);
-
+	
 		List<Double> cFirstCFlap = new ArrayList<Double>();
 		for(int i=0; i<input.getFlapsNumber(); i++)
 			cFirstCFlap.add(1+(deltaCCfFlap.get(i).doubleValue()*input.getCfc().get(i).doubleValue()));
-
+	
 		for(int i=0; i<input.getFlapsNumber(); i++)
 			output.getDeltaCl0FlapList().add(
 					(deltaCl0First.get(i).doubleValue()*cFirstCFlap.get(i).doubleValue())
 					+(input.getCl0MeanAirfoil()*(cFirstCFlap.get(i).doubleValue()-1))
 					);
-
+	
 		double deltaCl0FlapTemp = 0;
 		for(int i=0; i<input.getFlapsNumber(); i++)
 			deltaCl0FlapTemp += output.getDeltaCl0FlapList().get(i);
 		
 		output.setDeltaCl0Flap(deltaCl0FlapTemp);
-
+	
 		//---------------------------------------------------------------
 		// deltaClmax (flap)
 		List<Double> deltaClmaxBase = new ArrayList<Double>();
@@ -411,7 +411,7 @@ public class HighLiftDevicesCalc {
 							flapTypeIndex.get(i)
 							)
 					);
-
+	
 		List<Double> k1 = new ArrayList<Double>();
 		for(int i=0; i<input.getFlapsNumber(); i++)
 			if (input.getCfc().get(i) <= 0.30)
@@ -428,13 +428,13 @@ public class HighLiftDevicesCalc {
 						-(10.638*input.getCfc().get(i))
 						+0.0064
 						);
-
+	
 		List<Double> k2 = new ArrayList<Double>();
 		for(int i=0; i<input.getFlapsNumber(); i++)
 			k2.add(highLiftDatabaseReader
 					.getK2VsDeltaFlap(input.getDeltaFlap().get(i).getEstimatedValue(), flapTypeIndex.get(i))
 					);
-
+	
 		List<Double> k3 = new ArrayList<Double>();
 		for(int i=0; i<input.getFlapsNumber(); i++)
 			k3.add(highLiftDatabaseReader
@@ -444,7 +444,7 @@ public class HighLiftDevicesCalc {
 							flapTypeIndex.get(i)
 							)
 					);
-
+	
 		for(int i=0; i<input.getFlapsNumber(); i++)
 			output.getDeltaClmaxFlapList().add(k1.get(i).doubleValue()
 					*k2.get(i).doubleValue()
@@ -461,13 +461,13 @@ public class HighLiftDevicesCalc {
 		//---------------------------------------------------------------
 		// deltaClmax (slat)
 		if(input.getSlatsNumber() > 0.0) {
-
+	
 			List<Double> dCldDelta = new ArrayList<Double>();
 			for(int i=0; i<input.getSlatsNumber(); i++)
 				dCldDelta.add(highLiftDatabaseReader
 						.getDCldDeltaVsCsC(input.getCsc().get(i))
 						);
-
+	
 			List<Double> etaMaxSlat = new ArrayList<Double>();
 			for(int i=0; i<input.getSlatsNumber(); i++)
 				etaMaxSlat.add(highLiftDatabaseReader
@@ -475,14 +475,14 @@ public class HighLiftDevicesCalc {
 								input.getLERadiusMeanAirfoil().divide(input.getMeanAirfoilChord()).getEstimatedValue(),
 								input.getMaxthicknessMeanAirfoil())
 						);
-
+	
 			List<Double> etaDeltaSlat = new ArrayList<Double>();
 			for(int i=0; i<input.getSlatsNumber(); i++)
 				etaDeltaSlat.add(
 						highLiftDatabaseReader
 						.getEtaDeltaVsDeltaSlat(input.getDeltaSlat().get(i).getEstimatedValue())
 						);
-
+	
 			for(int i=0; i<input.getSlatsNumber(); i++)
 				output.getDeltaClmaxSlatList().add(
 						dCldDelta.get(i).doubleValue()
@@ -491,14 +491,14 @@ public class HighLiftDevicesCalc {
 						*input.getDeltaSlat().get(i).getEstimatedValue()
 						*input.getcExtCSlat().get(i)
 						);
-
+	
 			double deltaClmaxSlatTemp = 0.0;
 			for(int i=0; i<input.getSlatsNumber(); i++)
 				deltaClmaxSlatTemp += output.getDeltaClmaxSlatList().get(i);
 			
 			output.setDeltaClmaxSlat(deltaClmaxSlatTemp);
 		}
-
+	
 		//---------------------------------------------------------------
 		// deltaCL0 (flap)
 		List<Double> kc = new ArrayList<Double>();
@@ -508,7 +508,7 @@ public class HighLiftDevicesCalc {
 							input.getAspectRatio(),
 							alphaDelta.get(i))	
 					);
-
+	
 		List<Double> kb = new ArrayList<Double>();
 		for(int i=0; i<input.getFlapsNumber(); i++)
 			kb.add(highLiftDatabaseReader
@@ -525,13 +525,13 @@ public class HighLiftDevicesCalc {
 					*output.getDeltaCl0FlapList().get(i)
 					*(input.getcLAlphaClean().divide(input.getClAlphaMeanAirfoil())).getEstimatedValue()
 					);
-
+	
 		double deltaCL0FlapTemp = 0.0;
 		for(int i=0; i<input.getFlapsNumber(); i++)
 			deltaCL0FlapTemp += output.getDeltaCL0FlapList().get(i);
 		
 		output.setDeltaCL0Flap(deltaCL0FlapTemp);
-
+	
 		//---------------------------------------------------------------
 		// deltaCLmax (flap)
 		List<Double> flapSurface = new ArrayList<Double>();
@@ -551,30 +551,30 @@ public class HighLiftDevicesCalc {
 					Math.pow(Math.cos(input.getSweepQuarteChordEq().to(SI.RADIAN).getEstimatedValue()),0.75)
 					*(1-(0.08*Math.pow(Math.cos(input.getSweepQuarteChordEq().to(SI.RADIAN).getEstimatedValue()), 2)))
 					);
-
+	
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			output.getDeltaCLmaxFlapList().add(output.getDeltaClmaxFlapList().get(i)
 					*(flapSurface.get(i)/input.getSurface().getEstimatedValue())
 					*kLambdaFlap.get(i)
 					);
-
+	
 		double deltaCLmaxFlapTemp = 0.0;
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			deltaCLmaxFlapTemp += output.getDeltaCLmaxFlapList().get(i);
 		
 		output.setDeltaCLmaxFlap(deltaCLmaxFlapTemp);
-
+	
 		//---------------------------------------------------------------
 		// deltaCLmax (slat)
 		if(input.getSlatsNumber() > 0) {
-
+	
 			List<Double> kLambdaSlat = new ArrayList<Double>();
 			for(int i=0; i<input.getSlatsNumber(); i++)
 				kLambdaSlat.add(
 						Math.pow(Math.cos(input.getSweepQuarteChordEq().to(SI.RADIAN).getEstimatedValue()),0.75)
 						*(1-(0.08*Math.pow(Math.cos(input.getSweepQuarteChordEq().to(SI.RADIAN).getEstimatedValue()), 2)))
 						);
-
+	
 			List<Double> slatSurface = new ArrayList<Double>();
 			for(int i=0; i<input.getSlatsNumber(); i++)
 				slatSurface.add(
@@ -589,7 +589,7 @@ public class HighLiftDevicesCalc {
 				output.getDeltaCLmaxSlatList().add(output.getDeltaClmaxSlatList().get(i)
 						*(slatSurface.get(i)/input.getSurface().getEstimatedValue())
 						*kLambdaSlat.get(i));
-
+	
 			double deltaCLmaxSlatTemp = 0.0;
 			for(int i=0; i<input.getSlatsNumber(); i++)
 				deltaCLmaxSlatTemp += output.getDeltaCLmaxSlatList().get(i);
@@ -610,19 +610,19 @@ public class HighLiftDevicesCalc {
 					);
 			swf.add(flapSurface.get(i)/input.getSurface().getEstimatedValue());
 		}
-
+	
 		double swfTot = 0;
 		for(int i=0; i<swf.size(); i++)
 			swfTot += swf.get(i);
-
+	
 		double cLalphaNewTemp = 0.0;
 		for(int i=0; i<input.getFlapsNumber(); i++)
 			cLalphaNewTemp += output.getcLalphaNewList().get(i).getEstimatedValue()*swf.get(i);
-
+	
 		cLalphaNewTemp /= swfTot;
 		
 		output.setcLalphaNew(Amount.valueOf(cLalphaNewTemp, NonSI.DEGREE_ANGLE.inverse()));
-
+	
 		//---------------------------------------------------------------
 		// deltaCD
 		List<Double> delta1 = new ArrayList<Double>();
@@ -638,7 +638,7 @@ public class HighLiftDevicesCalc {
 						.getDelta1VsCfCSlotted(input.getCfc().get(i), input.getMaxthicknessMeanAirfoil())
 						);
 		}
-
+	
 		List<Double> delta2 = new ArrayList<Double>();
 		for(int i=0; i<input.getFlapsNumber(); i++) {
 			if(flapTypeIndex.get(i) == 3.0)
@@ -652,7 +652,7 @@ public class HighLiftDevicesCalc {
 						.getDelta2VsDeltaFlapSlotted(input.getDeltaFlap().get(i).getEstimatedValue(), input.getMaxthicknessMeanAirfoil())
 						);
 		}
-
+	
 		List<Double> delta3 = new ArrayList<Double>();
 		for(int i=0; i<input.getFlapsNumber(); i++) {
 			delta3.add(
@@ -660,17 +660,17 @@ public class HighLiftDevicesCalc {
 					.getDelta3VsBfB(input.getEtaInFlap().get(i), input.getEtaOutFlap().get(i), input.getTaperRatioEq())
 					);
 		}
-
+	
 		for(int i=0; i<input.getFlapsNumber(); i++) {
 			output.getDeltaCDList().add(delta1.get(i)*delta2.get(i)*delta3.get(i));
 		}
-
+	
 		double deltaCDTemp = 0.0;
 		for(int i=0; i<input.getFlapsNumber(); i++)
 			deltaCDTemp += output.getDeltaCDList().get(i);
 		
 		output.setDeltaCD(deltaCDTemp);
-
+	
 		//---------------------------------------------------------------
 		// deltaCM_c/4
 		List<Double> mu1 = new ArrayList<Double>();
@@ -687,7 +687,7 @@ public class HighLiftDevicesCalc {
 				mu1.add(highLiftDatabaseReader
 						.getMu1VsCfCFirstSlottedFowler((input.getCfc().get(i))*(1/cFirstCFlap.get(i)))
 						);
-
+	
 		List<Double> mu2 = new ArrayList<Double>();
 		for(int i=0; i<input.getFlapsNumber(); i++)
 			mu2.add(highLiftDatabaseReader
@@ -697,7 +697,7 @@ public class HighLiftDevicesCalc {
 							input.getTaperRatioEq()
 							)
 					);
-
+	
 		List<Double> mu3 = new ArrayList<Double>();
 		for(int i=0; i<input.getFlapsNumber(); i++)
 			mu3.add(highLiftDatabaseReader
@@ -707,7 +707,7 @@ public class HighLiftDevicesCalc {
 							input.getTaperRatioEq()
 							)
 					);
-
+	
 		
 		double cL = calcCLatAlphaHighLiftDevice(input.getAlphaCurrent(), aeroDatabaseReader);
 		for(int i=0; i<input.getFlapsNumber(); i++)
@@ -721,7 +721,7 @@ public class HighLiftDevicesCalc {
 											*mu3.get(i)*output.getDeltaClmaxFlapList().get(i)
 											*Math.tan(input.getSweepQuarteChordEq().to(SI.RADIAN).getEstimatedValue()))
 					);
-
+	
 		double deltaCMC4Temp = 0.0;
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			deltaCMC4Temp += output.getDeltaCMC4List().get(i);
@@ -734,55 +734,55 @@ public class HighLiftDevicesCalc {
 		System.out.println("\ndeltaCl0_flap_list = ");
 		for(int i=0; i<output.getDeltaCl0FlapList().size(); i++)
 			System.out.println(output.getDeltaCl0FlapList().get(i));
-
+	
 		System.out.println("\ndeltaCl0_flap = \n" + output.getDeltaCl0Flap());
-
+	
 		System.out.println("\ndeltaCL0_flap_list = ");
 		for(int i=0; i<output.getDeltaCL0FlapList().size(); i++)
 			System.out.println(output.getDeltaCL0FlapList().get(i));
-
+	
 		System.out.println("\ndeltaCL0_flap = \n" + output.getDeltaCL0Flap());
-
+	
 		System.out.println("\ndeltaClmax_flap_list = ");
 		for(int i=0; i<output.getDeltaClmaxFlapList().size(); i++)
 			System.out.println(output.getDeltaClmaxFlapList().get(i));
-
+	
 		System.out.println("\ndeltaClmax_flap = \n" + output.getDeltaClmaxFlap());
-
+	
 		System.out.println("\ndeltaCLmax_flap_list = ");
 		for(int i=0; i<output.getDeltaCLmaxFlapList().size(); i++)
 			System.out.println(output.getDeltaCLmaxFlapList().get(i));
-
+	
 		System.out.println("\ndeltaCLmax_flap = \n" + output.getDeltaCLmaxFlap());
 		
 		System.out.println("\ndeltaClmax_slat_list = ");
 		for(int i=0; i<output.getDeltaClmaxSlatList().size(); i++)
 			System.out.println(output.getDeltaClmaxSlatList().get(i));
-
+	
 		System.out.println("\ndeltaClmax_slat = \n" + output.getDeltaClmaxSlat());
-
+	
 		System.out.println("\ndeltaCLmax_slat_list = ");
 		for(int i=0; i<output.getDeltaCLmaxSlatList().size(); i++)
 			System.out.println(output.getDeltaCLmaxSlatList().get(i));
-
+	
 		System.out.println("\ndeltaCLmax_slat = \n" + output.getDeltaCLmaxSlat());
-
+	
 		System.out.println("\ncLalpha_new_list = ");
 		for(int i=0; i<output.getcLalphaNewList().size(); i++)
 			System.out.println(output.getcLalphaNewList().get(i).getEstimatedValue() + " " + output.getcLalphaNewList().get(i).getUnit());
-
+	
 		System.out.println("\ncLalpha_new = \n" + output.getcLalphaNew().getEstimatedValue() + " " + output.getcLalphaNew().getUnit());
-
+	
 		System.out.println("\ndeltaCD_list = ");
 		for(int i=0; i<output.getDeltaCDList().size(); i++)
 			System.out.println(output.getDeltaCDList().get(i));
-
+	
 		System.out.println("\ndeltaCD = \n" + output.getDeltaCD());
-
+	
 		System.out.println("\ndeltaCMc_4_list = ");
 		for(int i=0; i<output.getDeltaCMC4List().size(); i++)
 			System.out.println(output.getDeltaCMC4List().get(i));
-
+	
 		System.out.println("\ndeltaCMc_4 = \n" + output.getDeltaCMC4());
 		
 		System.out.println("------------------DONE----------------------");
@@ -793,7 +793,7 @@ public class HighLiftDevicesCalc {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/********************************************************************************************
 	 * This method calculates CL at alpha given as input for a wing with high lift devices.
 	 * This method calculates both linear trait and non linear trait. 

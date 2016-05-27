@@ -68,7 +68,7 @@ public class Test_HighLiftStallPath {
 		
 		AppIO theReader = new AppIO();
 		theReader.importFromXML(pathToXML,databaseDirectoryAbsolutePath , "Aerodynamic_Database_Ultimate.h5", "HighLiftDatabase.h5");
-//		WingAerodynamicCalc.calculateAll(theReader.getInput());
+		HighLiftStallPathCalc.calculateAll(theReader.getInput(), databaseDirectoryAbsolutePath,  "Aerodynamic_Database_Ultimate.h5", "HighLiftDatabase.h5");
 //		theReader.writeToXML(filenameWithPathAndExt);
 
 	}
