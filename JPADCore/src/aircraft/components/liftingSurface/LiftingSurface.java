@@ -217,7 +217,7 @@ public class LiftingSurface extends AeroComponent implements ILiftingSurface{
 		CmdLineParser theCmdLineParser = new CmdLineParser(va);
 
 		// populate the wing static object in the class
-		// befor launching the JavaFX application thread (launch --> start ...)
+		// before launching the JavaFX application thread (launch --> start ...)
 		try {
 			theCmdLineParser.parseArgument(args);
 			String pathToXML = va.getInputFile().getAbsolutePath();
@@ -263,6 +263,54 @@ public class LiftingSurface extends AeroComponent implements ILiftingSurface{
 			System.err.println("  Must launch this app with proper command line arguments.");
 			return;
 		}	    
+	}
+
+	public String get_id() {
+		return _id;
+	}
+
+	public ComponentEnum get_type() {
+		return _type;
+	}
+
+	public Amount<Length> get_xApexConstructionAxes() {
+		return _xApexConstructionAxes;
+	}
+
+	public Amount<Length> get_yApexConstructionAxes() {
+		return _yApexConstructionAxes;
+	}
+
+	public Amount<Length> get_zApexConstructionAxes() {
+		return _zApexConstructionAxes;
+	}
+
+	public LiftingSurfaceCreator get_liftingSurfaceCreator() {
+		return _liftingSurfaceCreator;
+	}
+
+	public void set_id(String _id) {
+		this._id = _id;
+	}
+
+	public void set_type(ComponentEnum _type) {
+		this._type = _type;
+	}
+
+	public void set_xApexConstructionAxes(Amount<Length> _xApexConstructionAxes) {
+		this._xApexConstructionAxes = _xApexConstructionAxes;
+	}
+
+	public void set_yApexConstructionAxes(Amount<Length> _yApexConstructionAxes) {
+		this._yApexConstructionAxes = _yApexConstructionAxes;
+	}
+
+	public void set_zApexConstructionAxes(Amount<Length> _zApexConstructionAxes) {
+		this._zApexConstructionAxes = _zApexConstructionAxes;
+	}
+
+	public void set_liftingSurfaceCreator(LiftingSurfaceCreator _liftingSurfaceCreator) {
+		this._liftingSurfaceCreator = _liftingSurfaceCreator;
 	}
 }
 

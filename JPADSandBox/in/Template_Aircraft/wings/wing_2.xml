@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+    <wing id="JPAD Test Wing DAF - 2016" mirrored="TRUE">
+        <panels>
+            <panel id="Inner panel">
+                <semispan unit="m">4.0</semispan>
+                <dihedral unit="deg">1.5</dihedral>
+                <sweep_leading_edge unit="deg">24</sweep_leading_edge>
+                <inner_section>
+                    <chord unit="m">3.0</chord>
+                    <airfoil file="naca63209.xml"/>
+                    <geometric_twist unit="deg">0.0</geometric_twist>
+                </inner_section>
+                <outer_section>
+                    <chord unit="m">1.5</chord>
+                    <airfoil file="naca63209.xml"/>
+                    <geometric_twist unit="deg">-1.0</geometric_twist>
+                </outer_section>
+            </panel>
+            <panel id="Outer panel" linked_to="Inner panel">
+                <semispan unit="m">7.0</semispan>
+                <dihedral unit="deg">3.5</dihedral>
+                <sweep_leading_edge unit="deg">20</sweep_leading_edge>
+                <outer_section>
+                    <chord unit="m">1.2</chord>
+                    <airfoil file="naca63209.xml"/>
+                    <geometric_twist unit="deg">-2.5</geometric_twist>
+                </outer_section>
+            </panel>
+        </panels>
+        <symmetric_flaps>
+            <symmetric_flap id="Inner flap" type="FOWLER">
+                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">
+                    <value>0.12</value>
+                </inner_station_spanwise_position>
+                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">
+                    <value>0.36</value>
+                </outer_station_spanwise_position>
+                <chord_ratio>0.30</chord_ratio>
+                <deflection unit="deg">40.0</deflection>
+            </symmetric_flap>
+			<symmetric_flap id="Outer flap" type="FOWLER">
+                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">
+                    <value>0.4</value>
+                </inner_station_spanwise_position>
+                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">
+                    <value>0.75</value>
+                </outer_station_spanwise_position>
+                <chord_ratio>0.30</chord_ratio>
+                <deflection unit="deg">40.0</deflection>
+            </symmetric_flap>
+        </symmetric_flaps>
+        <slats>
+            <slat linked_to="Inner flap" type="SINGLE">
+                <percent_chord value="10"/>
+                <max_deflection unit="deg">10.0</max_deflection>
+            </slat>
+        </slats>
+        <asymmetric_flaps>
+            <asymmetric_flap id="Aileron" type="PLAIN">
+                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">
+                    <value>0.75</value>
+                </inner_station_spanwise_position>
+                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">
+                    <value>0.97</value>
+                </outer_station_spanwise_position>
+                <percent_chord value="20"/>
+                <min_deflection unit="deg">-5.0</min_deflection>
+                <max_deflection unit="deg">10.0</max_deflection>
+                <differential_deflection_factor value="1.0"/>
+            </asymmetric_flap>
+        </asymmetric_flaps>
+        <spoilers>
+            <spoiler id="Spoiler" type="SIMPLE">
+                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">
+                    <value>0.75</value>
+                </inner_station_spanwise_position>
+                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">
+                    <value>0.97</value>
+                </outer_station_spanwise_position>
+                <percent_chord value="20"/>
+                <max_deflection unit="deg">40.0</max_deflection>
+            </spoiler>
+        </spoilers>
+    </wing>
+</jpad_config>

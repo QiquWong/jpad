@@ -1,20 +1,11 @@
 package aircraft.components.liftingSurface.creator;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Deque;
-import java.util.ArrayDeque;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
@@ -22,18 +13,11 @@ import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
-import javax.measure.unit.UnitFormat;
 
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.math3.analysis.UnivariateFunction;
-import org.apache.commons.math3.analysis.integration.TrapezoidIntegrator;
-import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
-import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
-import org.apache.poi.util.SystemOutLogger;
 import org.jscience.physics.amount.Amount;
 import org.jscience.physics.amount.AmountFormat;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -46,8 +30,6 @@ import configuration.enumerations.AirfoilTypeEnum;
 import javaslang.Tuple;
 import javaslang.Tuple2;
 import javaslang.Tuple5;
-import javolution.text.TypeFormat;
-import javolution.text.TextFormat.Cursor;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
@@ -347,7 +329,19 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 		//---------------------------------------------------------------------------------
 		// SYMMETRIC FLAPS
-		// TODO
+		NodeList nodelistFlaps = MyXMLReaderUtils
+				.getXMLNodeListByPath(reader.getXmlDoc(), "//symmetric_flaps/symmetric_flap");
+		
+		System.out.println("Symmetric flaps found: " + nodelistFlaps.getLength());
+		
+		for (int i = 0; i < nodelistFlaps.getLength(); i++) {
+			Node nodeFlap  = nodelistFlaps.item(i); // .getNodeValue();
+			Element elementFlap = (Element) nodeFlap;
+            System.out.println("[" + i + "]\nFlap id: " + elementFlap.getAttribute("id"));
+            
+            // TODO : Read flap from the creator. 
+            
+		}
 
 		//---------------------------------------------------------------------------------
 		// SYMMETRIC SLATS

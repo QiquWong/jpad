@@ -268,21 +268,21 @@ public class JavaFXD3_Test_09 extends Application {
 			// This wing static object is available in the scope of
 			// the Application.start method
 
-			//			// read LiftingSurface from xml ...
-			//			theWing = new LiftingSurfaceBuilder("MyWing", ComponentEnum.WING)
-			//					.liftingSurfaceCreator(
-			//							LiftingSurfaceCreator.importFromXML(pathToXML, dirAirfoil)
-			//							)
-			//					.build();
-
-			// default LiftingSurface ...
+			// read LiftingSurface from xml ...
 			theWing = new LiftingSurfaceBuilder("MyWing", ComponentEnum.WING)
 					.liftingSurfaceCreator(
-						new LiftingSurfaceCreator
-							.LiftingSurfaceCreatorBuilder("Test ATR72 wing", AircraftEnum.ATR72)
-							.build()
-					)
+							LiftingSurfaceCreator.importFromXML(pathToXML, dirAirfoil)
+							)
 					.build();
+
+//			// default LiftingSurface ...
+//			theWing = new LiftingSurfaceBuilder("MyWing", ComponentEnum.WING)
+//					.liftingSurfaceCreator(
+//						new LiftingSurfaceCreator
+//							.LiftingSurfaceCreatorBuilder("Test ATR72 wing", AircraftEnum.ATR72)
+//							.build()
+//					)
+//					.build();
 
 			JavaFXD3_Test_09.theWing.calculateGeometry(40);
 
