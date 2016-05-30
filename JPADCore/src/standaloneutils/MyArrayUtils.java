@@ -364,6 +364,18 @@ public final class MyArrayUtils {
 		}
 		return result;
 	}
+	
+	public static double[] convertListOfAmountodoubleArray(List<Amount> theListOfObjects) {
+
+		if ( theListOfObjects.size() == 0 ) return null;
+
+		double[] result = new double[theListOfObjects.size()];
+
+		for (int k = 0; k < theListOfObjects.size(); k++) {
+			result[k] = theListOfObjects.get(k).getEstimatedValue();
+		}
+		return result;
+	}
 
 	public static <T extends Quantity> Double[] convertListOfAmountToDoubleArray(List<Amount<T>> theListOfObjects) {
 

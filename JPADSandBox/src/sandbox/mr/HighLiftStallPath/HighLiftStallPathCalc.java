@@ -81,6 +81,9 @@ public class HighLiftStallPathCalc {
 			}
 		}
 
+		// Calculate mean values 
+		
+		
 		// Define input vector 
 
 		int numberOfPoint = input.getNumberOfPointSemispan();
@@ -110,6 +113,8 @@ public class HighLiftStallPathCalc {
 		double [] alphaStarInput = new double [input.getNumberOfSections()];
 		double [] alpha0lInput = new double [input.getNumberOfSections()];
 		double [] clMaxInput = new double [input.getNumberOfSections()];
+		double [] clAlphaInput = new double [input.getNumberOfSections()];
+		double [] clZeroInput = new double [input.getNumberOfSections()];
 
 		double [] etaInFlap = new double [input.getFlapsNumber()];
 		double [] etaOutFlap = new double [input.getFlapsNumber()];
@@ -124,6 +129,8 @@ public class HighLiftStallPathCalc {
 			alphaStarInput[i] = Math.toRadians(input.getAlphaStarDistribution().get(i).getEstimatedValue());
 			alpha0lInput[i] = Math.toRadians(input.getAlphaZeroLiftDistribution().get(i).getEstimatedValue());
 			clMaxInput[i] = input.getMaximumliftCoefficientDistribution().get(i);
+			clAlphaInput[i] = input.getClalphaDistribution().get(i);
+			clZeroInput[i] = input.getClZeroDistribution().get(i);
 		}
 
 		for (int i=0; i<input.getFlapsNumber(); i++){
@@ -371,6 +378,10 @@ public class HighLiftStallPathCalc {
 		// chords
 		// Base
 
+		System.out.println("\n---------------------------");
+		System.out.println("          CHORD            ");
+		System.out.println("---------------------------\n");
+		
 		Double[] chordDistributionBase = MyMathUtils.getInterpolatedValue1DLinear(yStationInput, chordInput, yStationTotal);
 
 		System.out.println("Chord distribution base :" + Arrays.toString(chordDistributionBase));
@@ -490,44 +501,296 @@ public class HighLiftStallPathCalc {
 
 		// interpolation
 
-		double [] deltaChordFlapAsListWithSeparator = new double [deltaChordFlapAsList.size()];
-		double [] deltaChordSlatAsListWithSeparator = new double [deltaChordSlatAsList.size()];
-		for(int i=0; i<deltaChordFlapAsListWithSeparator.length; i++){
-			deltaChordFlapAsListWithSeparator[i] = deltaChordFlapAsList.get(i);
-			deltaChordSlatAsListWithSeparator[i] = deltaChordSlatAsList.get(i);
+		double [] deltaChordFlapWithSeparator = new double [deltaChordFlapAsList.size()];
+		double [] deltaChordSlatWithSeparator = new double [deltaChordSlatAsList.size()];
+		for(int i=0; i<deltaChordFlapWithSeparator.length; i++){
+			deltaChordFlapWithSeparator[i] = deltaChordFlapAsList.get(i);
+			deltaChordSlatWithSeparator[i] = deltaChordSlatAsList.get(i);
 		}
 		
-		MyArray deltaChordFlapMyArray = new MyArray(deltaChordFlapAsListWithSeparator);
-		MyArray deltaChordFlapInterpolation = MyArray.createArray(
+		MyArray deltaChordFlapMyArray = new MyArray(deltaChordFlapWithSeparator);
+		MyArray deltaChordFlapTotal = MyArray.createArray(
 				deltaChordFlapMyArray.interpolate(
 						yStationTotalFlap,
 						yStationTotal));
 		
-		MyArray deltaChordSlatMyArray = new MyArray(deltaChordSlatAsListWithSeparator);
-		MyArray deltaChordSlatInterpolation = MyArray.createArray(
+		MyArray deltaChordSlatMyArray = new MyArray(deltaChordSlatWithSeparator);
+		MyArray deltaChordSlatTotal = MyArray.createArray(
 				deltaChordSlatMyArray.interpolate(
 						yStationTotalSlat,
 						yStationTotal));
-		
-//		double [] deltaChordSlatInterpolation = MyMathUtils.getInterpolatedValue1DLinear(yStationTotalSlat, deltaC, x0)
-
 
 
 		double [] chordDistributionTotal = new double [yStationTotal.length];
 
 		for (int i=0; i<yStationTotal.length; i++){
-			chordDistributionTotal [i] = chordDistributionBase[i] + deltaChordFlapInterpolation.get(i) + deltaChordSlatInterpolation.get(i);
+			chordDistributionTotal [i] = chordDistributionBase[i] + deltaChordFlapTotal.get(i) + deltaChordSlatTotal.get(i);
 		}
 		
 		System.out.println(" chord distribution total " + Arrays.toString(chordDistributionTotal));
 
 		// xle
+		
+		System.out.println("\n---------------------------");
+		System.out.println("           X LE            ");
+		System.out.println("---------------------------\n");
 
 		Double[] xLEDistributionBase = MyMathUtils.getInterpolatedValue1DLinear(yStationInput, xleInput, yStationTotal);
 
 		System.out.println("xle distribution base :" + Arrays.toString(xLEDistributionBase));
+		
+		// The delta in xle is due only of slat. In particular the delta xle is the delta chord due to slat.
+		
+		double [] deltaXleSlatTotal = new double [yStationTotal.length];
+		for (int i = 0 ; i<yStationTotal.length; i++){
+			deltaXleSlatTotal[i] =-deltaChordSlatTotal.get(i);
+		}
+		
+		System.out.println(" delta XLE due to slat " + Arrays.toString(deltaXleSlatTotal));
+		
+		
+		double [] xLeDistributionTotal = new double [yStationTotal.length];
+		
+		for (int i=0; i<yStationTotal.length; i++){
+			xLeDistributionTotal [i] = xLEDistributionBase[i] + deltaXleSlatTotal[i];
+		}
+		
+		System.out.println(" X LE distribution total " + Arrays.toString(xLeDistributionTotal));
+		
 
 		// alpha zero lift
+		
+		 //delta cl0 
+		
+		System.out.println("\n---------------------------");
+		System.out.println("          CL0            ");
+		System.out.println("---------------------------\n");
+		
+		Double[] clZeroDistributionBase = MyMathUtils.getInterpolatedValue1DLinear(yStationInput, clZeroInput, yStationTotal);
+
+		System.out.println("Cl zero distribution base :" + Arrays.toString(clZeroDistributionBase));
+
+		// mean values
+		
+		double [] clAlphaMean = new double [input.getFlapsNumber()];
+		double [] clZeroMean = new double [input.getFlapsNumber()];
+		double [] clAlphaFlapStations = new double [2*input.getFlapsNumber()];
+		double [] clZeroFlapStations = new double [2*input.getFlapsNumber()];
+
+		double [] influenceFactor = new double [2];
+		
+		for ( int i=0; i< input.getFlapsNumber(); i++){
+			int kk = i*2;
+			
+			clAlphaFlapStations[kk] = MyMathUtils.getInterpolatedValue1DLinear( 
+					MyArrayUtils.convertToDoublePrimitive(input.getyAdimensionalStationInput()),
+					MyArrayUtils.convertToDoublePrimitive(input.getClalphaDistribution()),
+					etaInFlap[i]);
+			
+			clAlphaFlapStations[kk+1] = MyMathUtils.getInterpolatedValue1DLinear( 
+					MyArrayUtils.convertToDoublePrimitive(input.getyAdimensionalStationInput()),
+					MyArrayUtils.convertToDoublePrimitive(input.getClalphaDistribution()),
+					etaOutFlap[i]);
+			
+			clZeroFlapStations[kk] = MyMathUtils.getInterpolatedValue1DLinear( 
+					MyArrayUtils.convertToDoublePrimitive(input.getyAdimensionalStationInput()),
+					MyArrayUtils.convertToDoublePrimitive(input.getClZeroDistribution()),
+					etaInFlap[i]);
+			
+			clZeroFlapStations[kk+1] = MyMathUtils.getInterpolatedValue1DLinear( 
+					MyArrayUtils.convertToDoublePrimitive(input.getyAdimensionalStationInput()),
+					MyArrayUtils.convertToDoublePrimitive(input.getClZeroDistribution()),
+					etaOutFlap[i]);
+			
+			influenceFactor = MeanAirfoilCalc.meanAirfoilFlap(etaInFlap[i], etaOutFlap[i], input);
+			
+			clAlphaMean[i] = clAlphaFlapStations[kk] * influenceFactor[0] + clAlphaFlapStations[kk+1]*influenceFactor[1];
+			clZeroMean[i] = clZeroFlapStations[kk] * influenceFactor[0] + clZeroFlapStations[kk+1]*influenceFactor[1];
+		}
+		
+		// Delta flap
+
+		List<Double> thetaF = new ArrayList<Double>();
+		for(int i=0; i<input.getFlapsNumber(); i++) 
+			thetaF.add(Math.acos((2*input.getCfc().get(i))-1));
+
+		List<Double> alphaDelta = new ArrayList<Double>();
+		for(int i=0; i<thetaF.size(); i++)
+			alphaDelta.add(1-((thetaF.get(i)-Math.sin(thetaF.get(i)))/Math.PI));
+	
+		List<Double> etaDeltaFlap = new ArrayList<Double>();
+		for(int i=0; i<input.getFlapsNumber(); i++) {
+			if(flapTypeIndex.get(i) == 3.0)
+				etaDeltaFlap.add(
+						highLiftDatabaseReader
+						.getEtaDeltaVsDeltaFlapPlain(input.getDeltaFlap().get(i).getEstimatedValue(), input.getCfc().get(i)));
+			else
+				etaDeltaFlap.add(
+						highLiftDatabaseReader
+						.getEtaDeltaVsDeltaFlap(input.getDeltaFlap().get(i).getEstimatedValue(), flapTypeIndex.get(i))
+						);
+		}
+		
+		List<Double> deltaCl0First = new ArrayList<Double>();
+		for(int i=0; i<input.getFlapsNumber(); i++)
+			deltaCl0First.add(
+					alphaDelta.get(i).doubleValue()
+					*etaDeltaFlap.get(i).doubleValue()
+					*input.getDeltaFlap().get(i).getEstimatedValue()
+					*clAlphaMean[i]
+					); 
+		
+		List<Double> deltaCl0FlapList = new ArrayList<Double>();
+		
+		for(int i=0; i<input.getFlapsNumber(); i++)
+			deltaCl0FlapList.add(
+					(deltaCl0First.get(i).doubleValue()*cFirstCFlap.get(i).doubleValue())
+					+(clZeroMean[i]*(cFirstCFlap.get(i).doubleValue()-1))
+					);
+		
+		
+		//---
+//		for(int i=0; i<input.getFlapsNumber(); i++)
+//			deltaCCfFlap.add(
+//					highLiftDatabaseReader
+//					.getDeltaCCfVsDeltaFlap(input.getDeltaFlap().get(i).getEstimatedValue(), flapTypeIndex.get(i))
+//					);
+//
+//		List<Double> cFirstCFlap = new ArrayList<Double>();
+//		
+//		for(int i=0; i<input.getFlapsNumber(); i++)
+//			cFirstCFlap.add(1+(deltaCCfFlap.get(i).doubleValue()*input.getCfc().get(i).doubleValue()));
+//
+//		int pos;
+//
+//		Double [] deltaChordFlap = new Double [yStationActualFlap.length];
+//		for (int i=0; i<deltaChordFlap.length; i++){
+//			deltaChordFlap[i] = 0.0;
+//		}
+//
+//		for (int i=1; i<input.getFlapsNumber()+1; i++) {
+//			pos=i*2;
+//			deltaChordFlap[pos] = cFirstCFlap.get(i-1)-1;
+//			deltaChordFlap[pos-1] = cFirstCFlap.get(i-1)-1;
+//		}
+//
+//		System.out.println(" delta c due to flap with no separation" + Arrays.toString(deltaChordFlap));
+//
+//		ArrayList<Double> deltaChordFlapAsList  = new ArrayList<Double>(Arrays.asList(deltaChordFlap));
+//
+//		int p=0;
+//		for ( int i =0; i< yStationActualFlap.length-1 ; i++) {
+//			if ( (yStationActualFlap[i+1] - yStationActualFlap[i]) > 0.03 ) {
+//
+//				if ( yStationActualFlap[i] == 0){
+//					deltaChordFlapAsList.add(i+1+p,0.0);	
+//					p=p+1;
+//				}
+//
+//				if (yStationActualFlap[i+1] ==1){
+//					deltaChordFlapAsList.add(i+1+p,0.0);		
+//					p=p+1;}
+//
+//				if (yStationActualFlap[i] != 0 & yStationActualFlap[i+1] !=1){
+//					//					if (Arrays.asList(etaOutFlap).contains(yStationActualFlap[i+1]) &  Arrays.asList(etaInFlap).contains(yStationActualFlap[i])){}
+//					if (Arrays.binarySearch(etaOutFlap,yStationActualFlap[i+1])>=0 &  Arrays.binarySearch(etaInFlap,yStationActualFlap[i])>=0){}
+//					else{
+//						deltaChordFlapAsList.add(i+1+p,0.0);
+//						deltaChordFlapAsList.add(i+1+p,0.0);
+//						p=p+2;
+//					}
+//				}
+//			}
+//		}
+//
+//		System.out.println(" delta c due to flap with separation" + deltaChordFlapAsList.toString());
+//
+//
+//
+//		// Delta Slat
+//
+//		List<Double> deltaCCfSlat = new ArrayList<Double>();
+//
+//		for(int i=0; i<input.getSlatsNumber(); i++){
+//			deltaCCfSlat.add(input.getcExtCSlat().get(i));}
+//
+//		int posSlat;
+//		Double [] deltaChordSlat = new Double [yStationActualSlat.length];
+//		for (int i=0; i<deltaChordSlat.length; i++){
+//			deltaChordSlat[i] = 0.0;
+//		}
+//		for (int i=1; i<input.getSlatsNumber()+1; i++) {
+//			posSlat=i*2;
+//			deltaChordSlat[posSlat] = deltaCCfSlat.get(i-1)-1;
+//			deltaChordSlat[posSlat-1] = deltaCCfSlat.get(i-1)-1;
+//		}
+//
+//		System.out.println(" delta c due to slat " + Arrays.toString(deltaChordSlat));
+//
+//
+//		ArrayList<Double> deltaChordSlatAsList  = new ArrayList<Double>(Arrays.asList(deltaChordSlat));
+//
+//		int ps=0;
+//		for ( int i =0; i< yStationActualSlat.length-1 ; i++) {
+//			if ( (yStationActualSlat[i+1] - yStationActualSlat[i]) > 0.03 ) {
+//
+//				if ( yStationActualSlat[i] == 0){
+//					deltaChordSlatAsList.add(i+1+ps,0.0);	
+//					ps=ps+1;
+//				}
+//
+//				if (yStationActualSlat[i+1] ==1){
+//					deltaChordSlatAsList.add(i+1+ps,0.0);		
+//					ps=ps+1;}
+//
+//				if (yStationActualSlat[i] != 0 & yStationActualSlat[i+1] !=1){
+//					//					if (Arrays.asList(etaOutFlap).contains(yStationActualFlap[i+1]) &  Arrays.asList(etaInFlap).contains(yStationActualFlap[i])){}
+//					if (Arrays.binarySearch(etaOutSlat,yStationActualSlat[i+1])>=0 &  Arrays.binarySearch(etaInSlat,yStationActualSlat[i])>=0){}
+//					else{
+//						deltaChordSlatAsList.add(i+1+ps,0.0);
+//						deltaChordSlatAsList.add(i+1+ps,0.0);
+//						ps=ps+2;
+//					}
+//				}
+//			}
+//		}
+//
+//		System.out.println(" delta c due to slat with separation" + deltaChordSlatAsList.toString());
+//
+//
+//		// TOTAL
+//
+//		// interpolation
+//
+//		double [] deltaChordFlapWithSeparator = new double [deltaChordFlapAsList.size()];
+//		double [] deltaChordSlatWithSeparator = new double [deltaChordSlatAsList.size()];
+//		for(int i=0; i<deltaChordFlapWithSeparator.length; i++){
+//			deltaChordFlapWithSeparator[i] = deltaChordFlapAsList.get(i);
+//			deltaChordSlatWithSeparator[i] = deltaChordSlatAsList.get(i);
+//		}
+//		
+//		MyArray deltaChordFlapMyArray = new MyArray(deltaChordFlapWithSeparator);
+//		MyArray deltaChordFlapTotal = MyArray.createArray(
+//				deltaChordFlapMyArray.interpolate(
+//						yStationTotalFlap,
+//						yStationTotal));
+//		
+//		MyArray deltaChordSlatMyArray = new MyArray(deltaChordSlatWithSeparator);
+//		MyArray deltaChordSlatTotal = MyArray.createArray(
+//				deltaChordSlatMyArray.interpolate(
+//						yStationTotalSlat,
+//						yStationTotal));
+//
+//
+//		double [] chordDistributionTotal = new double [yStationTotal.length];
+//
+//		for (int i=0; i<yStationTotal.length; i++){
+//			chordDistributionTotal [i] = chordDistributionBase[i] + deltaChordFlapTotal.get(i) + deltaChordSlatTotal.get(i);
+//		}
+//		
+//		System.out.println(" chord distribution total " + Arrays.toString(chordDistributionTotal));
+		
+		 //delta cl alpha
 
 		Double[] alphaZeroLiftDistributionBase = MyMathUtils.getInterpolatedValue1DLinear(yStationInput, alpha0lInput, yStationTotal);
 
