@@ -65,7 +65,7 @@ public class InputOutputTree {
 	private List<Amount<Angle>> deltaFlap,
     							deltaSlat;
 	
-	
+	List<Double> influenceCoefficient;
 	
 
 	// OUTPUT 
@@ -129,6 +129,8 @@ public class InputOutputTree {
 
 		clalphaDistribution  = new ArrayList<Double>();
 		clZeroDistribution  = new ArrayList<Double>();
+		
+		influenceCoefficient = new ArrayList<Double>();
 		
 		cfc = new ArrayList<Double>();
         csc = new ArrayList<Double>();
@@ -924,6 +926,16 @@ public class InputOutputTree {
 
 	public void setEtaStations(List<Double> etaStations) {
 		this.etaStations = etaStations;
+	}
+
+
+	public List<Double> getInfluenceCoefficient() {
+		return influenceCoefficient;
+	}
+
+
+	public void setInfluenceCoefficient(List<Double> influenceCoefficient) {
+		this.influenceCoefficient = influenceCoefficient;
 	}
 
 
