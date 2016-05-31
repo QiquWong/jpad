@@ -273,7 +273,7 @@ public class FuselageCreator implements IFuselageCreator {
 		//		_reynolds = _theOperatingConditions.calculateRe(_len_F.getEstimatedValue(), _roughness.getEstimatedValue());
 
 		calculateUpsweepAngle();
-		// calculateWindshieldAngle(); // TODO: agodemar, check this
+		 calculateWindshieldAngle(); // TODO: agodemar, check this
 
 		// --- END OF OUTPUT DATA -----------------------------------------
 
@@ -1416,7 +1416,6 @@ public class FuselageCreator implements IFuselageCreator {
 
 		// x at l_N + l_C
 		double x0 = lenN.doubleValue(SI.METER) + lenC.doubleValue(SI.METER);
-//		System.out.println("l_N + l_C: " + x0 + " (m)");
 
 		// values filtered as x >= l_N + l_C
 		List<Double> vX = new ArrayList<Double>();
@@ -1463,10 +1462,6 @@ public class FuselageCreator implements IFuselageCreator {
 	            .getAsInt();  // or throw
 
 		upsweepAngle = Amount.valueOf(Math.atan((vZ.get(idxXu)-zu)/(vX.get(idxXu)-xu)), SI.RADIAN).to(NonSI.DEGREE_ANGLE);
-
-//		System.out.println("---");
-//		System.out.println("Upsweep angle:" + _upsweepAngle.to(NonSI.DEGREE_ANGLE));
-//		System.out.println("---");
 	}
 
 	/**
@@ -1481,32 +1476,37 @@ public class FuselageCreator implements IFuselageCreator {
 	 * @author Vincenzo Cusati
 	 */
 	private void calculateWindshieldAngle() {
+		
+			// xcalculate point (x,z) from intersection of:
+			// - horiz. line at 0.75 of fuselage height (d_C) - taken from the bottom-line
+			// - upper profile of the nose sideview
+			//
+			// Using Java 8 features
+		
 				// x at l_N
 				double xLNose = lenN.doubleValue(SI.METER);
 
 				// values filtered as x <= l_N
 				List<Double> vXNose = new ArrayList<Double>();
-				outlineXZUpperCurveX.stream().filter(x -> x <= xLNose ).distinct().forEach(vXNose::add);
-
+				outlineXZUpperCurveX.stream().filter(x -> x < xLNose ).distinct().forEach(vXNose::add);
+				
 				// index of last x in _outlineXZUpperCurveX >= xLNose
-				int idxXNose = IntStream.range(0,outlineXZUpperCurveX.size())
-			            .reduce((i,j) -> outlineXZUpperCurveX.get(i) > xLNose ? i : j)
-			            .getAsInt();  // or throw
+				int idxXNose = vXNose.size();
+//						IntStream.range(0,outlineXZUpperCurveX.size())
+//			            .reduce((i,j) -> outlineXZUpperCurveX.get(i) > xLNose ? i : j)
+//			            .getAsInt();  // or throw
 
 				// the coupled z-values
-				// In this case is necessary filtered the strem with idxXNose-1 and not with idxXNose
-				// because the values _outlineXZUpperCurveZ(idxXNose) and _outlineXZUpperCurveZ(idxXNose-1)
-				// are different, in spite of they have the same value of _outlineXZUpperCurveX.
 				List<Double> vZNose = new ArrayList<Double>();
-				vZNose = IntStream.range(0, outlineXZUpperCurveZ.size()).filter(i -> i <= idxXNose-1)
-					 .mapToObj(i -> outlineXZUpperCurveZ.get(i)).distinct()
+				vZNose = IntStream.range(0, outlineXZUpperCurveZ.size()).filter(i -> i < idxXNose)
+					 .mapToObj(i -> outlineXZUpperCurveZ.get(i))
+					 .distinct()
 			         .collect(Collectors.toList());
 
 
 				// generate a vector of constant z = z_min + 0.75*d_C, same size of vZNose, or vXNose
-				// It's better to take the value of z at 0.60*d_C (for the methodology)
-				Double z1Nose = outlineXZLowerCurveZ.get(9) + 0.75*sectionCylinderHeight.doubleValue(SI.METER);
-//				Double z1Nose = outlineXZLowerCurveZ.get(9) + 0.60*sectionCylinderHeight.doubleValue(SI.METER);
+				// Check if it's better to take the value of z at 0.60*d_C (for the methodology)
+				Double z1Nose = MyArrayUtils.getMin(outlineXZLowerCurveZ) + 0.75*sectionCylinderHeight.doubleValue(SI.METER);
 				List<Double> vZ1Nose = new ArrayList<Double>();
 				vZNose.stream().map(z -> z1Nose).forEach(vZ1Nose::add);
 
@@ -1535,10 +1535,6 @@ public class FuselageCreator implements IFuselageCreator {
 
 				windshieldAngle = Amount.valueOf(Math.atan((vZNose.get(idxXw)-zw)/(vXNose.get(idxXw)-xw)), SI.RADIAN)
 						.to(NonSI.DEGREE_ANGLE);
-
-//				System.out.println("---");
-//				System.out.println("Windshield angle:" + _windshieldAngle.to(NonSI.DEGREE_ANGLE));
-//				System.out.println("---");
 	}
 
 	public double calculateFormFactor(double lambdaF) {
