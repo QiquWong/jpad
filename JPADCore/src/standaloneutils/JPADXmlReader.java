@@ -153,7 +153,7 @@ public class JPADXmlReader {
 	public String getXMLPropertyByPath(String expression) {
 		if (this.isStatusOK()) {
 			return MyXMLReaderUtils
-					.getXMLPropertyByPath(_xmlDoc, _xpath, expression);
+					.getXMLPropertyByPath(_xmlDoc, _xpath, expression + "/text()");
 		} else {
 			return null;
 		}		

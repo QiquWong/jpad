@@ -71,6 +71,7 @@ public class JavaFXD3_Test_09 extends Application {
 	private final int WIDTH = 700;
 	private final int HEIGHT = 600;
 
+	@SuppressWarnings("unused")
 	private static final double DELTA = 0.001d;
 
 	@Override
@@ -287,7 +288,7 @@ public class JavaFXD3_Test_09 extends Application {
 			JavaFXD3_Test_09.theWing.calculateGeometry(40);
 
 			System.out.println("The wing ...");
-			System.out.println(JavaFXD3_Test_09.theWing);
+			System.out.println(JavaFXD3_Test_09.theWing.get_liftingSurfaceCreator().toString());
 			System.out.println("Details on panel discretization ...");
 			JavaFXD3_Test_09.theWing.getLiftingSurfaceCreator().reportPanelsToSpanwiseDiscretizedVariables();
 

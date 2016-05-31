@@ -6,14 +6,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
-
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jscience.physics.amount.Amount;
@@ -21,12 +19,14 @@ import org.jscience.physics.amount.AmountFormat;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import aircraft.components.liftingSurface.creator.Airfoil.AirfoilBuilder;
+import aircraft.components.liftingSurface.creator.AirfoilCreator.AirfoilBuilder;
+import aircraft.components.liftingSurface.creator.AsymmetricFlapCreator.AsymmetricFlapBuilder;
 import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator.LiftingSurfacePanelBuilder;
+import aircraft.components.liftingSurface.creator.SymmetricFlapCreator.SymmetricFlapBuilder;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AirfoilTypeEnum;
+import configuration.enumerations.FlapTypeEnum;
 import javaslang.Tuple;
 import javaslang.Tuple2;
 import javaslang.Tuple5;
@@ -43,20 +43,26 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 	public LiftingSurfaceCreator(String id) {
 		this.id = id;
 		_panels = new ArrayList<LiftingSurfacePanelCreator>();
+		_symmetricFlaps = new ArrayList<SymmetricFlapCreator>();
+		_asymmetricFlaps = new ArrayList<AsymmetricFlapCreator>();
+		_slats = new ArrayList<SlatCreator>();
+		_spoilers = new ArrayList<SpoilerCreator>();
 		resetData();
 	}
 
 	// use this to generate the equivalent wing or a simple wing
-	public LiftingSurfaceCreator(String id, LiftingSurfacePanelCreator panel) {
+	public LiftingSurfaceCreator(
+			String id,
+			LiftingSurfacePanelCreator panel) {
 		this.id = id;
 		_panels = new ArrayList<LiftingSurfacePanelCreator>();
-
 		resetData();
 
 		_panels.add(panel);
-		
 		this.calculateGeometry(30);
 
+		// TODO : Should these surfaces have to be implemented only on the actual wing ? 
+		
 		//---------------------------------------------------------------------------------
 		// SYMMETRIC FLAPS
 		// TODO
@@ -86,7 +92,11 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		// ...
 
 		private List<LiftingSurfacePanelCreator> __panels = new ArrayList<LiftingSurfacePanelCreator>();
-
+		private List<SymmetricFlapCreator> __symmetricFlaps = new ArrayList<SymmetricFlapCreator>();
+		private List<AsymmetricFlapCreator> __asymmetricFlaps = new ArrayList<AsymmetricFlapCreator>();
+		private List<SlatCreator> __slats = new ArrayList<SlatCreator>();
+		private List<SpoilerCreator> __spoilers = new ArrayList<SpoilerCreator>();
+		
 		private MyArray __eta = new MyArray(Unit.ONE);
 
 		private List<Amount<Length>> __yBreakPoints =  new ArrayList<Amount<Length>>();
@@ -144,7 +154,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 			switch(aircraftName) {
 			case ATR72:
 				
-				Airfoil airfoil1 = new AirfoilBuilder("ATR72 wing, root airfoil")
+				AirfoilCreator airfoil1 = new AirfoilBuilder("ATR72 wing, root airfoil")
 					.type(AirfoilTypeEnum.CONVENTIONAL)
 					.thicknessToChordRatio(0.18)
 					.camberRatio(0.09)
@@ -181,7 +191,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 					)
 				.build();
 
-				Airfoil airfoil2 = new AirfoilBuilder("ATR72 wing, tip airfoil")
+				AirfoilCreator airfoil2 = new AirfoilBuilder("ATR72 wing, tip airfoil")
 						.type(AirfoilTypeEnum.CONVENTIONAL)
 						.thicknessToChordRatio(0.15)
 						.camberRatio(0.09)
@@ -218,11 +228,63 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 						)
 					.build();
 				
-					LiftingSurfaceCreator wing = new LiftingSurfaceCreator("ATR72 wing");
-					
 					__panels.add(panel1);
 					__panels.add(panel2);
 				
+					SymmetricFlapCreator flap1 =
+							new SymmetricFlapBuilder(
+									"ATR72 wing, inner flap",
+									FlapTypeEnum.SINGLE_SLOTTED,
+									0.08,
+									0.35,
+									0.35,
+									0.32,
+									Amount.valueOf(40, NonSI.DEGREE_ANGLE)			
+									)
+							.build();
+
+					SymmetricFlapCreator flap2 =
+							new SymmetricFlapBuilder(
+									"ATR72 wing, outer flap",
+									FlapTypeEnum.SINGLE_SLOTTED,
+									0.35,
+									0.8,
+									0.35,
+									0.32,
+									Amount.valueOf(40, NonSI.DEGREE_ANGLE)									
+									)
+							.build();
+
+					__symmetricFlaps.add(flap1);
+					__symmetricFlaps.add(flap2);
+					
+					AsymmetricFlapCreator aileron1 =
+							new AsymmetricFlapBuilder(
+									"ATR72 wing, left aileron",
+									FlapTypeEnum.PLAIN,
+									0.8,
+									0.98,
+									0.33,
+									0.33,
+									Amount.valueOf(-5.0, NonSI.DEGREE_ANGLE)
+									)
+							.build();
+					
+					AsymmetricFlapCreator aileron2 =
+							new AsymmetricFlapBuilder(
+									"ATR72 wing, right aileron",
+									FlapTypeEnum.PLAIN,
+									0.8,
+									0.98,
+									0.33,
+									0.33,
+									Amount.valueOf(5.0, NonSI.DEGREE_ANGLE)
+									)
+							.build();
+					
+					__asymmetricFlaps.add(aileron1);
+					__asymmetricFlaps.add(aileron2);
+					
 				break;
 
 			case B747_100B:
@@ -239,11 +301,14 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		
 	}
 	
-	private LiftingSurfaceCreator(LiftingSurfaceCreatorBuilder builder){ // defaults to ATR72 fuselage
+	private LiftingSurfaceCreator(LiftingSurfaceCreatorBuilder builder){ // defaults to ATR72 
 		
 		this.id = builder.__id;
 		this._panels = builder.__panels;
-
+		this._symmetricFlaps = builder.__symmetricFlaps;
+		this._asymmetricFlaps = builder.__asymmetricFlaps;
+		this._slats = builder.__slats;
+		
 		this._eta = builder.__eta;
 		this._yBreakPoints = builder.__yBreakPoints;
 		this._etaBP = builder.__etaBP;
@@ -339,17 +404,38 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 			Element elementFlap = (Element) nodeFlap;
             System.out.println("[" + i + "]\nFlap id: " + elementFlap.getAttribute("id"));
             
-            // TODO : Read flap from the creator. 
-            
+            wing.addSymmetricFlaps(SymmetricFlapCreator.importFromSymmetricFlapNode(nodeFlap));
 		}
 
 		//---------------------------------------------------------------------------------
 		// SYMMETRIC SLATS
-		// TODO
+		NodeList nodelistSlats = MyXMLReaderUtils
+				.getXMLNodeListByPath(reader.getXmlDoc(), "//slats/slat");
+		
+		System.out.println("Slats found: " + nodelistSlats.getLength());
+		
+		for (int i = 0; i < nodelistSlats.getLength(); i++) {
+			Node nodeSlat  = nodelistSlats.item(i); // .getNodeValue();
+			Element elementSlat = (Element) nodeSlat;
+            System.out.println("[" + i + "]\nSlat id: " + elementSlat.getAttribute("id"));
+            
+            wing.addSlats(SlatCreator.importFromSymmetricSlatNode(nodeSlat));
+		}
 
 		//---------------------------------------------------------------------------------
 		// ASYMMETRIC FLAPS
-		// TODO
+		NodeList nodelistAsymmetricFlaps = MyXMLReaderUtils
+				.getXMLNodeListByPath(reader.getXmlDoc(), "//asymmetric_flaps/asymmetric_flap");
+		
+		System.out.println("Asymmetric flaps found: " + nodelistAsymmetricFlaps.getLength());
+		
+		for (int i = 0; i < nodelistAsymmetricFlaps.getLength(); i++) {
+			Node nodeAsymmetricFlap  = nodelistAsymmetricFlaps.item(i); // .getNodeValue();
+			Element elementAsymmetricFlap = (Element) nodeAsymmetricFlap;
+            System.out.println("[" + i + "]\nSlat id: " + elementAsymmetricFlap.getAttribute("id"));
+            
+            wing.addAsymmetricFlaps(AsymmetricFlapCreator.importFromAsymmetricFlapNode(nodeAsymmetricFlap));
+		}
 
 		//---------------------------------------------------------------------------------
 		// SPOILERS
@@ -363,6 +449,21 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		_panels.add(panel);
 	}
 
+	@Override
+	public void addSymmetricFlaps(SymmetricFlapCreator symmetricFlaps) {
+		_symmetricFlaps.add(symmetricFlaps);
+	}
+	
+	@Override
+	public void addAsymmetricFlaps(AsymmetricFlapCreator asymmetricFlaps) {
+		_asymmetricFlaps.add(asymmetricFlaps);
+	}
+	
+	@Override
+	public void addSlats(SlatCreator slats) {
+		_slats.add(slats);
+	}
+	
 	@Override
 	public void calculateGeometry() {
 		calculateGeometry(_numberOfSpanwisePoints);
@@ -1425,6 +1526,24 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 			sb.append(panel.toString());
 		}
 
+		if(!(_symmetricFlaps == null)) {
+			for (SymmetricFlapCreator symmetricFlap : _symmetricFlaps) {
+				sb.append(symmetricFlap.toString());
+			}
+		}
+		
+		if(!(_slats == null)) {
+			for (SlatCreator slats : _slats) {
+				sb.append(slats.toString());
+			}
+		}
+		
+		if(!(_asymmetricFlaps == null)) {
+			for (AsymmetricFlapCreator asymmetricFlaps : _asymmetricFlaps) {
+				sb.append(asymmetricFlaps.toString());
+			}
+		}
+		
 		reportDiscretizedVariables();
 
 		sb

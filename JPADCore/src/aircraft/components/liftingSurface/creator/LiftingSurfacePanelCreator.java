@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import aircraft.components.liftingSurface.creator.Airfoil.AirfoilBuilder;
+import aircraft.components.liftingSurface.creator.AirfoilCreator.AirfoilBuilder;
 import configuration.MyConfiguration;
 import javolution.text.TypeFormat;
 import javolution.text.TextFormat.Cursor;
@@ -40,8 +40,8 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 
 	private Amount<Length> _chordRoot;
 	private Amount<Length> _chordTip;
-	private Airfoil _airfoilRoot;
-	private Airfoil _airfoilTip;
+	private AirfoilCreator _airfoilRoot;
+	private AirfoilCreator _airfoilTip;
 	private Amount<Angle> _twistGeometricTip;
 	private Amount<Length> _semiSpan, _span;
 	private Amount<Angle> _sweepLeadingEdge,
@@ -155,22 +155,22 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 	}
 
 	@Override
-	public Airfoil getAirfoilRoot() {
+	public AirfoilCreator getAirfoilRoot() {
 		return _airfoilRoot;
 	}
 
 	@Override
-	public void setAirfoilRoot(Airfoil a) {
+	public void setAirfoilRoot(AirfoilCreator a) {
 		_airfoilRoot = a;
 	}
 
 	@Override
-	public Airfoil getAirfoilTip() {
+	public AirfoilCreator getAirfoilTip() {
 		return _airfoilTip;
 	}
 
 	@Override
-	public void setAirfoilTip(Airfoil a) {
+	public void setAirfoilTip(AirfoilCreator a) {
 		_airfoilTip = a;
 	}
 
@@ -317,8 +317,8 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 		private String __id;
 		private Amount<Length> __chordRoot;
 		private Amount<Length> __chordTip;
-		private Airfoil __airfoilRoot;
-		private Airfoil __airfoilTip;
+		private AirfoilCreator __airfoilRoot;
+		private AirfoilCreator __airfoilTip;
 		private Amount<Angle> __twistGeometricTip;
 		private Amount<Length> __semiSpan;
 		private Amount<Angle> __sweepLeadingEdge;
@@ -330,7 +330,7 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 		public LiftingSurfacePanelBuilder(
 				String id,
 				Amount<Length> cR, Amount<Length> cT,
-				Airfoil airfR, Airfoil airfT,
+				AirfoilCreator airfR, AirfoilCreator airfT,
 				Amount<Angle> twistGeometricT,
 				Amount<Length> semiSpan,
 				Amount<Angle> sweepLE,
@@ -393,7 +393,7 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 						reader.getXmlDoc(), reader.getXpath(),
 						"//panel/inner_section/airfoil/@file");
 		String airFoilPath1 = airfoilsDir + File.separator + airfoilFileName1;
-		Airfoil airfoilRoot = Airfoil.importFromXML(airFoilPath1);
+		AirfoilCreator airfoilRoot = AirfoilCreator.importFromXML(airFoilPath1);
 
 		Amount<Length> chordTip = reader.getXMLAmountLengthByPath("//panel/outer_section/chord");
 
@@ -403,7 +403,7 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 						reader.getXmlDoc(), reader.getXpath(),
 						"//panel/outer_section/airfoil/@file");
 		String airFoilPath2 = airfoilsDir + File.separator + airfoilFileName2;
-		Airfoil airfoilTip = Airfoil.importFromXML(airFoilPath2);
+		AirfoilCreator airfoilTip = AirfoilCreator.importFromXML(airFoilPath2);
 
 		Amount<Angle> twistGeometricTip = reader.getXMLAmountAngleByPath("//panel/outer_section/geometric_twist");
 
@@ -444,7 +444,7 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 						doc, xpath,
 						"//inner_section/airfoil/@file");
 		String airFoilPath1 = airfoilsDir + File.separator + airfoilFileName1;
-		Airfoil airfoilRoot = Airfoil.importFromXML(airFoilPath1);
+		AirfoilCreator airfoilRoot = AirfoilCreator.importFromXML(airFoilPath1);
 
 		Amount<Length> chordTip = MyXMLReaderUtils.getXMLAmountLengthByPath(doc, xpath, "//outer_section/chord");
 
@@ -454,7 +454,7 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 						doc, xpath,
 						"//outer_section/airfoil/@file");
 		String airFoilPath2 = airfoilsDir + File.separator + airfoilFileName2;
-		Airfoil airfoilTip = Airfoil.importFromXML(airFoilPath2);
+		AirfoilCreator airfoilTip = AirfoilCreator.importFromXML(airFoilPath2);
 
 		Amount<Angle> twistGeometricTip = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//outer_section/geometric_twist");
 		// create the wing panel via its builder
@@ -506,7 +506,7 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 
 		Amount<Length> chordRoot = panel0.getChordTip(); // from linked panel
 
-		Airfoil airfoilRoot = panel0.getAirfoilTip(); // from linked panel
+		AirfoilCreator airfoilRoot = panel0.getAirfoilTip(); // from linked panel
 
 		Amount<Length> chordTip = MyXMLReaderUtils.getXMLAmountLengthByPath(doc, xpath, "//outer_section/chord");
 
@@ -516,7 +516,7 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 						doc, xpath,
 						"//outer_section/airfoil/@file");
 		String airFoilPath2 = airfoilsDir + File.separator + airfoilFileName2;
-		Airfoil airfoilTip = Airfoil.importFromXML(airFoilPath2);
+		AirfoilCreator airfoilTip = AirfoilCreator.importFromXML(airFoilPath2);
 
 		Amount<Angle> twistGeometricTip = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//outer_section/geometric_twist");
 		// create the wing panel via its builder

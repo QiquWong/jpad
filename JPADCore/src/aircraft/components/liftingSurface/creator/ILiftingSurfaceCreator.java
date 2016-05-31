@@ -1,15 +1,11 @@
 package aircraft.components.liftingSurface.creator;
 
 import java.util.List;
-
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
-
 import org.jscience.physics.amount.Amount;
-
 import javaslang.Tuple2;
-import javaslang.Tuple5;
 
 public interface ILiftingSurfaceCreator {
 
@@ -66,14 +62,17 @@ public interface ILiftingSurfaceCreator {
 	public List<LiftingSurfacePanelCreator> getPanels();
 	public void addPanel(LiftingSurfacePanelCreator panel);
 
-	public List<SymmetricFlap> getSymmetricFlaps();
-
-	public List<Slats> getSlats();
-
-	public List<AsymmetricFlaps> getAsymmetricFlaps();
-
-	public List<Spoilers> getSpoilers();
-
+	public List<SymmetricFlapCreator> getSymmetricFlaps();
+	public void addSymmetricFlaps(SymmetricFlapCreator symmetricFlaps);
+	
+	public List<SlatCreator> getSlats();
+	public void addSlats(SlatCreator slats);
+	
+	public List<AsymmetricFlapCreator> getAsymmetricFlaps();
+	public void addAsymmetricFlaps(AsymmetricFlapCreator asymmetricFlaps);
+	
+	public List<SpoilerCreator> getSpoilers();
+	
 	//
 
 	public List<Amount<Length>> getDiscretizedYs();
@@ -93,5 +92,4 @@ public interface ILiftingSurfaceCreator {
 
 
 	public void reportPanelsToSpanwiseDiscretizedVariables();
-
 }

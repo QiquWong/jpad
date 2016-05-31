@@ -375,7 +375,7 @@ public class MyXMLReaderUtils {
 			XPathExpression expr =
 					xpath.compile(expression);
 			// evaluate expression result on XML document
-			List<String> list_elements = new ArrayList<>();
+			List<String> list_elements = new ArrayList<String>();
 			NodeList nodes = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
 
 			for (int i = 0; i < nodes.getLength(); i++)
@@ -428,7 +428,7 @@ public class MyXMLReaderUtils {
 					xpath.compile(expression);
 
 			// evaluate expression result on XML document
-			List<String> list_elements = new ArrayList<>();
+			List<String> list_elements = new ArrayList<String>();
 			NodeList nodes = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
 
 			for (int i = 0; i < nodes.getLength(); i++)

@@ -22,10 +22,10 @@ public abstract class AbstractLiftingSurface implements ILiftingSurfaceCreator {
 	protected String id;
 
 	protected List<LiftingSurfacePanelCreator> _panels;
-	protected List<SymmetricFlap> symmetricFlaps;
-	protected List<Slats> slats;
-	protected List<AsymmetricFlaps> asymmetricFlaps;
-	protected List<Spoilers> spoilers;
+	protected List<SymmetricFlapCreator> _symmetricFlaps;
+	protected List<SlatCreator> _slats;
+	protected List<AsymmetricFlapCreator> _asymmetricFlaps;
+	protected List<SpoilerCreator> _spoilers;
 
 	// in BRF
 	protected Amount<Length> x0;
@@ -93,20 +93,20 @@ public abstract class AbstractLiftingSurface implements ILiftingSurfaceCreator {
 		return _panels;
 	}
 
-	public List<SymmetricFlap> getSymmetricFlaps() {
-		return symmetricFlaps;
+	public List<SymmetricFlapCreator> getSymmetricFlaps() {
+		return _symmetricFlaps;
 	}
 
-	public List<Slats> getSlats() {
-		return slats;
+	public List<SlatCreator> getSlats() {
+		return _slats;
 	}
 
-	public List<AsymmetricFlaps> getAsymmetricFlaps() {
-		return asymmetricFlaps;
+	public List<AsymmetricFlapCreator> getAsymmetricFlaps() {
+		return _asymmetricFlaps;
 	}
 
-	public List<Spoilers> getSpoilers() {
-		return spoilers;
+	public List<SpoilerCreator> getSpoilers() {
+		return _spoilers;
 	}
 
 }

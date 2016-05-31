@@ -29,11 +29,11 @@ public interface ILiftingSurfacePanelCreator {
 	Amount<Length> getChordTip();
 	void setChordTip(Amount<Length> ct);
 	
-	Airfoil getAirfoilRoot();
-	void setAirfoilRoot(Airfoil a);
+	AirfoilCreator getAirfoilRoot();
+	void setAirfoilRoot(AirfoilCreator a);
 
-	Airfoil getAirfoilTip();
-	void setAirfoilTip(Airfoil a);
+	AirfoilCreator getAirfoilTip();
+	void setAirfoilTip(AirfoilCreator a);
 
 	Amount<Angle> getTwistGeometricAtTip();
 	void setTwistGeometricAtTip(Amount<Angle> epsilonG);

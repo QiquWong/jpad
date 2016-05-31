@@ -14,8 +14,8 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import aircraft.components.liftingSurface.creator.Airfoil;
-import aircraft.components.liftingSurface.creator.Airfoil.AirfoilBuilder;
+import aircraft.components.liftingSurface.creator.AirfoilCreator;
+import aircraft.components.liftingSurface.creator.AirfoilCreator.AirfoilBuilder;
 import configuration.enumerations.AirfoilTypeEnum;
 import sandbox.vt.TakeOff_Test.TakeOff_Test_TP;
 import standaloneutils.JPADXmlReader;
@@ -53,7 +53,7 @@ public class AirfoilTest_01 {
 		theTestObject.theCmdLineParser.parseArgument(args);
 		String pathToXML = theTestObject.getInputFile().getAbsolutePath();
 
-		Airfoil airfoil = Airfoil.importFromXML(pathToXML);
+		AirfoilCreator airfoil = AirfoilCreator.importFromXML(pathToXML);
 		System.out.println(airfoil);
 		
 	}
