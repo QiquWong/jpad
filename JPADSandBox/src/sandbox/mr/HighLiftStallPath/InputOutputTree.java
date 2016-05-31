@@ -44,11 +44,13 @@ public class InputOutputTree {
 	dihedralDistribution,
 	twistDistribution,
 	alphaZeroLiftDistribution,
-	alphaStarDistribution;
+	alphaStarDistribution,
+	leadingEdgeRdiusDistribution;
 
 	private int flapsNumber, slatsNumber;
 	
 	private List<Double> maximumliftCoefficientDistribution,
+	maximumTicknessDistribution,
 	yAdimensionalStationInput,
 	clalphaDistribution,
 	clZeroDistribution;
@@ -126,7 +128,9 @@ public class InputOutputTree {
 		alphaStarDistribution = new ArrayList<Amount>();
 		maximumliftCoefficientDistribution = new ArrayList<Double>();
 		yAdimensionalStationInput = new ArrayList<Double>();
-
+		maximumTicknessDistribution = new ArrayList<Double>();
+		leadingEdgeRdiusDistribution = new ArrayList<Amount>();
+		
 		clalphaDistribution  = new ArrayList<Double>();
 		clZeroDistribution  = new ArrayList<Double>();
 		
@@ -936,6 +940,26 @@ public class InputOutputTree {
 
 	public void setInfluenceCoefficient(List<Double> influenceCoefficient) {
 		this.influenceCoefficient = influenceCoefficient;
+	}
+
+
+	public List<Double> getMaximumTickness() {
+		return maximumTicknessDistribution;
+	}
+
+
+	public void setMaximumTickness(List<Double> maximumTickness) {
+		this.maximumTicknessDistribution = maximumTickness;
+	}
+
+
+	public List<Amount> getLeadingEdgeRdiusDistribution() {
+		return leadingEdgeRdiusDistribution;
+	}
+
+
+	public void setLeadingEdgeRdiusDistribution(List<Amount> leadingEdgeRdiusDistribution) {
+		this.leadingEdgeRdiusDistribution = leadingEdgeRdiusDistribution;
 	}
 
 

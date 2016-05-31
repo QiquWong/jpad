@@ -121,13 +121,13 @@ public class MeanAirfoilCalc {
 			double chordOut = MyMathUtils.getInterpolatedValue1DLinear(MyArrayUtils.convertToDoublePrimitive(input.getyAdimensionalStationInput()),
 					MyArrayUtils.convertListOfAmountodoubleArray(input.getChordDistribution()), etaOut);
 			
-			influenceAreas[0] = (chordIn * (etaOut - etaIn))/2;
-			influenceAreas[1] = (chordOut * (etaOut - etaIn))/2;
+			influenceAreas[0] = (chordIn * ((etaOut - etaIn)*input.getSemiSpan().getEstimatedValue()))/2;
+			influenceAreas[1] = (chordOut * ((etaOut - etaIn)*input.getSemiSpan().getEstimatedValue()))/2;
 			
 			// it returns the influence coefficient
 			
-			influenceFactors[0] = 2*influenceAreas[0]/input.getSurface().getEstimatedValue();
-			influenceFactors[1] = 2*influenceAreas[1]/input.getSurface().getEstimatedValue();
+			influenceFactors[0] = influenceAreas[0]/(influenceAreas[0] + influenceAreas[1]);
+			influenceFactors[1] = influenceAreas[1]/(influenceAreas[0] + influenceAreas[1]);
 			
 			return influenceFactors;
 	}

@@ -151,6 +151,13 @@ public class AppIO {
 		for(int i=0; i<yAdimensionalStationIput.size(); i++)
 			input.getyAdimensionalStationInput().add(Double.valueOf(yAdimensionalStationIput.get(i)));
 
+		List<String> maximumThiknessDistribution = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//max_thickness").get(0));
+		for(int i=0; i<maximumThiknessDistribution.size(); i++)
+			input.getMaximumTickness().add(Double.valueOf(maximumThiknessDistribution.get(i)));
+
+		List<String> leadingEdgeRadiusDistribution = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//leading_edge_radius").get(0));
+		for(int i=0; i<leadingEdgeRadiusDistribution.size(); i++)
+			input.getLeadingEdgeRdiusDistribution().add(Amount.valueOf(Double.valueOf(leadingEdgeRadiusDistribution.get(i)), SI.METER));
 
 		List<String> xleDistribution = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//x_le_distribution").get(0));
 		for(int i=0; i<xleDistribution.size(); i++)
@@ -178,11 +185,11 @@ public class AppIO {
 
 		List<String> clAlphaDistribution = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//lift_coefficient_linear_slope").get(0));
 		for(int i=0; i<clAlphaDistribution.size(); i++)
-			input.getClalphaDistribution().add(Double.valueOf(clMaxDistribution.get(i)));
+			input.getClalphaDistribution().add(Double.valueOf(clAlphaDistribution.get(i)));
 
 		List<String> clZeroDistribution = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//cl0").get(0));
 		for(int i=0; i<clZeroDistribution.size(); i++)
-			input.getClZeroDistribution().add(Double.valueOf(clMaxDistribution.get(i)));
+			input.getClZeroDistribution().add(Double.valueOf(clZeroDistribution.get(i)));
 
 
 
