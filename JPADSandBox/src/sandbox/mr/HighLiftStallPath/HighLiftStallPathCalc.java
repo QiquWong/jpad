@@ -377,6 +377,15 @@ public class HighLiftStallPathCalc {
 
 		Arrays.sort(yStationTotal);
 
+		for (int i=0; i<yStationTotal.length-2; i++){
+			if ( yStationTotal[i] == yStationTotal[i+1] &  yStationTotal[i+1] == yStationTotal[i+2]){
+				yStationTotal[i+2] = yStationTotal[i+1] + 0.002;
+				yStationTotal[i+1] = yStationTotal[i+1] + 0.001;
+			}
+		if ( yStationTotal[i] == yStationTotal[i+1]){
+			yStationTotal[i+1] = yStationTotal[i+1] + 0.001;
+		}
+		}
 		System.out.println("Y station Total" + Arrays.toString(yStationTotal));
 
 	// mean values
@@ -443,6 +452,8 @@ public class HighLiftStallPathCalc {
 			maxTicknessMeanFlap[i] = maxTicknessFlapStations[kk]* influenceFactor[0] + maxTicknessFlapStations[kk+1]*influenceFactor[1];
 		}
 		
+		System.out.println(" MAX TICKNESS MEAN FLAP STATIONS " + Arrays.toString(maxTicknessMeanFlap));
+		
 		for ( int i=0; i< input.getSlatsNumber(); i++){
 			int kk = i*2;
 			
@@ -487,6 +498,9 @@ public class HighLiftStallPathCalc {
 			
 		}
 
+		System.out.println(" LE RADIUS MEAN SLAT STATIONS " + Arrays.toString(leRadiusMeanSlat));
+		System.out.println(" CHORD MEAN SLAT STATIONS " + Arrays.toString(chordMeanSlat));
+		System.out.println(" MAX TICKNESS MEAN SLAT STATIONS " + Arrays.toString(maxTicknessMeanSlat));
 		// chords
 		// Base
 
@@ -812,6 +826,9 @@ public class HighLiftStallPathCalc {
 
 		// alpha star
 	
+		System.out.println("\n---------------------------");
+		System.out.println("        ALPHA STAR           ");
+		System.out.println("---------------------------\n");
 
 		Double[] alphaStarDistributionBase = MyMathUtils.getInterpolatedValue1DLinear(yStationInput, alphaStarInput, yStationTotal);
 
@@ -841,6 +858,10 @@ public class HighLiftStallPathCalc {
 		System.out.println(" Alpha star distribution total " + Arrays.toString(alphaStarDistributionTotal));
 		
 		// cl max
+		
+		System.out.println("\n---------------------------");
+		System.out.println("          CL MAX             ");
+		System.out.println("---------------------------\n");
 		Double[] clMaxDistributionBase = MyMathUtils.getInterpolatedValue1DLinear(yStationInput, clMaxInput, yStationTotal);
 
 		System.out.println("cl max distribution base :" + Arrays.toString(clMaxDistributionBase));
@@ -910,6 +931,9 @@ public class HighLiftStallPathCalc {
 				
 //				//---------------------------------------------------------------
 //				// deltaClmax (slat)
+				
+				List<Double> deltaClmaxSlatList = new ArrayList<Double>();
+				
 				if(input.getSlatsNumber() > 0.0) {
 			
 					List<Double> dCldDelta = new ArrayList<Double>();
@@ -934,7 +958,13 @@ public class HighLiftStallPathCalc {
 								);
 			
 					
-					List<Double> deltaClmaxSlatList = new ArrayList<Double>();
+					
+					System.out.println(" ETA MAX --> " + etaMaxSlat.toString());
+					
+					System.out.println(" ETA DELTA SLAT --> " + etaDeltaSlat.toString());
+					
+					System.out.println(" d cl --> " + dCldDelta.toString());
+					
 					for(int i=0; i<input.getSlatsNumber(); i++)
 						deltaClmaxSlatList.add(
 								dCldDelta.get(i).doubleValue()
@@ -948,8 +978,220 @@ public class HighLiftStallPathCalc {
 				}
 				
 				
+				
+				pos=0;
 
+				Double [] deltaClMaxFlap = new Double [yStationActualFlap.length];
+				for (int i=0; i<deltaClMaxFlap.length; i++){
+					deltaClMaxFlap[i] = 0.0;
+				}
+
+				for (int i=1; i<input.getFlapsNumber()+1; i++) {
+					pos=i*2;
+					deltaClMaxFlap[pos] = deltaClmaxFlapList.get(i-1);
+					deltaClMaxFlap[pos-1] = deltaClmaxFlapList.get(i-1);
+				}
+
+				System.out.println(" delta cl max flap with no separation" + Arrays.toString(deltaClMaxFlap));
+
+				ArrayList<Double> deltaclMaxFlapAsList  = new ArrayList<Double>(Arrays.asList(deltaClMaxFlap));
+				ArrayList<Double> deltaclmaxFlapWithSeparator  = new ArrayList<Double>(Arrays.asList(deltaClMaxFlap));
+
+				deltaclmaxFlapWithSeparator = createCompleteArray(input, deltaclMaxFlapAsList, yStationActualFlap, etaInFlap, etaOutFlap);
+				
+				System.out.println(" delta c due to flap with separation" + deltaclmaxFlapWithSeparator.toString());
+				
+				
+				pos=0;
+
+				Double [] deltaClMaxSlat = new Double [yStationActualSlat.length];
+				for (int i=0; i<deltaClMaxSlat.length; i++){
+					deltaClMaxSlat[i] = 0.0;
+				}
+
+				for (int i=1; i<input.getSlatsNumber()+1; i++) {
+					pos=i*2;
+					deltaClMaxSlat[pos] = deltaClmaxSlatList.get(i-1);
+					deltaClMaxSlat[pos-1] = deltaClmaxSlatList.get(i-1);
+				}
+
+				System.out.println(" delta cl max flap with no separation" + Arrays.toString(deltaClMaxSlat));
+
+				ArrayList<Double> deltaclMaxSlatAsList  = new ArrayList<Double>(Arrays.asList(deltaClMaxSlat));
+				ArrayList<Double> deltaclmaxSlatWithSeparator  = new ArrayList<Double>(Arrays.asList(deltaClMaxSlat));
+
+				deltaclmaxSlatWithSeparator = createCompleteArray(input, deltaclMaxSlatAsList, yStationActualSlat, etaInSlat, etaOutSlat);
+				
+				System.out.println(" delta cl max due to slat with separation" + deltaclmaxSlatWithSeparator.toString());
+
+				// TOTAL
+
+				double [] deltaclMaxFlapWithSeparatorArray = new double [deltaclMaxFlapAsList.size()];
+				double [] deltaclMaxSlatWithSeparatorArray = new double [deltaclMaxSlatAsList.size()];
+				for(int i=0; i<deltaclMaxFlapWithSeparatorArray.length; i++){
+					deltaclMaxFlapWithSeparatorArray[i] = deltaclMaxFlapAsList.get(i);
+					deltaclMaxSlatWithSeparatorArray[i] = deltaclMaxSlatAsList.get(i);
+				}
+				
+				MyArray deltaclMaxFlapMyArray = new MyArray(deltaclMaxFlapWithSeparatorArray);
+				MyArray deltaclMaxFlapTotal = MyArray.createArray(
+						deltaclMaxFlapMyArray.interpolate(
+								yStationTotalFlap,
+								yStationTotal));
+				
+				MyArray deltaclMaxSlatMyArray = new MyArray(deltaclMaxSlatWithSeparatorArray);
+				MyArray deltaclMaxSlatTotal = MyArray.createArray(
+						deltaclMaxSlatMyArray.interpolate(
+								yStationTotalSlat,
+								yStationTotal));
+
+
+				double [] clMaxDistributionTotal = new double [yStationTotal.length];
+
+				for (int i=0; i<yStationTotal.length; i++){
+					clMaxDistributionTotal [i] = clMaxDistributionBase[i] + deltaclMaxFlapTotal.get(i) + deltaclMaxSlatTotal.get(i);
+				}
+				
+				System.out.println(" cl max distribution total " + Arrays.toString(clMaxDistributionTotal));
+				
+				
+				
 		//Calculate flapped curve
+				
+				Double [] dihedralDistributionTotal = MyMathUtils.getInterpolatedValue1DLinear( 
+						MyArrayUtils.convertToDoublePrimitive(input.getyAdimensionalStationInput()),
+						dihedralInput,yStationTotal);
+				
+				Double [] twistDistributionTotal = MyMathUtils.getInterpolatedValue1DLinear( 
+						MyArrayUtils.convertToDoublePrimitive(input.getyAdimensionalStationInput()),
+						twistInput,
+						yStationTotal);
+				
+				System.out.println(" dihedral total " + Arrays.toString(dihedralDistributionTotal));
+				System.out.println(" dihedral total " + Arrays.toString(twistDistributionTotal));
+				double vortexSemiSpanToSemiSpanRatio = (1./(2*input.getNumberOfPointSemispan()));
+				
+				NasaBlackwell theNasaBlackwellCalculator = new  NasaBlackwell(
+						input.getSemiSpan().getEstimatedValue(), 
+						input.getSurface().getEstimatedValue(),
+						yStationTotal,
+						chordDistributionTotal,
+						xLeDistributionTotal,
+						MyArrayUtils.convertToDoublePrimitive(dihedralDistributionTotal),
+						MyArrayUtils.convertToDoublePrimitive(twistDistributionTotal),
+						alphaZeroLiftTotal.toArray(),
+						vortexSemiSpanToSemiSpanRatio,
+						0.0,
+						input.getMachNumber(),
+						input.getAltitude().getEstimatedValue());
+				
+				Amount<Angle> alphaFirst = Amount.valueOf(Math.toRadians(2.0), SI.RADIAN);
+				Amount<Angle> alphaSecond = Amount.valueOf(Math.toRadians(4.0), SI.RADIAN);
+
+				theNasaBlackwellCalculator.calculate(alphaFirst);
+				double [] clDistribution = theNasaBlackwellCalculator.get_clTotalDistribution().toArray();
+				double cLFirst = theNasaBlackwellCalculator.get_cLEvaluated();//MyMathUtils.integrate1DTrapezoidLinear(yStationActual, clDistribution, 0, 1);
+				//System.out.println("\n\n cL alpha 2 " + cLFirst);
+
+				theNasaBlackwellCalculator.calculate(alphaSecond);
+				double cLSecond = theNasaBlackwellCalculator.get_cLEvaluated();
+				//System.out.println(" cL alpha 4 " + cLSecond);
+
+				double cLAlpha = (cLSecond - cLFirst)/(alphaSecond.getEstimatedValue()-alphaFirst.getEstimatedValue()); // 1/rad
+				input.setClAlpha(Math.toRadians(cLAlpha));
+
+				System.out.println(" \n ");
+				//		System.out.println(" cL ALPHA " + cLAlpha);
+
+
+				Amount<Angle> alphaZero = Amount.valueOf(0.0, SI.RADIAN);
+
+				theNasaBlackwellCalculator.calculate(alphaZero);
+				double cLZero = theNasaBlackwellCalculator.get_cLEvaluated();
+				input.setcLZero(cLZero);
+				//		System.out.println(" cl zero " + cLZero);
+
+				double alphaZeroLift = -(cLZero)/cLAlpha;
+				input.setAlphaZeroLift(Amount.valueOf(Math.toDegrees(alphaZeroLift), NonSI.DEGREE_ANGLE));
+
+				//		System.out.println(" alpha zero lift (deg) " + Math.toDegrees(alphaZeroLift));
+
+
+				// alpha Star
+
+				double rootChord = chordInput[0];
+				double kinkChord = MyMathUtils.getInterpolatedValue1DLinear(yStationTotal, chordDistributionTotal,
+						input.getAdimensionalKinkStation());
+				double tipChord = chordInput[chordInput.length-1];
+
+				double alphaStarRoot= alphaStarDistributionTotal[0];
+				double alphaStarKink = MyMathUtils.getInterpolatedValue1DLinear(yStationTotal, alphaStarDistributionTotal,
+						input.getAdimensionalKinkStation());
+				double alphaStarTip = alphaStarDistributionTotal[alphaStarDistributionTotal.length-1];
+
+				double dimensionalKinkStation = input.getAdimensionalKinkStation()*input.getSemiSpan().getEstimatedValue();
+				double dimensionalOverKink = input.getSemiSpan().getEstimatedValue() - dimensionalKinkStation;
+
+				double influenceAreaRoot = rootChord * dimensionalKinkStation/2;
+				double influenceAreaKink = (kinkChord * dimensionalKinkStation/2) + (kinkChord * dimensionalOverKink/2);
+				double influenceAreaTip = tipChord * dimensionalOverKink/2;
+
+				double kRoot = 2*influenceAreaRoot/input.getSurface().getEstimatedValue();
+				double kKink = 2*influenceAreaKink/input.getSurface().getEstimatedValue();
+				double kTip = 2*influenceAreaTip/input.getSurface().getEstimatedValue();
+
+
+				double alphaStar =  alphaStarRoot * kRoot + alphaStarKink * kKink + alphaStarTip * kTip;
+
+				input.setAlphaStar(Amount.valueOf(Math.toDegrees(alphaStar), NonSI.DEGREE_ANGLE));
+				//		System.out.println(" alpha star (deg) " + Math.toDegrees(alphaStar));
+
+				Amount<Angle> alphaStarAmount = Amount.valueOf(alphaStar, SI.RADIAN);
+
+				theNasaBlackwellCalculator.calculate(alphaStarAmount);
+				double cLStar = theNasaBlackwellCalculator.get_cLEvaluated();
+				input.setClStar(cLStar);
+
+				//		System.out.println(" cL star " + cLStar);
+
+				// cl Max
+
+				double cLMax = LiftCalc.calculateCLMax(clMaxDistributionTotal,
+						input.getSemiSpan().getEstimatedValue(), 
+						input.getSurface().getEstimatedValue(),
+						yStationTotal,
+						chordDistributionTotal,
+						xLeDistributionTotal,
+						MyArrayUtils.convertToDoublePrimitive(dihedralDistributionTotal),
+						MyArrayUtils.convertToDoublePrimitive(twistDistributionTotal),
+						alphaZeroLiftTotal.toArray(),
+						vortexSemiSpanToSemiSpanRatio,
+						0.0,
+						input.getMachNumber(),
+						input.getAltitude().getEstimatedValue());
+
+				input.setClMax(cLMax);
+				//		System.out.println(" cl max " + cLMax);
+
+				// alpha stall
+				double alphaMax = ((cLMax-cLZero)/Math.toRadians(cLAlpha));
+				double alphaStall = alphaMax + input.getDeltaAlpha();
+
+				input.setAlphaStall(Amount.valueOf(alphaStall, NonSI.DEGREE_ANGLE));
+				//		System.out.println(" alpha Stall (deg) = " +  alphaStall);
+
+
+
+				// RESULTS
+
+				System.out.println(" \n-----------WING RESULTS-------------- ");
+				System.out.println(" Alpha stall = " + input.getAlphaStall().getEstimatedValue() + " " + input.getAlphaStall().getUnit());
+				System.out.println(" Alpha star = " + input.getAlphaStar().getEstimatedValue() + " " + input.getAlphaStar().getUnit());
+				System.out.println(" CL max = " + input.getClMax());
+				System.out.println(" CL star = " + input.getClStar());
+				System.out.println(" CL alpha = " + input.getClAlpha() + " (1/deg)");
+
+
 
 		// alpha0L
 
