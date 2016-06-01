@@ -476,7 +476,7 @@ public class HighLiftDevicesCalc {
 			for(int i=0; i<input.getSlatsNumber(); i++)
 				etaMaxSlat.add(highLiftDatabaseReader
 						.getEtaMaxVsLEradiusTicknessRatio(
-								(input.getLERadiusMeanAirfoil().divide(input.getMeanAirfoilChord())).divide(input.getMaxthicknessMeanAirfoil()).getEstimatedValue(),
+								(input.getLERadiusMeanAirfoil().divide(input.getMeanAirfoilChord())).getEstimatedValue(),
 								input.getMaxthicknessMeanAirfoil())
 						);
 

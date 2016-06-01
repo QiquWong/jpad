@@ -57,7 +57,6 @@ public interface ILiftingSurfaceCreator {
 	public Double getTaperRatio();
 
 	public LiftingSurfaceCreator getEquivalentWing(boolean recalculate);
-	public LiftingSurfaceCreator getEquivalentWing();
 
 	public List<LiftingSurfacePanelCreator> getPanels();
 	public void addPanel(LiftingSurfacePanelCreator panel);

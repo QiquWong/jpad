@@ -17,7 +17,17 @@
                     <geometric_twist unit="deg">-1.0</geometric_twist>
                 </outer_section>
             </panel>
-            <panel id="Outer panel" linked_to="Inner panel">
+			<panel id="Middle panel" linked_to="Inner panel">
+                <semispan unit="m">5.0</semispan>
+                <dihedral unit="deg">2.5</dihedral>
+                <sweep_leading_edge unit="deg">15</sweep_leading_edge>
+                <outer_section>
+                    <chord unit="m">1.4</chord>
+                    <airfoil file="naca63209.xml"/>
+                    <geometric_twist unit="deg">-2.5</geometric_twist>
+                </outer_section>
+            </panel>
+            <panel id="Outer panel" linked_to="Middle panel">
                 <semispan unit="m">7.0</semispan>
                 <dihedral unit="deg">3.5</dihedral>
                 <sweep_leading_edge unit="deg">10</sweep_leading_edge>

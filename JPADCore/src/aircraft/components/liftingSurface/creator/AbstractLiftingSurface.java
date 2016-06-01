@@ -1,20 +1,15 @@
 package aircraft.components.liftingSurface.creator;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
-import javax.measure.unit.SI;
-import javax.measure.unit.Unit;
 
 import org.jscience.physics.amount.Amount;
 
 import javaslang.Tuple2;
 import javaslang.Tuple5;
-import javaslang.Tuple6;
 import standaloneutils.customdata.MyArray;
 
 public abstract class AbstractLiftingSurface implements ILiftingSurfaceCreator {

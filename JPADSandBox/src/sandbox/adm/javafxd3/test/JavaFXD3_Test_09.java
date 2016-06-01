@@ -126,18 +126,36 @@ public class JavaFXD3_Test_09 extends Application {
 
 		List<Double[][]> listDataArray = new ArrayList<Double[][]>();
 
-		listDataArray.add(dataChordsVsY);
-		// listDataArray.add(dataXleVsY);
+//		listDataArray.add(dataChordsVsY);
+// 		listDataArray.add(dataXleVsY);
 		listDataArray.add(dataTopView);
 
-		List<Double[][]> listAuxDataArray = new ArrayList<Double[][]>();
-
+		int nSec = theWing.get_liftingSurfaceCreator().getDiscretizedXle().size();
+		int nPanels = theWing.get_liftingSurfaceCreator().getPanels().size();
+		
+		Double[][] eqPts = new Double[4][2];
+		eqPts[0][0] = 0.0;
+		eqPts[0][1] = theWing.get_liftingSurfaceCreator().getXOffsetEquivalentWingRootLE().doubleValue(SI.METER);
+		eqPts[1][0] = theWing.get_liftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
+		eqPts[1][1] = theWing.get_liftingSurfaceCreator().getDiscretizedXle().get(nSec - 1).doubleValue(SI.METER);
+		eqPts[2][0] = theWing.get_liftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
+		eqPts[2][1] = theWing.get_liftingSurfaceCreator().getDiscretizedXle().get(nSec - 1)
+				.plus(
+						theWing.get_liftingSurfaceCreator().getPanels().get(nPanels - 1).getChordTip()
+						)
+				.doubleValue(SI.METER);
+		eqPts[3][0] = 0.0;
+		eqPts[3][1] = theWing.get_liftingSurfaceCreator().getPanels().get(0).getChordRoot()
+				.minus(theWing.get_liftingSurfaceCreator().getXOffsetEquivalentWingRootTE())
+				.doubleValue(SI.METER);
+		
+		listDataArray.add(eqPts);
+		
 		Double[][] xyMAC = new Double[2][2];
 		xyMAC[0][0] = wing.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeY().doubleValue(SI.METRE);
 		xyMAC[0][1] = wing.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METRE);
 		xyMAC[1][0] = xyMAC[0][0];
 		xyMAC[1][1] = xyMAC[0][1] + wing.getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METRE);
-		listAuxDataArray.add(xyMAC);
 
 		listDataArray.add(xyMAC);
 
@@ -159,13 +177,13 @@ public class JavaFXD3_Test_09 extends Application {
 				.showYGrid(true)
 				//				.symbolType(SymbolType.CIRCLE)
 				.symbolTypes(
-						SymbolType.TRIANGLE_UP,
+						SymbolType.CIRCLE,
 						SymbolType.CIRCLE,
 						SymbolType.CIRCLE
 						)
 				//				.symbolSize(20)
-				.symbolSizes(20,10)
-				.showSymbols(false,true,true) // NOTE: overloaded function
+				.symbolSizes(20,20,20)
+				.showSymbols(true,true,true) // NOTE: overloaded function
 				//				.symbolStyle("fill:yellow; stroke:green; stroke-width:2")
 				.symbolStyles(
 						"fill:blue; stroke:red; stroke-width:2",
@@ -177,16 +195,16 @@ public class JavaFXD3_Test_09 extends Application {
 				//						"fill:none; stroke:darkgreen; stroke-width:3"
 				//						)
 				.lineStyles(
-						"fill:none; stroke:magenta; stroke-dasharray: 15px, 2px; stroke-width:2",
+						"fill:none; stroke:darkblue; stroke-width:3",
 						"fill:none; stroke:darkblue; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:3"
+						"fill:none; stroke:black; stroke-width:2"
 						)
 				//				.plotArea(false)
-				.plotAreas(false,true)
+				.plotAreas(true,true,false,false)
 				//				.areaStyle("fill:orange;")
-				.areaStyles("fill:orange;","fill:yellow;")
+				.areaStyles("fill:orange;","fill:yellow;","fill:yellow;")
 				//				.areaOpacity(0.7)
-				.areaOpacities(0.50,0.70)
+				.areaOpacities(1.0,0.50,0.70)
 				//.legendItems("Pippo1", "agodemar2", "crocco3")
 				//				.showSymbolsAux(false, false) // NOTE: overloaded function
 				//				.symbolSizesAux(10)
@@ -280,13 +298,13 @@ public class JavaFXD3_Test_09 extends Application {
 //			theWing = new LiftingSurfaceBuilder("MyWing", ComponentEnum.WING)
 //					.liftingSurfaceCreator(
 //						new LiftingSurfaceCreator
-//							.LiftingSurfaceCreatorBuilder("Test ATR72 wing", AircraftEnum.ATR72)
+//							.LiftingSurfaceBuilder("Test ATR72 wing", AircraftEnum.ATR72)
 //							.build()
 //					)
 //					.build();
 
 			JavaFXD3_Test_09.theWing.calculateGeometry(40);
-
+			
 			System.out.println("The wing ...");
 			System.out.println(JavaFXD3_Test_09.theWing.get_liftingSurfaceCreator().toString());
 			System.out.println("Details on panel discretization ...");

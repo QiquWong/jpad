@@ -1,7 +1,6 @@
 package aircraft.components.liftingSurface.creator;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,27 +9,17 @@ import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
-import javax.measure.unit.UnitFormat;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.jscience.physics.amount.Amount;
-import org.jscience.physics.amount.AmountFormat;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
-import aircraft.components.liftingSurface.creator.AirfoilCreator.AirfoilBuilder;
 import configuration.MyConfiguration;
-import javolution.text.TypeFormat;
-import javolution.text.TextFormat.Cursor;
-import standaloneutils.JPADGlobalData;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;
 
@@ -81,6 +70,7 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 //
 //	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void calculateGeometry() {
 

@@ -272,7 +272,7 @@ public class JavaFXD3_Test_08 extends Application {
 	    	//====================================================================================
 	    	// THIS SEQUENCE CREATES A WING OBJECT WITH DEFAULT DATA :
 	    	JavaFXD3_Test_08.theWing = new LiftingSurfaceCreator
-	    			.LiftingSurfaceCreatorBuilder("Test ATR72 wing", AircraftEnum.ATR72)
+	    			.LiftingSurfaceBuilder("Test ATR72 wing", AircraftEnum.ATR72)
 	    			.build();
 	    	//====================================================================================
 	    	
