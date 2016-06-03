@@ -41,6 +41,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 	int _numberOfSpanwisePoints = 15;
 	private Amount<Length> _xOffsetEquivalentWingRootLE; // leading edge offset of the equivalent wing root chord ( >0 if inside original root chord)
 	private Amount<Length> _xOffsetEquivalentWingRootTE; // trailing edge offset of the equivalent wing root chord ( >0 if inside original root chord)
+	private LiftingSurfaceCreator _equivalentWing;
 	
 	public LiftingSurfaceCreator(String id) {
 		this.id = id;
@@ -920,7 +921,8 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 						(getDiscretizedXle().get(getDiscretizedXle().size()-1).getEstimatedValue())
 						/getSemiSpan().getEstimatedValue()
 						),
-				NonSI.DEGREE_ANGLE);
+				SI.RADIAN)
+				.to(NonSI.DEGREE_ANGLE);
 		
 		Amount<Angle> dihedralEquivalentWing = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		for(int i=0; i<getPanels().size(); i++)
@@ -942,18 +944,18 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 						dihedralEquivalentWing)
 				.build();
 		
-		LiftingSurfaceCreator equivalentWing = new LiftingSurfaceCreator("Equivalent Wing");
+		_equivalentWing = new LiftingSurfaceCreator("Equivalent Wing");
 		
-		equivalentWing.addPanel(equivalentWingPanel);
+		_equivalentWing.addPanel(equivalentWingPanel);
 		
-		return equivalentWing;
+		return _equivalentWing;
 	}
 
 
 	@Override
 	public LiftingSurfaceCreator getEquivalentWing(boolean recalculate) {
-		// TODO Auto-generated method stub
-		return null;
+		if(recalculate)	this.calculateEquivalentWing();
+		return this._equivalentWing;
 	}
 
 	/**
@@ -1567,6 +1569,12 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 			sb.append(panel.toString());
 		}
 
+		sb.append("\t---------------------------------------\n")
+		  .append("\tEquivalent wing\n")
+		  .append("\t---------------------------------------\n")
+		  ;
+		sb.append(this._equivalentWing.getPanels().get(0).toString());
+		
 		if(!(_symmetricFlaps == null)) {
 			for (SymmetricFlapCreator symmetricFlap : _symmetricFlaps) {
 				sb.append(symmetricFlap.toString());
