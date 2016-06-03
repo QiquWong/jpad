@@ -71,8 +71,7 @@ public interface ILiftingSurfaceCreator {
 	public void addAsymmetricFlaps(AsymmetricFlapCreator asymmetricFlaps);
 	
 	public List<SpoilerCreator> getSpoilers();
-	
-	//
+	public void addSpoilers(SpoilerCreator spoilers);
 
 	public List<Amount<Length>> getDiscretizedYs();
 	public List<Amount<Length>> getDiscretizedChords();

@@ -24,7 +24,8 @@ public class SymmetricFlapCreator implements ISymmetricFlapCreator {
 				   _innerChordRatio,
 				   _outerChordRatio,
 				   _meanChordRatio;
-	private Amount<Angle> _deflection;
+	private Amount<Angle> _minimumDeflection;
+	private Amount<Angle> _maximumDeflection;
 
 	//=================================================================
 	// Builder pattern via a nested public static class
@@ -37,7 +38,8 @@ public class SymmetricFlapCreator implements ISymmetricFlapCreator {
 		private Double __outerStationSpanwisePosition;
 		private Double __innerChordRatio;
 		private Double __outerChordRatio;
-		private Amount<Angle> __deflection;
+		private Amount<Angle> __minimumDeflection;
+		private Amount<Angle> __maximumDeflection;
 
 		// optional parameters ... defaults
 		// ...
@@ -49,7 +51,8 @@ public class SymmetricFlapCreator implements ISymmetricFlapCreator {
 				Double outerStationSpanwisePosition,
 				Double innerChordRatio,
 				Double outerChordRatio,
-				Amount<Angle> deflection
+				Amount<Angle> minimumDeflection,
+				Amount<Angle> maximumDeflection
 				){
 			this.__id = id;
 			this.__type = type;
@@ -57,7 +60,8 @@ public class SymmetricFlapCreator implements ISymmetricFlapCreator {
 			this.__outerStationSpanwisePosition = outerStationSpanwisePosition;
 			this.__innerChordRatio = innerChordRatio;
 			this.__outerChordRatio = outerChordRatio;
-			this.__deflection = deflection;
+			this.__minimumDeflection = minimumDeflection;
+			this.__maximumDeflection = maximumDeflection;
 		}
 
 		public SymmetricFlapCreator build() {
@@ -73,7 +77,8 @@ public class SymmetricFlapCreator implements ISymmetricFlapCreator {
 		_outerStationSpanwisePosition = builder.__outerStationSpanwisePosition;
 		_innerChordRatio = builder.__innerChordRatio;
 		_outerChordRatio = builder.__outerChordRatio;
-		_deflection = builder.__deflection;
+		_minimumDeflection = builder.__minimumDeflection;
+		_maximumDeflection = builder.__maximumDeflection;
 		
 		calculateMeanChordRatio(_innerChordRatio, _outerChordRatio);
 	}
@@ -154,10 +159,15 @@ public class SymmetricFlapCreator implements ISymmetricFlapCreator {
 		Double outerChordRatio = Double
 				.valueOf(outerChordRatioProperty);
 		
-		Amount<Angle> deflection = MyXMLReaderUtils
+		Amount<Angle> minimumDeflection = MyXMLReaderUtils
 				.getXMLAmountAngleByPath(
 						doc, xpath,
-						"//symmetric_flap/deflection");
+						"//symmetric_flap/min_deflection");
+		
+		Amount<Angle> maximumDeflection = MyXMLReaderUtils
+				.getXMLAmountAngleByPath(
+						doc, xpath,
+						"//symmetric_flap/max_deflection");
 		
 		// create the wing panel via its builder
 		SymmetricFlapCreator symmetricFlap =
@@ -168,7 +178,8 @@ public class SymmetricFlapCreator implements ISymmetricFlapCreator {
 						outerStationSpanwisePosition,
 						innerChordRatio,
 						outerChordRatio,
-						deflection
+						minimumDeflection,
+						maximumDeflection
 						)
 				.build();
 
@@ -191,7 +202,8 @@ public class SymmetricFlapCreator implements ISymmetricFlapCreator {
 			.append("\tInner chord ratio = " + _innerChordRatio + "\n")
 			.append("\tOuter chord ratio = " + _outerChordRatio + "\n")
 			.append("\tMean chord ratio = " + _meanChordRatio + "\n")
-			.append("\tDeflection = " + _deflection.to(NonSI.DEGREE_ANGLE) + "\n")
+			.append("\tMinimum deflection = " + _minimumDeflection.doubleValue(NonSI.DEGREE_ANGLE) + "\n")
+			.append("\tMaximum deflection = " + _maximumDeflection.doubleValue(NonSI.DEGREE_ANGLE) + "\n")
 			.append("\t.....................................\n")
 			;
 		return sb.toString();
@@ -255,13 +267,23 @@ public class SymmetricFlapCreator implements ISymmetricFlapCreator {
 	}
 	
 	@Override
-	public Amount<Angle> getDeflection() {
-		return _deflection;
+	public Amount<Angle> getMinimumDeflection() {
+		return _minimumDeflection;
 	}
 
 	@Override
-	public void setDeflection(Amount<Angle> deltaFlap) {
-		_deflection = deltaFlap;
+	public void setMinimumDeflection(Amount<Angle> deltaFlapMin) {
+		_minimumDeflection = deltaFlapMin;
+	}
+
+	@Override
+	public Amount<Angle> getMaximumDeflection() {
+		return _maximumDeflection;
+	}
+
+	@Override
+	public void setMaximumDeflection(Amount<Angle> deltaFlapMax) {
+		_maximumDeflection = deltaFlapMax;
 	}
 	
 	@Override
@@ -273,4 +295,5 @@ public class SymmetricFlapCreator implements ISymmetricFlapCreator {
 	public void setType(FlapTypeEnum flapType) {
 		_type = flapType;
 	}
+
 }

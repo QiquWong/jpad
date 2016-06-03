@@ -222,6 +222,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 									0.35,
 									0.35,
 									0.32,
+									Amount.valueOf(0, NonSI.DEGREE_ANGLE),
 									Amount.valueOf(40, NonSI.DEGREE_ANGLE)			
 									)
 							.build();
@@ -234,6 +235,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 									0.8,
 									0.35,
 									0.32,
+									Amount.valueOf(0, NonSI.DEGREE_ANGLE),
 									Amount.valueOf(40, NonSI.DEGREE_ANGLE)									
 									)
 							.build();
@@ -249,7 +251,8 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 									0.98,
 									0.33,
 									0.33,
-									Amount.valueOf(-5.0, NonSI.DEGREE_ANGLE)
+									Amount.valueOf(-25.0, NonSI.DEGREE_ANGLE),
+									Amount.valueOf(25.0, NonSI.DEGREE_ANGLE)
 									)
 							.build();
 					
@@ -261,7 +264,8 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 									0.98,
 									0.33,
 									0.33,
-									Amount.valueOf(5.0, NonSI.DEGREE_ANGLE)
+									Amount.valueOf(-25.0, NonSI.DEGREE_ANGLE),
+									Amount.valueOf(25.0, NonSI.DEGREE_ANGLE)
 									)
 							.build();
 					
@@ -425,8 +429,19 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 		//---------------------------------------------------------------------------------
 		// SPOILERS
-		// TODO : SEE ISpoilers or Spoilers classes
-
+		NodeList nodelistSpoilers = MyXMLReaderUtils
+				.getXMLNodeListByPath(reader.getXmlDoc(), "//spoilers/spoiler");
+		
+		System.out.println("Spoilers found: " + nodelistSpoilers.getLength());
+		
+		for (int i = 0; i < nodelistSpoilers.getLength(); i++) {
+			Node nodeSpoiler  = nodelistSpoilers.item(i); // .getNodeValue();
+			Element elementSpoiler = (Element) nodeSpoiler;
+            System.out.println("[" + i + "]\nSlat id: " + elementSpoiler.getAttribute("id"));
+            
+            wing.addSpoilers(SpoilerCreator.importFromSpoilerNode(nodeSpoiler));
+		}
+		
 		return wing;
 	}
 
@@ -448,6 +463,11 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 	@Override
 	public void addSlats(SlatCreator slats) {
 		_slats.add(slats);
+	}
+	
+	@Override
+	public void addSpoilers(SpoilerCreator spoilers) {
+		_spoilers.add(spoilers);
 	}
 	
 	@Override
@@ -1590,6 +1610,12 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		if(!(_asymmetricFlaps == null)) {
 			for (AsymmetricFlapCreator asymmetricFlaps : _asymmetricFlaps) {
 				sb.append(asymmetricFlaps.toString());
+			}
+		}
+		
+		if(!(_spoilers == null)) {
+			for (SpoilerCreator spoilers : _spoilers) {
+				sb.append(spoilers.toString());
 			}
 		}
 		

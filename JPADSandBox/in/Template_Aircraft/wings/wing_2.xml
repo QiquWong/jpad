@@ -34,19 +34,22 @@
                 <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.36</outer_station_spanwise_position>
                 <inner_chord_ratio>0.30</inner_chord_ratio>
 				<outer_chord_ratio>0.28</outer_chord_ratio>
-                <deflection unit="deg">40.0</deflection>
+                <min_deflection unit="deg">0.0</min_deflection>
+				<max_deflection unit="deg">40.0</max_deflection>
             </symmetric_flap>
 			<symmetric_flap id="Outer flap" type="FOWLER">
                 <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.4</inner_station_spanwise_position>
                 <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.75</outer_station_spanwise_position>
                 <inner_chord_ratio>0.30</inner_chord_ratio>
 				<outer_chord_ratio>0.28</outer_chord_ratio>
-                <deflection unit="deg">40.0</deflection>
+                <min_deflection unit="deg">0.0</min_deflection>
+				<max_deflection unit="deg">40.0</max_deflection>
             </symmetric_flap>
         </symmetric_flaps>
         <slats>
             <slat id="1">
-                <deflection unit = "°">25</deflection>
+                <min_deflection unit="deg">0.0</min_deflection>
+				<max_deflection unit="deg">25.0</max_deflection>
                 <inner_chord_ratio>0.055</inner_chord_ratio>
 				<outer_chord_ratio>0.055</outer_chord_ratio>
                 <extension_ratio>1.1</extension_ratio>
@@ -54,7 +57,8 @@
                 <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.33</outer_station_spanwise_position>
             </slat>
             <slat id="2">
-                <deflection unit = "°">25</deflection>
+                <min_deflection unit="deg">0.0</min_deflection>
+				<max_deflection unit="deg">25.0</max_deflection>
                 <inner_chord_ratio>0.085</inner_chord_ratio>
 				<outer_chord_ratio>0.085</outer_chord_ratio>
                 <extension_ratio>1.1</extension_ratio>
@@ -62,7 +66,8 @@
                 <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.56</outer_station_spanwise_position>
             </slat>
             <slat id="3">
-                <deflection unit = "°">25</deflection>
+                <min_deflection unit="deg">0.0</min_deflection>
+				<max_deflection unit="deg">25.0</max_deflection>
                 <inner_chord_ratio>0.095</inner_chord_ratio>
 				<outer_chord_ratio>0.095</outer_chord_ratio>
                 <extension_ratio>1.1</extension_ratio>
@@ -70,7 +75,8 @@
                 <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.73</outer_station_spanwise_position>
             </slat>
             <slat id="4">
-                <deflection unit = "°">25</deflection>
+                <min_deflection unit="deg">0.0</min_deflection>
+				<max_deflection unit="deg">25.0</max_deflection>
                 <inner_chord_ratio>0.11</inner_chord_ratio>
 				<outer_chord_ratio>0.11</outer_chord_ratio>
                 <extension_ratio>1.1</extension_ratio>
@@ -84,22 +90,34 @@
                 <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.97</outer_station_spanwise_position>
                 <inner_chord_ratio>0.25</inner_chord_ratio>
 				<outer_chord_ratio>0.25</outer_chord_ratio>
-                <deflection unit="deg">-5.0</deflection>
+                <min_deflection unit="deg">-25.0</min_deflection>
+				<max_deflection unit="deg">25.0</max_deflection>
             </asymmetric_flap>
 			<asymmetric_flap id="Right aileron" type="PLAIN">
                 <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.75</inner_station_spanwise_position>
                 <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.97</outer_station_spanwise_position>
                 <inner_chord_ratio>0.25</inner_chord_ratio>
 				<outer_chord_ratio>0.25</outer_chord_ratio>
-                <deflection unit="deg">5.0</deflection>
+                <min_deflection unit="deg">-25.0</min_deflection>
+				<max_deflection unit="deg">25.0</max_deflection>
             </asymmetric_flap>
         </asymmetric_flaps>
         <spoilers>
-            <spoiler id="Spoiler">
-                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.75</inner_station_spanwise_position>
-                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.97</outer_station_spanwise_position>
-                <chord_ratio>0.2</chord_ratio>
-                <deflection unit="deg">60.0</deflection>
+            <spoiler id="1">
+                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.20</inner_station_spanwise_position>
+                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.30</outer_station_spanwise_position>
+                <inner_station_chordwise_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.65</inner_station_chordwise_position>
+                <outer_station_chordwise_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.80</outer_station_chordwise_position>
+                <min_deflection unit="deg">0.0</min_deflection>
+				<max_deflection unit="deg">90.0</max_deflection>
+            </spoiler>
+			<spoiler id="2">
+                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.40</inner_station_spanwise_position>
+                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.75</outer_station_spanwise_position>
+                <inner_station_chordwise_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.65</inner_station_chordwise_position>
+                <outer_station_chordwise_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.80</outer_station_chordwise_position>
+                <min_deflection unit="deg">0.0</min_deflection>
+				<max_deflection unit="deg">90.0</max_deflection>
             </spoiler>
         </spoilers>
     </wing>

@@ -8,6 +8,8 @@ import javax.measure.quantity.Mass;
 
 import org.jscience.physics.amount.Amount;
 
+import aircraft.components.fuselage.creator.SpoilerCreator;
+
 public interface IFuselageCreator {
 
 	public void calculateGeometry(
@@ -43,7 +45,5 @@ public interface IFuselageCreator {
 	public Amount<Area> getSurfaceWetted();
 
 	public List<Amount<Length>> getDiscretizedYs();
-	//TODO: add section, etc...
-
-
+	
 }

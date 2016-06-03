@@ -12,7 +12,6 @@ import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
-import javax.measure.unit.Unit;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.analysis.UnivariateFunction;

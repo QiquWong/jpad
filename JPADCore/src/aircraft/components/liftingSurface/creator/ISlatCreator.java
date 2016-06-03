@@ -20,9 +20,10 @@ public interface ISlatCreator {
 	Double getExtensionRatio();
 	void setExtensionRatio(Double extensionRatio);
 	
-	Amount<Angle> getDeflection();
-	void setDeflection(Amount<Angle> deltaFlap);
-	
+	Amount<Angle> getMinimumDeflection();
+	void setMinimumDeflection(Amount<Angle> deltaSlatMin);
+	Amount<Angle> getMaximumDeflection();
+	void setMaximumDeflection(Amount<Angle> deltaSlatMax);
 	
 	public void calculateMeanChordRatio(Double cfcIn, Double cfcOut);
 	

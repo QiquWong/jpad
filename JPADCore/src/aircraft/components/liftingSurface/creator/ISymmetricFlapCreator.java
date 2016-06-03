@@ -23,8 +23,10 @@ public interface ISymmetricFlapCreator {
 	Double getMeanChordRatio();
 	void setMeanChordRatio(Double cfcOut);
 	
-	Amount<Angle> getDeflection();
-	void setDeflection(Amount<Angle> deltaFlap);
+	Amount<Angle> getMinimumDeflection();
+	void setMinimumDeflection(Amount<Angle> deltaFlapMin);
+	Amount<Angle> getMaximumDeflection();
+	void setMaximumDeflection(Amount<Angle> deltaFlapMax);
 	
 	public void calculateMeanChordRatio(Double cfcIn, Double cfcOut);
 }

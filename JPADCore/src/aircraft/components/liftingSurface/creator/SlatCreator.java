@@ -23,7 +23,8 @@ public class SlatCreator implements ISlatCreator {
 				   _outerChordRatio,
 				   _meanChordRatio,
 				   _extensionRatio;
-	private Amount<Angle> _deflection;
+	private Amount<Angle> _minimumDeflection;
+	private Amount<Angle> _maximumDeflection;
 
 	//=================================================================
 	// Builder pattern via a nested public static class
@@ -36,7 +37,8 @@ public class SlatCreator implements ISlatCreator {
 		private Double __innerChordRatio;
 		private Double __outerChordRatio;
 		private Double __extensionRatio;
-		private Amount<Angle> __deflection;
+		private Amount<Angle> __minimumDeflection;
+		private Amount<Angle> __maximumDeflection;
 
 		// optional parameters ... defaults
 		// ...
@@ -48,7 +50,8 @@ public class SlatCreator implements ISlatCreator {
 				Double innerChordRatio,
 				Double outerChordRatio,
 				Double extensionRatio,
-				Amount<Angle> deflection
+				Amount<Angle> minimumDeflection,
+				Amount<Angle> maximumDeflection
 				){
 			this.__id = id;
 			this.__innerStationSpanwisePosition = innerStationSpanwisePosition;
@@ -56,7 +59,8 @@ public class SlatCreator implements ISlatCreator {
 			this.__innerChordRatio = innerChordRatio;
 			this.__outerChordRatio = outerChordRatio;
 			this.__extensionRatio = extensionRatio;
-			this.__deflection = deflection;
+			this.__minimumDeflection = minimumDeflection;
+			this.__maximumDeflection = maximumDeflection;
 		}
 
 		public SlatCreator build() {
@@ -72,7 +76,8 @@ public class SlatCreator implements ISlatCreator {
 		_innerChordRatio = builder.__innerChordRatio;
 		_outerChordRatio = builder.__outerChordRatio;
 		_extensionRatio = builder.__extensionRatio;
-		_deflection = builder.__deflection;
+		_minimumDeflection = builder.__minimumDeflection;
+		_maximumDeflection = builder.__maximumDeflection;
 		
 		calculateMeanChordRatio(_innerChordRatio, _outerChordRatio);
 	}
@@ -106,10 +111,15 @@ public class SlatCreator implements ISlatCreator {
 						doc, xpath,
 						"//slat/@id");
 		
-		Amount<Angle> deflection = MyXMLReaderUtils
+		Amount<Angle> minimumDeflection = MyXMLReaderUtils
 				.getXMLAmountAngleByPath(
 						doc, xpath,
-						"//slat/deflection");
+						"//slat/min_deflection");
+		
+		Amount<Angle> maximumDeflection = MyXMLReaderUtils
+				.getXMLAmountAngleByPath(
+						doc, xpath,
+						"//slat/max_deflection");
 		
 		String innerChordRatioProperty = MyXMLReaderUtils
 				.getXMLPropertyByPath(
@@ -155,7 +165,8 @@ public class SlatCreator implements ISlatCreator {
 						innerChordRatio,
 						outerChordRatio,
 						extensionRatio,
-						deflection
+						minimumDeflection,
+						maximumDeflection
 						)
 				.build();
 
@@ -172,7 +183,8 @@ public class SlatCreator implements ISlatCreator {
 			.append("\tSlat\n")
 			.append("\t-------------------------------------\n")
 			.append("\tID: '" + _id + "'\n")
-			.append("\tDeflection = " + _deflection.to(NonSI.DEGREE_ANGLE) + "\n")
+			.append("\tMinimum deflection = " + _minimumDeflection.doubleValue(NonSI.DEGREE_ANGLE) + "\n")
+			.append("\tMaximum deflection = " + _maximumDeflection.doubleValue(NonSI.DEGREE_ANGLE) + "\n")
 			.append("\tInner chord ratio = " + _innerChordRatio + "\n")
 			.append("\tOuter chord ratio = " + _outerChordRatio + "\n")
 			.append("\tMean chord ratio = " + _meanChordRatio + "\n")
@@ -242,13 +254,23 @@ public class SlatCreator implements ISlatCreator {
 	}
 	
 	@Override
-	public Amount<Angle> getDeflection() {
-		return _deflection;
+	public Amount<Angle> getMinimumDeflection() {
+		return _minimumDeflection;
 	}
 
 	@Override
-	public void setDeflection(Amount<Angle> deltaFlap) {
-		_deflection = deltaFlap;
+	public void setMinimumDeflection(Amount<Angle> deltaSlatMin) {
+		_minimumDeflection = deltaSlatMin;
+	}
+	
+	@Override
+	public Amount<Angle> getMaximumDeflection() {
+		return _maximumDeflection;
+	}
+
+	@Override
+	public void setMaximumDeflection(Amount<Angle> deltaSlatMax) {
+		_maximumDeflection = deltaSlatMax;
 	}
 	
 	@Override

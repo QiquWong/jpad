@@ -1,4 +1,4 @@
-package aircraft.components.liftingSurface.creator;
+package aircraft.components.fuselage.creator;
 
 import javax.measure.quantity.Angle;
 
