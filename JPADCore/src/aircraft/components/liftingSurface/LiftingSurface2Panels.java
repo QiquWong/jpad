@@ -49,7 +49,7 @@ import standaloneutils.customdata.CenterOfGravity;
 import standaloneutils.customdata.MyArray;
 import writers.JPADStaticWriteUtils;
 
-public class LiftingSurface2Panels extends AeroComponent{
+public class LiftingSurface2Panels extends AeroComponent implements ILiftingSurface2Panels {
 
 	String id = null;
 
@@ -61,21 +61,159 @@ public class LiftingSurface2Panels extends AeroComponent{
 	 */
 	
 	Fuselage _theFuselage; // N-
-	ComponentEnum _type; // N+
 	OperatingConditions _theOperatingConditions; // N-
 	Aircraft _theAircraft; // N--
 
-	Amount<Length> _xApexConstructionAxes = null; // N+
-	Amount<Length> _yApexConstructionAxes = null; // N+
-	Amount<Length> _zApexConstructionAxes = null; // N+
+	ComponentEnum _type;
+	
 	Double _positionRelativeToAttachment = null; // 1.0 = high wing aircraft, 0.0 = low wing 
 	// N- (move)
 
 	
-	//=========================================================
+	//=========================================================================================================================================
+	// BEGIN OF THE CONSTRUCTOR USING BUILDER PATTERN
+	//=========================================================================================================================================
+
 	// the creator object
-	
 	private LiftingSurfaceCreator theLiftingSurfaceCreator;
+	
+	private String _id = null;
+	private ComponentEnum _liftingSurfaceType;
+	private Amount<Length> _xApexConstructionAxes = null; 
+	private Amount<Length> _yApexConstructionAxes = null; 
+	private Amount<Length> _zApexConstructionAxes = null;
+
+	private LiftingSurfaceCreator _liftingSurfaceCreator;
+
+	//********************************************************
+	// Builder pattern via a nested public static class
+	public static class LiftingSurface2PanelsBuilder {
+
+		private String __id = null;
+		private ComponentEnum __liftingSurfaceType;
+		private Amount<Length> __xApexConstructionAxes = null; 
+		private Amount<Length> __yApexConstructionAxes = null; 
+		private Amount<Length> __zApexConstructionAxes = null;
+		private LiftingSurfaceCreator __liftingSurfaceCreator;
+
+		public LiftingSurface2PanelsBuilder(String id, ComponentEnum type) {
+			// required parameter
+			this.__id = id;
+			this.__liftingSurfaceType = type;
+
+			// optional parameters ...
+
+		}
+
+		public LiftingSurface2PanelsBuilder liftingSurface2PanelsCreator(LiftingSurfaceCreator lsc) {
+			this.__liftingSurfaceCreator = lsc;
+			return this;
+		}
+		
+		public LiftingSurface2Panels build() {
+			return new LiftingSurface2Panels(this);
+		}
+
+	}
+
+	//***************************************************************************************************
+	
+	private LiftingSurface2Panels(LiftingSurface2PanelsBuilder builder) {
+		super(builder.__id, builder.__liftingSurfaceType);
+		this._id = builder.__id; 
+		this._type = builder.__liftingSurfaceType;
+		this._xApexConstructionAxes = builder.__xApexConstructionAxes; 
+		this._yApexConstructionAxes = builder.__yApexConstructionAxes; 
+		this._zApexConstructionAxes = builder.__zApexConstructionAxes;
+		this._liftingSurfaceCreator = builder.__liftingSurfaceCreator;
+	}
+
+	@Override
+	public Amount<Area> getSurface() {
+		return _liftingSurfaceCreator.getSurfacePlanform();
+	}
+
+	@Override
+	public double getAspectRatio() {
+		return _liftingSurfaceCreator.getAspectRatio();
+	}
+
+	@Override
+	public Amount<Length> getSpan() {
+		return _liftingSurfaceCreator.getSpan();
+	}
+
+	@Override
+	public Amount<Length> getSemiSpan() {
+		return _liftingSurfaceCreator.getSemiSpan();
+	}
+
+	@Override
+	public double getTaperRatio() {
+		return _liftingSurfaceCreator.getTaperRatio();
+	}
+
+	@Override
+	public double getTaperRatioEquivalent(Boolean recalculate) {
+		return _liftingSurfaceCreator.getEquivalentWing(recalculate).getTaperRatio();
+	}
+
+	@Override
+	public LiftingSurfaceCreator getEquivalentWing(Boolean recalculate) {
+		return _liftingSurfaceCreator.getEquivalentWing(recalculate);
+	}
+
+	@Override
+	public Amount<Length> getChordRootEquivalent(Boolean recalculate) {
+		return _liftingSurfaceCreator.getEquivalentWing(recalculate).getPanels().get(0).getChordRoot();
+	}
+
+	@Override
+	public Amount<Length> getChordRoot() {
+		return _liftingSurfaceCreator.getPanels().get(0).getChordRoot();
+	}
+
+	@Override
+	public Amount<Length> getChordTip() {
+		return _liftingSurfaceCreator.getPanels().get(
+				_liftingSurfaceCreator.getPanels().size()-1
+				)
+				.getChordTip();
+	}
+
+	@Override
+	public Amount<Angle> getSweepLEEquivalent(Boolean recalculate) {
+		return _liftingSurfaceCreator.getEquivalentWing(recalculate).getPanels().get(0).getSweepLeadingEdge();
+	}
+
+	@Override
+	public Amount<Angle> getSweepHalfChordEquivalent(Boolean recalculate) {
+		return _liftingSurfaceCreator.getEquivalentWing(recalculate).getPanels().get(0).getSweepHalfChord();
+	}
+
+	@Override
+	public Amount<Angle> getSweepQuarterChordEquivalent(Boolean recalculate) {
+		return _liftingSurfaceCreator.getEquivalentWing(recalculate).getPanels().get(0).getSweepQuarterChord();
+	}
+
+	@Override
+	public Amount<Angle> getDihedralEquivalent(Boolean recalculate) {
+		return _liftingSurfaceCreator.getEquivalentWing(recalculate).getPanels().get(0).getDihedral();
+	}
+
+	@Override
+	public LiftingSurfaceCreator getLiftingSurfaceCreator() {
+		return _liftingSurfaceCreator;
+	}
+
+	@Override
+	public void calculateGeometry(int nSections) {
+		_liftingSurfaceCreator.calculateGeometry(nSections);
+	}	
+	
+	//====================================================================================================================
+	// 	END CONSTRUCTOR USING BUILDER PATTERN
+	//====================================================================================================================
 	
 	Amount<Area> _surface = null; // N+
 	Amount<Area> _surfaceCranked = null; // N-

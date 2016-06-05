@@ -8,7 +8,7 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 
-public interface ILiftingSurface {
+public interface ILiftingSurface2Panels {
 
 	public Amount<Area> getSurface();
 	public double getAspectRatio();
@@ -30,6 +30,5 @@ public interface ILiftingSurface {
 	public void calculateGeometry(int nSections);
 	
 	// TODO: COMPLETE !!
-		
+	
 }
-

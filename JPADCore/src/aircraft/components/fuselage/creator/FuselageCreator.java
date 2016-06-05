@@ -21,12 +21,17 @@ import org.apache.commons.math3.analysis.solvers.AllowedSolution;
 import org.apache.commons.math3.exception.OutOfRangeException;
 import org.jscience.physics.amount.Amount;
 import org.jscience.physics.amount.AmountFormat;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import aircraft.components.fuselage.MyFuselageCurvesSection;
 import aircraft.components.fuselage.MyFuselageCurvesSideView;
 import aircraft.components.fuselage.MyFuselageCurvesUpperView;
+import aircraft.components.liftingSurface.creator.SpoilerCreator;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
+import configuration.enumerations.WindshieldType;
 import processing.core.PVector;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
@@ -39,6 +44,8 @@ public class FuselageCreator implements IFuselageCreator {
 	private int deckNumber;
 	private Amount<Mass> massReference;
 
+	private List<SpoilerCreator> spoilers;
+	
 	private Boolean pressurized;
 
 	// FuselageCreator overall length
@@ -61,7 +68,7 @@ public class FuselageCreator implements IFuselageCreator {
 	//cylindrical section base area
 	private Amount<Area> areaC;
 	private Amount<Area> windshieldArea;
-	private String windshieldType; // Possible types (Roskam part VI, page 134): Flat,protruding; Flat,flush; Single,round; Single,sharp; Double
+	private WindshieldType windshieldType; // Possible types (Roskam part VI, page 134): Flat,protruding; Flat,flush; Single,round; Single,sharp; Double
 
 	//Wetted area estimate
 	private Amount<Area> sWetNose;
@@ -1735,7 +1742,20 @@ public class FuselageCreator implements IFuselageCreator {
 		List<String>  dxCapPercentNoseProp = reader.getXMLPropertiesByPath("//nose_trunk/dx_cap_percent");
 		Double dxNoseCapPercent = Double.valueOf(dxCapPercentNoseProp.get(0));
 		
-		List<String>  windshieldType = reader.getXMLPropertiesByPath("//nose_trunk/windshield_type");
+		@SuppressWarnings("unused")
+		WindshieldType windshieldType = null;
+		List<String>  windshieldTypeProp = reader.getXMLPropertiesByPath("//nose_trunk/windshield_type");
+		if(windshieldTypeProp.get(0).equalsIgnoreCase("DOUBLE"))
+			windshieldType = WindshieldType.DOUBLE;
+		if(windshieldTypeProp.get(0).equalsIgnoreCase("FLAT_FLUSH"))
+			windshieldType = WindshieldType.FLAT_FLUSH;
+		if(windshieldTypeProp.get(0).equalsIgnoreCase("FLAT_PROTRUDING"))
+			windshieldType = WindshieldType.FLAT_PROTRUDING;
+		if(windshieldTypeProp.get(0).equalsIgnoreCase("SINGLE_ROUND"))
+			windshieldType = WindshieldType.SINGLE_ROUND;
+		if(windshieldTypeProp.get(0).equalsIgnoreCase("SINGLE_SHARP"))
+			windshieldType = WindshieldType.SINGLE_SHARP;
+		
 		Amount<Length> windshieldWidth = reader.getXMLAmountLengthByPath("//nose_trunk/windshield_width");
 		Amount<Length> windshieldHeight = reader.getXMLAmountLengthByPath("//nose_trunk/windshield_height");
 		List<String>  midSectionLowerToTotalHeightRatioProp = reader.getXMLPropertiesByPath("//nose_trunk/mid_section_lower_to_total_height_ratio");
@@ -1802,7 +1822,8 @@ public class FuselageCreator implements IFuselageCreator {
 				.sectionMidTailRhoLower(sectionMidTailRhoLower)
 				.sectionMidTailRhoUpper(sectionMidTailRhoUpper)
 				.sectionTailMidLowerToTotalHeightRatio(sectionTailMidLowerToTotalHeightRatio)
-				//
+				// SPOILERS
+				.addSpoilers(reader)
 				.build();
 
 		return fuselage;
@@ -1818,6 +1839,7 @@ public class FuselageCreator implements IFuselageCreator {
 		private int _deckNumber = 1;
 		private Amount<Mass> _massReference = Amount.valueOf(3300, SI.KILOGRAM);
 
+		private List<SpoilerCreator> _spoilers = new ArrayList<SpoilerCreator>();
 		private Boolean _pressurized;
 
 		// FuselageCreator overall length
@@ -1829,7 +1851,7 @@ public class FuselageCreator implements IFuselageCreator {
 
 		private Amount<Length> _sectionCylinderHeight;
 
-		private String _windshieldType; // Possible types (Roskam part VI, page 134): Flat,protruding; Flat,flush; Single,round; Single,sharp; Double
+		private WindshieldType _windshieldType; // Possible types (Roskam part VI, page 134): Flat,protruding; Flat,flush; Single,round; Single,sharp; Double
 
 		// Distance of fuselage lowest part from ground
 		private Amount<Length> _heightFromGround;
@@ -1934,7 +1956,7 @@ public class FuselageCreator implements IFuselageCreator {
 				_dxNoseCapPercent = 0.0750;
 				_dxTailCapPercent = 0.020; // TODO: check this! 0.050
 
-				_windshieldType = "Single,round";
+				_windshieldType = WindshieldType.SINGLE_ROUND;
 				_windshieldHeight = Amount.valueOf(0.8, SI.METER);
 				_windshieldWidth = Amount.valueOf(2.5, SI.METER);
 
@@ -1982,7 +2004,7 @@ public class FuselageCreator implements IFuselageCreator {
 				_dxNoseCapPercent = 0.075;
 				_dxTailCapPercent = 0.020;
 
-				_windshieldType = "Single,round";
+				_windshieldType = WindshieldType.SINGLE_ROUND;
 				_windshieldHeight = Amount.valueOf(0.5, SI.METER);
 				_windshieldWidth = Amount.valueOf(2.6, SI.METER);
 
@@ -2030,7 +2052,7 @@ public class FuselageCreator implements IFuselageCreator {
 				_dxNoseCapPercent = 0.075; // TODO: Have to Check
 				_dxTailCapPercent = 0.020; // TODO: Have to Check
 
-				_windshieldType = "Single,round";
+				_windshieldType = WindshieldType.SINGLE_ROUND;
 				_windshieldHeight = Amount.valueOf(0.5, SI.METER);
 				_windshieldWidth = Amount.valueOf(3.0, SI.METER);
 
@@ -2127,7 +2149,7 @@ public class FuselageCreator implements IFuselageCreator {
 			return this;
 		}
 		
-		public FuselageBuilder windshieldType(String windshieldType) {
+		public FuselageBuilder windshieldType(WindshieldType windshieldType) {
 			_windshieldType = windshieldType;
 			return this;
 		}
@@ -2187,6 +2209,24 @@ public class FuselageCreator implements IFuselageCreator {
 			return this;
 		}
 		
+		public FuselageBuilder addSpoilers(JPADXmlReader reader) {
+			
+			NodeList nodelistSpoilers = MyXMLReaderUtils
+					.getXMLNodeListByPath(reader.getXmlDoc(), "//spoilers/spoiler");
+			
+			System.out.println("Spoilers found: " + nodelistSpoilers.getLength());
+			
+			for (int i = 0; i < nodelistSpoilers.getLength(); i++) {
+				Node nodeSpoiler  = nodelistSpoilers.item(i); // .getNodeValue();
+				Element elementSpoiler = (Element) nodeSpoiler;
+	            System.out.println("[" + i + "]\nSlat id: " + elementSpoiler.getAttribute("id"));
+	            
+	            _spoilers.add(SpoilerCreator.importFromSpoilerNode(nodeSpoiler));
+			}
+			
+			return this;
+		}
+		
 		public FuselageCreator build() {
 			return new FuselageCreator(this);
 		}
@@ -2221,7 +2261,8 @@ public class FuselageCreator implements IFuselageCreator {
 		this.sectionMidTailRhoUpper = builder._sectionMidTailRhoUpper;
 		this.sectionMidNoseRhoLower = builder._sectionMidNoseRhoLower;
 		this.sectionMidTailRhoLower = builder._sectionMidTailRhoLower;
-
+		this.spoilers = builder._spoilers;
+		
 		calculateGeometry();
 	}
 
@@ -2280,6 +2321,13 @@ public class FuselageCreator implements IFuselageCreator {
 //
 // TODO add discretized data output
 				;
+		
+		if(!(spoilers == null)) {
+			for (SpoilerCreator spoilers : spoilers) {
+				sb.append(spoilers.toString());
+			}
+		}
+		
 		return sb.toString();
 	}
 
@@ -2379,11 +2427,11 @@ public class FuselageCreator implements IFuselageCreator {
 		this.windshieldArea = windshieldArea;
 	}
 
-	public String getWindshieldType() {
+	public WindshieldType getWindshieldType() {
 		return windshieldType;
 	}
 
-	public void setWindshieldType(String windshieldType) {
+	public void setWindshieldType(WindshieldType windshieldType) {
 		this.windshieldType = windshieldType;
 	}
 
@@ -3078,4 +3126,9 @@ public class FuselageCreator implements IFuselageCreator {
 	public int getNUM_SECTIONS_YZ() {
 		return NUM_SECTIONS_YZ;
 	}
+
+	public List<SpoilerCreator> getSpoilers() {
+		return spoilers;
+	}
+
 }

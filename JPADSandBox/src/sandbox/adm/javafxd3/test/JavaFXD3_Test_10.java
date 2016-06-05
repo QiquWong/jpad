@@ -1,7 +1,6 @@
 package sandbox.adm.javafxd3.test;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -17,12 +16,10 @@ import org.kohsuke.args4j.Option;
 import org.treez.javafxd3.d3.svg.SymbolType;
 import org.treez.javafxd3.javafx.JavaFxD3Browser;
 
+import aircraft.components.fuselage.Fuselage;
+import aircraft.components.fuselage.Fuselage.FuselageBuilder;
 import aircraft.components.fuselage.creator.FuselageCreator;
-import aircraft.components.liftingSurface.LiftingSurface;
-import aircraft.components.liftingSurface.LiftingSurface.LiftingSurfaceBuilder;
-import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import configuration.MyConfiguration;
-import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ComponentEnum;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -30,7 +27,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import sandbox.adm.D3PlotterOptions;
 import standaloneutils.JPADXmlReader;
-import standaloneutils.MyArrayUtils;
 import writers.JPADStaticWriteUtils;
 
 class MyArgumentTest10 {
@@ -64,7 +60,7 @@ public class JavaFXD3_Test_10 extends Application {
 
 	//-------------------------------------------------------------
 
-	public static FuselageCreator theFuselageCreator;
+	public static Fuselage theFuselage;
 
 	//-------------------------------------------------------------
 
@@ -83,8 +79,8 @@ public class JavaFXD3_Test_10 extends Application {
 		System.out.println("\n\n##################");
 		System.out.println("function start :: getting the fuselage object ...");
 
-		FuselageCreator fuselageCreator = JavaFXD3_Test_10.theFuselageCreator;
-		if (fuselageCreator == null) {
+		Fuselage fuselage = JavaFXD3_Test_10.theFuselage;
+		if (fuselage == null) {
 			System.out.println("wing object null, returning.");
 			return;
 		}
@@ -94,9 +90,9 @@ public class JavaFXD3_Test_10 extends Application {
 		//--------------------------------------------------
 
 		// upper curve, sideview
-		List<Amount<Length>> vX1 = fuselageCreator.getOutlineXZUpperCurveAmountX();
+		List<Amount<Length>> vX1 = fuselage.getFuselageCreator().getOutlineXZUpperCurveAmountX();
 		int nX1 = vX1.size();
-		List<Amount<Length>> vZ1 = fuselageCreator.getOutlineXZUpperCurveAmountZ();
+		List<Amount<Length>> vZ1 = fuselage.getFuselageCreator().getOutlineXZUpperCurveAmountZ();
 
 		Double[][] dataOutlineXZUpperCurve = new Double[nX1][2];
 		IntStream.range(0, nX1)
@@ -106,9 +102,9 @@ public class JavaFXD3_Test_10 extends Application {
 		});
 
 		// lower curve, sideview
-		List<Amount<Length>> vX2 = fuselageCreator.getOutlineXZLowerCurveAmountX();
+		List<Amount<Length>> vX2 = fuselage.getFuselageCreator().getOutlineXZLowerCurveAmountX();
 		int nX2 = vX2.size();
-		List<Amount<Length>> vZ2 = fuselageCreator.getOutlineXZLowerCurveAmountZ();
+		List<Amount<Length>> vZ2 = fuselage.getFuselageCreator().getOutlineXZLowerCurveAmountZ();
 
 		Double[][] dataOutlineXZLowerCurve = new Double[nX2][2];
 		IntStream.range(0, nX2)
@@ -118,9 +114,9 @@ public class JavaFXD3_Test_10 extends Application {
 		});
 
 		// camberline, sideview
-		List<Amount<Length>> vX3 = fuselageCreator.getOutlineXZCamberLineAmountX();
+		List<Amount<Length>> vX3 = fuselage.getFuselageCreator().getOutlineXZCamberLineAmountX();
 		int nX3 = vX3.size();
-		List<Amount<Length>> vZ3 = fuselageCreator.getOutlineXZCamberLineAmountZ();
+		List<Amount<Length>> vZ3 = fuselage.getFuselageCreator().getOutlineXZCamberLineAmountZ();
 		
 		Double[][] dataOutlineXZCamberLine = new Double[nX3][2];
 		IntStream.range(0, nX3)
@@ -140,7 +136,7 @@ public class JavaFXD3_Test_10 extends Application {
 		//--------------------------------------------------
 		System.out.println("Initializing test class...");
 		String rootOutputFolderPath = MyConfiguration.currentDirectoryString + File.separator + "out" + File.separator;
-		String outputFolderPath = JPADStaticWriteUtils.createNewFolder(rootOutputFolderPath + "Test_D3" + File.separator);
+		String outputFolderPath = JPADStaticWriteUtils.createNewFolder(rootOutputFolderPath + "Test_D3_WingBody" + File.separator);
 		System.out.println("Output ==> " + outputFolderPath);
 
 		//--------------------------------------------------
@@ -153,8 +149,8 @@ public class JavaFXD3_Test_10 extends Application {
 		listDataArray.add(dataOutlineXZLowerCurve);
 		listDataArray.add(dataOutlineXZCamberLine);
 
-		double xMax = 1.20*fuselageCreator.getLenF().doubleValue(SI.METRE);
-		double xMin = -0.20*fuselageCreator.getLenF().doubleValue(SI.METRE);
+		double xMax = 1.20*fuselage.getFuselageCreator().getLenF().doubleValue(SI.METRE);
+		double xMin = -0.20*fuselage.getFuselageCreator().getLenF().doubleValue(SI.METRE);
 		double yMax = xMax;
 		double yMin = xMin;
 
@@ -280,9 +276,22 @@ public class JavaFXD3_Test_10 extends Application {
 			// the Application.start method
 
 			// Read fuselage from xml ...
-			theFuselageCreator = FuselageCreator.importFromXML(pathToXML);
+			theFuselage = new FuselageBuilder("MyFuselage", ComponentEnum.FUSELAGE)
+					.fuselageCreator(
+							FuselageCreator.importFromXML(pathToXML)
+							)
+					.build();
 					
-			JavaFXD3_Test_10.theFuselageCreator.calculateGeometry(
+//			// default Fuselage ...
+//			theFuselage = new FuselageBuilder("MyFuselage", ComponentEnum.FUSELAGE)
+//					.fuselageCreator(
+//						new FuselageCreator
+//							.FuselageBuilder("Test ATR72 fuselage", AircraftEnum.ATR72)
+//							.build()
+//					)
+//					.build();
+			
+			JavaFXD3_Test_10.theFuselage.getFuselageCreator().calculateGeometry(
 					20,    // No. points in nose trunk
 					5,     // No. points in cylindrical trunk
 					15,    // No. points in tail trunk
@@ -290,7 +299,7 @@ public class JavaFXD3_Test_10 extends Application {
 					);
 
 			System.out.println("The fuselage ...");
-			System.out.println(JavaFXD3_Test_10.theFuselageCreator);
+			System.out.println(JavaFXD3_Test_10.theFuselage.getFuselageCreator().toString());
 			System.out.println("Details on discretization ...");
 
 		} catch (CmdLineException e) {

@@ -21,7 +21,6 @@ import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.LiftingSurface.LiftingSurfaceBuilder;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import configuration.MyConfiguration;
-import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ComponentEnum;
 import javafx.application.Application;
 import javafx.scene.Scene;

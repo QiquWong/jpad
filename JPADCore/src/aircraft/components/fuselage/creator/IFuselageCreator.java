@@ -8,8 +8,6 @@ import javax.measure.quantity.Mass;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.components.fuselage.creator.SpoilerCreator;
-
 public interface IFuselageCreator {
 
 	public void calculateGeometry(

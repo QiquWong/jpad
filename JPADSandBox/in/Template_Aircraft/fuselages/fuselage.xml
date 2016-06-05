@@ -35,5 +35,15 @@
             <mid_section_rho_upper>0.2</mid_section_rho_upper>
             <mid_section_rho_lower>0.3</mid_section_rho_lower>
         </tail_trunk>
+		 <spoilers>
+            <spoiler id="1">
+                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="DIAMETER">0.40</inner_station_spanwise_position>
+                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="DIAMETER">0.60</outer_station_spanwise_position>
+                <inner_station_chordwise_position type="PERCENT_CHORD" ref_to="FUSELAGE_LENGTH">0.15</inner_station_chordwise_position>
+                <outer_station_chordwise_position type="PERCENT_CHORD" ref_to="FUSELAGE_LEGNTH">0.20</outer_station_chordwise_position>
+                <min_deflection unit="deg">0.0</min_deflection>
+				<max_deflection unit="deg">90.0</max_deflection>
+            </spoiler>
+        </spoilers>
     </fuselage>
 </jpad_config>

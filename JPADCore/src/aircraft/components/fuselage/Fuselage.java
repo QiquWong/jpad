@@ -13,9 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 //import static org.eclipse.uomo.units.SI.*;
 import javax.measure.converter.UnitConverter;
@@ -52,6 +50,8 @@ import aircraft.calculators.ACPerformanceManager;
 import aircraft.componentmodel.AeroComponent;
 import aircraft.components.Aircraft;
 import aircraft.components.LandingGear;
+import aircraft.components.fuselage.creator.FuselageCreator;
+import aircraft.components.liftingSurface.creator.SpoilerCreator;
 import aircraft.components.nacelles.Nacelle;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
@@ -59,6 +59,7 @@ import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
+import configuration.enumerations.WindshieldType;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import processing.core.PVector;
 import standaloneutils.MyArrayUtils;
@@ -68,7 +69,7 @@ import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.customdata.CenterOfGravity;
 import writers.JPADStaticWriteUtils;
 
-public class Fuselage extends AeroComponent {
+public class Fuselage extends AeroComponent implements IFuselage {
 
 	AerodynamicDatabaseReader _aerodynamicDatabaseReader;
 	
@@ -276,7 +277,220 @@ public class Fuselage extends AeroComponent {
 	private String databaseFolderPath;
 	private String databaseFileName;
 
-	/** Construct isolated Fuselage */
+	//=========================================================================================================================================
+	// BEGIN OF THE CONSTRUCTOR USING BUILDER PATTERN
+	//=========================================================================================================================================
+	// the creator object
+	private String _id = null;
+	private Amount<Length> _xApexConstructionAxes = null; 
+	private Amount<Length> _yApexConstructionAxes = null; 
+	private Amount<Length> _zApexConstructionAxes = null;
+
+	private FuselageCreator _fuselageCreator;
+	
+	//**********************************************************************
+	// Builder pattern via a nested public static class
+	public static class FuselageBuilder {
+		
+		private String __id = null;
+		private ComponentEnum __type;
+		private Amount<Length> __xApexConstructionAxes = null; 
+		private Amount<Length> __yApexConstructionAxes = null; 
+		private Amount<Length> __zApexConstructionAxes = null;
+		private FuselageCreator __fuselageCreator;
+		
+		public FuselageBuilder(String id, ComponentEnum type) {
+			// required parameter
+			this.__id = id;
+			this.__type = type;
+
+			// optional parameters ...
+
+		}
+
+		public FuselageBuilder fuselageCreator(FuselageCreator fuselage) {
+			this.__fuselageCreator = fuselage;
+			return this;
+		}
+		
+		public Fuselage build() {
+			return new Fuselage(this);
+		}
+
+	}
+	
+	//**********************************************************************
+	
+	private Fuselage(FuselageBuilder builder) {
+		super(builder.__id, builder.__type);
+		this.setId(builder.__id); 
+		this._type = builder.__type;
+		this._xApexConstructionAxes = builder.__xApexConstructionAxes; 
+		this._yApexConstructionAxes = builder.__yApexConstructionAxes; 
+		this._zApexConstructionAxes = builder.__zApexConstructionAxes;
+		this._fuselageCreator = builder.__fuselageCreator;
+	}
+	
+	@Override
+	public int getDeckNumber() {
+		return _fuselageCreator.getDeckNumber();
+	}
+
+	@Override
+	public Amount<Length> getLength() {
+		return _fuselageCreator.getLength();
+	}
+
+	@Override
+	public Amount<Mass> getReferenceMass() {
+		return _fuselageCreator.getMassReference();
+	}
+
+	@Override
+	public Amount<Length> getRoughness() {
+		return _fuselageCreator.getRoughness();
+	}
+
+	@Override
+	public Double getNoseLengthRatio() {
+		return _fuselageCreator.getLenRatioNF();
+	}
+
+	@Override
+	public Double getFinesseRatio() {
+		return _fuselageCreator.getLambdaN();
+	}
+
+	@Override
+	public Amount<Length> getNoseTipHeightOffset() {
+		return _fuselageCreator.getHeightN();
+	}
+
+	@Override
+	public Double getNoseDxCapPercent() {
+		return _fuselageCreator.getDxNoseCapPercent();
+	}
+
+	@Override
+	public WindshieldType getWindshieldType() {
+		return _fuselageCreator.getWindshieldType();
+	}
+
+	@Override
+	public Amount<Length> getWindshieldWidht() {
+		return _fuselageCreator.getWindshieldWidth();
+	}
+
+	@Override
+	public Amount<Length> getWindshieldHeight() {
+		return _fuselageCreator.getWindshieldHeight();
+	}
+
+	@Override
+	public Double getNoseMidSectionLowerToTotalHeightRatio() {
+		return _fuselageCreator.getSectionNoseMidLowerToTotalHeightRatio();
+	}
+
+	@Override
+	public Double getNoseMidSectionRhoUpper() {
+		return _fuselageCreator.getSectionMidNoseRhoUpper();
+	}
+
+	@Override
+	public Double getNoseMidSectionRhoLower() {
+		return _fuselageCreator.getSectionMidNoseRhoLower();
+	}
+
+	@Override
+	public Double getCylindricalLengthRatio() {
+		return _fuselageCreator.getLenRatioCF();
+	}
+
+	@Override
+	public Amount<Length> getSectionWidht() {
+		return _fuselageCreator.getSectionCylinderWidth();
+	}
+
+	@Override
+	public Amount<Length> getSectionHeight() {
+		return _fuselageCreator.getSectionCylinderHeight();
+	}
+
+	@Override
+	public Amount<Length> getHeightFromGround() {
+		return _fuselageCreator.getHeightFromGround();
+	}
+
+	@Override
+	public Double getSectionLowerToTotalHeightRatio() {
+		return _fuselageCreator.getSectionCylinderLowerToTotalHeightRatio();
+	}
+
+	@Override
+	public Double getSectionRhoUpper() {
+		return _fuselageCreator.getSectionCylinderRhoUpper();
+	}
+
+	@Override
+	public Double getSectionRhoLower() {
+		return _fuselageCreator.getSectionCylinderRhoLower();
+	}
+
+	@Override
+	public Amount<Length> getTailTipHeightOffset() {
+		return _fuselageCreator.getHeightT();
+	}
+
+	@Override
+	public Double getTailDxCapPercent() {
+		return _fuselageCreator.getDxTailCapPercent();
+	}
+
+	@Override
+	public Double getTailMidSectionLowerToTotalHeightRatio() {
+		return _fuselageCreator.getSectionTailMidLowerToTotalHeightRatio();
+	}
+
+	@Override
+	public Double getTailMidSectionRhoUpper() {
+		return _fuselageCreator.getSectionMidTailRhoUpper();
+	}
+
+	@Override
+	public Double getTailMidSectionRhoLower() {
+		return _fuselageCreator.getSectionMidTailRhoLower();
+	}
+
+	@Override
+	public List<SpoilerCreator> getSpoilers() {
+		return _fuselageCreator.getSpoilers();
+	}
+
+	@Override
+	public void calculateGeometry(
+			int np_N, int np_C, int np_T, // no. points @ Nose/Cabin/Tail
+			int np_SecUp, int np_SecLow   // no. points @ Upper/Lower section
+			) {
+		_fuselageCreator.calculateGeometry(np_N, np_C, np_T, np_SecUp, np_SecLow);
+	}
+
+	@Override
+	public Amount<Area> getSurfaceWetted(Boolean recalculate) {
+		return _fuselageCreator.getSurfaceWetted(recalculate);
+	}
+
+	// TODO : ADD OTHER GETTERS VIA _fuselageCreator
+	
+	@Override
+	public FuselageCreator getFuselageCreator() {
+		return _fuselageCreator;
+	}
+	
+	//=========================================================================================================================================
+	// 	END CONSTRUCTOR VIA BUILDER PATTERN
+	//=========================================================================================================================================
+
+	// Construct isolated Fuselage
 	public Fuselage(String name, 
 			String description, 
 			double x, double y, double z) {
@@ -447,7 +661,29 @@ public class Fuselage extends AeroComponent {
 		checkGeometry();
 	}
 
-
+	// Import from file
+		public Fuselage(
+				String pathToXML, 
+				String name, String description, 
+				Double x, Double y, Double z, // fuselage apex wrt BRF
+				ComponentEnum type // example: ComponentEnum.FUSELAGE
+				) { 		
+			super(name, description, x, y, z, type);
+			
+			if (
+				!type.equals(ComponentEnum.FUSELAGE) 
+				)
+				throw new IllegalArgumentException("type must be a FUSELAGE!"); 
+			
+			_cg = new CenterOfGravity(_X0, _Y0, _Z0); // set the cg initially at the origin
+			
+			importFromXML(pathToXML);
+		}
+	
+		private void importFromXML(String pathToXML) {
+			_fuselageCreator = FuselageCreator.importFromXML(pathToXML);
+		}
+		
 	public void initializeDefaultVariables() {
 
 		// init variables - Reference aircraft: 
@@ -4627,4 +4863,37 @@ public class Fuselage extends AeroComponent {
 	public void set_windshieldAngle(Amount<Angle> _windshieldAngle) {
 		this._windshieldAngle = _windshieldAngle;
 	}
+
+	public Amount<Length> getXApexConstructionAxes() {
+		return _xApexConstructionAxes;
+	}
+
+	public Amount<Length> getYApexConstructionAxes() {
+		return _yApexConstructionAxes;
+	}
+
+	public Amount<Length> getZApexConstructionAxes() {
+		return _zApexConstructionAxes;
+	}
+
+	public void setId(String _id) {
+		this._id = _id;
+	}
+
+	public void setXApexConstructionAxes(Amount<Length> _xApexConstructionAxes) {
+		this._xApexConstructionAxes = _xApexConstructionAxes;
+	}
+
+	public void setYApexConstructionAxes(Amount<Length> _yApexConstructionAxes) {
+		this._yApexConstructionAxes = _yApexConstructionAxes;
+	}
+
+	public void setZApexConstructionAxes(Amount<Length> _zApexConstructionAxes) {
+		this._zApexConstructionAxes = _zApexConstructionAxes;
+	}
+
+	public void setFuselageCreator(FuselageCreator _fuselageCreator) {
+		this._fuselageCreator = _fuselageCreator;
+	}
+
 } // end of class

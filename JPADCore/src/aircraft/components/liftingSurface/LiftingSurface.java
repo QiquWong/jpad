@@ -15,6 +15,8 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import aircraft.componentmodel.AeroComponent;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import configuration.enumerations.ComponentEnum;
@@ -83,14 +85,12 @@ public class LiftingSurface extends AeroComponent implements ILiftingSurface{
 
 	@Override
 	public Amount<Area> getSurface() {
-		// TODO Auto-generated method stub
-		return null;
+		return _liftingSurfaceCreator.getSurfacePlanform();
 	}
 
 	@Override
 	public double getAspectRatio() {
-		// TODO Auto-generated method stub
-		return 0;
+		return _liftingSurfaceCreator.getAspectRatio();
 	}
 
 	@Override
@@ -109,57 +109,51 @@ public class LiftingSurface extends AeroComponent implements ILiftingSurface{
 	}
 
 	@Override
-	public double getTaperRatioEquivalent() {
-		// TODO Auto-generated method stub
-		return 0;
+	public double getTaperRatioEquivalent(Boolean recalculate) {
+		return _liftingSurfaceCreator.getEquivalentWing(recalculate).getTaperRatio();
 	}
 
 	@Override
-	public LiftingSurface getEquivalentWing() {
-		// TODO Auto-generated method stub
-		return null;
+	public LiftingSurfaceCreator getEquivalentWing(Boolean recalculate) {
+		return _liftingSurfaceCreator.getEquivalentWing(recalculate);
 	}
 
 	@Override
-	public Amount<Length> getChordRootEquivalent() {
-		// TODO Auto-generated method stub
-		return null;
+	public Amount<Length> getChordRootEquivalent(Boolean recalculate) {
+		return _liftingSurfaceCreator.getEquivalentWing(recalculate).getPanels().get(0).getChordRoot();
 	}
 
 	@Override
 	public Amount<Length> getChordRoot() {
-		// TODO Auto-generated method stub
-		return null;
+		return _liftingSurfaceCreator.getPanels().get(0).getChordRoot();
 	}
 
 	@Override
 	public Amount<Length> getChordTip() {
-		// TODO Auto-generated method stub
-		return null;
+		return _liftingSurfaceCreator.getPanels().get(
+				_liftingSurfaceCreator.getPanels().size()-1
+				)
+				.getChordTip();
 	}
 
 	@Override
-	public Amount<Angle> getSweepLEEquivalent() {
-		// TODO Auto-generated method stub
-		return null;
+	public Amount<Angle> getSweepLEEquivalent(Boolean recalculate) {
+		return _liftingSurfaceCreator.getEquivalentWing(recalculate).getPanels().get(0).getSweepLeadingEdge();
 	}
 
 	@Override
-	public Amount<Angle> getSweepHalfChordEquivalent() {
-		// TODO Auto-generated method stub
-		return null;
+	public Amount<Angle> getSweepHalfChordEquivalent(Boolean recalculate) {
+		return _liftingSurfaceCreator.getEquivalentWing(recalculate).getPanels().get(0).getSweepHalfChord();
 	}
 
 	@Override
-	public Amount<Angle> getSweepQuarterChordEquivalent() {
-		// TODO Auto-generated method stub
-		return null;
+	public Amount<Angle> getSweepQuarterChordEquivalent(Boolean recalculate) {
+		return _liftingSurfaceCreator.getEquivalentWing(recalculate).getPanels().get(0).getSweepQuarterChord();
 	}
 
 	@Override
-	public double getDihedralEquivalent() {
-		// TODO Auto-generated method stub
-		return 0;
+	public Amount<Angle> getDihedralEquivalent(Boolean recalculate) {
+		return _liftingSurfaceCreator.getEquivalentWing(recalculate).getPanels().get(0).getDihedral();
 	}
 
 	@Override
