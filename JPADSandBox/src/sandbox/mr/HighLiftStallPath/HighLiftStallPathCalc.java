@@ -1071,15 +1071,143 @@ public class HighLiftStallPathCalc {
 				System.out.println(" dihedral total " + Arrays.toString(twistDistributionTotal));
 				double vortexSemiSpanToSemiSpanRatio = (1./(2*input.getNumberOfPointSemispan()));
 				
+				
+				
+		// Nasa Blackwell input
+				
+				int nPointsSemispanWise = (int) (1./(2*vortexSemiSpanToSemiSpanRatio));
+				double [] yStationNasaBlackwellND = new double [nPointsSemispanWise];
+				double [] yStationNasaBlackwellDimensional = new double [nPointsSemispanWise];
+				
+				yStationNasaBlackwellND = MyArrayUtils.linspace(0, 1, nPointsSemispanWise);
+				yStationNasaBlackwellDimensional = MyArrayUtils.linspace(0, input.getSemiSpan().getEstimatedValue(), nPointsSemispanWise);
+				
+				MyArray chordsVsYActual = new MyArray(numberOfPoint);
+				MyArray xLEvsYActual = new MyArray(numberOfPoint);
+				MyArray dihedralActual = new MyArray(numberOfPoint);
+				MyArray twistActual = new MyArray(numberOfPoint);
+				MyArray alphaStarActual = new MyArray(numberOfPoint);
+				MyArray alpha0lActual = new MyArray(numberOfPoint);
+				MyArray clMaxActual = new MyArray(numberOfPoint);
+				
+				MyArray chordsVsYIn = new MyArray(chordDistributionTotal);
+				MyArray xLEvsYIn = new MyArray(xLeDistributionTotal);
+				MyArray dihedralIn = new MyArray(dihedralDistributionTotal);
+				MyArray twistIn  = new MyArray(twistDistributionTotal);
+				MyArray alphaStarIn = new MyArray(alphaStarDistributionTotal);
+				MyArray alpha0lIn = new MyArray(alphaZeroLiftTotal);
+				MyArray clMaxIn = new MyArray(clMaxDistributionTotal);
+
+
+				xLEvsYActual = MyArray.createArray(
+						xLEvsYIn.interpolate(
+								yStationTotal,
+								yStationNasaBlackwellND));
+
+				chordsVsYActual = MyArray.createArray(
+						chordsVsYIn.interpolate(
+								yStationTotal,
+								yStationNasaBlackwellND));
+
+				dihedralActual = MyArray.createArray(
+						dihedralIn.interpolate(
+								yStationTotal,
+								yStationNasaBlackwellND));
+				
+				twistActual = MyArray.createArray(
+						twistIn.interpolate(
+								yStationTotal,
+								yStationNasaBlackwellND));
+				
+				alphaStarActual = MyArray.createArray(
+						alphaStarIn.interpolate(
+								yStationTotal,
+								yStationNasaBlackwellND));
+
+				alpha0lActual = MyArray.createArray(
+						alpha0lIn.interpolate(
+								yStationTotal,
+								yStationNasaBlackwellND));
+
+				clMaxActual = MyArray.createArray(
+						clMaxIn.interpolate(
+								yStationTotal,
+								yStationNasaBlackwellND));
+				
+				double [] clMaxDistributionTotalNPoint = new double [yStationNasaBlackwellND.length];
+
+				clMaxDistributionTotalNPoint = MyArrayUtils.convertToDoublePrimitive(
+						MyMathUtils.getInterpolatedValue1DLinear(
+								yStationTotal,
+								clMaxDistributionTotal, 
+								yStationNasaBlackwellND));
+
+				
+				// alpha star
+				
+				System.out.println("\n---------------------------");
+				System.out.println("        FINAL VALUES           ");
+				System.out.println("---------------------------\n");
+
+				System.out.println("\n         CLEAN             ");
+				System.out.println("-----------------------------");
+				
+				System.out.println("Ystation --> " + Arrays.toString(yStationInput));
+				System.out.println("Chords -->"+ Arrays.toString(chordInput));
+				System.out.println("X le -->"+ Arrays.toString(xleInput));
+				System.out.println("Dihedral -->"+ Arrays.toString(dihedralInput));
+				System.out.println("Twist -->"+ Arrays.toString(twistInput));
+				System.out.println("Alpha zero lift -->"+ Arrays.toString(alpha0lInput));
+				System.out.println("Alpha Star -->"+ Arrays.toString(alphaStarInput));
+				System.out.println("Cl max -->"+ Arrays.toString(clMaxInput));
+				
+				System.out.println("\n   CLEAN FLAP SECTION      ");
+				System.out.println("-----------------------------");
+				
+				System.out.println("Ystation --> " + Arrays.toString(yStationTotal));
+				System.out.println("Chords -->"+ Arrays.toString(chordDistributionBase));
+				System.out.println("X le -->"+ Arrays.toString(xLEDistributionBase));
+				System.out.println("Alpha zero lift -->"+ alphaZeroLiftBasic.toString());
+				System.out.println("Alpha Star -->"+ Arrays.toString(alphaStarDistributionBase));
+				System.out.println("Cl max -->"+ Arrays.toString(clMaxDistributionBase));
+
+				
+				System.out.println("\n         FLAPPED             ");
+				System.out.println("-----------------------------");
+				
+				System.out.println("Ystation --> "+ Arrays.toString(yStationTotal));
+				System.out.println("Chords -->"+ Arrays.toString(chordDistributionTotal));
+				System.out.println("X le -->"+ Arrays.toString(xLeDistributionTotal));
+				System.out.println("Dihedral -->"+ Arrays.toString(dihedralDistributionTotal));
+				System.out.println("Twist -->"+ Arrays.toString(twistDistributionTotal));
+				System.out.println("Alpha zero lift -->"+ alphaZeroLiftTotal.toString());
+				System.out.println("Alpha Star -->"+ Arrays.toString(alphaStarDistributionTotal));
+				System.out.println("Cl max -->"+ Arrays.toString(clMaxDistributionTotal));
+	
+				
+				System.out.println("\n         FLAPPED 100 section            ");
+				System.out.println("-----------------------------");
+				
+				System.out.println("Ystation --> "+ Arrays.toString(yStationNasaBlackwellDimensional));
+				System.out.println("Chords -->"+ chordsVsYActual.toString());
+				System.out.println("X le -->" + xLEvsYActual.toString());
+				System.out.println("Dihedral -->" + dihedralActual.toString());
+				System.out.println("Twist -->" + twistActual.toString());
+				System.out.println("Alpha zero lift -->" + alpha0lActual.toString());
+				System.out.println("Cl max -->" + clMaxActual.toString());
+
+				
+				
+				
 				NasaBlackwell theNasaBlackwellCalculator = new  NasaBlackwell(
 						input.getSemiSpan().getEstimatedValue(), 
 						input.getSurface().getEstimatedValue(),
-						yStationTotal,
-						chordDistributionTotal,
-						xLeDistributionTotal,
-						MyArrayUtils.convertToDoublePrimitive(dihedralDistributionTotal),
-						MyArrayUtils.convertToDoublePrimitive(twistDistributionTotal),
-						alphaZeroLiftTotal.toArray(),
+						yStationNasaBlackwellDimensional,
+						chordsVsYActual.toArray(),
+						xLEvsYActual.toArray(),
+						dihedralActual.toArray(),
+						twistActual.toArray(),
+						alpha0lActual.toArray(),
 						vortexSemiSpanToSemiSpanRatio,
 						0.0,
 						input.getMachNumber(),
@@ -1156,20 +1284,21 @@ public class HighLiftStallPathCalc {
 
 				// cl Max
 
-				double cLMax = LiftCalc.calculateCLMax(clMaxDistributionTotal,
+				double cLMax = LiftCalc.calculateCLMax(clMaxDistributionTotalNPoint,
 						input.getSemiSpan().getEstimatedValue(), 
 						input.getSurface().getEstimatedValue(),
-						yStationTotal,
-						chordDistributionTotal,
-						xLeDistributionTotal,
-						MyArrayUtils.convertToDoublePrimitive(dihedralDistributionTotal),
-						MyArrayUtils.convertToDoublePrimitive(twistDistributionTotal),
-						alphaZeroLiftTotal.toArray(),
+						yStationNasaBlackwellDimensional,
+						chordsVsYActual.toArray(),
+						xLEvsYActual.toArray(),
+						dihedralActual.toArray(),
+						twistActual.toArray(),
+						twistActual.toArray(),
 						vortexSemiSpanToSemiSpanRatio,
 						0.0,
 						input.getMachNumber(),
 						input.getAltitude().getEstimatedValue());
-
+				
+				
 				input.setClMax(cLMax);
 				//		System.out.println(" cl max " + cLMax);
 
