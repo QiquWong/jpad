@@ -1,0 +1,76 @@
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\commons-lang\commons-lang3-3.3.2.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\commons-math\commons-math3-3.5.jar
+C:\Program Files\eclipse_MARS\plugins\org.eclipse.core.commands_3.7.0.v20150422-0725.jar
+C:\Program Files\eclipse_MARS\plugins\org.eclipse.equinox.common_3.7.0.v20150402-1709.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\args4j\args4j-2.0.21.jar
+C:\Program Files\eclipse_MARS\plugins\org.eclipse.draw2d_3.10.0.201506010206.jar
+C:\Program Files\eclipse_MARS\plugins\org.eclipse.core.runtime_3.11.0.v20150405-1723.jar
+C:\Program Files\eclipse_MARS\plugins\org.eclipse.equinox.registry_3.6.0.v20150318-1503.jar
+C:\Program Files\eclipse_MARS\plugins\org.eclipse.osgi_3.10.100.v20150529-1857.jar
+C:\Program Files\eclipse_MARS\plugins\org.eclipse.text_3.5.400.v20150505-1044.jar
+C:\Program Files\eclipse_MARS\plugins\org.eclipse.ui.forms_3.6.200.v20150506-2029.jar
+C:\Program Files\eclipse_MARS\plugins\org.eclipse.ui.workbench_3.107.0.v20150510-1732.jar
+C:\Program Files\eclipse_MARS\plugins\com.ibm.icu_54.1.1.v201501272100.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\jahuwaldt\jahuwaldt.aero.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\jahuwaldt\jahuwaldt.tools.math.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\jdom\jdom-2.0.5.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\jlatexmath\jlatexmath-1.0.3.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\jscience-4.3\jscience.jar
+C:\Program Files\eclipse_MARS\plugins\org.eclipse.jface_3.11.0.v20150602-1400.jar
+C:\Program Files\eclipse_MARS\plugins\org.eclipse.jface.text_3.10.0.v20150603-1752.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\nebula\org.eclipse.nebula.visualization.widgets_1.0.0.201401291008.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\nebula\org.eclipse.nebula.visualization.xygraph_1.0.0.201401291008.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\occjava\Win64\occjava.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\processing\library\core.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\processing\library\gluegen-rt.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\processing\library\jogl-all.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\unit-api\unit-api-0.6.1.jar
+C:\Program Files\eclipse_MARS\plugins\org.eclipse.swt.win32.win32.x86_64_3.104.0.v20150528-0211.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\guava\guava-16.0.1.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\jahuwaldt\AeroLS.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\trove\trove-3.1a1.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\log4j\log4j-api-2.0.2.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\log4j\log4j-core-2.0.2.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\hdf\jarhdf5-2.10.1.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\hdf\jarh5obj.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\hdf\jarhdf-2.10.1.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\hdf\jarh4obj.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\hdf\jarhdfobj.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\hdf\slf4j-api-1.7.5.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\hdf\slf4j-nop-1.7.5.jar
+C:\Program Files\eclipse_MARS\plugins\org.apache.commons.logging_1.1.1.v201101211721.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\jxls\jxls-core-1.0.5.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\jxls\jxls-reader-1.0.5.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\commons-collections\commons-collections4-4.0.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\commons-jexl\commons-jexl-2.1.1.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\commons-logging\commons-logging-1.2.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\poi\poi-3.10.1-20140818.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\poi\poi-ooxml-3.10.1-20140818.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\reflectUtils\reflectutils-0.9.16.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\xstream\xstream-1.4.7.jar
+C:\Program Files\Java\jdk1.8.0_60\jre\lib\jfxswt.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\jfreechart\jfreechart-1.0.19.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\jfreechart\jfreesvg-2.0.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\jfreechart\jcommon-1.0.23.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\fxyz\FXyzLib.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\jim\jimStlMeshImporterJFX.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\jim\jimObjModelImporterJFX.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\jim\jimFxmlModelImporterJFX.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\jim\jimColModelImporterJFX.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\vecmath\vecmath.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\cloning\cloning-1.9.1.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\cloning\lib\objenesis-2.1.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\fxgraphics2d\fxgraphics2d-1.1.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\fxgraphics2d\lib\orsonpdf-1.6-eval.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\fxgraphics2d\lib\orsoncharts-1.5-pre.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\fxgraphics2d\lib\jfreesvg-2.0.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\fxgraphics2d\lib\jfreechart-nofx-2.0-pre1.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\swing\swing2swt.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\jna\jna-4.1.0.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\jna\jna-platform-4.1.0.jar
+C:\Users\agodemar\ADOPT_PROJECT\jpad\libraries\tigl\win32-x86-64\tigl-2.1.4.jar
+C:\Program Files\eclipse_MARS\plugins\org.eclipse.core.databinding_1.5.0.v20150422-0725.jar
+C:\Program Files\eclipse_MARS\plugins\org.eclipse.core.databinding.beans_1.3.0.v20150422-0725.jar
+C:\Program Files\eclipse_MARS\plugins\org.eclipse.core.databinding.observable_1.5.0.v20150422-0725.jar
+C:\Program Files\eclipse_MARS\plugins\org.eclipse.core.databinding.property_1.5.0.v20150422-0725.jar
+C:\Program Files\eclipse_MARS\plugins\org.eclipse.jface.databinding_1.7.0.v20150406-2148.jar

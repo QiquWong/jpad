@@ -1,0 +1,395 @@
+package calculators.aerodynamics;
+
+import static java.lang.Math.cos;
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
+
+import javax.measure.quantity.Angle;
+import javax.measure.unit.NonSI;
+import javax.measure.unit.SI;
+
+import org.jscience.physics.amount.Amount;
+
+import configuration.enumerations.AircraftTypeEnum;
+import configuration.enumerations.AirfoilTypeEnum;
+import standaloneutils.MyArrayUtils;
+import standaloneutils.atmosphere.AtmosphereCalc;
+
+/**
+ * A collection of Aerodynamic static functions
+ * 
+ * @author Lorenzo Attanasio
+ */
+public class AerodynamicCalc {
+
+	private AerodynamicCalc() {}
+
+	public static Double calculateSwetTotal(Double ... d) {
+		// Approximately:
+		return MyArrayUtils.sumArrayElements(d);
+	}
+
+	public static double calculatePrandtlGlauertCorrection(double mach) {
+		return sqrt(1 - pow(mach,2));
+	}
+	
+	public static double calculate3Deffect(double mach, double ar, double cLalpha2D) {
+		double effMach = calculatePrandtlGlauertCorrection(mach);
+		return effMach * ar / (cLalpha2D*57.3 / 2*Math.PI*effMach);
+	}
+	
+	/** 
+	 * Calculate friction coefficient
+	 * 
+	 * @author Lorenzo Attanasio
+	 * @param reynolds
+	 * @param mach
+	 * @param xTransition
+	 * @return
+	 */
+	public static double calculateCf(double reynolds, double mach, double xTransition) {
+		return AerodynamicCalc.calculateCfLam(reynolds)*xTransition + AerodynamicCalc.calculateCfTurb(reynolds, mach)*(1-xTransition);
+	}
+
+	/**
+	 * Calculate turbulent friction coefficient
+	 * 
+	 * @author Lorenzo Attanasio
+	 * @param reynolds
+	 * @param mach
+	 * @return
+	 */
+	public static double calculateCfTurb(double reynolds, double mach) {
+		return 0.455/(Math.pow(Math.log10(reynolds),2.58)*Math.pow(1+0.144*(Math.pow(mach,2)),0.65));
+	}
+
+	/**
+	 * Behind ADAS pdf, beginning at page 63.
+	 * 
+	 * @param re
+	 * @return
+	 */
+	public static double calculateCfLam(double re) {
+		return 1.328/Math.sqrt(re);
+	}
+
+	/**
+	 * @author Lorenzo Attanasio
+	 * @param mach
+	 * @param machTransonicThreshold
+	 * @param lenght
+	 * @param k
+	 * @return
+	 */
+	public static double calculateReCutOff(
+			double mach, double machTransonicThreshold, 
+			double lenght, double k){
+
+		if (mach <= machTransonicThreshold) 
+			return 38.21*Math.pow(lenght/k, 1.053);  //Reynolds  cut-off for wing   // ADAS pag 91. Subsonic case
+		else 
+			return 44.62*Math.pow(lenght/k,1.053)*Math.pow(mach, 1.16); // Transonic or supersonic case
+	}
+
+	/**
+	 * @author Lorenzo Attanasio
+	 * @param mach
+	 * @param machTransonicThreshold
+	 * @param density
+	 * @param tas
+	 * @param mu
+	 * @param lenght
+	 * @param roughness
+	 * @return
+	 */
+	public static double calculateReynoldsEffective(
+			double mach, double machTransonicThreshold,
+			double density, double tas, double mu,
+			double lenght, double roughness){
+
+		double re = calculateReynolds(density, tas, lenght, mu);
+
+		if (calculateReCutOff(mach, machTransonicThreshold, lenght, roughness) < re) {
+			re = calculateReCutOff(mach, machTransonicThreshold, lenght, roughness);
+		}
+
+		return re;
+	}
+	
+	public static double calculateReynoldsEffective(
+			double mach, double machTransonicThreshold,
+			double altitude, double lenght, double roughness){
+
+		double re = calculateReynolds(altitude, mach, lenght);
+
+		if (calculateReCutOff(mach, machTransonicThreshold, lenght, roughness) < re) {
+			re = calculateReCutOff(mach, machTransonicThreshold, lenght, roughness);
+		}
+
+		return re;
+	}
+
+	/**
+	 * @author Lorenzo Attanasio
+	 * @param density
+	 * @param tas
+	 * @param lenght
+	 * @param mu
+	 * @return
+	 */
+	public static double calculateReynolds(
+			double density, double tas, double lenght,
+			double mu) {
+		return density*tas*lenght/mu;
+	}
+
+	/**
+	 * @author Lorenzo Attanasio
+	 * @param altitude
+	 * @param mach
+	 * @param lenght
+	 * @return
+	 */
+	public static double calculateReynolds(double altitude, double mach, double lenght) {
+		return calculateReynolds(AtmosphereCalc.getDensity(altitude), 
+				mach*AtmosphereCalc.getSpeedOfSound(altitude), lenght, 
+				calculateDynamicViscosity(AtmosphereCalc.getAtmosphere(altitude).getTemperature()));
+	}
+
+	/**
+	 * @author Lorenzo Attanasio
+	 * @param temperature
+	 * @param t0 (K)
+	 * @param mu0 (Pa*s) grc.nasa.gov/WWW/BGH/Viscosity.html
+	 * @param c (K)
+	 * @return
+	 */
+	public static double calculateDynamicViscosity(double temperature, double t0, double mu0, double c) {
+		return mu0*((t0 + c) / (temperature + c)) 
+				* Math.pow(temperature/t0, 1.5);	
+	}
+
+	public static double calculateDynamicViscosity(double temperature) {
+		return calculateDynamicViscosity(temperature, 288.166667, 17.33e-6, 110.4);
+	}
+
+	/**
+	 * @author Lorenzo Attanasio
+	 * 
+	 * @param cL
+	 * @param k
+	 * @param sweepHalfChord
+	 * @param tcMax
+	 * @return
+	 */
+	public static double calculateMachCriticalKornMason(
+			double cL, double k, double sweepHalfChord, double tcMax) {
+
+		// Here _maxThicknessMean is meant in the free stream direction
+		return k/cos(sweepHalfChord) - 0.108 
+				- 0.1*cL/pow(cos(sweepHalfChord), 3)
+				- tcMax/pow(cos(sweepHalfChord), 2);
+	}
+
+	/**
+	 * 
+	 * @param cL
+	 * @param sweepHalfChord
+	 * @param tcMax
+	 * @param airfoilType
+	 * @return
+	 */
+	public static double calculateMachCriticalKornMason(
+			double cL, double sweepHalfChord, 
+			double tcMax, AirfoilTypeEnum airfoilType) {
+		double k = 0.95;
+		if (airfoilType == AirfoilTypeEnum.CONVENTIONAL) k = 0.87;
+		return calculateMachCriticalKornMason(cL, k, sweepHalfChord, tcMax);
+	}
+
+	
+	public static double calculateMachCriticalKornMason(
+			double cL, Amount<Angle> sweepHalfChord, 
+			double tcMax, AirfoilTypeEnum airfoilType) {
+		return calculateMachCriticalKornMason(cL, sweepHalfChord.doubleValue(SI.RADIAN), tcMax, airfoilType);
+	}
+
+	/**
+	 * This static method allows users to calculate the crest critical Mach number using the 
+	 * Kroo graph which adapts the Shevell graph for swept wing. From this graph the following
+	 * equation has been derived (see CIORNEI, Simona: Mach Number, Relative Thickness, Sweep 
+	 * and Lift Coefficient Of The Wing – An Empirical Investigation of Parameters and Equations.
+	 * Hamburg University of Applied Sciences, Department of Automotive and Aeronautical 
+	 * Engineering, Project, 2005). Furthermore a correction for the modern supercritical 
+	 * airfoils have been added in order to make results more reliable.
+	 * 
+	 * @author Vittorio Trifari
+	 * @param cL
+	 * @param sweepHalfChord
+	 * @param tcMax
+	 * @param airfoilType
+	 * @return m_cr the crest critical Mach number from Kroo equation (2001)
+	 */
+	public static double calculateMachCriticalKroo(
+			double cL, Amount<Angle> sweepHalfChord,
+			double tcMax, AirfoilTypeEnum airfoilType) {
+		
+		// sweep check --> radian are required
+		if (sweepHalfChord.getUnit().equals(NonSI.DEGREE_ANGLE))
+			sweepHalfChord = sweepHalfChord.to(SI.RADIAN);
+		
+		double y = cL/(Math.pow(cos(sweepHalfChord.getEstimatedValue()),2));
+		double x = tcMax/(Math.cos(sweepHalfChord.getEstimatedValue()));
+		
+		double m_cr = ((2.8355*Math.pow(x, 2)) - (1.9072*x) + 0.9499 - (0.2*y) + (0.4262*x*y)) /
+				      (Math.cos(sweepHalfChord.getEstimatedValue()) );
+		
+		// this method work for peaky airfoils; for modern supercritical some corrections
+		// have to be made.
+		if (airfoilType.equals(AirfoilTypeEnum.SUPERCRITICAL))
+			m_cr += 0.035;
+		else if (airfoilType.equals(AirfoilTypeEnum.MODERN_SUPERCRITICAL))
+			m_cr += 0.06;
+		
+		return m_cr;
+	}
+
+	/**
+	 * Evaluate oswald factor with Howe method
+	 * 
+	 * @author Lorenzo Attanasio
+	 * @see page 7 DLR pdf
+	 * 
+	 * @param lambda
+	 * @param ar
+	 * @param tc
+	 * @param phi25
+	 * @param ne
+	 * @param mach
+	 * @return
+	 */
+	public static double calculateOswaldHowe(
+			double lambda, double ar, double tc, 
+			double phi25, double ne, double mach) {
+
+		double f = 0.005 * (1 + 1.5*Math.pow(lambda-0.6, 2));
+
+		return 1./ ( (1+0.12*Math.pow(mach,2)) 
+						* (1 + (0.142 + f * ar * Math.pow(10*tc, 0.33))/Math.pow(Math.cos(phi25), 2) +
+								(0.1*(3*ne + 1))/Math.pow(4+ar, 0.8) ));
+	}
+
+	/**
+	 * Evaluate oswald factor with DLR method
+	 * 
+	 * @author Lorenzo Attanasio
+	 * @see page 9 DLR pdf
+	 * 
+	 * @param taperRatioOpt
+	 * @param arW
+	 * @param bW
+	 * @param dihedralMean
+	 * @param wingletHeight
+	 * @param fuselageMaxDiam
+	 * @param typeVehicle
+	 * @param mach
+	 * @return
+	 */
+	public static double calculateOswaldDLR(
+			double taperRatioOpt, double arW, double bW, double dihedralMean, 
+			double wingletHeight, double fuselageMaxDiam, AircraftTypeEnum typeVehicle, 
+			double mach) {
+
+		double ae = -0.001521, be = 10.82, f, oswald,
+				kef, e_theo, keD0, 
+				lambda_opt,
+				delta_lambda, keM = 1.;
+
+		lambda_opt = taperRatioOpt;
+		delta_lambda = -0.357 + lambda_opt;
+		//			_f = 0.0524*Math.pow(_lambda - delta_lambda,4) 
+		//					- 0.15*Math.pow(_lambda - delta_lambda,3) 
+		//					+ 0.1659*Math.pow(_lambda - delta_lambda, 2) 
+		//					- 0.0706*(_lambda - delta_lambda) + 0.0119;
+		f = 0.0524*Math.pow(1 - delta_lambda,4) 
+				- 0.15*Math.pow(1 - delta_lambda,3) 
+				+ 0.1659*Math.pow(1 - delta_lambda, 2) 
+				- 0.0706*(1 - delta_lambda) + 0.0119;
+
+		e_theo = 1/(1 + f*arW);
+
+		kef = 1 - 2*Math.pow(fuselageMaxDiam/bW, 2);
+
+		switch(typeVehicle) {
+		case JET : keD0 = 0.873; break;
+		case BUSINESS_JET : keD0 = 0.864; break;
+		case TURBOPROP: keD0 = 0.804; break;
+		case GENERAL_AVIATION: keD0 = 0.804; break;
+		case FIGHTER: keD0 = 0.8; break; // ???
+		default: keD0 = 0.8; break;
+		}
+
+		if (mach > 0.3) {
+			keM = ae*Math.pow((mach/0.3 - 1), be) + 1;
+		}
+
+		oswald = e_theo*kef*keD0*keM;
+
+		// Kroo method: needs whole aircraft CD0 
+		//			double Q = 1/(e_theo*kef), P = 0.38*CD0;
+		//			double eKroo = keM/(Q + P*_AR);
+
+		double kWL = 2.83;
+
+		oswald = oswald*Math.pow(1+(2./kWL)*(wingletHeight/bW),2);
+
+		double keGamma = Math.pow(
+				Math.cos(dihedralMean),
+				-2);
+		//			double keGamma = Math.pow((1 + (1/kWL)*(1/Math.cos(_dihedral) - 1)),2);
+		double eWingletGamma = oswald*keGamma;
+		return eWingletGamma;
+	}
+
+	/**
+	 * Evaluate oswald factor with Grosu method
+	 * 
+	 * @author Lorenzo Attanasio
+	 * @param tc
+	 * @param arW
+	 * @param cL
+	 * @return
+	 */
+	public static double calculateOswaldGrosu(double tc, double arW, double cL) {
+		// page 3 DLR pdf
+		return 1/(1.08 + (0.028*tc/Math.pow(cL,2))*Math.PI*arW);
+	}
+
+	/**
+	 * Evaluate oswald factor with Raymer method
+	 * 
+	 * @author Lorenzo Attanasio
+	 * @param sweepLEEquivalent
+	 * @param arW
+	 * @return
+	 */
+	public static double calculateOswaldRaymer(double sweepLEEquivalent, double arW) {
+		if (sweepLEEquivalent > 5*Math.PI/180.){
+			return 4.61*(1 - 0.045
+					* Math.pow(arW,0.68)) 
+					* Math.pow(Math.cos(sweepLEEquivalent), 0.15) 
+					- 3.1;
+		} 
+
+		return 1.78*(1 - 0.045*Math.pow(arW, 0.68)) - 0.64;
+	}
+
+	public static Double calculateRoughness(double cd0) {
+		return cd0*0.06;
+	}
+
+	public static Double calculateCoolings(double cd0) {
+		return cd0*0.08;
+	}
+
+}
