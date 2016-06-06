@@ -16,7 +16,7 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import aircraft.OperatingConditions;
-import aircraft.auxiliary.airfoil.MyAirfoil;
+import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface2Panels;
@@ -132,7 +132,7 @@ public class AGILE_Test_HighLift_Landing {
 		//AIRFOILS DEFINITION (initialize and set data):
 		//AIRFOIL ROOT
 		double yLocRoot = 0.0;		
-		MyAirfoil airfoilRoot = new MyAirfoil(theWing, yLocRoot);
+		Airfoil airfoilRoot = new Airfoil(theWing, yLocRoot);
 		airfoilRoot.getAerodynamics().set_clAlpha(7.0336);
 		airfoilRoot.getAerodynamics().set_clStar(1.2);
 		airfoilRoot.getAerodynamics().set_alphaStar(Amount.valueOf(Math.toRadians(9.5), SI.RADIAN));
@@ -160,7 +160,7 @@ public class AGILE_Test_HighLift_Landing {
 
 		//AIRFOIL KINK
 		double yLocKink = 5.5919;	
-		MyAirfoil airfoilKink = new MyAirfoil(theWing, yLocKink);
+		Airfoil airfoilKink = new Airfoil(theWing, yLocKink);
 		airfoilKink.getAerodynamics().set_clAlpha(6.9533);
 		airfoilKink.getAerodynamics().set_clStar(1.2);
 		airfoilKink.getAerodynamics().set_alphaStar(Amount.valueOf(Math.toRadians(8.5), SI.RADIAN));
@@ -188,7 +188,7 @@ public class AGILE_Test_HighLift_Landing {
 
 		//AIRFOIL TIP
 		double yLocTip = 14.05;	
-		MyAirfoil airfoilTip = new MyAirfoil(theWing, yLocTip);
+		Airfoil airfoilTip = new Airfoil(theWing, yLocTip);
 		airfoilTip.getAerodynamics().set_clAlpha(6.6210);
 		airfoilTip.getAerodynamics().set_clStar(1.15);
 		airfoilTip.getAerodynamics().set_alphaStar(Amount.valueOf(Math.toRadians(8.0), NonSI.DEGREE_ANGLE));
@@ -215,7 +215,7 @@ public class AGILE_Test_HighLift_Landing {
 		airfoilTip.getGeometry().set_thicknessOverChordUnit(0.0);
 
 		// ASSIGN AIRFOILS:
-		List<MyAirfoil> myAirfoilList = new ArrayList<MyAirfoil>();
+		List<Airfoil> myAirfoilList = new ArrayList<Airfoil>();
 		myAirfoilList.add(0, airfoilRoot);
 		myAirfoilList.add(1, airfoilKink);
 		myAirfoilList.add(2, airfoilTip);
@@ -244,7 +244,7 @@ public class AGILE_Test_HighLift_Landing {
 		System.out.println("Starting evaluate the mean airfoil characteristics");
 		System.out.println("-----------------------------------------------------");
 
-		MyAirfoil meanAirfoil = theWing
+		Airfoil meanAirfoil = theWing
 				.getAerodynamics()
 				.new MeanAirfoil()
 				.calculateMeanAirfoil(

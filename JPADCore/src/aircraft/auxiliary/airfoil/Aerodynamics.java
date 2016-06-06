@@ -23,6 +23,7 @@ import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLMaxClean;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcLiftDistribution;
 import configuration.MyConfiguration;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AirfoilEnum;
 import configuration.enumerations.AirfoilStationEnum;
 import configuration.enumerations.AirfoilTypeEnum;
@@ -67,6 +68,8 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 	private Double _clAlpha; 
 	private Double _clStar; 
 	private Double _clMax;
+	
+	private Double _deltaYPercent;
 
 	private Double _cdMin;
 	private Double _clAtCdMin;
@@ -87,44 +90,63 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 	private double _machCr, _cdw = 0., _machCurrent;
 	private Geometry geometry;
 	private Airfoil _theAirfoil;
+	private double[] clAirfoil;
+	
+	MyArray alphaArray =  new MyArray();
 
-	public Aerodynamics(Airfoil airf, String aircraftName, AirfoilStationEnum station) {
+
+	public Aerodynamics(Airfoil airf, AircraftEnum aircraftName, AirfoilStationEnum station) {
 		switch (aircraftName) {
-		case "ATR-72":
+		case ATR72:
 			switch (station) {
 			case ROOT:
-				Aerodynamics(airf, "23-018");
+				Aerodynamics(airf, AirfoilEnum.NACA23_018);
 				break;
 			case KINK:
-				Aerodynamics(airf, "23-015") ;
+				Aerodynamics(airf, AirfoilEnum.NACA23_018) ;
 				break;
 			case TIP:
-				Aerodynamics(airf, "23-012");
+				Aerodynamics(airf, AirfoilEnum.NACA23_015);
 				break;	
 			}
 			break;
-		case "B747-100B":
+		case B747_100B:
 			//TODO implement this 
 			switch (station) {
 			case ROOT:
-				new Aerodynamics(airf, aircraftName, AirfoilStationEnum.ROOT);
+				Aerodynamics(airf, AirfoilEnum.NACA23_018);
 				break;
 			case KINK:
-				new Aerodynamics(airf, aircraftName, AirfoilStationEnum.KINK);
+				Aerodynamics(airf, AirfoilEnum.NACA23_015) ;
 				break;
 			case TIP:
-				new Aerodynamics(airf, aircraftName, AirfoilStationEnum.TIP);
+				Aerodynamics(airf, AirfoilEnum.NACA23_012);
 				break;	
+				
 			}
 			break;
+			
+		case AGILE_DC1:
+			switch (station) {
+			case ROOT:
+				Aerodynamics(airf, AirfoilEnum.DFVLR_R4); //TODO: It should be Ha5 airfoil
+				break;
+			case KINK:
+				Aerodynamics(airf, AirfoilEnum.DFVLR_R4) ;
+				break;
+			case TIP:
+				Aerodynamics(airf, AirfoilEnum.DFVLR_R4);
+				break;
+			}
+
 		}
 		
 	}
 
-	private void Aerodynamics(Airfoil airf, String string) {
-		 switch (string) {
+	private void Aerodynamics(Airfoil airf, AirfoilEnum airfoilName) {
+		 switch (airfoilName) {
 		 
-		 case "23-018":
+		 case NACA23_018:
 			 _id = airf.getId() + "1" + idCounter + "99";
 				idCounter++;
 			 airf.set_family(AirfoilEnum.NACA23_018);	
@@ -132,18 +154,20 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			 geometry = airf.getGeometry();
 
 			 _alphaZeroLift = Amount.valueOf(Math.toRadians(-1.2), SI.RADIAN); 
-			 _clAlpha = 7.22; 
+			 _clAlpha = 6.3; 
 			 _alphaStar = Amount.valueOf(Math.toRadians(9.5),SI.RADIAN); // end-of-linearity 
 			 _clStar = 1.3 ; 
 			 _alphaStall = Amount.valueOf(Math.toRadians(16.0),SI.RADIAN); 
-			 _clMax = 1.6; //1.8;
+			 _clMax = 1.65; //1.8;
 
+			 _deltaYPercent = 4.5;
+			 
 			 _cdMin = 0.00675;
 			 _clAtCdMin = 0.3;
-			 _kFactorDragPolar = 0.075;
+			 _kFactorDragPolar = 0.004;
 
 			 _aerodynamicCenterX = 0.243;
-			 _cmAC = -0.083;
+			 _cmAC = -0.02;
 			 _cmACStall = -0.09;
 			 _cmAlphaAC = 0. ;
 			 _cmAlphaLE = -0.1; //TODO, change this value
@@ -157,7 +181,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			 calculateCdWaveDrag = new CalculateCdWaveDrag();
 			 break;
 
-		 case "23-015":
+		 case NACA23_015:
 			 airf.set_family(AirfoilEnum.NACA23_015);	
 			 _id = airf.getId() + "1" + idCounter + "99";
 				idCounter++;
@@ -166,18 +190,20 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			 geometry = airf.getGeometry();
 
 			 _alphaZeroLift = Amount.valueOf(Math.toRadians(-1.1), SI.RADIAN); 
-			 _clAlpha = 7.05; 
+			 _clAlpha = 6.3; 
 			 _alphaStar = Amount.valueOf(Math.toRadians(10),SI.RADIAN); // end-of-linearity 
 			 _clStar = 1.2 ; 
 			 _alphaStall = Amount.valueOf(Math.toRadians(18.0),SI.RADIAN); 
-			 _clMax = 1.72; //1.6;
+			 _clMax = 1.7; //1.6;
 
+			 _deltaYPercent = 4.307;
+			 
 			 _cdMin = 0.00625;
 			 _clAtCdMin = 0.1;
-			 _kFactorDragPolar = 0.075;
+			 _kFactorDragPolar = 0.004;
 
 			 _aerodynamicCenterX = 0.243;
-			 _cmAC = -0.0833;
+			 _cmAC = -0.02;
 			 _cmACStall = -0.07;
 			 _cmAlphaAC = 0. ;
 			 _cmAlphaLE = -0.1; //TODO, change this value
@@ -191,7 +217,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			 calculateCdWaveDrag = new CalculateCdWaveDrag();
 			 break;
 			 
-		 case "23-012":
+		 case NACA23_012:
 			 airf.set_family(AirfoilEnum.NACA23_012);	
 			 _id = airf.getId() + "1" + idCounter + "99";
 				idCounter++;
@@ -200,18 +226,20 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			 geometry = airf.getGeometry();
 
 			 _alphaZeroLift = Amount.valueOf(Math.toRadians(-1.32), SI.RADIAN); 
-			 _clAlpha = 6.88; 
+			 _clAlpha = 6.3; 
 			 _alphaStar = Amount.valueOf(Math.toRadians(14),SI.RADIAN); // end-of-linearity 
 			 _clStar = 1.6 ; 
 			 _alphaStall = Amount.valueOf(Math.toRadians(18),SI.RADIAN); 
 			 _clMax = 1.8 ; //1.5;
 
+			 _deltaYPercent = 3.115;
+			 
 			 _cdMin = 0.00575;
 			 _clAtCdMin = 0.23;
-			 _kFactorDragPolar = 0.075;
+			 _kFactorDragPolar = 0.004;
 
 			 _aerodynamicCenterX = 0.247;
-			 _cmAC = -0.083;
+			 _cmAC = -0.03;
 			 _cmACStall = -0.09;
 			 _cmAlphaAC = 0. ;
 			 _cmAlphaLE = -0.1; //TODO, change this value
@@ -226,7 +254,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			 break;	
 			 
 			 
-		 case "65-209": 
+		 case NACA65_209: 
 			_id = airf.getId() + "1" + idCounter + "99";
 			idCounter++;
 			
@@ -242,7 +270,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 
 			_cdMin = 0.025;
 			_clAtCdMin = 0.2;
-			_kFactorDragPolar = 0.075;
+			_kFactorDragPolar = 0.0035;
 
 			_aerodynamicCenterX = 0.25;
 			_cmAC = -0.07;
@@ -259,7 +287,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			calculateCdWaveDrag = new CalculateCdWaveDrag();	
 			break;
 			
-		 case "65-206" :
+		 case NACA65_206:
 			 _id = airf.getId() + "1" + idCounter + "99";
 			idCounter++;
 			
@@ -275,7 +303,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 
 			_cdMin = 0.025;
 			_clAtCdMin = 0.2;
-			_kFactorDragPolar = 0.075;
+			_kFactorDragPolar = 0.0035;
 
 			_aerodynamicCenterX = 0.25;
 			_cmAC = -0.07;
@@ -291,6 +319,76 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			calculateMachCr = new CalculateMachCr();
 			calculateCdWaveDrag = new CalculateCdWaveDrag();	
 			break;
+			
+		 case NACA0012:
+			 airf.set_family(AirfoilEnum.NACA0012);	
+			 _id = airf.getId() + "1" + idCounter + "99";
+				idCounter++;
+				
+			 _theAirfoil = airf;
+			 geometry = airf.getGeometry();
+
+			 _alphaZeroLift = Amount.valueOf(Math.toRadians(0), SI.RADIAN); 
+			 _clAlpha = 6.92; 
+			 _alphaStar = Amount.valueOf(Math.toRadians(11),SI.RADIAN); // end-of-linearity 
+			 _clStar = 1.23 ; 
+			 _alphaStall = Amount.valueOf(Math.toRadians(20.1),SI.RADIAN); 
+			 _clMax = 1.86 ; //1.5;
+
+			 _deltaYPercent = 3.115;
+			 
+			 _cdMin = 0.0055;
+			 _clAtCdMin = 0.0;
+			 _kFactorDragPolar = 0.0035;
+
+			 _aerodynamicCenterX = 0.25;
+			 _cmAC = 0.0;
+			 _cmACStall = -0.09;
+			 _cmAlphaAC = 0. ;
+			 _cmAlphaLE = -0.1; //TODO, change this value
+			 //_cmAtClMax = 
+
+			 _reynoldsCruise = 9e+6;
+			 _reynoldsNumberStall = 1e+6;
+
+			 calculateClAlpha = new CalculateClAlpha();
+			 calculateMachCr = new CalculateMachCr();
+			 calculateCdWaveDrag = new CalculateCdWaveDrag();
+			 break;	
+			 
+		 case DFVLR_R4:
+			 airf.set_family(AirfoilEnum.DFVLR_R4);	
+			 _id = airf.getId() + "1" + idCounter + "99";
+				idCounter++;
+				
+			 _theAirfoil = airf;
+			 geometry = airf.getGeometry();
+
+			 _alphaZeroLift = Amount.valueOf(Math.toRadians(-3.75), SI.RADIAN); 
+			 _clAlpha = 6.30; 
+			 _alphaStar = Amount.valueOf(Math.toRadians(11),SI.RADIAN); // end-of-linearity 
+			 _clStar = 1.53 ; 
+			 _alphaStall = Amount.valueOf(Math.toRadians(16.75),SI.RADIAN); 
+			 _clMax = 1.7671 ; //1.5;
+
+			 _cdMin = 0.0056;
+			 _clAtCdMin = 0.0;
+			 _kFactorDragPolar = 0.075;
+
+			 _aerodynamicCenterX = 0.25;
+			 _cmAC = -0.1168;
+			 _cmACStall = -0.0515;
+			 _cmAlphaAC = 0.0015 ;
+			 _cmAlphaLE = 0.; //TODO, change this value
+			 //_cmAtClMax = 
+
+			 _reynoldsCruise = 9e+6;
+			 _reynoldsNumberStall = 1e+6;
+
+			 calculateClAlpha = new CalculateClAlpha();
+			 calculateMachCr = new CalculateMachCr();
+			 calculateCdWaveDrag = new CalculateCdWaveDrag();
+			 break;	
 		 }
 		 
 			 
@@ -311,11 +409,11 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 		_alphaStar = Amount.valueOf(Math.toRadians(10.0),SI.RADIAN); // end-of-linearity 
 		_clStar = 0.8; 
 		_alphaStall = Amount.valueOf(Math.toRadians(13.0),SI.RADIAN); 
-		_clMax = 1.03;
-
+		_clMax = 1.03; 
+		
 		_cdMin = 0.025;
 		_clAtCdMin = 0.2;
-		_kFactorDragPolar = 0.075;
+		_kFactorDragPolar = 0.0035;
 
 		_aerodynamicCenterX = 0.25;
 		_cmAC = -0.07;
@@ -352,7 +450,7 @@ public Aerodynamics(Airfoil airf, String name) {
 
 		 _cdMin = 0.00675;
 		 _clAtCdMin = 0.3;
-		 _kFactorDragPolar = 0.075;
+		 _kFactorDragPolar = 0.0035;
 
 		 _aerodynamicCenterX = 0.243;
 		 _cmAC = -0.083;
@@ -385,7 +483,7 @@ public Aerodynamics(Airfoil airf, String name) {
 
 		 _cdMin = 0.00625;
 		 _clAtCdMin = 0.1;
-		 _kFactorDragPolar = 0.075;
+		 _kFactorDragPolar = 0.0035;
 
 		 _aerodynamicCenterX = 0.243;
 		 _cmAC = -0.0833;
@@ -418,7 +516,7 @@ public Aerodynamics(Airfoil airf, String name) {
 
 		 _cdMin = 0.00575;
 		 _clAtCdMin = 0.23;
-		 _kFactorDragPolar = 0.075;
+		 _kFactorDragPolar = 0.0035;
 
 		 _aerodynamicCenterX = 0.247;
 		 _cmAC = -0.083;
@@ -435,6 +533,40 @@ public Aerodynamics(Airfoil airf, String name) {
 		 calculateCdWaveDrag = new CalculateCdWaveDrag();
 		 break;	
 		 
+	 case "0012":
+		 airf.set_family(AirfoilEnum.NACA0012);	
+		 _id = airf.getId() + "1" + idCounter + "99";
+			idCounter++;
+			
+		 _theAirfoil = airf;
+		 geometry = airf.getGeometry();
+
+		 _alphaZeroLift = Amount.valueOf(Math.toRadians(0), SI.RADIAN); 
+		 _clAlpha = 6.11; 
+		 _alphaStar = Amount.valueOf(Math.toRadians(12.1),SI.RADIAN); // end-of-linearity 
+		 _clStar = 1.3 ; 
+		 _alphaStall = Amount.valueOf(Math.toRadians(15),SI.RADIAN); 
+		 _clMax = 1.6 ; //1.5;
+
+		 _cdMin = 0.0055;
+		 _clAtCdMin = 0.0;
+		 _kFactorDragPolar = 0.0035;
+		 _deltaYPercent = 3.0;
+		 
+		 _aerodynamicCenterX = 0.25;
+		 _cmAC = 0.0;
+		 _cmACStall = -0.09;
+		 _cmAlphaAC = 0. ;
+		 _cmAlphaLE = -0.1; //TODO, change this value
+		 //_cmAtClMax = 
+
+		 _reynoldsCruise = 9e+6;
+		 _reynoldsNumberStall = 1e+6;
+
+		 calculateClAlpha = new CalculateClAlpha();
+		 calculateMachCr = new CalculateMachCr();
+		 calculateCdWaveDrag = new CalculateCdWaveDrag();
+		 break;	
 		 
 	 case "65-209": 
 		_id = airf.getId() + "1" + idCounter + "99";
@@ -452,7 +584,7 @@ public Aerodynamics(Airfoil airf, String name) {
 
 		_cdMin = 0.025;
 		_clAtCdMin = 0.2;
-		_kFactorDragPolar = 0.075;
+		_kFactorDragPolar = 0.0035;
 
 		_aerodynamicCenterX = 0.25;
 		_cmAC = -0.07;
@@ -470,6 +602,39 @@ public Aerodynamics(Airfoil airf, String name) {
 		break;
 		
 	 case "65-206" :
+		 _id = airf.getId() + "1" + idCounter + "99";
+		idCounter++;
+		
+		_theAirfoil = airf;
+		geometry = airf.getGeometry();
+		
+		_alphaZeroLift = Amount.valueOf(Math.toRadians(-1.4), SI.RADIAN); 
+		_clAlpha = 6.13; 
+		_alphaStar = Amount.valueOf(Math.toRadians(10.0),SI.RADIAN); // end-of-linearity 
+		_clStar = _clAlpha * _alphaStar.getEstimatedValue() ; 
+		_alphaStall = Amount.valueOf(Math.toRadians(15.0),SI.RADIAN); 
+		_clMax = 1.3;
+
+		_cdMin = 0.025;
+		_clAtCdMin = 0.2;
+		_kFactorDragPolar = 0.0035;
+
+		_aerodynamicCenterX = 0.25;
+		_cmAC = -0.07;
+		_cmACStall = -0.09;
+		_cmAlphaAC = 0. ;
+		_cmAlphaLE = -0.1; //TODO, change this value
+		//_cmAtClMax = 
+
+		_reynoldsCruise = 1e+7;
+		_reynoldsNumberStall = 1e+6;
+
+		calculateClAlpha = new CalculateClAlpha();
+		calculateMachCr = new CalculateMachCr();
+		calculateCdWaveDrag = new CalculateCdWaveDrag();	
+		break;
+		
+	 case "DFVLR_R4" :
 		 _id = airf.getId() + "1" + idCounter + "99";
 		idCounter++;
 		
@@ -525,6 +690,9 @@ public Aerodynamics(Airfoil airf, String name) {
 
 
 	public  double calculateClAtAlpha (double alpha){
+		
+//		double clActual= MyMathUtils.getInterpolatedValue1DLinear(alphaArray.toArray(), clAirfoil, alpha);
+//		return clActual;
 		double q = _clStar - _clAlpha * _alphaStar.getEstimatedValue();
 		if ( alpha < _alphaStar.getEstimatedValue() ) {
 			_clCurrentViscid = _clAlpha* alpha + q ;
@@ -548,34 +716,100 @@ public Aerodynamics(Airfoil airf, String name) {
 		}
 		return _clCurrentViscid;
 	}
+	
+public  double calculateClAtAlphaInterp (double alpha){
+		
+		double clActual= MyMathUtils.getInterpolatedValue1DLinear(alphaArray.toArray(), clAirfoil, alpha);
+		return clActual;
+//		double q = _clStar - _clAlpha * _alphaStar.getEstimatedValue();
+//		if ( alpha < _alphaStar.getEstimatedValue() ) {
+//			_clCurrentViscid = _clAlpha* alpha + q ;
+//		}
+//		else {
+//			double[][] matrixData = { {Math.pow(_alphaStall.getEstimatedValue(), 3),
+//				Math.pow(_alphaStall.getEstimatedValue(), 2), _alphaStall.getEstimatedValue(),1.0},
+//					{3* Math.pow(_alphaStall.getEstimatedValue(), 2), 2*_alphaStall.getEstimatedValue(), 1.0, 0.0},
+//					{3* Math.pow(_alphaStar.getEstimatedValue(), 2), 2*_alphaStar.getEstimatedValue(), 1.0, 0.0},
+//					{Math.pow(_alphaStar.getEstimatedValue(), 3), Math.pow(_alphaStar.getEstimatedValue(), 2),
+//						_alphaStar.getEstimatedValue(),1.0}};
+//			RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
+//			double [] vector = {_clMax, 0,_clAlpha, _clStar};
+//			double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
+//			double a = solSystem[0];
+//			double b = solSystem[1];
+//			double c = solSystem[2];
+//			double d = solSystem[3];
+//
+//			_clCurrentViscid = a * Math.pow(alpha,3) + b * Math.pow(alpha, 2) + c * alpha +d;  		
+//		}
+//		return _clCurrentViscid;
+	}
 
-	public void plotClvsAlpha(){
+	public  void calculateClvsAlpha (){
+		
+		int nValue = 50;
+		double alphaMin = Math.toRadians(-5);
+		double alphaMax = Math.toRadians(25);
+		alphaArray.linspace(alphaMin, alphaMax, nValue);
+		double alpha;
+		double q = _clStar - _clAlpha * _alphaStar.getEstimatedValue();
+		clAirfoil = new double [nValue];
+		for (int i=0; i<nValue; i++){
+	
+		alpha = alphaArray.get(i);	
+		if ( alpha < _alphaStar.getEstimatedValue() ) {
+			clAirfoil[i] = _clAlpha* alpha + q ;
+		}
+		else {
+			double[][] matrixData = { {Math.pow(_alphaStall.getEstimatedValue(), 3),
+				Math.pow(_alphaStall.getEstimatedValue(), 2), _alphaStall.getEstimatedValue(),1.0},
+					{3* Math.pow(_alphaStall.getEstimatedValue(), 2), 2*_alphaStall.getEstimatedValue(), 1.0, 0.0},
+					{3* Math.pow(_alphaStar.getEstimatedValue(), 2), 2*_alphaStar.getEstimatedValue(), 1.0, 0.0},
+					{Math.pow(_alphaStar.getEstimatedValue(), 3), Math.pow(_alphaStar.getEstimatedValue(), 2),
+						_alphaStar.getEstimatedValue(),1.0}};
+			RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
+			double [] vector = {_clMax, 0,_clAlpha, _clStar};
+			double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
+			double a = solSystem[0];
+			double b = solSystem[1];
+			double c = solSystem[2];
+			double d = solSystem[3];
+
+			clAirfoil[i] = a * Math.pow(alpha,3) + b * Math.pow(alpha, 2) + c * alpha +d; }
+		}
+		
+	}
+	public void plotClvsAlpha(String subfolderPath, String name){
 
 		System.out.println("\n \n-----------------------------------------------------");
-		System.out.println("STARTING PLOT AIRFOIL DRAG POLAR");
+		System.out.println("STARTING PLOT AIRFOIL CL vs ALPHA CURVE " + name);
 		System.out.println("-----------------------------------------------------");
 
 		MyArray alphaArray = new MyArray();
-		int _numberOfAlpha = 40;
+		int _numberOfAlpha = 60;
 		double [] clArray = new double [_numberOfAlpha];
 		double [] alphaArrayDeg = new double [_numberOfAlpha];
+		
 
 		Amount<Angle> alphaActualAmount;
 
+//		Amount<Angle> alphaStart = Amount.valueOf(toRadians(-6.), SI.RADIAN);
+//		Amount<Angle> alphaEnd = Amount.valueOf(
+//				toRadians(get_alphaStall()
+//						.to(NonSI.DEGREE_ANGLE)
+//						.getEstimatedValue()+2), SI.RADIAN);
+		
+		
 		Amount<Angle> alphaStart = Amount.valueOf(toRadians(-6.), SI.RADIAN);
-		Amount<Angle> alphaEnd = Amount.valueOf(
-				toRadians(get_alphaStall()
-						.to(NonSI.DEGREE_ANGLE)
-						.getEstimatedValue()+2), SI.RADIAN);
-
+		Amount<Angle> alphaEnd = Amount.valueOf(toRadians(25.0), SI.RADIAN);
+		
+		
 		alphaArray.setDouble(MyArrayUtils.linspace(
 				alphaStart.getEstimatedValue(), 
 				alphaEnd.getEstimatedValue(), 
 				_numberOfAlpha));
 
-		String folderPath = MyConfiguration.currentDirectoryString + File.separator + "out" + File.separator;
-		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "Cl vs Alpha Airfoil" + File.separator);
-
+	
 		for (int i=0 ; i<_numberOfAlpha ; i++){
 			alphaActualAmount = Amount.valueOf( alphaArray.get(i), SI.RADIAN); 
 			clArray[i] = calculateClAtAlpha(alphaActualAmount.getEstimatedValue());
@@ -584,7 +818,55 @@ public Aerodynamics(Airfoil airf, String name) {
 
 		MyChartToFileUtils.plotNoLegend
 		(alphaArrayDeg , clArray,null , null  ,
-				null ,null , "alpha", "CL", "deg" , "", subfolderPath, "CLalphaAirfoil");
+				null ,null , "alpha", "CL", "deg" , "", subfolderPath, "CL vs alpha Airfoil" + name);
+		
+
+		
+//		Amount<Angle> alphaActualAmount;
+//
+//
+//		
+//		
+//		double [] alphaArrayRad = {-6,
+//				-4,
+//				-2,
+//				0,
+//				2,
+//				4,
+//				6,
+//				8,
+//				10,
+//				12,
+//				14,
+//				15,
+//				16,
+//				17,
+//				18,
+//				20,
+//				21,
+//				22,
+//				23,
+//				24,
+//				25};
+//		
+//		double [] clArray = new double [alphaArrayRad.length];
+//		double [] alphaArrayDeg = new double [alphaArrayRad.length];
+//		double [] alphaArray = new double [alphaArrayRad.length];
+//		
+//		for (int i=0 ; i< alphaArrayRad.length ; i++){
+//			alphaArray[i] = Math.toRadians(alphaArrayRad[i]);
+//		}
+//
+//	
+//		for (int i=0 ; i<alphaArrayRad.length; i++){
+//			alphaActualAmount = Amount.valueOf( alphaArray[i], SI.RADIAN); 
+//			clArray[i] = calculateClAtAlpha(alphaActualAmount.getEstimatedValue());
+//			alphaArrayDeg [i] = alphaActualAmount.to(NonSI.DEGREE_ANGLE).getEstimatedValue();
+//		}
+//
+//		MyChartToFileUtils.plotNoLegend
+//		(alphaArrayRad , clArray,null , null  ,
+//				null ,null , "alpha", "CL", "deg" , "", subfolderPath, "CL vs alpha Airfoil" + name);
 
 
 		System.out.println("-----------------------------------------------------");	
@@ -631,6 +913,19 @@ public Aerodynamics(Airfoil airf, String name) {
 		double cdAirfoil;
 		double clAirfoil = calculateClAtAlpha(alpha.getEstimatedValue());
 		cdAirfoil = get_cdMin() + Math.pow(( clAirfoil - get_clAtCdMin()), 2)*get_kFactorDragPolar();
+		return cdAirfoil;
+
+	}
+	
+	public double calculateCdAtClLinear(double cl) {
+		double qValue =   _clStar - _clAlpha * _alphaStar.getEstimatedValue();
+		Amount<Angle> alpha;
+		double alphaTemp;
+		alphaTemp = (cl - qValue)/_clAlpha;
+
+		alpha = Amount.valueOf(alphaTemp, SI.RADIAN);
+		
+		double cdAirfoil = calculateCdAtAlpha(alpha);
 		return cdAirfoil;
 
 	}
@@ -886,6 +1181,14 @@ public Aerodynamics(Airfoil airf, String name) {
 		this._clMax = _clMax;
 	}
 
+	public Double get__deltaYPercent() {
+		return _deltaYPercent;
+	}
+
+	public void set__deltaYPercent(Double __deltaYPercent) {
+		this._deltaYPercent = __deltaYPercent;
+	}
+
 	public Double get_cdMin() {
 		return _cdMin;
 	}
@@ -1019,6 +1322,22 @@ public Aerodynamics(Airfoil airf, String name) {
 		String id = _theAirfoil.getId() + "aero" + nAero;
 		nAero++;
 		return id;
+	}
+
+	public double[] getClAirfoil() {
+		return clAirfoil;
+	}
+
+	public void setClAirfoil(double[] clAirfoil) {
+		this.clAirfoil = clAirfoil;
+	}
+
+	public MyArray getAlphaArray() {
+		return alphaArray;
+	}
+
+	public void setAlphaArray(MyArray alphaArray) {
+		this.alphaArray = alphaArray;
 	}
 	
 }

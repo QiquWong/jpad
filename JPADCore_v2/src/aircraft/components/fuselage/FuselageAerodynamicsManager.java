@@ -20,7 +20,7 @@ import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
 
-public class FusAerodynamicsManager extends aircraft.componentmodel.componentcalcmanager.AerodynamicsManager{
+public class FuselageAerodynamicsManager extends aircraft.componentmodel.componentcalcmanager.AerodynamicsManager{
 
 	private Fuselage _theFuselage;
 	private Aircraft _theAircraft;
@@ -53,7 +53,7 @@ public class FusAerodynamicsManager extends aircraft.componentmodel.componentcal
 	private String databaseFolderPath;
 	private String databaseFileName;
 
-	public FusAerodynamicsManager(OperatingConditions ops, Aircraft aircraft) {
+	public FuselageAerodynamicsManager(OperatingConditions ops, Aircraft aircraft) {
 
 		_theAircraft = aircraft;
 		_theFuselage = aircraft.get_fuselage();

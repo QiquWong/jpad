@@ -148,7 +148,7 @@ public class AirfoilCreator implements IAirfoilCreator {
 	}
 
 	@Override
-	public Amount<Angle> getAlphaLinearTrait() {
+	public Amount<Angle> getAlphaEndLinearTrait() {
 		return _alphaEndLinearTrait;
 	}
 

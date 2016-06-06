@@ -10,7 +10,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import aircraft.OperatingConditions;
-import aircraft.auxiliary.airfoil.MyAirfoil;
+import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
 import configuration.MyConfiguration;
@@ -76,7 +76,7 @@ public class HighLiftDevices_Test_TF {
 		aircraft.get_theAerodynamics().set_highLiftDatabaseReader(highLiftDatabaseReader);
 		aircraft.set_name("B747-100B");
 		aircraft.get_wing().set_theCurrentAirfoil(
-				new MyAirfoil(
+				new Airfoil(
 						aircraft.get_wing(),
 						0.5
 						)

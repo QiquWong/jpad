@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.sun.org.apache.xml.internal.utils.ThreadControllerWrapper;
 
-import aircraft.auxiliary.airfoil.MyAirfoil;
+import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.Aircraft;
 import configuration.enumerations.FlapTypeEnum;
 
@@ -25,7 +25,7 @@ public class CalcHighLiftDevices {
 	// VARIABLE DECLARATION:
 	
 	private Aircraft aircraft;
-	private MyAirfoil meanAirfoil;
+	private Airfoil meanAirfoil;
 	private List<Double[]> deltaFlap; 	    
 	private List<Double> flapType_index, deltaSlat, eta_in_flap, eta_out_flap, 
 				 eta_in_slat, eta_out_slat, cf_c, cs_c, leRadius_c_slat, cExt_c_slat;

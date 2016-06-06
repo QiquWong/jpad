@@ -14,9 +14,9 @@ import org.jscience.physics.amount.Amount;
 import com.google.common.collect.TreeBasedTable;
 
 import aircraft.OperatingConditions;
-import aircraft.auxiliary.airfoil.MyAerodynamics;
-import aircraft.auxiliary.airfoil.MyGeometry;
-import aircraft.auxiliary.airfoil.MyAirfoil;
+import aircraft.auxiliary.airfoil.Aerodynamics;
+import aircraft.auxiliary.airfoil.Geometry;
+import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
 import aircraft.components.fuselage.Fuselage;
@@ -46,7 +46,7 @@ public class Test_MR_O6c_CLMAX {
 	public static void main(String[] args) {
 
 		Amount<javax.measure.quantity.Angle> deltaAlphaMax; 
-		MyAirfoil meanAirfoil;
+		Airfoil meanAirfoil;
 
 
 		// -----------------------------------------------------------------------
@@ -140,7 +140,7 @@ public class Test_MR_O6c_CLMAX {
 
 		//AIRFOIL 1
 		double yLocRoot = 0.0;
-		MyAirfoil airfoilRoot = new MyAirfoil(theWing, yLocRoot, "23-018");
+		Airfoil airfoilRoot = new Airfoil(theWing, yLocRoot, "23-018");
 		airfoilRoot.getGeometry().update(yLocRoot);  // define chord
 		airfoilRoot.getGeometry().set_maximumThicknessOverChord(0.18); //REPORT
 		airfoilRoot.getGeometry().set_deltaYPercent(0.192 *airfoilRoot.getGeometry().get_maximumThicknessOverChord()*100 );
@@ -162,7 +162,7 @@ public class Test_MR_O6c_CLMAX {
 
 		//AIRFOIL 2
 		double yLocKink = theWing.get_spanStationKink() * theWing.get_semispan().getEstimatedValue();
-		MyAirfoil airfoilKink = new MyAirfoil(theWing, yLocKink, "23-015");
+		Airfoil airfoilKink = new Airfoil(theWing, yLocKink, "23-015");
 		airfoilKink.getGeometry().update(yLocKink);   // define chord
 		airfoilKink.getGeometry().set_maximumThicknessOverChord(0.15); //REPORT
 		airfoilKink.getGeometry().set_deltaYPercent(0.192 *airfoilKink.getGeometry().get_maximumThicknessOverChord()*100 );
@@ -183,7 +183,7 @@ public class Test_MR_O6c_CLMAX {
 
 		//AIRFOIL 3
 		double yLocTip = theWing.get_semispan().getEstimatedValue();
-		MyAirfoil airfoilTip = new MyAirfoil(theWing, yLocTip, "23-012");
+		Airfoil airfoilTip = new Airfoil(theWing, yLocTip, "23-012");
 		airfoilTip.getGeometry().update(yLocRoot);  // define chord
 		airfoilTip.getGeometry().set_maximumThicknessOverChord(0.12); //REPORT
 		//		airfoilTip.getAerodynamics().set_clMax(1.0);
@@ -206,7 +206,7 @@ public class Test_MR_O6c_CLMAX {
 		// -----------------------------------------------------------------------
 
 
-		List<MyAirfoil> myAirfoilList = new ArrayList<MyAirfoil>();
+		List<Airfoil> myAirfoilList = new ArrayList<Airfoil>();
 		myAirfoilList.add(0, airfoilRoot);
 		myAirfoilList.add(1, airfoilKink);
 		myAirfoilList.add(2, airfoilTip);

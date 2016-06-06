@@ -13,9 +13,9 @@ import org.jscience.physics.amount.Amount;
 
 
 import aircraft.OperatingConditions;
-import aircraft.auxiliary.airfoil.MyAerodynamics;
-import aircraft.auxiliary.airfoil.MyGeometry;
-import aircraft.auxiliary.airfoil.MyAirfoil;
+import aircraft.auxiliary.airfoil.Aerodynamics;
+import aircraft.auxiliary.airfoil.Geometry;
+import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
 import aircraft.components.fuselage.Fuselage;
@@ -147,7 +147,7 @@ public class Test_MR_CLalpha {
 		System.out.println("-----------------------------");
 		
 		
-		MyAirfoil airfoilRoot = theWing.get_theAirfoilsList().get(0);
+		Airfoil airfoilRoot = theWing.get_theAirfoilsList().get(0);
 		airfoilRoot.getGeometry().set_deltaYPercent(5.5);
 		airfoilRoot.getGeometry().set_maximumThicknessOverChord(0.18);
 		airfoilRoot.getAerodynamics().set_alphaZeroLift( Amount.valueOf(Math.toRadians(-4.6), SI.RADIAN));
@@ -163,7 +163,7 @@ public class Test_MR_CLalpha {
 		System.out.println("LE sharpness parameter Root " + airfoilRoot.getGeometry().get_deltaYPercent());
 
 
-		MyAirfoil airfoilKink = theWing.get_theAirfoilsList().get(1);
+		Airfoil airfoilKink = theWing.get_theAirfoilsList().get(1);
 		airfoilKink.getGeometry().set_deltaYPercent(5.5);
 		airfoilRoot.getGeometry().set_maximumThicknessOverChord(0.18);
 		airfoilKink.getAerodynamics().set_alphaZeroLift( Amount.valueOf(Math.toRadians(-4.6), SI.RADIAN));
@@ -179,7 +179,7 @@ public class Test_MR_CLalpha {
 		System.out.println("LE sharpness parameter Root " + airfoilKink.getGeometry().get_deltaYPercent());
 		
 
-		MyAirfoil airfoilTip = theWing.get_theAirfoilsList().get(2);
+		Airfoil airfoilTip = theWing.get_theAirfoilsList().get(2);
 		airfoilTip.getGeometry().set_deltaYPercent(4.5);
 		airfoilTip.getGeometry().set_maximumThicknessOverChord(0.136);
 		airfoilTip.getAerodynamics().set_alphaZeroLift( Amount.valueOf(Math.toRadians(-3.68), SI.RADIAN));

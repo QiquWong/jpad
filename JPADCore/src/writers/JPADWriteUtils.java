@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import aircraft.OperatingConditions;
-import aircraft.auxiliary.airfoil.MyAirfoil;
+import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.calculators.ACAerodynamicsManager;
 import aircraft.calculators.ACBalanceManager;
 import aircraft.calculators.ACPerformanceManager;
@@ -267,7 +267,7 @@ public class JPADWriteUtils {
 	private static void addAirfoilsToXMLNew(LiftingSurface2Panels liftingSurface, String fatherId) {
 		if (liftingSurface != null) {
 			for (int k=0; k < liftingSurface.get_numberOfAirfoils(); k++) {
-				MyAirfoil tempAirfoil = liftingSurface.get_theAirfoilsList().get(k);
+				Airfoil tempAirfoil = liftingSurface.get_theAirfoilsList().get(k);
 				JPADGlobalData.getTheXmlTree().add(tempAirfoil, 3, "Airfoil_" + (k+1), fatherId + "af" + k); //"1" + k + "99");
 				JPADGlobalData.getTheXmlTree().add(tempAirfoil.getGeometry(), 4, "Airfoil_Geometry", fatherId + "af" + k + "geo" + k);
 				JPADGlobalData.getTheXmlTree().add(tempAirfoil.getAerodynamics(), 4, "Airfoil_Aerodynamics", fatherId + "af" + k + "aero" + k);
@@ -279,7 +279,7 @@ public class JPADWriteUtils {
 
 		if (liftingSurface != null) {
 			for (int k=0; k < liftingSurface.get_numberOfAirfoils(); k++) {
-				MyAirfoil tempAirfoil = liftingSurface.get_theAirfoilsList().get(k);
+				Airfoil tempAirfoil = liftingSurface.get_theAirfoilsList().get(k);
 				JPADGlobalData.getTheXmlTree().add(tempAirfoil, 3, "Airfoil_" + (k+1), tempAirfoil.getId()); //"1" + k + "99");
 				JPADGlobalData.getTheXmlTree().add(tempAirfoil.getGeometry(), 4, "Airfoil_Geometry", tempAirfoil.getGeometry().getId());
 				JPADGlobalData.getTheXmlTree().add(tempAirfoil.getAerodynamics(), 4, "Airfoil_Aerodynamics", tempAirfoil.getAerodynamics().getId());

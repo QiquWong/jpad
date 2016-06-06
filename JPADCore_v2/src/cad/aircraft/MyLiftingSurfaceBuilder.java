@@ -24,7 +24,7 @@ import org.jcae.opencascade.jni.TopoDS_Vertex;
 import org.jcae.opencascade.jni.TopoDS_Wire;
 import org.jscience.physics.amount.Amount;
 
-import aircraft.components.liftingSurface.LiftingSurface2Panels;
+import aircraft.components.liftingSurface.LiftingSurface;
 import processing.core.PVector;
 
 /**
@@ -36,7 +36,7 @@ import processing.core.PVector;
  */
 public class MyLiftingSurfaceBuilder {
 
-	private LiftingSurface2Panels theLiftingSurface;
+	private LiftingSurface theLiftingSurface;
 
 	// OCC stuff
 	BRep_Builder theBuilder = null;
@@ -71,7 +71,7 @@ public class MyLiftingSurfaceBuilder {
 	// Measurements
 	private Amount<Area> _wettedArea = Amount.valueOf(0.0, SI.SQUARE_METRE);
 
-	public MyLiftingSurfaceBuilder(LiftingSurface2Panels ls) {
+	public MyLiftingSurfaceBuilder(LiftingSurface ls) {
 
 		theLiftingSurface = ls;
 

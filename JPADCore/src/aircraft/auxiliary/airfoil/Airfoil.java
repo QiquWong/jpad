@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import aircraft.components.liftingSurface.LiftingSurface2Panels;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AirfoilEnum;
 import configuration.enumerations.AirfoilStationEnum;
 import configuration.enumerations.AirfoilTypeEnum;
@@ -80,6 +81,7 @@ public class Airfoil {
 		_theLiftingSurface = ls;
 		geometry = new Geometry(this, yLoc);
 		aerodynamics = new Aerodynamics(this);
+	
 	}
 	
 	public Airfoil(LiftingSurface2Panels ls, Double yLoc, String name) {
@@ -92,6 +94,7 @@ public class Airfoil {
 		_theLiftingSurface = ls;
 		geometry = new Geometry(this, yLoc);
 		aerodynamics = new Aerodynamics(this, name);
+		
 	}
 	
 	/**
@@ -99,29 +102,41 @@ public class Airfoil {
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public Airfoil(String aircraftName, LiftingSurface2Panels ls, Double yLoc) {
+	public Airfoil(AircraftEnum aircraftName, LiftingSurface2Panels ls, Double yLoc) {
 
 		_id = ls.getObjectId() + idCounter + "99";
 		idCounter++;
 		
 		switch(aircraftName) {
-		case "ATR-72":
+		case ATR72:
 			_family = AirfoilEnum.NACA63_209;
 			_type = AirfoilTypeEnum.CONVENTIONAL;
 
 			_theLiftingSurface = ls;
 			geometry = new Geometry(this, yLoc);
 			aerodynamics = new Aerodynamics(this);
+			
 			break;
 		
 		// TODO: put inside Geometry and Aerodynamics B747-100B correct data (actually there are the same data in both ATR-72 and B747-100B
-		case "B747-100B":
+		case B747_100B:
 			_family = AirfoilEnum.NACA63_209;
 			_type = AirfoilTypeEnum.MODERN_SUPERCRITICAL;
 
 			_theLiftingSurface = ls;
 			geometry = new Geometry(this, yLoc);
 			aerodynamics = new Aerodynamics(this);
+			
+			break;
+			
+		case AGILE_DC1:
+			_family = AirfoilEnum.DFVLR_R4;
+			_type = AirfoilTypeEnum.MODERN_SUPERCRITICAL; //TODO: have to check
+
+			_theLiftingSurface = ls;
+			geometry = new Geometry(this, yLoc);
+			aerodynamics = new Aerodynamics(this);
+			
 			break;
 		}
 	}
@@ -131,28 +146,37 @@ public class Airfoil {
 	 * 
 	 * @author Manuela Ruocco
 	 */
-	public Airfoil(String aircraftName, AirfoilStationEnum station, LiftingSurface2Panels ls, Double yLoc) {
+	public Airfoil(AircraftEnum aircraftName, AirfoilStationEnum station, LiftingSurface2Panels ls, Double yLoc) {
 
 		_id = ls.getObjectId() + idCounter + "99";
 		idCounter++;
 		
 		switch(aircraftName) {
-		case "ATR-72":
+		case ATR72:
 			_type = AirfoilTypeEnum.CONVENTIONAL;
 
 			_theLiftingSurface = ls;
 			geometry = new Geometry(this, yLoc);
 			aerodynamics = new Aerodynamics(this, aircraftName, station);
+			
 			break;
 		
 		// TODO: put inside Geometry and Aerodynamics B747-100B correct data (actually there are the same data in both ATR-72 and B747-100B
-		case "B747-100B":
-			_family = AirfoilEnum.NACA63_209;
+		case B747_100B:
 			_type = AirfoilTypeEnum.MODERN_SUPERCRITICAL;
 
 			_theLiftingSurface = ls;
 			geometry = new Geometry(this, yLoc);
-			aerodynamics = new Aerodynamics(this);
+			aerodynamics = new Aerodynamics(this, aircraftName, station);
+			break;
+			
+		case AGILE_DC1:
+			_family = AirfoilEnum.DFVLR_R4;
+			_type = AirfoilTypeEnum.MODERN_SUPERCRITICAL; //TODO: have to check
+
+			_theLiftingSurface = ls;
+			geometry = new Geometry(this, yLoc);
+			aerodynamics = new Aerodynamics(this,aircraftName, station);
 			break;
 		}
 	}
@@ -167,8 +191,9 @@ public class Airfoil {
 	
 	public Airfoil(LiftingSurface2Panels ls) {
 		_theLiftingSurface = ls;
-		geometry = new Geometry(this, 10000.0);
 		aerodynamics = new Aerodynamics(this);
+		geometry = new Geometry(this, 10000.0);
+		
 		_type = AirfoilTypeEnum.CONVENTIONAL;
 	}
 	
@@ -254,6 +279,10 @@ public class Airfoil {
 
 	public double get_chordLocal() {
 		return _chordLocal;
+	}
+
+	public void set_chordLocal(double _chordLocal) {
+		this._chordLocal = _chordLocal;
 	}
 
 	public LiftingSurface2Panels get_theLiftingSurface() {

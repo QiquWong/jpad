@@ -365,7 +365,7 @@ public final class MyArrayUtils {
 		return result;
 	}
 	
-	public static double[] convertListOfAmountodoubleArray(List<Amount> theListOfObjects) {
+	public static double[] convertListOfAmountodoubleArray(List<Amount<?>> theListOfObjects) {
 
 		if ( theListOfObjects.size() == 0 ) return null;
 

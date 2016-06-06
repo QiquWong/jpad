@@ -20,13 +20,13 @@ import org.jscience.physics.amount.Amount;
 
 import com.sun.org.apache.xml.internal.utils.ThreadControllerWrapper;
 
-import aircraft.auxiliary.airfoil.MyAirfoil;
+import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcAlpha0L;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLvsAlphaCurve;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.MeanAirfoil;
-import aircraft.components.liftingSurface.LiftingSurface2Panels;
+import aircraft.components.liftingSurface.LiftingSurface;
 import calculators.geometry.LSGeometryCalc;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
@@ -261,7 +261,7 @@ public class LiftCalc {
 
 
 	public static double[] calculateCLvsAlphaArrayNasaBlackwell(
-			LiftingSurface2Panels theLiftingSurface,
+			LiftingSurface theLiftingSurface,
 			MyArray alphaArray,
 			int nValue,
 			boolean printResults
@@ -276,7 +276,7 @@ public class LiftCalc {
 		double cLStar = 0, cLTemp, qValue, a ,b ,c ,d;
 		Amount<Angle> alphaTemp = Amount.valueOf(0.0, SI.RADIAN);
 		LSAerodynamicsManager.MeanAirfoil theMeanAirfoilCalculator =theLsManager.new MeanAirfoil();
-		MyAirfoil meanAirfoil = theMeanAirfoilCalculator.calculateMeanAirfoil(theLiftingSurface);
+		Airfoil meanAirfoil = theMeanAirfoilCalculator.calculateMeanAirfoil(theLiftingSurface);
 		double alphaStar = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
 		Amount<Angle> alphaStarAmount = Amount.valueOf(alphaStar, SI.RADIAN);
 		theLiftingSurface.getAerodynamics().set_alphaStar( alphaStarAmount);
@@ -350,7 +350,7 @@ public class LiftCalc {
 
 
 	public static double[] calculateCLvsAlphaHighLiftArrayNasaBlackwell(
-			LiftingSurface2Panels theLiftingSurface,
+			LiftingSurface theLiftingSurface,
 			MyArray alphaArray, 
 			int nValue,
 			double cLalphaNew,
@@ -368,7 +368,7 @@ public class LiftCalc {
 		double cLAlphaFlap = cLalphaNew*57.3; // need it in 1/rad
 
 		LSAerodynamicsManager.MeanAirfoil theMeanAirfoilCalculator =theLsManager.new MeanAirfoil();
-		MyAirfoil meanAirfoil = theMeanAirfoilCalculator.calculateMeanAirfoil(theLiftingSurface);
+		Airfoil meanAirfoil = theMeanAirfoilCalculator.calculateMeanAirfoil(theLiftingSurface);
 		double alphaStarClean = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
 
 		Amount<Angle> alphaStarCleanAmount = Amount.valueOf(alphaStarClean, SI.RADIAN);
@@ -443,7 +443,7 @@ public class LiftCalc {
 
 	// TO DO move here the cl wing body calculator
 	public static double[] calculateCLvsAlphaArrayWingBody(
-			LiftingSurface2Panels theLiftingSurface,
+			LiftingSurface theLiftingSurface,
 			MyArray alphaArray,
 			int nValue,
 			boolean printResults
@@ -468,7 +468,7 @@ public class LiftCalc {
 	 *
 	 */
 	@SuppressWarnings("static-access")
-	public static double[] calculateCLArraymodifiedStallPath(MyArray alphaArray, LiftingSurface2Panels theLiftingSurface){
+	public static double[] calculateCLArraymodifiedStallPath(MyArray alphaArray, LiftingSurface theLiftingSurface){
 
 
 		// VARIABLE DECLARATION
@@ -476,7 +476,7 @@ public class LiftCalc {
 		double qValue, cLWingActual = 0;
 		double [] clNasaBlackwell = new double [alphaArray.size()];
 
-		List<MyAirfoil> airfoilList = new ArrayList<MyAirfoil>();
+		List<Airfoil> airfoilList = new ArrayList<Airfoil>();
 
 		LSAerodynamicsManager theLSManager = theLiftingSurface.getAerodynamics();
 		LSAerodynamicsManager.CalcLiftDistribution calculateLiftDistribution = theLSManager.getCalculateLiftDistribution();

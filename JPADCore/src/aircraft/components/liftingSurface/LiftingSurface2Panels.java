@@ -28,7 +28,7 @@ import org.jscience.physics.amount.Amount;
 import org.jscience.physics.amount.AmountFormat;
 
 import aircraft.OperatingConditions;
-import aircraft.auxiliary.airfoil.MyAirfoil;
+import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.componentmodel.AeroComponent;
 import aircraft.components.Aircraft;
 import aircraft.components.fuselage.Fuselage;
@@ -396,14 +396,14 @@ public class LiftingSurface2Panels extends AeroComponent implements ILiftingSurf
 	Amount<Length> _xLEMacActualBRF;
 	Amount<Length> _yLEMacActualBRF;
 
-	MyAirfoil _theCurrentAirfoil = null;
+	Airfoil _theCurrentAirfoil = null;
 
 
 	/**
 	 * Contains all the airfoil relative to the current lifting surface
 	 */
-	List<MyAirfoil> _theAirfoilsList = new ArrayList<MyAirfoil>();
-	List<MyAirfoil> _theAirfoilsListExposed = new ArrayList<MyAirfoil>();
+	List<Airfoil> _theAirfoilsList = new ArrayList<Airfoil>();
+	List<Airfoil> _theAirfoilsListExposed = new ArrayList<Airfoil>();
 
 	MyArray _etaAirfoil,
 	_twistVsY,
@@ -641,20 +641,20 @@ public class LiftingSurface2Panels extends AeroComponent implements ILiftingSurf
 		_numberOfAirfoils = 3;
 
 		// The id must be initially 0 to properly read the airfoils 
-		MyAirfoil.idCounter = 0;
-		aircraft.auxiliary.airfoil.MyGeometry.idCounter = 0;
-		aircraft.auxiliary.airfoil.MyAerodynamics.idCounter = 0;
+		Airfoil.idCounter = 0;
+		aircraft.auxiliary.airfoil.Geometry.idCounter = 0;
+		aircraft.auxiliary.airfoil.Aerodynamics.idCounter = 0;
 
 		// Create three default airfoils
-		_theAirfoilsList.add(new MyAirfoil(ls,0.));
+		_theAirfoilsList.add(new Airfoil(ls,0.));
 
 		if (_type.equals(ComponentEnum.VERTICAL_TAIL)) {
-			_theAirfoilsList.add(new MyAirfoil(ls, _spanStationKink*span));
-			_theAirfoilsList.add(new MyAirfoil(ls, span));
+			_theAirfoilsList.add(new Airfoil(ls, _spanStationKink*span));
+			_theAirfoilsList.add(new Airfoil(ls, span));
 
 		} else {
-			_theAirfoilsList.add(new MyAirfoil(ls, _spanStationKink*span/2.));
-			_theAirfoilsList.add(new MyAirfoil(ls, span/2.));
+			_theAirfoilsList.add(new Airfoil(ls, _spanStationKink*span/2.));
+			_theAirfoilsList.add(new Airfoil(ls, span/2.));
 		}
 	}
 
@@ -675,20 +675,20 @@ public class LiftingSurface2Panels extends AeroComponent implements ILiftingSurf
 		_numberOfAirfoils = 3;
 
 		// The id must be initially 0 to properly read the airfoils 
-		MyAirfoil.idCounter = 0;
-		aircraft.auxiliary.airfoil.MyGeometry.idCounter = 0;
-		aircraft.auxiliary.airfoil.MyAerodynamics.idCounter = 0;
+		Airfoil.idCounter = 0;
+		aircraft.auxiliary.airfoil.Geometry.idCounter = 0;
+		aircraft.auxiliary.airfoil.Aerodynamics.idCounter = 0;
 
 		// Create three default airfoils
-		_theAirfoilsList.add(new MyAirfoil(aircraftName, AirfoilStationEnum.ROOT , ls, 0.));
+		_theAirfoilsList.add(new Airfoil(aircraftName, AirfoilStationEnum.ROOT , ls, 0.));
 
 		if (_type.equals(ComponentEnum.VERTICAL_TAIL)) {
-			_theAirfoilsList.add(new MyAirfoil(aircraftName, ls, _spanStationKink*span));
-			_theAirfoilsList.add(new MyAirfoil(aircraftName, ls, span));
+			_theAirfoilsList.add(new Airfoil(aircraftName, ls, _spanStationKink*span));
+			_theAirfoilsList.add(new Airfoil(aircraftName, ls, span));
 
 		} else {
-			_theAirfoilsList.add(new MyAirfoil(aircraftName,  AirfoilStationEnum.KINK ,ls, _spanStationKink*span/2.));
-			_theAirfoilsList.add(new MyAirfoil(aircraftName,  AirfoilStationEnum.TIP,ls, span/2.));
+			_theAirfoilsList.add(new Airfoil(aircraftName,  AirfoilStationEnum.KINK ,ls, _spanStationKink*span/2.));
+			_theAirfoilsList.add(new Airfoil(aircraftName,  AirfoilStationEnum.TIP,ls, span/2.));
 		}
 	}
 
@@ -887,7 +887,7 @@ public class LiftingSurface2Panels extends AeroComponent implements ILiftingSurf
 
 		double yLoc = aircraft.get_fuselage().getWidthAtX(aircraft.get_wing()
 				.get_xLEMacActualBRF().getEstimatedValue())/2;
-		MyAirfoil airfoilRootExposed =LSAerodynamicsManager.calculateIntermediateAirfoil(
+		Airfoil airfoilRootExposed =LSAerodynamicsManager.calculateIntermediateAirfoil(
 				aircraft.get_wing(),
 				yLoc);
 		_theAirfoilsListExposed.add(0, airfoilRootExposed);
@@ -895,13 +895,13 @@ public class LiftingSurface2Panels extends AeroComponent implements ILiftingSurf
 		_theAirfoilsListExposed.get(0).initializeGeometry(aircraft.get_exposedWing(), yLoc);
 
 		if (aircraft.get_wing().get_theAirfoilsList().size() < 3) {
-			MyAirfoil airfoilTipExposed = aircraft.get_wing().get_theAirfoilsList().get(1);
+			Airfoil airfoilTipExposed = aircraft.get_wing().get_theAirfoilsList().get(1);
 			_theAirfoilsListExposed.add(1, airfoilTipExposed);
 		}
 
 		else{
-			MyAirfoil airfoilKinkExposed = aircraft.get_wing().get_theAirfoilsList().get(1);
-			MyAirfoil airfoilTipExposed = aircraft.get_wing().get_theAirfoilsList().get(2);
+			Airfoil airfoilKinkExposed = aircraft.get_wing().get_theAirfoilsList().get(1);
+			Airfoil airfoilTipExposed = aircraft.get_wing().get_theAirfoilsList().get(2);
 			_theAirfoilsListExposed.add(1, airfoilKinkExposed);
 			_theAirfoilsListExposed.add(2, airfoilTipExposed);
 		}
@@ -3548,22 +3548,22 @@ public class LiftingSurface2Panels extends AeroComponent implements ILiftingSurf
 		return _yLEMacActualBRF;
 	}
 
-	public MyAirfoil get_theCurrentAirfoil() {
+	public Airfoil get_theCurrentAirfoil() {
 		return _theCurrentAirfoil;
 	}
 
 
-	public void set_theCurrentAirfoil(MyAirfoil _theAirfoil) {
+	public void set_theCurrentAirfoil(Airfoil _theAirfoil) {
 		this._theCurrentAirfoil = _theAirfoil;
 	}
 
 
-	public List<MyAirfoil> get_theAirfoilsList() {
+	public List<Airfoil> get_theAirfoilsList() {
 		return _theAirfoilsList;
 	}
 
 
-	public void set_theAirfoilsList(List<MyAirfoil> _theAirfoilsList) {
+	public void set_theAirfoilsList(List<Airfoil> _theAirfoilsList) {
 		this._theAirfoilsList = _theAirfoilsList;
 	}
 
@@ -3707,11 +3707,11 @@ public class LiftingSurface2Panels extends AeroComponent implements ILiftingSurf
 		return _xTEvsYActual;
 	}
 
-	public List<MyAirfoil> get_theAirfoilsListExposed() {
+	public List<Airfoil> get_theAirfoilsListExposed() {
 		return _theAirfoilsListExposed;
 	}
 
-	public void set_theAirfoilsListExposed(List<MyAirfoil> _theAirfoilsListExposed) {
+	public void set_theAirfoilsListExposed(List<Airfoil> _theAirfoilsListExposed) {
 		this._theAirfoilsListExposed = _theAirfoilsListExposed;
 	}
 

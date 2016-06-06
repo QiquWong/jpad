@@ -16,7 +16,7 @@ import org.jscience.physics.amount.Amount;
 
 
 import aircraft.OperatingConditions;
-import aircraft.auxiliary.airfoil.MyAirfoil;
+import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
 import aircraft.components.fuselage.FusAerodynamicsManager;
@@ -72,7 +72,7 @@ public class ACStabilityManager {
 	double fusSurfRatio;
 	double clAlphaWing;
 
-	MyAirfoil meanAirfoil;
+	Airfoil meanAirfoil;
 
 	int nValueAlpha = 61;
 
@@ -256,7 +256,7 @@ public class ACStabilityManager {
 	 * only all stability characteristics at an array of alpha body
 	 * @param When this check value is true will be draw all graphs
 	 */
-	public ACStabilityManager(MyAirfoil meanAirfoil, Aircraft theAircraft, ConditionEnum theCondition, Amount<Angle> alphaMin,
+	public ACStabilityManager(Airfoil meanAirfoil, Aircraft theAircraft, ConditionEnum theCondition, Amount<Angle> alphaMin,
 			Amount<Angle> alphaMax, Amount<Angle> alphaBody, boolean plotCheck, String subfolderPath, String pathXMLHighLift){
 
 		this.aircraft = theAircraft;
