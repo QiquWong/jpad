@@ -368,107 +368,108 @@ public class WingAerodynamicCalc {
 		}
 		// PLOT
 		
-		String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR);
+				String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR);
 
-		System.out.println(" \n-----------WRITING CHART TO FILE. CL VS ALPHA-------------- ");
+				System.out.println(" \n-----------WRITING CHART TO FILE. CL VS ALPHA-------------- ");
 
-		MyChartToFileUtils.plotNoLegend(
-				alphaCleanArrayPlot, 
-				cLCleanArrayPlot,
-				null,
-				null,
-				null,
-				null,
-				"alpha", "CL",
-				"deg", "",
-				JPADStaticWriteUtils.createNewFolder(folderPath + "Wing_Charts" + File.separator),
-				"CL_curve_clean");
+				MyChartToFileUtils.plotNoLegend(
+						alphaCleanArrayPlot, 
+						cLCleanArrayPlot,
+						null,
+						null,
+						null,
+						null,
+						"$\\alpha$", "$C_L$",
+						"deg", "",
+						JPADStaticWriteUtils.createNewFolder(folderPath + "Wing_Charts" + File.separator),
+						"CL_curve_clean");
 
-		System.out.println(" \n-------------------DONE----------------------- ");
+				System.out.println(" \n-------------------DONE----------------------- ");
 
-		if ( input.getNumberOfAlpha() !=0){
-		List<Double[]> yVector = new ArrayList<Double[]>();
-		List<String> legend  = new ArrayList<>(); 
-		
-		Double [] yStationDouble = new Double [yStationActual.length];
-		
-		for (int i=0; i<yStationActual.length; i++){
-			yStationDouble[i] = yStationActual[i];
-		}
-		for (int i=0; i<input.getNumberOfAlpha(); i++){
+				if ( input.getNumberOfAlpha() !=0){
+				List<Double[]> yVector = new ArrayList<Double[]>();
+				List<String> legend  = new ArrayList<>(); 
+				
+				Double [] yStationDouble = new Double [yStationActual.length];
+				
+				for (int i=0; i<yStationActual.length; i++){
+					yStationDouble[i] = yStationActual[i];
+				}
+				for (int i=0; i<input.getNumberOfAlpha(); i++){
+					
+					yVector.add(i, yStationDouble);
+					legend.add("$\\alpha$ = " + alphaDistributionArray[i] + " (deg)");
+					}
+
+
+				
+
+				System.out.println(" \n-----------WRITING CHART TO FILE . Cl distribution-------------- ");
+				
+				MyChartToFileUtils.plotJFreeChart(
+						yVector, 
+						input.getClVsEtaVectors(),
+						"CL vs alpha",
+						"$\\eta$", 
+						"Cl",
+						null, null, null, null,
+						"",
+						"",
+						true,
+						legend,
+						JPADStaticWriteUtils.createNewFolder(folderPath + "Wing_Charts" + File.separator),
+						"Cl_vs_eta");
+
+				System.out.println(" \n-------------------DONE----------------------- ");
+				
 			
-		yVector.add(i, yStationDouble);
-		legend.add("alpha " + alphaDistributionArray[i]);
+				}
+				
+				List<Double[]> yVector = new ArrayList<Double[]>();
+				List<Double[]> clVector = new ArrayList<Double[]>();
+				List<String> legend  = new ArrayList<>(); 
+				Double [] yStationDouble = new Double [yStationActual.length];
+				Double [] clMaxDouble = new Double [clMaxActual.size()];
+				Double [] clMaxArrayDouble = new Double [clMaxActual.size()];
+				
+				for (int i=0; i< yStationActual.length; i++){
+					yStationDouble[i] = yStationActual[i];
+				}
+				for (int i=0; i<2; i++){
+					yVector.add(i, yStationDouble);
+				}
+
+				legend.add(0,"$c_l$ max airfoils ");
+				legend.add(1, "$c_l$ distribution at $\\alpha$ " + alphaMax);
+				
+				theNasaBlackwellCalculator.calculate(Amount.valueOf(Math.toRadians(alphaMax), SI.RADIAN));
+				double [] clMaxArray =theNasaBlackwellCalculator.get_clTotalDistribution().toArray();
+			
+				for (int i =0; i<clMaxActual.size(); i++){
+					clMaxDouble [i] =clMaxActual.get(i);
+					clMaxArrayDouble[i] = clMaxArray[i];
+				}
+				
+				clVector.add(clMaxDouble);
+				clVector.add(clMaxArrayDouble);
+
+				System.out.println(" \n-----------WRITING CHART TO FILE . STALL PATH-------------- ");
+				
+				MyChartToFileUtils.plotJFreeChart(
+						yVector, 
+						clVector,
+						"CL vs alpha",
+						"$\\eta$", 
+						"$C_l$",
+						null, null, null, null,
+						"",
+						"",
+						true,
+						legend,
+						JPADStaticWriteUtils.createNewFolder(folderPath + "Wing_Charts" + File.separator),
+						"Stall_path");
+
+				System.out.println(" \n-------------------DONE----------------------- \n");
+
+			}
 		}
-
-		
-
-		System.out.println(" \n-----------WRITING CHART TO FILE . Cl distribution-------------- ");
-		
-		MyChartToFileUtils.plotJFreeChart(
-				yVector, 
-				input.getClVsEtaVectors(),
-				"CL vs alpha",
-				"eta", 
-				"CL",
-				null, null, null, null,
-				"",
-				"",
-				true,
-				legend,
-				JPADStaticWriteUtils.createNewFolder(folderPath + "Wing_Charts" + File.separator),
-				"Cl_vs_eta");
-
-		System.out.println(" \n-------------------DONE----------------------- ");
-		
-	
-		}
-		
-		List<Double[]> yVector = new ArrayList<Double[]>();
-		List<Double[]> clVector = new ArrayList<Double[]>();
-		List<String> legend  = new ArrayList<>(); 
-		Double [] yStationDouble = new Double [yStationActual.length];
-		Double [] clMaxDouble = new Double [clMaxActual.size()];
-		Double [] clMaxArrayDouble = new Double [clMaxActual.size()];
-		
-		for (int i=0; i< yStationActual.length; i++){
-			yStationDouble[i] = yStationActual[i];
-		}
-		for (int i=0; i<2; i++){
-			yVector.add(i, yStationDouble);
-		}
-
-		legend.add(0,"cl max airfoils ");
-		legend.add(1, "cl distribution at alpha " + alphaMax);
-		
-		theNasaBlackwellCalculator.calculate(Amount.valueOf(Math.toRadians(alphaMax), SI.RADIAN));
-		double [] clMaxArray =theNasaBlackwellCalculator.get_clTotalDistribution().toArray();
-	
-		for (int i =0; i<clMaxActual.size(); i++){
-			clMaxDouble [i] =clMaxActual.get(i);
-			clMaxArrayDouble[i] = clMaxArray[i];
-		}
-		
-		clVector.add(clMaxDouble);
-		clVector.add(clMaxArrayDouble);
-
-		System.out.println(" \n-----------WRITING CHART TO FILE . STALL PATH-------------- ");
-		
-		MyChartToFileUtils.plotJFreeChart(
-				yVector, 
-				clVector,
-				"CL vs alpha",
-				"eta", 
-				"CL",
-				null, null, null, null,
-				"",
-				"",
-				true,
-				legend,
-				JPADStaticWriteUtils.createNewFolder(folderPath + "Wing_Charts" + File.separator),
-				"Stall_path");
-
-		System.out.println(" \n-------------------DONE----------------------- \n");
-
-	}
-}

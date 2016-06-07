@@ -379,7 +379,7 @@ public class WingAerodynamicCalc {
 				null,
 				null,
 				null,
-				"alpha", "CL",
+				"$\\alpha$", "$C_L$",
 				"deg", "",
 				JPADStaticWriteUtils.createNewFolder(folderPath + "Wing_Charts" + File.separator),
 				"CL_curve_clean");
@@ -397,9 +397,10 @@ public class WingAerodynamicCalc {
 		}
 		for (int i=0; i<input.getNumberOfAlpha(); i++){
 			
-		yVector.add(i, yStationDouble);
-		legend.add("alpha " + alphaDistributionArray[i]);
-		}
+			yVector.add(i, yStationDouble);
+			legend.add("$\\alpha$ = " + alphaDistributionArray[i] + " (deg)");
+			}
+
 
 		
 
@@ -409,8 +410,8 @@ public class WingAerodynamicCalc {
 				yVector, 
 				input.getClVsEtaVectors(),
 				"CL vs alpha",
-				"eta", 
-				"CL",
+				"$\\eta$", 
+				"Cl",
 				null, null, null, null,
 				"",
 				"",
@@ -458,8 +459,8 @@ public class WingAerodynamicCalc {
 				yVector, 
 				clVector,
 				"CL vs alpha",
-				"eta", 
-				"CL",
+				"$\\eta$", 
+				"$C_l$",
 				null, null, null, null,
 				"",
 				"",

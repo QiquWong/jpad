@@ -5,13 +5,13 @@
                 <mach_number>0.2</mach_number>
                 <number_of_alpha>7</number_of_alpha>
                 <alpha_initial unit="°">0.0</alpha_initial>
-                <alpha_final unit="°">10.0</alpha_final>
+                <alpha_final unit="°">1.0</alpha_final>
         </operating_conditions>
        <wing>
             <global>
-                <surface unit="m²">83.15</surface>
+                <surface unit="m²">83.15</surface> 
                 <aspect_ratio>9.43</aspect_ratio>
-                <number_of_point_semispan>8</number_of_point_semispan>
+                <number_of_point_semispan>100</number_of_point_semispan>
                 <adimensional_kink_station>0.399</adimensional_kink_station>
              </global>
              <distribution>
