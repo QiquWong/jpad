@@ -20,7 +20,7 @@ import org.apache.commons.math3.linear.RealMatrix;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.OperatingConditions;
-import aircraft.auxiliary.airfoil.MyAirfoil;
+import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcAlpha0L;
@@ -518,7 +518,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 	 * @author Manuela Ruocco
 	 */
 
-	public double calculateCLAtAlphaWingBody(Amount<Angle> alphaBody, MyAirfoil meanAirfoil,
+	public double calculateCLAtAlphaWingBody(Amount<Angle> alphaBody, Airfoil meanAirfoil,
 			boolean printCheck, ConditionEnum theCondition){
 		if (alphaBody.getUnit() == NonSI.DEGREE_ANGLE) 
 			alphaBody = alphaBody.to(SI.RADIAN);
@@ -649,7 +649,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		alphaArrayActual.linspace(alphaMin.getEstimatedValue(), alphaMax.getEstimatedValue(), nValue);
 		LSAerodynamicsManager  theLSAnalysis = _theAircraft.get_wing().getAerodynamics();
 		LSAerodynamicsManager.MeanAirfoil theMeanAirfoilCalculator = theLSAnalysis.new MeanAirfoil();
-		MyAirfoil meanAirfoil = theMeanAirfoilCalculator.calculateMeanAirfoil(_theAircraft.get_wing());
+		Airfoil meanAirfoil = theMeanAirfoilCalculator.calculateMeanAirfoil(_theAircraft.get_wing());
 		alphaActual = Amount.valueOf(alphaArrayActual.get(0), SI.RADIAN); 
 		cLActualArray[0]= calculateCLAtAlphaWingBody(alphaActual, meanAirfoil, true, theCondition);
 		for (int i=1; i<alphaArrayActual.size(); i++){
@@ -672,7 +672,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 	 * 
 	 * @author Manuela Ruocco
 	 */
-	public void PlotCLvsAlphaCurve(MyAirfoil meanAirfoil, ConditionEnum theCondition){
+	public void PlotCLvsAlphaCurve(Airfoil meanAirfoil, ConditionEnum theCondition){
 		
 		
 		Amount<Angle> alphaActual;
@@ -827,7 +827,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 	 * 
 	 * @author Manuela Ruocco
 	 */
-	public void PlotCLvsAlphaCurve(MyAirfoil meanAirfoil, String subfolderPath, ConditionEnum theCondition){
+	public void PlotCLvsAlphaCurve(Airfoil meanAirfoil, String subfolderPath, ConditionEnum theCondition){
 		this.subfolderPathCLAlpha = subfolderPath;
 		subfolderPathCeck = false;
 		PlotCLvsAlphaCurve(meanAirfoil, theCondition);

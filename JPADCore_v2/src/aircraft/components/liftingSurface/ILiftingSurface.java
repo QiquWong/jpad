@@ -1,11 +1,14 @@
 package aircraft.components.liftingSurface;
 
+import java.util.List;
+
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 
 import org.jscience.physics.amount.Amount;
 
+import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 
 public interface ILiftingSurface {
@@ -29,7 +32,9 @@ public interface ILiftingSurface {
 	public void calculateGeometry();
 	public void calculateGeometry(int nSections);
 	
-	// TODO: COMPLETE !!
+	public double getChordAtYActual(Double y);
+	
+	public List<Airfoil> getAirfoilList();
 		
 }
 

@@ -30,6 +30,7 @@ import configuration.enumerations.FlapTypeEnum;
 import javaslang.Tuple;
 import javaslang.Tuple2;
 import javaslang.Tuple5;
+import standaloneutils.GeometryCalc;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
@@ -170,7 +171,8 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 					Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), // twistGeometricTip,
 					Amount.valueOf(4.7,SI.METER), // semiSpan, 
 					Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), // sweepLeadingEdge, 
-					Amount.valueOf(0.0, NonSI.DEGREE_ANGLE) // dihedral
+					Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), // dihedral
+					Amount.valueOf(2.0, NonSI.DEGREE_ANGLE)  // angle of incidence (iw)
 					)
 				.build();
 
@@ -207,7 +209,8 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 						Amount.valueOf(-2.0, NonSI.DEGREE_ANGLE), // twistGeometricTip,
 						Amount.valueOf(8.83,SI.METER), // semiSpan, 
 						Amount.valueOf(4.3, NonSI.DEGREE_ANGLE), // sweepLeadingEdge, 
-						Amount.valueOf(0.0, NonSI.DEGREE_ANGLE) // dihedral
+						Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), // dihedral
+						Amount.valueOf(0.0, NonSI.DEGREE_ANGLE)  // angle of incidence (iw)
 						)
 					.build();
 				
@@ -295,6 +298,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		this._symmetricFlaps = builder.__symmetricFlaps;
 		this._asymmetricFlaps = builder.__asymmetricFlaps;
 		this._slats = builder.__slats;
+		this._spoilers = builder.__spoilers;
 		
 		this._eta = builder.__eta;
 		this._yBreakPoints = builder.__yBreakPoints;
@@ -868,6 +872,11 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		return this.taperRatio;
 	}
 
+	@Override
+	public Amount<Angle> getAngleOfIncidence() {
+		return _panels.get(0).getAngleOfIncidence();
+	}
+	
 	private LiftingSurfaceCreator calculateEquivalentWing() {
 		
 		// Equivalent wing calculation --> sheet reference (Vittorio Trifari)
@@ -944,6 +953,8 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 				SI.RADIAN)
 				.to(NonSI.DEGREE_ANGLE);
 		
+		Amount<Angle> angleOfIncidence = this.getAngleOfIncidence();
+		
 		Amount<Angle> dihedralEquivalentWing = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		for(int i=0; i<getPanels().size(); i++)
 			dihedralEquivalentWing = dihedralEquivalentWing.plus(getPanels().get(i).getDihedral());
@@ -961,7 +972,8 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 						twistGeometricTipEquivalentWing,
 						getSemiSpan(),
 						sweepLEEquivalentWing,
-						dihedralEquivalentWing)
+						dihedralEquivalentWing,
+						angleOfIncidence)
 				.build();
 		
 		_equivalentWing = new LiftingSurfaceCreator("Equivalent Wing");
@@ -1510,6 +1522,45 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 				.collect(Collectors.toList());
 	}
 
+	@Override
+	public Amount<Length> getXLEAtYActual(Double yStation) {
+		return Amount.valueOf(
+				GeometryCalc.getXLEAtYActual(
+						MyArrayUtils.convertListOfAmountTodoubleArray(getDiscretizedYs()),
+						MyArrayUtils.convertListOfAmountTodoubleArray(getDiscretizedXle()),
+						yStation
+						),
+				SI.METER
+				);
+	}
+
+	@Override
+	public Amount<Angle> getDihedralAtYActual(Double yStation) {
+		if (yStation >= 0) return getDihedralSemispanAtYActual(yStation);
+		else return getDihedralSemispanAtYActual(-yStation);
+	}
+	
+	@Override
+	public Amount<Angle> getDihedralSemispanAtYActual(Double yStation) {
+		
+		Amount<Angle> dihedralAtY = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		
+		if(yStation <= this._yBreakPoints.get(0).getEstimatedValue()) {
+			System.err.println("INVALID Y STATION");
+			dihedralAtY = null;
+		}
+		
+		for(int i=1; i<this._yBreakPoints.size(); i++) {
+			
+			if(yStation <= this._yBreakPoints.get(i).getEstimatedValue()
+					&& yStation <= this._yBreakPoints.get(i).getEstimatedValue()
+					)
+				dihedralAtY = this._panels.get(i).getDihedral();
+		}
+		
+		return dihedralAtY;
+	}
+	
 	@Override
 	public List<
 		Tuple2<

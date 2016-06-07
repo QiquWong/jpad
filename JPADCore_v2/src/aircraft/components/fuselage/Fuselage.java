@@ -273,7 +273,7 @@ public class Fuselage extends AeroComponent implements IFuselage {
 	private Double[] _percentDifferenceXCG;
 
 	private CenterOfGravity _cg;
-	private FusAerodynamicsManager aerodynamics;
+	private FuselageAerodynamicsManager aerodynamics;
 	private String databaseFolderPath;
 	private String databaseFileName;
 
@@ -1096,9 +1096,9 @@ public class Fuselage extends AeroComponent implements IFuselage {
 
 	}
 
-	public FusAerodynamicsManager initializeAerodynamics(OperatingConditions ops, Aircraft aircraft) {
+	public FuselageAerodynamicsManager initializeAerodynamics(OperatingConditions ops, Aircraft aircraft) {
 		_aerodynamicDatabaseReader = aircraft.get_theAerodynamics().get_aerodynamicDatabaseReader();
-		aerodynamics = new FusAerodynamicsManager(ops, aircraft);
+		aerodynamics = new FuselageAerodynamicsManager(ops, aircraft);
 		return aerodynamics;
 	}
 	
@@ -4837,11 +4837,11 @@ public class Fuselage extends AeroComponent implements IFuselage {
 	}
 
 
-	public FusAerodynamicsManager getAerodynamics() {
+	public FuselageAerodynamicsManager getAerodynamics() {
 		return aerodynamics;
 	}
 
-	public void setAerodynamics(FusAerodynamicsManager aerodynamics) {
+	public void setAerodynamics(FuselageAerodynamicsManager aerodynamics) {
 		this.aerodynamics = aerodynamics;
 	}
 

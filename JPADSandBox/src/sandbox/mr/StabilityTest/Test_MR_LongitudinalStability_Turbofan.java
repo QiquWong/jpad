@@ -23,7 +23,7 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import aircraft.OperatingConditions;
-import aircraft.auxiliary.airfoil.MyAirfoil;
+import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.calculators.ACAnalysisManager;
 import aircraft.componentmodel.InnerCalculator;
 import aircraft.components.Aircraft;
@@ -224,7 +224,7 @@ public class Test_MR_LongitudinalStability_Turbofan {
 
 		//AIRFOIL 1
 		double yLocRoot = 0.0;
-		MyAirfoil airfoilRoot = theWing.get_theAirfoilsList().get(0);
+		Airfoil airfoilRoot = theWing.get_theAirfoilsList().get(0);
 		airfoilRoot.getGeometry().update(yLocRoot);  // define chord
 		airfoilRoot.getGeometry().set_maximumThicknessOverChord(0.18); //REPORT
 		airfoilRoot.getGeometry().set_deltaYPercent(4.6);
@@ -253,7 +253,7 @@ public class Test_MR_LongitudinalStability_Turbofan {
 
 		//AIRFOIL 2
 		double yLocKink = theWing.get_spanStationKink() * theWing.get_semispan().getEstimatedValue();
-		MyAirfoil airfoilKink = theWing.get_theAirfoilsList().get(1);
+		Airfoil airfoilKink = theWing.get_theAirfoilsList().get(1);
 		airfoilKink.getGeometry().update(yLocKink);   // define chord
 		airfoilKink.getGeometry().set_maximumThicknessOverChord(0.18); //REPORT
 		airfoilKink.getGeometry().set_deltaYPercent(4.2);
@@ -282,7 +282,7 @@ public class Test_MR_LongitudinalStability_Turbofan {
 
 		//AIRFOIL 3
 		double yLocTip = theWing.get_semispan().getEstimatedValue();
-		MyAirfoil airfoilTip = theWing.get_theAirfoilsList().get(2);
+		Airfoil airfoilTip = theWing.get_theAirfoilsList().get(2);
 		airfoilTip.getGeometry().update(yLocRoot);  // define chord
 		airfoilTip.getGeometry().set_maximumThicknessOverChord(0.15); //REPORT
 		airfoilTip.getGeometry().set_deltaYPercent(3.0);
@@ -309,7 +309,7 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		//--------------------------------------------------------------------------------------
 		// Assign airfoil
 
-		List<MyAirfoil> myAirfoilList = new ArrayList<MyAirfoil>();
+		List<Airfoil> myAirfoilList = new ArrayList<Airfoil>();
 		myAirfoilList.add(0, airfoilRoot);
 		myAirfoilList.add(1, airfoilKink);
 		myAirfoilList.add(2, airfoilTip);
@@ -327,20 +327,20 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		System.out.println("\nHORIZONTAL TAIL AIRFOILS:");
 
 		double yLocRootH = 0.0;
-		MyAirfoil airfoilRootHorizontalTail = new MyAirfoil(
+		Airfoil airfoilRootHorizontalTail = new Airfoil(
 				horizontalTail, yLocRootH, "0012");
 		airfoilTip.getGeometry().set_deltaYPercent(3.0);
 		airfoilRootHorizontalTail.getGeometry().update(yLocRootH);  // define chord
 		airfoilRootHorizontalTail.getGeometry().set_maximumThicknessOverChord(0.12); //REPORT
 
 		double yLocTipH = aircraft.get_HTail().get_semispan().getEstimatedValue();
-		MyAirfoil airfoilTipHorizontalTail = new MyAirfoil(
+		Airfoil airfoilTipHorizontalTail = new Airfoil(
 				horizontalTail, yLocTipH, "0012");
 		airfoilTip.getGeometry().set_deltaYPercent(3.0);
 		airfoilTipHorizontalTail.getGeometry().update(yLocTipH);  // define chord
 		airfoilTipHorizontalTail.getGeometry().set_maximumThicknessOverChord(0.12); //REPORT
 
-		List<MyAirfoil> myAirfoilListHorizontalTail = new ArrayList<MyAirfoil>();
+		List<Airfoil> myAirfoilListHorizontalTail = new ArrayList<Airfoil>();
 		myAirfoilListHorizontalTail.add(0, airfoilRootHorizontalTail);
 		myAirfoilListHorizontalTail.add(1, airfoilTipHorizontalTail);
 		horizontalTail.set_theAirfoilsList(myAirfoilListHorizontalTail);
@@ -377,7 +377,7 @@ public class Test_MR_LongitudinalStability_Turbofan {
 		// Mean Airfoil
 
 		LSAerodynamicsManager.MeanAirfoil theMeanAirfoilCalculator = theLSAnalysis.new MeanAirfoil();
-		MyAirfoil meanAirfoil = theMeanAirfoilCalculator.calculateMeanAirfoil(theWing);
+		Airfoil meanAirfoil = theMeanAirfoilCalculator.calculateMeanAirfoil(theWing);
 
 
 

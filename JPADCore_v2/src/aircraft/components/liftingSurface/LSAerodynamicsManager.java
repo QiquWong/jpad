@@ -31,8 +31,8 @@ import com.sun.org.apache.bcel.internal.generic.NEWARRAY;
 import com.sun.org.apache.xml.internal.utils.ThreadControllerWrapper;
 
 import aircraft.OperatingConditions;
-import aircraft.auxiliary.airfoil.MyAerodynamics;
-import aircraft.auxiliary.airfoil.MyAirfoil;
+import aircraft.auxiliary.airfoil.Aerodynamics;
+import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.componentmodel.InnerCalculator;
 import aircraft.componentmodel.componentcalcmanager.AerodynamicsManager;
 import aircraft.components.Aircraft;
@@ -934,12 +934,12 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 		public void airfoilLiftDistribution (Amount<Angle> alpha, LiftingSurface theWing){
 			double [] clLocalAirfoil = new double [_nPointsSemispanWise];
-			MyAirfoil intermediateAirfoil;
+			Airfoil intermediateAirfoil;
 			double alphaDouble = alpha.getEstimatedValue();
 
-			MyAirfoil airfoilRoot = theWing.get_theAirfoilsList().get(0);
-			MyAirfoil airfoilKink = theWing.get_theAirfoilsList().get(1);
-			MyAirfoil airfoilTip = theWing.get_theAirfoilsList().get(2);
+			Airfoil airfoilRoot = theWing.get_theAirfoilsList().get(0);
+			Airfoil airfoilKink = theWing.get_theAirfoilsList().get(1);
+			Airfoil airfoilTip = theWing.get_theAirfoilsList().get(2);
 
 			for (int i=0 ; i< _nPointsSemispanWise ; i++){
 				intermediateAirfoil = calculateIntermediateAirfoil(
@@ -1241,7 +1241,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			public double nasaBlackwellCompleteCurveValue(Amount<Angle> alpha){	
 			double cLStar, cLTemp, qValue, a ,b ,c ,d;
 			Amount<Angle> alphaTemp = Amount.valueOf(0.0, SI.RADIAN);
-			MyAirfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
+			Airfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
 			double alphaStar = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
 			set_alphaStar(Amount.valueOf(alphaStar,SI.RADIAN));
 			Amount<Angle> alphaStarAmount = Amount.valueOf(alphaStar, SI.RADIAN);
@@ -1453,7 +1453,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			CalcCLAtAlpha theCLCleanCalculator = new CalcCLAtAlpha();
 			
 			
-			MyAirfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
+			Airfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
 			calcAlphaAndCLMax(meanAirfoil);
 			Amount<Angle> alphaMax = get_alphaMaxClean().to(NonSI.DEGREE_ANGLE);
 			double alphaStarClean = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
@@ -1618,7 +1618,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		Amount<Angle> alphaActual;
 		Amount<Angle> alphaTemp = Amount.valueOf(0.0, SI.RADIAN);
 		int nPoints = 40;
-		MyAirfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
+		Airfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
 		double alphaStar = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
 		Amount<Angle> alphaStarAmount = Amount.valueOf(alphaStar, SI.RADIAN);
 		double cLStar = theCLCalculator.nasaBlackwell(alphaStarAmount);
@@ -2254,7 +2254,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 
 
-	public void calcAlphaAndCLMax(MyAirfoil meanAirfoil){
+	public void calcAlphaAndCLMax(Airfoil meanAirfoil){
 		Amount<Angle> deltaAlphaMax;
 		double meanLESharpnessParameter = meanAirfoil.getGeometry().get_deltaYPercent();
 
@@ -2300,7 +2300,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 		private LiftingSurface theWing;
 		private OperatingConditions theConditions;
-		private MyAirfoil meanAirfoil;
+		private Airfoil meanAirfoil;
 		private List<Double[]> deltaFlap; 	    
 		private List<Double> flapTypeIndex, deltaSlat, etaInFlap, etaOutFlap, 
 		etaInSlat, etaOutSlat, cfc, csc, leRadiusSlatRatio, cExtcSlat;
@@ -2942,7 +2942,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 			double cLAlphaFlap = cLalphaNew*57.3; // need it in 1/rad
 
-			MyAirfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
+			Airfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
 			double alphaStarClean = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
 
 			Amount<Angle> alphaStarCleanAmount = Amount.valueOf(alphaStarClean, SI.RADIAN);
@@ -3042,7 +3042,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 			double alphaFirst = -13.0;
 			int nPoints = 50;
-			MyAirfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
+			Airfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
 			double alphaStarClean = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
 			Amount<Angle> alphaStarCleanAmount = Amount.valueOf(alphaStarClean, SI.RADIAN);
 
@@ -4119,7 +4119,7 @@ public class CalcCdvsAlpha {
 					alphaMin.to(NonSI.DEGREE_ANGLE).getEstimatedValue(),
 					alphaMax.to(NonSI.DEGREE_ANGLE).getEstimatedValue(),
 					nValueTemp); // array in rad
-			MyAirfoil intermediateAirfoil;
+			Airfoil intermediateAirfoil;
 			Amount<Angle> alphaActual;
 			
 			double [] cDDistributionTemp =  new double [nValueTemp];
@@ -4170,7 +4170,7 @@ public class CalcCdvsAlpha {
 			double[] clDistributionInviscid; 
 			AlphaEffective theAlphaInducedCalculator = new AlphaEffective(getTheLiftingSurface().getAerodynamics(),
 					getTheLiftingSurface(), theOperatingConditions);
-			List<MyAirfoil> airfoilList = new ArrayList<MyAirfoil>();
+			List<Airfoil> airfoilList = new ArrayList<Airfoil>();
 			CalcLiftDistribution calculateLiftDistribution = getTheLiftingSurface().getAerodynamics().getCalculateLiftDistribution();
 			int nPointSemiSpan = get_nPointsSemispanWise();
 			double [] clDisributionReal = new double [nPointSemiSpan];
@@ -4179,7 +4179,7 @@ public class CalcCdvsAlpha {
 					alphaMax.getEstimatedValue(),
 					nValue); // array in rad
 			
-			MyAirfoil intermediateAirfoil;
+			Airfoil intermediateAirfoil;
 			Amount<Angle> alphaActual;
 			double[] cdDistribution, cDDistribution;
 			Double []  alphaInduced;
@@ -4245,7 +4245,7 @@ public class CalcCdvsAlpha {
 		public double[] nasaBlackwell(Amount<Angle> alpha, LSAerodynamicsManager theLSManager) {
 
 
-			MyAirfoil airfoilActual;
+			Airfoil airfoilActual;
 			double yActual;
 			cdDistributionNasaBlackwell = new double [_nPointsSemispanWise];
 			LiftingSurface theLS = getTheLiftingSurface();
@@ -4283,7 +4283,7 @@ public class CalcCdvsAlpha {
 		 * @author Manuela Ruocco
 		 */  
 
-		public double nasaBlackwell(Amount<Angle> alpha, LSAerodynamicsManager theLSManager, MyAirfoil airfoil){
+		public double nasaBlackwell(Amount<Angle> alpha, LSAerodynamicsManager theLSManager, Airfoil airfoil){
 
 			double yLoc = airfoil.getGeometry().get_yStation();
 			LSAerodynamicsManager.CalcLiftDistribution calculateLiftDistribution = theLSManager.getCalculateLiftDistribution();
@@ -4300,7 +4300,7 @@ public class CalcCdvsAlpha {
 			return cdLocal;
 		}
 
-		public double schrenk(Amount<Angle> alpha, LSAerodynamicsManager theLSManager, MyAirfoil airfoil){
+		public double schrenk(Amount<Angle> alpha, LSAerodynamicsManager theLSManager, Airfoil airfoil){
 
 			double yLoc = airfoil.getGeometry().get_yStation();
 			LSAerodynamicsManager.CalcLiftDistribution calculateLiftDistribution =  theLSManager.getCalculateLiftDistribution();
@@ -4331,7 +4331,7 @@ public class CalcCdvsAlpha {
 		 * 
 		 */  
 
-		public void plotPolar(LSAerodynamicsManager theLSManager, MethodEnum method, MyAirfoil airfoil){
+		public void plotPolar(LSAerodynamicsManager theLSManager, MethodEnum method, Airfoil airfoil){
 
 			System.out.println("\n \n-----------------------------------------------------");
 			System.out.println("STARTING PLOT AIRFOIL DRAG POLAR");
@@ -4604,14 +4604,14 @@ public class CalcCdvsAlpha {
 
 
 
-		public MyAirfoil calculateMeanAirfoil (LiftingSurface theWing){
+		public Airfoil calculateMeanAirfoil (LiftingSurface theWing){
 
-			MyAirfoil meanAirfoil = new MyAirfoil(theWing);
+			Airfoil meanAirfoil = new Airfoil(theWing);
 
 			if ( theLiftingSurface.get_type() == ComponentEnum.WING ){
-				MyAirfoil airfoilRoot = theWing.get_theAirfoilsList().get(0);
-				MyAirfoil airfoilKink = theWing.get_theAirfoilsList().get(1);
-				MyAirfoil airfoilTip = theWing.get_theAirfoilsList().get(2);
+				Airfoil airfoilRoot = theWing.get_theAirfoilsList().get(0);
+				Airfoil airfoilKink = theWing.get_theAirfoilsList().get(1);
+				Airfoil airfoilTip = theWing.get_theAirfoilsList().get(2);
 
 				//			System.out.println( "---------------------------------------");
 				//			System.out.println( "STARTING EVALUATION OF THE MEAN AIRFOIL");
@@ -4850,8 +4850,8 @@ public class CalcCdvsAlpha {
 
 			if ( theLiftingSurface.get_type() == ComponentEnum.HORIZONTAL_TAIL ){
 
-				MyAirfoil airfoilRoot = theWing.get_theAirfoilsList().get(0);
-				MyAirfoil airfoilTip = theWing.get_theAirfoilsList().get(1);
+				Airfoil airfoilRoot = theWing.get_theAirfoilsList().get(0);
+				Airfoil airfoilTip = theWing.get_theAirfoilsList().get(1);
 
 				rootChord = theWing.get_chordRoot().getEstimatedValue();
 				tipChord = theWing.get_chordTip().getEstimatedValue();
@@ -5065,9 +5065,9 @@ public class CalcCdvsAlpha {
 	 * @param Dimensional station where the airfoil is located.
 	 */ 
 
-	public static MyAirfoil calculateIntermediateAirfoil (LiftingSurface theWing, double yLoc){
+	public static Airfoil calculateIntermediateAirfoil (LiftingSurface theWing, double yLoc){
 
-		MyAirfoil intermediateAirfoil = new MyAirfoil(theWing);
+		Airfoil intermediateAirfoil = new Airfoil(theWing);
 
 		//			System.out.println( "---------------------------------------");
 		//			System.out.println( "STARTING EVALUATION OF INTERMEDIATE AIRFOIL");

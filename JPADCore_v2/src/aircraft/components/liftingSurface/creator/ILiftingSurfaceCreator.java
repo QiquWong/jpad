@@ -79,6 +79,10 @@ public interface ILiftingSurfaceCreator {
 	public List<Amount<Length>> getDiscretizedZle();
 	public List<Amount<Angle>> getDiscretizedTwists();
 
+	public Amount<Length> getXLEAtYActual(Double yStation);
+	public Amount<Angle> getDihedralAtYActual(Double yStation);
+	public Amount<Angle> getDihedralSemispanAtYActual(Double yStation);
+	
 	public List<
 		Tuple2<
 			Amount<Length>, // Xs
@@ -87,7 +91,8 @@ public interface ILiftingSurfaceCreator {
 		> getDiscretizedTopViewAsList();
 
 	public Double[][] getDiscretizedTopViewAsArray();
-
+	
+	public Amount<Angle> getAngleOfIncidence();
 
 	public void reportPanelsToSpanwiseDiscretizedVariables();
 }

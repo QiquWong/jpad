@@ -6,6 +6,7 @@
                 <semispan unit="m">4.0</semispan>
                 <dihedral unit="deg">1.5</dihedral>
                 <sweep_leading_edge unit="deg">20</sweep_leading_edge>
+				<angle_of_incidence unit="deg">2.0</angle_of_incidence>
                 <inner_section>
                     <chord unit="m">3.0</chord>
                     <airfoil file="naca63209.xml"/>

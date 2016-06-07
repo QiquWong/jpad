@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import aircraft.OperatingConditions;
-import aircraft.auxiliary.airfoil.MyAirfoil;
+import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.calculators.ACAerodynamicsManager;
 import aircraft.calculators.ACBalanceManager;
 import aircraft.calculators.ACPerformanceManager;
@@ -19,7 +19,7 @@ import aircraft.components.Systems;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.Canard;
 import aircraft.components.liftingSurface.HTail;
-import aircraft.components.liftingSurface.LiftingSurface2Panels;
+import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.VTail;
 import aircraft.components.liftingSurface.Wing;
 import aircraft.components.nacelles.Nacelle;
@@ -34,83 +34,6 @@ import standaloneutils.JPADGlobalData;
 import standaloneutils.customdata.MyXmlTree;
 
 public class JPADWriteUtils {
-
-	/** 
-	 * This method handles the type of analysis the user could choose.
-	 * Within a type more than one method can be used to make a comparison
-	 * and estimate a mean value.
-	 * 
-	 * @author LA
-	 * @deprecated
-	 */
-	public static void methodHandler(
-			Map <ComponentEnum, List<MethodEnum>> methodsMap, 
-			ComponentEnum componentType, 
-			AnalysisTypeEnum analysisType,
-			Aircraft aircraft, 
-			OperatingConditions conditions) {
-
-		if (analysisType == AnalysisTypeEnum.WEIGHTS) {
-
-			if (methodsMap.get(componentType).get(0) == MethodEnum.ALL){
-
-				for(int j=0; j < MethodEnum.values().length; j++){
-					aircraft.get_component(componentType).calculateMass(
-							aircraft, 
-							conditions,
-							MethodEnum.values()[j]);
-				}
-
-			} else if (methodsMap.get(componentType).size() > 1) {
-				for(int j=0; j < methodsMap.get(componentType).size(); j++){
-					aircraft.get_component(componentType).calculateMass(
-							aircraft, 
-							conditions, 
-							methodsMap.get(componentType).get(j));	
-				}
-			}
-		}
-
-		if (analysisType == AnalysisTypeEnum.BALANCE) {
-			if (methodsMap.get(componentType).get(0) == MethodEnum.ALL){
-
-				for(int j=0; j < MethodEnum.values().length; j++){
-					aircraft.get_component(componentType).calculateCG(
-							aircraft, 
-							conditions,
-							MethodEnum.values()[j]);
-				}
-
-			} else if (methodsMap.get(componentType).size() > 1) {
-				for(int j=0; j < methodsMap.get(componentType).size(); j++){
-					aircraft.get_component(componentType).calculateCG(
-							aircraft, 
-							conditions, 
-							methodsMap.get(componentType).get(j));	
-				}
-			}
-		}
-
-		if (analysisType == AnalysisTypeEnum.AERODYNAMIC) {
-			if (methodsMap.get(componentType).get(0) == MethodEnum.ALL){
-
-				for(int j=0; j < MethodEnum.values().length; j++){
-					aircraft.get_component(componentType).calculateCG(
-							aircraft, 
-							conditions,
-							MethodEnum.values()[j]);
-				}
-
-			} else if (methodsMap.get(componentType).size() > 1) {
-				for(int j=0; j < methodsMap.get(componentType).size(); j++){
-					aircraft.get_component(componentType).calculateCG(
-							aircraft, 
-							conditions, 
-							methodsMap.get(componentType).get(j));	
-				}
-			}
-		}
-	}
 
 	public static String createImagesFolder(String folderName) {
 
@@ -264,10 +187,10 @@ public class JPADWriteUtils {
 
 	}
 
-	private static void addAirfoilsToXMLNew(LiftingSurface2Panels liftingSurface, String fatherId) {
+	private static void addAirfoilsToXMLNew(LiftingSurface liftingSurface, String fatherId) {
 		if (liftingSurface != null) {
 			for (int k=0; k < liftingSurface.get_numberOfAirfoils(); k++) {
-				MyAirfoil tempAirfoil = liftingSurface.get_theAirfoilsList().get(k);
+				Airfoil tempAirfoil = liftingSurface.get_theAirfoilsList().get(k);
 				JPADGlobalData.getTheXmlTree().add(tempAirfoil, 3, "Airfoil_" + (k+1), fatherId + "af" + k); //"1" + k + "99");
 				JPADGlobalData.getTheXmlTree().add(tempAirfoil.getGeometry(), 4, "Airfoil_Geometry", fatherId + "af" + k + "geo" + k);
 				JPADGlobalData.getTheXmlTree().add(tempAirfoil.getAerodynamics(), 4, "Airfoil_Aerodynamics", fatherId + "af" + k + "aero" + k);
@@ -275,11 +198,11 @@ public class JPADWriteUtils {
 		}
 	}
 
-	private static void addAirfoilsToXML(LiftingSurface2Panels liftingSurface, String fatherId) {
+	private static void addAirfoilsToXML(LiftingSurface liftingSurface, String fatherId) {
 
 		if (liftingSurface != null) {
 			for (int k=0; k < liftingSurface.get_numberOfAirfoils(); k++) {
-				MyAirfoil tempAirfoil = liftingSurface.get_theAirfoilsList().get(k);
+				Airfoil tempAirfoil = liftingSurface.get_theAirfoilsList().get(k);
 				JPADGlobalData.getTheXmlTree().add(tempAirfoil, 3, "Airfoil_" + (k+1), tempAirfoil.getId()); //"1" + k + "99");
 				JPADGlobalData.getTheXmlTree().add(tempAirfoil.getGeometry(), 4, "Airfoil_Geometry", tempAirfoil.getGeometry().getId());
 				JPADGlobalData.getTheXmlTree().add(tempAirfoil.getAerodynamics(), 4, "Airfoil_Aerodynamics", tempAirfoil.getAerodynamics().getId());

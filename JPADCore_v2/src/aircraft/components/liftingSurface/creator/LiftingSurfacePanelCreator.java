@@ -36,6 +36,7 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 	private Amount<Angle> _sweepLeadingEdge,
 		_sweepQuarterChord, _sweepHalfChord, _sweepTrailingEdge;
 	private Amount<Angle> _dihedral;
+	private Amount<Angle> _angleOfIncidence;
 	private Amount<Area> _surfacePlanform;
 	private Amount<Area> _surfaceWetted;
 	private Double _aspectRatio;
@@ -292,6 +293,11 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 			.plus(_airfoilRoot.getAlphaZeroLift());
 	}
 
+	@Override
+	public Amount<Angle> getAngleOfIncidence() {
+		return this._angleOfIncidence;
+	}
+	
 	public String getId() {
 		return _id;
 	}
@@ -313,6 +319,7 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 		private Amount<Length> __semiSpan;
 		private Amount<Angle> __sweepLeadingEdge;
 		private Amount<Angle> __dihedral;
+		private Amount<Angle> __angleOfIncidence;
 
 		// optional parameters ... defaults
 		// ...
@@ -324,7 +331,8 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 				Amount<Angle> twistGeometricT,
 				Amount<Length> semiSpan,
 				Amount<Angle> sweepLE,
-				Amount<Angle> dih
+				Amount<Angle> dih,
+				Amount<Angle> iw
 				){
 			this.__id = id;
 			this.__chordRoot = cR;
@@ -335,6 +343,7 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 			this.__semiSpan = semiSpan;
 			this.__sweepLeadingEdge = sweepLE;
 			this.__dihedral = dih;
+			this.__angleOfIncidence = iw;
 		}
 
 		public LiftingSurfacePanelCreator build() {
@@ -354,6 +363,7 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 		_span = _semiSpan.times(2.0);
 		_sweepLeadingEdge = builder.__sweepLeadingEdge;
 		_dihedral = builder.__dihedral;
+		_angleOfIncidence = builder.__angleOfIncidence;
 		calculateGeometry();
 
 	}
@@ -375,6 +385,8 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 
 		Amount<Angle> sweepLeadingEdge = reader.getXMLAmountAngleByPath("//panel/sweep_leading_edge");
 
+		Amount<Angle> angleOfIncidence = reader.getXMLAmountAngleByPath("//panel/angle_of_incidence");
+		
 		Amount<Length> chordRoot = reader.getXMLAmountLengthByPath("//panel/inner_section/chord");
 
 		String airfoilFileName1 =
@@ -404,7 +416,8 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 				chordRoot, chordTip,
 				airfoilRoot, airfoilTip,
 				twistGeometricTip,
-				semiSpan, sweepLeadingEdge, dihedral
+				semiSpan, sweepLeadingEdge, dihedral,
+				angleOfIncidence
 				)
 			.build();
 
@@ -426,6 +439,7 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 		Amount<Length> semiSpan = MyXMLReaderUtils.getXMLAmountLengthByPath(doc, xpath, "//semispan");
 		Amount<Angle> dihedral = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//dihedral");
 		Amount<Angle> sweepLeadingEdge = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//sweep_leading_edge");
+		Amount<Angle> angleOfIncidence = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//angle_of_incidence");
 		Amount<Length> chordRoot = MyXMLReaderUtils.getXMLAmountLengthByPath(doc, xpath, "//inner_section/chord");
 
 		String airfoilFileName1 =
@@ -454,7 +468,8 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 				chordRoot, chordTip,
 				airfoilRoot, airfoilTip,
 				twistGeometricTip,
-				semiSpan, sweepLeadingEdge, dihedral
+				semiSpan, sweepLeadingEdge, dihedral,
+				angleOfIncidence
 				)
 			.build();
 
@@ -516,7 +531,8 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 				chordRoot, chordTip,
 				airfoilRoot, airfoilTip,
 				twistGeometricTip,
-				semiSpan, sweepLeadingEdge, dihedral
+				semiSpan, sweepLeadingEdge, dihedral,
+				Amount.valueOf(0.0, NonSI.DEGREE_ANGLE)
 				)
 			.build();
 
@@ -556,6 +572,7 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 			.append("\tLambda_LE = " + _sweepLeadingEdge.to(NonSI.DEGREE_ANGLE) + "\n")
 			.append("\tLambda_c/4 = " + _sweepQuarterChord.to(NonSI.DEGREE_ANGLE) + "\n")
 			.append("\tLambda_c/2 = " + _sweepHalfChord.to(NonSI.DEGREE_ANGLE) + "\n")
+			.append("\tLambda_TE = " + _sweepTrailingEdge.to(NonSI.DEGREE_ANGLE) + "\n")
 			.append("\tLambda_TE = " + _sweepTrailingEdge.to(NonSI.DEGREE_ANGLE) + "\n")
 			.append("\t.....................................\n")
 			.append("\t                           panel root\n")

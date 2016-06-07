@@ -20,7 +20,7 @@ import org.jscience.physics.amount.Amount;
 
 import com.sun.org.apache.xml.internal.utils.ThreadControllerWrapper;
 
-import aircraft.auxiliary.airfoil.MyAirfoil;
+import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcAlpha0L;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
@@ -276,7 +276,7 @@ public class LiftCalc {
 		double cLStar = 0, cLTemp, qValue, a ,b ,c ,d;
 		Amount<Angle> alphaTemp = Amount.valueOf(0.0, SI.RADIAN);
 		LSAerodynamicsManager.MeanAirfoil theMeanAirfoilCalculator =theLsManager.new MeanAirfoil();
-		MyAirfoil meanAirfoil = theMeanAirfoilCalculator.calculateMeanAirfoil(theLiftingSurface);
+		Airfoil meanAirfoil = theMeanAirfoilCalculator.calculateMeanAirfoil(theLiftingSurface);
 		double alphaStar = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
 		Amount<Angle> alphaStarAmount = Amount.valueOf(alphaStar, SI.RADIAN);
 		theLiftingSurface.getAerodynamics().set_alphaStar( alphaStarAmount);
@@ -368,7 +368,7 @@ public class LiftCalc {
 		double cLAlphaFlap = cLalphaNew*57.3; // need it in 1/rad
 
 		LSAerodynamicsManager.MeanAirfoil theMeanAirfoilCalculator =theLsManager.new MeanAirfoil();
-		MyAirfoil meanAirfoil = theMeanAirfoilCalculator.calculateMeanAirfoil(theLiftingSurface);
+		Airfoil meanAirfoil = theMeanAirfoilCalculator.calculateMeanAirfoil(theLiftingSurface);
 		double alphaStarClean = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
 
 		Amount<Angle> alphaStarCleanAmount = Amount.valueOf(alphaStarClean, SI.RADIAN);
@@ -476,7 +476,7 @@ public class LiftCalc {
 		double qValue, cLWingActual = 0;
 		double [] clNasaBlackwell = new double [alphaArray.size()];
 
-		List<MyAirfoil> airfoilList = new ArrayList<MyAirfoil>();
+		List<Airfoil> airfoilList = new ArrayList<Airfoil>();
 
 		LSAerodynamicsManager theLSManager = theLiftingSurface.getAerodynamics();
 		LSAerodynamicsManager.CalcLiftDistribution calculateLiftDistribution = theLSManager.getCalculateLiftDistribution();

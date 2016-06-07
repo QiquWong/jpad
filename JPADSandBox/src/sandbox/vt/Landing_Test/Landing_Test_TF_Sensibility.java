@@ -15,7 +15,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import aircraft.OperatingConditions;
-import aircraft.auxiliary.airfoil.MyAirfoil;
+import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
@@ -135,7 +135,7 @@ public class Landing_Test_TF_Sensibility {
 
 		//AIRFOIL 1
 		double yLocRoot = 0.0;
-		MyAirfoil airfoilRoot = theWing.get_theAirfoilsList().get(0);
+		Airfoil airfoilRoot = theWing.get_theAirfoilsList().get(0);
 		airfoilRoot.getGeometry().update(yLocRoot);  // define chord
 		airfoilRoot.getGeometry().set_maximumThicknessOverChord(0.18); //REPORT
 		airfoilRoot.getGeometry().set_deltaYPercent(4.5);
@@ -147,7 +147,7 @@ public class Landing_Test_TF_Sensibility {
 
 		//AIRFOIL 2
 		double yLocKink = theWing.get_spanStationKink() * theWing.get_semispan().getEstimatedValue();
-		MyAirfoil airfoilKink = theWing.get_theAirfoilsList().get(1);
+		Airfoil airfoilKink = theWing.get_theAirfoilsList().get(1);
 		airfoilKink.getGeometry().update(yLocKink);   // define chord
 		airfoilKink.getGeometry().set_maximumThicknessOverChord(0.18); //REPORT
 		airfoilKink.getGeometry().set_deltaYPercent(4.5);
@@ -160,7 +160,7 @@ public class Landing_Test_TF_Sensibility {
 
 		//AIRFOIL 3
 		double yLocTip = theWing.get_semispan().getEstimatedValue();
-		MyAirfoil airfoilTip = theWing.get_theAirfoilsList().get(2);
+		Airfoil airfoilTip = theWing.get_theAirfoilsList().get(2);
 		airfoilTip.getGeometry().update(yLocRoot);  // define chord
 		airfoilTip.getGeometry().set_maximumThicknessOverChord(0.15); //REPORT
 		airfoilTip.getGeometry().set_deltaYPercent(4.307);
@@ -173,7 +173,7 @@ public class Landing_Test_TF_Sensibility {
 		//--------------------------------------------------------------------------------------
 		// Assign airfoil
 
-		List<MyAirfoil> myAirfoilList = new ArrayList<MyAirfoil>();
+		List<Airfoil> myAirfoilList = new ArrayList<Airfoil>();
 		myAirfoilList.add(0, airfoilRoot);
 		myAirfoilList.add(1, airfoilKink);
 		myAirfoilList.add(2, airfoilTip);

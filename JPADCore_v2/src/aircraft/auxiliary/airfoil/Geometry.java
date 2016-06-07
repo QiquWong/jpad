@@ -5,16 +5,20 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Length;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
 import aircraft.auxiliary.AuxiliaryComponentCalculator;
+import aircraft.components.liftingSurface.creator.AirfoilCreator;
+import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.ComponentEnum;
+import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import processing.core.PVector;
 import standaloneutils.customdata.MyArray;
 
-public class MyGeometry extends AuxiliaryComponentCalculator{
+public class Geometry extends AuxiliaryComponentCalculator{
 
 	private String _id = ""; 
 	public static int idCounter = 0;
@@ -26,11 +30,12 @@ public class MyGeometry extends AuxiliaryComponentCalculator{
 
 	private Double _thicknessOverChordUnit, _deltaYPercent; 
 	
-
+	private Double _camberRatio;
 	private Double _maximumThicknessOverChord; 
 	private Double _radiusLE; 
 	private Amount<Angle> _anglePhiTE = Amount.valueOf(0,SI.RADIAN);
-
+	private Amount<Length> _chord;
+	
 	/** Twist relative to root chord */
 	private Amount<Angle> _twist;
 
@@ -44,13 +49,49 @@ public class MyGeometry extends AuxiliaryComponentCalculator{
 
 	// Non dimensional coordinate of the airfoil along the semi-span
 	private Double _yStation = 0.;
-	private MyAirfoil _theAirfoil;
+	private Airfoil _theAirfoil;
 	private boolean isMirrored;
 	private ComponentEnum liftingSurfaceType;
 	private double _etaStation;
 	private double iw;
 
-	public MyGeometry(MyAirfoil airfoil, double yLoc) {	
+	/*
+	 * This constructor builds the airfoil geometry using the AirfoilCreator class 
+	 */
+	public Geometry(AirfoilCreator airfoilCreator, AerodynamicDatabaseReader reader) {
+
+		int airfoilFamilyIndex = 0;
+		//recognizing airfoil family
+		if(airfoilCreator.getFamily().equals(AirfoilFamilyEnum.NACA_4_Digit)) 
+			airfoilFamilyIndex = 1;
+		else if(airfoilCreator.getFamily().equals(AirfoilFamilyEnum.NACA_5_Digit))
+			airfoilFamilyIndex = 2;
+		else if(airfoilCreator.getFamily().equals(AirfoilFamilyEnum.NACA_63_Series))
+			airfoilFamilyIndex = 3;
+		else if(airfoilCreator.getFamily().equals(AirfoilFamilyEnum.NACA_64_Series))
+			airfoilFamilyIndex = 4;
+		else if(airfoilCreator.getFamily().equals(AirfoilFamilyEnum.NACA_65_Series))
+			airfoilFamilyIndex = 5;
+		else if(airfoilCreator.getFamily().equals(AirfoilFamilyEnum.NACA_66_Series))
+			airfoilFamilyIndex = 6;
+		else if(airfoilCreator.getFamily().equals(AirfoilFamilyEnum.BICONVEX))
+			airfoilFamilyIndex = 7;
+		else if(airfoilCreator.getFamily().equals(AirfoilFamilyEnum.DOUBLE_WEDGE))
+			airfoilFamilyIndex = 8;
+
+		this._deltaYPercent = reader.getDeltaYvsThickness(
+				airfoilCreator.getThicknessToChordRatio(),
+				airfoilFamilyIndex
+				);
+		this._anglePhiTE = airfoilCreator.getAngleAtTrailingEdge();
+		this._maximumThicknessOverChord = airfoilCreator.getThicknessToChordRatio();
+		this._camberRatio = airfoilCreator.getCamberRatio();
+		this._radiusLE = airfoilCreator.getRadiusLeadingEdgeNormalized();
+		
+		this._chord = airfoilCreator.getChord(); 
+	}
+	
+	public Geometry(Airfoil airfoil, double yLoc) {	
 
 		_id = airfoil.getId() + "0" + idCounter + "99";
 		idCounter++;
@@ -74,7 +115,7 @@ public class MyGeometry extends AuxiliaryComponentCalculator{
 		}
 		_yCoords = new Double[_xCoords.length];
 		
-		_cornerPointsX = new ArrayList<Double>(Arrays.asList(_xCoords));
+		set_cornerPointsX(new ArrayList<Double>(Arrays.asList(_xCoords)));
 
 		Double[] vz = {
 				0.04351, 0.03982, 0.03522, 0.02925, 0.02074, 0.01438, 0.00000,-0.01438,-0.02074,-0.02925,-0.03522,
@@ -82,7 +123,7 @@ public class MyGeometry extends AuxiliaryComponentCalculator{
 				-0.06048,-0.06002,-0.05951,-0.05808,-0.05588,-0.05294,-0.04952,-0.04563,-0.04133,-0.03664,-0.03160,
 				-0.02623,-0.02053,-0.01448,-0.00807,-0.00126
 		};
-		_cornerPointsZ = new ArrayList<Double>(Arrays.asList(vz));
+		set_cornerPointsZ(new ArrayList<Double>(Arrays.asList(vz)));
 
 		_maximumThicknessOverChord = 0.15;
 		_thicknessOverChordUnit = 0.12; 
@@ -100,8 +141,8 @@ public class MyGeometry extends AuxiliaryComponentCalculator{
 	public void update(double yLoc) {
 		Arrays.fill(_yCoords, yLoc);
 		_yStation = yLoc;
-		_etaStation = yLoc/_theAirfoil.get_theLiftingSurface().get_semispan().getEstimatedValue();
-		iw = _theAirfoil.get_theLiftingSurface().get_iw().getEstimatedValue();
+		_etaStation = yLoc/_theAirfoil.get_theLiftingSurface().getSemiSpan().getEstimatedValue();
+		iw = _theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getAngleOfIncidence().getEstimatedValue();
 		populateCoordinateList(_theAirfoil.get_theLiftingSurface().getChordAtYActual(yLoc));
 	}
 
@@ -125,7 +166,7 @@ public class MyGeometry extends AuxiliaryComponentCalculator{
 			}
 
 			// Actual location
-			x = x + (float) _theAirfoil.get_theLiftingSurface().getXLEAtYActual(_yStation)
+			x = x + (float) _theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getXLEAtYActual(_yStation)
 					+ (float) _theAirfoil.get_theLiftingSurface().get_X0().getEstimatedValue();
 			y = _yCoords[i].floatValue();
 			z = z + (float) _theAirfoil.get_theLiftingSurface().get_Z0().getEstimatedValue()
@@ -276,6 +317,38 @@ public class MyGeometry extends AuxiliaryComponentCalculator{
 
 	public double get_etaStation() {
 		return _etaStation;
+	}
+
+	public List<Double> get_cornerPointsX() {
+		return _cornerPointsX;
+	}
+
+	public void set_cornerPointsX(List<Double> _cornerPointsX) {
+		this._cornerPointsX = _cornerPointsX;
+	}
+
+	public List<Double> get_cornerPointsZ() {
+		return _cornerPointsZ;
+	}
+
+	public void set_cornerPointsZ(List<Double> _cornerPointsZ) {
+		this._cornerPointsZ = _cornerPointsZ;
+	}
+
+	public Double get_camberRatio() {
+		return _camberRatio;
+	}
+
+	public void set_camberRatio(Double _camberRatio) {
+		this._camberRatio = _camberRatio;
+	}
+
+	public Amount<Length> get_chord() {
+		return _chord;
+	}
+
+	public void set_chord(Amount<Length> _chord) {
+		this._chord = _chord;
 	}
 
 }

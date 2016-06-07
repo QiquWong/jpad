@@ -67,6 +67,8 @@ public interface ILiftingSurfacePanelCreator {
 	public Double getAspectRatio();
 	public Double getTaperRatio();
 	
+	public Amount<Angle> getAngleOfIncidence();
+	
 	/** 
 	 * Returns the chord of the wing panel at y station (distance from local root)
 	 * 

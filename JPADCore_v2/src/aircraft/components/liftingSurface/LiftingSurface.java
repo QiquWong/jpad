@@ -1,25 +1,19 @@
 package aircraft.components.liftingSurface;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
-
 import org.jscience.physics.amount.Amount;
-import org.kohsuke.args4j.Argument;
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
-import org.kohsuke.args4j.Option;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
+import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.componentmodel.AeroComponent;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import configuration.enumerations.ComponentEnum;
+import standaloneutils.GeometryCalc;
+import standaloneutils.MyArrayUtils;
 
 public class LiftingSurface extends AeroComponent implements ILiftingSurface{
 
@@ -31,14 +25,16 @@ public class LiftingSurface extends AeroComponent implements ILiftingSurface{
 
 	private LiftingSurfaceCreator _liftingSurfaceCreator;
 
-	//	private Amount<Area> _surface = null;
-	//	private Double _aspectRatio = null; 
-	//	private Double _taperRatioEquivalent = null;
-	//	private Double _taperRatioActual = null; 
-	//	private Double _taperRatioOpt = null; // (oswald factor)
-	//	private Amount<Angle> _sweepQuarterChordEq = null; 
-	//	private Amount<Angle> _sweepHalfChordEq = null; 
-	//	private Amount<Angle> _dihedralMean = null;
+	private List<Airfoil> _airfoilList;
+	
+	private Amount<Area> _surface = null;
+	private Double _aspectRatio = null; 
+	private Double _taperRatioEquivalent = null;
+	private Double _taperRatioActual = null; 
+	private Double _taperRatioOpt = null; // (oswald factor)
+	private Amount<Angle> _sweepQuarterChordEq = null; 
+	private Amount<Angle> _sweepHalfChordEq = null; 
+	private Amount<Angle> _dihedralMean = null;
 
 	//	private double deltaFactorDrag;
 
@@ -52,14 +48,16 @@ public class LiftingSurface extends AeroComponent implements ILiftingSurface{
 		private Amount<Length> __yApexConstructionAxes = null; 
 		private Amount<Length> __zApexConstructionAxes = null;
 		private LiftingSurfaceCreator __liftingSurfaceCreator;
-
+		private List<Airfoil> __airfoilList;
+		
 		public LiftingSurfaceBuilder(String id, ComponentEnum type) {
 			// required parameter
 			this.__id = id;
 			this.__type = type;
 
 			// optional parameters ...
-
+			this.__airfoilList = new ArrayList<Airfoil>();
+			
 		}
 
 		public LiftingSurfaceBuilder liftingSurfaceCreator(LiftingSurfaceCreator lsc) {
@@ -81,8 +79,26 @@ public class LiftingSurface extends AeroComponent implements ILiftingSurface{
 		this._yApexConstructionAxes = builder.__yApexConstructionAxes; 
 		this._zApexConstructionAxes = builder.__zApexConstructionAxes;
 		this._liftingSurfaceCreator = builder.__liftingSurfaceCreator;
+		this._airfoilList = builder.__airfoilList;  
 	}
 
+	@Override
+	public List<Airfoil> getAirfoilList() {
+		
+		Airfoil airfoilRoot = _liftingSurfaceCreator.getPanels().get(0).getAirfoilRoot();
+		
+		return ;
+	}
+	
+	@Override
+	public double getChordAtYActual(Double y) {
+		return GeometryCalc.getChordAtYActual(
+				MyArrayUtils.convertListOfAmountTodoubleArray(_liftingSurfaceCreator.getDiscretizedYs()), 
+				MyArrayUtils.convertListOfAmountTodoubleArray(_liftingSurfaceCreator.getDiscretizedChords()),
+				y
+				);
+	}
+	
 	@Override
 	public Amount<Area> getSurface() {
 		return _liftingSurfaceCreator.getSurfacePlanform();
@@ -171,94 +187,6 @@ public class LiftingSurface extends AeroComponent implements ILiftingSurface{
 		_liftingSurfaceCreator.calculateGeometry(nSections);
 	}
 
-
-	//==============================================================
-	// MAIN: 
-	//==============================================================
-	public static void main(String[] args) {
-
-		// TODO: check out this as an alternative
-		// https://blog.codecentric.de/en/2015/09/javafx-how-to-easily-implement-application-preloader-2/
-
-		System.out.println("--------------");
-		System.out.println("Generic Lifting Surface Test");
-		System.out.println("--------------");
-
-		class MyArgument {
-			@Option(name = "-i", aliases = { "--input" }, required = true,
-					usage = "my input file")
-			private File _inputFile;
-
-			@Option(name = "-da", aliases = { "--dir-airfoils" }, required = true,
-					usage = "airfoil directory path")
-			private File _airfoilDirectory;
-
-			// receives other command line parameters than options
-			@Argument
-			public List<String> arguments = new ArrayList<String>();
-
-			public File getInputFile() {
-				return _inputFile;
-			}
-
-			public File getAirfoilDirectory() {
-				return _airfoilDirectory;
-			}
-
-		}
-
-		MyArgument va = new MyArgument();
-		CmdLineParser theCmdLineParser = new CmdLineParser(va);
-
-		// populate the wing static object in the class
-		// before launching the JavaFX application thread (launch --> start ...)
-		try {
-			theCmdLineParser.parseArgument(args);
-			String pathToXML = va.getInputFile().getAbsolutePath();
-			System.out.println("INPUT ===> " + pathToXML);
-
-			String dirAirfoil = va.getAirfoilDirectory().getCanonicalPath();
-			System.out.println("AIRFOILS ===> " + dirAirfoil);
-
-			System.out.println("--------------");
-
-			// This wing static object is available in the scope of
-			// the Application.start method
-
-			// define LiftingSurface ...
-			LiftingSurface theWing = new LiftingSurfaceBuilder("MyWing", ComponentEnum.WING)
-					.liftingSurfaceCreator(LiftingSurfaceCreator.importFromXML(pathToXML, dirAirfoil))
-					.build();
-			
-			//====================================================================================
-			// THIS SEQUENCE READS A WING AND CREATES THE RELATED OBJECT : 
-//			theWing = LiftingSurfaceCreator.importFromXML(pathToXML, dirAirfoil);
-
-			//====================================================================================
-			// THIS SEQUENCE CREATES A WING OBJECT WITH DEFAULT DATA :
-//			theWing = new LiftingSurfaceCreator
-//					.LiftingSurfaceCreatorBuilder("Test ATR72 wing", AircraftEnum.ATR72)
-//					.build();
-			//====================================================================================
-
-			theWing.calculateGeometry(40);
-
-			System.out.println("The wing ...");
-			System.out.println(theWing);
-			System.out.println("Details on panel discretization ...");
-			theWing
-				.getLiftingSurfaceCreator()
-				.reportPanelsToSpanwiseDiscretizedVariables();
-
-		} catch (CmdLineException | IOException e) {
-			System.err.println("Error: " + e.getMessage());
-			theCmdLineParser.printUsage(System.err);
-			System.err.println();
-			System.err.println("  Must launch this app with proper command line arguments.");
-			return;
-		}	    
-	}
-
 	public String get_id() {
 		return _id;
 	}
@@ -277,10 +205,6 @@ public class LiftingSurface extends AeroComponent implements ILiftingSurface{
 
 	public Amount<Length> get_zApexConstructionAxes() {
 		return _zApexConstructionAxes;
-	}
-
-	public LiftingSurfaceCreator get_liftingSurfaceCreator() {
-		return _liftingSurfaceCreator;
 	}
 
 	public void set_id(String _id) {
@@ -306,5 +230,6 @@ public class LiftingSurface extends AeroComponent implements ILiftingSurface{
 	public void set_liftingSurfaceCreator(LiftingSurfaceCreator _liftingSurfaceCreator) {
 		this._liftingSurfaceCreator = _liftingSurfaceCreator;
 	}
+
 }
 

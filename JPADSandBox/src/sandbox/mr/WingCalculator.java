@@ -20,7 +20,7 @@ import org.apache.commons.math3.linear.RealMatrix;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.OperatingConditions;
-import aircraft.auxiliary.airfoil.MyAirfoil;
+import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.componentmodel.InnerCalculator;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface2Panels;
@@ -360,18 +360,18 @@ public class WingCalculator {
 		 * This function creates a new airfoil with its own characteristics.
 		 * 
 		 * @author Manuela Ruocco
-		 * @param MyAirfoil Airfoilroot
+		 * @param Airfoil Airfoilroot
 		 * @param Amount<Length> root position
-		 * @param MyAirfoil Airfoilkink
+		 * @param Airfoil Airfoilkink
 		 * @param Amount<Length> Kink position
-		 * @param MyAirfoil Airfoiltip
+		 * @param Airfoil Airfoiltip
 		 * @param Amount<Length> Tip position
 		 */  
 
 
-		public MyAirfoil calculateIntermediateProfile(MyAirfoil airfoilRoot, Amount<Length> root , 
-				MyAirfoil airfoilKink, Amount<Length> kink ,
-				MyAirfoil airfoilTip, Amount<Length> tip){ 
+		public Airfoil calculateIntermediateProfile(Airfoil airfoilRoot, Amount<Length> root , 
+				Airfoil airfoilKink, Amount<Length> kink ,
+				Airfoil airfoilTip, Amount<Length> tip){ 
 
 			return airfoilTip;
 
@@ -383,14 +383,14 @@ public class WingCalculator {
 		 * This function creates a new airfoil with its own characteristics.
 		 * 
 		 * @author Manuela Ruocco
-		 * @param MyAirfoil Airfoilroot
+		 * @param Airfoil Airfoilroot
 		 * @param Amount<Length> root position
-		 * @param MyAirfoil Airfoiltip
+		 * @param Airfoil Airfoiltip
 		 * @param Amount<Length> Tip position
 		 */  
 
-		public MyAirfoil calculateIntermediateProfile(MyAirfoil airfoilRoot, Amount<Length> root ,
-				MyAirfoil airfoilTip, Amount<Length> tip){
+		public Airfoil calculateIntermediateProfile(Airfoil airfoilRoot, Amount<Length> root ,
+				Airfoil airfoilTip, Amount<Length> tip){
 
 			return airfoilTip;
 
@@ -447,10 +447,10 @@ public class WingCalculator {
 
 
 
-		public MyAirfoil calculateMeanAirfoil (LiftingSurface2Panels theWing , MyAirfoil airfoilRoot, 
-				MyAirfoil airfoilKink, MyAirfoil airfoilTip){
+		public Airfoil calculateMeanAirfoil (LiftingSurface2Panels theWing , Airfoil airfoilRoot, 
+				Airfoil airfoilKink, Airfoil airfoilTip){
 
-			MyAirfoil meanAirfoil = new MyAirfoil(theWing);
+			Airfoil meanAirfoil = new Airfoil(theWing);
 
 			System.out.println( "---------------------------------------");
 			System.out.println( "STARTING EVALUATION OF THE MEAN AIRFOIL");
@@ -714,10 +714,10 @@ public class WingCalculator {
 		 * @param Dimensional station where the airfoil is located.
 		 */ 
 
-		public MyAirfoil calculateIntermediateAirfoil (LiftingSurface2Panels theWing , MyAirfoil airfoilRoot, 
-				MyAirfoil airfoilKink, MyAirfoil airfoilTip, double yLoc){
+		public Airfoil calculateIntermediateAirfoil (LiftingSurface2Panels theWing , Airfoil airfoilRoot, 
+				Airfoil airfoilKink, Airfoil airfoilTip, double yLoc){
 
-			MyAirfoil intermediateAirfoil = new MyAirfoil(theWing);
+			Airfoil intermediateAirfoil = new Airfoil(theWing);
 
 //			System.out.println( "---------------------------------------");
 //			System.out.println( "STARTING EVALUATION OF INTERMEDIATE AIRFOIL");

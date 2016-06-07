@@ -38,7 +38,7 @@ import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 
 import aircraft.OperatingConditions;
-import aircraft.auxiliary.airfoil.MyAirfoil;
+import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.calculators.ACAerodynamicsManager;
 import aircraft.calculators.ACAnalysisManager;
 import aircraft.calculators.ACBalanceManager;
@@ -1110,7 +1110,7 @@ public class JPADDataWriter {
 	 * @param parentInitiator
 	 */
 	private void writeAirfoil(
-			MyAirfoil airfoil, 
+			Airfoil airfoil, 
 			LiftingSurface2Panels liftingSurface, 
 			Element parentInitiator) {
 

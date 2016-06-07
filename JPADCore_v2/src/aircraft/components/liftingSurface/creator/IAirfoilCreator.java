@@ -40,7 +40,7 @@ public interface IAirfoilCreator {
 	Amount<Angle> getAlphaZeroLift();
 	void setAlphaZeroLift(Amount<Angle> alpha0l);
 	
-	Amount<Angle> getAlphaLinearTrait();
+	Amount<Angle> getAlphaEndLinearTrait();
 	void setAlphaLinearTrait(Amount<Angle> alphaStar);
 	
 	Amount<Angle> getAlphaStall();

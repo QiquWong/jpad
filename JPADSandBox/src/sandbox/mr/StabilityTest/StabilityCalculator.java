@@ -17,7 +17,7 @@ import com.sun.org.apache.xml.internal.utils.ThreadControllerWrapper;
 import com.sun.xml.internal.bind.v2.runtime.output.StAXExStreamWriterOutput;
 
 import aircraft.OperatingConditions;
-import aircraft.auxiliary.airfoil.MyAirfoil;
+import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface2Panels;
@@ -224,7 +224,7 @@ public class StabilityCalculator {
 				double deltaE, double tauValue, double[] cLCleanArray, double[] alphaTailArray){
 
 			LSAerodynamicsManager.MeanAirfoil theMeanAirfoil = hTail.getAerodynamics().new MeanAirfoil();
-			MyAirfoil meanAirfoil = theMeanAirfoil.calculateMeanAirfoil(hTail);
+			Airfoil meanAirfoil = theMeanAirfoil.calculateMeanAirfoil(hTail);
 
 			int nPoints = 60;
 
@@ -400,7 +400,7 @@ public class CalcPitchingMomentAC{
 	yStationsNB, cLDistributionNB, chordLocal, xcPArrayLRF, xACArrayLRF, clNasaBlackwell;
 	Double[] cLDistribution;
 	int nPointSemiSpan;
-	List<MyAirfoil> airfoilList = new ArrayList<MyAirfoil>();
+	List<Airfoil> airfoilList = new ArrayList<Airfoil>();
 	LSAerodynamicsManager theLSManager;
 
 	// BUILDER--------------------------------------
@@ -661,7 +661,7 @@ public class CalcPitchingMomentAC{
 		Amount<Angle> alphaSecond;
 		
 		LSAerodynamicsManager.MeanAirfoil theMeanAirfoilCalculator = theLiftingSurface.getAerodynamics().new MeanAirfoil();
-		MyAirfoil meanAirfoil = theMeanAirfoilCalculator.calculateMeanAirfoil(theLiftingSurface);
+		Airfoil meanAirfoil = theMeanAirfoilCalculator.calculateMeanAirfoil(theLiftingSurface);
 	
 		alphaFirst = Amount.valueOf(1.0, NonSI.DEGREE_ANGLE);
 		alphaSecond= Amount.valueOf(4.0, NonSI.DEGREE_ANGLE);

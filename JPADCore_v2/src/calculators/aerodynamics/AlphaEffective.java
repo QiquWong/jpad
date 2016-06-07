@@ -16,7 +16,7 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.OperatingConditions;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
-import aircraft.components.liftingSurface.LiftingSurface2Panels;
+import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.GeometryCalc;
 import standaloneutils.MyArrayUtils;
@@ -38,7 +38,7 @@ public class AlphaEffective {
 	int numberOfPoints = 30; //the same of static final  _numberOfPointsChordDistribution
 	OperatingConditions theOperatingConditions;
 	LSAerodynamicsManager theLSManager;
-	LiftingSurface2Panels theWing;
+	LiftingSurface theWing;
 
 	double vortexSemiSpan, vortexSemiSpanToSemiSpanRatio, surface, semispan, mach, altitude ;
 	double [] yStationsActual, dihedral,  twist, alpha0l, xLEvsYActual, chordsVsYActual, alpha0lArray,
@@ -51,7 +51,7 @@ public class AlphaEffective {
 	//--------------------------------------------------------
 	//builder
 
-	public AlphaEffective(LSAerodynamicsManager theLSManager, LiftingSurface2Panels theWing,
+	public AlphaEffective(LSAerodynamicsManager theLSManager, LiftingSurface theWing,
 			OperatingConditions theOperatingConditions){
 		this.theLSManager = theLSManager;
 		this.theWing = theWing;
