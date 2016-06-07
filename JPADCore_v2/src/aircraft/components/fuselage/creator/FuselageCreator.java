@@ -279,7 +279,7 @@ public class FuselageCreator implements IFuselageCreator {
 		//		_reynolds = _theOperatingConditions.calculateRe(_len_F.getEstimatedValue(), _roughness.getEstimatedValue());
 
 		calculateUpsweepAngle();
-		 calculateWindshieldAngle(); // TODO: agodemar, check this
+		calculateWindshieldAngle(); 
 
 		// --- END OF OUTPUT DATA -----------------------------------------
 
