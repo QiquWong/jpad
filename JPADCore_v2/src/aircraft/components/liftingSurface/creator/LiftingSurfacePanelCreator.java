@@ -19,6 +19,7 @@ import org.jscience.physics.amount.Amount;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
+import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import configuration.MyConfiguration;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;

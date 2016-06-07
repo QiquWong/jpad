@@ -1,6 +1,6 @@
 package aircraft.components.liftingSurface;
 
-public class Wing {
+public class Wing extends LiftingSurface {
 
 	
 }

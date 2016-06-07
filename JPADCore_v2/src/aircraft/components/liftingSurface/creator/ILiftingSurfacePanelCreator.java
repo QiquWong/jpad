@@ -8,6 +8,8 @@ import javax.measure.quantity.Length;
 
 import org.jscience.physics.amount.Amount;
 
+import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
+
 public interface ILiftingSurfacePanelCreator {
 
 	/*

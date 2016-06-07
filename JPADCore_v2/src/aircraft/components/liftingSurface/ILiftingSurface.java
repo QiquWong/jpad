@@ -10,6 +10,7 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
+import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 
 public interface ILiftingSurface {
 
@@ -32,9 +33,15 @@ public interface ILiftingSurface {
 	public void calculateGeometry();
 	public void calculateGeometry(int nSections);
 	
+	public List<Airfoil> getAirfoilList();
+	public void setAirfoilList(List<Airfoil> airfoilList);
+	
+	public List<Airfoil> populateAirfoilList (
+			AerodynamicDatabaseReader aeroDatabaseReader,
+			Boolean equivalentWingFlag
+			);
+	
 	public double getChordAtYActual(Double y);
 	
-	public List<Airfoil> getAirfoilList();
-		
 }
 

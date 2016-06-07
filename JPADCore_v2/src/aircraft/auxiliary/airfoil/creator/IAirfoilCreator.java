@@ -1,4 +1,4 @@
-package aircraft.components.liftingSurface.creator;
+package aircraft.auxiliary.airfoil.creator;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
@@ -33,6 +33,12 @@ public interface IAirfoilCreator {
 	
 	Double getRadiusLeadingEdgeNormalized();
 	void setRadiusLeadingEdgeNormalized(Double rLE);
+	
+	Double[] getXCoords();
+	void setXCoords(Double[] xCoords);
+	
+	Double[] getZCoords();
+	void setZCoords(Double[] zCoords);
 	
 	Amount<Angle> getAngleAtTrailingEdge();
 	void setAngleAtTrailingEdge(Amount<Angle> phiTE);
