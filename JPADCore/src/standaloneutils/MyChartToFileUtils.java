@@ -615,6 +615,12 @@ public class MyChartToFileUtils {
 		
 		//----------------------------------------------------------------------------------
 		// Generating the .tikz graph
+		
+		String[] legendValue = new String[legend.size()];
+		
+		for (int i=0; i<legendValue.length; i++){
+			legendValue[i] = legend.get(i);
+		}
 		MyChartToFileUtils chartFactory = new MyChartToFileUtils();
 		chartFactory.initializeTikz(
 				folderPathName + fileName,
@@ -623,7 +629,7 @@ public class MyChartToFileUtils {
 				xLabelName, yLabelName,
 				xUnit, yUnit,
 				"west", "black",
-				"white", "left");
+				"white", "left", legendValue);
 
 		if (xList.size() == 1)
 			for (int i=0; i < yList.size(); i++) {
@@ -670,6 +676,42 @@ public class MyChartToFileUtils {
 			String xlabel, String ylabel,
 			String xUnit, String yUnit,
 			String anchor, String draw,
+			String fill, String align, String[] legendValue) {
+
+		File f = new File(fileNameWithPath + ".tikz");
+		if(f.exists()) {
+			f.delete();
+		}
+
+		try {
+			writer = new PrintWriter(fileNameWithPath + ".tikz", "UTF-8");
+			writer.println("%" + fileNameWithPath
+					.substring(
+							fileNameWithPath.lastIndexOf(File.separator) + 1, 
+							fileNameWithPath.length()));
+
+			writer.println("\\begin{tikzpicture}\n");
+
+			setTikzAxis(
+					xmin, xmax,
+					ymin, ymax,
+					xlabel, ylabel,
+					xUnit, yUnit,
+					anchor, draw,
+					fill, align, legendValue);
+
+		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void initializeTikz(
+			String fileNameWithPath,
+			double xmin, double xmax,
+			double ymin, double ymax,
+			String xlabel, String ylabel,
+			String xUnit, String yUnit,
+			String anchor, String draw,
 			String fill, String align) {
 
 		File f = new File(fileNameWithPath + ".tikz");
@@ -698,6 +740,7 @@ public class MyChartToFileUtils {
 			e.printStackTrace();
 		}
 	}
+	
 
 	public void initializeTikz(
 			String directoryPlusFileName,
@@ -1351,6 +1394,53 @@ public class MyChartToFileUtils {
 			String xlabel, String ylabel,
 			String xUnit, String yUnit,
 			String anchor, String draw,
+			String fill, String align, String[] legendValue) {
+
+		if (!xUnit.equals("")) xUnit = "(" + xUnit + ")"; 
+		if (!yUnit.equals("")) yUnit = "(" + yUnit + ")"; 
+
+		xMin = xmin; xMax = xmax;
+		yMin = ymin; yMax = ymax;
+		
+		String legend = new String();
+		legend = "{ ";
+		for (int i=0; i<legendValue.length; i++){
+			legend = legend + legendValue[i] + " \\" + "\\ ";
+		}
+		legend = legend + " }";
+		
+		writer.println("\\begin{axis}[");
+
+		writer.println("width=\\textwidth,"
+				+ "\nheight=\\textheight,"
+				+ "\nscaled ticks=false, tick label style={/pgf/number format/fixed},");
+
+		writer.println("xmin=" + xmin 
+				+ ",\nxmax=" + xmax
+				+ ",\nxlabel={" + xlabel + " " + xUnit + "}"
+				+ ",\nxmajorgrids"
+				+ ",\nymin=" + ymin 
+				+ ",\nymax=" + ymax
+				+ ",\nylabel={" + ylabel + " " + yUnit + "}"
+				+ ",\nymajorgrids"
+				+ ",\nlegend style={" 
+				+ "at={(1.03,0.5)},"
+				+ "anchor=" + anchor + ","
+				+ "draw=" + draw + ","
+				+ "fill=" + fill + ","
+				+ "legend cell align=" + align + "}"
+				+ ",\nlegend entries = " + legend 
+				+ "\n]"
+				);
+	}
+
+	
+	public void setTikzAxis(
+			double xmin, double xmax,
+			double ymin, double ymax,
+			String xlabel, String ylabel,
+			String xUnit, String yUnit,
+			String anchor, String draw,
 			String fill, String align) {
 
 		if (!xUnit.equals("")) xUnit = "(" + xUnit + ")"; 
@@ -1359,10 +1449,11 @@ public class MyChartToFileUtils {
 		xMin = xmin; xMax = xmax;
 		yMin = ymin; yMax = ymax;
 		
+		
 		writer.println("\\begin{axis}[");
 
-		writer.println("width=\\figurewidth,"
-				+ "\nheight=\\figureheight,"
+		writer.println("width=\\textwidth,"
+				+ "\nheight=\\textheight,"
 				+ "\nscaled ticks=false, tick label style={/pgf/number format/fixed},");
 
 		writer.println("xmin=" + xmin 
@@ -1382,7 +1473,6 @@ public class MyChartToFileUtils {
 				+ "\n]"
 				);
 	}
-
 	/**
 	 * 
 	 * @param xmin
@@ -1409,13 +1499,19 @@ public class MyChartToFileUtils {
 
 	public void setAxisBarGraph(String symbolicCoords) {
 
-		writer.println("\\begin{axis}[");
-		writer.println("width=\\figurewidth,"
+		writer.println("\\begin{axis}[");	
+		writer.println("width=\\textheight,"
 				+ "\nheight=\\figureheight,"
 				+ "\nsymbolic x coords={"
 				+ symbolicCoords + "}"
 				+ "\nxtick=data"
 				+ "\n]");
+//		writer.println("width=\\figurewidth,"
+//				+ "\nheight=\\figureheight,"
+//				+ "\nsymbolic x coords={"
+//				+ symbolicCoords + "}"
+//				+ "\nxtick=data"
+//				+ "\n]");
 	}
 
 	/**

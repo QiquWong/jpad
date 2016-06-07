@@ -2,8 +2,8 @@
 \begin{tikzpicture}
 
 \begin{axis}[
-width=\figurewidth,
-height=\figureheight,
+width=\textwidth,
+height=\textheight,
 scaled ticks=false, tick label style={/pgf/number format/fixed},
 xmin=0.0,
 xmax=1.0,
@@ -13,7 +13,8 @@ ymin=0.0,
 ymax=1.7,
 ylabel={CL },
 ymajorgrids,
-legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
+legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left},
+legend entries = { cl max airfoils  \\ cl distribution at alpha 16.356584821428573 \\  }
 ]
 
 \addplot [

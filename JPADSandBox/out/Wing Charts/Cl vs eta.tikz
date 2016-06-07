@@ -2,8 +2,8 @@
 \begin{tikzpicture}
 
 \begin{axis}[
-width=\figurewidth,
-height=\figureheight,
+width=\textwidth,
+height=\textheight,
 scaled ticks=false, tick label style={/pgf/number format/fixed},
 xmin=0.0,
 xmax=1.0,
@@ -11,9 +11,10 @@ xlabel={eta },
 xmajorgrids,
 ymin=-0.1704023668541247,
 ymax=0.9784043130835831,
-ylabel={CL },
+ylabel={Cl },
 ymajorgrids,
-legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
+legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left},
+legend entries = { $\alpha$ 0.0 \\ $\alpha$ 1.6666666666666667 \\ $\alpha$ 3.3333333333333335 \\ $\alpha$ 5.0 \\ $\alpha$ 6.666666666666667 \\ $\alpha$ 8.333333333333334 \\ $\alpha$ 10.0 \\  }
 ]
 
 \addplot [

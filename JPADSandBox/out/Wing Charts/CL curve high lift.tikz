@@ -2,8 +2,8 @@
 \begin{tikzpicture}
 
 \begin{axis}[
-width=\figurewidth,
-height=\figureheight,
+width=\textwidth,
+height=\textheight,
 scaled ticks=false, tick label style={/pgf/number format/fixed},
 xmin=-10.8,
 xmax=22.27340306468371,

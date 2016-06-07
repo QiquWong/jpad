@@ -398,7 +398,7 @@ public class WingAerodynamicCalc {
 		for (int i=0; i<input.getNumberOfAlpha(); i++){
 			
 		yVector.add(i, yStationDouble);
-		legend.add("alpha " + alphaDistributionArray[i]);
+		legend.add("$\\alpha$ " + alphaDistributionArray[i]);
 		}
 
 		
@@ -410,7 +410,7 @@ public class WingAerodynamicCalc {
 				input.getClVsEtaVectors(),
 				"CL vs alpha",
 				"eta", 
-				"CL",
+				"Cl",
 				null, null, null, null,
 				"",
 				"",
