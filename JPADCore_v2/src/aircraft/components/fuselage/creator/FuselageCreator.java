@@ -295,8 +295,7 @@ public class FuselageCreator implements IFuselageCreator {
 	 * @param np_SecUp number of points discretizing the upper YZ sections
 	 * @param np_SecLow number of points discretizing the lower YZ sections
 	 */
-	public void calculateOutlines(int np_N, int np_C, int np_T, int np_SecUp, int np_SecLow)
-	{
+	public void calculateOutlines(int np_N, int np_C, int np_T, int np_SecUp, int np_SecLow){
 
 		// calculate initial curves
 		// get variables
@@ -2072,7 +2071,6 @@ public class FuselageCreator implements IFuselageCreator {
 			}
 			// --- END OF INPUT DATA ------------------------------------------
 		}
-		
 		
 		public FuselageBuilder deckNumber(Integer deckNum) {
 			_deckNumber = deckNum;
