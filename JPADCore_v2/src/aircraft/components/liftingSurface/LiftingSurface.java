@@ -6,12 +6,14 @@ import java.util.List;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
+
 import org.jscience.physics.amount.Amount;
 
 import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.componentmodel.AeroComponent;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import configuration.enumerations.ComponentEnum;
+import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import standaloneutils.GeometryCalc;
 import standaloneutils.MyArrayUtils;
 
@@ -25,19 +27,10 @@ public class LiftingSurface extends AeroComponent implements ILiftingSurface{
 
 	private LiftingSurfaceCreator _liftingSurfaceCreator;
 
+	private AerodynamicDatabaseReader _aeroDatabaseReader;
+	
 	private List<Airfoil> _airfoilList;
 	
-	private Amount<Area> _surface = null;
-	private Double _aspectRatio = null; 
-	private Double _taperRatioEquivalent = null;
-	private Double _taperRatioActual = null; 
-	private Double _taperRatioOpt = null; // (oswald factor)
-	private Amount<Angle> _sweepQuarterChordEq = null; 
-	private Amount<Angle> _sweepHalfChordEq = null; 
-	private Amount<Angle> _dihedralMean = null;
-
-	//	private double deltaFactorDrag;
-
 	//================================================
 	// Builder pattern via a nested public static class
 	public static class LiftingSurfaceBuilder {
@@ -49,15 +42,16 @@ public class LiftingSurface extends AeroComponent implements ILiftingSurface{
 		private Amount<Length> __zApexConstructionAxes = null;
 		private LiftingSurfaceCreator __liftingSurfaceCreator;
 		private List<Airfoil> __airfoilList;
+		private AerodynamicDatabaseReader __aeroDatabaseReader;
 		
-		public LiftingSurfaceBuilder(String id, ComponentEnum type) {
+		public LiftingSurfaceBuilder(String id, ComponentEnum type, AerodynamicDatabaseReader aeroDatabaseReader) {
 			// required parameter
 			this.__id = id;
 			this.__type = type;
-
-			// optional parameters ...
-			this.__airfoilList = new ArrayList<Airfoil>();
+			this.__aeroDatabaseReader = aeroDatabaseReader;
 			
+			// optional parameters ...
+			this.__airfoilList = new ArrayList<Airfoil>(); 
 		}
 
 		public LiftingSurfaceBuilder liftingSurfaceCreator(LiftingSurfaceCreator lsc) {
@@ -79,15 +73,72 @@ public class LiftingSurface extends AeroComponent implements ILiftingSurface{
 		this._yApexConstructionAxes = builder.__yApexConstructionAxes; 
 		this._zApexConstructionAxes = builder.__zApexConstructionAxes;
 		this._liftingSurfaceCreator = builder.__liftingSurfaceCreator;
-		this._airfoilList = builder.__airfoilList;  
+		this._aeroDatabaseReader = builder.__aeroDatabaseReader;
+		this._airfoilList = builder.__airfoilList;
 	}
 
 	@Override
-	public List<Airfoil> getAirfoilList() {
+	public List<Airfoil> populateAirfoilList(
+			AerodynamicDatabaseReader aeroDatabaseReader,
+			Boolean equivalentWingFlag
+			) {	
 		
-		Airfoil airfoilRoot = _liftingSurfaceCreator.getPanels().get(0).getAirfoilRoot();
-		
-		return ;
+		int nPanels = this._liftingSurfaceCreator.getPanels().size();
+
+		if(!equivalentWingFlag) {
+			Airfoil airfoilRoot = new Airfoil(
+					this._liftingSurfaceCreator.getPanels().get(0).getAirfoilRoot(),
+					aeroDatabaseReader
+					);
+			this._airfoilList.add(airfoilRoot);
+
+			for(int i=0; i<nPanels - 2; i++) {
+
+				Airfoil innerAirfoil = new Airfoil(
+						this._liftingSurfaceCreator.getPanels().get(i).getAirfoilTip(),
+						aeroDatabaseReader
+						); 
+				this._airfoilList.add(innerAirfoil);
+			}
+
+			Airfoil airfoilTip = new Airfoil(
+					this._liftingSurfaceCreator.getPanels().get(nPanels - 1).getAirfoilTip(),
+					aeroDatabaseReader
+					);
+			this._airfoilList.add(airfoilTip);
+		}
+
+		else{
+			Airfoil airfoilRoot = new Airfoil(
+					this._liftingSurfaceCreator.getPanels().get(0).getAirfoilRoot(),
+					aeroDatabaseReader
+					);
+			this._airfoilList.add(airfoilRoot);
+
+			Airfoil airfoilKink = new Airfoil(
+					this._liftingSurfaceCreator.getPanels().get(0).getAirfoilTip(),
+					aeroDatabaseReader
+					);
+			this._airfoilList.add(airfoilKink);
+
+			Airfoil airfoilTip = new Airfoil(
+					this._liftingSurfaceCreator.getPanels().get(1).getAirfoilTip(),
+					aeroDatabaseReader
+					);
+			this._airfoilList.add(airfoilTip);
+		}
+
+		return this._airfoilList;
+	}
+	
+	@Override
+	public List<Airfoil> getAirfoilList() {	
+		return this._airfoilList;
+	}
+	
+	@Override
+	public void setAirfoilList(List<Airfoil> airfoilList) {	
+		this._airfoilList = airfoilList;
 	}
 	
 	@Override
@@ -98,7 +149,7 @@ public class LiftingSurface extends AeroComponent implements ILiftingSurface{
 				y
 				);
 	}
-	
+
 	@Override
 	public Amount<Area> getSurface() {
 		return _liftingSurfaceCreator.getSurfacePlanform();
@@ -231,5 +282,12 @@ public class LiftingSurface extends AeroComponent implements ILiftingSurface{
 		this._liftingSurfaceCreator = _liftingSurfaceCreator;
 	}
 
-}
+	public AerodynamicDatabaseReader getAerodynamicDatabaseReader() {
+		return this._aeroDatabaseReader;
+	}
+	
+	public void setAerodynamicDatabaseReader(AerodynamicDatabaseReader aeroDatabaseReader) {
+		this._aeroDatabaseReader = aeroDatabaseReader;
+	}
 
+}

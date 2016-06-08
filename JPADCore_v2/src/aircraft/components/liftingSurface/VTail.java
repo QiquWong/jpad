@@ -1,5 +1,4 @@
 package aircraft.components.liftingSurface;
 
-
-public class VTail {
+public class VTail extends LiftingSurface {
 }

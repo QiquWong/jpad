@@ -3,8 +3,8 @@ package aircraft.auxiliary.airfoil;
 import java.util.HashMap;
 import java.util.Map;
 
+import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import aircraft.components.liftingSurface.LiftingSurface;
-import aircraft.components.liftingSurface.creator.AirfoilCreator;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AirfoilEnum;
 import configuration.enumerations.AirfoilStationEnum;
@@ -48,81 +48,8 @@ public class Airfoil {
 		
 	}
 	
-	/** 
-	 * Initialize an airfoil with default values
-	 */
-	public Airfoil(LiftingSurface ls, Double yLoc) {
-
-		_id = ls.get_id() + idCounter + "99";
-		idCounter++;
-		_family = AirfoilEnum.NACA63_209;
-		_type = AirfoilTypeEnum.CONVENTIONAL;
-		
-		_theLiftingSurface = ls;
-		geometry = new Geometry(this, yLoc);
-		aerodynamics = new Aerodynamics(this);
-	
-	}
-	
-	public Airfoil(LiftingSurface ls, Double yLoc, AirfoilEnum name) {
-
-		_id = ls.get_id() + idCounter + "99";
-		idCounter++;
-		_family = AirfoilEnum.NACA63_209;
-		_type = AirfoilTypeEnum.CONVENTIONAL;
-		
-		_theLiftingSurface = ls;
-		geometry = new Geometry(this, yLoc);
-		aerodynamics = new Aerodynamics(this, name);
-		
-	}
-	
 	/**
-	 * Overload of the builder that recognize the aircraft name and sets it's airfoils values.
-	 * 
-	 * @author Vittorio Trifari
-	 */
-	public Airfoil(AircraftEnum aircraftName, LiftingSurface ls, Double yLoc) {
-
-		_id = ls.get_id() + idCounter + "99";
-		idCounter++;
-		
-		switch(aircraftName) {
-		case ATR72:
-			_family = AirfoilEnum.NACA63_209;
-			_type = AirfoilTypeEnum.CONVENTIONAL;
-
-			_theLiftingSurface = ls;
-			geometry = new Geometry(this, yLoc);
-			aerodynamics = new Aerodynamics(this);
-			
-			break;
-		
-		// TODO: put inside Geometry and Aerodynamics B747-100B correct data (actually there are the same data in both ATR-72 and B747-100B
-		case B747_100B:
-			_family = AirfoilEnum.NACA63_209;
-			_type = AirfoilTypeEnum.MODERN_SUPERCRITICAL;
-
-			_theLiftingSurface = ls;
-			geometry = new Geometry(this, yLoc);
-			aerodynamics = new Aerodynamics(this);
-			
-			break;
-			
-		case AGILE_DC1:
-			_family = AirfoilEnum.DFVLR_R4;
-			_type = AirfoilTypeEnum.MODERN_SUPERCRITICAL; //TODO: have to check
-
-			_theLiftingSurface = ls;
-			geometry = new Geometry(this, yLoc);
-			aerodynamics = new Aerodynamics(this);
-			
-			break;
-		}
-	}
-	
-	/**
-	 * Overload of the builder that recognize the aircraft name and the station of airfoil.
+	 * Builder that recognize the aircraft name and the station of airfoil.
 	 * 
 	 * @author Manuela Ruocco
 	 */
@@ -162,19 +89,15 @@ public class Airfoil {
 	}
 	
 	//*********************************************************************
-	// These methods initialize an airfoil with default values
-	public void initialize(LiftingSurface ls, double yLoc) {
-		_theLiftingSurface = ls;
-		initializeGeometry(ls, yLoc);	
-		initializeAerodynamics();
-	}
-
-	public void initializeGeometry(LiftingSurface ls, double yLoc) {
-		_chordLocal = _theLiftingSurface.getChordAtYActual(yLoc);
-	}
-
-	public void initializeAerodynamics() {
-		aerodynamics = new Aerodynamics(this);		
+	// These methods initialize an airfoil from the default ones.
+	public void initialize(Airfoil airfoil, AirfoilEnum airfoilName) {
+		
+		// FIXME : Geometry initialize always to the NACA 66(3)-418
+		//		  or to the NACA 0012 in case of HTail or VTail
+		
+		geometry = new Geometry(airfoil);	
+		aerodynamics = new Aerodynamics(airfoil, airfoilName);
+		
 	}
 	//*********************************************************************	
 	

@@ -1,10 +1,13 @@
 package aircraft.components.liftingSurface.creator;
 
 import java.util.List;
+
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
+
 import org.jscience.physics.amount.Amount;
+
 import javaslang.Tuple2;
 
 public interface ILiftingSurfaceCreator {
@@ -91,7 +94,7 @@ public interface ILiftingSurfaceCreator {
 		> getDiscretizedTopViewAsList();
 
 	public Double[][] getDiscretizedTopViewAsArray();
-	
+
 	public Amount<Angle> getAngleOfIncidence();
 
 	public void reportPanelsToSpanwiseDiscretizedVariables();
