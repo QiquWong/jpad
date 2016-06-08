@@ -8,13 +8,15 @@ import javax.measure.quantity.Length;
 
 import org.jscience.physics.amount.Amount;
 
+import configuration.enumerations.ComponentEnum;
 import javaslang.Tuple2;
 import javaslang.Tuple5;
 import standaloneutils.customdata.MyArray;
 
 public abstract class AbstractLiftingSurface implements ILiftingSurfaceCreator {
 
-	protected String id;
+	protected String _id;
+	protected ComponentEnum _type;
 
 	protected List<LiftingSurfacePanelCreator> _panels;
 	protected List<SymmetricFlapCreator> _symmetricFlaps;

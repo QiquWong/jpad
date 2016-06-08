@@ -927,7 +927,7 @@ public class JPADDataWriter {
 	 */
 	private void writeLiftingSurfaceOutput(LiftingSurface liftingSurface, Element analysisNode) {
 
-		Element analysis = JPADStaticWriteUtils.addSubElement(doc, _sheet, WordUtils.capitalizeFully(liftingSurface.get_type().name()) + "_Analysis", analysisNode);
+		Element analysis = JPADStaticWriteUtils.addSubElement(doc, _sheet, WordUtils.capitalizeFully(liftingSurface.getType().name()) + "_Analysis", analysisNode);
 
 		// --- Weights -----------------------
 
@@ -980,7 +980,7 @@ public class JPADDataWriter {
 					liftingSurface.getAerodynamics().getCalculateMachCr().get_methodsMap(), 
 					aerodynamics);
 
-			if (liftingSurface.get_type() == ComponentEnum.WING){
+			if (liftingSurface.getType() == ComponentEnum.WING){
 
 				writeOutputNode("FrictionCoefficient_Cf", liftingSurface.getAerodynamics().get_cF(), aerodynamics);
 				writeOutputNode("CompressibilityFactor", liftingSurface.getAerodynamics().get_compressibilityFactor(), aerodynamics);
@@ -996,7 +996,7 @@ public class JPADDataWriter {
 				writeOutputNode("Cd0", liftingSurface.getAerodynamics().get_cD0Total(), aerodynamics);
 			}
 
-			else if (liftingSurface.get_type() == ComponentEnum.HORIZONTAL_TAIL){
+			else if (liftingSurface.getType() == ComponentEnum.HORIZONTAL_TAIL){
 
 				writeOutputNode("CG-ACtail_distance", liftingSurface.get_AC_CGdistance(), aerodynamics);
 				writeOutputNode("ACwing-ACtail_distance", liftingSurface.get_ACw_ACdistance(), aerodynamics);
@@ -1013,7 +1013,7 @@ public class JPADDataWriter {
 				writeOutputNode("Cd0", liftingSurface.getAerodynamics().get_cD0Total(), aerodynamics);
 			}
 
-			else if (liftingSurface.get_type() == ComponentEnum.VERTICAL_TAIL){
+			else if (liftingSurface.getType() == ComponentEnum.VERTICAL_TAIL){
 
 				writeOutputNode("CG-ACtail_distance", liftingSurface.get_AC_CGdistance(), aerodynamics);
 				writeOutputNode("ACwing-ACtail_distance", liftingSurface.get_ACw_ACdistance(), aerodynamics);
@@ -1117,7 +1117,7 @@ public class JPADDataWriter {
 		commonOperations(airfoil, airfoilParam);
 
 		writeInputNode("Family", airfoil.get_family(), airfoilParam, true);
-		writeInputNode("Type", airfoil.get_type(), airfoilParam, true);
+		writeInputNode("Type", airfoil.getType(), airfoilParam, true);
 
 
 		Element geometry = addElementToSubElement(JPADGlobalData.getTheXmlTree().getDescription(airfoil.getGeometry()), airfoilParam);

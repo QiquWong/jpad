@@ -17,6 +17,8 @@ import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.jscience.physics.amount.Amount;
 
+import com.sun.jna.platform.win32.WinUser.INPUT;
+
 import calculators.aerodynamics.LiftCalc;
 import calculators.aerodynamics.NasaBlackwell;
 import calculators.geometry.LSGeometryCalc;
@@ -377,7 +379,12 @@ public class HighLiftStallPathCalc {
 
 		Arrays.sort(yStationTotal);
 
-		for (int i=0; i<yStationTotal.length-2; i++){
+		for (int i=0; i<yStationTotal.length-3; i++){
+			if ( yStationTotal[i] == yStationTotal[i+1] &  yStationTotal[i+1] == yStationTotal[i+2] & yStationTotal[i+2] == yStationTotal[i+3]){
+				yStationTotal[i+3] = yStationTotal[i+1] + 0.003;
+				yStationTotal[i+2] = yStationTotal[i+1] + 0.002;
+				yStationTotal[i+1] = yStationTotal[i+1] + 0.001;
+			}
 			if ( yStationTotal[i] == yStationTotal[i+1] &  yStationTotal[i+1] == yStationTotal[i+2]){
 				yStationTotal[i+2] = yStationTotal[i+1] + 0.002;
 				yStationTotal[i+1] = yStationTotal[i+1] + 0.001;
@@ -451,7 +458,8 @@ public class HighLiftStallPathCalc {
 			clZeroMeanFlap[i] = clZeroFlapStations[kk] * influenceFactor[0] + clZeroFlapStations[kk+1]*influenceFactor[1];
 			maxTicknessMeanFlap[i] = maxTicknessFlapStations[kk]* influenceFactor[0] + maxTicknessFlapStations[kk+1]*influenceFactor[1];
 		}
-		
+		System.out.println(" CL ALPHA FLAP STATIONS " + Arrays.toString(clAlphaMeanFlap));
+		System.out.println(" CL ZERO MEAN FLAP STATIONS " + Arrays.toString(clZeroMeanFlap));
 		System.out.println(" MAX TICKNESS MEAN FLAP STATIONS " + Arrays.toString(maxTicknessMeanFlap));
 		
 		for ( int i=0; i< input.getSlatsNumber(); i++){
@@ -588,7 +596,9 @@ public class HighLiftStallPathCalc {
 		double [] deltaChordSlatWithSeparatorArray = new double [deltaChordSlatAsList.size()];
 		for(int i=0; i<deltaChordFlapWithSeparatorArray.length; i++){
 			deltaChordFlapWithSeparatorArray[i] = deltaChordFlapAsList.get(i);
-			deltaChordSlatWithSeparatorArray[i] = deltaChordSlatAsList.get(i);
+		}
+		for(int i=0; i<deltaChordSlatWithSeparatorArray.length; i++){
+		deltaChordSlatWithSeparatorArray[i] = deltaChordSlatAsList.get(i);
 		}
 		
 		MyArray deltaChordFlapMyArray = new MyArray(deltaChordFlapWithSeparatorArray);
@@ -687,6 +697,8 @@ public class HighLiftStallPathCalc {
 					*clAlphaMeanFlap[i]
 					); 
 		
+	
+		
 		List<Double> deltaCl0FlapList = new ArrayList<Double>();
 		
 		for(int i=0; i<input.getFlapsNumber(); i++)
@@ -704,11 +716,11 @@ public class HighLiftStallPathCalc {
 
 		for (int i=1; i<input.getFlapsNumber()+1; i++) {
 			pos=i*2;
-			deltaCl0Flap[pos] = deltaCl0FlapList.get(i-1)-1;
-			deltaCl0Flap[pos-1] = deltaCl0FlapList.get(i-1)-1;
+			deltaCl0Flap[pos] = deltaCl0FlapList.get(i-1);
+			deltaCl0Flap[pos-1] = deltaCl0FlapList.get(i-1);
 		}
 
-		System.out.println(" delta c due to flap with no separation" + Arrays.toString(deltaChordFlap));
+		System.out.println(" delta clo due to flap with no separation" + Arrays.toString(deltaCl0Flap));
 
 		ArrayList<Double> deltaCl0FlapAsList  = new ArrayList<Double>(Arrays.asList(deltaCl0Flap));
 	
@@ -1015,7 +1027,7 @@ public class HighLiftStallPathCalc {
 					deltaClMaxSlat[pos-1] = deltaClmaxSlatList.get(i-1);
 				}
 
-				System.out.println(" delta cl max flap with no separation" + Arrays.toString(deltaClMaxSlat));
+				System.out.println(" delta cl max slat with no separation" + Arrays.toString(deltaClMaxSlat));
 
 				ArrayList<Double> deltaclMaxSlatAsList  = new ArrayList<Double>(Arrays.asList(deltaClMaxSlat));
 				ArrayList<Double> deltaclmaxSlatWithSeparator  = new ArrayList<Double>(Arrays.asList(deltaClMaxSlat));
@@ -1030,7 +1042,9 @@ public class HighLiftStallPathCalc {
 				double [] deltaclMaxSlatWithSeparatorArray = new double [deltaclMaxSlatAsList.size()];
 				for(int i=0; i<deltaclMaxFlapWithSeparatorArray.length; i++){
 					deltaclMaxFlapWithSeparatorArray[i] = deltaclMaxFlapAsList.get(i);
-					deltaclMaxSlatWithSeparatorArray[i] = deltaclMaxSlatAsList.get(i);
+								}
+				for(int i=0; i<deltaclMaxSlatWithSeparatorArray.length; i++){
+				deltaclMaxSlatWithSeparatorArray[i] = deltaclMaxSlatAsList.get(i);
 				}
 				
 				MyArray deltaclMaxFlapMyArray = new MyArray(deltaclMaxFlapWithSeparatorArray);
@@ -1044,6 +1058,13 @@ public class HighLiftStallPathCalc {
 						deltaclMaxSlatMyArray.interpolate(
 								yStationTotalSlat,
 								yStationTotal));
+				
+				System.out.println("\n\n delta cl max slat array  " + Arrays.toString(deltaclMaxSlatTotal.toArray()));
+				System.out.println(" y station total   " + Arrays.toString(yStationTotal));
+				
+				System.out.println(" delta cl max flap array  " + Arrays.toString(deltaclMaxFlapTotal.toArray()));
+				System.out.println(" y station total   " + Arrays.toString(yStationTotal));
+
 
 
 				double [] clMaxDistributionTotal = new double [yStationTotal.length];
@@ -1119,6 +1140,11 @@ public class HighLiftStallPathCalc {
 								yStationTotal,
 								yStationNasaBlackwellND));
 				
+				double [] twistDegree = new double [twistDistributionTotal.length ];
+				for (int i=0; i<twistDegree.length; i++){
+					twistDegree[i] = Math.toDegrees(twistDistributionTotal[i]);
+				}
+				
 				alphaStarActual = MyArray.createArray(
 						alphaStarIn.interpolate(
 								yStationTotal,
@@ -1128,6 +1154,11 @@ public class HighLiftStallPathCalc {
 						alpha0lIn.interpolate(
 								yStationTotal,
 								yStationNasaBlackwellND));
+				
+				double [] alphaZeroLiftActual = new double [alpha0lActual.size() ];
+				for (int i=0; i<alpha0lActual.size(); i++){
+					alphaZeroLiftActual[i] = Math.toRadians(alpha0lActual.get(i));
+				}
 
 				clMaxActual = MyArray.createArray(
 						clMaxIn.interpolate(
@@ -1179,7 +1210,7 @@ public class HighLiftStallPathCalc {
 				System.out.println("Chords -->"+ Arrays.toString(chordDistributionTotal));
 				System.out.println("X le -->"+ Arrays.toString(xLeDistributionTotal));
 				System.out.println("Dihedral -->"+ Arrays.toString(dihedralDistributionTotal));
-				System.out.println("Twist -->"+ Arrays.toString(twistDistributionTotal));
+				System.out.println("Twist -->"+ Arrays.toString(twistDegree));
 				System.out.println("Alpha zero lift -->"+ alphaZeroLiftTotal.toString());
 				System.out.println("Alpha Star -->"+ Arrays.toString(alphaStarDistributionTotal));
 				System.out.println("Cl max -->"+ Arrays.toString(clMaxDistributionTotal));
@@ -1193,10 +1224,11 @@ public class HighLiftStallPathCalc {
 				System.out.println("X le -->" + xLEvsYActual.toString());
 				System.out.println("Dihedral -->" + dihedralActual.toString());
 				System.out.println("Twist -->" + twistActual.toString());
-				System.out.println("Alpha zero lift -->" + alpha0lActual.toString());
+				System.out.println("Alpha zero lift -->" + Arrays.toString(alphaZeroLiftActual));
 				System.out.println("Cl max -->" + clMaxActual.toString());
 
-				
+				System.out.println(" Mach " + input.getMachNumber());
+				System.out.println(" Altitude " + input.getAltitude());
 				
 				
 				NasaBlackwell theNasaBlackwellCalculator = new  NasaBlackwell(
@@ -1207,7 +1239,7 @@ public class HighLiftStallPathCalc {
 						xLEvsYActual.toArray(),
 						dihedralActual.toArray(),
 						twistActual.toArray(),
-						alpha0lActual.toArray(),
+						alphaZeroLiftActual,
 						vortexSemiSpanToSemiSpanRatio,
 						0.0,
 						input.getMachNumber(),
@@ -1216,6 +1248,14 @@ public class HighLiftStallPathCalc {
 				Amount<Angle> alphaFirst = Amount.valueOf(Math.toRadians(2.0), SI.RADIAN);
 				Amount<Angle> alphaSecond = Amount.valueOf(Math.toRadians(4.0), SI.RADIAN);
 
+				Amount<Angle> alphaThird = Amount.valueOf(Math.toRadians(3.0), SI.RADIAN);
+				
+				System.out.println("\n\ny STATION ND " + Arrays.toString(yStationNasaBlackwellND));
+				theNasaBlackwellCalculator.calculate(alphaThird);
+				double [] clOutput = theNasaBlackwellCalculator.get_clTotalDistribution().toArray();
+				
+				System.out.println( " cl array at alpha 3 " + Arrays.toString(clOutput));
+				
 				theNasaBlackwellCalculator.calculate(alphaFirst);
 				double [] clDistribution = theNasaBlackwellCalculator.get_clTotalDistribution().toArray();
 				double cLFirst = theNasaBlackwellCalculator.get_cLEvaluated();//MyMathUtils.integrate1DTrapezoidLinear(yStationActual, clDistribution, 0, 1);
@@ -1271,7 +1311,7 @@ public class HighLiftStallPathCalc {
 
 				double alphaStar =  alphaStarRoot * kRoot + alphaStarKink * kKink + alphaStarTip * kTip;
 
-				input.setAlphaStar(Amount.valueOf(Math.toDegrees(alphaStar), NonSI.DEGREE_ANGLE));
+				input.setAlphaStar(Amount.valueOf(alphaStar, NonSI.DEGREE_ANGLE));
 				//		System.out.println(" alpha star (deg) " + Math.toDegrees(alphaStar));
 
 				Amount<Angle> alphaStarAmount = Amount.valueOf(alphaStar, SI.RADIAN);
@@ -1292,7 +1332,7 @@ public class HighLiftStallPathCalc {
 						xLEvsYActual.toArray(),
 						dihedralActual.toArray(),
 						twistActual.toArray(),
-						twistActual.toArray(),
+						alphaZeroLiftActual,
 						vortexSemiSpanToSemiSpanRatio,
 						0.0,
 						input.getMachNumber(),
@@ -1322,6 +1362,7 @@ public class HighLiftStallPathCalc {
 
 
 
+
 		// alpha0L
 
 		// cL alpha new
@@ -1333,6 +1374,57 @@ public class HighLiftStallPathCalc {
 		// Print results
 
 		// plot
+
+	
+	String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR);
+
+
+	
+	List<Double[]> yVector = new ArrayList<Double[]>();
+	List<Double[]> clVector = new ArrayList<Double[]>();
+	List<String> legend  = new ArrayList<>(); 
+	Double [] yStationDouble = new Double [nPointsSemispanWise];
+	Double [] clMaxDouble = new Double [clMaxActual.size()];
+	Double [] clMaxArrayDouble = new Double [clMaxActual.size()];
+	
+	for (int i=0; i< yStationNasaBlackwellND.length; i++){
+		yStationDouble[i] = yStationNasaBlackwellND[i];
+	}
+	for (int i=0; i<2; i++){
+		yVector.add(i, yStationDouble);
+	}
+
+	legend.add(0,"$c_l$ max airfoils ");
+	legend.add(1, "$c_l$ distribution at $\\alpha$ " + alphaMax);
+	
+	theNasaBlackwellCalculator.calculate(Amount.valueOf(Math.toRadians(alphaMax), SI.RADIAN));
+	double [] clMaxArray =theNasaBlackwellCalculator.get_clTotalDistribution().toArray();
+
+	for (int i =0; i<clMaxActual.size(); i++){
+		clMaxDouble [i] =clMaxActual.get(i);
+		clMaxArrayDouble[i] = clMaxArray[i];
+	}
+	
+	clVector.add(clMaxDouble);
+	clVector.add(clMaxArrayDouble);
+
+	System.out.println(" \n-----------WRITING CHART TO FILE . STALL PATH-------------- ");
+	
+	MyChartToFileUtils.plotJFreeChart(
+			yVector, 
+			clVector,
+			"CL vs alpha",
+			"$\\eta$", 
+			"$C_l$",
+			null, null, null, null,
+			"",
+			"",
+			true,
+			legend,
+			JPADStaticWriteUtils.createNewFolder(folderPath + "HighLift_StallPath_Charts" + File.separator),
+			"Stall_path");
+
+	System.out.println(" \n-------------------DONE----------------------- \n");
 	}
 	
 	public static ArrayList<Double> createCompleteArray (InputOutputTree input, List<Double> outputAsList, double [] yStation, double [] etaIn, double [] etaOut){

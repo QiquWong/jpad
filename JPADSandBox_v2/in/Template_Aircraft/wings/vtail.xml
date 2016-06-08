@@ -1,0 +1,32 @@
+<jpad_config>
+    <vertical_tail id="JPAD Test Vertical Tail DAF - 2016" mirrored="FALSE">
+        <panels>
+            <panel id="Vertical tail panel">
+                <semispan unit="m">6.25</semispan>
+                <dihedral unit="deg">0.0</dihedral>
+                <sweep_leading_edge unit="deg">44</sweep_leading_edge>
+				<angle_of_incidence unit="deg">0.0</angle_of_incidence>
+                <inner_section>
+                    <chord unit="m">5.3</chord>
+                    <airfoil file="naca63209.xml"/>
+                    <geometric_twist unit="deg">0.0</geometric_twist>
+                </inner_section>
+                <outer_section>
+                    <chord unit="m">1.5944</chord>
+                    <airfoil file="naca63209.xml"/>
+                    <geometric_twist unit="deg">0.0</geometric_twist>
+                </outer_section>
+            </panel>
+        </panels>
+        <symmetric_flaps>
+            <symmetric_flap id="Rudder" type="PLAIN">
+                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.1</inner_station_spanwise_position>
+                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.9</outer_station_spanwise_position>
+                <inner_chord_ratio>0.30</inner_chord_ratio>
+				<outer_chord_ratio>0.30</outer_chord_ratio>
+                <min_deflection unit="deg">-25.0</min_deflection>
+				<max_deflection unit="deg">25.0</max_deflection>
+            </symmetric_flap>
+        </symmetric_flaps>
+    </vertical_tail>
+</jpad_config>

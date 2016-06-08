@@ -3865,7 +3865,7 @@ public class Fuselage extends AeroComponent implements IFuselage {
 	}
 
 	@Override
-	public ComponentEnum get_type() {
+	public ComponentEnum getType() {
 		return _type;
 	}
 

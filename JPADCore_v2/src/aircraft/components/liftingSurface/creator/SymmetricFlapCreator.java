@@ -11,6 +11,7 @@ import org.jscience.physics.amount.Amount;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import configuration.MyConfiguration;
+import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FlapTypeEnum;
 import standaloneutils.MyXMLReaderUtils;
 
@@ -83,7 +84,7 @@ public class SymmetricFlapCreator implements ISymmetricFlapCreator {
 		calculateMeanChordRatio(_innerChordRatio, _outerChordRatio);
 	}
 
-	public static SymmetricFlapCreator importFromSymmetricFlapNode(Node nodeSymmetricFlap) {
+	public static SymmetricFlapCreator importFromSymmetricFlapNode(Node nodeSymmetricFlap, ComponentEnum type) {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
 		DocumentBuilder builder;
@@ -92,7 +93,7 @@ public class SymmetricFlapCreator implements ISymmetricFlapCreator {
 			Document doc = builder.newDocument();
 			Node importedNode = doc.importNode(nodeSymmetricFlap, true);
 			doc.appendChild(importedNode);
-			return SymmetricFlapCreator.importFromSymmetricFlapNodeImpl(doc);
+			return SymmetricFlapCreator.importFromSymmetricFlapNodeImpl(doc, type);
 
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
@@ -100,7 +101,7 @@ public class SymmetricFlapCreator implements ISymmetricFlapCreator {
 		}
 	}
 	
-	private static SymmetricFlapCreator importFromSymmetricFlapNodeImpl(Document doc) {
+	private static SymmetricFlapCreator importFromSymmetricFlapNodeImpl(Document doc, ComponentEnum type) {
 
 		System.out.println("Reading symmetric flap data from XML doc ...");
 
@@ -117,19 +118,42 @@ public class SymmetricFlapCreator implements ISymmetricFlapCreator {
 						doc, xpath,
 						"//symmetric_flap/@type");
 		
-		FlapTypeEnum type = null;
+		FlapTypeEnum flapType = null;
+		
+		if(type.equals(ComponentEnum.WING)) {
+		
 		if(flapTypeProperty.equalsIgnoreCase("SINGLE_SLOTTED"))
-			type = FlapTypeEnum.SINGLE_SLOTTED;
+			flapType = FlapTypeEnum.SINGLE_SLOTTED;
 		else if(flapTypeProperty.equalsIgnoreCase("DOUBLE_SLOTTED"))
-			type = FlapTypeEnum.DOUBLE_SLOTTED;
+			flapType = FlapTypeEnum.DOUBLE_SLOTTED;
 		else if(flapTypeProperty.equalsIgnoreCase("TRIPLE_SLOTTED"))
-			type = FlapTypeEnum.TRIPLE_SLOTTED;
+			flapType = FlapTypeEnum.TRIPLE_SLOTTED;
 		else if(flapTypeProperty.equalsIgnoreCase("FOWLER"))
-			type = FlapTypeEnum.FOWLER;
+			flapType = FlapTypeEnum.FOWLER;
 		else if(flapTypeProperty.equalsIgnoreCase("PLAIN"))
-			type = FlapTypeEnum.PLAIN;
+			flapType = FlapTypeEnum.PLAIN;
 		else
 			System.err.println("INVALID FLAP TYPE !!");
+		
+		}
+		
+		if(type.equals(ComponentEnum.HORIZONTAL_TAIL)) {
+
+		    if(flapTypeProperty.equalsIgnoreCase("PLAIN"))
+				flapType = FlapTypeEnum.PLAIN;
+			else
+				System.err.println("INVALID ELEVATOR TYPE !!");
+
+		}
+
+		if(type.equals(ComponentEnum.VERTICAL_TAIL)) {
+
+			if(flapTypeProperty.equalsIgnoreCase("PLAIN"))
+				flapType = FlapTypeEnum.PLAIN;
+			else
+				System.err.println("INVALID RUDDER TYPE !!");
+
+		}
 		
 		String innerStationSpanwisePositionProperty = MyXMLReaderUtils
 				.getXMLPropertyByPath(
@@ -173,7 +197,7 @@ public class SymmetricFlapCreator implements ISymmetricFlapCreator {
 		SymmetricFlapCreator symmetricFlap =
 				new SymmetricFlapBuilder(
 						id,
-						type,
+						flapType,
 						innerStationSpanwisePosition,
 						outerStationSpanwisePosition,
 						innerChordRatio,

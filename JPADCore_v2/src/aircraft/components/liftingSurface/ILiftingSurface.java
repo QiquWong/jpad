@@ -10,6 +10,8 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
+import configuration.enumerations.ComponentEnum;
+import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 
 public interface ILiftingSurface {
 
@@ -29,12 +31,18 @@ public interface ILiftingSurface {
 	public Amount<Angle> getDihedralEquivalent(Boolean recalculate);
 	public LiftingSurfaceCreator getLiftingSurfaceCreator();
 	
-	public void calculateGeometry();
-	public void calculateGeometry(int nSections);
+	public void calculateGeometry(ComponentEnum type);
+	public void calculateGeometry(int nSections, ComponentEnum type);
+	
+	public List<Airfoil> getAirfoilList();
+	public void setAirfoilList(List<Airfoil> airfoilList);
+	
+	public List<Airfoil> populateAirfoilList (
+			AerodynamicDatabaseReader aeroDatabaseReader,
+			Boolean equivalentWingFlag
+			);
 	
 	public double getChordAtYActual(Double y);
 	
-	public List<Airfoil> getAirfoilList();
-		
 }
 

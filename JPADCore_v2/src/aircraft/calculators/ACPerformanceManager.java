@@ -225,7 +225,7 @@ public class ACPerformanceManager {
 					_theAircraft.get_wing().get_aspectRatio(), 
 					_theAircraft.get_wing().get_sweepHalfChordEq().doubleValue(SI.RADIAN), 
 					_theAircraft.get_wing().get_thicknessMax(), 
-					_theAircraft.get_wing().get_theAirfoilsList().get(0).get_type(), 
+					_theAircraft.get_wing().get_theAirfoilsList().get(0).getType(), 
 					_theAircraft.get_wing().getAerodynamics().getCalculateCLMaxClean().phillipsAndAlley(), 
 					_theAircraft.get_theAerodynamics().get_cD0(), 
 					_theAircraft.get_theAerodynamics().get_oswald());
@@ -247,7 +247,7 @@ public class ACPerformanceManager {
 					_theAircraft.get_wing().get_aspectRatio(), 
 					_theAircraft.get_wing().get_sweepHalfChordEq().doubleValue(SI.RADIAN), 
 					_theAircraft.get_wing().get_thicknessMax(), 
-					_theAircraft.get_wing().get_theAirfoilsList().get(0).get_type(), 
+					_theAircraft.get_wing().get_theAirfoilsList().get(0).getType(), 
 					_theAircraft.get_wing().getAerodynamics().getCalculateCLMaxClean().phillipsAndAlley(), 
 					_theAircraft.get_theAerodynamics().get_cD0(), 
 					_theAircraft.get_theAerodynamics().get_oswald());
