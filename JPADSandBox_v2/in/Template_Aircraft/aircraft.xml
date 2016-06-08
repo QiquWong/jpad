@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+    <aircraft>
+        <wings>
+            <wing type="WING" file="wing.xml">
+                <position>
+                    <x unit="m">12.0</x>
+                    <y unit="m"> 0.0</y>
+                    <z unit="m"> 2.0</z>
+                </position>
+                <rigging_angle unit="deg">2.0</rigging_angle>
+            </wing>
+            <wing type="HTAIL" file="htail.xml">
+                <position>
+                    <x unit="m">30.0</x>
+                    <y unit="m"> 0.0</y>
+                    <z unit="m"> 4.0</z>
+                </position>
+                <rigging_angle unit="deg">0.0</rigging_angle>
+            </wing>
+            <wing type="VTAIL" file="vtail.xml">
+                <position>
+                    <x unit="m">30.0</x>
+                    <y unit="m"> 0.0</y>
+                    <z unit="m"> 5.0</z>
+                </position>
+                <rigging_angle unit="deg">0.0</rigging_angle>
+            </wing>
+        </wings>
+        <fuselages>
+            <fuselage file="fuselage.xml">
+                <position>
+                    <x unit="m">0.0</x>
+                    <y unit="m">0.0</y>
+                    <z unit="m">0.0</z>
+                </position>
+            </fuselage>
+        </fuselages>
+        <propulsors>
+            <propulsor file="propulsor.xml">
+                <position>
+                    <x unit="m">12.0</x>
+                    <y unit="m"> 5.0</y>
+                    <z unit="m"> 0.0</z>
+                </position>
+                <tilting_angle unit="deg">2.0</tilting_angle>
+                <yawing_angle unit="deg">0.0</yawing_angle>
+            </propulsor>
+            <propulsor file="propulsor.xml">
+                <position>
+                    <x unit="m">12.0</x>
+                    <y unit="m">-5.0</y>
+                    <z unit="m"> 0.0</z>
+                </position>
+                <tilting_angle unit="deg">2.0</tilting_angle>
+                <yawing_angle unit="deg">0.0</yawing_angle>
+            </propulsor>
+        </propulsors>
+    </aircraft>
+</jpad_config>

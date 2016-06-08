@@ -128,7 +128,7 @@ public class PayloadRangeCalc{
 		operatingEmptyMass = theAircraft.get_weights().get_OEM();
 		maxFuelMass = theAircraft.get_theFuelTank().get_fuelMass();
 		nPassMax = theAircraft.get_configuration().get_maxPax();
-		airfoilType = theAircraft.get_wing().get_theAirfoilsList().get(0).get_type();
+		airfoilType = theAircraft.get_wing().get_theAirfoilsList().get(0).getType();
 		engineType = theAircraft.get_powerPlant().get_engineType();
 
 		surface = theAircraft.get_wing().get_surface();

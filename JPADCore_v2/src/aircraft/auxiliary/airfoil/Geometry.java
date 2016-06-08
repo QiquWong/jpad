@@ -98,7 +98,7 @@ public class Geometry extends AuxiliaryComponentCalculator{
 		idCounter++;
 
 		isMirrored = airfoil.get_theLiftingSurface().isMirrored();
-		liftingSurfaceType = airfoil.get_theLiftingSurface().get_type();
+		liftingSurfaceType = airfoil.get_theLiftingSurface().getType();
 		_theAirfoil = airfoil;
 		
 
@@ -144,7 +144,7 @@ public class Geometry extends AuxiliaryComponentCalculator{
 		idCounter++;
 
 		isMirrored = airfoil.get_theLiftingSurface().isMirrored();
-		liftingSurfaceType = airfoil.get_theLiftingSurface().get_type();
+		liftingSurfaceType = airfoil.get_theLiftingSurface().getType();
 		_theAirfoil = airfoil;
 		
 
@@ -240,7 +240,7 @@ public class Geometry extends AuxiliaryComponentCalculator{
 
 		int nPan = _theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getPanels().size(); 
 		
-		if (_theAirfoil.get_theLiftingSurface().get_type().equals(ComponentEnum.VERTICAL_TAIL)) {
+		if (_theAirfoil.get_theLiftingSurface().getType().equals(ComponentEnum.VERTICAL_TAIL)) {
 			x = (float) (_theAirfoil.get_theLiftingSurface().get_X0().getEstimatedValue()
 					+ _theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getDiscretizedXle().get(_theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getDiscretizedXle().size()-1).getEstimatedValue()
 					+ _theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getPanels().get(nPan - 1).getChordTip().getEstimatedValue()/2);

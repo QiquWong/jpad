@@ -55,7 +55,7 @@ public class Airfoil {
 	 */
 	public Airfoil(AircraftEnum aircraftName, AirfoilStationEnum station, LiftingSurface ls, Double yLoc) {
 
-		_id = ls.get_id() + idCounter + "99";
+		_id = ls.getId() + idCounter + "99";
 		idCounter++;
 		
 		switch(aircraftName) {

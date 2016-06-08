@@ -8,12 +8,13 @@ import javax.measure.quantity.Length;
 
 import org.jscience.physics.amount.Amount;
 
+import configuration.enumerations.ComponentEnum;
 import javaslang.Tuple2;
 
 public interface ILiftingSurfaceCreator {
 
-	public void calculateGeometry(int numberSpanwiseStations);
-	public void calculateGeometry();
+	public void calculateGeometry(int numberSpanwiseStations, ComponentEnum type);
+	public void calculateGeometry(ComponentEnum type);
 
 	List<Amount<Length>> getXYZ0();
 	Amount<Length> getX0();
@@ -98,4 +99,5 @@ public interface ILiftingSurfaceCreator {
 	public Amount<Angle> getAngleOfIncidence();
 
 	public void reportPanelsToSpanwiseDiscretizedVariables();
+	
 }

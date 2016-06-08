@@ -229,56 +229,56 @@ public class LiftingSurface extends AeroComponent implements ILiftingSurface{
 	}
 
 	@Override
-	public void calculateGeometry() {
-		_liftingSurfaceCreator.calculateGeometry();
+	public void calculateGeometry(ComponentEnum type) {
+		_liftingSurfaceCreator.calculateGeometry(type);
 	}
 
 	@Override
-	public void calculateGeometry(int nSections) {
-		_liftingSurfaceCreator.calculateGeometry(nSections);
+	public void calculateGeometry(int nSections, ComponentEnum type) {
+		_liftingSurfaceCreator.calculateGeometry(nSections, type);
 	}
 
 	public String get_id() {
 		return _id;
 	}
 
-	public ComponentEnum get_type() {
+	public ComponentEnum getType() {
 		return _type;
 	}
 
-	public Amount<Length> get_xApexConstructionAxes() {
+	public Amount<Length> getXApexConstructionAxes() {
 		return _xApexConstructionAxes;
 	}
 
-	public Amount<Length> get_yApexConstructionAxes() {
+	public Amount<Length> getYApexConstructionAxes() {
 		return _yApexConstructionAxes;
 	}
 
-	public Amount<Length> get_zApexConstructionAxes() {
+	public Amount<Length> getZApexConstructionAxes() {
 		return _zApexConstructionAxes;
 	}
 
-	public void set_id(String _id) {
+	public void setId(String _id) {
 		this._id = _id;
 	}
 
-	public void set_type(ComponentEnum _type) {
+	public void setType(ComponentEnum _type) {
 		this._type = _type;
 	}
 
-	public void set_xApexConstructionAxes(Amount<Length> _xApexConstructionAxes) {
+	public void setXApexConstructionAxes(Amount<Length> _xApexConstructionAxes) {
 		this._xApexConstructionAxes = _xApexConstructionAxes;
 	}
 
-	public void set_yApexConstructionAxes(Amount<Length> _yApexConstructionAxes) {
+	public void setYApexConstructionAxes(Amount<Length> _yApexConstructionAxes) {
 		this._yApexConstructionAxes = _yApexConstructionAxes;
 	}
 
-	public void set_zApexConstructionAxes(Amount<Length> _zApexConstructionAxes) {
+	public void setZApexConstructionAxes(Amount<Length> _zApexConstructionAxes) {
 		this._zApexConstructionAxes = _zApexConstructionAxes;
 	}
 
-	public void set_liftingSurfaceCreator(LiftingSurfaceCreator _liftingSurfaceCreator) {
+	public void setLiftingSurfaceCreator(LiftingSurfaceCreator _liftingSurfaceCreator) {
 		this._liftingSurfaceCreator = _liftingSurfaceCreator;
 	}
 

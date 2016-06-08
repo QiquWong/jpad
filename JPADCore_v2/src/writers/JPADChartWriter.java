@@ -83,7 +83,7 @@ public class JPADChartWriter {
 
 		try {
 			// TODO: modify nasa Blackwell method to support vertical tail
-			if (!liftingSurface.get_type().equals(ComponentEnum.VERTICAL_TAIL)) {
+			if (!liftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
 
 				
 				System.out.println("cLMap: "+ liftingSurface.getAerodynamics().getcLMap().getCxyVsAlphaTable().toString());
@@ -93,7 +93,7 @@ public class JPADChartWriter {
 						liftingSurface.getAerodynamics().getcLMap().getCxyVsAlphaTable(),
 						JPADWriteUtils.createImagesFolder("Aerodynamics"),
 						"cl_distribution" 
-								+ WordUtils.capitalizeFully(liftingSurface.get_type().name()),
+								+ WordUtils.capitalizeFully(liftingSurface.getType().name()),
 								"$Y\\;(\\mathrm{m})$", "$C_l$",
 								"","", 
 								"$\\alpha$",
@@ -105,7 +105,7 @@ public class JPADChartWriter {
 						liftingSurface.getAerodynamics().getcLMap().getCcxyVsAlphaTable(),
 						JPADWriteUtils.createImagesFolder("Aerodynamics"),
 						"cCl_distribution" 
-								+ WordUtils.capitalizeFully(liftingSurface.get_type().name()),
+								+ WordUtils.capitalizeFully(liftingSurface.getType().name()),
 								"$Y\\;(\\mathrm{m})$", "$c C_l$",
 								"","",
 								"solid", "black",

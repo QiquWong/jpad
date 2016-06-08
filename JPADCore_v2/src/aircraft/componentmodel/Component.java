@@ -124,13 +124,13 @@ public abstract class Component {
 				+ "it should not be used by MyComponent instances");		
 	}
 
-	public ComponentEnum get_type() {
+	public ComponentEnum getType() {
 		System.out.println("WARNING: this method MUST be overridden by MyComponent subclasses;"
 				+ "it should not be used by MyComponent instances");
 		return _type;
 	}
 
-	public void set_type(ComponentEnum _type) {
+	public void setType(ComponentEnum _type) {
 		System.out.println("WARNING: this method MUST be overridden by MyComponent subclasses;"
 				+ "it should not be used by MyComponent instances");
 		this._type = _type;

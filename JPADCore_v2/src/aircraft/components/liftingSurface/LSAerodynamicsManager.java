@@ -349,7 +349,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 	public void initializeDataFromLiftingSurface(LiftingSurface ls) {
 		initializeLiftingSurfaceData(
-				ls.get_type(), 
+				ls.getType(), 
 				ls.get_surface().doubleValue(SI.SQUARE_METRE), 
 				ls.get_surfaceWetted().getEstimatedValue(), 
 				ls.get_semispan().doubleValue(SI.METER), 
@@ -739,7 +739,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 		// The lifting surface is assumed to have conventional
 		// or supercritical airfoils, not both
-		_airfoilType =  getTheLiftingSurface()._theAirfoilsList.get(0).get_type();
+		_airfoilType =  getTheLiftingSurface()._theAirfoilsList.get(0).getType();
 
 		for (int i = 0; i < getTheLiftingSurface()._numberOfAirfoils; i++){
 
@@ -1728,13 +1728,13 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				alphaArrayPlotCD,cDPlotArray, 
 				null, null , null , null ,					    // axis with limits
 				"alpha", "CD", "deg", "",	   				
-				subfolderPathCDAlpha, "CD vs Alpha " + theLiftingSurface.get_type());
+				subfolderPathCDAlpha, "CD vs Alpha " + theLiftingSurface.getType());
 
 		MyChartToFileUtils.plotNoLegend(
 				cDPlotArray,cLPlotArray, 
 				null, null , null , null ,					    // axis with limits
 				"CD", "CL", "", "",	   				
-				subfolderPathCDAlpha, "CD vs CL " + theLiftingSurface.get_type());
+				subfolderPathCDAlpha, "CD vs CL " + theLiftingSurface.getType());
 
 	}
 	
@@ -4608,7 +4608,7 @@ public class CalcCdvsAlpha {
 
 			Airfoil meanAirfoil = new Airfoil(theWing);
 
-			if ( theLiftingSurface.get_type() == ComponentEnum.WING ){
+			if ( theLiftingSurface.getType() == ComponentEnum.WING ){
 				Airfoil airfoilRoot = theWing.get_theAirfoilsList().get(0);
 				Airfoil airfoilKink = theWing.get_theAirfoilsList().get(1);
 				Airfoil airfoilTip = theWing.get_theAirfoilsList().get(2);
@@ -4848,7 +4848,7 @@ public class CalcCdvsAlpha {
 
 			}
 
-			if ( theLiftingSurface.get_type() == ComponentEnum.HORIZONTAL_TAIL ){
+			if ( theLiftingSurface.getType() == ComponentEnum.HORIZONTAL_TAIL ){
 
 				Airfoil airfoilRoot = theWing.get_theAirfoilsList().get(0);
 				Airfoil airfoilTip = theWing.get_theAirfoilsList().get(1);
