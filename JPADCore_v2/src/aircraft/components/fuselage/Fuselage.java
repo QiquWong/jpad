@@ -1911,8 +1911,8 @@ public class Fuselage extends AeroComponent implements IFuselage {
 					(aircraft.get_weights().get_MZFM().to(NonSI.POUND).getEstimatedValue() - 
 							aircraft.get_wing().get_mass().to(NonSI.POUND).getEstimatedValue()
 							//					- aircraft.get_nacelle().get_mass().getEstimatedValue()*aircraft.get_propulsion().get_engineNumber()) TODO ADD!
-		 * _len_F.minus(aircraft.get_wing().get_chordRoot().divide(2.)).to(NonSI.FOOT).getEstimatedValue()/
-							pow(_sectionCylinderHeight.to(NonSI.FOOT).getEstimatedValue(),2));
+		 * _fuselageCreator.getLenF().minus(aircraft.get_wing().get_chordRoot().divide(2.)).to(NonSI.FOOT).getEstimatedValue()/
+							pow(_fuselageCreator.getSectionCylinderHeight().to(NonSI.FOOT).getEstimatedValue(),2));
 
 			if (Ip > Ib) {
 				Ifuse = Ip;
@@ -1973,10 +1973,10 @@ public class Fuselage extends AeroComponent implements IFuselage {
 						get_MTOM().to(NonSI.POUND).times(aircraft.get_performances().
 								get_nUltimate()).getEstimatedValue(),
 								0.5)*
-								pow(_len_F.to(NonSI.FOOT).getEstimatedValue(),0.25)*
+								pow(_fuselageCreator.getLenF().to(NonSI.FOOT).getEstimatedValue(),0.25)*
 								pow(_sWet.to(MyUnits.FOOT2).getEstimatedValue(), 0.302)*
 								pow(1+Kws, 0.04)*
-								pow(_len_F.to(NonSI.FOOT).
+								pow(_fuselageCreator.getLenF().to(NonSI.FOOT).
 										divide(_equivalentDiameterCylinderGM.to(NonSI.FOOT)).getEstimatedValue(), 0.1), 
 										NonSI.POUND).to(SI.KILOGRAM);
 	}
@@ -1984,10 +1984,10 @@ public class Fuselage extends AeroComponent implements IFuselage {
 	private Amount<Mass> calculateMassTorenbeek2013(double nUltimate) {
 		return Amount.valueOf((60*
 				pow(get_equivalentDiameterCylinderGM().getEstimatedValue(),2)*
-				(_len_F.getEstimatedValue() + 1.5)+
+				(_fuselageCreator.getLenF().getEstimatedValue() + 1.5)+
 				160*pow(nUltimate, 0.5)*
 				get_equivalentDiameterCylinderGM().getEstimatedValue()*
-				_len_F.getEstimatedValue()),
+				_fuselageCreator.getLenF().getEstimatedValue()),
 				SI.NEWTON).divide(AtmosphereCalc.g0).to(SI.KILOGRAM);
 
 	}
@@ -2022,7 +2022,7 @@ public class Fuselage extends AeroComponent implements IFuselage {
 			MethodEnum method) {
 
 		_cg.setLRForigin(_X0, _Y0, _Z0);
-		_cg.set_xLRFref(_len_F.times(0.45));
+		_cg.set_xLRFref(_fuselageCreator.getLenF().times(0.45));
 		_cg.set_yLRFref(Amount.valueOf(0., SI.METER));
 		_cg.set_zLRFref(Amount.valueOf(_Z0.getEstimatedValue(), SI.METER));
 
@@ -2037,7 +2037,7 @@ public class Fuselage extends AeroComponent implements IFuselage {
 			_methodsList.add(method);
 
 			_xCG = Amount.valueOf(
-					_len_F.divide(_lambda_F).getEstimatedValue()*
+					_fuselageCreator.getLenF().divide(_lambda_F).getEstimatedValue()*
 					(_lambda_N + (_lambda_F - 5.)/1.8)
 					, SI.METER);
 			_xCGMap.put(method, _xCG);
@@ -2051,24 +2051,24 @@ public class Fuselage extends AeroComponent implements IFuselage {
 					(aircraft.get_powerPlant().get_engineType() == EngineTypeEnum.PISTON |
 					aircraft.get_powerPlant().get_engineType() == EngineTypeEnum.TURBOPROP)) {
 
-				_xCG = _len_F.times(0.335);
+				_xCG = _fuselageCreator.getLenF().times(0.335);
 			}
 
 			if (aircraft.get_powerPlant().get_position() == EngineMountingPositionEnum.WING) {
 				if ((aircraft.get_powerPlant().get_engineType() == EngineTypeEnum.PISTON |
 						aircraft.get_powerPlant().get_engineType() == EngineTypeEnum.TURBOPROP)) {
-					_xCG = _len_F.times(0.39); 
+					_xCG = _fuselageCreator.getLenF().times(0.39); 
 				} else {
-					_xCG = _len_F.times(0.435);
+					_xCG = _fuselageCreator.getLenF().times(0.435);
 				}
 			}
 
 			if (aircraft.get_powerPlant().get_position() == EngineMountingPositionEnum.REAR_FUSELAGE) {
-				_xCG = _len_F.times(0.47);
+				_xCG = _fuselageCreator.getLenF().times(0.47);
 			}
 
 			if (aircraft.get_powerPlant().get_position() == EngineMountingPositionEnum.BURIED) {
-				_xCG = _len_F.times(0.45);
+				_xCG = _fuselageCreator.getLenF().times(0.45);
 			}
 
 			_xCGMap.put(method, _xCG);
@@ -2350,14 +2350,15 @@ public class Fuselage extends AeroComponent implements IFuselage {
 	}
 
 	public Amount<Length> get_len_F() {
-		return _len_F;
+		return _fuselageCreator.getLenF();
 	}
 
 	public void set_len_F(Amount<Length> len_F) {
 		// check bounds
 		if ( !(len_F.doubleValue(SI.METRE) < _len_F_MIN.doubleValue(SI.METRE)) 
 				&& !(len_F.doubleValue(SI.METRE) > _len_F_MAX.doubleValue(SI.METRE)) ) {
-			this._len_F = len_F;		
+			_fuselageCreator.setLenF(len_F);
+			//			this._len_F = len_F;		
 		}
 	}
 
@@ -2385,14 +2386,22 @@ public class Fuselage extends AeroComponent implements IFuselage {
 		// check bounds
 		if ( !(len_N.doubleValue(SI.METRE) < _len_N_MIN.doubleValue(SI.METRE)) 
 				&& !(len_N.doubleValue(SI.METRE) > _len_N_MAX.doubleValue(SI.METRE)) ) {
-			this._len_N = len_N;
+			_fuselageCreator.setLenC(len_N);
 
+//			Double value_l_F_METER_1 = 
+//					_len_N.doubleValue(SI.METRE) 
+//					+ _len_C.doubleValue(SI.METRE) 
+//					+ _len_T.doubleValue(SI.METRE);
+//
+//			_len_F = Amount.valueOf(value_l_F_METER_1, SI.METRE);
+			
+			
 			Double value_l_F_METER_1 = 
-					_len_N.doubleValue(SI.METRE) 
-					+ _len_C.doubleValue(SI.METRE) 
-					+ _len_T.doubleValue(SI.METRE);
-
-			_len_F = Amount.valueOf(value_l_F_METER_1, SI.METRE);
+					_fuselageCreator.getLenN().doubleValue(SI.METRE) 
+					+ _fuselageCreator.getLenC().doubleValue(SI.METRE) 
+					+ _fuselageCreator.getLenT().doubleValue(SI.METRE);
+			
+			_fuselageCreator.setLenF(Amount.valueOf(value_l_F_METER_1, SI.METRE));
 
 			calculateDependentData(); // TO DO: check _dxNoseCap_MIN/MAX etc
 		}
@@ -2418,22 +2427,30 @@ public class Fuselage extends AeroComponent implements IFuselage {
 		return _len_C;
 	}
 
-	public void set_len_C(Amount<Length> len_C) {
-		// check bounds
-		if ( !(len_C.doubleValue(SI.METRE) < _len_C_MIN.doubleValue(SI.METRE)) 
-				&& !(len_C.doubleValue(SI.METRE) > _len_C_MAX.doubleValue(SI.METRE)) ) {
-			this._len_C = len_C;
-
-			Double value_l_F_METER_1 = 
-					_len_N.doubleValue(SI.METRE) 
-					+ _len_C.doubleValue(SI.METRE) 
-					+ _len_T.doubleValue(SI.METRE);
-
-			_len_F = Amount.valueOf(value_l_F_METER_1, SI.METRE);
-
-			calculateDependentData();
+	
+		public void set_len_C(Amount<Length> len_C) {
+			// check bounds
+			if ( !(len_C.doubleValue(SI.METRE) < _len_C_MIN.doubleValue(SI.METRE)) 
+					&& !(len_C.doubleValue(SI.METRE) > _len_C_MAX.doubleValue(SI.METRE)) ) {
+				_fuselageCreator.setLenC(len_C);
+	
+//				Double value_l_F_METER_1 = 
+//						_len_N.doubleValue(SI.METRE) 
+//						+ _len_C.doubleValue(SI.METRE) 
+//						+ _len_T.doubleValue(SI.METRE);
+//	
+//				_len_F = Amount.valueOf(value_l_F_METER_1, SI.METRE);
+				
+				Double value_l_F_METER_1 = 
+						_fuselageCreator.getLenN().doubleValue(SI.METRE) 
+						+ _fuselageCreator.getLenC().doubleValue(SI.METRE) 
+						+ _fuselageCreator.getLenT().doubleValue(SI.METRE);
+				
+				_fuselageCreator.setLenF(Amount.valueOf(value_l_F_METER_1, SI.METRE));
+	
+				calculateDependentData();
+			}
 		}
-	}
 
 	public Amount<Length> get_len_C_MIN() {
 		return _len_C_MIN;
@@ -2456,18 +2473,26 @@ public class Fuselage extends AeroComponent implements IFuselage {
 		return _len_T;
 	}
 
+	
 	public void set_len_T(Amount<Length> len_T) {
 		// check bounds
 		if ( !(len_T.doubleValue(SI.METRE) < _len_T_MIN.doubleValue(SI.METRE)) 
 				&& !(len_T.doubleValue(SI.METRE) > _len_T_MAX.doubleValue(SI.METRE)) ) {
-			this._len_T = len_T;			
+			_fuselageCreator.setLenC(len_T);	
+			
+//			Double value_l_F_METER_1 = 
+//					_len_N.doubleValue(SI.METRE) 
+//					+ _len_C.doubleValue(SI.METRE) 
+//					+ _len_T.doubleValue(SI.METRE);
+			
+//			_len_F = Amount.valueOf(value_l_F_METER_1, SI.METRE);
 
 			Double value_l_F_METER_1 = 
-					_len_N.doubleValue(SI.METRE) 
-					+ _len_C.doubleValue(SI.METRE) 
-					+ _len_T.doubleValue(SI.METRE);
-
-			_len_F = Amount.valueOf(value_l_F_METER_1, SI.METRE);
+					_fuselageCreator.getLenN().doubleValue(SI.METRE) 
+					+ _fuselageCreator.getLenC().doubleValue(SI.METRE) 
+					+ _fuselageCreator.getLenT().doubleValue(SI.METRE);
+			
+			_fuselageCreator.setLenF(Amount.valueOf(value_l_F_METER_1, SI.METRE));	
 
 			calculateDependentData();
 		}
@@ -2637,14 +2662,21 @@ public class Fuselage extends AeroComponent implements IFuselage {
 		// check bounds
 		if ( !(diam_C.doubleValue(SI.METRE) < _diam_C_MIN.doubleValue(SI.METRE)) 
 				&& !(diam_C.doubleValue(SI.METRE) > diam_C.doubleValue(SI.METRE)) ) {
-			this._sectionCylinderHeight = diam_C;			
-
+			this._sectionCylinderHeight = diam_C;	
+			
+//			Double value_l_F_METER_1 = 
+//					_len_N.doubleValue(SI.METRE) 
+//					+ _len_C.doubleValue(SI.METRE) 
+//					+ _len_T.doubleValue(SI.METRE);
+			
+//			_len_F = Amount.valueOf(value_l_F_METER_1 , SI.METRE);
+			
 			Double value_l_F_METER_1 = 
-					_len_N.doubleValue(SI.METRE) 
-					+ _len_C.doubleValue(SI.METRE) 
-					+ _len_T.doubleValue(SI.METRE);
+					_fuselageCreator.getLenN().doubleValue(SI.METRE) 
+					+ _fuselageCreator.getLenC().doubleValue(SI.METRE) 
+					+ _fuselageCreator.getLenT().doubleValue(SI.METRE);
 
-			_len_F = Amount.valueOf(value_l_F_METER_1 , SI.METRE);
+			_fuselageCreator.setLenF(Amount.valueOf(value_l_F_METER_1 , SI.METRE));
 
 			calculateDependentData();
 		}
