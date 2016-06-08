@@ -1,0 +1,20 @@
+%                         AR=    9.430000
+%                          b=   29.508234
+%                         Sw=   92.336784
+%                   C_radice=    6.390000
+%        Rapp rastremazione =    0.164319
+%   ****   MAC   ****
+%                     MAC/Cr=    0.602759
+%                    MAC [m]=    3.851631
+%                  X_MAC [m]=    3.161067
+%                  Y_MAC [m]=    5.391680
+%  ****  AER. CENTER   ***
+%  POS in x         X_AC [m]=    0.000000
+%  POS in aper. y   Y_AC [m]=    0.000000
+%  POS in x (%MAC)  X_AC/MAC=    0.000000
+%  ****  WING AC MOM COEFF
+%    basic load contr  Cmac1=    0.000000
+%    local cmac contr  Cmac2=    0.000000
+%            WING      CMACw=    0.000000
+    %Alpha         CL         CDi       Cm(c/4)       e
+    3.000000    0.869053    0.032453   -0.722932    0.785564

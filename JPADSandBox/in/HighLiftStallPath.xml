@@ -25,7 +25,7 @@
 						<x_le_distribution unit="m">[0.0, 3.71, 8.31]</x_le_distribution>
 						<leading_edge_radius unit = "m">[0.03892, 0.04265, 0.0292]</leading_edge_radius>
 						<twist_distribution unit="°">[0,-2, -6]</twist_distribution>
-						<dihedral_distribution unit="°">[5.02, 5.02, 5.02]</dihedral_distribution>
+						<dihedral_distribution unit="°">[0.0, 0.0, 0.0]</dihedral_distribution>
                     </geometry>
                     <aerodynamics>
 						<alpha_zero_lift_distribution unit="°">[-1.98, -1.63, -3.18]</alpha_zero_lift_distribution>
