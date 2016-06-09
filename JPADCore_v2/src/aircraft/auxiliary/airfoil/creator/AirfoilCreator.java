@@ -536,6 +536,7 @@ public class AirfoilCreator implements IAirfoilCreator {
 
 		System.out.println("Reading airfoil data ...");
 
+		@SuppressWarnings("unused")
 		String family = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),

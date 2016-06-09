@@ -13,9 +13,12 @@ import javaslang.Tuple2;
 
 public interface ILiftingSurfaceCreator {
 
-	public void calculateGeometry(int numberSpanwiseStations, ComponentEnum type);
-	public void calculateGeometry(ComponentEnum type);
+	public void calculateGeometry(int numberSpanwiseStations, ComponentEnum type, Boolean mirrored);
+	public void calculateGeometry(ComponentEnum type, Boolean mirrored);
 
+	public Boolean isMirrored();
+	public void setMirrored (Boolean mirrored);
+	
 	List<Amount<Length>> getXYZ0();
 	Amount<Length> getX0();
 	Amount<Length> getY0();
@@ -94,9 +97,7 @@ public interface ILiftingSurfaceCreator {
 			>
 		> getDiscretizedTopViewAsList();
 
-	public Double[][] getDiscretizedTopViewAsArray();
-
-	public Amount<Angle> getAngleOfIncidence();
+	public Double[][] getDiscretizedTopViewAsArray(ComponentEnum type);
 
 	public void reportPanelsToSpanwiseDiscretizedVariables();
 	

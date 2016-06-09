@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-    <wing id="JPAD Test Wing DAF - 2016" mirrored="TRUE" equivalent="TRUE">
+    <wing id="JPAD Test Wing DAF - 2016" mirrored="TRUE" equivalent="FALSE">
         <equivalent_wing>
 			<surface unit="m²">36.9</surface>
 			<aspect_ratio>13.09</aspect_ratio>
 			<non_dimensional_span_station_kink>0.363</non_dimensional_span_station_kink>
 			<sweep_quarter_chord unit="deg">12.56</sweep_quarter_chord>
-			<angle_of_incidence unit="deg">2.0</angle_of_incidence>
 			<twist_at_tip unit="deg">-2.5</twist_at_tip>
 			<dihedral unit="deg">2.5</dihedral>
 			<taper_ratio>0.556</taper_ratio>
@@ -20,10 +19,9 @@
 		</equivalent_wing>
 		<panels>
             <panel id="Inner panel">
-                <semispan unit="m">4.0</semispan>
+                <span unit="m">4.0</span>
                 <dihedral unit="deg">1.5</dihedral>
                 <sweep_leading_edge unit="deg">25</sweep_leading_edge>
-				<angle_of_incidence unit="deg">2.0</angle_of_incidence>
                 <inner_section>
                     <chord unit="m">3.0</chord>
                     <airfoil file="naca63209.xml"/>
@@ -36,7 +34,7 @@
                 </outer_section>
             </panel>
             <panel id="Outer panel" linked_to="Inner panel">
-                <semispan unit="m">7.0</semispan>
+                <span unit="m">7.0</span>
                 <dihedral unit="deg">3.5</dihedral>
                 <sweep_leading_edge unit="deg">5</sweep_leading_edge>
                 <outer_section>

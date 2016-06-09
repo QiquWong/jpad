@@ -6,25 +6,28 @@ import java.util.List;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
+import javax.measure.unit.NonSI;
+import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
 import aircraft.auxiliary.airfoil.Airfoil;
-import aircraft.componentmodel.AeroComponent;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import configuration.enumerations.ComponentEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import standaloneutils.GeometryCalc;
 import standaloneutils.MyArrayUtils;
 
-public class LiftingSurface extends AeroComponent implements ILiftingSurface{
+public class LiftingSurface implements ILiftingSurface{
 
 	private String _id = null;
 	private ComponentEnum _type;
-	private Amount<Length> _xApexConstructionAxes = null; 
-	private Amount<Length> _yApexConstructionAxes = null; 
-	private Amount<Length> _zApexConstructionAxes = null;
-
+	
+	private Amount<Length> _xApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
+	private Amount<Length> _yApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
+	private Amount<Length> _zApexConstructionAxes = Amount.valueOf(0.0, SI.METER);
+	private Amount<Angle> _riggingAngle = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+	
 	private LiftingSurfaceCreator _liftingSurfaceCreator;
 
 	private AerodynamicDatabaseReader _aeroDatabaseReader;
@@ -66,7 +69,6 @@ public class LiftingSurface extends AeroComponent implements ILiftingSurface{
 	}
 
 	private LiftingSurface(LiftingSurfaceBuilder builder) {
-		super(builder.__id, builder.__type);
 		this._id = builder.__id; 
 		this._type = builder.__type;
 		this._xApexConstructionAxes = builder.__xApexConstructionAxes; 
@@ -229,31 +231,36 @@ public class LiftingSurface extends AeroComponent implements ILiftingSurface{
 	}
 
 	@Override
-	public void calculateGeometry(ComponentEnum type) {
-		_liftingSurfaceCreator.calculateGeometry(type);
+	public void calculateGeometry(ComponentEnum type, Boolean mirrored) {
+		_liftingSurfaceCreator.calculateGeometry(type, mirrored);
 	}
 
 	@Override
-	public void calculateGeometry(int nSections, ComponentEnum type) {
-		_liftingSurfaceCreator.calculateGeometry(nSections, type);
+	public void calculateGeometry(int nSections, ComponentEnum type, Boolean mirrored) {
+		_liftingSurfaceCreator.calculateGeometry(nSections, type, mirrored);
 	}
 
-	public String get_id() {
+	@Override
+	public String getId() {
 		return _id;
 	}
 
+	@Override
 	public ComponentEnum getType() {
 		return _type;
 	}
 
+	@Override
 	public Amount<Length> getXApexConstructionAxes() {
 		return _xApexConstructionAxes;
 	}
-
+	
+	@Override
 	public Amount<Length> getYApexConstructionAxes() {
 		return _yApexConstructionAxes;
 	}
 
+	@Override
 	public Amount<Length> getZApexConstructionAxes() {
 		return _zApexConstructionAxes;
 	}
@@ -266,28 +273,43 @@ public class LiftingSurface extends AeroComponent implements ILiftingSurface{
 		this._type = _type;
 	}
 
+	@Override
 	public void setXApexConstructionAxes(Amount<Length> _xApexConstructionAxes) {
 		this._xApexConstructionAxes = _xApexConstructionAxes;
 	}
 
+	@Override
 	public void setYApexConstructionAxes(Amount<Length> _yApexConstructionAxes) {
 		this._yApexConstructionAxes = _yApexConstructionAxes;
 	}
 
+	@Override
 	public void setZApexConstructionAxes(Amount<Length> _zApexConstructionAxes) {
 		this._zApexConstructionAxes = _zApexConstructionAxes;
 	}
 
+	@Override
 	public void setLiftingSurfaceCreator(LiftingSurfaceCreator _liftingSurfaceCreator) {
 		this._liftingSurfaceCreator = _liftingSurfaceCreator;
 	}
 
+	@Override
 	public AerodynamicDatabaseReader getAerodynamicDatabaseReader() {
 		return this._aeroDatabaseReader;
 	}
 	
+	@Override
 	public void setAerodynamicDatabaseReader(AerodynamicDatabaseReader aeroDatabaseReader) {
 		this._aeroDatabaseReader = aeroDatabaseReader;
 	}
 
+	@Override
+	public Amount<Angle> getRiggingAngle() {
+		return this._riggingAngle;
+	}
+	
+	@Override
+	public void setRiggingAngle (Amount<Angle> iW) {
+		this._riggingAngle = iW;
+	}
 }

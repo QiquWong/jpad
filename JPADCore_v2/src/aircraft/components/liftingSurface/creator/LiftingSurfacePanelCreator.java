@@ -27,17 +27,16 @@ import standaloneutils.MyXMLReaderUtils;
 public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 
 	String _id;
-
+	
 	private Amount<Length> _chordRoot;
 	private Amount<Length> _chordTip;
 	private AirfoilCreator _airfoilRoot;
 	private AirfoilCreator _airfoilTip;
 	private Amount<Angle> _twistGeometricTip;
-	private Amount<Length> _semiSpan, _span;
+	private Amount<Length> _span;
 	private Amount<Angle> _sweepLeadingEdge,
 		_sweepQuarterChord, _sweepHalfChord, _sweepTrailingEdge;
 	private Amount<Angle> _dihedral;
-	private Amount<Angle> _angleOfIncidence;
 	private Amount<Area> _surfacePlanform;
 	private Amount<Area> _surfaceWetted;
 	private Double _aspectRatio;
@@ -47,37 +46,12 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 	private Amount<Length> _meanAerodynamicChordLeadingEdgeX;
 	private Amount<Length> _meanAerodynamicChord;
 
-	// commented out, use the builder pattern instead
-//	public LiftingSurfacePanelCreator(
-//			Amount<Length> chordRoot,
-//			Amount<Length> chordTip,
-//			Airfoil airfoilRoot,
-//			Airfoil airfoilTip,
-//			Amount<Angle> twistGeometricTip,
-//			Amount<Length> semiSpan,
-//			Amount<Angle> sweepLeadingEdge,
-//			Amount<Angle> dihedral
-//			) {
-//		_chordRoot = chordRoot;
-//		_chordTip = chordTip;
-//		_airfoilRoot = airfoilRoot;
-//		_airfoilTip = airfoilTip;
-//		_twistGeometricTip = twistGeometricTip;
-//		_semiSpan = semiSpan;
-//		_span = _semiSpan.times(2.0);
-//		_sweepLeadingEdge = sweepLeadingEdge;
-//		_dihedral = dihedral;
-//
-//		calculateGeometry();
-//
-//	}
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public void calculateGeometry() {
 
 		_taperRatio = _chordTip.divide(_chordRoot).getEstimatedValue();
-		_surfacePlanform = (Amount<Area>) ( _chordRoot.plus(_chordTip) ).times(_semiSpan);
+		_surfacePlanform = (Amount<Area>) ( _chordRoot.plus(_chordTip) ).times(_span).divide(2);
 		_surfaceWetted = _surfacePlanform.times(2.0);
 		_aspectRatio = _span.times(_span).divide(_surfacePlanform).getEstimatedValue();
 
@@ -164,18 +138,6 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 	@Override
 	public void setAirfoilTip(AirfoilCreator a) {
 		_airfoilTip = a;
-	}
-
-	@Override
-	public Amount<Length> getSpan() {
-		return _span;
-	}
-
-	@Override
-	public void setSpan(Amount<Length> b) {
-		_span = b;
-		_semiSpan = _span.times(0.5);
-		calculateGeometry();
 	}
 
 	@Override
@@ -266,13 +228,12 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 
 	@Override
 	public Amount<Length> getSemiSpan() {
-		return _semiSpan;
+		return _span;
 	}
 
 	@Override
 	public void setSemiSpan(Amount<Length> s) {
-		_semiSpan = s;
-		_span = _semiSpan.times(2.0);
+		_span = s;
 		calculateGeometry();
 	}
 
@@ -295,14 +256,11 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 	}
 
 	@Override
-	public Amount<Angle> getAngleOfIncidence() {
-		return this._angleOfIncidence;
-	}
-	
 	public String getId() {
 		return _id;
 	}
-
+	
+	@Override
 	public void setId(String id) {
 		this._id = id;
 	}
@@ -317,10 +275,9 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 		private AirfoilCreator __airfoilRoot;
 		private AirfoilCreator __airfoilTip;
 		private Amount<Angle> __twistGeometricTip;
-		private Amount<Length> __semiSpan;
+		private Amount<Length> __span;
 		private Amount<Angle> __sweepLeadingEdge;
 		private Amount<Angle> __dihedral;
-		private Amount<Angle> __angleOfIncidence;
 
 		// optional parameters ... defaults
 		// ...
@@ -330,10 +287,9 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 				Amount<Length> cR, Amount<Length> cT,
 				AirfoilCreator airfR, AirfoilCreator airfT,
 				Amount<Angle> twistGeometricT,
-				Amount<Length> semiSpan,
+				Amount<Length> span,
 				Amount<Angle> sweepLE,
-				Amount<Angle> dih,
-				Amount<Angle> iw
+				Amount<Angle> dih
 				){
 			this.__id = id;
 			this.__chordRoot = cR;
@@ -341,10 +297,9 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 			this.__airfoilRoot = airfR;
 			this.__airfoilTip = airfT;
 			this.__twistGeometricTip = twistGeometricT;
-			this.__semiSpan = semiSpan;
+			this.__span = span;
 			this.__sweepLeadingEdge = sweepLE;
 			this.__dihedral = dih;
-			this.__angleOfIncidence = iw;
 		}
 
 		public LiftingSurfacePanelCreator build() {
@@ -360,11 +315,9 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 		_airfoilRoot = builder.__airfoilRoot;
 		_airfoilTip = builder.__airfoilTip;
 		_twistGeometricTip = builder.__twistGeometricTip;
-		_semiSpan = builder.__semiSpan;
-		_span = _semiSpan.times(2.0);
+		_span = builder.__span;
 		_sweepLeadingEdge = builder.__sweepLeadingEdge;
 		_dihedral = builder.__dihedral;
-		_angleOfIncidence = builder.__angleOfIncidence;
 		calculateGeometry();
 
 	}
@@ -380,14 +333,12 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 						reader.getXmlDoc(), reader.getXpath(),
 						"//panel/@id");
 
-		Amount<Length> semiSpan = reader.getXMLAmountLengthByPath("//panel/semispan");
+		Amount<Length> span = reader.getXMLAmountLengthByPath("//panel/span");
 
 		Amount<Angle> dihedral = reader.getXMLAmountAngleByPath("//panel/dihedral");
 
 		Amount<Angle> sweepLeadingEdge = reader.getXMLAmountAngleByPath("//panel/sweep_leading_edge");
 
-		Amount<Angle> angleOfIncidence = reader.getXMLAmountAngleByPath("//panel/angle_of_incidence");
-		
 		Amount<Length> chordRoot = reader.getXMLAmountLengthByPath("//panel/inner_section/chord");
 
 		String airfoilFileName1 =
@@ -417,8 +368,7 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 				chordRoot, chordTip,
 				airfoilRoot, airfoilTip,
 				twistGeometricTip,
-				semiSpan, sweepLeadingEdge, dihedral,
-				angleOfIncidence
+				span, sweepLeadingEdge, dihedral
 				)
 			.build();
 
@@ -437,10 +387,9 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 						doc, xpath,
 						"//panel/@id");
 
-		Amount<Length> semiSpan = MyXMLReaderUtils.getXMLAmountLengthByPath(doc, xpath, "//semispan");
+		Amount<Length> span = MyXMLReaderUtils.getXMLAmountLengthByPath(doc, xpath, "//span");
 		Amount<Angle> dihedral = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//dihedral");
 		Amount<Angle> sweepLeadingEdge = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//sweep_leading_edge");
-		Amount<Angle> angleOfIncidence = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//angle_of_incidence");
 		Amount<Length> chordRoot = MyXMLReaderUtils.getXMLAmountLengthByPath(doc, xpath, "//inner_section/chord");
 
 		String airfoilFileName1 =
@@ -469,8 +418,7 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 				chordRoot, chordTip,
 				airfoilRoot, airfoilTip,
 				twistGeometricTip,
-				semiSpan, sweepLeadingEdge, dihedral,
-				angleOfIncidence
+				span, sweepLeadingEdge, dihedral
 				)
 			.build();
 
@@ -506,7 +454,7 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 						doc, xpath,
 						"//panel/@id");
 
-		Amount<Length> semiSpan = MyXMLReaderUtils.getXMLAmountLengthByPath(doc, xpath, "//semispan");
+		Amount<Length> span = MyXMLReaderUtils.getXMLAmountLengthByPath(doc, xpath, "//span");
 		Amount<Angle> dihedral = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//dihedral");
 		Amount<Angle> sweepLeadingEdge = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//sweep_leading_edge");
 
@@ -532,8 +480,7 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 				chordRoot, chordTip,
 				airfoilRoot, airfoilTip,
 				twistGeometricTip,
-				semiSpan, sweepLeadingEdge, dihedral,
-				Amount.valueOf(0.0, NonSI.DEGREE_ANGLE)
+				span, sweepLeadingEdge, dihedral
 				)
 			.build();
 
@@ -568,8 +515,7 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 			.append("\tLifting surface panel\n")
 			.append("\t-------------------------------------\n")
 			.append("\tID: '" + _id + "'\n")
-			.append("\tb = " + _span.to(SI.METER) + "\n")
-			.append("\tb/2 = " + _semiSpan.to(SI.METER) + "\n")
+			.append("\tSpan = " + _span.to(SI.METER) + "\n")
 			.append("\tLambda_LE = " + _sweepLeadingEdge.to(NonSI.DEGREE_ANGLE) + "\n")
 			.append("\tLambda_c/4 = " + _sweepQuarterChord.to(NonSI.DEGREE_ANGLE) + "\n")
 			.append("\tLambda_c/2 = " + _sweepHalfChord.to(NonSI.DEGREE_ANGLE) + "\n")
