@@ -471,11 +471,11 @@ public class JPADDataWriter {
 	}
 
 	private void writeConfigurationInput(Configuration configuration, Element configurationNode) {
-		writeInputNode("Number_of_passengers", configuration.get_nPax(), configurationNode, true);
-		writeInputNode("Maximum_number_of_passengers", configuration.get_maxPax(), configurationNode, true);
-		writeInputNode("Number_of_aisles", configuration.get_aislesNumber(), configurationNode, true);
-		writeInputNode("Number_of_classes", configuration.get_classesNumber(), configurationNode, true);
-		writeInputNode("Xcoordinate_of_first_row", configuration.get_xCoordinateFirstRow(), configurationNode, true);
+		writeInputNode("Number_of_passengers", configuration.getNPax(), configurationNode, true);
+		writeInputNode("Maximum_number_of_passengers", configuration.getMaxPax(), configurationNode, true);
+		writeInputNode("Number_of_aisles", configuration.getAislesNumber(), configurationNode, true);
+		writeInputNode("Number_of_classes", configuration.getClassesNumber(), configurationNode, true);
+		writeInputNode("Xcoordinate_of_first_row", configuration.getXCoordinateFirstRow(), configurationNode, true);
 
 		Element cabinLayout = doc.createElement("Cabin_Layout");
 		configurationNode.appendChild(cabinLayout);
@@ -483,48 +483,48 @@ public class JPADDataWriter {
 		Element economy = doc.createElement(WordUtils.capitalizeFully(ClassTypeEnum.ECONOMY.name()));
 		cabinLayout.appendChild(economy);
 
-		writeInputNode("Pitch", configuration.get_pitchEconomyClass(), economy, true);
-		writeInputNode("Width", configuration.get_widthEconomyClass(), economy, true);
-		writeInputNode("Abreasts", configuration.get_numberOfColumnsEconomyClass(), economy, true);
-		writeInputNode("Number_of_rows", configuration.get_numberOfRowsEconomyClass(), economy, true);
-		writeInputNode("Distance_from_wall", configuration.get_distanceFromWallEconomyClass(), economy, true);
-		writeInputNode("Number_of_breaks", configuration.get_numberOfBreaksEconomyClass(), economy, true);
-		writeInputNode("Length_of_each_break", configuration.get_lengthOfEachBreakEconomyClass(), economy, true);
+		writeInputNode("Pitch", configuration.getPitchEconomyClass(), economy, true);
+		writeInputNode("Width", configuration.getWidthEconomyClass(), economy, true);
+		writeInputNode("Abreasts", configuration.getNumberOfColumnsEconomyClass(), economy, true);
+		writeInputNode("Number_of_rows", configuration.getNumberOfRowsEconomyClass(), economy, true);
+		writeInputNode("Distance_from_wall", configuration.getDistanceFromWallEconomyClass(), economy, true);
+		writeInputNode("Number_of_breaks", configuration.getNumberOfBreaksEconomyClass(), economy, true);
+		writeInputNode("Length_of_each_break", configuration.getLengthOfEachBreakEconomyClass(), economy, true);
 
 		Element business = doc.createElement(WordUtils.capitalizeFully(ClassTypeEnum.BUSINESS.name()));
 		cabinLayout.appendChild(business);
 
-		writeInputNode("Pitch", configuration.get_pitchBusinessClass(), business, true);
-		writeInputNode("Width", configuration.get_widthBusinessClass(), business, true);
-		writeInputNode("Abreasts", configuration.get_numberOfColumnsBusinessClass(), business, true);
-		writeInputNode("Number_of_rows", configuration.get_numberOfRowsBusinessClass(), business, true);
-		writeInputNode("Distance_from_wall", configuration.get_distanceFromWallBusinessClass(), business, true);
-		writeInputNode("Number_of_breaks", configuration.get_numberOfBreaksBusinessClass(), business, true);
-		writeInputNode("Length_of_each_break", configuration.get_lengthOfEachBreakBusinessClass(), business, true);
+		writeInputNode("Pitch", configuration.getPitchBusinessClass(), business, true);
+		writeInputNode("Width", configuration.getWidthBusinessClass(), business, true);
+		writeInputNode("Abreasts", configuration.getNumberOfColumnsBusinessClass(), business, true);
+		writeInputNode("Number_of_rows", configuration.getNumberOfRowsBusinessClass(), business, true);
+		writeInputNode("Distance_from_wall", configuration.getDistanceFromWallBusinessClass(), business, true);
+		writeInputNode("Number_of_breaks", configuration.getNumberOfBreaksBusinessClass(), business, true);
+		writeInputNode("Length_of_each_break", configuration.getLengthOfEachBreakBusinessClass(), business, true);
 
 		Element first = doc.createElement(WordUtils.capitalizeFully(ClassTypeEnum.FIRST.name()));
 		cabinLayout.appendChild(first);
 
-		writeInputNode("Pitch", configuration.get_pitchFirstClass(), first, true);
-		writeInputNode("Width", configuration.get_widthFirstClass(), first, true);
-		writeInputNode("Abreasts", configuration.get_numberOfColumnsFirstClass(), first, true);
-		writeInputNode("Number_of_rows", configuration.get_numberOfRowsFirstClass(), first, true);
-		writeInputNode("Distance_from_wall", configuration.get_distanceFromWallFirstClass(), first, true);
-		writeInputNode("Number_of_breaks", configuration.get_numberOfBreaksFirstClass(), first, true);
-		writeInputNode("Length_of_each_break", configuration.get_lengthOfEachBreakFirstClass(), first, true);
+		writeInputNode("Pitch", configuration.getPitchFirstClass(), first, true);
+		writeInputNode("Width", configuration.getWidthFirstClass(), first, true);
+		writeInputNode("Abreasts", configuration.getNumberOfColumnsFirstClass(), first, true);
+		writeInputNode("Number_of_rows", configuration.getNumberOfRowsFirstClass(), first, true);
+		writeInputNode("Distance_from_wall", configuration.getDistanceFromWallFirstClass(), first, true);
+		writeInputNode("Number_of_breaks", configuration.getNumberOfBreaksFirstClass(), first, true);
+		writeInputNode("Length_of_each_break", configuration.getLengthOfEachBreakFirstClass(), first, true);
 	}
 
 	private void writeConfigurationOutput(Configuration configuration, Element analysisNode) {
 		Element configurationAnalysis = JPADStaticWriteUtils.addSubElement(doc, _sheet, "Configuration_Analysis", analysisNode);
-		writeOutputNode("Number_of_crew_members", configuration.get_nCrew(), configurationAnalysis);
-		writeOutputNode("Furnishings_and_equipment_mass", configuration.get_massEstimatedFurnishingsAndEquipment(), configurationAnalysis);
-		writeOutputNode("Cabin_Center_of_Gravity_X", configuration.get_seatsCoG(), configurationAnalysis);
-		writeOutputNode("Cabin_Center_of_Gravity_X_boarding_front_to_rear_window_seats", configuration.get_seatsCoGFrontToRearWindow(), configurationAnalysis);
-		writeOutputNode("Cabin_Center_of_Gravity_X_boarding_front_to_rear_aisle_seats", configuration.get_seatsCoGFrontToRearAisle(), configurationAnalysis);
-		writeOutputNode("Cabin_Center_of_Gravity_X_boarding_front_to_rear_other_seats", configuration.get_seatsCoGFrontToRearOther(), configurationAnalysis);
-		writeOutputNode("Cabin_Center_of_Gravity_X_boarding_rear_to_front_window_seats", configuration.get_seatsCoGrearToFrontWindow(), configurationAnalysis);
-		writeOutputNode("Cabin_Center_of_Gravity_X_boarding_rear_to_front_aisle_seats", configuration.get_seatsCoGrearToFrontAisle(), configurationAnalysis);
-		writeOutputNode("Cabin_Center_of_Gravity_X_boarding_rear_to_front_other_seats", configuration.get_seatsCoGrearToFrontOther(), configurationAnalysis);
+		writeOutputNode("Number_of_crew_members", configuration.getNCrew(), configurationAnalysis);
+		writeOutputNode("Furnishings_and_equipment_mass", configuration.getMassEstimatedFurnishingsAndEquipment(), configurationAnalysis);
+		writeOutputNode("Cabin_Center_of_Gravity_X", configuration.getSeatsCoG(), configurationAnalysis);
+		writeOutputNode("Cabin_Center_of_Gravity_X_boarding_front_to_rear_window_seats", configuration.getSeatsCoGFrontToRearWindow(), configurationAnalysis);
+		writeOutputNode("Cabin_Center_of_Gravity_X_boarding_front_to_rear_aisle_seats", configuration.getSeatsCoGFrontToRearAisle(), configurationAnalysis);
+		writeOutputNode("Cabin_Center_of_Gravity_X_boarding_front_to_rear_other_seats", configuration.getSeatsCoGFrontToRearOther(), configurationAnalysis);
+		writeOutputNode("Cabin_Center_of_Gravity_X_boarding_rear_to_front_window_seats", configuration.getSeatsCoGrearToFrontWindow(), configurationAnalysis);
+		writeOutputNode("Cabin_Center_of_Gravity_X_boarding_rear_to_front_aisle_seats", configuration.getSeatsCoGrearToFrontAisle(), configurationAnalysis);
+		writeOutputNode("Cabin_Center_of_Gravity_X_boarding_rear_to_front_other_seats", configuration.getSeatsCoGrearToFrontOther(), configurationAnalysis);
 		JPADStaticWriteUtils.writeAllArraysToXls(_sheet, _xlsArraysDescription, _xlsArraysList, _xlsArraysUnit);
 	}
 
@@ -565,7 +565,7 @@ public class JPADDataWriter {
 					writeOutputNode("Structure_mass", _theAircraft.get_weights().get_structuralMass(), weightsAnalysis);
 					writeOutputNode("Power_plant_mass", _theAircraft.get_powerPlant().get_totalMass(), weightsAnalysis);
 					writeOutputNode("Systems_mass", _theAircraft.get_systems().get_mass(), weightsAnalysis);
-					writeOutputNode("Furnishings_and_Equipment_mass", _theAircraft.get_configuration().get_massEstimatedFurnishingsAndEquipment(), weightsAnalysis);
+					writeOutputNode("Furnishings_and_Equipment_mass", _theAircraft.get_configuration().getMassEstimatedFurnishingsAndEquipment(), weightsAnalysis);
 					writeOutputNode("Manufacturer_empty_mass", _theAircraft.get_weights().get_manufacturerEmptyMass(), weightsAnalysis);
 					writeOutputNode("Crew_mass", _theAircraft.get_weights().get_crewMass(), weightsAnalysis);
 					writeOutputNode("Operating_Items_mass", _theAircraft.get_weights().get_OIM(), weightsAnalysis);
@@ -940,7 +940,7 @@ public class JPADDataWriter {
 		writeMethodsComparison(
 				doc, _sheet,
 				"Weight_estimation_method_comparison",
-				liftingSurface.get_massMap(), liftingSurface.get_percentDifference(), weights);
+				liftingSurface.get_massMap(), liftingSurface.getPercentDifference(), weights);
 
 		writeOutputNode("Estimated_mass", liftingSurface.get_massEstimated(), weights);
 

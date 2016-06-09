@@ -81,7 +81,7 @@ public class MyTripCharges {
 				aircraft.get_weights().get_MTOM(), 
 				aircraft.get_performances().get_blockTime(),
 				aircraft.get_performances().get_range(), costs.get_jenkinsonNavigationalCharges(),
-				aircraft.get_weights().get_paxMassMax(), aircraft.get_configuration().get_maxPax().intValue(),
+				aircraft.get_weights().get_paxMassMax(), aircraft.get_configuration().getMaxPax().intValue(),
 				costs.get_groundHandlingCostXPax(),
 				aircraft.get_weights().get_manufacturerEmptyMass().minus(aircraft.get_powerPlant().get_totalMass()),
 				costs.get_manHourLaborRate(), costs.get_airframeCost(), 

@@ -180,7 +180,7 @@ public class ACBalanceManager extends ACCalculatorManager {
 
 		get_cgMZFM().set_xBRF(Amount.valueOf(
 				(get_cgStructureAndPower().get_xBRF().getEstimatedValue()*aircraft.get_weights().get_OEM().getEstimatedValue() + 
-						aircraft.get_configuration().get_seatsCoG().getEstimatedValue()*
+						aircraft.get_configuration().getSeatsCoG().getEstimatedValue()*
 						aircraft.get_weights().get_paxMassMax().getEstimatedValue()) /
 						(aircraft.get_weights().get_paxMassMax().getEstimatedValue() + aircraft.get_weights().get_OEM().getEstimatedValue())
 						, SI.METER));

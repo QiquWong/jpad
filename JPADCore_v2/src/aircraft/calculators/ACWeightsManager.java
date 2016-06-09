@@ -173,17 +173,17 @@ public class ACWeightsManager extends ACCalculatorManager {
 
 		// Passengers and crew mass
 		// 76.5 kg for each crew member + baggage
-		_paxMass = _paxSingleMass.times(aircraft.get_configuration().get_nPax());
-		_crewMass = Amount.valueOf(aircraft.get_configuration().get_nCrew() * 76.5145485, SI.KILOGRAM); 
+		_paxMass = _paxSingleMass.times(aircraft.get_configuration().getNPax());
+		_crewMass = Amount.valueOf(aircraft.get_configuration().getNCrew() * 76.5145485, SI.KILOGRAM); 
 
 		// Passengers and crew mass
-		_paxMassMax = _paxSingleMass.times(aircraft.get_configuration().get_maxPax());
+		_paxMassMax = _paxSingleMass.times(aircraft.get_configuration().getMaxPax());
 
 		// Operating items mass
 		if (aircraft.get_performances().get_range().getEstimatedValue() < 2000) { 
-			_OIM = Amount.valueOf(8.617*aircraft.get_configuration().get_nPax(), SI.KILOGRAM);
+			_OIM = Amount.valueOf(8.617*aircraft.get_configuration().getNPax(), SI.KILOGRAM);
 		} else {
-			_OIM = Amount.valueOf(14.97*aircraft.get_configuration().get_nPax(), SI.KILOGRAM);
+			_OIM = Amount.valueOf(14.97*aircraft.get_configuration().getNPax(), SI.KILOGRAM);
 		}
 
 		_actualEmptyMass =_OEM.minus(_crewMass).minus(_TFOM);
@@ -347,16 +347,16 @@ public class ACWeightsManager extends ACCalculatorManager {
 				aircraft.get_powerPlant().get_totalMass().plus(
 						aircraft.get_weights().get_structuralMass()).plus(
 								aircraft.get_systems().get_mass()).plus(
-										aircraft.get_configuration().get_massEstimatedFurnishingsAndEquipment()));
+										aircraft.get_configuration().getMassEstimatedFurnishingsAndEquipment()));
 	}
 
 
 	public void calculateFirstGuessMTOM(Aircraft aircraft) {
 
 		aircraft.get_fuselage().set_mass(aircraft.get_weights().get_MZFM().times(.15));
-		aircraft.get_wing().set_mass(aircraft.get_weights().get_MZFM().times(.1));
-		aircraft.get_HTail().set_mass(aircraft.get_weights().get_MZFM().times(.015));
-		aircraft.get_VTail().set_mass(aircraft.get_weights().get_MZFM().times(.015));
+		aircraft.get_wing().setMass(aircraft.get_weights().get_MZFM().times(.1));
+		aircraft.get_HTail().setMass(aircraft.get_weights().get_MZFM().times(.015));
+		aircraft.get_VTail().setMass(aircraft.get_weights().get_MZFM().times(.015));
 		aircraft.get_powerPlant().set_mass(aircraft.get_weights().get_MZFM().times(.05));
 		aircraft.get_theNacelles().set_totalMass(aircraft.get_weights().get_MZFM().times(.015));
 		aircraft.get_theFuelTank().set_fuelMass(aircraft.get_weights().get_MZFM().times(.015));
@@ -365,9 +365,9 @@ public class ACWeightsManager extends ACCalculatorManager {
 
 		aircraft.get_weights().set_structuralMass(
 				aircraft.get_fuselage().get_mass().plus(
-						aircraft.get_wing().get_mass()).plus(
-								aircraft.get_HTail().get_mass()).plus(
-										aircraft.get_VTail().get_mass()).plus(
+						aircraft.get_wing().getMass()).plus(
+								aircraft.get_HTail().getMass()).plus(
+										aircraft.get_VTail().getMass()).plus(
 												aircraft.get_theNacelles().get_totalMass()).plus(
 														aircraft.get_landingGear().get_mass()));
 

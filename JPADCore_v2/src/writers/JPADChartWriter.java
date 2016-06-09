@@ -50,10 +50,10 @@ public class JPADChartWriter {
 	public void createBalanceCharts(Configuration configuration) {
 
 		new MyChartToFileUtils().createMultiTraceTikz(
-				MyArrayUtils.convertListOfAmountTodoubleArray(configuration.get_seatsCoGFrontToRear()),
-				MyArrayUtils.convertListOfAmountTodoubleArray(configuration.get_currentMassList()),
-				MyArrayUtils.convertListOfAmountTodoubleArray(configuration.get_seatsCoGRearToFront()),
-				MyArrayUtils.convertListOfAmountTodoubleArray(configuration.get_currentMassList()),
+				MyArrayUtils.convertListOfAmountTodoubleArray(configuration.getSeatsCoGFrontToRear()),
+				MyArrayUtils.convertListOfAmountTodoubleArray(configuration.getCurrentMassList()),
+				MyArrayUtils.convertListOfAmountTodoubleArray(configuration.getSeatsCoGRearToFront()),
+				MyArrayUtils.convertListOfAmountTodoubleArray(configuration.getCurrentMassList()),
 				null, null,
 				JPADWriteUtils.createImagesFolder("Balance"),
 				"loadingCycle",

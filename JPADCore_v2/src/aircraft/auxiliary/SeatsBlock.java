@@ -20,11 +20,18 @@ import configuration.enumerations.RelativePositionEnum;
 
 public class SeatsBlock {
 
-	private Amount<Length> _xCoordinate, _lenghtOverall, _width, 
-	_pitch, _distanceFromWall;
+	private Amount<Length> _xCoordinate,
+						   _lenghtOverall,
+						   _width,
+						   _pitch,
+						   _distanceFromWall;
 
-	private Integer _aisleNumber, _breaksNumber, _seatsNumber,
-	_rowNumber, _columns, _totalSeats = 0;
+	private Integer _aisleNumber,
+					_breaksNumber,
+					_seatsNumber,
+					_rowNumber,
+					_columns,
+					_totalSeats = 0;
 
 	private Integer[] _missingSeatRow;
 	private Integer[] _missingSeatColumn;
@@ -95,14 +102,6 @@ public class SeatsBlock {
 			_column.add(j);
 		}
 	}
-
-	//	public class Triplet {
-	//
-	//		private List<Integer> _x;
-	//		private List<Integer> _y;
-	//		private List<Boolean> _bool;
-	//
-	//	}
 
 	/**
 	 * A seat block stands for a group of seats which can be separated by empty
@@ -323,19 +322,12 @@ public class SeatsBlock {
 			sum = sum + x;
 		}
 
-		// double xCoGcolumn = sum/
-		// (_theAircraft.get_weights().get_paxSingleMass().getEstimatedValue()*
-		// (_rowNumber -
-		// Collections.frequency(Arrays.asList(_seatsMatrix.getColumn(j)), 0)
-		// ));
-
 		_xCoGblock = Amount.valueOf(
 				(sum/_totalSeats) +
 				_pitch.getEstimatedValue()/2, 
 				SI.METER);
 
 		calculateTotalMass(aircraft);
-		//		System.out.println("xCoG: " + _xCoGblock);
 	}
 
 
@@ -437,7 +429,7 @@ public class SeatsBlock {
 
 					// If there are two aisles the loop has to fill 4 columns,
 					// otherwise it has to fill 2 columns
-					if (aircraft.get_configuration().get_aislesNumber() > 1) {
+					if (aircraft.get_configuration().getAislesNumber() > 1) {
 						mult = 4.;
 					} else {
 						mult = 2.;
@@ -540,7 +532,7 @@ public class SeatsBlock {
 
 					// If there are the aisles the loop has to fill 4 columns,
 					// otherwise it has to fill 2 columns
-					if (aircraft.get_configuration().get_aislesNumber() > 1) {
+					if (aircraft.get_configuration().getAislesNumber() > 1) {
 						mult = 4.;
 					} else {
 						mult = 2.;
@@ -747,36 +739,3 @@ public class SeatsBlock {
 	}
 
 }
-
-
-// public void takeSeatInColumn(int column) {
-//
-// for (int i = 0; i < _rowNumber; i++) {
-// takeSeat(i, column);
-// }
-//
-// _currentCoG
-// .put(_xCoordinate.getEstimatedValue()
-// + _xCoG
-// / (_theAircraft.get_weights().get_paxSingleMass().getEstimatedValue() *
-// _rowNumber),
-// (_yCoG / (_theAircraft.get_weights().get_paxSingleMass()
-// .getEstimatedValue() * _width.times(column).getEstimatedValue())));
-//
-// }
-//
-//
-// public void takeSeat(int row, int column) {
-//
-// _currentSeat.put(row, column);
-// _currentMass =
-// _currentMass.plus(_theAircraft.get_weights().get_paxSingleMass());
-// _xCoG = _xCoG +
-// _theAircraft.get_weights().get_paxSingleMass().getEstimatedValue() * row
-// * _pitch.getEstimatedValue();
-// _yCoG = _xCoG +
-// _theAircraft.get_weights().get_paxSingleMass().getEstimatedValue() *
-// column
-// * _width.getEstimatedValue();
-//
-// }

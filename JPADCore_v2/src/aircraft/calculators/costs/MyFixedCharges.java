@@ -55,7 +55,7 @@ public class MyFixedCharges {
 				costs.get_singleEngineCost(),
 				aircraft.get_lifeSpan(), costs.get_residualValue(), costs.get_annualInterestRate(),
 				costs.get_annualInsurancePremiumRate(), aircraft.get_configuration().get_cabinCrewNumber().intValue(),
-				aircraft.get_configuration().get_flightCrewNumber().intValue(), aircraft.get_powerPlant().get_engineNumber(), 
+				aircraft.get_configuration().getFlightCrewNumber().intValue(), aircraft.get_powerPlant().get_engineNumber(), 
 				costs.get_singleCabinCrewHrCost(),
 				costs.get_singleflightCrewHrCost(), aircraft.get_weights().get_MTOM());		
 	}
