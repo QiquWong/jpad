@@ -703,6 +703,12 @@ public class FuselageCreator implements IFuselageCreator {
 		return MyMathUtils.arithmeticMean((getEquivalentDiameterAtX(x)));
 
 	}
+	
+	public double getCamberAngleAtX(double x) {
+		if (x<= this.getLenN().getEstimatedValue()) return Math.atan(getCamberZAtX(x)/x); 
+		if (x>= this.getLenC().getEstimatedValue()) return Math.atan(-getCamberZAtX(x)/x);
+		return 0.;
+	}
 
 	/** Return Camber z-coordinate at x-coordinate */
 	public Double getCamberZAtX(double x) {

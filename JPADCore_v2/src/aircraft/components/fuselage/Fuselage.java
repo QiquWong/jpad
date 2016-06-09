@@ -490,200 +490,6 @@ public class Fuselage extends AeroComponent implements IFuselage {
 	//=========================================================================================================================================
 	// 	END CONSTRUCTOR VIA BUILDER PATTERN
 	//=========================================================================================================================================
-
-	// Construct isolated Fuselage
-	public Fuselage(String name, 
-			String description, 
-			double x, double y, double z) {
-
-		super(name, description, x, y, z, ComponentEnum.FUSELAGE);
-
-		_name = name;
-		_description = description;
-		_X0 = Amount.valueOf(x, SI.METER);
-		_Y0 = Amount.valueOf(y, SI.METER);
-		_Z0 = Amount.valueOf(z, SI.METER);
-
-		_cg = new CenterOfGravity(_X0, _Y0, _Z0);
-
-		initializeDefaultVariables();
-		_fuselageCreator.calculateGeometry();
-		checkGeometry();
-
-	} // end-of-constructor
-	
-	/**
-	 * Overload of the previous builder that recognize the aircraft name
-	 * 
-	 *@author Vittorio Trifari
-	 */
-	public Fuselage(AircraftEnum aircraftName,
-			String name, 
-			String description, 
-			double x, double y, double z) {
-
-		super(name, description, x, y, z, ComponentEnum.FUSELAGE);
-
-		_name = name;
-		_description = description;
-		_X0 = Amount.valueOf(x, SI.METER);
-		_Y0 = Amount.valueOf(y, SI.METER);
-		_Z0 = Amount.valueOf(z, SI.METER);
-
-		_cg = new CenterOfGravity(_X0, _Y0, _Z0);
-
-		initializeDefaultVariables(aircraftName);
-		calculateGeometry();
-		checkGeometry();
-
-	} // end-of-constructor
-
-	// My own copy constructor
-	// TODO: check use in MyFuselagePanel
-	public Fuselage(Fuselage aFuselage) {
-		this(
-				aFuselage.get_name(),
-				aFuselage.get_description(),
-				aFuselage.get_X0().doubleValue(SI.METER), 
-				aFuselage.get_Y0().doubleValue(SI.METER), 
-				aFuselage.get_Z0().doubleValue(SI.METER)
-				);
-
-		_deckNumber = aFuselage.get_deckNumber();
-		_len_F =  aFuselage.get_len_F();
-		_lenRatio_NF = aFuselage.get_lenRatio_NF();
-		_lenRatio_CF = aFuselage.get_lenRatio_CF();
-
-		_sectionCylinderWidth = aFuselage.get_sectionCylinderWidth();
-		_sectionCylinderHeight = aFuselage.get_sectionCylinderHeight();
-
-		// Nose fineness ratio, _len_N/_diam_N
-		_lambda_N = aFuselage.get_lambda_N(); 
-
-		// Height from ground of lowest part of fuselage
-		_heightFromGround = aFuselage.get_heightFromGround();
-
-		// Fuselage Roughness
-		_roughness = aFuselage.get_roughness();
-
-		// positive if nose tip higher than cylindrical part ref. line (in XZ plane)
-		_height_N = aFuselage.get_height_N();
-		_height_T = aFuselage.get_height_T();
-
-		_massReference = aFuselage.get_massReference();
-		_pressurized = aFuselage.is_pressurized();
-
-		// Section parameters
-		_dxNoseCapPercent = 
-				aFuselage.get_dxNoseCap().doubleValue(SI.METER)
-				/ aFuselage.get_len_N().doubleValue(SI.METER);
-		_dxTailCapPercent = 
-				aFuselage.get_dxTailCap().doubleValue(SI.METER)
-				/ aFuselage.get_len_T().doubleValue(SI.METER);
-
-		_windshieldType = aFuselage.get_windshieldType();
-		_windshieldHeight = aFuselage.get_windshieldHeight();
-		_windshieldWidth = aFuselage.get_windshieldWidth();
-
-		_sectionCylinderLowerToTotalHeightRatio = aFuselage.get_sectionCylinderLowerToTotalHeightRatio();
-		_sectionCylinderRhoUpper = aFuselage.get_sectionCylinderRhoUpper();
-		_sectionCylinderRhoLower = aFuselage.get_sectionCylinderRhoLower();
-
-		_sectionNoseMidLowerToTotalHeightRatio      = _sectionCylinderLowerToTotalHeightRatio.doubleValue();
-		_sectionTailMidLowerToTotalHeightRatio      = _sectionCylinderLowerToTotalHeightRatio.doubleValue();
-		//++++++++++++++++++++++++++++++++++++
-		_sectionNoseMidToTotalHeightRatio_MIN       = _sectionLowerToTotalHeightRatio_MIN;
-		_sectionNoseMidToTotalHeightRatio_MAX       = _sectionLowerToTotalHeightRatio_MAX;
-		_sectionTailMidToTotalHeightRatio_MIN       = _sectionLowerToTotalHeightRatio_MIN;
-		_sectionTailMidToTotalHeightRatio_MAX       = _sectionLowerToTotalHeightRatio_MAX;
-
-		//+++++++++++++++++++++++++++++++++++++
-		_sectionMidNoseRhoUpper      = _sectionCylinderRhoUpper.doubleValue();
-		_sectionMidNoseRhoUpper_MIN  = _sectionRhoUpper_MIN;
-		_sectionMidNoseRhoUpper_MAX  = _sectionRhoUpper_MAX;
-		_sectionMidTailRhoUpper      = _sectionCylinderRhoUpper.doubleValue();
-		_sectionMidTailRhoUpper_MIN  = _sectionRhoUpper_MIN;
-		_sectionMidTailRhoUpper_MAX  = _sectionRhoUpper_MAX;
-
-		//+++++++++++++++++++++++++++++++++++++
-		_sectionMidNoseRhoLower      = _sectionCylinderRhoLower.doubleValue();
-		_sectionMidNoseRhoLower_MIN  = _sectionRhoLower_MIN;
-		_sectionMidNoseRhoLower_MAX  = _sectionRhoLower_MAX;
-		_sectionMidTailRhoLower      = _sectionCylinderRhoLower.doubleValue();
-		_sectionMidTailRhoLower_MIN  = _sectionRhoLower_MIN;
-		_sectionMidTailRhoLower_MAX  = _sectionRhoLower_MAX;
-
-		calculateGeometry();
-		checkGeometry();
-
-	}
-
-	// see also deepCopy function from here
-	// 1) http://howtodoinjava.com/2012/11/22/how-to-do-deep-cloning-using-in-memory-serialization-in-java/
-	// 2) http://alvinalexander.com/java/java-deep-clone-example-source-code
-
-	// Avoid clone at all costs and go for your own copy solution
-	// http://stackoverflow.com/questions/2427883/clone-vs-copy-constructor-which-is-recommended-in-java
-	//	/** Construct fuselage using data from isolated fuselage and from other components */
-	//	public MyAeroFuselage(MyAeroFuselage fuselage, 
-	//			MyAeroConfiguration configuration,
-	//			MyPerformances performances) {
-	//
-	//		super(fuselage.get_name(),
-	//				fuselage.get_description(), 
-	//				fuselage.get_x(), 
-	//				fuselage.get_y(), 
-	//				fuselage.get_z(), 
-	//				MyAeroComponent.MAIN_BODY);
-	//
-	//		_theAircraft = configuration;
-	//		_thePerformances = performances;
-	//
-	//		try {
-	//			fuselage.clone();
-	//		} catch (CloneNotSupportedException e) {
-	//			e.printStackTrace();
-	//		}
-	//
-	//	} // end-of-constructor
-
-
-	public Fuselage() {
-		super("New fuselage", "Default fuselage", 0.0, 0.0, 0.0, ComponentEnum.FUSELAGE);
-
-		_name = "New fuselage";
-		_description = "Default fuselage";
-		_X0 = Amount.valueOf(0.0, SI.METER);
-		_Y0 = Amount.valueOf(0.0, SI.METER);
-		_Z0 = Amount.valueOf(0.0, SI.METER);
-
-		initializeDefaultVariables();
-		calculateGeometry();
-		checkGeometry();
-	}
-
-	// Import from file
-		public Fuselage(
-				String pathToXML, 
-				String name, String description, 
-				Double x, Double y, Double z, // fuselage apex wrt BRF
-				ComponentEnum type // example: ComponentEnum.FUSELAGE
-				) { 		
-			super(name, description, x, y, z, type);
-			
-			if (
-				!type.equals(ComponentEnum.FUSELAGE) 
-				)
-				throw new IllegalArgumentException("type must be a FUSELAGE!"); 
-			
-			_cg = new CenterOfGravity(_X0, _Y0, _Z0); // set the cg initially at the origin
-			
-			importFromXML(pathToXML);
-		}
-	
-		private void importFromXML(String pathToXML) {
-			_fuselageCreator = FuselageCreator.importFromXML(pathToXML);
-		}
 		
 		/**
 		 * Overload of the previous method that set ATR72 as default aircraft and initialize fuselage data with its values.
@@ -900,10 +706,6 @@ public class Fuselage extends AeroComponent implements IFuselage {
 			// --- END OF INPUT DATA ------------------------------------------ 
 		}
 
-		public void calculateGeometry() {
-			_fuselageCreator.calculateGeometry();
-		}
-
 	public void checkGeometry() {
 
 		// --- CHECKS -----------------------------------------------------
@@ -972,551 +774,377 @@ public class Fuselage extends AeroComponent implements IFuselage {
 		return aerodynamics;
 	}
 	
-// ------------------------------------------ Called by anyone -----------------------------------------------------------------------------
 	
-//	public double calculateFormFactor(double lambdaF) {
-//		return 1. + 60./Math.pow(lambdaF,3) + 0.0025*(lambdaF);
-//	}
-//
-//	public void calculateSwet(String method) {
-//
-//		switch (method) {
-//
-//		case "Stanford" : {
-//			_sWetNose = Amount.valueOf(0.75 * Math.PI * get_equivalentDiameterCylinderGM().getEstimatedValue()*_len_N.getEstimatedValue(), Area.UNIT);
-//			_sWetTail = Amount.valueOf(0.72 * Math.PI * get_equivalentDiameterCylinderGM().getEstimatedValue()*_len_T.getEstimatedValue(), Area.UNIT);
-//			_sWetC = Amount.valueOf(Math.PI * get_equivalentDiameterCylinderGM().getEstimatedValue()*_len_C.getEstimatedValue(), Area.UNIT);
-//			_sWet = Amount.valueOf(_sWetNose.getEstimatedValue() + _sWetTail.getEstimatedValue() + _sWetC.getEstimatedValue(), Area.UNIT); break;		
-//		}
-//
-//		case "Torenbeek" : { // page 409 torenbeek 2013
-//			_sFront = Amount.valueOf((Math.PI/4) * Math.pow(_sectionCylinderHeight.getEstimatedValue(),2), Area.UNIT); // CANNOT FIND FUSELAGE HEIGHT in MyAeroFuselage!!
-//			_sWet = Amount.valueOf(_sFront.getEstimatedValue()*4*(get_lambda_F() - 1.30), Area.UNIT); break;	
-//		}
-//
-//		}
-//		
-//	}
-//
-//	public static double calculateSfront(double fuselageDiameter){
-//		return Math.PI*Math.pow(fuselageDiameter, 2)/4;
-//	}
+	// Old import (from xml) method. in can be useful for ADOpT  
+	// import values from file
+	//----------------------------------------------------------------------
+	public void importFromXMLFile(File xmlFile) {
 
-	// see MyInitiatorPaneFuselage::recalculateCurves()
-	/**
-	 * Generate the fuselage profile curves in XZ plane, i.e. upper and lower curves in A/C symmetry plane
-	 * and generate side curves, as seen from topview, i.e. view from Z+ to Z-
-	 * 
-	 * @param np_N number of points discretizing the nose part
-	 * @param np_C number of points discretizing the cilyndrical part
-	 * @param np_T number of points discretizing the tail part
-	 * @param np_SecUp number of points discretizing the upper YZ sections
-	 * @param np_SecLow number of points discretizing the lower YZ sections
-	 */
-	public void calculateOutlines(int np_N, int np_C, int np_T, int np_SecUp, int np_SecLow){
-		_fuselageCreator.calculateOutlines(np_N, np_C, np_T, np_SecUp, np_SecLow);
-	}
-	
-	public void calculateOutlines(){
-		calculateOutlines(_np_N, _np_C, _np_T, _np_SecUp, _np_SecLow);
-	}
+		//  create a document builder using DocumentBuilderFactory class
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		DocumentBuilder builder;
+		Document doc = null;
+
+		//Once we have a document builder object. We uses it to parse XML file and create a document object.
+		try {
+			builder = factory.newDocumentBuilder();
+			doc = builder.parse(xmlFile.toString());
+
+			//Once we have document object. We are ready to use XPath. Just create an xpath object using XPathFactory.
+
+			// Create XPathFactory object
+			XPathFactory xpathFactory = XPathFactory.newInstance();
+
+			// Create XPath object
+			XPath xpath = xpathFactory.newXPath();
 
 
-	public void calculateOutlinesUpperLowerSectionYZ(int idx){
-		_fuselageCreator.calculateOutlinesUpperLowerSectionYZ(idx);
-	}
+			// READ FUSELAGE PARAMETERS
 
-	public double getZOutlineXZUpperAtX(double x) {
-		return _fuselageCreator.getZOutlineXZUpperAtX(x);
-	}
+			// read l_F numeric value
+			String s_value_l_F = 
+					getXMLPropertyByPath(doc, xpath, "//Fuse_Parms/Fuse_Length/text()");
+			// read l_F unit
+			String s_unit_l_F = 
+					getXMLPropertyByPath(doc, xpath, "//Fuse_Parms/Fuse_Length/@unit");
+
+			Double value_l_F_METER = null;
+			value_l_F_METER = convertFromTo(s_value_l_F,s_unit_l_F,"m");
+
+			//			MyStaticWriteUtils.logToConsole(
+			//					"The ADOpT | Fuse_Length | original value: " + s_value_l_F + "\n" +
+			//							"The ADOpT | Fuse_Length | original unit: " +	s_unit_l_F + "\n" +
+			//							"The ADOpT | Fuse_Length | value (m): " +	value_l_F_METER + "\n"
+			//					);
+
+			if ( value_l_F_METER != null ) {
+				_fuselageCreator.setLenF(Amount.valueOf(value_l_F_METER.doubleValue(), SI.METRE));
+				AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
+			}
+			else {
+				JPADStaticWriteUtils.logToConsole(
+						"The ADOpT | Fuse_Length | WARNING: import l_F failed.\n"
+						);
+			}
+
+			// read l_N numeric value
+			String s_value_l_N = 
+					getXMLPropertyByPath(doc, xpath, "//Fuse_Parms/Nose_Length/text()");
+			// read l_N unit
+			String s_unit_l_N = 
+					getXMLPropertyByPath(doc, xpath, "//Fuse_Parms/Nose_Length/@unit");
+
+			Double value_l_N_METER = null;
+			value_l_N_METER = convertFromTo(s_value_l_N,s_unit_l_N,"m");
+
+			//			MyStaticWriteUtils.logToConsole(
+			//					"The ADOpT | Nose_Length | original value: " + s_value_l_N + "\n" +
+			//							"The ADOpT | Nose_Length | original unit: " +	s_unit_l_N + "\n" +
+			//							"The ADOpT | Nose_Length | value (m): " +	value_l_N_METER + "\n"
+			//					);
+
+			if ( value_l_N_METER != null ) {
+				_fuselageCreator.setLenN(Amount.valueOf(value_l_N_METER.doubleValue(), SI.METRE));
+				AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
+			}
+			else {
+				JPADStaticWriteUtils.logToConsole(
+						"The ADOpT | Nose_Length | WARNING: import l_N failed.\n"
+						);
+			}
+
+			// read l_C numeric value
+			String s_value_l_C = 
+					getXMLPropertyByPath(doc, xpath, "//Fuse_Parms/Cylindrical_Length/text()");
+			// read l_F unit
+			String s_unit_l_C = 
+					getXMLPropertyByPath(doc, xpath, "//Fuse_Parms/Cylindrical_Length/@unit");
+
+			Double value_l_C_METER = null;
+			value_l_C_METER = convertFromTo(s_value_l_C,s_unit_l_C,"m");
+
+			//			MyStaticWriteUtils.logToConsole(
+			//					"The ADOpT | Cylindrical_Length | original value: " + s_value_l_C + "\n" +
+			//							"The ADOpT | Cylindrical_Length | original unit: " +	s_unit_l_C + "\n" +
+			//							"The ADOpT | Cylindrical_Length | value (m): " +	value_l_C_METER + "\n"
+			//	);
+
+			if ( value_l_C_METER != null ) {
+				_fuselageCreator.setLenC(Amount.valueOf(value_l_C_METER.doubleValue(), SI.METRE));
+				AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
+			}
+			else {
+				JPADStaticWriteUtils.logToConsole(
+						"The ADOpT | Cylindrical_Length | WARNING: import l_C failed.\n"
+						);
+			}
+
+			// read l_T numeric value
+			String s_value_l_T = 
+					getXMLPropertyByPath(doc, xpath, "//Fuse_Parms/TailCone_Length/text()");
+			// read l_T unit
+			String s_unit_l_T = 
+					getXMLPropertyByPath(doc, xpath, "//Fuse_Parms/TailCone_Length/@unit");
+
+			Double value_l_T_METER = null;
+			value_l_T_METER = convertFromTo(s_value_l_T,s_unit_l_T,"m");
+
+			//			MyStaticWriteUtils.logToConsole(
+			//					"The ADOpT | TailCone_Length | original value: " + s_value_l_T + "\n" +
+			//							"The ADOpT | TailCone_Length | original unit: " +	s_unit_l_T + "\n" +
+			//							"The ADOpT | TailCone_Length | value (m): " +	value_l_T_METER + "\n"
+			//					);
+
+			if ( value_l_T_METER != null ) {
+				_fuselageCreator.setLenT(Amount.valueOf(value_l_T_METER.doubleValue(), SI.METRE));
+				AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
+			}
+			else {
+				JPADStaticWriteUtils.logToConsole(
+						"The ADOpT | TailCone_Length | WARNING: import l_T failed.\n"
+						);
+			}
+
+			// read diam_C numeric value
+			String s_value_d_C = 
+					getXMLPropertyByPath(doc, xpath, "//Fuse_Parms/Fuse_Cylinder_Heigth/text()");
+			// read diam_C unit
+			String s_unit_d_C = 
+					getXMLPropertyByPath(doc, xpath, "//Fuse_Parms/Fuse_Cylinder_Heigth/@unit");
+
+			Double value_d_C_METER = null;
+			value_d_C_METER = convertFromTo(s_value_d_C,s_unit_d_C,"m");
+
+			//			MyStaticWriteUtils.logToConsole(
+			//					"The ADOpT | Fuse_Heigth | original value: " + s_value_d_C + "\n" +
+			//							"The ADOpT | Fuse_Heigth | original unit: " +	s_unit_d_C + "\n" +
+			//							"The ADOpT | Fuse_Heigth | value (m): " +	value_d_C_METER + "\n"
+			//					);
+
+			if ( value_d_C_METER != null ) {
+				_fuselageCreator.setSectionCylinderHeight(Amount.valueOf(value_d_C_METER.doubleValue(), SI.METRE));
+				AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
+			}
+			else {
+				JPADStaticWriteUtils.logToConsole(
+						"The ADOpT | Fuse_Heigth | WARNING: import d_C failed.\n"
+						);
+			}
+
+			// read h_N numeric value
+			String s_value_h_N = 
+					getXMLPropertyByPath(doc, xpath, "//Fuse_Parms/Fuse_Nose_Tip/text()");
+			// read h_N  unit
+			String s_unit_h_N = 
+					getXMLPropertyByPath(doc, xpath, "//Fuse_Parms/Fuse_Nose_Tip/@unit");
+
+			Double value_h_N_METER = null;
+			value_h_N_METER = convertFromTo(s_value_h_N ,s_unit_h_N ,"m");
+
+			//			MyStaticWriteUtils.logToConsole(
+			//					"The ADOpT | Fuse_Nose_Tip | original value: " + s_value_h_N + "\n" +
+			//					"The ADOpT | Fuse_Nose_Tip | original unit: " +	s_unit_h_N  + "\n" +
+			//					"The ADOpT | Fuse_Nose_Tip | value (m): " +value_h_N_METER + "\n"
+			//					);
+
+			if ( value_h_N_METER != null ) {
+				_fuselageCreator.setHeightN(Amount.valueOf(value_h_N_METER.doubleValue(), SI.METRE));
+				AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
+			}
+			else {
+				JPADStaticWriteUtils.logToConsole(
+						"The ADOpT | Fuse_Nose_Tip | WARNING: import h_N failed.\n"
+						);
+			}
+
+			// read h_T numeric value
+			String s_value_h_T = 
+					getXMLPropertyByPath(doc, xpath, "//Fuse_Parms/Fuse_Tail_Tip/text()");
+			// read h_T unit
+			String s_unit_h_T = 
+					getXMLPropertyByPath(doc, xpath, "//Fuse_Parms/Fuse_Tail_Tip/@unit");
+
+			Double value_h_T_METER = null;
+			value_h_T_METER = convertFromTo(s_value_h_T ,s_unit_h_T ,"m");
+
+			//			MyStaticWriteUtils.logToConsole(
+			//					"The ADOpT | Fuse_Tail_Tip | original value: " + s_value_h_T + "\n" +
+			//					"The ADOpT | Fuse_Tail_Tip | original unit: " +	s_unit_h_T  + "\n" +
+			//					"The ADOpT | Fuse_Tail_Tip | value (m): " +value_h_T_METER + "\n"
+			//					);
+
+			if ( value_h_T_METER != null ) {
+				_fuselageCreator.setHeightT(Amount.valueOf(value_h_T_METER.doubleValue(), SI.METRE));
+				AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
+			}
+			else {
+				JPADStaticWriteUtils.logToConsole(
+						"The ADOpT | Fuse_Tail_Tip | WARNING: import h_T failed.\n"
+						);
+			}
+
+			// READ FUSELAGE CROSS SECTION PARAMETERS
+
+			// read width w_B numerical value
+
+			String s_value_w_B = 
+					getXMLPropertyByPath(doc, xpath, "//Fuse_Cylinder_Section/Fuse_Cylinder_Section_Width/text()");
+			// read w_B  unit
+			String s_unit_w_B = 
+					getXMLPropertyByPath(doc, xpath, "//Fuse_Cylinder_Section/Fuse_Cylinder_Section_Width/@unit");
+
+			Double value_w_B_METER = null;
+			value_w_B_METER = convertFromTo(s_value_w_B,s_unit_w_B,"m");
+
+			//			MyStaticWriteUtils.logToConsole(
+			//					"The ADOpT     | Section_Width | original value: " + s_value_w_B+ "\n" +
+			//							"The ADOpT | Section_Width | original unit: " +	s_unit_w_B + "\n" +
+			//							"The ADOpT | Section_Width | value (m): " +	value_w_B_METER + "\n"
+			//					);
+
+			if ( value_w_B_METER != null ) {
+				_fuselageCreator.setSectionCylinderWidth(Amount.valueOf(value_w_B_METER.doubleValue(), SI.METRE));
+				AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
+			}
+			else {
+				JPADStaticWriteUtils.logToConsole(
+						"The ADOpT | Section_Width  | WARNING: import w_B failed.\n"
+						);
+			}
+
+			// read rho_upper numerical value
+
+			String s_value_rho_upper = 
+					getXMLPropertyByPath(doc, xpath, "//Fuse_Cylinder_Section/Fuse_Cylinder_Section_Rho_Upper/text()");
+			// read w_B  unit
+			String s_unit_rho_upper = 
+					getXMLPropertyByPath(doc, xpath, "//Fuse_Cylinder_Section/Fuse_Cylinder_Section_Rho_Upper/@unit");
+
+			Double value_rho_upper = null;
+			value_rho_upper = convertFromTo(s_value_rho_upper,s_unit_rho_upper,"");
+
+			//			MyStaticWriteUtils.logToConsole(
+			//					"The ADOpT | Section_Rho_Upper | original value: " +s_value_rho_upper+ "\n" +
+			//					"The ADOpT | Section_Rho_Upper| original unit: " +	s_unit_rho_upper+ "\n" +
+			//					"The ADOpT | Section_Rho_Upper | value (m): " +value_rho_upper+ "\n"
+			//					);
+
+			if ( value_rho_upper != null ) {
+				_fuselageCreator.setSectionCylinderRhoUpper(new Double(value_rho_upper.doubleValue()));
+				AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
+			}
+			else {
+				JPADStaticWriteUtils.logToConsole(
+						"The ADOpT | Section_Rho_Upper  | WARNING: import rho_upper failed.\n"
+						);
+			}
+
+			// read rho_upper numerical value
+
+			String s_value_rho_lower = 
+					getXMLPropertyByPath(doc, xpath, "//Fuse_Cylinder_Section/Fuse_Cylinder_Section_Rho_Lower/text()");
+			// read w_B  unit
+			String s_unit_rho_lower = 
+					getXMLPropertyByPath(doc, xpath, "//Fuse_Cylinder_Section/Fuse_Cylinder_Section_Rho_Lower/@unit");
+
+			Double value_rho_lower = null;
+			value_rho_lower = convertFromTo(s_value_rho_lower,s_unit_rho_lower,"");
+
+			//			MyStaticWriteUtils.logToConsole(
+			//					"The ADOpT | Section_Rho_Lower | original value: " +s_value_rho_lower+ "\n" +
+			//					"The ADOpT | Section_Rho_Lower | original unit: " +	s_unit_rho_lower+ "\n" +
+			//					"The ADOpT | Section_Rho_Lower | value (m): " +value_rho_lower+ "\n"
+			//					);
+
+			if ( value_rho_lower  != null ) {
+				_fuselageCreator.setSectionCylinderRhoLower(new Double(value_rho_lower.doubleValue()));
+				AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
+			}
+			else {
+				JPADStaticWriteUtils.logToConsole(
+						"The ADOpT | Section_Rho_Lower | WARNING: import rho_lower failed.\n"
+						);
+			}
+
+			// read a numerical value
+
+			String s_value_a = 
+					getXMLPropertyByPath(doc, xpath, "//Fuse_Cylinder_Section/Fuse_Cylinder_Lower_Section_a_Control_Point/text()");
+			// read w_B  unit
+			String s_unit_a = 
+					getXMLPropertyByPath(doc, xpath, "//Fuse_Cylinder_Section/Fuse_Lower_Section_a_Control_Point/@unit");
+
+			Double value_a = null;
+			value_a = convertFromTo(s_value_a,s_unit_a,"");
+
+			//			MyStaticWriteUtils.logToConsole(
+			//					"The ADOpT | Lower_Section_a_Control_Point| original value: " +s_value_a + "\n" +
+			//							"The ADOpT | Lower_Section_a_Control_Point | original unit: " +	s_unit_a + "\n" +
+			//							"The ADOpT | Lower_Section_a_Control_Point | value (m): " +value_a + "\n"
+			//					);
+
+			if ( value_a  != null ) {
+				_fuselageCreator.setSectionCylinderLowerToTotalHeightRatio(new Double(value_a.doubleValue()));
+				AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
+			}
+			else {
+				JPADStaticWriteUtils.logToConsole(
+						"The ADOpT | Lower_Section_a_Control_Point  | WARNING: import a failed.\n"
+						);
+			} 
 
 
-	public Double getZOutlineXZLowerAtX(double x) {
-		return _fuselageCreator.getZOutlineXZLowerAtX(x);
-	}
+			// Check data consistency
+			// assume that user is giving all lengths and simply reassign the total length
 
+			Double value_l_F_METER_1 = 
+					_fuselageCreator.getLenN().doubleValue(SI.METRE) 
+					+ _fuselageCreator.getLenC().doubleValue(SI.METRE) 
+					+ _fuselageCreator.getLenT().doubleValue(SI.METRE);
 
-	public Double getYOutlineXYSideRAtX(double x) {
-		return _fuselageCreator.getYOutlineXYSideRAtX(x);
-	}
+			if ( Math.abs(value_l_F_METER_1 - value_l_F_METER) > 1e-06 ) {
+				JPADStaticWriteUtils.logToConsole(
+						"The ADOpT | Import Data | WARNING: Fuse_Length not consistent. Reassigned.\n"
+								+ "The ADOpT | Import Data | (" + value_l_F_METER_1 + " != " + value_l_F_METER + ")\n"
+						);
+				_fuselageCreator.setLenF(Amount.valueOf( value_l_F_METER_1, SI.METRE));
+				AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
+			}
 
+			// recalculate dependent data
+			calculateDependentData();
 
-	public Double getYOutlineXYSideLAtX(double x) {
-		return -getYOutlineXYSideRAtX(x);
-	}
-
-	public double getCamberAngleAtX(double x) {
-		
-		if (x<=_fuselageCreator.getLenN().getEstimatedValue()) return Math.atan(getCamberZAtX(x)/x); 
-		if (x>=_fuselageCreator.getLenC().getEstimatedValue()) return Math.atan(-getCamberZAtX(x)/x);
-		return 0.;
-	}
-
-
-	/** Return Camber z-coordinate at x-coordinate */
-	public Double getCamberZAtX(double x) {
-		double zUp = getZOutlineXZUpperAtX(x);
-		double zDown = getZOutlineXZLowerAtX(x);
-		return zUp/2 + zDown/2;
-	}
-
-	/** Return equivalent diameter at x-coordinate */
-	public Double getEquivalentDiameterAtX(double x) {
-
-		double zUp = getZOutlineXZUpperAtX(x);
-		double zDown = getZOutlineXZLowerAtX(x);
-		double height = zUp - zDown;
-		double width = 2*getYOutlineXYSideRAtX(x);
-		return Math.sqrt(height*width);
-
-	}
-
-
-	/** Return equivalent diameter at x-coordinates (x is an array)
-	 * 
-	 * @author Lorenzo Attanasio
-	 * @param x
-	 * @return
-	 */
-	public Double[] getEquivalentDiameterAtX(double ... x) {
-
-		Double[] diameter = new Double[x.length];
-
-		for(int i=0; i < x.length ; i++){
-			double zUp = getZOutlineXZUpperAtX(x[i]);
-			double zDown = getZOutlineXZLowerAtX(x[i]);
-			double height = zUp - zDown;
-			double width = 2*getYOutlineXYSideRAtX(x[i]);
-			diameter[i] = Math.sqrt(height*width);
+		} catch (ParserConfigurationException | SAXException | IOException ex0) {
+			ex0.printStackTrace();
 		}
 
-		return diameter;
-	}
-
-
-	/** Return equivalent diameter of entire fuselage */
-	public Double calculateEquivalentDiameter(){
-
-		// BEWARE: Gtmat library starts indexing arrays from 1! 
-		// To workaround this problem use .data to extract a double[] array
-		double[] x = MyArrayUtils.linspace(0., _fuselageCreator.getLenF().getEstimatedValue()*(1-0.0001), 200);
-
-		return MyMathUtils.arithmeticMean((getEquivalentDiameterAtX(x)));
-
-	}
-
-
-	//  Return width at x-coordinate
-	public Double getWidthAtX(double x) {
-		return 2*getYOutlineXYSideRAtX(x);
-	}
-
-
-	/**
-	 * Calculate a fuselage section profile for a given coordinate x, 
-	 * with interpolated values of section shape parameters
-	 * @param x section X-coordinate
-	 * @return a MyFuselageCurvesSection object
-	 */
-	public FuselageCurvesSection makeSection(double x){
-		return _fuselageCreator.makeSection(x);
-	}
-
-	private double getZSide(double x){
-		// Return the z-coordinate of the side curve at x
-		// Note: the y-coordinate is known from the outline-side-R curve
-
-		//		System.out.println("getZSide :: x ==> "+x);
-
-		FuselageCurvesSection section = makeSection(x);
-
-		if ( section == null ) {
-			System.out.println("null makeSection");
-			return 0.0;
-		}
-
-		int iLast = section.getSectionUpperLeftPoints().size() - 1;
-		// Left Points when section is seen from X- to X+
-
-		return section.getSectionUpperLeftPoints().get(iLast).y;
-	}
-
-	public void adjustSectionShapeParameters(int idx, Double a, Double rhoUpper, Double rhoLower) {
-		_fuselageCreator.adjustSectionShapeParameters(idx, a, rhoUpper, rhoLower);
-	}
-	
-	
-//	//	------------------------   CALLED BY ANYONE    ----------------------------------------------
-//	//----------------------------------------------------------------------
-//	// import values from file
-//	//----------------------------------------------------------------------
-//	public void importFromXMLFile(File xmlFile) {
-//
-//		//  create a document builder using DocumentBuilderFactory class
-//		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-//		factory.setNamespaceAware(true);
-//		DocumentBuilder builder;
-//		Document doc = null;
-//
-//		//Once we have a document builder object. We uses it to parse XML file and create a document object.
-//		try {
-//			builder = factory.newDocumentBuilder();
-//			doc = builder.parse(xmlFile.toString());
-//
-//			//Once we have document object. We are ready to use XPath. Just create an xpath object using XPathFactory.
-//
-//			// Create XPathFactory object
-//			XPathFactory xpathFactory = XPathFactory.newInstance();
-//
-//			// Create XPath object
-//			XPath xpath = xpathFactory.newXPath();
-//
-//
-//			// READ FUSELAGE PARAMETERS
-//
-//			// read l_F numeric value
-//			String s_value_l_F = 
-//					getXMLPropertyByPath(doc, xpath, "//Fuse_Parms/Fuse_Length/text()");
-//			// read l_F unit
-//			String s_unit_l_F = 
-//					getXMLPropertyByPath(doc, xpath, "//Fuse_Parms/Fuse_Length/@unit");
-//
-//			Double value_l_F_METER = null;
-//			value_l_F_METER = convertFromTo(s_value_l_F,s_unit_l_F,"m");
-//
-//			//			MyStaticWriteUtils.logToConsole(
-//			//					"The ADOpT | Fuse_Length | original value: " + s_value_l_F + "\n" +
-//			//							"The ADOpT | Fuse_Length | original unit: " +	s_unit_l_F + "\n" +
-//			//							"The ADOpT | Fuse_Length | value (m): " +	value_l_F_METER + "\n"
-//			//					);
-//
-//			if ( value_l_F_METER != null ) {
-//				_len_F = Amount.valueOf(value_l_F_METER.doubleValue(), SI.METRE);
-//				AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
-//			}
-//			else {
-//				JPADStaticWriteUtils.logToConsole(
-//						"The ADOpT | Fuse_Length | WARNING: import l_F failed.\n"
-//						);
-//			}
-//
-//			// read l_N numeric value
-//			String s_value_l_N = 
-//					getXMLPropertyByPath(doc, xpath, "//Fuse_Parms/Nose_Length/text()");
-//			// read l_N unit
-//			String s_unit_l_N = 
-//					getXMLPropertyByPath(doc, xpath, "//Fuse_Parms/Nose_Length/@unit");
-//
-//			Double value_l_N_METER = null;
-//			value_l_N_METER = convertFromTo(s_value_l_N,s_unit_l_N,"m");
-//
-//			//			MyStaticWriteUtils.logToConsole(
-//			//					"The ADOpT | Nose_Length | original value: " + s_value_l_N + "\n" +
-//			//							"The ADOpT | Nose_Length | original unit: " +	s_unit_l_N + "\n" +
-//			//							"The ADOpT | Nose_Length | value (m): " +	value_l_N_METER + "\n"
-//			//					);
-//
-//			if ( value_l_N_METER != null ) {
-//				_len_N = Amount.valueOf(value_l_N_METER.doubleValue(), SI.METRE);
-//				AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
-//			}
-//			else {
-//				JPADStaticWriteUtils.logToConsole(
-//						"The ADOpT | Nose_Length | WARNING: import l_N failed.\n"
-//						);
-//			}
-//
-//			// read l_C numeric value
-//			String s_value_l_C = 
-//					getXMLPropertyByPath(doc, xpath, "//Fuse_Parms/Cylindrical_Length/text()");
-//			// read l_F unit
-//			String s_unit_l_C = 
-//					getXMLPropertyByPath(doc, xpath, "//Fuse_Parms/Cylindrical_Length/@unit");
-//
-//			Double value_l_C_METER = null;
-//			value_l_C_METER = convertFromTo(s_value_l_C,s_unit_l_C,"m");
-//
-//			//			MyStaticWriteUtils.logToConsole(
-//			//					"The ADOpT | Cylindrical_Length | original value: " + s_value_l_C + "\n" +
-//			//							"The ADOpT | Cylindrical_Length | original unit: " +	s_unit_l_C + "\n" +
-//			//							"The ADOpT | Cylindrical_Length | value (m): " +	value_l_C_METER + "\n"
-//			//	);
-//
-//			if ( value_l_C_METER != null ) {
-//				_len_C = Amount.valueOf(value_l_C_METER.doubleValue(), SI.METRE);
-//				AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
-//			}
-//			else {
-//				JPADStaticWriteUtils.logToConsole(
-//						"The ADOpT | Cylindrical_Length | WARNING: import l_C failed.\n"
-//						);
-//			}
-//
-//			// read l_T numeric value
-//			String s_value_l_T = 
-//					getXMLPropertyByPath(doc, xpath, "//Fuse_Parms/TailCone_Length/text()");
-//			// read l_T unit
-//			String s_unit_l_T = 
-//					getXMLPropertyByPath(doc, xpath, "//Fuse_Parms/TailCone_Length/@unit");
-//
-//			Double value_l_T_METER = null;
-//			value_l_T_METER = convertFromTo(s_value_l_T,s_unit_l_T,"m");
-//
-//			//			MyStaticWriteUtils.logToConsole(
-//			//					"The ADOpT | TailCone_Length | original value: " + s_value_l_T + "\n" +
-//			//							"The ADOpT | TailCone_Length | original unit: " +	s_unit_l_T + "\n" +
-//			//							"The ADOpT | TailCone_Length | value (m): " +	value_l_T_METER + "\n"
-//			//					);
-//
-//			if ( value_l_T_METER != null ) {
-//				_len_T = Amount.valueOf(value_l_T_METER.doubleValue(), SI.METRE);
-//				AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
-//			}
-//			else {
-//				JPADStaticWriteUtils.logToConsole(
-//						"The ADOpT | TailCone_Length | WARNING: import l_T failed.\n"
-//						);
-//			}
-//
-//			// read diam_C numeric value
-//			String s_value_d_C = 
-//					getXMLPropertyByPath(doc, xpath, "//Fuse_Parms/Fuse_Cylinder_Heigth/text()");
-//			// read diam_C unit
-//			String s_unit_d_C = 
-//					getXMLPropertyByPath(doc, xpath, "//Fuse_Parms/Fuse_Cylinder_Heigth/@unit");
-//
-//			Double value_d_C_METER = null;
-//			value_d_C_METER = convertFromTo(s_value_d_C,s_unit_d_C,"m");
-//
-//			//			MyStaticWriteUtils.logToConsole(
-//			//					"The ADOpT | Fuse_Heigth | original value: " + s_value_d_C + "\n" +
-//			//							"The ADOpT | Fuse_Heigth | original unit: " +	s_unit_d_C + "\n" +
-//			//							"The ADOpT | Fuse_Heigth | value (m): " +	value_d_C_METER + "\n"
-//			//					);
-//
-//			if ( value_d_C_METER != null ) {
-//				_sectionCylinderHeight = Amount.valueOf(value_d_C_METER.doubleValue(), SI.METRE);
-//				AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
-//			}
-//			else {
-//				JPADStaticWriteUtils.logToConsole(
-//						"The ADOpT | Fuse_Heigth | WARNING: import d_C failed.\n"
-//						);
-//			}
-//
-//			// read h_N numeric value
-//			String s_value_h_N = 
-//					getXMLPropertyByPath(doc, xpath, "//Fuse_Parms/Fuse_Nose_Tip/text()");
-//			// read h_N  unit
-//			String s_unit_h_N = 
-//					getXMLPropertyByPath(doc, xpath, "//Fuse_Parms/Fuse_Nose_Tip/@unit");
-//
-//			Double value_h_N_METER = null;
-//			value_h_N_METER = convertFromTo(s_value_h_N ,s_unit_h_N ,"m");
-//
-//			//			MyStaticWriteUtils.logToConsole(
-//			//					"The ADOpT | Fuse_Nose_Tip | original value: " + s_value_h_N + "\n" +
-//			//					"The ADOpT | Fuse_Nose_Tip | original unit: " +	s_unit_h_N  + "\n" +
-//			//					"The ADOpT | Fuse_Nose_Tip | value (m): " +value_h_N_METER + "\n"
-//			//					);
-//
-//			if ( value_h_N_METER != null ) {
-//				_height_N = Amount.valueOf(value_h_N_METER.doubleValue(), SI.METRE);
-//				AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
-//			}
-//			else {
-//				JPADStaticWriteUtils.logToConsole(
-//						"The ADOpT | Fuse_Nose_Tip | WARNING: import h_N failed.\n"
-//						);
-//			}
-//
-//			// read h_T numeric value
-//			String s_value_h_T = 
-//					getXMLPropertyByPath(doc, xpath, "//Fuse_Parms/Fuse_Tail_Tip/text()");
-//			// read h_T unit
-//			String s_unit_h_T = 
-//					getXMLPropertyByPath(doc, xpath, "//Fuse_Parms/Fuse_Tail_Tip/@unit");
-//
-//			Double value_h_T_METER = null;
-//			value_h_T_METER = convertFromTo(s_value_h_T ,s_unit_h_T ,"m");
-//
-//			//			MyStaticWriteUtils.logToConsole(
-//			//					"The ADOpT | Fuse_Tail_Tip | original value: " + s_value_h_T + "\n" +
-//			//					"The ADOpT | Fuse_Tail_Tip | original unit: " +	s_unit_h_T  + "\n" +
-//			//					"The ADOpT | Fuse_Tail_Tip | value (m): " +value_h_T_METER + "\n"
-//			//					);
-//
-//			if ( value_h_T_METER != null ) {
-//				_height_T = Amount.valueOf(value_h_T_METER.doubleValue(), SI.METRE);
-//				AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
-//			}
-//			else {
-//				JPADStaticWriteUtils.logToConsole(
-//						"The ADOpT | Fuse_Tail_Tip | WARNING: import h_T failed.\n"
-//						);
-//			}
-//
-//			// READ FUSELAGE CROSS SECTION PARAMETERS
-//
-//			// read width w_B numerical value
-//
-//			String s_value_w_B = 
-//					getXMLPropertyByPath(doc, xpath, "//Fuse_Cylinder_Section/Fuse_Cylinder_Section_Width/text()");
-//			// read w_B  unit
-//			String s_unit_w_B = 
-//					getXMLPropertyByPath(doc, xpath, "//Fuse_Cylinder_Section/Fuse_Cylinder_Section_Width/@unit");
-//
-//			Double value_w_B_METER = null;
-//			value_w_B_METER = convertFromTo(s_value_w_B,s_unit_w_B,"m");
-//
-//			//			MyStaticWriteUtils.logToConsole(
-//			//					"The ADOpT     | Section_Width | original value: " + s_value_w_B+ "\n" +
-//			//							"The ADOpT | Section_Width | original unit: " +	s_unit_w_B + "\n" +
-//			//							"The ADOpT | Section_Width | value (m): " +	value_w_B_METER + "\n"
-//			//					);
-//
-//			if ( value_w_B_METER != null ) {
-//				_sectionCylinderWidth = Amount.valueOf(value_w_B_METER.doubleValue(), SI.METRE);
-//				AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
-//			}
-//			else {
-//				JPADStaticWriteUtils.logToConsole(
-//						"The ADOpT | Section_Width  | WARNING: import w_B failed.\n"
-//						);
-//			}
-//
-//			// read rho_upper numerical value
-//
-//			String s_value_rho_upper = 
-//					getXMLPropertyByPath(doc, xpath, "//Fuse_Cylinder_Section/Fuse_Cylinder_Section_Rho_Upper/text()");
-//			// read w_B  unit
-//			String s_unit_rho_upper = 
-//					getXMLPropertyByPath(doc, xpath, "//Fuse_Cylinder_Section/Fuse_Cylinder_Section_Rho_Upper/@unit");
-//
-//			Double value_rho_upper = null;
-//			value_rho_upper = convertFromTo(s_value_rho_upper,s_unit_rho_upper,"");
-//
-//			//			MyStaticWriteUtils.logToConsole(
-//			//					"The ADOpT | Section_Rho_Upper | original value: " +s_value_rho_upper+ "\n" +
-//			//					"The ADOpT | Section_Rho_Upper| original unit: " +	s_unit_rho_upper+ "\n" +
-//			//					"The ADOpT | Section_Rho_Upper | value (m): " +value_rho_upper+ "\n"
-//			//					);
-//
-//			if ( value_rho_upper != null ) {
-//				_sectionCylinderRhoUpper = new Double(value_rho_upper.doubleValue());
-//				AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
-//			}
-//			else {
-//				JPADStaticWriteUtils.logToConsole(
-//						"The ADOpT | Section_Rho_Upper  | WARNING: import rho_upper failed.\n"
-//						);
-//			}
-//
-//			// read rho_upper numerical value
-//
-//			String s_value_rho_lower = 
-//					getXMLPropertyByPath(doc, xpath, "//Fuse_Cylinder_Section/Fuse_Cylinder_Section_Rho_Lower/text()");
-//			// read w_B  unit
-//			String s_unit_rho_lower = 
-//					getXMLPropertyByPath(doc, xpath, "//Fuse_Cylinder_Section/Fuse_Cylinder_Section_Rho_Lower/@unit");
-//
-//			Double value_rho_lower = null;
-//			value_rho_lower = convertFromTo(s_value_rho_lower,s_unit_rho_lower,"");
-//
-//			//			MyStaticWriteUtils.logToConsole(
-//			//					"The ADOpT | Section_Rho_Lower | original value: " +s_value_rho_lower+ "\n" +
-//			//					"The ADOpT | Section_Rho_Lower | original unit: " +	s_unit_rho_lower+ "\n" +
-//			//					"The ADOpT | Section_Rho_Lower | value (m): " +value_rho_lower+ "\n"
-//			//					);
-//
-//			if ( value_rho_lower  != null ) {
-//				_sectionCylinderRhoLower = new Double(value_rho_lower.doubleValue());
-//				AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
-//			}
-//			else {
-//				JPADStaticWriteUtils.logToConsole(
-//						"The ADOpT | Section_Rho_Lower | WARNING: import rho_lower failed.\n"
-//						);
-//			}
-//
-//			// read a numerical value
-//
-//			String s_value_a = 
-//					getXMLPropertyByPath(doc, xpath, "//Fuse_Cylinder_Section/Fuse_Cylinder_Lower_Section_a_Control_Point/text()");
-//			// read w_B  unit
-//			String s_unit_a = 
-//					getXMLPropertyByPath(doc, xpath, "//Fuse_Cylinder_Section/Fuse_Lower_Section_a_Control_Point/@unit");
-//
-//			Double value_a = null;
-//			value_a = convertFromTo(s_value_a,s_unit_a,"");
-//
-//			//			MyStaticWriteUtils.logToConsole(
-//			//					"The ADOpT | Lower_Section_a_Control_Point| original value: " +s_value_a + "\n" +
-//			//							"The ADOpT | Lower_Section_a_Control_Point | original unit: " +	s_unit_a + "\n" +
-//			//							"The ADOpT | Lower_Section_a_Control_Point | value (m): " +value_a + "\n"
-//			//					);
-//
-//			if ( value_a  != null ) {
-//				_sectionCylinderLowerToTotalHeightRatio = new Double(value_a.doubleValue());
-//				AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
-//			}
-//			else {
-//				JPADStaticWriteUtils.logToConsole(
-//						"The ADOpT | Lower_Section_a_Control_Point  | WARNING: import a failed.\n"
-//						);
-//			} 
-//
-//
-//			// Check data consistency
-//			// assume that user is giving all lengths and simply reassign the total length
-//
-//			Double value_l_F_METER_1 = 
-//					_len_N.doubleValue(SI.METRE) 
-//					+ _len_C.doubleValue(SI.METRE) 
-//					+ _len_T.doubleValue(SI.METRE);
-//
-//			if ( Math.abs(value_l_F_METER_1 - value_l_F_METER) > 1e-06 ) {
-//				JPADStaticWriteUtils.logToConsole(
-//						"The ADOpT | Import Data | WARNING: Fuse_Length not consistent. Reassigned.\n"
-//								+ "The ADOpT | Import Data | (" + value_l_F_METER_1 + " != " + value_l_F_METER + ")\n"
-//						);
-//				_len_F = Amount.valueOf( value_l_F_METER_1, SI.METRE);
-//				AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
-//			}
-//
-//			// recalculate dependent data
-//			calculateDependentData();
-//
-//		} catch (ParserConfigurationException | SAXException | IOException ex0) {
-//			ex0.printStackTrace();
-//		}
-//
-//	} // end-of-importFromXMLFile
+	} // end-of-importFromXMLFile
 
 
 	private void calculateDependentData() {
-		
-		_lambda_N =   
+
+		_fuselageCreator.setLambdaN(   
 				_fuselageCreator.getLenN().doubleValue(SI.METRE)
-				/ _fuselageCreator.getSectionCylinderHeight().doubleValue(SI.METRE) ; // _len_N / _diam_C;
-		_lambda_C =  
+				/ _fuselageCreator.getSectionCylinderHeight().doubleValue(SI.METRE)); // _len_N / _diam_C;
+		_fuselageCreator.setLambdaC(   
 				_fuselageCreator.getLenC().doubleValue(SI.METRE)
-				/ _fuselageCreator.getSectionCylinderHeight().doubleValue(SI.METRE) ; // _len_C / _diam_C;
-		_lambda_T =   
+				/ _fuselageCreator.getSectionCylinderHeight().doubleValue(SI.METRE)) ; // _len_C / _diam_C;
+		_fuselageCreator.setLambdaT(   
 				_fuselageCreator.getLenT().doubleValue(SI.METRE)
-				/ _fuselageCreator.getSectionCylinderHeight().doubleValue(SI.METRE) ; // _len_T / _diam_C;
-		_lambda_F =
+				/ _fuselageCreator.getSectionCylinderHeight().doubleValue(SI.METRE)) ; // _len_T / _diam_C;
+		_fuselageCreator.setLambdaF(
 				_fuselageCreator.getLenF().doubleValue(SI.METRE)
-				/ _sectionCylinderHeight.doubleValue(SI.METRE) ; // _len_F / _diam_C;
-		_lenRatio_NF =  
+				/ _sectionCylinderHeight.doubleValue(SI.METRE)) ; // _len_F / _diam_C;
+		_fuselageCreator.setLenRatioNF(  
 				_fuselageCreator.getLenN().doubleValue(SI.METRE)
-				/ _fuselageCreator.getLenF().doubleValue(SI.METRE);
-		_lenRatio_CF =   
+				/ _fuselageCreator.getLenF().doubleValue(SI.METRE));
+		_fuselageCreator.setLenRatioCF(    
 				_fuselageCreator.getLenC().doubleValue(SI.METRE)
-				/ _fuselageCreator.getLenF().doubleValue(SI.METRE);
-		_lenRatio_TF =   
+				/ _fuselageCreator.getLenF().doubleValue(SI.METRE));
+		_fuselageCreator.setLenRatioTF(   
 				_fuselageCreator.getLenT().doubleValue(SI.METRE)
-				/ _fuselageCreator.getLenF().doubleValue(SI.METRE) ;
+				/ _fuselageCreator.getLenF().doubleValue(SI.METRE)) ;
 	}
 
 	// Function adjustLength
@@ -1528,67 +1156,73 @@ public class Fuselage extends AeroComponent implements IFuselage {
 		switch (criterion) {
 
 		case ADJ_TOT_LENGTH_CONST_LENGTH_RATIOS_DIAMETERS:
-			_len_F = len;
-			_len_N = Amount.valueOf(
-					_lenRatio_NF * _len_F.doubleValue(SI.METRE), 
-					SI.METRE); // _lenRatio_NF*_len_F;
-			_len_C = Amount.valueOf( 
-					_lenRatio_CF * _len_F.doubleValue(SI.METRE), 
-					SI.METRE); // _lenRatio_CF*_len_F;
-			_len_T = Amount.valueOf(
-					_len_F.doubleValue(SI.METRE)
-					-_len_N.doubleValue(SI.METRE)
-					-_len_C.doubleValue(SI.METRE), 
-					SI.METRE); // _len_F - _len_N - _len_C;
-			_lambda_N =   
-					_len_N.doubleValue(SI.METRE)
-					/_sectionCylinderHeight.doubleValue(SI.METRE); // _len_N / _diam_C;
-			_lambda_C =
-					_len_C.doubleValue(SI.METRE)
-					/_sectionCylinderHeight.doubleValue(SI.METRE); // _len_C / _diam_C;
-			_lambda_T =
-					_len_T.doubleValue(SI.METRE)
-					/_sectionCylinderHeight.doubleValue(SI.METRE); // _len_T / _diam_C;
-			_lambda_F =  
-					_len_F.doubleValue(SI.METRE)
-					/_sectionCylinderHeight.doubleValue(SI.METRE); // _len_F / _diam_C;
+			_fuselageCreator.setLenF(len);
+			
+			_fuselageCreator.setLenN(Amount.valueOf(
+					_fuselageCreator.getLenRatioNF() * _fuselageCreator.getLenF().doubleValue(SI.METRE), 
+					SI.METRE)); // _lenRatio_NF*_len_F;
+			
+			_fuselageCreator.setLenC(Amount.valueOf( 
+					_lenRatio_CF * _fuselageCreator.getLenF().doubleValue(SI.METRE), 
+					SI.METRE)); // _lenRatio_CF*_len_F;
+			_fuselageCreator.setLenT(Amount.valueOf(
+					_fuselageCreator.getLenF().doubleValue(SI.METRE)
+					-_fuselageCreator.getLenN().doubleValue(SI.METRE)
+					-_fuselageCreator.getLenC().doubleValue(SI.METRE), 
+					SI.METRE)); // _len_F - _len_N - _len_C;
+			
+			_fuselageCreator.setLambdaN(
+					_fuselageCreator.getLenN().doubleValue(SI.METRE)
+					/_fuselageCreator.getSectionCylinderHeight().doubleValue(SI.METRE)); // _len_N / _diam_C;
+			
+			_fuselageCreator.setLambdaC(
+					_fuselageCreator.getLenC().doubleValue(SI.METRE)
+					/_sectionCylinderHeight.doubleValue(SI.METRE)); // _len_C / _diam_C;
+					
+			_fuselageCreator.setLambdaT(
+					_fuselageCreator.getLenT().doubleValue(SI.METRE)
+					/_fuselageCreator.getSectionCylinderHeight().doubleValue(SI.METRE)); // _len_T / _diam_C;
+			
+			_fuselageCreator.setLambdaF(  
+					_fuselageCreator.getLenF().doubleValue(SI.METRE)
+					/_fuselageCreator.getSectionCylinderHeight().doubleValue(SI.METRE)); // _len_F / _diam_C;
 			break;
 
 		case ADJ_TOT_LENGTH_CONST_FINENESS_RATIOS:
-			_len_F = len;
-			_sectionCylinderHeight = Amount.valueOf(
-					_len_F.doubleValue(SI.METRE)
-					/_lambda_F, 
-					SI.METRE);
-			_len_N = Amount.valueOf(
-					_lambda_N * _sectionCylinderHeight.doubleValue(SI.METRE), 
-					SI.METRE);
-			_len_C = Amount.valueOf(
-					_lambda_C * _sectionCylinderHeight.doubleValue(SI.METRE), 
-					SI.METRE);;
-					_len_T = Amount.valueOf(
-							_lambda_T * _sectionCylinderHeight.doubleValue(SI.METRE), 
-							SI.METRE);
-					_lenRatio_NF =
-							_len_N.doubleValue(SI.METRE)
-							/ _len_F.doubleValue(SI.METRE);
-					_lenRatio_CF =   
-							_len_C.doubleValue(SI.METRE)
-							/ _len_F.doubleValue(SI.METRE);
-					_lenRatio_TF =  
-							_len_T.doubleValue(SI.METRE)
-							/ _len_F.doubleValue(SI.METRE);
+			_fuselageCreator.setLenF(len);
+			_fuselageCreator.setSectionCylinderHeight(Amount.valueOf(
+					_fuselageCreator.getLenF().doubleValue(SI.METRE)
+					/_fuselageCreator.getLambdaF(), 
+					SI.METRE));
+			_fuselageCreator.setLenN(Amount.valueOf(
+					_fuselageCreator.getLambdaN() * _fuselageCreator.getSectionCylinderHeight().doubleValue(SI.METRE), 
+					SI.METRE));
+			_fuselageCreator.setLenC(Amount.valueOf(
+					_lambda_C * _fuselageCreator.getSectionCylinderHeight().doubleValue(SI.METRE), 
+					SI.METRE));
+			_fuselageCreator.setLenT(Amount.valueOf(
+					_fuselageCreator.getLambdaT() * _sectionCylinderHeight.doubleValue(SI.METRE), 
+							SI.METRE));
+			_fuselageCreator.setLenRatioNF(
+					_fuselageCreator.getLenN().doubleValue(SI.METRE)
+							/ _fuselageCreator.getLenF().doubleValue(SI.METRE));
+			_fuselageCreator.setLenRatioCF(   
+					_fuselageCreator.getLenC().doubleValue(SI.METRE)
+							/ _fuselageCreator.getLenF().doubleValue(SI.METRE));
+			_fuselageCreator.setLenRatioTF( 
+					_fuselageCreator.getLenT().doubleValue(SI.METRE)
+							/ _fuselageCreator.getLenF().doubleValue(SI.METRE));
 					break;
 
 		case ADJ_CYL_LENGTH:
-			_len_C = len;
+			_fuselageCreator.setLenC(len);
 			_len_F = Amount.valueOf( 
 					_len_N.doubleValue(SI.METRE)
-					+ _len_C.doubleValue(SI.METRE) 
-					+ _len_T.doubleValue(SI.METRE) , 
+					+ _fuselageCreator.getLenC().doubleValue(SI.METRE) 
+					+ _fuselageCreator.getLenT().doubleValue(SI.METRE) , 
 					SI.METRE);
 			_lambda_C = 
-					_len_C.doubleValue(SI.METRE)
+					_fuselageCreator.getLenC().doubleValue(SI.METRE)
 					/ _sectionCylinderHeight.doubleValue(SI.METRE); // _len_C / _diam_C;
 			_lambda_F =  
 					_len_F.doubleValue(SI.METRE)
@@ -1597,42 +1231,42 @@ public class Fuselage extends AeroComponent implements IFuselage {
 					_len_N.doubleValue(SI.METRE)
 					/ _len_F.doubleValue(SI.METRE);
 			_lenRatio_CF =  
-					_len_C.doubleValue(SI.METRE)
+					_fuselageCreator.getLenC().doubleValue(SI.METRE)
 					/ _len_F.doubleValue(SI.METRE);
 			_lenRatio_TF = 
-					_len_T.doubleValue(SI.METRE)
+					_fuselageCreator.getLenT().doubleValue(SI.METRE)
 					/ _len_F.doubleValue(SI.METRE);
 			break;
 
 		case ADJ_NOSE_LENGTH_CONST_TOT_LENGTH_DIAMETERS:
 			_len_N = len;
-			_len_C = Amount.valueOf(  
+			_fuselageCreator.setLenC(Amount.valueOf(  
 					_len_F.doubleValue(SI.METRE)
 					- _len_N.doubleValue(SI.METRE) 
-					- _len_T.doubleValue(SI.METRE), 
-					SI.METRE);
+					- _fuselageCreator.getLenT().doubleValue(SI.METRE), 
+					SI.METRE));
 			_lambda_N =  
 					_len_N.doubleValue(SI.METRE)
 					/ _sectionCylinderHeight.doubleValue(SI.METRE); // _len_N / _diam_C;
 			_lambda_C = 
-					_len_C.doubleValue(SI.METRE)
+					_fuselageCreator.getLenC().doubleValue(SI.METRE)
 					/ _sectionCylinderHeight.doubleValue(SI.METRE); // _len_C / _diam_C;
 			_lenRatio_NF =  
 					_len_N.doubleValue(SI.METRE)
 					/ _len_F.doubleValue(SI.METRE);
 			_lenRatio_CF =  
-					_len_C.doubleValue(SI.METRE)
+					_fuselageCreator.getLenC().doubleValue(SI.METRE)
 					/ _len_F.doubleValue(SI.METRE);
 			break;
 
 		case ADJ_NOSE_LENGTH_CONST_LENGTH_RATIOS_DIAMETERS:
 			_len_N = len;	
 			_len_F = Amount.valueOf( 
-					_len_N.doubleValue(SI.METRE)/_lenRatio_NF, 
+					_len_N.doubleValue(SI.METRE)/_fuselageCreator.getLenRatioNF(), 
 					SI.METRE); // _len_N/_lenRatio_NF;
-			_len_C = Amount.valueOf(
+			_fuselageCreator.setLenC(Amount.valueOf(
 					_lenRatio_CF * _len_F.doubleValue(SI.METRE), 
-					SI.METRE); // _lenRatio_CF*_len_F;
+					SI.METRE)); // _lenRatio_CF*_len_F;
 			_len_T = Amount.valueOf(
 					_lenRatio_TF * _len_F.doubleValue(SI.METRE) , 
 					SI.METRE); // _lenRatio_CF*_len_F;
@@ -1640,7 +1274,7 @@ public class Fuselage extends AeroComponent implements IFuselage {
 					_len_N.doubleValue(SI.METRE)
 					/ _sectionCylinderHeight.doubleValue(SI.METRE); // _len_N / _diam_C;
 			_lambda_C =  
-					_len_C.doubleValue(SI.METRE)
+					_fuselageCreator.getLenC().doubleValue(SI.METRE)
 					/ _sectionCylinderHeight.doubleValue(SI.METRE); // _len_C / _diam_C;
 			_lambda_T =  
 					_len_T.doubleValue(SI.METRE)
@@ -1656,22 +1290,22 @@ public class Fuselage extends AeroComponent implements IFuselage {
 					_len_N.doubleValue(SI.METRE)
 					/ _lambda_N, 
 					SI.METRE);
-			_len_C = Amount.valueOf(
+			_fuselageCreator.setLenC(Amount.valueOf(
 					_lambda_C * _sectionCylinderHeight.doubleValue(SI.METRE), 
-					SI.METRE);
+					SI.METRE));
 			_len_T = Amount.valueOf(
 					_lambda_T * _sectionCylinderHeight.doubleValue(SI.METRE) , 
 					SI.METRE);
 			_len_F = Amount.valueOf(
 					_len_N.doubleValue(SI.METRE)
-					+ _len_C.doubleValue(SI.METRE) 
+					+ _fuselageCreator.getLenC().doubleValue(SI.METRE) 
 					+ _len_T.doubleValue(SI.METRE), 
 					SI.METRE);
 			_lenRatio_NF =   
 					_len_N.doubleValue(SI.METRE)
 					/ _len_F.doubleValue(SI.METRE) ;
 			_lenRatio_CF =  
-					_len_C.doubleValue(SI.METRE)
+					_fuselageCreator.getLenC().doubleValue(SI.METRE)
 					/ _len_F.doubleValue(SI.METRE) ;
 			_lenRatio_TF = 
 					_len_T.doubleValue(SI.METRE)
@@ -1686,16 +1320,16 @@ public class Fuselage extends AeroComponent implements IFuselage {
 			_lambda_T = 
 					_len_T.doubleValue(SI.METRE)
 					/ _sectionCylinderHeight.doubleValue(SI.METRE) ; // _len_T / _diam_C;
-			_len_C = Amount.valueOf( 
+			_fuselageCreator.setLenC(Amount.valueOf( 
 					_len_F.doubleValue(SI.METRE)
 					- _len_N.doubleValue(SI.METRE) 
 					- _len_T.doubleValue(SI.METRE) , 
-					SI.METRE);
+					SI.METRE));
 			_lambda_C = 
-					_len_C.doubleValue(SI.METRE)
+					_fuselageCreator.getLenC().doubleValue(SI.METRE)
 					/ _sectionCylinderHeight.doubleValue(SI.METRE) ; // _len_C / _diam_C;
 			_lenRatio_CF = 
-					_len_C.doubleValue(SI.METRE)
+					_fuselageCreator.getLenC().doubleValue(SI.METRE)
 					/ _len_F.doubleValue(SI.METRE);
 			_lenRatio_TF =  
 					_len_T.doubleValue(SI.METRE)
@@ -1708,16 +1342,16 @@ public class Fuselage extends AeroComponent implements IFuselage {
 					_len_T.doubleValue(SI.METRE)/ _lenRatio_TF, 
 					SI.METRE); // _len_N/_lenRatio_NF;
 			_len_N = Amount.valueOf( 
-					_lenRatio_NF * _len_F.doubleValue(SI.METRE) , 
+					_fuselageCreator.getLenRatioNF() * _len_F.doubleValue(SI.METRE) , 
 					SI.METRE); // _lenRatio_NF*_len_F;
-			_len_C = Amount.valueOf( 
+			_fuselageCreator.setLenC(Amount.valueOf( 
 					_lenRatio_CF * _len_F.doubleValue(SI.METRE) , 
-					SI.METRE); // _lenRatio_CF*_len_F;
+					SI.METRE)); // _lenRatio_CF*_len_F;
 			_lambda_N =  
 					_len_N.doubleValue(SI.METRE)
 					/ _sectionCylinderHeight.doubleValue(SI.METRE) ; // _len_N / _diam_C;
 			_lambda_C =  
-					_len_C.doubleValue(SI.METRE)
+					_fuselageCreator.getLenC().doubleValue(SI.METRE)
 					/ _sectionCylinderHeight.doubleValue(SI.METRE) ; // _len_C / _diam_C;
 			_lambda_T =   
 					_len_T.doubleValue(SI.METRE)
@@ -1736,9 +1370,9 @@ public class Fuselage extends AeroComponent implements IFuselage {
 			_len_N = Amount.valueOf( 
 					_lambda_N * _sectionCylinderHeight.doubleValue(SI.METRE) , 
 					SI.METRE);
-			_len_C = Amount.valueOf( 
+			_fuselageCreator.setLenC(Amount.valueOf( 
 					_lambda_C * _sectionCylinderHeight.doubleValue(SI.METRE) , 
-					SI.METRE);
+					SI.METRE));
 			_len_F = Amount.valueOf( 
 					_lambda_F * _sectionCylinderHeight.doubleValue(SI.METRE) , 
 					SI.METRE);
@@ -1746,7 +1380,7 @@ public class Fuselage extends AeroComponent implements IFuselage {
 					_len_N.doubleValue(SI.METRE)
 					/ _len_F.doubleValue(SI.METRE);
 			_lenRatio_CF =  
-					_len_C.doubleValue(SI.METRE)
+					_fuselageCreator.getLenC().doubleValue(SI.METRE)
 					/ _len_F.doubleValue(SI.METRE);
 			_lenRatio_TF = 
 					_len_T.doubleValue(SI.METRE)
@@ -1758,9 +1392,9 @@ public class Fuselage extends AeroComponent implements IFuselage {
 			_len_N  =Amount.valueOf(
 					_lambda_N * _sectionCylinderHeight.doubleValue(SI.METRE) , 
 					SI.METRE);
-			_len_C = Amount.valueOf(  
+			_fuselageCreator.setLenC(Amount.valueOf(  
 					_lambda_C * _sectionCylinderHeight.doubleValue(SI.METRE) , 
-					SI.METRE);
+					SI.METRE));
 			_len_T = Amount.valueOf(  
 					_lambda_T * _sectionCylinderHeight.doubleValue(SI.METRE) , 
 					SI.METRE);
@@ -1771,7 +1405,7 @@ public class Fuselage extends AeroComponent implements IFuselage {
 					_len_N.doubleValue(SI.METRE)
 					/ _len_F.doubleValue(SI.METRE);
 			_lenRatio_CF =  
-					_len_C.doubleValue(SI.METRE)
+					_fuselageCreator.getLenC().doubleValue(SI.METRE)
 					/ _len_F.doubleValue(SI.METRE);
 			_lenRatio_TF = 
 					_len_T.doubleValue(SI.METRE)
@@ -1921,7 +1555,7 @@ public class Fuselage extends AeroComponent implements IFuselage {
 			}
 
 			_mass = Amount.valueOf((1.051 + 0.102*Ifuse)*
-					_sWet.to(MyUnits.FOOT2).getEstimatedValue(), NonSI.POUND).to(SI.KILOGRAM);
+					_fuselageCreator.getsWet().to(MyUnits.FOOT2).getEstimatedValue(), NonSI.POUND).to(SI.KILOGRAM);
 			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
 //		 */
@@ -1974,7 +1608,7 @@ public class Fuselage extends AeroComponent implements IFuselage {
 								get_nUltimate()).getEstimatedValue(),
 								0.5)*
 								pow(_fuselageCreator.getLenF().to(NonSI.FOOT).getEstimatedValue(),0.25)*
-								pow(_sWet.to(MyUnits.FOOT2).getEstimatedValue(), 0.302)*
+								pow(_fuselageCreator.getsWet().to(MyUnits.FOOT2).getEstimatedValue(), 0.302)*
 								pow(1+Kws, 0.04)*
 								pow(_fuselageCreator.getLenF().to(NonSI.FOOT).
 										divide(_equivalentDiameterCylinderGM.to(NonSI.FOOT)).getEstimatedValue(), 0.1), 
@@ -2004,7 +1638,7 @@ public class Fuselage extends AeroComponent implements IFuselage {
 						aircraft.get_performances().get_vDiveEAS().getEstimatedValue() *
 						aircraft.get_HTail().get_ACw_ACdistance().getEstimatedValue()/
 						(2*_equivalentDiameterCylinderGM.getEstimatedValue())) *
-						Math.pow(_sWet.getEstimatedValue(), 1.2),
+						Math.pow(_fuselageCreator.getsWet().getEstimatedValue(), 1.2),
 						SI.KILOGRAM);
 	}
 
@@ -2424,7 +2058,7 @@ public class Fuselage extends AeroComponent implements IFuselage {
 	}
 
 	public Amount<Length> get_len_C() {
-		return _len_C;
+		return _fuselageCreator.getLenC();
 	}
 
 	
@@ -2703,11 +2337,11 @@ public class Fuselage extends AeroComponent implements IFuselage {
 
 	public Double get_lenRatio_NF() {
 		// TO DO: check what should be adjusted
-		return _lenRatio_NF;
+		return _fuselageCreator.getLenRatioNF();
 	}
 
 	public void set_lenRatio_NF(Double lenRatio_NF) {
-		this._lenRatio_NF = lenRatio_NF;
+		_fuselageCreator.setLenRatioNF(lenRatio_NF);
 	}
 
 	public Double get_lenRatio_NF_MIN() {
@@ -3208,7 +2842,7 @@ public class Fuselage extends AeroComponent implements IFuselage {
 		// Using Java 8 features
 		
 		// x at l_N + l_C
-		double x0 = _len_N.doubleValue(SI.METER) + _len_C.doubleValue(SI.METER);
+		double x0 = _len_N.doubleValue(SI.METER) + _fuselageCreator.getLenC().doubleValue(SI.METER);
 //		System.out.println("l_N + l_C: " + x0 + " (m)");
 
 		// values filtered as x >= l_N + l_C 
@@ -3581,11 +3215,11 @@ public class Fuselage extends AeroComponent implements IFuselage {
 
 
 	public Amount<Area> get_sWet() {
-		return _sWet;
+		return _fuselageCreator.getsWet();
 	}
 
 	public void set_sWet(Amount<Area> _sWet) {
-		this._sWet = _sWet;
+		_fuselageCreator.setsWet(_sWet);
 	}
 
 	public Amount<Area> get_sFront() {
