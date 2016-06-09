@@ -1,11 +1,10 @@
 <jpad_config>
-     <horizontal_tail id="JPAD Test Horizontal Tail DAF - 2016" mirrored="TRUE">
+    <horizontal_tail id="JPAD Test Horizontal Tail DAF - 2016" mirrored="TRUE">
         <panels>
             <panel id="Horizontal tail panel">
-                <semispan unit="m">6.25</semispan>
+                <span unit="m">6.25</span>
                 <dihedral unit="deg">0.0</dihedral>
                 <sweep_leading_edge unit="deg">34</sweep_leading_edge>
-				<angle_of_incidence unit="deg">1.5</angle_of_incidence>
                 <inner_section>
                     <chord unit="m">3.96</chord>
                     <airfoil file="naca63209.xml"/>

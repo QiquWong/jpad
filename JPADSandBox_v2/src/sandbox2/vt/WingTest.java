@@ -114,7 +114,7 @@ public class WingTest extends Application {
 
 		System.out.println("##################\n\n");
 
-		Double[][] dataTopView = wing.getLiftingSurfaceCreator().getDiscretizedTopViewAsArray();
+		Double[][] dataTopView = wing.getLiftingSurfaceCreator().getDiscretizedTopViewAsArray(ComponentEnum.WING);
 
 		//--------------------------------------------------
 		System.out.println("Initializing test class...");
@@ -282,7 +282,10 @@ public class WingTest extends Application {
 							)
 					.build();
 
-			WingTest.theWing.calculateGeometry(40, ComponentEnum.WING);
+			WingTest.theWing.calculateGeometry(
+					40,
+					theWing.getType(),
+					theWing.getLiftingSurfaceCreator().isMirrored());
 
 			System.out.println("The wing ...");
 			System.out.println(WingTest.theWing.getLiftingSurfaceCreator().toString());

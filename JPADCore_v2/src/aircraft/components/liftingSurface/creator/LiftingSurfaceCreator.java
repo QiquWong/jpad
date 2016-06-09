@@ -46,10 +46,12 @@ import writers.JPADStaticWriteUtils;
 
 public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
-	int _numberOfSpanwisePoints = 15;
+	private int _numberOfSpanwisePoints = 15;
 	private LiftingSurfaceCreator _equivalentWing;
 	private LiftingSurfaceCreator _wing2Panels;
 
+	private Boolean _mirrored;
+	
 	// equivalent wing fields
 	private Boolean _equivalentWingFlag = Boolean.FALSE;
 	private Amount<Area> _equivalentWingSurface;
@@ -66,8 +68,9 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 	private AirfoilCreator airfoilKinkEquivalentWing;
 	private AirfoilCreator airfoilTipEquivalentWing;
 
-	public LiftingSurfaceCreator(String id, ComponentEnum type) {
+	public LiftingSurfaceCreator(String id, Boolean mirrored, ComponentEnum type) {
 		this._id = id;
+		this._mirrored = mirrored;
 		this._type = type;
 		_panels = new ArrayList<LiftingSurfacePanelCreator>();
 		_symmetricFlaps = new ArrayList<SymmetricFlapCreator>();
@@ -80,15 +83,17 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 	// use this to generate the equivalent wing or a simple wing
 	public LiftingSurfaceCreator(
 			String id,
+			Boolean mirrored,
 			ComponentEnum type,
 			LiftingSurfacePanelCreator panel) {
 		this._id = id;
+		this._mirrored = mirrored;
 		this._type = type;
 		_panels = new ArrayList<LiftingSurfacePanelCreator>();
 		resetData();
 
 		_panels.add(panel);
-		this.calculateGeometry(30, type);
+		this.calculateGeometry(30, type, mirrored);
 	}
 
 	//=====================================================================
@@ -98,6 +103,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 		// required parameters
 		private String __id;
+		private Boolean __mirrored;
 		private ComponentEnum __type;
 
 		// optional parameters ... defaults
@@ -142,14 +148,16 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		> __spanwiseDiscretizedVariables = new ArrayList<>();
 
 
-		public LiftingSurfaceCreatorBuilder(String id, ComponentEnum type) {
+		public LiftingSurfaceCreatorBuilder(String id, Boolean mirrored, ComponentEnum type) {
 			this.__id = id;
+			this.__mirrored = mirrored; 
 			this.__type = type;
 			this.initializeDefaultVariables(AircraftEnum.ATR72, type);
 		}
 
-		public LiftingSurfaceCreatorBuilder(String id, AircraftEnum aircraftName, ComponentEnum type) {
+		public LiftingSurfaceCreatorBuilder(String id, Boolean mirrored, AircraftEnum aircraftName, ComponentEnum type) {
 			this.__id = id;
+			this.__mirrored = mirrored;
 			this.__type = type;
 			this.initializeDefaultVariables(aircraftName, type);
 		}
@@ -201,8 +209,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 								Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), // twistGeometricTip,
 								Amount.valueOf(4.7,SI.METER), // semiSpan, 
 								Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), // sweepLeadingEdge, 
-								Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), // dihedral
-								Amount.valueOf(2.0, NonSI.DEGREE_ANGLE)  // angle of incidence (iw)
+								Amount.valueOf(0.0, NonSI.DEGREE_ANGLE) // dihedral
 								)
 						.build();
 
@@ -239,8 +246,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 								Amount.valueOf(-2.0, NonSI.DEGREE_ANGLE), // twistGeometricTip,
 								Amount.valueOf(8.83,SI.METER), // semiSpan, 
 								Amount.valueOf(4.3, NonSI.DEGREE_ANGLE), // sweepLeadingEdge, 
-								Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), // dihedral
-								Amount.valueOf(0.0, NonSI.DEGREE_ANGLE)  // angle of incidence (iw)
+								Amount.valueOf(0.0, NonSI.DEGREE_ANGLE) // dihedral
 								)
 						.build();
 
@@ -340,8 +346,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 									Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), // twistGeometricTip,
 									Amount.valueOf(3.6548,SI.METER), // semiSpan, 
 									Amount.valueOf(3.44, NonSI.DEGREE_ANGLE), // sweepLeadingEdge, 
-									Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), // dihedral
-									Amount.valueOf(1.5, NonSI.DEGREE_ANGLE)  // angle of incidence (iw)
+									Amount.valueOf(0.0, NonSI.DEGREE_ANGLE) // dihedral
 									)
 							.build();
 
@@ -397,8 +402,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 									Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), // twistGeometricTip,
 									Amount.valueOf(2.2758,SI.METER), // semiSpan, 
 									Amount.valueOf(50.7103, NonSI.DEGREE_ANGLE), // sweepLeadingEdge, 
-									Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), // dihedral
-									Amount.valueOf(0.0, NonSI.DEGREE_ANGLE)  // angle of incidence (iw)
+									Amount.valueOf(0.0, NonSI.DEGREE_ANGLE) // dihedral
 									)
 							.build();
 
@@ -439,8 +443,9 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 	private LiftingSurfaceCreator(LiftingSurfaceCreatorBuilder builder){ // defaults to ATR72 
 
 		this._id = builder.__id;
+		this._mirrored = builder.__mirrored;
 		this._type = builder.__type;
-
+		
 		this._panels = builder.__panels;
 		this._symmetricFlaps = builder.__symmetricFlaps;
 		this._asymmetricFlaps = builder.__asymmetricFlaps;
@@ -458,16 +463,14 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		this._panelToSpanwiseDiscretizedVariables = builder.__panelToSpanwiseDiscretizedVariables;
 		this._spanwiseDiscretizedVariables = builder.__spanwiseDiscretizedVariables;
 
-		this.calculateGeometry(30, this._type);
+		this.calculateGeometry(30, this._type, this._mirrored);
 
 	}
 
 	private void resetData() {
 
-		_eta = new MyArray(Unit.ONE);
-		//_eta.setDouble(MyArrayUtils.linspace(0., 1., _numberOfPointsChordDistribution));
-		//
 		// assign eta's when the shape of the planform is loaded and no. _panels are known
+		_eta = new MyArray(Unit.ONE);
 
 		_yBreakPoints =  new ArrayList<Amount<Length>>();
 		_etaBP = new ArrayList<>();
@@ -492,8 +495,15 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
 						"//@id");
+		
+		Boolean mirrored = Boolean.valueOf(
+				MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@mirrored")
+				);
 
-		LiftingSurfaceCreator liftingSurface = new LiftingSurfaceCreator(id, type);
+		LiftingSurfaceCreator liftingSurface = new LiftingSurfaceCreator(id, mirrored, type);
 
 		if(type.equals(ComponentEnum.WING)) {
 
@@ -837,14 +847,14 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 	}
 
 	@Override
-	public void calculateGeometry(ComponentEnum type) {
-		calculateGeometry(_numberOfSpanwisePoints, type);
+	public void calculateGeometry(ComponentEnum type, Boolean mirrored) {
+		calculateGeometry(_numberOfSpanwisePoints, type, mirrored);
 	}
 
 	@Override
-	public void calculateGeometry(int numberSpanwiseStations, ComponentEnum type) {
+	public void calculateGeometry(int numberSpanwiseStations, ComponentEnum type, Boolean mirrored) {
 
-		System.out.println("[LiftingSurfaceCreator] Calculating derived geometry parameters of wing ...");
+		System.out.println("[LiftingSurfaceCreator] Calculating derived geometry parameters of lifting surface ...");
 
 		resetData();
 		
@@ -860,20 +870,36 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		.forEach(LiftingSurfacePanelCreator::calculateGeometry);
 
 		// Total planform area
-		Double surfPlanform = this.getPanels().stream()
-				.mapToDouble(p -> p.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue())
-				.sum();
-		this.surfacePlanform = Amount.valueOf(surfPlanform,SI.SQUARE_METRE);
-
+		if(mirrored) {
+			Double surfPlanform = this.getPanels().stream()
+					.mapToDouble(p -> p.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue())
+					.sum();
+			this.surfacePlanform = Amount.valueOf(surfPlanform,SI.SQUARE_METRE).times(2);
+		}
+		else {
+			Double surfPlanform = this.getPanels().stream()
+					.mapToDouble(p -> p.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue())
+					.sum();
+			this.surfacePlanform = Amount.valueOf(surfPlanform,SI.SQUARE_METRE);
+		}
+		
 		// Total wetted area
-		Double surfWetted = this.getPanels().stream()
-				.mapToDouble(p -> p.getSurfaceWetted().to(SI.SQUARE_METRE).getEstimatedValue())
-				.sum();
-		this.surfaceWetted = Amount.valueOf(surfWetted,SI.SQUARE_METRE);
+		if(mirrored) {
+			Double surfWetted = this.getPanels().stream()
+					.mapToDouble(p -> p.getSurfaceWetted().to(SI.SQUARE_METRE).getEstimatedValue())
+					.sum();
+			this.surfaceWetted = Amount.valueOf(surfWetted,SI.SQUARE_METRE).times(2);
+		}
+		else {
+			Double surfWetted = this.getPanels().stream()
+					.mapToDouble(p -> p.getSurfaceWetted().to(SI.SQUARE_METRE).getEstimatedValue())
+					.sum();
+			this.surfaceWetted = Amount.valueOf(surfWetted,SI.SQUARE_METRE);
+		}
 		
 		//======================================================
 		// Update semiSpan and span
-		calculateSpans();
+		calculateSpans(mirrored);
 
 		//======================================================
 		// Calculate break-points
@@ -889,11 +915,11 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 		//======================================================
 		// Mean aerodynamic chord
-		calculateMAC();
+		calculateMAC(mirrored);
 
 		//======================================================
 		// Mean aerodynamic chord leading-edge coordinates
-		calculateXYZleMAC();
+		calculateXYZleMAC(mirrored);
 
 		if(type.equals(ComponentEnum.WING)) {
 			//======================================================
@@ -903,7 +929,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		}
 	}
 
-	private void calculateMAC() {
+	private void calculateMAC(Boolean mirrored) {
 
 		// Mean Aerodynamic Chord
 
@@ -918,25 +944,42 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 //		this.meanAerodynamicChord = Amount.valueOf(mac0,SI.METRE);
 
 		//======================================================
-		// mac = (2/S) * int_0^(b/2) c^2 dy
-		Double mac = MyMathUtils.integrate1DSimpsonSpline(
-				MyArrayUtils.convertListOfAmountTodoubleArray(
-					this.getDiscretizedYs()), // y
-				MyArrayUtils.convertListOfAmountTodoubleArray(
-					this.getDiscretizedChords().stream()
-						.map(c -> c.pow(2))
-						.collect(Collectors.toList())
-				) // c^2
-			);
-		mac = 2.0 * mac / this.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue(); // *= 2/S
-		this.meanAerodynamicChord = Amount.valueOf(mac,1e-9,SI.METRE);
-
+		// mac = (2/S) * int_0^(b/2) c^2 dy (if mirrored)
+		// mac = (1/S) * int_0^(b/2) c^2 dy (if not mirrored)
+		
+		if (mirrored) {
+			Double mac = MyMathUtils.integrate1DSimpsonSpline(
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							this.getDiscretizedYs()), // y
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							this.getDiscretizedChords().stream()
+							.map(c -> c.pow(2))
+							.collect(Collectors.toList())
+							) // c^2
+					);
+			mac = 2.0 * mac / this.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue(); // *= 2/S
+			this.meanAerodynamicChord = Amount.valueOf(mac,1e-9,SI.METRE);
+		}
+		else {
+			Double mac = MyMathUtils.integrate1DSimpsonSpline(
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							this.getDiscretizedYs()), // y
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							this.getDiscretizedChords().stream()
+							.map(c -> c.pow(2))
+							.collect(Collectors.toList())
+							) // c^2
+					);
+			mac = mac / this.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue(); // *= 2/S
+			this.meanAerodynamicChord = Amount.valueOf(mac,1e-9,SI.METRE);
+		}
 	}
 
-	private void calculateXYZleMAC() {
+	private void calculateXYZleMAC(Boolean mirrored) {
 
 		//======================================================
-		// x_le_mac = (2/S) * int_0^(b/2) xle(y) c(y) dy
+		// x_le_mac = (2/S) * int_0^(b/2) xle(y) c(y) dy (if mirrored)
+		// x_le_mac = (2/S) * int_0^(b/2) xle(y) c(y) dy (if not mirrored)
 
 		Tuple2<
 			List<Amount<Length>>, // Xle
@@ -954,11 +997,18 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 						this.getDiscretizedYs()), // y
 				MyArrayUtils.convertToDoublePrimitive(xleTimeC) // xle * c
 			);
-		xle = 2.0 * xle / this.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue();
-		this.meanAerodynamicChordLeadingEdgeX = Amount.valueOf(xle,1e-9,SI.METRE);
-
+		
+		if(mirrored) {
+			xle = 2.0 * xle / this.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue();
+			this.meanAerodynamicChordLeadingEdgeX = Amount.valueOf(xle,1e-9,SI.METRE);
+		}
+		else {
+			xle = xle / this.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue();
+			this.meanAerodynamicChordLeadingEdgeX = Amount.valueOf(xle,1e-9,SI.METRE);
+		}
 		//======================================================
-		// y_le_mac = (2/S) * int_0^(b/2) yle(y) c(y) dy
+		// y_le_mac = (2/S) * int_0^(b/2) yle(y) c(y) dy (if mirrored)
+		// y_le_mac = (1/S) * int_0^(b/2) yle(y) c(y) dy (if not mirrored)
 
 		Tuple2<
 			List<Amount<Length>>, // Xle
@@ -976,18 +1026,23 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 						this.getDiscretizedYs()), // y
 				MyArrayUtils.convertToDoublePrimitive(yTimeC) // y * c
 			);
-		yle = 2.0 * yle / this.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue(); // *= 2/S
-		this.meanAerodynamicChordLeadingEdgeY = Amount.valueOf(yle,1e-9,SI.METRE);
-
+		if(mirrored) {
+			yle = 2.0 * yle / this.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue(); // *= 2/S
+			this.meanAerodynamicChordLeadingEdgeY = Amount.valueOf(yle,1e-9,SI.METRE);
+		}
+		else {
+			yle = yle / this.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue(); // *= 2/S
+			this.meanAerodynamicChordLeadingEdgeY = Amount.valueOf(yle,1e-9,SI.METRE);
+		}
 		//======================================================
-		// z_le_mac = (2/S) * int_0^(b/2) zle(y) c(y) dy
-
+		// z_le_mac = (2/S) * int_0^(b/2) zle(y) c(y) dy (if mirrored)
+		// z_le_mac = (1/S) * int_0^(b/2) zle(y) c(y) dy (if not mirrored)
 		Tuple2<
 			List<Amount<Length>>, // Xle
 			List<Amount<Length>>  // c
 		> zTimeCTuple = Tuple.of(this.getDiscretizedZle(), this.getDiscretizedChords());
 
-	List<Double> zTimeC = IntStream.range(0, this.getDiscretizedYs().size())
+		List<Double> zTimeC = IntStream.range(0, this.getDiscretizedYs().size())
 			.mapToObj(i -> 
 				zTimeCTuple._1.get(i).doubleValue(SI.METRE)
 				*zTimeCTuple._2.get(i).doubleValue(SI.METRE)) // z * c
@@ -998,10 +1053,16 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 						this.getDiscretizedYs()), // z
 				MyArrayUtils.convertToDoublePrimitive(zTimeC) // z * c
 			);
-		zle = 2.0 * zle / this.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue(); // *= 2/S
-		this.meanAerodynamicChordLeadingEdgeZ = Amount.valueOf(zle,1e-9,SI.METRE);
+		if(mirrored) {
+			zle = 2.0 * zle / this.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue(); // *= 2/S
+			this.meanAerodynamicChordLeadingEdgeZ = Amount.valueOf(zle,1e-9,SI.METRE);
+		}
+		else {
+			zle = zle / this.getSurfacePlanform().to(SI.SQUARE_METRE).getEstimatedValue(); // *= 2/S
+			this.meanAerodynamicChordLeadingEdgeZ = Amount.valueOf(zle,1e-9,SI.METRE);
+		}
 	}
-
+	
 	@Override
 	public void discretizeGeometry(int numberSpanwiseStations) {
 		//======================================================
@@ -1015,31 +1076,23 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 						MyArrayUtils.linspace(0., 1., numberSpanwiseStations)
 				)
 			);
-//		System.out.println(eta0);
 
 		List<Double> eta1 = ListUtils.union(eta0, _etaBP);
 		Collections.sort(eta1);
-//		System.out.println(eta1);
 
 		List<Double> eta2 = eta1.stream()
 			.distinct().collect(Collectors.toList());
-//		System.out.println(eta2);
 
 		_numberOfSpanwisePoints = eta2.size();
 
 		// Now that break-points are known generate eta's, including
 		// break-point eta's
-		//_eta.setDouble(MyArrayUtils.linspace(0., 1., _numberOfPointsChordDistribution));
 		_eta.setList(eta2);
-//		System.out.println(_eta);
 
 		//======================================================
 		// Y's discretizing the whole planform,
 		// in the middle of each panel,
 		// and including break-point eta's
-
-//		_yStationActual.setRealVector(
-//				_eta.getRealVector().mapMultiply(this.semiSpan.doubleValue(SI.METER)));
 
 		_yStationActual = _eta.getList().stream()
 				.map(d -> this.semiSpan.times(d))
@@ -1057,14 +1110,22 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		// Map Y's to (Xle, Zle, twist)
 		calculateXZleTwistAtYDiscretized();
 
-//		reportPanelsToSpanwiseDiscretizedVariables();
-
 		//======================================================
 		// fill the list of all discretized variables
 		calculateDiscretizedGeometry();
 
 	}
 
+	@Override
+	public Boolean isMirrored() {
+		return this._mirrored;
+	}
+	
+	@Override
+	public void setMirrored(Boolean mirrored) {
+		this._mirrored = mirrored;
+	}
+	
 	@Override
 	public List<Amount<Length>> getXYZ0() {
 		return Arrays.asList(this.x0, this.y0, this.z0);
@@ -1126,7 +1187,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	@Override
 	public Amount<Length> getMeanAerodynamicChord(boolean recalculate) {
-		if (recalculate) this.calculateGeometry(this._type);
+		if (recalculate) this.calculateGeometry(this._type, this._mirrored);
 		return this.meanAerodynamicChord;
 	}
 
@@ -1141,7 +1202,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	@Override
 	public List<Amount<Length>> getMeanAerodynamicChordLeadingEdge(boolean recalculate) {
-		if (recalculate) this.calculateGeometry(this._type);
+		if (recalculate) this.calculateGeometry(this._type, this._mirrored);
 		return Arrays.asList(
 				this.meanAerodynamicChordLeadingEdgeX,
 				this.meanAerodynamicChordLeadingEdgeY,
@@ -1156,7 +1217,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	@Override
 	public Amount<Length> getMeanAerodynamicChordLeadingEdgeX(boolean recalculate) {
-		if (recalculate) this.calculateGeometry(this._type);
+		if (recalculate) this.calculateGeometry(this._type, this._mirrored);
 		return this.meanAerodynamicChordLeadingEdgeX;
 	}
 
@@ -1167,7 +1228,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	@Override
 	public Amount<Length> getMeanAerodynamicChordLeadingEdgeY(boolean recalculate) {
-		if (recalculate) this.calculateGeometry(this._type);
+		if (recalculate) this.calculateGeometry(this._type, this._mirrored);
 		return this.meanAerodynamicChordLeadingEdgeY;
 	}
 
@@ -1178,7 +1239,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	@Override
 	public Amount<Length> getMeanAerodynamicChordLeadingEdgeZ(boolean recalculate) {
-		if (recalculate) this.calculateGeometry(this._type);
+		if (recalculate) this.calculateGeometry(this._type, this._mirrored);
 		return this.meanAerodynamicChordLeadingEdgeZ;
 	}
 
@@ -1188,7 +1249,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 	}
 	@Override
 	public Amount<Length> getSemiSpan(boolean recalculate) {
-		if (recalculate) this.calculateGeometry(this._type);
+		if (recalculate) this.calculateGeometry(this._type, this._mirrored);
 		return this.semiSpan;
 	}
 
@@ -1198,7 +1259,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 	}
 	@Override
 	public Amount<Length> getSpan(boolean recalculate) {
-		if (recalculate) this.calculateGeometry(this._type);
+		if (recalculate) this.calculateGeometry(this._type, this._mirrored);
 		return this.span;
 	}
 
@@ -1208,7 +1269,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 	}
 	@Override
 	public Amount<Area> getSurfacePlanform(boolean recalculate) {
-		if (recalculate) this.calculateGeometry(this._type);
+		if (recalculate) this.calculateGeometry(this._type, this._mirrored);
 		return this.surfacePlanform;
 	}
 
@@ -1218,7 +1279,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 	}
 	@Override
 	public Amount<Area> getSurfaceWetted(boolean recalculate) {
-		if (recalculate) this.calculateGeometry(this._type);
+		if (recalculate) this.calculateGeometry(this._type, this._mirrored);
 		return surfaceWetted;
 	}
 
@@ -1229,7 +1290,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	@Override
 	public Double getAspectRatio(boolean recalculate) {
-		if (recalculate) this.calculateGeometry(this._type);
+		if (recalculate) this.calculateGeometry(this._type, this._mirrored);
 		return this.aspectRatio;
 	}
 
@@ -1240,14 +1301,10 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	@Override
 	public Double getTaperRatio(boolean recalculate) {
-		if (recalculate) this.calculateGeometry(this._type);
+		if (recalculate) this.calculateGeometry(this._type, this._mirrored);
 		return this.taperRatio;
 	}
 
-	@Override
-	public Amount<Angle> getAngleOfIncidence() {
-		return _panels.get(0).getAngleOfIncidence();
-	}
 	/*****************************************************************************
 	 * This method builds a 2 panel wing from the related equivalent wing data
 	 */
@@ -1428,8 +1485,8 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 						twistAtKink,
 						semiSpanInnerPanel,
 						sweepLeadingEdgeInnerPanel.to(NonSI.DEGREE_ANGLE),
-						this._dihedralEquivalentWing,
-						this._angleOfIncidenceEquivalentWing)
+						this._dihedralEquivalentWing
+						)
 				.build();
 
 		LiftingSurfacePanelCreator panel2 = new 
@@ -1442,8 +1499,8 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 						this._twistAtTipEquivalentWing,
 						semiSpanOuterPanel,
 						sweepLeadingEdgeOuterPanel.to(NonSI.DEGREE_ANGLE),
-						this._dihedralEquivalentWing,
-						Amount.valueOf(0.0, NonSI.DEGREE_ANGLE))
+						this._dihedralEquivalentWing
+						)
 				.build();
 
 		// creating the wing ...
@@ -1451,8 +1508,9 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		
 	}
 	
-	/*************************************************************************************
+	/***********************************************************************************
 	 * This method builds the equivalent wing from the actual wing panels
+	 * 
 	 */
 	private LiftingSurfaceCreator calculateEquivalentWing() {
 		
@@ -1530,8 +1588,6 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 				SI.RADIAN)
 				.to(NonSI.DEGREE_ANGLE);
 		
-		Amount<Angle> angleOfIncidence = this.getAngleOfIncidence();
-		
 		Amount<Angle> dihedralEquivalentWing = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		for(int i=0; i<getPanels().size(); i++)
 			dihedralEquivalentWing = dihedralEquivalentWing.plus(getPanels().get(i).getDihedral());
@@ -1549,18 +1605,23 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 						twistGeometricTipEquivalentWing,
 						getSemiSpan(),
 						sweepLEEquivalentWing,
-						dihedralEquivalentWing,
-						angleOfIncidence)
+						dihedralEquivalentWing
+						)
 				.build();
 		
-		_equivalentWing = new LiftingSurfaceCreator("Equivalent Wing", ComponentEnum.WING);
+		_equivalentWing = new LiftingSurfaceCreator("Equivalent Wing", Boolean.TRUE, ComponentEnum.WING);
 		
 		_equivalentWing.addPanel(equivalentWingPanel);
 		
 		return _equivalentWing;
 	}
 
-
+	/**********************************************************************************
+	 * This method returns the equivalent wing calculated from the the actual wing. 
+	 * If the user have assigned the equivalent wing, he has to call its filed from 
+	 * the LiftingSurfaceCreator object. ( _equivalentWingSurface )
+	 */
+	
 	@Override
 	public LiftingSurfaceCreator getEquivalentWing(boolean recalculate) {
 		if(recalculate)	this.calculateEquivalentWing();
@@ -1571,8 +1632,8 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 	 * Calculate wing's span and semi-span according to current values
 	 * i.e. _panels' semi-spans and dihedral angles
 	 */
-	private void calculateSpans() {
-		System.out.println("[LiftingSurfaceCreator] Wing span ...");
+	private void calculateSpans(Boolean mirrored) {
+		System.out.println("[LiftingSurfaceCreator] Lifting surface span ...");
 		Double bhalf = this.getPanels().stream()
 				.mapToDouble(p ->
 					p.getSemiSpan().to(SI.METRE).getEstimatedValue()
@@ -1580,7 +1641,11 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 				)
 				.sum();
 		this.semiSpan = Amount.valueOf(bhalf,SI.METRE);
-		this.span = this.semiSpan.times(2.0);
+		
+		if(mirrored)
+			this.span = this.semiSpan.times(2.0);
+		else
+			this.span = this.semiSpan;
 	}
 
 	private void calculateVariablesAtBreakpoints() {
@@ -1667,8 +1732,6 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 			.boxed()
 			.collect(Collectors.toList())
 			;
-//		System.out.println(etaBP);
-
 	}
 
 	/**
@@ -2163,18 +2226,27 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 	}
 
 	@Override
-	public Double[][] getDiscretizedTopViewAsArray() {
+	public Double[][] getDiscretizedTopViewAsArray(ComponentEnum type) {
 		// see:
 		// http://stackoverflow.com/questions/26050530/filling-a-multidimensional-array-using-a-stream/26053236#26053236
 
 		List<Tuple2<Amount<Length>,Amount<Length>>> listYX = getDiscretizedTopViewAsList();
 
 		Double[][] array = new Double[listYX.size()][2];
-		IntStream.range(0, listYX.size())
+		if((type.equals(ComponentEnum.WING)) || (type.equals(ComponentEnum.HORIZONTAL_TAIL)) || (type.equals(ComponentEnum.CANARD))) {
+			IntStream.range(0, listYX.size())
 			.forEach(i -> {
 				array[i][0] = listYX.get(i)._1().doubleValue(SI.METRE);
 				array[i][1] = listYX.get(i)._2().doubleValue(SI.METRE);
 			});
+		}
+		else if (type.equals(ComponentEnum.VERTICAL_TAIL)) {
+			IntStream.range(0, listYX.size())
+			.forEach(i -> {
+				array[i][1] = listYX.get(i)._1().doubleValue(SI.METRE);
+				array[i][0] = listYX.get(i)._2().doubleValue(SI.METRE);
+			});
+		}
 		return array;
 	}
 

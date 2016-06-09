@@ -15,6 +15,26 @@ import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 
 public interface ILiftingSurface {
 
+	public String getId();
+	public void setId (String name);
+	public ComponentEnum getType();
+	public void setType (ComponentEnum type);
+	
+	public LiftingSurfaceCreator getLiftingSurfaceCreator();
+	public void setLiftingSurfaceCreator (LiftingSurfaceCreator lsc);
+	
+	public AerodynamicDatabaseReader getAerodynamicDatabaseReader ();
+	public void setAerodynamicDatabaseReader (AerodynamicDatabaseReader aeroDatabaseReader);
+	
+	public Amount<Length> getXApexConstructionAxes();
+	public void setXApexConstructionAxes (Amount<Length> xApexConstructionAxes);
+	public Amount<Length> getYApexConstructionAxes();
+	public void setYApexConstructionAxes (Amount<Length> yApexConstructionAxes);
+	public Amount<Length> getZApexConstructionAxes();
+	public void setZApexConstructionAxes (Amount<Length> zApexConstructionAxes);
+	public Amount<Angle> getRiggingAngle();
+	public void setRiggingAngle (Amount<Angle> iW);
+	
 	public Amount<Area> getSurface();
 	public double getAspectRatio();
 	public Amount<Length> getSpan();
@@ -29,10 +49,9 @@ public interface ILiftingSurface {
 	public Amount<Angle> getSweepHalfChordEquivalent(Boolean recalculate);
 	public Amount<Angle> getSweepQuarterChordEquivalent(Boolean recalculate);
 	public Amount<Angle> getDihedralEquivalent(Boolean recalculate);
-	public LiftingSurfaceCreator getLiftingSurfaceCreator();
 	
-	public void calculateGeometry(ComponentEnum type);
-	public void calculateGeometry(int nSections, ComponentEnum type);
+	public void calculateGeometry(ComponentEnum type, Boolean mirrored);
+	public void calculateGeometry(int nSections, ComponentEnum type, Boolean mirrored);
 	
 	public List<Airfoil> getAirfoilList();
 	public void setAirfoilList(List<Airfoil> airfoilList);

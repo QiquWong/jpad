@@ -114,7 +114,7 @@ public class VerticalTailTest extends Application {
 
 		System.out.println("##################\n\n");
 
-		Double[][] dataTopView = vTail.getLiftingSurfaceCreator().getDiscretizedTopViewAsArray();
+		Double[][] dataTopView = vTail.getLiftingSurfaceCreator().getDiscretizedTopViewAsArray(ComponentEnum.VERTICAL_TAIL);
 
 		//--------------------------------------------------
 		System.out.println("Initializing test class...");
@@ -131,14 +131,14 @@ public class VerticalTailTest extends Application {
 		listDataArray.add(dataTopView);
 
 		Double[][] xyMAC = new Double[2][2];
-		xyMAC[0][0] = vTail.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeY().doubleValue(SI.METRE);
-		xyMAC[0][1] = vTail.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METRE);
-		xyMAC[1][0] = xyMAC[0][0];
-		xyMAC[1][1] = xyMAC[0][1] + vTail.getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METRE);
+		xyMAC[0][0] = vTail.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METRE);
+		xyMAC[0][1] = vTail.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeY().doubleValue(SI.METRE);
+		xyMAC[1][0] = xyMAC[0][0] + vTail.getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METRE);
+		xyMAC[1][1] = xyMAC[0][1] ;
 
 		listDataArray.add(xyMAC);
 
-		double yMax = 1.35*vTail.getSemiSpan().doubleValue(SI.METRE);
+		double yMax = 1.25*vTail.getSemiSpan().doubleValue(SI.METRE);
 		double yMin = -0.05*vTail.getSemiSpan().doubleValue(SI.METRE);
 		double xMax = yMax;
 		double xMin = yMin;
@@ -146,7 +146,7 @@ public class VerticalTailTest extends Application {
 		D3PlotterOptions options = new D3PlotterOptions.D3PlotterOptionsBuilder()
 				.widthGraph(WIDTH).heightGraph(HEIGHT)
 				.xRange(xMin, xMax)
-				.yRange(yMax, yMin)
+				.yRange(yMin, yMax)
 				.axisLineColor("darkblue").axisLineStrokeWidth("2px")
 				.graphBackgroundColor("blue").graphBackgroundOpacity(0.1)
 				.title("Vertical tail data representation")
@@ -168,7 +168,7 @@ public class VerticalTailTest extends Application {
 						"fill:none; stroke:darkblue; stroke-width:3",
 						"fill:none; stroke:darkblue; stroke-width:2"
 						)
-				.plotAreas(true,true)
+				.plotAreas(true,false)
 				.areaStyles("fill:orange;","fill:yellow;")
 				.areaOpacities(1.0,0.50)
 				.build();
@@ -258,7 +258,11 @@ public class VerticalTailTest extends Application {
 							)
 					.build();
 
-			VerticalTailTest.theVerticalTail.calculateGeometry(40, ComponentEnum.VERTICAL_TAIL);
+			VerticalTailTest.theVerticalTail.calculateGeometry(
+					40,
+					theVerticalTail.getType(),
+					theVerticalTail.getLiftingSurfaceCreator().isMirrored()
+					);
 
 			System.out.println("The vertical tail ...");
 			System.out.println(VerticalTailTest.theVerticalTail.getLiftingSurfaceCreator().toString());

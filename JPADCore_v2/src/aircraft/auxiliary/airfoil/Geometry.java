@@ -10,7 +10,6 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.auxiliary.AuxiliaryComponentCalculator;
 import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.ComponentEnum;
@@ -18,7 +17,7 @@ import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import processing.core.PVector;
 import standaloneutils.customdata.MyArray;
 
-public class Geometry extends AuxiliaryComponentCalculator{
+public class Geometry {
 
 	private String _id = ""; 
 	public static int idCounter = 0;
@@ -97,7 +96,7 @@ public class Geometry extends AuxiliaryComponentCalculator{
 		_id = airfoil.getId() + "0" + idCounter + "99";
 		idCounter++;
 
-		isMirrored = airfoil.get_theLiftingSurface().isMirrored();
+		isMirrored = airfoil.get_theLiftingSurface().getLiftingSurfaceCreator().isMirrored();
 		liftingSurfaceType = airfoil.get_theLiftingSurface().getType();
 		_theAirfoil = airfoil;
 		
@@ -143,7 +142,7 @@ public class Geometry extends AuxiliaryComponentCalculator{
 		_id = airfoil.getId() + "0" + idCounter + "99";
 		idCounter++;
 
-		isMirrored = airfoil.get_theLiftingSurface().isMirrored();
+		isMirrored = airfoil.get_theLiftingSurface().getLiftingSurfaceCreator().isMirrored();
 		liftingSurfaceType = airfoil.get_theLiftingSurface().getType();
 		_theAirfoil = airfoil;
 		
@@ -185,7 +184,7 @@ public class Geometry extends AuxiliaryComponentCalculator{
 		Arrays.fill(_yCoords, yLoc);
 		_yStation = yLoc;
 		_etaStation = yLoc/_theAirfoil.get_theLiftingSurface().getSemiSpan().getEstimatedValue();
-		iw = _theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getAngleOfIncidence().getEstimatedValue();
+		iw = _theAirfoil.get_theLiftingSurface().getRiggingAngle().getEstimatedValue();
 		populateCoordinateList(_theAirfoil.get_theLiftingSurface().getChordAtYActual(yLoc));
 	}
 
@@ -210,9 +209,9 @@ public class Geometry extends AuxiliaryComponentCalculator{
 
 			// Actual location
 			x = x + (float) _theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getXLEAtYActual(_yStation).getEstimatedValue()
-					+ (float) _theAirfoil.get_theLiftingSurface().get_X0().getEstimatedValue();
+					+ (float) _theAirfoil.get_theLiftingSurface().getXApexConstructionAxes().getEstimatedValue();
 			y = _yCoords[i].floatValue();
-			z = z + (float) _theAirfoil.get_theLiftingSurface().get_Z0().getEstimatedValue()
+			z = z + (float) _theAirfoil.get_theLiftingSurface().getZApexConstructionAxes().getEstimatedValue()
 					+ (float) (_yStation
 							* Math.tan(_theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getDihedralAtYActual(_yStation).getEstimatedValue()));
 
@@ -226,7 +225,7 @@ public class Geometry extends AuxiliaryComponentCalculator{
 								x,
 								_zCoords[i].floatValue()*c, 
 								_yCoords[i].floatValue()
-								+ (float) _theAirfoil.get_theLiftingSurface().get_Z0().getEstimatedValue()));
+								+ (float) _theAirfoil.get_theLiftingSurface().getZApexConstructionAxes().getEstimatedValue()));
 
 			} else {
 				_coordinatesRight.add(new PVector(x, y, z));
@@ -241,19 +240,19 @@ public class Geometry extends AuxiliaryComponentCalculator{
 		int nPan = _theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getPanels().size(); 
 		
 		if (_theAirfoil.get_theLiftingSurface().getType().equals(ComponentEnum.VERTICAL_TAIL)) {
-			x = (float) (_theAirfoil.get_theLiftingSurface().get_X0().getEstimatedValue()
+			x = (float) (_theAirfoil.get_theLiftingSurface().getXApexConstructionAxes().getEstimatedValue()
 					+ _theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getDiscretizedXle().get(_theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getDiscretizedXle().size()-1).getEstimatedValue()
 					+ _theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getPanels().get(nPan - 1).getChordTip().getEstimatedValue()/2);
 			z = (float) (_theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getSpan().getEstimatedValue())*1.005f 
-					+ (float) _theAirfoil.get_theLiftingSurface().get_Z0().getEstimatedValue();
+					+ (float) _theAirfoil.get_theLiftingSurface().getZApexConstructionAxes().getEstimatedValue();
 			y = 0.0f;
 
 		} else {
-			x = (float) (_theAirfoil.get_theLiftingSurface().get_X0().getEstimatedValue()
+			x = (float) (_theAirfoil.get_theLiftingSurface().getXApexConstructionAxes().getEstimatedValue()
 					+ _theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getDiscretizedXle().get(_theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getDiscretizedXle().size()-1).getEstimatedValue()
 					+ _theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getPanels().get(nPan - 1).getChordTip().getEstimatedValue()/2);
 			y = (float) (_theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getSpan().getEstimatedValue()/2.)*1.005f;
-			z = (float) (_theAirfoil.get_theLiftingSurface().get_Z0().getEstimatedValue()
+			z = (float) (_theAirfoil.get_theLiftingSurface().getZApexConstructionAxes().getEstimatedValue()
 					+ _yStation
 					* Math.tan(_theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getDihedralAtYActual(_yStation).getEstimatedValue())); //TODO: add dihedral
 		}
@@ -345,7 +344,6 @@ public class Geometry extends AuxiliaryComponentCalculator{
 		return _coordinatesRight;
 	}
 
-	@Override
 	public String getId() {
 		return _id;
 	}

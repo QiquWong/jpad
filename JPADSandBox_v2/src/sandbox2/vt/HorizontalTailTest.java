@@ -114,7 +114,7 @@ public class HorizontalTailTest extends Application {
 
 		System.out.println("##################\n\n");
 
-		Double[][] dataTopView = hTail.getLiftingSurfaceCreator().getDiscretizedTopViewAsArray();
+		Double[][] dataTopView = hTail.getLiftingSurfaceCreator().getDiscretizedTopViewAsArray(ComponentEnum.HORIZONTAL_TAIL);
 
 		//--------------------------------------------------
 		System.out.println("Initializing test class...");
@@ -258,7 +258,11 @@ public class HorizontalTailTest extends Application {
 							)
 					.build();
 
-			HorizontalTailTest.theHorizontalTail.calculateGeometry(40, ComponentEnum.HORIZONTAL_TAIL);
+			HorizontalTailTest.theHorizontalTail.calculateGeometry(
+					40,
+					theHorizontalTail.getType(),
+					theHorizontalTail.getLiftingSurfaceCreator().isMirrored()
+					);
 
 			System.out.println("The horizontal tail ...");
 			System.out.println(HorizontalTailTest.theHorizontalTail.getLiftingSurfaceCreator().toString());

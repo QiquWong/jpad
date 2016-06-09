@@ -25,6 +25,9 @@ public interface ILiftingSurfacePanelCreator {
 	 */
 	public void calculateGeometry();
 
+	String getId();
+	void setId (String name);
+	
 	Amount<Length> getChordRoot();
 	void setChordRoot(Amount<Length> cr);
 
@@ -42,9 +45,6 @@ public interface ILiftingSurfacePanelCreator {
 
 	Amount<Angle> getTwistAerodynamicAtTip();
 	
-	Amount<Length> getSpan();
-	void setSpan(Amount<Length> b);
-
 	Amount<Length> getSemiSpan();
 	void setSemiSpan(Amount<Length> b);
 	
@@ -69,8 +69,6 @@ public interface ILiftingSurfacePanelCreator {
 	public Double getAspectRatio();
 	public Double getTaperRatio();
 	
-	public Amount<Angle> getAngleOfIncidence();
-	
 	/** 
 	 * Returns the chord of the wing panel at y station (distance from local root)
 	 * 
@@ -82,12 +80,12 @@ public interface ILiftingSurfacePanelCreator {
 
 		double chord = 
 			(
-				(2 * getSurfacePlanform().getEstimatedValue())/
-					(getSpan().getEstimatedValue() * (1 + getTaperRatio()))
+				(4 * getSurfacePlanform().getEstimatedValue())/
+					(getSemiSpan().getEstimatedValue() * (1 + getTaperRatio()))
 			)
 			*(
 				1 - (
-						2 * y * (1 - getTaperRatio())/getSpan().getEstimatedValue() 
+						4 * y * (1 - getTaperRatio())/getSemiSpan().getEstimatedValue() 
 					)
 			);
 		return chord;
