@@ -440,8 +440,8 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	}
 
-	private LiftingSurfaceCreator(LiftingSurfaceCreatorBuilder builder){ // defaults to ATR72 
-
+	private LiftingSurfaceCreator(LiftingSurfaceCreatorBuilder builder){ 
+		
 		this._id = builder.__id;
 		this._mirrored = builder.__mirrored;
 		this._type = builder.__type;

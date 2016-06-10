@@ -7,41 +7,36 @@ import javax.measure.quantity.Mass;
 
 import org.jscience.physics.amount.Amount;
 
+import aircraft.OperatingConditions;
 import aircraft.auxiliary.SeatsBlock;
-import aircraft.components.fuselage.Fuselage;
-import aircraft.components.liftingSurface.LiftingSurface;
-import aircraft.components.nacelles.Nacelle;
+import configuration.enumerations.MethodEnum;
 import standaloneutils.customdata.MyArray;
 
 public interface IConfiguration {
 
-	public void calculateDependentVariables ();
-	
 	public void updateConfiguration();
-	
+	public void calculateDependentVariables();
 	public void buildSimpleLayout(Aircraft aircraft);
+	public void calculateMass(Aircraft aircraft,
+							  OperatingConditions conditions,
+							  MethodEnum method
+							  );
+	public void calculateMassFurnishings(Aircraft aircraft,
+										 OperatingConditions conditions,
+										 MethodEnum method
+										 );
 	
-	public Fuselage getFuselage();
+	public Integer getNPax();
 
-	public LiftingSurface getWing();
+	public void setNPax(Integer nPax);
 
-	public LiftingSurface getHTail();
+	public Integer getNCrew();
 
-	public LiftingSurface getVTail();
+	public void setNCrew(Integer nCrew);
 
-	public Nacelle getNacelle();
-
-	public Double getNPax();
-
-	public void setNPax(Double nPax);
-
-	public Double getNCrew();
-
-	public void setNCrew(Double nCrew);
-
-	public Double getMaxPax();
+	public Integer getMaxPax();
 	
-	public void setMaxPax(Double maxPax);
+	public void setMaxPax(Integer maxPax);
 
 	public Amount<Mass> getMassFurnishings();
 
@@ -59,13 +54,9 @@ public interface IConfiguration {
 
 	public void setPercentDifference(Double[] percentDifference);
 
-	public Amount<Mass> getMass();
+	public Integer getClassesNumber();
 
-	public void setMass(Amount<Mass> mass);
-
-	public Double getClassesNumber();
-
-	public void setClassesNumber(Double classesNumber);
+	public void setClassesNumber(Integer classesNumber);
 
 	public Integer getAislesNumber();
 
@@ -94,10 +85,6 @@ public interface IConfiguration {
 	public List<Integer[]> getMissingSeatsRow();
 
 	public void setMissingSeatsRow(List<Integer[]> missingSeatsRow);
-
-	public List<Integer[]> getMissingSeatsColumn();
-
-	public void setMissingSeatsColumn(List<Integer[]> missingSeatsColumn);
 
 	public Amount<Length> getPitchFirstClass();
 
@@ -179,10 +166,6 @@ public interface IConfiguration {
 
 	public void setDistanceFromWallFirstClass(Amount<Length> distanceFromWallFirstClass);
 
-	public Double[] getLengthOfEachBreakEconomyClass();
-
-	public void setLengthOfEachBreakEconomyClass(Double[] lengthOfEachBreakEconomyClass);
-
 	public Double[] getPitchArr();
 
 	public void setPitchArr(Double[] pitchArr);
@@ -206,14 +189,6 @@ public interface IConfiguration {
 	public Integer[] getNumberOfColumnsArr();
 
 	public void setNumberOfColumnsArr(Integer[] numberOfColumnsArr);
-
-	public Double[] getLengthOfEachBreakBusinessClass();
-
-	public void setLengthOfEachBreakBusinessClass(Double[] lengthOfEachBreakBusinessClass);
-
-	public Double[] getLengthOfEachBreakFirstClass();
-
-	public void setLengthOfEachBreakFirstClass(Double[] lengthOfEachBreakFirstClass);
 
 	public Amount<Length> getSeatsCoG();
 	
@@ -259,10 +234,10 @@ public interface IConfiguration {
 
 	public MyArray getYLoading(); 
 
-	public Double getFlightCrewNumber();
+	public Integer getFlightCrewNumber();
 
-	public void setFlightCrewNumber(Double flightCrewNumber);
+	public void setFlightCrewNumber(Integer flightCrewNumber);
 
-	public Double getCabinCrewNumber();
+	public Integer getCabinCrewNumber();
 	
 }
