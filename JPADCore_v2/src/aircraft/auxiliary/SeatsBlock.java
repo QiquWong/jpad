@@ -153,7 +153,6 @@ public class SeatsBlock {
 			Integer rows,
 			Integer columns,
 			Integer[] missingSeatRow,
-			Integer[] missingSeatColumn,
 			ClassTypeEnum type) {
 
 		_position = pos;
@@ -169,7 +168,6 @@ public class SeatsBlock {
 
 		// Missing seat coordinate : [row number , column number]
 		_missingSeatRow = missingSeatRow;
-		_missingSeatColumn = missingSeatColumn;
 
 		// Pitch: the distance between two consecutive seats farther pillars.
 		_pitch = pitch;
@@ -223,7 +221,6 @@ public class SeatsBlock {
 				null,
 				rows,
 				columns,
-				new Integer[] { -1},
 				new Integer[] { -1},
 				type);
 	}
