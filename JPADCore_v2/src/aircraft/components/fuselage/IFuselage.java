@@ -56,7 +56,8 @@ public interface IFuselage {
 			int np_N, int np_C, int np_T, // no. points @ Nose/Cabin/Tail
 			int np_SecUp, int np_SecLow   // no. points @ Upper/Lower section
 			);
-	public void calculateGeometry();
+	
+//	public void calculateGeometry();
 	
 	public Amount<Area> getSurfaceWetted(Boolean recalculate);
 		

@@ -49,14 +49,14 @@ public class FuselageCreator implements IFuselageCreator {
 	private Boolean pressurized;
 
 	// FuselageCreator overall length
-	private Amount<Length> lenF;
+	private Amount<Length> lenF, lenFMIN, lenFMAX;
 
 	// FuselageCreator nose length
-	private Amount<Length> lenN;
+	private Amount<Length> lenN, lenNMIN, lenNMAX;
 
-	private Amount<Length> lenC;
+	private Amount<Length> lenC, lenCMIN, lenCMAX;
 
-	private Amount<Length> lenT;
+	private Amount<Length> lenT, lenTMIN, lenTMAX;
 
 	private Amount<Length> sectionCylinderHeight;
 
@@ -186,6 +186,40 @@ public class FuselageCreator implements IFuselageCreator {
 	List<List<Double>> sectionUpperCurvesZ = new ArrayList<List<Double>>();
 	List<List<Double>> sectionLowerCurvesY = new ArrayList<List<Double>>();
 	List<List<Double>> sectionLowerCurvesZ = new ArrayList<List<Double>>();
+	
+	// Non-dimensional parameters - bounds
+	private double lambdaCMIN;
+	private double lambdaCMAX;
+	private double lenRatioNFMIN;
+	private double lenRatioNFMAX;
+	private double lenRatioCFMIN;
+	private double lenRatioCFMAX;
+	private double lambdaNMIN;
+	private double lambdaNMAX;
+	private double lambdaTMIN;
+	private double lambdaTMAX;
+	private double lenRatioTFMIN;
+	private double lenRatioTFMAX;
+	private Amount<Length> diamCMIN;
+	private Amount<Length> diamCMAX;
+	private Amount<Length> sectionWidthMIN;
+	private Amount<Length> sectionWidthMAX;
+	private Amount<Length> heightNMIN;
+	private Amount<Length> heightNMAX;
+	private Amount<Length> heightTMIN;
+	private Amount<Length> heightTMAX;
+	private Amount<Length> dxNoseCapMIN;
+	private Amount<Length> dxNoseCapMAX;
+	private Amount<Length> dxTailCapMIN;
+	private Amount<Length> dxTailCapMAX;
+	private double lambdaFMIN;
+	private double lambdaFMAX;
+	private double sectionLowerToTotalHeightRatioMIN;
+	private double sectionLowerToTotalHeightRatioMAX;
+	private double sectionRhoUpperMIN;
+	private double sectionRhoUpperMAX;
+	private double sectionRhoLowerMIN;
+	private double sectionRhoLowerMAX;
 
 	// Constructor
 //	public FuselageCreator(String id) {
@@ -672,6 +706,95 @@ public class FuselageCreator implements IFuselageCreator {
 		//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	}// end-of calculateOutlines
+	
+	public void calculateDependentData() {
+		lambdaN =   
+				lenN.doubleValue(SI.METRE)
+				/ sectionCylinderHeight.doubleValue(SI.METRE) ; // _len_N / _diam_C;
+		lambdaC =  
+				lenC.doubleValue(SI.METRE)
+				/ sectionCylinderHeight.doubleValue(SI.METRE) ; // _len_C / _diam_C;
+		lambdaT =   
+				lenT.doubleValue(SI.METRE)
+				/ sectionCylinderHeight.doubleValue(SI.METRE) ; // _len_T / _diam_C;
+		lambdaF =
+				lenF.doubleValue(SI.METRE)
+				/ sectionCylinderHeight.doubleValue(SI.METRE) ; // _len_F / _diam_C;
+		lenRatioNF =  
+				lenN.doubleValue(SI.METRE)
+				/ lenF.doubleValue(SI.METRE);
+		lenRatioCF =   
+				lenC.doubleValue(SI.METRE)
+				/ lenF.doubleValue(SI.METRE);
+		lenRatioTF =   
+				lenT.doubleValue(SI.METRE)
+				/ lenF.doubleValue(SI.METRE) ;
+	}
+	
+	public void checkGeometry() {
+
+		public void checkGeometry() {
+
+			// --- CHECKS -----------------------------------------------------
+
+			lambdaCMIN  = 3.0;
+			lambdaCMAX  = 7.0;
+			lenFMIN     =  Amount.valueOf(10.0,SI.METRE);		
+			lenFMAX     =  Amount.valueOf(80.0,SI.METRE);
+			lenRatioNFMIN   = 0.1;
+			lenRatioNFMAX   = 0.2;
+
+			lenNMIN     = Amount.valueOf(1.0, SI.METRE);
+			lenNMAX     = Amount.valueOf(8.0, SI.METRE);
+			lenRatioCFMIN   = 0.4;
+			lenRatioCFMAX   = 0.8;
+			lambdaNMIN  = 1.2;
+			lambdaNMAX  = 2.5;
+
+			lambdaTMIN  = 2.8;
+			lambdaTMAX  = 3.2;
+			lenRatioTFMIN = 1.0- lenRatioCFMIN - lenRatioNFMIN;
+			lenRatioTFMAX = 1.0 - lenRatioCFMAX - lenRatioNFMAX;
+			lenTMIN     = Amount.valueOf( 2.0, SI.METRE);
+			lenTMAX     = Amount.valueOf( 25.0, SI.METRE);
+
+			// Bounds to diameter value input
+			diamCMIN    = Amount.valueOf(2.0, SI.METRE);
+			diamCMAX    = Amount.valueOf( 10.0, SI.METRE);
+
+			sectionWidthMIN         = Amount.valueOf(0.7*diamCMIN.doubleValue(SI.METRE), SI.METRE);
+			sectionWidthMAX         = Amount.valueOf(1.3*diamCMAX.doubleValue(SI.METRE), SI.METRE);
+
+			heightNMIN  =(Amount.valueOf( -0.2 *sectionCylinderHeight.doubleValue(SI.METRE), SI.METRE));
+			heightNMAX  =(Amount.valueOf( 0.2 *sectionCylinderHeight.doubleValue(SI.METRE), SI.METRE));
+
+			heightTMIN  =(Amount.valueOf(  0.4*(0.5*sectionCylinderHeight.doubleValue(SI.METRE)), SI.METRE));
+			heightTMAX  =(Amount.valueOf(  1.0*(0.5*sectionCylinderHeight.doubleValue(SI.METRE)), SI.METRE));
+
+			dxNoseCapMIN            = Amount.valueOf(0.015 * lenN.doubleValue(SI.METRE), SI.METRE);
+			dxNoseCapMAX            = Amount.valueOf(0.0150* lenN.doubleValue(SI.METRE), SI.METRE);
+
+			dxTailCapMIN            = Amount.valueOf(0.000*lenT.doubleValue(SI.METRE), SI.METRE);
+			dxTailCapMAX            = Amount.valueOf(0.100*lenT.doubleValue(SI.METRE), SI.METRE);
+
+			lambdaFMIN  = 8.0;
+			lambdaFMAX  = 12.5;
+
+			sectionLowerToTotalHeightRatioMIN = 0.1;
+			sectionLowerToTotalHeightRatioMAX = 0.5;
+
+			sectionRhoUpperMIN = 0.0;
+			sectionRhoUpperMAX = 1.0;
+			sectionRhoLowerMIN = 0.0;
+			sectionRhoLowerMAX = 1.0;
+
+			lenCMIN     = Amount.valueOf( 0.35 * lenFMIN.doubleValue(SI.METRE), SI.METRE);
+			lenCMAX     = Amount.valueOf(0.75 * lenFMAX.doubleValue(SI.METRE), SI.METRE);
+
+			// --- END OF CHECKS ----------------------------------------
+
+		}
+	}
 
 	public int getNumberPointsNose() {
 		return npN;
@@ -2364,7 +2487,20 @@ public class FuselageCreator implements IFuselageCreator {
 	}
 
 	public void setLenN(Amount<Length> lenN) {
-		this.lenN = lenN;
+		// check bounds
+		if ( !(lenN.doubleValue(SI.METRE) < lenNMIN.doubleValue(SI.METRE)) 
+				&& !(lenN.doubleValue(SI.METRE) > lenNMAX.doubleValue(SI.METRE)) ) {
+			this.setLenN(lenN);
+			
+			Double value_l_F_METER_1 = 
+					this.getLenN().doubleValue(SI.METRE) 
+					+ this.getLenC().doubleValue(SI.METRE) 
+					+ this.getLenT().doubleValue(SI.METRE);
+			
+			this.setLenN(Amount.valueOf(value_l_F_METER_1, SI.METRE));
+
+			this.calculateDependentData(); 
+		}
 	}
 
 	public Amount<Length> getLenC() {
@@ -2372,7 +2508,20 @@ public class FuselageCreator implements IFuselageCreator {
 	}
 
 	public void setLenC(Amount<Length> lenC) {
-		this.lenC = lenC;
+		// check bounds
+		if ( !(lenC.doubleValue(SI.METRE) < lenCMIN.doubleValue(SI.METRE)) 
+				&& !(lenC.doubleValue(SI.METRE) > lenCMAX.doubleValue(SI.METRE)) ) {
+			this.setLenC(lenC);
+			
+			Double value_l_F_METER_1 = 
+					this.getLenN().doubleValue(SI.METRE) 
+					+ this.getLenC().doubleValue(SI.METRE) 
+					+ this.getLenT().doubleValue(SI.METRE);
+			
+			this.setLenN(Amount.valueOf(value_l_F_METER_1, SI.METRE));
+
+			this.calculateDependentData(); 
+		}
 	}
 
 	public Amount<Length> getLenT() {
@@ -2380,7 +2529,20 @@ public class FuselageCreator implements IFuselageCreator {
 	}
 
 	public void setLenT(Amount<Length> lenT) {
-		this.lenT = lenT;
+		// check bounds
+		if ( !(lenT.doubleValue(SI.METRE) < lenTMIN.doubleValue(SI.METRE)) 
+				&& !(lenT.doubleValue(SI.METRE) > lenTMAX.doubleValue(SI.METRE)) ) {
+			this.setLenT(lenT);
+			
+			Double value_l_F_METER_1 = 
+					this.getLenN().doubleValue(SI.METRE) 
+					+ this.getLenC().doubleValue(SI.METRE) 
+					+ this.getLenT().doubleValue(SI.METRE);
+			
+			this.setLenN(Amount.valueOf(value_l_F_METER_1, SI.METRE));
+
+			this.calculateDependentData(); 
+		}
 	}
 
 	public Amount<Length> getSectionCylinderHeight() {
@@ -2388,6 +2550,7 @@ public class FuselageCreator implements IFuselageCreator {
 	}
 
 	public void setSectionCylinderHeight(Amount<Length> sectionCylinderHeight) {
+		
 		this.sectionCylinderHeight = sectionCylinderHeight;
 	}
 
