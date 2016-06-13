@@ -49,7 +49,7 @@ import aircraft.OperatingConditions;
 import aircraft.calculators.ACPerformanceManager;
 import aircraft.componentmodel.AeroComponent;
 import aircraft.components.Aircraft;
-import aircraft.components.LandingGear;
+import aircraft.components.LandingGears;
 import aircraft.components.fuselage.creator.FuselageCreator;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.creator.SpoilerCreator;
@@ -857,7 +857,7 @@ public class Fuselage extends AeroComponent implements IFuselage {
 				k = k + 0.04;
 			}
 
-			if (aircraft.get_landingGear().get_mounting() == LandingGear.MountingPosition.FUSELAGE) {
+			if (aircraft.get_landingGear().get_mounting() == LandingGear.LandingGears.FUSELAGE) {
 				k = k + 0.07;
 			}
 
@@ -1019,7 +1019,7 @@ public class Fuselage extends AeroComponent implements IFuselage {
 	private Amount<Mass> calculateMassTorenbeek1976(Aircraft aircraft) {
 		double k = 0.;
 		if (_pressurized) {k = k + 0.08;}
-		if (aircraft.get_landingGear().get_mounting() == LandingGear.MountingPosition.FUSELAGE){
+		if (aircraft.get_landingGear().get_mounting() == LandingGear.LandingGears.FUSELAGE){
 			k = k + 0.07;
 		}
 

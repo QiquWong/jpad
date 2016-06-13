@@ -20,9 +20,9 @@
 				If the user wants to add other arrays it has to add another value tag.
 				Each value tag contains an array of Integer values and must be assigned using [ , , ].
 				-->
-				<value>[1,2,3]</value>
-				<value>[1,2,3]</value>
-				<value>[1,2,3]</value>
+				<value>[1,1,1,1,1,1,1,1,1,1]</value>
+				<value>[1,2,2]</value>
+				<value>[1,2]</value>
 			</missing_seat_row> 
 		</global_data>
 		<detailed_data>

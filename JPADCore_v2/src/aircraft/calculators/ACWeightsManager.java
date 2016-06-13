@@ -301,11 +301,11 @@ public class ACWeightsManager extends ACCalculatorManager {
 		}
 
 		_massStructureList.add(aircraft.get_fuselage().get_massEstimated());
-		_massStructureList.add(aircraft.get_wing().get_massEstimated());
-		_massStructureList.add(aircraft.get_HTail().get_massEstimated());
-		_massStructureList.add(aircraft.get_VTail().get_massEstimated());
+		_massStructureList.add(aircraft.get_wing().getMassEstimated());
+		_massStructureList.add(aircraft.get_HTail().getMassEstimated());
+		_massStructureList.add(aircraft.get_VTail().getMassEstimated());
 		_massStructureList.addAll(aircraft.get_theNacelles().get_massList());
-		_massStructureList.add(aircraft.get_landingGear().get_massEstimated());
+		_massStructureList.add(aircraft.get_landingGear().getMassEstimated());
 
 		System.out.println("----- WEIGHT ESTIMATION PROCEDURE FINISHED -----\n");
 
@@ -331,12 +331,12 @@ public class ACWeightsManager extends ACCalculatorManager {
 
 		aircraft.get_weights().set_structuralMass(
 				aircraft.get_fuselage().get_massEstimated().plus(
-						aircraft.get_wing().get_massEstimated()).plus(
-								aircraft.get_HTail().get_massEstimated()).plus(
-										aircraft.get_VTail().get_massEstimated()).plus(
+						aircraft.get_wing().getMassEstimated()).plus(
+								aircraft.get_HTail().getMassEstimated()).plus(
+										aircraft.get_VTail().getMassEstimated()).plus(
 												aircraft.get_theNacelles().get_totalMass()).plus(
 //												aircraft.get_theNacelles().  getWeights()).plus(
-														aircraft.get_landingGear().get_massEstimated()));
+														aircraft.get_landingGear().getMassEstimated()));
 
 	}
 
@@ -346,7 +346,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 		aircraft.get_weights().set_manufacturerEmptyMass(
 				aircraft.get_powerPlant().get_totalMass().plus(
 						aircraft.get_weights().get_structuralMass()).plus(
-								aircraft.get_systems().get_mass()).plus(
+								aircraft.get_systems().getOverallMass()).plus(
 										aircraft.get_configuration().getMassEstimatedFurnishingsAndEquipment()));
 	}
 
@@ -354,22 +354,22 @@ public class ACWeightsManager extends ACCalculatorManager {
 	public void calculateFirstGuessMTOM(Aircraft aircraft) {
 
 		aircraft.get_fuselage().set_mass(aircraft.get_weights().get_MZFM().times(.15));
-		aircraft.get_wing().setMass(aircraft.get_weights().get_MZFM().times(.1));
-		aircraft.get_HTail().setMass(aircraft.get_weights().get_MZFM().times(.015));
-		aircraft.get_VTail().setMass(aircraft.get_weights().get_MZFM().times(.015));
+		aircraft.get_wing().setOverallMass(aircraft.get_weights().get_MZFM().times(.1));
+		aircraft.get_HTail().setOverallMass(aircraft.get_weights().get_MZFM().times(.015));
+		aircraft.get_VTail().setOverallMass(aircraft.get_weights().get_MZFM().times(.015));
 		aircraft.get_powerPlant().set_mass(aircraft.get_weights().get_MZFM().times(.05));
 		aircraft.get_theNacelles().set_totalMass(aircraft.get_weights().get_MZFM().times(.015));
 		aircraft.get_theFuelTank().set_fuelMass(aircraft.get_weights().get_MZFM().times(.015));
-		aircraft.get_landingGear().set_mass(aircraft.get_weights().get_MZFM().times(.04));
-		aircraft.get_systems().set_mass(aircraft.get_weights().get_MZFM().times(.04));
+		aircraft.get_landingGear().setMass(aircraft.get_weights().get_MZFM().times(.04));
+		aircraft.get_systems().setOverallMass(aircraft.get_weights().get_MZFM().times(.04));
 
 		aircraft.get_weights().set_structuralMass(
 				aircraft.get_fuselage().get_mass().plus(
-						aircraft.get_wing().getMass()).plus(
-								aircraft.get_HTail().getMass()).plus(
-										aircraft.get_VTail().getMass()).plus(
+						aircraft.get_wing().getOverallMass()).plus(
+								aircraft.get_HTail().getOverallMass()).plus(
+										aircraft.get_VTail().getOverallMass()).plus(
 												aircraft.get_theNacelles().get_totalMass()).plus(
-														aircraft.get_landingGear().get_mass()));
+														aircraft.get_landingGear().getMass()));
 
 		System.out.println("First guess value:" + aircraft.get_weights().get_structuralMass().getEstimatedValue());
 	}

@@ -3992,7 +3992,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			if (theLocalAircraft != null) {
 				cg = theLocalAircraft.get_theBalance().get_cgMTOM();
 			} else {
-				cg = theLiftingSurface.get_cg();
+				cg = theLiftingSurface.getCg();
 			}
 			System.out.println("the xbr is --> " + cg.get_xBRF());
 			System.out.println("the cg is --> " + cg);
@@ -4013,7 +4013,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			if (theLocalAircraft != null) {
 				cg = theLocalAircraft.get_theBalance().get_cgMTOM();
 			} else {
-				cg = theLiftingSurface.get_cg();
+				cg = theLiftingSurface.getCg();
 			}
 			System.out.println("the xbr is --> " + cg.get_xBRF());
 			System.out.println("the cg is --> " + cg);

@@ -64,7 +64,7 @@ public class Aircraft {
 
 	//TODO: remove nacelle from aircraft, leave only nacelleS
 	private Nacelle _theNacelle = null;
-	private LandingGear _theLandingGear = null;
+	private LandingGears _theLandingGear = null;
 
 	private Double _sWetTotal = 0.;
 	private String _name;
@@ -609,7 +609,7 @@ public class Aircraft {
 	}
 
 	public void createLandingGear() {
-		_theLandingGear = new LandingGear(
+		_theLandingGear = new LandingGears(
 				"Landing Gear",
 				"ATR 72 Landing Gear",
 				12.5, 0., 0.);
@@ -627,7 +627,7 @@ public class Aircraft {
 		switch(aircraftName) {
 
 		case ATR72:
-			_theLandingGear = new LandingGear(
+			_theLandingGear = new LandingGears(
 					aircraftName,
 					"Landing Gear",
 					"ATR 72 Landing Gear",
@@ -636,7 +636,7 @@ public class Aircraft {
 			break;
 
 		case B747_100B:
-			_theLandingGear = new LandingGear(
+			_theLandingGear = new LandingGears(
 					aircraftName,
 					"Landing Gear",
 					"B747-100B Landing Gear",
@@ -645,7 +645,7 @@ public class Aircraft {
 			break;
 			
 		case AGILE_DC1:
-			_theLandingGear = new LandingGear(
+			_theLandingGear = new LandingGears(
 					aircraftName,
 					"Landing Gear",
 					"AGILE_DC1 Landing Gear",
@@ -1029,7 +1029,7 @@ public class Aircraft {
 		return _thePerformances;
 	}
 
-	public LandingGear get_landingGear() {
+	public LandingGears get_landingGear() {
 		return _theLandingGear;
 	}
 

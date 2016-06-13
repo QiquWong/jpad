@@ -8,100 +8,184 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
 import aircraft.OperatingConditions;
-import aircraft.componentmodel.Component;
+import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.MethodEnum;
+import standaloneutils.JPADXmlReader;
+import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import writers.JPADStaticWriteUtils;
 
 
-public class Systems extends Component{
+public class Systems implements ISystems {
 
-	private Amount<Mass> _massCS;
-	private Amount<Length> _lenght;
+	private String _id;
+	private Amount<Mass> _controlSurfaceMass;
+	private Amount<Mass> _referenceMass;
+	private Amount<Mass> _meanMass;
+	private Amount<Mass> _overallMass;
 
+	private Double[] _percentDifference;
 	private Map <MethodEnum, Amount<Mass>> _massMap = new TreeMap<MethodEnum, Amount<Mass>>();
 	private List<MethodEnum> _methodsList = new ArrayList<MethodEnum>();
 	private Map <AnalysisTypeEnum, List<MethodEnum>> _methodsMap = new HashMap<AnalysisTypeEnum, List<MethodEnum>>();
-	private Double[] _percentDifference;
-	private Amount<Mass> _massReference;
-	private Amount<Mass> _massMean;
-	private Amount<Mass> _mass;
 
+	//============================================================================================
+	// Builder pattern 
+	//============================================================================================
+	public static class SystemsBuilder {
 
-	public Systems(String name, String description, double x, double y,
-			double z) {
-		super("", name, description, x, y, z);
+		// required parameters
+		private String __id;
 
-		_massReference = Amount.valueOf(2118, SI.KILOGRAM);
+		// optional parameters ... defaults
+		// ...
+		private Amount<Mass> __referenceMass;
+		private Map <MethodEnum, Amount<Mass>> __massMap = new TreeMap<MethodEnum, Amount<Mass>>();
+		private List<MethodEnum> __methodsList = new ArrayList<MethodEnum>();
+		private Map <AnalysisTypeEnum, List<MethodEnum>> __methodsMap = new HashMap<AnalysisTypeEnum, List<MethodEnum>>();
 
-	}
-
-	/**
-	 * Overload of the previous builder that recognize aircraft name and sets it's 
-	 * systems data.
-	 * 
-	 * @author Vittorio Trifari
-	 */
-	public Systems(AircraftEnum aircraftName, String name, String description, double x, double y,
-			double z) {
-		super("", name, description, x, y, z);
-
-		switch(aircraftName) {
+		public SystemsBuilder (String id) {
+			this.__id = id;
+			this.initializeDefaultVariables(AircraftEnum.ATR72);
+		}
 		
-		case ATR72:
-			_massReference = Amount.valueOf(2118, SI.KILOGRAM);
-			break;
-			
-		case B747_100B:
-			_massReference = Amount.valueOf(15949.0, SI.KILOGRAM);
-			break;
-			
-		case AGILE_DC1:
-			_massReference = Amount.valueOf(5087., SI.KILOGRAM);
-			break;
+		public SystemsBuilder (String id, AircraftEnum aircraftName) {
+			this.__id = id;
+			this.initializeDefaultVariables(aircraftName);
+		}
+
+		public SystemsBuilder referenceMass (Amount<Mass> referenceMass) {
+			this.__referenceMass = referenceMass;
+			return this;
+		}
+
+		public Systems build() {
+			return new Systems (this);
+		}
+		
+		/************************************************************************
+		 * method that recognize aircraft name and sets it's 
+		 * systems data.
+		 * 
+		 * @author Vittorio Trifari
+		 */
+		private void initializeDefaultVariables (AircraftEnum aircraftName) {
+
+			switch(aircraftName) {
+
+			case ATR72:
+				__referenceMass = Amount.valueOf(2118, SI.KILOGRAM);
+				break;
+
+			case B747_100B:
+				__referenceMass = Amount.valueOf(15949.0, SI.KILOGRAM);
+				break;
+
+			case AGILE_DC1:
+				__referenceMass = Amount.valueOf(5087., SI.KILOGRAM);
+				break;
+			}
 		}
 	}
+	
+	private Systems (SystemsBuilder builder) { 
+		
+		this._id = builder.__id;
+		this._referenceMass = builder.__referenceMass;
+		
+		this._methodsMap = builder.__methodsMap;
+		this._massMap = builder.__massMap;
+		this._methodsList = builder.__methodsList;
+		
+	}
+	
+	//===================================================================================================
+	// End of builder pattern
+	//===================================================================================================
+	
+	public static Systems importFromXML (String pathToXML) {
+		
+		JPADXmlReader reader = new JPADXmlReader(pathToXML);
 
+		System.out.println("Reading systems data ...");
+		
+		String id = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@id");
+		
+		//---------------------------------------------------------------
+		//REFERENCE MASS
+		Amount<Mass> massReference = Amount
+				.valueOf(
+						Double.valueOf(
+								reader.getXMLPropertyByPath(
+										"//reference_masses/overall_reference_mass"
+										)
+								),
+						SI.KILOGRAM
+						);
+		
+		Systems aircraftSystems = new SystemsBuilder(id)
+				.referenceMass(massReference)
+				.build();
+		
+		return aircraftSystems;
+	}
+	
+	@Override
+	public String toString() {
+		
+		MyConfiguration.customizeAmountOutput();
+
+		StringBuilder sb = new StringBuilder()
+				.append("\t-------------------------------------\n")
+				.append("\tConfiguration\n")
+				.append("\t-------------------------------------\n")
+				.append("\tID: '" + _id + "'\n")
+				.append("\t·····································\n")
+				.append("\tOverall reference mass: " + _referenceMass + "\n")
+				.append("\t·····································\n")
+				;
+		
+		return sb.toString();
+		
+	}
+	
 	@Override
 	public void calculateMass(Aircraft aircraft, OperatingConditions conditions, MethodEnum method) {
 
 		// The user can estimate the overall systems mass (control surfaces systems, apu, de-icing ecc...)
 		// or estimate each component mass separately
 		calculateOverallMass(aircraft, method);
-//		} else {
-//			calculateControlSurfaceMass(aircraft, method);
-			//			_mass = _massCS; // + ...
-//		}
-
 	}
 
-
+	@Override
 	public void calculateControlSurfaceMass(Aircraft aircraft, MethodEnum method) {
 
 		switch (method) {
 		case JENKINSON : {
 			_methodsList.add(method);
-			_massCS = Amount.valueOf(
+			_controlSurfaceMass = Amount.valueOf(
 					Math.pow(aircraft.get_weights().get_MTOM().times(0.04).getEstimatedValue(), 0.684),
 					SI.KILOGRAM);
-			_massMap.put(method, Amount.valueOf(round(_massCS.getEstimatedValue()), SI.KILOGRAM));
+			_massMap.put(method, Amount.valueOf(round(_controlSurfaceMass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
 
 		case TORENBEEK_1982 : {
-			_massCS = Amount.valueOf(
+			_controlSurfaceMass = Amount.valueOf(
 					0.4915*Math.pow(aircraft.get_weights().get_MTOM().getEstimatedValue(), 2/3), 
 					SI.KILOGRAM);
 			_methodsList.add(method);
-			_massMap.put(method, Amount.valueOf(round(_massCS.getEstimatedValue()), SI.KILOGRAM));
+			_massMap.put(method, Amount.valueOf(round(_controlSurfaceMass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
 
 		default : {} break;
@@ -111,29 +195,28 @@ public class Systems extends Component{
 		_percentDifference =  new Double[_massMap.size()]; 
 
 	}
-
-
 	
-	/**
-	 * Evaluate mass of all the systems on board (APU, air conditioning, hydraulic systems ...)
+	/*****************************************************************************
+	 * Evaluate mass of all the systems on board 
+	 * (APU, air conditioning, hydraulic systems ...)
 	 * 
 	 * @param aircraft
 	 * @param method
 	 */
-	@SuppressWarnings("unchecked")
+	@Override
 	public void calculateOverallMass(Aircraft aircraft, MethodEnum method) {
 
 		switch(method) {
 		case TORENBEEK_2013 : {
 
-			_mass = Amount.valueOf((
-					250*aircraft.get_fuselage().get_len_F().getEstimatedValue()*
-					aircraft.get_fuselage().get_equivalentDiameterCylinderGM().getEstimatedValue() +
-					150*aircraft.get_fuselage().get_len_F().getEstimatedValue())/
+			_overallMass = Amount.valueOf((
+					250*aircraft.get_fuselage().getFuselageCreator().getLenF().getEstimatedValue()*
+					aircraft.get_fuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().getEstimatedValue() +
+					150*aircraft.get_fuselage().getFuselageCreator().getLenF().getEstimatedValue())/
 					AtmosphereCalc.g0.getEstimatedValue(), 
 					SI.KILOGRAM);
 			_methodsList.add(method);
-			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+			_massMap.put(method, Amount.valueOf(round(_overallMass.getEstimatedValue()), SI.KILOGRAM));
 
 		} break;
 		default : break;
@@ -142,121 +225,122 @@ public class Systems extends Component{
 		_methodsMap.put(AnalysisTypeEnum.WEIGHTS, _methodsList);
 		_percentDifference =  new Double[_massMap.size()]; 
 
-		_massMean = Amount.valueOf(JPADStaticWriteUtils.compareMethods(
-				_massReference, 
+		_meanMass = Amount.valueOf(JPADStaticWriteUtils.compareMethods(
+				_referenceMass, 
 				_massMap,
 				_percentDifference,
 				30.).getFilteredMean(), SI.KILOGRAM);
 		
 	}
 
-
+	@Override
 	public void calculateAPUMass() {
-
+		// TODO
 	}
 
-
+	@Override
 	public void calculateInstrumentationMass() {
-
+		// TODO
 	}
 
-
+	@Override
 	public void calculateElectricalMass() {
-
+		// TODO
 	}
 
-
+	@Override
 	public void calculateAntiIceAirCond() {
-
+		// TODO
 	}
 
-
+	@Override
 	public void calculateElectronicsMass() {
-
+		// TODO
 	}
 
-
+	@Override
 	public void calculateHydraulicPneumaticMass() {
-
+		// TODO
+	}
+	
+	@Override
+	public void calculateAbsorbedPower() {
+		// TODO
+	}
+	
+	@Override
+	public Amount<Mass> getControlSurfaceMass() {
+		return _controlSurfaceMass;
 	}
 
-	public Amount<Mass> get_massCS() {
-		return _massCS;
+	@Override
+	public void setControlSurfaceMass(Amount<Mass> csMass) {
+		this._controlSurfaceMass = csMass;
 	}
 
-
-	public void set_massCS(Amount<Mass> _mass) {
-		this._massCS = _mass;
-	}
-
-
-	public Amount<Length> get_lenght() {
-		return _lenght;
-	}
-
-
-	public void set_lenght(Amount<Length> _lenght) {
-		this._lenght = _lenght;
-	}
-
-
-	public Map<MethodEnum, Amount<Mass>> get_massMap() {
+	@Override
+	public Map<MethodEnum, Amount<Mass>> getMassMap() {
 		return _massMap;
 	}
 
-
-	public void set_massMap(Map<MethodEnum, Amount<Mass>> _massMap) {
+	@Override
+	public void setMassMap(Map<MethodEnum, Amount<Mass>> _massMap) {
 		this._massMap = _massMap;
 	}
 
-
-	public Map<AnalysisTypeEnum, List<MethodEnum>> get_methodsMap() {
+	@Override
+	public Map<AnalysisTypeEnum, List<MethodEnum>> getMethodsMap() {
 		return _methodsMap;
 	}
 
-
-	public void set_methodsMap(
+	@Override
+	public void setMethodsMap(
 			Map<AnalysisTypeEnum, List<MethodEnum>> _methodsMap) {
 		this._methodsMap = _methodsMap;
 	}
 
-
-	public Double[] get_percentDifference() {
+	@Override
+	public Double[] getPercentDifference() {
 		return _percentDifference;
 	}
 
-
-	public void set_percentDifference(Double[] _percentDifference) {
+	@Override
+	public void setPercentDifference(Double[] _percentDifference) {
 		this._percentDifference = _percentDifference;
 	}
 
-
-	public Amount<Mass> get_massReference() {
-		return _massReference;
+	@Override
+	public Amount<Mass> getReferenceMass() {
+		return _referenceMass;
 	}
 
-
-	public void set_massReference(Amount<Mass> _massReference) {
-		this._massReference = _massReference;
+	@Override
+	public void setReferenceMass(Amount<Mass> _massReference) {
+		this._referenceMass = _massReference;
 	}
 
-
-	public Amount<Mass> get_massMean() {
-		return _massMean;
+	@Override
+	public Amount<Mass> getMeanMass() {
+		return _meanMass;
 	}
 
-
-	public Amount<Mass> get_mass() {
-		return _mass;
+	@Override
+	public Amount<Mass> getOverallMass() {
+		return _overallMass;
 	}
 
-
-	public void set_mass(Amount<Mass> _mass) {
-		this._mass = _mass;
+	@Override
+	public void setOverallMass(Amount<Mass> _mass) {
+		this._overallMass = _mass;
 	}
 
-	public static String getId() {
-		return "9";
+	@Override
+	public String getId() {
+		return _id;
 	}
-
+	
+	@Override
+	public void setId(String id) {
+		this._id = id;
+	}
 }
