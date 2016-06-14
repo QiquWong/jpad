@@ -47,7 +47,7 @@ import aircraft.calculators.costs.MyCosts;
 import aircraft.components.Aircraft;
 import aircraft.components.Configuration;
 import aircraft.components.FuelTank;
-import aircraft.components.LandingGear;
+import aircraft.components.LandingGears;
 import aircraft.components.Systems;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
@@ -557,14 +557,14 @@ public class JPADDataWriter {
 					analysisNode.appendChild(weightsAnalysis);
 
 					writeOutputNode("Fuselage_mass", _theAircraft.get_fuselage().get_massEstimated(), weightsAnalysis);
-					writeOutputNode("Wing_mass", _theAircraft.get_wing().get_massEstimated(), weightsAnalysis);
-					writeOutputNode("HTail_mass", _theAircraft.get_HTail().get_massEstimated(), weightsAnalysis);
-					writeOutputNode("VTail_mass", _theAircraft.get_VTail().get_massEstimated(), weightsAnalysis);
+					writeOutputNode("Wing_mass", _theAircraft.get_wing().getMassEstimated(), weightsAnalysis);
+					writeOutputNode("HTail_mass", _theAircraft.get_HTail().getMassEstimated(), weightsAnalysis);
+					writeOutputNode("VTail_mass", _theAircraft.get_VTail().getMassEstimated(), weightsAnalysis);
 					writeOutputNode("Nacelles_mass", _theAircraft.get_theNacelles().get_totalMass(), weightsAnalysis);
-					writeOutputNode("Landing_gear_mass", _theAircraft.get_landingGear().get_massEstimated(), weightsAnalysis);
+					writeOutputNode("Landing_gear_mass", _theAircraft.get_landingGear().getMassEstimated(), weightsAnalysis);
 					writeOutputNode("Structure_mass", _theAircraft.get_weights().get_structuralMass(), weightsAnalysis);
 					writeOutputNode("Power_plant_mass", _theAircraft.get_powerPlant().get_totalMass(), weightsAnalysis);
-					writeOutputNode("Systems_mass", _theAircraft.get_systems().get_mass(), weightsAnalysis);
+					writeOutputNode("Systems_mass", _theAircraft.get_systems().getOverallMass(), weightsAnalysis);
 					writeOutputNode("Furnishings_and_Equipment_mass", _theAircraft.get_configuration().getMassEstimatedFurnishingsAndEquipment(), weightsAnalysis);
 					writeOutputNode("Manufacturer_empty_mass", _theAircraft.get_weights().get_manufacturerEmptyMass(), weightsAnalysis);
 					writeOutputNode("Crew_mass", _theAircraft.get_weights().get_crewMass(), weightsAnalysis);
@@ -856,7 +856,7 @@ public class JPADDataWriter {
 		writeInputNode("Surface_roughness", liftingSurface.get_roughness(), equivalent_parameters, true);
 		writeInputNode("Transition_point_in_percent_of_chord_upper_wing", liftingSurface.get_xTransitionU(), equivalent_parameters, true);
 		writeInputNode("Transition_point_in_percent_of_chord_upper_wing", liftingSurface.get_xTransitionL(), equivalent_parameters, true);
-		writeInputNode("Reference_mass", liftingSurface.get_massReference(), equivalent_parameters, true);
+		writeInputNode("Reference_mass", liftingSurface.getReferenceMass(), equivalent_parameters, true);
 		writeInputNode("Composite_correction_factor", liftingSurface.get_compositeCorretionFactor(), equivalent_parameters, true);
 		writeInputNode("Mass_correction_factor", liftingSurface.get_massCorrectionFactor(), equivalent_parameters, true);
 
@@ -933,16 +933,16 @@ public class JPADDataWriter {
 
 		Element weights = addElementToSubElement("Weights", analysis);
 
-		writeOutputNode("Reference_mass", liftingSurface.get_massReference(), weights);
+		writeOutputNode("Reference_mass", liftingSurface.getReferenceMass(), weights);
 		writeOutputNode("Composite_correction_factor", liftingSurface.get_compositeCorretionFactor(), weights);
 		writeOutputNode("Mass_correction_factor", liftingSurface.get_massCorrectionFactor(), weights);
 
 		writeMethodsComparison(
 				doc, _sheet,
 				"Weight_estimation_method_comparison",
-				liftingSurface.get_massMap(), liftingSurface.getPercentDifference(), weights);
+				liftingSurface.getMassMap(), liftingSurface.getPercentDifference(), weights);
 
-		writeOutputNode("Estimated_mass", liftingSurface.get_massEstimated(), weights);
+		writeOutputNode("Estimated_mass", liftingSurface.getMassEstimated(), weights);
 
 		// --- Balance ----------------------------
 
@@ -951,19 +951,19 @@ public class JPADDataWriter {
 		writeMethodsComparison(				
 				doc, _sheet,
 				"Xcg_estimation_method_comparison",
-				liftingSurface.get_xCGMap(), liftingSurface.get_percentDifferenceXCG(), balance);
+				liftingSurface.getXCGMap(), liftingSurface.get_percentDifferenceXCG(), balance);
 
 		writeMethodsComparison(
 				doc, _sheet,
 				"Ycg_estimation_method_comparison",
 				liftingSurface.get_yCGMap(), liftingSurface.get_percentDifferenceYCG(), balance);
 
-		writeOutputNode("Xcg_LRF", liftingSurface.get_cg().get_xLRF(), balance);
-		writeOutputNode("Ycg_LRF_half_wing", liftingSurface.get_cg().get_yLRF(), balance);
-		writeOutputNode("Zcg_LRF", liftingSurface.get_cg().get_zLRF(), balance);
-		writeOutputNode("Xcg_BRF", liftingSurface.get_cg().get_xBRF(), balance);
-		writeOutputNode("Ycg_BRF_half_wing", liftingSurface.get_cg().get_yBRF(), balance);
-		writeOutputNode("Zcg_BRF", liftingSurface.get_cg().get_zBRF(), balance);
+		writeOutputNode("Xcg_LRF", liftingSurface.getCg().get_xLRF(), balance);
+		writeOutputNode("Ycg_LRF_half_wing", liftingSurface.getCg().get_yLRF(), balance);
+		writeOutputNode("Zcg_LRF", liftingSurface.getCg().get_zLRF(), balance);
+		writeOutputNode("Xcg_BRF", liftingSurface.getCg().get_xBRF(), balance);
+		writeOutputNode("Ycg_BRF_half_wing", liftingSurface.getCg().get_yBRF(), balance);
+		writeOutputNode("Zcg_BRF", liftingSurface.getCg().get_zBRF(), balance);
 
 		// --- Aerodynamics -------------------------
 
@@ -1406,7 +1406,7 @@ public class JPADDataWriter {
 	}
 
 
-	private void writeLandingGear(LandingGear landingGear) {
+	private void writeLandingGear(LandingGears landingGear) {
 		_sheet = commonOperations(landingGear, _landingGearInitiator, true);
 		writeLandingGearInput(landingGear, _landingGearInitiator);
 		writeLandingGearOutput(landingGear, _analysisInitiator);
@@ -1419,7 +1419,7 @@ public class JPADDataWriter {
 	 * @param landingGear
 	 * @param father
 	 */
-	private void writeLandingGearInput(LandingGear landingGear, Element father) {
+	private void writeLandingGearInput(LandingGears landingGear, Element father) {
 		Element Landing_gear_parameters = doc.createElement("Landing_gear_parameters");
 		father.appendChild(Landing_gear_parameters);
 
@@ -1427,8 +1427,8 @@ public class JPADDataWriter {
 		writeInputNode("Ycoordinate", landingGear.get_Y0(), Landing_gear_parameters, true);
 		writeInputNode("Zcoordinate", landingGear.get_Z0(), Landing_gear_parameters, true);
 		writeInputNode("Mounting_point", landingGear.get_mounting().name(), Landing_gear_parameters, true);
-		writeInputNode("Lenght", landingGear.get_lenght(), Landing_gear_parameters, true);
-		writeInputNode("Reference_mass", landingGear.get_massReference(), Landing_gear_parameters, true);
+		writeInputNode("Lenght", landingGear.getLenght(), Landing_gear_parameters, true);
+		writeInputNode("Reference_mass", landingGear.getReferenceMass(), Landing_gear_parameters, true);
 	}
 
 	/**
@@ -1438,33 +1438,33 @@ public class JPADDataWriter {
 	 * @param landingGear
 	 * @param analysisNode
 	 */
-	private void writeLandingGearOutput(LandingGear landingGear, Element analysisNode) {
+	private void writeLandingGearOutput(LandingGears landingGear, Element analysisNode) {
 
 		Element analysis = JPADStaticWriteUtils.addSubElement(doc, _sheet, "Landing_gear_Analysis", analysisNode);
 
 		// --- Weights -------------------------
 		Element weights = addElementToSubElement("Weights", analysis);
 
-		writeOutputNode("Reference_mass", landingGear.get_massReference(), weights);
-		writeOutputNode("Mass", landingGear.get_mass(), weights);
+		writeOutputNode("Reference_mass", landingGear.getReferenceMass(), weights);
+		writeOutputNode("Mass", landingGear.getMass(), weights);
 
 		writeMethodsComparison(
 				doc, 
 				_sheet, 
 				"Weight_estimation_method_comparison",
-				landingGear.get_massMap(), landingGear.get_percentDifference(), weights);
+				landingGear.getMassMap(), landingGear.getPercentDifference(), weights);
 
-		writeOutputNode("Estimated_mass", landingGear.get_massEstimated(), weights);
+		writeOutputNode("Estimated_mass", landingGear.getMassEstimated(), weights);
 
 		// --- Balance --------------------------------
 		Element balance = addElementToSubElement("Balance", analysis);
 
-		writeOutputNode("Xcg_LRF", landingGear.get_cg().get_xLRF(), balance);
-		writeOutputNode("Ycg_LRF", landingGear.get_cg().get_yLRF(), balance);
-		writeOutputNode("Zcg_LRF", landingGear.get_cg().get_zLRF(), balance);
-		writeOutputNode("Xcg_BRF", landingGear.get_cg().get_xBRF(), balance);
-		writeOutputNode("Ycg_BRF", landingGear.get_cg().get_yBRF(), balance);
-		writeOutputNode("Zcg_BRF", landingGear.get_cg().get_zBRF(), balance);
+		writeOutputNode("Xcg_LRF", landingGear.getCg().get_xLRF(), balance);
+		writeOutputNode("Ycg_LRF", landingGear.getCg().get_yLRF(), balance);
+		writeOutputNode("Zcg_LRF", landingGear.getCg().get_zLRF(), balance);
+		writeOutputNode("Xcg_BRF", landingGear.getCg().get_xBRF(), balance);
+		writeOutputNode("Ycg_BRF", landingGear.getCg().get_yBRF(), balance);
+		writeOutputNode("Zcg_BRF", landingGear.getCg().get_zBRF(), balance);
 
 		JPADStaticWriteUtils.writeAllArraysToXls(_sheet, _xlsArraysDescription, _xlsArraysList, _xlsArraysUnit);
 
@@ -1480,7 +1480,7 @@ public class JPADDataWriter {
 		Element Systems = doc.createElement("Systems_data");
 		_systemsInitiator.appendChild(Systems);
 
-		writeInputNode("Reference_mass", systems.get_massReference(), Systems, true);
+		writeInputNode("Reference_mass", systems.getReferenceMass(), Systems, true);
 
 		////////////////////////////////////////////////////////////////////////////
 		// Systems analysis results
@@ -1491,11 +1491,11 @@ public class JPADDataWriter {
 		// --- Weights -------------------------
 		Element weights = addElementToSubElement("Weights", analysis);
 
-		writeOutputNode("Reference_mass", systems.get_massReference(), weights);
-		writeOutputNode("Overall_mass", systems.get_mass(), weights);
+		writeOutputNode("Reference_mass", systems.getReferenceMass(), weights);
+		writeOutputNode("Overall_mass", systems.getOverallMass(), weights);
 
 		int i=0;
-		for (Entry<MethodEnum, Amount<Mass>> entry : systems.get_massMap().entrySet())
+		for (Entry<MethodEnum, Amount<Mass>> entry : systems.getMassMap().entrySet())
 		{
 			// Wing Mass estimation methods
 			writeOutputNode("Mass_estimation_method", entry.getKey().toString(), weights);
@@ -1504,7 +1504,7 @@ public class JPADDataWriter {
 			writeOutputNode("Mass", entry.getValue(), weights);
 
 			// Percent difference from reference value
-			writeOutputNode("Percent_difference", systems.get_percentDifference()[i], weights);
+			writeOutputNode("Percent_difference", systems.getPercentDifference()[i], weights);
 
 			i++;
 		}

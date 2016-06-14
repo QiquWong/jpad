@@ -111,10 +111,10 @@ public class ACBalanceManager extends ACCalculatorManager {
 		_cgStructure = new CenterOfGravity();
 
 		_cgList.add(aircraft.get_fuselage().get_cg());
-		_cgList.add(aircraft.get_wing().get_cg());
-		_cgList.add(aircraft.get_HTail().get_cg());
-		_cgList.add(aircraft.get_VTail().get_cg());
-		_cgList.add(aircraft.get_landingGear().get_cg());
+		_cgList.add(aircraft.get_wing().getCg());
+		_cgList.add(aircraft.get_HTail().getCg());
+		_cgList.add(aircraft.get_VTail().getCg());
+		_cgList.add(aircraft.get_landingGear().getCg());
 		_cgList.addAll(aircraft.get_theNacelles().get_cgList());
 		
 		System.out.println("\n \nCG COMPONENTS LOCATION IN BRF");

@@ -482,7 +482,7 @@ public class LiftCalc {
 		LSAerodynamicsManager.CalcLiftDistribution calculateLiftDistribution = theLSManager.getCalculateLiftDistribution();
 
 		int nPointSemiSpan = theLSManager.get_nPointsSemispanWise();
-		double [] yArray = MyArrayUtils.linspace(0., theLiftingSurface.get_span().getEstimatedValue()/2, nPointSemiSpan);
+		double [] yArray = MyArrayUtils.linspace(0., theLiftingSurface.getSpan().getEstimatedValue()/2, nPointSemiSpan);
 		double [] yArrayND = MyArrayUtils.linspace(0., 1, nPointSemiSpan);
 		double [] cLDistributionInviscid = new double [nPointSemiSpan];
 		double [] alphaLocalAirfoil = new double [nPointSemiSpan];

@@ -10,6 +10,7 @@ import aircraft.calculators.ACAerodynamicsManager;
 import aircraft.calculators.ACPerformanceManager;
 import aircraft.components.Aircraft;
 import aircraft.components.Configuration;
+import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.LiftingSurface2Panels;
 import calculators.performance.PerformanceCalcManager;
 import configuration.enumerations.ComponentEnum;
@@ -79,7 +80,7 @@ public class JPADChartWriter {
 	 * @author LA
 	 * @param liftingSurface
 	 */
-	public void createLiftingSurfaceCharts(LiftingSurface2Panels liftingSurface, boolean makeGraphs){
+	public void createLiftingSurfaceCharts(LiftingSurface liftingSurface, boolean makeGraphs){
 
 		try {
 			// TODO: modify nasa Blackwell method to support vertical tail

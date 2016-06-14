@@ -9,12 +9,14 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import aircraft.components.Configuration;
+import aircraft.components.LandingGears;
+import aircraft.components.Systems;
+import configuration.enumerations.AircraftEnum;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import standaloneutils.JPADXmlReader;
 
-class MyArgumentConfiguration {
+class MyArgumentLandingGears {
 	@Option(name = "-i", aliases = { "--input" }, required = true,
 			usage = "my input file")
 	private File _inputFile;
@@ -29,7 +31,7 @@ class MyArgumentConfiguration {
 
 }
 
-public class ConfigurationTest extends Application {
+public class LandingGearsTest extends Application {
 
 	// declaration necessary for Concrete Object usage
 	public static CmdLineParser theCmdLineParser;
@@ -37,7 +39,7 @@ public class ConfigurationTest extends Application {
 
 	//-------------------------------------------------------------
 
-	public static Configuration theConfiguration;
+	public static LandingGears theLandingGears;
 
 	//-------------------------------------------------------------
 
@@ -47,16 +49,16 @@ public class ConfigurationTest extends Application {
 		//--------------------------------------------------
 		// get the wing object
 		System.out.println("\n\n##################");
-		System.out.println("function start :: getting the configuration object ...");
+		System.out.println("function start :: getting the landing gears object ...");
 
-		Configuration configuration = ConfigurationTest.theConfiguration;
-		if (configuration == null) {
-			System.out.println("configuration object null, returning.");
+		Systems systems = SystemsTest.theSystems;
+		if (systems == null) {
+			System.out.println("landing gears object null, returning.");
 			return;
 		}
 
-		System.out.println("The configuration ...");
-		System.out.println(configuration);
+		System.out.println("The landing gears ...");
+		System.out.println(systems);
 
 		}; // end-of-Runnable
 
@@ -71,16 +73,16 @@ public class ConfigurationTest extends Application {
 		// https://blog.codecentric.de/en/2015/09/javafx-how-to-easily-implement-application-preloader-2/
 
 		System.out.println("--------------");
-		System.out.println("Configuration test");
+		System.out.println("Landing gears test");
 		System.out.println("--------------");
 
-		MyArgumentSystems va = new MyArgumentSystems();
-		SystemsTest.theCmdLineParser = new CmdLineParser(va);
+		MyArgumentLandingGears va = new MyArgumentLandingGears();
+		LandingGearsTest.theCmdLineParser = new CmdLineParser(va);
 
 		// populate the configuration static object in the class
 		// before launching the application thread (launch --> start ...)
 		try {
-			SystemsTest.theCmdLineParser.parseArgument(args);
+			LandingGearsTest.theCmdLineParser.parseArgument(args);
 			String pathToXML = va.getInputFile().getAbsolutePath();
 			System.out.println("INPUT ===> " + pathToXML);
 
@@ -90,20 +92,20 @@ public class ConfigurationTest extends Application {
 			// the Application.start method
 				
 			// read Configuration from xml ...
-			theConfiguration = Configuration.importFromXML(pathToXML);
+			theLandingGears = LandingGears.importFromXML(pathToXML);
 
 //			// default Configuration ...
-//			theConfiguration = new ConfigurationBuilder(
-//					"ATR-72 Cabin Configuration",
+//			theLandingGears = new LandingGear.LandingGearBuilder(
+//					"ATR-72 landing gears",
 //					AircraftEnum.ATR72)
 //					.build();
 			
-			System.out.println("The Configuration ...");
-			System.out.println(ConfigurationTest.theConfiguration.toString());
+			System.out.println("The landing gears ...");
+			System.out.println(LandingGearsTest.theLandingGears.toString());
 
 		} catch (CmdLineException e) {
 			System.err.println("Error: " + e.getMessage());
-			ConfigurationTest.theCmdLineParser.printUsage(System.err);
+			LandingGearsTest.theCmdLineParser.printUsage(System.err);
 			System.err.println();
 			System.err.println("  Must launch this app with proper command line arguments.");
 			return;

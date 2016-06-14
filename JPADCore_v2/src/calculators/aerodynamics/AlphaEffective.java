@@ -58,9 +58,9 @@ public class AlphaEffective {
 		this.theOperatingConditions = theOperatingConditions;
 
 		vortexSemiSpanToSemiSpanRatio = theLSManager.get_vortexSemiSpanToSemiSpanRatio();
-		vortexSemiSpan = vortexSemiSpanToSemiSpanRatio * theWing.get_semispan().getEstimatedValue();
+		vortexSemiSpan = vortexSemiSpanToSemiSpanRatio * theWing.getSemiSpan().getEstimatedValue();
 		mach = theOperatingConditions.get_machCurrent();
-		semispan = theWing.get_semispan().getEstimatedValue();
+		semispan = theWing.getSemiSpan().getEstimatedValue();
 
 		dihedral = theWing.get_dihedral().toArray();
 		alpha0lArray = theWing.get_alpha0VsY().toArray();

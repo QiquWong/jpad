@@ -4,8 +4,10 @@ import static java.lang.Math.round;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
@@ -175,6 +177,31 @@ public class Configuration implements IConfiguration {
 		private List<Integer[]> __missingSeatsRowList = new ArrayList<Integer[]>();
 		private List<ClassTypeEnum> __typeList = new ArrayList<ClassTypeEnum>();
 
+		private Map<MethodEnum, Amount<?>> __massMap = new TreeMap<MethodEnum, Amount<?>>();
+		private Map<Integer, Amount<Length>> __breaksMap = new HashMap<Integer, Amount<Length>>();
+		private Map<AnalysisTypeEnum, List<MethodEnum>> __methodsMap = new HashMap<AnalysisTypeEnum, List<MethodEnum>>();
+		private Map<ClassTypeEnum, ArrayList<Object>> __seatsMap = new HashMap<ClassTypeEnum, ArrayList<Object>>();
+
+		private List<MethodEnum> __methodsList = new ArrayList<MethodEnum>();
+		private List<SeatsBlock> __seatsBlocksList = new ArrayList<SeatsBlock>();
+		private MyArray __xLoading = new MyArray(),  
+						__yLoading = new MyArray();
+		
+		private List<Amount<Length>> __pitchList = new ArrayList<Amount<Length>>();
+		private List<Amount<Length>> __widthList = new ArrayList<Amount<Length>>();
+		private List<Amount<Length>> __distanceFromWallList = new ArrayList<Amount<Length>>();
+		private List<Integer> __numberOfBreaksList = new ArrayList<Integer>();
+		private List<Integer> __numberOfRowsList = new ArrayList<Integer>();
+		private List<Integer[]> __numberOfColumnsList = new ArrayList<Integer[]>();
+		private List<Map<Integer, Amount<Length>>> __breaksMapList = new ArrayList<Map<Integer, Amount<Length>>>();
+
+		private List<Amount<Length>> __seatsCoGFrontToRearWindow = new ArrayList<Amount<Length>>();
+		private List<Amount<Length>> __seatsCoGrearToFrontWindow = new ArrayList<Amount<Length>>();
+		private List<Amount<Length>> __seatsCoGFrontToRearAisle = new ArrayList<Amount<Length>>();
+		private List<Amount<Length>> __seatsCoGrearToFrontAisle = new ArrayList<Amount<Length>>();
+		private List<Amount<Length>> __seatsCoGrearToFrontOther = new ArrayList<Amount<Length>>();
+		private List<Amount<Length>> __seatsCoGFrontToRearOther = new ArrayList<Amount<Length>>();
+		
 		public ConfigurationBuilder (String id) {
 			this.__id = id;
 			this.initializeDefaultVariables(AircraftEnum.ATR72); // initialize with ATR-72 data
@@ -536,6 +563,31 @@ public class Configuration implements IConfiguration {
 		this._missingSeatsRowList = builder.__missingSeatsRowList;
 		this._typeList = builder.__typeList;
 
+		this._massMap = builder.__massMap;
+		this._breaksMap = builder.__breaksMap;
+		this._methodsMap = builder.__methodsMap;
+		this._seatsMap = builder.__seatsMap;
+
+		this._methodsList = builder.__methodsList;
+		this._seatsBlocksList = builder.__seatsBlocksList;
+		this._xLoading = builder.__xLoading;
+		this._yLoading = builder.__yLoading;
+		
+		this._pitchList = builder.__pitchList;
+		this._widthList = builder.__widthList;
+		this._distanceFromWallList = builder.__distanceFromWallList;
+		this._numberOfBreaksList = builder.__numberOfBreaksList;
+		this._numberOfRowsList = builder.__numberOfRowsList;
+		this._numberOfColumnsList = builder.__numberOfColumnsList;
+		this._breaksMapList = builder.__breaksMapList;
+
+		this._seatsCoGFrontToRearWindow = builder.__seatsCoGFrontToRearWindow;
+		this._seatsCoGrearToFrontWindow = builder.__seatsCoGrearToFrontWindow;
+		this._seatsCoGFrontToRearAisle = builder.__seatsCoGFrontToRearAisle;
+		this._seatsCoGrearToFrontAisle = builder.__seatsCoGrearToFrontAisle;
+		this._seatsCoGrearToFrontOther = builder.__seatsCoGrearToFrontOther;
+		this._seatsCoGFrontToRearOther = builder.__seatsCoGFrontToRearOther;
+		
 		this.calculateDependentVariables();
 		
 	}
@@ -630,6 +682,10 @@ public class Configuration implements IConfiguration {
 		List<Integer[]> missingSeatsRow = new ArrayList<Integer[]>();
 		List<String> missingSeatsRowProperty = reader.getXMLPropertiesByPath
 				("//value");
+		if(missingSeatsRowProperty.size() != classesNumber) {
+			System.err.println("THE NUMBER OF MISSING SEAT ROW TAGS HAVE TO BE EQUAL TO THE CLASSES NUMBER !!");
+			return null;
+		}
 		if((missingSeatsRowProperty.isEmpty())) {
 			for(int i=0; i<classesNumber; i++)
 				missingSeatsRow.add(new Integer[] {-1});
@@ -819,6 +875,8 @@ public class Configuration implements IConfiguration {
 						SI.METER
 						);
 		
+		//---------------------------------------------------------------
+		//REFERENCE MASS
 		Amount<Mass> massFurnishingsAndEquipment = Amount
 				.valueOf(
 						Double.valueOf(
@@ -1047,10 +1105,10 @@ public class Configuration implements IConfiguration {
 
 			_massFurnishingsAndEquipment = Amount.valueOf(
 					(12
-							* aircraft.get_fuselage().get_len_F().getEstimatedValue()
-							* aircraft.get_fuselage().get_equivalentDiameterCylinderGM().getEstimatedValue() 
+							* aircraft.get_fuselage().getFuselageCreator().getLenF().getEstimatedValue()
+							* aircraft.get_fuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().getEstimatedValue() 
 							* ( 3
-									* aircraft.get_fuselage().get_equivalentDiameterCylinderGM().getEstimatedValue() 
+									* aircraft.get_fuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().getEstimatedValue() 
 									+ 0.5 * aircraft.get_fuselage().get_deckNumber() + 1) + 3500) /
 					AtmosphereCalc.g0.getEstimatedValue(),
 					SI.KILOGRAM);
@@ -1073,7 +1131,7 @@ public class Configuration implements IConfiguration {
 				_percentDifference,
 				1000.).getFilteredMean(), SI.KILOGRAM);
 	}
-
+	
 	@Override
 	public String toString() {
 

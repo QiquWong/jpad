@@ -14,7 +14,7 @@ import aircraft.calculators.costs.MyCosts;
 import aircraft.components.Aircraft;
 import aircraft.components.Configuration;
 import aircraft.components.FuelTank;
-import aircraft.components.LandingGear;
+import aircraft.components.LandingGears;
 import aircraft.components.Systems;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.Canard;
@@ -99,7 +99,7 @@ public class JPADWriteUtils {
 			addEnginesToXML(aircraft.get_powerPlant(), PowerPlant.getId());
 
 			JPADGlobalData.getTheXmlTree().add(aircraft.get_systems(), 2, "Systems", Systems.getId());
-			JPADGlobalData.getTheXmlTree().add(aircraft.get_landingGear(), 2, "LandingGear", LandingGear.getId());
+			JPADGlobalData.getTheXmlTree().add(aircraft.get_landingGear(), 2, "LandingGear", LandingGears.getId());
 			JPADGlobalData.getTheXmlTree().add(aircraft.get_theAerodynamics(), 2, "Aircraft_Aerodynamics", "24");
 
 			//			try {
@@ -158,7 +158,7 @@ public class JPADWriteUtils {
 			JPADGlobalData.getTheXmlTree().add(FuelTank.class, 2, "Fuel_tank", FuelTank.getId());
 			JPADGlobalData.getTheXmlTree().add(PowerPlant.class, 2, "PowerPlant", PowerPlant.getId());
 			JPADGlobalData.getTheXmlTree().add(Systems.class, 2, "Systems", Systems.getId());
-			JPADGlobalData.getTheXmlTree().add(LandingGear.class, 2, "LandingGear", LandingGear.getId());
+			JPADGlobalData.getTheXmlTree().add(LandingGears.class, 2, "LandingGear", LandingGears.getId());
 			JPADGlobalData.getTheXmlTree().add(ACAerodynamicsManager.class, 2, "Aircraft_Aerodynamics", "24");
 
 			//			try {
