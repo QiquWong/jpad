@@ -91,14 +91,20 @@ public class FuselageCreator implements IFuselageCreator {
 	private Amount<Length> roughness;
 
 	// Non-dimensional parameters
-	private Double lambdaF;
-	private Double lambdaN;
-	private Double lambdaC;
-	private Double lambdaT;
-	private Double lenRatioNF;
-	private Double lenRatioCF;
-	private Double lenRatioTF;
+	private Double lambdaF, lambdaFMIN, lambdaFMAX ;
+	private Double lambdaN, lambdaNMIN, lambdaNMAX;
+	private Double lambdaC,lambdaCMIN, lambdaCMAX;
+	private Double lambdaT, lambdaTMIN, lambdaTMAX;
+	private Double lenRatioNF, lenRatioNFMIN, lenRatioNFMAX;
+	private Double lenRatioCF, lenRatioCFMIN, lenRatioCFMAX;
+	private Double lenRatioTF, lenRatioTFMIN, lenRatioTFMAX;
 	private Double formFactor;
+	
+	// Non-dimensional parameters - bounds
+	private Amount<Length> diamCMIN;
+	private Amount<Length> diamCMAX;
+	private Amount<Length> sectionWidthMIN, sectionWidthMAX;
+	private Amount<Length> heightNMIN, heightNMAX, heightTMIN, heightTMAX;
 
 	// FuselageCreator section parameters
 
@@ -107,21 +113,22 @@ public class FuselageCreator implements IFuselageCreator {
 
 	private Amount<Length> windshieldHeight, windshieldWidth;
 
-	private Amount<Length> dxNoseCap, dxTailCap;
+	private Amount<Length> dxNoseCap, dxNoseCapMIN, dxNoseCapMAX,
+						   dxTailCap, dxTailCapMIN, dxTailCapMAX;
 
 	// Non dimensional section parameters
 
 	// how lower part is different from half diameter
 	private Double
-		sectionCylinderLowerToTotalHeightRatio,
+		sectionCylinderLowerToTotalHeightRatio,sectionLowerToTotalHeightRatioMIN, sectionLowerToTotalHeightRatioMAX,
 		sectionNoseMidLowerToTotalHeightRatio,
 		sectionTailMidLowerToTotalHeightRatio;
 
 
 	// shape index, 1 --> close to a rectangle; 0 --> close to a circle
 	private Double
-		sectionCylinderRhoUpper,
-		sectionCylinderRhoLower,
+		sectionCylinderRhoUpper,sectionRhoUpperMIN, sectionRhoUpperMAX,
+		sectionCylinderRhoLower,sectionRhoLowerMIN, sectionRhoLowerMAX,
 		sectionMidNoseRhoUpper,
 		sectionMidNoseRhoLower,
 		sectionMidTailRhoUpper,
@@ -179,6 +186,7 @@ public class FuselageCreator implements IFuselageCreator {
 	public final int IDX_SECTION_YZ_TAIL_CAP   = 6;
 	public final int IDX_SECTION_YZ_TAIL_TIP   = 7;
 	public final int NUM_SECTIONS_YZ           = 8;
+	
 	// X-coordinates (m) of each YZ section
 	List<Amount<Length> > sectionsYZStations = new ArrayList<Amount<Length>>();
 
@@ -187,40 +195,6 @@ public class FuselageCreator implements IFuselageCreator {
 	List<List<Double>> sectionLowerCurvesY = new ArrayList<List<Double>>();
 	List<List<Double>> sectionLowerCurvesZ = new ArrayList<List<Double>>();
 	
-	// Non-dimensional parameters - bounds
-	private double lambdaCMIN;
-	private double lambdaCMAX;
-	private double lenRatioNFMIN;
-	private double lenRatioNFMAX;
-	private double lenRatioCFMIN;
-	private double lenRatioCFMAX;
-	private double lambdaNMIN;
-	private double lambdaNMAX;
-	private double lambdaTMIN;
-	private double lambdaTMAX;
-	private double lenRatioTFMIN;
-	private double lenRatioTFMAX;
-	private Amount<Length> diamCMIN;
-	private Amount<Length> diamCMAX;
-	private Amount<Length> sectionWidthMIN;
-	private Amount<Length> sectionWidthMAX;
-	private Amount<Length> heightNMIN;
-	private Amount<Length> heightNMAX;
-	private Amount<Length> heightTMIN;
-	private Amount<Length> heightTMAX;
-	private Amount<Length> dxNoseCapMIN;
-	private Amount<Length> dxNoseCapMAX;
-	private Amount<Length> dxTailCapMIN;
-	private Amount<Length> dxTailCapMAX;
-	private double lambdaFMIN;
-	private double lambdaFMAX;
-	private double sectionLowerToTotalHeightRatioMIN;
-	private double sectionLowerToTotalHeightRatioMAX;
-	private double sectionRhoUpperMIN;
-	private double sectionRhoUpperMAX;
-	private double sectionRhoLowerMIN;
-	private double sectionRhoLowerMAX;
-
 	// Constructor
 //	public FuselageCreator(String id) {
 //		this.id = id;
@@ -733,67 +707,64 @@ public class FuselageCreator implements IFuselageCreator {
 	
 	public void checkGeometry() {
 
-		public void checkGeometry() {
+		// --- CHECKS -----------------------------------------------------
 
-			// --- CHECKS -----------------------------------------------------
+		lambdaCMIN  = 3.0;
+		lambdaCMAX  = 7.0;
+		lenFMIN     =  Amount.valueOf(10.0,SI.METRE);		
+		lenFMAX     =  Amount.valueOf(80.0,SI.METRE);
+		lenRatioNFMIN   = 0.1;
+		lenRatioNFMAX   = 0.2;
 
-			lambdaCMIN  = 3.0;
-			lambdaCMAX  = 7.0;
-			lenFMIN     =  Amount.valueOf(10.0,SI.METRE);		
-			lenFMAX     =  Amount.valueOf(80.0,SI.METRE);
-			lenRatioNFMIN   = 0.1;
-			lenRatioNFMAX   = 0.2;
+		lenNMIN     = Amount.valueOf(1.0, SI.METRE);
+		lenNMAX     = Amount.valueOf(8.0, SI.METRE);
+		lenRatioCFMIN   = 0.4;
+		lenRatioCFMAX   = 0.8;
+		lambdaNMIN  = 1.2;
+		lambdaNMAX  = 2.5;
 
-			lenNMIN     = Amount.valueOf(1.0, SI.METRE);
-			lenNMAX     = Amount.valueOf(8.0, SI.METRE);
-			lenRatioCFMIN   = 0.4;
-			lenRatioCFMAX   = 0.8;
-			lambdaNMIN  = 1.2;
-			lambdaNMAX  = 2.5;
+		lambdaTMIN  = 2.8;
+		lambdaTMAX  = 3.2;
+		lenRatioTFMIN = 1.0- lenRatioCFMIN - lenRatioNFMIN;
+		lenRatioTFMAX = 1.0 - lenRatioCFMAX - lenRatioNFMAX;
+		lenTMIN     = Amount.valueOf( 2.0, SI.METRE);
+		lenTMAX     = Amount.valueOf( 25.0, SI.METRE);
 
-			lambdaTMIN  = 2.8;
-			lambdaTMAX  = 3.2;
-			lenRatioTFMIN = 1.0- lenRatioCFMIN - lenRatioNFMIN;
-			lenRatioTFMAX = 1.0 - lenRatioCFMAX - lenRatioNFMAX;
-			lenTMIN     = Amount.valueOf( 2.0, SI.METRE);
-			lenTMAX     = Amount.valueOf( 25.0, SI.METRE);
+		// Bounds to diameter value input
+		diamCMIN    = Amount.valueOf(2.0, SI.METRE);
+		diamCMAX    = Amount.valueOf( 10.0, SI.METRE);
 
-			// Bounds to diameter value input
-			diamCMIN    = Amount.valueOf(2.0, SI.METRE);
-			diamCMAX    = Amount.valueOf( 10.0, SI.METRE);
+		sectionWidthMIN         = Amount.valueOf(0.7*diamCMIN.doubleValue(SI.METRE), SI.METRE);
+		sectionWidthMAX         = Amount.valueOf(1.3*diamCMAX.doubleValue(SI.METRE), SI.METRE);
 
-			sectionWidthMIN         = Amount.valueOf(0.7*diamCMIN.doubleValue(SI.METRE), SI.METRE);
-			sectionWidthMAX         = Amount.valueOf(1.3*diamCMAX.doubleValue(SI.METRE), SI.METRE);
+		heightNMIN  =(Amount.valueOf( -0.2 *sectionCylinderHeight.doubleValue(SI.METRE), SI.METRE));
+		heightNMAX  =(Amount.valueOf( 0.2 *sectionCylinderHeight.doubleValue(SI.METRE), SI.METRE));
 
-			heightNMIN  =(Amount.valueOf( -0.2 *sectionCylinderHeight.doubleValue(SI.METRE), SI.METRE));
-			heightNMAX  =(Amount.valueOf( 0.2 *sectionCylinderHeight.doubleValue(SI.METRE), SI.METRE));
+		heightTMIN  =(Amount.valueOf(  0.4*(0.5*sectionCylinderHeight.doubleValue(SI.METRE)), SI.METRE));
+		heightTMAX  =(Amount.valueOf(  1.0*(0.5*sectionCylinderHeight.doubleValue(SI.METRE)), SI.METRE));
 
-			heightTMIN  =(Amount.valueOf(  0.4*(0.5*sectionCylinderHeight.doubleValue(SI.METRE)), SI.METRE));
-			heightTMAX  =(Amount.valueOf(  1.0*(0.5*sectionCylinderHeight.doubleValue(SI.METRE)), SI.METRE));
+		dxNoseCapMIN            = Amount.valueOf(0.015 * lenN.doubleValue(SI.METRE), SI.METRE);
+		dxNoseCapMAX            = Amount.valueOf(0.0150* lenN.doubleValue(SI.METRE), SI.METRE);
 
-			dxNoseCapMIN            = Amount.valueOf(0.015 * lenN.doubleValue(SI.METRE), SI.METRE);
-			dxNoseCapMAX            = Amount.valueOf(0.0150* lenN.doubleValue(SI.METRE), SI.METRE);
+		dxTailCapMIN            = Amount.valueOf(0.000*lenT.doubleValue(SI.METRE), SI.METRE);
+		dxTailCapMAX            = Amount.valueOf(0.100*lenT.doubleValue(SI.METRE), SI.METRE);
 
-			dxTailCapMIN            = Amount.valueOf(0.000*lenT.doubleValue(SI.METRE), SI.METRE);
-			dxTailCapMAX            = Amount.valueOf(0.100*lenT.doubleValue(SI.METRE), SI.METRE);
+		lambdaFMIN  = 8.0;
+		lambdaFMAX  = 12.5;
 
-			lambdaFMIN  = 8.0;
-			lambdaFMAX  = 12.5;
+		sectionLowerToTotalHeightRatioMIN = 0.1;
+		sectionLowerToTotalHeightRatioMAX = 0.5;
 
-			sectionLowerToTotalHeightRatioMIN = 0.1;
-			sectionLowerToTotalHeightRatioMAX = 0.5;
+		sectionRhoUpperMIN = 0.0;
+		sectionRhoUpperMAX = 1.0;
+		sectionRhoLowerMIN = 0.0;
+		sectionRhoLowerMAX = 1.0;
 
-			sectionRhoUpperMIN = 0.0;
-			sectionRhoUpperMAX = 1.0;
-			sectionRhoLowerMIN = 0.0;
-			sectionRhoLowerMAX = 1.0;
+		lenCMIN     = Amount.valueOf( 0.35 * lenFMIN.doubleValue(SI.METRE), SI.METRE);
+		lenCMAX     = Amount.valueOf(0.75 * lenFMAX.doubleValue(SI.METRE), SI.METRE);
 
-			lenCMIN     = Amount.valueOf( 0.35 * lenFMIN.doubleValue(SI.METRE), SI.METRE);
-			lenCMAX     = Amount.valueOf(0.75 * lenFMAX.doubleValue(SI.METRE), SI.METRE);
+		// --- END OF CHECKS ----------------------------------------
 
-			// --- END OF CHECKS ----------------------------------------
-
-		}
 	}
 
 	public int getNumberPointsNose() {

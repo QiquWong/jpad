@@ -20,7 +20,7 @@ import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
 
 
-public class MyTripCharges {
+public class TripCharges {
 
 	private Aircraft _theAircraft;
 	//	private MyCost _theCost; // TODO: control how organize the classes and the calling
@@ -65,7 +65,7 @@ public class MyTripCharges {
 	 * @param costs
 	 * @author AC
 	 */
-	public MyTripCharges(Aircraft aircraft, MyCosts costs) {
+	public TripCharges(Aircraft aircraft, Costs costs) {
 		_theAircraft = aircraft;
 
 		_calcLandingFees = new CalcLandingFees();
@@ -76,7 +76,7 @@ public class MyTripCharges {
 		_totalTripChargesMap = new TreeMap<MethodEnum, Double>();
 	}
 
-	public void initialize(Aircraft aircraft, MyCosts costs) {
+	public void initialize(Aircraft aircraft, Costs costs) {
 		initialize(costs.get_landingFeesPerTon(), 
 				aircraft.get_weights().get_MTOM(), 
 				aircraft.get_performances().get_blockTime(),

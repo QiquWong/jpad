@@ -279,12 +279,12 @@ public class ACWeightsManager extends ACCalculatorManager {
 			// Actual passenger mass
 			aircraft.get_weights().set_TOM(
 					aircraft.get_weights().get_ZFM().plus(
-							aircraft.get_theFuelTank().get_fuelMass()));
+							aircraft.get_theFuelTank().getFuelMass()));
 
 			// Maximum passenger mass
 			aircraft.get_weights().set_MTOM(
 					aircraft.get_weights().get_MZFM().plus(
-							aircraft.get_theFuelTank().get_fuelMass()));
+							aircraft.get_theFuelTank().getFuelMass()));
 
 			// Maximum landing mass
 			aircraft.get_weights().set_MLM(_MTOM.times(0.9));
@@ -359,7 +359,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 		aircraft.get_VTail().setOverallMass(aircraft.get_weights().get_MZFM().times(.015));
 		aircraft.get_powerPlant().set_mass(aircraft.get_weights().get_MZFM().times(.05));
 		aircraft.get_theNacelles().set_totalMass(aircraft.get_weights().get_MZFM().times(.015));
-		aircraft.get_theFuelTank().set_fuelMass(aircraft.get_weights().get_MZFM().times(.015));
+		aircraft.get_theFuelTank().setFuelMass(aircraft.get_weights().get_MZFM().times(.015));
 		aircraft.get_landingGear().setMass(aircraft.get_weights().get_MZFM().times(.04));
 		aircraft.get_systems().setOverallMass(aircraft.get_weights().get_MZFM().times(.04));
 

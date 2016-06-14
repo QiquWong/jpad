@@ -20,7 +20,6 @@ import aircraft.components.powerPlant.Engine;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.MethodEnum;
-import standaloneutils.customdata.CenterOfGravity;
 
 /** 
  * The Nacelle is considered 

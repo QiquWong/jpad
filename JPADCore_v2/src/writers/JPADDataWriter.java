@@ -43,10 +43,10 @@ import aircraft.calculators.ACAnalysisManager;
 import aircraft.calculators.ACBalanceManager;
 import aircraft.calculators.ACPerformanceManager;
 import aircraft.calculators.ACWeightsManager;
-import aircraft.calculators.costs.MyCosts;
+import aircraft.calculators.costs.Costs;
 import aircraft.components.Aircraft;
 import aircraft.components.Configuration;
-import aircraft.components.FuelTank;
+import aircraft.components.FuelTanks;
 import aircraft.components.LandingGears;
 import aircraft.components.Systems;
 import aircraft.components.fuselage.Fuselage;
@@ -951,12 +951,12 @@ public class JPADDataWriter {
 		writeMethodsComparison(				
 				doc, _sheet,
 				"Xcg_estimation_method_comparison",
-				liftingSurface.getXCGMap(), liftingSurface.get_percentDifferenceXCG(), balance);
+				liftingSurface.getXCGMap(), liftingSurface.getPercentDifferenceXCG(), balance);
 
 		writeMethodsComparison(
 				doc, _sheet,
 				"Ycg_estimation_method_comparison",
-				liftingSurface.get_yCGMap(), liftingSurface.get_percentDifferenceYCG(), balance);
+				liftingSurface.getYCGMap(), liftingSurface.getPercentDifferenceYCG(), balance);
 
 		writeOutputNode("Xcg_LRF", liftingSurface.getCg().get_xLRF(), balance);
 		writeOutputNode("Ycg_LRF_half_wing", liftingSurface.getCg().get_yLRF(), balance);
@@ -1152,7 +1152,7 @@ public class JPADDataWriter {
 
 	}
 
-	private void writeFuelTank(FuelTank fuelTank) {
+	private void writeFuelTank(FuelTanks fuelTank) {
 
 		_sheet = commonOperations(fuelTank, _fuelTankInitiator, true);
 
@@ -1163,25 +1163,25 @@ public class JPADDataWriter {
 		writeFuelTankOutput(fuelTank, fuelTankParam, _analysisInitiator);
 	}
 
-	private void writeFuelTankInput(FuelTank fuelTank, Element fuelTankParam) {
+	private void writeFuelTankInput(FuelTanks fuelTank, Element fuelTankParam) {
 		writeInputNode("Xcoordinate", fuelTank.get_X0(), fuelTankParam, true);
 		writeInputNode("Ycoordinate", fuelTank.get_Y0(), fuelTankParam, true);
 		writeInputNode("Zcoordinate", fuelTank.get_Z0(), fuelTankParam, true);
-		writeInputNode("Fuel_density", fuelTank.get_fuelDensity(), fuelTankParam, true);
-		writeInputNode("Fuel_volume", fuelTank.get_fuelVolume(), fuelTankParam, true);
-		writeInputNode("Fuel_mass", fuelTank.get_fuelMass(), fuelTankParam, true);
+		writeInputNode("Fuel_density", fuelTank.getFuelDensity(), fuelTankParam, true);
+		writeInputNode("Fuel_volume", fuelTank.getFuelVolume(), fuelTankParam, true);
+		writeInputNode("Fuel_mass", fuelTank.getFuelMass(), fuelTankParam, true);
 	}
 
-	private void writeFuelTankOutput(FuelTank fuelTank, Element fuelTankParam, Element analysisNode) {
+	private void writeFuelTankOutput(FuelTanks fuelTank, Element fuelTankParam, Element analysisNode) {
 
-		writeOutputNode("LE_spanwise_extension", fuelTank.get_a1(), fuelTankParam);
-		writeOutputNode("TE_spanwise_extension", fuelTank.get_a2(), fuelTankParam);
-		writeOutputNode("Chordwise_mean_extension", fuelTank.get_length(), fuelTankParam);
-		writeOutputNode("Root_height", fuelTank.get_b1(), fuelTankParam);
-		writeOutputNode("Tip_height", fuelTank.get_b2(), fuelTankParam);
-		writeOutputNode("LE_surface", fuelTank.get_s1(), fuelTankParam);
-		writeOutputNode("TE_surface", fuelTank.get_s2(), fuelTankParam);
-		writeOutputNode("Volume", fuelTank.get_volumeEstimated(), fuelTankParam);
+		writeOutputNode("LE_spanwise_extension", fuelTank.getA1(), fuelTankParam);
+		writeOutputNode("TE_spanwise_extension", fuelTank.getA2(), fuelTankParam);
+		writeOutputNode("Chordwise_mean_extension", fuelTank.getLength(), fuelTankParam);
+		writeOutputNode("Root_height", fuelTank.getB1(), fuelTankParam);
+		writeOutputNode("Tip_height", fuelTank.getB2(), fuelTankParam);
+		writeOutputNode("LE_surface", fuelTank.getS1(), fuelTankParam);
+		writeOutputNode("TE_surface", fuelTank.getS2(), fuelTankParam);
+		writeOutputNode("Volume", fuelTank.getVolumeEstimated(), fuelTankParam);
 
 		Element analysis = JPADStaticWriteUtils.addSubElement(doc, _sheet, "Fuel_tank_Analysis", analysisNode);
 
@@ -1195,14 +1195,14 @@ public class JPADDataWriter {
 				doc, 
 				_sheet,
 				"Xcg_estimation_method_comparison",
-				fuelTank.get_xCGMap(), fuelTank.get_percentDifferenceXCG(), balance);
+				fuelTank.getXCGMap(), fuelTank.getPercentDifferenceXCG(), balance);
 
-		writeOutputNode("Xcg_LRF", fuelTank.get_cg().get_xLRF(), balance);
-		writeOutputNode("Ycg_LRF", fuelTank.get_cg().get_yLRF(), balance);
-		writeOutputNode("Zcg_LRF", fuelTank.get_cg().get_zLRF(), balance);
-		writeOutputNode("Xcg_BRF", fuelTank.get_cg().get_xBRF(), balance);
-		writeOutputNode("Ycg_BRF", fuelTank.get_cg().get_yBRF(), balance);
-		writeOutputNode("Zcg_BRF", fuelTank.get_cg().get_zBRF(), balance);
+		writeOutputNode("Xcg_LRF", fuelTank.getCenterOfGravity().get_xLRF(), balance);
+		writeOutputNode("Ycg_LRF", fuelTank.getCenterOfGravity().get_yLRF(), balance);
+		writeOutputNode("Zcg_LRF", fuelTank.getCenterOfGravity().get_zLRF(), balance);
+		writeOutputNode("Xcg_BRF", fuelTank.getCenterOfGravity().get_xBRF(), balance);
+		writeOutputNode("Ycg_BRF", fuelTank.getCenterOfGravity().get_yBRF(), balance);
+		writeOutputNode("Zcg_BRF", fuelTank.getCenterOfGravity().get_zBRF(), balance);
 
 		JPADStaticWriteUtils.writeAllArraysToXls(_sheet, _xlsArraysDescription, _xlsArraysList, _xlsArraysUnit);	
 	}
@@ -1581,7 +1581,7 @@ public class JPADDataWriter {
 	 * @param costs
 	 * @param analysisNode
 	 */
-	private void writeCosts(MyCosts costs, Element analysisNode) {
+	private void writeCosts(Costs costs, Element analysisNode) {
 		_sheet = commonOperations(costs, _costsInitiator, true);
 		writeCostsInput(costs, _costsInitiator);
 		writeCostsOutput(costs, analysisNode);
@@ -1595,7 +1595,7 @@ public class JPADDataWriter {
 	 * @param costs
 	 * @param costsInitiator
 	 */
-	private void writeCostsInput(MyCosts costs, Element costsInitiator) {
+	private void writeCostsInput(Costs costs, Element costsInitiator) {
 
 		writeInputNode("Airframe_cost", costs.get_airframeCost(), costsInitiator, true);
 		writeInputNode("Total_investments", costs.get_totalInvestments(), costsInitiator, true);
@@ -1628,7 +1628,7 @@ public class JPADDataWriter {
 	 * @param costs
 	 * @param analysisNode
 	 */
-	private void writeCostsOutput(MyCosts costs, Element analysisNode) {
+	private void writeCostsOutput(Costs costs, Element analysisNode) {
 
 		Element analysis = JPADStaticWriteUtils.addSubElement(doc, _sheet, "Costs_Analysis", analysisNode);
 

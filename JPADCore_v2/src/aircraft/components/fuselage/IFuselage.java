@@ -1,6 +1,7 @@
 package aircraft.components.fuselage;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
@@ -8,8 +9,13 @@ import javax.measure.quantity.Mass;
 
 import org.jscience.physics.amount.Amount;
 
+import aircraft.OperatingConditions;
+import aircraft.components.Aircraft;
 import aircraft.components.fuselage.creator.FuselageCreator;
 import aircraft.components.liftingSurface.creator.SpoilerCreator;
+import configuration.enumerations.AnalysisTypeEnum;
+import configuration.enumerations.ComponentEnum;
+import configuration.enumerations.MethodEnum;
 import configuration.enumerations.WindshieldType;
 
 public interface IFuselage {
@@ -64,4 +70,24 @@ public interface IFuselage {
 	// to be completed !!
 	
 	public FuselageCreator getFuselageCreator();
+	
+	public void calculateCG(Aircraft aircraft, OperatingConditions conditions, MethodEnum method);
+	
+	public void calculateMass(Aircraft aircraft, OperatingConditions conditions, MethodEnum method);
+	
+	public Map<AnalysisTypeEnum, List<MethodEnum>> getMethodsMap();
+	
+	public void set_Z0(Amount<Length> z);
+	
+	public Amount<Length> get_X0();
+	
+	public void set_X0(Amount<Length> x);
+	
+	public Amount<Length> get_Y0();
+	
+	public void set_Y0(Amount<Length> y);
+	
+	public Amount<Length> get_Z0();
+	
+	public ComponentEnum getType();
 }

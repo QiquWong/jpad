@@ -13,7 +13,7 @@ import aircraft.components.Aircraft;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
 
-public class MyFixedCharges {
+public class FixedCharges {
 
 	private Aircraft _theAircraft;
 
@@ -40,7 +40,7 @@ public class MyFixedCharges {
 	 * @param lifeSpan life span on year
 	 * @author AC
 	 */
-	public MyFixedCharges(Aircraft aircraft, MyCosts costs) {
+	public FixedCharges(Aircraft aircraft, Costs costs) {
 		_theAircraft = aircraft;
 
 		_calcDepreciation = new CalcDepreciation();
@@ -50,11 +50,11 @@ public class MyFixedCharges {
 		_totalFixedChargesMap = new TreeMap<MethodEnum, Double>();
 	}
 
-	public void initialize(Aircraft aircraft, MyCosts costs) {
+	public void initialize(Aircraft aircraft, Costs costs) {
 		initialize(costs.get_utilization(), costs.get_totalInvestments(), costs.get_aircraftCost(),
 				costs.get_singleEngineCost(),
 				aircraft.get_lifeSpan(), costs.get_residualValue(), costs.get_annualInterestRate(),
-				costs.get_annualInsurancePremiumRate(), aircraft.get_configuration().get_cabinCrewNumber().intValue(),
+				costs.get_annualInsurancePremiumRate(), aircraft.get_configuration().getCabinCrewNumber().intValue(),
 				aircraft.get_configuration().getFlightCrewNumber().intValue(), aircraft.get_powerPlant().get_engineNumber(), 
 				costs.get_singleCabinCrewHrCost(),
 				costs.get_singleflightCrewHrCost(), aircraft.get_weights().get_MTOM());		

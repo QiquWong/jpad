@@ -152,7 +152,7 @@ public class ACBalanceManager extends ACCalculatorManager {
 		// Structure + engines CG
 		_cgStructureAndPower = new CenterOfGravity();
 
-		System.out.println("fuel tank --> " + aircraft.get_theFuelTank().get_cg().get_xBRF().getEstimatedValue());
+		System.out.println("fuel tank --> " + aircraft.get_theFuelTank().getCenterOfGravity().get_xBRF().getEstimatedValue());
 		double cgPowerPlantContribute =0.0;
 		
 		for(int i=0 ; i< aircraft.get_powerPlant().get_engineNumber(); i++){
@@ -197,8 +197,8 @@ public class ACBalanceManager extends ACCalculatorManager {
 		_cgMTOM.set_xBRF(Amount.valueOf(
 				(_cgMZFM.get_xBRF().getEstimatedValue() 
 						* aircraft.get_weights().get_MZFM().getEstimatedValue()
-						+ aircraft.get_theFuelTank().get_fuelMass().getEstimatedValue()
-						* aircraft.get_theFuelTank().get_cg().get_xBRF().getEstimatedValue())
+						+ aircraft.get_theFuelTank().getFuelMass().getEstimatedValue()
+						* aircraft.get_theFuelTank().getCenterOfGravity().get_xBRF().getEstimatedValue())
 						/ aircraft.get_weights().get_MTOM().getEstimatedValue(),
 						SI.METER));
 
