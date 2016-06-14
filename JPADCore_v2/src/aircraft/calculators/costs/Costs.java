@@ -12,26 +12,20 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.OperatingConditions;
 import aircraft.calculators.ACCalculatorManager;
 import aircraft.components.Aircraft;
 import calculators.costs.CostsCalcUtils;
 import calculators.performance.PerformanceCalcUtils;
-import configuration.enumerations.AnalysisTypeEnum;
 import writers.JPADStaticWriteUtils;
 
-public class MyCosts extends ACCalculatorManager {
+public class Costs extends ACCalculatorManager {
 
-	private final String id = "25";
-	private AnalysisTypeEnum _type;
-	private String _name;
-	private OperatingConditions _theOperatingConditions;
 	private Aircraft _theAircraft;
 
-	private MyFixedCharges _theFixedCharges;
-	private MyTripCharges _theTripCharges;
+	private FixedCharges _theFixedCharges;
+	private TripCharges _theTripCharges;
 
-	private double _theCost, _totalInvestments, _utilization, _residualValue,  _annualInterestRate, 
+	private double _totalInvestments, _utilization, _residualValue,  _annualInterestRate, 
 	_annualInsurancePremiumRate, _singleCabinCrewHrCost, _singleflightCrewHrCost, _groundHandlingCostXPax,
 	_manHourLaborRate, _byPassRatio, _overallPressureRatio, _fuelVolumetricCost, _cruiseSpecificFuelConsumption,
 	_hourVolumetricFuelConsumption, _oilMassCost;	
@@ -45,7 +39,7 @@ public class MyCosts extends ACCalculatorManager {
 	private Amount<Duration> _blockTime, _flightTime, _groundManoeuvreTime, _cruiseTime, _climbDescentTime,
 	_sturtupTaxiTOTime, _holdPriorToLandTime, _landingTaxiToStopTime;
 
-	private Amount<Velocity> _blockSpeed, _cruiseSpeed;
+	private Amount<Velocity> _cruiseSpeed;
 
 	private Amount<Mass> _OEM, _MTOM, _payload, _airframeMass;
 
@@ -55,43 +49,40 @@ public class MyCosts extends ACCalculatorManager {
 
 	private Amount<Force> _seaLevelStaticThrust, _thrustTO;
 
-	private Amount<Power> _powerTO;
-
 	private int _numberOfEngines, _cabinCrewNumber, _flightCrewNumber, _numberOfPax,
 	_numberOfCompressorStage, _numberOfShaft;
 
-	public MyCosts(Aircraft aircraft) {
+	public Costs(Aircraft aircraft) {
 
-		_type = AnalysisTypeEnum.COSTS;
-		_name = "Costs";
 		_theAircraft = aircraft;
 
-		_theFixedCharges = new MyFixedCharges(_theAircraft, this);
-		_theTripCharges= new MyTripCharges(_theAircraft, this); 
+		_theFixedCharges = new FixedCharges(_theAircraft, this);
+		_theTripCharges= new TripCharges(_theAircraft, this); 
 
-		initializeIndependentVars(0.1,			// residualValue, Jenkinson's example value.
-				0.053,		// annualInterestRate
-				0.005,		// annualInsurancePremiumRate
-				4200.,		// utilization (hr/year)
-				0.1,			// sparesCostsAsAirframeCostPercentage
-				0.3,			// sparesEnginesCostsAsAirframeCostPercentage
-				246.5,		// singleCabinCrewHrCost,
-				81.,			// singleflightCrewHrCost,
-				Amount.valueOf(10, NonSI.MINUTE), // Climb and descent time (min),
-				Amount.valueOf(20, NonSI.MINUTE), // Sturtup Taxi and Take-Off time (min),
-				Amount.valueOf(8, NonSI.MINUTE),  // Hold Prior To Land Time (min),
-				Amount.valueOf(5, NonSI.MINUTE),   // Landing and Taxi To Stop Time (min),
-				7.8,			// landingFeesPerTon, As suggested by Kundu (USD per ton of MTOW); Jenkinson suggested instead a value of 6 USD per ton of MTOW.
-				5640.,		// jenkinsonNavigationalCharges, (USD)this value is from the jenkinson example. Jenkinson doesn't give a statistic law, but suggest to find the desired value time by time in literature or else.
+		initializeIndependentVars(
+				0.1,									// residualValue, Jenkinson's example value.
+				0.053,									// annualInterestRate
+				0.005,									// annualInsurancePremiumRate
+				4200.,									// utilization (hr/year)
+				0.1,									// sparesCostsAsAirframeCostPercentage
+				0.3,									// sparesEnginesCostsAsAirframeCostPercentage
+				246.5,									// singleCabinCrewHrCost,
+				81.,									// singleflightCrewHrCost,
+				Amount.valueOf(10, NonSI.MINUTE), 		// Climb and descent time (min),
+				Amount.valueOf(20, NonSI.MINUTE), 		// Sturtup Taxi and Take-Off time (min),
+				Amount.valueOf(8, NonSI.MINUTE),  		// Hold Prior To Land Time (min),
+				Amount.valueOf(5, NonSI.MINUTE),  		// Landing and Taxi To Stop Time (min),
+				7.8,									// landingFeesPerTon, As suggested by Kundu (USD per ton of MTOW); Jenkinson suggested instead a value of 6 USD per ton of MTOW.
+				5640.,									// jenkinsonNavigationalCharges, (USD)this value is from the jenkinson example. Jenkinson doesn't give a statistic law, but suggest to find the desired value time by time in literature or else.
 				72,
-				11.,			// groundHandlingCostXPax, Jenkinson suggests this value in USD for the ground handling cost per passenger
-				63.0,		// manHourLaborRate, (USD/hr) As suggested by Kundu. This is the cost of an hour man labor for the maintenance of the airframe.
-				110.,		// engineMaintLaborCost, (USD/hr/engine) 
-				80.,		// engineMaintMaterialCost, (USD/hr/engine)
-				660.,		// airframeMaintLaborCost, (USD/hr)	  
-				218.,		// airframeMaintMaterialCost, (USD/hr)
-				0.75,	// fuelVolumetricCost, Volumetric cost of aeronautic fuel in USD/USGal, as suggested by Kundu
-				8.99		// oilMassCost, Mass cost of aeronautic oil (USD/lb) according to Sforza
+				11.,									// groundHandlingCostXPax, Jenkinson suggests this value in USD for the ground handling cost per passenger
+				63.0,									// manHourLaborRate, (USD/hr) As suggested by Kundu. This is the cost of an hour man labor for the maintenance of the airframe.
+				110.,									// engineMaintLaborCost, (USD/hr/engine) 
+				80.,									// engineMaintMaterialCost, (USD/hr/engine)
+				660.,									// airframeMaintLaborCost, (USD/hr)	  
+				218.,									// airframeMaintMaterialCost, (USD/hr)
+				0.75,									// fuelVolumetricCost, Volumetric cost of aeronautic fuel in USD/USGal, as suggested by Kundu
+				8.99									// oilMassCost, Mass cost of aeronautic oil (USD/lb) according to Sforza
 				);
 	}
 
@@ -174,7 +165,7 @@ public class MyCosts extends ACCalculatorManager {
 
 	public void initializeDependentVars(Aircraft aircraft){
 		initializeDependentVars(aircraft.get_powerPlant().get_engineNumber().intValue(),			// numberOfEngines
-				aircraft.get_configuration().get_cabinCrewNumber().intValue(),			// cabinCrewNumber,
+				aircraft.get_configuration().getCabinCrewNumber().intValue(),			// cabinCrewNumber,
 				aircraft.get_configuration().getFlightCrewNumber().intValue(),			// flightCrewNumber,
 				aircraft.get_performances().get_range(),	// range (nm)
 				aircraft.get_performances().get_vOptimumCruise(),	// cruiseSpeed, This default value is taken from the Jenkinson's Example
@@ -197,8 +188,6 @@ public class MyCosts extends ACCalculatorManager {
 	}
 
 	/**
-	 *
-	 * 
 	 * @param numberOfEngines
 	 * @param cabinCrewNumber
 	 * @param flightCrewNumber
@@ -256,7 +245,6 @@ public class MyCosts extends ACCalculatorManager {
 		_numberOfShaft = numberOfShaft;
 		_seaLevelStaticThrust = seaLevelStaticThrust;	
 		_thrustTO = thrustTO;
-		_powerTO = powerTO;
 		_cruiseSpecificFuelConsumption = cruiseSpecificFuelConsumption;
 		_hourVolumetricFuelConsumption = hourVolumetricFuelConsumption;
 
@@ -270,8 +258,8 @@ public class MyCosts extends ACCalculatorManager {
 
 		_blockTime = calcBlockTime(); //(hr)
 
-		_blockSpeed = Amount.valueOf((_range.getEstimatedValue()
-				/_blockTime.getEstimatedValue()), NonSI.KNOT); //(kts)
+		Amount.valueOf((_range.getEstimatedValue()
+				/_blockTime.getEstimatedValue()), NonSI.KNOT);
 		_flightTime = _blockTime.minus(_groundManoeuvreTime); //(hr) as suggested by Kundu and Jankinson
 
 		_blockFuelVolume = Amount.valueOf(_hourVolumetricFuelConsumption*
@@ -288,7 +276,7 @@ public class MyCosts extends ACCalculatorManager {
 				aircraft.get_powerPlant().get_engineNumber().intValue(),			// numberOfEngines
 				0.1,			// sparesCostsAsAirframeCostPercentage
 				0.3,			// sparesEnginesCostsAsAirframeCostPercentage
-				aircraft.get_configuration().get_cabinCrewNumber().intValue(),			// cabinCrewNumber,
+				aircraft.get_configuration().getCabinCrewNumber().intValue(),			// cabinCrewNumber,
 				aircraft.get_configuration().getFlightCrewNumber().intValue(),			// flightCrewNumber,
 				246.5,		// singleCabinCrewHrCost,
 				81,			// singleflightCrewHrCost,
@@ -529,8 +517,8 @@ public class MyCosts extends ACCalculatorManager {
 
 		_blockTime = calcBlockTime(); //(hr)
 
-		_blockSpeed = Amount.valueOf((_range.getEstimatedValue()
-				/_blockTime.getEstimatedValue()), NonSI.KNOT); //(kts)
+		Amount.valueOf((_range.getEstimatedValue()
+				/_blockTime.getEstimatedValue()), NonSI.KNOT);
 		_flightTime = _blockTime.minus(_groundManoeuvreTime); //(hr) as suggested by Kundu and Jankinson
 	}
 
@@ -633,12 +621,10 @@ public class MyCosts extends ACCalculatorManager {
 		_numberOfShaft = numberOfShaft;
 		_seaLevelStaticThrust = seaLevelStaticThrust;//(N)		
 		_thrustTO = thrustTO;//(N)
-		_powerTO = powerTO;//(hp)
 		_cruiseSpecificFuelConsumption = cruiseSpecificFuelConsumption;
 	}
 
 	/**
-	 * 
 	 * @param manHourLaborRate
 	 * @param byPassRatio
 	 * @param overallPressureRatio
@@ -779,11 +765,11 @@ public class MyCosts extends ACCalculatorManager {
 				_climbDescentTime, _cruiseSpeed);
 	}	
 
-	public MyFixedCharges get_theFixedCharges() {
+	public FixedCharges get_theFixedCharges() {
 		return _theFixedCharges;
 	}
 
-	public MyTripCharges get_theTripCharges() {
+	public TripCharges get_theTripCharges() {
 		return _theTripCharges;
 	}
 
@@ -912,7 +898,6 @@ public class MyCosts extends ACCalculatorManager {
 	}
 
 	public void set_blockSpeed(Amount<Velocity> _blockSpeed) {
-		this._blockSpeed = _blockSpeed;
 	}
 
 	public void set_flightTime(Amount<Duration> _flightTime) {
@@ -1013,7 +998,6 @@ public class MyCosts extends ACCalculatorManager {
 	}
 
 	public void set_powerTO(Amount<Power> _powerTO) {
-		this._powerTO = _powerTO;
 	}
 
 	public Amount<Volume> get_blockFuelVolume() {

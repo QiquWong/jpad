@@ -12,7 +12,7 @@ import aircraft.calculators.ACBalanceManager;
 import aircraft.calculators.ACPerformanceManager;
 import aircraft.calculators.ACStructuralCalculatorManager;
 import aircraft.calculators.ACWeightsManager;
-import aircraft.calculators.costs.MyCosts;
+import aircraft.calculators.costs.Costs;
 import aircraft.componentmodel.AeroComponent;
 import aircraft.componentmodel.Component;
 import aircraft.components.fuselage.Fuselage;
@@ -38,56 +38,44 @@ import configuration.enumerations.ComponentEnum;
  */
 public class Aircraft {
 
-	private static final String _id = "11";
+	private String _id;
+	private AeroConfigurationTypeEnum _type = AeroConfigurationTypeEnum.EMPTY;
+	private AircraftTypeEnum _typeVehicle;
 
-	private PowerPlant _thePowerPlant;
+	private ACAerodynamicsManager _theAerodynamics;
 	private ACStructuralCalculatorManager _theStructures;
-	private Systems _theSystems;
-
 	private ACPerformanceManager _thePerformances;
 	private ACWeightsManager _theWeights;
-
-	// TODO: remove _aeroComponents ??!!
-	private List<AeroComponent> _aeroComponents = new ArrayList<AeroComponent>();
-
-	private AeroConfigurationTypeEnum _type = AeroConfigurationTypeEnum.EMPTY;
-	private List<String> _components = new ArrayList<String>();
-	private List<Component> _componentsList = new ArrayList<Component>();
-	private List<LiftingSurface> _liftingSurfaceList = new ArrayList<LiftingSurface>();
-
-	private Fuselage _theFuselage = null;
-	private Wing _theWing = null;
-	private HTail _theHTail = null;
-	private VTail _theVTail = null;
-	private Canard _theCanard = null;
-	private Wing _exposedWing = null;
-
-	//TODO: remove nacelle from aircraft, leave only nacelleS
-	private Nacelle _theNacelle = null;
-	private LandingGears _theLandingGear = null;
-
-	private Double _sWetTotal = 0.;
-	private String _name;
-	private AircraftTypeEnum _typeVehicle;
-	private Configuration _theConfiguration;
-
-	private FuelTank _theFuelTank;
-
 	private ACBalanceManager _theBalance;
 
-	private double _lifeSpan = 14.; //typical life span in year
-	private NacellesManager _theNacelles;
-	private ACAerodynamicsManager _theAerodynamics;
-	private MyCosts _theCosts;
-	
+	private Fuselage _theFuselage;
+	private LiftingSurface _theWing;
+	private LiftingSurface _theHTail;
+	private LiftingSurface _theVTail;
+	private LiftingSurface _theCanard;
 
+	//TODO: remove nacelle from aircraft, leave only nacelleS
+	private PowerPlant _thePowerPlant;
+	private Nacelle _theNacelle;
+	private FuelTanks _theFuelTank;
+	private LandingGears _theLandingGears;
+	private Systems _theSystems;
+	private Configuration _theConfiguration;
+	
+	private Double _sWetTotal = 0.;
+
+	private NacellesManager _theNacelles;
+	private Costs _theCosts;
+
+	private double _lifeSpan = 14.; //typical life span in year
 
 	/**
 	 * Create an aircraft without components
 	 *
 	 * @author Lorenzo Attanasio
 	 */
-	public Aircraft() {
+	public Aircraft (String id) {
+		this._id = id;
 		initialize();
 	}
 
@@ -119,14 +107,13 @@ public class Aircraft {
 	}
 
 	public void initialize() {
-		_name = "";
 		_typeVehicle = AircraftTypeEnum.TURBOPROP;
-		_theConfiguration = new Configuration();
+		_theConfiguration = new Configuration.ConfigurationBuilder(_id).build();
 		_theBalance = new ACBalanceManager();
 		_theWeights = new ACWeightsManager();
 		_theAerodynamics = new ACAerodynamicsManager(this);
 		_thePerformances = new ACPerformanceManager(this);
-		_theCosts = new MyCosts(this);
+		_theCosts = new Costs(this);
 	}
 
 	/**
@@ -149,7 +136,7 @@ public class Aircraft {
 			_theWeights = new ACWeightsManager(AircraftEnum.ATR72);
 			_theAerodynamics = new ACAerodynamicsManager(this);
 			_thePerformances = new ACPerformanceManager(AircraftEnum.ATR72);
-			_theCosts = new MyCosts(this);
+			_theCosts = new Costs(this);
 			break;
 
 		case B747_100B:
@@ -161,7 +148,7 @@ public class Aircraft {
 			_theAerodynamics = new ACAerodynamicsManager(this);
 			_thePerformances = new ACPerformanceManager(AircraftEnum.B747_100B);
 			// TODO: These data are incorrect because referred to ATR-72. Fix when available
-			_theCosts = new MyCosts(this);
+			_theCosts = new Costs(this);
 			break;
 			
 		case AGILE_DC1:
@@ -172,7 +159,7 @@ public class Aircraft {
 			_theWeights = new ACWeightsManager(AircraftEnum.AGILE_DC1);
 			_theAerodynamics = new ACAerodynamicsManager(this);
 			_thePerformances = new ACPerformanceManager(AircraftEnum.AGILE_DC1);
-			_theCosts = new MyCosts(this);
+			_theCosts = new Costs(this);
 			break;
 		
 		
@@ -657,7 +644,7 @@ public class Aircraft {
 
 	public void createFuelTank() {
 
-		_theFuelTank = new FuelTank(
+		_theFuelTank = new FuelTanks(
 				"Fuel Tank",
 				"ATR 72 Fuel Tank",
 				12.5, 0., 0.);
@@ -673,7 +660,7 @@ public class Aircraft {
 
 		switch(aircraftName) {
 		case ATR72:
-			_theFuelTank = new FuelTank(
+			_theFuelTank = new FuelTanks(
 					aircraftName,
 					"Fuel Tank",
 					"ATR 72 Fuel Tank",
@@ -682,7 +669,7 @@ public class Aircraft {
 			break;
 
 		case B747_100B:
-			_theFuelTank = new FuelTank(
+			_theFuelTank = new FuelTanks(
 					aircraftName,
 					"Fuel Tank",
 					"B747-100B Fuel Tank",
@@ -691,7 +678,7 @@ public class Aircraft {
 			break;
 			
 		case AGILE_DC1:
-			_theFuelTank = new FuelTank(
+			_theFuelTank = new FuelTanks(
 					aircraftName,
 					"Fuel Tank",
 					"AGILE_DC1 Fuel Tank",
@@ -1042,11 +1029,11 @@ public class Aircraft {
 		return _componentsList;
 	}
 
-	public FuelTank get_theFuelTank() {
+	public FuelTanks get_theFuelTank() {
 		return _theFuelTank;
 	}
 
-	public void set_theFuelTank(FuelTank _theFuelTank) {
+	public void set_theFuelTank(FuelTanks _theFuelTank) {
 		this._theFuelTank = _theFuelTank;
 	}
 
@@ -1082,7 +1069,7 @@ public class Aircraft {
 		return _theAerodynamics;
 	}
 
-	public MyCosts get_theCosts() {
+	public Costs get_theCosts() {
 		return _theCosts;
 	}
 

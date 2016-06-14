@@ -42,7 +42,7 @@ import writers.JPADStaticWriteUtils;
  * @author Lorenzo Attanasio
  * @see Torenbeek 1982 page 467
  */
-public class FuelTank extends Component{
+public class FuelTanks extends Component{
 
 	private ComponentEnum _type;
 	
@@ -76,7 +76,7 @@ public class FuelTank extends Component{
 	private Amount<Force> _fuelWeight;
 
 
-	public FuelTank(String name, String description, double x, double y,double z) {
+	public FuelTanks(String name, String description, double x, double y,double z) {
 
 		super("", name, description, x, y, z);
 		_X0 = Amount.valueOf(x, SI.METER);
@@ -98,7 +98,7 @@ public class FuelTank extends Component{
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public FuelTank(AircraftEnum aircraftName, String name, String description, double x, double y,double z) {
+	public FuelTanks(AircraftEnum aircraftName, String name, String description, double x, double y,double z) {
 
 		super("", name, description, x, y, z);
 		_X0 = Amount.valueOf(x, SI.METER);
