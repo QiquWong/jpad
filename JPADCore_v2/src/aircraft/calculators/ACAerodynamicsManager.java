@@ -164,7 +164,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		arW = aircraft.get_wing().get_aspectRatio().doubleValue();
 		bW = aircraft.get_wing().get_span().getEstimatedValue();
 		phi25 = aircraft.get_wing().get_sweepQuarterChordEq().doubleValue(SI.RADIAN);
-		tc = aircraft.get_wing().getGeometry().getCalculateThickness().get_methodsMap().get(MethodEnum.INTEGRAL_MEAN);
+		tc = aircraft.get_wing().getGeometry().getCalculateThickness().getMethodsMap().get(MethodEnum.INTEGRAL_MEAN);
 		dihedral = aircraft.get_wing().get_dihedralMean().getEstimatedValue();
 
 		// TODO: remove this
@@ -186,8 +186,8 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 
 		try {
 			etaHT = aircraft.get_HTail().getAerodynamics().get_dynamicPressureRatio();
-			cLAlphaW = aircraft.get_wing().getAerodynamics().getCalculateCLAlpha().get_methodsMap().get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC);
-			cLAlphaHT = aircraft.get_HTail().getAerodynamics().getCalculateCLAlpha().get_methodsMap().get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC);
+			cLAlphaW = aircraft.get_wing().getAerodynamics().getCalculateCLAlpha().getMethodsMap().get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC);
+			cLAlphaHT = aircraft.get_HTail().getAerodynamics().getCalculateCLAlpha().getMethodsMap().get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC);
 
 			xacWPercentMAC = aircraft.get_wing().getAerodynamics()
 					.getCalculateXAC().get_methodMapMRF().get(MethodEnum.DEYOUNG_HARPER).getEstimatedValue()
