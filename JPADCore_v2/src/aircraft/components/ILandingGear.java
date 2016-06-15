@@ -67,4 +67,11 @@ public interface ILandingGear {
 	public Amount<Mass> getReferenceMass();
 	public void setReferenceMass(Amount<Mass> referenceMass);
 	
+	public Amount<Length> getXApexConstructionAxes();
+	public void setXApexConstructionAxes (Amount<Length> xApexConstructionAxes);
+	public Amount<Length> getYApexConstructionAxes();
+	public void setYApexConstructionAxes (Amount<Length> yApexConstructionAxes);
+	public Amount<Length> getZApexConstructionAxes();
+	public void setZApexConstructionAxes (Amount<Length> zApexConstructionAxes);
+	
 }

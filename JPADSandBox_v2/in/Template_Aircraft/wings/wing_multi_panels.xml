@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-    <wing id="JPAD Test Wing DAF - 2016" mirrored="TRUE" equivalent="TRUE">
+    <wing id="JPAD Test Wing DAF - 2016" mirrored="TRUE" equivalent="FALSE">
         <equivalent_wing>
 			<surface unit="m²">36.9</surface>
 			<aspect_ratio>13.09</aspect_ratio>

@@ -1,6 +1,6 @@
 <jpad_config>
     <vertical_tail id="JPAD Test Vertical Tail DAF - 2016" mirrored="FALSE">
-        <panels>
+		<panels>
             <panel id="Vertical tail panel">
                 <span unit="m">6.25</span> 
                 <dihedral unit="deg">0.0</dihedral>

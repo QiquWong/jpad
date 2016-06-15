@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.SI;
 
@@ -27,6 +28,11 @@ import writers.JPADStaticWriteUtils;
 public class Systems implements ISystems {
 
 	private String _id;
+	
+	private Amount<Length> _xApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
+	private Amount<Length> _yApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
+	private Amount<Length> _zApexConstructionAxes = Amount.valueOf(0.0, SI.METER);
+	
 	private Amount<Mass> _controlSurfaceMass;
 	private Amount<Mass> _referenceMass;
 	private Amount<Mass> _meanMass;
@@ -343,4 +349,34 @@ public class Systems implements ISystems {
 	public void setId(String id) {
 		this._id = id;
 	}
+	
+	@Override
+	public Amount<Length> getXApexConstructionAxes() {
+		return _xApexConstructionAxes;
+	};
+	
+	@Override
+	public void setXApexConstructionAxes (Amount<Length> xApexConstructionAxes) {
+		this._xApexConstructionAxes = xApexConstructionAxes;
+	};
+	
+	@Override
+	public Amount<Length> getYApexConstructionAxes() {
+		return _yApexConstructionAxes;
+	};
+	
+	@Override
+	public void setYApexConstructionAxes (Amount<Length> yApexConstructionAxes) {
+		this._yApexConstructionAxes = yApexConstructionAxes; 
+	};
+	
+	@Override 
+	public Amount<Length> getZApexConstructionAxes() {
+		return _zApexConstructionAxes;
+	};
+	
+	@Override
+	public void setZApexConstructionAxes (Amount<Length> zApexConstructionAxes) {
+		this._zApexConstructionAxes = zApexConstructionAxes;
+	};
 }

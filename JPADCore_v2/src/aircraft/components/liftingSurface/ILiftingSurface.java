@@ -11,7 +11,10 @@ import org.jscience.physics.amount.Amount;
 import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import configuration.enumerations.ComponentEnum;
+import configuration.enumerations.MethodEnum;
+import configuration.enumerations.PositionRelativeToAttachmentEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
+import standaloneutils.customdata.CenterOfGravity;
 
 public interface ILiftingSurface {
 
@@ -48,10 +51,11 @@ public interface ILiftingSurface {
 	public Amount<Angle> getSweepLEEquivalent(Boolean recalculate);
 	public Amount<Angle> getSweepHalfChordEquivalent(Boolean recalculate);
 	public Amount<Angle> getSweepQuarterChordEquivalent(Boolean recalculate);
-	public Amount<Angle> getDihedralEquivalent(Boolean recalculate);
 	
 	public void calculateGeometry(ComponentEnum type, Boolean mirrored);
 	public void calculateGeometry(int nSections, ComponentEnum type, Boolean mirrored);
+	
+	public void calculateCG(MethodEnum method, ComponentEnum type);
 	
 	public List<Airfoil> getAirfoilList();
 	public void setAirfoilList(List<Airfoil> airfoilList);
@@ -62,6 +66,19 @@ public interface ILiftingSurface {
 			);
 	
 	public double getChordAtYActual(Double y);
+	
+	public CenterOfGravity getCG();
+	public Amount<Length> getXCG();
+	public Amount<Length> getYCG();
+	public Amount<Length> getZCG();
+
+	public void setCG(CenterOfGravity cg);
+	public void setXCG(Amount<Length> xCG);
+	public void setYCG(Amount<Length> yCG);
+	public void setZCG(Amount<Length> zCG);
+	
+	public PositionRelativeToAttachmentEnum getPositionRelativeToAttachment();
+	public void setPositionRelativeToAttachment(PositionRelativeToAttachmentEnum positionRelativeToAttachment);
 	
 }
 

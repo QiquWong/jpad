@@ -48,7 +48,6 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	private int _numberOfSpanwisePoints = 15;
 	private LiftingSurfaceCreator _equivalentWing;
-	private LiftingSurfaceCreator _wing2Panels;
 
 	private Boolean _mirrored;
 	
@@ -56,9 +55,9 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 	private Boolean _equivalentWingFlag = Boolean.FALSE;
 	private Amount<Area> _equivalentWingSurface;
 	private Double _equivalentWingAspectRatio;
+	private Amount<Length> _equivalentWingRootChord;
 	private Double _nonDimensionalSpanStationKink;
 	private Amount<Angle> _sweepQuarterChordEquivalentWing;
-	private Amount<Angle> _angleOfIncidenceEquivalentWing;
 	private Amount<Angle> _dihedralEquivalentWing;
 	private Amount<Angle> _twistAtTipEquivalentWing;
 	private Double _taperRatioEquivalentWing;
@@ -524,7 +523,6 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 				Double aspectRatio = Double.valueOf(reader.getXMLPropertyByPath("//equivalent_wing/aspect_ratio"));
 				Double spanStationKink = Double.valueOf(reader.getXMLPropertyByPath("//equivalent_wing/non_dimensional_span_station_kink"));
 				Amount<Angle> sweepQuarterChord = reader.getXMLAmountAngleByPath("//equivalent_wing/sweep_quarter_chord");
-				Amount<Angle> angleOfIncidence = reader.getXMLAmountAngleByPath("//equivalent_wing/angle_of_incidence");
 				Amount<Angle> dihedral = reader.getXMLAmountAngleByPath("//equivalent_wing/dihedral");
 				Amount<Angle> twistAtTip = reader.getXMLAmountAngleByPath("//equivalent_wing/twist_at_tip");
 				Double taperRatio = Double.valueOf(reader.getXMLPropertyByPath("//equivalent_wing/taper_ratio"));
@@ -560,7 +558,6 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 				liftingSurface.setEquivalentWingAspectRatio(aspectRatio);
 				liftingSurface.setNonDimensionalSpanStationKink(spanStationKink);
 				liftingSurface.setSweepQuarterChordEquivalentWing(sweepQuarterChord);
-				liftingSurface.setAngleOfIncidenceEquivalentWing(angleOfIncidence);
 				liftingSurface.setDihedralEquivalentWing(dihedral);
 				liftingSurface.setTwistAtTipEquivalentWing(twistAtTip);
 				liftingSurface.setTaperRatioEquivalentWing(taperRatio);
@@ -1322,6 +1319,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 				(span.doubleValue( SI.METER)*(1 + this._taperRatioEquivalentWing)),
 				SI.METER
 				);
+		this._equivalentWingRootChord = chordRootEquivalentWing;
 		
 		Amount<Length> semiSpanInnerPanel = Amount.valueOf(0.0, SI.METER);
 		Amount<Length> semiSpanOuterPanel = Amount.valueOf(0.0, SI.METER);
@@ -1613,6 +1611,12 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		
 		_equivalentWing.addPanel(equivalentWingPanel);
 		
+		this._equivalentWingSurface = equivalentWingPanel.getSurfacePlanform();
+		this._equivalentWingAspectRatio = equivalentWingPanel.getAspectRatio();
+		this._sweepQuarterChordEquivalentWing = equivalentWingPanel.getSweepQuarterChord();
+		this._taperRatioEquivalentWing = equivalentWingPanel.getTaperRatio();
+		this._equivalentWingRootChord = chordRootEquivalentWing;
+		
 		return _equivalentWing;
 	}
 
@@ -1628,6 +1632,54 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		return this._equivalentWing;
 	}
 
+	/** 
+	 * Returns the chord of the 
+	 * equivalent wing at y station
+	 * 
+	 * @author Lorenzo Attanasio
+	 * @param y in meter or foot
+	 * @return
+	 */
+	public double getChordEquivalentAtY(Double y) {
+
+		Amount<Length> span = Amount.valueOf(
+				Math.sqrt(
+						_equivalentWingSurface
+						.times(_equivalentWingAspectRatio)
+						.getEstimatedValue()
+						),
+				SI.METER);
+		
+		double chord = ((2 * _equivalentWingSurface.getEstimatedValue())/
+				(span.getEstimatedValue() * (1+_taperRatioEquivalentWing))) * 
+				(1-((2 * (1-_taperRatioEquivalentWing)/span.getEstimatedValue()) * 
+						y));
+		return chord;
+
+	}
+	
+	/** 
+	 * Get LE of the equivalent lifting surface 
+	 * x coordinate at y location.
+	 * 
+	 * @param y
+	 * @return
+	 */
+	public double getXLEAtYEquivalent(Double y){
+		
+		Amount<Length> span = Amount.valueOf(
+				Math.sqrt(
+						_equivalentWingSurface
+						.times(_equivalentWingAspectRatio)
+						.getEstimatedValue()
+						),
+				SI.METER);
+		
+		return (getDiscretizedXle().get(getDiscretizedXle().size()-1).getEstimatedValue()
+				/span.getEstimatedValue())
+				* y;
+	}
+	
 	/**
 	 * Calculate wing's span and semi-span according to current values
 	 * i.e. _panels' semi-spans and dihedral angles
@@ -2297,10 +2349,10 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 				.append("\t---------------------------------------\n")
 				.append("\tSurface: " + this._equivalentWingSurface + "\n")
 				.append("\tAspect ratio: " + this._equivalentWingAspectRatio + "\n")
+				.append("\tChord root: " + this._equivalentWingRootChord + "\n")
 				.append("\tSweep c/4: " + this._sweepQuarterChordEquivalentWing + "\n")
 				.append("\tTaperRatio: " + this._taperRatioEquivalentWing + "\n")
 				.append("\tKink station: " + this._nonDimensionalSpanStationKink + "\n")
-				.append("\tAngle of incidence: " + this._angleOfIncidenceEquivalentWing + "\n")
 				.append("\tTwist at tip: " + this._twistAtTipEquivalentWing + "\n")
 				.append("\tDihedral: " + this._dihedralEquivalentWing + "\n")
 				.append("\tX offset leanding edge at root: " + this._xOffsetEquivalentWingRootLE + "\n")
@@ -2457,6 +2509,10 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		return _equivalentWingFlag;
 	}
 
+	public Amount<Length> getRootChordEquivalentWing() {
+		return _equivalentWingRootChord;
+	}
+	
 	public Amount<Area> getEquivalentWingSurface() {
 		return _equivalentWingSurface;
 	}
@@ -2487,6 +2543,10 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	public void setEquivalentWingFlag(Boolean _equivalentWingFlag) {
 		this._equivalentWingFlag = _equivalentWingFlag;
+	}
+	
+	public void setChordRootEquivalentWing(Amount<Length> _equivalentWingRootChord) {
+		this._equivalentWingRootChord = _equivalentWingRootChord;
 	}
 	
 	public void setEquivalentWingSurface(Amount<Area> _equivalentWingSurface) {
@@ -2541,16 +2601,8 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		this.airfoilTipEquivalentWing = airfoilTipEquivalentWing;
 	}
 
-	public Amount<Angle> getAngleOfIncidenceEquivalentWing() {
-		return _angleOfIncidenceEquivalentWing;
-	}
-
 	public Amount<Angle> getDihedralEquivalentWing() {
 		return _dihedralEquivalentWing;
-	}
-
-	public void setAngleOfIncidenceEquivalentWing(Amount<Angle> _angleOfIncidenceEquivalentWing) {
-		this._angleOfIncidenceEquivalentWing = _angleOfIncidenceEquivalentWing;
 	}
 
 	public void setDihedralEquivalentWing(Amount<Angle> _dihedralEquivalentWing) {
@@ -2565,7 +2617,4 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		this._twistAtTipEquivalentWing = _twistAtTipEquivalentWing;
 	}
 
-	public LiftingSurfaceCreator getWing2Panels() {
-		return _wing2Panels;
-	}
 }

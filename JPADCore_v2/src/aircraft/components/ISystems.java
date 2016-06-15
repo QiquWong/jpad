@@ -3,6 +3,7 @@ package aircraft.components;
 import java.util.List;
 import java.util.Map;
 
+import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 
 import org.jscience.physics.amount.Amount;
@@ -57,4 +58,10 @@ public interface ISystems {
 	public Amount<Mass> getOverallMass();
 	public void setOverallMass(Amount<Mass> mass);
 	
+	public Amount<Length> getXApexConstructionAxes();
+	public void setXApexConstructionAxes (Amount<Length> xApexConstructionAxes);
+	public Amount<Length> getYApexConstructionAxes();
+	public void setYApexConstructionAxes (Amount<Length> yApexConstructionAxes);
+	public Amount<Length> getZApexConstructionAxes();
+	public void setZApexConstructionAxes (Amount<Length> zApexConstructionAxes);
 }

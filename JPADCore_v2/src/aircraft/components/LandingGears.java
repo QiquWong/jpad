@@ -16,12 +16,10 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.OperatingConditions;
-import aircraft.componentmodel.Component;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.MethodEnum;
-import configuration.enumerations.MountingPositionEnum;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.customdata.CenterOfGravity;
@@ -31,6 +29,10 @@ import writers.JPADStaticWriteUtils;
 public class LandingGears implements ILandingGear {
 
 	private String _id;
+	
+	private Amount<Length> _xApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
+	private Amount<Length> _yApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
+	private Amount<Length> _zApexConstructionAxes = Amount.valueOf(0.0, SI.METER);
 	
 	private int _numberOfFrontalWheels,
 				_numberOfRearWheels;
@@ -393,7 +395,11 @@ public class LandingGears implements ILandingGear {
 			OperatingConditions conditions,
 			MethodEnum method) {
 
-		_cg.setLRForigin(_X0, _Y0, _Z0); // FIXME : THESE VALUES WILL COME FROM THE AIRCRAFT CLASS
+		 // THESE VALUES WILL COME FROM THE AIRCRAFT CLASS
+		_cg.setLRForigin(_xApexConstructionAxes,
+						 _yApexConstructionAxes,
+						 _zApexConstructionAxes
+						 );
 		_cg.set_xLRFref(Amount.valueOf(0., SI.METER));
 		_cg.set_yLRFref(Amount.valueOf(0., SI.METER));
 		_cg.set_zLRFref(Amount.valueOf(0., SI.METER));
@@ -585,4 +591,34 @@ public class LandingGears implements ILandingGear {
 	public void setReferenceMass(Amount<Mass> referenceMass) {
 		this._referenceMass = referenceMass;
 	}
+	
+	@Override
+	public Amount<Length> getXApexConstructionAxes() {
+		return _xApexConstructionAxes;
+	};
+	
+	@Override
+	public void setXApexConstructionAxes (Amount<Length> xApexConstructionAxes) {
+		this._xApexConstructionAxes = xApexConstructionAxes;
+	};
+	
+	@Override
+	public Amount<Length> getYApexConstructionAxes() {
+		return _yApexConstructionAxes;
+	};
+	
+	@Override
+	public void setYApexConstructionAxes (Amount<Length> yApexConstructionAxes) {
+		this._yApexConstructionAxes = yApexConstructionAxes; 
+	};
+	
+	@Override 
+	public Amount<Length> getZApexConstructionAxes() {
+		return _zApexConstructionAxes;
+	};
+	
+	@Override
+	public void setZApexConstructionAxes (Amount<Length> zApexConstructionAxes) {
+		this._zApexConstructionAxes = zApexConstructionAxes;
+	};
 }
