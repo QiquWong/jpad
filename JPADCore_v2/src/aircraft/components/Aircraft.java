@@ -3,6 +3,7 @@ package aircraft.components;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
@@ -27,6 +28,7 @@ import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AircraftTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
+import parser.ExprParser.casePart_return;
 
 /**
  * This class holds all the data related with the aircraft
@@ -163,6 +165,21 @@ public class Aircraft {
 		Aircraft aircraft = new Aircraft(aircraftName);
 		aircraft.createFuselage(aircraftName);
 		aircraft.createWing(aircraftName, aeroDatabaseReader);
+		
+		switch(aircraftName) {
+		case ATR72 :
+			
+			aircraft.getWing().setXApexConstructionAxes(Amount.valueOf(12.5, SI.METER));
+			aircraft.getWing().setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
+			aircraft.getWing().setZApexConstructionAxes(Amount.valueOf(1.0, SI.METER));
+			aircraft.getWing().setRiggingAngle(Amount.valueOf(2.0, NonSI.DEGREE_ANGLE));
+			
+			break;
+		default:
+			break;
+			
+		}
+		
 //		aircraft.createHTail(aircraftName);
 //		aircraft.createVTail(aircraftName);
 //		aircraft.createFuelTank(aircraftName);

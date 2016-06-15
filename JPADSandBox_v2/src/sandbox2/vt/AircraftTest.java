@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.measure.quantity.Length;
@@ -140,6 +142,10 @@ public class AircraftTest extends Application {
 		List<Amount<Length>> vChords = wing.getLiftingSurfaceCreator().getDiscretizedChords();
 		List<Amount<Length>> vXle = wing.getLiftingSurfaceCreator().getDiscretizedXle();
 
+//		List<Amount<Length>> vXleBRF = new ArrayList<Amount<Length>>();
+//		for(Amount<Length> x : vXle)
+//			vXleBRF.add(x.plus(wing.getXApexConstructionAxes()));
+		
 		Double[][] dataChordsVsY = new Double[nY][2];
 		Double[][] dataXleVsY = new Double[nY][2];
 		IntStream.range(0, nY)
@@ -147,6 +153,7 @@ public class AircraftTest extends Application {
 			dataChordsVsY[i][0] = vY.get(i).doubleValue(SI.METRE);
 			dataChordsVsY[i][1] = vChords.get(i).doubleValue(SI.METRE);
 			dataXleVsY[i][0] = vY.get(i).doubleValue(SI.METRE);
+//			dataXleVsY[i][1] = vXleBRF.get(i).doubleValue(SI.METRE);
 			dataXleVsY[i][1] = vXle.get(i).doubleValue(SI.METRE);
 		});
 
