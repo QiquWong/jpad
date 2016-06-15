@@ -42,7 +42,7 @@ import writers.JPADStaticWriteUtils;
  * @author Lorenzo Attanasio
  *
  */
-public class Configuration implements IConfiguration {
+public class CabinConfiguration implements ICabinConfiguration {
 
 	private String _id;
 	private SeatsBlock _seatsBlockRight,	
@@ -352,8 +352,8 @@ public class Configuration implements IConfiguration {
 			return this;
 		}
 		
-		public Configuration build() {
-			return new Configuration(this);
+		public CabinConfiguration build() {
+			return new CabinConfiguration(this);
 		}
 		
 		/**********************************************************************************************
@@ -524,7 +524,7 @@ public class Configuration implements IConfiguration {
 		}
 	}
 
-	private Configuration (ConfigurationBuilder builder) {
+	private CabinConfiguration (ConfigurationBuilder builder) {
 		
 		this._id = builder.__id;
 		
@@ -595,7 +595,7 @@ public class Configuration implements IConfiguration {
 	// End of builder pattern
 	//===================================================================================================
 	
-	public static Configuration importFromXML (String pathToXML) {
+	public static CabinConfiguration importFromXML (String pathToXML) {
 		
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
 
@@ -887,7 +887,7 @@ public class Configuration implements IConfiguration {
 						SI.KILOGRAM
 						);
 		
-		Configuration aircraftConfiguration = new ConfigurationBuilder(id)
+		CabinConfiguration aircraftConfiguration = new ConfigurationBuilder(id)
 				.nPax(actualPassengerNumber)
 				.maxPax(maximumPassengerNumber)
 				.flightCrewNumber(flightCrewNumber)
@@ -1105,11 +1105,11 @@ public class Configuration implements IConfiguration {
 
 			_massFurnishingsAndEquipment = Amount.valueOf(
 					(12
-							* aircraft.get_fuselage().getFuselageCreator().getLenF().getEstimatedValue()
-							* aircraft.get_fuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().getEstimatedValue() 
+							* aircraft.getFuselage().getFuselageCreator().getLenF().getEstimatedValue()
+							* aircraft.getFuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().getEstimatedValue() 
 							* ( 3
-									* aircraft.get_fuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().getEstimatedValue() 
-									+ 0.5 * aircraft.get_fuselage().getDeckNumber() + 1) + 3500) /
+									* aircraft.getFuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().getEstimatedValue() 
+									+ 0.5 * aircraft.getFuselage().getDeckNumber() + 1) + 3500) /
 					AtmosphereCalc.g0.getEstimatedValue(),
 					SI.KILOGRAM);
 

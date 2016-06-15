@@ -216,9 +216,9 @@ public class Systems implements ISystems {
 		case TORENBEEK_2013 : {
 
 			_overallMass = Amount.valueOf((
-					250*aircraft.get_fuselage().getFuselageCreator().getLenF().getEstimatedValue()*
-					aircraft.get_fuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().getEstimatedValue() +
-					150*aircraft.get_fuselage().getFuselageCreator().getLenF().getEstimatedValue())/
+					250*aircraft.getFuselage().getFuselageCreator().getLenF().getEstimatedValue()*
+					aircraft.getFuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().getEstimatedValue() +
+					150*aircraft.getFuselage().getFuselageCreator().getLenF().getEstimatedValue())/
 					AtmosphereCalc.g0.getEstimatedValue(), 
 					SI.KILOGRAM);
 			_methodsList.add(method);

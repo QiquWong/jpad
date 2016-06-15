@@ -45,7 +45,7 @@ import aircraft.calculators.ACPerformanceManager;
 import aircraft.calculators.ACWeightsManager;
 import aircraft.calculators.costs.Costs;
 import aircraft.components.Aircraft;
-import aircraft.components.Configuration;
+import aircraft.components.CabinConfiguration;
 import aircraft.components.FuelTanks;
 import aircraft.components.LandingGears;
 import aircraft.components.Systems;
@@ -287,16 +287,16 @@ public class JPADDataWriter {
 		_balanceInit = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.get_theBalance())); 
 		_whole_aircraft.appendChild(_balanceInit);
 
-		_fuselageInitiator = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.get_fuselage()));
+		_fuselageInitiator = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.getFuselage()));
 		_whole_aircraft.appendChild(_fuselageInitiator);
 
-		_wingInitiator = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.get_wing()));
+		_wingInitiator = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.getWing()));
 		_whole_aircraft.appendChild(_wingInitiator);
 
-		_hTailInitiator = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.get_HTail()));
+		_hTailInitiator = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.getHTail()));
 		_whole_aircraft.appendChild(_hTailInitiator);
 
-		_vTailInitiator = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.get_VTail()));
+		_vTailInitiator = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.getVTail()));
 		_whole_aircraft.appendChild(_vTailInitiator);
 
 		_nacelleInitiator = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.get_theNacelles()));
@@ -321,7 +321,7 @@ public class JPADDataWriter {
 		Adjust_Criterion = doc.createElement("Adjust_Criterion");
 		Adjust_Criterion.appendChild(
 				doc.createTextNode(
-						_theAircraft.get_fuselage().get_adjustCriterion().toString()
+						_theAircraft.getFuselage().get_adjustCriterion().toString()
 						)
 				);
 		_fuselageInitiator.appendChild(Adjust_Criterion);
@@ -367,20 +367,20 @@ public class JPADDataWriter {
 		// --- Components --------------------------------------------------
 
 		// Write fuselage data (analysis results included)
-		if (_theAircraft.get_fuselage() != null)
-			writeFuselage(_theAircraft.get_fuselage());
+		if (_theAircraft.getFuselage() != null)
+			writeFuselage(_theAircraft.getFuselage());
 
 		// Write wing data
-		if (_theAircraft.get_wing() != null)
-			writeLiftingSurface(_wingInitiator, _theAircraft.get_wing());
+		if (_theAircraft.getWing() != null)
+			writeLiftingSurface(_wingInitiator, _theAircraft.getWing());
 
 		// Write HTail data
-		if (_theAircraft.get_HTail() != null)
-			writeLiftingSurface(_hTailInitiator, _theAircraft.get_HTail());
+		if (_theAircraft.getHTail() != null)
+			writeLiftingSurface(_hTailInitiator, _theAircraft.getHTail());
 
 		// Write VTail data
-		if (_theAircraft.get_VTail() != null)
-			writeLiftingSurface(_vTailInitiator, _theAircraft.get_VTail());
+		if (_theAircraft.getVTail() != null)
+			writeLiftingSurface(_vTailInitiator, _theAircraft.getVTail());
 
 		// Write Propulsion system data
 		if (_theAircraft.get_powerPlant() != null)
@@ -464,13 +464,13 @@ public class JPADDataWriter {
 		JPADStaticWriteUtils.writeAllArraysToXls(_sheet, _xlsArraysDescription, _xlsArraysList, _xlsArraysUnit);
 	}
 
-	private void writeConfiguration(Configuration configuration) {
+	private void writeConfiguration(CabinConfiguration configuration) {
 		_sheet = commonOperations(configuration, _configurationInit, true);
 		writeConfigurationInput(configuration, _configurationInit);
 		writeConfigurationOutput(configuration, _analysisInitiator);
 	}
 
-	private void writeConfigurationInput(Configuration configuration, Element configurationNode) {
+	private void writeConfigurationInput(CabinConfiguration configuration, Element configurationNode) {
 		writeInputNode("Number_of_passengers", configuration.getNPax(), configurationNode, true);
 		writeInputNode("Maximum_number_of_passengers", configuration.getMaxPax(), configurationNode, true);
 		writeInputNode("Number_of_aisles", configuration.getAislesNumber(), configurationNode, true);
@@ -514,7 +514,7 @@ public class JPADDataWriter {
 		writeInputNode("Length_of_each_break", configuration.getLengthOfEachBreakFirstClass(), first, true);
 	}
 
-	private void writeConfigurationOutput(Configuration configuration, Element analysisNode) {
+	private void writeConfigurationOutput(CabinConfiguration configuration, Element analysisNode) {
 		Element configurationAnalysis = JPADStaticWriteUtils.addSubElement(doc, _sheet, "Configuration_Analysis", analysisNode);
 		writeOutputNode("Number_of_crew_members", configuration.getNCrew(), configurationAnalysis);
 		writeOutputNode("Furnishings_and_equipment_mass", configuration.getMassEstimatedFurnishingsAndEquipment(), configurationAnalysis);
@@ -556,10 +556,10 @@ public class JPADDataWriter {
 					Element weightsAnalysis = doc.createElement("Weights_Breakdown");
 					analysisNode.appendChild(weightsAnalysis);
 
-					writeOutputNode("Fuselage_mass", _theAircraft.get_fuselage().get_massEstimated(), weightsAnalysis);
-					writeOutputNode("Wing_mass", _theAircraft.get_wing().getMassEstimated(), weightsAnalysis);
-					writeOutputNode("HTail_mass", _theAircraft.get_HTail().getMassEstimated(), weightsAnalysis);
-					writeOutputNode("VTail_mass", _theAircraft.get_VTail().getMassEstimated(), weightsAnalysis);
+					writeOutputNode("Fuselage_mass", _theAircraft.getFuselage().get_massEstimated(), weightsAnalysis);
+					writeOutputNode("Wing_mass", _theAircraft.getWing().getMassEstimated(), weightsAnalysis);
+					writeOutputNode("HTail_mass", _theAircraft.getHTail().getMassEstimated(), weightsAnalysis);
+					writeOutputNode("VTail_mass", _theAircraft.getVTail().getMassEstimated(), weightsAnalysis);
 					writeOutputNode("Nacelles_mass", _theAircraft.get_theNacelles().get_totalMass(), weightsAnalysis);
 					writeOutputNode("Landing_gear_mass", _theAircraft.get_landingGear().getMassEstimated(), weightsAnalysis);
 					writeOutputNode("Structure_mass", _theAircraft.get_weights().get_structuralMass(), weightsAnalysis);

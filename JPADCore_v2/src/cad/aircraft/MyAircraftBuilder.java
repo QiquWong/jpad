@@ -52,22 +52,22 @@ public class MyAircraftBuilder {
 		theBuilder.makeCompound(theCompound);
 		
 		// Export Fuselage CAD
-		MyFuselageBuilder fusCADBuilder = new MyFuselageBuilder(aircraft.get_fuselage());
+		MyFuselageBuilder fusCADBuilder = new MyFuselageBuilder(aircraft.getFuselage());
 		fusCADBuilder.buildAndWriteCAD(false, true, true, currentFolder, aircraft.get_name() + "Fuselage");
 		theBuilder.add(theCompound, fusCADBuilder.getTheCompound());
 		
 		// Export wing CAD
-		MyLiftingSurfaceBuilder lsCADBuilder = new MyLiftingSurfaceBuilder(aircraft.get_wing());
+		MyLiftingSurfaceBuilder lsCADBuilder = new MyLiftingSurfaceBuilder(aircraft.getWing());
 		lsCADBuilder.buildAndWriteCAD(false, true, false, currentFolder, aircraft.get_name() + "Wing");
 		theBuilder.add(theCompound, lsCADBuilder.getTheCompound());
 		
 		// Export htail CAD
-		lsCADBuilder = new MyLiftingSurfaceBuilder(aircraft.get_HTail());
+		lsCADBuilder = new MyLiftingSurfaceBuilder(aircraft.getHTail());
 		lsCADBuilder.buildAndWriteCAD(false, true, false, currentFolder, aircraft.get_name() + "HTail");
 		theBuilder.add(theCompound, lsCADBuilder.getTheCompound());
 		
 		// Export vtail CAD
-		lsCADBuilder = new MyLiftingSurfaceBuilder(aircraft.get_VTail());
+		lsCADBuilder = new MyLiftingSurfaceBuilder(aircraft.getVTail());
 		lsCADBuilder.buildAndWriteCAD(false, true, false, currentFolder, aircraft.get_name() + "VTail");
 		theBuilder.add(theCompound, lsCADBuilder.getTheCompound());
 		

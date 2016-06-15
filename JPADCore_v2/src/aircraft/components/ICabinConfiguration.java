@@ -12,7 +12,7 @@ import aircraft.auxiliary.SeatsBlock;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.customdata.MyArray;
 
-public interface IConfiguration {
+public interface ICabinConfiguration {
 
 	public void updateConfiguration();
 	public void calculateDependentVariables();

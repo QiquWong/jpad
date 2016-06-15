@@ -315,7 +315,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	}
 
 	public void initializeDataFromAircraft(Aircraft ac) {
-		initializeAircraftData(ac.get_wing().get_surface().doubleValue(SI.SQUARE_METRE));
+		initializeAircraftData(ac.getWing().get_surface().doubleValue(SI.SQUARE_METRE));
 	}
 
 	public void initializeLiftingSurfaceData(
@@ -400,8 +400,8 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 		_yStations = MyArrayUtils.linspace(0., semispan, _nPointsSemispanWise);
 		if (theAircraft != null ){
-			if (theAircraft.get_exposedWing() != null && theLiftingSurface.getType()==ComponentEnum.WING){
-				double yLocRootExposed = theAircraft.get_exposedWing().get_theAirfoilsList().get(0).getGeometry().get_yStation();
+			if (theAircraft.getExposedWing() != null && theLiftingSurface.getType()==ComponentEnum.WING){
+				double yLocRootExposed = theAircraft.getExposedWing().get_theAirfoilsList().get(0).getGeometry().get_yStation();
 				_yStationsIntegral = MyArrayUtils.linspace(yLocRootExposed, semispan, _nPointsSemispanWise);
 
 				_yStationsND = MyArrayUtils.linspace(0., 1., _nPointsSemispanWise);
@@ -617,7 +617,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	 */
 	public double calculateCD0Total() {
 
-		Double kExcr = DragCalc.calculateKExcrescences(theAircraft.get_sWetTotal());
+		Double kExcr = DragCalc.calculateKExcrescences(theAircraft.getSWetTotal());
 
 		calculateCd0Parasite();
 		calculateCdWingFusInterference();
@@ -1584,7 +1584,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 			double alphaLocal = alphaBodyDouble 
 					- downwashAngleDeg 
-					+ theAircraft.get_HTail().get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue();
+					+ theAircraft.getHTail().get_iw().to(NonSI.DEGREE_ANGLE).getEstimatedValue();
 
 			double[]  clArray = calculateCLWithElevatorDeflection(
 					deltaFlap, flapType,deltaSlat,
@@ -3522,10 +3522,10 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		public Amount<Angle> integralMeanExposedNoTwist() {
 
 
-			if ( theAircraft.get_exposedWing() != null && theLiftingSurface.getType() == ComponentEnum.WING){
+			if ( theAircraft.getExposedWing() != null && theLiftingSurface.getType() == ComponentEnum.WING){
 				//System.out.println(" y station integral " + Arrays.toString(_yStationsIntegral));
-				surfaceInteg = theAircraft.get_exposedWing().get_surface().getEstimatedValue();
-				semispanInteg = theAircraft.get_exposedWing().get_semispan().getEstimatedValue();
+				surfaceInteg = theAircraft.getExposedWing().get_surface().getEstimatedValue();
+				semispanInteg = theAircraft.getExposedWing().get_semispan().getEstimatedValue();
 				//				MyArray alphaZeroLiftExposed = new MyArray();
 				//				MyArray chordDistributionExposed = new MyArray();
 				//				alphaZeroLiftExposed.add(
@@ -3594,9 +3594,9 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 
 
-				_alpha0lDistribution = theAircraft.get_exposedWing().get_alpha0lDistributionExposed();
+				_alpha0lDistribution = theAircraft.getExposedWing().get_alpha0lDistributionExposed();
 
-				_chordsVsY = theAircraft.get_exposedWing().get_chordsVsYExposed();
+				_chordsVsY = theAircraft.getExposedWing().get_chordsVsYExposed();
 
 			}
 			else{
@@ -3614,10 +3614,10 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		}
 
 		public Amount<Angle>  integralMeanExposedWithTwist() {
-			if ( theAircraft.get_exposedWing() != null ){
+			if ( theAircraft.getExposedWing() != null ){
 				//System.out.println(" y station integral " + Arrays.toString(_yStationsIntegral));
-				surfaceInteg = theAircraft.get_exposedWing().get_surface().getEstimatedValue();
-				semispanInteg = theAircraft.get_exposedWing().get_semispan().getEstimatedValue();
+				surfaceInteg = theAircraft.getExposedWing().get_surface().getEstimatedValue();
+				semispanInteg = theAircraft.getExposedWing().get_semispan().getEstimatedValue();
 				//				MyArray alphaZeroLiftExposed = new MyArray();
 				//				MyArray chordDistributionExposed = new MyArray();
 				//				MyArray twistExposed = new MyArray();
@@ -3743,10 +3743,10 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				//						twistExposed
 				//						.interpolate(yStationTwistExposed, _yStationsIntegral));
 
-				_alpha0lDistribution = theAircraft.get_exposedWing().get_alpha0lDistributionExposed();
-				_chordsVsY = theAircraft.get_exposedWing().get_chordsVsYExposed();
+				_alpha0lDistribution = theAircraft.getExposedWing().get_alpha0lDistributionExposed();
+				_chordsVsY = theAircraft.getExposedWing().get_chordsVsYExposed();
 
-				_twistDistribution =theAircraft.get_exposedWing().get_twistDistributionExposed();
+				_twistDistribution =theAircraft.getExposedWing().get_twistDistributionExposed();
 
 			}
 			else{
@@ -3964,8 +3964,8 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 					machCurrent, ar, semispan, 
 					sweepHalfChordEq, _yStations, _clAlphaVsY.toArray(), _chordsVsY.toArray())
 					+ calculateCL0.andersonSweptCompressibleSubsonic()
-					* (aircraft.get_wing().get_AC_CGdistance().getEstimatedValue()
-							/aircraft.get_wing().get_meanAerodChordActual().getEstimatedValue());
+					* (aircraft.getWing().get_AC_CGdistance().getEstimatedValue()
+							/aircraft.getWing().get_meanAerodChordActual().getEstimatedValue());
 
 			_methodsMap.put(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC, _cM0);
 			return _cM0;

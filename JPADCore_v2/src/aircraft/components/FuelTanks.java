@@ -174,11 +174,11 @@ public class FuelTanks extends Component{
 
 		// Approximate length of fuel tank in half wing
 		// The user can also override it
-		_a1 = (aircraft.get_wing().get_span().divide(2)).times(0.75);
-		_a2 = (aircraft.get_wing().get_span().divide(2)).times(0.75);
-		_b1 = (aircraft.get_wing().get_meanAerodChordActual().times(aircraft.get_wing().get_thicknessMean()));
-		_b2 = (aircraft.get_wing().get_meanAerodChordActual().times(aircraft.get_wing().get_thicknessMean()));
-		_length = aircraft.get_wing().get_meanAerodChordActual().times(0.75);
+		_a1 = (aircraft.getWing().get_span().divide(2)).times(0.75);
+		_a2 = (aircraft.getWing().get_span().divide(2)).times(0.75);
+		_b1 = (aircraft.getWing().get_meanAerodChordActual().times(aircraft.getWing().get_thicknessMean()));
+		_b2 = (aircraft.getWing().get_meanAerodChordActual().times(aircraft.getWing().get_thicknessMean()));
+		_length = aircraft.getWing().get_meanAerodChordActual().times(0.75);
 	}
 
 	public void calculateCG(Aircraft aircraft, OperatingConditions conditions) {

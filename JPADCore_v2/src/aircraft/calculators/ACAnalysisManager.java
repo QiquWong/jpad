@@ -79,17 +79,17 @@ public class ACAnalysisManager {
 		_thePerformances = new ACPerformanceManager();
 
 		//it's possible to define a method setDatabase
-		if ( aircraft.get_wing().getAerodynamics().get_AerodynamicDatabaseReader() != null){
+		if ( aircraft.getWing().getAerodynamics().get_AerodynamicDatabaseReader() != null){
 				aircraft.get_theAerodynamics().set_aerodynamicDatabaseReader(
 						aircraft
-						.get_wing()
+						.getWing()
 						.getAerodynamics()
 						.get_AerodynamicDatabaseReader());}
 		
-		if ( aircraft.get_wing().getAerodynamics().getHighLiftDatabaseReader() != null){
+		if ( aircraft.getWing().getAerodynamics().getHighLiftDatabaseReader() != null){
 				aircraft.get_theAerodynamics().set_highLiftDatabaseReader(
 						aircraft
-						.get_wing()
+						.getWing()
 						.getAerodynamics()
 						.getHighLiftDatabaseReader());}
 				
@@ -110,9 +110,9 @@ public class ACAnalysisManager {
 			_executedAnalysesMap.put(AnalysisTypeEnum.AERODYNAMIC, true);
 		}
 		
-		if (Arrays.asList(type).contains(AnalysisTypeEnum.PERFORMANCES)) {
+		if (Arrays.asList(type).contains(AnalysisTypeEnum.PERFORMANCE)) {
 			calculatePerformances(aircraft);
-			_executedAnalysesMap.put(AnalysisTypeEnum.PERFORMANCES, true);
+			_executedAnalysesMap.put(AnalysisTypeEnum.PERFORMANCE, true);
 		}
 		
 		if (Arrays.asList(type).contains(AnalysisTypeEnum.COSTS)) {
@@ -128,69 +128,69 @@ public class ACAnalysisManager {
 	public void updateGeometry(Aircraft aircraft) {
 
 		// Fuselage
-		if(aircraft.get_fuselage() != null){
+		if(aircraft.getFuselage() != null){
 			System.out.println("Updating fuselage geometry ...");
-			aircraft.get_fuselage().calculateGeometry();
-			aircraft.get_fuselage().checkGeometry();
-			aircraft.set_sWetTotal(aircraft.get_fuselage().get_sWet().getEstimatedValue());
+			aircraft.getFuselage().calculateGeometry();
+			aircraft.getFuselage().checkGeometry();
+			aircraft.setSWetTotal(aircraft.getFuselage().get_sWet().getEstimatedValue());
 		}
 
 		// Wing
-		if(aircraft.get_wing() != null){
+		if(aircraft.getWing() != null){
 			System.out.println("Updating wing geometry ...");
-			aircraft.get_wing().calculateGeometry();
+			aircraft.getWing().calculateGeometry();
 			//			aircraft.get_wing().updateAirfoilsGeometry();
-			aircraft.get_wing().getGeometry().calculateAll();
-			aircraft.set_sWetTotal(aircraft.get_wing().get_surfaceWettedExposed().getEstimatedValue());
+			aircraft.getWing().getGeometry().calculateAll();
+			aircraft.setSWetTotal(aircraft.getWing().get_surfaceWettedExposed().getEstimatedValue());
 		}
 		//ExposedWing
 		//TODO: eventually continue here
-		if(aircraft.get_exposedWing() != null){
-		aircraft.get_exposedWing().set_surface(aircraft.get_wing().get_surfaceExposed());
-		aircraft.get_exposedWing().set_span(Amount.valueOf(aircraft.get_wing().get_span().getEstimatedValue()-
-				aircraft.get_fuselage().getWidthAtX(aircraft.get_wing()
+		if(aircraft.getExposedWing() != null){
+		aircraft.getExposedWing().set_surface(aircraft.getWing().get_surfaceExposed());
+		aircraft.getExposedWing().set_span(Amount.valueOf(aircraft.getWing().get_span().getEstimatedValue()-
+				aircraft.getFuselage().getWidthAtX(aircraft.getWing()
 						.get_xLEMacActualBRF().getEstimatedValue()), SI.METER));
-		aircraft.get_exposedWing().set_semispan(
+		aircraft.getExposedWing().set_semispan(
 				Amount.valueOf(
-						(aircraft.get_exposedWing().get_span().getEstimatedValue()/2),SI.METER)
+						(aircraft.getExposedWing().get_span().getEstimatedValue()/2),SI.METER)
 				);
-		aircraft.get_exposedWing().set_aspectRatio(
-				(Math.pow(aircraft.get_exposedWing().get_span().getEstimatedValue(),2))
-				/(aircraft.get_exposedWing().get_surface().getEstimatedValue()));
+		aircraft.getExposedWing().set_aspectRatio(
+				(Math.pow(aircraft.getExposedWing().get_span().getEstimatedValue(),2))
+				/(aircraft.getExposedWing().get_surface().getEstimatedValue()));
 		//aircraft.get_exposedWing().updateAirfoilsGeometryEquivalentWing(aircraft);
 		}
 
 		// Htail
-		if(aircraft.get_HTail() != null){
+		if(aircraft.getHTail() != null){
 			System.out.println("Updating HTail geometry ...");
-			aircraft.get_HTail().calculateGeometry();
+			aircraft.getHTail().calculateGeometry();
 			//			aircraft.get_HTail().updateAirfoilsGeometry();
-			aircraft.get_HTail().getGeometry().calculateAll();
-			aircraft.set_sWetTotal(aircraft.get_HTail().get_surfaceWettedExposed().getEstimatedValue());
+			aircraft.getHTail().getGeometry().calculateAll();
+			aircraft.setSWetTotal(aircraft.getHTail().get_surfaceWettedExposed().getEstimatedValue());
 		}
 
 		// Vtail
-		if(aircraft.get_VTail() != null){
+		if(aircraft.getVTail() != null){
 			System.out.println("Updating VTail geometry ...");
-			aircraft.get_VTail().calculateGeometry();
+			aircraft.getVTail().calculateGeometry();
 			//			aircraft.get_VTail().updateAirfoilsGeometry();
-			aircraft.get_VTail().getGeometry().calculateAll();
-			aircraft.set_sWetTotal(aircraft.get_VTail().get_surfaceWettedExposed().getEstimatedValue());
+			aircraft.getVTail().getGeometry().calculateAll();
+			aircraft.setSWetTotal(aircraft.getVTail().get_surfaceWettedExposed().getEstimatedValue());
 		}
 
 		// Canard
-		if(aircraft.get_Canard() != null){
+		if(aircraft.getCanard() != null){
 			System.out.println("Updating Canard geometry ...");
-			aircraft.get_Canard().calculateGeometry();
+			aircraft.getCanard().calculateGeometry();
 			//			aircraft.get_Canard().updateAirfoilsGeometry();
-			aircraft.get_Canard().getGeometry().calculateAll();
-			aircraft.set_sWetTotal(aircraft.get_Canard().get_surfaceWettedExposed().getEstimatedValue());
+			aircraft.getCanard().getGeometry().calculateAll();
+			aircraft.setSWetTotal(aircraft.getCanard().get_surfaceWettedExposed().getEstimatedValue());
 		}
 
 		// Nacelle
 		if(aircraft.get_theNacelles() != null){
 			aircraft.get_theNacelles().calculateSurfaceWetted();
-			aircraft.set_sWetTotal(aircraft.get_theNacelles().get_surfaceWetted().getEstimatedValue());
+			aircraft.setSWetTotal(aircraft.get_theNacelles().get_surfaceWetted().getEstimatedValue());
 		}
 
 		// Fuel tank
@@ -210,12 +210,12 @@ public class ACAnalysisManager {
 			aircraft.get_weights().calculateDependentVariables(aircraft);
 			aircraft.get_theBalance().calculateBalance(aircraft);
 
-			if(aircraft.get_HTail() != null){
-				aircraft.get_HTail().calculateACwACdistance(aircraft);
+			if(aircraft.getHTail() != null){
+				aircraft.getHTail().calculateACwACdistance(aircraft);
 			}
 
-			if(aircraft.get_VTail() != null){
-				aircraft.get_VTail().calculateACwACdistance(aircraft);
+			if(aircraft.getVTail() != null){
+				aircraft.getVTail().calculateACwACdistance(aircraft);
 			}
 
 			// Calculate dependent variables
@@ -248,8 +248,8 @@ public class ACAnalysisManager {
 		aircraft.get_theBalance().calculateBalance(aircraft, _theOperatingConditions, _methodsMap);
 
 		// Evaluate arms again with the new CG estimate
-		aircraft.get_HTail().calculateArms(aircraft);
-		aircraft.get_VTail().calculateArms(aircraft);
+		aircraft.getHTail().calculateArms(aircraft);
+		aircraft.getVTail().calculateArms(aircraft);
 
 		_theCalculatorsList.add(aircraft.get_theBalance());
 	}

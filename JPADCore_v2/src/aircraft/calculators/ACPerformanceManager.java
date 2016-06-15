@@ -7,12 +7,14 @@ import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
+import org.apache.commons.lang3.text.WordUtils;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.OperatingConditions;
 import aircraft.components.Aircraft;
 import calculators.performance.PerformanceCalcManager;
 import configuration.enumerations.AircraftEnum;
+import configuration.enumerations.AnalysisTypeEnum;
 import standaloneutils.atmosphere.AtmosphereCalc;
 
 /** 
@@ -27,6 +29,14 @@ public class ACPerformanceManager {
 
 	private static final String id = "21";
 
+	// TODO :  ADD GET /SET
+	private AnalysisTypeEnum _type;
+	private String _name;
+	
+	public static Double nLimit = 2.5;
+	public static Double nLimitZFW = 2.5;
+	public static Double nUltimate = 1.5 * nLimit;
+	
 	private Aircraft _theAircraft;
 	private Double _nUltimate,
 	_nLimit, _nLimitZFW,
@@ -52,159 +62,15 @@ public class ACPerformanceManager {
 	 */
 	public ACPerformanceManager() {
 
-		_nLimit = 2.5;
-		_nLimitZFW = 2.5;
-		_nUltimate = 1.5 * _nLimit;
-
-		// Altitude at which TAS is maximum.
-		_maxAltitudeAtMaxSpeed = Amount.valueOf(16000., NonSI.FOOT).to(SI.METER);
-
-		_altitudeOptimumCruise = Amount.valueOf(16000., NonSI.FOOT).to(SI.METER);
-
-		// Cruise Mach number
-		_machOptimumCruise = 0.43;
-
-		_vOptimumCruise = Amount.valueOf(_machOptimumCruise*AtmosphereCalc.getSpeedOfSound(_altitudeOptimumCruise.doubleValue(SI.METER)), SI.METERS_PER_SECOND);
-
-		// Max Mach number
-		_machMaxCruise = 0.45;
-
-		_blockTime = Amount.valueOf(1.5, NonSI.HOUR);
-		_flightTime = Amount.valueOf(1.35, NonSI.HOUR);
-
-		_cruiseCL = 0.45;
-
-		_range = Amount.valueOf(1528., SI.KILOMETER);
-
-		calculateSpeeds();
+		_type = AnalysisTypeEnum.PERFORMANCE;
+		_name = WordUtils.capitalizeFully(AnalysisTypeEnum.PERFORMANCE.name());
 	}
 	
-	/**
-	 * Overload of the default builder that recognize aircraft name and sets the relative 
-	 * data to be used in performances evaluation.
-	 * 
-	 * @author Vittorio Trifari
-	 */
-	public ACPerformanceManager(AircraftEnum aircraftName) {
-		
-		switch(aircraftName) {
-		case ATR72:
-			_nLimit = 2.5;
-			_nLimitZFW = 2.5;
-			_nUltimate = 1.5 * _nLimit;
-
-			// Altitude at which TAS is maximum.
-			_maxAltitudeAtMaxSpeed = Amount.valueOf(16000., NonSI.FOOT).to(SI.METER);
-
-			_altitudeOptimumCruise = Amount.valueOf(16000., NonSI.FOOT).to(SI.METER);
-
-			// Cruise Mach number
-			_machOptimumCruise = 0.43;
-
-			_vOptimumCruise = Amount.valueOf(_machOptimumCruise*AtmosphereCalc.getSpeedOfSound(_altitudeOptimumCruise.doubleValue(SI.METER)), SI.METERS_PER_SECOND);
-
-			// Max Mach number
-			_machMaxCruise = 0.45;
-
-			_blockTime = Amount.valueOf(1.5, NonSI.HOUR);
-			_flightTime = Amount.valueOf(1.35, NonSI.HOUR);
-
-			_cruiseCL = 0.45;
-
-			_range = Amount.valueOf(1528., SI.KILOMETER);
-
-			calculateSpeeds();
-			break;
-			
-		case B747_100B:
-			_nLimit = 2.5;
-			_nLimitZFW = 2.5;
-			_nUltimate = 1.5 * _nLimit;
-
-			// Altitude at which TAS is maximum.
-			_maxAltitudeAtMaxSpeed = Amount.valueOf(35000., NonSI.FOOT).to(SI.METER);
-
-			_altitudeOptimumCruise = Amount.valueOf(35000., NonSI.FOOT).to(SI.METER);
-
-			// Cruise Mach number
-			_machOptimumCruise = 0.84;
-
-			_vOptimumCruise = Amount.valueOf(_machOptimumCruise*AtmosphereCalc.getSpeedOfSound(_altitudeOptimumCruise.doubleValue(SI.METER)), SI.METERS_PER_SECOND);
-
-			// Max Mach number
-			_machMaxCruise = 0.89;
-
-			//used for costs --> TODO: need to be fixed with correct data.
-			_blockTime = Amount.valueOf(1.5, NonSI.HOUR);
-			_flightTime = Amount.valueOf(1.35, NonSI.HOUR);
-
-			_cruiseCL = 0.58;
-
-			_range = Amount.valueOf(9800., SI.KILOMETER);
-
-			calculateSpeeds();
-			break;
-			
-		case AGILE_DC1:
-			_nLimit = 2.5;
-			_nLimitZFW = 2.5;
-			_nUltimate = 1.5 * _nLimit;
-
-			// Altitude at which TAS is maximum.
-			_maxAltitudeAtMaxSpeed = Amount.valueOf(36000., NonSI.FOOT).to(SI.METER);
-
-			_altitudeOptimumCruise = Amount.valueOf(36000., NonSI.FOOT).to(SI.METER);
-
-			// Cruise Mach number
-			_machOptimumCruise = 0.78;
-
-			_vOptimumCruise = Amount.valueOf(_machOptimumCruise*AtmosphereCalc.getSpeedOfSound(_altitudeOptimumCruise.doubleValue(SI.METER)), SI.METERS_PER_SECOND);
-
-			// Max Mach number
-			_machMaxCruise = 0.82;
-
-			_blockTime = Amount.valueOf(2.6, NonSI.HOUR);
-			_flightTime = Amount.valueOf(2.33, NonSI.HOUR);
-
-			_cruiseCL = 0.5;
-
-			_range = Amount.valueOf(3500., SI.KILOMETER);
-
-			calculateSpeeds();
-			break;
-		}
-	}
 
 	public ACPerformanceManager(Aircraft aircraft) {
 		this();
 		_theAircraft = aircraft;
 	}
-
-	/**
-	 * Evaluate relevant speeds
-	 */
-	public void calculateSpeeds() {
-
-		// Maximum cruise TAS
-		_vMaxCruise = Amount.valueOf(
-				_machMaxCruise * 
-				OperatingConditions.get_atmosphere(_maxAltitudeAtMaxSpeed.getEstimatedValue()).getSpeedOfSound(), 
-				SI.METERS_PER_SECOND); // ATR72 max TAS (Jane's)
-		_vMaxCruiseEAS = _vMaxCruise.
-				times(Math.sqrt(
-						OperatingConditions.get_atmosphere(_maxAltitudeAtMaxSpeed.getEstimatedValue()).getDensityRatio()));
-
-		// FAR Part 25 paragraph 25.335
-		_vDive = _vMaxCruise.times(1.25); 
-		_vDiveEAS = _vMaxCruiseEAS.times(1.25); 
-
-		_machDive0 = _vDiveEAS.divide(AtmosphereCalc.a0).getEstimatedValue();
-		_maxDynamicPressure = Amount.valueOf(0.5 * 
-				AtmosphereCalc.rho0.getEstimatedValue()*
-				Math.pow(_vDiveEAS.getEstimatedValue(), 2), SI.PASCAL); //TODO ??? Is it correct ???
-
-	}
-
 
 	/**
 	 * This method MUST be called only if the aircraft
@@ -221,12 +87,12 @@ public class ACPerformanceManager {
 					_theAircraft.get_powerPlant().get_engineNumber().intValue(), 
 					_theAircraft.get_powerPlant().get_engineList().get(0).get_engineType(), 
 					_theAircraft.get_powerPlant().get_engineList().get(0).get_bpr(), 
-					_theAircraft.get_wing().get_surface().doubleValue(SI.SQUARE_METRE),
-					_theAircraft.get_wing().get_aspectRatio(), 
-					_theAircraft.get_wing().get_sweepHalfChordEq().doubleValue(SI.RADIAN), 
-					_theAircraft.get_wing().get_thicknessMax(), 
-					_theAircraft.get_wing().get_theAirfoilsList().get(0).getType(), 
-					_theAircraft.get_wing().getAerodynamics().getCalculateCLMaxClean().phillipsAndAlley(), 
+					_theAircraft.getWing().get_surface().doubleValue(SI.SQUARE_METRE),
+					_theAircraft.getWing().get_aspectRatio(), 
+					_theAircraft.getWing().get_sweepHalfChordEq().doubleValue(SI.RADIAN), 
+					_theAircraft.getWing().get_thicknessMax(), 
+					_theAircraft.getWing().get_theAirfoilsList().get(0).getType(), 
+					_theAircraft.getWing().getAerodynamics().getCalculateCLMaxClean().phillipsAndAlley(), 
 					_theAircraft.get_theAerodynamics().get_cD0(), 
 					_theAircraft.get_theAerodynamics().get_oswald());
 			// TODO
@@ -243,12 +109,12 @@ public class ACPerformanceManager {
 					_theAircraft.get_powerPlant().get_engineNumber().intValue() - 1, 
 					_theAircraft.get_powerPlant().get_engineList().get(0).get_engineType(),
 					_theAircraft.get_powerPlant().get_engineList().get(0).get_bpr(), 
-					_theAircraft.get_wing().get_surface().doubleValue(SI.SQUARE_METRE),
-					_theAircraft.get_wing().get_aspectRatio(), 
-					_theAircraft.get_wing().get_sweepHalfChordEq().doubleValue(SI.RADIAN), 
-					_theAircraft.get_wing().get_thicknessMax(), 
-					_theAircraft.get_wing().get_theAirfoilsList().get(0).getType(), 
-					_theAircraft.get_wing().getAerodynamics().getCalculateCLMaxClean().phillipsAndAlley(), 
+					_theAircraft.getWing().get_surface().doubleValue(SI.SQUARE_METRE),
+					_theAircraft.getWing().get_aspectRatio(), 
+					_theAircraft.getWing().get_sweepHalfChordEq().doubleValue(SI.RADIAN), 
+					_theAircraft.getWing().get_thicknessMax(), 
+					_theAircraft.getWing().get_theAirfoilsList().get(0).getType(), 
+					_theAircraft.getWing().getAerodynamics().getCalculateCLMaxClean().phillipsAndAlley(), 
 					_theAircraft.get_theAerodynamics().get_cD0(), 
 					_theAircraft.get_theAerodynamics().get_oswald());
 

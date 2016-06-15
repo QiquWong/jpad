@@ -9,7 +9,7 @@ import org.apache.commons.lang3.text.WordUtils;
 import aircraft.calculators.ACAerodynamicsManager;
 import aircraft.calculators.ACPerformanceManager;
 import aircraft.components.Aircraft;
-import aircraft.components.Configuration;
+import aircraft.components.CabinConfiguration;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.LiftingSurface2Panels;
 import calculators.performance.PerformanceCalcManager;
@@ -38,17 +38,17 @@ public class JPADChartWriter {
 		
 		createBalanceCharts(aircraft.get_configuration());
 		createAircraftAerodynamicsCharts(aircraft.get_theAerodynamics());
-		createLiftingSurfaceCharts(aircraft.get_wing(), true);
-		createLiftingSurfaceCharts(aircraft.get_HTail(), true);
-		createLiftingSurfaceCharts(aircraft.get_VTail(), true);
-		createLiftingSurfaceCharts(aircraft.get_Canard(), true);
+		createLiftingSurfaceCharts(aircraft.getWing(), true);
+		createLiftingSurfaceCharts(aircraft.getHTail(), true);
+		createLiftingSurfaceCharts(aircraft.getVTail(), true);
+		createLiftingSurfaceCharts(aircraft.getCanard(), true);
 		createPerformanceCharts(aircraft.get_performances(), aircraft.get_performances().getPerformanceManager(), "AEO");
 		createPerformanceCharts(aircraft.get_performances(), aircraft.get_performances().getPerformanceManagerOEI(), "OEI");
 		
 		System.out.println("--------- DONE WRITING CHARTS TO FILE ----------");
 	}
 
-	public void createBalanceCharts(Configuration configuration) {
+	public void createBalanceCharts(CabinConfiguration configuration) {
 
 		new MyChartToFileUtils().createMultiTraceTikz(
 				MyArrayUtils.convertListOfAmountTodoubleArray(configuration.getSeatsCoGFrontToRear()),

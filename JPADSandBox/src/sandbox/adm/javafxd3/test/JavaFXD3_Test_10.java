@@ -20,6 +20,7 @@ import aircraft.components.fuselage.Fuselage;
 import aircraft.components.fuselage.Fuselage.FuselageBuilder;
 import aircraft.components.fuselage.creator.FuselageCreator;
 import configuration.MyConfiguration;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ComponentEnum;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -275,28 +276,28 @@ public class JavaFXD3_Test_10 extends Application {
 			// This wing static object is available in the scope of
 			// the Application.start method
 
-			// Read fuselage from xml ...
-			theFuselage = new FuselageBuilder("MyFuselage", ComponentEnum.FUSELAGE)
-					.fuselageCreator(
-							FuselageCreator.importFromXML(pathToXML)
-							)
-					.build();
-					
-//			// default Fuselage ...
+//			// Read fuselage from xml ...
 //			theFuselage = new FuselageBuilder("MyFuselage", ComponentEnum.FUSELAGE)
 //					.fuselageCreator(
-//						new FuselageCreator
-//							.FuselageBuilder("Test ATR72 fuselage", AircraftEnum.ATR72)
-//							.build()
-//					)
+//							FuselageCreator.importFromXML(pathToXML)
+//							)
 //					.build();
+					
+			// default Fuselage ...
+			theFuselage = new FuselageBuilder("MyFuselage", ComponentEnum.FUSELAGE)
+					.fuselageCreator(
+						new FuselageCreator
+							.FuselageBuilder("Test ATR72 fuselage", AircraftEnum.ATR72)
+							.build()
+					)
+					.build();
 			
-			JavaFXD3_Test_10.theFuselage.getFuselageCreator().calculateGeometry(
-					20,    // No. points in nose trunk
-					5,     // No. points in cylindrical trunk
-					15,    // No. points in tail trunk
-					10, 10 // No. points in upper/lower cyl. trunk section
-					);
+//			JavaFXD3_Test_10.theFuselage.getFuselageCreator().calculateGeometry(
+//					20,    // No. points in nose trunk
+//					5,     // No. points in cylindrical trunk
+//					15,    // No. points in tail trunk
+//					10, 10 // No. points in upper/lower cyl. trunk section
+//					);
 
 			System.out.println("The fuselage ...");
 			System.out.println(JavaFXD3_Test_10.theFuselage.getFuselageCreator().toString());

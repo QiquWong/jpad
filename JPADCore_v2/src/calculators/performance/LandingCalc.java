@@ -153,7 +153,7 @@ public class LandingCalc {
 				SpeedCalc.calculateSpeedStall(
 						theConditions.get_altitude().getEstimatedValue(),
 						aircraft.get_weights().get_MLW().getEstimatedValue(),
-						aircraft.get_wing().get_surface().getEstimatedValue(),
+						aircraft.getWing().get_surface().getEstimatedValue(),
 						cLmaxLanding
 						),
 				SI.METERS_PER_SECOND);
@@ -162,7 +162,7 @@ public class LandingCalc {
 		vTD = vSLanding.times(kTD);
 
 		// McCormick interpolated function --> See the excel file into JPAD DOCS
-		double hb = wingToGroundDistance.divide(aircraft.get_wing().get_span().times(Math.PI/4)).getEstimatedValue();
+		double hb = wingToGroundDistance.divide(aircraft.getWing().get_span().times(Math.PI/4)).getEstimatedValue();
 		kGround = - 622.44*(Math.pow(hb, 5)) + 624.46*(Math.pow(hb, 4)) - 255.24*(Math.pow(hb, 3))
 				+ 47.105*(Math.pow(hb, 2)) - 0.6378*hb + 0.0055;
 		
@@ -176,7 +176,7 @@ public class LandingCalc {
 		System.out.println("Delta CD0 spoilers = " + this.deltaCD0Spoiler);
 		System.out.println("CD0 Landing = " + (cD0 + deltaCD0FlapLandinGearsSpoilers));
 		System.out.println("Induced CD Landing = " + ((Math.pow(cLground, 2)*kGround)
-				/(Math.PI*aircraft.get_wing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald())));
+				/(Math.PI*aircraft.getWing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald())));
 		System.out.println("VsLanding = " + vSLanding);
 		System.out.println("V_Approach = " + vA);
 		System.out.println("V_Flare = " + vFlare);
@@ -277,7 +277,7 @@ public class LandingCalc {
 				SpeedCalc.calculateSpeedStall(
 						theConditions.get_altitude().getEstimatedValue(),
 						aircraft.get_weights().get_MLW().getEstimatedValue(),
-						aircraft.get_wing().get_surface().getEstimatedValue(),
+						aircraft.getWing().get_surface().getEstimatedValue(),
 						cLmaxLanding
 						),
 				SI.METERS_PER_SECOND);
@@ -296,7 +296,7 @@ public class LandingCalc {
 		System.out.println("-----------------------------------------------------------\n");
 
 		// McCormick interpolated function --> See the excel file into JPAD DOCS
-		double hb = wingToGroundDistance.divide(aircraft.get_wing().get_span().times(Math.PI/4)).getEstimatedValue();
+		double hb = wingToGroundDistance.divide(aircraft.getWing().get_span().times(Math.PI/4)).getEstimatedValue();
 		kGround = - 622.44*(Math.pow(hb, 5)) + 624.46*(Math.pow(hb, 4)) - 255.24*(Math.pow(hb, 3))
 				+ 47.105*(Math.pow(hb, 2)) - 0.6378*hb + 0.0055;
 
@@ -751,7 +751,7 @@ public class LandingCalc {
 			cD0 = LandingCalc.this.getcD0();
 			deltaCD0 = LandingCalc.this.getDeltaCD0FlapLandinGearsSpoilers();
 			oswald = LandingCalc.this.getOswald();
-			ar = aircraft.get_wing().get_aspectRatio();
+			ar = aircraft.getWing().get_aspectRatio();
 			kGround = LandingCalc.this.getkGround();
 			cLground = LandingCalc.this.getcLground();
 			vWind = LandingCalc.this.getvWind().getEstimatedValue();
@@ -809,7 +809,7 @@ public class LandingCalc {
 					((Math.pow(cLground, 2)/(Math.PI*ar*oswald))*kGround);
 
 			return 	0.5
-					*aircraft.get_wing().get_surface().getEstimatedValue()
+					*aircraft.getWing().get_surface().getEstimatedValue()
 					*AtmosphereCalc.getDensity(
 							theConditions.get_altitude().getEstimatedValue())
 					*(Math.pow((speed + vWind), 2))
@@ -819,7 +819,7 @@ public class LandingCalc {
 		public double lift(double speed) {
 
 			return 	0.5
-					*aircraft.get_wing().get_surface().getEstimatedValue()
+					*aircraft.getWing().get_surface().getEstimatedValue()
 					*AtmosphereCalc.getDensity(
 							theConditions.get_altitude().getEstimatedValue())
 					*(Math.pow((speed + vWind), 2))

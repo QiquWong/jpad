@@ -137,7 +137,7 @@ public class Test_CompleteAC_01 {
 							AnalysisTypeEnum.AERODYNAMIC, 
 							AnalysisTypeEnum.BALANCE,
 							AnalysisTypeEnum.WEIGHTS,
-							AnalysisTypeEnum.PERFORMANCES, 
+							AnalysisTypeEnum.PERFORMANCE, 
 							AnalysisTypeEnum.COSTS
 							);
 		

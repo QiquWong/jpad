@@ -110,9 +110,9 @@ public class ACAnalysisManager {
 			_executedAnalysesMap.put(AnalysisTypeEnum.AERODYNAMIC, true);
 		}
 		
-		if (Arrays.asList(type).contains(AnalysisTypeEnum.PERFORMANCES)) {
+		if (Arrays.asList(type).contains(AnalysisTypeEnum.PERFORMANCE)) {
 			calculatePerformances(aircraft);
-			_executedAnalysesMap.put(AnalysisTypeEnum.PERFORMANCES, true);
+			_executedAnalysesMap.put(AnalysisTypeEnum.PERFORMANCE, true);
 		}
 		
 		if (Arrays.asList(type).contains(AnalysisTypeEnum.COSTS)) {

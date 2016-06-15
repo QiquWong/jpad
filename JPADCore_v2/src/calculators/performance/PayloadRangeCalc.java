@@ -128,15 +128,15 @@ public class PayloadRangeCalc{
 		operatingEmptyMass = theAircraft.get_weights().get_OEM();
 		maxFuelMass = theAircraft.get_theFuelTank().getFuelMass();
 		nPassMax = theAircraft.get_configuration().getMaxPax();
-		airfoilType = theAircraft.get_wing().get_theAirfoilsList().get(0).getType();
+		airfoilType = theAircraft.getWing().get_theAirfoilsList().get(0).getType();
 		engineType = theAircraft.get_powerPlant().get_engineType();
 
-		surface = theAircraft.get_wing().get_surface();
-		ar = theAircraft.get_wing().get_aspectRatio();
+		surface = theAircraft.getWing().get_surface();
+		ar = theAircraft.getWing().get_aspectRatio();
 		currentMach = theConditions.get_machCurrent();
 		altitude = theConditions.get_altitude().getEstimatedValue();
-		sweepLEEquivalent = theAircraft.get_wing().get_sweepLEEquivalent();
-		sweepHalfChordEquivalent = theAircraft.get_wing().calculateSweep(
+		sweepLEEquivalent = theAircraft.getWing().get_sweepLEEquivalent();
+		sweepHalfChordEquivalent = theAircraft.getWing().calculateSweep(
 				sweepLEEquivalent.getEstimatedValue(), 0.5, 0.0
 				);
 		
@@ -148,12 +148,12 @@ public class PayloadRangeCalc{
 		else
 			byPassRatio = 0.0;
 		
-		tcMax = theAircraft.get_wing().get_thicknessMean();
+		tcMax = theAircraft.getWing().get_thicknessMean();
 		cd0 = theAircraft.get_theAerodynamics().calculateCD0Total();
 		oswald = theAircraft.get_theAerodynamics().calculateOswald(currentMach, MethodEnum.HOWE);
 		cl = LiftCalc.calcCLatAlphaLinearDLR(
 				theConditions.get_alphaCurrent().getEstimatedValue(),
-				theAircraft.get_wing().get_aspectRatio()
+				theAircraft.getWing().get_aspectRatio()
 				);
 	
 		

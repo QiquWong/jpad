@@ -58,7 +58,7 @@ public class Text_Aircraft_01 {
 				AnalysisTypeEnum.AERODYNAMIC, 
 				AnalysisTypeEnum.BALANCE,
 				AnalysisTypeEnum.WEIGHTS,
-				AnalysisTypeEnum.PERFORMANCES,
+				AnalysisTypeEnum.PERFORMANCE,
 				AnalysisTypeEnum.COSTS);
 		// do pass these parameters in this sequence
 		

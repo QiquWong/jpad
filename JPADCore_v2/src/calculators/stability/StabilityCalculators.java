@@ -30,7 +30,7 @@ public class StabilityCalculators {
 		}
 		double deflectionAngleDeg = deflection.getEstimatedValue();
 		
-		double aspectratioHorizontalTail = aircraft.get_HTail().get_aspectRatio();
+		double aspectratioHorizontalTail = aircraft.getHTail().get_aspectRatio();
 		
 		double etaDelta = aircraft
 				.get_theAerodynamics()

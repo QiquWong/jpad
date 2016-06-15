@@ -74,7 +74,7 @@ public class Test_AGILE_DC1_01 {
 							AnalysisTypeEnum.AERODYNAMIC, 
 							AnalysisTypeEnum.BALANCE,
 							AnalysisTypeEnum.WEIGHTS,
-							AnalysisTypeEnum.PERFORMANCES, 
+							AnalysisTypeEnum.PERFORMANCE, 
 							AnalysisTypeEnum.COSTS
 							);
 		

@@ -9,7 +9,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import aircraft.components.Configuration;
+import aircraft.components.CabinConfiguration;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import standaloneutils.JPADXmlReader;
@@ -37,7 +37,7 @@ public class ConfigurationTest extends Application {
 
 	//-------------------------------------------------------------
 
-	public static Configuration theConfiguration;
+	public static CabinConfiguration theConfiguration;
 
 	//-------------------------------------------------------------
 
@@ -49,7 +49,7 @@ public class ConfigurationTest extends Application {
 		System.out.println("\n\n##################");
 		System.out.println("function start :: getting the configuration object ...");
 
-		Configuration configuration = ConfigurationTest.theConfiguration;
+		CabinConfiguration configuration = ConfigurationTest.theConfiguration;
 		if (configuration == null) {
 			System.out.println("configuration object null, returning.");
 			return;
@@ -90,7 +90,7 @@ public class ConfigurationTest extends Application {
 			// the Application.start method
 				
 			// read Configuration from xml ...
-			theConfiguration = Configuration.importFromXML(pathToXML);
+			theConfiguration = CabinConfiguration.importFromXML(pathToXML);
 
 //			// default Configuration ...
 //			theConfiguration = new ConfigurationBuilder(

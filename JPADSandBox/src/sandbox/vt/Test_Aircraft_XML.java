@@ -66,7 +66,7 @@ public class Test_Aircraft_XML {
 				AnalysisTypeEnum.AERODYNAMIC, 
 				AnalysisTypeEnum.BALANCE,
 				AnalysisTypeEnum.WEIGHTS,
-				AnalysisTypeEnum.PERFORMANCES, 
+				AnalysisTypeEnum.PERFORMANCE, 
 				AnalysisTypeEnum.COSTS
 				);
 

@@ -4,57 +4,26 @@ import static java.lang.Math.pow;
 import static java.lang.Math.round;
 import static java.lang.Math.tan;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
-//import static org.eclipse.uomo.units.SI.*;
-import javax.measure.converter.UnitConverter;
-import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
-import javax.measure.unit.Unit;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.math3.analysis.UnivariateFunction;
-import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
-import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
-import org.apache.commons.math3.analysis.solvers.AllowedSolution;
-import org.apache.commons.math3.exception.OutOfRangeException;
 import org.jscience.physics.amount.Amount;
-import org.jscience.physics.amount.AmountFormat;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import aircraft.OperatingConditions;
 import aircraft.calculators.ACPerformanceManager;
-import aircraft.componentmodel.AeroComponent;
 import aircraft.components.Aircraft;
-import aircraft.components.LandingGears;
 import aircraft.components.fuselage.creator.FuselageCreator;
-import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.creator.SpoilerCreator;
 import aircraft.components.nacelles.Nacelle;
-import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
@@ -62,22 +31,17 @@ import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
 import configuration.enumerations.WindshieldType;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
-import processing.core.PVector;
-import standaloneutils.MyArrayUtils;
-import standaloneutils.MyMathUtils;
 import standaloneutils.MyUnits;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.customdata.CenterOfGravity;
 import writers.JPADStaticWriteUtils;
-import aircraft.components.fuselage.FuselageAerodynamicsManager;
 
 public class Fuselage implements IFuselage {
 
 	AerodynamicDatabaseReader _aerodynamicDatabaseReader;
 	
-	private String _name, _description;
+	private String _id, _description;
 	private Amount<Length> _X0, _Y0, _Z0;
-	private ComponentEnum _type = ComponentEnum.FUSELAGE; 
 
 	//-----------------------------------------------------------------------
 	// DESIGN PARAMETERS
@@ -85,16 +49,6 @@ public class Fuselage implements IFuselage {
 
 	// GM = Geometric Mean, RMS = Root Mean Square, AM = Arithmetic Mean
 	private Amount<Length> _equivalentDiameterCylinderGM;
-
-	private Double _lambda_N; 
-
-
-	
-
-	// meshing stuff
-//	private int _np_N = 10, _np_C = 4, _np_T = 10, _np_SecUp = 10, _np_SecLow = 10;
-//	private double _deltaXNose, _deltaXCylinder, _deltaXTail;
-//	protected Object mouseClicked;
 
 	private Amount<Mass> _mass, _massEstimated, _massReference;
 	private Map <MethodEnum, Amount<Mass>> _massMap = new TreeMap<MethodEnum, Amount<Mass>>();
@@ -114,9 +68,9 @@ public class Fuselage implements IFuselage {
 	private CenterOfGravity _cg;
 	private FuselageAerodynamicsManager aerodynamics;
 
-	private Amount<Length> _xApexConstructionAxes = null; 
-	private Amount<Length> _yApexConstructionAxes = null; 
-	private Amount<Length> _zApexConstructionAxes = null;
+	private Amount<Length> _xApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
+	private Amount<Length> _yApexConstructionAxes = Amount.valueOf(0.0, SI.METER);
+	private Amount<Length> _zApexConstructionAxes = Amount.valueOf(0.0, SI.METER);
 
 	private FuselageCreator _fuselageCreator;
 	
@@ -125,16 +79,14 @@ public class Fuselage implements IFuselage {
 	public static class FuselageBuilder {
 		
 		private String __id = null;
-		private ComponentEnum __type;
 		private Amount<Length> __xApexConstructionAxes = null; 
 		private Amount<Length> __yApexConstructionAxes = null; 
 		private Amount<Length> __zApexConstructionAxes = null;
 		private FuselageCreator __fuselageCreator;
 		
-		public FuselageBuilder(String id, ComponentEnum type) {
+		public FuselageBuilder(String id) {
 			// required parameter
 			this.__id = id;
-			this.__type = type;
 
 			// optional parameters ...
 
@@ -155,8 +107,7 @@ public class Fuselage implements IFuselage {
 	
 	private Fuselage(FuselageBuilder builder) {
 		super();
-		this.setId(builder.__id); 
-		this._type = builder.__type;
+		this._id = builder.__id; 
 		this._xApexConstructionAxes = builder.__xApexConstructionAxes; 
 		this._yApexConstructionAxes = builder.__yApexConstructionAxes; 
 		this._zApexConstructionAxes = builder.__zApexConstructionAxes;
@@ -456,9 +407,9 @@ public class Fuselage implements IFuselage {
 			double Ib = 1.91e-4 * aircraft.get_performances().get_nLimitZFW() * 
 					(aircraft.get_weights().get_MZFM().to(NonSI.POUND).getEstimatedValue() - 
 //							_liftingSurface.get_wing().get_mass().to(NonSI.POUND).getEstimatedValue()
-							aircraft.get_wing().get_mass().to(NonSI.POUND).getEstimatedValue()
+							aircraft.getWing().get_mass().to(NonSI.POUND).getEstimatedValue()
 //												- aircraft.get_nacelle().get_mass().getEstimatedValue()*aircraft.get_propulsion().get_engineNumber()) TODO ADD!
-		 * _fuselageCreator.getLenF().minus(aircraft.get_wing().get_chordRoot().divide(2.)).to(NonSI.FOOT).getEstimatedValue()/
+		 * _fuselageCreator.getLenF().minus(aircraft.getWing().get_chordRoot().divide(2.)).to(NonSI.FOOT).getEstimatedValue()/
 							pow(_fuselageCreator.getSectionCylinderHeight().to(NonSI.FOOT).getEstimatedValue(),2));
 
 			if (Ip > Ib) {
@@ -508,10 +459,10 @@ public class Fuselage implements IFuselage {
 		double Kdoor = 1.0;
 		double Klg = 1.12;
 		double Kws = 0.75*
-				((1+2*aircraft.get_wing().get_taperRatioEquivalent())/
-						(1+aircraft.get_wing().get_taperRatioEquivalent()))*
-						aircraft.get_wing().get_span().to(NonSI.FOOT).getEstimatedValue()*
-						tan(aircraft.get_wing().get_sweepQuarterChordEq().to(SI.RADIAN).getEstimatedValue())/
+				((1+2*aircraft.getWing().get_taperRatioEquivalent())/
+						(1+aircraft.getWing().get_taperRatioEquivalent()))*
+						aircraft.getWing().get_span().to(NonSI.FOOT).getEstimatedValue()*
+						tan(aircraft.getWing().get_sweepQuarterChordEq().to(SI.RADIAN).getEstimatedValue())/
 						_fuselageCreator.getLenF().to(NonSI.FOOT).getEstimatedValue();
 
 		return Amount.valueOf(0.328*
@@ -549,7 +500,7 @@ public class Fuselage implements IFuselage {
 		return Amount.valueOf((1 + k) * 0.23 * 
 				Math.sqrt(
 						aircraft.get_performances().get_vDiveEAS().getEstimatedValue() *
-						aircraft.get_HTail().get_ACw_ACdistance().getEstimatedValue()/
+						aircraft.getHTail().get_ACw_ACdistance().getEstimatedValue()/
 						(2*_equivalentDiameterCylinderGM.getEstimatedValue())) *
 						Math.pow(_fuselageCreator.getsWet().getEstimatedValue(), 1.2),
 						SI.KILOGRAM);

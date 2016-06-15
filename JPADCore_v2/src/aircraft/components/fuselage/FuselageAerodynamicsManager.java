@@ -56,8 +56,8 @@ public class FuselageAerodynamicsManager extends aircraft.componentmodel.compone
 	public FuselageAerodynamicsManager(OperatingConditions ops, Aircraft aircraft) {
 
 		_theAircraft = aircraft;
-		_theFuselage = aircraft.get_fuselage();
-		 aircraft.get_fuselage().setAerodynamics(this);
+		_theFuselage = aircraft.getFuselage();
+		 aircraft.getFuselage().setAerodynamics(this);
 		_theOperatingConditions = ops;
 		_aeroDatabaseReader = _theAircraft.get_theAerodynamics().get_aerodynamicDatabaseReader();
    
@@ -71,13 +71,13 @@ public class FuselageAerodynamicsManager extends aircraft.componentmodel.compone
 		maxWidth = _theFuselage.get_sectionCylinderWidth().doubleValue(SI.METER);
 
 		try {
-			cLAlphaW = _theAircraft.get_wing().getAerodynamics().getCalculateCLAlpha().andersonSweptCompressibleSubsonic();
+			cLAlphaW = _theAircraft.getWing().getAerodynamics().getCalculateCLAlpha().andersonSweptCompressibleSubsonic();
 		} catch (NullPointerException e) {
 			cLAlphaW = 6.28;	
 		}
 
-		mac = _theAircraft.get_wing().get_meanAerodChordActual().doubleValue(SI.METER);
-		surfaceW = _theAircraft.get_wing().get_surface().doubleValue(SI.SQUARE_METRE);
+		mac = _theAircraft.getWing().get_meanAerodChordActual().doubleValue(SI.METER);
+		surfaceW = _theAircraft.getWing().get_surface().doubleValue(SI.SQUARE_METRE);
 
 		_len_F = _theFuselage.get_len_F();
 		_roughness = _theFuselage.get_roughness();
@@ -115,7 +115,7 @@ public class FuselageAerodynamicsManager extends aircraft.componentmodel.compone
 		//		double x = 26.62; //value chosen to match matlab file base drag //lenF - dxTailCap;
 		_equivalentDiameterBase = _theFuselage.getEquivalentDiameterAtX(_len_F.getEstimatedValue()*0.9995);
 
-		double kExcr = DragCalc.calculateKExcrescences(_theAircraft.get_sWetTotal());
+		double kExcr = DragCalc.calculateKExcrescences(_theAircraft.getSWetTotal());
 
 		_cF = AerodynamicCalc.calculateCf(
 				_theOperatingConditions.calculateRe(
@@ -127,10 +127,10 @@ public class FuselageAerodynamicsManager extends aircraft.componentmodel.compone
 				);
 
 		_cD0Parasite = DragCalc.calculateCd0Parasite(_theFuselage.get_formFactor(), 
-				_cF, _sWet.getEstimatedValue(), _theAircraft.get_wing().get_surface().getEstimatedValue());
+				_cF, _sWet.getEstimatedValue(), _theAircraft.getWing().get_surface().getEstimatedValue());
 
 		_cD0Base = DragCalc.calculateCd0Base(MethodEnum.MATLAB, 
-				_cD0Parasite, _theAircraft.get_wing().get_surface().getEstimatedValue(), 
+				_cD0Parasite, _theAircraft.getWing().get_surface().getEstimatedValue(), 
 				_equivalentDiameterBase, _theFuselage.get_equivalentDiameterCylinderGM().getEstimatedValue());
 
 		calculateCdUpsweep();
@@ -144,7 +144,7 @@ public class FuselageAerodynamicsManager extends aircraft.componentmodel.compone
 		double zCamber75 = _theFuselage.getCamberZAtX(_len_F.getEstimatedValue() - 0.25*_len_T.getEstimatedValue());
 
 		_cD0Upsweep =  0.075 * (_area_C.getEstimatedValue()/
-				_theAircraft.get_wing().get_surface().getEstimatedValue()) *
+				_theAircraft.getWing().get_surface().getEstimatedValue()) *
 				(zCamber75/(0.75*_len_T.getEstimatedValue()));
 
 		return _cD0Upsweep;
@@ -163,11 +163,11 @@ public class FuselageAerodynamicsManager extends aircraft.componentmodel.compone
 		switch(method){ // Behind ADAS page 101
 		case EMPIRICAL : {
 			_cDWindshield = 0.07*_theFuselage.get_windshieldArea().getEstimatedValue()/
-					_theAircraft.get_wing().get_surface().getEstimatedValue();
+					_theAircraft.getWing().get_surface().getEstimatedValue();
 		} break;
 		case NACA : { // NACA report 730, poor results
 			_cDWindshield = 0.08*_theFuselage.get_area_C().getEstimatedValue()/
-					_theAircraft.get_wing().get_surface().getEstimatedValue();
+					_theAircraft.getWing().get_surface().getEstimatedValue();
 		} break;
 		case ROSKAM : { // page 134 Roskam, part VI
 			switch(_theFuselage.get_windshieldType()){
@@ -179,7 +179,7 @@ public class FuselageAerodynamicsManager extends aircraft.componentmodel.compone
 			default : {deltaCd = 0.0;}; break;
 			}
 			_cDWindshield = (deltaCd*_theFuselage.get_area_C().getEstimatedValue())/
-					_theAircraft.get_wing().get_surface().getEstimatedValue();
+					_theAircraft.getWing().get_surface().getEstimatedValue();
 		} break;
 		default : {
 			_cDWindshield = 0.0;
@@ -264,8 +264,8 @@ public class FuselageAerodynamicsManager extends aircraft.componentmodel.compone
 				for(int i=1; i<x.length; i++){
 					sum = sum + pow(_theFuselage.getWidthAtX(x[i]),2)
 					*(_theFuselage.getCamberAngleAtX(x[i]) 
-							+ _theAircraft.get_wing().get_iw().getEstimatedValue()
-							+ _theAircraft.get_wing().getAerodynamics()
+							+ _theAircraft.getWing().get_iw().getEstimatedValue()
+							+ _theAircraft.getWing().getAerodynamics()
 							.getCalculateAlpha0L().integralMeanWithTwist().getEstimatedValue())
 					* (x[i] - x[i-1]);
 				}
@@ -299,13 +299,13 @@ public class FuselageAerodynamicsManager extends aircraft.componentmodel.compone
 
 		public double gilruth() {
 
-			if (_theAircraft.get_wing() == null) return 0.;
+			if (_theAircraft.getWing() == null) return 0.;
 
 			double kf = MyMathUtils
 					.interpolate1DLinear(_positionOfC4ToFuselageLength, _kF)
-					.value((_theAircraft.get_wing().get_X0().getEstimatedValue() 
-							+ 0.25*_theAircraft.get_wing().get_chordRoot().getEstimatedValue())
-							/_theAircraft.get_fuselage().get_len_F().getEstimatedValue());
+					.value((_theAircraft.getWing().get_X0().getEstimatedValue() 
+							+ 0.25*_theAircraft.getWing().get_chordRoot().getEstimatedValue())
+							/_theAircraft.getFuselage().get_len_F().getEstimatedValue());
 
 			_cMAlpha = kf*pow(maxWidth,2) * length
 					/ (surfaceW*mac);
@@ -331,13 +331,13 @@ public class FuselageAerodynamicsManager extends aircraft.componentmodel.compone
 
 		public double gilruth() {
 
-			if (_theAircraft.get_wing() == null) return 0.;
+			if (_theAircraft.getWing() == null) return 0.;
 
 			double kf = MyMathUtils
 					.interpolate1DLinear(_positionOfC4ToFuselageLength, _kF)
-					.value((_theAircraft.get_wing().get_X0().getEstimatedValue() 
-							+ 0.25*_theAircraft.get_wing().get_chordRoot().getEstimatedValue())
-							/_theAircraft.get_fuselage().get_len_F().getEstimatedValue());
+					.value((_theAircraft.getWing().get_X0().getEstimatedValue() 
+							+ 0.25*_theAircraft.getWing().get_chordRoot().getEstimatedValue())
+							/_theAircraft.getFuselage().get_len_F().getEstimatedValue());
 
 			_cMCL = kf*pow(maxWidth,2) * length
 					/ (surfaceW*mac*cLAlphaW);
@@ -367,10 +367,10 @@ public class FuselageAerodynamicsManager extends aircraft.componentmodel.compone
 	public  double calculateCLAlphaFuselage(double cLAlphaWing){ //Sforza p64
 		double d = _theFuselage.getEquivalentDiameterAtX(
 				_theAircraft
-				.get_wing()
+				.getWing()
 				.get_xLEMacActualBRF().getEstimatedValue()
 				);
-		double b = _theAircraft.get_wing().get_span().getEstimatedValue();
+		double b = _theAircraft.getWing().get_span().getEstimatedValue();
 		double cLAlphaFuselage = (1.0+((1/4.0)*(d/b))-((1/40.0)*Math.pow((d/b), 2)))*cLAlphaWing;
 	
 		return cLAlphaFuselage;

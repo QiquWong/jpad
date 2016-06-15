@@ -44,7 +44,7 @@ public class NacelleAerodynamicsManager extends aircraft.componentmodel.componen
 		//TODO: check this
 		_mach = 0.45;
 		_altitude = 6000.;
-		sW = _theAircraft.get_wing().get_surface();
+		sW = _theAircraft.getWing().get_surface();
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class NacelleAerodynamicsManager extends aircraft.componentmodel.componen
 		_xTransition = 0.0;
 		_cF = AerodynamicCalc.calculateCf(_reynolds, _mach, _xTransition);
 
-		double kExcr = DragCalc.calculateKExcrescences(_theAircraft.get_sWetTotal()); 
+		double kExcr = DragCalc.calculateKExcrescences(_theAircraft.getSWetTotal()); 
 
 		calculateCd0Parasite();
 		calculateCd0Base();

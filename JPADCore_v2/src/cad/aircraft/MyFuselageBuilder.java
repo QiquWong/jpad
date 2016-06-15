@@ -79,7 +79,7 @@ public class MyFuselageBuilder {
 	private Amount<Area> _wettedArea = Amount.valueOf(0.0, SI.SQUARE_METRE); 
 
 	public MyFuselageBuilder(Aircraft aircraft) {
-		initialize(aircraft.get_fuselage());
+		initialize(aircraft.getFuselage());
 	}
 
 	public MyFuselageBuilder(Fuselage fuselage) {

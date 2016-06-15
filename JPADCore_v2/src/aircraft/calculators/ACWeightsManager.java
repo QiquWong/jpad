@@ -28,6 +28,14 @@ import standaloneutils.atmosphere.AtmosphereCalc;
 public class ACWeightsManager extends ACCalculatorManager {
 
 	private static final String id = "20";
+	
+	// Aluminum density
+	public static final Amount<VolumetricDensity> materialDensity = 
+			Amount.valueOf(2711.0,VolumetricDensity.UNIT);
+
+	// 84 kg assumed for each passenger + 15 kg baggage (EASA 2008.C.06) 
+	public static final Amount<Mass> paxSingleMass = Amount.valueOf(99.0, SI.KILOGRAM);
+	
 	private AnalysisTypeEnum _type;
 	private String _name;
 
@@ -50,123 +58,10 @@ public class ACWeightsManager extends ACCalculatorManager {
 	public ACWeightsManager() {
 
 		super();
-
-		_name = "Weights";
 		_type = AnalysisTypeEnum.WEIGHTS;
+		_name = "Weights";
+		
 
-		_MTOM = Amount.valueOf(22000., SI.KILOGRAM); // ATR72 MTOM, Jane's page 294
-
-		//		_mtomIter = MyMathUtils.linspace(.*);
-		//		_mtomResult = new double[_mtomIter.length];
-
-		_MZFM = Amount.valueOf(20000., SI.KILOGRAM); // ATR72 MZFM, Jane's page 294
-
-		_MLM = Amount.valueOf(21850., SI.KILOGRAM);
-		_MLW = _MLM.times(AtmosphereCalc.g0).to(SI.NEWTON);
-
-		_OEM = Amount.valueOf(12950., SI.KILOGRAM);
-
-		// Actuators oils
-		_TFOM = Amount.valueOf(0., SI.KILOGRAM);
-
-		// Aluminum density
-		_materialDensity = Amount.valueOf(2711., VolumetricDensity.UNIT);
-
-		// 84 kg assumed for each passenger + 15 kg baggage (EASA 2008.C.06) 
-		_paxSingleMass = Amount.valueOf(99.0, SI.KILOGRAM);
-
-	}
-
-	/**
-	 * Overload of the standard builder that recognize the aircraft and sets it's relative 
-	 * values.
-	 * 
-	 * @author Vittorio Trifari
-	 */
-	public ACWeightsManager(AircraftEnum aircraftName) {
-
-		super();
-
-		switch(aircraftName) {
-		case ATR72:
-			_name = "Weights";
-			_type = AnalysisTypeEnum.WEIGHTS;
-			
-			_MTOM = Amount.valueOf(23063.5789, SI.KILOGRAM); // ATR72 MTOM, REPORT_ATR72
-			
-			//		_mtomIter = MyMathUtils.linspace(.*);
-			//		_mtomResult = new double[_mtomIter.length];
-			
-			_MZFM = Amount.valueOf(20063.5789, SI.KILOGRAM); // ATR72 MZFM, REPORT_ATR72
-			
-			_MLM = Amount.valueOf(20757.2210, SI.KILOGRAM);
-			_MLW = _MLM.times(AtmosphereCalc.g0).to(SI.NEWTON);
-			
-			_OEM = Amount.valueOf(12935.5789, SI.KILOGRAM);
-			
-			// Actuators oils
-			_TFOM = Amount.valueOf(0., SI.KILOGRAM);
-			
-			// Aluminum density
-			_materialDensity = Amount.valueOf(2711., VolumetricDensity.UNIT);
-			
-			// 84 kg assumed for each passenger + 15 kg baggage (EASA 2008.C.06) 
-			_paxSingleMass = Amount.valueOf(99.0, SI.KILOGRAM);
-			break;
-			
-		case B747_100B:
-			_name = "Weights";
-			_type = AnalysisTypeEnum.WEIGHTS;
-			
-			_MTOM = Amount.valueOf(354991.5060, SI.KILOGRAM); // B747-100B MTOM, see REPORT_B747_100B in database
-			
-			//		_mtomIter = MyMathUtils.linspace(.*);
-			//		_mtomResult = new double[_mtomIter.length];
-			
-			_MZFM = Amount.valueOf(207581.9860, SI.KILOGRAM); // B747-100B MTOM, see REPORT_B747_100B in database
-			
-			_MLM = Amount.valueOf(319517.5554, SI.KILOGRAM); // B747-100B MTOM, see REPORT_B747_100B in database
-			_MLW = _MLM.times(AtmosphereCalc.g0).to(SI.NEWTON); 
-			
-			_OEM = Amount.valueOf(153131.9860, SI.KILOGRAM);
-			
-			// Actuators oils
-			_TFOM = Amount.valueOf(0.005*(_MTOM.getEstimatedValue()), SI.KILOGRAM);
-			
-			// Aluminum density
-			_materialDensity = Amount.valueOf(2711., VolumetricDensity.UNIT);
-			
-			// 84 kg assumed for each passenger + 15 kg baggage (EASA 2008.C.06) 
-			_paxSingleMass = Amount.valueOf(99.0, SI.KILOGRAM);
-			break;
-			
-		case AGILE_DC1:
-			_name = "Weights";
-			_type = AnalysisTypeEnum.WEIGHTS;
-			
-			_MTOM = Amount.valueOf(36336, SI.KILOGRAM); // ADAS project
-			
-			//		_mtomIter = MyMathUtils.linspace(.*);
-			//		_mtomResult = new double[_mtomIter.length];
-			
-			_MZFM = Amount.valueOf(29716, SI.KILOGRAM); // 
-			
-			_MLM = Amount.valueOf(32702.4, SI.KILOGRAM);
-			_MLW = _MLM.times(AtmosphereCalc.g0).to(SI.NEWTON);
-			
-			_OEM = Amount.valueOf(20529, SI.KILOGRAM);
-			
-			// Actuators oils
-			_TFOM = Amount.valueOf(0., SI.KILOGRAM);
-			
-			// Aluminum density
-			_materialDensity = Amount.valueOf(2711., VolumetricDensity.UNIT);
-			
-			// 102 kg (225 lbs) assumed for each passenger (AGILE_2.5 doc) 
-			// Into ADAS 159lbs + 66lbs = 225 lbs 
-			_paxSingleMass = Amount.valueOf(102.0, SI.KILOGRAM);
-			break;
-		}
 	}
 
 	public void calculateDependentVariables(Aircraft aircraft) {
@@ -300,10 +195,10 @@ public class ACWeightsManager extends ACCalculatorManager {
 			aircraft.get_weights().calculateDependentVariables(aircraft);
 		}
 
-		_massStructureList.add(aircraft.get_fuselage().get_massEstimated());
-		_massStructureList.add(aircraft.get_wing().getMassEstimated());
-		_massStructureList.add(aircraft.get_HTail().getMassEstimated());
-		_massStructureList.add(aircraft.get_VTail().getMassEstimated());
+		_massStructureList.add(aircraft.getFuselage().get_massEstimated());
+		_massStructureList.add(aircraft.getWing().getMassEstimated());
+		_massStructureList.add(aircraft.getHTail().getMassEstimated());
+		_massStructureList.add(aircraft.getVTail().getMassEstimated());
 		_massStructureList.addAll(aircraft.get_theNacelles().get_massList());
 		_massStructureList.add(aircraft.get_landingGear().getMassEstimated());
 
@@ -316,11 +211,11 @@ public class ACWeightsManager extends ACCalculatorManager {
 			Aircraft aircraft, 
 			Map <ComponentEnum, List<MethodEnum>> methodsMap) {
 
-		aircraft.get_fuselage().calculateMass(aircraft, conditions);
+		aircraft.getFuselage().calculateMass(aircraft, conditions);
 
-		aircraft.get_wing().calculateMass(aircraft, conditions);
-		aircraft.get_HTail().calculateMass(aircraft, conditions);
-		aircraft.get_VTail().calculateMass(aircraft, conditions);
+		aircraft.getWing().calculateMass(aircraft, conditions);
+		aircraft.getHTail().calculateMass(aircraft, conditions);
+		aircraft.getVTail().calculateMass(aircraft, conditions);
 
 		aircraft.get_theNacelles().calculateMass();
 //		aircraft.          get_theNacelles().calculateMass();
@@ -330,10 +225,10 @@ public class ACWeightsManager extends ACCalculatorManager {
 		aircraft.get_systems().calculateMass(aircraft, conditions, MethodEnum.TORENBEEK_2013);
 
 		aircraft.get_weights().set_structuralMass(
-				aircraft.get_fuselage().get_massEstimated().plus(
-						aircraft.get_wing().getMassEstimated()).plus(
-								aircraft.get_HTail().getMassEstimated()).plus(
-										aircraft.get_VTail().getMassEstimated()).plus(
+				aircraft.getFuselage().get_massEstimated().plus(
+						aircraft.getWing().getMassEstimated()).plus(
+								aircraft.getHTail().getMassEstimated()).plus(
+										aircraft.getVTail().getMassEstimated()).plus(
 												aircraft.get_theNacelles().get_totalMass()).plus(
 //												aircraft.get_theNacelles().  getWeights()).plus(
 														aircraft.get_landingGear().getMassEstimated()));
@@ -353,10 +248,10 @@ public class ACWeightsManager extends ACCalculatorManager {
 
 	public void calculateFirstGuessMTOM(Aircraft aircraft) {
 
-		aircraft.get_fuselage().set_mass(aircraft.get_weights().get_MZFM().times(.15));
-		aircraft.get_wing().setOverallMass(aircraft.get_weights().get_MZFM().times(.1));
-		aircraft.get_HTail().setOverallMass(aircraft.get_weights().get_MZFM().times(.015));
-		aircraft.get_VTail().setOverallMass(aircraft.get_weights().get_MZFM().times(.015));
+		aircraft.getFuselage().set_mass(aircraft.get_weights().get_MZFM().times(.15));
+		aircraft.getWing().setOverallMass(aircraft.get_weights().get_MZFM().times(.1));
+		aircraft.getHTail().setOverallMass(aircraft.get_weights().get_MZFM().times(.015));
+		aircraft.getVTail().setOverallMass(aircraft.get_weights().get_MZFM().times(.015));
 		aircraft.get_powerPlant().set_mass(aircraft.get_weights().get_MZFM().times(.05));
 		aircraft.get_theNacelles().set_totalMass(aircraft.get_weights().get_MZFM().times(.015));
 		aircraft.get_theFuelTank().setFuelMass(aircraft.get_weights().get_MZFM().times(.015));
@@ -364,10 +259,10 @@ public class ACWeightsManager extends ACCalculatorManager {
 		aircraft.get_systems().setOverallMass(aircraft.get_weights().get_MZFM().times(.04));
 
 		aircraft.get_weights().set_structuralMass(
-				aircraft.get_fuselage().get_mass().plus(
-						aircraft.get_wing().getOverallMass()).plus(
-								aircraft.get_HTail().getOverallMass()).plus(
-										aircraft.get_VTail().getOverallMass()).plus(
+				aircraft.getFuselage().get_mass().plus(
+						aircraft.getWing().getOverallMass()).plus(
+								aircraft.getHTail().getOverallMass()).plus(
+										aircraft.getVTail().getOverallMass()).plus(
 												aircraft.get_theNacelles().get_totalMass()).plus(
 														aircraft.get_landingGear().getMass()));
 
