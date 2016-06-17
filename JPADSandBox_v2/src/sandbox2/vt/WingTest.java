@@ -281,6 +281,26 @@ public class WingTest extends Application {
 							LiftingSurfaceCreator.importFromXML(ComponentEnum.WING, pathToXML, dirAirfoil)
 							)
 					.build();
+//			
+//	  TODO: //////////////////////////////////////////////////////////////////
+//			// EQUIVALENT WING ON ATR-72 DO NOT CALCULATE THE TWO INTEGRALS	//
+//			// BECAUSE DISCRETIZED y STATIONS AND xLE ARE NOT STRICTLY 		//
+//			// MONOTONIC													//
+//			//////////////////////////////////////////////////////////////////
+//			
+//			// default LiftingSurface from xml ...
+//			theWing = new LiftingSurfaceBuilder("MyWing", ComponentEnum.WING, aeroDatabaseReader)
+//					.liftingSurfaceCreator(
+//							new LiftingSurfaceCreator
+//							.LiftingSurfaceCreatorBuilder(
+//									"MyWing",
+//									Boolean.TRUE,
+//									AircraftEnum.ATR72,
+//									ComponentEnum.WING
+//									)
+//							.build()
+//							)
+//					.build();
 
 			WingTest.theWing.calculateGeometry(
 					40,

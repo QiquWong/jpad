@@ -36,14 +36,14 @@ public class JPADChartWriter {
 		System.out.println();
 		System.out.println("--------- WRITING ALL CHARTS TO FILE ----------");
 		
-		createBalanceCharts(aircraft.get_configuration());
-		createAircraftAerodynamicsCharts(aircraft.get_theAerodynamics());
+		createBalanceCharts(aircraft.getCabinConfiguration());
+		createAircraftAerodynamicsCharts(aircraft.getTheAerodynamics());
 		createLiftingSurfaceCharts(aircraft.getWing(), true);
 		createLiftingSurfaceCharts(aircraft.getHTail(), true);
 		createLiftingSurfaceCharts(aircraft.getVTail(), true);
 		createLiftingSurfaceCharts(aircraft.getCanard(), true);
-		createPerformanceCharts(aircraft.get_performances(), aircraft.get_performances().getPerformanceManager(), "AEO");
-		createPerformanceCharts(aircraft.get_performances(), aircraft.get_performances().getPerformanceManagerOEI(), "OEI");
+		createPerformanceCharts(aircraft.getThePerformance(), aircraft.getThePerformance().getPerformanceManager(), "AEO");
+		createPerformanceCharts(aircraft.getThePerformance(), aircraft.getThePerformance().getPerformanceManagerOEI(), "OEI");
 		
 		System.out.println("--------- DONE WRITING CHARTS TO FILE ----------");
 	}

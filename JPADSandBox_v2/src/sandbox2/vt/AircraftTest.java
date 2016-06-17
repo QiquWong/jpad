@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.measure.quantity.Length;
@@ -22,8 +20,6 @@ import org.treez.javafxd3.javafx.JavaFxD3Browser;
 import aircraft.components.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
-import aircraft.components.liftingSurface.LiftingSurface.LiftingSurfaceBuilder;
-import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ComponentEnum;
@@ -91,10 +87,22 @@ public class AircraftTest extends Application {
 
 		LiftingSurface wing = AircraftTest.theAircraft.getWing();
 		if (wing == null) {
-			System.out.println("aircraft object null, returning.");
+			System.out.println("wing object null, returning.");
 			return;
 		}
 
+		LiftingSurface hTail = AircraftTest.theAircraft.getHTail();
+		if (hTail == null) {
+			System.out.println("horizontal tail object null, returning.");
+			return;
+		}
+		
+		LiftingSurface vTail = AircraftTest.theAircraft.getVTail();
+		if (vTail == null) {
+			System.out.println("vertical tail object null, returning.");
+			return;
+		}
+		
 		Fuselage fuselage = AircraftTest.theAircraft.getFuselage();
 		if (fuselage == null) {
 			System.out.println("fuselage object null, returning.");
@@ -141,10 +149,6 @@ public class AircraftTest extends Application {
 		int nY = vY.size();
 		List<Amount<Length>> vChords = wing.getLiftingSurfaceCreator().getDiscretizedChords();
 		List<Amount<Length>> vXle = wing.getLiftingSurfaceCreator().getDiscretizedXle();
-
-//		List<Amount<Length>> vXleBRF = new ArrayList<Amount<Length>>();
-//		for(Amount<Length> x : vXle)
-//			vXleBRF.add(x.plus(wing.getXApexConstructionAxes()));
 		
 		Double[][] dataChordsVsY = new Double[nY][2];
 		Double[][] dataXleVsY = new Double[nY][2];
@@ -153,13 +157,57 @@ public class AircraftTest extends Application {
 			dataChordsVsY[i][0] = vY.get(i).doubleValue(SI.METRE);
 			dataChordsVsY[i][1] = vChords.get(i).doubleValue(SI.METRE);
 			dataXleVsY[i][0] = vY.get(i).doubleValue(SI.METRE);
-//			dataXleVsY[i][1] = vXleBRF.get(i).doubleValue(SI.METRE);
 			dataXleVsY[i][1] = vXle.get(i).doubleValue(SI.METRE);
 		});
 
 		System.out.println("##################\n\n");
 
-		Double[][] dataTopView = wing.getLiftingSurfaceCreator().getDiscretizedTopViewAsArray(ComponentEnum.WING);
+		Double[][] dataTopViewIsolated = wing.getLiftingSurfaceCreator().getDiscretizedTopViewAsArray(ComponentEnum.WING);
+		
+		Double[][] dataTopView = new Double[dataTopViewIsolated.length][dataTopViewIsolated[0].length];
+		for (int i=0; i<dataTopViewIsolated.length; i++) { 
+			dataTopView[i][0] = dataTopViewIsolated[i][0];
+			dataTopView[i][1] = dataTopViewIsolated[i][1] + wing.getXApexConstructionAxes().doubleValue(SI.METER);
+	}
+		
+		Double[][] dataTopViewMirrored = new Double[dataTopView.length][dataTopView[0].length];
+		for (int i=0; i<dataTopView.length; i++) { 
+				dataTopViewMirrored[i][0] = -dataTopView[i][0];
+				dataTopViewMirrored[i][1] = dataTopView[i][1];
+		}
+
+		//--------------------------------------------------
+		// get data vectors from hTail discretization
+		List<Amount<Length>> vYHTail = hTail.getLiftingSurfaceCreator().getDiscretizedYs();
+		int nYHTail = vYHTail.size();
+		List<Amount<Length>> vChordsHTail = hTail.getLiftingSurfaceCreator().getDiscretizedChords();
+		List<Amount<Length>> vXleHTail = hTail.getLiftingSurfaceCreator().getDiscretizedXle();
+
+		Double[][] dataChordsVsYHTail = new Double[nYHTail][2];
+		Double[][] dataXleVsYHTail = new Double[nYHTail][2];
+		IntStream.range(0, nYHTail)
+		.forEach(i -> {
+			dataChordsVsYHTail[i][0] = vYHTail.get(i).doubleValue(SI.METRE);
+			dataChordsVsYHTail[i][1] = vChordsHTail.get(i).doubleValue(SI.METRE);
+			dataXleVsYHTail[i][0] = vYHTail.get(i).doubleValue(SI.METRE);
+			dataXleVsYHTail[i][1] = vXleHTail.get(i).doubleValue(SI.METRE);
+		});
+
+		System.out.println("##################\n\n");
+
+		Double[][] dataTopViewIsolatedHTail = hTail.getLiftingSurfaceCreator().getDiscretizedTopViewAsArray(ComponentEnum.WING);
+
+		Double[][] dataTopViewHTail = new Double[dataTopViewIsolatedHTail.length][dataTopViewIsolatedHTail[0].length];
+		for (int i=0; i<dataTopViewIsolatedHTail.length; i++) { 
+			dataTopViewHTail[i][0] = dataTopViewIsolatedHTail[i][0];
+			dataTopViewHTail[i][1] = dataTopViewIsolatedHTail[i][1] + hTail.getXApexConstructionAxes().doubleValue(SI.METER);
+		}
+
+		Double[][] dataTopViewMirroredHTail = new Double[dataTopViewHTail.length][dataTopViewHTail[0].length];
+		for (int i=0; i<dataTopViewHTail.length; i++) { 
+			dataTopViewMirroredHTail[i][0] = -dataTopViewHTail[i][0];
+			dataTopViewMirroredHTail[i][1] = dataTopViewHTail[i][1];
+		}
 
 		//--------------------------------------------------
 		System.out.println("Initializing test class...");
@@ -176,28 +224,10 @@ public class AircraftTest extends Application {
 		listDataArray.add(dataOutlineXYLeftCurve);
 		listDataArray.add(dataOutlineXYRightCurve);
 		listDataArray.add(dataTopView);
+		listDataArray.add(dataTopViewMirrored);
+		listDataArray.add(dataTopViewHTail);
+		listDataArray.add(dataTopViewMirroredHTail);
 
-//		int nSec = wing.getLiftingSurfaceCreator().getDiscretizedXle().size();
-//		int nPanels = wing.getLiftingSurfaceCreator().getPanels().size();
-//
-//		Double[][] eqPts = new Double[4][2];
-//		eqPts[0][0] = 0.0;
-//		eqPts[0][1] = wing.getLiftingSurfaceCreator().getXOffsetEquivalentWingRootLE().doubleValue(SI.METER);
-//		eqPts[1][0] = wing.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
-//		eqPts[1][1] = wing.getLiftingSurfaceCreator().getDiscretizedXle().get(nSec - 1).doubleValue(SI.METER);
-//		eqPts[2][0] = wing.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
-//		eqPts[2][1] = wing.getLiftingSurfaceCreator().getDiscretizedXle().get(nSec - 1)
-//				.plus(
-//						wing.getLiftingSurfaceCreator().getPanels().get(nPanels - 1).getChordTip()
-//						)
-//				.doubleValue(SI.METER);
-//		eqPts[3][0] = 0.0;
-//		eqPts[3][1] = wing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot()
-//				.minus(wing.getLiftingSurfaceCreator().getXOffsetEquivalentWingRootTE())
-//				.doubleValue(SI.METER);
-//
-//		listDataArray.add(eqPts);
-		
 		Double[][] xyMAC = new Double[2][2];
 		xyMAC[0][0] = wing.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeY().doubleValue(SI.METRE);
 		xyMAC[0][1] = wing.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METRE);
@@ -206,10 +236,10 @@ public class AircraftTest extends Application {
 
 		listDataArray.add(xyMAC);
 		
-		double xMax = 1.20*fuselage.getFuselageCreator().getLenF().doubleValue(SI.METRE);
-		double xMin = -0.20*fuselage.getFuselageCreator().getLenF().doubleValue(SI.METRE);
-		double yMax = xMax;
-		double yMin = xMin;
+		double xMax = 1.20*wing.getSemiSpan().doubleValue(SI.METER);
+		double xMin = -1.20*wing.getSemiSpan().doubleValue(SI.METER);;
+		double yMax = 1.20*fuselage.getFuselageCreator().getLenF().doubleValue(SI.METRE);
+		double yMin = -0.20*fuselage.getFuselageCreator().getLenF().doubleValue(SI.METRE);
 		
 		System.out.println("The aircraft ...");
 		System.out.println(wing);
@@ -221,7 +251,7 @@ public class AircraftTest extends Application {
 				.xRange(xMin, xMax)
 				.yRange(yMax, yMin)
 				.axisLineColor("darkblue").axisLineStrokeWidth("2px")
-				.graphBackgroundColor("blue").graphBackgroundOpacity(0.1)
+				.graphBackgroundColor("blue").graphBackgroundOpacity(0.05)
 				.title("Wing data representation")
 				.xLabel("x (m)")
 				.yLabel("y (m)")
@@ -232,27 +262,34 @@ public class AircraftTest extends Application {
 						SymbolType.CIRCLE,
 						SymbolType.CIRCLE,
 						SymbolType.CIRCLE,
-						SymbolType.CIRCLE						
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE
 						)
-				.symbolSizes(20,20,20,20,20)
-				.showSymbols(true,true,true,true,true) // NOTE: overloaded function
+				.symbolSizes(5,5,5,5,5,5,5)
+				.showSymbols(true,true,true,true,true,true,true) // NOTE: overloaded function
 				.symbolStyles(
-						"fill:blue; stroke:red; stroke-width:2",
-						"fill:cyan; stroke:green; stroke-width:2",
-						"fill:cyan; stroke:black; stroke-width:3",
-						"fill:cyan; stroke:blue; stroke-width:3",
-						"fill:cyan; stroke:purple; stroke-width:3"
+						"fill:blue; stroke:darkblue; stroke-width:3",
+						"fill:cyan; stroke:darkblue; stroke-width:3",
+						"fill:cyan; stroke:darkblue; stroke-width:3",
+						"fill:cyan; stroke:darkblue; stroke-width:3",
+						"fill:cyan; stroke:darkblue; stroke-width:3",
+						"fill:cyan; stroke:darkblue; stroke-width:3",
+						"fill:cyan; stroke:darkblue; stroke-width:3"
 						)
 				.lineStyles(
 						"fill:none; stroke:darkblue; stroke-width:3",
 						"fill:none; stroke:darkblue; stroke-width:2",
 						"fill:none; stroke:darkblue; stroke-width:2",
 						"fill:none; stroke:darkblue; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2"
+						"fill:none; stroke:darkblue; stroke-width:2",
+						"fill:none; stroke:darkblue; stroke-width:2",
+						"fill:none; stroke:darkblue; stroke-width:2"
 						)
-				.plotAreas(true,true,true,true,false)
-				.areaStyles("fill:orange;","fill:yellow;","fill:yellow;","fill:orange;","fill:orange;")
-				.areaOpacities(1.0,1.0,1.0,0.7,0.5)
+				.plotAreas(true,true,true,true,true,true)
+				.areaStyles("fill:white;","fill:white;","fill:lightblue;","fill:lightblue;","fill:lightblue;","fill:lightblue;","fill:orange;")
+				.areaOpacities(1.0,1.0,1.0,1.0,1.0,1.0,1.0)
+				.showLegend(false)
 				.build();
 
 		System.out.println("Plot options:\n" + options);
@@ -334,12 +371,10 @@ public class AircraftTest extends Application {
 			AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
 			
 			// read LiftingSurface from xml ...
-			theAircraft = Aircraft.createDefaultAircraft(AircraftEnum.ATR72, aeroDatabaseReader);
+			theAircraft = new Aircraft.AircraftBuilder("ATR-72", AircraftEnum.ATR72, aeroDatabaseReader).build();
 
 			System.out.println("The Aircaraft ...");
-			
-//			TODO: ADD Builder pattern to Aircraft
-//			System.out.println(AircraftTest.theAircraft.toString());
+			System.out.println(AircraftTest.theAircraft.toString());
 			
 		} catch (CmdLineException | IOException e) {
 			System.err.println("Error: " + e.getMessage());

@@ -164,23 +164,23 @@ public class Costs extends ACCalculatorManager {
 	}
 
 	public void initializeDependentVars(Aircraft aircraft){
-		initializeDependentVars(aircraft.get_powerPlant().get_engineNumber().intValue(),			// numberOfEngines
-				aircraft.get_configuration().getCabinCrewNumber().intValue(),			// cabinCrewNumber,
-				aircraft.get_configuration().getFlightCrewNumber().intValue(),			// flightCrewNumber,
-				aircraft.get_performances().get_range(),	// range (nm)
-				aircraft.get_performances().get_vOptimumCruise(),	// cruiseSpeed, This default value is taken from the Jenkinson's Example
-				aircraft.get_weights().get_OEM(),			// OEM, 
-				aircraft.get_weights().get_MTOM(),			// MTOM,
-				aircraft.get_weights().get_paxMassMax(),		// payload, 
-				aircraft.get_weights().get_manufacturerEmptyMass().minus(aircraft.get_powerPlant().get_totalMass()),	// airframeMass,
-				aircraft.get_configuration().getMaxPax().intValue(),// numberOfPax, Data from Jenkinson's example.
-				aircraft.get_powerPlant().get_engineList().get(0).get_bpr(),		// byPassRatio, Kundu's example value
+		initializeDependentVars(aircraft.getPowerPlant().get_engineNumber().intValue(),			// numberOfEngines
+				aircraft.getCabinConfiguration().getCabinCrewNumber().intValue(),			// cabinCrewNumber,
+				aircraft.getCabinConfiguration().getFlightCrewNumber().intValue(),			// flightCrewNumber,
+				aircraft.getThePerformance().get_range(),	// range (nm)
+				aircraft.getThePerformance().get_vOptimumCruise(),	// cruiseSpeed, This default value is taken from the Jenkinson's Example
+				aircraft.getTheWeights().get_OEM(),			// OEM, 
+				aircraft.getTheWeights().get_MTOM(),			// MTOM,
+				aircraft.getTheWeights().get_paxMassMax(),		// payload, 
+				aircraft.getTheWeights().get_manufacturerEmptyMass().minus(aircraft.getPowerPlant().get_totalMass()),	// airframeMass,
+				aircraft.getCabinConfiguration().getMaxPax().intValue(),// numberOfPax, Data from Jenkinson's example.
+				aircraft.getPowerPlant().get_engineList().get(0).get_bpr(),		// byPassRatio, Kundu's example value
 				14.0,		// overallPressureRatio, Kundu's example value
-				aircraft.get_powerPlant().get_engineList().get(0).get_numberOfCompressorStages(),			// numberOfCompressorStage, Kundu's example value
-				aircraft.get_powerPlant().get_engineList().get(0).get_numberOfShafts(),			// numberOfShaft
-				aircraft.get_powerPlant().get_engineList().get(0).get_t0(),	// seaLevelStaticThrust (single engine), 
-				aircraft.get_powerPlant().get_engineList().get(0).get_t0(),	// thrustTO (single engine), 
-				aircraft.get_powerPlant().get_engineList().get(0).get_p0(),	// powerTO (single engine),
+				aircraft.getPowerPlant().get_engineList().get(0).get_numberOfCompressorStages(),			// numberOfCompressorStage, Kundu's example value
+				aircraft.getPowerPlant().get_engineList().get(0).get_numberOfShafts(),			// numberOfShaft
+				aircraft.getPowerPlant().get_engineList().get(0).get_t0(),	// seaLevelStaticThrust (single engine), 
+				aircraft.getPowerPlant().get_engineList().get(0).get_t0(),	// thrustTO (single engine), 
+				aircraft.getPowerPlant().get_engineList().get(0).get_p0(),	// powerTO (single engine),
 				//				aircraft.get_powerPlant().get_engineList().get(0).get_specificFuelConsumption //TODO: Substitute the value below whit this raw
 				0.5, // Specific fuel consumption in (lb/(lb*hr))
 				1816.0	// hourVolumetricFuelConsumption, Hour fuel consumption in USGal/hr. The value is taken from Jenkinson's example
@@ -273,37 +273,37 @@ public class Costs extends ACCalculatorManager {
 				0.005,		// annualInsurancePremiumRate
 				4200.,		// utilization (hr/year)
 				CostsCalcUtils.singleEngineCostSforza(Amount.valueOf(0., SI.NEWTON), 0.),	// singleEngineCost
-				aircraft.get_powerPlant().get_engineNumber().intValue(),			// numberOfEngines
+				aircraft.getPowerPlant().get_engineNumber().intValue(),			// numberOfEngines
 				0.1,			// sparesCostsAsAirframeCostPercentage
 				0.3,			// sparesEnginesCostsAsAirframeCostPercentage
-				aircraft.get_configuration().getCabinCrewNumber().intValue(),			// cabinCrewNumber,
-				aircraft.get_configuration().getFlightCrewNumber().intValue(),			// flightCrewNumber,
+				aircraft.getCabinConfiguration().getCabinCrewNumber().intValue(),			// cabinCrewNumber,
+				aircraft.getCabinConfiguration().getFlightCrewNumber().intValue(),			// flightCrewNumber,
 				246.5,		// singleCabinCrewHrCost,
 				81,			// singleflightCrewHrCost,
-				aircraft.get_performances().get_range(),	// range (nm)
-				aircraft.get_performances().get_vOptimumCruise(),	// cruiseSpeed, This default value is taken from the Jenkinson's Example
+				aircraft.getThePerformance().get_range(),	// range (nm)
+				aircraft.getThePerformance().get_vOptimumCruise(),	// cruiseSpeed, This default value is taken from the Jenkinson's Example
 				Amount.valueOf(10, NonSI.MINUTE), // Climb and descent time (min),
 				Amount.valueOf(20, NonSI.MINUTE), // Sturtup Taxi and Take-Off time (min),
 				Amount.valueOf(8, NonSI.MINUTE),  // Hold Prior To Land Time (min),
 				Amount.valueOf(5, NonSI.MINUTE),   // Landing and Taxi To Stop Time (min),
-				aircraft.get_weights().get_OEM(),			// OEM, 
-				aircraft.get_weights().get_MTOM(),			// MTOM,
+				aircraft.getTheWeights().get_OEM(),			// OEM, 
+				aircraft.getTheWeights().get_MTOM(),			// MTOM,
 //				aircraft.get_weights().get_paxMassMax(),		// payload,
-				aircraft.get_weights().get_paxSingleMass().times(aircraft.get_configuration().getMaxPax()),		// payload,
+				aircraft.getTheWeights().get_paxSingleMass().times(aircraft.getCabinConfiguration().getMaxPax()),		// payload,
 //				aircraft.get_weights().get_manufacturerEmptyMass().minus(aircraft.get_powerPlant().get_totalMass()),	// airframeMass,
-				aircraft.get_weights().get_manufacturerEmptyMass().minus(aircraft.get_powerPlant().get_engineList().get(0).get_totalMass()),	// airframeMass,
+				aircraft.getTheWeights().get_manufacturerEmptyMass().minus(aircraft.getPowerPlant().get_engineList().get(0).get_totalMass()),	// airframeMass,
 				7.8,			// landingFeesPerTon, As suggested by Kundu (USD per ton of MTOW); Jenkinson suggested instead a value of 6 USD per ton of MTOW.
 				5640.,		// jenkinsonNavigationalCharges, (USD)this value is from the jenkinson example. Jenkinson doesn't give a statistic law, but suggest to find the desired value time by time in literature or else.
-				aircraft.get_configuration().getMaxPax().intValue(),// numberOfPax, Data from Jenkinson's example.
+				aircraft.getCabinConfiguration().getMaxPax().intValue(),// numberOfPax, Data from Jenkinson's example.
 				11,			// groundHandlingCostXPax, Jenkinson suggests this value in USD for the ground handling cost per passenger
 				63.0,		// manHourLaborRate, (USD/hr) As suggested by Kundu. This is the cost of an hour man labor for the maintenance of the airframe.
-				aircraft.get_powerPlant().get_engineList().get(0).get_bpr(),		// byPassRatio, Kundu's example value
+				aircraft.getPowerPlant().get_engineList().get(0).get_bpr(),		// byPassRatio, Kundu's example value
 				14.0,		// overallPressureRatio, Kundu's example value
-				aircraft.get_powerPlant().get_engineList().get(0).get_numberOfCompressorStages(),			// numberOfCompressorStage, Kundu's example value
-				aircraft.get_powerPlant().get_engineList().get(0).get_numberOfShafts(),			// numberOfShaft
-				aircraft.get_powerPlant().get_engineList().get(0).get_t0(),	// seaLevelStaticThrust (single engine), 
-				aircraft.get_powerPlant().get_engineList().get(0).get_t0(),	// thrustTO (single engine), 
-				aircraft.get_powerPlant().get_engineList().get(0).get_p0(),	// powerTO (single engine),
+				aircraft.getPowerPlant().get_engineList().get(0).get_numberOfCompressorStages(),			// numberOfCompressorStage, Kundu's example value
+				aircraft.getPowerPlant().get_engineList().get(0).get_numberOfShafts(),			// numberOfShaft
+				aircraft.getPowerPlant().get_engineList().get(0).get_t0(),	// seaLevelStaticThrust (single engine), 
+				aircraft.getPowerPlant().get_engineList().get(0).get_t0(),	// thrustTO (single engine), 
+				aircraft.getPowerPlant().get_engineList().get(0).get_p0(),	// powerTO (single engine),
 				//				aircraft.get_powerPlant().get_engineList().get(0).get_specificFuelConsumption //TODO: Substitute the value below whit this raw
 				0.5, // Specific fuel consumption in (lb/(lb*hr))
 				110,		// engineMaintLaborCost, (USD/hr/engine) 
@@ -695,7 +695,7 @@ public class Costs extends ACCalculatorManager {
 		_aircraftCost = calcAircraftCostSforza();
 
 		_theFixedCharges.initialize(_utilization, _totalInvestments, _aircraftCost,
-				_singleEngineCost, aircraft.get_lifeSpan(),	_residualValue, _annualInterestRate,
+				_singleEngineCost, aircraft.getLifeSpan(),	_residualValue, _annualInterestRate,
 				_annualInsurancePremiumRate, _cabinCrewNumber, _flightCrewNumber, _numberOfEngines,
 				_singleCabinCrewHrCost, _singleflightCrewHrCost, _MTOM);
 		_theFixedCharges.calculateAll();

@@ -159,7 +159,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 
 		initializeComponentsAerodynamics(_theOperatingConditions, aircraft);
 
-		ne = aircraft.get_powerPlant().get_engineNumber();
+		ne = aircraft.getPowerPlant().get_engineNumber();
 		lambdaW = aircraft.getWing().get_taperRatioEquivalent().doubleValue();
 		arW = aircraft.getWing().get_aspectRatio().doubleValue();
 		bW = aircraft.getWing().get_span().getEstimatedValue();
@@ -196,7 +196,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 					.getCalculateXAC().get_methodMapLRF().get(MethodEnum.DEYOUNG_HARPER).getEstimatedValue()
 					+ aircraft.getWing().get_X0().getEstimatedValue();
 
-			xa = (aircraft.get_theBalance().get_cgMTOM().get_xBRF().getEstimatedValue() - xacWBRF)
+			xa = (aircraft.getTheBalance().get_cgMTOM().get_xBRF().getEstimatedValue() - xacWBRF)
 					/macW;
 
 		} catch (NullPointerException e) { }
@@ -266,7 +266,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 				
 		_cD0Parasite =  _theAircraft.getFuselage().getAerodynamics().get_cD0Parasite()
 				+ _theAircraft.getWing().getAerodynamics().get_cD0Parasite()
-				+ _theAircraft.get_theNacelles().get_cD0Parasite()
+				+ _theAircraft.getNacelles().get_cD0Parasite()
 				+ _theAircraft.getHTail().getAerodynamics().get_cD0Parasite()
 				+ _theAircraft.getVTail().getAerodynamics().get_cD0Parasite();
 		
@@ -281,7 +281,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 
 		_cD0 = _theAircraft.getFuselage().getAerodynamics().get_cD0Total() +
 				_theAircraft.getWing().getAerodynamics().get_cD0Total() +
-				_theAircraft.get_theNacelles().get_cD0Total() +
+				_theAircraft.getNacelles().get_cD0Total() +
 				_theAircraft.getHTail().getAerodynamics().get_cD0Total() +
 				_theAircraft.getVTail().getAerodynamics().get_cD0Total();
 
@@ -294,7 +294,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 				&& mach == _theOperatingConditions.get_machCurrent()) {
 			_cD0Map.put(ComponentEnum.FUSELAGE, _theAircraft.getFuselage().getAerodynamics().get_cD0Total());
 			_cD0Map.put(ComponentEnum.WING, _theAircraft.getWing().getAerodynamics().get_cD0Total());
-			_cD0Map.put(ComponentEnum.NACELLE, _theAircraft.get_theNacelles().get_cD0Total());
+			_cD0Map.put(ComponentEnum.NACELLE, _theAircraft.getNacelles().get_cD0Total());
 			_cD0Map.put(ComponentEnum.HORIZONTAL_TAIL, _theAircraft.getHTail().getAerodynamics().get_cD0Total());
 			_cD0Map.put(ComponentEnum.VERTICAL_TAIL, _theAircraft.getVTail().getAerodynamics().get_cD0Total());
 			_cD0Map.put(ComponentEnum.ALL, _cD0Total);
@@ -392,7 +392,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 					_theAircraft.getFuselage().get_sectionCylinderHeight().getEstimatedValue()/bW
 					, 2);
 
-			switch(_theAircraft.get_typeVehicle()) {
+			switch(_theAircraft.getTypeVehicle()) {
 			case JET : keD0 = 0.873; break;
 			case BUSINESS_JET : keD0 = 0.864; break;
 			case TURBOPROP: keD0 = 0.804; break;
@@ -861,14 +861,14 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 
 		// Evaluate all wing parameters
 		if (aircraft.getWing() != null) {
-			aircraft.getWing().getAerodynamics().set_cLCurrent(aircraft.get_performances().get_cruiseCL());
+			aircraft.getWing().getAerodynamics().set_cLCurrent(aircraft.getThePerformance().get_cruiseCL());
 			aircraft.getWing().getAerodynamics().calculateAll(_theOperatingConditions.get_machCurrent(), alphaRoot);
 		} 
 
 		// Evaluate all Htail parameters
 		if (aircraft.getHTail() != null) {
 			// TODO: change Htail CL
-			aircraft.getHTail().getAerodynamics().set_cLCurrent(aircraft.get_performances().get_cruiseCL());
+			aircraft.getHTail().getAerodynamics().set_cLCurrent(aircraft.getThePerformance().get_cruiseCL());
 			aircraft.getHTail().getAerodynamics().calculateAll(_theOperatingConditions.get_machCurrent(),alphaRoot);
 		}
 
@@ -880,13 +880,13 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 
 		// Evaluate all canard parameters
 		if (aircraft.getCanard() != null) {
-			aircraft.getCanard().getAerodynamics().set_cLCurrent(aircraft.get_performances().get_cruiseCL());
+			aircraft.getCanard().getAerodynamics().set_cLCurrent(aircraft.getThePerformance().get_cruiseCL());
 			aircraft.getCanard().getAerodynamics().calculateAll(_theOperatingConditions.get_machCurrent(),alphaRoot);
 		}
 
 		// Evaluate all nacelle parameters
-		if (aircraft.get_theNacelles() != null) {
-			aircraft.get_theNacelles().calculateAerodynamics();
+		if (aircraft.getNacelles() != null) {
+			aircraft.getNacelles().calculateAerodynamics();
 		}
 	}
 
@@ -900,7 +900,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		calculateDragPolar();
 		calculateDragPolarPoints(arW, _eWhole[0], _cD0, 
 				conditions.get_densityCurrent().getEstimatedValue(), 
-				_theAircraft.get_weights().get_MTOW().getEstimatedValue(), 
+				_theAircraft.getTheWeights().get_MTOW().getEstimatedValue(), 
 				_theAircraft.getWing().get_surface().getEstimatedValue());
 
 		calculateDepsDalpha(_theAircraft);

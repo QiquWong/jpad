@@ -206,7 +206,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 								airfoil1, // airfoilRoot, 
 								airfoil1, // airfoilTip,
 								Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), // twistGeometricTip,
-								Amount.valueOf(4.7,SI.METER), // semiSpan, 
+								Amount.valueOf(4.7,SI.METER), // span, 
 								Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), // sweepLeadingEdge, 
 								Amount.valueOf(0.0, NonSI.DEGREE_ANGLE) // dihedral
 								)
@@ -243,7 +243,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 								airfoil1, // airfoilRoot, 
 								airfoil2, // airfoilTip,
 								Amount.valueOf(-2.0, NonSI.DEGREE_ANGLE), // twistGeometricTip,
-								Amount.valueOf(8.83,SI.METER), // semiSpan, 
+								Amount.valueOf(8.83,SI.METER), // span, 
 								Amount.valueOf(4.3, NonSI.DEGREE_ANGLE), // sweepLeadingEdge, 
 								Amount.valueOf(0.0, NonSI.DEGREE_ANGLE) // dihedral
 								)
@@ -1518,6 +1518,14 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		// integral_1 = ((b/2)*xle(b/2)) - int_0^(b/2) xle(y) dy
 		// _xOffsetEquivalentWingRootLE = xle(b/2) - (2*A_1/(b/2))
 
+		System.out.println("\n\tDiscretized y --> " + 
+				Arrays.toString(MyArrayUtils.convertListOfAmountTodoubleArray(
+						this.getDiscretizedYs())) + "\n");
+		
+		System.out.println("\n\tDiscretized xLE --> " + 
+				Arrays.toString(MyArrayUtils.convertListOfAmountTodoubleArray(
+						this.getDiscretizedXle())) + "\n");
+		
 		Double integral1 = MyMathUtils.integrate1DSimpsonSpline(
 				MyArrayUtils.convertListOfAmountTodoubleArray(
 					this.getDiscretizedYs()), // y
@@ -2324,7 +2332,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 				.append("\tLifting surface\n")
 				.append("\t-------------------------------------\n")
 				.append("\tID: '" + _id + "'\n")
-				.append("\tID: '" + _type + "'\n")
+				.append("\tType: '" + _type + "'\n")
 				.append("\tNo. _panels " + _panels.size() + "\n")
 				;
 				for (LiftingSurfacePanelCreator panel : _panels) {

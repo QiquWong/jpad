@@ -124,12 +124,12 @@ public class PayloadRangeCalc{
 		
 		airplaneType = type;
 		
-		maxTakeOffMass = theAircraft.get_weights().get_MTOM();
-		operatingEmptyMass = theAircraft.get_weights().get_OEM();
-		maxFuelMass = theAircraft.get_theFuelTank().getFuelMass();
-		nPassMax = theAircraft.get_configuration().getMaxPax();
+		maxTakeOffMass = theAircraft.getTheWeights().get_MTOM();
+		operatingEmptyMass = theAircraft.getTheWeights().get_OEM();
+		maxFuelMass = theAircraft.getFuelTank().getFuelMass();
+		nPassMax = theAircraft.getCabinConfiguration().getMaxPax();
 		airfoilType = theAircraft.getWing().get_theAirfoilsList().get(0).getType();
-		engineType = theAircraft.get_powerPlant().get_engineType();
+		engineType = theAircraft.getPowerPlant().get_engineType();
 
 		surface = theAircraft.getWing().get_surface();
 		ar = theAircraft.getWing().get_aspectRatio();
@@ -144,21 +144,21 @@ public class PayloadRangeCalc{
 		 * this works for turbofan and turboprop engine only (which are what we're analyzing). 
 		 */
 		if (engineType == EngineTypeEnum.TURBOFAN)
-			byPassRatio = theAircraft.get_powerPlant().get_engineList().get(0).get_bpr();
+			byPassRatio = theAircraft.getPowerPlant().get_engineList().get(0).get_bpr();
 		else
 			byPassRatio = 0.0;
 		
 		tcMax = theAircraft.getWing().get_thicknessMean();
-		cd0 = theAircraft.get_theAerodynamics().calculateCD0Total();
-		oswald = theAircraft.get_theAerodynamics().calculateOswald(currentMach, MethodEnum.HOWE);
+		cd0 = theAircraft.getTheAerodynamics().calculateCD0Total();
+		oswald = theAircraft.getTheAerodynamics().calculateOswald(currentMach, MethodEnum.HOWE);
 		cl = LiftCalc.calcCLatAlphaLinearDLR(
 				theConditions.get_alphaCurrent().getEstimatedValue(),
 				theAircraft.getWing().get_aspectRatio()
 				);
 	
 		
-		aerodynamicAnalysis = theAircraft.get_theAerodynamics();
-		fuelFractionDatabase = theAircraft.get_theFuelTank().getFuelFractionDatabase();
+		aerodynamicAnalysis = theAircraft.getTheAerodynamics();
+		fuelFractionDatabase = theAircraft.getFuelTank().getFuelFractionDatabase();
 	}
 
 	//-------------------------------------------------------------------------------------

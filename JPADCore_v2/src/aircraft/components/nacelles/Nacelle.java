@@ -97,7 +97,7 @@ public class Nacelle extends Component{
 		this(name, description, x, y, z);
 		_theAircraft = aircraft;
 		
-		_id = aircraft.get_theNacelles().getId() + idCounter + "99";
+		_id = aircraft.getNacelles().getId() + idCounter + "99";
 		idCounter++;
 		
 		initializeData();
@@ -115,7 +115,7 @@ public class Nacelle extends Component{
 		this(name, description, x, y, z);
 		_theAircraft = aircraft;
 		
-		_id = aircraft.get_theNacelles().getId() + idCounter + "99";
+		_id = aircraft.getNacelles().getId() + idCounter + "99";
 		idCounter++;
 		
 		initializeData(aircraftName);

@@ -59,7 +59,7 @@ public class FuselageAerodynamicsManager extends aircraft.componentmodel.compone
 		_theFuselage = aircraft.getFuselage();
 		 aircraft.getFuselage().setAerodynamics(this);
 		_theOperatingConditions = ops;
-		_aeroDatabaseReader = _theAircraft.get_theAerodynamics().get_aerodynamicDatabaseReader();
+		_aeroDatabaseReader = _theAircraft.getTheAerodynamics().get_aerodynamicDatabaseReader();
    
 		initializeDependentData();
 		initializeInnerCalculators();
@@ -244,7 +244,7 @@ public class FuselageAerodynamicsManager extends aircraft.componentmodel.compone
 		private double k2k1;
 
 		public CalculateCm0() {
-			_aerodynamicDatabaseReader = _theAircraft.get_theAerodynamics().get_aerodynamicDatabaseReader();
+			_aerodynamicDatabaseReader = _theAircraft.getTheAerodynamics().get_aerodynamicDatabaseReader();
 			k2k1 = _aerodynamicDatabaseReader.get_C_m0_b_k2_minus_k1_vs_FFR(
 					_theFuselage.get_len_F().doubleValue(SI.METER), 
 					_theFuselage.get_equivalentDiameterGM().doubleValue(SI.METER)); 
