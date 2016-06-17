@@ -179,7 +179,7 @@ public class JPADDataWriter {
 
 		MyConfiguration.currentImagesDirectory = MyConfiguration.imagesDirectory 
 				+ File.separator
-				+ _theAircraft.get_name()
+				+ _theAircraft.getId()
 				+ File.separator;
 
 		// Create folders for each aircraft
@@ -272,19 +272,19 @@ public class JPADDataWriter {
 		_whole_aircraft = doc.createElement("AIRCRAFT");
 		_rootElement.appendChild(_whole_aircraft);
 
-		_performancesInit = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.get_performances()));
+		_performancesInit = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.getThePerformance()));
 		_whole_aircraft.appendChild(_performancesInit);
 
-		_costsInitiator = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.get_theCosts()));
+		_costsInitiator = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.getTheCosts()));
 		_whole_aircraft.appendChild(_costsInitiator);
 
-		_configurationInit = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.get_configuration()));
+		_configurationInit = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.getCabinConfiguration()));
 		_whole_aircraft.appendChild(_configurationInit);
 
-		_weightsInit = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.get_weights())); 
+		_weightsInit = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.getTheWeights())); 
 		_whole_aircraft.appendChild(_weightsInit);
 
-		_balanceInit = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.get_theBalance())); 
+		_balanceInit = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.getTheBalance())); 
 		_whole_aircraft.appendChild(_balanceInit);
 
 		_fuselageInitiator = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.getFuselage()));
@@ -299,19 +299,19 @@ public class JPADDataWriter {
 		_vTailInitiator = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.getVTail()));
 		_whole_aircraft.appendChild(_vTailInitiator);
 
-		_nacelleInitiator = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.get_theNacelles()));
+		_nacelleInitiator = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.getNacelles()));
 		_whole_aircraft.appendChild(_nacelleInitiator);
 
-		_fuelTankInitiator = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.get_theFuelTank()));
+		_fuelTankInitiator = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.getFuelTank()));
 		_whole_aircraft.appendChild(_fuelTankInitiator);
 
-		_powerPlantInitiator = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.get_powerPlant()));
+		_powerPlantInitiator = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.getPowerPlant()));
 		_whole_aircraft.appendChild(_powerPlantInitiator);
 
-		_systemsInitiator = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.get_systems()));
+		_systemsInitiator = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.getSystems()));
 		_whole_aircraft.appendChild(_systemsInitiator);
 
-		_landingGearInitiator = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.get_landingGear()));
+		_landingGearInitiator = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(_theAircraft.getLandingGears()));
 		_whole_aircraft.appendChild(_landingGearInitiator);
 
 		_analysisInitiator = doc.createElement("ANALYSIS");
@@ -344,25 +344,25 @@ public class JPADDataWriter {
 		if (_theOperatingConditions != null)
 			writeOperatingConditions(_theOperatingConditions);
 
-		ACAerodynamicsManager am = _theAircraft.get_theAerodynamics();
+		ACAerodynamicsManager am = _theAircraft.getTheAerodynamics();
 		
-		if (_theAircraft.get_theAerodynamics() != null)
-			writeAircraftAerodynamics(doc, _analysisInitiator, _theAircraft.get_theAerodynamics());
+		if (_theAircraft.getTheAerodynamics() != null)
+			writeAircraftAerodynamics(doc, _analysisInitiator, _theAircraft.getTheAerodynamics());
 
-		if (_theAircraft.get_weights() != null)
-			writeWeights(_theAircraft.get_weights());
+		if (_theAircraft.getTheWeights() != null)
+			writeWeights(_theAircraft.getTheWeights());
 
-		if (_theAircraft.get_theBalance() != null)
-			writeBalanceOutput(_theAircraft.get_theBalance());
+		if (_theAircraft.getTheBalance() != null)
+			writeBalanceOutput(_theAircraft.getTheBalance());
 
-		if (_theAircraft.get_performances() != null)
-			writePerformances(_theAircraft.get_performances());
+		if (_theAircraft.getThePerformance() != null)
+			writePerformances(_theAircraft.getThePerformance());
 
-		if (_theAircraft.get_configuration() != null)
-			writeConfiguration(_theAircraft.get_configuration());
+		if (_theAircraft.getCabinConfiguration() != null)
+			writeConfiguration(_theAircraft.getCabinConfiguration());
 
-		if (_theAircraft.get_theCosts() != null)
-			writeCosts(_theAircraft.get_theCosts(), _analysisInitiator);
+		if (_theAircraft.getTheCosts() != null)
+			writeCosts(_theAircraft.getTheCosts(), _analysisInitiator);
 
 		// --- Components --------------------------------------------------
 
@@ -383,24 +383,24 @@ public class JPADDataWriter {
 			writeLiftingSurface(_vTailInitiator, _theAircraft.getVTail());
 
 		// Write Propulsion system data
-		if (_theAircraft.get_powerPlant() != null)
-			writePowerPlant(_theAircraft.get_powerPlant());
+		if (_theAircraft.getPowerPlant() != null)
+			writePowerPlant(_theAircraft.getPowerPlant());
 
 		// Write fuel tank data
-		if (_theAircraft.get_theFuelTank() != null)
-			writeFuelTank(_theAircraft.get_theFuelTank());
+		if (_theAircraft.getFuelTank() != null)
+			writeFuelTank(_theAircraft.getFuelTank());
 
 		// Write Nacelle data
-		if (_theAircraft.get_theNacelles() != null)
-			writeNacelles(_theAircraft.get_theNacelles());
+		if (_theAircraft.getNacelles() != null)
+			writeNacelles(_theAircraft.getNacelles());
 
 		// Write Landing Gear data
-		if (_theAircraft.get_landingGear() != null)
-			writeLandingGear(_theAircraft.get_landingGear());
+		if (_theAircraft.getLandingGears() != null)
+			writeLandingGear(_theAircraft.getLandingGears());
 
 		// Write Systems data
-		if (_theAircraft.get_systems() != null)
-			writeSystems(_theAircraft.get_systems());
+		if (_theAircraft.getSystems() != null)
+			writeSystems(_theAircraft.getSystems());
 
 	}
 
@@ -560,18 +560,18 @@ public class JPADDataWriter {
 					writeOutputNode("Wing_mass", _theAircraft.getWing().getMassEstimated(), weightsAnalysis);
 					writeOutputNode("HTail_mass", _theAircraft.getHTail().getMassEstimated(), weightsAnalysis);
 					writeOutputNode("VTail_mass", _theAircraft.getVTail().getMassEstimated(), weightsAnalysis);
-					writeOutputNode("Nacelles_mass", _theAircraft.get_theNacelles().get_totalMass(), weightsAnalysis);
-					writeOutputNode("Landing_gear_mass", _theAircraft.get_landingGear().getMassEstimated(), weightsAnalysis);
-					writeOutputNode("Structure_mass", _theAircraft.get_weights().get_structuralMass(), weightsAnalysis);
-					writeOutputNode("Power_plant_mass", _theAircraft.get_powerPlant().get_totalMass(), weightsAnalysis);
-					writeOutputNode("Systems_mass", _theAircraft.get_systems().getOverallMass(), weightsAnalysis);
-					writeOutputNode("Furnishings_and_Equipment_mass", _theAircraft.get_configuration().getMassEstimatedFurnishingsAndEquipment(), weightsAnalysis);
-					writeOutputNode("Manufacturer_empty_mass", _theAircraft.get_weights().get_manufacturerEmptyMass(), weightsAnalysis);
-					writeOutputNode("Crew_mass", _theAircraft.get_weights().get_crewMass(), weightsAnalysis);
-					writeOutputNode("Operating_Items_mass", _theAircraft.get_weights().get_OIM(), weightsAnalysis);
-					writeOutputNode("Operating_empty_mass", _theAircraft.get_weights().get_OEM(), weightsAnalysis);
-					writeOutputNode("Passengers_mass", _theAircraft.get_weights().get_paxMass(), weightsAnalysis);
-					writeOutputNode("ZeroFuelMass", _theAircraft.get_weights().get_ZFM(), weightsAnalysis);
+					writeOutputNode("Nacelles_mass", _theAircraft.getNacelles().get_totalMass(), weightsAnalysis);
+					writeOutputNode("Landing_gear_mass", _theAircraft.getLandingGears().getMassEstimated(), weightsAnalysis);
+					writeOutputNode("Structure_mass", _theAircraft.getTheWeights().get_structuralMass(), weightsAnalysis);
+					writeOutputNode("Power_plant_mass", _theAircraft.getPowerPlant().get_totalMass(), weightsAnalysis);
+					writeOutputNode("Systems_mass", _theAircraft.getSystems().getOverallMass(), weightsAnalysis);
+					writeOutputNode("Furnishings_and_Equipment_mass", _theAircraft.getCabinConfiguration().getMassEstimatedFurnishingsAndEquipment(), weightsAnalysis);
+					writeOutputNode("Manufacturer_empty_mass", _theAircraft.getTheWeights().get_manufacturerEmptyMass(), weightsAnalysis);
+					writeOutputNode("Crew_mass", _theAircraft.getTheWeights().get_crewMass(), weightsAnalysis);
+					writeOutputNode("Operating_Items_mass", _theAircraft.getTheWeights().get_OIM(), weightsAnalysis);
+					writeOutputNode("Operating_empty_mass", _theAircraft.getTheWeights().get_OEM(), weightsAnalysis);
+					writeOutputNode("Passengers_mass", _theAircraft.getTheWeights().get_paxMass(), weightsAnalysis);
+					writeOutputNode("ZeroFuelMass", _theAircraft.getTheWeights().get_ZFM(), weightsAnalysis);
 				}
 			}
 			JPADStaticWriteUtils.writeAllArraysToXls(_sheet, _xlsArraysDescription, _xlsArraysList, _xlsArraysUnit);
@@ -593,14 +593,14 @@ public class JPADDataWriter {
 					Element balance_Analysis = doc.createElement("Balance");
 					_analysisInitiator.appendChild(balance_Analysis);
 
-					writeOutputNode("Xcg_structure_MAC", _theAircraft.get_theBalance().get_cgStructure().get_xMAC(), balance_Analysis);
-					writeOutputNode("Xcg_structure_BRF", _theAircraft.get_theBalance().get_cgStructure().get_xBRF(), balance_Analysis);
-					writeOutputNode("Xcg_structure_and_engines_MAC", _theAircraft.get_theBalance().get_cgStructureAndPower().get_xMAC(), balance_Analysis);
-					writeOutputNode("Xcg_structure_and_engines_BRF", _theAircraft.get_theBalance().get_cgStructureAndPower().get_xBRF(), balance_Analysis);
-					writeOutputNode("Xcg_MAC_MZFM", _theAircraft.get_theBalance().get_cgMZFM().get_xMAC(), balance_Analysis);
-					writeOutputNode("Xcg_BRF_MZFM", _theAircraft.get_theBalance().get_cgMZFM().get_xBRF(), balance_Analysis);
-					writeOutputNode("Xcg_MTOM_MAC", _theAircraft.get_theBalance().get_cgMTOM().get_xMAC(), balance_Analysis);
-					writeOutputNode("Xcg_MTOM_BRF", _theAircraft.get_theBalance().get_cgMTOM().get_xBRF(), balance_Analysis);
+					writeOutputNode("Xcg_structure_MAC", _theAircraft.getTheBalance().get_cgStructure().get_xMAC(), balance_Analysis);
+					writeOutputNode("Xcg_structure_BRF", _theAircraft.getTheBalance().get_cgStructure().get_xBRF(), balance_Analysis);
+					writeOutputNode("Xcg_structure_and_engines_MAC", _theAircraft.getTheBalance().get_cgStructureAndPower().get_xMAC(), balance_Analysis);
+					writeOutputNode("Xcg_structure_and_engines_BRF", _theAircraft.getTheBalance().get_cgStructureAndPower().get_xBRF(), balance_Analysis);
+					writeOutputNode("Xcg_MAC_MZFM", _theAircraft.getTheBalance().get_cgMZFM().get_xMAC(), balance_Analysis);
+					writeOutputNode("Xcg_BRF_MZFM", _theAircraft.getTheBalance().get_cgMZFM().get_xBRF(), balance_Analysis);
+					writeOutputNode("Xcg_MTOM_MAC", _theAircraft.getTheBalance().get_cgMTOM().get_xMAC(), balance_Analysis);
+					writeOutputNode("Xcg_MTOM_BRF", _theAircraft.getTheBalance().get_cgMTOM().get_xBRF(), balance_Analysis);
 				}
 			}
 
@@ -1527,7 +1527,7 @@ public class JPADDataWriter {
 
 			Element wholeConfigurationAerodynamics = doc.createElement("Whole_configuration_aerodynamics");
 			father.appendChild(wholeConfigurationAerodynamics);
-			_sheet = JPADStaticWriteUtils.commonOperations(_theAircraft.get_name(), _workbookExport, "Whole_configuration_aerodynamics", true);
+			_sheet = JPADStaticWriteUtils.commonOperations(_theAircraft.getId(), _workbookExport, "Whole_configuration_aerodynamics", true);
 
 			Element dragPolar = addElementToSubElement("Drag_Polar", wholeConfigurationAerodynamics);
 			if (aeroCalc.get_eWhole() != null)
@@ -1710,7 +1710,7 @@ public class JPADDataWriter {
 		_variablesMap = initializeVariableMap();
 		_fatherObject = obj;
 
-		return JPADStaticWriteUtils.commonOperations(_theAircraft.get_name(), _workbookExport, JPADGlobalData.getTheXmlTree().getDescription(obj), createSheet);
+		return JPADStaticWriteUtils.commonOperations(_theAircraft.getId(), _workbookExport, JPADGlobalData.getTheXmlTree().getDescription(obj), createSheet);
 	}
 
 	private void commonOperations(Object obj, Element el) {

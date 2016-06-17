@@ -262,7 +262,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		theAircraft = ac;
 		set_AerodynamicDatabaseReader(
 				theAircraft
-				.get_theAerodynamics()
+				.getTheAerodynamics()
 				.get_aerodynamicDatabaseReader()
 				);
 
@@ -699,8 +699,8 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		if (getTheLiftingSurface()._type == ComponentEnum.WING){
 			_cdWNInterf = 0.0033*Math.pow(
 					//TODO: change this
-					theAircraft.get_theNacelles().get_nacellesList().get(0).get_diameterMean().getEstimatedValue()
-					* theAircraft.get_theNacelles().get_nacellesNumber(),2)/
+					theAircraft.getNacelles().get_nacellesList().get(0).get_diameterMean().getEstimatedValue()
+					* theAircraft.getNacelles().get_nacellesNumber(),2)/
 					surface;
 		} else {
 			_cdWNInterf = 0.0;
@@ -1124,7 +1124,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 							taperRatioEq ,sweepHalfChordEq, ar,  
 							theOperatingConditions.get_machCurrent(),
 							//theLiftingSurface.getAerodynamics().get_AerodynamicDatabaseReader() ), SI.METER);
-							theAircraft.get_theAerodynamics().get_aerodynamicDatabaseReader() ),SI.METER);
+							theAircraft.getTheAerodynamics().get_aerodynamicDatabaseReader() ),SI.METER);
 			double xacNapolitano=getTheLiftingSurface()._xACActualMRF.getEstimatedValue();
 
 			//			System.out.println("taper ratio " + taperRatioEq);
@@ -1949,7 +1949,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			double result;
 			EngineTypeEnum engineType;
 			if (theAircraft != null) {
-				engineType = theAircraft.get_powerPlant().get_engineType();
+				engineType = theAircraft.getPowerPlant().get_engineType();
 			} else {
 				engineType = EngineTypeEnum.TURBOPROP;
 			}
@@ -3990,7 +3990,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			CenterOfGravity cg;
 
 			if (theLocalAircraft != null) {
-				cg = theLocalAircraft.get_theBalance().get_cgMTOM();
+				cg = theLocalAircraft.getTheBalance().get_cgMTOM();
 			} else {
 				cg = theLiftingSurface.getCg();
 			}
@@ -4011,7 +4011,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			CenterOfGravity cg;
 
 			if (theLocalAircraft != null) {
-				cg = theLocalAircraft.get_theBalance().get_cgMTOM();
+				cg = theLocalAircraft.getTheBalance().get_cgMTOM();
 			} else {
 				cg = theLiftingSurface.getCg();
 			}
@@ -5594,14 +5594,14 @@ public class CalcCdvsAlpha {
 				_aerodynamicDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath, databaseFileName); 
 				listDatabaseReaders.add(_aerodynamicDatabaseReader);
 				if( theAircraft!= null)
-					theAircraft.get_theAerodynamics().set_aerodynamicDatabaseReader(_aerodynamicDatabaseReader);
+					theAircraft.getTheAerodynamics().set_aerodynamicDatabaseReader(_aerodynamicDatabaseReader);
 				break;
 
 			case HIGHLIFT:
 				_highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, databaseFileName); 
 				listDatabaseReaders.add(_highLiftDatabaseReader);
 				if( theAircraft!= null)
-					theAircraft.get_theAerodynamics().set_highLiftDatabaseReader(_highLiftDatabaseReader);
+					theAircraft.getTheAerodynamics().set_highLiftDatabaseReader(_highLiftDatabaseReader);
 				break;	
 
 			}

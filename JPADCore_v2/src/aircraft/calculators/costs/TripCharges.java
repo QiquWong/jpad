@@ -78,24 +78,24 @@ public class TripCharges {
 
 	public void initialize(Aircraft aircraft, Costs costs) {
 		initialize(costs.get_landingFeesPerTon(), 
-				aircraft.get_weights().get_MTOM(), 
-				aircraft.get_performances().get_blockTime(),
-				aircraft.get_performances().get_range(), costs.get_jenkinsonNavigationalCharges(),
-				aircraft.get_weights().get_paxMassMax(), aircraft.get_configuration().getMaxPax().intValue(),
+				aircraft.getTheWeights().get_MTOM(), 
+				aircraft.getThePerformance().get_blockTime(),
+				aircraft.getThePerformance().get_range(), costs.get_jenkinsonNavigationalCharges(),
+				aircraft.getTheWeights().get_paxMassMax(), aircraft.getCabinConfiguration().getMaxPax().intValue(),
 				costs.get_groundHandlingCostXPax(),
-				aircraft.get_weights().get_manufacturerEmptyMass().minus(aircraft.get_powerPlant().get_totalMass()),
+				aircraft.getTheWeights().get_manufacturerEmptyMass().minus(aircraft.getPowerPlant().get_totalMass()),
 				costs.get_manHourLaborRate(), costs.get_airframeCost(), 
-				aircraft.get_performances().get_flightTime(),
-				aircraft.get_powerPlant().get_engineList().get(0).get_bpr(), 
-				aircraft.get_powerPlant().get_engineList().get(0).get_overallPressureRatio(),
-				aircraft.get_powerPlant().get_engineList().get(0).get_numberOfCompressorStages(), 
-				aircraft.get_powerPlant().get_engineList().get(0).get_numberOfShafts(),
-				aircraft.get_powerPlant().get_engineList().get(0).get_t0(), aircraft.get_powerPlant().get_engineNumber(),
+				aircraft.getThePerformance().get_flightTime(),
+				aircraft.getPowerPlant().get_engineList().get(0).get_bpr(), 
+				aircraft.getPowerPlant().get_engineList().get(0).get_overallPressureRatio(),
+				aircraft.getPowerPlant().get_engineList().get(0).get_numberOfCompressorStages(), 
+				aircraft.getPowerPlant().get_engineList().get(0).get_numberOfShafts(),
+				aircraft.getPowerPlant().get_engineList().get(0).get_t0(), aircraft.getPowerPlant().get_engineNumber(),
 				costs.get_engineMaintLaborCost(), costs.get_engineMaintMaterialCost(),
 				costs.get_airframeMaintLaborCost(),	costs.get_airframeMaintMaterialCost(),
-				aircraft.get_weights().get_OEM(), 
-				aircraft.get_performances().get_vOptimumCruise(), costs.get_aircraftCost(),
-				costs.get_singleEngineCost(), aircraft.get_powerPlant().get_P0Total(), costs.get_blockFuelVolume(), 
+				aircraft.getTheWeights().get_OEM(), 
+				aircraft.getThePerformance().get_vOptimumCruise(), costs.get_aircraftCost(),
+				costs.get_singleEngineCost(), aircraft.getPowerPlant().get_P0Total(), costs.get_blockFuelVolume(), 
 				costs.get_fuelVolumetricCost(), costs.get_hourVolumetricFuelConsumption(), 
 				costs.get_oilMassCost());		
 	}
@@ -821,11 +821,11 @@ public class TripCharges {
 			double engineTOFactorValue = 0.0;
 			int jConst = 0;
 
-			if (_theAircraft.get_powerPlant().get_engineList().get(0).equals(EngineTypeEnum.TURBOFAN)){
+			if (_theAircraft.getPowerPlant().get_engineList().get(0).equals(EngineTypeEnum.TURBOFAN)){
 				jConst = 0;
 				engineTOFactorValue = engineTOFactor.doubleValue(NonSI.POUND_FORCE);
 			}
-			if (_theAircraft.get_powerPlant().get_engineList().get(0).equals(EngineTypeEnum.TURBOPROP)){
+			if (_theAircraft.getPowerPlant().get_engineList().get(0).equals(EngineTypeEnum.TURBOPROP)){
 				jConst = 1;
 				engineTOFactorValue = engineTOFactor.doubleValue(NonSI.HORSEPOWER);
 			}

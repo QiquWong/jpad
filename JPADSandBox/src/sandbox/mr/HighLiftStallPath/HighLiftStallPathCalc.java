@@ -19,6 +19,9 @@ import org.jscience.physics.amount.Amount;
 
 import com.sun.jna.platform.win32.WinUser.INPUT;
 
+import aircraft.auxiliary.airfoil.Airfoil;
+import aircraft.components.liftingSurface.LSAerodynamicsManager;
+import aircraft.components.liftingSurface.LiftingSurface2Panels;
 import calculators.aerodynamics.LiftCalc;
 import calculators.aerodynamics.NasaBlackwell;
 import calculators.geometry.LSGeometryCalc;
@@ -1458,4 +1461,75 @@ public class HighLiftStallPathCalc {
 				}
 				return (ArrayList<Double>) outputAsList;
 	}
+	
+	
+	public static double[] calculateCLArraymodifiedStallPath(MyArray alphaArray, LiftingSurface2Panels theLiftingSurface){
+
+
+		// VARIABLE DECLARATION
+		Amount<Angle> alphaActual;
+		double qValue, cLWingActual = 0;
+		double [] clNasaBlackwell = new double [alphaArray.size()];
+
+		List<Airfoil> airfoilList = new ArrayList<Airfoil>();
+
+		LSAerodynamicsManager theLSManager = theLiftingSurface.getAerodynamics();
+		LSAerodynamicsManager.CalcLiftDistribution calculateLiftDistribution = theLSManager.getCalculateLiftDistribution();
+
+		int nPointSemiSpan = theLSManager.get_nPointsSemispanWise();
+		double [] yArray = MyArrayUtils.linspace(0., theLiftingSurface.get_span().getEstimatedValue()/2, nPointSemiSpan);
+		double [] yArrayND = MyArrayUtils.linspace(0., 1, nPointSemiSpan);
+		double [] cLDistributionInviscid = new double [nPointSemiSpan];
+		double [] alphaLocalAirfoil = new double [nPointSemiSpan];
+		double [] clDisributionReal = new double [nPointSemiSpan];
+
+		double [] cLWingArray = new double [alphaArray.size()];
+
+
+		for (int j=0 ; j<nPointSemiSpan; j++){
+			airfoilList.add(j,theLSManager.calculateIntermediateAirfoil(
+					theLiftingSurface, yArray[j]) );
+			airfoilList.get(j).getAerodynamics().calculateClvsAlpha();}
+
+
+		// iterations
+		for (int ii=0; ii<alphaArray.size(); ii++){
+			alphaActual = Amount.valueOf(alphaArray.get(ii),SI.RADIAN);
+
+			calculateLiftDistribution.getNasaBlackwell().calculate(alphaActual);
+			clNasaBlackwell = calculateLiftDistribution.getNasaBlackwell().get_clTotalDistribution().toArray();
+			clNasaBlackwell[clNasaBlackwell.length-1] = 0;
+
+			for (int i=0 ; i<nPointSemiSpan ;  i++){
+				cLDistributionInviscid[i] = clNasaBlackwell[i];
+				//			System.out.println( " cl local " + cLLocal);
+				qValue = airfoilList.get(i).getAerodynamics().calculateClAtAlphaInterp(0.0);
+				//			System.out.println(" qValue " + qValue );
+				alphaLocalAirfoil[i] = (cLDistributionInviscid[i]-qValue)/airfoilList.get(i).getAerodynamics().get_clAlpha();
+				//			System.out.println(" alpha local airfoil " + alphaLocalAirfoil);
+				clDisributionReal[i] = airfoilList.get(i).getAerodynamics().calculateClAtAlpha(
+						//alphaLocal.getEstimatedValue()+
+						alphaLocalAirfoil[i]);
+				//					airfoilList.get(i).getGeometry().get_twist().getEstimatedValue());
+			}
+			cLWingActual = MyMathUtils.integrate1DSimpsonSpline(yArrayND, clDisributionReal);
+
+			cLWingArray[ii] = cLWingActual;
+		}
+
+		return cLWingArray;
+	}
+	
+	
+	// MODIFIED STALL PATH
+	
+	// Need to define the vector useful to the method.
+	// Clmax
+	// alphaStall
+	// alphaStar
+	// ClStar
+	// ClZero
+	// Cl
+	
+	
 }

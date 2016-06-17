@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <wing_executable>
         <operating_conditions>
-                <altitude unit="m">6000</altitude>
-                <mach_number>0.2</mach_number>
-                <number_of_alpha>7</number_of_alpha>
-                <alpha_initial unit="°">0.0</alpha_initial>
-                <alpha_final unit="°">6.0</alpha_final>
+                <altitude unit="m">0.0</altitude>
+                <mach_number>0.0</mach_number>
+                <number_of_alpha>1</number_of_alpha>
+                <alpha_initial unit="°">2.0</alpha_initial>
+                <alpha_final unit="°">3.0</alpha_final>
         </operating_conditions>
        <wing>
             <global>
@@ -25,7 +25,7 @@
 						<x_le_distribution unit="m">[0.0, 3.71, 8.31]</x_le_distribution>
 						<leading_edge_radius unit = "m">[0.03892, 0.04265, 0.0292]</leading_edge_radius>
 						<twist_distribution unit="°">[0,-2, -6]</twist_distribution>
-						<dihedral_distribution unit="°">[5.8, 5.8, 5.8]</dihedral_distribution>
+						<dihedral_distribution unit="°">[0.0, 0.0, 0.0]</dihedral_distribution>
                     </geometry>
                     <aerodynamics>
 						<alpha_zero_lift_distribution unit="°">[-1.98, -1.63, -3.18]</alpha_zero_lift_distribution>

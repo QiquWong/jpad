@@ -329,28 +329,28 @@ public class LandingGears implements ILandingGear {
 		case ROSKAM : { // Roskam page 97 (pdf) part V
 			_methodsList.add(method);
 			_overallMass = Amount.valueOf(
-					62.21 * Math.pow(aircraft.get_weights().get_MTOM().to(NonSI.POUND).times(1e-3).getEstimatedValue(), 0.84),
+					62.21 * Math.pow(aircraft.getTheWeights().get_MTOM().to(NonSI.POUND).times(1e-3).getEstimatedValue(), 0.84),
 					NonSI.POUND).to(SI.KILOGRAM);
 			_massMap.put(method, Amount.valueOf(round(_overallMass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
 
 		case STANFORD : {
 			_methodsList.add(method);
-			_overallMass = aircraft.get_weights().get_MTOM().times(0.04);
+			_overallMass = aircraft.getTheWeights().get_MTOM().times(0.04);
 			_massMap.put(method, Amount.valueOf(round(_overallMass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
 
 		case TORENBEEK_1982 : {
 			_methodsList.add(method);
 			_mainMass = Amount.valueOf(40 + 0.16 * 
-					Math.pow(aircraft.get_weights().get_MTOM().to(NonSI.POUND).getEstimatedValue(), 0.75) + 
-					0.019 * aircraft.get_weights().get_MTOM().to(NonSI.POUND).getEstimatedValue() + 
-					1.5 * 1e-5 * Math.pow(aircraft.get_weights().get_MTOM().to(NonSI.POUND).getEstimatedValue(), 1.5),
+					Math.pow(aircraft.getTheWeights().get_MTOM().to(NonSI.POUND).getEstimatedValue(), 0.75) + 
+					0.019 * aircraft.getTheWeights().get_MTOM().to(NonSI.POUND).getEstimatedValue() + 
+					1.5 * 1e-5 * Math.pow(aircraft.getTheWeights().get_MTOM().to(NonSI.POUND).getEstimatedValue(), 1.5),
 					NonSI.POUND).to(SI.KILOGRAM);
 			_noseMass = Amount.valueOf(20 + 0.1 * 
-					Math.pow(aircraft.get_weights().get_MTOM().to(NonSI.POUND).getEstimatedValue(), 0.75) + 
+					Math.pow(aircraft.getTheWeights().get_MTOM().to(NonSI.POUND).getEstimatedValue(), 0.75) + 
 					2 * 1e-5 * 
-					Math.pow(aircraft.get_weights().get_MTOM().to(NonSI.POUND).getEstimatedValue(), 1.5),
+					Math.pow(aircraft.getTheWeights().get_MTOM().to(NonSI.POUND).getEstimatedValue(), 1.5),
 					NonSI.POUND).to(SI.KILOGRAM);
 
 			_overallMass = _noseMass.plus(_mainMass);
@@ -359,8 +359,8 @@ public class LandingGears implements ILandingGear {
 
 		case TORENBEEK_2013 : {
 			_methodsList.add(method);
-			_overallMass = aircraft.get_weights().get_MTOM().times(0.025).
-					plus(aircraft.get_weights().get_MLM().times(0.016));
+			_overallMass = aircraft.getTheWeights().get_MTOM().times(0.025).
+					plus(aircraft.getTheWeights().get_MLM().times(0.016));
 			_massMap.put(method, Amount.valueOf(round(_overallMass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
 

@@ -36,7 +36,7 @@ public class MyAircraftBuilder {
 	 */
 	public void buildAndWriteCAD(Aircraft aircraft, String path) {
 		theCurrentCompound = buildCAD(aircraft);
-		writeToFile(path, aircraft.get_name(), theCurrentCompound);
+		writeToFile(path, aircraft.getId(), theCurrentCompound);
 	}
 	
 	/**
@@ -46,29 +46,29 @@ public class MyAircraftBuilder {
 	 */
 	public TopoDS_Compound buildCAD(Aircraft aircraft) {
 		
-		String currentFolder = JPADStaticWriteUtils.createNewFolder(MyConfiguration.cadDirectory + aircraft.get_name() + File.separator);
+		String currentFolder = JPADStaticWriteUtils.createNewFolder(MyConfiguration.cadDirectory + aircraft.getId() + File.separator);
 		BRep_Builder theBuilder = new BRep_Builder();
 		TopoDS_Compound theCompound = new TopoDS_Compound();
 		theBuilder.makeCompound(theCompound);
 		
 		// Export Fuselage CAD
 		MyFuselageBuilder fusCADBuilder = new MyFuselageBuilder(aircraft.getFuselage());
-		fusCADBuilder.buildAndWriteCAD(false, true, true, currentFolder, aircraft.get_name() + "Fuselage");
+		fusCADBuilder.buildAndWriteCAD(false, true, true, currentFolder, aircraft.getId() + "Fuselage");
 		theBuilder.add(theCompound, fusCADBuilder.getTheCompound());
 		
 		// Export wing CAD
 		MyLiftingSurfaceBuilder lsCADBuilder = new MyLiftingSurfaceBuilder(aircraft.getWing());
-		lsCADBuilder.buildAndWriteCAD(false, true, false, currentFolder, aircraft.get_name() + "Wing");
+		lsCADBuilder.buildAndWriteCAD(false, true, false, currentFolder, aircraft.getId() + "Wing");
 		theBuilder.add(theCompound, lsCADBuilder.getTheCompound());
 		
 		// Export htail CAD
 		lsCADBuilder = new MyLiftingSurfaceBuilder(aircraft.getHTail());
-		lsCADBuilder.buildAndWriteCAD(false, true, false, currentFolder, aircraft.get_name() + "HTail");
+		lsCADBuilder.buildAndWriteCAD(false, true, false, currentFolder, aircraft.getId() + "HTail");
 		theBuilder.add(theCompound, lsCADBuilder.getTheCompound());
 		
 		// Export vtail CAD
 		lsCADBuilder = new MyLiftingSurfaceBuilder(aircraft.getVTail());
-		lsCADBuilder.buildAndWriteCAD(false, true, false, currentFolder, aircraft.get_name() + "VTail");
+		lsCADBuilder.buildAndWriteCAD(false, true, false, currentFolder, aircraft.getId() + "VTail");
 		theBuilder.add(theCompound, lsCADBuilder.getTheCompound());
 		
 		theCurrentCompound = theCompound;

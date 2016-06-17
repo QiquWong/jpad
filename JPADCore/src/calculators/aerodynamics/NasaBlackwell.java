@@ -16,7 +16,10 @@ import javax.measure.unit.SI;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.DecompositionSolver;
 import org.apache.commons.math3.linear.LUDecomposition;
+import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.RealVector;
+import org.apache.poi.util.ArrayUtil;
 import org.jscience.physics.amount.Amount;
 
 import standaloneutils.GeometryCalc;
@@ -73,6 +76,7 @@ public class NasaBlackwell {
 	private double [][] influenceFactor;
 	private double [] gamma;
 	double [][] influenceMatrix;
+	double [] sweepAngle;
 
 	Amount<Angle> alphaInitial;
 
@@ -120,6 +124,13 @@ public class NasaBlackwell {
 				vortexSemiSpan,
 				semispan - vortexSemiSpan,
 				nPointsSemispanWise));
+		
+		sweepAngle= new double [nPointsSemispanWise];
+		
+		for (int i=0; i<nPointsSemispanWise; i++){
+			sweepAngle[i] =- Math.atan(xLEvsYActual[i]/yStationsActual[i]);
+		}
+		sweepAngle[0] = sweepAngle[1];
 
 		prepareDiscreteSurface();
 	}
@@ -136,6 +147,38 @@ public class NasaBlackwell {
 	 * @param phi
 	 */
 	private double fw(double xs, double y, double z, double s, double phi) {
+		
+		double fwUno = (-xs*cos(phi)/
+				(pow(xs,2) + pow(z*cos(phi) - y*sin(phi),2)));
+		
+//		System.out.println(" FW UNO " + fwUno);
+
+		
+		double fwFactor = (-xs*cos(phi)/
+				(pow(xs,2) + pow(z*cos(phi) - y*sin(phi),2)))
+				* (
+						((y + s*cos(phi))*cos(phi) + (z + s*sin(phi))*sin(phi))/
+						sqrt( pow(xs,2) + pow(y + s*cos(phi),2) + pow(z + s*sin(phi),2) )
+
+						- ((y - s*cos(phi))*cos(phi) + (z - s*sin(phi))*sin(phi))/
+						sqrt( pow(xs,2) + pow(y - s*cos(phi),2) + pow(z - s*sin(phi),2) )
+						)
+
+				- ((y - s*cos(phi))/( pow(y - s*cos(phi),2) + pow(z - s*sin(phi),2)) )
+				* (
+						1 - ( xs/pow(
+								pow(xs,2) + pow(y - s*cos(phi),2) + pow(z - s*sin(phi),2)
+								, 0.5) )
+						)
+
+				+ ((y + s*cos(phi))/( pow(y + s*cos(phi),2) + pow(z + s*sin(phi),2)) )
+				* (
+						1 - (xs/pow(
+								pow(xs,2) + pow(y + s*cos(phi),2) + pow(z + s*sin(phi),2)
+								, 0.5))
+						);
+		
+//		System.out.println("\n Fw " + fwFactor);
 
 		return (-xs*cos(phi)/
 				(pow(xs,2) + pow(z*cos(phi) - y*sin(phi),2)))
@@ -174,6 +217,80 @@ public class NasaBlackwell {
 	 */
 	private double fv(double xs, double y, double z, double s, double phi) {
 
+		double uno = (
+				xs*sin(phi)/
+				(pow(xs,2) + pow((z*cos(phi) - y*sin(phi)),2))
+				);
+		
+		double due = 	(
+				((y + s*cos(phi))*cos(phi) + (z + s*sin(phi))*sin(phi))/
+				pow(
+						( pow(xs,2) + pow(y + s*cos(phi),2) + pow(z + s*sin(phi),2) )
+						,0.5));
+		
+		double tre = ((y - s*cos(phi))*cos(phi) + (z - s*sin(phi))*sin(phi))/
+				pow(
+						( pow(xs,2) + pow(y - s*cos(phi),2) + pow(z - s*sin(phi),2) )
+						,0.5)
+				;
+				
+		double quattro = 	((z - s*sin(phi))/(pow(y - s*cos(phi),2) + pow(z - s*sin(phi),2)));
+		
+		double cinque = (xs
+				/pow(
+						pow(xs,2) + pow(y - s*cos(phi),2) + pow(z - s*sin(phi),2)
+						,0.5));
+		
+		double sei = ((z + s*sin(phi))/(pow(y + s*cos(phi),2) + pow(z + s*sin(phi),2)));
+		
+		double sette = (xs
+				/pow(
+						pow(xs,2) + pow(y + s*cos(phi),2) + pow(z + s*sin(phi),2)
+						,0.5));
+		
+		
+//			System.out.println("\nuno " + uno);
+//			System.out.println("due " + due );
+//			System.out.println("tre " + tre);
+//			System.out.println("quattro " + quattro);
+//			System.out.println("cinque " + cinque);
+//			System.out.println("sei " + sei );
+//			System.out.println("sette " + sette);
+//			
+			double fvfinal = (
+					xs*sin(phi)/
+					(pow(xs,2) + pow((z*cos(phi) - y*sin(phi)),2))
+					)
+					* (
+							((y + s*cos(phi))*cos(phi) + (z + s*sin(phi))*sin(phi))/
+							pow(
+									( pow(xs,2) + pow(y + s*cos(phi),2) + pow(z + s*sin(phi),2) )
+									,0.5)
+
+							- ((y - s*cos(phi))*cos(phi) + (z - s*sin(phi))*sin(phi))/
+							pow(
+									( pow(xs,2) + pow(y - s*cos(phi),2) + pow(z - s*sin(phi),2) )
+									,0.5)
+							)
+
+					+ ((z - s*sin(phi))/(pow(y - s*cos(phi),2) + pow(z - s*sin(phi),2)))
+					* (
+							1 - (xs
+							/pow(
+									pow(xs,2) + pow(y - s*cos(phi),2) + pow(z - s*sin(phi),2)
+									,0.5))
+							) 
+
+					- ((z + s*sin(phi))/(pow(y + s*cos(phi),2) + pow(z + s*sin(phi),2)))
+					* (
+							1 - (xs
+							/pow(
+									pow(xs,2) + pow(y + s*cos(phi),2) + pow(z + s*sin(phi),2)
+									,0.5))
+							);
+			
+//			System.out.println(" FV " + fvfinal);
+		
 		return (
 				xs*sin(phi)/
 				(pow(xs,2) + pow((z*cos(phi) - y*sin(phi)),2))
@@ -190,24 +307,42 @@ public class NasaBlackwell {
 								,0.5)
 						)
 
-				- ((z - s*sin(phi))/(pow(y - s*cos(phi),2) + pow(z - s*sin(phi),2)))
+				+ ((z - s*sin(phi))/(pow(y - s*cos(phi),2) + pow(z - s*sin(phi),2)))
 				* (
-						1 - xs
+						1 - (xs
 						/pow(
 								pow(xs,2) + pow(y - s*cos(phi),2) + pow(z - s*sin(phi),2)
-								,0.5)
-						)
+								,0.5))
+						) 
 
-				+ ((z + s*sin(phi))/(pow(y + s*cos(phi),2) + pow(z + s*sin(phi),2)))
+				- ((z + s*sin(phi))/(pow(y + s*cos(phi),2) + pow(z + s*sin(phi),2)))
 				* (
-						1 - xs
+						1 - (xs
 						/pow(
 								pow(xs,2) + pow(y + s*cos(phi),2) + pow(z + s*sin(phi),2)
-								,0.5)
+								,0.5))
 						);
+		
 
 	}
 
+	
+private double fu(double xs, double y, double z, double s, double phi) {
+		
+		double fuFactor = ((z*cos(phi)-y*sin(phi))/
+				(pow(xs,2) + pow(z*cos(phi) - y*sin(phi),2)))
+				* (
+						((y + s*cos(phi))*cos(phi) + (z + s*sin(phi))*sin(phi))/
+						sqrt( pow(xs,2) + pow(y + s*cos(phi),2) + pow(z + s*sin(phi),2) )
+
+						- ((y - s*cos(phi))*cos(phi) + (z - s*sin(phi))*sin(phi))/
+						sqrt( pow(xs,2) + pow(y - s*cos(phi),2) + pow(z - s*sin(phi),2) )
+						);
+		
+//		System.out.println("\n FU " + fuFactor);
+		
+		return fuFactor ;
+}
 	/**
 	 * 
 	 * @param control
@@ -219,6 +354,7 @@ public class NasaBlackwell {
 	private double fv_ni_n(MyPoint control, MyPoint vortex, 
 			double sn, double phin) {
 
+		
 		return fv(-(control.getX() - vortex.getX()), 
 				control.getY() - vortex.getY(), 
 				control.getZ() -vortex.getZ(), 
@@ -262,6 +398,8 @@ public class NasaBlackwell {
 			double rni, double rn,
 			double sn, double phin) {
 
+//		System.out.println("\n\nfv ");
+		
 		return fv(-(pni-pn), qni-qn, rni-rn, sn, phin) 
 				+ fv(-(pni-pn), qni+qn, rni-rn, sn, -phin); 
 	}
@@ -278,6 +416,21 @@ public class NasaBlackwell {
 
 		return fw(-(pni-pn), qni-qn, rni-rn, sn, phin) 
 				+ fw(-(pni-pn), qni+qn, rni-rn, sn, -phin); 
+
+	}
+	
+	/*
+	 * Wrapper function for populating easily the influence
+	 * matrix considering the wing is symmetric with respect
+	 * to the xz plane
+	 */
+	private double fuSigned_ni_n(double pni, double pn, 
+			double qni, double qn, 
+			double rni, double rn, 
+			double sn, double phin) {
+
+		return fu(-(pni-pn), qni-qn, rni-rn, sn, phin) 
+				+ fu(-(pni-pn), qni+qn, rni-rn, sn, -phin); 
 
 	}
 
@@ -315,6 +468,24 @@ public class NasaBlackwell {
 				sn, phin);
 	}
 
+	
+
+	/**
+	 * 
+	 * @param control
+	 * @param vortex
+	 * @param sn
+	 * @param phin
+	 * @return
+	 */
+	private double fuSigned_ni_n(MyPoint control, MyPoint vortex, 
+			double sn, double phin){
+
+		return fuSigned_ni_n(control.getX(), vortex.getX(), 
+				control.getY(), vortex.getY(), 
+				control.getZ(), vortex.getZ(), 
+				sn, phin);
+	}
 	/* Locate points where vortex are placed along the semispan */
 	private List<MyPoint> getVortexPoints() {
 
@@ -329,6 +500,10 @@ public class NasaBlackwell {
 			point.setY(yStationsNB.get(i));
 			point.setZ(tan(dihedral[i])*yStationsNB.get(i));
 			list.add(point);
+			
+//			System.out.println(" chord at " + i + " " +  GeometryCalc.getChordAtYActual(yStationsActual, chordsVsYActual, yStationsNB.get(i)));
+//			System.out.println(" xle d at " + i + " " + GeometryCalc.getXLEAtYActual(yStationsActual, xLEvsYActual, yStationsNB.get(i)));
+			
 		}
 
 		return list; 
@@ -370,9 +545,13 @@ public class NasaBlackwell {
 
 		// i = row counter; in a row the control point is fixed
 		for(int i=0; i < nPointsSemispanWise; i++) {
+//			System.out.println("-------------------------------------------");
+//			System.out.println("\n control point num " + i);
 
 			// j = column counter; in a column the vortex point is fixed 
 			for(int j=0; j < nPointsSemispanWise; j++) {
+//				System.out.println("\n vortex point num " + j );
+//				System.out.println("-------------------------------------------");
 				if (_listControlPoints == null){
 					_listControlPoints = controlPoints;
 				};
@@ -383,9 +562,44 @@ public class NasaBlackwell {
 						fwSigned_ni_n(_listControlPoints.get(i), _listVortexPoints.get(j), 
 								vortexSemiSpan, 
 								dihedral[j])
-						- fvSigned_ni_n(_listControlPoints.get(i), _listVortexPoints.get(j), 
+						+ fvSigned_ni_n(_listControlPoints.get(i), _listVortexPoints.get(j), 
 								vortexSemiSpan, 
 								dihedral[j])*tan(dihedral[i]);
+			}
+		}
+
+		_influenceMatrix = new Array2DRowRealMatrix(influenceMatrix);
+	}
+	
+	private void buildInfluenceMatrixFu() {
+
+		influenceMatrix = new double[nPointsSemispanWise][nPointsSemispanWise];
+
+		System.out.println(" sweep length " + sweepAngle.length);
+		System.out.println(" sweep angle " + Arrays.toString(sweepAngle));
+		
+		// i = row counter; in a row the control point is fixed
+		for(int i=0; i < nPointsSemispanWise; i++) {
+			System.out.println("-------------------------------------------");
+			System.out.println("\n control point num " + i);
+
+			// j = column counter; in a column the vortex point is fixed 
+			for(int j=0; j < nPointsSemispanWise; j++) {
+				System.out.println("\n vortex point num " + j );
+				System.out.println("-------------------------------------------");
+				if (_listControlPoints == null){
+					_listControlPoints = controlPoints;
+				};
+				if (_listVortexPoints == null){
+					_listVortexPoints  = vortexPoints;
+				};
+				influenceMatrix[i][j] = 
+						fuSigned_ni_n(_listControlPoints.get(i), _listVortexPoints.get(j), 
+								vortexSemiSpan, 
+								dihedral[j])*Math.sin(sweepAngle[i])
+						- fvSigned_ni_n(_listControlPoints.get(i), _listVortexPoints.get(j), 
+								vortexSemiSpan, 
+								dihedral[j])*Math.cos(sweepAngle[i]);
 			}
 		}
 
@@ -398,6 +612,26 @@ public class NasaBlackwell {
 		// Solve linear system
 		_gammaSignedDistribution.setRealVector(
 				_linearSystemSolver.solve(_alphaDistribution.getRealVector()));
+		_gammaSignedDistribution.add(0.0);
+		_gammaSignedDistribution.toArray();
+
+		// Scale for actual airfoil mean Clalpha
+		//				_gammaSignedCurrent = MyArray.createArray(
+		//						_gammaSignedCurrent.times(calculateCLAlpha.integralMean2D()/(2.*Math.PI)));
+	}
+	
+	private void solveSystemFu() {
+		_linearSystemSolver = new LUDecomposition(_influenceMatrix).getSolver();
+
+		double [] sweepAngleWithSin = new double [nPointsSemispanWise];
+		
+		for (int i=0; i<nPointsSemispanWise; i++){
+			sweepAngleWithSin[i] = Math.sin(sweepAngle[i]);
+		}
+		// Solve linear system
+		
+		_gammaSignedDistribution.setRealVector(
+				_linearSystemSolver.solve(MatrixUtils.createRealVector(sweepAngleWithSin)));
 		_gammaSignedDistribution.add(0.0);
 		_gammaSignedDistribution.toArray();
 
@@ -489,6 +723,15 @@ public class NasaBlackwell {
 				alpha.doubleValue(SI.RADIAN),
 				twist, 
 				alpha0l));
+		
+//		_alphaDistribution = new MyArray();
+		
+//		for (int i=0; i<twist.length; i++){
+//			_alphaDistribution.set(i, alpha.doubleValue(SI.RADIAN)+twist[i]);
+//		}
+		
+		
+		System.out.println( "alpha distribution " + _alphaDistribution.toString());
 
 		prepareSystemSolution();
 		calculateCLOverall();

@@ -177,8 +177,8 @@ public class TakeOffCalc {
 		this.iw = iw;
 		this.deltaCD0LandingGear = deltaCD0LandingGear;
 		
-		this.oswald = aircraft.get_theAerodynamics().get_oswald();
-		this.cD0 = aircraft.get_theAerodynamics().get_cD0();
+		this.oswald = aircraft.getTheAerodynamics().get_oswald();
+		this.cD0 = aircraft.getTheAerodynamics().get_cD0();
 		
 		// CalcHighLiftDevices object to manage flap/slat effects
 		highLiftCalculator.calculateHighLiftDevicesEffects();
@@ -192,7 +192,7 @@ public class TakeOffCalc {
 		vSTakeOff = Amount.valueOf(
 				SpeedCalc.calculateSpeedStall(
 						theConditions.get_altitude().getEstimatedValue(),
-						aircraft.get_weights().get_MTOW().getEstimatedValue(),
+						aircraft.getTheWeights().get_MTOW().getEstimatedValue(),
 						aircraft.getWing().get_surface().getEstimatedValue(),
 						cLmaxTO
 						),
@@ -214,7 +214,7 @@ public class TakeOffCalc {
 		System.out.println("Delta CD0 landing gears = " + this.deltaCD0LandingGear);
 		System.out.println("CD0 TakeOff = " + (cD0 + deltaCD0FlapLandinGears));
 		System.out.println("Induced CD TakeOff = " + ((Math.pow(cLground, 2)*kGround)
-				/(Math.PI*aircraft.getWing().get_aspectRatio()*aircraft.get_theAerodynamics().get_oswald())));
+				/(Math.PI*aircraft.getWing().get_aspectRatio()*aircraft.getTheAerodynamics().get_oswald())));
 		System.out.println("VsTO = " + vSTakeOff);
 		System.out.println("VRot = " + vRot);
 		System.out.println("VLO = " + vLO);
@@ -342,7 +342,7 @@ public class TakeOffCalc {
 		vSTakeOff = Amount.valueOf(
 				SpeedCalc.calculateSpeedStall(
 						theConditions.get_altitude().getEstimatedValue(),
-						aircraft.get_weights().get_MTOW().getEstimatedValue(),
+						aircraft.getTheWeights().get_MTOW().getEstimatedValue(),
 						aircraft.getWing().get_surface().getEstimatedValue(),
 						cLmaxTO
 						),
@@ -1406,12 +1406,12 @@ public class TakeOffCalc {
 
 		double[] weightVertical = new double[getTime().size()];
 		for(int i=0; i<weightVertical.length; i++)
-			weightVertical[i] = aircraft.get_weights().get_MTOW().getEstimatedValue()
+			weightVertical[i] = aircraft.getTheWeights().get_MTOW().getEstimatedValue()
 			*Math.cos(getGamma().get(i).to(SI.RADIAN).getEstimatedValue());
 
 		double[] weightHorizontal = new double[getTime().size()];
 		for(int i=0; i<weightHorizontal.length; i++)
-			weightHorizontal[i] = aircraft.get_weights().get_MTOW().getEstimatedValue()
+			weightHorizontal[i] = aircraft.getTheWeights().get_MTOW().getEstimatedValue()
 			*Math.sin(getGamma().get(i).to(SI.RADIAN).getEstimatedValue());
 
 		if(!isAborted) {
@@ -1694,7 +1694,7 @@ public class TakeOffCalc {
 		public DynamicsEquationsTakeOff() {
 
 			// constants and known values
-			weight = aircraft.get_weights().get_MTOW().getEstimatedValue();
+			weight = aircraft.getTheWeights().get_MTOW().getEstimatedValue();
 			g0 = AtmosphereCalc.g0.getEstimatedValue();
 			mu = TakeOffCalc.this.mu;
 			kAlpha = TakeOffCalc.this.kAlphaDot;
@@ -1775,11 +1775,11 @@ public class TakeOffCalc {
 
 			if (time < tFaiulre.getEstimatedValue())
 				theThrust =	ThrustCalc.calculateThrustDatabase(
-						TakeOffCalc.this.getAircraft().get_powerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
-						TakeOffCalc.this.getAircraft().get_powerPlant().get_engineNumber(),
+						TakeOffCalc.this.getAircraft().getPowerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
+						TakeOffCalc.this.getAircraft().getPowerPlant().get_engineNumber(),
 						TakeOffCalc.this.getPhi(),
-						TakeOffCalc.this.getAircraft().get_powerPlant().get_engineList().get(0).get_bpr(),
-						TakeOffCalc.this.getAircraft().get_powerPlant().get_engineType(),
+						TakeOffCalc.this.getAircraft().getPowerPlant().get_engineList().get(0).get_bpr(),
+						TakeOffCalc.this.getAircraft().getPowerPlant().get_engineType(),
 						EngineOperatingConditionEnum.TAKE_OFF,
 						altitude,
 						SpeedCalc.calculateMach(
@@ -1792,11 +1792,11 @@ public class TakeOffCalc {
 						);
 			else
 				theThrust =	ThrustCalc.calculateThrustDatabase(
-						TakeOffCalc.this.getAircraft().get_powerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
-						TakeOffCalc.this.getAircraft().get_powerPlant().get_engineNumber() - 1,
+						TakeOffCalc.this.getAircraft().getPowerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
+						TakeOffCalc.this.getAircraft().getPowerPlant().get_engineNumber() - 1,
 						TakeOffCalc.this.getPhi(),
-						TakeOffCalc.this.getAircraft().get_powerPlant().get_engineList().get(0).get_bpr(),
-						TakeOffCalc.this.getAircraft().get_powerPlant().get_engineType(),
+						TakeOffCalc.this.getAircraft().getPowerPlant().get_engineList().get(0).get_bpr(),
+						TakeOffCalc.this.getAircraft().getPowerPlant().get_engineType(),
 						EngineOperatingConditionEnum.TAKE_OFF,
 						altitude,
 						SpeedCalc.calculateMach(

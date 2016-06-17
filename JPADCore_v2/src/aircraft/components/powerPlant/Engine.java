@@ -82,7 +82,7 @@ public class Engine extends Component{
 		this(name, description, x, y, z);
 		_theAircraft = aircraft;
 		
-		_id = aircraft.get_powerPlant().getId() + idCounter + "99";
+		_id = aircraft.getPowerPlant().getId() + idCounter + "99";
 		idCounter++;
 		
 		initialize();
@@ -100,7 +100,7 @@ public class Engine extends Component{
 		this(name, description, x, y, z);
 		_theAircraft = aircraft;
 		
-		_id = aircraft.get_powerPlant().getId() + idCounter + "99";
+		_id = aircraft.getPowerPlant().getId() + idCounter + "99";
 		idCounter++;
 		
 		initialize(aircraftName);

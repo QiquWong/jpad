@@ -44,7 +44,7 @@ public class NacelleWeightsManager extends aircraft.componentmodel.componentcalc
 		_mass = Amount.valueOf(0., SI.KILOGRAM);
 		_massEstimated = Amount.valueOf(0., SI.KILOGRAM);
 //		_massReference = Amount.valueOf(0., SI.KILOGRAM);
-		_massReference = _theAircraft.get_theNacelles().get_massReference();
+		_massReference = _theAircraft.getNacelles().get_massReference();
 	}
 	
 	
@@ -135,7 +135,7 @@ public class NacelleWeightsManager extends aircraft.componentmodel.componentcalc
 
 		public Amount<Mass> torenbeek1976 () {
 			_mass = Amount.valueOf(0.405*
-					Math.sqrt(_theAircraft.get_performances().get_vDiveEAS().getEstimatedValue())*
+					Math.sqrt(_theAircraft.getThePerformance().get_vDiveEAS().getEstimatedValue())*
 					Math.pow(_theNacelle.get_surfaceWetted().getEstimatedValue(), 1.3), SI.KILOGRAM);
 			_methodsList.add(MethodEnum.TORENBEEK_1976);
 			_massMap.put(MethodEnum.TORENBEEK_1976, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
@@ -220,7 +220,7 @@ public class NacelleWeightsManager extends aircraft.componentmodel.componentcalc
 
 		public Amount<Mass> torenbeek1976() {
 			_mass = Amount.valueOf(0.405*
-					Math.sqrt(_theAircraft.get_performances().get_vDiveEAS().getEstimatedValue())*
+					Math.sqrt(_theAircraft.getThePerformance().get_vDiveEAS().getEstimatedValue())*
 					Math.pow(_theNacelle.get_surfaceWetted().getEstimatedValue()*2, 1.3), SI.KILOGRAM);
 			_methodsList.add(MethodEnum.TORENBEEK_1976);
 			_massMap.put(MethodEnum.TORENBEEK_1976, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));

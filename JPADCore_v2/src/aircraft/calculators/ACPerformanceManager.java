@@ -81,20 +81,20 @@ public class ACPerformanceManager {
 		if (_theAircraft != null) {
 			//		try {
 			performanceManager = new PerformanceCalcManager(
-					_theAircraft.get_weights().get_MZFW().doubleValue(SI.NEWTON),
-					_theAircraft.get_weights().get_MTOW().doubleValue(SI.NEWTON),
-					_theAircraft.get_powerPlant().get_engineList().get(0).get_t0().doubleValue(SI.NEWTON),
-					_theAircraft.get_powerPlant().get_engineNumber().intValue(), 
-					_theAircraft.get_powerPlant().get_engineList().get(0).get_engineType(), 
-					_theAircraft.get_powerPlant().get_engineList().get(0).get_bpr(), 
+					_theAircraft.getTheWeights().get_MZFW().doubleValue(SI.NEWTON),
+					_theAircraft.getTheWeights().get_MTOW().doubleValue(SI.NEWTON),
+					_theAircraft.getPowerPlant().get_engineList().get(0).get_t0().doubleValue(SI.NEWTON),
+					_theAircraft.getPowerPlant().get_engineNumber().intValue(), 
+					_theAircraft.getPowerPlant().get_engineList().get(0).get_engineType(), 
+					_theAircraft.getPowerPlant().get_engineList().get(0).get_bpr(), 
 					_theAircraft.getWing().get_surface().doubleValue(SI.SQUARE_METRE),
 					_theAircraft.getWing().get_aspectRatio(), 
 					_theAircraft.getWing().get_sweepHalfChordEq().doubleValue(SI.RADIAN), 
 					_theAircraft.getWing().get_thicknessMax(), 
 					_theAircraft.getWing().get_theAirfoilsList().get(0).getType(), 
 					_theAircraft.getWing().getAerodynamics().getCalculateCLMaxClean().phillipsAndAlley(), 
-					_theAircraft.get_theAerodynamics().get_cD0(), 
-					_theAircraft.get_theAerodynamics().get_oswald());
+					_theAircraft.getTheAerodynamics().get_cD0(), 
+					_theAircraft.getTheAerodynamics().get_oswald());
 			// TODO
 			//		performanceManager.setMinAndMaxValues(0., 11000., 0., _vDive.doubleValue(SI.METERS_PER_SECOND), 0.7, 1.);
 			//		performanceManager.initializeArraysWithMinAndMaxValues();
@@ -103,20 +103,20 @@ public class ACPerformanceManager {
 			performanceManager.calculateAllPerformance();
 
 			performanceManagerOEI = new PerformanceCalcManager(
-					_theAircraft.get_weights().get_MZFW().doubleValue(SI.NEWTON),
-					_theAircraft.get_weights().get_MTOW().doubleValue(SI.NEWTON),
-					_theAircraft.get_powerPlant().get_engineList().get(0).get_t0().doubleValue(SI.NEWTON),
-					_theAircraft.get_powerPlant().get_engineNumber().intValue() - 1, 
-					_theAircraft.get_powerPlant().get_engineList().get(0).get_engineType(),
-					_theAircraft.get_powerPlant().get_engineList().get(0).get_bpr(), 
+					_theAircraft.getTheWeights().get_MZFW().doubleValue(SI.NEWTON),
+					_theAircraft.getTheWeights().get_MTOW().doubleValue(SI.NEWTON),
+					_theAircraft.getPowerPlant().get_engineList().get(0).get_t0().doubleValue(SI.NEWTON),
+					_theAircraft.getPowerPlant().get_engineNumber().intValue() - 1, 
+					_theAircraft.getPowerPlant().get_engineList().get(0).get_engineType(),
+					_theAircraft.getPowerPlant().get_engineList().get(0).get_bpr(), 
 					_theAircraft.getWing().get_surface().doubleValue(SI.SQUARE_METRE),
 					_theAircraft.getWing().get_aspectRatio(), 
 					_theAircraft.getWing().get_sweepHalfChordEq().doubleValue(SI.RADIAN), 
 					_theAircraft.getWing().get_thicknessMax(), 
 					_theAircraft.getWing().get_theAirfoilsList().get(0).getType(), 
 					_theAircraft.getWing().getAerodynamics().getCalculateCLMaxClean().phillipsAndAlley(), 
-					_theAircraft.get_theAerodynamics().get_cD0(), 
-					_theAircraft.get_theAerodynamics().get_oswald());
+					_theAircraft.getTheAerodynamics().get_cD0(), 
+					_theAircraft.getTheAerodynamics().get_oswald());
 
 			performanceManagerOEI.setMinAndMaxValuesShortArrays(0., 9000., 50., 340., 0.7, 1.);
 			performanceManagerOEI.initializeShortArrays();

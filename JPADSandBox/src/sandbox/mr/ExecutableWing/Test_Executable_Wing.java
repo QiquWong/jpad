@@ -67,10 +67,17 @@ public class Test_Executable_Wing {
 		
 		System.out.println("--------------");
 		
+//		int [] numberOfPointInput = {3, 5, 8, 9, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100,110, 120, 130, 140, 150};
+//		
 		ReaderWriterWing theReader = new ReaderWriterWing();
+		
 		theReader.importFromXML(pathToXML,databaseDirectoryAbsolutePath , "Aerodynamic_Database_Ultimate.h5");
+//		for (int i=0; i<numberOfPointInput.length; i++){
+//			System.err.println("\n\n\nNUMBER OF POINT SEMISPAN" + numberOfPointInput[i]);
+//			theReader.getInput().setNumberOfPointSemispan(numberOfPointInput[i]);
 		WingAerodynamicCalc.calculateAll(theReader.getInput());
-		theReader.writeToXML(filenameWithPathAndExt);
+//		}
+//		theReader.writeToXML(filenameWithPathAndExt);
 
 	}
 
