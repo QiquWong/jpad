@@ -2,6 +2,7 @@ package aircraft.components.fuselage.creator;
 
 import java.util.List;
 
+import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
@@ -43,5 +44,20 @@ public interface IFuselageCreator {
 	public Amount<Area> getSurfaceWetted();
 
 	public List<Amount<Length>> getDiscretizedYs();
+	//--------------------------------------------------------------
+	Amount<Length> getLenF();
+	String getId();
+	void setId(String id);
+	Boolean getPressurized();
+	Amount<Length> getLenN();
+	Amount<Length> getLenC();
+	Amount<Area> getsWet();
+	Amount<Length> getHeightFromGround();
+	Amount<Angle> getUpsweepAngle();
+	Amount<Angle> getWindshieldAngle();
+	void setUpsweepAngle(Amount<Angle> upsweepAngle);
+	void setWindshieldAngle(Amount<Angle> windshieldAngle);
+	Amount<Length> getRoughness();
+	void setRoughness(Amount<Length> roughness);
 	
 }

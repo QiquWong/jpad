@@ -2428,15 +2428,18 @@ public class FuselageCreator implements IFuselageCreator {
 		
 		return sb.toString();
 	}
-
+	
+	@Override
 	public String getId() {
 		return id;
 	}
-
+	
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
-
+	
+	@Override
 	public Boolean getPressurized() {
 		return pressurized;
 	}
@@ -2445,6 +2448,7 @@ public class FuselageCreator implements IFuselageCreator {
 		this.pressurized = pressurized;
 	}
 
+	@Override
 	public Amount<Length> getLenF() {
 		return lenF;
 	}
@@ -2453,6 +2457,7 @@ public class FuselageCreator implements IFuselageCreator {
 		this.lenF = lenF;
 	}
 
+	@Override
 	public Amount<Length> getLenN() {
 		return lenN;
 	}
@@ -2474,6 +2479,7 @@ public class FuselageCreator implements IFuselageCreator {
 		}
 	}
 
+	@Override
 	public Amount<Length> getLenC() {
 		return lenC;
 	}
@@ -2494,7 +2500,8 @@ public class FuselageCreator implements IFuselageCreator {
 			this.calculateDependentData(); 
 		}
 	}
-
+	
+	@Override
 	public Amount<Length> getLenT() {
 		return lenT;
 	}
@@ -2516,6 +2523,7 @@ public class FuselageCreator implements IFuselageCreator {
 		}
 	}
 
+	@Override
 	public Amount<Length> getSectionCylinderHeight() {
 		return sectionCylinderHeight;
 	}
@@ -2525,6 +2533,7 @@ public class FuselageCreator implements IFuselageCreator {
 		this.sectionCylinderHeight = sectionCylinderHeight;
 	}
 
+	@Override
 	public Amount<Length> getEquivalentDiameterCylinderGM() {
 		return equivalentDiameterCylinderGM;
 	}
@@ -2532,7 +2541,8 @@ public class FuselageCreator implements IFuselageCreator {
 	public void setEquivalentDiameterCylinderGM(Amount<Length> equivalentDiameterCylinderGM) {
 		this.equivalentDiameterCylinderGM = equivalentDiameterCylinderGM;
 	}
-
+	
+	@Override
 	public Amount<Length> getEquivalentDiameterGM() {
 		return equivalentDiameterGM;
 	}
@@ -2541,14 +2551,16 @@ public class FuselageCreator implements IFuselageCreator {
 		this.equivalentDiameterGM = equivalentDiameterGM;
 	}
 
+	@Override
 	public Amount<Length> getEquivalentDiameterCylinderAM() {
 		return equivalentDiameterCylinderAM;
 	}
-
+	
 	public void setEquivalentDiameterCylinderAM(Amount<Length> equivalentDiameterCylinderAM) {
 		this.equivalentDiameterCylinderAM = equivalentDiameterCylinderAM;
 	}
 
+	@Override
 	public Amount<Area> getAreaC() {
 		return areaC;
 	}
@@ -2557,6 +2569,7 @@ public class FuselageCreator implements IFuselageCreator {
 		this.areaC = areaC;
 	}
 
+	@Override
 	public Amount<Area> getWindshieldArea() {
 		return windshieldArea;
 	}
@@ -2565,6 +2578,7 @@ public class FuselageCreator implements IFuselageCreator {
 		this.windshieldArea = windshieldArea;
 	}
 
+	@Override
 	public WindshieldType getWindshieldType() {
 		return windshieldType;
 	}
@@ -2573,6 +2587,7 @@ public class FuselageCreator implements IFuselageCreator {
 		this.windshieldType = windshieldType;
 	}
 
+	@Override
 	public Amount<Area> getsWetNose() {
 		return sWetNose;
 	}
@@ -2581,6 +2596,7 @@ public class FuselageCreator implements IFuselageCreator {
 		this.sWetNose = sWetNose;
 	}
 
+	@Override
 	public Amount<Area> getsWetTail() {
 		return sWetTail;
 	}
@@ -2589,6 +2605,7 @@ public class FuselageCreator implements IFuselageCreator {
 		this.sWetTail = sWetTail;
 	}
 
+	@Override
 	public Amount<Area> getsWetC() {
 		return sWetC;
 	}
@@ -2597,6 +2614,7 @@ public class FuselageCreator implements IFuselageCreator {
 		this.sWetC = sWetC;
 	}
 
+	@Override
 	public Amount<Area> getsFront() {
 		return sFront;
 	}
@@ -2605,6 +2623,7 @@ public class FuselageCreator implements IFuselageCreator {
 		this.sFront = sFront;
 	}
 
+	@Override
 	public Amount<Area> getsWet() {
 		return sWet;
 	}
@@ -2613,6 +2632,7 @@ public class FuselageCreator implements IFuselageCreator {
 		this.sWet = sWet;
 	}
 
+	@Override
 	public Amount<Length> getHeightFromGround() {
 		return heightFromGround;
 	}
@@ -2677,174 +2697,217 @@ public class FuselageCreator implements IFuselageCreator {
 		this.heightT = heightT;
 	}
 
+	@Override
 	public Amount<Angle> getUpsweepAngle() {
 		return upsweepAngle;
 	}
-
+	
+	@Override
 	public void setUpsweepAngle(Amount<Angle> upsweepAngle) {
 		this.upsweepAngle = upsweepAngle;
 	}
 
+	@Override
 	public Amount<Angle> getWindshieldAngle() {
 		return windshieldAngle;
 	}
 
+	@Override
 	public void setWindshieldAngle(Amount<Angle> windshieldAngle) {
 		this.windshieldAngle = windshieldAngle;
 	}
 
+	@Override
 	public Amount<Length> getRoughness() {
 		return roughness;
 	}
 
+	@Override
 	public void setRoughness(Amount<Length> roughness) {
 		this.roughness = roughness;
 	}
 
+	@Override
 	public Double getLambdaF() {
 		return lambdaF;
 	}
 
+	@Override
 	public void setLambdaF(Double lambdaF) {
 		this.lambdaF = lambdaF;
 	}
 
+	@Override
 	public Double getLambdaN() {
 		return lambdaN;
 	}
 
+	@Override
 	public void setLambdaN(Double lambdaN) {
 		this.lambdaN = lambdaN;
 	}
 
+	@Override
 	public Double getLambdaC() {
 		return lambdaC;
 	}
 
+	@Override
 	public void setLambdaC(Double lambdaC) {
 		this.lambdaC = lambdaC;
 	}
 
+	@Override
 	public Double getLambdaT() {
 		return lambdaT;
 	}
 
+	@Override
 	public void setLambdaT(Double lambdaT) {
 		this.lambdaT = lambdaT;
 	}
 
+	@Override
 	public Double getLenRatioNF() {
 		return lenRatioNF;
 	}
 
+	@Override
 	public void setLenRatioNF(Double lenRatioNF) {
 		this.lenRatioNF = lenRatioNF;
 	}
 
+	@Override
 	public Double getLenRatioCF() {
 		return lenRatioCF;
 	}
 
+	@Override
 	public void setLenRatioCF(Double lenRatioCF) {
 		this.lenRatioCF = lenRatioCF;
 	}
 
+	@Override
 	public Double getLenRatioTF() {
 		return lenRatioTF;
 	}
 
+	@Override
 	public void setLenRatioTF(Double lenRatioTF) {
 		this.lenRatioTF = lenRatioTF;
 	}
 
+	@Override
 	public Double getFormFactor() {
 		return formFactor;
 	}
 
+	@Override
 	public void setFormFactor(Double formFactor) {
 		this.formFactor = formFactor;
 	}
 
+	@Override
 	public Amount<Length> getSectionCylinderWidth() {
 		return sectionCylinderWidth;
 	}
 
+	@Override
 	public void setSectionCylinderWidth(Amount<Length> sectionCylinderWidth) {
 		this.sectionCylinderWidth = sectionCylinderWidth;
 	}
 
+	@Override
 	public Amount<Length> getWindshieldHeight() {
 		return windshieldHeight;
 	}
 
+	@Override
 	public void setWindshieldHeight(Amount<Length> windshieldHeight) {
 		this.windshieldHeight = windshieldHeight;
 	}
 
+	@Override
 	public Amount<Length> getWindshieldWidth() {
 		return windshieldWidth;
 	}
 
+	@Override
 	public void setWindshieldWidth(Amount<Length> windshieldWidth) {
 		this.windshieldWidth = windshieldWidth;
 	}
 
+	@Override
 	public Amount<Length> getDxNoseCap() {
 		return dxNoseCap;
 	}
 
+	@Override
 	public void setDxNoseCap(Amount<Length> dxNoseCap) {
 		this.dxNoseCap = dxNoseCap;
 	}
 
+	@Override
 	public Amount<Length> getDxTailCap() {
 		return dxTailCap;
 	}
 
+	@Override
 	public void setDxTailCap(Amount<Length> dxTailCap) {
 		this.dxTailCap = dxTailCap;
 	}
 
+	@Override
 	public Double getSectionCylinderLowerToTotalHeightRatio() {
 		return sectionCylinderLowerToTotalHeightRatio;
 	}
 
+	@Override
 	public void setSectionCylinderLowerToTotalHeightRatio(Double sectionCylinderLowerToTotalHeightRatio) {
 		this.sectionCylinderLowerToTotalHeightRatio = sectionCylinderLowerToTotalHeightRatio;
 	}
 
+	@Override
 	public Double getSectionNoseMidLowerToTotalHeightRatio() {
 		return sectionNoseMidLowerToTotalHeightRatio;
 	}
 
+	@Override
 	public void setSectionNoseMidLowerToTotalHeightRatio(Double sectionNoseMidLowerToTotalHeightRatio) {
 		this.sectionNoseMidLowerToTotalHeightRatio = sectionNoseMidLowerToTotalHeightRatio;
 	}
 
+	@Override
 	public Double getSectionTailMidLowerToTotalHeightRatio() {
 		return sectionTailMidLowerToTotalHeightRatio;
 	}
 
+	@Override
 	public void setSectionTailMidLowerToTotalHeightRatio(Double sectionTailMidLowerToTotalHeightRatio) {
 		this.sectionTailMidLowerToTotalHeightRatio = sectionTailMidLowerToTotalHeightRatio;
 	}
 
+	@Override
 	public Double getSectionCylinderRhoUpper() {
 		return sectionCylinderRhoUpper;
 	}
 
+	@Override
 	public void setSectionCylinderRhoUpper(Double sectionCylinderRhoUpper) {
 		this.sectionCylinderRhoUpper = sectionCylinderRhoUpper;
 	}
 
+	@Override
 	public Double getSectionCylinderRhoLower() {
 		return sectionCylinderRhoLower;
 	}
 
+	@Override
 	public void setSectionCylinderRhoLower(Double sectionCylinderRhoLower) {
 		this.sectionCylinderRhoLower = sectionCylinderRhoLower;
 	}
 
+	@Override
 	public Double getSectionMidNoseRhoUpper() {
 		return sectionMidNoseRhoUpper;
 	}
