@@ -5,7 +5,7 @@
                 <mach_number>0.2</mach_number>
                 <number_of_alpha>7</number_of_alpha>
                 <alpha_initial unit="°">0.0</alpha_initial>
-                <alpha_final unit="°">10.0</alpha_final>
+                <alpha_final unit="°">6.0</alpha_final>
         </operating_conditions>
        <wing>
             <global>
@@ -16,14 +16,14 @@
              </global>
              <distribution>
                 <number_of_given_sections>3</number_of_given_sections>
-                <airfoil_family>NACA_4_DIGIT</airfoil_family>
+                <airfoil_family>NACA_65_SERIES</airfoil_family> 
 				<max_thickness_mean_airfoil>0.15</max_thickness_mean_airfoil>
                    <geometry>
 						<y_adimensional_stations>[0, 0.399, 1]</y_adimensional_stations>
 						<chord_distribution unit="m">[6.39, 2.72, 1.05]</chord_distribution>
 						<x_le_distribution unit="m">[0.0, 3.71, 8.31]</x_le_distribution>
 						<twist_distribution unit="°">[0, -2, -6]</twist_distribution>
-						<dihedral_distribution unit="°">[0.0, 0.0, 0.0]</dihedral_distribution>
+						<dihedral_distribution unit="°">[5.8, 5.8, 5.8]</dihedral_distribution>
                     </geometry>
                     <aerodynamics>
 						<alpha_zero_lift_distribution unit="°">[-1.98, -1.63, -3.18]</alpha_zero_lift_distribution>

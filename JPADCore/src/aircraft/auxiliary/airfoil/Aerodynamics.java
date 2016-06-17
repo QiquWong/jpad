@@ -648,9 +648,8 @@ public Aerodynamics(Airfoil airf, String name) {
 		_alphaStall = Amount.valueOf(Math.toRadians(15.0),SI.RADIAN); 
 		_clMax = 1.3;
 
-		_cdMin = 0.025;
-		_clAtCdMin = 0.2;
-		_kFactorDragPolar = 0.075;
+
+
 
 		_aerodynamicCenterX = 0.25;
 		_cmAC = -0.07;
