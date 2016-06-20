@@ -1,5 +1,6 @@
 package aircraft.components;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +30,8 @@ import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AircraftTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
+import standaloneutils.JPADXmlReader;
+import standaloneutils.MyXMLReaderUtils;
 
 /**
  * This class holds all the data related with the aircraft
@@ -152,13 +155,13 @@ public class Aircraft implements IAircraft {
 				__theWing.setRiggingAngle(Amount.valueOf(2.0, NonSI.DEGREE_ANGLE));
 				
 				createHTail(aircraftName, aeroDatabaseReader);
-				__theHTail.setXApexConstructionAxes(Amount.valueOf(24.6, SI.METER));
+				__theHTail.setXApexConstructionAxes(Amount.valueOf(25.3, SI.METER));
 				__theHTail.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theHTail.setZApexConstructionAxes(Amount.valueOf(5.7374, SI.METER));
 				__theHTail.setRiggingAngle(Amount.valueOf(1.0, NonSI.DEGREE_ANGLE));
 				
 				createVTail(aircraftName, aeroDatabaseReader);
-				__theVTail.setXApexConstructionAxes(Amount.valueOf(21.9, SI.METER));
+				__theVTail.setXApexConstructionAxes(Amount.valueOf(21.6, SI.METER));
 				__theVTail.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theVTail.setZApexConstructionAxes(Amount.valueOf(1.3, SI.METER));
 				__theVTail.setRiggingAngle(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
@@ -372,6 +375,7 @@ public class Aircraft implements IAircraft {
 							)
 					.build();
 			
+			__theWing.populateAirfoilList(aeroDatabaseReader, Boolean.FALSE);
 			__theWing.getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.WING, Boolean.TRUE);
 			
 			__componentsList.add(__theWing);
@@ -387,6 +391,7 @@ public class Aircraft implements IAircraft {
 							)
 					.build();
 			
+			__theHTail.populateAirfoilList(aeroDatabaseReader, Boolean.FALSE);
 			__theHTail.getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.HORIZONTAL_TAIL, Boolean.TRUE);
 			
 			__componentsList.add(__theHTail);
@@ -402,6 +407,7 @@ public class Aircraft implements IAircraft {
 							)
 					.build();
 			
+			__theVTail.populateAirfoilList(aeroDatabaseReader, Boolean.FALSE);
 			__theVTail.getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.VERTICAL_TAIL, Boolean.FALSE);
 			
 			__componentsList.add(__theVTail);
@@ -418,6 +424,7 @@ public class Aircraft implements IAircraft {
 							)
 					.build();
 			
+			__theCanard.populateAirfoilList(aeroDatabaseReader, Boolean.FALSE);
 			__theCanard.getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.WING, Boolean.TRUE);
 			
 			__componentsList.add(__theCanard);
@@ -681,6 +688,11 @@ public class Aircraft implements IAircraft {
 			return this;
 		}
 		
+		public AircraftBuilder cabinConfiguration (CabinConfiguration cabinConfiguration) {
+			this.__theCabinConfiguration = cabinConfiguration;
+			return this;
+		}
+		
 		public Aircraft build() {
 			return new Aircraft(this);
 		}
@@ -771,6 +783,195 @@ public class Aircraft implements IAircraft {
 		
 	} // end of updateType
 
+	public static Aircraft importFromXML (String pathToXML,
+										  String liftingSurfacesDir,
+										  String fuselagesDir,
+										  String landingGearsDir,
+										  String systemsDir,
+										  String cabinConfigurationDir,
+										  String airfoilsDir,
+										  AerodynamicDatabaseReader aeroDatabaseReader) {
+		
+		/////////////////////////////////////////////////////////////
+		//														   //
+		//	TODO: add other directories in input when all 		   //
+		// 		  the components will be available			       //
+		//														   //
+		/////////////////////////////////////////////////////////////
+		
+		JPADXmlReader reader = new JPADXmlReader(pathToXML);
+
+		System.out.println("Reading aircraft data from file ...");
+		
+		String id = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@id");
+		
+		//---------------------------------------------------------------------------------
+		// FUSELAGE
+		String fuselageFileName =
+				MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//fuselages/fuselage/@file");
+		
+		Fuselage theFuselage = null;
+		if(fuselageFileName != null) {
+			String fuselagePath = fuselagesDir + File.separator + fuselageFileName;
+			FuselageCreator fuselageCreator = FuselageCreator.importFromXML(fuselagePath);
+			theFuselage = new FuselageBuilder("MyFuselage")
+					.fuselageCreator(fuselageCreator)
+						.build();
+		}
+		
+		//---------------------------------------------------------------------------------
+		// CABIN CONFIGURATION
+		String cabinConfigrationFileName =
+				MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//global_data/cabin_configuration/@file");
+		
+		CabinConfiguration theCabinConfiguration = null;
+		if(cabinConfigrationFileName != null) {
+			String cabinConfigurationPath = cabinConfigurationDir + File.separator + cabinConfigrationFileName;
+			theCabinConfiguration = CabinConfiguration.importFromXML(cabinConfigurationPath);
+		}
+		
+		//---------------------------------------------------------------------------------
+		// WING
+		String wingFileName =
+				MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//lifting_surfaces/wing/@file");
+		
+		LiftingSurface theWing = null;
+		if(wingFileName != null) {
+			String wingPath = liftingSurfacesDir + File.separator + wingFileName;
+			LiftingSurfaceCreator wingCreator = LiftingSurfaceCreator.importFromXML(ComponentEnum.WING, wingPath, airfoilsDir);
+			theWing = new LiftingSurfaceBuilder("MyWing", ComponentEnum.WING, aeroDatabaseReader)
+					.liftingSurfaceCreator(wingCreator)
+						.build();
+		}
+
+		//---------------------------------------------------------------------------------
+		// HORIZONTAL TAIL
+		String hTailFileName =
+				MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//lifting_surfaces/horizontal_tail/@file");
+		
+		LiftingSurface theHorizontalTail = null;
+		if(hTailFileName != null) {
+			String hTailPath = liftingSurfacesDir + File.separator + hTailFileName;
+			LiftingSurfaceCreator hTailCreator = LiftingSurfaceCreator.importFromXML(ComponentEnum.HORIZONTAL_TAIL, hTailPath, airfoilsDir);
+			theHorizontalTail = new LiftingSurfaceBuilder("MyHorizontalTail", ComponentEnum.WING, aeroDatabaseReader)
+					.liftingSurfaceCreator(hTailCreator)
+						.build();
+		}
+		
+		//---------------------------------------------------------------------------------
+		// VERTICAL TAIL
+		String vTailFileName =
+				MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//lifting_surfaces/vertical_tail/@file");
+		
+		LiftingSurface theVerticalTail = null;
+		if(vTailFileName != null) {
+			String vTailPath = liftingSurfacesDir + File.separator + vTailFileName;
+			LiftingSurfaceCreator vTailCreator = LiftingSurfaceCreator.importFromXML(ComponentEnum.VERTICAL_TAIL, vTailPath, airfoilsDir);
+			theVerticalTail = new LiftingSurfaceBuilder("MyVerticalTail", ComponentEnum.VERTICAL_TAIL, aeroDatabaseReader)
+					.liftingSurfaceCreator(vTailCreator)
+						.build();
+		}
+		
+		//---------------------------------------------------------------------------------
+		// CANARD
+		String canardFileName =
+				MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//lifting_surfaces/canard/@file");
+		
+		LiftingSurface theCanard = null;
+		if(canardFileName != null) {
+			String canardPath = liftingSurfacesDir + File.separator + canardFileName;
+			LiftingSurfaceCreator canardCreator = LiftingSurfaceCreator.importFromXML(ComponentEnum.CANARD, canardPath, airfoilsDir);
+			theCanard = new LiftingSurfaceBuilder("MyCanard", ComponentEnum.CANARD, aeroDatabaseReader)
+					.liftingSurfaceCreator(canardCreator)
+						.build();
+		}
+		
+		//---------------------------------------------------------------------------------
+		// POWER PLANT
+		
+		
+		//---------------------------------------------------------------------------------
+		// NACELLES
+		
+		
+		//---------------------------------------------------------------------------------
+		// LANDING GEARS
+		String landingGearsFileName =
+				MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//landing_gears/landing_gear/@file");
+		
+		LandingGears theLandingGears = null;
+		if(landingGearsFileName != null) {
+			String landingGearsPath = landingGearsDir + File.separator + landingGearsFileName;
+			theLandingGears = LandingGears.importFromXML(landingGearsPath);
+		}
+		
+		//---------------------------------------------------------------------------------
+		// SYSTEMS
+		String systemsFileName =
+				MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//systems/@file");
+		
+		Systems theSystems = null;
+		if(systemsFileName != null) {
+			String systemsPath = systemsDir + File.separator + systemsFileName;
+			theSystems = Systems.importFromXML(systemsPath);
+		}
+		
+		//---------------------------------------------------------------------------------
+		Aircraft theAircraft = new AircraftBuilder(id, aeroDatabaseReader)
+				// TODO: ADD ALL THE COMPONENTS AND THEIR POSITIONS ...
+				.fuselage(theFuselage)
+				.cabinConfiguration(theCabinConfiguration)
+				.wing(theWing)
+				.horizontalTail(theHorizontalTail)
+				.verticalTail(theVerticalTail)
+				.canard(theCanard)
+				.landingGears(theLandingGears)
+				.systems(theSystems)
+				.build();
+		
+		if(theAircraft.getFuselage() != null)
+			theAircraft.getFuselage().getFuselageCreator().calculateGeometry();
+		if(theAircraft.getWing() != null)
+			theAircraft.getWing().getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.WING, Boolean.TRUE);
+		if(theAircraft.getHTail() != null)
+			theAircraft.getHTail().getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.HORIZONTAL_TAIL, Boolean.TRUE);
+		if(theAircraft.getVTail() != null)
+			theAircraft.getVTail().getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.VERTICAL_TAIL, Boolean.FALSE);
+		if(theAircraft.getCanard() != null)
+			theAircraft.getCanard().getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.CANARD, Boolean.TRUE);
+		
+		// TODO : EVENTUALLY ADD OTHER CALCULATE GEOMETRY ... 
+		
+		return theAircraft;
+	}
+	
 	@Override
 	public String toString() {
 		
@@ -798,6 +999,15 @@ public class Aircraft implements IAircraft {
 		
 		if(_theCanard != null)
 			sb.append(_theCanard.getLiftingSurfaceCreator().toString());
+		
+		if(_theCabinConfiguration != null)
+			sb.append(_theCabinConfiguration.toString());
+		
+		if(_theLandingGears != null)
+			sb.append(_theLandingGears.toString());
+		
+		if(_theSystems != null)
+			sb.append(_theSystems.toString());
 		
 		////////////////////////////////////////////////////////////////
 		//															  //

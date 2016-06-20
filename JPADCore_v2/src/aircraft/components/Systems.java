@@ -154,7 +154,7 @@ public class Systems implements ISystems {
 
 		StringBuilder sb = new StringBuilder()
 				.append("\t-------------------------------------\n")
-				.append("\tConfiguration\n")
+				.append("\tSystems\n")
 				.append("\t-------------------------------------\n")
 				.append("\tID: '" + _id + "'\n")
 				.append("\t·····································\n")

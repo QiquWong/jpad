@@ -142,7 +142,7 @@ public class AirfoilCreator implements IAirfoilCreator {
 	
 	@Override
 	public Double[] getZCoords() {
-		return _xCoords;
+		return _zCoords;
 	}
 
 	@Override
@@ -710,7 +710,6 @@ public class AirfoilCreator implements IAirfoilCreator {
 				.append("\t-------------------------------------\n")
 				.append("\tID: '" + _id + "'\n")
 				.append("\tType: " + _type + "\n")
-				.append("\tFamily: " + _family + "\n")
 				.append("\tc = " + _chord.to(SI.METER) + "\n")
 				.append("\tt/c = " + _thicknessToChordRatio + "\n")
 				.append("\tf/c = " + _camberRatio + "\n")

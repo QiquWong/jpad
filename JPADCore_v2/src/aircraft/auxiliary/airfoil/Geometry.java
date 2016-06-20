@@ -96,8 +96,8 @@ public class Geometry {
 		_id = airfoil.getId() + "0" + idCounter + "99";
 		idCounter++;
 
-		isMirrored = airfoil.get_theLiftingSurface().getLiftingSurfaceCreator().isMirrored();
-		liftingSurfaceType = airfoil.get_theLiftingSurface().getType();
+		isMirrored = airfoil.getLiftingSurface().getLiftingSurfaceCreator().isMirrored();
+		liftingSurfaceType = airfoil.getLiftingSurface().getType();
 		_theAirfoil = airfoil;
 		
 
@@ -142,8 +142,8 @@ public class Geometry {
 		_id = airfoil.getId() + "0" + idCounter + "99";
 		idCounter++;
 
-		isMirrored = airfoil.get_theLiftingSurface().getLiftingSurfaceCreator().isMirrored();
-		liftingSurfaceType = airfoil.get_theLiftingSurface().getType();
+		isMirrored = airfoil.getLiftingSurface().getLiftingSurfaceCreator().isMirrored();
+		liftingSurfaceType = airfoil.getLiftingSurface().getType();
 		_theAirfoil = airfoil;
 		
 
@@ -183,9 +183,9 @@ public class Geometry {
 	public void update(double yLoc) {
 		Arrays.fill(_yCoords, yLoc);
 		_yStation = yLoc;
-		_etaStation = yLoc/_theAirfoil.get_theLiftingSurface().getSemiSpan().getEstimatedValue();
-		iw = _theAirfoil.get_theLiftingSurface().getRiggingAngle().getEstimatedValue();
-		populateCoordinateList(_theAirfoil.get_theLiftingSurface().getChordAtYActual(yLoc));
+		_etaStation = yLoc/_theAirfoil.getLiftingSurface().getSemiSpan().getEstimatedValue();
+		iw = _theAirfoil.getLiftingSurface().getRiggingAngle().getEstimatedValue();
+		populateCoordinateList(_theAirfoil.getLiftingSurface().getChordAtYActual(yLoc));
 	}
 
 	private void populateCoordinateList(double chord) {
@@ -208,12 +208,12 @@ public class Geometry {
 			}
 
 			// Actual location
-			x = x + (float) _theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getXLEAtYActual(_yStation).getEstimatedValue()
-					+ (float) _theAirfoil.get_theLiftingSurface().getXApexConstructionAxes().getEstimatedValue();
+			x = x + (float) _theAirfoil.getLiftingSurface().getLiftingSurfaceCreator().getXLEAtYActual(_yStation).getEstimatedValue()
+					+ (float) _theAirfoil.getLiftingSurface().getXApexConstructionAxes().getEstimatedValue();
 			y = _yCoords[i].floatValue();
-			z = z + (float) _theAirfoil.get_theLiftingSurface().getZApexConstructionAxes().getEstimatedValue()
+			z = z + (float) _theAirfoil.getLiftingSurface().getZApexConstructionAxes().getEstimatedValue()
 					+ (float) (_yStation
-							* Math.tan(_theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getDihedralAtYActual(_yStation).getEstimatedValue()));
+							* Math.tan(_theAirfoil.getLiftingSurface().getLiftingSurfaceCreator().getDihedralAtYActual(_yStation).getEstimatedValue()));
 
 			if (isMirrored) {
 				_coordinatesLeft.add(new PVector(x, -y, z));
@@ -225,7 +225,7 @@ public class Geometry {
 								x,
 								_zCoords[i].floatValue()*c, 
 								_yCoords[i].floatValue()
-								+ (float) _theAirfoil.get_theLiftingSurface().getZApexConstructionAxes().getEstimatedValue()));
+								+ (float) _theAirfoil.getLiftingSurface().getZApexConstructionAxes().getEstimatedValue()));
 
 			} else {
 				_coordinatesRight.add(new PVector(x, y, z));
@@ -237,24 +237,24 @@ public class Geometry {
 	public PVector getCentralPoint() {
 		float x,y,z;
 
-		int nPan = _theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getPanels().size(); 
+		int nPan = _theAirfoil.getLiftingSurface().getLiftingSurfaceCreator().getPanels().size(); 
 		
-		if (_theAirfoil.get_theLiftingSurface().getType().equals(ComponentEnum.VERTICAL_TAIL)) {
-			x = (float) (_theAirfoil.get_theLiftingSurface().getXApexConstructionAxes().getEstimatedValue()
-					+ _theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getDiscretizedXle().get(_theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getDiscretizedXle().size()-1).getEstimatedValue()
-					+ _theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getPanels().get(nPan - 1).getChordTip().getEstimatedValue()/2);
-			z = (float) (_theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getSpan().getEstimatedValue())*1.005f 
-					+ (float) _theAirfoil.get_theLiftingSurface().getZApexConstructionAxes().getEstimatedValue();
+		if (_theAirfoil.getLiftingSurface().getType().equals(ComponentEnum.VERTICAL_TAIL)) {
+			x = (float) (_theAirfoil.getLiftingSurface().getXApexConstructionAxes().getEstimatedValue()
+					+ _theAirfoil.getLiftingSurface().getLiftingSurfaceCreator().getDiscretizedXle().get(_theAirfoil.getLiftingSurface().getLiftingSurfaceCreator().getDiscretizedXle().size()-1).getEstimatedValue()
+					+ _theAirfoil.getLiftingSurface().getLiftingSurfaceCreator().getPanels().get(nPan - 1).getChordTip().getEstimatedValue()/2);
+			z = (float) (_theAirfoil.getLiftingSurface().getLiftingSurfaceCreator().getSpan().getEstimatedValue())*1.005f 
+					+ (float) _theAirfoil.getLiftingSurface().getZApexConstructionAxes().getEstimatedValue();
 			y = 0.0f;
 
 		} else {
-			x = (float) (_theAirfoil.get_theLiftingSurface().getXApexConstructionAxes().getEstimatedValue()
-					+ _theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getDiscretizedXle().get(_theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getDiscretizedXle().size()-1).getEstimatedValue()
-					+ _theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getPanels().get(nPan - 1).getChordTip().getEstimatedValue()/2);
-			y = (float) (_theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getSpan().getEstimatedValue()/2.)*1.005f;
-			z = (float) (_theAirfoil.get_theLiftingSurface().getZApexConstructionAxes().getEstimatedValue()
+			x = (float) (_theAirfoil.getLiftingSurface().getXApexConstructionAxes().getEstimatedValue()
+					+ _theAirfoil.getLiftingSurface().getLiftingSurfaceCreator().getDiscretizedXle().get(_theAirfoil.getLiftingSurface().getLiftingSurfaceCreator().getDiscretizedXle().size()-1).getEstimatedValue()
+					+ _theAirfoil.getLiftingSurface().getLiftingSurfaceCreator().getPanels().get(nPan - 1).getChordTip().getEstimatedValue()/2);
+			y = (float) (_theAirfoil.getLiftingSurface().getLiftingSurfaceCreator().getSpan().getEstimatedValue()/2.)*1.005f;
+			z = (float) (_theAirfoil.getLiftingSurface().getZApexConstructionAxes().getEstimatedValue()
 					+ _yStation
-					* Math.tan(_theAirfoil.get_theLiftingSurface().getLiftingSurfaceCreator().getDihedralAtYActual(_yStation).getEstimatedValue())); //TODO: add dihedral
+					* Math.tan(_theAirfoil.getLiftingSurface().getLiftingSurfaceCreator().getDihedralAtYActual(_yStation).getEstimatedValue())); //TODO: add dihedral
 		}
 
 		return new PVector(x, y, z);

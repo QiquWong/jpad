@@ -119,7 +119,7 @@ public class VerticalTailTest extends Application {
 		//--------------------------------------------------
 		System.out.println("Initializing test class...");
 		String rootOutputFolderPath = MyConfiguration.currentDirectoryString + File.separator + "out" + File.separator;
-		String outputFolderPath = JPADStaticWriteUtils.createNewFolder(rootOutputFolderPath + "Test_D3" + File.separator);
+		String outputFolderPath = JPADStaticWriteUtils.createNewFolder(rootOutputFolderPath + "Tests_Aircraft" + File.separator);
 		System.out.println("Output ==> " + outputFolderPath);
 
 		//--------------------------------------------------
@@ -151,7 +151,7 @@ public class VerticalTailTest extends Application {
 				.graphBackgroundColor("blue").graphBackgroundOpacity(0.1)
 				.title("Vertical tail data representation")
 				.xLabel("x (m)")
-				.yLabel("y (m)")
+				.yLabel("z (m)")
 				.showXGrid(true)
 				.showYGrid(true)
 				.symbolTypes(
@@ -192,7 +192,7 @@ public class VerticalTailTest extends Application {
 
 			//--------------------------------------------------
 			// output
-			String outputFilePath = outputFolderPath + "test6.svg";
+			String outputFilePath = outputFolderPath + "VerticalTail.svg";
 			d3Plotter.saveSVG(outputFilePath);
 
 

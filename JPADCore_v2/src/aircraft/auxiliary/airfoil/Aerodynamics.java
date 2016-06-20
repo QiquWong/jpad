@@ -165,7 +165,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 		 case NACA23_018:
 			 _id = airf.getId() + "1" + idCounter + "99";
 				idCounter++;
-			 airf.set_family(AirfoilEnum.NACA23_018);	
+			 airf.setFamily(AirfoilEnum.NACA23_018);	
 			 _theAirfoil = airf;
 			 geometry = airf.getGeometry();
 
@@ -189,7 +189,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			 break;
 
 		 case NACA23_015:
-			 airf.set_family(AirfoilEnum.NACA23_015);	
+			 airf.setFamily(AirfoilEnum.NACA23_015);	
 			 _id = airf.getId() + "1" + idCounter + "99";
 				idCounter++;
 				
@@ -215,7 +215,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			 break;
 			 
 		 case NACA23_012:
-			 airf.set_family(AirfoilEnum.NACA23_012);	
+			 airf.setFamily(AirfoilEnum.NACA23_012);	
 			 _id = airf.getId() + "1" + idCounter + "99";
 				idCounter++;
 				
@@ -295,7 +295,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			break;
 			
 		 case NACA0012:
-			 airf.set_family(AirfoilEnum.NACA0012);	
+			 airf.setFamily(AirfoilEnum.NACA0012);	
 			 _id = airf.getId() + "1" + idCounter + "99";
 				idCounter++;
 				
@@ -322,7 +322,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			 break;	
 			 
 		 case DFVLR_R4:
-			 airf.set_family(AirfoilEnum.DFVLR_R4);	
+			 airf.setFamily(AirfoilEnum.DFVLR_R4);	
 			 _id = airf.getId() + "1" + idCounter + "99";
 				idCounter++;
 				
@@ -589,8 +589,8 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 		}
 
 		public double perkinsAndHage() {
-			if (_kWaveDragMap.containsKey(_theAirfoil.get_family())) {
-				_machCr = mCr0PerkinsAndHage() - _kWaveDragMap.get(_theAirfoil.get_family())*_clCurrent;
+			if (_kWaveDragMap.containsKey(_theAirfoil.getFamily())) {
+				_machCr = mCr0PerkinsAndHage() - _kWaveDragMap.get(_theAirfoil.getFamily())*_clCurrent;
 			} else _machCr = 0.;
 			return _machCr;
 		}
@@ -602,7 +602,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 
 		public double korn() {
 			double k;
-			if (_theAirfoil.get_type().equals(AirfoilTypeEnum.CONVENTIONAL)) k = 0.87;
+			if (_theAirfoil.getType().equals(AirfoilTypeEnum.CONVENTIONAL)) k = 0.87;
 			else k = 0.95; 
 
 			_machCr = (k - 0.108) - geometry.get_maximumThicknessOverChord() - 0.1*_clCurrent;

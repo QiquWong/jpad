@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-    <aircraft>
-        <wings>
-            <wing type="WING" file="wing.xml">
+    <aircraft id="JPAD Test Aircraft DAF - 2016">
+		<global_data>
+			<cabin_configuration file="cabin_configuration.xml"></cabin_configuration>
+			<costs_data file="TODO!!!"></costs_data>
+		</global_data>
+        <lifting_surfaces>
+            <wing file="wing_2_panels.xml">
                 <position>
                     <x unit="m">12.0</x>
                     <y unit="m"> 0.0</y>
@@ -10,23 +14,23 @@
                 </position>
                 <rigging_angle unit="deg">2.0</rigging_angle>
             </wing>
-            <wing type="HTAIL" file="htail.xml">
+            <horizontal_tail file="htail.xml">
                 <position>
                     <x unit="m">30.0</x>
                     <y unit="m"> 0.0</y>
                     <z unit="m"> 4.0</z>
                 </position>
                 <rigging_angle unit="deg">0.0</rigging_angle>
-            </wing>
-            <wing type="VTAIL" file="vtail.xml">
+            </horizontal_tail>
+            <vertical_tail file="vtail.xml">
                 <position>
                     <x unit="m">30.0</x>
                     <y unit="m"> 0.0</y>
                     <z unit="m"> 5.0</z>
                 </position>
                 <rigging_angle unit="deg">0.0</rigging_angle>
-            </wing>
-        </wings>
+            </vertical_tail>
+        </lifting_surfaces>
         <fuselages>
             <fuselage file="fuselage.xml">
                 <position>
@@ -36,7 +40,8 @@
                 </position>
             </fuselage>
         </fuselages>
-        <propulsors>
+ <!--    TODO!!!
+		<propulsors>
             <propulsor file="propulsor.xml">
                 <position>
                     <x unit="m">12.0</x>
@@ -55,6 +60,16 @@
                 <tilting_angle unit="deg">2.0</tilting_angle>
                 <yawing_angle unit="deg">0.0</yawing_angle>
             </propulsor>
-        </propulsors>
+		</propulsors> 
+		<nacelles>
+		
+		</nacelles>
+		<landing_gears>
+		
+		</landing_gears>
+		</systems>
+		
+		</systems>
+-->
     </aircraft>
 </jpad_config>

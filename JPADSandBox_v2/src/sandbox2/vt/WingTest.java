@@ -119,7 +119,7 @@ public class WingTest extends Application {
 		//--------------------------------------------------
 		System.out.println("Initializing test class...");
 		String rootOutputFolderPath = MyConfiguration.currentDirectoryString + File.separator + "out" + File.separator;
-		String outputFolderPath = JPADStaticWriteUtils.createNewFolder(rootOutputFolderPath + "Test_D3" + File.separator);
+		String outputFolderPath = JPADStaticWriteUtils.createNewFolder(rootOutputFolderPath + "Tests_Aircraft" + File.separator);
 		System.out.println("Output ==> " + outputFolderPath);
 
 		//--------------------------------------------------
@@ -216,7 +216,7 @@ public class WingTest extends Application {
 
 			//--------------------------------------------------
 			// output
-			String outputFilePath = outputFolderPath + "test6.svg";
+			String outputFilePath = outputFolderPath + "Wing.svg";
 			d3Plotter.saveSVG(outputFilePath);
 
 

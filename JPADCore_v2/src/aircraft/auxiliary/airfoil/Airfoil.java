@@ -30,6 +30,7 @@ public class Airfoil {
 	Aerodynamics aerodynamics;
 	double _chordLocal;
 	private LiftingSurface _theLiftingSurface;
+	private AirfoilCreator _theAirfoilCreator;
 
 	/**
 	 * This constructor creates an Airfoil object from the AirfoilCreator class
@@ -39,6 +40,7 @@ public class Airfoil {
 			AerodynamicDatabaseReader aerodynamicDatabaseReader
 			) {
 		
+		this._theAirfoilCreator = airfoilCreator;
 		this._id = airfoilCreator.getID();
 		this._type = airfoilCreator.getType();
 		this._family = airfoilCreator.getFamily();
@@ -112,19 +114,19 @@ public class Airfoil {
 		_kWaveDragMap.put(AirfoilEnum.NACA65_410, 0.066);
 	}
 
-	public Map<AirfoilEnum, Double> get_kWaveDragMap() {
+	public Map<AirfoilEnum, Double> getKWaveDragMap() {
 		return _kWaveDragMap;
 	}
 
-	public void set_kWaveDragMap(Map<AirfoilEnum, Double> kWaveDragMap) {
+	public void setKWaveDragMap(Map<AirfoilEnum, Double> kWaveDragMap) {
 		_kWaveDragMap = kWaveDragMap;
 	}
 
-	public AirfoilTypeEnum get_type() {
+	public AirfoilTypeEnum getType() {
 		return _type;
 	}
 
-	public void set_type(AirfoilTypeEnum _type) {
+	public void setType(AirfoilTypeEnum _type) {
 		this._type = _type;
 	}
 
@@ -136,7 +138,7 @@ public class Airfoil {
 		return aerodynamics;
 	}
 
-	public AirfoilEnum get_family() {
+	public AirfoilEnum getFamily() {
 		return _family;
 	}
 
@@ -144,7 +146,7 @@ public class Airfoil {
 		this.aerodynamics = aerodynamics;
 	}
 
-	public void set_family(AirfoilEnum _family) {
+	public void setFamily(AirfoilEnum _family) {
 		this._family = _family;
 	}
 
@@ -153,22 +155,29 @@ public class Airfoil {
 	}
 	
 	public String getIdNew() {
-		@SuppressWarnings("static-access")
 		String id = _theLiftingSurface.getId() + "af" + nAirfoil;
 		nAirfoil++;
 		return id;
 	}
 
-	public double get_chordLocal() {
+	public double getChordLocal() {
 		return _chordLocal;
 	}
 
-	public void set_chordLocal(double _chordLocal) {
+	public void setChordLocal(double _chordLocal) {
 		this._chordLocal = _chordLocal;
 	}
 
-	public LiftingSurface get_theLiftingSurface() {
+	public LiftingSurface getLiftingSurface() {
 		return _theLiftingSurface;
+	}
+
+	public AirfoilCreator getAirfoilCreator() {
+		return _theAirfoilCreator;
+	}
+
+	public void setAirfoilCreator(AirfoilCreator _theAirfoilCreator) {
+		this._theAirfoilCreator = _theAirfoilCreator;
 	}
 
 } // end-of-class

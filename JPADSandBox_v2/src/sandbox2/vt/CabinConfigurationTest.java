@@ -29,7 +29,7 @@ class MyArgumentConfiguration {
 
 }
 
-public class ConfigurationTest extends Application {
+public class CabinConfigurationTest extends Application {
 
 	// declaration necessary for Concrete Object usage
 	public static CmdLineParser theCmdLineParser;
@@ -49,7 +49,7 @@ public class ConfigurationTest extends Application {
 		System.out.println("\n\n##################");
 		System.out.println("function start :: getting the configuration object ...");
 
-		CabinConfiguration configuration = ConfigurationTest.theConfiguration;
+		CabinConfiguration configuration = CabinConfigurationTest.theConfiguration;
 		if (configuration == null) {
 			System.out.println("configuration object null, returning.");
 			return;
@@ -99,11 +99,11 @@ public class ConfigurationTest extends Application {
 //					.build();
 			
 			System.out.println("The Configuration ...");
-			System.out.println(ConfigurationTest.theConfiguration.toString());
+			System.out.println(CabinConfigurationTest.theConfiguration.toString());
 
 		} catch (CmdLineException e) {
 			System.err.println("Error: " + e.getMessage());
-			ConfigurationTest.theCmdLineParser.printUsage(System.err);
+			CabinConfigurationTest.theCmdLineParser.printUsage(System.err);
 			System.err.println();
 			System.err.println("  Must launch this app with proper command line arguments.");
 			return;
