@@ -303,7 +303,7 @@ public class FuselageAerodynamicsManager extends aircraft.componentmodel.compone
 
 			double kf = MyMathUtils
 					.interpolate1DLinear(_positionOfC4ToFuselageLength, _kF)
-					.value((_theAircraft.getWing().get_X0().getEstimatedValue() 
+					.value((_theAircraft.getWing().getX0().getEstimatedValue() 
 							+ 0.25*_theAircraft.getWing().get_chordRoot().getEstimatedValue())
 							/_theAircraft.getFuselage().get_len_F().getEstimatedValue());
 
@@ -335,7 +335,7 @@ public class FuselageAerodynamicsManager extends aircraft.componentmodel.compone
 
 			double kf = MyMathUtils
 					.interpolate1DLinear(_positionOfC4ToFuselageLength, _kF)
-					.value((_theAircraft.getWing().get_X0().getEstimatedValue() 
+					.value((_theAircraft.getWing().getX0().getEstimatedValue() 
 							+ 0.25*_theAircraft.getWing().get_chordRoot().getEstimatedValue())
 							/_theAircraft.getFuselage().get_len_F().getEstimatedValue());
 

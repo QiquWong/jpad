@@ -20,6 +20,8 @@ import configuration.enumerations.WindshieldType;
 
 public interface IFuselage {
 
+	String getId();
+	void setId(String _id);
 	// GLOBAL DATA
 	public int getDeckNumber();
 	public Amount<Length> getLength();
@@ -65,29 +67,17 @@ public interface IFuselage {
 	
 //	public void calculateGeometry();
 	
-	public Amount<Area> getSurfaceWetted(Boolean recalculate);
-		
-	// to be completed !!
-	
 	public FuselageCreator getFuselageCreator();
-	
 	public void calculateCG(Aircraft aircraft, OperatingConditions conditions, MethodEnum method);
-	
 	public void calculateMass(Aircraft aircraft, OperatingConditions conditions, MethodEnum method);
-	
 	public Map<AnalysisTypeEnum, List<MethodEnum>> getMethodsMap();
-	
-	public void set_Z0(Amount<Length> z);
-	
-	public Amount<Length> get_X0();
-	
-	public void set_X0(Amount<Length> x);
-	
-	public Amount<Length> get_Y0();
-	
-	public void set_Y0(Amount<Length> y);
-	
-	public Amount<Length> get_Z0();
-	
+	public void setZ0(Amount<Length> z);
+	public Amount<Length> getX0();
+	public void setX0(Amount<Length> x);
+	public Amount<Length> getY0();
+	public void setY0(Amount<Length> y);
+	public Amount<Length> getZ0();
 	public ComponentEnum getType();
+	Amount<Area> getsWet();
+	
 }

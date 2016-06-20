@@ -1683,126 +1683,6 @@ public class FuselageCreator implements IFuselageCreator {
 
 	//========================================================================
 
-	@Override
-	public List<Amount<Length>> getXYZ0() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Amount<Length> getX0() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Amount<Length> getY0() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Amount<Length> getZ0() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setXYZ0(Amount<Length> x0, Amount<Length> y0, Amount<Length> z0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public List<Amount<Length>> getXYZPole() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Amount<Length> getXPole() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Amount<Length> getYPole() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Amount<Length> getZPole() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setXYZPole(Amount<Length> xp, Amount<Length> yp, Amount<Length> zp) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public int getDeckNumber() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void setDeckNumber(int dn) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public Amount<Length> getLength() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setLength(Amount<Length> len) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public Amount<Mass> getMassReference() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setMassReference(Amount<Mass> massRef) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void discretizeGeometry(int numberSpanwiseStations) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public Amount<Area> getSurfaceWetted(boolean recalculate) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Amount<Area> getSurfaceWetted() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Amount<Length>> getDiscretizedYs() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public static FuselageCreator importFromXML(String pathToXML) {
 
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
@@ -2453,6 +2333,7 @@ public class FuselageCreator implements IFuselageCreator {
 		return lenF;
 	}
 
+	@Override
 	public void setLenF(Amount<Length> lenF) {
 		this.lenF = lenF;
 	}
@@ -2560,7 +2441,6 @@ public class FuselageCreator implements IFuselageCreator {
 		this.equivalentDiameterCylinderAM = equivalentDiameterCylinderAM;
 	}
 
-	@Override
 	public Amount<Area> getAreaC() {
 		return areaC;
 	}
@@ -2569,7 +2449,6 @@ public class FuselageCreator implements IFuselageCreator {
 		this.areaC = areaC;
 	}
 
-	@Override
 	public Amount<Area> getWindshieldArea() {
 		return windshieldArea;
 	}
@@ -2587,7 +2466,6 @@ public class FuselageCreator implements IFuselageCreator {
 		this.windshieldType = windshieldType;
 	}
 
-	@Override
 	public Amount<Area> getsWetNose() {
 		return sWetNose;
 	}
@@ -2596,7 +2474,6 @@ public class FuselageCreator implements IFuselageCreator {
 		this.sWetNose = sWetNose;
 	}
 
-	@Override
 	public Amount<Area> getsWetTail() {
 		return sWetTail;
 	}
@@ -2605,7 +2482,6 @@ public class FuselageCreator implements IFuselageCreator {
 		this.sWetTail = sWetTail;
 	}
 
-	@Override
 	public Amount<Area> getsWetC() {
 		return sWetC;
 	}
@@ -2702,7 +2578,6 @@ public class FuselageCreator implements IFuselageCreator {
 		return upsweepAngle;
 	}
 	
-	@Override
 	public void setUpsweepAngle(Amount<Angle> upsweepAngle) {
 		this.upsweepAngle = upsweepAngle;
 	}
@@ -2712,7 +2587,6 @@ public class FuselageCreator implements IFuselageCreator {
 		return windshieldAngle;
 	}
 
-	@Override
 	public void setWindshieldAngle(Amount<Angle> windshieldAngle) {
 		this.windshieldAngle = windshieldAngle;
 	}
@@ -2722,7 +2596,6 @@ public class FuselageCreator implements IFuselageCreator {
 		return roughness;
 	}
 
-	@Override
 	public void setRoughness(Amount<Length> roughness) {
 		this.roughness = roughness;
 	}
@@ -2732,7 +2605,6 @@ public class FuselageCreator implements IFuselageCreator {
 		return lambdaF;
 	}
 
-	@Override
 	public void setLambdaF(Double lambdaF) {
 		this.lambdaF = lambdaF;
 	}
@@ -2742,7 +2614,6 @@ public class FuselageCreator implements IFuselageCreator {
 		return lambdaN;
 	}
 
-	@Override
 	public void setLambdaN(Double lambdaN) {
 		this.lambdaN = lambdaN;
 	}
@@ -2752,7 +2623,6 @@ public class FuselageCreator implements IFuselageCreator {
 		return lambdaC;
 	}
 
-	@Override
 	public void setLambdaC(Double lambdaC) {
 		this.lambdaC = lambdaC;
 	}
@@ -2762,7 +2632,6 @@ public class FuselageCreator implements IFuselageCreator {
 		return lambdaT;
 	}
 
-	@Override
 	public void setLambdaT(Double lambdaT) {
 		this.lambdaT = lambdaT;
 	}
@@ -2772,7 +2641,6 @@ public class FuselageCreator implements IFuselageCreator {
 		return lenRatioNF;
 	}
 
-	@Override
 	public void setLenRatioNF(Double lenRatioNF) {
 		this.lenRatioNF = lenRatioNF;
 	}
@@ -2782,7 +2650,6 @@ public class FuselageCreator implements IFuselageCreator {
 		return lenRatioCF;
 	}
 
-	@Override
 	public void setLenRatioCF(Double lenRatioCF) {
 		this.lenRatioCF = lenRatioCF;
 	}
@@ -2792,17 +2659,14 @@ public class FuselageCreator implements IFuselageCreator {
 		return lenRatioTF;
 	}
 
-	@Override
 	public void setLenRatioTF(Double lenRatioTF) {
 		this.lenRatioTF = lenRatioTF;
 	}
 
-	@Override
 	public Double getFormFactor() {
 		return formFactor;
 	}
 
-	@Override
 	public void setFormFactor(Double formFactor) {
 		this.formFactor = formFactor;
 	}
@@ -2812,102 +2676,82 @@ public class FuselageCreator implements IFuselageCreator {
 		return sectionCylinderWidth;
 	}
 
-	@Override
 	public void setSectionCylinderWidth(Amount<Length> sectionCylinderWidth) {
 		this.sectionCylinderWidth = sectionCylinderWidth;
 	}
 
-	@Override
 	public Amount<Length> getWindshieldHeight() {
 		return windshieldHeight;
 	}
 
-	@Override
 	public void setWindshieldHeight(Amount<Length> windshieldHeight) {
 		this.windshieldHeight = windshieldHeight;
 	}
 
-	@Override
 	public Amount<Length> getWindshieldWidth() {
 		return windshieldWidth;
 	}
 
-	@Override
 	public void setWindshieldWidth(Amount<Length> windshieldWidth) {
 		this.windshieldWidth = windshieldWidth;
 	}
 
-	@Override
 	public Amount<Length> getDxNoseCap() {
 		return dxNoseCap;
 	}
 
-	@Override
 	public void setDxNoseCap(Amount<Length> dxNoseCap) {
 		this.dxNoseCap = dxNoseCap;
 	}
 
-	@Override
 	public Amount<Length> getDxTailCap() {
 		return dxTailCap;
 	}
 
-	@Override
 	public void setDxTailCap(Amount<Length> dxTailCap) {
 		this.dxTailCap = dxTailCap;
 	}
 
-	@Override
 	public Double getSectionCylinderLowerToTotalHeightRatio() {
 		return sectionCylinderLowerToTotalHeightRatio;
 	}
 
-	@Override
 	public void setSectionCylinderLowerToTotalHeightRatio(Double sectionCylinderLowerToTotalHeightRatio) {
 		this.sectionCylinderLowerToTotalHeightRatio = sectionCylinderLowerToTotalHeightRatio;
 	}
 
-	@Override
 	public Double getSectionNoseMidLowerToTotalHeightRatio() {
 		return sectionNoseMidLowerToTotalHeightRatio;
 	}
 
-	@Override
 	public void setSectionNoseMidLowerToTotalHeightRatio(Double sectionNoseMidLowerToTotalHeightRatio) {
 		this.sectionNoseMidLowerToTotalHeightRatio = sectionNoseMidLowerToTotalHeightRatio;
 	}
 
-	@Override
 	public Double getSectionTailMidLowerToTotalHeightRatio() {
 		return sectionTailMidLowerToTotalHeightRatio;
 	}
 
-	@Override
 	public void setSectionTailMidLowerToTotalHeightRatio(Double sectionTailMidLowerToTotalHeightRatio) {
 		this.sectionTailMidLowerToTotalHeightRatio = sectionTailMidLowerToTotalHeightRatio;
 	}
 
-	@Override
 	public Double getSectionCylinderRhoUpper() {
 		return sectionCylinderRhoUpper;
 	}
 
-	@Override
 	public void setSectionCylinderRhoUpper(Double sectionCylinderRhoUpper) {
 		this.sectionCylinderRhoUpper = sectionCylinderRhoUpper;
 	}
 
-	@Override
 	public Double getSectionCylinderRhoLower() {
 		return sectionCylinderRhoLower;
 	}
 
-	@Override
 	public void setSectionCylinderRhoLower(Double sectionCylinderRhoLower) {
 		this.sectionCylinderRhoLower = sectionCylinderRhoLower;
 	}
 
-	@Override
 	public Double getSectionMidNoseRhoUpper() {
 		return sectionMidNoseRhoUpper;
 	}
@@ -3328,8 +3172,354 @@ public class FuselageCreator implements IFuselageCreator {
 		return NUM_SECTIONS_YZ;
 	}
 
+	@Override
 	public List<SpoilerCreator> getSpoilers() {
 		return spoilers;
+	}
+
+	@Override
+	public int getDeckNumber() {
+		return deckNumber;
+	}
+
+	@Override
+	public void setDeckNumber(int deckNumber) {
+		this.deckNumber = deckNumber;
+	}
+
+	@Override
+	public Amount<Mass> getMassReference() {
+		return massReference;
+	}
+
+	@Override
+	public void setMassReference(Amount<Mass> massReference) {
+		this.massReference = massReference;
+	}
+	
+	@Override
+	public void setSpoilers(List<SpoilerCreator> spoilers) {
+		this.spoilers = spoilers;
+	}
+
+	public Amount<Length> getLenFMIN() {
+		return lenFMIN;
+	}
+
+	public void setLenFMIN(Amount<Length> lenFMIN) {
+		this.lenFMIN = lenFMIN;
+	}
+
+	public Amount<Length> getLenFMAX() {
+		return lenFMAX;
+	}
+
+	public void setLenFMAX(Amount<Length> lenFMAX) {
+		this.lenFMAX = lenFMAX;
+	}
+
+	public Amount<Length> getLenNMIN() {
+		return lenNMIN;
+	}
+
+	public void setLenNMIN(Amount<Length> lenNMIN) {
+		this.lenNMIN = lenNMIN;
+	}
+
+	public Amount<Length> getLenNMAX() {
+		return lenNMAX;
+	}
+
+	public void setLenNMAX(Amount<Length> lenNMAX) {
+		this.lenNMAX = lenNMAX;
+	}
+
+	public Amount<Length> getLenCMIN() {
+		return lenCMIN;
+	}
+
+	public void setLenCMIN(Amount<Length> lenCMIN) {
+		this.lenCMIN = lenCMIN;
+	}
+
+	public Amount<Length> getLenCMAX() {
+		return lenCMAX;
+	}
+
+	public void setLenCMAX(Amount<Length> lenCMAX) {
+		this.lenCMAX = lenCMAX;
+	}
+
+	public Amount<Length> getLenTMIN() {
+		return lenTMIN;
+	}
+
+	public void setLenTMIN(Amount<Length> lenTMIN) {
+		this.lenTMIN = lenTMIN;
+	}
+
+	public Amount<Length> getLenTMAX() {
+		return lenTMAX;
+	}
+
+	public void setLenTMAX(Amount<Length> lenTMAX) {
+		this.lenTMAX = lenTMAX;
+	}
+
+	public Double getLambdaFMIN() {
+		return lambdaFMIN;
+	}
+
+	public void setLambdaFMIN(Double lambdaFMIN) {
+		this.lambdaFMIN = lambdaFMIN;
+	}
+
+	public Double getLambdaFMAX() {
+		return lambdaFMAX;
+	}
+
+	public void setLambdaFMAX(Double lambdaFMAX) {
+		this.lambdaFMAX = lambdaFMAX;
+	}
+
+	public Double getLambdaNMIN() {
+		return lambdaNMIN;
+	}
+
+	public void setLambdaNMIN(Double lambdaNMIN) {
+		this.lambdaNMIN = lambdaNMIN;
+	}
+
+	public Double getLambdaNMAX() {
+		return lambdaNMAX;
+	}
+
+	public void setLambdaNMAX(Double lambdaNMAX) {
+		this.lambdaNMAX = lambdaNMAX;
+	}
+
+	public Double getLambdaCMIN() {
+		return lambdaCMIN;
+	}
+
+	public void setLambdaCMIN(Double lambdaCMIN) {
+		this.lambdaCMIN = lambdaCMIN;
+	}
+
+	public Double getLambdaCMAX() {
+		return lambdaCMAX;
+	}
+
+	public void setLambdaCMAX(Double lambdaCMAX) {
+		this.lambdaCMAX = lambdaCMAX;
+	}
+
+	public Double getLambdaTMIN() {
+		return lambdaTMIN;
+	}
+
+	public void setLambdaTMIN(Double lambdaTMIN) {
+		this.lambdaTMIN = lambdaTMIN;
+	}
+
+	public Double getLambdaTMAX() {
+		return lambdaTMAX;
+	}
+
+	public void setLambdaTMAX(Double lambdaTMAX) {
+		this.lambdaTMAX = lambdaTMAX;
+	}
+
+	public Double getLenRatioNFMIN() {
+		return lenRatioNFMIN;
+	}
+
+	public void setLenRatioNFMIN(Double lenRatioNFMIN) {
+		this.lenRatioNFMIN = lenRatioNFMIN;
+	}
+
+	public Double getLenRatioNFMAX() {
+		return lenRatioNFMAX;
+	}
+
+	public void setLenRatioNFMAX(Double lenRatioNFMAX) {
+		this.lenRatioNFMAX = lenRatioNFMAX;
+	}
+
+	public Double getLenRatioCFMIN() {
+		return lenRatioCFMIN;
+	}
+
+	public void setLenRatioCFMIN(Double lenRatioCFMIN) {
+		this.lenRatioCFMIN = lenRatioCFMIN;
+	}
+
+	public Double getLenRatioCFMAX() {
+		return lenRatioCFMAX;
+	}
+
+	public void setLenRatioCFMAX(Double lenRatioCFMAX) {
+		this.lenRatioCFMAX = lenRatioCFMAX;
+	}
+
+	public Double getLenRatioTFMIN() {
+		return lenRatioTFMIN;
+	}
+
+	public void setLenRatioTFMIN(Double lenRatioTFMIN) {
+		this.lenRatioTFMIN = lenRatioTFMIN;
+	}
+
+	public Double getLenRatioTFMAX() {
+		return lenRatioTFMAX;
+	}
+
+	public void setLenRatioTFMAX(Double lenRatioTFMAX) {
+		this.lenRatioTFMAX = lenRatioTFMAX;
+	}
+
+	public Amount<Length> getDiamCMIN() {
+		return diamCMIN;
+	}
+
+	public void setDiamCMIN(Amount<Length> diamCMIN) {
+		this.diamCMIN = diamCMIN;
+	}
+
+	public Amount<Length> getDiamCMAX() {
+		return diamCMAX;
+	}
+
+	public void setDiamCMAX(Amount<Length> diamCMAX) {
+		this.diamCMAX = diamCMAX;
+	}
+
+	public Amount<Length> getSectionWidthMIN() {
+		return sectionWidthMIN;
+	}
+
+	public void setSectionWidthMIN(Amount<Length> sectionWidthMIN) {
+		this.sectionWidthMIN = sectionWidthMIN;
+	}
+
+	public Amount<Length> getSectionWidthMAX() {
+		return sectionWidthMAX;
+	}
+
+	public void setSectionWidthMAX(Amount<Length> sectionWidthMAX) {
+		this.sectionWidthMAX = sectionWidthMAX;
+	}
+
+	public Amount<Length> getHeightNMIN() {
+		return heightNMIN;
+	}
+
+	public void setHeightNMIN(Amount<Length> heightNMIN) {
+		this.heightNMIN = heightNMIN;
+	}
+
+	public Amount<Length> getHeightNMAX() {
+		return heightNMAX;
+	}
+
+	public void setHeightNMAX(Amount<Length> heightNMAX) {
+		this.heightNMAX = heightNMAX;
+	}
+
+	public Amount<Length> getHeightTMIN() {
+		return heightTMIN;
+	}
+
+	public void setHeightTMIN(Amount<Length> heightTMIN) {
+		this.heightTMIN = heightTMIN;
+	}
+
+	public Amount<Length> getHeightTMAX() {
+		return heightTMAX;
+	}
+
+	public void setHeightTMAX(Amount<Length> heightTMAX) {
+		this.heightTMAX = heightTMAX;
+	}
+
+	public Amount<Length> getDxNoseCapMIN() {
+		return dxNoseCapMIN;
+	}
+
+	public void setDxNoseCapMIN(Amount<Length> dxNoseCapMIN) {
+		this.dxNoseCapMIN = dxNoseCapMIN;
+	}
+
+	public Amount<Length> getDxNoseCapMAX() {
+		return dxNoseCapMAX;
+	}
+
+	public void setDxNoseCapMAX(Amount<Length> dxNoseCapMAX) {
+		this.dxNoseCapMAX = dxNoseCapMAX;
+	}
+
+	public Amount<Length> getDxTailCapMIN() {
+		return dxTailCapMIN;
+	}
+
+	public void setDxTailCapMIN(Amount<Length> dxTailCapMIN) {
+		this.dxTailCapMIN = dxTailCapMIN;
+	}
+
+	public Amount<Length> getDxTailCapMAX() {
+		return dxTailCapMAX;
+	}
+
+	public void setDxTailCapMAX(Amount<Length> dxTailCapMAX) {
+		this.dxTailCapMAX = dxTailCapMAX;
+	}
+
+	public Double getSectionLowerToTotalHeightRatioMIN() {
+		return sectionLowerToTotalHeightRatioMIN;
+	}
+
+	public void setSectionLowerToTotalHeightRatioMIN(Double sectionLowerToTotalHeightRatioMIN) {
+		this.sectionLowerToTotalHeightRatioMIN = sectionLowerToTotalHeightRatioMIN;
+	}
+
+	public Double getSectionLowerToTotalHeightRatioMAX() {
+		return sectionLowerToTotalHeightRatioMAX;
+	}
+
+	public void setSectionLowerToTotalHeightRatioMAX(Double sectionLowerToTotalHeightRatioMAX) {
+		this.sectionLowerToTotalHeightRatioMAX = sectionLowerToTotalHeightRatioMAX;
+	}
+
+	public Double getSectionRhoUpperMIN() {
+		return sectionRhoUpperMIN;
+	}
+
+	public void setSectionRhoUpperMIN(Double sectionRhoUpperMIN) {
+		this.sectionRhoUpperMIN = sectionRhoUpperMIN;
+	}
+
+	public Double getSectionRhoUpperMAX() {
+		return sectionRhoUpperMAX;
+	}
+
+	public void setSectionRhoUpperMAX(Double sectionRhoUpperMAX) {
+		this.sectionRhoUpperMAX = sectionRhoUpperMAX;
+	}
+
+	public Double getSectionRhoLowerMIN() {
+		return sectionRhoLowerMIN;
+	}
+
+	public void setSectionRhoLowerMIN(Double sectionRhoLowerMIN) {
+		this.sectionRhoLowerMIN = sectionRhoLowerMIN;
+	}
+
+	public Double getSectionRhoLowerMAX() {
+		return sectionRhoLowerMAX;
+	}
+
+	public void setSectionRhoLowerMAX(Double sectionRhoLowerMAX) {
+		this.sectionRhoLowerMAX = sectionRhoLowerMAX;
 	}
 
 }

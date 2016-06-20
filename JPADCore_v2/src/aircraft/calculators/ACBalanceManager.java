@@ -58,7 +58,7 @@ public class ACBalanceManager extends ACCalculatorManager {
 	 */
 	public void calculateBalance(Aircraft aircraft) {
 
-		_xCoGMeanAtOEM = (aircraft.getWing().get_X0().getEstimatedValue() + 
+		_xCoGMeanAtOEM = (aircraft.getWing().getX0().getEstimatedValue() + 
 				0.25*aircraft.getWing().get_meanAerodChordActual().getEstimatedValue());
 		set_xCoGMaxAftAtOEM((_xCoGMeanAtOEM*(1-0.1)));	
 	}
@@ -94,7 +94,7 @@ public class ACBalanceManager extends ACCalculatorManager {
 
 		calculateTotalCG(aircraft);
 
-		set_xCoGMeanAtOEM(aircraft.getWing().get_X0().getEstimatedValue() + 
+		set_xCoGMeanAtOEM(aircraft.getWing().getX0().getEstimatedValue() + 
 				0.25*aircraft.getWing().get_meanAerodChordActual().getEstimatedValue());
 		set_xCoGMaxAftAtOEM(get_xCoGMeanAtOEM()*(1-0.1));
 		set_xCoGMaxForAtOEM(get_xCoGMeanAtOEM()*(1+0.1));

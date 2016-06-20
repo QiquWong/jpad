@@ -832,9 +832,9 @@ public class JPADDataWriter {
 		initiator.appendChild(equivalent_parameters);
 
 		// --- INPUT DATA-------------------------------------
-		writeInputNode("Xcoordinate", liftingSurface.get_X0(), equivalent_parameters, true);
-		writeInputNode("Ycoordinate", liftingSurface.get_Y0(), equivalent_parameters, true);
-		writeInputNode("Zcoordinate", liftingSurface.get_Z0(), equivalent_parameters, true);
+		writeInputNode("Xcoordinate", liftingSurface.getX0(), equivalent_parameters, true);
+		writeInputNode("Ycoordinate", liftingSurface.getY0(), equivalent_parameters, true);
+		writeInputNode("Zcoordinate", liftingSurface.getZ0(), equivalent_parameters, true);
 
 		writeInputNode("Planform_surface", liftingSurface.get_surface(), equivalent_parameters, true);
 		writeInputNode("Control_surface_extension", liftingSurface.get_surfaceCS(), equivalent_parameters, true);
@@ -1164,9 +1164,9 @@ public class JPADDataWriter {
 	}
 
 	private void writeFuelTankInput(FuelTanks fuelTank, Element fuelTankParam) {
-		writeInputNode("Xcoordinate", fuelTank.get_X0(), fuelTankParam, true);
-		writeInputNode("Ycoordinate", fuelTank.get_Y0(), fuelTankParam, true);
-		writeInputNode("Zcoordinate", fuelTank.get_Z0(), fuelTankParam, true);
+		writeInputNode("Xcoordinate", fuelTank.getX0(), fuelTankParam, true);
+		writeInputNode("Ycoordinate", fuelTank.getY0(), fuelTankParam, true);
+		writeInputNode("Zcoordinate", fuelTank.getZ0(), fuelTankParam, true);
 		writeInputNode("Fuel_density", fuelTank.getFuelDensity(), fuelTankParam, true);
 		writeInputNode("Fuel_volume", fuelTank.getFuelVolume(), fuelTankParam, true);
 		writeInputNode("Fuel_mass", fuelTank.getFuelMass(), fuelTankParam, true);
@@ -1423,9 +1423,9 @@ public class JPADDataWriter {
 		Element Landing_gear_parameters = doc.createElement("Landing_gear_parameters");
 		father.appendChild(Landing_gear_parameters);
 
-		writeInputNode("Xcoordinate", landingGear.get_X0(), Landing_gear_parameters, true);
-		writeInputNode("Ycoordinate", landingGear.get_Y0(), Landing_gear_parameters, true);
-		writeInputNode("Zcoordinate", landingGear.get_Z0(), Landing_gear_parameters, true);
+		writeInputNode("Xcoordinate", landingGear.getX0(), Landing_gear_parameters, true);
+		writeInputNode("Ycoordinate", landingGear.getY0(), Landing_gear_parameters, true);
+		writeInputNode("Zcoordinate", landingGear.getZ0(), Landing_gear_parameters, true);
 		writeInputNode("Mounting_point", landingGear.get_mounting().name(), Landing_gear_parameters, true);
 		writeInputNode("Lenght", landingGear.getLenght(), Landing_gear_parameters, true);
 		writeInputNode("Reference_mass", landingGear.getReferenceMass(), Landing_gear_parameters, true);

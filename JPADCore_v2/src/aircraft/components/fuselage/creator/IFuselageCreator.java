@@ -9,55 +9,66 @@ import javax.measure.quantity.Mass;
 
 import org.jscience.physics.amount.Amount;
 
-public interface IFuselageCreator {
+import aircraft.components.liftingSurface.creator.SpoilerCreator;
+import configuration.enumerations.WindshieldType;
 
+public interface IFuselageCreator {
+	
+	String getId();
+	void setId(String id);
+	Boolean getPressurized();
+	// Global data
+	int getDeckNumber();
+	void setDeckNumber(int dn);
+	Amount<Length> getLenF();
+	Amount<Mass> getMassReference();
+	void setMassReference(Amount<Mass> massRef);
+	Amount<Length> getRoughness();
+	void setRoughness(Amount<Length> roughness);
+	// Nose trunk
+	Amount<Length> getLenN();
+	Double getLambdaN();
+	Double getLenRatioNF();
+	Amount<Angle> getWindshieldAngle();
+	void setWindshieldAngle(Amount<Angle> windshieldAngle);
+	//Cylindrical trunk
+	Double getLenRatioCF();
+	Double getLambdaC();
+	Amount<Length> getLenC();
+	Amount<Length> getHeightFromGround();
+	Amount<Angle> getUpsweepAngle();
+	//Tail trunk 	
+	Double getLenRatioTF();
+	void setUpsweepAngle(Amount<Angle> upsweepAngle);
+	Double getLambdaT();
+	
+	// Other
 	public void calculateGeometry(
 			int np_N, int np_C, int np_T, // no. points @ Nose/Cabin/Tail
 			int np_SecUp, int np_SecLow   // no. points @ Upper/Lower section
 			);
 	public void calculateGeometry();
 
-	List<Amount<Length>> getXYZ0();
-	Amount<Length> getX0();
-	Amount<Length> getY0();
-	Amount<Length> getZ0();
-	void setXYZ0(Amount<Length> x0, Amount<Length> y0, Amount<Length> z0);
+// These are in IFuselage interface
+//	List<Amount<Length>> getXYZ0();
+//	Amount<Length> getX0();
+//	Amount<Length> getY0();
+//	Amount<Length> getZ0();
+//	void setXYZ0(Amount<Length> x0, Amount<Length> y0, Amount<Length> z0);
 
-	List<Amount<Length>> getXYZPole();
-	Amount<Length> getXPole();
-	Amount<Length> getYPole();
-	Amount<Length> getZPole();
-	void setXYZPole(Amount<Length> xp, Amount<Length> yp, Amount<Length> zp);
-
-	int getDeckNumber();
-	void setDeckNumber(int dn);
-
-	Amount<Length> getLength();
-	void setLength(Amount<Length> len);
-
-	Amount<Mass> getMassReference();
-	void setMassReference(Amount<Mass> massRef);
-
-	void discretizeGeometry(int numberSpanwiseStations);
-
-	public Amount<Area> getSurfaceWetted(boolean recalculate);
-	public Amount<Area> getSurfaceWetted();
-
-	public List<Amount<Length>> getDiscretizedYs();
-	//--------------------------------------------------------------
-	Amount<Length> getLenF();
-	String getId();
-	void setId(String id);
-	Boolean getPressurized();
-	Amount<Length> getLenN();
-	Amount<Length> getLenC();
+	
+	Double getLambdaF();
+	void setLenF(Amount<Length> lenF);
 	Amount<Area> getsWet();
-	Amount<Length> getHeightFromGround();
-	Amount<Angle> getUpsweepAngle();
-	Amount<Angle> getWindshieldAngle();
-	void setUpsweepAngle(Amount<Angle> upsweepAngle);
-	void setWindshieldAngle(Amount<Angle> windshieldAngle);
-	Amount<Length> getRoughness();
-	void setRoughness(Amount<Length> roughness);
+	Amount<Area> getsFront();
+	Amount<Length> getSectionCylinderWidth();
+	WindshieldType getWindshieldType();
+	Amount<Length> getEquivalentDiameterCylinderAM();
+	Amount<Length> getEquivalentDiameterGM();
+	Amount<Length> getEquivalentDiameterCylinderGM();
+	Amount<Length> getSectionCylinderHeight();
+	Amount<Length> getLenT();
+	List<SpoilerCreator> getSpoilers();
+	void setSpoilers(List<SpoilerCreator> spoilers);
 	
 }

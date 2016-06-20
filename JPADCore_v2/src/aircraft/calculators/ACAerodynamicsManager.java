@@ -175,7 +175,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		macW = aircraft.getWing().get_meanAerodChordActual().getEstimatedValue();
 		sW = aircraft.getWing().get_surface().getEstimatedValue();
 		sHT = aircraft.getHTail().get_surface().getEstimatedValue();
-		dzH = aircraft.getHTail().get_Z0().minus(aircraft.getWing().get_Z0()).getEstimatedValue();
+		dzH = aircraft.getHTail().getZ0().minus(aircraft.getWing().getZ0()).getEstimatedValue();
 		dxH = aircraft.getHTail().get_ACw_ACdistance().getEstimatedValue();
 		niHT = aircraft.getHTail().get_volumetricRatio();
 
@@ -194,7 +194,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 					/ aircraft.getWing().get_meanAerodChordActual().getEstimatedValue();
 			xacWBRF = aircraft.getWing().getAerodynamics()
 					.getCalculateXAC().get_methodMapLRF().get(MethodEnum.DEYOUNG_HARPER).getEstimatedValue()
-					+ aircraft.getWing().get_X0().getEstimatedValue();
+					+ aircraft.getWing().getX0().getEstimatedValue();
 
 			xa = (aircraft.getTheBalance().get_cgMTOM().get_xBRF().getEstimatedValue() - xacWBRF)
 					/macW;

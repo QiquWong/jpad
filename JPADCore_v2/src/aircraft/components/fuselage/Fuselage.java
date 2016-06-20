@@ -40,8 +40,9 @@ public class Fuselage implements IFuselage {
 
 	AerodynamicDatabaseReader _aerodynamicDatabaseReader;
 	
-	private String _id, _description;
+	private String _id;
 	private Amount<Length> _X0, _Y0, _Z0;
+	private ComponentEnum _type = ComponentEnum.FUSELAGE; 
 
 	//-----------------------------------------------------------------------
 	// DESIGN PARAMETERS
@@ -59,7 +60,6 @@ public class Fuselage implements IFuselage {
 	private List<MethodEnum> _methodsList = new ArrayList<MethodEnum>();
 	private Double[] _percentDifference;
 
-	private Boolean _pressurized;
 	private Double _massCorrectionFactor = 1.;
 	private Amount<Length> _xCG, _xCGReference, 
 	_xCGEstimated, _zCGEstimated;
@@ -107,12 +107,14 @@ public class Fuselage implements IFuselage {
 	
 	private Fuselage(FuselageBuilder builder) {
 		super();
-		this._id = builder.__id; 
+		this.setId(builder.__id); 
 		this._xApexConstructionAxes = builder.__xApexConstructionAxes; 
 		this._yApexConstructionAxes = builder.__yApexConstructionAxes; 
 		this._zApexConstructionAxes = builder.__zApexConstructionAxes;
 		this._fuselageCreator = builder.__fuselageCreator;
 	}
+	
+	
 	
 	@Override
 	public int getDeckNumber() {
@@ -121,7 +123,7 @@ public class Fuselage implements IFuselage {
 
 	@Override
 	public Amount<Length> getLength() {
-		return _fuselageCreator.getLength();
+		return _fuselageCreator.getLenF();
 	}
 
 	@Override
@@ -258,11 +260,9 @@ public class Fuselage implements IFuselage {
 	}
 
 	@Override
-	public Amount<Area> getSurfaceWetted(Boolean recalculate) {
-		return _fuselageCreator.getSurfaceWetted(recalculate);
+	public Amount<Area> getsWet() {
+		return _fuselageCreator.getsWet();
 	}
-
-	// TODO : ADD OTHER GETTERS VIA _fuselageCreator
 	
 	@Override
 	public FuselageCreator getFuselageCreator() {
@@ -282,8 +282,6 @@ public class Fuselage implements IFuselage {
 	
 	
 	
-	
-
 	///////////////////////////////////////////////////////////////////
 	// Methods for evaluation of derived quantities (mass, cd...)
 	///////////////////////////////////////////////////////////////////
@@ -323,7 +321,7 @@ public class Fuselage implements IFuselage {
 
 			double k = 0.;
 
-			if (_pressurized == true) {
+			if (_fuselageCreator.getPressurized() == true) {
 				k = k + 0.08;
 			}
 
@@ -492,7 +490,7 @@ public class Fuselage implements IFuselage {
 
 	private Amount<Mass> calculateMassTorenbeek1976(Aircraft aircraft) {
 		double k = 0.;
-		if (_pressurized) {k = k + 0.08;}
+		if (_fuselageCreator.getPressurized()) {k = k + 0.08;}
 		if (aircraft.getLandingGears().get_mounting() == LandingGear.LandingGears.FUSELAGE){
 			k = k + 0.07;
 		}
@@ -590,13 +588,13 @@ public class Fuselage implements IFuselage {
 	}
 
 
-		public String get_name() {
-		return _name;
-	}
-
-	public void set_name(String n) {
-		this._name = n;
-	}
+//		public String get_name() {
+//		return _name;
+//	}
+//
+//	public void set_name(String n) {
+//		this._name = n;
+//	}
 
 	public String get_description() {
 		return _description;
@@ -623,22 +621,22 @@ public class Fuselage implements IFuselage {
 
 
 	@Override
-	public Amount<Length> get_X0() { return _X0; }
+	public Amount<Length> getX0() { return _X0; }
 
 	@Override
-	public void set_X0(Amount<Length> x) { _X0 = x; };
+	public void setX0(Amount<Length> x) { _X0 = x; };
 
 	@Override
-	public Amount<Length> get_Y0() { return _Y0; }
+	public Amount<Length> getY0() { return _Y0; }
 
 	@Override
-	public void set_Y0(Amount<Length> y) { _Y0 = y; };
+	public void setY0(Amount<Length> y) { _Y0 = y; };
 
 	@Override
-	public Amount<Length> get_Z0() { return _Z0; }
+	public Amount<Length> getZ0() { return _Z0; }
 
 	@Override
-	public void set_Z0(Amount<Length> z) { _Z0 = z; }
+	public void setZ0(Amount<Length> z) { _Z0 = z; }
 
 	
 	public Double get_massCorrectionFactor() {
@@ -709,8 +707,16 @@ public class Fuselage implements IFuselage {
 		this.aerodynamics = aerodynamics;
 	}
 
+	@Override
+	public String getId() {
+		return _fuselageCreator.getId();
+	}
 	
-	// --------------------------- Already done --------------------------------------
+	
+	@Override
+	public void setId(String _id) {
+		_fuselageCreator.setId(_id);
+	}
 
 	public Amount<Length> getXApexConstructionAxes() {
 		return _xApexConstructionAxes;
@@ -722,9 +728,6 @@ public class Fuselage implements IFuselage {
 
 	public Amount<Length> getZApexConstructionAxes() {
 		return _zApexConstructionAxes;
-	}
-
-	public void setId(String _id) {
 	}
 
 	public void setXApexConstructionAxes(Amount<Length> _xApexConstructionAxes) {
@@ -742,7 +745,6 @@ public class Fuselage implements IFuselage {
 	public void setFuselageCreator(FuselageCreator _fuselageCreator) {
 		this._fuselageCreator = _fuselageCreator;
 	}
-	// -----------------------------------------------------------------
 
 
 } // end of class
