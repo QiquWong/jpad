@@ -2412,6 +2412,26 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 				.collect(Collectors.toList());
 	}
 
+	public List<Amount<Length>> getYBreakPoints() {
+		return _yBreakPoints;
+	}
+
+	public List<Double> getEtaBreakPoints() {
+		return _etaBP;
+	}
+
+	public List<Amount<Length>> getXLEBreakPoints() {
+		return _xLEBreakPoints;
+	}
+
+	public List<Amount<Length>> getZLEBreakPoints() {
+		return _zLEBreakPoints;
+	}
+
+	public List<Amount<Length>> getChordsBreakPoints() {
+		return _chordsBreakPoints;
+	}
+	
 	@Override
 	public String toString() {
 

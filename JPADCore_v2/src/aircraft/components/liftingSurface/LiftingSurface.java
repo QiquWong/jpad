@@ -15,8 +15,10 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.auxiliary.airfoil.Airfoil;
+import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import calculators.geometry.LSGeometryCalc;
+import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
@@ -24,6 +26,7 @@ import configuration.enumerations.PositionRelativeToAttachmentEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import standaloneutils.GeometryCalc;
 import standaloneutils.MyArrayUtils;
+import standaloneutils.MyMathUtils;
 import standaloneutils.customdata.CenterOfGravity;
 import writers.JPADStaticWriteUtils;
 
@@ -32,7 +35,6 @@ public class LiftingSurface implements ILiftingSurface{
 	private String _id = null;
 	private ComponentEnum _type;
 
-	// TODO : THESE DATA WILL COME FROM AIRCRAFT CLASS
 	private PositionRelativeToAttachmentEnum _positionRelativeToAttachment;
 	private Amount<Length> _xApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
 	private Amount<Length> _yApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
@@ -111,7 +113,6 @@ public class LiftingSurface implements ILiftingSurface{
 
 		List<MethodEnum> methodsList = new ArrayList<MethodEnum>();
 		
-		// THESE DATA WILL COME FROM AIRCRAFT CLASS
 		_cg.setLRForigin(_xApexConstructionAxes,
 						 _yApexConstructionAxes,
 						 _zApexConstructionAxes
@@ -331,6 +332,317 @@ public class LiftingSurface implements ILiftingSurface{
 		}
 
 		return this._airfoilList;
+	}
+	
+	public static Airfoil calculateAirfoilAtY (LiftingSurface theWing, double yLoc, AerodynamicDatabaseReader aeroDatabaseReader) {
+
+		// initializing variables ... 
+		AirfoilTypeEnum type = null;
+		Double yInner = 0.0;
+		Double yOuter = 0.0;
+		Amount<Length> innerChord = Amount.valueOf(0.0, SI.METER);
+		Amount<Length> outerChord = Amount.valueOf(0.0, SI.METER);
+		Double thicknessRatioInner = 0.0;
+		Double thicknessRatioOuter = 0.0;
+		Double camberRatioInner = 0.0;
+		Double camberRatioOuter = 0.0;
+		Double leadingEdgeRadiusInner = 0.0;
+		Double leadingEdgeRadiusOuter = 0.0;
+		Amount<Angle> alphaZeroLiftInner = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		Amount<Angle> alphaZeroLiftOuter = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		Amount<Angle> alphaEndLinearityInner = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		Amount<Angle> alphaEndLinearityOuter = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		Amount<Angle> alphaStallInner = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		Amount<Angle> alphaStallOuter = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		Double clAlphaInner = 0.0;
+		Double clAlphaOuter = 0.0;
+		Double cdMinInner = 0.0;
+		Double cdMinOuter = 0.0;
+		Double clAtCdMinInner = 0.0;
+		Double clAtCdMinOuter = 0.0;
+		Double cl0Inner = 0.0;
+		Double cl0Outer = 0.0;
+		Double clEndLinearityInner = 0.0;
+		Double clEndLinearityOuter = 0.0;
+		Double clMaxInner = 0.0;
+		Double clMaxOuter = 0.0;
+		Double kFactorDragPolarInner = 0.0;
+		Double kFactorDragPolarOuter = 0.0;
+		Double mExponentDragPolarInner = 0.0;
+		Double mExponentDragPolarOuter = 0.0;
+		Double cmAlphaQuarterChordInner = 0.0;
+		Double cmAlphaQuarterChordOuter = 0.0;
+		Double normalizedXacInner = 0.0;
+		Double normalizedXacOuter = 0.0;
+		Double cmACInner = 0.0;
+		Double cmACOuter = 0.0;
+		Double cmACStallInner = 0.0;
+		Double cmACStallOuter = 0.0;
+		Double criticalMachInner = 0.0;
+		Double criticalMachOuter = 0.0;
+		
+		if(yLoc < 0.0) {
+			System.err.println("\n\tINVALID Y STATION FOR THE INTERMEDIATE AIRFOIL!!");
+			return null;
+		}
+		
+		for(int i=1; i<theWing.getLiftingSurfaceCreator().getYBreakPoints().size(); i++) {
+			
+			if((yLoc > theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i-1).doubleValue(SI.METER))
+					&& (yLoc < theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i).doubleValue(SI.METER))) {
+				
+				type = theWing.getLiftingSurfaceCreator().getPanels().get(i).getAirfoilRoot().getType();
+				yInner = theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i-1).doubleValue(SI.METER);
+				yOuter = theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i).doubleValue(SI.METER);
+				innerChord = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getChordRoot();
+				innerChord = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getChordTip();
+				thicknessRatioInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getThicknessToChordRatio();
+				thicknessRatioOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getThicknessToChordRatio();
+				camberRatioInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getCamberRatio();
+				camberRatioOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getCamberRatio();
+				leadingEdgeRadiusInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getRadiusLeadingEdgeNormalized();
+				leadingEdgeRadiusOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getRadiusLeadingEdgeNormalized();
+				alphaZeroLiftInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getAlphaZeroLift();
+				alphaZeroLiftOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getAlphaZeroLift();
+				alphaEndLinearityInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getAlphaEndLinearTrait();
+				alphaEndLinearityOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getAlphaEndLinearTrait();
+				alphaStallInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getAlphaStall();
+				alphaStallOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getAlphaStall();
+				clAlphaInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getClAlphaLinearTrait(); 
+				clAlphaOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getClAlphaLinearTrait();
+				cdMinInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getCdMin();
+				cdMinOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getCdMin();
+				clAtCdMinInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getClAtCdMin();
+				clAtCdMinOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getClAtCdMin();
+				cl0Inner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getClAtAlphaZero();
+				cl0Outer = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getClAtAlphaZero();
+				clEndLinearityInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getClEndLinearTrait(); 
+				clEndLinearityOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getClEndLinearTrait();
+				clMaxInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getClMax();
+				clMaxOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getClMax();
+				kFactorDragPolarInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getKFactorDragPolar();
+				kFactorDragPolarOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getKFactorDragPolar();
+				mExponentDragPolarInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getMExponentDragPolar();
+				mExponentDragPolarOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getMExponentDragPolar();
+				cmAlphaQuarterChordInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getCmAlphaQuarterChord();
+				cmAlphaQuarterChordOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getCmAlphaQuarterChord();
+				normalizedXacInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getXACNormalized();
+				normalizedXacOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getXACNormalized();
+				cmACInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getCmAC();
+				cmACOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getCmAC();
+				cmACStallInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getCmACAtStall();
+				cmACStallOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getCmACAtStall();
+				criticalMachInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getMachCritical();
+				criticalMachOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getMachCritical();
+				
+			}	
+		}
+
+		//------------------------------------------------------------------------------------------------
+		// INTERMEDIATE CHORD
+		Amount<Length> intermediateAirfoilChord = Amount.valueOf(
+				MyMathUtils.getInterpolatedValue1DLinear(
+						new double[] {yInner, yOuter},
+						new double[] {innerChord.doubleValue(SI.METER), outerChord.doubleValue(SI.METER)},
+						yLoc
+						),
+				SI.METER
+				);
+		
+		//------------------------------------------------------------------------------------------------
+		// INTERMEDIATE THICKNESS RATIO
+		Double intermediateAirfoilThicknessRatio = MyMathUtils.getInterpolatedValue1DLinear(
+				new double[] {yInner, yOuter},
+				new double[] {thicknessRatioInner, thicknessRatioOuter},
+				yLoc
+				);
+		
+		//------------------------------------------------------------------------------------------------
+		// INTERMEDIATE CAMBER RATIO
+		Double intermediateAirfoilCamberRatio = MyMathUtils.getInterpolatedValue1DLinear(
+				new double[] {yInner, yOuter},
+				new double[] {camberRatioInner, camberRatioOuter},
+				yLoc
+				);
+		
+		//------------------------------------------------------------------------------------------------
+		// INTERMEDIATE LEADING EDGE RADIUS
+		Double intermediateAirfoilLeadingEdgeRadius = MyMathUtils.getInterpolatedValue1DLinear(
+				new double[] {yInner, yOuter},
+				new double[] {leadingEdgeRadiusInner, leadingEdgeRadiusOuter},
+				yLoc
+				);
+		
+		//------------------------------------------------------------------------------------------------
+		// INTERMEDIATE ALPHA ZERO LIFT
+		Amount<Angle> intermediateAirfoilAlphaZeroLift = Amount.valueOf(
+				MyMathUtils.getInterpolatedValue1DLinear(
+						new double[] {yInner, yOuter},
+						new double[] {alphaZeroLiftInner.doubleValue(NonSI.DEGREE_ANGLE), alphaZeroLiftOuter.doubleValue(NonSI.DEGREE_ANGLE)},
+						yLoc
+						),
+				NonSI.DEGREE_ANGLE
+				);
+		
+		//------------------------------------------------------------------------------------------------
+		// INTERMEDIATE ALPHA STAR
+		Amount<Angle> intermediateAirfoilAlphaEndLinearity = Amount.valueOf(
+				MyMathUtils.getInterpolatedValue1DLinear(
+						new double[] {yInner, yOuter},
+						new double[] {alphaEndLinearityInner.doubleValue(NonSI.DEGREE_ANGLE), alphaEndLinearityOuter.doubleValue(NonSI.DEGREE_ANGLE)},
+						yLoc
+						),
+				NonSI.DEGREE_ANGLE
+				);
+		
+		//------------------------------------------------------------------------------------------------
+		// INTERMEDIATE ALPHA STALL
+		Amount<Angle> intermediateAirfoilAlphaStall = Amount.valueOf(
+				MyMathUtils.getInterpolatedValue1DLinear(
+						new double[] {yInner, yOuter},
+						new double[] {alphaStallInner.doubleValue(NonSI.DEGREE_ANGLE), alphaStallOuter.doubleValue(NonSI.DEGREE_ANGLE)},
+						yLoc
+						),
+				NonSI.DEGREE_ANGLE
+				);
+		
+		//------------------------------------------------------------------------------------------------
+		// INTERMEDIATE Cl ALPHA
+		Double intermediateAirfoilClAlpha = MyMathUtils.getInterpolatedValue1DLinear(
+				new double[] {yInner, yOuter},
+				new double[] {clAlphaInner, clAlphaOuter},
+				yLoc
+				);
+		
+		//------------------------------------------------------------------------------------------------
+		// INTERMEDIATE Cd MIN
+		Double intermediateAirfoilCdMin = MyMathUtils.getInterpolatedValue1DLinear(
+				new double[] {yInner, yOuter},
+				new double[] {cdMinInner, cdMinOuter},
+				yLoc
+				);
+		
+		//------------------------------------------------------------------------------------------------
+		// INTERMEDIATE Cl AT Cd MIN
+		Double intermediateAirfoilClAtCdMin = MyMathUtils.getInterpolatedValue1DLinear(
+				new double[] {yInner, yOuter},
+				new double[] {clAtCdMinInner, clAtCdMinOuter},
+				yLoc
+				);
+		
+		//------------------------------------------------------------------------------------------------
+		// INTERMEDIATE Cl0
+		Double intermediateAirfoilCl0 = MyMathUtils.getInterpolatedValue1DLinear(
+				new double[] {yInner, yOuter},
+				new double[] {cl0Inner, cl0Outer},
+				yLoc
+				);
+		
+		//------------------------------------------------------------------------------------------------
+		// INTERMEDIATE Cl END LINEARITY
+		Double intermediateAirfoilClEndLinearity = MyMathUtils.getInterpolatedValue1DLinear(
+				new double[] {yInner, yOuter},
+				new double[] {clEndLinearityInner, clEndLinearityOuter},
+				yLoc
+				);
+		
+		//------------------------------------------------------------------------------------------------
+		// INTERMEDIATE Cl MAX
+		Double intermediateAirfoilClMax = MyMathUtils.getInterpolatedValue1DLinear(
+				new double[] {yInner, yOuter},
+				new double[] {clMaxInner, clMaxOuter},
+				yLoc
+				);
+		
+		//------------------------------------------------------------------------------------------------
+		// INTERMEDIATE K FACTOR DRAG POLAR
+		Double intermediateAirfoilKFactorDragPolar = MyMathUtils.getInterpolatedValue1DLinear(
+				new double[] {yInner, yOuter},
+				new double[] {kFactorDragPolarInner, kFactorDragPolarOuter},
+				yLoc
+				);
+		
+		//------------------------------------------------------------------------------------------------
+		// INTERMEDIATE m EXPONENT DRAG POLAR
+		Double intermediateAirfoilMExponentDragPolar = MyMathUtils.getInterpolatedValue1DLinear(
+				new double[] {yInner, yOuter},
+				new double[] {mExponentDragPolarInner, mExponentDragPolarOuter},
+				yLoc
+				);
+		
+		//------------------------------------------------------------------------------------------------
+		// INTERMEDIATE Cm ALPHA c/4
+		Double intermediateAirfoilCmAlphaQuaterChord = MyMathUtils.getInterpolatedValue1DLinear(
+				new double[] {yInner, yOuter},
+				new double[] {cmAlphaQuarterChordInner, cmAlphaQuarterChordOuter},
+				yLoc
+				);
+		
+		//------------------------------------------------------------------------------------------------
+		// INTERMEDIATE Xac
+		Double intermediateAirfoilXac = MyMathUtils.getInterpolatedValue1DLinear(
+				new double[] {yInner, yOuter},
+				new double[] {normalizedXacInner, normalizedXacOuter},
+				yLoc
+				);
+		
+		//------------------------------------------------------------------------------------------------
+		// INTERMEDIATE Cm_ac
+		Double intermediateAirfoilCmAC = MyMathUtils.getInterpolatedValue1DLinear(
+				new double[] {yInner, yOuter},
+				new double[] {cmACInner, cmACOuter},
+				yLoc
+				);
+		
+		//------------------------------------------------------------------------------------------------
+		// INTERMEDIATE Cm_ac STALL
+		Double intermediateAirfoilCmACStall = MyMathUtils.getInterpolatedValue1DLinear(
+				new double[] {yInner, yOuter},
+				new double[] {cmACStallInner, cmACStallOuter},
+				yLoc
+				);
+		
+		//------------------------------------------------------------------------------------------------
+		// INTERMEDIATE Cm_ac STALL
+		Double intermediateAirfoilCriticalMach = MyMathUtils.getInterpolatedValue1DLinear(
+				new double[] {yInner, yOuter},
+				new double[] {criticalMachInner, criticalMachOuter},
+				yLoc
+				);
+		
+		//------------------------------------------------------------------------------------------------
+		// AIRFOIL CREATION
+		AirfoilCreator intermediateAirfoilCreator = new AirfoilCreator.AirfoilBuilder("Intermediate Airfoil")
+				.type(type)
+				.chord(intermediateAirfoilChord)
+				.thicknessToChordRatio(intermediateAirfoilThicknessRatio)
+				.camberRatio(intermediateAirfoilCamberRatio)
+				.radiusLeadingEdgeNormalized(intermediateAirfoilLeadingEdgeRadius)
+				.alphaZeroLift(intermediateAirfoilAlphaZeroLift)
+				.alphaEndLinearTrait(intermediateAirfoilAlphaEndLinearity)
+				.alphaStall(intermediateAirfoilAlphaStall)
+				.clAlphaLinearTrait(intermediateAirfoilClAlpha)
+				.cdMin(intermediateAirfoilCdMin)
+				.clAtCdMin(intermediateAirfoilClAtCdMin)
+				.clAtAlphaZero(intermediateAirfoilCl0)
+				.clEndLinearTrait(intermediateAirfoilClEndLinearity)
+				.clMax(intermediateAirfoilClMax)
+				.kFactorDragPolar(intermediateAirfoilKFactorDragPolar)
+				.mExponentDragPolar(intermediateAirfoilMExponentDragPolar)
+				.cmAlphaQuarterChord(intermediateAirfoilCmAlphaQuaterChord)
+				.xACNormalized(intermediateAirfoilXac)
+				.cmAC(intermediateAirfoilCmAC)
+				.cmACAtStall(intermediateAirfoilCmACStall)
+				.machCritical(intermediateAirfoilCriticalMach)
+				.build();
+		
+		Airfoil intermediateAirfoil = new Airfoil(
+				intermediateAirfoilCreator,
+				aeroDatabaseReader
+				);
+		
+		return intermediateAirfoil;
+
 	}
 	
 	@Override

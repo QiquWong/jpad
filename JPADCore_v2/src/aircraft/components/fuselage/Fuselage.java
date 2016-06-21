@@ -107,7 +107,7 @@ public class Fuselage implements IFuselage {
 	
 	private Fuselage(FuselageBuilder builder) {
 		super();
-		this.setId(builder.__id); 
+		this._id = builder.__id; 
 		this._xApexConstructionAxes = builder.__xApexConstructionAxes; 
 		this._yApexConstructionAxes = builder.__yApexConstructionAxes; 
 		this._zApexConstructionAxes = builder.__zApexConstructionAxes;
@@ -407,7 +407,7 @@ public class Fuselage implements IFuselage {
 //							_liftingSurface.get_wing().get_mass().to(NonSI.POUND).getEstimatedValue()
 							aircraft.getWing().get_mass().to(NonSI.POUND).getEstimatedValue()
 //												- aircraft.get_nacelle().get_mass().getEstimatedValue()*aircraft.get_propulsion().get_engineNumber()) TODO ADD!
-		 * _fuselageCreator.getLenF().minus(aircraft.getWing().get_chordRoot().divide(2.)).to(NonSI.FOOT).getEstimatedValue()/
+		 * _fuselageCreator.getLenF().minus(aircraft.getWing().getChordRoot().divide(2.)).to(NonSI.FOOT).getEstimatedValue()/
 							pow(_fuselageCreator.getSectionCylinderHeight().to(NonSI.FOOT).getEstimatedValue(),2));
 
 			if (Ip > Ib) {
@@ -457,10 +457,10 @@ public class Fuselage implements IFuselage {
 		double Kdoor = 1.0;
 		double Klg = 1.12;
 		double Kws = 0.75*
-				((1+2*aircraft.getWing().get_taperRatioEquivalent())/
-						(1+aircraft.getWing().get_taperRatioEquivalent()))*
-						aircraft.getWing().get_span().to(NonSI.FOOT).getEstimatedValue()*
-						tan(aircraft.getWing().get_sweepQuarterChordEq().to(SI.RADIAN).getEstimatedValue())/
+				((1+2*aircraft.getWing().getLiftingSurfaceCreator().getTaperRatioEquivalentWing())/
+						(1+aircraft.getWing().getLiftingSurfaceCreator().getTaperRatioEquivalentWing()))*
+						aircraft.getWing().getSpan().to(NonSI.FOOT).getEstimatedValue()*
+						tan(aircraft.getWing().getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().to(SI.RADIAN).getEstimatedValue())/
 						_fuselageCreator.getLenF().to(NonSI.FOOT).getEstimatedValue();
 
 		return Amount.valueOf(0.328*

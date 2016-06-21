@@ -4,9 +4,9 @@
             <panel id="Horizontal tail panel">
                 <span unit="m">6.25</span>
                 <dihedral unit="deg">0.0</dihedral>
-                <sweep_leading_edge unit="deg">34</sweep_leading_edge>
+                <sweep_leading_edge unit="deg">25</sweep_leading_edge>
                 <inner_section>
-                    <chord unit="m">3.96</chord>
+                    <chord unit="m">3.0</chord>
                     <airfoil file="naca0012.xml"/>
                     <geometric_twist unit="deg">0.0</geometric_twist>
                 </inner_section>

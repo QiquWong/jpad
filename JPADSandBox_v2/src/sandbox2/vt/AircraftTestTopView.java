@@ -426,7 +426,7 @@ public class AircraftTestTopView extends Application {
 			AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
 			
 			// default Aircraft ATR-72 ...
-			// theAircraft = new Aircraft.AircraftBuilder("ATR-72", AircraftEnum.ATR72, aeroDatabaseReader).build();
+//			theAircraft = new Aircraft.AircraftBuilder("ATR-72", AircraftEnum.ATR72, aeroDatabaseReader).build();
 
 			// reading aircraft from xml ...
 			theAircraft = Aircraft.importFromXML(
