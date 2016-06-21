@@ -319,7 +319,8 @@ public class AircraftTestSideView extends Application {
 		// populate the wing static object in the class
 		// before launching the JavaFX application thread (launch --> start ...)
 		try {
-			AircraftTestTopView.theCmdLineParser.parseArgument(args);
+			AircraftTestSideView.theCmdLineParser.parseArgument(args);
+			
 			String pathToXML = va.getInputFile().getAbsolutePath();
 			System.out.println("INPUT ===> " + pathToXML);
 
@@ -352,7 +353,7 @@ public class AircraftTestSideView extends Application {
 			AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
 			
 			// default Aircraft ATR-72 ...
-			theAircraft = new Aircraft.AircraftBuilder("ATR-72", AircraftEnum.ATR72, aeroDatabaseReader).build();
+//			theAircraft = new Aircraft.AircraftBuilder("ATR-72", AircraftEnum.ATR72, aeroDatabaseReader).build();
 
 			// reading aircraft from xml ...
 			theAircraft = Aircraft.importFromXML(

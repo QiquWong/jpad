@@ -10,23 +10,23 @@
                 <position>
                     <x unit="m">12.0</x>
                     <y unit="m"> 0.0</y>
-                    <z unit="m"> 2.0</z>
+                    <z unit="m"> -0.5</z>
                 </position>
                 <rigging_angle unit="deg">2.0</rigging_angle>
             </wing>
             <horizontal_tail file="htail.xml">
                 <position>
-                    <x unit="m">30.0</x>
+                    <x unit="m">25.0</x>
                     <y unit="m"> 0.0</y>
-                    <z unit="m"> 4.0</z>
+                    <z unit="m"> 1.0</z>
                 </position>
                 <rigging_angle unit="deg">0.0</rigging_angle>
             </horizontal_tail>
             <vertical_tail file="vtail.xml">
                 <position>
-                    <x unit="m">30.0</x>
+                    <x unit="m">23.0</x>
                     <y unit="m"> 0.0</y>
-                    <z unit="m"> 5.0</z>
+                    <z unit="m"> 1.5</z>
                 </position>
                 <rigging_angle unit="deg">0.0</rigging_angle>
             </vertical_tail>

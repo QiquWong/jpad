@@ -4,14 +4,14 @@
             <panel id="Vertical tail panel">
                 <span unit="m">6.25</span> 
                 <dihedral unit="deg">0.0</dihedral>
-                <sweep_leading_edge unit="deg">44</sweep_leading_edge>
+                <sweep_leading_edge unit="deg">35</sweep_leading_edge>
                 <inner_section>
                     <chord unit="m">5.3</chord>
                     <airfoil file="naca0012.xml"/>
                     <geometric_twist unit="deg">0.0</geometric_twist>
                 </inner_section>
                 <outer_section>
-                    <chord unit="m">1.5944</chord>
+                    <chord unit="m">2.6</chord>
                     <airfoil file="naca0012.xml"/>
                     <geometric_twist unit="deg">0.0</geometric_twist>
                 </outer_section>
