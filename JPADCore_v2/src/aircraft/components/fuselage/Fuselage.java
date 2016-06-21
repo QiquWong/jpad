@@ -596,9 +596,9 @@ public class Fuselage implements IFuselage {
 //		this._name = n;
 //	}
 
-	public String get_description() {
-		return _description;
-	}
+//	public String get_description() {
+//		return _description;
+//	}
 
 
 	public Amount<Mass> get_mass() {
