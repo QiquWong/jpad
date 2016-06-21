@@ -16,6 +16,9 @@ import javax.measure.quantity.Mass;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
+import org.apache.commons.math3.analysis.UnivariateFunction;
+import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
+import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.OperatingConditions;
@@ -286,6 +289,30 @@ public class Fuselage implements IFuselage {
 	// Methods for evaluation of derived quantities (mass, cd...)
 	///////////////////////////////////////////////////////////////////
 
+	//  Return width at x-coordinate
+	public Double getWidthAtX(double x) {
+		return 2*getYOutlineXYSideRAtX(x);
+	}
+	
+	public Double getYOutlineXYSideRAtX(double x) {
+		// base vectors - side (right)
+		// unique values
+		double vxs[] = new double[this._fuselageCreator.getUniqueValuesXYSideRCurve().size()];
+		double vys[] = new double[this._fuselageCreator.getUniqueValuesXYSideRCurve().size()];
+		for (int i = 0; i < vxs.length; i++)
+		{
+			vxs[i] = this._fuselageCreator.getUniqueValuesXYSideRCurve().get(i).x;
+			vys[i] = this._fuselageCreator.getUniqueValuesXYSideRCurve().get(i).y;			
+		}
+		// Interpolation - side (right)
+		UnivariateInterpolator interpolatorSide = new LinearInterpolator(); // SplineInterpolator();
+		UnivariateFunction myInterpolationFunctionSide = 
+				interpolatorSide.interpolate(vxs, vys);
+
+		Double yFr = myInterpolationFunctionSide.value(x);
+		return yFr;
+	}
+	
 	public void calculateStructure(OperatingConditions conditions,
 			Aircraft configuration, 
 			ACPerformanceManager performances,
@@ -405,7 +432,7 @@ public class Fuselage implements IFuselage {
 			double Ib = 1.91e-4 * aircraft.getThePerformance().get_nLimitZFW() * 
 					(aircraft.getTheWeights().get_MZFM().to(NonSI.POUND).getEstimatedValue() - 
 //							_liftingSurface.get_wing().get_mass().to(NonSI.POUND).getEstimatedValue()
-							aircraft.getWing().get_mass().to(NonSI.POUND).getEstimatedValue()
+							aircraft.getWing().getMass().to(NonSI.POUND).getEstimatedValue()
 //												- aircraft.get_nacelle().get_mass().getEstimatedValue()*aircraft.get_propulsion().get_engineNumber()) TODO ADD!
 		 * _fuselageCreator.getLenF().minus(aircraft.getWing().getChordRoot().divide(2.)).to(NonSI.FOOT).getEstimatedValue()/
 							pow(_fuselageCreator.getSectionCylinderHeight().to(NonSI.FOOT).getEstimatedValue(),2));
@@ -587,30 +614,16 @@ public class Fuselage implements IFuselage {
 
 	}
 
-
-//		public String get_name() {
-//		return _name;
-//	}
-//
-//	public void set_name(String n) {
-//		this._name = n;
-//	}
-
-//	public String get_description() {
-//		return _description;
-//	}
-
-
-	public Amount<Mass> get_mass() {
+	public Amount<Mass> getMass() {
 		return _mass;
 	}
 
-	public void set_mass(Amount<Mass> _mass) {
+	public void setMass(Amount<Mass> _mass) {
 		this._mass = _mass;
 	}
 
 
-	public Map<MethodEnum, Amount<Mass>> get_massMap() {
+	public Map<MethodEnum, Amount<Mass>> getMassMap() {
 		return _massMap;
 	}
 

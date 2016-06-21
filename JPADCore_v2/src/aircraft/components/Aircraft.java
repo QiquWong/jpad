@@ -314,11 +314,17 @@ public class Aircraft implements IAircraft {
 				__theVTail.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theVTail.setRiggingAngle(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 				
-//				createExposedWing(aircraftName);
-//				__theExposedWing.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-//				__theExposedWing.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-//				__theExposedWing.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-//				__theExposedWing.setRiggingAngle(__theWing.getRiggingAngle());
+				if((__theWing != null) && (__theFuselage != null)) {
+					createExposedWing(aircraftName, aeroDatabaseReader);
+					__theExposedWing.setXApexConstructionAxes(__theWing.getXApexConstructionAxes());
+					__theExposedWing.setYApexConstructionAxes(Amount.valueOf(
+							__theFuselage.getWidthAtX(
+									__theWing.getXApexConstructionAxes().doubleValue(SI.METER)),
+							SI.METER)
+							);
+					__theExposedWing.setZApexConstructionAxes(__theWing.getZApexConstructionAxes());
+					__theExposedWing.setRiggingAngle(__theWing.getRiggingAngle());
+				}
 				
 				// FIXME : X,Y,Z APEX WILL BE DEFINED IN THE RELATED CLASS WHEN THE BUILDER PATTERN WILL BE IMPLEMENTED
 				createPowerPlant(aircraftName);
@@ -457,20 +463,28 @@ public class Aircraft implements IAircraft {
 		
 				if ( (this.__theWing != null) && (this.__theFuselage != null)) {
 		
-					Amount<Length> fuselageHalfWidth = __theFuselage.getSectionWidht().divide(2);
+					// TODO : CALCULATE THE SECTION OUTLINE AND RETRIVE THE WIDTH AT Z!! 
+					//		  NOW IS POSSIBLE TO HAVE THE WING ON THE TOP OF THE FUSELAGE 
+					//		  OR MOUNTED AT MID HEIGHT OF THE FUSELAGE!!
+					
+					Amount<Length> fuselageHalfWidthAtX = Amount.valueOf(
+							__theFuselage.getWidthAtX(
+									__theWing.getXApexConstructionAxes()
+									.doubleValue(SI.METER)),
+							SI.METER);
 					Amount<Length> chordRootExposed = Amount.valueOf(
-							__theWing.getChordAtYActual(fuselageHalfWidth.doubleValue(SI.METER)),
+							__theWing.getChordAtYActual(fuselageHalfWidthAtX.doubleValue(SI.METER)),
 							SI.METER
 							);
 					Airfoil exposedWingRootAirfoil = LiftingSurface.calculateAirfoilAtY(
 							__theWing,
-							fuselageHalfWidth.doubleValue(SI.METER),
+							fuselageHalfWidthAtX.doubleValue(SI.METER),
 							aeroDatabaseReader
 							);
 					Amount<Length> exposedWingFirstPanelSpan = __theWing.getLiftingSurfaceCreator()
 								.getPanels().get(0)
 									.getSemiSpan()
-										.minus(fuselageHalfWidth);	
+										.minus(fuselageHalfWidthAtX);	
 														
 					LiftingSurfacePanelCreator exposedWingFirstPanel = new LiftingSurfacePanelCreator
 							.LiftingSurfacePanelBuilder(
@@ -504,7 +518,8 @@ public class Aircraft implements IAircraft {
 					////////////////////////////////////////////////////////////////////////////////////////////////
 						
 					this.__theExposedWing = __theWing;
-//					this.__theExposedWing.getLiftingSurfaceCreator().getPanels()
+					this.__theExposedWing.getLiftingSurfaceCreator().getPanels().clear();
+					this.__theExposedWing.getLiftingSurfaceCreator().setPanels(exposedWingPanels);
 		
 				}
 		

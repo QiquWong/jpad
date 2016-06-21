@@ -778,7 +778,7 @@ public class JPADDataWriter {
 
 			writeOutputNode("Reference_mass", fuselage.get_massReference(), weights);
 			writeOutputNode("Mass_correction_factor", fuselage.get_massCorrectionFactor(), weights);
-			writeMethodsComparison(doc, _sheet, "Weight_estimation_methods_comparison", fuselage.get_massMap(), fuselage.get_percentDifference(), weights);
+			writeMethodsComparison(doc, _sheet, "Weight_estimation_methods_comparison", fuselage.getMassMap(), fuselage.get_percentDifference(), weights);
 			writeOutputNode("Estimated_mass", fuselage.get_massEstimated(), weights);
 
 			// --- Balance ----------------------------

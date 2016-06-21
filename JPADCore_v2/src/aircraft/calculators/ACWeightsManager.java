@@ -248,7 +248,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 
 	public void calculateFirstGuessMTOM(Aircraft aircraft) {
 
-		aircraft.getFuselage().set_mass(aircraft.getTheWeights().get_MZFM().times(.15));
+		aircraft.getFuselage().setMass(aircraft.getTheWeights().get_MZFM().times(.15));
 		aircraft.getWing().setOverallMass(aircraft.getTheWeights().get_MZFM().times(.1));
 		aircraft.getHTail().setOverallMass(aircraft.getTheWeights().get_MZFM().times(.015));
 		aircraft.getVTail().setOverallMass(aircraft.getTheWeights().get_MZFM().times(.015));
@@ -259,7 +259,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 		aircraft.getSystems().setOverallMass(aircraft.getTheWeights().get_MZFM().times(.04));
 
 		aircraft.getTheWeights().set_structuralMass(
-				aircraft.getFuselage().get_mass().plus(
+				aircraft.getFuselage().getMass().plus(
 						aircraft.getWing().getOverallMass()).plus(
 								aircraft.getHTail().getOverallMass()).plus(
 										aircraft.getVTail().getOverallMass()).plus(

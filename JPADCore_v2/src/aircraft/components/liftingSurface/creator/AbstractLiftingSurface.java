@@ -90,6 +90,10 @@ public abstract class AbstractLiftingSurface implements ILiftingSurfaceCreator {
 		return _panels;
 	}
 
+	public void setPanels(List<LiftingSurfacePanelCreator> panels) {
+		this._panels = panels;
+	}
+	
 	public List<SymmetricFlapCreator> getSymmetricFlaps() {
 		return _symmetricFlaps;
 	}
