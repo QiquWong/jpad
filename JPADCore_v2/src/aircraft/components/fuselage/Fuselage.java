@@ -107,7 +107,7 @@ public class Fuselage implements IFuselage {
 	
 	private Fuselage(FuselageBuilder builder) {
 		super();
-		this.setId(builder.__id); 
+		this._id = builder.__id; 
 		this._xApexConstructionAxes = builder.__xApexConstructionAxes; 
 		this._yApexConstructionAxes = builder.__yApexConstructionAxes; 
 		this._zApexConstructionAxes = builder.__zApexConstructionAxes;
@@ -596,9 +596,9 @@ public class Fuselage implements IFuselage {
 //		this._name = n;
 //	}
 
-	public String get_description() {
-		return _description;
-	}
+//	public String get_description() {
+//		return _description;
+//	}
 
 
 	public Amount<Mass> get_mass() {
