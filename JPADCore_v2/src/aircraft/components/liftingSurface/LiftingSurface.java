@@ -334,7 +334,7 @@ public class LiftingSurface implements ILiftingSurface{
 		return this._airfoilList;
 	}
 	
-	public static Airfoil calculateAirfoilAtY (LiftingSurface theWing, double yLoc, AerodynamicDatabaseReader aeroDatabaseReader) {
+	public static AirfoilCreator calculateAirfoilAtY (LiftingSurface theWing, double yLoc) {
 
 		// initializing variables ... 
 		AirfoilTypeEnum type = null;
@@ -636,12 +636,7 @@ public class LiftingSurface implements ILiftingSurface{
 				.machCritical(intermediateAirfoilCriticalMach)
 				.build();
 		
-		Airfoil intermediateAirfoil = new Airfoil(
-				intermediateAirfoilCreator,
-				aeroDatabaseReader
-				);
-		
-		return intermediateAirfoil;
+		return intermediateAirfoilCreator;
 
 	}
 	

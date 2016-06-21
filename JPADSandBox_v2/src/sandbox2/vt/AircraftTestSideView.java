@@ -210,11 +210,8 @@ public class AircraftTestSideView extends Application {
 		
 		double xMaxSideView = 1.20*fuselage.getFuselageCreator().getLenF().doubleValue(SI.METRE);
 		double xMinSideView = -0.20*fuselage.getFuselageCreator().getLenF().doubleValue(SI.METRE);
-//		FIXME : WAIT UNTIL FUSELAGE CREATOR HAS NO MORE ERROES
-//		double yMaxSideView = 1.20*fuselage.getFuselageCreator().getSectionCylinderHeight().getEstimatedValue();
-//		double yMinSideView = -0.20*fuselage.getFuselageCreator().getSectionCylinderHeight().getEstimatedValue();
-		double yMaxSideView = 15;
-		double yMinSideView = -15;
+		double yMaxSideView = 2.80*(vTail.getSpan().getEstimatedValue() + vTail.getZApexConstructionAxes().getEstimatedValue());
+		double yMinSideView = 2.80*(-fuselage.getFuselageCreator().getSectionCylinderHeight().getEstimatedValue());
 		
 		D3PlotterOptions optionsSideView = new D3PlotterOptions.D3PlotterOptionsBuilder()
 				.widthGraph(WIDTH).heightGraph(HEIGHT)

@@ -45,8 +45,8 @@ public interface ILiftingSurfacePanelCreator {
 
 	Amount<Angle> getTwistAerodynamicAtTip();
 	
-	Amount<Length> getSemiSpan();
-	void setSemiSpan(Amount<Length> b);
+	Amount<Length> getSpan();
+	void setSpan(Amount<Length> b);
 	
 	Amount<Angle> getSweepLeadingEdge();
 	Amount<Angle> getSweepQuarterChord();
@@ -81,11 +81,11 @@ public interface ILiftingSurfacePanelCreator {
 		double chord = 
 			(
 				(4 * getSurfacePlanform().getEstimatedValue())/
-					(getSemiSpan().getEstimatedValue() * (1 + getTaperRatio()))
+					(getSpan().getEstimatedValue() * (1 + getTaperRatio()))
 			)
 			*(
 				1 - (
-						4 * y * (1 - getTaperRatio())/getSemiSpan().getEstimatedValue() 
+						4 * y * (1 - getTaperRatio())/getSpan().getEstimatedValue() 
 					)
 			);
 		return chord;
