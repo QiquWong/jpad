@@ -167,8 +167,8 @@ public class Costs extends ACCalculatorManager {
 		initializeDependentVars(aircraft.getPowerPlant().get_engineNumber().intValue(),			// numberOfEngines
 				aircraft.getCabinConfiguration().getCabinCrewNumber().intValue(),			// cabinCrewNumber,
 				aircraft.getCabinConfiguration().getFlightCrewNumber().intValue(),			// flightCrewNumber,
-				aircraft.getThePerformance().get_range(),	// range (nm)
-				aircraft.getThePerformance().get_vOptimumCruise(),	// cruiseSpeed, This default value is taken from the Jenkinson's Example
+				aircraft.getThePerformance().getRange(),	// range (nm)
+				aircraft.getThePerformance().getVOptimumCruise(),	// cruiseSpeed, This default value is taken from the Jenkinson's Example
 				aircraft.getTheWeights().get_OEM(),			// OEM, 
 				aircraft.getTheWeights().get_MTOM(),			// MTOM,
 				aircraft.getTheWeights().get_paxMassMax(),		// payload, 
@@ -280,8 +280,8 @@ public class Costs extends ACCalculatorManager {
 				aircraft.getCabinConfiguration().getFlightCrewNumber().intValue(),			// flightCrewNumber,
 				246.5,		// singleCabinCrewHrCost,
 				81,			// singleflightCrewHrCost,
-				aircraft.getThePerformance().get_range(),	// range (nm)
-				aircraft.getThePerformance().get_vOptimumCruise(),	// cruiseSpeed, This default value is taken from the Jenkinson's Example
+				aircraft.getThePerformance().getRange(),	// range (nm)
+				aircraft.getThePerformance().getVOptimumCruise(),	// cruiseSpeed, This default value is taken from the Jenkinson's Example
 				Amount.valueOf(10, NonSI.MINUTE), // Climb and descent time (min),
 				Amount.valueOf(20, NonSI.MINUTE), // Sturtup Taxi and Take-Off time (min),
 				Amount.valueOf(8, NonSI.MINUTE),  // Hold Prior To Land Time (min),

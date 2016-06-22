@@ -75,7 +75,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 		_paxMassMax = _paxSingleMass.times(aircraft.getCabinConfiguration().getMaxPax());
 
 		// Operating items mass
-		if (aircraft.getThePerformance().get_range().getEstimatedValue() < 2000) { 
+		if (aircraft.getThePerformance().getRange().getEstimatedValue() < 2000) { 
 			_OIM = Amount.valueOf(8.617*aircraft.getCabinConfiguration().getNPax(), SI.KILOGRAM);
 		} else {
 			_OIM = Amount.valueOf(14.97*aircraft.getCabinConfiguration().getNPax(), SI.KILOGRAM);

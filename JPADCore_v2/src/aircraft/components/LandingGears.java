@@ -28,7 +28,15 @@ import writers.JPADStaticWriteUtils;
 
 public class LandingGears implements ILandingGear {
 
+	public enum MountingPosition {
+		FUSELAGE,
+		WING,
+		NACELLE,
+	}
+	
 	private String _id;
+	
+	private MountingPosition _mountingPosition;
 	
 	private Amount<Length> _xApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
 	private Amount<Length> _yApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
@@ -620,5 +628,13 @@ public class LandingGears implements ILandingGear {
 	@Override
 	public void setZApexConstructionAxes (Amount<Length> zApexConstructionAxes) {
 		this._zApexConstructionAxes = zApexConstructionAxes;
+	}
+
+	public MountingPosition getMountingPosition() {
+		return _mountingPosition;
+	}
+
+	public void setMountingPosition(MountingPosition _mountingPosition) {
+		this._mountingPosition = _mountingPosition;
 	};
 }

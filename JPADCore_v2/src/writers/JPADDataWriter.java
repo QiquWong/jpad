@@ -615,11 +615,11 @@ public class JPADDataWriter {
 	}
 
 	private void writePerformancesInput(ACPerformanceManager performances, Element performancesNode) {
-		writeInputNode("Optimum_Cruise_Mach_Number", performances.get_machOptimumCruise(), performancesNode, true);
-		writeInputNode("Maximum_Cruise_Mach_Number", performances.get_machMaxCruise(), performancesNode, true);
-		writeInputNode("Limit_load_factor", performances.get_nLimit(), performancesNode, true);
-		writeInputNode("Limit_load_factor_at_MZFW", performances.get_nLimitZFW(), performancesNode, true);
-		writeInputNode("Ultimate_load_factor", performances.get_nUltimate(), performancesNode, true);		
+		writeInputNode("Optimum_Cruise_Mach_Number", performances.getMachOptimumCruise(), performancesNode, true);
+		writeInputNode("Maximum_Cruise_Mach_Number", performances.getMachMaxCruise(), performancesNode, true);
+		writeInputNode("Limit_load_factor", performances.getNLimit(), performancesNode, true);
+		writeInputNode("Limit_load_factor_at_MZFW", performances.getNLimitZFW(), performancesNode, true);
+		writeInputNode("Ultimate_load_factor", performances.getNUltimate(), performancesNode, true);		
 	}
 
 	private void writePerformancesOutput(ACPerformanceManager performances, Element analysisNode) {
@@ -627,10 +627,10 @@ public class JPADDataWriter {
 		Element speeds = addElementToSubElement("Speeds", analysis);
 
 		if (performances != null) {
-			if (performances.get_vDiveEAS() != null)
-				writeOutputNode("Dive_EAS", performances.get_vDiveEAS(), speeds);
-			if (performances.get_vMaxCruiseEAS() != null)
-				writeOutputNode("Max_cruise_EAS", performances.get_vMaxCruiseEAS(), speeds);
+			if (performances.getVDiveEAS() != null)
+				writeOutputNode("Dive_EAS", performances.getVDiveEAS(), speeds);
+			if (performances.getVMaxCruiseEAS() != null)
+				writeOutputNode("Max_cruise_EAS", performances.getVMaxCruiseEAS(), speeds);
 			//		writeNode("Altitude_at_absolute_minimum_speed_and_MTOW", performances.getPerformanceManager().getAltitudeAtMinimumSpeedAbsolutePercentMaxWeight(1., FlightConditionEnum.CRUISE), speeds);
 			if (performances.getPerformanceManager() != null) {
 				writeOutputNode("Absolute_minimum_speed_at_MTOW", performances.getPerformanceManager().getMinimumSpeedAbsolutePercentMaxWeight(1., EngineOperatingConditionEnum.CRUISE), speeds);
@@ -638,7 +638,7 @@ public class JPADDataWriter {
 				writeOutputNode("Absolute_maximum_speed_at_MTOW", performances.getPerformanceManager().getMaximumSpeedAbsolutePercentMaxWeight(1., EngineOperatingConditionEnum.CRUISE), speeds);
 
 				Element pressures = addElementToSubElement("Pressures", analysis);
-				writeOutputNode("Maximum_dynamic_pressure", performances.get_maxDynamicPressure(), pressures);
+				writeOutputNode("Maximum_dynamic_pressure", performances.getMaxDynamicPressure(), pressures);
 
 				Element range = addElementToSubElement("Ranges", analysis);
 				writeOutputNode("Range_constant_speed_and_cl", performances.getPerformanceManager().getRangeManager().getRangeSpeedAndClConstant(), range);
@@ -689,7 +689,7 @@ public class JPADDataWriter {
 		writeInputNode("Cylinder_Rho_upper", fuselage.get_sectionCylinderRhoUpper(), fuselageParameters, true);
 		writeInputNode("Cylinder_Rho_lower", fuselage.get_sectionCylinderRhoLower(), fuselageParameters, true);
 		writeInputNode("Pressurization", fuselage.is_pressurized(), fuselageParameters, true);
-		writeInputNode("Reference_mass", fuselage.get_massReference(), fuselageParameters, true);
+		writeInputNode("Reference_mass", fuselage.getMassReference(), fuselageParameters, true);
 		writeInputNode("Mass_correction_factor", fuselage.get_massCorrectionFactor(), fuselageParameters, true);
 
 		// --- END OF INPUT DATA --------------------------------------------------------------
@@ -776,7 +776,7 @@ public class JPADDataWriter {
 			// --- Weights ---------------------------
 			Element weights = addElementToSubElement("Weights", analysis);
 
-			writeOutputNode("Reference_mass", fuselage.get_massReference(), weights);
+			writeOutputNode("Reference_mass", fuselage.getMassReference(), weights);
 			writeOutputNode("Mass_correction_factor", fuselage.get_massCorrectionFactor(), weights);
 			writeMethodsComparison(doc, _sheet, "Weight_estimation_methods_comparison", fuselage.getMassMap(), fuselage.get_percentDifference(), weights);
 			writeOutputNode("Estimated_mass", fuselage.get_massEstimated(), weights);

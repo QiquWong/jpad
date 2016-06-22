@@ -28,13 +28,13 @@ public class OCCFXFuselageSection {
 			_idxX = idx; 
 			// check range
 			if (
-					(_idxX >= fuselage.NUM_SECTIONS_YZ) ||
+					(_idxX >= fuselage.getFuselageCreator().NUM_SECTIONS_YZ) ||
 					(_idxX < 0)
 					) {
-				_idxX = fuselage.IDX_SECTION_YZ_CYLINDER_1;
+				_idxX = fuselage.getFuselageCreator().IDX_SECTION_YZ_CYLINDER_1;
 			}
-			_x = fuselage.get_sectionsYZStations().get(_idxX).doubleValue(SI.METER);
-			FuselageCurvesSection section = fuselage.get_sectionsYZ().get(_idxX);
+			_x = fuselage.getFuselageCreator().getSectionsYZStations().get(_idxX).doubleValue(SI.METER);
+			FuselageCurvesSection section = fuselage.getFuselageCreator().getSectionsYZ().get(_idxX);
 			_knots = section.getSectionLeftPoints() // Gives PVectors
 					.stream()
 					.map(pVector -> { // <===== LAMBDA

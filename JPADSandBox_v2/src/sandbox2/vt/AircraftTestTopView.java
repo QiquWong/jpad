@@ -273,12 +273,16 @@ public class AircraftTestTopView extends Application {
 
 		List<Double[][]> listDataArrayTopView = new ArrayList<Double[][]>();
 
+		// fuselage
 		listDataArrayTopView.add(dataOutlineXYLeftCurve);
 		listDataArrayTopView.add(dataOutlineXYRightCurve);
+		// wing
 		listDataArrayTopView.add(dataTopView);
 		listDataArrayTopView.add(dataTopViewMirrored);
+		// hTail
 		listDataArrayTopView.add(dataTopViewHTail);
 		listDataArrayTopView.add(dataTopViewMirroredHTail);
+		// vTail
 		listDataArrayTopView.add(vTailRootAirfoilPoints);
 		listDataArrayTopView.add(vTailTipAirfoilPoints);
 

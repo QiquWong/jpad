@@ -130,17 +130,17 @@ public class MyLiftingSurfaceBuilder {
 
 		List<List<PVector>> sections = new ArrayList<List<PVector>>();
 
-		int sz = theLiftingSurface.get_theAirfoilsList().size();
+		int sz = theLiftingSurface.getAirfoilList().size();
 		
-		PVector p = theLiftingSurface.get_theAirfoilsList()
-				.get(theLiftingSurface.get_theAirfoilsList().size()-1).getGeometry()
+		PVector p = theLiftingSurface.getAirfoilList()
+				.get(theLiftingSurface.getAirfoilList().size()-1).getGeometry()
 				.getCentralPoint();
 		
 		PVector pR = null, pL = new PVector();
 
-		if (theLiftingSurface.isMirrored() == true) {
-			for(int i=0; i < theLiftingSurface.get_theAirfoilsList().size(); i++) {
-				sections.add(theLiftingSurface.get_theAirfoilsList().get(i).getGeometry().get_coordinatesLeft());
+		if (theLiftingSurface.getLiftingSurfaceCreator().isMirrored() == true) {
+			for(int i=0; i < theLiftingSurface.getAirfoilList().size(); i++) {
+				sections.add(theLiftingSurface.getAirfoilList().get(i).getGeometry().get_coordinatesLeft());
 			}
 
 			pL.set(p.x, -p.y, p.z);
@@ -152,8 +152,8 @@ public class MyLiftingSurfaceBuilder {
 
 			sections.clear();
 
-			for (int j = theLiftingSurface.get_theAirfoilsList().size()-1; j >= 0 ; j--) {
-				sections.add(theLiftingSurface.get_theAirfoilsList().get(j).getGeometry().get_coordinatesRight());
+			for (int j = theLiftingSurface.getAirfoilList().size()-1; j >= 0 ; j--) {
+				sections.add(theLiftingSurface.getAirfoilList().get(j).getGeometry().get_coordinatesRight());
 			}
 			
 			pR = p;
@@ -170,8 +170,8 @@ public class MyLiftingSurfaceBuilder {
 
 		} else {
 			
-			for (int j = theLiftingSurface.get_theAirfoilsList().size()-1; j >= 0 ; j--) {
-				sections.add(theLiftingSurface.get_theAirfoilsList().get(j).getGeometry().get_coordinatesRight());
+			for (int j = theLiftingSurface.getAirfoilList().size()-1; j >= 0 ; j--) {
+				sections.add(theLiftingSurface.getAirfoilList().get(j).getGeometry().get_coordinatesRight());
 			}
 
 			pR = p;

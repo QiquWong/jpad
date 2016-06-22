@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-    <aircraft id="JPAD Test Aircraft DAF - 2016">
+    <aircraft id="JPAD Test Aircraft DAF - 2016" type="JET">
 		<global_data>
 			<cabin_configuration file="cabin_configuration.xml"></cabin_configuration>
 			<costs_data file="TODO!!!"></costs_data>
@@ -10,7 +10,7 @@
                 <position>
                     <x unit="m">12.0</x>
                     <y unit="m"> 0.0</y>
-                    <z unit="m"> -0.5</z>
+                    <z unit="m"> 1.5</z>
                 </position>
                 <rigging_angle unit="deg">2.0</rigging_angle>
             </wing>

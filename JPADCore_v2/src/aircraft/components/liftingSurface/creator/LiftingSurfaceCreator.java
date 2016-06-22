@@ -50,6 +50,10 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 	private LiftingSurfaceCreator _equivalentWing;
 
 	private Boolean _mirrored;
+
+	private Double volumetricRatio = 0.0;
+	private Amount<Length> _liftingSurfaceACToWingACDistance = Amount.valueOf(0.0, SI.METER);
+	private Amount<Length> _liftingSurfaceArm = Amount.valueOf(0.0, SI.METER);
 	
 	// equivalent wing fields
 	private Boolean _equivalentWingFlag = Boolean.FALSE;
@@ -2730,4 +2734,27 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		this._twistAtTipEquivalentWing = _twistAtTipEquivalentWing;
 	}
 
+	public Double getVolumetricRatio() {
+		return volumetricRatio;
+	}
+
+	public void setVolumetricRatio(Double volumetricRatio) {
+		this.volumetricRatio = volumetricRatio;
+	}
+
+	public Amount<Length> getLiftingSurfaceACToWingACdistance() {
+		return _liftingSurfaceACToWingACDistance;
+	}
+
+	public void setLiftingSurfaceACTOWingACDistance(Amount<Length> _liftingSurfaceACToWingACDistance) {
+		this._liftingSurfaceACToWingACDistance = _liftingSurfaceACToWingACDistance;
+	}
+
+	public Amount<Length> getLiftingSurfaceArm() {
+		return _liftingSurfaceArm;
+	}
+
+	public void setLiftingSurfaceArm(Amount<Length> _liftingSurfaceArm) {
+		this._liftingSurfaceArm = _liftingSurfaceArm;
+	}
 }

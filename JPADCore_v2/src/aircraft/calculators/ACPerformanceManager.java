@@ -87,11 +87,11 @@ public class ACPerformanceManager {
 					_theAircraft.getPowerPlant().get_engineNumber().intValue(), 
 					_theAircraft.getPowerPlant().get_engineList().get(0).get_engineType(), 
 					_theAircraft.getPowerPlant().get_engineList().get(0).get_bpr(), 
-					_theAircraft.getWing().get_surface().doubleValue(SI.SQUARE_METRE),
-					_theAircraft.getWing().get_aspectRatio(), 
-					_theAircraft.getWing().get_sweepHalfChordEq().doubleValue(SI.RADIAN), 
+					_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+					_theAircraft.getWing().getAspectRatio(), 
+					_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN), 
 					_theAircraft.getWing().get_thicknessMax(), 
-					_theAircraft.getWing().get_theAirfoilsList().get(0).getType(), 
+					_theAircraft.getWing().getAirfoilList().get(0).getType(), 
 					_theAircraft.getWing().getAerodynamics().getCalculateCLMaxClean().phillipsAndAlley(), 
 					_theAircraft.getTheAerodynamics().get_cD0(), 
 					_theAircraft.getTheAerodynamics().get_oswald());
@@ -109,11 +109,11 @@ public class ACPerformanceManager {
 					_theAircraft.getPowerPlant().get_engineNumber().intValue() - 1, 
 					_theAircraft.getPowerPlant().get_engineList().get(0).get_engineType(),
 					_theAircraft.getPowerPlant().get_engineList().get(0).get_bpr(), 
-					_theAircraft.getWing().get_surface().doubleValue(SI.SQUARE_METRE),
-					_theAircraft.getWing().get_aspectRatio(), 
-					_theAircraft.getWing().get_sweepHalfChordEq().doubleValue(SI.RADIAN), 
+					_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+					_theAircraft.getWing().getAspectRatio(), 
+					_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN), 
 					_theAircraft.getWing().get_thicknessMax(), 
-					_theAircraft.getWing().get_theAirfoilsList().get(0).getType(), 
+					_theAircraft.getWing().getAirfoilList().get(0).getType(), 
 					_theAircraft.getWing().getAerodynamics().getCalculateCLMaxClean().phillipsAndAlley(), 
 					_theAircraft.getTheAerodynamics().get_cD0(), 
 					_theAircraft.getTheAerodynamics().get_oswald());
@@ -131,125 +131,125 @@ public class ACPerformanceManager {
 	}
 
 
-	public Double get_nLimit() {
+	public Double getNLimit() {
 		return _nLimit;
 	}
 
-	public void set_nLimit(Double _nLimit) {
+	public void setNLimit(Double _nLimit) {
 		this._nLimit = _nLimit;
 	}
 
-	public Amount<Velocity> get_vMaxCruise() {
+	public Amount<Velocity> getVMaxCruise() {
 		return _vMaxCruise;
 	}
 
-	public void set_vMaxCruise(Amount<Velocity> _vMaxCruise) {
+	public void setVMaxCruise(Amount<Velocity> _vMaxCruise) {
 		this._vMaxCruise = _vMaxCruise;
 	}
 
 
-	public Amount<Velocity> get_vDive() {
+	public Amount<Velocity> getVDive() {
 		return _vDive;
 	}
 
 
-	public void set_vDive(Amount<Velocity> _vDive) {
+	public void setVDive(Amount<Velocity> _vDive) {
 		this._vDive = _vDive;
 	}
 
 
-	public Double get_nUltimate() {
+	public Double getNUltimate() {
 		return _nUltimate;
 	}
 
 
-	public void set_nUltimate(Double _nUltimate) {
+	public void setNUltimate(Double _nUltimate) {
 		this._nUltimate = _nUltimate;
 	}
 
 
-	public Double get_nLimitZFW() {
+	public Double getNLimitZFW() {
 		return _nLimitZFW;
 	}
 
 
-	public void set_nLimitZFW(Double _nLimitZFW) {
+	public void setNLimitZFW(Double _nLimitZFW) {
 		this._nLimitZFW = _nLimitZFW;
 	}
 
 
-	public Amount<Pressure> get_maxDynamicPressure() {
+	public Amount<Pressure> getMaxDynamicPressure() {
 		return _maxDynamicPressure;
 	}
 
 
-	public Amount<Velocity> get_vMaxCruiseEAS() {
+	public Amount<Velocity> getVMaxCruiseEAS() {
 		return _vMaxCruiseEAS;
 	}
 
 
-	public void set_vMaxCruiseEAS(Amount<Velocity> _vMaxCruiseEAS) {
+	public void setVMaxCruiseEAS(Amount<Velocity> _vMaxCruiseEAS) {
 		this._vMaxCruiseEAS = _vMaxCruiseEAS;
 	}
 
 
-	public Amount<Velocity> get_vDiveEAS() {
+	public Amount<Velocity> getVDiveEAS() {
 		return _vDiveEAS;
 	}
 
 
-	public void set_vDiveEAS(Amount<Velocity> _vDiveEAS) {
+	public void setVDiveEAS(Amount<Velocity> _vDiveEAS) {
 		this._vDiveEAS = _vDiveEAS;
 	}
 
 
-	public Amount<Length> get_maxAltitudeAtMaxSpeed() {
+	public Amount<Length> getMaxAltitudeAtMaxSpeed() {
 		return _maxAltitudeAtMaxSpeed;
 	}
 
 
-	public void set_maxAltitudeAtMaxSpeed(Amount<Length> _maxAltitudeAtMaxSpeed) {
+	public void setMaxAltitudeAtMaxSpeed(Amount<Length> _maxAltitudeAtMaxSpeed) {
 		this._maxAltitudeAtMaxSpeed = _maxAltitudeAtMaxSpeed;
 	}
 
 
-	public Double get_machDive0() {
+	public Double getMachDive0() {
 		return _machDive0;
 	}
 
 
-	public Double get_machMaxCruise() {
+	public Double getMachMaxCruise() {
 		return _machMaxCruise;
 	}
 
 
-	public void set_machMaxCruise(Double _mach) {
+	public void setMachMaxCruise(Double _mach) {
 		this._machMaxCruise = _mach;
 	}
 
 
-	public Double get_machOptimumCruise() {
+	public Double getMachOptimumCruise() {
 		return _machOptimumCruise;
 	}
 
 
-	public void set_machOptimumCruise(Double _machCruise) {
+	public void setMachOptimumCruise(Double _machCruise) {
 		this._machOptimumCruise = _machCruise;
 	}
 
-	public Amount<Length> get_range() {
+	public Amount<Length> getRange() {
 		return _range;
 	}
 
-	public void set_range(Amount<Length> _range) {
+	public void setRange(Amount<Length> _range) {
 		this._range = _range;
 	}
 
-	public Double get_cruiseCL() {
+	public Double getCruiseCL() {
 		return _cruiseCL;
 	}
 
-	public void set_cruiseCL(Double _cruiseCL) {
+	public void setCruiseCL(Double _cruiseCL) {
 		this._cruiseCL = _cruiseCL;
 	}
 
@@ -265,27 +265,27 @@ public class ACPerformanceManager {
 		return performanceManagerOEI;
 	}
 
-	public Amount<Velocity> get_vOptimumCruise() {
+	public Amount<Velocity> getVOptimumCruise() {
 		return _vOptimumCruise;
 	}
 
-	public void set_vDesignCruise(Amount<Velocity> _vDesignCruise) {
+	public void setVDesignCruise(Amount<Velocity> _vDesignCruise) {
 		this._vOptimumCruise = _vDesignCruise;
 	}
 
-	public Amount<Duration> get_blockTime() {
+	public Amount<Duration> getBlockTime() {
 		return _blockTime;
 	}
 
-	public void set_blockTime(Amount<Duration> _blockTime) {
+	public void setBlockTime(Amount<Duration> _blockTime) {
 		this._blockTime = _blockTime;
 	}
 
-	public Amount<Duration> get_flightTime() {
+	public Amount<Duration> getFlightTime() {
 		return _flightTime;
 	}
 
-	public void set_flightTime(Amount<Duration> _flightTime) {
+	public void setFlightTime(Amount<Duration> _flightTime) {
 		this._flightTime = _flightTime;
 	}
 
