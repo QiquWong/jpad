@@ -2,12 +2,15 @@
 <jpad_config>
 	<costs id="JPAD Test Costs DAF - 2016">
 			<!-- Fixed Charged -->
-			<!-- <ResidualValue>0.1</ResidualValue> initialized! -->
-			<depreciationPeriod> </depreciationPeriod>
-			//Utilization, //it depends on block_time 
-			Interest, //per year 
-			Insurance, // Year Rate
-			num_cabin_crew_members,
+			<Residual_Value>0.1</Residual_Value> 
+			<Annual_Interest_Rate>0.053</Annual_Interest_Rate>
+			<Annual_Insurance_Premium_Rate>0.005</Annual_Insurance_Premium_Rate>
+			<Utilization unit="hr/year">4200.</Utilization unit="hr/year"> <!--it depends on block_time --> 
+			<!-- single engine cost
+				 engine number -->
+			<Spares_Costs_As_Airframe_Cost_Percentage>0.1</Spares_Costs_As_Airframe_Cost_Percentage>
+			<Spares_Engines_Costs_As_Airframe_Cost_Percentage>0.3</Spares_Costs_As_Airframe_Cost_Percentage>
+			<!-- num_cabin_crew_members, num_cabin_crew_members  -->
 			<!-- Trip Charged -->
 			MTOW,
 			Block_Time,
