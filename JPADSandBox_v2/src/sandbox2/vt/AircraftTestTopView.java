@@ -124,7 +124,13 @@ public class AircraftTestTopView extends Application {
 		System.out.println("\n\n##################");
 		System.out.println("function start :: getting the aircaft object ...");
 
-		LiftingSurface wing = AircraftTestTopView.theAircraft.getWing();
+		Fuselage fuselage = AircraftTestTopView.theAircraft.getFuselage();
+		if (fuselage == null) {
+			System.out.println("fuselage object null, returning.");
+			return;
+		}
+		
+		LiftingSurface wing = AircraftTestTopView.theAircraft.getExposedWing();
 		if (wing == null) {
 			System.out.println("wing object null, returning.");
 			return;
@@ -139,12 +145,6 @@ public class AircraftTestTopView extends Application {
 		LiftingSurface vTail = AircraftTestTopView.theAircraft.getVTail();
 		if (vTail == null) {
 			System.out.println("vertical tail object null, returning.");
-			return;
-		}
-		
-		Fuselage fuselage = AircraftTestTopView.theAircraft.getFuselage();
-		if (fuselage == null) {
-			System.out.println("fuselage object null, returning.");
 			return;
 		}
 
@@ -197,7 +197,7 @@ public class AircraftTestTopView extends Application {
 		
 		Double[][] dataTopView = new Double[dataTopViewIsolated.length][dataTopViewIsolated[0].length];
 		for (int i=0; i<dataTopViewIsolated.length; i++) { 
-			dataTopView[i][0] = dataTopViewIsolated[i][0];
+			dataTopView[i][0] = dataTopViewIsolated[i][0] + wing.getYApexConstructionAxes().doubleValue(SI.METER);
 			dataTopView[i][1] = dataTopViewIsolated[i][1] + wing.getXApexConstructionAxes().doubleValue(SI.METER);
 		}
 		
@@ -426,18 +426,18 @@ public class AircraftTestTopView extends Application {
 			AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
 			
 			// default Aircraft ATR-72 ...
-			theAircraft = new Aircraft.AircraftBuilder("ATR-72", AircraftEnum.ATR72, aeroDatabaseReader).build();
+//			theAircraft = new Aircraft.AircraftBuilder("ATR-72", AircraftEnum.ATR72, aeroDatabaseReader).build();
 
 			// reading aircraft from xml ...
-//			theAircraft = Aircraft.importFromXML(
-//					pathToXML,
-//					dirLiftingSurfaces,
-//					dirFuselages,
-//					dirLandingGears,
-//					dirSystems,
-//					dirCabinConfiguration,
-//					dirAirfoil,
-//					aeroDatabaseReader);
+			theAircraft = Aircraft.importFromXML(
+					pathToXML,
+					dirLiftingSurfaces,
+					dirFuselages,
+					dirLandingGears,
+					dirSystems,
+					dirCabinConfiguration,
+					dirAirfoil,
+					aeroDatabaseReader);
 			
 			System.out.println("The Aircaraft ...");
 			System.out.println(AircraftTestTopView.theAircraft.toString());

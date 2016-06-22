@@ -227,12 +227,12 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 	}
 
 	@Override
-	public Amount<Length> getSemiSpan() {
+	public Amount<Length> getSpan() {
 		return _span;
 	}
 
 	@Override
-	public void setSemiSpan(Amount<Length> s) {
+	public void setSpan(Amount<Length> s) {
 		_span = s;
 		calculateGeometry();
 	}

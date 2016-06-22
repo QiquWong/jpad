@@ -37,7 +37,7 @@ public class LineMeshYZ {
 		
 		// build the mesh
 		List<PVector> vPPoints0 = new ArrayList<PVector>(); 
-		vPPoints0 = _theFuselage.getUniqueValuesYZSideRCurve( _x );
+		vPPoints0 = _theFuselage.getFuselageCreator().getUniqueValuesYZSideRCurve( _x );
 
 //		System.out.println(vCurveAbscissa);
 //		System.out.println("points: "+vPPoints.size());

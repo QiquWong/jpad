@@ -447,7 +447,7 @@ public class FuselageCreator implements IFuselageCreator {
 					(double) fuselageCurvesSection.getSectionUpperRightPoints().get(i).y
 					);
 		}
-		// TO DO: CAREFUL WITH REPEATED POINTS
+		// TODO: CAREFUL WITH REPEATED POINTS
 		for (int i = 0; i <= fuselageCurvesSection.getSectionUpperLeftPoints().size() - 1; i++){
 			sectionUpperCurveY.add(
 					(double) fuselageCurvesSection.getSectionUpperLeftPoints().get(i).x
@@ -467,7 +467,7 @@ public class FuselageCreator implements IFuselageCreator {
 					(double) fuselageCurvesSection.getSectionLowerLeftPoints().get(i).y
 					);
 		}
-		// TO DO: CAREFUL WITH REPEATED POINTS
+		// TODO: CAREFUL WITH REPEATED POINTS
 		for (int i = 0; i <= fuselageCurvesSection.getSectionLowerRightPoints().size() - 1; i++){
 			sectionLowerCurveY.add(
 					(double) fuselageCurvesSection.getSectionLowerRightPoints().get(i).x

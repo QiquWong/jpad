@@ -96,7 +96,5 @@ public interface IAircraft {
 	
 	public List<Object> getComponentsList();
 	
-	public Double getSWetTotal();
-	public void setSWetTotal(Double sWet);
 	
 }

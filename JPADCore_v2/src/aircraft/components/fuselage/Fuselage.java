@@ -289,30 +289,6 @@ public class Fuselage implements IFuselage {
 	// Methods for evaluation of derived quantities (mass, cd...)
 	///////////////////////////////////////////////////////////////////
 
-	//  Return width at x-coordinate
-	public Double getWidthAtX(double x) {
-		return 2*getYOutlineXYSideRAtX(x);
-	}
-	
-	public Double getYOutlineXYSideRAtX(double x) {
-		// base vectors - side (right)
-		// unique values
-		double vxs[] = new double[this._fuselageCreator.getUniqueValuesXYSideRCurve().size()];
-		double vys[] = new double[this._fuselageCreator.getUniqueValuesXYSideRCurve().size()];
-		for (int i = 0; i < vxs.length; i++)
-		{
-			vxs[i] = this._fuselageCreator.getUniqueValuesXYSideRCurve().get(i).x;
-			vys[i] = this._fuselageCreator.getUniqueValuesXYSideRCurve().get(i).y;			
-		}
-		// Interpolation - side (right)
-		UnivariateInterpolator interpolatorSide = new LinearInterpolator(); // SplineInterpolator();
-		UnivariateFunction myInterpolationFunctionSide = 
-				interpolatorSide.interpolate(vxs, vys);
-
-		Double yFr = myInterpolationFunctionSide.value(x);
-		return yFr;
-	}
-	
 	public void calculateStructure(OperatingConditions conditions,
 			Aircraft configuration, 
 			ACPerformanceManager performances,

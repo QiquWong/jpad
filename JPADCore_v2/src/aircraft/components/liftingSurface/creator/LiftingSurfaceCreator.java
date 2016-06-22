@@ -699,12 +699,6 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 					}
 				}
 			}
-			// Update _panels' internal geometry variables
-			// wing.calculateGeometry(); // shouldn't care about discretization
-			// for now the user calculates the geometry from the outside of the class
-			// via the wing object:
-			//
-			//     theWing.calculateGeometry(30);
 
 			//---------------------------------------------------------------------------------
 			// SYMMETRIC FLAPS
@@ -1788,7 +1782,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		System.out.println("[LiftingSurfaceCreator] Lifting surface span ...");
 		Double bhalf = this.getPanels().stream()
 				.mapToDouble(p ->
-					p.getSemiSpan().to(SI.METRE).getEstimatedValue()
+					p.getSpan().to(SI.METRE).getEstimatedValue()
 						*Math.cos(p.getDihedral().to(SI.RADIAN).getEstimatedValue())
 				)
 				.sum();
@@ -1812,13 +1806,12 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		for(int i=1; i <= this._panels.size(); i++) {
 			_yBreakPoints.add(
 					_yBreakPoints.get(i-1).plus( // semiSpan * cos( dihedral )
-							_panels.get(i-1).getSemiSpan()
+							_panels.get(i-1).getSpan()
 								.times(Math.cos(_panels.get(i-1).getDihedral().to(SI.RADIAN).getEstimatedValue())
 										)
 								)
 					);
 		}
-		_yBreakPoints.add(this.semiSpan);
 
 		MyConfiguration.customizeAmountOutput();
 		System.out.println("y Break-Points ->\n" + _yBreakPoints);
@@ -1909,26 +1902,26 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 				y -> Tuple.of(
 					y.stream()
 						// Innermost panel: Y's include 0 and panel's tip breakpoint Y
-						.filter(y_ -> y_.isLessThan( _panels.get(0).getSemiSpan() ) || y_.equals( _panels.get(0).getSemiSpan()) )
+						.filter(y_ -> y_.isLessThan( _panels.get(0).getSpan() ) || y_.equals( _panels.get(0).getSpan()) )
 						.collect(Collectors.toList())
 					,
 					y.stream()
-						.filter(y_ -> y_.isLessThan( _panels.get(0).getSemiSpan() ) || y_.equals( _panels.get(0).getSemiSpan()) )
+						.filter(y_ -> y_.isLessThan( _panels.get(0).getSpan() ) || y_.equals( _panels.get(0).getSpan()) )
 						.map(Y__ -> Amount.valueOf(0.0, SI.METRE))
 						.collect(Collectors.toList()) // initialize Chords
 					,
 					y.stream()
-						.filter(y_ -> y_.isLessThan( _panels.get(0).getSemiSpan() ) || y_.equals( _panels.get(0).getSemiSpan()) )
+						.filter(y_ -> y_.isLessThan( _panels.get(0).getSpan() ) || y_.equals( _panels.get(0).getSpan()) )
 						.map(Y__ -> Amount.valueOf(0.0, SI.METRE))
 						.collect(Collectors.toList()) // initialize Xle
 					,
 					y.stream()
-						.filter(y_ -> y_.isLessThan( _panels.get(0).getSemiSpan() ) || y_.equals( _panels.get(0).getSemiSpan()) )
+						.filter(y_ -> y_.isLessThan( _panels.get(0).getSpan() ) || y_.equals( _panels.get(0).getSpan()) )
 						.map(Y__ -> Amount.valueOf(0.0, SI.METRE))
 						.collect(Collectors.toList()) // initialize Zle
 					,
 					y.stream()
-						.filter(y_ -> y_.isLessThan( _panels.get(0).getSemiSpan() ) || y_.equals( _panels.get(0).getSemiSpan()) )
+						.filter(y_ -> y_.isLessThan( _panels.get(0).getSpan() ) || y_.equals( _panels.get(0).getSpan()) )
 						.map(Y__ -> Amount.valueOf(0.0, SI.RADIAN))
 						.collect(Collectors.toList()) // initialize twists
 					)
@@ -1948,7 +1941,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 							.mapToDouble(a -> a.to(SI.METRE).getEstimatedValue())
 							.filter(y_ -> (
 									y_ > _yBreakPoints.get(i_).getEstimatedValue() )
-									&& ( y_ <= _yBreakPoints.get(i_+1).getEstimatedValue() )
+									&& ( y_ < _yBreakPoints.get(i_+1).getEstimatedValue() )
 								)
 							.mapToObj(y_ -> Amount.valueOf(y_, SI.METRE))
 							.collect(Collectors.toList())
@@ -2018,7 +2011,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 					Amount<Length> c = panel.getChordRoot().plus(
 						y.times(
 							panel.getChordTip().minus(panel.getChordRoot())
-						).divide(panel.getSemiSpan())
+						).divide(panel.getSpan())
 						);
 					// assign the chord
 					vC.set(i, c);
@@ -2070,7 +2063,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 					Amount<Angle> twist = twist0.plus(
 						y.times(
 							panel.getTwistGeometricAtTip().minus(twist0)
-						).divide(panel.getSemiSpan())
+						).divide(panel.getSpan())
 						);
 					// assign the chord
 					vTwistsLE.set(i, twist);
