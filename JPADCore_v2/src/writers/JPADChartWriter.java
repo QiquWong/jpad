@@ -11,7 +11,6 @@ import aircraft.calculators.ACPerformanceManager;
 import aircraft.components.Aircraft;
 import aircraft.components.CabinConfiguration;
 import aircraft.components.liftingSurface.LiftingSurface;
-import aircraft.components.liftingSurface.LiftingSurface2Panels;
 import calculators.performance.PerformanceCalcManager;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;

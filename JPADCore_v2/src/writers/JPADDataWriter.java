@@ -489,7 +489,6 @@ public class JPADDataWriter {
 		writeInputNode("Number_of_rows", configuration.getNumberOfRowsEconomyClass(), economy, true);
 		writeInputNode("Distance_from_wall", configuration.getDistanceFromWallEconomyClass(), economy, true);
 		writeInputNode("Number_of_breaks", configuration.getNumberOfBreaksEconomyClass(), economy, true);
-		writeInputNode("Length_of_each_break", configuration.getLengthOfEachBreakEconomyClass(), economy, true);
 
 		Element business = doc.createElement(WordUtils.capitalizeFully(ClassTypeEnum.BUSINESS.name()));
 		cabinLayout.appendChild(business);
@@ -500,7 +499,6 @@ public class JPADDataWriter {
 		writeInputNode("Number_of_rows", configuration.getNumberOfRowsBusinessClass(), business, true);
 		writeInputNode("Distance_from_wall", configuration.getDistanceFromWallBusinessClass(), business, true);
 		writeInputNode("Number_of_breaks", configuration.getNumberOfBreaksBusinessClass(), business, true);
-		writeInputNode("Length_of_each_break", configuration.getLengthOfEachBreakBusinessClass(), business, true);
 
 		Element first = doc.createElement(WordUtils.capitalizeFully(ClassTypeEnum.FIRST.name()));
 		cabinLayout.appendChild(first);
@@ -511,7 +509,6 @@ public class JPADDataWriter {
 		writeInputNode("Number_of_rows", configuration.getNumberOfRowsFirstClass(), first, true);
 		writeInputNode("Distance_from_wall", configuration.getDistanceFromWallFirstClass(), first, true);
 		writeInputNode("Number_of_breaks", configuration.getNumberOfBreaksFirstClass(), first, true);
-		writeInputNode("Length_of_each_break", configuration.getLengthOfEachBreakFirstClass(), first, true);
 	}
 
 	private void writeConfigurationOutput(CabinConfiguration configuration, Element analysisNode) {

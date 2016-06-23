@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import com.sun.corba.se.impl.oa.poa.AOMEntry;
+
 import aircraft.OperatingConditions;
 import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.calculators.ACAerodynamicsManager;
@@ -17,11 +19,7 @@ import aircraft.components.FuelTank;
 import aircraft.components.LandingGears;
 import aircraft.components.Systems;
 import aircraft.components.fuselage.Fuselage;
-import aircraft.components.liftingSurface.Canard;
-import aircraft.components.liftingSurface.HTail;
 import aircraft.components.liftingSurface.LiftingSurface;
-import aircraft.components.liftingSurface.VTail;
-import aircraft.components.liftingSurface.Wing;
 import aircraft.components.nacelles.Nacelle;
 import aircraft.components.nacelles.NacellesManager;
 import aircraft.components.powerPlant.Engine;
@@ -70,36 +68,36 @@ public class JPADWriteUtils {
 
 			JPADGlobalData.setTheXmlTree(new MyXmlTree());
 			JPADGlobalData.getTheXmlTree().add(conditions, 1, "Operating_Conditions", OperatingConditions.getId());
-			JPADGlobalData.getTheXmlTree().add(aircraft.getCabinConfiguration(), 2, "Configuration", CabinConfiguration.getId());
+			JPADGlobalData.getTheXmlTree().add(aircraft.getCabinConfiguration(), 2, "Configuration", aircraft.getCabinConfiguration().getId());
 			JPADGlobalData.getTheXmlTree().add(aircraft.getTheWeights(), 2, "Weights", ACWeightsManager.getId());
 			JPADGlobalData.getTheXmlTree().add(aircraft.getTheBalance(), 2, "Balance", ACBalanceManager.getId());
 			JPADGlobalData.getTheXmlTree().add(aircraft.getThePerformance(), 2, "Performances", ACPerformanceManager.getId());
 			JPADGlobalData.getTheXmlTree().add(aircraft.getTheCosts(), 2, "Costs", Costs.getId());
 			
-			JPADGlobalData.getTheXmlTree().add(aircraft.getFuselage(), 2, "Fuselage", Fuselage.getId());
+			JPADGlobalData.getTheXmlTree().add(aircraft.getFuselage(), 2, "Fuselage", aircraft.getFuselage().getId());
 
-			JPADGlobalData.getTheXmlTree().add(aircraft.getWing(), 2, "Wing", Wing.getId());
-			addAirfoilsToXML(aircraft.getWing(), Wing.getId());
+			JPADGlobalData.getTheXmlTree().add(aircraft.getWing(), 2, "Wing", aircraft.getWing().getId());
+			addAirfoilsToXML(aircraft.getWing(), aircraft.getWing().getId());
 
-			JPADGlobalData.getTheXmlTree().add(aircraft.getHTail(), 2, "HTail", HTail.getId());
-			addAirfoilsToXML(aircraft.getHTail(), HTail.getId());
+			JPADGlobalData.getTheXmlTree().add(aircraft.getHTail(), 2, "HTail", aircraft.getHTail().getId());
+			addAirfoilsToXML(aircraft.getHTail(), aircraft.getHTail().getId());
 
-			JPADGlobalData.getTheXmlTree().add(aircraft.getVTail(), 2, "VTail", VTail.getId());
-			addAirfoilsToXML(aircraft.getVTail(), VTail.getId());
+			JPADGlobalData.getTheXmlTree().add(aircraft.getVTail(), 2, "VTail", aircraft.getVTail().getId());
+			addAirfoilsToXML(aircraft.getVTail(), aircraft.getVTail().getId());
 
-			JPADGlobalData.getTheXmlTree().add(aircraft.getCanard(), 2, "Canard", Canard.getId());
-			addAirfoilsToXML(aircraft.getCanard(), Canard.getId());
+			JPADGlobalData.getTheXmlTree().add(aircraft.getCanard(), 2, "Canard", aircraft.getCanard().getId());
+			addAirfoilsToXML(aircraft.getCanard(), aircraft.getCanard().getId());
 
 			JPADGlobalData.getTheXmlTree().add(aircraft.getNacelles(), 2, "Nacelles", NacellesManager.getId());
 			addNacellesToXML(aircraft.getNacelles(), NacellesManager.getId());
 
-			JPADGlobalData.getTheXmlTree().add(aircraft.getFuelTank(), 2, "Fuel_tank", FuelTank.getId());
+			JPADGlobalData.getTheXmlTree().add(aircraft.getFuelTank(), 2, "Fuel_tank", aircraft.getFuelTank().getId());
 
 			JPADGlobalData.getTheXmlTree().add(aircraft.getPowerPlant(), 2, "PowerPlant", PowerPlant.getId());
 			addEnginesToXML(aircraft.getPowerPlant(), PowerPlant.getId());
 
-			JPADGlobalData.getTheXmlTree().add(aircraft.getSystems(), 2, "Systems", Systems.getId());
-			JPADGlobalData.getTheXmlTree().add(aircraft.getLandingGears(), 2, "LandingGear", LandingGears.getId());
+			JPADGlobalData.getTheXmlTree().add(aircraft.getSystems(), 2, "Systems", aircraft.getSystems().getId());
+			JPADGlobalData.getTheXmlTree().add(aircraft.getLandingGears(), 2, "LandingGear", aircraft.getLandingGears().getId());
 			JPADGlobalData.getTheXmlTree().add(aircraft.getTheAerodynamics(), 2, "Aircraft_Aerodynamics", "24");
 
 			//			try {
@@ -142,16 +140,16 @@ public class JPADWriteUtils {
 			JPADGlobalData.getTheXmlTree().add(ACPerformanceManager.class, 2, "Performances", ACPerformanceManager.getId());
 			JPADGlobalData.getTheXmlTree().add(Fuselage.class, 2, "Fuselage", Fuselage.getId());
 
-			JPADGlobalData.getTheXmlTree().add(Wing.class, 2, "Wing", Wing.getId());
+			JPADGlobalData.getTheXmlTree().add(LiftingSurface.class, 2, "Wing", Wing.getId());
 			addAirfoilsToXML(JPADGlobalData.getTheCurrentAircraft().getWing(), Wing.getId());
 
-			JPADGlobalData.getTheXmlTree().add(HTail.class, 2, "HTail", HTail.getId());
+			JPADGlobalData.getTheXmlTree().add(LiftingSurface.class, 2, "HTail", HTail.getId());
 			addAirfoilsToXML(JPADGlobalData.getTheCurrentAircraft().getHTail(), HTail.getId());
 
-			JPADGlobalData.getTheXmlTree().add(VTail.class, 2, "VTail", VTail.getId());
+			JPADGlobalData.getTheXmlTree().add(LiftingSurface.class, 2, "VTail", VTail.getId());
 			addAirfoilsToXML(JPADGlobalData.getTheCurrentAircraft().getVTail(), VTail.getId());
 
-			JPADGlobalData.getTheXmlTree().add(Canard.class, 2, "Canard", Canard.getId());
+			JPADGlobalData.getTheXmlTree().add(LiftingSurface.class, 2, "Canard", Canard.getId());
 			addAirfoilsToXML(JPADGlobalData.getTheCurrentAircraft().getCanard(), Canard.getId());	
 
 			JPADGlobalData.getTheXmlTree().add(Nacelle.class, 2, "Nacelle", Nacelle.getId());
@@ -189,8 +187,8 @@ public class JPADWriteUtils {
 
 	private static void addAirfoilsToXMLNew(LiftingSurface liftingSurface, String fatherId) {
 		if (liftingSurface != null) {
-			for (int k=0; k < liftingSurface.get_numberOfAirfoils(); k++) {
-				Airfoil tempAirfoil = liftingSurface.get_theAirfoilsList().get(k);
+			for (int k=0; k < liftingSurface.getAirfoilList().size(); k++) {
+				Airfoil tempAirfoil = liftingSurface.getAirfoilList().get(k);
 				JPADGlobalData.getTheXmlTree().add(tempAirfoil, 3, "Airfoil_" + (k+1), fatherId + "af" + k); //"1" + k + "99");
 				JPADGlobalData.getTheXmlTree().add(tempAirfoil.getGeometry(), 4, "Airfoil_Geometry", fatherId + "af" + k + "geo" + k);
 				JPADGlobalData.getTheXmlTree().add(tempAirfoil.getAerodynamics(), 4, "Airfoil_Aerodynamics", fatherId + "af" + k + "aero" + k);
@@ -201,8 +199,8 @@ public class JPADWriteUtils {
 	private static void addAirfoilsToXML(LiftingSurface liftingSurface, String fatherId) {
 
 		if (liftingSurface != null) {
-			for (int k=0; k < liftingSurface.get_numberOfAirfoils(); k++) {
-				Airfoil tempAirfoil = liftingSurface.get_theAirfoilsList().get(k);
+			for (int k=0; k < liftingSurface.getAirfoilList().size(); k++) {
+				Airfoil tempAirfoil = liftingSurface.getAirfoilList().get(k);
 				JPADGlobalData.getTheXmlTree().add(tempAirfoil, 3, "Airfoil_" + (k+1), tempAirfoil.getId()); //"1" + k + "99");
 				JPADGlobalData.getTheXmlTree().add(tempAirfoil.getGeometry(), 4, "Airfoil_Geometry", tempAirfoil.getGeometry().getId());
 				JPADGlobalData.getTheXmlTree().add(tempAirfoil.getAerodynamics(), 4, "Airfoil_Aerodynamics", tempAirfoil.getAerodynamics().getId());

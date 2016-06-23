@@ -128,17 +128,15 @@ public class PayloadRangeCalc{
 		operatingEmptyMass = theAircraft.getTheWeights().get_OEM();
 		maxFuelMass = theAircraft.getFuelTank().getFuelMass();
 		nPassMax = theAircraft.getCabinConfiguration().getMaxPax();
-		airfoilType = theAircraft.getWing().get_theAirfoilsList().get(0).getType();
+		airfoilType = theAircraft.getWing().getAirfoilList().get(0).getType();
 		engineType = theAircraft.getPowerPlant().get_engineType();
 
-		surface = theAircraft.getWing().get_surface();
-		ar = theAircraft.getWing().get_aspectRatio();
+		surface = theAircraft.getWing().getSurface();
+		ar = theAircraft.getWing().getAspectRatio();
 		currentMach = theConditions.get_machCurrent();
 		altitude = theConditions.get_altitude().getEstimatedValue();
-		sweepLEEquivalent = theAircraft.getWing().get_sweepLEEquivalent();
-		sweepHalfChordEquivalent = theAircraft.getWing().calculateSweep(
-				sweepLEEquivalent.getEstimatedValue(), 0.5, 0.0
-				);
+		sweepLEEquivalent = theAircraft.getWing().getSweepLEEquivalent(false);
+		sweepHalfChordEquivalent = theAircraft.getWing().getSweepHalfChordEquivalent(false);
 		
 		/* TODO: WHEN OTHER ENGINE DATA WILL BE AVAIABLE FIX THIS
 		 * this works for turbofan and turboprop engine only (which are what we're analyzing). 
@@ -153,7 +151,7 @@ public class PayloadRangeCalc{
 		oswald = theAircraft.getTheAerodynamics().calculateOswald(currentMach, MethodEnum.HOWE);
 		cl = LiftCalc.calcCLatAlphaLinearDLR(
 				theConditions.get_alphaCurrent().getEstimatedValue(),
-				theAircraft.getWing().get_aspectRatio()
+				theAircraft.getWing().getAspectRatio()
 				);
 	
 		
