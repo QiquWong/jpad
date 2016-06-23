@@ -13,7 +13,7 @@ import aircraft.calculators.ACWeightsManager;
 import aircraft.calculators.costs.Costs;
 import aircraft.components.Aircraft;
 import aircraft.components.CabinConfiguration;
-import aircraft.components.FuelTanks;
+import aircraft.components.FuelTank;
 import aircraft.components.LandingGears;
 import aircraft.components.Systems;
 import aircraft.components.fuselage.Fuselage;
@@ -93,7 +93,7 @@ public class JPADWriteUtils {
 			JPADGlobalData.getTheXmlTree().add(aircraft.getNacelles(), 2, "Nacelles", NacellesManager.getId());
 			addNacellesToXML(aircraft.getNacelles(), NacellesManager.getId());
 
-			JPADGlobalData.getTheXmlTree().add(aircraft.getFuelTank(), 2, "Fuel_tank", FuelTanks.getId());
+			JPADGlobalData.getTheXmlTree().add(aircraft.getFuelTank(), 2, "Fuel_tank", FuelTank.getId());
 
 			JPADGlobalData.getTheXmlTree().add(aircraft.getPowerPlant(), 2, "PowerPlant", PowerPlant.getId());
 			addEnginesToXML(aircraft.getPowerPlant(), PowerPlant.getId());
@@ -155,7 +155,7 @@ public class JPADWriteUtils {
 			addAirfoilsToXML(JPADGlobalData.getTheCurrentAircraft().getCanard(), Canard.getId());	
 
 			JPADGlobalData.getTheXmlTree().add(Nacelle.class, 2, "Nacelle", Nacelle.getId());
-			JPADGlobalData.getTheXmlTree().add(FuelTanks.class, 2, "Fuel_tank", FuelTanks.getId());
+			JPADGlobalData.getTheXmlTree().add(FuelTank.class, 2, "Fuel_tank", FuelTank.getId());
 			JPADGlobalData.getTheXmlTree().add(PowerPlant.class, 2, "PowerPlant", PowerPlant.getId());
 			JPADGlobalData.getTheXmlTree().add(Systems.class, 2, "Systems", Systems.getId());
 			JPADGlobalData.getTheXmlTree().add(LandingGears.class, 2, "LandingGear", LandingGears.getId());

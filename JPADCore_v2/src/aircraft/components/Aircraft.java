@@ -34,6 +34,7 @@ import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AircraftTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
+import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;
 
@@ -68,7 +69,7 @@ public class Aircraft implements IAircraft {
 	private LiftingSurface _theCanard;
 	private PowerPlant _thePowerPlant;
 	private NacellesManager _theNacelles;
-	private FuelTanks _theFuelTank;
+	private FuelTank _theFuelTank;
 	private LandingGears _theLandingGears;
 	private Systems _theSystems;
 	private CabinConfiguration _theCabinConfiguration;
@@ -101,7 +102,7 @@ public class Aircraft implements IAircraft {
 		private LiftingSurface __theCanard;
 		private PowerPlant __thePowerPlant;
 		private NacellesManager __theNacelles;
-		private FuelTanks __theFuelTank;
+		private FuelTank __theFuelTank;
 		private LandingGears __theLandingGears;
 		private Systems __theSystems;
 				
@@ -113,17 +114,17 @@ public class Aircraft implements IAircraft {
 		private Costs __theCosts;
 		private CabinConfiguration __theCabinConfiguration;
 		
-		public AircraftBuilder (String id, AerodynamicDatabaseReader aeroDatabaseReader) {
+		public AircraftBuilder (String id, AerodynamicDatabaseReader aeroDatabaseReader, HighLiftDatabaseReader highLiftDatabaseReader) {
 			this.__id = id;
-			initialize(AircraftEnum.ATR72, aeroDatabaseReader);
+			initialize(AircraftEnum.ATR72, aeroDatabaseReader, highLiftDatabaseReader);
 		}
 		
-		public AircraftBuilder (String id, AircraftEnum aircraftName, AerodynamicDatabaseReader aeroDatabaseReader) {
+		public AircraftBuilder (String id, AircraftEnum aircraftName, AerodynamicDatabaseReader aeroDatabaseReader, HighLiftDatabaseReader highLiftDatabaseReader) {
 			this.__id = id;
-			initialize(aircraftName, aeroDatabaseReader);
+			initialize(aircraftName, aeroDatabaseReader, highLiftDatabaseReader);
 		}
 		
-		private void initialize(AircraftEnum aircraftName, AerodynamicDatabaseReader aeroDatabaseReader) {
+		private void initialize(AircraftEnum aircraftName, AerodynamicDatabaseReader aeroDatabaseReader, HighLiftDatabaseReader highLiftDatabaseReader) {
 
 			/////////////////////////////////////////////////////////////////////////////////////////
 			//																					   //
@@ -151,19 +152,19 @@ public class Aircraft implements IAircraft {
 				__theFuselage.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theFuselage.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				
-				createWing(aircraftName, aeroDatabaseReader);
+				createWing(aircraftName, aeroDatabaseReader, highLiftDatabaseReader);
 				__theWing.setXApexConstructionAxes(Amount.valueOf(11.0, SI.METER));
 				__theWing.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theWing.setZApexConstructionAxes(Amount.valueOf(1.6, SI.METER));
 				__theWing.setRiggingAngle(Amount.valueOf(2.0, NonSI.DEGREE_ANGLE));
 				
-				createHTail(aircraftName, aeroDatabaseReader);
+				createHTail(aircraftName, aeroDatabaseReader, highLiftDatabaseReader);
 				__theHTail.setXApexConstructionAxes(Amount.valueOf(25.3, SI.METER));
 				__theHTail.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theHTail.setZApexConstructionAxes(Amount.valueOf(5.7374, SI.METER));
 				__theHTail.setRiggingAngle(Amount.valueOf(1.0, NonSI.DEGREE_ANGLE));
 				
-				createVTail(aircraftName, aeroDatabaseReader);
+				createVTail(aircraftName, aeroDatabaseReader, highLiftDatabaseReader);
 				__theVTail.setXApexConstructionAxes(Amount.valueOf(21.6, SI.METER));
 				__theVTail.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theVTail.setZApexConstructionAxes(Amount.valueOf(1.3, SI.METER));
@@ -219,19 +220,19 @@ public class Aircraft implements IAircraft {
 				__theFuselage.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theFuselage.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				
-				createWing(aircraftName, aeroDatabaseReader);
+				createWing(aircraftName, aeroDatabaseReader, highLiftDatabaseReader);
 				__theWing.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theWing.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theWing.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theWing.setRiggingAngle(Amount.valueOf(2.0, NonSI.DEGREE_ANGLE));
 				
-				createHTail(aircraftName, aeroDatabaseReader);
+				createHTail(aircraftName, aeroDatabaseReader, highLiftDatabaseReader);
 				__theHTail.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theHTail.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theHTail.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theHTail.setRiggingAngle(Amount.valueOf(1.0, NonSI.DEGREE_ANGLE));
 				
-				createVTail(aircraftName, aeroDatabaseReader);
+				createVTail(aircraftName, aeroDatabaseReader, highLiftDatabaseReader);
 				__theVTail.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theVTail.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theVTail.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
@@ -287,19 +288,19 @@ public class Aircraft implements IAircraft {
 				__theFuselage.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theFuselage.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				
-				createWing(aircraftName, aeroDatabaseReader);
+				createWing(aircraftName, aeroDatabaseReader, highLiftDatabaseReader);
 				__theWing.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theWing.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theWing.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theWing.setRiggingAngle(Amount.valueOf(2.0, NonSI.DEGREE_ANGLE));
 				
-				createHTail(aircraftName, aeroDatabaseReader);
+				createHTail(aircraftName, aeroDatabaseReader, highLiftDatabaseReader);
 				__theHTail.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theHTail.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theHTail.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theHTail.setRiggingAngle(Amount.valueOf(1.0, NonSI.DEGREE_ANGLE));
 				
-				createVTail(aircraftName, aeroDatabaseReader);
+				createVTail(aircraftName, aeroDatabaseReader, highLiftDatabaseReader);
 				__theVTail.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theVTail.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theVTail.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
@@ -354,9 +355,12 @@ public class Aircraft implements IAircraft {
 			__componentsList.add(__theFuselage);
 		}
 		
-		private void createWing(AircraftEnum aircraftName, AerodynamicDatabaseReader aeroDatabaseReader) {
+		private void createWing(
+				AircraftEnum aircraftName,
+				AerodynamicDatabaseReader aeroDatabaseReader,
+				HighLiftDatabaseReader highLiftDatabaseReader) {
 
-			__theWing = new LiftingSurfaceBuilder("Wing", ComponentEnum.WING, aeroDatabaseReader)
+			__theWing = new LiftingSurfaceBuilder("Wing", ComponentEnum.WING, aeroDatabaseReader, highLiftDatabaseReader)
 					.liftingSurfaceCreator(
 							new LiftingSurfaceCreator
 								.LiftingSurfaceCreatorBuilder("Wing", Boolean.TRUE, aircraftName, ComponentEnum.WING)
@@ -370,9 +374,12 @@ public class Aircraft implements IAircraft {
 			__componentsList.add(__theWing);
 		}
 		
-		private void createHTail(AircraftEnum aircraftName, AerodynamicDatabaseReader aeroDatabaseReader) {
+		private void createHTail(
+				AircraftEnum aircraftName,
+				AerodynamicDatabaseReader aeroDatabaseReader,
+				HighLiftDatabaseReader highLiftDatabaseReader) {
 
-			__theHTail = new LiftingSurfaceBuilder("Horizontal tail", ComponentEnum.HORIZONTAL_TAIL, aeroDatabaseReader)
+			__theHTail = new LiftingSurfaceBuilder("Horizontal tail", ComponentEnum.HORIZONTAL_TAIL, aeroDatabaseReader, highLiftDatabaseReader)
 					.liftingSurfaceCreator(
 							new LiftingSurfaceCreator
 								.LiftingSurfaceCreatorBuilder("Horizontal tail", Boolean.TRUE, aircraftName, ComponentEnum.HORIZONTAL_TAIL)
@@ -386,9 +393,12 @@ public class Aircraft implements IAircraft {
 			__componentsList.add(__theHTail);
 		}
 		
-		private void createVTail(AircraftEnum aircraftName, AerodynamicDatabaseReader aeroDatabaseReader) {
+		private void createVTail(
+				AircraftEnum aircraftName,
+				AerodynamicDatabaseReader aeroDatabaseReader,
+				HighLiftDatabaseReader highLiftDatabaseReader) {
 
-			__theVTail = new LiftingSurfaceBuilder("Vertical tail", ComponentEnum.VERTICAL_TAIL, aeroDatabaseReader)
+			__theVTail = new LiftingSurfaceBuilder("Vertical tail", ComponentEnum.VERTICAL_TAIL, aeroDatabaseReader, highLiftDatabaseReader)
 					.liftingSurfaceCreator(
 							new LiftingSurfaceCreator
 								.LiftingSurfaceCreatorBuilder("Vertical tail", Boolean.FALSE, aircraftName, ComponentEnum.VERTICAL_TAIL)
@@ -403,9 +413,12 @@ public class Aircraft implements IAircraft {
 		}
 		
 		@SuppressWarnings("unused")
-		private void createCanard(AircraftEnum aircraftName, AerodynamicDatabaseReader aeroDatabaseReader) {
+		private void createCanard(
+				AircraftEnum aircraftName,
+				AerodynamicDatabaseReader aeroDatabaseReader,
+				HighLiftDatabaseReader highLiftDatabaseReader) {
 
-			__theCanard = new LiftingSurfaceBuilder("Canard", ComponentEnum.WING, aeroDatabaseReader)
+			__theCanard = new LiftingSurfaceBuilder("Canard", ComponentEnum.WING, aeroDatabaseReader, highLiftDatabaseReader)
 					.liftingSurfaceCreator(
 							new LiftingSurfaceCreator
 								.LiftingSurfaceCreatorBuilder("Canard", Boolean.TRUE, aircraftName, ComponentEnum.CANARD)
@@ -604,7 +617,7 @@ public class Aircraft implements IAircraft {
 //			return this;
 //		}
 		
-		public AircraftBuilder fuelTank (FuelTanks fuelTanks) {
+		public AircraftBuilder fuelTank (FuelTank fuelTanks) {
 			this.__theFuelTank = fuelTanks;
 			return this;
 		}
@@ -718,7 +731,7 @@ public class Aircraft implements IAircraft {
 		
 		updateType();
 		if((this._theFuselage != null) && (this._theWing != null)) 
-			calculateExposedWing(_theWing, _theFuselage, _theWing.getAerodynamicDatabaseReader());
+			calculateExposedWing(_theWing, _theFuselage);
 	}
 	
 	private void updateType() {
@@ -771,9 +784,7 @@ public class Aircraft implements IAircraft {
 		
 	} // end of updateType
 
-	private void calculateExposedWing(LiftingSurface theWing,
-									  Fuselage theFuselage,
-									  AerodynamicDatabaseReader aeroDatabaseReader) {
+	private void calculateExposedWing(LiftingSurface theWing, Fuselage theFuselage) {
 		
 		Amount<Length> sectionWidthAtZ = Amount.valueOf(
 				0.5 * theFuselage.getFuselageCreator()
@@ -818,7 +829,7 @@ public class Aircraft implements IAircraft {
 		for(int i=1; i<theWing.getLiftingSurfaceCreator().getPanels().size(); i++)
 			exposedWingPanels.add(theWing.getLiftingSurfaceCreator().getPanels().get(i));
 
-		this._theExposedWing = new LiftingSurfaceBuilder("Exposed wing", ComponentEnum.WING, aeroDatabaseReader)
+		this._theExposedWing = new LiftingSurfaceBuilder("Exposed wing", ComponentEnum.WING, theWing.getAerodynamicDatabaseReader(), theWing.getHighLiftDatabaseReader())
 				.liftingSurfaceCreator(
 						new LiftingSurfaceCreator
 							.LiftingSurfaceCreatorBuilder("Exposed wing", Boolean.TRUE, ComponentEnum.WING)
@@ -828,7 +839,9 @@ public class Aircraft implements IAircraft {
 		this._theExposedWing.getLiftingSurfaceCreator().getPanels().clear();
 		this._theExposedWing.getLiftingSurfaceCreator().setPanels(exposedWingPanels);
 		this._theExposedWing.getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.WING, Boolean.TRUE);
-		this._theExposedWing.populateAirfoilList(aeroDatabaseReader, Boolean.FALSE);
+		this._theExposedWing.populateAirfoilList(
+				theWing.getAerodynamicDatabaseReader(),
+				Boolean.FALSE);
 		
 		this._theExposedWing.setXApexConstructionAxes(theWing.getXApexConstructionAxes());
 		this._theExposedWing.setYApexConstructionAxes(Amount.valueOf(
@@ -996,7 +1009,8 @@ public class Aircraft implements IAircraft {
 									      String systemsDir,
 									      String cabinConfigurationDir,
 									      String airfoilsDir,
-									      AerodynamicDatabaseReader aeroDatabaseReader) {
+									      AerodynamicDatabaseReader aeroDatabaseReader,
+									      HighLiftDatabaseReader highLiftDatabaseReader) {
 
 		/////////////////////////////////////////////////////////////
 		//														   //
@@ -1094,7 +1108,7 @@ public class Aircraft implements IAircraft {
 		if(wingFileName != null) {
 			String wingPath = liftingSurfacesDir + File.separator + wingFileName;
 			LiftingSurfaceCreator wingCreator = LiftingSurfaceCreator.importFromXML(ComponentEnum.WING, wingPath, airfoilsDir);
-			theWing = new LiftingSurfaceBuilder("MyWing", ComponentEnum.WING, aeroDatabaseReader)
+			theWing = new LiftingSurfaceBuilder("MyWing", ComponentEnum.WING, aeroDatabaseReader, highLiftDatabaseReader)
 					.liftingSurfaceCreator(wingCreator)
 						.build();
 
@@ -1122,7 +1136,7 @@ public class Aircraft implements IAircraft {
 		if(hTailFileName != null) {
 			String hTailPath = liftingSurfacesDir + File.separator + hTailFileName;
 			LiftingSurfaceCreator hTailCreator = LiftingSurfaceCreator.importFromXML(ComponentEnum.HORIZONTAL_TAIL, hTailPath, airfoilsDir);
-			theHorizontalTail = new LiftingSurfaceBuilder("MyHorizontalTail", ComponentEnum.WING, aeroDatabaseReader)
+			theHorizontalTail = new LiftingSurfaceBuilder("MyHorizontalTail", ComponentEnum.WING, aeroDatabaseReader, highLiftDatabaseReader)
 					.liftingSurfaceCreator(hTailCreator)
 						.build();
 		
@@ -1150,7 +1164,7 @@ public class Aircraft implements IAircraft {
 		if(vTailFileName != null) {
 			String vTailPath = liftingSurfacesDir + File.separator + vTailFileName;
 			LiftingSurfaceCreator vTailCreator = LiftingSurfaceCreator.importFromXML(ComponentEnum.VERTICAL_TAIL, vTailPath, airfoilsDir);
-			theVerticalTail = new LiftingSurfaceBuilder("MyVerticalTail", ComponentEnum.VERTICAL_TAIL, aeroDatabaseReader)
+			theVerticalTail = new LiftingSurfaceBuilder("MyVerticalTail", ComponentEnum.VERTICAL_TAIL, aeroDatabaseReader, highLiftDatabaseReader)
 					.liftingSurfaceCreator(vTailCreator)
 						.build();
 
@@ -1178,7 +1192,7 @@ public class Aircraft implements IAircraft {
 		if(canardFileName != null) {
 			String canardPath = liftingSurfacesDir + File.separator + canardFileName;
 			LiftingSurfaceCreator canardCreator = LiftingSurfaceCreator.importFromXML(ComponentEnum.CANARD, canardPath, airfoilsDir);
-			theCanard = new LiftingSurfaceBuilder("MyCanard", ComponentEnum.CANARD, aeroDatabaseReader)
+			theCanard = new LiftingSurfaceBuilder("MyCanard", ComponentEnum.CANARD, aeroDatabaseReader, highLiftDatabaseReader)
 					.liftingSurfaceCreator(canardCreator)
 						.build();
 			
@@ -1257,7 +1271,7 @@ public class Aircraft implements IAircraft {
 		}
 		
 		//---------------------------------------------------------------------------------
-		Aircraft theAircraft = new AircraftBuilder(id, aeroDatabaseReader)
+		Aircraft theAircraft = new AircraftBuilder(id, aeroDatabaseReader, highLiftDatabaseReader)
 				// TODO: ADD ALL THE COMPONENTS AND THEIR POSITIONS ...
 				.name(id)
 				.aircraftType(type)
@@ -1542,12 +1556,12 @@ public class Aircraft implements IAircraft {
 	}
 	
 	@Override
-	public FuelTanks getFuelTank() {
+	public FuelTank getFuelTank() {
 		return _theFuelTank;
 	}
 	
 	@Override
-	public void setFuelTank(FuelTanks fuelTank) {
+	public void setFuelTank(FuelTank fuelTank) {
 		this._theFuelTank = fuelTank;
 	}
 	

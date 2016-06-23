@@ -46,7 +46,7 @@ import aircraft.calculators.ACWeightsManager;
 import aircraft.calculators.costs.Costs;
 import aircraft.components.Aircraft;
 import aircraft.components.CabinConfiguration;
-import aircraft.components.FuelTanks;
+import aircraft.components.FuelTank;
 import aircraft.components.LandingGears;
 import aircraft.components.Systems;
 import aircraft.components.fuselage.Fuselage;
@@ -1152,7 +1152,7 @@ public class JPADDataWriter {
 
 	}
 
-	private void writeFuelTank(FuelTanks fuelTank) {
+	private void writeFuelTank(FuelTank fuelTank) {
 
 		_sheet = commonOperations(fuelTank, _fuelTankInitiator, true);
 
@@ -1163,7 +1163,7 @@ public class JPADDataWriter {
 		writeFuelTankOutput(fuelTank, fuelTankParam, _analysisInitiator);
 	}
 
-	private void writeFuelTankInput(FuelTanks fuelTank, Element fuelTankParam) {
+	private void writeFuelTankInput(FuelTank fuelTank, Element fuelTankParam) {
 		writeInputNode("Xcoordinate", fuelTank.getX0(), fuelTankParam, true);
 		writeInputNode("Ycoordinate", fuelTank.getY0(), fuelTankParam, true);
 		writeInputNode("Zcoordinate", fuelTank.getZ0(), fuelTankParam, true);
@@ -1172,7 +1172,7 @@ public class JPADDataWriter {
 		writeInputNode("Fuel_mass", fuelTank.getFuelMass(), fuelTankParam, true);
 	}
 
-	private void writeFuelTankOutput(FuelTanks fuelTank, Element fuelTankParam, Element analysisNode) {
+	private void writeFuelTankOutput(FuelTank fuelTank, Element fuelTankParam, Element analysisNode) {
 
 		writeOutputNode("LE_spanwise_extension", fuelTank.getA1(), fuelTankParam);
 		writeOutputNode("TE_spanwise_extension", fuelTank.getA2(), fuelTankParam);
@@ -1387,12 +1387,12 @@ public class JPADDataWriter {
 		// --- Balance -------------------------
 		Element balance = addElementToSubElement("Balance", analysis);
 
-		writeOutputNode("Xcg_LRF", nacelle.get_cg().get_xLRF(), balance);
-		writeOutputNode("Ycg_LRF", nacelle.get_cg().get_yLRF(), balance);
-		writeOutputNode("Zcg_LRF", nacelle.get_cg().get_zLRF(), balance);
-		writeOutputNode("Xcg_BRF", nacelle.get_cg().get_xBRF(), balance);
-		writeOutputNode("Ycg_BRF", nacelle.get_cg().get_yBRF(), balance);
-		writeOutputNode("Zcg_BRF", nacelle.get_cg().get_zBRF(), balance);
+		writeOutputNode("Xcg_LRF", nacelle.getCG().get_xLRF(), balance);
+		writeOutputNode("Ycg_LRF", nacelle.getCG().get_yLRF(), balance);
+		writeOutputNode("Zcg_LRF", nacelle.getCG().get_zLRF(), balance);
+		writeOutputNode("Xcg_BRF", nacelle.getCG().get_xBRF(), balance);
+		writeOutputNode("Ycg_BRF", nacelle.getCG().get_yBRF(), balance);
+		writeOutputNode("Zcg_BRF", nacelle.getCG().get_zBRF(), balance);
 
 		// --- Aerodynamics --------------------
 		Element aerodynamics = addElementToSubElement("Aerodynamics", analysis);

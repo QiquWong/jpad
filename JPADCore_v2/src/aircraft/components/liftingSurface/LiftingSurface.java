@@ -24,6 +24,7 @@ import aircraft.OperatingConditions;
 import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import aircraft.components.Aircraft;
+import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcHighLiftDevices;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import calculators.geometry.LSGeometryCalc;
 import configuration.enumerations.AirfoilTypeEnum;
@@ -33,6 +34,7 @@ import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
 import configuration.enumerations.PositionRelativeToAttachmentEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
+import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import standaloneutils.GeometryCalc;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
@@ -47,6 +49,7 @@ public class LiftingSurface implements ILiftingSurface{
 	private ComponentEnum _type;
 
 	LSAerodynamicsManager theAerodynamics;
+	CalcHighLiftDevices _highLiftCalculator;
 	
 	private PositionRelativeToAttachmentEnum _positionRelativeToAttachment;
 	private Amount<Length> _xApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
@@ -57,6 +60,7 @@ public class LiftingSurface implements ILiftingSurface{
 	private LiftingSurfaceCreator _liftingSurfaceCreator;
 
 	private AerodynamicDatabaseReader _aeroDatabaseReader;
+	private HighLiftDatabaseReader _highLiftDatabaseReader;
 	
 	private Amount<Mass> _mass, _massReference, _massEstimated;
 	private CenterOfGravity _cg;
@@ -83,16 +87,23 @@ public class LiftingSurface implements ILiftingSurface{
 		private LiftingSurfaceCreator __liftingSurfaceCreator;
 		private List<Airfoil> __airfoilList;
 		private AerodynamicDatabaseReader __aeroDatabaseReader;
+		private HighLiftDatabaseReader __highLiftDatabaseReader;
 		Map <MethodEnum, Amount<Length>> __xCGMap;
 		Map <MethodEnum, Amount<Length>> __yCGMap;
 		Map <AnalysisTypeEnum, List<MethodEnum>> __methodsMap;
 		Map <MethodEnum, Amount<Mass>> __massMap;
 		
-		public LiftingSurfaceBuilder(String id, ComponentEnum type, AerodynamicDatabaseReader aeroDatabaseReader) {
+		public LiftingSurfaceBuilder(
+				String id,
+				ComponentEnum type,
+				AerodynamicDatabaseReader aeroDatabaseReader,
+				HighLiftDatabaseReader highLiftDatabaseReader
+				) {
 			// required parameter
 			this.__id = id;
 			this.__type = type;
 			this.__aeroDatabaseReader = aeroDatabaseReader;
+			this.__highLiftDatabaseReader = highLiftDatabaseReader;
 			
 			// optional parameters ...
 			this.__airfoilList = new ArrayList<Airfoil>(); 
@@ -121,6 +132,7 @@ public class LiftingSurface implements ILiftingSurface{
 		this._zApexConstructionAxes = builder.__zApexConstructionAxes;
 		this._liftingSurfaceCreator = builder.__liftingSurfaceCreator;
 		this._aeroDatabaseReader = builder.__aeroDatabaseReader;
+		this._highLiftDatabaseReader = builder.__highLiftDatabaseReader;
 		this._airfoilList = builder.__airfoilList;
 		this._xCGMap = builder.__xCGMap;
 		this._yCGMap = builder.__yCGMap;
@@ -225,7 +237,7 @@ public class LiftingSurface implements ILiftingSurface{
 					for (int i = 0; i < 10; i++) {
 
 						try {
-							R = _mass.getEstimatedValue() + aircraft.getFuelTank().get_fuelMass().getEstimatedValue() +
+							R = _mass.getEstimatedValue() + aircraft.getFuelTank().getFuelMass().getEstimatedValue() +
 									((2*(aircraft.getNacelles().get_totalMass().getEstimatedValue() + 
 											aircraft.getPowerPlant().get_massDryEngineActual().getEstimatedValue())*
 											aircraft.getNacelles().get_distanceBetweenInboardNacellesY())/
@@ -1271,6 +1283,14 @@ public class LiftingSurface implements ILiftingSurface{
 		this._aeroDatabaseReader = aeroDatabaseReader;
 	}
 
+	public HighLiftDatabaseReader getHighLiftDatabaseReader() {
+		return _highLiftDatabaseReader;
+	}
+
+	public void setHighLiftDatabaseReader(HighLiftDatabaseReader _highLiftDatabaseReader) {
+		this._highLiftDatabaseReader = _highLiftDatabaseReader;
+	}
+
 	@Override
 	public Amount<Angle> getRiggingAngle() {
 		return this._riggingAngle;
@@ -1357,5 +1377,13 @@ public class LiftingSurface implements ILiftingSurface{
 
 	public void setAerodynamics(LSAerodynamicsManager theAerodynamics) {
 		this.theAerodynamics = theAerodynamics;
+	}
+	
+	public CalcHighLiftDevices getHigLiftCalculator() {
+		return _higLiftCalculator;
+	}
+
+	public void setHigLiftCalculator(CalcHighLiftDevices higLiftCalculator) {
+		this._higLiftCalculator = higLiftCalculator;
 	}
 }

@@ -116,7 +116,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 
 		calculateFirstGuessMTOM(aircraft);
 
-		aircraft.getFuelTank().calculateFuel();
+		aircraft.getFuelTank().calculateFuelMass();
 
 		int i=0;
 		_MTOMList.add(Amount.valueOf(0.0, SI.KILOGRAM));
