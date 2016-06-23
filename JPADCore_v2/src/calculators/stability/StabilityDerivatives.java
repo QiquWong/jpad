@@ -42,9 +42,9 @@ public class StabilityDerivatives {
 	public Double DirectionalStabilityDerivative(Aircraft AC,  
 			Double horizontalPositionOverVertical, Double tailconeShape){
 
-	wingAspectRatio = AC.getWing().get_aspectRatio();
-	verticalTailAspectRatio = AC.getVTail().get_aspectRatio();
-	verticalTailSpan = AC.getVTail().get_span();
+	wingAspectRatio = AC.getWing().getAspectRatio();
+	verticalTailAspectRatio = AC.getVTail().getAspectRatio();
+	verticalTailSpan = AC.getVTail().getSpan();
 	wingPosition = AC.getWing().get_positionRelativeToAttachment();
 	
 	veDSCDatabaseReader = DatabaseManager.initializeVeDSC(new VeDSCDatabaseReader(

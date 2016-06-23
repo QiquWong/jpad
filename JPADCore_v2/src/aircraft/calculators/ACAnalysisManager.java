@@ -130,24 +130,24 @@ public class ACAnalysisManager {
 		// Fuselage
 		if(aircraft.getFuselage() != null){
 			System.out.println("Updating fuselage geometry ...");
-			aircraft.getFuselage().calculateGeometry();
-			aircraft.getFuselage().checkGeometry();
-			aircraft.setSWetTotal(aircraft.getFuselage().get_sWet().getEstimatedValue());
+			aircraft.getFuselage().getFuselageCreator().calculateGeometry();
+			aircraft.getFuselage().getFuselageCreator().checkGeometry();
+			aircraft.setSWetTotal(aircraft.getFuselage().getsWet().getEstimatedValue());
 		}
 
 		// Wing
 		if(aircraft.getWing() != null){
 			System.out.println("Updating wing geometry ...");
-			aircraft.getWing().calculateGeometry();
+			aircraft.getWing().getLiftingSurfaceCreator().calculateGeometry();
 			//			aircraft.get_wing().updateAirfoilsGeometry();
 			aircraft.getWing().getGeometry().calculateAll();
-			aircraft.setSWetTotal(aircraft.getWing().get_surfaceWettedExposed().getEstimatedValue());
+			aircraft.setSWetTotal(aircraft.getExposedWing().getLiftingSurfaceCreator().getSurfaceWetted().getEstimatedValue());
 		}
 		//ExposedWing
 		//TODO: eventually continue here
 		if(aircraft.getExposedWing() != null){
-		aircraft.getExposedWing().set_surface(aircraft.getWing().get_surfaceExposed());
-		aircraft.getExposedWing().set_span(Amount.valueOf(aircraft.getWing().get_span().getEstimatedValue()-
+		aircraft.getExposedWing().setSurface(aircraft.getExposedWing().getSurface());
+		aircraft.getExposedWing().setSpan(Amount.valueOf(aircraft.getWing().getSpan().getEstimatedValue()-
 				aircraft.getFuselage().getWidthAtX(aircraft.getWing()
 						.get_xLEMacActualBRF().getEstimatedValue()), SI.METER));
 		aircraft.getExposedWing().set_semispan(
