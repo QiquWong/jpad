@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.measure.quantity.Angle;
-import javax.measure.quantity.Length;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
@@ -33,7 +32,6 @@ public class Geometry {
 	private Double _maximumThicknessOverChord; 
 	private Double _radiusLE; 
 	private Amount<Angle> _anglePhiTE = Amount.valueOf(0,SI.RADIAN);
-	private Amount<Length> _chord;
 	
 	/** Twist relative to root chord */
 	private Amount<Angle> _twist;
@@ -88,7 +86,6 @@ public class Geometry {
 		this._radiusLE = airfoilCreator.getRadiusLeadingEdgeNormalized();
 		this._xCoords = airfoilCreator.getXCoords();
 		this._zCoords = airfoilCreator.getZCoords();
-		this._chord = airfoilCreator.getChord(); 
 	}
 	
 	public Geometry(Airfoil airfoil) {	
@@ -384,14 +381,6 @@ public class Geometry {
 
 	public void set_camberRatio(Double _camberRatio) {
 		this._camberRatio = _camberRatio;
-	}
-
-	public Amount<Length> get_chord() {
-		return _chord;
-	}
-
-	public void set_chord(Amount<Length> _chord) {
-		this._chord = _chord;
 	}
 
 }

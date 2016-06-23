@@ -22,9 +22,6 @@ public interface IAirfoilCreator {
 	double[][] getNormalizedCornerPointsXZ();
 	void setNormalizedCornerPointsXZ(double[][] xz);
 	
-	Amount<Length> getChord();
-	void setChord(Amount<Length> c);
-	
 	Double getThicknessToChordRatio();
 	void setThicknessToChordRatio(Double tOverC);
 

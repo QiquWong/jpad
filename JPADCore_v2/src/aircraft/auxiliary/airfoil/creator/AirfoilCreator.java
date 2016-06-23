@@ -28,7 +28,6 @@ public class AirfoilCreator implements IAirfoilCreator {
 	private RealMatrix _NormalizedCornerPointsXZ;
 	private Double[] _xCoords;
 	private Double[] _zCoords;
-	private Amount<Length> _chord;
 	private Double _thicknessToChordRatio;
 	private Double _camberRatio;
 	private Double _radiusLeadingEdgeNormalized;
@@ -88,16 +87,6 @@ public class AirfoilCreator implements IAirfoilCreator {
 	@Override
 	public void setNormalizedCornerPointsXZ(double[][] xz) {
 		_NormalizedCornerPointsXZ = MatrixUtils.createRealMatrix(xz);
-	}
-
-	@Override
-	public Amount<Length> getChord() {
-		return _chord;
-	}
-
-	@Override
-	public void setChord(Amount<Length> c) {
-		_chord = c;
 	}
 
 	@Override
@@ -332,7 +321,6 @@ public class AirfoilCreator implements IAirfoilCreator {
 		private AirfoilEnum __family = AirfoilEnum.NACA65_209;
 
 		private RealMatrix __NormalizedCornerPointsXZ = MatrixUtils.createRealMatrix(30, 2);
-		private Amount<Length> __chord = Amount.valueOf(1.0,1e-8,SI.METER);
 		private Double __thicknessToChordRatio = 0.12;
 		private Double __camberRatio = 0.9;
 		private Double __radiusLeadingEdgeNormalized = 0.015;
@@ -375,11 +363,6 @@ public class AirfoilCreator implements IAirfoilCreator {
 		
 		public AirfoilBuilder cornerPointsXZNormalized(double[][] xz) {
 			__NormalizedCornerPointsXZ = MatrixUtils.createRealMatrix(xz);
-			return this;
-		}
-
-		public AirfoilBuilder chord(Amount<Length> c) {
-			__chord = c;
 			return this;
 		}
 
@@ -504,7 +487,6 @@ public class AirfoilCreator implements IAirfoilCreator {
 		_type = builder.__type;
 		_family = builder.__family;
 		_NormalizedCornerPointsXZ = builder.__NormalizedCornerPointsXZ;
-		_chord = builder.__chord;
 		_thicknessToChordRatio = builder.__thicknessToChordRatio;
 		_camberRatio = builder.__camberRatio;
 		_radiusLeadingEdgeNormalized = builder.__radiusLeadingEdgeNormalized;
@@ -710,7 +692,6 @@ public class AirfoilCreator implements IAirfoilCreator {
 				.append("\t-------------------------------------\n")
 				.append("\tID: '" + _id + "'\n")
 				.append("\tType: " + _type + "\n")
-				.append("\tc = " + _chord.to(SI.METER) + "\n")
 				.append("\tt/c = " + _thicknessToChordRatio + "\n")
 				.append("\tf/c = " + _camberRatio + "\n")
 				.append("\tr_le/c = " + _radiusLeadingEdgeNormalized + "\n")

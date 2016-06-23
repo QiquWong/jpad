@@ -456,7 +456,7 @@ public class LiftingSurface implements ILiftingSurface{
 			case HOWE : { // page 381 Howe Aircraft Conceptual Design Synthesis
 				methodsList.add(method);
 				double k = 0.;
-				if (this._positionRelativeToAttachment == PositionRelativeToAttachmentEnum.HIGH) {
+				if (aircraft.getHTail().getPositionRelativeToAttachment() == PositionRelativeToAttachmentEnum.T_TAIL) {
 					k = 1.5;
 				} else {
 					k = 1.;
@@ -494,7 +494,7 @@ public class LiftingSurface implements ILiftingSurface{
 			case TORENBEEK_1976 : { // Roskam page 90 (pdf) part V
 				methodsList.add(method);
 				double kv = 1.;
-				if (this._positionRelativeToAttachment == PositionRelativeToAttachmentEnum.HIGH) { 
+				if (aircraft.getHTail().getPositionRelativeToAttachment() == PositionRelativeToAttachmentEnum.T_TAIL) { 
 					kv = 1 + 0.15*
 							(aircraft.getHTail().getSurface().getEstimatedValue()/
 									this.getSurface().getEstimatedValue());}
@@ -754,7 +754,7 @@ public class LiftingSurface implements ILiftingSurface{
 					);
 			this._airfoilList.add(airfoilRoot);
 
-			for(int i=0; i<nPanels - 2; i++) {
+			for(int i=0; i<nPanels - 1; i++) {
 
 				Airfoil innerAirfoil = new Airfoil(
 						this._liftingSurfaceCreator.getPanels().get(i).getAirfoilTip(),
@@ -799,8 +799,6 @@ public class LiftingSurface implements ILiftingSurface{
 		AirfoilTypeEnum type = null;
 		Double yInner = 0.0;
 		Double yOuter = 0.0;
-		Amount<Length> innerChord = Amount.valueOf(0.0, SI.METER);
-		Amount<Length> outerChord = Amount.valueOf(0.0, SI.METER);
 		Double thicknessRatioInner = 0.0;
 		Double thicknessRatioOuter = 0.0;
 		Double camberRatioInner = 0.0;
@@ -853,8 +851,6 @@ public class LiftingSurface implements ILiftingSurface{
 				type = theWing.getLiftingSurfaceCreator().getPanels().get(i).getAirfoilRoot().getType();
 				yInner = theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i-1).doubleValue(SI.METER);
 				yOuter = theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i).doubleValue(SI.METER);
-				innerChord = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getChordRoot();
-				innerChord = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getChordTip();
 				thicknessRatioInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getThicknessToChordRatio();
 				thicknessRatioOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getThicknessToChordRatio();
 				camberRatioInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getCamberRatio();
@@ -897,17 +893,6 @@ public class LiftingSurface implements ILiftingSurface{
 			}	
 		}
 
-		//------------------------------------------------------------------------------------------------
-		// INTERMEDIATE CHORD
-		Amount<Length> intermediateAirfoilChord = Amount.valueOf(
-				MyMathUtils.getInterpolatedValue1DLinear(
-						new double[] {yInner, yOuter},
-						new double[] {innerChord.doubleValue(SI.METER), outerChord.doubleValue(SI.METER)},
-						yLoc
-						),
-				SI.METER
-				);
-		
 		//------------------------------------------------------------------------------------------------
 		// INTERMEDIATE THICKNESS RATIO
 		Double intermediateAirfoilThicknessRatio = MyMathUtils.getInterpolatedValue1DLinear(
@@ -1073,7 +1058,6 @@ public class LiftingSurface implements ILiftingSurface{
 		// AIRFOIL CREATION
 		AirfoilCreator intermediateAirfoilCreator = new AirfoilCreator.AirfoilBuilder("Intermediate Airfoil")
 				.type(type)
-				.chord(intermediateAirfoilChord)
 				.thicknessToChordRatio(intermediateAirfoilThicknessRatio)
 				.camberRatio(intermediateAirfoilCamberRatio)
 				.radiusLeadingEdgeNormalized(intermediateAirfoilLeadingEdgeRadius)

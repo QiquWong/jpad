@@ -718,7 +718,7 @@ public class Aircraft implements IAircraft {
 		
 		updateType();
 		if((this._theFuselage != null) && (this._theWing != null)) 
-			calculateExposedWing(_theWing, _theFuselage);
+			calculateExposedWing(_theWing, _theFuselage, _theWing.getAerodynamicDatabaseReader());
 	}
 	
 	private void updateType() {
@@ -772,7 +772,8 @@ public class Aircraft implements IAircraft {
 	} // end of updateType
 
 	private void calculateExposedWing(LiftingSurface theWing,
-									  Fuselage theFuselage) {
+									  Fuselage theFuselage,
+									  AerodynamicDatabaseReader aeroDatabaseReader) {
 		
 		Amount<Length> sectionWidthAtZ = Amount.valueOf(
 				0.5 * theFuselage.getFuselageCreator()
@@ -789,6 +790,9 @@ public class Aircraft implements IAircraft {
 				theWing,
 				sectionWidthAtZ.doubleValue(SI.METER)
 				);
+		exposedWingRootAirfoil.setXCoords(theWing.getAirfoilList().get(0).getAirfoilCreator().getXCoords());
+		exposedWingRootAirfoil.setZCoords(theWing.getAirfoilList().get(0).getAirfoilCreator().getZCoords());
+		
 		Amount<Length> exposedWingFirstPanelSpan = theWing.getLiftingSurfaceCreator()
 				.getPanels().get(0)
 				.getSpan()
@@ -814,10 +818,18 @@ public class Aircraft implements IAircraft {
 		for(int i=1; i<theWing.getLiftingSurfaceCreator().getPanels().size(); i++)
 			exposedWingPanels.add(theWing.getLiftingSurfaceCreator().getPanels().get(i));
 
-		this._theExposedWing = theWing;
+		this._theExposedWing = new LiftingSurfaceBuilder("Exposed wing", ComponentEnum.WING, aeroDatabaseReader)
+				.liftingSurfaceCreator(
+						new LiftingSurfaceCreator
+							.LiftingSurfaceCreatorBuilder("Exposed wing", Boolean.TRUE, ComponentEnum.WING)
+								.build()
+						)
+				.build();
 		this._theExposedWing.getLiftingSurfaceCreator().getPanels().clear();
 		this._theExposedWing.getLiftingSurfaceCreator().setPanels(exposedWingPanels);
-
+		this._theExposedWing.getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.WING, Boolean.TRUE);
+		this._theExposedWing.populateAirfoilList(aeroDatabaseReader, Boolean.FALSE);
+		
 		this._theExposedWing.setXApexConstructionAxes(theWing.getXApexConstructionAxes());
 		this._theExposedWing.setYApexConstructionAxes(Amount.valueOf(
 				0.5 * theFuselage.getFuselageCreator().getSectionWidthAtZ(
@@ -1301,6 +1313,9 @@ public class Aircraft implements IAircraft {
 		
 		if(_theWing != null)
 			sb.append(_theWing.getLiftingSurfaceCreator().toString());
+		
+		if(_theExposedWing != null)
+			sb.append(_theExposedWing.getLiftingSurfaceCreator().toString());
 		
 		if(_theHTail != null)
 			sb.append(_theHTail.getLiftingSurfaceCreator().toString());

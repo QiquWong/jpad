@@ -1,4 +1,4 @@
-package sandbox2.vt;
+package sandbox2.vt.aircraft;
 
 import java.io.File;
 import java.io.IOException;
@@ -286,8 +286,8 @@ public class AircraftTestTopView extends Application {
 		listDataArrayTopView.add(vTailRootAirfoilPoints);
 		listDataArrayTopView.add(vTailTipAirfoilPoints);
 
-		double xMaxTopView = 1.20*wing.getSemiSpan().doubleValue(SI.METER);
-		double xMinTopView = -1.20*wing.getSemiSpan().doubleValue(SI.METER);
+		double xMaxTopView = 1.40*fuselage.getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
+		double xMinTopView = -1.40*fuselage.getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
 		double yMaxTopView = 1.20*fuselage.getFuselageCreator().getLenF().doubleValue(SI.METRE);
 		double yMinTopView = -0.20*fuselage.getFuselageCreator().getLenF().doubleValue(SI.METRE);
 			
@@ -335,7 +335,7 @@ public class AircraftTestTopView extends Application {
 						"fill:none; stroke:black; stroke-width:2"
 						)
 				.plotAreas(true,true,true,true,true,true,true)
-				.areaStyles("fill:white;","fill:white;","fill:lightblue;","fill:lightblue;","fill:blue;","fill:blue;","fill:orange;","fill:yellow;")
+				.areaStyles("fill:white;","fill:white;","fill:lightblue;","fill:lightblue;","fill:blue;","fill:blue;","fill:yellow;","fill:yellow;")
 				.areaOpacities(1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0)
 				.showLegend(false)
 				.build();
