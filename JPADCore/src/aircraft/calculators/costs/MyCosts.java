@@ -75,23 +75,25 @@ public class MyCosts extends ACCalculatorManager {
 				4200.,		// utilization (hr/year)
 				0.1,			// sparesCostsAsAirframeCostPercentage
 				0.3,			// sparesEnginesCostsAsAirframeCostPercentage
-				246.5,		// singleCabinCrewHrCost,
-				81.,			// singleflightCrewHrCost,
+//				246.5,			// singleCabinCrewHrCost,
+//				81.,			// singleflightCrewHrCost,
+				81.,			// singleCabinCrewHrCost,
+				246.5,			// singleflightCrewHrCost,
 				Amount.valueOf(10, NonSI.MINUTE), // Climb and descent time (min),
 				Amount.valueOf(20, NonSI.MINUTE), // Sturtup Taxi and Take-Off time (min),
 				Amount.valueOf(8, NonSI.MINUTE),  // Hold Prior To Land Time (min),
 				Amount.valueOf(5, NonSI.MINUTE),   // Landing and Taxi To Stop Time (min),
 				7.8,			// landingFeesPerTon, As suggested by Kundu (USD per ton of MTOW); Jenkinson suggested instead a value of 6 USD per ton of MTOW.
-				5640.,		// jenkinsonNavigationalCharges, (USD)this value is from the jenkinson example. Jenkinson doesn't give a statistic law, but suggest to find the desired value time by time in literature or else.
+				5640.,			// jenkinsonNavigationalCharges, (USD)this value is from the jenkinson example. Jenkinson doesn't give a statistic law, but suggest to find the desired value time by time in literature or else.
 				72,
 				11.,			// groundHandlingCostXPax, Jenkinson suggests this value in USD for the ground handling cost per passenger
-				63.0,		// manHourLaborRate, (USD/hr) As suggested by Kundu. This is the cost of an hour man labor for the maintenance of the airframe.
-				110.,		// engineMaintLaborCost, (USD/hr/engine) 
-				80.,		// engineMaintMaterialCost, (USD/hr/engine)
-				660.,		// airframeMaintLaborCost, (USD/hr)	  
-				218.,		// airframeMaintMaterialCost, (USD/hr)
-				0.75,	// fuelVolumetricCost, Volumetric cost of aeronautic fuel in USD/USGal, as suggested by Kundu
-				8.99		// oilMassCost, Mass cost of aeronautic oil (USD/lb) according to Sforza
+				63.0,			// manHourLaborRate, (USD/hr) As suggested by Kundu. This is the cost of an hour man labor for the maintenance of the airframe.
+				110.,			// engineMaintLaborCost, (USD/hr/engine) 
+				80.,			// engineMaintMaterialCost, (USD/hr/engine)
+				660.,			// airframeMaintLaborCost, (USD/hr)	  
+				218.,			// airframeMaintMaterialCost, (USD/hr)
+				0.75,			// fuelVolumetricCost, Volumetric cost of aeronautic fuel in USD/USGal, as suggested by Kundu
+				8.99			// oilMassCost, Mass cost of aeronautic oil (USD/lb) according to Sforza
 				);
 	}
 
