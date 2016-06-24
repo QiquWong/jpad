@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-    <aircraft id="JPAD Test Aircraft DAF - 2016">
+    <aircraft id="JPAD Test Aircraft DAF - 2016" type="JET">
 		<global_data>
 			<cabin_configuration file="cabin_configuration.xml"></cabin_configuration>
 			<costs_data file="TODO!!!"></costs_data>

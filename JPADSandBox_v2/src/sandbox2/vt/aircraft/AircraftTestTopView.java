@@ -1,4 +1,4 @@
-package sandbox2.vt;
+package sandbox2.vt.aircraft;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +25,7 @@ import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
+import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
@@ -273,17 +274,21 @@ public class AircraftTestTopView extends Application {
 
 		List<Double[][]> listDataArrayTopView = new ArrayList<Double[][]>();
 
+		// fuselage
 		listDataArrayTopView.add(dataOutlineXYLeftCurve);
 		listDataArrayTopView.add(dataOutlineXYRightCurve);
+		// wing
 		listDataArrayTopView.add(dataTopView);
 		listDataArrayTopView.add(dataTopViewMirrored);
+		// hTail
 		listDataArrayTopView.add(dataTopViewHTail);
 		listDataArrayTopView.add(dataTopViewMirroredHTail);
+		// vTail
 		listDataArrayTopView.add(vTailRootAirfoilPoints);
 		listDataArrayTopView.add(vTailTipAirfoilPoints);
 
-		double xMaxTopView = 1.20*wing.getSemiSpan().doubleValue(SI.METER);
-		double xMinTopView = -1.20*wing.getSemiSpan().doubleValue(SI.METER);
+		double xMaxTopView = 1.40*fuselage.getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
+		double xMinTopView = -1.40*fuselage.getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
 		double yMaxTopView = 1.20*fuselage.getFuselageCreator().getLenF().doubleValue(SI.METRE);
 		double yMinTopView = -0.20*fuselage.getFuselageCreator().getLenF().doubleValue(SI.METRE);
 			
@@ -331,7 +336,7 @@ public class AircraftTestTopView extends Application {
 						"fill:none; stroke:black; stroke-width:2"
 						)
 				.plotAreas(true,true,true,true,true,true,true)
-				.areaStyles("fill:white;","fill:white;","fill:lightblue;","fill:lightblue;","fill:blue;","fill:blue;","fill:orange;","fill:yellow;")
+				.areaStyles("fill:white;","fill:white;","fill:lightblue;","fill:lightblue;","fill:blue;","fill:blue;","fill:yellow;","fill:yellow;")
 				.areaOpacities(1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0)
 				.showLegend(false)
 				.build();
@@ -423,7 +428,9 @@ public class AircraftTestTopView extends Application {
 			
 			String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
 			String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
+			String highLiftDatabaseFileName = "HighLiftDatabase.h5";
 			AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
+			HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
 			
 			// default Aircraft ATR-72 ...
 //			theAircraft = new Aircraft.AircraftBuilder("ATR-72", AircraftEnum.ATR72, aeroDatabaseReader).build();
@@ -437,7 +444,8 @@ public class AircraftTestTopView extends Application {
 					dirSystems,
 					dirCabinConfiguration,
 					dirAirfoil,
-					aeroDatabaseReader);
+					aeroDatabaseReader,
+					highLiftDatabaseReader);
 			
 			System.out.println("The Aircaraft ...");
 			System.out.println(AircraftTestTopView.theAircraft.toString());

@@ -394,7 +394,7 @@ public class LiftCalc {
 			alphaMaxHighLift = ((cLMaxFlap-cL0HighLift)/cLalphaNew) 
 			+ theLsManager.get_AerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(
 					theLiftingSurface
-					.get_sweepLEEquivalent().to(NonSI.DEGREE_ANGLE).getEstimatedValue(),
+					.getSweepLEEquivalent(false).to(NonSI.DEGREE_ANGLE).getEstimatedValue(),
 					meanAirfoil.getGeometry().get_deltaYPercent());
 
 		alphaMaxHighLift = Amount.valueOf(alphaMaxHighLift, SI.RADIAN).getEstimatedValue();
@@ -492,8 +492,10 @@ public class LiftCalc {
 
 
 		for (int j=0 ; j<nPointSemiSpan; j++){
-			airfoilList.add(j,theLSManager.calculateIntermediateAirfoil(
-					theLiftingSurface, yArray[j]) );
+			airfoilList.add(j, new Airfoil(theLiftingSurface
+						.calculateAirfoilAtY(theLiftingSurface, yArray[j]),
+						theLiftingSurface.getAerodynamicDatabaseReader())
+					);
 			airfoilList.get(j).getAerodynamics().calculateClvsAlpha();}
 
 

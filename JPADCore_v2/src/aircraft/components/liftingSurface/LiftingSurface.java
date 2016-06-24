@@ -1,5 +1,10 @@
 package aircraft.components.liftingSurface;
 
+import static java.lang.Math.cos;
+import static java.lang.Math.pow;
+import static java.lang.Math.round;
+import static java.lang.Math.sqrt;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,24 +14,32 @@ import java.util.TreeMap;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Mass;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
+import aircraft.OperatingConditions;
 import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
+import aircraft.components.Aircraft;
+import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcHighLiftDevices;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import calculators.geometry.LSGeometryCalc;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
+import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
 import configuration.enumerations.PositionRelativeToAttachmentEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
+import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import standaloneutils.GeometryCalc;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
+import standaloneutils.MyUnits;
+import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.customdata.CenterOfGravity;
 import writers.JPADStaticWriteUtils;
 
@@ -35,6 +48,9 @@ public class LiftingSurface implements ILiftingSurface{
 	private String _id = null;
 	private ComponentEnum _type;
 
+	LSAerodynamicsManager theAerodynamics;
+	CalcHighLiftDevices _highLiftCalculator;
+	
 	private PositionRelativeToAttachmentEnum _positionRelativeToAttachment;
 	private Amount<Length> _xApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
 	private Amount<Length> _yApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
@@ -44,14 +60,18 @@ public class LiftingSurface implements ILiftingSurface{
 	private LiftingSurfaceCreator _liftingSurfaceCreator;
 
 	private AerodynamicDatabaseReader _aeroDatabaseReader;
+	private HighLiftDatabaseReader _highLiftDatabaseReader;
 	
+	private Amount<Mass> _mass, _massReference, _massEstimated;
 	private CenterOfGravity _cg;
 	private Amount<Length> _xCG, _yCG, _zCG;
 	Map <MethodEnum, Amount<Length>> _xCGMap = new TreeMap<MethodEnum, Amount<Length>>();
 	Map <MethodEnum, Amount<Length>> _yCGMap = new TreeMap<MethodEnum, Amount<Length>>();
 	Map <AnalysisTypeEnum, List<MethodEnum>> _methodsMap = new HashMap<AnalysisTypeEnum, List<MethodEnum>>();
+	Map <MethodEnum, Amount<Mass>> _massMap = new TreeMap<MethodEnum, Amount<Mass>>();
 	Double[] _percentDifferenceXCG;
 	Double[] _percentDifferenceYCG;
+	Double[] _percentDifference;
 	
 	private List<Airfoil> _airfoilList;
 	
@@ -67,21 +87,30 @@ public class LiftingSurface implements ILiftingSurface{
 		private LiftingSurfaceCreator __liftingSurfaceCreator;
 		private List<Airfoil> __airfoilList;
 		private AerodynamicDatabaseReader __aeroDatabaseReader;
+		private HighLiftDatabaseReader __highLiftDatabaseReader;
 		Map <MethodEnum, Amount<Length>> __xCGMap;
 		Map <MethodEnum, Amount<Length>> __yCGMap;
 		Map <AnalysisTypeEnum, List<MethodEnum>> __methodsMap;
+		Map <MethodEnum, Amount<Mass>> __massMap;
 		
-		public LiftingSurfaceBuilder(String id, ComponentEnum type, AerodynamicDatabaseReader aeroDatabaseReader) {
+		public LiftingSurfaceBuilder(
+				String id,
+				ComponentEnum type,
+				AerodynamicDatabaseReader aeroDatabaseReader,
+				HighLiftDatabaseReader highLiftDatabaseReader
+				) {
 			// required parameter
 			this.__id = id;
 			this.__type = type;
 			this.__aeroDatabaseReader = aeroDatabaseReader;
+			this.__highLiftDatabaseReader = highLiftDatabaseReader;
 			
 			// optional parameters ...
 			this.__airfoilList = new ArrayList<Airfoil>(); 
 			this.__xCGMap = new TreeMap<MethodEnum, Amount<Length>>();
 			this.__yCGMap = new TreeMap<MethodEnum, Amount<Length>>();
 			this.__methodsMap = new HashMap<AnalysisTypeEnum, List<MethodEnum>>();
+			this.__massMap = new TreeMap<MethodEnum, Amount<Mass>>();
 		}
 
 		public LiftingSurfaceBuilder liftingSurfaceCreator(LiftingSurfaceCreator lsc) {
@@ -103,21 +132,463 @@ public class LiftingSurface implements ILiftingSurface{
 		this._zApexConstructionAxes = builder.__zApexConstructionAxes;
 		this._liftingSurfaceCreator = builder.__liftingSurfaceCreator;
 		this._aeroDatabaseReader = builder.__aeroDatabaseReader;
+		this._highLiftDatabaseReader = builder.__highLiftDatabaseReader;
 		this._airfoilList = builder.__airfoilList;
 		this._xCGMap = builder.__xCGMap;
 		this._yCGMap = builder.__yCGMap;
 		this._methodsMap = builder.__methodsMap;
+		this._massMap = builder.__massMap;
+	}
+
+	@Override
+	public void calculateMass(Aircraft aircraft, OperatingConditions conditions) {
+		calculateMass(aircraft, conditions, MethodEnum.KROO);
+		calculateMass(aircraft, conditions, MethodEnum.JENKINSON);
+		calculateMass(aircraft, conditions, MethodEnum.TORENBEEK_2013);
+		calculateMass(aircraft, conditions, MethodEnum.TORENBEEK_1982);
+		calculateMass(aircraft, conditions, MethodEnum.RAYMER);
+//		calculateMass(aircraft, conditions, MethodEnum.NICOLAI_2013);
+//		calculateMass(aircraft, conditions, MethodEnum.HOWE);
+//		calculateMass(aircraft, conditions, MethodEnum.TORENBEEK_1976);
+		calculateMass(aircraft, conditions, MethodEnum.SADRAY);
+		calculateMass(aircraft, conditions, MethodEnum.ROSKAM);
+	}
+	
+	/** 
+	 * Calculate mass of the generic lifting surface
+	 * 
+	 * @author Lorenzo Attanasio
+	 * @param aircraft
+	 * @param method
+	 */
+	private void calculateMass(
+			Aircraft aircraft, 
+			OperatingConditions conditions, 
+			MethodEnum method) {
+
+		List<MethodEnum> methodsList = new ArrayList<MethodEnum>();
+
+		Double surface = this.getSurface().to(MyUnits.FOOT2).getEstimatedValue();
+		Double surfaceExposed = aircraft.getExposedWing().getSurface().to(MyUnits.FOOT2).getEstimatedValue();
+
+		switch(_type) {
+		case WING : {
+			switch (method) {
+
+			/* This method poor results
+			 * */
+			case ROSKAM : { // Roskam page 85 (pdf) part V
+				methodsList.add(method);
+
+				// FIXME : WHO IS MACH DIVE 0 ??
+				
+				System.out.println("---" + this._liftingSurfaceCreator.getSweepQuarterChordEquivalentWing().to(SI.RADIAN));
+				_mass = Amount.valueOf(
+						Amount.valueOf(2*(0.00428*
+								Math.pow(surface, 0.48)*this.getAspectRatio()*
+								Math.pow(aircraft.getThePerformance().getMachDive0(), 0.43)*
+								Math.pow(aircraft.getTheWeights().get_MTOW().to(NonSI.POUND_FORCE).
+										times(aircraft.getThePerformance().getNUltimate()).
+										getEstimatedValue(),0.84)*
+								Math.pow(this._liftingSurfaceCreator.getTaperRatioEquivalentWing(), 0.14))/
+								(Math.pow(100*this._liftingSurfaceCreator.getPanels().get(0).getAirfoilRoot().getThicknessToChordRatio(),0.76)*
+										Math.pow(Math.cos(this.getSweepHalfChordEquivalent(false).to(SI.RADIAN).getEstimatedValue()), 1.54)),
+								NonSI.POUND_FORCE).to(NonSI.KILOGRAM_FORCE).getEstimatedValue(),
+						SI.KILOGRAM);
+
+				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+			} break;
+			//			
+			case KROO : { // page 430 Aircraft design synthesis
+				methodsList.add(method);
+
+				//				if (aircraft.get_powerPlant().get_engineType().equals(EngineTypeEnum.TURBOPROP)) {
+				_mass = Amount.valueOf((4.22*surface +
+						1.642e-6*
+						(aircraft.getThePerformance().getNUltimate()*
+								Math.pow(this.getSpan().to(NonSI.FOOT).getEstimatedValue(),3)*
+								Math.sqrt(aircraft.getTheWeights().get_MTOM().to(NonSI.POUND).getEstimatedValue()*
+										aircraft.getTheWeights().get_MZFM().to(NonSI.POUND).getEstimatedValue())*
+								(1 + 2*this._liftingSurfaceCreator.getTaperRatioEquivalentWing()))/
+						(_thicknessMean*Math.pow(Math.cos(this._liftingSurfaceCreator.getSweepQuarterChordEquivalentWing().to(SI.RADIAN).getEstimatedValue()),2)*
+								surface*(1 + this.getLiftingSurfaceCreator().getTaperRatioEquivalentWing()))),
+						NonSI.POUND).to(SI.KILOGRAM);
+				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+				//				} else {
+				//					_mass = null;
+				//					_massMap.put(method, null);
+				//				}
+			} break;
+
+			case JENKINSON : { // page 134 Jenkinson - Civil Jet Aircraft Design
+
+				methodsList.add(method);
+
+				if (!aircraft.getPowerPlant().get_engineType().equals(EngineTypeEnum.TURBOPROP)) {
+
+					double R, kComp;
+
+					if (compositeCorretionFactor != null) {
+						kComp = _compositeCorretionFactor;
+					} else {
+						kComp = 0.;					
+					}
+
+					for (int i = 0; i < 10; i++) {
+
+						try {
+							R = _mass.getEstimatedValue() + aircraft.getFuelTank().getFuelMass().getEstimatedValue() +
+									((2*(aircraft.getNacelles().get_totalMass().getEstimatedValue() + 
+											aircraft.getPowerPlant().get_massDryEngineActual().getEstimatedValue())*
+											aircraft.getNacelles().get_distanceBetweenInboardNacellesY())/
+											(0.4*this.getSpan().getEstimatedValue())) + 
+									((2*(aircraft.getNacelles().get_totalMass().getEstimatedValue() + 
+											aircraft.getPowerPlant().get_massDryEngineActual().getEstimatedValue())*
+											aircraft.getNacelles().get_distanceBetweenOutboardNacellesY())/
+											(0.4*this.getSpan().getEstimatedValue()));
+						} catch(NullPointerException e) {R = 0.;}
+
+						_mass = Amount.valueOf(
+								(1 - kComp) * 0.021265*
+								(pow(aircraft.getTheWeights().get_MTOM().getEstimatedValue()*
+										aircraft.getThePerformance().getNUltimate(),0.4843)*
+										pow(this.getSurface().getEstimatedValue(),0.7819)*
+										pow(this.getAspectRatio(),0.993)*
+										pow(1 + this.getLiftingSurfaceCreator().getTaperRatioEquivalentWing(),0.4)*
+										pow(1 - R/aircraft.getTheWeights().get_MTOM().getEstimatedValue(),0.4))/
+								(cos(this.getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().to(SI.RADIAN).getEstimatedValue())*
+										pow(_thicknessMean,0.4)), 
+								SI.KILOGRAM);
+					}
+					_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+				} else {
+					_mass = null;
+					_massMap.put(method, null);
+				}
+			} break;
+
+			/* This method gives poor results
+			 * 
+			 * */
+			case RAYMER : { // page 403 (211 pdf) Raymer 
+				methodsList.add(method);
+				_mass = Amount.valueOf(0.0051 * pow(aircraft.getTheWeights().
+						get_MTOW().to(NonSI.POUND_FORCE).times(aircraft.getThePerformance().
+								getNUltimate()).getEstimatedValue(),
+						0.557)*
+						pow(this.getSurface().to(MyUnits.FOOT2).getEstimatedValue(),0.649)*
+						pow(this.getAspectRatio(), 0.5)*
+						pow(this.getLiftingSurfaceCreator().getPanels().get(0).getAirfoilRoot().getThicknessToChordRatio(), -0.4)*
+						pow(1+this.getLiftingSurfaceCreator().getTaperRatioEquivalentWing(), 0.1)*
+						pow(cos(this.getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().to(SI.RADIAN).getEstimatedValue()), -1)*
+						pow(_surfaceCS.to(MyUnits.FOOT2).getEstimatedValue(), 0.1), NonSI.POUND).
+						to(SI.KILOGRAM);
+				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+			} break;
+
+			case SADRAY : { // page 583 pdf Sadray Aircraft Design System Engineering Approach
+				// results very similar to Jenkinson
+				methodsList.add(method);
+				Double _kRho = 0.0035;
+				_mass = Amount.valueOf(
+						this.getSurface().getEstimatedValue()*
+						//_meanAerodChordCk.getEstimatedValue()*
+						aircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()* //
+						(this.getLiftingSurfaceCreator().getPanels().get(0).getAirfoilRoot().getThicknessToChordRatio())
+						*aircraft.getTheWeights().get_materialDensity().getEstimatedValue()*
+						_kRho*
+						pow((this.getAspectRatio()*aircraft.getThePerformance().getNUltimate())/
+								cos(this.getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().to(SI.RADIAN).getEstimatedValue()),0.6)*
+						pow(this.getLiftingSurfaceCreator().getTaperRatioEquivalentWing(), 0.04), SI.KILOGRAM);
+				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+			} break;
+
+			/* The method gives an average 20 percent difference from real value 
+			 */
+			case TORENBEEK_1982 : {
+				methodsList.add(method);
+				_mass = Amount.valueOf(
+						0.0017*
+						aircraft.getTheWeights().get_MZFW().to(NonSI.POUND_FORCE).getEstimatedValue()*
+						Math.pow(this.getSpan().to(NonSI.FOOT).getEstimatedValue()/
+								Math.cos(this.getSweepHalfChordEquivalent(false).to(SI.RADIAN).getEstimatedValue()),0.75)*
+						(1 + Math.pow(6.3*Math.cos(this.getSweepHalfChordEquivalent(false).to(SI.RADIAN).getEstimatedValue())/
+								this.getSpan().to(NonSI.FOOT).getEstimatedValue(), 0.5))*
+						Math.pow(aircraft.getThePerformance().getNUltimate(), 0.55)*
+						Math.pow(
+								this.getSpan().to(NonSI.FOOT).getEstimatedValue()*surface/
+								(this.getLiftingSurfaceCreator().getPanels().get(0).getAirfoilRoot().getThicknessToChordRatio()
+										*this.getChordRoot().to(NonSI.FOOT).getEstimatedValue()*
+										aircraft.getTheWeights().get_MZFW().to(NonSI.POUND_FORCE).getEstimatedValue()*
+										Math.cos(this.getSweepHalfChordEquivalent(false).to(SI.RADIAN).getEstimatedValue())), 0.3)
+						, NonSI.POUND).to(SI.KILOGRAM);
+				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+			} break;
+
+			case TORENBEEK_2013 : { // page 253 pdf
+				methodsList.add(method);
+
+				//				if (aircraft.get_powerPlant().get_engineType().equals(EngineTypeEnum.TURBOPROP)) {
+				_mass = Amount.valueOf(
+						(0.0013*
+								aircraft.getThePerformance().getNUltimate()*
+								Math.pow(aircraft.getTheWeights().get_MTOW()
+										.times(aircraft.getTheWeights().get_MZFW()).getEstimatedValue(), 
+										0.5)*
+								0.36*Math.pow(1 + this.getLiftingSurfaceCreator().getTaperRatioEquivalentWing(), 0.5)*
+								(this.getSpan().getEstimatedValue()/100)*
+								(this.getAspectRatio()/
+										(_thicknessMean
+												*Math.pow(
+														Math.cos(this.getSweepHalfChordEquivalent(false).to(SI.RADIAN).getEstimatedValue())
+														, 2))) +
+								210*this.getSurface().getEstimatedValue())/
+						AtmosphereCalc.g0.getEstimatedValue()
+						, SI.KILOGRAM);
+				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+				//				} else {
+				//					_mass = null;
+				//					_massMap.put(method, null);
+				//				}
+
+			}
+
+			default : { }
+			}
+		} break;
+		////////////////////////////////////
+		////////////////////////////////////
+		case HORIZONTAL_TAIL : {
+			switch (method) {
+
+			/*
+			case HOWE : { // page 381 Howe Aircraft Conceptual Design Synthesis
+				_methodsList.add(method);
+				_mass = Amount.valueOf(0.047*
+						aircraft.get_performances().get_vDiveEAS().getEstimatedValue()*
+						pow(_surface.getEstimatedValue(), 1.24), SI.KILOGRAM);
+				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+			} break;
+			 */
+			case JENKINSON : { // Jenkinson page 149 pdf
+				methodsList.add(method);
+				_mass = Amount.valueOf(22*this.getSurface().getEstimatedValue(), SI.KILOGRAM);
+				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+			} break;
+
+			case NICOLAI_2013 : {
+				methodsList.add(method);
+				double gamma = pow(aircraft.getTheWeights().get_MTOM().to(NonSI.POUND).getEstimatedValue()*
+						aircraft.getThePerformance().getNUltimate(), 0.813)*
+						pow(this.getSurface().to(MyUnits.FOOT2).getEstimatedValue(), 0.584)*
+						pow(this.getSpan().getEstimatedValue()/
+								(this.getLiftingSurfaceCreator().getPanels().get(0).getAirfoilRoot().getThicknessToChordRatio()
+										*this.getChordRoot().getEstimatedValue()), 0.033) * 
+						pow(aircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()/
+								this.getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance().getEstimatedValue(), 0.28);
+
+				_mass = Amount.valueOf(0.0034 * 
+						pow(gamma, 0.915), NonSI.POUND).to(SI.KILOGRAM);
+				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+			} break;
+
+			case RAYMER : { // Raymer page 211 pdf
+				methodsList.add(method);
+				_mass = Amount.valueOf(0.0379 * 
+						pow(aircraft.getTheWeights().get_MTOM().to(NonSI.POUND).getEstimatedValue(), 0.639)*
+						pow(aircraft.getThePerformance().getNUltimate(), 0.1) * 
+						pow(this.getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance().to(NonSI.FOOT).getEstimatedValue(), -1.) *
+						pow(this.getSurface().to(MyUnits.FOOT2).getEstimatedValue(), 0.75) * 
+						pow(0.3*this.getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance().to(NonSI.FOOT).getEstimatedValue(), 0.704) * 
+						pow(cos(this.getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().to(SI.RADIAN).getEstimatedValue()), -1) *
+						pow(this.getAspectRatio(), 0.166) * 
+						pow(1 + aircraft.getFuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().to(NonSI.FOOT).getEstimatedValue()/
+								this.getSpan().to(NonSI.FOOT).getEstimatedValue(), -0.25) * 
+						pow(1 + _surfaceCS.to(MyUnits.FOOT2).getEstimatedValue()/
+								this.getSurface().to(MyUnits.FOOT2).getEstimatedValue(), 0.1),
+						NonSI.POUND).to(SI.KILOGRAM);
+				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+			} break;
+
+			case KROO : {
+				methodsList.add(method);
+				_mass = Amount.valueOf((5.25*surfaceExposed +
+						0.8e-6*
+						(aircraft.getThePerformance().getNUltimate()*
+								Math.pow(this.getSpan().to(NonSI.FOOT).getEstimatedValue(),3)*
+								aircraft.getTheWeights().get_MTOM().to(NonSI.POUND).getEstimatedValue()*
+								this.getLiftingSurfaceCreator().getMeanAerodynamicChord().to(NonSI.FOOT).getEstimatedValue()*
+								Math.sqrt(surfaceExposed))/
+						(_thicknessMean*Math.pow(Math.cos(_sweepStructuralAxis.to(SI.RADIAN).getEstimatedValue()),2)*
+								this.getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance().to(NonSI.FOOT).getEstimatedValue()*Math.pow(surface,1.5))),
+						NonSI.POUND).to(SI.KILOGRAM);
+				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+			} break;
+
+			/* Average error > 50 %
+			case SADRAY : { // page 584 pdf Sadray Aircraft Design System Engineering Approach
+				_methodsList.add(method);
+				// TODO ADD kRho table
+				Double _kRho = 0.0275;
+				_mass = Amount.valueOf(
+						_surface.getEstimatedValue()*
+						_meanAerodChordCk.getEstimatedValue()*
+						(_tc_root)*aircraft.get_weights().get_materialDensity().getEstimatedValue()*
+						_kRho*
+						pow(_aspectRatio/
+								cos(_sweepQuarterChordEq.getEstimatedValue()),0.6)*
+								pow(_taperRatioEquivalent, 0.04)*
+								pow(_volumetricRatio, 0.3)*
+								pow(_CeCt, 0.4), SI.KILOGRAM);
+				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+			} break;
+			 */
+			/*
+			case TORENBEEK_1976 : { // Roskam page 90 (pdf) part V
+				_methodsList.add(method);
+				double kh = 1.;
+				if (_variableIncidence == true) { kh = 1.1;}
+
+				_mass = Amount.valueOf(kh*3.81*
+						aircraft.get_performances().get_vDiveEAS().to(NonSI.KNOT).getEstimatedValue()*
+						pow(_surface.to(MyUnits.FOOT2).getEstimatedValue(), 1.2)/
+						(1000*sqrt(cos(_sweepQuarterChordEq.to(SI.RADIAN).getEstimatedValue()))) - 0.287,
+						NonSI.POUND).to(SI.KILOGRAM);
+				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+			} break;
+			 */
+			default : { } break;
+			}
+		} break;
+		////////////////////////////////////
+		////////////////////////////////////
+		case VERTICAL_TAIL : {
+			switch (method) {
+
+			case HOWE : { // page 381 Howe Aircraft Conceptual Design Synthesis
+				methodsList.add(method);
+				double k = 0.;
+				if (aircraft.getHTail().getPositionRelativeToAttachment() == PositionRelativeToAttachmentEnum.T_TAIL) {
+					k = 1.5;
+				} else {
+					k = 1.;
+				}
+				_mass = Amount.valueOf(0.05*k*
+						aircraft.getThePerformance().getVDiveEAS().getEstimatedValue()*
+						pow(this.getSurface().getEstimatedValue(), 1.15), SI.KILOGRAM);
+				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+			} break;
+
+
+			case JENKINSON : {
+				methodsList.add(method);
+				_mass = Amount.valueOf(22*this.getSurface().getEstimatedValue(), SI.KILOGRAM);
+				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+			} break;
+
+			/* Average error > 50 %
+			case RAYMER : { // Raymer page 211 pdf
+				_methodsList.add(method);
+				_mass = Amount.valueOf(0.0026 * 
+						pow(aircraft.get_weights().get_MTOM().to(NonSI.POUND).getEstimatedValue(), 0.556)*
+						pow(aircraft.get_performances().get_nUltimate(), 0.536) * 
+						pow(_ACw_ACdistance.to(NonSI.FOOT).getEstimatedValue(), -0.5) *
+						pow(_surface.to(MyUnits.FOOT2).getEstimatedValue(), 0.5) * 
+						pow(0.3*_ACw_ACdistance.to(NonSI.FOOT).getEstimatedValue(), 0.875) * 
+						pow(cos(_sweepQuarterChordEq.to(SI.RADIAN).getEstimatedValue()), -1.) *
+						pow(_aspectRatio, 0.35) * 
+						pow(_tc_root, -0.5) *
+						pow(1 + _positionRelativeToAttachment, 0.225),
+						NonSI.POUND).to(SI.KILOGRAM);
+				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+			} break;
+			 */
+			case TORENBEEK_1976 : { // Roskam page 90 (pdf) part V
+				methodsList.add(method);
+				double kv = 1.;
+				if (aircraft.getHTail().getPositionRelativeToAttachment() == PositionRelativeToAttachmentEnum.T_TAIL) { 
+					kv = 1 + 0.15*
+							(aircraft.getHTail().getSurface().getEstimatedValue()/
+									this.getSurface().getEstimatedValue());}
+				_mass = Amount.valueOf(kv*3.81*
+						aircraft.getThePerformance().getVDiveEAS().to(NonSI.KNOT).getEstimatedValue()*
+						pow(this.getSurface().to(MyUnits.FOOT2).getEstimatedValue(), 1.2)/
+						(1000*sqrt(cos(this.getSweepHalfChordEquivalent(false).to(SI.RADIAN).getEstimatedValue()))) - 0.287,
+						NonSI.POUND).to(SI.KILOGRAM);
+				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+			} break;
+
+			case KROO : {
+				methodsList.add(method);
+				_mass = Amount.valueOf((2.62*surface +
+						1.5e-5*
+						(aircraft.getThePerformance().getNUltimate()*
+								Math.pow(this.getSpan().to(NonSI.FOOT).getEstimatedValue(),3)*(
+										8.0 + 0.44*aircraft.getTheWeights().get_MTOW().to(NonSI.POUND_FORCE).getEstimatedValue()/
+										aircraft.getWing().getSurface().to(MyUnits.FOOT2).getEstimatedValue())/
+								(_thicknessMean*Math.pow(Math.cos(_sweepStructuralAxis.getEstimatedValue()),2)))),
+						NonSI.POUND).to(SI.KILOGRAM);
+				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+			} break;
+
+			/* Average error > 50 %
+			case SADRAY : { // page 584 pdf Sadray Aircraft Design System Engineering Approach
+				_methodsList.add(method);
+				// TODO ADD kRho table
+				Double _kRho = 0.05;
+				_mass = Amount.valueOf(
+						_surface.getEstimatedValue()*
+						_meanAerodChordCk.getEstimatedValue()*
+						(_tc_root)*aircraft.get_weights().get_materialDensity().getEstimatedValue()*
+						_kRho*
+						pow(_aspectRatio/
+								cos(_sweepQuarterChordEq.getEstimatedValue()),0.6)*
+								pow(_taperRatioEquivalent, 0.04)*
+								pow(_volumetricRatio, 0.2)*
+								pow(_CeCt, 0.4), SI.KILOGRAM);
+				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+			}break;
+			 */
+
+			default : { } break;
+			}
+		} break;
+		case CANARD : {
+
+			// TODO
+			
+		} break;
+		
+		default:
+			break;
+		}
+
+		_methodsMap.put(AnalysisTypeEnum.WEIGHTS, methodsList);
+		_percentDifference =  new Double[_massMap.size()]; 
+
+		_massEstimated = Amount.valueOf(JPADStaticWriteUtils.compareMethods(
+				_massReference, 
+				_massMap,
+				_percentDifference,
+				20.).getFilteredMean(), SI.KILOGRAM);
+
+		if (_massCorrectionFactor != null && _massEstimated != null) {
+			_massEstimated = _massEstimated.times(_massCorrectionFactor);
+		}
+
+		_mass = Amount.valueOf(_massEstimated.getEstimatedValue(), SI.KILOGRAM);
+
 	}
 
 	public void calculateCG(MethodEnum method, ComponentEnum type) {
 
 		List<MethodEnum> methodsList = new ArrayList<MethodEnum>();
-		
+
 		_cg.setLRForigin(_xApexConstructionAxes,
 						 _yApexConstructionAxes,
 						 _zApexConstructionAxes
-						 );
-		
+				);
+
 		_cg.set_xLRFref(getChordRoot().times(0.4));
 		_cg.set_yLRFref(getSpan().times(0.5*0.4));
 		_cg.set_zLRFref(Amount.valueOf(0., SI.METER));
@@ -295,7 +766,7 @@ public class LiftingSurface implements ILiftingSurface{
 					);
 			this._airfoilList.add(airfoilRoot);
 
-			for(int i=0; i<nPanels - 2; i++) {
+			for(int i=0; i<nPanels - 1; i++) {
 
 				Airfoil innerAirfoil = new Airfoil(
 						this._liftingSurfaceCreator.getPanels().get(i).getAirfoilTip(),
@@ -340,8 +811,6 @@ public class LiftingSurface implements ILiftingSurface{
 		AirfoilTypeEnum type = null;
 		Double yInner = 0.0;
 		Double yOuter = 0.0;
-		Amount<Length> innerChord = Amount.valueOf(0.0, SI.METER);
-		Amount<Length> outerChord = Amount.valueOf(0.0, SI.METER);
 		Double thicknessRatioInner = 0.0;
 		Double thicknessRatioOuter = 0.0;
 		Double camberRatioInner = 0.0;
@@ -394,8 +863,6 @@ public class LiftingSurface implements ILiftingSurface{
 				type = theWing.getLiftingSurfaceCreator().getPanels().get(i).getAirfoilRoot().getType();
 				yInner = theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i-1).doubleValue(SI.METER);
 				yOuter = theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i).doubleValue(SI.METER);
-				innerChord = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getChordRoot();
-				innerChord = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getChordTip();
 				thicknessRatioInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getThicknessToChordRatio();
 				thicknessRatioOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getThicknessToChordRatio();
 				camberRatioInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getCamberRatio();
@@ -438,17 +905,6 @@ public class LiftingSurface implements ILiftingSurface{
 			}	
 		}
 
-		//------------------------------------------------------------------------------------------------
-		// INTERMEDIATE CHORD
-		Amount<Length> intermediateAirfoilChord = Amount.valueOf(
-				MyMathUtils.getInterpolatedValue1DLinear(
-						new double[] {yInner, yOuter},
-						new double[] {innerChord.doubleValue(SI.METER), outerChord.doubleValue(SI.METER)},
-						yLoc
-						),
-				SI.METER
-				);
-		
 		//------------------------------------------------------------------------------------------------
 		// INTERMEDIATE THICKNESS RATIO
 		Double intermediateAirfoilThicknessRatio = MyMathUtils.getInterpolatedValue1DLinear(
@@ -614,7 +1070,6 @@ public class LiftingSurface implements ILiftingSurface{
 		// AIRFOIL CREATION
 		AirfoilCreator intermediateAirfoilCreator = new AirfoilCreator.AirfoilBuilder("Intermediate Airfoil")
 				.type(type)
-				.chord(intermediateAirfoilChord)
 				.thicknessToChordRatio(intermediateAirfoilThicknessRatio)
 				.camberRatio(intermediateAirfoilCamberRatio)
 				.radiusLeadingEdgeNormalized(intermediateAirfoilLeadingEdgeRadius)
@@ -828,6 +1283,14 @@ public class LiftingSurface implements ILiftingSurface{
 		this._aeroDatabaseReader = aeroDatabaseReader;
 	}
 
+	public HighLiftDatabaseReader getHighLiftDatabaseReader() {
+		return _highLiftDatabaseReader;
+	}
+
+	public void setHighLiftDatabaseReader(HighLiftDatabaseReader _highLiftDatabaseReader) {
+		this._highLiftDatabaseReader = _highLiftDatabaseReader;
+	}
+
 	@Override
 	public Amount<Angle> getRiggingAngle() {
 		return this._riggingAngle;
@@ -886,5 +1349,41 @@ public class LiftingSurface implements ILiftingSurface{
 	@Override
 	public void setPositionRelativeToAttachment(PositionRelativeToAttachmentEnum _positionRelativeToAttachment) {
 		this._positionRelativeToAttachment = _positionRelativeToAttachment;
+	}
+
+	public Amount<Mass> getMassReference() {
+		return _massReference;
+	}
+
+	public void setMassReference(Amount<Mass> _massReference) {
+		this._massReference = _massReference;
+	}
+
+	public Amount<Mass> getMass() {
+		return _mass;
+	}
+
+	public Amount<Mass> getMassEstimated() {
+		return _massEstimated;
+	}
+
+	public Map<MethodEnum, Amount<Mass>> getMassMap() {
+		return _massMap;
+	}
+
+	public LSAerodynamicsManager getAerodynamics() {
+		return theAerodynamics;
+	}
+
+	public void setAerodynamics(LSAerodynamicsManager theAerodynamics) {
+		this.theAerodynamics = theAerodynamics;
+	}
+	
+	public CalcHighLiftDevices getHigLiftCalculator() {
+		return _higLiftCalculator;
+	}
+
+	public void setHigLiftCalculator(CalcHighLiftDevices higLiftCalculator) {
+		this._higLiftCalculator = higLiftCalculator;
 	}
 }

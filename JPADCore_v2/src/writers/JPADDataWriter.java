@@ -46,7 +46,7 @@ import aircraft.calculators.ACWeightsManager;
 import aircraft.calculators.costs.Costs;
 import aircraft.components.Aircraft;
 import aircraft.components.CabinConfiguration;
-import aircraft.components.FuelTanks;
+import aircraft.components.FuelTank;
 import aircraft.components.LandingGears;
 import aircraft.components.Systems;
 import aircraft.components.fuselage.Fuselage;
@@ -489,7 +489,6 @@ public class JPADDataWriter {
 		writeInputNode("Number_of_rows", configuration.getNumberOfRowsEconomyClass(), economy, true);
 		writeInputNode("Distance_from_wall", configuration.getDistanceFromWallEconomyClass(), economy, true);
 		writeInputNode("Number_of_breaks", configuration.getNumberOfBreaksEconomyClass(), economy, true);
-		writeInputNode("Length_of_each_break", configuration.getLengthOfEachBreakEconomyClass(), economy, true);
 
 		Element business = doc.createElement(WordUtils.capitalizeFully(ClassTypeEnum.BUSINESS.name()));
 		cabinLayout.appendChild(business);
@@ -500,7 +499,6 @@ public class JPADDataWriter {
 		writeInputNode("Number_of_rows", configuration.getNumberOfRowsBusinessClass(), business, true);
 		writeInputNode("Distance_from_wall", configuration.getDistanceFromWallBusinessClass(), business, true);
 		writeInputNode("Number_of_breaks", configuration.getNumberOfBreaksBusinessClass(), business, true);
-		writeInputNode("Length_of_each_break", configuration.getLengthOfEachBreakBusinessClass(), business, true);
 
 		Element first = doc.createElement(WordUtils.capitalizeFully(ClassTypeEnum.FIRST.name()));
 		cabinLayout.appendChild(first);
@@ -511,7 +509,6 @@ public class JPADDataWriter {
 		writeInputNode("Number_of_rows", configuration.getNumberOfRowsFirstClass(), first, true);
 		writeInputNode("Distance_from_wall", configuration.getDistanceFromWallFirstClass(), first, true);
 		writeInputNode("Number_of_breaks", configuration.getNumberOfBreaksFirstClass(), first, true);
-		writeInputNode("Length_of_each_break", configuration.getLengthOfEachBreakFirstClass(), first, true);
 	}
 
 	private void writeConfigurationOutput(CabinConfiguration configuration, Element analysisNode) {
@@ -615,11 +612,11 @@ public class JPADDataWriter {
 	}
 
 	private void writePerformancesInput(ACPerformanceManager performances, Element performancesNode) {
-		writeInputNode("Optimum_Cruise_Mach_Number", performances.get_machOptimumCruise(), performancesNode, true);
-		writeInputNode("Maximum_Cruise_Mach_Number", performances.get_machMaxCruise(), performancesNode, true);
-		writeInputNode("Limit_load_factor", performances.get_nLimit(), performancesNode, true);
-		writeInputNode("Limit_load_factor_at_MZFW", performances.get_nLimitZFW(), performancesNode, true);
-		writeInputNode("Ultimate_load_factor", performances.get_nUltimate(), performancesNode, true);		
+		writeInputNode("Optimum_Cruise_Mach_Number", performances.getMachOptimumCruise(), performancesNode, true);
+		writeInputNode("Maximum_Cruise_Mach_Number", performances.getMachMaxCruise(), performancesNode, true);
+		writeInputNode("Limit_load_factor", performances.getNLimit(), performancesNode, true);
+		writeInputNode("Limit_load_factor_at_MZFW", performances.getNLimitZFW(), performancesNode, true);
+		writeInputNode("Ultimate_load_factor", performances.getNUltimate(), performancesNode, true);		
 	}
 
 	private void writePerformancesOutput(ACPerformanceManager performances, Element analysisNode) {
@@ -627,10 +624,10 @@ public class JPADDataWriter {
 		Element speeds = addElementToSubElement("Speeds", analysis);
 
 		if (performances != null) {
-			if (performances.get_vDiveEAS() != null)
-				writeOutputNode("Dive_EAS", performances.get_vDiveEAS(), speeds);
-			if (performances.get_vMaxCruiseEAS() != null)
-				writeOutputNode("Max_cruise_EAS", performances.get_vMaxCruiseEAS(), speeds);
+			if (performances.getVDiveEAS() != null)
+				writeOutputNode("Dive_EAS", performances.getVDiveEAS(), speeds);
+			if (performances.getVMaxCruiseEAS() != null)
+				writeOutputNode("Max_cruise_EAS", performances.getVMaxCruiseEAS(), speeds);
 			//		writeNode("Altitude_at_absolute_minimum_speed_and_MTOW", performances.getPerformanceManager().getAltitudeAtMinimumSpeedAbsolutePercentMaxWeight(1., FlightConditionEnum.CRUISE), speeds);
 			if (performances.getPerformanceManager() != null) {
 				writeOutputNode("Absolute_minimum_speed_at_MTOW", performances.getPerformanceManager().getMinimumSpeedAbsolutePercentMaxWeight(1., EngineOperatingConditionEnum.CRUISE), speeds);
@@ -638,7 +635,7 @@ public class JPADDataWriter {
 				writeOutputNode("Absolute_maximum_speed_at_MTOW", performances.getPerformanceManager().getMaximumSpeedAbsolutePercentMaxWeight(1., EngineOperatingConditionEnum.CRUISE), speeds);
 
 				Element pressures = addElementToSubElement("Pressures", analysis);
-				writeOutputNode("Maximum_dynamic_pressure", performances.get_maxDynamicPressure(), pressures);
+				writeOutputNode("Maximum_dynamic_pressure", performances.getMaxDynamicPressure(), pressures);
 
 				Element range = addElementToSubElement("Ranges", analysis);
 				writeOutputNode("Range_constant_speed_and_cl", performances.getPerformanceManager().getRangeManager().getRangeSpeedAndClConstant(), range);
@@ -689,7 +686,7 @@ public class JPADDataWriter {
 		writeInputNode("Cylinder_Rho_upper", fuselage.get_sectionCylinderRhoUpper(), fuselageParameters, true);
 		writeInputNode("Cylinder_Rho_lower", fuselage.get_sectionCylinderRhoLower(), fuselageParameters, true);
 		writeInputNode("Pressurization", fuselage.is_pressurized(), fuselageParameters, true);
-		writeInputNode("Reference_mass", fuselage.get_massReference(), fuselageParameters, true);
+		writeInputNode("Reference_mass", fuselage.getMassReference(), fuselageParameters, true);
 		writeInputNode("Mass_correction_factor", fuselage.get_massCorrectionFactor(), fuselageParameters, true);
 
 		// --- END OF INPUT DATA --------------------------------------------------------------
@@ -776,7 +773,7 @@ public class JPADDataWriter {
 			// --- Weights ---------------------------
 			Element weights = addElementToSubElement("Weights", analysis);
 
-			writeOutputNode("Reference_mass", fuselage.get_massReference(), weights);
+			writeOutputNode("Reference_mass", fuselage.getMassReference(), weights);
 			writeOutputNode("Mass_correction_factor", fuselage.get_massCorrectionFactor(), weights);
 			writeMethodsComparison(doc, _sheet, "Weight_estimation_methods_comparison", fuselage.getMassMap(), fuselage.get_percentDifference(), weights);
 			writeOutputNode("Estimated_mass", fuselage.get_massEstimated(), weights);
@@ -1152,7 +1149,7 @@ public class JPADDataWriter {
 
 	}
 
-	private void writeFuelTank(FuelTanks fuelTank) {
+	private void writeFuelTank(FuelTank fuelTank) {
 
 		_sheet = commonOperations(fuelTank, _fuelTankInitiator, true);
 
@@ -1163,7 +1160,7 @@ public class JPADDataWriter {
 		writeFuelTankOutput(fuelTank, fuelTankParam, _analysisInitiator);
 	}
 
-	private void writeFuelTankInput(FuelTanks fuelTank, Element fuelTankParam) {
+	private void writeFuelTankInput(FuelTank fuelTank, Element fuelTankParam) {
 		writeInputNode("Xcoordinate", fuelTank.getX0(), fuelTankParam, true);
 		writeInputNode("Ycoordinate", fuelTank.getY0(), fuelTankParam, true);
 		writeInputNode("Zcoordinate", fuelTank.getZ0(), fuelTankParam, true);
@@ -1172,7 +1169,7 @@ public class JPADDataWriter {
 		writeInputNode("Fuel_mass", fuelTank.getFuelMass(), fuelTankParam, true);
 	}
 
-	private void writeFuelTankOutput(FuelTanks fuelTank, Element fuelTankParam, Element analysisNode) {
+	private void writeFuelTankOutput(FuelTank fuelTank, Element fuelTankParam, Element analysisNode) {
 
 		writeOutputNode("LE_spanwise_extension", fuelTank.getA1(), fuelTankParam);
 		writeOutputNode("TE_spanwise_extension", fuelTank.getA2(), fuelTankParam);
@@ -1387,12 +1384,12 @@ public class JPADDataWriter {
 		// --- Balance -------------------------
 		Element balance = addElementToSubElement("Balance", analysis);
 
-		writeOutputNode("Xcg_LRF", nacelle.get_cg().get_xLRF(), balance);
-		writeOutputNode("Ycg_LRF", nacelle.get_cg().get_yLRF(), balance);
-		writeOutputNode("Zcg_LRF", nacelle.get_cg().get_zLRF(), balance);
-		writeOutputNode("Xcg_BRF", nacelle.get_cg().get_xBRF(), balance);
-		writeOutputNode("Ycg_BRF", nacelle.get_cg().get_yBRF(), balance);
-		writeOutputNode("Zcg_BRF", nacelle.get_cg().get_zBRF(), balance);
+		writeOutputNode("Xcg_LRF", nacelle.getCG().get_xLRF(), balance);
+		writeOutputNode("Ycg_LRF", nacelle.getCG().get_yLRF(), balance);
+		writeOutputNode("Zcg_LRF", nacelle.getCG().get_zLRF(), balance);
+		writeOutputNode("Xcg_BRF", nacelle.getCG().get_xBRF(), balance);
+		writeOutputNode("Ycg_BRF", nacelle.getCG().get_yBRF(), balance);
+		writeOutputNode("Zcg_BRF", nacelle.getCG().get_zBRF(), balance);
 
 		// --- Aerodynamics --------------------
 		Element aerodynamics = addElementToSubElement("Aerodynamics", analysis);

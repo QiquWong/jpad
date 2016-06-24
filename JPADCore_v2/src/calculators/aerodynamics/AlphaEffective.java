@@ -70,7 +70,7 @@ public class AlphaEffective {
 		yStationsAlpha = MyArrayUtils.linspace(0., semispan, 50);
 		yStationsAirfoil = theWing.get_yStationsAirfoil().toArray();
 		xLEvsYActual = theWing.get_xLEvsYActual().toArray();
-		surface = theWing.get_surface().getEstimatedValue();
+		surface = theWing.getSurface().getEstimatedValue();
 		altitude = theOperatingConditions.get_altitude().getEstimatedValue();
 
 		alpha0l = theLSManager.get_alpha0lDistribution().toArray();

@@ -160,10 +160,10 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		initializeComponentsAerodynamics(_theOperatingConditions, aircraft);
 
 		ne = aircraft.getPowerPlant().get_engineNumber();
-		lambdaW = aircraft.getWing().get_taperRatioEquivalent().doubleValue();
-		arW = aircraft.getWing().get_aspectRatio().doubleValue();
-		bW = aircraft.getWing().get_span().getEstimatedValue();
-		phi25 = aircraft.getWing().get_sweepQuarterChordEq().doubleValue(SI.RADIAN);
+		lambdaW = aircraft.getWing().getLiftingSurfaceCreator().getTaperRatioEquivalentWing().doubleValue();
+		arW = aircraft.getWing().getAspectRatio();
+		bW = aircraft.getWing().getSpan().getEstimatedValue();
+		phi25 = aircraft.getWing().getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().doubleValue(SI.RADIAN);
 		tc = aircraft.getWing().getGeometry().getCalculateThickness().getMethodsMap().get(MethodEnum.INTEGRAL_MEAN);
 		dihedral = aircraft.getWing().get_dihedralMean().getEstimatedValue();
 
@@ -194,7 +194,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 					/ aircraft.getWing().get_meanAerodChordActual().getEstimatedValue();
 			xacWBRF = aircraft.getWing().getAerodynamics()
 					.getCalculateXAC().get_methodMapLRF().get(MethodEnum.DEYOUNG_HARPER).getEstimatedValue()
-					+ aircraft.getWing().getX0().getEstimatedValue();
+					+ aircraft.getWing().getXApexConstructionAxes().getEstimatedValue();
 
 			xa = (aircraft.getTheBalance().get_cgMTOM().get_xBRF().getEstimatedValue() - xacWBRF)
 					/macW;
@@ -389,7 +389,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 			e_theo = 1/(1 + f*arW);
 
 			kef = 1 - 2*Math.pow(
-					_theAircraft.getFuselage().get_sectionCylinderHeight().getEstimatedValue()/bW
+					_theAircraft.getFuselage().getFuselageCreator().getSectionCylinderHeight().getEstimatedValue()/bW
 					, 2);
 
 			switch(_theAircraft.getTypeVehicle()) {
@@ -432,15 +432,15 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		}
 
 		case RAYMER : { // Raymer page 298 (157 pdf)
-			if (_theAircraft.getWing().get_sweepLEEquivalent().getEstimatedValue()> 5*Math.PI/180.){
+			if (_theAircraft.getWing().getSweepLEEquivalent(false).getEstimatedValue()> 5*Math.PI/180.){
 				return 4.61*(1 - 0.045
-						*Math.pow(_theAircraft.getWing().get_aspectRatio(),0.68))*
+						*Math.pow(_theAircraft.getWing().getAspectRatio(),0.68))*
 						Math.pow(
-								Math.cos(_theAircraft.getWing().get_sweepLEEquivalent().getEstimatedValue())
+								Math.cos(_theAircraft.getWing().getSweepLEEquivalent(false).getEstimatedValue())
 								,0.15) - 3.1;
 			} else {
 				return 1.78*(1 - 0.045
-						*Math.pow(_theAircraft.getWing().get_aspectRatio().doubleValue()
+						*Math.pow(_theAircraft.getWing().getAspectRatio()
 								,0.68)) - 0.64;
 			}
 		}
@@ -589,7 +589,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		
 
 		double alphaWing = alphaBody.getEstimatedValue() +
-				_theAircraft.getWing().get_iw().getEstimatedValue();
+				_theAircraft.getWing().getRiggingAngle().getEstimatedValue();
 
 	
 		
@@ -861,14 +861,14 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 
 		// Evaluate all wing parameters
 		if (aircraft.getWing() != null) {
-			aircraft.getWing().getAerodynamics().set_cLCurrent(aircraft.getThePerformance().get_cruiseCL());
+			aircraft.getWing().getAerodynamics().set_cLCurrent(aircraft.getThePerformance().getCruiseCL());
 			aircraft.getWing().getAerodynamics().calculateAll(_theOperatingConditions.get_machCurrent(), alphaRoot);
 		} 
 
 		// Evaluate all Htail parameters
 		if (aircraft.getHTail() != null) {
 			// TODO: change Htail CL
-			aircraft.getHTail().getAerodynamics().set_cLCurrent(aircraft.getThePerformance().get_cruiseCL());
+			aircraft.getHTail().getAerodynamics().set_cLCurrent(aircraft.getThePerformance().getCruiseCL());
 			aircraft.getHTail().getAerodynamics().calculateAll(_theOperatingConditions.get_machCurrent(),alphaRoot);
 		}
 
@@ -880,7 +880,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 
 		// Evaluate all canard parameters
 		if (aircraft.getCanard() != null) {
-			aircraft.getCanard().getAerodynamics().set_cLCurrent(aircraft.getThePerformance().get_cruiseCL());
+			aircraft.getCanard().getAerodynamics().set_cLCurrent(aircraft.getThePerformance().getCruiseCL());
 			aircraft.getCanard().getAerodynamics().calculateAll(_theOperatingConditions.get_machCurrent(),alphaRoot);
 		}
 
@@ -901,7 +901,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		calculateDragPolarPoints(arW, _eWhole[0], _cD0, 
 				conditions.get_densityCurrent().getEstimatedValue(), 
 				_theAircraft.getTheWeights().get_MTOW().getEstimatedValue(), 
-				_theAircraft.getWing().get_surface().getEstimatedValue());
+				_theAircraft.getWing().getSurface().getEstimatedValue());
 
 		calculateDepsDalpha(_theAircraft);
 		calculateCLAlphaFixed(_theAircraft);

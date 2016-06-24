@@ -78,7 +78,7 @@ public class Systems implements ISystems {
 		}
 		
 		/************************************************************************
-		 * method that recognize aircraft name and sets it's 
+		 * method that recognize aircraft name and sets its 
 		 * systems data.
 		 * 
 		 * @author Vittorio Trifari

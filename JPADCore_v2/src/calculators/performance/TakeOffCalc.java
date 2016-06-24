@@ -193,7 +193,7 @@ public class TakeOffCalc {
 				SpeedCalc.calculateSpeedStall(
 						theConditions.get_altitude().getEstimatedValue(),
 						aircraft.getTheWeights().get_MTOW().getEstimatedValue(),
-						aircraft.getWing().get_surface().getEstimatedValue(),
+						aircraft.getWing().getSurface().getEstimatedValue(),
 						cLmaxTO
 						),
 				SI.METERS_PER_SECOND);
@@ -201,7 +201,7 @@ public class TakeOffCalc {
 		vLO = vSTakeOff.times(kLO);
 		
 		// McCormick interpolated function --> See the excel file into JPAD DOCS
-		double hb = wingToGroundDistance.divide(aircraft.getWing().get_span().times(Math.PI/4)).getEstimatedValue();
+		double hb = wingToGroundDistance.divide(aircraft.getWing().getSpan().times(Math.PI/4)).getEstimatedValue();
 		kGround = - 622.44*(Math.pow(hb, 5)) + 624.46*(Math.pow(hb, 4)) - 255.24*(Math.pow(hb, 3))
 				+ 47.105*(Math.pow(hb, 2)) - 0.6378*hb + 0.0055;
 		
@@ -214,7 +214,7 @@ public class TakeOffCalc {
 		System.out.println("Delta CD0 landing gears = " + this.deltaCD0LandingGear);
 		System.out.println("CD0 TakeOff = " + (cD0 + deltaCD0FlapLandinGears));
 		System.out.println("Induced CD TakeOff = " + ((Math.pow(cLground, 2)*kGround)
-				/(Math.PI*aircraft.getWing().get_aspectRatio()*aircraft.getTheAerodynamics().get_oswald())));
+				/(Math.PI*aircraft.getWing().getAspectRatio()*aircraft.getTheAerodynamics().get_oswald())));
 		System.out.println("VsTO = " + vSTakeOff);
 		System.out.println("VRot = " + vRot);
 		System.out.println("VLO = " + vLO);
@@ -343,7 +343,7 @@ public class TakeOffCalc {
 				SpeedCalc.calculateSpeedStall(
 						theConditions.get_altitude().getEstimatedValue(),
 						aircraft.getTheWeights().get_MTOW().getEstimatedValue(),
-						aircraft.getWing().get_surface().getEstimatedValue(),
+						aircraft.getWing().getSurface().getEstimatedValue(),
 						cLmaxTO
 						),
 				SI.METERS_PER_SECOND);
@@ -363,7 +363,7 @@ public class TakeOffCalc {
 		System.out.println("-----------------------------------------------------------\n");
 
 		// McCormick interpolated function --> See the excel file into JPAD DOCS
-		double hb = wingToGroundDistance.divide(aircraft.getWing().get_span().times(Math.PI/4)).getEstimatedValue();
+		double hb = wingToGroundDistance.divide(aircraft.getWing().getSpan().times(Math.PI/4)).getEstimatedValue();
 		kGround = - 622.44*(Math.pow(hb, 5)) + 624.46*(Math.pow(hb, 4)) - 255.24*(Math.pow(hb, 3))
 				+ 47.105*(Math.pow(hb, 2)) - 0.6378*hb + 0.0055;
 		
@@ -1701,7 +1701,7 @@ public class TakeOffCalc {
 			cD0 = TakeOffCalc.this.getcD0();
 			deltaCD0 = TakeOffCalc.this.getDeltaCD0FlapLandinGears();
 			oswald = TakeOffCalc.this.getOswald();
-			ar = aircraft.getWing().get_aspectRatio();
+			ar = aircraft.getWing().getAspectRatio();
 			k1 = TakeOffCalc.this.getK1();
 			k2 = TakeOffCalc.this.getK2();
 			kGround = TakeOffCalc.this.getkGround();
@@ -1836,7 +1836,7 @@ public class TakeOffCalc {
 				cD = kFailure*cD(cL(speed, alpha, gamma, time));
 
 			return 	0.5
-					*aircraft.getWing().get_surface().getEstimatedValue()
+					*aircraft.getWing().getSurface().getEstimatedValue()
 					*AtmosphereCalc.getDensity(
 							altitude)
 					*(Math.pow(speed + (vWind*Math.cos(Amount.valueOf(
@@ -1856,7 +1856,7 @@ public class TakeOffCalc {
 			}
 			else
 				return (2*weight*Math.cos(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))/
-						(TakeOffCalc.this.getAircraft().getWing().get_surface().getEstimatedValue()*
+						(TakeOffCalc.this.getAircraft().getWing().getSurface().getEstimatedValue()*
 								AtmosphereCalc.getDensity(
 										altitude)*
 								Math.pow(speed, 2));
@@ -1867,7 +1867,7 @@ public class TakeOffCalc {
 			double cL = cL(speed, alpha, gamma, time);
 
 			return 	0.5
-					*aircraft.getWing().get_surface().getEstimatedValue()
+					*aircraft.getWing().getSurface().getEstimatedValue()
 					*AtmosphereCalc.getDensity(
 							altitude)
 					*(Math.pow(speed + (vWind*Math.cos(Amount.valueOf(

@@ -41,8 +41,8 @@ public interface IAircraft {
 	public NacellesManager getNacelles();
 	public void setNacelles(NacellesManager nacelles);
 
-	public FuelTanks getFuelTank();
-	public void setFuelTank(FuelTanks fuelTank);
+	public FuelTank getFuelTank();
+	public void setFuelTank(FuelTank fuelTank);
 	
 	public LandingGears getLandingGears();
 	public void setLandingGears(LandingGears landingGears);

@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     id="svg"
+     class="svg"
+     width="700"
+     height="600">
+   <g id="page" width="700" height="600">
+      <g id="graph" transform="translate(60,40)">
+         <rect width="620" height="510" fill="blue" opacity="0.05"/>
+         <rect width="620"
+               height="510"
+               fill="none"
+               opacity="1.0"
+               style="stroke: darkblue; stroke-width: 2px;"/>
+         <g id="xAxis" class="axis" transform="translate(0,510)">
+            <g class="tick"
+               transform="translate(51.32134670897453,0)"
+               style="opacity: 1;">
+               <line y2="-510"
+                     x2="0"
+                     style="fill: none; stroke: #808080; stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+               <text dy=".71em" y="12" x="0" style="text-anchor: middle;">-10</text>
+            </g>
+            <g class="tick"
+               transform="translate(103.05707736717962,0)"
+               style="opacity: 1;">
+               <line y2="-510"
+                     x2="0"
+                     style="fill: none; stroke: #808080; stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+               <text dy=".71em" y="12" x="0" style="text-anchor: middle;">-8</text>
+            </g>
+            <g class="tick"
+               transform="translate(154.79280802538472,0)"
+               style="opacity: 1;">
+               <line y2="-510"
+                     x2="0"
+                     style="fill: none; stroke: #808080; stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+               <text dy=".71em" y="12" x="0" style="text-anchor: middle;">-6</text>
+            </g>
+            <g class="tick"
+               transform="translate(206.52853868358983,0)"
+               style="opacity: 1;">
+               <line y2="-510"
+                     x2="0"
+                     style="fill: none; stroke: #808080; stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+               <text dy=".71em" y="12" x="0" style="text-anchor: middle;">-4</text>
+            </g>
+            <g class="tick"
+               transform="translate(258.2642693417949,0)"
+               style="opacity: 1;">
+               <line y2="-510"
+                     x2="0"
+                     style="fill: none; stroke: #808080; stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+               <text dy=".71em" y="12" x="0" style="text-anchor: middle;">-2</text>
+            </g>
+            <g class="tick" transform="translate(310,0)" style="opacity: 1;">
+               <line y2="-510"
+                     x2="0"
+                     style="fill: none; stroke: #808080; stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+               <text dy=".71em" y="12" x="0" style="text-anchor: middle;">0</text>
+            </g>
+            <g class="tick"
+               transform="translate(361.73573065820506,0)"
+               style="opacity: 1;">
+               <line y2="-510"
+                     x2="0"
+                     style="fill: none; stroke: #808080; stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+               <text dy=".71em" y="12" x="0" style="text-anchor: middle;">2</text>
+            </g>
+            <g class="tick"
+               transform="translate(413.4714613164102,0)"
+               style="opacity: 1;">
+               <line y2="-510"
+                     x2="0"
+                     style="fill: none; stroke: #808080; stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+               <text dy=".71em" y="12" x="0" style="text-anchor: middle;">4</text>
+            </g>
+            <g class="tick"
+               transform="translate(465.2071919746153,0)"
+               style="opacity: 1;">
+               <line y2="-510"
+                     x2="0"
+                     style="fill: none; stroke: #808080; stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+               <text dy=".71em" y="12" x="0" style="text-anchor: middle;">6</text>
+            </g>
+            <g class="tick"
+               transform="translate(516.9429226328203,0)"
+               style="opacity: 1;">
+               <line y2="-510"
+                     x2="0"
+                     style="fill: none; stroke: #808080; stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+               <text dy=".71em" y="12" x="0" style="text-anchor: middle;">8</text>
+            </g>
+            <g class="tick"
+               transform="translate(568.6786532910255,0)"
+               style="opacity: 1;">
+               <line y2="-510"
+                     x2="0"
+                     style="fill: none; stroke: #808080; stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+               <text dy=".71em" y="12" x="0" style="text-anchor: middle;">10</text>
+            </g>
+            <path class="domain"
+                  d="M0,-510V0H620V-510"
+                  style="fill: none; stroke: #808080; stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
+         </g>
+         <g id="yAxis" class="axis">
+            <g class="tick"
+               transform="translate(0,467.7840535135855)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-8" y="0" style="text-anchor: end;">-10</text>
+            </g>
+            <g class="tick"
+               transform="translate(0,425.2272428108684)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-8" y="0" style="text-anchor: end;">-8</text>
+            </g>
+            <g class="tick"
+               transform="translate(0,382.67043210815126)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-8" y="0" style="text-anchor: end;">-6</text>
+            </g>
+            <g class="tick"
+               transform="translate(0,340.1136214054342)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-8" y="0" style="text-anchor: end;">-4</text>
+            </g>
+            <g class="tick"
+               transform="translate(0,297.5568107027171)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-8" y="0" style="text-anchor: end;">-2</text>
+            </g>
+            <g class="tick" transform="translate(0,255)" style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-8" y="0" style="text-anchor: end;">0</text>
+            </g>
+            <g class="tick"
+               transform="translate(0,212.4431892972829)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-8" y="0" style="text-anchor: end;">2</text>
+            </g>
+            <g class="tick"
+               transform="translate(0,169.8863785945658)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-8" y="0" style="text-anchor: end;">4</text>
+            </g>
+            <g class="tick"
+               transform="translate(0,127.32956789184873)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-8" y="0" style="text-anchor: end;">6</text>
+            </g>
+            <g class="tick"
+               transform="translate(0,84.77275718913165)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-8" y="0" style="text-anchor: end;">8</text>
+            </g>
+            <g class="tick"
+               transform="translate(0,42.215946486414516)"
+               style="opacity: 1;">
+               <line x2="620"
+                     y2="0"
+                     style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+               <text dy=".32em" x="-8" y="0" style="text-anchor: end;">10</text>
+            </g>
+            <path class="domain"
+                  d="M620,0H0V510H620"
+                  style="fill: none; stroke: #808080; stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
+         </g>
+         <g id="xy" class="xy">
+            <path id="line"
+                  d="M310,229.89103483888454L471.6741583068909,232.42558857967367L471.6741583068909,235.01760071760918L310,237.5521544583984"
+                  class="line"
+                  style="fill:none; stroke:black; stroke-width:2"/>
+            <path id="area"
+                  d="M310,229.89103483888454L471.6741583068909,232.42558857967367L471.6741583068909,235.01760071760918L310,237.5521544583984L310,255L471.6741583068909,255L471.6741583068909,255L310,255Z"
+                  class="area"
+                  style="fill:blue;"
+                  opacity="1"/>
+         </g>
+         <g id="xy" class="xy">
+            <path id="line"
+                  d="M310,229.89103483888454L148.3258416931091,232.42558857967367L148.3258416931091,235.01760071760918L310,237.5521544583984"
+                  class="line"
+                  style="fill:none; stroke:black; stroke-width:2"/>
+            <path id="area"
+                  d="M310,229.89103483888454L148.3258416931091,232.42558857967367L148.3258416931091,235.01760071760918L310,237.5521544583984L310,255L148.3258416931091,255L148.3258416931091,255L310,255Z"
+                  class="area"
+                  style="fill:blue;"
+                  opacity="1"/>
+         </g>
+         <g id="xy" class="xy">
+            <path id="line"
+                  d="M318.22694087245833,223.08239197296217L314.035857786489,90.09235852697127L305.964142213511,90.09235852697127L301.7730591275417,223.08239197296217"
+                  class="line"
+                  style="fill:none; stroke:black; stroke-width:2"/>
+            <path id="area"
+                  d="M318.22694087245833,223.08239197296217L314.035857786489,90.09235852697127L305.964142213511,90.09235852697127L301.7730591275417,223.08239197296217L301.7730591275417,255L305.964142213511,255L314.035857786489,255L318.22694087245833,255Z"
+                  class="area"
+                  style="fill:yellow;"
+                  opacity="1"/>
+         </g>
+         <g id="xy" class="xy">
+            <path id="line"
+                  d="M284.13213467089747,263.5113622673726L284.14376326531453,260.89268913054934L284.2216958170001,257.49357691978554L284.42261054536175,253.5331607738913L284.79272579384246,249.20987572426066L285.36775531641786,244.70147318266507L286.1729622421681,240.1650141241849L287.2231159036208,235.73686718477182L288.522496462285,231.53271072222287L290.064905701566,227.64752710886745L291.83368244521466,224.15562556081971L293.8016624693593,221.11060408922447L295.93122013231863,218.54538501242774L298.1742344540133,216.47218705355698L300.4721122436401,214.88254563319L302.75577884860195,213.747312869355L304.9456769981247,213.0166448946124L306.95177085059976,212.61999931947145L308.6735431026248,212.4661529884753L309.99999629956943,212.4431892972829L310,212.4431892972829L311.32645246457105,212.46614791530808L313.0482239456736,212.62000185605504L315.0543176054181,213.016647431196L317.2442165258633,213.74732047910575L319.5278854435926,214.88254309660638L321.8257655459867,216.4721794438062L324.0687814095263,218.54538501242774L326.19833598879575,221.11061169897522L328.1663221803201,224.15562809740334L329.935094298434,227.64753471861823L331.4775081632498,231.53271072222287L332.77688409637915,235.73686718477182L333.82703313229706,240.1650128558931L334.63224314173726,244.7014681094979L335.2072803735372,249.20986748036398L335.57738945463825,253.53315046902048L335.7783057248448,257.4935682002795L335.8562336509956,260.8926796183609L335.86786532910253,263.51135465762184"
+                  class="line"
+                  style="fill:none; stroke:black; stroke-width:2"/>
+            <path id="area"
+                  d="M284.13213467089747,263.5113622673726L284.14376326531453,260.89268913054934L284.2216958170001,257.49357691978554L284.42261054536175,253.5331607738913L284.79272579384246,249.20987572426066L285.36775531641786,244.70147318266507L286.1729622421681,240.1650141241849L287.2231159036208,235.73686718477182L288.522496462285,231.53271072222287L290.064905701566,227.64752710886745L291.83368244521466,224.15562556081971L293.8016624693593,221.11060408922447L295.93122013231863,218.54538501242774L298.1742344540133,216.47218705355698L300.4721122436401,214.88254563319L302.75577884860195,213.747312869355L304.9456769981247,213.0166448946124L306.95177085059976,212.61999931947145L308.6735431026248,212.4661529884753L309.99999629956943,212.4431892972829L310,212.4431892972829L311.32645246457105,212.46614791530808L313.0482239456736,212.62000185605504L315.0543176054181,213.016647431196L317.2442165258633,213.74732047910575L319.5278854435926,214.88254309660638L321.8257655459867,216.4721794438062L324.0687814095263,218.54538501242774L326.19833598879575,221.11061169897522L328.1663221803201,224.15562809740334L329.935094298434,227.64753471861823L331.4775081632498,231.53271072222287L332.77688409637915,235.73686718477182L333.82703313229706,240.1650128558931L334.63224314173726,244.7014681094979L335.2072803735372,249.20986748036398L335.57738945463825,253.53315046902048L335.7783057248448,257.4935682002795L335.8562336509956,260.8926796183609L335.86786532910253,263.51135465762184L335.86786532910253,255L335.8562336509956,255L335.7783057248448,255L335.57738945463825,255L335.2072803735372,255L334.63224314173726,255L333.82703313229706,255L332.77688409637915,255L331.4775081632498,255L329.935094298434,255L328.1663221803201,255L326.19833598879575,255L324.0687814095263,255L321.8257655459867,255L319.5278854435926,255L317.2442165258633,255L315.0543176054181,255L313.0482239456736,255L311.32645246457105,255L310,255L309.99999629956943,255L308.6735431026248,255L306.95177085059976,255L304.9456769981247,255L302.75577884860195,255L300.4721122436401,255L298.1742344540133,255L295.93122013231863,255L293.8016624693593,255L291.83368244521466,255L290.064905701566,255L288.522496462285,255L287.2231159036208,255L286.1729622421681,255L285.36775531641786,255L284.79272579384246,255L284.42261054536175,255L284.2216958170001,255L284.14376326531453,255L284.13213467089747,255Z"
+                  class="area"
+                  style="fill:white;"
+                  opacity="1"/>
+         </g>
+         <g id="xy" class="xy">
+            <path id="line"
+                  d="M335.86786532910253,263.5113622673726L335.85623673468547,265.2571456268799L335.7783041829999,267.52321842592704L335.57738945463825,270.16349627928713L335.20727420615754,273.0456855725374L334.63224468358214,276.0512885352262L333.8270377578318,279.0755975335606L332.77688409637915,282.02769126553L331.477503537715,284.8304613950347L329.935094298434,287.4205846494662L328.16631755478534,289.74851901483134L326.1983375306407,291.77853417475603L324.0687798676814,293.4886810714818L321.8257655459867,294.8708121985344L319.52788775636,295.93057145438996L317.24422115139805,296.68739667905805L315.0543230018753,297.1745069711641L313.04822914940024,297.43893820011925L311.32645689737524,297.5415024207834L310.0000037004305,297.5568107027171L310,297.5568107027171L308.67354753542895,297.5415074939505L306.95177605432633,297.4389356635357L304.9456823945819,297.1745069711641L302.7557834741367,296.68738653272374L300.47211455640746,295.9305739909736L298.1742344540133,294.87081980828515L295.9312185904737,293.4886810714818L293.80166401120425,291.7785291015889L291.8336778196799,289.74851901483134L290.064905701566,287.42057957629896L288.5224918367502,284.8304664682019L287.2231159036208,282.02769380211356L286.17296686770294,279.075594996977L285.3677568582628,276.0512910718098L284.79271962646277,273.04569191399634L284.42261054536175,270.1635038890379L284.2216942751552,267.52322476738607L284.1437663490044,265.25715133419294L284.13213467089747,263.51136670639386"
+                  class="line"
+                  style="fill:none; stroke:black; stroke-width:2"/>
+            <path id="area"
+                  d="M335.86786532910253,263.5113622673726L335.85623673468547,265.2571456268799L335.7783041829999,267.52321842592704L335.57738945463825,270.16349627928713L335.20727420615754,273.0456855725374L334.63224468358214,276.0512885352262L333.8270377578318,279.0755975335606L332.77688409637915,282.02769126553L331.477503537715,284.8304613950347L329.935094298434,287.4205846494662L328.16631755478534,289.74851901483134L326.1983375306407,291.77853417475603L324.0687798676814,293.4886810714818L321.8257655459867,294.8708121985344L319.52788775636,295.93057145438996L317.24422115139805,296.68739667905805L315.0543230018753,297.1745069711641L313.04822914940024,297.43893820011925L311.32645689737524,297.5415024207834L310.0000037004305,297.5568107027171L310,297.5568107027171L308.67354753542895,297.5415074939505L306.95177605432633,297.4389356635357L304.9456823945819,297.1745069711641L302.7557834741367,296.68738653272374L300.47211455640746,295.9305739909736L298.1742344540133,294.87081980828515L295.9312185904737,293.4886810714818L293.80166401120425,291.7785291015889L291.8336778196799,289.74851901483134L290.064905701566,287.42057957629896L288.5224918367502,284.8304664682019L287.2231159036208,282.02769380211356L286.17296686770294,279.075594996977L285.3677568582628,276.0512910718098L284.79271962646277,273.04569191399634L284.42261054536175,270.1635038890379L284.2216942751552,267.52322476738607L284.1437663490044,265.25715133419294L284.13213467089747,263.51136670639386L284.13213467089747,255L284.1437663490044,255L284.2216942751552,255L284.42261054536175,255L284.79271962646277,255L285.3677568582628,255L286.17296686770294,255L287.2231159036208,255L288.5224918367502,255L290.064905701566,255L291.8336778196799,255L293.80166401120425,255L295.9312185904737,255L298.1742344540133,255L300.47211455640746,255L302.7557834741367,255L304.9456823945819,255L306.95177605432633,255L308.67354753542895,255L310,255L310.0000037004305,255L311.32645689737524,255L313.04822914940024,255L315.0543230018753,255L317.24422115139805,255L319.52788775636,255L321.8257655459867,255L324.0687798676814,255L326.1983375306407,255L328.16631755478534,255L329.935094298434,255L331.477503537715,255L332.77688409637915,255L333.8270377578318,255L334.63224468358214,255L335.20727420615754,255L335.57738945463825,255L335.7783041829999,255L335.85623673468547,255L335.86786532910253,255Z"
+                  class="area"
+                  style="fill:white;"
+                  opacity="1"/>
+         </g>
+         <g id="xy" class="xy">
+            <path id="line"
+                  d="M335.8488444720268,262.5500516960207L413.4448619842857,263.87415895178407L594.1821778053601,264.2271676965631L594.1821778053601,266.5252354745099L413.4448619842857,266.74674367421744L335.8488444720268,267.577603019154"
+                  class="line"
+                  style="fill:none; stroke:black; stroke-width:2"/>
+            <path id="area"
+                  d="M335.8488444720268,262.5500516960207L413.4448619842857,263.87415895178407L594.1821778053601,264.2271676965631L594.1821778053601,266.5252354745099L413.4448619842857,266.74674367421744L335.8488444720268,267.577603019154L335.8488444720268,255L413.4448619842857,255L594.1821778053601,255L594.1821778053601,255L413.4448619842857,255L335.8488444720268,255Z"
+                  class="area"
+                  style="fill:lightblue;"
+                  opacity="1"/>
+         </g>
+         <g id="xy" class="xy">
+            <path id="line"
+                  d="M284.1511555279732,262.5500516960207L206.5551380157143,263.87415895178407L25.817822194639948,264.2271676965631L25.817822194639948,266.5252354745099L206.5551380157143,266.74674367421744L284.1511555279732,267.577603019154"
+                  class="line"
+                  style="fill:none; stroke:black; stroke-width:2"/>
+            <path id="area"
+                  d="M284.1511555279732,262.5500516960207L206.5551380157143,263.87415895178407L25.817822194639948,264.2271676965631L25.817822194639948,266.5252354745099L206.5551380157143,266.74674367421744L284.1511555279732,267.577603019154L284.1511555279732,255L206.5551380157143,255L25.817822194639948,255L25.817822194639948,255L206.5551380157143,255L284.1511555279732,255Z"
+                  class="area"
+                  style="fill:lightblue;"
+                  opacity="1"/>
+         </g>
+      </g>
+   </g>
+   <text class="x label" text-anchor="middle" x="370" y="595">y (m)</text>
+   <text class="y label"
+         text-anchor="middle"
+         x="-295"
+         y="5"
+         dy=".75em"
+         transform="rotate(-90)">z (m)</text>
+   <text class="title" text-anchor="middle" x="370" y="20">Aircraft data representation - Front View</text>
+</svg>

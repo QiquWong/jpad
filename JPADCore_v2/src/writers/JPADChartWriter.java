@@ -11,7 +11,6 @@ import aircraft.calculators.ACPerformanceManager;
 import aircraft.components.Aircraft;
 import aircraft.components.CabinConfiguration;
 import aircraft.components.liftingSurface.LiftingSurface;
-import aircraft.components.liftingSurface.LiftingSurface2Panels;
 import calculators.performance.PerformanceCalcManager;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;
@@ -137,7 +136,7 @@ public class JPADChartWriter {
 				subfolderPath, "ThrustVsSpeed_Phi100_CRUISE");
 		chartFactory.setXarrays(perfManager.getSpeed().toArray());
 		chartFactory.setYarrays(perfManager.getThrustvsAltitude(1., EngineOperatingConditionEnum.CRUISE));
-		chartFactory.setxMax(performance.get_vMaxCruise().doubleValue(SI.METERS_PER_SECOND));
+		chartFactory.setxMax(performance.getVMaxCruise().doubleValue(SI.METERS_PER_SECOND));
 		chartFactory.setyMin(0.);
 		chartFactory.createMultiTraceChart();
 		
@@ -147,7 +146,7 @@ public class JPADChartWriter {
 				subfolderPath, "ThrustVsSpeed_Phi100_CLIMB");
 		chartFactory.setXarrays(perfManager.getSpeed().toArray());
 		chartFactory.setYarrays(perfManager.getThrustvsAltitude(1., EngineOperatingConditionEnum.CLIMB));
-		chartFactory.setxMax(performance.get_vMaxCruise().doubleValue(SI.METERS_PER_SECOND));
+		chartFactory.setxMax(performance.getVMaxCruise().doubleValue(SI.METERS_PER_SECOND));
 		chartFactory.setyMin(0.);
 		chartFactory.createMultiTraceChart();
 		
@@ -157,7 +156,7 @@ public class JPADChartWriter {
 				subfolderPath, "DragVsSpeedMZFW");
 		chartFactory.setXarrays(perfManager.getSpeed().toArray());
 		chartFactory.setYarrays(perfManager.getDragMinWeight());
-		chartFactory.setxMax(performance.get_vMaxCruise().doubleValue(SI.METERS_PER_SECOND));
+		chartFactory.setxMax(performance.getVMaxCruise().doubleValue(SI.METERS_PER_SECOND));
 		chartFactory.setyMin(0.);
 //		TODO
 //		chartFactory.setyMax(theAircraft.get_powerPlant().get_T0Total().doubleValue(SI.NEWTON));
@@ -171,7 +170,7 @@ public class JPADChartWriter {
 		chartFactory.setXarrays(perfManager.getSpeed().toArray());
 		chartFactory.setYarrays(perfManager.getDragMinWeight());
 		chartFactory.setYarrays(perfManager.getThrustvsAltitude(0.75, EngineOperatingConditionEnum.CRUISE));
-		chartFactory.setxMax(performance.get_vMaxCruise().doubleValue(SI.METERS_PER_SECOND));
+		chartFactory.setxMax(performance.getVMaxCruise().doubleValue(SI.METERS_PER_SECOND));
 		chartFactory.setyMin(0.);
 //		TODO
 //		chartFactory.setyMax(theAircraft.get_powerPlant().get_T0Total().doubleValue(SI.NEWTON));
@@ -185,7 +184,7 @@ public class JPADChartWriter {
 		chartFactory.setXarrays(perfManager.getSpeed().toArray());
 		chartFactory.setYarrays(perfManager.getDragMinWeight());
 		chartFactory.setYarrays(perfManager.getThrustvsAltitude(1., EngineOperatingConditionEnum.CRUISE));
-		chartFactory.setxMax(performance.get_vMaxCruise().doubleValue(SI.METERS_PER_SECOND));
+		chartFactory.setxMax(performance.getVMaxCruise().doubleValue(SI.METERS_PER_SECOND));
 		chartFactory.setyMin(0.);
 //		TODO
 //		chartFactory.setyMax(theAircraft.get_powerPlant().get_T0Total().doubleValue(SI.NEWTON));
@@ -198,7 +197,7 @@ public class JPADChartWriter {
 				subfolderPath, "RateOfClimb_Phi100_MZFW");
 		chartFactory.setXarrays(perfManager.getSpeed().toArray());
 		chartFactory.setYarrays(perfManager.getRCvsAltitudeMinWeight(1.));
-		chartFactory.setxMax(performance.get_vMaxCruise().doubleValue(SI.METERS_PER_SECOND));
+		chartFactory.setxMax(performance.getVMaxCruise().doubleValue(SI.METERS_PER_SECOND));
 		chartFactory.setyMin(0.);
 		chartFactory.createMultiTraceChart();
 		
@@ -208,7 +207,7 @@ public class JPADChartWriter {
 				subfolderPath, "RateOfClimb_Phi100_" + weightPercentMTOW + "MTOW");
 		chartFactory.setXarrays(perfManager.getSpeed().toArray());
 		chartFactory.setYarrays(perfManager.getRCvsAltitudeMinWeight(1.));
-		chartFactory.setxMax(performance.get_vMaxCruise().doubleValue(SI.METERS_PER_SECOND));
+		chartFactory.setxMax(performance.getVMaxCruise().doubleValue(SI.METERS_PER_SECOND));
 		chartFactory.setyMin(0.);
 		chartFactory.createMultiTraceChart();
 
@@ -218,7 +217,7 @@ public class JPADChartWriter {
 				subfolderPath, "RateOfClimb_Phi100_MTOW");
 		chartFactory.setXarrays(perfManager.getSpeed().toArray());
 		chartFactory.setYarrays(perfManager.getRCvsAltitudeMaxWeight(1.));
-		chartFactory.setxMax(performance.get_vMaxCruise().doubleValue(SI.METERS_PER_SECOND));
+		chartFactory.setxMax(performance.getVMaxCruise().doubleValue(SI.METERS_PER_SECOND));
 		chartFactory.setyMin(0.);
 		chartFactory.createMultiTraceChart();
 
@@ -228,7 +227,7 @@ public class JPADChartWriter {
 				subfolderPath, "ClimbAngle_Phi100_MZFW");
 		chartFactory.setXarrays(perfManager.getSpeed().toArray());
 		chartFactory.setYarrays(perfManager.getGammaDegVsAltitudeMinWeight(1.));
-		chartFactory.setxMax(performance.get_vMaxCruise().doubleValue(SI.METERS_PER_SECOND));
+		chartFactory.setxMax(performance.getVMaxCruise().doubleValue(SI.METERS_PER_SECOND));
 		chartFactory.setyMin(0.); //TODO: check max and min angles
 		chartFactory.setyMax(20.);
 		chartFactory.createMultiTraceChart();
@@ -239,7 +238,7 @@ public class JPADChartWriter {
 				subfolderPath, "ClimbAngle_Phi100_MTOW");
 		chartFactory.setXarrays(perfManager.getSpeed().toArray());
 		chartFactory.setYarrays(perfManager.getGammaDegVsAltitudeMaxWeight(1.));
-		chartFactory.setxMax(performance.get_vMaxCruise().doubleValue(SI.METERS_PER_SECOND));
+		chartFactory.setxMax(performance.getVMaxCruise().doubleValue(SI.METERS_PER_SECOND));
 		chartFactory.setyMin(0.);
 		chartFactory.setyMax(20.);
 		chartFactory.createMultiTraceChart();

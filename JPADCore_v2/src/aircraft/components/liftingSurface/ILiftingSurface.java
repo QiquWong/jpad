@@ -8,7 +8,9 @@ import javax.measure.quantity.Length;
 
 import org.jscience.physics.amount.Amount;
 
+import aircraft.OperatingConditions;
 import aircraft.auxiliary.airfoil.Airfoil;
+import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
@@ -55,6 +57,7 @@ public interface ILiftingSurface {
 	public void calculateGeometry(ComponentEnum type, Boolean mirrored);
 	public void calculateGeometry(int nSections, ComponentEnum type, Boolean mirrored);
 	
+	public void calculateMass(Aircraft aircraft, OperatingConditions conditions);
 	public void calculateCG(MethodEnum method, ComponentEnum type);
 	
 	public List<Airfoil> getAirfoilList();

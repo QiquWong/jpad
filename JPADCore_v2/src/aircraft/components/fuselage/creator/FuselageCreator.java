@@ -16,6 +16,7 @@ import javax.measure.unit.SI;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
+import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 import org.apache.commons.math3.analysis.solvers.AllowedSolution;
 import org.apache.commons.math3.exception.OutOfRangeException;
@@ -844,11 +845,67 @@ public class FuselageCreator implements IFuselageCreator {
 		return diameter;
 	}
 
+	//	Return width at x-coordinate
+	public Double getSectionWidthAtZ(double z) {
+		return -2*getYOutlineYZSectionRightCurveAtZ(z);
+	}
+	
+	public double getYOutlineYZSectionRightCurveAtZ(double z) {
+	
+		List<Double> outlineYZSideRCurveY = new ArrayList<Double>();
+		List<Double> outlineYZSideRCurveZ = new ArrayList<Double>();
+		
+		for (int i = 0; i <= getSectionsYZ().get(IDX_SECTION_YZ_CYLINDER_1).getSectionLowerRightPoints().size() - 1; i++){
+			outlineYZSideRCurveY.add(
+					(double) getSectionsYZ().get(IDX_SECTION_YZ_CYLINDER_1).getSectionLowerRightPoints().get(i).x
+					);
+			outlineYZSideRCurveZ.add(
+					(double) getSectionsYZ().get(IDX_SECTION_YZ_CYLINDER_1).getSectionLowerRightPoints().get(i).y
+					);
+		}
+		
+		for (int i = 1; i <= getSectionsYZ().get(IDX_SECTION_YZ_CYLINDER_1).getSectionUpperRightPoints().size() - 1; i++){
+			outlineYZSideRCurveY.add(
+					(double) getSectionsYZ().get(IDX_SECTION_YZ_CYLINDER_1).getSectionUpperRightPoints().get(i).x
+					);
+			outlineYZSideRCurveZ.add(
+					(double) getSectionsYZ().get(IDX_SECTION_YZ_CYLINDER_1).getSectionUpperRightPoints().get(i).y
+					);
+		}
+		
+		double vyu[] = new double[outlineYZSideRCurveY.size()];
+		double vzu[] = new double[outlineYZSideRCurveZ.size()];
+		
+		for (int i = 0; i < vzu.length; i++)
+		{
+			vyu[i] = outlineYZSideRCurveY.get(i);
+			vzu[i] = outlineYZSideRCurveZ.get(i);
+		}
+		
+		// interpolation - lower
+		UnivariateInterpolator interpolatorSectionRightCurve = new SplineInterpolator();
+		UnivariateFunction myInterpolationFunctionUpper =
+				interpolatorSectionRightCurve.interpolate(vzu, vyu);
+
+		// section y-coordinates at z
+		Double ySection = 0.0;
+		if (z < vzu[0]) {
+			ySection = vyu[0];
+		}
+		if (z > vzu[vzu.length-1]) {
+			ySection = vyu[vyu.length-1];
+		}
+		if ((z >= vzu[0]) && (z <= vzu[vzu.length-1])){
+			ySection = myInterpolationFunctionUpper.value(z);
+		}
+		return ySection;
+	}
+	
 	//  Return width at x-coordinate
 	public Double getWidthAtX(double x) {
 		return 2*getYOutlineXYSideRAtX(x);
 	}
-
+	
 	public double getZOutlineXZUpperAtX(double x) {
 		// base vectors - upper
 		// unique values
