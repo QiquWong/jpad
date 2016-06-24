@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
     <wing id="JPAD Test Wing DAF - 2016" mirrored="TRUE" equivalent="FALSE">
-        <equivalent_wing>
+         <structure>
+			<main_spar_non_dimensional_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.25</main_spar_non_dimensional_position>
+			<secondary_spar_non_dimensional_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.55</secondary_spar_non_dimensional_position>
+		</structure>
+		<equivalent_wing>
 			<surface unit="m²">36.9</surface>
 			<aspect_ratio>13.09</aspect_ratio>
 			<non_dimensional_span_station_kink>0.363</non_dimensional_span_station_kink>

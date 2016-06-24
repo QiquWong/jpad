@@ -182,11 +182,16 @@ public class Aircraft implements IAircraft {
 //				__theNacelles.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 //				__theNacelles.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				
-				// FIXME : X,Y,Z APEX WILL BE DEFINED IN THE RELATED CLASS WHEN THE BUILDER PATTERN WILL BE IMPLEMENTED
-				createFuelTank(aircraftName);
-//				__theFuelTank.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-//				__theFuelTank.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-//				__theFuelTank.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
+				createFuelTank();
+				__theFuelTank.setXApexConstructionAxes(__theWing.getXApexConstructionAxes()
+															.plus(__theWing.getChordRoot()
+																	.times(__theWing.getLiftingSurfaceCreator()
+																						.getMainSparNonDimensionalPosition()
+																						)
+																	)
+															);
+				__theFuelTank.setYApexConstructionAxes(__theWing.getYApexConstructionAxes());
+				__theFuelTank.setZApexConstructionAxes(__theWing.getZApexConstructionAxes());
 				
 				createLandingGears(aircraftName);
 				__theLandingGears.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
@@ -250,11 +255,16 @@ public class Aircraft implements IAircraft {
 //				__theNacelles.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 //				__theNacelles.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				
-				// FIXME : X,Y,Z APEX WILL BE DEFINED IN THE RELATED CLASS WHEN THE BUILDER PATTERN WILL BE IMPLEMENTED
-				createFuelTank(aircraftName);
-//				__theFuelTank.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-//				__theFuelTank.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-//				__theFuelTank.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
+				createFuelTank();
+				__theFuelTank.setXApexConstructionAxes(__theWing.getXApexConstructionAxes()
+															.plus(__theWing.getChordRoot()
+																	.times(__theWing.getLiftingSurfaceCreator()
+																						.getMainSparNonDimensionalPosition()
+																						)
+																	)
+															);
+				__theFuelTank.setYApexConstructionAxes(__theWing.getYApexConstructionAxes());
+				__theFuelTank.setZApexConstructionAxes(__theWing.getZApexConstructionAxes());
 				
 				createLandingGears(aircraftName);
 				__theLandingGears.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
@@ -318,11 +328,16 @@ public class Aircraft implements IAircraft {
 //				__theNacelles.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 //				__theNacelles.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				
-				// FIXME : X,Y,Z APEX WILL BE DEFINED IN THE RELATED CLASS WHEN THE BUILDER PATTERN WILL BE IMPLEMENTED
-				createFuelTank(aircraftName);
-//				__theFuelTank.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-//				__theFuelTank.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-//				__theFuelTank.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
+				createFuelTank();
+				__theFuelTank.setXApexConstructionAxes(__theWing.getXApexConstructionAxes()
+															.plus(__theWing.getChordRoot()
+																	.times(__theWing.getLiftingSurfaceCreator()
+																						.getMainSparNonDimensionalPosition()
+																						)
+																	)
+															);
+				__theFuelTank.setYApexConstructionAxes(__theWing.getYApexConstructionAxes());
+				__theFuelTank.setZApexConstructionAxes(__theWing.getZApexConstructionAxes());
 				
 				createLandingGears(aircraftName);
 				__theLandingGears.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
@@ -440,8 +455,8 @@ public class Aircraft implements IAircraft {
 			// TODO
 		}
 		
-		private void createFuelTank(AircraftEnum aircraftName) {
-			// TODO
+		private void createFuelTank() {
+			__theFuelTank = new FuelTank.FuelTankBuilder("Fuel Tank", __theWing).build();
 		}
 		
 		private void createLandingGears(AircraftEnum aircraftName) {
@@ -622,20 +637,20 @@ public class Aircraft implements IAircraft {
 			return this;
 		}
 		
-//		public AircraftBuilder xApexFuelTank(Amount<Length> xApex) {
-//			this.__theFuelTank.setXApexConstructionAxes(xApex);
-//			return this;
-//		}
-//		
-//		public AircraftBuilder yApexFuelTank(Amount<Length> yApex) {
-//			this.__theFuelTank.setYApexConstructionAxes(yApex);
-//			return this;
-//		}
-//	
-//		public AircraftBuilder zApexFuelTank(Amount<Length> zApex) {
-//			this.__theFuelTank.setZApexConstructionAxes(zApex);
-//			return this;
-//		}
+		public AircraftBuilder xApexFuelTank(Amount<Length> xApex) {
+			this.__theFuelTank.setXApexConstructionAxes(xApex);
+			return this;
+		}
+		
+		public AircraftBuilder yApexFuelTank(Amount<Length> yApex) {
+			this.__theFuelTank.setYApexConstructionAxes(yApex);
+			return this;
+		}
+	
+		public AircraftBuilder zApexFuelTank(Amount<Length> zApex) {
+			this.__theFuelTank.setZApexConstructionAxes(zApex);
+			return this;
+		}
 		
 		public AircraftBuilder landingGears (LandingGears landingGears) {
 			this.__theLandingGears = landingGears;
@@ -885,10 +900,10 @@ public class Aircraft implements IAircraft {
 		
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////
-	// TODO : THE RESULTS OF THIS CALCULATION REQUIRES THE BALANCE ANALYSIS SO  //
-	//		  THEY MUST BE ADDED TO THE toString MEHOD OF THE BALANCE ANALYSIS. //
-	//////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////
+	// TODO : THE RESULTS OF THIS CALCULATION REQUIRES THE BALANCE ANALYSIS SO   //
+	//		  THEY MUST BE ADDED TO THE toString METHOD OF THE BALANCE ANALYSIS. //
+	///////////////////////////////////////////////////////////////////////////////
 	public void calculateArms(LiftingSurface theLiftingSurface){
 		
 		if(theLiftingSurface.getType() == ComponentEnum.WING) {
@@ -1296,6 +1311,16 @@ public class Aircraft implements IAircraft {
 				.xApexCanard(xApexCanard)
 				.yApexCanard(yApexCanard)
 				.zApexCanard(zApexCanard)
+				.fuelTank(new FuelTank.FuelTankBuilder("Fuel Tank", theWing).build())
+				.xApexFuelTank(theWing.getXApexConstructionAxes()
+						.plus(theWing.getChordRoot()
+								.times(theWing.getLiftingSurfaceCreator()
+										.getMainSparNonDimensionalPosition()
+										)
+								)
+						)
+				.yApexFuelTank(theWing.getYApexConstructionAxes())
+				.zApexFuelTank(theWing.getZApexConstructionAxes())
 				.landingGears(theLandingGears)
 				.xApexLandingGears(xApexLandingGears)
 				.yApexLandingGears(yApexLandingGears)
@@ -1343,6 +1368,9 @@ public class Aircraft implements IAircraft {
 		if(_theCabinConfiguration != null)
 			sb.append(_theCabinConfiguration.toString());
 		
+		if(_theFuelTank != null)
+			sb.append(_theFuelTank.toString());
+			
 		if(_theLandingGears != null)
 			sb.append(_theLandingGears.toString());
 		
@@ -1655,10 +1683,12 @@ public class Aircraft implements IAircraft {
 		this._theCabinConfiguration = theCabinConfiguration;
 	}
 	
+	@Override
 	public Amount<Length> getWingACToCGDistance() {
 		return _wingACToCGDistance;
 	}
 
+	@Override
 	public void setWingACToCGDistance(Amount<Length> _wingACToCGDistance) {
 		this._wingACToCGDistance = _wingACToCGDistance;
 	}

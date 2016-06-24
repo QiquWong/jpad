@@ -64,13 +64,13 @@ public interface IFuelTank {
 	
 	public Amount<Mass> getMassEstimated();
 	
-	public Amount<Volume> getVolumeEstimated();
-	
 	public List<Amount<Length>> getThicknessAtMainSpar();
 	
 	public List<Amount<Length>> getThicknessAtSecondarySpar();
 	
 	public List<Amount<Area>> getPrismoidsSectionsAreas();
+	
+	public List<Amount<Volume>> getPrismoidsVolumes();
 	
 	public CenterOfGravity getCG();
 	

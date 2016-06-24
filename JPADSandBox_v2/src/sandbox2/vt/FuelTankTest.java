@@ -10,18 +10,16 @@ import javax.measure.quantity.Length;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
-import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
-import org.kohsuke.args4j.Option;
 import org.treez.javafxd3.d3.svg.SymbolType;
 import org.treez.javafxd3.javafx.JavaFxD3Browser;
 
+import aircraft.components.FuelTank;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.LiftingSurface.LiftingSurfaceBuilder;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import configuration.MyConfiguration;
-import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
@@ -35,30 +33,7 @@ import sandbox2.javafx.D3PlotterOptions;
 import standaloneutils.JPADXmlReader;
 import writers.JPADStaticWriteUtils;
 
-class MyArgumentWing {
-	@Option(name = "-i", aliases = { "--input" }, required = true,
-			usage = "my input file")
-	private File _inputFile;
-
-	@Option(name = "-da", aliases = { "--dir-airfoils" }, required = true,
-			usage = "airfoil directory path")
-	private File _airfoilDirectory;
-
-	// receives other command line parameters than options
-	@Argument
-	public List<String> arguments = new ArrayList<String>();
-
-	public File getInputFile() {
-		return _inputFile;
-	}
-
-	public File getAirfoilDirectory() {
-		return _airfoilDirectory;
-	}
-
-}
-
-public class WingTest extends Application {
+public class FuelTankTest extends Application {
 
 	// declaration necessary for Concrete Object usage
 	public static CmdLineParser theCmdLineParser;
@@ -67,6 +42,8 @@ public class WingTest extends Application {
 	//-------------------------------------------------------------
 
 	public static LiftingSurface theWing;
+	
+	public static FuelTank theFuelTank;
 
 	//-------------------------------------------------------------
 
@@ -86,7 +63,7 @@ public class WingTest extends Application {
 		System.out.println("\n\n##################");
 		System.out.println("function start :: getting the wing object ...");
 
-		LiftingSurface wing = WingTest.theWing;
+		LiftingSurface wing = FuelTankTest.theWing;
 		if (wing == null) {
 			System.out.println("wing object null, returning.");
 			return;
@@ -97,6 +74,18 @@ public class WingTest extends Application {
 		System.out.println("Details on panel discretization ...");
 		wing.getLiftingSurfaceCreator().reportPanelsToSpanwiseDiscretizedVariables();
 
+		System.out.println("\n\n##################");
+		System.out.println("getting the fuel tank object ...");
+
+		FuelTank fuelTank = FuelTankTest.theFuelTank;
+		if (fuelTank == null) {
+			System.out.println("fuel tank object null, returning.");
+			return;
+		}
+
+		System.out.println("The fuel tank ...");
+		System.out.println(fuelTank);
+		
 		//--------------------------------------------------
 		// get data vectors from wing discretization
 		List<Amount<Length>> vY = wing.getLiftingSurfaceCreator().getDiscretizedYs();
@@ -119,6 +108,63 @@ public class WingTest extends Application {
 		Double[][] dataTopView = wing.getLiftingSurfaceCreator().getDiscretizedTopViewAsArray(ComponentEnum.WING);
 
 		//--------------------------------------------------
+		// get data vectors from fuel tank discretization
+		List<Amount<Length>> fuelTankXCoordinates = new ArrayList<Amount<Length>>();
+		int nStationFuelTank = wing.getLiftingSurfaceCreator().getYBreakPoints().size();
+		for (int i=0; i<nStationFuelTank-1; i++) {
+			fuelTankXCoordinates.add(wing.getLiftingSurfaceCreator().getYBreakPoints().get(i));
+		}
+		fuelTankXCoordinates.add(wing.getSemiSpan().times(0.85));
+		fuelTankXCoordinates.add(wing.getSemiSpan().times(0.85));
+		for (int i=1; i<nStationFuelTank; i++) {
+			fuelTankXCoordinates.add(wing.getLiftingSurfaceCreator().getYBreakPoints().get(nStationFuelTank-i-1));
+		}
+		
+		Amount<Length> xLEAt85Percent = theWing.getLiftingSurfaceCreator()
+												.getXLEAtYActual(
+														theWing.getSemiSpan()
+															.times(0.85)
+																.doubleValue(SI.METER)
+																);
+		Amount<Length> chordAt85Percent = Amount.valueOf(
+				theWing.getChordAtYActual(
+						theWing.getSemiSpan().times(0.85).doubleValue(SI.METER)
+						),
+				SI.METER
+				);
+		
+		List<Amount<Length>> fuelTankYCoordinates = new ArrayList<Amount<Length>>();
+		for(int i=0; i<nStationFuelTank-1; i++) {
+			fuelTankYCoordinates.add(
+					theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i)
+						.times(theFuelTank.getMainSparNormalizedStation())
+							.plus(theWing.getLiftingSurfaceCreator().getXLEBreakPoints().get(i))
+						);
+		}
+		fuelTankYCoordinates.add(
+				chordAt85Percent
+					.times(theFuelTank.getMainSparNormalizedStation())
+						.plus(xLEAt85Percent));
+		fuelTankYCoordinates.add(
+				chordAt85Percent
+					.times(theFuelTank.getSecondarySparNormalizedStation())
+						.plus(xLEAt85Percent));
+		for(int i=1; i<nStationFuelTank; i++) {
+			fuelTankYCoordinates.add(
+					theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(nStationFuelTank-i-1)
+						.times(theFuelTank.getSecondarySparNormalizedStation())
+							.plus(theWing.getLiftingSurfaceCreator().getXLEBreakPoints().get(nStationFuelTank-i-1))
+						);
+		}
+		
+		Double[][] dataFuelTank = new Double[fuelTankXCoordinates.size()][2];
+		IntStream.range(0, fuelTankXCoordinates.size())
+		.forEach(i -> {
+			dataFuelTank[i][0] = fuelTankXCoordinates.get(i).doubleValue(SI.METER);
+			dataFuelTank[i][1] = fuelTankYCoordinates.get(i).doubleValue(SI.METER);
+		});
+		
+		//--------------------------------------------------
 		System.out.println("Initializing test class...");
 		String rootOutputFolderPath = MyConfiguration.currentDirectoryString + File.separator + "out" + File.separator;
 		String outputFolderPath = JPADStaticWriteUtils.createNewFolder(rootOutputFolderPath + "Tests_Aircraft" + File.separator);
@@ -131,40 +177,12 @@ public class WingTest extends Application {
 		List<Double[][]> listDataArray = new ArrayList<Double[][]>();
 
 		listDataArray.add(dataTopView);
-
-		int nSec = theWing.getLiftingSurfaceCreator().getDiscretizedXle().size();
-		int nPanels = theWing.getLiftingSurfaceCreator().getPanels().size();
-
-		Double[][] eqPts = new Double[4][2];
-		eqPts[0][0] = 0.0;
-		eqPts[0][1] = theWing.getLiftingSurfaceCreator().getXOffsetEquivalentWingRootLE().doubleValue(SI.METER);
-		eqPts[1][0] = theWing.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
-		eqPts[1][1] = theWing.getLiftingSurfaceCreator().getDiscretizedXle().get(nSec - 1).doubleValue(SI.METER);
-		eqPts[2][0] = theWing.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
-		eqPts[2][1] = theWing.getLiftingSurfaceCreator().getDiscretizedXle().get(nSec - 1)
-				.plus(
-						theWing.getLiftingSurfaceCreator().getPanels().get(nPanels - 1).getChordTip()
-						)
-				.doubleValue(SI.METER);
-		eqPts[3][0] = 0.0;
-		eqPts[3][1] = theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot()
-				.minus(theWing.getLiftingSurfaceCreator().getXOffsetEquivalentWingRootTE())
-				.doubleValue(SI.METER);
-
-		listDataArray.add(eqPts);
-
-		Double[][] xyMAC = new Double[2][2];
-		xyMAC[0][0] = wing.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeY().doubleValue(SI.METRE);
-		xyMAC[0][1] = wing.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METRE);
-		xyMAC[1][0] = xyMAC[0][0];
-		xyMAC[1][1] = xyMAC[0][1] + wing.getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METRE);
-
-		listDataArray.add(xyMAC);
-
-		double yMax = 1.05*wing.getSemiSpan().doubleValue(SI.METRE);
-		double yMin = -0.05*wing.getSemiSpan().doubleValue(SI.METRE);
-		double xMax = yMax;
-		double xMin = yMin;
+		listDataArray.add(dataFuelTank);
+		
+		double xMax = 1.05*wing.getSemiSpan().doubleValue(SI.METRE);
+		double xMin = -0.05*wing.getSemiSpan().doubleValue(SI.METRE);
+		double yMax = 1.30*wing.getSemiSpan().divide(2).doubleValue(SI.METRE);
+		double yMin = -0.80*wing.getSemiSpan().divide(2).doubleValue(SI.METRE);
 
 		D3PlotterOptions options = new D3PlotterOptions.D3PlotterOptionsBuilder()
 				.widthGraph(WIDTH).heightGraph(HEIGHT)
@@ -172,34 +190,32 @@ public class WingTest extends Application {
 				.yRange(yMax, yMin)
 				.axisLineColor("darkblue").axisLineStrokeWidth("2px")
 				.graphBackgroundColor("blue").graphBackgroundOpacity(0.1)
-				.title("Wing data representation")
+				.title("Fuel tank representation")
 				.xLabel("x (m)")
 				.yLabel("y (m)")
 				.showXGrid(true)
 				.showYGrid(true)
 				.symbolTypes(
 						SymbolType.CIRCLE,
-						SymbolType.CIRCLE,
 						SymbolType.CIRCLE
 						)
-				.symbolSizes(20,20,20)
-				.showSymbols(true,true,true) // NOTE: overloaded function
+				.symbolSizes(20,20)
+				.showSymbols(false,false) // NOTE: overloaded function
 				.symbolStyles(
-						"fill:blue; stroke:red; stroke-width:2",
-						"fill:cyan; stroke:green; stroke-width:2",
-						"fill:cyan; stroke:black; stroke-width:3"
+						"fill:cyan; stroke:black; stroke-width:2",
+						"fill:cyan; stroke:black; stroke-width:2"
 						)
 				.lineStyles(
-						"fill:none; stroke:darkblue; stroke-width:3",
-						"fill:none; stroke:darkblue; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2"
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:blue; stroke-width:2"
 						)
-				.plotAreas(true,true,false,false)
-				.areaStyles("fill:orange;","fill:yellow;","fill:yellow;")
-				.areaOpacities(1.0,0.50,0.70)
+				.plotAreas(true,true)
+				.areaStyles("fill:orange;","fill:yellow;")
+				.areaOpacities(0.7,1.0)
+				.showLegend(false)
 				.build();
 
-		System.out.println("Plot options:\n" + options);
+//		System.out.println("Plot options:\n" + options);
 
 		d3Plotter = new D3Plotter(
 				options,
@@ -218,7 +234,7 @@ public class WingTest extends Application {
 
 			//--------------------------------------------------
 			// output
-			String outputFilePath = outputFolderPath + "Wing.svg";
+			String outputFilePath = outputFolderPath + "FuelTank.svg";
 			d3Plotter.saveSVG(outputFilePath);
 
 
@@ -248,16 +264,16 @@ public class WingTest extends Application {
 		// https://blog.codecentric.de/en/2015/09/javafx-how-to-easily-implement-application-preloader-2/
 
 		System.out.println("--------------");
-		System.out.println("Wing test / D3");
+		System.out.println("Fuel tank test / D3");
 		System.out.println("--------------");
 
 		MyArgumentWing va = new MyArgumentWing();
-		WingTest.theCmdLineParser = new CmdLineParser(va);
+		FuelTankTest.theCmdLineParser = new CmdLineParser(va);
 
 		// populate the wing static object in the class
 		// before launching the JavaFX application thread (launch --> start ...)
 		try {
-			WingTest.theCmdLineParser.parseArgument(args);
+			FuelTankTest.theCmdLineParser.parseArgument(args);
 			String pathToXML = va.getInputFile().getAbsolutePath();
 			System.out.println("INPUT ===> " + pathToXML);
 
@@ -279,42 +295,46 @@ public class WingTest extends Application {
 			AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
 			HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
 			
-//			// read LiftingSurface from xml ...
-//			theWing = new LiftingSurfaceBuilder("MyWing", ComponentEnum.WING, aeroDatabaseReader, highLiftDatabaseReader)
+//			// default LiftingSurface ATR-72 ...
+//			theWing = new LiftingSurfaceBuilder("ATR-72 Wing", ComponentEnum.WING, aeroDatabaseReader, highLiftDatabaseReader)
 //					.liftingSurfaceCreator(
-//							LiftingSurfaceCreator.importFromXML(ComponentEnum.WING, pathToXML, dirAirfoil)
+//							new LiftingSurfaceCreator
+//							.LiftingSurfaceCreatorBuilder(
+//									"MyWing",
+//									Boolean.TRUE,
+//									AircraftEnum.ATR72,
+//									ComponentEnum.WING
+//									)
+//							.build()
 //							)
 //					.build();
+//			theWing.populateAirfoilList(aeroDatabaseReader, Boolean.FALSE);
+//			
+//			theFuelTank = new FuelTank.FuelTankBuilder("ATR-72 Fuel Tank", theWing).build();
 			
-			// default LiftingSurface from xml ...
+			// imported wing from xml ...
 			theWing = new LiftingSurfaceBuilder("MyWing", ComponentEnum.WING, aeroDatabaseReader, highLiftDatabaseReader)
 					.liftingSurfaceCreator(
-							new LiftingSurfaceCreator
-							.LiftingSurfaceCreatorBuilder(
-									"MyWing",
-									Boolean.TRUE,
-									AircraftEnum.ATR72,
-									ComponentEnum.WING
-									)
-							.build()
+							LiftingSurfaceCreator.importFromXML(ComponentEnum.WING, pathToXML, dirAirfoil)
 							)
 					.build();
-
-			WingTest.theWing.calculateGeometry(
-					40,
-					theWing.getType(),
-					theWing.getLiftingSurfaceCreator().isMirrored());
-
-			WingTest.theWing.populateAirfoilList(aeroDatabaseReader, Boolean.FALSE);
+			theWing.getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.WING, Boolean.TRUE);
+			theWing.populateAirfoilList(aeroDatabaseReader, Boolean.FALSE);
+			
+			theFuelTank = new FuelTank.FuelTankBuilder("My Fuel Tank", theWing)
+										.build();
 			
 			System.out.println("The wing ...");
-			System.out.println(WingTest.theWing.getLiftingSurfaceCreator().toString());
+			System.out.println(FuelTankTest.theWing.getLiftingSurfaceCreator().toString());
 			System.out.println("Details on panel discretization ...");
-			WingTest.theWing.getLiftingSurfaceCreator().reportPanelsToSpanwiseDiscretizedVariables();
-
+			FuelTankTest.theWing.getLiftingSurfaceCreator().reportPanelsToSpanwiseDiscretizedVariables();
+			
+			System.out.println("The fuel tank ...");
+			System.out.println(FuelTankTest.theFuelTank.toString());
+			
 		} catch (CmdLineException | IOException e) {
 			System.err.println("Error: " + e.getMessage());
-			WingTest.theCmdLineParser.printUsage(System.err);
+			FuelTankTest.theCmdLineParser.printUsage(System.err);
 			System.err.println();
 			System.err.println("  Must launch this app with proper command line arguments.");
 			return;

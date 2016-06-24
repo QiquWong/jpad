@@ -16,9 +16,9 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
+import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.MyConfiguration;
-import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.MethodEnum;
 import database.databasefunctions.FuelFractionDatabaseReader;
@@ -52,6 +52,8 @@ public class FuelTank implements IFuelTank {
 
 	private String _id;
 	
+	private LiftingSurface _theWing;
+	
 	private Amount<Length> _xApexConstructionAxes;
 	private Amount<Length> _yApexConstructionAxes;
 	private Amount<Length> _zApexConstructionAxes;
@@ -59,7 +61,6 @@ public class FuelTank implements IFuelTank {
 	private FuelFractionDatabaseReader fuelFractionDatabase;
 	
 	private Amount<Mass> _massEstimated;
-	private Amount<Volume> _volumeEstimated;
 
 	private Double _mainSparNormalizedStation;
 	private Double _secondarySparNormalizedStation;
@@ -68,6 +69,7 @@ public class FuelTank implements IFuelTank {
 	List<Amount<Length>> _distanceBetweenSpars;
 	List<Amount<Length>> _prismoidsLength;
 	List<Amount<Area>> _prismoidsSectionsAreas;
+	List<Amount<Volume>> _prismoidsVolumes;
 	
 	private CenterOfGravity _cg;
 	private Amount<Length> _xCG;
@@ -81,10 +83,10 @@ public class FuelTank implements IFuelTank {
 	private Double[] _percentDifferenceYCG;
 	
 	// Jet A1 fuel density : the user can set this parameter when necessary
-	private Amount<VolumetricDensity> _fuelDensity = Amount.valueOf(0.804, MyUnits.KILOGRAM_LITER);
-	private Amount<Volume> _fuelVolume;
-	private Amount<Mass> _fuelMass;
-	private Amount<Force> _fuelWeight;
+	private Amount<VolumetricDensity> _fuelDensity = Amount.valueOf(804.0, MyUnits.KILOGRAM_PER_CUBIC_METER);
+	private Amount<Volume> _fuelVolume = Amount.valueOf(0.0, SI.CUBIC_METRE);
+	private Amount<Mass> _fuelMass = Amount.valueOf(0.0, SI.KILOGRAM);
+	private Amount<Force> _fuelWeight = Amount.valueOf(0.0, SI.NEWTON);
 
 	//============================================================================================
 	// Builder pattern 
@@ -98,6 +100,7 @@ public class FuelTank implements IFuelTank {
 		// ...
 		private Double __mainSparNormalizedStation;
 		private Double __secondarySparNormalizedStation;
+		private LiftingSurface __theWing;
 		
 		private ArrayList<MethodEnum> __methodsList = new ArrayList<MethodEnum>();
 		private Map <AnalysisTypeEnum, List<MethodEnum>> __methodsMap = new HashMap<AnalysisTypeEnum, List<MethodEnum>>();
@@ -108,15 +111,13 @@ public class FuelTank implements IFuelTank {
 		List<Amount<Length>> __distanceBetweenSpars = new ArrayList<Amount<Length>>();
 		List<Amount<Length>> __prismoidsLength = new ArrayList<Amount<Length>>();
 		List<Amount<Area>> __prismoidsSectionsAreas = new ArrayList<Amount<Area>>();
+		List<Amount<Volume>> __prismoidsVolumes = new ArrayList<Amount<Volume>>();
 		
-		public FuelTankBuilder (String id) {
+		public FuelTankBuilder (String id, LiftingSurface theWing) {
 			this.__id = id;
-			this.initializeDefaultVariables(AircraftEnum.ATR72);
-		}
-		
-		public FuelTankBuilder (String id, AircraftEnum aircraftName) {
-			this.__id = id;
-			this.initializeDefaultVariables(aircraftName);
+			this.__theWing = theWing;
+			this.__mainSparNormalizedStation = theWing.getLiftingSurfaceCreator().getMainSparNonDimensionalPosition();
+			this.__secondarySparNormalizedStation = theWing.getLiftingSurfaceCreator().getSecondarySparNonDimensionalPosition();
 		}
 		
 		public FuelTankBuilder mainSparPosition (Double xMainSpar) {
@@ -133,39 +134,12 @@ public class FuelTank implements IFuelTank {
 			return new FuelTank (this);
 		}
 		
-		/************************************************************************
-		 * method that recognize aircraft name and sets its 
-		 * fuel tank data.
-		 * 
-		 * @author Vittorio Trifari
-		 */
-		private void initializeDefaultVariables (AircraftEnum aircraftName) {
-
-			switch(aircraftName) {
-
-			// TODO : CHECK THESE VALUES
-			
-			case ATR72:
-				__mainSparNormalizedStation = 0.25;
-				__secondarySparNormalizedStation = 0.55;
-				break;
-
-			case B747_100B:
-				__mainSparNormalizedStation = 0.25;
-				__secondarySparNormalizedStation = 0.55;
-				break;
-
-			case AGILE_DC1:
-				__mainSparNormalizedStation = 0.25;
-				__secondarySparNormalizedStation = 0.55;
-				break;
-			}
-		}
 	}
 	
 	private FuelTank (FuelTankBuilder builder) {
 	
 		this._id = builder.__id;
+		this._theWing = builder.__theWing;
 		this._mainSparNormalizedStation = builder.__mainSparNormalizedStation;
 		this._secondarySparNormalizedStation = builder.__secondarySparNormalizedStation;
 		this._methodsList = builder.__methodsList;
@@ -177,45 +151,180 @@ public class FuelTank implements IFuelTank {
 		this._distanceBetweenSpars = builder.__distanceBetweenSpars;
 		this._prismoidsLength = builder.__prismoidsLength;
 		this._prismoidsSectionsAreas = builder.__prismoidsSectionsAreas;
+		this._prismoidsVolumes = builder.__prismoidsVolumes;
+		
+		calculateGeometry(_theWing);
+		calculateFuelMass();
 		
 	}
+	
 	//===================================================================================================
 	// End of builder pattern
 	//===================================================================================================
+	
+	/************************************************************************************ 
+	 * Estimates dimensions of the fuel tank.
+	 * 
+	 * The first section is at the root station while the other ones, except the last,
+	 * are at the kink stations (may be more than one).
+	 * 
+	 * The last section is at 85% of the semispan so that it has to be defined separately.
+	 * 
+	 */
+	private void estimateDimensions(LiftingSurface theWing) {
+
+		for (int i=0; i<theWing.getAirfoilList().size()-1; i++) {
+			this._thicknessAtMainSpar.add(
+					Amount.valueOf(
+							theWing.getAirfoilList().get(i)
+								.getAirfoilCreator()
+									.calculateThicknessRatioAtXNormalizedStation(
+											_mainSparNormalizedStation,
+											theWing.getAirfoilList().get(i).getAirfoilCreator().getThicknessToChordRatio()
+											)
+							* theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER),
+							SI.METER)
+					);
+			this._thicknessAtSecondarySpar.add(
+					Amount.valueOf(
+							theWing.getAirfoilList().get(i)
+								.getAirfoilCreator()
+									.calculateThicknessRatioAtXNormalizedStation(
+											_secondarySparNormalizedStation,
+											theWing.getAirfoilList().get(i).getAirfoilCreator().getThicknessToChordRatio()
+											)
+							* theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER),
+							SI.METER)
+					);
+			this._distanceBetweenSpars.add(
+					Amount.valueOf(
+							_secondarySparNormalizedStation*theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)
+							-_mainSparNormalizedStation*theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER),
+							SI.METER
+							)
+					);
+		}
+		for(int i=1; i<theWing.getLiftingSurfaceCreator().getYBreakPoints().size()-1; i++)
+			this._prismoidsLength.add(
+					theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i)
+					.minus(theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i-1))
+					);
+		
+		AirfoilCreator airfoilAt85Percent = LiftingSurface.calculateAirfoilAtY(
+				theWing,
+				theWing.getSemiSpan().times(0.85).doubleValue(SI.METER)
+				);
+		Amount<Length> chordAt85Percent = Amount.valueOf(
+				theWing.getChordAtYActual(
+						theWing.getSemiSpan().times(0.85).doubleValue(SI.METER)
+						),
+				SI.METER
+				);
+		
+		this._thicknessAtMainSpar.add(
+				Amount.valueOf(
+						airfoilAt85Percent
+							.calculateThicknessRatioAtXNormalizedStation(
+									_mainSparNormalizedStation,
+									airfoilAt85Percent.getThicknessToChordRatio()
+									)
+						* chordAt85Percent.doubleValue(SI.METER),
+						SI.METER)
+				);
+		this._thicknessAtSecondarySpar.add(
+				Amount.valueOf(
+						airfoilAt85Percent
+							.calculateThicknessRatioAtXNormalizedStation(
+									_secondarySparNormalizedStation,
+									airfoilAt85Percent.getThicknessToChordRatio()
+									)
+						* chordAt85Percent.doubleValue(SI.METER),
+						SI.METER)
+				);
+		this._distanceBetweenSpars.add(
+				Amount.valueOf(
+						(_secondarySparNormalizedStation*chordAt85Percent.doubleValue(SI.METER))
+						-(_mainSparNormalizedStation*chordAt85Percent.doubleValue(SI.METER)),
+						SI.METER
+						)
+				);
+		this._prismoidsLength.add(
+				theWing.getSemiSpan().times(0.85)
+				.minus(theWing.getLiftingSurfaceCreator().getYBreakPoints().get(
+						theWing.getLiftingSurfaceCreator().getYBreakPoints().size()-2)
+						)
+				);
+	}
+	
+	/***********************************************************************************
+	 * Calculates areas of each prismoid section (spanwise) from base size
+	 * 
+	 * @param theAircraft
+	 */
+	private void calculateAreas() {
+
+		/*
+		 * Each section is a trapezoid, so that the area is given by:
+		 * 
+		 *  (thicknessAtMainSpar + thicknessAtSecondarySpar)*distanceBetweenSpars*0.5
+		 *  
+		 */
+		int nSections = this._thicknessAtMainSpar.size();
+		for(int i=0; i<nSections; i++)
+			this._prismoidsSectionsAreas.add(
+					Amount.valueOf(
+							(this._thicknessAtMainSpar.get(i).plus(this._thicknessAtSecondarySpar.get(i)))
+							.times(this._distanceBetweenSpars.get(i)).times(0.5).getEstimatedValue(),
+							SI.SQUARE_METRE
+							)
+					);
+	}
+	
+	/*********************************************************************************
+	 * Calculates the fuel tank volume using the section areas. 
+	 * Each prismoid has a volume given by:
+	 * 
+	 *  (prismoidLength/3)*
+	 *  	((prismoidSectionAreas(inner)) + (prismoidSectionAreas(outer)) 
+	 *  		+ sqrt((prismoidSectionAreas(inner)) * (prismoidSectionAreas(outer))))
+	 *  
+	 * The total volume is the double of the sum of all prismoid volumes 
+	 */
+	private void calculateVolume() {
+
+		/*
+
+		 */
+		for(int i=0; i<this._prismoidsLength.size(); i++) 
+			this._prismoidsVolumes.add(
+					Amount.valueOf(
+							this._prismoidsLength.get(i).divide(3)
+							.times(
+									this._prismoidsSectionsAreas.get(i).getEstimatedValue()
+									+ this._prismoidsSectionsAreas.get(i+1).getEstimatedValue()
+									+ Math.sqrt(
+											this._prismoidsSectionsAreas.get(i)
+											.times(this._prismoidsSectionsAreas.get(i+1))
+											.getEstimatedValue()
+											)
+									).getEstimatedValue(),
+							SI.CUBIC_METRE
+							)
+					);
+		
+		for(int i=0; i<this._prismoidsVolumes.size(); i++)
+			this._fuelVolume = this._fuelVolume
+										.plus(this._prismoidsVolumes.get(i));
+		this._fuelVolume = this._fuelVolume.times(2);
+		
+	}
 	
 	@Override
 	public void calculateGeometry(LiftingSurface theWing) {
 		
 		estimateDimensions(theWing);
-		calculateArea();
+		calculateAreas();
 		calculateVolume();
-	}
-	
-	
-	private void calculateVolume() {
-
-		// TODO
-		
-	}
-
-	/** 
-	 * Calculate areas from base size
-	 * 
-	 * @param theAircraft
-	 */
-	private void calculateArea() {
-
-		// TODO
-		
-	}
-
-	/** 
-	 * Estimate dimensions of the fuel tank.
-	 */
-	private void estimateDimensions(LiftingSurface theWing) {
-
-		// TODO
-		
 	}
 	
 	@Override
@@ -224,11 +333,112 @@ public class FuelTank implements IFuelTank {
 		_fuelWeight = _fuelMass.times(AtmosphereCalc.g0).to(SI.NEWTON);
 	}
 
+	/**********************************************************************************
+	 * The total X and Y coordinates of the center of gravity can be calculated for
+	 * each prismoid starting from its lateral faces. These are trapezoids and their
+	 * center of gravity can be calculated as:
+	 * 
+	 *  x_cg = ((thicknessMainSpar + (2*thicknessSecondarySpar))
+	 *  			/(thicknessMainSpar + thicknessSecondarySpar))
+	 *  				*(distanceBetweenSpars/3)
+	 *  
+	 * These coordinates are taken from the major base of each face.
+	 * 
+	 * N.B.: The lateral faces will be enumerated counter-clockwise 
+	 * 	     starting from the root station 
+	 * 
+	 * Having these coordinates for each lateral face the total prismoid CG 
+	 * coordinates (x,y) can be determined by the intersection of the segments built up
+	 * using these coordinates.
+	 * 
+	 * Finally the total CG coordinates of each  semi-wing tank are calculated as
+	 *    
+	 *  X_cg = sum(prismoidsVolumes(i)*x_cg(i)
+	 *  		/sum(prismoidsVolumes(i)
+	 *   
+	 *  Y_cg = sum(prismoidsVolumes(i)*y_cg(i)
+	 *  		/sum(prismoidsVolumes(i)
+	 *  
+	 * The total tank Y_cg will be zero since its symmetry; while the X_cg will be the one
+	 * calculated for each semi-wing tank
+	 *  
+	 *  @author Vittorio Trifari
+	 */
 	@Override
 	public void calculateCG() {
 
-		// TODO
-
+		//-------------------------------------------------------------
+		// Lateral faces xCG calculation (LFR = Local Reference Frame):
+		List<Double[]> xCGLateralFacesLFRList = new ArrayList<Double[]>();
+		
+		for(int i=0; i<this._prismoidsLength.size(); i++) {
+			
+			Double[] xCGLateralFacesLFR = new Double[4];
+			
+			xCGLateralFacesLFR[0] = this._thicknessAtMainSpar.get(i)
+										.plus(this._thicknessAtSecondarySpar.get(i))
+											.divide(
+												this._thicknessAtMainSpar.get(i)
+													.plus(this._thicknessAtSecondarySpar.get(i))
+													)
+												.times(this._distanceBetweenSpars.get(i).divide(3))
+													.getEstimatedValue();
+			
+			xCGLateralFacesLFR[1] = this._thicknessAtSecondarySpar.get(i)
+										.plus(this._thicknessAtSecondarySpar.get(i+1))
+											.divide(
+												this._thicknessAtSecondarySpar.get(i)
+													.plus(this._thicknessAtSecondarySpar.get(i+1))
+													)
+												.times(this._prismoidsLength.get(i).divide(3))
+													.getEstimatedValue();
+			
+			xCGLateralFacesLFR[2] = this._thicknessAtMainSpar.get(i+1)
+										.plus(this._thicknessAtSecondarySpar.get(i+1))
+											.divide(
+													this._thicknessAtMainSpar.get(i+1)
+														.plus(this._thicknessAtSecondarySpar.get(i+1))
+													)
+												.times(this._distanceBetweenSpars.get(i+1).divide(3))
+													.getEstimatedValue();
+			
+			xCGLateralFacesLFR[3] = this._thicknessAtMainSpar.get(i)
+										.plus(this._thicknessAtMainSpar.get(i+1))
+											.divide(
+													this._thicknessAtMainSpar.get(i)
+													.plus(this._thicknessAtMainSpar.get(i+1))
+													)
+												.times(this._prismoidsLength.get(i).divide(3))
+													.getEstimatedValue();
+			
+			xCGLateralFacesLFRList.add(xCGLateralFacesLFR);
+		}
+		
+		//-------------------------------------------------------------
+		// Calculation of the Xcg coordinates of each prismoid.
+		
+//		for(int i=0; i<xCGLateralFacesLFRList.size(); i++) {
+//			
+//			double[] xCGSegmentOppositeFaceSpanwiseX = new double[2];
+//			double[] xCGSegmentOppositeFaceSpanwiseY = new double[2];
+//			
+//			double[] xCGSegmentOppositeFaceChordwiseX = new double[2];
+//			double[] xCGSegmentOppositeFaceChordwiseY = new double[2];
+//			
+//			xCGSegmentOppositeFaceSpanwiseX[0] = 0.0;
+//			xCGSegmentOppositeFaceSpanwiseX[1] = this._prismoidsLength.get(i).doubleValue(SI.METER);
+//			xCGSegmentOppositeFaceSpanwiseY[0] = xCGLateralFacesLFRList.get(i)[0];
+//			xCGSegmentOppositeFaceSpanwiseY[1] = xCGLateralFacesLFRList.get(i)[2];
+//
+//			xCGSegmentOppositeFaceChordwiseX[0] = 0.0; 
+//			xCGSegmentOppositeFaceChordwiseX[1] = this._distanceBetweenSpars.get(i).doubleValue(SI.METER);
+//			xCGSegmentOppositeFaceChordwiseY[0] = xCGLateralFacesLFRList.get(i)[1]; 
+//			xCGSegmentOppositeFaceChordwiseY[1] = xCGLateralFacesLFRList.get(i)[3];
+//		
+//			TODO : CONTINUE THIS !!
+//		
+//		}
+		
 	}
 
 	@Override
@@ -241,6 +451,22 @@ public class FuelTank implements IFuelTank {
 				.append("\tFuel tank\n")
 				.append("\t-------------------------------------\n")
 				.append("\tID: '" + _id + "'\n")
+				.append("\t·····································\n")
+				.append("\tMain spar position (% semispan): " + _mainSparNormalizedStation + "\n")
+				.append("\tSecondary spar position (% semispan): " + _secondarySparNormalizedStation + "\n")
+				.append("\t·····································\n")
+				.append("\tAirfoils thickness at main spar stations: " + _thicknessAtMainSpar + "\n")
+				.append("\tAirfoils thickness at secondary spar stations: " + _thicknessAtSecondarySpar + "\n")
+				.append("\tSpar distance at each spanwise station: " + _distanceBetweenSpars + "\n")
+				.append("\tPrismoids length: " + _prismoidsLength + "\n")
+				.append("\t·····································\n")
+				.append("\tPrismoids spanwise sections areas: " + _prismoidsSectionsAreas + "\n")
+				.append("\tPrismoids volumes: " + _prismoidsVolumes + "\n")
+				.append("\t·····································\n")
+				.append("\tTotal tank volume: " + _fuelVolume + "\n")
+				.append("\tFuel density: " + _fuelDensity + "\n")
+				.append("\tTotal fuel mass: " + _fuelMass + "\n")
+				.append("\tTotal fuel weight: " + _fuelWeight + "\n")
 				.append("\t·····································\n")
 				;
 		
@@ -386,11 +612,6 @@ public class FuelTank implements IFuelTank {
 	}
 
 	@Override
-	public Amount<Volume> getVolumeEstimated() {
-		return _volumeEstimated;
-	}
-
-	@Override
 	public List<Amount<Length>> getThicknessAtMainSpar() {
 		return _thicknessAtMainSpar;
 	}
@@ -403,6 +624,11 @@ public class FuelTank implements IFuelTank {
 	@Override
 	public List<Amount<Area>> getPrismoidsSectionsAreas() {
 		return _prismoidsSectionsAreas;
+	}
+
+	@Override
+	public List<Amount<Volume>> getPrismoidsVolumes() {
+		return _prismoidsVolumes;
 	}
 
 	@Override

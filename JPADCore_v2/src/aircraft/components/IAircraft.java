@@ -2,6 +2,10 @@ package aircraft.components;
 
 import java.util.List;
 
+import javax.measure.quantity.Length;
+
+import org.jscience.physics.amount.Amount;
+
 import aircraft.calculators.ACAerodynamicsManager;
 import aircraft.calculators.ACBalanceManager;
 import aircraft.calculators.ACPerformanceManager;
@@ -96,5 +100,7 @@ public interface IAircraft {
 	
 	public List<Object> getComponentsList();
 	
+	public Amount<Length> getWingACToCGDistance();
+	public void setWingACToCGDistance(Amount<Length> _wingACToCGDistance);
 	
 }

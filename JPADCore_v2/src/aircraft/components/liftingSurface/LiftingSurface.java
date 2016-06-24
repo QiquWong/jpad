@@ -26,6 +26,7 @@ import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcHighLiftDevices;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
+import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator;
 import calculators.geometry.LSGeometryCalc;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.AnalysisTypeEnum;
@@ -860,7 +861,7 @@ public class LiftingSurface implements ILiftingSurface{
 			if((yLoc > theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i-1).doubleValue(SI.METER))
 					&& (yLoc < theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i).doubleValue(SI.METER))) {
 				
-				type = theWing.getLiftingSurfaceCreator().getPanels().get(i).getAirfoilRoot().getType();
+				type = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getType();
 				yInner = theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i-1).doubleValue(SI.METER);
 				yOuter = theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i).doubleValue(SI.METER);
 				thicknessRatioInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getThicknessToChordRatio();
@@ -1380,10 +1381,10 @@ public class LiftingSurface implements ILiftingSurface{
 	}
 	
 	public CalcHighLiftDevices getHigLiftCalculator() {
-		return _higLiftCalculator;
+		return _highLiftCalculator;
 	}
 
 	public void setHigLiftCalculator(CalcHighLiftDevices higLiftCalculator) {
-		this._higLiftCalculator = higLiftCalculator;
+		this._highLiftCalculator = higLiftCalculator;
 	}
 }

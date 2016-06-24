@@ -51,6 +51,9 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	private Boolean _mirrored;
 
+	private Double _mainSparNonDimensionalPosition;
+	private Double _secondarySparNonDimensionalPosition;
+	
 	private Double volumetricRatio = 0.0;
 	private Amount<Length> _liftingSurfaceACToWingACDistance = Amount.valueOf(0.0, SI.METER);
 	private Amount<Length> _liftingSurfaceArm = Amount.valueOf(0.0, SI.METER);
@@ -111,7 +114,9 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 		// optional parameters ... defaults
 		// ...
-
+		private Double __mainSparNonDimensionalPosition;
+		private Double __secondarySparNonDimensionalPosition;
+		
 		private List<LiftingSurfacePanelCreator> __panels = new ArrayList<LiftingSurfacePanelCreator>();
 		private List<SymmetricFlapCreator> __symmetricFlaps = new ArrayList<SymmetricFlapCreator>();
 		private List<AsymmetricFlapCreator> __asymmetricFlaps = new ArrayList<AsymmetricFlapCreator>();
@@ -178,6 +183,9 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 			switch(aircraftName) {
 			case ATR72:
 
+				__mainSparNonDimensionalPosition = 0.25;
+				__secondarySparNonDimensionalPosition = 0.55;
+				
 				if (type.equals(ComponentEnum.WING)) {
 				AirfoilCreator airfoil1 = new AirfoilBuilder("ATR72 wing, root airfoil")
 				.type(AirfoilTypeEnum.CONVENTIONAL)
@@ -549,6 +557,9 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		this._mirrored = builder.__mirrored;
 		this._type = builder.__type;
 		
+		this._mainSparNonDimensionalPosition = builder.__mainSparNonDimensionalPosition;
+		this._secondarySparNonDimensionalPosition = builder.__secondarySparNonDimensionalPosition;
+		
 		this._panels = builder.__panels;
 		this._symmetricFlaps = builder.__symmetricFlaps;
 		this._asymmetricFlaps = builder.__asymmetricFlaps;
@@ -617,6 +628,15 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 			liftingSurface.setEquivalentWingFlag(Boolean.valueOf(equivalent));
 
+			//---------------------------------------------------------------------------------
+			// STRUCTURE - SPAR POSITION
+			Double mainSparPosition = Double.valueOf(reader.getXMLPropertyByPath("//structure/main_spar_non_dimensional_position"));
+			Double secondarySparPosition = Double.valueOf(reader.getXMLPropertyByPath("//structure/secondary_spar_non_dimensional_position"));
+			
+			// setting these variables to the related fields of the wing
+			liftingSurface.setMainSparNonDimensionalPosition(mainSparPosition);
+			liftingSurface.setSecondarySparNonDimensionalPosition(secondarySparPosition);
+			
 			//---------------------------------------------------------------------------------
 			// EQUIVALENT WING
 			if(equivalent.equalsIgnoreCase("TRUE")) {
@@ -2756,5 +2776,21 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	public void setLiftingSurfaceArm(Amount<Length> _liftingSurfaceArm) {
 		this._liftingSurfaceArm = _liftingSurfaceArm;
+	}
+
+	public Double getMainSparNonDimensionalPosition() {
+		return _mainSparNonDimensionalPosition;
+	}
+
+	public void setMainSparNonDimensionalPosition(Double _mainSparNonDimensionalPosition) {
+		this._mainSparNonDimensionalPosition = _mainSparNonDimensionalPosition;
+	}
+
+	public Double getSecondarySparNonDimensionalPosition() {
+		return _secondarySparNonDimensionalPosition;
+	}
+
+	public void setSecondarySparNonDimensionalPosition(Double _secondarySparNonDimensionalPosition) {
+		this._secondarySparNonDimensionalPosition = _secondarySparNonDimensionalPosition;
 	}
 }
