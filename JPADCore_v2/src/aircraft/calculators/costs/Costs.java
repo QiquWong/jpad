@@ -1,24 +1,37 @@
 package aircraft.calculators.costs;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
 import javax.measure.quantity.Duration;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.Power;
+import javax.measure.quantity.Quantity;
 import javax.measure.quantity.Velocity;
 import javax.measure.quantity.Volume;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+import javax.measure.unit.Unit;
 
 import org.jscience.physics.amount.Amount;
 
 import aircraft.calculators.ACCalculatorManager;
 import aircraft.components.Aircraft;
+import aircraft.components.Systems;
+import aircraft.components.Systems.SystemsBuilder;
 import calculators.costs.CostsCalcUtils;
 import calculators.performance.PerformanceCalcUtils;
+import configuration.enumerations.AircraftEnum;
+import configuration.enumerations.AnalysisTypeEnum;
+import configuration.enumerations.MethodEnum;
 import writers.JPADStaticWriteUtils;
 
-public class Costs extends ACCalculatorManager {
+public class Costs extends ACCalculatorManager implements ICosts {
 
 	private Aircraft _theAircraft;
 
@@ -52,6 +65,166 @@ public class Costs extends ACCalculatorManager {
 	private int _numberOfEngines, _cabinCrewNumber, _flightCrewNumber, _numberOfPax,
 	_numberOfCompressorStage, _numberOfShaft;
 
+	
+	
+	//============================================================================================
+	// Builder pattern 
+	//============================================================================================
+	public static class CostsBuilder {
+
+		// required parameters
+		private String __id;
+
+		// optional parameters
+
+		private double 	__residualValue,
+		__annualInterestRate, 
+		__annualInsurancePremiumRate,  
+		__utilization, 
+		__sparesAirframePerCosts, 
+		__sparesEnginesPerCosts,
+		__singleCabinCrewHrCost,
+		__singleflightCrewHrCost, 
+		__landingFeesPerTon,
+		__jenkinsonNavigationalCharges,
+		__groundHandlingCostXPax,
+		__manHourLaborRate, 
+		__overallPressureRatio, 
+		__engineMaintLaborCost,
+		__engineMaintMaterialCost,
+		__airframeMaintLaborCost, 
+		__airframeMaintMaterialCost,
+		__fuelVolumetricCost,
+		__hourVolumetricFuelConsumption,
+		__oilMassCost;	
+
+
+		private Amount<Duration>  __climbDescentTime, 
+		__sturtupTaxiTOTime,
+		__holdPriorToLandTime, 
+		__landingTaxiToStopTime;
+		
+		public CostsBuilder (String id) {
+			this.__id = id;
+		}
+	
+		public CostsBuilder residualValue (double residualValue){
+			__residualValue = residualValue;
+			return this;
+		}
+		
+		public CostsBuilder annualInterestRate (double annualInterestRate) {
+			__annualInterestRate = annualInterestRate;
+			return this;
+		}
+		
+		public CostsBuilder annualInsurancePremiumRate(double annualInsurancePremiumRate) {
+			__annualInsurancePremiumRate = annualInsurancePremiumRate;
+			return this;
+		}
+		
+		public CostsBuilder utilization (double utilization) {
+			__utilization = utilization;
+			return this;
+		}
+		
+		public CostsBuilder sparesAirframePerCosts(double sparesAirframePerCosts) {
+			__sparesAirframePerCosts = sparesAirframePerCosts;
+			return this;
+		}
+		
+		public CostsBuilder sparesEnginesPerCosts (double sparesEnginesPerCosts) {
+			__sparesEnginesPerCosts = sparesEnginesPerCosts;
+			return this;
+		}
+		
+		public CostsBuilder singleCabinCrewHrCost (double singleCabinCrewHrCost){
+			__singleCabinCrewHrCost = singleCabinCrewHrCost;
+			return this;
+		}
+	
+		public CostsBuilder singleflightCrewHrCost(double singleflightCrewHrCost) {
+			__singleflightCrewHrCost = singleflightCrewHrCost;
+			return this;
+		}
+		
+		
+//		__climbDescentTime, 
+//		__sturtupTaxiTOTime,
+//		__holdPriorToLandTime, 
+//		__landingTaxiToStopTime
+		
+		
+		public CostsBuilder landingFeesPerTon(double landingFeesPerTon) {
+			__landingFeesPerTon =landingFeesPerTon;
+			return this;
+		}
+		
+		public CostsBuilder jenkinsonNavigationalCharges(double jenkinsonNavigationalCharges) {
+			__jenkinsonNavigationalCharges = jenkinsonNavigationalCharges;
+			return this;
+		}
+		
+		public CostsBuilder groundHandlingCostXPax(double groundHandlingCostXPax) {
+			__groundHandlingCostXPax = groundHandlingCostXPax;
+			return this;
+		}
+		
+		public CostsBuilder manHourLaborRate(double manHourLaborRate) {
+			__manHourLaborRate = manHourLaborRate;
+			return this;
+		}
+		
+		public CostsBuilder overallPressureRatio(double overallPressureRatio) {
+			__overallPressureRatio = overallPressureRatio;
+			return this;
+		}
+		
+		public CostsBuilder engineMaintLaborCost(double engineMaintLaborCost) {
+			__engineMaintLaborCost = engineMaintLaborCost;
+			return this;
+		}
+		
+		public CostsBuilder engineMaintMaterialCost(double engineMaintMaterialCost) {
+			__engineMaintMaterialCost = engineMaintMaterialCost;
+			return this;
+		}
+		
+		
+//		__engineMaintMaterialCost,
+//		__airframeMaintLaborCost, 
+//		__airframeMaintMaterialCost,
+//		__fuelVolumetricCost,
+//		__hourVolumetricFuelConsumption,
+//		__oilMassCost;	
+		
+		
+		
+		
+		
+		
+		public Costs build() {
+			return new Costs(this);
+		}
+		
+
+	}
+	
+	
+	// Constructor 
+	private Costs (CostsBuilder builder) { 
+		
+//		this._id = builder.__id;
+		
+		
+	}
+	
+	//===================================================================================================
+	// End of builder pattern
+	//===================================================================================================
+
+		
+		
 	public Costs(Aircraft aircraft) {
 
 		_theAircraft = aircraft;
