@@ -13,7 +13,7 @@
 	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.text_3.5.400.v20150505-1044.jar"/>
 	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.ui.forms_3.6.200.v20150506-2029.jar"/>
 	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.ui.workbench_3.107.1.v20160120-2131.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_FOLDER/com.ibm.icu_54.1.1.v201501272100.jar"/>
+	<classpathentry kind="var" path="ECLIPSE_FOLDER/icu4j-57_1.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/igeo/igeo.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jahuwaldt/jahuwaldt.aero.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jahuwaldt/jahuwaldt.tools.math.jar"/>
