@@ -20,6 +20,7 @@ import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.LiftingSurface.LiftingSurfaceBuilder;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import configuration.MyConfiguration;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
@@ -191,8 +192,8 @@ public class FuelTankTest extends Application {
 				.axisLineColor("darkblue").axisLineStrokeWidth("2px")
 				.graphBackgroundColor("blue").graphBackgroundOpacity(0.1)
 				.title("Fuel tank representation")
-				.xLabel("x (m)")
-				.yLabel("y (m)")
+				.xLabel("y (m)")
+				.yLabel("x (m)")
 				.showXGrid(true)
 				.showYGrid(true)
 				.symbolTypes(
@@ -295,34 +296,38 @@ public class FuelTankTest extends Application {
 			AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
 			HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
 			
-//			// default LiftingSurface ATR-72 ...
-//			theWing = new LiftingSurfaceBuilder("ATR-72 Wing", ComponentEnum.WING, aeroDatabaseReader, highLiftDatabaseReader)
-//					.liftingSurfaceCreator(
-//							new LiftingSurfaceCreator
-//							.LiftingSurfaceCreatorBuilder(
-//									"MyWing",
-//									Boolean.TRUE,
-//									AircraftEnum.ATR72,
-//									ComponentEnum.WING
-//									)
-//							.build()
-//							)
-//					.build();
-//			theWing.populateAirfoilList(aeroDatabaseReader, Boolean.FALSE);
-//			
-//			theFuelTank = new FuelTank.FuelTankBuilder("ATR-72 Fuel Tank", theWing).build();
-			
-			// imported wing from xml ...
-			theWing = new LiftingSurfaceBuilder("MyWing", ComponentEnum.WING, aeroDatabaseReader, highLiftDatabaseReader)
+			// default LiftingSurface ATR-72 ...
+			theWing = new LiftingSurfaceBuilder("ATR-72 Wing", ComponentEnum.WING, aeroDatabaseReader, highLiftDatabaseReader)
 					.liftingSurfaceCreator(
-							LiftingSurfaceCreator.importFromXML(ComponentEnum.WING, pathToXML, dirAirfoil)
+							new LiftingSurfaceCreator
+							.LiftingSurfaceCreatorBuilder(
+									"MyWing",
+									Boolean.TRUE,
+									AircraftEnum.ATR72,
+									ComponentEnum.WING
+									)
+							.build()
 							)
 					.build();
-			theWing.getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.WING, Boolean.TRUE);
 			theWing.populateAirfoilList(aeroDatabaseReader, Boolean.FALSE);
 			
-			theFuelTank = new FuelTank.FuelTankBuilder("My Fuel Tank", theWing)
-										.build();
+			theFuelTank = new FuelTank.FuelTankBuilder("ATR-72 Fuel Tank", theWing).build();
+			
+			// imported wing from xml ...
+//			theWing = new LiftingSurfaceBuilder("MyWing", ComponentEnum.WING, aeroDatabaseReader, highLiftDatabaseReader)
+//					.liftingSurfaceCreator(
+//							LiftingSurfaceCreator.importFromXML(ComponentEnum.WING, pathToXML, dirAirfoil)
+//							)
+//					.build();
+//			theWing.getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.WING, Boolean.TRUE);
+//			theWing.populateAirfoilList(aeroDatabaseReader, Boolean.FALSE);
+//			
+//			theFuelTank = new FuelTank.FuelTankBuilder("My Fuel Tank", theWing)
+//										.build();
+			theWing.setXApexConstructionAxes(Amount.valueOf(11.0, SI.METER));
+			theWing.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
+			theWing.setZApexConstructionAxes(Amount.valueOf(1.6, SI.METER));
+			theFuelTank.calculateCG();
 			
 			System.out.println("The wing ...");
 			System.out.println(FuelTankTest.theWing.getLiftingSurfaceCreator().toString());

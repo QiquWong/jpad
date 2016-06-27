@@ -1,10 +1,7 @@
 package aircraft.components;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Force;
@@ -14,17 +11,17 @@ import javax.measure.quantity.Volume;
 import javax.measure.quantity.VolumetricDensity;
 import javax.measure.unit.SI;
 
+import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.MyConfiguration;
-import configuration.enumerations.AnalysisTypeEnum;
-import configuration.enumerations.MethodEnum;
 import database.databasefunctions.FuelFractionDatabaseReader;
+import standaloneutils.MyArrayUtils;
+import standaloneutils.MyMathUtils;
 import standaloneutils.MyUnits;
 import standaloneutils.atmosphere.AtmosphereCalc;
-import standaloneutils.customdata.CenterOfGravity;
 
 /** 
  * The fuel tank is supposed to be make up of a series of prismoids from the root station to the 85% of the
@@ -70,17 +67,12 @@ public class FuelTank implements IFuelTank {
 	List<Amount<Length>> _prismoidsLength;
 	List<Amount<Area>> _prismoidsSectionsAreas;
 	List<Amount<Volume>> _prismoidsVolumes;
+	List<Amount<Length>> _fuelTankStations;
+	List<Amount<Length>> _wingChordsAtFuelTankStations;
 	
-	private CenterOfGravity _cg;
 	private Amount<Length> _xCG;
 	private Amount<Length> _yCG;
 	private Amount<Length> _zCG;
-	private ArrayList<MethodEnum> _methodsList;
-	private Map <AnalysisTypeEnum, List<MethodEnum>> _methodsMap;
-	private Map <MethodEnum, Amount<Length>> _xCGMap;
-	private Map <MethodEnum, Amount<Length>> _yCGMap;
-	private Double[] _percentDifferenceXCG;
-	private Double[] _percentDifferenceYCG;
 	
 	// Jet A1 fuel density : the user can set this parameter when necessary
 	private Amount<VolumetricDensity> _fuelDensity = Amount.valueOf(804.0, MyUnits.KILOGRAM_PER_CUBIC_METER);
@@ -102,16 +94,14 @@ public class FuelTank implements IFuelTank {
 		private Double __secondarySparNormalizedStation;
 		private LiftingSurface __theWing;
 		
-		private ArrayList<MethodEnum> __methodsList = new ArrayList<MethodEnum>();
-		private Map <AnalysisTypeEnum, List<MethodEnum>> __methodsMap = new HashMap<AnalysisTypeEnum, List<MethodEnum>>();
-		private Map <MethodEnum, Amount<Length>> __xCGMap = new TreeMap<MethodEnum, Amount<Length>>();
-		private Map <MethodEnum, Amount<Length>> __yCGMap = new TreeMap<MethodEnum, Amount<Length>>();
 		List<Amount<Length>> __thicknessAtMainSpar = new ArrayList<Amount<Length>>();
 		List<Amount<Length>> __thicknessAtSecondarySpar = new ArrayList<Amount<Length>>();
 		List<Amount<Length>> __distanceBetweenSpars = new ArrayList<Amount<Length>>();
 		List<Amount<Length>> __prismoidsLength = new ArrayList<Amount<Length>>();
 		List<Amount<Area>> __prismoidsSectionsAreas = new ArrayList<Amount<Area>>();
 		List<Amount<Volume>> __prismoidsVolumes = new ArrayList<Amount<Volume>>();
+		List<Amount<Length>> __fuelTankStations = new ArrayList<Amount<Length>>();
+		List<Amount<Length>> __wingChordsAtFuelTankStations = new ArrayList<Amount<Length>>();
 		
 		public FuelTankBuilder (String id, LiftingSurface theWing) {
 			this.__id = id;
@@ -142,16 +132,14 @@ public class FuelTank implements IFuelTank {
 		this._theWing = builder.__theWing;
 		this._mainSparNormalizedStation = builder.__mainSparNormalizedStation;
 		this._secondarySparNormalizedStation = builder.__secondarySparNormalizedStation;
-		this._methodsList = builder.__methodsList;
-		this._methodsMap = builder.__methodsMap;
-		this._xCGMap = builder.__xCGMap;
-		this._yCGMap = builder.__yCGMap;
 		this._thicknessAtMainSpar = builder.__thicknessAtMainSpar;
 		this._thicknessAtSecondarySpar = builder.__thicknessAtSecondarySpar;
 		this._distanceBetweenSpars = builder.__distanceBetweenSpars;
 		this._prismoidsLength = builder.__prismoidsLength;
 		this._prismoidsSectionsAreas = builder.__prismoidsSectionsAreas;
 		this._prismoidsVolumes = builder.__prismoidsVolumes;
+		this._fuelTankStations = builder.__fuelTankStations;
+		this._wingChordsAtFuelTankStations = builder.__wingChordsAtFuelTankStations;
 		
 		calculateGeometry(_theWing);
 		calculateFuelMass();
@@ -203,6 +191,8 @@ public class FuelTank implements IFuelTank {
 							SI.METER
 							)
 					);
+			this._fuelTankStations.add(theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i));
+			this._wingChordsAtFuelTankStations.add(theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i));
 		}
 		for(int i=1; i<theWing.getLiftingSurfaceCreator().getYBreakPoints().size()-1; i++)
 			this._prismoidsLength.add(
@@ -248,6 +238,10 @@ public class FuelTank implements IFuelTank {
 						SI.METER
 						)
 				);
+		this._fuelTankStations.add(theWing.getSemiSpan().times(0.85));
+		
+		this._wingChordsAtFuelTankStations.add(chordAt85Percent);
+		
 		this._prismoidsLength.add(
 				theWing.getSemiSpan().times(0.85)
 				.minus(theWing.getLiftingSurfaceCreator().getYBreakPoints().get(
@@ -376,7 +370,7 @@ public class FuelTank implements IFuelTank {
 			Double[] xCGLateralFacesLFR = new Double[4];
 			
 			xCGLateralFacesLFR[0] = this._thicknessAtMainSpar.get(i)
-										.plus(this._thicknessAtSecondarySpar.get(i))
+										.plus(this._thicknessAtSecondarySpar.get(i).times(2))
 											.divide(
 												this._thicknessAtMainSpar.get(i)
 													.plus(this._thicknessAtSecondarySpar.get(i))
@@ -385,7 +379,7 @@ public class FuelTank implements IFuelTank {
 													.getEstimatedValue();
 			
 			xCGLateralFacesLFR[1] = this._thicknessAtSecondarySpar.get(i)
-										.plus(this._thicknessAtSecondarySpar.get(i+1))
+										.plus(this._thicknessAtSecondarySpar.get(i+1).times(2))
 											.divide(
 												this._thicknessAtSecondarySpar.get(i)
 													.plus(this._thicknessAtSecondarySpar.get(i+1))
@@ -394,7 +388,7 @@ public class FuelTank implements IFuelTank {
 													.getEstimatedValue();
 			
 			xCGLateralFacesLFR[2] = this._thicknessAtMainSpar.get(i+1)
-										.plus(this._thicknessAtSecondarySpar.get(i+1))
+										.plus(this._thicknessAtSecondarySpar.get(i+1).times(2))
 											.divide(
 													this._thicknessAtMainSpar.get(i+1)
 														.plus(this._thicknessAtSecondarySpar.get(i+1))
@@ -403,7 +397,7 @@ public class FuelTank implements IFuelTank {
 													.getEstimatedValue();
 			
 			xCGLateralFacesLFR[3] = this._thicknessAtMainSpar.get(i)
-										.plus(this._thicknessAtMainSpar.get(i+1))
+										.plus(this._thicknessAtMainSpar.get(i+1).times(2))
 											.divide(
 													this._thicknessAtMainSpar.get(i)
 													.plus(this._thicknessAtMainSpar.get(i+1))
@@ -415,29 +409,153 @@ public class FuelTank implements IFuelTank {
 		}
 		
 		//-------------------------------------------------------------
-		// Calculation of the Xcg coordinates of each prismoid.
+		// Calculation of the Xcg coordinates of each prismoid in wing LRF.
 		
-//		for(int i=0; i<xCGLateralFacesLFRList.size(); i++) {
-//			
-//			double[] xCGSegmentOppositeFaceSpanwiseX = new double[2];
-//			double[] xCGSegmentOppositeFaceSpanwiseY = new double[2];
-//			
-//			double[] xCGSegmentOppositeFaceChordwiseX = new double[2];
-//			double[] xCGSegmentOppositeFaceChordwiseY = new double[2];
-//			
-//			xCGSegmentOppositeFaceSpanwiseX[0] = 0.0;
-//			xCGSegmentOppositeFaceSpanwiseX[1] = this._prismoidsLength.get(i).doubleValue(SI.METER);
-//			xCGSegmentOppositeFaceSpanwiseY[0] = xCGLateralFacesLFRList.get(i)[0];
-//			xCGSegmentOppositeFaceSpanwiseY[1] = xCGLateralFacesLFRList.get(i)[2];
-//
-//			xCGSegmentOppositeFaceChordwiseX[0] = 0.0; 
-//			xCGSegmentOppositeFaceChordwiseX[1] = this._distanceBetweenSpars.get(i).doubleValue(SI.METER);
-//			xCGSegmentOppositeFaceChordwiseY[0] = xCGLateralFacesLFRList.get(i)[1]; 
-//			xCGSegmentOppositeFaceChordwiseY[1] = xCGLateralFacesLFRList.get(i)[3];
-//		
-//			TODO : CONTINUE THIS !!
-//		
-//		}
+		List<Amount<Length>> xCGPrismoidsList = new ArrayList<Amount<Length>>();
+		
+		for(int i=0; i<xCGLateralFacesLFRList.size(); i++) {
+			
+			double[] xCGSegmentOppositeFaceSpanwiseX = new double[2];
+			double[] xCGSegmentOppositeFaceSpanwiseY = new double[2];
+			
+			double[] xCGSegmentOppositeFaceChordwiseX = new double[2];
+			double[] xCGSegmentOppositeFaceChordwiseY = new double[2];
+			
+			xCGSegmentOppositeFaceSpanwiseX[0] = this._fuelTankStations.get(i).doubleValue(SI.METER);
+			xCGSegmentOppositeFaceSpanwiseX[1] = this._fuelTankStations.get(i+1).doubleValue(SI.METER);
+			xCGSegmentOppositeFaceSpanwiseY[0] = this._theWing
+													.getLiftingSurfaceCreator()
+														.getXLEAtYActual(
+																this._fuelTankStations.get(i).doubleValue(SI.METER)
+																)
+														.plus(this._wingChordsAtFuelTankStations.get(i)
+																.times(this._mainSparNormalizedStation)
+																)
+														.doubleValue(SI.METER) + xCGLateralFacesLFRList.get(i)[0];
+			xCGSegmentOppositeFaceSpanwiseY[1] = this._theWing
+													.getLiftingSurfaceCreator()
+														.getXLEAtYActual(
+																this._fuelTankStations.get(i+1).doubleValue(SI.METER)
+																)
+														.plus(this._wingChordsAtFuelTankStations.get(i+1)
+																.times(this._mainSparNormalizedStation)
+																)
+														.doubleValue(SI.METER) + xCGLateralFacesLFRList.get(i)[2];
+
+			xCGSegmentOppositeFaceChordwiseX[0] = this._theWing.getLiftingSurfaceCreator()
+																	.getYBreakPoints().get(i)
+																		.doubleValue(SI.METER)
+												  + xCGLateralFacesLFRList.get(i)[3]; 
+			xCGSegmentOppositeFaceChordwiseX[1] = this._theWing.getLiftingSurfaceCreator()
+																	.getYBreakPoints().get(i)
+																		.doubleValue(SI.METER)
+												  + xCGLateralFacesLFRList.get(i)[1];
+			
+			xCGSegmentOppositeFaceChordwiseY[0] = this._theWing
+													.getLiftingSurfaceCreator()
+														.getXLEAtYActual(
+																this._theWing.getLiftingSurfaceCreator()
+																		.getYBreakPoints().get(i)
+																			.doubleValue(SI.METER)
+																+ xCGLateralFacesLFRList.get(i)[3]																
+																).doubleValue(SI.METER)
+														+ (this._theWing.getChordAtYActual(
+																this._theWing.getLiftingSurfaceCreator()
+																	.getYBreakPoints().get(i)
+																		.doubleValue(SI.METER)
+																+ xCGLateralFacesLFRList.get(i)[3])
+																* this._mainSparNormalizedStation
+																);
+			xCGSegmentOppositeFaceChordwiseY[1] = this._theWing
+													.getLiftingSurfaceCreator()
+														.getXLEAtYActual(
+																this._theWing.getLiftingSurfaceCreator()
+																		.getYBreakPoints().get(i)	
+																			.doubleValue(SI.METER)
+																+ xCGLateralFacesLFRList.get(i)[1]																
+																).doubleValue(SI.METER)
+														+ (this._theWing.getChordAtYActual(
+																this._theWing.getLiftingSurfaceCreator()
+																		.getYBreakPoints().get(i)
+																			.doubleValue(SI.METER)
+																+ xCGLateralFacesLFRList.get(i)[1])
+																* this._mainSparNormalizedStation
+																)
+														+ ((this._theWing.getChordAtYActual(
+																this._theWing.getLiftingSurfaceCreator()
+																		.getYBreakPoints().get(i)
+																			.doubleValue(SI.METER)
+																+ xCGLateralFacesLFRList.get(i)[1])
+																* this._secondarySparNormalizedStation)
+															- (this._theWing.getChordAtYActual(
+																	this._theWing.getLiftingSurfaceCreator()
+																			.getYBreakPoints().get(i)
+																				.doubleValue(SI.METER)
+																	+ xCGLateralFacesLFRList.get(i)[1])
+																	* this._mainSparNormalizedStation));
+
+			// check if the chordwise X array is monotonic increasing
+			if(xCGSegmentOppositeFaceChordwiseX[1] - xCGSegmentOppositeFaceChordwiseX[0] < 0.0001)
+				xCGSegmentOppositeFaceChordwiseX[0] -= 0.0001; 
+			
+			// now that the segments coordinates are calculated, we have to intersect these latter.
+			UnivariateFunction functionToIntersectSpanWise = MyMathUtils.interpolate1DLinear(
+					xCGSegmentOppositeFaceSpanwiseX,
+					xCGSegmentOppositeFaceSpanwiseY
+					);
+			UnivariateFunction functionToIntersectChordWise = MyMathUtils.interpolate1DLinear(
+					xCGSegmentOppositeFaceChordwiseX,
+					xCGSegmentOppositeFaceChordwiseY
+					);
+			
+			double[] arrayToIntersectSpanWise = new double[50];
+			double[] arrayToIntersectChordWise = new double[50];
+			double[] xArrayFittedSpanwise = MyArrayUtils.linspace(
+					xCGSegmentOppositeFaceSpanwiseX[0],
+					xCGSegmentOppositeFaceSpanwiseX[xCGSegmentOppositeFaceSpanwiseX.length-1],
+					50
+					);
+			double[] xArrayFittedChordwise = MyArrayUtils.linspace(
+					xCGSegmentOppositeFaceChordwiseX[0],
+					xCGSegmentOppositeFaceChordwiseX[xCGSegmentOppositeFaceChordwiseX.length-1],
+					50
+					);
+			for(int j=0; j<arrayToIntersectSpanWise.length; j++) {
+				arrayToIntersectSpanWise[j] = functionToIntersectSpanWise.value(xArrayFittedSpanwise[j]);
+				arrayToIntersectChordWise[j] = functionToIntersectChordWise.value(xArrayFittedChordwise[j]);
+			}
+			
+			double[] intersection = MyArrayUtils.intersectArraysSimple(arrayToIntersectSpanWise, arrayToIntersectChordWise);
+			
+			for(int j=0; j<intersection.length; j++)
+				if(intersection[j] != 0.0)
+					xCGPrismoidsList.add(
+							Amount.valueOf(
+									intersection[j],
+									SI.METER
+									)
+							);
+			
+			
+		}
+		
+		System.out.println("\n xCG list = " + xCGPrismoidsList);
+		
+		_xCG = Amount.valueOf(0.0, SI.METER);
+		
+		for(int i=0; i<this._prismoidsVolumes.size(); i++)
+			_xCG = _xCG.plus(
+					Amount.valueOf(
+							this._prismoidsVolumes.get(i).getEstimatedValue()
+							*xCGPrismoidsList.get(i).getEstimatedValue()
+							, SI.METER
+							)
+					);
+		_xCG = _xCG.divide(this._fuelVolume.divide(2).getEstimatedValue());
+		_xCG = _xCG.plus(_theWing.getXApexConstructionAxes());
+		
+		_yCG = Amount.valueOf(0.0, SI.METER);
+		_zCG = _theWing.getZCG();
 		
 	}
 
@@ -469,8 +587,6 @@ public class FuelTank implements IFuelTank {
 				.append("\tTotal fuel weight: " + _fuelWeight + "\n")
 				.append("\t·····································\n")
 				;
-		
-		// TODO : APPEND REMAINING DATA
 		
 		return sb.toString();
 		
@@ -629,11 +745,6 @@ public class FuelTank implements IFuelTank {
 	@Override
 	public List<Amount<Volume>> getPrismoidsVolumes() {
 		return _prismoidsVolumes;
-	}
-
-	@Override
-	public CenterOfGravity getCG() {
-		return _cg;
 	}
 
 	@Override

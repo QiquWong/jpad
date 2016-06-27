@@ -72,8 +72,6 @@ public interface IFuelTank {
 	
 	public List<Amount<Volume>> getPrismoidsVolumes();
 	
-	public CenterOfGravity getCG();
-	
 	public Amount<Volume> getFuelVolume();
 	
 	public Amount<Mass> getFuelMass();
