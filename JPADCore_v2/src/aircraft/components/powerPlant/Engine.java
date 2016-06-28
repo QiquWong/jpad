@@ -63,7 +63,10 @@ public class Engine extends Component{
 	private Aircraft _theAircraft;
 	private EngWeightsManager weights;
 	private EngBalanceManager balance;
-
+	// ---------------------------
+	private double _SFC;
+	// ---------------------------
+	
 	public Engine(String name, String description, double x, double y,double z){
 
 		super("", name, description, x, y, z);
@@ -320,7 +323,18 @@ public class Engine extends Component{
 	public void set_t0(Amount<Force> _t0) {
 		this._t0 = _t0;
 	}
-
+	
+	// ----------------------------------
+	// TODO: implement a method for SFC
+	public double getSFC(){
+		return _SFC;
+	}
+	
+	public double setSFC(double SFC){
+		this._SFC = SFC;
+	}
+	
+	// ----------------------------------
 	public Amount<Mass> get_dryMass() {
 		return _dryMass;
 	}

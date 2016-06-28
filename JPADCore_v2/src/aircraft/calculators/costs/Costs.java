@@ -29,17 +29,20 @@ import calculators.performance.PerformanceCalcUtils;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.MethodEnum;
+import standaloneutils.JPADXmlReader;
+import standaloneutils.MyXMLReaderUtils;
 import writers.JPADStaticWriteUtils;
 
 public class Costs extends ACCalculatorManager implements ICosts {
 
+	private String _id;
 	private Aircraft _theAircraft;
 
 	private FixedCharges _theFixedCharges;
 	private TripCharges _theTripCharges;
 
 	private double _totalInvestments, _utilization, _residualValue,  _annualInterestRate, 
-	_annualInsurancePremiumRate, _singleCabinCrewHrCost, _singleflightCrewHrCost, _groundHandlingCostXPax,
+	_annualInsurancePremiumRate, _singleCabinCrewHrCost, _singleFlightCrewHrCost, _groundHandlingCostXPax,
 	_manHourLaborRate, _byPassRatio, _overallPressureRatio, _fuelVolumetricCost, _cruiseSpecificFuelConsumption,
 	_hourVolumetricFuelConsumption, _oilMassCost;	
 
@@ -65,6 +68,7 @@ public class Costs extends ACCalculatorManager implements ICosts {
 	private int _numberOfEngines, _cabinCrewNumber, _flightCrewNumber, _numberOfPax,
 	_numberOfCompressorStage, _numberOfShaft;
 
+
 	
 	
 	//============================================================================================
@@ -76,7 +80,6 @@ public class Costs extends ACCalculatorManager implements ICosts {
 		private String __id;
 
 		// optional parameters
-
 		private double 	__residualValue,
 		__annualInterestRate, 
 		__annualInsurancePremiumRate,  
@@ -148,12 +151,25 @@ public class Costs extends ACCalculatorManager implements ICosts {
 			return this;
 		}
 		
+		public CostsBuilder climbDescentTime(Amount<Duration> climbDescentTime) {
+			__climbDescentTime = climbDescentTime;
+			return this;
+		}
 		
-//		__climbDescentTime, 
-//		__sturtupTaxiTOTime,
-//		__holdPriorToLandTime, 
-//		__landingTaxiToStopTime
+		public CostsBuilder sturtupTaxiTOTime(Amount<Duration> sturtupTaxiTOTime){
+			__sturtupTaxiTOTime = sturtupTaxiTOTime;
+			return this;
+		}
 		
+		public CostsBuilder holdPriorToLandTime(Amount<Duration> holdPriorToLandTime){
+			__holdPriorToLandTime = holdPriorToLandTime;
+			return this;
+		}
+		
+		public CostsBuilder landingTaxiToStopTime(Amount<Duration> landingTaxiToStopTime){
+			__landingTaxiToStopTime = landingTaxiToStopTime;
+			return this;
+		}
 		
 		public CostsBuilder landingFeesPerTon(double landingFeesPerTon) {
 			__landingFeesPerTon =landingFeesPerTon;
@@ -190,48 +206,68 @@ public class Costs extends ACCalculatorManager implements ICosts {
 			return this;
 		}
 		
+		public CostsBuilder airframeMaintLaborCost(double airframeMaintLaborCost) {
+			__airframeMaintLaborCost = airframeMaintLaborCost;
+			return this;
+		}
 		
-//		__engineMaintMaterialCost,
-//		__airframeMaintLaborCost, 
-//		__airframeMaintMaterialCost,
-//		__fuelVolumetricCost,
-//		__hourVolumetricFuelConsumption,
-//		__oilMassCost;	
+		public CostsBuilder airframeMaintMaterialCost(double airframeMaintMaterialCost) {
+			__airframeMaintMaterialCost = airframeMaintMaterialCost;
+			return this;
+		}
+		
+		public CostsBuilder fuelVolumetricCost(double fuelVolumetricCost){
+			__fuelVolumetricCost = fuelVolumetricCost;
+			return this;
+		}
+		
+		public  CostsBuilder hourVolumetricFuelConsumption(double hourVolumetricFuelConsumption){
+			__hourVolumetricFuelConsumption = hourVolumetricFuelConsumption;
+			return this;
+		}
 		
 		
-		
-		
-		
+		public CostsBuilder oilMassCost(double oilMassCost){
+			__oilMassCost = oilMassCost;
+			return this;
+		}
 		
 		public Costs build() {
 			return new Costs(this);
 		}
 		
-
 	}
 	
 	
-	// Constructor 
+	// Constructor of Costs class
 	private Costs (CostsBuilder builder) { 
 		
-//		this._id = builder.__id;
+		this._id = builder.__id;
+		this._residualValue = builder.__residualValue;
+		this._annualInterestRate = builder.__annualInterestRate;
+		this._annualInsurancePremiumRate = builder.__annualInsurancePremiumRate;
+		this._utilization = builder.__utilization;
+		this._sparesAirframePerCosts = builder.__sparesAirframePerCosts;
+		this._sparesEnginesPerCosts = builder.__sparesEnginesPerCosts;
+		this._singleCabinCrewHrCost = builder.__airframeMaintLaborCost;
+		this._singleFlightCrewHrCost = builder.__singleflightCrewHrCost;
+		this._climbDescentTime = builder.__climbDescentTime;
+		this._sturtupTaxiTOTime = builder.__sturtupTaxiTOTime;
+		this._holdPriorToLandTime = builder.__holdPriorToLandTime;
+		this._landingTaxiToStopTime = builder.__landingTaxiToStopTime;
+		this._landingFeesPerTon = builder.__landingFeesPerTon;
+		this._jenkinsonNavigationalCharges = builder.__jenkinsonNavigationalCharges;
+		this._groundHandlingCostXPax = builder.__groundHandlingCostXPax;
+		this._manHourLaborRate = builder.__manHourLaborRate;
+		this._overallPressureRatio = builder.__overallPressureRatio;
+		this._engineMaintLaborCost = builder.__engineMaintLaborCost;
+		this._engineMaintMaterialCost = builder.__engineMaintMaterialCost;
+		this._airframeMaintLaborCost = builder.__airframeMaintLaborCost;
+		this._airframeMaintMaterialCost = builder.__airframeMaintMaterialCost;
+		this._fuelVolumetricCost = builder.__fuelVolumetricCost;
+		this._hourVolumetricFuelConsumption = builder.__hourVolumetricFuelConsumption;
+		this._oilMassCost = builder.__oilMassCost;
 		
-		
-	}
-	
-	//===================================================================================================
-	// End of builder pattern
-	//===================================================================================================
-
-		
-		
-	public Costs(Aircraft aircraft) {
-
-		_theAircraft = aircraft;
-
-		_theFixedCharges = new FixedCharges(_theAircraft, this);
-		_theTripCharges= new TripCharges(_theAircraft, this); 
-
 		initializeIndependentVars(
 				0.1,									// residualValue, Jenkinson's example value.
 				0.053,									// annualInterestRate
@@ -258,6 +294,74 @@ public class Costs extends ACCalculatorManager implements ICosts {
 				8.99									// oilMassCost, Mass cost of aeronautic oil (USD/lb) according to Sforza
 				);
 	}
+	
+	//===================================================================================================
+	// End of builder pattern
+	//===================================================================================================
+
+	public static Costs importFromXML(String pathToXML){
+	
+		JPADXmlReader reader = new JPADXmlReader(pathToXML);
+
+		System.out.println("Reading costs data ...");
+		
+
+		String id = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@id");
+		
+		// Fixed Charges
+		double residualValue = Double.valueOf(
+									reader.getXMLPropertyByPath("//Fixed_Charges/Residual_Value"));
+		
+		double annualInterestRate = Double.valueOf(
+				reader.getXMLPropertyByPath("//Fixed_Charges/Annual_Interest_Rate"));
+		
+		
+		
+		
+		Costs costs = new CostsBuilder(id)
+				.residualValue(residualValue)
+				.annualInterestRate(annualInterestRate)
+				.build();
+		
+		return costs;
+	}
+		
+//	public Costs(Aircraft aircraft) {
+//
+//		_theAircraft = aircraft;
+//
+//		_theFixedCharges = new FixedCharges(_theAircraft, this);
+//		_theTripCharges= new TripCharges(_theAircraft, this); 
+//
+//		initializeIndependentVars(
+//				0.1,									// residualValue, Jenkinson's example value.
+//				0.053,									// annualInterestRate
+//				0.005,									// annualInsurancePremiumRate
+//				4200.,									// utilization (hr/year)
+//				0.1,									// sparesCostsAsAirframeCostPercentage
+//				0.3,									// sparesEnginesCostsAsAirframeCostPercentage
+//				246.5,									// singleCabinCrewHrCost,
+//				81.,									// singleflightCrewHrCost,
+//				Amount.valueOf(10, NonSI.MINUTE), 		// Climb and descent time (min),
+//				Amount.valueOf(20, NonSI.MINUTE), 		// Sturtup Taxi and Take-Off time (min),
+//				Amount.valueOf(8, NonSI.MINUTE),  		// Hold Prior To Land Time (min),
+//				Amount.valueOf(5, NonSI.MINUTE),  		// Landing and Taxi To Stop Time (min),
+//				7.8,									// landingFeesPerTon, As suggested by Kundu (USD per ton of MTOW); Jenkinson suggested instead a value of 6 USD per ton of MTOW.
+//				5640.,									// jenkinsonNavigationalCharges, (USD)this value is from the jenkinson example. Jenkinson doesn't give a statistic law, but suggest to find the desired value time by time in literature or else.
+//				72,
+//				11.,									// groundHandlingCostXPax, Jenkinson suggests this value in USD for the ground handling cost per passenger
+//				63.0,									// manHourLaborRate, (USD/hr) As suggested by Kundu. This is the cost of an hour man labor for the maintenance of the airframe.
+//				110.,									// engineMaintLaborCost, (USD/hr/engine) 
+//				80.,									// engineMaintMaterialCost, (USD/hr/engine)
+//				660.,									// airframeMaintLaborCost, (USD/hr)	  
+//				218.,									// airframeMaintMaterialCost, (USD/hr)
+//				0.75,									// fuelVolumetricCost, Volumetric cost of aeronautic fuel in USD/USGal, as suggested by Kundu
+//				8.99									// oilMassCost, Mass cost of aeronautic oil (USD/lb) according to Sforza
+//				);
+//	}
 
 	/**
 	 * Initialize the variable that are independent from aircraft or statistical assumed. //TODO: Complete Javadoc
@@ -318,7 +422,7 @@ public class Costs extends ACCalculatorManager implements ICosts {
 		_sparesAirframePerCosts = sparesAirframePerCosts;
 		_sparesEnginesPerCosts = sparesEnginesPerCosts;
 		_singleCabinCrewHrCost = singleCabinCrewHrCost;
-		_singleflightCrewHrCost = singleflightCrewHrCost;
+		_singleFlightCrewHrCost = singleflightCrewHrCost;
 		_climbDescentTime = climbDescentTime;
 		_sturtupTaxiTOTime = sturtupTaxiTOTime;
 		_holdPriorToLandTime = holdPriorToLandTime;
@@ -354,7 +458,7 @@ public class Costs extends ACCalculatorManager implements ICosts {
 				aircraft.getPowerPlant().get_engineList().get(0).get_t0(),	// seaLevelStaticThrust (single engine), 
 				aircraft.getPowerPlant().get_engineList().get(0).get_t0(),	// thrustTO (single engine), 
 				aircraft.getPowerPlant().get_engineList().get(0).get_p0(),	// powerTO (single engine),
-				//				aircraft.get_powerPlant().get_engineList().get(0).get_specificFuelConsumption //TODO: Substitute the value below whit this raw
+//				aircraft.getPowerPlant().get_engineList().get(0).getSFC(), //TODO: Substitute the value below whit this raw
 				0.5, // Specific fuel consumption in (lb/(lb*hr))
 				1816.0	// hourVolumetricFuelConsumption, Hour fuel consumption in USGal/hr. The value is taken from Jenkinson's example
 				);
@@ -451,8 +555,8 @@ public class Costs extends ACCalculatorManager implements ICosts {
 				0.3,			// sparesEnginesCostsAsAirframeCostPercentage
 				aircraft.getCabinConfiguration().getCabinCrewNumber().intValue(),			// cabinCrewNumber,
 				aircraft.getCabinConfiguration().getFlightCrewNumber().intValue(),			// flightCrewNumber,
-				246.5,		// singleCabinCrewHrCost,
-				81,			// singleflightCrewHrCost,
+				81,			// singleCabinCrewHrCost,
+				246.5,		// singleflightCrewHrCost,
 				aircraft.getThePerformance().getRange(),	// range (nm)
 				aircraft.getThePerformance().getVOptimumCruise(),	// cruiseSpeed, This default value is taken from the Jenkinson's Example
 				Amount.valueOf(10, NonSI.MINUTE), // Climb and descent time (min),
@@ -674,7 +778,7 @@ public class Costs extends ACCalculatorManager implements ICosts {
 		_cabinCrewNumber = cabinCrewNumber;
 		_flightCrewNumber = flightCrewNumber;
 		_singleCabinCrewHrCost = singleCabinCrewHrCost;
-		_singleflightCrewHrCost = singleflightCrewHrCost;
+		_singleFlightCrewHrCost = singleflightCrewHrCost;
 
 		_range = range; // (nm)
 
@@ -870,7 +974,7 @@ public class Costs extends ACCalculatorManager implements ICosts {
 		_theFixedCharges.initialize(_utilization, _totalInvestments, _aircraftCost,
 				_singleEngineCost, aircraft.getLifeSpan(),	_residualValue, _annualInterestRate,
 				_annualInsurancePremiumRate, _cabinCrewNumber, _flightCrewNumber, _numberOfEngines,
-				_singleCabinCrewHrCost, _singleflightCrewHrCost, _MTOM);
+				_singleCabinCrewHrCost, _singleFlightCrewHrCost, _MTOM);
 		_theFixedCharges.calculateAll();
 
 		_theTripCharges.initialize(_landingFeesPerTon, _MTOM, _blockTime, _range,
@@ -1047,11 +1151,11 @@ public class Costs extends ACCalculatorManager implements ICosts {
 	}
 
 	public double get_singleflightCrewHrCost() {
-		return _singleflightCrewHrCost;
+		return _singleFlightCrewHrCost;
 	}
 
 	public void set_singleflightCrewHrCost(double _singleflightCrewHrCost) {
-		this._singleflightCrewHrCost = _singleflightCrewHrCost;
+		this._singleFlightCrewHrCost = _singleflightCrewHrCost;
 	}
 
 	public void set_cabinCrewNumber(int _cabinCrewNumber) {

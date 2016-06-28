@@ -1,31 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
 	<costs id="JPAD Test Costs DAF - 2016">
-			<!-- Fixed Charged -->
-			<Residual_Value>0.1</Residual_Value> 
-			<Annual_Interest_Rate>0.053</Annual_Interest_Rate>
-			<Annual_Insurance_Premium_Rate>0.005</Annual_Insurance_Premium_Rate>
-			<Utilization unit="hr/year">4200.</Utilization unit="hr/year">
-			<Spares_Costs_As_Airframe_Cost_Percentage>0.1</Spares_Costs_As_Airframe_Cost_Percentage>
-			<Spares_Engines_Costs_As_Airframe_Cost_Percentage>0.3</Spares_Costs_As_Airframe_Cost_Percentage>
-			<Single_Flight_Crew_Hr_Cost unit="USD">246.5</Single_Flight_Crew_Hr_Cost>
-			<Single_Cabin_Crew_Hr_Cost unit="USD">81</Single_Cabin_Crew_Hr_Cost>
-			<!-- Trip Charged -->
-			<Climb_and_Descent_Time unit="min">10</Climb_and_Descent_Time>
-			<Sturtup_Taxi_and_Take_Off_time unit="min">20</Sturtup_Taxi_and_Take_Off_time>
-			<Hold_Prior_To_Land_Time unit="min">8</Hold_Prior_To_Land_Time>
-			<Landing_and_Taxi_To_Stop_Time unit="min">5</Landing_and_Taxi_To_Stop_Time>
-			<Landing_Fees_Per_Ton unit="USD">7.8</Landing_Fees_Per_Ton>  
-			<Navigational_Charges unit="USD">5640.</Navigational_Charges>
-			<Ground_Handling_Cost_Per_Pax unit="USD">11.0</Ground_Handling_Cost_Per_Pax>
-			<Labor_Manhour_Rate unit="USD/hr">63.0</Labor_Manhour_Rate>
-			<OAPR>14.</OAPR>
-			<Engine_Maint_Labor_Cost unit="USD/hr/engine">110.</Engine_Maint_Labor_Cost>
-			<Engine_Maint_Material_Cost unit="USD/hr/engine">80.</Engine_Maint_Material_Cost>
-			<Airframe_Maint_Labor_Cost unit="USD/hr">660.</Airframe_Maint_Labor_Cost>
-			<Airframe_Maint_Material_Cost unit="USD/hr"> 218.</Airframe_Maint_Material_Cost>
-			<Fuel_Volumetric_Cost unit="USD/USGal">0.75</Fuel_Volumetric_Cost>
-			<Hour_Volumetric_Fuel_Consumption unit="USGal/hr">1816.0</Hour_Volumetric_Fuel_Consumption>
-			<Oil_Mass_Cost unit="USD/lb">8.99</Oil_Mass_Cost>
+			<Fixed_Charges>
+				<Residual_Value>0.1</Residual_Value> 
+				<Annual_Interest_Rate>0.053</Annual_Interest_Rate>
+				<Annual_Insurance_Premium_Rate>0.005</Annual_Insurance_Premium_Rate>
+				<Utilization unit="hr/year">4200.</Utilization unit="hr/year">
+				<Spares_Costs_As_Airframe_Cost_Percentage>0.1</Spares_Costs_As_Airframe_Cost_Percentage>
+				<Spares_Engines_Costs_As_Airframe_Cost_Percentage>0.3</Spares_Engines_Costs_As_Airframe_Cost_Percentage>
+				<Single_Flight_Crew_Hr_Cost unit="USD">246.5</Single_Flight_Crew_Hr_Cost>
+				<Single_Cabin_Crew_Hr_Cost unit="USD">81</Single_Cabin_Crew_Hr_Cost>
+			</Fixed_Charges>
+			<Trip_Charges>
+				<Climb_and_Descent_Time unit="min">10</Climb_and_Descent_Time>
+				<Sturtup_Taxi_and_Take_Off_time unit="min">20</Sturtup_Taxi_and_Take_Off_time>
+				<Hold_Prior_To_Land_Time unit="min">8</Hold_Prior_To_Land_Time>
+				<Landing_and_Taxi_To_Stop_Time unit="min">5</Landing_and_Taxi_To_Stop_Time>
+				<Landing_Fees_Per_Ton unit="USD">7.8</Landing_Fees_Per_Ton>  
+				<Navigational_Charges unit="USD">5640.</Navigational_Charges>
+				<Ground_Handling_Cost_Per_Pax unit="USD">11.0</Ground_Handling_Cost_Per_Pax>
+				<Labor_Manhour_Rate unit="USD/hr">63.0</Labor_Manhour_Rate>
+				<OAPR>14.</OAPR>
+				<Engine_Maint_Labor_Cost unit="USD/hr/engine">110.</Engine_Maint_Labor_Cost>
+				<Engine_Maint_Material_Cost unit="USD/hr/engine">80.</Engine_Maint_Material_Cost>
+				<Airframe_Maint_Labor_Cost unit="USD/hr">660.</Airframe_Maint_Labor_Cost>
+				<Airframe_Maint_Material_Cost unit="USD/hr"> 218.</Airframe_Maint_Material_Cost>
+				<Fuel_Volumetric_Cost unit="USD/USGal">0.75</Fuel_Volumetric_Cost>
+				<Hour_Volumetric_Fuel_Consumption unit="USGal/hr">1816.0</Hour_Volumetric_Fuel_Consumption>
+				<Oil_Mass_Cost unit="USD/lb">8.99</Oil_Mass_Cost>
+			</Trip_Charges>
 	</costs>
 </jpad_config>
