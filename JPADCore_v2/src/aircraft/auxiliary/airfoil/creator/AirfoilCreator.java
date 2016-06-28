@@ -30,12 +30,12 @@ public class AirfoilCreator implements IAirfoilCreator {
 	private Double[] _zCoords;
 	private Double _thicknessToChordRatio;
 	private Double _camberRatio;
-	private Double _radiusLeadingEdgeNormalized;
+	private Amount<Length> _radiusLeadingEdge;
 	private Amount<Angle> _angleAtTrailingEdge;
 	private Amount<Angle> _alphaZeroLift;
 	private Amount<Angle> _alphaEndLinearTrait;
 	private Amount<Angle> _alphaStall;
-	private Double _clAlphaLinearTrait;
+	private Amount<?> _clAlphaLinearTrait;
 	private Double _cdMin;
 	private Double _clAtCdMin;
 	private Double _clAtAlphaZero;
@@ -110,13 +110,13 @@ public class AirfoilCreator implements IAirfoilCreator {
 	}
 
 	@Override
-	public Double getRadiusLeadingEdgeNormalized() {
-		return _radiusLeadingEdgeNormalized;
+	public Amount<Length> getRadiusLeadingEdge() {
+		return _radiusLeadingEdge;
 	}
 
 	@Override
-	public void setRadiusLeadingEdgeNormalized(Double rLEOverC) {
-		_radiusLeadingEdgeNormalized = rLEOverC;
+	public void setRadiusLeadingEdge(Amount<Length> rLEOverC) {
+		_radiusLeadingEdge = rLEOverC;
 	}
 
 	@Override
@@ -180,12 +180,12 @@ public class AirfoilCreator implements IAirfoilCreator {
 	}
 
 	@Override
-	public Double getClAlphaLinearTrait() {
+	public Amount<?> getClAlphaLinearTrait() {
 		return _clAlphaLinearTrait;
 	}
 
 	@Override
-	public void setClAlphaLinearTrait(Double clApha) {
+	public void setClAlphaLinearTrait(Amount<?> clApha) {
 		_clAlphaLinearTrait = clApha;
 	}
 
@@ -323,7 +323,7 @@ public class AirfoilCreator implements IAirfoilCreator {
 		private RealMatrix __NormalizedCornerPointsXZ = MatrixUtils.createRealMatrix(30, 2);
 		private Double __thicknessToChordRatio = 0.12;
 		private Double __camberRatio = 0.9;
-		private Double __radiusLeadingEdgeNormalized = 0.015;
+		private Amount<Length> __radiusLeadingEdge = Amount.valueOf(0.015, SI.METER);
 		private Double[] __xCoords;
 		private Double[] __zCoords;
 		private Amount<Angle> __angleAtTrailingEdge = Amount.valueOf(4.0,1e-8,NonSI.DEGREE_ANGLE);
@@ -331,7 +331,7 @@ public class AirfoilCreator implements IAirfoilCreator {
 		private Amount<Angle> __alphaZeroLift = Amount.valueOf(-1.5,1e-8,NonSI.DEGREE_ANGLE);
 		private Amount<Angle> __alphaEndLinearTrait = Amount.valueOf(9.0,1e-8,NonSI.DEGREE_ANGLE);;
 		private Amount<Angle> __alphaStall = Amount.valueOf(12.0,1e-8,NonSI.DEGREE_ANGLE);;
-		private Double __clAlphaLinearTrait = 6.10;
+		private Amount<?> __clAlphaLinearTrait = Amount.valueOf(6.10, SI.RADIAN.inverse());
 		private Double __cdMin = 0.002;
 		private Double __clAtCdMin = 0.10;
 		private Double __clAtAlphaZero = 0.09;
@@ -376,8 +376,8 @@ public class AirfoilCreator implements IAirfoilCreator {
 			return this;
 		}
 
-		public AirfoilBuilder radiusLeadingEdgeNormalized(Double rLE) {
-			__radiusLeadingEdgeNormalized = rLE;
+		public AirfoilBuilder radiusLeadingEdge(Amount<Length> rLE) {
+			__radiusLeadingEdge = rLE;
 			return this;
 		}
 
@@ -411,7 +411,7 @@ public class AirfoilCreator implements IAirfoilCreator {
 			return this;
 		}
 
-		public AirfoilBuilder clAlphaLinearTrait(Double clApha) {
+		public AirfoilBuilder clAlphaLinearTrait(Amount<?> clApha) {
 			__clAlphaLinearTrait = clApha;
 			return this;
 		}
@@ -489,7 +489,7 @@ public class AirfoilCreator implements IAirfoilCreator {
 		_NormalizedCornerPointsXZ = builder.__NormalizedCornerPointsXZ;
 		_thicknessToChordRatio = builder.__thicknessToChordRatio;
 		_camberRatio = builder.__camberRatio;
-		_radiusLeadingEdgeNormalized = builder.__radiusLeadingEdgeNormalized;
+		_radiusLeadingEdge = builder.__radiusLeadingEdge;
 		_xCoords = builder.__xCoords;
 		_zCoords = builder.__zCoords;
 		_angleAtTrailingEdge = builder.__angleAtTrailingEdge;
@@ -546,11 +546,15 @@ public class AirfoilCreator implements IAirfoilCreator {
 							reader.getXmlDoc(), reader.getXpath(),
 							"//airfoil/geometry/camber_ratio/text()"));
 
-		Double radiusLeadingEdgeNormalized = Double.valueOf(
-				MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//airfoil/geometry/radius_leading_edge_normalized/text()"));
+		Amount<Length> radiusLeadingEdge = Amount.valueOf(
+				Double.valueOf(
+						MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//airfoil/geometry/radius_leading_edge_normalized/text()")
+						),
+				SI.METER
+				);
 		
 		List<String> xCoordsProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//airfoil/geometry/x_coordinates").get(0));
 		Double[] xCoords = new Double[xCoordsProperty.size()];
@@ -568,11 +572,14 @@ public class AirfoilCreator implements IAirfoilCreator {
 
 		Amount<Angle> alphaStall = reader.getXMLAmountAngleByPath("//airfoil/aerodynamics/alpha_stall");
 
-		Double clAlphaLinearTrait = Double.valueOf(
-				MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//airfoil/aerodynamics/Cl_alpha_linear_trait/text()"));
+		Amount<?> clAlphaLinearTrait = Amount.valueOf( 
+				Double.valueOf(
+						MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//airfoil/aerodynamics/Cl_alpha_linear_trait/text()")),
+				SI.METER
+				);
 
 		Double cDmin = Double.valueOf(
 				MyXMLReaderUtils
@@ -656,7 +663,7 @@ public class AirfoilCreator implements IAirfoilCreator {
 				.type(type)
 				.thicknessToChordRatio(thicknessRatio)
 				.camberRatio(camberRatio)
-				.radiusLeadingEdgeNormalized(radiusLeadingEdgeNormalized)
+				.radiusLeadingEdge(radiusLeadingEdge)
 				.xCoords(xCoords)
 				.zCoords(zCoords)
 				.alphaZeroLift(alphaZeroLift)
@@ -716,7 +723,7 @@ public class AirfoilCreator implements IAirfoilCreator {
 				.append("\tType: " + _type + "\n")
 				.append("\tt/c = " + _thicknessToChordRatio + "\n")
 				.append("\tf/c = " + _camberRatio + "\n")
-				.append("\tr_le/c = " + _radiusLeadingEdgeNormalized + "\n")
+				.append("\tr_le/c = " + _radiusLeadingEdge + "\n")
 				.append("\tx coordinates = " + Arrays.toString(_xCoords) + "\n")
 				.append("\tz coordinates = " + Arrays.toString(_zCoords) + "\n")
 				.append("\tphi_te = " + _angleAtTrailingEdge.to(NonSI.DEGREE_ANGLE) + "\n")

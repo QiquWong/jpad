@@ -25,7 +25,6 @@ import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcAlpha0L;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
-import aircraft.components.liftingSurface.LSAerodynamicsManager.MeanAirfoil;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;

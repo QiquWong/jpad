@@ -758,6 +758,11 @@ public class FuelTank implements IFuelTank {
 	}
 
 	@Override
+	public void setFuelMass(Amount<Mass> fuelMass) {
+		this._fuelMass = fuelMass;
+	}
+	
+	@Override
 	public Amount<Force> getFuelWeight() {
 		return _fuelWeight;
 	}

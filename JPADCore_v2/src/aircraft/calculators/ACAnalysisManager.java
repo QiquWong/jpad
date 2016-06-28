@@ -132,16 +132,16 @@ public class ACAnalysisManager {
 			System.out.println("Updating fuselage geometry ...");
 			aircraft.getFuselage().getFuselageCreator().calculateGeometry();
 			aircraft.getFuselage().getFuselageCreator().checkGeometry();
-			aircraft.setSWetTotal(aircraft.getFuselage().getsWet().getEstimatedValue());
+			aircraft.setSWetTotal(aircraft.getFuselage().getsWet());
 		}
 
 		// Wing
 		if(aircraft.getWing() != null){
 			System.out.println("Updating wing geometry ...");
-			aircraft.getWing().getLiftingSurfaceCreator().calculateGeometry();
+			aircraft.getWing().getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.WING, Boolean.TRUE);
 			//			aircraft.get_wing().updateAirfoilsGeometry();
 			aircraft.getWing().getGeometry().calculateAll();
-			aircraft.setSWetTotal(aircraft.getExposedWing().getLiftingSurfaceCreator().getSurfaceWetted().getEstimatedValue());
+			aircraft.setSWetTotal(aircraft.getExposedWing().getLiftingSurfaceCreator().getSurfaceWetted());
 		}
 		//ExposedWing
 		//TODO: eventually continue here

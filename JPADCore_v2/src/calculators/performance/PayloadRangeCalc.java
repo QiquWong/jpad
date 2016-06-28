@@ -12,8 +12,10 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 import aircraft.OperatingConditions;
+import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.calculators.ACAerodynamicsManager;
 import aircraft.components.Aircraft;
+import aircraft.components.liftingSurface.LiftingSurface;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
@@ -146,7 +148,11 @@ public class PayloadRangeCalc{
 		else
 			byPassRatio = 0.0;
 		
-		tcMax = theAircraft.getWing().get_thicknessMean();
+		Airfoil meanAirfoil = new Airfoil(
+				LiftingSurface.calculateMeanAirfoil(theAircraft.getWing()),
+				theAircraft.getWing().getAerodynamicDatabaseReader());
+		
+		tcMax = meanAirfoil.getAirfoilCreator().getThicknessToChordRatio();
 		cd0 = theAircraft.getTheAerodynamics().calculateCD0Total();
 		oswald = theAircraft.getTheAerodynamics().calculateOswald(currentMach, MethodEnum.HOWE);
 		cl = LiftCalc.calcCLatAlphaLinearDLR(

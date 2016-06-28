@@ -44,7 +44,7 @@ import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.customdata.CenterOfGravity;
 import writers.JPADStaticWriteUtils;
 
-public class LiftingSurface implements ILiftingSurface{
+public class LiftingSurface implements ILiftingSurface {
 
 	private String _id = null;
 	private ComponentEnum _type;
@@ -75,6 +75,26 @@ public class LiftingSurface implements ILiftingSurface{
 	Double[] _percentDifference;
 	
 	private List<Airfoil> _airfoilList;
+	private List<Double> _maxThicknessVsY;
+	private List<Amount<Length>> _radiusLEVsY;
+	private List<Double> _camberRatioVsY;
+	private List<Amount<Angle>> _alpha0VsY; 
+	private List<Amount<Angle>> _alphaStarVsY;
+	private List<Amount<Angle>>_alphaStallVsY;
+	private List<Amount<?>> _clAlphaVsY; 
+	private List<Double> _cdMinVsY;
+	private List<Double> _clAtCdMinVsY;
+	private List<Double> _cl0VsY;
+	private List<Double> _clStarVsY;
+	private List<Double> _clMaxVsY;
+	private List<Double> _clMaxSweepVsY;
+	private List<Double> _kFactorDragPolarVsY;
+	private List<Double> _mExponentDragPolarVsY;
+	private List<Double> _cmAlphaQuarteChordVsY;
+	private List<Double> _xAcAirfoilVsY;
+	private List<Double> _cmACVsY;
+	private List<Double> _cmACStallVsY;
+	private List<Double> _criticalMachVsY;
 	
 	//================================================
 	// Builder pattern via a nested public static class
@@ -172,6 +192,12 @@ public class LiftingSurface implements ILiftingSurface{
 		Double surface = this.getSurface().to(MyUnits.FOOT2).getEstimatedValue();
 		Double surfaceExposed = aircraft.getExposedWing().getSurface().to(MyUnits.FOOT2).getEstimatedValue();
 
+		Airfoil meanAirfoil = new Airfoil(
+				LiftingSurface.calculateMeanAirfoil(aircraft.getWing()),
+				aircraft.getWing().getAerodynamicDatabaseReader()
+				);
+		double _thicknessMean = meanAirfoil.getAirfoilCreator().getThicknessToChordRatio();
+		
 		switch(_type) {
 		case WING : {
 			switch (method) {
@@ -803,7 +829,37 @@ public class LiftingSurface implements ILiftingSurface{
 			this._airfoilList.add(airfoilTip);
 		}
 
+		discretizeAirfoilCharacteristics(this._airfoilList);
+		
 		return this._airfoilList;
+	}
+	
+	private void discretizeAirfoilCharacteristics (List<Airfoil> airfoilList) {
+		
+		for(int i=0; i<airfoilList.size(); i++) {
+		
+			this._maxThicknessVsY.add(airfoilList.get(i).getAirfoilCreator().getThicknessToChordRatio());
+			this._radiusLEVsY.add(airfoilList.get(i).getAirfoilCreator().getRadiusLeadingEdge());
+			this._camberRatioVsY.add(airfoilList.get(i).getAirfoilCreator().getCamberRatio());
+			this._alpha0VsY.add(airfoilList.get(i).getAirfoilCreator().getAlphaZeroLift());
+			this._alphaStarVsY.add(airfoilList.get(i).getAirfoilCreator().getAlphaEndLinearTrait());
+			this._alphaStallVsY.add(airfoilList.get(i).getAirfoilCreator().getAlphaStall());
+			this._clAlphaVsY.add(airfoilList.get(i).getAirfoilCreator().getClAlphaLinearTrait());
+			this._cdMinVsY.add(airfoilList.get(i).getAirfoilCreator().getCdMin());
+			this._clAtCdMinVsY.add(airfoilList.get(i).getAirfoilCreator().getClAtCdMin());
+			this._cl0VsY.add(airfoilList.get(i).getAirfoilCreator().getClAtAlphaZero());
+			this._clStarVsY.add(airfoilList.get(i).getAirfoilCreator().getClEndLinearTrait());
+			this._clMaxVsY.add(airfoilList.get(i).getAirfoilCreator().getClMax());
+			this._clMaxSweepVsY.add(this._clMaxVsY.get(i)*Math.pow(Math.cos(this.getSweepLEEquivalent(false).doubleValue(SI.RADIAN)),2));
+			this._kFactorDragPolarVsY.add(airfoilList.get(i).getAirfoilCreator().getKFactorDragPolar());
+			this._mExponentDragPolarVsY.add(airfoilList.get(i).getAirfoilCreator().getMExponentDragPolar());
+			this._cmAlphaQuarteChordVsY.add(airfoilList.get(i).getAirfoilCreator().getCmAlphaQuarterChord());
+			this._xAcAirfoilVsY.add(airfoilList.get(i).getAirfoilCreator().getXACNormalized());
+			this._cmACVsY.add(airfoilList.get(i).getAirfoilCreator().getCmAC());
+			this._cmACStallVsY.add(airfoilList.get(i).getAirfoilCreator().getCmACAtStall());
+			this._criticalMachVsY.add(airfoilList.get(i).getAirfoilCreator().getMachCritical());
+			
+		}
 	}
 	
 	public static AirfoilCreator calculateAirfoilAtY (LiftingSurface theWing, double yLoc) {
@@ -868,16 +924,16 @@ public class LiftingSurface implements ILiftingSurface{
 				thicknessRatioOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getThicknessToChordRatio();
 				camberRatioInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getCamberRatio();
 				camberRatioOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getCamberRatio();
-				leadingEdgeRadiusInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getRadiusLeadingEdgeNormalized();
-				leadingEdgeRadiusOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getRadiusLeadingEdgeNormalized();
+				leadingEdgeRadiusInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getRadiusLeadingEdge().doubleValue(SI.METER);
+				leadingEdgeRadiusOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getRadiusLeadingEdge().doubleValue(SI.METER);
 				alphaZeroLiftInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getAlphaZeroLift();
 				alphaZeroLiftOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getAlphaZeroLift();
 				alphaEndLinearityInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getAlphaEndLinearTrait();
 				alphaEndLinearityOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getAlphaEndLinearTrait();
 				alphaStallInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getAlphaStall();
 				alphaStallOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getAlphaStall();
-				clAlphaInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getClAlphaLinearTrait(); 
-				clAlphaOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getClAlphaLinearTrait();
+				clAlphaInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getClAlphaLinearTrait().getEstimatedValue(); 
+				clAlphaOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getClAlphaLinearTrait().getEstimatedValue();
 				cdMinInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getCdMin();
 				cdMinOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getCdMin();
 				clAtCdMinInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getClAtCdMin();
@@ -924,10 +980,13 @@ public class LiftingSurface implements ILiftingSurface{
 		
 		//------------------------------------------------------------------------------------------------
 		// INTERMEDIATE LEADING EDGE RADIUS
-		Double intermediateAirfoilLeadingEdgeRadius = MyMathUtils.getInterpolatedValue1DLinear(
-				new double[] {yInner, yOuter},
-				new double[] {leadingEdgeRadiusInner, leadingEdgeRadiusOuter},
-				yLoc
+		Amount<Length> intermediateAirfoilLeadingEdgeRadius = Amount.valueOf(
+				MyMathUtils.getInterpolatedValue1DLinear(
+						new double[] {yInner, yOuter},
+						new double[] {leadingEdgeRadiusInner, leadingEdgeRadiusOuter},
+						yLoc
+						),
+				SI.METER
 				);
 		
 		//------------------------------------------------------------------------------------------------
@@ -965,10 +1024,13 @@ public class LiftingSurface implements ILiftingSurface{
 		
 		//------------------------------------------------------------------------------------------------
 		// INTERMEDIATE Cl ALPHA
-		Double intermediateAirfoilClAlpha = MyMathUtils.getInterpolatedValue1DLinear(
-				new double[] {yInner, yOuter},
-				new double[] {clAlphaInner, clAlphaOuter},
-				yLoc
+		Amount<?> intermediateAirfoilClAlpha = Amount.valueOf( 
+				MyMathUtils.getInterpolatedValue1DLinear(
+						new double[] {yInner, yOuter},
+						new double[] {clAlphaInner, clAlphaOuter},
+						yLoc
+						),
+				SI.METER
 				);
 		
 		//------------------------------------------------------------------------------------------------
@@ -1073,7 +1135,7 @@ public class LiftingSurface implements ILiftingSurface{
 				.type(type)
 				.thicknessToChordRatio(intermediateAirfoilThicknessRatio)
 				.camberRatio(intermediateAirfoilCamberRatio)
-				.radiusLeadingEdgeNormalized(intermediateAirfoilLeadingEdgeRadius)
+				.radiusLeadingEdge(intermediateAirfoilLeadingEdgeRadius)
 				.alphaZeroLift(intermediateAirfoilAlphaZeroLift)
 				.alphaEndLinearTrait(intermediateAirfoilAlphaEndLinearity)
 				.alphaStall(intermediateAirfoilAlphaStall)
@@ -1094,6 +1156,295 @@ public class LiftingSurface implements ILiftingSurface{
 		
 		return intermediateAirfoilCreator;
 
+	}
+	
+	public static AirfoilCreator calculateMeanAirfoil (LiftingSurface theWing) {
+		
+		List<Amount<Area>> influenceAreas = new ArrayList<Amount<Area>>();
+		List<Double> influenceCoefficients = new ArrayList<Double>();
+		
+		int nSections = theWing.getAirfoilList().size();
+		
+		//----------------------------------------------------------------------------------------------
+		// calculation of the first influence area ...
+		influenceAreas.add(
+				Amount.valueOf(
+						0.5
+						*theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(0).doubleValue(SI.METER)
+						*(theWing.getLiftingSurfaceCreator().getYBreakPoints().get(1)
+									.minus(theWing.getLiftingSurfaceCreator().getYBreakPoints().get(0))
+										.getEstimatedValue()),
+						SI.SQUARE_METRE)
+				);
+
+		influenceCoefficients.add(
+				influenceAreas.get(0)
+				.times(2)
+				.divide(theWing.getSurface())
+				.getEstimatedValue()
+				);
+
+		//----------------------------------------------------------------------------------------------
+		// calculation of the inner influence areas ... 
+		for(int i=1; i<theWing.getAirfoilList().size()-1; i++) {
+
+			influenceAreas.add(
+					Amount.valueOf(
+							(0.5
+									*theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)
+									*(theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i)
+												.minus(theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i-1))
+													.getEstimatedValue())
+									)
+							+(0.5
+									*theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)
+									*(theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i+1)
+												.minus(theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i))
+													.getEstimatedValue())
+									),
+							SI.SQUARE_METRE)
+					);
+
+			influenceCoefficients.add(
+					influenceAreas.get(i)
+					.times(2)
+					.divide(theWing.getSurface())
+					.getEstimatedValue()
+					);
+
+		}
+	
+	//----------------------------------------------------------------------------------------------
+	// calculation of the last influence area ...
+	influenceAreas.add(
+			Amount.valueOf(
+					0.5
+					*theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(nSections-1).doubleValue(SI.METER)
+					*(theWing.getLiftingSurfaceCreator().getYBreakPoints().get(nSections-1)
+							.minus(theWing.getLiftingSurfaceCreator().getYBreakPoints().get(nSections-2))
+							.getEstimatedValue()),
+					SI.SQUARE_METRE)
+			);
+	
+	influenceCoefficients.add(
+			influenceAreas.get(nSections-1)
+			.times(2)
+			.divide(theWing.getSurface())
+			.getEstimatedValue()
+			);
+	
+	double totalInfluenceArea = 0; 
+	for(int i=0; i<influenceAreas.size(); i++)
+		totalInfluenceArea += influenceAreas.get(i).getEstimatedValue();
+	
+	if(theWing.getSurface().getEstimatedValue() - (totalInfluenceArea*2) < 0.001) {
+		System.out.println("\tTotal influence area equals the semi-surface. CHECK PASSED!!\n");
+		System.out.println("\tTotal inluence area = " + totalInfluenceArea);
+		System.out.println("\tWing semi-surface = " + theWing.getSurface().divide(2).getEstimatedValue() + "\n");
+	}
+	else {
+		System.err.println("\n\tTotal influence area differs from the semi-surface. CHECK NOT PASSED!!\n");
+		return null;
+	}
+	
+	//----------------------------------------------------------------------------------------------
+	// MEAN AIRFOIL DATA CALCULATION:
+	
+	//----------------------------------------------------------------------------------------------
+	// Maximum thickness:
+	double maximumThicknessMeanAirfoil = 0;
+
+	for(int i=0; i<influenceCoefficients.size(); i++)
+		maximumThicknessMeanAirfoil += influenceCoefficients.get(i)
+		*theWing.getAirfoilList().get(i).getAirfoilCreator().getThicknessToChordRatio();
+
+	//----------------------------------------------------------------------------------------------
+	// Camber ratio:
+	double camberRatioMeanAirfoil = 0;
+
+	for(int i=0; i<influenceCoefficients.size(); i++)
+		camberRatioMeanAirfoil += influenceCoefficients.get(i)
+		*theWing.getAirfoilList().get(i).getAirfoilCreator().getCamberRatio();
+	
+	//----------------------------------------------------------------------------------------------
+	// Leading edge radius:
+	Amount<Length> leadingEdgeRadiusMeanAirfoil = Amount.valueOf(0.0, SI.METER);
+
+	for(int i=0; i<influenceCoefficients.size(); i++)
+		leadingEdgeRadiusMeanAirfoil = leadingEdgeRadiusMeanAirfoil
+									.plus(theWing.getAirfoilList().get(i).getAirfoilCreator().getRadiusLeadingEdge()
+											.times(influenceCoefficients.get(i)
+													)
+											);
+
+	//----------------------------------------------------------------------------------------------
+	// Alpha zero lift:
+	Amount<Angle> alphaZeroLiftMeanAirfoil = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+
+	for(int i=0; i<influenceCoefficients.size(); i++)
+		alphaZeroLiftMeanAirfoil = alphaZeroLiftMeanAirfoil
+										.plus(theWing.getAirfoilList().get(i).getAirfoilCreator().getAlphaZeroLift()
+												.times(influenceCoefficients.get(i)
+														)
+												);
+	
+	//----------------------------------------------------------------------------------------------
+	// Alpha star lift:
+	Amount<Angle> alphaStarMeanAirfoil = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+
+	for(int i=0; i<influenceCoefficients.size(); i++)
+		alphaStarMeanAirfoil = alphaStarMeanAirfoil
+										.plus(theWing.getAirfoilList().get(i).getAirfoilCreator().getAlphaEndLinearTrait()
+												.times(influenceCoefficients.get(i)
+														)
+												);
+		
+	//----------------------------------------------------------------------------------------------
+	// Alpha stall lift:
+	Amount<Angle> alphaStallMeanAirfoil = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+
+	for(int i=0; i<influenceCoefficients.size(); i++)
+		alphaStallMeanAirfoil = alphaStallMeanAirfoil
+										.plus(theWing.getAirfoilList().get(i).getAirfoilCreator().getAlphaStall()
+												.times(influenceCoefficients.get(i)
+														)
+												);
+		
+	//----------------------------------------------------------------------------------------------
+	// Cl alpha:
+	Amount<?> clAlphaMeanAirfoil = Amount.valueOf(0.0, SI.RADIAN.inverse());
+	
+	for(int i=0; i<influenceCoefficients.size(); i++)
+		clAlphaMeanAirfoil = clAlphaMeanAirfoil
+										.plus(theWing.getAirfoilList().get(i).getAirfoilCreator().getClAlphaLinearTrait()
+												.times(influenceCoefficients.get(i)
+														)
+												);
+		
+	//----------------------------------------------------------------------------------------------
+	// Cd min:
+	double cdMinMeanAirfoil = 0;
+
+	for(int i=0; i<influenceCoefficients.size(); i++)
+		cdMinMeanAirfoil += influenceCoefficients.get(i)
+		*theWing.getAirfoilList().get(i).getAirfoilCreator().getCdMin();
+		
+	//----------------------------------------------------------------------------------------------
+	// Cl at Cd min:
+	double clAtCdMinMeanAirfoil = 0;
+
+	for(int i=0; i<influenceCoefficients.size(); i++)
+		clAtCdMinMeanAirfoil += influenceCoefficients.get(i)
+		*theWing.getAirfoilList().get(i).getAirfoilCreator().getClAtCdMin();
+		
+	//----------------------------------------------------------------------------------------------
+	// Cl0:
+	double cl0MeanAirfoil = 0;
+
+	for(int i=0; i<influenceCoefficients.size(); i++)
+		cl0MeanAirfoil += influenceCoefficients.get(i)
+		*theWing.getAirfoilList().get(i).getAirfoilCreator().getClAtAlphaZero();	
+	
+	//----------------------------------------------------------------------------------------------
+	// Cl star:
+	double clStarMeanAirfoil = 0;
+
+	for(int i=0; i<influenceCoefficients.size(); i++)
+		clStarMeanAirfoil += influenceCoefficients.get(i)
+		*theWing.getAirfoilList().get(i).getAirfoilCreator().getClEndLinearTrait();	
+		
+	//----------------------------------------------------------------------------------------------
+	// Cl max:
+	double clMaxMeanAirfoil = 0;
+
+	for(int i=0; i<influenceCoefficients.size(); i++)
+		clMaxMeanAirfoil += influenceCoefficients.get(i)
+		*theWing.getAirfoilList().get(i).getAirfoilCreator().getClMax();	
+	
+	//----------------------------------------------------------------------------------------------
+	// K factor drag polar:
+	double kFactorDragPolarMeanAirfoil = 0;
+
+	for(int i=0; i<influenceCoefficients.size(); i++)
+		kFactorDragPolarMeanAirfoil += influenceCoefficients.get(i)
+		*theWing.getAirfoilList().get(i).getAirfoilCreator().getKFactorDragPolar();	
+	
+	//----------------------------------------------------------------------------------------------
+	// m exponent drag polar:
+	double mExponentDragPolarMeanAirfoil = 0;
+
+	for(int i=0; i<influenceCoefficients.size(); i++)
+		mExponentDragPolarMeanAirfoil += influenceCoefficients.get(i)
+		*theWing.getAirfoilList().get(i).getAirfoilCreator().getMExponentDragPolar();	
+	
+	//----------------------------------------------------------------------------------------------
+	// m exponent drag polar:
+	double cmAlphaQuarteChordMeanAirfoil = 0;
+
+	for(int i=0; i<influenceCoefficients.size(); i++)
+		cmAlphaQuarteChordMeanAirfoil += influenceCoefficients.get(i)
+		*theWing.getAirfoilList().get(i).getAirfoilCreator().getCmAlphaQuarterChord();	
+	
+	//----------------------------------------------------------------------------------------------
+	// x ac:
+	double xACMeanAirfoil= 0;
+
+	for(int i=0; i<influenceCoefficients.size(); i++)
+		xACMeanAirfoil += influenceCoefficients.get(i)
+		*theWing.getAirfoilList().get(i).getAirfoilCreator().getXACNormalized();	
+	
+	//----------------------------------------------------------------------------------------------
+	// cm ac:
+	double cmACMeanAirfoil= 0;
+
+	for(int i=0; i<influenceCoefficients.size(); i++)
+		cmACMeanAirfoil += influenceCoefficients.get(i)
+		*theWing.getAirfoilList().get(i).getAirfoilCreator().getCmAC();	
+	
+	//----------------------------------------------------------------------------------------------
+	// cm ac stall:
+	double cmACStallMeanAirfoil= 0;
+
+	for(int i=0; i<influenceCoefficients.size(); i++)
+		cmACStallMeanAirfoil += influenceCoefficients.get(i)
+		*theWing.getAirfoilList().get(i).getAirfoilCreator().getCmACAtStall();	
+	
+	//----------------------------------------------------------------------------------------------
+	// critical Mach number:
+	double criticalMachMeanAirfoil= 0;
+
+	for(int i=0; i<influenceCoefficients.size(); i++)
+		criticalMachMeanAirfoil += influenceCoefficients.get(i)
+		*theWing.getAirfoilList().get(i).getAirfoilCreator().getMachCritical();	
+	
+	//----------------------------------------------------------------------------------------------
+	// MEAN AIRFOIL CREATION:
+	
+	AirfoilCreator meanAirfoilCreator = new AirfoilCreator.AirfoilBuilder("Mean Airfoil")
+			.type(theWing.getAirfoilList().get(0).getType())
+			.thicknessToChordRatio(maximumThicknessMeanAirfoil)
+			.camberRatio(camberRatioMeanAirfoil)
+			.radiusLeadingEdge(leadingEdgeRadiusMeanAirfoil)
+			.alphaZeroLift(alphaZeroLiftMeanAirfoil)
+			.alphaEndLinearTrait(alphaStarMeanAirfoil)
+			.alphaStall(alphaStallMeanAirfoil)
+			.clAlphaLinearTrait(clAlphaMeanAirfoil)
+			.cdMin(cdMinMeanAirfoil)
+			.clAtCdMin(clAtCdMinMeanAirfoil)
+			.clAtAlphaZero(cl0MeanAirfoil)
+			.clEndLinearTrait(clStarMeanAirfoil)
+			.clMax(clMaxMeanAirfoil)
+			.kFactorDragPolar(kFactorDragPolarMeanAirfoil)
+			.mExponentDragPolar(mExponentDragPolarMeanAirfoil)
+			.cmAlphaQuarterChord(cmAlphaQuarteChordMeanAirfoil)
+			.xACNormalized(xACMeanAirfoil)
+			.cmAC(cmACMeanAirfoil)
+			.cmACAtStall(cmACStallMeanAirfoil)
+			.machCritical(criticalMachMeanAirfoil)
+			.build();
+	
+	return meanAirfoilCreator;
+	
 	}
 	
 	@Override
@@ -1386,5 +1737,85 @@ public class LiftingSurface implements ILiftingSurface{
 
 	public void setHigLiftCalculator(CalcHighLiftDevices higLiftCalculator) {
 		this._highLiftCalculator = higLiftCalculator;
+	}
+
+	public List<Double> getMaxThicknessVsY() {
+		return _maxThicknessVsY;
+	}
+
+	public List<Amount<Length>> getRadiusLEVsY() {
+		return _radiusLEVsY;
+	}
+
+	public List<Double> getCamberRatioVsY() {
+		return _camberRatioVsY;
+	}
+
+	public List<Amount<Angle>> getAlpha0VsY() {
+		return _alpha0VsY;
+	}
+
+	public List<Amount<Angle>> getAlphaStarVsY() {
+		return _alphaStarVsY;
+	}
+
+	public List<Amount<Angle>> getAlphaStallVsY() {
+		return _alphaStallVsY;
+	}
+
+	public List<Amount<?>> getClAlphaVsY() {
+		return _clAlphaVsY;
+	}
+
+	public List<Double> getCdMinVsY() {
+		return _cdMinVsY;
+	}
+
+	public List<Double> getClAtCdMinVsY() {
+		return _clAtCdMinVsY;
+	}
+
+	public List<Double> getCl0VsY() {
+		return _cl0VsY;
+	}
+
+	public List<Double> getClStarVsY() {
+		return _clStarVsY;
+	}
+
+	public List<Double> getClMaxVsY() {
+		return _clMaxVsY;
+	}
+
+	public List<Double> getClMaxSweepVsY() {
+		return _clMaxSweepVsY;
+	}
+
+	public List<Double> getKFactorDragPolarVsY() {
+		return _kFactorDragPolarVsY;
+	}
+
+	public List<Double> getMExponentDragPolarVsY() {
+		return _mExponentDragPolarVsY;
+	}
+
+	public List<Double> getCmAlphaQuarteChordVsY() {
+		return _cmAlphaQuarteChordVsY;
+	}
+
+	public List<Double> getXAcAirfoilVsY() {
+		return _xAcAirfoilVsY;
+	}
+
+	public List<Double> getCmACVsY() {
+		return _cmACVsY;
+	}
+
+	public List<Double> getCmACStallVsY() {
+		return _cmACStallVsY;
+	}
+
+	public List<Double> getCriticalMachVsY() {
+		return _criticalMachVsY;
 	}
 }

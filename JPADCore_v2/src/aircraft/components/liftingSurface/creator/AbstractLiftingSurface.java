@@ -58,7 +58,8 @@ public abstract class AbstractLiftingSurface implements ILiftingSurfaceCreator {
 	List<Amount<Length>> _zLEBreakPoints;
 	List<Amount<Length>> _chordsBreakPoints;
 	List<Amount<Angle>> _twistsBreakPoints;
-
+	List<Amount<Angle>> _dihedralsBreakPoints;
+	
 	List<Amount<Length>> _yStationActual;
 
 	List<

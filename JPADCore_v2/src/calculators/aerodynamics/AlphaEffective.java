@@ -63,7 +63,7 @@ public class AlphaEffective {
 		semispan = theWing.getSemiSpan().getEstimatedValue();
 
 		dihedral = theWing.get_dihedral().toArray();
-		alpha0lArray = theWing.get_alpha0VsY().toArray();
+		alpha0lArray = theWing.getAlpha0VsY().toArray();
 		twist = theWing.get_twistVsY().toArray();
 		chordsVsYActual = theWing.get_chordsVsYActual().toArray();
 		yStationsActual = MyArrayUtils.linspace(0., semispan, numberOfPoints);

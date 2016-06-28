@@ -28,8 +28,8 @@ public interface IAirfoilCreator {
 	Double getCamberRatio();
 	void setCamberRatio(Double fOverC);
 	
-	Double getRadiusLeadingEdgeNormalized();
-	void setRadiusLeadingEdgeNormalized(Double rLE);
+	Amount<Length> getRadiusLeadingEdge();
+	void setRadiusLeadingEdge(Amount<Length> rLE);
 	
 	Double[] getXCoords();
 	void setXCoords(Double[] xCoords);
@@ -49,8 +49,8 @@ public interface IAirfoilCreator {
 	Amount<Angle> getAlphaStall();
 	void setAlphaStall(Amount<Angle> alphaStall);
 	
-    Double getClAlphaLinearTrait();
-    void setClAlphaLinearTrait(Double clApha);
+    Amount<?> getClAlphaLinearTrait();
+    void setClAlphaLinearTrait(Amount<?> clApha);
     
     Double getCdMin();
     void setCdMin(Double cdMin); 

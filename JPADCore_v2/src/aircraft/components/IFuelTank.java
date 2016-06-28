@@ -75,6 +75,7 @@ public interface IFuelTank {
 	public Amount<Volume> getFuelVolume();
 	
 	public Amount<Mass> getFuelMass();
+	public void setFuelMass(Amount<Mass> fuelMass);
 	
 	public Amount<Force> getFuelWeight();
 }

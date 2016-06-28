@@ -249,9 +249,9 @@ public class ACWeightsManager extends ACCalculatorManager {
 	public void calculateFirstGuessMTOM(Aircraft aircraft) {
 
 		aircraft.getFuselage().setMass(aircraft.getTheWeights().get_MZFM().times(.15));
-		aircraft.getWing().setOverallMass(aircraft.getTheWeights().get_MZFM().times(.1));
-		aircraft.getHTail().setOverallMass(aircraft.getTheWeights().get_MZFM().times(.015));
-		aircraft.getVTail().setOverallMass(aircraft.getTheWeights().get_MZFM().times(.015));
+		aircraft.getWing().setMassReference(aircraft.getTheWeights().get_MZFM().times(.1));
+		aircraft.getHTail().setMassReference(aircraft.getTheWeights().get_MZFM().times(.015));
+		aircraft.getVTail().setMassReference(aircraft.getTheWeights().get_MZFM().times(.015));
 		aircraft.getPowerPlant().set_mass(aircraft.getTheWeights().get_MZFM().times(.05));
 		aircraft.getNacelles().set_totalMass(aircraft.getTheWeights().get_MZFM().times(.015));
 		aircraft.getFuelTank().setFuelMass(aircraft.getTheWeights().get_MZFM().times(.015));
@@ -260,9 +260,9 @@ public class ACWeightsManager extends ACCalculatorManager {
 
 		aircraft.getTheWeights().set_structuralMass(
 				aircraft.getFuselage().getMass().plus(
-						aircraft.getWing().getOverallMass()).plus(
-								aircraft.getHTail().getOverallMass()).plus(
-										aircraft.getVTail().getOverallMass()).plus(
+						aircraft.getWing().getMassReference()).plus(
+								aircraft.getHTail().getMassReference()).plus(
+										aircraft.getVTail().getMassReference()).plus(
 												aircraft.getNacelles().get_totalMass()).plus(
 														aircraft.getLandingGears().getMass()));
 

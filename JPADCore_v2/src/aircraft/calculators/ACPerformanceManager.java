@@ -11,6 +11,7 @@ import org.apache.commons.lang3.text.WordUtils;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.OperatingConditions;
+import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.Aircraft;
 import calculators.performance.PerformanceCalcManager;
 import configuration.enumerations.AircraftEnum;

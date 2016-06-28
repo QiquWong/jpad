@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Length;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
@@ -30,7 +31,7 @@ public class Geometry {
 	
 	private Double _camberRatio;
 	private Double _maximumThicknessOverChord; 
-	private Double _radiusLE; 
+	private Amount<Length> _radiusLE; 
 	private Amount<Angle> _anglePhiTE = Amount.valueOf(0,SI.RADIAN);
 	
 	/** Twist relative to root chord */
@@ -83,7 +84,7 @@ public class Geometry {
 		this._anglePhiTE = airfoilCreator.getAngleAtTrailingEdge();
 		this._maximumThicknessOverChord = airfoilCreator.getThicknessToChordRatio();
 		this._camberRatio = airfoilCreator.getCamberRatio();
-		this._radiusLE = airfoilCreator.getRadiusLeadingEdgeNormalized();
+		this._radiusLE = airfoilCreator.getRadiusLeadingEdge();
 		this._xCoords = airfoilCreator.getXCoords();
 		this._zCoords = airfoilCreator.getZCoords();
 	}
@@ -124,7 +125,7 @@ public class Geometry {
 
 		_maximumThicknessOverChord = 0.15;
 		_thicknessOverChordUnit = 0.12; 
-		_radiusLE = 0.030195; 
+		_radiusLE = Amount.valueOf(0.030195, SI.METER); 
 		_deltaYPercent =3.5;
 		_anglePhiTE = Amount.valueOf(0,SI.RADIAN); 
 		_twist = Amount.valueOf(0.0,SI.RADIAN);
@@ -170,7 +171,7 @@ public class Geometry {
 
 		_maximumThicknessOverChord = 0.15;
 		_thicknessOverChordUnit = 0.12; 
-		_radiusLE = 0.030195; 
+		_radiusLE = Amount.valueOf(0.030195, SI.METER); 
 		_deltaYPercent =3.5;
 		_anglePhiTE = Amount.valueOf(0,SI.RADIAN); 
 		_twist = Amount.valueOf(0.0,SI.RADIAN);
@@ -273,11 +274,11 @@ public class Geometry {
 		this._maximumThicknessOverChord = _maximumThicknessOverChord;
 	}
 
-	public Double get_radiusLE() {
+	public Amount<Length> get_radiusLE() {
 		return _radiusLE;
 	}
 
-	public void set_radiusLE(Double _radiusLE) {
+	public void set_radiusLE(Amount<Length> _radiusLE) {
 		this._radiusLE = _radiusLE;
 	}
 

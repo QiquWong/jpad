@@ -57,7 +57,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 	private Amount<Angle> _alphaEffective = Amount.valueOf(0,SI.RADIAN);
 
 	private Double _clAtAlpha0;
-	private Double _clAlpha; 
+	private Amount<?> _clAlpha; 
 	private Double _clStar; 
 	private Double _clMax;
 	private Double _cdMin;
@@ -170,7 +170,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			 geometry = airf.getGeometry();
 
 			 _alphaZeroLift = Amount.valueOf(Math.toRadians(-1.2), SI.RADIAN); 
-			 _clAlpha = 6.3; 
+			 _clAlpha = Amount.valueOf(6.3, SI.RADIAN.inverse()); 
 			 _alphaStar = Amount.valueOf(Math.toRadians(9.5),SI.RADIAN); // end-of-linearity 
 			 _clStar = 1.3 ; 
 			 _alphaStall = Amount.valueOf(Math.toRadians(16.0),SI.RADIAN); 
@@ -197,7 +197,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			 geometry = airf.getGeometry();
 
 			 _alphaZeroLift = Amount.valueOf(Math.toRadians(-1.1), SI.RADIAN); 
-			 _clAlpha = 6.3; 
+			 _clAlpha = Amount.valueOf(6.3, SI.RADIAN.inverse()); 
 			 _alphaStar = Amount.valueOf(Math.toRadians(10),SI.RADIAN); // end-of-linearity 
 			 _clStar = 1.2 ; 
 			 _alphaStall = Amount.valueOf(Math.toRadians(18.0),SI.RADIAN); 
@@ -223,7 +223,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			 geometry = airf.getGeometry();
 
 			 _alphaZeroLift = Amount.valueOf(Math.toRadians(-1.32), SI.RADIAN); 
-			 _clAlpha = 6.3; 
+			 _clAlpha = Amount.valueOf(6.3, SI.RADIAN.inverse()); 
 			 _alphaStar = Amount.valueOf(Math.toRadians(14),SI.RADIAN); // end-of-linearity 
 			 _clStar = 1.6 ; 
 			 _alphaStall = Amount.valueOf(Math.toRadians(18),SI.RADIAN); 
@@ -250,7 +250,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			geometry = airf.getGeometry();
 			
 			_alphaZeroLift = Amount.valueOf(Math.toRadians(-1.3), SI.RADIAN); 
-			_clAlpha = 5.96; 
+			_clAlpha = Amount.valueOf(5.96, SI.RADIAN.inverse()); 
 			_alphaStar = Amount.valueOf(Math.toRadians(11),SI.RADIAN); // end-of-linearity 
 			_clStar = 1.1 ; 
 			_alphaStall = Amount.valueOf(Math.toRadians(17.0),SI.RADIAN); 
@@ -276,9 +276,9 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			geometry = airf.getGeometry();
 			
 			_alphaZeroLift = Amount.valueOf(Math.toRadians(-1.4), SI.RADIAN); 
-			_clAlpha = 6.13; 
+			_clAlpha = Amount.valueOf(6.13, SI.RADIAN.inverse()); 
 			_alphaStar = Amount.valueOf(Math.toRadians(10.0),SI.RADIAN); // end-of-linearity 
-			_clStar = _clAlpha * _alphaStar.getEstimatedValue() ; 
+			_clStar = _clAlpha.getEstimatedValue() * _alphaStar.getEstimatedValue() ; 
 			_alphaStall = Amount.valueOf(Math.toRadians(15.0),SI.RADIAN); 
 			_clMax = 1.3;
 
@@ -303,7 +303,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			 geometry = airf.getGeometry();
 
 			 _alphaZeroLift = Amount.valueOf(Math.toRadians(0), SI.RADIAN); 
-			 _clAlpha = 6.92; 
+			 _clAlpha = Amount.valueOf(6.92, SI.RADIAN.inverse());
 			 _alphaStar = Amount.valueOf(Math.toRadians(11),SI.RADIAN); // end-of-linearity 
 			 _clStar = 1.23 ; 
 			 _alphaStall = Amount.valueOf(Math.toRadians(20.1),SI.RADIAN); 
@@ -330,7 +330,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			 geometry = airf.getGeometry();
 
 			 _alphaZeroLift = Amount.valueOf(Math.toRadians(-3.75), SI.RADIAN); 
-			 _clAlpha = 6.30; 
+			 _clAlpha = Amount.valueOf(6.3, SI.RADIAN.inverse());
 			 _alphaStar = Amount.valueOf(Math.toRadians(11),SI.RADIAN); // end-of-linearity 
 			 _clStar = 1.53 ; 
 			 _alphaStall = Amount.valueOf(Math.toRadians(16.75),SI.RADIAN); 
@@ -354,7 +354,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 		}
 
 	public double calculateClAtAlphaLinear(Double alpha) {
-		_clCurrent = alpha/_clAlpha;
+		_clCurrent = alpha/_clAlpha.getEstimatedValue();
 		return _clCurrent;
 	}
 	
@@ -371,9 +371,9 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 		
 //		double clActual= MyMathUtils.getInterpolatedValue1DLinear(alphaArray.toArray(), clAirfoil, alpha);
 //		return clActual;
-		double q = _clStar - _clAlpha * _alphaStar.getEstimatedValue();
+		double q = _clStar - _clAlpha.getEstimatedValue() * _alphaStar.getEstimatedValue();
 		if ( alpha < _alphaStar.getEstimatedValue() ) {
-			_clCurrentViscid = _clAlpha* alpha + q ;
+			_clCurrentViscid = _clAlpha.getEstimatedValue()* alpha + q ;
 		}
 		else {
 			double[][] matrixData = { {Math.pow(_alphaStall.getEstimatedValue(), 3),
@@ -383,7 +383,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 					{Math.pow(_alphaStar.getEstimatedValue(), 3), Math.pow(_alphaStar.getEstimatedValue(), 2),
 						_alphaStar.getEstimatedValue(),1.0}};
 			RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
-			double [] vector = {_clMax, 0,_clAlpha, _clStar};
+			double [] vector = {_clMax, 0,_clAlpha.getEstimatedValue(), _clStar};
 			double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
 			double a = solSystem[0];
 			double b = solSystem[1];
@@ -408,13 +408,13 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 		double alphaMax = Math.toRadians(25);
 		alphaArray.linspace(alphaMin, alphaMax, nValue);
 		double alpha;
-		double q = _clStar - _clAlpha * _alphaStar.getEstimatedValue();
+		double q = _clStar - _clAlpha.getEstimatedValue() * _alphaStar.getEstimatedValue();
 		clAirfoil = new double [nValue];
 		for (int i=0; i<nValue; i++){
 	
 		alpha = alphaArray.get(i);	
 		if ( alpha < _alphaStar.getEstimatedValue() ) {
-			clAirfoil[i] = _clAlpha* alpha + q ;
+			clAirfoil[i] = _clAlpha.getEstimatedValue()* alpha + q ;
 		}
 		else {
 			double[][] matrixData = { {Math.pow(_alphaStall.getEstimatedValue(), 3),
@@ -424,7 +424,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 					{Math.pow(_alphaStar.getEstimatedValue(), 3), Math.pow(_alphaStar.getEstimatedValue(), 2),
 						_alphaStar.getEstimatedValue(),1.0}};
 			RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
-			double [] vector = {_clMax, 0,_clAlpha, _clStar};
+			double [] vector = {_clMax, 0,_clAlpha.getEstimatedValue(), _clStar};
 			double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
 			double a = solSystem[0];
 			double b = solSystem[1];
@@ -505,10 +505,10 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 	}
 	
 	public double calculateCdAtClLinear(double cl) {
-		double qValue =   _clStar - _clAlpha * _alphaStar.getEstimatedValue();
+		double qValue =   _clStar - _clAlpha.getEstimatedValue() * _alphaStar.getEstimatedValue();
 		Amount<Angle> alpha;
 		double alphaTemp;
-		alphaTemp = (cl - qValue)/_clAlpha;
+		alphaTemp = (cl - qValue)/_clAlpha.getEstimatedValue();
 
 		alpha = Amount.valueOf(alphaTemp, SI.RADIAN);
 		
@@ -734,11 +734,11 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 		this._clAtAlpha0 = _clAtAlpha0;
 	}
 
-	public Double get_clAlpha() {
+	public Amount<?> getClAlpha() {
 		return _clAlpha;
 	}
 
-	public void set_clAlpha(Double _clAlpha) {
+	public void set_clAlpha(Amount<?> _clAlpha) {
 		this._clAlpha = _clAlpha;
 	}
 

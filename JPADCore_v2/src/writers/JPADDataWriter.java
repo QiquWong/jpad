@@ -38,6 +38,7 @@ import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 
 import aircraft.OperatingConditions;
+import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.calculators.ACAerodynamicsManager;
 import aircraft.calculators.ACAnalysisManager;
 import aircraft.calculators.ACBalanceManager;
@@ -676,17 +677,17 @@ public class JPADDataWriter {
 		writeInputNode("Minimum_height_from_ground", fuselage.getFuselageCreator().getHeightFromGround(), fuselageParameters, true);
 		writeInputNode("Surface_roughess", fuselage.getRoughness(), fuselageParameters, true);
 		writeInputNode("Nose_furthermost_point_height", fuselage.getFuselageCreator().getHeightN(), fuselageParameters, true);
-		writeInputNode("Tail_rearmost_point_height", fuselage.get_height_T(), fuselageParameters, true);
-		writeInputNode("Nose_cap_lenght", fuselage.get_dxNoseCap(), fuselageParameters, true);
-		writeInputNode("Tail_cap_lenght", fuselage.get_dxTailCap(), fuselageParameters, true);
-		writeInputNode("Windshield_type", fuselage.get_windshieldType(), fuselageParameters, true);
-		writeInputNode("Windshield_height", fuselage.get_windshieldHeight(), fuselageParameters, true);
-		writeInputNode("Windshield_width", fuselage.get_windshieldWidth(), fuselageParameters, true);
-		writeInputNode("Cylinder_lower_to_total_height_ratio", fuselage.get_sectionCylinderLowerToTotalHeightRatio(), fuselageParameters, true);
-		writeInputNode("Cylinder_Rho_upper", fuselage.get_sectionCylinderRhoUpper(), fuselageParameters, true);
-		writeInputNode("Cylinder_Rho_lower", fuselage.get_sectionCylinderRhoLower(), fuselageParameters, true);
-		writeInputNode("Pressurization", fuselage.is_pressurized(), fuselageParameters, true);
-		writeInputNode("Reference_mass", fuselage.getMassReference(), fuselageParameters, true);
+		writeInputNode("Tail_rearmost_point_height", fuselage.getFuselageCreator().getHeightT(), fuselageParameters, true);
+		writeInputNode("Nose_cap_lenght", fuselage.getFuselageCreator().getDxNoseCap(), fuselageParameters, true);
+		writeInputNode("Tail_cap_lenght", fuselage.getFuselageCreator().getDxTailCap(), fuselageParameters, true);
+		writeInputNode("Windshield_type", fuselage.getFuselageCreator().getWindshieldType(), fuselageParameters, true);
+		writeInputNode("Windshield_height", fuselage.getFuselageCreator().getWindshieldHeight(), fuselageParameters, true);
+		writeInputNode("Windshield_width", fuselage.getFuselageCreator().getWindshieldWidth(), fuselageParameters, true);
+		writeInputNode("Cylinder_lower_to_total_height_ratio", fuselage.getFuselageCreator().getSectionCylinderLowerToTotalHeightRatio(), fuselageParameters, true);
+		writeInputNode("Cylinder_Rho_upper", fuselage.getFuselageCreator().getSectionCylinderRhoUpper(), fuselageParameters, true);
+		writeInputNode("Cylinder_Rho_lower", fuselage.getFuselageCreator().getSectionCylinderRhoLower(), fuselageParameters, true);
+		writeInputNode("Pressurization", fuselage.getFuselageCreator().getPressurized(), fuselageParameters, true);
+		writeInputNode("Reference_mass", fuselage.getFuselageCreator().getMassReference(), fuselageParameters, true);
 		writeInputNode("Mass_correction_factor", fuselage.get_massCorrectionFactor(), fuselageParameters, true);
 
 		// --- END OF INPUT DATA --------------------------------------------------------------
@@ -695,15 +696,15 @@ public class JPADDataWriter {
 		// --- OUTPUT DATA --------------------------------------------------------------------
 
 		// TODO: these parameters can be considered as input or output!!!
-		writeOutputNode("Nose_Length", fuselage.get_len_N(), fuselageParameters);
-		writeOutputNode("Cylindrical_Length", fuselage.get_len_C(), fuselageParameters);
-		writeOutputNode("TailCone_Length", fuselage.get_len_T(), fuselageParameters);
-		writeOutputNode("Nose_Length_Ratio", fuselage.get_lenRatio_NF(), fuselageParameters);
-		writeOutputNode("Cylindrical_Length_Ratio", fuselage.get_lenRatio_CF(), fuselageParameters);
-		writeOutputNode("TailCone_Length_Ratio", fuselage.get_lenRatio_TF(), fuselageParameters);
-		writeOutputNode("Nose_Fineness_Ratio", fuselage.get_lambda_N(),  fuselageParameters);
-		writeOutputNode("Cylindrical_Fineness_Ratio", fuselage.get_lambda_C(), fuselageParameters);
-		writeOutputNode("TailCone_Fineness_Ratio", fuselage.get_lambda_T(), fuselageParameters);
+		writeOutputNode("Nose_Length", fuselage.getFuselageCreator().getLenN(), fuselageParameters);
+		writeOutputNode("Cylindrical_Length", fuselage.getFuselageCreator().getLenC(), fuselageParameters);
+		writeOutputNode("TailCone_Length", fuselage.getFuselageCreator().getLenT(), fuselageParameters);
+		writeOutputNode("Nose_Length_Ratio", fuselage.getFuselageCreator().getLenRatioNF(), fuselageParameters);
+		writeOutputNode("Cylindrical_Length_Ratio", fuselage.getFuselageCreator().getLenRatioCF(), fuselageParameters);
+		writeOutputNode("TailCone_Length_Ratio", fuselage.getFuselageCreator().getLenRatioTF(), fuselageParameters);
+		writeOutputNode("Nose_Fineness_Ratio", fuselage.getFuselageCreator().getLambdaN(),  fuselageParameters);
+		writeOutputNode("Cylindrical_Fineness_Ratio", fuselage.getFuselageCreator().getLambdaC(), fuselageParameters);
+		writeOutputNode("TailCone_Fineness_Ratio", fuselage.getFuselageCreator().getLambdaT(), fuselageParameters);
 
 		////////////////////////////////////////////////////////////////////////////
 		// Fuselage Cross Section element
@@ -717,39 +718,39 @@ public class JPADDataWriter {
 
 		// --- INPUT DATA --------------------------------------------------------------------
 
-		writeInputNode("Fuse_Cylinder_Section_X_Location", fuselage.get_sectionsYZStations().get(fuselage.IDX_SECTION_YZ_CYLINDER_1), crossSections, true);
-		writeInputNode("Fuse_Cylinder_Section_Rho_Upper", fuselage.get_sectionCylinderRhoUpper(), crossSections, true);
-		writeInputNode("Fuse_Cylinder_Section_Rho_Lower", fuselage.get_sectionCylinderRhoLower(), crossSections, true);
-		writeInputNode("Fuse_Cylinder_Lower_to_total_height_ratio", fuselage.get_sectionCylinderLowerToTotalHeightRatio(), crossSections, true);
+		writeInputNode("Fuse_Cylinder_Section_X_Location", fuselage.getFuselageCreator().getSectionsYZStations().get(fuselage.getFuselageCreator().IDX_SECTION_YZ_CYLINDER_1), crossSections, true);
+		writeInputNode("Fuse_Cylinder_Section_Rho_Upper", fuselage.getFuselageCreator().getSectionCylinderRhoUpper(), crossSections, true);
+		writeInputNode("Fuse_Cylinder_Section_Rho_Lower", fuselage.getFuselageCreator().getSectionCylinderRhoLower(), crossSections, true);
+		writeInputNode("Fuse_Cylinder_Lower_to_total_height_ratio", fuselage.getFuselageCreator().getSectionCylinderLowerToTotalHeightRatio(), crossSections, true);
 
 		// --- END OF INPUT DATA -------------------------------------------------------------
 
 		// TODO: these are input parameters!
-		writeOutputNode("Cylinder_Base_Area", fuselage.get_area_C(), crossSections);		
-		writeOutputNode("Section_stations", fuselage.get_sectionsYZStations().get(fuselage.IDX_SECTION_YZ_NOSE_CAP), crossSections);
-		writeOutputNode("Nose_Cap_Section_Width", fuselage.get_sectionsYZ().get(fuselage.IDX_SECTION_YZ_NOSE_CAP).get_w_f(), crossSections);
-		writeOutputNode("Nose_Cap_Section_Height", fuselage.get_sectionsYZ().get(fuselage.IDX_SECTION_YZ_NOSE_CAP).get_Len_Height(), crossSections);
-		writeOutputNode("Nose_Cap_Section_Rho_Upper", fuselage.get_sectionsYZ().get(fuselage.IDX_SECTION_YZ_NOSE_CAP).get_RhoUpper(), crossSections);
-		writeOutputNode("Nose_Cap_Section_Rho_Lower", fuselage.get_sectionsYZ().get(fuselage.IDX_SECTION_YZ_NOSE_CAP).get_RhoLower(), crossSections);
-		writeOutputNode("Nose_Cap_Lower_Section_a_Control_Point", fuselage.get_sectionsYZ().get(fuselage.IDX_SECTION_YZ_NOSE_CAP).get_LowerToTotalHeightRatio(), crossSections);
-		writeOutputNode("Mid_Nose_Section_X_Location", fuselage.get_sectionsYZStations().get(fuselage.IDX_SECTION_YZ_MID_NOSE), crossSections);
-		writeOutputNode("Mid_Nose_Section_Width", fuselage.get_sectionsYZ().get(fuselage.IDX_SECTION_YZ_MID_NOSE).get_w_f(), crossSections);
-		writeOutputNode("Mid_Nose_Section_Height", fuselage.get_sectionsYZ().get(fuselage.IDX_SECTION_YZ_MID_NOSE).get_Len_Height(), crossSections);
-		writeOutputNode("Mid_Nose_Section_Rho_Upper", fuselage.get_sectionsYZ().get(fuselage.IDX_SECTION_YZ_MID_NOSE).get_RhoUpper(), crossSections);
-		writeOutputNode("Mid_Nose_Section_Rho_Lower", fuselage.get_sectionsYZ().get(fuselage.IDX_SECTION_YZ_MID_NOSE).get_RhoLower(), crossSections);
-		writeOutputNode("Mid_Nose_Lower_Section_a_Control_Point", fuselage.get_sectionsYZ().get(fuselage.IDX_SECTION_YZ_MID_NOSE).get_LowerToTotalHeightRatio(), crossSections);
-		writeOutputNode("Mid_Tail_Section_X_Location", fuselage.get_sectionsYZStations().get(fuselage.IDX_SECTION_YZ_MID_TAIL), crossSections);
-		writeOutputNode("Mid_Tail_Section_Width", fuselage.get_sectionsYZ().get(fuselage.IDX_SECTION_YZ_MID_TAIL).get_w_f(), crossSections);
-		writeOutputNode("Mid_Tail_Section_Height", fuselage.get_sectionsYZ().get(fuselage.IDX_SECTION_YZ_MID_TAIL).get_Len_Height(), crossSections);
-		writeOutputNode("Mid_Tail_Section_Rho_Upper", fuselage.get_sectionsYZ().get(fuselage.IDX_SECTION_YZ_MID_TAIL).get_RhoUpper(), crossSections);
-		writeOutputNode("Mid_Tail_Section_Rho_Lower", fuselage.get_sectionsYZ().get(fuselage.IDX_SECTION_YZ_MID_TAIL).get_RhoLower(), crossSections);
-		writeOutputNode("Mid_Tail_Lower_Section_a_Control_Point", fuselage.get_sectionsYZ().get(fuselage.IDX_SECTION_YZ_MID_TAIL).get_LowerToTotalHeightRatio(), crossSections);
-		writeOutputNode("Tail_Cap_Section_X_Location", fuselage.get_sectionsYZStations().get(fuselage.IDX_SECTION_YZ_TAIL_CAP), crossSections);
-		writeOutputNode("Tail_Cap_Section_Width", fuselage.get_sectionsYZ().get(fuselage.IDX_SECTION_YZ_TAIL_CAP).get_w_f(), crossSections);
-		writeOutputNode("Tail_Cap_Section_Height", fuselage.get_sectionsYZ().get(fuselage.IDX_SECTION_YZ_MID_NOSE).get_Len_Height(), crossSections);
-		writeOutputNode("Tail_Cap_Section_Rho_Upper", fuselage.get_sectionsYZ().get(fuselage.IDX_SECTION_YZ_TAIL_CAP).get_RhoUpper(), crossSections);
-		writeOutputNode("Tail_Cap_Section_Rho_Lower", fuselage.get_sectionsYZ().get(fuselage.IDX_SECTION_YZ_TAIL_CAP).get_RhoLower(), crossSections);
-		writeOutputNode("Tail_Cap_Lower_Section_a_Control_Point", fuselage.get_sectionsYZ().get(fuselage.IDX_SECTION_YZ_TAIL_CAP).get_LowerToTotalHeightRatio(), crossSections);
+		writeOutputNode("Cylinder_Base_Area", fuselage.getFuselageCreator().getAreaC(), crossSections);		
+		writeOutputNode("Section_stations", fuselage.getFuselageCreator().getSectionsYZStations().get(fuselage.getFuselageCreator().IDX_SECTION_YZ_NOSE_CAP), crossSections);
+		writeOutputNode("Nose_Cap_Section_Width", fuselage.getFuselageCreator().getSectionsYZ().get(fuselage.getFuselageCreator().IDX_SECTION_YZ_NOSE_CAP).get_w_f(), crossSections);
+		writeOutputNode("Nose_Cap_Section_Height", fuselage.getFuselageCreator().getSectionsYZ().get(fuselage.getFuselageCreator().IDX_SECTION_YZ_NOSE_CAP).get_Len_Height(), crossSections);
+		writeOutputNode("Nose_Cap_Section_Rho_Upper", fuselage.getFuselageCreator().getSectionsYZ().get(fuselage.getFuselageCreator().IDX_SECTION_YZ_NOSE_CAP).get_RhoUpper(), crossSections);
+		writeOutputNode("Nose_Cap_Section_Rho_Lower", fuselage.getFuselageCreator().getSectionsYZ().get(fuselage.getFuselageCreator().IDX_SECTION_YZ_NOSE_CAP).get_RhoLower(), crossSections);
+		writeOutputNode("Nose_Cap_Lower_Section_a_Control_Point", fuselage.getFuselageCreator().getSectionsYZ().get(fuselage.getFuselageCreator().IDX_SECTION_YZ_NOSE_CAP).get_LowerToTotalHeightRatio(), crossSections);
+		writeOutputNode("Mid_Nose_Section_X_Location", fuselage.getFuselageCreator().getSectionsYZStations().get(fuselage.getFuselageCreator().IDX_SECTION_YZ_MID_NOSE), crossSections);
+		writeOutputNode("Mid_Nose_Section_Width", fuselage.getFuselageCreator().getSectionsYZ().get(fuselage.getFuselageCreator().IDX_SECTION_YZ_MID_NOSE).get_w_f(), crossSections);
+		writeOutputNode("Mid_Nose_Section_Height", fuselage.getFuselageCreator().getSectionsYZ().get(fuselage.getFuselageCreator().IDX_SECTION_YZ_MID_NOSE).get_Len_Height(), crossSections);
+		writeOutputNode("Mid_Nose_Section_Rho_Upper", fuselage.getFuselageCreator().getSectionsYZ().get(fuselage.getFuselageCreator().IDX_SECTION_YZ_MID_NOSE).get_RhoUpper(), crossSections);
+		writeOutputNode("Mid_Nose_Section_Rho_Lower", fuselage.getFuselageCreator().getSectionsYZ().get(fuselage.getFuselageCreator().IDX_SECTION_YZ_MID_NOSE).get_RhoLower(), crossSections);
+		writeOutputNode("Mid_Nose_Lower_Section_a_Control_Point", fuselage.getFuselageCreator().getSectionsYZ().get(fuselage.getFuselageCreator().IDX_SECTION_YZ_MID_NOSE).get_LowerToTotalHeightRatio(), crossSections);
+		writeOutputNode("Mid_Tail_Section_X_Location", fuselage.getFuselageCreator().getSectionsYZStations().get(fuselage.getFuselageCreator().IDX_SECTION_YZ_MID_TAIL), crossSections);
+		writeOutputNode("Mid_Tail_Section_Width", fuselage.getFuselageCreator().getSectionsYZ().get(fuselage.getFuselageCreator().IDX_SECTION_YZ_MID_TAIL).get_w_f(), crossSections);
+		writeOutputNode("Mid_Tail_Section_Height", fuselage.getFuselageCreator().getSectionsYZ().get(fuselage.getFuselageCreator().IDX_SECTION_YZ_MID_TAIL).get_Len_Height(), crossSections);
+		writeOutputNode("Mid_Tail_Section_Rho_Upper", fuselage.getFuselageCreator().getSectionsYZ().get(fuselage.getFuselageCreator().IDX_SECTION_YZ_MID_TAIL).get_RhoUpper(), crossSections);
+		writeOutputNode("Mid_Tail_Section_Rho_Lower", fuselage.getFuselageCreator().getSectionsYZ().get(fuselage.getFuselageCreator().IDX_SECTION_YZ_MID_TAIL).get_RhoLower(), crossSections);
+		writeOutputNode("Mid_Tail_Lower_Section_a_Control_Point", fuselage.getFuselageCreator().getSectionsYZ().get(fuselage.getFuselageCreator().IDX_SECTION_YZ_MID_TAIL).get_LowerToTotalHeightRatio(), crossSections);
+		writeOutputNode("Tail_Cap_Section_X_Location", fuselage.getFuselageCreator().getSectionsYZStations().get(fuselage.getFuselageCreator().IDX_SECTION_YZ_TAIL_CAP), crossSections);
+		writeOutputNode("Tail_Cap_Section_Width", fuselage.getFuselageCreator().getSectionsYZ().get(fuselage.getFuselageCreator().IDX_SECTION_YZ_TAIL_CAP).get_w_f(), crossSections);
+		writeOutputNode("Tail_Cap_Section_Height", fuselage.getFuselageCreator().getSectionsYZ().get(fuselage.getFuselageCreator().IDX_SECTION_YZ_MID_NOSE).get_Len_Height(), crossSections);
+		writeOutputNode("Tail_Cap_Section_Rho_Upper", fuselage.getFuselageCreator().getSectionsYZ().get(fuselage.getFuselageCreator().IDX_SECTION_YZ_TAIL_CAP).get_RhoUpper(), crossSections);
+		writeOutputNode("Tail_Cap_Section_Rho_Lower", fuselage.getFuselageCreator().getSectionsYZ().get(fuselage.getFuselageCreator().IDX_SECTION_YZ_TAIL_CAP).get_RhoLower(), crossSections);
+		writeOutputNode("Tail_Cap_Lower_Section_a_Control_Point", fuselage.getFuselageCreator().getSectionsYZ().get(fuselage.getFuselageCreator().IDX_SECTION_YZ_TAIL_CAP).get_LowerToTotalHeightRatio(), crossSections);
 
 		writeFuselageOutput(fuselage, _analysisInitiator);
 	}
@@ -764,16 +765,16 @@ public class JPADDataWriter {
 			// --- Geometry ---------------------------
 			Element geometry = addElementToSubElement("Geometry", analysis);
 
-			writeOutputNode("Overall_Equivalent_diameter_GM", fuselage.get_equivalentDiameterGM(), geometry);
-			writeOutputNode("Cylinder_Equivalent_diameter_GM", fuselage.get_equivalentDiameterCylinderGM(), geometry);
-			writeOutputNode("Fineness_Ratio", fuselage.get_lambda_F(), geometry);
-			writeOutputNode("Wetted_surface", fuselage.get_sWet().getEstimatedValue(), geometry);
-			writeOutputNode("Form_Factor", fuselage.get_formFactor(), geometry);
+			writeOutputNode("Overall_Equivalent_diameter_GM", fuselage.getFuselageCreator().getEquivalentDiameterGM(), geometry);
+			writeOutputNode("Cylinder_Equivalent_diameter_GM", fuselage.getFuselageCreator().getEquivalentDiameterCylinderGM(), geometry);
+			writeOutputNode("Fineness_Ratio", fuselage.getFuselageCreator().getLambdaF(), geometry);
+			writeOutputNode("Wetted_surface", fuselage.getFuselageCreator().getsWet().getEstimatedValue(), geometry);
+			writeOutputNode("Form_Factor", fuselage.getFuselageCreator().getFormFactor(), geometry);
 
 			// --- Weights ---------------------------
 			Element weights = addElementToSubElement("Weights", analysis);
 
-			writeOutputNode("Reference_mass", fuselage.getMassReference(), weights);
+			writeOutputNode("Reference_mass", fuselage.getFuselageCreator().getMassReference(), weights);
 			writeOutputNode("Mass_correction_factor", fuselage.get_massCorrectionFactor(), weights);
 			writeMethodsComparison(doc, _sheet, "Weight_estimation_methods_comparison", fuselage.getMassMap(), fuselage.get_percentDifference(), weights);
 			writeOutputNode("Estimated_mass", fuselage.get_massEstimated(), weights);
@@ -829,25 +830,25 @@ public class JPADDataWriter {
 		initiator.appendChild(equivalent_parameters);
 
 		// --- INPUT DATA-------------------------------------
-		writeInputNode("Xcoordinate", liftingSurface.getX0(), equivalent_parameters, true);
-		writeInputNode("Ycoordinate", liftingSurface.getY0(), equivalent_parameters, true);
-		writeInputNode("Zcoordinate", liftingSurface.getZ0(), equivalent_parameters, true);
+		writeInputNode("Xcoordinate", liftingSurface.getXApexConstructionAxes(), equivalent_parameters, true);
+		writeInputNode("Ycoordinate", liftingSurface.getYApexConstructionAxes(), equivalent_parameters, true);
+		writeInputNode("Zcoordinate", liftingSurface.getZApexConstructionAxes(), equivalent_parameters, true);
 
-		writeInputNode("Planform_surface", liftingSurface.get_surface(), equivalent_parameters, true);
+		writeInputNode("Planform_surface", liftingSurface.getSurface(), equivalent_parameters, true);
 		writeInputNode("Control_surface_extension", liftingSurface.get_surfaceCS(), equivalent_parameters, true);
-		writeInputNode("aspectRatio", liftingSurface.get_aspectRatio(), equivalent_parameters, true);
-		writeInputNode("taperRatio", liftingSurface.get_taperRatioEquivalent(), equivalent_parameters, true);
+		writeInputNode("aspectRatio", liftingSurface.getAspectRatio(), equivalent_parameters, true);
+		writeInputNode("taperRatio", liftingSurface.getLiftingSurfaceCreator().getTaperRatioEquivalentWing(), equivalent_parameters, true);
 		writeInputNode("Wing_position_in_percent_of_fuselage_height", liftingSurface.get_positionRelativeToAttachment(), equivalent_parameters, true);
-		writeInputNode("kinkSpanStation", liftingSurface.get_spanStationKink(), equivalent_parameters, true);
-		writeInputNode("Thickness_to_chord_ratio_root", liftingSurface.get_tc_root(), equivalent_parameters, true);
-		writeInputNode("Thickness_to_chord_ratio_kink", liftingSurface.get_tc_kink(), equivalent_parameters, true);
-		writeInputNode("Thickness_to_chord_ratio_tip", liftingSurface.get_tc_tip(), equivalent_parameters, true);
-		writeInputNode("Root_chord_LE_extension", liftingSurface.get_extensionLERootChordLinPanel(), equivalent_parameters, true);
-		writeInputNode("Root_chord_TE_extension", liftingSurface.get_extensionTERootChordLinPanel(), equivalent_parameters, true);
-		writeInputNode("sweepc4", liftingSurface.get_sweepQuarterChordEq(), equivalent_parameters, true);
-		writeInputNode("Incidence_relative_to_xBRF", liftingSurface.get_iw(), equivalent_parameters, true);
+		writeInputNode("kinkSpanStation", liftingSurface.getLiftingSurfaceCreator().getNonDimensionalSpanStationKink(), equivalent_parameters, true);
+		writeInputNode("Thickness_to_chord_ratio_root", liftingSurface.getLiftingSurfaceCreator().getAirfoilRootEquivalentWing().getThicknessToChordRatio(), equivalent_parameters, true);
+		writeInputNode("Thickness_to_chord_ratio_kink", liftingSurface.getLiftingSurfaceCreator().getAirfoilKinkEquivalentWing().getThicknessToChordRatio(), equivalent_parameters, true);
+		writeInputNode("Thickness_to_chord_ratio_tip", liftingSurface.getLiftingSurfaceCreator().getAirfoilTipEquivalentWing().getThicknessToChordRatio(), equivalent_parameters, true);
+		writeInputNode("Root_chord_LE_extension", liftingSurface.getLiftingSurfaceCreator().getXOffsetEquivalentWingRootLE(), equivalent_parameters, true);
+		writeInputNode("Root_chord_TE_extension", liftingSurface.getLiftingSurfaceCreator().getXOffsetEquivalentWingRootTE(), equivalent_parameters, true);
+		writeInputNode("sweepc4", liftingSurface.getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing(), equivalent_parameters, true);
+		writeInputNode("Incidence_relative_to_xBRF", liftingSurface.getRiggingAngle(), equivalent_parameters, true);
 		writeInputNode("kinkStationTwist", liftingSurface.get_twistKink(), equivalent_parameters, true);
-		writeInputNode("tipStationTwist", liftingSurface.get_twistTip(), equivalent_parameters, true);
+		writeInputNode("tipStationTwist", liftingSurface.getLiftingSurfaceCreator().getTwistAtTipEquivalentWing(), equivalent_parameters, true);
 		writeInputNode("Dihedral_inner_panel", liftingSurface.get_dihedralInnerPanel(), equivalent_parameters, true);
 		writeInputNode("Dihedral_outer_panel", liftingSurface.get_dihedralOuterPanel(), equivalent_parameters, true);
 		writeInputNode("Surface_roughness", liftingSurface.get_roughness(), equivalent_parameters, true);
@@ -869,22 +870,19 @@ public class JPADDataWriter {
 		initiator.appendChild(actual_parameters);
 
 		//		writeNode("Mach_number_transonic_threshold", liftingSurface.get_machTransonicThreshold(), actual_parameters, true);
-		writeOutputNode("Planform_surface", liftingSurface.get_surfaceCranked(), actual_parameters);
-		writeOutputNode("Exposed_surface", liftingSurface.get_surfaceExposed(), actual_parameters);
-		writeOutputNode("Wetted_surface", liftingSurface.get_surfaceWetted(), actual_parameters);
-		writeOutputNode("Exposed_Wetted_surface", liftingSurface.get_surfaceWettedExposed(), actual_parameters);
-		writeOutputNode("span", liftingSurface.get_span(), actual_parameters);
-		writeOutputNode("taperRatio", liftingSurface.get_taperRatioActual(), actual_parameters);
-		writeOutputNode("semiSurfaceInnerPanel", liftingSurface.get_semiSurfaceInnerPanel(), actual_parameters);
-		writeOutputNode("aspectRatioInnerPanel", liftingSurface.get_aspectRatioInnerPanel(), actual_parameters);
-		writeOutputNode("semiSurfaceOuterPanel", liftingSurface.get_semiSurfaceOuterPanel(), actual_parameters);
-		writeOutputNode("aspectRatioOuterPanel", liftingSurface.get_aspectRatioOuterPanel(), actual_parameters);
-		writeOutputNode("taperRatioInnerPanel", liftingSurface.get_taperRatioInnerPanel(), actual_parameters);
-		writeOutputNode("taperRatioOuterPanel", liftingSurface.get_taperRatioOuterPanel(), actual_parameters);
-		writeOutputNode("sweepLEInnerPanel", liftingSurface.get_sweepLEInnerPanel(), actual_parameters);
-		writeOutputNode("sweepc4InnerPanel", liftingSurface.get_sweepQuarterChordInnerPanel(), actual_parameters);
-		writeOutputNode("sweepLEOuterPanel", liftingSurface.get_sweepLEOuterPanel(), actual_parameters);
-		writeOutputNode("sweepc4OuterPanel", liftingSurface.get_sweepQuarterChordOuterPanel(), actual_parameters);
+		writeOutputNode("Planform_surface", liftingSurface.getSurface(), actual_parameters);
+		writeOutputNode("Wetted_surface", liftingSurface.getLiftingSurfaceCreator().getSurfaceWetted(), actual_parameters);
+		writeOutputNode("span", liftingSurface.getSpan(), actual_parameters);
+		writeOutputNode("taperRatio", liftingSurface.getTaperRatio(), actual_parameters);
+		for(int i=0; i<liftingSurface.getLiftingSurfaceCreator().getPanels().size(); i++) {
+			writeOutputNode("Surface " + (i+1) + "° Panel", liftingSurface.getLiftingSurfaceCreator().getPanels().get(i).getSurfacePlanform(), actual_parameters);
+			writeOutputNode("AspectRatio " + (i+1) + "° Panel", liftingSurface.getLiftingSurfaceCreator().getPanels().get(i).getAspectRatio(), actual_parameters);
+			writeOutputNode("TaperRatio" + (i+1) + "° Panel", liftingSurface.getLiftingSurfaceCreator().getPanels().get(i).getTaperRatio(), actual_parameters);
+			writeOutputNode("sweepLE" + (i+1) + "° Panel", liftingSurface.getLiftingSurfaceCreator().getPanels().get(i).getSweepLeadingEdge(), actual_parameters);
+			writeOutputNode("sweepHalfChord" + (i+1) + "° Panel", liftingSurface.getLiftingSurfaceCreator().getPanels().get(i).getSweepHalfChord(), actual_parameters);
+			writeOutputNode("sweepC/4" + (i+1) + "° Panel", liftingSurface.getLiftingSurfaceCreator().getPanels().get(i).getSweepQuarterChord(), actual_parameters);
+			writeOutputNode("sweepTE" + (i+1) + "° Panel", liftingSurface.getLiftingSurfaceCreator().getPanels().get(i).getSweepAtTrailingEdge(), actual_parameters);
+		}
 		writeOutputNode("rootChord", liftingSurface.get_chordRoot(), actual_parameters);
 		writeOutputNode("rootChordXle", liftingSurface.get_xLERoot(), actual_parameters);
 		writeOutputNode("kinkChord", liftingSurface.get_chordKink(), actual_parameters);
@@ -901,17 +899,10 @@ public class JPADDataWriter {
 		writeOutputNode("AC_to_Wing_AC_distance", liftingSurface.get_ACw_ACdistance(), actual_parameters);
 		writeOutputNode("Volumetric_ratio", liftingSurface.get_volumetricRatio(), actual_parameters);
 
-		if (liftingSurface.getGeometry().getCalculateThickness() != null) {
-			writeMethodsComparison(
-					"Mean_maximum_thickness", 
-					liftingSurface.getGeometry().getCalculateThickness().getMethodsMap(),
-					actual_parameters);
-		}
-		
-		writeInputNode("Number_of_airfoils", liftingSurface.get_numberOfAirfoils(), actual_parameters, true);
+		writeInputNode("Number_of_airfoils", liftingSurface.getAirfoilList().size(), actual_parameters, true);
 
-		for (int k=0; k < liftingSurface.get_theAirfoilsList().size(); k++){
-			writeAirfoil(liftingSurface.get_theAirfoilsList().get(k), liftingSurface, actual_parameters);
+		for (int k=0; k < liftingSurface.getAirfoilList().size(); k++){
+			writeAirfoil(liftingSurface.getAirfoilList().get(k), liftingSurface, actual_parameters);
 		}
 	}
 
@@ -1113,7 +1104,7 @@ public class JPADDataWriter {
 		airfoilParam.setAttribute("level", JPADGlobalData.getTheXmlTree().getLevel(airfoil).toString());
 		commonOperations(airfoil, airfoilParam);
 
-		writeInputNode("Family", airfoil.get_family(), airfoilParam, true);
+		writeInputNode("Family", airfoil.getFamily(), airfoilParam, true);
 		writeInputNode("Type", airfoil.getType(), airfoilParam, true);
 
 
@@ -1136,7 +1127,7 @@ public class JPADDataWriter {
 		writeInputNode("Alpha_zero_lift", airfoil.getAerodynamics().get_alphaZeroLift(), aerodynamics, true);
 		writeInputNode("Alpha_end_linear", airfoil.getAerodynamics().get_alphaStar(), aerodynamics, true);
 		writeInputNode("Alpha_stall", airfoil.getAerodynamics().get_alphaStall(), aerodynamics, true);
-		writeInputNode("Cl_alpha", airfoil.getAerodynamics().get_clAlpha(), aerodynamics, true);
+		writeInputNode("Cl_alpha", airfoil.getAerodynamics().getClAlpha(), aerodynamics, true);
 		writeInputNode("Cd_min", airfoil.getAerodynamics().get_cdMin(), aerodynamics, true);
 		writeInputNode("Cl_at_Cdmin", airfoil.getAerodynamics().get_clAtCdMin(), aerodynamics, true);
 		writeInputNode("Cl_end_linear", airfoil.getAerodynamics().get_clStar(), aerodynamics, true);
@@ -1161,9 +1152,9 @@ public class JPADDataWriter {
 	}
 
 	private void writeFuelTankInput(FuelTank fuelTank, Element fuelTankParam) {
-		writeInputNode("Xcoordinate", fuelTank.getX0(), fuelTankParam, true);
-		writeInputNode("Ycoordinate", fuelTank.getY0(), fuelTankParam, true);
-		writeInputNode("Zcoordinate", fuelTank.getZ0(), fuelTankParam, true);
+		writeInputNode("Xcoordinate", fuelTank.getXApexConstructionAxes(), fuelTankParam, true);
+		writeInputNode("Ycoordinate", fuelTank.getYApexConstructionAxes(), fuelTankParam, true);
+		writeInputNode("Zcoordinate", fuelTank.getZApexConstructionAxes(), fuelTankParam, true);
 		writeInputNode("Fuel_density", fuelTank.getFuelDensity(), fuelTankParam, true);
 		writeInputNode("Fuel_volume", fuelTank.getFuelVolume(), fuelTankParam, true);
 		writeInputNode("Fuel_mass", fuelTank.getFuelMass(), fuelTankParam, true);
@@ -1188,18 +1179,9 @@ public class JPADDataWriter {
 		// --- Balance ----------------------------
 		Element balance = addElementToSubElement("Balance", analysis);
 
-		writeMethodsComparison(				
-				doc, 
-				_sheet,
-				"Xcg_estimation_method_comparison",
-				fuelTank.getXCGMap(), fuelTank.getPercentDifferenceXCG(), balance);
-
-		writeOutputNode("Xcg_LRF", fuelTank.getCenterOfGravity().get_xLRF(), balance);
-		writeOutputNode("Ycg_LRF", fuelTank.getCenterOfGravity().get_yLRF(), balance);
-		writeOutputNode("Zcg_LRF", fuelTank.getCenterOfGravity().get_zLRF(), balance);
-		writeOutputNode("Xcg_BRF", fuelTank.getCenterOfGravity().get_xBRF(), balance);
-		writeOutputNode("Ycg_BRF", fuelTank.getCenterOfGravity().get_yBRF(), balance);
-		writeOutputNode("Zcg_BRF", fuelTank.getCenterOfGravity().get_zBRF(), balance);
+		writeOutputNode("Xcg_BRF", fuelTank.getXCG(), balance);
+		writeOutputNode("Ycg_BRF", fuelTank.getYCG(), balance);
+		writeOutputNode("Zcg_BRF", fuelTank.getZCG(), balance);
 
 		JPADStaticWriteUtils.writeAllArraysToXls(_sheet, _xlsArraysDescription, _xlsArraysList, _xlsArraysUnit);	
 	}
@@ -1420,12 +1402,15 @@ public class JPADDataWriter {
 		Element Landing_gear_parameters = doc.createElement("Landing_gear_parameters");
 		father.appendChild(Landing_gear_parameters);
 
-		writeInputNode("Xcoordinate", landingGear.getX0(), Landing_gear_parameters, true);
-		writeInputNode("Ycoordinate", landingGear.getY0(), Landing_gear_parameters, true);
-		writeInputNode("Zcoordinate", landingGear.getZ0(), Landing_gear_parameters, true);
-		writeInputNode("Mounting_point", landingGear.get_mounting().name(), Landing_gear_parameters, true);
-		writeInputNode("Lenght", landingGear.getLenght(), Landing_gear_parameters, true);
+		writeInputNode("Xcoordinate", landingGear.getXApexConstructionAxes(), Landing_gear_parameters, true);
+		writeInputNode("Ycoordinate", landingGear.getYApexConstructionAxes(), Landing_gear_parameters, true);
+		writeInputNode("Zcoordinate", landingGear.getZApexConstructionAxes(), Landing_gear_parameters, true);
+		writeInputNode("Mounting_point", landingGear.getMountingPosition(), Landing_gear_parameters, true);
+		writeInputNode("Lenght", landingGear.getMainLegsLenght(), Landing_gear_parameters, true);
 		writeInputNode("Reference_mass", landingGear.getReferenceMass(), Landing_gear_parameters, true);
+		
+		// TODO : ADD OTHER DATA
+		
 	}
 
 	/**

@@ -1498,6 +1498,10 @@ public class Aircraft implements IAircraft {
 		this._lifeSpan = _lifeSpan;
 	}
 	
+	public void setSWetTotal(Amount<Area> _sWetTotal) {
+		this._sWetTotal = _sWetTotal;
+	}
+
 	@Override
 	public List<Object> getComponentsList() {
 		return _componentsList;

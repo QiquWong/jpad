@@ -131,7 +131,8 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		private List<Amount<Length>> __zLEBreakPoints = new ArrayList<Amount<Length>>();
 		private List<Amount<Length>> __chordsBreakPoints = new ArrayList<Amount<Length>>();
 		private List<Amount<Angle>> __twistsBreakPoints = new ArrayList<Amount<Angle>>();
-
+		private List<Amount<Angle>> __dihedralBreakPoints = new ArrayList<Amount<Angle>>();
+		
 		private List<Amount<Length>> __yStationActual = new ArrayList<Amount<Length>>();
 		private List<
 		Tuple2<
@@ -191,11 +192,11 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 				.type(AirfoilTypeEnum.CONVENTIONAL)
 				.thicknessToChordRatio(0.18)
 				.camberRatio(0.018)
-				.radiusLeadingEdgeNormalized(0.03565)
+				.radiusLeadingEdge(Amount.valueOf(0.03565, SI.METER))
 				.alphaZeroLift(Amount.valueOf(-1.2, NonSI.DEGREE_ANGLE))
 				.alphaEndLinearTrait(Amount.valueOf(9.5, NonSI.DEGREE_ANGLE))
 				.alphaStall(Amount.valueOf(16.0, NonSI.DEGREE_ANGLE))
-				.clAlphaLinearTrait(6.22)
+				.clAlphaLinearTrait(Amount.valueOf(6.22, SI.RADIAN.inverse()))
 				.cdMin(0.00675)
 				.clAtCdMin(0.3)
 				.clAtAlphaZero(0.13)
@@ -236,11 +237,11 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 						.type(AirfoilTypeEnum.CONVENTIONAL)
 						.thicknessToChordRatio(0.15)
 						.camberRatio(0.018)
-						.radiusLeadingEdgeNormalized(0.02474)
+						.radiusLeadingEdge(Amount.valueOf(0.02474, SI.METER))
 						.alphaZeroLift(Amount.valueOf(-1.1, NonSI.DEGREE_ANGLE))
 						.alphaEndLinearTrait(Amount.valueOf(10.0, NonSI.DEGREE_ANGLE))
 						.alphaStall(Amount.valueOf(18.0, NonSI.DEGREE_ANGLE))
-						.clAlphaLinearTrait(6.02)
+						.clAlphaLinearTrait(Amount.valueOf(6.02, SI.RADIAN.inverse()))
 						.cdMin(0.00625)
 						.clAtCdMin(0.1)
 						.clAtAlphaZero(0.115)
@@ -344,11 +345,11 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 							.type(AirfoilTypeEnum.CONVENTIONAL)
 							.thicknessToChordRatio(0.12)
 							.camberRatio(0.00)
-							.radiusLeadingEdgeNormalized(0.01578)
+							.radiusLeadingEdge(Amount.valueOf(0.01578, SI.METER))
 							.alphaZeroLift(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE))
 							.alphaEndLinearTrait(Amount.valueOf(11, NonSI.DEGREE_ANGLE))
 							.alphaStall(Amount.valueOf(20.1, NonSI.DEGREE_ANGLE))
-							.clAlphaLinearTrait(6.92)
+							.clAlphaLinearTrait(Amount.valueOf(6.92, SI.RADIAN.inverse()))
 							.cdMin(0.0055)
 							.clAtCdMin(0.0)
 							.clAtAlphaZero(0.0)
@@ -442,11 +443,11 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 							.type(AirfoilTypeEnum.CONVENTIONAL)
 							.thicknessToChordRatio(0.12)
 							.camberRatio(0.09) // FIXME
-							.radiusLeadingEdgeNormalized(0.030195) // FIXME
+							.radiusLeadingEdge(Amount.valueOf(0.030195, SI.METER)) // FIXME
 							.alphaZeroLift(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE))
 							.alphaEndLinearTrait(Amount.valueOf(11, NonSI.DEGREE_ANGLE))
 							.alphaStall(Amount.valueOf(20.1, NonSI.DEGREE_ANGLE))
-							.clAlphaLinearTrait(6.92)
+							.clAlphaLinearTrait(Amount.valueOf(6.92, SI.RADIAN.inverse()))
 							.cdMin(0.0055)
 							.clAtCdMin(0.0)
 							.clAtAlphaZero(0.0)
@@ -573,6 +574,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		this._zLEBreakPoints = builder.__zLEBreakPoints;
 		this._chordsBreakPoints = builder.__chordsBreakPoints;
 		this._twistsBreakPoints = builder.__twistsBreakPoints;
+		this._dihedralsBreakPoints = builder.__dihedralBreakPoints;
 		this._yStationActual = builder.__yStationActual;
 		this._panelToSpanwiseDiscretizedVariables = builder.__panelToSpanwiseDiscretizedVariables;
 		this._spanwiseDiscretizedVariables = builder.__spanwiseDiscretizedVariables;
@@ -592,7 +594,8 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		_zLEBreakPoints = new ArrayList<Amount<Length>>();
 		_chordsBreakPoints = new ArrayList<Amount<Length>>();
 		_twistsBreakPoints = new ArrayList<Amount<Angle>>();
-
+		_dihedralsBreakPoints = new ArrayList<Amount<Angle>>();
+		
 		_yStationActual = new ArrayList<Amount<Length>>();
 		_panelToSpanwiseDiscretizedVariables = new ArrayList<>();
 		_spanwiseDiscretizedVariables = new ArrayList<>();
@@ -1889,6 +1892,12 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 				);
 		}
 
+		// Dihedral at breakpoints
+		_dihedralsBreakPoints.add(_panels.get(0).getDihedral());
+		for(int i = 0; i < this._panels.size(); i++) {
+			_dihedralsBreakPoints.add(_panels.get(i).getDihedral());
+		}
+		
 		MyConfiguration.customizeAmountOutput();
 		System.out.println("Twists Break-Points ->\n" + _twistsBreakPoints);
 
@@ -2447,6 +2456,14 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	public List<Amount<Length>> getChordsBreakPoints() {
 		return _chordsBreakPoints;
+	}
+	
+	public List<Amount<Angle>> getTwistsBreakPoints() {
+		return _twistsBreakPoints;
+	}
+	
+	public List<Amount<Angle>> getDihedralsBreakPoints() {
+		return _dihedralsBreakPoints;
 	}
 	
 	@Override

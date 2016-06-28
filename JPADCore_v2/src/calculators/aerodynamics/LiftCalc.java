@@ -25,7 +25,6 @@ import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcAlpha0L;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLvsAlphaCurve;
-import aircraft.components.liftingSurface.LSAerodynamicsManager.MeanAirfoil;
 import aircraft.components.liftingSurface.LiftingSurface;
 import calculators.geometry.LSGeometryCalc;
 import configuration.enumerations.EngineTypeEnum;
@@ -275,8 +274,10 @@ public class LiftCalc {
 		LSAerodynamicsManager.CalcCLAtAlpha theClatAlphaCalculator =theLsManager.new CalcCLAtAlpha();
 		double cLStar = 0, cLTemp, qValue, a ,b ,c ,d;
 		Amount<Angle> alphaTemp = Amount.valueOf(0.0, SI.RADIAN);
-		LSAerodynamicsManager.MeanAirfoil theMeanAirfoilCalculator =theLsManager.new MeanAirfoil();
-		Airfoil meanAirfoil = theMeanAirfoilCalculator.calculateMeanAirfoil(theLiftingSurface);
+		Airfoil meanAirfoil = new Airfoil(
+				LiftingSurface.calculateMeanAirfoil(theLiftingSurface),
+				theLiftingSurface.getAerodynamicDatabaseReader()
+				);
 		double alphaStar = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
 		Amount<Angle> alphaStarAmount = Amount.valueOf(alphaStar, SI.RADIAN);
 		theLiftingSurface.getAerodynamics().set_alphaStar( alphaStarAmount);
@@ -367,8 +368,9 @@ public class LiftCalc {
 		double [] cLActualArray = new double[nValue];
 		double cLAlphaFlap = cLalphaNew*57.3; // need it in 1/rad
 
-		LSAerodynamicsManager.MeanAirfoil theMeanAirfoilCalculator =theLsManager.new MeanAirfoil();
-		Airfoil meanAirfoil = theMeanAirfoilCalculator.calculateMeanAirfoil(theLiftingSurface);
+		Airfoil meanAirfoil = new Airfoil(
+				LiftingSurface.calculateMeanAirfoil(theLiftingSurface), 
+				theLiftingSurface.getAerodynamicDatabaseReader());
 		double alphaStarClean = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
 
 		Amount<Angle> alphaStarCleanAmount = Amount.valueOf(alphaStarClean, SI.RADIAN);
@@ -512,7 +514,7 @@ public class LiftCalc {
 				//			System.out.println( " cl local " + cLLocal);
 				qValue = airfoilList.get(i).getAerodynamics().calculateClAtAlphaInterp(0.0);
 				//			System.out.println(" qValue " + qValue );
-				alphaLocalAirfoil[i] = (cLDistributionInviscid[i]-qValue)/airfoilList.get(i).getAerodynamics().get_clAlpha();
+				alphaLocalAirfoil[i] = (cLDistributionInviscid[i]-qValue)/airfoilList.get(i).getAerodynamics().getClAlpha().getEstimatedValue();
 				//			System.out.println(" alpha local airfoil " + alphaLocalAirfoil);
 				clDisributionReal[i] = airfoilList.get(i).getAerodynamics().calculateClAtAlpha(
 						//alphaLocal.getEstimatedValue()+

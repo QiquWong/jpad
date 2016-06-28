@@ -58,8 +58,8 @@ public class ACBalanceManager extends ACCalculatorManager {
 	 */
 	public void calculateBalance(Aircraft aircraft) {
 
-		_xCoGMeanAtOEM = (aircraft.getWing().getX0().getEstimatedValue() + 
-				0.25*aircraft.getWing().get_meanAerodChordActual().getEstimatedValue());
+		_xCoGMeanAtOEM = (aircraft.getWing().getXApexConstructionAxes().getEstimatedValue() + 
+				0.25*aircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue());
 		set_xCoGMaxAftAtOEM((_xCoGMeanAtOEM*(1-0.1)));	
 	}
 
@@ -94,8 +94,8 @@ public class ACBalanceManager extends ACCalculatorManager {
 
 		calculateTotalCG(aircraft);
 
-		set_xCoGMeanAtOEM(aircraft.getWing().getX0().getEstimatedValue() + 
-				0.25*aircraft.getWing().get_meanAerodChordActual().getEstimatedValue());
+		set_xCoGMeanAtOEM(aircraft.getWing().getXApexConstructionAxes().getEstimatedValue() + 
+				0.25*aircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue());
 		set_xCoGMaxAftAtOEM(get_xCoGMeanAtOEM()*(1-0.1));
 		set_xCoGMaxForAtOEM(get_xCoGMeanAtOEM()*(1+0.1));
 	}
@@ -111,9 +111,9 @@ public class ACBalanceManager extends ACCalculatorManager {
 		_cgStructure = new CenterOfGravity();
 
 		_cgList.add(aircraft.getFuselage().get_cg());
-		_cgList.add(aircraft.getWing().getCg());
-		_cgList.add(aircraft.getHTail().getCg());
-		_cgList.add(aircraft.getVTail().getCg());
+		_cgList.add(aircraft.getWing().getCG());
+		_cgList.add(aircraft.getHTail().getCG());
+		_cgList.add(aircraft.getVTail().getCG());
 		_cgList.add(aircraft.getLandingGears().getCg());
 		_cgList.addAll(aircraft.getNacelles().get_cgList());
 		
@@ -152,7 +152,7 @@ public class ACBalanceManager extends ACCalculatorManager {
 		// Structure + engines CG
 		_cgStructureAndPower = new CenterOfGravity();
 
-		System.out.println("fuel tank --> " + aircraft.getFuelTank().getCenterOfGravity().get_xBRF().getEstimatedValue());
+		System.out.println("fuel tank --> " + aircraft.getFuelTank().getXCG().getEstimatedValue());
 		double cgPowerPlantContribute =0.0;
 		
 		for(int i=0 ; i< aircraft.getPowerPlant().get_engineNumber(); i++){
@@ -173,7 +173,7 @@ public class ACBalanceManager extends ACCalculatorManager {
 				aircraft.getWing().get_xLEMacActualBRF(), 
 				aircraft.getWing().get_xLEMacActualBRF(), 
 				Amount.valueOf(0., SI.METER), 
-				aircraft.getWing().get_meanAerodChordActual());
+				aircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord());
 
 		// MZFW CG location
 		_cgMZFM = new CenterOfGravity();
@@ -189,7 +189,7 @@ public class ACBalanceManager extends ACCalculatorManager {
 				aircraft.getWing().get_xLEMacActualBRF(), 
 				aircraft.getWing().get_xLEMacActualBRF(), 
 				Amount.valueOf(0., SI.METER), 
-				aircraft.getWing().get_meanAerodChordActual());
+				aircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord());
 
 		// MTOM CG location
 		_cgMTOM = new CenterOfGravity();
@@ -198,7 +198,7 @@ public class ACBalanceManager extends ACCalculatorManager {
 				(_cgMZFM.get_xBRF().getEstimatedValue() 
 						* aircraft.getTheWeights().get_MZFM().getEstimatedValue()
 						+ aircraft.getFuelTank().getFuelMass().getEstimatedValue()
-						* aircraft.getFuelTank().getCenterOfGravity().get_xBRF().getEstimatedValue())
+						* aircraft.getFuelTank().getXCG().getEstimatedValue())
 						/ aircraft.getTheWeights().get_MTOM().getEstimatedValue(),
 						SI.METER));
 
@@ -206,7 +206,7 @@ public class ACBalanceManager extends ACCalculatorManager {
 				aircraft.getWing().get_xLEMacActualBRF(), 
 				aircraft.getWing().get_xLEMacActualBRF(), 
 				Amount.valueOf(0., SI.METER), 
-				aircraft.getWing().get_meanAerodChordActual());
+				aircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord());
 
 	}
 
