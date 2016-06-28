@@ -666,16 +666,16 @@ public class JPADDataWriter {
 
 		// --- INPUT DATA --------------------------------------------------------------
 		// Fuselage length
-		writeInputNode("Length", fuselage.get_len_F(), fuselageParameters, true);
-		writeInputNode("Number_of_decks", fuselage.get_deckNumber(), fuselageParameters, true);
-		writeInputNode("Nose_to_fuselage_lenght_ratio", fuselage.get_lenRatio_NF(), fuselageParameters, true);
-		writeInputNode("Cylindrical_part_to_fuselage_lenght_ratio", fuselage.get_lenRatio_CF(), fuselageParameters, true);
-		writeInputNode("Cylindrical_part_width", fuselage.get_sectionCylinderWidth(), fuselageParameters, true);
-		writeInputNode("Cylindrical_part_height", fuselage.get_sectionCylinderHeight(), fuselageParameters, true);
-		writeInputNode("Nose_fineness_ratio", fuselage.get_lambda_N(), fuselageParameters, true);
-		writeInputNode("Minimum_height_from_ground", fuselage.get_heightFromGround(), fuselageParameters, true);
-		writeInputNode("Surface_roughess", fuselage.get_roughness(), fuselageParameters, true);
-		writeInputNode("Nose_furthermost_point_height", fuselage.get_height_N(), fuselageParameters, true);
+		writeInputNode("Length", fuselage.getFuselageCreator().getLenF(), fuselageParameters, true);
+		writeInputNode("Number_of_decks", fuselage.getFuselageCreator().getDeckNumber(), fuselageParameters, true);
+		writeInputNode("Nose_to_fuselage_lenght_ratio", fuselage.getFuselageCreator().getLenRatioNF(), fuselageParameters, true);
+		writeInputNode("Cylindrical_part_to_fuselage_lenght_ratio", fuselage.getFuselageCreator().getLenRatioCF(), fuselageParameters, true);
+		writeInputNode("Cylindrical_part_width", fuselage.getFuselageCreator().getSectionCylinderWidth(), fuselageParameters, true);
+		writeInputNode("Cylindrical_part_height", fuselage.getFuselageCreator().getSectionCylinderHeight(), fuselageParameters, true);
+		writeInputNode("Nose_fineness_ratio", fuselage.getFuselageCreator().getLambdaN(), fuselageParameters, true);
+		writeInputNode("Minimum_height_from_ground", fuselage.getFuselageCreator().getHeightFromGround(), fuselageParameters, true);
+		writeInputNode("Surface_roughess", fuselage.getRoughness(), fuselageParameters, true);
+		writeInputNode("Nose_furthermost_point_height", fuselage.getFuselageCreator().getHeightN(), fuselageParameters, true);
 		writeInputNode("Tail_rearmost_point_height", fuselage.get_height_T(), fuselageParameters, true);
 		writeInputNode("Nose_cap_lenght", fuselage.get_dxNoseCap(), fuselageParameters, true);
 		writeInputNode("Tail_cap_lenght", fuselage.get_dxTailCap(), fuselageParameters, true);
