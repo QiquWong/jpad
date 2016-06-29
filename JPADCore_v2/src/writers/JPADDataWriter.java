@@ -1583,24 +1583,24 @@ public class JPADDataWriter {
 		writeInputNode("Total_investments", costs.get_totalInvestments(), costsInitiator, true);
 
 		writeInputNode("Single_Engine_cost", costs.get_singleEngineCost(), costsInitiator, true);
-		writeInputNode("Engine_maintenance_cost", costs.get_engineMaintLaborCost(), costsInitiator, true);
+		writeInputNode("Engine_maintenance_cost", costs.getEngineMaintLaborCost(), costsInitiator, true);
 		writeInputNode("Fuel_volumetric_cost", costs.get_fuelVolumetricCost(), costsInitiator, true);
 		writeInputNode("Hour_volumetric_fuel_consumption", costs.get_hourVolumetricFuelConsumption(), costsInitiator, true);
 		writeInputNode("Oil_mass_cost", costs.get_oilMassCost(), costsInitiator, true);
-		writeInputNode("Spares_cost", costs.get_sparesAirframePerCosts(), costsInitiator, true);
+		writeInputNode("Spares_cost", costs.getSparesAirframePerCosts(), costsInitiator, true);
 
-		writeInputNode("Airframe_Maintenance_Labor_Cost", costs.get_airframeMaintLaborCost(), costsInitiator, true);
-		writeInputNode("Airframe_Maintenance_Material_Cost", costs.get_airframeMaintMaterialCost(), costsInitiator, true);
-		writeInputNode("Residual_value", costs.get_residualValue(), costsInitiator, true);
-		writeInputNode("Annual_insurance_premium_rate", costs.get_annualInsurancePremiumRate(), costsInitiator, true);
-		writeInputNode("Annual_interest_rate", costs.get_annualInterestRate(), costsInitiator, true);
-		writeInputNode("Ground_Handling_cost_per_passengers", costs.get_groundHandlingCostXPax(), costsInitiator, true);
-		writeInputNode("Navigational_charges", costs.get_jenkinsonNavigationalCharges(), costsInitiator, true);
-		writeInputNode("Landing_fees_per_ton", costs.get_landingFeesPerTon(), costsInitiator, true);
+		writeInputNode("Airframe_Maintenance_Labor_Cost", costs.getAirframeMaintLaborCost(), costsInitiator, true);
+		writeInputNode("Airframe_Maintenance_Material_Cost", costs.getAirframeMaintMaterialCost(), costsInitiator, true);
+		writeInputNode("Residual_value", costs.getResidualValue(), costsInitiator, true);
+		writeInputNode("Annual_insurance_premium_rate", costs.getAnnualInsurancePremiumRate(), costsInitiator, true);
+		writeInputNode("Annual_interest_rate", costs.getAnnualInterestRate(), costsInitiator, true);
+		writeInputNode("Ground_Handling_cost_per_passengers", costs.getGroundHandlingCostXPax(), costsInitiator, true);
+		writeInputNode("Navigational_charges", costs.getJenkinsonNavigationalCharges(), costsInitiator, true);
+		writeInputNode("Landing_fees_per_ton", costs.getLandingFeesPerTon(), costsInitiator, true);
 		writeInputNode("Man_hour_labor_rate", costs.get_manHourLaborRate(), costsInitiator, true);
-		writeInputNode("Single_cabin_crew_cost_per_hour", costs.get_singleCabinCrewHrCost(), costsInitiator, true);
-		writeInputNode("Single_flight_crew_cost_per_hour", costs.get_singleflightCrewHrCost(), costsInitiator, true);
-		writeInputNode("Utilization", costs.get_utilization(), costsInitiator, true);
+		writeInputNode("Single_cabin_crew_cost_per_hour", costs.getSingleCabinCrewHrCost(), costsInitiator, true);
+		writeInputNode("Single_flight_crew_cost_per_hour", costs.getSingleflightCrewHrCost(), costsInitiator, true);
+		writeInputNode("Utilization", costs.getUtilization(), costsInitiator, true);
 	}
 
 	/**

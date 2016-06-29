@@ -77,12 +77,12 @@ public class TripCharges {
 	}
 
 	public void initialize(Aircraft aircraft, Costs costs) {
-		initialize(costs.get_landingFeesPerTon(), 
+		initialize(costs.getLandingFeesPerTon(), 
 				aircraft.getTheWeights().get_MTOM(), 
 				aircraft.getThePerformance().getBlockTime(),
-				aircraft.getThePerformance().getRange(), costs.get_jenkinsonNavigationalCharges(),
+				aircraft.getThePerformance().getRange(), costs.getJenkinsonNavigationalCharges(),
 				aircraft.getTheWeights().get_paxMassMax(), aircraft.getCabinConfiguration().getMaxPax().intValue(),
-				costs.get_groundHandlingCostXPax(),
+				costs.getGroundHandlingCostXPax(),
 				aircraft.getTheWeights().get_manufacturerEmptyMass().minus(aircraft.getPowerPlant().get_totalMass()),
 				costs.get_manHourLaborRate(), costs.get_airframeCost(), 
 				aircraft.getThePerformance().getFlightTime(),
@@ -91,8 +91,8 @@ public class TripCharges {
 				aircraft.getPowerPlant().get_engineList().get(0).get_numberOfCompressorStages(), 
 				aircraft.getPowerPlant().get_engineList().get(0).get_numberOfShafts(),
 				aircraft.getPowerPlant().get_engineList().get(0).get_t0(), aircraft.getPowerPlant().get_engineNumber(),
-				costs.get_engineMaintLaborCost(), costs.get_engineMaintMaterialCost(),
-				costs.get_airframeMaintLaborCost(),	costs.get_airframeMaintMaterialCost(),
+				costs.getEngineMaintLaborCost(), costs.getEngineMaintMaterialCost(),
+				costs.getAirframeMaintLaborCost(),	costs.getAirframeMaintMaterialCost(),
 				aircraft.getTheWeights().get_OEM(), 
 				aircraft.getThePerformance().getVOptimumCruise(), costs.get_aircraftCost(),
 				costs.get_singleEngineCost(), aircraft.getPowerPlant().get_P0Total(), costs.get_blockFuelVolume(), 

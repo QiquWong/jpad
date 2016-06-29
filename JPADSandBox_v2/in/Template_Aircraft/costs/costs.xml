@@ -5,11 +5,11 @@
 				<Residual_Value>0.1</Residual_Value> 
 				<Annual_Interest_Rate>0.053</Annual_Interest_Rate>
 				<Annual_Insurance_Premium_Rate>0.005</Annual_Insurance_Premium_Rate>
-				<Utilization unit="hr/year">4200.</Utilization unit="hr/year">
+				<Utilization unit="hr/year">4200.</Utilization>
 				<Spares_Costs_As_Airframe_Cost_Percentage>0.1</Spares_Costs_As_Airframe_Cost_Percentage>
 				<Spares_Engines_Costs_As_Airframe_Cost_Percentage>0.3</Spares_Engines_Costs_As_Airframe_Cost_Percentage>
 				<Single_Flight_Crew_Hr_Cost unit="USD">246.5</Single_Flight_Crew_Hr_Cost>
-				<Single_Cabin_Crew_Hr_Cost unit="USD">81</Single_Cabin_Crew_Hr_Cost>
+				<Single_Cabin_Crew_Hr_Cost unit="USD">81.</Single_Cabin_Crew_Hr_Cost>
 			</Fixed_Charges>
 			<Trip_Charges>
 				<Climb_and_Descent_Time unit="min">10</Climb_and_Descent_Time>

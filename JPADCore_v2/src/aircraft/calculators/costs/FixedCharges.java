@@ -51,13 +51,13 @@ public class FixedCharges {
 	}
 
 	public void initialize(Aircraft aircraft, Costs costs) {
-		initialize(costs.get_utilization(), costs.get_totalInvestments(), costs.get_aircraftCost(),
+		initialize(costs.getUtilization(), costs.get_totalInvestments(), costs.get_aircraftCost(),
 				costs.get_singleEngineCost(),
-				aircraft.getLifeSpan(), costs.get_residualValue(), costs.get_annualInterestRate(),
-				costs.get_annualInsurancePremiumRate(), aircraft.getCabinConfiguration().getCabinCrewNumber().intValue(),
+				aircraft.getLifeSpan(), costs.getResidualValue(), costs.getAnnualInterestRate(),
+				costs.getAnnualInsurancePremiumRate(), aircraft.getCabinConfiguration().getCabinCrewNumber().intValue(),
 				aircraft.getCabinConfiguration().getFlightCrewNumber().intValue(), aircraft.getPowerPlant().get_engineNumber(), 
-				costs.get_singleCabinCrewHrCost(),
-				costs.get_singleflightCrewHrCost(), aircraft.getTheWeights().get_MTOM());		
+				costs.getSingleCabinCrewHrCost(),
+				costs.getSingleflightCrewHrCost(), aircraft.getTheWeights().get_MTOM());		
 	}
 	
 	/**
