@@ -1,27 +1,16 @@
 package calculators.aerodynamics;
 
-import static java.lang.Math.pow;
-import static java.lang.Math.sqrt;
-import static java.lang.Math.tan;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.measure.quantity.Angle;
-import javax.measure.unit.NonSI;
-import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
 import aircraft.OperatingConditions;
 import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface;
-import configuration.enumerations.MethodEnum;
-import standaloneutils.GeometryCalc;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
-import standaloneutils.atmosphere.SpeedCalc;
 import standaloneutils.customdata.MyArray;
 import standaloneutils.customdata.MyPoint;
 
@@ -62,14 +51,32 @@ public class AlphaEffective {
 		mach = theOperatingConditions.get_machCurrent();
 		semispan = theWing.getSemiSpan().getEstimatedValue();
 
-		dihedral = theWing.get_dihedral().toArray();
-		alpha0lArray = theWing.getAlpha0VsY().toArray();
-		twist = theWing.get_twistVsY().toArray();
-		chordsVsYActual = theWing.get_chordsVsYActual().toArray();
+		dihedral = MyArrayUtils
+				.convertListOfAmountTodoubleArray(
+						theWing.getLiftingSurfaceCreator().getDihedralsBreakPoints()
+						);
+		alpha0lArray = MyArrayUtils
+				.convertListOfAmountTodoubleArray(
+						theWing.getAlpha0VsY()
+						);
+		twist = MyArrayUtils
+				.convertListOfAmountTodoubleArray(
+						theWing.getLiftingSurfaceCreator().getTwistsBreakPoints()
+						);
+		chordsVsYActual = MyArrayUtils
+				.convertListOfAmountTodoubleArray(
+						theWing.getLiftingSurfaceCreator().getChordsBreakPoints()
+						);
 		yStationsActual = MyArrayUtils.linspace(0., semispan, numberOfPoints);
 		yStationsAlpha = MyArrayUtils.linspace(0., semispan, 50);
-		yStationsAirfoil = theWing.get_yStationsAirfoil().toArray();
-		xLEvsYActual = theWing.get_xLEvsYActual().toArray();
+		yStationsAirfoil = MyArrayUtils
+				.convertListOfAmountTodoubleArray(
+						theWing.getLiftingSurfaceCreator().getYBreakPoints()
+						);
+		xLEvsYActual = MyArrayUtils
+				.convertListOfAmountTodoubleArray(
+						theWing.getLiftingSurfaceCreator().getXLEBreakPoints()
+						);
 		surface = theWing.getSurface().getEstimatedValue();
 		altitude = theOperatingConditions.get_altitude().getEstimatedValue();
 
@@ -110,7 +117,12 @@ public class AlphaEffective {
 
 
 		Double[] twistDistribution = MyMathUtils.getInterpolatedValue1DLinear(
-				theWing.get_yStationsAirfoil().toArray(), twist, yStationsActual);
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						theWing.getLiftingSurfaceCreator().getYBreakPoints()
+						),
+				twist,
+				yStationsActual
+				);
 
 
 		for (int i=0 ; i<numberOfPoints; i++){

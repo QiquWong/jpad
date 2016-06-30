@@ -786,10 +786,10 @@ public class LandingCalc {
 			double theThrust = 0.0;
 
 			theThrust =	ThrustCalc.calculateThrustDatabase(
-					LandingCalc.this.getAircraft().getPowerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
+					LandingCalc.this.getAircraft().getPowerPlant().get_engineList().get(0).getT0().getEstimatedValue(),
 					LandingCalc.this.getAircraft().getPowerPlant().get_engineNumber(),
 					LandingCalc.this.getPhiRev(),
-					LandingCalc.this.getAircraft().getPowerPlant().get_engineList().get(0).get_bpr(),
+					LandingCalc.this.getAircraft().getPowerPlant().get_engineList().get(0).getBPR(),
 					LandingCalc.this.getAircraft().getPowerPlant().get_engineType(),
 					EngineOperatingConditionEnum.TAKE_OFF,
 					LandingCalc.this.getTheConditions().get_altitude().getEstimatedValue(),

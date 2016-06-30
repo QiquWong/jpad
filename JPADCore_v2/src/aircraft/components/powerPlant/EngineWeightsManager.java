@@ -10,6 +10,7 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.componentmodel.InnerCalculator;
+import aircraft.componentmodel.componentcalcmanager.WeightsManager;
 import aircraft.components.Aircraft;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.EngineTypeEnum;
@@ -17,7 +18,7 @@ import configuration.enumerations.MethodEnum;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import writers.JPADStaticWriteUtils;
 
-public class EngWeightsManager extends aircraft.componentmodel.componentcalcmanager.WeightsManager{
+public class EngineWeightsManager extends WeightsManager{
 
 	private Aircraft _theAircraft;
 	private Engine _theEngine;
@@ -28,7 +29,7 @@ public class EngWeightsManager extends aircraft.componentmodel.componentcalcmana
 	_dryMassPublicDomain;
 	private Amount<Force> _t0;
 
-	public EngWeightsManager(Aircraft aircraft, Engine engine) {
+	public EngineWeightsManager(Aircraft aircraft, Engine engine) {
 		_theAircraft = aircraft;
 		_theEngine = engine;
 		
@@ -38,9 +39,9 @@ public class EngWeightsManager extends aircraft.componentmodel.componentcalcmana
 
 	@Override
 	public void initializeDependentData() {
-		_t0 = _theEngine.get_t0();
-		_dryMassPublicDomain = _theEngine.get_dryMassPublicDomain();
-		_engineType = _theEngine.get_engineType();
+		_t0 = _theEngine.getT0();
+		_dryMassPublicDomain = _theEngine.getDryMassPublicDomain();
+		_engineType = _theEngine.getEngineType();
 	}
 	
 	@Override
@@ -187,15 +188,15 @@ public class EngWeightsManager extends aircraft.componentmodel.componentcalcmana
 		return _totalMass;
 	}
 
-	public Amount<Mass> get_dryMassPublicDomain() {
+	public Amount<Mass> getDryMassPublicDomain() {
 		return _dryMassPublicDomain;
 	}
 
-	public void set_dryMassPublicDomain(Amount<Mass> _dryMassPublicDomain) {
+	public void setDryMassPublicDomain(Amount<Mass> _dryMassPublicDomain) {
 		this._dryMassPublicDomain = _dryMassPublicDomain;
 	}
 
-	public Amount<Mass> get_totalMass() {
+	public Amount<Mass> getTotalMass() {
 		return _totalMass;
 	}
 

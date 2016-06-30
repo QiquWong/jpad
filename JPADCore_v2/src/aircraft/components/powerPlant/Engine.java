@@ -17,25 +17,26 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.componentmodel.Component;
 import aircraft.components.Aircraft;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
-import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.customdata.CenterOfGravity;
 
-public class Engine extends Component{
+public class Engine {
 
 	private String _id;
-	private static int idCounter = 0;
-	public static final ComponentEnum type = ComponentEnum.ENGINE;
 	private EngineTypeEnum _engineType;
-	private Amount<Length> _X0, _Y0, _Z0;
 	private EngineMountingPositionEnum _mountingPoint;
+	
+	private Amount<Length> _xApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
+	private Amount<Length> _yApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
+	private Amount<Length> _zApexConstructionAxes = Amount.valueOf(0.0, SI.METER);
+	
+	private static int idCounter = 0;
 	private Amount<Power> _p0;
 	private Amount<Force> _t0;
 	private Amount<Mass> 
@@ -61,46 +62,23 @@ public class Engine extends Component{
 	private Double[] _percentDifferenceXCG;
 	
 	private Aircraft _theAircraft;
-	private EngWeightsManager weights;
-	private EngBalanceManager balance;
+	private EngineWeightsManager weights;
+	private EngineBalanceManager balance;
 	// ---------------------------
 	private double _SFC;
 	// ---------------------------
 	
-	public Engine(String name, String description, double x, double y,double z){
-
-		super("", name, description, x, y, z);
-
-		_name = name;
-		_X0 = Amount.valueOf(x, SI.METER);
-		_Y0 = Amount.valueOf(y, SI.METER);
-		_Z0 = Amount.valueOf(z, SI.METER);
-
-	}
-	
-	public Engine(String name, String description, 
-			double x, double y,double z, 
-			Aircraft aircraft) {
-		
-		this(name, description, x, y, z);
-		_theAircraft = aircraft;
-		
-		_id = aircraft.getPowerPlant().getId() + idCounter + "99";
-		idCounter++;
-		
-		initialize();
-	}
+	//============================================================================================
+	// Builder pattern 
+	//============================================================================================
 	
 	/**
 	 * Overload of the previous builder that recognize aircraft name and generates it's default engine.
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public Engine(AircraftEnum aircraftName, String name, String description, 
-			double x, double y,double z, 
-			Aircraft aircraft) {
+	public Engine(AircraftEnum aircraftName, String name, Aircraft aircraft) {
 		
-		this(name, description, x, y, z);
 		_theAircraft = aircraft;
 		
 		_id = aircraft.getPowerPlant().getId() + idCounter + "99";
@@ -111,7 +89,7 @@ public class Engine extends Component{
 	
 	public void initialize() {
 		
-		_cg = new CenterOfGravity(_X0, _Y0, _Z0);
+		_cg = new CenterOfGravity(_xApexConstructionAxes, _yApexConstructionAxes, _zApexConstructionAxes);
 
 		// PW127 Data
 		_engineType = EngineTypeEnum.TURBOPROP;
@@ -119,7 +97,7 @@ public class Engine extends Component{
 		_length = Amount.valueOf(2.13, SI.METER);
 
 		// By-pass ratio
-		set_bpr(0.0);
+		setBPR(0.0);
 		
 		_numberOfCompressorStages = 5;
 		_numberOfShafts = 2;
@@ -144,8 +122,8 @@ public class Engine extends Component{
 		// Engine position
 		_mountingPoint = EngineMountingPositionEnum.WING;
 		
-		weights = new EngWeightsManager(_theAircraft, this);
-		balance = new EngBalanceManager(this);
+		weights = new EngineWeightsManager(_theAircraft, this);
+		balance = new EngineBalanceManager(this);
 		
 	}
 	
@@ -160,7 +138,7 @@ public class Engine extends Component{
 		switch(aircraftName) {
 		
 		case ATR72:
-			_cg = new CenterOfGravity(_X0, _Y0, _Z0);
+			_cg = new CenterOfGravity(_xApexConstructionAxes, _yApexConstructionAxes, _zApexConstructionAxes);
 
 			// PW127 Data
 			_engineType = EngineTypeEnum.TURBOPROP;
@@ -168,7 +146,7 @@ public class Engine extends Component{
 			_length = Amount.valueOf(2.13, SI.METER);
 
 			// By-pass ratio
-			set_bpr(0.0);
+			setBPR(0.0);
 			
 			_numberOfCompressorStages = 5;
 			_numberOfShafts = 2;
@@ -193,12 +171,12 @@ public class Engine extends Component{
 			// Engine position
 			_mountingPoint = EngineMountingPositionEnum.WING;
 			
-			weights = new EngWeightsManager(_theAircraft, this);
-			balance = new EngBalanceManager(this);
+			weights = new EngineWeightsManager(_theAircraft, this);
+			balance = new EngineBalanceManager(this);
 			break;
 			
 		case B747_100B:
-			_cg = new CenterOfGravity(_X0, _Y0, _Z0);
+			_cg = new CenterOfGravity(_xApexConstructionAxes, _yApexConstructionAxes, _zApexConstructionAxes);
 
 			// PWJT9D-7 Data
 			_engineType = EngineTypeEnum.TURBOFAN;
@@ -206,7 +184,7 @@ public class Engine extends Component{
 			_length = Amount.valueOf(3.26, SI.METER);
 
 			// By-pass ratio
-			set_bpr(5.0);
+			setBPR(5.0);
 			
 			_numberOfCompressorStages = 14;
 			_numberOfShafts = 2;
@@ -232,20 +210,20 @@ public class Engine extends Component{
 			// Engine position
 			_mountingPoint = EngineMountingPositionEnum.WING;
 			
-			weights = new EngWeightsManager(_theAircraft, this);
-			balance = new EngBalanceManager(this);
+			weights = new EngineWeightsManager(_theAircraft, this);
+			balance = new EngineBalanceManager(this);
 			break;
 			
 		case AGILE_DC1:
 			//PW1700G
-			_cg = new CenterOfGravity(_X0, _Y0, _Z0);
+			_cg = new CenterOfGravity(_xApexConstructionAxes, _yApexConstructionAxes, _zApexConstructionAxes);
 
 			_engineType = EngineTypeEnum.TURBOFAN;
 
 			_length = Amount.valueOf(2.739, SI.METER);
 
 			// By-pass ratio
-			set_bpr(6.0);
+			setBPR(6.0);
 			
 			_numberOfCompressorStages = 5; // TODO: CHECK
 			_numberOfShafts = 2;// TODO: CHECK
@@ -270,57 +248,57 @@ public class Engine extends Component{
 			// Engine position
 			_mountingPoint = EngineMountingPositionEnum.WING;
 			
-			weights = new EngWeightsManager(_theAircraft, this);
-			balance = new EngBalanceManager(this);
+			weights = new EngineWeightsManager(_theAircraft, this);
+			balance = new EngineBalanceManager(this);
 			break;
 		}
 	}
 
-	public Amount<Length> get_X0() {
-		return _X0;
+	public Amount<Length> getXApexConstructionAxes() {
+		return _xApexConstructionAxes;
 	}
 
-	public void set_X0(Amount<Length> _X0) {
-		this._X0 = _X0;
+	public void setXApexConstructionAxes(Amount<Length> _X0) {
+		this._xApexConstructionAxes = _X0;
 	}
 
-	public Amount<Length> get_Y0() {
-		return _Y0;
+	public Amount<Length> getYApexConstructionAxes() {
+		return _yApexConstructionAxes;
 	}
 
-	public void set_Y0(Amount<Length> _Y0) {
-		this._Y0 = _Y0;
+	public void setYApexConstructionAxes(Amount<Length> _Y0) {
+		this._yApexConstructionAxes = _Y0;
 	}
 
-	public Amount<Length> get_Z0() {
-		return _Z0;
+	public Amount<Length> getZApexConstructionAxes() {
+		return _zApexConstructionAxes;
 	}
 
-	public void set_Z0(Amount<Length> _Z0) {
-		this._Z0 = _Z0;
+	public void setZApexConstructionAxes(Amount<Length> _Z0) {
+		this._zApexConstructionAxes = _Z0;
 	}
 
-	public EngineMountingPositionEnum get_mountingPoint() {
+	public EngineMountingPositionEnum getMountingPoint() {
 		return _mountingPoint;
 	}
 
-	public void set_mountingPoint(EngineMountingPositionEnum _mountingPoint) {
+	public void setMountingPoint(EngineMountingPositionEnum _mountingPoint) {
 		this._mountingPoint = _mountingPoint;
 	}
 
-	public Amount<Power> get_p0() {
+	public Amount<Power> getP0() {
 		return _p0;
 	}
 
-	public void set_p0(Amount<Power> _p0) {
+	public void setP0(Amount<Power> _p0) {
 		this._p0 = _p0;
 	}
 
-	public Amount<Force> get_t0() {
+	public Amount<Force> getT0() {
 		return _t0;
 	}
 
-	public void set_t0(Amount<Force> _t0) {
+	public void setT0(Amount<Force> _t0) {
 		this._t0 = _t0;
 	}
 	
@@ -330,104 +308,108 @@ public class Engine extends Component{
 		return _SFC;
 	}
 	
-	public double setSFC(double SFC){
+	public void setSFC(double SFC){
 		this._SFC = SFC;
 	}
 	
 	// ----------------------------------
-	public Amount<Mass> get_dryMass() {
+	public Amount<Mass> getDryMass() {
 		return _dryMass;
 	}
 
-	public void set_dryMass(Amount<Mass> _dryMass) {
+	public void setDryMass(Amount<Mass> _dryMass) {
 		this._dryMass = _dryMass;
 	}
 
-	public Amount<Mass> get_totalMass() {
+	public Amount<Mass> getTotalMass() {
 		return _totalMass;
 	}
 
-	public void set_totalMass(Amount<Mass> _totalMass) {
+	public void setTotalMass(Amount<Mass> _totalMass) {
 		this._totalMass = _totalMass;
 	}
 
-	public EngineTypeEnum get_engineType() {
+	public EngineTypeEnum getEngineType() {
 		return _engineType;
 	}
 
-	public void set_engineType(EngineTypeEnum _engineType) {
+	public void setEngineType(EngineTypeEnum _engineType) {
 		this._engineType = _engineType;
 	}
 
-	public Map<MethodEnum, Amount<Mass>> get_massMap() {
+	public Map<MethodEnum, Amount<Mass>> getMassMap() {
 		return _massMap;
 	}
 
-	public Double[] get_percentDifference() {
+	public Double[] getPercentDifference() {
 		return _percentDifference;
 	}
 
-	public Amount<Angle> get_muT() {
+	public Amount<Angle> getMuT() {
 		return _muT;
 	}
 
-	public void set_muT(Amount<Angle> _muT) {
+	public void setMuT(Amount<Angle> _muT) {
 		this._muT = _muT;
 	}
 
-	public Double get_bpr() {
+	public Double getBPR() {
 		return _bpr;
 	}
 
-	public void set_bpr(Double _BPR) {
+	public void setBPR(Double _BPR) {
 		this._bpr = _BPR;
 	}
 
-	public Amount<Mass> get_dryMassPublicDomain() {
+	public Amount<Mass> getDryMassPublicDomain() {
 		return _dryMassPublicDomain;
 	}
 
-	public EngWeightsManager getWeights() {
+	public EngineWeightsManager getWeights() {
 		return weights;
 	}
 
-	public Amount<Length> get_length() {
+	public Amount<Length> getLength() {
 		return _length;
 	}
 
-	public void set_length(Amount<Length> _length) {
+	public void setLength(Amount<Length> _length) {
 		this._length = _length;
 	}
 
-	public EngBalanceManager getBalance() {
+	public EngineBalanceManager getBalance() {
 		return balance;
 	}
 
-	public String get_id() {
+	public String getId() {
 		return _id;
 	}
 
-	public int get_numberOfCompressorStages() {
+	public void setId(String id) {
+		this._id = id;
+	}
+	
+	public int getNumberOfCompressorStages() {
 		return _numberOfCompressorStages;
 	}
 
-	public void set_numberOfCompressorStages(int _numberOfCompressorStages) {
+	public void setNumberOfCompressorStages(int _numberOfCompressorStages) {
 		this._numberOfCompressorStages = _numberOfCompressorStages;
 	}
 
-	public int get_numberOfShafts() {
+	public int getNumberOfShafts() {
 		return _numberOfShafts;
 	}
 
-	public void set_numberOfShafts(int _numberOfShafts) {
+	public void setNumberOfShafts(int _numberOfShafts) {
 		this._numberOfShafts = _numberOfShafts;
 	}
 
-	public double get_overallPressureRatio() {
+	public double getOverallPressureRatio() {
 		return _overallPressureRatio;
 	}
 
-	public void set_overallPressureRatio(double _overallPressureRatio) {
+	public void setOverallPressureRatio(double _overallPressureRatio) {
 		this._overallPressureRatio = _overallPressureRatio;
 	}
 

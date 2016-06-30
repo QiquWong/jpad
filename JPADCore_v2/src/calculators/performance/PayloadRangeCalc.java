@@ -144,7 +144,7 @@ public class PayloadRangeCalc{
 		 * this works for turbofan and turboprop engine only (which are what we're analyzing). 
 		 */
 		if (engineType == EngineTypeEnum.TURBOFAN)
-			byPassRatio = theAircraft.getPowerPlant().get_engineList().get(0).get_bpr();
+			byPassRatio = theAircraft.getPowerPlant().get_engineList().get(0).getBPR();
 		else
 			byPassRatio = 0.0;
 		

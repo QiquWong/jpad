@@ -429,7 +429,7 @@ public class AircraftTestTopView extends Application {
 			System.out.println("CABIN CONFIGURATIONS ===> " + dirCabinConfiguration);
 			
 			String dirCosts = va.getCostsDirectory().getCanonicalPath();
-			System.out.println("Costs ===> " + dirCosts);
+			System.out.println("COSTS ===> " + dirCosts);
 			
 			System.out.println("--------------");
 

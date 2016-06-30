@@ -52,8 +52,8 @@ import aircraft.components.LandingGears;
 import aircraft.components.Systems;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
-import aircraft.components.nacelles.Nacelle;
-import aircraft.components.nacelles.NacellesManager;
+import aircraft.components.nacelles.NacelleCreator;
+import aircraft.components.nacelles.Nacelles;
 import aircraft.components.powerPlant.Engine;
 import aircraft.components.powerPlant.PowerPlant;
 import configuration.MyConfiguration;
@@ -776,7 +776,7 @@ public class JPADDataWriter {
 
 			writeOutputNode("Reference_mass", fuselage.getFuselageCreator().getMassReference(), weights);
 			writeOutputNode("Mass_correction_factor", fuselage.get_massCorrectionFactor(), weights);
-			writeMethodsComparison(doc, _sheet, "Weight_estimation_methods_comparison", fuselage.getMassMap(), fuselage.get_percentDifference(), weights);
+			writeMethodsComparison(doc, _sheet, "Weight_estimation_methods_comparison", fuselage.getMassMap(), fuselage.getPercentDifference(), weights);
 			writeOutputNode("Estimated_mass", fuselage.get_massEstimated(), weights);
 
 			// --- Balance ----------------------------
@@ -851,7 +851,7 @@ public class JPADDataWriter {
 		writeInputNode("tipStationTwist", liftingSurface.getLiftingSurfaceCreator().getTwistAtTipEquivalentWing(), equivalent_parameters, true);
 		writeInputNode("Dihedral_inner_panel", liftingSurface.get_dihedralInnerPanel(), equivalent_parameters, true);
 		writeInputNode("Dihedral_outer_panel", liftingSurface.get_dihedralOuterPanel(), equivalent_parameters, true);
-		writeInputNode("Surface_roughness", liftingSurface.get_roughness(), equivalent_parameters, true);
+		writeInputNode("Surface_roughness", liftingSurface.getRoughness(), equivalent_parameters, true);
 		writeInputNode("Transition_point_in_percent_of_chord_upper_wing", liftingSurface.get_xTransitionU(), equivalent_parameters, true);
 		writeInputNode("Transition_point_in_percent_of_chord_upper_wing", liftingSurface.get_xTransitionL(), equivalent_parameters, true);
 		writeInputNode("Reference_mass", liftingSurface.getReferenceMass(), equivalent_parameters, true);
@@ -1272,15 +1272,15 @@ public class JPADDataWriter {
 		engineParameters.setAttribute("level", JPADGlobalData.getTheXmlTree().getLevel(engine).toString());
 		commonOperations(engine, engineParameters);
 
-		writeInputNode("Type", engine.get_engineType(), engineParameters, true);
-		writeInputNode("Xcoordinate", engine.get_X0(), engineParameters, true);
-		writeInputNode("Ycoordinate", engine.get_Y0(), engineParameters, true);
-		writeInputNode("Zcoordinate", engine.get_Z0(), engineParameters, true);
-		writeInputNode("Mounting_point", engine.get_mountingPoint(), engineParameters, true);
-		writeInputNode("Maximum_thrust", engine.get_t0(), engineParameters, true);
-		writeInputNode("Maximum_power_output", engine.get_p0(),  engineParameters, true);
-		writeInputNode("BPR", engine.get_bpr(),  engineParameters, true);
-		writeInputNode("Dry_engine_mass_from_public_domain", engine.get_dryMassPublicDomain(), engineParameters, true);	
+		writeInputNode("Type", engine.getEngineType(), engineParameters, true);
+		writeInputNode("Xcoordinate", engine.getXApexConstructionAxes(), engineParameters, true);
+		writeInputNode("Ycoordinate", engine.getYApexConstructionAxes(), engineParameters, true);
+		writeInputNode("Zcoordinate", engine.getZApexConstructionAxes(), engineParameters, true);
+		writeInputNode("Mounting_point", engine.getMountingPoint(), engineParameters, true);
+		writeInputNode("Maximum_thrust", engine.getT0(), engineParameters, true);
+		writeInputNode("Maximum_power_output", engine.getP0(),  engineParameters, true);
+		writeInputNode("BPR", engine.getBPR(),  engineParameters, true);
+		writeInputNode("Dry_engine_mass_from_public_domain", engine.getDryMassPublicDomain(), engineParameters, true);	
 	}
 
 	/**
@@ -1300,13 +1300,13 @@ public class JPADDataWriter {
 		writeMethodsComparison(				
 				doc, _sheet,
 				"Mass_estimation_method_comparison",
-				engine.get_massMap(), engine.get_percentDifference(), weights);
+				engine.getMassMap(), engine.getPercentDifference(), weights);
 
-		writeOutputNode("Dry_engine_mass", engine.get_dryMass(), weights);		
+		writeOutputNode("Dry_engine_mass", engine.getDryMass(), weights);		
 	}
 
 
-	private void writeNacelles(NacellesManager nacelles) {
+	private void writeNacelles(Nacelles nacelles) {
 
 		_sheet = commonOperations(nacelles, _nacelleInitiator, true);
 		Element analysisNode = doc.createElement("Nacelles_analysis");
@@ -1325,7 +1325,7 @@ public class JPADDataWriter {
 	 * @param nacelle
 	 * @param parentInitiator
 	 */
-	private void writeNacelleInput(Nacelle nacelle, Element parentInitiator) {
+	private void writeNacelleInput(NacelleCreator nacelle, Element parentInitiator) {
 
 		Element nacelleParameters = doc.createElement(JPADGlobalData.getTheXmlTree().getDescription(nacelle));
 		parentInitiator.appendChild(nacelleParameters);
@@ -1350,7 +1350,7 @@ public class JPADDataWriter {
 	 * @param nacelle
 	 * @param analysisNode
 	 */
-	private void writeNacelleOutput(Nacelle nacelle, Element analysisNode) {
+	private void writeNacelleOutput(NacelleCreator nacelle, Element analysisNode) {
 
 		Element analysis = JPADStaticWriteUtils.addSubElement(doc, _sheet, "Nacelle_Analysis", analysisNode);
 
@@ -1360,7 +1360,7 @@ public class JPADDataWriter {
 		writeOutputNode("Reference_mass", nacelle.get_massReference(), weights);
 		writeOutputNode("All_nacelles_mass", nacelle.get_totalMass(), weights);
 //		writeMethodsComparison(doc, _sheet, "Weight_estimation_methods_comparison", nacelle.getWeights().get_massMap(), nacelle.get_percentDifference(), weights);
-		writeMethodsComparison(doc, _sheet, "Weight_estimation_methods_comparison", nacelle.getWeights().get_massMap(), nacelle.getWeights().get_percentDifference(), weights);
+		writeMethodsComparison(doc, _sheet, "Weight_estimation_methods_comparison", nacelle.getWeights().getMassMap(), nacelle.getWeights().getPercentDifference(), weights);
 		writeOutputNode("Estimated_mass", nacelle.get_massEstimated(), weights);
 
 		// --- Balance -------------------------
@@ -1376,10 +1376,10 @@ public class JPADDataWriter {
 		// --- Aerodynamics --------------------
 		Element aerodynamics = addElementToSubElement("Aerodynamics", analysis);
 
-		writeOutputNode("FrictionCoefficient_Cf", nacelle.getAerodynamics().get_cF(), aerodynamics);
-		writeOutputNode("Cd0Parasite", nacelle.getAerodynamics().get_cd0Parasite(), aerodynamics);
-		writeOutputNode("Cd0Base", nacelle.getAerodynamics().get_cd0Base(), aerodynamics);
-		writeOutputNode("Cd0Nacelle", nacelle.getAerodynamics().get_cd0Total(), aerodynamics);
+		writeOutputNode("FrictionCoefficient_Cf", nacelle.getAerodynamics().getCF(), aerodynamics);
+		writeOutputNode("Cd0Parasite", nacelle.getAerodynamics().getCd0Parasite(), aerodynamics);
+		writeOutputNode("Cd0Base", nacelle.getAerodynamics().getCd0Base(), aerodynamics);
+		writeOutputNode("Cd0Nacelle", nacelle.getAerodynamics().getCd0Total(), aerodynamics);
 
 		JPADStaticWriteUtils.writeAllArraysToXls(_sheet, _xlsArraysDescription, _xlsArraysList, _xlsArraysUnit);		
 	}

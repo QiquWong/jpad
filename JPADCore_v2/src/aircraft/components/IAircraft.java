@@ -14,7 +14,7 @@ import aircraft.calculators.ACWeightsManager;
 import aircraft.calculators.costs.Costs;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
-import aircraft.components.nacelles.NacellesManager;
+import aircraft.components.nacelles.Nacelles;
 import aircraft.components.powerPlant.PowerPlant;
 import configuration.enumerations.AeroConfigurationTypeEnum;
 import configuration.enumerations.AircraftTypeEnum;
@@ -42,8 +42,8 @@ public interface IAircraft {
 	public PowerPlant getPowerPlant();
 	public void setPowerPlant(PowerPlant powerPlant);
 	
-	public NacellesManager getNacelles();
-	public void setNacelles(NacellesManager nacelles);
+	public Nacelles getNacelles();
+	public void setNacelles(Nacelles nacelles);
 
 	public FuelTank getFuelTank();
 	public void setFuelTank(FuelTank fuelTank);

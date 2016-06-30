@@ -75,27 +75,27 @@ public class LiftingSurface implements ILiftingSurface {
 	Double[] _percentDifference;
 	
 	private List<Airfoil> _airfoilList;
-	private List<Double> _maxThicknessVsY;
-	private List<Amount<Length>> _radiusLEVsY;
-	private List<Double> _camberRatioVsY;
-	private List<Amount<Angle>> _alpha0VsY; 
-	private List<Amount<Angle>> _alphaStarVsY;
-	private List<Amount<Angle>>_alphaStallVsY;
-	private List<Amount<?>> _clAlphaVsY; 
-	private List<Double> _cdMinVsY;
-	private List<Double> _clAtCdMinVsY;
-	private List<Double> _cl0VsY;
-	private List<Double> _clStarVsY;
-	private List<Double> _clMaxVsY;
-	private List<Double> _clMaxSweepVsY;
-	private List<Double> _kFactorDragPolarVsY;
-	private List<Double> _mExponentDragPolarVsY;
-	private List<Double> _cmAlphaQuarteChordVsY;
-	private List<Double> _xAcAirfoilVsY;
-	private List<Double> _cmACVsY;
-	private List<Double> _cmACStallVsY;
-	private List<Double> _criticalMachVsY;
-	
+	private List<Double> _maxThicknessVsY = new ArrayList<>();
+	private List<Amount<Length>> _radiusLEVsY = new ArrayList<>();
+	private List<Double> _camberRatioVsY = new ArrayList<>();
+	private List<Amount<Angle>> _alpha0VsY = new ArrayList<>();
+	private List<Amount<Angle>> _alphaStarVsY = new ArrayList<>();
+	private List<Amount<Angle>>_alphaStallVsY = new ArrayList<>();
+	private List<Amount<?>> _clAlphaVsY = new ArrayList<>(); 
+	private List<Double> _cdMinVsY = new ArrayList<>();
+	private List<Double> _clAtCdMinVsY = new ArrayList<>();
+	private List<Double> _cl0VsY = new ArrayList<>();
+	private List<Double> _clStarVsY = new ArrayList<>();
+	private List<Double> _clMaxVsY = new ArrayList<>();
+	private List<Double> _clMaxSweepVsY = new ArrayList<>();
+	private List<Double> _kFactorDragPolarVsY = new ArrayList<>();
+	private List<Double> _mExponentDragPolarVsY = new ArrayList<>();
+	private List<Double> _cmAlphaQuarteChordVsY = new ArrayList<>();
+	private List<Double> _xAcAirfoilVsY = new ArrayList<>();
+	private List<Double> _cmACVsY = new ArrayList<>();
+	private List<Double> _cmACStallVsY = new ArrayList<>();
+	private List<Double> _criticalMachVsY = new ArrayList<>();
+
 	//================================================
 	// Builder pattern via a nested public static class
 	public static class LiftingSurfaceBuilder {
@@ -850,7 +850,7 @@ public class LiftingSurface implements ILiftingSurface {
 			this._cl0VsY.add(airfoilList.get(i).getAirfoilCreator().getClAtAlphaZero());
 			this._clStarVsY.add(airfoilList.get(i).getAirfoilCreator().getClEndLinearTrait());
 			this._clMaxVsY.add(airfoilList.get(i).getAirfoilCreator().getClMax());
-			this._clMaxSweepVsY.add(this._clMaxVsY.get(i)*Math.pow(Math.cos(this.getSweepLEEquivalent(false).doubleValue(SI.RADIAN)),2));
+			this._clMaxSweepVsY.add(this._clMaxVsY.get(i)*Math.pow(Math.cos(this.getSweepLEEquivalent(true).doubleValue(SI.RADIAN)),2));
 			this._kFactorDragPolarVsY.add(airfoilList.get(i).getAirfoilCreator().getKFactorDragPolar());
 			this._mExponentDragPolarVsY.add(airfoilList.get(i).getAirfoilCreator().getMExponentDragPolar());
 			this._cmAlphaQuarteChordVsY.add(airfoilList.get(i).getAirfoilCreator().getCmAlphaQuarterChord());

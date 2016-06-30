@@ -1775,10 +1775,10 @@ public class TakeOffCalc {
 
 			if (time < tFaiulre.getEstimatedValue())
 				theThrust =	ThrustCalc.calculateThrustDatabase(
-						TakeOffCalc.this.getAircraft().getPowerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
+						TakeOffCalc.this.getAircraft().getPowerPlant().get_engineList().get(0).getT0().getEstimatedValue(),
 						TakeOffCalc.this.getAircraft().getPowerPlant().get_engineNumber(),
 						TakeOffCalc.this.getPhi(),
-						TakeOffCalc.this.getAircraft().getPowerPlant().get_engineList().get(0).get_bpr(),
+						TakeOffCalc.this.getAircraft().getPowerPlant().get_engineList().get(0).getBPR(),
 						TakeOffCalc.this.getAircraft().getPowerPlant().get_engineType(),
 						EngineOperatingConditionEnum.TAKE_OFF,
 						altitude,
@@ -1792,10 +1792,10 @@ public class TakeOffCalc {
 						);
 			else
 				theThrust =	ThrustCalc.calculateThrustDatabase(
-						TakeOffCalc.this.getAircraft().getPowerPlant().get_engineList().get(0).get_t0().getEstimatedValue(),
+						TakeOffCalc.this.getAircraft().getPowerPlant().get_engineList().get(0).getT0().getEstimatedValue(),
 						TakeOffCalc.this.getAircraft().getPowerPlant().get_engineNumber() - 1,
 						TakeOffCalc.this.getPhi(),
-						TakeOffCalc.this.getAircraft().getPowerPlant().get_engineList().get(0).get_bpr(),
+						TakeOffCalc.this.getAircraft().getPowerPlant().get_engineList().get(0).getBPR(),
 						TakeOffCalc.this.getAircraft().getPowerPlant().get_engineType(),
 						EngineOperatingConditionEnum.TAKE_OFF,
 						altitude,

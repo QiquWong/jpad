@@ -7,7 +7,7 @@
 <listEntry value="1"/>
 </listAttribute>
 <mapAttribute key="org.eclipse.debug.core.environmentVariables">
-<mapEntry key="Path" value="h:\Java\jpad\libraries\hdf;h:\Java\jpad\libraries\occjava\Win64;"/>
+<mapEntry key="Path" value="c:\Users\Vittorio\ADOPT_PROJECT\jpad\libraries\hdf\"/>
 </mapAttribute>
 <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="sandbox2.vt.aircraft.AircraftTestTopView"/>

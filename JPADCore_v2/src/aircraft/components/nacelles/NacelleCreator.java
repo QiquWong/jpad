@@ -14,7 +14,6 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.OperatingConditions;
-import aircraft.componentmodel.Component;
 import aircraft.components.Aircraft;
 import aircraft.components.powerPlant.Engine;
 import configuration.enumerations.AircraftEnum;
@@ -28,7 +27,7 @@ import configuration.enumerations.MethodEnum;
  * @author Lorenzo Attanasio
  *
  */
-public class Nacelle extends Component{
+public class NacelleCreator {
 
 	public enum MountingPosition {
 		WING,
@@ -63,9 +62,9 @@ public class Nacelle extends Component{
 
 	private Aircraft _theAircraft;
 	private Engine _theEngine;
-	private NacelleWeightsManager weights;
-	private NacelleBalanceManager balance;
-	private NacelleAerodynamicsManager aerodynamics;
+	private NacellesWeightsManager weights;
+	private NacellesBalanceManager balance;
+	private NacellesAerodynamicsManager aerodynamics;
 	/**
 	 * Define a single nacelle object regardless of the
 	 * aircraft and the engine which corresponds to the nacelle.
@@ -78,7 +77,7 @@ public class Nacelle extends Component{
 	 * @param y
 	 * @param z
 	 */
-	public Nacelle(String name, String description, double x, double y, double z) {
+	public NacelleCreator(String name, String description, double x, double y, double z) {
 
 		super("", name, description, x, y, z);
 
@@ -91,7 +90,7 @@ public class Nacelle extends Component{
 		_cg.set_zBRF(_Z0);
 	}
 
-	public Nacelle(String name, String description, 
+	public NacelleCreator(String name, String description, 
 			double x, double y, double z,
 			Aircraft aircraft) {
 		this(name, description, x, y, z);
@@ -109,7 +108,7 @@ public class Nacelle extends Component{
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public Nacelle(AircraftEnum aircraftName, String name, String description, 
+	public NacelleCreator(AircraftEnum aircraftName, String name, String description, 
 			double x, double y, double z,
 			Aircraft aircraft) {
 		this(name, description, x, y, z);
@@ -133,7 +132,7 @@ public class Nacelle extends Component{
 	 * @param z
 	 * @param engine
 	 */
-	public Nacelle(String name, String description, 
+	public NacelleCreator(String name, String description, 
 			double x, double y, double z,
 			Aircraft aircraft,
 			Engine engine) {
@@ -236,12 +235,12 @@ public class Nacelle extends Component{
 
 	public void initializeWeights() {
 		if (weights == null) 
-			weights = new NacelleWeightsManager(_theAircraft, this);
+			weights = new NacellesWeightsManager(_theAircraft, this);
 	}
 
 	public void initializeAerodynamics() {
 		if (aerodynamics == null) 
-			aerodynamics = new NacelleAerodynamicsManager(_theAircraft, this);
+			aerodynamics = new NacellesAerodynamicsManager(_theAircraft, this);
 		//TODO: find a way to manage this
 //		aerodynamics.set_mach(_theOperatingConditions.get_machCurrent());
 //		aerodynamics.set_altitude(_theOperatingConditions.get_altitude().doubleValue(SI.METER));
@@ -249,7 +248,7 @@ public class Nacelle extends Component{
 	
 	public void initializeBalance() {
 		if (balance == null)
-			balance = new NacelleBalanceManager(this);
+			balance = new NacellesBalanceManager(this);
 	}
 
 	/**
@@ -417,7 +416,7 @@ public class Nacelle extends Component{
 
 	public Map<MethodEnum, Amount<Mass>> get_massMap() {
 //		System.out.println("weight.getMassMap: " + weights.get_massMap());
-		return weights.get_massMap();
+		return weights.getMassMap();
 //		return _massMap;
 	}
 
@@ -441,7 +440,6 @@ public class Nacelle extends Component{
 	public Amount<Mass> get_totalMass() {
 		return _totalMass;
 	}
-
 
 	@Override
 	public Amount<Length> get_X0() { return _X0; }
@@ -475,17 +473,17 @@ public class Nacelle extends Component{
 		this._theEngine = _theEngine;
 	}
 
-	public NacelleWeightsManager getWeights() {
+	public NacellesWeightsManager getWeights() {
 		initializeWeights();
 		return weights;
 	}
 
-	public NacelleAerodynamicsManager getAerodynamics() {
+	public NacellesAerodynamicsManager getAerodynamics() {
 		initializeAerodynamics();
 		return aerodynamics;
 	}
 
-	public NacelleBalanceManager getBalance() {
+	public NacellesBalanceManager getBalance() {
 		initializeBalance();
 		return balance;
 	}

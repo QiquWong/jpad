@@ -27,7 +27,7 @@ import aircraft.components.Aircraft;
 import aircraft.components.LandingGears;
 import aircraft.components.fuselage.creator.FuselageCreator;
 import aircraft.components.liftingSurface.creator.SpoilerCreator;
-import aircraft.components.nacelles.Nacelle;
+import aircraft.components.nacelles.NacelleCreator;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
@@ -329,7 +329,7 @@ public class Fuselage implements IFuselage {
 				k = k + 0.08;
 			}
 
-			if (aircraft.getNacelles().get_nacellesList().get(0).get_mounting() == Nacelle.MountingPosition.FUSELAGE) {
+			if (aircraft.getNacelles().get_nacellesList().get(0).get_mounting() == NacelleCreator.MountingPosition.FUSELAGE) {
 				k = k + 0.04;
 			}
 

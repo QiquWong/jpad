@@ -6,13 +6,14 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
+import aircraft.componentmodel.componentcalcmanager.AerodynamicsManager;
 import aircraft.components.Aircraft;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.DragCalc;
 import configuration.enumerations.MethodEnum;
 import writers.JPADStaticWriteUtils;
 
-public class NacelleAerodynamicsManager extends aircraft.componentmodel.componentcalcmanager.AerodynamicsManager{
+public class NacellesAerodynamicsManager extends AerodynamicsManager{
 
 	private Amount<Length> _length;
 	private Amount<Length> _roughness;
@@ -24,12 +25,12 @@ public class NacelleAerodynamicsManager extends aircraft.componentmodel.componen
 	private Double _cd0Base;
 	private Double _cd0Total;
 	private Aircraft _theAircraft;
-	private Nacelle _theNacelle;
+	private NacelleCreator _theNacelle;
 	private Amount<Area> sW;
 
-	public NacelleAerodynamicsManager(
+	public NacellesAerodynamicsManager(
 			Aircraft aircraft, 
-			Nacelle nacelle) {
+			NacelleCreator nacelle) {
 
 		_theAircraft = aircraft;
 		_theNacelle = nacelle;
@@ -41,10 +42,10 @@ public class NacelleAerodynamicsManager extends aircraft.componentmodel.componen
 	
 	@Override
 	public void initializeDependentData() {
-		//TODO: check this
+		//TODO: FROM OPERATING CONDITIONS
 		_mach = 0.45;
 		_altitude = 6000.;
-		sW = _theAircraft.getWing().get_surface();
+		sW = _theAircraft.getWing().getSurface();
 	}
 
 	@Override
@@ -61,7 +62,7 @@ public class NacelleAerodynamicsManager extends aircraft.componentmodel.componen
 		_xTransition = 0.0;
 		_cF = AerodynamicCalc.calculateCf(_reynolds, _mach, _xTransition);
 
-		double kExcr = DragCalc.calculateKExcrescences(_theAircraft.getSWetTotal()); 
+		double kExcr = DragCalc.calculateKExcrescences(_theAircraft.getSWetTotal().doubleValue(SI.SQUARE_METRE)); 
 
 		calculateCd0Parasite();
 		calculateCd0Base();
@@ -96,39 +97,39 @@ public class NacelleAerodynamicsManager extends aircraft.componentmodel.componen
 	}
 
 
-	public Amount<Length> get_length() {
+	public Amount<Length> getLength() {
 		return _length;
 	}
 
-	public Amount<Length> get_roughness() {
+	public Amount<Length> getRoughness() {
 		return _roughness;
 	}
 
-	public Double get_reynolds() {
+	public Double getReynolds() {
 		return _reynolds;
 	}
 
-	public Double get_xTransition() {
+	public Double getXTransition() {
 		return _xTransition;
 	}
 
-	public Double get_cF() {
+	public Double getCF() {
 		return _cF;
 	}
 
-	public Double get_cd0Parasite() {
+	public Double getCd0Parasite() {
 		return _cd0Parasite;
 	}
 
-	public Double get_cd0Base() {
+	public Double getCd0Base() {
 		return _cd0Base;
 	}
 
-	public Double get_cd0Total() {
+	public Double getCd0Total() {
 		return _cd0Total;
 	}
 
-	public void set_theNacelle(Nacelle _theNacelle) {
+	public void setTheNacelle(NacelleCreator _theNacelle) {
 		this._theNacelle = _theNacelle;
 	}
 

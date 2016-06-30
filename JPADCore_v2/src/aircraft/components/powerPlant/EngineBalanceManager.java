@@ -1,4 +1,4 @@
-package aircraft.components.nacelles;
+package aircraft.components.powerPlant;
 
 import java.util.ArrayList;
 
@@ -7,40 +7,46 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
+import aircraft.componentmodel.componentcalcmanager.BalanceManager;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.MethodEnum;
 import writers.JPADStaticWriteUtils;
 
-public class NacelleBalanceManager extends aircraft.componentmodel.componentcalcmanager.BalanceManager{
+public class EngineBalanceManager extends BalanceManager{
 
-	private Nacelle _theNacelle;
+	private Engine _theEngine; 
 	
 	private Amount<Length> _xCG;
 	private Double[] _percentDifferenceXCG;
-
-	public NacelleBalanceManager(Nacelle nacelle) {
+	
+	
+	public EngineBalanceManager(Engine engine) {
 		super();
-		_theNacelle = nacelle;
+		
+		_theEngine = engine;
+		initializeDependentData();
+		initializeInnerCalculators();
 		initializeDependentData();
 		calculateAll();
 	}
 	
+	
 	public void initializeDependentData() {
 		_cg.setLRForigin(
-				_theNacelle.get_X0(), 
-				_theNacelle.get_Y0(), 
-				_theNacelle.get_Z0());
+				_theEngine.getXApexConstructionAxes(), 
+				_theEngine.getYApexConstructionAxes(), 
+				_theEngine.getZApexConstructionAxes());
 		
-		_cg.set_xLRFref(_theNacelle.get_length().times(0.4));
-		_cg.set_yLRFref(_theNacelle.get_diameterMean().divide(2));
-		_cg.set_zLRFref(_theNacelle.get_diameterMean().divide(2));
+		_cg.set_xLRFref(_theEngine.getLength().divide(2));
+		_cg.set_yLRFref(Amount.valueOf(0., SI.METER));
+		_cg.set_zLRFref(Amount.valueOf(0., SI.METER));
 	}
 	
 	@Override
 	public void initializeInnerCalculators() {
 		
 	}
-
+	
 	@Override
 	public void calculateAll() {
 
@@ -48,7 +54,7 @@ public class NacelleBalanceManager extends aircraft.componentmodel.componentcalc
 		// from old entries
 		_methodsList = new ArrayList<MethodEnum>();
 
-		torenbeek();
+		sforza();
 		
 		_methodsMap.put(AnalysisTypeEnum.BALANCE, _methodsList);
 		_percentDifferenceXCG = new Double[_xCGMap.size()];
@@ -58,15 +64,15 @@ public class NacelleBalanceManager extends aircraft.componentmodel.componentcalc
 				_xCGMap,
 				_percentDifferenceXCG,
 				30.).getFilteredMean(), SI.METER));
-		
+
 		_cg.calculateCGinBRF();
 
 	}
 	
-	public void torenbeek() {
-		_methodsList.add(MethodEnum.TORENBEEK_1982);
-		_xCG = _theNacelle.get_length().times(0.4);
-		_xCGMap.put(MethodEnum.TORENBEEK_1982, _xCG);	
+	public void sforza() {
+		_methodsList.add(MethodEnum.SFORZA);
+		_xCG = _theEngine.getLength().divide(2.);
+		_xCGMap.put(MethodEnum.SFORZA, _xCG);
 	}
-
+	
 }

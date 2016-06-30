@@ -24,7 +24,7 @@ import standaloneutils.customdata.CenterOfGravity;
  * @author Lorenzo Attanasio
  *
  */
-public class NacellesManager {
+public class Nacelles {
 
 	private int _nacellesNumber = 1;
 	private Amount<Mass> _totalMass;
@@ -37,12 +37,12 @@ public class NacellesManager {
 	private Double _distanceBetweenInboardNacellesY, _distanceBetweenOutboardNacellesY;
 	private Amount<Area> _surfaceWetted;
 
-	private List<Nacelle> _nacellesList = new ArrayList<Nacelle>();
+	private List<NacelleCreator> _nacellesList = new ArrayList<NacelleCreator>();
 	private List<CenterOfGravity> _cgList = new ArrayList<CenterOfGravity>();
 	private List<Amount<Mass>> _massList = new ArrayList<Amount<Mass>>();
-	private Map<Nacelle, Engine> _nacelleEngineMap = new HashMap<Nacelle, Engine>();
+	private Map<NacelleCreator, Engine> _nacelleEngineMap = new HashMap<NacelleCreator, Engine>();
 
-	public NacellesManager(Aircraft aircraft) {
+	public Nacelles(Aircraft aircraft) {
 		_theAircraft = aircraft;
 		_nacellesNumber = 2;
 		_massReference = Amount.valueOf(0., SI.KILOGRAM);
@@ -53,7 +53,7 @@ public class NacellesManager {
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public NacellesManager(AircraftEnum aircraftName, Aircraft aircraft) {
+	public Nacelles(AircraftEnum aircraftName, Aircraft aircraft) {
 		
 		switch(aircraftName) {
 		
@@ -80,7 +80,7 @@ public class NacellesManager {
 	public void initializeNacelles() {
 
 		for(int i=0; i < _nacellesNumber; i++) {
-			_nacellesList.add(new Nacelle("Nacelle_" + i, "", 0.0, 0.0, 0.0, _theAircraft));
+			_nacellesList.add(new NacelleCreator("Nacelle_" + i, "", 0.0, 0.0, 0.0, _theAircraft));
 		}
 
 		_distanceBetweenInboardNacellesY = 2*_nacellesList.get(0).get_Y0().getEstimatedValue();
@@ -99,16 +99,16 @@ public class NacellesManager {
 		
 		case ATR72:
 			_nacellesNumber = 2;
-				_nacellesList.add(new Nacelle(aircraftName, "Nacelle_1", "", 8.6100, 4.0500, 1.3255, _theAircraft));
-				_nacellesList.add(new Nacelle(aircraftName, "Nacelle_2", "", 8.6100, 4.0500, 1.3255, _theAircraft));
+				_nacellesList.add(new NacelleCreator(aircraftName, "Nacelle_1", "", 8.6100, 4.0500, 1.3255, _theAircraft));
+				_nacellesList.add(new NacelleCreator(aircraftName, "Nacelle_2", "", 8.6100, 4.0500, 1.3255, _theAircraft));
 			break;
 			
 		case B747_100B:
 			_nacellesNumber = 4;
-				_nacellesList.add(new Nacelle(aircraftName, "Nacelle_1", "", 23.770, 11.820, -2.462, _theAircraft));
-				_nacellesList.add(new Nacelle(aircraftName, "Nacelle_2", "", 31.693, 21.951, -2.462, _theAircraft));
-				_nacellesList.add(new Nacelle(aircraftName, "Nacelle_3", "", 23.770, -11.820, -2.462, _theAircraft));
-				_nacellesList.add(new Nacelle(aircraftName, "Nacelle_4", "", 31.693, -21.951, -2.462, _theAircraft));
+				_nacellesList.add(new NacelleCreator(aircraftName, "Nacelle_1", "", 23.770, 11.820, -2.462, _theAircraft));
+				_nacellesList.add(new NacelleCreator(aircraftName, "Nacelle_2", "", 31.693, 21.951, -2.462, _theAircraft));
+				_nacellesList.add(new NacelleCreator(aircraftName, "Nacelle_3", "", 23.770, -11.820, -2.462, _theAircraft));
+				_nacellesList.add(new NacelleCreator(aircraftName, "Nacelle_4", "", 31.693, -21.951, -2.462, _theAircraft));
 				
 			break;
 			
@@ -116,8 +116,8 @@ public class NacellesManager {
 			_nacellesNumber = 2;
 //			for(int i=0; i < _nacellesNumber; i++) {
 //				_nacellesList.add(new Nacelle(aircraftName, "Nacelle_" + i, "", 0.0, 0.0, 0.0, _theAircraft));
-				_nacellesList.add(new Nacelle(aircraftName, "Nacelle_1", "", 12.891, 4.968, -1.782, _theAircraft));
-				_nacellesList.add(new Nacelle(aircraftName, "Nacelle_2", "", 12.891, -4.968, -1.782, _theAircraft));
+				_nacellesList.add(new NacelleCreator(aircraftName, "Nacelle_1", "", 12.891, 4.968, -1.782, _theAircraft));
+				_nacellesList.add(new NacelleCreator(aircraftName, "Nacelle_2", "", 12.891, -4.968, -1.782, _theAircraft));
 //			}
 			break;
 		}
@@ -170,9 +170,9 @@ public class NacellesManager {
 
 		for(int i=0; i < _nacellesNumber; i++) {
 			_nacellesList.get(i).getWeights().calculateAll();
-			_massList.add(_nacellesList.get(i).getWeights().get_massEstimated());
-			_totalMass = _totalMass.plus(_nacellesList.get(i).getWeights().get_massEstimated());
-			_massReference = _massReference.plus(_nacellesList.get(i).getWeights().get_massReference());
+			_massList.add(_nacellesList.get(i).getWeights().getMassEstimated());
+			_totalMass = _totalMass.plus(_nacellesList.get(i).getWeights().getMassEstimated());
+			_massReference = _massReference.plus(_nacellesList.get(i).getWeights().getMassReference());
 		}
 		
 
@@ -190,7 +190,7 @@ public class NacellesManager {
 //			_cgList.add(_nacellesList.get(i).get_cg());
 			_cgList.add(_nacellesList.get(i).getBalance().get_cg());
 			_totalCG = _totalCG.plus(_nacellesList.get(i).getBalance().get_cg()
-					.times(_nacellesList.get(i).getWeights().get_massEstimated().doubleValue(SI.KILOGRAM)));
+					.times(_nacellesList.get(i).getWeights().getMassEstimated().doubleValue(SI.KILOGRAM)));
 		}
 
 		_totalCG = _totalCG.divide(_totalMass.doubleValue(SI.KILOGRAM));
@@ -207,9 +207,9 @@ public class NacellesManager {
 
 		for(int i=0; i < _nacellesNumber; i++) {
 			_nacellesList.get(i).getAerodynamics().calculateAll();
-			_cd0Parasite = _cd0Parasite + _nacellesList.get(i).getAerodynamics().get_cd0Parasite();
-			_cd0Base = _cd0Base + _nacellesList.get(i).getAerodynamics().get_cd0Base();
-			_cd0Total = _cd0Total + _nacellesList.get(i).getAerodynamics().get_cd0Total();
+			_cd0Parasite = _cd0Parasite + _nacellesList.get(i).getAerodynamics().getCd0Parasite();
+			_cd0Base = _cd0Base + _nacellesList.get(i).getAerodynamics().getCd0Base();
+			_cd0Total = _cd0Total + _nacellesList.get(i).getAerodynamics().getCd0Total();
 		}
 	}
 
@@ -225,11 +225,11 @@ public class NacellesManager {
 		return _totalMass;
 	}
 
-	public List<Nacelle> get_nacellesList() {
+	public List<NacelleCreator> get_nacellesList() {
 		return _nacellesList;
 	}
 
-	public Map<Nacelle, Engine> get_nacelleEngineMap() {
+	public Map<NacelleCreator, Engine> get_nacelleEngineMap() {
 		return _nacelleEngineMap;
 	}
 

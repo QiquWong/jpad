@@ -20,8 +20,8 @@ import aircraft.components.LandingGears;
 import aircraft.components.Systems;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
-import aircraft.components.nacelles.Nacelle;
-import aircraft.components.nacelles.NacellesManager;
+import aircraft.components.nacelles.NacelleCreator;
+import aircraft.components.nacelles.Nacelles;
 import aircraft.components.powerPlant.Engine;
 import aircraft.components.powerPlant.PowerPlant;
 import configuration.MyConfiguration;
@@ -88,8 +88,8 @@ public class JPADWriteUtils {
 			JPADGlobalData.getTheXmlTree().add(aircraft.getCanard(), 2, "Canard", aircraft.getCanard().getId());
 			addAirfoilsToXML(aircraft.getCanard(), aircraft.getCanard().getId());
 
-			JPADGlobalData.getTheXmlTree().add(aircraft.getNacelles(), 2, "Nacelles", NacellesManager.getId());
-			addNacellesToXML(aircraft.getNacelles(), NacellesManager.getId());
+			JPADGlobalData.getTheXmlTree().add(aircraft.getNacelles(), 2, "Nacelles", Nacelles.getId());
+			addNacellesToXML(aircraft.getNacelles(), Nacelles.getId());
 
 			JPADGlobalData.getTheXmlTree().add(aircraft.getFuelTank(), 2, "Fuel_tank", aircraft.getFuelTank().getId());
 
@@ -152,7 +152,7 @@ public class JPADWriteUtils {
 			JPADGlobalData.getTheXmlTree().add(LiftingSurface.class, 2, "Canard", Canard.getId());
 			addAirfoilsToXML(JPADGlobalData.getTheCurrentAircraft().getCanard(), Canard.getId());	
 
-			JPADGlobalData.getTheXmlTree().add(Nacelle.class, 2, "Nacelle", Nacelle.getId());
+			JPADGlobalData.getTheXmlTree().add(NacelleCreator.class, 2, "Nacelle", NacelleCreator.getId());
 			JPADGlobalData.getTheXmlTree().add(FuelTank.class, 2, "Fuel_tank", FuelTank.getId());
 			JPADGlobalData.getTheXmlTree().add(PowerPlant.class, 2, "PowerPlant", PowerPlant.getId());
 			JPADGlobalData.getTheXmlTree().add(Systems.class, 2, "Systems", Systems.getId());
@@ -213,18 +213,18 @@ public class JPADWriteUtils {
 		if (powerPlant != null) {
 			for (int k=0; k < powerPlant.get_engineNumber(); k++) {
 				Engine engine = powerPlant.get_engineList().get(k);
-				JPADGlobalData.getTheXmlTree().add(engine, 3, "Engine_" + (k+1), engine.get_id()); //"1" + k + "99");
+				JPADGlobalData.getTheXmlTree().add(engine, 3, "Engine_" + (k+1), engine.getId()); //"1" + k + "99");
 				//				JPADGlobalData.getTheXmlTree().add(engine.getGeometry(), 4, "Airfoil_Geometry", engine.getGeometry().getId());
 				//				JPADGlobalData.getTheXmlTree().add(engine.getAerodynamics(), 4, "Airfoil_Aerodynamics", engine.getAerodynamics().getId());
 			}
 		}
 	}
 
-	private static void addNacellesToXML(NacellesManager nacelles, String fatherId) {
+	private static void addNacellesToXML(Nacelles nacelles, String fatherId) {
 
 		if (nacelles != null) {
 			for (int k=0; k < nacelles.get_nacellesNumber(); k++) {
-				Nacelle nacelle = nacelles.get_nacellesList().get(k);
+				NacelleCreator nacelle = nacelles.get_nacellesList().get(k);
 				JPADGlobalData.getTheXmlTree().add(nacelle, 3, "Nacelle_" + (k+1), nacelle.get_id()); //"1" + k + "99");
 				//				JPADGlobalData.getTheXmlTree().add(engine.getGeometry(), 4, "Airfoil_Geometry", engine.getGeometry().getId());
 				//				JPADGlobalData.getTheXmlTree().add(engine.getAerodynamics(), 4, "Airfoil_Aerodynamics", engine.getAerodynamics().getId());

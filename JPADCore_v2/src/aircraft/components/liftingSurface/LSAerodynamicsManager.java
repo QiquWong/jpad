@@ -633,15 +633,15 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	public double calculateCd0Parasite(){
 		_reynolds = theOperatingConditions.calculateRe(
 				getTheLiftingSurface().getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue(), 
-				getTheLiftingSurface().get_roughness().getEstimatedValue());
+				getTheLiftingSurface().getRoughness().getEstimatedValue());
 
 		if (theOperatingConditions.calculateReCutOff(
 				getTheLiftingSurface().getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue(), 
-				getTheLiftingSurface().get_roughness().getEstimatedValue()) < 
+				getTheLiftingSurface().getRoughness().getEstimatedValue()) < 
 				_reynolds) {
 
 			_reynolds = theOperatingConditions.calculateReCutOff(
-					getTheLiftingSurface().getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue(), getTheLiftingSurface().get_roughness().getEstimatedValue());
+					getTheLiftingSurface().getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue(), getTheLiftingSurface().getRoughness().getEstimatedValue());
 
 			_cF  = (AerodynamicCalc.calculateCf(
 					_reynolds, machCurrent, 

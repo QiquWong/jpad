@@ -157,7 +157,7 @@ public class ACBalanceManager extends ACCalculatorManager {
 		
 		for(int i=0 ; i< aircraft.getPowerPlant().get_engineNumber(); i++){
 			cgPowerPlantContribute = cgPowerPlantContribute + (aircraft.getPowerPlant().get_cgList().get(i).get_xBRF().getEstimatedValue()*
-					aircraft.getPowerPlant().get_engineList().get(i).get_totalMass().getEstimatedValue());
+					aircraft.getPowerPlant().get_engineList().get(i).getTotalMass().getEstimatedValue());
 			System.out.println("Engine " + i + " --> " + aircraft.getPowerPlant().get_cgList().get(i).get_xBRF());
 		}
 		_cgStructureAndPower.set_xBRF(

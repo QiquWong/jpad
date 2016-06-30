@@ -11,18 +11,19 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.componentmodel.InnerCalculator;
+import aircraft.componentmodel.componentcalcmanager.WeightsManager;
 import aircraft.components.Aircraft;
-import aircraft.components.nacelles.Nacelle.MountingPosition;
+import aircraft.components.nacelles.NacelleCreator.MountingPosition;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import writers.JPADStaticWriteUtils;
 
-public class NacelleWeightsManager extends aircraft.componentmodel.componentcalcmanager.WeightsManager{
+public class NacellesWeightsManager extends WeightsManager{
 
 	private Aircraft _theAircraft;
-	private Nacelle _theNacelle;
+	private NacelleCreator _theNacelle;
 	private MountingPosition _mountingPosition;
 	private InnerCalculator calculator;
 	private Turboprop turboprop;
@@ -30,7 +31,7 @@ public class NacelleWeightsManager extends aircraft.componentmodel.componentcalc
 	private Piston piston;
 
 	
-	public NacelleWeightsManager(Aircraft aircraft, Nacelle nacelle) {
+	public NacellesWeightsManager(Aircraft aircraft, NacelleCreator nacelle) {
 		_theAircraft = aircraft;
 		_theNacelle = nacelle;
 
@@ -50,11 +51,11 @@ public class NacelleWeightsManager extends aircraft.componentmodel.componentcalc
 	
 	@Override
 	public void initializeInnerCalculators() {
-		if (_theNacelle.get_theEngine().get_engineType().equals(EngineTypeEnum.TURBOPROP))
+		if (_theNacelle.get_theEngine().getEngineType().equals(EngineTypeEnum.TURBOPROP))
 			calculator = new Turboprop();
-		else if(_theNacelle.get_theEngine().get_engineType().equals(EngineTypeEnum.TURBOFAN))
+		else if(_theNacelle.get_theEngine().getEngineType().equals(EngineTypeEnum.TURBOFAN))
 			calculator = new Turbofan();
-		else if(_theNacelle.get_theEngine().get_engineType().equals(EngineTypeEnum.PISTON))
+		else if(_theNacelle.get_theEngine().getEngineType().equals(EngineTypeEnum.PISTON))
 			calculator = new Piston();	
 	}
 	
@@ -86,14 +87,14 @@ public class NacelleWeightsManager extends aircraft.componentmodel.componentcalc
 		// page 150 Jenkinson - Civil Jet Aircraft Design
 		public Amount<Mass> jenkinson() {
 
-			if (_theNacelle.get_theEngine().get_t0().getEstimatedValue() < 600000.){
+			if (_theNacelle.get_theEngine().getT0().getEstimatedValue() < 600000.){
 				_mass = Amount.valueOf(
-						_theNacelle.get_theEngine().get_t0().divide(1000.).times(6.8).getEstimatedValue(), 
+						_theNacelle.get_theEngine().getT0().divide(1000.).times(6.8).getEstimatedValue(), 
 						SI.KILOGRAM);
 			
 			} else {
 				_mass = Amount.valueOf(2760 + 
-						(2.2*_theNacelle.get_theEngine().get_t0().divide(1000.).getEstimatedValue()), 
+						(2.2*_theNacelle.get_theEngine().getT0().divide(1000.).getEstimatedValue()), 
 						SI.KILOGRAM);
 			}
 			
@@ -145,7 +146,7 @@ public class NacelleWeightsManager extends aircraft.componentmodel.componentcalc
 		public Amount<Mass> torenbeek1982() {
 
 			_mass = Amount.valueOf(
-					0.055*_theNacelle.get_theEngine().get_t0().to(NonSI.POUND_FORCE).getEstimatedValue(),
+					0.055*_theNacelle.get_theEngine().getT0().to(NonSI.POUND_FORCE).getEstimatedValue(),
 					NonSI.POUND).
 					to(SI.KILOGRAM);
 			_methodsList.add(MethodEnum.TORENBEEK_1982);
@@ -171,14 +172,14 @@ public class NacelleWeightsManager extends aircraft.componentmodel.componentcalc
 		public Turboprop() { }
 
 		public Amount<Mass> jenkinson() { // page 150 Jenkinson - Civil Jet _theAircraft Design
-			if (_theNacelle.get_theEngine().get_t0().getEstimatedValue() < 600000.){
+			if (_theNacelle.get_theEngine().getT0().getEstimatedValue() < 600000.){
 				_mass = Amount.valueOf(
-						_theNacelle.get_theEngine().get_t0().divide(1000).times(6.8).getEstimatedValue(), 
+						_theNacelle.get_theEngine().getT0().divide(1000).times(6.8).getEstimatedValue(), 
 						SI.KILOGRAM);
 			
 			} else {
 				_mass = Amount.valueOf(2760 + 
-						(2.2*_theNacelle.get_theEngine().get_t0().divide(1000).getEstimatedValue()), 
+						(2.2*_theNacelle.get_theEngine().getT0().divide(1000).getEstimatedValue()), 
 						SI.KILOGRAM);
 			}
 			_methodsList.add(MethodEnum.JENKINSON);
@@ -229,7 +230,7 @@ public class NacelleWeightsManager extends aircraft.componentmodel.componentcalc
 
 		public Amount<Mass> torenbeek1982() {
 			_mass = Amount.valueOf(
-					0.055*_theNacelle.get_theEngine().get_t0().to(NonSI.POUND_FORCE).getEstimatedValue(),
+					0.055*_theNacelle.get_theEngine().getT0().to(NonSI.POUND_FORCE).getEstimatedValue(),
 					NonSI.POUND).
 					to(SI.KILOGRAM);
 			_methodsList.add(MethodEnum.TORENBEEK_1982);
@@ -250,12 +251,12 @@ public class NacelleWeightsManager extends aircraft.componentmodel.componentcalc
 		public Amount<Mass> kundu() {
 			if (_mountingPosition == MountingPosition.WING) {
 				_mass = Amount.valueOf(
-						_theNacelle.get_theEngine().get_p0()
+						_theNacelle.get_theEngine().getP0()
 						.to(NonSI.HORSEPOWER).times(0.4).getEstimatedValue(),
 						NonSI.POUND_FORCE).to(SI.NEWTON).divide(AtmosphereCalc.g0).to(SI.KILOGRAM);
 			} else if (_mountingPosition == MountingPosition.FUSELAGE) {
 				_mass = Amount.valueOf(
-						_theNacelle.get_theEngine().get_p0().to(NonSI.HORSEPOWER).times(0.5).getEstimatedValue(),
+						_theNacelle.get_theEngine().getP0().to(NonSI.HORSEPOWER).times(0.5).getEstimatedValue(),
 						NonSI.POUND_FORCE).to(SI.NEWTON).divide(AtmosphereCalc.g0).to(SI.KILOGRAM);
 			}
 			_methodsList.add(MethodEnum.KUNDU);
@@ -269,15 +270,15 @@ public class NacelleWeightsManager extends aircraft.componentmodel.componentcalc
 		}
 	}
 
-	public void set_theNacelle(Nacelle _theNacelle) {
+	public void setTheNacelle(NacelleCreator _theNacelle) {
 		this._theNacelle = _theNacelle;
 	}
 
-	public Map<MethodEnum, Amount<Mass>> get_massMap() {
+	public Map<MethodEnum, Amount<Mass>> getMassMap() {
 		return _massMap;
 	}
 
-	public Amount<Mass> get_massEstimated() {
+	public Amount<Mass> getMassEstimated() {
 		return _massEstimated;
 	}
 
@@ -293,27 +294,27 @@ public class NacelleWeightsManager extends aircraft.componentmodel.componentcalc
 		return piston;
 	}
 
-	public Amount<Mass> get_massReference() {
+	public Amount<Mass> getMassReference() {
 		return _massReference;
 	}
 
-	public void set_massReference(Amount<Mass> _massReference) {
+	public void setMassReference(Amount<Mass> _massReference) {
 		this._massReference = _massReference;
 	}
 
-	public Amount<Mass> get_mass() {
+	public Amount<Mass> getMass() {
 		return _mass;
 	}
 
-	public void set_mass(Amount<Mass> _mass) {
+	public void setMass(Amount<Mass> _mass) {
 		this._mass = _mass;
 	}
 	
-	public Double[] get_percentDifference() {
+	public Double[] getPercentDifference() {
 		return _percentDifference;
 	}
 	
-	public void set_percentDifference(Double[] _percentDifference) {
+	public void setPercentDifference(Double[] _percentDifference) {
 		this._percentDifference =_percentDifference;
 	}
 	

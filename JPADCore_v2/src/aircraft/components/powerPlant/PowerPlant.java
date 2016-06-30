@@ -18,7 +18,6 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.componentmodel.Component;
 import aircraft.components.Aircraft;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
@@ -35,7 +34,7 @@ import standaloneutils.customdata.CenterOfGravity;
  */
 
 //TODO: this class should not extend MyComponent
-public class PowerPlant extends Component{
+public class PowerPlant {
 
 	public static final String _id = "8";
 	private String _name;
@@ -213,8 +212,8 @@ public class PowerPlant extends Component{
 		//		}
 
 		for(int i=0; i < _engineNumber; i++) {
-			_T0Total = _T0Total.plus(engineList.get(i).get_t0());
-			_P0Total = _P0Total.plus(engineList.get(i).get_p0());
+			_T0Total = _T0Total.plus(engineList.get(i).getT0());
+			_P0Total = _P0Total.plus(engineList.get(i).getP0());
 		}
 
 	}
@@ -228,8 +227,8 @@ public class PowerPlant extends Component{
 
 		for(int i=0; i < _engineNumber; i++) {
 			engineList.get(i).getWeights().calculateAll();
-			_totalMass = _totalMass.plus(engineList.get(i).get_totalMass());
-			_dryMassPublicDomain = _dryMassPublicDomain.plus(engineList.get(i).getWeights().get_dryMassPublicDomain());
+			_totalMass = _totalMass.plus(engineList.get(i).getTotalMass());
+			_dryMassPublicDomain = _dryMassPublicDomain.plus(engineList.get(i).getWeights().getDryMassPublicDomain());
 		}
 
 		_percentTotalDifference = _totalMass.
@@ -246,7 +245,7 @@ public class PowerPlant extends Component{
 			engineList.get(i).getBalance().calculateAll();
 			_cgList.add(engineList.get(i).getBalance().get_cg());
 			_totalCG = _totalCG.plus(engineList.get(i).getBalance().get_cg()
-					.times(engineList.get(i).get_totalMass().doubleValue(SI.KILOGRAM)));
+					.times(engineList.get(i).getTotalMass().doubleValue(SI.KILOGRAM)));
 		}
 		
 		_totalCG = _totalCG.divide(_totalMass.doubleValue(SI.KILOGRAM));

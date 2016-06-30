@@ -26,7 +26,7 @@ import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.LiftingSurface.LiftingSurfaceBuilder;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator;
-import aircraft.components.nacelles.NacellesManager;
+import aircraft.components.nacelles.Nacelles;
 import aircraft.components.powerPlant.PowerPlant;
 import configuration.MyConfiguration;
 import configuration.enumerations.AeroConfigurationTypeEnum;
@@ -68,7 +68,7 @@ public class Aircraft implements IAircraft {
 	private LiftingSurface _theVTail;
 	private LiftingSurface _theCanard;
 	private PowerPlant _thePowerPlant;
-	private NacellesManager _theNacelles;
+	private Nacelles _theNacelles;
 	private FuelTank _theFuelTank;
 	private LandingGears _theLandingGears;
 	private Systems _theSystems;
@@ -101,7 +101,7 @@ public class Aircraft implements IAircraft {
 		private LiftingSurface __theVTail;
 		private LiftingSurface __theCanard;
 		private PowerPlant __thePowerPlant;
-		private NacellesManager __theNacelles;
+		private Nacelles __theNacelles;
 		private FuelTank __theFuelTank;
 		private LandingGears __theLandingGears;
 		private Systems __theSystems;
@@ -617,7 +617,7 @@ public class Aircraft implements IAircraft {
 //			return this;
 //		}
 		
-		public AircraftBuilder nacelles (NacellesManager nacelles) {
+		public AircraftBuilder nacelles (Nacelles nacelles) {
 			this.__theNacelles = nacelles;
 			return this;
 		}
@@ -1600,12 +1600,12 @@ public class Aircraft implements IAircraft {
 	}
 	
 	@Override
-	public NacellesManager getNacelles() {
+	public Nacelles getNacelles() {
 		return _theNacelles;
 	}
 	
 	@Override
-	public void setNacelles(NacellesManager nacelles) {
+	public void setNacelles(Nacelles nacelles) {
 		this._theNacelles = nacelles;
 	}
 	
