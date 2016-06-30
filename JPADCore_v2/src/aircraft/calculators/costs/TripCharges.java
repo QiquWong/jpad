@@ -84,7 +84,7 @@ public class TripCharges {
 				aircraft.getTheWeights().get_paxMassMax(), aircraft.getCabinConfiguration().getMaxPax().intValue(),
 				costs.getGroundHandlingCostXPax(),
 				aircraft.getTheWeights().get_manufacturerEmptyMass().minus(aircraft.getPowerPlant().get_totalMass()),
-				costs.get_manHourLaborRate(), costs.get_airframeCost(), 
+				costs.getManHourLaborRate(), costs.getAirframeCost(), 
 				aircraft.getThePerformance().getFlightTime(),
 				aircraft.getPowerPlant().get_engineList().get(0).get_bpr(), 
 				aircraft.getPowerPlant().get_engineList().get(0).get_overallPressureRatio(),
@@ -94,10 +94,10 @@ public class TripCharges {
 				costs.getEngineMaintLaborCost(), costs.getEngineMaintMaterialCost(),
 				costs.getAirframeMaintLaborCost(),	costs.getAirframeMaintMaterialCost(),
 				aircraft.getTheWeights().get_OEM(), 
-				aircraft.getThePerformance().getVOptimumCruise(), costs.get_aircraftCost(),
-				costs.get_singleEngineCost(), aircraft.getPowerPlant().get_P0Total(), costs.get_blockFuelVolume(), 
-				costs.get_fuelVolumetricCost(), costs.get_hourVolumetricFuelConsumption(), 
-				costs.get_oilMassCost());		
+				aircraft.getThePerformance().getVOptimumCruise(), costs.getAircraftCost(),
+				costs.getSingleEngineCost(), aircraft.getPowerPlant().get_P0Total(), costs.getBlockFuelVolume(), 
+				costs.getFuelVolumetricCost(), costs.getHourVolumetricFuelConsumption(), 
+				costs.getOilMassCost());		
 	}
 
 	/**

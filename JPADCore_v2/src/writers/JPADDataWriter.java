@@ -1579,14 +1579,14 @@ public class JPADDataWriter {
 	 */
 	private void writeCostsInput(Costs costs, Element costsInitiator) {
 
-		writeInputNode("Airframe_cost", costs.get_airframeCost(), costsInitiator, true);
-		writeInputNode("Total_investments", costs.get_totalInvestments(), costsInitiator, true);
+		writeInputNode("Airframe_cost", costs.getAirframeCost(), costsInitiator, true);
+		writeInputNode("Total_investments", costs.getTotalInvestments(), costsInitiator, true);
 
-		writeInputNode("Single_Engine_cost", costs.get_singleEngineCost(), costsInitiator, true);
+		writeInputNode("Single_Engine_cost", costs.getSingleEngineCost(), costsInitiator, true);
 		writeInputNode("Engine_maintenance_cost", costs.getEngineMaintLaborCost(), costsInitiator, true);
-		writeInputNode("Fuel_volumetric_cost", costs.get_fuelVolumetricCost(), costsInitiator, true);
-		writeInputNode("Hour_volumetric_fuel_consumption", costs.get_hourVolumetricFuelConsumption(), costsInitiator, true);
-		writeInputNode("Oil_mass_cost", costs.get_oilMassCost(), costsInitiator, true);
+		writeInputNode("Fuel_volumetric_cost", costs.getFuelVolumetricCost(), costsInitiator, true);
+		writeInputNode("Hour_volumetric_fuel_consumption", costs.getHourVolumetricFuelConsumption(), costsInitiator, true);
+		writeInputNode("Oil_mass_cost", costs.getOilMassCost(), costsInitiator, true);
 		writeInputNode("Spares_cost", costs.getSparesAirframePerCosts(), costsInitiator, true);
 
 		writeInputNode("Airframe_Maintenance_Labor_Cost", costs.getAirframeMaintLaborCost(), costsInitiator, true);
@@ -1597,7 +1597,7 @@ public class JPADDataWriter {
 		writeInputNode("Ground_Handling_cost_per_passengers", costs.getGroundHandlingCostXPax(), costsInitiator, true);
 		writeInputNode("Navigational_charges", costs.getJenkinsonNavigationalCharges(), costsInitiator, true);
 		writeInputNode("Landing_fees_per_ton", costs.getLandingFeesPerTon(), costsInitiator, true);
-		writeInputNode("Man_hour_labor_rate", costs.get_manHourLaborRate(), costsInitiator, true);
+		writeInputNode("Man_hour_labor_rate", costs.getManHourLaborRate(), costsInitiator, true);
 		writeInputNode("Single_cabin_crew_cost_per_hour", costs.getSingleCabinCrewHrCost(), costsInitiator, true);
 		writeInputNode("Single_flight_crew_cost_per_hour", costs.getSingleflightCrewHrCost(), costsInitiator, true);
 		writeInputNode("Utilization", costs.getUtilization(), costsInitiator, true);
@@ -1615,17 +1615,17 @@ public class JPADDataWriter {
 		Element analysis = JPADStaticWriteUtils.addSubElement(doc, _sheet, "Costs_Analysis", analysisNode);
 
 		Element fixedCharges = addElementToSubElement("Fixed_charges", analysis);
-		writeMethodsComparison("Depreciation", costs.get_theFixedCharges().get_calcDepreciation().get_methodsMap(), fixedCharges);
-		writeMethodsComparison("Interests", costs.get_theFixedCharges().get_calcInterest().get_methodsMap(), fixedCharges);
-		writeMethodsComparison("Insurance", costs.get_theFixedCharges().get_calcInsurance().get_methodsMap(), fixedCharges);
-		writeMethodsComparison("Crew", costs.get_theFixedCharges().get_calcCrewCosts().get_methodsMap(), fixedCharges);
+		writeMethodsComparison("Depreciation", costs.getTheFixedCharges().get_calcDepreciation().get_methodsMap(), fixedCharges);
+		writeMethodsComparison("Interests", costs.getTheFixedCharges().get_calcInterest().get_methodsMap(), fixedCharges);
+		writeMethodsComparison("Insurance", costs.getTheFixedCharges().get_calcInsurance().get_methodsMap(), fixedCharges);
+		writeMethodsComparison("Crew", costs.getTheFixedCharges().get_calcCrewCosts().get_methodsMap(), fixedCharges);
 
 		Element tripCharges = addElementToSubElement("Trip_charges", analysis);
-		writeMethodsComparison("Landing_fees", costs.get_theTripCharges().get_calcLandingFees().get_methodsMap(), tripCharges);
-		writeMethodsComparison("Navigational_charges", costs.get_theTripCharges().get_calcNavigationalCharges().get_methodsMap(), tripCharges);
-		writeMethodsComparison("Ground_handling_charges", costs.get_theTripCharges().get_calcGroundHandlingCharges().get_methodsMap(), tripCharges);
-		writeMethodsComparison("Maintenance_costs", costs.get_theTripCharges().get_calcMaintenanceCosts().get_methodsMap(), tripCharges);
-		writeMethodsComparison("Fuel_and_oil_costs", costs.get_theTripCharges().get_calcFuelAndOilCharges().get_methodsMap(), tripCharges);
+		writeMethodsComparison("Landing_fees", costs.getTheTripCharges().get_calcLandingFees().get_methodsMap(), tripCharges);
+		writeMethodsComparison("Navigational_charges", costs.getTheTripCharges().get_calcNavigationalCharges().get_methodsMap(), tripCharges);
+		writeMethodsComparison("Ground_handling_charges", costs.getTheTripCharges().get_calcGroundHandlingCharges().get_methodsMap(), tripCharges);
+		writeMethodsComparison("Maintenance_costs", costs.getTheTripCharges().get_calcMaintenanceCosts().get_methodsMap(), tripCharges);
+		writeMethodsComparison("Fuel_and_oil_costs", costs.getTheTripCharges().get_calcFuelAndOilCharges().get_methodsMap(), tripCharges);
 
 		JPADStaticWriteUtils.writeAllArraysToXls(_sheet, _xlsArraysDescription, _xlsArraysList, _xlsArraysUnit);
 	}

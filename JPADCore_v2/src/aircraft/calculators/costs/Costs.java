@@ -11,7 +11,6 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
-import aircraft.calculators.ACCalculatorManager;
 import aircraft.components.Aircraft;
 import calculators.costs.CostsCalcUtils;
 import calculators.performance.PerformanceCalcUtils;
@@ -20,7 +19,7 @@ import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;
 import writers.JPADStaticWriteUtils;
 
-public class Costs extends ACCalculatorManager implements ICosts {
+public class Costs implements ICosts {
 
 	private String _id;
 	private Aircraft _theAircraft;
@@ -261,7 +260,6 @@ public class Costs extends ACCalculatorManager implements ICosts {
 	//===================================================================================================
 
 	
-	
 	public static Costs importFromXML(String pathToXML){
 	
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
@@ -413,86 +411,7 @@ public class Costs extends ACCalculatorManager implements ICosts {
 	}
 	
 	
-
-//	/**
-//	 * Initialize the variable that are independent from aircraft or statistical assumed. //TODO: Complete Javadoc
-//	 * 
-//	 * @param residualValue
-//	 * @param annualInterestRate
-//	 * @param annualInsurancePremiumRate
-//	 * @param utilization
-//	 * @param sparesAirframePerCosts
-//	 * @param sparesEnginesPerCosts
-//	 * @param singleCabinCrewHrCost
-//	 * @param singleFlightCrewHrCost
-//	 * @param climbDescentTime
-//	 * @param sturtupTaxiTOTime
-//	 * @param holdPriorToLandTime
-//	 * @param landingTaxiToStopTime
-//	 * @param landingFeesPerTon
-//	 * @param jenkinsonNavigationalCharges
-//	 * @param numberOfPax
-//	 * @param groundHandlingCostXPax
-//	 * @param manHourLaborRate
-//	 * @param engineMaintLaborCost
-//	 * @param engineMaintMaterialCost
-//	 * @param airframeMaintLaborCost
-//	 * @param airframeMaintMaterialCost
-//	 * @param fuelVolumetricCost
-//	 * @param oilMassCost
-//	 * @author AC
-//	 */
-//	public void initializeIndependentVars(double residualValue,
-//			double annualInterestRate,
-//			double annualInsurancePremiumRate,
-//			double utilization,
-//			double sparesAirframePerCosts,
-//			double sparesEnginesPerCosts,
-//			double singleCabinCrewHrCost,
-//			double singleFlightCrewHrCost,
-//			Amount<Duration> climbDescentTime,
-//			Amount<Duration> sturtupTaxiTOTime,
-//			Amount<Duration> holdPriorToLandTime,
-//			Amount<Duration> landingTaxiToStopTime,
-//			double landingFeesPerTon,
-//			double jenkinsonNavigationalCharges,
-//			int numberOfPax,
-//			double groundHandlingCostXPax,
-//			double manHourLaborRate,
-//			double engineMaintLaborCost, 
-//			double engineMaintMaterialCost,  
-//			double airframeMaintLaborCost,		  
-//			double airframeMaintMaterialCost,
-//			double fuelVolumetricCost,
-//			double oilMassCost){
-//
-//		_residualValue = residualValue;
-//		_annualInterestRate = annualInterestRate;
-//		_annualInsurancePremiumRate = annualInsurancePremiumRate;
-//		_utilization = utilization;
-//		_sparesAirframePerCosts = sparesAirframePerCosts;
-//		_sparesEnginesPerCosts = sparesEnginesPerCosts;
-//		_singleCabinCrewHrCost = singleCabinCrewHrCost;
-//		_singleFlightCrewHrCost = singleFlightCrewHrCost;
-//		_climbDescentTime = climbDescentTime;
-//		_startupTaxiTOTime = sturtupTaxiTOTime;
-//		_holdPriorToLandTime = holdPriorToLandTime;
-//		_landingTaxiToStopTime = landingTaxiToStopTime;
-//		_landingFeesPerTon = landingFeesPerTon;
-//		_jenkinsonNavigationalCharges = jenkinsonNavigationalCharges;
-//		_numberOfPax = numberOfPax;
-//		_groundHandlingCostXPax = groundHandlingCostXPax;
-//		_manHourLaborRate = manHourLaborRate;
-//		_engineMaintLaborCost = engineMaintLaborCost;
-//		_engineMaintMaterialCost = engineMaintMaterialCost;
-//		_airframeMaintLaborCost = airframeMaintLaborCost;
-//		_airframeMaintMaterialCost = airframeMaintMaterialCost;
-//		_fuelVolumetricCost = fuelVolumetricCost;
-//		_oilMassCost = oilMassCost;
-//	}
-
-
-
+	@Override
 	public void initializeAll(Aircraft aircraft) {
 		
 		initializeAll(
@@ -601,7 +520,7 @@ public class Costs extends ACCalculatorManager implements ICosts {
 				payload,
 				airframeMass);
 
-		initializeMaintAndEngineVariable(get_manHourLaborRate(),
+		initializeMaintAndEngineVariable(getManHourLaborRate(),
 				byPassRatio,
 				getOverallPressureRatio(),
 				numberOfCompressorStage,
@@ -641,11 +560,12 @@ public class Costs extends ACCalculatorManager implements ICosts {
 				getAirframeMaintLaborCost(),		  
 				getAirframeMaintMaterialCost());
 
-		initializeFuelAndOilCunsumptionVariables(get_fuelVolumetricCost(),
-				get_hourVolumetricFuelConsumption(),
-				get_oilMassCost());
+		initializeFuelAndOilCunsumptionVariables(getFuelVolumetricCost(),
+				getHourVolumetricFuelConsumption(),
+				getOilMassCost());
 	}
 
+	@Override
 	public void initializeFinacialCostVariables(double residualValue,
 			double annualInterestRate,
 			double annualInsurancePremiumRate,
@@ -667,7 +587,8 @@ public class Costs extends ACCalculatorManager implements ICosts {
 		_totalInvestments = calcTotalInvestments(); 
 		_airframeCost = _aircraftCost - _singleEngineCost; // TODO: seek for the price of ATR 72, meanwhile these values comes from Jenkinson
 	}
-
+	
+	@Override
 	public void initializeFlightDataVariables(int cabinCrewNumber,
 			int flightCrewNumber,
 			double singleCabinCrewHrCost,
@@ -771,6 +692,7 @@ public class Costs extends ACCalculatorManager implements ICosts {
 	}	
 
 
+	@Override
 	public void initializeTripChargesVariables(double landingFeesPerTon,
 			double jenkinsonNavigationalCharges,
 			int numberOfPax,
@@ -784,6 +706,7 @@ public class Costs extends ACCalculatorManager implements ICosts {
 
 	}
 
+	@Override
 	public void initializeMaintAndEngineVariable(double manHourLaborRate,
 			double byPassRatio,
 			double overallPressureRatio,
@@ -836,7 +759,8 @@ public class Costs extends ACCalculatorManager implements ICosts {
 				Amount.valueOf(powerTO*1000., SI.WATT),
 				cruiseSpecificFuelConsumption);
 	}
-
+	
+	@Override
 	public void initializeAvailableMaintenanceCost(double engineMaintLaborCost, 
 			double engineMaintMaterialCost,  
 			double airframeMaintLaborCost,		  
@@ -850,6 +774,7 @@ public class Costs extends ACCalculatorManager implements ICosts {
 
 	}
 
+	@Override
 	public void initializeFuelAndOilCunsumptionVariables(double fuelVolumetricCost,
 			double hourVolumetricFuelConsumption,
 			double oilMassCost){
@@ -867,6 +792,7 @@ public class Costs extends ACCalculatorManager implements ICosts {
 	 * 
 	 * @param aircraft
 	 */
+	@Override
 	public void calculateAll(Aircraft aircraft) {
 
 		JPADStaticWriteUtils.logToConsole("STARTING COSTS EVALUATION");
@@ -898,6 +824,7 @@ public class Costs extends ACCalculatorManager implements ICosts {
 		calculateAll(_theAircraft);
 	}
 
+	@Override
 	public double calcTotalInvestments(){
 
 		return CostsCalcUtils.calcTotalInvestments(_airframeCost,
@@ -907,7 +834,7 @@ public class Costs extends ACCalculatorManager implements ICosts {
 				_sparesEnginesPerCosts);
 	}
 
-
+	@Override
 	public double calcAircraftCost(){
 
 		return CostsCalcUtils.calcAircraftCost(_airframeCost,
@@ -915,7 +842,7 @@ public class Costs extends ACCalculatorManager implements ICosts {
 				_numberOfEngines);
 	}
 
-
+	@Override
 	public double calcAircraftCostSforza(){
 		return CostsCalcUtils.calcAircraftCostSforza(_OEM);
 	}
@@ -932,7 +859,7 @@ public class Costs extends ACCalculatorManager implements ICosts {
 		return (3750./(blockTime+0.5))*blockTime;
 	}
 
-
+	@Override
 	public Amount<Duration> calcBlockTime(){
 		return PerformanceCalcUtils.calcBlockTime(_cruiseTime,
 				_climbDescentTime,
@@ -941,45 +868,50 @@ public class Costs extends ACCalculatorManager implements ICosts {
 				_landingTaxiToStopTime);
 	}
 
+	@Override
 	public Amount<Duration> calcCruiseTime(){
 		return PerformanceCalcUtils.calcCruiseTime(_range,
 				_climbDescentTime, _cruiseSpeed);
 	}	
 
-	public FixedCharges get_theFixedCharges() {
+	@Override
+	public FixedCharges getTheFixedCharges() {
 		return _theFixedCharges;
 	}
 
-	public TripCharges get_theTripCharges() {
+	@Override
+	public TripCharges getTheTripCharges() {
 		return _theTripCharges;
 	}
 
-	public double get_totalInvestments() {
+	@Override
+	public double getTotalInvestments() {
 		return _totalInvestments;
 	}
 
-	public void set_totalInvestments(double _totalInvestments) {
+	public void setTotalInvestments(double _totalInvestments) {
 		this._totalInvestments = _totalInvestments;
 	}
 
-	public double get_aircraftCost() {
+	@Override
+	public double getAircraftCost() {
 		return _aircraftCost;
 	}
 
-	public void set_aircraftCost(double _aircraftCost) {
+	public void setAircraftCost(double _aircraftCost) {
 		this._aircraftCost = _aircraftCost;
 	}
 
-
-	public void set_theAircraft(Aircraft _theAircraft) {
+	public void setTheAircraft(Aircraft _theAircraft) {
 		this._theAircraft = _theAircraft;
 	}
 
+	@Override
 	public double getUtilization() {
 		return _utilization;
 	}
 
-	public void set_utilization(double utilization) {
+	public void setUtilization(double utilization) {
 		this._utilization = utilization;
 	}
 
@@ -988,7 +920,7 @@ public class Costs extends ACCalculatorManager implements ICosts {
 	}
 
 
-	public void set_annualInterestRate(double _annualInterestRate) {
+	public void setAnnualInterestRate(double _annualInterestRate) {
 		this._annualInterestRate = _annualInterestRate;
 	}
 
@@ -997,24 +929,24 @@ public class Costs extends ACCalculatorManager implements ICosts {
 		return _residualValue;
 	}
 
-
-	public void set_residualValue(double _residualValue) {
+	public void setResidualValue(double _residualValue) {
 		this._residualValue = _residualValue;
 	}
 
-	public double get_airframeCost() {
+	@Override
+	public double getAirframeCost() {
 		return _airframeCost;
 	}
 
-	public void set_airframeCost(double _airframeCost) {
+	public void setAirframeCost(double _airframeCost) {
 		this._airframeCost = _airframeCost;
 	}
 
-	public double get_singleEngineCost() {
+	public double getSingleEngineCost() {
 		return _singleEngineCost;
 	}
 
-	public void set_singleEngineCost(double _singleEngineCost) {
+	public void setSingleEngineCost(double _singleEngineCost) {
 		this._singleEngineCost = _singleEngineCost;
 	}
 
@@ -1022,7 +954,7 @@ public class Costs extends ACCalculatorManager implements ICosts {
 		return _sparesAirframePerCosts;
 	}
 
-	public void set_sparesAirframePerCosts(double _sparesAirframePerCosts) {
+	public void setSparesAirframePerCosts(double _sparesAirframePerCosts) {
 		this._sparesAirframePerCosts = _sparesAirframePerCosts;
 	}
 
@@ -1034,15 +966,15 @@ public class Costs extends ACCalculatorManager implements ICosts {
 		return _annualInsurancePremiumRate;
 	}
 
-	public void set_annualInsurancePremiumRate(double _annualInsurancePremiumRate) {
+	public void setAnnualInsurancePremiumRate(double _annualInsurancePremiumRate) {
 		this._annualInsurancePremiumRate = _annualInsurancePremiumRate;
 	}
 
-	public void set_sparesEnginesPerCosts(double _sparesEnginesPerCosts) {
+	public void setSparesEnginesPerCosts(double _sparesEnginesPerCosts) {
 		this._sparesEnginesPerCosts = _sparesEnginesPerCosts;
 	}
 
-	public void set_numberOfEngines(int _numberOfEngines) {
+	public void setNumberOfEngines(int _numberOfEngines) {
 		this._numberOfEngines = _numberOfEngines;
 	}
 
@@ -1050,7 +982,7 @@ public class Costs extends ACCalculatorManager implements ICosts {
 		return _singleCabinCrewHrCost;
 	}
 
-	public void set_singleCabinCrewHrCost(double _singleCabinCrewHrCost) {
+	public void setSingleCabinCrewHrCost(double _singleCabinCrewHrCost) {
 		this._singleCabinCrewHrCost = _singleCabinCrewHrCost;
 	}
 
@@ -1058,30 +990,30 @@ public class Costs extends ACCalculatorManager implements ICosts {
 		return _singleFlightCrewHrCost;
 	}
 
-	public void set_singleflightCrewHrCost(double _singleflightCrewHrCost) {
+	public void setSingleflightCrewHrCost(double _singleflightCrewHrCost) {
 		this._singleFlightCrewHrCost = _singleflightCrewHrCost;
 	}
 
-	public void set_cabinCrewNumber(int _cabinCrewNumber) {
+	public void setCabinCrewNumber(int _cabinCrewNumber) {
 		this._cabinCrewNumber = _cabinCrewNumber;
 	}
 
-	public void set_flightCrewNumber(int _flightCrewNumber) {
+	public void setFlightCrewNumber(int _flightCrewNumber) {
 		this._flightCrewNumber = _flightCrewNumber;
 	}
 
-	public void set_range(Amount<Length> _range) {
+	public void setRange(Amount<Length> _range) {
 		this._range = _range;
 	}
 
-	public void set_blockTime(Amount<Duration> _blockTime) {
+	public void setBlockTime(Amount<Duration> _blockTime) {
 		this._blockTime = _blockTime;
 	}
 
-	public void set_blockSpeed(Amount<Velocity> _blockSpeed) {
+	public void setBlockSpeed(Amount<Velocity> _blockSpeed) {
 	}
 
-	public void set_flightTime(Amount<Duration> _flightTime) {
+	public void setFlightTime(Amount<Duration> _flightTime) {
 		this._flightTime = _flightTime;
 	}
 
@@ -1089,7 +1021,7 @@ public class Costs extends ACCalculatorManager implements ICosts {
 		return _landingFeesPerTon;
 	}
 
-	public void set_landingFeesPerTon(double _landingFeesPerTon) {
+	public void setLandingFeesPerTon(double _landingFeesPerTon) {
 		this._landingFeesPerTon = _landingFeesPerTon;
 	}
 
@@ -1097,7 +1029,7 @@ public class Costs extends ACCalculatorManager implements ICosts {
 		return _jenkinsonNavigationalCharges;
 	}
 
-	public void set_jenkinsonNavigationalCharges(
+	public void setJenkinsonNavigationalCharges(
 			double _jenkinsonNavigationalCharges) {
 		this._jenkinsonNavigationalCharges = _jenkinsonNavigationalCharges;
 	}
@@ -1106,19 +1038,19 @@ public class Costs extends ACCalculatorManager implements ICosts {
 		return _groundHandlingCostXPax;
 	}
 
-	public void set_groundHandlingCostXPax(double _groundHandlingCostXPax) {
+	public void setGroundHandlingCostXPax(double _groundHandlingCostXPax) {
 		this._groundHandlingCostXPax = _groundHandlingCostXPax;
 	}
 
-	public double get_manHourLaborRate() {
+	public double getManHourLaborRate() {
 		return _manHourLaborRate;
 	}
 
-	public void set_manHourLaborRate(double _manHourLaborRate) {
+	public void setManHourLaborRate(double _manHourLaborRate) {
 		this._manHourLaborRate = _manHourLaborRate;
 	}
 
-	public void set_byPassRatio(double _byPassRatio) {
+	public void setByPassRatio(double _byPassRatio) {
 		this._byPassRatio = _byPassRatio;
 	}
 
@@ -1126,19 +1058,19 @@ public class Costs extends ACCalculatorManager implements ICosts {
 		return _overallPressureRatio;
 	}
 	
-	public void set_overallPressureRatio(double _overallPressureRatio) {
+	public void setOverallPressureRatio(double _overallPressureRatio) {
 		this._overallPressureRatio = _overallPressureRatio;
 	}
 
-	public void set_numberOfCompressorStage(int _numberOfCompressorStage) {
+	public void setNumberOfCompressorStage(int _numberOfCompressorStage) {
 		this._numberOfCompressorStage = _numberOfCompressorStage;
 	}
 
-	public void set_numberOfShaft(int _numberOfShaft) {
+	public void setNumberOfShaft(int _numberOfShaft) {
 		this._numberOfShaft = _numberOfShaft;
 	}
 
-	public void set_seaLevelStaticThrust(Amount<Force> _seaLevelStaticThrust) {
+	public void setSeaLevelStaticThrust(Amount<Force> _seaLevelStaticThrust) {
 		this._seaLevelStaticThrust = _seaLevelStaticThrust;
 	}
 
@@ -1146,7 +1078,7 @@ public class Costs extends ACCalculatorManager implements ICosts {
 		return _engineMaintLaborCost;
 	}
 
-	public void set_engineMaintLaborCost(double _engineMaintLaborCost) {
+	public void setEngineMaintLaborCost(double _engineMaintLaborCost) {
 		this._engineMaintLaborCost = _engineMaintLaborCost;
 	}
 
@@ -1154,7 +1086,7 @@ public class Costs extends ACCalculatorManager implements ICosts {
 		return _engineMaintMaterialCost;
 	}
 
-	public void set_engineMaintMaterialCost(double _engineMaintMaterialCost) {
+	public void setEngineMaintMaterialCost(double _engineMaintMaterialCost) {
 		this._engineMaintMaterialCost = _engineMaintMaterialCost;
 	}
 
@@ -1162,7 +1094,7 @@ public class Costs extends ACCalculatorManager implements ICosts {
 		return _airframeMaintLaborCost;
 	}
 
-	public void set_airframeMaintLaborCost(double _airframeMaintLaborCost) {
+	public void setAirframeMaintLaborCost(double _airframeMaintLaborCost) {
 		this._airframeMaintLaborCost = _airframeMaintLaborCost;
 	}
 
@@ -1170,78 +1102,77 @@ public class Costs extends ACCalculatorManager implements ICosts {
 		return _airframeMaintMaterialCost;
 	}
 
-	public void set_airframeMaintMaterialCost(double _airframeMaintMaterialCost) {
+	public void setAirframeMaintMaterialCost(double _airframeMaintMaterialCost) {
 		this._airframeMaintMaterialCost = _airframeMaintMaterialCost;
 	}
 
-	public void set_cruiseSpeed(Amount<Velocity> _cruiseSpeed) {
+	public void setCruiseSpeed(Amount<Velocity> _cruiseSpeed) {
 		this._cruiseSpeed = _cruiseSpeed;
 	}
 
-	public void set_thrustTO(Amount<Force> _thrustTO) {
+	public void setThrustTO(Amount<Force> _thrustTO) {
 		this._thrustTO = _thrustTO;
 	}
 
-	public void set_powerTO(Amount<Power> _powerTO) {
+	public void setPowerTO(Amount<Power> _powerTO) {
 	}
 
-	public Amount<Volume> get_blockFuelVolume() {
+	public Amount<Volume> getBlockFuelVolume() {
 		return _blockFuelVolume;
 	}
 
-	public void set_blockFuelVolume(Amount<Volume> _blockFuelVolume) {
+	public void setBlockFuelVolume(Amount<Volume> _blockFuelVolume) {
 		this._blockFuelVolume = _blockFuelVolume;
 	}
 
-	public double get_fuelVolumetricCost() {
+	public double getFuelVolumetricCost() {
 		return _fuelVolumetricCost;
 	}
 
-	public void set_fuelVolumetricCost(double _fuelVolumetricCost) {
+	public void setFuelVolumetricCost(double _fuelVolumetricCost) {
 		this._fuelVolumetricCost = _fuelVolumetricCost;
 	}
 
-	public double get_hourVolumetricFuelConsumption() {
+	public double getHourVolumetricFuelConsumption() {
 		return _hourVolumetricFuelConsumption;
 	}
 
-	public void set_hourVolumetricFuelConsumption(
+	public void setHourVolumetricFuelConsumption(
 			double _hourVolumetricFuelConsumption) {
 		this._hourVolumetricFuelConsumption = _hourVolumetricFuelConsumption;
 	}
 
-	public double get_oilMassCost() {
+	public double getOilMassCost() {
 		return _oilMassCost;
 	}
 
-	public void set_oilMassCost(double _oilMassCost) {
+	public void setOilMassCost(double _oilMassCost) {
 		this._oilMassCost = _oilMassCost;
 	}
 
-	public void set_groundManoeuvreTime(Amount<Duration> _groundManoeuvreTime) {
+	public void setGroundManoeuvreTime(Amount<Duration> _groundManoeuvreTime) {
 		this._groundManoeuvreTime = _groundManoeuvreTime;
 	}
 
-	public void set_cruiseTime(Amount<Duration> _cruiseTime) {
+	public void setCruiseTime(Amount<Duration> _cruiseTime) {
 		this._cruiseTime = _cruiseTime;
 	}
 
-	public void set_climbDescentTime(Amount<Duration> _climbDescentTime) {
+	public void setClimbDescentTime(Amount<Duration> _climbDescentTime) {
 		this._climbDescentTime = _climbDescentTime;
 	}
 
-	public void set_sturtupTaxiTOTime(Amount<Duration> _sturtupTaxiTOTime) {
+	public void setSturtupTaxiTOTime(Amount<Duration> _sturtupTaxiTOTime) {
 		this._startupTaxiTOTime = _sturtupTaxiTOTime;
 	}
 
-	public void set_holdPriorToLandTime(Amount<Duration> _holdPriorToLandTime) {
+	public void setHoldPriorToLandTime(Amount<Duration> _holdPriorToLandTime) {
 		this._holdPriorToLandTime = _holdPriorToLandTime;
 	}
 
-	public void set_landingTaxiToStopTime(Amount<Duration> _landingTaxiToStopTime) {
+	public void setLandingTaxiToStopTime(Amount<Duration> _landingTaxiToStopTime) {
 		this._landingTaxiToStopTime = _landingTaxiToStopTime;
 	}
-
 	public static String getId() {
 		return "25";
 	}
@@ -1250,7 +1181,7 @@ public class Costs extends ACCalculatorManager implements ICosts {
 		return _startupTaxiTOTime;
 	}
 
-	public void set_startupTaxiTOTime(Amount<Duration> _startupTaxiTOTime) {
+	public void setStartupTaxiTOTime(Amount<Duration> _startupTaxiTOTime) {
 		this._startupTaxiTOTime = _startupTaxiTOTime;
 	}
 

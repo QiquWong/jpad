@@ -51,8 +51,8 @@ public class FixedCharges {
 	}
 
 	public void initialize(Aircraft aircraft, Costs costs) {
-		initialize(costs.getUtilization(), costs.get_totalInvestments(), costs.get_aircraftCost(),
-				costs.get_singleEngineCost(),
+		initialize(costs.getUtilization(), costs.getTotalInvestments(), costs.getAircraftCost(),
+				costs.getSingleEngineCost(),
 				aircraft.getLifeSpan(), costs.getResidualValue(), costs.getAnnualInterestRate(),
 				costs.getAnnualInsurancePremiumRate(), aircraft.getCabinConfiguration().getCabinCrewNumber().intValue(),
 				aircraft.getCabinConfiguration().getFlightCrewNumber().intValue(), aircraft.getPowerPlant().get_engineNumber(), 
