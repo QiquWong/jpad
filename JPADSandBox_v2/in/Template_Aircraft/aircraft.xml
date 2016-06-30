@@ -3,7 +3,7 @@
     <aircraft id="JPAD Test Aircraft DAF - 2016" type="JET">
 		<global_data>
 			<cabin_configuration file="cabin_configuration.xml"></cabin_configuration>
-			<costs_data file="TODO!!!"></costs_data>
+			<costs file="costs.xml"></costs>
 		</global_data>
         <lifting_surfaces>
             <wing file="wing_2_panels.xml">

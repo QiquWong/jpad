@@ -64,6 +64,10 @@ class MyArgumentsAircraft {
 			usage = "cabin configurations directory path")
 	private File _cabinConfigurationsDirectory;
 	
+	@Option(name = "-dc", aliases = { "--dir-costs" }, required = true,
+			usage = "costs directory path")
+	private File _costsDirectory;
+	
 	// receives other command line parameters than options
 	@Argument
 	public List<String> arguments = new ArrayList<String>();
@@ -94,6 +98,10 @@ class MyArgumentsAircraft {
 	
 	public File getCabinConfigurationDirectory() {
 		return _cabinConfigurationsDirectory;
+	}
+	
+	public File getCostsDirectory() {
+		return _costsDirectory;
 	}
 }
 	
@@ -420,6 +428,9 @@ public class AircraftTestTopView extends Application {
 			String dirCabinConfiguration = va.getCabinConfigurationDirectory().getCanonicalPath();
 			System.out.println("CABIN CONFIGURATIONS ===> " + dirCabinConfiguration);
 			
+			String dirCosts = va.getCostsDirectory().getCanonicalPath();
+			System.out.println("Costs ===> " + dirCosts);
+			
 			System.out.println("--------------");
 
 			//------------------------------------------------------------------------------------
@@ -449,6 +460,7 @@ public class AircraftTestTopView extends Application {
 					dirSystems,
 					dirCabinConfiguration,
 					dirAirfoil,
+					dirCosts,
 					aeroDatabaseReader,
 					highLiftDatabaseReader);
 			

@@ -65,6 +65,7 @@ public interface IAircraft {
 	public void deleteFuelTank();
 	public void deleteLandingGears();
 	public void deleteSystems();
+	public void deleteCosts();
 	
 	public ACAerodynamicsManager getTheAerodynamics();
 	public void setTheAerodynamics(ACAerodynamicsManager theAerodynamics);

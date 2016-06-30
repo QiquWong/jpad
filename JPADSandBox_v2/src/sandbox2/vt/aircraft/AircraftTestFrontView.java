@@ -381,6 +381,9 @@ public class AircraftTestFrontView extends Application {
 			String dirCabinConfiguration = va.getCabinConfigurationDirectory().getCanonicalPath();
 			System.out.println("CABIN CONFIGURATIONS ===> " + dirCabinConfiguration);
 			
+			String dirCosts = va.getCostsDirectory().getCanonicalPath();
+			System.out.println("Costs ===> " + dirCosts);
+			
 			System.out.println("--------------");
 
 			//------------------------------------------------------------------------------------
@@ -405,6 +408,7 @@ public class AircraftTestFrontView extends Application {
 					dirSystems,
 					dirCabinConfiguration,
 					dirAirfoil,
+					dirCosts,
 					aeroDatabaseReader,
 					highLiftDatabaseReader);
 			

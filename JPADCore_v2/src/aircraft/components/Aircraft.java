@@ -500,6 +500,11 @@ public class Aircraft implements IAircraft {
 			return this;
 		}
 		
+		public AircraftBuilder costs(Costs theCosts){
+			this.__theCosts = theCosts;
+			return this;
+		}
+		
 		public AircraftBuilder wing(LiftingSurface wing) {
 			this.__theWing = wing;
 			return this;
@@ -717,7 +722,7 @@ public class Aircraft implements IAircraft {
 	// End of builder pattern
 	//===================================================================================================
 
-	private Aircraft(AircraftBuilder builder) {
+	public Aircraft(AircraftBuilder builder) {
 		
 		this._id = builder.__id;
 		this._typeVehicle = builder.__typeVehicle;
@@ -1024,6 +1029,7 @@ public class Aircraft implements IAircraft {
 									      String systemsDir,
 									      String cabinConfigurationDir,
 									      String airfoilsDir,
+									      String costsDir,
 									      AerodynamicDatabaseReader aeroDatabaseReader,
 									      HighLiftDatabaseReader highLiftDatabaseReader) {
 
@@ -1105,8 +1111,17 @@ public class Aircraft implements IAircraft {
 		
 		//---------------------------------------------------------------------------------
 		// COSTS DATA 
-		// TODO!!
+		String costsFileName =
+				MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//global_data/costs/@file");
 		
+		Costs theCosts = null;
+		if(costsFileName != null) {
+			String costsPath = costsDir + File.separator + costsFileName;
+			theCosts = Costs.importFromXML(costsPath);
+		}
 		//---------------------------------------------------------------------------------
 		// WING
 		String wingFileName =
@@ -1294,6 +1309,7 @@ public class Aircraft implements IAircraft {
 				.xApexFuselage(xApexFuselage)
 				.yApexFuselage(yApexFuselage)
 				.zApexFuselage(zApexFuselage)
+				.costs(theCosts)
 				.cabinConfiguration(theCabinConfiguration)
 				.wing(theWing)
 				.xApexWing(xApexWing)
@@ -1461,6 +1477,12 @@ public class Aircraft implements IAircraft {
 	{
 		_theSystems = null;
 		updateType();
+	}
+	
+	@Override
+	public void deleteCosts()
+	{
+		_theCosts = null;
 	}
 	
 	@Override
