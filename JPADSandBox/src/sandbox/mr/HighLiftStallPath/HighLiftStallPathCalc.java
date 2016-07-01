@@ -1258,7 +1258,7 @@ public class HighLiftStallPathCalc {
 				double [] clOutput = theNasaBlackwellCalculator.get_clTotalDistribution().toArray();
 				
 				System.out.println( " cl array at alpha 3 " + Arrays.toString(clOutput));
-				
+				System.out.println(" CL " + theNasaBlackwellCalculator.get_cLCurrent());
 				theNasaBlackwellCalculator.calculate(alphaFirst);
 				double [] clDistribution = theNasaBlackwellCalculator.get_clTotalDistribution().toArray();
 				double cLFirst = theNasaBlackwellCalculator.get_cLEvaluated();//MyMathUtils.integrate1DTrapezoidLinear(yStationActual, clDistribution, 0, 1);
@@ -1271,7 +1271,7 @@ public class HighLiftStallPathCalc {
 				double cLAlpha = (cLSecond - cLFirst)/(alphaSecond.getEstimatedValue()-alphaFirst.getEstimatedValue()); // 1/rad
 				input.setClAlpha(Math.toRadians(cLAlpha));
 
-				System.out.println(" \n ");
+//				System.out.println(" \n ");
 				//		System.out.println(" cL ALPHA " + cLAlpha);
 
 
@@ -1365,7 +1365,22 @@ public class HighLiftStallPathCalc {
 
 
 
-
+				double alphaDeg = 17;
+				theNasaBlackwellCalculator.calculate(Amount.valueOf(Math.toRadians(alphaDeg), SI.RADIAN));
+				System.err.println( "\n alpha" + alphaDeg);
+				double [] clArray = theNasaBlackwellCalculator.get_clTotalDistribution().toArray();
+				System.out.println(" stations ");
+				for (int i=0; i<clArray.length; i++){
+				System.out.println( theNasaBlackwellCalculator.getyStationsNB().get(i));
+				}
+				System.out.println("\n");
+				System.out.println(" cl array ");
+				
+				for(int i=0;i<clArray.length; i++){
+				System.out.println(clArray[i]);
+				}
+				
+				System.out.println(" CL " + theNasaBlackwellCalculator.get_cLCurrent()) ;
 		// alpha0L
 
 		// cL alpha new

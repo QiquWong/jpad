@@ -80,6 +80,13 @@ public class NasaBlackwell {
 
 	Amount<Angle> alphaInitial;
 
+	List<Double> fwUno = new ArrayList<Double>();
+	List<Double> fwDue = new ArrayList<Double>();
+	List<Double> fwTre = new ArrayList<Double>();
+	List<Double> fwQuattro = new ArrayList<Double>(); 
+	List<Double> fwCinque= new ArrayList<Double>(); 
+	List<Double>fwSei= new ArrayList<Double>();
+	List<Double>fwSette =new ArrayList<Double>();
 
 
 
@@ -148,8 +155,48 @@ public class NasaBlackwell {
 	 */
 	private double fw(double xs, double y, double z, double s, double phi) {
 		
-		double fwUno = (-xs*cos(phi)/
+		double fwUno = (xs*cos(phi)/
 				(pow(xs,2) + pow(z*cos(phi) - y*sin(phi),2)));
+		
+		double due = 	((y + s*cos(phi))*cos(phi) + (z + s*sin(phi))*sin(phi))/
+				sqrt( pow(xs,2) + pow(y + s*cos(phi),2) + pow(z + s*sin(phi),2) );
+		
+		double tre = ((y - s*cos(phi))*cos(phi) + (z - s*sin(phi))*sin(phi))/
+				sqrt( pow(xs,2) + pow(y - s*cos(phi),2) + pow(z - s*sin(phi),2) )
+				
+				;
+				
+		double quattro = 	((y - s*cos(phi))/( pow(y - s*cos(phi),2) + pow(z - s*sin(phi),2)) );
+		
+		double cinque = ( xs/pow(
+				pow(xs,2) + pow(y - s*cos(phi),2) + pow(z - s*sin(phi),2)
+				, 0.5) );
+		
+		double sei = ((y + s*cos(phi))/( pow(y + s*cos(phi),2) + pow(z + s*sin(phi),2)) );
+		
+		double sette = (xs/pow(
+				pow(xs,2) + pow(y + s*cos(phi),2) + pow(z + s*sin(phi),2)
+				, 0.5));
+		
+		if ( phi <0)
+		{ this.fwUno.add(fwUno);
+		this.fwDue.add(due);
+		this.fwTre.add(tre);
+		this.fwQuattro.add(quattro);
+		this.fwCinque.add(cinque);
+		this.fwSei.add(sei);
+		this.fwSette.add(sette);
+		
+		}
+		
+		
+//			System.out.println("\nuno " + uno);
+//			System.out.println("due " + due );
+//			System.out.println("tre " + tre);
+//			System.out.println("quattro " + quattro);
+//			System.out.println("cinque " + cinque);
+//			System.out.println("sei " + sei );
+//			System.out.println("sette " + sette);
 		
 //		System.out.println(" FW UNO " + fwUno);
 
@@ -562,13 +609,42 @@ private double fu(double xs, double y, double z, double s, double phi) {
 						fwSigned_ni_n(_listControlPoints.get(i), _listVortexPoints.get(j), 
 								vortexSemiSpan, 
 								dihedral[j])
-						+ fvSigned_ni_n(_listControlPoints.get(i), _listVortexPoints.get(j), 
+						- fvSigned_ni_n(_listControlPoints.get(i), _listVortexPoints.get(j), 
 								vortexSemiSpan, 
 								dihedral[j])*tan(dihedral[i]);
 			}
 		}
 
 		_influenceMatrix = new Array2DRowRealMatrix(influenceMatrix);
+		
+//		System.out.println("\n\n CONTROL POINT X");
+//		for (int i=0; i<_listControlPoints.size(); i++){
+//			System.out.println(_listControlPoints.get(i).getX());
+//		}
+//		System.out.println("\n\n CONTROL POINT Y");
+//		for (int i=0; i<_listControlPoints.size(); i++){
+//			System.out.println(_listControlPoints.get(i).getY());
+//		}
+//		System.out.println("\n\n CONTROL POINT z");
+//		for (int i=0; i<_listControlPoints.size(); i++){
+//			System.out.println(_listControlPoints.get(i).getZ());
+//		}
+//		
+//		
+//		System.out.println("\n\n VORTEX POINT X");
+//		for (int i=0; i<_listControlPoints.size(); i++){
+//			System.out.println(_listVortexPoints.get(i).getX());
+//		}
+//		System.out.println("\n\n VORTEX POINT Y");
+//		for (int i=0; i<_listControlPoints.size(); i++){
+//			System.out.println(_listVortexPoints.get(i).getY());
+//		}
+//		System.out.println("\n\n VORTEX POINT z");
+//		for (int i=0; i<_listControlPoints.size(); i++){
+//			System.out.println(_listVortexPoints.get(i).getZ());
+//		}
+		
+		System.out.println();
 	}
 	
 	private void buildInfluenceMatrixFu() {
@@ -580,13 +656,13 @@ private double fu(double xs, double y, double z, double s, double phi) {
 		
 		// i = row counter; in a row the control point is fixed
 		for(int i=0; i < nPointsSemispanWise; i++) {
-			System.out.println("-------------------------------------------");
-			System.out.println("\n control point num " + i);
+//			System.out.println("-------------------------------------------");
+//			System.out.println("\n control point num " + i);
 
 			// j = column counter; in a column the vortex point is fixed 
 			for(int j=0; j < nPointsSemispanWise; j++) {
-				System.out.println("\n vortex point num " + j );
-				System.out.println("-------------------------------------------");
+//				System.out.println("\n vortex point num " + j );
+//				System.out.println("-------------------------------------------");
 				if (_listControlPoints == null){
 					_listControlPoints = controlPoints;
 				};
@@ -614,6 +690,10 @@ private double fu(double xs, double y, double z, double s, double phi) {
 				_linearSystemSolver.solve(_alphaDistribution.getRealVector()));
 		_gammaSignedDistribution.add(0.0);
 		_gammaSignedDistribution.toArray();
+//		System.out.println("GAMMA SIGNED ");
+		for (int i=0; i<_gammaDistribution.size(); i++){
+//			System.out.println(_gammaSignedDistribution.get(i));
+		}
 
 		// Scale for actual airfoil mean Clalpha
 		//				_gammaSignedCurrent = MyArray.createArray(
@@ -704,6 +784,10 @@ private double fu(double xs, double y, double z, double s, double phi) {
 		_ccLDistribution = _ccLDistribution.interpolate(yy.toArray(), yStations).clone();
 		_clAdditionalDistribution = _clAdditionalDistribution.interpolate(yy.toArray(), yStations).clone();
 
+//		System.out.println(" ccl distr ");
+//		for (int i=0; i<_ccLDistribution.size();i++){
+//			System.out.println(_ccLDistribution.get(i));
+//		}
 		_clTotalDistribution = _clAdditionalDistribution.clone();
 
 		//TODO uncomment
@@ -731,8 +815,17 @@ private double fu(double xs, double y, double z, double s, double phi) {
 //		}
 		
 		
-		System.out.println( "alpha distribution " + _alphaDistribution.toString());
+//		System.out.println( "alpha distribution " + _alphaDistribution.toString());
 
+		
+		List<Double> fwUno = new ArrayList<Double>();
+		List<Double> fwDue = new ArrayList<Double>();
+		List<Double> fwTre = new ArrayList<Double>();
+		List<Double> fwQuattro = new ArrayList<Double>(); 
+		List<Double> fwCinque= new ArrayList<Double>(); 
+		List<Double>fwSei= new ArrayList<Double>();
+		List<Double>fwSette =new ArrayList<Double>();
+		
 		prepareSystemSolution();
 		calculateCLOverall();
 		calculateLoadingDistribution();
@@ -846,6 +939,60 @@ private double fu(double xs, double y, double z, double s, double phi) {
 
 	public void setInfluenceMatrix(double[][] influenceMatrix) {
 		this.influenceMatrix = influenceMatrix;
+	}
+
+
+
+	public MyArray getyStationsNB() {
+		return yStationsNB;
+	}
+
+
+
+	public void setyStationsNB(MyArray yStationsNB) {
+		this.yStationsNB = yStationsNB;
+	}
+
+
+
+	public List<Double> getFwUno() {
+		return fwUno;
+	}
+
+
+
+	public List<Double> getFwDue() {
+		return fwDue;
+	}
+
+
+
+	public List<Double> getFwTre() {
+		return fwTre;
+	}
+
+
+
+	public List<Double> getFwQuattro() {
+		return fwQuattro;
+	}
+
+
+
+	public List<Double> getFwCinque() {
+		return fwCinque;
+	}
+
+
+
+	public List<Double> getFwSei() {
+		return fwSei;
+	}
+
+
+
+	public List<Double> getFwSette() {
+		return fwSette;
 	}
 
 } // end of NasaBlackwell
