@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Mass;
+import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
@@ -15,6 +16,7 @@ import aircraft.components.Aircraft;
 import aircraft.components.powerPlant.Engine;
 import aircraft.components.powerPlant.PowerPlant;
 import configuration.enumerations.AircraftEnum;
+import configuration.enumerations.EngineTypeEnum;
 import standaloneutils.customdata.CenterOfGravity;
 
 /** 
@@ -42,6 +44,92 @@ public class Nacelles {
 	private List<Amount<Mass>> _massList = new ArrayList<Amount<Mass>>();
 	private Map<NacelleCreator, Engine> _nacelleEngineMap = new HashMap<NacelleCreator, Engine>();
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//																												//
+//						THIS METHOD MAKE THE NACELLE SIZING USING STATISTICAL 									//
+//  					EQUATIONS. ASSUME THAT THE EACH ENGINE DIMENSION FITS   								//
+//  					THE NACELLE.																			//
+//																												//
+//																												//
+//	/***************************************************************************								//
+//	 * This method estimates the engine dimensions in inches as function of 									//
+//	 * the engine type. If is a jet engine it uses the static thrust in lbs; 									//
+//	 * otherwise it uses the shaft-horsepower (hp).
+//	 * 
+//	 * @see: Behind ADAS - Nacelle Sizing
+//	 */
+//	public void estimateDimensions () {
+//				
+//		if((this.en_engineType == EngineTypeEnum.TURBOFAN) || (this._engineType == EngineTypeEnum.TURBOJET)) {
+//			_length = Amount.valueOf(
+//					40 + (0.59 * Math.sqrt(this._t0.doubleValue(NonSI.POUND_FORCE))),
+//					NonSI.INCH)
+//					.to(SI.METER);
+//			_diameter = Amount.valueOf(
+//					5 + (0.39 * Math.sqrt(this._t0.doubleValue(NonSI.POUND_FORCE))),
+//					NonSI.INCH)
+//					.to(SI.METER); 
+//		}
+//		
+//		else if(this._engineType == EngineTypeEnum.PISTON) {
+//			_length = Amount.valueOf(
+//					4*(10^-10)*Math.pow(_p0.doubleValue(NonSI.HORSEPOWER),4)
+//					- 6*(10^-7)*Math.pow(_p0.doubleValue(NonSI.HORSEPOWER),3)
+//					+ 8*(10^-5)*Math.pow(_p0.doubleValue(NonSI.HORSEPOWER),2)
+//					- 0.2193*_p0.doubleValue(NonSI.HORSEPOWER)
+//					+ 54.097,
+//					NonSI.INCH)
+//					.to(SI.METER);
+//			
+//			if(this._p0.doubleValue(NonSI.HORSEPOWER) <= 410)
+//				_width = Amount.valueOf(
+//						- 3*(10^-7)*Math.pow(_p0.doubleValue(NonSI.HORSEPOWER),3)
+//						- 0.0003*Math.pow(_p0.doubleValue(NonSI.HORSEPOWER),2)
+//						+ 0.2196*_p0.doubleValue(NonSI.HORSEPOWER)
+//						+ 7.3966,
+//						NonSI.INCH)
+//						.to(SI.METER); 
+//			else 
+//				_width = Amount.valueOf(
+//						- 4.6563*Math.log(this._p0.doubleValue(NonSI.HORSEPOWER))
+//						+ 57.943,
+//						NonSI.INCH)
+//						.to(SI.METER);
+//			
+//			_height = Amount.valueOf(
+//					12.595*Math.log(this._p0.doubleValue(NonSI.HORSEPOWER))
+//					- 43.932,
+//					NonSI.INCH)
+//					.to(SI.METER);
+//			}
+//		
+//		else if(this._engineType == EngineTypeEnum.TURBOPROP) {
+//			_length = Amount.valueOf(
+//					- 1.28*(10^-5)*Math.pow(_p0.doubleValue(NonSI.HORSEPOWER),2)
+//					+ 9.273*(10^-2)*_p0.doubleValue(NonSI.HORSEPOWER)
+//					- 8.3456,
+//					NonSI.INCH)
+//					.to(SI.METER);
+//			
+//			_width = Amount.valueOf(
+//					- 0.95*(10^-6)*Math.pow(_p0.doubleValue(NonSI.HORSEPOWER),2)
+//					+ 0.0073*_p0.doubleValue(NonSI.HORSEPOWER)
+//					+ 25.3,
+//					NonSI.INCH)
+//					.to(SI.METER);
+//			
+//			_height = Amount.valueOf(
+//					0.67*(10^-11)*Math.pow(_p0.doubleValue(NonSI.HORSEPOWER),3)
+//					- 3.35*(10^-6)*Math.pow(_p0.doubleValue(NonSI.HORSEPOWER),2)
+//					+ 0.029*_p0.doubleValue(NonSI.HORSEPOWER)
+//					- 5.58425,
+//					NonSI.INCH)
+//					.to(SI.METER); 
+//		}
+//	}
+//
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	public Nacelles(Aircraft aircraft) {
 		_theAircraft = aircraft;
 		_nacellesNumber = 2;

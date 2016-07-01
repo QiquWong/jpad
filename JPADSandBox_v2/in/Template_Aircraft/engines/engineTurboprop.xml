@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+	<engine id="JPAD Test Engine DAF - 2016" type="TURBOPROP">
+		<dimensions>
+			<length unit="m">2.5</length>
+			<width unit="m">0.5</width>
+			<height unit="m">1.5</height>
+			<propeller_diameter unit="m">3.5</propeller_diameter>
+		</dimensions>
+		<specifications>
+			<number_of_propeller_blades>4</number_of_propeller_blades>
+			<static_power unit="hp">2500</static_power>
+			<dry_mass unit="kg">1200</dry_mass>
+		</specifications>
+	</engine>
+</jpad_config>

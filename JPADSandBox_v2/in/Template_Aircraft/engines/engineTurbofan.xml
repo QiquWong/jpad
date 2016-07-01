@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+	<engine id="JPAD Test Engine DAF - 2016" type="TURBOFAN">
+		<dimensions>
+			<length unit="m">2.8</length>
+			<diameter unit="m">1.5</diameter>
+		</dimensions>
+		<specifications>
+			<static_thrust unit="lbf">7000</static_thrust>
+			<by_pass_ratio>6.5</by_pass_ratio>
+			<dry_mass unit="kg">1200</dry_mass>
+		</specifications>
+	</engine>
+</jpad_config>

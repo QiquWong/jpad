@@ -18,7 +18,7 @@ import configuration.enumerations.MethodEnum;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import writers.JPADStaticWriteUtils;
 
-public class EngineWeightsManager extends WeightsManager{
+public class PowerPlantWeightsManager extends WeightsManager{
 
 	private Aircraft _theAircraft;
 	private Engine _theEngine;
@@ -29,7 +29,9 @@ public class EngineWeightsManager extends WeightsManager{
 	_dryMassPublicDomain;
 	private Amount<Force> _t0;
 
-	public EngineWeightsManager(Aircraft aircraft, Engine engine) {
+	// TODO : THIS HAS TO CALCULATE THE TOTAL POWER PLANT MASS CONSIDERING THE NUMBER OF ENGINES
+	
+	public PowerPlantWeightsManager(Aircraft aircraft, Engine engine) {
 		_theAircraft = aircraft;
 		_theEngine = engine;
 		

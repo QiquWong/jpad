@@ -36,12 +36,17 @@ import standaloneutils.customdata.CenterOfGravity;
 //TODO: this class should not extend MyComponent
 public class PowerPlant {
 
-	public static final String _id = "8";
-	private String _name;
-	private Amount<Length> _X0, _Y0, _Z0,
-	_length;
-
-
+	//---------------------------------------------------------------------------
+	// ALREADY DONE :
+	public  String _id ;
+	private EngineMountingPositionEnum _mountingPoint;
+	private Amount<Length> _xApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
+	private Amount<Length> _yApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
+	private Amount<Length> _zApexConstructionAxes = Amount.valueOf(0.0, SI.METER);
+	private Amount<Angle> _muT;
+	//---------------------------------------------------------------------------
+	
+	private Amount<Length> _length;
 	private List<CenterOfGravity> _cgList = new ArrayList<CenterOfGravity>();
 	public static final List<Engine> engineList = new ArrayList<Engine>();
 	private EngineTypeEnum _engineType;
@@ -71,7 +76,6 @@ public class PowerPlant {
 	private EngineMountingPositionEnum _position;
 	private Double[] _percentDifferenceXCG;
 	private Amount<Length> _xCG;
-	private Amount<Angle> _muT;
 
 	/** Check if engines are all the same */
 	private Boolean _engineEqual = false;
@@ -333,26 +337,50 @@ public class PowerPlant {
 		return _percentTotalDifference;
 	}
 
+	//---------------------------------------------------------------------------------
+	// ALREADY DONE : 
+	public Amount<Length> getXApexConstructionAxes() {
+		return _xApexConstructionAxes;
+	}
 
-	@Override
-	public Amount<Length> get_X0() { return _X0; }
+	public void setXApexConstructionAxes(Amount<Length> _X0) {
+		this._xApexConstructionAxes = _X0;
+	}
 
-	@Override
-	public void set_X0(Amount<Length> x) { _X0 = x; };
+	public Amount<Length> getYApexConstructionAxes() {
+		return _yApexConstructionAxes;
+	}
 
-	@Override
-	public Amount<Length> get_Y0() { return _Y0; }
+	public void setYApexConstructionAxes(Amount<Length> _Y0) {
+		this._yApexConstructionAxes = _Y0;
+	}
 
-	@Override
-	public void set_Y0(Amount<Length> y) { _Y0 = y; };
+	public Amount<Length> getZApexConstructionAxes() {
+		return _zApexConstructionAxes;
+	}
 
-	@Override
-	public Amount<Length> get_Z0() { return _Z0; }
+	public void setZApexConstructionAxes(Amount<Length> _Z0) {
+		this._zApexConstructionAxes = _Z0;
+	}
 
-	@Override
-	public void set_Z0(Amount<Length> z) { _Z0 = z; }
+	public EngineMountingPositionEnum getMountingPoint() {
+		return _mountingPoint;
+	}
 
+	public void setMountingPoint(EngineMountingPositionEnum _mountingPoint) {
+		this._mountingPoint = _mountingPoint;
+	}
 
+	public Amount<Angle> getMuT() {
+		return _muT;
+	}
+
+	public void setMuT(Amount<Angle> _muT) {
+		this._muT = _muT;
+	}
+	
+	//---------------------------------------------------------------------------------
+	
 	public Amount<Mass> get_massDryEngineActualTotal() {
 		return _massDryEngineActualTotal;
 	}
@@ -430,16 +458,6 @@ public class PowerPlant {
 
 	public Double[] get_percentDifferenceXCG() {
 		return _percentDifferenceXCG;
-	}
-
-
-	public Amount<Angle> get_muT() {
-		return _muT;
-	}
-
-
-	public void set_muT(Amount<Angle> _muT) {
-		this._muT = _muT;
 	}
 
 	public static String getId() {
