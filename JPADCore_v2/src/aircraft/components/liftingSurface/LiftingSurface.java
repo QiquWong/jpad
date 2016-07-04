@@ -26,7 +26,6 @@ import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcHighLiftDevices;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
-import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator;
 import calculators.geometry.LSGeometryCalc;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.AnalysisTypeEnum;
@@ -49,10 +48,10 @@ public class LiftingSurface implements ILiftingSurface {
 	private String _id = null;
 	private ComponentEnum _type;
 
-	LSAerodynamicsManager theAerodynamics;
+	LSAerodynamicsManager _theAerodynamics;
 	CalcHighLiftDevices _highLiftCalculator;
 	
-	private PositionRelativeToAttachmentEnum _positionRelativeToAttachment;
+	private Double _positionRelativeToAttachment;
 	private Amount<Length> _xApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
 	private Amount<Length> _yApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
 	private Amount<Length> _zApexConstructionAxes = Amount.valueOf(0.0, SI.METER);
@@ -63,6 +62,7 @@ public class LiftingSurface implements ILiftingSurface {
 	private AerodynamicDatabaseReader _aeroDatabaseReader;
 	private HighLiftDatabaseReader _highLiftDatabaseReader;
 	
+	private Double _massCorrectionFactor = 1.0;
 	private Amount<Mass> _mass, _massReference, _massEstimated;
 	private CenterOfGravity _cg;
 	private Amount<Length> _xCG, _yCG, _zCG;
@@ -196,7 +196,18 @@ public class LiftingSurface implements ILiftingSurface {
 				LiftingSurface.calculateMeanAirfoil(aircraft.getWing()),
 				aircraft.getWing().getAerodynamicDatabaseReader()
 				);
-		double _thicknessMean = meanAirfoil.getAirfoilCreator().getThicknessToChordRatio();
+		double thicknessMean = meanAirfoil.getAirfoilCreator().getThicknessToChordRatio();
+		
+		Amount<Angle> sweepStructuralAxis = Amount.valueOf(
+				Math.atan(
+						Math.tan(this.getSweepLEEquivalent(false).doubleValue(SI.RADIAN))
+						- (4./this.getAspectRatio())*
+						(this._liftingSurfaceCreator.getMainSparNonDimensionalPosition()
+								*(1 - this.getTaperRatioEquivalent(false))
+								/(1 + this.getTaperRatioEquivalent(false)))
+						),
+			1e-9, // precision
+			SI.RADIAN);
 		
 		switch(_type) {
 		case WING : {
@@ -237,7 +248,7 @@ public class LiftingSurface implements ILiftingSurface {
 								Math.sqrt(aircraft.getTheWeights().get_MTOM().to(NonSI.POUND).getEstimatedValue()*
 										aircraft.getTheWeights().get_MZFM().to(NonSI.POUND).getEstimatedValue())*
 								(1 + 2*this._liftingSurfaceCreator.getTaperRatioEquivalentWing()))/
-						(_thicknessMean*Math.pow(Math.cos(this._liftingSurfaceCreator.getSweepQuarterChordEquivalentWing().to(SI.RADIAN).getEstimatedValue()),2)*
+						(thicknessMean*Math.pow(Math.cos(this._liftingSurfaceCreator.getSweepQuarterChordEquivalentWing().to(SI.RADIAN).getEstimatedValue()),2)*
 								surface*(1 + this.getLiftingSurfaceCreator().getTaperRatioEquivalentWing()))),
 						NonSI.POUND).to(SI.KILOGRAM);
 				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
@@ -255,8 +266,8 @@ public class LiftingSurface implements ILiftingSurface {
 
 					double R, kComp;
 
-					if (compositeCorretionFactor != null) {
-						kComp = _compositeCorretionFactor;
+					if (getLiftingSurfaceCreator().getCompositeCorrectioFactor() != null) {
+						kComp = getLiftingSurfaceCreator().getCompositeCorrectioFactor();
 					} else {
 						kComp = 0.;					
 					}
@@ -284,7 +295,7 @@ public class LiftingSurface implements ILiftingSurface {
 										pow(1 + this.getLiftingSurfaceCreator().getTaperRatioEquivalentWing(),0.4)*
 										pow(1 - R/aircraft.getTheWeights().get_MTOM().getEstimatedValue(),0.4))/
 								(cos(this.getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().to(SI.RADIAN).getEstimatedValue())*
-										pow(_thicknessMean,0.4)), 
+										pow(thicknessMean,0.4)), 
 								SI.KILOGRAM);
 					}
 					_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
@@ -308,7 +319,7 @@ public class LiftingSurface implements ILiftingSurface {
 						pow(this.getLiftingSurfaceCreator().getPanels().get(0).getAirfoilRoot().getThicknessToChordRatio(), -0.4)*
 						pow(1+this.getLiftingSurfaceCreator().getTaperRatioEquivalentWing(), 0.1)*
 						pow(cos(this.getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().to(SI.RADIAN).getEstimatedValue()), -1)*
-						pow(_surfaceCS.to(MyUnits.FOOT2).getEstimatedValue(), 0.1), NonSI.POUND).
+						pow(this._liftingSurfaceCreator.getControlSurfaceArea().to(MyUnits.FOOT2).getEstimatedValue(), 0.1), NonSI.POUND).
 						to(SI.KILOGRAM);
 				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 			} break;
@@ -365,7 +376,7 @@ public class LiftingSurface implements ILiftingSurface {
 								0.36*Math.pow(1 + this.getLiftingSurfaceCreator().getTaperRatioEquivalentWing(), 0.5)*
 								(this.getSpan().getEstimatedValue()/100)*
 								(this.getAspectRatio()/
-										(_thicknessMean
+										(thicknessMean
 												*Math.pow(
 														Math.cos(this.getSweepHalfChordEquivalent(false).to(SI.RADIAN).getEstimatedValue())
 														, 2))) +
@@ -431,7 +442,7 @@ public class LiftingSurface implements ILiftingSurface {
 						pow(this.getAspectRatio(), 0.166) * 
 						pow(1 + aircraft.getFuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().to(NonSI.FOOT).getEstimatedValue()/
 								this.getSpan().to(NonSI.FOOT).getEstimatedValue(), -0.25) * 
-						pow(1 + _surfaceCS.to(MyUnits.FOOT2).getEstimatedValue()/
+						pow(1 + this._liftingSurfaceCreator.getControlSurfaceArea().to(MyUnits.FOOT2).getEstimatedValue()/
 								this.getSurface().to(MyUnits.FOOT2).getEstimatedValue(), 0.1),
 						NonSI.POUND).to(SI.KILOGRAM);
 				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
@@ -446,7 +457,7 @@ public class LiftingSurface implements ILiftingSurface {
 								aircraft.getTheWeights().get_MTOM().to(NonSI.POUND).getEstimatedValue()*
 								this.getLiftingSurfaceCreator().getMeanAerodynamicChord().to(NonSI.FOOT).getEstimatedValue()*
 								Math.sqrt(surfaceExposed))/
-						(_thicknessMean*Math.pow(Math.cos(_sweepStructuralAxis.to(SI.RADIAN).getEstimatedValue()),2)*
+						(thicknessMean*Math.pow(Math.cos(sweepStructuralAxis.to(SI.RADIAN).getEstimatedValue()),2)*
 								this.getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance().to(NonSI.FOOT).getEstimatedValue()*Math.pow(surface,1.5))),
 						NonSI.POUND).to(SI.KILOGRAM);
 				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
@@ -495,7 +506,7 @@ public class LiftingSurface implements ILiftingSurface {
 			case HOWE : { // page 381 Howe Aircraft Conceptual Design Synthesis
 				methodsList.add(method);
 				double k = 0.;
-				if (aircraft.getHTail().getPositionRelativeToAttachment() == PositionRelativeToAttachmentEnum.T_TAIL) {
+				if (_positionRelativeToAttachment == 1.0) {
 					k = 1.5;
 				} else {
 					k = 1.;
@@ -533,7 +544,7 @@ public class LiftingSurface implements ILiftingSurface {
 			case TORENBEEK_1976 : { // Roskam page 90 (pdf) part V
 				methodsList.add(method);
 				double kv = 1.;
-				if (aircraft.getHTail().getPositionRelativeToAttachment() == PositionRelativeToAttachmentEnum.T_TAIL) { 
+				if (_positionRelativeToAttachment == 1.) { 
 					kv = 1 + 0.15*
 							(aircraft.getHTail().getSurface().getEstimatedValue()/
 									this.getSurface().getEstimatedValue());}
@@ -553,7 +564,7 @@ public class LiftingSurface implements ILiftingSurface {
 								Math.pow(this.getSpan().to(NonSI.FOOT).getEstimatedValue(),3)*(
 										8.0 + 0.44*aircraft.getTheWeights().get_MTOW().to(NonSI.POUND_FORCE).getEstimatedValue()/
 										aircraft.getWing().getSurface().to(MyUnits.FOOT2).getEstimatedValue())/
-								(_thicknessMean*Math.pow(Math.cos(_sweepStructuralAxis.getEstimatedValue()),2)))),
+								(thicknessMean*Math.pow(Math.cos(sweepStructuralAxis.getEstimatedValue()),2)))),
 						NonSI.POUND).to(SI.KILOGRAM);
 				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 			} break;
@@ -599,7 +610,7 @@ public class LiftingSurface implements ILiftingSurface {
 				_percentDifference,
 				20.).getFilteredMean(), SI.KILOGRAM);
 
-		if (_massCorrectionFactor != null && _massEstimated != null) {
+		if ((_massCorrectionFactor != null) && (_massEstimated != null)) {
 			_massEstimated = _massEstimated.times(_massCorrectionFactor);
 		}
 
@@ -1694,12 +1705,12 @@ public class LiftingSurface implements ILiftingSurface {
 	}
 
 	@Override
-	public PositionRelativeToAttachmentEnum getPositionRelativeToAttachment() {
+	public Double getPositionRelativeToAttachment() {
 		return _positionRelativeToAttachment;
 	}
 
 	@Override
-	public void setPositionRelativeToAttachment(PositionRelativeToAttachmentEnum _positionRelativeToAttachment) {
+	public void setPositionRelativeToAttachment(Double _positionRelativeToAttachment) {
 		this._positionRelativeToAttachment = _positionRelativeToAttachment;
 	}
 
@@ -1724,11 +1735,11 @@ public class LiftingSurface implements ILiftingSurface {
 	}
 
 	public LSAerodynamicsManager getAerodynamics() {
-		return theAerodynamics;
+		return _theAerodynamics;
 	}
 
 	public void setAerodynamics(LSAerodynamicsManager theAerodynamics) {
-		this.theAerodynamics = theAerodynamics;
+		this._theAerodynamics = theAerodynamics;
 	}
 	
 	public CalcHighLiftDevices getHigLiftCalculator() {
@@ -1817,5 +1828,13 @@ public class LiftingSurface implements ILiftingSurface {
 
 	public List<Double> getCriticalMachVsY() {
 		return _criticalMachVsY;
+	}
+
+	public Double getMassCorrectionFactor() {
+		return _massCorrectionFactor;
+	}
+
+	public void setMassCorrectionFactor(Double _massCorrectionFactor) {
+		this._massCorrectionFactor = _massCorrectionFactor;
 	}
 }

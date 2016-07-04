@@ -53,6 +53,12 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	private Double _mainSparNonDimensionalPosition;
 	private Double _secondarySparNonDimensionalPosition;
+	private Double _compositeCorrectioFactor;
+	
+	private Amount<Length> _roughness;
+	
+	private Amount<Area> _surfaceWettedExposed;
+	private Amount<Area> _controlSurfaceArea = Amount.valueOf(0.0, SI.SQUARE_METRE);
 	
 	private Double volumetricRatio = 0.0;
 	private Amount<Length> _liftingSurfaceACToWingACDistance = Amount.valueOf(0.0, SI.METER);
@@ -116,6 +122,8 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		// ...
 		private Double __mainSparNonDimensionalPosition;
 		private Double __secondarySparNonDimensionalPosition;
+		private Double __compositeCorrectioFactor;
+		private Amount<Length> __roughness;
 		
 		private List<LiftingSurfacePanelCreator> __panels = new ArrayList<LiftingSurfacePanelCreator>();
 		private List<SymmetricFlapCreator> __symmetricFlaps = new ArrayList<SymmetricFlapCreator>();
@@ -186,6 +194,8 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 				__mainSparNonDimensionalPosition = 0.25;
 				__secondarySparNonDimensionalPosition = 0.55;
+				__compositeCorrectioFactor = 0.0;
+				__roughness = Amount.valueOf(0.405e-5, SI.METER);
 				
 				if (type.equals(ComponentEnum.WING)) {
 				AirfoilCreator airfoil1 = new AirfoilBuilder("ATR72 wing, root airfoil")
@@ -560,6 +570,8 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		
 		this._mainSparNonDimensionalPosition = builder.__mainSparNonDimensionalPosition;
 		this._secondarySparNonDimensionalPosition = builder.__secondarySparNonDimensionalPosition;
+		this._compositeCorrectioFactor = builder.__compositeCorrectioFactor;
+		this._roughness = builder.__roughness;
 		
 		this._panels = builder.__panels;
 		this._symmetricFlaps = builder.__symmetricFlaps;
@@ -632,13 +644,17 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 			liftingSurface.setEquivalentWingFlag(Boolean.valueOf(equivalent));
 
 			//---------------------------------------------------------------------------------
-			// STRUCTURE - SPAR POSITION
-			Double mainSparPosition = Double.valueOf(reader.getXMLPropertyByPath("//structure/main_spar_non_dimensional_position"));
-			Double secondarySparPosition = Double.valueOf(reader.getXMLPropertyByPath("//structure/secondary_spar_non_dimensional_position"));
+			// GLOBAL DATA
+			Double mainSparPosition = Double.valueOf(reader.getXMLPropertyByPath("//global_data/main_spar_non_dimensional_position"));
+			Double secondarySparPosition = Double.valueOf(reader.getXMLPropertyByPath("//global_data/secondary_spar_non_dimensional_position"));
+			Double compositeCorrectionFactor = Double.valueOf(reader.getXMLPropertyByPath("//global_data/composite_correction_factor"));
+			Amount<Length> roughness = reader.getXMLAmountLengthByPath("//global_data/roughness");
 			
 			// setting these variables to the related fields of the wing
 			liftingSurface.setMainSparNonDimensionalPosition(mainSparPosition);
 			liftingSurface.setSecondarySparNonDimensionalPosition(secondarySparPosition);
+			liftingSurface.setCompositeCorrectioFactor(compositeCorrectionFactor);
+			liftingSurface.setRoughness(roughness);
 			
 			//---------------------------------------------------------------------------------
 			// EQUIVALENT WING
@@ -1044,6 +1060,235 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 			// Equivalent wing 
 			if(!this._equivalentWingFlag)
 				calculateEquivalentWing();
+		}
+		
+		//======================================================
+		// Control surface are calculation
+		if(type.equals(ComponentEnum.WING)) {
+					
+			// flaps
+			if(!this._symmetricFlaps.isEmpty()) {
+				for(int i=0; i<this._symmetricFlaps.size(); i++) {
+					this._controlSurfaceArea = this._controlSurfaceArea.plus(
+							Amount.valueOf(
+									(this._symmetricFlaps.get(i).getInnerChordRatio()
+									*this.getChordAtYActual(
+											this._symmetricFlaps.get(i).getInnerStationSpanwisePosition()
+											) + 
+									this._symmetricFlaps.get(i).getOuterChordRatio()
+									*this.getChordAtYActual(
+											this._symmetricFlaps.get(i).getOuterStationSpanwisePosition()
+											)
+									)
+									*(this._symmetricFlaps.get(i).getOuterStationSpanwisePosition()
+											- this._symmetricFlaps.get(i).getInnerStationSpanwisePosition())
+									*this.semiSpan.doubleValue(SI.METER),
+									SI.SQUARE_METRE
+									)
+							);
+					System.out.println("FLAP "+ i + " area = " +Amount.valueOf(
+							(this._symmetricFlaps.get(i).getInnerChordRatio()
+							*this.getChordAtYActual(
+									this._symmetricFlaps.get(i).getInnerStationSpanwisePosition()
+									) + 
+							this._symmetricFlaps.get(i).getOuterChordRatio()
+							*this.getChordAtYActual(
+									this._symmetricFlaps.get(i).getOuterStationSpanwisePosition()
+									)
+							)
+							*(this._symmetricFlaps.get(i).getOuterStationSpanwisePosition()
+									- this._symmetricFlaps.get(i).getInnerStationSpanwisePosition())
+							*this.semiSpan.doubleValue(SI.METER),
+							SI.SQUARE_METRE
+							));
+				}
+			}
+			// ailerons
+			if(!this._asymmetricFlaps.isEmpty()) {
+				for(int i=0; i<this._asymmetricFlaps.size(); i++) {
+					this._controlSurfaceArea = this._controlSurfaceArea.plus(
+							Amount.valueOf(
+									(this._asymmetricFlaps.get(i).getInnerChordRatio()
+									*this.getChordAtYActual(
+											this._asymmetricFlaps.get(i).getInnerStationSpanwisePosition()
+											) + 
+									this._asymmetricFlaps.get(i).getOuterChordRatio()
+									*this.getChordAtYActual(
+											this._asymmetricFlaps.get(i).getOuterStationSpanwisePosition()
+											)
+									)
+									*(this._asymmetricFlaps.get(i).getOuterStationSpanwisePosition()
+											- this._asymmetricFlaps.get(i).getInnerStationSpanwisePosition())
+									*this.semiSpan.doubleValue(SI.METER),
+									SI.SQUARE_METRE
+									)
+							);
+					System.out.println("ALIERONS "+ i + " area = " +Amount.valueOf(
+							(this._asymmetricFlaps.get(i).getInnerChordRatio()
+							*this.getChordAtYActual(
+									this._asymmetricFlaps.get(i).getInnerStationSpanwisePosition()
+									) + 
+							this._asymmetricFlaps.get(i).getOuterChordRatio()
+							*this.getChordAtYActual(
+									this._asymmetricFlaps.get(i).getOuterStationSpanwisePosition()
+									)
+							)
+							*(this._asymmetricFlaps.get(i).getOuterStationSpanwisePosition()
+									- this._asymmetricFlaps.get(i).getInnerStationSpanwisePosition())
+							*this.semiSpan.doubleValue(SI.METER),
+							SI.SQUARE_METRE
+							));
+				}
+			}		
+			// slats
+			if(!this._slats.isEmpty()) {
+				for(int i=0; i<this._slats.size(); i++) {
+					this._controlSurfaceArea = this._controlSurfaceArea.plus(
+							Amount.valueOf(
+									(this._slats.get(i).getInnerChordRatio()
+									*this.getChordAtYActual(
+											this._slats.get(i).getInnerStationSpanwisePosition()
+											) + 
+									this._slats.get(i).getOuterChordRatio()
+									*this.getChordAtYActual(
+											this._slats.get(i).getOuterStationSpanwisePosition()
+											)
+									)
+									*(this._slats.get(i).getOuterStationSpanwisePosition()
+											- this._slats.get(i).getInnerStationSpanwisePosition())
+									*this.semiSpan.doubleValue(SI.METER),
+									SI.SQUARE_METRE
+									)
+							);
+					System.out.println("SLAT "+ i + " area = " + Amount.valueOf(
+							(this._slats.get(i).getInnerChordRatio()
+							*this.getChordAtYActual(
+									this._slats.get(i).getInnerStationSpanwisePosition()
+									) + 
+							this._slats.get(i).getOuterChordRatio()
+							*this.getChordAtYActual(
+									this._slats.get(i).getOuterStationSpanwisePosition()
+									)
+							)
+							*(this._slats.get(i).getOuterStationSpanwisePosition()
+									- this._slats.get(i).getInnerStationSpanwisePosition())
+							*this.semiSpan.doubleValue(SI.METER),
+							SI.SQUARE_METRE
+							));
+				}
+			}
+			// spoilers
+			if(!this._spoilers.isEmpty()) {
+				for(int i=0; i<this._spoilers.size(); i++) {
+					this._controlSurfaceArea = this._controlSurfaceArea.plus(
+							Amount.valueOf(
+									(this._spoilers.get(i).getOuterStationChordwisePosition()
+									*this.getChordAtYActual(
+											this._spoilers.get(i).getOuterStationSpanwisePosition()
+											) -
+									this._spoilers.get(i).getInnerStationChordwisePosition()
+									*this.getChordAtYActual(
+											this._spoilers.get(i).getInnerStationSpanwisePosition()
+											)
+									)
+									*(this._spoilers.get(i).getOuterStationSpanwisePosition()
+											- this._spoilers.get(i).getInnerStationSpanwisePosition())
+									*this.semiSpan.doubleValue(SI.METER),
+									SI.SQUARE_METRE
+									)
+							);
+					System.out.println("SPOILER "+ i + " area = " + Amount.valueOf(
+									(this._spoilers.get(i).getOuterStationChordwisePosition()
+									*this.getChordAtYActual(
+											this._spoilers.get(i).getOuterStationSpanwisePosition()
+											) -
+									this._spoilers.get(i).getInnerStationChordwisePosition()
+									*this.getChordAtYActual(
+											this._spoilers.get(i).getInnerStationSpanwisePosition()
+											)
+									)
+									*(this._spoilers.get(i).getOuterStationSpanwisePosition()
+											- this._spoilers.get(i).getInnerStationSpanwisePosition())
+									*this.semiSpan.doubleValue(SI.METER),
+									SI.SQUARE_METRE
+									));
+				}
+			}
+		}
+		else if(type.equals(ComponentEnum.HORIZONTAL_TAIL)) {
+			
+			// elevator
+			if(!this._symmetricFlaps.isEmpty()) {
+				for(int i=0; i<this._symmetricFlaps.size(); i++) {
+					this._controlSurfaceArea = this._controlSurfaceArea.plus(
+							Amount.valueOf(
+									(this._symmetricFlaps.get(i).getInnerChordRatio()
+									*this.getChordAtYActual(
+											this._symmetricFlaps.get(i).getInnerStationSpanwisePosition()
+											) + 
+									this._symmetricFlaps.get(i).getOuterChordRatio()
+									*this.getChordAtYActual(
+											this._symmetricFlaps.get(i).getOuterStationSpanwisePosition()
+											)
+									)
+									*(this._symmetricFlaps.get(i).getOuterStationSpanwisePosition()
+											- this._symmetricFlaps.get(i).getInnerStationSpanwisePosition())
+									*this.semiSpan.doubleValue(SI.METER),
+									SI.SQUARE_METRE
+									)
+							);
+				}
+			}
+		}
+		else if(type.equals(ComponentEnum.VERTICAL_TAIL)) {
+			
+			// rudder
+			if(!this._symmetricFlaps.isEmpty()) {
+				for(int i=0; i<this._symmetricFlaps.size(); i++) {
+					this._controlSurfaceArea = this._controlSurfaceArea.plus(
+							Amount.valueOf(
+									(this._symmetricFlaps.get(i).getInnerChordRatio()
+											*this.getChordAtYActual(
+													this._symmetricFlaps.get(i).getInnerStationSpanwisePosition()
+													) + 
+											this._symmetricFlaps.get(i).getOuterChordRatio()
+											*this.getChordAtYActual(
+													this._symmetricFlaps.get(i).getOuterStationSpanwisePosition()
+													)
+											)
+									*(this._symmetricFlaps.get(i).getOuterStationSpanwisePosition()
+											- this._symmetricFlaps.get(i).getInnerStationSpanwisePosition())
+									*this.semiSpan.doubleValue(SI.METER),
+									SI.SQUARE_METRE
+									)
+							);
+				}
+			}
+		}
+		else if(type.equals(ComponentEnum.CANARD)) {
+			
+			// elevator
+			if(!this._symmetricFlaps.isEmpty()) {
+				for(int i=0; i<this._symmetricFlaps.size(); i++) {
+					this._controlSurfaceArea = this._controlSurfaceArea.plus(
+							Amount.valueOf(
+									(this._symmetricFlaps.get(i).getInnerChordRatio()
+											*this.getChordAtYActual(
+													this._symmetricFlaps.get(i).getInnerStationSpanwisePosition()
+													) + 
+											this._symmetricFlaps.get(i).getOuterChordRatio()
+											*this.getChordAtYActual(
+													this._symmetricFlaps.get(i).getOuterStationSpanwisePosition()
+													)
+											)
+									*(this._symmetricFlaps.get(i).getOuterStationSpanwisePosition()
+											- this._symmetricFlaps.get(i).getInnerStationSpanwisePosition())
+									*this.semiSpan.doubleValue(SI.METER),
+									SI.SQUARE_METRE
+									)
+							);
+				}
+			}
 		}
 	}
 
@@ -1779,6 +2024,14 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	}
 	
+	public double getChordAtYActual(Double y) {
+		return GeometryCalc.getChordAtYActual(
+				MyArrayUtils.convertListOfAmountTodoubleArray(getDiscretizedYs()), 
+				MyArrayUtils.convertListOfAmountTodoubleArray(getDiscretizedChords()),
+				y
+				);
+	}
+	
 	/** 
 	 * Get LE of the equivalent lifting surface 
 	 * x coordinate at y location.
@@ -2479,7 +2732,12 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 				.append("\t-------------------------------------\n")
 				.append("\tID: '" + _id + "'\n")
 				.append("\tType: '" + _type + "'\n")
-				.append("\tNo. _panels " + _panels.size() + "\n")
+				.append("\t-------------------------------------\n")
+				.append("\tNo. panels " + _panels.size() + "\n")
+				.append("\tMain spar position referred to chord " + _mainSparNonDimensionalPosition + "\n")
+				.append("\tSecondary spar position referred to chord " + _secondarySparNonDimensionalPosition + "\n")
+				.append("\tComposite correction factor " + _compositeCorrectioFactor + "\n")
+				.append("\tSurface roughness " + _roughness + "\n")
 				;
 				for (LiftingSurfacePanelCreator panel : _panels) {
 					sb.append(panel.toString());
@@ -2497,7 +2755,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 				.append("\tLifting surface\n")
 				.append("\t-------------------------------------\n")
 				.append("\tID: '" + _id + "'\n")
-				.append("\tID: '" + _type + "'\n")
+				.append("\tType: " + _type + "\n")
 				.append("\t---------------------------------------\n")
 				.append("\tEquivalent wing\n")
 				.append("\t---------------------------------------\n")
@@ -2557,6 +2815,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 			.append("\tAspect-ratio: " + this.getAspectRatio() +"\n")
 			.append("\tMean aerodynamic chord: " + this.getMeanAerodynamicChord() +"\n")
 			.append("\t(X,Y,Z)_le of mean aerodynamic chord: " + this.getMeanAerodynamicChordLeadingEdge() +"\n")
+			.append("\tControl surface area: " + this._controlSurfaceArea +"\n")
 			;
 		}
 		else if (_type.equals(ComponentEnum.HORIZONTAL_TAIL)) {
@@ -2565,8 +2824,10 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 			.append("\tLifting surface\n")
 			.append("\t-------------------------------------\n")
 			.append("\tID: '" + _id + "'\n")
-			.append("\tID: '" + _type + "'\n")
-			.append("\tNo. _panels " + _panels.size() + "\n")
+			.append("\tType: " + _type + "\n")
+			.append("\t-------------------------------------\n")
+			.append("\tNo. panels " + _panels.size() + "\n")
+			.append("\tSurface roughness " + _roughness + "\n")
 			;
 			for (LiftingSurfacePanelCreator panel : _panels) {
 				sb.append(panel.toString());
@@ -2588,6 +2849,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 			.append("\tAspect-ratio: " + this.getAspectRatio() +"\n")
 			.append("\tMean aerodynamic chord: " + this.getMeanAerodynamicChord() +"\n")
 			.append("\t(X,Y,Z)_le of mean aerodynamic chord: " + this.getMeanAerodynamicChordLeadingEdge() +"\n")
+			.append("\tControl surface area: " + this._controlSurfaceArea +"\n")
 			;
 			
 		}
@@ -2597,8 +2859,10 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 			.append("\tLifting surface\n")
 			.append("\t-------------------------------------\n")
 			.append("\tID: '" + _id + "'\n")
-			.append("\tID: '" + _type + "'\n")
-			.append("\tNo. _panels " + _panels.size() + "\n")
+			.append("\tType: " + _type + "\n")
+			.append("\t-------------------------------------\n")
+			.append("\tNo. panels " + _panels.size() + "\n")
+			.append("\tSurface roughness " + _roughness + "\n")
 			;
 			for (LiftingSurfacePanelCreator panel : _panels) {
 				sb.append(panel.toString());
@@ -2620,6 +2884,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 			.append("\tAspect-ratio: " + this.getAspectRatio() +"\n")
 			.append("\tMean aerodynamic chord: " + this.getMeanAerodynamicChord() +"\n")
 			.append("\t(X,Y,Z)_le of mean aerodynamic chord: " + this.getMeanAerodynamicChordLeadingEdge() +"\n")
+			.append("\tControl surface area: " + this._controlSurfaceArea +"\n")
 			;
 
 		}
@@ -2629,8 +2894,10 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 			.append("\tLifting surface\n")
 			.append("\t-------------------------------------\n")
 			.append("\tID: '" + _id + "'\n")
-			.append("\tID: '" + _type + "'\n")
-			.append("\tNo. _panels " + _panels.size() + "\n")
+			.append("\tType: " + _type + "\n")
+			.append("\t-------------------------------------\n")
+			.append("\tNo. panels " + _panels.size() + "\n")
+			.append("\tSurface roughness " + _roughness + "\n")
 			;
 			for (LiftingSurfacePanelCreator panel : _panels) {
 				sb.append(panel.toString());
@@ -2652,6 +2919,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 			.append("\tAspect-ratio: " + this.getAspectRatio() +"\n")
 			.append("\tMean aerodynamic chord: " + this.getMeanAerodynamicChord() +"\n")
 			.append("\t(X,Y,Z)_le of mean aerodynamic chord: " + this.getMeanAerodynamicChordLeadingEdge() +"\n")
+			.append("\tControl surface area: " + this._controlSurfaceArea +"\n")
 			;
 
 		}
@@ -2809,5 +3077,37 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	public void setSecondarySparNonDimensionalPosition(Double _secondarySparNonDimensionalPosition) {
 		this._secondarySparNonDimensionalPosition = _secondarySparNonDimensionalPosition;
+	}
+
+	public Double getCompositeCorrectioFactor() {
+		return _compositeCorrectioFactor;
+	}
+
+	public void setCompositeCorrectioFactor(Double _compositeCorrectioFactor) {
+		this._compositeCorrectioFactor = _compositeCorrectioFactor;
+	}
+
+	public Amount<Length> getRoughness() {
+		return _roughness;
+	}
+
+	public void setRoughness(Amount<Length> _roughness) {
+		this._roughness = _roughness;
+	}
+
+	public Amount<Area> getSurfaceWettedExposed() {
+		return _surfaceWettedExposed;
+	}
+
+	public void setSurfaceWettedExposed(Amount<Area> _surfaceWettedExposed) {
+		this._surfaceWettedExposed = _surfaceWettedExposed;
+	}
+
+	public Amount<Area> getControlSurfaceArea() {
+		return _controlSurfaceArea;
+	}
+
+	public void setControlSurfaceArea(Amount<Area> _controlSurfaceArea) {
+		this._controlSurfaceArea = _controlSurfaceArea;
 	}
 }

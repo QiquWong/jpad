@@ -14,7 +14,6 @@ import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
-import configuration.enumerations.PositionRelativeToAttachmentEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import standaloneutils.customdata.CenterOfGravity;
 
@@ -80,8 +79,8 @@ public interface ILiftingSurface {
 	public void setYCG(Amount<Length> yCG);
 	public void setZCG(Amount<Length> zCG);
 	
-	public PositionRelativeToAttachmentEnum getPositionRelativeToAttachment();
-	public void setPositionRelativeToAttachment(PositionRelativeToAttachmentEnum positionRelativeToAttachment);
+	public Double getPositionRelativeToAttachment();
+	public void setPositionRelativeToAttachment(Double positionRelativeToAttachment);
 	
 }
 

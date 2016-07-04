@@ -1,6 +1,7 @@
 package aircraft.components.liftingSurface.creator;
 
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Area;
 
 import org.jscience.physics.amount.Amount;
 

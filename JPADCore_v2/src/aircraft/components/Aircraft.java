@@ -158,18 +158,18 @@ public class Aircraft implements IAircraft {
 				__theWing.setZApexConstructionAxes(Amount.valueOf(1.6, SI.METER));
 				__theWing.setRiggingAngle(Amount.valueOf(2.0, NonSI.DEGREE_ANGLE));
 				
-				createHTail(aircraftName, aeroDatabaseReader, highLiftDatabaseReader);
-				__theHTail.setXApexConstructionAxes(Amount.valueOf(25.3, SI.METER));
-				__theHTail.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theHTail.setZApexConstructionAxes(Amount.valueOf(5.7374, SI.METER));
-				__theHTail.setRiggingAngle(Amount.valueOf(1.0, NonSI.DEGREE_ANGLE));
-				
 				createVTail(aircraftName, aeroDatabaseReader, highLiftDatabaseReader);
 				__theVTail.setXApexConstructionAxes(Amount.valueOf(21.6, SI.METER));
 				__theVTail.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theVTail.setZApexConstructionAxes(Amount.valueOf(1.3, SI.METER));
 				__theVTail.setRiggingAngle(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 				
+				createHTail(aircraftName, aeroDatabaseReader, highLiftDatabaseReader);
+				__theHTail.setXApexConstructionAxes(Amount.valueOf(25.3, SI.METER));
+				__theHTail.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
+				__theHTail.setZApexConstructionAxes(Amount.valueOf(5.7374, SI.METER));
+				__theHTail.setRiggingAngle(Amount.valueOf(1.0, NonSI.DEGREE_ANGLE));
+						
 				// FIXME : X,Y,Z APEX WILL BE DEFINED IN THE RELATED CLASS WHEN THE BUILDER PATTERN WILL BE IMPLEMENTED
 				createPowerPlant(aircraftName);
 //				__thePowerPlant.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
@@ -750,8 +750,50 @@ public class Aircraft implements IAircraft {
 		this._componentsList = builder.__componentsList;
 		
 		updateType();
-		if((this._theFuselage != null) && (this._theWing != null)) 
+		if((this._theFuselage != null) && (this._theWing != null)) { 
 			calculateExposedWing(_theWing, _theFuselage);
+			this._theWing.getLiftingSurfaceCreator().setSurfaceWettedExposed(
+					this._theExposedWing.getLiftingSurfaceCreator().getSurfaceWetted()
+					);
+		}
+		else
+			this._theWing.getLiftingSurfaceCreator().setSurfaceWettedExposed(
+					this._theWing.getLiftingSurfaceCreator().getSurfaceWetted()
+					);
+		
+		// setup the positionRelativeToAttachment variable
+		if(_theWing != null)
+			this._theWing.setPositionRelativeToAttachment(
+					_theWing.getZApexConstructionAxes()
+					.divide(_theFuselage
+							.getFuselageCreator()
+							.getSectionCylinderHeight()
+							)
+					.getEstimatedValue()
+					);
+		
+		if(_theHTail != null)
+			this._theHTail.setPositionRelativeToAttachment(
+					(_theHTail.getZApexConstructionAxes()
+							.minus(_theVTail
+									.getZApexConstructionAxes()
+									)
+							).divide(_theVTail.getSpan())
+					.getEstimatedValue()
+					);
+		
+		if(_theVTail != null)
+			this._theVTail.setPositionRelativeToAttachment(0.0);
+		
+		if(_theCanard != null)
+			this._theCanard.setPositionRelativeToAttachment(
+					_theCanard.getZApexConstructionAxes()
+					.divide(_theFuselage
+							.getFuselageCreator()
+							.getSectionCylinderHeight()
+							)
+					.getEstimatedValue()
+					);
 	}
 	
 	private void updateType() {

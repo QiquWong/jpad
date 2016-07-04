@@ -1,6 +1,10 @@
 <jpad_config>
     <horizontal_tail id="JPAD Test Horizontal Tail DAF - 2016" mirrored="TRUE">
-        <panels>
+         <global_data>
+			<composite_correction_factor>0.1</composite_correction_factor>
+			<roughness unit="m">0.405e-5</roughness>
+		</global_data>
+		<panels>
             <panel id="Horizontal tail panel">
                 <span unit="m">6.25</span>
                 <dihedral unit="deg">0.0</dihedral>

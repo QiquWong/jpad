@@ -45,7 +45,7 @@ public class StabilityDerivatives {
 	wingAspectRatio = AC.getWing().getAspectRatio();
 	verticalTailAspectRatio = AC.getVTail().getAspectRatio();
 	verticalTailSpan = AC.getVTail().getSpan();
-	wingPosition = AC.getWing().get_positionRelativeToAttachment();
+	wingPosition = AC.getWing().getPositionRelativeToAttachment();
 	
 	veDSCDatabaseReader = DatabaseManager.initializeVeDSC(new VeDSCDatabaseReader(
 			MyConfiguration.getDir(FoldersEnum.DATABASE_DIR), veDSCDatabaseFileName));

@@ -856,7 +856,7 @@ public class JPADDataWriter {
 		writeInputNode("Transition_point_in_percent_of_chord_upper_wing", liftingSurface.get_xTransitionL(), equivalent_parameters, true);
 		writeInputNode("Reference_mass", liftingSurface.getReferenceMass(), equivalent_parameters, true);
 		writeInputNode("Composite_correction_factor", liftingSurface.get_compositeCorretionFactor(), equivalent_parameters, true);
-		writeInputNode("Mass_correction_factor", liftingSurface.get_massCorrectionFactor(), equivalent_parameters, true);
+		writeInputNode("Mass_correction_factor", liftingSurface.getMassCorrectionFactor(), equivalent_parameters, true);
 
 		// ---OUTPUT DATA-------------------------------------
 		writeOutputNode("sweepLE", liftingSurface.get_sweepLEEquivalent(), equivalent_parameters);
@@ -923,7 +923,7 @@ public class JPADDataWriter {
 
 		writeOutputNode("Reference_mass", liftingSurface.getReferenceMass(), weights);
 		writeOutputNode("Composite_correction_factor", liftingSurface.get_compositeCorretionFactor(), weights);
-		writeOutputNode("Mass_correction_factor", liftingSurface.get_massCorrectionFactor(), weights);
+		writeOutputNode("Mass_correction_factor", liftingSurface.getMassCorrectionFactor(), weights);
 
 		writeMethodsComparison(
 				doc, _sheet,

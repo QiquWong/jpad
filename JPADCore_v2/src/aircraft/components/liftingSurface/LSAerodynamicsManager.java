@@ -633,11 +633,11 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	public double calculateCd0Parasite(){
 		_reynolds = theOperatingConditions.calculateRe(
 				getTheLiftingSurface().getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue(), 
-				getTheLiftingSurface().getRoughness().getEstimatedValue());
+				getTheLiftingSurface().getLiftingSurfaceCreator().getRoughness().getEstimatedValue());
 
 		if (theOperatingConditions.calculateReCutOff(
 				getTheLiftingSurface().getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue(), 
-				getTheLiftingSurface().getRoughness().getEstimatedValue()) < 
+				getTheLiftingSurface().getLiftingSurfaceCreator().getRoughness().getEstimatedValue()) < 
 				_reynolds) {
 
 			_reynolds = theOperatingConditions.calculateReCutOff(
@@ -659,7 +659,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		if (getTheLiftingSurface().getType() == ComponentEnum.WING) {
 			_cd0Parasite = 
 					_cF * getTheLiftingSurface()._formFactor 
-					* getTheLiftingSurface().get_surfaceWettedExposed().getEstimatedValue()
+					* getTheLiftingSurface().getLiftingSurfaceCreator().getSurfaceWettedExposed().getEstimatedValue()
 					/ surface;			
 
 		} else { //TODO NEED TO EVALUATE Exposed Wetted surface also for Vtail and Htail
@@ -676,8 +676,8 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	public double calculateCdWingFusInterference() {
 		if (getTheLiftingSurface().getType() == ComponentEnum.WING){
 
-			_cdWFInterf = ((0.5*Math.pow(getTheLiftingSurface()._positionRelativeToAttachment,2) 
-					+ 1.25*getTheLiftingSurface()._positionRelativeToAttachment + 0.75)
+			_cdWFInterf = ((0.5*Math.pow(getTheLiftingSurface().getPositionRelativeToAttachment(),2) 
+					+ 1.25*getTheLiftingSurface().getPositionRelativeToAttachment() + 0.75)
 					* 2.16*Math.pow(chordRoot,2)
 					* Math.pow((getTheLiftingSurface().getAirfoilList().get(0).getGeometry().get_maximumThicknessOverChord()),3))
 					/surfaceReference;
@@ -1239,7 +1239,11 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			public double nasaBlackwellCompleteCurveValue(Amount<Angle> alpha){	
 			double cLStar, cLTemp, qValue, a ,b ,c ,d;
 			Amount<Angle> alphaTemp = Amount.valueOf(0.0, SI.RADIAN);
-			Airfoil meanAirfoil = new MeanAirfoil().calculateMeanAirfoil(getTheLiftingSurface());
+			
+			Airfoil meanAirfoil = new Airfoil(
+					getTheLiftingSurface().calculateMeanAirfoil(getTheLiftingSurface()),
+					getTheLiftingSurface().getAerodynamicDatabaseReader()
+					);
 			double alphaStar = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
 			set_alphaStar(Amount.valueOf(alphaStar,SI.RADIAN));
 			Amount<Angle> alphaStarAmount = Amount.valueOf(alphaStar, SI.RADIAN);
@@ -3616,9 +3620,9 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 
 
-				_alpha0lDistribution = theAircraft.getExposedWing().get_alpha0lDistributionExposed();
+				_alpha0lDistribution = new MyArray(MyArrayUtils.convertListOfAmountToDoubleArray(theAircraft.getExposedWing().getAlpha0VsY()));
 
-				_chordsVsY = theAircraft.getExposedWing().getLiftingSurfaceCreator().getChordsBreakPoints();
+				_chordsVsY = new MyArray(MyArrayUtils.convertListOfAmountToDoubleArray(theAircraft.getExposedWing().getLiftingSurfaceCreator().getChordsBreakPoints()));
 
 			}
 			else{
@@ -3765,10 +3769,10 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				//						twistExposed
 				//						.interpolate(yStationTwistExposed, _yStationsIntegral));
 
-				_alpha0lDistribution = theAircraft.getExposedWing().get_alpha0lDistributionExposed();
-				_chordsVsY = theAircraft.getExposedWing().get_chordsVsYExposed();
+				_alpha0lDistribution = new MyArray(MyArrayUtils.convertListOfAmountTodoubleArray(theAircraft.getExposedWing().getAlpha0VsY()));
+				_chordsVsY = new MyArray(MyArrayUtils.convertListOfAmountToDoubleArray(theAircraft.getExposedWing().getLiftingSurfaceCreator().getChordsBreakPoints()));
 
-				_twistDistribution =theAircraft.getExposedWing().get_twistDistributionExposed();
+				_twistDistribution = new MyArray(MyArrayUtils.convertListOfAmountToDoubleArray(theAircraft.getExposedWing().getLiftingSurfaceCreator().getTwistsBreakPoints()));
 
 			}
 			else{
@@ -3917,15 +3921,15 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 		public CalcCmAC() {
 			_chordsVsYActualAirfoils = getTheLiftingSurface().getLiftingSurfaceCreator().getDiscretizedChords().interpolate(
-					getTheLiftingSurface()._eta.toArray(), etaAirfoil);
+					getTheLiftingSurface().getLiftingSurfaceCreator().getEtaBreakPoints().toArray(), etaAirfoil);
 		}
 
 		public double additional() {
 			if (!_methodsMap.containsKey(MethodEnum.ADDITIONAL)) {
 				_cMacAdditional = (2/(surface*getTheLiftingSurface().getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()))
 						* MyMathUtils.integrate1DSimpsonSpline(
-								getTheLiftingSurface().getLiftingSurfaceCreator().getYBreakPoints(), 
-								getTheLiftingSurface()._cmAC_y.times(_chordsVsYActualAirfoils.getRealVector().map(new Power(2))).toArray(), 
+								MyArrayUtils.convertListOfAmountTodoubleArray(getTheLiftingSurface().getLiftingSurfaceCreator().getYBreakPoints()), 
+								new MyArray(MyArrayUtils.convertToDoublePrimitive(getTheLiftingSurface().getCmACVsY())).times(_chordsVsYActualAirfoils.getRealVector().map(new Power(2))).toArray(), 
 								0., semispan);
 				_methodsMap.put(MethodEnum.ADDITIONAL, _cMacAdditional);
 
@@ -3957,8 +3961,8 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			_cMacTotal = (2/(surface
 					*getTheLiftingSurface().getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()))
 					* MyMathUtils.integrate1DSimpsonSpline(
-							getTheLiftingSurface().getLiftingSurfaceCreator().getYBreakPoints(), 
-							getTheLiftingSurface()._cmAC_y.times(_chordsVsYActualAirfoils.times(_chordsVsYActualAirfoils)).toArray(), 
+							MyArrayUtils.convertListOfAmountTodoubleArray(getTheLiftingSurface().getLiftingSurfaceCreator().getYBreakPoints()), 
+							new MyArray(MyArrayUtils.convertToDoublePrimitive(getTheLiftingSurface().getCmACVsY())).times(_chordsVsYActualAirfoils.times(_chordsVsYActualAirfoils)).toArray(), 
 							0., semispan);
 			_methodsMap.put(MethodEnum.INTEGRAL_MEAN, _cMacTotal);
 		}

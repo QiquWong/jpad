@@ -1,6 +1,7 @@
 package aircraft.components.liftingSurface.creator;
 
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Area;
 import javax.measure.unit.NonSI;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -27,7 +28,7 @@ public class SymmetricFlapCreator implements ISymmetricFlapCreator {
 				   _meanChordRatio;
 	private Amount<Angle> _minimumDeflection;
 	private Amount<Angle> _maximumDeflection;
-
+	
 	//=================================================================
 	// Builder pattern via a nested public static class
 	
