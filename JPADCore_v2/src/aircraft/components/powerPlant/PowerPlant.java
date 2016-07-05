@@ -50,7 +50,7 @@ public class PowerPlant {
 	/** Check if engines are all the same */
 	private Boolean _engineEqual = false;
 	
-	public List<Engine> _engineList;
+	public List<Engine> __engineList;
 	private Amount<Force> _T0Total;
 	private Amount<Power> _P0Total;
 	
@@ -73,7 +73,7 @@ public class PowerPlant {
 		// required parameters
 		private String __id;
 		private Integer __engineNumber;
-		public List<Engine> __engineList = new ArrayList<Engine>();
+		public List<Engine> ___engineList = new ArrayList<Engine>();
 		
 		// optional parameters ... defaults
 		// ...	
@@ -82,15 +82,30 @@ public class PowerPlant {
 		private Map <MethodEnum, Amount<Length>> __xCGMap = new TreeMap<MethodEnum, Amount<Length>>();
 		private Map <MethodEnum, Amount<Length>> __yCGMap = new TreeMap<MethodEnum, Amount<Length>>();
 		private Map <AnalysisTypeEnum, List<MethodEnum>> __methodsMap = new HashMap<AnalysisTypeEnum, List<MethodEnum>>();
-		private Double[] __percentDifference;
 		
 		public PowerPlantBuilder (String id, Engine engine, Integer nEngine) {
 			this.__id = id;
 			this.__engineNumber = nEngine;
 			for(int i=0; i<__engineNumber; i++)
-				__engineList.add(engine);
+				___engineList.add(engine);
 		}
 		
+	}
+	
+	private PowerPlant (PowerPlantBuilder builder) {
+		
+		this._id = builder.__id;
+		this._engineNumber = builder.__engineNumber;
+		this.__engineList = builder.___engineList;
+		this._cgList = builder.__cgList;
+		this._massMap = builder.__massMap;
+		this._xCGMap = builder.__xCGMap;
+		this._yCGMap = builder.__yCGMap;
+		this._methodsMap = builder.__methodsMap;
+
+		// TODO : SEE IF POWERPLANTWEIGHTSMANAGER HAS TO SEE THE SINGLE ENGINE OR THE POWER PLANT (FIX THIS IN THE MANAGER)
+		this._theWeights = new PowerPlantWeightsManager(this._theAircraft, this.__engineList.get(0));
+		this._theBalance = new PowerPlantBalanceManager(this);
 	}
 	
 	//---------------------------------------------------------------------------
@@ -135,22 +150,20 @@ public class PowerPlant {
 		//		}
 
 		for(int i=0; i < _engineNumber; i++) {
-			_T0Total = _T0Total.plus(engineList.get(i).getT0());
-			_P0Total = _P0Total.plus(engineList.get(i).getP0());
+			_T0Total = _T0Total.plus(_engineList.get(i).getT0());
+			_P0Total = _P0Total.plus(_engineList.get(i).getP0());
 		}
 
 	}
 
-
-	@Override
 	public void calculateMass() {
 
 		_totalMass = Amount.valueOf(0., SI.KILOGRAM);
 		_dryMassPublicDomain = Amount.valueOf(0., SI.KILOGRAM);
 
 		for(int i=0; i < _engineNumber; i++) {
-			_totalMass = _totalMass.plus(engineList.get(i).getmasTotalMass());
-			_dryMassPublicDomain = _dryMassPublicDomain.plus(engineList.get(i).getWeights().getDryMassPublicDomain());
+			_totalMass = _totalMass.plus(__engineList.get(i).getmasTotalMass());
+			_dryMassPublicDomain = _dryMassPublicDomain.plus(__engineList.get(i).getWeights().getDryMassPublicDomain());
 		}
 
 		_percentTotalDifference = _totalMass.
@@ -164,10 +177,10 @@ public class PowerPlant {
 
 		_totalCG = new CenterOfGravity();		
 		for(int i=0; i < _engineNumber; i++) {
-			engineList.get(i).getBalance().calculateAll();
-			_cgList.add(engineList.get(i).getBalance().get_cg());
-			_totalCG = _totalCG.plus(engineList.get(i).getBalance().get_cg()
-					.times(engineList.get(i).getTotalMass().doubleValue(SI.KILOGRAM)));
+			_engineList.get(i).getBalance().calculateAll();
+			_cgList.add(_engineList.get(i).getBalance().get_cg());
+			_totalCG = _totalCG.plus(_engineList.get(i).getBalance().get_cg()
+					.times(_engineList.get(i).getTotalMass().doubleValue(SI.KILOGRAM)));
 		}
 		
 		_totalCG = _totalCG.divide(_totalMass.doubleValue(SI.KILOGRAM));
@@ -382,8 +395,8 @@ public class PowerPlant {
 		return "8";
 	}
 
-	public List<Engine> get_engineList() {
-		return engineList;
+	public List<Engine> get__engineList() {
+		return _engineList;
 	}
 
 	public Boolean is_engineEqual() {
