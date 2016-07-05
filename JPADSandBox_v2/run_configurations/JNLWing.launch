@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/JPADSandBox_v2/src/sandbox2/vt/WingTest.java"/>
+<listEntry value="/JPADSandBox_v2/src/jnlwing/JNLWing.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
@@ -9,8 +9,8 @@
 <mapAttribute key="org.eclipse.debug.core.environmentVariables">
 <mapEntry key="Path" value="${JPAD_ROOT}\libraries\hdf"/>
 </mapAttribute>
-<booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
-<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="sandbox2.vt.WingTest"/>
+<stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_91"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="jnlwing.JNLWing"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-i in/Template_Aircraft/lifting_surfaces/wing_multi_panels.xml&#9;-da in/Template_Aircraft/lifting_surfaces/airfoils"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="JPADSandBox_v2"/>
 </launchConfiguration>
