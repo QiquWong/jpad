@@ -429,7 +429,7 @@ public class HighLiftDevicesCalc {
 						-(626.15*Math.pow(input.getCfc().get(i), 4))
 						+(263.4*Math.pow(input.getCfc().get(i), 3))
 						-(62.946*Math.pow(input.getCfc().get(i), 2))
-						-(10.638*input.getCfc().get(i))
+						+(10.638*input.getCfc().get(i))
 						+0.0064
 						);
 
@@ -449,12 +449,13 @@ public class HighLiftDevicesCalc {
 							)
 					);
 
-		for(int i=0; i<input.getFlapsNumber(); i++)
+		for(int i=0; i<input.getFlapsNumber(); i++) {
 			output.getDeltaClmaxFlapList().add(k1.get(i).doubleValue()
 					*k2.get(i).doubleValue()
 					*k3.get(i).doubleValue()
 					*deltaClmaxBase.get(i).doubleValue()
 					);
+		}
 		
 		double deltaClmaxFlapTemp = 0;
 		for(int i=0; i<input.getFlapsNumber(); i++)
@@ -462,6 +463,7 @@ public class HighLiftDevicesCalc {
 		
 		output.setDeltaClmaxFlap(deltaClmaxFlapTemp);
 	
+		
 		//---------------------------------------------------------------
 		// deltaClmax (slat)
 		if(input.getSlatsNumber() > 0.0) {
@@ -556,12 +558,13 @@ public class HighLiftDevicesCalc {
 					*(1-(0.08*Math.pow(Math.cos(input.getSweepQuarteChordEq().to(SI.RADIAN).getEstimatedValue()), 2)))
 					);
 
-		for(int i=0; i<flapTypeIndex.size(); i++)
+		for(int i=0; i<flapTypeIndex.size(); i++) {
 			output.getDeltaCLmaxFlapList().add(output.getDeltaClmaxFlapList().get(i)
 					*(flapSurface.get(i)/input.getSurface().getEstimatedValue())
 					*kLambdaFlap.get(i)
 					);
-
+		}
+		
 		double deltaCLmaxFlapTemp = 0.0;
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			deltaCLmaxFlapTemp += output.getDeltaCLmaxFlapList().get(i);

@@ -611,6 +611,8 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		_yStationActual = new ArrayList<Amount<Length>>();
 		_panelToSpanwiseDiscretizedVariables = new ArrayList<>();
 		_spanwiseDiscretizedVariables = new ArrayList<>();
+		
+		_controlSurfaceArea = Amount.valueOf(0.0, SI.SQUARE_METRE);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -2733,11 +2735,11 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 				.append("\tID: '" + _id + "'\n")
 				.append("\tType: '" + _type + "'\n")
 				.append("\t-------------------------------------\n")
-				.append("\tNo. panels " + _panels.size() + "\n")
-				.append("\tMain spar position referred to chord " + _mainSparNonDimensionalPosition + "\n")
-				.append("\tSecondary spar position referred to chord " + _secondarySparNonDimensionalPosition + "\n")
-				.append("\tComposite correction factor " + _compositeCorrectioFactor + "\n")
-				.append("\tSurface roughness " + _roughness + "\n")
+				.append("\tNo. panels = " + _panels.size() + "\n")
+				.append("\tMain spar position referred to chord = " + _mainSparNonDimensionalPosition + "\n")
+				.append("\tSecondary spar position referred to chord = " + _secondarySparNonDimensionalPosition + "\n")
+				.append("\tComposite correction factor = " + _compositeCorrectioFactor + "\n")
+				.append("\tSurface roughness = " + _roughness + "\n")
 				;
 				for (LiftingSurfacePanelCreator panel : _panels) {
 					sb.append(panel.toString());

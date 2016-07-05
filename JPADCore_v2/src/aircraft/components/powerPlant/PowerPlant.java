@@ -19,6 +19,7 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
+import aircraft.components.powerPlant.Engine.EngineBuilder;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
@@ -39,158 +40,76 @@ public class PowerPlant {
 	//---------------------------------------------------------------------------
 	// ALREADY DONE :
 	public  String _id ;
+	private Integer _engineNumber;
 	private EngineMountingPositionEnum _mountingPoint;
 	private Amount<Length> _xApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
 	private Amount<Length> _yApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
 	private Amount<Length> _zApexConstructionAxes = Amount.valueOf(0.0, SI.METER);
 	private Amount<Angle> _muT;
-	//---------------------------------------------------------------------------
 	
-	private Amount<Length> _length;
-	private List<CenterOfGravity> _cgList = new ArrayList<CenterOfGravity>();
-	public static final List<Engine> engineList = new ArrayList<Engine>();
-	private EngineTypeEnum _engineType;
-	private Amount<Power> _P0Total;
+	/** Check if engines are all the same */
+	private Boolean _engineEqual = false;
+	
+	public List<Engine> _engineList;
 	private Amount<Force> _T0Total;
-	private Integer _engineNumber;
-	private Amount<Length> _diameter;
-	private Amount<Frequency> _rpm, _rps;
-	private Amount<Velocity> _v0;
-
-	private Map <MethodEnum, Amount<Mass>> _massMap = new TreeMap<MethodEnum, Amount<Mass>>();
-	private Map <MethodEnum, Amount<Length>> _xCGMap = new TreeMap<MethodEnum, Amount<Length>>();
-	private Map <MethodEnum, Amount<Length>> _yCGMap = new TreeMap<MethodEnum, Amount<Length>>();
-
-	private List<MethodEnum> _methodsList = new ArrayList<MethodEnum>();
-	private Map <AnalysisTypeEnum, List<MethodEnum>> _methodsMap = new HashMap<AnalysisTypeEnum, List<MethodEnum>>();
+	private Amount<Power> _P0Total;
+	
+	private List<CenterOfGravity> _cgList;
+	private Map <MethodEnum, Amount<Mass>> _massMap;
+	private Map <MethodEnum, Amount<Length>> _xCGMap;
+	private Map <MethodEnum, Amount<Length>> _yCGMap;
+	private Map <AnalysisTypeEnum, List<MethodEnum>> _methodsMap;
 	private Double[] _percentDifference;
+	
+	private Aircraft _theAircraft;
+	private PowerPlantWeightsManager _theWeights;
+	private PowerPlantBalanceManager _theBalance;
+	
+	//============================================================================================
+	// Builder pattern 
+	//============================================================================================
+	public static class PowerPlantBuilder {
+	
+		// required parameters
+		private String __id;
+		private Integer __engineNumber;
+		public List<Engine> __engineList = new ArrayList<Engine>();
+		
+		// optional parameters ... defaults
+		// ...	
+		private List<CenterOfGravity> __cgList = new ArrayList<CenterOfGravity>();
+		private Map <MethodEnum, Amount<Mass>> __massMap = new TreeMap<MethodEnum, Amount<Mass>>();
+		private Map <MethodEnum, Amount<Length>> __xCGMap = new TreeMap<MethodEnum, Amount<Length>>();
+		private Map <MethodEnum, Amount<Length>> __yCGMap = new TreeMap<MethodEnum, Amount<Length>>();
+		private Map <AnalysisTypeEnum, List<MethodEnum>> __methodsMap = new HashMap<AnalysisTypeEnum, List<MethodEnum>>();
+		private Double[] __percentDifference;
+		
+		public PowerPlantBuilder (String id, Engine engine, Integer nEngine) {
+			this.__id = id;
+			this.__engineNumber = nEngine;
+			for(int i=0; i<__engineNumber; i++)
+				__engineList.add(engine);
+		}
+		
+	}
+	
+	//---------------------------------------------------------------------------
+
 	private Amount<Mass> 
 	_massDryEngine, _massDryEngineEstimated,
 	_massDryEngineActual, _massDryEngineActualTotal, 
-	_totalMass, _dryMassPublicDomain, _totalEngineMass,
-	_massDryEngineTotalEstimated;
+	_totalMass, _dryMassPublicDomain;
 
 	private Double _percentTotalDifference;
 	private CenterOfGravity _cg;
 
-	private EngineMountingPositionEnum _position;
 	private Double[] _percentDifferenceXCG;
-	private Amount<Length> _xCG;
-
-	/** Check if engines are all the same */
-	private Boolean _engineEqual = false;
-	private Amount<Mass> _massReference;
-	private Aircraft _theAircraft;
 	private CenterOfGravity _totalCG;
 
 	private double etaEfficiency;
 	private double nBlade;
 	Amount<Length> fanDiameter;
 
-	public PowerPlant(String name, String description, double x, double y,double z){
-
-		super(getId(), name, description, x, y, z);
-
-		_name = name;
-		_X0 = Amount.valueOf(x, SI.METER);
-		_Y0 = Amount.valueOf(y, SI.METER);
-		_Z0 = Amount.valueOf(z, SI.METER);
-
-		initialize();
-	}
-
-	public PowerPlant(String name, String description, 
-			double x, double y,double z,
-			Aircraft aircraft) {
-
-		this(name, description, x, y, z);
-		_theAircraft = aircraft;
-		initializeEngines();
-	}
-	
-	/**
-	 * Overload of the previous builder that recognize aircraft name and initialize engines with it's data.
-	 * 
-	 * @author Vittorio Trifari
-	 */
-	public PowerPlant(AircraftEnum aircraftName, String name, String description, 
-			double x, double y,double z,
-			Aircraft aircraft) {
-
-		this(name, description, x, y, z);
-		_theAircraft = aircraft;
-		initializeEngines(aircraftName);
-	}
-
-	public void initialize() {
-		_cg = new CenterOfGravity(_X0, _Y0, _Z0);
-
-		// PW127 Data
-		_engineNumber = 2;
-		_engineType = EngineTypeEnum.TURBOPROP;
-
-		_length = Amount.valueOf(2.13, SI.METER);
-
-		// Reference dry engine mass (from public domain data)
-		_massDryEngineActual = Amount.valueOf(1064, NonSI.POUND).to(SI.KILOGRAM);
-
-		// Reference speed at take-off
-		_v0 = Amount.valueOf(5, SI.METERS_PER_SECOND);
-
-		// Reference total power plant mass
-		_dryMassPublicDomain = Amount.valueOf(1557.8, SI.KILOGRAM);
-
-		_muT = Amount.valueOf(0., SI.RADIAN);
-
-		// Engine position
-		_position = EngineMountingPositionEnum.WING;
-
-	}
-
-	//TODO check the behaviour when reading engines from file
-	public void initializeEngines() {
-		for (int i=0; i < _engineNumber; i++) {
-			engineList.add(new Engine("Engine_" + i, "", 0.0, 0.0, 0.0, _theAircraft));
-		}
-	}
-	
-	/**
-	 * Overload of the default initializer that recognize aircraft name and generates 
-	 * an Engine with the specified aircraft data.
-	 * 
-	 * @author Vittorio Trifari
-	 */
-	public void initializeEngines(AircraftEnum aircraftName) {
-		
-		switch(aircraftName) {
-		case ATR72:
-			_engineNumber = 2;
-			_engineType = EngineTypeEnum.TURBOPROP;
-				engineList.add(new Engine(aircraftName, "Engine_1", "",8.6100, 4.0500, 1.3200, _theAircraft));
-				engineList.add(new Engine(aircraftName, "Engine_2", "",8.6100, -4.0500, 1.3200, _theAircraft));
-			break;
-		case B747_100B:
-			_engineNumber = 4;
-			_engineType = EngineTypeEnum.TURBOFAN;
-				engineList.add(new Engine(aircraftName, "Engine_1" , "", 23.770, 11.820, -2.462, _theAircraft));
-				engineList.add(new Engine(aircraftName, "Engine_1" , "", 31.693, 21.951, -2.462, _theAircraft));
-				engineList.add(new Engine(aircraftName, "Engine_1" , "", 23.770, -11.820, -2.462, _theAircraft));
-				engineList.add(new Engine(aircraftName, "Engine_1" , "", 31.693, -21.951, -2.462, _theAircraft));
-				
-			
-			break;
-			
-		case AGILE_DC1:
-			_engineNumber = 2;
-			_engineType = EngineTypeEnum.TURBOFAN;
-//			for (int i=0; i < _engineNumber; i++) {
-//				engineList.add(new Engine(aircraftName, "Engine_" + i, "", 0.0, 0.0, 0.0, _theAircraft));
-			engineList.add(new Engine(aircraftName, "Engine_1", "", 12.891, 4.869, -1.782, _theAircraft));
-			engineList.add(new Engine(aircraftName, "Engine_2", "", 12.891, -4.869, -1.782, _theAircraft));
-//			}
-			break;
-		}
-	}
 
 	public void calculateDerivedVariables() {
 
@@ -230,8 +149,7 @@ public class PowerPlant {
 		_dryMassPublicDomain = Amount.valueOf(0., SI.KILOGRAM);
 
 		for(int i=0; i < _engineNumber; i++) {
-			engineList.get(i).getWeights().calculateAll();
-			_totalMass = _totalMass.plus(engineList.get(i).getTotalMass());
+			_totalMass = _totalMass.plus(engineList.get(i).getmasTotalMass());
 			_dryMassPublicDomain = _dryMassPublicDomain.plus(engineList.get(i).getWeights().getDryMassPublicDomain());
 		}
 

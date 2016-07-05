@@ -444,43 +444,28 @@ public class AircraftTestTopView extends Application {
 			HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
 			
 			// default Aircraft ATR-72 ...
-//			theAircraft = new Aircraft.AircraftBuilder(
-//					"ATR-72",
-//					AircraftEnum.ATR72,
-//					aeroDatabaseReader,
-//					highLiftDatabaseReader
-//					).build();
+			theAircraft = new Aircraft.AircraftBuilder(
+					"ATR-72",
+					AircraftEnum.ATR72,
+					aeroDatabaseReader,
+					highLiftDatabaseReader
+					).build();
 
 			// reading aircraft from xml ...
-			theAircraft = Aircraft.importFromXML(
-					pathToXML,
-					dirLiftingSurfaces,
-					dirFuselages,
-					dirLandingGears,
-					dirSystems,
-					dirCabinConfiguration,
-					dirAirfoil,
-					dirCosts,
-					aeroDatabaseReader,
-					highLiftDatabaseReader);
+//			theAircraft = Aircraft.importFromXML(
+//					pathToXML,
+//					dirLiftingSurfaces,
+//					dirFuselages,
+//					dirLandingGears,
+//					dirSystems,
+//					dirCabinConfiguration,
+//					dirAirfoil,
+//					dirCosts,
+//					aeroDatabaseReader,
+//					highLiftDatabaseReader);
 			
 			System.out.println("The Aircaraft ...");
 			System.out.println(AircraftTestTopView.theAircraft.toString());
-			
-			System.out.println("\n\tWing span = " + theAircraft.getWing().getSpan());
-			System.out.println("\n\tChord at 0.12 = " + theAircraft.getWing().getChordAtYActual(0.12));
-			System.out.println("\tChord at 0.20 = " + theAircraft.getWing().getChordAtYActual(0.20));
-			System.out.println("\tChord at 0.30 = " + theAircraft.getWing().getChordAtYActual(0.30));
-			System.out.println("\tChord at 0.33 = " + theAircraft.getWing().getChordAtYActual(0.33));
-			System.out.println("\tChord at 0.36 = " + theAircraft.getWing().getChordAtYActual(0.36));
-			System.out.println("\tChord at 0.40 = " + theAircraft.getWing().getChordAtYActual(0.40));
-			System.out.println("\tChord at 0.56 = " + theAircraft.getWing().getChordAtYActual(0.56));
-			System.out.println("\tChord at 0.57 = " + theAircraft.getWing().getChordAtYActual(0.57));
-			System.out.println("\tChord at 0.73 = " + theAircraft.getWing().getChordAtYActual(0.73));
-			System.out.println("\tChord at 0.74 = " + theAircraft.getWing().getChordAtYActual(0.74));
-			System.out.println("\tChord at 0.75 = " + theAircraft.getWing().getChordAtYActual(0.75));
-			System.out.println("\tChord at 0.95 = " + theAircraft.getWing().getChordAtYActual(0.95));
-			System.out.println("\tChord at 0.97 = " + theAircraft.getWing().getChordAtYActual(0.97) + "\n");
 			
 		} catch (CmdLineException | IOException e) {
 			System.err.println("Error: " + e.getMessage());

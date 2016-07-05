@@ -4,19 +4,14 @@ import javax.measure.quantity.Duration;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Pressure;
 import javax.measure.quantity.Velocity;
-import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.apache.commons.lang3.text.WordUtils;
 import org.jscience.physics.amount.Amount;
 
-import aircraft.OperatingConditions;
-import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.Aircraft;
 import calculators.performance.PerformanceCalcManager;
-import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
-import standaloneutils.atmosphere.AtmosphereCalc;
 
 /** 
  * Estimate the whole aircraft performances.
@@ -34,20 +29,18 @@ public class ACPerformanceManager {
 	private AnalysisTypeEnum _type;
 	private String _name;
 	
-	public static Double nLimit = 2.5;
-	public static Double nLimitZFW = 2.5;
-	public static Double nUltimate = 1.5 * nLimit;
+	public Double _nLimit = 2.5;
+	public Double _nLimitZFW = 2.5;
+	public Double _nUltimate = 1.5 * _nLimit;
 	
 	private Aircraft _theAircraft;
-	private Double _nUltimate,
-	_nLimit, _nLimitZFW,
-	_cruiseCL;
+	private Double _cruiseCL;
 
 	private Amount<Velocity> _vOptimumCruise, _vMaxCruise,
 	_vDive, _vMaxCruiseEAS, _vDiveEAS;
 
 	private Amount<Pressure> _maxDynamicPressure;
-	private Amount<Length> _maxAltitudeAtMaxSpeed, _altitudeOptimumCruise, _range;
+	private Amount<Length> _maxAltitudeAtMaxSpeed, _range;
 
 	private Double _machDive0, _machOptimumCruise, _machMaxCruise;
 
@@ -63,8 +56,8 @@ public class ACPerformanceManager {
 	 */
 	public ACPerformanceManager() {
 
-		_type = AnalysisTypeEnum.PERFORMANCE;
-		_name = WordUtils.capitalizeFully(AnalysisTypeEnum.PERFORMANCE.name());
+		setType(AnalysisTypeEnum.PERFORMANCE);
+		setName(WordUtils.capitalizeFully(AnalysisTypeEnum.PERFORMANCE.name()));
 	}
 	
 
@@ -91,7 +84,7 @@ public class ACPerformanceManager {
 					_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 					_theAircraft.getWing().getAspectRatio(), 
 					_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN), 
-					_theAircraft.getWing().get_thicknessMax(), 
+					_theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(), 
 					_theAircraft.getWing().getAirfoilList().get(0).getType(), 
 					_theAircraft.getWing().getAerodynamics().getCalculateCLMaxClean().phillipsAndAlley(), 
 					_theAircraft.getTheAerodynamics().get_cD0(), 
@@ -113,7 +106,7 @@ public class ACPerformanceManager {
 					_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 					_theAircraft.getWing().getAspectRatio(), 
 					_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN), 
-					_theAircraft.getWing().get_thicknessMax(), 
+					_theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(), 
 					_theAircraft.getWing().getAirfoilList().get(0).getType(), 
 					_theAircraft.getWing().getAerodynamics().getCalculateCLMaxClean().phillipsAndAlley(), 
 					_theAircraft.getTheAerodynamics().get_cD0(), 
@@ -288,6 +281,26 @@ public class ACPerformanceManager {
 
 	public void setFlightTime(Amount<Duration> _flightTime) {
 		this._flightTime = _flightTime;
+	}
+
+
+	public AnalysisTypeEnum getType() {
+		return _type;
+	}
+
+
+	public void setType(AnalysisTypeEnum _type) {
+		this._type = _type;
+	}
+
+
+	public String getName() {
+		return _name;
+	}
+
+
+	public void setName(String _name) {
+		this._name = _name;
 	}
 
 

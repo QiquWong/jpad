@@ -32,14 +32,14 @@
                 </wing>
                 <flaps>
                         <flap id = "1">
-                                <flap_type>FOWLER</flap_type>
+                                <flap_type>SINGLE_SLOTTED</flap_type>
                                 <flap_chord_ratio>0.285</flap_chord_ratio>
                                 <flap_deflection unit = "°">40</flap_deflection>
                                 <flap_non_dimensional_inner_station>0.12</flap_non_dimensional_inner_station>
                                 <flap_non_dimensional_outer_station>0.4</flap_non_dimensional_outer_station>
                         </flap>
                         <flap id = "2">
-                                <flap_type>FOWLER</flap_type>
+                                <flap_type>SINGLE_SLOTTED</flap_type>
                                 <flap_chord_ratio>0.32</flap_chord_ratio>
                                 <flap_deflection unit = "°">40</flap_deflection>
                                 <flap_non_dimensional_inner_station>0.4</flap_non_dimensional_inner_station>

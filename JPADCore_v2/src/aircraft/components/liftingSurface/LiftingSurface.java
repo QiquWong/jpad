@@ -511,7 +511,7 @@ public class LiftingSurface implements ILiftingSurface {
 				} else {
 					k = 1.;
 				}
-				_mass = Amount.valueOf(0.05*k*
+				_mass = Amount.valueOf(0.065*k*
 						aircraft.getThePerformance().getVDiveEAS().getEstimatedValue()*
 						pow(this.getSurface().getEstimatedValue(), 1.15), SI.KILOGRAM);
 				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
