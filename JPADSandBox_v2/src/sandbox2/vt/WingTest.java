@@ -279,26 +279,26 @@ public class WingTest extends Application {
 			AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
 			HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
 			
-//			// read LiftingSurface from xml ...
-//			theWing = new LiftingSurfaceBuilder("MyWing", ComponentEnum.WING, aeroDatabaseReader, highLiftDatabaseReader)
-//					.liftingSurfaceCreator(
-//							LiftingSurfaceCreator.importFromXML(ComponentEnum.WING, pathToXML, dirAirfoil)
-//							)
-//					.build();
-			
-			// default LiftingSurface from xml ...
+			// read LiftingSurface from xml ...
 			theWing = new LiftingSurfaceBuilder("MyWing", ComponentEnum.WING, aeroDatabaseReader, highLiftDatabaseReader)
 					.liftingSurfaceCreator(
-							new LiftingSurfaceCreator
-							.LiftingSurfaceCreatorBuilder(
-									"MyWing",
-									Boolean.TRUE,
-									AircraftEnum.ATR72,
-									ComponentEnum.WING
-									)
-							.build()
+							LiftingSurfaceCreator.importFromXML(ComponentEnum.WING, pathToXML, dirAirfoil)
 							)
 					.build();
+			
+			// default LiftingSurface from xml ...
+//			theWing = new LiftingSurfaceBuilder("MyWing", ComponentEnum.WING, aeroDatabaseReader, highLiftDatabaseReader)
+//					.liftingSurfaceCreator(
+//							new LiftingSurfaceCreator
+//							.LiftingSurfaceCreatorBuilder(
+//									"MyWing",
+//									Boolean.TRUE,
+//									AircraftEnum.ATR72,
+//									ComponentEnum.WING
+//									)
+//							.build()
+//							)
+//					.build();
 
 			WingTest.theWing.calculateGeometry(
 					40,
