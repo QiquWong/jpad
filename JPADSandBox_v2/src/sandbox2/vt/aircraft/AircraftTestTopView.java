@@ -52,6 +52,10 @@ class MyArgumentsAircraft {
 			usage = "lifting surfaces directory path")
 	private File _liftingSurfacesDirectory;
 	
+	@Option(name = "-de", aliases = { "--dir-engines" }, required = true,
+			usage = "engines directory path")
+	private File _enginesDirectory;
+	
 	@Option(name = "-dlg", aliases = { "--dir-landing-gears" }, required = true,
 			usage = "landing gears directory path")
 	private File _landingGearsDirectory;
@@ -88,6 +92,10 @@ class MyArgumentsAircraft {
 		return _liftingSurfacesDirectory;
 	}
 
+	public File getEnginesDirectory() {
+		return _enginesDirectory;
+	}
+	
 	public File getLandingGearsDirectory() {
 		return _landingGearsDirectory;
 	}
@@ -419,6 +427,9 @@ public class AircraftTestTopView extends Application {
 			String dirLiftingSurfaces = va.getLiftingSurfacesDirectory().getCanonicalPath();
 			System.out.println("LIFTING SURFACES ===> " + dirLiftingSurfaces);
 			
+			String dirEngines = va.getEnginesDirectory().getCanonicalPath();
+			System.out.println("ENGINES ===> " + dirEngines);
+			
 			String dirLandingGears = va.getLandingGearsDirectory().getCanonicalPath();
 			System.out.println("LANDING GEARS ===> " + dirLandingGears);
 			
@@ -444,25 +455,26 @@ public class AircraftTestTopView extends Application {
 			HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
 			
 			// default Aircraft ATR-72 ...
-			theAircraft = new Aircraft.AircraftBuilder(
-					"ATR-72",
-					AircraftEnum.ATR72,
-					aeroDatabaseReader,
-					highLiftDatabaseReader
-					).build();
+//			theAircraft = new Aircraft.AircraftBuilder(
+//					"ATR-72",
+//					AircraftEnum.ATR72,
+//					aeroDatabaseReader,
+//					highLiftDatabaseReader
+//					).build();
 
 			// reading aircraft from xml ...
-//			theAircraft = Aircraft.importFromXML(
-//					pathToXML,
-//					dirLiftingSurfaces,
-//					dirFuselages,
-//					dirLandingGears,
-//					dirSystems,
-//					dirCabinConfiguration,
-//					dirAirfoil,
-//					dirCosts,
-//					aeroDatabaseReader,
-//					highLiftDatabaseReader);
+			theAircraft = Aircraft.importFromXML(
+					pathToXML,
+					dirLiftingSurfaces,
+					dirFuselages,
+					dirEngines,
+					dirLandingGears,
+					dirSystems,
+					dirCabinConfiguration,
+					dirAirfoil,
+					dirCosts,
+					aeroDatabaseReader,
+					highLiftDatabaseReader);
 			
 			System.out.println("The Aircaraft ...");
 			System.out.println(AircraftTestTopView.theAircraft.toString());

@@ -92,14 +92,14 @@ public class EngineTest extends Application {
 			// the Application.start method
 				
 			// read Engine from xml ...
-//			theEngine = Engine.importFromXML(pathToXML);
+			theEngine = Engine.importFromXML(pathToXML);
 
 			// default Engine ...
-			theEngine = new Engine.EngineBuilder(
-					"ATR-72 engine",
-					EngineTypeEnum.TURBOPROP,
-					AircraftEnum.ATR72)
-					.build();
+//			theEngine = new Engine.EngineBuilder(
+//					"ATR-72 engine",
+//					EngineTypeEnum.TURBOPROP,
+//					AircraftEnum.ATR72)
+//					.build();
 			
 			System.out.println("The Engine ...");
 			System.out.println(EngineTest.theEngine.toString());

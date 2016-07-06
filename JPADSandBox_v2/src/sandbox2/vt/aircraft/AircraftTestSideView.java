@@ -330,6 +330,9 @@ public class AircraftTestSideView extends Application {
 			String dirLiftingSurfaces = va.getLiftingSurfacesDirectory().getCanonicalPath();
 			System.out.println("LIFTING SURFACES ===> " + dirLiftingSurfaces);
 			
+			String dirEngines = va.getEnginesDirectory().getCanonicalPath();
+			System.out.println("ENGINES ===> " + dirEngines);
+			
 			String dirLandingGears = va.getLandingGearsDirectory().getCanonicalPath();
 			System.out.println("LANDING GEARS ===> " + dirLandingGears);
 			
@@ -362,6 +365,7 @@ public class AircraftTestSideView extends Application {
 					pathToXML,
 					dirLiftingSurfaces,
 					dirFuselages,
+					dirEngines,
 					dirLandingGears,
 					dirSystems,
 					dirCabinConfiguration,

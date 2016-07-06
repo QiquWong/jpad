@@ -12,18 +12,18 @@ import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.MethodEnum;
 import writers.JPADStaticWriteUtils;
 
-public class PowerPlantBalanceManager extends BalanceManager{
+public class EngineBalanceManager extends BalanceManager{
 
-	private PowerPlant _thePowerPlant; 
+	private Engine _theEngine; 
 	
 	private Amount<Length> _xCG;
 	private Double[] _percentDifferenceXCG;
 	
 	
-	public PowerPlantBalanceManager(PowerPlant powerPlant) {
+	public EngineBalanceManager(Engine engine) {
 		super();
 		
-		_thePowerPlant = powerPlant;
+		_theEngine = engine;
 		initializeDependentData();
 		initializeInnerCalculators();
 		initializeDependentData();
@@ -33,11 +33,11 @@ public class PowerPlantBalanceManager extends BalanceManager{
 	
 	public void initializeDependentData() {
 		_cg.setLRForigin(
-				_thePowerPlant.getXApexConstructionAxes(), 
-				_thePowerPlant.getYApexConstructionAxes(), 
-				_thePowerPlant.getZApexConstructionAxes());
+				_theEngine.getXApexConstructionAxes(), 
+				_theEngine.getYApexConstructionAxes(), 
+				_theEngine.getZApexConstructionAxes());
 		
-		_cg.set_xLRFref(_thePowerPlant.get_engineList().get(0).getLength().divide(2));
+		_cg.set_xLRFref(_theEngine.getLength().divide(2));
 		_cg.set_yLRFref(Amount.valueOf(0., SI.METER));
 		_cg.set_zLRFref(Amount.valueOf(0., SI.METER));
 	}
@@ -71,7 +71,7 @@ public class PowerPlantBalanceManager extends BalanceManager{
 	
 	public void sforza() {
 		_methodsList.add(MethodEnum.SFORZA);
-		_xCG = _thePowerPlant.get_engineList().get(0).getLength().divide(2.);
+		_xCG = _theEngine.getLength().divide(2.);
 		_xCGMap.put(MethodEnum.SFORZA, _xCG);
 	}
 	

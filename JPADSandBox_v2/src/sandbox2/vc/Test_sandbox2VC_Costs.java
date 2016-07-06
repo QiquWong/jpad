@@ -51,6 +51,10 @@ class MyArgumentsAircraft {
 			usage = "lifting surfaces directory path")
 	private File _liftingSurfacesDirectory;
 	
+	@Option(name = "-de", aliases = { "--dir-engines" }, required = true,
+			usage = "engines directory path")
+	private File _enginesDirectory;
+	
 	@Option(name = "-dlg", aliases = { "--dir-landing-gears" }, required = true,
 			usage = "landing gears directory path")
 	private File _landingGearsDirectory;
@@ -87,6 +91,10 @@ class MyArgumentsAircraft {
 		return _liftingSurfacesDirectory;
 	}
 
+	public File getEnginesDirectory() {
+		return _enginesDirectory;
+	}
+	
 	public File getLandingGearsDirectory() {
 		return _landingGearsDirectory;
 	}
@@ -134,6 +142,9 @@ public class Test_sandbox2VC_Costs {
 			String dirLiftingSurfaces = va.getLiftingSurfacesDirectory().getCanonicalPath();
 			System.out.println("LIFTING SURFACES ===> " + dirLiftingSurfaces);
 			
+			String dirEngines = va.getEnginesDirectory().getCanonicalPath();
+			System.out.println("ENGINES ===> " + dirEngines);
+			
 			String dirLandingGears = va.getLandingGearsDirectory().getCanonicalPath();
 			System.out.println("LANDING GEARS ===> " + dirLandingGears);
 			
@@ -170,6 +181,7 @@ public class Test_sandbox2VC_Costs {
 					pathToXML,
 					dirLiftingSurfaces,
 					dirFuselages,
+					dirEngines,
 					dirLandingGears,
 					dirSystems,
 					dirCabinConfiguration,
@@ -202,7 +214,7 @@ public class Test_sandbox2VC_Costs {
 			theAircraft.getTheCosts().setUtilization(4750);
 //			theAircraft.getTheCosts().calcTotalInvestments(98400000.0, 9800000.0, 2, 0.1, 0.3);
 //			theAircraft.getTheCosts().get_theFixedCharges().set_residualValue(0.2);
-			theAircraft.getPowerPlant().set_engineType(EngineTypeEnum.TURBOFAN);
+			theAircraft.getPowerPlant().setEngineType(EngineTypeEnum.TURBOFAN);
 //			Amount<Duration> tb = theCost.calcBlockTime();
 //			theCost.set_blockTime(Amount.valueOf(15.94, NonSI.HOUR));;
 			

@@ -147,7 +147,7 @@ public class ACBalanceManager extends ACCalculatorManager {
 				aircraft.getWing().get_xLEMacActualBRF(), 
 				aircraft.getWing().get_xLEMacActualBRF(), 
 				Amount.valueOf(0., SI.METER), 
-				aircraft.getWing().get_meanAerodChordActual());
+				aircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord());
 
 		// Structure + engines CG
 		_cgStructureAndPower = new CenterOfGravity();
@@ -155,10 +155,10 @@ public class ACBalanceManager extends ACCalculatorManager {
 		System.out.println("fuel tank --> " + aircraft.getFuelTank().getXCG().getEstimatedValue());
 		double cgPowerPlantContribute =0.0;
 		
-		for(int i=0 ; i< aircraft.getPowerPlant().get_engineNumber(); i++){
-			cgPowerPlantContribute = cgPowerPlantContribute + (aircraft.getPowerPlant().get_cgList().get(i).get_xBRF().getEstimatedValue()*
-					aircraft.getPowerPlant().get_engineList().get(i).getTotalMass().getEstimatedValue());
-			System.out.println("Engine " + i + " --> " + aircraft.getPowerPlant().get_cgList().get(i).get_xBRF());
+		for(int i=0 ; i< aircraft.getPowerPlant().getEngineNumber(); i++){
+			cgPowerPlantContribute = cgPowerPlantContribute + (aircraft.getPowerPlant().getCGList().get(i).get_xBRF().getEstimatedValue()*
+					aircraft.getPowerPlant().getEngineList().get(i).getTotalMass().getEstimatedValue());
+			System.out.println("Engine " + i + " --> " + aircraft.getPowerPlant().getCGList().get(i).get_xBRF());
 		}
 		_cgStructureAndPower.set_xBRF(
 				Amount.valueOf(
@@ -166,7 +166,7 @@ public class ACBalanceManager extends ACCalculatorManager {
 								aircraft.getTheWeights().get_structuralMass().getEstimatedValue()*
 								get_cgStructure().get_xBRF().getEstimatedValue())/
 								(aircraft.getTheWeights().get_structuralMass().getEstimatedValue() + 
-										aircraft.getPowerPlant().get_totalMass().getEstimatedValue())
+										aircraft.getPowerPlant().getTotalMass().getEstimatedValue())
 										, SI.METER));
 
 		get_cgStructureAndPower().calculateCGinMAC(

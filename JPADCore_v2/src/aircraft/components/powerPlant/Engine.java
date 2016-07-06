@@ -1,5 +1,6 @@
 package aircraft.components.powerPlant;
 
+import javax.measure.quantity.Angle;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
@@ -11,6 +12,7 @@ import org.jscience.physics.amount.Amount;
 
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
+import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.EngineTypeEnum;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;
@@ -20,6 +22,12 @@ public class Engine implements IEngine {
 
 	private String _id;
 	private EngineTypeEnum _engineType;
+	
+	private EngineMountingPositionEnum _mountingPoint;
+	private Amount<Length> _xApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
+	private Amount<Length> _yApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
+	private Amount<Length> _zApexConstructionAxes = Amount.valueOf(0.0, SI.METER);
+	private Amount<Angle> _tiltingAngle;
 	
 	private Amount<Length> _length;
 
@@ -34,11 +42,18 @@ public class Engine implements IEngine {
 	private int _numberOfBlades;
 	//------------------------------------------
 	
+	private int _numberOfCompressorStages, _numberOfShafts; 
+	private double _overallPressureRatio;
+	
 	private Double _bpr;
 	private Amount<Power> _p0;
 	private Amount<Force> _t0;
 	private Amount<Mass> _dryMassPublicDomain; 
+	private Amount<Mass> _totalMass; // 1.5*dryMass (ref: Aircraft design - Kundu (pag.245) 
 
+	private EngineWeightsManager _theWeights;
+	private EngineBalanceManager _theBalance;
+	
 	//============================================================================================
 	// Builder pattern 
 	//============================================================================================
@@ -50,6 +65,12 @@ public class Engine implements IEngine {
 		
 		// optional parameters ... defaults
 		// ...
+		private EngineMountingPositionEnum __mountingPoint;
+		private Amount<Length> __xApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
+		private Amount<Length> __yApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
+		private Amount<Length> __zApexConstructionAxes = Amount.valueOf(0.0, SI.METER);
+		private Amount<Angle> __tiltingAngle;
+		
 		private Amount<Length> __length = Amount.valueOf(0.0, SI.METER);
 		private Amount<Length> __diameter = Amount.valueOf(0.0, SI.METER);
 		private Amount<Length> __width = Amount.valueOf(0.0, SI.METER);
@@ -60,6 +81,9 @@ public class Engine implements IEngine {
 		private Amount<Power> __p0 = Amount.valueOf(0.0, SI.WATT);
 		private Amount<Force> __t0 = Amount.valueOf(0.0, SI.NEWTON);
 		private Amount<Mass> __dryMassPublicDomain = Amount.valueOf(0.0, SI.KILOGRAM);
+		private int __numberOfCompressorStages = 0;
+		private int __numberOfShafts = 0; 
+		private double __overallPressureRatio = 0.0;
 		
 		public EngineBuilder id (String id) {
 			this.__id = id;
@@ -121,6 +145,46 @@ public class Engine implements IEngine {
 			return this;
 		}
 		
+		public EngineBuilder numberOfCompressorStages (int numberOfCompressorStages) {
+			this.__numberOfCompressorStages = numberOfCompressorStages;
+			return this;
+		}
+		
+		public EngineBuilder numberOfShafts (int numberOfShafts) {
+			this.__numberOfShafts = numberOfShafts;
+			return this;
+		}
+		
+		public EngineBuilder overallPressureRatio (double overallPressureRatio) {
+			this.__overallPressureRatio = overallPressureRatio;
+			return this;
+		}
+		
+		public EngineBuilder mountingPoint (EngineMountingPositionEnum mountingPoint) {
+			this.__mountingPoint = mountingPoint;
+			return this;
+		}
+		
+		public EngineBuilder xApexConstructionAxes (Amount<Length> xApex) {
+			this.__xApexConstructionAxes = xApex;
+			return this;
+		}
+		
+		public EngineBuilder yApexConstructionAxes (Amount<Length> yApex) {
+			this.__yApexConstructionAxes = yApex;
+			return this;
+		}
+		
+		public EngineBuilder zApexConstructionAxes (Amount<Length> zApex) {
+			this.__zApexConstructionAxes = zApex;
+			return this;
+		}
+		
+		public EngineBuilder riggingAngle (Amount<Angle> muT) {
+			this.__tiltingAngle = muT;
+			return this;
+		}
+		
 		public EngineBuilder (String id, EngineTypeEnum engineType) {
 			this.__id = id;
 			this.__engineType = engineType;
@@ -151,7 +215,10 @@ public class Engine implements IEngine {
 				__numberOfBlades = 6;
 				__dryMassPublicDomain = Amount.valueOf(1064., NonSI.POUND).to(SI.KILOGRAM);
 				__p0 = Amount.valueOf(2750., NonSI.HORSEPOWER).to(SI.WATT);
-
+				__numberOfCompressorStages = 5;
+				__numberOfShafts = 2;
+				__overallPressureRatio = 15.;
+				
 				break;
 				
 			case B747_100B:
@@ -162,6 +229,9 @@ public class Engine implements IEngine {
 				__bpr = 5.0;
 				__dryMassPublicDomain = Amount.valueOf(3905.0, NonSI.POUND).to(SI.KILOGRAM);
 				__t0 = Amount.valueOf(204000.0000, SI.NEWTON);
+				__numberOfCompressorStages = 14;
+				__numberOfShafts = 2;
+				__overallPressureRatio = 23.4;
 				
 				break;
 				
@@ -173,6 +243,9 @@ public class Engine implements IEngine {
 				__bpr = 6.0;				
 				__dryMassPublicDomain = Amount.valueOf(1162.6, NonSI.POUND).to(SI.KILOGRAM);
 				__t0 = Amount.valueOf(7000*AtmosphereCalc.g0.getEstimatedValue(), SI.NEWTON);
+				__numberOfCompressorStages = 5; // TODO: CHECK
+				__numberOfShafts = 2;// TODO: CHECK
+				__overallPressureRatio = 15.;// TODO: CHECK
 				
 				break;
 			}
@@ -197,20 +270,29 @@ public class Engine implements IEngine {
 		this._p0 = builder.__p0;
 		this._t0 = builder.__t0;
 		this._dryMassPublicDomain = builder.__dryMassPublicDomain;
+		this._totalMass = this._dryMassPublicDomain.times(1.5);
+		this._numberOfCompressorStages = builder.__numberOfCompressorStages;
+		this._numberOfShafts = builder.__numberOfShafts;
+		this._overallPressureRatio = builder.__overallPressureRatio;
+		this._mountingPoint = builder.__mountingPoint;
+		this._xApexConstructionAxes = builder.__xApexConstructionAxes;
+		this._yApexConstructionAxes = builder.__yApexConstructionAxes;
+		this._zApexConstructionAxes = builder.__zApexConstructionAxes;
+		this._tiltingAngle = builder.__tiltingAngle;
 		
 		if((this._engineType == EngineTypeEnum.TURBOPROP)
 				|| (this._engineType == EngineTypeEnum.PISTON)) {
 			calculateT0FromP0();
 		}
+		
+		this._theWeights = new EngineWeightsManager(this);
+		this._theBalance = new EngineBalanceManager(this);
 	}
 	
 	//===================================================================================================
 	// End of builder pattern
 	//===================================================================================================
 	
-	//-------------------------------
-	// TODO : IMPORT FROM XML
-	//-------------------------------
 	public static Engine importFromXML (String pathToXML) {
 		
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
@@ -254,6 +336,9 @@ public class Engine implements IEngine {
 			@SuppressWarnings("unchecked")
 			Amount<Mass> dryMass = ((Amount<Mass>) reader.getXMLAmountWithUnitByPath("//specifications/dry_mass")); 
 			Double bpr = Double.valueOf(reader.getXMLPropertyByPath("//specifications/by_pass_ratio"));
+			Integer numberOfCompressorStages = Integer.valueOf(reader.getXMLPropertyByPath("//specifications/number_of_compressor_stages"));
+			Integer numberOfShafts = Integer.valueOf(reader.getXMLPropertyByPath("//specifications/number_of_shafts"));
+			Double overallPressureRatio = Double.valueOf(reader.getXMLPropertyByPath("//specifications/overall_pressure_ratio"));
 			
 			theEngine = new EngineBuilder(id, engineType)
 					.id(id)
@@ -263,11 +348,45 @@ public class Engine implements IEngine {
 					.t0(staticThrust)
 					.bpr(bpr)
 					.dryMass(dryMass)
+					.numberOfCompressorStages(numberOfCompressorStages)
+					.numberOfShafts(numberOfShafts)
+					.overallPressureRatio(overallPressureRatio)
 					.build();
 			
 		}
-		else if((engineType == EngineTypeEnum.PISTON)||(engineType == EngineTypeEnum.TURBOPROP)) {
+		else if(engineType == EngineTypeEnum.TURBOPROP) {
 		
+			Amount<Length> length = reader.getXMLAmountLengthByPath("//dimensions/length");
+			Amount<Length> width = reader.getXMLAmountLengthByPath("//dimensions/width");
+			Amount<Length> height = reader.getXMLAmountLengthByPath("//dimensions/height");
+			Amount<Length> propellerDiameter = reader.getXMLAmountLengthByPath("//dimensions/propeller_diameter");
+			
+			@SuppressWarnings("unchecked")
+			Amount<Power> staticPower = ((Amount<Power>) reader.getXMLAmountWithUnitByPath("//specifications/static_power"));
+			@SuppressWarnings("unchecked")
+			Amount<Mass> dryMass = ((Amount<Mass>) reader.getXMLAmountWithUnitByPath("//specifications/dry_mass")); 
+			int numberOfPropellerBlades = Integer.valueOf(reader.getXMLPropertyByPath("//specifications/number_of_propeller_blades"));
+			Integer numberOfCompressorStages = Integer.valueOf(reader.getXMLPropertyByPath("//specifications/number_of_compressor_stages"));
+			Integer numberOfShafts = Integer.valueOf(reader.getXMLPropertyByPath("//specifications/number_of_shafts"));
+			Double overallPressureRatio = Double.valueOf(reader.getXMLPropertyByPath("//specifications/overall_pressure_ratio"));
+			
+			theEngine = new EngineBuilder(id, engineType)
+					.id(id)
+					.type(engineType)
+					.length(length)
+					.width(width)
+					.height(height)
+					.propellerDiameter(propellerDiameter)
+					.numberOfBlades(numberOfPropellerBlades)
+					.p0(staticPower)
+					.dryMass(dryMass)
+					.numberOfCompressorStages(numberOfCompressorStages)
+					.numberOfShafts(numberOfShafts)
+					.overallPressureRatio(overallPressureRatio)
+					.build();
+		}
+		else if(engineType == EngineTypeEnum.PISTON) {
+			
 			Amount<Length> length = reader.getXMLAmountLengthByPath("//dimensions/length");
 			Amount<Length> width = reader.getXMLAmountLengthByPath("//dimensions/width");
 			Amount<Length> height = reader.getXMLAmountLengthByPath("//dimensions/height");
@@ -338,17 +457,27 @@ public class Engine implements IEngine {
 		MyConfiguration.customizeAmountOutput();
 
 		StringBuilder sb = new StringBuilder()
-				.append("\t-------------------------------------\n")
-				.append("\tEngine\n")
-				.append("\t-------------------------------------\n")
 				.append("\tID: '" + _id + "'\n")
 				.append("\tType: " + _engineType + "\n")
 				.append("\t·····································\n")
 				.append("\tLength: " + _length + "\n")
 				;
 		if((_engineType == EngineTypeEnum.TURBOFAN) || (_engineType == EngineTypeEnum.TURBOJET))
-			sb.append("\tDiameter: " + _diameter + "\n");
-		else if((_engineType == EngineTypeEnum.PISTON) || (_engineType == EngineTypeEnum.TURBOPROP)) 
+			sb.append("\tDiameter: " + _diameter + "\n")
+			.append("\tNumber of compressor stages: " + _numberOfCompressorStages + "\n")
+			.append("\tNumber of shafts: " + _numberOfShafts + "\n")
+			.append("\tOverall pressure ratio: " + _overallPressureRatio + "\n")
+			;
+		else if(_engineType == EngineTypeEnum.TURBOPROP) 
+			sb.append("\tWidth: " + _width + "\n")
+			.append("\tHeight: " + _height + "\n")
+			.append("\tPropeller diameter: " + _propellerDiameter + "\n")
+			.append("\tNumber of blades: " + _numberOfBlades + "\n")
+			.append("\tNumber of compressor stages: " + _numberOfCompressorStages + "\n")
+			.append("\tNumber of shafts: " + _numberOfShafts + "\n")
+			.append("\tOverall pressure ratio: " + _overallPressureRatio + "\n")
+			;
+		else if(_engineType == EngineTypeEnum.PISTON) 
 			sb.append("\tWidth: " + _width + "\n")
 			.append("\tHeight: " + _height + "\n")
 			.append("\tPropeller diameter: " + _propellerDiameter + "\n")
@@ -391,10 +520,60 @@ public class Engine implements IEngine {
 	}
 	
 	@Override
+	public Amount<Length> getXApexConstructionAxes() {
+		return _xApexConstructionAxes;
+	}
+
+	@Override
+	public void setXApexConstructionAxes(Amount<Length> _X0) {
+		this._xApexConstructionAxes = _X0;
+	}
+
+	@Override
+	public Amount<Length> getYApexConstructionAxes() {
+		return _yApexConstructionAxes;
+	}
+
+	@Override
+	public void setYApexConstructionAxes(Amount<Length> _Y0) {
+		this._yApexConstructionAxes = _Y0;
+	}
+
+	@Override
+	public Amount<Length> getZApexConstructionAxes() {
+		return _zApexConstructionAxes;
+	}
+
+	@Override
+	public void setZApexConstructionAxes(Amount<Length> _Z0) {
+		this._zApexConstructionAxes = _Z0;
+	}
+
+	@Override
+	public Amount<Angle> getTiltingAngle() {
+		return _tiltingAngle;
+	}
+
+	@Override
+	public void setTiltingAngle(Amount<Angle> _muT) {
+		this._tiltingAngle = _muT;
+	}
+	
+	@Override
 	public void setEngineType(EngineTypeEnum _engineType) {
 		this._engineType = _engineType;
 	}
 
+	@Override
+	public EngineMountingPositionEnum getMountingPosition() {
+		return _mountingPoint;
+	}
+
+	@Override
+	public void setMountingPosition(EngineMountingPositionEnum _position) {
+		this._mountingPoint = _position;
+	}
+	
 	@Override
 	public Amount<Power> getP0() {
 		return _p0;
@@ -435,6 +614,14 @@ public class Engine implements IEngine {
 		this._dryMassPublicDomain = dryMassPublicDomain;
 	}
 	
+	public Amount<Mass> getTotalMass() {
+		return _totalMass;
+	}
+
+	public void setTotalMass(Amount<Mass> _totalMass) {
+		this._totalMass = _totalMass;
+	}
+
 	@Override
 	public Amount<Length> getLength() {
 		return _length;
@@ -493,6 +680,50 @@ public class Engine implements IEngine {
 	@Override
 	public void setNumberOfBlades(int _nBlades) {
 		this._numberOfBlades = _nBlades;
+	}
+
+	public int getNumberOfCompressorStages() {
+		return _numberOfCompressorStages;
+	}
+
+	public void setNumberOfCompressorStages(int _numberOfCompressorStages) {
+		this._numberOfCompressorStages = _numberOfCompressorStages;
+	}
+
+	public int getNumberOfShafts() {
+		return _numberOfShafts;
+	}
+
+	public void setNumberOfShafts(int _numberOfShafts) {
+		this._numberOfShafts = _numberOfShafts;
+	}
+
+	public double getOverallPressureRatio() {
+		return _overallPressureRatio;
+	}
+
+	public void setOverallPressureRatio(double _overallPressureRatio) {
+		this._overallPressureRatio = _overallPressureRatio;
+	}
+
+	@Override
+	public EngineWeightsManager getTheWeights() {
+		return _theWeights;
+	}
+
+	@Override
+	public void setTheWeights(EngineWeightsManager _theWeights) {
+		this._theWeights = _theWeights;
+	}
+
+	@Override
+	public EngineBalanceManager getTheBalance() {
+		return _theBalance;
+	}
+
+	@Override
+	public void setTheBalance(EngineBalanceManager _theBalance) {
+		this._theBalance = _theBalance;
 	}
 
 }

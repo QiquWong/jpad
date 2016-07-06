@@ -561,7 +561,7 @@ public class JPADDataWriter {
 					writeOutputNode("Nacelles_mass", _theAircraft.getNacelles().get_totalMass(), weightsAnalysis);
 					writeOutputNode("Landing_gear_mass", _theAircraft.getLandingGears().getMassEstimated(), weightsAnalysis);
 					writeOutputNode("Structure_mass", _theAircraft.getTheWeights().get_structuralMass(), weightsAnalysis);
-					writeOutputNode("Power_plant_mass", _theAircraft.getPowerPlant().get_totalMass(), weightsAnalysis);
+					writeOutputNode("Power_plant_mass", _theAircraft.getPowerPlant().getTotalMass(), weightsAnalysis);
 					writeOutputNode("Systems_mass", _theAircraft.getSystems().getOverallMass(), weightsAnalysis);
 					writeOutputNode("Furnishings_and_Equipment_mass", _theAircraft.getCabinConfiguration().getMassEstimatedFurnishingsAndEquipment(), weightsAnalysis);
 					writeOutputNode("Manufacturer_empty_mass", _theAircraft.getTheWeights().get_manufacturerEmptyMass(), weightsAnalysis);
@@ -1205,17 +1205,17 @@ public class JPADDataWriter {
 		writeInputNode("Xcoordinate", powerPlant.get_X0(), powerPlantParameters, true);
 		writeInputNode("Ycoordinate", powerPlant.get_Y0(), powerPlantParameters, true);
 		writeInputNode("Zcoordinate", powerPlant.get_Z0(), powerPlantParameters, true);
-		writeInputNode("Number_of_engines", powerPlant.get_engineNumber(), powerPlantParameters, true);
+		writeInputNode("Number_of_engines", powerPlant.getEngineNumber(), powerPlantParameters, true);
 		writeInputNode("Engines_equal", powerPlant.is_engineEqual(),  powerPlantParameters, true);
 		writeOutputNode("Maximum_total_power_output", powerPlant.get_P0Total(),  powerPlantParameters);
 		writeOutputNode("Maximum_total_thrust", powerPlant.get_T0Total(), powerPlantParameters);
 		writeInputNode("Total_Reference_mass", powerPlant.get_dryMassPublicDomain(), powerPlantParameters, true);
 
 		int nEngines = 1;
-		if (powerPlant.is_engineEqual() == false) nEngines = powerPlant.get_engineList().size();
+		if (powerPlant.is_engineEqual() == false) nEngines = powerPlant.getEngineList().size();
 
 		for (int k=0; k < nEngines; k++){
-			writeEngineInput(powerPlant.get_engineList().get(k), _powerPlantInitiator);
+			writeEngineInput(powerPlant.getEngineList().get(k), _powerPlantInitiator);
 		}
 	}
 
@@ -1227,8 +1227,8 @@ public class JPADDataWriter {
 		Element weights = addElementToSubElement("Weights", analysis);
 
 		writeOutputNode("Total_Reference_mass", powerPlant.get_dryMassPublicDomain(), weights);
-		writeOutputNode("Total_Estimated_mass", powerPlant.get_totalMass(), weights);
-		writeOutputNode("Percent_difference_from_total_reference_mass", powerPlant.get_percentTotalDifference(), weights);
+		writeOutputNode("Total_Estimated_mass", powerPlant.getTotalMass(), weights);
+		writeOutputNode("Percent_difference_from_total_reference_mass", powerPlant.getPercentTotalDifference(), weights);
 
 		// --- Balance --------------------------------------
 		Element balance = addElementToSubElement("Balance", analysis);
@@ -1247,10 +1247,10 @@ public class JPADDataWriter {
 		writeOutputNode("Zcg_BRF", powerPlant.get_cg().get_zBRF(), balance);
 
 		int size = 1;
-		if (powerPlant.is_engineEqual() == false) size = powerPlant.get_engineList().size();
+		if (powerPlant.is_engineEqual() == false) size = powerPlant.getEngineList().size();
 
 		for (int k=0; k < size; k++){
-			writeEngineOutput(powerPlant.get_engineList().get(k), analysisNode);
+			writeEngineOutput(powerPlant.getEngineList().get(k), analysisNode);
 		}
 
 		JPADStaticWriteUtils.writeAllArraysToXls(_sheet, _xlsArraysDescription, _xlsArraysList, _xlsArraysUnit);

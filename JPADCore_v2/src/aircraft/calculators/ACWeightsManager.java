@@ -239,7 +239,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 		aircraft.getSystems().calculateMass(aircraft, conditions, MethodEnum.TORENBEEK_2013);
 		aircraft.getCabinConfiguration().calculateMass(aircraft, conditions, MethodEnum.TORENBEEK_2013);
 		aircraft.getTheWeights().set_manufacturerEmptyMass(
-				aircraft.getPowerPlant().get_totalMass().plus(
+				aircraft.getPowerPlant().getTotalMass().plus(
 						aircraft.getTheWeights().get_structuralMass()).plus(
 								aircraft.getSystems().getOverallMass()).plus(
 										aircraft.getCabinConfiguration().getMassEstimatedFurnishingsAndEquipment()));
@@ -252,7 +252,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 		aircraft.getWing().setMassReference(aircraft.getTheWeights().get_MZFM().times(.1));
 		aircraft.getHTail().setMassReference(aircraft.getTheWeights().get_MZFM().times(.015));
 		aircraft.getVTail().setMassReference(aircraft.getTheWeights().get_MZFM().times(.015));
-		aircraft.getPowerPlant().set_mass(aircraft.getTheWeights().get_MZFM().times(.05));
+		aircraft.getPowerPlant().setTotalMass(aircraft.getTheWeights().get_MZFM().times(.05));
 		aircraft.getNacelles().set_totalMass(aircraft.getTheWeights().get_MZFM().times(.015));
 		aircraft.getFuelTank().setFuelMass(aircraft.getTheWeights().get_MZFM().times(.015));
 		aircraft.getLandingGears().setMass(aircraft.getTheWeights().get_MZFM().times(.04));

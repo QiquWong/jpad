@@ -7,10 +7,10 @@
 <listEntry value="1"/>
 </listAttribute>
 <mapAttribute key="org.eclipse.debug.core.environmentVariables">
-<mapEntry key="Path" value="c:\Users\Vittorio\ADOPT_PROJECT\jpad\libraries\hdf\"/>
+<mapEntry key="Path" value="${JPAD_ROOT}\libraries\hdf\"/>
 </mapAttribute>
 <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="sandbox2.vt.aircraft.AircraftTestTopView"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-i in/Template_Aircraft/aircraft.xml&#9;-da in/Template_Aircraft/lifting_surfaces/airfoils -df in/Template_Aircraft/fuselages -dls in/Template_Aircraft/lifting_surfaces -dlg in/Template_Aircraft/landing_gears -ds in/Template_Aircraft/systems -dcc in/Template_Aircraft/cabin_configurations -dc in/Template_Aircraft/costs"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-i in/Template_Aircraft/aircraft.xml -da in/Template_Aircraft/lifting_surfaces/airfoils -df in/Template_Aircraft/fuselages -dls in/Template_Aircraft/lifting_surfaces -de in/Template_Aircraft/engines -dlg in/Template_Aircraft/landing_gears -ds in/Template_Aircraft/systems -dcc in/Template_Aircraft/cabin_configurations -dc in/Template_Aircraft/costs"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="JPADSandBox_v2"/>
 </launchConfiguration>

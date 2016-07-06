@@ -9,6 +9,9 @@
 			<static_thrust unit="lbf">7000</static_thrust>
 			<by_pass_ratio>6.5</by_pass_ratio>
 			<dry_mass unit="kg">1200</dry_mass>
+			<number_of_compressor_stages>15</number_of_compressor_stages>
+			<number_of_shafts>2</number_of_shafts>
+			<overall_pressure_ratio>25.0</overall_pressure_ratio>
 		</specifications>
 	</engine>
 </jpad_config>

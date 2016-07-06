@@ -262,7 +262,7 @@ public class LiftingSurface implements ILiftingSurface {
 
 				methodsList.add(method);
 
-				if (!aircraft.getPowerPlant().get_engineType().equals(EngineTypeEnum.TURBOPROP)) {
+				if (!aircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOPROP)) {
 
 					double R, kComp;
 
@@ -277,11 +277,11 @@ public class LiftingSurface implements ILiftingSurface {
 						try {
 							R = _mass.getEstimatedValue() + aircraft.getFuelTank().getFuelMass().getEstimatedValue() +
 									((2*(aircraft.getNacelles().get_totalMass().getEstimatedValue() + 
-											aircraft.getPowerPlant().get_massDryEngineActual().getEstimatedValue())*
+											aircraft.getPowerPlant().getEngineList().get(0).getDryMassPublicDomain().getEstimatedValue())*
 											aircraft.getNacelles().get_distanceBetweenInboardNacellesY())/
 											(0.4*this.getSpan().getEstimatedValue())) + 
 									((2*(aircraft.getNacelles().get_totalMass().getEstimatedValue() + 
-											aircraft.getPowerPlant().get_massDryEngineActual().getEstimatedValue())*
+											aircraft.getPowerPlant().getEngineList().get(0).getDryMassPublicDomain().getEstimatedValue())*
 											aircraft.getNacelles().get_distanceBetweenOutboardNacellesY())/
 											(0.4*this.getSpan().getEstimatedValue()));
 						} catch(NullPointerException e) {R = 0.;}

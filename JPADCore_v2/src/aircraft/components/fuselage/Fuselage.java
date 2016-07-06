@@ -16,9 +16,6 @@ import javax.measure.quantity.Mass;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
-import org.apache.commons.math3.analysis.UnivariateFunction;
-import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
-import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.OperatingConditions;
@@ -310,7 +307,6 @@ public class Fuselage implements IFuselage {
 	}
 
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void calculateMass(Aircraft aircraft, 
 			OperatingConditions conditions, 
@@ -513,8 +509,6 @@ public class Fuselage implements IFuselage {
 		calculateCG(aircraft, conditions, MethodEnum.TORENBEEK_1982);
 	}
 	
-	
-	@SuppressWarnings("unchecked")
 	@Override
 	public void calculateCG(
 			Aircraft aircraft, 
@@ -547,27 +541,27 @@ public class Fuselage implements IFuselage {
 		case TORENBEEK_1982 : { 
 			_methodsList.add(method);
 
-			if (aircraft.getPowerPlant().get_engineNumber() == 1 && 
-					(aircraft.getPowerPlant().get_engineType() == EngineTypeEnum.PISTON |
-					aircraft.getPowerPlant().get_engineType() == EngineTypeEnum.TURBOPROP)) {
+			if (aircraft.getPowerPlant().getEngineNumber() == 1 && 
+					(aircraft.getPowerPlant().getEngineType() == EngineTypeEnum.PISTON |
+					aircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOPROP)) {
 
 				_xCG = _fuselageCreator.getLenF().times(0.335);
 			}
 
-			if (aircraft.getPowerPlant().get_position() == EngineMountingPositionEnum.WING) {
-				if ((aircraft.getPowerPlant().get_engineType() == EngineTypeEnum.PISTON |
-						aircraft.getPowerPlant().get_engineType() == EngineTypeEnum.TURBOPROP)) {
+			if (aircraft.getPowerPlant().getMountingPosition() == EngineMountingPositionEnum.WING) {
+				if ((aircraft.getPowerPlant().getEngineType() == EngineTypeEnum.PISTON |
+						aircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOPROP)) {
 					_xCG = _fuselageCreator.getLenF().times(0.39); 
 				} else {
 					_xCG = _fuselageCreator.getLenF().times(0.435);
 				}
 			}
 
-			if (aircraft.getPowerPlant().get_position() == EngineMountingPositionEnum.REAR_FUSELAGE) {
+			if (aircraft.getPowerPlant().getMountingPosition() == EngineMountingPositionEnum.REAR_FUSELAGE) {
 				_xCG = _fuselageCreator.getLenF().times(0.47);
 			}
 
-			if (aircraft.getPowerPlant().get_position() == EngineMountingPositionEnum.BURIED) {
+			if (aircraft.getPowerPlant().getMountingPosition() == EngineMountingPositionEnum.BURIED) {
 				_xCG = _fuselageCreator.getLenF().times(0.45);
 			}
 

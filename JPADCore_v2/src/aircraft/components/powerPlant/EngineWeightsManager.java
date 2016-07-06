@@ -11,16 +11,14 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.componentmodel.InnerCalculator;
 import aircraft.componentmodel.componentcalcmanager.WeightsManager;
-import aircraft.components.Aircraft;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import writers.JPADStaticWriteUtils;
 
-public class PowerPlantWeightsManager extends WeightsManager{
+public class EngineWeightsManager extends WeightsManager{
 
-	private Aircraft _theAircraft;
 	private Engine _theEngine;
 	private EngineTypeEnum _engineType;
 
@@ -29,10 +27,7 @@ public class PowerPlantWeightsManager extends WeightsManager{
 	_dryMassPublicDomain;
 	private Amount<Force> _t0;
 
-	// TODO : THIS HAS TO CALCULATE THE TOTAL POWER PLANT MASS CONSIDERING THE NUMBER OF ENGINES
-	
-	public PowerPlantWeightsManager(Aircraft aircraft, Engine engine) {
-		_theAircraft = aircraft;
+	public EngineWeightsManager(Engine engine) {
 		_theEngine = engine;
 		
 		initializeDependentData();

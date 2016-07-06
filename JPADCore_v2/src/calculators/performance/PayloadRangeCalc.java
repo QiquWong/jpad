@@ -131,7 +131,7 @@ public class PayloadRangeCalc{
 		maxFuelMass = theAircraft.getFuelTank().getFuelMass();
 		nPassMax = theAircraft.getCabinConfiguration().getMaxPax();
 		airfoilType = theAircraft.getWing().getAirfoilList().get(0).getType();
-		engineType = theAircraft.getPowerPlant().get_engineType();
+		engineType = theAircraft.getPowerPlant().getEngineType();
 
 		surface = theAircraft.getWing().getSurface();
 		ar = theAircraft.getWing().getAspectRatio();
@@ -144,7 +144,7 @@ public class PayloadRangeCalc{
 		 * this works for turbofan and turboprop engine only (which are what we're analyzing). 
 		 */
 		if (engineType == EngineTypeEnum.TURBOFAN)
-			byPassRatio = theAircraft.getPowerPlant().get_engineList().get(0).getBPR();
+			byPassRatio = theAircraft.getPowerPlant().getEngineList().get(0).getBPR();
 		else
 			byPassRatio = 0.0;
 		

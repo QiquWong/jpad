@@ -158,7 +158,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 
 		initializeComponentsAerodynamics(_theOperatingConditions, aircraft);
 
-		ne = aircraft.getPowerPlant().get_engineNumber();
+		ne = aircraft.getPowerPlant().getEngineNumber();
 		lambdaW = aircraft.getWing().getLiftingSurfaceCreator().getTaperRatioEquivalentWing().doubleValue();
 		arW = aircraft.getWing().getAspectRatio();
 		bW = aircraft.getWing().getSpan().getEstimatedValue();

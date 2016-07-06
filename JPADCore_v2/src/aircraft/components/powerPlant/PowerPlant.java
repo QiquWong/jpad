@@ -1,30 +1,20 @@
 package aircraft.components.powerPlant;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
-import javax.measure.quantity.Angle;
 import javax.measure.quantity.Force;
-import javax.measure.quantity.Frequency;
-import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.Power;
-import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.components.Aircraft;
-import aircraft.components.powerPlant.Engine.EngineBuilder;
+import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
-import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.EngineTypeEnum;
-import configuration.enumerations.MethodEnum;
 import standaloneutils.customdata.CenterOfGravity;
 
 /** 
@@ -34,36 +24,26 @@ import standaloneutils.customdata.CenterOfGravity;
  * is, all engines are included) 
  */
 
-//TODO: this class should not extend MyComponent
-public class PowerPlant {
+public class PowerPlant implements IPowerPlant {
 
 	//---------------------------------------------------------------------------
 	// ALREADY DONE :
 	public  String _id ;
 	private Integer _engineNumber;
-	private EngineMountingPositionEnum _mountingPoint;
-	private Amount<Length> _xApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
-	private Amount<Length> _yApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
-	private Amount<Length> _zApexConstructionAxes = Amount.valueOf(0.0, SI.METER);
-	private Amount<Angle> _muT;
+	public List<Engine> _engineList;
+	public EngineTypeEnum _engineType;
+	public EngineMountingPositionEnum _mountingPosition;
 	
-	/** Check if engines are all the same */
-	private Boolean _engineEqual = false;
-	
-	public List<Engine> __engineList;
-	private Amount<Force> _T0Total;
-	private Amount<Power> _P0Total;
+	private Amount<Force> _t0Total;
+	private Amount<Power> _p0Total;
 	
 	private List<CenterOfGravity> _cgList;
-	private Map <MethodEnum, Amount<Mass>> _massMap;
-	private Map <MethodEnum, Amount<Length>> _xCGMap;
-	private Map <MethodEnum, Amount<Length>> _yCGMap;
-	private Map <AnalysisTypeEnum, List<MethodEnum>> _methodsMap;
-	private Double[] _percentDifference;
 	
-	private Aircraft _theAircraft;
-	private PowerPlantWeightsManager _theWeights;
-	private PowerPlantBalanceManager _theBalance;
+	private Amount<Mass> _totalMass,
+						 _dryMassPublicDomainTotal;
+	
+	private Double _percentTotalDifference;
+	private CenterOfGravity _totalCG;
 	
 	//============================================================================================
 	// Builder pattern 
@@ -73,113 +53,190 @@ public class PowerPlant {
 		// required parameters
 		private String __id;
 		private Integer __engineNumber;
-		public List<Engine> ___engineList = new ArrayList<Engine>();
+		public List<Engine> __engineList = new ArrayList<Engine>();
 		
 		// optional parameters ... defaults
 		// ...	
 		private List<CenterOfGravity> __cgList = new ArrayList<CenterOfGravity>();
-		private Map <MethodEnum, Amount<Mass>> __massMap = new TreeMap<MethodEnum, Amount<Mass>>();
-		private Map <MethodEnum, Amount<Length>> __xCGMap = new TreeMap<MethodEnum, Amount<Length>>();
-		private Map <MethodEnum, Amount<Length>> __yCGMap = new TreeMap<MethodEnum, Amount<Length>>();
-		private Map <AnalysisTypeEnum, List<MethodEnum>> __methodsMap = new HashMap<AnalysisTypeEnum, List<MethodEnum>>();
 		
-		public PowerPlantBuilder (String id, Engine engine, Integer nEngine) {
+		public PowerPlantBuilder (String id, List<Engine> engineList) {
 			this.__id = id;
-			this.__engineNumber = nEngine;
-			for(int i=0; i<__engineNumber; i++)
-				___engineList.add(engine);
+			this.__engineList = engineList;
+			this.__engineNumber = engineList.size();
 		}
 		
+		public PowerPlantBuilder (String id, AircraftEnum aircraftName) {
+			this.__id = id;
+			initializeDefaultVariables(aircraftName);
+		}
+		
+		private void initializeDefaultVariables (AircraftEnum aircraftName) {
+			switch(aircraftName) {
+			
+			case ATR72:
+				__engineNumber = 2;
+				for (int i=0; i<__engineNumber; i++)
+					__engineList.add(
+							new Engine
+								.EngineBuilder("ATR-72 Engine", EngineTypeEnum.TURBOPROP, aircraftName)
+									.build()
+							);
+				__engineList.get(0).setXApexConstructionAxes(Amount.valueOf(8.56902, SI.METER));
+				__engineList.get(0).setYApexConstructionAxes(Amount.valueOf(4.5738, SI.METER));
+				__engineList.get(0).setZApexConstructionAxes(Amount.valueOf(1.02895, SI.METER));
+				__engineList.get(0).setMountingPosition(EngineMountingPositionEnum.WING);
+				__engineList.get(0).setTiltingAngle(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+				
+				__engineList.get(1).setXApexConstructionAxes(Amount.valueOf(8.56902, SI.METER));
+				__engineList.get(1).setYApexConstructionAxes(Amount.valueOf(-4.5738, SI.METER));
+				__engineList.get(1).setZApexConstructionAxes(Amount.valueOf(1.02895, SI.METER));
+				__engineList.get(1).setMountingPosition(EngineMountingPositionEnum.WING);
+				__engineList.get(1).setTiltingAngle(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+				
+				break;
+				
+			case B747_100B:
+				__engineNumber = 4;
+				for (int i=0; i<__engineNumber; i++)
+					__engineList.add(
+							new Engine
+								.EngineBuilder("B747-100B Engine", EngineTypeEnum.TURBOFAN, aircraftName)
+									.build()
+							);
+				__engineList.get(0).setXApexConstructionAxes(Amount.valueOf(23.770, SI.METER));
+				__engineList.get(0).setYApexConstructionAxes(Amount.valueOf(11.820, SI.METER));
+				__engineList.get(0).setZApexConstructionAxes(Amount.valueOf(-2.642, SI.METER));
+				__engineList.get(0).setMountingPosition(EngineMountingPositionEnum.WING);
+				__engineList.get(0).setTiltingAngle(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+				
+				__engineList.get(1).setXApexConstructionAxes(Amount.valueOf(31.693, SI.METER));
+				__engineList.get(1).setYApexConstructionAxes(Amount.valueOf(21.951, SI.METER));
+				__engineList.get(1).setZApexConstructionAxes(Amount.valueOf(-2.642, SI.METER));
+				__engineList.get(1).setMountingPosition(EngineMountingPositionEnum.WING);
+				__engineList.get(1).setTiltingAngle(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+				
+				__engineList.get(2).setXApexConstructionAxes(Amount.valueOf(23.770, SI.METER));
+				__engineList.get(2).setYApexConstructionAxes(Amount.valueOf(-11.820, SI.METER));
+				__engineList.get(2).setZApexConstructionAxes(Amount.valueOf(-2.642, SI.METER));
+				__engineList.get(2).setMountingPosition(EngineMountingPositionEnum.WING);
+				__engineList.get(2).setTiltingAngle(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+				
+				__engineList.get(3).setXApexConstructionAxes(Amount.valueOf(31.693, SI.METER));
+				__engineList.get(3).setYApexConstructionAxes(Amount.valueOf(-21.951, SI.METER));
+				__engineList.get(3).setZApexConstructionAxes(Amount.valueOf(-2.642, SI.METER));
+				__engineList.get(3).setMountingPosition(EngineMountingPositionEnum.WING);
+				__engineList.get(3).setTiltingAngle(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+				
+				break;
+				
+			case AGILE_DC1:
+				__engineNumber = 2;
+				for (int i=0; i<__engineNumber; i++)
+					__engineList.add(
+							new Engine
+								.EngineBuilder("AGILE-DC1 Engine", EngineTypeEnum.TURBOFAN, aircraftName)
+									.build()
+							);
+				__engineList.get(0).setXApexConstructionAxes(Amount.valueOf(11.84, SI.METER));
+				__engineList.get(0).setYApexConstructionAxes(Amount.valueOf(4.91, SI.METER));
+				__engineList.get(0).setZApexConstructionAxes(Amount.valueOf(-2.45, SI.METER));
+				__engineList.get(0).setMountingPosition(EngineMountingPositionEnum.WING);
+				__engineList.get(0).setTiltingAngle(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+				
+				__engineList.get(1).setXApexConstructionAxes(Amount.valueOf(11.84, SI.METER));
+				__engineList.get(1).setYApexConstructionAxes(Amount.valueOf(-4.91, SI.METER));
+				__engineList.get(1).setZApexConstructionAxes(Amount.valueOf(-2.45, SI.METER));
+				__engineList.get(1).setMountingPosition(EngineMountingPositionEnum.WING);
+				__engineList.get(1).setTiltingAngle(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+				
+				break;
+			}
+		}
+		
+		public PowerPlant build() {
+			return new PowerPlant(this);
+		}
 	}
 	
 	private PowerPlant (PowerPlantBuilder builder) {
 		
 		this._id = builder.__id;
 		this._engineNumber = builder.__engineNumber;
-		this.__engineList = builder.___engineList;
+		this._engineList = builder.__engineList;
 		this._cgList = builder.__cgList;
-		this._massMap = builder.__massMap;
-		this._xCGMap = builder.__xCGMap;
-		this._yCGMap = builder.__yCGMap;
-		this._methodsMap = builder.__methodsMap;
 
-		// TODO : SEE IF POWERPLANTWEIGHTSMANAGER HAS TO SEE THE SINGLE ENGINE OR THE POWER PLANT (FIX THIS IN THE MANAGER)
-		this._theWeights = new PowerPlantWeightsManager(this._theAircraft, this.__engineList.get(0));
-		this._theBalance = new PowerPlantBalanceManager(this);
+		calculateDerivedVariables();
+		
 	}
 	
-	//---------------------------------------------------------------------------
+	//============================================================================================
+	// End of builder pattern 
+	//============================================================================================
 
-	private Amount<Mass> 
-	_massDryEngine, _massDryEngineEstimated,
-	_massDryEngineActual, _massDryEngineActualTotal, 
-	_totalMass, _dryMassPublicDomain;
+	private void calculateDerivedVariables() {
 
-	private Double _percentTotalDifference;
-	private CenterOfGravity _cg;
-
-	private Double[] _percentDifferenceXCG;
-	private CenterOfGravity _totalCG;
-
-	private double etaEfficiency;
-	private double nBlade;
-	Amount<Length> fanDiameter;
-
-
-	public void calculateDerivedVariables() {
-
-		_massDryEngineActualTotal = _massDryEngineActual.times(_engineNumber);
-		_T0Total = Amount.valueOf(0., SI.NEWTON);
-		_P0Total = Amount.valueOf(0., SI.WATT);
-
-		//		if (_engineType==MyEngineTypeEnum.TURBOPROP || _engineType==MyEngineTypeEnum.PISTON) {
-		//			_rpm = Amount.valueOf(2100, MyUnits.RPM);
-		//			_rps = _rpm.to(SI.HERTZ);
-		//			_diameter = Amount.valueOf(3.93, SI.METER);
-		//			_J = _v0.divide(_diameter.times(_rps)).getEstimatedValue();
-		//
-		//			_eta = 0.75;
-		//			_cP = _P0.divide((conditions.get_densityCurrent().times(_rps.pow(3)).times(_diameter.pow(5)))).getEstimatedValue();
-		//			
-		//			//TODO: need for a more accurate estimation of Ct for v--->0
-		//			//		_cT = _eta*_cP/_J;
-		//			_cT = 0.12;
-		//
-		//			_T0 = Amount.valueOf(conditions.get_densityCurrent().times(_cT).times(_rps.pow(2)).times(_diameter.pow(4)).getEstimatedValue(),
-		//					SI.NEWTON);
-		//		}
-
+		_engineType = this._engineList.get(0).getEngineType();
+		_mountingPosition = this._engineList.get(0).getMountingPosition();
+		
+		_t0Total = Amount.valueOf(0., SI.NEWTON);
+		_p0Total = Amount.valueOf(0., SI.WATT);
+		
 		for(int i=0; i < _engineNumber; i++) {
-			_T0Total = _T0Total.plus(_engineList.get(i).getT0());
-			_P0Total = _P0Total.plus(_engineList.get(i).getP0());
+			_t0Total = _t0Total.plus(_engineList.get(i).getT0());
+			_p0Total = _p0Total.plus(_engineList.get(i).getP0());
 		}
-
 	}
 
+	@Override
+	public String toString() {
+		
+		MyConfiguration.customizeAmountOutput();
+
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("\t-------------------------------------\n")
+		  .append("\tThe Power Plant\n")
+		  .append("\t-------------------------------------\n")
+		  .append("\tId: '" + _id + "'\n")
+		  .append("\tNumber of engines: " + _engineNumber + "\n")
+		  ;
+		for(int i=0; i<this._engineList.size(); i++)
+			sb.append("\t-------------------------------------\n")
+			  .append("\tEngine n° " + (i+1) + "\n")
+			  .append("\t-------------------------------------\n")
+			  .append(this._engineList.get(i).toString())
+			  ;
+		
+		
+		return sb.toString();
+		
+	}
+	
+	@Override
 	public void calculateMass() {
 
 		_totalMass = Amount.valueOf(0., SI.KILOGRAM);
-		_dryMassPublicDomain = Amount.valueOf(0., SI.KILOGRAM);
+		_dryMassPublicDomainTotal = Amount.valueOf(0., SI.KILOGRAM);
 
 		for(int i=0; i < _engineNumber; i++) {
-			_totalMass = _totalMass.plus(__engineList.get(i).getmasTotalMass());
-			_dryMassPublicDomain = _dryMassPublicDomain.plus(__engineList.get(i).getWeights().getDryMassPublicDomain());
+			_totalMass = _totalMass.plus(_engineList.get(i).getTotalMass());
+			_dryMassPublicDomainTotal = _dryMassPublicDomainTotal.plus(_engineList.get(i).getTheWeights().getDryMassPublicDomain());
 		}
 
 		_percentTotalDifference = _totalMass.
-				minus(_dryMassPublicDomain).
-				divide(_dryMassPublicDomain).
+				minus(_dryMassPublicDomainTotal).
+				divide(_dryMassPublicDomainTotal).
 				getEstimatedValue()*100.;
 	}
 
-
+	@Override
 	public CenterOfGravity calculateCG() {
 
 		_totalCG = new CenterOfGravity();		
 		for(int i=0; i < _engineNumber; i++) {
-			_engineList.get(i).getBalance().calculateAll();
-			_cgList.add(_engineList.get(i).getBalance().get_cg());
-			_totalCG = _totalCG.plus(_engineList.get(i).getBalance().get_cg()
+			_engineList.get(i).getTheBalance().calculateAll();
+			_cgList.add(_engineList.get(i).getTheBalance().get_cg());
+			_totalCG = _totalCG.plus(_engineList.get(i).getTheBalance().get_cg()
 					.times(_engineList.get(i).getTotalMass().doubleValue(SI.KILOGRAM)));
 		}
 		
@@ -187,261 +244,89 @@ public class PowerPlant {
 		return _totalCG;
 	}
 
-	public Amount<Mass> get_massDryEngineActual() {
-		return _massDryEngineActual;
+	@Override
+	public String getId() {
+		return _id;
+	}
+	
+	@Override
+	public void setId(String _id) {
+		this._id = _id;
 	}
 
-	public void set_mass(Amount<Mass> _mass) {
-		this._massDryEngine = _mass;
-	}
-
-	public Amount<Power> get_P0Total() {
-		return _P0Total;
-	}
-
-	public void set_P0Total(Amount<Power> _P0) {
-		this._P0Total = _P0;
-	}
-
-	public Amount<Force> get_T0Total() {
-		return _T0Total;
-	}
-
-	public void set_T0Total(Amount<Force> _T0Total) {
-		this._T0Total = _T0Total;
-	}
-
-	public Integer get_engineNumber() {
+	@Override
+	public Integer getEngineNumber() {
 		return _engineNumber;
 	}
 
-	public void set_engineNumber(Integer _engineNumber) {
+	@Override
+	public void setEngineNumber(Integer _engineNumber) {
 		this._engineNumber = _engineNumber;
 	}
 
-
-	public EngineTypeEnum get_engineType() {
+	@Override
+	public EngineTypeEnum getEngineType() {
 		return _engineType;
 	}
-
-	public void set_engineType(EngineTypeEnum _engineType) {
-		this._engineType = _engineType;
-	}
-
-	public Map<MethodEnum, Amount<Mass>> get_massMap() {
-		return _massMap;
-	}
-
-
-	public Map<AnalysisTypeEnum, List<MethodEnum>> get_methodsMap() {
-		return _methodsMap;
-	}
-
-
-	public Double[] get_percentDifference() {
-		return _percentDifference;
-	}
-
-
-	public void set_massDryEngine(Amount<Mass> _massDryEngine) {
-		this._massDryEngine = _massDryEngine;
-	}
-
-
-	public Amount<Mass> get_totalMass() {
-		return _totalMass;
-	}
-
-
-	public Amount<Mass> get_dryMassPublicDomain() {
-		return _dryMassPublicDomain;
-	}
-
-
-	public void set_totalPowerPlantMassActual(
-			Amount<Mass> _totalPowerPlantMassReference) {
-		this._dryMassPublicDomain = _totalPowerPlantMassReference;
-	}
-
-
-	public Double get_percentTotalDifference() {
-		return _percentTotalDifference;
-	}
-
-	//---------------------------------------------------------------------------------
-	// ALREADY DONE : 
-	public Amount<Length> getXApexConstructionAxes() {
-		return _xApexConstructionAxes;
-	}
-
-	public void setXApexConstructionAxes(Amount<Length> _X0) {
-		this._xApexConstructionAxes = _X0;
-	}
-
-	public Amount<Length> getYApexConstructionAxes() {
-		return _yApexConstructionAxes;
-	}
-
-	public void setYApexConstructionAxes(Amount<Length> _Y0) {
-		this._yApexConstructionAxes = _Y0;
-	}
-
-	public Amount<Length> getZApexConstructionAxes() {
-		return _zApexConstructionAxes;
-	}
-
-	public void setZApexConstructionAxes(Amount<Length> _Z0) {
-		this._zApexConstructionAxes = _Z0;
-	}
-
-	public EngineMountingPositionEnum getMountingPoint() {
-		return _mountingPoint;
-	}
-
-	public void setMountingPoint(EngineMountingPositionEnum _mountingPoint) {
-		this._mountingPoint = _mountingPoint;
-	}
-
-	public Amount<Angle> getMuT() {
-		return _muT;
-	}
-
-	public void setMuT(Amount<Angle> _muT) {
-		this._muT = _muT;
+	
+	@Override
+	public void setEngineType(EngineTypeEnum engineType) {
+		this._engineType = engineType;
 	}
 	
-	//---------------------------------------------------------------------------------
+	@Override
+	public EngineMountingPositionEnum getMountingPosition() {
+		return _mountingPosition;
+	}
 	
-	public Amount<Mass> get_massDryEngineActualTotal() {
-		return _massDryEngineActualTotal;
-	}
-
-
-	public Amount<Mass> get_massDryEngine() {
-		return _massDryEngine;
-	}
-
-
-	public Amount<Mass> get_massDryEngineEstimated() {
-		return _massDryEngineEstimated;
-	}
-
-
-	public EngineMountingPositionEnum get_position() {
-		return _position;
-	}
-
-
-	public void set_position(EngineMountingPositionEnum _position) {
-		this._position = _position;
-	}
-
-
-	public String get_name() {
-		return _name;
-	}
-
-
-	public void set_name(String _name) {
-		this._name = _name;
-	}
-
-
-	public Amount<Length> get_length() {
-		return _length;
-	}
-
-
-	public void set_length(Amount<Length> _length) {
-		this._length = _length;
-	}
-
-
-	public Map<MethodEnum, Amount<Length>> get_xCGMap() {
-		return _xCGMap;
-	}
-
-
-	public void set_xCGMap(Map<MethodEnum, Amount<Length>> _xCGMap) {
-		this._xCGMap = _xCGMap;
-	}
-
-
-	public Map<MethodEnum, Amount<Length>> get_yCGMap() {
-		return _yCGMap;
-	}
-
-
-	public void set_yCGMap(Map<MethodEnum, Amount<Length>> _yCGMap) {
-		this._yCGMap = _yCGMap;
-	}
-
-
-	public CenterOfGravity get_cg() {
-		return _cg;
-	}
-
-
-	public void set_cg(CenterOfGravity _cg) {
-		this._cg = _cg;
-	}
-
-
-	public Double[] get_percentDifferenceXCG() {
-		return _percentDifferenceXCG;
-	}
-
-	public static String getId() {
-		return "8";
-	}
-
-	public List<Engine> get__engineList() {
+	@Override
+	public List<Engine> getEngineList() {
 		return _engineList;
 	}
 
-	public Boolean is_engineEqual() {
-		return _engineEqual;
+	@Override
+	public void setEngineList(List<Engine> _engineList) {
+		this._engineList = _engineList;
 	}
 
-	public void set_engineEqual(Boolean _engineEqual) {
-		this._engineEqual = _engineEqual;
+	@Override
+	public Amount<Force> getT0Total() {
+		return _t0Total;
 	}
 
-	public CenterOfGravity get_totalCG() {
-		return _totalCG;
+	@Override
+	public Amount<Power> getP0Total() {
+		return _p0Total;
 	}
 
-	public List<CenterOfGravity> get_cgList() {
+	@Override
+	public List<CenterOfGravity> getCGList() {
 		return _cgList;
 	}
 
-	public void set_cgList(List<CenterOfGravity> _cgList) {
-		this._cgList = _cgList;
+	@Override
+	public Amount<Mass> getTotalMass() {
+		return _totalMass;
 	}
 
-	public double getEtaEfficiency() {
-		return etaEfficiency;
+	@Override
+	public void setTotalMass(Amount<Mass> totalMass) {
+		this._totalMass = totalMass;
 	}
-
-	public void setEtaEfficiency(double etaEfficiency) {
-		this.etaEfficiency = etaEfficiency;
-	}
-
-	public double getnBlade() {
-		return nBlade;
-	}
-
-	public void setnBlade(double nBlade) {
-		this.nBlade = nBlade;
-	}
-
-	public Amount<Length> getFanDiameter() {
-		return fanDiameter;
-	}
-
-	public void setFanDiameter(Amount<Length> fanDiameter) {
-		this.fanDiameter = fanDiameter;
-	}
-
 	
+	@Override
+	public Amount<Mass> getDryMassPublicDomainTotal() {
+		return _dryMassPublicDomainTotal;
+	}
+
+	@Override
+	public Double getPercentTotalDifference() {
+		return _percentTotalDifference;
+	}
+
+	@Override
+	public CenterOfGravity getTotalCG() {
+		return _totalCG;
+	}
+
 }

@@ -83,19 +83,19 @@ public class TripCharges {
 				aircraft.getThePerformance().getRange(), costs.getJenkinsonNavigationalCharges(),
 				aircraft.getTheWeights().get_paxMassMax(), aircraft.getCabinConfiguration().getMaxPax().intValue(),
 				costs.getGroundHandlingCostXPax(),
-				aircraft.getTheWeights().get_manufacturerEmptyMass().minus(aircraft.getPowerPlant().get_totalMass()),
+				aircraft.getTheWeights().get_manufacturerEmptyMass().minus(aircraft.getPowerPlant().getTotalMass()),
 				costs.getManHourLaborRate(), costs.getAirframeCost(), 
 				aircraft.getThePerformance().getFlightTime(),
-				aircraft.getPowerPlant().get_engineList().get(0).getBPR(), 
-				aircraft.getPowerPlant().get_engineList().get(0).getOverallPressureRatio(),
-				aircraft.getPowerPlant().get_engineList().get(0).getNumberOfCompressorStages(), 
-				aircraft.getPowerPlant().get_engineList().get(0).getNumberOfShafts(),
-				aircraft.getPowerPlant().get_engineList().get(0).getT0(), aircraft.getPowerPlant().get_engineNumber(),
+				aircraft.getPowerPlant().getEngineList().get(0).getBPR(), 
+				aircraft.getPowerPlant().getEngineList().get(0).getOverallPressureRatio(),
+				aircraft.getPowerPlant().getEngineList().get(0).getNumberOfCompressorStages(), 
+				aircraft.getPowerPlant().getEngineList().get(0).getNumberOfShafts(),
+				aircraft.getPowerPlant().getEngineList().get(0).getT0(), aircraft.getPowerPlant().getEngineNumber(),
 				costs.getEngineMaintLaborCost(), costs.getEngineMaintMaterialCost(),
 				costs.getAirframeMaintLaborCost(),	costs.getAirframeMaintMaterialCost(),
 				aircraft.getTheWeights().get_OEM(), 
 				aircraft.getThePerformance().getVOptimumCruise(), costs.getAircraftCost(),
-				costs.getSingleEngineCost(), aircraft.getPowerPlant().get_P0Total(), costs.getBlockFuelVolume(), 
+				costs.getSingleEngineCost(), aircraft.getPowerPlant().getP0Total(), costs.getBlockFuelVolume(), 
 				costs.getFuelVolumetricCost(), costs.getHourVolumetricFuelConsumption(), 
 				costs.getOilMassCost());		
 	}
@@ -821,11 +821,11 @@ public class TripCharges {
 			double engineTOFactorValue = 0.0;
 			int jConst = 0;
 
-			if (_theAircraft.getPowerPlant().get_engineList().get(0).equals(EngineTypeEnum.TURBOFAN)){
+			if (_theAircraft.getPowerPlant().getEngineList().get(0).equals(EngineTypeEnum.TURBOFAN)){
 				jConst = 0;
 				engineTOFactorValue = engineTOFactor.doubleValue(NonSI.POUND_FORCE);
 			}
-			if (_theAircraft.getPowerPlant().get_engineList().get(0).equals(EngineTypeEnum.TURBOPROP)){
+			if (_theAircraft.getPowerPlant().getEngineList().get(0).equals(EngineTypeEnum.TURBOPROP)){
 				jConst = 1;
 				engineTOFactorValue = engineTOFactor.doubleValue(NonSI.HORSEPOWER);
 			}

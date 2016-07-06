@@ -211,8 +211,8 @@ public class JPADWriteUtils {
 	private static void addEnginesToXML(PowerPlant powerPlant, String fatherId) {
 
 		if (powerPlant != null) {
-			for (int k=0; k < powerPlant.get_engineNumber(); k++) {
-				Engine engine = powerPlant.get_engineList().get(k);
+			for (int k=0; k < powerPlant.getEngineNumber(); k++) {
+				Engine engine = powerPlant.getEngineList().get(k);
 				JPADGlobalData.getTheXmlTree().add(engine, 3, "Engine_" + (k+1), engine.getId()); //"1" + k + "99");
 				//				JPADGlobalData.getTheXmlTree().add(engine.getGeometry(), 4, "Airfoil_Geometry", engine.getGeometry().getId());
 				//				JPADGlobalData.getTheXmlTree().add(engine.getAerodynamics(), 4, "Airfoil_Aerodynamics", engine.getAerodynamics().getId());

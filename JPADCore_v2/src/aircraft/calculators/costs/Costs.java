@@ -416,7 +416,7 @@ public class Costs implements ICosts {
 		
 		initializeAll(
 				CostsCalcUtils.singleEngineCostSforza(Amount.valueOf(0., SI.NEWTON), 0.),	// singleEngineCost
-				aircraft.getPowerPlant().get_engineNumber().intValue(),			// numberOfEngines
+				aircraft.getPowerPlant().getEngineNumber().intValue(),			// numberOfEngines
 				aircraft.getCabinConfiguration().getCabinCrewNumber().intValue(),			// cabinCrewNumber,
 				aircraft.getCabinConfiguration().getFlightCrewNumber().intValue(),			// flightCrewNumber,
 				aircraft.getThePerformance().getRange(),	// range (nm)
@@ -426,14 +426,14 @@ public class Costs implements ICosts {
 //				aircraft.get_weights().get_paxMassMax(),		// payload,
 				aircraft.getTheWeights().get_paxSingleMass().times(aircraft.getCabinConfiguration().getMaxPax()),		// payload,
 //				aircraft.get_weights().get_manufacturerEmptyMass().minus(aircraft.get_powerPlant().get_totalMass()),	// airframeMass,
-				aircraft.getTheWeights().get_manufacturerEmptyMass().minus(aircraft.getPowerPlant().get_engineList().get(0).getTotalMass()),	// airframeMass,
+				aircraft.getTheWeights().get_manufacturerEmptyMass().minus(aircraft.getPowerPlant().getEngineList().get(0).getTotalMass()),	// airframeMass,
 				aircraft.getCabinConfiguration().getMaxPax().intValue(),// numberOfPax, Data from Jenkinson's example.
-				aircraft.getPowerPlant().get_engineList().get(0).getBPR(),		// byPassRatio, Kundu's example value
-				aircraft.getPowerPlant().get_engineList().get(0).getNumberOfCompressorStages(),			// numberOfCompressorStage, Kundu's example value
-				aircraft.getPowerPlant().get_engineList().get(0).getNumberOfShafts(),			// numberOfShaft
-				aircraft.getPowerPlant().get_engineList().get(0).getT0(),	// seaLevelStaticThrust (single engine), 
-				aircraft.getPowerPlant().get_engineList().get(0).getT0(),	// thrustTO (single engine), 
-				aircraft.getPowerPlant().get_engineList().get(0).getP0(),	// powerTO (single engine),
+				aircraft.getPowerPlant().getEngineList().get(0).getBPR(),		// byPassRatio, Kundu's example value
+				aircraft.getPowerPlant().getEngineList().get(0).getNumberOfCompressorStages(),			// numberOfCompressorStage, Kundu's example value
+				aircraft.getPowerPlant().getEngineList().get(0).getNumberOfShafts(),			// numberOfShaft
+				aircraft.getPowerPlant().getEngineList().get(0).getT0(),	// seaLevelStaticThrust (single engine), 
+				aircraft.getPowerPlant().getEngineList().get(0).getT0(),	// thrustTO (single engine), 
+				aircraft.getPowerPlant().getEngineList().get(0).getP0(),	// powerTO (single engine),
 				//				aircraft.get_powerPlant().get_engineList().get(0).get_specificFuelConsumption //TODO: Substitute the value below whit this raw
 				0.5 // Specific fuel consumption in (lb/(lb*hr))
 				);		

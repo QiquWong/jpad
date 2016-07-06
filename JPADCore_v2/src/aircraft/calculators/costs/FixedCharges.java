@@ -55,7 +55,7 @@ public class FixedCharges {
 				costs.getSingleEngineCost(),
 				aircraft.getLifeSpan(), costs.getResidualValue(), costs.getAnnualInterestRate(),
 				costs.getAnnualInsurancePremiumRate(), aircraft.getCabinConfiguration().getCabinCrewNumber().intValue(),
-				aircraft.getCabinConfiguration().getFlightCrewNumber().intValue(), aircraft.getPowerPlant().get_engineNumber(), 
+				aircraft.getCabinConfiguration().getFlightCrewNumber().intValue(), aircraft.getPowerPlant().getEngineNumber(), 
 				costs.getSingleCabinCrewHrCost(),
 				costs.getSingleflightCrewHrCost(), aircraft.getTheWeights().get_MTOM());		
 	}
@@ -513,13 +513,13 @@ public class FixedCharges {
 			double crewCosts = 0.0;
 			double aircraftTypeConst = 0.0;
 
-			if (_theAircraft.getPowerPlant().get_engineType().equals(EngineTypeEnum.TURBOFAN) && cabinCrewNumber == 2){
+			if (_theAircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOFAN) && cabinCrewNumber == 2){
 				aircraftTypeConst = 697.0;
 			}
-			else if (_theAircraft.getPowerPlant().get_engineType().equals(EngineTypeEnum.TURBOPROP) && cabinCrewNumber == 2){
+			else if (_theAircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOPROP) && cabinCrewNumber == 2){
 				aircraftTypeConst = 439.0;
 			}
-			else if (_theAircraft.getPowerPlant().get_engineType().equals(EngineTypeEnum.TURBOFAN) && cabinCrewNumber == 3){
+			else if (_theAircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOFAN) && cabinCrewNumber == 3){
 				aircraftTypeConst = 836.4;
 			}
 
