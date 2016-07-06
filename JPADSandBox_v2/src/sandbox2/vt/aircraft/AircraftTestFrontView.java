@@ -3,7 +3,6 @@ package sandbox2.vt.aircraft;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -242,8 +241,38 @@ public class AircraftTestFrontView extends Application {
 			
 			for(int i=0; i<theAircraft.getPowerPlant().getEngineList().size(); i++) {
 				
-				// TODO : PLOT THE CIRCLE !!
-
+				double[] angleArray = MyArrayUtils.linspace(0.0, 2*Math.PI, 20);
+				double[] yCoordinate = new double[angleArray.length];
+				double[] zCoordinate = new double[angleArray.length];
+				
+				double radius = theAircraft.getPowerPlant()
+							.getEngineList().get(i)
+								.getDiameter()
+									.divide(2)
+										.doubleValue(SI.METER);
+				double y0 = theAircraft.getPowerPlant()
+							.getEngineList().get(i)
+								.getYApexConstructionAxes()
+									.doubleValue(SI.METER);
+				
+				double z0 = theAircraft.getPowerPlant()
+						.getEngineList().get(i)
+							.getZApexConstructionAxes()
+								.doubleValue(SI.METER);
+				
+				for(int j=0; j<angleArray.length; j++) {
+					yCoordinate[j] = radius*Math.cos(angleArray[j]);
+					zCoordinate[j] = radius*Math.sin(angleArray[j]);
+				}
+				
+				Double[][] enginePoints = new Double[yCoordinate.length][2];
+				for (int j=0; j<yCoordinate.length; j++) {
+					enginePoints[j][0] = yCoordinate[j] + y0;
+					enginePoints[j][1] = zCoordinate[j] + z0;
+				}
+				
+				enginePointsList.add(enginePoints);
+				
 			}
 		}
 		else if((theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOPROP)
