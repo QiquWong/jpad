@@ -1271,6 +1271,62 @@ public class Aircraft implements IAircraft {
 		NodeList nodelistEngines = MyXMLReaderUtils
 				.getXMLNodeListByPath(reader.getXmlDoc(), "//power_plant/engine");
 
+		List<String> xApexPowerPlantListProperties = reader.getXMLPropertiesByPath("//engine/position/x");
+		List<String> yApexPowerPlantListProperties = reader.getXMLPropertiesByPath("//engine/position/y");
+		List<String> zApexPowerPlantListProperties = reader.getXMLPropertiesByPath("//engine/position/z");		
+		List<String> tiltingAngleListProperties = reader.getXMLPropertiesByPath("//engine/tilting_angle");
+		List<String> mountingPointListProperties = reader.getXMLPropertiesByPath("//engine/mounting_point");
+
+		List<Amount<Length>> xApexPowerPlantList = new ArrayList<>();
+		List<Amount<Length>> yApexPowerPlantList = new ArrayList<>();
+		List<Amount<Length>> zApexPowerPlantList = new ArrayList<>();
+		List<Amount<Angle>> tiltingAngleList = new ArrayList<>();
+		List<EngineMountingPositionEnum> mountingPointList = new ArrayList<>();
+		
+		for(int i=0; i<mountingPointListProperties.size(); i++) {
+			if(mountingPointListProperties.get(i).equalsIgnoreCase("AFT_FUSELAGE"))
+				mountingPointList.add(EngineMountingPositionEnum.AFT_FUSELAGE);
+			else if(mountingPointListProperties.get(i).equalsIgnoreCase("BURIED"))
+				mountingPointList.add(EngineMountingPositionEnum.BURIED);
+			else if(mountingPointListProperties.get(i).equalsIgnoreCase("REAR_FUSELAGE"))
+				mountingPointList.add(EngineMountingPositionEnum.REAR_FUSELAGE);
+			else if(mountingPointListProperties.get(i).equalsIgnoreCase("WING"))
+				mountingPointList.add(EngineMountingPositionEnum.WING);
+			else {
+				System.err.println("INVALID ENGINE MOUNTING POSITION !!! ");
+				return null;
+			}
+			
+			xApexPowerPlantList.add(
+					Amount.valueOf(
+							Double.valueOf(
+									xApexPowerPlantListProperties.get(i)
+									),
+							SI.METER)
+					);
+			yApexPowerPlantList.add(
+					Amount.valueOf(
+							Double.valueOf(
+									yApexPowerPlantListProperties.get(i)
+									),
+							SI.METER)
+					);
+			zApexPowerPlantList.add(
+					Amount.valueOf(
+							Double.valueOf(
+									zApexPowerPlantListProperties.get(i)
+									),
+							SI.METER)
+					);
+			tiltingAngleList.add(
+					Amount.valueOf(
+							Double.valueOf(
+									tiltingAngleListProperties.get(i)
+									),
+							NonSI.DEGREE_ANGLE)
+					);
+		}
+		
 		System.out.println("Engines found: " + nodelistEngines.getLength());
 		for (int i = 0; i < nodelistEngines.getLength(); i++) {
 			Node nodeEngine  = nodelistEngines.item(i); // .getNodeValue();
@@ -1281,28 +1337,12 @@ public class Aircraft implements IAircraft {
 			String enginePath = engineDir + File.separator + engineFileName;
 			engineList.add(Engine.importFromXML(enginePath));
 			
-			Amount<Length> xApexLandingGears = reader.getXMLAmountLengthByPath("//engine/position/x");
-			Amount<Length> yApexLandingGears = reader.getXMLAmountLengthByPath("//engine/position/y");
-			Amount<Length> zApexLandingGears = reader.getXMLAmountLengthByPath("//engine/position/z");
-			Amount<Angle> tiltingAngle = reader.getXMLAmountAngleByPath("//engine/tilting_angle");
-			engineList.get(i).setXApexConstructionAxes(xApexLandingGears);
-			engineList.get(i).setYApexConstructionAxes(yApexLandingGears);
-			engineList.get(i).setZApexConstructionAxes(zApexLandingGears);
-			engineList.get(i).setTiltingAngle(tiltingAngle);
+			engineList.get(i).setXApexConstructionAxes(xApexPowerPlantList.get(i));
+			engineList.get(i).setYApexConstructionAxes(yApexPowerPlantList.get(i));
+			engineList.get(i).setZApexConstructionAxes(zApexPowerPlantList.get(i));
+			engineList.get(i).setTiltingAngle(tiltingAngleList.get(i));
+			engineList.get(i).setMountingPosition(mountingPointList.get(i));
 			
-			String mountingPositionProperty = reader.getXMLPropertyByPath("//engine/mounting_point");
-			if(mountingPositionProperty.equalsIgnoreCase("AFT_FUSELAGE"))
-				engineList.get(i).setMountingPosition(EngineMountingPositionEnum.AFT_FUSELAGE);
-			else if(mountingPositionProperty.equalsIgnoreCase("BURIED"))
-				engineList.get(i).setMountingPosition(EngineMountingPositionEnum.BURIED);
-			else if(mountingPositionProperty.equalsIgnoreCase("REAR_FUSELAGE"))
-				engineList.get(i).setMountingPosition(EngineMountingPositionEnum.REAR_FUSELAGE);
-			else if(mountingPositionProperty.equalsIgnoreCase("WING"))
-				engineList.get(i).setMountingPosition(EngineMountingPositionEnum.WING);
-			else {
-				System.err.println("INVALID ENGINE MOUNTING POSITION !!! ");
-				return null;
-			}
 		}
 
 		PowerPlant thePowerPlant = new PowerPlant.PowerPlantBuilder("MyPowerPlant", engineList).build();

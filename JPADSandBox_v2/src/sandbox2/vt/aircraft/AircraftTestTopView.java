@@ -9,6 +9,7 @@ import java.util.stream.IntStream;
 import javax.measure.quantity.Length;
 import javax.measure.unit.SI;
 
+import org.jfree.chart.plot.ThermometerPlot;
 import org.jscience.physics.amount.Amount;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
@@ -23,6 +24,7 @@ import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ComponentEnum;
+import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
@@ -279,6 +281,65 @@ public class AircraftTestTopView extends Application {
 		}
 		
 		//--------------------------------------------------
+		// get data vectors from engine discretization
+		//--------------------------------------------------
+		List<Double[][]> enginePointsList = new ArrayList<Double[][]>();
+		
+		if((theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOJET)
+				|| (theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOFAN)) {
+			
+			for(int i=0; i<theAircraft.getPowerPlant().getEngineList().size(); i++) {
+				Double[][] enginePoints = new Double[5][2];
+				
+				enginePoints[0][1] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes().doubleValue(SI.METER);
+				enginePoints[0][0] = theAircraft.getPowerPlant().getEngineList().get(i).getYApexConstructionAxes()
+						.minus(theAircraft.getPowerPlant().getEngineList().get(i).getDiameter().divide(2)).getEstimatedValue();
+				enginePoints[1][1] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes().doubleValue(SI.METER);
+				enginePoints[1][0] = theAircraft.getPowerPlant().getEngineList().get(i).getYApexConstructionAxes()
+						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getDiameter().divide(2)).getEstimatedValue();
+				enginePoints[2][1] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes()
+						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getLength()).doubleValue(SI.METER);
+				enginePoints[2][0] = theAircraft.getPowerPlant().getEngineList().get(i).getYApexConstructionAxes()
+						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getDiameter().divide(2)).getEstimatedValue();
+				enginePoints[3][1] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes()
+						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getLength()).doubleValue(SI.METER);
+				enginePoints[3][0] = theAircraft.getPowerPlant().getEngineList().get(i).getYApexConstructionAxes()
+						.minus(theAircraft.getPowerPlant().getEngineList().get(i).getDiameter().divide(2)).getEstimatedValue();
+				enginePoints[4][1] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes().doubleValue(SI.METER);
+				enginePoints[4][0] = theAircraft.getPowerPlant().getEngineList().get(i).getYApexConstructionAxes()
+						.minus(theAircraft.getPowerPlant().getEngineList().get(i).getDiameter().divide(2)).getEstimatedValue();
+				
+				enginePointsList.add(enginePoints);
+			}
+		}
+		else if((theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOPROP)
+				|| (theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.PISTON)) {
+			
+			for(int i=0; i<theAircraft.getPowerPlant().getEngineList().size(); i++) {
+				Double[][] enginePoints = new Double[5][2];
+				enginePoints[0][1] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes().doubleValue(SI.METER);
+				enginePoints[0][0] = theAircraft.getPowerPlant().getEngineList().get(i).getYApexConstructionAxes()
+						.minus(theAircraft.getPowerPlant().getEngineList().get(i).getWidth().divide(2)).getEstimatedValue();
+				enginePoints[1][1] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes().doubleValue(SI.METER);
+				enginePoints[1][0] = theAircraft.getPowerPlant().getEngineList().get(i).getYApexConstructionAxes()
+						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getWidth().divide(2)).getEstimatedValue();
+				enginePoints[2][1] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes()
+						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getLength()).doubleValue(SI.METER);
+				enginePoints[2][0] = theAircraft.getPowerPlant().getEngineList().get(i).getYApexConstructionAxes()
+						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getWidth().divide(2)).getEstimatedValue();
+				enginePoints[3][1] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes()
+						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getLength()).doubleValue(SI.METER);
+				enginePoints[3][0] = theAircraft.getPowerPlant().getEngineList().get(i).getYApexConstructionAxes()
+						.minus(theAircraft.getPowerPlant().getEngineList().get(i).getWidth().divide(2)).getEstimatedValue();
+				enginePoints[4][1] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes().doubleValue(SI.METER);
+				enginePoints[4][0] = theAircraft.getPowerPlant().getEngineList().get(i).getYApexConstructionAxes()
+						.minus(theAircraft.getPowerPlant().getEngineList().get(i).getWidth().divide(2)).getEstimatedValue();
+				
+				enginePointsList.add(enginePoints);
+			}
+		}
+		
+		//--------------------------------------------------
 		System.out.println("Initializing test class...");
 		String rootOutputFolderPath = MyConfiguration.currentDirectoryString + File.separator + "out" + File.separator;
 		String outputFolderPath = JPADStaticWriteUtils.createNewFolder(rootOutputFolderPath + "Tests_Aircraft" + File.separator);
@@ -293,15 +354,18 @@ public class AircraftTestTopView extends Application {
 		// fuselage
 		listDataArrayTopView.add(dataOutlineXYLeftCurve);
 		listDataArrayTopView.add(dataOutlineXYRightCurve);
-		// wing
-		listDataArrayTopView.add(dataTopView);
-		listDataArrayTopView.add(dataTopViewMirrored);
 		// hTail
 		listDataArrayTopView.add(dataTopViewHTail);
 		listDataArrayTopView.add(dataTopViewMirroredHTail);
 		// vTail
 		listDataArrayTopView.add(vTailRootAirfoilPoints);
 		listDataArrayTopView.add(vTailTipAirfoilPoints);
+		// power plant
+		for (int i=0; i<enginePointsList.size(); i++)
+			listDataArrayTopView.add(enginePointsList.get(i));
+		// wing
+		listDataArrayTopView.add(dataTopView);
+		listDataArrayTopView.add(dataTopViewMirrored);
 
 		double xMaxTopView = 1.40*fuselage.getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
 		double xMinTopView = -1.40*fuselage.getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
@@ -327,12 +391,20 @@ public class AircraftTestTopView extends Application {
 						SymbolType.CIRCLE,
 						SymbolType.CIRCLE,
 						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
 						SymbolType.CIRCLE
 						)
-				.symbolSizes(2,2,2,2,2,2,2,2)
-				.showSymbols(false,false,false,false,false,false,false,false) // NOTE: overloaded function
+				.symbolSizes(2,2,2,2,2,2,2,2,2,2,2,2)
+				.showSymbols(false,false,false,false,false,false,false,false,false,false,false,false) // NOTE: overloaded function
 				.symbolStyles(
 						"fill:blue; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
 						"fill:cyan; stroke:darkblue; stroke-width:2",
 						"fill:cyan; stroke:darkblue; stroke-width:2",
 						"fill:cyan; stroke:darkblue; stroke-width:2",
@@ -349,11 +421,16 @@ public class AircraftTestTopView extends Application {
 						"fill:none; stroke:black; stroke-width:2",
 						"fill:none; stroke:black; stroke-width:2",
 						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
 						"fill:none; stroke:black; stroke-width:2"
 						)
-				.plotAreas(true,true,true,true,true,true,true)
-				.areaStyles("fill:white;","fill:white;","fill:lightblue;","fill:lightblue;","fill:blue;","fill:blue;","fill:yellow;","fill:yellow;")
-				.areaOpacities(1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0)
+				.plotAreas(true,true,true,true,true,true,true,true,true,true,true)
+				.areaStyles("fill:white;","fill:white;","fill:blue;","fill:blue;","fill:yellow;","fill:yellow;",
+						"fill:orange;","fill:orange;","fill:lightblue;","fill:lightblue;")
+				.areaOpacities(1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0)
 				.showLegend(false)
 				.build();
 

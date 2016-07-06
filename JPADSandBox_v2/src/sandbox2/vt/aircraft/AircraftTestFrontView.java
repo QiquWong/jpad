@@ -3,6 +3,7 @@ package sandbox2.vt.aircraft;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -22,6 +23,7 @@ import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
+import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
@@ -231,6 +233,50 @@ public class AircraftTestFrontView extends Application {
 		});
 		
 		//--------------------------------------------------
+		// get data vectors from engine discretization
+		//--------------------------------------------------
+		List<Double[][]> enginePointsList = new ArrayList<Double[][]>();
+		
+		if((theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOJET)
+				|| (theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOFAN)) {
+			
+			for(int i=0; i<theAircraft.getPowerPlant().getEngineList().size(); i++) {
+				
+				// TODO : PLOT THE CIRCLE !!
+
+			}
+		}
+		else if((theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOPROP)
+				|| (theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.PISTON)) {
+			
+			for(int i=0; i<theAircraft.getPowerPlant().getEngineList().size(); i++) {
+				Double[][] enginePoints = new Double[5][2];
+				enginePoints[0][0] = theAircraft.getPowerPlant().getEngineList().get(i).getYApexConstructionAxes()
+						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getWidth().divide(2)).getEstimatedValue();
+				enginePoints[0][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
+						.minus(theAircraft.getPowerPlant().getEngineList().get(i).getHeight().divide(2)).getEstimatedValue();
+				enginePoints[1][0] = theAircraft.getPowerPlant().getEngineList().get(i).getYApexConstructionAxes()
+						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getWidth().divide(2)).getEstimatedValue();
+				enginePoints[1][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
+						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getHeight().divide(2)).getEstimatedValue();
+				enginePoints[2][0] = theAircraft.getPowerPlant().getEngineList().get(i).getYApexConstructionAxes()
+						.minus(theAircraft.getPowerPlant().getEngineList().get(i).getWidth().divide(2)).getEstimatedValue();
+				enginePoints[2][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
+						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getHeight().divide(2)).getEstimatedValue();
+				enginePoints[3][0] = theAircraft.getPowerPlant().getEngineList().get(i).getYApexConstructionAxes()
+						.minus(theAircraft.getPowerPlant().getEngineList().get(i).getWidth().divide(2)).getEstimatedValue();
+				enginePoints[3][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
+						.minus(theAircraft.getPowerPlant().getEngineList().get(i).getHeight().divide(2)).getEstimatedValue();
+				enginePoints[4][0] = theAircraft.getPowerPlant().getEngineList().get(i).getYApexConstructionAxes()
+						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getWidth().divide(2)).getEstimatedValue();
+				enginePoints[4][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
+						.minus(theAircraft.getPowerPlant().getEngineList().get(i).getHeight().divide(2)).getEstimatedValue();
+				
+				enginePointsList.add(enginePoints);
+			}
+		}
+		
+		//--------------------------------------------------
 		System.out.println("Initializing test class...");
 		String rootOutputFolderPath = MyConfiguration.currentDirectoryString + File.separator + "out" + File.separator;
 		String outputFolderPath = JPADStaticWriteUtils.createNewFolder(rootOutputFolderPath + "Tests_Aircraft" + File.separator);
@@ -242,13 +288,20 @@ public class AircraftTestFrontView extends Application {
 
 		List<Double[][]> listDataArrayFrontView = new ArrayList<Double[][]>();
 
+		// hTail
 		listDataArrayFrontView.add(dataFrontViewHTail);
 		listDataArrayFrontView.add(dataFrontViewHTailMirrored);
+		// vTail
 		listDataArrayFrontView.add(dataFrontViewVTail);
+		// fuselage
 		listDataArrayFrontView.add(dataSectionYZUpperCurve);
 		listDataArrayFrontView.add(dataSectionYZLowerCurve);
+		// wing
 		listDataArrayFrontView.add(dataFrontViewWing);
 		listDataArrayFrontView.add(dataFrontViewWingMirrored);
+		// engine
+		for (int i=0; i<enginePointsList.size(); i++)
+			listDataArrayFrontView.add(enginePointsList.get(i));
 		
 		double yMaxFrontView = 1.20*wing.getSemiSpan().doubleValue(SI.METER);
 		double yMinFrontView = -1.20*wing.getSemiSpan().doubleValue(SI.METRE);
@@ -273,12 +326,19 @@ public class AircraftTestFrontView extends Application {
 						SymbolType.CIRCLE,
 						SymbolType.CIRCLE,
 						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
 						SymbolType.CIRCLE
 						)
-				.symbolSizes(2,2,2,2,2,2,2)
-				.showSymbols(false,false,false,false,false,false,false) // NOTE: overloaded function
+				.symbolSizes(2,2,2,2,2,2,2,2,2,2,2)
+				.showSymbols(false,false,false,false,false,false,false,false,false,false) // NOTE: overloaded function
 				.symbolStyles(
-						"fill:blue; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
 						"fill:cyan; stroke:darkblue; stroke-width:2",
 						"fill:cyan; stroke:darkblue; stroke-width:2",
 						"fill:cyan; stroke:darkblue; stroke-width:2",
@@ -293,11 +353,16 @@ public class AircraftTestFrontView extends Application {
 						"fill:none; stroke:black; stroke-width:2",
 						"fill:none; stroke:black; stroke-width:2",
 						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
 						"fill:none; stroke:black; stroke-width:2"
 						)
-				.plotAreas(true,true,true,true,true,true,true)
-				.areaStyles("fill:blue;","fill:blue;","fill:yellow;","fill:white;","fill:white;","fill:lightblue;","fill:lightblue;")
-				.areaOpacities(1.0,1.0,1.0,1.0,1.0,1.0,1.0)
+				.plotAreas(true,true,true,true,true,true,true,true,true,true)
+				.areaStyles("fill:blue;","fill:blue;","fill:yellow;","fill:white;","fill:white;","fill:lightblue;","fill:lightblue;",
+						"fill:orange;","fill:orange;")
+				.areaOpacities(1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0)
 				.showLegend(false)
 				.build();
 
@@ -400,7 +465,13 @@ public class AircraftTestFrontView extends Application {
 			HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
 			
 			// default Aircraft ATR-72 ...
-//			theAircraft = new Aircraft.AircraftBuilder("ATR-72", AircraftEnum.ATR72, aeroDatabaseReader).build();
+//			theAircraft = new Aircraft.AircraftBuilder(
+//					"ATR-72",
+//					AircraftEnum.ATR72,
+//					aeroDatabaseReader,
+//					highLiftDatabaseReader
+//					)
+//					.build();
 
 			// reading aircraft from xml ...
 			theAircraft = Aircraft.importFromXML(
