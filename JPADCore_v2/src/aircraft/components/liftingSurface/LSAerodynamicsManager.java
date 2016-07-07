@@ -695,7 +695,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		if (getTheLiftingSurface().getType() == ComponentEnum.WING){
 			_cdWNInterf = 0.0033*Math.pow(
 					//TODO: change this
-					theAircraft.getNacelles().get_nacellesList().get(0).get_diameterMean().getEstimatedValue()
+					theAircraft.getNacelles().get_nacellesList().get(0).getDiameterMean().getEstimatedValue()
 					* theAircraft.getNacelles().get_nacellesNumber(),2)/
 					surface;
 		} else {

@@ -69,4 +69,16 @@ public interface IEngine {
 
 	public EngineBalanceManager getTheBalance();
 	public void setTheBalance(EngineBalanceManager _theBalance);
+	
+	public Amount<Mass> getTotalMass();
+	public void setTotalMass(Amount<Mass> _totalMass);
+	
+	public int getNumberOfCompressorStages();
+	public void setNumberOfCompressorStages(int _numberOfCompressorStages);
+
+	public int getNumberOfShafts();
+	public void setNumberOfShafts(int _numberOfShafts);
+ 
+	public double getOverallPressureRatio();
+	public void setOverallPressureRatio(double _overallPressureRatio);
 }

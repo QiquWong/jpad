@@ -1,14 +1,9 @@
 package aircraft.components.nacelles;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
+import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
@@ -16,18 +11,16 @@ import org.jscience.physics.amount.Amount;
 import aircraft.OperatingConditions;
 import aircraft.components.Aircraft;
 import aircraft.components.powerPlant.Engine;
-import configuration.enumerations.AircraftEnum;
-import configuration.enumerations.AnalysisTypeEnum;
-import configuration.enumerations.MethodEnum;
+import configuration.enumerations.EngineTypeEnum;
 
 /** 
  * The Nacelle is considered 
  * the structural part of the engine
  * 
- * @author Lorenzo Attanasio
+ * @author Vittorio Trifari
  *
  */
-public class NacelleCreator {
+public class NacelleCreator implements INacelleCreator {
 
 	public enum MountingPosition {
 		WING,
@@ -36,230 +29,191 @@ public class NacelleCreator {
 	}
 
 	private String _id;
-	private static int idCounter = 0;
-	private Amount<Length> _X0, _Y0, _Z0;
-	private Amount<Length> _heightFromGround;
-	private Amount<Length> _length;
-	private Amount<Length> _diameterMean, _diameterInlet, _diameterOutlet;
-	private Amount<Length> _roughness;
-	private Amount<Area> _surfaceWetted;
-
-	private OperatingConditions _theOperatingConditions;
-	private Amount<Mass> _mass, _massReference, _totalMass;
 	private MountingPosition _mountingPosition;
-
-	private Map <MethodEnum, Amount<Mass>> _massMap = new TreeMap<MethodEnum, Amount<Mass>>();
-	private Map <AnalysisTypeEnum, List<MethodEnum>> _methodsMap = new HashMap<AnalysisTypeEnum, List<MethodEnum>>();
-	private List<MethodEnum> _methodsList = new ArrayList<MethodEnum>();
-	private Double[] _percentDifference;
-	private Amount<Mass> _massEstimated;
-
-	private Amount<Length> _xCG, _yCG, _xCGReference, 
-	_xCGEstimated, _yCGReference, _yCGEstimated,
-	_zCG, _zCGEstimated, _zCGReference;
-
-	private Double[] _percentDifferenceXCG;
-
+	private Amount<Length> _xApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
+	private Amount<Length> _yApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
+	private Amount<Length> _zApexConstructionAxes = Amount.valueOf(0.0, SI.METER);
+	
+	private Amount<Length> _roughness;
+	
+	private Amount<Length> _length;
+	//-----------------------------------------
+	// only for jet engines
+	private Amount<Length> _diameterMean;
+	private Amount<Length> _diameterOutlet;
+	//-----------------------------------------
+	// only for propeller engines
+	private Amount<Length> _width;
+	private Amount<Length> _height;
+	//------------------------------------------
+	
+	private Amount<Area> _surfaceWetted;
+	private Amount<Mass> _massReference;
+	
 	private Aircraft _theAircraft;
+	private OperatingConditions _theOperatingConditions;
 	private Engine _theEngine;
-	private NacellesWeightsManager weights;
-	private NacellesBalanceManager balance;
-	private NacellesAerodynamicsManager aerodynamics;
-	/**
-	 * Define a single nacelle object regardless of the
-	 * aircraft and the engine which corresponds to the nacelle.
-	 * The corresponding engine must be set to run the analyses.
-	 * 
-	 * @author Lorenzo Attanasio
-	 * @param name
-	 * @param description
-	 * @param x coordinate of forward-most point of the nacelle measured from aircraft nose
-	 * @param y
-	 * @param z
-	 */
-	public NacelleCreator(String name, String description, double x, double y, double z) {
-
-		super("", name, description, x, y, z);
-
-		_X0 = Amount.valueOf(x, SI.METER);
-		_Y0 = Amount.valueOf(y, SI.METER);
-		_Z0 = Amount.valueOf(z, SI.METER);
-
-		_cg.set_xBRF(_X0);
-		_cg.set_yBRF(_Y0);
-		_cg.set_zBRF(_Z0);
-	}
-
-	public NacelleCreator(String name, String description, 
-			double x, double y, double z,
-			Aircraft aircraft) {
-		this(name, description, x, y, z);
-		_theAircraft = aircraft;
+	
+	private NacellesWeightsManager _theWeights;
+	private NacellesBalanceManager _theBalance;
+	private NacellesAerodynamicsManager _theAerodynamics;
+	
+	//============================================================================================
+	// Builder pattern 
+	//============================================================================================
+	public static class NacelleCreatorBuilder {
+	
+		// required parameters
+		private String __id;
 		
-		_id = aircraft.getNacelles().getId() + idCounter + "99";
-		idCounter++;
+		// optional parameters ... defaults
+		// ...
+		private Amount<Length> __length = Amount.valueOf(0.0, SI.METER);
+		//-----------------------------------------
+		// only for jet engines
+		private Amount<Length> __diameterMean = Amount.valueOf(0.0, SI.METER);
+		private Amount<Length> __diameterOutlet = Amount.valueOf(0.0, SI.METER);
+		//-----------------------------------------
+		// only for propeller engines
+		private Amount<Length> __width = Amount.valueOf(0.0, SI.METER);
+		private Amount<Length> __height = Amount.valueOf(0.0, SI.METER);
+		//------------------------------------------
+		// TODO : CONTINUE !!!
 		
-		initializeData();
 	}
 	
-	/**
-	 * Overload of the previous builder that recognize aircraft name and initialize 
-	 * it'a nacelles data.
-	 * 
-	 * @author Vittorio Trifari
-	 */
-	public NacelleCreator(AircraftEnum aircraftName, String name, String description, 
-			double x, double y, double z,
-			Aircraft aircraft) {
-		this(name, description, x, y, z);
-		_theAircraft = aircraft;
+	private NacelleCreator (NacelleCreatorBuilder builder) {
 		
-		_id = aircraft.getNacelles().getId() + idCounter + "99";
-		idCounter++;
-		
-		initializeData(aircraftName);
-	}
-
-	/**
-	 * Define a nacelle linking it to an engine
-	 * This is mandatory to execute the analyses
-	 * 
-	 * @author Lorenzo Attanasio
-	 * @param name
-	 * @param description
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @param engine
-	 */
-	public NacelleCreator(String name, String description, 
-			double x, double y, double z,
-			Aircraft aircraft,
-			Engine engine) {
-
-		this(name, description, x, y, z, aircraft);
-		_theEngine = engine;
-		initializeWeights();
-		initializeBalance();
-		initializeAerodynamics();
-	}
-
-	public void initializeData() {
-		_length = Amount.valueOf(4.371,SI.METER);
-		_diameterMean = Amount.valueOf(1.4,SI.METER);
-		_diameterInlet = Amount.valueOf(1.2,SI.METER);
-		_diameterOutlet = Amount.valueOf(0.2,SI.METER);
-
-		_roughness = Amount.valueOf(0.405 * Math.pow(10,-5), SI.METRE);
-		_heightFromGround = Amount.valueOf(3.19, SI.METER);
-
-		//		_z = Amount.valueOf(_heightFromGround.getEstimatedValue() 
-		//				- _theFuselage.get_heightGround().getEstimatedValue() 
-		//				- _theFuselage.get_diam_C().getEstimatedValue()/2, SI.METER);
-		_surfaceWetted = Amount.valueOf(12.5, Area.UNIT); // matlab file ATR72
-
-		_massReference = Amount.valueOf(409.4, SI.KILOGRAM);
-		_mountingPosition = MountingPosition.WING;
+		// TODO : PASS ALL REQUIRED VARIABLES FROM THE BUILDER TO THE CLASS FIELDS
 		
 		calculateSurfaceWetted();
-	}
-	
-	/**
-	 * Overload of the default initializer that recognize aircraft name and sets it's
-	 * nacelle data.
-	 * 
-	 * @author Vittorio Trifari
-	 */
-	public void initializeData(AircraftEnum aircraftName) {
 		
-		switch(aircraftName) {
-		
-		case ATR72:
-			_length = Amount.valueOf(4.371,SI.METER);
-			_diameterMean = Amount.valueOf(1.4,SI.METER);
-			_diameterInlet = Amount.valueOf(1.2,SI.METER);
-			_diameterOutlet = Amount.valueOf(0.2,SI.METER);
-
-			_roughness = Amount.valueOf(0.405 * Math.pow(10,-5), SI.METRE);
-			_heightFromGround = Amount.valueOf(3.19, SI.METER);
-
-			//		_z = Amount.valueOf(_heightFromGround.getEstimatedValue() 
-			//				- _theFuselage.get_heightGround().getEstimatedValue() 
-			//				- _theFuselage.get_diam_C().getEstimatedValue()/2, SI.METER);
-			_surfaceWetted = Amount.valueOf(12.5, Area.UNIT); // matlab file ATR72
-
-			_massReference = Amount.valueOf(409.4, SI.KILOGRAM);
-			_mountingPosition = MountingPosition.WING;
-			
-			calculateSurfaceWetted();
-			break;
-			
-		case B747_100B:
-			_length = Amount.valueOf(7.6,SI.METER);
-			_diameterMean = Amount.valueOf(2.0,SI.METER);
-			_diameterInlet = Amount.valueOf(1.2,SI.METER);
-			_diameterOutlet = Amount.valueOf(0.2,SI.METER);
-
-			_roughness = Amount.valueOf(0.405 * Math.pow(10,-5), SI.METRE);
-			_heightFromGround = Amount.valueOf(0.81, SI.METER);
-
-			//		_z = Amount.valueOf(_heightFromGround.getEstimatedValue() 
-			//				- _theFuselage.get_heightGround().getEstimatedValue() 
-			//				- _theFuselage.get_diam_C().getEstimatedValue()/2, SI.METER);
-			_surfaceWetted = Amount.valueOf(95.5044, Area.UNIT); // matlab file ATR72
-
-			_massReference = Amount.valueOf(1184.2500, SI.KILOGRAM);
-			_mountingPosition = MountingPosition.WING;
-			
-			calculateSurfaceWetted();
-			break;
-			
-		case AGILE_DC1:
-			_length = Amount.valueOf(3.,SI.METER);
-			_diameterMean = Amount.valueOf(1.816,SI.METER);
-			_diameterInlet = Amount.valueOf(1.538,SI.METER);
-			_diameterOutlet = Amount.valueOf(0.60,SI.METER); // "suitable" value: ADAS
-
-			_roughness = Amount.valueOf(0.405 * Math.pow(10,-5), SI.METRE);
-			_heightFromGround = Amount.valueOf(3.6, SI.METER);
-
-			_surfaceWetted = Amount.valueOf(15.8, Area.UNIT); // ADAS 12 m^2
-
-			_massReference = Amount.valueOf(380., SI.KILOGRAM);//ADAS
-			_mountingPosition = MountingPosition.WING;
-			
-			calculateSurfaceWetted();
-			break;
+		if((_theEngine.getEngineType() == EngineTypeEnum.TURBOFAN)
+				|| (_theEngine.getEngineType() == EngineTypeEnum.TURBOJET)) {
+			if((_length.doubleValue(SI.METER) == 0.0)
+					&& (_diameterMean.doubleValue(SI.METER) == 0.0)
+					&& (_diameterOutlet.doubleValue(SI.METER) == 0.0)) {
+				estimateDimensions(_theEngine);
+			}
+		}
+		else if((_theEngine.getEngineType() == EngineTypeEnum.TURBOPROP)
+				|| (_theEngine.getEngineType() == EngineTypeEnum.PISTON)) {
+			if((_length.doubleValue(SI.METER) == 0.0)
+					&& (_height.doubleValue(SI.METER) == 0.0)
+					&& (_width.doubleValue(SI.METER) == 0.0)) {
+				estimateDimensions(_theEngine);
+			}
 		}
 	}
-
-	public void initializeWeights() {
-		if (weights == null) 
-			weights = new NacellesWeightsManager(_theAircraft, this);
-	}
-
-	public void initializeAerodynamics() {
-		if (aerodynamics == null) 
-			aerodynamics = new NacellesAerodynamicsManager(_theAircraft, this);
-		//TODO: find a way to manage this
-//		aerodynamics.set_mach(_theOperatingConditions.get_machCurrent());
-//		aerodynamics.set_altitude(_theOperatingConditions.get_altitude().doubleValue(SI.METER));
+	
+	//============================================================================================
+	// End of builder pattern 
+	//============================================================================================
+	
+	/***************************************************************************								
+	 * This method estimates the nacelle dimensions in inches as function of 									
+	 * the engine type. If is a jet engine it uses the static thrust in lbs; 									
+	 * otherwise it uses the shaft-horsepower (hp).
+	 * 
+	 * @see: Behind ADAS - Nacelle Sizing
+	 */
+	@Override
+	public void estimateDimensions (Engine theEngine) {
+				
+		if((theEngine.getEngineType() == EngineTypeEnum.TURBOFAN) || (theEngine.getEngineType() == EngineTypeEnum.TURBOJET)) {
+			_length = Amount.valueOf(
+					40 + (0.59 * Math.sqrt(theEngine.getT0().doubleValue(NonSI.POUND_FORCE))),
+					NonSI.INCH)
+					.to(SI.METER);
+			_diameterMean = Amount.valueOf(
+					5 + (0.39 * Math.sqrt(theEngine.getT0().doubleValue(NonSI.POUND_FORCE))),
+					NonSI.INCH)
+					.to(SI.METER); 
+		}
+		
+		else if(theEngine.getEngineType() == EngineTypeEnum.PISTON) {
+			_length = Amount.valueOf(
+					4*(10^-10)*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),4)
+					- 6*(10^-7)*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),3)
+					+ 8*(10^-5)*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),2)
+					- 0.2193*theEngine.getP0().doubleValue(NonSI.HORSEPOWER)
+					+ 54.097,
+					NonSI.INCH)
+					.to(SI.METER);
+			
+			if(theEngine.getP0().doubleValue(NonSI.HORSEPOWER) <= 410)
+				_width = Amount.valueOf(
+						- 3*(10^-7)*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),3)
+						- 0.0003*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),2)
+						+ 0.2196*theEngine.getP0().doubleValue(NonSI.HORSEPOWER)
+						+ 7.3966,
+						NonSI.INCH)
+						.to(SI.METER); 
+			else 
+				_width = Amount.valueOf(
+						- 4.6563*Math.log(theEngine.getP0().doubleValue(NonSI.HORSEPOWER))
+						+ 57.943,
+						NonSI.INCH)
+						.to(SI.METER);
+			
+			_height = Amount.valueOf(
+					12.595*Math.log(theEngine.getP0().doubleValue(NonSI.HORSEPOWER))
+					- 43.932,
+					NonSI.INCH)
+					.to(SI.METER);
+			}
+		
+		else if(theEngine.getEngineType() == EngineTypeEnum.TURBOPROP) {
+			_length = Amount.valueOf(
+					- 1.28*(10^-5)*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),2)
+					+ 9.273*(10^-2)*theEngine.getP0().doubleValue(NonSI.HORSEPOWER)
+					- 8.3456,
+					NonSI.INCH)
+					.to(SI.METER);
+			
+			_width = Amount.valueOf(
+					- 0.95*(10^-6)*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),2)
+					+ 0.0073*theEngine.getP0().doubleValue(NonSI.HORSEPOWER)
+					+ 25.3,
+					NonSI.INCH)
+					.to(SI.METER);
+			
+			_height = Amount.valueOf(
+					0.67*(10^-11)*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),3)
+					- 3.35*(10^-6)*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),2)
+					+ 0.029*theEngine.getP0().doubleValue(NonSI.HORSEPOWER)
+					- 5.58425,
+					NonSI.INCH)
+					.to(SI.METER); 
+		}
 	}
 	
-	public void initializeBalance() {
-		if (balance == null)
-			balance = new NacellesBalanceManager(this);
-	}
-
 	/**
 	 * Wetted surface is considered as two times the external surface
 	 * (the air flows both outside and inside)
 	 * 
-	 * BE CAREFUL! Only the external area of the nacelle is counted as wetted surtface [Roskam] 
+	 * BE CAREFUL! Only the external area of the nacelle is counted as wetted surface [Roskam] 
 	 */
-	public void calculateSurfaceWetted() {
-//		_surfaceWetted = _length.times(_diameterMean.times(Math.PI * 2)).to(SI.SQUARE_METRE);
+	private void calculateSurfaceWetted() {
+		
+		// TODO : IF TURBOPROP OR PISTON, THE Swet IS (2*HEIGHT*LENGTH)+(2*WIDTH*LENGTH) ??
+		
 		_surfaceWetted = _length.times(_diameterMean.times(Math.PI)).to(SI.SQUARE_METRE); 
+	}
+
+	private void initializeWeights() {
+		if (_theWeights == null) 
+			_theWeights = new NacellesWeightsManager(this);
+	}
+
+	private void initializeAerodynamics() {
+		if (_theAerodynamics == null) 
+			_theAerodynamics = new NacellesAerodynamicsManager(_theAircraft, this, _theOperatingConditions);
+	}
+	
+	private void initializeBalance() {
+		if (_theBalance == null)
+			_theBalance = new NacellesBalanceManager(this);
 	}
 
 	/**
@@ -268,232 +222,180 @@ public class NacelleCreator {
 	 * 
 	 * @author Lorenzo Attanasio
 	 */
+	@Override
 	public void calculateAll() {
 		initializeWeights();
 		initializeBalance();
 		initializeAerodynamics();
 		
-		weights.calculateAll();
-		balance.calculateAll();
-		aerodynamics.calculateAll();
+		_theWeights.calculateAll();
+		_theBalance.calculateAll();
+		_theAerodynamics.calculateAll();
 	}
 
-
-	//	@SuppressWarnings("unchecked")
-	//	@Override
-	//	public void calculateCG(
-	//			MyAircraft aircraft, 
-	//			MyOperatingConditions conditions,
-	//			MyMethodEnum method) {
-	//
-	//		_cg.setLRForigin(_X0, _Y0, _Z0);
-	//		_cg.set_xLRFref(_length.times(0.4));
-	//		_cg.set_yLRFref(_diameterMean.divide(2));
-	//		_cg.set_zLRFref(_diameterMean.divide(2));
-	//
-	//		// Initialize _methodsList again to clear it
-	//		// from old entries
-	//		_methodsList = new ArrayList<MyMethodEnum>();
-	//
-	//		switch(method) {
-	//
-	//		// page 313 Torenbeek (1982)
-	//		case TORENBEEK_1982 : { 
-	//			_methodsList.add(method);
-	//			_xCG = _length.times(0.4);
-	//			_xCGMap.put(method, _xCG);
-	//		} break;
-	//
-	//		default : break;
-	//
-	//		}
-	//
-	//		_methodsMap.put(MyAnalysisTypeEnum.BALANCE, _methodsList);
-	//		_percentDifferenceXCG = new Double[_xCGMap.size()];
-	//
-	//		_cg.set_xLRF((Amount<Length>) MyWriteUtils.compareMethods(
-	//				_cg.get_xLRFref(), 
-	//				_xCGMap,
-	//				_percentDifferenceXCG,
-	//				30.).getFilteredMean());
-	//		
-	//		_cg.calculateCGinBRF();
-	//
-	//	}
-
-
-	public Double formFactor(){
-
+	@Override
+	public Double calculateFormFactor(){
 		//matlab file ATR72
 		return (1 + 0.165 
 				+ 0.91/(_length.getEstimatedValue()/_diameterMean.getEstimatedValue())); 	
 	}
-
-	public Amount<Length> get_heightFromGround() {
-		return _heightFromGround;
-	}
-
-	public void set_heightFromGround(Amount<Length> _height) {
-		this._heightFromGround = _height;
-	}
-
-	public Amount<Length> get_length() {
+	
+	@Override
+	public Amount<Length> getLength() {
 		return _length;
 	}
 
-	public void set_length(Amount<Length> _lenght) {
+	@Override
+	public void setLength(Amount<Length> _lenght) {
 		this._length = _lenght;
 	}
 
-	public Amount<Area> get_surfaceWetted() {
+	@Override
+	public Amount<Area> getSurfaceWetted() {
 		return _surfaceWetted;
 	}
 
-	public void set_surfaceWetted(Amount<Area> _sWet) {
+	@Override
+	public void setSurfaceWetted(Amount<Area> _sWet) {
 		this._surfaceWetted = _sWet;
 	}
 
-	public Amount<Length> get_diameterMean() {
+	@Override
+	public Amount<Length> getDiameterMean() {
 		return _diameterMean;
 	}
 
-	public void set_diameterMean(Amount<Length> _diameter) {
+	@Override
+	public void setDiameterMean(Amount<Length> _diameter) {
 		this._diameterMean = _diameter;
 	}
 
-	public Amount<Length> get_diameterInlet() {
-		return _diameterInlet;
-	}
-
-	public void set_diameterInlet(Amount<Length> _inletDiameter) {
-		this._diameterInlet = _inletDiameter;
-	}
-
-	public Amount<Length> get_diameterOutlet() {
+	@Override
+	public Amount<Length> getDiameterOutlet() {
 		return _diameterOutlet;
 	}
 
-	public void set_diameterOutlet(Amount<Length> _exitDiameter) {
+	@Override
+	public void setDiameterOutlet(Amount<Length> _exitDiameter) {
 		this._diameterOutlet = _exitDiameter;
 	}
 
-	public Amount<Length> get_roughness() {
+	@Override
+	public Amount<Length> getWidth() {
+		return _width;
+	}
+
+	@Override
+	public void setWidth(Amount<Length> _width) {
+		this._width = _width;
+	}
+
+	@Override
+	public Amount<Length> getHeight() {
+		return _height;
+	}
+
+	@Override
+	public void setHeight(Amount<Length> _height) {
+		this._height = _height;
+	}
+
+	@Override
+	public Amount<Length> getRoughness() {
 		return _roughness;
 	}
 
-	public void set_roughness(Amount<Length> _roughness) {
+	@Override
+	public void setRoughness(Amount<Length> _roughness) {
 		this._roughness = _roughness;
 	}
 
-	public Amount<Mass> get_mass() {
-		return _mass;
-	}
-
-	public void set_mass(Amount<Mass> _mass) {
-		this._mass = _mass;
-	}
-
-
-	public MountingPosition get_mounting() {
+	@Override
+	public MountingPosition getMountingPosition() {
 		return _mountingPosition;
 	}
 
-
-	public void set_mounting(MountingPosition _mounting) {
+	@Override
+	public void setMountingPosition(MountingPosition _mounting) {
 		this._mountingPosition = _mounting;
 	}
 
-
-	public Amount<Mass> get_massReference() {
-		return _massReference;
-	}
-
-
-	public void set_massReference(Amount<Mass> _massReference) {
-		this._massReference = _massReference;
-	}
-
-
-	public Map<MethodEnum, Amount<Mass>> get_massMap() {
-//		System.out.println("weight.getMassMap: " + weights.get_massMap());
-		return weights.getMassMap();
-//		return _massMap;
-	}
-
-
-	public Map<AnalysisTypeEnum, List<MethodEnum>> get_methodsMap() {
-		return _methodsMap;
-	}
-
-
-	public List<MethodEnum> get_methodsList() {
-		return _methodsList;
-	}
-
-
-	public Double[] get_percentDifference() {
-//		weights.;
-		return _percentDifference;
-	}
-
-
-	public Amount<Mass> get_totalMass() {
-		return _totalMass;
+	@Override
+	public Amount<Length> getXApexConstructionAxes() {
+		return _xApexConstructionAxes;
 	}
 
 	@Override
-	public Amount<Length> get_X0() { return _X0; }
-
-	@Override
-	public void set_X0(Amount<Length> x) { _X0 = x; };
-
-	@Override
-	public Amount<Length> get_Y0() { return _Y0; }
-
-	@Override
-	public void set_Y0(Amount<Length> y) { _Y0 = y; };
-
-	@Override
-	public Amount<Length> get_Z0() { return _Z0; }
-
-	@Override
-	public void set_Z0(Amount<Length> z) { _Z0 = z; }
-
-
-	public Amount<Mass> get_massEstimated() {
-		return _massEstimated;
+	public void setXApexConstructionAxes(Amount<Length> _X0) {
+		this._xApexConstructionAxes = _X0;
 	}
 
+	@Override
+	public Amount<Length> getYApexConstructionAxes() {
+		return _yApexConstructionAxes;
+	}
 
-	public Engine get_theEngine() {
+	@Override
+	public void setYApexConstructionAxes(Amount<Length> _Y0) {
+		this._yApexConstructionAxes = _Y0;
+	}
+
+	@Override
+	public Amount<Length> getZApexConstructionAxes() {
+		return _zApexConstructionAxes;
+	}
+
+	@Override
+	public void setZApexConstructionAxes(Amount<Length> _Z0) {
+		this._zApexConstructionAxes = _Z0;
+	}
+
+	@Override
+	public Engine getTheEngine() {
 		return _theEngine;
 	}
 
-	public void set_theEngine(Engine _theEngine) {
+	@Override
+	public void setTheEngine(Engine _theEngine) {
 		this._theEngine = _theEngine;
 	}
 
+	@Override
 	public NacellesWeightsManager getWeights() {
 		initializeWeights();
-		return weights;
+		return _theWeights;
 	}
 
+	@Override
 	public NacellesAerodynamicsManager getAerodynamics() {
 		initializeAerodynamics();
-		return aerodynamics;
+		return _theAerodynamics;
 	}
 
+	@Override
 	public NacellesBalanceManager getBalance() {
 		initializeBalance();
-		return balance;
+		return _theBalance;
 	}
 	
-//	public CenterOfGravity getCG() {
-//		return balance.get_cg();
-//	}
-
-	public String get_id() {
+	@Override
+	public String getId() {
 		return _id;
 	}
 
+	@Override
+	public void setId(String id) {
+		this._id = id;
+	}
+
+	@Override
+	public Amount<Mass> getMassReference() {
+		return _massReference;
+	}
+
+	@Override
+	public void setMassReference(Amount<Mass> _massReference) {
+		this._massReference = _massReference;
+	}
+	
 }

@@ -28,13 +28,13 @@ public class NacellesBalanceManager extends BalanceManager{
 	
 	public void initializeDependentData() {
 		_cg.setLRForigin(
-				_theNacelle.get_X0(), 
-				_theNacelle.get_Y0(), 
-				_theNacelle.get_Z0());
+				_theNacelle.getXApexConstructionAxes(), 
+				_theNacelle.getYApexConstructionAxes(), 
+				_theNacelle.getZApexConstructionAxes());
 		
-		_cg.set_xLRFref(_theNacelle.get_length().times(0.4));
-		_cg.set_yLRFref(_theNacelle.get_diameterMean().divide(2));
-		_cg.set_zLRFref(_theNacelle.get_diameterMean().divide(2));
+		_cg.set_xLRFref(_theNacelle.getLength().times(0.4));
+		_cg.set_yLRFref(_theNacelle.getDiameterMean().divide(2));
+		_cg.set_zLRFref(_theNacelle.getDiameterMean().divide(2));
 	}
 	
 	@Override
@@ -66,7 +66,7 @@ public class NacellesBalanceManager extends BalanceManager{
 	
 	public void torenbeek() {
 		_methodsList.add(MethodEnum.TORENBEEK_1982);
-		_xCG = _theNacelle.get_length().times(0.4);
+		_xCG = _theNacelle.getLength().times(0.4);
 		_xCGMap.put(MethodEnum.TORENBEEK_1982, _xCG);	
 	}
 

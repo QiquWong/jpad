@@ -1334,13 +1334,13 @@ public class JPADDataWriter {
 		writeInputNode("Xcoordinate", nacelle.get_X0(), nacelleParameters, true);
 		writeInputNode("Ycoordinate", nacelle.get_Y0(), nacelleParameters, true);
 		writeInputNode("Zcoordinate", nacelle.get_Z0(), nacelleParameters, true);
-		writeInputNode("Lenght", nacelle.get_length(), nacelleParameters, true);
-		writeInputNode("Mean_diameter", nacelle.get_diameterMean(), nacelleParameters, true);
+		writeInputNode("Lenght", nacelle.getLength(), nacelleParameters, true);
+		writeInputNode("Mean_diameter", nacelle.getDiameterMean(), nacelleParameters, true);
 		writeInputNode("Inlet_diameter", nacelle.get_diameterInlet(), nacelleParameters, true);
-		writeInputNode("Outlet_diameter", nacelle.get_diameterOutlet(), nacelleParameters, true);
-		writeInputNode("Reference_mass", nacelle.get_massReference(), nacelleParameters, true);
-		writeOutputNode("Wetted_surface", nacelle.get_surfaceWetted(), nacelleParameters);
-		writeOutputNode("FormFactor", nacelle.formFactor(), nacelleParameters);
+		writeInputNode("Outlet_diameter", nacelle.getDiameterOutlet(), nacelleParameters, true);
+		writeInputNode("Reference_mass", nacelle.getMassReference(), nacelleParameters, true);
+		writeOutputNode("Wetted_surface", nacelle.getSurfaceWetted(), nacelleParameters);
+		writeOutputNode("FormFactor", nacelle.calculateFormFactor(), nacelleParameters);
 	}
 
 	/**
@@ -1357,8 +1357,8 @@ public class JPADDataWriter {
 		// --- Weights -------------------------
 		Element weights = addElementToSubElement("Weights", analysis);
 
-		writeOutputNode("Reference_mass", nacelle.get_massReference(), weights);
-		writeOutputNode("All_nacelles_mass", nacelle.get_totalMass(), weights);
+		writeOutputNode("Reference_mass", nacelle.getMassReference(), weights);
+		writeOutputNode("All_nacelles_mass", nacelle.getTotalMass(), weights);
 //		writeMethodsComparison(doc, _sheet, "Weight_estimation_methods_comparison", nacelle.getWeights().get_massMap(), nacelle.get_percentDifference(), weights);
 		writeMethodsComparison(doc, _sheet, "Weight_estimation_methods_comparison", nacelle.getWeights().getMassMap(), nacelle.getWeights().getPercentDifference(), weights);
 		writeOutputNode("Estimated_mass", nacelle.get_massEstimated(), weights);

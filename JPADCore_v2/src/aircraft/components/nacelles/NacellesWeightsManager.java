@@ -12,7 +12,6 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.componentmodel.InnerCalculator;
 import aircraft.componentmodel.componentcalcmanager.WeightsManager;
-import aircraft.components.Aircraft;
 import aircraft.components.nacelles.NacelleCreator.MountingPosition;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.EngineTypeEnum;
@@ -22,7 +21,6 @@ import writers.JPADStaticWriteUtils;
 
 public class NacellesWeightsManager extends WeightsManager{
 
-	private Aircraft _theAircraft;
 	private NacelleCreator _theNacelle;
 	private MountingPosition _mountingPosition;
 	private InnerCalculator calculator;
@@ -31,8 +29,7 @@ public class NacellesWeightsManager extends WeightsManager{
 	private Piston piston;
 
 	
-	public NacellesWeightsManager(Aircraft aircraft, NacelleCreator nacelle) {
-		_theAircraft = aircraft;
+	public NacellesWeightsManager(NacelleCreator nacelle) {
 		_theNacelle = nacelle;
 
 		initializeDependentData();
@@ -44,18 +41,17 @@ public class NacellesWeightsManager extends WeightsManager{
 	public void initializeDependentData() {
 		_mass = Amount.valueOf(0., SI.KILOGRAM);
 		_massEstimated = Amount.valueOf(0., SI.KILOGRAM);
-//		_massReference = Amount.valueOf(0., SI.KILOGRAM);
-		_massReference = _theAircraft.getNacelles().get_massReference();
+		_massReference = _theNacelle.getMassReference();
 	}
 	
 	
 	@Override
 	public void initializeInnerCalculators() {
-		if (_theNacelle.get_theEngine().getEngineType().equals(EngineTypeEnum.TURBOPROP))
+		if (_theNacelle.getTheEngine().getEngineType().equals(EngineTypeEnum.TURBOPROP))
 			calculator = new Turboprop();
-		else if(_theNacelle.get_theEngine().getEngineType().equals(EngineTypeEnum.TURBOFAN))
+		else if(_theNacelle.getTheEngine().getEngineType().equals(EngineTypeEnum.TURBOFAN))
 			calculator = new Turbofan();
-		else if(_theNacelle.get_theEngine().getEngineType().equals(EngineTypeEnum.PISTON))
+		else if(_theNacelle.getTheEngine().getEngineType().equals(EngineTypeEnum.PISTON))
 			calculator = new Piston();	
 	}
 	
@@ -87,14 +83,14 @@ public class NacellesWeightsManager extends WeightsManager{
 		// page 150 Jenkinson - Civil Jet Aircraft Design
 		public Amount<Mass> jenkinson() {
 
-			if (_theNacelle.get_theEngine().getT0().getEstimatedValue() < 600000.){
+			if (_theNacelle.getTheEngine().getT0().getEstimatedValue() < 600000.){
 				_mass = Amount.valueOf(
-						_theNacelle.get_theEngine().getT0().divide(1000.).times(6.8).getEstimatedValue(), 
+						_theNacelle.getTheEngine().getT0().divide(1000.).times(6.8).getEstimatedValue(), 
 						SI.KILOGRAM);
 			
 			} else {
 				_mass = Amount.valueOf(2760 + 
-						(2.2*_theNacelle.get_theEngine().getT0().divide(1000.).getEstimatedValue()), 
+						(2.2*_theNacelle.getTheEngine().getT0().divide(1000.).getEstimatedValue()), 
 						SI.KILOGRAM);
 			}
 			
@@ -137,7 +133,7 @@ public class NacellesWeightsManager extends WeightsManager{
 		public Amount<Mass> torenbeek1976 () {
 			_mass = Amount.valueOf(0.405*
 					Math.sqrt(_theAircraft.getThePerformance().getVDiveEAS().getEstimatedValue())*
-					Math.pow(_theNacelle.get_surfaceWetted().getEstimatedValue(), 1.3), SI.KILOGRAM);
+					Math.pow(_theNacelle.getSurfaceWetted().getEstimatedValue(), 1.3), SI.KILOGRAM);
 			_methodsList.add(MethodEnum.TORENBEEK_1976);
 			_massMap.put(MethodEnum.TORENBEEK_1976, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 			return _mass;
@@ -146,7 +142,7 @@ public class NacellesWeightsManager extends WeightsManager{
 		public Amount<Mass> torenbeek1982() {
 
 			_mass = Amount.valueOf(
-					0.055*_theNacelle.get_theEngine().getT0().to(NonSI.POUND_FORCE).getEstimatedValue(),
+					0.055*_theNacelle.getTheEngine().getT0().to(NonSI.POUND_FORCE).getEstimatedValue(),
 					NonSI.POUND).
 					to(SI.KILOGRAM);
 			_methodsList.add(MethodEnum.TORENBEEK_1982);
@@ -172,14 +168,14 @@ public class NacellesWeightsManager extends WeightsManager{
 		public Turboprop() { }
 
 		public Amount<Mass> jenkinson() { // page 150 Jenkinson - Civil Jet _theAircraft Design
-			if (_theNacelle.get_theEngine().getT0().getEstimatedValue() < 600000.){
+			if (_theNacelle.getTheEngine().getT0().getEstimatedValue() < 600000.){
 				_mass = Amount.valueOf(
-						_theNacelle.get_theEngine().getT0().divide(1000).times(6.8).getEstimatedValue(), 
+						_theNacelle.getTheEngine().getT0().divide(1000).times(6.8).getEstimatedValue(), 
 						SI.KILOGRAM);
 			
 			} else {
 				_mass = Amount.valueOf(2760 + 
-						(2.2*_theNacelle.get_theEngine().getT0().divide(1000).getEstimatedValue()), 
+						(2.2*_theNacelle.getTheEngine().getT0().divide(1000).getEstimatedValue()), 
 						SI.KILOGRAM);
 			}
 			_methodsList.add(MethodEnum.JENKINSON);
@@ -222,7 +218,7 @@ public class NacellesWeightsManager extends WeightsManager{
 		public Amount<Mass> torenbeek1976() {
 			_mass = Amount.valueOf(0.405*
 					Math.sqrt(_theAircraft.getThePerformance().getVDiveEAS().getEstimatedValue())*
-					Math.pow(_theNacelle.get_surfaceWetted().getEstimatedValue()*2, 1.3), SI.KILOGRAM);
+					Math.pow(_theNacelle.getSurfaceWetted().getEstimatedValue()*2, 1.3), SI.KILOGRAM);
 			_methodsList.add(MethodEnum.TORENBEEK_1976);
 			_massMap.put(MethodEnum.TORENBEEK_1976, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 			return _mass;
@@ -230,7 +226,7 @@ public class NacellesWeightsManager extends WeightsManager{
 
 		public Amount<Mass> torenbeek1982() {
 			_mass = Amount.valueOf(
-					0.055*_theNacelle.get_theEngine().getT0().to(NonSI.POUND_FORCE).getEstimatedValue(),
+					0.055*_theNacelle.getTheEngine().getT0().to(NonSI.POUND_FORCE).getEstimatedValue(),
 					NonSI.POUND).
 					to(SI.KILOGRAM);
 			_methodsList.add(MethodEnum.TORENBEEK_1982);
@@ -251,12 +247,12 @@ public class NacellesWeightsManager extends WeightsManager{
 		public Amount<Mass> kundu() {
 			if (_mountingPosition == MountingPosition.WING) {
 				_mass = Amount.valueOf(
-						_theNacelle.get_theEngine().getP0()
+						_theNacelle.getTheEngine().getP0()
 						.to(NonSI.HORSEPOWER).times(0.4).getEstimatedValue(),
 						NonSI.POUND_FORCE).to(SI.NEWTON).divide(AtmosphereCalc.g0).to(SI.KILOGRAM);
 			} else if (_mountingPosition == MountingPosition.FUSELAGE) {
 				_mass = Amount.valueOf(
-						_theNacelle.get_theEngine().getP0().to(NonSI.HORSEPOWER).times(0.5).getEstimatedValue(),
+						_theNacelle.getTheEngine().getP0().to(NonSI.HORSEPOWER).times(0.5).getEstimatedValue(),
 						NonSI.POUND_FORCE).to(SI.NEWTON).divide(AtmosphereCalc.g0).to(SI.KILOGRAM);
 			}
 			_methodsList.add(MethodEnum.KUNDU);

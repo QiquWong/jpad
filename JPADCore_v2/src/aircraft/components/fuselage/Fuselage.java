@@ -325,7 +325,7 @@ public class Fuselage implements IFuselage {
 				k = k + 0.08;
 			}
 
-			if (aircraft.getNacelles().get_nacellesList().get(0).get_mounting() == NacelleCreator.MountingPosition.FUSELAGE) {
+			if (aircraft.getNacelles().get_nacellesList().get(0).getMountingPosition() == NacelleCreator.MountingPosition.FUSELAGE) {
 				k = k + 0.04;
 			}
 

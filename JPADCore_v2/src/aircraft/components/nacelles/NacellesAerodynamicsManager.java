@@ -6,6 +6,7 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
+import aircraft.OperatingConditions;
 import aircraft.componentmodel.componentcalcmanager.AerodynamicsManager;
 import aircraft.components.Aircraft;
 import calculators.aerodynamics.AerodynamicCalc;
@@ -26,26 +27,29 @@ public class NacellesAerodynamicsManager extends AerodynamicsManager{
 	private Double _cd0Total;
 	private Aircraft _theAircraft;
 	private NacelleCreator _theNacelle;
-	private Amount<Area> sW;
+	private Amount<Area> _wingSurface;
 
+	private OperatingConditions _theOperatingConditions;
+	
 	public NacellesAerodynamicsManager(
 			Aircraft aircraft, 
-			NacelleCreator nacelle) {
+			NacelleCreator nacelle,
+			OperatingConditions operationConditions) {
 
 		_theAircraft = aircraft;
+		_theOperatingConditions = operationConditions;
 		_theNacelle = nacelle;
-		_length = _theNacelle.get_length();
-		_roughness = _theNacelle.get_roughness();
+		_length = _theNacelle.getLength();
+		_roughness = _theNacelle.getRoughness();
 
 		initializeDependentData();
 	}
 	
 	@Override
 	public void initializeDependentData() {
-		//TODO: FROM OPERATING CONDITIONS
-		_mach = 0.45;
-		_altitude = 6000.;
-		sW = _theAircraft.getWing().getSurface();
+		_mach = _theOperatingConditions.get_machCurrent();
+		_altitude = _theOperatingConditions.get_altitude().doubleValue(SI.METER);
+		_wingSurface = _theAircraft.getWing().getSurface();
 	}
 
 	@Override
@@ -73,10 +77,10 @@ public class NacellesAerodynamicsManager extends AerodynamicsManager{
 	public double calculateCd0Parasite() {
 
 		_cd0Parasite = DragCalc.calculateCd0Parasite(
-				_theNacelle.formFactor(), 
+				_theNacelle.calculateFormFactor(), 
 				_cF, 
-				_theNacelle.get_surfaceWetted().getEstimatedValue(), 
-				sW.getEstimatedValue());
+				_theNacelle.getSurfaceWetted().getEstimatedValue(), 
+				_wingSurface.getEstimatedValue());
 
 		return _cd0Parasite;
 	}
@@ -84,9 +88,9 @@ public class NacellesAerodynamicsManager extends AerodynamicsManager{
 	public double calculateCd0Base() {
 		_cd0Base = DragCalc.calculateCd0Base(
 				MethodEnum.MATLAB, 
-				_cd0Parasite, sW.getEstimatedValue(),
-				_theNacelle.get_diameterOutlet().getEstimatedValue(), 
-				_theNacelle.get_diameterMean().getEstimatedValue());
+				_cd0Parasite, _wingSurface.getEstimatedValue(),
+				_theNacelle.getDiameterOutlet().getEstimatedValue(), 
+				_theNacelle.getDiameterMean().getEstimatedValue());
 
 		return _cd0Base;
 	}

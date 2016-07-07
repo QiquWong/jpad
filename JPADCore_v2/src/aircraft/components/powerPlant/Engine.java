@@ -614,10 +614,12 @@ public class Engine implements IEngine {
 		this._dryMassPublicDomain = dryMassPublicDomain;
 	}
 	
+	@Override
 	public Amount<Mass> getTotalMass() {
 		return _totalMass;
 	}
 
+	@Override
 	public void setTotalMass(Amount<Mass> _totalMass) {
 		this._totalMass = _totalMass;
 	}
@@ -682,26 +684,32 @@ public class Engine implements IEngine {
 		this._numberOfBlades = _nBlades;
 	}
 
+	@Override
 	public int getNumberOfCompressorStages() {
 		return _numberOfCompressorStages;
 	}
 
+	@Override
 	public void setNumberOfCompressorStages(int _numberOfCompressorStages) {
 		this._numberOfCompressorStages = _numberOfCompressorStages;
 	}
 
+	@Override
 	public int getNumberOfShafts() {
 		return _numberOfShafts;
 	}
 
+	@Override
 	public void setNumberOfShafts(int _numberOfShafts) {
 		this._numberOfShafts = _numberOfShafts;
 	}
-
+ 
+	@Override
 	public double getOverallPressureRatio() {
 		return _overallPressureRatio;
 	}
 
+	@Override
 	public void setOverallPressureRatio(double _overallPressureRatio) {
 		this._overallPressureRatio = _overallPressureRatio;
 	}

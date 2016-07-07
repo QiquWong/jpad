@@ -225,7 +225,7 @@ public class JPADWriteUtils {
 		if (nacelles != null) {
 			for (int k=0; k < nacelles.get_nacellesNumber(); k++) {
 				NacelleCreator nacelle = nacelles.get_nacellesList().get(k);
-				JPADGlobalData.getTheXmlTree().add(nacelle, 3, "Nacelle_" + (k+1), nacelle.get_id()); //"1" + k + "99");
+				JPADGlobalData.getTheXmlTree().add(nacelle, 3, "Nacelle_" + (k+1), nacelle.getId()); //"1" + k + "99");
 				//				JPADGlobalData.getTheXmlTree().add(engine.getGeometry(), 4, "Airfoil_Geometry", engine.getGeometry().getId());
 				//				JPADGlobalData.getTheXmlTree().add(engine.getAerodynamics(), 4, "Airfoil_Aerodynamics", engine.getAerodynamics().getId());
 			}
