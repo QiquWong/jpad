@@ -12,14 +12,14 @@ import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.MethodEnum;
 import writers.JPADStaticWriteUtils;
 
-public class NacellesBalanceManager extends BalanceManager{
+public class NacelleBalanceManager extends BalanceManager{
 
 	private NacelleCreator _theNacelle;
 	
 	private Amount<Length> _xCG;
 	private Double[] _percentDifferenceXCG;
 
-	public NacellesBalanceManager(NacelleCreator nacelle) {
+	public NacelleBalanceManager(NacelleCreator nacelle) {
 		super();
 		_theNacelle = nacelle;
 		initializeDependentData();

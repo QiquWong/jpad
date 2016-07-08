@@ -34,6 +34,9 @@ public interface IEngine {
 	public EngineMountingPositionEnum getMountingPosition();
 	public void setMountingPosition (EngineMountingPositionEnum position);
 	
+	public Amount<Length> getLength();
+	public void setLength(Amount<Length> _length);
+	
 	public Amount<Power> getP0();
 	public void setP0(Amount<Power> _p0);
 
@@ -45,18 +48,6 @@ public interface IEngine {
 	
 	public Amount<Mass> getDryMassPublicDomain();
 	public void setDryMassPublicDomain(Amount<Mass> dryMassPublicDomain);
-	
-	public Amount<Length> getLength();
-	public void setLength(Amount<Length> _length);
-	
-	public Amount<Length> getDiameter();
-	public void setDiameter(Amount<Length> _diameter);
-	
-	public Amount<Length> getWidth();
-	public void setWidth(Amount<Length> _width);
-	
-	public Amount<Length> getHeight();
-	public void setHeight(Amount<Length> _height);
 	
 	public Amount<Length> getPropellerDiameter();
 	public void setPropellerDiameter(Amount<Length> _propellerDiameter);

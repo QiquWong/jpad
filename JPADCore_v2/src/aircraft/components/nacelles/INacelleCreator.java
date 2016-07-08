@@ -21,17 +21,23 @@ public interface INacelleCreator {
 	public Amount<Area> getSurfaceWetted();
 	public void setSurfaceWetted(Amount<Area> _sWet);
 
+	public Amount<Length> getDiameterInlet();
+	public void setDiameterInlet(Amount<Length> _diameterInlet);
+	
 	public Amount<Length> getDiameterMean();
 	public void setDiameterMean(Amount<Length> _diameter);
 
 	public Amount<Length> getDiameterOutlet();
 	public void setDiameterOutlet(Amount<Length> _exitDiameter);
 
-	public Amount<Length> getWidth();
-	public void setWidth(Amount<Length> _width);
+	public Double getKInlet();
+	public void setKInlet(Double _kInlet);
 
-	public Amount<Length> getHeight();
-	public void setHeight(Amount<Length> _height);
+	public Double getKOutlet();
+	public void setKOutlet(Double _kOutlet);
+
+	public Amount<Length> getXPositionMaximumDiameterLRF();
+	public void setXPositionMaximumDiameterLRF(Amount<Length> _xPositionMaximumDiameterLRF);
 	
 	public Amount<Length> getRoughness();
 	public void setRoughness(Amount<Length> _roughness);
@@ -51,11 +57,11 @@ public interface INacelleCreator {
 	public Engine getTheEngine();
 	public void setTheEngine(Engine _theEngine);
 	
-	public NacellesWeightsManager getWeights();
+	public NacelleWeightsManager getWeights();
 	
-	public NacellesAerodynamicsManager getAerodynamics();
+	public NacelleAerodynamicsManager getAerodynamics();
 	
-	public NacellesBalanceManager getBalance();
+	public NacelleBalanceManager getBalance();
 	
 	public String getId();
 	public void setId(String id);

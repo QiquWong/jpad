@@ -1,23 +1,36 @@
 package aircraft.components.nacelles;
 
+import java.io.File;
+
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
-
 import org.jscience.physics.amount.Amount;
-
 import aircraft.OperatingConditions;
 import aircraft.components.Aircraft;
+import aircraft.components.fuselage.Fuselage.FuselageBuilder;
+import aircraft.components.fuselage.creator.FuselageCreator;
 import aircraft.components.powerPlant.Engine;
+import configuration.MyConfiguration;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.EngineTypeEnum;
+import jdk.jfr.events.ThrowablesEvent;
+import standaloneutils.JPADXmlReader;
+import standaloneutils.MyXMLReaderUtils;
 
 /** 
- * The Nacelle is considered 
- * the structural part of the engine
- * 
- * @author Vittorio Trifari
+ * The Nacelle is defined by a length and three diameters (inlet, mean, outlet).
+ * The user can assign length, diameter mean (max) and two coefficients (K_inlet, K_outlet) which 
+ * define the inlet and outlet diameters as a percentage of the maximum one.
+ * Otherwise, if the user doesn't assign these data, the maximum diameter is calculated from a 
+ * statistical chart as function of T0 or, in case of propeller driven engines, as the equivalent
+ * diameter obtained from maximum height and with calculated as function of the shaft horse-power.
+ * Concerning K_inlet and K_outlet, these data are initialized with default values in 
+ * case the user doesn't assign them.
+ *  
+ * @author Vittorio Trifari, Vincenzo Cusati
  *
  */
 public class NacelleCreator implements INacelleCreator {
@@ -37,15 +50,12 @@ public class NacelleCreator implements INacelleCreator {
 	private Amount<Length> _roughness;
 	
 	private Amount<Length> _length;
-	//-----------------------------------------
-	// only for jet engines
-	private Amount<Length> _diameterMean;
+	private Amount<Length> _diameterInlet;
+	private Amount<Length> _diameterMax;
 	private Amount<Length> _diameterOutlet;
-	//-----------------------------------------
-	// only for propeller engines
-	private Amount<Length> _width;
-	private Amount<Length> _height;
-	//------------------------------------------
+	private Double _kInlet;
+	private Double _kOutlet;
+	private Amount<Length> _xPositionMaximumDiameterLRF;
 	
 	private Amount<Area> _surfaceWetted;
 	private Amount<Mass> _massReference;
@@ -54,9 +64,9 @@ public class NacelleCreator implements INacelleCreator {
 	private OperatingConditions _theOperatingConditions;
 	private Engine _theEngine;
 	
-	private NacellesWeightsManager _theWeights;
-	private NacellesBalanceManager _theBalance;
-	private NacellesAerodynamicsManager _theAerodynamics;
+	private NacelleWeightsManager _theWeights;
+	private NacelleBalanceManager _theBalance;
+	private NacelleAerodynamicsManager _theAerodynamics;
 	
 	//============================================================================================
 	// Builder pattern 
@@ -68,48 +78,249 @@ public class NacelleCreator implements INacelleCreator {
 		
 		// optional parameters ... defaults
 		// ...
-		private Amount<Length> __length = Amount.valueOf(0.0, SI.METER);
-		//-----------------------------------------
-		// only for jet engines
-		private Amount<Length> __diameterMean = Amount.valueOf(0.0, SI.METER);
-		private Amount<Length> __diameterOutlet = Amount.valueOf(0.0, SI.METER);
-		//-----------------------------------------
-		// only for propeller engines
-		private Amount<Length> __width = Amount.valueOf(0.0, SI.METER);
-		private Amount<Length> __height = Amount.valueOf(0.0, SI.METER);
-		//------------------------------------------
-		// TODO : CONTINUE !!!
 		
+		// initialized to ATR-72 engine
+		private Engine __theEngine = new Engine.EngineBuilder("ATR-72", EngineTypeEnum.TURBOPROP, AircraftEnum.ATR72).build();
+		
+		private Amount<Length> __roughness;
+		private Amount<Mass> __massReference;
+		private Amount<Length> __length = Amount.valueOf(0.0, SI.METER);
+		private Amount<Length> __diameterMax = Amount.valueOf(0.0, SI.METER);
+		private Double __kInlet = 0.8; // default value
+		private Double __kOutlet = 0.2; // default value
+		private Amount<Length> __xPositionMaximumDiameterLRF = __length.times(0.35); // default at 35% of Nacelle length
+
+		public NacelleCreatorBuilder id (String id) {
+			this.__id = id;
+			return this;
+		}
+	
+		public NacelleCreatorBuilder engine (Engine theEngine) {
+			this.__theEngine = theEngine;
+			return this;
+		}
+		
+		public NacelleCreatorBuilder massReference (Amount<Mass> massRef) {
+			this.__massReference = massRef;
+			return this;
+		}
+		
+		public NacelleCreatorBuilder roughness (Amount<Length> roughness) {
+			this.__roughness = roughness;
+			return this;
+		}
+		
+		public NacelleCreatorBuilder lenght (Amount<Length> lenght) {
+			this.__length = lenght;
+			return this;
+		}
+		
+		public NacelleCreatorBuilder maximumDiameter (Amount<Length> diameterMax) {
+			this.__diameterMax = diameterMax;
+			return this;
+		}
+		
+		public NacelleCreatorBuilder kInlet (Double kInlet) {
+			this.__kInlet = kInlet;
+			return this;
+		}
+		
+		public NacelleCreatorBuilder kOutlet (Double kOutlet) {
+			this.__kOutlet = kOutlet;
+		
+			return this;
+		}
+		
+		public NacelleCreatorBuilder xPositionMaximumDiameterLRF (Amount<Length> xPositionMaxDiameter) {
+			this.__xPositionMaximumDiameterLRF = xPositionMaxDiameter;
+			return this;
+		}
+		
+		public NacelleCreatorBuilder(String id) {
+			this.__id = id;
+		}
+		
+		public NacelleCreatorBuilder(String id, AircraftEnum aircraftName) {
+			this.__id = id;
+			this.initializeDefaultVariables(aircraftName);
+		}
+		
+		/**
+		 * Method that recognize aircraft name and initialize the correct nacelle data.
+		 * 
+		 * @author Vittorio Trifari
+		 */
+		private void initializeDefaultVariables (AircraftEnum aircraftName) {
+			
+			switch(aircraftName) {
+			
+			case ATR72:
+				__theEngine = new Engine.EngineBuilder("ATR-72 engine", EngineTypeEnum.TURBOPROP, AircraftEnum.ATR72).build();
+				__length = Amount.valueOf(4.371,SI.METER);
+				__diameterMax = Amount.valueOf(1.4,SI.METER);
+				__kInlet = 0.857;
+				__kOutlet = 0.143;
+				__roughness = Amount.valueOf(0.405 * Math.pow(10,-5), SI.METRE);
+				__massReference = Amount.valueOf(409.4, SI.KILOGRAM);
+				__xPositionMaximumDiameterLRF = Amount.valueOf(0.4, SI.METER);
+				
+				break;
+				
+			case B747_100B:
+				__theEngine = new Engine.EngineBuilder("B747-100B engine", EngineTypeEnum.TURBOFAN, AircraftEnum.B747_100B).build();
+				__length = Amount.valueOf(7.6,SI.METER);
+				__diameterMax = Amount.valueOf(2.0,SI.METER);
+				__kInlet = 0.6;
+				__kOutlet = 0.1;
+				__roughness = Amount.valueOf(0.405 * Math.pow(10,-5), SI.METRE);
+				__massReference = Amount.valueOf(1184.2500, SI.KILOGRAM);
+				__xPositionMaximumDiameterLRF = Amount.valueOf(0.35, SI.METER);
+				
+				break;
+				
+			case AGILE_DC1:
+				__theEngine = new Engine.EngineBuilder("AGILE DC-1 engine", EngineTypeEnum.TURBOFAN, AircraftEnum.AGILE_DC1).build();
+				__length = Amount.valueOf(3.,SI.METER);
+				__diameterMax = Amount.valueOf(1.816,SI.METER);
+				__kInlet = 0.847;
+				__kOutlet = 0.33;
+				__roughness = Amount.valueOf(0.405 * Math.pow(10,-5), SI.METRE);
+				__massReference = Amount.valueOf(380., SI.KILOGRAM);//ADAS
+				__xPositionMaximumDiameterLRF = Amount.valueOf(0.35, SI.METER);
+				
+				break;
+			}
+		}
+		
+		public NacelleCreator build () {
+			return new NacelleCreator(this);
+		}
 	}
 	
 	private NacelleCreator (NacelleCreatorBuilder builder) {
 		
-		// TODO : PASS ALL REQUIRED VARIABLES FROM THE BUILDER TO THE CLASS FIELDS
+		this._id = builder.__id;
+		this._theEngine = builder.__theEngine;
+		this._roughness = builder.__roughness;
+		this._massReference = builder.__massReference;
+		this._length = builder.__length;
+		this._diameterMax = builder.__diameterMax;
+		this._kInlet = builder.__kInlet;
+		this._kOutlet = builder.__kOutlet;
+		this._xPositionMaximumDiameterLRF = builder.__xPositionMaximumDiameterLRF;
+		
+		if((_length.doubleValue(SI.METER) == 0.0)
+				&& (_diameterMax.doubleValue(SI.METER) == 0.0)) {
+			estimateDimensions(_theEngine);
+		}
+		
+		this._diameterInlet = this._diameterMax.times(_kInlet);
+		this._diameterOutlet = this._diameterMax.times(_kOutlet);
 		
 		calculateSurfaceWetted();
-		
-		if((_theEngine.getEngineType() == EngineTypeEnum.TURBOFAN)
-				|| (_theEngine.getEngineType() == EngineTypeEnum.TURBOJET)) {
-			if((_length.doubleValue(SI.METER) == 0.0)
-					&& (_diameterMean.doubleValue(SI.METER) == 0.0)
-					&& (_diameterOutlet.doubleValue(SI.METER) == 0.0)) {
-				estimateDimensions(_theEngine);
-			}
-		}
-		else if((_theEngine.getEngineType() == EngineTypeEnum.TURBOPROP)
-				|| (_theEngine.getEngineType() == EngineTypeEnum.PISTON)) {
-			if((_length.doubleValue(SI.METER) == 0.0)
-					&& (_height.doubleValue(SI.METER) == 0.0)
-					&& (_width.doubleValue(SI.METER) == 0.0)) {
-				estimateDimensions(_theEngine);
-			}
-		}
 	}
 	
 	//============================================================================================
 	// End of builder pattern 
 	//============================================================================================
 	
+	public static NacelleCreator importFromXML (String pathToXML, String engineDirectory) {
+		
+		JPADXmlReader reader = new JPADXmlReader(pathToXML);
+
+		System.out.println("Reading systems data ...");
+		
+		NacelleCreator theNacelle = null;
+		
+		String id = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@id");
+		
+		String engineFileName =
+				MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@engine");
+		
+		// default engine. This will be updated with the engine from file (if present)
+		Engine engine = new Engine
+				.EngineBuilder("ATR-72 engine", EngineTypeEnum.TURBOPROP, AircraftEnum.ATR72)
+					.build();
+		
+		if(engineFileName != null) {
+			String enginePath = engineDirectory + File.separator + engineFileName;
+			engine = Engine.importFromXML(enginePath);
+		}
+		
+		@SuppressWarnings("unchecked")
+		Amount<Mass> massReference = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//global_data/reference_mass");
+		Amount<Length> roughness = reader.getXMLAmountLengthByPath("//global_data/roughness");
+		
+		Amount<Length> length = Amount.valueOf(0.0, SI.METER);
+		Amount<Length> diameterMax = Amount.valueOf(0.0, SI.METER);
+		Double kInlet = 0.8;
+		Double kOutlet = 0.2;
+		Amount<Length> xPositionMaxDiamterLRF = length.times(0.35);
+		
+		if(reader.getXMLPropertyByPath("//geometry/length") != null)
+			length = reader.getXMLAmountLengthByPath("//geometry/length");
+		if(reader.getXMLPropertyByPath("//geometry/maximum_diameter") != null)
+			diameterMax = reader.getXMLAmountLengthByPath("//geometry/maximum_diameter");
+		if(reader.getXMLPropertyByPath("//geometry/k_inlet") != null)
+			kInlet = Double.valueOf(reader.getXMLPropertyByPath("//geometry/k_inlet"));
+		if(reader.getXMLPropertyByPath("//geometry/k_outlet") != null)
+			kOutlet = Double.valueOf(reader.getXMLPropertyByPath("//geometry/k_outlet"));
+		if(reader.getXMLPropertyByPath("//geometry/x_position_maximum_diameter_from_nacelle_apex") != null)
+			xPositionMaxDiamterLRF = reader.getXMLAmountLengthByPath("//geometry/x_position_maximum_diameter_from_nacelle_apex");
+
+		theNacelle = new NacelleCreatorBuilder(id)
+				.massReference(massReference)
+				.engine(engine)
+				.roughness(roughness)
+				.lenght(length)
+				.maximumDiameter(diameterMax)
+				.kInlet(kInlet)
+				.kOutlet(kOutlet)
+				.xPositionMaximumDiameterLRF(xPositionMaxDiamterLRF)
+				.build()
+				;
+		
+		return theNacelle;
+	}
+	
+	@Override
+	public String toString() {
+		
+		MyConfiguration.customizeAmountOutput();
+
+		StringBuilder sb = new StringBuilder()
+				.append("\tID: '" + _id + "'\n")
+				.append("\t·····································\n")
+				;
+		
+		if(_theEngine != null)
+			sb.append("\tEngine ID: '" + _theEngine.getId() + "'\n")
+			  .append("\tEngine type: " + _theEngine.getEngineType() + "\n")
+			  ;
+				
+		sb.append("\tLength: " + _length + "\n")
+		.append("\tDiameter max: " + _diameterMax + "\n")
+		.append("\tK_inlet: " + _kInlet + "\n")
+		.append("\tK_outlet: " + _kOutlet + "\n")
+		.append("\tDiameter inlet: " + _diameterInlet + "\n")
+		.append("\tDiameter outlet: " + _diameterOutlet + "\n")
+		.append("\tX position of the max diameter in LRF: " + _xPositionMaximumDiameterLRF + "\n")
+		.append("\t·····································\n")
+		.append("\tSurface roughness: " + _roughness + "\n")
+		.append("\tMass reference: " + _massReference + "\n")
+		.append("\tSurface wetted: " + _surfaceWetted + "\n")
+		.append("\t·····································\n")				
+		;
+
+		return sb.toString();
+	}
+
 	/***************************************************************************								
 	 * This method estimates the nacelle dimensions in inches as function of 									
 	 * the engine type. If is a jet engine it uses the static thrust in lbs; 									
@@ -120,12 +331,16 @@ public class NacelleCreator implements INacelleCreator {
 	@Override
 	public void estimateDimensions (Engine theEngine) {
 				
-		if((theEngine.getEngineType() == EngineTypeEnum.TURBOFAN) || (theEngine.getEngineType() == EngineTypeEnum.TURBOJET)) {
+		Amount<Length> width;
+		Amount<Length> height;
+		
+		if((theEngine.getEngineType() == EngineTypeEnum.TURBOFAN) 
+				|| (theEngine.getEngineType() == EngineTypeEnum.TURBOJET)) {
 			_length = Amount.valueOf(
 					40 + (0.59 * Math.sqrt(theEngine.getT0().doubleValue(NonSI.POUND_FORCE))),
 					NonSI.INCH)
 					.to(SI.METER);
-			_diameterMean = Amount.valueOf(
+			_diameterMax = Amount.valueOf(
 					5 + (0.39 * Math.sqrt(theEngine.getT0().doubleValue(NonSI.POUND_FORCE))),
 					NonSI.INCH)
 					.to(SI.METER); 
@@ -133,58 +348,75 @@ public class NacelleCreator implements INacelleCreator {
 		
 		else if(theEngine.getEngineType() == EngineTypeEnum.PISTON) {
 			_length = Amount.valueOf(
-					4*(10^-10)*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),4)
-					- 6*(10^-7)*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),3)
-					+ 8*(10^-5)*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),2)
+					4*10e-10*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),4)
+					- 6*10e-7*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),3)
+					+ 8*10e-5*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),2)
 					- 0.2193*theEngine.getP0().doubleValue(NonSI.HORSEPOWER)
 					+ 54.097,
 					NonSI.INCH)
 					.to(SI.METER);
 			
 			if(theEngine.getP0().doubleValue(NonSI.HORSEPOWER) <= 410)
-				_width = Amount.valueOf(
-						- 3*(10^-7)*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),3)
+				width = Amount.valueOf(
+						- 3*10e-7*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),3)
 						- 0.0003*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),2)
 						+ 0.2196*theEngine.getP0().doubleValue(NonSI.HORSEPOWER)
 						+ 7.3966,
 						NonSI.INCH)
 						.to(SI.METER); 
 			else 
-				_width = Amount.valueOf(
+				width = Amount.valueOf(
 						- 4.6563*Math.log(theEngine.getP0().doubleValue(NonSI.HORSEPOWER))
 						+ 57.943,
 						NonSI.INCH)
 						.to(SI.METER);
 			
-			_height = Amount.valueOf(
+			height = Amount.valueOf(
 					12.595*Math.log(theEngine.getP0().doubleValue(NonSI.HORSEPOWER))
 					- 43.932,
 					NonSI.INCH)
 					.to(SI.METER);
+			
+			_diameterMax = Amount.valueOf(
+					Math.sqrt(
+							(width.times(height).times(4).divide(Math.PI).getEstimatedValue())
+							),
+					SI.METER
+					);
 			}
 		
 		else if(theEngine.getEngineType() == EngineTypeEnum.TURBOPROP) {
+			
+			System.out.println("P0(hp) = " + theEngine.getP0().doubleValue(NonSI.HORSEPOWER));
+			
 			_length = Amount.valueOf(
-					- 1.28*(10^-5)*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),2)
-					+ 9.273*(10^-2)*theEngine.getP0().doubleValue(NonSI.HORSEPOWER)
+					-(1.28*0.00001*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),2))
+					+ (9.273*0.01*theEngine.getP0().doubleValue(NonSI.HORSEPOWER))
 					- 8.3456,
 					NonSI.INCH)
 					.to(SI.METER);
 			
-			_width = Amount.valueOf(
-					- 0.95*(10^-6)*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),2)
+			width = Amount.valueOf(
+					- 0.95*10e-6*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),2)
 					+ 0.0073*theEngine.getP0().doubleValue(NonSI.HORSEPOWER)
 					+ 25.3,
 					NonSI.INCH)
 					.to(SI.METER);
 			
-			_height = Amount.valueOf(
-					0.67*(10^-11)*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),3)
-					- 3.35*(10^-6)*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),2)
+			height = Amount.valueOf(
+					0.67*10e-11*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),3)
+					- 3.35*10e-6*Math.pow(theEngine.getP0().doubleValue(NonSI.HORSEPOWER),2)
 					+ 0.029*theEngine.getP0().doubleValue(NonSI.HORSEPOWER)
 					- 5.58425,
 					NonSI.INCH)
 					.to(SI.METER); 
+			
+			_diameterMax = Amount.valueOf(
+					Math.sqrt(
+							(width.times(height).times(4).divide(Math.PI).getEstimatedValue())
+							),
+					SI.METER
+					);
 		}
 	}
 	
@@ -196,24 +428,22 @@ public class NacelleCreator implements INacelleCreator {
 	 */
 	private void calculateSurfaceWetted() {
 		
-		// TODO : IF TURBOPROP OR PISTON, THE Swet IS (2*HEIGHT*LENGTH)+(2*WIDTH*LENGTH) ??
-		
-		_surfaceWetted = _length.times(_diameterMean.times(Math.PI)).to(SI.SQUARE_METRE); 
+		_surfaceWetted = _length.times(_diameterMax.times(Math.PI)).to(SI.SQUARE_METRE); 
 	}
 
 	private void initializeWeights() {
 		if (_theWeights == null) 
-			_theWeights = new NacellesWeightsManager(this);
+			_theWeights = new NacelleWeightsManager(this);
 	}
 
 	private void initializeAerodynamics() {
 		if (_theAerodynamics == null) 
-			_theAerodynamics = new NacellesAerodynamicsManager(_theAircraft, this, _theOperatingConditions);
+			_theAerodynamics = new NacelleAerodynamicsManager(_theAircraft, this, _theOperatingConditions);
 	}
 	
 	private void initializeBalance() {
 		if (_theBalance == null)
-			_theBalance = new NacellesBalanceManager(this);
+			_theBalance = new NacelleBalanceManager(this);
 	}
 
 	/**
@@ -237,7 +467,7 @@ public class NacelleCreator implements INacelleCreator {
 	public Double calculateFormFactor(){
 		//matlab file ATR72
 		return (1 + 0.165 
-				+ 0.91/(_length.getEstimatedValue()/_diameterMean.getEstimatedValue())); 	
+				+ 0.91/(_length.getEstimatedValue()/_diameterMax.getEstimatedValue())); 	
 	}
 	
 	@Override
@@ -261,13 +491,23 @@ public class NacelleCreator implements INacelleCreator {
 	}
 
 	@Override
+	public Amount<Length> getDiameterInlet() {
+		return _diameterInlet;
+	}
+
+	@Override
+	public void setDiameterInlet(Amount<Length> _diameterInlet) {
+		this._diameterInlet = _diameterInlet;
+	}
+
+	@Override
 	public Amount<Length> getDiameterMean() {
-		return _diameterMean;
+		return _diameterMax;
 	}
 
 	@Override
 	public void setDiameterMean(Amount<Length> _diameter) {
-		this._diameterMean = _diameter;
+		this._diameterMax = _diameter;
 	}
 
 	@Override
@@ -281,23 +521,33 @@ public class NacelleCreator implements INacelleCreator {
 	}
 
 	@Override
-	public Amount<Length> getWidth() {
-		return _width;
+	public Double getKInlet() {
+		return _kInlet;
 	}
 
 	@Override
-	public void setWidth(Amount<Length> _width) {
-		this._width = _width;
+	public void setKInlet(Double _kInlet) {
+		this._kInlet = _kInlet;
 	}
 
 	@Override
-	public Amount<Length> getHeight() {
-		return _height;
+	public Double getKOutlet() {
+		return _kOutlet;
 	}
 
 	@Override
-	public void setHeight(Amount<Length> _height) {
-		this._height = _height;
+	public void setKOutlet(Double _kOutlet) {
+		this._kOutlet = _kOutlet;
+	}
+
+	@Override
+	public Amount<Length> getXPositionMaximumDiameterLRF() {
+		return _xPositionMaximumDiameterLRF;
+	}
+
+	@Override
+	public void setXPositionMaximumDiameterLRF(Amount<Length> _xPositionMaximumDiameterLRF) {
+		this._xPositionMaximumDiameterLRF = _xPositionMaximumDiameterLRF;
 	}
 
 	@Override
@@ -361,19 +611,19 @@ public class NacelleCreator implements INacelleCreator {
 	}
 
 	@Override
-	public NacellesWeightsManager getWeights() {
+	public NacelleWeightsManager getWeights() {
 		initializeWeights();
 		return _theWeights;
 	}
 
 	@Override
-	public NacellesAerodynamicsManager getAerodynamics() {
+	public NacelleAerodynamicsManager getAerodynamics() {
 		initializeAerodynamics();
 		return _theAerodynamics;
 	}
 
 	@Override
-	public NacellesBalanceManager getBalance() {
+	public NacelleBalanceManager getBalance() {
 		initializeBalance();
 		return _theBalance;
 	}

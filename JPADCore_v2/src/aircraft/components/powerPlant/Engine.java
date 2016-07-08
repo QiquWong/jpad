@@ -28,16 +28,10 @@ public class Engine implements IEngine {
 	private Amount<Length> _yApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
 	private Amount<Length> _zApexConstructionAxes = Amount.valueOf(0.0, SI.METER);
 	private Amount<Angle> _tiltingAngle;
-	
 	private Amount<Length> _length;
-
-	//-----------------------------------------
-	// only for jet engines
-	private Amount<Length> _diameter;
-	//-----------------------------------------
-	// only for propeller engines
-	private Amount<Length> _width;
-	private Amount<Length> _height;
+	
+	//------------------------------------------
+	// only for propeller driven engines
 	private Amount<Length> _propellerDiameter;
 	private int _numberOfBlades;
 	//------------------------------------------
@@ -72,9 +66,6 @@ public class Engine implements IEngine {
 		private Amount<Angle> __tiltingAngle;
 		
 		private Amount<Length> __length = Amount.valueOf(0.0, SI.METER);
-		private Amount<Length> __diameter = Amount.valueOf(0.0, SI.METER);
-		private Amount<Length> __width = Amount.valueOf(0.0, SI.METER);
-		private Amount<Length> __height = Amount.valueOf(0.0, SI.METER);
 		private Amount<Length> __propellerDiameter = Amount.valueOf(0.0, SI.METER);
 		private int __numberOfBlades = 0;
 		private Double __bpr = 0.0;
@@ -97,21 +88,6 @@ public class Engine implements IEngine {
 		
 		public EngineBuilder length (Amount<Length> length) {
 			this.__length = length;
-			return this;
-		}
-		
-		public EngineBuilder diameter (Amount<Length> diameter) {
-			this.__diameter = diameter;
-			return this;
-		}
-		
-		public EngineBuilder width (Amount<Length> width) {
-			this.__width = width;
-			return this;
-		}
-		
-		public EngineBuilder height (Amount<Length> height) {
-			this.__height = height;
 			return this;
 		}
 		
@@ -208,9 +184,7 @@ public class Engine implements IEngine {
 			case ATR72:
 				// PW127 Data
 				__engineType = EngineTypeEnum.TURBOPROP;
-				__length = Amount.valueOf(2.413, SI.METER);
-				__width = Amount.valueOf(0.762, SI.METER); 
-				__height = Amount.valueOf(1.1176, SI.METER);
+				__length = Amount.valueOf(2.13, SI.METER);
 				__propellerDiameter = Amount.valueOf(3.93, SI.METER);
 				__numberOfBlades = 6;
 				__dryMassPublicDomain = Amount.valueOf(1064., NonSI.POUND).to(SI.KILOGRAM);
@@ -225,7 +199,6 @@ public class Engine implements IEngine {
 				// PWJT9D-7 Data
 				__engineType = EngineTypeEnum.TURBOFAN;
 				__length = Amount.valueOf(3.26, SI.METER);
-				__diameter = Amount.valueOf(2.34, SI.METER);
 				__bpr = 5.0;
 				__dryMassPublicDomain = Amount.valueOf(3905.0, NonSI.POUND).to(SI.KILOGRAM);
 				__t0 = Amount.valueOf(204000.0000, SI.NEWTON);
@@ -239,7 +212,6 @@ public class Engine implements IEngine {
 				//PW1700G
 				__engineType = EngineTypeEnum.TURBOFAN;
 				__length = Amount.valueOf(2.739, SI.METER);
-				__diameter = Amount.valueOf(1.442, SI.METER);
 				__bpr = 6.0;				
 				__dryMassPublicDomain = Amount.valueOf(1162.6, NonSI.POUND).to(SI.KILOGRAM);
 				__t0 = Amount.valueOf(7000*AtmosphereCalc.g0.getEstimatedValue(), SI.NEWTON);
@@ -261,9 +233,6 @@ public class Engine implements IEngine {
 		this._id = builder.__id;
 		this._engineType = builder.__engineType;
 		this._length = builder.__length;
-		this._diameter = builder.__diameter;
-		this._width = builder.__width;
-		this._height = builder.__height;
 		this._propellerDiameter = builder.__propellerDiameter;
 		this._numberOfBlades = builder.__numberOfBlades;
 		this._bpr = builder.__bpr;
@@ -329,7 +298,6 @@ public class Engine implements IEngine {
 		if((engineType == EngineTypeEnum.TURBOJET)||(engineType == EngineTypeEnum.TURBOFAN)) {
 			
 			Amount<Length> length = reader.getXMLAmountLengthByPath("//dimensions/length");
-			Amount<Length> diameter = reader.getXMLAmountLengthByPath("//dimensions/diameter");
 			
 			@SuppressWarnings("unchecked")
 			Amount<Force> staticThrust = ((Amount<Force>) reader.getXMLAmountWithUnitByPath("//specifications/static_thrust"));
@@ -342,9 +310,8 @@ public class Engine implements IEngine {
 			
 			theEngine = new EngineBuilder(id, engineType)
 					.id(id)
-					.type(engineType)
 					.length(length)
-					.diameter(diameter)
+					.type(engineType)
 					.t0(staticThrust)
 					.bpr(bpr)
 					.dryMass(dryMass)
@@ -355,10 +322,8 @@ public class Engine implements IEngine {
 			
 		}
 		else if(engineType == EngineTypeEnum.TURBOPROP) {
-		
+
 			Amount<Length> length = reader.getXMLAmountLengthByPath("//dimensions/length");
-			Amount<Length> width = reader.getXMLAmountLengthByPath("//dimensions/width");
-			Amount<Length> height = reader.getXMLAmountLengthByPath("//dimensions/height");
 			Amount<Length> propellerDiameter = reader.getXMLAmountLengthByPath("//dimensions/propeller_diameter");
 			
 			@SuppressWarnings("unchecked")
@@ -374,8 +339,6 @@ public class Engine implements IEngine {
 					.id(id)
 					.type(engineType)
 					.length(length)
-					.width(width)
-					.height(height)
 					.propellerDiameter(propellerDiameter)
 					.numberOfBlades(numberOfPropellerBlades)
 					.p0(staticPower)
@@ -386,10 +349,8 @@ public class Engine implements IEngine {
 					.build();
 		}
 		else if(engineType == EngineTypeEnum.PISTON) {
-			
+
 			Amount<Length> length = reader.getXMLAmountLengthByPath("//dimensions/length");
-			Amount<Length> width = reader.getXMLAmountLengthByPath("//dimensions/width");
-			Amount<Length> height = reader.getXMLAmountLengthByPath("//dimensions/height");
 			Amount<Length> propellerDiameter = reader.getXMLAmountLengthByPath("//dimensions/propeller_diameter");
 			
 			@SuppressWarnings("unchecked")
@@ -402,8 +363,6 @@ public class Engine implements IEngine {
 					.id(id)
 					.type(engineType)
 					.length(length)
-					.width(width)
-					.height(height)
 					.propellerDiameter(propellerDiameter)
 					.numberOfBlades(numberOfPropellerBlades)
 					.p0(staticPower)
@@ -463,24 +422,19 @@ public class Engine implements IEngine {
 				.append("\tLength: " + _length + "\n")
 				;
 		if((_engineType == EngineTypeEnum.TURBOFAN) || (_engineType == EngineTypeEnum.TURBOJET))
-			sb.append("\tDiameter: " + _diameter + "\n")
-			.append("\tNumber of compressor stages: " + _numberOfCompressorStages + "\n")
+			sb.append("\tNumber of compressor stages: " + _numberOfCompressorStages + "\n")
 			.append("\tNumber of shafts: " + _numberOfShafts + "\n")
 			.append("\tOverall pressure ratio: " + _overallPressureRatio + "\n")
 			;
 		else if(_engineType == EngineTypeEnum.TURBOPROP) 
-			sb.append("\tWidth: " + _width + "\n")
-			.append("\tHeight: " + _height + "\n")
-			.append("\tPropeller diameter: " + _propellerDiameter + "\n")
+			sb.append("\tPropeller diameter: " + _propellerDiameter + "\n")
 			.append("\tNumber of blades: " + _numberOfBlades + "\n")
 			.append("\tNumber of compressor stages: " + _numberOfCompressorStages + "\n")
 			.append("\tNumber of shafts: " + _numberOfShafts + "\n")
 			.append("\tOverall pressure ratio: " + _overallPressureRatio + "\n")
 			;
 		else if(_engineType == EngineTypeEnum.PISTON) 
-			sb.append("\tWidth: " + _width + "\n")
-			.append("\tHeight: " + _height + "\n")
-			.append("\tPropeller diameter: " + _propellerDiameter + "\n")
+			sb.append("\tPropeller diameter: " + _propellerDiameter + "\n")
 			.append("\tNumber of blades: " + _numberOfBlades + "\n")
 			;
 		
@@ -575,6 +529,16 @@ public class Engine implements IEngine {
 	}
 	
 	@Override
+	public Amount<Length> getLength() {
+		return _length;
+	}
+
+	@Override
+	public void setLength(Amount<Length> _length) {
+		this._length = _length;
+	}
+
+	@Override
 	public Amount<Power> getP0() {
 		return _p0;
 	}
@@ -624,46 +588,6 @@ public class Engine implements IEngine {
 		this._totalMass = _totalMass;
 	}
 
-	@Override
-	public Amount<Length> getLength() {
-		return _length;
-	}
-
-	@Override
-	public void setLength(Amount<Length> _length) {
-		this._length = _length;
-	}
-	
-	@Override
-	public Amount<Length> getDiameter() {
-		return _diameter;
-	}
-
-	@Override
-	public void setDiameter(Amount<Length> _diameter) {
-		this._diameter = _diameter;
-	}
-	
-	@Override
-	public Amount<Length> getWidth() {
-		return _width;
-	}
-
-	@Override
-	public void setWidth(Amount<Length> _width) {
-		this._width = _width;
-	}
-	
-	@Override
-	public Amount<Length> getHeight() {
-		return _height;
-	}
-
-	@Override
-	public void setHeight(Amount<Length> _height) {
-		this._height = _height;
-	}
-	
 	@Override
 	public Amount<Length> getPropellerDiameter() {
 		return _propellerDiameter;

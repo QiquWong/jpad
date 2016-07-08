@@ -182,64 +182,64 @@ public class AircraftTestSideView extends Application {
 			dataXleVsYVTail[i][1] = vXleVTail.get(i).doubleValue(SI.METRE);
 		});
 
-		//--------------------------------------------------
-		// get data vectors from engine discretization
-		//--------------------------------------------------
-		List<Double[][]> enginePointsList = new ArrayList<Double[][]>();
-		
-		if((theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOJET)
-				|| (theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOFAN)) {
-			
-			for(int i=0; i<theAircraft.getPowerPlant().getEngineList().size(); i++) {
-				Double[][] enginePoints = new Double[5][2];
-				
-				enginePoints[0][0] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes().doubleValue(SI.METER);
-				enginePoints[0][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
-						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getDiameter().divide(2)).getEstimatedValue();
-				enginePoints[1][0] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes()
-						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getLength()).doubleValue(SI.METER);
-				enginePoints[1][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
-						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getDiameter().divide(2)).getEstimatedValue();
-				enginePoints[2][0] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes()
-						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getLength()).doubleValue(SI.METER);
-				enginePoints[2][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
-						.minus(theAircraft.getPowerPlant().getEngineList().get(i).getDiameter().divide(2)).getEstimatedValue();
-				enginePoints[3][0] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes().doubleValue(SI.METER);
-				enginePoints[3][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
-						.minus(theAircraft.getPowerPlant().getEngineList().get(i).getDiameter().divide(2)).getEstimatedValue();
-				enginePoints[4][0] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes().doubleValue(SI.METER);
-				enginePoints[4][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
-						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getDiameter().divide(2)).getEstimatedValue();
-				
-				enginePointsList.add(enginePoints);
-			}
-		}
-		else if((theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOPROP)
-				|| (theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.PISTON)) {
-			
-			for(int i=0; i<theAircraft.getPowerPlant().getEngineList().size(); i++) {
-				Double[][] enginePoints = new Double[5][2];
-				enginePoints[0][0] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes().doubleValue(SI.METER);
-				enginePoints[0][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
-						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getHeight().divide(2)).getEstimatedValue();
-				enginePoints[1][0] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes()
-						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getLength()).doubleValue(SI.METER);
-				enginePoints[1][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
-						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getHeight().divide(2)).getEstimatedValue();
-				enginePoints[2][0] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes()
-						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getLength()).doubleValue(SI.METER);
-				enginePoints[2][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
-						.minus(theAircraft.getPowerPlant().getEngineList().get(i).getHeight().divide(2)).getEstimatedValue();
-				enginePoints[3][0] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes().doubleValue(SI.METER);
-				enginePoints[3][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
-						.minus(theAircraft.getPowerPlant().getEngineList().get(i).getHeight().divide(2)).getEstimatedValue();
-				enginePoints[4][0] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes().doubleValue(SI.METER);
-				enginePoints[4][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
-						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getHeight().divide(2)).getEstimatedValue();
-				
-				enginePointsList.add(enginePoints);
-			}
-		}
+//		//--------------------------------------------------
+//		// get data vectors from engine discretization
+//		//--------------------------------------------------
+//		List<Double[][]> enginePointsList = new ArrayList<Double[][]>();
+//		
+//		if((theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOJET)
+//				|| (theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOFAN)) {
+//			
+//			for(int i=0; i<theAircraft.getPowerPlant().getEngineList().size(); i++) {
+//				Double[][] enginePoints = new Double[5][2];
+//				
+//				enginePoints[0][0] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes().doubleValue(SI.METER);
+//				enginePoints[0][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
+//						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getDiameter().divide(2)).getEstimatedValue();
+//				enginePoints[1][0] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes()
+//						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getLength()).doubleValue(SI.METER);
+//				enginePoints[1][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
+//						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getDiameter().divide(2)).getEstimatedValue();
+//				enginePoints[2][0] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes()
+//						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getLength()).doubleValue(SI.METER);
+//				enginePoints[2][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
+//						.minus(theAircraft.getPowerPlant().getEngineList().get(i).getDiameter().divide(2)).getEstimatedValue();
+//				enginePoints[3][0] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes().doubleValue(SI.METER);
+//				enginePoints[3][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
+//						.minus(theAircraft.getPowerPlant().getEngineList().get(i).getDiameter().divide(2)).getEstimatedValue();
+//				enginePoints[4][0] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes().doubleValue(SI.METER);
+//				enginePoints[4][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
+//						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getDiameter().divide(2)).getEstimatedValue();
+//				
+//				enginePointsList.add(enginePoints);
+//			}
+//		}
+//		else if((theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOPROP)
+//				|| (theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.PISTON)) {
+//			
+//			for(int i=0; i<theAircraft.getPowerPlant().getEngineList().size(); i++) {
+//				Double[][] enginePoints = new Double[5][2];
+//				enginePoints[0][0] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes().doubleValue(SI.METER);
+//				enginePoints[0][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
+//						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getHeight().divide(2)).getEstimatedValue();
+//				enginePoints[1][0] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes()
+//						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getLength()).doubleValue(SI.METER);
+//				enginePoints[1][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
+//						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getHeight().divide(2)).getEstimatedValue();
+//				enginePoints[2][0] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes()
+//						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getLength()).doubleValue(SI.METER);
+//				enginePoints[2][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
+//						.minus(theAircraft.getPowerPlant().getEngineList().get(i).getHeight().divide(2)).getEstimatedValue();
+//				enginePoints[3][0] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes().doubleValue(SI.METER);
+//				enginePoints[3][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
+//						.minus(theAircraft.getPowerPlant().getEngineList().get(i).getHeight().divide(2)).getEstimatedValue();
+//				enginePoints[4][0] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes().doubleValue(SI.METER);
+//				enginePoints[4][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
+//						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getHeight().divide(2)).getEstimatedValue();
+//				
+//				enginePointsList.add(enginePoints);
+//			}
+//		}
 		
 		System.out.println("##################\n\n");
 
@@ -272,9 +272,9 @@ public class AircraftTestSideView extends Application {
 		// hTail
 		listDataArraySideView.add(hTailRootAirfoilPoints);
 		listDataArraySideView.add(hTailTipAirfoilPoints);
-		// power plant
-		for (int i=0; i<enginePointsList.size(); i++)
-			listDataArraySideView.add(enginePointsList.get(i));
+//		// power plant
+//		for (int i=0; i<enginePointsList.size(); i++)
+//			listDataArraySideView.add(enginePointsList.get(i));
 		
 		double xMaxSideView = 1.20*fuselage.getFuselageCreator().getLenF().doubleValue(SI.METRE);
 		double xMinSideView = -0.20*fuselage.getFuselageCreator().getLenF().doubleValue(SI.METRE);

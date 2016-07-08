@@ -19,7 +19,7 @@ import configuration.enumerations.MethodEnum;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import writers.JPADStaticWriteUtils;
 
-public class NacellesWeightsManager extends WeightsManager{
+public class NacelleWeightsManager extends WeightsManager{
 
 	private NacelleCreator _theNacelle;
 	private MountingPosition _mountingPosition;
@@ -29,7 +29,7 @@ public class NacellesWeightsManager extends WeightsManager{
 	private Piston piston;
 
 	
-	public NacellesWeightsManager(NacelleCreator nacelle) {
+	public NacelleWeightsManager(NacelleCreator nacelle) {
 		_theNacelle = nacelle;
 
 		initializeDependentData();

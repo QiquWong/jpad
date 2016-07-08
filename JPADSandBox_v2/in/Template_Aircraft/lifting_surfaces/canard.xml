@@ -1,6 +1,6 @@
 <jpad_config>
      <canard id="JPAD Test Canard DAF - 2016" mirrored="TRUE">
-         <global_data>
+        <global_data>
 			<composite_correction_factor>0.1</composite_correction_factor>
 			<roughness unit="m">0.405e-5</roughness>
 		</global_data>

@@ -3,7 +3,6 @@
 	<engine id="JPAD Test Engine DAF - 2016" type="TURBOFAN">
 		<dimensions>
 			<length unit="m">2.8</length>
-			<diameter unit="m">1.5</diameter>
 		</dimensions>
 		<specifications>
 			<static_thrust unit="lbf">7000</static_thrust>

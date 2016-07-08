@@ -14,7 +14,7 @@ import calculators.aerodynamics.DragCalc;
 import configuration.enumerations.MethodEnum;
 import writers.JPADStaticWriteUtils;
 
-public class NacellesAerodynamicsManager extends AerodynamicsManager{
+public class NacelleAerodynamicsManager extends AerodynamicsManager{
 
 	private Amount<Length> _length;
 	private Amount<Length> _roughness;
@@ -31,7 +31,7 @@ public class NacellesAerodynamicsManager extends AerodynamicsManager{
 
 	private OperatingConditions _theOperatingConditions;
 	
-	public NacellesAerodynamicsManager(
+	public NacelleAerodynamicsManager(
 			Aircraft aircraft, 
 			NacelleCreator nacelle,
 			OperatingConditions operationConditions) {
@@ -60,7 +60,6 @@ public class NacellesAerodynamicsManager extends AerodynamicsManager{
 	@Override
 	public void calculateAll() {
 
-		JPADStaticWriteUtils.logToConsole("NEED TO CHANGE MACH AND ALTITUDE FOR NACELLE");
 		_reynolds = AerodynamicCalc.calculateReynoldsEffective(_mach, 0.3, _altitude, 
 				_length.doubleValue(SI.METER), _roughness.doubleValue(SI.METER));
 		_xTransition = 0.0;

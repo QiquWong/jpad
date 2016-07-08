@@ -3,8 +3,6 @@
 	<engine id="JPAD Test Engine DAF - 2016" type="TURBOPROP">
 		<dimensions>
 			<length unit="m">2.5</length>
-			<width unit="m">0.5</width>
-			<height unit="m">1.5</height>
 			<propeller_diameter unit="m">3.5</propeller_diameter>
 		</dimensions>
 		<specifications>
