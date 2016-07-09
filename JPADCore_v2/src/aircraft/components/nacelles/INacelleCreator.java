@@ -1,5 +1,7 @@
 package aircraft.components.nacelles;
 
+import java.util.List;
+
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
@@ -11,6 +13,8 @@ import aircraft.components.powerPlant.Engine;
 
 public interface INacelleCreator {
 
+	public void calculateGeometry();
+	public void calculateGeometry(int nPoints);
 	public void calculateAll();
 	public void estimateDimensions (Engine theEngine);
 	public Double calculateFormFactor();
@@ -36,8 +40,17 @@ public interface INacelleCreator {
 	public Double getKOutlet();
 	public void setKOutlet(Double _kOutlet);
 
+	public Double getKLength();
+	public void setKLength(Double _kLength);
+	
+	public Double getKDiameterOutlet();
+	public void setKDiameterOutlet(Double _kDiameterOutlet);
+	
 	public Amount<Length> getXPositionMaximumDiameterLRF();
 	public void setXPositionMaximumDiameterLRF(Amount<Length> _xPositionMaximumDiameterLRF);
+	
+	public Amount<Length> getZPositionOutletDiameterLRF();
+	public void setZPositionOutletDiameterLRF(Amount<Length> _zPositionOutletDiameterLRF);
 	
 	public Amount<Length> getRoughness();
 	public void setRoughness(Amount<Length> _roughness);
@@ -69,4 +82,33 @@ public interface INacelleCreator {
 	public Amount<Mass> getMassReference();
 	public void setMassReference(Amount<Mass> _massReference);
 	
+	public double[] getXCoordinatesOutlineDouble();
+	public void setXCoordinatesOutlineDouble(double[] xCoordinatesOutlineDouble);
+
+	public double[] getZCoordinatesOutlineXZUpperDouble();
+	public void setZCoordinatesOutlineXZUpperDouble(double[] zCoordinatesOutlineXZUpperDouble);
+
+	public double[] getZCoordinatesOutlineXZLowerDouble();
+	public void setZCoordinatesOutlineXZLowerDouble(double[] zCoordinatesOutlineXZLowerDouble);
+		
+	public double[] getYCoordinatesOutlineXYRightDouble();
+	public void setYCoordinatesOutlineXYRightDouble(double[] _yCoordinatesOutlineXYRightDouble);
+
+	public double[] getYCoordinatesOutlineXYLeftDouble();
+	public void setYCoordinatesOutlineXYLeftDouble(double[] _yCoordinatesOutlineXYLeftDouble);
+	
+	public List<Amount<Length>> getXCoordinatesOutline();
+	public void setXCoordinatesOutline(List<Amount<Length>> xCoordinatesOutlineXY);
+
+	public List<Amount<Length>> getZCoordinatesOutlineXZUpper();
+	public void setZCoordinatesOutlineXZUpper(List<Amount<Length>> zCoordinatesOutlineXZUpper);
+
+	public List<Amount<Length>> getZCoordinatesOutlineXZLower();
+	public void setZCoordinatesOutlineXZLower(List<Amount<Length>> zCoordinatesOutlineXZLower);
+	
+	public List<Amount<Length>> getYCoordinatesOutlineXYRight();
+	public void setYCoordinatesOutlineXYRight(List<Amount<Length>> _yCoordinatesOutlineXYRight);
+
+	public List<Amount<Length>> getYCoordinatesOutlineXYLeft();
+	public void setYCoordinatesOutlineXYLeft(List<Amount<Length>> _yCoordinatesOutlineXYLeft);
 }

@@ -2,7 +2,7 @@
 <jpad_config>
 	<engine id="JPAD Test Engine DAF - 2016" type="TURBOFAN">
 		<dimensions>
-			<length unit="m">2.8</length>
+			<length unit="m">2.0</length>
 		</dimensions>
 		<specifications>
 			<static_thrust unit="lbf">7000</static_thrust>

@@ -1,6 +1,8 @@
 package aircraft.components.nacelles;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
@@ -10,14 +12,13 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 import aircraft.OperatingConditions;
 import aircraft.components.Aircraft;
-import aircraft.components.fuselage.Fuselage.FuselageBuilder;
-import aircraft.components.fuselage.creator.FuselageCreator;
 import aircraft.components.powerPlant.Engine;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.EngineTypeEnum;
-import jdk.jfr.events.ThrowablesEvent;
 import standaloneutils.JPADXmlReader;
+import standaloneutils.MyArrayUtils;
+import standaloneutils.MyInterpolatingFunction;
 import standaloneutils.MyXMLReaderUtils;
 
 /** 
@@ -29,6 +30,9 @@ import standaloneutils.MyXMLReaderUtils;
  * diameter obtained from maximum height and with calculated as function of the shaft horse-power.
  * Concerning K_inlet and K_outlet, these data are initialized with default values in 
  * case the user doesn't assign them.
+ * The user can also assign the position from the Nacelle apex of the maximum diameter as a percentage
+ * of the Nacelle lenght (this thruough the variable kLenght). Moreover he can assign the z position
+ * of the outlet diameter as a percentage of the outlet diameter (through the variable kDiameterOutlet).
  *  
  * @author Vittorio Trifari, Vincenzo Cusati
  *
@@ -55,7 +59,22 @@ public class NacelleCreator implements INacelleCreator {
 	private Amount<Length> _diameterOutlet;
 	private Double _kInlet;
 	private Double _kOutlet;
+	private Double _kLength;
+	private Double _kDiameterOutlet;
 	private Amount<Length> _xPositionMaximumDiameterLRF;
+	private Amount<Length> _zPositionOutletDiameterLRF;
+	
+	// outlines
+	private double[] _xCoordinatesOutlineDouble; 
+	private double[] _zCoordinatesOutlineXZUpperDouble;
+	private double[] _zCoordinatesOutlineXZLowerDouble;
+	private double[] _yCoordinatesOutlineXYRightDouble;
+	private double[] _yCoordinatesOutlineXYLeftDouble;
+	private List<Amount<Length>> _xCoordinatesOutline;
+	private List<Amount<Length>> _zCoordinatesOutlineXZUpper;
+	private List<Amount<Length>> _zCoordinatesOutlineXZLower;
+	private List<Amount<Length>> _yCoordinatesOutlineXYRight;
+	private List<Amount<Length>> _yCoordinatesOutlineXYLeft;
 	
 	private Amount<Area> _surfaceWetted;
 	private Amount<Mass> _massReference;
@@ -88,8 +107,9 @@ public class NacelleCreator implements INacelleCreator {
 		private Amount<Length> __diameterMax = Amount.valueOf(0.0, SI.METER);
 		private Double __kInlet = 0.8; // default value
 		private Double __kOutlet = 0.2; // default value
-		private Amount<Length> __xPositionMaximumDiameterLRF = __length.times(0.35); // default at 35% of Nacelle length
-
+		private Double __kLength = 0.35; // default value
+		private Double __kDiameterOutlet = 0.0; // default value
+		
 		public NacelleCreatorBuilder id (String id) {
 			this.__id = id;
 			return this;
@@ -131,8 +151,15 @@ public class NacelleCreator implements INacelleCreator {
 			return this;
 		}
 		
-		public NacelleCreatorBuilder xPositionMaximumDiameterLRF (Amount<Length> xPositionMaxDiameter) {
-			this.__xPositionMaximumDiameterLRF = xPositionMaxDiameter;
+		public NacelleCreatorBuilder kLength (Double kLength) {
+			this.__kLength = kLength;
+		
+			return this;
+		}
+		
+		public NacelleCreatorBuilder kDiameterOutlet (Double kDiameterOutlet) {
+			this.__kDiameterOutlet = kDiameterOutlet;
+		
 			return this;
 		}
 		
@@ -160,9 +187,10 @@ public class NacelleCreator implements INacelleCreator {
 				__diameterMax = Amount.valueOf(1.4,SI.METER);
 				__kInlet = 0.857;
 				__kOutlet = 0.143;
+				__kLength = 0.4;
+				__kDiameterOutlet = 0.5;
 				__roughness = Amount.valueOf(0.405 * Math.pow(10,-5), SI.METRE);
 				__massReference = Amount.valueOf(409.4, SI.KILOGRAM);
-				__xPositionMaximumDiameterLRF = Amount.valueOf(0.4, SI.METER);
 				
 				break;
 				
@@ -172,9 +200,10 @@ public class NacelleCreator implements INacelleCreator {
 				__diameterMax = Amount.valueOf(2.0,SI.METER);
 				__kInlet = 0.6;
 				__kOutlet = 0.1;
+				__kLength = 0.35;
+				__kDiameterOutlet = 0.0;
 				__roughness = Amount.valueOf(0.405 * Math.pow(10,-5), SI.METRE);
 				__massReference = Amount.valueOf(1184.2500, SI.KILOGRAM);
-				__xPositionMaximumDiameterLRF = Amount.valueOf(0.35, SI.METER);
 				
 				break;
 				
@@ -184,9 +213,10 @@ public class NacelleCreator implements INacelleCreator {
 				__diameterMax = Amount.valueOf(1.816,SI.METER);
 				__kInlet = 0.847;
 				__kOutlet = 0.33;
+				__kLength = 0.35;
+				__kDiameterOutlet = 0.0;
 				__roughness = Amount.valueOf(0.405 * Math.pow(10,-5), SI.METRE);
 				__massReference = Amount.valueOf(380., SI.KILOGRAM);//ADAS
-				__xPositionMaximumDiameterLRF = Amount.valueOf(0.35, SI.METER);
 				
 				break;
 			}
@@ -207,7 +237,8 @@ public class NacelleCreator implements INacelleCreator {
 		this._diameterMax = builder.__diameterMax;
 		this._kInlet = builder.__kInlet;
 		this._kOutlet = builder.__kOutlet;
-		this._xPositionMaximumDiameterLRF = builder.__xPositionMaximumDiameterLRF;
+		this._kLength = builder.__kLength;
+		this._kDiameterOutlet = builder.__kDiameterOutlet;
 		
 		if((_length.doubleValue(SI.METER) == 0.0)
 				&& (_diameterMax.doubleValue(SI.METER) == 0.0)) {
@@ -216,8 +247,10 @@ public class NacelleCreator implements INacelleCreator {
 		
 		this._diameterInlet = this._diameterMax.times(_kInlet);
 		this._diameterOutlet = this._diameterMax.times(_kOutlet);
+		this._xPositionMaximumDiameterLRF = _length.times(_kLength);
+		this._zPositionOutletDiameterLRF = _diameterOutlet.times(_kDiameterOutlet);
 		
-		calculateSurfaceWetted();
+		calculateGeometry();
 	}
 	
 	//============================================================================================
@@ -261,7 +294,8 @@ public class NacelleCreator implements INacelleCreator {
 		Amount<Length> diameterMax = Amount.valueOf(0.0, SI.METER);
 		Double kInlet = 0.8;
 		Double kOutlet = 0.2;
-		Amount<Length> xPositionMaxDiamterLRF = length.times(0.35);
+		Double kLength = 0.35;
+		Double kDiameterOutlet = 0.0;
 		
 		if(reader.getXMLPropertyByPath("//geometry/length") != null)
 			length = reader.getXMLAmountLengthByPath("//geometry/length");
@@ -271,9 +305,11 @@ public class NacelleCreator implements INacelleCreator {
 			kInlet = Double.valueOf(reader.getXMLPropertyByPath("//geometry/k_inlet"));
 		if(reader.getXMLPropertyByPath("//geometry/k_outlet") != null)
 			kOutlet = Double.valueOf(reader.getXMLPropertyByPath("//geometry/k_outlet"));
-		if(reader.getXMLPropertyByPath("//geometry/x_position_maximum_diameter_from_nacelle_apex") != null)
-			xPositionMaxDiamterLRF = reader.getXMLAmountLengthByPath("//geometry/x_position_maximum_diameter_from_nacelle_apex");
-
+		if(reader.getXMLPropertyByPath("//geometry/k_length") != null)
+			kLength = Double.valueOf(reader.getXMLPropertyByPath("//geometry/k_length"));
+		if(reader.getXMLPropertyByPath("//geometry/k_diameter_outlet") != null)
+			kDiameterOutlet = Double.valueOf(reader.getXMLPropertyByPath("//geometry/k_diameter_outlet"));
+		
 		theNacelle = new NacelleCreatorBuilder(id)
 				.massReference(massReference)
 				.engine(engine)
@@ -282,7 +318,8 @@ public class NacelleCreator implements INacelleCreator {
 				.maximumDiameter(diameterMax)
 				.kInlet(kInlet)
 				.kOutlet(kOutlet)
-				.xPositionMaximumDiameterLRF(xPositionMaxDiamterLRF)
+				.kLength(kLength)
+				.kDiameterOutlet(kDiameterOutlet)
 				.build()
 				;
 		
@@ -310,7 +347,10 @@ public class NacelleCreator implements INacelleCreator {
 		.append("\tK_outlet: " + _kOutlet + "\n")
 		.append("\tDiameter inlet: " + _diameterInlet + "\n")
 		.append("\tDiameter outlet: " + _diameterOutlet + "\n")
+		.append("\tK_length: " + _kLength + "\n")
 		.append("\tX position of the max diameter in LRF: " + _xPositionMaximumDiameterLRF + "\n")
+		.append("\tK_diameter_outlet: " + _kDiameterOutlet + "\n")
+		.append("\tZ position of the outlet diameter in LRF: " + _zPositionOutletDiameterLRF + "\n")
 		.append("\t·····································\n")
 		.append("\tSurface roughness: " + _roughness + "\n")
 		.append("\tMass reference: " + _massReference + "\n")
@@ -446,6 +486,138 @@ public class NacelleCreator implements INacelleCreator {
 			_theBalance = new NacelleBalanceManager(this);
 	}
 
+	@Override
+	/**
+	 * @author Vittorio Trifari
+	 */
+	public void calculateGeometry() {
+		calculateGeometry(20);
+	}
+	
+	@Override
+	/**
+	 * This method evaluates the Nacelle wetted surface and the Nacelle outlines for a 3-view
+	 * representation. The X-Z and X-Y outlines are calculated using a cubic spline interpolation
+	 * of the known points of the Nacelle; these latter obtained from the diameters at the three 
+	 * main stations.
+	 * 
+	 * @author Vittorio Trifari
+	 * @param nPoints the number of points used to model the Nacelle shape
+	 */
+	public void calculateGeometry(int nPoints){
+	
+		calculateSurfaceWetted();
+		
+		//----------------------------------------------------------------------------------------
+		// comparison between the engine length and the nacelle length
+		if(_theEngine.getLength() != null)
+			if(_theEngine.getLength().doubleValue(SI.METER) <= this._length.doubleValue(SI.METER))
+				System.out.println("[Nacelle] Nacelle length bigger than engine length \n\t CHECK PASSED --> proceding ...");
+			else {
+				System.err.println("[Nacelle] Nacelle length lower than engine length \n\t CHECK NOT PASSED --> returning ...");
+				return;
+			}
+		
+		//----------------------------------------------------------------------------------------
+		// X-Z OUTLINE
+		System.out.println("[Nacelle] calculating outlines ...");
+		
+		double[] trueXCoordinates = new double[3];
+		double[] trueZCoordinatesUpper = new double[3];
+		double[] trueZCoordinatesLower = new double[3];
+		
+		trueXCoordinates[0] = 0.0;
+		trueXCoordinates[1] = this._xPositionMaximumDiameterLRF.doubleValue(SI.METER);
+		trueXCoordinates[2] = this._length.doubleValue(SI.METER);
+		
+		trueZCoordinatesUpper[0] = this._diameterInlet.divide(2).doubleValue(SI.METER);
+		trueZCoordinatesUpper[1] = this._diameterMax.divide(2).doubleValue(SI.METER);
+		trueZCoordinatesUpper[2] = (this._diameterOutlet.divide(2).doubleValue(SI.METER)) 
+									+ this._zPositionOutletDiameterLRF.doubleValue(SI.METER);
+		
+		trueZCoordinatesLower[0] = - this._diameterInlet.divide(2).doubleValue(SI.METER);
+		trueZCoordinatesLower[1] = - this._diameterMax.divide(2).doubleValue(SI.METER);
+		trueZCoordinatesLower[2] = (- this._diameterOutlet.divide(2).doubleValue(SI.METER)) 
+									+ this._zPositionOutletDiameterLRF.doubleValue(SI.METER);
+		
+		_xCoordinatesOutlineDouble = MyArrayUtils
+				.linspace(
+						0.0,
+						this._length.doubleValue(SI.METER),
+						nPoints
+						); 
+		_xCoordinatesOutline = MyArrayUtils
+				.convertDoubleArrayToListOfAmount(
+						_xCoordinatesOutlineDouble,
+						SI.METER
+						);
+		
+		_zCoordinatesOutlineXZUpperDouble = new double[nPoints];
+		_zCoordinatesOutlineXZLowerDouble = new double[nPoints];
+		_zCoordinatesOutlineXZUpper = new ArrayList<Amount<Length>>();
+		_zCoordinatesOutlineXZLower = new ArrayList<Amount<Length>>();
+		
+		MyInterpolatingFunction splineUpper = new MyInterpolatingFunction();
+		splineUpper.interpolate(trueXCoordinates, trueZCoordinatesUpper);
+		
+		MyInterpolatingFunction splineLower = new MyInterpolatingFunction();
+		splineLower.interpolate(trueXCoordinates, trueZCoordinatesLower);
+		
+		for(int i=0; i<nPoints; i++) {
+			_zCoordinatesOutlineXZUpperDouble[i] = splineUpper.value(_xCoordinatesOutlineDouble[i]);
+			_zCoordinatesOutlineXZLowerDouble[i] = splineLower.value(_xCoordinatesOutlineDouble[i]);
+			_zCoordinatesOutlineXZUpper.add(
+					Amount.valueOf(
+							_zCoordinatesOutlineXZUpperDouble[i],
+							SI.METER)
+					);
+			_zCoordinatesOutlineXZLower.add(
+					Amount.valueOf(
+							_zCoordinatesOutlineXZLowerDouble[i],
+							SI.METER)
+					);
+		}
+		
+		//----------------------------------------------------------------------------------------
+		// X-Y OUTLINE
+		double[] trueYCoordinatesRight = new double[3];
+		double[] trueYCoordinatesLeft = new double[3];
+		
+		trueYCoordinatesRight[0] = this._diameterInlet.divide(2).doubleValue(SI.METER);
+		trueYCoordinatesRight[1] = this._diameterMax.divide(2).doubleValue(SI.METER);
+		trueYCoordinatesRight[2] = this._diameterOutlet.divide(2).doubleValue(SI.METER); 
+		
+		trueYCoordinatesLeft[0] = - this._diameterInlet.divide(2).doubleValue(SI.METER);
+		trueYCoordinatesLeft[1] = - this._diameterMax.divide(2).doubleValue(SI.METER);
+		trueYCoordinatesLeft[2] = - this._diameterOutlet.divide(2).doubleValue(SI.METER); 
+		
+		_yCoordinatesOutlineXYRightDouble = new double[nPoints];
+		_yCoordinatesOutlineXYLeftDouble = new double[nPoints];
+		_yCoordinatesOutlineXYRight = new ArrayList<Amount<Length>>();
+		_yCoordinatesOutlineXYLeft = new ArrayList<Amount<Length>>();
+		
+		MyInterpolatingFunction splineRight = new MyInterpolatingFunction();
+		splineRight.interpolate(trueXCoordinates, trueYCoordinatesRight);
+		
+		MyInterpolatingFunction splineLeft = new MyInterpolatingFunction();
+		splineLeft.interpolate(trueXCoordinates, trueYCoordinatesLeft);
+		
+		for(int i=0; i<nPoints; i++) {
+			_yCoordinatesOutlineXYRightDouble[i] = splineRight.value(_xCoordinatesOutlineDouble[i]);
+			_yCoordinatesOutlineXYLeftDouble[i] = splineLeft.value(_xCoordinatesOutlineDouble[i]);
+			_yCoordinatesOutlineXYRight.add(
+					Amount.valueOf(
+							_yCoordinatesOutlineXYRightDouble[i],
+							SI.METER)
+					);
+			_yCoordinatesOutlineXYLeft.add(
+					Amount.valueOf(
+							_yCoordinatesOutlineXYLeftDouble[i],
+							SI.METER)
+					);
+		}
+	}
+	
 	/**
 	 * Invoke all the methods to evaluate 
 	 * nacelle related quantities
@@ -541,6 +713,26 @@ public class NacelleCreator implements INacelleCreator {
 	}
 
 	@Override
+	public Double getKLength() {
+		return _kLength;
+	}
+
+	@Override
+	public void setKLength(Double _kLength) {
+		this._kLength = _kLength;
+	}
+	
+	@Override
+	public Double getKDiameterOutlet() {
+		return _kDiameterOutlet;
+	}
+
+	@Override
+	public void setKDiameterOutlet(Double _kDiameterOutlet) {
+		this._kDiameterOutlet = _kDiameterOutlet;
+	}
+
+	@Override
 	public Amount<Length> getXPositionMaximumDiameterLRF() {
 		return _xPositionMaximumDiameterLRF;
 	}
@@ -548,6 +740,16 @@ public class NacelleCreator implements INacelleCreator {
 	@Override
 	public void setXPositionMaximumDiameterLRF(Amount<Length> _xPositionMaximumDiameterLRF) {
 		this._xPositionMaximumDiameterLRF = _xPositionMaximumDiameterLRF;
+	}
+
+	@Override
+	public Amount<Length> getZPositionOutletDiameterLRF() {
+		return _zPositionOutletDiameterLRF;
+	}
+
+	@Override
+	public void setZPositionOutletDiameterLRF(Amount<Length> _zPositionOutletDiameterLRF) {
+		this._zPositionOutletDiameterLRF = _zPositionOutletDiameterLRF;
 	}
 
 	@Override
@@ -646,6 +848,106 @@ public class NacelleCreator implements INacelleCreator {
 	@Override
 	public void setMassReference(Amount<Mass> _massReference) {
 		this._massReference = _massReference;
+	}
+
+	@Override
+	public double[] getXCoordinatesOutlineDouble() {
+		return _xCoordinatesOutlineDouble;
+	}
+
+	@Override
+	public void setXCoordinatesOutlineDouble(double[] xCoordinatesOutlineDouble) {
+		_xCoordinatesOutlineDouble = xCoordinatesOutlineDouble;
+	}
+
+	@Override
+	public double[] getZCoordinatesOutlineXZUpperDouble() {
+		return _zCoordinatesOutlineXZUpperDouble;
+	}
+
+	@Override
+	public void setZCoordinatesOutlineXZUpperDouble(double[] zCoordinatesOutlineXZUpperDouble) {
+		_zCoordinatesOutlineXZUpperDouble = zCoordinatesOutlineXZUpperDouble;
+	}
+
+	@Override
+	public double[] getZCoordinatesOutlineXZLowerDouble() {
+		return _zCoordinatesOutlineXZLowerDouble;
+	}
+
+	@Override
+	public void setZCoordinatesOutlineXZLowerDouble(double[] zCoordinatesOutlineXZLowerDouble) {
+		_zCoordinatesOutlineXZLowerDouble = zCoordinatesOutlineXZLowerDouble;
+	}
+
+	@Override
+	public double[] getYCoordinatesOutlineXYRightDouble() {
+		return _yCoordinatesOutlineXYRightDouble;
+	}
+
+	@Override
+	public void setYCoordinatesOutlineXYRightDouble(double[] _yCoordinatesOutlineXYRightDouble) {
+		this._yCoordinatesOutlineXYRightDouble = _yCoordinatesOutlineXYRightDouble;
+	}
+
+	@Override
+	public double[] getYCoordinatesOutlineXYLeftDouble() {
+		return _yCoordinatesOutlineXYLeftDouble;
+	}
+
+	@Override
+	public void setYCoordinatesOutlineXYLeftDouble(double[] _yCoordinatesOutlineXYLeftDouble) {
+		this._yCoordinatesOutlineXYLeftDouble = _yCoordinatesOutlineXYLeftDouble;
+	}
+
+	@Override
+	public List<Amount<Length>> getXCoordinatesOutline() {
+		return _xCoordinatesOutline;
+	}
+
+	@Override
+	public void setXCoordinatesOutline(List<Amount<Length>> xCoordinatesOutline) {
+		_xCoordinatesOutline = xCoordinatesOutline;
+	}
+
+	@Override
+	public List<Amount<Length>> getZCoordinatesOutlineXZUpper() {
+		return _zCoordinatesOutlineXZUpper;
+	}
+	
+	@Override
+	public void setZCoordinatesOutlineXZUpper(List<Amount<Length>> zCoordinatesOutlineXZUpper) {
+		_zCoordinatesOutlineXZUpper = zCoordinatesOutlineXZUpper;
+	}
+
+	@Override
+	public List<Amount<Length>> getZCoordinatesOutlineXZLower() {
+		return _zCoordinatesOutlineXZLower;
+	}
+
+	@Override
+	public void setZCoordinatesOutlineXZLower(List<Amount<Length>> zCoordinatesOutlineXZLower) {
+		_zCoordinatesOutlineXZLower = zCoordinatesOutlineXZLower;
+	}
+
+	@Override
+	public List<Amount<Length>> getYCoordinatesOutlineXYRight() {
+		return _yCoordinatesOutlineXYRight;
+	}
+
+	@Override
+	public void setYCoordinatesOutlineXYRight(List<Amount<Length>> _yCoordinatesOutlineXYRight) {
+		this._yCoordinatesOutlineXYRight = _yCoordinatesOutlineXYRight;
+	}
+
+	@Override
+	public List<Amount<Length>> getYCoordinatesOutlineXYLeft() {
+		return _yCoordinatesOutlineXYLeft;
+	}
+
+	@Override
+	public void setYCoordinatesOutlineXYLeft(List<Amount<Length>> _yCoordinatesOutlineXYLeft) {
+		this._yCoordinatesOutlineXYLeft = _yCoordinatesOutlineXYLeft;
 	}
 	
 }
