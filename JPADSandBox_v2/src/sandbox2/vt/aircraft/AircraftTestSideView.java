@@ -21,7 +21,6 @@ import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ComponentEnum;
-import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
@@ -166,7 +165,6 @@ public class AircraftTestSideView extends Application {
 		//--------------------------------------------------
 		// get data vectors from vTail discretization
 		//--------------------------------------------------
-		// get data vectors from wing discretization
 		List<Amount<Length>> vYVTail = vTail.getLiftingSurfaceCreator().getDiscretizedYs();
 		int nYVTail = vYVTail.size();
 		List<Amount<Length>> vChordsVTail = vTail.getLiftingSurfaceCreator().getDiscretizedChords();
@@ -182,64 +180,53 @@ public class AircraftTestSideView extends Application {
 			dataXleVsYVTail[i][1] = vXleVTail.get(i).doubleValue(SI.METRE);
 		});
 
-//		//--------------------------------------------------
-//		// get data vectors from engine discretization
-//		//--------------------------------------------------
-//		List<Double[][]> enginePointsList = new ArrayList<Double[][]>();
-//		
-//		if((theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOJET)
-//				|| (theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOFAN)) {
-//			
-//			for(int i=0; i<theAircraft.getPowerPlant().getEngineList().size(); i++) {
-//				Double[][] enginePoints = new Double[5][2];
-//				
-//				enginePoints[0][0] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes().doubleValue(SI.METER);
-//				enginePoints[0][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
-//						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getDiameter().divide(2)).getEstimatedValue();
-//				enginePoints[1][0] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes()
-//						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getLength()).doubleValue(SI.METER);
-//				enginePoints[1][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
-//						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getDiameter().divide(2)).getEstimatedValue();
-//				enginePoints[2][0] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes()
-//						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getLength()).doubleValue(SI.METER);
-//				enginePoints[2][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
-//						.minus(theAircraft.getPowerPlant().getEngineList().get(i).getDiameter().divide(2)).getEstimatedValue();
-//				enginePoints[3][0] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes().doubleValue(SI.METER);
-//				enginePoints[3][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
-//						.minus(theAircraft.getPowerPlant().getEngineList().get(i).getDiameter().divide(2)).getEstimatedValue();
-//				enginePoints[4][0] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes().doubleValue(SI.METER);
-//				enginePoints[4][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
-//						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getDiameter().divide(2)).getEstimatedValue();
-//				
-//				enginePointsList.add(enginePoints);
-//			}
-//		}
-//		else if((theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOPROP)
-//				|| (theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.PISTON)) {
-//			
-//			for(int i=0; i<theAircraft.getPowerPlant().getEngineList().size(); i++) {
-//				Double[][] enginePoints = new Double[5][2];
-//				enginePoints[0][0] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes().doubleValue(SI.METER);
-//				enginePoints[0][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
-//						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getHeight().divide(2)).getEstimatedValue();
-//				enginePoints[1][0] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes()
-//						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getLength()).doubleValue(SI.METER);
-//				enginePoints[1][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
-//						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getHeight().divide(2)).getEstimatedValue();
-//				enginePoints[2][0] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes()
-//						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getLength()).doubleValue(SI.METER);
-//				enginePoints[2][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
-//						.minus(theAircraft.getPowerPlant().getEngineList().get(i).getHeight().divide(2)).getEstimatedValue();
-//				enginePoints[3][0] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes().doubleValue(SI.METER);
-//				enginePoints[3][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
-//						.minus(theAircraft.getPowerPlant().getEngineList().get(i).getHeight().divide(2)).getEstimatedValue();
-//				enginePoints[4][0] = theAircraft.getPowerPlant().getEngineList().get(i).getXApexConstructionAxes().doubleValue(SI.METER);
-//				enginePoints[4][1] = theAircraft.getPowerPlant().getEngineList().get(i).getZApexConstructionAxes()
-//						.plus(theAircraft.getPowerPlant().getEngineList().get(i).getHeight().divide(2)).getEstimatedValue();
-//				
-//				enginePointsList.add(enginePoints);
-//			}
-//		}
+		//--------------------------------------------------
+		// get data vectors from nacelle discretization
+		//--------------------------------------------------
+		List<Double[][]> nacellePointsList = new ArrayList<Double[][]>();
+		
+		for(int i=0; i<theAircraft.getNacelles().getNacellesList().size(); i++) {
+			
+			// upper curve, sideview
+			List<Amount<Length>> nacelleCurveX = theAircraft.getNacelles().getNacellesList().get(i).getXCoordinatesOutline();
+			int nacelleCurveXPoints = nacelleCurveX.size();
+			List<Amount<Length>> nacelleCurveUpperZ = theAircraft.getNacelles().getNacellesList().get(i).getZCoordinatesOutlineXZUpper();
+			
+			// lower curve, sideview
+			List<Amount<Length>> nacelleCurveLowerZ = theAircraft.getNacelles().getNacellesList().get(i).getZCoordinatesOutlineXZLower();
+
+			List<Amount<Length>> dataOutlineXZCurveNacelleX = new ArrayList<>();
+			List<Amount<Length>> dataOutlineXZCurveNacelleZ = new ArrayList<>();
+			
+			for(int j=0; j<nacelleCurveXPoints; j++) {
+				dataOutlineXZCurveNacelleX.add(nacelleCurveX.get(j)
+						.plus(theAircraft.getNacelles().getNacellesList().get(i).getXApexConstructionAxes()));
+				dataOutlineXZCurveNacelleZ.add(nacelleCurveUpperZ.get(j)
+						.plus(theAircraft.getNacelles().getNacellesList().get(i).getZApexConstructionAxes()));
+			}
+			
+			for(int j=0; j<nacelleCurveXPoints; j++) {
+				dataOutlineXZCurveNacelleX.add(nacelleCurveX.get(nacelleCurveXPoints-j-1) 
+						.plus(theAircraft.getNacelles().getNacellesList().get(i).getXApexConstructionAxes()));
+				dataOutlineXZCurveNacelleZ.add(nacelleCurveLowerZ.get(nacelleCurveXPoints-j-1)
+						.plus(theAircraft.getNacelles().getNacellesList().get(i).getZApexConstructionAxes()));
+			}
+			
+			dataOutlineXZCurveNacelleX.add(nacelleCurveX.get(0)
+					.plus(theAircraft.getNacelles().getNacellesList().get(i).getXApexConstructionAxes()));
+			dataOutlineXZCurveNacelleZ.add(nacelleCurveUpperZ.get(0)
+					.plus(theAircraft.getNacelles().getNacellesList().get(i).getZApexConstructionAxes()));
+			
+			
+			Double[][] dataOutlineXZCurveNacelle = new Double[dataOutlineXZCurveNacelleX.size()][2];
+			for(int j=0; j<dataOutlineXZCurveNacelleX.size(); j++) {
+				dataOutlineXZCurveNacelle[j][0] = dataOutlineXZCurveNacelleX.get(j).doubleValue(SI.METER);
+				dataOutlineXZCurveNacelle[j][1] = dataOutlineXZCurveNacelleZ.get(j).doubleValue(SI.METER);
+			}
+			
+			nacellePointsList.add(dataOutlineXZCurveNacelle);
+			
+		}
 		
 		System.out.println("##################\n\n");
 
@@ -272,9 +259,9 @@ public class AircraftTestSideView extends Application {
 		// hTail
 		listDataArraySideView.add(hTailRootAirfoilPoints);
 		listDataArraySideView.add(hTailTipAirfoilPoints);
-//		// power plant
-//		for (int i=0; i<enginePointsList.size(); i++)
-//			listDataArraySideView.add(enginePointsList.get(i));
+		// nacelles
+		for (int i=0; i<nacellePointsList.size(); i++)
+			listDataArraySideView.add(nacellePointsList.get(i));
 		
 		double xMaxSideView = 1.20*fuselage.getFuselageCreator().getLenF().doubleValue(SI.METRE);
 		double xMinSideView = -0.20*fuselage.getFuselageCreator().getLenF().doubleValue(SI.METRE);
@@ -303,12 +290,16 @@ public class AircraftTestSideView extends Application {
 						SymbolType.CIRCLE,
 						SymbolType.CIRCLE,
 						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
 						SymbolType.CIRCLE
 						)
-				.symbolSizes(2,2,2,2,2,2,2,2,2,2,2)
-				.showSymbols(false,false,false,false,false,false,false,false,false,false,false) // NOTE: overloaded function
+				.symbolSizes(2,2,2,2,2,2,2,2,2,2,2,2,2)
+				.showSymbols(false,false,false,false,false,false,false,false,false,false,false,false,false) // NOTE: overloaded function
 				.symbolStyles(
 						"fill:blue; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
 						"fill:cyan; stroke:darkblue; stroke-width:2",
 						"fill:cyan; stroke:darkblue; stroke-width:2",
 						"fill:cyan; stroke:darkblue; stroke-width:2",
@@ -331,12 +322,14 @@ public class AircraftTestSideView extends Application {
 						"fill:none; stroke:black; stroke-width:2",
 						"fill:none; stroke:black; stroke-width:2",
 						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
 						"fill:none; stroke:black; stroke-width:2"
 						)
-				.plotAreas(true,true,true,true,true,true,true,true,true,true,true)
+				.plotAreas(true,true,true,true,true,true,true,true,true,true,true,true,true)
 				.areaStyles("fill:yellow;","fill:white;","fill:white;","fill:lightblue;","fill:lightblue;","fill:blue;","fill:blue;",
-						"fill:orange;","fill:orange;","fill:orange;","fill:orange;")
-				.areaOpacities(1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0)
+						"fill:orange;","fill:orange;","fill:orange;","fill:orange;","fill:orange;","fill:orange;")
+				.areaOpacities(1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0)
 				.showLegend(false)
 				.build();
 
@@ -413,6 +406,9 @@ public class AircraftTestSideView extends Application {
 			String dirEngines = va.getEnginesDirectory().getCanonicalPath();
 			System.out.println("ENGINES ===> " + dirEngines);
 			
+			String dirNacelles = va.getNacellesDirectory().getCanonicalPath();
+			System.out.println("NACELLES ===> " + dirNacelles);
+			
 			String dirLandingGears = va.getLandingGearsDirectory().getCanonicalPath();
 			System.out.println("LANDING GEARS ===> " + dirLandingGears);
 			
@@ -438,21 +434,27 @@ public class AircraftTestSideView extends Application {
 			HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
 			
 			// default Aircraft ATR-72 ...
-//			theAircraft = new Aircraft.AircraftBuilder("ATR-72", AircraftEnum.ATR72, aeroDatabaseReader).build();
+			theAircraft = new Aircraft.AircraftBuilder(
+					"ATR-72",
+					AircraftEnum.ATR72,
+					aeroDatabaseReader,
+					highLiftDatabaseReader
+					).build();
 
 			// reading aircraft from xml ...
-			theAircraft = Aircraft.importFromXML(
-					pathToXML,
-					dirLiftingSurfaces,
-					dirFuselages,
-					dirEngines,
-					dirLandingGears,
-					dirSystems,
-					dirCabinConfiguration,
-					dirAirfoil,
-					dirCosts,
-					aeroDatabaseReader,
-					highLiftDatabaseReader);
+//			theAircraft = Aircraft.importFromXML(
+//					pathToXML,
+//					dirLiftingSurfaces,
+//					dirFuselages,
+//					dirEngines,
+//					dirNacelles,
+//					dirLandingGears,
+//					dirSystems,
+//					dirCabinConfiguration,
+//					dirAirfoil,
+//					dirCosts,
+//					aeroDatabaseReader,
+//					highLiftDatabaseReader);
 			
 			System.out.println("The Aircaraft ...");
 			System.out.println(AircraftTestSideView.theAircraft.toString());

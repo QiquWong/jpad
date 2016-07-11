@@ -199,7 +199,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 		_massStructureList.add(aircraft.getWing().getMassEstimated());
 		_massStructureList.add(aircraft.getHTail().getMassEstimated());
 		_massStructureList.add(aircraft.getVTail().getMassEstimated());
-		_massStructureList.addAll(aircraft.getNacelles().get_massList());
+		_massStructureList.addAll(aircraft.getNacelles().getMassList());
 		_massStructureList.add(aircraft.getLandingGears().getMassEstimated());
 
 		System.out.println("----- WEIGHT ESTIMATION PROCEDURE FINISHED -----\n");
@@ -229,7 +229,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 						aircraft.getWing().getMassEstimated()).plus(
 								aircraft.getHTail().getMassEstimated()).plus(
 										aircraft.getVTail().getMassEstimated()).plus(
-												aircraft.getNacelles().get_totalMass()).plus(
+												aircraft.getNacelles().getTotalMass()).plus(
 //												aircraft.get_theNacelles().  getWeights()).plus(
 														aircraft.getLandingGears().getMassEstimated()));
 
@@ -253,7 +253,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 		aircraft.getHTail().setMassReference(aircraft.getTheWeights().get_MZFM().times(.015));
 		aircraft.getVTail().setMassReference(aircraft.getTheWeights().get_MZFM().times(.015));
 		aircraft.getPowerPlant().setTotalMass(aircraft.getTheWeights().get_MZFM().times(.05));
-		aircraft.getNacelles().set_totalMass(aircraft.getTheWeights().get_MZFM().times(.015));
+		aircraft.getNacelles().setTotalMass(aircraft.getTheWeights().get_MZFM().times(.015));
 		aircraft.getFuelTank().setFuelMass(aircraft.getTheWeights().get_MZFM().times(.015));
 		aircraft.getLandingGears().setMass(aircraft.getTheWeights().get_MZFM().times(.04));
 		aircraft.getSystems().setOverallMass(aircraft.getTheWeights().get_MZFM().times(.04));
@@ -263,7 +263,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 						aircraft.getWing().getMassReference()).plus(
 								aircraft.getHTail().getMassReference()).plus(
 										aircraft.getVTail().getMassReference()).plus(
-												aircraft.getNacelles().get_totalMass()).plus(
+												aircraft.getNacelles().getTotalMass()).plus(
 														aircraft.getLandingGears().getMass()));
 
 		System.out.println("First guess value:" + aircraft.getTheWeights().get_structuralMass().getEstimatedValue());

@@ -695,8 +695,8 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		if (getTheLiftingSurface().getType() == ComponentEnum.WING){
 			_cdWNInterf = 0.0033*Math.pow(
 					//TODO: change this
-					theAircraft.getNacelles().get_nacellesList().get(0).getDiameterMean().getEstimatedValue()
-					* theAircraft.getNacelles().get_nacellesNumber(),2)/
+					theAircraft.getNacelles().getNacellesList().get(0).getDiameterMax().getEstimatedValue()
+					* theAircraft.getNacelles().getNacellesNumber(),2)/
 					surface;
 		} else {
 			_cdWNInterf = 0.0;
@@ -1092,7 +1092,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		 */
 		public double atQuarterMAC() {
 			getTheLiftingSurface()._xACActualMRF = getTheLiftingSurface().getLiftingSurfaceCreator().getMeanAerodynamicChord().times(0.25);
-			getTheLiftingSurface()._xACActualLRF = getTheLiftingSurface()._xACActualMRF.plus(getTheLiftingSurface()._xLEMacActualLRF);
+			getTheLiftingSurface()._xACActualLRF = getTheLiftingSurface()._xACActualMRF.plus(getTheLiftingSurface().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX());
 			_methodMapMRF.put(MethodEnum.QUARTER, getTheLiftingSurface()._xACActualMRF.copy());
 			_methodMapLRF.put(MethodEnum.QUARTER, getTheLiftingSurface()._xACActualLRF.copy());
 			return getTheLiftingSurface()._xACActualMRF.getEstimatedValue();
@@ -1963,7 +1963,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			double result;
 			EngineTypeEnum engineType;
 			if (theAircraft != null) {
-				engineType = theAircraft.getPowerPlant().get_engineType();
+				engineType = theAircraft.getPowerPlant().getEngineType();
 			} else {
 				engineType = EngineTypeEnum.TURBOPROP;
 			}

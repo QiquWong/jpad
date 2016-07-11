@@ -88,13 +88,13 @@ public class JPADWriteUtils {
 			JPADGlobalData.getTheXmlTree().add(aircraft.getCanard(), 2, "Canard", aircraft.getCanard().getId());
 			addAirfoilsToXML(aircraft.getCanard(), aircraft.getCanard().getId());
 
-			JPADGlobalData.getTheXmlTree().add(aircraft.getNacelles(), 2, "Nacelles", Nacelles.getId());
-			addNacellesToXML(aircraft.getNacelles(), Nacelles.getId());
+			JPADGlobalData.getTheXmlTree().add(aircraft.getNacelles(), 2, "Nacelles", aircraft.getNacelles().getId());
+			addNacellesToXML(aircraft.getNacelles(), aircraft.getNacelles().getId());
 
 			JPADGlobalData.getTheXmlTree().add(aircraft.getFuelTank(), 2, "Fuel_tank", aircraft.getFuelTank().getId());
 
-			JPADGlobalData.getTheXmlTree().add(aircraft.getPowerPlant(), 2, "PowerPlant", PowerPlant.getId());
-			addEnginesToXML(aircraft.getPowerPlant(), PowerPlant.getId());
+			JPADGlobalData.getTheXmlTree().add(aircraft.getPowerPlant(), 2, "PowerPlant", aircraft.getPowerPlant().getId());
+			addEnginesToXML(aircraft.getPowerPlant(), aircraft.getPowerPlant().getId());
 
 			JPADGlobalData.getTheXmlTree().add(aircraft.getSystems(), 2, "Systems", aircraft.getSystems().getId());
 			JPADGlobalData.getTheXmlTree().add(aircraft.getLandingGears(), 2, "LandingGear", aircraft.getLandingGears().getId());
@@ -223,8 +223,8 @@ public class JPADWriteUtils {
 	private static void addNacellesToXML(Nacelles nacelles, String fatherId) {
 
 		if (nacelles != null) {
-			for (int k=0; k < nacelles.get_nacellesNumber(); k++) {
-				NacelleCreator nacelle = nacelles.get_nacellesList().get(k);
+			for (int k=0; k < nacelles.getNacellesNumber(); k++) {
+				NacelleCreator nacelle = nacelles.getNacellesList().get(k);
 				JPADGlobalData.getTheXmlTree().add(nacelle, 3, "Nacelle_" + (k+1), nacelle.getId()); //"1" + k + "99");
 				//				JPADGlobalData.getTheXmlTree().add(engine.getGeometry(), 4, "Airfoil_Geometry", engine.getGeometry().getId());
 				//				JPADGlobalData.getTheXmlTree().add(engine.getAerodynamics(), 4, "Airfoil_Aerodynamics", engine.getAerodynamics().getId());

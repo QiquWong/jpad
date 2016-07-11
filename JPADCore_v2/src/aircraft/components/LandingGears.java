@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.NonSI;
@@ -419,7 +420,7 @@ public class LandingGears implements ILandingGear {
 		switch(method) {
 
 		// page 359 Sforza (2014) - Aircraft Design
-		
+
 		//TODO change this
 		case SFORZA : { 
 			_methodsList.add(method);
@@ -630,11 +631,13 @@ public class LandingGears implements ILandingGear {
 		this._zApexConstructionAxes = zApexConstructionAxes;
 	}
 
+	@Override
 	public MountingPosition getMountingPosition() {
 		return _mountingPosition;
 	}
 
+	@Override
 	public void setMountingPosition(MountingPosition _mountingPosition) {
 		this._mountingPosition = _mountingPosition;
-	};
+	}
 }

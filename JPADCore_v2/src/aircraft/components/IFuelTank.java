@@ -13,7 +13,6 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.components.liftingSurface.LiftingSurface;
 import database.databasefunctions.FuelFractionDatabaseReader;
-import standaloneutils.customdata.CenterOfGravity;
 
 public interface IFuelTank {
 

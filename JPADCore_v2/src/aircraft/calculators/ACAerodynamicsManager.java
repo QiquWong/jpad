@@ -265,7 +265,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 				
 		_cD0Parasite =  _theAircraft.getFuselage().getAerodynamics().get_cD0Parasite()
 				+ _theAircraft.getWing().getAerodynamics().get_cD0Parasite()
-				+ _theAircraft.getNacelles().get_cD0Parasite()
+				+ _theAircraft.getNacelles().getCD0Parasite()
 				+ _theAircraft.getHTail().getAerodynamics().get_cD0Parasite()
 				+ _theAircraft.getVTail().getAerodynamics().get_cD0Parasite();
 		
@@ -280,7 +280,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 
 		_cD0 = _theAircraft.getFuselage().getAerodynamics().get_cD0Total() +
 				_theAircraft.getWing().getAerodynamics().get_cD0Total() +
-				_theAircraft.getNacelles().get_cD0Total() +
+				_theAircraft.getNacelles().getCD0Total() +
 				_theAircraft.getHTail().getAerodynamics().get_cD0Total() +
 				_theAircraft.getVTail().getAerodynamics().get_cD0Total();
 
@@ -293,7 +293,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 				&& mach == _theOperatingConditions.get_machCurrent()) {
 			_cD0Map.put(ComponentEnum.FUSELAGE, _theAircraft.getFuselage().getAerodynamics().get_cD0Total());
 			_cD0Map.put(ComponentEnum.WING, _theAircraft.getWing().getAerodynamics().get_cD0Total());
-			_cD0Map.put(ComponentEnum.NACELLE, _theAircraft.getNacelles().get_cD0Total());
+			_cD0Map.put(ComponentEnum.NACELLE, _theAircraft.getNacelles().getCD0Total());
 			_cD0Map.put(ComponentEnum.HORIZONTAL_TAIL, _theAircraft.getHTail().getAerodynamics().get_cD0Total());
 			_cD0Map.put(ComponentEnum.VERTICAL_TAIL, _theAircraft.getVTail().getAerodynamics().get_cD0Total());
 			_cD0Map.put(ComponentEnum.ALL, _cD0Total);

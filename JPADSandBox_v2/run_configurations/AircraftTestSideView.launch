@@ -11,6 +11,6 @@
 </mapAttribute>
 <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="sandbox2.vt.aircraft.AircraftTestSideView"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-i in/Template_Aircraft/aircraft.xml -da in/Template_Aircraft/lifting_surfaces/airfoils -df in/Template_Aircraft/fuselages -dls in/Template_Aircraft/lifting_surfaces -de in/Template_Aircraft/engines -dlg in/Template_Aircraft/landing_gears -ds in/Template_Aircraft/systems -dcc in/Template_Aircraft/cabin_configurations -dc in/Template_Aircraft/costs"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-i in/Template_Aircraft/aircraft.xml -da in/Template_Aircraft/lifting_surfaces/airfoils -df in/Template_Aircraft/fuselages -dls in/Template_Aircraft/lifting_surfaces -de in/Template_Aircraft/engines -dn in/Template_Aircraft/nacelles -dlg in/Template_Aircraft/landing_gears -ds in/Template_Aircraft/systems -dcc in/Template_Aircraft/cabin_configurations -dc in/Template_Aircraft/costs"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="JPADSandBox_v2"/>
 </launchConfiguration>

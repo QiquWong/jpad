@@ -9,6 +9,7 @@ import javax.measure.quantity.Mass;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.OperatingConditions;
+import aircraft.components.LandingGears.MountingPosition;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.customdata.CenterOfGravity;
@@ -73,5 +74,8 @@ public interface ILandingGear {
 	public void setYApexConstructionAxes (Amount<Length> yApexConstructionAxes);
 	public Amount<Length> getZApexConstructionAxes();
 	public void setZApexConstructionAxes (Amount<Length> zApexConstructionAxes);
+	
+	public MountingPosition getMountingPosition();
+	public void setMountingPosition(MountingPosition _mountingPosition);
 	
 }

@@ -190,7 +190,7 @@ public class ACAnalysisManager {
 		// Nacelle
 		if(aircraft.getNacelles() != null){
 			aircraft.getNacelles().calculateSurfaceWetted();
-			aircraft.setSWetTotal(aircraft.getNacelles().get_surfaceWetted().getEstimatedValue());
+			aircraft.setSWetTotal(aircraft.getNacelles().getSurfaceWetted().getEstimatedValue());
 		}
 
 		// Fuel tank

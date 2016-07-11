@@ -14,6 +14,7 @@ import org.jscience.physics.amount.Amount;
 import aircraft.components.Aircraft;
 import calculators.costs.CostsCalcUtils;
 import calculators.performance.PerformanceCalcUtils;
+import calculators.performance.ThrustCalc;
 import configuration.MyConfiguration;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;
@@ -89,12 +90,10 @@ public class Costs implements ICosts {
 		__holdPriorToLandTime, 
 		__landingTaxiToStopTime;
 		
-		 
-		
 		public CostsBuilder (String id) {
 			this.__id = id;
 		}
-	
+		
 		public CostsBuilder residualValue (double residualValue){
 			__residualValue = residualValue;
 			return this;
@@ -210,7 +209,6 @@ public class Costs implements ICosts {
 			return this;
 		}
 		
-		
 		public CostsBuilder oilMassCost(double oilMassCost){
 			__oilMassCost = oilMassCost;
 			return this;
@@ -219,9 +217,7 @@ public class Costs implements ICosts {
 		public Costs build() {
 			return new Costs(this);
 		}
-		
 	}
-	
 	
 	// Constructor of Costs class
 	private Costs (CostsBuilder builder) { 
@@ -251,21 +247,18 @@ public class Costs implements ICosts {
 		this._fuelVolumetricCost = builder.__fuelVolumetricCost;
 		this._hourVolumetricFuelConsumption = builder.__hourVolumetricFuelConsumption;
 		this._oilMassCost = builder.__oilMassCost;
-		
 
 	}
 	
 	//===================================================================================================
 	// End of builder pattern
 	//===================================================================================================
-
 	
 	public static Costs importFromXML(String pathToXML){
 	
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
 
 		System.out.println("Reading costs data ...");
-		
 
 		String id = MyXMLReaderUtils
 				.getXMLPropertyByPath(reader.getXmlDoc(), reader.getXpath(),"//@id");

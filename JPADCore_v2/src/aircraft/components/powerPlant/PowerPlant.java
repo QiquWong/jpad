@@ -26,8 +26,6 @@ import standaloneutils.customdata.CenterOfGravity;
 
 public class PowerPlant implements IPowerPlant {
 
-	//---------------------------------------------------------------------------
-	// ALREADY DONE :
 	public  String _id ;
 	private Integer _engineNumber;
 	public List<Engine> _engineList;

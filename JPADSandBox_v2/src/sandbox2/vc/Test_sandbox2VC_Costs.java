@@ -55,6 +55,10 @@ class MyArgumentsAircraft {
 			usage = "engines directory path")
 	private File _enginesDirectory;
 	
+	@Option(name = "-dn", aliases = { "--dir-nacelles" }, required = true,
+			usage = "nacelles directory path")
+	private File _nacellesDirectory;
+	
 	@Option(name = "-dlg", aliases = { "--dir-landing-gears" }, required = true,
 			usage = "landing gears directory path")
 	private File _landingGearsDirectory;
@@ -93,6 +97,10 @@ class MyArgumentsAircraft {
 
 	public File getEnginesDirectory() {
 		return _enginesDirectory;
+	}
+	
+	public File getNacellesDirectory() {
+		return _nacellesDirectory;
 	}
 	
 	public File getLandingGearsDirectory() {
@@ -145,6 +153,9 @@ public class Test_sandbox2VC_Costs {
 			String dirEngines = va.getEnginesDirectory().getCanonicalPath();
 			System.out.println("ENGINES ===> " + dirEngines);
 			
+			String dirNacelles = va.getNacellesDirectory().getCanonicalPath();
+			System.out.println("NACELLES ===> " + dirNacelles);
+			
 			String dirLandingGears = va.getLandingGearsDirectory().getCanonicalPath();
 			System.out.println("LANDING GEARS ===> " + dirLandingGears);
 			
@@ -182,6 +193,7 @@ public class Test_sandbox2VC_Costs {
 					dirLiftingSurfaces,
 					dirFuselages,
 					dirEngines,
+					dirNacelles,
 					dirLandingGears,
 					dirSystems,
 					dirCabinConfiguration,

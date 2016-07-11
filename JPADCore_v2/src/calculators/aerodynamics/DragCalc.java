@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
+
+import aircraft.components.LandingGears;
+import aircraft.components.liftingSurface.LiftingSurface;
+import calculators.performance.LandingCalc;
 import calculators.performance.customdata.DragMap;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.MethodEnum;
@@ -124,6 +128,41 @@ public class DragCalc {
 				- 7e-6*S_wet + 0.0825;
 	}
 
+	/***********************************************************************************************
+	 * The drag coefficient of the undercarriage is the sum of the main an nose gears contributions.
+	 * The DeltaCD0LandingGears is made up of two other contributions:
+	 * DeltaCD0basic and a function of alpha and delta flap.
+	 * 
+	 * --------------------------------------------------------------------------------------
+	 * DeltaCD0LandingGears = f(alpha, deltaFlap)*DeltaCD0basic
+	 * 
+	 * --------------------------------------------------------------------------------------
+	 * DeltaCD0basic = (1.5*sum(S_frontal_tires) + 0.75*sum(S_rear_tires))/(S_wing)
+	 * 
+	 * --------------------------------------------------------------------------------------
+	 * f(alpha, deltaFlap) = {1-(0.04*((CL+DeltaCL0_flap*((1.5*(S/Swf))-1))/(l_uc/cg)}^2
+	 * 
+	 * --------------------------------------------------------------------------------------
+	 * where l_uc is the length of the main gear leg and cg is the mean geometric chord of the wing
+	 * (S/b).
+	 * 
+	 * @see: Torenbeek 1976 pag.570(pdf)
+	 */
+	public double calculateCD0(
+			LiftingSurface wing,
+			LandingGears landingGears,
+			double cL,
+			double deltaCL0flap,
+			double flapSurface
+			) {
+		
+		double CD0 = 0.0;
+		
+		// TODO: IMPLEMENT THE DELTA CD0 CALCULATION
+		
+		return CD0;
+	}
+	
 	/**
 	 * @author Lorenzo Attanasio
 	 * @param cL

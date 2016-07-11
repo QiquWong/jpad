@@ -33,8 +33,8 @@ public class NacelleBalanceManager extends BalanceManager{
 				_theNacelle.getZApexConstructionAxes());
 		
 		_cg.set_xLRFref(_theNacelle.getLength().times(0.4));
-		_cg.set_yLRFref(_theNacelle.getDiameterMean().divide(2));
-		_cg.set_zLRFref(_theNacelle.getDiameterMean().divide(2));
+		_cg.set_yLRFref(_theNacelle.getDiameterMax().divide(2));
+		_cg.set_zLRFref(_theNacelle.getDiameterMax().divide(2));
 	}
 	
 	@Override

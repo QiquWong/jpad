@@ -558,7 +558,7 @@ public class JPADDataWriter {
 					writeOutputNode("Wing_mass", _theAircraft.getWing().getMassEstimated(), weightsAnalysis);
 					writeOutputNode("HTail_mass", _theAircraft.getHTail().getMassEstimated(), weightsAnalysis);
 					writeOutputNode("VTail_mass", _theAircraft.getVTail().getMassEstimated(), weightsAnalysis);
-					writeOutputNode("Nacelles_mass", _theAircraft.getNacelles().get_totalMass(), weightsAnalysis);
+					writeOutputNode("Nacelles_mass", _theAircraft.getNacelles().getTotalMass(), weightsAnalysis);
 					writeOutputNode("Landing_gear_mass", _theAircraft.getLandingGears().getMassEstimated(), weightsAnalysis);
 					writeOutputNode("Structure_mass", _theAircraft.getTheWeights().get_structuralMass(), weightsAnalysis);
 					writeOutputNode("Power_plant_mass", _theAircraft.getPowerPlant().getTotalMass(), weightsAnalysis);
@@ -835,10 +835,10 @@ public class JPADDataWriter {
 		writeInputNode("Zcoordinate", liftingSurface.getZApexConstructionAxes(), equivalent_parameters, true);
 
 		writeInputNode("Planform_surface", liftingSurface.getSurface(), equivalent_parameters, true);
-		writeInputNode("Control_surface_extension", liftingSurface.get_surfaceCS(), equivalent_parameters, true);
+		writeInputNode("Control_surface_extension", liftingSurface.getLiftingSurfaceCreator().getControlSurfaceArea(), equivalent_parameters, true);
 		writeInputNode("aspectRatio", liftingSurface.getAspectRatio(), equivalent_parameters, true);
 		writeInputNode("taperRatio", liftingSurface.getLiftingSurfaceCreator().getTaperRatioEquivalentWing(), equivalent_parameters, true);
-		writeInputNode("Wing_position_in_percent_of_fuselage_height", liftingSurface.get_positionRelativeToAttachment(), equivalent_parameters, true);
+		writeInputNode("Wing_position_in_percent_of_fuselage_height", liftingSurface.getPositionRelativeToAttachment(), equivalent_parameters, true);
 		writeInputNode("kinkSpanStation", liftingSurface.getLiftingSurfaceCreator().getNonDimensionalSpanStationKink(), equivalent_parameters, true);
 		writeInputNode("Thickness_to_chord_ratio_root", liftingSurface.getLiftingSurfaceCreator().getAirfoilRootEquivalentWing().getThicknessToChordRatio(), equivalent_parameters, true);
 		writeInputNode("Thickness_to_chord_ratio_kink", liftingSurface.getLiftingSurfaceCreator().getAirfoilKinkEquivalentWing().getThicknessToChordRatio(), equivalent_parameters, true);
@@ -851,15 +851,15 @@ public class JPADDataWriter {
 		writeInputNode("tipStationTwist", liftingSurface.getLiftingSurfaceCreator().getTwistAtTipEquivalentWing(), equivalent_parameters, true);
 		writeInputNode("Dihedral_inner_panel", liftingSurface.get_dihedralInnerPanel(), equivalent_parameters, true);
 		writeInputNode("Dihedral_outer_panel", liftingSurface.get_dihedralOuterPanel(), equivalent_parameters, true);
-		writeInputNode("Surface_roughness", liftingSurface.getRoughness(), equivalent_parameters, true);
+		writeInputNode("Surface_roughness", liftingSurface.getLiftingSurfaceCreator().getRoughness(), equivalent_parameters, true);
 		writeInputNode("Transition_point_in_percent_of_chord_upper_wing", liftingSurface.get_xTransitionU(), equivalent_parameters, true);
 		writeInputNode("Transition_point_in_percent_of_chord_upper_wing", liftingSurface.get_xTransitionL(), equivalent_parameters, true);
 		writeInputNode("Reference_mass", liftingSurface.getReferenceMass(), equivalent_parameters, true);
-		writeInputNode("Composite_correction_factor", liftingSurface.get_compositeCorretionFactor(), equivalent_parameters, true);
+		writeInputNode("Composite_correction_factor", liftingSurface.getLiftingSurfaceCreator().getCompositeCorrectioFactor(), equivalent_parameters, true);
 		writeInputNode("Mass_correction_factor", liftingSurface.getMassCorrectionFactor(), equivalent_parameters, true);
 
 		// ---OUTPUT DATA-------------------------------------
-		writeOutputNode("sweepLE", liftingSurface.get_sweepLEEquivalent(), equivalent_parameters);
+		writeOutputNode("sweepLE", liftingSurface.getSweepLEEquivalent(false), equivalent_parameters);
 		writeOutputNode("Mean_aerodynamic_chord_MAC", liftingSurface.get_meanAerodChordEq(), equivalent_parameters);
 		writeOutputNode("Root_chord", liftingSurface.get_chordRootEquivalentWing(), equivalent_parameters);
 	}
@@ -1312,9 +1312,9 @@ public class JPADDataWriter {
 		Element analysisNode = doc.createElement("Nacelles_analysis");
 		_analysisInitiator.appendChild(analysisNode);
 
-		for (int i=0; i < nacelles.get_nacellesNumber(); i++) {
-			writeNacelleInput(nacelles.get_nacellesList().get(i), _nacelleInitiator);
-			writeNacelleOutput(nacelles.get_nacellesList().get(i), analysisNode);
+		for (int i=0; i < nacelles.getNacellesNumber(); i++) {
+			writeNacelleInput(nacelles.getNacellesList().get(i), _nacelleInitiator);
+			writeNacelleOutput(nacelles.getNacellesList().get(i), analysisNode);
 		}
 	}
 
@@ -1335,7 +1335,7 @@ public class JPADDataWriter {
 		writeInputNode("Ycoordinate", nacelle.get_Y0(), nacelleParameters, true);
 		writeInputNode("Zcoordinate", nacelle.get_Z0(), nacelleParameters, true);
 		writeInputNode("Lenght", nacelle.getLength(), nacelleParameters, true);
-		writeInputNode("Mean_diameter", nacelle.getDiameterMean(), nacelleParameters, true);
+		writeInputNode("Mean_diameter", nacelle.getDiameterMax(), nacelleParameters, true);
 		writeInputNode("Inlet_diameter", nacelle.get_diameterInlet(), nacelleParameters, true);
 		writeInputNode("Outlet_diameter", nacelle.getDiameterOutlet(), nacelleParameters, true);
 		writeInputNode("Reference_mass", nacelle.getMassReference(), nacelleParameters, true);

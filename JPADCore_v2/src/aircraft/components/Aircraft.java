@@ -30,6 +30,7 @@ import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.LiftingSurface.LiftingSurfaceBuilder;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator;
+import aircraft.components.nacelles.NacelleCreator;
 import aircraft.components.nacelles.Nacelles;
 import aircraft.components.powerPlant.Engine;
 import aircraft.components.powerPlant.PowerPlant;
@@ -132,12 +133,6 @@ public class Aircraft implements IAircraft {
 		
 		private void initialize(AircraftEnum aircraftName, AerodynamicDatabaseReader aeroDatabaseReader, HighLiftDatabaseReader highLiftDatabaseReader) {
 
-			/////////////////////////////////////////////////////////////////////////////////////////
-			//																					   //
-			// TODO : SET THE CORRECT X,Y,Z, APEX FOR EACH COMPONENT OF EACH AIRCRAFT			   // 
-			//																					   //
-			/////////////////////////////////////////////////////////////////////////////////////////
-			
 			switch(aircraftName) {
 			case ATR72:
 				__id = "ATR-72";
@@ -149,7 +144,7 @@ public class Aircraft implements IAircraft {
 				__theWeights = new ACWeightsManager();
 				__theAerodynamics = new ACAerodynamicsManager();
 				__thePerformance = new ACPerformanceManager();
-				// __theCosts = new Costs(this); TODO: WAIT UNTIL COSTS IS NOT PROVIDED WITH BUILDER PATTERN
+				__theCosts = new Costs.CostsBuilder("Costs").build(); 
 				
 				__componentsList.clear();
 				
@@ -178,11 +173,7 @@ public class Aircraft implements IAircraft {
 						
 				createPowerPlant(aircraftName);
 				
-				// FIXME : X,Y,Z APEX WILL BE DEFINED IN THE RELATED CLASS WHEN THE BUILDER PATTERN WILL BE IMPLEMENTED
 				createNacelles(aircraftName);
-//				__theNacelles.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-//				__theNacelles.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-//				__theNacelles.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				
 				createFuelTank();
 				__theFuelTank.setXApexConstructionAxes(__theWing.getXApexConstructionAxes()
@@ -218,7 +209,7 @@ public class Aircraft implements IAircraft {
 				__theWeights = new ACWeightsManager();
 				__theAerodynamics = new ACAerodynamicsManager();
 				__thePerformance = new ACPerformanceManager();
-				// __theCosts = new Costs(this); TODO: WAIT UNTIL COSTS IS NOT PROVIDED WITH BUILDER PATTERN
+				__theCosts = new Costs.CostsBuilder("Costs").build();
 				
 				__componentsList.clear();
 				
@@ -245,17 +236,9 @@ public class Aircraft implements IAircraft {
 				__theVTail.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theVTail.setRiggingAngle(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 				
-				// FIXME : X,Y,Z APEX WILL BE DEFINED IN THE RELATED CLASS WHEN THE BUILDER PATTERN WILL BE IMPLEMENTED
 				createPowerPlant(aircraftName);
-//				__thePowerPlant.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-//				__thePowerPlant.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-//				__thePowerPlant.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				
-				// FIXME : X,Y,Z APEX WILL BE DEFINED IN THE RELATED CLASS WHEN THE BUILDER PATTERN WILL BE IMPLEMENTED
 				createNacelles(aircraftName);
-//				__theNacelles.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-//				__theNacelles.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-//				__theNacelles.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				
 				createFuelTank();
 				__theFuelTank.setXApexConstructionAxes(__theWing.getXApexConstructionAxes()
@@ -291,7 +274,7 @@ public class Aircraft implements IAircraft {
 				__theWeights = new ACWeightsManager();
 				__theAerodynamics = new ACAerodynamicsManager();
 				__thePerformance = new ACPerformanceManager();
-				// __theCosts = new Costs(this); TODO: WAIT UNTIL COSTS IS NOT PROVIDED WITH BUILDER PATTERN
+				__theCosts = new Costs.CostsBuilder("Costs").build(); 
 				
 				__componentsList.clear();
 				
@@ -318,17 +301,9 @@ public class Aircraft implements IAircraft {
 				__theVTail.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theVTail.setRiggingAngle(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 				
-				// FIXME : X,Y,Z APEX WILL BE DEFINED IN THE RELATED CLASS WHEN THE BUILDER PATTERN WILL BE IMPLEMENTED
 				createPowerPlant(aircraftName);
-//				__thePowerPlant.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-//				__thePowerPlant.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-//				__thePowerPlant.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				
-				// FIXME : X,Y,Z APEX WILL BE DEFINED IN THE RELATED CLASS WHEN THE BUILDER PATTERN WILL BE IMPLEMENTED
 				createNacelles(aircraftName);
-//				__theNacelles.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-//				__theNacelles.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-//				__theNacelles.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				
 				createFuelTank();
 				__theFuelTank.setXApexConstructionAxes(__theWing.getXApexConstructionAxes()
@@ -367,8 +342,6 @@ public class Aircraft implements IAircraft {
 					.build();
 			
 			__theFuselage.getFuselageCreator().calculateGeometry();
-//			__theFuselage.getFuselageCreator().checkGeometry();
-			
 			__componentsList.add(__theFuselage);
 		}
 		
@@ -386,7 +359,6 @@ public class Aircraft implements IAircraft {
 					.build();
 			
 			__theWing.populateAirfoilList(aeroDatabaseReader, Boolean.FALSE);
-			
 			__componentsList.add(__theWing);
 		}
 		
@@ -404,7 +376,6 @@ public class Aircraft implements IAircraft {
 					.build();
 			
 			__theHTail.populateAirfoilList(aeroDatabaseReader, Boolean.FALSE);
-			
 			__componentsList.add(__theHTail);
 		}
 		
@@ -422,7 +393,6 @@ public class Aircraft implements IAircraft {
 					.build();
 			
 			__theVTail.populateAirfoilList(aeroDatabaseReader, Boolean.FALSE);
-			
 			__componentsList.add(__theVTail);
 		}
 		
@@ -441,7 +411,6 @@ public class Aircraft implements IAircraft {
 					.build();
 			
 			__theCanard.populateAirfoilList(aeroDatabaseReader, Boolean.FALSE);
-			
 			__componentsList.add(__theCanard);
 		}
 		
@@ -451,7 +420,8 @@ public class Aircraft implements IAircraft {
 		}
 		
 		private void createNacelles(AircraftEnum aircraftName) {
-			// TODO
+			__theNacelles = new Nacelles.NacellesBuilder("Nacelles", aircraftName).build();
+			__componentsList.add(__theNacelles);
 		}
 		
 		private void createFuelTank() {
@@ -924,20 +894,13 @@ public class Aircraft implements IAircraft {
 		if(this._theCanard != null)
 			this._sWetTotal = this._sWetTotal.plus(this._theCanard.getLiftingSurfaceCreator().getSurfaceWetted());
 			
-		/////////////////////////////////////////////////////////////////
-		//													           //
-		// TODO: ADD SURFECE WETTED OF NACELLES, LANDING GEARS, ECC... //
-		//															   //
-		/////////////////////////////////////////////////////////////////
+		if(this._theNacelles != null)
+			this._sWetTotal = this._sWetTotal.plus(this._theNacelles.getSurfaceWetted());
 		
 		return this._sWetTotal;
 		
 	}
 	
-	///////////////////////////////////////////////////////////////////////////////
-	// TODO : THE RESULTS OF THIS CALCULATION REQUIRES THE BALANCE ANALYSIS SO   //
-	//		  THEY MUST BE ADDED TO THE toString METHOD OF THE BALANCE ANALYSIS. //
-	///////////////////////////////////////////////////////////////////////////////
 	public void calculateArms(LiftingSurface theLiftingSurface){
 		
 		if(theLiftingSurface.getType() == ComponentEnum.WING) {
@@ -1055,6 +1018,7 @@ public class Aircraft implements IAircraft {
 									      String liftingSurfacesDir,
 									      String fuselagesDir,
 									      String engineDir,
+									      String nacelleDir,
 									      String landingGearsDir,
 									      String systemsDir,
 									      String cabinConfigurationDir,
@@ -1063,13 +1027,6 @@ public class Aircraft implements IAircraft {
 									      AerodynamicDatabaseReader aeroDatabaseReader,
 									      HighLiftDatabaseReader highLiftDatabaseReader) {
 
-		/////////////////////////////////////////////////////////////
-		//														   //
-		//	TODO: add other directories in input when all 		   //
-		// 		  the components will be available			       //
-		//														   //
-		/////////////////////////////////////////////////////////////
-		
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
 
 		System.out.println("Reading aircraft data from file ...");
@@ -1349,7 +1306,74 @@ public class Aircraft implements IAircraft {
 		
 		//---------------------------------------------------------------------------------
 		// NACELLES
-		// TODO!!
+		List<NacelleCreator> nacelleList = new ArrayList<NacelleCreator>();
+		
+		NodeList nodelistNacelle = MyXMLReaderUtils
+				.getXMLNodeListByPath(reader.getXmlDoc(), "//nacelles/nacelle");
+
+		List<String> xApexNacellesListProperties = reader.getXMLPropertiesByPath("//nacelle/position/x");
+		List<String> yApexNacellesListProperties = reader.getXMLPropertiesByPath("//nacelle/position/y");
+		List<String> zApexNacellesListProperties = reader.getXMLPropertiesByPath("//nacelle/position/z");		
+		List<String> mountingPointNacellesListProperties = reader.getXMLPropertiesByPath("//nacelle/mounting_point");
+
+		List<Amount<Length>> xApexNacellesList = new ArrayList<>();
+		List<Amount<Length>> yApexNacellesList = new ArrayList<>();
+		List<Amount<Length>> zApexNacellesList = new ArrayList<>();
+		List<NacelleCreator.MountingPosition> mountingPointNacellesList = new ArrayList<>();
+		
+		for(int i=0; i<mountingPointNacellesListProperties.size(); i++) {
+			if(mountingPointNacellesListProperties.get(i).equalsIgnoreCase("WING"))
+				mountingPointNacellesList.add(NacelleCreator.MountingPosition.WING);
+			else if(mountingPointNacellesListProperties.get(i).equalsIgnoreCase("FUSELAGE"))
+				mountingPointNacellesList.add(NacelleCreator.MountingPosition.FUSELAGE);
+			else if(mountingPointNacellesListProperties.get(i).equalsIgnoreCase("UNDERCARRIAGE_HOUSING"))
+				mountingPointNacellesList.add(NacelleCreator.MountingPosition.UNDERCARRIAGE_HOUSING);
+			else {
+				System.err.println("INVALID NACELLE MOUNTING POSITION !!! ");
+				return null;
+			}
+			
+			xApexNacellesList.add(
+					Amount.valueOf(
+							Double.valueOf(
+									xApexNacellesListProperties.get(i)
+									),
+							SI.METER)
+					);
+			yApexNacellesList.add(
+					Amount.valueOf(
+							Double.valueOf(
+									yApexNacellesListProperties.get(i)
+									),
+							SI.METER)
+					);
+			zApexNacellesList.add(
+					Amount.valueOf(
+							Double.valueOf(
+									zApexNacellesListProperties.get(i)
+									),
+							SI.METER)
+					);
+		}
+		
+		System.out.println("Nacelles found: " + nodelistNacelle.getLength());
+		for (int i = 0; i < nodelistNacelle.getLength(); i++) {
+			Node nodeNacelle  = nodelistNacelle.item(i); // .getNodeValue();
+			Element elementNacelle = (Element) nodeNacelle;
+			String nacelleFileName = elementNacelle.getAttribute("file");
+			System.out.println("[" + i + "]\nNacelle file: " + elementNacelle.getAttribute("file"));
+			
+			String nacellePath = nacelleDir + File.separator + nacelleFileName;
+			nacelleList.add(NacelleCreator.importFromXML(nacellePath, engineDir));
+			
+			nacelleList.get(i).setXApexConstructionAxes(xApexNacellesList.get(i));
+			nacelleList.get(i).setYApexConstructionAxes(yApexNacellesList.get(i));
+			nacelleList.get(i).setZApexConstructionAxes(zApexNacellesList.get(i));
+			nacelleList.get(i).setMountingPosition(mountingPointNacellesList.get(i));
+			
+		}
+
+		Nacelles theNacelles = new Nacelles.NacellesBuilder("MyNacelle", nacelleList).build();
 		
 		//---------------------------------------------------------------------------------
 		// LANDING GEARS
@@ -1411,7 +1435,6 @@ public class Aircraft implements IAircraft {
 		
 		//---------------------------------------------------------------------------------
 		Aircraft theAircraft = new AircraftBuilder(id, aeroDatabaseReader, highLiftDatabaseReader)
-				// TODO: ADD ALL THE COMPONENTS AND THEIR POSITIONS ...
 				.name(id)
 				.aircraftType(type)
 				.fuselage(theFuselage)
@@ -1447,6 +1470,7 @@ public class Aircraft implements IAircraft {
 				.yApexFuelTank(theWing.getYApexConstructionAxes())
 				.zApexFuelTank(theWing.getZApexConstructionAxes())
 				.powerPlant(thePowerPlant)
+				.nacelles(theNacelles)
 				.landingGears(theLandingGears)
 				.xApexLandingGears(xApexLandingGears)
 				.yApexLandingGears(yApexLandingGears)
@@ -1500,17 +1524,14 @@ public class Aircraft implements IAircraft {
 		if(_thePowerPlant != null)
 			sb.append(_thePowerPlant.toString());
 		
+		if(_theNacelles != null)
+			sb.append(_theNacelles.toString());
+		
 		if(_theLandingGears != null)
 			sb.append(_theLandingGears.toString());
 		
 		if(_theSystems != null)
 			sb.append(_theSystems.toString());
-		
-		////////////////////////////////////////////////////////////////
-		//															  //
-		//				TODO: ADD OTHER toString METHODS		      //
-		//															  //
-		////////////////////////////////////////////////////////////////
 		
 		return sb.toString();
 		

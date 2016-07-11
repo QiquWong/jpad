@@ -19,6 +19,10 @@ public interface INacelleCreator {
 	public void estimateDimensions (Engine theEngine);
 	public Double calculateFormFactor();
 	
+	public void initializeWeights();
+	public void initializeAerodynamics();
+	public void initializeBalance();
+	
 	public Amount<Length> getLength();
 	public void setLength(Amount<Length> _lenght);
 
@@ -28,7 +32,7 @@ public interface INacelleCreator {
 	public Amount<Length> getDiameterInlet();
 	public void setDiameterInlet(Amount<Length> _diameterInlet);
 	
-	public Amount<Length> getDiameterMean();
+	public Amount<Length> getDiameterMax();
 	public void setDiameterMean(Amount<Length> _diameter);
 
 	public Amount<Length> getDiameterOutlet();

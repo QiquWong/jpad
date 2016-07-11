@@ -77,13 +77,14 @@ public class ACBalanceManager extends ACCalculatorManager {
 
 		aircraft.getFuselage().calculateCG(aircraft, conditions);
 
-		aircraft.getWing().calculateCG(aircraft, conditions);
-		aircraft.getHTail().calculateCG(aircraft, conditions);
-		aircraft.getVTail().calculateCG(aircraft, conditions);
+		// FIXME : METHODS MAP --> LIFTING SURFACE REQUIRES A METHOD FROM MethodEnum
+		aircraft.getWing().calculateCG(methodsMap, ComponentEnum.WING);
+		aircraft.getHTail().calculateCG(methodsMap, ComponentEnum.HORIZONTAL_TAIL);
+		aircraft.getVTail().calculateCG(methodsMap, ComponentEnum.VERTICAL_TAIL);
 
 		aircraft.getNacelles().calculateCG();
 
-		aircraft.getFuelTank().calculateCG(aircraft, conditions);
+		aircraft.getFuelTank().calculateCG();
 
 		aircraft.getLandingGears().calculateCG(aircraft, conditions);
 
@@ -115,7 +116,7 @@ public class ACBalanceManager extends ACCalculatorManager {
 		_cgList.add(aircraft.getHTail().getCG());
 		_cgList.add(aircraft.getVTail().getCG());
 		_cgList.add(aircraft.getLandingGears().getCg());
-		_cgList.addAll(aircraft.getNacelles().get_cgList());
+		_cgList.addAll(aircraft.getNacelles().getCGList());
 		
 		System.out.println("\n \nCG COMPONENTS LOCATION IN BRF");
 		System.out.println("fuselage --> " + _cgList.get(0).get_xBRF());
@@ -123,7 +124,7 @@ public class ACBalanceManager extends ACCalculatorManager {
 		System.out.println("HTail --> " + _cgList.get(2).get_xBRF());
 		System.out.println("VTail --> " + _cgList.get(3).get_xBRF());
 		System.out.println("Landing gear --> " + _cgList.get(4).get_xBRF());
-		for(int i=0 ;  i<aircraft.getNacelles().get_cgList().size() ; i++){
+		for(int i=0 ;  i<aircraft.getNacelles().getCGList().size() ; i++){
 		System.out.println("Nacelle  "+  i + " --> " + _cgList.get(i+5).get_xBRF());
 		}
 
@@ -144,8 +145,8 @@ public class ACBalanceManager extends ACCalculatorManager {
 				Amount.valueOf(prod/sum, SI.METER));
 
 		_cgStructure.calculateCGinMAC(
-				aircraft.getWing().get_xLEMacActualBRF(), 
-				aircraft.getWing().get_xLEMacActualBRF(), 
+				aircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX(), 
+				aircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX(), 
 				Amount.valueOf(0., SI.METER), 
 				aircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord());
 
@@ -170,8 +171,8 @@ public class ACBalanceManager extends ACCalculatorManager {
 										, SI.METER));
 
 		get_cgStructureAndPower().calculateCGinMAC(
-				aircraft.getWing().get_xLEMacActualBRF(), 
-				aircraft.getWing().get_xLEMacActualBRF(), 
+				aircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX(), 
+				aircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX(), 
 				Amount.valueOf(0., SI.METER), 
 				aircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord());
 
@@ -186,8 +187,8 @@ public class ACBalanceManager extends ACCalculatorManager {
 						, SI.METER));
 
 		get_cgMZFM().calculateCGinMAC(
-				aircraft.getWing().get_xLEMacActualBRF(), 
-				aircraft.getWing().get_xLEMacActualBRF(), 
+				aircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX(), 
+				aircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX(), 
 				Amount.valueOf(0., SI.METER), 
 				aircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord());
 
@@ -203,8 +204,8 @@ public class ACBalanceManager extends ACCalculatorManager {
 						SI.METER));
 
 		_cgMTOM.calculateCGinMAC(
-				aircraft.getWing().get_xLEMacActualBRF(), 
-				aircraft.getWing().get_xLEMacActualBRF(), 
+				aircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX(), 
+				aircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX(), 
 				Amount.valueOf(0., SI.METER), 
 				aircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord());
 

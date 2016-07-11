@@ -188,7 +188,7 @@ public class NacelleCreator implements INacelleCreator {
 				__kInlet = 0.857;
 				__kOutlet = 0.143;
 				__kLength = 0.4;
-				__kDiameterOutlet = 0.5;
+				__kDiameterOutlet = 1.5;
 				__roughness = Amount.valueOf(0.405 * Math.pow(10,-5), SI.METRE);
 				__massReference = Amount.valueOf(409.4, SI.KILOGRAM);
 				
@@ -471,17 +471,20 @@ public class NacelleCreator implements INacelleCreator {
 		_surfaceWetted = _length.times(_diameterMax.times(Math.PI)).to(SI.SQUARE_METRE); 
 	}
 
-	private void initializeWeights() {
+	@Override
+	public void initializeWeights() {
 		if (_theWeights == null) 
 			_theWeights = new NacelleWeightsManager(this);
 	}
 
-	private void initializeAerodynamics() {
+	@Override
+	public void initializeAerodynamics() {
 		if (_theAerodynamics == null) 
 			_theAerodynamics = new NacelleAerodynamicsManager(_theAircraft, this, _theOperatingConditions);
 	}
 	
-	private void initializeBalance() {
+	@Override
+	public void initializeBalance() {
 		if (_theBalance == null)
 			_theBalance = new NacelleBalanceManager(this);
 	}
@@ -673,7 +676,7 @@ public class NacelleCreator implements INacelleCreator {
 	}
 
 	@Override
-	public Amount<Length> getDiameterMean() {
+	public Amount<Length> getDiameterMax() {
 		return _diameterMax;
 	}
 

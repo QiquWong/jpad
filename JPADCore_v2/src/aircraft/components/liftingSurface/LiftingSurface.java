@@ -276,13 +276,13 @@ public class LiftingSurface implements ILiftingSurface {
 
 						try {
 							R = _mass.getEstimatedValue() + aircraft.getFuelTank().getFuelMass().getEstimatedValue() +
-									((2*(aircraft.getNacelles().get_totalMass().getEstimatedValue() + 
+									((2*(aircraft.getNacelles().getTotalMass().getEstimatedValue() + 
 											aircraft.getPowerPlant().getEngineList().get(0).getDryMassPublicDomain().getEstimatedValue())*
-											aircraft.getNacelles().get_distanceBetweenInboardNacellesY())/
+											aircraft.getNacelles().getDistanceBetweenInboardNacellesY().getEstimatedValue())/
 											(0.4*this.getSpan().getEstimatedValue())) + 
-									((2*(aircraft.getNacelles().get_totalMass().getEstimatedValue() + 
+									((2*(aircraft.getNacelles().getTotalMass().getEstimatedValue() + 
 											aircraft.getPowerPlant().getEngineList().get(0).getDryMassPublicDomain().getEstimatedValue())*
-											aircraft.getNacelles().get_distanceBetweenOutboardNacellesY())/
+											aircraft.getNacelles().getDistanceBetweenOutboardNacellesY().getEstimatedValue())/
 											(0.4*this.getSpan().getEstimatedValue()));
 						} catch(NullPointerException e) {R = 0.;}
 

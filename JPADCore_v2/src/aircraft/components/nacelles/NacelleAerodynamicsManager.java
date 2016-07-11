@@ -12,7 +12,6 @@ import aircraft.components.Aircraft;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.DragCalc;
 import configuration.enumerations.MethodEnum;
-import writers.JPADStaticWriteUtils;
 
 public class NacelleAerodynamicsManager extends AerodynamicsManager{
 
@@ -89,7 +88,7 @@ public class NacelleAerodynamicsManager extends AerodynamicsManager{
 				MethodEnum.MATLAB, 
 				_cd0Parasite, _wingSurface.getEstimatedValue(),
 				_theNacelle.getDiameterOutlet().getEstimatedValue(), 
-				_theNacelle.getDiameterMean().getEstimatedValue());
+				_theNacelle.getDiameterMax().getEstimatedValue());
 
 		return _cd0Base;
 	}

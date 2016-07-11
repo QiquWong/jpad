@@ -60,6 +60,24 @@
                 <mounting_point>WING</mounting_point>
             </engine>
 		</power_plant> 
+		<nacelles>
+            <nacelle file="nacelle.xml">
+                <position>
+                    <x unit="m">11.0</x>
+                    <y unit="m">5.0</y>
+                    <z unit="m">-1.1</z>
+                </position>
+                <mounting_point>WING</mounting_point>
+            </nacelle>
+            <nacelle file="nacelle.xml">
+                <position>
+                    <x unit="m">11.0</x>
+                    <y unit="m">-5.0</y>
+                    <z unit="m">-1.1</z>
+                </position>
+                <mounting_point>WING</mounting_point>
+            </nacelle>
+		</nacelles> 
 		<landing_gears file="landing_gear.xml">
 			<position>
                 <x unit="m">11.5</x>
