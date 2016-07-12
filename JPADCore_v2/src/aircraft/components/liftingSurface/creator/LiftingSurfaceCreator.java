@@ -56,6 +56,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 	private Double _compositeCorrectioFactor;
 	
 	private Amount<Length> _roughness;
+	private Amount<Angle> _dihedralMean = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 	
 	private Amount<Area> _surfaceWettedExposed;
 	private Amount<Area> _controlSurfaceArea = Amount.valueOf(0.0, SI.SQUARE_METRE);
@@ -3111,5 +3112,19 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	public void setControlSurfaceArea(Amount<Area> _controlSurfaceArea) {
 		this._controlSurfaceArea = _controlSurfaceArea;
+	}
+
+	public Amount<Angle> getDihedralMean() {
+		
+		for(int i=0; i<_panels.size(); i++)
+			this._dihedralMean = this._dihedralMean.plus(this._panels.get(i).getDihedral());
+		
+		_dihedralMean = _dihedralMean.divide(_panels.size());
+		
+		return _dihedralMean;
+	}
+
+	public void setDihedralMean(Amount<Angle> _dihedralMean) {
+		this._dihedralMean = _dihedralMean;
 	}
 }

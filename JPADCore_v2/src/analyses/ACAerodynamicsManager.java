@@ -21,6 +21,7 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.Aircraft;
+import aircraft.components.liftingSurface.LiftingSurface;
 import analyses.liftingsurface.LSAerodynamicsManager;
 import analyses.liftingsurface.LSAerodynamicsManager.CalcAlpha0L;
 import analyses.liftingsurface.LSAerodynamicsManager.CalcCLAtAlpha;
@@ -85,7 +86,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 	private double 
 		lambdaW, arW, bW, 
 		mach, phi25, tc, 
-		dihedral, wingletHeight, _e, f,
+		dihedral, _e, f,
 		cLAlphaW, cLAlphaHT, macW,
 		sW, sHT, depsdalpha = 0.,
 		dzH, dxH, niHT, etaHT,
@@ -162,20 +163,15 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		arW = aircraft.getWing().getAspectRatio();
 		bW = aircraft.getWing().getSpan().getEstimatedValue();
 		phi25 = aircraft.getWing().getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().doubleValue(SI.RADIAN);
-		tc = aircraft.getWing().getGeometry().getCalculateThickness().getMethodsMap().get(MethodEnum.INTEGRAL_MEAN);
-		dihedral = aircraft.getWing().get_dihedralMean().getEstimatedValue();
+		tc = aircraft.getWing().getThicknessMean();
+		dihedral = aircraft.getWing().getLiftingSurfaceCreator().getDihedralMean().getEstimatedValue();
 
-		// TODO: remove this
-		aircraft.getWing().setHasWinglet(true);
-		aircraft.getWing().set_wingletHeight(Amount.valueOf(0.6, SI.METER));
-		wingletHeight = aircraft.getWing().get_wingletHeight().getEstimatedValue();
-
-		macW = aircraft.getWing().get_meanAerodChordActual().getEstimatedValue();
-		sW = aircraft.getWing().get_surface().getEstimatedValue();
-		sHT = aircraft.getHTail().get_surface().getEstimatedValue();
-		dzH = aircraft.getHTail().getZ0().minus(aircraft.getWing().getZ0()).getEstimatedValue();
-		dxH = aircraft.getHTail().get_ACw_ACdistance().getEstimatedValue();
-		niHT = aircraft.getHTail().get_volumetricRatio();
+		macW = aircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue();
+		sW = aircraft.getWing().getSurface().getEstimatedValue();
+		sHT = aircraft.getHTail().getSurface().getEstimatedValue();
+		dzH = aircraft.getHTail().getZApexConstructionAxes().minus(aircraft.getWing().getZApexConstructionAxes()).getEstimatedValue();
+		dxH = aircraft.getHTail().getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance().getEstimatedValue();
+		niHT = aircraft.getHTail().getLiftingSurfaceCreator().getVolumetricRatio();
 
 		mach = _theOperatingConditions.get_machCurrent();
 		_machDragPolar.add(mach - 0.1);
@@ -184,12 +180,12 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 
 		try {
 			etaHT = aircraft.getHTail().getAerodynamics().get_dynamicPressureRatio();
-			cLAlphaW = aircraft.getWing().getAerodynamics().getCalculateCLAlpha().getMethodsMap().get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC);
-			cLAlphaHT = aircraft.getHTail().getAerodynamics().getCalculateCLAlpha().getMethodsMap().get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC);
+			cLAlphaW = aircraft.getWing().getAerodynamics().getCalculateCLAlpha().andersonSweptCompressibleSubsonic();
+			cLAlphaHT = aircraft.getHTail().getAerodynamics().getCalculateCLAlpha().andersonSweptCompressibleSubsonic();
 
 			xacWPercentMAC = aircraft.getWing().getAerodynamics()
 					.getCalculateXAC().get_methodMapMRF().get(MethodEnum.DEYOUNG_HARPER).getEstimatedValue()
-					/ aircraft.getWing().get_meanAerodChordActual().getEstimatedValue();
+					/ aircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue();
 			xacWBRF = aircraft.getWing().getAerodynamics()
 					.getCalculateXAC().get_methodMapLRF().get(MethodEnum.DEYOUNG_HARPER).getEstimatedValue()
 					+ aircraft.getWing().getXApexConstructionAxes().getEstimatedValue();
@@ -273,7 +269,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 	}
 
 	public double calculateCD0Total() {
-		_kExcr = DragCalc.calculateKExcrescences(_theAircraft.getSWetTotal()); 
+		_kExcr = DragCalc.calculateKExcrescences(_theAircraft.getSWetTotal().doubleValue(SI.SQUARE_METRE)); 
 
 		calculateCD0Parasite();
 
@@ -413,12 +409,8 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 
 			double kWL = 2.83;
 
-			if (_theAircraft.getWing().isHasWinglet() == true) {
-				_e = _e*Math.pow(1+(2/kWL)*(wingletHeight/bW),2);
-			}
-
 			double keGamma = Math.pow(
-					Math.cos(_theAircraft.getWing().get_dihedralMean().to(SI.RADIAN).getEstimatedValue()),
+					Math.cos(_theAircraft.getWing().getLiftingSurfaceCreator().getDihedralMean().to(SI.RADIAN).getEstimatedValue()),
 					-2);
 			//			double keGamma = Math.pow((1 + (1/kWL)*(1/Math.cos(_dihedral) - 1)),2);
 			double eWingletGamma = _e*keGamma;
@@ -646,8 +638,12 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		Amount<Angle> alphaActual ;
 		alphaArrayActual.linspace(alphaMin.getEstimatedValue(), alphaMax.getEstimatedValue(), nValue);
 		LSAerodynamicsManager  theLSAnalysis = _theAircraft.getWing().getAerodynamics();
-		LSAerodynamicsManager.MeanAirfoil theMeanAirfoilCalculator = theLSAnalysis.new MeanAirfoil();
-		Airfoil meanAirfoil = theMeanAirfoilCalculator.calculateMeanAirfoil(_theAircraft.getWing());
+		
+		Airfoil meanAirfoil = new Airfoil(
+				LiftingSurface.calculateMeanAirfoil(this._theAircraft.getWing()),
+				this._theAircraft.getWing().getAerodynamicDatabaseReader()
+				);
+
 		alphaActual = Amount.valueOf(alphaArrayActual.get(0), SI.RADIAN); 
 		cLActualArray[0]= calculateCLAtAlphaWingBody(alphaActual, meanAirfoil, true, theCondition);
 		for (int i=1; i<alphaArrayActual.size(); i++){

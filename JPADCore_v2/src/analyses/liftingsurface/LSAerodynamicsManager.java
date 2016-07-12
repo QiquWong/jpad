@@ -218,32 +218,11 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	public double cLAlphaZero;
 	public double alphaZeroLiftWingClean;
 
-
 	static double rootChord;
 	static double kinkChord;
 	static double tipChord;
 	static double dimensionalKinkStation;
 	static double dimensionalOverKink;
-	private static double intermediateClMax;
-	private static double intermediateEta;
-	private static double intermediateTwist;
-	private double intermediateChord;
-	private double intermediateDistanceAC;
-	private double intermediateXac;
-	private static double intermediateAlphaZL;
-	private static double intermediateAlphaStar;
-	private static double intermediateClStar;
-	private static double intermediateClMaxSweep;
-	private static double intermediateClatMinCD;
-	private static double intermediateCdMin;
-	private static double intermediateCm;
-	private static double intermediateCmAlphaLE;
-	private static double intermediateAerodynamicCentre;
-	private static double intermediateMaxThickness;
-	private static double intermediateReynolds;
-	private static double intermediatekFactorPolar;
-	private static double intermediateClAlpha;
-	private static double intermediateAlphaStall;
 	private double[] _yStationsIntegral;
 	public double cLStarWing;
 	private double alphaZeroLiftDeflection;
@@ -354,22 +333,22 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				ls.getSpan().doubleValue(SI.METER), 
 				ls.getChordRoot().getEstimatedValue(), 
 				ls.getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(), 
-				ls.get_dihedralMean().doubleValue(SI.RADIAN), 
+				ls.getLiftingSurfaceCreator().getDihedralMean().doubleValue(SI.RADIAN), 
 				ls.getAspectRatio(), 
 				ls.getLiftingSurfaceCreator().getTaperRatioEquivalentWing(), 
 				ls.getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN), 
 				ls.getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().doubleValue(SI.RADIAN), 
 				//ls.get_maxThicknessMean(),
-				ls.getLiftingSurfaceCreator().getYBreakPoints().toArray(),
-				ls.getLiftingSurfaceCreator().getChordsBreakPoints().toArray(),
-				ls.getLiftingSurfaceCreator().getXLEBreakPoints().toArray(),
-				ls.getLiftingSurfaceCreator().getTwistsBreakPoints().toArray(), 
-				ls.getLiftingSurfaceCreator().getDihedralsBreakPoints().toArray(),
-				ls.getAlpha0VsY().toArray(),
-				ls.getLiftingSurfaceCreator().getEtaBreakPoints().toArray());
+				MyArrayUtils.convertListOfAmountTodoubleArray(ls.getLiftingSurfaceCreator().getYBreakPoints()),
+				MyArrayUtils.convertListOfAmountTodoubleArray(ls.getLiftingSurfaceCreator().getChordsBreakPoints()),
+				MyArrayUtils.convertListOfAmountTodoubleArray(ls.getLiftingSurfaceCreator().getXLEBreakPoints()),
+				MyArrayUtils.convertListOfAmountTodoubleArray(ls.getLiftingSurfaceCreator().getTwistsBreakPoints()), 
+				MyArrayUtils.convertListOfAmountTodoubleArray(ls.getLiftingSurfaceCreator().getDihedralsBreakPoints()),
+				MyArrayUtils.convertListOfAmountTodoubleArray(ls.getAlpha0VsY()),
+				MyArrayUtils.convertToDoublePrimitive(ls.getLiftingSurfaceCreator().getEtaBreakPoints())
+				);
 
 	} 
-
 
 	public void initializeOperatingConditions(double altitude, double mach, double alpha) {
 		this.machCurrent = mach;
@@ -938,7 +917,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 			for (int i=0 ; i< _nPointsSemispanWise ; i++){
 				intermediateAirfoil = new Airfoil(
-						theWing.calculateAirfoilAtY(theWing, _yStations[i]),
+						LiftingSurface.calculateAirfoilAtY(theWing, _yStations[i]),
 						theWing.getAerodynamicDatabaseReader()
 						);
 				clLocalAirfoil[i] = intermediateAirfoil.getAerodynamics().calculateClAtAlpha(alphaDouble);
@@ -1073,7 +1052,6 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		}
 
 	}
-
 
 	/** 
 	 * Evaluate the AC x coordinate relative to MAC

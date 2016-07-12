@@ -60,7 +60,6 @@ public class ACWeightsManager extends ACCalculatorManager {
 		_type = AnalysisTypeEnum.WEIGHTS;
 		_name = "Weights";
 		
-
 	}
 
 	public void calculateDependentVariables(Aircraft aircraft) {
@@ -88,7 +87,6 @@ public class ACWeightsManager extends ACCalculatorManager {
 		_TFOW = _TFOM.times(AtmosphereCalc.g0).to(SI.NEWTON);
 
 	}
-
 
 	public void calculate() {
 

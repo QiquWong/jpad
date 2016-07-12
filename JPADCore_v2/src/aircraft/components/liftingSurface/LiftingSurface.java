@@ -162,8 +162,13 @@ public class LiftingSurface implements ILiftingSurface {
 		this._yCGMap = builder.__yCGMap;
 		this._methodsMap = builder.__methodsMap;
 		this._massMap = builder.__massMap;
+		
 	}
 
+	public void initializeAerodynamics(OperatingConditions conditions, Aircraft aircraft) {
+		_theAerodynamics = new LSAerodynamicsManager(conditions, this, aircraft);
+	}
+	
 	@Override
 	public double calculateThicknessMean() {
 		Airfoil meanAirfoil = new Airfoil(
