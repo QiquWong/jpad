@@ -171,7 +171,7 @@ public class PowerPlant implements IPowerPlant {
 	// End of builder pattern 
 	//============================================================================================
 
-	private void calculateDerivedVariables() {
+	public void calculateDerivedVariables() {
 
 		_engineType = this._engineList.get(0).getEngineType();
 		_mountingPosition = this._engineList.get(0).getMountingPosition();

@@ -189,12 +189,12 @@ public class ACAnalysisManager {
 		// Nacelle
 		if(aircraft.getNacelles() != null){
 			aircraft.getNacelles().calculateSurfaceWetted();
-			aircraft.setSWetTotal(aircraft.getNacelles().getSurfaceWetted().getEstimatedValue());
+			aircraft.setSWetTotal(aircraft.getNacelles().getSurfaceWetted());
 		}
 
 		// Fuel tank
 		if(aircraft.getFuelTank() != null){
-			aircraft.getFuelTank().calculateGeometry(aircraft);
+			aircraft.getFuelTank().calculateGeometry(aircraft.getWing());
 		}
 
 		// Evaluate thrust output
@@ -247,8 +247,8 @@ public class ACAnalysisManager {
 		aircraft.getTheBalance().calculateBalance(aircraft, _theOperatingConditions, _methodsMap);
 
 		// Evaluate arms again with the new CG estimate
-		aircraft.getHTail().calculateArms(aircraft);
-		aircraft.getVTail().calculateArms(aircraft);
+		aircraft.calculateArms(aircraft.getHTail());
+		aircraft.calculateArms(aircraft.getVTail());
 
 		_theCalculatorsList.add(aircraft.getTheBalance());
 	}
