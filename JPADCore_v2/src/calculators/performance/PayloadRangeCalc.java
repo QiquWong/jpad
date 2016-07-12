@@ -11,11 +11,12 @@ import javax.measure.quantity.Quantity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
-import aircraft.OperatingConditions;
+
 import aircraft.auxiliary.airfoil.Airfoil;
-import aircraft.calculators.ACAerodynamicsManager;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LiftingSurface;
+import analyses.ACAerodynamicsManager;
+import analyses.OperatingConditions;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;

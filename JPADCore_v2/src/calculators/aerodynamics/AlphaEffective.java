@@ -6,9 +6,9 @@ import javax.measure.quantity.Angle;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.OperatingConditions;
-import aircraft.components.liftingSurface.LSAerodynamicsManager;
 import aircraft.components.liftingSurface.LiftingSurface;
+import analyses.OperatingConditions;
+import analyses.liftingsurface.LSAerodynamicsManager;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
 import standaloneutils.customdata.MyArray;

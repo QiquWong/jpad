@@ -13,7 +13,7 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.nacelles.NacelleCreator.MountingPosition;
-import aircraft.components.powerPlant.Engine;
+import aircraft.components.powerplant.Engine;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import standaloneutils.customdata.CenterOfGravity;

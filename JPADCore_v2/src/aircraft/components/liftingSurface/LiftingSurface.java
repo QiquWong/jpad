@@ -20,12 +20,13 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.OperatingConditions;
 import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import aircraft.components.Aircraft;
-import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcHighLiftDevices;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
+import analyses.OperatingConditions;
+import analyses.liftingsurface.LSAerodynamicsManager;
+import analyses.liftingsurface.LSAerodynamicsManager.CalcHighLiftDevices;
 import calculators.geometry.LSGeometryCalc;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.AnalysisTypeEnum;

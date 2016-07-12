@@ -22,8 +22,9 @@ import org.jscience.physics.amount.AmountException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
-import aircraft.OperatingConditions;
+
 import aircraft.components.Aircraft;
+import analyses.OperatingConditions;
 
 public class JPADXmlReader {
 

@@ -21,9 +21,10 @@ import org.apache.commons.math3.ode.nonstiff.HighamHall54Integrator;
 import org.apache.commons.math3.ode.sampling.StepHandler;
 import org.apache.commons.math3.ode.sampling.StepInterpolator;
 import org.jscience.physics.amount.Amount;
-import aircraft.OperatingConditions;
+
 import aircraft.components.Aircraft;
-import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcHighLiftDevices;
+import analyses.OperatingConditions;
+import analyses.liftingsurface.LSAerodynamicsManager.CalcHighLiftDevices;
 import configuration.MyConfiguration;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.FoldersEnum;

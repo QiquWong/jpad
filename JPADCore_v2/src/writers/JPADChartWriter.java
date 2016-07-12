@@ -6,11 +6,11 @@ import javax.measure.unit.SI;
 
 import org.apache.commons.lang3.text.WordUtils;
 
-import aircraft.calculators.ACAerodynamicsManager;
-import aircraft.calculators.ACPerformanceManager;
 import aircraft.components.Aircraft;
 import aircraft.components.CabinConfiguration;
 import aircraft.components.liftingSurface.LiftingSurface;
+import analyses.ACAerodynamicsManager;
+import analyses.ACPerformanceManager;
 import calculators.performance.PerformanceCalcManager;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;

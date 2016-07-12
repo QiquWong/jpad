@@ -3,9 +3,9 @@ package standaloneutils;
 import java.util.ArrayList;
 import java.util.List;
 
-import aircraft.OperatingConditions;
-import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
+import analyses.ACAnalysisManager;
+import analyses.OperatingConditions;
 
 public class JPADWorkSession {
 

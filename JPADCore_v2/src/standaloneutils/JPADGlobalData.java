@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import aircraft.OperatingConditions;
-import aircraft.calculators.ACAnalysisManager;
 import aircraft.components.Aircraft;
 import aircraft.components.fuselage.Fuselage;
+import analyses.ACAnalysisManager;
+import analyses.OperatingConditions;
 import cad.occ.OCCFXViewableCAD;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;

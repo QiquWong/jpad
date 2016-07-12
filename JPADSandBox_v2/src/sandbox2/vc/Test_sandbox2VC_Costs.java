@@ -19,10 +19,10 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import aircraft.OperatingConditions;
 import aircraft.components.Aircraft;
 import aircraft.components.Aircraft.AircraftBuilder;
-import aircraft.calculators.costs.Costs;
+import analyses.OperatingConditions;
+import analyses.costs.Costs;
 import calculators.costs.CostsCalcUtils;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;

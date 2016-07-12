@@ -8,7 +8,7 @@ import javax.measure.quantity.Mass;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.components.powerPlant.Engine;
+import aircraft.components.powerplant.Engine;
 import standaloneutils.customdata.CenterOfGravity;
 
 public interface INacelles {

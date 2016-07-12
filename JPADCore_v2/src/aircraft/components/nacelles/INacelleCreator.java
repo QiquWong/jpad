@@ -9,7 +9,10 @@ import javax.measure.quantity.Mass;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.nacelles.NacelleCreator.MountingPosition;
-import aircraft.components.powerPlant.Engine;
+import aircraft.components.powerplant.Engine;
+import analyses.nacelles.NacelleAerodynamicsManager;
+import analyses.nacelles.NacelleBalanceManager;
+import analyses.nacelles.NacelleWeightsManager;
 
 public interface INacelleCreator {
 

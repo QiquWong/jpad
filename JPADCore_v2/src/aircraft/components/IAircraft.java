@@ -6,16 +6,16 @@ import javax.measure.quantity.Length;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.calculators.ACAerodynamicsManager;
-import aircraft.calculators.ACBalanceManager;
-import aircraft.calculators.ACPerformanceManager;
-import aircraft.calculators.ACStructuralCalculatorManager;
-import aircraft.calculators.ACWeightsManager;
-import aircraft.calculators.costs.Costs;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.nacelles.Nacelles;
-import aircraft.components.powerPlant.PowerPlant;
+import aircraft.components.powerplant.PowerPlant;
+import analyses.ACAerodynamicsManager;
+import analyses.ACBalanceManager;
+import analyses.ACPerformanceManager;
+import analyses.ACStructuralCalculatorManager;
+import analyses.ACWeightsManager;
+import analyses.costs.Costs;
 import configuration.enumerations.AeroConfigurationTypeEnum;
 import configuration.enumerations.AircraftTypeEnum;
 

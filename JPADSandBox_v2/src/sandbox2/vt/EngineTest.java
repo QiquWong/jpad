@@ -9,7 +9,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import aircraft.components.powerPlant.Engine;
+import aircraft.components.powerplant.Engine;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.EngineTypeEnum;
 import javafx.application.Application;

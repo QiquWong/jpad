@@ -9,10 +9,10 @@ import javax.measure.quantity.Mass;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.OperatingConditions;
 import aircraft.components.Aircraft;
 import aircraft.components.fuselage.creator.FuselageCreator;
 import aircraft.components.liftingSurface.creator.SpoilerCreator;
+import analyses.OperatingConditions;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;

@@ -7,8 +7,8 @@ import javax.measure.quantity.Mass;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.OperatingConditions;
 import aircraft.auxiliary.SeatsBlock;
+import analyses.OperatingConditions;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.customdata.MyArray;
 

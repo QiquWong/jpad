@@ -21,11 +21,11 @@ import org.jscience.physics.amount.Amount;
 import com.sun.org.apache.xml.internal.utils.ThreadControllerWrapper;
 
 import aircraft.auxiliary.airfoil.Airfoil;
-import aircraft.components.liftingSurface.LSAerodynamicsManager;
-import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcAlpha0L;
-import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLAtAlpha;
-import aircraft.components.liftingSurface.LSAerodynamicsManager.CalcCLvsAlphaCurve;
 import aircraft.components.liftingSurface.LiftingSurface;
+import analyses.liftingsurface.LSAerodynamicsManager;
+import analyses.liftingsurface.LSAerodynamicsManager.CalcAlpha0L;
+import analyses.liftingsurface.LSAerodynamicsManager.CalcCLAtAlpha;
+import analyses.liftingsurface.LSAerodynamicsManager.CalcCLvsAlphaCurve;
 import calculators.geometry.LSGeometryCalc;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;

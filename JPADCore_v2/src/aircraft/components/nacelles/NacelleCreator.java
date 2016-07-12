@@ -10,9 +10,13 @@ import javax.measure.quantity.Mass;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
-import aircraft.OperatingConditions;
+
 import aircraft.components.Aircraft;
-import aircraft.components.powerPlant.Engine;
+import aircraft.components.powerplant.Engine;
+import analyses.OperatingConditions;
+import analyses.nacelles.NacelleAerodynamicsManager;
+import analyses.nacelles.NacelleBalanceManager;
+import analyses.nacelles.NacelleWeightsManager;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.EngineTypeEnum;

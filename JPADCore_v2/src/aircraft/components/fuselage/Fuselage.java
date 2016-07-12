@@ -18,13 +18,14 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.OperatingConditions;
-import aircraft.calculators.ACPerformanceManager;
 import aircraft.components.Aircraft;
 import aircraft.components.LandingGears;
 import aircraft.components.fuselage.creator.FuselageCreator;
 import aircraft.components.liftingSurface.creator.SpoilerCreator;
 import aircraft.components.nacelles.NacelleCreator;
+import analyses.ACPerformanceManager;
+import analyses.OperatingConditions;
+import analyses.fuselage.FuselageAerodynamicsManager;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineMountingPositionEnum;

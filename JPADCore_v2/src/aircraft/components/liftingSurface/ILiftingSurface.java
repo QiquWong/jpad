@@ -8,10 +8,10 @@ import javax.measure.quantity.Length;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.OperatingConditions;
 import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
+import analyses.OperatingConditions;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;

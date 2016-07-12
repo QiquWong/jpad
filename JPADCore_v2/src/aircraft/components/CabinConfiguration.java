@@ -16,9 +16,9 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 import org.jscience.physics.amount.AmountFormat;
 
-import aircraft.OperatingConditions;
 import aircraft.auxiliary.SeatsBlock;
 import aircraft.auxiliary.SeatsBlock.CGboarding;
+import analyses.OperatingConditions;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
