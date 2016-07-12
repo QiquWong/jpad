@@ -73,8 +73,6 @@ import standaloneutils.customdata.CenterOfGravity;
 import standaloneutils.customdata.MyArray;
 import writers.JPADStaticWriteUtils;
 
-
-
 /**
  * This class holds all aerodynamic analysis methods 
  * available for a generic lifting surface
@@ -658,13 +656,13 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 		if (getTheLiftingSurface().getType() == ComponentEnum.WING) {
 			_cd0Parasite = 
-					_cF * getTheLiftingSurface()._formFactor 
+					_cF * getTheLiftingSurface().getFormFactor() 
 					* getTheLiftingSurface().getLiftingSurfaceCreator().getSurfaceWettedExposed().getEstimatedValue()
 					/ surface;			
 
 		} else { //TODO NEED TO EVALUATE Exposed Wetted surface also for Vtail and Htail
 			_cd0Parasite = 
-					_cF * getTheLiftingSurface()._formFactor 
+					_cF * getTheLiftingSurface().getFormFactor() 
 					* surfaceWetted/surfaceReference;
 		}
 
@@ -2319,6 +2317,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		private List<Double> flapTypeIndex, deltaSlat, etaInFlap, etaOutFlap, 
 		etaInSlat, etaOutSlat, cfc, csc, leRadiusSlatRatio, cExtcSlat;
 		private final List<Double> deltaFlapRef;
+		@SuppressWarnings("unused")
 		private List<FlapTypeEnum> flapType; 
 
 		//to evaluate:

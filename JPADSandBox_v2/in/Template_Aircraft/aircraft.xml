@@ -6,7 +6,7 @@
 			<costs file="costs.xml"></costs>
 		</global_data>
         <lifting_surfaces>
-            <wing file="wing_2_panels.xml">
+            <wing file="wing_2_panels.xml" bind_to="FUSELAGE">
                 <position>
                     <x unit="m">12.0</x>
                     <y unit="m"> 0.0</y>
@@ -14,7 +14,7 @@
                 </position>
                 <rigging_angle unit="deg">2.0</rigging_angle>
             </wing>
-            <horizontal_tail file="htail.xml">
+            <horizontal_tail file="htail.xml" bind_to="FUSELAGE">
                 <position>
                     <x unit="m">25.0</x>
                     <y unit="m"> 0.0</y>
@@ -22,7 +22,7 @@
                 </position>
                 <rigging_angle unit="deg">0.0</rigging_angle>
             </horizontal_tail>
-            <vertical_tail file="vtail.xml">
+            <vertical_tail file="vtail.xml" bind_to="FUSELAGE">
                 <position>
                     <x unit="m">23.0</x>
                     <y unit="m"> 0.0</y>

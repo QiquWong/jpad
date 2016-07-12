@@ -2,10 +2,13 @@ package calculators.aerodynamics;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.measure.quantity.Area;
 import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.LandingGears;
+import aircraft.components.LandingGears.MountingPosition;
 import aircraft.components.liftingSurface.LiftingSurface;
 import calculators.performance.LandingCalc;
 import calculators.performance.customdata.DragMap;
@@ -133,6 +136,11 @@ public class DragCalc {
 	 * The DeltaCD0LandingGears is made up of two other contributions:
 	 * DeltaCD0basic and a function of alpha and delta flap.
 	 * 
+	 * N.B.: the flap considered is the one related to the undercarriage position (if present).
+	 * 
+	 * N.B.: deltaCL0flap have to be passed as zero or null in case the undercarriage position
+	 * 		 is not WING !!
+	 * 
 	 * --------------------------------------------------------------------------------------
 	 * DeltaCD0LandingGears = f(alpha, deltaFlap)*DeltaCD0basic
 	 * 
@@ -148,19 +156,72 @@ public class DragCalc {
 	 * 
 	 * @see: Torenbeek 1976 pag.570(pdf)
 	 */
-	public double calculateCD0(
+	public static double calculateDeltaCD0LandingGears(
 			LiftingSurface wing,
 			LandingGears landingGears,
-			double cL,
-			double deltaCL0flap,
-			double flapSurface
+			Double cL,
+			Double deltaCL0flap
 			) {
 		
-		double CD0 = 0.0;
+		if(deltaCL0flap == null)
+			deltaCL0flap = 0.0;
 		
-		// TODO: IMPLEMENT THE DELTA CD0 CALCULATION
+		double deltaCD0 = 0.0;
+		double deltaCD0Basic = 0.0;
+		double functionAlphaDeltaFlap = 0.0;
 		
-		return CD0;
+		Amount<Area> frontalTiresTotalArea = Amount.valueOf(0.0, SI.SQUARE_METRE);
+		Amount<Area> rearTiresTotalArea = Amount.valueOf(0.0, SI.SQUARE_METRE);
+		
+		for(int i=0; i<landingGears.getNumberOfFrontalWheels(); i++) {
+			frontalTiresTotalArea = frontalTiresTotalArea.plus(landingGears.getFrontalWheelsHeight().times(landingGears.getFrontalWheelsWidth()));
+		}
+		
+		for(int i=0; i<landingGears.getNumberOfRearWheels(); i++) {
+			rearTiresTotalArea = rearTiresTotalArea.plus(landingGears.getRearWheelsHeight().times(landingGears.getRearWheelsWidth()));
+		}
+		
+		deltaCD0Basic = ((1.5*frontalTiresTotalArea.getEstimatedValue())
+				+(0.75*rearTiresTotalArea.getEstimatedValue()))
+				/(wing.getSurface().getEstimatedValue());
+				
+		if(landingGears.getMountingPosition() == MountingPosition.WING) {
+		
+			Amount<Area> flapSurface = Amount.valueOf(
+					wing.getSpan().getEstimatedValue()							
+					/2*wing.getLiftingSurfaceCreator().getRootChordEquivalentWing().getEstimatedValue()
+					*(2-((1-wing.getLiftingSurfaceCreator().getTaperRatioEquivalentWing())
+							*(wing.getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getOuterStationSpanwisePosition()
+									+wing.getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getInnerStationSpanwisePosition())))
+					*(wing.getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getOuterStationSpanwisePosition()
+							-wing.getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getInnerStationSpanwisePosition()),
+					SI.SQUARE_METRE
+					);
+			
+			functionAlphaDeltaFlap = 
+					Math.pow(1-(0.04
+							*(cL+(deltaCL0flap*((1.5*(wing.getSurface().divide(flapSurface).getEstimatedValue()))-1))
+									)
+							/(landingGears.getMainLegsLenght().getEstimatedValue()
+									/(wing.getSurface().getEstimatedValue()/wing.getSpan().getEstimatedValue())
+									)
+							)
+							,2);
+		}
+		else if((landingGears.getMountingPosition() == MountingPosition.FUSELAGE)
+				|| (landingGears.getMountingPosition() == MountingPosition.NACELLE)) {
+		
+			functionAlphaDeltaFlap = 
+					Math.pow(1-(0.04*cL/(landingGears.getMainLegsLenght().getEstimatedValue()
+									/(wing.getSurface().getEstimatedValue()/wing.getSpan().getEstimatedValue())
+									)
+							)
+							,2);		
+		}
+		
+		deltaCD0 = deltaCD0Basic*functionAlphaDeltaFlap;
+		
+		return deltaCD0;
 	}
 	
 	/**

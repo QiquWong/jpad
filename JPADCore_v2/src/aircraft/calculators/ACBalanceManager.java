@@ -77,10 +77,9 @@ public class ACBalanceManager extends ACCalculatorManager {
 
 		aircraft.getFuselage().calculateCG(aircraft, conditions);
 
-		// FIXME : METHODS MAP --> LIFTING SURFACE REQUIRES A METHOD FROM MethodEnum
-		aircraft.getWing().calculateCG(methodsMap, ComponentEnum.WING);
-		aircraft.getHTail().calculateCG(methodsMap, ComponentEnum.HORIZONTAL_TAIL);
-		aircraft.getVTail().calculateCG(methodsMap, ComponentEnum.VERTICAL_TAIL);
+		aircraft.getWing().calculateCGAllMethods(methodsMap, ComponentEnum.WING);
+		aircraft.getHTail().calculateCGAllMethods(methodsMap, ComponentEnum.HORIZONTAL_TAIL);
+		aircraft.getVTail().calculateCGAllMethods(methodsMap, ComponentEnum.VERTICAL_TAIL);
 
 		aircraft.getNacelles().calculateCG();
 

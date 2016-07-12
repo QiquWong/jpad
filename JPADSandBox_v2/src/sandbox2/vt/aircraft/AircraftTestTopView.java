@@ -20,6 +20,7 @@ import org.treez.javafxd3.javafx.JavaFxD3Browser;
 import aircraft.components.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
+import calculators.aerodynamics.DragCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ComponentEnum;
@@ -554,6 +555,14 @@ public class AircraftTestTopView extends Application {
 			
 			System.out.println("The Aircaraft ...");
 			System.out.println(AircraftTestTopView.theAircraft.toString());
+			
+//			double deltaCD0 = DragCalc.calculateDeltaCD0LandingGears(
+//					theAircraft.getWing(),
+//					theAircraft.getLandingGears(),
+//					1.05,
+//					0.3213
+//					);
+//			System.out.println("\n\tdeltaCD0L_LG = " + deltaCD0 + "\n\n");
 			
 		} catch (CmdLineException | IOException e) {
 			System.err.println("Error: " + e.getMessage());

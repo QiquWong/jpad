@@ -62,6 +62,8 @@ public class LiftingSurface implements ILiftingSurface {
 	private AerodynamicDatabaseReader _aeroDatabaseReader;
 	private HighLiftDatabaseReader _highLiftDatabaseReader;
 	
+	private Double _thicknessMean;
+	private Double _formFactor;
 	private Double _massCorrectionFactor = 1.0;
 	private Amount<Mass> _mass, _massReference, _massEstimated;
 	private CenterOfGravity _cg;
@@ -161,6 +163,26 @@ public class LiftingSurface implements ILiftingSurface {
 		this._massMap = builder.__massMap;
 	}
 
+	@Override
+	public double calculateThicknessMean() {
+		Airfoil meanAirfoil = new Airfoil(
+				calculateMeanAirfoil(this),
+				this._aeroDatabaseReader
+				);
+		
+		return meanAirfoil.getAirfoilCreator().getThicknessToChordRatio();
+	}
+	
+	@Override
+	public void calculateFormFactor(double compressibilityFactor) {
+		// Wing Form Factor (ADAS pag 93 graphic or pag 9 meccanica volo appunti)
+		_formFactor = ((1 + 1.2*getThicknessMean()*
+				Math.cos(getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().doubleValue(SI.RADIAN))+
+				100*Math.pow(compressibilityFactor,3)*
+				(Math.pow(Math.cos(getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().doubleValue(SI.RADIAN)),2))*
+				Math.pow(getThicknessMean(),4)));
+	}
+	
 	@Override
 	public void calculateMass(Aircraft aircraft, OperatingConditions conditions) {
 		calculateMass(aircraft, conditions, MethodEnum.KROO);
@@ -618,6 +640,19 @@ public class LiftingSurface implements ILiftingSurface {
 
 	}
 
+	public void calculateCGAllMethods(Map<ComponentEnum, List<MethodEnum>> methodsMap, ComponentEnum type) {
+		// ITERATIVE CALL OF CALCULATE CG IN ORDER TO COMPARE ALL METHODS. 
+		
+		List<MethodEnum> methodsList = methodsMap.keySet().stream()
+						   							      .filter(key -> key.equals(type))
+						   							      .map(key -> methodsMap.get(key))
+						   							      .findFirst()
+						   							      .get();
+		
+		for (int i=0; i<methodsList.size(); i++)
+			calculateCG(methodsList.get(i), type);
+	}
+	
 	public void calculateCG(MethodEnum method, ComponentEnum type) {
 
 		List<MethodEnum> methodsList = new ArrayList<MethodEnum>();
@@ -1836,5 +1871,21 @@ public class LiftingSurface implements ILiftingSurface {
 
 	public void setMassCorrectionFactor(Double _massCorrectionFactor) {
 		this._massCorrectionFactor = _massCorrectionFactor;
+	}
+
+	public Double getFormFactor() {
+		return _formFactor;
+	}
+
+	public void setFormFactor(Double _formFactor) {
+		this._formFactor = _formFactor;
+	}
+
+	public Double getThicknessMean() {
+		return _thicknessMean;
+	}
+
+	public void setThicknessMean(Double _thicknessMean) {
+		this._thicknessMean = _thicknessMean;
 	}
 }
