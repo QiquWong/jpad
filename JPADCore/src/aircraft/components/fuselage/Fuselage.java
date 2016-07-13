@@ -479,8 +479,6 @@ public class Fuselage extends AeroComponent implements IFuselage {
 		return _fuselageCreator.getSurfaceWetted(recalculate);
 	}
 
-	// TODO : ADD OTHER GETTERS VIA _fuselageCreator
-	
 	@Override
 	public FuselageCreator getFuselageCreator() {
 		return _fuselageCreator;

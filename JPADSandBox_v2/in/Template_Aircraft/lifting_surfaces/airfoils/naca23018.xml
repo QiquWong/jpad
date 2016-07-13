@@ -32,6 +32,8 @@
             <Cm_ac unit="">-0.083</Cm_ac>
             <Cm_ac_at_stall unit="">-0.09</Cm_ac_at_stall>
             <mach_critical>0.656</mach_critical>
+			<x_transition_upper>0.15</x_transition_upper>
+			<x_transition_lower>0.12</x_transition_lower>
         </aerodynamics>
     </airfoil>
 </jpad_config>

@@ -25,7 +25,6 @@ public class ACPerformanceManager {
 
 	private static final String id = "21";
 
-	// TODO :  ADD GET /SET
 	private AnalysisTypeEnum _type;
 	private String _name;
 	

@@ -3,30 +3,30 @@
     <aircraft id="JPAD Test Aircraft DAF - 2016" type="JET">
 		<global_data>
 			<cabin_configuration file="cabin_configuration.xml"></cabin_configuration>
-			<costs file="costs.xml"></costs>
+			<costs file="costs.xml"></costs> <!--TO BE MOVED TO COSTS ANALYSIS-->
 		</global_data>
         <lifting_surfaces>
-            <wing file="wing_2_panels.xml" bind_to="FUSELAGE">
+            <wing file="wing_2_panels.xml">
                 <position>
                     <x unit="m">12.0</x>
-                    <y unit="m"> 0.0</y>
-                    <z unit="m"> -0.5</z>
+                    <y unit="m">0.0</y>
+                    <z unit="m">-0.5</z>
                 </position>
                 <rigging_angle unit="deg">2.0</rigging_angle>
             </wing>
-            <horizontal_tail file="htail.xml" bind_to="FUSELAGE">
+            <horizontal_tail file="htail.xml">
                 <position>
                     <x unit="m">25.0</x>
-                    <y unit="m"> 0.0</y>
-                    <z unit="m"> 1.0</z>
+                    <y unit="m">0.0</y>
+                    <z unit="m">1.0</z>
                 </position>
                 <rigging_angle unit="deg">0.0</rigging_angle>
             </horizontal_tail>
-            <vertical_tail file="vtail.xml" bind_to="FUSELAGE">
+            <vertical_tail file="vtail.xml">
                 <position>
                     <x unit="m">23.0</x>
-                    <y unit="m"> 0.0</y>
-                    <z unit="m"> 1.5</z>
+                    <y unit="m">0.0</y>
+                    <z unit="m">1.5</z>
                 </position>
                 <rigging_angle unit="deg">0.0</rigging_angle>
             </vertical_tail>

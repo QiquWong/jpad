@@ -369,7 +369,16 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 					lambda_opt,
 					delta_lambda, keM;
 
-			lambda_opt = _theAircraft.getWing().get_taperRatioOpt();
+			lambda_opt = 0.45
+					*Math.pow(
+							Math.E,
+							(_theAircraft.getWing()
+									     .getLiftingSurfaceCreator()
+									     .getSweepQuarterChordEquivalentWing()
+									     .times(-0.037)
+									     .getEstimatedValue()
+									     )
+							);
 			delta_lambda = -0.357 + lambda_opt;
 			//			_f = 0.0524*Math.pow(_lambda - delta_lambda,4) 
 			//					- 0.15*Math.pow(_lambda - delta_lambda,3) 

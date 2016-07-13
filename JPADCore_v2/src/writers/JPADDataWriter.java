@@ -1409,10 +1409,8 @@ public class JPADDataWriter {
 		writeInputNode("Lenght", landingGear.getMainLegsLenght(), Landing_gear_parameters, true);
 		writeInputNode("Reference_mass", landingGear.getReferenceMass(), Landing_gear_parameters, true);
 		
-		// TODO : ADD OTHER DATA
-		
 	}
-
+	
 	/**
 	 * Write landing gear output parameters
 	 * 

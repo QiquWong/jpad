@@ -42,6 +42,8 @@ import standaloneutils.MyMathUtils;
 import standaloneutils.MyUnits;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.customdata.CenterOfGravity;
+import standaloneutils.customdata.MyArray;
+import sun.launcher.resources.launcher;
 import writers.JPADStaticWriteUtils;
 
 public class LiftingSurface implements ILiftingSurface {
@@ -77,6 +79,7 @@ public class LiftingSurface implements ILiftingSurface {
 	Double[] _percentDifferenceYCG;
 	Double[] _percentDifference;
 	
+	// airfoil span-wise characteristics : 
 	private List<Airfoil> _airfoilList;
 	private List<Double> _maxThicknessVsY = new ArrayList<>();
 	private List<Amount<Length>> _radiusLEVsY = new ArrayList<>();
@@ -98,7 +101,14 @@ public class LiftingSurface implements ILiftingSurface {
 	private List<Double> _cmACVsY = new ArrayList<>();
 	private List<Double> _cmACStallVsY = new ArrayList<>();
 	private List<Double> _criticalMachVsY = new ArrayList<>();
-
+	private MyArray _distanceAirfoilACFromWingAC = new MyArray();
+	
+	// wing span-wise arrays : 
+	private MyArray _ellChordVsY = new MyArray(SI.METER);
+	private MyArray _clBasicY = new MyArray();
+	
+	private Amount<Length> _xACActualMRF, _xACActualLRF;
+	
 	//================================================
 	// Builder pattern via a nested public static class
 	public static class LiftingSurfaceBuilder {
@@ -246,8 +256,6 @@ public class LiftingSurface implements ILiftingSurface {
 			case ROSKAM : { // Roskam page 85 (pdf) part V
 				methodsList.add(method);
 
-				// FIXME : WHO IS MACH DIVE 0 ??
-				
 				System.out.println("---" + this._liftingSurfaceCreator.getSweepQuarterChordEquivalentWing().to(SI.RADIAN));
 				_mass = Amount.valueOf(
 						Amount.valueOf(2*(0.00428*
@@ -881,37 +889,56 @@ public class LiftingSurface implements ILiftingSurface {
 			this._airfoilList.add(airfoilTip);
 		}
 
-		discretizeAirfoilCharacteristics(this._airfoilList);
+		discretizeAirfoilCharacteristics();
+		calculateTransitionPoints();
 		
 		return this._airfoilList;
 	}
 	
-	private void discretizeAirfoilCharacteristics (List<Airfoil> airfoilList) {
+	private void discretizeAirfoilCharacteristics () {
 		
-		for(int i=0; i<airfoilList.size(); i++) {
+		for(int i=0; i<_airfoilList.size(); i++) {
 		
-			this._maxThicknessVsY.add(airfoilList.get(i).getAirfoilCreator().getThicknessToChordRatio());
-			this._radiusLEVsY.add(airfoilList.get(i).getAirfoilCreator().getRadiusLeadingEdge());
-			this._camberRatioVsY.add(airfoilList.get(i).getAirfoilCreator().getCamberRatio());
-			this._alpha0VsY.add(airfoilList.get(i).getAirfoilCreator().getAlphaZeroLift());
-			this._alphaStarVsY.add(airfoilList.get(i).getAirfoilCreator().getAlphaEndLinearTrait());
-			this._alphaStallVsY.add(airfoilList.get(i).getAirfoilCreator().getAlphaStall());
-			this._clAlphaVsY.add(airfoilList.get(i).getAirfoilCreator().getClAlphaLinearTrait());
-			this._cdMinVsY.add(airfoilList.get(i).getAirfoilCreator().getCdMin());
-			this._clAtCdMinVsY.add(airfoilList.get(i).getAirfoilCreator().getClAtCdMin());
-			this._cl0VsY.add(airfoilList.get(i).getAirfoilCreator().getClAtAlphaZero());
-			this._clStarVsY.add(airfoilList.get(i).getAirfoilCreator().getClEndLinearTrait());
-			this._clMaxVsY.add(airfoilList.get(i).getAirfoilCreator().getClMax());
+			this._maxThicknessVsY.add(_airfoilList.get(i).getAirfoilCreator().getThicknessToChordRatio());
+			this._radiusLEVsY.add(_airfoilList.get(i).getAirfoilCreator().getRadiusLeadingEdge());
+			this._camberRatioVsY.add(_airfoilList.get(i).getAirfoilCreator().getCamberRatio());
+			this._alpha0VsY.add(_airfoilList.get(i).getAirfoilCreator().getAlphaZeroLift());
+			this._alphaStarVsY.add(_airfoilList.get(i).getAirfoilCreator().getAlphaEndLinearTrait());
+			this._alphaStallVsY.add(_airfoilList.get(i).getAirfoilCreator().getAlphaStall());
+			this._clAlphaVsY.add(_airfoilList.get(i).getAirfoilCreator().getClAlphaLinearTrait());
+			this._cdMinVsY.add(_airfoilList.get(i).getAirfoilCreator().getCdMin());
+			this._clAtCdMinVsY.add(_airfoilList.get(i).getAirfoilCreator().getClAtCdMin());
+			this._cl0VsY.add(_airfoilList.get(i).getAirfoilCreator().getClAtAlphaZero());
+			this._clStarVsY.add(_airfoilList.get(i).getAirfoilCreator().getClEndLinearTrait());
+			this._clMaxVsY.add(_airfoilList.get(i).getAirfoilCreator().getClMax());
 			this._clMaxSweepVsY.add(this._clMaxVsY.get(i)*Math.pow(Math.cos(this.getSweepLEEquivalent(true).doubleValue(SI.RADIAN)),2));
-			this._kFactorDragPolarVsY.add(airfoilList.get(i).getAirfoilCreator().getKFactorDragPolar());
-			this._mExponentDragPolarVsY.add(airfoilList.get(i).getAirfoilCreator().getMExponentDragPolar());
-			this._cmAlphaQuarteChordVsY.add(airfoilList.get(i).getAirfoilCreator().getCmAlphaQuarterChord());
-			this._xAcAirfoilVsY.add(airfoilList.get(i).getAirfoilCreator().getXACNormalized());
-			this._cmACVsY.add(airfoilList.get(i).getAirfoilCreator().getCmAC());
-			this._cmACStallVsY.add(airfoilList.get(i).getAirfoilCreator().getCmACAtStall());
-			this._criticalMachVsY.add(airfoilList.get(i).getAirfoilCreator().getMachCritical());
+			this._kFactorDragPolarVsY.add(_airfoilList.get(i).getAirfoilCreator().getKFactorDragPolar());
+			this._mExponentDragPolarVsY.add(_airfoilList.get(i).getAirfoilCreator().getMExponentDragPolar());
+			this._cmAlphaQuarteChordVsY.add(_airfoilList.get(i).getAirfoilCreator().getCmAlphaQuarterChord());
+			this._xAcAirfoilVsY.add(_airfoilList.get(i).getAirfoilCreator().getXACNormalized());
+			this._cmACVsY.add(_airfoilList.get(i).getAirfoilCreator().getCmAC());
+			this._cmACStallVsY.add(_airfoilList.get(i).getAirfoilCreator().getCmACAtStall());
+			this._criticalMachVsY.add(_airfoilList.get(i).getAirfoilCreator().getMachCritical());
 			
 		}
+	}
+	
+	private void calculateTransitionPoints() {
+				
+		Double xTransitionUpper = 0.0;
+		Double xTransitionLower = 0.0;
+		
+		for(int i=0; i<_airfoilList.size(); i++) {
+			xTransitionUpper += _airfoilList.get(i).getAirfoilCreator().getXTransitionUpper();
+			xTransitionLower += _airfoilList.get(i).getAirfoilCreator().getXTransitionLower();
+		}
+		
+		xTransitionUpper = xTransitionUpper/_airfoilList.size();
+		xTransitionLower = xTransitionLower/_airfoilList.size();
+		
+		this._liftingSurfaceCreator.setXTransitionUpper(xTransitionUpper);
+		this._liftingSurfaceCreator.setXTransitionLower(xTransitionLower);
+		
 	}
 	
 	public static AirfoilCreator calculateAirfoilAtY (LiftingSurface theWing, double yLoc) {
@@ -1871,6 +1898,30 @@ public class LiftingSurface implements ILiftingSurface {
 		return _criticalMachVsY;
 	}
 
+	public MyArray getDistanceAirfoilACFromWingAC() {
+		return _distanceAirfoilACFromWingAC;
+	}
+
+	public void setDistanceAirfoilACFromWingAC(MyArray _distanceAirfoilACFromWingAC) {
+		this._distanceAirfoilACFromWingAC = _distanceAirfoilACFromWingAC;
+	}
+
+	public MyArray getEllChordVsY() {
+		return _ellChordVsY;
+	}
+
+	public void setEllChordVsY(MyArray _ellChordVsY) {
+		this._ellChordVsY = _ellChordVsY;
+	}
+
+	public MyArray getClBasicY() {
+		return _clBasicY;
+	}
+
+	public void setClBasicY(MyArray _clBasicY) {
+		this._clBasicY = _clBasicY;
+	}
+
 	public Double getMassCorrectionFactor() {
 		return _massCorrectionFactor;
 	}
@@ -1894,4 +1945,21 @@ public class LiftingSurface implements ILiftingSurface {
 	public void setThicknessMean(Double _thicknessMean) {
 		this._thicknessMean = _thicknessMean;
 	}
+
+	public Amount<Length> getXacActualMRF() {
+		return _xACActualMRF;
+	}
+
+	public void setXacActualMRF(Amount<Length> _xACActualMRF) {
+		this._xACActualMRF = _xACActualMRF;
+	}
+
+	public Amount<Length> getXacActualLRF() {
+		return _xACActualLRF;
+	}
+
+	public void setXacActualLRF(Amount<Length> _xACActualLRF) {
+		this._xACActualLRF = _xACActualLRF;
+	}
+	
 }

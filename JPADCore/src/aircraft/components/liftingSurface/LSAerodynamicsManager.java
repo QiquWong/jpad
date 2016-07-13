@@ -531,7 +531,6 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		// TODO: check if compressibility factor has to be evaluated even if 
 		// we use the lock - korn method to evaluate wave drag
 		
-		// TODO : CALCULATE FORM FACTOR MUST BE COPIED INSIDE THIS CLASS AND CALLED HERE
 		getTheLiftingSurface().calculateFormFactor(calculateCompressibility(mach));
 		calculateCD0Total();
 		calculateCLAlpha.allMethods();

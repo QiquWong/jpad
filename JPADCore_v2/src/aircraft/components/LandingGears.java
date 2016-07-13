@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.NonSI;
@@ -51,6 +50,8 @@ public class LandingGears implements ILandingGear {
 						   _rearWheelsHeight,
 						   _rearWheelsWidth;
 	
+	private Double _kMainLegsLength;
+	
 	private Amount<Mass> _overallMass,
 						 _mainMass, 
 						 _noseMass;
@@ -86,6 +87,8 @@ public class LandingGears implements ILandingGear {
 							   __rearWheelsHeight,
 							   __rearWheelsWidth;
 
+		private Double __kMainLegsLength;
+		
 		private Amount<Mass> __referenceMass;
 		
 		private Map <MethodEnum, Amount<Mass>> __massMap = new TreeMap<MethodEnum, Amount<Mass>>();
@@ -115,6 +118,11 @@ public class LandingGears implements ILandingGear {
 		
 		public LandingGearsBuilder mainLegsLength (Amount<Length> mainLegsLength) {
 			this.__mainLegsLenght = mainLegsLength;
+			return this;
+		}
+		
+		public LandingGearsBuilder kMainLegsLength (Double kMainLegsLength) {
+			this.__kMainLegsLength = kMainLegsLength;
 			return this;
 		}
 		
@@ -161,6 +169,7 @@ public class LandingGears implements ILandingGear {
 				__numberOfFrontalWheels = 2;
 				__numberOfRearWheels = 4;
 				__mainLegsLenght = Amount.valueOf(0.66, SI.METER);
+				__kMainLegsLength = 0.15; //TODO : CHECK THIS
 				__frontalWheelsHeight = Amount.valueOf(0.450, SI.METER);
 				__frontalWheelsWidth = Amount.valueOf(0.190, SI.METER);
 				__rearWheelsHeight = Amount.valueOf(0.8636, SI.METER);
@@ -172,6 +181,7 @@ public class LandingGears implements ILandingGear {
 				__numberOfFrontalWheels = 2;
 				__numberOfRearWheels = 8;
 				__mainLegsLenght = Amount.valueOf(3.26, SI.METER);
+				__kMainLegsLength = 0.15; //TODO : CHECK THIS
 				__frontalWheelsHeight = Amount.valueOf(1.245, SI.METER);
 				__frontalWheelsWidth = Amount.valueOf(0.4829, SI.METER);
 				__rearWheelsHeight = Amount.valueOf(1.245, SI.METER);
@@ -191,6 +201,7 @@ public class LandingGears implements ILandingGear {
 		
 		this._id = builder.__id;
 		this._mainLegsLenght = builder.__mainLegsLenght;
+		this._kMainLegsLength = builder.__kMainLegsLength;
 		this._numberOfFrontalWheels = builder.__numberOfFrontalWheels;
 		this._numberOfRearWheels = builder.__numberOfRearWheels;
 		this._frontalWheelsHeight = builder.__frontalWheelsHeight;
@@ -225,6 +236,10 @@ public class LandingGears implements ILandingGear {
 		// GLOBAL DATA
 		Amount<Length> mainGearLegsLength = reader.getXMLAmountLengthByPath(
 				"//global_data/main_gear_legs_length"
+				);
+		
+		Double kMainLegsLength = Double.valueOf(
+				reader.getXMLPropertyByPath("//global_data/k_main_gear_legs_length")
 				);
 		
 		int numberOfFrontalWheels = Integer.valueOf(
@@ -275,6 +290,7 @@ public class LandingGears implements ILandingGear {
 		
 		LandingGears landingGears = new LandingGearsBuilder(id)
 				.mainLegsLength(mainGearLegsLength)
+				.kMainLegsLength(kMainLegsLength)
 				.numberOfFrontalWheels(numberOfFrontalWheels)
 				.numberOfRearWheels(numberOfRearWheels)
 				.frontalWheelsHeight(frontalWheelsHeight)
@@ -300,6 +316,7 @@ public class LandingGears implements ILandingGear {
 				.append("\tID: '" + _id + "'\n")
 				.append("\t·····································\n")
 				.append("\tMain gear legs length: " + _mainLegsLenght + "\n")
+				.append("\tK Main gear legs length: " + _kMainLegsLength + "\n")
 				.append("\tNumber of frontal wheels: " + _numberOfFrontalWheels + "\n")
 				.append("\tNumber of rear wheels: " + _numberOfRearWheels + "\n")
 				.append("\t·····································\n")
@@ -531,6 +548,16 @@ public class LandingGears implements ILandingGear {
 		this._mainLegsLenght = lenght;
 	}
 	
+	@Override
+	public Double getKMainLegsLength() {
+		return _kMainLegsLength;
+	}
+
+	@Override
+	public void setKMainLegsLength(Double _kMainLegsLength) {
+		this._kMainLegsLength = _kMainLegsLength;
+	}
+
 	@Override
 	public int getNumberOfFrontalWheels() {
 		return _numberOfFrontalWheels;

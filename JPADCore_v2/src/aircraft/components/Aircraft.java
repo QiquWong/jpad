@@ -199,6 +199,7 @@ public class Aircraft implements IAircraft {
 				
 				break;
 
+		    // TODO : COMPLETE THIS!
 			case B747_100B:
 				__id = "B747-100B";
 				__typeVehicle = AircraftTypeEnum.JET;
@@ -264,6 +265,7 @@ public class Aircraft implements IAircraft {
 				
 				break;
 				
+			// TODO : COMPLETE THIS!
 			case AGILE_DC1:
 				__id = "AGILE DC-1";
 				__typeVehicle = AircraftTypeEnum.JET;
@@ -883,8 +885,7 @@ public class Aircraft implements IAircraft {
 		if(this._theExposedWing != null)
 			this._sWetTotal = this._sWetTotal.plus(this._theExposedWing.getLiftingSurfaceCreator().getSurfaceWetted());
 			
-		// TODO : FOR HTAIL, VTAIL AND CANARD THE EXPOSED WING IS NOT CALCULATED ... 
-		//	      IS THIS ACCEPTABLE?
+		// TODO : FOR HTAIL, VTAIL AND CANARD THE EXPOSED WING IS NOT CALCULATED ... IS THIS ACCEPTABLE?
 		if(this._theHTail != null)
 			this._sWetTotal = this._sWetTotal.plus(this._theHTail.getLiftingSurfaceCreator().getSurfaceWetted());
 		

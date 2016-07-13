@@ -3,6 +3,7 @@
 	<landing_gears id="JPAD Test Landing Gears DAF - 2016">
 		<global_data>
 			<main_gear_legs_length unit="m">2.0</main_gear_legs_length>
+			<k_main_gear_legs_length>0.15</k_main_gear_legs_length>
 			<number_of_frontal_wheels>2</number_of_frontal_wheels>
 			<number_of_rear_wheels>4</number_of_rear_wheels>
 		</global_data>

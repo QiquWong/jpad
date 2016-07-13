@@ -48,6 +48,8 @@ public class AirfoilCreator implements IAirfoilCreator {
 	private Double _cmAC;
 	private Double _cmACAtStall;
 	private Double _machCritical;
+	private Double _xTransitionUpper;
+	private Double _xTransitionLower;
 
 	@Override
 	public String getID() {
@@ -309,7 +311,25 @@ public class AirfoilCreator implements IAirfoilCreator {
 		_machCritical = machCritical;
 	}
 
-	// Builder pattern via a nested public static class
+	@Override
+	public Double getXTransitionUpper() {
+		return _xTransitionUpper;
+	}
+
+	@Override
+	public void setXTransitionUpper(Double _xTransitionUpper) {
+		this._xTransitionUpper = _xTransitionUpper;
+	}
+
+	@Override
+	public Double getXTransitionLower() {
+		return _xTransitionLower;
+	}
+
+	@Override
+	public void setXTransitionLower(Double _xTransitionLower) {
+		this._xTransitionLower = _xTransitionLower;
+	}
 
 	public static class AirfoilBuilder {
 
@@ -344,6 +364,8 @@ public class AirfoilCreator implements IAirfoilCreator {
 		private Double __cmAC = -0.070;
 		private Double __cmACAtStall = -0.090;
 		private Double __machCritical = 0.7;
+		private Double __xTransitionUpper = 0.15;
+		private Double __xTransitionLower = 0.12;
 
 		public AirfoilBuilder(String id){
 			this.__id = id;
@@ -359,8 +381,6 @@ public class AirfoilCreator implements IAirfoilCreator {
 			return this;
 		}
 
-		// TODO: implement default airfoil construction according to designation. Example: AirfoilNameEnum.NACA2412
-		
 		public AirfoilBuilder cornerPointsXZNormalized(double[][] xz) {
 			__NormalizedCornerPointsXZ = MatrixUtils.createRealMatrix(xz);
 			return this;
@@ -476,12 +496,21 @@ public class AirfoilCreator implements IAirfoilCreator {
 			return this;
 		}
 
+		public AirfoilBuilder xTransitionUpper(Double xTransitionUpper) {
+			__xTransitionUpper = xTransitionUpper;
+			return this;
+		}
+		
+		public AirfoilBuilder xTransitionLower(Double xTransitionLower) {
+			__xTransitionLower = xTransitionLower;
+			return this;
+		}
+		
 		public AirfoilCreator build() {
 			return new AirfoilCreator(this);
 		}
-
 	}
-
+	
 	private AirfoilCreator(AirfoilBuilder builder) {
 		_id = builder.__id;
 		_type = builder.__type;
@@ -509,7 +538,9 @@ public class AirfoilCreator implements IAirfoilCreator {
 		_cmAC = builder.__cmAC;
 		_cmACAtStall = builder.__cmACAtStall;
 		_machCritical = builder.__machCritical;
-
+		_xTransitionUpper = builder.__xTransitionUpper;
+		_xTransitionLower = builder.__xTransitionLower;
+		
 	}
 
 	public static AirfoilCreator importFromXML(String pathToXML) {
@@ -524,15 +555,15 @@ public class AirfoilCreator implements IAirfoilCreator {
 						reader.getXmlDoc(), reader.getXpath(),
 						"//airfoil/@family");
 
-		String typeS = MyXMLReaderUtils
+		String typeProperty = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
 						"//airfoil/@type");
 		// check if the airfoil type given in file is a legal enumerated type
 		AirfoilTypeEnum type = Arrays.stream(AirfoilTypeEnum.values())
-	            .filter(e -> e.toString().equals(typeS))
+	            .filter(e -> e.toString().equals(typeProperty))
 	            .findFirst()
-	            .orElseThrow(() -> new IllegalStateException(String.format("Unsupported airfoil type %s.", typeS)));
+	            .orElseThrow(() -> new IllegalStateException(String.format("Unsupported airfoil type %s.", typeProperty)));
 
 		Double thicknessRatio = Double.valueOf(
 				MyXMLReaderUtils
@@ -652,6 +683,18 @@ public class AirfoilCreator implements IAirfoilCreator {
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
 						"//airfoil/aerodynamics/mach_critical/text()"));
+		
+		Double xTransitionUpper = Double.valueOf(
+				MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//airfoil/aerodynamics/x_transition_upper/text()"));
+		
+		Double xTransitionLower = Double.valueOf(
+				MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//airfoil/aerodynamics/x_transition_lower/text()"));
 
 		String formedID = "Imported from ";
 		Path p = Paths.get(pathToXML);
@@ -682,6 +725,8 @@ public class AirfoilCreator implements IAirfoilCreator {
 				.cmAC(cmAC)
 				.cmACAtStall(cmACAtStall)
 				.machCritical(machCritical)
+				.xTransitionUpper(xTransitionUpper)
+				.xTransitionLower(xTransitionLower)
 				.build();
 
 		return airfoil;
@@ -743,6 +788,8 @@ public class AirfoilCreator implements IAirfoilCreator {
 				.append("\tCm_ac = " + _cmAC + "\n")
 				.append("\tCm_ac @ stall = " + _cmACAtStall + "\n")
 				.append("\tM_cr = " + _machCritical)
+				.append("\tTransition point upper side = " + _xTransitionUpper + "\n")
+				.append("\tTransition point lower side = " + _xTransitionLower + "\n")
 				;
 		return sb.toString();
 	}

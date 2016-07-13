@@ -87,6 +87,12 @@ public interface IAirfoilCreator {
     
     Double getMachCritical();
     void setMachCritical(Double machCritical);
+    
+	Double getXTransitionUpper();
+	void setXTransitionUpper(Double _xTransitionUpper);
+
+	Double getXTransitionLower();
+	void setXTransitionLower(Double _xTransitionLower);
 	
     public Double calculateThicknessRatioAtXNormalizedStation (Double x, Double tcMaxActual);
     

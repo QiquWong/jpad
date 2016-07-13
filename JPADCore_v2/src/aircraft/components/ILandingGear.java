@@ -47,6 +47,9 @@ public interface ILandingGear {
 	public Amount<Length> getMainLegsLenght();
 	public void setMainLegsLenght(Amount<Length> lenght);
 	
+	public Double getKMainLegsLength();
+		public void setKMainLegsLength(Double _kMainLegsLength);
+	
 	public int getNumberOfFrontalWheels();
 	public void setNumberOfFrontalWheels(int _numberOfFrontalWheels);
 	

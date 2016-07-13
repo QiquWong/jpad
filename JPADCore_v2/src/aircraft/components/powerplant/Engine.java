@@ -295,8 +295,6 @@ public class Engine implements IEngine {
 			return null;
 		}
 		
-		// TODO : CHECK IF OTHER ENGINE TYPES ARE NECESSARIES
-		
 		if((engineType == EngineTypeEnum.TURBOJET)||(engineType == EngineTypeEnum.TURBOFAN)) {
 			
 			Amount<Length> length = reader.getXMLAmountLengthByPath("//dimensions/length");

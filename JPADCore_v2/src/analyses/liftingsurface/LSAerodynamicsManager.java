@@ -575,8 +575,8 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	public double checkBasicLoad() {
 		return (2/surface)
 				* MyMathUtils.integrate1DSimpsonSpline(
-						getTheLiftingSurface().getLiftingSurfaceCreator().getYBreakPoints().toArray(), 
-						getTheLiftingSurface()._clBasic_y.times(getTheLiftingSurface().getLiftingSurfaceCreator().getChordsBreakPoints()).toArray(), 
+						MyArrayUtils.convertListOfAmountTodoubleArray(getTheLiftingSurface().getLiftingSurfaceCreator().getYBreakPoints()), 
+						getTheLiftingSurface().getClBasicY().times(MyArrayUtils.convertListOfAmountTodoubleArray(getTheLiftingSurface().getLiftingSurfaceCreator().getChordsBreakPoints())), 
 						0., semispan);
 	}
 
@@ -619,18 +619,18 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				_reynolds) {
 
 			_reynolds = theOperatingConditions.calculateReCutOff(
-					getTheLiftingSurface().getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue(), getTheLiftingSurface().getRoughness().getEstimatedValue());
+					getTheLiftingSurface().getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue(), getTheLiftingSurface().getLiftingSurfaceCreator().getRoughness().getEstimatedValue());
 
 			_cF  = (AerodynamicCalc.calculateCf(
 					_reynolds, machCurrent, 
-					getTheLiftingSurface().get_xTransitionU()) 
+					getTheLiftingSurface().getLiftingSurfaceCreator().getXTransitionUpper()) 
 					+ AerodynamicCalc.calculateCf(_reynolds, 
-							machCurrent, getTheLiftingSurface().get_xTransitionL()))/2;
+							machCurrent, getTheLiftingSurface().getLiftingSurfaceCreator().getXTransitionLower()))/2;
 
 		} else // XTRANSITION!!!
 		{
-			_cF  = (AerodynamicCalc.calculateCf(_reynolds, machCurrent, getTheLiftingSurface().get_xTransitionU()) + 
-					AerodynamicCalc.calculateCf(_reynolds, machCurrent, getTheLiftingSurface().get_xTransitionL()))/2; 
+			_cF  = (AerodynamicCalc.calculateCf(_reynolds, machCurrent, getTheLiftingSurface().getLiftingSurfaceCreator().getXTransitionUpper()) + 
+					AerodynamicCalc.calculateCf(_reynolds, machCurrent, getTheLiftingSurface().getLiftingSurfaceCreator().getXTransitionLower()))/2; 
 
 		}
 
@@ -719,14 +719,14 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 			//FIXME: change mach value
 			getTheLiftingSurface().getAirfoilList().get(i).getAerodynamics().set_mach(machCurrent);
-			getTheLiftingSurface()._xAcAirfoil
+			getTheLiftingSurface().getXAcAirfoilVsY()
 			.add(getTheLiftingSurface().getAirfoilList().get(i).getAerodynamics().get_aerodynamicCenterX()
 					* getTheLiftingSurface().getLiftingSurfaceCreator().getDiscretizedChords().get(i).doubleValue(SI.METER));
 
-			getTheLiftingSurface().get_distanceAirfoilACFromWingAC
-			.add(getTheLiftingSurface()._xACActualLRF.getEstimatedValue() 
-					- getTheLiftingSurface()._xAcAirfoil.get(i) 
-					- getTheLiftingSurface().getLiftingSurfaceCreator().getXLEAtYActual(getTheLiftingSurface().getLiftingSurfaceCreator().getYBreakPoints().get(i).doubleValue(SI.METER)));
+			getTheLiftingSurface().getDistanceAirfoilACFromWingAC()
+			.add(getTheLiftingSurface().getXacActualLRF().getEstimatedValue() 
+					- getTheLiftingSurface().getXAcAirfoilVsY().get(i) 
+					- getTheLiftingSurface().getLiftingSurfaceCreator().getXLEAtYActual(getTheLiftingSurface().getLiftingSurfaceCreator().getYBreakPoints().get(i).doubleValue(SI.METER)).doubleValue(SI.METER));
 
 			getTheLiftingSurface().getAirfoilList().get(i)
 			.getAerodynamics().set_alphaRoot(getCalculateAlpha0L().integralMeanWithTwist());
@@ -737,14 +737,14 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			getTheLiftingSurface().getAirfoilList().get(i)
 			.getAerodynamics().getCalculateCdWaveDrag().allMethods();
 
-			getTheLiftingSurface()._clBasic_y
+			getTheLiftingSurface().getClBasicY()
 			.add(0.5*getTheLiftingSurface().getAirfoilList().get(i).getAerodynamics().get_clCurrent());
 
 		}
 
-		getTheLiftingSurface()._distanceAirfoilACFromWingAC.toArray();
-		getTheLiftingSurface()._xAcAirfoil.toArray();
-		getTheLiftingSurface()._clBasic_y.toArray();
+		getTheLiftingSurface().getDistanceAirfoilACFromWingAC().toArray();
+		getTheLiftingSurface().getXAcAirfoilVsY().toArray();
+		getTheLiftingSurface().getClBasicY().toArray();
 
 		//		System.out.println("------" + checkBasicLoad());
 	}
@@ -842,7 +842,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			MyArray ellChordVsY = new MyArray(
 					MyMathUtils.getInterpolatedValue1DLinear(
 							yStationsActual, 
-							getTheLiftingSurface()._ellChordVsY.toArray(),
+							getTheLiftingSurface().getEllChordVsY().toArray(),
 							yStations));
 
 			MyArray chordsY = new MyArray(
@@ -910,10 +910,6 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			double [] clLocalAirfoil = new double [_nPointsSemispanWise];
 			Airfoil intermediateAirfoil;
 			double alphaDouble = alpha.getEstimatedValue();
-
-			Airfoil airfoilRoot = theWing.getAirfoilList().get(0);
-			Airfoil airfoilKink = theWing.getAirfoilList().get(1);
-			Airfoil airfoilTip = theWing.getAirfoilList().get(2);
 
 			for (int i=0 ; i< _nPointsSemispanWise ; i++){
 				intermediateAirfoil = new Airfoil(
@@ -1068,25 +1064,25 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		 * LRF = Wing Local Reference Frame
 		 */
 		public double atQuarterMAC() {
-			getTheLiftingSurface()._xACActualMRF = getTheLiftingSurface().getLiftingSurfaceCreator().getMeanAerodynamicChord().times(0.25);
-			getTheLiftingSurface()._xACActualLRF = getTheLiftingSurface()._xACActualMRF.plus(getTheLiftingSurface().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX());
-			_methodMapMRF.put(MethodEnum.QUARTER, getTheLiftingSurface()._xACActualMRF.copy());
-			_methodMapLRF.put(MethodEnum.QUARTER, getTheLiftingSurface()._xACActualLRF.copy());
-			return getTheLiftingSurface()._xACActualMRF.getEstimatedValue();
+			getTheLiftingSurface().setXacActualMRF(getTheLiftingSurface().getLiftingSurfaceCreator().getMeanAerodynamicChord().times(0.25));
+			getTheLiftingSurface().setXacActualLRF(getTheLiftingSurface().getXacActualMRF().plus(getTheLiftingSurface().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()));
+			_methodMapMRF.put(MethodEnum.QUARTER, getTheLiftingSurface().getXacActualMRF().copy());
+			_methodMapLRF.put(MethodEnum.QUARTER, getTheLiftingSurface().getXacActualLRF().copy());
+			return getTheLiftingSurface().getXacActualMRF().getEstimatedValue();
 		}
 
 		/**
 		 * @see page 555 Sforza
 		 */
 		public double deYoungHarper() {
-			getTheLiftingSurface()._xACActualMRF = Amount.valueOf(
+			getTheLiftingSurface().setXacActualMRF(Amount.valueOf(
 					LSGeometryCalc.calcXacFromLEMacDeYoungHarper(ar, getTheLiftingSurface().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER), 
 							taperRatioEq, sweepQuarterChordEq),
-					SI.METER);
-			getTheLiftingSurface()._xACActualLRF = getTheLiftingSurface()._xACActualMRF.plus(getTheLiftingSurface()._xLEMacActualLRF);
-			_methodMapMRF.put(MethodEnum.DEYOUNG_HARPER, getTheLiftingSurface()._xACActualMRF.copy());
-			_methodMapLRF.put(MethodEnum.DEYOUNG_HARPER, getTheLiftingSurface()._xACActualLRF.copy());
-			return getTheLiftingSurface()._xACActualMRF.getEstimatedValue();
+					SI.METER));
+			getTheLiftingSurface().setXacActualLRF(getTheLiftingSurface().getXacActualMRF().plus(getTheLiftingSurface().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()));
+			_methodMapMRF.put(MethodEnum.DEYOUNG_HARPER, getTheLiftingSurface().getXacActualMRF().copy());
+			_methodMapLRF.put(MethodEnum.DEYOUNG_HARPER, getTheLiftingSurface().getXacActualLRF().copy());
+			return getTheLiftingSurface().getXacActualMRF().getEstimatedValue();
 		}
 
 
@@ -1094,13 +1090,13 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		 *  page 53 Napolitano 
 		 */
 		public double datcomNapolitano() {
-			getTheLiftingSurface()._xACActualMRF = Amount.valueOf(
+			getTheLiftingSurface().setXacActualMRF(Amount.valueOf(
 					LSGeometryCalc.calcXacFromNapolitanoDatcom(getTheLiftingSurface().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER),
 							taperRatioEq ,sweepHalfChordEq, ar,  
 							theOperatingConditions.get_machCurrent(),
 							//theLiftingSurface.getAerodynamics().get_AerodynamicDatabaseReader() ), SI.METER);
-							theAircraft.getTheAerodynamics().get_aerodynamicDatabaseReader() ),SI.METER);
-			double xacNapolitano=getTheLiftingSurface()._xACActualMRF.getEstimatedValue();
+							theAircraft.getTheAerodynamics().get_aerodynamicDatabaseReader() ),SI.METER));
+			double xacNapolitano=getTheLiftingSurface().getXacActualMRF().getEstimatedValue();
 
 			//			System.out.println("taper ratio " + taperRatioEq);
 			//			System.out.println("sweep angle " + sweepHalfChordEq);
@@ -3898,8 +3894,8 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		private MyArray _chordsVsYActualAirfoils;
 
 		public CalcCmAC() {
-			_chordsVsYActualAirfoils = getTheLiftingSurface().getLiftingSurfaceCreator().getDiscretizedChords().interpolate(
-					getTheLiftingSurface().getLiftingSurfaceCreator().getEtaBreakPoints().toArray(), etaAirfoil);
+			_chordsVsYActualAirfoils = new MyArray(MyArrayUtils.convertListOfAmountTodoubleArray(getTheLiftingSurface().getLiftingSurfaceCreator().getDiscretizedChords())).interpolate(
+					MyArrayUtils.convertToDoublePrimitive(getTheLiftingSurface().getLiftingSurfaceCreator().getEtaBreakPoints()), etaAirfoil);
 		}
 
 		public double additional() {
@@ -3921,10 +3917,10 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			if (!_methodsMap.containsKey(MethodEnum.BASIC)) {
 				_cMacBasic = (2/(surface*getTheLiftingSurface().getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()))
 						* MyMathUtils.integrate1DSimpsonSpline(
-								getTheLiftingSurface().getLiftingSurfaceCreator().getYBreakPoints().toArray(), 
-								getTheLiftingSurface()._clBasic_y
+								MyArrayUtils.convertListOfAmountTodoubleArray(getTheLiftingSurface().getLiftingSurfaceCreator().getYBreakPoints()), 
+								getTheLiftingSurface().getClBasicY()
 								.times(_chordsVsYActualAirfoils)
-								.times(getTheLiftingSurface()._distanceAirfoilACFromWingAC)
+								.times(getTheLiftingSurface().getDistanceAirfoilACFromWingAC())
 								.toArray(), 
 								0., semispan);
 				_methodsMap.put(MethodEnum.BASIC, _cMacBasic);

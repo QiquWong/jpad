@@ -924,7 +924,7 @@ public class LiftingSurface2Panels extends AeroComponent implements ILiftingSurf
 
 		_deltaXWingFus = Amount.valueOf(_X0.getEstimatedValue(),SI.METER);
 
-		// TODO : given S,AR,eta_kink,lambda_eq_c4,taper_ratio;ex_le,ex_te
+		//Given S,AR,eta_kink,lambda_eq_c4,taper_ratio;ex_le,ex_te
 		//calculate wing geometry.
 
 		//////////////////////////////

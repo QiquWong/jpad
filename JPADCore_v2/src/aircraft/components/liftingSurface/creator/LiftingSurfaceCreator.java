@@ -58,10 +58,13 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 	private Amount<Length> _roughness;
 	private Amount<Angle> _dihedralMean = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 	
+	private Double _xTransitionUpper;
+	private Double _xTransitionLower;
+	
 	private Amount<Area> _surfaceWettedExposed;
 	private Amount<Area> _controlSurfaceArea = Amount.valueOf(0.0, SI.SQUARE_METRE);
 	
-	private Double volumetricRatio = 0.0;
+	private Double _volumetricRatio = 0.0;
 	private Amount<Length> _liftingSurfaceACToWingACDistance = Amount.valueOf(0.0, SI.METER);
 	private Amount<Length> _liftingSurfaceArm = Amount.valueOf(0.0, SI.METER);
 	
@@ -2819,6 +2822,8 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 			.append("\tMean aerodynamic chord: " + this.getMeanAerodynamicChord() +"\n")
 			.append("\t(X,Y,Z)_le of mean aerodynamic chord: " + this.getMeanAerodynamicChordLeadingEdge() +"\n")
 			.append("\tControl surface area: " + this._controlSurfaceArea +"\n")
+			.append("\tTransition point upper surface: " + this._xTransitionUpper +"\n")
+			.append("\tTransition point lower surface: " + this._xTransitionLower +"\n")
 			;
 		}
 		else if (_type.equals(ComponentEnum.HORIZONTAL_TAIL)) {
@@ -2853,6 +2858,8 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 			.append("\tMean aerodynamic chord: " + this.getMeanAerodynamicChord() +"\n")
 			.append("\t(X,Y,Z)_le of mean aerodynamic chord: " + this.getMeanAerodynamicChordLeadingEdge() +"\n")
 			.append("\tControl surface area: " + this._controlSurfaceArea +"\n")
+			.append("\tTransition point upper surface: " + this._xTransitionUpper +"\n")
+			.append("\tTransition point lower surface: " + this._xTransitionLower +"\n")
 			;
 			
 		}
@@ -2888,6 +2895,8 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 			.append("\tMean aerodynamic chord: " + this.getMeanAerodynamicChord() +"\n")
 			.append("\t(X,Y,Z)_le of mean aerodynamic chord: " + this.getMeanAerodynamicChordLeadingEdge() +"\n")
 			.append("\tControl surface area: " + this._controlSurfaceArea +"\n")
+			.append("\tTransition point upper surface: " + this._xTransitionUpper +"\n")
+			.append("\tTransition point lower surface: " + this._xTransitionLower +"\n")
 			;
 
 		}
@@ -2923,6 +2932,8 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 			.append("\tMean aerodynamic chord: " + this.getMeanAerodynamicChord() +"\n")
 			.append("\t(X,Y,Z)_le of mean aerodynamic chord: " + this.getMeanAerodynamicChordLeadingEdge() +"\n")
 			.append("\tControl surface area: " + this._controlSurfaceArea +"\n")
+			.append("\tTransition point upper surface: " + this._xTransitionUpper +"\n")
+			.append("\tTransition point lower surface: " + this._xTransitionLower +"\n")
 			;
 
 		}
@@ -3043,11 +3054,11 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 	}
 
 	public Double getVolumetricRatio() {
-		return volumetricRatio;
+		return _volumetricRatio;
 	}
 
 	public void setVolumetricRatio(Double volumetricRatio) {
-		this.volumetricRatio = volumetricRatio;
+		this._volumetricRatio = volumetricRatio;
 	}
 
 	public Amount<Length> getLiftingSurfaceACToWingACdistance() {
@@ -3126,5 +3137,21 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	public void setDihedralMean(Amount<Angle> _dihedralMean) {
 		this._dihedralMean = _dihedralMean;
+	}
+	
+	public Double getXTransitionUpper() {
+		return _xTransitionUpper;
+	}
+
+	public void setXTransitionUpper(Double _xTransitionUpper) {
+		this._xTransitionUpper = _xTransitionUpper;
+	}
+
+	public Double getXTransitionLower() {
+		return _xTransitionLower;
+	}
+
+	public void setXTransitionLower(Double _xTransitionLower) {
+		this._xTransitionLower = _xTransitionLower;
 	}
 }
