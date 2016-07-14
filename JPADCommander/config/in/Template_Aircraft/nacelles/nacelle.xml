@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+	<nacelle id="JPAD Test Nacelle DAF - 2016" engine="engineTurbofan.xml">
+		<global_data>
+			<roughness unit="m">0.405e-5</roughness>
+			<reference_mass unit="kg">800</reference_mass>
+		</global_data>
+		<geometry>
+			<length unit="m"></length>
+			<maximum_diameter unit="m"></maximum_diameter>
+			<k_inlet>0.82</k_inlet>
+			<k_outlet>0.22</k_outlet>
+			<k_length>0.38</k_length>
+			<k_diameter_outlet>0.5</k_diameter_outlet>
+		</geometry>
+	</nacelle>
+</jpad_config>

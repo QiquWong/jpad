@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+    <analyses id="JPAD Test analysis">
+        <weights file="analysis_weights.xml"/>
+        <balance file="analysis_balance.xml"/>
+        <aerodynamics file="analysis_aerodynamics.xml"/>
+        <performance file="analysis_performance.xml"/>
+        <costs file="analysis_costs.xml"/>
+    </analyses>
+</jpad_config>
