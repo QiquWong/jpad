@@ -12,12 +12,9 @@ import java.io.IOException;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
@@ -30,22 +27,24 @@ public class Main extends Application {
 	private static TextField textFieldAircraftInputFile;
 	private static BorderPane mainInputManagerAircraftFromFileLayout;
 	private static BorderPane mainInputManagerAircraftDefaultLayout;
+	private static String inputDirectoryPath;
+	private static String outputDirectoryPath;
+	private static String databaseDirectoryPath;
 	
 	@Override
 	public void start(Stage primaryStage) throws IOException {
-		
-		// Modal dialog - setup
-	     
 		
 		Main.primaryStage = primaryStage;
 		Main.primaryStage.setTitle("JPADCommander - UniNa - DAF");
 		showMainView();
 		
 		Stage dialogConfig = new DialogConfig(primaryStage);
+		dialogConfig.setTitle("JPADCommander Configuration - UniNa - DAF");
 		dialogConfig.sizeToScene();
 		dialogConfig.show();
 		
 		showMainItems();
+		
 	}
 	
 	private void showMainView() throws IOException {
@@ -132,5 +131,29 @@ public class Main extends Application {
 
 	public static Stage getPrimaryStage() {
 		return primaryStage;
+	}
+
+	public static String getInputDirectoryPath() {
+		return inputDirectoryPath;
+	}
+
+	public static void setInputDirectoryPath(String inputDirectoryPath) {
+		Main.inputDirectoryPath = inputDirectoryPath;
+	}
+
+	public static String getOutputDirectoryPath() {
+		return outputDirectoryPath;
+	}
+
+	public static void setOutputDirectoryPath(String outputDirectoryPath) {
+		Main.outputDirectoryPath = outputDirectoryPath;
+	}
+
+	public static String getDatabaseDirectoryPath() {
+		return databaseDirectoryPath;
+	}
+
+	public static void setDatabaseDirectoryPath(String databaseDirectoryPath) {
+		Main.databaseDirectoryPath = databaseDirectoryPath;
 	}
 }
