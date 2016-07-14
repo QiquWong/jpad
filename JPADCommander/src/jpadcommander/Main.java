@@ -12,9 +12,12 @@ import java.io.IOException;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
@@ -26,12 +29,22 @@ public class Main extends Application {
 	private static BorderPane mainInputManagerAircraftSubContentLayout;
 	private static TextField textFieldAircraftInputFile;
 	private static BorderPane mainInputManagerAircraftFromFileLayout;
+	private static BorderPane mainInputManagerAircraftDefaultLayout;
 	
 	@Override
 	public void start(Stage primaryStage) throws IOException {
+		
+		// Modal dialog - setup
+	     
+		
 		Main.primaryStage = primaryStage;
 		Main.primaryStage.setTitle("JPADCommander - UniNa - DAF");
 		showMainView();
+		
+		Stage dialogConfig = new DialogConfig(primaryStage);
+		dialogConfig.sizeToScene();
+		dialogConfig.show();
+		
 		showMainItems();
 	}
 	
@@ -59,10 +72,6 @@ public class Main extends Application {
 		loader.setLocation(Main.class.getResource("inputmanager/InputManager.fxml"));
 		mainInputManagerLayout = loader.load();
 		mainLayout.setCenter(mainInputManagerLayout);
-		
-		// get the content of Input-Aircraft-From-File
-		mainInputManagerAircraftSubContentLayout = (BorderPane) mainInputManagerLayout.lookup("#mainInputManagerAircraftSubContent");
-		
 		primaryStage.show();
 		
 	}
@@ -71,11 +80,16 @@ public class Main extends Application {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(Main.class.getResource("inputmanager/InputManagerAircraftFromFile.fxml"));
 		mainInputManagerAircraftFromFileLayout = loader.load();
-
-		// get the text field for aircraft input file name
-		textFieldAircraftInputFile = (TextField) mainInputManagerAircraftFromFileLayout.lookup("#textFieldAircraftInputFile");
-		
 		mainInputManagerAircraftSubContentLayout.setCenter(mainInputManagerAircraftFromFileLayout);
+		primaryStage.show();
+		
+	}
+
+	public static void showInputManagerAircraftDefault() throws IOException {
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(Main.class.getResource("inputmanager/InputManagerAircraftDefault.fxml"));
+		mainInputManagerAircraftDefaultLayout = loader.load();
+		mainInputManagerAircraftSubContentLayout.setCenter(mainInputManagerAircraftDefaultLayout);
 		primaryStage.show();
 		
 	}
@@ -86,5 +100,37 @@ public class Main extends Application {
 
 	public static TextField getTextFieldAircraftInputFile() {
 		return textFieldAircraftInputFile;
+	}
+
+	public static BorderPane getMainInputManagerAircraftFromFileLayout() {
+		return mainInputManagerAircraftFromFileLayout;
+	}
+
+	public static BorderPane getMainInputManagerAircraftDefaultLayout() {
+		return mainInputManagerAircraftDefaultLayout;
+	}
+	
+	public static void setTextFieldAircraftInputFile(TextField textFieldAircraftInputFile) {
+		Main.textFieldAircraftInputFile = textFieldAircraftInputFile;
+	}
+
+	public static BorderPane getMainInputManagerLayout() {
+		return mainInputManagerLayout;
+	}
+
+	public static void setMainInputManagerLayout(BorderPane mainInputManagerLayout) {
+		Main.mainInputManagerLayout = mainInputManagerLayout;
+	}
+
+	public static BorderPane getMainInputManagerAircraftSubContentLayout() {
+		return mainInputManagerAircraftSubContentLayout;
+	}
+
+	public static void setMainInputManagerAircraftSubContentLayout(BorderPane mainInputManagerAircraftSubContentLayout) {
+		Main.mainInputManagerAircraftSubContentLayout = mainInputManagerAircraftSubContentLayout;
+	}
+
+	public static Stage getPrimaryStage() {
+		return primaryStage;
 	}
 }

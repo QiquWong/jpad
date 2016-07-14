@@ -23,14 +23,11 @@
                   </Label>
                   <AnchorPane>
                      <children>
-                        <TextField id="textFieldAircraftInputFile" prefHeight="25.0" prefWidth="1130.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <TextField id="textFieldAircraftInputFile" prefHeight="30.0" prefWidth="884.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="246.0" AnchorPane.topAnchor="0.0" />
+                        <Button layoutX="892.0" layoutY="3.0" mnemonicParsing="false" onAction="#chooseAircraftFile" text="..." />
+                        <Button layoutX="925.0" layoutY="2.0" mnemonicParsing="false" onAction="#loadAircraftFile" text="Load" />
                      </children>
                   </AnchorPane>
-                  <Button mnemonicParsing="false" onAction="#chooseAircraftFile" text="...">
-                     <HBox.margin>
-                        <Insets left="10.0" />
-                     </HBox.margin>
-                  </Button>
                </children>
             </HBox>
          </items>

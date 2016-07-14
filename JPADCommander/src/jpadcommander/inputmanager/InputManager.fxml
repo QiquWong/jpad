@@ -29,12 +29,7 @@
                                           <ToggleGroup fx:id="groupAircraftInputType" />
                                        </toggleGroup>
                                     </RadioButton>
-                                    <RadioButton mnemonicParsing="false" text="Default aircraft" toggleGroup="$groupAircraftInputType">
-                                       <padding>
-                                          <Insets left="10.0" right="10.0" />
-                                       </padding>
-                                    </RadioButton>
-                                    <RadioButton mnemonicParsing="false" text="Blank aircraft" toggleGroup="$groupAircraftInputType">
+                                    <RadioButton mnemonicParsing="false" onAction="#showInputManagerAircraftDefaultContent" text="Default aircraft" toggleGroup="$groupAircraftInputType">
                                        <padding>
                                           <Insets left="10.0" right="10.0" />
                                        </padding>
