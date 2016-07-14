@@ -13,6 +13,7 @@ import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -21,6 +22,10 @@ public class Main extends Application {
 
 	private static Stage primaryStage;
 	private static BorderPane mainLayout;
+	private static BorderPane mainInputManagerLayout;
+	private static BorderPane mainInputManagerAircraftSubContentLayout;
+	private static TextField textFieldAircraftInputFile;
+	private static BorderPane mainInputManagerAircraftFromFileLayout;
 	
 	@Override
 	public void start(Stage primaryStage) throws IOException {
@@ -52,13 +57,34 @@ public class Main extends Application {
 	public static void showInputManager() throws IOException {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(Main.class.getResource("inputmanager/InputManager.fxml"));
-		BorderPane mainItems = loader.load();
-		mainLayout.setCenter(mainItems);
+		mainInputManagerLayout = loader.load();
+		mainLayout.setCenter(mainInputManagerLayout);
+		
+		// get the content of Input-Aircraft-From-File
+		mainInputManagerAircraftSubContentLayout = (BorderPane) mainInputManagerLayout.lookup("#mainInputManagerAircraftSubContent");
+		
+		primaryStage.show();
+		
+	}
+
+	public static void showInputManagerAircraftFromFile() throws IOException {
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(Main.class.getResource("inputmanager/InputManagerAircraftFromFile.fxml"));
+		mainInputManagerAircraftFromFileLayout = loader.load();
+
+		// get the text field for aircraft input file name
+		textFieldAircraftInputFile = (TextField) mainInputManagerAircraftFromFileLayout.lookup("#textFieldAircraftInputFile");
+		
+		mainInputManagerAircraftSubContentLayout.setCenter(mainInputManagerAircraftFromFileLayout);
 		primaryStage.show();
 		
 	}
 	
 	public static void main(String[] args) {
 		launch(args);
+	}
+
+	public static TextField getTextFieldAircraftInputFile() {
+		return textFieldAircraftInputFile;
 	}
 }
