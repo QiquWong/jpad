@@ -13,6 +13,7 @@ import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -21,13 +22,29 @@ public class Main extends Application {
 
 	private static Stage primaryStage;
 	private static BorderPane mainLayout;
+	private static BorderPane mainInputManagerLayout;
+	private static BorderPane mainInputManagerAircraftSubContentLayout;
+	private static TextField textFieldAircraftInputFile;
+	private static BorderPane mainInputManagerAircraftFromFileLayout;
+	private static BorderPane mainInputManagerAircraftDefaultLayout;
+	private static String inputDirectoryPath;
+	private static String outputDirectoryPath;
+	private static String databaseDirectoryPath;
 	
 	@Override
 	public void start(Stage primaryStage) throws IOException {
+		
 		Main.primaryStage = primaryStage;
 		Main.primaryStage.setTitle("JPADCommander - UniNa - DAF");
 		showMainView();
+		
+		Stage dialogConfig = new DialogConfig(primaryStage);
+		dialogConfig.setTitle("JPADCommander Configuration - UniNa - DAF");
+		dialogConfig.sizeToScene();
+		dialogConfig.show();
+		
 		showMainItems();
+		
 	}
 	
 	private void showMainView() throws IOException {
@@ -52,13 +69,91 @@ public class Main extends Application {
 	public static void showInputManager() throws IOException {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(Main.class.getResource("inputmanager/InputManager.fxml"));
-		BorderPane mainItems = loader.load();
-		mainLayout.setCenter(mainItems);
+		mainInputManagerLayout = loader.load();
+		mainLayout.setCenter(mainInputManagerLayout);
+		primaryStage.show();
+		
+	}
+
+	public static void showInputManagerAircraftFromFile() throws IOException {
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(Main.class.getResource("inputmanager/InputManagerAircraftFromFile.fxml"));
+		mainInputManagerAircraftFromFileLayout = loader.load();
+		mainInputManagerAircraftSubContentLayout.setCenter(mainInputManagerAircraftFromFileLayout);
+		primaryStage.show();
+		
+	}
+
+	public static void showInputManagerAircraftDefault() throws IOException {
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(Main.class.getResource("inputmanager/InputManagerAircraftDefault.fxml"));
+		mainInputManagerAircraftDefaultLayout = loader.load();
+		mainInputManagerAircraftSubContentLayout.setCenter(mainInputManagerAircraftDefaultLayout);
 		primaryStage.show();
 		
 	}
 	
 	public static void main(String[] args) {
 		launch(args);
+	}
+
+	public static TextField getTextFieldAircraftInputFile() {
+		return textFieldAircraftInputFile;
+	}
+
+	public static BorderPane getMainInputManagerAircraftFromFileLayout() {
+		return mainInputManagerAircraftFromFileLayout;
+	}
+
+	public static BorderPane getMainInputManagerAircraftDefaultLayout() {
+		return mainInputManagerAircraftDefaultLayout;
+	}
+	
+	public static void setTextFieldAircraftInputFile(TextField textFieldAircraftInputFile) {
+		Main.textFieldAircraftInputFile = textFieldAircraftInputFile;
+	}
+
+	public static BorderPane getMainInputManagerLayout() {
+		return mainInputManagerLayout;
+	}
+
+	public static void setMainInputManagerLayout(BorderPane mainInputManagerLayout) {
+		Main.mainInputManagerLayout = mainInputManagerLayout;
+	}
+
+	public static BorderPane getMainInputManagerAircraftSubContentLayout() {
+		return mainInputManagerAircraftSubContentLayout;
+	}
+
+	public static void setMainInputManagerAircraftSubContentLayout(BorderPane mainInputManagerAircraftSubContentLayout) {
+		Main.mainInputManagerAircraftSubContentLayout = mainInputManagerAircraftSubContentLayout;
+	}
+
+	public static Stage getPrimaryStage() {
+		return primaryStage;
+	}
+
+	public static String getInputDirectoryPath() {
+		return inputDirectoryPath;
+	}
+
+	public static void setInputDirectoryPath(String inputDirectoryPath) {
+		Main.inputDirectoryPath = inputDirectoryPath;
+	}
+
+	public static String getOutputDirectoryPath() {
+		return outputDirectoryPath;
+	}
+
+	public static void setOutputDirectoryPath(String outputDirectoryPath) {
+		Main.outputDirectoryPath = outputDirectoryPath;
+	}
+
+	public static String getDatabaseDirectoryPath() {
+		return databaseDirectoryPath;
+	}
+
+	public static void setDatabaseDirectoryPath(String databaseDirectoryPath) {
+		Main.databaseDirectoryPath = databaseDirectoryPath;
 	}
 }

@@ -74,7 +74,7 @@ public class ACBalanceManager extends ACCalculatorManager {
 			Aircraft aircraft, OperatingConditions conditions, 
 			Map<ComponentEnum, List<MethodEnum>> methodsMap){
 
-		aircraft.getFuselage().calculateCG(aircraft, conditions);
+		aircraft.getFuselage().calculateCG(aircraft);
 
 		aircraft.getWing().calculateCGAllMethods(methodsMap, ComponentEnum.WING);
 		aircraft.getHTail().calculateCGAllMethods(methodsMap, ComponentEnum.HORIZONTAL_TAIL);
@@ -84,7 +84,7 @@ public class ACBalanceManager extends ACCalculatorManager {
 
 		aircraft.getFuelTank().calculateCG();
 
-		aircraft.getLandingGears().calculateCG(aircraft, conditions);
+		aircraft.getLandingGears().calculateCG(aircraft);
 
 
 		// --- END OF STRUCTURE MASS-----------------------------------
@@ -134,8 +134,8 @@ public class ACBalanceManager extends ACCalculatorManager {
 		for (int i=0; i < _cgList.size(); i++) {
 
 			prod += _cgList.get(i).get_xBRF().getEstimatedValue()
-					*aircraft.getTheWeights().get_massStructureList().get(i).getEstimatedValue();
-			sum += aircraft.getTheWeights().get_massStructureList().get(i).getEstimatedValue();
+					*aircraft.getTheWeights().getMassStructureList().get(i).getEstimatedValue();
+			sum += aircraft.getTheWeights().getMassStructureList().get(i).getEstimatedValue();
 
 		}
 
@@ -162,9 +162,9 @@ public class ACBalanceManager extends ACCalculatorManager {
 		_cgStructureAndPower.set_xBRF(
 				Amount.valueOf(
 						       (cgPowerPlantContribute+
-								aircraft.getTheWeights().get_structuralMass().getEstimatedValue()*
+								aircraft.getTheWeights().getStructuralMass().getEstimatedValue()*
 								get_cgStructure().get_xBRF().getEstimatedValue())/
-								(aircraft.getTheWeights().get_structuralMass().getEstimatedValue() + 
+								(aircraft.getTheWeights().getStructuralMass().getEstimatedValue() + 
 										aircraft.getPowerPlant().getTotalMass().getEstimatedValue())
 										, SI.METER));
 
@@ -178,10 +178,10 @@ public class ACBalanceManager extends ACCalculatorManager {
 		_cgMZFM = new CenterOfGravity();
 
 		get_cgMZFM().set_xBRF(Amount.valueOf(
-				(get_cgStructureAndPower().get_xBRF().getEstimatedValue()*aircraft.getTheWeights().get_OEM().getEstimatedValue() + 
+				(get_cgStructureAndPower().get_xBRF().getEstimatedValue()*aircraft.getTheWeights().getOperatingEmptyMass().getEstimatedValue() + 
 						aircraft.getCabinConfiguration().getSeatsCoG().getEstimatedValue()*
-						aircraft.getTheWeights().get_paxMassMax().getEstimatedValue()) /
-						(aircraft.getTheWeights().get_paxMassMax().getEstimatedValue() + aircraft.getTheWeights().get_OEM().getEstimatedValue())
+						aircraft.getTheWeights().getPaxMassMax().getEstimatedValue()) /
+						(aircraft.getTheWeights().getPaxMassMax().getEstimatedValue() + aircraft.getTheWeights().getOperatingEmptyMass().getEstimatedValue())
 						, SI.METER));
 
 		get_cgMZFM().calculateCGinMAC(
@@ -195,10 +195,10 @@ public class ACBalanceManager extends ACCalculatorManager {
 
 		_cgMTOM.set_xBRF(Amount.valueOf(
 				(_cgMZFM.get_xBRF().getEstimatedValue() 
-						* aircraft.getTheWeights().get_MZFM().getEstimatedValue()
+						* aircraft.getTheWeights().getMaximumZeroFuelMass().getEstimatedValue()
 						+ aircraft.getFuelTank().getFuelMass().getEstimatedValue()
 						* aircraft.getFuelTank().getXCG().getEstimatedValue())
-						/ aircraft.getTheWeights().get_MTOM().getEstimatedValue(),
+						/ aircraft.getTheWeights().getMaximumTakeOffMass().getEstimatedValue(),
 						SI.METER));
 
 		_cgMTOM.calculateCGinMAC(

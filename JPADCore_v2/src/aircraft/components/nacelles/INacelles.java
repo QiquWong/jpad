@@ -8,14 +8,15 @@ import javax.measure.quantity.Mass;
 
 import org.jscience.physics.amount.Amount;
 
+import aircraft.components.Aircraft;
 import aircraft.components.powerplant.Engine;
 import standaloneutils.customdata.CenterOfGravity;
 
 public interface INacelles {
 
-	public void initializeWeights();
+	public void initializeWeights(Aircraft theAircraft);
 	public void calculateSurfaceWetted();
-	public void calculateMass();
+	public void calculateMass(Aircraft theAircraft);
 	public CenterOfGravity calculateCG();
 	public void calculateAerodynamics();
 

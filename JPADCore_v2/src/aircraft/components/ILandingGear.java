@@ -9,17 +9,16 @@ import javax.measure.quantity.Mass;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.LandingGears.MountingPosition;
-import analyses.OperatingConditions;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.customdata.CenterOfGravity;
 
 public interface ILandingGear {
 
-	public void calculateMass(Aircraft aircraft, OperatingConditions conditions);
-	public void calculateMass(Aircraft aircraft, OperatingConditions conditions, MethodEnum method);
-	public void calculateCG(Aircraft aircraft, OperatingConditions conditions);
-	public void calculateCG(Aircraft aircraft, OperatingConditions conditions, MethodEnum method);
+	public void calculateMass(Aircraft aircraft);
+	public void calculateMass(Aircraft aircraft, MethodEnum method);
+	public void calculateCG(Aircraft aircraft);
+	public void calculateCG(Aircraft aircraft, MethodEnum method);
 	
 	public Amount<Mass> getMass();
 	public void setMass(Amount<Mass> mass);

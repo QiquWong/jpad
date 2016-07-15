@@ -51,12 +51,9 @@ public class Fuselage implements IFuselage {
 	//-----------------------------------------------------------------------
 
 	// GM = Geometric Mean, RMS = Root Mean Square, AM = Arithmetic Mean
-	private Amount<Length> _equivalentDiameterCylinderGM;
-
 	private Amount<Mass> _mass, _massEstimated, _massReference;
 	private Map <MethodEnum, Amount<Mass>> _massMap = new TreeMap<MethodEnum, Amount<Mass>>();
 	private Map <MethodEnum, Amount<Length>> _xCGMap = new TreeMap<MethodEnum, Amount<Length>>();
-	private Map <MethodEnum, Amount<Length>> _yCGMap = new TreeMap<MethodEnum, Amount<Length>>();
 
 	private Map <AnalysisTypeEnum, List<MethodEnum>> _methodsMap = new HashMap<AnalysisTypeEnum, List<MethodEnum>>();
 	private List<MethodEnum> _methodsList = new ArrayList<MethodEnum>();
@@ -295,22 +292,20 @@ public class Fuselage implements IFuselage {
 
 	}
 
-	public void calculateMass(Aircraft aircraft, 
-			OperatingConditions conditions) {
-		calculateMass(aircraft, conditions, MethodEnum.RAYMER);
-		calculateMass(aircraft, conditions, MethodEnum.TORENBEEK_1976);
-		calculateMass(aircraft, conditions, MethodEnum.TORENBEEK_2013);
-		calculateMass(aircraft, conditions, MethodEnum.JENKINSON);
-		calculateMass(aircraft, conditions, MethodEnum.KROO);
-		calculateMass(aircraft, conditions, MethodEnum.SADRAY);
-		calculateMass(aircraft, conditions, MethodEnum.NICOLAI_1984);
-		calculateMass(aircraft, conditions, MethodEnum.ROSKAM);
+	public void calculateMass(Aircraft aircraft) {
+		calculateMass(aircraft, MethodEnum.RAYMER);
+		calculateMass(aircraft, MethodEnum.TORENBEEK_1976);
+		calculateMass(aircraft, MethodEnum.TORENBEEK_2013);
+		calculateMass(aircraft, MethodEnum.JENKINSON);
+		calculateMass(aircraft, MethodEnum.KROO);
+		calculateMass(aircraft, MethodEnum.SADRAY);
+		calculateMass(aircraft, MethodEnum.NICOLAI_1984);
+		calculateMass(aircraft, MethodEnum.ROSKAM);
 	}
 
 
 	@Override
-	public void calculateMass(Aircraft aircraft, 
-			OperatingConditions conditions, 
+	public void calculateMass(Aircraft aircraft,  
 			MethodEnum method) {
 
 		switch (method){
@@ -337,7 +332,7 @@ public class Fuselage implements IFuselage {
 			_mass = Amount.valueOf(0.039*
 					Math.pow((1 + k) * 
 							2*_fuselageCreator.getLenF().getEstimatedValue()*
-							_equivalentDiameterCylinderGM.getEstimatedValue()*
+							getFuselageCreator().getEquivalentDiameterCylinderGM().getEstimatedValue()*
 							Math.pow(aircraft.getThePerformance().getVDiveEAS().getEstimatedValue(),0.5),
 							1.5), SI.KILOGRAM);
 			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
@@ -347,10 +342,10 @@ public class Fuselage implements IFuselage {
 			_methodsList.add(method);
 			_mass = Amount.valueOf(
 					0.0737*
-					pow(2*_equivalentDiameterCylinderGM.getEstimatedValue()*
+					pow(2*getFuselageCreator().getEquivalentDiameterCylinderGM().getEstimatedValue()*
 							pow(aircraft.getThePerformance().getVDiveEAS().getEstimatedValue(), 0.338) * 
 							pow(_fuselageCreator.getLenF().getEstimatedValue(), 0.857)*
-							pow(aircraft.getTheWeights().get_MTOM().getEstimatedValue()*
+							pow(aircraft.getTheWeights().getMaximumTakeOffMass().getEstimatedValue()*
 									aircraft.getThePerformance().getNUltimate(), 0.286)
 									, 1.1)
 									, SI.KILOGRAM);
@@ -366,7 +361,7 @@ public class Fuselage implements IFuselage {
 					pow(
 							aircraft.getThePerformance().getMaxDynamicPressure().to(MyUnits.LB_FT2).getEstimatedValue()/100,
 							0.283)*
-							pow(aircraft.getTheWeights().get_MTOM().to(NonSI.POUND).getEstimatedValue()/1000, 0.95)*
+							pow(aircraft.getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue()/1000, 0.95)*
 							pow(_fuselageCreator.getLenF().divide(_fuselageCreator.getSectionCylinderHeight()).getEstimatedValue(), 0.71), 
 							NonSI.POUND).to(SI.KILOGRAM);
 			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), _mass.getUnit()));
@@ -384,43 +379,44 @@ public class Fuselage implements IFuselage {
 			double Kinlet = 1.;
 			double kRho = 0.0032;
 			_mass = Amount.valueOf(_fuselageCreator.getLenF().getEstimatedValue()*
-					pow(_equivalentDiameterCylinderGM.getEstimatedValue(),2)*
-					aircraft.getTheWeights().get_materialDensity().getEstimatedValue()*
+					pow(getFuselageCreator().getEquivalentDiameterCylinderGM().getEstimatedValue(),2)*
+					aircraft.getTheWeights().getMaterialDensity().getEstimatedValue()*
 					kRho*
 					pow(aircraft.getThePerformance().getNUltimate(),0.25)*
 					Kinlet,
 					SI.KILOGRAM);
 			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
-//		 */
-		//		 The method gives poor results
-		/*
-		 * */
-		case KROO : { // page 432 Stanford University pdf
-			_methodsList.add(method);
-			double Ifuse;
-			double Ip = 1.5e-3 * 
-					conditions.get_maxDeltaP().to(MyUnits.LB_FT2).getEstimatedValue()*
-					_fuselageCreator.getSectionCylinderWidth().to(NonSI.FOOT).getEstimatedValue();
-
-			double Ib = 1.91e-4 * aircraft.getThePerformance().getNLimitZFW() * 
-					(aircraft.getTheWeights().get_MZFM().to(NonSI.POUND).getEstimatedValue() - 
-//							_liftingSurface.get_wing().get_mass().to(NonSI.POUND).getEstimatedValue()
-							aircraft.getWing().getMass().to(NonSI.POUND).getEstimatedValue()
-//												- aircraft.get_nacelle().get_mass().getEstimatedValue()*aircraft.get_propulsion().get_engineNumber()) TODO ADD!
-		 * _fuselageCreator.getLenF().minus(aircraft.getWing().getChordRoot().divide(2.)).to(NonSI.FOOT).getEstimatedValue()/
-							pow(_fuselageCreator.getSectionCylinderHeight().to(NonSI.FOOT).getEstimatedValue(),2));
-
-			if (Ip > Ib) {
-				Ifuse = Ip;
-			} else {
-				Ifuse = (Math.pow(Ip,2) + Math.pow(Ib,2))/(2*Ib); 
-			}
-
-			_mass = Amount.valueOf((1.051 + 0.102*Ifuse)*
-					_fuselageCreator.getsWet().to(MyUnits.FOOT2).getEstimatedValue(), NonSI.POUND).to(SI.KILOGRAM);
-			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
-		} break;
+//		 
+//		-------------------------------
+//		 The method gives poor results
+//	    -------------------------------
+//
+//		case KROO : { // page 432 Stanford University pdf
+//			_methodsList.add(method);
+//			double Ifuse;
+//			double Ip = 1.5e-3 * 
+//					conditions.get_maxDeltaPressure().to(MyUnits.LB_FT2).getEstimatedValue()*
+//					_fuselageCreator.getSectionCylinderWidth().to(NonSI.FOOT).getEstimatedValue();
+//
+//			double Ib = 1.91e-4 * aircraft.getThePerformance().getNLimitZFW() * 
+//					(aircraft.getTheWeights().getMaximumZeroFuelMass().to(NonSI.POUND).getEstimatedValue() - 
+////							_liftingSurface.get_wing().get_mass().to(NonSI.POUND).getEstimatedValue()
+//							aircraft.getWing().getMass().to(NonSI.POUND).getEstimatedValue()
+////												- aircraft.get_nacelle().get_mass().getEstimatedValue()*aircraft.get_propulsion().get_engineNumber()) TODO ADD!
+//		 * _fuselageCreator.getLenF().minus(aircraft.getWing().getChordRoot().divide(2.)).to(NonSI.FOOT).getEstimatedValue()/
+//							pow(_fuselageCreator.getSectionCylinderHeight().to(NonSI.FOOT).getEstimatedValue(),2));
+//
+//			if (Ip > Ib) {
+//				Ifuse = Ip;
+//			} else {
+//				Ifuse = (Math.pow(Ip,2) + Math.pow(Ib,2))/(2*Ib); 
+//			}
+//
+//			_mass = Amount.valueOf((1.051 + 0.102*Ifuse)*
+//					_fuselageCreator.getsWet().to(MyUnits.FOOT2).getEstimatedValue(), NonSI.POUND).to(SI.KILOGRAM);
+//			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+//		} break;
 //		 */
 		case TORENBEEK_2013 : {
 			_mass = calculateMassTorenbeek2013(aircraft.getThePerformance().getNUltimate());
@@ -467,14 +463,14 @@ public class Fuselage implements IFuselage {
 		return Amount.valueOf(0.328*
 				Kdoor*Klg*
 				pow(aircraft.getTheWeights().
-						get_MTOM().to(NonSI.POUND).times(aircraft.getThePerformance().
+						getMaximumTakeOffMass().to(NonSI.POUND).times(aircraft.getThePerformance().
 								getNUltimate()).getEstimatedValue(),
 								0.5)*
 								pow(_fuselageCreator.getLenF().to(NonSI.FOOT).getEstimatedValue(),0.25)*
 								pow(_fuselageCreator.getsWet().to(MyUnits.FOOT2).getEstimatedValue(), 0.302)*
 								pow(1+Kws, 0.04)*
 								pow(_fuselageCreator.getLenF().to(NonSI.FOOT).
-										divide(_equivalentDiameterCylinderGM.to(NonSI.FOOT)).getEstimatedValue(), 0.1), 
+										divide(getFuselageCreator().getEquivalentDiameterCylinderGM().to(NonSI.FOOT)).getEstimatedValue(), 0.1), 
 										NonSI.POUND).to(SI.KILOGRAM);
 	}
 
@@ -500,20 +496,19 @@ public class Fuselage implements IFuselage {
 				Math.sqrt(
 						aircraft.getThePerformance().getVDiveEAS().getEstimatedValue() *
 						aircraft.getHTail().getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance().getEstimatedValue()/
-						(2*_equivalentDiameterCylinderGM.getEstimatedValue())) *
+						(2*getFuselageCreator().getEquivalentDiameterCylinderGM().getEstimatedValue())) *
 						Math.pow(_fuselageCreator.getsWet().getEstimatedValue(), 1.2),
 						SI.KILOGRAM);
 	}
 
-	public void calculateCG(Aircraft aircraft, OperatingConditions conditions) {
-		calculateCG(aircraft, conditions, MethodEnum.SFORZA);
-		calculateCG(aircraft, conditions, MethodEnum.TORENBEEK_1982);
+	public void calculateCG(Aircraft aircraft) {
+		calculateCG(aircraft, MethodEnum.SFORZA);
+		calculateCG(aircraft, MethodEnum.TORENBEEK_1982);
 	}
 	
 	@Override
 	public void calculateCG(
 			Aircraft aircraft, 
-			OperatingConditions conditions,
 			MethodEnum method) {
 
 		_cg.setLRForigin(_X0, _Y0, _Z0);
@@ -634,7 +629,7 @@ public class Fuselage implements IFuselage {
 	}
 
 
-	public Amount<Mass> get_massEstimated() {
+	public Amount<Mass> getMassEstimated() {
 		return _massEstimated;
 	}
 
@@ -696,7 +691,6 @@ public class Fuselage implements IFuselage {
 	public String getId() {
 		return _fuselageCreator.getId();
 	}
-	
 	
 	@Override
 	public void setId(String _id) {

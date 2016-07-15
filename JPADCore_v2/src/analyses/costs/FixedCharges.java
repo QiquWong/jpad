@@ -57,7 +57,7 @@ public class FixedCharges {
 				costs.getAnnualInsurancePremiumRate(), aircraft.getCabinConfiguration().getCabinCrewNumber().intValue(),
 				aircraft.getCabinConfiguration().getFlightCrewNumber().intValue(), aircraft.getPowerPlant().getEngineNumber(), 
 				costs.getSingleCabinCrewHrCost(),
-				costs.getSingleflightCrewHrCost(), aircraft.getTheWeights().get_MTOM());		
+				costs.getSingleflightCrewHrCost(), aircraft.getTheWeights().getMaximumTakeOffMass());		
 	}
 	
 	/**

@@ -127,8 +127,8 @@ public class PayloadRangeCalc{
 		
 		airplaneType = type;
 		
-		maxTakeOffMass = theAircraft.getTheWeights().get_MTOM();
-		operatingEmptyMass = theAircraft.getTheWeights().get_OEM();
+		maxTakeOffMass = theAircraft.getTheWeights().getMaximumTakeOffMass();
+		operatingEmptyMass = theAircraft.getTheWeights().getOperatingEmptyMass();
 		maxFuelMass = theAircraft.getFuelTank().getFuelMass();
 		nPassMax = theAircraft.getCabinConfiguration().getMaxPax();
 		airfoilType = theAircraft.getWing().getAirfoilList().get(0).getType();

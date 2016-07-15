@@ -335,15 +335,15 @@ public class LandingGears implements ILandingGear {
 	}
 	
 	@Override
-	public void calculateMass(Aircraft aircraft, OperatingConditions conditions) {
-		calculateMass(aircraft, conditions, MethodEnum.ROSKAM);
-		calculateMass(aircraft, conditions, MethodEnum.STANFORD);
-		calculateMass(aircraft, conditions, MethodEnum.TORENBEEK_1982);
-		calculateMass(aircraft, conditions, MethodEnum.TORENBEEK_2013);
+	public void calculateMass(Aircraft aircraft) {
+		calculateMass(aircraft, MethodEnum.ROSKAM);
+		calculateMass(aircraft, MethodEnum.STANFORD);
+		calculateMass(aircraft, MethodEnum.TORENBEEK_1982);
+		calculateMass(aircraft, MethodEnum.TORENBEEK_2013);
 	}
 
 	@Override
-	public void calculateMass(Aircraft aircraft, OperatingConditions conditions, MethodEnum method) {
+	public void calculateMass(Aircraft aircraft, MethodEnum method) {
 		switch (method) {
 		/* Average error > 30 %
 		case JENKINSON : {
@@ -355,28 +355,28 @@ public class LandingGears implements ILandingGear {
 		case ROSKAM : { // Roskam page 97 (pdf) part V
 			_methodsList.add(method);
 			_overallMass = Amount.valueOf(
-					62.21 * Math.pow(aircraft.getTheWeights().get_MTOM().to(NonSI.POUND).times(1e-3).getEstimatedValue(), 0.84),
+					62.21 * Math.pow(aircraft.getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).times(1e-3).getEstimatedValue(), 0.84),
 					NonSI.POUND).to(SI.KILOGRAM);
 			_massMap.put(method, Amount.valueOf(round(_overallMass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
 
 		case STANFORD : {
 			_methodsList.add(method);
-			_overallMass = aircraft.getTheWeights().get_MTOM().times(0.04);
+			_overallMass = aircraft.getTheWeights().getMaximumTakeOffMass().times(0.04);
 			_massMap.put(method, Amount.valueOf(round(_overallMass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
 
 		case TORENBEEK_1982 : {
 			_methodsList.add(method);
 			_mainMass = Amount.valueOf(40 + 0.16 * 
-					Math.pow(aircraft.getTheWeights().get_MTOM().to(NonSI.POUND).getEstimatedValue(), 0.75) + 
-					0.019 * aircraft.getTheWeights().get_MTOM().to(NonSI.POUND).getEstimatedValue() + 
-					1.5 * 1e-5 * Math.pow(aircraft.getTheWeights().get_MTOM().to(NonSI.POUND).getEstimatedValue(), 1.5),
+					Math.pow(aircraft.getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue(), 0.75) + 
+					0.019 * aircraft.getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue() + 
+					1.5 * 1e-5 * Math.pow(aircraft.getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue(), 1.5),
 					NonSI.POUND).to(SI.KILOGRAM);
 			_noseMass = Amount.valueOf(20 + 0.1 * 
-					Math.pow(aircraft.getTheWeights().get_MTOM().to(NonSI.POUND).getEstimatedValue(), 0.75) + 
+					Math.pow(aircraft.getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue(), 0.75) + 
 					2 * 1e-5 * 
-					Math.pow(aircraft.getTheWeights().get_MTOM().to(NonSI.POUND).getEstimatedValue(), 1.5),
+					Math.pow(aircraft.getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue(), 1.5),
 					NonSI.POUND).to(SI.KILOGRAM);
 
 			_overallMass = _noseMass.plus(_mainMass);
@@ -385,8 +385,8 @@ public class LandingGears implements ILandingGear {
 
 		case TORENBEEK_2013 : {
 			_methodsList.add(method);
-			_overallMass = aircraft.getTheWeights().get_MTOM().times(0.025).
-					plus(aircraft.getTheWeights().get_MLM().times(0.016));
+			_overallMass = aircraft.getTheWeights().getMaximumTakeOffMass().times(0.025).
+					plus(aircraft.getTheWeights().getMaximumLangingMass().times(0.016));
 			_massMap.put(method, Amount.valueOf(round(_overallMass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
 
@@ -408,8 +408,8 @@ public class LandingGears implements ILandingGear {
 	}
 
 	@Override
-	public void calculateCG(Aircraft aircraft, OperatingConditions conditions) {
-		calculateCG(aircraft, conditions, MethodEnum.SFORZA);
+	public void calculateCG(Aircraft aircraft) {
+		calculateCG(aircraft, MethodEnum.SFORZA);
 	}
 	
 	/** 
@@ -418,7 +418,6 @@ public class LandingGears implements ILandingGear {
 	@Override
 	public void calculateCG(
 			Aircraft aircraft, 
-			OperatingConditions conditions,
 			MethodEnum method) {
 
 		 // THESE VALUES WILL COME FROM THE AIRCRAFT CLASS

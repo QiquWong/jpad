@@ -207,6 +207,11 @@ public class Test_sandbox2VC_Costs {
 			OperatingConditions operatingConditions = new OperatingConditions();
 			operatingConditions.set_altitude(Amount.valueOf(11000, SI.METER));
 			operatingConditions.set_tas(Amount.valueOf(473, NonSI.KNOT));
+			Amount<Mass> OEM = Amount.valueOf(141056, SI.KILOGRAM);
+			Amount<Mass> MTOM = Amount.valueOf(536164.22, NonSI.POUND);
+			theAircraft.getTheWeights().setOperatingEmptyMass(OEM);
+			theAircraft.getTheWeights().setMaximumTakeOffMass(MTOM);
+			theAircraft.getTheWeights().setManufacturerEmptyMass(OEM);
 			
 			// Variables setting
 			Amount<Mass> _OEM = Amount.valueOf(141056, SI.KILOGRAM);
@@ -214,9 +219,9 @@ public class Test_sandbox2VC_Costs {
 			Amount<Length> _range = Amount.valueOf(500, NonSI.NAUTICAL_MILE);
 			Amount<Velocity> _cruiseSpeed = Amount.valueOf(267.0, SI.METERS_PER_SECOND);
 			
-			theAircraft.getTheWeights().set_OEM(_OEM);
-			theAircraft.getTheWeights().set_MTOM(_MTOM);
-			theAircraft.getTheWeights().set_manufacturerEmptyMass(_OEM);
+			theAircraft.getTheWeights().setOperatingEmptyMass(_OEM);
+			theAircraft.getTheWeights().setMaximumTakeOffMass(_MTOM);
+			theAircraft.getTheWeights().setManufacturerEmptyMass(_OEM);
 			theAircraft.setLifeSpan(16);
 			theAircraft.getTheCosts().setAnnualInterestRate(0.054);
 			theAircraft.getThePerformance().setRange(_range);

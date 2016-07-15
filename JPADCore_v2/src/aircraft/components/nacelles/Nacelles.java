@@ -12,6 +12,7 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
+import aircraft.components.Aircraft;
 import aircraft.components.nacelles.NacelleCreator.MountingPosition;
 import aircraft.components.powerplant.Engine;
 import configuration.MyConfiguration;
@@ -205,9 +206,9 @@ public class Nacelles implements INacelles {
 	}
 	
 	@Override
-	public void initializeWeights() {
+	public void initializeWeights(Aircraft theAircraft) {
 		for(int i=0; i < _nacellesNumber; i++) {
-			_nacellesList.get(i).initializeWeights();
+			_nacellesList.get(i).initializeWeights(theAircraft);
 		}
 	}
 
@@ -223,10 +224,11 @@ public class Nacelles implements INacelles {
 	 * @author Lorenzo Attanasio
 	 */
 	@Override
-	public void calculateMass() {
+	public void calculateMass(Aircraft theAircraft) {
 
 		_totalMass = Amount.valueOf(0., SI.KILOGRAM);
-		initializeWeights();
+		_massReference = Amount.valueOf(0., SI.KILOGRAM);
+		initializeWeights(theAircraft);
 
 		for(int i=0; i < _nacellesNumber; i++) {
 			_nacellesList.get(i).getWeights().calculateAll();

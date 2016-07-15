@@ -12,7 +12,6 @@ import org.jscience.physics.amount.Amount;
 import aircraft.components.Aircraft;
 import aircraft.components.fuselage.creator.FuselageCreator;
 import aircraft.components.liftingSurface.creator.SpoilerCreator;
-import analyses.OperatingConditions;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
@@ -68,8 +67,8 @@ public interface IFuselage {
 //	public void calculateGeometry();
 	
 	public FuselageCreator getFuselageCreator();
-	public void calculateCG(Aircraft aircraft, OperatingConditions conditions, MethodEnum method);
-	public void calculateMass(Aircraft aircraft, OperatingConditions conditions, MethodEnum method);
+	public void calculateCG(Aircraft aircraft, MethodEnum method);
+	public void calculateMass(Aircraft aircraft, MethodEnum method);
 	public Map<AnalysisTypeEnum, List<MethodEnum>> getMethodsMap();
 	public void setZ0(Amount<Length> z);
 	public Amount<Length> getX0();

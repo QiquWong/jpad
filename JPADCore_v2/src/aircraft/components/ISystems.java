@@ -16,7 +16,6 @@ public interface ISystems {
 
 	public void calculateMass(
 			Aircraft aircraft,
-			OperatingConditions conditions,
 			MethodEnum method);
 	
 	public void calculateOverallMass(

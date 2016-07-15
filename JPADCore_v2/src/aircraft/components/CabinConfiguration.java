@@ -1092,14 +1092,12 @@ public class CabinConfiguration implements ICabinConfiguration {
 	}
 
 	@Override
-	public void calculateMass(Aircraft aircraft, OperatingConditions conditions,
-			MethodEnum method) {
-		calculateMassFurnishings(aircraft, conditions, method);
+	public void calculateMass(Aircraft aircraft, MethodEnum method) {
+		calculateMassFurnishings(aircraft, method);
 	}
 
 	@Override
-	public void calculateMassFurnishings(Aircraft aircraft, OperatingConditions conditions,
-			MethodEnum method) {
+	public void calculateMassFurnishings(Aircraft aircraft,	MethodEnum method) {
 		switch (method) {
 		case TORENBEEK_2013: { // page 257 Torenbeek 2013
 

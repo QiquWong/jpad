@@ -14,7 +14,6 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import analyses.OperatingConditions;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
@@ -167,7 +166,7 @@ public class Systems implements ISystems {
 	}
 	
 	@Override
-	public void calculateMass(Aircraft aircraft, OperatingConditions conditions, MethodEnum method) {
+	public void calculateMass(Aircraft aircraft, MethodEnum method) {
 
 		// The user can estimate the overall systems mass (control surfaces systems, apu, de-icing ecc...)
 		// or estimate each component mass separately
@@ -181,14 +180,14 @@ public class Systems implements ISystems {
 		case JENKINSON : {
 			_methodsList.add(method);
 			_controlSurfaceMass = Amount.valueOf(
-					Math.pow(aircraft.getTheWeights().get_MTOM().times(0.04).getEstimatedValue(), 0.684),
+					Math.pow(aircraft.getTheWeights().getMaximumTakeOffMass().times(0.04).getEstimatedValue(), 0.684),
 					SI.KILOGRAM);
 			_massMap.put(method, Amount.valueOf(round(_controlSurfaceMass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
 
 		case TORENBEEK_1982 : {
 			_controlSurfaceMass = Amount.valueOf(
-					0.4915*Math.pow(aircraft.getTheWeights().get_MTOM().getEstimatedValue(), 2/3), 
+					0.4915*Math.pow(aircraft.getTheWeights().getMaximumTakeOffMass().getEstimatedValue(), 2/3), 
 					SI.KILOGRAM);
 			_methodsList.add(method);
 			_massMap.put(method, Amount.valueOf(round(_controlSurfaceMass.getEstimatedValue()), SI.KILOGRAM));

@@ -153,7 +153,7 @@ public class LandingCalc {
 		vSLanding = Amount.valueOf(
 				SpeedCalc.calculateSpeedStall(
 						theConditions.get_altitude().getEstimatedValue(),
-						aircraft.getTheWeights().get_MLW().getEstimatedValue(),
+						aircraft.getTheWeights().getMaximumLandingWeight().getEstimatedValue(),
 						aircraft.getWing().getSurface().getEstimatedValue(),
 						cLmaxLanding
 						),
@@ -277,7 +277,7 @@ public class LandingCalc {
 		vSLanding = Amount.valueOf(
 				SpeedCalc.calculateSpeedStall(
 						theConditions.get_altitude().getEstimatedValue(),
-						aircraft.getTheWeights().get_MLW().getEstimatedValue(),
+						aircraft.getTheWeights().getMaximumLandingWeight().getEstimatedValue(),
 						aircraft.getWing().getSurface().getEstimatedValue(),
 						cLmaxLanding
 						),
@@ -652,7 +652,7 @@ public class LandingCalc {
 
 		double[] weight = new double[getTime().size()];
 		for(int i=0; i<weight.length; i++)
-			weight[i] = aircraft.getTheWeights().get_MLW().getEstimatedValue();
+			weight[i] = aircraft.getTheWeights().getMaximumLandingWeight().getEstimatedValue();
 
 		// landing trajectory and speed
 		double[][] xMatrix1 = new double[2][groundDistance.length];
@@ -745,7 +745,7 @@ public class LandingCalc {
 		public DynamicsEquationsLanding() {
 
 			// constants and known values
-			weight = aircraft.getTheWeights().get_MLW().getEstimatedValue();
+			weight = aircraft.getTheWeights().getMaximumLandingWeight().getEstimatedValue();
 			g0 = AtmosphereCalc.g0.getEstimatedValue();
 			mu = LandingCalc.this.mu;
 			muBrake = LandingCalc.this.muBrake;

@@ -74,8 +74,8 @@ public class ACPerformanceManager {
 		if (_theAircraft != null) {
 			//		try {
 			performanceManager = new PerformanceCalcManager(
-					_theAircraft.getTheWeights().get_MZFW().doubleValue(SI.NEWTON),
-					_theAircraft.getTheWeights().get_MTOW().doubleValue(SI.NEWTON),
+					_theAircraft.getTheWeights().getMaximumZeroFuelWeight().doubleValue(SI.NEWTON),
+					_theAircraft.getTheWeights().getMaximumTakeOffWeight().doubleValue(SI.NEWTON),
 					_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
 					_theAircraft.getPowerPlant().getEngineNumber().intValue(), 
 					_theAircraft.getPowerPlant().getEngineList().get(0).getEngineType(), 
@@ -96,8 +96,8 @@ public class ACPerformanceManager {
 			performanceManager.calculateAllPerformance();
 
 			performanceManagerOEI = new PerformanceCalcManager(
-					_theAircraft.getTheWeights().get_MZFW().doubleValue(SI.NEWTON),
-					_theAircraft.getTheWeights().get_MTOW().doubleValue(SI.NEWTON),
+					_theAircraft.getTheWeights().getMaximumZeroFuelWeight().doubleValue(SI.NEWTON),
+					_theAircraft.getTheWeights().getMaximumTakeOffWeight().doubleValue(SI.NEWTON),
 					_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
 					_theAircraft.getPowerPlant().getEngineNumber().intValue() - 1, 
 					_theAircraft.getPowerPlant().getEngineList().get(0).getEngineType(),
@@ -175,6 +175,9 @@ public class ACPerformanceManager {
 		return _maxDynamicPressure;
 	}
 
+	public void setMaxDynamicPressure(Amount<Pressure> maxDynamicPressure) {
+		this._maxDynamicPressure = maxDynamicPressure;
+	}
 
 	public Amount<Velocity> getVMaxCruiseEAS() {
 		return _vMaxCruiseEAS;
@@ -190,11 +193,9 @@ public class ACPerformanceManager {
 		return _vDiveEAS;
 	}
 
-
 	public void setVDiveEAS(Amount<Velocity> _vDiveEAS) {
 		this._vDiveEAS = _vDiveEAS;
 	}
-
 
 	public Amount<Length> getMaxAltitudeAtMaxSpeed() {
 		return _maxAltitudeAtMaxSpeed;
@@ -209,12 +210,14 @@ public class ACPerformanceManager {
 	public Double getMachDive0() {
 		return _machDive0;
 	}
-
-
+	
+	public void setMachDive0(Double machDive0) {
+		this._machDive0 = machDive0;
+	}
+	
 	public Double getMachMaxCruise() {
 		return _machMaxCruise;
 	}
-
 
 	public void setMachMaxCruise(Double _mach) {
 		this._machMaxCruise = _mach;

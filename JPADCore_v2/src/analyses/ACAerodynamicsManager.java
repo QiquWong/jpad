@@ -903,7 +903,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		calculateDragPolar();
 		calculateDragPolarPoints(arW, _eWhole[0], _cD0, 
 				conditions.get_densityCurrent().getEstimatedValue(), 
-				_theAircraft.getTheWeights().get_MTOW().getEstimatedValue(), 
+				_theAircraft.getTheWeights().getMaximumTakeOffWeight().getEstimatedValue(), 
 				_theAircraft.getWing().getSurface().getEstimatedValue());
 
 		calculateDepsDalpha(_theAircraft);

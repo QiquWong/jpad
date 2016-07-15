@@ -149,8 +149,8 @@ public class EngineWeightsManager extends WeightsManager{
 
 		// TORENBEEK_1982 method gives better results for 50000 < MTOM < 200000
 		if (_engineType.equals(EngineTypeEnum.TURBOPROP) | ( 
-				_theAircraft.getTheWeights().get_MTOM().getEstimatedValue() < 50000 |
-				_theAircraft.getTheWeights().get_MTOM().getEstimatedValue() > 200000)) {
+				_theAircraft.getTheWeights().getMaximumTakeOffMass().getEstimatedValue() < 50000 |
+				_theAircraft.getTheWeights().getMaximumTakeOffMass().getEstimatedValue() > 200000)) {
 			calculateTotalMass(MethodEnum.TORENBEEK_1982);
 
 		} else {
