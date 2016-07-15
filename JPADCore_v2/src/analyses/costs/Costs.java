@@ -12,6 +12,7 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
+import analyses.ACWeightsManager;
 import calculators.costs.CostsCalcUtils;
 import calculators.performance.PerformanceCalcUtils;
 import calculators.performance.ThrustCalc;
@@ -417,7 +418,7 @@ public class Costs implements ICosts {
 				aircraft.getTheWeights().get_OEM(),			// OEM, 
 				aircraft.getTheWeights().get_MTOM(),			// MTOM,
 //				aircraft.get_weights().get_paxMassMax(),		// payload,
-				aircraft.getTheWeights().get_paxSingleMass().times(aircraft.getCabinConfiguration().getMaxPax()),		// payload,
+				ACWeightsManager.paxSingleMass.times(aircraft.getCabinConfiguration().getMaxPax()),		// payload,
 //				aircraft.get_weights().get_manufacturerEmptyMass().minus(aircraft.get_powerPlant().get_totalMass()),	// airframeMass,
 				aircraft.getTheWeights().get_manufacturerEmptyMass().minus(aircraft.getPowerPlant().getEngineList().get(0).getTotalMass()),	// airframeMass,
 				aircraft.getCabinConfiguration().getMaxPax().intValue(),// numberOfPax, Data from Jenkinson's example.

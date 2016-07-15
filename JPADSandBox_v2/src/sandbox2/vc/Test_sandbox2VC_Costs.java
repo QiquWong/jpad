@@ -9,7 +9,9 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import javax.measure.quantity.Duration;
+import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
+import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
@@ -205,17 +207,24 @@ public class Test_sandbox2VC_Costs {
 			OperatingConditions operatingConditions = new OperatingConditions();
 			operatingConditions.set_altitude(Amount.valueOf(11000, SI.METER));
 			operatingConditions.set_tas(Amount.valueOf(473, NonSI.KNOT));
-			Amount<Mass> OEM = Amount.valueOf(141056, SI.KILOGRAM);
-			Amount<Mass> MTOM = Amount.valueOf(536164.22, NonSI.POUND);
-			theAircraft.getTheWeights().set_OEM(OEM);
-			theAircraft.getTheWeights().set_MTOM(MTOM);
-			theAircraft.getTheWeights().set_manufacturerEmptyMass(OEM);
 			
+			// Variables setting
+			Amount<Mass> _OEM = Amount.valueOf(141056, SI.KILOGRAM);
+			Amount<Mass> _MTOM = Amount.valueOf(536164.22, NonSI.POUND);
+			Amount<Length> _range = Amount.valueOf(500, NonSI.NAUTICAL_MILE);
+			Amount<Velocity> _cruiseSpeed = Amount.valueOf(267.0, SI.METERS_PER_SECOND);
+			
+			theAircraft.getTheWeights().set_OEM(_OEM);
+			theAircraft.getTheWeights().set_MTOM(_MTOM);
+			theAircraft.getTheWeights().set_manufacturerEmptyMass(_OEM);
 			theAircraft.setLifeSpan(16);
 			theAircraft.getTheCosts().setAnnualInterestRate(0.054);
+			theAircraft.getThePerformance().setRange(_range);
+			theAircraft.getThePerformance().setVDesignCruise(_cruiseSpeed);
 			
 			
-			CostsCalcUtils.calcAircraftCostSforza(OEM);
+			
+			CostsCalcUtils.calcAircraftCostSforza(_OEM);
 //			theCost.calcAircraftCostSforza();
 			Amount<Duration> flightTime = Amount.valueOf(15.22, NonSI.HOUR);
 //			Amount<Velocity> blockSpeed = Amount.valueOf(243.0, SI.METERS_PER_SECOND); // Value according to Sforza
@@ -278,22 +287,22 @@ public class Test_sandbox2VC_Costs {
 			totalTripChargesMap.forEach((k,v) -> DOC.merge(k,v, Double::sum));
 			//------------------------------------------------------------------------------------------------------------------------
 			
-//			System.out.println("The aircraft total investment is " +  theCost.get_totalInvestments());
-////			System.out.println("The aircraft depreciation per block hour is " + depreciation  );
-////			System.out.println("The residual value rate is " + theFixedCharges.get_residualValue() );
-//			System.out.println("The test depreciation methodMap is " + depreciationMap );
-//			System.out.println("The test interest methodMap is " + interestMap );
-//			System.out.println("The test insurance methodMap is " + insuranceMap );
-//			System.out.println("The test crew cost methodMap is " + crewCostsMap );
-//			System.out.println("The test total fixed charges methodMap is " + totalFixedChargesMap );
-//			System.out.println();
-//			
-//			System.out.println("The test landing fees methodMap is " + landingFeesMap );
-//			System.out.println("The test navigational charges methodMap is " + navigationalChargesMap );
-//			System.out.println("The test ground handling charges methodMap is " + groundHandlingChargesMap );
-//			System.out.println("The test maintenance methodMap is " + maintenanceMap );
-//			System.out.println("The test fuel and oil methodMap is " + fuelAndOilMap );
-//			System.out.println("The test total trip charges methodMap is " + totalTripChargesMap );		
+			System.out.println("The aircraft total investment is " +  theAircraft.getTheCosts().getTotalInvestments());
+//			System.out.println("The aircraft depreciation per block hour is " + depreciation  );
+//			System.out.println("The residual value rate is " + theFixedCharges.get_residualValue() );
+			System.out.println("The test depreciation methodMap is " + depreciationMap );
+			System.out.println("The test interest methodMap is " + interestMap );
+			System.out.println("The test insurance methodMap is " + insuranceMap );
+			System.out.println("The test crew cost methodMap is " + crewCostsMap );
+			System.out.println("The test total fixed charges methodMap is " + totalFixedChargesMap );
+			System.out.println();
+			
+			System.out.println("The test landing fees methodMap is " + landingFeesMap );
+			System.out.println("The test navigational charges methodMap is " + navigationalChargesMap );
+			System.out.println("The test ground handling charges methodMap is " + groundHandlingChargesMap );
+			System.out.println("The test maintenance methodMap is " + maintenanceMap );
+			System.out.println("The test fuel and oil methodMap is " + fuelAndOilMap );
+			System.out.println("The test total trip charges methodMap is " + totalTripChargesMap );		
 			
 //			aircraft.getCost().calculateAll();
 			System.out.println("\n The test total Fixed Charge methodMap is " + totalFixedChargesMap);

@@ -261,7 +261,7 @@ public class ACPerformanceManager {
 	public Amount<Velocity> getVOptimumCruise() {
 		return _vOptimumCruise;
 	}
-
+	
 	public void setVDesignCruise(Amount<Velocity> _vDesignCruise) {
 		this._vOptimumCruise = _vDesignCruise;
 	}
