@@ -59,7 +59,7 @@ public interface ILiftingSurface {
 	public void calculateGeometry(ComponentEnum type, Boolean mirrored);
 	public void calculateGeometry(int nSections, ComponentEnum type, Boolean mirrored);
 	
-	public void calculateMass(Aircraft aircraft, OperatingConditions conditions);
+	public void calculateMass(Aircraft aircraft);
 	public void calculateCG(MethodEnum method, ComponentEnum type);
 	
 	public List<Airfoil> getAirfoilList();

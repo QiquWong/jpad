@@ -41,7 +41,7 @@ public class OperatingConditions {
 	private Amount<VolumetricDensity> _densityCurrent;
 	private Amount<Pressure> 
 	_staticPressure, _dynamicPressure, _stagnationPressure, 
-	_maxDeltaP, _maxDynamicPressure;
+	_maxDeltaPressure, _maxDynamicPressure;
 
 	private Amount<DynamicViscosity> _mu;
 	private Double _machTransonicThreshold = 0.7;
@@ -92,7 +92,7 @@ public class OperatingConditions {
 				.times(TemperatureCalc.calculateStagnationTemperatureToStaticTemperatureRatio(_machCurrent));
 
 		// Maximum pressure difference between outside and inside
-		_maxDeltaP = Amount.valueOf(
+		_maxDeltaPressure = Amount.valueOf(
 				Math.abs(
 						_staticPressure.getEstimatedValue() 
 						- ((new StdAtmos1976(2000.)).getPressure()))
@@ -133,8 +133,8 @@ public class OperatingConditions {
 
 	// GETTERS AND SETTERS ---------------------------------------------------------
 
-	public Amount<Pressure> get_maxDeltaP() {
-		return _maxDeltaP;
+	public Amount<Pressure> get_maxDeltaPressure() {
+		return _maxDeltaPressure;
 	}
 
 	public Double get_machCurrent() {

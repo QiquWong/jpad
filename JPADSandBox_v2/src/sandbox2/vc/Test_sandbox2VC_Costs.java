@@ -207,9 +207,9 @@ public class Test_sandbox2VC_Costs {
 			operatingConditions.set_tas(Amount.valueOf(473, NonSI.KNOT));
 			Amount<Mass> OEM = Amount.valueOf(141056, SI.KILOGRAM);
 			Amount<Mass> MTOM = Amount.valueOf(536164.22, NonSI.POUND);
-			theAircraft.getTheWeights().set_OEM(OEM);
-			theAircraft.getTheWeights().set_MTOM(MTOM);
-			theAircraft.getTheWeights().set_manufacturerEmptyMass(OEM);
+			theAircraft.getTheWeights().setOperatingEmptyMass(OEM);
+			theAircraft.getTheWeights().setMaximumTakeOffMass(MTOM);
+			theAircraft.getTheWeights().setManufacturerEmptyMass(OEM);
 			
 			theAircraft.setLifeSpan(16);
 			theAircraft.getTheCosts().setAnnualInterestRate(0.054);

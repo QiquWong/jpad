@@ -414,12 +414,12 @@ public class Costs implements ICosts {
 				aircraft.getCabinConfiguration().getFlightCrewNumber().intValue(),			// flightCrewNumber,
 				aircraft.getThePerformance().getRange(),	// range (nm)
 				aircraft.getThePerformance().getVOptimumCruise(),	// cruiseSpeed, This default value is taken from the Jenkinson's Example
-				aircraft.getTheWeights().get_OEM(),			// OEM, 
-				aircraft.getTheWeights().get_MTOM(),			// MTOM,
+				aircraft.getTheWeights().getOperatingEmptyMass(),			// OEM, 
+				aircraft.getTheWeights().getMaximumTakeOffMass(),			// MTOM,
 //				aircraft.get_weights().get_paxMassMax(),		// payload,
-				aircraft.getTheWeights().get_paxSingleMass().times(aircraft.getCabinConfiguration().getMaxPax()),		// payload,
+				aircraft.getTheWeights().getPaxSingleMass().times(aircraft.getCabinConfiguration().getMaxPax()),		// payload,
 //				aircraft.get_weights().get_manufacturerEmptyMass().minus(aircraft.get_powerPlant().get_totalMass()),	// airframeMass,
-				aircraft.getTheWeights().get_manufacturerEmptyMass().minus(aircraft.getPowerPlant().getEngineList().get(0).getTotalMass()),	// airframeMass,
+				aircraft.getTheWeights().getManufacturerEmptyMass().minus(aircraft.getPowerPlant().getEngineList().get(0).getTotalMass()),	// airframeMass,
 				aircraft.getCabinConfiguration().getMaxPax().intValue(),// numberOfPax, Data from Jenkinson's example.
 				aircraft.getPowerPlant().getEngineList().get(0).getBPR(),		// byPassRatio, Kundu's example value
 				aircraft.getPowerPlant().getEngineList().get(0).getNumberOfCompressorStages(),			// numberOfCompressorStage, Kundu's example value

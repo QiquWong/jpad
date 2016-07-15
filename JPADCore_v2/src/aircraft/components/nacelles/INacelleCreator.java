@@ -8,6 +8,7 @@ import javax.measure.quantity.Mass;
 
 import org.jscience.physics.amount.Amount;
 
+import aircraft.components.Aircraft;
 import aircraft.components.nacelles.NacelleCreator.MountingPosition;
 import aircraft.components.powerplant.Engine;
 import analyses.nacelles.NacelleAerodynamicsManager;
@@ -18,11 +19,11 @@ public interface INacelleCreator {
 
 	public void calculateGeometry();
 	public void calculateGeometry(int nPoints);
-	public void calculateAll();
+	public void calculateAll(Aircraft theAircraft);
 	public void estimateDimensions (Engine theEngine);
 	public Double calculateFormFactor();
 	
-	public void initializeWeights();
+	public void initializeWeights(Aircraft theAircraft);
 	public void initializeAerodynamics();
 	public void initializeBalance();
 	

@@ -193,7 +193,7 @@ public class TakeOffCalc {
 		vSTakeOff = Amount.valueOf(
 				SpeedCalc.calculateSpeedStall(
 						theConditions.get_altitude().getEstimatedValue(),
-						aircraft.getTheWeights().get_MTOW().getEstimatedValue(),
+						aircraft.getTheWeights().getMaximumTakeOffWeight().getEstimatedValue(),
 						aircraft.getWing().getSurface().getEstimatedValue(),
 						cLmaxTO
 						),
@@ -343,7 +343,7 @@ public class TakeOffCalc {
 		vSTakeOff = Amount.valueOf(
 				SpeedCalc.calculateSpeedStall(
 						theConditions.get_altitude().getEstimatedValue(),
-						aircraft.getTheWeights().get_MTOW().getEstimatedValue(),
+						aircraft.getTheWeights().getMaximumTakeOffWeight().getEstimatedValue(),
 						aircraft.getWing().getSurface().getEstimatedValue(),
 						cLmaxTO
 						),
@@ -1407,12 +1407,12 @@ public class TakeOffCalc {
 
 		double[] weightVertical = new double[getTime().size()];
 		for(int i=0; i<weightVertical.length; i++)
-			weightVertical[i] = aircraft.getTheWeights().get_MTOW().getEstimatedValue()
+			weightVertical[i] = aircraft.getTheWeights().getMaximumTakeOffWeight().getEstimatedValue()
 			*Math.cos(getGamma().get(i).to(SI.RADIAN).getEstimatedValue());
 
 		double[] weightHorizontal = new double[getTime().size()];
 		for(int i=0; i<weightHorizontal.length; i++)
-			weightHorizontal[i] = aircraft.getTheWeights().get_MTOW().getEstimatedValue()
+			weightHorizontal[i] = aircraft.getTheWeights().getMaximumTakeOffWeight().getEstimatedValue()
 			*Math.sin(getGamma().get(i).to(SI.RADIAN).getEstimatedValue());
 
 		if(!isAborted) {
@@ -1695,7 +1695,7 @@ public class TakeOffCalc {
 		public DynamicsEquationsTakeOff() {
 
 			// constants and known values
-			weight = aircraft.getTheWeights().get_MTOW().getEstimatedValue();
+			weight = aircraft.getTheWeights().getMaximumTakeOffWeight().getEstimatedValue();
 			g0 = AtmosphereCalc.g0.getEstimatedValue();
 			mu = TakeOffCalc.this.mu;
 			kAlpha = TakeOffCalc.this.kAlphaDot;

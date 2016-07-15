@@ -137,11 +137,9 @@ public class Aircraft implements IAircraft {
 			case ATR72:
 				__id = "ATR-72";
 				__typeVehicle = AircraftTypeEnum.TURBOPROP;
-				__theCabinConfiguration = new CabinConfiguration
-						.ConfigurationBuilder("Aircraft cabin configuration", AircraftEnum.ATR72)
-							.build();
+				__theCabinConfiguration = new CabinConfiguration.ConfigurationBuilder("Aircraft cabin configuration", AircraftEnum.ATR72).build();
 				__theBalance = new ACBalanceManager();
-				__theWeights = new ACWeightsManager();
+				__theWeights = new ACWeightsManager.ACWeightsManagerBuilder("Weights", AircraftEnum.ATR72).build();
 				__theAerodynamics = new ACAerodynamicsManager();
 				__thePerformance = new ACPerformanceManager();
 				__theCosts = new Costs.CostsBuilder("Costs").build(); 
@@ -207,7 +205,7 @@ public class Aircraft implements IAircraft {
 						.ConfigurationBuilder("Aircraft cabin configuration", AircraftEnum.B747_100B)
 							.build();
 				__theBalance = new ACBalanceManager();
-				__theWeights = new ACWeightsManager();
+				__theWeights = new ACWeightsManager.ACWeightsManagerBuilder("Weights", AircraftEnum.B747_100B).build();
 				__theAerodynamics = new ACAerodynamicsManager();
 				__thePerformance = new ACPerformanceManager();
 				__theCosts = new Costs.CostsBuilder("Costs").build();
@@ -273,7 +271,7 @@ public class Aircraft implements IAircraft {
 						.ConfigurationBuilder("Aircraft cabin configuration", AircraftEnum.AGILE_DC1)
 							.build();
 				__theBalance = new ACBalanceManager();
-				__theWeights = new ACWeightsManager();
+				__theWeights = new ACWeightsManager.ACWeightsManagerBuilder("Weights", AircraftEnum.AGILE_DC1).build();
 				__theAerodynamics = new ACAerodynamicsManager();
 				__thePerformance = new ACPerformanceManager();
 				__theCosts = new Costs.CostsBuilder("Costs").build(); 
@@ -580,21 +578,6 @@ public class Aircraft implements IAircraft {
 			this.__theNacelles = nacelles;
 			return this;
 		}
-		
-//		public AircraftBuilder xApexNacelles(Amount<Length> xApex) {
-//			this.__theNacelles.setXApexConstructionAxes(xApex);
-//			return this;
-//		}
-//		
-//		public AircraftBuilder yApexNacelles(Amount<Length> yApex) {
-//			this.__theNacelles.setYApexConstructionAxes(yApex);
-//			return this;
-//		}
-//	
-//		public AircraftBuilder zApexNacelles(Amount<Length> zApex) {
-//			this.__theNacelles.setZApexConstructionAxes(zApex);
-//			return this;
-//		}
 		
 		public AircraftBuilder fuelTank (FuelTank fuelTanks) {
 			this.__theFuelTank = fuelTanks;
@@ -1098,19 +1081,6 @@ public class Aircraft implements IAircraft {
 		}
 		
 		//---------------------------------------------------------------------------------
-		// COSTS DATA 
-		String costsFileName =
-				MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//global_data/costs/@file");
-		
-		Costs theCosts = null;
-		if(costsFileName != null) {
-			String costsPath = costsDir + File.separator + costsFileName;
-			theCosts = Costs.importFromXML(costsPath);
-		}
-		//---------------------------------------------------------------------------------
 		// WING
 		String wingFileName =
 				MyXMLReaderUtils
@@ -1435,6 +1405,20 @@ public class Aircraft implements IAircraft {
 		}
 		
 		//---------------------------------------------------------------------------------
+		// COSTS DATA 
+		String costsFileName =
+				MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//global_data/costs/@file");
+
+		Costs theCosts = null;
+		if(costsFileName != null) {
+			String costsPath = costsDir + File.separator + costsFileName;
+			theCosts = Costs.importFromXML(costsPath);
+		}
+		
+		//---------------------------------------------------------------------------------
 		Aircraft theAircraft = new AircraftBuilder(id, aeroDatabaseReader, highLiftDatabaseReader)
 				.name(id)
 				.aircraftType(type)
@@ -1442,7 +1426,6 @@ public class Aircraft implements IAircraft {
 				.xApexFuselage(xApexFuselage)
 				.yApexFuselage(yApexFuselage)
 				.zApexFuselage(zApexFuselage)
-				.costs(theCosts)
 				.cabinConfiguration(theCabinConfiguration)
 				.wing(theWing)
 				.xApexWing(xApexWing)
@@ -1480,6 +1463,7 @@ public class Aircraft implements IAircraft {
 				.xApexSystems(xApexSystems)
 				.yApexSystem(yApexSystems)
 				.zApexSystems(zApexSystems)
+				.costs(theCosts)
 				.build();
 		
 		return theAircraft;

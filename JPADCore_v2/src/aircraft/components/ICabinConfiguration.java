@@ -18,11 +18,9 @@ public interface ICabinConfiguration {
 	public void calculateDependentVariables();
 	public void buildSimpleLayout(Aircraft aircraft);
 	public void calculateMass(Aircraft aircraft,
-							  OperatingConditions conditions,
 							  MethodEnum method
 							  );
 	public void calculateMassFurnishings(Aircraft aircraft,
-										 OperatingConditions conditions,
 										 MethodEnum method
 										 );
 	

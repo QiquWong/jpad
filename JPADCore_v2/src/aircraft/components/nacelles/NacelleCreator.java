@@ -476,9 +476,9 @@ public class NacelleCreator implements INacelleCreator {
 	}
 
 	@Override
-	public void initializeWeights() {
+	public void initializeWeights(Aircraft theAircraft) {
 		if (_theWeights == null) 
-			_theWeights = new NacelleWeightsManager(this);
+			_theWeights = new NacelleWeightsManager(this, theAircraft);
 	}
 
 	@Override
@@ -632,8 +632,8 @@ public class NacelleCreator implements INacelleCreator {
 	 * @author Lorenzo Attanasio
 	 */
 	@Override
-	public void calculateAll() {
-		initializeWeights();
+	public void calculateAll(Aircraft theAircraft) {
+		initializeWeights(theAircraft);
 		initializeBalance();
 		initializeAerodynamics();
 		
@@ -821,19 +821,16 @@ public class NacelleCreator implements INacelleCreator {
 
 	@Override
 	public NacelleWeightsManager getWeights() {
-		initializeWeights();
 		return _theWeights;
 	}
 
 	@Override
 	public NacelleAerodynamicsManager getAerodynamics() {
-		initializeAerodynamics();
 		return _theAerodynamics;
 	}
 
 	@Override
 	public NacelleBalanceManager getBalance() {
-		initializeBalance();
 		return _theBalance;
 	}
 	

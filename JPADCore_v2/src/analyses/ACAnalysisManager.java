@@ -299,7 +299,7 @@ public class ACAnalysisManager {
 		aircraft.getCabinConfiguration().calculateDependentVariables();
 
 		// Evaluate aircraft masses
-		aircraft.getTheWeights().calculateAllMasses(aircraft, _theOperatingConditions, _methodsMap);
+		aircraft.getTheWeights().calculateAllMasses(aircraft, _methodsMap);
 
 		// populate _theCalculatorsList
 		_theCalculatorsList.add(aircraft.getTheWeights());

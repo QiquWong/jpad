@@ -452,7 +452,7 @@ public class JPADDataWriter {
 		writeOutputNode("Static_Pressure", conditions.get_staticPressure(),  analysis);
 		writeOutputNode("Dynamic_Pressure", conditions.get_dynamicPressure(),  analysis);
 		writeOutputNode("Stagnation_Pressure", conditions.get_stagnationPressure(),  analysis);
-		writeOutputNode("Cabin_to_outside_pressure_differential", conditions.get_maxDeltaP(),  analysis);
+		writeOutputNode("Cabin_to_outside_pressure_differential", conditions.get_maxDeltaPressure(),  analysis);
 		writeOutputNode("Density", conditions.get_densityCurrent(),  analysis);
 		writeOutputNode("Static_Temperature", conditions.get_staticTemperature(),  analysis);
 		writeOutputNode("Stagnation_Temperature", conditions.get_stagnationTemperature(),  analysis);
@@ -534,12 +534,12 @@ public class JPADDataWriter {
 	}
 
 	private void writeWeightsInput(ACWeightsManager weights) {
-		writeInputNode("Material_density", weights.get_materialDensity(), _weightsInit, true);
+		writeInputNode("Material_density", weights.getMaterialDensity(), _weightsInit, true);
 
 		// TODO: this should be output only data
-		writeInputNode("Maximum_zero_fuel_mass", weights.get_MZFM(), _weightsInit, true);
-		writeInputNode("Maximum_landing_mass", weights.get_MLM(), _weightsInit, true);
-		writeInputNode("Maximum_take_off_mass", weights.get_MTOM(), _weightsInit, true);
+		writeInputNode("Maximum_zero_fuel_mass", weights.getMaximumZeroFuelMass(), _weightsInit, true);
+		writeInputNode("Maximum_landing_mass", weights.getMaximumLangingMass(), _weightsInit, true);
+		writeInputNode("Maximum_take_off_mass", weights.getMaximumTakeOffMass(), _weightsInit, true);
 
 	}
 
@@ -554,22 +554,22 @@ public class JPADDataWriter {
 					Element weightsAnalysis = doc.createElement("Weights_Breakdown");
 					analysisNode.appendChild(weightsAnalysis);
 
-					writeOutputNode("Fuselage_mass", _theAircraft.getFuselage().get_massEstimated(), weightsAnalysis);
+					writeOutputNode("Fuselage_mass", _theAircraft.getFuselage().getMassEstimated(), weightsAnalysis);
 					writeOutputNode("Wing_mass", _theAircraft.getWing().getMassEstimated(), weightsAnalysis);
 					writeOutputNode("HTail_mass", _theAircraft.getHTail().getMassEstimated(), weightsAnalysis);
 					writeOutputNode("VTail_mass", _theAircraft.getVTail().getMassEstimated(), weightsAnalysis);
 					writeOutputNode("Nacelles_mass", _theAircraft.getNacelles().getTotalMass(), weightsAnalysis);
 					writeOutputNode("Landing_gear_mass", _theAircraft.getLandingGears().getMassEstimated(), weightsAnalysis);
-					writeOutputNode("Structure_mass", _theAircraft.getTheWeights().get_structuralMass(), weightsAnalysis);
+					writeOutputNode("Structure_mass", _theAircraft.getTheWeights().getStructuralMass(), weightsAnalysis);
 					writeOutputNode("Power_plant_mass", _theAircraft.getPowerPlant().getTotalMass(), weightsAnalysis);
 					writeOutputNode("Systems_mass", _theAircraft.getSystems().getOverallMass(), weightsAnalysis);
 					writeOutputNode("Furnishings_and_Equipment_mass", _theAircraft.getCabinConfiguration().getMassEstimatedFurnishingsAndEquipment(), weightsAnalysis);
-					writeOutputNode("Manufacturer_empty_mass", _theAircraft.getTheWeights().get_manufacturerEmptyMass(), weightsAnalysis);
-					writeOutputNode("Crew_mass", _theAircraft.getTheWeights().get_crewMass(), weightsAnalysis);
-					writeOutputNode("Operating_Items_mass", _theAircraft.getTheWeights().get_OIM(), weightsAnalysis);
-					writeOutputNode("Operating_empty_mass", _theAircraft.getTheWeights().get_OEM(), weightsAnalysis);
-					writeOutputNode("Passengers_mass", _theAircraft.getTheWeights().get_paxMass(), weightsAnalysis);
-					writeOutputNode("ZeroFuelMass", _theAircraft.getTheWeights().get_ZFM(), weightsAnalysis);
+					writeOutputNode("Manufacturer_empty_mass", _theAircraft.getTheWeights().getManufacturerEmptyMass(), weightsAnalysis);
+					writeOutputNode("Crew_mass", _theAircraft.getTheWeights().getCrewMass(), weightsAnalysis);
+					writeOutputNode("Operating_Items_mass", _theAircraft.getTheWeights().getOperatingItemMass(), weightsAnalysis);
+					writeOutputNode("Operating_empty_mass", _theAircraft.getTheWeights().getOperatingEmptyMass(), weightsAnalysis);
+					writeOutputNode("Passengers_mass", _theAircraft.getTheWeights().getPaxMass(), weightsAnalysis);
+					writeOutputNode("ZeroFuelMass", _theAircraft.getTheWeights().getZeroFuelMass(), weightsAnalysis);
 				}
 			}
 			JPADStaticWriteUtils.writeAllArraysToXls(_sheet, _xlsArraysDescription, _xlsArraysList, _xlsArraysUnit);
@@ -777,7 +777,7 @@ public class JPADDataWriter {
 			writeOutputNode("Reference_mass", fuselage.getFuselageCreator().getMassReference(), weights);
 			writeOutputNode("Mass_correction_factor", fuselage.get_massCorrectionFactor(), weights);
 			writeMethodsComparison(doc, _sheet, "Weight_estimation_methods_comparison", fuselage.getMassMap(), fuselage.getPercentDifference(), weights);
-			writeOutputNode("Estimated_mass", fuselage.get_massEstimated(), weights);
+			writeOutputNode("Estimated_mass", fuselage.getMassEstimated(), weights);
 
 			// --- Balance ----------------------------
 			Element balance = addElementToSubElement("Balance", analysis);
@@ -1361,7 +1361,7 @@ public class JPADDataWriter {
 		writeOutputNode("All_nacelles_mass", nacelle.getTotalMass(), weights);
 //		writeMethodsComparison(doc, _sheet, "Weight_estimation_methods_comparison", nacelle.getWeights().get_massMap(), nacelle.get_percentDifference(), weights);
 		writeMethodsComparison(doc, _sheet, "Weight_estimation_methods_comparison", nacelle.getWeights().getMassMap(), nacelle.getWeights().getPercentDifference(), weights);
-		writeOutputNode("Estimated_mass", nacelle.get_massEstimated(), weights);
+		writeOutputNode("Estimated_mass", nacelle.getMassEstimated(), weights);
 
 		// --- Balance -------------------------
 		Element balance = addElementToSubElement("Balance", analysis);
