@@ -2,7 +2,12 @@ package jpadcommander;
 
 import java.io.File;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -159,9 +164,14 @@ public class DialogConfig extends Stage {
         	}
         });
         
-        // TODO : THIS HAS TO BE DESABLED UNTIL ALL TEXTFIELDS ARE FILLES AND THE TEXT INSIDE 
-        //        THEM IS ASSOCIATED TO AN EXISTING FOLDER (BINDINGS??)
+        // TODO : CHECK IF THE FOLDERS EXISTS !
         Button start = new Button("Start");
+        start.disableProperty().bind(
+        	    Bindings.isEmpty(workingDirectoryField.textProperty())
+        	    .or(Bindings.isEmpty(inputDirectoryField.textProperty()))
+        	    .or(Bindings.isEmpty(outputDirectoryField.textProperty()))
+        	    .or(Bindings.isEmpty(databaseDirectoryField.textProperty()))
+        	    );
         start.setOnAction(new EventHandler<ActionEvent>() {
 
             public void handle(ActionEvent event) {
