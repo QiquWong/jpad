@@ -2,6 +2,9 @@ package jpadcommander;
 
 import java.io.File;
 
+import org.controlsfx.validation.ValidationSupport;
+import org.controlsfx.validation.Validator;
+
 import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -23,15 +26,16 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class DialogConfig extends Stage {
-
+	
     public DialogConfig(Stage owner) {
+    	
         super();
         initOwner(owner);
         initModality(Modality.APPLICATION_MODAL);
         Group root = new Group();
         Scene scene = new Scene(root, 820, 250, Color.LIGHTBLUE);
         setScene(scene);
-
+        
         GridPane gridpane = new GridPane();
         gridpane.setPadding(new Insets(20));
         gridpane.setHgap(5);
@@ -52,6 +56,8 @@ public class DialogConfig extends Stage {
         final TextField workingDirectoryField = new TextField();
         workingDirectoryField.setPrefWidth(600);
         gridpane.add(workingDirectoryField, 1, 1);
+//        ValidationSupport validationSupport = new ValidationSupport();
+//        validationSupport.registerValidator(workingDirectoryField, Validator.createEmptyValidator("Working directory path is required"));
         
         final TextField inputDirectoryField = new TextField();
         gridpane.add(inputDirectoryField, 1, 2);
