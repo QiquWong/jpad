@@ -3,19 +3,18 @@ package jpadcommander;
 import java.io.File;
 
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -70,6 +69,9 @@ public class DialogConfig extends Stage {
         	public void handle(ActionEvent action) {
         		DirectoryChooser chooser = new DirectoryChooser();
         		chooser.setTitle("Choose input directory");
+        		chooser.setInitialDirectory(new File(System.getProperty("user.dir") + File.separator + "config"));
+        		System.out.println(System.getProperty("user.dir"));
+        		
         		File file = chooser.showDialog(Main.getPrimaryStage());
         		if (file != null) {
         			// get full path and populate the text box
@@ -87,6 +89,7 @@ public class DialogConfig extends Stage {
         	public void handle(ActionEvent action) {
         		DirectoryChooser chooser = new DirectoryChooser();
         		chooser.setTitle("Choose output directory");
+        		chooser.setInitialDirectory(new File(System.getProperty("user.dir") + File.separator + "config"));
         		File file = chooser.showDialog(Main.getPrimaryStage());
         		if (file != null) {
         			// get full path and populate the text box
@@ -104,6 +107,7 @@ public class DialogConfig extends Stage {
         	public void handle(ActionEvent action) {
         		DirectoryChooser chooser = new DirectoryChooser();
         		chooser.setTitle("Choose database directory");
+        		chooser.setInitialDirectory(new File(System.getProperty("user.dir") + File.separator + "config"));
         		File file = chooser.showDialog(Main.getPrimaryStage());
         		if (file != null) {
         			// get full path and populate the text box
@@ -121,6 +125,7 @@ public class DialogConfig extends Stage {
         	public void handle(ActionEvent action) {
         		DirectoryChooser chooser = new DirectoryChooser();
         		chooser.setTitle("Choose working directory");
+        		chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
         		File file = chooser.showDialog(Main.getPrimaryStage());
         		if (file != null) {
         			// get full path and populate the text box
@@ -164,21 +169,50 @@ public class DialogConfig extends Stage {
         	}
         });
         
-        // TODO : CHECK IF THE FOLDERS EXISTS !
         Button start = new Button("Start");
+        
+        final Tooltip warning = new Tooltip("WARNING : One of the folder selected does not exists !!");
+        start.setOnMouseEntered(new EventHandler<MouseEvent>() {
+        	
+        	@Override
+        	public void handle(MouseEvent event) {
+        		Point2D p = start.localToScreen(-2.5*start.getLayoutBounds().getMaxX(), 1.2*start.getLayoutBounds().getMaxY());
+        		if((!new File(workingDirectoryField.getText()).exists())
+        				|| (!new File(inputDirectoryField.getText()).exists())
+        				|| (!new File(outputDirectoryField.getText()).exists())
+        				|| (!new File(databaseDirectoryField.getText()).exists())
+        				) {
+        			warning.show(start, p.getX(), p.getY());
+        		}
+        	}
+        });
+        start.setOnMouseExited(new EventHandler<MouseEvent>() {
+        	
+        	@Override
+        	public void handle(MouseEvent event) {
+        		warning.hide();
+        	}
+        });
+        
         start.disableProperty().bind(
         	    Bindings.isEmpty(workingDirectoryField.textProperty())
         	    .or(Bindings.isEmpty(inputDirectoryField.textProperty()))
         	    .or(Bindings.isEmpty(outputDirectoryField.textProperty()))
         	    .or(Bindings.isEmpty(databaseDirectoryField.textProperty()))
         	    );
+        	
         start.setOnAction(new EventHandler<ActionEvent>() {
 
             public void handle(ActionEvent event) {
             	Main.setInputDirectoryPath(inputDirectoryField.getText());
             	Main.setOutputDirectoryPath(outputDirectoryField.getText());
             	Main.setDatabaseDirectoryPath(databaseDirectoryField.getText());
-            	close();
+            	if((new File(workingDirectoryField.getText()).exists())
+        				&& (new File(inputDirectoryField.getText()).exists())
+        				&& (new File(outputDirectoryField.getText()).exists())
+        				&& (new File(databaseDirectoryField.getText()).exists())
+        				)
+            		close();
             }
             
         });

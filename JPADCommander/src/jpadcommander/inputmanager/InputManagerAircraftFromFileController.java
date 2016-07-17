@@ -24,6 +24,7 @@ public class InputManagerAircraftFromFileController {
 
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("Open File");
+		chooser.setInitialDirectory(new File(Main.getInputDirectoryPath()));
 		File file = chooser.showOpenDialog(null);
 		if (file != null) {
 			// get full path and populate the text box

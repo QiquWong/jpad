@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-image: url(&quot;C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADCommander\src\jpadcommander\graphics\background.jpg&quot;);;" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jpadcommander.view.MainItemsController">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1281.0" style="-fx-background-image: url(&quot;C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADCommander\src\jpadcommander\graphics\background.jpg&quot;);;" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jpadcommander.view.MainItemsController">
    <children>
       <Button blendMode="SRC_ATOP" mnemonicParsing="false" onAction="#goInputManager" prefHeight="250.0" prefWidth="350.0" text="Input Manager">
          <HBox.margin>
