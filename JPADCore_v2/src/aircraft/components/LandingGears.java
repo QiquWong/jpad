@@ -15,7 +15,6 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import analyses.OperatingConditions;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
@@ -462,7 +461,7 @@ public class LandingGears implements ILandingGear {
 	}
 
 	@Override
-	public Amount<Mass> getMass() {
+	public Amount<Mass> getOverallMass() {
 		return _overallMass;
 	}
 

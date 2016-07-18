@@ -2,6 +2,8 @@ package analyses.powerplant;
 
 import static java.lang.Math.round;
 
+import java.util.Map;
+
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.NonSI;
@@ -24,7 +26,7 @@ public class EngineWeightsManager extends WeightsManager{
 	private EngineTypeEnum _engineType;
 
 	private Amount<Mass> _totalMass,
-	_dryMass,
+	_massEstimated,
 	_dryMassPublicDomain;
 	private Amount<Force> _t0;
 
@@ -65,7 +67,7 @@ public class EngineWeightsManager extends WeightsManager{
 		_methodsMap.put(AnalysisTypeEnum.WEIGHTS, _methodsList);
 		_percentDifference =  new Double[_massMap.size()]; 
 
-		_dryMass = Amount.valueOf(JPADStaticWriteUtils.compareMethods(
+		_massEstimated = Amount.valueOf(JPADStaticWriteUtils.compareMethods(
 				_dryMassPublicDomain, 
 				_massMap,
 				_percentDifference,
@@ -80,19 +82,19 @@ public class EngineWeightsManager extends WeightsManager{
 		//page 434 Stanford
 		public Amount<Mass> harris() {
 			if (_t0.to(NonSI.POUND_FORCE).getEstimatedValue() < 10000) {
-				_dryMass = Amount.valueOf(
+				_massEstimated = Amount.valueOf(
 						Math.pow(0.4054 * _t0.to(NonSI.POUND_FORCE).getEstimatedValue(),0.9255), 
 						NonSI.POUND).to(SI.KILOGRAM);
 
 			} else {
-				_dryMass = Amount.valueOf(
+				_massEstimated = Amount.valueOf(
 						Math.pow(0.616 * _t0.to(NonSI.POUND_FORCE).getEstimatedValue(),0.886), 
 						NonSI.POUND).to(SI.KILOGRAM);
 			}
 
 			_methodsList.add(MethodEnum.HARRIS);
-			_massMap.put(MethodEnum.HARRIS, Amount.valueOf(round(_dryMass.getEstimatedValue()), SI.KILOGRAM));
-			return _dryMass;
+			_massMap.put(MethodEnum.HARRIS, Amount.valueOf(round(_massEstimated.getEstimatedValue()), SI.KILOGRAM));
+			return _massEstimated;
 		}
 
 		@Override
@@ -107,18 +109,18 @@ public class EngineWeightsManager extends WeightsManager{
 		// page 434 Stanford		
 		public Amount<Mass> harris() {
 			if (_t0.to(NonSI.POUND_FORCE).getEstimatedValue() < 10000) {
-				_dryMass = Amount.valueOf(
+				_massEstimated = Amount.valueOf(
 						Math.pow(0.4054 * _t0.to(NonSI.POUND_FORCE).getEstimatedValue(),0.9255), 
 						NonSI.POUND).to(SI.KILOGRAM);
 
 			} else {
-				_dryMass = Amount.valueOf(
+				_massEstimated = Amount.valueOf(
 						Math.pow(0.616 * _t0.to(NonSI.POUND_FORCE).getEstimatedValue(),0.886), 
 						NonSI.POUND).to(SI.KILOGRAM);
 			}
 			_methodsList.add(MethodEnum.HARRIS);
-			_massMap.put(MethodEnum.HARRIS, Amount.valueOf(round(_dryMass.getEstimatedValue()), SI.KILOGRAM));
-			return _dryMass;
+			_massMap.put(MethodEnum.HARRIS, Amount.valueOf(round(_massEstimated.getEstimatedValue()), SI.KILOGRAM));
+			return _massEstimated;
 		}
 
 		@Override
@@ -144,7 +146,7 @@ public class EngineWeightsManager extends WeightsManager{
 	public void calculateTotalMass() {
 
 		if (_dryMassPublicDomain != null) {
-			_dryMass = Amount.valueOf(_dryMassPublicDomain.getEstimatedValue(), SI.KILOGRAM);
+			_massEstimated = Amount.valueOf(_dryMassPublicDomain.getEstimatedValue(), SI.KILOGRAM);
 		}
 
 		// TORENBEEK_1982 method gives better results for 50000 < MTOM < 200000
@@ -171,7 +173,7 @@ public class EngineWeightsManager extends WeightsManager{
 		switch(method){
 
 		case TORENBEEK_1982 : {
-			_totalMass = _dryMass.times(1.377);
+			_totalMass = _massEstimated.times(1.377);
 		} break;
 
 		case TORENBEEK_2013 : {
@@ -198,5 +200,36 @@ public class EngineWeightsManager extends WeightsManager{
 		return _totalMass;
 	}
 
+	public Map<MethodEnum, Amount<Mass>> getMassMap() {
+		return _massMap;
+	}
+
+	public Amount<Mass> getMassEstimated() {
+		return _massEstimated;
+	}
+
+	public Amount<Mass> getMassReference() {
+		return _massReference;
+	}
+
+	public void setMassReference(Amount<Mass> _massReference) {
+		this._massReference = _massReference;
+	}
+
+	public Amount<Mass> getMass() {
+		return _mass;
+	}
+
+	public void setMass(Amount<Mass> _mass) {
+		this._mass = _mass;
+	}
+	
+	public Double[] getPercentDifference() {
+		return _percentDifference;
+	}
+	
+	public void setPercentDifference(Double[] _percentDifference) {
+		this._percentDifference =_percentDifference;
+	}
 
 }

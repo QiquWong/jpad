@@ -1134,7 +1134,7 @@ public class Aircraft implements IAircraft {
 		if(hTailFileName != null) {
 			String hTailPath = liftingSurfacesDir + File.separator + hTailFileName;
 			LiftingSurfaceCreator hTailCreator = LiftingSurfaceCreator.importFromXML(ComponentEnum.HORIZONTAL_TAIL, hTailPath, airfoilsDir);
-			theHorizontalTail = new LiftingSurfaceBuilder("MyHorizontalTail", ComponentEnum.WING, aeroDatabaseReader, highLiftDatabaseReader)
+			theHorizontalTail = new LiftingSurfaceBuilder("MyHorizontalTail", ComponentEnum.HORIZONTAL_TAIL, aeroDatabaseReader, highLiftDatabaseReader)
 					.liftingSurfaceCreator(hTailCreator)
 						.build();
 		

@@ -609,7 +609,7 @@ public class AirfoilCreator implements IAirfoilCreator {
 						.getXMLPropertyByPath(
 								reader.getXmlDoc(), reader.getXpath(),
 								"//airfoil/aerodynamics/Cl_alpha_linear_trait/text()")),
-				SI.METER
+				SI.RADIAN
 				);
 
 		Double cDmin = Double.valueOf(

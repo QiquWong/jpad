@@ -219,6 +219,7 @@ public class LiftingSurface implements ILiftingSurface {
 	 * @param aircraft
 	 * @param method
 	 */
+	@SuppressWarnings("unused")
 	private void calculateMass(
 			Aircraft aircraft, 
 			MethodEnum method) {
@@ -234,16 +235,29 @@ public class LiftingSurface implements ILiftingSurface {
 				);
 		double thicknessMean = meanAirfoil.getAirfoilCreator().getThicknessToChordRatio();
 		
-		Amount<Angle> sweepStructuralAxis = Amount.valueOf(
-				Math.atan(
-						Math.tan(this.getSweepLEEquivalent(false).doubleValue(SI.RADIAN))
-						- (4./this.getAspectRatio())*
-						(this._liftingSurfaceCreator.getMainSparNonDimensionalPosition()
-								*(1 - this.getTaperRatioEquivalent(false))
-								/(1 + this.getTaperRatioEquivalent(false)))
-						),
-			1e-9, // precision
-			SI.RADIAN);
+		Amount<Angle> sweepStructuralAxis;
+		if(this._type == ComponentEnum.WING)
+			sweepStructuralAxis = Amount.valueOf(
+					Math.atan(
+							Math.tan(this.getSweepLEEquivalent(false).doubleValue(SI.RADIAN))
+							- (4./this.getAspectRatio())*
+							(getLiftingSurfaceCreator().getMainSparNonDimensionalPosition()
+									*(1 - this.getTaperRatioEquivalent(false))
+									/(1 + this.getTaperRatioEquivalent(false)))
+							),
+					1e-9, // precision
+					SI.RADIAN);
+		else
+			sweepStructuralAxis = Amount.valueOf(
+					Math.atan(
+							Math.tan(this.getSweepLEEquivalent(false).doubleValue(SI.RADIAN))
+							- (4./this.getAspectRatio())*
+							(0.25
+									*(1 - this.getTaperRatioEquivalent(false))
+									/(1 + this.getTaperRatioEquivalent(false)))
+							),
+					1e-9, // precision
+					SI.RADIAN);
 		
 		switch(_type) {
 		case WING : {

@@ -311,7 +311,6 @@ public class WeightsTest extends Application {
 			// Evaluate aircraft masses
 			theAircraft.getTheWeights().calculateAllMasses(theAircraft, _methodsMap);
 			System.out.println(WeightsTest.theAircraft.getTheWeights().toString());
-				
 			theAircraft.getTheWeights().toXLSFile(subfolderPath + "ATR-72");
 			///////////////////////////////////////////////////////////////////////////////////
 			

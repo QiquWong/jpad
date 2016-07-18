@@ -1426,7 +1426,7 @@ public class JPADDataWriter {
 		Element weights = addElementToSubElement("Weights", analysis);
 
 		writeOutputNode("Reference_mass", landingGear.getReferenceMass(), weights);
-		writeOutputNode("Mass", landingGear.getMass(), weights);
+		writeOutputNode("Mass", landingGear.getOverallMass(), weights);
 
 		writeMethodsComparison(
 				doc, 
