@@ -688,7 +688,7 @@ public class JPADDataWriter {
 		writeInputNode("Cylinder_Rho_lower", fuselage.getFuselageCreator().getSectionCylinderRhoLower(), fuselageParameters, true);
 		writeInputNode("Pressurization", fuselage.getFuselageCreator().getPressurized(), fuselageParameters, true);
 		writeInputNode("Reference_mass", fuselage.getFuselageCreator().getMassReference(), fuselageParameters, true);
-		writeInputNode("Mass_correction_factor", fuselage.get_massCorrectionFactor(), fuselageParameters, true);
+		writeInputNode("Mass_correction_factor", fuselage.getMassCorrectionFactor(), fuselageParameters, true);
 
 		// --- END OF INPUT DATA --------------------------------------------------------------
 
@@ -775,7 +775,7 @@ public class JPADDataWriter {
 			Element weights = addElementToSubElement("Weights", analysis);
 
 			writeOutputNode("Reference_mass", fuselage.getFuselageCreator().getMassReference(), weights);
-			writeOutputNode("Mass_correction_factor", fuselage.get_massCorrectionFactor(), weights);
+			writeOutputNode("Mass_correction_factor", fuselage.getMassCorrectionFactor(), weights);
 			writeMethodsComparison(doc, _sheet, "Weight_estimation_methods_comparison", fuselage.getMassMap(), fuselage.getPercentDifference(), weights);
 			writeOutputNode("Estimated_mass", fuselage.getMassEstimated(), weights);
 

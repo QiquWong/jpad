@@ -1,16 +1,35 @@
 package analyses;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.VolumetricDensity;
+import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
+import org.apache.commons.lang3.text.WordUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jscience.physics.amount.Amount;
+import org.w3c.dom.Element;
 
 import aircraft.components.Aircraft;
 import configuration.MyConfiguration;
@@ -19,17 +38,20 @@ import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.JPADXmlReader;
+import standaloneutils.MyXLSWriteUtils;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
+import writers.JPADStaticWriteUtils;
 
 /**
  * Manage components weight calculations
  * 
- * @author Lorenzo Attanasio
+ * @author Vittorio Trifari
  */
 public class ACWeightsManager extends ACCalculatorManager {
 
 	private String _id;
+	private static Aircraft _theAircraft;
 	private static final AnalysisTypeEnum _type = AnalysisTypeEnum.WEIGHTS;
 	
 	// Aluminum density
@@ -80,7 +102,8 @@ public class ACWeightsManager extends ACCalculatorManager {
 		
 		// required parameters
 		private String __id;
-
+		private Aircraft __theAircraft;
+		
 		// optional parameters ... defaults
 		// ...
 		private Amount<Mass> __maximumTakeOffMass;
@@ -128,13 +151,15 @@ public class ACWeightsManager extends ACCalculatorManager {
 			return this;
 		}
 		
-		public ACWeightsManagerBuilder (String id) {
+		public ACWeightsManagerBuilder (String id, Aircraft theAircraft) {
 			this.__id = id;
+			this.__theAircraft = theAircraft;
 			this.initializeDefaultData(AircraftEnum.ATR72);
 		}
 		
-		public ACWeightsManagerBuilder (String id, AircraftEnum aircraftName) {
+		public ACWeightsManagerBuilder (String id, Aircraft theAircraft, AircraftEnum aircraftName) {
 			this.__id = id;
+			this.__theAircraft = theAircraft;
 			this.initializeDefaultData(aircraftName);
 		}
 		
@@ -178,6 +203,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 	private ACWeightsManager(ACWeightsManagerBuilder builder) {
 		
 		this._id = builder.__id;
+		ACWeightsManager._theAircraft = builder.__theAircraft;
 		this._maximumTakeOffMass = builder.__maximumTakeOffMass;
 		this._maximumZeroFuelMass = builder.__maximumZeroFuelMass;
 		this._maximumLandingMass = builder.__maximumLandingMass;
@@ -271,7 +297,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 			return null; 
 		}
 		
-		ACWeightsManager theWeigths = new ACWeightsManagerBuilder(id)
+		ACWeightsManager theWeigths = new ACWeightsManagerBuilder(id, _theAircraft)
 				.maximumTakeOffMass(maximumTakeOffMass)
 				.maximumLandingMass(maximumLandingMass)
 				.maximumZeroFuelMass(maximumZeroFuelMass)
@@ -340,15 +366,445 @@ public class ACWeightsManager extends ACCalculatorManager {
 				.append("\tTrapped Fuel Oil Mass: " + _trappedFuelOilMass + "\n")
 				.append("\tTrapped Fuel Oil Weight: " + _trappedFuelOilWeight + "\n")
 				.append("\t·····································\n")
-				.append("\tOperating Empty Mass: " + _operatingEmptyMass + "\n")
-				.append("\tOperating Empty Weight: " + _operatingEmptyWeight + "\n")
-				.append("\t·····································\n")
 				;
 				
 		return sb.toString();
 		
 	}
 	
+	public void toXLSFile(String filenameWithPathAndExt) throws InvalidFormatException, IOException {
+		
+		Workbook wb;
+		File outputFile = new File(filenameWithPathAndExt + ".xlsx");
+		if (outputFile.exists()) { 
+			outputFile.delete();		
+			System.out.println("Deleting the old .xls file ...");
+		} 
+		
+		if (outputFile.getName().endsWith(".xls")) {
+			wb = new HSSFWorkbook();
+		}
+		else if (outputFile.getName().endsWith(".xlsx")) {
+			wb = new XSSFWorkbook();
+		}
+		else {
+			throw new IllegalArgumentException("I don't know how to create that kind of new file");
+		}
+		
+		//--------------------------------------------------------------------------------
+		// GLOBAL ANALYSIS RESULTS:
+		//--------------------------------------------------------------------------------
+		Sheet sheet = wb.createSheet("GLOBAL RESULTS");
+		List<Object[]> dataListGlobal = new ArrayList<>();
+		dataListGlobal.add(new Object[] {"Description","Unit","Value"});
+		dataListGlobal.add(new Object[] {"Reference Range","nmi",_referenceRange.doubleValue(NonSI.NAUTICAL_MILE)});
+		dataListGlobal.add(new Object[] {"Material density","kg/m³",_materialDensity.getEstimatedValue()});
+		dataListGlobal.add(new Object[] {"Single passenger Mass","kg",_paxSingleMass.doubleValue(SI.KILOGRAM)});
+		dataListGlobal.add(new Object[] {" "});
+		dataListGlobal.add(new Object[] {"Maximum Take-Off Mass","kg",_maximumTakeOffMass.doubleValue(SI.KILOGRAM)});
+		dataListGlobal.add(new Object[] {"Maximum Take-Off Weight","N",_maximumTakeOffWeight.doubleValue(SI.NEWTON)});
+		dataListGlobal.add(new Object[] {"Take-Off Mass","kg",_takeOffMass.doubleValue(SI.KILOGRAM)});
+		dataListGlobal.add(new Object[] {"Take-Off Weight","N",_takeOffWeight.doubleValue(SI.NEWTON)});
+		dataListGlobal.add(new Object[] {"Maximum Landing Mass","kg",_maximumLandingMass.doubleValue(SI.KILOGRAM)});
+		dataListGlobal.add(new Object[] {"Maximum Landing Weight","N",_maximumLandingWeight.doubleValue(SI.NEWTON)});
+		dataListGlobal.add(new Object[] {"Maximum Passengers Mass","kg",_paxMassMax.doubleValue(SI.KILOGRAM)});
+		dataListGlobal.add(new Object[] {"Maximum Passengers Weight","N",(_paxMassMax.times(AtmosphereCalc.g0)).getEstimatedValue()});
+		dataListGlobal.add(new Object[] {"Crew Mass","kg",_crewMass.doubleValue(SI.KILOGRAM)});
+		dataListGlobal.add(new Object[] {"Crew Weight","N",_crewMass.times(AtmosphereCalc.g0).getEstimatedValue()});
+		dataListGlobal.add(new Object[] {"Maximum Zero Fuel Mass","kg",_maximumZeroFuelMass.doubleValue(SI.KILOGRAM)});
+		dataListGlobal.add(new Object[] {"Maximum Zero Fuel Weight","N",_maximumZeroFuelWeight.doubleValue(SI.NEWTON)});
+		dataListGlobal.add(new Object[] {"Zero Fuel Mass","kg",_zeroFuelMass.doubleValue(SI.KILOGRAM)});
+		dataListGlobal.add(new Object[] {"Zero Fuel Weight","N",_zeroFuelWeight.doubleValue(SI.NEWTON)});
+		dataListGlobal.add(new Object[] {"Operating Empty Mass","kg",_operatingEmptyMass.doubleValue(SI.KILOGRAM)});
+		dataListGlobal.add(new Object[] {"Operating Empty Weight","N",_operatingEmptyWeight.doubleValue(SI.NEWTON)});
+		dataListGlobal.add(new Object[] {"Empty Mass","kg",_emptyMass.doubleValue(SI.KILOGRAM)});
+		dataListGlobal.add(new Object[] {"Empty Weight","N",_emptyWeight.doubleValue(SI.NEWTON)});
+		dataListGlobal.add(new Object[] {"Manufacturer Empty Mass","kg",_manufacturerEmptyMass.doubleValue(SI.KILOGRAM)});
+		dataListGlobal.add(new Object[] {"Manufacturer Empty Weight","N",_manufacturerEmptyMass.times(AtmosphereCalc.g0).getEstimatedValue()});
+		dataListGlobal.add(new Object[] {"Operating Item Mass","kg",_operatingItemMass.doubleValue(SI.KILOGRAM)});
+		dataListGlobal.add(new Object[] {"Operating Item Weight","N",_operatingItemWeight.doubleValue(SI.NEWTON)});
+		dataListGlobal.add(new Object[] {"Trapped Fuel Oil Mass","kg",_trappedFuelOilMass.doubleValue(SI.KILOGRAM)});
+		dataListGlobal.add(new Object[] {"Trapped Fuel Oil Weight","N",_trappedFuelOilWeight.doubleValue(SI.NEWTON)});
+		dataListGlobal.add(new Object[] {"Operating Empty Mass","kg",_operatingEmptyMass.doubleValue(SI.KILOGRAM)});
+		dataListGlobal.add(new Object[] {"Operating Empty Weight","N",_operatingEmptyWeight.doubleValue(SI.NEWTON)});
+		
+		CellStyle styleHead = wb.createCellStyle();
+		styleHead.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+	    styleHead.setFillPattern(CellStyle.SOLID_FOREGROUND);
+	    Font font = wb.createFont();
+	    font.setFontHeightInPoints((short) 20);
+        font.setColor(IndexedColors.BLACK.getIndex());
+        font.setBoldweight(Font.BOLDWEIGHT_BOLD);
+        styleHead.setFont(font);
+        
+        Row row = sheet.createRow(0);
+		Object[] objArr = dataListGlobal.get(0);
+		int cellnum = 0;
+		for (Object obj : objArr) {
+			Cell cell = row.createCell(cellnum++);
+			cell.setCellStyle(styleHead);
+			if (obj instanceof Date) {
+				cell.setCellValue((Date) obj);
+			} else if (obj instanceof Boolean) {
+				cell.setCellValue((Boolean) obj);
+			} else if (obj instanceof String) {
+				cell.setCellValue((String) obj);
+			} else if (obj instanceof Double) {
+				cell.setCellValue((Double) obj);
+			}
+			sheet.setDefaultColumnWidth(25);
+		}
+	
+		int rownum = 1;
+		for (int i = 1; i < dataListGlobal.size(); i++) {
+			objArr = dataListGlobal.get(i);
+			row = sheet.createRow(rownum++);
+			cellnum = 0;
+			for (Object obj : objArr) {
+				Cell cell = row.createCell(cellnum++);
+				if (obj instanceof Date) {
+					cell.setCellValue((Date) obj);
+				} else if (obj instanceof Boolean) {
+					cell.setCellValue((Boolean) obj);
+				} else if (obj instanceof String) {
+					cell.setCellValue((String) obj);
+				} else if (obj instanceof Double) {
+					cell.setCellValue((Double) obj);
+				}
+			}
+		}
+
+		//--------------------------------------------------------------------------------
+		// FUSELAGE WEIGHTS ANALYSIS RESULTS:
+		//--------------------------------------------------------------------------------
+		if(_theAircraft.getFuselage() != null) {
+			Sheet sheetFuselage = wb.createSheet("FUSELAGE");
+			List<Object[]> dataListFuselage = new ArrayList<>();
+			dataListFuselage.add(new Object[] {"Description","Unit","Value","Percent Error"});
+			dataListFuselage.add(new Object[] {"Reference Mass","Kg", _theAircraft.getFuselage().getReferenceMass().getEstimatedValue()});
+			dataListFuselage.add(new Object[] {"Mass Correction Factor"," ",_theAircraft.getFuselage().getMassCorrectionFactor()});
+			dataListFuselage.add(new Object[] {" "});
+			dataListFuselage.add(new Object[] {"WEIGHT ESTIMATION METHODS COMPARISON"});
+			int indexFuselage=0;
+			for(MethodEnum methods : _theAircraft.getFuselage().getMassMap().keySet()) {
+				if(_theAircraft.getFuselage().getMassMap().get(methods) != null) 
+					dataListFuselage.add(
+							new Object[] {
+									methods.toString(),
+									"Kg",
+									_theAircraft.getFuselage().getMassMap().get(methods).getEstimatedValue(),
+									_theAircraft.getFuselage().getPercentDifference()[indexFuselage]
+							}
+							);
+				indexFuselage++;
+			}
+			dataListFuselage.add(new Object[] {"Estimated Mass ","Kg", _theAircraft.getFuselage().getMassEstimated().getEstimatedValue()});
+
+			Row rowFuselage = sheetFuselage.createRow(0);
+			Object[] objArrFuselage = dataListFuselage.get(0);
+			int cellnumFuselage = 0;
+			for (Object obj : objArrFuselage) {
+				Cell cell = rowFuselage.createCell(cellnumFuselage++);
+				cell.setCellStyle(styleHead);
+				if (obj instanceof Date) {
+					cell.setCellValue((Date) obj);
+				} else if (obj instanceof Boolean) {
+					cell.setCellValue((Boolean) obj);
+				} else if (obj instanceof String) {
+					cell.setCellValue((String) obj);
+				} else if (obj instanceof Double) {
+					cell.setCellValue((Double) obj);
+				}
+				sheetFuselage.setDefaultColumnWidth(25);
+			}
+
+			int rownumFuselage = 1;
+			for (int j = 1; j < dataListFuselage.size(); j++) {
+				objArrFuselage = dataListFuselage.get(j);
+				rowFuselage = sheetFuselage.createRow(rownumFuselage++);
+				cellnumFuselage = 0;
+				for (Object obj : objArrFuselage) {
+					Cell cell = rowFuselage.createCell(cellnumFuselage++);
+					if (obj instanceof Date) {
+						cell.setCellValue((Date) obj);
+					} else if (obj instanceof Boolean) {
+						cell.setCellValue((Boolean) obj);
+					} else if (obj instanceof String) {
+						cell.setCellValue((String) obj);
+					} else if (obj instanceof Double) {
+						cell.setCellValue((Double) obj);
+					}
+				}
+			}
+		}
+		//--------------------------------------------------------------------------------
+		// WING WEIGHTS ANALYSIS RESULTS:
+		//--------------------------------------------------------------------------------
+		if(_theAircraft.getWing() != null) {
+			Sheet sheetWing = wb.createSheet("WING");
+			List<Object[]> dataListWing = new ArrayList<>();
+			dataListWing.add(new Object[] {"Description","Unit","Value","Percent Error"});
+			dataListWing.add(new Object[] {"Reference Mass","Kg", _theAircraft.getWing().getMassReference().getEstimatedValue()});
+			dataListWing.add(new Object[] {"Composite Correction Factor"," ",_theAircraft.getWing().getLiftingSurfaceCreator().getCompositeCorrectioFactor()});
+			dataListWing.add(new Object[] {"Mass Correction Factor"," ",_theAircraft.getWing().getMassCorrectionFactor()});
+			dataListWing.add(new Object[] {" "});
+			dataListWing.add(new Object[] {"WEIGHT ESTIMATION METHODS COMPARISON"});
+			int indexWing=0;
+			for(MethodEnum methods : _theAircraft.getWing().getMassMap().keySet()) {
+				if(_theAircraft.getWing().getMassMap().get(methods) != null) 
+					dataListWing.add(
+							new Object[] {
+									methods.toString(),
+									"Kg",
+									_theAircraft.getWing().getMassMap().get(methods).getEstimatedValue(),
+									_theAircraft.getWing().getPercentDifference()[indexWing]
+							}
+							);
+				indexWing++;
+			}
+			dataListWing.add(new Object[] {"Estimated Mass ","Kg", _theAircraft.getWing().getMassEstimated().getEstimatedValue()});
+
+			Row rowWing = sheetWing.createRow(0);
+			Object[] objArrWing = dataListWing.get(0);
+			int cellnumWing = 0;
+			for (Object obj : objArrWing) {
+				Cell cell = rowWing.createCell(cellnumWing++);
+				cell.setCellStyle(styleHead);
+				if (obj instanceof Date) {
+					cell.setCellValue((Date) obj);
+				} else if (obj instanceof Boolean) {
+					cell.setCellValue((Boolean) obj);
+				} else if (obj instanceof String) {
+					cell.setCellValue((String) obj);
+				} else if (obj instanceof Double) {
+					cell.setCellValue((Double) obj);
+				}
+				sheetWing.setDefaultColumnWidth(25);
+			}
+
+			int rownumWing = 1;
+			for (int j = 1; j < dataListWing.size(); j++) {
+				objArrWing = dataListWing.get(j);
+				rowWing = sheetWing.createRow(rownumWing++);
+				cellnumWing = 0;
+				for (Object obj : objArrWing) {
+					Cell cell = rowWing.createCell(cellnumWing++);
+					if (obj instanceof Date) {
+						cell.setCellValue((Date) obj);
+					} else if (obj instanceof Boolean) {
+						cell.setCellValue((Boolean) obj);
+					} else if (obj instanceof String) {
+						cell.setCellValue((String) obj);
+					} else if (obj instanceof Double) {
+						cell.setCellValue((Double) obj);
+					}
+				}
+			}
+		}
+		//--------------------------------------------------------------------------------
+		// HORIZONTAL TAIL WEIGHTS ANALYSIS RESULTS:
+		//--------------------------------------------------------------------------------
+		if(_theAircraft.getHTail() != null) {
+			Sheet sheetHTail = wb.createSheet("HORIZONTAL TAIL");
+			List<Object[]> dataListHTail = new ArrayList<>();
+			dataListHTail.add(new Object[] {"Description","Unit","Value","Percent Error"});
+			dataListHTail.add(new Object[] {"Reference Mass","Kg", _theAircraft.getHTail().getMassReference().getEstimatedValue()});
+			dataListHTail.add(new Object[] {"Composite Correction Factor"," ",_theAircraft.getHTail().getLiftingSurfaceCreator().getCompositeCorrectioFactor()});
+			dataListHTail.add(new Object[] {"Mass Correction Factor"," ",_theAircraft.getHTail().getMassCorrectionFactor()});
+			dataListHTail.add(new Object[] {" "});
+			dataListHTail.add(new Object[] {"WEIGHT ESTIMATION METHODS COMPARISON"});
+			int indexHTail=0;
+			for(MethodEnum methods : _theAircraft.getHTail().getMassMap().keySet()) {
+				if(_theAircraft.getHTail().getMassMap().get(methods) != null) 
+					dataListHTail.add(
+							new Object[] {
+									methods.toString(),
+									"Kg",
+									_theAircraft.getHTail().getMassMap().get(methods).getEstimatedValue(),
+									_theAircraft.getHTail().getPercentDifference()[indexHTail]
+							}
+							);
+				indexHTail++;
+			}
+			dataListHTail.add(new Object[] {"Estimated Mass ","Kg", _theAircraft.getHTail().getMassEstimated().getEstimatedValue()});
+
+			Row rowHTail = sheetHTail.createRow(0);
+			Object[] objArrHTail = dataListHTail.get(0);
+			int cellnumHTail = 0;
+			for (Object obj : objArrHTail) {
+				Cell cell = rowHTail.createCell(cellnumHTail++);
+				cell.setCellStyle(styleHead);
+				if (obj instanceof Date) {
+					cell.setCellValue((Date) obj);
+				} else if (obj instanceof Boolean) {
+					cell.setCellValue((Boolean) obj);
+				} else if (obj instanceof String) {
+					cell.setCellValue((String) obj);
+				} else if (obj instanceof Double) {
+					cell.setCellValue((Double) obj);
+				}
+				sheetHTail.setDefaultColumnWidth(25);
+			}
+
+			int rownumHTail = 1;
+			for (int j = 1; j < dataListHTail.size(); j++) {
+				objArrHTail = dataListHTail.get(j);
+				rowHTail = sheetHTail.createRow(rownumHTail++);
+				cellnumHTail = 0;
+				for (Object obj : objArrHTail) {
+					Cell cell = rowHTail.createCell(cellnumHTail++);
+					if (obj instanceof Date) {
+						cell.setCellValue((Date) obj);
+					} else if (obj instanceof Boolean) {
+						cell.setCellValue((Boolean) obj);
+					} else if (obj instanceof String) {
+						cell.setCellValue((String) obj);
+					} else if (obj instanceof Double) {
+						cell.setCellValue((Double) obj);
+					}
+				}
+			}
+		}
+		
+		//--------------------------------------------------------------------------------
+		// VERTICAL TAIL WEIGHTS ANALYSIS RESULTS:
+		//--------------------------------------------------------------------------------
+		if(_theAircraft.getVTail() != null) {
+			Sheet sheetVTail = wb.createSheet("VERTICAL TAIL");
+			List<Object[]> dataListVTail = new ArrayList<>();
+			dataListVTail.add(new Object[] {"Description","Unit","Value","Percent Error"});
+			dataListVTail.add(new Object[] {"Reference Mass","Kg", _theAircraft.getVTail().getMassReference().getEstimatedValue()});
+			dataListVTail.add(new Object[] {"Composite Correction Factor"," ",_theAircraft.getVTail().getLiftingSurfaceCreator().getCompositeCorrectioFactor()});
+			dataListVTail.add(new Object[] {"Mass Correction Factor"," ",_theAircraft.getVTail().getMassCorrectionFactor()});
+			dataListVTail.add(new Object[] {" "});
+			dataListVTail.add(new Object[] {"WEIGHT ESTIMATION METHODS COMPARISON"});
+			int indexVTail=0;
+			for(MethodEnum methods : _theAircraft.getVTail().getMassMap().keySet()) {
+				if(_theAircraft.getVTail().getMassMap().get(methods) != null) 
+					dataListVTail.add(
+							new Object[] {
+									methods.toString(),
+									"Kg",
+									_theAircraft.getVTail().getMassMap().get(methods).getEstimatedValue(),
+									_theAircraft.getVTail().getPercentDifference()[indexVTail]
+							}
+							);
+				indexVTail++;
+			}
+			dataListVTail.add(new Object[] {"Estimated Mass ","Kg", _theAircraft.getVTail().getMassEstimated().getEstimatedValue()});
+
+			Row rowVTail = sheetVTail.createRow(0);
+			Object[] objArrVTail = dataListVTail.get(0);
+			int cellnumVTail = 0;
+			for (Object obj : objArrVTail) {
+				Cell cell = rowVTail.createCell(cellnumVTail++);
+				cell.setCellStyle(styleHead);
+				if (obj instanceof Date) {
+					cell.setCellValue((Date) obj);
+				} else if (obj instanceof Boolean) {
+					cell.setCellValue((Boolean) obj);
+				} else if (obj instanceof String) {
+					cell.setCellValue((String) obj);
+				} else if (obj instanceof Double) {
+					cell.setCellValue((Double) obj);
+				}
+				sheetVTail.setDefaultColumnWidth(25);
+			}
+
+			int rownumVTail = 1;
+			for (int j = 1; j < dataListVTail.size(); j++) {
+				objArrVTail = dataListVTail.get(j);
+				rowVTail = sheetVTail.createRow(rownumVTail++);
+				cellnumVTail = 0;
+				for (Object obj : objArrVTail) {
+					Cell cell = rowVTail.createCell(cellnumVTail++);
+					if (obj instanceof Date) {
+						cell.setCellValue((Date) obj);
+					} else if (obj instanceof Boolean) {
+						cell.setCellValue((Boolean) obj);
+					} else if (obj instanceof String) {
+						cell.setCellValue((String) obj);
+					} else if (obj instanceof Double) {
+						cell.setCellValue((Double) obj);
+					}
+				}
+			}
+		}
+		
+		//--------------------------------------------------------------------------------
+		// CANARD WEIGHTS ANALYSIS RESULTS:
+		//--------------------------------------------------------------------------------
+		if(_theAircraft.getCanard() != null) {
+			Sheet sheetCanard = wb.createSheet("CANARD");
+			List<Object[]> dataListCanard = new ArrayList<>();
+			dataListCanard.add(new Object[] {"Description","Unit","Value","Percent Error"});
+			dataListCanard.add(new Object[] {"Reference Mass","Kg", _theAircraft.getCanard().getMassReference().getEstimatedValue()});
+			dataListCanard.add(new Object[] {"Composite Correction Factor"," ",_theAircraft.getCanard().getLiftingSurfaceCreator().getCompositeCorrectioFactor()});
+			dataListCanard.add(new Object[] {"Mass Correction Factor"," ",_theAircraft.getCanard().getMassCorrectionFactor()});
+			dataListCanard.add(new Object[] {" "});
+			dataListCanard.add(new Object[] {"WEIGHT ESTIMATION METHODS COMPARISON"});
+			int indexCanard=0;
+			for(MethodEnum methods : _theAircraft.getCanard().getMassMap().keySet()) {
+				if(_theAircraft.getCanard().getMassMap().get(methods) != null) 
+					dataListCanard.add(
+							new Object[] {
+									methods.toString(),
+									"Kg",
+									_theAircraft.getCanard().getMassMap().get(methods).getEstimatedValue(),
+									_theAircraft.getCanard().getPercentDifference()[indexCanard]
+							}
+							);
+				indexCanard++;
+			}
+			dataListCanard.add(new Object[] {"Estimated Mass ","Kg", _theAircraft.getCanard().getMassEstimated().getEstimatedValue()});
+
+			Row rowCanard = sheetCanard.createRow(0);
+			Object[] objArrCanard = dataListCanard.get(0);
+			int cellnumCanard = 0;
+			for (Object obj : objArrCanard) {
+				Cell cell = rowCanard.createCell(cellnumCanard++);
+				cell.setCellStyle(styleHead);
+				if (obj instanceof Date) {
+					cell.setCellValue((Date) obj);
+				} else if (obj instanceof Boolean) {
+					cell.setCellValue((Boolean) obj);
+				} else if (obj instanceof String) {
+					cell.setCellValue((String) obj);
+				} else if (obj instanceof Double) {
+					cell.setCellValue((Double) obj);
+				}
+				sheetCanard.setDefaultColumnWidth(25);
+			}
+
+			int rownumCanard = 1;
+			for (int j = 1; j < dataListCanard.size(); j++) {
+				objArrCanard = dataListCanard.get(j);
+				rowCanard = sheetCanard.createRow(rownumCanard++);
+				cellnumCanard = 0;
+				for (Object obj : objArrCanard) {
+					Cell cell = rowCanard.createCell(cellnumCanard++);
+					if (obj instanceof Date) {
+						cell.setCellValue((Date) obj);
+					} else if (obj instanceof Boolean) {
+						cell.setCellValue((Boolean) obj);
+					} else if (obj instanceof String) {
+						cell.setCellValue((String) obj);
+					} else if (obj instanceof Double) {
+						cell.setCellValue((Double) obj);
+					}
+				}
+			}
+		}
+		
+		//--------------------------------------------------------------------------------
+		// XLS FILE CREATION:
+		//--------------------------------------------------------------------------------
+		FileOutputStream fileOut = new FileOutputStream(filenameWithPathAndExt + ".xlsx");
+		wb.write(fileOut);
+		fileOut.close();
+		System.out.println("Your excel file has been generated!");
+	}
+
 	public void calculateDependentVariables(Aircraft aircraft) {
 
 		// Passengers and crew mass
@@ -376,7 +832,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 		_operatingEmptyWeight = _operatingEmptyMass.times(AtmosphereCalc.g0).to(SI.NEWTON);
 		_trappedFuelOilWeight = _trappedFuelOilMass.times(AtmosphereCalc.g0).to(SI.NEWTON);
 		_maximumLandingWeight = _maximumLandingMass.times(AtmosphereCalc.g0).to(SI.NEWTON);
-		
+
 	}
 
 	/** 
@@ -442,7 +898,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 			aircraft.getTheWeights().setZeroFuelWeight(
 					aircraft.getTheWeights().getZeroFuelMass().times(
 							AtmosphereCalc.g0).to(SI.NEWTON));
-			
+
 			// Maximum zero fuel mass
 			aircraft.getTheWeights().setMaximumZeroFuelMass(
 					aircraft.getTheWeights().getOperatingEmptyMass().plus(
@@ -458,7 +914,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 			aircraft.getTheWeights().setTakeOffWeight(
 					aircraft.getTheWeights().getTakeOffMass().times(
 							AtmosphereCalc.g0).to(SI.NEWTON));
-			
+
 			// Maximum take-off mass
 			aircraft.getTheWeights().setMaximumTakeOffMass(
 					aircraft.getTheWeights().getMaximumZeroFuelMass().plus(
@@ -757,6 +1213,14 @@ public class ACWeightsManager extends ACCalculatorManager {
 
 	public void setId(String id) {
 		this._id = id;
+	}
+
+	public Aircraft getTheAircraft() {
+		return _theAircraft;
+	}
+
+	public void setTheAircraft(Aircraft _theAircraft) {
+		ACWeightsManager._theAircraft = _theAircraft;
 	}
 
 	public static AnalysisTypeEnum getType() {

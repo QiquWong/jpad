@@ -191,7 +191,7 @@ public class Aircraft implements IAircraft {
 				__theSystems.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				
 				__theBalance = new ACBalanceManager();
-				__theWeights = new ACWeightsManager.ACWeightsManagerBuilder("Weights", AircraftEnum.ATR72).build();
+				__theWeights = new ACWeightsManager.ACWeightsManagerBuilder("Weights", new Aircraft(this), AircraftEnum.ATR72).build();
 				__theAerodynamics = new ACAerodynamicsManager();
 				__thePerformance = new ACPerformanceManager();
 				__theCosts = new Costs.CostsBuilder("Costs", new Aircraft(this)).build(); 
@@ -257,7 +257,7 @@ public class Aircraft implements IAircraft {
 				__theSystems.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				
 				__theBalance = new ACBalanceManager();
-				__theWeights = new ACWeightsManager.ACWeightsManagerBuilder("Weights", AircraftEnum.B747_100B).build();
+				__theWeights = new ACWeightsManager.ACWeightsManagerBuilder("Weights", new Aircraft(this), AircraftEnum.B747_100B).build();
 				__theAerodynamics = new ACAerodynamicsManager();
 				__thePerformance = new ACPerformanceManager();
 				__theCosts = new Costs.CostsBuilder("Costs", new Aircraft(this)).build();
@@ -323,7 +323,7 @@ public class Aircraft implements IAircraft {
 				__theSystems.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				
 				__theBalance = new ACBalanceManager();
-				__theWeights = new ACWeightsManager.ACWeightsManagerBuilder("Weights", AircraftEnum.AGILE_DC1).build();
+				__theWeights = new ACWeightsManager.ACWeightsManagerBuilder("Weights", new Aircraft(this), AircraftEnum.AGILE_DC1).build();
 				__theAerodynamics = new ACAerodynamicsManager();
 				__thePerformance = new ACPerformanceManager();
 				__theCosts = new Costs.CostsBuilder("Costs", new Aircraft(this)).build(); 
@@ -736,6 +736,16 @@ public class Aircraft implements IAircraft {
 							)
 					.getEstimatedValue()
 					);
+		
+		//----------------------------------------
+		if(_theWing != null)
+			calculateLiftingSurfaceACToWingACdistance(this._theWing);
+		if(_theHTail != null)
+			calculateLiftingSurfaceACToWingACdistance(this._theHTail);
+		if(_theVTail != null)
+			calculateLiftingSurfaceACToWingACdistance(this._theVTail);
+		if(_theCanard != null)
+			calculateLiftingSurfaceACToWingACdistance(this._theCanard);
 	}
 	
 	private void updateType() {

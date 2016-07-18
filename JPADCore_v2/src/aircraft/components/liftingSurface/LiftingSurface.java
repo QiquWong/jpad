@@ -484,13 +484,13 @@ public class LiftingSurface implements ILiftingSurface {
 
 			case KROO : {
 				methodsList.add(method);
-				_mass = Amount.valueOf((5.25*surfaceExposed +
+				_mass = Amount.valueOf((5.25*aircraft.getExposedWing().getSurface().getEstimatedValue() +
 						0.8e-6*
 						(aircraft.getThePerformance().getNUltimate()*
 								Math.pow(this.getSpan().to(NonSI.FOOT).getEstimatedValue(),3)*
 								aircraft.getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue()*
 								this.getLiftingSurfaceCreator().getMeanAerodynamicChord().to(NonSI.FOOT).getEstimatedValue()*
-								Math.sqrt(surfaceExposed))/
+								Math.sqrt(aircraft.getExposedWing().getSurface().getEstimatedValue()))/
 						(thicknessMean*Math.pow(Math.cos(sweepStructuralAxis.to(SI.RADIAN).getEstimatedValue()),2)*
 								this.getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance().to(NonSI.FOOT).getEstimatedValue()*Math.pow(surface,1.5))),
 						NonSI.POUND).to(SI.KILOGRAM);
@@ -1944,6 +1944,14 @@ public class LiftingSurface implements ILiftingSurface {
 
 	public void setXacActualLRF(Amount<Length> _xACActualLRF) {
 		this._xACActualLRF = _xACActualLRF;
+	}
+
+	public Double[] getPercentDifference() {
+		return _percentDifference;
+	}
+
+	public void set_percentDifference(Double[] _percentDifference) {
+		this._percentDifference = _percentDifference;
 	}
 	
 }
