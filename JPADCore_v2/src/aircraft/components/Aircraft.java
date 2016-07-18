@@ -138,11 +138,6 @@ public class Aircraft implements IAircraft {
 				__id = "ATR-72";
 				__typeVehicle = AircraftTypeEnum.TURBOPROP;
 				__theCabinConfiguration = new CabinConfiguration.ConfigurationBuilder("Aircraft cabin configuration", AircraftEnum.ATR72).build();
-				__theBalance = new ACBalanceManager();
-				__theWeights = new ACWeightsManager.ACWeightsManagerBuilder("Weights", AircraftEnum.ATR72).build();
-				__theAerodynamics = new ACAerodynamicsManager();
-				__thePerformance = new ACPerformanceManager();
-				__theCosts = new Costs.CostsBuilder("Costs").build(); 
 				
 				__componentsList.clear();
 				
@@ -195,6 +190,11 @@ public class Aircraft implements IAircraft {
 				__theSystems.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theSystems.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				
+				__theBalance = new ACBalanceManager();
+				__theWeights = new ACWeightsManager.ACWeightsManagerBuilder("Weights", AircraftEnum.ATR72).build();
+				__theAerodynamics = new ACAerodynamicsManager();
+				__thePerformance = new ACPerformanceManager();
+				__theCosts = new Costs.CostsBuilder("Costs", new Aircraft(this)).build(); 
 				break;
 
 		    // TODO : COMPLETE THIS!
@@ -204,11 +204,6 @@ public class Aircraft implements IAircraft {
 				__theCabinConfiguration = new CabinConfiguration
 						.ConfigurationBuilder("Aircraft cabin configuration", AircraftEnum.B747_100B)
 							.build();
-				__theBalance = new ACBalanceManager();
-				__theWeights = new ACWeightsManager.ACWeightsManagerBuilder("Weights", AircraftEnum.B747_100B).build();
-				__theAerodynamics = new ACAerodynamicsManager();
-				__thePerformance = new ACPerformanceManager();
-				__theCosts = new Costs.CostsBuilder("Costs").build();
 				
 				__componentsList.clear();
 				
@@ -261,6 +256,11 @@ public class Aircraft implements IAircraft {
 				__theSystems.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theSystems.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				
+				__theBalance = new ACBalanceManager();
+				__theWeights = new ACWeightsManager.ACWeightsManagerBuilder("Weights", AircraftEnum.B747_100B).build();
+				__theAerodynamics = new ACAerodynamicsManager();
+				__thePerformance = new ACPerformanceManager();
+				__theCosts = new Costs.CostsBuilder("Costs", new Aircraft(this)).build();
 				break;
 				
 			// TODO : COMPLETE THIS!
@@ -270,11 +270,6 @@ public class Aircraft implements IAircraft {
 				__theCabinConfiguration = new CabinConfiguration
 						.ConfigurationBuilder("Aircraft cabin configuration", AircraftEnum.AGILE_DC1)
 							.build();
-				__theBalance = new ACBalanceManager();
-				__theWeights = new ACWeightsManager.ACWeightsManagerBuilder("Weights", AircraftEnum.AGILE_DC1).build();
-				__theAerodynamics = new ACAerodynamicsManager();
-				__thePerformance = new ACPerformanceManager();
-				__theCosts = new Costs.CostsBuilder("Costs").build(); 
 				
 				__componentsList.clear();
 				
@@ -327,6 +322,11 @@ public class Aircraft implements IAircraft {
 				__theSystems.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theSystems.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				
+				__theBalance = new ACBalanceManager();
+				__theWeights = new ACWeightsManager.ACWeightsManagerBuilder("Weights", AircraftEnum.AGILE_DC1).build();
+				__theAerodynamics = new ACAerodynamicsManager();
+				__thePerformance = new ACPerformanceManager();
+				__theCosts = new Costs.CostsBuilder("Costs", new Aircraft(this)).build(); 
 				break;
 			
 			}
@@ -1415,7 +1415,7 @@ public class Aircraft implements IAircraft {
 		Costs theCosts = null;
 		if(costsFileName != null) {
 			String costsPath = costsDir + File.separator + costsFileName;
-			theCosts = Costs.importFromXML(costsPath);
+			theCosts = Costs.importFromXML(costsPath, null);
 		}
 		
 		//---------------------------------------------------------------------------------

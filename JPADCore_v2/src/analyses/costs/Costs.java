@@ -63,6 +63,7 @@ public class Costs implements ICosts {
 
 		// required parameters
 		private String __id;
+		private Aircraft __theAircraft;
 
 		// optional parameters
 		private double 	__residualValue,
@@ -90,9 +91,12 @@ public class Costs implements ICosts {
 		__startupTaxiTOTime,
 		__holdPriorToLandTime, 
 		__landingTaxiToStopTime;
+
 		
-		public CostsBuilder (String id) {
+		
+		public CostsBuilder (String id, Aircraft theAircraft) {
 			this.__id = id;
+			this.__theAircraft = theAircraft;
 		}
 		
 		public CostsBuilder residualValue (double residualValue){
@@ -224,6 +228,7 @@ public class Costs implements ICosts {
 	private Costs (CostsBuilder builder) { 
 		
 		this._id = builder.__id;
+		this._theAircraft = builder.__theAircraft;
 		this._residualValue = builder.__residualValue;
 		this._annualInterestRate = builder.__annualInterestRate;
 		this._annualInsurancePremiumRate = builder.__annualInsurancePremiumRate;
@@ -255,7 +260,7 @@ public class Costs implements ICosts {
 	// End of builder pattern
 	//===================================================================================================
 	
-	public static Costs importFromXML(String pathToXML){
+	public static Costs importFromXML(String pathToXML, Aircraft _theAircraft){
 	
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
 
@@ -308,7 +313,7 @@ public class Costs implements ICosts {
 		double hourVolumetricFuelConsumption  = Double.valueOf(reader.getXMLPropertyByPath("//Trip_Charges/Hour_Volumetric_Fuel_Consumption")); 
 		double oilMassCost  = Double.valueOf(reader.getXMLPropertyByPath("//Trip_Charges/Oil_Mass_Cost")); 
 		
-		Costs costs = new CostsBuilder(id)
+		Costs costs = new CostsBuilder(id,_theAircraft)
 				.residualValue(residualValue)
 				.annualInterestRate(annualInterestRate)
 				.annualInsurancePremiumRate(annualInsurancePremiumRate)
@@ -407,6 +412,9 @@ public class Costs implements ICosts {
 	
 	@Override
 	public void initializeAll(Aircraft aircraft) {
+		
+		_theFixedCharges = new FixedCharges(aircraft, this);
+		_theTripCharges= new TripCharges(aircraft, this); 
 		
 		initializeAll(
 				CostsCalcUtils.singleEngineCostSforza(Amount.valueOf(0., SI.NEWTON), 0.),	// singleEngineCost
