@@ -30,7 +30,7 @@ import standaloneutils.JPADXmlReader;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import writers.JPADStaticWriteUtils;
 
-class MyArgumentsWieghtsAnalysis {
+class MyArgumentsWeightsAnalysis {
 	@Option(name = "-i", aliases = { "--input" }, required = true,
 			usage = "my input file")
 	private File _inputFile;
@@ -175,7 +175,7 @@ public class WeightsTest extends Application {
 		String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR); 
 		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "WEIGHTS" + File.separator);
 		
-		MyArgumentsWieghtsAnalysis va = new MyArgumentsWieghtsAnalysis();
+		MyArgumentsWeightsAnalysis va = new MyArgumentsWeightsAnalysis();
 		WeightsTest.theCmdLineParser = new CmdLineParser(va);
 
 		// populate the wing static object in the class

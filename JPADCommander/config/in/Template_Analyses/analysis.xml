@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
+    <!-- Input data, shared across analysis tasks -->
+    <global_data>
+        <cruise_mach>0.72</cruise_mach>
+        <cruise_altitude unit="ft">8000</cruise_altitude>
+        
+        <!-- ... -->
+        
+    </global_data>
+    <!-- Required analysis tasks -->
     <analyses id="JPAD Test analysis">
         <weights file="analysis_weights.xml"/>
         <balance file="analysis_balance.xml"/>
