@@ -167,7 +167,7 @@ public class CenterOfGravity {
 		return _xLRF;
 	}
 
-	public void set_xLRF(Amount<Length> _xLRF) {
+	public void setXLRF(Amount<Length> _xLRF) {
 		this._xLRF = _xLRF;
 	}
 
@@ -175,7 +175,7 @@ public class CenterOfGravity {
 		return _yLRF;
 	}
 
-	public void set_yLRF(Amount<Length> _yLRF) {
+	public void setYLRF(Amount<Length> _yLRF) {
 		this._yLRF = _yLRF;
 	}
 
@@ -187,11 +187,11 @@ public class CenterOfGravity {
 		this._zLRF = _zLRF;
 	}
 
-	public Amount<Length> get_xBRF() {
+	public Amount<Length> getXBRF() {
 		return _xBRF;
 	}
 
-	public void set_xBRF(Amount<Length> _xBRF) {
+	public void setXBRF(Amount<Length> _xBRF) {
 		this._xBRF = _xBRF;
 	}
 
@@ -211,7 +211,7 @@ public class CenterOfGravity {
 		this._zBRF = _zBRF;
 	}
 
-	public Amount<Length> get_xLRFref() {
+	public Amount<Length> getXLRFref() {
 		return _xLRFref;
 	}
 
@@ -219,7 +219,7 @@ public class CenterOfGravity {
 		this._xLRFref = _xLRFref;
 	}
 
-	public Amount<Length> get_yLRFref() {
+	public Amount<Length> getYLRFref() {
 		return _yLRFref;
 	}
 

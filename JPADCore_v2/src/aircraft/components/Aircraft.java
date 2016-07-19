@@ -904,7 +904,7 @@ public class Aircraft implements IAircraft {
 					);
 		}
 		else if( // case CG behind AC wing
-				_theBalance.get_cgMTOM().get_xBRF().getEstimatedValue() > 
+				_theBalance.getCGMTOM().getXBRF().getEstimatedValue() > 
 				(_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
 						.plus(_theWing.getXApexConstructionAxes()).getEstimatedValue() + 
 							_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()*0.25)
@@ -932,7 +932,7 @@ public class Aircraft implements IAircraft {
 			}
 		}
 		else if( // case AC wing behind CG
-				_theBalance.get_cgMTOM().get_xBRF().getEstimatedValue() <= 
+				_theBalance.getCGMTOM().getXBRF().getEstimatedValue() <= 
 				(_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
 						.plus(_theWing.getXApexConstructionAxes()).getEstimatedValue() + 
 							_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()*0.25)
@@ -963,7 +963,7 @@ public class Aircraft implements IAircraft {
 	private void calculateAircraftCGToWingACdistance(){
 		_wingACToCGDistance = Amount.valueOf(
 				Math.abs(
-						_theBalance.get_cgMTOM().get_xBRF().getEstimatedValue() -
+						_theBalance.getCGMTOM().getXBRF().getEstimatedValue() -
 						(_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
 								.plus(_theWing.getXApexConstructionAxes()).getEstimatedValue() + 
 									_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()*0.25)

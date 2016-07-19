@@ -3990,15 +3990,15 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			CenterOfGravity cg;
 
 			if (theLocalAircraft != null) {
-				cg = theLocalAircraft.getTheBalance().get_cgMTOM();
+				cg = theLocalAircraft.getTheBalance().getCGMTOM();
 			} else {
 				cg = theLiftingSurface.getCG();
 			}
-			System.out.println("the xbr is --> " + cg.get_xBRF());
+			System.out.println("the xbr is --> " + cg.getXBRF());
 			System.out.println("the cg is --> " + cg);
 
 			_cmAlpha = MomentCalc.calcCMalphaLS(calculateCLAlpha.andersonSweptCompressibleSubsonic(),
-					cg.get_xBRF().getEstimatedValue(), 
+					cg.getXBRF().getEstimatedValue(), 
 					calculateXAC.atQuarterMAC(), getTheLiftingSurface().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().getEstimatedValue(), 
 					getTheLiftingSurface().getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue());
 
@@ -4011,14 +4011,14 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			CenterOfGravity cg;
 
 			if (theLocalAircraft != null) {
-				cg = theLocalAircraft.getTheBalance().get_cgMTOM();
+				cg = theLocalAircraft.getTheBalance().getCGMTOM();
 			} else {
 				cg = theLiftingSurface.getCG();
 			}
-			System.out.println("the xbr is --> " + cg.get_xBRF());
+			System.out.println("the xbr is --> " + cg.getXBRF());
 			System.out.println("the cg is --> " + cg);
 			_cmAlpha = MomentCalc.calcCMalphaLS(calculateCLAlpha.polhamus(),
-					cg.get_xBRF().getEstimatedValue(), 
+					cg.getXBRF().getEstimatedValue(), 
 					calculateXAC.atQuarterMAC(), getTheLiftingSurface().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().getEstimatedValue(), 
 					getTheLiftingSurface().getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue());
 

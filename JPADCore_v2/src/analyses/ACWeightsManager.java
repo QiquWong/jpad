@@ -7,12 +7,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.VolumetricDensity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -24,10 +26,10 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jscience.physics.amount.Amount;
+
 import aircraft.components.Aircraft;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
-import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.JPADXmlReader;
@@ -43,7 +45,6 @@ public class ACWeightsManager extends ACCalculatorManager {
 
 	private String _id;
 	private static Aircraft _theAircraft;
-	private static final AnalysisTypeEnum _type = AnalysisTypeEnum.WEIGHTS;
 	
 	// Aluminum density
 	public static Amount<VolumetricDensity> _materialDensity = 
@@ -109,6 +110,11 @@ public class ACWeightsManager extends ACCalculatorManager {
 		
 		public ACWeightsManagerBuilder id(String id) {
 			this.__id = id;
+			return this;
+		}
+		
+		public ACWeightsManagerBuilder aircraft(Aircraft theAircraft) {
+			this.__theAircraft = theAircraft;
 			return this;
 		}
 		
@@ -211,7 +217,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 	//============================================================================================
 	
 	@SuppressWarnings("unchecked")
-	public static ACWeightsManager importFromXML (String pathToXML) {
+	public static ACWeightsManager importFromXML (String pathToXML, Aircraft theAircraft) {
 		
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
 
@@ -288,7 +294,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 			return null; 
 		}
 		
-		ACWeightsManager theWeigths = new ACWeightsManagerBuilder(id, _theAircraft)
+		ACWeightsManager theWeigths = new ACWeightsManagerBuilder(id, theAircraft)
 				.maximumTakeOffMass(maximumTakeOffMass)
 				.maximumLandingMass(maximumLandingMass)
 				.maximumZeroFuelMass(maximumZeroFuelMass)
@@ -1202,17 +1208,26 @@ public class ACWeightsManager extends ACCalculatorManager {
 			Aircraft aircraft, 
 			Map <ComponentEnum, List<MethodEnum>> methodsMap) {
 
-		aircraft.getFuselage().calculateMass(aircraft);
+		if(aircraft.getFuselage() != null)
+			aircraft.getFuselage().calculateMass(aircraft);
 
-		aircraft.getWing().calculateMass(aircraft);
-		aircraft.getHTail().calculateMass(aircraft);
-		aircraft.getVTail().calculateMass(aircraft);
+		if(aircraft.getWing() != null)
+			aircraft.getWing().calculateMass(aircraft);
+		if(aircraft.getHTail() != null)
+			aircraft.getHTail().calculateMass(aircraft);
+		if(aircraft.getVTail() != null)
+			aircraft.getVTail().calculateMass(aircraft);
+		if(aircraft.getCanard() != null)
+			aircraft.getCanard().calculateMass(aircraft);
+		
+		if(aircraft.getNacelles() != null)
+			aircraft.getNacelles().calculateMass(aircraft);
 
-		aircraft.getNacelles().calculateMass(aircraft);
+		if(aircraft.getLandingGears() != null)
+			aircraft.getLandingGears().calculateMass(aircraft);
 
-		aircraft.getLandingGears().calculateMass(aircraft);
-
-		aircraft.getSystems().calculateMass(aircraft, MethodEnum.TORENBEEK_2013);
+		if(aircraft.getSystems() != null)
+			aircraft.getSystems().calculateMass(aircraft, MethodEnum.TORENBEEK_2013);
 
 		aircraft.getTheWeights().setStructuralMass(
 				aircraft.getFuselage().getMassEstimated().plus(
@@ -1225,8 +1240,10 @@ public class ACWeightsManager extends ACCalculatorManager {
 	}
 
 	public void calculateManufacturerEmptyMass(Aircraft aircraft) {
-		aircraft.getSystems().calculateMass(aircraft, MethodEnum.TORENBEEK_2013);
-		aircraft.getCabinConfiguration().calculateMass(aircraft, MethodEnum.TORENBEEK_2013);
+		if(aircraft.getSystems() != null)
+			aircraft.getSystems().calculateMass(aircraft, MethodEnum.TORENBEEK_2013);
+		if(aircraft.getCabinConfiguration() != null)
+			aircraft.getCabinConfiguration().calculateMass(aircraft, MethodEnum.TORENBEEK_2013);
 		aircraft.getTheWeights().setManufacturerEmptyMass(
 				aircraft.getPowerPlant().getTotalMass().plus(
 						aircraft.getTheWeights().getStructuralMass()).plus(
@@ -1237,15 +1254,24 @@ public class ACWeightsManager extends ACCalculatorManager {
 
 	public void calculateFirstGuessMTOM(Aircraft aircraft) {
 
-		aircraft.getFuselage().setMass(aircraft.getTheWeights().getMaximumZeroFuelMass().times(.15));
-		aircraft.getWing().setMassReference(aircraft.getTheWeights().getMaximumZeroFuelMass().times(.1));
-		aircraft.getHTail().setMassReference(aircraft.getTheWeights().getMaximumZeroFuelMass().times(.015));
-		aircraft.getVTail().setMassReference(aircraft.getTheWeights().getMaximumZeroFuelMass().times(.015));
-		aircraft.getPowerPlant().setTotalMass(aircraft.getTheWeights().getMaximumZeroFuelMass().times(.05));
-		aircraft.getNacelles().setTotalMass(aircraft.getTheWeights().getMaximumZeroFuelMass().times(.015));
-		aircraft.getFuelTank().setFuelMass(aircraft.getTheWeights().getMaximumZeroFuelMass().times(.015));
-		aircraft.getLandingGears().setMass(aircraft.getTheWeights().getMaximumZeroFuelMass().times(.04));
-		aircraft.getSystems().setOverallMass(aircraft.getTheWeights().getMaximumZeroFuelMass().times(.04));
+		if(aircraft.getFuselage() != null)
+			aircraft.getFuselage().setMass(aircraft.getTheWeights().getMaximumZeroFuelMass().times(.15));
+		if(aircraft.getWing() != null)
+			aircraft.getWing().setMassReference(aircraft.getTheWeights().getMaximumZeroFuelMass().times(.1));
+		if(aircraft.getHTail() != null)
+			aircraft.getHTail().setMassReference(aircraft.getTheWeights().getMaximumZeroFuelMass().times(.015));
+		if(aircraft.getVTail() != null)
+			aircraft.getVTail().setMassReference(aircraft.getTheWeights().getMaximumZeroFuelMass().times(.015));
+		if(aircraft.getPowerPlant() != null)
+			aircraft.getPowerPlant().setTotalMass(aircraft.getTheWeights().getMaximumZeroFuelMass().times(.05));
+		if(aircraft.getNacelles() != null)
+			aircraft.getNacelles().setTotalMass(aircraft.getTheWeights().getMaximumZeroFuelMass().times(.015));
+		if(aircraft.getFuelTank() != null)
+			aircraft.getFuelTank().setFuelMass(aircraft.getTheWeights().getMaximumZeroFuelMass().times(.015));
+		if(aircraft.getLandingGears() != null)
+			aircraft.getLandingGears().setMass(aircraft.getTheWeights().getMaximumZeroFuelMass().times(.04));
+		if(aircraft.getSystems() != null)
+			aircraft.getSystems().setOverallMass(aircraft.getTheWeights().getMaximumZeroFuelMass().times(.04));
 
 		aircraft.getTheWeights().setStructuralMass(
 				aircraft.getFuselage().getMass().plus(
@@ -1472,10 +1498,6 @@ public class ACWeightsManager extends ACCalculatorManager {
 
 	public void setTheAircraft(Aircraft _theAircraft) {
 		ACWeightsManager._theAircraft = _theAircraft;
-	}
-
-	public static AnalysisTypeEnum getType() {
-		return _type;
 	}
 
 	public Amount<Length> getRange() {

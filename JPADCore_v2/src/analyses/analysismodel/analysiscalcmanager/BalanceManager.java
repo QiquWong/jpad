@@ -35,7 +35,7 @@ public abstract class BalanceManager extends ComponentCalculator{
 	}
 
 
-	public CenterOfGravity get_cg() {
+	public CenterOfGravity getCG() {
 		return _cg;
 	}
 }

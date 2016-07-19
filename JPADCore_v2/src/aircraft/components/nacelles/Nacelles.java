@@ -249,8 +249,8 @@ public class Nacelles implements INacelles {
 		_totalCG = new CenterOfGravity();
 		for(int i=0; i < _nacellesNumber; i++) {
 			_nacellesList.get(i).getBalance().calculateAll();
-			_cgList.add(_nacellesList.get(i).getBalance().get_cg());
-			_totalCG = _totalCG.plus(_nacellesList.get(i).getBalance().get_cg()
+			_cgList.add(_nacellesList.get(i).getBalance().getCG());
+			_totalCG = _totalCG.plus(_nacellesList.get(i).getBalance().getCG()
 					.times(_nacellesList.get(i).getWeights().getMassEstimated().doubleValue(SI.KILOGRAM)));
 		}
 

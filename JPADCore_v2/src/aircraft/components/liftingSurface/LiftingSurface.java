@@ -702,8 +702,8 @@ public class LiftingSurface implements ILiftingSurface {
 
 		Double lambda = _liftingSurfaceCreator.getTaperRatioEquivalentWing(),
 				span = getSpan().getEstimatedValue(),
-				xRearSpar,
-				xFrontSpar;
+				xRearSpar = _liftingSurfaceCreator.getSecondarySparNonDimensionalPosition(),
+				xFrontSpar = _liftingSurfaceCreator.getMainSparNonDimensionalPosition();
 
 		switch (type) {
 		case WING : {
@@ -834,14 +834,14 @@ public class LiftingSurface implements ILiftingSurface {
 		_percentDifferenceXCG = new Double[_xCGMap.size()];
 		_percentDifferenceYCG = new Double[_yCGMap.size()];
 
-		_cg.set_xLRF(Amount.valueOf(JPADStaticWriteUtils.compareMethods(
-				_cg.get_xLRFref(), 
+		_cg.setXLRF(Amount.valueOf(JPADStaticWriteUtils.compareMethods(
+				_cg.getXLRFref(), 
 				_xCGMap,
 				_percentDifferenceXCG,
 				30.).getFilteredMean(), SI.METER));
 
-		_cg.set_yLRF(Amount.valueOf(JPADStaticWriteUtils.compareMethods(
-				_cg.get_yLRFref(), 
+		_cg.setYLRF(Amount.valueOf(JPADStaticWriteUtils.compareMethods(
+				_cg.getYLRFref(), 
 				_yCGMap,
 				_percentDifferenceYCG,
 				30.).getFilteredMean(), SI.METER));

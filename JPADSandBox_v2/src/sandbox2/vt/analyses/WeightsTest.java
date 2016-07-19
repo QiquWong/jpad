@@ -17,6 +17,7 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import aircraft.components.Aircraft;
+import analyses.ACWeightsManager;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ComponentEnum;
@@ -186,6 +187,9 @@ public class WeightsTest extends Application {
 			String pathToXML = va.getInputFile().getAbsolutePath();
 			System.out.println("INPUT ===> " + pathToXML);
 
+			String pathToXMLWeights = va.getWeightsInputFile().getAbsolutePath();
+			System.out.println("WEIGHTS INPUT ===> " + pathToXMLWeights);
+			
 			String dirAirfoil = va.getAirfoilDirectory().getCanonicalPath();
 			System.out.println("AIRFOILS ===> " + dirAirfoil);
 
@@ -249,6 +253,7 @@ public class WeightsTest extends Application {
 //					dirCosts,
 //					aeroDatabaseReader,
 //					highLiftDatabaseReader);
+//			theAircraft.setTheWieghts(ACWeightsManager.importFromXML(pathToXMLWeights, theAircraft));
 			
 			///////////////////////////////////////////////////////////////////////////////////
 			// TODO : THE METHODS MAP WILL COME FROM ANALYSIS MANAGER

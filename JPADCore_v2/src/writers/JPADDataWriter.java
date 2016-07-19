@@ -591,14 +591,14 @@ public class JPADDataWriter {
 					Element balance_Analysis = doc.createElement("Balance");
 					_analysisInitiator.appendChild(balance_Analysis);
 
-					writeOutputNode("Xcg_structure_MAC", _theAircraft.getTheBalance().get_cgStructure().get_xMAC(), balance_Analysis);
-					writeOutputNode("Xcg_structure_BRF", _theAircraft.getTheBalance().get_cgStructure().get_xBRF(), balance_Analysis);
-					writeOutputNode("Xcg_structure_and_engines_MAC", _theAircraft.getTheBalance().get_cgStructureAndPower().get_xMAC(), balance_Analysis);
-					writeOutputNode("Xcg_structure_and_engines_BRF", _theAircraft.getTheBalance().get_cgStructureAndPower().get_xBRF(), balance_Analysis);
-					writeOutputNode("Xcg_MAC_MZFM", _theAircraft.getTheBalance().get_cgMZFM().get_xMAC(), balance_Analysis);
-					writeOutputNode("Xcg_BRF_MZFM", _theAircraft.getTheBalance().get_cgMZFM().get_xBRF(), balance_Analysis);
-					writeOutputNode("Xcg_MTOM_MAC", _theAircraft.getTheBalance().get_cgMTOM().get_xMAC(), balance_Analysis);
-					writeOutputNode("Xcg_MTOM_BRF", _theAircraft.getTheBalance().get_cgMTOM().get_xBRF(), balance_Analysis);
+					writeOutputNode("Xcg_structure_MAC", _theAircraft.getTheBalance().getCGStructure().get_xMAC(), balance_Analysis);
+					writeOutputNode("Xcg_structure_BRF", _theAircraft.getTheBalance().getCGStructure().getXBRF(), balance_Analysis);
+					writeOutputNode("Xcg_structure_and_engines_MAC", _theAircraft.getTheBalance().getCGStructureAndPower().get_xMAC(), balance_Analysis);
+					writeOutputNode("Xcg_structure_and_engines_BRF", _theAircraft.getTheBalance().getCGStructureAndPower().getXBRF(), balance_Analysis);
+					writeOutputNode("Xcg_MAC_MZFM", _theAircraft.getTheBalance().getCGMZFM().get_xMAC(), balance_Analysis);
+					writeOutputNode("Xcg_BRF_MZFM", _theAircraft.getTheBalance().getCGMZFM().getXBRF(), balance_Analysis);
+					writeOutputNode("Xcg_MTOM_MAC", _theAircraft.getTheBalance().getCGMTOM().get_xMAC(), balance_Analysis);
+					writeOutputNode("Xcg_MTOM_BRF", _theAircraft.getTheBalance().getCGMTOM().getXBRF(), balance_Analysis);
 				}
 			}
 
@@ -787,12 +787,12 @@ public class JPADDataWriter {
 					"Xcg_estimation_method_comparison",
 					fuselage.get_xCGMap(), fuselage.get_percentDifferenceXCG(), balance);
 
-			writeOutputNode("Xcg_LRF", fuselage.get_cg().get_xLRF(), balance);
-			writeOutputNode("Ycg_LRF", fuselage.get_cg().get_yLRF(), balance);
-			writeOutputNode("Zcg_LRF", fuselage.get_cg().get_zLRF(), balance);
-			writeOutputNode("Xcg_BRF", fuselage.get_cg().get_xBRF(), balance);
-			writeOutputNode("Ycg_BRF", fuselage.get_cg().get_yBRF(), balance);
-			writeOutputNode("Zcg_BRF", fuselage.get_cg().get_zBRF(), balance);
+			writeOutputNode("Xcg_LRF", fuselage.getCG().get_xLRF(), balance);
+			writeOutputNode("Ycg_LRF", fuselage.getCG().get_yLRF(), balance);
+			writeOutputNode("Zcg_LRF", fuselage.getCG().get_zLRF(), balance);
+			writeOutputNode("Xcg_BRF", fuselage.getCG().getXBRF(), balance);
+			writeOutputNode("Ycg_BRF", fuselage.getCG().get_yBRF(), balance);
+			writeOutputNode("Zcg_BRF", fuselage.getCG().get_zBRF(), balance);
 
 			// --- Aerodynamics -----------------------
 			Element aerodynamics = addElementToSubElement("Aerodynamics", analysis);
@@ -949,7 +949,7 @@ public class JPADDataWriter {
 		writeOutputNode("Xcg_LRF", liftingSurface.getCg().get_xLRF(), balance);
 		writeOutputNode("Ycg_LRF_half_wing", liftingSurface.getCg().get_yLRF(), balance);
 		writeOutputNode("Zcg_LRF", liftingSurface.getCg().get_zLRF(), balance);
-		writeOutputNode("Xcg_BRF", liftingSurface.getCg().get_xBRF(), balance);
+		writeOutputNode("Xcg_BRF", liftingSurface.getCg().getXBRF(), balance);
 		writeOutputNode("Ycg_BRF_half_wing", liftingSurface.getCg().get_yBRF(), balance);
 		writeOutputNode("Zcg_BRF", liftingSurface.getCg().get_zBRF(), balance);
 
@@ -1239,12 +1239,12 @@ public class JPADDataWriter {
 				"Xcg_estimation_method_comparison",
 				powerPlant.get_xCGMap(), powerPlant.get_percentDifferenceXCG(), balance);
 
-		writeOutputNode("Xcg_LRF", powerPlant.get_cg().get_xLRF(), balance);
-		writeOutputNode("Ycg_LRF", powerPlant.get_cg().get_yLRF(), balance);
-		writeOutputNode("Zcg_LRF", powerPlant.get_cg().get_zLRF(), balance);
-		writeOutputNode("Xcg_BRF", powerPlant.get_cg().get_xBRF(), balance);
-		writeOutputNode("Ycg_BRF", powerPlant.get_cg().get_yBRF(), balance);
-		writeOutputNode("Zcg_BRF", powerPlant.get_cg().get_zBRF(), balance);
+		writeOutputNode("Xcg_LRF", powerPlant.getCG().get_xLRF(), balance);
+		writeOutputNode("Ycg_LRF", powerPlant.getCG().get_yLRF(), balance);
+		writeOutputNode("Zcg_LRF", powerPlant.getCG().get_zLRF(), balance);
+		writeOutputNode("Xcg_BRF", powerPlant.getCG().getXBRF(), balance);
+		writeOutputNode("Ycg_BRF", powerPlant.getCG().get_yBRF(), balance);
+		writeOutputNode("Zcg_BRF", powerPlant.getCG().get_zBRF(), balance);
 
 		int size = 1;
 		if (powerPlant.is_engineEqual() == false) size = powerPlant.getEngineList().size();
@@ -1369,7 +1369,7 @@ public class JPADDataWriter {
 		writeOutputNode("Xcg_LRF", nacelle.getCG().get_xLRF(), balance);
 		writeOutputNode("Ycg_LRF", nacelle.getCG().get_yLRF(), balance);
 		writeOutputNode("Zcg_LRF", nacelle.getCG().get_zLRF(), balance);
-		writeOutputNode("Xcg_BRF", nacelle.getCG().get_xBRF(), balance);
+		writeOutputNode("Xcg_BRF", nacelle.getCG().getXBRF(), balance);
 		writeOutputNode("Ycg_BRF", nacelle.getCG().get_yBRF(), balance);
 		writeOutputNode("Zcg_BRF", nacelle.getCG().get_zBRF(), balance);
 
@@ -1442,7 +1442,7 @@ public class JPADDataWriter {
 		writeOutputNode("Xcg_LRF", landingGear.getCg().get_xLRF(), balance);
 		writeOutputNode("Ycg_LRF", landingGear.getCg().get_yLRF(), balance);
 		writeOutputNode("Zcg_LRF", landingGear.getCg().get_zLRF(), balance);
-		writeOutputNode("Xcg_BRF", landingGear.getCg().get_xBRF(), balance);
+		writeOutputNode("Xcg_BRF", landingGear.getCg().getXBRF(), balance);
 		writeOutputNode("Ycg_BRF", landingGear.getCg().get_yBRF(), balance);
 		writeOutputNode("Zcg_BRF", landingGear.getCg().get_zBRF(), balance);
 

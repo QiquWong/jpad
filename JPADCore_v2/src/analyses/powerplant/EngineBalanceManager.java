@@ -60,8 +60,8 @@ public class EngineBalanceManager extends BalanceManager{
 		_methodsMap.put(AnalysisTypeEnum.BALANCE, _methodsList);
 		_percentDifferenceXCG = new Double[_xCGMap.size()];
 
-		_cg.set_xLRF(Amount.valueOf(JPADStaticWriteUtils.compareMethods(
-				_cg.get_xLRFref(), 
+		_cg.setXLRF(Amount.valueOf(JPADStaticWriteUtils.compareMethods(
+				_cg.getXLRFref(), 
 				_xCGMap,
 				_percentDifferenceXCG,
 				30.).getFilteredMean(), SI.METER));
