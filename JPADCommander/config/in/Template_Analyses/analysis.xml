@@ -10,8 +10,14 @@
     </global_data>
     <!-- Required analysis tasks -->
     <analyses id="JPAD Test analysis">
-        <weights file="analysis_weights.xml"/>
-        <balance file="analysis_balance.xml"/>
+        <weights 
+            file="analysis_weights.xml" 
+            method_fuselage="JENKINSON"
+            method_wing="TORENBEEK_2013"
+            method_htail="TORENBEEK_2013"
+            method_vtail="TORENBEEK_2013"
+            /> <!-- method_XXX="AVERAGED" if not present -->
+        <balance from_calculated_weights="false" file="analysis_balance.xml"/>
         <aerodynamics file="analysis_aerodynamics.xml"/>
         <performance file="analysis_performance.xml"/>
         <costs file="analysis_costs.xml"/>
