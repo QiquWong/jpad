@@ -369,10 +369,10 @@ public class SeatsBlock {
 	 */
 	public static CGboarding calculateCoGboarding(List<SeatsBlock> seatsBlocks, Aircraft aircraft) {
 
-		double sumFtoR = aircraft.getTheBalance().getXCoGMeanAtOEM()*
+		double sumFtoR = aircraft.getTheBalance().getXCGMeanAtOEM()*
 				aircraft.getTheWeights().getOperatingEmptyMass().getEstimatedValue(),
 
-				sumRtoF = aircraft.getTheBalance().getXCoGMeanAtOEM()*
+				sumRtoF = aircraft.getTheBalance().getXCGMeanAtOEM()*
 				aircraft.getTheWeights().getOperatingEmptyMass().getEstimatedValue();
 
 		double currentMass, mult, emptyColumns = 0.;

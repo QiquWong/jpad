@@ -683,6 +683,8 @@ public class LiftingSurface implements ILiftingSurface {
 
 		List<MethodEnum> methodsList = new ArrayList<MethodEnum>();
 
+		_cg = new CenterOfGravity();
+		
 		_cg.setLRForigin(_xApexConstructionAxes,
 						 _yApexConstructionAxes,
 						 _zApexConstructionAxes
@@ -1796,6 +1798,10 @@ public class LiftingSurface implements ILiftingSurface {
 		return _massEstimated;
 	}
 
+	public void setMassEstimated(Amount<Mass> massEstimated) {
+		this._massEstimated = massEstimated;
+	}
+	
 	public Map<MethodEnum, Amount<Mass>> getMassMap() {
 		return _massMap;
 	}
@@ -1966,6 +1972,38 @@ public class LiftingSurface implements ILiftingSurface {
 
 	public void set_percentDifference(Double[] _percentDifference) {
 		this._percentDifference = _percentDifference;
+	}
+
+	public Map<MethodEnum, Amount<Length>> getXCGMap() {
+		return _xCGMap;
+	}
+
+	public void setXCGMap(Map<MethodEnum, Amount<Length>> _xCGMap) {
+		this._xCGMap = _xCGMap;
+	}
+
+	public Map<MethodEnum, Amount<Length>> getYCGMap() {
+		return _yCGMap;
+	}
+
+	public void setYCGMap(Map<MethodEnum, Amount<Length>> _yCGMap) {
+		this._yCGMap = _yCGMap;
+	}
+
+	public Double[] getPercentDifferenceXCG() {
+		return _percentDifferenceXCG;
+	}
+
+	public void setPercentDifferenceXCG(Double[] _percentDifferenceXCG) {
+		this._percentDifferenceXCG = _percentDifferenceXCG;
+	}
+
+	public Double[] getPercentDifferenceYCG() {
+		return _percentDifferenceYCG;
+	}
+
+	public void setPercentDifferenceYCG(Double[] _percentDifferenceYCG) {
+		this._percentDifferenceYCG = _percentDifferenceYCG;
 	}
 	
 }

@@ -213,6 +213,13 @@ public class Nacelles implements INacelles {
 	}
 
 	@Override
+	public void initializeBalance() {
+		for(int i=0; i < _nacellesNumber; i++) {
+			_nacellesList.get(i).initializeBalance();
+		}
+	}
+	
+	@Override
 	public void calculateSurfaceWetted() {
 		_surfaceWetted = Amount.valueOf(0., SI.SQUARE_METRE);
 		for(int i=0; i < _nacellesNumber; i++) {
@@ -247,7 +254,10 @@ public class Nacelles implements INacelles {
 	public CenterOfGravity calculateCG() {
 
 		_totalCG = new CenterOfGravity();
+		initializeBalance();
+		
 		for(int i=0; i < _nacellesNumber; i++) {
+			_nacellesList.get(i).initializeBalance();
 			_nacellesList.get(i).getBalance().calculateAll();
 			_cgList.add(_nacellesList.get(i).getBalance().getCG());
 			_totalCG = _totalCG.plus(_nacellesList.get(i).getBalance().getCG()

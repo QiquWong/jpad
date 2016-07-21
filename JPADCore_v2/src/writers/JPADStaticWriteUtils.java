@@ -43,7 +43,7 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 
 import configuration.MyConfiguration;
 import configuration.enumerations.MethodEnum;
-import standaloneutils.MyXLSWriteUtils;
+import standaloneutils.MyXLSUtils;
 import standaloneutils.customdata.MyArray;
 
 public class JPADStaticWriteUtils {
@@ -143,7 +143,7 @@ public class JPADStaticWriteUtils {
 		sheet.createRow(sheet.getLastRowNum()+1).createCell((short) 0).setCellValue("");
 		Cell cell0 = sheet.createRow(sheet.getLastRowNum()+1).createCell((short) 0);
 		cell0.setCellValue("ANALYSIS");
-		cell0.setCellStyle(MyXLSWriteUtils.styleTitlesFirstCol);
+		cell0.setCellStyle(MyXLSUtils.styleTitlesFirstCol);
 
 		// --- Analysis results ---------------------------------------------------------------------
 		Element analysis = doc.createElement(elementName);
@@ -167,7 +167,7 @@ public class JPADStaticWriteUtils {
 
 		Cell cell1 = _sheet.createRow(_sheet.getLastRowNum()+1).createCell((short) 0);
 		cell1.setCellValue(StringUtils.replace(elementName, "_", " "));
-		cell1.setCellStyle(MyXLSWriteUtils.styleSubtitles);
+		cell1.setCellStyle(MyXLSUtils.styleSubtitles);
 
 		Element element = doc.createElement(elementName); 
 		father.appendChild(element);
@@ -906,13 +906,13 @@ public class JPADStaticWriteUtils {
 
 		// Create a cell and put a value in it.
 		row.createCell(0).setCellValue(description.replace("_", " "));
-		row.getCell(0).setCellStyle(MyXLSWriteUtils.styleFirstColumn);
+		row.getCell(0).setCellStyle(MyXLSUtils.styleFirstColumn);
 
 		row.createCell(1).setCellValue(unit);
 		row.createCell(2).setCellValue(value);
 
 		for (int i = 1; i < 3; i++){
-			row.getCell(i).setCellStyle(MyXLSWriteUtils.styleDefault);
+			row.getCell(i).setCellStyle(MyXLSUtils.styleDefault);
 		}
 	}
 
@@ -937,7 +937,7 @@ public class JPADStaticWriteUtils {
 
 			Cell cellTitle = sheet.createRow(currentRow).createCell(0);
 			cellTitle.setCellValue("Arrays");
-			cellTitle.setCellStyle(MyXLSWriteUtils.styleTitlesFirstCol);
+			cellTitle.setCellStyle(MyXLSUtils.styleTitlesFirstCol);
 			currentRow++;
 
 			Row descriptionRow = sheet.createRow(currentRow);
@@ -1043,7 +1043,7 @@ public class JPADStaticWriteUtils {
 
 		if (createSheet == true) {
 			if (sheet == null || !sheet.getSheetName().equals(str.replace("_", " ")))
-				sheet = MyXLSWriteUtils.createNewSheet(
+				sheet = MyXLSUtils.createNewSheet(
 						WordUtils.capitalizeFully(str.replace("_", " ")), 
 						aircraftName, _workbookExport); 
 		} 

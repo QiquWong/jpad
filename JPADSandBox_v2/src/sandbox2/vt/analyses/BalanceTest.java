@@ -17,6 +17,7 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import aircraft.components.Aircraft;
+import analyses.ACBalanceManager;
 import analyses.ACWeightsManager;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
@@ -31,7 +32,7 @@ import standaloneutils.JPADXmlReader;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import writers.JPADStaticWriteUtils;
 
-class MyArgumentsWeightsAnalysis {
+class MyArgumentsBalanceAnalysis {
 	@Option(name = "-i", aliases = { "--input" }, required = true,
 			usage = "my input file")
 	private File _inputFile;
@@ -72,9 +73,9 @@ class MyArgumentsWeightsAnalysis {
 			usage = "costs directory path")
 	private File _costsDirectory;
 	
-	@Option(name = "-iw", aliases = { "--input-weights" }, required = true,
-			usage = "weights input path")
-	private File _weigthsInputFile;
+	@Option(name = "-ib", aliases = { "--input-balance" }, required = true,
+			usage = "balance input path")
+	private File _balanceInputFile;
 	
 	// receives other command line parameters than options
 	@Argument
@@ -120,12 +121,12 @@ class MyArgumentsWeightsAnalysis {
 		return _costsDirectory;
 	}
 	
-	public File getWeightsInputFile() {
-		return _weigthsInputFile;
+	public File getBalanceInputFile() {
+		return _balanceInputFile;
 	}
 }
 
-public class WeightsTest extends Application {
+public class BalanceTest extends Application {
 
 	// declaration necessary for Concrete Object usage
 	public static CmdLineParser theCmdLineParser;
@@ -165,22 +166,22 @@ public class WeightsTest extends Application {
 		// https://blog.codecentric.de/en/2015/09/javafx-how-to-easily-implement-application-preloader-2/
 
 		System.out.println("-------------------");
-		System.out.println("Weights test");
+		System.out.println("Balance test");
 		System.out.println("-------------------");
-
-		MyArgumentsWeightsAnalysis va = new MyArgumentsWeightsAnalysis();
-		WeightsTest.theCmdLineParser = new CmdLineParser(va);
+		
+		MyArgumentsBalanceAnalysis va = new MyArgumentsBalanceAnalysis();
+		BalanceTest.theCmdLineParser = new CmdLineParser(va);
 
 		// populate the wing static object in the class
 		// before launching the JavaFX application thread (launch --> start ...)
 		try {
-			WeightsTest.theCmdLineParser.parseArgument(args);
+			BalanceTest.theCmdLineParser.parseArgument(args);
 			
 			String pathToXML = va.getInputFile().getAbsolutePath();
 			System.out.println("INPUT ===> " + pathToXML);
 
-			String pathToXMLWeights = va.getWeightsInputFile().getAbsolutePath();
-			System.out.println("WEIGHTS INPUT ===> " + pathToXMLWeights);
+			String pathToXMLBalance = va.getBalanceInputFile().getAbsolutePath();
+			System.out.println("BALANCE INPUT ===> " + pathToXMLBalance);
 			
 			String dirAirfoil = va.getAirfoilDirectory().getCanonicalPath();
 			System.out.println("AIRFOILS ===> " + dirAirfoil);
@@ -254,8 +255,8 @@ public class WeightsTest extends Application {
 					MyConfiguration.outputDirectory);
 			String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR); 
 			String aircraftFolder = JPADStaticWriteUtils.createNewFolder(folderPath + theAircraft.getId() + File.separator);
-			String subfolderPath = JPADStaticWriteUtils.createNewFolder(aircraftFolder + "WEIGHTS" + File.separator);
-			
+			String subfolderPath = JPADStaticWriteUtils.createNewFolder(aircraftFolder + "BALANCE" + File.separator);
+
 			///////////////////////////////////////////////////////////////////////////////////
 			// TODO : THE METHODS MAP WILL COME FROM ANALYSIS MANAGER
 			// Choose methods to use for each component
@@ -301,28 +302,17 @@ public class WeightsTest extends Application {
 			_methodsMap.put(ComponentEnum.SYSTEMS, _methodsList);
 			_methodsList = new ArrayList<MethodEnum>();
 
-			//-------------------------------------------------------------------------------------
-			// THESE DATA HAVE TO BE DEFINED AS INTIAL REQUIRED DATA FOR EVERY GLOBAL ANALYSIS.
-			theAircraft.getThePerformance().setVDiveEAS(Amount.valueOf(134.653, SI.METERS_PER_SECOND));
-			theAircraft.getThePerformance().setMachDive0(theAircraft.getThePerformance().getVDiveEAS().divide(AtmosphereCalc.a0).getEstimatedValue());
-			theAircraft.getThePerformance().setMaxDynamicPressure(
-					Amount.valueOf(0.5 * 
-							AtmosphereCalc.rho0.getEstimatedValue()*
-							Math.pow(theAircraft.getThePerformance().getVDiveEAS().getEstimatedValue(), 2),
-							SI.PASCAL)
-					);
-			theAircraft.getThePerformance().setNUltimate(3.75);
-			//-------------------------------------------------------------------------------------
-			
-			// Evaluate aircraft masses
-			theAircraft.getTheWeights().calculateAllMasses(theAircraft, _methodsMap);
-			System.out.println(WeightsTest.theAircraft.getTheWeights().toString());
-			theAircraft.getTheWeights().toXLSFile(subfolderPath + "Weights");
+			// Evaluate aircraft balance
+			theAircraft.setTheBalance(ACBalanceManager.importFromXML(pathToXMLBalance, theAircraft));
+			theAircraft.getTheBalance().calculateBalance(_methodsMap);
+			System.out.println(BalanceTest.theAircraft.getTheBalance().toString());
+			theAircraft.getTheBalance().toXLSFile(subfolderPath + "Balance");
+			theAircraft.getTheBalance().createBalanceCharts(subfolderPath);
 			///////////////////////////////////////////////////////////////////////////////////
 			
 		} catch (CmdLineException | IOException e) {
 			System.err.println("Error: " + e.getMessage());
-			WeightsTest.theCmdLineParser.printUsage(System.err);
+			BalanceTest.theCmdLineParser.printUsage(System.err);
 			System.err.println();
 			System.err.println("  Must launch this app with proper command line arguments.");
 			return;

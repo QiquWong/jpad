@@ -4,11 +4,20 @@
         <balance 
             id="JPAD Test analysis - BALANCE" 
             from_xls_file="true" 
-            file="out/weights.xls"
+            file="Weights.xlsx"
             >
-            <maximum_take_off_mass unit="kg">300000</maximum_take_off_mass>
-			<maximum_zero_fuel_mass unit="kg">220000</maximum_zero_fuel_mass>
-            <!-- ... -->
+            <maximum_take_off_mass unit="kg">30000</maximum_take_off_mass>
+			<maximum_zero_fuel_mass unit="kg">22000</maximum_zero_fuel_mass>
+			<operating_empty_mass unit="kg">15000</operating_empty_mass>
+			<passengers_total_mass unit="kg">5000</passengers_total_mass>
+			<fuselage_mass unit="kg">3000</fuselage_mass>
+			<wing_mass unit="kg">2000</wing_mass>
+			<horizontal_tail_mass unit="kg">600</horizontal_tail_mass>
+			<vertical_tail_mass unit="kg">400</vertical_tail_mass>
+			<canard_mass unit="kg"></canard_mass>
+			<nacelles_mass unit="kg">450;450</nacelles_mass>
+			<engines_mass unit="kg">300;300</engines_mass>
+			<landing_gears_mass unit="kg">500</landing_gears_mass>
         </balance>
     </analysis>        
 </jpad_config>

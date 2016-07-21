@@ -5,7 +5,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -17,7 +19,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 
-public final class MyXLSWriteUtils {
+public final class MyXLSUtils {
 
 	public static CellStyle 
 	styleTitlesFirstCol = null, styleTitlesOtherCols = null, 
@@ -28,7 +30,7 @@ public final class MyXLSWriteUtils {
 	public static Font
 	fontTitle = null, fontDefault = null, fontSubtitles = null;
 
-	private MyXLSWriteUtils() {}
+	private MyXLSUtils() {}
 	
 	/** 
 	 * Set each style used in the xls files
@@ -231,4 +233,27 @@ public final class MyXLSWriteUtils {
 
 	}
 
+	public static List<Integer> findRowIndex(Sheet sheet, String cellContent) {
+		List<Integer> rowIndexList = new ArrayList<Integer>();
+		for (Row row : sheet) {
+	        for (Cell cell : row) {
+	            if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
+	                if (cell.getStringCellValue().equals(cellContent)) {
+	                    rowIndexList.add(cell.getRowIndex());  
+	                }
+	            }
+	        }
+	    }               
+	    return rowIndexList;
+	}
+	
+	public static Sheet findSheet(Workbook workbook, String sheetName) {
+	    for (int i=0; i<workbook.getNumberOfSheets(); i++) {
+	    	if (workbook.getSheetAt(i).getSheetName().equalsIgnoreCase(sheetName)) {
+	    		return workbook.getSheetAt(i);  
+	    	}
+	    }               
+	    return null;
+	}
+	
 }

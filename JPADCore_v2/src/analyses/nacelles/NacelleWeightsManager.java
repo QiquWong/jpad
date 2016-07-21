@@ -283,6 +283,10 @@ public class NacelleWeightsManager extends WeightsManager{
 		return _massEstimated;
 	}
 
+	public void setMassEstimated(Amount<Mass> massEstimated) {
+		this._massEstimated = massEstimated;
+	}
+	
 	public Turboprop getTurboprop() {
 		return turboprop;
 	}

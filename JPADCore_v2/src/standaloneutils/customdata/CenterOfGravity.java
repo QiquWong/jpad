@@ -163,7 +163,7 @@ public class CenterOfGravity {
 		return times(1./constant);
 	}
 
-	public Amount<Length> get_xLRF() {
+	public Amount<Length> getXLRF() {
 		return _xLRF;
 	}
 
@@ -171,7 +171,7 @@ public class CenterOfGravity {
 		this._xLRF = _xLRF;
 	}
 
-	public Amount<Length> get_yLRF() {
+	public Amount<Length> getYLRF() {
 		return _yLRF;
 	}
 
@@ -179,7 +179,7 @@ public class CenterOfGravity {
 		this._yLRF = _yLRF;
 	}
 
-	public Amount<Length> get_zLRF() {
+	public Amount<Length> getZLRF() {
 		return _zLRF;
 	}
 
@@ -195,7 +195,7 @@ public class CenterOfGravity {
 		this._xBRF = _xBRF;
 	}
 
-	public Amount<Length> get_yBRF() {
+	public Amount<Length> getYBRF() {
 		return _yBRF;
 	}
 
@@ -203,7 +203,7 @@ public class CenterOfGravity {
 		this._yBRF = _yBRF;
 	}
 
-	public Amount<Length> get_zBRF() {
+	public Amount<Length> getZBRF() {
 		return _zBRF;
 	}
 
@@ -259,7 +259,7 @@ public class CenterOfGravity {
 		this._z0 = _z0;
 	}
 
-	public Double get_xMAC() {
+	public Double getXMAC() {
 		return _xMAC;
 	}
 

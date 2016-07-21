@@ -506,6 +506,10 @@ public class LandingGears implements ILandingGear {
 		return _estimatedMass;
 	}
 
+	public void setMassEstimated(Amount<Mass> estimatedMass) {
+		this._estimatedMass = estimatedMass;
+	}
+	
 	@Override
 	public Map<MethodEnum, Amount<Length>> getXCGMap() {
 		return _xCGMap;
@@ -517,7 +521,7 @@ public class LandingGears implements ILandingGear {
 	}
 
 	@Override
-	public CenterOfGravity getCg() {
+	public CenterOfGravity getCG() {
 		return _cg;
 	}
 

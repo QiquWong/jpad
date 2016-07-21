@@ -511,10 +511,12 @@ public class Fuselage implements IFuselage {
 			Aircraft aircraft, 
 			MethodEnum method) {
 
-		_cg.setLRForigin(_X0, _Y0, _Z0);
+		_cg = new CenterOfGravity();
+		
+		_cg.setLRForigin(_xApexConstructionAxes, _yApexConstructionAxes, _zApexConstructionAxes);
 		_cg.set_xLRFref(_fuselageCreator.getLenF().times(0.45));
 		_cg.set_yLRFref(Amount.valueOf(0., SI.METER));
-		_cg.set_zLRFref(Amount.valueOf(_Z0.getEstimatedValue(), SI.METER));
+		_cg.set_zLRFref(Amount.valueOf(_zApexConstructionAxes.getEstimatedValue(), SI.METER));
 
 		// Initialize _methodsList again to clear it
 		// from old entries
@@ -633,7 +635,10 @@ public class Fuselage implements IFuselage {
 		return _massEstimated;
 	}
 
-
+	public void setMassEstimated(Amount<Mass> massEstimated) {
+		this._massEstimated = massEstimated;
+	}
+	
 	public Amount<Length> get_xCGReference() {
 		return _xCGReference;
 	}
@@ -644,7 +649,7 @@ public class Fuselage implements IFuselage {
 	}
 
 
-	public Map<MethodEnum, Amount<Length>> get_xCGMap() {
+	public Map<MethodEnum, Amount<Length>> getXCGMap() {
 		return _xCGMap;
 	}
 

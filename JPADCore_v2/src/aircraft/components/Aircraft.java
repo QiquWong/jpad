@@ -192,7 +192,7 @@ public class Aircraft implements IAircraft {
 
 				// TODO : THESE HAVE TO BE MOVED TO ACANALYSIS MANAGER
 				__theWeights = new ACWeightsManager.ACWeightsManagerBuilder("Weights", new Aircraft(this), AircraftEnum.ATR72).build();
-				__theBalance = new ACBalanceManager.ACBalanceManagerBuilder("Balance", new Aircraft(this)).build();
+//				__theBalance = new ACBalanceManager.ACBalanceManagerBuilder().id("Balance").build();
 				__theAerodynamics = new ACAerodynamicsManager();
 				__thePerformance = new ACPerformanceManager();
 				__theCosts = new Costs.CostsBuilder("Costs", new Aircraft(this)).build(); 
@@ -259,7 +259,7 @@ public class Aircraft implements IAircraft {
 
 				// TODO : THESE HAVE TO BE MOVED TO ACANALYSIS MANAGER
 				__theWeights = new ACWeightsManager.ACWeightsManagerBuilder("Weights", new Aircraft(this), AircraftEnum.B747_100B).build();
-				__theBalance = new ACBalanceManager.ACBalanceManagerBuilder("Balance", new Aircraft(this)).build();
+//				__theBalance = new ACBalanceManager.ACBalanceManagerBuilder().id("Balance").build();
 				__theAerodynamics = new ACAerodynamicsManager();
 				__thePerformance = new ACPerformanceManager();
 				__theCosts = new Costs.CostsBuilder("Costs", new Aircraft(this)).build();
@@ -326,7 +326,7 @@ public class Aircraft implements IAircraft {
 				
 				// TODO : THESE HAVE TO BE MOVED TO ACANALYSIS MANAGER
 				__theWeights = new ACWeightsManager.ACWeightsManagerBuilder("Weights", new Aircraft(this), AircraftEnum.AGILE_DC1).build();
-				__theBalance = new ACBalanceManager.ACBalanceManagerBuilder("Balance", new Aircraft(this)).build();
+//				__theBalance = new ACBalanceManager.ACBalanceManagerBuilder().id("Balance").build();
 				__theAerodynamics = new ACAerodynamicsManager();
 				__thePerformance = new ACPerformanceManager();
 				__theCosts = new Costs.CostsBuilder("Costs", new Aircraft(this)).build(); 

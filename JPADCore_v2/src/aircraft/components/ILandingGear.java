@@ -37,7 +37,7 @@ public interface ILandingGear {
 	public Map<MethodEnum, Amount<Length>> getXCGMap();
 	public void setXCGMap(Map<MethodEnum, Amount<Length>> xCGMap);
 	
-	public CenterOfGravity getCg();
+	public CenterOfGravity getCG();
 	public void setCg(CenterOfGravity cg);
 	
 	public String getId();

@@ -39,7 +39,7 @@ import standaloneutils.atmosphere.AtmosphereCalc;
 /**
  * Manage components weight calculations
  * 
- * @author Vittorio Trifari
+ * @author Lorenzo Attanasio, Vittorio Trifari
  */
 public class ACWeightsManager extends ACCalculatorManager {
 
@@ -483,7 +483,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 			Sheet sheetFuselage = wb.createSheet("FUSELAGE");
 			List<Object[]> dataListFuselage = new ArrayList<>();
 			dataListFuselage.add(new Object[] {"Description","Unit","Value","Percent Error"});
-			dataListFuselage.add(new Object[] {"Reference Mass","Kg", _theAircraft.getFuselage().getReferenceMass().getEstimatedValue()});
+			dataListFuselage.add(new Object[] {"Reference Mass","kg", _theAircraft.getFuselage().getReferenceMass().getEstimatedValue()});
 			dataListFuselage.add(new Object[] {"Mass Correction Factor"," ",_theAircraft.getFuselage().getMassCorrectionFactor()});
 			dataListFuselage.add(new Object[] {" "});
 			dataListFuselage.add(new Object[] {"WEIGHT ESTIMATION METHODS COMPARISON"});
@@ -500,7 +500,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 							);
 				indexFuselage++;
 			}
-			dataListFuselage.add(new Object[] {"Estimated Mass ","Kg", _theAircraft.getFuselage().getMassEstimated().getEstimatedValue()});
+			dataListFuselage.add(new Object[] {"Estimated Mass ","kg", _theAircraft.getFuselage().getMassEstimated().getEstimatedValue()});
 
 			Row rowFuselage = sheetFuselage.createRow(0);
 			Object[] objArrFuselage = dataListFuselage.get(0);
@@ -546,7 +546,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 			Sheet sheetWing = wb.createSheet("WING");
 			List<Object[]> dataListWing = new ArrayList<>();
 			dataListWing.add(new Object[] {"Description","Unit","Value","Percent Error"});
-			dataListWing.add(new Object[] {"Reference Mass","Kg", _theAircraft.getWing().getMassReference().getEstimatedValue()});
+			dataListWing.add(new Object[] {"Reference Mass","kg", _theAircraft.getWing().getMassReference().getEstimatedValue()});
 			dataListWing.add(new Object[] {"Composite Correction Factor"," ",_theAircraft.getWing().getLiftingSurfaceCreator().getCompositeCorrectioFactor()});
 			dataListWing.add(new Object[] {"Mass Correction Factor"," ",_theAircraft.getWing().getMassCorrectionFactor()});
 			dataListWing.add(new Object[] {" "});
@@ -564,7 +564,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 							);
 				indexWing++;
 			}
-			dataListWing.add(new Object[] {"Estimated Mass ","Kg", _theAircraft.getWing().getMassEstimated().getEstimatedValue()});
+			dataListWing.add(new Object[] {"Estimated Mass ","kg", _theAircraft.getWing().getMassEstimated().getEstimatedValue()});
 
 			Row rowWing = sheetWing.createRow(0);
 			Object[] objArrWing = dataListWing.get(0);
@@ -610,7 +610,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 			Sheet sheetHTail = wb.createSheet("HORIZONTAL TAIL");
 			List<Object[]> dataListHTail = new ArrayList<>();
 			dataListHTail.add(new Object[] {"Description","Unit","Value","Percent Error"});
-			dataListHTail.add(new Object[] {"Reference Mass","Kg", _theAircraft.getHTail().getMassReference().getEstimatedValue()});
+			dataListHTail.add(new Object[] {"Reference Mass","kg", _theAircraft.getHTail().getMassReference().getEstimatedValue()});
 			dataListHTail.add(new Object[] {"Composite Correction Factor"," ",_theAircraft.getHTail().getLiftingSurfaceCreator().getCompositeCorrectioFactor()});
 			dataListHTail.add(new Object[] {"Mass Correction Factor"," ",_theAircraft.getHTail().getMassCorrectionFactor()});
 			dataListHTail.add(new Object[] {" "});
@@ -628,7 +628,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 							);
 				indexHTail++;
 			}
-			dataListHTail.add(new Object[] {"Estimated Mass ","Kg", _theAircraft.getHTail().getMassEstimated().getEstimatedValue()});
+			dataListHTail.add(new Object[] {"Estimated Mass ","kg", _theAircraft.getHTail().getMassEstimated().getEstimatedValue()});
 
 			Row rowHTail = sheetHTail.createRow(0);
 			Object[] objArrHTail = dataListHTail.get(0);
@@ -675,7 +675,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 			Sheet sheetVTail = wb.createSheet("VERTICAL TAIL");
 			List<Object[]> dataListVTail = new ArrayList<>();
 			dataListVTail.add(new Object[] {"Description","Unit","Value","Percent Error"});
-			dataListVTail.add(new Object[] {"Reference Mass","Kg", _theAircraft.getVTail().getMassReference().getEstimatedValue()});
+			dataListVTail.add(new Object[] {"Reference Mass","kg", _theAircraft.getVTail().getMassReference().getEstimatedValue()});
 			dataListVTail.add(new Object[] {"Composite Correction Factor"," ",_theAircraft.getVTail().getLiftingSurfaceCreator().getCompositeCorrectioFactor()});
 			dataListVTail.add(new Object[] {"Mass Correction Factor"," ",_theAircraft.getVTail().getMassCorrectionFactor()});
 			dataListVTail.add(new Object[] {" "});
@@ -693,7 +693,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 							);
 				indexVTail++;
 			}
-			dataListVTail.add(new Object[] {"Estimated Mass ","Kg", _theAircraft.getVTail().getMassEstimated().getEstimatedValue()});
+			dataListVTail.add(new Object[] {"Estimated Mass ","kg", _theAircraft.getVTail().getMassEstimated().getEstimatedValue()});
 
 			Row rowVTail = sheetVTail.createRow(0);
 			Object[] objArrVTail = dataListVTail.get(0);
@@ -740,7 +740,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 			Sheet sheetCanard = wb.createSheet("CANARD");
 			List<Object[]> dataListCanard = new ArrayList<>();
 			dataListCanard.add(new Object[] {"Description","Unit","Value","Percent Error"});
-			dataListCanard.add(new Object[] {"Reference Mass","Kg", _theAircraft.getCanard().getMassReference().getEstimatedValue()});
+			dataListCanard.add(new Object[] {"Reference Mass","kg", _theAircraft.getCanard().getMassReference().getEstimatedValue()});
 			dataListCanard.add(new Object[] {"Composite Correction Factor"," ",_theAircraft.getCanard().getLiftingSurfaceCreator().getCompositeCorrectioFactor()});
 			dataListCanard.add(new Object[] {"Mass Correction Factor"," ",_theAircraft.getCanard().getMassCorrectionFactor()});
 			dataListCanard.add(new Object[] {" "});
@@ -758,7 +758,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 							);
 				indexCanard++;
 			}
-			dataListCanard.add(new Object[] {"Estimated Mass ","Kg", _theAircraft.getCanard().getMassEstimated().getEstimatedValue()});
+			dataListCanard.add(new Object[] {"Estimated Mass ","kg", _theAircraft.getCanard().getMassEstimated().getEstimatedValue()});
 
 			Row rowCanard = sheetCanard.createRow(0);
 			Object[] objArrCanard = dataListCanard.get(0);
@@ -805,14 +805,14 @@ public class ACWeightsManager extends ACCalculatorManager {
 			Sheet sheetNacelles = wb.createSheet("NACELLES");
 			List<Object[]> dataListNacelles = new ArrayList<>();
 			dataListNacelles.add(new Object[] {"Description","Unit","Value","Percent Error"});
-			dataListNacelles.add(new Object[] {"Total Reference Mass","Kg", _theAircraft.getNacelles().getMassReference().getEstimatedValue()});
-			dataListNacelles.add(new Object[] {"Total mass estimated","Kg",_theAircraft.getNacelles().getTotalMass().getEstimatedValue(),_theAircraft.getNacelles().getPercentTotalDifference()});
+			dataListNacelles.add(new Object[] {"Total Reference Mass","kg", _theAircraft.getNacelles().getMassReference().getEstimatedValue()});
+			dataListNacelles.add(new Object[] {"Total mass estimated","kg",_theAircraft.getNacelles().getTotalMass().getEstimatedValue(),_theAircraft.getNacelles().getPercentTotalDifference()});
 			dataListNacelles.add(new Object[] {" "});
 			dataListNacelles.add(new Object[] {"WEIGHT ESTIMATION METHODS COMPARISON FOR EACH NACELLE"});
 			dataListNacelles.add(new Object[] {" "});
 			for(int iNacelle = 0; iNacelle < _theAircraft.getNacelles().getNacellesNumber(); iNacelle++) {
 				dataListNacelles.add(new Object[] {"NACELLE " + (iNacelle+1)});
-				dataListNacelles.add(new Object[] {"Reference Mass","Kg", _theAircraft.getNacelles().getNacellesList().get(iNacelle).getWeights().getMassReference().getEstimatedValue()});
+				dataListNacelles.add(new Object[] {"Reference Mass","kg", _theAircraft.getNacelles().getNacellesList().get(iNacelle).getWeights().getMassReference().getEstimatedValue()});
 				int indexNacelles=0;
 				for(MethodEnum methods : _theAircraft.getNacelles().getNacellesList().get(iNacelle).getWeights().getMassMap().keySet()) {
 					if(_theAircraft.getNacelles().getNacellesList().get(iNacelle).getWeights().getMassMap().get(methods) != null) 
@@ -826,7 +826,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 								);
 					indexNacelles++;
 				}
-				dataListNacelles.add(new Object[] {"Estimated Mass ","Kg", _theAircraft.getNacelles().getNacellesList().get(iNacelle).getWeights().getMassEstimated().getEstimatedValue()});
+				dataListNacelles.add(new Object[] {"Estimated Mass ","kg", _theAircraft.getNacelles().getNacellesList().get(iNacelle).getWeights().getMassEstimated().getEstimatedValue()});
 				dataListNacelles.add(new Object[] {" "});
 				}
 			
@@ -875,15 +875,15 @@ public class ACWeightsManager extends ACCalculatorManager {
 			Sheet sheetPowerPlant = wb.createSheet("POWER PLANT");
 			List<Object[]> dataListPowerPlant = new ArrayList<>();
 			dataListPowerPlant.add(new Object[] {"Description","Unit","Value","Percent Error"});
-			dataListPowerPlant.add(new Object[] {"Total Reference Mass","Kg", _theAircraft.getPowerPlant().getDryMassPublicDomainTotal().getEstimatedValue()});
-			dataListPowerPlant.add(new Object[] {"Total mass estimated","Kg",_theAircraft.getPowerPlant().getTotalMass().getEstimatedValue(),_theAircraft.getNacelles().getPercentTotalDifference()});
+			dataListPowerPlant.add(new Object[] {"Total Reference Mass","kg", _theAircraft.getPowerPlant().getDryMassPublicDomainTotal().getEstimatedValue()});
+			dataListPowerPlant.add(new Object[] {"Total mass estimated","kg",_theAircraft.getPowerPlant().getTotalMass().getEstimatedValue(),_theAircraft.getNacelles().getPercentTotalDifference()});
 			dataListPowerPlant.add(new Object[] {" "});
 			dataListPowerPlant.add(new Object[] {"WEIGHT ESTIMATION METHODS COMPARISON FOR EACH ENGINE"});
 			dataListPowerPlant.add(new Object[] {" "});
 			for(int iEngine = 0; iEngine < _theAircraft.getPowerPlant().getEngineNumber(); iEngine++) {
 				dataListPowerPlant.add(new Object[] {"ENGINE " + (iEngine+1)});
-				dataListPowerPlant.add(new Object[] {"Reference Mass","Kg", _theAircraft.getPowerPlant().getEngineList().get(iEngine).getTheWeights().getDryMassPublicDomain().getEstimatedValue()});
-				dataListPowerPlant.add(new Object[] {"Total Mass","Kg", _theAircraft.getPowerPlant().getEngineList().get(iEngine).getTotalMass().getEstimatedValue()});			
+				dataListPowerPlant.add(new Object[] {"Reference Mass","kg", _theAircraft.getPowerPlant().getEngineList().get(iEngine).getTheWeights().getDryMassPublicDomain().getEstimatedValue()});
+				dataListPowerPlant.add(new Object[] {"Total Mass","kg", _theAircraft.getPowerPlant().getEngineList().get(iEngine).getTotalMass().getEstimatedValue()});			
 				dataListPowerPlant.add(new Object[] {" "});
 				}
 			
@@ -932,8 +932,8 @@ public class ACWeightsManager extends ACCalculatorManager {
 			Sheet sheetLandingGears = wb.createSheet("LANDING GEARS");
 			List<Object[]> dataListLandingGears = new ArrayList<>();
 			dataListLandingGears.add(new Object[] {"Description","Unit","Value","Percent Error"});
-			dataListLandingGears.add(new Object[] {"Reference Mass","Kg", _theAircraft.getLandingGears().getReferenceMass().getEstimatedValue()});
-			dataListLandingGears.add(new Object[] {"Overall Mass","Kg", _theAircraft.getLandingGears().getOverallMass().getEstimatedValue()});
+			dataListLandingGears.add(new Object[] {"Reference Mass","kg", _theAircraft.getLandingGears().getReferenceMass().getEstimatedValue()});
+			dataListLandingGears.add(new Object[] {"Overall Mass","kg", _theAircraft.getLandingGears().getOverallMass().getEstimatedValue()});
 			dataListLandingGears.add(new Object[] {" "});
 			dataListLandingGears.add(new Object[] {"WEIGHT ESTIMATION METHODS COMPARISON"});
 			int indexLandingGears=0;
@@ -942,14 +942,14 @@ public class ACWeightsManager extends ACCalculatorManager {
 					dataListLandingGears.add(
 							new Object[] {
 									methods.toString(),
-									"Kg",
+									"kg",
 									_theAircraft.getLandingGears().getMassMap().get(methods).getEstimatedValue(),
 									_theAircraft.getLandingGears().getPercentDifference()[indexLandingGears]
 							}
 							);
 				indexLandingGears++;
 			}
-			dataListLandingGears.add(new Object[] {"Estimated Mass ","Kg", _theAircraft.getLandingGears().getMassEstimated().getEstimatedValue()});
+			dataListLandingGears.add(new Object[] {"Estimated Mass ","kg", _theAircraft.getLandingGears().getMassEstimated().getEstimatedValue()});
 
 			Row rowLandingGears = sheetLandingGears.createRow(0);
 			Object[] objArrLandingGears = dataListLandingGears.get(0);
@@ -996,8 +996,8 @@ public class ACWeightsManager extends ACCalculatorManager {
 			Sheet sheetSystems = wb.createSheet("SYSTEMS");
 			List<Object[]> dataListSystems = new ArrayList<>();
 			dataListSystems.add(new Object[] {"Description","Unit","Value","Percent Error"});
-			dataListSystems.add(new Object[] {"Reference Mass","Kg", _theAircraft.getSystems().getReferenceMass().getEstimatedValue()});
-			dataListSystems.add(new Object[] {"Overall Mass","Kg", _theAircraft.getSystems().getOverallMass().getEstimatedValue()});
+			dataListSystems.add(new Object[] {"Reference Mass","kg", _theAircraft.getSystems().getReferenceMass().getEstimatedValue()});
+			dataListSystems.add(new Object[] {"Overall Mass","kg", _theAircraft.getSystems().getOverallMass().getEstimatedValue()});
 			dataListSystems.add(new Object[] {" "});
 			dataListSystems.add(new Object[] {"WEIGHT ESTIMATION METHODS COMPARISON"});
 			int indexSystems=0;
@@ -1006,7 +1006,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 					dataListSystems.add(
 							new Object[] {
 									methods.toString(),
-									"Kg",
+									"kg",
 									_theAircraft.getSystems().getMassMap().get(methods).getEstimatedValue(),
 									_theAircraft.getSystems().getPercentDifference()[indexSystems]
 							}

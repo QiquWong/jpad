@@ -15,6 +15,7 @@ import standaloneutils.customdata.CenterOfGravity;
 public interface INacelles {
 
 	public void initializeWeights(Aircraft theAircraft);
+	public void initializeBalance();
 	public void calculateSurfaceWetted();
 	public void calculateMass(Aircraft theAircraft);
 	public CenterOfGravity calculateCG();
