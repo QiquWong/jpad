@@ -233,8 +233,8 @@ public class PowerPlant implements IPowerPlant {
 		_totalCG = new CenterOfGravity();		
 		for(int i=0; i < _engineNumber; i++) {
 			_engineList.get(i).getTheBalance().calculateAll();
-			_cgList.add(_engineList.get(i).getTheBalance().get_cg());
-			_totalCG = _totalCG.plus(_engineList.get(i).getTheBalance().get_cg()
+			_cgList.add(_engineList.get(i).getTheBalance().getCG());
+			_totalCG = _totalCG.plus(_engineList.get(i).getTheBalance().getCG()
 					.times(_engineList.get(i).getTotalMass().doubleValue(SI.KILOGRAM)));
 		}
 		

@@ -219,6 +219,7 @@ public class LiftingSurface implements ILiftingSurface {
 	 * @param aircraft
 	 * @param method
 	 */
+	@SuppressWarnings("unused")
 	private void calculateMass(
 			Aircraft aircraft, 
 			MethodEnum method) {
@@ -234,16 +235,29 @@ public class LiftingSurface implements ILiftingSurface {
 				);
 		double thicknessMean = meanAirfoil.getAirfoilCreator().getThicknessToChordRatio();
 		
-		Amount<Angle> sweepStructuralAxis = Amount.valueOf(
-				Math.atan(
-						Math.tan(this.getSweepLEEquivalent(false).doubleValue(SI.RADIAN))
-						- (4./this.getAspectRatio())*
-						(this._liftingSurfaceCreator.getMainSparNonDimensionalPosition()
-								*(1 - this.getTaperRatioEquivalent(false))
-								/(1 + this.getTaperRatioEquivalent(false)))
-						),
-			1e-9, // precision
-			SI.RADIAN);
+		Amount<Angle> sweepStructuralAxis;
+		if(this._type == ComponentEnum.WING)
+			sweepStructuralAxis = Amount.valueOf(
+					Math.atan(
+							Math.tan(this.getSweepLEEquivalent(false).doubleValue(SI.RADIAN))
+							- (4./this.getAspectRatio())*
+							(getLiftingSurfaceCreator().getMainSparNonDimensionalPosition()
+									*(1 - this.getTaperRatioEquivalent(false))
+									/(1 + this.getTaperRatioEquivalent(false)))
+							),
+					1e-9, // precision
+					SI.RADIAN);
+		else
+			sweepStructuralAxis = Amount.valueOf(
+					Math.atan(
+							Math.tan(this.getSweepLEEquivalent(false).doubleValue(SI.RADIAN))
+							- (4./this.getAspectRatio())*
+							(0.25
+									*(1 - this.getTaperRatioEquivalent(false))
+									/(1 + this.getTaperRatioEquivalent(false)))
+							),
+					1e-9, // precision
+					SI.RADIAN);
 		
 		switch(_type) {
 		case WING : {
@@ -484,13 +498,13 @@ public class LiftingSurface implements ILiftingSurface {
 
 			case KROO : {
 				methodsList.add(method);
-				_mass = Amount.valueOf((5.25*surfaceExposed +
+				_mass = Amount.valueOf((5.25*aircraft.getExposedWing().getSurface().getEstimatedValue() +
 						0.8e-6*
 						(aircraft.getThePerformance().getNUltimate()*
 								Math.pow(this.getSpan().to(NonSI.FOOT).getEstimatedValue(),3)*
 								aircraft.getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue()*
 								this.getLiftingSurfaceCreator().getMeanAerodynamicChord().to(NonSI.FOOT).getEstimatedValue()*
-								Math.sqrt(surfaceExposed))/
+								Math.sqrt(aircraft.getExposedWing().getSurface().getEstimatedValue()))/
 						(thicknessMean*Math.pow(Math.cos(sweepStructuralAxis.to(SI.RADIAN).getEstimatedValue()),2)*
 								this.getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance().to(NonSI.FOOT).getEstimatedValue()*Math.pow(surface,1.5))),
 						NonSI.POUND).to(SI.KILOGRAM);
@@ -688,8 +702,8 @@ public class LiftingSurface implements ILiftingSurface {
 
 		Double lambda = _liftingSurfaceCreator.getTaperRatioEquivalentWing(),
 				span = getSpan().getEstimatedValue(),
-				xRearSpar,
-				xFrontSpar;
+				xRearSpar = _liftingSurfaceCreator.getSecondarySparNonDimensionalPosition(),
+				xFrontSpar = _liftingSurfaceCreator.getMainSparNonDimensionalPosition();
 
 		switch (type) {
 		case WING : {
@@ -820,14 +834,14 @@ public class LiftingSurface implements ILiftingSurface {
 		_percentDifferenceXCG = new Double[_xCGMap.size()];
 		_percentDifferenceYCG = new Double[_yCGMap.size()];
 
-		_cg.set_xLRF(Amount.valueOf(JPADStaticWriteUtils.compareMethods(
-				_cg.get_xLRFref(), 
+		_cg.setXLRF(Amount.valueOf(JPADStaticWriteUtils.compareMethods(
+				_cg.getXLRFref(), 
 				_xCGMap,
 				_percentDifferenceXCG,
 				30.).getFilteredMean(), SI.METER));
 
-		_cg.set_yLRF(Amount.valueOf(JPADStaticWriteUtils.compareMethods(
-				_cg.get_yLRFref(), 
+		_cg.setYLRF(Amount.valueOf(JPADStaticWriteUtils.compareMethods(
+				_cg.getYLRFref(), 
 				_yCGMap,
 				_percentDifferenceYCG,
 				30.).getFilteredMean(), SI.METER));
@@ -1944,6 +1958,14 @@ public class LiftingSurface implements ILiftingSurface {
 
 	public void setXacActualLRF(Amount<Length> _xACActualLRF) {
 		this._xACActualLRF = _xACActualLRF;
+	}
+
+	public Double[] getPercentDifference() {
+		return _percentDifference;
+	}
+
+	public void set_percentDifference(Double[] _percentDifference) {
+		this._percentDifference = _percentDifference;
 	}
 	
 }

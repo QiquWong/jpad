@@ -189,9 +189,10 @@ public class Aircraft implements IAircraft {
 				__theSystems.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theSystems.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theSystems.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				
-				__theBalance = new ACBalanceManager();
-				__theWeights = new ACWeightsManager.ACWeightsManagerBuilder("Weights", AircraftEnum.ATR72).build();
+
+				// TODO : THESE HAVE TO BE MOVED TO ACANALYSIS MANAGER
+				__theWeights = new ACWeightsManager.ACWeightsManagerBuilder("Weights", new Aircraft(this), AircraftEnum.ATR72).build();
+				__theBalance = new ACBalanceManager.ACBalanceManagerBuilder("Balance", new Aircraft(this)).build();
 				__theAerodynamics = new ACAerodynamicsManager();
 				__thePerformance = new ACPerformanceManager();
 				__theCosts = new Costs.CostsBuilder("Costs", new Aircraft(this)).build(); 
@@ -255,9 +256,10 @@ public class Aircraft implements IAircraft {
 				__theSystems.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theSystems.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theSystems.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				
-				__theBalance = new ACBalanceManager();
-				__theWeights = new ACWeightsManager.ACWeightsManagerBuilder("Weights", AircraftEnum.B747_100B).build();
+
+				// TODO : THESE HAVE TO BE MOVED TO ACANALYSIS MANAGER
+				__theWeights = new ACWeightsManager.ACWeightsManagerBuilder("Weights", new Aircraft(this), AircraftEnum.B747_100B).build();
+				__theBalance = new ACBalanceManager.ACBalanceManagerBuilder("Balance", new Aircraft(this)).build();
 				__theAerodynamics = new ACAerodynamicsManager();
 				__thePerformance = new ACPerformanceManager();
 				__theCosts = new Costs.CostsBuilder("Costs", new Aircraft(this)).build();
@@ -322,8 +324,9 @@ public class Aircraft implements IAircraft {
 				__theSystems.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theSystems.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				
-				__theBalance = new ACBalanceManager();
-				__theWeights = new ACWeightsManager.ACWeightsManagerBuilder("Weights", AircraftEnum.AGILE_DC1).build();
+				// TODO : THESE HAVE TO BE MOVED TO ACANALYSIS MANAGER
+				__theWeights = new ACWeightsManager.ACWeightsManagerBuilder("Weights", new Aircraft(this), AircraftEnum.AGILE_DC1).build();
+				__theBalance = new ACBalanceManager.ACBalanceManagerBuilder("Balance", new Aircraft(this)).build();
 				__theAerodynamics = new ACAerodynamicsManager();
 				__thePerformance = new ACPerformanceManager();
 				__theCosts = new Costs.CostsBuilder("Costs", new Aircraft(this)).build(); 
@@ -736,6 +739,16 @@ public class Aircraft implements IAircraft {
 							)
 					.getEstimatedValue()
 					);
+		
+		//----------------------------------------
+		if(_theWing != null)
+			calculateLiftingSurfaceACToWingACdistance(this._theWing);
+		if(_theHTail != null)
+			calculateLiftingSurfaceACToWingACdistance(this._theHTail);
+		if(_theVTail != null)
+			calculateLiftingSurfaceACToWingACdistance(this._theVTail);
+		if(_theCanard != null)
+			calculateLiftingSurfaceACToWingACdistance(this._theCanard);
 	}
 	
 	private void updateType() {
@@ -894,7 +907,7 @@ public class Aircraft implements IAircraft {
 					);
 		}
 		else if( // case CG behind AC wing
-				_theBalance.get_cgMTOM().get_xBRF().getEstimatedValue() > 
+				_theBalance.getCGMTOM().getXBRF().getEstimatedValue() > 
 				(_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
 						.plus(_theWing.getXApexConstructionAxes()).getEstimatedValue() + 
 							_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()*0.25)
@@ -922,7 +935,7 @@ public class Aircraft implements IAircraft {
 			}
 		}
 		else if( // case AC wing behind CG
-				_theBalance.get_cgMTOM().get_xBRF().getEstimatedValue() <= 
+				_theBalance.getCGMTOM().getXBRF().getEstimatedValue() <= 
 				(_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
 						.plus(_theWing.getXApexConstructionAxes()).getEstimatedValue() + 
 							_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()*0.25)
@@ -953,7 +966,7 @@ public class Aircraft implements IAircraft {
 	private void calculateAircraftCGToWingACdistance(){
 		_wingACToCGDistance = Amount.valueOf(
 				Math.abs(
-						_theBalance.get_cgMTOM().get_xBRF().getEstimatedValue() -
+						_theBalance.getCGMTOM().getXBRF().getEstimatedValue() -
 						(_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
 								.plus(_theWing.getXApexConstructionAxes()).getEstimatedValue() + 
 									_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()*0.25)
@@ -1124,7 +1137,7 @@ public class Aircraft implements IAircraft {
 		if(hTailFileName != null) {
 			String hTailPath = liftingSurfacesDir + File.separator + hTailFileName;
 			LiftingSurfaceCreator hTailCreator = LiftingSurfaceCreator.importFromXML(ComponentEnum.HORIZONTAL_TAIL, hTailPath, airfoilsDir);
-			theHorizontalTail = new LiftingSurfaceBuilder("MyHorizontalTail", ComponentEnum.WING, aeroDatabaseReader, highLiftDatabaseReader)
+			theHorizontalTail = new LiftingSurfaceBuilder("MyHorizontalTail", ComponentEnum.HORIZONTAL_TAIL, aeroDatabaseReader, highLiftDatabaseReader)
 					.liftingSurfaceCreator(hTailCreator)
 						.build();
 		

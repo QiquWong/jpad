@@ -190,7 +190,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 					.getCalculateXAC().get_methodMapLRF().get(MethodEnum.DEYOUNG_HARPER).getEstimatedValue()
 					+ aircraft.getWing().getXApexConstructionAxes().getEstimatedValue();
 
-			xa = (aircraft.getTheBalance().get_cgMTOM().get_xBRF().getEstimatedValue() - xacWBRF)
+			xa = (aircraft.getTheBalance().getCGMTOM().getXBRF().getEstimatedValue() - xacWBRF)
 					/macW;
 
 		} catch (NullPointerException e) { }
@@ -962,7 +962,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 
 
 	@Override
-	public AnalysisTypeEnum get_type() {
+	public AnalysisTypeEnum getType() {
 		return _type;
 	}
 
@@ -972,7 +972,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 
 
 	@Override
-	public String get_name() {
+	public String getName() {
 		return _name;
 	}
 

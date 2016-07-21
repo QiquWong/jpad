@@ -25,12 +25,12 @@ public class ACCalculatorManager {
 		
 	}
 	
-	public String get_name(){
+	public String getName(){
 		System.out.println("MyCalculator get_name function to override");
 		return null;
 	}
 	
-	public AnalysisTypeEnum get_type(){
+	public AnalysisTypeEnum getType(){
 		System.out.println("MyCalculator get_type function to override");
 		return null;
 	}

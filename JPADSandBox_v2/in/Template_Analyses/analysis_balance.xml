@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
     <analysis>
-        <balance id="JPAD Test analysis - BALANCE">
-
-
+        <balance 
+            id="JPAD Test analysis - BALANCE" 
+            from_xls_file="true" 
+            file="out/weights.xls"
+            >
+            <maximum_take_off_mass unit="kg">300000</maximum_take_off_mass>
+			<maximum_zero_fuel_mass unit="kg">220000</maximum_zero_fuel_mass>
+            <!-- ... -->
         </balance>
     </analysis>        
 </jpad_config>

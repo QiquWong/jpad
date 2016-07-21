@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.measure.unit.SI;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jscience.physics.amount.Amount;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
@@ -16,6 +17,7 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import aircraft.components.Aircraft;
+import analyses.ACWeightsManager;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ComponentEnum;
@@ -27,8 +29,9 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.atmosphere.AtmosphereCalc;
+import writers.JPADStaticWriteUtils;
 
-class MyArgumentsWieghtsAnalysis {
+class MyArgumentsWeightsAnalysis {
 	@Option(name = "-i", aliases = { "--input" }, required = true,
 			usage = "my input file")
 	private File _inputFile;
@@ -154,8 +157,9 @@ public class WeightsTest extends Application {
 	 * Main
 	 *
 	 * @param args
+	 * @throws InvalidFormatException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InvalidFormatException {
 
 		// TODO: check out this as an alternative
 		// https://blog.codecentric.de/en/2015/09/javafx-how-to-easily-implement-application-preloader-2/
@@ -164,7 +168,15 @@ public class WeightsTest extends Application {
 		System.out.println("Weights test");
 		System.out.println("-------------------");
 
-		MyArgumentsWieghtsAnalysis va = new MyArgumentsWieghtsAnalysis();
+		// Set the folders tree
+		MyConfiguration.initWorkingDirectoryTree(
+				MyConfiguration.currentDirectoryString,
+				MyConfiguration.inputDirectory, 
+				MyConfiguration.outputDirectory);
+		String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR); 
+		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "WEIGHTS" + File.separator);
+		
+		MyArgumentsWeightsAnalysis va = new MyArgumentsWeightsAnalysis();
 		WeightsTest.theCmdLineParser = new CmdLineParser(va);
 
 		// populate the wing static object in the class
@@ -175,6 +187,9 @@ public class WeightsTest extends Application {
 			String pathToXML = va.getInputFile().getAbsolutePath();
 			System.out.println("INPUT ===> " + pathToXML);
 
+			String pathToXMLWeights = va.getWeightsInputFile().getAbsolutePath();
+			System.out.println("WEIGHTS INPUT ===> " + pathToXMLWeights);
+			
 			String dirAirfoil = va.getAirfoilDirectory().getCanonicalPath();
 			System.out.println("AIRFOILS ===> " + dirAirfoil);
 
@@ -238,6 +253,7 @@ public class WeightsTest extends Application {
 //					dirCosts,
 //					aeroDatabaseReader,
 //					highLiftDatabaseReader);
+//			theAircraft.setTheWieghts(ACWeightsManager.importFromXML(pathToXMLWeights, theAircraft));
 			
 			///////////////////////////////////////////////////////////////////////////////////
 			// TODO : THE METHODS MAP WILL COME FROM ANALYSIS MANAGER
@@ -300,6 +316,7 @@ public class WeightsTest extends Application {
 			// Evaluate aircraft masses
 			theAircraft.getTheWeights().calculateAllMasses(theAircraft, _methodsMap);
 			System.out.println(WeightsTest.theAircraft.getTheWeights().toString());
+			theAircraft.getTheWeights().toXLSFile(subfolderPath + "ATR-72");
 			///////////////////////////////////////////////////////////////////////////////////
 			
 		} catch (CmdLineException | IOException e) {

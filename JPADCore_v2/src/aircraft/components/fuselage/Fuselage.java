@@ -51,7 +51,7 @@ public class Fuselage implements IFuselage {
 	//-----------------------------------------------------------------------
 
 	// GM = Geometric Mean, RMS = Root Mean Square, AM = Arithmetic Mean
-	private Amount<Mass> _mass, _massEstimated, _massReference;
+	private Amount<Mass> _mass, _massEstimated;
 	private Map <MethodEnum, Amount<Mass>> _massMap = new TreeMap<MethodEnum, Amount<Mass>>();
 	private Map <MethodEnum, Amount<Length>> _xCGMap = new TreeMap<MethodEnum, Amount<Length>>();
 
@@ -424,11 +424,11 @@ public class Fuselage implements IFuselage {
 			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
 
-		case TORENBEEK_1976 : { // page 302 Synthesis 1976
-			_mass = calculateMassTorenbeek1976(aircraft);
-			_methodsList.add(method);
-			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
-		} break;
+//		case TORENBEEK_1976 : { // page 302 Synthesis 1976
+//			_mass = calculateMassTorenbeek1976(aircraft);
+//			_methodsList.add(method);
+//			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
+//		} break;
 
 		default : { } break;
 
@@ -442,7 +442,7 @@ public class Fuselage implements IFuselage {
 		_percentDifference =  new Double[_massMap.size()]; 
 
 		_massEstimated = Amount.valueOf(JPADStaticWriteUtils.compareMethods(
-				_massReference, 
+				this._fuselageCreator.getMassReference(), 
 				_massMap,
 				_percentDifference,
 				100.).getFilteredMean(), SI.KILOGRAM);
@@ -485,21 +485,21 @@ public class Fuselage implements IFuselage {
 
 	}
 
-	private Amount<Mass> calculateMassTorenbeek1976(Aircraft aircraft) {
-		double k = 0.;
-		if (_fuselageCreator.getPressurized()) {k = k + 0.08;}
-		if (aircraft.getLandingGears().getMountingPosition() == LandingGears.MountingPosition.FUSELAGE){
-			k = k + 0.07;
-		}
-
-		return Amount.valueOf((1 + k) * 0.23 * 
-				Math.sqrt(
-						aircraft.getThePerformance().getVDiveEAS().getEstimatedValue() *
-						aircraft.getHTail().getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance().getEstimatedValue()/
-						(2*getFuselageCreator().getEquivalentDiameterCylinderGM().getEstimatedValue())) *
-						Math.pow(_fuselageCreator.getsWet().getEstimatedValue(), 1.2),
-						SI.KILOGRAM);
-	}
+//	private Amount<Mass> calculateMassTorenbeek1976(Aircraft aircraft) {
+//		double k = 0.;
+//		if (_fuselageCreator.getPressurized()) {k = k + 0.08;}
+//		if (aircraft.getLandingGears().getMountingPosition() == LandingGears.MountingPosition.FUSELAGE){
+//			k = k + 0.07;
+//		}
+//
+//		return Amount.valueOf((1 + k) * 0.23 * 
+//				Math.sqrt(
+//						aircraft.getThePerformance().getVDiveEAS().getEstimatedValue() *
+//						aircraft.getHTail().getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance().getEstimatedValue()/
+//						(2*getFuselageCreator().getEquivalentDiameterCylinderGM().getEstimatedValue())) *
+//						Math.pow(_fuselageCreator.getsWet().getEstimatedValue(), 1.2),
+//						SI.KILOGRAM);
+//	}
 
 	public void calculateCG(Aircraft aircraft) {
 		calculateCG(aircraft, MethodEnum.SFORZA);
@@ -571,8 +571,8 @@ public class Fuselage implements IFuselage {
 		_methodsMap.put(AnalysisTypeEnum.BALANCE, _methodsList);
 		_percentDifferenceXCG = new Double[_xCGMap.size()];
 
-		_cg.set_xLRF(Amount.valueOf(JPADStaticWriteUtils.compareMethods(
-				_cg.get_xLRFref(), 
+		_cg.setXLRF(Amount.valueOf(JPADStaticWriteUtils.compareMethods(
+				_cg.getXLRFref(), 
 				_xCGMap,
 				_percentDifferenceXCG,
 				30.).getFilteredMean(), SI.METER));
@@ -619,7 +619,7 @@ public class Fuselage implements IFuselage {
 	public void setZ0(Amount<Length> z) { _Z0 = z; }
 
 	
-	public Double get_massCorrectionFactor() {
+	public Double getMassCorrectionFactor() {
 		return _massCorrectionFactor;
 	}
 
@@ -664,7 +664,7 @@ public class Fuselage implements IFuselage {
 	}
 
 
-	public CenterOfGravity get_cg() {
+	public CenterOfGravity getCG() {
 		return _cg;
 	}
 
@@ -723,6 +723,18 @@ public class Fuselage implements IFuselage {
 
 	public void setFuselageCreator(FuselageCreator _fuselageCreator) {
 		this._fuselageCreator = _fuselageCreator;
+	}
+
+
+
+	public Double[] getPercentDifference() {
+		return _percentDifference;
+	}
+
+
+
+	public void setPercentDifference(Double[] _percentDifference) {
+		this._percentDifference = _percentDifference;
 	}
 
 

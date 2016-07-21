@@ -20,7 +20,7 @@ public interface ILandingGear {
 	public void calculateCG(Aircraft aircraft);
 	public void calculateCG(Aircraft aircraft, MethodEnum method);
 	
-	public Amount<Mass> getMass();
+	public Amount<Mass> getOverallMass();
 	public void setMass(Amount<Mass> mass);
 	
 	public Map<MethodEnum, Amount<Mass>> getMassMap();
