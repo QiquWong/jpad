@@ -238,7 +238,7 @@ public final class MyXLSUtils {
 		for (Row row : sheet) {
 	        for (Cell cell : row) {
 	            if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
-	                if (cell.getStringCellValue().equals(cellContent)) {
+	                if (cell.getStringCellValue().equalsIgnoreCase(cellContent)) {
 	                    rowIndexList.add(cell.getRowIndex());  
 	                }
 	            }

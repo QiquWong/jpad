@@ -659,7 +659,7 @@ public class Fuselage implements IFuselage {
 	}
 
 
-	public Double[] get_percentDifferenceXCG() {
+	public Double[] getPercentDifferenceXCG() {
 		return _percentDifferenceXCG;
 	}
 

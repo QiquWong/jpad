@@ -7,10 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.measure.unit.SI;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.jscience.physics.amount.Amount;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -18,7 +16,6 @@ import org.kohsuke.args4j.Option;
 
 import aircraft.components.Aircraft;
 import analyses.ACBalanceManager;
-import analyses.ACWeightsManager;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ComponentEnum;
@@ -29,7 +26,6 @@ import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import standaloneutils.JPADXmlReader;
-import standaloneutils.atmosphere.AtmosphereCalc;
 import writers.JPADStaticWriteUtils;
 
 class MyArgumentsBalanceAnalysis {
@@ -246,7 +242,6 @@ public class BalanceTest extends Application {
 //					dirCosts,
 //					aeroDatabaseReader,
 //					highLiftDatabaseReader);
-//			theAircraft.setTheWieghts(ACWeightsManager.importFromXML(pathToXMLWeights, theAircraft));
 			
 			// Set the folders tree
 			MyConfiguration.initWorkingDirectoryTree(
@@ -304,7 +299,9 @@ public class BalanceTest extends Application {
 
 			// Evaluate aircraft balance
 			theAircraft.setTheBalance(ACBalanceManager.importFromXML(pathToXMLBalance, theAircraft));
+			
 			theAircraft.getTheBalance().calculateBalance(_methodsMap);
+			
 			System.out.println(BalanceTest.theAircraft.getTheBalance().toString());
 			theAircraft.getTheBalance().toXLSFile(subfolderPath + "Balance");
 			theAircraft.getTheBalance().createBalanceCharts(subfolderPath);

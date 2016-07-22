@@ -33,7 +33,6 @@ import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
-import configuration.enumerations.PositionRelativeToAttachmentEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import standaloneutils.GeometryCalc;
@@ -666,17 +665,9 @@ public class LiftingSurface implements ILiftingSurface {
 
 	}
 
-	public void calculateCGAllMethods(Map<ComponentEnum, List<MethodEnum>> methodsMap, ComponentEnum type) {
-		// ITERATIVE CALL OF CALCULATE CG IN ORDER TO COMPARE ALL METHODS. 
-		
-		List<MethodEnum> methodsList = methodsMap.keySet().stream()
-						   							      .filter(key -> key.equals(type))
-						   							      .map(key -> methodsMap.get(key))
-						   							      .findFirst()
-						   							      .get();
-		
-		for (int i=0; i<methodsList.size(); i++)
-			calculateCG(methodsList.get(i), type);
+	public void calculateCG(ComponentEnum type) {
+		calculateCG(MethodEnum.SFORZA, type);
+		calculateCG(MethodEnum.TORENBEEK_1982, type);
 	}
 	
 	public void calculateCG(MethodEnum method, ComponentEnum type) {
@@ -791,8 +782,7 @@ public class LiftingSurface implements ILiftingSurface {
 			case TORENBEEK_1982 : { 
 				methodsList.add(method);
 
-				if (_positionRelativeToAttachment
-						.equals(PositionRelativeToAttachmentEnum.T_TAIL)) {
+				if (_positionRelativeToAttachment > 0.8) {
 					_yCG = Amount.valueOf(
 							0.55*(span/2) 
 							, SI.METER);
@@ -800,13 +790,7 @@ public class LiftingSurface implements ILiftingSurface {
 							0.42*_liftingSurfaceCreator.getChordEquivalentAtY(_yCG.getEstimatedValue())
 							+ _liftingSurfaceCreator.getXLEAtYEquivalent(_yCG.getEstimatedValue())
 							, SI.METER);
-				} else if (
-						(_positionRelativeToAttachment
-								.equals(PositionRelativeToAttachmentEnum.CONVENTIONAL))
-						|| 
-						(_positionRelativeToAttachment
-								.equals(PositionRelativeToAttachmentEnum.CROSS))
-						){
+				} else {
 					_yCG = Amount.valueOf(
 							0.38*(span/2) 
 							, SI.METER);

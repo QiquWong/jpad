@@ -419,6 +419,8 @@ public class LandingGears implements ILandingGear {
 			Aircraft aircraft, 
 			MethodEnum method) {
 
+		_cg = new CenterOfGravity();
+		
 		 // THESE VALUES WILL COME FROM THE AIRCRAFT CLASS
 		_cg.setLRForigin(_xApexConstructionAxes,
 						 _yApexConstructionAxes,

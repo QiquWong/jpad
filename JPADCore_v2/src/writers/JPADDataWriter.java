@@ -785,7 +785,7 @@ public class JPADDataWriter {
 					doc, 
 					_sheet,
 					"Xcg_estimation_method_comparison",
-					fuselage.getXCGMap(), fuselage.get_percentDifferenceXCG(), balance);
+					fuselage.getXCGMap(), fuselage.getPercentDifferenceXCG(), balance);
 
 			writeOutputNode("Xcg_LRF", fuselage.getCG().getXLRF(), balance);
 			writeOutputNode("Ycg_LRF", fuselage.getCG().getYLRF(), balance);

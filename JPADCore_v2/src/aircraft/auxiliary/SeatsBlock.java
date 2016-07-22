@@ -265,8 +265,7 @@ public class SeatsBlock {
 				}
 
 				// Check if seat is missing.
-				if (Arrays.asList(_missingSeatRow).contains(i) &&
-						Arrays.asList(_missingSeatColumn).contains(j)) {
+				if (Arrays.asList(_missingSeatRow).contains(i)) {
 					currentXcoord = currentXcoord + _pitch.getEstimatedValue();
 					_seatsMatrix.setEntry(i, j, 0);
 					_totalSeats--;
