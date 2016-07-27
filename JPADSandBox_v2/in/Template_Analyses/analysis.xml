@@ -2,11 +2,15 @@
 <jpad_config>
     <!-- Input data, shared across analysis tasks -->
     <global_data>
-        <cruise_mach>0.72</cruise_mach>
-        <cruise_altitude unit="ft">8000</cruise_altitude>
-        
-        <!-- ... -->
-        
+        <n_limit>2.5</n_limit>
+		<cruise_lift_coefficient>0.45</cruise_lift_coefficient>
+		<reference_range unit="nmi">825</reference_range>
+		<maximum_altitude_at_maximum_speed unit="ft">16000</maximum_altitude_at_maximum_speed>
+		<maximum_cruise_mach_number>0.43</maximum_cruise_mach_number>
+		<optimum_cruise_altitude unit="ft">16000</optimum_cruise_altitude>
+		<optimum_cruise_mach_number>0.45</optimum_cruise_mach_number>
+		<block_time unit="h">1.5</block_time>
+		<flight_time unit="h">1.35</flight_time>
     </global_data>
     <!-- Required analysis tasks -->
     <analyses id="JPAD Test analysis">

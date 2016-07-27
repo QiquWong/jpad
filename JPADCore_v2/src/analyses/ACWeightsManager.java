@@ -28,6 +28,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
+import analyses.costs.ACCostsManager;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ComponentEnum;
@@ -45,6 +46,8 @@ public class ACWeightsManager extends ACCalculatorManager {
 
 	private String _id;
 	private static Aircraft _theAircraft;
+	
+
 	
 	// Aluminum density
 	public static Amount<VolumetricDensity> _materialDensity = 
@@ -1508,4 +1511,3 @@ public class ACWeightsManager extends ACCalculatorManager {
 		this._referenceRange = _range;
 	}
 }
-

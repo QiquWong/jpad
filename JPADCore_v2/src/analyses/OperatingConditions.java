@@ -213,7 +213,7 @@ public class OperatingConditions {
 	}
 
 
-	public static StdAtmos1976 get_atmosphere(double altitude) {
+	public static StdAtmos1976 getAtmosphere(double altitude) {
 		return new StdAtmos1976(altitude);
 	}
 

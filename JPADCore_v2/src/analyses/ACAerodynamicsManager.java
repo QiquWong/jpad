@@ -1124,7 +1124,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		return _aerodynamicDatabaseReader;
 	}
 
-	public void set_aerodynamicDatabaseReader(AerodynamicDatabaseReader _aerodynamicDatabaseReader) {
+	public void setAerodynamicDatabaseReader(AerodynamicDatabaseReader _aerodynamicDatabaseReader) {
 		this._aerodynamicDatabaseReader = _aerodynamicDatabaseReader;
 	}
 
@@ -1132,7 +1132,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		return _highLiftDatabaseReader;
 	}
 
-	public void set_highLiftDatabaseReader(HighLiftDatabaseReader _highLiftDatabaseReader) {
+	public void setHighLiftDatabaseReader(HighLiftDatabaseReader _highLiftDatabaseReader) {
 		this._highLiftDatabaseReader = _highLiftDatabaseReader;
 	}
 	

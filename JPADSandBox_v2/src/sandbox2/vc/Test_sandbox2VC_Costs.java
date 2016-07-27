@@ -24,7 +24,7 @@ import org.kohsuke.args4j.Option;
 import aircraft.components.Aircraft;
 import aircraft.components.Aircraft.AircraftBuilder;
 import analyses.OperatingConditions;
-import analyses.costs.Costs;
+import analyses.costs.ACCostsManager;
 import calculators.costs.CostsCalcUtils;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
@@ -36,7 +36,7 @@ import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import standaloneutils.JPADXmlReader;
 
 
-class MyArgumentsAircraft {
+class MyArgumentsCostsTest {
 	@Option(name = "-i", aliases = { "--input" }, required = true,
 			usage = "my input file")
 	private File _inputFile;
@@ -135,7 +135,7 @@ public class Test_sandbox2VC_Costs {
 
 		public static void main(String[] args) throws CmdLineException {
 			
-			MyArgumentsAircraft va = new MyArgumentsAircraft();
+			MyArgumentsCostsTest va = new MyArgumentsCostsTest();
 			Test_sandbox2VC_Costs.theCmdLineParser = new CmdLineParser(va);
 			
 			try{

@@ -24,7 +24,7 @@ import org.kohsuke.args4j.Option;
 import aircraft.components.Aircraft;
 import aircraft.components.Aircraft.AircraftBuilder;
 import analyses.OperatingConditions;
-import analyses.costs.Costs;
+import analyses.costs.ACCostsManager;
 import calculators.costs.CostsCalcUtils;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;

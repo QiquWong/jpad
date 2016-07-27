@@ -169,6 +169,11 @@ public class ACBalanceManager extends ACCalculatorManager {
 			return this;
 		}
 		
+		public ACBalanceManagerBuilder (String id, Aircraft theAircraft) {
+			this.__id = id;
+			_theAircraft = theAircraft;
+		}
+		
 		public ACBalanceManager build() {
 			return new ACBalanceManager(this);
 		}
@@ -465,9 +470,7 @@ public class ACBalanceManager extends ACCalculatorManager {
 		 * Once the data are ready, it's possible to create the ACBalanceManager object can be created
 		 * using the builder pattern.
 		 */
-		ACBalanceManager theBalance = new ACBalanceManagerBuilder()
-				.id(id)
-				.aircraft(theAircraft)
+		ACBalanceManager theBalance = new ACBalanceManagerBuilder(id, theAircraft)
 				.maximumTakeOffMass(maximumTakeOffMass)
 				.maximumZeroFuelMass(maximumZeroFuelMass)
 				.operatingEmptyMass(operatingEmptyMass)

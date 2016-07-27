@@ -40,7 +40,7 @@ public class FixedCharges {
 	 * @param lifeSpan life span on year
 	 * @author AC
 	 */
-	public FixedCharges(Aircraft aircraft, Costs costs) {
+	public FixedCharges(Aircraft aircraft, ACCostsManager costs) {
 		_theAircraft = aircraft;
 
 		_calcDepreciation = new CalcDepreciation();
@@ -50,7 +50,7 @@ public class FixedCharges {
 		_totalFixedChargesMap = new TreeMap<MethodEnum, Double>();
 	}
 
-	public void initialize(Aircraft aircraft, Costs costs) {
+	public void initialize(Aircraft aircraft, ACCostsManager costs) {
 		initialize(costs.getUtilization(), costs.getTotalInvestments(), costs.getAircraftCost(),
 				costs.getSingleEngineCost(),
 				aircraft.getLifeSpan(), costs.getResidualValue(), costs.getAnnualInterestRate(),

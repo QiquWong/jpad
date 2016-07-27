@@ -274,7 +274,7 @@ public class Fuselage implements IFuselage {
 
 
 	public FuselageAerodynamicsManager initializeAerodynamics(OperatingConditions ops, Aircraft aircraft) {
-		_aerodynamicDatabaseReader = aircraft.getTheAerodynamics().get_aerodynamicDatabaseReader();
+		_aerodynamicDatabaseReader = aircraft.getTheAnalysisManager().getTheAerodynamics().get_aerodynamicDatabaseReader();
 		aerodynamics = new FuselageAerodynamicsManager(ops, aircraft);
 		return aerodynamics;
 	}
@@ -333,7 +333,7 @@ public class Fuselage implements IFuselage {
 					Math.pow((1 + k) * 
 							2*_fuselageCreator.getLenF().getEstimatedValue()*
 							getFuselageCreator().getEquivalentDiameterCylinderGM().getEstimatedValue()*
-							Math.pow(aircraft.getThePerformance().getVDiveEAS().getEstimatedValue(),0.5),
+							Math.pow(aircraft.getTheAnalysisManager().getThePerformance().getVDiveEAS().getEstimatedValue(),0.5),
 							1.5), SI.KILOGRAM);
 			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
@@ -343,10 +343,10 @@ public class Fuselage implements IFuselage {
 			_mass = Amount.valueOf(
 					0.0737*
 					pow(2*getFuselageCreator().getEquivalentDiameterCylinderGM().getEstimatedValue()*
-							pow(aircraft.getThePerformance().getVDiveEAS().getEstimatedValue(), 0.338) * 
+							pow(aircraft.getTheAnalysisManager().getThePerformance().getVDiveEAS().getEstimatedValue(), 0.338) * 
 							pow(_fuselageCreator.getLenF().getEstimatedValue(), 0.857)*
-							pow(aircraft.getTheWeights().getMaximumTakeOffMass().getEstimatedValue()*
-									aircraft.getThePerformance().getNUltimate(), 0.286)
+							pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().getEstimatedValue()*
+									aircraft.getTheAnalysisManager().getThePerformance().getNUltimate(), 0.286)
 									, 1.1)
 									, SI.KILOGRAM);
 			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
@@ -359,9 +359,9 @@ public class Fuselage implements IFuselage {
 			_mass = Amount.valueOf(2*10.43*
 					pow(Kinlet, 1.42)*
 					pow(
-							aircraft.getThePerformance().getMaxDynamicPressure().to(MyUnits.LB_FT2).getEstimatedValue()/100,
+							aircraft.getTheAnalysisManager().getThePerformance().getMaxDynamicPressure().to(MyUnits.LB_FT2).getEstimatedValue()/100,
 							0.283)*
-							pow(aircraft.getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue()/1000, 0.95)*
+							pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue()/1000, 0.95)*
 							pow(_fuselageCreator.getLenF().divide(_fuselageCreator.getSectionCylinderHeight()).getEstimatedValue(), 0.71), 
 							NonSI.POUND).to(SI.KILOGRAM);
 			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), _mass.getUnit()));
@@ -380,9 +380,9 @@ public class Fuselage implements IFuselage {
 			double kRho = 0.0032;
 			_mass = Amount.valueOf(_fuselageCreator.getLenF().getEstimatedValue()*
 					pow(getFuselageCreator().getEquivalentDiameterCylinderGM().getEstimatedValue(),2)*
-					aircraft.getTheWeights().getMaterialDensity().getEstimatedValue()*
+					aircraft.getTheAnalysisManager().getTheWeights().getMaterialDensity().getEstimatedValue()*
 					kRho*
-					pow(aircraft.getThePerformance().getNUltimate(),0.25)*
+					pow(aircraft.getTheAnalysisManager().getThePerformance().getNUltimate(),0.25)*
 					Kinlet,
 					SI.KILOGRAM);
 			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
@@ -419,7 +419,7 @@ public class Fuselage implements IFuselage {
 //		} break;
 //		 */
 		case TORENBEEK_2013 : {
-			_mass = calculateMassTorenbeek2013(aircraft.getThePerformance().getNUltimate());
+			_mass = calculateMassTorenbeek2013(aircraft.getTheAnalysisManager().getThePerformance().getNUltimate());
 			_methodsList.add(method);
 			_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
@@ -462,8 +462,8 @@ public class Fuselage implements IFuselage {
 
 		return Amount.valueOf(0.328*
 				Kdoor*Klg*
-				pow(aircraft.getTheWeights().
-						getMaximumTakeOffMass().to(NonSI.POUND).times(aircraft.getThePerformance().
+				pow(aircraft.getTheAnalysisManager().getTheWeights().
+						getMaximumTakeOffMass().to(NonSI.POUND).times(aircraft.getTheAnalysisManager().getThePerformance().
 								getNUltimate()).getEstimatedValue(),
 								0.5)*
 								pow(_fuselageCreator.getLenF().to(NonSI.FOOT).getEstimatedValue(),0.25)*

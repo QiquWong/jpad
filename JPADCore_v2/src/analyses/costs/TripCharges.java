@@ -65,7 +65,7 @@ public class TripCharges {
 	 * @param costs
 	 * @author AC
 	 */
-	public TripCharges(Aircraft aircraft, Costs costs) {
+	public TripCharges(Aircraft aircraft, ACCostsManager costs) {
 		_theAircraft = aircraft;
 
 		_calcLandingFees = new CalcLandingFees();
@@ -76,7 +76,7 @@ public class TripCharges {
 		_totalTripChargesMap = new TreeMap<MethodEnum, Double>();
 	}
 
-	public void initialize(Aircraft aircraft, Costs costs) {
+	public void initialize(Aircraft aircraft, ACCostsManager costs) {
 		initialize(costs.getLandingFeesPerTon(), 
 				aircraft.getTheWeights().getMaximumTakeOffMass(), 
 				aircraft.getThePerformance().getBlockTime(),

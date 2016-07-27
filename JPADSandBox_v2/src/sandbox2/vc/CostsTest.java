@@ -10,7 +10,7 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import aircraft.components.Aircraft;
-import analyses.costs.Costs;
+import analyses.costs.ACCostsManager;
 import standaloneutils.JPADXmlReader;
 
 class MyArgumentSystems {
@@ -36,7 +36,7 @@ public class CostsTest {
 
 		//-------------------------------------------------------------
 		public static Aircraft theAircraft;
-		public static Costs theCosts;
+		public static ACCostsManager theCosts;
 
 		//-------------------------------------------------------------
 
@@ -59,7 +59,7 @@ public class CostsTest {
 			System.out.println("--------------");
 
 			// read data from XML
-			theCosts = Costs.importFromXML(pathToXML, theAircraft);
+			theCosts = ACCostsManager.importFromXML(pathToXML, theAircraft);
 			
 //			// default Configuration ...
 //			theCosts = new CostsBuilder(

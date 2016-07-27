@@ -21,7 +21,7 @@ import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;
 import writers.JPADStaticWriteUtils;
 
-public class Costs implements ICosts {
+public class ACCostsManager implements ICosts {
 
 	private String _id;
 	private Aircraft _theAircraft;
@@ -219,13 +219,13 @@ public class Costs implements ICosts {
 			return this;
 		}
 		
-		public Costs build() {
-			return new Costs(this);
+		public ACCostsManager build() {
+			return new ACCostsManager(this);
 		}
 	}
 	
 	// Constructor of Costs class
-	private Costs (CostsBuilder builder) { 
+	private ACCostsManager (CostsBuilder builder) { 
 		
 		this._id = builder.__id;
 		this._theAircraft = builder.__theAircraft;
@@ -260,7 +260,7 @@ public class Costs implements ICosts {
 	// End of builder pattern
 	//===================================================================================================
 	
-	public static Costs importFromXML(String pathToXML, Aircraft _theAircraft){
+	public static ACCostsManager importFromXML(String pathToXML, Aircraft _theAircraft){
 	
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
 
@@ -313,7 +313,7 @@ public class Costs implements ICosts {
 		double hourVolumetricFuelConsumption  = Double.valueOf(reader.getXMLPropertyByPath("//Trip_Charges/Hour_Volumetric_Fuel_Consumption")); 
 		double oilMassCost  = Double.valueOf(reader.getXMLPropertyByPath("//Trip_Charges/Oil_Mass_Cost")); 
 		
-		Costs costs = new CostsBuilder(id,_theAircraft)
+		ACCostsManager costs = new CostsBuilder(id,_theAircraft)
 				.residualValue(residualValue)
 				.annualInterestRate(annualInterestRate)
 				.annualInsurancePremiumRate(annualInsurancePremiumRate)

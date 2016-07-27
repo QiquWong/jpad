@@ -55,7 +55,7 @@ import analyses.ACBalanceManager;
 import analyses.ACPerformanceManager;
 import analyses.ACWeightsManager;
 import analyses.OperatingConditions;
-import analyses.costs.Costs;
+import analyses.costs.ACCostsManager;
 import configuration.MyConfiguration;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ClassTypeEnum;
@@ -545,11 +545,11 @@ public class JPADDataWriter {
 
 	private void writeWeightsOutput(Element analysisNode) {
 		if (_theAnalysis != null &&
-			_theAnalysis.get_executedAnalysesMap() != null) {
+			_theAnalysis.getExecutedAnalysesMap() != null) {
 
-			if (_theAnalysis.get_executedAnalysesMap().get(AnalysisTypeEnum.WEIGHTS) != null) {
+			if (_theAnalysis.getExecutedAnalysesMap().get(AnalysisTypeEnum.WEIGHTS) != null) {
 
-				if (_theAnalysis.get_executedAnalysesMap().get(AnalysisTypeEnum.WEIGHTS) == true) {
+				if (_theAnalysis.getExecutedAnalysesMap().get(AnalysisTypeEnum.WEIGHTS) == true) {
 
 					Element weightsAnalysis = doc.createElement("Weights_Breakdown");
 					analysisNode.appendChild(weightsAnalysis);
@@ -582,11 +582,11 @@ public class JPADDataWriter {
 		_sheet = commonOperations(balance, _balanceInit, true);
 
 		if (_theAnalysis != null &&
-				_theAnalysis.get_executedAnalysesMap() != null) {
+				_theAnalysis.getExecutedAnalysesMap() != null) {
 
-			if (_theAnalysis.get_executedAnalysesMap().get(AnalysisTypeEnum.WEIGHTS) != null) {
+			if (_theAnalysis.getExecutedAnalysesMap().get(AnalysisTypeEnum.WEIGHTS) != null) {
 
-				if (_theAnalysis.get_executedAnalysesMap().get(AnalysisTypeEnum.WEIGHTS) == true) {
+				if (_theAnalysis.getExecutedAnalysesMap().get(AnalysisTypeEnum.WEIGHTS) == true) {
 
 					Element balance_Analysis = doc.createElement("Balance");
 					_analysisInitiator.appendChild(balance_Analysis);
@@ -1561,7 +1561,7 @@ public class JPADDataWriter {
 	 * @param costs
 	 * @param analysisNode
 	 */
-	private void writeCosts(Costs costs, Element analysisNode) {
+	private void writeCosts(ACCostsManager costs, Element analysisNode) {
 		_sheet = commonOperations(costs, _costsInitiator, true);
 		writeCostsInput(costs, _costsInitiator);
 		writeCostsOutput(costs, analysisNode);
@@ -1575,7 +1575,7 @@ public class JPADDataWriter {
 	 * @param costs
 	 * @param costsInitiator
 	 */
-	private void writeCostsInput(Costs costs, Element costsInitiator) {
+	private void writeCostsInput(ACCostsManager costs, Element costsInitiator) {
 
 		writeInputNode("Airframe_cost", costs.getAirframeCost(), costsInitiator, true);
 		writeInputNode("Total_investments", costs.getTotalInvestments(), costsInitiator, true);
@@ -1608,7 +1608,7 @@ public class JPADDataWriter {
 	 * @param costs
 	 * @param analysisNode
 	 */
-	private void writeCostsOutput(Costs costs, Element analysisNode) {
+	private void writeCostsOutput(ACCostsManager costs, Element analysisNode) {
 
 		Element analysis = JPADStaticWriteUtils.addSubElement(doc, _sheet, "Costs_Analysis", analysisNode);
 

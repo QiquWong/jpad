@@ -23,7 +23,7 @@ import analyses.ACBalanceManager;
 import analyses.ACPerformanceManager;
 import analyses.ACWeightsManager;
 import analyses.OperatingConditions;
-import analyses.costs.Costs;
+import analyses.costs.ACCostsManager;
 import configuration.MyConfiguration;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
@@ -72,7 +72,7 @@ public class JPADWriteUtils {
 			JPADGlobalData.getTheXmlTree().add(aircraft.getTheWeights(), 2, "Weights", ACWeightsManager.getId());
 			JPADGlobalData.getTheXmlTree().add(aircraft.getTheBalance(), 2, "Balance", ACBalanceManager.getId());
 			JPADGlobalData.getTheXmlTree().add(aircraft.getThePerformance(), 2, "Performances", ACPerformanceManager.getId());
-			JPADGlobalData.getTheXmlTree().add(aircraft.getTheCosts(), 2, "Costs", Costs.getId());
+			JPADGlobalData.getTheXmlTree().add(aircraft.getTheCosts(), 2, "Costs", ACCostsManager.getId());
 			
 			JPADGlobalData.getTheXmlTree().add(aircraft.getFuselage(), 2, "Fuselage", aircraft.getFuselage().getId());
 

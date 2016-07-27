@@ -10,12 +10,7 @@ import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.nacelles.Nacelles;
 import aircraft.components.powerplant.PowerPlant;
-import analyses.ACAerodynamicsManager;
-import analyses.ACBalanceManager;
-import analyses.ACPerformanceManager;
-import analyses.ACStructuralCalculatorManager;
-import analyses.ACWeightsManager;
-import analyses.costs.Costs;
+import analyses.ACAnalysisManager;
 import configuration.enumerations.AeroConfigurationTypeEnum;
 import configuration.enumerations.AircraftTypeEnum;
 
@@ -65,25 +60,9 @@ public interface IAircraft {
 	public void deleteFuelTank();
 	public void deleteLandingGears();
 	public void deleteSystems();
-	public void deleteCosts();
 	
-	public ACAerodynamicsManager getTheAerodynamics();
-	public void setTheAerodynamics(ACAerodynamicsManager theAerodynamics);
-
-	public ACStructuralCalculatorManager getTheStructures();
-	public void setTheStructures(ACStructuralCalculatorManager theStructures);
-
-	public ACPerformanceManager getThePerformance();
-	public void setThePerformance(ACPerformanceManager thePerformance);
-	
-	public ACWeightsManager getTheWeights();
-	public void setTheWieghts(ACWeightsManager theWeights);
-	
-	public ACBalanceManager getTheBalance();
-	public void setTheBalance(ACBalanceManager theBalance);
-	
-	public Costs getTheCosts();
-	public void setTheCosts(Costs theCosts);
+	public ACAnalysisManager getTheAnalysisManager();
+	public void setTheAnalysisManager(ACAnalysisManager theAnalysisManager);
 
 	public CabinConfiguration getCabinConfiguration();
 	public void setCabinConfiguration(CabinConfiguration theCabinConfiguration);

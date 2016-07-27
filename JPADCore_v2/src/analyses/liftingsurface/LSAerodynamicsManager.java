@@ -2259,7 +2259,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		this.set_cLMaxClean(theCLatAlpha.nasaBlackwell(alphaMaxNasaBlackwell));
 		//System.out.println("CL Max " + get_cLMaxClean());
 		deltaAlphaMax = Amount.valueOf(
-				toRadians (this.get_AerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(
+				toRadians (this.getAerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(
 						getTheLiftingSurface().getSweepLEEquivalent(false).to(NonSI.DEGREE_ANGLE).getEstimatedValue() ,
 						meanLESharpnessParameter )), SI.RADIAN);
 //				System.out.println("Sweep LE Equivalent = " + getTheLiftingSurface().get_sweepLEEquivalent().getEstimatedValue());
@@ -2382,7 +2382,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				}
 			}
 
-			deltaAlphaMaxFlap = get_AerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(
+			deltaAlphaMaxFlap = getAerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(
 					getTheLiftingSurface()
 					.getSweepLEEquivalent(false).to(NonSI.DEGREE_ANGLE).getEstimatedValue(),
 					meanAirfoil.getGeometry().get_deltaYPercent());
@@ -2962,7 +2962,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			double alphaMaxHighLift;
 
 			alphaMaxHighLift = ((cLMaxFlap-cL0HighLift)/cLalphaNew) 
-								+ get_AerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(
+								+ getAerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(
 										getTheLiftingSurface()
 										.getSweepLEEquivalent(false).to(NonSI.DEGREE_ANGLE).getEstimatedValue(),
 										meanAirfoil.getGeometry().get_deltaYPercent());
@@ -3061,7 +3061,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			double alphaMaxHighLift;
 
 			alphaMaxHighLift = ((cLMaxFlap-cL0HighLift)/cLalphaNew) 
-								+ get_AerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(
+								+ getAerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(
 										getTheLiftingSurface()
 										.getSweepLEEquivalent(false).to(NonSI.DEGREE_ANGLE).getEstimatedValue(),
 										meanAirfoil.getGeometry().get_deltaYPercent());
@@ -4927,7 +4927,7 @@ public class CalcCdvsAlpha {
 		this._vortexSemiSpanToSemiSpanRatio = _vortexSemiSpanToSemiSpanRatio;
 	}
 
-	public AerodynamicDatabaseReader get_AerodynamicDatabaseReader() {
+	public AerodynamicDatabaseReader getAerodynamicDatabaseReader() {
 		return _aerodynamicDatabaseReader;
 	}
 
@@ -4998,14 +4998,14 @@ public class CalcCdvsAlpha {
 				_aerodynamicDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath, databaseFileName); 
 				listDatabaseReaders.add(_aerodynamicDatabaseReader);
 				if( theAircraft!= null)
-					theAircraft.getTheAerodynamics().set_aerodynamicDatabaseReader(_aerodynamicDatabaseReader);
+					theAircraft.getTheAerodynamics().setAerodynamicDatabaseReader(_aerodynamicDatabaseReader);
 				break;
 
 			case HIGHLIFT:
 				_highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, databaseFileName); 
 				listDatabaseReaders.add(_highLiftDatabaseReader);
 				if( theAircraft!= null)
-					theAircraft.getTheAerodynamics().set_highLiftDatabaseReader(_highLiftDatabaseReader);
+					theAircraft.getTheAerodynamics().setHighLiftDatabaseReader(_highLiftDatabaseReader);
 				break;	
 
 			}

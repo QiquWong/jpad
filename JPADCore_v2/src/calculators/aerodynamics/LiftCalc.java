@@ -394,7 +394,7 @@ public class LiftCalc {
 			alphaMaxHighLift = alphaMax.getEstimatedValue() + deltaAlphaMaxFlap/57.3;
 		else
 			alphaMaxHighLift = ((cLMaxFlap-cL0HighLift)/cLalphaNew) 
-			+ theLsManager.get_AerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(
+			+ theLsManager.getAerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(
 					theLiftingSurface
 					.getSweepLEEquivalent(false).to(NonSI.DEGREE_ANGLE).getEstimatedValue(),
 					meanAirfoil.getGeometry().get_deltaYPercent());

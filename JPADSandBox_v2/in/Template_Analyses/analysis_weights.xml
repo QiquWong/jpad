@@ -7,7 +7,7 @@
 			<maximum_zero_fuel_mass unit="kg">220000</maximum_zero_fuel_mass>
 			<operating_empty_mass unit="kg">150000</operating_empty_mass>
 			<trapped_fuel_oil_mass unit="kg">1000</trapped_fuel_oil_mass>
-			<reference_range unit="nmi">4000</reference_range>
+			<reference_range unit="nmi">4000</reference_range> <!-- TO BE MOVED INSIDE analysis.xml -->
         </weights>
     </analysis>
 </jpad_config>

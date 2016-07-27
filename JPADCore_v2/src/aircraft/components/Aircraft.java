@@ -28,12 +28,7 @@ import aircraft.components.nacelles.NacelleCreator;
 import aircraft.components.nacelles.Nacelles;
 import aircraft.components.powerplant.Engine;
 import aircraft.components.powerplant.PowerPlant;
-import analyses.ACAerodynamicsManager;
-import analyses.ACBalanceManager;
-import analyses.ACPerformanceManager;
-import analyses.ACStructuralCalculatorManager;
-import analyses.ACWeightsManager;
-import analyses.costs.Costs;
+import analyses.ACAnalysisManager;
 import configuration.MyConfiguration;
 import configuration.enumerations.AeroConfigurationTypeEnum;
 import configuration.enumerations.AircraftEnum;
@@ -61,13 +56,8 @@ public class Aircraft implements IAircraft {
 	private AeroConfigurationTypeEnum _type = AeroConfigurationTypeEnum.EMPTY;
 	private AircraftTypeEnum _typeVehicle;
 
-	private ACAerodynamicsManager _theAerodynamics;
-	private ACStructuralCalculatorManager _theStructures;
-	private ACPerformanceManager _thePerformance;
-	private ACWeightsManager _theWeights;
-	private ACBalanceManager _theBalance;
-	private Costs _theCosts;
-
+	private ACAnalysisManager _theAnalysisManager;
+	
 	private Fuselage _theFuselage;
 	private LiftingSurface _theWing;
 	private LiftingSurface _theExposedWing;
@@ -112,14 +102,9 @@ public class Aircraft implements IAircraft {
 		private FuelTank __theFuelTank;
 		private LandingGears __theLandingGears;
 		private Systems __theSystems;
-				
-		private ACAerodynamicsManager __theAerodynamics;
-		private ACStructuralCalculatorManager __theStructures;
-		private ACPerformanceManager __thePerformance;
-		private ACWeightsManager __theWeights;
-		private ACBalanceManager __theBalance;
-		private Costs __theCosts;
 		private CabinConfiguration __theCabinConfiguration;
+		
+		private ACAnalysisManager __theAnalysisManager;
 		
 		public AircraftBuilder (String id, AerodynamicDatabaseReader aeroDatabaseReader, HighLiftDatabaseReader highLiftDatabaseReader) {
 			this.__id = id;
@@ -190,12 +175,12 @@ public class Aircraft implements IAircraft {
 				__theSystems.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theSystems.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 
-				// TODO : THESE HAVE TO BE MOVED TO ACANALYSIS MANAGER
-				__theWeights = new ACWeightsManager.ACWeightsManagerBuilder("Weights", new Aircraft(this), AircraftEnum.ATR72).build();
-//				__theBalance = new ACBalanceManager.ACBalanceManagerBuilder().id("Balance").build();
-				__theAerodynamics = new ACAerodynamicsManager();
-				__thePerformance = new ACPerformanceManager();
-				__theCosts = new Costs.CostsBuilder("Costs", new Aircraft(this)).build(); 
+				__theAnalysisManager = new ACAnalysisManager.ACAnalysisManagerBuilder(
+						"ATR-72 Analysis Manager",
+						new Aircraft(this),
+						AircraftEnum.ATR72
+						).build();
+				
 				break;
 
 		    // TODO : COMPLETE THIS!
@@ -257,12 +242,12 @@ public class Aircraft implements IAircraft {
 				__theSystems.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theSystems.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 
-				// TODO : THESE HAVE TO BE MOVED TO ACANALYSIS MANAGER
-				__theWeights = new ACWeightsManager.ACWeightsManagerBuilder("Weights", new Aircraft(this), AircraftEnum.B747_100B).build();
-//				__theBalance = new ACBalanceManager.ACBalanceManagerBuilder().id("Balance").build();
-				__theAerodynamics = new ACAerodynamicsManager();
-				__thePerformance = new ACPerformanceManager();
-				__theCosts = new Costs.CostsBuilder("Costs", new Aircraft(this)).build();
+				__theAnalysisManager = new ACAnalysisManager.ACAnalysisManagerBuilder(
+						"B747-100B Analysis Manager",
+						new Aircraft(this),
+						AircraftEnum.B747_100B
+						).build();
+				
 				break;
 				
 			// TODO : COMPLETE THIS!
@@ -324,12 +309,12 @@ public class Aircraft implements IAircraft {
 				__theSystems.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theSystems.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				
-				// TODO : THESE HAVE TO BE MOVED TO ACANALYSIS MANAGER
-				__theWeights = new ACWeightsManager.ACWeightsManagerBuilder("Weights", new Aircraft(this), AircraftEnum.AGILE_DC1).build();
-//				__theBalance = new ACBalanceManager.ACBalanceManagerBuilder().id("Balance").build();
-				__theAerodynamics = new ACAerodynamicsManager();
-				__thePerformance = new ACPerformanceManager();
-				__theCosts = new Costs.CostsBuilder("Costs", new Aircraft(this)).build(); 
+				__theAnalysisManager = new ACAnalysisManager.ACAnalysisManagerBuilder(
+						"AGILE DC-1 Analysis Manager",
+						new Aircraft(this),
+						AircraftEnum.AGILE_DC1
+						).build();
+				
 				break;
 			
 			}
@@ -472,11 +457,6 @@ public class Aircraft implements IAircraft {
 		public AircraftBuilder zApexFuselage(Amount<Length> zApex) {
 			if(__theFuselage != null)
 				this.__theFuselage.setZApexConstructionAxes(zApex);
-			return this;
-		}
-		
-		public AircraftBuilder costs(Costs theCosts){
-			this.__theCosts = theCosts;
 			return this;
 		}
 		
@@ -672,12 +652,7 @@ public class Aircraft implements IAircraft {
 		this._id = builder.__id;
 		this._typeVehicle = builder.__typeVehicle;
 		
-		this._theAerodynamics = builder.__theAerodynamics;
-		this._theStructures = builder.__theStructures;
-		this._thePerformance = builder.__thePerformance;
-		this._theWeights = builder.__theWeights;
-		this._theBalance = builder.__theBalance;
-		this._theCosts = builder.__theCosts;
+		this._theAnalysisManager = builder.__theAnalysisManager;
 		this._theCabinConfiguration = builder.__theCabinConfiguration;
 		
 		this._theFuselage = builder.__theFuselage;
@@ -907,7 +882,7 @@ public class Aircraft implements IAircraft {
 					);
 		}
 		else if( // case CG behind AC wing
-				_theBalance.getCGMTOM().getXBRF().getEstimatedValue() > 
+				_theAnalysisManager.getTheBalance().getCGMTOM().getXBRF().getEstimatedValue() > 
 				(_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
 						.plus(_theWing.getXApexConstructionAxes()).getEstimatedValue() + 
 							_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()*0.25)
@@ -935,7 +910,7 @@ public class Aircraft implements IAircraft {
 			}
 		}
 		else if( // case AC wing behind CG
-				_theBalance.getCGMTOM().getXBRF().getEstimatedValue() <= 
+				_theAnalysisManager.getTheBalance().getCGMTOM().getXBRF().getEstimatedValue() <= 
 				(_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
 						.plus(_theWing.getXApexConstructionAxes()).getEstimatedValue() + 
 							_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()*0.25)
@@ -966,7 +941,7 @@ public class Aircraft implements IAircraft {
 	private void calculateAircraftCGToWingACdistance(){
 		_wingACToCGDistance = Amount.valueOf(
 				Math.abs(
-						_theBalance.getCGMTOM().getXBRF().getEstimatedValue() -
+						_theAnalysisManager.getTheBalance().getCGMTOM().getXBRF().getEstimatedValue() -
 						(_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
 								.plus(_theWing.getXApexConstructionAxes()).getEstimatedValue() + 
 									_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()*0.25)
@@ -1418,20 +1393,6 @@ public class Aircraft implements IAircraft {
 		}
 		
 		//---------------------------------------------------------------------------------
-		// COSTS DATA 
-		String costsFileName =
-				MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//global_data/costs/@file");
-
-		Costs theCosts = null;
-		if(costsFileName != null) {
-			String costsPath = costsDir + File.separator + costsFileName;
-			theCosts = Costs.importFromXML(costsPath, null);
-		}
-		
-		//---------------------------------------------------------------------------------
 		Aircraft theAircraft = new AircraftBuilder(id, aeroDatabaseReader, highLiftDatabaseReader)
 				.name(id)
 				.aircraftType(type)
@@ -1476,7 +1437,6 @@ public class Aircraft implements IAircraft {
 				.xApexSystems(xApexSystems)
 				.yApexSystem(yApexSystems)
 				.zApexSystems(zApexSystems)
-				.costs(theCosts)
 				.build();
 		
 		return theAircraft;
@@ -1612,12 +1572,6 @@ public class Aircraft implements IAircraft {
 	}
 	
 	@Override
-	public void deleteCosts()
-	{
-		_theCosts = null;
-	}
-	
-	@Override
 	public AircraftTypeEnum getTypeVehicle() {
 		return _typeVehicle;
 	}
@@ -1659,6 +1613,16 @@ public class Aircraft implements IAircraft {
 	@Override
 	public List<Object> getComponentsList() {
 		return _componentsList;
+	}
+	
+	@Override
+	public ACAnalysisManager getTheAnalysisManager() {
+		return this._theAnalysisManager;
+	}
+	
+	@Override
+	public void setTheAnalysisManager(ACAnalysisManager theAnalysisManager) {
+		this._theAnalysisManager = theAnalysisManager;
 	}
 	
 	@Override
@@ -1769,66 +1733,6 @@ public class Aircraft implements IAircraft {
 	@Override
 	public void setSystems(Systems systems) {
 		this._theSystems = systems;
-	}
-	
-	@Override
-	public ACAerodynamicsManager getTheAerodynamics() {
-		return _theAerodynamics;
-	}
-
-	@Override
-	public void setTheAerodynamics(ACAerodynamicsManager theAerodynamics) {
-		this._theAerodynamics = theAerodynamics;
-	}
-	
-	@Override
-	public ACStructuralCalculatorManager getTheStructures() {
-		return _theStructures;
-	}
-	
-	@Override
-	public void setTheStructures(ACStructuralCalculatorManager theStructures) {
-		this._theStructures = theStructures;
-	}
-
-	@Override
-	public ACPerformanceManager getThePerformance() {
-		return _thePerformance;
-	}
-	
-	@Override
-	public void setThePerformance(ACPerformanceManager thePerformance) {
-		this._thePerformance = thePerformance;
-	}
-	
-	@Override
-	public ACWeightsManager getTheWeights() {
-		return _theWeights;
-	}
-	
-	@Override
-	public void setTheWieghts(ACWeightsManager theWeights) {
-		this._theWeights = theWeights;
-	}
-	
-	@Override
-	public ACBalanceManager getTheBalance() {
-		return _theBalance;
-	}
-	
-	@Override
-	public void setTheBalance(ACBalanceManager theBalance) {
-		this._theBalance = theBalance;
-	}
-	
-	@Override
-	public Costs getTheCosts() {
-		return _theCosts;
-	}
-
-	@Override
-	public void setTheCosts(Costs theCosts) {
-		this._theCosts = theCosts;
 	}
 	
 	@Override
