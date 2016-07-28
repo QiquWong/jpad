@@ -182,8 +182,6 @@ public class ACBalanceManager extends ACCalculatorManager {
 	private ACBalanceManager(ACBalanceManagerBuilder builder) {
 		
 		this._id = builder.__id;
-		_theAircraft = builder.__theAircraft;
-		
 		this._maximumTakeOffMass = builder.__maximumTakeOffMass;
 		this._maximumZeroFuelMass = builder.__maximumZeroFuelMass;
 		this._operatingEmptyMass = builder.__operatingEmptyMass;

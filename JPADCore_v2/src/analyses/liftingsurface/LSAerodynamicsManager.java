@@ -239,6 +239,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		theAircraft = ac;
 		set_AerodynamicDatabaseReader(
 				theAircraft
+				.getTheAnalysisManager()
 				.getTheAerodynamics()
 				.get_aerodynamicDatabaseReader()
 				);
@@ -1095,7 +1096,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 							taperRatioEq ,sweepHalfChordEq, ar,  
 							theOperatingConditions.get_machCurrent(),
 							//theLiftingSurface.getAerodynamics().get_AerodynamicDatabaseReader() ), SI.METER);
-							theAircraft.getTheAerodynamics().get_aerodynamicDatabaseReader() ),SI.METER));
+							theAircraft.getTheAnalysisManager().getTheAerodynamics().get_aerodynamicDatabaseReader() ),SI.METER));
 			double xacNapolitano=getTheLiftingSurface().getXacActualMRF().getEstimatedValue();
 
 			//			System.out.println("taper ratio " + taperRatioEq);
@@ -3990,7 +3991,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			CenterOfGravity cg;
 
 			if (theLocalAircraft != null) {
-				cg = theLocalAircraft.getTheBalance().getCGMTOM();
+				cg = theLocalAircraft.getTheAnalysisManager().getTheBalance().getCGMTOM();
 			} else {
 				cg = theLiftingSurface.getCG();
 			}
@@ -4011,7 +4012,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			CenterOfGravity cg;
 
 			if (theLocalAircraft != null) {
-				cg = theLocalAircraft.getTheBalance().getCGMTOM();
+				cg = theLocalAircraft.getTheAnalysisManager().getTheBalance().getCGMTOM();
 			} else {
 				cg = theLiftingSurface.getCG();
 			}
@@ -4998,14 +4999,14 @@ public class CalcCdvsAlpha {
 				_aerodynamicDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath, databaseFileName); 
 				listDatabaseReaders.add(_aerodynamicDatabaseReader);
 				if( theAircraft!= null)
-					theAircraft.getTheAerodynamics().setAerodynamicDatabaseReader(_aerodynamicDatabaseReader);
+					theAircraft.getTheAnalysisManager().getTheAerodynamics().setAerodynamicDatabaseReader(_aerodynamicDatabaseReader);
 				break;
 
 			case HIGHLIFT:
 				_highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, databaseFileName); 
 				listDatabaseReaders.add(_highLiftDatabaseReader);
 				if( theAircraft!= null)
-					theAircraft.getTheAerodynamics().setHighLiftDatabaseReader(_highLiftDatabaseReader);
+					theAircraft.getTheAnalysisManager().getTheAerodynamics().setHighLiftDatabaseReader(_highLiftDatabaseReader);
 				break;	
 
 			}

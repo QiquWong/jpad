@@ -190,7 +190,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 					.getCalculateXAC().get_methodMapLRF().get(MethodEnum.DEYOUNG_HARPER).getEstimatedValue()
 					+ aircraft.getWing().getXApexConstructionAxes().getEstimatedValue();
 
-			xa = (aircraft.getTheBalance().getCGMTOM().getXBRF().getEstimatedValue() - xacWBRF)
+			xa = (aircraft.getTheAnalysisManager().getTheBalance().getCGMTOM().getXBRF().getEstimatedValue() - xacWBRF)
 					/macW;
 
 		} catch (NullPointerException e) { }
@@ -864,14 +864,14 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 
 		// Evaluate all wing parameters
 		if (aircraft.getWing() != null) {
-			aircraft.getWing().getAerodynamics().set_cLCurrent(aircraft.getThePerformance().getCruiseCL());
+			aircraft.getWing().getAerodynamics().set_cLCurrent(aircraft.getTheAnalysisManager().getCruiseCL());
 			aircraft.getWing().getAerodynamics().calculateAll(_theOperatingConditions.get_machCurrent(), alphaRoot);
 		} 
 
 		// Evaluate all Htail parameters
 		if (aircraft.getHTail() != null) {
 			// TODO: change Htail CL
-			aircraft.getHTail().getAerodynamics().set_cLCurrent(aircraft.getThePerformance().getCruiseCL());
+			aircraft.getHTail().getAerodynamics().set_cLCurrent(aircraft.getTheAnalysisManager().getCruiseCL());
 			aircraft.getHTail().getAerodynamics().calculateAll(_theOperatingConditions.get_machCurrent(),alphaRoot);
 		}
 
@@ -883,7 +883,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 
 		// Evaluate all canard parameters
 		if (aircraft.getCanard() != null) {
-			aircraft.getCanard().getAerodynamics().set_cLCurrent(aircraft.getThePerformance().getCruiseCL());
+			aircraft.getCanard().getAerodynamics().set_cLCurrent(aircraft.getTheAnalysisManager().getCruiseCL());
 			aircraft.getCanard().getAerodynamics().calculateAll(_theOperatingConditions.get_machCurrent(),alphaRoot);
 		}
 
@@ -903,7 +903,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		calculateDragPolar();
 		calculateDragPolarPoints(arW, _eWhole[0], _cD0, 
 				conditions.get_densityCurrent().getEstimatedValue(), 
-				_theAircraft.getTheWeights().getMaximumTakeOffWeight().getEstimatedValue(), 
+				_theAircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffWeight().getEstimatedValue(), 
 				_theAircraft.getWing().getSurface().getEstimatedValue());
 
 		calculateDepsDalpha(_theAircraft);

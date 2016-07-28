@@ -180,14 +180,14 @@ public class Systems implements ISystems {
 		case JENKINSON : {
 			_methodsList.add(method);
 			_controlSurfaceMass = Amount.valueOf(
-					Math.pow(aircraft.getTheWeights().getMaximumTakeOffMass().times(0.04).getEstimatedValue(), 0.684),
+					Math.pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().times(0.04).getEstimatedValue(), 0.684),
 					SI.KILOGRAM);
 			_massMap.put(method, Amount.valueOf(round(_controlSurfaceMass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
 
 		case TORENBEEK_1982 : {
 			_controlSurfaceMass = Amount.valueOf(
-					0.4915*Math.pow(aircraft.getTheWeights().getMaximumTakeOffMass().getEstimatedValue(), 2/3), 
+					0.4915*Math.pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().getEstimatedValue(), 2/3), 
 					SI.KILOGRAM);
 			_methodsList.add(method);
 			_massMap.put(method, Amount.valueOf(round(_controlSurfaceMass.getEstimatedValue()), SI.KILOGRAM));

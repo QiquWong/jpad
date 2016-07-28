@@ -3,14 +3,10 @@ package sandbox2.vt.analyses;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.measure.unit.SI;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.jscience.physics.amount.Amount;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -28,7 +24,6 @@ import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import standaloneutils.JPADXmlReader;
-import standaloneutils.atmosphere.AtmosphereCalc;
 import writers.JPADStaticWriteUtils;
 
 class MyArgumentsWeightsAnalysis {
@@ -231,7 +226,6 @@ public class WeightsTest extends Application {
 					.build();
 
 			// reading aircraft from xml ... 
-			// TODO : THE ANALYSIS UPON THE IMPORTED AIRCRAFT REQUIRES THAT ACAnalysisManager WORKS !!
 //			theAircraft = Aircraft.importFromXML(
 //					pathToXML,
 //					dirLiftingSurfaces,
@@ -256,69 +250,10 @@ public class WeightsTest extends Application {
 			String aircraftFolder = JPADStaticWriteUtils.createNewFolder(folderPath + theAircraft.getId() + File.separator);
 			String subfolderPath = JPADStaticWriteUtils.createNewFolder(aircraftFolder + "WEIGHTS" + File.separator);
 			
-			///////////////////////////////////////////////////////////////////////////////////
-			// TODO : THE METHODS MAP WILL COME FROM ANALYSIS MANAGER
-			// Choose methods to use for each component
-			// All methods are used for weight estimation and for CG estimation
-			List<MethodEnum> _methodsList = new ArrayList<MethodEnum>(); 
-			Map <ComponentEnum, List<MethodEnum>> _methodsMap = 
-					new HashMap<ComponentEnum, List<MethodEnum>>();
-			
-			_methodsList.clear();
-			_methodsList.add(MethodEnum.ALL);
-			_methodsMap.put(ComponentEnum.FUSELAGE, _methodsList);
-			_methodsList = new ArrayList<MethodEnum>();
-
-			_methodsList.add(MethodEnum.ALL);
-			_methodsMap.put(ComponentEnum.WING, _methodsList);
-			_methodsList = new ArrayList<MethodEnum>();
-
-			_methodsList.add(MethodEnum.ALL);
-			_methodsMap.put(ComponentEnum.HORIZONTAL_TAIL, _methodsList);
-			_methodsList = new ArrayList<MethodEnum>();
-
-			_methodsList.add(MethodEnum.ALL);
-			_methodsMap.put(ComponentEnum.VERTICAL_TAIL, _methodsList);
-			_methodsList = new ArrayList<MethodEnum>();
-
-			_methodsList.add(MethodEnum.ALL);
-			_methodsMap.put(ComponentEnum.POWER_PLANT, _methodsList);
-			_methodsList = new ArrayList<MethodEnum>();
-
-			_methodsList.add(MethodEnum.ALL);
-			_methodsMap.put(ComponentEnum.FUEL_TANK, _methodsList);
-			_methodsList = new ArrayList<MethodEnum>();
-
-			_methodsList.add(MethodEnum.ALL);
-			_methodsMap.put(ComponentEnum.NACELLE, _methodsList);
-			_methodsList = new ArrayList<MethodEnum>();
-
-			_methodsList.add(MethodEnum.ALL);
-			_methodsMap.put(ComponentEnum.LANDING_GEAR, _methodsList);
-			_methodsList = new ArrayList<MethodEnum>();
-
-			_methodsList.add(MethodEnum.ALL);
-			_methodsMap.put(ComponentEnum.SYSTEMS, _methodsList);
-			_methodsList = new ArrayList<MethodEnum>();
-
-			//-------------------------------------------------------------------------------------
-			// THESE DATA HAVE TO BE DEFINED AS INTIAL REQUIRED DATA FOR EVERY GLOBAL ANALYSIS.
-			theAircraft.getThePerformance().setVDiveEAS(Amount.valueOf(134.653, SI.METERS_PER_SECOND));
-			theAircraft.getThePerformance().setMachDive0(theAircraft.getThePerformance().getVDiveEAS().divide(AtmosphereCalc.a0).getEstimatedValue());
-			theAircraft.getThePerformance().setMaxDynamicPressure(
-					Amount.valueOf(0.5 * 
-							AtmosphereCalc.rho0.getEstimatedValue()*
-							Math.pow(theAircraft.getThePerformance().getVDiveEAS().getEstimatedValue(), 2),
-							SI.PASCAL)
-					);
-			theAircraft.getThePerformance().setNUltimate(3.75);
-			//-------------------------------------------------------------------------------------
-			
 			// Evaluate aircraft masses
-			theAircraft.getTheWeights().calculateAllMasses(theAircraft, _methodsMap);
-			System.out.println(WeightsTest.theAircraft.getTheWeights().toString());
-			theAircraft.getTheWeights().toXLSFile(subfolderPath + "Weights");
-			///////////////////////////////////////////////////////////////////////////////////
+			theAircraft.getTheAnalysisManager().calculateWeights(theAircraft);
+			System.out.println(WeightsTest.theAircraft.getTheAnalysisManager().getTheWeights().toString());
+			theAircraft.getTheAnalysisManager().getTheWeights().toXLSFile(subfolderPath + "Weights");
 			
 		} catch (CmdLineException | IOException e) {
 			System.err.println("Error: " + e.getMessage());

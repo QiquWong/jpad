@@ -28,7 +28,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
-import analyses.costs.ACCostsManager;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ComponentEnum;
@@ -1123,7 +1122,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 
 			_maximumTakeOffMassList.add(_maximumTakeOffMass);
 
-			aircraft.getTheWeights().calculateDependentVariables(aircraft);
+			aircraft.getTheAnalysisManager().getTheWeights().calculateDependentVariables(aircraft);
 
 			//////////////////////////////////////////////////////////////////
 			// Evaluate weights with more than one method for each component
@@ -1143,55 +1142,55 @@ public class ACWeightsManager extends ACCalculatorManager {
 
 			// --- END OF MANUFACTURER EMPTY MASS-----------------------------------
 
-			aircraft.getTheWeights().setOperatingEmptyMass(
-					aircraft.getTheWeights().getManufacturerEmptyMass().plus(
-							aircraft.getTheWeights().getOperatingItemMass()).plus(
-									aircraft.getTheWeights().getCrewMass()));
+			aircraft.getTheAnalysisManager().getTheWeights().setOperatingEmptyMass(
+					aircraft.getTheAnalysisManager().getTheWeights().getManufacturerEmptyMass().plus(
+							aircraft.getTheAnalysisManager().getTheWeights().getOperatingItemMass()).plus(
+									aircraft.getTheAnalysisManager().getTheWeights().getCrewMass()));
 
 			// --- END OF OPERATING EMPTY MASS-----------------------------------
 
 			// Zero fuel mass
-			aircraft.getTheWeights().setZeroFuelMass(
-					aircraft.getTheWeights().getOperatingEmptyMass().plus(
+			aircraft.getTheAnalysisManager().getTheWeights().setZeroFuelMass(
+					aircraft.getTheAnalysisManager().getTheWeights().getOperatingEmptyMass().plus(
 							_paxMass));
 
-			aircraft.getTheWeights().setZeroFuelWeight(
-					aircraft.getTheWeights().getZeroFuelMass().times(
+			aircraft.getTheAnalysisManager().getTheWeights().setZeroFuelWeight(
+					aircraft.getTheAnalysisManager().getTheWeights().getZeroFuelMass().times(
 							AtmosphereCalc.g0).to(SI.NEWTON));
 
 			// Maximum zero fuel mass
-			aircraft.getTheWeights().setMaximumZeroFuelMass(
-					aircraft.getTheWeights().getOperatingEmptyMass().plus(
+			aircraft.getTheAnalysisManager().getTheWeights().setMaximumZeroFuelMass(
+					aircraft.getTheAnalysisManager().getTheWeights().getOperatingEmptyMass().plus(
 							_paxMassMax));
 
 			// --- END ZERO FUEL MASS-----------------------------------
 
 			// Take-off mass
-			aircraft.getTheWeights().setTakeOffMass(
-					aircraft.getTheWeights().getZeroFuelMass().plus(
+			aircraft.getTheAnalysisManager().getTheWeights().setTakeOffMass(
+					aircraft.getTheAnalysisManager().getTheWeights().getZeroFuelMass().plus(
 							aircraft.getFuelTank().getFuelMass()));
 
-			aircraft.getTheWeights().setTakeOffWeight(
-					aircraft.getTheWeights().getTakeOffMass().times(
+			aircraft.getTheAnalysisManager().getTheWeights().setTakeOffWeight(
+					aircraft.getTheAnalysisManager().getTheWeights().getTakeOffMass().times(
 							AtmosphereCalc.g0).to(SI.NEWTON));
 
 			// Maximum take-off mass
-			aircraft.getTheWeights().setMaximumTakeOffMass(
-					aircraft.getTheWeights().getMaximumZeroFuelMass().plus(
+			aircraft.getTheAnalysisManager().getTheWeights().setMaximumTakeOffMass(
+					aircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().plus(
 							aircraft.getFuelTank().getFuelMass()));
 
 			// Maximum landing mass
-			aircraft.getTheWeights().setMaximumLandingMass(_maximumTakeOffMass.times(0.9));
+			aircraft.getTheAnalysisManager().getTheWeights().setMaximumLandingMass(_maximumTakeOffMass.times(0.9));
 
 			System.out.println("Iteration " + (i+1) + 
-					", Structure mass: " + aircraft.getTheWeights().getStructuralMass() + 
+					", Structure mass: " + aircraft.getTheAnalysisManager().getTheWeights().getStructuralMass() + 
 					" , Maximum Take-Off Mass: " + _maximumTakeOffMass);
 
 			sum = sum.plus(_maximumTakeOffMass);
 			i++;
 			_maximumTakeOffMass = sum.divide(i);
 
-			aircraft.getTheWeights().calculateDependentVariables(aircraft);
+			aircraft.getTheAnalysisManager().getTheWeights().calculateDependentVariables(aircraft);
 		}
 
 		_massStructureList.add(aircraft.getFuselage().getMassEstimated());
@@ -1232,7 +1231,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 		if(aircraft.getSystems() != null)
 			aircraft.getSystems().calculateMass(aircraft, MethodEnum.TORENBEEK_2013);
 
-		aircraft.getTheWeights().setStructuralMass(
+		aircraft.getTheAnalysisManager().getTheWeights().setStructuralMass(
 				aircraft.getFuselage().getMassEstimated().plus(
 						aircraft.getWing().getMassEstimated()).plus(
 								aircraft.getHTail().getMassEstimated()).plus(
@@ -1247,9 +1246,9 @@ public class ACWeightsManager extends ACCalculatorManager {
 			aircraft.getSystems().calculateMass(aircraft, MethodEnum.TORENBEEK_2013);
 		if(aircraft.getCabinConfiguration() != null)
 			aircraft.getCabinConfiguration().calculateMass(aircraft, MethodEnum.TORENBEEK_2013);
-		aircraft.getTheWeights().setManufacturerEmptyMass(
+		aircraft.getTheAnalysisManager().getTheWeights().setManufacturerEmptyMass(
 				aircraft.getPowerPlant().getTotalMass().plus(
-						aircraft.getTheWeights().getStructuralMass()).plus(
+						aircraft.getTheAnalysisManager().getTheWeights().getStructuralMass()).plus(
 								aircraft.getSystems().getOverallMass()).plus(
 										aircraft.getCabinConfiguration().getMassEstimatedFurnishingsAndEquipment()));
 	}
@@ -1258,25 +1257,25 @@ public class ACWeightsManager extends ACCalculatorManager {
 	public void calculateFirstGuessMTOM(Aircraft aircraft) {
 
 		if(aircraft.getFuselage() != null)
-			aircraft.getFuselage().setMass(aircraft.getTheWeights().getMaximumZeroFuelMass().times(.15));
+			aircraft.getFuselage().setMass(aircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().times(.15));
 		if(aircraft.getWing() != null)
-			aircraft.getWing().setMassReference(aircraft.getTheWeights().getMaximumZeroFuelMass().times(.1));
+			aircraft.getWing().setMassReference(aircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().times(.1));
 		if(aircraft.getHTail() != null)
-			aircraft.getHTail().setMassReference(aircraft.getTheWeights().getMaximumZeroFuelMass().times(.015));
+			aircraft.getHTail().setMassReference(aircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().times(.015));
 		if(aircraft.getVTail() != null)
-			aircraft.getVTail().setMassReference(aircraft.getTheWeights().getMaximumZeroFuelMass().times(.015));
+			aircraft.getVTail().setMassReference(aircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().times(.015));
 		if(aircraft.getPowerPlant() != null)
-			aircraft.getPowerPlant().setTotalMass(aircraft.getTheWeights().getMaximumZeroFuelMass().times(.05));
+			aircraft.getPowerPlant().setTotalMass(aircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().times(.05));
 		if(aircraft.getNacelles() != null)
-			aircraft.getNacelles().setTotalMass(aircraft.getTheWeights().getMaximumZeroFuelMass().times(.015));
+			aircraft.getNacelles().setTotalMass(aircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().times(.015));
 		if(aircraft.getFuelTank() != null)
-			aircraft.getFuelTank().setFuelMass(aircraft.getTheWeights().getMaximumZeroFuelMass().times(.015));
+			aircraft.getFuelTank().setFuelMass(aircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().times(.015));
 		if(aircraft.getLandingGears() != null)
-			aircraft.getLandingGears().setMass(aircraft.getTheWeights().getMaximumZeroFuelMass().times(.04));
+			aircraft.getLandingGears().setMass(aircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().times(.04));
 		if(aircraft.getSystems() != null)
-			aircraft.getSystems().setOverallMass(aircraft.getTheWeights().getMaximumZeroFuelMass().times(.04));
+			aircraft.getSystems().setOverallMass(aircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().times(.04));
 
-		aircraft.getTheWeights().setStructuralMass(
+		aircraft.getTheAnalysisManager().getTheWeights().setStructuralMass(
 				aircraft.getFuselage().getMass().plus(
 						aircraft.getWing().getMassReference()).plus(
 								aircraft.getHTail().getMassReference()).plus(
@@ -1284,7 +1283,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 												aircraft.getNacelles().getTotalMass()).plus(
 														aircraft.getLandingGears().getOverallMass()));
 
-		System.out.println("First guess value:" + aircraft.getTheWeights().getStructuralMass().getEstimatedValue());
+		System.out.println("First guess value:" + aircraft.getTheAnalysisManager().getTheWeights().getStructuralMass().getEstimatedValue());
 	}
 
 	public Amount<Mass> getMaximumTakeOffMass() {

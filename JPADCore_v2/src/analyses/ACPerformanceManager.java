@@ -74,8 +74,8 @@ public class ACPerformanceManager {
 		if (_theAircraft != null) {
 			//		try {
 			performanceManager = new PerformanceCalcManager(
-					_theAircraft.getTheWeights().getMaximumZeroFuelWeight().doubleValue(SI.NEWTON),
-					_theAircraft.getTheWeights().getMaximumTakeOffWeight().doubleValue(SI.NEWTON),
+					_theAircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelWeight().doubleValue(SI.NEWTON),
+					_theAircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffWeight().doubleValue(SI.NEWTON),
 					_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
 					_theAircraft.getPowerPlant().getEngineNumber().intValue(), 
 					_theAircraft.getPowerPlant().getEngineList().get(0).getEngineType(), 
@@ -86,8 +86,8 @@ public class ACPerformanceManager {
 					_theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(), 
 					_theAircraft.getWing().getAirfoilList().get(0).getType(), 
 					_theAircraft.getWing().getAerodynamics().getCalculateCLMaxClean().phillipsAndAlley(), 
-					_theAircraft.getTheAerodynamics().get_cD0(), 
-					_theAircraft.getTheAerodynamics().get_oswald());
+					_theAircraft.getTheAnalysisManager().getTheAerodynamics().get_cD0(), 
+					_theAircraft.getTheAnalysisManager().getTheAerodynamics().get_oswald());
 			// TODO
 			//		performanceManager.setMinAndMaxValues(0., 11000., 0., _vDive.doubleValue(SI.METERS_PER_SECOND), 0.7, 1.);
 			//		performanceManager.initializeArraysWithMinAndMaxValues();
@@ -96,8 +96,8 @@ public class ACPerformanceManager {
 			performanceManager.calculateAllPerformance();
 
 			performanceManagerOEI = new PerformanceCalcManager(
-					_theAircraft.getTheWeights().getMaximumZeroFuelWeight().doubleValue(SI.NEWTON),
-					_theAircraft.getTheWeights().getMaximumTakeOffWeight().doubleValue(SI.NEWTON),
+					_theAircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelWeight().doubleValue(SI.NEWTON),
+					_theAircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffWeight().doubleValue(SI.NEWTON),
 					_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
 					_theAircraft.getPowerPlant().getEngineNumber().intValue() - 1, 
 					_theAircraft.getPowerPlant().getEngineList().get(0).getEngineType(),
@@ -108,8 +108,8 @@ public class ACPerformanceManager {
 					_theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(), 
 					_theAircraft.getWing().getAirfoilList().get(0).getType(), 
 					_theAircraft.getWing().getAerodynamics().getCalculateCLMaxClean().phillipsAndAlley(), 
-					_theAircraft.getTheAerodynamics().get_cD0(), 
-					_theAircraft.getTheAerodynamics().get_oswald());
+					_theAircraft.getTheAnalysisManager().getTheAerodynamics().get_cD0(), 
+					_theAircraft.getTheAnalysisManager().getTheAerodynamics().get_oswald());
 
 			performanceManagerOEI.setMinAndMaxValuesShortArrays(0., 9000., 50., 340., 0.7, 1.);
 			performanceManagerOEI.initializeShortArrays();

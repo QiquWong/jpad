@@ -217,14 +217,14 @@ public class CostsTestsJenkinson {
 //			Amount<Velocity> blockSpeed = Amount.valueOf(243.0, SI.METERS_PER_SECOND); // Value according to Sforza
 			
 			
-			theAircraft.getTheWeights().setOperatingEmptyMass(_OEM);
-			theAircraft.getTheWeights().setMaximumTakeOffMass(_MTOM);
-			theAircraft.getTheWeights().setManufacturerEmptyMass(_OEM);
+			theAircraft.getTheAnalysisManager().getTheWeights().setOperatingEmptyMass(_OEM);
+			theAircraft.getTheAnalysisManager().getTheWeights().setMaximumTakeOffMass(_MTOM);
+			theAircraft.getTheAnalysisManager().getTheWeights().setManufacturerEmptyMass(_OEM);
 			theAircraft.setLifeSpan(16);
 //			theAircraft.getTheCosts().setAnnualInterestRate(0.054);
-			theAircraft.getThePerformance().setRange(_range);
-			theAircraft.getThePerformance().setVDesignCruise(_cruiseSpeed);
-			theAircraft.getTheCosts().setFlightTime(_flightTime);
+			theAircraft.getTheAnalysisManager().setReferenceRange(_range);
+			theAircraft.getTheAnalysisManager().getThePerformance().setVDesignCruise(_cruiseSpeed);
+			theAircraft.getTheAnalysisManager().getTheCosts().setFlightTime(_flightTime);
 			
 			
 			CostsCalcUtils.calcAircraftCostSforza(_OEM); // Methods that implements Sforza statistical formula that relates the aircraft operative 
@@ -233,14 +233,14 @@ public class CostsTestsJenkinson {
 //			theAircraft.getTheCosts().set_manHourLaborRate(40); // Value according to Sforza
 //			theAircraft.getTheCosts().set_blockSpeed(blockSpeed);// Value according to Sforza
 //			theAircraft.getTheCosts().calcUtilizationKundu(theCost.get_blockTime().doubleValue(NonSI.HOUR));
-			theAircraft.getTheCosts().setUtilization(4750);
+			theAircraft.getTheAnalysisManager().getTheCosts().setUtilization(4750);
 //			theAircraft.getTheCosts().calcTotalInvestments(98400000.0, 9800000.0, 2, 0.1, 0.3);
 //			theAircraft.getTheCosts().get_theFixedCharges().set_residualValue(0.2);
 			theAircraft.getPowerPlant().setEngineType(EngineTypeEnum.TURBOFAN);
 //			Amount<Duration> tb = theCost.calcBlockTime();
 //			theCost.set_blockTime(Amount.valueOf(15.94, NonSI.HOUR));;
 			
-			theAircraft.getTheCosts().calculateAll(theAircraft);
+			theAircraft.getTheAnalysisManager().getTheCosts().calculateAll(theAircraft);
 			
 			Map<MethodEnum, Double> depreciationMap = 
 					new TreeMap<MethodEnum, Double>();
@@ -268,27 +268,27 @@ public class CostsTestsJenkinson {
 			
 			
 			// Start costs estimation
-			depreciationMap = theAircraft.getTheCosts().getTheFixedCharges().get_calcDepreciation().get_methodsMap();
-			interestMap = theAircraft.getTheCosts().getTheFixedCharges().get_calcInterest().get_methodsMap();
-			insuranceMap = theAircraft.getTheCosts().getTheFixedCharges().get_calcInsurance().get_methodsMap();
-			crewCostsMap = theAircraft.getTheCosts().getTheFixedCharges().get_calcCrewCosts().get_methodsMap();
+			depreciationMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheFixedCharges().get_calcDepreciation().get_methodsMap();
+			interestMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheFixedCharges().get_calcInterest().get_methodsMap();
+			insuranceMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheFixedCharges().get_calcInsurance().get_methodsMap();
+			crewCostsMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheFixedCharges().get_calcCrewCosts().get_methodsMap();
 			//------------------------------------------------------------------------------------------------------------------------
-			totalFixedChargesMap = theAircraft.getTheCosts().getTheFixedCharges().get_totalFixedChargesMap();
+			totalFixedChargesMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheFixedCharges().get_totalFixedChargesMap();
 			//------------------------------------------------------------------------------------------------------------------------
-			landingFeesMap = theAircraft.getTheCosts().getTheTripCharges().get_calcLandingFees().get_methodsMap();
-			navigationalChargesMap = theAircraft.getTheCosts().getTheTripCharges().get_calcNavigationalCharges().get_methodsMap();
-			groundHandlingChargesMap = theAircraft.getTheCosts().getTheTripCharges().get_calcGroundHandlingCharges().get_methodsMap();
-			maintenanceMap = theAircraft.getTheCosts().getTheTripCharges().get_calcMaintenanceCosts().get_methodsMap();
-			fuelAndOilMap = theAircraft.getTheCosts().getTheTripCharges().get_calcFuelAndOilCharges().get_methodsMap();
+			landingFeesMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheTripCharges().get_calcLandingFees().get_methodsMap();
+			navigationalChargesMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheTripCharges().get_calcNavigationalCharges().get_methodsMap();
+			groundHandlingChargesMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheTripCharges().get_calcGroundHandlingCharges().get_methodsMap();
+			maintenanceMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheTripCharges().get_calcMaintenanceCosts().get_methodsMap();
+			fuelAndOilMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheTripCharges().get_calcFuelAndOilCharges().get_methodsMap();
 			//------------------------------------------------------------------------------------------------------------------------
-			totalTripChargesMap = theAircraft.getTheCosts().getTheTripCharges().get_totalTripChargesMap();
+			totalTripChargesMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheTripCharges().get_totalTripChargesMap();
 			//------------------------------------------------------------------------------------------------------------------------
 			// DOC = Fixed + Trip Charge
 			Map<MethodEnum, Double> DOC = new HashMap<>(totalFixedChargesMap);
 			totalTripChargesMap.forEach((k,v) -> DOC.merge(k,v, Double::sum));
 			//------------------------------------------------------------------------------------------------------------------------
 			
-			System.out.println("The aircraft total investment is " +  theAircraft.getTheCosts().getTotalInvestments());
+			System.out.println("The aircraft total investment is " +  theAircraft.getTheAnalysisManager().getTheCosts().getTotalInvestments());
 //			System.out.println("The aircraft depreciation per block hour is " + depreciation  );
 //			System.out.println("The residual value rate is " + theFixedCharges.get_residualValue() );
 			System.out.println("The test depreciation methodMap is " + depreciationMap );

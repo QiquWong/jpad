@@ -127,8 +127,8 @@ public class PayloadRangeCalc{
 		
 		airplaneType = type;
 		
-		maxTakeOffMass = theAircraft.getTheWeights().getMaximumTakeOffMass();
-		operatingEmptyMass = theAircraft.getTheWeights().getOperatingEmptyMass();
+		maxTakeOffMass = theAircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass();
+		operatingEmptyMass = theAircraft.getTheAnalysisManager().getTheWeights().getOperatingEmptyMass();
 		maxFuelMass = theAircraft.getFuelTank().getFuelMass();
 		nPassMax = theAircraft.getCabinConfiguration().getMaxPax();
 		airfoilType = theAircraft.getWing().getAirfoilList().get(0).getType();
@@ -154,15 +154,15 @@ public class PayloadRangeCalc{
 				theAircraft.getWing().getAerodynamicDatabaseReader());
 		
 		tcMax = meanAirfoil.getAirfoilCreator().getThicknessToChordRatio();
-		cd0 = theAircraft.getTheAerodynamics().calculateCD0Total();
-		oswald = theAircraft.getTheAerodynamics().calculateOswald(currentMach, MethodEnum.HOWE);
+		cd0 = theAircraft.getTheAnalysisManager().getTheAerodynamics().calculateCD0Total();
+		oswald = theAircraft.getTheAnalysisManager().getTheAerodynamics().calculateOswald(currentMach, MethodEnum.HOWE);
 		cl = LiftCalc.calcCLatAlphaLinearDLR(
 				theConditions.get_alphaCurrent().getEstimatedValue(),
 				theAircraft.getWing().getAspectRatio()
 				);
 	
 		
-		aerodynamicAnalysis = theAircraft.getTheAerodynamics();
+		aerodynamicAnalysis = theAircraft.getTheAnalysisManager().getTheAerodynamics();
 		fuelFractionDatabase = theAircraft.getFuelTank().getFuelFractionDatabase();
 	}
 

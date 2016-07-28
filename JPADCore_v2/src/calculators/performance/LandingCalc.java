@@ -138,8 +138,8 @@ public class LandingCalc {
 		this.deltaCD0LandignGear = deltaCD0LandingGear;
 		this.deltaCD0Spoiler = deltaCD0Spoiler;
 		
-		this.oswald = aircraft.getTheAerodynamics().get_oswald();
-		this.cD0 = aircraft.getTheAerodynamics().get_cD0();
+		this.oswald = aircraft.getTheAnalysisManager().getTheAerodynamics().get_oswald();
+		this.cD0 = aircraft.getTheAnalysisManager().getTheAerodynamics().get_cD0();
 
 		// CalcHighLiftDevices object to manage flap/slat effects
 		highLiftCalculator.calculateHighLiftDevicesEffects();
@@ -153,7 +153,7 @@ public class LandingCalc {
 		vSLanding = Amount.valueOf(
 				SpeedCalc.calculateSpeedStall(
 						theConditions.get_altitude().getEstimatedValue(),
-						aircraft.getTheWeights().getMaximumLandingWeight().getEstimatedValue(),
+						aircraft.getTheAnalysisManager().getTheWeights().getMaximumLandingWeight().getEstimatedValue(),
 						aircraft.getWing().getSurface().getEstimatedValue(),
 						cLmaxLanding
 						),
@@ -177,7 +177,7 @@ public class LandingCalc {
 		System.out.println("Delta CD0 spoilers = " + this.deltaCD0Spoiler);
 		System.out.println("CD0 Landing = " + (cD0 + deltaCD0FlapLandinGearsSpoilers));
 		System.out.println("Induced CD Landing = " + ((Math.pow(cLground, 2)*kGround)
-				/(Math.PI*aircraft.getWing().getAspectRatio()*aircraft.getTheAerodynamics().get_oswald())));
+				/(Math.PI*aircraft.getWing().getAspectRatio()*aircraft.getTheAnalysisManager().getTheAerodynamics().get_oswald())));
 		System.out.println("VsLanding = " + vSLanding);
 		System.out.println("V_Approach = " + vA);
 		System.out.println("V_Flare = " + vFlare);
@@ -277,7 +277,7 @@ public class LandingCalc {
 		vSLanding = Amount.valueOf(
 				SpeedCalc.calculateSpeedStall(
 						theConditions.get_altitude().getEstimatedValue(),
-						aircraft.getTheWeights().getMaximumLandingWeight().getEstimatedValue(),
+						aircraft.getTheAnalysisManager().getTheWeights().getMaximumLandingWeight().getEstimatedValue(),
 						aircraft.getWing().getSurface().getEstimatedValue(),
 						cLmaxLanding
 						),
@@ -652,7 +652,7 @@ public class LandingCalc {
 
 		double[] weight = new double[getTime().size()];
 		for(int i=0; i<weight.length; i++)
-			weight[i] = aircraft.getTheWeights().getMaximumLandingWeight().getEstimatedValue();
+			weight[i] = aircraft.getTheAnalysisManager().getTheWeights().getMaximumLandingWeight().getEstimatedValue();
 
 		// landing trajectory and speed
 		double[][] xMatrix1 = new double[2][groundDistance.length];
@@ -745,7 +745,7 @@ public class LandingCalc {
 		public DynamicsEquationsLanding() {
 
 			// constants and known values
-			weight = aircraft.getTheWeights().getMaximumLandingWeight().getEstimatedValue();
+			weight = aircraft.getTheAnalysisManager().getTheWeights().getMaximumLandingWeight().getEstimatedValue();
 			g0 = AtmosphereCalc.g0.getEstimatedValue();
 			mu = LandingCalc.this.mu;
 			muBrake = LandingCalc.this.muBrake;

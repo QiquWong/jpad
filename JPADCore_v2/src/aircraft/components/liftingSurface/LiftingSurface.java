@@ -271,9 +271,9 @@ public class LiftingSurface implements ILiftingSurface {
 				_mass = Amount.valueOf(
 						Amount.valueOf(2*(0.00428*
 								Math.pow(surface, 0.48)*this.getAspectRatio()*
-								Math.pow(aircraft.getThePerformance().getMachDive0(), 0.43)*
-								Math.pow(aircraft.getTheWeights().getMaximumTakeOffWeight().to(NonSI.POUND_FORCE).
-										times(aircraft.getThePerformance().getNUltimate()).
+								Math.pow(aircraft.getTheAnalysisManager().getMachDive0(), 0.43)*
+								Math.pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffWeight().to(NonSI.POUND_FORCE).
+										times(aircraft.getTheAnalysisManager().getNUltimate()).
 										getEstimatedValue(),0.84)*
 								Math.pow(this._liftingSurfaceCreator.getTaperRatioEquivalentWing(), 0.14))/
 								(Math.pow(100*this._liftingSurfaceCreator.getPanels().get(0).getAirfoilRoot().getThicknessToChordRatio(),0.76)*
@@ -290,10 +290,10 @@ public class LiftingSurface implements ILiftingSurface {
 				//				if (aircraft.get_powerPlant().get_engineType().equals(EngineTypeEnum.TURBOPROP)) {
 				_mass = Amount.valueOf((4.22*surface +
 						1.642e-6*
-						(aircraft.getThePerformance().getNUltimate()*
+						(aircraft.getTheAnalysisManager().getNUltimate()*
 								Math.pow(this.getSpan().to(NonSI.FOOT).getEstimatedValue(),3)*
-								Math.sqrt(aircraft.getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue()*
-										aircraft.getTheWeights().getMaximumZeroFuelMass().to(NonSI.POUND).getEstimatedValue())*
+								Math.sqrt(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue()*
+										aircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().to(NonSI.POUND).getEstimatedValue())*
 								(1 + 2*this._liftingSurfaceCreator.getTaperRatioEquivalentWing()))/
 						(thicknessMean*Math.pow(Math.cos(this._liftingSurfaceCreator.getSweepQuarterChordEquivalentWing().to(SI.RADIAN).getEstimatedValue()),2)*
 								surface*(1 + this.getLiftingSurfaceCreator().getTaperRatioEquivalentWing()))),
@@ -335,12 +335,12 @@ public class LiftingSurface implements ILiftingSurface {
 
 						_mass = Amount.valueOf(
 								(1 - kComp) * 0.021265*
-								(pow(aircraft.getTheWeights().getMaximumTakeOffMass().getEstimatedValue()*
-										aircraft.getThePerformance().getNUltimate(),0.4843)*
+								(pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().getEstimatedValue()*
+										aircraft.getTheAnalysisManager().getNUltimate(),0.4843)*
 										pow(this.getSurface().getEstimatedValue(),0.7819)*
 										pow(this.getAspectRatio(),0.993)*
 										pow(1 + this.getLiftingSurfaceCreator().getTaperRatioEquivalentWing(),0.4)*
-										pow(1 - R/aircraft.getTheWeights().getMaximumTakeOffMass().getEstimatedValue(),0.4))/
+										pow(1 - R/aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().getEstimatedValue(),0.4))/
 								(cos(this.getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().to(SI.RADIAN).getEstimatedValue())*
 										pow(thicknessMean,0.4)), 
 								SI.KILOGRAM);
@@ -357,8 +357,8 @@ public class LiftingSurface implements ILiftingSurface {
 			 * */
 			case RAYMER : { // page 403 (211 pdf) Raymer 
 				methodsList.add(method);
-				_mass = Amount.valueOf(0.0051 * pow(aircraft.getTheWeights().
-						getMaximumTakeOffWeight().to(NonSI.POUND_FORCE).times(aircraft.getThePerformance().
+				_mass = Amount.valueOf(0.0051 * pow(aircraft.getTheAnalysisManager().getTheWeights().
+						getMaximumTakeOffWeight().to(NonSI.POUND_FORCE).times(aircraft.getTheAnalysisManager().
 								getNUltimate()).getEstimatedValue(),
 						0.557)*
 						pow(this.getSurface().to(MyUnits.FOOT2).getEstimatedValue(),0.649)*
@@ -380,9 +380,9 @@ public class LiftingSurface implements ILiftingSurface {
 						//_meanAerodChordCk.getEstimatedValue()*
 						aircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()* //
 						(this.getLiftingSurfaceCreator().getPanels().get(0).getAirfoilRoot().getThicknessToChordRatio())
-						*aircraft.getTheWeights().getMaterialDensity().getEstimatedValue()*
+						*aircraft.getTheAnalysisManager().getTheWeights().getMaterialDensity().getEstimatedValue()*
 						_kRho*
-						pow((this.getAspectRatio()*aircraft.getThePerformance().getNUltimate())/
+						pow((this.getAspectRatio()*aircraft.getTheAnalysisManager().getNUltimate())/
 								cos(this.getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().to(SI.RADIAN).getEstimatedValue()),0.6)*
 						pow(this.getLiftingSurfaceCreator().getTaperRatioEquivalentWing(), 0.04), SI.KILOGRAM);
 				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
@@ -394,17 +394,17 @@ public class LiftingSurface implements ILiftingSurface {
 				methodsList.add(method);
 				_mass = Amount.valueOf(
 						0.0017*
-						aircraft.getTheWeights().getMaximumZeroFuelWeight().to(NonSI.POUND_FORCE).getEstimatedValue()*
+						aircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelWeight().to(NonSI.POUND_FORCE).getEstimatedValue()*
 						Math.pow(this.getSpan().to(NonSI.FOOT).getEstimatedValue()/
 								Math.cos(this.getSweepHalfChordEquivalent(false).to(SI.RADIAN).getEstimatedValue()),0.75)*
 						(1 + Math.pow(6.3*Math.cos(this.getSweepHalfChordEquivalent(false).to(SI.RADIAN).getEstimatedValue())/
 								this.getSpan().to(NonSI.FOOT).getEstimatedValue(), 0.5))*
-						Math.pow(aircraft.getThePerformance().getNUltimate(), 0.55)*
+						Math.pow(aircraft.getTheAnalysisManager().getNUltimate(), 0.55)*
 						Math.pow(
 								this.getSpan().to(NonSI.FOOT).getEstimatedValue()*surface/
 								(this.getLiftingSurfaceCreator().getPanels().get(0).getAirfoilRoot().getThicknessToChordRatio()
 										*this.getChordRoot().to(NonSI.FOOT).getEstimatedValue()*
-										aircraft.getTheWeights().getMaximumZeroFuelWeight().to(NonSI.POUND_FORCE).getEstimatedValue()*
+										aircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelWeight().to(NonSI.POUND_FORCE).getEstimatedValue()*
 										Math.cos(this.getSweepHalfChordEquivalent(false).to(SI.RADIAN).getEstimatedValue())), 0.3)
 						, NonSI.POUND).to(SI.KILOGRAM);
 				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
@@ -416,9 +416,9 @@ public class LiftingSurface implements ILiftingSurface {
 				//				if (aircraft.get_powerPlant().get_engineType().equals(EngineTypeEnum.TURBOPROP)) {
 				_mass = Amount.valueOf(
 						(0.0013*
-								aircraft.getThePerformance().getNUltimate()*
-								Math.pow(aircraft.getTheWeights().getMaximumTakeOffWeight()
-										.times(aircraft.getTheWeights().getMaximumZeroFuelWeight()).getEstimatedValue(), 
+								aircraft.getTheAnalysisManager().getNUltimate()*
+								Math.pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffWeight()
+										.times(aircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelWeight()).getEstimatedValue(), 
 										0.5)*
 								0.36*Math.pow(1 + this.getLiftingSurfaceCreator().getTaperRatioEquivalentWing(), 0.5)*
 								(this.getSpan().getEstimatedValue()/100)*
@@ -463,8 +463,8 @@ public class LiftingSurface implements ILiftingSurface {
 
 			case NICOLAI_2013 : {
 				methodsList.add(method);
-				double gamma = pow(aircraft.getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue()*
-						aircraft.getThePerformance().getNUltimate(), 0.813)*
+				double gamma = pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue()*
+						aircraft.getTheAnalysisManager().getNUltimate(), 0.813)*
 						pow(this.getSurface().to(MyUnits.FOOT2).getEstimatedValue(), 0.584)*
 						pow(this.getSpan().getEstimatedValue()/
 								(this.getLiftingSurfaceCreator().getPanels().get(0).getAirfoilRoot().getThicknessToChordRatio()
@@ -480,8 +480,8 @@ public class LiftingSurface implements ILiftingSurface {
 			case RAYMER : { // Raymer page 211 pdf
 				methodsList.add(method);
 				_mass = Amount.valueOf(0.0379 * 
-						pow(aircraft.getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue(), 0.639)*
-						pow(aircraft.getThePerformance().getNUltimate(), 0.1) * 
+						pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue(), 0.639)*
+						pow(aircraft.getTheAnalysisManager().getNUltimate(), 0.1) * 
 						pow(this.getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance().to(NonSI.FOOT).getEstimatedValue(), -1.) *
 						pow(this.getSurface().to(MyUnits.FOOT2).getEstimatedValue(), 0.75) * 
 						pow(0.3*this.getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance().to(NonSI.FOOT).getEstimatedValue(), 0.704) * 
@@ -499,9 +499,9 @@ public class LiftingSurface implements ILiftingSurface {
 				methodsList.add(method);
 				_mass = Amount.valueOf((5.25*aircraft.getExposedWing().getSurface().getEstimatedValue() +
 						0.8e-6*
-						(aircraft.getThePerformance().getNUltimate()*
+						(aircraft.getTheAnalysisManager().getNUltimate()*
 								Math.pow(this.getSpan().to(NonSI.FOOT).getEstimatedValue(),3)*
-								aircraft.getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue()*
+								aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue()*
 								this.getLiftingSurfaceCreator().getMeanAerodynamicChord().to(NonSI.FOOT).getEstimatedValue()*
 								Math.sqrt(aircraft.getExposedWing().getSurface().getEstimatedValue()))/
 						(thicknessMean*Math.pow(Math.cos(sweepStructuralAxis.to(SI.RADIAN).getEstimatedValue()),2)*
@@ -559,7 +559,7 @@ public class LiftingSurface implements ILiftingSurface {
 					k = 1.;
 				}
 				_mass = Amount.valueOf(0.065*k*
-						aircraft.getThePerformance().getVDiveEAS().getEstimatedValue()*
+						aircraft.getTheAnalysisManager().getVDiveEAS().getEstimatedValue()*
 						pow(this.getSurface().getEstimatedValue(), 1.15), SI.KILOGRAM);
 				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 			} break;
@@ -596,7 +596,7 @@ public class LiftingSurface implements ILiftingSurface {
 							(aircraft.getHTail().getSurface().getEstimatedValue()/
 									this.getSurface().getEstimatedValue());}
 				_mass = Amount.valueOf(kv*3.81*
-						aircraft.getThePerformance().getVDiveEAS().to(NonSI.KNOT).getEstimatedValue()*
+						aircraft.getTheAnalysisManager().getVDiveEAS().to(NonSI.KNOT).getEstimatedValue()*
 						pow(this.getSurface().to(MyUnits.FOOT2).getEstimatedValue(), 1.2)/
 						(1000*sqrt(cos(this.getSweepHalfChordEquivalent(false).to(SI.RADIAN).getEstimatedValue()))) - 0.287,
 						NonSI.POUND).to(SI.KILOGRAM);
@@ -607,9 +607,9 @@ public class LiftingSurface implements ILiftingSurface {
 				methodsList.add(method);
 				_mass = Amount.valueOf((2.62*surface +
 						1.5e-5*
-						(aircraft.getThePerformance().getNUltimate()*
+						(aircraft.getTheAnalysisManager().getNUltimate()*
 								Math.pow(this.getSpan().to(NonSI.FOOT).getEstimatedValue(),3)*(
-										8.0 + 0.44*aircraft.getTheWeights().getMaximumTakeOffWeight().to(NonSI.POUND_FORCE).getEstimatedValue()/
+										8.0 + 0.44*aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffWeight().to(NonSI.POUND_FORCE).getEstimatedValue()/
 										aircraft.getWing().getSurface().to(MyUnits.FOOT2).getEstimatedValue())/
 								(thicknessMean*Math.pow(Math.cos(sweepStructuralAxis.getEstimatedValue()),2)))),
 						NonSI.POUND).to(SI.KILOGRAM);

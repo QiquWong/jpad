@@ -178,8 +178,8 @@ public class TakeOffCalc {
 		this.iw = iw;
 		this.deltaCD0LandingGear = deltaCD0LandingGear;
 		
-		this.oswald = aircraft.getTheAerodynamics().get_oswald();
-		this.cD0 = aircraft.getTheAerodynamics().get_cD0();
+		this.oswald = aircraft.getTheAnalysisManager().getTheAerodynamics().get_oswald();
+		this.cD0 = aircraft.getTheAnalysisManager().getTheAerodynamics().get_cD0();
 		
 		// CalcHighLiftDevices object to manage flap/slat effects
 		highLiftCalculator.calculateHighLiftDevicesEffects();
@@ -193,7 +193,7 @@ public class TakeOffCalc {
 		vSTakeOff = Amount.valueOf(
 				SpeedCalc.calculateSpeedStall(
 						theConditions.get_altitude().getEstimatedValue(),
-						aircraft.getTheWeights().getMaximumTakeOffWeight().getEstimatedValue(),
+						aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffWeight().getEstimatedValue(),
 						aircraft.getWing().getSurface().getEstimatedValue(),
 						cLmaxTO
 						),
@@ -215,7 +215,7 @@ public class TakeOffCalc {
 		System.out.println("Delta CD0 landing gears = " + this.deltaCD0LandingGear);
 		System.out.println("CD0 TakeOff = " + (cD0 + deltaCD0FlapLandinGears));
 		System.out.println("Induced CD TakeOff = " + ((Math.pow(cLground, 2)*kGround)
-				/(Math.PI*aircraft.getWing().getAspectRatio()*aircraft.getTheAerodynamics().get_oswald())));
+				/(Math.PI*aircraft.getWing().getAspectRatio()*aircraft.getTheAnalysisManager().getTheAerodynamics().get_oswald())));
 		System.out.println("VsTO = " + vSTakeOff);
 		System.out.println("VRot = " + vRot);
 		System.out.println("VLO = " + vLO);
@@ -343,7 +343,7 @@ public class TakeOffCalc {
 		vSTakeOff = Amount.valueOf(
 				SpeedCalc.calculateSpeedStall(
 						theConditions.get_altitude().getEstimatedValue(),
-						aircraft.getTheWeights().getMaximumTakeOffWeight().getEstimatedValue(),
+						aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffWeight().getEstimatedValue(),
 						aircraft.getWing().getSurface().getEstimatedValue(),
 						cLmaxTO
 						),
@@ -1407,12 +1407,12 @@ public class TakeOffCalc {
 
 		double[] weightVertical = new double[getTime().size()];
 		for(int i=0; i<weightVertical.length; i++)
-			weightVertical[i] = aircraft.getTheWeights().getMaximumTakeOffWeight().getEstimatedValue()
+			weightVertical[i] = aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffWeight().getEstimatedValue()
 			*Math.cos(getGamma().get(i).to(SI.RADIAN).getEstimatedValue());
 
 		double[] weightHorizontal = new double[getTime().size()];
 		for(int i=0; i<weightHorizontal.length; i++)
-			weightHorizontal[i] = aircraft.getTheWeights().getMaximumTakeOffWeight().getEstimatedValue()
+			weightHorizontal[i] = aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffWeight().getEstimatedValue()
 			*Math.sin(getGamma().get(i).to(SI.RADIAN).getEstimatedValue());
 
 		if(!isAborted) {
@@ -1695,7 +1695,7 @@ public class TakeOffCalc {
 		public DynamicsEquationsTakeOff() {
 
 			// constants and known values
-			weight = aircraft.getTheWeights().getMaximumTakeOffWeight().getEstimatedValue();
+			weight = aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffWeight().getEstimatedValue();
 			g0 = AtmosphereCalc.g0.getEstimatedValue();
 			mu = TakeOffCalc.this.mu;
 			kAlpha = TakeOffCalc.this.kAlphaDot;

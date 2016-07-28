@@ -136,7 +136,7 @@ public class NacelleWeightsManager extends WeightsManager{
 
 		public Amount<Mass> torenbeek1976 () {
 			_mass = Amount.valueOf(0.405*
-					Math.sqrt(_theAircraft.getThePerformance().getVDiveEAS().getEstimatedValue())*
+					Math.sqrt(_theAircraft.getTheAnalysisManager().getVDiveEAS().getEstimatedValue())*
 					Math.pow(_theNacelle.getSurfaceWetted().getEstimatedValue(), 1.3), SI.KILOGRAM);
 			_methodsList.add(MethodEnum.TORENBEEK_1976);
 			_massMap.put(MethodEnum.TORENBEEK_1976, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
@@ -222,7 +222,7 @@ public class NacelleWeightsManager extends WeightsManager{
 		public Amount<Mass> torenbeek1976() {
 			
 			_mass = Amount.valueOf(0.405*
-					Math.sqrt(_theAircraft.getThePerformance().getVDiveEAS().getEstimatedValue())*
+					Math.sqrt(_theAircraft.getTheAnalysisManager().getVDiveEAS().getEstimatedValue())*
 					Math.pow(_theNacelle.getSurfaceWetted().getEstimatedValue()*2, 1.3), SI.KILOGRAM);
 			_methodsList.add(MethodEnum.TORENBEEK_1976);
 			_massMap.put(MethodEnum.TORENBEEK_1976, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));

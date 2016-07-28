@@ -228,7 +228,6 @@ public class BalanceTest extends Application {
 					.build();
 
 			// reading aircraft from xml ... 
-			// TODO : THE ANALYSIS UPON THE IMPORTED AIRCRAFT REQUIRES THAT ACAnalysisManager WORKS !!
 //			theAircraft = Aircraft.importFromXML(
 //					pathToXML,
 //					dirLiftingSurfaces,
@@ -252,60 +251,14 @@ public class BalanceTest extends Application {
 			String aircraftFolder = JPADStaticWriteUtils.createNewFolder(folderPath + theAircraft.getId() + File.separator);
 			String subfolderPath = JPADStaticWriteUtils.createNewFolder(aircraftFolder + "BALANCE" + File.separator);
 
-			///////////////////////////////////////////////////////////////////////////////////
-			// TODO : THE METHODS MAP WILL COME FROM ANALYSIS MANAGER
-			// Choose methods to use for each component
-			// All methods are used for weight estimation and for CG estimation
-			List<MethodEnum> _methodsList = new ArrayList<MethodEnum>(); 
-			Map <ComponentEnum, List<MethodEnum>> _methodsMap = 
-					new HashMap<ComponentEnum, List<MethodEnum>>();
-			
-			_methodsList.clear();
-			_methodsList.add(MethodEnum.ALL);
-			_methodsMap.put(ComponentEnum.FUSELAGE, _methodsList);
-			_methodsList = new ArrayList<MethodEnum>();
-
-			_methodsList.add(MethodEnum.ALL);
-			_methodsMap.put(ComponentEnum.WING, _methodsList);
-			_methodsList = new ArrayList<MethodEnum>();
-
-			_methodsList.add(MethodEnum.ALL);
-			_methodsMap.put(ComponentEnum.HORIZONTAL_TAIL, _methodsList);
-			_methodsList = new ArrayList<MethodEnum>();
-
-			_methodsList.add(MethodEnum.ALL);
-			_methodsMap.put(ComponentEnum.VERTICAL_TAIL, _methodsList);
-			_methodsList = new ArrayList<MethodEnum>();
-
-			_methodsList.add(MethodEnum.ALL);
-			_methodsMap.put(ComponentEnum.POWER_PLANT, _methodsList);
-			_methodsList = new ArrayList<MethodEnum>();
-
-			_methodsList.add(MethodEnum.ALL);
-			_methodsMap.put(ComponentEnum.FUEL_TANK, _methodsList);
-			_methodsList = new ArrayList<MethodEnum>();
-
-			_methodsList.add(MethodEnum.ALL);
-			_methodsMap.put(ComponentEnum.NACELLE, _methodsList);
-			_methodsList = new ArrayList<MethodEnum>();
-
-			_methodsList.add(MethodEnum.ALL);
-			_methodsMap.put(ComponentEnum.LANDING_GEAR, _methodsList);
-			_methodsList = new ArrayList<MethodEnum>();
-
-			_methodsList.add(MethodEnum.ALL);
-			_methodsMap.put(ComponentEnum.SYSTEMS, _methodsList);
-			_methodsList = new ArrayList<MethodEnum>();
-
 			// Evaluate aircraft balance
-			theAircraft.setTheBalance(ACBalanceManager.importFromXML(pathToXMLBalance, theAircraft));
+			theAircraft.getTheAnalysisManager().setTheBalance(ACBalanceManager.importFromXML(pathToXMLBalance, theAircraft));
+		
+			theAircraft.getTheAnalysisManager().calculateBalance(theAircraft);
 			
-			theAircraft.getTheBalance().calculateBalance(_methodsMap);
-			
-			System.out.println(BalanceTest.theAircraft.getTheBalance().toString());
-			theAircraft.getTheBalance().toXLSFile(subfolderPath + "Balance");
-			theAircraft.getTheBalance().createBalanceCharts(subfolderPath);
-			///////////////////////////////////////////////////////////////////////////////////
+			System.out.println(BalanceTest.theAircraft.getTheAnalysisManager().getTheBalance().toString());
+			theAircraft.getTheAnalysisManager().getTheBalance().toXLSFile(subfolderPath + "Balance");
+			theAircraft.getTheAnalysisManager().getTheBalance().createBalanceCharts(subfolderPath);
 			
 		} catch (CmdLineException | IOException e) {
 			System.err.println("Error: " + e.getMessage());

@@ -354,28 +354,28 @@ public class LandingGears implements ILandingGear {
 		case ROSKAM : { // Roskam page 97 (pdf) part V
 			_methodsList.add(method);
 			_overallMass = Amount.valueOf(
-					62.21 * Math.pow(aircraft.getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).times(1e-3).getEstimatedValue(), 0.84),
+					62.21 * Math.pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).times(1e-3).getEstimatedValue(), 0.84),
 					NonSI.POUND).to(SI.KILOGRAM);
 			_massMap.put(method, Amount.valueOf(round(_overallMass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
 
 		case STANFORD : {
 			_methodsList.add(method);
-			_overallMass = aircraft.getTheWeights().getMaximumTakeOffMass().times(0.04);
+			_overallMass = aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().times(0.04);
 			_massMap.put(method, Amount.valueOf(round(_overallMass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
 
 		case TORENBEEK_1982 : {
 			_methodsList.add(method);
 			_mainMass = Amount.valueOf(40 + 0.16 * 
-					Math.pow(aircraft.getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue(), 0.75) + 
-					0.019 * aircraft.getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue() + 
-					1.5 * 1e-5 * Math.pow(aircraft.getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue(), 1.5),
+					Math.pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue(), 0.75) + 
+					0.019 * aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue() + 
+					1.5 * 1e-5 * Math.pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue(), 1.5),
 					NonSI.POUND).to(SI.KILOGRAM);
 			_noseMass = Amount.valueOf(20 + 0.1 * 
-					Math.pow(aircraft.getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue(), 0.75) + 
+					Math.pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue(), 0.75) + 
 					2 * 1e-5 * 
-					Math.pow(aircraft.getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue(), 1.5),
+					Math.pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue(), 1.5),
 					NonSI.POUND).to(SI.KILOGRAM);
 
 			_overallMass = _noseMass.plus(_mainMass);
@@ -384,8 +384,8 @@ public class LandingGears implements ILandingGear {
 
 		case TORENBEEK_2013 : {
 			_methodsList.add(method);
-			_overallMass = aircraft.getTheWeights().getMaximumTakeOffMass().times(0.025).
-					plus(aircraft.getTheWeights().getMaximumLangingMass().times(0.016));
+			_overallMass = aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().times(0.025).
+					plus(aircraft.getTheAnalysisManager().getTheWeights().getMaximumLangingMass().times(0.016));
 			_massMap.put(method, Amount.valueOf(round(_overallMass.getEstimatedValue()), SI.KILOGRAM));
 		} break;
 

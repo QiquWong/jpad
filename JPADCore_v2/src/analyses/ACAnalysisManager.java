@@ -356,7 +356,7 @@ public class ACAnalysisManager {
 
 		//it's possible to define a method setDatabase
 		if ( aircraft.getWing().getAerodynamicDatabaseReader() != null){
-				aircraft.getTheAerodynamics().setAerodynamicDatabaseReader(
+				aircraft.getTheAnalysisManager().getTheAerodynamics().setAerodynamicDatabaseReader(
 						aircraft
 						.getWing()
 						.getAerodynamicDatabaseReader()
@@ -364,7 +364,7 @@ public class ACAnalysisManager {
 				}
 		
 		if (aircraft.getWing().getHighLiftDatabaseReader() != null){
-				aircraft.getTheAerodynamics().setHighLiftDatabaseReader(
+				aircraft.getTheAnalysisManager().getTheAerodynamics().setHighLiftDatabaseReader(
 						aircraft
 						.getWing()
 						.getHighLiftDatabaseReader()
@@ -541,48 +541,45 @@ public class ACAnalysisManager {
 		_methodsMap.put(ComponentEnum.SYSTEMS, _methodsList);
 		_methodsList = new ArrayList<MethodEnum>();
 
-		aircraft.getTheWeights().calculateDependentVariables(aircraft);
+		aircraft.getTheAnalysisManager().getTheWeights().calculateDependentVariables(aircraft);
 		aircraft.getCabinConfiguration().calculateDependentVariables();
 
 		// Evaluate aircraft masses
-		aircraft.getTheWeights().calculateAllMasses(aircraft, _methodsMap);
+		aircraft.getTheAnalysisManager().getTheWeights().calculateAllMasses(aircraft, _methodsMap);
 
 		// populate _theCalculatorsList
-		_theCalculatorsList.add(aircraft.getTheWeights());
+		_theCalculatorsList.add(aircraft.getTheAnalysisManager().getTheWeights());
 
 	}
 
 	public void calculateBalance(Aircraft aircraft) {
 
-		// Build cabin layout
-		aircraft.getCabinConfiguration().buildSimpleLayout(aircraft);
-
 		// Estimate center of gravity location
-		aircraft.getTheBalance().calculateBalance(_methodsMap);
+		aircraft.getTheAnalysisManager().getTheBalance().calculateBalance(_methodsMap);
 
 		// Evaluate arms again with the new CG estimate
 		aircraft.calculateArms(aircraft.getHTail());
 		aircraft.calculateArms(aircraft.getVTail());
 
-		_theCalculatorsList.add(aircraft.getTheBalance());
+		_theCalculatorsList.add(aircraft.getTheAnalysisManager().getTheBalance());
 	}
 	
 	public void calculateAerodynamics(OperatingConditions theOperatingConditions, Aircraft aircraft) {
 
-		aircraft.getTheAerodynamics().initialize(theOperatingConditions);
-		aircraft.getTheAerodynamics().calculateAll(theOperatingConditions);
+		aircraft.getTheAnalysisManager().getTheAerodynamics().initialize(theOperatingConditions);
+		aircraft.getTheAnalysisManager().getTheAerodynamics().calculateAll(theOperatingConditions);
 
 		// populate _theCalculatorsList
-		_theCalculatorsList.add(aircraft.getTheAerodynamics());
+		_theCalculatorsList.add(aircraft.getTheAnalysisManager().getTheAerodynamics());
 
 	}
 	
 	public void calculatePerformances(Aircraft aircraft) {
-		aircraft.getThePerformance().calculateAllPerformance();
+		aircraft.getTheAnalysisManager().getThePerformance().calculateAllPerformance();
 	}
 	
 	public void calculateCosts(Aircraft aircraft) {
-		aircraft.getTheCosts().calculateAll();
+		aircraft.getTheAnalysisManager().getTheCosts().calculateAll();
 	}
 
 	// GETTERS & SETTERS:
