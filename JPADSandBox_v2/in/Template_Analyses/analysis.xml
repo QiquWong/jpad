@@ -21,7 +21,7 @@
             method_htail="TORENBEEK_2013"
             method_vtail="TORENBEEK_2013"
             /> <!-- method_XXX="AVERAGED" if not present -->
-        <balance from_calculated_weights="false" file="analysis_balance.xml"/>
+        <balance file="analysis_balance.xml"/>
         <aerodynamics file="analysis_aerodynamics.xml"/>
         <performance file="analysis_performance.xml"/>
         <costs file="analysis_costs.xml"/>

@@ -41,12 +41,10 @@ import standaloneutils.atmosphere.AtmosphereCalc;
  * 
  * @author Lorenzo Attanasio, Vittorio Trifari
  */
-public class ACWeightsManager extends ACCalculatorManager {
+public class ACWeightsManager extends ACCalculatorManager implements IACWeightsManager {
 
 	private String _id;
 	private static Aircraft _theAircraft;
-	
-
 	
 	// Aluminum density
 	public static Amount<VolumetricDensity> _materialDensity = 
@@ -1322,7 +1320,7 @@ public class ACWeightsManager extends ACCalculatorManager {
 		this._emptyMass = _emptyMass;
 	}
 
-	public Amount<Force> get_emptyWeight() {
+	public Amount<Force> getEmptyWeight() {
 		return _emptyWeight;
 	}
 

@@ -192,7 +192,7 @@ public class TakeOffCalc {
 		// Reference velocities definition
 		vSTakeOff = Amount.valueOf(
 				SpeedCalc.calculateSpeedStall(
-						theConditions.get_altitude().getEstimatedValue(),
+						theConditions.getAltitude().getEstimatedValue(),
 						aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffWeight().getEstimatedValue(),
 						aircraft.getWing().getSurface().getEstimatedValue(),
 						cLmaxTO
@@ -342,7 +342,7 @@ public class TakeOffCalc {
 		// Reference velocities definition
 		vSTakeOff = Amount.valueOf(
 				SpeedCalc.calculateSpeedStall(
-						theConditions.get_altitude().getEstimatedValue(),
+						theConditions.getAltitude().getEstimatedValue(),
 						aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffWeight().getEstimatedValue(),
 						aircraft.getWing().getSurface().getEstimatedValue(),
 						cLmaxTO
@@ -1707,7 +1707,7 @@ public class TakeOffCalc {
 			k2 = TakeOffCalc.this.getK2();
 			kGround = TakeOffCalc.this.getkGround();
 			vWind = TakeOffCalc.this.getvWind().getEstimatedValue();
-			altitude = TakeOffCalc.this.getTheConditions().get_altitude().getEstimatedValue();
+			altitude = TakeOffCalc.this.getTheConditions().getAltitude().getEstimatedValue();
 
 			// alpha_dot_initial calculation
 			double cLatLiftOff = cLmaxTO/(Math.pow(kLO, 2));

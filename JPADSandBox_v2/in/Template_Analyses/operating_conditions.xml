@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+	<operating_conditions id="JPAD Operating Conditions">
+		<alpha_current unit="deg">5</alpha_current>
+		<mach_current>0.43</mach_current>	
+		<altitude unit="m">6000</altitude>
+		<alpha_array unit="deg">0;2;4;6;8;10;12;14;16;18;20;22;24</alpha_array>
+		<lift_coefficients_array>0;0.2;0.4;0.6;0.8;1.0;1.2;1.4;1.6;1.8;2.0;2.2;2.4</lift_coefficients_array>
+	</operating_conditions>
+</jpad_config>
+
+
+
+
+
+

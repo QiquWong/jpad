@@ -152,7 +152,7 @@ public class LandingCalc {
 		// Reference velocities definition
 		vSLanding = Amount.valueOf(
 				SpeedCalc.calculateSpeedStall(
-						theConditions.get_altitude().getEstimatedValue(),
+						theConditions.getAltitude().getEstimatedValue(),
 						aircraft.getTheAnalysisManager().getTheWeights().getMaximumLandingWeight().getEstimatedValue(),
 						aircraft.getWing().getSurface().getEstimatedValue(),
 						cLmaxLanding
@@ -276,7 +276,7 @@ public class LandingCalc {
 		// Reference velocities definition
 		vSLanding = Amount.valueOf(
 				SpeedCalc.calculateSpeedStall(
-						theConditions.get_altitude().getEstimatedValue(),
+						theConditions.getAltitude().getEstimatedValue(),
 						aircraft.getTheAnalysisManager().getTheWeights().getMaximumLandingWeight().getEstimatedValue(),
 						aircraft.getWing().getSurface().getEstimatedValue(),
 						cLmaxLanding
@@ -793,9 +793,9 @@ public class LandingCalc {
 					LandingCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
 					LandingCalc.this.getAircraft().getPowerPlant().getEngineType(),
 					EngineOperatingConditionEnum.TAKE_OFF,
-					LandingCalc.this.getTheConditions().get_altitude().getEstimatedValue(),
+					LandingCalc.this.getTheConditions().getAltitude().getEstimatedValue(),
 					SpeedCalc.calculateMach(
-							LandingCalc.this.getTheConditions().get_altitude().getEstimatedValue(),
+							LandingCalc.this.getTheConditions().getAltitude().getEstimatedValue(),
 							speed + 
 							LandingCalc.this.getvWind().getEstimatedValue()
 							)
@@ -812,7 +812,7 @@ public class LandingCalc {
 			return 	0.5
 					*aircraft.getWing().getSurface().getEstimatedValue()
 					*AtmosphereCalc.getDensity(
-							theConditions.get_altitude().getEstimatedValue())
+							theConditions.getAltitude().getEstimatedValue())
 					*(Math.pow((speed + vWind), 2))
 					*cD;
 		}
@@ -822,7 +822,7 @@ public class LandingCalc {
 			return 	0.5
 					*aircraft.getWing().getSurface().getEstimatedValue()
 					*AtmosphereCalc.getDensity(
-							theConditions.get_altitude().getEstimatedValue())
+							theConditions.getAltitude().getEstimatedValue())
 					*(Math.pow((speed + vWind), 2))
 					*LandingCalc.this.getcLground();
 		}

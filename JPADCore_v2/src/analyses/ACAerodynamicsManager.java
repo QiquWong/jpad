@@ -146,10 +146,10 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 
 		_theOperatingConditions = operatingConditions;
 
-		_eWhole = new Double[_theOperatingConditions.get_cL().length];
-		_cD = new Double[_theOperatingConditions.get_cL().length];
-		_cL = new Double[_theOperatingConditions.get_cL().length];
-		_cY = new Double[_theOperatingConditions.get_cL().length];
+		_eWhole = new Double[_theOperatingConditions.getCL().length];
+		_cD = new Double[_theOperatingConditions.getCL().length];
+		_cL = new Double[_theOperatingConditions.getCL().length];
+		_cY = new Double[_theOperatingConditions.getCL().length];
 		
 		updateVariables(_theAircraft);
 	}
@@ -173,7 +173,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		dxH = aircraft.getHTail().getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance().getEstimatedValue();
 		niHT = aircraft.getHTail().getLiftingSurfaceCreator().getVolumetricRatio();
 
-		mach = _theOperatingConditions.get_machCurrent();
+		mach = _theOperatingConditions.getMachCurrent();
 		_machDragPolar.add(mach - 0.1);
 		_machDragPolar.add(mach + (1-Math.pow(mach, 0.37)));
 		_machDragPolar.add(mach);
@@ -210,9 +210,9 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		for (int j=0; j < _machDragPolar.size(); j++) {
 
 			// Iterate over lift coefficients
-			for(int i=0; i < _theOperatingConditions.get_cL().length; i++) {
+			for(int i=0; i < _theOperatingConditions.getCL().length; i++) {
 
-				_cL[i] = _theOperatingConditions.get_cL()[i];
+				_cL[i] = _theOperatingConditions.getCL()[i];
 				_cLcurrent = _cL[i];
 
 				_eWhole[i] = calculateOswald(_machDragPolar.get(j), MethodEnum.HOWE);
@@ -285,7 +285,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		_cD0Total = (_cD0 + _cDRough + _cDCool);
 
 		if (_theOperatingConditions != null 
-				&& mach == _theOperatingConditions.get_machCurrent()) {
+				&& mach == _theOperatingConditions.getMachCurrent()) {
 			_cD0Map.put(ComponentEnum.FUSELAGE, _theAircraft.getFuselage().getAerodynamics().get_cD0Total());
 			_cD0Map.put(ComponentEnum.WING, _theAircraft.getWing().getAerodynamics().get_cD0Total());
 			_cD0Map.put(ComponentEnum.NACELLE, _theAircraft.getNacelles().getCD0Total());
@@ -865,26 +865,26 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		// Evaluate all wing parameters
 		if (aircraft.getWing() != null) {
 			aircraft.getWing().getAerodynamics().set_cLCurrent(aircraft.getTheAnalysisManager().getCruiseCL());
-			aircraft.getWing().getAerodynamics().calculateAll(_theOperatingConditions.get_machCurrent(), alphaRoot);
+			aircraft.getWing().getAerodynamics().calculateAll(_theOperatingConditions.getMachCurrent(), alphaRoot);
 		} 
 
 		// Evaluate all Htail parameters
 		if (aircraft.getHTail() != null) {
 			// TODO: change Htail CL
 			aircraft.getHTail().getAerodynamics().set_cLCurrent(aircraft.getTheAnalysisManager().getCruiseCL());
-			aircraft.getHTail().getAerodynamics().calculateAll(_theOperatingConditions.get_machCurrent(),alphaRoot);
+			aircraft.getHTail().getAerodynamics().calculateAll(_theOperatingConditions.getMachCurrent(),alphaRoot);
 		}
 
 		// Evaluate all Vtail parameters
 		if (aircraft.getVTail() != null) {
 			aircraft.getVTail().getAerodynamics().set_cLCurrent(0.0);
-			aircraft.getVTail().getAerodynamics().calculateAll(_theOperatingConditions.get_machCurrent(),alphaRoot);
+			aircraft.getVTail().getAerodynamics().calculateAll(_theOperatingConditions.getMachCurrent(),alphaRoot);
 		}
 
 		// Evaluate all canard parameters
 		if (aircraft.getCanard() != null) {
 			aircraft.getCanard().getAerodynamics().set_cLCurrent(aircraft.getTheAnalysisManager().getCruiseCL());
-			aircraft.getCanard().getAerodynamics().calculateAll(_theOperatingConditions.get_machCurrent(),alphaRoot);
+			aircraft.getCanard().getAerodynamics().calculateAll(_theOperatingConditions.getMachCurrent(),alphaRoot);
 		}
 
 		// Evaluate all nacelle parameters
@@ -898,11 +898,11 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 	 */
 	public void calculateAll(OperatingConditions conditions) {
 		updateVariables(_theAircraft);
-		calculateComponentsParameters(_theAircraft, conditions.get_alphaCurrent());
+		calculateComponentsParameters(_theAircraft, conditions.getAlphaCurrent());
 		calculateCD0Total();
 		calculateDragPolar();
 		calculateDragPolarPoints(arW, _eWhole[0], _cD0, 
-				conditions.get_densityCurrent().getEstimatedValue(), 
+				conditions.getDensityCurrent().getEstimatedValue(), 
 				_theAircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffWeight().getEstimatedValue(), 
 				_theAircraft.getWing().getSurface().getEstimatedValue());
 

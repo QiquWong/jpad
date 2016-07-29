@@ -359,9 +359,9 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 	public void initializeDataFromOperatingConditions(OperatingConditions ops) {
 		initializeOperatingConditions(
-				ops.get_altitude().doubleValue(SI.METER), 
-				ops.get_machCurrent(),
-				ops.get_alphaCurrent().doubleValue(SI.RADIAN));
+				ops.getAltitude().doubleValue(SI.METER), 
+				ops.getMachCurrent(),
+				ops.getAlphaCurrent().doubleValue(SI.RADIAN));
 	}
 
 	public void initializeDependentData() {
@@ -1094,7 +1094,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			getTheLiftingSurface().setXacActualMRF(Amount.valueOf(
 					LSGeometryCalc.calcXacFromNapolitanoDatcom(getTheLiftingSurface().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER),
 							taperRatioEq ,sweepHalfChordEq, ar,  
-							theOperatingConditions.get_machCurrent(),
+							theOperatingConditions.getMachCurrent(),
 							//theLiftingSurface.getAerodynamics().get_AerodynamicDatabaseReader() ), SI.METER);
 							theAircraft.getTheAnalysisManager().getTheAerodynamics().get_aerodynamicDatabaseReader() ),SI.METER));
 			double xacNapolitano=getTheLiftingSurface().getXacActualMRF().getEstimatedValue();
@@ -2817,7 +2817,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 						);
 
 			deltaCMC4List = new ArrayList<Double>();
-			double cL = calcCLatAlphaHighLiftDevice(theConditions.get_alphaCurrent());
+			double cL = calcCLatAlphaHighLiftDevice(theConditions.getAlphaCurrent());
 			for(int i=0; i<flapTypeIndex.size(); i++)
 				deltaCMC4List.add(
 						(mu2.get(i)*(-(mu1.get(i)*deltaClmaxFlapList.get(i)

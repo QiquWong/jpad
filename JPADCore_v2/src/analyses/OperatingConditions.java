@@ -1,5 +1,8 @@
 package analyses;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.DynamicViscosity;
 import javax.measure.quantity.Length;
@@ -7,13 +10,17 @@ import javax.measure.quantity.Pressure;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Velocity;
 import javax.measure.quantity.VolumetricDensity;
+import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.jscience.physics.amount.Amount;
 
+import configuration.MyConfiguration;
 //WARNING: Density is in g/cm3 ( = 1000 kg/m3)
 import jahuwaldt.aero.StdAtmos1976;
+import standaloneutils.JPADXmlReader;
+import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.PressureCalc;
 import standaloneutils.atmosphere.SpeedCalc;
 import standaloneutils.atmosphere.TemperatureCalc;
@@ -24,70 +31,238 @@ import standaloneutils.atmosphere.TemperatureCalc;
  * @author Lorenzo Attanasio
  */
 @XmlRootElement
-public class OperatingConditions {
+public class OperatingConditions implements IOperatingConditions {
 
-	private static final String _id = "10";
+	private String _id;
+	
 	// Flight parameters
 	private Double[] _alpha;
 	private Double[] _cL;
 	private Amount<Angle> _alphaCurrent;
-	private Double _machCurrent, _pressureCoefficientCurrent;
-	private Amount<Velocity> _tas, _cas, _eas;
+	private Double _machCurrent;
+	private Double _pressureCoefficientCurrent;
+	private Amount<Velocity> _tas;
+	private Amount<Velocity> _cas;
+	private Amount<Velocity> _eas;
 	private Amount<Length> _altitude;
 
-
 	// Return density ratio, pressure ratio, temperature ratio, ecc ...
-	private StdAtmos1976 atmosphere;
+	private StdAtmos1976 _atmosphere;
 	private Amount<VolumetricDensity> _densityCurrent;
-	private Amount<Pressure> 
-	_staticPressure, _dynamicPressure, _stagnationPressure, 
-	_maxDeltaPressure, _maxDynamicPressure;
-
+	private Amount<Pressure> _staticPressure;
+	private Amount<Pressure> _dynamicPressure;
+	private Amount<Pressure> _stagnationPressure; 
+	private Amount<Pressure> _maxDeltaPressure;
+	private Amount<Pressure> _maxDynamicPressure;
 	private Amount<DynamicViscosity> _mu;
 	private Double _machTransonicThreshold = 0.7;
-	private Amount<Temperature> _staticTemperature, _stagnationTemperature;
+	private Amount<Temperature> _staticTemperature;
+	private Amount<Temperature> _stagnationTemperature;
 
-
-
-	public OperatingConditions() {
-
-		_alphaCurrent = Amount.valueOf(Math.toRadians(5), SI.RADIAN);
-		_machCurrent = 0.43;
-		_altitude = Amount.valueOf(6000.0, SI.METER);
+	//============================================================================================
+	// Builder pattern 
+	//============================================================================================
+	public static class OperatingConditionsBuilder {
 		
-		_alpha = new Double[]{0., 1., 2., 3., 4., 5., 6.};
-		_cL = new Double[]{0., 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4};
+		// required parameters
+		private String __id;
 
-		calculate();
+		// optional parameters ... defaults
+		// ...
+		private Double[] __alpha;
+		private Double[] __cL;
+		private Amount<Angle> __alphaCurrent;
+		private Double __machCurrent;
+		private Amount<Length> __altitude;
+		
+		public OperatingConditionsBuilder id(String id) {
+			this.__id = id;
+			return this;
+		}
+		
+		public OperatingConditionsBuilder alphaArray(Double[] alpha) {
+			this.__alpha = alpha;
+			return this;
+		}
+		
+		public OperatingConditionsBuilder cLArray(Double[] cLArray) {
+			this.__cL = cLArray;
+			return this;
+		}
+		
+		public OperatingConditionsBuilder alphaCurrent(Amount<Angle> alphaCurrent) {
+			this.__alphaCurrent = alphaCurrent; 
+			return this;
+		}
+		
+		public OperatingConditionsBuilder machCurrent (Double machCurrent) {
+			this.__machCurrent = machCurrent;
+			return this;
+		}
+		
+		public OperatingConditionsBuilder altitude (Amount<Length> altitude) {
+			this.__altitude = altitude;
+			return this;
+		}
+		
+		public OperatingConditionsBuilder(String id) {
+			this.__id = id;
+			initializeDefaultVariables();
+		}
+		
+		private void initializeDefaultVariables() {
+			
+			this.__alphaCurrent = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+			this.__machCurrent = 0.0;
+			this.__altitude = Amount.valueOf(0.0, SI.METER);
+			this.__alpha = new Double[] {0.0,2.0,4.0,6.0,8.0,10.0,12.0,14.0,16.0,18.0,20.0,22.0,24.0};
+			this.__cL = new Double[] {0.0,0.2,0.4,0.6,0.8,1.0,1.2,1.4,1.6,1.8,2.0,2.2,2.4};
+			
+		}
+		
+		public OperatingConditions build() {
+			return new OperatingConditions(this);
+		}
+		
 	}
+	
+	private OperatingConditions(OperatingConditionsBuilder builder) {
+		
+		this._id = builder.__id;
+		this._alphaCurrent = builder.__alphaCurrent;
+		this._machCurrent = builder.__machCurrent;
+		this._altitude = builder.__altitude;
+		this._alpha = builder.__alpha;
+		this._cL = builder.__cL;
+		
+		calculate();
+		
+	}
+	
+	//============================================================================================
+	// End of the builder pattern 
+	//============================================================================================
 
+	public static OperatingConditions importFromXML(String pathToXML) {
+		
+		JPADXmlReader reader = new JPADXmlReader(pathToXML);
+
+		System.out.println("Reading operating conditions data ...");
+		
+		String id = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@id");
+		
+		Amount<Angle> alphaCurrent = Amount.valueOf(
+				Double.valueOf(
+						reader.getXMLPropertyByPath(
+								"//operating_conditions/alpha_current"
+								)
+						),
+				NonSI.DEGREE_ANGLE)
+				.to(SI.RADIAN);
+		
+		Double machCurrent = Double.valueOf(
+				reader.getXMLPropertyByPath(
+						"//operating_conditions/mach_current"
+						)
+				);
+		
+		Amount<Length> altitude = reader.getXMLAmountLengthByPath("//operating_conditions/altitude");
+		
+		List<String> alphaArrayList = JPADXmlReader.readArrayFromXML(
+				reader.getXMLPropertiesByPath(
+						"//operating_conditions/alpha_array"
+						).get(0)
+				);
+		Double[] alphaArray = new Double[alphaArrayList.size()];
+		for(int i=0; i<alphaArrayList.size(); i++)
+			alphaArray[i] = Double.valueOf(alphaArrayList.get(i));
+		
+		List<String> cLArrayList = JPADXmlReader.readArrayFromXML(
+				reader.getXMLPropertiesByPath(
+						"//operating_conditions/lift_coefficients_array"
+						).get(0)
+				);
+		Double[] cLArray = new Double[cLArrayList.size()];
+		for(int i=0; i<cLArrayList.size(); i++)
+			cLArray[i] = Double.valueOf(cLArrayList.get(i));
+		
+		OperatingConditions theConditions = new OperatingConditionsBuilder(id)
+				.alphaCurrent(alphaCurrent)
+				.machCurrent(machCurrent)
+				.altitude(altitude)
+				.alphaArray(alphaArray)
+				.cLArray(cLArray)
+				.build();
+				
+		return theConditions;
+		
+	}
+	
+	@Override
+	public String toString() {
+		
+		MyConfiguration.customizeAmountOutput();
+
+		StringBuilder sb = new StringBuilder()
+				.append("\t-------------------------------------\n")
+				.append("\tOperating Conditions\n")
+				.append("\t-------------------------------------\n")
+				.append("\tID: '" + _id + "' \n")
+				.append("\t.....................................\n")
+				.append("\tAltitude: " + _altitude + "\n")
+				.append("\tMach current: " + _machCurrent + "\n")
+				.append("\tAlpha current: " + _alphaCurrent + "\n")
+				.append("\tAlpha array: " + Arrays.toString(_alpha) + "\n")
+				.append("\tLift coefficients array: " + Arrays.toString(_cL) + "\n")
+				.append("\t.....................................\n")
+				.append("\tCurrent pressure coefficient: " + _pressureCoefficientCurrent + "\n")
+				.append("\tCurrent density: " + _densityCurrent + "\n")
+				.append("\tCurrent static pressure: " + _staticPressure + "\n")
+				.append("\tCurrent dynamic pressure: " + _dynamicPressure + "\n")
+				.append("\tCurrent stagnation pressure: " + _stagnationPressure + "\n")
+				.append("\tCurrent maximum delta pressure outside-inside: " + _maxDeltaPressure + "\n")
+				.append("\tCurrent static temperature: " + _staticTemperature + "\n")
+				.append("\tCurrent stagnation temperature: " + _stagnationTemperature + "\n")
+				.append("\tCurrent speed (TAS): " + _tas + "\n")
+				.append("\tCurrent speed (CAS): " + _cas + "\n")
+				.append("\tCurrent speed (EAS): " + _eas + "\n")
+				.append("\tCurrent dynamic viscosity: " + _mu + "\n")
+				.append("\t.....................................\n")
+				;
+				
+		return sb.toString();
+	}
+	
 	/** 
 	 * Evaluate all dependent parameters
 	 * @author Lorenzo Attanasio
 	 */
 	public void calculate() {
 
-		atmosphere = new StdAtmos1976(_altitude.getEstimatedValue());
+		_atmosphere = new StdAtmos1976(_altitude.getEstimatedValue());
 		_pressureCoefficientCurrent = PressureCalc.calculatePressureCoefficient(_machCurrent);
 
-		_densityCurrent = Amount.valueOf(atmosphere.getDensity()*1000, VolumetricDensity.UNIT);
+		_densityCurrent = Amount.valueOf(_atmosphere.getDensity()*1000, VolumetricDensity.UNIT);
 
-		_staticPressure = Amount.valueOf(atmosphere.getPressure(), SI.PASCAL);
+		_staticPressure = Amount.valueOf(_atmosphere.getPressure(), SI.PASCAL);
 		_dynamicPressure = Amount.valueOf(
 				PressureCalc.calculateDynamicPressure(_machCurrent, _staticPressure.getEstimatedValue())
 				, SI.PASCAL);
 		_stagnationPressure = _dynamicPressure.times(_pressureCoefficientCurrent).plus(_staticPressure);
 
-		_tas = Amount.valueOf(_machCurrent * atmosphere.getSpeedOfSound(), SI.METERS_PER_SECOND);
+		_tas = Amount.valueOf(_machCurrent * _atmosphere.getSpeedOfSound(), SI.METERS_PER_SECOND);
 		_cas = Amount.valueOf(
 				SpeedCalc.calculateCAS(_stagnationPressure.getEstimatedValue(), _staticPressure.getEstimatedValue())
 				, SI.METERS_PER_SECOND);
-		_eas = Amount.valueOf(Math.sqrt(atmosphere.getDensityRatio())
+		_eas = Amount.valueOf(Math.sqrt(_atmosphere.getDensityRatio())
 				* SpeedCalc.calculateIsentropicVelocity(_stagnationPressure.getEstimatedValue(), 
 						_staticPressure.getEstimatedValue(), _densityCurrent.getEstimatedValue())
 						, SI.METERS_PER_SECOND);
 
-		_staticTemperature = Amount.valueOf(atmosphere.getTemperature(), SI.KELVIN);
+		_staticTemperature = Amount.valueOf(_atmosphere.getTemperature(), SI.KELVIN);
 		_stagnationTemperature = _staticTemperature
 				.times(TemperatureCalc.calculateStagnationTemperatureToStaticTemperatureRatio(_machCurrent));
 
@@ -98,15 +273,15 @@ public class OperatingConditions {
 						- ((new StdAtmos1976(2000.)).getPressure()))
 						, SI.PASCAL);
 
-		double _mu0 = 17.33e-6; // Pa*s, grc.nasa.gov/WWW/BGH/Viscosity.html
+		double mu0 = 17.33e-6; // Pa*s, grc.nasa.gov/WWW/BGH/Viscosity.html
 		double T0 = 288.166667; // K
 		double C = 110.4; // K
 
 		_mu = Amount.valueOf(
-				_mu0*((T0 + C)
-						/ (atmosphere.getTemperature() + C))
+				mu0*((T0 + C)
+						/ (_atmosphere.getTemperature() + C))
 						* Math.pow(
-								atmosphere.getTemperature()/T0, 
+								_atmosphere.getTemperature()/T0, 
 								3/2), 
 								DynamicViscosity.UNIT);
 
@@ -130,85 +305,83 @@ public class OperatingConditions {
 		return re;
 	}
 
-
 	// GETTERS AND SETTERS ---------------------------------------------------------
 
-	public Amount<Pressure> get_maxDeltaPressure() {
+	public Amount<Pressure> getMaxDeltaPressure() {
 		return _maxDeltaPressure;
 	}
 
-	public Double get_machCurrent() {
+	public Double getMachCurrent() {
 		return _machCurrent;
 	}
 
-	public void set_machCurrent(Double _mach) {
+	public void setMachCurrent(Double _mach) {
 		this._machCurrent = _mach;
 	}
 
-	public Double get_machTransonicThreshold() {
+	public Double getMachTransonicThreshold() {
 		return _machTransonicThreshold;
 	}
 
-	public void set_machTransonicThreshold(Double _machTransonicThreshold) {
+	public void setMachTransonicThreshold(Double _machTransonicThreshold) {
 		this._machTransonicThreshold = _machTransonicThreshold;
 	}
 
-	public Amount<VolumetricDensity> get_densityCurrent() {
+	public Amount<VolumetricDensity> getDensityCurrent() {
 		return _densityCurrent;
 	}
 
-	public void set_rho(Amount<VolumetricDensity> _rho) {
+	public void setRho(Amount<VolumetricDensity> _rho) {
 		this._densityCurrent = _rho;
 	}
 
-	public Amount<DynamicViscosity> get_mu() {
+	public Amount<DynamicViscosity> getMu() {
 		return _mu;
 	}
 
-	public void set_mu(Amount<DynamicViscosity> _mu) {
+	public void setMu(Amount<DynamicViscosity> _mu) {
 		this._mu = _mu;
 	}
 
-	public Double[] get_alpha() {
+	public Double[] getAlpha() {
 		return _alpha;
 	}
 
-	public void set_alpha(Double _alpha[]) {
+	public void setAlpha(Double _alpha[]) {
 		this._alpha = _alpha;
 	}
 
-	public Amount<Length> get_altitude() {
+	public Amount<Length> getAltitude() {
 		return _altitude;
 	}
 
-	public void set_altitude(Amount<Length> _altitude) {
+	public void setAltitude(Amount<Length> _altitude) {
 		this._altitude = _altitude;
 	}
 
-	public Amount<Velocity> get_tas() {
+	public Amount<Velocity> getTAS() {
 		return _tas;
 	}
 
-	public void set_tas(Amount<Velocity> _speed) {
+	public void setTAS(Amount<Velocity> _speed) {
 		this._tas = _speed;
 	}
 
-	public Double[] get_cL() {
+	public Double[] getCL() {
 		return _cL;
 	}
 
-
-	public Amount<Pressure> get_staticPressure() {
+	public Amount<Pressure> getStaticPressure() {
 		return _staticPressure;
 	}
 
 
-	public Amount<Temperature> get_staticTemperature() {
+	public Amount<Temperature> getStaticTemperature() {
 		return _staticTemperature;
 	}
 
 
-	public void set_temperature(Amount<Temperature> _temperature) {
+	public void setTemperature(Amount<Temperature> _temperature) {
 		this._staticTemperature = _temperature;
 	}
 
@@ -217,63 +390,56 @@ public class OperatingConditions {
 		return new StdAtmos1976(altitude);
 	}
 
-	public void set_density(Amount<VolumetricDensity> _density) {
+	public void setDensity(Amount<VolumetricDensity> _density) {
 		this._densityCurrent = _density;
 	}
 
-	public void set_pressure(Amount<Pressure> _pressure) {
+	public void setPressure(Amount<Pressure> _pressure) {
 		this._staticPressure = _pressure;
 	}
 
-	public Amount<Pressure> get_maxDynamicPressure() {
+	public Amount<Pressure> getMaxDynamicPressure() {
 		return _maxDynamicPressure;
 	}
 
-
-	public Amount<Angle> get_alphaCurrent() {
+	public Amount<Angle> getAlphaCurrent() {
 		return _alphaCurrent;
 	}
 
-
-	public void set_alphaCurrent(Amount<Angle> _alphaCurrent) {
+	public void setAlphaCurrent(Amount<Angle> _alphaCurrent) {
 		this._alphaCurrent = _alphaCurrent;
 	}
 
-
-	public Amount<Velocity> get_eas() {
+	public Amount<Velocity> getEAS() {
 		return _eas;
 	}
 
-
-	public Double get_pressureCoefficientCurrent() {
+	public Double getPressureCoefficientCurrent() {
 		return _pressureCoefficientCurrent;
 	}
 
-
-	public Amount<Temperature> get_stagnationTemperature() {
+	public Amount<Temperature> getStagnationTemperature() {
 		return _stagnationTemperature;
 	}
 
-
-	public Amount<Pressure> get_stagnationPressure() {
+	public Amount<Pressure> getStagnationPressure() {
 		return _stagnationPressure;
 	}
 
-
-	public Amount<Velocity> get_cas() {
+	public Amount<Velocity> getCAS() {
 		return _cas;
 	}
 
-
-	public Amount<Pressure> get_dynamicPressure() {
+	public Amount<Pressure> getDynamicPressure() {
 		return _dynamicPressure;
 	}
 
-	public static String getId() {
+	public String getId() {
 		return _id;
 	}
 
-
-
+	public void setId(String id) {
+		this._id = id;
+	}
+	
 } // end of class
-

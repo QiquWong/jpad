@@ -204,9 +204,9 @@ public class Test_sandbox2VC_Costs {
 					aeroDatabaseReader,
 					highLiftDatabaseReader);
 					
-			OperatingConditions operatingConditions = new OperatingConditions();
-			operatingConditions.set_altitude(Amount.valueOf(11000, SI.METER));
-			operatingConditions.set_tas(Amount.valueOf(473, NonSI.KNOT));
+			OperatingConditions operatingConditions = new OperatingConditions.OperatingConditionsBuilder("The Operating Conditions").build();
+			operatingConditions.setAltitude(Amount.valueOf(11000, SI.METER));
+			operatingConditions.setTAS(Amount.valueOf(473, NonSI.KNOT));
 			Amount<Mass> OEM = Amount.valueOf(141056, SI.KILOGRAM);
 			Amount<Mass> MTOM = Amount.valueOf(536164.22, NonSI.POUND);
 			theAircraft.getTheAnalysisManager().getTheWeights().setOperatingEmptyMass(OEM);

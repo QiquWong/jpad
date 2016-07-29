@@ -443,23 +443,23 @@ public class JPADDataWriter {
 	}
 
 	private void writeOperatingConditionsInput(OperatingConditions conditions, Element operatingNode) {
-		writeInputNode("Altitude", conditions.get_altitude(), operatingNode, true);
-		writeInputNode("Mach_number", conditions.get_machCurrent(), operatingNode, true);		
+		writeInputNode("Altitude", conditions.getAltitude(), operatingNode, true);
+		writeInputNode("Mach_number", conditions.getMachCurrent(), operatingNode, true);		
 	}
 
 	private void writeOperatingConditionsOutput(OperatingConditions conditions, Element analysisNode){
 		Element analysis = JPADStaticWriteUtils.addSubElement(doc, _sheet, "Operating_Conditions", analysisNode);
-		writeOutputNode("Static_Pressure", conditions.get_staticPressure(),  analysis);
-		writeOutputNode("Dynamic_Pressure", conditions.get_dynamicPressure(),  analysis);
-		writeOutputNode("Stagnation_Pressure", conditions.get_stagnationPressure(),  analysis);
-		writeOutputNode("Cabin_to_outside_pressure_differential", conditions.get_maxDeltaPressure(),  analysis);
-		writeOutputNode("Density", conditions.get_densityCurrent(),  analysis);
-		writeOutputNode("Static_Temperature", conditions.get_staticTemperature(),  analysis);
-		writeOutputNode("Stagnation_Temperature", conditions.get_stagnationTemperature(),  analysis);
-		writeOutputNode("Dynamic_Viscosity", conditions.get_mu(),  analysis);
-		writeOutputNode("Equivalent_AirSpeed", conditions.get_eas(), analysis);
-		writeOutputNode("Calibrated_AirSpeed", conditions.get_cas(), analysis);
-		writeOutputNode("True_AirSpeed", conditions.get_tas(), analysis);
+		writeOutputNode("Static_Pressure", conditions.getStaticPressure(),  analysis);
+		writeOutputNode("Dynamic_Pressure", conditions.getDynamicPressure(),  analysis);
+		writeOutputNode("Stagnation_Pressure", conditions.getStagnationPressure(),  analysis);
+		writeOutputNode("Cabin_to_outside_pressure_differential", conditions.getMaxDeltaPressure(),  analysis);
+		writeOutputNode("Density", conditions.getDensityCurrent(),  analysis);
+		writeOutputNode("Static_Temperature", conditions.getStaticTemperature(),  analysis);
+		writeOutputNode("Stagnation_Temperature", conditions.getStagnationTemperature(),  analysis);
+		writeOutputNode("Dynamic_Viscosity", conditions.getMu(),  analysis);
+		writeOutputNode("Equivalent_AirSpeed", conditions.getEAS(), analysis);
+		writeOutputNode("Calibrated_AirSpeed", conditions.getCas(), analysis);
+		writeOutputNode("True_AirSpeed", conditions.getTas(), analysis);
 		//		writeBlock(Operating_Conditions, "Reynolds_Number_Fuselage_lenght", _theAircraft.get_fuselage().get_reynolds());
 		//		writeBlock(Operating_Conditions, "Reynolds_Number_MAC", formatter.format(BigDecimal.valueOf(conditions.calculateRe(_theAircraft.get_wing().get_meanAerodChordCk().getEstimatedValue(), _theAircraft.get_wing().get_roughness().getEstimatedValue()))));
 		JPADStaticWriteUtils.writeAllArraysToXls(_sheet, _xlsArraysDescription, _xlsArraysList, _xlsArraysUnit);

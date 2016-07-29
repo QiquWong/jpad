@@ -42,7 +42,7 @@ import standaloneutils.customdata.CenterOfGravity;
  * @author Lorenzo Attanasio, Vittorio Trifari
  *
  */
-public class ACBalanceManager extends ACCalculatorManager {
+public class ACBalanceManager extends ACCalculatorManager implements IACBalanceManager {
 
 	private String _id;
 	private static Aircraft _theAircraft;
@@ -80,7 +80,6 @@ public class ACBalanceManager extends ACCalculatorManager {
 
 		// required parameters
 		private String __id;
-		private Aircraft __theAircraft;
 
 		// optional parameters ... defaults
 		// ...
@@ -104,11 +103,6 @@ public class ACBalanceManager extends ACCalculatorManager {
 			return this;
 		}
 
-		public ACBalanceManagerBuilder aircraft (Aircraft theAircraft) {
-			this.__theAircraft = theAircraft;
-			return this;
-		}
-		
 		public ACBalanceManagerBuilder maximumTakeOffMass (Amount<Mass> maximumTakeOffMass) {
 			this.__maximumTakeOffMass = maximumTakeOffMass;
 			return this;

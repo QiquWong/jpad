@@ -136,8 +136,8 @@ public class PayloadRangeCalc{
 
 		surface = theAircraft.getWing().getSurface();
 		ar = theAircraft.getWing().getAspectRatio();
-		currentMach = theConditions.get_machCurrent();
-		altitude = theConditions.get_altitude().getEstimatedValue();
+		currentMach = theConditions.getMachCurrent();
+		altitude = theConditions.getAltitude().getEstimatedValue();
 		sweepLEEquivalent = theAircraft.getWing().getSweepLEEquivalent(false);
 		sweepHalfChordEquivalent = theAircraft.getWing().getSweepHalfChordEquivalent(false);
 		
@@ -157,7 +157,7 @@ public class PayloadRangeCalc{
 		cd0 = theAircraft.getTheAnalysisManager().getTheAerodynamics().calculateCD0Total();
 		oswald = theAircraft.getTheAnalysisManager().getTheAerodynamics().calculateOswald(currentMach, MethodEnum.HOWE);
 		cl = LiftCalc.calcCLatAlphaLinearDLR(
-				theConditions.get_alphaCurrent().getEstimatedValue(),
+				theConditions.getAlphaCurrent().getEstimatedValue(),
 				theAircraft.getWing().getAspectRatio()
 				);
 	

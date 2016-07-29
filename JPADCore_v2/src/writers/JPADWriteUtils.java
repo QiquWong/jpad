@@ -67,7 +67,7 @@ public class JPADWriteUtils {
 		try {
 
 			JPADGlobalData.setTheXmlTree(new MyXmlTree());
-			JPADGlobalData.getTheXmlTree().add(conditions, 1, "Operating_Conditions", OperatingConditions.getId());
+			JPADGlobalData.getTheXmlTree().add(conditions, 1, "Operating_Conditions", conditions.getId());
 			JPADGlobalData.getTheXmlTree().add(aircraft.getCabinConfiguration(), 2, "Configuration", aircraft.getCabinConfiguration().getId());
 			JPADGlobalData.getTheXmlTree().add(aircraft.getTheAnalysisManager().getTheWeights(), 2, "Weights", ACWeightsManager.getId());
 			JPADGlobalData.getTheXmlTree().add(aircraft.getTheAnalysisManager().getTheBalance(), 2, "Balance", ACBalanceManager.getId());

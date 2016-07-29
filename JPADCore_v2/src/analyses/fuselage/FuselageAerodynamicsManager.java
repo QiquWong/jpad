@@ -119,7 +119,7 @@ public class FuselageAerodynamicsManager extends analyses.analysismodel.analysis
 						_len_F.getEstimatedValue(), 
 						_roughness.getEstimatedValue()
 						),
-				_theOperatingConditions.get_machCurrent().doubleValue(), 
+				_theOperatingConditions.getMachCurrent().doubleValue(), 
 				0.
 				);
 

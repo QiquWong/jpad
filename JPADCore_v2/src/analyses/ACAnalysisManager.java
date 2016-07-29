@@ -34,7 +34,7 @@ import standaloneutils.atmosphere.AtmosphereCalc;
  * @author Lorenzo Attanasio, Vittorio Trifari
  *
  */
-public class ACAnalysisManager {
+public class ACAnalysisManager implements IACAnalysisManager {
 
 	private String _id;
 	private Aircraft _theAircraft;
@@ -371,8 +371,6 @@ public class ACAnalysisManager {
 						);
 				}
 				
-//		updateGeometry(aircraft);
-
 		if (Arrays.asList(type).contains(AnalysisTypeEnum.WEIGHTS)) {
 			calculateWeights(aircraft); 
 			_executedAnalysesMap.put(AnalysisTypeEnum.WEIGHTS, true);
@@ -400,106 +398,6 @@ public class ACAnalysisManager {
 		
 	} // end of constructor
 
-//	/** 
-//	 * Evaluate dependent geometric parameters
-//	 */
-//	public void updateGeometry(Aircraft aircraft) {
-//
-//		// Fuselage
-//		if(aircraft.getFuselage() != null){
-//			System.out.println("Updating fuselage geometry ...");
-//			aircraft.getFuselage().getFuselageCreator().calculateGeometry();
-//			aircraft.getFuselage().getFuselageCreator().checkGeometry();
-//			aircraft.setSWetTotal(aircraft.getFuselage().getsWet());
-//		}
-//
-//		// Wing
-//		if(aircraft.getWing() != null){
-//			System.out.println("Updating wing geometry ...");
-//			aircraft.getWing().getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.WING, Boolean.TRUE);
-//			aircraft.setSWetTotal(aircraft.getExposedWing().getLiftingSurfaceCreator().getSurfaceWetted());
-//		}
-//		//ExposedWing
-//		if(aircraft.getExposedWing() != null){
-//		aircraft.getExposedWing().getSurface(aircraft.getExposedWing().getSurface());
-//		aircraft.getExposedWing().setSpan(Amount.valueOf(aircraft.getWing().getSpan().getEstimatedValue()-
-//				aircraft.getFuselage().getWidthAtX(aircraft.getWing()
-//						.get_xLEMacActualBRF().getEstimatedValue()), SI.METER));
-//		aircraft.getExposedWing().set_semispan(
-//				Amount.valueOf(
-//						(aircraft.getExposedWing().get_span().getEstimatedValue()/2),SI.METER)
-//				);
-//		aircraft.getExposedWing().set_aspectRatio(
-//				(Math.pow(aircraft.getExposedWing().get_span().getEstimatedValue(),2))
-//				/(aircraft.getExposedWing().get_surface().getEstimatedValue()));
-//		//aircraft.get_exposedWing().updateAirfoilsGeometryEquivalentWing(aircraft);
-//		}
-//
-//		// Htail
-//		if(aircraft.getHTail() != null){
-//			System.out.println("Updating HTail geometry ...");
-//			aircraft.getHTail().calculateGeometry();
-//			//			aircraft.get_HTail().updateAirfoilsGeometry();
-//			aircraft.getHTail().getGeometry().calculateAll();
-//			aircraft.setSWetTotal(aircraft.getHTail().get_surfaceWettedExposed().getEstimatedValue());
-//		}
-//
-//		// Vtail
-//		if(aircraft.getVTail() != null){
-//			System.out.println("Updating VTail geometry ...");
-//			aircraft.getVTail().calculateGeometry();
-//			//			aircraft.get_VTail().updateAirfoilsGeometry();
-//			aircraft.getVTail().getGeometry().calculateAll();
-//			aircraft.setSWetTotal(aircraft.getVTail().get_surfaceWettedExposed().getEstimatedValue());
-//		}
-//
-//		// Canard
-//		if(aircraft.getCanard() != null){
-//			System.out.println("Updating Canard geometry ...");
-//			aircraft.getCanard().calculateGeometry();
-//			//			aircraft.get_Canard().updateAirfoilsGeometry();
-//			aircraft.getCanard().getGeometry().calculateAll();
-//			aircraft.setSWetTotal(aircraft.getCanard().get_surfaceWettedExposed().getEstimatedValue());
-//		}
-//
-//		// Nacelle
-//		if(aircraft.getNacelles() != null){
-//			aircraft.getNacelles().calculateSurfaceWetted();
-//			aircraft.setSWetTotal(aircraft.getNacelles().getSurfaceWetted());
-//		}
-//
-//		// Fuel tank
-//		if(aircraft.getFuelTank() != null){
-//			aircraft.getFuelTank().calculateGeometry(aircraft.getWing());
-//		}
-//
-//		// Evaluate thrust output
-//		if(aircraft.getPowerPlant() != null){
-//			aircraft.getPowerPlant().calculateDerivedVariables();
-//		}
-//
-//		if(aircraft!= null && _theOperatingConditions!=null){
-//
-//			aircraft.getThePerformance().calculateSpeeds();
-//
-//			aircraft.getTheWeights().calculateDependentVariables(aircraft);
-//			aircraft.getTheBalance().calculateBalance(aircraft);
-//
-//			if(aircraft.getHTail() != null){
-//				aircraft.getHTail().calculateACwACdistance(aircraft);
-//			}
-//
-//			if(aircraft.getVTail() != null){
-//				aircraft.getVTail().calculateACwACdistance(aircraft);
-//			}
-//
-//			// Calculate dependent variables
-//			aircraft.getCabinConfiguration().calculateDependentVariables();
-//		}
-//
-//		_executedAnalysesMap.put(AnalysisTypeEnum.GEOMETRY, true);
-//	}
-	
 	public void calculateWeights(Aircraft aircraft) {
 
 		// Choose methods to use for each component

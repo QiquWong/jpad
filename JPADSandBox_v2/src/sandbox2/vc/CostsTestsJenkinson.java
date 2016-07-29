@@ -204,8 +204,8 @@ public class CostsTestsJenkinson {
 					aeroDatabaseReader,
 					highLiftDatabaseReader);
 					
-			OperatingConditions operatingConditions = new OperatingConditions();
-			operatingConditions.set_altitude(Amount.valueOf(11000, SI.METER));
+			OperatingConditions operatingConditions = new OperatingConditions.OperatingConditionsBuilder("The operating conditions").build();
+			operatingConditions.setAltitude(Amount.valueOf(11000, SI.METER));
 //			operatingConditions.set_tas(Amount.valueOf(472, NonSI.KNOT));
 
 			// Variables setting
