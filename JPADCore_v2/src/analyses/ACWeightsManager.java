@@ -1100,7 +1100,7 @@ public class ACWeightsManager extends ACCalculatorManager implements IACWeightsM
 	 * @param methodsMap
 	 */
 	public void calculateAllMasses(Aircraft aircraft, 
-			Map <ComponentEnum, List<MethodEnum>> methodsMap) {
+			Map <ComponentEnum, MethodEnum> methodsMap) {
 
 		System.out.println("\n-----------------------------------------------");
 		System.out.println("----- WEIGHT ESTIMATION PROCEDURE STARTED -----");
@@ -1206,25 +1206,25 @@ public class ACWeightsManager extends ACCalculatorManager implements IACWeightsM
 
 	public void calculateStructuralMass(
 			Aircraft aircraft, 
-			Map <ComponentEnum, List<MethodEnum>> methodsMap) {
+			Map <ComponentEnum, MethodEnum> methodsMap) {
 
 		if(aircraft.getFuselage() != null)
-			aircraft.getFuselage().calculateMass(aircraft);
+			aircraft.getFuselage().calculateMass(aircraft, methodsMap);
 
 		if(aircraft.getWing() != null)
-			aircraft.getWing().calculateMass(aircraft);
+			aircraft.getWing().calculateMass(aircraft, ComponentEnum.WING, methodsMap);
 		if(aircraft.getHTail() != null)
-			aircraft.getHTail().calculateMass(aircraft);
+			aircraft.getHTail().calculateMass(aircraft, ComponentEnum.HORIZONTAL_TAIL, methodsMap);
 		if(aircraft.getVTail() != null)
-			aircraft.getVTail().calculateMass(aircraft);
+			aircraft.getVTail().calculateMass(aircraft, ComponentEnum.VERTICAL_TAIL, methodsMap);
 		if(aircraft.getCanard() != null)
-			aircraft.getCanard().calculateMass(aircraft);
+			aircraft.getCanard().calculateMass(aircraft, ComponentEnum.CANARD, methodsMap);
 		
 		if(aircraft.getNacelles() != null)
-			aircraft.getNacelles().calculateMass(aircraft);
+			aircraft.getNacelles().calculateMass(aircraft, methodsMap);
 
 		if(aircraft.getLandingGears() != null)
-			aircraft.getLandingGears().calculateMass(aircraft);
+			aircraft.getLandingGears().calculateMass(aircraft, methodsMap);
 
 		if(aircraft.getSystems() != null)
 			aircraft.getSystems().calculateMass(aircraft, MethodEnum.TORENBEEK_2013);

@@ -17,6 +17,8 @@ import aircraft.components.nacelles.NacelleCreator.MountingPosition;
 import aircraft.components.powerplant.Engine;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
+import configuration.enumerations.ComponentEnum;
+import configuration.enumerations.MethodEnum;
 import standaloneutils.customdata.CenterOfGravity;
 
 /** 
@@ -231,7 +233,7 @@ public class Nacelles implements INacelles {
 	 * @author Lorenzo Attanasio
 	 */
 	@Override
-	public void calculateMass(Aircraft theAircraft) {
+	public void calculateMass(Aircraft theAircraft, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
 
 		_totalMass = Amount.valueOf(0., SI.KILOGRAM);
 		_massReference = Amount.valueOf(0., SI.KILOGRAM);
@@ -239,6 +241,12 @@ public class Nacelles implements INacelles {
 
 		for(int i=0; i < _nacellesNumber; i++) {
 			_nacellesList.get(i).getWeights().calculateAll();
+			if(methodsMapWeights.get(ComponentEnum.NACELLE) != null)
+				_nacellesList.get(i).getWeights().setMassEstimated(
+						_nacellesList.get(i).getWeights().getMassMap().get(
+								methodsMapWeights.get(ComponentEnum.NACELLE)
+								)
+						);
 			_massList.add(_nacellesList.get(i).getWeights().getMassEstimated());
 			_totalMass = _totalMass.plus(_nacellesList.get(i).getWeights().getMassEstimated());
 			_massReference = _massReference.plus(_nacellesList.get(i).getWeights().getMassReference());

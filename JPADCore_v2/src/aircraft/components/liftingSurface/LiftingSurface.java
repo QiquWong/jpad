@@ -198,7 +198,7 @@ public class LiftingSurface implements ILiftingSurface {
 	}
 	
 	@Override
-	public void calculateMass(Aircraft aircraft) {
+	public void calculateMass(Aircraft aircraft, ComponentEnum liftingSurfaceType, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
 		calculateMass(aircraft, MethodEnum.KROO);
 		calculateMass(aircraft, MethodEnum.JENKINSON);
 		calculateMass(aircraft, MethodEnum.TORENBEEK_2013);
@@ -209,6 +209,10 @@ public class LiftingSurface implements ILiftingSurface {
 //		calculateMass(aircraft, MethodEnum.TORENBEEK_1976);
 		calculateMass(aircraft, MethodEnum.SADRAY);
 		calculateMass(aircraft, MethodEnum.ROSKAM);
+		
+		if(methodsMapWeights.get(liftingSurfaceType) != null) 
+			_massEstimated = _massMap.get(methodsMapWeights.get(liftingSurfaceType));
+		
 	}
 	
 	/** 

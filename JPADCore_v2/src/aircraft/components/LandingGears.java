@@ -18,6 +18,7 @@ import org.jscience.physics.amount.Amount;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
+import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;
@@ -334,11 +335,15 @@ public class LandingGears implements ILandingGear {
 	}
 	
 	@Override
-	public void calculateMass(Aircraft aircraft) {
+	public void calculateMass(Aircraft aircraft, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
 		calculateMass(aircraft, MethodEnum.ROSKAM);
 		calculateMass(aircraft, MethodEnum.STANFORD);
 		calculateMass(aircraft, MethodEnum.TORENBEEK_1982);
 		calculateMass(aircraft, MethodEnum.TORENBEEK_2013);
+		
+		if (methodsMapWeights.get(ComponentEnum.LANDING_GEAR) != null)
+			_estimatedMass = _massMap.get(methodsMapWeights.get(ComponentEnum.LANDING_GEAR));
+		
 	}
 
 	@Override

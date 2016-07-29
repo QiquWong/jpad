@@ -13,7 +13,9 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import aircraft.components.Aircraft;
+import analyses.ACAnalysisManager;
 import analyses.ACWeightsManager;
+import analyses.OperatingConditions;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ComponentEnum;
@@ -31,6 +33,14 @@ class MyArgumentsWeightsAnalysis {
 			usage = "my input file")
 	private File _inputFile;
 
+	@Option(name = "-ia", aliases = { "--input-analyses" }, required = true,
+			usage = "analyses input file")
+	private File _inputFileAnalyses;
+	
+	@Option(name = "-ioc", aliases = { "--input-operating-condition" }, required = true,
+			usage = "operating conditions input file")
+	private File _inputFileOperatingCondition;
+	
 	@Option(name = "-da", aliases = { "--dir-airfoils" }, required = true,
 			usage = "airfoil directory path")
 	private File _airfoilDirectory;
@@ -66,11 +76,7 @@ class MyArgumentsWeightsAnalysis {
 	@Option(name = "-dc", aliases = { "--dir-costs" }, required = true,
 			usage = "costs directory path")
 	private File _costsDirectory;
-	
-	@Option(name = "-iw", aliases = { "--input-weights" }, required = true,
-			usage = "weights input path")
-	private File _weigthsInputFile;
-	
+		
 	// receives other command line parameters than options
 	@Argument
 	public List<String> arguments = new ArrayList<String>();
@@ -79,6 +85,14 @@ class MyArgumentsWeightsAnalysis {
 		return _inputFile;
 	}
 
+	public File getInputFileAnalyses() {
+		return _inputFileAnalyses;
+	}
+	
+	public File getOperatingConditionsInputFile() {
+		return _inputFileOperatingCondition;
+	}
+	
 	public File getAirfoilDirectory() {
 		return _airfoilDirectory;
 	}
@@ -115,9 +129,6 @@ class MyArgumentsWeightsAnalysis {
 		return _costsDirectory;
 	}
 	
-	public File getWeightsInputFile() {
-		return _weigthsInputFile;
-	}
 }
 
 public class WeightsTest extends Application {
@@ -172,10 +183,13 @@ public class WeightsTest extends Application {
 			WeightsTest.theCmdLineParser.parseArgument(args);
 			
 			String pathToXML = va.getInputFile().getAbsolutePath();
-			System.out.println("INPUT ===> " + pathToXML);
+			System.out.println("AIRCRAFT INPUT ===> " + pathToXML);
 
-			String pathToXMLWeights = va.getWeightsInputFile().getAbsolutePath();
-			System.out.println("WEIGHTS INPUT ===> " + pathToXMLWeights);
+			String pathToAnalysesXML = va.getInputFileAnalyses().getAbsolutePath();
+			System.out.println("ANALYSES INPUT ===> " + pathToAnalysesXML);
+			
+			String pathToOperatingConditionsXML = va.getOperatingConditionsInputFile().getAbsolutePath();
+			System.out.println("OPERATING CONDITIONS INPUT ===> " + pathToOperatingConditionsXML);
 			
 			String dirAirfoil = va.getAirfoilDirectory().getCanonicalPath();
 			System.out.println("AIRFOILS ===> " + dirAirfoil);
@@ -250,8 +264,12 @@ public class WeightsTest extends Application {
 			String aircraftFolder = JPADStaticWriteUtils.createNewFolder(folderPath + theAircraft.getId() + File.separator);
 			String subfolderPath = JPADStaticWriteUtils.createNewFolder(aircraftFolder + "WEIGHTS" + File.separator);
 			
+			// Defining the operating conditions ...
+			OperatingConditions theOperatingConditions = OperatingConditions.importFromXML(pathToOperatingConditionsXML);
+			
 			// Evaluate aircraft masses
-			theAircraft.getTheAnalysisManager().calculateWeights(theAircraft);
+			theAircraft.setTheAnalysisManager(ACAnalysisManager.importFromXML(pathToAnalysesXML, theAircraft));
+			theAircraft.getTheAnalysisManager().doAnalysis(theAircraft, theOperatingConditions);
 			System.out.println(WeightsTest.theAircraft.getTheAnalysisManager().getTheWeights().toString());
 			theAircraft.getTheAnalysisManager().getTheWeights().toXLSFile(subfolderPath + "Weights");
 			

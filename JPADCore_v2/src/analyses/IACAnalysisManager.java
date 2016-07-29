@@ -21,8 +21,7 @@ public interface IACAnalysisManager {
 	public void calculateDependentVariables();
 	public void doAnalysis(
 			Aircraft aircraft, 
-			OperatingConditions theOperatingConditions,
-			AnalysisTypeEnum ... type
+			OperatingConditions theOperatingConditions
 			);
 	public void calculateWeights(Aircraft aircraft);
 	public void calculateBalance(Aircraft aircraft);
@@ -90,11 +89,11 @@ public interface IACAnalysisManager {
 	public Amount<Pressure> getMaxDynamicPressure();
 	public void setMaxDynamicPressure(Amount<Pressure> _maxDynamicPressure);
 
-	public List<MethodEnum> getMethodsList();
-	public void setMethodsList(List<MethodEnum> _methodsList);
-
-	public Map<ComponentEnum, List<MethodEnum>> getMethodsMap();
-	public void setMethodsMap(Map<ComponentEnum, List<MethodEnum>> _methodsMap);
+	public Map<ComponentEnum, MethodEnum> getMethodsMapWeights();
+	public void setMethodsMapWeights(Map<ComponentEnum, MethodEnum> _methodsMap);
+	
+	public Map<ComponentEnum, MethodEnum> getMethodsMapBalance();
+	public void setMethodsMapBalance(Map<ComponentEnum, MethodEnum> _methodsMap);
 
 	public Map<AnalysisTypeEnum, Boolean> getExecutedAnalysesMap();
 	public void setExecutedAnalysesMap(Map<AnalysisTypeEnum, Boolean> _executedAnalysesMap);

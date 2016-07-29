@@ -965,7 +965,7 @@ public class JPADDataWriter {
 					liftingSurface.getAerodynamics().getCalculateXAC().get_methodMapLRF(), 
 					aerodynamics);
 			writeMethodsComparison("Critical_Mach_number", 
-					liftingSurface.getAerodynamics().getCalculateMachCr().getMethodsMap(), 
+					liftingSurface.getAerodynamics().getCalculateMachCr().getMethodsMapWeights(), 
 					aerodynamics);
 
 			if (liftingSurface.getType() == ComponentEnum.WING){
@@ -979,7 +979,7 @@ public class JPADDataWriter {
 				writeOutputNode("CdGaps", liftingSurface.getAerodynamics().get_cdGap(), aerodynamics);
 				writeMethodsComparison(				
 						"CdWaveAtCurrentCL", 
-						liftingSurface.getAerodynamics().getCalculateCdWaveDrag().getMethodsMap(),
+						liftingSurface.getAerodynamics().getCalculateCdWaveDrag().getMethodsMapWeights(),
 						aerodynamics);
 				writeOutputNode("Cd0", liftingSurface.getAerodynamics().get_cD0Total(), aerodynamics);
 			}
@@ -996,7 +996,7 @@ public class JPADDataWriter {
 				writeOutputNode("CdGaps", liftingSurface.getAerodynamics().get_cdGap(), aerodynamics);
 				writeMethodsComparison(				
 						"CdWaveAtCurrentCL", 
-						liftingSurface.getAerodynamics().getCalculateCdWaveDrag().getMethodsMap(),
+						liftingSurface.getAerodynamics().getCalculateCdWaveDrag().getMethodsMapWeights(),
 						aerodynamics);
 				writeOutputNode("Cd0", liftingSurface.getAerodynamics().get_cD0Total(), aerodynamics);
 			}
@@ -1013,7 +1013,7 @@ public class JPADDataWriter {
 				writeOutputNode("CdGaps", liftingSurface.getAerodynamics().get_cdGap(), aerodynamics);
 				writeMethodsComparison(				
 						"CdWaveAtCurrentCL", 
-						liftingSurface.getAerodynamics().getCalculateCdWaveDrag().getMethodsMap(),
+						liftingSurface.getAerodynamics().getCalculateCdWaveDrag().getMethodsMapWeights(),
 						aerodynamics);
 				writeOutputNode("Cd0", liftingSurface.getAerodynamics().get_cD0Total(), aerodynamics);
 
@@ -1029,7 +1029,7 @@ public class JPADDataWriter {
 				writeOutputNode("CdGaps", liftingSurface.getAerodynamics().get_cdGap(), aerodynamics);
 				writeMethodsComparison(				
 						"CdWaveAtCurrentCL", 
-						liftingSurface.getAerodynamics().getCalculateCdWaveDrag().getMethodsMap(),
+						liftingSurface.getAerodynamics().getCalculateCdWaveDrag().getMethodsMapWeights(),
 						aerodynamics);
 				writeOutputNode("Cd0", liftingSurface.getAerodynamics().get_cD0Total(), aerodynamics);
 			}
@@ -1038,11 +1038,11 @@ public class JPADDataWriter {
 
 			writeMethodsComparison(				
 					"Alpha_zero_lift", 
-					liftingSurface.getAerodynamics().getCalculateAlpha0L().getMethodsMap(),
+					liftingSurface.getAerodynamics().getCalculateAlpha0L().getMethodsMapWeights(),
 					aerodynamics);
 			writeMethodsComparison(				
 					"CL_alpha", 
-					liftingSurface.getAerodynamics().getCalculateCLAlpha().getMethodsMap(),
+					liftingSurface.getAerodynamics().getCalculateCLAlpha().getMethodsMapWeights(),
 					aerodynamics);
 			writeMethodsComparison(				
 					"Maximum_lift_coefficient",
@@ -1052,11 +1052,11 @@ public class JPADDataWriter {
 
 			writeMethodsComparison(				
 					"CMac", 
-					liftingSurface.getAerodynamics().getCalculateCmAC().getMethodsMap(),
+					liftingSurface.getAerodynamics().getCalculateCmAC().getMethodsMapWeights(),
 					aerodynamics);
 			writeMethodsComparison(				
 					"CMalpha", 
-					liftingSurface.getAerodynamics().getCalculateCmAlpha().getMethodsMap(),
+					liftingSurface.getAerodynamics().getCalculateCmAlpha().getMethodsMapWeights(),
 					aerodynamics);
 
 			writeOutputNode("Alpha", liftingSurface.getAerodynamics().getAlphaArray().to(NonSI.DEGREE_ANGLE), aerodynamics);

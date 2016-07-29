@@ -16,6 +16,7 @@ import aircraft.components.nacelles.NacelleCreator.MountingPosition;
 import analyses.analysismodel.InnerCalculator;
 import analyses.analysismodel.analysiscalcmanager.WeightsManager;
 import configuration.enumerations.AnalysisTypeEnum;
+import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.atmosphere.AtmosphereCalc;
@@ -59,7 +60,6 @@ public class NacelleWeightsManager extends WeightsManager{
 			calculator = new Piston();	
 	}
 	
-	@Override
 	public void calculateAll() {
 		
 		calculator.allMethods();

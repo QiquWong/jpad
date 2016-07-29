@@ -175,12 +175,6 @@ public class Aircraft implements IAircraft {
 				__theSystems.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theSystems.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 
-				__theAnalysisManager = new ACAnalysisManager.ACAnalysisManagerBuilder(
-						"ATR-72 Analysis Manager",
-						new Aircraft(this),
-						AircraftEnum.ATR72
-						).build();
-				
 				break;
 
 		    // TODO : COMPLETE THIS!
@@ -242,12 +236,6 @@ public class Aircraft implements IAircraft {
 				__theSystems.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theSystems.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 
-				__theAnalysisManager = new ACAnalysisManager.ACAnalysisManagerBuilder(
-						"B747-100B Analysis Manager",
-						new Aircraft(this),
-						AircraftEnum.B747_100B
-						).build();
-				
 				break;
 				
 			// TODO : COMPLETE THIS!
@@ -308,12 +296,6 @@ public class Aircraft implements IAircraft {
 				__theSystems.setXApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theSystems.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				__theSystems.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				
-				__theAnalysisManager = new ACAnalysisManager.ACAnalysisManagerBuilder(
-						"AGILE DC-1 Analysis Manager",
-						new Aircraft(this),
-						AircraftEnum.AGILE_DC1
-						).build();
 				
 				break;
 			

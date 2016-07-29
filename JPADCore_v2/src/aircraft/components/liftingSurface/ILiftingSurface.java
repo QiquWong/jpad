@@ -1,6 +1,7 @@
 package aircraft.components.liftingSurface;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
@@ -59,7 +60,7 @@ public interface ILiftingSurface {
 	public void calculateGeometry(ComponentEnum type, Boolean mirrored);
 	public void calculateGeometry(int nSections, ComponentEnum type, Boolean mirrored);
 	
-	public void calculateMass(Aircraft aircraft);
+	public void calculateMass(Aircraft aircraft, ComponentEnum liftingSurfaceType, Map<ComponentEnum, MethodEnum> methodsMap);
 	public void calculateCG(MethodEnum method, ComponentEnum type);
 	
 	public List<Airfoil> getAirfoilList();

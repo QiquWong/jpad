@@ -3,6 +3,9 @@ package analyses.analysismodel;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.jscience.physics.amount.Amount;
+
+import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
 
 /**

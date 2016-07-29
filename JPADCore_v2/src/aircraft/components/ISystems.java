@@ -10,17 +10,14 @@ import org.jscience.physics.amount.Amount;
 
 import analyses.OperatingConditions;
 import configuration.enumerations.AnalysisTypeEnum;
+import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
 
 public interface ISystems {
 
-	public void calculateMass(
-			Aircraft aircraft,
-			MethodEnum method);
+	public void calculateMass(Aircraft aircraft, MethodEnum method);
 	
-	public void calculateOverallMass(
-			Aircraft aircraft,
-			MethodEnum method);
+	public void calculateOverallMass(Aircraft aircraft, MethodEnum method);
 	
 	public void calculateControlSurfaceMass(
 			Aircraft aircraft,

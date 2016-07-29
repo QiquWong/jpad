@@ -22,11 +22,11 @@ public interface IACWeightsManager {
 	public void calculateDependentVariables(Aircraft aircraft);
 	public void calculateAllMasses(
 			Aircraft aircraft, 
-			Map <ComponentEnum, List<MethodEnum>> methodsMap
+			Map <ComponentEnum, MethodEnum> methodsMap
 			);
 	public void calculateStructuralMass(
 			Aircraft aircraft, 
-			Map <ComponentEnum, List<MethodEnum>> methodsMap
+			Map <ComponentEnum, MethodEnum> methodsMap
 			); 
 	
 	public void calculateManufacturerEmptyMass(Aircraft aircraft);

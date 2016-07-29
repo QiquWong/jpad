@@ -290,7 +290,7 @@ public class Fuselage implements IFuselage {
 
 	}
 
-	public void calculateMass(Aircraft aircraft) {
+	public void calculateMass(Aircraft aircraft, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
 		calculateMass(aircraft, MethodEnum.RAYMER);
 		calculateMass(aircraft, MethodEnum.TORENBEEK_1976);
 		calculateMass(aircraft, MethodEnum.TORENBEEK_2013);
@@ -299,12 +299,17 @@ public class Fuselage implements IFuselage {
 		calculateMass(aircraft, MethodEnum.SADRAY);
 		calculateMass(aircraft, MethodEnum.NICOLAI_1984);
 		calculateMass(aircraft, MethodEnum.ROSKAM);
+		
+		if(methodsMapWeights.get(ComponentEnum.FUSELAGE) != null) 
+			_massEstimated = _massMap.get(methodsMapWeights.get(ComponentEnum.FUSELAGE));
+		
 	}
 
 
 	@Override
 	public void calculateMass(Aircraft aircraft,  
-			MethodEnum method) {
+			MethodEnum method
+			) {
 
 		switch (method){
 

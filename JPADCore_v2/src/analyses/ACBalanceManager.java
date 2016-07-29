@@ -1231,7 +1231,7 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 	 * @param conditions
 	 * @param methodsMap
 	 */
-	public void calculateBalance(Map<ComponentEnum, List<MethodEnum>> methodsMap){
+	public void calculateBalance(Map<ComponentEnum, MethodEnum> methodsMap){
 
 		if(_theAircraft.getFuselage() != null) {
 			_theAircraft.getFuselage().setMassEstimated(_fuselageMass);

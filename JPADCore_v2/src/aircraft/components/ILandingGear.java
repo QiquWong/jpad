@@ -10,12 +10,13 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.components.LandingGears.MountingPosition;
 import configuration.enumerations.AnalysisTypeEnum;
+import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.customdata.CenterOfGravity;
 
 public interface ILandingGear {
 
-	public void calculateMass(Aircraft aircraft);
+	public void calculateMass(Aircraft aircraft, Map<ComponentEnum, MethodEnum> methodsMapWeights);
 	public void calculateMass(Aircraft aircraft, MethodEnum method);
 	public void calculateCG(Aircraft aircraft);
 	public void calculateCG(Aircraft aircraft, MethodEnum method);

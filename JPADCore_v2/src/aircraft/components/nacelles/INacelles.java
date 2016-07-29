@@ -10,6 +10,8 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
 import aircraft.components.powerplant.Engine;
+import configuration.enumerations.ComponentEnum;
+import configuration.enumerations.MethodEnum;
 import standaloneutils.customdata.CenterOfGravity;
 
 public interface INacelles {
@@ -17,7 +19,7 @@ public interface INacelles {
 	public void initializeWeights(Aircraft theAircraft);
 	public void initializeBalance();
 	public void calculateSurfaceWetted();
-	public void calculateMass(Aircraft theAircraft);
+	public void calculateMass(Aircraft theAircraft, Map<ComponentEnum, MethodEnum> methodsMapWeights);
 	public CenterOfGravity calculateCG();
 	public void calculateAerodynamics();
 
