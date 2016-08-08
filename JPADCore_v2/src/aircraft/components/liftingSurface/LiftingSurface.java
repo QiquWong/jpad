@@ -210,8 +210,14 @@ public class LiftingSurface implements ILiftingSurface {
 		calculateMass(aircraft, MethodEnum.SADRAY);
 		calculateMass(aircraft, MethodEnum.ROSKAM);
 		
-		if(methodsMapWeights.get(liftingSurfaceType) != null) 
+		if(!methodsMapWeights.get(liftingSurfaceType).equals(MethodEnum.AVERAGE))
 			_massEstimated = _massMap.get(methodsMapWeights.get(liftingSurfaceType));
+		else
+			_massEstimated = Amount.valueOf(JPADStaticWriteUtils.compareMethods(
+					this.getMassReference(), 
+					_massMap,
+					_percentDifference,
+					20.).getMean(), SI.KILOGRAM);
 		
 	}
 	

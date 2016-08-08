@@ -3,9 +3,7 @@ package sandbox2.vt.analyses;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -15,7 +13,9 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import aircraft.components.Aircraft;
-import analyses.ACBalanceManager;
+import analyses.ACAnalysisManager;
+import analyses.ACWeightsManager;
+import analyses.OperatingConditions;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ComponentEnum;
@@ -28,11 +28,19 @@ import javafx.stage.Stage;
 import standaloneutils.JPADXmlReader;
 import writers.JPADStaticWriteUtils;
 
-class MyArgumentsBalanceAnalysis {
+class MyArgumentsAnalysis {
 	@Option(name = "-i", aliases = { "--input" }, required = true,
 			usage = "my input file")
 	private File _inputFile;
 
+	@Option(name = "-ia", aliases = { "--input-analyses" }, required = true,
+			usage = "analyses input file")
+	private File _inputFileAnalyses;
+	
+	@Option(name = "-ioc", aliases = { "--input-operating-condition" }, required = true,
+			usage = "operating conditions input file")
+	private File _inputFileOperatingCondition;
+	
 	@Option(name = "-da", aliases = { "--dir-airfoils" }, required = true,
 			usage = "airfoil directory path")
 	private File _airfoilDirectory;
@@ -68,11 +76,7 @@ class MyArgumentsBalanceAnalysis {
 	@Option(name = "-dc", aliases = { "--dir-costs" }, required = true,
 			usage = "costs directory path")
 	private File _costsDirectory;
-	
-	@Option(name = "-ib", aliases = { "--input-balance" }, required = true,
-			usage = "balance input path")
-	private File _balanceInputFile;
-	
+		
 	// receives other command line parameters than options
 	@Argument
 	public List<String> arguments = new ArrayList<String>();
@@ -81,6 +85,14 @@ class MyArgumentsBalanceAnalysis {
 		return _inputFile;
 	}
 
+	public File getInputFileAnalyses() {
+		return _inputFileAnalyses;
+	}
+	
+	public File getOperatingConditionsInputFile() {
+		return _inputFileOperatingCondition;
+	}
+	
 	public File getAirfoilDirectory() {
 		return _airfoilDirectory;
 	}
@@ -113,16 +125,14 @@ class MyArgumentsBalanceAnalysis {
 		return _cabinConfigurationsDirectory;
 	}
 	
+	// TODO : REMOVE THIS!! THIS HAS TO BE MOVED INSIDE THE ANALYSIS MANAGER!!
 	public File getCostsDirectory() {
 		return _costsDirectory;
 	}
 	
-	public File getBalanceInputFile() {
-		return _balanceInputFile;
-	}
 }
 
-public class BalanceTest extends Application {
+public class CompleteAnalysisTest extends Application {
 
 	// declaration necessary for Concrete Object usage
 	public static CmdLineParser theCmdLineParser;
@@ -142,7 +152,7 @@ public class BalanceTest extends Application {
 		System.out.println("\n\n##################");
 		System.out.println("function start :: getting the aircraft object ...");
 
-		Aircraft aircraft = WeightsTest.theAircraft;
+		Aircraft aircraft = CompleteAnalysisTest.theAircraft;
 		if (aircraft == null) {
 			System.out.println("aircraft object null, returning.");
 			return;
@@ -162,22 +172,25 @@ public class BalanceTest extends Application {
 		// https://blog.codecentric.de/en/2015/09/javafx-how-to-easily-implement-application-preloader-2/
 
 		System.out.println("-------------------");
-		System.out.println("Balance test");
+		System.out.println("Complete Analysis Test");
 		System.out.println("-------------------");
-		
-		MyArgumentsBalanceAnalysis va = new MyArgumentsBalanceAnalysis();
-		BalanceTest.theCmdLineParser = new CmdLineParser(va);
+
+		MyArgumentsAnalysis va = new MyArgumentsAnalysis();
+		CompleteAnalysisTest.theCmdLineParser = new CmdLineParser(va);
 
 		// populate the wing static object in the class
 		// before launching the JavaFX application thread (launch --> start ...)
 		try {
-			BalanceTest.theCmdLineParser.parseArgument(args);
+			CompleteAnalysisTest.theCmdLineParser.parseArgument(args);
 			
 			String pathToXML = va.getInputFile().getAbsolutePath();
-			System.out.println("INPUT ===> " + pathToXML);
+			System.out.println("AIRCRAFT INPUT ===> " + pathToXML);
 
-			String pathToXMLBalance = va.getBalanceInputFile().getAbsolutePath();
-			System.out.println("BALANCE INPUT ===> " + pathToXMLBalance);
+			String pathToAnalysesXML = va.getInputFileAnalyses().getAbsolutePath();
+			System.out.println("ANALYSES INPUT ===> " + pathToAnalysesXML);
+			
+			String pathToOperatingConditionsXML = va.getOperatingConditionsInputFile().getAbsolutePath();
+			System.out.println("OPERATING CONDITIONS INPUT ===> " + pathToOperatingConditionsXML);
 			
 			String dirAirfoil = va.getAirfoilDirectory().getCanonicalPath();
 			System.out.println("AIRFOILS ===> " + dirAirfoil);
@@ -203,6 +216,7 @@ public class BalanceTest extends Application {
 			String dirCabinConfiguration = va.getCabinConfigurationDirectory().getCanonicalPath();
 			System.out.println("CABIN CONFIGURATIONS ===> " + dirCabinConfiguration);
 			
+			// TODO: REMOVE THIS!!
 			String dirCosts = va.getCostsDirectory().getCanonicalPath();
 			System.out.println("COSTS ===> " + dirCosts);
 			
@@ -241,6 +255,7 @@ public class BalanceTest extends Application {
 //					dirCosts,
 //					aeroDatabaseReader,
 //					highLiftDatabaseReader);
+//			theAircraft.setTheWieghts(ACWeightsManager.importFromXML(pathToXMLWeights, theAircraft));
 			
 			// Set the folders tree
 			MyConfiguration.initWorkingDirectoryTree(
@@ -249,26 +264,24 @@ public class BalanceTest extends Application {
 					MyConfiguration.outputDirectory);
 			String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR); 
 			String aircraftFolder = JPADStaticWriteUtils.createNewFolder(folderPath + theAircraft.getId() + File.separator);
-			String subfolderPath = JPADStaticWriteUtils.createNewFolder(aircraftFolder + "BALANCE" + File.separator);
-
-			// Evaluate aircraft balance
-			theAircraft.getTheAnalysisManager().setTheBalance(ACBalanceManager.importFromXML(pathToXMLBalance, theAircraft));
-		
-			theAircraft.getTheAnalysisManager().calculateBalance(theAircraft);
+			String subfolderPath = JPADStaticWriteUtils.createNewFolder(aircraftFolder);
 			
-			System.out.println(BalanceTest.theAircraft.getTheAnalysisManager().getTheBalance().toString());
-			theAircraft.getTheAnalysisManager().getTheBalance().toXLSFile(subfolderPath + "Balance");
-			theAircraft.getTheAnalysisManager().getTheBalance().createBalanceCharts(subfolderPath);
+			// Defining the operating conditions ...
+			OperatingConditions theOperatingConditions = OperatingConditions.importFromXML(pathToOperatingConditionsXML);
+			
+			// Analyzing the aircraft
+			theAircraft.setTheAnalysisManager(ACAnalysisManager.importFromXML(pathToAnalysesXML, theAircraft));
+			theAircraft.getTheAnalysisManager().doAnalysis(theAircraft, theOperatingConditions, subfolderPath);
 			
 		} catch (CmdLineException | IOException e) {
 			System.err.println("Error: " + e.getMessage());
-			BalanceTest.theCmdLineParser.printUsage(System.err);
+			CompleteAnalysisTest.theCmdLineParser.printUsage(System.err);
 			System.err.println();
 			System.err.println("  Must launch this app with proper command line arguments.");
 			return;
 		}	    
 
-		// JavaFX ...
+		// JavaFX ... (if needed)
 		launch(args);
 	}
 

@@ -53,6 +53,7 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 	private Amount<Mass> _maximumZeroFuelMass;
 	private Amount<Mass> _operatingEmptyMass;	
 	private Amount<Mass> _passengersTotalMass;
+	private Amount<Mass> _passengersSingleMass;
 	private Amount<Mass> _fuselageMass;
 	private Amount<Mass> _wingMass;
 	private Amount<Mass> _horizontalTailMass;
@@ -87,6 +88,7 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 		private Amount<Mass> __maximumZeroFuelMass;
 		private Amount<Mass> __operatingEmptyMass;	
 		private Amount<Mass> __passengersTotalMass;
+		private Amount<Mass> __passengersSingleMass;
 		private Amount<Mass> __fuselageMass;
 		private Amount<Mass> __wingMass;
 		private Amount<Mass> __horizontalTailMass;
@@ -120,6 +122,11 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 		
 		public ACBalanceManagerBuilder passengersTotalMass (Amount<Mass> passengersTotalMass) {
 			this.__passengersTotalMass = passengersTotalMass;
+			return this;
+		}
+		
+		public ACBalanceManagerBuilder passengersSingleMass (Amount<Mass> passengerSingleMass) {
+			this.__passengersSingleMass = passengerSingleMass;
 			return this;
 		}
 		
@@ -180,6 +187,7 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 		this._maximumZeroFuelMass = builder.__maximumZeroFuelMass;
 		this._operatingEmptyMass = builder.__operatingEmptyMass;
 		this._passengersTotalMass = builder.__passengersTotalMass;
+		this._passengersSingleMass = builder.__passengersSingleMass;
 		this._fuselageMass = builder.__fuselageMass;
 		this._wingMass = builder.__wingMass;
 		this._horizontalTailMass = builder.__horizontalTailMass;
@@ -234,6 +242,7 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 		Amount<Mass> maximumZeroFuelMass = Amount.valueOf(0.0, SI.KILOGRAM);
 		Amount<Mass> operatingEmptyMass = Amount.valueOf(0.0, SI.KILOGRAM);
 		Amount<Mass> passengersTotalMass = Amount.valueOf(0.0, SI.KILOGRAM);
+		Amount<Mass> passengersSingleMass = Amount.valueOf(0.0, SI.KILOGRAM);
 		Amount<Mass> fuselageMass = Amount.valueOf(0.0, SI.KILOGRAM);
 		Amount<Mass> wingMass = Amount.valueOf(0.0, SI.KILOGRAM);
 		Amount<Mass> horizontalTailMass = Amount.valueOf(0.0, SI.KILOGRAM);
@@ -298,6 +307,13 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 				if(passengersTotalMassCell != null)
 					passengersTotalMass = Amount.valueOf(passengersTotalMassCell.getNumericCellValue(), SI.KILOGRAM);
 
+				//---------------------------------------------------------------
+				// PASSENGERS SINGLE MASS (From ACWeightsManager)
+				passengersSingleMass = theAircraft
+						.getTheAnalysisManager()
+							.getTheWeights()
+								.getPaxSingleMass();
+				
 				//---------------------------------------------------------------
 				// FUSELAGE MASS
 				Sheet sheetFuselage = MyXLSUtils.findSheet(workbook, "FUSELAGE");
@@ -406,6 +422,12 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 			String passengersTotalMassProperty = reader.getXMLPropertyByPath("//balance/passengers_total_mass");
 			if(passengersTotalMassProperty != null)
 				passengersTotalMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//balance/passengers_total_mass");
+
+			//---------------------------------------------------------------
+			// PASSENGERS SINGLE MASS
+			String passengersSingleMassProperty = reader.getXMLPropertyByPath("//balance/passengers_single_mass");
+			if(passengersSingleMassProperty != null)
+				passengersSingleMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//balance/passengers_single_mass");
 			
 			//---------------------------------------------------------------
 			// FUSELAGE MASS
@@ -467,6 +489,7 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 				.maximumZeroFuelMass(maximumZeroFuelMass)
 				.operatingEmptyMass(operatingEmptyMass)
 				.passengersTotalMass(passengersTotalMass)
+				.passengersSingleMass(passengersSingleMass)
 				.fuselageMass(fuselageMass)
 				.wingMass(wingMass)
 				.horizontalTailMass(horizontalTailMass)
@@ -1210,20 +1233,6 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 	}
 	
 	/** 
-	 * A first guess value of center of gravity location
-	 * of the whole aircraft.
-	 * 
-	 * @author Lorenzo Attanasio
-	 * @param aircraft
-	 */
-	public void calculateBalance() {
-		
-		_xCGMeanAtOEM = (_theAircraft.getWing().getXApexConstructionAxes().getEstimatedValue() + 
-				0.25*_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue());
-		setXCGMaxAftAtOEM((_xCGMeanAtOEM*(1-0.1)));	
-	}
-
-	/** 
 	 * Evaluate center of gravity location
 	 * of each component.
 	 * 
@@ -1231,7 +1240,7 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 	 * @param conditions
 	 * @param methodsMap
 	 */
-	public void calculateBalance(Map<ComponentEnum, MethodEnum> methodsMap){
+	public void calculateBalance(){
 
 		if(_theAircraft.getFuselage() != null) {
 			_theAircraft.getFuselage().setMassEstimated(_fuselageMass);
@@ -1531,6 +1540,14 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 
 	public void setPassengersTotalMass(Amount<Mass> _passengerTotalMass) {
 		this._passengersTotalMass = _passengerTotalMass;
+	}
+
+	public Amount<Mass> getPassengersSingleMass() {
+		return _passengersSingleMass;
+	}
+
+	public void setPassengersSingleMass(Amount<Mass> _passengersSingleMass) {
+		this._passengersSingleMass = _passengersSingleMass;
 	}
 
 	public Amount<Mass> getFuselageMass() {

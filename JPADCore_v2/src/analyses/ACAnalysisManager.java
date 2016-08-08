@@ -1,6 +1,7 @@
 package analyses;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +14,7 @@ import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
@@ -26,6 +28,7 @@ import configuration.enumerations.MethodEnum;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
+import writers.JPADStaticWriteUtils;
 
 /**
  * All the computations are managed by this class.
@@ -68,10 +71,15 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	private Amount<Pressure> _maxDynamicPressure;
 	
 	private Map <ComponentEnum, MethodEnum> _methodsMapWeights;
-	private Map <ComponentEnum, MethodEnum> _methodsMapBalance;
 	private Map <AnalysisTypeEnum, Boolean> _executedAnalysesMap;
 	private List<ACCalculatorManager> _theCalculatorsList;
 	private List<AnalysisTypeEnum> _analysisList;
+	
+	private static File _weightsFileComplete;
+	private static File _balanceFileComplete;
+	private static File _aerodynamicsFileComplete;
+	private static File _performanceFileComplete;
+	private static File _costsFileComplete;
 
 	//============================================================================================
 	// Builder pattern 
@@ -84,12 +92,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 
 		// optional parameters ... defaults
 		// ...
-		private ACWeightsManager __theWeights;
-		private ACBalanceManager __theBalance;
-		private ACAerodynamicsManager __theAerodynamics;
-		private ACPerformanceManager __thePerformance;
-		private ACCostsManager __theCosts;
-		
 		private Double __nLimit;
 		private Double __cruiseCL;
 		private Amount<Length> __referenceRange;
@@ -117,31 +119,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		
 		public ACAnalysisManagerBuilder analysisList (List<AnalysisTypeEnum> analysisList) {
 			this.__analysisList = analysisList;
-			return this;
-		}
-		
-		public ACAnalysisManagerBuilder theWeights (ACWeightsManager theWeights) {
-			this.__theWeights = theWeights;
-			return this;
-		}
-		
-		public ACAnalysisManagerBuilder theBalance (ACBalanceManager theBalance) {
-			this.__theBalance = theBalance;
-			return this;
-		}
-		
-		public ACAnalysisManagerBuilder theAerodynamics (ACAerodynamicsManager theAerodynamics) {
-			this.__theAerodynamics = theAerodynamics;
-			return this;
-		}
-		
-		public ACAnalysisManagerBuilder thePerformance (ACPerformanceManager thePerformance) {
-			this.__thePerformance = thePerformance;
-			return this;
-		}
-		
-		public ACAnalysisManagerBuilder theCosts (ACCostsManager theCosts) {
-			this.__theCosts = theCosts;
 			return this;
 		}
 		
@@ -190,8 +167,8 @@ public class ACAnalysisManager implements IACAnalysisManager {
 			return this;
 		}
 		
-		public ACAnalysisManagerBuilder methodsMap (Map<ComponentEnum, MethodEnum> methodsMap) {
-			this.__methodsMapWeights = methodsMap;
+		public ACAnalysisManagerBuilder methodsMapWeights (Map<ComponentEnum, MethodEnum> methodsMapWeights) {
+			this.__methodsMapWeights = methodsMapWeights;
 			return this;
 		}
 		
@@ -272,12 +249,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		this._theCalculatorsList = builder.__theCalculatorsList;
 		this._analysisList = builder.__analysisList;
 		
-		this._theWeights = builder.__theWeights;
-		this._theBalance = builder.__theBalance;
-		this._theAerodynamics = builder.__theAerodynamics;
-		this._thePerformance = builder.__thePerformance;
-		this._theCosts = builder.__theCosts;
-		
 		calculateDependentVariables();
 
 	}
@@ -286,7 +257,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	// End of the builder pattern 
 	//============================================================================================
 	
-	public static ACAnalysisManager importFromXML (String pathToXML, Aircraft theAircraft) {
+	public static ACAnalysisManager importFromXML (String pathToXML, Aircraft theAircraft) throws IOException {
 		
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
 
@@ -311,7 +282,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 
 		//-------------------------------------------------------------------------------------------
 		// WEIGHTS ANALYSIS:
-		Map<ComponentEnum, MethodEnum> methodsMap = new HashMap<>();
+		Map<ComponentEnum, MethodEnum> methodsMapWeights = new HashMap<>();
 		
 		String weightsFile = MyXMLReaderUtils
 				.getXMLPropertyByPath(
@@ -322,228 +293,212 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		
 			analysisList.add(AnalysisTypeEnum.WEIGHTS);
 			
-			String fuselageMethod = MyXMLReaderUtils
+			String fuselageWeightsMethod = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//weights/@method_fuselage");
-			if (fuselageMethod != null) {
-				if(fuselageMethod.equalsIgnoreCase("RAYMER")) {
-					methodsMap.put(ComponentEnum.FUSELAGE, MethodEnum.RAYMER);
+			if (fuselageWeightsMethod != null) {
+				if(fuselageWeightsMethod.equalsIgnoreCase("RAYMER")) {
+					methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.RAYMER);
 				}
-				else if(fuselageMethod.equalsIgnoreCase("TORENBEEK_1976")) {
-					methodsMap.put(ComponentEnum.FUSELAGE, MethodEnum.TORENBEEK_1976);
+				else if(fuselageWeightsMethod.equalsIgnoreCase("TORENBEEK_1976")) {
+					methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.TORENBEEK_1976);
 				}
-				else if(fuselageMethod.equalsIgnoreCase("TORENBEEK_2013")) {
-					methodsMap.put(ComponentEnum.FUSELAGE, MethodEnum.TORENBEEK_2013);
+				else if(fuselageWeightsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
+					methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.TORENBEEK_2013);
 				}
-				else if(fuselageMethod.equalsIgnoreCase("JENKINSON")) {
-					methodsMap.put(ComponentEnum.FUSELAGE, MethodEnum.JENKINSON);
+				else if(fuselageWeightsMethod.equalsIgnoreCase("JENKINSON")) {
+					methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.JENKINSON);
 				}
-				else if(fuselageMethod.equalsIgnoreCase("KROO")) {
-					methodsMap.put(ComponentEnum.FUSELAGE, MethodEnum.KROO);
+				else if(fuselageWeightsMethod.equalsIgnoreCase("KROO")) {
+					methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.KROO);
 				}
-				else if(fuselageMethod.equalsIgnoreCase("SADRAY")) {
-					methodsMap.put(ComponentEnum.FUSELAGE, MethodEnum.SADRAY);
+				else if(fuselageWeightsMethod.equalsIgnoreCase("SADRAY")) {
+					methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.SADRAY);
 				}
-				else if(fuselageMethod.equalsIgnoreCase("NICOLAI_1984")) {
-					methodsMap.put(ComponentEnum.FUSELAGE, MethodEnum.NICOLAI_1984);
+				else if(fuselageWeightsMethod.equalsIgnoreCase("NICOLAI_1984")) {
+					methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.NICOLAI_1984);
 				}
-				else if(fuselageMethod.equalsIgnoreCase("ROSKAM")) {
-					methodsMap.put(ComponentEnum.FUSELAGE, MethodEnum.ROSKAM);
+				else if(fuselageWeightsMethod.equalsIgnoreCase("ROSKAM")) {
+					methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.ROSKAM);
 				}
-				else {
-					System.err.println("NO VALID METHODS FOR THE FUSELAGE ANALYSIS !!");
-					return null;
-				}
+				else 
+					methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.AVERAGE);
 			}
 
-			String wingMethod = MyXMLReaderUtils
+			String wingWeightsMethod = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//weights/@method_wing");
-			if(wingMethod != null) {
-				if(wingMethod.equalsIgnoreCase("KROO")) {
-					methodsMap.put(ComponentEnum.WING, MethodEnum.KROO);
+			if(wingWeightsMethod != null) {
+				if(wingWeightsMethod.equalsIgnoreCase("KROO")) {
+					methodsMapWeights.put(ComponentEnum.WING, MethodEnum.KROO);
 				}
-				else if(wingMethod.equalsIgnoreCase("JENKINSON")) {
-					methodsMap.put(ComponentEnum.WING, MethodEnum.JENKINSON);
+				else if(wingWeightsMethod.equalsIgnoreCase("JENKINSON")) {
+					methodsMapWeights.put(ComponentEnum.WING, MethodEnum.JENKINSON);
 				}
-				else if(wingMethod.equalsIgnoreCase("TORENBEEK_2013")) {
-					methodsMap.put(ComponentEnum.WING, MethodEnum.TORENBEEK_2013);
+				else if(wingWeightsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
+					methodsMapWeights.put(ComponentEnum.WING, MethodEnum.TORENBEEK_2013);
 				}
-				else if(wingMethod.equalsIgnoreCase("TORENBEEK_1982")) {
-					methodsMap.put(ComponentEnum.WING, MethodEnum.TORENBEEK_1982);
+				else if(wingWeightsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
+					methodsMapWeights.put(ComponentEnum.WING, MethodEnum.TORENBEEK_1982);
 				}
-				else if(wingMethod.equalsIgnoreCase("RAYMER")) {
-					methodsMap.put(ComponentEnum.WING, MethodEnum.RAYMER);
+				else if(wingWeightsMethod.equalsIgnoreCase("RAYMER")) {
+					methodsMapWeights.put(ComponentEnum.WING, MethodEnum.RAYMER);
 				}
-				else if(wingMethod.equalsIgnoreCase("SADRAY")) {
-					methodsMap.put(ComponentEnum.WING, MethodEnum.SADRAY);
+				else if(wingWeightsMethod.equalsIgnoreCase("SADRAY")) {
+					methodsMapWeights.put(ComponentEnum.WING, MethodEnum.SADRAY);
 				}
-				else if(wingMethod.equalsIgnoreCase("ROSKAM")) {
-					methodsMap.put(ComponentEnum.WING, MethodEnum.ROSKAM);
+				else if(wingWeightsMethod.equalsIgnoreCase("ROSKAM")) {
+					methodsMapWeights.put(ComponentEnum.WING, MethodEnum.ROSKAM);
 				}
-				else {
-					System.err.println("NO VALID METHODS FOR THE WING ANALYSIS !!");
-					return null;
-				}
+				else 
+					methodsMapWeights.put(ComponentEnum.WING, MethodEnum.AVERAGE);
 			}
 			
-			String hTailMethod = MyXMLReaderUtils
+			String hTailWeightsMethod = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//weights/@method_htail");
-			if(hTailMethod != null) {
-				if(hTailMethod.equalsIgnoreCase("KROO")) {
-					methodsMap.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.KROO);
+			if(hTailWeightsMethod != null) {
+				if(hTailWeightsMethod.equalsIgnoreCase("KROO")) {
+					methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.KROO);
 				}
-				else if(hTailMethod.equalsIgnoreCase("JENKINSON")) {
-					methodsMap.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.JENKINSON);
+				else if(hTailWeightsMethod.equalsIgnoreCase("JENKINSON")) {
+					methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.JENKINSON);
 				}
-				else if(hTailMethod.equalsIgnoreCase("TORENBEEK_2013")) {
-					methodsMap.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.TORENBEEK_2013);
+				else if(hTailWeightsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
+					methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.TORENBEEK_2013);
 				}
-				else if(hTailMethod.equalsIgnoreCase("TORENBEEK_1982")) {
-					methodsMap.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.TORENBEEK_1982);
+				else if(hTailWeightsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
+					methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.TORENBEEK_1982);
 				}
-				else if(hTailMethod.equalsIgnoreCase("RAYMER")) {
-					methodsMap.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.RAYMER);
+				else if(hTailWeightsMethod.equalsIgnoreCase("RAYMER")) {
+					methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.RAYMER);
 				}
-				else if(hTailMethod.equalsIgnoreCase("SADRAY")) {
-					methodsMap.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.SADRAY);
+				else if(hTailWeightsMethod.equalsIgnoreCase("SADRAY")) {
+					methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.SADRAY);
 				}
-				else if(hTailMethod.equalsIgnoreCase("ROSKAM")) {
-					methodsMap.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.ROSKAM);
+				else if(hTailWeightsMethod.equalsIgnoreCase("ROSKAM")) {
+					methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.ROSKAM);
 				}
-				else {
-					System.err.println("NO VALID METHODS FOR THE HORIZONTAL TAIL ANALYSIS !!");
-					return null;
-				}
+				else 
+					methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.AVERAGE);
 			}
 			
-			String vTailMethod = MyXMLReaderUtils
+			String vTailWeightsMethod = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//weights/@method_vtail");
-			if(vTailMethod != null) {
-				if(vTailMethod.equalsIgnoreCase("KROO")) {
-					methodsMap.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.KROO);
+			if(vTailWeightsMethod != null) {
+				if(vTailWeightsMethod.equalsIgnoreCase("KROO")) {
+					methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.KROO);
 				}
-				else if(vTailMethod.equalsIgnoreCase("JENKINSON")) {
-					methodsMap.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.JENKINSON);
+				else if(vTailWeightsMethod.equalsIgnoreCase("JENKINSON")) {
+					methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.JENKINSON);
 				}
-				else if(vTailMethod.equalsIgnoreCase("TORENBEEK_2013")) {
-					methodsMap.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.TORENBEEK_2013);
+				else if(vTailWeightsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
+					methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.TORENBEEK_2013);
 				}
-				else if(vTailMethod.equalsIgnoreCase("TORENBEEK_1982")) {
-					methodsMap.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.TORENBEEK_1982);
+				else if(vTailWeightsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
+					methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.TORENBEEK_1982);
 				}
-				else if(vTailMethod.equalsIgnoreCase("RAYMER")) {
-					methodsMap.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.RAYMER);
+				else if(vTailWeightsMethod.equalsIgnoreCase("RAYMER")) {
+					methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.RAYMER);
 				}
-				else if(vTailMethod.equalsIgnoreCase("SADRAY")) {
-					methodsMap.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.SADRAY);
+				else if(vTailWeightsMethod.equalsIgnoreCase("SADRAY")) {
+					methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.SADRAY);
 				}
-				else if(vTailMethod.equalsIgnoreCase("ROSKAM")) {
-					methodsMap.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.ROSKAM);
+				else if(vTailWeightsMethod.equalsIgnoreCase("ROSKAM")) {
+					methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.ROSKAM);
 				}
-				else {
-					System.err.println("NO VALID METHODS FOR THE VERTICAL TAIL ANALYSIS !!");
-					return null;
-				}
+				else 
+					methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.AVERAGE);
 			}
 			
-			String canardMethod = MyXMLReaderUtils
+			String canardWeightsMethod = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//weights/@method_canard");
-			if(canardMethod != null) {
-				if(canardMethod.equalsIgnoreCase("KROO")) {
-					methodsMap.put(ComponentEnum.CANARD, MethodEnum.KROO);
+			if(canardWeightsMethod != null) {
+				if(canardWeightsMethod.equalsIgnoreCase("KROO")) {
+					methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.KROO);
 				}
-				else if(canardMethod.equalsIgnoreCase("JENKINSON")) {
-					methodsMap.put(ComponentEnum.CANARD, MethodEnum.JENKINSON);
+				else if(canardWeightsMethod.equalsIgnoreCase("JENKINSON")) {
+					methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.JENKINSON);
 				}
-				else if(canardMethod.equalsIgnoreCase("TORENBEEK_2013")) {
-					methodsMap.put(ComponentEnum.CANARD, MethodEnum.TORENBEEK_2013);
+				else if(canardWeightsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
+					methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.TORENBEEK_2013);
 				}
-				else if(canardMethod.equalsIgnoreCase("TORENBEEK_1982")) {
-					methodsMap.put(ComponentEnum.CANARD, MethodEnum.TORENBEEK_1982);
+				else if(canardWeightsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
+					methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.TORENBEEK_1982);
 				}
-				else if(canardMethod.equalsIgnoreCase("RAYMER")) {
-					methodsMap.put(ComponentEnum.CANARD, MethodEnum.RAYMER);
+				else if(canardWeightsMethod.equalsIgnoreCase("RAYMER")) {
+					methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.RAYMER);
 				}
-				else if(canardMethod.equalsIgnoreCase("SADRAY")) {
-					methodsMap.put(ComponentEnum.CANARD, MethodEnum.SADRAY);
+				else if(canardWeightsMethod.equalsIgnoreCase("SADRAY")) {
+					methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.SADRAY);
 				}
-				else if(canardMethod.equalsIgnoreCase("ROSKAM")) {
-					methodsMap.put(ComponentEnum.CANARD, MethodEnum.ROSKAM);
+				else if(canardWeightsMethod.equalsIgnoreCase("ROSKAM")) {
+					methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.ROSKAM);
 				}
-				else {
-					System.err.println("NO VALID METHODS FOR THE CANARD ANALYSIS !!");
-					return null;
-				}
+				else 
+					methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.AVERAGE);
 			}
 			
-			String nacellesMethod = MyXMLReaderUtils
+			String nacellesWeightsMethod = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//weights/@method_nacelles");
-			if(nacellesMethod != null) {
-				if(nacellesMethod.equalsIgnoreCase("JENKINSON")) {
-					methodsMap.put(ComponentEnum.NACELLE, MethodEnum.JENKINSON);
+			if(nacellesWeightsMethod != null) {
+				if(nacellesWeightsMethod.equalsIgnoreCase("JENKINSON")) {
+					methodsMapWeights.put(ComponentEnum.NACELLE, MethodEnum.JENKINSON);
 				}
-				else if(nacellesMethod.equalsIgnoreCase("TORENBEEK_1976")) {
-					methodsMap.put(ComponentEnum.NACELLE, MethodEnum.TORENBEEK_1976);
+				else if(nacellesWeightsMethod.equalsIgnoreCase("TORENBEEK_1976")) {
+					methodsMapWeights.put(ComponentEnum.NACELLE, MethodEnum.TORENBEEK_1976);
 				}
-				else if(nacellesMethod.equalsIgnoreCase("TORENBEEK_1982")) {
-					methodsMap.put(ComponentEnum.NACELLE, MethodEnum.TORENBEEK_1982);
+				else if(nacellesWeightsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
+					methodsMapWeights.put(ComponentEnum.NACELLE, MethodEnum.TORENBEEK_1982);
 				}
-				else {
-					System.err.println("NO VALID METHODS FOR THE NACELLES ANALYSIS !!");
-					return null;
-				}
+				else 
+					methodsMapWeights.put(ComponentEnum.NACELLE, MethodEnum.AVERAGE);
 			}
 			
-			String landingGearsMethod = MyXMLReaderUtils
+			String landingGearsWeightsMethod = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//weights/@method_landing_gears");
-			if(landingGearsMethod != null) {
-				if(landingGearsMethod.equalsIgnoreCase("ROSKAM")) {
-					methodsMap.put(ComponentEnum.LANDING_GEAR, MethodEnum.ROSKAM);
+			if(landingGearsWeightsMethod != null) {
+				if(landingGearsWeightsMethod.equalsIgnoreCase("ROSKAM")) {
+					methodsMapWeights.put(ComponentEnum.LANDING_GEAR, MethodEnum.ROSKAM);
 				}
-				else if(landingGearsMethod.equalsIgnoreCase("STANFORD")) {
-					methodsMap.put(ComponentEnum.LANDING_GEAR, MethodEnum.STANFORD);
+				else if(landingGearsWeightsMethod.equalsIgnoreCase("STANFORD")) {
+					methodsMapWeights.put(ComponentEnum.LANDING_GEAR, MethodEnum.STANFORD);
 				}
-				else if(landingGearsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
-					methodsMap.put(ComponentEnum.LANDING_GEAR, MethodEnum.TORENBEEK_1982);
+				else if(landingGearsWeightsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
+					methodsMapWeights.put(ComponentEnum.LANDING_GEAR, MethodEnum.TORENBEEK_1982);
 				}
-				else if(landingGearsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
-					methodsMap.put(ComponentEnum.LANDING_GEAR, MethodEnum.TORENBEEK_2013);
+				else if(landingGearsWeightsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
+					methodsMapWeights.put(ComponentEnum.LANDING_GEAR, MethodEnum.TORENBEEK_2013);
 				}
-				else {
-					System.err.println("NO VALID METHODS FOR THE LANDING GEARS ANALYSIS !!");
-					return null;
-				}
+				else 
+					methodsMapWeights.put(ComponentEnum.LANDING_GEAR, MethodEnum.AVERAGE);
 			}
 			
-			String systemsMethod = MyXMLReaderUtils
+			String systemsWeightsMethod = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//weights/@method_systems");
-			if(systemsMethod != null) {
-				if(systemsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
-					methodsMap.put(ComponentEnum.SYSTEMS, MethodEnum.TORENBEEK_2013);
+			if(systemsWeightsMethod != null) {
+				if(systemsWeightsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
+					methodsMapWeights.put(ComponentEnum.SYSTEMS, MethodEnum.TORENBEEK_2013);
 				}
-				else {
-					System.err.println("NO VALID METHODS FOR THE SYSTEMS ANALYSIS !!");
-					return null;
-				}
+				else 
+					methodsMapWeights.put(ComponentEnum.SYSTEMS, MethodEnum.AVERAGE);
 			}
 		}
 		
-		File weightsFileComplete = new File(
+		_weightsFileComplete = new File(
 				MyConfiguration.getDir(FoldersEnum.INPUT_DIR)
 				+ File.separator 
 				+ "Template_Analyses"
@@ -551,17 +506,23 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				+ weightsFile
 				);
 		
-		ACWeightsManager theWeights = ACWeightsManager.importFromXML(
-				weightsFileComplete.getAbsolutePath(),
-				theAircraft
-				);
-		
 		//-------------------------------------------------------------------------------------------
 		// BALANCE ANALYSIS:
-
+		String balanceFile = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//balance/@file");
 		
+		if(balanceFile != null) 		
+			analysisList.add(AnalysisTypeEnum.BALANCE);
 		
-		
+		_balanceFileComplete = new File(
+				MyConfiguration.getDir(FoldersEnum.INPUT_DIR)
+				+ File.separator 
+				+ "Template_Analyses"
+				+ File.separator
+				+ balanceFile
+				);
 		
 		//-------------------------------------------------------------------------------------------
 		// AERODYNAMIC ANALYSIS:
@@ -593,8 +554,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				.machOptimumCruise(optimumCruiseMach)
 				.blockTime(blockTime)
 				.flightTime(flightTime)
-				.theWeights(theWeights)
-				.methodsMap(methodsMap)
+				.methodsMapWeights(methodsMapWeights)
 				.build();
 	
 		return theAnalysisManager;
@@ -667,8 +627,9 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	
 	public void doAnalysis(
 			Aircraft aircraft, 
-			OperatingConditions theOperatingConditions
-			) {
+			OperatingConditions theOperatingConditions,
+			String resultsFolderPath
+			) throws IOException {
 
 		if (aircraft == null) return;
 
@@ -692,50 +653,81 @@ public class ACAnalysisManager implements IACAnalysisManager {
 //				}
 				
 		if (this._analysisList.contains(AnalysisTypeEnum.WEIGHTS)) {
-			calculateWeights(aircraft); 
+			_theWeights = ACWeightsManager.importFromXML(_weightsFileComplete.getAbsolutePath(), aircraft);
+			calculateWeights(aircraft, resultsFolderPath); 
 			_executedAnalysesMap.put(AnalysisTypeEnum.WEIGHTS, true);
 		}
 
 		if (this._analysisList.contains(AnalysisTypeEnum.BALANCE)) {
-			calculateBalance(aircraft);
+			_theBalance = ACBalanceManager.importFromXML(_balanceFileComplete.getAbsolutePath(), aircraft);
+			calculateBalance(aircraft, resultsFolderPath);
 			_executedAnalysesMap.put(AnalysisTypeEnum.BALANCE, true);
 		}
 
 		if (this._analysisList.contains(AnalysisTypeEnum.AERODYNAMIC)) {
-			calculateAerodynamics(theOperatingConditions, aircraft);
+			calculateAerodynamics(theOperatingConditions, aircraft, resultsFolderPath);
 			_executedAnalysesMap.put(AnalysisTypeEnum.AERODYNAMIC, true);
 		}
 		
 		if (this._analysisList.contains(AnalysisTypeEnum.PERFORMANCE)) {
-			calculatePerformances(aircraft);
+			calculatePerformances(aircraft, resultsFolderPath);
 			_executedAnalysesMap.put(AnalysisTypeEnum.PERFORMANCE, true);
 		}
 		
 		if (this._analysisList.contains(AnalysisTypeEnum.COSTS)) {
-			calculateCosts(aircraft);
+			calculateCosts(aircraft, resultsFolderPath);
 			_executedAnalysesMap.put(AnalysisTypeEnum.COSTS, true);
 		}
 		
 	} // end of constructor
 
-	public void calculateWeights(Aircraft aircraft) {
+	public void calculateWeights(Aircraft aircraft, String resultsFolderPath) {
 
 		aircraft.getTheAnalysisManager().getTheWeights().calculateDependentVariables(aircraft);
 		aircraft.getCabinConfiguration().calculateDependentVariables();
 
 		// Evaluate aircraft masses
 		aircraft.getTheAnalysisManager().getTheWeights().calculateAllMasses(aircraft, _methodsMapWeights);
-
+		System.out.println(aircraft.getTheAnalysisManager().getTheWeights().toString());
+		try {
+			String weightsFolderPath = JPADStaticWriteUtils.createNewFolder(
+					resultsFolderPath 
+					+ "WEIGHTS"
+					+ File.separator);
+			aircraft.getTheAnalysisManager().getTheWeights().toXLSFile(
+					weightsFolderPath
+					+ "Weights");
+		} catch (InvalidFormatException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		
 		// populate _theCalculatorsList
 		_theCalculatorsList.add(aircraft.getTheAnalysisManager().getTheWeights());
 
 	}
 
-	public void calculateBalance(Aircraft aircraft) {
+	public void calculateBalance(Aircraft aircraft, String resultsFolderPath) {
 
 		// Estimate center of gravity location
-		aircraft.getTheAnalysisManager().getTheBalance().calculateBalance(_methodsMapWeights);
-
+		aircraft.getTheAnalysisManager().getTheBalance().calculateBalance();
+		System.out.println(aircraft.getTheAnalysisManager().getTheBalance().toString());
+		try {
+			String balanceFolderPath = JPADStaticWriteUtils.createNewFolder(
+					resultsFolderPath 
+					+ "BALANCE"
+					+ File.separator);
+			aircraft.getTheAnalysisManager().getTheBalance().toXLSFile(
+					balanceFolderPath
+					+ "Balance");
+			aircraft.getTheAnalysisManager().getTheBalance().createBalanceCharts(balanceFolderPath);
+		} catch (InvalidFormatException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		// Evaluate arms again with the new CG estimate
 		aircraft.calculateArms(aircraft.getHTail());
 		aircraft.calculateArms(aircraft.getVTail());
@@ -743,22 +735,33 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		_theCalculatorsList.add(aircraft.getTheAnalysisManager().getTheBalance());
 	}
 	
-	public void calculateAerodynamics(OperatingConditions theOperatingConditions, Aircraft aircraft) {
+	public void calculateAerodynamics(
+			OperatingConditions theOperatingConditions,
+			Aircraft aircraft,
+			String resultsFolderPath) {
 
 		aircraft.getTheAnalysisManager().getTheAerodynamics().initialize(theOperatingConditions);
 		aircraft.getTheAnalysisManager().getTheAerodynamics().calculateAll(theOperatingConditions);
 
+		// TODO : ADD toString AND toXLSFile METHODS WHEN AVAILABLE !
+		
 		// populate _theCalculatorsList
 		_theCalculatorsList.add(aircraft.getTheAnalysisManager().getTheAerodynamics());
 
 	}
 	
-	public void calculatePerformances(Aircraft aircraft) {
+	public void calculatePerformances(Aircraft aircraft, String resultsFolderPath) {
 		aircraft.getTheAnalysisManager().getThePerformance().calculateAllPerformance();
+		
+		// TODO : ADD toString AND toXLSFile METHODS WHEN AVAILABLE !
+		
 	}
 	
-	public void calculateCosts(Aircraft aircraft) {
+	public void calculateCosts(Aircraft aircraft, String resultsFolderPath) {
 		aircraft.getTheAnalysisManager().getTheCosts().calculateAll();
+		
+		// TODO : ADD toString AND toXLSFile METHODS WHEN AVAILABLE !
+		
 	}
 
 	// GETTERS & SETTERS:
@@ -923,14 +926,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		this._methodsMapWeights = _methodsMap;
 	}
 
-	public Map <ComponentEnum, MethodEnum> getMethodsMapBalance() {
-		return _methodsMapBalance;
-	}
-
-	public void setMethodsMapBalance(Map <ComponentEnum, MethodEnum> _methodsMapBalance) {
-		this._methodsMapBalance = _methodsMapBalance;
-	}
-
 	public Map<AnalysisTypeEnum, Boolean> getExecutedAnalysesMap() {
 		return _executedAnalysesMap;
 	}
@@ -993,5 +988,45 @@ public class ACAnalysisManager implements IACAnalysisManager {
 
 	public void setAnalysisList(List<AnalysisTypeEnum> _analysisList) {
 		this._analysisList = _analysisList;
+	}
+
+	public File getWeightsFileComplete() {
+		return _weightsFileComplete;
+	}
+
+	public void setWeightsFileComplete(File _weightsFileComplete) {
+		ACAnalysisManager._weightsFileComplete = _weightsFileComplete;
+	}
+
+	public File getBalanceFileComplete() {
+		return _balanceFileComplete;
+	}
+
+	public void setBalanceFileComplete(File _balanceFileComplete) {
+		ACAnalysisManager._balanceFileComplete = _balanceFileComplete;
+	}
+
+	public File getAerodynamicsFileComplete() {
+		return _aerodynamicsFileComplete;
+	}
+
+	public void setAerodynamicsFileComplete(File _aerodynamicsFileComplete) {
+		ACAnalysisManager._aerodynamicsFileComplete = _aerodynamicsFileComplete;
+	}
+
+	public File getPerformanceFileComplete() {
+		return _performanceFileComplete;
+	}
+
+	public void setPerformanceFileComplete(File _performanceFileComplete) {
+		ACAnalysisManager._performanceFileComplete = _performanceFileComplete;
+	}
+
+	public File getCostsFileComplete() {
+		return _costsFileComplete;
+	}
+
+	public void setCostsFileComplete(File _costsFileComplete) {
+		ACAnalysisManager._costsFileComplete = _costsFileComplete;
 	}
 }

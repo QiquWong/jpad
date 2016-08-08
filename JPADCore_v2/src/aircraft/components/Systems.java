@@ -171,7 +171,7 @@ public class Systems implements ISystems {
 
 		// The user can estimate the overall systems mass (control surfaces systems, apu, de-icing ecc...)
 		// or estimate each component mass separately
-		calculateOverallMass(aircraft, method);
+		calculateOverallMass(aircraft, MethodEnum.TORENBEEK_2013);
 	}
 
 	@Override

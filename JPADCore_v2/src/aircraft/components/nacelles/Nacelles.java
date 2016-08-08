@@ -241,7 +241,7 @@ public class Nacelles implements INacelles {
 
 		for(int i=0; i < _nacellesNumber; i++) {
 			_nacellesList.get(i).getWeights().calculateAll();
-			if(methodsMapWeights.get(ComponentEnum.NACELLE) != null)
+			if(!methodsMapWeights.get(ComponentEnum.NACELLE).equals(MethodEnum.AVERAGE))
 				_nacellesList.get(i).getWeights().setMassEstimated(
 						_nacellesList.get(i).getWeights().getMassMap().get(
 								methodsMapWeights.get(ComponentEnum.NACELLE)

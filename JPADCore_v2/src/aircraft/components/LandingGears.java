@@ -341,8 +341,14 @@ public class LandingGears implements ILandingGear {
 		calculateMass(aircraft, MethodEnum.TORENBEEK_1982);
 		calculateMass(aircraft, MethodEnum.TORENBEEK_2013);
 		
-		if (methodsMapWeights.get(ComponentEnum.LANDING_GEAR) != null)
+		if (!methodsMapWeights.get(ComponentEnum.LANDING_GEAR).equals(MethodEnum.AVERAGE))
 			_estimatedMass = _massMap.get(methodsMapWeights.get(ComponentEnum.LANDING_GEAR));
+		else
+			_estimatedMass = Amount.valueOf(JPADStaticWriteUtils.compareMethods(
+					_referenceMass, 
+					_massMap,
+					_percentDifference,
+					25.).getMean(), SI.KILOGRAM);
 		
 	}
 

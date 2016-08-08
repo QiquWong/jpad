@@ -18,7 +18,6 @@ public interface IACBalanceManager {
 	public void toXLSFile(String filenameWithPathAndExt) throws InvalidFormatException, IOException;
 	public void createBalanceCharts(String balanceOutputFolderPath);
 	public void calculateBalance();
-	public void calculateBalance(Map<ComponentEnum, MethodEnum> methodsMap);
 	public void calculateTotalCG();
 	
 	public Double getXCGMeanAtOEM();

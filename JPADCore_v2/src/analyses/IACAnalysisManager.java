@@ -1,5 +1,6 @@
 package analyses;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -21,16 +22,18 @@ public interface IACAnalysisManager {
 	public void calculateDependentVariables();
 	public void doAnalysis(
 			Aircraft aircraft, 
-			OperatingConditions theOperatingConditions
-			);
-	public void calculateWeights(Aircraft aircraft);
-	public void calculateBalance(Aircraft aircraft);
+			OperatingConditions theOperatingConditions,
+			String resultsFolderPath
+			) throws IOException;
+	public void calculateWeights(Aircraft aircraft, String resultsFolderPath);
+	public void calculateBalance(Aircraft aircraft, String resultsFolderPath);
 	public void calculateAerodynamics(
 			OperatingConditions theOperatingConditions,
-			Aircraft aircraft
+			Aircraft aircraft,
+			String resultsFolderPath
 			);
-	public void calculatePerformances(Aircraft aircraft);
-	public void calculateCosts(Aircraft aircraft);
+	public void calculatePerformances(Aircraft aircraft, String resultsFolderPath);
+	public void calculateCosts(Aircraft aircraft, String resultsFolderPath);
 	
 	public String getId();
 	public void setId(String _id);
@@ -92,9 +95,6 @@ public interface IACAnalysisManager {
 	public Map<ComponentEnum, MethodEnum> getMethodsMapWeights();
 	public void setMethodsMapWeights(Map<ComponentEnum, MethodEnum> _methodsMap);
 	
-	public Map<ComponentEnum, MethodEnum> getMethodsMapBalance();
-	public void setMethodsMapBalance(Map<ComponentEnum, MethodEnum> _methodsMap);
-
 	public Map<AnalysisTypeEnum, Boolean> getExecutedAnalysesMap();
 	public void setExecutedAnalysesMap(Map<AnalysisTypeEnum, Boolean> _executedAnalysesMap);
 

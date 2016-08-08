@@ -330,7 +330,7 @@ public class SeatsBlock {
 	public void calculateTotalMass(Aircraft aircraft) {
 		_totalMass = Amount.valueOf(
 				_totalSeats *
-				aircraft.getTheAnalysisManager().getTheWeights().getPaxSingleMass().getEstimatedValue(), 
+				aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().getEstimatedValue(), 
 				SI.KILOGRAM);
 	}
 
@@ -369,10 +369,10 @@ public class SeatsBlock {
 	public static CGboarding calculateCoGboarding(List<SeatsBlock> seatsBlocks, Aircraft aircraft) {
 
 		double sumFtoR = aircraft.getTheAnalysisManager().getTheBalance().getXCGMeanAtOEM()*
-				aircraft.getTheAnalysisManager().getTheWeights().getOperatingEmptyMass().getEstimatedValue(),
+				aircraft.getTheAnalysisManager().getTheBalance().getOperatingEmptyMass().getEstimatedValue(),
 
 				sumRtoF = aircraft.getTheAnalysisManager().getTheBalance().getXCGMeanAtOEM()*
-				aircraft.getTheAnalysisManager().getTheWeights().getOperatingEmptyMass().getEstimatedValue();
+				aircraft.getTheAnalysisManager().getTheBalance().getOperatingEmptyMass().getEstimatedValue();
 
 		double currentMass, mult, emptyColumns = 0.;
 		boolean window = false, aisle = false, other = false;
@@ -380,7 +380,7 @@ public class SeatsBlock {
 		CGboarding cg = new CGboarding();
 
 		SeatsBlock x = new SeatsBlock();
-		currentMass = aircraft.getTheAnalysisManager().getTheWeights().getOperatingEmptyMass().getEstimatedValue();
+		currentMass = aircraft.getTheAnalysisManager().getTheBalance().getOperatingEmptyMass().getEstimatedValue();
 		window = false; aisle = false; other = false;
 
 		///////////////////
@@ -403,9 +403,9 @@ public class SeatsBlock {
 
 						//						System.out.println("FRwindow-----" + currentMass);
 						sumFtoR += (x._rowColumnCoordinate._xList.get(i) + x._xCoordinate.getEstimatedValue() + x._pitch.getEstimatedValue()/2)*
-								2*aircraft.getTheAnalysisManager().getTheWeights().getPaxSingleMass().getEstimatedValue();
+								2*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().getEstimatedValue();
 
-						currentMass += 2*aircraft.getTheAnalysisManager().getTheWeights().getPaxSingleMass().getEstimatedValue();
+						currentMass += 2*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().getEstimatedValue();
 						cg.getCurrentMassList().add(Amount.valueOf(currentMass, SI.KILOGRAM));
 
 						cg.getCurrentXCoGfrontToRearWindow().add(
@@ -435,9 +435,9 @@ public class SeatsBlock {
 
 						//						System.out.println("FRaisle-----" + currentMass);
 						sumFtoR += (x._rowColumnCoordinate._xList.get(i) + x._xCoordinate.getEstimatedValue() + x._pitch.getEstimatedValue()/2)*
-								mult*aircraft.getTheAnalysisManager().getTheWeights().getPaxSingleMass().getEstimatedValue();
+								mult*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().getEstimatedValue();
 
-						currentMass += mult*aircraft.getTheAnalysisManager().getTheWeights().getPaxSingleMass().getEstimatedValue();
+						currentMass += mult*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().getEstimatedValue();
 						cg.getCurrentMassList().add(Amount.valueOf(currentMass, SI.KILOGRAM));
 
 						cg.getCurrentXCoGfrontToRearAisle().add(
@@ -472,9 +472,9 @@ public class SeatsBlock {
 				for (int i = 0; i < x._rowNumber; i++) {
 
 					sumFtoR += (x._rowColumnCoordinate._xList.get(i) + x._xCoordinate.getEstimatedValue() + x._pitch.getEstimatedValue()/2)*
-							emptyColumns*aircraft.getTheAnalysisManager().getTheWeights().getPaxSingleMass().getEstimatedValue();
+							emptyColumns*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().getEstimatedValue();
 
-					currentMass += emptyColumns*aircraft.getTheAnalysisManager().getTheWeights().getPaxSingleMass().getEstimatedValue();
+					currentMass += emptyColumns*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().getEstimatedValue();
 					cg.getCurrentMassList().add(Amount.valueOf(currentMass, SI.KILOGRAM));
 
 					cg.getCurrentXCoGfrontToRearOther().add(
@@ -486,7 +486,7 @@ public class SeatsBlock {
 			}
 		}
 
-		currentMass = aircraft.getTheAnalysisManager().getTheWeights().getOperatingEmptyMass().getEstimatedValue();
+		currentMass = aircraft.getTheAnalysisManager().getTheBalance().getOperatingEmptyMass().getEstimatedValue();
 		window = false; aisle = false; other = false;
 
 		///////////////////
@@ -506,10 +506,10 @@ public class SeatsBlock {
 					for (int i = x._rowNumber-1; i >= 0; i--) {
 
 						sumRtoF += (x._rowColumnCoordinate._xList.get(i) + x._xCoordinate.getEstimatedValue() + x._pitch.getEstimatedValue()/2)*
-								2*aircraft.getTheAnalysisManager().getTheWeights().getPaxSingleMass().getEstimatedValue();
+								2*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().getEstimatedValue();
 
 						//						System.out.println("RFwindow-----" + currentMass);
-						currentMass += 2*aircraft.getTheAnalysisManager().getTheWeights().getPaxSingleMass().getEstimatedValue();
+						currentMass += 2*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().getEstimatedValue();
 
 						cg.getCurrentXCoGrearToFrontWindow().add(
 								Amount.valueOf(
@@ -538,9 +538,9 @@ public class SeatsBlock {
 
 						//						System.out.println("RFailse-----" + currentMass);
 						sumRtoF += ((x._rowColumnCoordinate._xList.get(i) + x._xCoordinate.getEstimatedValue() + x._pitch.getEstimatedValue()/2)*
-								mult*aircraft.getTheAnalysisManager().getTheWeights().getPaxSingleMass().getEstimatedValue());
+								mult*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().getEstimatedValue());
 
-						currentMass += mult*aircraft.getTheAnalysisManager().getTheWeights().getPaxSingleMass().getEstimatedValue();
+						currentMass += mult*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().getEstimatedValue();
 
 						cg.currentXCoGrearToFrontAisle.add(
 								Amount.valueOf(
@@ -573,9 +573,9 @@ public class SeatsBlock {
 				for (int i = x._rowNumber - 1; i >= 0 ; i--) {
 
 					sumRtoF += (x._rowColumnCoordinate._xList.get(i) + x._xCoordinate.getEstimatedValue() + x._pitch.getEstimatedValue()/2)*
-							emptyColumns*aircraft.getTheAnalysisManager().getTheWeights().getPaxSingleMass().getEstimatedValue();
+							emptyColumns*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().getEstimatedValue();
 
-					currentMass += emptyColumns*aircraft.getTheAnalysisManager().getTheWeights().getPaxSingleMass().getEstimatedValue();
+					currentMass += emptyColumns*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().getEstimatedValue();
 
 					cg.currentXCoGrearToFrontOther.add(
 							Amount.valueOf(

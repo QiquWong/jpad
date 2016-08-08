@@ -300,8 +300,14 @@ public class Fuselage implements IFuselage {
 		calculateMass(aircraft, MethodEnum.NICOLAI_1984);
 		calculateMass(aircraft, MethodEnum.ROSKAM);
 		
-		if(methodsMapWeights.get(ComponentEnum.FUSELAGE) != null) 
+		if(!methodsMapWeights.get(ComponentEnum.FUSELAGE).equals(MethodEnum.AVERAGE)) 
 			_massEstimated = _massMap.get(methodsMapWeights.get(ComponentEnum.FUSELAGE));
+		else 
+			_massEstimated = Amount.valueOf(JPADStaticWriteUtils.compareMethods(
+					this._fuselageCreator.getMassReference(), 
+					_massMap,
+					_percentDifference,
+					100.).getFilteredMean(), SI.KILOGRAM);
 		
 	}
 
