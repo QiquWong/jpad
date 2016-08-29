@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import it.unina.daf.jpadcad.occ.CADEdge;
 import it.unina.daf.jpadcad.occ.CADGeomCurve3D;
 import it.unina.daf.jpadcad.occ.CADShapeFactory;
 import it.unina.daf.jpadcad.occ.OCCShapeFactory;
@@ -19,7 +20,7 @@ public class Test6 {
 		points.add(new double[]{ 0,  0,  0});
 		points.add(new double[]{ 0, 10,  5});
 		points.add(new double[]{ 0, 15, -5});
-		points.add(new double[]{ 0, 20,  0});
+		points.add(new double[]{ 0, 20,  3});
 
 		// create the cad factory
 		CADShapeFactory.setFactory(new OCCShapeFactory());
@@ -41,8 +42,9 @@ public class Test6 {
 		
 		// Write to a file
 		String fileName = "test06.brep";
-//		cadEdge.writeNative(fileName);
-//		System.out.println("Output written on file: " + fileName);
+		CADEdge cadEdge = cadGeomCurve3D.edge();
+		cadEdge.writeNative(fileName);
+		System.out.println("Output written on file: " + fileName);
 
 	}
 

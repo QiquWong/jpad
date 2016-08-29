@@ -64,4 +64,10 @@ public interface CADGeomCurve3D
 	 * @return the length of this curve
 	 */
 	public double length();
+
+	/**
+	 * Return the CADEdge object of this curve
+	 * @return the CADEdge object of this curve
+	 */
+	public CADEdge edge();
 }

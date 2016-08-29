@@ -18,6 +18,7 @@ import opencascade.gp_Pnt;
 
 public class OCCGeomCurve3D implements CADGeomCurve3D
 {
+	private CADEdge cadEdge = null;
 	private GeomAdaptor_Curve myCurve = null;
 	private final double [] range = new double[2];
 	private OCCDiscretizeCurve3D discret = null;
@@ -27,6 +28,7 @@ public class OCCGeomCurve3D implements CADGeomCurve3D
 	{
 		if (!(E instanceof OCCEdge))
 			throw new IllegalArgumentException();
+		cadEdge = E;
 		OCCEdge occEdge = (OCCEdge) E;
 		double[] first = new double[1];
 		double[] last  = new double[1];
@@ -54,22 +56,24 @@ public class OCCGeomCurve3D implements CADGeomCurve3D
 		int nPoints = pointList.size();
 		if (nPoints > 0) {			
 			TColgp_HArray1OfPnt points = new TColgp_HArray1OfPnt(1, nPoints);
-			for(int i=0; i < nPoints-1; i++) {
+			for(int i=0; i < nPoints; i++) {
 				points.SetValue(i+1, new gp_Pnt(pointList.get(i)[0],  pointList.get(i)[1], pointList.get(i)[2]));
 			}
 			long longIsPeriodic = 0;
 			if (isPeriodic)
 				longIsPeriodic = 1;
 			
-			for(int i=1; i < nPoints; i++) {
-				System.out.println(points.Value(i));
-			}
-			
 			GeomAPI_Interpolate anInterpolate = 
 					new GeomAPI_Interpolate(points, longIsPeriodic, Precision.Confusion());
 			anInterpolate.Perform();
 			Geom_BSplineCurve anInterpolationCurve = anInterpolate.Curve();
 			TopoDS_Edge spline = new BRepBuilderAPI_MakeEdge(anInterpolationCurve).Edge();
+			
+			CADShapeFactory factory = CADShapeFactory.getFactory();
+			if (factory != null) {
+				CADShape cadShape = factory.newShape(spline);
+				cadEdge =(CADEdge) cadShape;
+			}
 			
 			double[] first = new double[1];
 			double[] last  = new double[1];
@@ -158,5 +162,9 @@ public class OCCGeomCurve3D implements CADGeomCurve3D
 	{
 		return len;
 	}
-	
+
+	public CADEdge edge() {
+		return cadEdge;
+	}
+
 }
