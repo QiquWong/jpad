@@ -15,16 +15,16 @@ public class Test6 {
 		System.out.println("Testing Java Wrapper of OCCT v7.0.0");
 		System.out.println("Classes in package it.unina.daf.jpadcad.occ");
 		
+		// create the cad factory
+		CADShapeFactory.setFactory(new OCCShapeFactory());
+		CADShapeFactory factory = CADShapeFactory.getFactory();
+
 		// list of points belonging to the desired curve
 		List<double[]> points = new ArrayList<double[]>();
 		points.add(new double[]{ 0,  0,  0});
 		points.add(new double[]{ 0, 10,  5});
 		points.add(new double[]{ 0, 15, -5});
 		points.add(new double[]{ 0, 20,  3});
-
-		// create the cad factory
-		CADShapeFactory.setFactory(new OCCShapeFactory());
-		CADShapeFactory factory = CADShapeFactory.getFactory();
 
 		boolean isPeriodic = false;
 		CADGeomCurve3D cadGeomCurve3D = factory.newCurve3D(points, isPeriodic);
