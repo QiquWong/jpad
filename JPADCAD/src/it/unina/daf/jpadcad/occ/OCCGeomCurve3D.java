@@ -2,6 +2,8 @@ package it.unina.daf.jpadcad.occ;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import opencascade.BRepBuilderAPI_MakeEdge;
 import opencascade.BRepGProp;
@@ -73,6 +75,11 @@ public class OCCGeomCurve3D implements CADGeomCurve3D
 			if (factory != null) {
 				CADShape cadShape = factory.newShape(spline);
 				cadEdge =(CADEdge) cadShape;
+			} else {
+				Logger LOGGER=Logger.getLogger(CADShapeFactory.class.getName());
+				LOGGER.log(Level.WARNING, "Class CADShapeFactory: factory object not found.");
+				LOGGER.log(Level.WARNING, "Class OCCGeomCurve3D: CADEdge object set to null.");
+				cadEdge = null;
 			}
 			
 			double[] first = new double[1];
