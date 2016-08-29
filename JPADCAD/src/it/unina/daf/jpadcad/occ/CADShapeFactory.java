@@ -1,6 +1,7 @@
 package it.unina.daf.jpadcad.occ;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -114,4 +115,11 @@ public abstract class CADShapeFactory
 	 */
 	public abstract CADGeomCurve3D newCurve3D(CADEdge E);
 
+	/**
+	 * Create a new CADGeomCurve3D
+	 * @param pointList The list of points belonging to the curve (a BSpline)
+	 * @return The created CADGeomCurve3D
+	 */
+	public abstract CADGeomCurve3D newCurve3D(List<double[]> pointList, boolean isPeriodic);
+	
 }

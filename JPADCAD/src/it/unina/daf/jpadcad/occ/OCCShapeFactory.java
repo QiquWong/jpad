@@ -1,6 +1,7 @@
 package it.unina.daf.jpadcad.occ;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Logger;
 
 import opencascade.BRepAlgoAPI_BooleanOperation;
@@ -191,6 +192,19 @@ public class OCCShapeFactory extends CADShapeFactory
 		try
 		{
 			curve = new OCCGeomCurve3D(E);
+		}
+		catch (RuntimeException ex)
+		{
+		}
+		return curve;
+	}
+
+	@Override
+	public CADGeomCurve3D newCurve3D(List<double[]> pointList, boolean isPeriodic) {
+		CADGeomCurve3D curve = null;
+		try
+		{
+			curve = new OCCGeomCurve3D(pointList, isPeriodic);
 		}
 		catch (RuntimeException ex)
 		{
