@@ -1,0 +1,14 @@
+c:\Program Files\Java\jre1.8.0_91\bin;
+C:\Users\jyota\ADOPT_PROJECT\OCCT\Java_Wrapper\java\win64\vc14\bin;
+c:\Users\jyota\Downloads\OpenCASCADE7.0.0-vc14-64\VTK-6.1.0-vc14-64\bin;
+c:\Users\jyota\Downloads\OpenCASCADE7.0.0-vc14-64\tcltk-86-64\bin;
+c:\Users\jyota\Downloads\OpenCASCADE7.0.0-vc14-64\freetype-2.5.5-vc14-64\bin;
+c:\Users\jyota\Downloads\OpenCASCADE7.0.0-vc14-64\freeimage-3.17.0-vc14-64\bin;
+c:\Users\jyota\Downloads\OpenCASCADE7.0.0-vc14-64\gl2ps-1.3.8-vc14-64\bin;
+c:\Users\jyota\Downloads\OpenCASCADE7.0.0-vc14-64\tbb44_20160526oss\bin\intel64\vc14;
+c:\Users\jyota\Downloads\OpenCASCADE7.0.0-vc14-64\opencascade-7.0.0\win64\vc14\bin;
+------
+c:\Program Files\Java\jre1.8.0_91\bin;C:\Users\jyota\ADOPT_PROJECT\OCCT\Java_Wrapper\java\win64\vc14\bin;c:\Users\jyota\Downloads\OpenCASCADE7.0.0-vc14-64\VTK-6.1.0-vc14-64\bin;c:\Users\jyota\Downloads\OpenCASCADE7.0.0-vc14-64\tcltk-86-64\bin;c:\Users\jyota\Downloads\OpenCASCADE7.0.0-vc14-64\freetype-2.5.5-vc14-64\bin;c:\Users\jyota\Downloads\OpenCASCADE7.0.0-vc14-64\freeimage-3.17.0-vc14-64\bin;c:\Users\jyota\Downloads\OpenCASCADE7.0.0-vc14-64\gl2ps-1.3.8-vc14-64\bin;c:\Users\jyota\Downloads\OpenCASCADE7.0.0-vc14-64\tbb44_20160526oss\bin\intel64\vc14;c:\Users\jyota\Downloads\OpenCASCADE7.0.0-vc14-64\opencascade-7.0.0\win64\vc14\bin;
+------
+c:\Users\jyota\ADOPT_PROJECT\jpad\libraries\occjava\OCCJavaWrapper_OCCT_v7.0.0_vc14_Win64
+c:\Users\jyota\ADOPT_PROJECT\jpad\libraries\occjava\OCCJavaWrapper_OCCT_v7.0.0_vc14_Win64\jre1.8.0_91\bin

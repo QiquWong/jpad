@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_91"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/occjava/OCCJavaWrapper_OCCT_v7.0.0_vc14_Win64/OCCJavaWrapper.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/trove/trove-3.1a1.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/vecmath/vecmath.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
