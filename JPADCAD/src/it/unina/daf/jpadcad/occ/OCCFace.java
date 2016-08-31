@@ -3,6 +3,7 @@ package it.unina.daf.jpadcad.occ;
 import opencascade.BRepBndLib;
 import opencascade.BRep_Tool;
 import opencascade.Bnd_Box;
+import opencascade.TopoDS;
 import opencascade.TopoDS_Face;
 
 public class OCCFace extends OCCShape implements CADFace
@@ -10,7 +11,8 @@ public class OCCFace extends OCCShape implements CADFace
 	@Override
 	public final TopoDS_Face getShape()
 	{
-		return (TopoDS_Face) myShape;
+		//return (TopoDS_Face) myShape;
+		return TopoDS.ToFace(myShape);
 	}
 
 	@Override

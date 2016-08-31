@@ -10,6 +10,7 @@ import it.unina.daf.jpadcad.occ.CADGeomCurve3D;
 import it.unina.daf.jpadcad.occ.CADGeomSurface;
 import it.unina.daf.jpadcad.occ.CADShape;
 import it.unina.daf.jpadcad.occ.CADShapeFactory;
+import it.unina.daf.jpadcad.occ.CADVertex;
 import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occ.OCCShapeFactory;
 import opencascade.BRepBuilderAPI_MakeWire;
@@ -18,6 +19,7 @@ import opencascade.BRepOffsetAPI_ThruSections;
 import opencascade.BRepTools;
 import opencascade.BRep_Builder;
 import opencascade.GProp_GProps;
+import opencascade.TopAbs_ShapeEnum;
 import opencascade.TopoDS;
 import opencascade.TopoDS_Compound;
 import opencascade.TopoDS_Edge;
@@ -77,6 +79,16 @@ public class Test7 {
 		OCCShape edge3 = (OCCShape)cadGeomCurve3D3.edge();
 		TopoDS_Edge _edge3 = TopoDS.ToEdge(edge3.getShape());
 
+		// show vertices of each edge
+		int edgeCount = 1;
+		for (CADEdge cadEdge : new CADEdge[]{(CADEdge)edge1, (CADEdge)edge2, (CADEdge)edge3} ) {
+			System.out.print("Edge " + edgeCount + " vertices: ");
+			CADVertex [] cadVertices = cadEdge.vertices();
+			System.out.print(Arrays.toString(cadVertices[0].pnt()) + " - ");
+			System.out.println(Arrays.toString(cadVertices[1].pnt()));
+			edgeCount++;
+		}
+		
 		// make wires
 		BRepBuilderAPI_MakeWire _wire1 = new BRepBuilderAPI_MakeWire();
 		_wire1.Add(_edge1);
@@ -99,6 +111,13 @@ public class Test7 {
 		BRepGProp.SurfaceProperties(_loft.Shape(), _property);
 		System.out.println("Loft surface area = " + _property.Mass());
 
+		// create a CADSurface
+		
+		//BRepOffsetAPI_ThruSections
+		CADShape shape = factory.newShape(_loft.Shape());
+		System.out.println("Shape class: " + shape.getClass());
+		
+		
 		//---------------------------------------------------------------------------
 		// Put everything in a compound
 		BRep_Builder _builder = new BRep_Builder();
