@@ -46,7 +46,10 @@ public class SpeedCalc {
 	}
 	
 	public static double calculateTAS(double mach, double altitude) {
-		return mach*AtmosphereCalc.getSpeedOfSound(altitude);
+	//	return mach*AtmosphereCalc.getSpeedOfSound(altitude);
+//		double speed = mach*200000;
+		double speed = mach*AtmosphereCalc.getSpeedOfSound(altitude);
+		return speed;
 	}
 
 	/**

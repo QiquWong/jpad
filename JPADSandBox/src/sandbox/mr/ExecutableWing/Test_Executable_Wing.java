@@ -77,7 +77,7 @@ public class Test_Executable_Wing {
 //			theReader.getInput().setNumberOfPointSemispan(numberOfPointInput[i]);
 		WingAerodynamicCalc.calculateAll(theReader.getInput());
 //		}
-//		theReader.writeToXML(filenameWithPathAndExt);
+		theReader.writeToXML(filenameWithPathAndExt);
 
 	}
 
