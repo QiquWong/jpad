@@ -145,6 +145,13 @@ public class WingAerodynamicCalc {
 		System.out.println("alpha zero lift distribution (rad) = " + alpha0lActual.toString());
 		System.out.println("Cl max distribution = " + clMaxActual.toString());
 
+		// set dihedral to zero
+		
+		double [] dihedralZero = new double [dihedralActual.size()];
+		
+		for (int i=0; i< dihedralZero.length; i++){
+			dihedralZero[i] = 0.0;
+		}
 
 		// other
 
@@ -159,7 +166,8 @@ public class WingAerodynamicCalc {
 				yStationDimensional,
 				chordsVsYActual.toArray(),
 				xLEvsYActual.toArray(),
-				dihedralActual.toArray(),
+//				dihedralActual.toArray(),
+				dihedralZero,
 				twistActual.toArray(),
 				alpha0lActual.toArray(),
 				vortexSemiSpanToSemiSpanRatio,
