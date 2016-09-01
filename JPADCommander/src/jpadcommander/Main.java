@@ -10,6 +10,7 @@ package jpadcommander;
 
 import java.io.IOException;
 
+import aircraft.components.Aircraft;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -24,12 +25,49 @@ public class Main extends Application {
 	private static BorderPane mainLayout;
 	private static BorderPane mainInputManagerLayout;
 	private static BorderPane mainInputManagerAircraftSubContentLayout;
+	
 	private static TextField textFieldAircraftInputFile;
+	
+	private static TextField textFieldAircraftCabinConfiguration;
+	
+	private static TextField textFieldAircraftFuselageFile;
+	private static TextField textFieldAircraftFuselageX;
+	private static TextField textFieldAircraftFuselageY;
+	private static TextField textFieldAircraftFuselageZ;
+	
+	private static TextField textFieldAircraftWingFile;
+	private static TextField textFieldAircraftWingX;
+	private static TextField textFieldAircraftWingY;
+	private static TextField textFieldAircraftWingZ;
+	private static TextField textFieldAircraftWingRiggingAngle;
+	
+	private static TextField textFieldAircraftHorizontalTailFile;
+	private static TextField textFieldAircraftHorizontalTailX;
+	private static TextField textFieldAircraftHorizontalTailY;
+	private static TextField textFieldAircraftHorizontalTailZ;
+	private static TextField textFieldAircraftHorizontalTailRiggingAngle;
+	
+	private static TextField textFieldAircraftVerticalTailFile;
+	private static TextField textFieldAircraftVerticalTailX;
+	private static TextField textFieldAircraftVerticalTailY;
+	private static TextField textFieldAircraftVerticalTailZ;
+	private static TextField textFieldAircraftVerticalTailRiggingAngle;
+	
+	private static TextField textFieldAircraftCanardFile;
+	private static TextField textFieldAircraftCanardX;
+	private static TextField textFieldAircraftCanardY;
+	private static TextField textFieldAircraftCanardZ;
+	private static TextField textFieldAircraftCanardRiggingAngle;
+	
+	// TODO : ADD OTHER TEXT FIELDS (BOTH DEFAULT AND IMPORT FROM FILE)
+	
 	private static BorderPane mainInputManagerAircraftFromFileLayout;
 	private static BorderPane mainInputManagerAircraftDefaultLayout;
 	private static String inputDirectoryPath;
 	private static String outputDirectoryPath;
 	private static String databaseDirectoryPath;
+	
+	private static Aircraft theAircraft;
 	
 	@Override
 	public void start(Stage primaryStage) throws IOException {
@@ -156,4 +194,214 @@ public class Main extends Application {
 	public static void setDatabaseDirectoryPath(String databaseDirectoryPath) {
 		Main.databaseDirectoryPath = databaseDirectoryPath;
 	}
+
+	public static Aircraft getTheAircraft() {
+		return theAircraft;
+	}
+
+	public static void setTheAircraft(Aircraft theAircraft) {
+		Main.theAircraft = theAircraft;
+	}
+	
+	public static TextField getTextFieldAircraftCabinConfiguration() {
+		return textFieldAircraftCabinConfiguration;
+	}
+
+	public static void setTextFieldAircraftCabinConfiguration(TextField textFieldAircraftCabinConfiguration) {
+		Main.textFieldAircraftCabinConfiguration = textFieldAircraftCabinConfiguration;
+	}
+
+	public static TextField getTextFieldAircraftFuselageFile() {
+		return textFieldAircraftFuselageFile;
+	}
+
+	public static void setTextFieldAircraftFuselageFile(TextField textFieldAircraftFuselageFile) {
+		Main.textFieldAircraftFuselageFile = textFieldAircraftFuselageFile;
+	}
+
+	public static TextField getTextFieldAircraftFuselageX() {
+		return textFieldAircraftFuselageX;
+	}
+
+	public static void setTextFieldAircraftFuselageX(TextField textFieldAircraftFuselageX) {
+		Main.textFieldAircraftFuselageX = textFieldAircraftFuselageX;
+	}
+
+	public static TextField getTextFieldAircraftFuselageY() {
+		return textFieldAircraftFuselageY;
+	}
+
+	public static void setTextFieldAircraftFuselageY(TextField textFieldAircraftFuselageY) {
+		Main.textFieldAircraftFuselageY = textFieldAircraftFuselageY;
+	}
+
+	public static TextField getTextFieldAircraftFuselageZ() {
+		return textFieldAircraftFuselageZ;
+	}
+
+	public static void setTextFieldAircraftFuselageZ(TextField textFieldAircraftFuselageZ) {
+		Main.textFieldAircraftFuselageZ = textFieldAircraftFuselageZ;
+	}
+
+	public static TextField getTextFieldAircraftWingFile() {
+		return textFieldAircraftWingFile;
+	}
+
+	public static void setTextFieldAircraftWingFile(TextField textFieldAircraftWingFile) {
+		Main.textFieldAircraftWingFile = textFieldAircraftWingFile;
+	}
+
+	public static TextField getTextFieldAircraftWingX() {
+		return textFieldAircraftWingX;
+	}
+
+	public static void setTextFieldAircraftWingX(TextField textFieldAircraftWingX) {
+		Main.textFieldAircraftWingX = textFieldAircraftWingX;
+	}
+
+	public static TextField getTextFieldAircraftWingY() {
+		return textFieldAircraftWingY;
+	}
+
+	public static void setTextFieldAircraftWingY(TextField textFieldAircraftWingY) {
+		Main.textFieldAircraftWingY = textFieldAircraftWingY;
+	}
+
+	public static TextField getTextFieldAircraftWingZ() {
+		return textFieldAircraftWingZ;
+	}
+
+	public static void setTextFieldAircraftWingZ(TextField textFieldAircraftWingZ) {
+		Main.textFieldAircraftWingZ = textFieldAircraftWingZ;
+	}
+
+	public static TextField getTextFieldAircraftWingRiggingAngle() {
+		return textFieldAircraftWingRiggingAngle;
+	}
+
+	public static void setTextFieldAircraftWingRiggingAngle(TextField textFieldAircraftWingRiggingAngle) {
+		Main.textFieldAircraftWingRiggingAngle = textFieldAircraftWingRiggingAngle;
+	}
+
+	public static TextField getTextFieldAircraftHorizontalTailFile() {
+		return textFieldAircraftHorizontalTailFile;
+	}
+
+	public static void setTextFieldAircraftHorizontalTailFile(TextField textFieldAircraftHorizontalTailFile) {
+		Main.textFieldAircraftHorizontalTailFile = textFieldAircraftHorizontalTailFile;
+	}
+
+	public static TextField getTextFieldAircraftHorizontalTailX() {
+		return textFieldAircraftHorizontalTailX;
+	}
+
+	public static void setTextFieldAircraftHorizontalTailX(TextField textFieldAircraftHorizontalTailX) {
+		Main.textFieldAircraftHorizontalTailX = textFieldAircraftHorizontalTailX;
+	}
+
+	public static TextField getTextFieldAircraftHorizontalTailY() {
+		return textFieldAircraftHorizontalTailY;
+	}
+
+	public static void setTextFieldAircraftHorizontalTailY(TextField textFieldAircraftHorizontalTailY) {
+		Main.textFieldAircraftHorizontalTailY = textFieldAircraftHorizontalTailY;
+	}
+
+	public static TextField getTextFieldAircraftHorizontalTailZ() {
+		return textFieldAircraftHorizontalTailZ;
+	}
+
+	public static void setTextFieldAircraftHorizontalTailZ(TextField textFieldAircraftHorizontalTailZ) {
+		Main.textFieldAircraftHorizontalTailZ = textFieldAircraftHorizontalTailZ;
+	}
+
+	public static TextField getTextFieldAircraftHorizontalTailRiggingAngle() {
+		return textFieldAircraftHorizontalTailRiggingAngle;
+	}
+
+	public static void setTextFieldAircraftHorizontalTailRiggingAngle(
+			TextField textFieldAircraftHorizontalTailRiggingAngle) {
+		Main.textFieldAircraftHorizontalTailRiggingAngle = textFieldAircraftHorizontalTailRiggingAngle;
+	}
+
+	public static TextField getTextFieldAircraftVerticalTailFile() {
+		return textFieldAircraftVerticalTailFile;
+	}
+
+	public static void setTextFieldAircraftVerticalTailFile(TextField textFieldAircraftVerticalTailFile) {
+		Main.textFieldAircraftVerticalTailFile = textFieldAircraftVerticalTailFile;
+	}
+
+	public static TextField getTextFieldAircraftVerticalTailX() {
+		return textFieldAircraftVerticalTailX;
+	}
+
+	public static void setTextFieldAircraftVerticalTailX(TextField textFieldAircraftVerticalTailX) {
+		Main.textFieldAircraftVerticalTailX = textFieldAircraftVerticalTailX;
+	}
+
+	public static TextField getTextFieldAircraftVerticalTailY() {
+		return textFieldAircraftVerticalTailY;
+	}
+
+	public static void setTextFieldAircraftVerticalTailY(TextField textFieldAircraftVerticalTailY) {
+		Main.textFieldAircraftVerticalTailY = textFieldAircraftVerticalTailY;
+	}
+
+	public static TextField getTextFieldAircraftVerticalTailZ() {
+		return textFieldAircraftVerticalTailZ;
+	}
+
+	public static void setTextFieldAircraftVerticalTailZ(TextField textFieldAircraftVerticalTailZ) {
+		Main.textFieldAircraftVerticalTailZ = textFieldAircraftVerticalTailZ;
+	}
+
+	public static TextField getTextFieldAircraftVerticalTailRiggingAngle() {
+		return textFieldAircraftVerticalTailRiggingAngle;
+	}
+
+	public static void setTextFieldAircraftVerticalTailRiggingAngle(TextField textFieldAircraftVerticalTailRiggingAngle) {
+		Main.textFieldAircraftVerticalTailRiggingAngle = textFieldAircraftVerticalTailRiggingAngle;
+	}
+
+	public static TextField getTextFieldAircraftCanardFile() {
+		return textFieldAircraftCanardFile;
+	}
+
+	public static void setTextFieldAircraftCanardFile(TextField textFieldAircraftCanardFile) {
+		Main.textFieldAircraftCanardFile = textFieldAircraftCanardFile;
+	}
+
+	public static TextField getTextFieldAircraftCanardX() {
+		return textFieldAircraftCanardX;
+	}
+
+	public static void setTextFieldAircraftCanardX(TextField textFieldAircraftCanardX) {
+		Main.textFieldAircraftCanardX = textFieldAircraftCanardX;
+	}
+
+	public static TextField getTextFieldAircraftCanardY() {
+		return textFieldAircraftCanardY;
+	}
+
+	public static void setTextFieldAircraftCanardY(TextField textFieldAircraftCanardY) {
+		Main.textFieldAircraftCanardY = textFieldAircraftCanardY;
+	}
+
+	public static TextField getTextFieldAircraftCanardZ() {
+		return textFieldAircraftCanardZ;
+	}
+
+	public static void setTextFieldAircraftCanardZ(TextField textFieldAircraftCanardZ) {
+		Main.textFieldAircraftCanardZ = textFieldAircraftCanardZ;
+	}
+
+	public static TextField getTextFieldAircraftCanardRiggingAngle() {
+		return textFieldAircraftCanardRiggingAngle;
+	}
+
+	public static void setTextFieldAircraftCanardRiggingAngle(TextField textFieldAircraftCanardRiggingAngle) {
+		Main.textFieldAircraftCanardRiggingAngle = textFieldAircraftCanardRiggingAngle;
+	}
+
 }

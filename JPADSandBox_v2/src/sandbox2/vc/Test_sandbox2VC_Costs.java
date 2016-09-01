@@ -200,7 +200,6 @@ public class Test_sandbox2VC_Costs {
 					dirSystems,
 					dirCabinConfiguration,
 					dirAirfoil,
-					dirCosts,
 					aeroDatabaseReader,
 					highLiftDatabaseReader);
 					
