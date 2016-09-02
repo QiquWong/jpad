@@ -8,16 +8,13 @@ import it.unina.daf.jpadcad.occ.CADEdge;
 import it.unina.daf.jpadcad.occ.CADExplorer;
 import it.unina.daf.jpadcad.occ.CADFace;
 import it.unina.daf.jpadcad.occ.CADGeomCurve3D;
-import it.unina.daf.jpadcad.occ.CADGeomSurface;
 import it.unina.daf.jpadcad.occ.CADShape;
 import it.unina.daf.jpadcad.occ.CADShapeFactory;
 import it.unina.daf.jpadcad.occ.CADShapeTypes;
 import it.unina.daf.jpadcad.occ.CADShell;
 import it.unina.daf.jpadcad.occ.CADVertex;
-import it.unina.daf.jpadcad.occ.OCCEdge;
 import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occ.OCCShapeFactory;
-import it.unina.daf.jpadcad.occ.OCCShapeTypes;
 import it.unina.daf.jpadcad.occ.OCCShell;
 import opencascade.BRepBuilderAPI_MakeWire;
 import opencascade.BRepGProp;
@@ -30,7 +27,7 @@ import opencascade.TopoDS;
 import opencascade.TopoDS_Compound;
 import opencascade.TopoDS_Edge;
 
-public class Test7 {
+public class Test8 {
 
 	public static void main(String[] args) {
 		System.out.println("Testing Java Wrapper of OCCT v7.0.0");
@@ -74,76 +71,37 @@ public class Test7 {
 		CADGeomCurve3D cadGeomCurve3D3 = factory.newCurve3D(points3, isPeriodic);
 		
 		//---------------------------------------------------------------------------
-		// Make a loft surface with low-level OCCT data structures
-		// NOTE: _<var-name> means a low-level OCCT object
-		BRepOffsetAPI_ThruSections _loft = new BRepOffsetAPI_ThruSections();
+		// Make a loft surface without low-level OCCT data structures
+		
+		List<CADGeomCurve3D> cadGeomCurveList = new ArrayList<CADGeomCurve3D>();
+		cadGeomCurveList.add(cadGeomCurve3D1);
+		cadGeomCurveList.add(cadGeomCurve3D2);
+		cadGeomCurveList.add(cadGeomCurve3D3);
+		
+		// The CADShell object
+		CADShell cadShell = factory.newShell(cadGeomCurveList);
+		
+		System.out.println("Is cadShell null?: " + (cadShell == null));
+		
+		System.out.println("Shape class: " + cadShell.getClass());
+		System.out.println("Is cadShape class CADShell?: " + (cadShell instanceof CADShell));
+		System.out.println("Is cadShape class OCCShell?: " + (cadShell instanceof OCCShell));
 
-		OCCShape edge1 = (OCCShape)cadGeomCurve3D1.edge();
-		TopoDS_Edge _edge1 = TopoDS.ToEdge(edge1.getShape());
-		OCCShape edge2 = (OCCShape)cadGeomCurve3D2.edge();
-		TopoDS_Edge _edge2 = TopoDS.ToEdge(edge2.getShape());
-		OCCShape edge3 = (OCCShape)cadGeomCurve3D3.edge();
-		TopoDS_Edge _edge3 = TopoDS.ToEdge(edge3.getShape());
-
-		// show vertices of each edge
-		int edgeCount = 1;
-		for (CADEdge cadEdge : new CADEdge[]{(CADEdge)edge1, (CADEdge)edge2, (CADEdge)edge3} ) {
-			System.out.print("Edge " + edgeCount + " vertices: ");
-			CADVertex [] cadVertices = cadEdge.vertices();
-			System.out.print(Arrays.toString(cadVertices[0].pnt()) + " - ");
-			System.out.println(Arrays.toString(cadVertices[1].pnt()));
-			edgeCount++;
-		}
-		
-		// make wires
-		BRepBuilderAPI_MakeWire _wire1 = new BRepBuilderAPI_MakeWire();
-		_wire1.Add(_edge1);
-		BRepBuilderAPI_MakeWire _wire2 = new BRepBuilderAPI_MakeWire();
-		_wire2.Add(_edge2);
-		BRepBuilderAPI_MakeWire _wire3 = new BRepBuilderAPI_MakeWire();
-		_wire3.Add(_edge3);
-		
-		// add wires to loft structure
-		_loft.AddWire(_wire1.Wire());
-		_loft.AddWire(_wire2.Wire());
-		_loft.AddWire(_wire3.Wire());
-		
-		_loft.Build();
-		
-		// System.out.println("Loft non-null?: " + (_loft != null));
-
-		// Display various other properties
-		GProp_GProps _property = new GProp_GProps(); // store measurements
-		BRepGProp.SurfaceProperties(_loft.Shape(), _property);
-		System.out.println("Loft surface area = " + _property.Mass());
-
-		// create a CADShape
-		
-		CADShape cadShape = factory.newShape(_loft.Shape());
-		
-		// Here the low-level object _loft is a OCCT Shell
-		// Example of shell exploration in search of faces
-		System.out.println("Is _loft class == TopAbs_SHELL?: " + 
-				(_loft.Shape().ShapeType() == TopAbs_ShapeEnum.TopAbs_SHELL));
-		System.out.println("Shape class: " + cadShape.getClass());
-		System.out.println("Is cadShape class CADShell?: " + (cadShape instanceof CADShell));
-		System.out.println("Is cadShape class OCCShell?: " + (cadShape instanceof OCCShell));
-
-		if (cadShape instanceof OCCShell) {
+		if (cadShell instanceof OCCShell) {
 			//-----------------------------------------------------------
 			// Explore the shell in search of faces 
 
 			// count
 			CADExplorer expF = CADShapeFactory.getFactory().newExplorer();
 			int faces = 0;
-			for (expF.init(cadShape, CADShapeTypes.FACE); expF.more(); expF.next())
+			for (expF.init((CADShape)cadShell, CADShapeTypes.FACE); expF.more(); expF.next())
 				faces++;	
 			System.out.println("Face count in cadShape: " + faces);
 			
 			// fill the array of faces
 			CADFace[] vFaceList = new CADFace[faces];
 			int kFace = 0;
-			for (expF.init(cadShape, CADShapeTypes.FACE); expF.more(); expF.next()) {
+			for (expF.init(cadShell, CADShapeTypes.FACE); expF.more(); expF.next()) {
 				vFaceList[kFace] = (CADFace) expF.current();
 				System.out.println(
 					"Face, F(" + kFace + ") bounding box: " 
@@ -159,13 +117,13 @@ public class Test7 {
 		BRep_Builder _builder = new BRep_Builder();
 		TopoDS_Compound _compound = new TopoDS_Compound();
 		_builder.MakeCompound(_compound);
-		_builder.Add(_compound, _edge1);
-		_builder.Add(_compound, _edge2);
-		_builder.Add(_compound, _edge3);
-		_builder.Add(_compound, _loft.Shape());
+//		_builder.Add(_compound, _edge1);
+//		_builder.Add(_compound, _edge2);
+//		_builder.Add(_compound, _edge3);
+		_builder.Add(_compound, ((OCCShape)cadShell).getShape());
 		
 		// Write to a file
-		String fileName = "test07.brep";
+		String fileName = "test08.brep";
 
 //		CADFace cadSurface = null; // TODO
 //		cadSurface.writeNative(fileName);

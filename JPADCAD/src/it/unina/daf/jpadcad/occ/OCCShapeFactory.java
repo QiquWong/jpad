@@ -211,5 +211,19 @@ public class OCCShapeFactory extends CADShapeFactory
 		}
 		return curve;
 	}
+
+	@Override
+	public CADShell newShell(List<CADGeomCurve3D> cadGeomCurveList) {
+		CADShell shell = null;
+		try
+		{
+			shell = new OCCShell(cadGeomCurveList);
+		}
+		catch (RuntimeException ex)
+		{
+		}
+		
+		return shell;
+	}
 	
 }

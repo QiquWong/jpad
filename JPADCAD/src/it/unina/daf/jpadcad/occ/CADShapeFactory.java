@@ -121,5 +121,12 @@ public abstract class CADShapeFactory
 	 * @return The created CADGeomCurve3D
 	 */
 	public abstract CADGeomCurve3D newCurve3D(List<double[]> pointList, boolean isPeriodic);
+
+	/**
+	 * Create a new CADShell by constructing a loft surface (see BRepOffsetAPI_ThruSections)
+	 * @param cadGeomCurveList The list of CADGeomCurve3D through which the loft passes
+	 * @return The created CADShell
+	 */
+	public abstract CADShell newShell(List<CADGeomCurve3D> cadGeomCurveList);
 	
 }
