@@ -23,6 +23,7 @@ import org.kohsuke.args4j.Option;
 
 import aircraft.components.Aircraft;
 import aircraft.components.Aircraft.AircraftBuilder;
+import analyses.ACAnalysisManager;
 import analyses.OperatingConditions;
 import analyses.costs.ACCostsManager;
 import calculators.costs.CostsCalcUtils;
@@ -40,6 +41,10 @@ class MyArgumentsCostsTest {
 	@Option(name = "-i", aliases = { "--input" }, required = true,
 			usage = "my input file")
 	private File _inputFile;
+	
+	@Option(name = "-ia", aliases = { "--input-analyses" }, required = true,
+			usage = "analyses input file")
+	private File _inputFileAnalyses;
 
 	@Option(name = "-da", aliases = { "--dir-airfoils" }, required = true,
 			usage = "airfoil directory path")
@@ -84,6 +89,10 @@ class MyArgumentsCostsTest {
 	public File getInputFile() {
 		return _inputFile;
 	}
+	
+	public File getInputFileAnalyses() {
+		return _inputFileAnalyses;
+	}
 
 	public File getAirfoilDirectory() {
 		return _airfoilDirectory;
@@ -120,6 +129,8 @@ class MyArgumentsCostsTest {
 	public File getCostsDirectory() {
 		return _costsDirectory;
 	}
+
+
 }
 
 public class Test_sandbox2VC_Costs {
@@ -142,6 +153,9 @@ public class Test_sandbox2VC_Costs {
 			theCmdLineParser.parseArgument(args);
 			String pathToXML = va.getInputFile().getAbsolutePath();
 			System.out.println("INPUT ===> " + pathToXML);
+			
+			String pathToAnalysesXML = va.getInputFileAnalyses().getAbsolutePath();
+			System.out.println("ANALYSES INPUT ===> " + pathToAnalysesXML);
 
 			String dirAirfoil = va.getAirfoilDirectory().getCanonicalPath();
 			System.out.println("AIRFOILS ===> " + dirAirfoil);
@@ -203,15 +217,18 @@ public class Test_sandbox2VC_Costs {
 					dirCosts,
 					aeroDatabaseReader,
 					highLiftDatabaseReader);
+			
+			
+			theAircraft.setTheAnalysisManager(ACAnalysisManager.importFromXML(pathToAnalysesXML, theAircraft));
 					
 			OperatingConditions operatingConditions = new OperatingConditions.OperatingConditionsBuilder("The Operating Conditions").build();
 			operatingConditions.setAltitude(Amount.valueOf(11000, SI.METER));
 			operatingConditions.setTAS(Amount.valueOf(473, NonSI.KNOT));
-			Amount<Mass> OEM = Amount.valueOf(141056, SI.KILOGRAM);
-			Amount<Mass> MTOM = Amount.valueOf(536164.22, NonSI.POUND);
-			theAircraft.getTheAnalysisManager().getTheWeights().setOperatingEmptyMass(OEM);
-			theAircraft.getTheAnalysisManager().getTheWeights().setMaximumTakeOffMass(MTOM);
-			theAircraft.getTheAnalysisManager().getTheWeights().setManufacturerEmptyMass(OEM);
+//			Amount<Mass> OEM = Amount.valueOf(141056, SI.KILOGRAM);
+//			Amount<Mass> MTOM = Amount.valueOf(536164.22, NonSI.POUND);
+//			theAircraft.getTheAnalysisManager().getTheWeights().setOperatingEmptyMass(OEM);
+//			theAircraft.getTheAnalysisManager().getTheWeights().setMaximumTakeOffMass(MTOM);
+//			theAircraft.getTheAnalysisManager().getTheWeights().setManufacturerEmptyMass(OEM);
 			
 			// Variables setting
 			Amount<Mass> _OEM = Amount.valueOf(141056, SI.KILOGRAM);
@@ -219,25 +236,31 @@ public class Test_sandbox2VC_Costs {
 			Amount<Length> _range = Amount.valueOf(500, NonSI.NAUTICAL_MILE);
 			Amount<Velocity> _cruiseSpeed = Amount.valueOf(267.0, SI.METERS_PER_SECOND);
 			
-			theAircraft.getTheAnalysisManager().getTheWeights().setOperatingEmptyMass(_OEM);
-			theAircraft.getTheAnalysisManager().getTheWeights().setMaximumTakeOffMass(_MTOM);
-			theAircraft.getTheAnalysisManager().getTheWeights().setManufacturerEmptyMass(_OEM);
+//			theAircraft.getTheAnalysisManager().getTheWeights().setOperatingEmptyMass(_OEM);
+//			theAircraft.getTheAnalysisManager().getTheWeights().setMaximumTakeOffMass(_MTOM);
+//			theAircraft.getTheAnalysisManager().getTheWeights().setManufacturerEmptyMass(_OEM);
 			theAircraft.setLifeSpan(16);
-			theAircraft.getTheAnalysisManager().getTheCosts().setAnnualInterestRate(0.054);
-			theAircraft.getTheAnalysisManager().setReferenceRange(_range);
-			theAircraft.getTheAnalysisManager().getThePerformance().setVDesignCruise(_cruiseSpeed);
+//			theAircraft.getTheAnalysisManager().getTheCosts().setAnnualInterestRate(0.054);
+//			theAircraft.getTheAnalysisManager().setReferenceRange(_range);
+//			theAircraft.getTheAnalysisManager().getThePerformance().setVDesignCruise(_cruiseSpeed);
 			
 			
 			
 			CostsCalcUtils.calcAircraftCostSforza(_OEM);
 //			theCost.calcAircraftCostSforza();
+			
 			Amount<Duration> flightTime = Amount.valueOf(15.22, NonSI.HOUR);
+			
 //			Amount<Velocity> blockSpeed = Amount.valueOf(243.0, SI.METERS_PER_SECOND); // Value according to Sforza
-			theAircraft.getTheAnalysisManager().getTheCosts().setFlightTime(flightTime);
+			
+//			theAircraft.getTheAnalysisManager().getTheCosts().setFlightTime(flightTime);
+			
 //			theAircraft.getTheCosts().set_manHourLaborRate(40); // Value according to Sforza
 //			theAircraft.getTheCosts().set_blockSpeed(blockSpeed);// Value according to Sforza
 //			theAircraft.getTheCosts().calcUtilizationKundu(theCost.get_blockTime().doubleValue(NonSI.HOUR));
-			theAircraft.getTheAnalysisManager().getTheCosts().setUtilization(4750);
+			
+//			theAircraft.getTheAnalysisManager().getTheCosts().setUtilization(4750);
+			
 //			theAircraft.getTheCosts().calcTotalInvestments(98400000.0, 9800000.0, 2, 0.1, 0.3);
 //			theAircraft.getTheCosts().get_theFixedCharges().set_residualValue(0.2);
 			theAircraft.getPowerPlant().setEngineType(EngineTypeEnum.TURBOFAN);
