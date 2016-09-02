@@ -513,9 +513,12 @@ public class WingAerodynamicCalc {
 
 		System.out.println(" \n-------------------DONE----------------------- \n");
 		
-//		theNasaBlackwellCalculator.calculate(Amount.valueOf(Math.toRadians(3.0), SI.RADIAN));
-//		double [] clArray =theNasaBlackwellCalculator.get_clTotalDistribution().toArray();
-//		System.out.println(" cl array " + Arrays.toString(clArray));
+		System.out.println(" eta station " + Arrays.toString(yStationActual));
+		theNasaBlackwellCalculator.calculate(Amount.valueOf(Math.toRadians(18.7), SI.RADIAN));
+		double [] clArrayOutput =theNasaBlackwellCalculator.get_clTotalDistribution().toArray();
+		System.out.println(" \ncl array " + Arrays.toString(clArrayOutput));
+		double cl3d = theNasaBlackwellCalculator.get_cLCurrent();
+		System.out.println("\n  cl  " + cl3d);
 
 	}
 }

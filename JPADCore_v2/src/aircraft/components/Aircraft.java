@@ -977,7 +977,6 @@ public class Aircraft implements IAircraft {
 									      String systemsDir,
 									      String cabinConfigurationDir,
 									      String airfoilsDir,
-									      String costsDir,
 									      AerodynamicDatabaseReader aeroDatabaseReader,
 									      HighLiftDatabaseReader highLiftDatabaseReader) {
 

@@ -549,7 +549,6 @@ public class AircraftTestTopView extends Application {
 //					dirSystems,
 //					dirCabinConfiguration,
 //					dirAirfoil,
-//					dirCosts,
 //					aeroDatabaseReader,
 //					highLiftDatabaseReader);
 			

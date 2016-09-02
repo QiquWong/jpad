@@ -200,7 +200,6 @@ public class CostsTestsJenkinson {
 					dirSystems,
 					dirCabinConfiguration,
 					dirAirfoil,
-					dirCosts,
 					aeroDatabaseReader,
 					highLiftDatabaseReader);
 					

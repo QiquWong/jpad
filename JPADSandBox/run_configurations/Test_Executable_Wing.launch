@@ -12,6 +12,6 @@
 <mapEntry key="occjavaDir" value="C:\Users\manue\ADOPT_PROJECT\jpad\libraries\occjava\Win64"/>
 </mapAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="sandbox.mr.ExecutableWing.Test_Executable_Wing"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-i C:\Users\manue\Desktop\TestKoven_Graham.xml -d C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox\data"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-i C:\Users\manue\Desktop\Analisi\NLWing\TestKoven_Graham.xml -d C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox\data"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="JPADSandBox"/>
 </launchConfiguration>

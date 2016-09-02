@@ -452,7 +452,6 @@ public class AircraftTestSideView extends Application {
 //					dirSystems,
 //					dirCabinConfiguration,
 //					dirAirfoil,
-//					dirCosts,
 //					aeroDatabaseReader,
 //					highLiftDatabaseReader);
 			

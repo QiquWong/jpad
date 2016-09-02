@@ -479,7 +479,6 @@ public class AircraftTestFrontView extends Application {
 					dirSystems,
 					dirCabinConfiguration,
 					dirAirfoil,
-					dirCosts,
 					aeroDatabaseReader,
 					highLiftDatabaseReader);
 			
