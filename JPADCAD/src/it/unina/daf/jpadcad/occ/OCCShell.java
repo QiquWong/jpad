@@ -19,6 +19,8 @@ public class OCCShell extends OCCShape implements CADShell
 		
 		if (cadGeomCurveList.size() > 0) {
 			
+			// NOTE: _<var-name> means a low-level OCCT object
+			
 			BRepOffsetAPI_ThruSections _loft = new BRepOffsetAPI_ThruSections();
 
 			cadGeomCurveList.stream()
@@ -29,7 +31,6 @@ public class OCCShell extends OCCShape implements CADShell
 					return _wire;
 				})
 				.forEach(_w -> _loft.AddWire(_w.Wire()));
-				;
 			
 			_loft.Build();
 			
