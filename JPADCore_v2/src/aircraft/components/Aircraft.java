@@ -1323,8 +1323,7 @@ public class Aircraft implements IAircraft {
 						reader.getXmlDoc(), reader.getXpath(),
 						"//landing_gears/@file");
 		
-		@SuppressWarnings("unused")
-		LandingGears.MountingPosition mountingPosition;
+		LandingGears.MountingPosition mountingPosition = null;
 		LandingGears theLandingGears = null;
 		Amount<Length> xApexLandingGears = Amount.valueOf(0.0, SI.METER);
 		Amount<Length> yApexLandingGears = Amount.valueOf(0.0, SI.METER);
@@ -1414,6 +1413,7 @@ public class Aircraft implements IAircraft {
 				.xApexLandingGears(xApexLandingGears)
 				.yApexLandingGears(yApexLandingGears)
 				.zApexLandingGears(zApexLandingGears)
+				.landingGearsMountingPosition(mountingPosition)
 				.systems(theSystems)
 				.xApexSystems(xApexSystems)
 				.yApexSystem(yApexSystems)

@@ -6,5 +6,6 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/controlFX/controlsfx-8.40.11.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JPADCore_v2"/>
 	<classpathentry kind="lib" path="C:/Users/Vittorio/ADOPT_PROJECT/jpad/libraries/jscience-4.3/jscience.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JPADConfigs"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

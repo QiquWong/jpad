@@ -9,11 +9,14 @@
 package jpadcommander;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import aircraft.components.Aircraft;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -25,6 +28,8 @@ public class Main extends Application {
 	private static BorderPane mainLayout;
 	private static BorderPane mainInputManagerLayout;
 	private static BorderPane mainInputManagerAircraftSubContentLayout;
+	
+	private static TextArea textAreaAircraftConsoleOutput;
 	
 	private static TextField textFieldAircraftInputFile;
 	
@@ -59,7 +64,29 @@ public class Main extends Application {
 	private static TextField textFieldAircraftCanardZ;
 	private static TextField textFieldAircraftCanardRiggingAngle;
 	
-	// TODO : ADD OTHER TEXT FIELDS (BOTH DEFAULT AND IMPORT FROM FILE)
+	private static List<TextField> textFieldAircraftEngineFileList = new ArrayList<>();
+	private static List<TextField> textFieldAircraftEngineXList = new ArrayList<>();
+	private static List<TextField> textFieldAircraftEngineYList = new ArrayList<>();
+	private static List<TextField> textFieldAircraftEngineZList = new ArrayList<>();
+	private static List<TextField> textFieldAircraftEnginePositonList = new ArrayList<>();
+	private static List<TextField> textFieldAircraftEngineTiltList = new ArrayList<>();
+	
+	private static List<TextField> textFieldAircraftNacelleFileList = new ArrayList<>();
+	private static List<TextField> textFieldAircraftNacelleXList = new ArrayList<>();
+	private static List<TextField> textFieldAircraftNacelleYList = new ArrayList<>();
+	private static List<TextField> textFieldAircraftNacelleZList = new ArrayList<>();
+	private static List<TextField> textFieldAircraftNacellePositonList = new ArrayList<>();
+	
+	private static TextField textFieldAircraftLandingGearsFile;
+	private static TextField textFieldAircraftLandingGearsX;
+	private static TextField textFieldAircraftLandingGearsY;
+	private static TextField textFieldAircraftLandingGearsZ;
+	private static TextField textFieldAircraftLandingGearsPosition;
+	
+	private static TextField textFieldAircraftSystemsFile;
+	private static TextField textFieldAircraftSystemsX;
+	private static TextField textFieldAircraftSystemsY;
+	private static TextField textFieldAircraftSystemsZ;
 	
 	private static BorderPane mainInputManagerAircraftFromFileLayout;
 	private static BorderPane mainInputManagerAircraftDefaultLayout;
@@ -402,6 +429,174 @@ public class Main extends Application {
 
 	public static void setTextFieldAircraftCanardRiggingAngle(TextField textFieldAircraftCanardRiggingAngle) {
 		Main.textFieldAircraftCanardRiggingAngle = textFieldAircraftCanardRiggingAngle;
+	}
+
+	public static List<TextField> getTextFieldAircraftEngineFileList() {
+		return textFieldAircraftEngineFileList;
+	}
+
+	public static void setTextFieldAircraftEngineFileList(List<TextField> textFieldAircraftEngineFileList) {
+		Main.textFieldAircraftEngineFileList = textFieldAircraftEngineFileList;
+	}
+
+	public static List<TextField> getTextFieldAircraftEngineXList() {
+		return textFieldAircraftEngineXList;
+	}
+
+	public static void setTextFieldAircraftEngineXList(List<TextField> textFieldAircraftEngineXList) {
+		Main.textFieldAircraftEngineXList = textFieldAircraftEngineXList;
+	}
+
+	public static List<TextField> getTextFieldAircraftEngineYList() {
+		return textFieldAircraftEngineYList;
+	}
+
+	public static void setTextFieldAircraftEngineYList(List<TextField> textFieldAircraftEngineYList) {
+		Main.textFieldAircraftEngineYList = textFieldAircraftEngineYList;
+	}
+
+	public static List<TextField> getTextFieldAircraftEngineZList() {
+		return textFieldAircraftEngineZList;
+	}
+
+	public static void setTextFieldAircraftEngineZList(List<TextField> textFieldAircraftEngineZList) {
+		Main.textFieldAircraftEngineZList = textFieldAircraftEngineZList;
+	}
+
+	public static List<TextField> getTextFieldAircraftEnginePositonList() {
+		return textFieldAircraftEnginePositonList;
+	}
+
+	public static void setTextFieldAircraftEnginePositonList(List<TextField> textFieldAircraftEnginePositonList) {
+		Main.textFieldAircraftEnginePositonList = textFieldAircraftEnginePositonList;
+	}
+
+	public static List<TextField> getTextFieldAircraftEngineTiltList() {
+		return textFieldAircraftEngineTiltList;
+	}
+
+	public static void setTextFieldAircraftEngineTiltList(List<TextField> textFieldAircraftEngineTiltList) {
+		Main.textFieldAircraftEngineTiltList = textFieldAircraftEngineTiltList;
+	}
+
+	public static List<TextField> getTextFieldAircraftNacelleFileList() {
+		return textFieldAircraftNacelleFileList;
+	}
+
+	public static void setTextFieldAircraftNacelleFileList(List<TextField> textFieldAircraftNacelleFileList) {
+		Main.textFieldAircraftNacelleFileList = textFieldAircraftNacelleFileList;
+	}
+
+	public static List<TextField> getTextFieldAircraftNacelleXList() {
+		return textFieldAircraftNacelleXList;
+	}
+
+	public static void setTextFieldAircraftNacelleXList(List<TextField> textFieldAircraftNacelleXList) {
+		Main.textFieldAircraftNacelleXList = textFieldAircraftNacelleXList;
+	}
+
+	public static List<TextField> getTextFieldAircraftNacelleYList() {
+		return textFieldAircraftNacelleYList;
+	}
+
+	public static void setTextFieldAircraftNacelleYList(List<TextField> textFieldAircraftNacelleYList) {
+		Main.textFieldAircraftNacelleYList = textFieldAircraftNacelleYList;
+	}
+
+	public static List<TextField> getTextFieldAircraftNacelleZList() {
+		return textFieldAircraftNacelleZList;
+	}
+
+	public static void setTextFieldAircraftNacelleZList(List<TextField> textFieldAircraftNacelleZList) {
+		Main.textFieldAircraftNacelleZList = textFieldAircraftNacelleZList;
+	}
+
+	public static List<TextField> getTextFieldAircraftNacellePositonList() {
+		return textFieldAircraftNacellePositonList;
+	}
+
+	public static void setTextFieldAircraftNacellePositonList(List<TextField> textFieldAircraftNacellePositonList) {
+		Main.textFieldAircraftNacellePositonList = textFieldAircraftNacellePositonList;
+	}
+
+	public static TextField getTextFieldAircraftLandingGearsFile() {
+		return textFieldAircraftLandingGearsFile;
+	}
+
+	public static void setTextFieldAircraftLandingGearsFile(TextField textFieldAircraftLandingGearsFile) {
+		Main.textFieldAircraftLandingGearsFile = textFieldAircraftLandingGearsFile;
+	}
+
+	public static TextField getTextFieldAircraftLandingGearsX() {
+		return textFieldAircraftLandingGearsX;
+	}
+
+	public static void setTextFieldAircraftLandingGearsX(TextField textFieldAircraftLandingGearsX) {
+		Main.textFieldAircraftLandingGearsX = textFieldAircraftLandingGearsX;
+	}
+
+	public static TextField getTextFieldAircraftLandingGearsY() {
+		return textFieldAircraftLandingGearsY;
+	}
+
+	public static void setTextFieldAircraftLandingGearsY(TextField textFieldAircraftLandingGearsY) {
+		Main.textFieldAircraftLandingGearsY = textFieldAircraftLandingGearsY;
+	}
+
+	public static TextField getTextFieldAircraftLandingGearsZ() {
+		return textFieldAircraftLandingGearsZ;
+	}
+
+	public static void setTextFieldAircraftLandingGearsZ(TextField textFieldAircraftLandingGearsZ) {
+		Main.textFieldAircraftLandingGearsZ = textFieldAircraftLandingGearsZ;
+	}
+
+	public static TextField getTextFieldAircraftLandingGearsPosition() {
+		return textFieldAircraftLandingGearsPosition;
+	}
+
+	public static void setTextFieldAircraftLandingGearsPosition(TextField textFieldAircraftLandingGearsPosition) {
+		Main.textFieldAircraftLandingGearsPosition = textFieldAircraftLandingGearsPosition;
+	}
+
+	public static TextField getTextFieldAircraftSystemsFile() {
+		return textFieldAircraftSystemsFile;
+	}
+
+	public static void setTextFieldAircraftSystemsFile(TextField textFieldAircraftSystemsFile) {
+		Main.textFieldAircraftSystemsFile = textFieldAircraftSystemsFile;
+	}
+
+	public static TextField getTextFieldAircraftSystemsX() {
+		return textFieldAircraftSystemsX;
+	}
+
+	public static void setTextFieldAircraftSystemsX(TextField textFieldAircraftSystemsX) {
+		Main.textFieldAircraftSystemsX = textFieldAircraftSystemsX;
+	}
+
+	public static TextField getTextFieldAircraftSystemsY() {
+		return textFieldAircraftSystemsY;
+	}
+
+	public static void setTextFieldAircraftSystemsY(TextField textFieldAircraftSystemsY) {
+		Main.textFieldAircraftSystemsY = textFieldAircraftSystemsY;
+	}
+
+	public static TextField getTextFieldAircraftSystemsZ() {
+		return textFieldAircraftSystemsZ;
+	}
+
+	public static void setTextFieldAircraftSystemsZ(TextField textFieldAircraftSystemsZ) {
+		Main.textFieldAircraftSystemsZ = textFieldAircraftSystemsZ;
+	}
+
+	public static TextArea getTextAreaAircraftConsoleOutput() {
+		return textAreaAircraftConsoleOutput;
+	}
+
+	public static void setTextAreaAircraftConsoleOutput(TextArea textAreaAircraftConsoleOutput) {
+		Main.textAreaAircraftConsoleOutput = textAreaAircraftConsoleOutput;
 	}
 
 }
