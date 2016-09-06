@@ -979,6 +979,8 @@ public class TakeOffManager {
 			System.out.println("CD0 clean = " + input.getcD0Clean());
 			System.out.println("Delta CD0 flap + landing gears = " + (input.getDeltaCD0Flap()+input.getDeltaCD0LandingGear()));
 			System.out.println("CD0 TakeOff = " + (input.getcD0Clean() + input.getDeltaCD0Flap() + input.getDeltaCD0LandingGear()));
+			System.out.println("Friction coefficient = " + mu);
+			System.out.println("Friction coefficient (brakes) = " + muBrake);
 			System.out.println("VsTO = " + vSTakeOff.getEstimatedValue() + " " + vSTakeOff.getUnit());
 			System.out.println("VRot = " + vRot.getEstimatedValue() + " " + vRot.getUnit());
 			System.out.println("vLO = " + vLO.getEstimatedValue() + " " +vLO.getUnit());

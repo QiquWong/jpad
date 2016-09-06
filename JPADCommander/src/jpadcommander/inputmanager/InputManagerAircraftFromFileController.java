@@ -74,6 +74,14 @@ public class InputManagerAircraftFromFileController {
 				highLiftDatabaseReader)
 				);
 		
+		// print the toString method of the aircraft inside the text area of the GUI ...
+		Main.setTextAreaAircraftConsoleOutput(
+				(TextArea) Main.getMainInputManagerAircraftFromFileLayout().lookup("#output")
+				);
+		Main.getTextAreaAircraftConsoleOutput().appendText(
+				Main.getTheAircraft().toString()
+				);
+		
 		// get the text field for aircraft input data
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
 		
