@@ -12,8 +12,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.controlsfx.control.StatusBar;
+
 import aircraft.components.Aircraft;
 import javafx.application.Application;
+import javafx.concurrent.Worker.State;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
@@ -96,13 +99,15 @@ public class Main extends Application {
 	
 	private static Aircraft theAircraft;
 	
+	private static StatusBar statusBar;
+	private static State status;
+	
 	@Override
 	public void start(Stage primaryStage) throws IOException {
 		
 		Main.primaryStage = primaryStage;
 		Main.primaryStage.setTitle("JPADCommander - UniNa - DAF");
 		showMainView();
-		
 		Stage dialogConfig = new DialogConfig(primaryStage);
 		dialogConfig.setTitle("JPADCommander Configuration - UniNa - DAF");
 		dialogConfig.sizeToScene();
@@ -116,6 +121,10 @@ public class Main extends Application {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(Main.class.getResource("view/MainView.fxml"));
 		Main.mainLayout = loader.load();
+		Main.setStatus(State.READY);
+		Main.setStatusBar(new StatusBar());
+		Main.getStatusBar().setText("Ready");
+		Main.mainLayout.setBottom(Main.getStatusBar());
 		Scene scene = new Scene(mainLayout);
 		primaryStage.setScene(scene);
 		primaryStage.show();
@@ -597,6 +606,22 @@ public class Main extends Application {
 
 	public static void setTextAreaAircraftConsoleOutput(TextArea textAreaAircraftConsoleOutput) {
 		Main.textAreaAircraftConsoleOutput = textAreaAircraftConsoleOutput;
+	}
+
+	public static StatusBar getStatusBar() {
+		return statusBar;
+	}
+
+	public static void setStatusBar(StatusBar statusBar) {
+		Main.statusBar = statusBar;
+	}
+
+	public static State getStatus() {
+		return status;
+	}
+
+	public static void setStatus(State status) {
+		Main.status = status;
 	}
 
 }

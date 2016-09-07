@@ -7,5 +7,11 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/JPADCore_v2"/>
 	<classpathentry kind="lib" path="C:/Users/Vittorio/ADOPT_PROJECT/jpad/libraries/jscience-4.3/jscience.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JPADConfigs"/>
+	<classpathentry kind="lib" path="C:/Users/Vittorio/ADOPT_PROJECT/jpad/libraries/javafx-d3/javafx-d3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Vittorio/ADOPT_PROJECT/jpad/libraries/javafx-d3/org.treez.core_1.0.0.201602152140.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Vittorio/ADOPT_PROJECT/jpad/libraries/javafx-d3/org.treez.data_1.0.0.201602152140.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Vittorio/ADOPT_PROJECT/jpad/libraries/javafx-d3/org.treez.javafxd3_1.0.0.201602152140.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Vittorio/ADOPT_PROJECT/jpad/libraries/commons-lang/commons-lang3-3.3.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Vittorio/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/guava-16.0.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
