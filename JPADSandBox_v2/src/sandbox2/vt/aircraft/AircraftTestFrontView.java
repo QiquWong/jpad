@@ -460,27 +460,27 @@ public class AircraftTestFrontView extends Application {
 			HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
 			
 			// default Aircraft ATR-72 ...
-//			theAircraft = new Aircraft.AircraftBuilder(
-//					"ATR-72",
-//					AircraftEnum.ATR72,
-//					aeroDatabaseReader,
-//					highLiftDatabaseReader
-//					)
-//					.build();
+			theAircraft = new Aircraft.AircraftBuilder(
+					"ATR-72",
+					AircraftEnum.ATR72,
+					aeroDatabaseReader,
+					highLiftDatabaseReader
+					)
+					.build();
 
 			// reading aircraft from xml ...
-			theAircraft = Aircraft.importFromXML(
-					pathToXML,
-					dirLiftingSurfaces,
-					dirFuselages,
-					dirEngines,
-					dirNacelles,
-					dirLandingGears,
-					dirSystems,
-					dirCabinConfiguration,
-					dirAirfoil,
-					aeroDatabaseReader,
-					highLiftDatabaseReader);
+//			theAircraft = Aircraft.importFromXML(
+//					pathToXML,
+//					dirLiftingSurfaces,
+//					dirFuselages,
+//					dirEngines,
+//					dirNacelles,
+//					dirLandingGears,
+//					dirSystems,
+//					dirCabinConfiguration,
+//					dirAirfoil,
+//					aeroDatabaseReader,
+//					highLiftDatabaseReader);
 			
 			System.out.println("The Aircaraft ...");
 			System.out.println(AircraftTestFrontView.theAircraft.toString());

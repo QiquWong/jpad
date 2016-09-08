@@ -23,6 +23,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToolBar;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
@@ -30,7 +31,6 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import jpadcommander.inputmanager.InputManagerAircraftFromFileController;
 
 public class Main extends Application {
 
@@ -38,6 +38,11 @@ public class Main extends Application {
 	private static BorderPane mainLayout;
 	private static BorderPane mainInputManagerLayout;
 	private static BorderPane mainInputManagerAircraftSubContentLayout;
+	private static BorderPane mainInputManagerAircraftSubContentFieldsLayout;
+	private static BorderPane mainInputManagerAircraftFromFileLayout;
+	private static ToolBar mainInputManagerAircraftFromFileToolbarLayout;
+	private static BorderPane mainInputManagerAircraftDefaultLayout;
+	private static ToolBar mainInputManagerAircraftDefaultToolbarLayout;
 	
 	private static TextArea textAreaAircraftConsoleOutput;
 	
@@ -98,8 +103,6 @@ public class Main extends Application {
 	private static TextField textFieldAircraftSystemsY;
 	private static TextField textFieldAircraftSystemsZ;
 	
-	private static BorderPane mainInputManagerAircraftFromFileLayout;
-	private static BorderPane mainInputManagerAircraftDefaultLayout;
 	private static String inputDirectoryPath;
 	private static String outputDirectoryPath;
 	private static String databaseDirectoryPath;
@@ -191,20 +194,23 @@ public class Main extends Application {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(Main.class.getResource("inputmanager/InputManagerAircraftFromFile.fxml"));
 		mainInputManagerAircraftFromFileLayout = loader.load();
-		mainInputManagerAircraftSubContentLayout.setCenter(mainInputManagerAircraftFromFileLayout);
-		
-		if(Main.getTheAircraft() != null)
-			InputManagerAircraftFromFileController.logAircraftFromFileToInterface();
+
+		Main.setMainInputManagerAircraftFromFileToolbarLayout(
+				(ToolBar) Main.getMainInputManagerAircraftFromFileLayout().lookup("#ImportAircraftFromFileToolbar")
+				);
+		mainInputManagerAircraftSubContentFieldsLayout.setTop(mainInputManagerAircraftFromFileToolbarLayout);
 		
 		primaryStage.show();
-		
 	}
 
 	public static void showInputManagerAircraftDefault() throws IOException {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(Main.class.getResource("inputmanager/InputManagerAircraftDefault.fxml"));
 		mainInputManagerAircraftDefaultLayout = loader.load();
-		mainInputManagerAircraftSubContentLayout.setCenter(mainInputManagerAircraftDefaultLayout);
+		Main.setMainInputManagerAircraftDefaultToolbarLayout(
+				(ToolBar) Main.getMainInputManagerAircraftDefaultLayout().lookup("#ImportAircraftDefaultToolbar")
+				);
+		mainInputManagerAircraftSubContentFieldsLayout.setTop(mainInputManagerAircraftDefaultToolbarLayout);
 		primaryStage.show();
 		
 	}
@@ -672,6 +678,33 @@ public class Main extends Application {
 
 	public static void setStatusLight(Button statusLight) {
 		Main.statusLight = statusLight;
+	}
+
+	public static BorderPane getMainInputManagerAircraftSubContentFieldsLayout() {
+		return mainInputManagerAircraftSubContentFieldsLayout;
+	}
+
+	public static void setMainInputManagerAircraftSubContentFieldsLayout(
+			BorderPane mainInputManagerAircraftSubContentFieldsLayout) {
+		Main.mainInputManagerAircraftSubContentFieldsLayout = mainInputManagerAircraftSubContentFieldsLayout;
+	}
+
+	public static ToolBar getMainInputManagerAircraftFromFileToolbarLayout() {
+		return mainInputManagerAircraftFromFileToolbarLayout;
+	}
+
+	public static void setMainInputManagerAircraftFromFileToolbarLayout(
+			ToolBar mainInputManagerAircraftFromFileToolbarLayout) {
+		Main.mainInputManagerAircraftFromFileToolbarLayout = mainInputManagerAircraftFromFileToolbarLayout;
+	}
+
+	public static ToolBar getMainInputManagerAircraftDefaultToolbarLayout() {
+		return mainInputManagerAircraftDefaultToolbarLayout;
+	}
+
+	public static void setMainInputManagerAircraftDefaultToolbarLayout(
+			ToolBar mainInputManagerAircraftDefaultToolbarLayout) {
+		Main.mainInputManagerAircraftDefaultToolbarLayout = mainInputManagerAircraftDefaultToolbarLayout;
 	}
 
 }

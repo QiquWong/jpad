@@ -12,10 +12,10 @@ public class InputManagerController {
 	private void showInputManagerAircraftFromFileContent() throws IOException {
 		
 		// get the content of Input-Aircraft-From-File
-		Main.setMainInputManagerAircraftSubContentLayout(
-				(BorderPane) Main.getMainInputManagerLayout().lookup("#mainInputManagerAircraftSubContent")
+		Main.setMainInputManagerAircraftSubContentFieldsLayout(
+				(BorderPane) Main.getMainInputManagerLayout().lookup("#mainInputManagerAircraftSubContentFields")
 				);
-
+		
 		Main.showInputManagerAircraftFromFile();
 	}
 
@@ -23,9 +23,8 @@ public class InputManagerController {
 	private void showInputManagerAircraftDefaultContent() throws IOException {
 		
 		// get the content of Default-Aircraft
-		
-		Main.setMainInputManagerAircraftSubContentLayout(
-				(BorderPane) Main.getMainInputManagerLayout().lookup("#mainInputManagerAircraftSubContent")
+		Main.setMainInputManagerAircraftSubContentFieldsLayout(
+				(BorderPane) Main.getMainInputManagerLayout().lookup("#mainInputManagerAircraftSubContentFields")
 				);
 
 		Main.showInputManagerAircraftDefault();
