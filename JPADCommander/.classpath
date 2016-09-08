@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.8.0_101"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_101"/>
 	<classpathentry kind="con" path="org.eclipse.fx.ide.jdt.core.JAVAFX_CONTAINER"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/controlFX/controlsfx-8.40.11.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JPADCore_v2"/>
-	<classpathentry kind="lib" path="C:/Users/Vittorio/ADOPT_PROJECT/jpad/libraries/jscience-4.3/jscience.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JPADConfigs"/>
-	<classpathentry kind="lib" path="C:/Users/Vittorio/ADOPT_PROJECT/jpad/libraries/javafx-d3/javafx-d3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Vittorio/ADOPT_PROJECT/jpad/libraries/javafx-d3/org.treez.core_1.0.0.201602152140.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Vittorio/ADOPT_PROJECT/jpad/libraries/javafx-d3/org.treez.data_1.0.0.201602152140.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Vittorio/ADOPT_PROJECT/jpad/libraries/javafx-d3/org.treez.javafxd3_1.0.0.201602152140.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Vittorio/ADOPT_PROJECT/jpad/libraries/commons-lang/commons-lang3-3.3.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Vittorio/ADOPT_PROJECT/jpad/JPAD-Apps/lib/JPADAPPS_LIBRARY_FOLDER/guava-16.0.1.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/commons-lang/commons-lang3-3.3.2.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/guava/guava-16.0.1.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/javafx-d3/javafx-d3.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/javafx-d3/org.treez.core_1.0.0.201602152140.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/javafx-d3/org.treez.data_1.0.0.201602152140.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/javafx-d3/org.treez.javafxd3_1.0.0.201602152140.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/jscience-4.3/jscience.jar" sourcepath="/LIBRARY_FOLDER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
