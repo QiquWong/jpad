@@ -56,8 +56,6 @@ public class DialogConfig extends Stage {
         final TextField workingDirectoryField = new TextField();
         workingDirectoryField.setPrefWidth(600);
         gridpane.add(workingDirectoryField, 1, 1);
-//        ValidationSupport validationSupport = new ValidationSupport();
-//        validationSupport.registerValidator(workingDirectoryField, Validator.createEmptyValidator("Working directory path is required"));
         
         final TextField inputDirectoryField = new TextField();
         gridpane.add(inputDirectoryField, 1, 2);

@@ -12,7 +12,6 @@ public class InputManagerController {
 	private void showInputManagerAircraftFromFileContent() throws IOException {
 		
 		// get the content of Input-Aircraft-From-File
-		
 		Main.setMainInputManagerAircraftSubContentLayout(
 				(BorderPane) Main.getMainInputManagerLayout().lookup("#mainInputManagerAircraftSubContent")
 				);

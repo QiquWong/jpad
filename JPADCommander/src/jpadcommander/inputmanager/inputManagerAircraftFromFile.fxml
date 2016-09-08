@@ -6,6 +6,8 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToolBar?>
@@ -408,18 +410,52 @@
                      <center>
                         <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
                           <items>
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="332.0" prefWidth="730.0" />
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="332.0" prefWidth="730.0">
+                                 <children>
+                                    <TabPane prefHeight="978.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                      <tabs>
+                                        <Tab id="TopView" text="Top view" />
+                                        <Tab id="SideView" text="Side view" />
+                                          <Tab id="FrontView" text="Front view">
+                                            <content>
+                                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                            </content>
+                                          </Tab>
+                                      </tabs>
+                                    </TabPane>
+                                 </children></AnchorPane>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                  <children>
-                                    <ScrollPane prefHeight="977.0" prefWidth="797.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                      <content>
-                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="30000.0" prefWidth="3000.0">
-                                             <children>
-                                                <TextArea id="output" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                             </children>
-                                          </AnchorPane>
-                                      </content>
-                                    </ScrollPane>
+                                    <TabPane prefHeight="977.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                      <tabs>
+                                        <Tab text="Data log">
+                                             <content>
+                                                <ScrollPane prefHeight="977.0" prefWidth="797.0">
+                                                  <content>
+                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="30000.0" prefWidth="3000.0">
+                                                         <children>
+                                                            <TextArea id="output" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                         </children>
+                                                      </AnchorPane>
+                                                  </content>
+                                                </ScrollPane>
+                                             </content>
+                                          </Tab>
+                                        <Tab text="Messages">
+                                             <content>
+                                                <ScrollPane prefHeight="977.0" prefWidth="797.0">
+                                                   <content>
+                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="30000.0" prefWidth="3000.0">
+                                                         <children>
+                                                            <TextArea id="messages" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                         </children>
+                                                      </AnchorPane>
+                                                   </content>
+                                                </ScrollPane>
+                                             </content>
+                                          </Tab>
+                                      </tabs>
+                                    </TabPane>
                                  </children></AnchorPane>
                           </items>
                         </SplitPane>

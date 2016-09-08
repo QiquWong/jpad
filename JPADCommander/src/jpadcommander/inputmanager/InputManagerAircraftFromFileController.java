@@ -2,6 +2,8 @@ package jpadcommander.inputmanager;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -10,7 +12,6 @@ import org.w3c.dom.NodeList;
 import aircraft.components.Aircraft;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
-import javafx.concurrent.Task;
 import javafx.concurrent.Worker.State;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
@@ -39,42 +40,12 @@ public class InputManagerAircraftFromFileController {
 			Main.getTextFieldAircraftInputFile().setText(file.getAbsolutePath());
 		}
 	}
-
-	// FIXME : STATUS BAR HAS TO FOLLOW THE CALCULATION PROGRESSION !!
-	private void startTask() {
-
-        Task<Void> task = new Task<Void>() {
-
-            @Override protected Void call() throws Exception {               
-                int max = 5000000;
-                int i=1;
-                while (Main.getStatus().equals(State.RUNNING)) {
-                	updateMessage("Loading the aircraft ...");
-                    updateProgress(i, max);
-                    i++;
-                }
-                updateProgress(0, 0);
-                done();
-                updateMessage("Complete");
-                return null;
-            }
-        };
-
-        Main.getStatusBar().textProperty().bind(task.messageProperty());
-        Main.getStatusBar().progressProperty().bind(task.progressProperty());
-
-        // remove bindings again
-        task.setOnSucceeded(event -> {
-        	Main.getStatusBar().textProperty().unbind();   
-        	Main.getStatusBar().progressProperty().unbind();
-        });
-        new Thread(task).start();
-    }
 	
 	@FXML
 	private void loadAircraftFile() throws IOException, InterruptedException {
 		
 		Main.setStatus(State.RUNNING);
+		Main.checkStatus(Main.getStatus());
 		
 		String databaseFolderPath = Main.getDatabaseDirectoryPath();
 		String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
@@ -93,6 +64,13 @@ public class InputManagerAircraftFromFileController {
 
 		String pathToXML = Main.getTextFieldAircraftInputFile().getText(); 
 
+		PrintStream filterStream = new PrintStream(new OutputStream() {
+			public void write(int b) {
+				// write nothing
+			}
+		});
+		System.setOut(filterStream);
+		
 		Main.setTheAircraft(Aircraft.importFromXML(
 				pathToXML,
 				dirLiftingSurfaces,
@@ -106,11 +84,29 @@ public class InputManagerAircraftFromFileController {
 				aeroDatabaseReader,
 				highLiftDatabaseReader)
 				);
-
+		
+		logAircraftFromFileToInterface();
+		
+		//////////////////////////////////////////////////////////////////////////////////
+		Main.setStatus(State.READY);
+		Main.checkStatus(Main.getStatus());
+	}
+	
+	public static void logAircraftFromFileToInterface() {
+		
+		String dirLiftingSurfaces = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "lifting_surfaces";
+		String dirFuselages = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "fuselages";
+		String dirEngines = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "engines";
+		String dirLandingGears = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "landing_gears";
+		String dirSystems = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "systems";
+		String dirCabinConfiguration = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "cabin_configurations";
+		String pathToXML = Main.getTextFieldAircraftInputFile().getText();
+		
 		// print the toString method of the aircraft inside the text area of the GUI ...
-		Main.setTextAreaAircraftConsoleOutput(
-				(TextArea) Main.getMainInputManagerAircraftFromFileLayout().lookup("#output")
-				);
+		if(Main.getTextAreaAircraftConsoleOutput() == null)
+			Main.setTextAreaAircraftConsoleOutput(
+					(TextArea) Main.getMainInputManagerAircraftFromFileLayout().lookup("#output")
+					);
 		Main.getTextAreaAircraftConsoleOutput().appendText(
 				Main.getTheAircraft().toString()
 				);
@@ -120,9 +116,10 @@ public class InputManagerAircraftFromFileController {
 
 		//---------------------------------------------------------------------------------
 		// CABIN CONFIGURATION:
-		Main.setTextFieldAircraftCabinConfiguration(
-				(TextField) Main.getMainInputManagerAircraftFromFileLayout().lookup("#textFieldAircraftCabinConfiguration")
-				);
+		if(Main.getTextFieldAircraftCabinConfiguration() == null)
+			Main.setTextFieldAircraftCabinConfiguration(
+					(TextField) Main.getMainInputManagerAircraftFromFileLayout().lookup("#textFieldAircraftCabinConfiguration")
+					);
 
 		String cabinConfigrationFileName =
 				MyXMLReaderUtils
@@ -143,9 +140,10 @@ public class InputManagerAircraftFromFileController {
 
 		//---------------------------------------------------------------------------------
 		// FUSELAGE:
-		Main.setTextFieldAircraftFuselageFile(
-				(TextField) Main.getMainInputManagerAircraftFromFileLayout().lookup("#textFieldAircraftFuselageFile")
-				);
+		if(Main.getTextFieldAircraftFuselageFile() == null)
+			Main.setTextFieldAircraftFuselageFile(
+					(TextField) Main.getMainInputManagerAircraftFromFileLayout().lookup("#textFieldAircraftFuselageFile")
+					);
 
 		String fuselageFileName =
 				MyXMLReaderUtils
@@ -163,9 +161,10 @@ public class InputManagerAircraftFromFileController {
 					"NOT INITIALIZED"
 					);
 		//.................................................................................
-		Main.setTextFieldAircraftFuselageX(
-				(TextField) Main.getMainInputManagerAircraftFromFileLayout().lookup("#textFieldAircraftFuselageX")
-				);
+		if(Main.getTextFieldAircraftFuselageX() == null)
+			Main.setTextFieldAircraftFuselageX(
+					(TextField) Main.getMainInputManagerAircraftFromFileLayout().lookup("#textFieldAircraftFuselageX")
+					);
 		if(Main.getTheAircraft().getFuselage() != null)
 			Main.getTextFieldAircraftFuselageX().setText(
 					Main.getTheAircraft()
@@ -178,9 +177,10 @@ public class InputManagerAircraftFromFileController {
 					"NOT INITIALIZED"
 					);
 		//.................................................................................
-		Main.setTextFieldAircraftFuselageY(
-				(TextField) Main.getMainInputManagerAircraftFromFileLayout().lookup("#textFieldAircraftFuselageY")
-				);
+		if(Main.getTextFieldAircraftFuselageY() == null)
+			Main.setTextFieldAircraftFuselageY(
+					(TextField) Main.getMainInputManagerAircraftFromFileLayout().lookup("#textFieldAircraftFuselageY")
+					);
 		if(Main.getTheAircraft().getFuselage() != null)
 			Main.getTextFieldAircraftFuselageY().setText(
 					Main.getTheAircraft()
@@ -193,9 +193,10 @@ public class InputManagerAircraftFromFileController {
 					"NOT INITIALIZED"
 					);
 		//.................................................................................
-		Main.setTextFieldAircraftFuselageZ(
-				(TextField) Main.getMainInputManagerAircraftFromFileLayout().lookup("#textFieldAircraftFuselageZ")
-				);
+		if(Main.getTextFieldAircraftFuselageZ() == null)
+			Main.setTextFieldAircraftFuselageZ(
+					(TextField) Main.getMainInputManagerAircraftFromFileLayout().lookup("#textFieldAircraftFuselageZ")
+					);
 		if(Main.getTheAircraft().getFuselage() != null)
 			Main.getTextFieldAircraftFuselageZ().setText(
 					Main.getTheAircraft()
@@ -1055,7 +1056,5 @@ public class InputManagerAircraftFromFileController {
 			Main.getTextFieldAircraftSystemsZ().setText(
 					"NOT INITIALIZED"
 					);
-		//////////////////////////////////////////////////////////////////////////////////
-		Main.setStatus(State.SUCCEEDED);
-	}	
+	}
 }

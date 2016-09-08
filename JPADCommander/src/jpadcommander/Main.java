@@ -18,12 +18,19 @@ import aircraft.components.Aircraft;
 import javafx.application.Application;
 import javafx.concurrent.Worker.State;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import jpadcommander.inputmanager.InputManagerAircraftFromFileController;
 
 public class Main extends Application {
 
@@ -100,6 +107,7 @@ public class Main extends Application {
 	private static Aircraft theAircraft;
 	
 	private static StatusBar statusBar;
+	private static Button statusLight;
 	private static State status;
 	
 	@Override
@@ -117,13 +125,43 @@ public class Main extends Application {
 		
 	}
 	
+	public static void checkStatus(State status) {
+		if(Main.getStatus().equals(State.RUNNING)) {
+			Main.getStatusBar().setText("Running calculation ... "); 
+			Main.getStatusLight().setBackground(
+		        		new Background(
+		        				new BackgroundFill(
+		        						Color.ORANGE,
+		        						new CornerRadii(2),
+		        						new Insets(4)
+		        						)
+		        				)
+		        		);
+		}
+		else if(Main.getStatus().equals(State.READY)) {
+			Main.getStatusBar().setText("Ready");
+			Main.getStatusLight().setBackground(
+		        		new Background(
+		        				new BackgroundFill(
+		        						Color.LIGHTGREEN,
+		        						new CornerRadii(2),
+		        						new Insets(4)
+		        						)
+		        				)
+		        		);
+		}
+	}
+	
 	private void showMainView() throws IOException {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(Main.class.getResource("view/MainView.fxml"));
 		Main.mainLayout = loader.load();
-		Main.setStatus(State.READY);
 		Main.setStatusBar(new StatusBar());
-		Main.getStatusBar().setText("Ready");
+		Main.setStatusLight(new Button());
+        Main.getStatusLight().setPrefWidth(30.0);
+        Main.getStatusBar().getRightItems().add(Main.getStatusLight());
+        Main.setStatus(State.READY);
+        checkStatus(Main.getStatus());
 		Main.mainLayout.setBottom(Main.getStatusBar());
 		Scene scene = new Scene(mainLayout);
 		primaryStage.setScene(scene);
@@ -154,6 +192,10 @@ public class Main extends Application {
 		loader.setLocation(Main.class.getResource("inputmanager/InputManagerAircraftFromFile.fxml"));
 		mainInputManagerAircraftFromFileLayout = loader.load();
 		mainInputManagerAircraftSubContentLayout.setCenter(mainInputManagerAircraftFromFileLayout);
+		
+		if(Main.getTheAircraft() != null)
+			InputManagerAircraftFromFileController.logAircraftFromFileToInterface();
+		
 		primaryStage.show();
 		
 	}
@@ -622,6 +664,14 @@ public class Main extends Application {
 
 	public static void setStatus(State status) {
 		Main.status = status;
+	}
+
+	public static Button getStatusLight() {
+		return statusLight;
+	}
+
+	public static void setStatusLight(Button statusLight) {
+		Main.statusLight = statusLight;
 	}
 
 }
