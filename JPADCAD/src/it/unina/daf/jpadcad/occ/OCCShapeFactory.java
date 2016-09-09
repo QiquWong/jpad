@@ -225,5 +225,24 @@ public class OCCShapeFactory extends CADShapeFactory
 		
 		return shell;
 	}
+
+	@Override
+	public CADVertex newVertex(double x, double y, double z) {
+		CADVertex vertex = null;
+		try
+		{
+			vertex = new OCCVertex(x, y, z);
+		}
+		catch (RuntimeException ex)
+		{
+		}
+		
+		return vertex;
+	}
+
+	@Override
+	public CADVertex newVertex(double[] coordinates3d) {
+		return newVertex(coordinates3d[0], coordinates3d[1], coordinates3d[1]);
+	}
 	
 }

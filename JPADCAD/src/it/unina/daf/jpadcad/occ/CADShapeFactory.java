@@ -129,4 +129,18 @@ public abstract class CADShapeFactory
 	 */
 	public abstract CADShell newShell(List<CADGeomCurve3D> cadGeomCurveList);
 	
+	/**
+	 * Create a new CADVertex from a triplet of coordinates
+	 * @param x, y, z the cartesian coordinates
+	 * @return The created CADVertex
+	 */
+	public abstract CADVertex newVertex(double x, double y, double z);
+
+	/**
+	 * Create a new CADVertex from a triplet of coordinates
+	 * @param coordinates3D the array of cartesian coordinates
+	 * @return The created CADVertex
+	 */
+	public abstract CADVertex newVertex(double [] coordinates3D);
+	
 }

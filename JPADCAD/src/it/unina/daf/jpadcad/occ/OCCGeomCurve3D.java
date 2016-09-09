@@ -74,7 +74,7 @@ public class OCCGeomCurve3D implements CADGeomCurve3D
 			CADShapeFactory factory = CADShapeFactory.getFactory();
 			if (factory != null) {
 				CADShape cadShape = factory.newShape(spline);
-				cadEdge =(CADEdge) cadShape;
+				cadEdge = (CADEdge) cadShape;
 			} else {
 				Logger LOGGER=Logger.getLogger(CADShapeFactory.class.getName());
 				LOGGER.log(Level.WARNING, "Class CADShapeFactory: factory object not found.");

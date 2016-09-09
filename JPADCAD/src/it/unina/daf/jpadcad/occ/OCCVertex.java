@@ -1,5 +1,8 @@
 package it.unina.daf.jpadcad.occ;
 
+import java.util.List;
+
+import opencascade.BRepBuilderAPI_MakeVertex;
 import opencascade.BRep_Tool;
 import opencascade.TopoDS;
 import opencascade.TopoDS_Face;
@@ -9,6 +12,17 @@ import opencascade.gp_Pnt2d;
 
 public class OCCVertex extends OCCShape implements CADVertex
 {
+
+	public OCCVertex() 
+	{
+	}	
+	
+	public OCCVertex(double x, double y, double z) {
+		myShape = TopoDS.ToVertex(
+				new BRepBuilderAPI_MakeVertex(new gp_Pnt(x, y, z)).Vertex() 
+				);
+	}	
+	
 	@Override
 	public final TopoDS_Vertex getShape()
 	{

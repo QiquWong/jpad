@@ -6,11 +6,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import opencascade.BRepBuilderAPI_MakeWire;
+import opencascade.BRepGProp;
 import opencascade.BRepOffsetAPI_ThruSections;
+import opencascade.GProp_GProps;
 import opencascade.TopoDS;
 
 public class OCCShell extends OCCShape implements CADShell
 {
+	private double area = 0.0;
 
 	public OCCShell() {
 	}	
@@ -54,6 +57,13 @@ public class OCCShell extends OCCShape implements CADShell
 					expF.init(cadShape, CADShapeTypes.FACE);
 					CADFace cadFace = (CADFace) expF.current();
 					myShape = ((OCCShape)cadFace).getShape();
+
+					// area of the face
+					GProp_GProps property = new GProp_GProps();
+					BRepGProp.SurfaceProperties(myShape, property);
+					area = property.Mass();
+					//System.out.println("OCCShell :: Surface area = " + area);
+
 				} else {
 					Logger LOGGER=Logger.getLogger(CADShapeFactory.class.getName());
 					LOGGER.log(Level.WARNING, "Class CADShapeFactory: factory object not found.");
@@ -67,5 +77,10 @@ public class OCCShell extends OCCShape implements CADShell
 				myShape = null;
 			}
 		}
+	}
+
+	@Override
+	public double getArea() {
+		return area;
 	}
 }
