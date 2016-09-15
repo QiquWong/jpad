@@ -33,7 +33,6 @@ public class InputManagerAircraftDefaultController {
 	@SuppressWarnings("unchecked")
 	private void initialize() {
 		defaultAircraftChioseBox.setItems(defaultAircraftList);
-		defaultAircraftChioseBox.setValue("mmm");
 	}
 	
 	@FXML

@@ -13,6 +13,8 @@ import aircraft.components.Aircraft;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import javafx.concurrent.Worker.State;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -23,15 +25,12 @@ import standaloneutils.MyXMLReaderUtils;
 
 public class InputManagerAircraftFromFileController {
 
+	FileChooser chooser;
+	
 	@FXML
 	private void chooseAircraftFile() throws IOException {
 
-		// get the text field for aircraft input file name
-		Main.setTextFieldAircraftInputFile(
-				(TextField) Main.getMainInputManagerAircraftFromFileToolbarLayout().lookup("#textFieldAircraftInputFile")
-				);
-
-		FileChooser chooser = new FileChooser();
+		chooser = new FileChooser();
 		chooser.setTitle("Open File");
 		chooser.setInitialDirectory(new File(Main.getInputDirectoryPath()));
 		File file = chooser.showOpenDialog(null);
@@ -39,14 +38,32 @@ public class InputManagerAircraftFromFileController {
 			// get full path and populate the text box
 			Main.getTextFieldAircraftInputFile().setText(file.getAbsolutePath());
 		}
+		
 	}
-
+	
+	/////////////////////////////////////////////////////////////////////////////////
+	// TODO : CHECK IF THE TEXT FIELD CONTENT IS AN .XML FILE (CHECK THE EXTENSION)//
+	/////////////////////////////////////////////////////////////////////////////////
 	@FXML
 	private void loadAircraftFile() throws IOException, InterruptedException {
+	
+		Main.getLoadButtonFromFile().setOnAction(new EventHandler<ActionEvent>() {
 
+			public void handle(ActionEvent event) {
+				if(Main.isAircraftFile(Main.getTextFieldAircraftInputFile().getText()))
+					try {
+						loadAircraftFileImplementation();
+					} catch (IOException | InterruptedException e) {
+						e.printStackTrace();
+					}
+			}
+		});
+	}
+
+	private void loadAircraftFileImplementation() throws IOException, InterruptedException {
 		Main.setStatus(State.RUNNING);
 		Main.checkStatus(Main.getStatus());
-
+		
 		String databaseFolderPath = Main.getDatabaseDirectoryPath();
 		String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
 		String highLiftDatabaseFileName = "HighLiftDatabase.h5";
@@ -1056,5 +1073,10 @@ public class InputManagerAircraftFromFileController {
 			Main.getTextFieldAircraftSystemsZ().setText(
 					"NOT INITIALIZED"
 					);
+		
+		///////////////////////////////////////////////////////////////////////////////
+		// TODO : ADD SVG IMAGES TO THE TOP, SIDE AND FRONT VIEW PANES SAVED IN MAIN //
+		///////////////////////////////////////////////////////////////////////////////
+		
 	}
 }

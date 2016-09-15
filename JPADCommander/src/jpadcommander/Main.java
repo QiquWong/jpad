@@ -9,6 +9,8 @@
 package jpadcommander;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
@@ -29,8 +32,10 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import standaloneutils.JPADXmlReader;
 
 public class Main extends Application {
 
@@ -103,11 +108,18 @@ public class Main extends Application {
 	private static TextField textFieldAircraftSystemsY;
 	private static TextField textFieldAircraftSystemsZ;
 	
+	private static Pane aircraftFrontViewPane;
+	private static Pane aircraftSideViewPane;
+	private static Pane aircraftTopViewPane;
+	
 	private static String inputDirectoryPath;
 	private static String outputDirectoryPath;
 	private static String databaseDirectoryPath;
 	
 	private static Aircraft theAircraft;
+	private static Button loadButtonFromFile;
+	private static Button loadButtonDefaultAircraft;
+	private static ChoiceBox<String> defaultAircraftChoiseBox;
 	
 	private static StatusBar statusBar;
 	private static Button statusLight;
@@ -126,6 +138,30 @@ public class Main extends Application {
 		
 		showMainItems();
 		
+	}
+	
+	public static boolean isAircraftFile(String pathToAircraftXML) {
+		
+		final PrintStream originalOut = System.out;
+		PrintStream filterStream = new PrintStream(new OutputStream() {
+			public void write(int b) {
+				// write nothing
+			}
+		});
+		System.setOut(filterStream);
+		
+		String pathToXML = Main.getTextFieldAircraftInputFile().getText(); 
+		JPADXmlReader reader = new JPADXmlReader(pathToXML);
+		
+		boolean isAircraftFile = false;
+		
+		if(reader.getXmlDoc().getElementsByTagName("aircraft").getLength() > 0)
+			isAircraftFile = true;
+		
+		// write again
+		System.setOut(originalOut);
+		
+		return isAircraftFile;
 	}
 	
 	public static void checkStatus(State status) {
@@ -199,6 +235,7 @@ public class Main extends Application {
 				(ToolBar) Main.getMainInputManagerAircraftFromFileLayout().lookup("#ImportAircraftFromFileToolbar")
 				);
 		mainInputManagerAircraftSubContentFieldsLayout.setTop(mainInputManagerAircraftFromFileToolbarLayout);
+		
 		
 		primaryStage.show();
 	}
@@ -705,6 +742,54 @@ public class Main extends Application {
 	public static void setMainInputManagerAircraftDefaultToolbarLayout(
 			ToolBar mainInputManagerAircraftDefaultToolbarLayout) {
 		Main.mainInputManagerAircraftDefaultToolbarLayout = mainInputManagerAircraftDefaultToolbarLayout;
+	}
+
+	public static Pane getAircraftFrontViewPane() {
+		return aircraftFrontViewPane;
+	}
+
+	public static void setAircraftFrontViewPane(Pane aircraftFrontViewPane) {
+		Main.aircraftFrontViewPane = aircraftFrontViewPane;
+	}
+
+	public static Pane getAircraftSideViewPane() {
+		return aircraftSideViewPane;
+	}
+
+	public static void setAircraftSideViewPane(Pane aircraftSideViewPane) {
+		Main.aircraftSideViewPane = aircraftSideViewPane;
+	}
+
+	public static Pane getAircraftTopViewPane() {
+		return aircraftTopViewPane;
+	}
+
+	public static void setAircraftTopViewPane(Pane aircraftTopViewPane) {
+		Main.aircraftTopViewPane = aircraftTopViewPane;
+	}
+
+	public static Button getLoadButtonFromFile() {
+		return loadButtonFromFile;
+	}
+
+	public static void setLoadButtonFromFile(Button loadButtonFromFile) {
+		Main.loadButtonFromFile = loadButtonFromFile;
+	}
+
+	public static Button getLoadButtonDefaultAircraft() {
+		return loadButtonDefaultAircraft;
+	}
+
+	public static void setLoadButtonDefaultAircraft(Button loadButtonDefaultAircraft) {
+		Main.loadButtonDefaultAircraft = loadButtonDefaultAircraft;
+	}
+
+	public static ChoiceBox<String> getDefaultAircraftChoiseBox() {
+		return defaultAircraftChoiseBox;
+	}
+
+	public static void setDefaultAircraftChoiseBox(ChoiceBox<String> defaultAircraftChoiseBox) {
+		Main.defaultAircraftChoiseBox = defaultAircraftChoiseBox;
 	}
 
 }

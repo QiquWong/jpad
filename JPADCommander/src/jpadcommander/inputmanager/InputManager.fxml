@@ -16,6 +16,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
@@ -421,11 +422,17 @@
                                                                <children>
                                                                   <TabPane prefHeight="978.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                      <tabs>
-                                                                        <Tab id="TopView" text="Top view" />
-                                                                        <Tab id="SideView" text="Side view" />
+                                                                        <Tab id="TopView" text="Top view">
+                                                                           <content>
+                                                                              <Pane id="TopViewPane" prefHeight="200.0" prefWidth="200.0" />
+                                                                           </content></Tab>
+                                                                        <Tab id="SideView" text="Side view">
+                                                                           <content>
+                                                                              <Pane id="SideViewPane" prefHeight="200.0" prefWidth="200.0" />
+                                                                           </content></Tab>
                                                                         <Tab id="FrontView" text="Front view">
                                                                            <content>
-                                                                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                                                              <Pane id="FrontViewPane" prefHeight="200.0" prefWidth="200.0" />
                                                                            </content>
                                                                         </Tab>
                                                                      </tabs>
