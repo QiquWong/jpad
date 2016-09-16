@@ -37,27 +37,23 @@ public class InputManagerAircraftFromFileController {
 		if (file != null) {
 			// get full path and populate the text box
 			Main.getTextFieldAircraftInputFile().setText(file.getAbsolutePath());
+			Main.setInputFileAbsolutePath(file.getAbsolutePath());
 		}
 		
 	}
 	
-	/////////////////////////////////////////////////////////////////////////////////
-	// TODO : CHECK IF THE TEXT FIELD CONTENT IS AN .XML FILE (CHECK THE EXTENSION)//
-	/////////////////////////////////////////////////////////////////////////////////
 	@FXML
 	private void loadAircraftFile() throws IOException, InterruptedException {
 	
-		Main.getLoadButtonFromFile().setOnAction(new EventHandler<ActionEvent>() {
-
-			public void handle(ActionEvent event) {
-				if(Main.isAircraftFile(Main.getTextFieldAircraftInputFile().getText()))
-					try {
-						loadAircraftFileImplementation();
-					} catch (IOException | InterruptedException e) {
-						e.printStackTrace();
-					}
+		if(Main.getTheAircraft() != null)
+			Main.setChoiseBoxSelectionDefaultAircraft(null);
+		
+		if(Main.isAircraftFile(Main.getTextFieldAircraftInputFile().getText()))
+			try {
+				loadAircraftFileImplementation();
+			} catch (IOException | InterruptedException e) {
+				e.printStackTrace();
 			}
-		});
 	}
 
 	private void loadAircraftFileImplementation() throws IOException, InterruptedException {

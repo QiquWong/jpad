@@ -23,7 +23,7 @@ import jpadcommander.Main;
 
 public class InputManagerAircraftDefaultController {
 
-	ObservableList<String> defaultAircraftList = FXCollections.observableArrayList("ATR-72","B747-100B","AGILE DC-1");
+	ObservableList<String> defaultAircraftList = FXCollections.observableArrayList("ATR-72","B747-100B","AGILE-DC1");
 	
 	@FXML
 	@SuppressWarnings("rawtypes")
@@ -59,6 +59,12 @@ public class InputManagerAircraftDefaultController {
 				.getSelectionModel()
 					.getSelectedItem()
 						.equals("ATR-72")) {
+			Main.setChoiseBoxSelectionDefaultAircraft(
+					defaultAircraftChioseBox
+						.getSelectionModel()
+							.getSelectedItem()
+							);
+			Main.setInputFileAbsolutePath("");
 			Main.setTheAircraft(new Aircraft.AircraftBuilder(
 					"ATR-72",
 					AircraftEnum.ATR72,
@@ -72,7 +78,13 @@ public class InputManagerAircraftDefaultController {
 		else if(defaultAircraftChioseBox
 				.getSelectionModel()
 				.getSelectedItem()
-					.equals("B747_100B")) {
+					.equals("B747-100B")) {
+//			Main.setInputFileAbsolutePath("");
+			Main.setChoiseBoxSelectionDefaultAircraft(
+					defaultAircraftChioseBox
+						.getSelectionModel()
+							.getSelectedItem()
+							);
 			Alert alert = new Alert(
 					AlertType.INFORMATION, 
 					"Hello from DAF!\nThis action is still unimplemented.", 
@@ -83,7 +95,13 @@ public class InputManagerAircraftDefaultController {
 		else if(defaultAircraftChioseBox
 				.getSelectionModel()
 				.getSelectedItem()
-					.equals("AGILE_DC1")) {
+					.equals("AGILE-DC1")) {
+//			Main.setInputFileAbsolutePath("");
+			Main.setChoiseBoxSelectionDefaultAircraft(
+					defaultAircraftChioseBox
+						.getSelectionModel()
+							.getSelectedItem()
+							);
 			Alert alert = new Alert(
 					AlertType.INFORMATION, 
 					"Hello from DAF!\nThis action is still unimplemented.", 

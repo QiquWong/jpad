@@ -8,6 +8,7 @@
 
 package jpadcommander;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -115,6 +116,8 @@ public class Main extends Application {
 	private static String inputDirectoryPath;
 	private static String outputDirectoryPath;
 	private static String databaseDirectoryPath;
+	private static String inputFileAbsolutePath;
+	private static Object choiseBoxSelectionDefaultAircraft;
 	
 	private static Aircraft theAircraft;
 	private static Button loadButtonFromFile;
@@ -141,6 +144,8 @@ public class Main extends Application {
 	}
 	
 	public static boolean isAircraftFile(String pathToAircraftXML) {
+
+		boolean isAircraftFile = false;
 		
 		final PrintStream originalOut = System.out;
 		PrintStream filterStream = new PrintStream(new OutputStream() {
@@ -149,15 +154,16 @@ public class Main extends Application {
 			}
 		});
 		System.setOut(filterStream);
-		
-		String pathToXML = Main.getTextFieldAircraftInputFile().getText(); 
-		JPADXmlReader reader = new JPADXmlReader(pathToXML);
-		
-		boolean isAircraftFile = false;
-		
-		if(reader.getXmlDoc().getElementsByTagName("aircraft").getLength() > 0)
-			isAircraftFile = true;
-		
+
+		String pathToXML = Main.getTextFieldAircraftInputFile().getText();
+		if(pathToAircraftXML.endsWith(".xml")) {
+			File inputFile = new File(pathToAircraftXML);
+			if(inputFile.exists()) {
+				JPADXmlReader reader = new JPADXmlReader(pathToXML);
+				if(reader.getXmlDoc().getElementsByTagName("aircraft").getLength() > 0)
+					isAircraftFile = true;
+			}
+		}
 		// write again
 		System.setOut(originalOut);
 		
@@ -790,6 +796,22 @@ public class Main extends Application {
 
 	public static void setDefaultAircraftChoiseBox(ChoiceBox<String> defaultAircraftChoiseBox) {
 		Main.defaultAircraftChoiseBox = defaultAircraftChoiseBox;
+	}
+
+	public static String getInputFileAbsolutePath() {
+		return inputFileAbsolutePath;
+	}
+
+	public static void setInputFileAbsolutePath(String inputFileAbsolutePath) {
+		Main.inputFileAbsolutePath = inputFileAbsolutePath;
+	}
+
+	public static Object getChoiseBoxSelectionDefaultAircraft() {
+		return choiseBoxSelectionDefaultAircraft;
+	}
+
+	public static void setChoiseBoxSelectionDefaultAircraft(Object choiseBoxSelectionDefaultAircraft) {
+		Main.choiseBoxSelectionDefaultAircraft = choiseBoxSelectionDefaultAircraft;
 	}
 
 }

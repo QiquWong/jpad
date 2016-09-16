@@ -50,6 +50,19 @@ public class InputManagerController {
 										.lookup("#textFieldAircraftInputFile")
 				);
 		
+		// set the aircraft input file path in the input text filed if aircraft != null
+		if(Main.getTheAircraft() != null) {
+			Main.setTextFieldAircraftInputFile(
+					(TextField) Main.getMainInputManagerAircraftFromFileToolbarLayout()
+									.getItems()
+										.get(0)
+											.lookup("#textFieldAircraftInputFile")
+					);
+			Main.getTextFieldAircraftInputFile().setText(
+					Main.getInputFileAbsolutePath()
+					);
+		}
+		
 		// get the load button from file
 		Main.setLoadButtonFromFile(
 				(Button) Main.getMainInputManagerAircraftFromFileToolbarLayout()
@@ -74,7 +87,8 @@ public class InputManagerController {
         						-2.5*Main.getLoadButtonFromFile().getLayoutBounds().getMaxX(),
         						1.2*Main.getLoadButtonFromFile().getLayoutBounds().getMaxY()
         						);
-        		if(!Main.isAircraftFile(Main.getTextFieldAircraftInputFile().getText())) {
+        		if(!Main.isAircraftFile(Main.getTextFieldAircraftInputFile().getText())
+        				) {
         			warning.show(Main.getLoadButtonFromFile(), p.getX(), p.getY());
         		}
         	}
@@ -120,10 +134,28 @@ public class InputManagerController {
 										.lookup("#loadButtonDefaultAircraft")
 				);
 		
+		// set the aircraft input file path in the input text filed if aircraft != null
+		if(Main.getTheAircraft() != null) {
+			Main.setDefaultAircraftChoiseBox(
+					(ChoiceBox<String>) Main.getMainInputManagerAircraftDefaultToolbarLayout()
+									.getItems()
+										.get(0)
+											.lookup("#defaultAircraftChoiseBox")
+					);
+			if(Main.getChoiseBoxSelectionDefaultAircraft() != null) {
+				if(Main.getChoiseBoxSelectionDefaultAircraft().equals("ATR-72"))
+					Main.getDefaultAircraftChoiseBox().getSelectionModel().select(0);
+				else if(Main.getChoiseBoxSelectionDefaultAircraft().equals("B747-100B"))		
+					Main.getDefaultAircraftChoiseBox().getSelectionModel().select(1);
+				else if(Main.getChoiseBoxSelectionDefaultAircraft().equals("AGILE-DC1"))
+					Main.getDefaultAircraftChoiseBox().getSelectionModel().select(2);
+			}
+		}
+
 		// CHECK IF NO CHOICE BOX ITEM HAS BEEN SELECTED 
 		Main.getLoadButtonDefaultAircraft().disableProperty().bind(
 				Main.getDefaultAircraftChoiseBox().valueProperty().isNull()
 				);
 	}
-	
+
 }
