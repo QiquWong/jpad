@@ -146,10 +146,10 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 
 		_theOperatingConditions = operatingConditions;
 
-		_eWhole = new Double[_theOperatingConditions.getCL().length];
-		_cD = new Double[_theOperatingConditions.getCL().length];
-		_cL = new Double[_theOperatingConditions.getCL().length];
-		_cY = new Double[_theOperatingConditions.getCL().length];
+		_eWhole = new Double[_theOperatingConditions.getAlpha().length];
+		_cD = new Double[_theOperatingConditions.getAlpha().length];
+		_cL = new Double[_theOperatingConditions.getAlpha().length];
+		_cY = new Double[_theOperatingConditions.getAlpha().length];
 		
 		updateVariables(_theAircraft);
 	}
@@ -210,9 +210,9 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		for (int j=0; j < _machDragPolar.size(); j++) {
 
 			// Iterate over lift coefficients
-			for(int i=0; i < _theOperatingConditions.getCL().length; i++) {
+			for(int i=0; i < _theOperatingConditions.getAlpha().length; i++) {
 
-				_cL[i] = _theOperatingConditions.getCL()[i];
+				_cL[i] = _theOperatingConditions.getAlpha()[i];
 				_cLcurrent = _cL[i];
 
 				_eWhole[i] = calculateOswald(_machDragPolar.get(j), MethodEnum.HOWE);
@@ -528,7 +528,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		Amount<Angle> alphaMaxWingClean = null, alphaStar, alphaMaxWingBody;
 		
 		if( theCondition == ConditionEnum.CRUISE){
-		alphaMaxWingClean =  _theAircraft.getWing().getAerodynamics().get_alphaMaxClean();
+		alphaMaxWingClean =  _theAircraft.getWing().getAerodynamics().getAlphaMaxClean();
 		cLMaxWingClean = _theAircraft.getWing().getAerodynamics().get_cLMaxClean();
 		cLAlphaWing = _theAircraft.getWing().getAerodynamics().getcLLinearSlopeNB();
 		//alphaStar = meanAirfoil.getAerodynamics().get_alphaStar();
@@ -547,7 +547,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		
 		if (theCondition == ConditionEnum.LANDING || theCondition == ConditionEnum.TAKE_OFF){
 		
-			alphaMaxWingClean =  _theAircraft.getWing().getAerodynamics().get_alphaMaxClean();
+			alphaMaxWingClean =  _theAircraft.getWing().getAerodynamics().getAlphaMaxClean();
 			double deltaAlphaMax = Math.toRadians(_theAircraft.getWing().getHigLiftCalculator().getDeltaAlphaMaxFlap());
 			alphaMaxWingClean = Amount.valueOf(alphaMaxWingClean.getEstimatedValue() + deltaAlphaMax ,SI.RADIAN);
 
@@ -689,7 +689,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 
 		if( theCondition == ConditionEnum.CRUISE){
 			alphaFirst = -2.0 ;
-			alphaMaxWingClean =  _theAircraft.getWing().getAerodynamics().get_alphaMaxClean();
+			alphaMaxWingClean =  _theAircraft.getWing().getAerodynamics().getAlphaMaxClean();
 			cLMaxWingClean = _theAircraft.getWing().getAerodynamics().get_cLMaxClean();
 			cLAlphaWing = _theAircraft.getWing().getAerodynamics().getcLLinearSlopeNB();
 			alphaStar = meanAirfoil.getAerodynamics().get_alphaStar();
@@ -707,7 +707,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 			
 			if (theCondition == ConditionEnum.LANDING || theCondition == ConditionEnum.TAKE_OFF){
 				alphaFirst = -10.0 ;
-				alphaMaxWingClean =  _theAircraft.getWing().getAerodynamics().get_alphaMaxClean();
+				alphaMaxWingClean =  _theAircraft.getWing().getAerodynamics().getAlphaMaxClean();
 				double deltaAlphaMax = Math.toRadians(_theAircraft.getWing().getHigLiftCalculator().getDeltaAlphaMaxFlap());
 				alphaMaxWingClean = Amount.valueOf(alphaMaxWingClean.getEstimatedValue() + deltaAlphaMax ,SI.RADIAN);
 

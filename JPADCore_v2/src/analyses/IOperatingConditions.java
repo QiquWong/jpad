@@ -37,8 +37,6 @@ public interface IOperatingConditions {
 	public Amount<Length> getAltitude();
 	public void setAltitude(Amount<Length> _altitude);
 
-	public Double[] getCL();
-
 	public Amount<Temperature> getStaticTemperature();
 	public void setTemperature(Amount<Temperature> _temperature);
 	public void setDensity(Amount<VolumetricDensity> _density);

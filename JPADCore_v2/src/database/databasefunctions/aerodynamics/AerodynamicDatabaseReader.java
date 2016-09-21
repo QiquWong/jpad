@@ -63,7 +63,7 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 	}
 	
 	public void runAnalysisDeltaAlphaCLMax(double sweepAngleLE , double sharpnessParameterLE){
-		d_Alpha_Vs_LambdaLE =  getD_Alpha_Vs_LambdaLE_VsDy(sweepAngleLE, sharpnessParameterLE);
+		d_Alpha_Vs_LambdaLE =  getDAlphaVsLambdaLEVsDy(sweepAngleLE, sharpnessParameterLE);
 	}
 	
 	
@@ -135,7 +135,7 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 	
 	
 	
-	public double getD_Alpha_Vs_LambdaLE_VsDy(double sweepAngleLE , double sharpnessParameterLE ) {
+	public double getDAlphaVsLambdaLEVsDy(double sweepAngleLE , double sharpnessParameterLE ) {
 		return d_Alpha_Vs_LambdaLE_VsDy.value(sweepAngleLE, sharpnessParameterLE);
 	}
 	

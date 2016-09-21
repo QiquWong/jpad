@@ -1239,7 +1239,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 				calcAlphaAndCLMax(meanAirfoil);
 				double cLMax = get_cLMaxClean();
-				Amount<Angle> alphaMax = get_alphaMaxClean();	
+				Amount<Angle> alphaMax = getAlphaMaxClean();	
 				double alphaMaxDouble = alphaMax.getEstimatedValue();
 
 				cLLinearSlope = (cLStarWing - cLTemp)/alphaStar;
@@ -1435,7 +1435,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 					); 
 					
 			calcAlphaAndCLMax(meanAirfoil);
-			Amount<Angle> alphaMax = get_alphaMaxClean().to(NonSI.DEGREE_ANGLE);
+			Amount<Angle> alphaMax = getAlphaMaxClean().to(NonSI.DEGREE_ANGLE);
 			double alphaStarClean = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
 			Amount<Angle> alphaStarCleanAmount = Amount.valueOf(alphaStarClean, SI.RADIAN);
 			double cLMax=get_cLMaxClean();
@@ -1616,7 +1616,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 		calcAlphaAndCLMax(meanAirfoil);
 		double cLMax = get_cLMaxClean();
-		Amount<Angle> alphaMax = get_alphaMaxClean().to(NonSI.DEGREE_ANGLE);
+		Amount<Angle> alphaMax = getAlphaMaxClean().to(NonSI.DEGREE_ANGLE);
 		double alphaMaxDoubleDegree = alphaMax.getEstimatedValue();
 		double alphaMaxDouble = alphaMax.to(SI.RADIAN).getEstimatedValue();
 		alphaArrayPlot = MyArrayUtils.linspace(alphaFirst,alphaMaxDoubleDegree + 2, nPoints);
@@ -2260,7 +2260,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		this.set_cLMaxClean(theCLatAlpha.nasaBlackwell(alphaMaxNasaBlackwell));
 		//System.out.println("CL Max " + get_cLMaxClean());
 		deltaAlphaMax = Amount.valueOf(
-				toRadians (this.getAerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(
+				toRadians (this.getAerodynamicDatabaseReader().getDAlphaVsLambdaLEVsDy(
 						getTheLiftingSurface().getSweepLEEquivalent(false).to(NonSI.DEGREE_ANGLE).getEstimatedValue() ,
 						meanLESharpnessParameter )), SI.RADIAN);
 //				System.out.println("Sweep LE Equivalent = " + getTheLiftingSurface().get_sweepLEEquivalent().getEstimatedValue());
@@ -2383,7 +2383,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 				}
 			}
 
-			deltaAlphaMaxFlap = getAerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(
+			deltaAlphaMaxFlap = getAerodynamicDatabaseReader().getDAlphaVsLambdaLEVsDy(
 					getTheLiftingSurface()
 					.getSweepLEEquivalent(false).to(NonSI.DEGREE_ANGLE).getEstimatedValue(),
 					meanAirfoil.getGeometry().get_deltaYPercent());
@@ -2957,13 +2957,13 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			double qValue = cL0HighLift;
 			double alphaStar = (cLStarClean - qValue)/cLAlphaFlap;
 			double cLMaxClean = get_cLMaxClean();
-			Amount<Angle> alphaMax = get_alphaMaxClean().to(NonSI.DEGREE_ANGLE);	
+			Amount<Angle> alphaMax = getAlphaMaxClean().to(NonSI.DEGREE_ANGLE);	
 			cLMaxFlap = cLMaxClean + deltaCLmaxFlap + deltaCLmaxSlat;
 			
 			double alphaMaxHighLift;
 
 			alphaMaxHighLift = ((cLMaxFlap-cL0HighLift)/cLalphaNew) 
-								+ getAerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(
+								+ getAerodynamicDatabaseReader().getDAlphaVsLambdaLEVsDy(
 										getTheLiftingSurface()
 										.getSweepLEEquivalent(false).to(NonSI.DEGREE_ANGLE).getEstimatedValue(),
 										meanAirfoil.getGeometry().get_deltaYPercent());
@@ -3056,13 +3056,13 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			double alphaStar = (cLStarClean - qValue)/cLAlphaFlap;
 			
 			double cLMaxClean = get_cLMaxClean();
-			Amount<Angle> alphaMax = get_alphaMaxClean().to(NonSI.DEGREE_ANGLE);	
+			Amount<Angle> alphaMax = getAlphaMaxClean().to(NonSI.DEGREE_ANGLE);	
 			cLMaxFlap = cLMaxClean + deltaCLmaxFlap + deltaCLmaxSlat;
 
 			double alphaMaxHighLift;
 
 			alphaMaxHighLift = ((cLMaxFlap-cL0HighLift)/cLalphaNew) 
-								+ getAerodynamicDatabaseReader().getD_Alpha_Vs_LambdaLE_VsDy(
+								+ getAerodynamicDatabaseReader().getDAlphaVsLambdaLEVsDy(
 										getTheLiftingSurface()
 										.getSweepLEEquivalent(false).to(NonSI.DEGREE_ANGLE).getEstimatedValue(),
 										meanAirfoil.getGeometry().get_deltaYPercent());
@@ -4970,7 +4970,7 @@ public class CalcCdvsAlpha {
 	public void set_cLMaxClean(Double _cLMaxClean) {
 		this._cLMaxClean = _cLMaxClean;
 	}
-	public Amount<Angle> get_alphaMaxClean() {
+	public Amount<Angle> getAlphaMaxClean() {
 		return _alphaMaxClean;
 	}
 
