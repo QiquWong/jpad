@@ -2,8 +2,54 @@
 <jpad_config>
     <analysis>
         <aerodynamics id="JPAD Test analysis - AERODYNAMICS">
-
-
+			<wing>
+				<lift>
+				
+				</lift>
+				<high_lift>
+				
+				</high_lift>
+				<drag>
+				
+				</drag>
+				<pitching_moment>
+				
+				</pitching_moment>
+			</wing>
+			<horizontal_tail>
+				<lift>
+				
+				</lift>
+				<high_lift>
+				
+				</high_lift>
+				<drag>
+				
+				</drag>
+				<pitching_moment>
+				
+				</pitching_moment>
+			</horizontal_tail>
+			<vertical_tail>
+				<lift>
+				
+				</lift>
+				<high_lift>
+				
+				</high_lift>
+				<drag>
+				
+				</drag>
+				<pitching_moment>
+				
+				</pitching_moment>
+			</vertical_tail>
+			<fuselage>
+			
+			</fuselage>
+			<nacelles>
+			
+			</nacelles>
         </aerodynamics>
     </analysis>
 </jpad_config>

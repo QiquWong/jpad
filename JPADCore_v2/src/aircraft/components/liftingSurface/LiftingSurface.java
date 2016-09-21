@@ -25,6 +25,7 @@ import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import analyses.OperatingConditions;
+import analyses.liftingsurface.LSAerodynamicsCalculator;
 import analyses.liftingsurface.LSAerodynamicsManager;
 import analyses.liftingsurface.LSAerodynamicsManager.CalcHighLiftDevices;
 import calculators.geometry.LSGeometryCalc;
@@ -49,6 +50,8 @@ public class LiftingSurface implements ILiftingSurface {
 	private String _id = null;
 	private ComponentEnum _type;
 
+	LSAerodynamicsCalculator _theAerodynamicsCalculator;
+	// THIS HAS TO BE CHANGED IN LSAerodynamicCalculator
 	LSAerodynamicsManager _theAerodynamics;
 	CalcHighLiftDevices _highLiftCalculator;
 	
@@ -1520,6 +1523,47 @@ public class LiftingSurface implements ILiftingSurface {
 	
 	}
 	
+	public static double[] calculateInfluenceFactorsMeanAirfoilFlap(
+			double etaIn,
+			double etaOut,
+			LiftingSurface theLiftingSurface
+			
+			) throws InstantiationException, IllegalAccessException{
+
+		double [] influenceAreas = new double [2];
+		double [] influenceFactors = new double [2];
+		
+		double chordIn = MyMathUtils.getInterpolatedValue1DLinear(
+				MyArrayUtils.convertToDoublePrimitive(
+						theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints()
+						),
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						theLiftingSurface.getLiftingSurfaceCreator().getChordsBreakPoints()
+						),
+				etaIn
+				);
+
+		double chordOut = MyMathUtils.getInterpolatedValue1DLinear(
+				MyArrayUtils.convertToDoublePrimitive(
+						theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints()
+						),
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						theLiftingSurface.getLiftingSurfaceCreator().getChordsBreakPoints()
+						),
+				etaOut
+				);
+		
+		influenceAreas[0] = (chordIn * ((etaOut - etaIn)*theLiftingSurface.getSemiSpan().getEstimatedValue()))/2;
+		influenceAreas[1] = (chordOut * ((etaOut - etaIn)*theLiftingSurface.getSemiSpan().getEstimatedValue()))/2;
+		
+		// it returns the influence coefficient
+		
+		influenceFactors[0] = influenceAreas[0]/(influenceAreas[0] + influenceAreas[1]);
+		influenceFactors[1] = influenceAreas[1]/(influenceAreas[0] + influenceAreas[1]);
+		
+		return influenceFactors;
+}
+	
 	@Override
 	public List<Airfoil> getAirfoilList() {	
 		return this._airfoilList;
@@ -1808,6 +1852,14 @@ public class LiftingSurface implements ILiftingSurface {
 		this._theAerodynamics = theAerodynamics;
 	}
 	
+	public LSAerodynamicsCalculator getTheAerodynamicsCalculator() {
+		return _theAerodynamicsCalculator;
+	}
+
+	public void setTheAerodynamicsCalculator(LSAerodynamicsCalculator _theAerodynamicsCalculator) {
+		this._theAerodynamicsCalculator = _theAerodynamicsCalculator;
+	}
+
 	public CalcHighLiftDevices getHigLiftCalculator() {
 		return _highLiftCalculator;
 	}

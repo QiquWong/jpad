@@ -234,24 +234,20 @@ public class AerodynamicCalc {
 			double cL, Amount<Angle> sweepHalfChord,
 			double tcMax, AirfoilTypeEnum airfoilType) {
 		
-		// sweep check --> radian are required
-		if (sweepHalfChord.getUnit().equals(NonSI.DEGREE_ANGLE))
-			sweepHalfChord = sweepHalfChord.to(SI.RADIAN);
+		double y = cL/(Math.pow(cos(sweepHalfChord.doubleValue(SI.RADIAN)),2));
+		double x = tcMax/(Math.cos(sweepHalfChord.doubleValue(SI.RADIAN)));
 		
-		double y = cL/(Math.pow(cos(sweepHalfChord.getEstimatedValue()),2));
-		double x = tcMax/(Math.cos(sweepHalfChord.getEstimatedValue()));
-		
-		double m_cr = ((2.8355*Math.pow(x, 2)) - (1.9072*x) + 0.9499 - (0.2*y) + (0.4262*x*y)) /
+		double machCr = ((2.8355*Math.pow(x, 2)) - (1.9072*x) + 0.9499 - (0.2*y) + (0.4262*x*y)) /
 				      (Math.cos(sweepHalfChord.getEstimatedValue()) );
 		
 		// this method work for peaky airfoils; for modern supercritical some corrections
 		// have to be made.
 		if (airfoilType.equals(AirfoilTypeEnum.SUPERCRITICAL))
-			m_cr += 0.035;
+			machCr += 0.035;
 		else if (airfoilType.equals(AirfoilTypeEnum.MODERN_SUPERCRITICAL))
-			m_cr += 0.06;
+			machCr += 0.06;
 		
-		return m_cr;
+		return machCr;
 	}
 
 	/**

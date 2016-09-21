@@ -12,7 +12,6 @@ import javax.measure.quantity.Velocity;
 import javax.measure.quantity.VolumetricDensity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import org.jscience.physics.amount.Amount;
 
@@ -30,14 +29,12 @@ import standaloneutils.atmosphere.TemperatureCalc;
  *   
  * @author Lorenzo Attanasio
  */
-@XmlRootElement
 public class OperatingConditions implements IOperatingConditions {
 
 	private String _id;
 	
 	// Flight parameters
 	private Double[] _alpha;
-	private Double[] _cL;
 	private Amount<Angle> _alphaCurrent;
 	private Double _machCurrent;
 	private Double _pressureCoefficientCurrent;
@@ -70,7 +67,6 @@ public class OperatingConditions implements IOperatingConditions {
 		// optional parameters ... defaults
 		// ...
 		private Double[] __alpha;
-		private Double[] __cL;
 		private Amount<Angle> __alphaCurrent;
 		private Double __machCurrent;
 		private Amount<Length> __altitude;
@@ -82,11 +78,6 @@ public class OperatingConditions implements IOperatingConditions {
 		
 		public OperatingConditionsBuilder alphaArray(Double[] alpha) {
 			this.__alpha = alpha;
-			return this;
-		}
-		
-		public OperatingConditionsBuilder cLArray(Double[] cLArray) {
-			this.__cL = cLArray;
 			return this;
 		}
 		
@@ -116,8 +107,6 @@ public class OperatingConditions implements IOperatingConditions {
 			this.__machCurrent = 0.0;
 			this.__altitude = Amount.valueOf(0.0, SI.METER);
 			this.__alpha = new Double[] {0.0,2.0,4.0,6.0,8.0,10.0,12.0,14.0,16.0,18.0,20.0,22.0,24.0};
-			this.__cL = new Double[] {0.0,0.2,0.4,0.6,0.8,1.0,1.2,1.4,1.6,1.8,2.0,2.2,2.4};
-			
 		}
 		
 		public OperatingConditions build() {
@@ -133,7 +122,6 @@ public class OperatingConditions implements IOperatingConditions {
 		this._machCurrent = builder.__machCurrent;
 		this._altitude = builder.__altitude;
 		this._alpha = builder.__alpha;
-		this._cL = builder.__cL;
 		
 		calculate();
 		
@@ -180,21 +168,11 @@ public class OperatingConditions implements IOperatingConditions {
 		for(int i=0; i<alphaArrayList.size(); i++)
 			alphaArray[i] = Double.valueOf(alphaArrayList.get(i));
 		
-		List<String> cLArrayList = JPADXmlReader.readArrayFromXML(
-				reader.getXMLPropertiesByPath(
-						"//operating_conditions/lift_coefficients_array"
-						).get(0)
-				);
-		Double[] cLArray = new Double[cLArrayList.size()];
-		for(int i=0; i<cLArrayList.size(); i++)
-			cLArray[i] = Double.valueOf(cLArrayList.get(i));
-		
 		OperatingConditions theConditions = new OperatingConditionsBuilder(id)
 				.alphaCurrent(alphaCurrent)
 				.machCurrent(machCurrent)
 				.altitude(altitude)
 				.alphaArray(alphaArray)
-				.cLArray(cLArray)
 				.build();
 				
 		return theConditions;
@@ -216,7 +194,6 @@ public class OperatingConditions implements IOperatingConditions {
 				.append("\tMach current: " + _machCurrent + "\n")
 				.append("\tAlpha current: " + _alphaCurrent + "\n")
 				.append("\tAlpha array: " + Arrays.toString(_alpha) + "\n")
-				.append("\tLift coefficients array: " + Arrays.toString(_cL) + "\n")
 				.append("\t.....................................\n")
 				.append("\tCurrent pressure coefficient: " + _pressureCoefficientCurrent + "\n")
 				.append("\tCurrent density: " + _densityCurrent + "\n")
@@ -365,10 +342,6 @@ public class OperatingConditions implements IOperatingConditions {
 
 	public void setTAS(Amount<Velocity> _speed) {
 		this._tas = _speed;
-	}
-
-	public Double[] getCL() {
-		return _cL;
 	}
 
 	public Amount<Pressure> getStaticPressure() {
