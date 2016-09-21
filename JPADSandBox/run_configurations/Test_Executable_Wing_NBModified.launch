@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/JPADSandBox/src/sandbox/mr/ExecutableWing/Test_Executable_Wing.java"/>
+<listEntry value="/JPADSandBox/src/sandbox/mr/ExecutableTestModifiedNasaBlackwell/Test_Executable_Wing.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
@@ -11,7 +11,7 @@
 <mapEntry key="Path" value="C:\Users\manue\ADOPT_PROJECT\jpad\libraries\hdf"/>
 <mapEntry key="occjavaDir" value="C:\Users\manue\ADOPT_PROJECT\jpad\libraries\occjava\Win64"/>
 </mapAttribute>
-<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="sandbox.mr.ExecutableWing.Test_Executable_Wing"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-i C:\Users\manue\Desktop\Analisi\NLWing\TestKoven_Graham.xml -d C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox\data"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="sandbox.mr.ExecutableTestModifiedNasaBlackwell.Test_Executable_Wing"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-i C:\Users\manue\Desktop\NasaBlackwell_Modified_Executable\WingAnalysis_NBMod_input_c.xml -d C:\Users\manue\ADOPT_PROJECT\jpad\JPADSandBox\data"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="JPADSandBox"/>
 </launchConfiguration>

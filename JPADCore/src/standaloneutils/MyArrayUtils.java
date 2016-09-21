@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
+import javax.measure.quantity.Angle;
 import javax.measure.quantity.Quantity;
 import javax.measure.unit.Unit;
 
@@ -366,6 +367,30 @@ public final class MyArrayUtils {
 	}
 	
 	public static double[] convertListOfAmountodoubleArray(List<Amount> theListOfObjects) {
+
+		if ( theListOfObjects.size() == 0 ) return null;
+
+		double[] result = new double[theListOfObjects.size()];
+
+		for (int k = 0; k < theListOfObjects.size(); k++) {
+			result[k] = theListOfObjects.get(k).getEstimatedValue();
+		}
+		return result;
+	}
+	
+	public static double[] convertListTodoubleArray(List<Double> theListOfObjects) {
+
+		if ( theListOfObjects.size() == 0 ) return null;
+
+		double[] result = new double[theListOfObjects.size()];
+
+		for (int k = 0; k < theListOfObjects.size(); k++) {
+			result[k] = theListOfObjects.get(k);
+		}
+		return result;
+	}
+	
+	public static double[] convertListOfAmountodoubleArrayAngle(List<Amount<Angle>> theListOfObjects) {
 
 		if ( theListOfObjects.size() == 0 ) return null;
 
