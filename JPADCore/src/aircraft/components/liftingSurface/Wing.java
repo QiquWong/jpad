@@ -277,6 +277,53 @@ public class Wing extends LiftingSurface2Panels{
 
 			initializeAirfoils(aircraftName, this);
 			break;
+			
+		case IRON:
+			_surface = Amount.valueOf(105, SI.SQUARE_METRE);
+			_aspectRatio = 12.0;
+			_taperRatioEquivalent = 0.39;
+			_sweepQuarterChordEq = Amount.valueOf(Math.toRadians(7.7),SI.RADIAN);
+			_spanStationKink = 0.3;
+			_iw = Amount.valueOf(Math.toRadians(2), SI.RADIAN);
+			_twistKink = Amount.valueOf(Math.toRadians(-0.6),SI.RADIAN);
+			_twistTip = Amount.valueOf(Math.toRadians(-2.0),SI.RADIAN);
+			_dihedralInnerPanel = Amount.valueOf(Math.toRadians(5.0),SI.RADIAN);
+			_dihedralOuterPanel = Amount.valueOf(Math.toRadians(5.0),SI.RADIAN);
+
+			// distance of wing apex (LE of xz plane chord) from fuselage nose = (0,0,0) point
+			_deltaXWingFus = Amount.valueOf(_X0.getEstimatedValue(),SI.METER);  
+			_roughness = Amount.valueOf(0.152e-5, SI.METER);
+			_xTransitionU = 0.15;
+			_xTransitionL = 0.12;
+
+			// Thickness of 3 section
+			_tc_root = 0.18;               
+			_tc_kink = 0.18;               
+			_tc_tip = 0.14;        
+
+			// Z position relative to the height of component to which this one is attached
+			_positionRelativeToAttachment = 0.12; 
+
+			// Extension of control surfaces in percent of total surface
+			_surfaceCS = Amount.valueOf(_surface.times(0.25).getEstimatedValue(), SI.SQUARE_METRE);
+
+			// Additional chord extension at root (LE) with respect to equivalent wing
+			_extensionLERootChordLinPanel = 0.;
+
+			// Additional chord extension at root (TE) with respect to equivalent wing
+			_extensionTERootChordLinPanel = 0.;
+
+			// Percent of composite material used for wing structure
+			_compositeCorretionFactor = 0.85;
+
+			// A reference value chosen by the user
+			_massReference = Amount.valueOf(2080.6, SI.KILOGRAM);
+
+			// Calibration constant (to account for slight weight changes due to composites etc...)
+			_massCorrectionFactor = 1.;
+
+			initializeAirfoils(aircraftName, this);
+			break;
 		}
 	}
 	

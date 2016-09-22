@@ -174,6 +174,17 @@ public class Aircraft {
 			_thePerformances = new ACPerformanceManager(AircraftEnum.AGILE_DC1);
 			_theCosts = new MyCosts(this);
 			break;
+			
+		case IRON:
+			_name = "";
+			_typeVehicle = AircraftTypeEnum.TURBOPROP;
+			_theConfiguration = new Configuration(AircraftEnum.IRON);
+			_theBalance = new ACBalanceManager();
+			_theWeights = new ACWeightsManager(AircraftEnum.IRON);
+			_theAerodynamics = new ACAerodynamicsManager(this);
+			_thePerformances = new ACPerformanceManager(AircraftEnum.IRON);
+			_theCosts = new MyCosts(this);
+			break;
 		
 		
 		}
@@ -351,6 +362,19 @@ public class Aircraft {
 						_theHTail,
 						_theVTail
 						);
+			case IRON:
+				_theWing = new Wing(
+						aircraftName,
+						"Wing", // name
+						"Data from IRON D2.0.pdf",
+						18.9, 0.0, -1.32,
+						ComponentEnum.WING,
+						_theFuselage,
+						_theNacelle,
+						_theHTail,
+						_theVTail
+						);
+				break;
 		}
 
 		_componentsList.add(_theWing);

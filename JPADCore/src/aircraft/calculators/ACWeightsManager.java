@@ -166,6 +166,33 @@ public class ACWeightsManager extends ACCalculatorManager {
 			// Into ADAS 159lbs + 66lbs = 225 lbs 
 			_paxSingleMass = Amount.valueOf(102.0, SI.KILOGRAM);
 			break;
+			
+		case IRON:
+			_name = "Weights";
+			_type = AnalysisTypeEnum.WEIGHTS;
+			
+			_MTOM = Amount.valueOf(54037, SI.KILOGRAM); // ATR72 MTOM, REPORT_ATR72
+			
+			//		_mtomIter = MyMathUtils.linspace(.*);
+			//		_mtomResult = new double[_mtomIter.length];
+			
+			_MZFM = Amount.valueOf(45990, SI.KILOGRAM); // ATR72 MZFM, REPORT_ATR72
+			
+			// 90% MTOM
+			_MLM = Amount.valueOf(48633.3, SI.KILOGRAM);
+			_MLW = _MLM.times(AtmosphereCalc.g0).to(SI.NEWTON);
+			
+			_OEM = Amount.valueOf(33076, SI.KILOGRAM);
+			
+			// Actuators oils
+			_TFOM = Amount.valueOf(270., SI.KILOGRAM);
+			
+			// Aluminum density
+			_materialDensity = Amount.valueOf(2711., VolumetricDensity.UNIT);
+			
+			// 79 kg assumed for each passenger + 14 kg baggage (EASA 2008.C.06) 
+			_paxSingleMass = Amount.valueOf(93.0, SI.KILOGRAM);
+			break;
 		}
 	}
 

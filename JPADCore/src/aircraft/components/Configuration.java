@@ -395,6 +395,72 @@ public class Configuration {
 
 			calculateDependentVariables();
 			break;
+			
+		case IRON:
+			// see Roskam (Part V) Appendix-A pag.142 --> Fixed Equipment Total (mean value)
+			_massFurnishingsAndEquipmentReference = Amount.valueOf(3742., SI.KILOGRAM);
+			
+			_maxPax = 130.;
+			_nPax = 130.;
+			_flightCrewNumber = 3.;
+			
+			// Number of classes
+			_classesNumber = 1.;
+
+			// Number of aisles
+			_aislesNumber = new Integer(1);
+
+			_position = RelativePositionEnum.RIGHT;
+			// from ADAS deliverable 2.0
+			_xCoordinateFirstRow = Amount.valueOf(5.064, SI.METER);
+
+			_pitchEconomyClass = Amount.valueOf(0.80, SI.METER);
+			_pitchBusinessClass = Amount.valueOf(0., SI.METER);
+			_pitchFirstClass = Amount.valueOf(0., SI.METER);
+
+			_widthEconomyClass = Amount.valueOf(0.47, SI.METER);
+			_widthBusinessClass = Amount.valueOf(0., SI.METER);
+			_widthFirstClass = Amount.valueOf(0., SI.METER);
+
+			_distanceFromWallEconomyClass = Amount.valueOf(0.1, SI.METER);
+			_distanceFromWallBusinessClass = Amount.valueOf(0.1, SI.METER);
+			_distanceFromWallFirstClass = Amount.valueOf(0.1, SI.METER);
+
+			_numberOfBreaksEconomyClass = new Integer(-1);
+			_numberOfBreaksBusinessClass = new Integer(-1);
+			_numberOfBreaksFirstClass = new Integer(-1);
+
+			_lengthOfEachBreakEconomyClass = new Double[] {0.0, 0.0};
+			_lengthOfEachBreakBusinessClass = new Double[] {0.0, 0.0};
+			_lengthOfEachBreakFirstClass = new Double[] {0.0, 0.0};
+			//		_lengthOfEachBreak.add(_lengthOfEachBreakEconomyClass);
+			//		_lengthOfEachBreak.add(_lengthOfEachBreakEconomyClass);
+			//		_lengthOfEachBreak.add(_lengthOfEachBreakEconomyClass);
+
+			_numberOfRowsEconomyClass = new Integer(26);
+			_numberOfRowsBusinessClass = new Integer(0);
+			_numberOfRowsFirstClass = new Integer(0);
+
+			_numberOfColumnsEconomyClass = new Integer[]{3,2};
+			_numberOfColumnsBusinessClass = new Integer[]{0,0};
+			_numberOfColumnsFirstClass = new Integer[]{0,0};
+
+			// _missingSeatsRowList.size() must be equal to number of classes
+			_missingSeatsRowList.add(new Integer[] { -1});
+			_missingSeatsRowList.add(new Integer[] { -1});
+			_missingSeatsRowList.add(new Integer[] { -1});
+
+			// _missingSeatsColumnList.size() must be equal to number of classes
+			_missingSeatsColumnList.add(new Integer[] { -1});
+			_missingSeatsColumnList.add(new Integer[] { -1});
+			_missingSeatsColumnList.add(new Integer[] { -1});
+
+			_typeList.add(ClassTypeEnum.ECONOMY);
+			_typeList.add(ClassTypeEnum.BUSINESS);
+			_typeList.add(ClassTypeEnum.FIRST);
+
+			calculateDependentVariables();
+			break;
 		}
 			
 	}

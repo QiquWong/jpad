@@ -172,6 +172,34 @@ public class ACPerformanceManager {
 
 			calculateSpeeds();
 			break;
+			
+		case IRON:
+			_nLimit = 2.5;
+			_nLimitZFW = 2.5;
+			_nUltimate = 1.5 * _nLimit;
+
+			// Altitude at which TAS is maximum.
+			_maxAltitudeAtMaxSpeed = Amount.valueOf(30000., NonSI.FOOT).to(SI.METER);
+
+			_altitudeOptimumCruise = Amount.valueOf(30000., NonSI.FOOT).to(SI.METER);
+
+			// Cruise Mach number
+			_machOptimumCruise = 0.62;
+
+			_vOptimumCruise = Amount.valueOf(_machOptimumCruise*AtmosphereCalc.getSpeedOfSound(_altitudeOptimumCruise.doubleValue(SI.METER)), SI.METERS_PER_SECOND);
+
+			// Max Mach number
+			_machMaxCruise = 0.68;
+
+			_blockTime = Amount.valueOf(1.5, NonSI.HOUR);
+			_flightTime = Amount.valueOf(1.35, NonSI.HOUR);
+
+			_cruiseCL = 0.45;
+
+			_range = Amount.valueOf(2960., SI.KILOMETER);
+
+			calculateSpeeds();
+			break;
 		}
 	}
 

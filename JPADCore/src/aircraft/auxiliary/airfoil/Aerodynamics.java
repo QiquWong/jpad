@@ -138,6 +138,19 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 				Aerodynamics(airf, AirfoilEnum.DFVLR_R4);
 				break;
 			}
+			
+		case IRON:
+			switch (station) {
+			case ROOT:
+				Aerodynamics(airf, AirfoilEnum.IRONROOT); //TODO: It should be Ha5 airfoil
+				break;
+			case KINK:
+				Aerodynamics(airf, AirfoilEnum.IRONKINK) ;
+				break;
+			case TIP:
+				Aerodynamics(airf, AirfoilEnum.IRONTIP);
+				break;
+			}
 
 		}
 		
@@ -389,6 +402,105 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			 calculateMachCr = new CalculateMachCr();
 			 calculateCdWaveDrag = new CalculateCdWaveDrag();
 			 break;	
+			 
+		 case IRONROOT: 
+			_id = airf.getId() + "1" + idCounter + "99";
+			idCounter++;
+			
+			_theAirfoil = airf;
+			geometry = airf.getGeometry();
+			
+			_alphaZeroLift = Amount.valueOf(Math.toRadians(-3.21), SI.RADIAN); 
+			_clAlpha = 6.2457; 
+			_alphaStar = Amount.valueOf(Math.toRadians(7.81),SI.RADIAN); // end-of-linearity 
+			_clStar = 1.2 ; 
+			_alphaStall = Amount.valueOf(Math.toRadians(17.0),SI.RADIAN); 
+			_clMax = 1.83;
+
+			_cdMin = 0.006;
+			_clAtCdMin = 0.5;
+			_kFactorDragPolar = 0.006;
+
+			_aerodynamicCenterX = 0.25;
+			_cmAC = -0.12;
+			_cmACStall = -0.09;
+			_cmAlphaAC = 0. ;
+			_cmAlphaLE = -0.1; //TODO, change this value
+			//_cmAtClMax = 
+
+			_reynoldsCruise = 1e+7;
+			_reynoldsNumberStall = 1e+6;
+
+			calculateClAlpha = new CalculateClAlpha();
+			calculateMachCr = new CalculateMachCr();
+			calculateCdWaveDrag = new CalculateCdWaveDrag();	
+			break;
+			
+		 case IRONKINK: 
+			_id = airf.getId() + "1" + idCounter + "99";
+			idCounter++;
+			
+			_theAirfoil = airf;
+			geometry = airf.getGeometry();
+			
+			_alphaZeroLift = Amount.valueOf(Math.toRadians(-1.3), SI.RADIAN); 
+			_clAlpha = 5.96; 
+			_alphaStar = Amount.valueOf(Math.toRadians(11),SI.RADIAN); // end-of-linearity 
+			_clStar = 1.1 ; 
+			_alphaStall = Amount.valueOf(Math.toRadians(17.0),SI.RADIAN); 
+			_clMax = 1.6;
+
+			_cdMin = 0.006;
+			_clAtCdMin = 0.5;
+			_kFactorDragPolar = 0.006;
+
+			_aerodynamicCenterX = 0.25;
+			_cmAC = -0.07;
+			_cmACStall = -0.09;
+			_cmAlphaAC = 0. ;
+			_cmAlphaLE = -0.1; //TODO, change this value
+			//_cmAtClMax = 
+
+			_reynoldsCruise = 1e+7;
+			_reynoldsNumberStall = 1e+6;
+
+			calculateClAlpha = new CalculateClAlpha();
+			calculateMachCr = new CalculateMachCr();
+			calculateCdWaveDrag = new CalculateCdWaveDrag();	
+			break;
+			
+		 case IRONTIP: 
+			_id = airf.getId() + "1" + idCounter + "99";
+			idCounter++;
+			
+			_theAirfoil = airf;
+			geometry = airf.getGeometry();
+			
+			_alphaZeroLift = Amount.valueOf(Math.toRadians(-1.3), SI.RADIAN); 
+			_clAlpha = 5.96; 
+			_alphaStar = Amount.valueOf(Math.toRadians(11),SI.RADIAN); // end-of-linearity 
+			_clStar = 1.1 ; 
+			_alphaStall = Amount.valueOf(Math.toRadians(17.0),SI.RADIAN); 
+			_clMax = 1.6;
+
+			_cdMin = 0.006;
+			_clAtCdMin = 0.5;
+			_kFactorDragPolar = 0.006;
+			
+			_aerodynamicCenterX = 0.25;
+			_cmAC = -0.07;
+			_cmACStall = -0.09;
+			_cmAlphaAC = 0. ;
+			_cmAlphaLE = -0.1; //TODO, change this value
+			//_cmAtClMax = 
+
+			_reynoldsCruise = 1e+7;
+			_reynoldsNumberStall = 1e+6;
+
+			calculateClAlpha = new CalculateClAlpha();
+			calculateMachCr = new CalculateMachCr();
+			calculateCdWaveDrag = new CalculateCdWaveDrag();	
+			break;
 		 }
 		 
 			 

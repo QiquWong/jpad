@@ -20,5 +20,8 @@ public enum AirfoilEnum{
 	NACA23_015,
 	NACA23_012,
 	//
-	DFVLR_R4;
+	DFVLR_R4,
+	IRONROOT,
+	IRONKINK,
+	IRONTIP;
 }
