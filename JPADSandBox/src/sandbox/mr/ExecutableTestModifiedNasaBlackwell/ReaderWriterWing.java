@@ -251,19 +251,47 @@ public class ReaderWriterWing {
 				
 				// Built of interpolated curve
 				
-				int numberOfPoint = 50;
+				int numberOfPoint = 100;
+				
 				
 				for ( int i=0; i<input.getNumberOfSections(); i++){
-					double alphaInitialAirfoilArray = input.getAlphaAirfoils().get(i).get(0).getEstimatedValue();
-					double alphaFinalAirfoilArray = input.getAlphaAirfoils().get(i).get(input.getAlphaAirfoils().get(i).size()-1).getEstimatedValue();
+					
+					double appNegValues = 0.0;
+					
+					for (int l=0; l<input.getAlphaAirfoils().get(i).size(); l++){
+						if (input.getClAirfoils().get(i).get(l)<0){
+							appNegValues=input.getClAirfoils().get(i).get(l);
+						}
+					}
+					
+					double alphaInitialAirfoilArray, alphaFinalAirfoilArray;
+					double [] alphaArray= null, clArray = null;
+					
+					if (appNegValues==0.0){
+						
+						double clAlphaTemp = (input.getClAirfoils().get(i).get(1)-input.getClAirfoils().get(i).get(0))/
+								(input.getAlphaAirfoils().get(i).get(1).getEstimatedValue()-input.getAlphaAirfoils().get(i).get(0).getEstimatedValue());
+						
+						double alphaZeroLiftTemp = (clAlphaTemp*input.getAlphaAirfoils().get(i).get(0).getEstimatedValue()-input.getClAirfoils().get(i).get(0))/clAlphaTemp;
+						
+						input.getAlphaAirfoils().get(i).add(0, Amount.valueOf(alphaZeroLiftTemp, NonSI.DEGREE_ANGLE));
+						input.getClAirfoils().get(i).add(0, 0.0);
+						
+					}
+					alphaInitialAirfoilArray = input.getAlphaAirfoils().get(i).get(0).getEstimatedValue();
+					alphaFinalAirfoilArray = input.getAlphaAirfoils().get(i).get(input.getAlphaAirfoils().get(i).size()-1).getEstimatedValue();
 				
 					// INTERPOLATED VALUE ARRAYS
 					
-					double [] alphaArray = MyArrayUtils.linspace(alphaInitialAirfoilArray, alphaFinalAirfoilArray, numberOfPoint);
+					System.out.println("\n cl airfoil " + Arrays.toString(MyArrayUtils.convertListTodoubleArray(input.getClAirfoils().get(i))));
+					alphaArray = MyArrayUtils.linspace(alphaInitialAirfoilArray, alphaFinalAirfoilArray, numberOfPoint);
 					input.getAlphaAirfoilsInterpolated().add(i, alphaArray);
-					double [] clArray = MyArrayUtils.convertToDoublePrimitive(MyMathUtils.getInterpolatedValue1DLinear(MyArrayUtils.convertListOfAmountodoubleArrayAngle(input.getAlphaAirfoils().get(i)), 
+					clArray = MyArrayUtils.convertToDoublePrimitive(MyMathUtils.getInterpolatedValue1DLinear(MyArrayUtils.convertListOfAmountodoubleArrayAngle(input.getAlphaAirfoils().get(i)), 
 							MyArrayUtils.convertListTodoubleArray(input.getClAirfoils().get(i)), alphaArray));
 					
+//					System.out.println(" alpha array " + Arrays.toString(MyArrayUtils.convertListOfAmountodoubleArrayAngle(input.getAlphaAirfoils().get(i))));
+//					System.out.println(" alpha new " + Arrays.toString(alphaArray));
+//					System.out.println(" cl array  " + Arrays.toString(clArray));
 				// find alpha zero lit, alpha star, cl max
 					
 					// cl max
@@ -285,38 +313,33 @@ public class ReaderWriterWing {
 					  // cl0
 					  double numTempAlpha = alphaArray[0];
 					  int position = 0;
-					  for (int ii=0; ii<alphaArray.length; ii++){
-						  if(Math.abs(alphaArray[ii])<Math.abs(numTempAlpha)){
-							  numTempAlpha = alphaArray[ii];
-							  position = ii;		
+					  for (int iii=0; iii<alphaArray.length; iii++){
+						  if(Math.abs(alphaArray[iii])<Math.abs(numTempAlpha)){
+							  numTempAlpha = alphaArray[iii];
+							  position = iii;		
 					  }}
 					  double clZeroArray = clArray[position];
 					  
 					  double clAlphaArray = (clArray[pos + 3]- clArray[pos])/(alphaArray[pos+3] - alphaArray[pos]);
-					  
 					  
 					  int posStar = pos;
 					  
 					  for (int j=pos; j<clArray.length; j++){
 						  double clLinear = clAlphaArray*alphaArray[j] + clZeroArray;
 						  if( Math.abs(clArray[j] - clLinear) < 0.01){
-							 posStar = posStar+1;
-							 
+							 posStar = posStar+1;	 
 						  }
-					  }
-					
+					  }					
 					  input.getAlphaStarDistribution().add(i, Amount.valueOf(alphaArray[posStar], NonSI.DEGREE_ANGLE));
 					
 				}
 				
-				
-					
-					System.out.println(" cl airfoil 1" + input.getClAirfoils().get(0).toString());
-					System.out.println(" alpha airfoil 1" + input.getAlphaAirfoils().get(0).toString());
-					System.out.println(" cl airfoil 2" + input.getClAirfoils().get(1).toString());
-					System.out.println(" alpha airfoil 2" + input.getAlphaAirfoils().get(1).toString());
-					System.out.println(" cl airfoil 3" + input.getClAirfoils().get(2).toString());
-					System.out.println(" alpha airfoil 3" + input.getAlphaAirfoils().get(2).toString());
+//					System.out.println(" cl airfoil 1" + input.getClAirfoils().get(0).toString());
+//					System.out.println(" alpha airfoil 1" + input.getAlphaAirfoils().get(0).toString());
+//					System.out.println(" cl airfoil 2" + input.getClAirfoils().get(1).toString());
+//					System.out.println(" alpha airfoil 2" + input.getAlphaAirfoils().get(1).toString());
+//					System.out.println(" cl airfoil 3" + input.getClAirfoils().get(2).toString());
+//					System.out.println(" alpha airfoil 3" + input.getAlphaAirfoils().get(2).toString());
 										
 			}
 			
@@ -324,8 +347,6 @@ public class ReaderWriterWing {
 				System.err.println("No valid input! wing_executable method_input = MAIN_POINTS or COMPLETE_CURVE");
 			}
 			
-
-
 	// OTHER VALUES
 		double span = Math.sqrt(input.getAspectRatio() * input.getSurface().getEstimatedValue());
 		input.setSpan(Amount.valueOf(span, SI.METER));
