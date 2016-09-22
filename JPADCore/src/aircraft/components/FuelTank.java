@@ -127,6 +127,11 @@ public class FuelTank extends Component{
 			_fuelMass = Amount.valueOf(6800., SI.KILOGRAM);
 			_fuelVolume = Amount.valueOf(_fuelMass.divide(_fuelDensity).getEstimatedValue(), NonSI.LITER);
 			break;
+			
+		case IRON:
+			_fuelMass = Amount.valueOf(8398.4, SI.KILOGRAM);
+			_fuelVolume = Amount.valueOf(_fuelMass.divide(_fuelDensity).getEstimatedValue(), NonSI.LITER);
+			break;
 		}
 	}
 

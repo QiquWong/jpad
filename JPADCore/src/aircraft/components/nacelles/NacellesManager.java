@@ -74,6 +74,12 @@ public class NacellesManager {
 			_nacellesNumber = 2;
 			_massReference = Amount.valueOf(380., SI.KILOGRAM); // ADAS
 			break;
+			
+		case IRON:
+			_theAircraft = aircraft;
+			_nacellesNumber = 2;
+			_massReference = Amount.valueOf(653.4, SI.KILOGRAM); // ADAS
+			break;
 		}
 	}
 
@@ -118,6 +124,15 @@ public class NacellesManager {
 //				_nacellesList.add(new Nacelle(aircraftName, "Nacelle_" + i, "", 0.0, 0.0, 0.0, _theAircraft));
 				_nacellesList.add(new Nacelle(aircraftName, "Nacelle_1", "", 12.891, 4.968, -1.782, _theAircraft));
 				_nacellesList.add(new Nacelle(aircraftName, "Nacelle_2", "", 12.891, -4.968, -1.782, _theAircraft));
+//			}
+			break;
+			
+		case IRON:
+			_nacellesNumber = 2;
+//			for(int i=0; i < _nacellesNumber; i++) {
+//				_nacellesList.add(new Nacelle(aircraftName, "Nacelle_" + i, "", 0.0, 0.0, 0.0, _theAircraft));
+				_nacellesList.add(new Nacelle(aircraftName, "Nacelle_1", "", 31.22, 4.4375, 1.65, _theAircraft));
+				_nacellesList.add(new Nacelle(aircraftName, "Nacelle_2", "", 31.22, -4.4375, 1.65, _theAircraft));
 //			}
 			break;
 		}

@@ -34,6 +34,7 @@ public class Nacelle extends Component{
 	public enum MountingPosition {
 		WING,
 		FUSELAGE,
+		HTAIL,
 		UNDERCARRIAGE_HOUSING
 	}
 
@@ -229,6 +230,23 @@ public class Nacelle extends Component{
 
 			_massReference = Amount.valueOf(380., SI.KILOGRAM);//ADAS
 			_mountingPosition = MountingPosition.WING;
+			
+			calculateSurfaceWetted();
+			break;
+			
+		case IRON:
+			_length = Amount.valueOf(3.796,SI.METER);
+			_diameterMean = Amount.valueOf(1.75,SI.METER);
+			_diameterInlet = Amount.valueOf(1.62,SI.METER);
+			_diameterOutlet = Amount.valueOf(0.44,SI.METER);
+
+			_roughness = Amount.valueOf(0.405 * Math.pow(10,-5), SI.METRE);
+			_heightFromGround = Amount.valueOf(3.2, SI.METER);
+
+			_surfaceWetted = Amount.valueOf(14.77, Area.UNIT); 
+
+			_massReference = Amount.valueOf(653.4, SI.KILOGRAM);
+			_mountingPosition = MountingPosition.HTAIL;
 			
 			calculateSurfaceWetted();
 			break;

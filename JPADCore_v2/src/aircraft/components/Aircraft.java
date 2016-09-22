@@ -666,7 +666,8 @@ public class Aircraft implements IAircraft {
 		// setup the positionRelativeToAttachment variable
 		if(_theWing != null)
 			this._theWing.setPositionRelativeToAttachment(
-					_theWing.getZApexConstructionAxes()
+					(_theFuselage.getFuselageCreator().getSectionCylinderHeight().divide(2))
+					.plus(_theWing.getZApexConstructionAxes())
 					.divide(_theFuselage
 							.getFuselageCreator()
 							.getSectionCylinderHeight()
@@ -689,7 +690,8 @@ public class Aircraft implements IAircraft {
 		
 		if(_theCanard != null)
 			this._theCanard.setPositionRelativeToAttachment(
-					_theCanard.getZApexConstructionAxes()
+					(_theFuselage.getFuselageCreator().getSectionCylinderHeight().divide(2))
+					.plus(_theCanard.getZApexConstructionAxes())
 					.divide(_theFuselage
 							.getFuselageCreator()
 							.getSectionCylinderHeight()

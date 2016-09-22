@@ -293,7 +293,7 @@ public class Aircraft {
 		_theFuselage = new Fuselage(
 				aircraftName,
 				"Fuselage", // name
-				"Data available for ATR-72 and B747_100B", // description
+				"Data available for ATR-72, B747-100B, AGILE DC-1 and IRON", // description
 				0.0, 0.0, 0.0 // Fuselage apex (x,y,z)-coordinates in construction axes
 				);
 		_componentsList.add(_theFuselage);
@@ -676,6 +676,15 @@ public class Aircraft {
 					12.5, 0., 0.);
 			_componentsList.add(_theLandingGear);
 			break;
+			
+		case IRON:
+			_theLandingGear = new LandingGear(
+					aircraftName,
+					"Landing Gear",
+					"IRON Landing Gear",
+					22.35, 0., -2.78);
+			_componentsList.add(_theLandingGear);
+			break;
 		}
 	}
 
@@ -720,6 +729,15 @@ public class Aircraft {
 					"Fuel Tank",
 					"AGILE_DC1 Fuel Tank",
 					12.891, 4.968, -1.782);
+			_componentsList.add(_theFuelTank);
+			break;
+			
+		case IRON:
+			_theFuelTank = new FuelTank(
+					aircraftName,
+					"Fuel Tank",
+					"IRON Fuel Tank",
+					19.64, 0.0, -1.24);
 			_componentsList.add(_theFuelTank);
 			break;
 		}
@@ -770,6 +788,16 @@ public class Aircraft {
 					"Power plant",
 					"Data taken from ...",
 					0.0,0.0,0.0,
+					this);
+			_componentsList.add(_thePowerPlant);
+			break;
+			
+		case IRON:
+			_thePowerPlant = new PowerPlant(
+					aircraftName,
+					"Power plant",
+					"Data taken from ...",
+					31.22, 4.4375, 1.65,
 					this);
 			_componentsList.add(_thePowerPlant);
 			break;

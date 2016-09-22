@@ -68,6 +68,10 @@ public class Systems extends Component{
 		case AGILE_DC1:
 			_massReference = Amount.valueOf(5087., SI.KILOGRAM);
 			break;
+			
+		case IRON:
+			_massReference = Amount.valueOf(4283., SI.KILOGRAM);
+			break;
 		}
 	}
 
@@ -120,14 +124,13 @@ public class Systems extends Component{
 	 * @param aircraft
 	 * @param method
 	 */
-	@SuppressWarnings("unchecked")
 	public void calculateOverallMass(Aircraft aircraft, MethodEnum method) {
 
 		switch(method) {
 		case TORENBEEK_2013 : {
 
 			_mass = Amount.valueOf((
-					250*aircraft.get_fuselage().get_len_F().getEstimatedValue()*
+					270*aircraft.get_fuselage().get_len_F().getEstimatedValue()*
 					aircraft.get_fuselage().get_equivalentDiameterCylinderGM().getEstimatedValue() +
 					150*aircraft.get_fuselage().get_len_F().getEstimatedValue())/
 					AtmosphereCalc.g0.getEstimatedValue(), 

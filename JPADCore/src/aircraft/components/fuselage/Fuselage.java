@@ -955,6 +955,69 @@ public class Fuselage extends AeroComponent implements IFuselage {
 			_sectionMidTailRhoLower_MIN  = _sectionRhoLower_MIN;
 			_sectionMidTailRhoLower_MAX  = _sectionRhoLower_MAX;
 			break;
+			
+		case IRON:
+			_deckNumber = 1;
+
+			_len_F         =  Amount.valueOf(38.04, 0.0, SI.METRE);
+			_lenRatio_NF       = 0.1109;
+			_lenRatio_CF       = 0.589;
+
+			_sectionCylinderWidth     = Amount.valueOf(3.510,SI.METRE);
+			_sectionCylinderHeight    = Amount.valueOf(3.564, SI.METRE);
+
+			// Nose fineness ratio, _len_N/_diam_N
+			_lambda_N      = 1.192; 
+
+			// Height from ground of lowest part of fuselage
+			_heightFromGround = Amount.valueOf(1.55, SI.METER);
+
+			// Fuselage Roughness
+			_roughness = Amount.valueOf(0.405e-5, SI.METRE);
+
+			// positive if nose tip higher than cylindrical part ref. line (in XZ plane)
+			_height_N      = Amount.valueOf(-0.236*_sectionCylinderHeight.doubleValue(SI.METRE), SI.METRE);
+			_height_T      = Amount.valueOf(  0.516*(0.5*_sectionCylinderHeight.doubleValue(SI.METRE)), SI.METRE);
+
+			_massReference = Amount.valueOf(5004.7, SI.KILOGRAM);
+			_pressurized = true;
+
+			// Section parameters
+			_dxNoseCapPercent = 0.0750;
+			_dxTailCapPercent = 0.020; 
+
+			_windshieldType = "Flat,flush";
+			_windshieldHeight = Amount.valueOf(0.683, SI.METER);
+			_windshieldWidth = Amount.valueOf(3.2, SI.METER);
+
+			_sectionCylinderLowerToTotalHeightRatio     = 0.0;
+			_sectionCylinderRhoUpper     = 0.5;
+			_sectionCylinderRhoLower     =  0.5;
+
+			_sectionNoseMidLowerToTotalHeightRatio      = _sectionCylinderLowerToTotalHeightRatio.doubleValue();
+			_sectionTailMidLowerToTotalHeightRatio      = _sectionCylinderLowerToTotalHeightRatio.doubleValue();
+			//++++++++++++++++++++++++++++++++++++
+			_sectionNoseMidToTotalHeightRatio_MIN       = _sectionLowerToTotalHeightRatio_MIN;
+			_sectionNoseMidToTotalHeightRatio_MAX       = _sectionLowerToTotalHeightRatio_MAX;
+			_sectionTailMidToTotalHeightRatio_MIN       = _sectionLowerToTotalHeightRatio_MIN;
+			_sectionTailMidToTotalHeightRatio_MAX       = _sectionLowerToTotalHeightRatio_MAX;
+
+			//+++++++++++++++++++++++++++++++++++++
+			_sectionMidNoseRhoUpper      = _sectionCylinderRhoUpper.doubleValue();
+			_sectionMidNoseRhoUpper_MIN  = _sectionRhoUpper_MIN;
+			_sectionMidNoseRhoUpper_MAX  = _sectionRhoUpper_MAX;
+			_sectionMidTailRhoUpper      = _sectionCylinderRhoUpper.doubleValue();
+			_sectionMidTailRhoUpper_MIN  = _sectionRhoUpper_MIN;
+			_sectionMidTailRhoUpper_MAX  = _sectionRhoUpper_MAX;
+
+			//+++++++++++++++++++++++++++++++++++++
+			_sectionMidNoseRhoLower      = _sectionCylinderRhoLower.doubleValue();
+			_sectionMidNoseRhoLower_MIN  = _sectionRhoLower_MIN;
+			_sectionMidNoseRhoLower_MAX  = _sectionRhoLower_MAX;
+			_sectionMidTailRhoLower      = _sectionCylinderRhoLower.doubleValue();
+			_sectionMidTailRhoLower_MIN  = _sectionRhoLower_MIN;
+			_sectionMidTailRhoLower_MAX  = _sectionRhoLower_MAX;
+			break;
 		}
 		// --- END OF INPUT DATA ------------------------------------------ 
 	}
