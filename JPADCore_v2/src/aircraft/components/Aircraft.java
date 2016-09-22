@@ -1191,6 +1191,8 @@ public class Aircraft implements IAircraft {
 				mountingPointList.add(EngineMountingPositionEnum.REAR_FUSELAGE);
 			else if(mountingPointListProperties.get(i).equalsIgnoreCase("WING"))
 				mountingPointList.add(EngineMountingPositionEnum.WING);
+			else if(mountingPointListProperties.get(i).equalsIgnoreCase("HTAIL"))
+				mountingPointList.add(EngineMountingPositionEnum.HTAIL);
 			else {
 				System.err.println("INVALID ENGINE MOUNTING POSITION !!! ");
 				return null;
@@ -1270,6 +1272,8 @@ public class Aircraft implements IAircraft {
 				mountingPointNacellesList.add(NacelleCreator.MountingPosition.FUSELAGE);
 			else if(mountingPointNacellesListProperties.get(i).equalsIgnoreCase("UNDERCARRIAGE_HOUSING"))
 				mountingPointNacellesList.add(NacelleCreator.MountingPosition.UNDERCARRIAGE_HOUSING);
+			else if(mountingPointNacellesListProperties.get(i).equalsIgnoreCase("HTAIL"))
+				mountingPointNacellesList.add(NacelleCreator.MountingPosition.HTAIL);
 			else {
 				System.err.println("INVALID NACELLE MOUNTING POSITION !!! ");
 				return null;

@@ -35,7 +35,7 @@ import standaloneutils.MyXMLReaderUtils;
  * Concerning K_inlet and K_outlet, these data are initialized with default values in 
  * case the user doesn't assign them.
  * The user can also assign the position from the Nacelle apex of the maximum diameter as a percentage
- * of the Nacelle lenght (this thruough the variable kLenght). Moreover he can assign the z position
+ * of the Nacelle length (this through the variable kLenght). Moreover he can assign the z position
  * of the outlet diameter as a percentage of the outlet diameter (through the variable kDiameterOutlet).
  *  
  * @author Vittorio Trifari, Vincenzo Cusati
@@ -46,6 +46,7 @@ public class NacelleCreator implements INacelleCreator {
 	public enum MountingPosition {
 		WING,
 		FUSELAGE,
+		HTAIL,
 		UNDERCARRIAGE_HOUSING
 	}
 

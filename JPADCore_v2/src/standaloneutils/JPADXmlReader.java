@@ -310,10 +310,15 @@ public class JPADXmlReader {
 		}
 		
 		// First value
+		boolean checkOnlyOneElement = false;
 		
 		n = inputString.indexOf(',');
 		if ( n == -1){
 			n = inputString.indexOf(';');
+			if ( n == -1 ) {
+				n = inputString.indexOf(']');
+				checkOnlyOneElement = true;
+			}
 		}
 		
 		tempString = inputString.substring(1, n);
@@ -324,7 +329,7 @@ public class JPADXmlReader {
 		
 		// Following values
 		
-		while ( n!= -1 ){
+		while ( (n!= -1) && (checkOnlyOneElement == false) ){
 			
 			m = n;
 			tempString = new String();

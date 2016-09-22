@@ -247,6 +247,44 @@ public class HTail extends LiftingSurface2Panels{
 			
 			initializeAirfoils(aircraftName, this);
 			break;
+			
+		case IRON:
+			_type = ComponentEnum.HORIZONTAL_TAIL;
+			_positionRelativeToAttachment = 0.0;
+			_surface = Amount.valueOf(33.49, SI.SQUARE_METRE) ;
+			_aspectRatio = 2.49;
+			_taperRatioEquivalent = 0.65;
+			_sweepQuarterChordEq = Amount.valueOf(Math.toRadians(10.4),SI.RADIAN);
+
+			_spanStationKink = 1.0;  
+			_extensionLERootChordLinPanel = 0.;
+			_extensionTERootChordLinPanel = 0.;
+			_iw = Amount.valueOf(-2., SI.RADIAN);
+			_twistKink = Amount.valueOf(Math.toRadians(0.0),SI.RADIAN);
+			_twistTip = Amount.valueOf(Math.toRadians(0.0),SI.RADIAN);
+			_dihedralInnerPanel = Amount.valueOf(Math.toRadians(5.1),SI.RADIAN);
+			_dihedralOuterPanel = Amount.valueOf(Math.toRadians(5.1),SI.RADIAN);
+			_CeCt = 0.3; // Elevator to tail chord ratio
+			_deltaXWingFus = Amount.valueOf(_X0.getEstimatedValue(),SI.METER);
+			//			_deltaXWingFus = Amount.valueOf(24.6,SI.METER); // distance of wing apex (LE of xz plane chord) from fuselage nose = (0,0,0) point 
+			_xTransitionU = 0.12;
+			_xTransitionL = 0.12;
+			_roughness = Amount.valueOf(0.052e-5, SI.METER);
+
+			//  INPUT DATA
+			// Thickness of 3 section
+			_tc_root = .12;               // value in %
+			_tc_kink = .12;               // value in %
+			_tc_tip = .12;              // value in %
+
+			// Variable incidence horizontal tail ?
+			_variableIncidence = false;
+
+			_surfaceCS = Amount.valueOf(_surface.times(0.14).getEstimatedValue(), SI.SQUARE_METRE);
+			_massReference = Amount.valueOf(548.3, SI.KILOGRAM);
+			
+			initializeAirfoils(aircraftName, this);
+			break;
 		}
 	}
 

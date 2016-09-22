@@ -50,6 +50,7 @@ public class LandingGears implements ILandingGear {
 						   _rearWheelsHeight,
 						   _rearWheelsWidth;
 	
+	// this K is due to the compression of the landing gears in ground phases
 	private Double _kMainLegsLength;
 	
 	private Amount<Mass> _overallMass,
@@ -447,9 +448,9 @@ public class LandingGears implements ILandingGear {
 
 		switch(method) {
 
-		// page 359 Sforza (2014) - Aircraft Design
+		// page 337 (pdf) Sforza (2014) - Aircraft Design
 
-		//TODO change this
+		//TODO : implement this !!!
 		case SFORZA : { 
 			_methodsList.add(method);
 			_xCG = Amount.valueOf(0.0, SI.METER);		

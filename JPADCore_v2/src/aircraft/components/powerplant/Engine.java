@@ -404,7 +404,7 @@ public class Engine implements IEngine {
 				*2
 				*0.00237717
 				*Math.pow(this._propellerDiameter.doubleValue(NonSI.FOOT),2)
-					*Math.PI/4,
+				*Math.PI/4,
 				NonSI.POUND_FORCE);
 		this._t0 = this._t0.times(0.95).to(SI.NEWTON);
 		

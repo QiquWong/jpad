@@ -528,6 +528,22 @@ public class Aircraft {
 					_theVTail
 					);
 			break;
+			
+		case IRON:
+			_theHTail =  new HTail(
+					aircraftName,
+					"HTail",
+					"Data taken from ...",
+					31.21,
+					0.0,
+					1.34,
+					ComponentEnum.HORIZONTAL_TAIL,
+					_theFuselage,
+					_theNacelle,
+					_theWing,
+					_theVTail
+					);
+			break;
 		}
 
 		_componentsList.add(_theHTail);
@@ -537,7 +553,7 @@ public class Aircraft {
 	public void createVTail() {
 		_theVTail =  new VTail(
 				"VTail",
-				"Data taken from ...",
+				"Data taken from IRON ADAS",
 				21.9,
 				0.0,
 				1.30,
@@ -608,6 +624,21 @@ public class Aircraft {
 					);
 			break;
 			
+		case IRON:
+			_theVTail =  new VTail(
+					aircraftName,
+					"VTail",
+					"Data taken from IRON ADAS",
+					31.54,
+					0.0,
+					1.34,
+					ComponentEnum.VERTICAL_TAIL,
+					_theFuselage,
+					_theNacelle,
+					_theWing,
+					_theHTail
+					);
+			break;
 		}
 
 		_componentsList.add(_theVTail);

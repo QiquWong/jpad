@@ -277,7 +277,7 @@ public class Engine extends Component{
 
 			_engineType = EngineTypeEnum.TURBOPROP;
 
-			_length = Amount.valueOf(5.75, SI.METER);
+			_length = Amount.valueOf(4.371, SI.METER);
 
 			// By-pass ratio
 			set_bpr(0.0);
@@ -296,10 +296,9 @@ public class Engine extends Component{
 			
 			// Single engine maximum power output (from IRON005 ADAS )
 			_p0 = Amount.valueOf(7176.55, NonSI.HORSEPOWER).to(SI.WATT); // TODO: check
-
-			// calculated following -> 
-			// http://aviation.stackexchange.com/questions/8819/is-there-any-equation-to-bind-velocity-thrust-and-power
-			_t0 = Amount.valueOf(74767.77, SI.NEWTON);
+ 
+			// @see: thrustmodelsToFromP0.pdf in JPAD DOCS
+			_t0 = Amount.valueOf(81896.21, SI.NEWTON);
 			
 			/** Reference total engine mass (dry + something) */
 			// TAKEN FROM ADAS IRON005
