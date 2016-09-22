@@ -9,5 +9,6 @@ package configuration.enumerations;
 public enum AircraftEnum {
 	ATR72,
 	B747_100B,
-	AGILE_DC1;
+	AGILE_DC1,
+	IRON;
 }
