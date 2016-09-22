@@ -10,5 +10,6 @@ public enum EngineMountingPositionEnum {
 	BURIED,
 	WING,
 	AFT_FUSELAGE,
+	HTAIL,
 	REAR_FUSELAGE;
 }

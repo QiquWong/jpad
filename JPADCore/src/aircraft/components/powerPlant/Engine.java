@@ -270,6 +270,49 @@ public class Engine extends Component{
 			weights = new EngWeightsManager(_theAircraft, this);
 			balance = new EngBalanceManager(this);
 			break;
+			
+		case IRON:
+			//FROM IRON 3-VIEW AND LEONARDO ASSUMPTIONS
+			_cg = new CenterOfGravity(_X0, _Y0, _Z0);
+
+			_engineType = EngineTypeEnum.TURBOPROP;
+
+			_length = Amount.valueOf(5.75, SI.METER);
+
+			// By-pass ratio
+			set_bpr(0.0);
+			
+			// Assumed from ATR-72 engine
+			_numberOfCompressorStages = 5;
+			_numberOfShafts = 2;
+			_overallPressureRatio = 15.;
+
+			// Reference dry engine mass (from public domain data)
+			// TAKEN FROM ADAS IRON005
+			_dryMassPublicDomain = Amount.valueOf(4254.2, SI.KILOGRAM);
+			
+			// Reference speed at take-off
+			_v0 = Amount.valueOf(5., SI.METERS_PER_SECOND);
+			
+			// Single engine maximum power output (from IRON005 ADAS )
+			_p0 = Amount.valueOf(7176.55, NonSI.HORSEPOWER).to(SI.WATT); // TODO: check
+
+			// calculated following -> 
+			// http://aviation.stackexchange.com/questions/8819/is-there-any-equation-to-bind-velocity-thrust-and-power
+			_t0 = Amount.valueOf(74767.77, SI.NEWTON);
+			
+			/** Reference total engine mass (dry + something) */
+			// TAKEN FROM ADAS IRON005
+			_totalMass = Amount.valueOf(10734.8, SI.KILOGRAM);
+
+			_muT = Amount.valueOf(0., SI.RADIAN);
+
+			// Engine position
+			_mountingPoint = EngineMountingPositionEnum.HTAIL;
+			
+			weights = new EngWeightsManager(_theAircraft, this);
+			balance = new EngBalanceManager(this);
+			break;
 		}
 	}
 

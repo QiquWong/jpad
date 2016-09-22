@@ -97,6 +97,12 @@ public class LandingGear extends Component{
 			_massReference = Amount.valueOf(1501.6, SI.KILOGRAM);
 			set_deltaCD0(0.018);
 			break;
+			
+		case IRON:
+			_mounting = MountingPosition.WING;
+			_massReference = Amount.valueOf(2233.1, SI.KILOGRAM);
+			set_deltaCD0(0.015);
+			break;
 		}
 	}
 

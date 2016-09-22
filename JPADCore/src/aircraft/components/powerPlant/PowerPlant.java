@@ -186,6 +186,16 @@ public class PowerPlant extends Component{
 			engineList.add(new Engine(aircraftName, "Engine_2", "", 12.891, -4.869, -1.782, _theAircraft));
 //			}
 			break;
+			
+		case IRON:
+			_engineNumber = 2;
+			_engineType = EngineTypeEnum.TURBOPROP;
+//			for (int i=0; i < _engineNumber; i++) {
+//				engineList.add(new Engine(aircraftName, "Engine_" + i, "", 0.0, 0.0, 0.0, _theAircraft));
+			engineList.add(new Engine(aircraftName, "Engine_1", "", 31.22, 4.4375, 1.65, _theAircraft));
+			engineList.add(new Engine(aircraftName, "Engine_2", "", 31.22, -4.4375, 1.65, _theAircraft));
+//			}
+			break;
 		}
 	}
 
