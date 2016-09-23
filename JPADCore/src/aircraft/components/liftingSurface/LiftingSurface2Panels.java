@@ -683,7 +683,8 @@ public class LiftingSurface2Panels extends AeroComponent implements ILiftingSurf
 		_theAirfoilsList.add(new Airfoil(aircraftName, AirfoilStationEnum.ROOT , ls, 0.));
 
 		if (_type.equals(ComponentEnum.VERTICAL_TAIL)) {
-			_theAirfoilsList.add(new Airfoil(aircraftName, ls, _spanStationKink*span));
+			_numberOfAirfoils = 2;
+//			_theAirfoilsList.add(new Airfoil(aircraftName, ls, _spanStationKink*span));
 			_theAirfoilsList.add(new Airfoil(aircraftName, ls, span));
 
 		} else {
@@ -1093,7 +1094,7 @@ public class LiftingSurface2Panels extends AeroComponent implements ILiftingSurf
 	private void calculateChordYAxisEquivalent() {
 
 		List<Amount<Length>> chordsEqList = new ArrayList<Amount<Length>>();
-		_eta.setDouble(MyArrayUtils.linspace(0., 1., _numberOfPointsChordDistribution));
+		_eta.setDouble(MyArrayUtils.linspace(0., 1., 30));
 		_yStationEq.setRealVector(_eta.getRealVector().mapMultiply(0.5*_span.doubleValue(SI.METER)));
 
 		for(int i = 0; i < _eta.size(); i++){

@@ -32,11 +32,11 @@ public class Test_CompleteAC_01 {
 	
 	//------------------------------------------------------------------------------------------
 		// VARIABLE DECLARATION:
-		@Option(name = "-i", aliases = { "--input" }, required = true,
+		@Option(name = "-i", aliases = { "--input" }, required = false,
 				usage = "my input file")
 		private File _inputFile;
 		
-		@Option(name = "-d", aliases = { "--database-path" }, required = true,
+		@Option(name = "-d", aliases = { "--database-path" }, required = false,
 				usage = "path for database files")
 		private File _databasePath;
 
@@ -99,14 +99,16 @@ public class Test_CompleteAC_01 {
 		
 		// Define the aircraft
 //		JPADXmlReader aircraft = new JPADXmlReader(inputFileName) ;
-		Aircraft aircraft = new Aircraft(AircraftEnum.ATR72);
-		aircraft.setName("ATR72");
+//		Aircraft aircraft = new Aircraft(AircraftEnum.ATR72);
+//		aircraft.setName("ATR72");
+		Aircraft aircraft = new Aircraft(AircraftEnum.IRON);
+		aircraft.setName("IRON");
 		LiftingSurface2Panels theWing = aircraft.get_wing();
 
 		// Set the operating conditions
 		OperatingConditions operatingConditions = new OperatingConditions();
-		operatingConditions.set_altitude(Amount.valueOf(11000., SI.METER));
-		operatingConditions.set_machCurrent(0.78);
+		operatingConditions.set_altitude(Amount.valueOf(9144., SI.METER));
+		operatingConditions.set_machCurrent(0.62);
 		
 		// Define the Analysis Manager
 		ACAnalysisManager theAnalysis = new ACAnalysisManager(operatingConditions);

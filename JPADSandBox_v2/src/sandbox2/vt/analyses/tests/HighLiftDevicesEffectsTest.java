@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.measure.quantity.Angle;
 import javax.measure.unit.NonSI;
+import javax.measure.unit.SI;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jscience.physics.amount.Amount;
@@ -23,6 +24,7 @@ import analyses.ACWeightsManager;
 import analyses.OperatingConditions;
 import analyses.liftingsurface.LSAerodynamicsCalculator;
 import calculators.aerodynamics.LiftCalc;
+import calculators.aerodynamics.NasaBlackwell;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ComponentEnum;
@@ -252,13 +254,10 @@ public class HighLiftDevicesEffectsTest extends Application {
 			// Defining the LSAerodynamicsCalculator object
 			Map <String, MethodEnum> taskMap = new HashMap<>();
 			LSAerodynamicsCalculator theAerodynamicCalculator = new LSAerodynamicsCalculator(
-					theAircraft,
+					theAircraft.getWing(),
 					theOperatingConditions,
 					taskMap
 					);
-			
-			// Evaluating CLAlpha clean
-			// TODO: MOVE THE CalcCLAlpha INNER CLASS TO THE LSAerodynamicsCalculator
 			
 			// Evaluating high lift devices effects
 			List<Amount<Angle>> deltaFlap = new ArrayList<>();
@@ -266,6 +265,15 @@ public class HighLiftDevicesEffectsTest extends Application {
 			deltaFlap.add(Amount.valueOf(40, NonSI.DEGREE_ANGLE));
 			
 			theAircraft.getWing().setTheAerodynamicsCalculator(theAerodynamicCalculator);
+			
+			// Evaluating CLAlpha clean
+			// TODO: MOVE THE CalcCLAlpha INNER CLASS TO THE LSAerodynamicsCalculator
+			theAircraft.getWing()
+			.getTheAerodynamicsCalculator()
+			.getCLAlpha()
+			.put(MethodEnum.NASA_BLACKWELL,
+					Amount.valueOf(6.2, SI.RADIAN).inverse());
+			
 			LiftCalc.calculateHighLiftDevicesEffects(
 					theAircraft.getWing(),
 					theOperatingConditions,
@@ -274,7 +282,59 @@ public class HighLiftDevicesEffectsTest extends Application {
 					0.4
 					);
 			
-			// TODO : PRINT RESULTS 
+			//----------------------------------------------------------------------------------
+			// Results print
+			System.out.println("\ndeltaCl0_flap_list = ");
+			for(int i=0; i<theAerodynamicCalculator.getDeltaCl0FlapList().size(); i++)
+				System.out.print(theAerodynamicCalculator.getDeltaCl0FlapList().get(i) + " ");
+
+			System.out.println("\n\ndeltaCl0_flap = \n" + theAerodynamicCalculator.getDeltaCl0Flap());
+
+			System.out.println("\ndeltaCL0_flap_list = ");
+			for(int i=0; i<theAerodynamicCalculator.getDeltaCL0FlapList().size(); i++)
+				System.out.print(theAerodynamicCalculator.getDeltaCL0FlapList().get(i) + " ");
+
+			System.out.println("\n\ndeltaCL0_flap = \n" + theAerodynamicCalculator.getDeltaCl0Flap());
+			
+			System.out.println("\ndeltaClmax_flap_list = ");
+			for(int i=0; i<theAerodynamicCalculator.getDeltaClmaxFlapList().size(); i++)
+				System.out.print(theAerodynamicCalculator.getDeltaClmaxFlapList().get(i) + " ");
+
+			System.out.println("\n\ndeltaClmax_flap = \n" + theAerodynamicCalculator.getDeltaClmaxFlap());
+			
+			System.out.println("\ndeltaCLmax_flap_list = ");
+			for(int i=0; i<theAerodynamicCalculator.getDeltaCLmaxFlapList().size(); i++)
+				System.out.print(theAerodynamicCalculator.getDeltaCLmaxFlapList().get(i) + " ");
+
+			System.out.println("\n\ndeltaCLmax_flap = \n" + theAerodynamicCalculator.getDeltaCLmaxFlap());
+
+			if(!theAircraft.getWing().getLiftingSurfaceCreator().getSlats().isEmpty()) {
+				System.out.println("\ndeltaClmax_slat_list = ");
+				for(int i=0; i<theAerodynamicCalculator.getDeltaClmaxSlatList().size(); i++)
+					System.out.print(theAerodynamicCalculator.getDeltaClmaxSlatList().get(i) + " ");
+
+				System.out.println("\n\ndeltaClmax_slat = \n" + theAerodynamicCalculator.getDeltaClmaxSlat());
+
+				System.out.println("\ndeltaCLmax_slat_list = ");
+				for(int i=0; i<theAerodynamicCalculator.getDeltaCLmaxSlatList().size(); i++)
+					System.out.print(theAerodynamicCalculator.getDeltaCLmaxSlatList().get(i) + " ");
+
+				System.out.println("\n\ndeltaCLmax_slat = \n" + theAerodynamicCalculator.getDeltaCLmaxSlat());
+			}
+			
+			System.out.println("\n\ncLalpha_flap_list = " + theAerodynamicCalculator.getCLAlpha().get(MethodEnum.NASA_BLACKWELL));
+
+			System.out.println("\n\ndeltaCD_list = ");
+			for(int i=0; i<theAerodynamicCalculator.getDeltaCDList().size(); i++)
+				System.out.print(theAerodynamicCalculator.getDeltaCDList().get(i) + " ");
+
+			System.out.println("\n\ndeltaCD = \n" + theAerodynamicCalculator.getDeltaCD());
+			
+			System.out.println("\n\ndeltaCM_c4_list = ");
+			for(int i=0; i<theAerodynamicCalculator.getDeltaCMc4List().size(); i++)
+				System.out.print(theAerodynamicCalculator.getDeltaCMc4List().get(i) + " ");
+
+			System.out.println("\n\ndeltaCM_c4 = \n" + theAerodynamicCalculator.getDeltaCMc4());
 			
 		} catch (CmdLineException | IOException e) {
 			System.err.println("Error: " + e.getMessage());

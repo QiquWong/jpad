@@ -138,6 +138,14 @@ public class Airfoil {
 			aerodynamics = new Aerodynamics(this);
 			
 			break;
+			
+		case IRON:
+			_family = AirfoilEnum.NACA63_209;
+			_type = AirfoilTypeEnum.LAMINAR;
+
+			_theLiftingSurface = ls;
+			geometry = new Geometry(this, yLoc);
+			aerodynamics = new Aerodynamics(this);
 		}
 	}
 	

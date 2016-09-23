@@ -308,7 +308,7 @@ public class ACAnalysisManager {
 	}
 
 	public void calculatePerformances(Aircraft aircraft) {
-		aircraft.get_performances().calculateAllPerformance();
+		aircraft.get_performances().calculateAllPerformance(aircraft);
 	}
 	
 	public void calculateCosts(Aircraft aircraft) {

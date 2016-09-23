@@ -3859,6 +3859,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		public void allMethods() {
 			polhamus();
 			andersonSweptCompressibleSubsonic();
+			integralMean2D();
 		}
 
 	}

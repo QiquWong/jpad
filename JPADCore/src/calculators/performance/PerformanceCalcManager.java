@@ -152,11 +152,11 @@ public class PerformanceCalcManager {
 	}
 
 	public void initializeDefaultArrays() {
-		setMinAndMaxValues(0., 11000., 50., 340., 0.7, 1.);
+		setMinAndMaxValues(0., 11000., 10., 340., 0.7, 1.);
 
-		//TODO remove hard-coded values
-		speedCruise = 210.;
-		altitudeCruise = 10000.;
+//		//TODO remove hard-coded values
+//		speedCruise = 210.;
+//		altitudeCruise = 10000.;
 		initializeArraysWithMinAndMaxValues();
 	}
 

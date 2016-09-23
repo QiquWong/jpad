@@ -41,8 +41,8 @@ public class JPADChartWriter {
 		createLiftingSurfaceCharts(aircraft.get_HTail(), true);
 		createLiftingSurfaceCharts(aircraft.get_VTail(), true);
 		createLiftingSurfaceCharts(aircraft.get_Canard(), true);
-		createPerformanceCharts(aircraft.get_performances(), aircraft.get_performances().getPerformanceManager(), "AEO");
-		createPerformanceCharts(aircraft.get_performances(), aircraft.get_performances().getPerformanceManagerOEI(), "OEI");
+//		createPerformanceCharts(aircraft.get_performances(), aircraft.get_performances().getPerformanceManager(), "AEO");
+//		createPerformanceCharts(aircraft.get_performances(), aircraft.get_performances().getPerformanceManagerOEI(), "OEI");
 		
 		System.out.println("--------- DONE WRITING CHARTS TO FILE ----------");
 	}

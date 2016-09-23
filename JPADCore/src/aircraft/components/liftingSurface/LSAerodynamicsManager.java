@@ -189,7 +189,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	dihedralMean, sweepHalfChordEq, sweepQuarterChordEq, 
 	maxThicknessMean, deltaAlpha, alphaNew, cLLinearSlope, diffCL =1 ;
 
-	private double _vortexSemiSpan, _vortexSemiSpanToSemiSpanRatio = 0.01;
+	private double _vortexSemiSpan, _vortexSemiSpanToSemiSpanRatio = 0.01666666666666666666666666666667;
 
 	private double _cmAlpha, _cL0, _cM0, _dynamicPressureRatio = 1.;
 
@@ -852,9 +852,20 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			this.xLEvsYActual = xLEvsYActual;
 
 
-			nasaBlackwell = new NasaBlackwell(semispan, surface, 
-					yStationsActual, chordsVsYActual, xLEvsYActual, dihedral, twist, alpha0l, 
-					vortexSemiSpanToSemiSpanRatio, alpha, mach, altitude);
+			nasaBlackwell = new NasaBlackwell(
+					this.semispan,
+					this.surface, 
+					this.yStationsActual,
+					this.chordsVsYActual,
+					this.xLEvsYActual,
+					this.dihedral,
+					this.twist,
+					this.alpha0l, 
+					this.vortexSemiSpanToSemiSpanRatio,
+					this.alpha,
+					this.mach,
+					this.altitude
+					);
 		}
 
 		public CalcLiftDistribution() {}

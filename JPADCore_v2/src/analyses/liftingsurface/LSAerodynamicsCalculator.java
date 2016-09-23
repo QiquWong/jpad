@@ -1,5 +1,7 @@
 package analyses.liftingsurface;
 
+import static java.lang.Math.toRadians;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,15 +11,27 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
+import javax.measure.unit.SI;
 
+import org.apache.commons.math3.linear.MatrixUtils;
+import org.apache.commons.math3.linear.RealMatrix;
 import org.jscience.physics.amount.Amount;
 
+import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LiftingSurface;
 import analyses.OperatingConditions;
+import analyses.analysismodel.InnerCalculator;
+import analyses.liftingsurface.LSAerodynamicsManager.CalcCLAtAlpha;
+import analyses.liftingsurface.LSAerodynamicsManager.CalcHighLiftDevices;
 import calculators.aerodynamics.AerodynamicCalc;
+import calculators.aerodynamics.LiftCalc;
+import calculators.stability.StabilityCalculators;
 import configuration.enumerations.AirfoilTypeEnum;
+import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.MethodEnum;
+import standaloneutils.MyArrayUtils;
+import standaloneutils.MyMathUtils;
 
 public class LSAerodynamicsCalculator {
 
@@ -33,7 +47,7 @@ public class LSAerodynamicsCalculator {
 	// VARIABLES DECLARATION:
 	//------------------------------------------------------------------------------
 	// INPUT DATA (IMPORTED AND CALCULATED)
-	private Aircraft _theAircraft;
+	private LiftingSurface _theLiftingSurface;
 	private OperatingConditions _theOperatingConditions;
 	private Map <String, MethodEnum> _taskMap;
 	private int _numberOfPointSemiSpanWise;
@@ -102,12 +116,12 @@ public class LSAerodynamicsCalculator {
 	// CONSTRUCTOR
 	//------------------------------------------------------------------------------
 	public LSAerodynamicsCalculator (
-			Aircraft theAircraft,
+			LiftingSurface theLiftingSurface,
 			OperatingConditions theOperatingConditions,
 			Map <String, MethodEnum> taskMap
 			) {
 		
-		this._theAircraft = theAircraft;
+		this._theLiftingSurface = theLiftingSurface;
 		this._theOperatingConditions = theOperatingConditions;
 		this._taskMap = taskMap;
 		
@@ -196,11 +210,11 @@ public class LSAerodynamicsCalculator {
 		 * @author Lorenzo Attanasio
 		 * @see Sforza (2014), page 417
 		 */
-		public void kornMason(double cL, LiftingSurface theLiftingSurface) {
+		public void kornMason(double cL) {
 
-			AirfoilTypeEnum airfoilType = theLiftingSurface.getAirfoilList().get(0).getType();
-			Amount<Angle> sweepHalfChordEq = theLiftingSurface.getSweepHalfChordEquivalent(false);
-			double maxThicknessMean = theLiftingSurface.getThicknessMean();
+			AirfoilTypeEnum airfoilType = _theLiftingSurface.getAirfoilList().get(0).getType();
+			Amount<Angle> sweepHalfChordEq = _theLiftingSurface.getSweepHalfChordEquivalent(false);
+			double maxThicknessMean = _theLiftingSurface.getThicknessMean();
 			
 			double machCr = AerodynamicCalc.calculateMachCriticalKornMason(
 					cL,
@@ -227,12 +241,12 @@ public class LSAerodynamicsCalculator {
 		 * @param airfoilType
 		 * @return m_cr the crest critical Mach number from Kroo equation (2001)
 		 */
-		public void kroo(double cL, LiftingSurface theLiftingSurface) {
+		public void kroo(double cL) {
 
 			// sweepHalfChord --> radians are required
-			AirfoilTypeEnum airfoilType = theLiftingSurface.getAirfoilList().get(0).getType();
-			Amount<Angle> sweepHalfChordEq = theLiftingSurface.getSweepHalfChordEquivalent(false);
-			double maxThicknessMean = theLiftingSurface.getThicknessMean();
+			AirfoilTypeEnum airfoilType = _theLiftingSurface.getAirfoilList().get(0).getType();
+			Amount<Angle> sweepHalfChordEq = _theLiftingSurface.getSweepHalfChordEquivalent(false);
+			double maxThicknessMean = _theLiftingSurface.getThicknessMean();
 			
 			double machCr = AerodynamicCalc.calculateMachCriticalKroo(
 					cL,
@@ -244,15 +258,556 @@ public class LSAerodynamicsCalculator {
 			_criticalMachNumber.put(MethodEnum.KROO, machCr);
 		}
 
-		public void allMethods(double cL, LiftingSurface theLiftingSurface) {
-			kornMason(cL, theLiftingSurface);
-			kroo(cL, theLiftingSurface);
+		public void allMethods(double cL) {
+			kornMason(cL);
+			kroo(cL);
 		}
 	}
 	//............................................................................
 	// END OF THE CRITICAL MACH INNER CLASS
 	//............................................................................
 
+	//............................................................................
+	// CL AT APLHA INNER CLASS
+	//............................................................................
+	public class CalcCLAtAlpha {
+
+		private double cL;
+		private double alphaZeroLiftDeflection;
+		private double[] alphaTailArray;
+		int nPoints = 20;
+		
+		double [] alphaArrayHTailPlot = new double [nPoints];
+		
+		public double[] getAlphaArrayHTailPlot() {
+			return alphaArrayHTailPlot;
+		}
+		public void setAlphaArrayHTailPlot(double[] alphaArrayHTailPlot) {
+			this.alphaArrayHTailPlot = alphaArrayHTailPlot;
+		}
+
+		public double linearDLR(double alpha) {
+			// page 3 DLR pdf
+			return LiftCalc.calcCLatAlphaLinearDLR(
+					alpha,
+					_theLiftingSurface.getAspectRatio()
+					);
+		}
+
+		/** 
+		 * Evaluate CL at a specific AoA
+		 * 
+		 * @author Lorenzo Attanasio
+		 * @return
+		 */
+		public double linearAndersonCompressibleSubsonic(Amount<Angle> alpha) {
+
+			double cL = calculateCLAlpha.andersonSweptCompressibleSubsonic()
+					*alpha.to(SI.RADIAN).getEstimatedValue() + 
+					calculateCL0();
+
+			_cLCurrent = cL;
+
+			cLMap.getcXVsAlphaTable().put(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC, alpha, _cLCurrent);
+
+			return cL;
+
+		}
+
+		public double nasaBlackwell(Amount<Angle> alpha) {
+
+			calculateLiftDistribution.getNasaBlackwell().calculate(alpha);
+
+			cLMap.getcXVsAlphaTable().put(MethodEnum.NASA_BLACKWELL, alpha, calculateLiftDistribution.getNasaBlackwell().get_cLCurrent());
+			cLMap.getCxyVsAlphaTable().put(MethodEnum.NASA_BLACKWELL, alpha, calculateLiftDistribution.getNasaBlackwell().get_clTotalDistribution().clone());
+			cLMap.getCcxyVsAlphaTable().put(MethodEnum.NASA_BLACKWELL, alpha, calculateLiftDistribution.getNasaBlackwell().get_ccLDistribution().clone());
+
+			cL = calculateLiftDistribution.getNasaBlackwell().get_cLEvaluated();
+			_cLCurrent = cL;
+
+			return cL;
+		}
+
+		/**
+		 * This method calculates CL at alpha given as input. It interpolates the values of cl and alpha array filled before.
+		 * WARNING: it is necessary to call the method CalcCLvsAlphaCurve--> nasaBlackwellCompleteCurve before.
+		 * 
+		 * @author Manuela Ruocco
+		 *
+		 */		
+		public double nasaBlackwellCompleteCurve(Amount<Angle> alpha){
+			
+			if (alpha.getUnit() == NonSI.DEGREE_ANGLE) 
+				alpha = alpha.to(SI.RADIAN);
+
+			double  [] clValue = getcLActualArray();
+			double [] alphaArray = getAlphaArrayActual();
+			
+			double cLAtAlpha = MyMathUtils.getInterpolatedValue1DLinear(alphaArray,clValue, alpha.getEstimatedValue());
+			
+			return cLAtAlpha;
+		}
+
+		public double nasaBlackwellCompleteCurveValue(Amount<Angle> alpha){	
+			
+			double cLStar, cLTemp, qValue, a ,b ,c ,d;
+			Amount<Angle> alphaTemp = Amount.valueOf(0.0, SI.RADIAN);
+			
+			Airfoil meanAirfoil = new Airfoil(
+					getTheLiftingSurface().calculateMeanAirfoil(getTheLiftingSurface()),
+					getTheLiftingSurface().getAerodynamicDatabaseReader()
+					);
+			double alphaStar = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
+			set_alphaStar(Amount.valueOf(alphaStar,SI.RADIAN));
+			Amount<Angle> alphaStarAmount = Amount.valueOf(alphaStar, SI.RADIAN);
+
+			cLStarWing = nasaBlackwell(alphaStarAmount);
+			cLTemp = nasaBlackwell(alphaTemp);
+			if (alpha.getEstimatedValue() < alphaStar){    //linear trait
+				cLLinearSlope = (cLStarWing - cLTemp)/alphaStar;
+				//System.out.println("CL Linear Slope [1/rad] = " + cLLinearSlope);
+				qValue = cLStarWing - cLLinearSlope*alphaStar;
+				cLAlphaZero = qValue;
+				alphaZeroLiftWingClean = -qValue/cLLinearSlope;
+				double cLActual = cLLinearSlope * alpha.getEstimatedValue() + qValue;
+				//System.out.println(" CL Actual = " + cLActual );
+				return cLActual;
+			}
+			else {  // non linear trait
+				calcAlphaAndCLMax(meanAirfoil);
+				double cLMax = get_cLMaxClean();
+				Amount<Angle> alphaMax = getAlphaMaxClean();	
+				double alphaMaxDouble = alphaMax.getEstimatedValue();
+
+				cLLinearSlope = (cLStarWing - cLTemp)/alphaStar;
+				//System.out.println("CL Linear Slope [1/rad] = " + cLLinearSlope);
+				double[][] matrixData = { {Math.pow(alphaMaxDouble, 3), Math.pow(alphaMaxDouble, 2), alphaMaxDouble,1.0},
+						{3* Math.pow(alphaMaxDouble, 2), 2*alphaMaxDouble, 1.0, 0.0},
+						{3* Math.pow(alphaStar, 2), 2*alphaStar, 1.0, 0.0},
+						{Math.pow(alphaStar, 3), Math.pow(alphaStar, 2),alphaStar,1.0}};
+				RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
+				double [] vector = {cLMax, 0,cLLinearSlope, cLStarWing};
+
+				double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
+
+				a = solSystem[0];
+				b = solSystem[1];
+				c = solSystem[2];
+				d = solSystem[3];
+
+				double clActual = a * Math.pow(alpha.getEstimatedValue(), 3) + 
+						b * Math.pow(alpha.getEstimatedValue(), 2) + 
+						c * alpha.getEstimatedValue() + d;
+
+				return clActual;
+			}							
+		}
+
+		public void allMethods(Amount<Angle> alpha) {
+			linearAndersonCompressibleSubsonic(alpha);
+			nasaBlackwell(alpha);
+		}
+
+		/**
+		 * This method calculates CL at alpha given as input. This method calculates both linear trait and 
+		 * non linear trait. It use the NasaBlackwell method in order to evaluate the slope of the linear trait
+		 * and it builds the non-linear trait using a cubic interpolation. 
+		 * 
+		 * @author Manuela Ruocco
+		 * @param Amount<Angle> alphaBody. It is the angle of attack between the direction of asimptotic 
+		 * velocity and the reference line of fuselage.
+		 */		
+		public double nasaBlackwellAlphaBody(Amount<Angle> alphaBody){
+			if (alphaBody.getUnit() == NonSI.DEGREE_ANGLE) 
+				alphaBody = alphaBody.to(SI.RADIAN);
+
+			Amount<Angle> angleOfIncidence = _theLiftingSurface.getRiggingAngle();
+			Amount<Angle> alphaWing = Amount.valueOf(
+					alphaBody.getEstimatedValue() +
+					angleOfIncidence.getEstimatedValue(), SI.RADIAN);
+
+			double cLWing = nasaBlackwellCompleteCurve(alphaWing);
+			return cLWing;
+		}
+
+		/**
+		 * This method calculates CL at alpha given as input. This method calculates both linear trait and 
+		 * non linear trait. It use the NasaBlackwell method in order to evaluate the slope of the linear trait
+		 * and it builds the non-linear trait using a cubic interpolation. This is an overload of previous method
+		 * that accepts in input the downwash angle. 
+		 * 
+		 * @author Manuela Ruocco
+		 * @param Amount<Angle> alphaBody. It is the angle of attack between the direction of asimptotic 
+		 * velocity and the reference line of fuselage.
+		 * @param Amount<Angle> downwash. 
+		 */	
+		public double nasaBlackwellalphaBody(Amount<Angle> alphaBody,Amount<Angle> downwash ){
+			if (alphaBody.getUnit() == NonSI.DEGREE_ANGLE) 
+				alphaBody = alphaBody.to(SI.RADIAN);
+
+			if (downwash.getUnit() == NonSI.DEGREE_ANGLE) 
+				alphaBody = alphaBody.to(SI.RADIAN);
+
+			Amount<Angle> angleOfIncidence = _theLiftingSurface.getRiggingAngle();
+			Amount<Angle> alphaWing = Amount.valueOf(
+					alphaBody.getEstimatedValue() +
+					angleOfIncidence.getEstimatedValue()- downwash.getEstimatedValue()
+					,SI.RADIAN);
+
+			double cLWing = nasaBlackwellCompleteCurveValue(alphaWing);
+			return cLWing;
+		}
+
+		/**
+		 * This method evaluates CL for an alpha array having the elevator deflection as input. 
+		 * 
+		 * @param angle of deflection of the elevator in deg or radians
+		 * @param chord ratio -> cf_c
+		 *
+		 * @return Cl array for fixed deflection
+		 * @author  Manuela Ruocco
+		 */
+
+		// The calculation of the lift coefficient with a deflection of the elevator is made by the
+		// method calculateCLWithElevatorDeflection. This method fills the array of 20 value of CL in
+		// its linear trait. 
+		// The procedure used to calculate the CL is the following. It's important to know that 
+		// it's necessary to call the method nasaBlackwellCompleteCurve in order to obtain the
+		// cl linear slope of the horizontal tail with no elevator deflection.
+		//
+		//1 . First of all the tau factor it's calculated used the method calculateTauIndex in the .. class
+		//2. It's necessary to get the linear slope of the horizontal tail with no elevator defletion.
+		// 3. The alphazero lift of the deflected configuration is calculated with this formula
+		//   alphaw= tau per delta e
+		// 4. At this point it's possible to create an alpha array, starting from the alpha zero lift, until
+		//   15 degrees after.
+		// 5. the value of cl for each alpha is calculated with the formula :
+		//  cl alfa * (alfa + t delta e)
+
+		public double[] calculateCLWithElevatorDeflection (
+				List<Double[]> deltaFlap,
+				List<FlapTypeEnum> flapType,
+				List<Double> deltaSlat,
+				List<Double> etaInFlap,
+				List<Double> etaOutFlap,
+				List<Double> etaInSlat,
+				List<Double> etaOutSlat, 
+				List<Double> cfc,
+				List<Double> csc,
+				List<Double> leRadiusSlatRatio,
+				List<Double> cExtcSlat
+				) {
+
+			// variable declaration
+			Amount<Angle> deflection = Amount.valueOf(deltaFlap.get(0)[0], NonSI.DEGREE_ANGLE);
+			
+			if (deflection.getUnit() == SI.RADIAN){
+				deflection = deflection.to(NonSI.DEGREE_ANGLE);
+			}
+			double deflectionAngleDeg = deflection.getEstimatedValue();
+
+			int nPoints = 20;
+			double tauValue, cLLinearSlopeNoDeflection;
+			alphaTailArray = new double [nPoints];
+			double[] cLArray = new double [nPoints];
+			Amount<Angle> alphaActual;
+			double alphaStallElevator;
+			double deltaCLMaxElevator;
+			
+			//linear trait
+			StabilityCalculators theStablityCalculator = new StabilityCalculators();
+			tauValue = theStablityCalculator.calculateTauIndex(cfc.get(0), theAircraft, deflection);
+			cLLinearSlopeNoDeflection = getcLLinearSlopeNB()/57.3; //in deg 
+			alphaZeroLiftDeflection = - tauValue*deflectionAngleDeg;
+			alphaTailArray[0] = alphaZeroLiftDeflection;
+			double qValue = - cLLinearSlopeNoDeflection *  alphaZeroLiftDeflection;
+			double alphaTemp = 1;
+			
+			cLArray[0] = 0;
+			cLArray[1] = cLLinearSlopeNoDeflection * alphaTemp + qValue;
+
+			double clAlpha = (cLArray[1] - cLArray[0])/Math.abs(alphaTemp-alphaTailArray[0]);
+			
+			// non linear trait
+			CalcHighLiftDevices theHighLiftCalculatorLiftEffects = new CalcHighLiftDevices(
+					_theLiftingSurface, 
+					_theOperatingConditions,
+					deltaFlap, 
+					flapType, 
+					deltaSlat, 
+					etaInFlap,
+					etaOutFlap,
+					etaInSlat,
+					etaOutSlat, 
+					cfc, 
+					csc, 
+					leRadiusSlatRatio, 
+					cExtcSlat);
+			
+			theHighLiftCalculatorLiftEffects.calculateHighLiftDevicesEffects();
+			
+			deltaCLMaxElevator = theHighLiftCalculatorLiftEffects.getDeltaCLmax_flap()*tauValue;
+			double deltaAlphaMaxElevator =-(tauValue * deflection.getEstimatedValue())/2;
+			double deltaAlphaMaxElevatordelta = theHighLiftCalculatorLiftEffects.getDeltaAlphaMaxFlap();
+			CalcCLAtAlpha theCLCleanCalculator = new CalcCLAtAlpha();
+			
+			Airfoil meanAirfoil = new Airfoil(
+					LiftingSurface.calculateMeanAirfoil(getTheLiftingSurface()),
+					getTheLiftingSurface().getAerodynamicDatabaseReader()
+					); 
+					
+			calcAlphaAndCLMax(meanAirfoil);
+			Amount<Angle> alphaMax = getAlphaMaxClean().to(NonSI.DEGREE_ANGLE);
+			double alphaStarClean = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
+			Amount<Angle> alphaStarCleanAmount = Amount.valueOf(alphaStarClean, SI.RADIAN);
+			double cLMax = get_cLMaxClean();
+			double cLStarClean = theCLCleanCalculator.nasaBlackwellCompleteCurve(alphaStarCleanAmount);
+			double cL0Elevator = cLArray[0];
+			double alphaStar = (cLStarClean - qValue)/clAlpha;
+			alphaStarClean = alphaStarClean*57.3;		
+			double cLMaxElevator = cLMax + deltaCLMaxElevator;
+			
+				alphaStallElevator = alphaMax.getEstimatedValue() + deltaAlphaMaxElevator;
+			
+			double alphaStarElevator; 
+
+				alphaStarElevator = (alphaStar + alphaStarClean)/2;
+			
+			cLArray[1] = cLLinearSlopeNoDeflection * (alphaStarElevator + tauValue * deflectionAngleDeg);
+			
+			double[][] matrixData = { {Math.pow(alphaStallElevator, 3), Math.pow(alphaStallElevator, 2),
+				alphaStallElevator,1.0},
+					{3* Math.pow(alphaStallElevator, 2), 2*alphaStallElevator, 1.0, 0.0},
+					{3* Math.pow(alphaStarElevator, 2), 2*alphaStarElevator, 1.0, 0.0},
+					{Math.pow(alphaStarElevator, 3), Math.pow(alphaStarElevator, 2),alphaStarElevator,1.0}};
+			RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
+
+			double [] vector = {cLMaxElevator, 0,clAlpha, cLArray[1]};
+
+			double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
+
+			double a = solSystem[0];
+			double b = solSystem[1];
+			double c = solSystem[2];
+			double d = solSystem[3];
+
+			alphaTailArray = MyArrayUtils.linspace(alphaStarElevator,
+					alphaStallElevator+ 4,
+					nPoints-1);
+
+			double[] cLArrayHighLiftPlot = new double [nPoints];
+
+			for ( int i=0 ; i< alphaTailArray.length ; i++){
+				alphaActual = Amount.valueOf((alphaTailArray[i]), NonSI.DEGREE_ANGLE);
+				if (alphaActual.getEstimatedValue() <= alphaStarElevator) { 
+					cLArray[i+1] = clAlpha * alphaActual.getEstimatedValue() + qValue;}
+				else {
+					cLArray[i+1] = a * Math.pow(alphaActual.getEstimatedValue(), 3) + 
+							b * Math.pow(alphaActual.getEstimatedValue(), 2) + 
+							c * alphaActual.getEstimatedValue() + d;
+				}
+
+			}
+					
+			alphaArrayHTailPlot[0] = alphaZeroLiftDeflection;
+			for(int i=1; i<nPoints ; i++){
+				alphaArrayHTailPlot[i]= alphaTailArray[i-1];
+			}
+			
+			return cLArray;
+		}
+	
+		public Double[] getAlphaTailArrayDouble() {
+			Double[]alphaTailArrayDouble = new Double [getAlphaTailArray().length];
+			for ( int i=0; i<getAlphaTailArray().length; i++){
+				alphaTailArrayDouble [i] = (Double)getAlphaTailArray()[i];
+			}
+			return alphaTailArrayDouble;
+		}
+
+		public double[] getAlphaTailArray() {
+			return alphaTailArray;
+		}
+
+		public void setAlphaTailArray(double[] alphaTailArray) {
+			this.alphaTailArray = alphaTailArray;
+		}
+
+		/**
+		 * This method calculates CL of an horizontal tail at alpha given as input. This method calculates linear trait 
+		 * considering a known elevator deflection. It use the NasaBlackwell method in order to evaluate the slope of the linear trait
+		 * This method needs that the field of cl has filled before. --> Need to call calculateCLWithElevatorDeflection
+		 * before!
+		 * 
+		 * @author Manuela Ruocco
+		 * @param Amount<Angle> alphaBody. It is the angle of attack between the direction of asimptotic 
+		 * velocity and the reference line of fuselage.
+		 * @param Amount<Angle> deflection of elevator in degree. 
+		 */	
+
+		// In ordet to obtain a value of lift coefficient corresponding at an alpha body with a known
+		// elevator deflection it's possible to use the method getCLHTailatAlphaBodyWithElevator.
+
+		public double getCLHTailatAlphaBodyWithElevator (double chordRatio,
+				Amount<Angle> alphaBody,
+				Amount<Angle> deflection,
+				Amount<Angle> downwashAngle,
+				List<Double[]> deltaFlap,
+				List<FlapTypeEnum> flapType,
+				List<Double> deltaSlat,
+				List<Double> etaInFlap,
+				List<Double> etaOutFlap,
+				List<Double> etaInSlat,
+				List<Double> etaOutSlat, 
+				List<Double> cfc,
+				List<Double> csc,
+				List<Double> leRadiusSlatRatio,
+				List<Double> cExtcSlat
+				){
+
+			if (alphaBody.getUnit() == SI.RADIAN)
+				alphaBody = alphaBody.to(NonSI.DEGREE_ANGLE);
+			double alphaBodyDouble = alphaBody.getEstimatedValue();
+
+			if (downwashAngle.getUnit() == SI.RADIAN)
+				downwashAngle = downwashAngle.to(NonSI.DEGREE_ANGLE);
+			double downwashAngleDeg = downwashAngle.getEstimatedValue();
+
+
+			double deflectionAngleDeg = deflection.getEstimatedValue();
+			double alphaZeroLift = getAlphaZeroLiftDeflection();
+
+			double[] alphaLocalArray = getAlphaArrayHTailPlot();
+
+			double alphaLocal = alphaBodyDouble 
+					- downwashAngleDeg 
+					+ theAircraft.getHTail().getRiggingAngle().to(NonSI.DEGREE_ANGLE).getEstimatedValue();
+
+			double[]  clArray = calculateCLWithElevatorDeflection(
+					deltaFlap, flapType,deltaSlat,
+					etaInFlap, etaOutFlap, etaInSlat, etaOutSlat, 
+					 cfc, csc, leRadiusSlatRatio, cExtcSlat
+					);
+			double clAtAlpha = MyMathUtils.getInterpolatedValue1DLinear(alphaLocalArray, clArray, alphaLocal);
+
+			return clAtAlpha;
+		}
+	}
+	//............................................................................
+	// END OF THE CRITICAL MACH INNER CLASS
+	//............................................................................
+	
+	//............................................................................
+	// CLalpha INNER CLASS
+	//............................................................................
+	/** 
+	 * Calculate the lift coefficient gradient of the whole lifting surface.
+	 * The class hold all available methods to estimate such gradient
+	 * (1/rad)
+	 * 
+	 * @author Lorenzo Attanasio, Manuela Ruocco
+	 */
+	public class CalcCLAlpha {
+
+		/**
+		 * This function determines the linear trait slope of the CL-alpha curve using the NasaBlackwell method.
+		 * It evaluate CL wing in correspondence of two alpha and calculates the equation of the line.
+		 * 
+		 * @author Manuela Ruocco
+		 * @param LSAerodynamicsManager.CalcCLAtAlpha theCLatAlpha
+		 */  
+
+		// TODO : FIX THE CALC CL AT ALPHA INNER CLASS AND CREATE THE OBJECT INSIDE THE METHOD.
+		public double nasaBlackwell(LSAerodynamicsManager.CalcCLAtAlpha theCLatAlpha){
+			
+			Amount<Angle> alphaOne = Amount.valueOf(toRadians(0.), SI.RADIAN);
+			double clOne = theCLatAlpha.nasaBlackwell(alphaOne);
+
+			Amount<Angle>alphaTwo = Amount.valueOf(toRadians(4.), SI.RADIAN);
+			double alphaTwoDouble = 4.0;
+			double clTwo = theCLatAlpha.nasaBlackwell(alphaTwo);
+
+			double cLSlope = (clTwo-clOne)/alphaTwo.getEstimatedValue();
+			double cLSlopeDeg = Math.toRadians(cLSlope);
+
+			//  TODO : q ??
+			double q = clTwo- cLSlopeDeg* alphaTwoDouble;
+			return cLSlope;
+		}
+		
+		public void polhamus() {
+
+			// TODO : ??
+//			_kPolhamus = LiftCalc.kFactorPolhamus(
+//					_theLiftingSurface.getAspectRatio(),
+//					_theOperatingConditions.getMachCurrent(), 
+//					_theLiftingSurface.getSweepLEEquivalent(false),
+//					_theLiftingSurface.getTaperRatioEquivalent(false)
+//					);
+
+			_cLAlpha.put(MethodEnum.POLHAMUS,
+					Amount.valueOf(
+							LiftCalc.calculateCLalphaPolhamus(
+									_theLiftingSurface.getAspectRatio(),
+									_theOperatingConditions.getMachCurrent(), 
+									_theLiftingSurface.getSweepLEEquivalent(false),
+									_theLiftingSurface.getTaperRatioEquivalent(false)
+									),
+							SI.RADIAN
+							).inverse()
+					);
+		}
+
+		/**
+		 * pag. 49 ADAS
+		 */
+		public void andersonSweptCompressibleSubsonic() {
+
+			_cLAlpha.put(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC,
+					LiftCalc.calcCLalphaAndersonSweptCompressibleSubsonic(
+							_theOperatingConditions.getMachCurrent(),
+							_theLiftingSurface.getAspectRatio(),
+							_theLiftingSurface.getSemiSpan(),
+							_theLiftingSurface.getSweepHalfChordEquivalent(false), 
+							_theLiftingSurface.getLiftingSurfaceCreator().getDiscretizedYs(),
+							// TODO : ADD THE CALCULATION OF ALL THE AIRFOIL PARAMETERS ON THE DISCRETIZED Y STATIONSS
+							_clAlphaVsY.toArray(),
+							_theLiftingSurface.getLiftingSurfaceCreator().getDiscretizedChords()
+							)
+					);
+		}
+
+		/** 
+		 * This method gets called by andersonSweptCompressibleSubsonic
+		 *
+		 * @author Lorenzo Attanasio
+		 * @return
+		 */
+		public void integralMean2D() {
+			_cLAlpha.put(
+					MethodEnum.INTEGRAL_MEAN, 
+					LiftCalc.calcCLalphaIntegralMean2D(
+							_theLiftingSurface.getSurface(),
+							_theLiftingSurface.getSemiSpan(),
+							_theLiftingSurface.getLiftingSurfaceCreator().getDiscretizedYs(), 
+							// TODO : ADD THE CALCULATION OF ALL THE AIRFOIL PARAMETERS ON THE DISCRETIZED Y STATIONSS
+							_clAlphaVsY.toArray(),
+							_theLiftingSurface.getLiftingSurfaceCreator().getDiscretizedChords()
+							)
+					);
+		}
+
+		public void allMethods() {
+			polhamus();
+			andersonSweptCompressibleSubsonic();
+			integralMean2D();
+//			nasaBlackwell(theCLatAlpha)
+		}
+
+	}
+	//............................................................................
+	// END OF THE CLalpha INNER CLASS
+	//............................................................................
 	
 	//............................................................................
 	// HIGH LIFT INNER CLASS
@@ -269,11 +824,11 @@ public class LSAerodynamicsCalculator {
 	//------------------------------------------------------------------------------
 	// GETTERS & SETTERS
 	//------------------------------------------------------------------------------
-	public Aircraft getTheAircraft() {
-		return _theAircraft;
+	public LiftingSurface getTheLiftingSurface() {
+		return _theLiftingSurface;
 	}
-	public void setTheAircraft(Aircraft _theAircraft) {
-		this._theAircraft = _theAircraft;
+	public void setTheLiftingSurface(LiftingSurface _theLiftingSurface) {
+		this._theLiftingSurface = _theLiftingSurface;
 	}
 	public OperatingConditions getTheOperatingConditions() {
 		return _theOperatingConditions;

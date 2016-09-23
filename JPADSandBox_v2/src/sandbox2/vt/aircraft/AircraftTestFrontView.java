@@ -154,8 +154,6 @@ public class AircraftTestFrontView extends Application {
 					);
 		}
 		
-		System.out.println("Dihedral breakpoints : " + dihedralList);
-		
 		Double[][] dataFrontViewWing = new Double[nYPointsWing][2];
 		IntStream.range(0, nYPointsWing)
 		.forEach(i -> {
