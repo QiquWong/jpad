@@ -314,7 +314,7 @@ public class Geometry {
 		this._yCoords = _yCoords;
 	}
 
-	public Double[] get_zCoords() {
+	public Double[] getZCoords() {
 		return _zCoords;
 	}
 

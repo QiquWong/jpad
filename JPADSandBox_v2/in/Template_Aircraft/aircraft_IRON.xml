@@ -15,7 +15,7 @@
             </wing>
             <horizontal_tail file="htail_IRON.xml">
                 <position>
-                    <x unit="m">31.21</x>
+                    <x unit="m">31.54</x>
                     <y unit="m">0.0</y>
                     <z unit="m">1.34</z>
                 </position>
@@ -23,7 +23,7 @@
             </horizontal_tail>
             <vertical_tail file="vtail_IRON.xml">
                 <position>
-                    <x unit="m">23.0</x>
+                    <x unit="m">31.54</x>
                     <y unit="m">0.0</y>
                     <z unit="m">1.5</z>
                 </position>

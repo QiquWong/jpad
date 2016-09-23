@@ -73,10 +73,6 @@ class MyArgumentsAnalysis {
 			usage = "cabin configurations directory path")
 	private File _cabinConfigurationsDirectory;
 	
-	@Option(name = "-dc", aliases = { "--dir-costs" }, required = true,
-			usage = "costs directory path")
-	private File _costsDirectory;
-		
 	// receives other command line parameters than options
 	@Argument
 	public List<String> arguments = new ArrayList<String>();
@@ -124,12 +120,6 @@ class MyArgumentsAnalysis {
 	public File getCabinConfigurationDirectory() {
 		return _cabinConfigurationsDirectory;
 	}
-	
-	// TODO : REMOVE THIS!! THIS HAS TO BE MOVED INSIDE THE ANALYSIS MANAGER!!
-	public File getCostsDirectory() {
-		return _costsDirectory;
-	}
-	
 }
 
 public class CompleteAnalysisTest extends Application {
@@ -216,10 +206,6 @@ public class CompleteAnalysisTest extends Application {
 			String dirCabinConfiguration = va.getCabinConfigurationDirectory().getCanonicalPath();
 			System.out.println("CABIN CONFIGURATIONS ===> " + dirCabinConfiguration);
 			
-			// TODO: REMOVE THIS!!
-			String dirCosts = va.getCostsDirectory().getCanonicalPath();
-			System.out.println("COSTS ===> " + dirCosts);
-			
 			System.out.println("--------------");
 
 			//------------------------------------------------------------------------------------
@@ -233,29 +219,27 @@ public class CompleteAnalysisTest extends Application {
 			HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
 			
 			// default Aircraft ATR-72 ...
-			theAircraft = new Aircraft.AircraftBuilder(
-					"ATR-72",
-					AircraftEnum.ATR72,
-					aeroDatabaseReader,
-					highLiftDatabaseReader
-					)
-					.build();
+//			theAircraft = new Aircraft.AircraftBuilder(
+//					"ATR-72",
+//					AircraftEnum.ATR72,
+//					aeroDatabaseReader,
+//					highLiftDatabaseReader
+//					)
+//					.build();
 
 			// reading aircraft from xml ... 
-//			theAircraft = Aircraft.importFromXML(
-//					pathToXML,
-//					dirLiftingSurfaces,
-//					dirFuselages,
-//					dirEngines,
-//					dirNacelles,
-//					dirLandingGears,
-//					dirSystems,
-//					dirCabinConfiguration,
-//					dirAirfoil,
-//					dirCosts,
-//					aeroDatabaseReader,
-//					highLiftDatabaseReader);
-//			theAircraft.setTheWieghts(ACWeightsManager.importFromXML(pathToXMLWeights, theAircraft));
+			theAircraft = Aircraft.importFromXML(
+					pathToXML,
+					dirLiftingSurfaces,
+					dirFuselages,
+					dirEngines,
+					dirNacelles,
+					dirLandingGears,
+					dirSystems,
+					dirCabinConfiguration,
+					dirAirfoil,
+					aeroDatabaseReader,
+					highLiftDatabaseReader);
 			
 			// Set the folders tree
 			MyConfiguration.initWorkingDirectoryTree(

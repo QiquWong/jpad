@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+    <analysis>
+        <balance 
+            id="JPAD Test analysis - BALANCE" 
+            from_xls_file="true" 
+            file="Weights.xlsx"
+            >
+            <maximum_take_off_mass unit="kg">53967.7</maximum_take_off_mass>
+			<maximum_zero_fuel_mass unit="kg">45569.3</maximum_zero_fuel_mass>
+			<operating_empty_mass unit="kg">33219.3</operating_empty_mass>
+			<passengers_total_mass unit="kg">12350</passengers_total_mass>
+			<passengers_single_mass unit='kg'>99.33</passengers_single_mass>
+			<fuselage_mass unit="kg">5004.7</fuselage_mass>
+			<wing_mass unit="kg">3209.1</wing_mass>
+			<horizontal_tail_mass unit="kg">548.3</horizontal_tail_mass>
+			<vertical_tail_mass unit="kg">452.7</vertical_tail_mass>
+			<canard_mass unit="kg"></canard_mass>
+			<nacelles_mass unit="kg">653.4;653.4</nacelles_mass>
+			<engines_mass unit="kg">4254.2;4254.2</engines_mass>
+			<landing_gears_mass unit="kg">2233.1</landing_gears_mass>
+        </balance>
+    </analysis>        
+</jpad_config>

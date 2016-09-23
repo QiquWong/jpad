@@ -2087,7 +2087,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		// Break points Y's
 
 		// root at symmetry plane
-		_yBreakPoints.add(Amount.valueOf(0.0, 1e-8, SI.METRE));
+		_yBreakPoints.add(Amount.valueOf(0.0, 0.0, SI.METRE));
 		// Accumulate values and add
 		for(int i=1; i <= this._panels.size(); i++) {
 			_yBreakPoints.add(
@@ -2169,6 +2169,10 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 			.boxed()
 			.collect(Collectors.toList())
 			;
+		if(_etaBP.get(_etaBP.size()-1) != 1.0) {
+			_etaBP.remove(_etaBP.size()-1);
+			_etaBP.add(1.0);
+		}
 	}
 
 	/**

@@ -534,7 +534,7 @@ public class Aircraft {
 					aircraftName,
 					"HTail",
 					"Data taken from ...",
-					31.21,
+					31.54,
 					0.0,
 					1.34,
 					ComponentEnum.HORIZONTAL_TAIL,

@@ -801,6 +801,13 @@ public class Fuselage extends AeroComponent implements IFuselage {
 			_windshieldHeight = Amount.valueOf(0.8, SI.METER);
 			_windshieldWidth = Amount.valueOf(2.5, SI.METER);
 
+			/**
+			 * _sectionCylinderLowerToTotalHeightRatio = 0.5
+			 * _sectionCylinderRhoUpper = 0.1
+			 * _sectionCylinderRhoLower = 0.1
+			 * 
+			 * for a circular section
+			 */
 			_sectionCylinderLowerToTotalHeightRatio     = 0.4;
 			_sectionCylinderRhoUpper     = 0.2;
 			_sectionCylinderRhoLower     =  0.3;
@@ -863,7 +870,14 @@ public class Fuselage extends AeroComponent implements IFuselage {
 			_windshieldType = "Single,round";
 			_windshieldHeight = Amount.valueOf(0.5, SI.METER);
 			_windshieldWidth = Amount.valueOf(2.6, SI.METER);
-
+			
+			/**
+			 * _sectionCylinderLowerToTotalHeightRatio = 0.5
+			 * _sectionCylinderRhoUpper = 0.1
+			 * _sectionCylinderRhoLower = 0.1
+			 * 
+			 * for a circular section
+			 */
 			_sectionCylinderLowerToTotalHeightRatio     = 0.4;
 			_sectionCylinderRhoUpper     = 0.2;
 			_sectionCylinderRhoLower     =  0.3;
@@ -927,6 +941,13 @@ public class Fuselage extends AeroComponent implements IFuselage {
 			_windshieldHeight = Amount.valueOf(0.5, SI.METER);
 			_windshieldWidth = Amount.valueOf(3.0, SI.METER);
 
+			/**
+			 * _sectionCylinderLowerToTotalHeightRatio = 0.5
+			 * _sectionCylinderRhoUpper = 0.1
+			 * _sectionCylinderRhoLower = 0.1
+			 * 
+			 * for a circular section
+			 */
 			_sectionCylinderLowerToTotalHeightRatio     = 0.4;
 			_sectionCylinderRhoUpper     = 0.1;
 			_sectionCylinderRhoLower     = 0.1;
@@ -990,9 +1011,16 @@ public class Fuselage extends AeroComponent implements IFuselage {
 			_windshieldHeight = Amount.valueOf(0.683, SI.METER);
 			_windshieldWidth = Amount.valueOf(3.2, SI.METER);
 
-			_sectionCylinderLowerToTotalHeightRatio     = 0.0;
-			_sectionCylinderRhoUpper     = 0.5;
-			_sectionCylinderRhoLower     =  0.5;
+			/**
+			 * _sectionCylinderLowerToTotalHeightRatio = 0.5
+			 * _sectionCylinderRhoUpper = 0.1
+			 * _sectionCylinderRhoLower = 0.1
+			 * 
+			 * for a circular section
+			 */
+			_sectionCylinderLowerToTotalHeightRatio     = 0.5;
+			_sectionCylinderRhoUpper     = 0.1;
+			_sectionCylinderRhoLower     =  0.1;
 
 			_sectionNoseMidLowerToTotalHeightRatio      = _sectionCylinderLowerToTotalHeightRatio.doubleValue();
 			_sectionTailMidLowerToTotalHeightRatio      = _sectionCylinderLowerToTotalHeightRatio.doubleValue();
