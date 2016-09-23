@@ -52,7 +52,7 @@ public class InputOutputTree {
 
 
 	private List<Double> maximumliftCoefficientDistribution,
-	yAdimensionalStationInput;
+	yAdimensionalStationInput, cl0Distribution, clAlphaDistribution;
 
 
 	// OUTPUT 

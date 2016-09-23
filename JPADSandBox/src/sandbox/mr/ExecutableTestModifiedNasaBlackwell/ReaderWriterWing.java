@@ -266,11 +266,12 @@ public class ReaderWriterWing {
 					
 					double alphaInitialAirfoilArray, alphaFinalAirfoilArray;
 					double [] alphaArray= null, clArray = null;
+					double clAlphaTemp = 0;
+					
+					clAlphaTemp = (input.getClAirfoils().get(i).get(1)-input.getClAirfoils().get(i).get(0))/
+							(input.getAlphaAirfoils().get(i).get(1).getEstimatedValue()-input.getAlphaAirfoils().get(i).get(0).getEstimatedValue());
 					
 					if (appNegValues==0.0){
-						
-						double clAlphaTemp = (input.getClAirfoils().get(i).get(1)-input.getClAirfoils().get(i).get(0))/
-								(input.getAlphaAirfoils().get(i).get(1).getEstimatedValue()-input.getAlphaAirfoils().get(i).get(0).getEstimatedValue());
 						
 						double alphaZeroLiftTemp = (clAlphaTemp*input.getAlphaAirfoils().get(i).get(0).getEstimatedValue()-input.getClAirfoils().get(i).get(0))/clAlphaTemp;
 						
@@ -289,10 +290,10 @@ public class ReaderWriterWing {
 					clArray = MyArrayUtils.convertToDoublePrimitive(MyMathUtils.getInterpolatedValue1DLinear(MyArrayUtils.convertListOfAmountodoubleArrayAngle(input.getAlphaAirfoils().get(i)), 
 							MyArrayUtils.convertListTodoubleArray(input.getClAirfoils().get(i)), alphaArray));
 					
-//					System.out.println(" alpha array " + Arrays.toString(MyArrayUtils.convertListOfAmountodoubleArrayAngle(input.getAlphaAirfoils().get(i))));
-//					System.out.println(" alpha new " + Arrays.toString(alphaArray));
-//					System.out.println(" cl array  " + Arrays.toString(clArray));
-				// find alpha zero lit, alpha star, cl max
+					System.out.println(" alpha array " + Arrays.toString(MyArrayUtils.convertListOfAmountodoubleArrayAngle(input.getAlphaAirfoils().get(i))));
+					System.out.println(" alpha new " + Arrays.toString(alphaArray));
+					System.out.println(" cl array  " + Arrays.toString(clArray));
+				    // find alpha zero lit, alpha star, cl max
 					
 					// cl max
 					
@@ -318,14 +319,24 @@ public class ReaderWriterWing {
 							  numTempAlpha = alphaArray[iii];
 							  position = iii;		
 					  }}
+					  System.out.println(" cl array " + Arrays.toString(clArray));
+					  System.out.println(" position " + position);
 					  double clZeroArray = clArray[position];
+					  System.out.println(" alpha zero " + numTempAlpha);
+					  System.out.println(" cl zero " + clZeroArray);
+					  System.out.println(" position " + position);
+					  				  
+//					  double clAlphaArray = (clArray[pos + 1]- clArray[pos])/(alphaArray[pos+1] - alphaArray[pos]);
+					  double clAlphaArray = clAlphaTemp;
 					  
-					  double clAlphaArray = (clArray[pos + 3]- clArray[pos])/(alphaArray[pos+3] - alphaArray[pos]);
+					  System.out.println(" cl alpha " + clAlphaArray);
+					  System.out.println(" pos " + pos);
+					  int posStar = position;
 					  
-					  int posStar = pos;
+					  double clLinear;
 					  
-					  for (int j=pos; j<clArray.length; j++){
-						  double clLinear = clAlphaArray*alphaArray[j] + clZeroArray;
+					  for (int j=position; j<clArray.length; j++){
+						  clLinear = clAlphaArray*alphaArray[j] + clZeroArray;
 						  if( Math.abs(clArray[j] - clLinear) < 0.01){
 							 posStar = posStar+1;	 
 						  }
@@ -410,20 +421,20 @@ public class ReaderWriterWing {
 		for(int i=0; i<input.getDihedralDistribution().size(); i++)
 			System.out.print("  " +input.getDihedralDistribution().get(i).getEstimatedValue()+ " ");
 			System.out.println("] " + input.getDihedralDistribution().get(0).getUnit() );
-
-			
+	
 		System.out.print("Alpha zero lift distribution : [");
 		for(int i=0; i<input.getAlphaZeroLiftDistribution().size(); i++)
 			System.out.print("  " +input.getAlphaZeroLiftDistribution().get(i).getEstimatedValue()+ " ");
 			System.out.println("] " + input.getAlphaZeroLiftDistribution().get(0).getUnit() );
 			
-//		System.out.print("Alpha Star distribution: [");
-//		for(int i=0; i<input.getAlphaStarDistribution().size(); i++)
-//			System.out.print("  " +input.getAlphaStarDistribution().get(i).getEstimatedValue()+ " ");
-//			System.out.println("] " + input.getAlphaStarDistribution().get(0).getUnit() );	
+		System.out.print("Alpha Star distribution: [");
+		for(int i=0; i<input.getAlphaStarDistribution().size(); i++)
+			System.out.print("  " +input.getAlphaStarDistribution().get(i).getEstimatedValue()+ " ");
+			System.out.println("] " + input.getAlphaStarDistribution().get(0).getUnit() );	
 			
 		System.out.print("Cl max distribution : ");
 			System.out.print(input.getMaximumliftCoefficientDistribution());
+			
 
 	
 	}

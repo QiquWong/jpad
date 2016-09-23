@@ -171,8 +171,8 @@ public final class MyArrayUtils {
 	}
 
 	public static double getMax(double[] d) {
-		MathArrays.sortInPlace(d);
-		return d[d.length-1];
+		int max = getIndexOfMax(d);
+		return d[max];
 	}
 
 	public static double getMin(double[] d) {
