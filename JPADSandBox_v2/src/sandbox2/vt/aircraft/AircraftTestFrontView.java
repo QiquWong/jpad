@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
 import javax.measure.unit.SI;
 
@@ -126,24 +127,47 @@ public class AircraftTestFrontView extends Application {
 			wingThicknessZCoordinates.add(
 					Amount.valueOf(
 							wing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)*
-							MyArrayUtils.getMax(wing.getAirfoilList().get(i).getGeometry().get_zCoords()),
+							MyArrayUtils.getMax(wing.getAirfoilList().get(i).getGeometry().getZCoords()),
 							SI.METER
 							)
 					);
-		for(int i=0; i<nYPointsWingTemp; i++)
+		for(int i=0; i<nYPointsWingTemp; i++) {
 			wingThicknessZCoordinates.add(
 					Amount.valueOf(
-							wing.getLiftingSurfaceCreator().getChordsBreakPoints().get(nYPointsWingTemp-i-1).doubleValue(SI.METER)*
-							MyArrayUtils.getMin(wing.getAirfoilList().get(nYPointsWingTemp-i-1).getGeometry().get_zCoords()),
+							(wing.getLiftingSurfaceCreator().getChordsBreakPoints().get(nYPointsWingTemp-i-1).doubleValue(SI.METER)*
+									MyArrayUtils.getMin(wing.getAirfoilList().get(nYPointsWingTemp-i-1).getGeometry().getZCoords())),
 							SI.METER
 							)
 					);
+		}
+		
+		List<Amount<Angle>> dihedralList = new ArrayList<>();
+		for (int i = 0; i < wing.getLiftingSurfaceCreator().getDihedralsBreakPoints().size(); i++) {
+			dihedralList.add(
+					wing.getLiftingSurfaceCreator().getDihedralsBreakPoints().get(i)
+					);
+		}
+		for (int i = 0; i < wing.getLiftingSurfaceCreator().getDihedralsBreakPoints().size(); i++) {
+			dihedralList.add(
+					wing.getLiftingSurfaceCreator().getDihedralsBreakPoints().get(
+							wing.getLiftingSurfaceCreator().getDihedralsBreakPoints().size()-1-i)
+					);
+		}
+		
+		System.out.println("Dihedral breakpoints : " + dihedralList);
 		
 		Double[][] dataFrontViewWing = new Double[nYPointsWing][2];
 		IntStream.range(0, nYPointsWing)
 		.forEach(i -> {
 			dataFrontViewWing[i][0] = wingBreakPointsYCoordinates.get(i).plus(wing.getYApexConstructionAxes()).doubleValue(SI.METRE);
-			dataFrontViewWing[i][1] = wingThicknessZCoordinates.get(i).plus(wing.getZApexConstructionAxes()).doubleValue(SI.METRE);
+			dataFrontViewWing[i][1] = wingThicknessZCoordinates.get(i)
+					.plus(wing.getZApexConstructionAxes())
+						.plus(wingBreakPointsYCoordinates.get(i)
+										.times(Math.sin(dihedralList.get(i)
+												.doubleValue(SI.RADIAN))
+												)
+										)
+							.doubleValue(SI.METRE);
 		});
 		
 		Double[][] dataFrontViewWingMirrored = new Double[nYPointsWing][2];
@@ -167,7 +191,7 @@ public class AircraftTestFrontView extends Application {
 			hTailThicknessZCoordinates.add(
 					Amount.valueOf(
 							hTail.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)*
-							MyArrayUtils.getMax(hTail.getAirfoilList().get(i).getGeometry().get_zCoords()),
+							MyArrayUtils.getMax(hTail.getAirfoilList().get(i).getGeometry().getZCoords()),
 							SI.METER
 							)
 					);
@@ -175,16 +199,36 @@ public class AircraftTestFrontView extends Application {
 			hTailThicknessZCoordinates.add(
 					Amount.valueOf(
 							hTail.getLiftingSurfaceCreator().getChordsBreakPoints().get(nYPointsHTailTemp-i-1).doubleValue(SI.METER)*
-							MyArrayUtils.getMin(hTail.getAirfoilList().get(nYPointsHTailTemp-i-1).getGeometry().get_zCoords()),
+							MyArrayUtils.getMin(hTail.getAirfoilList().get(nYPointsHTailTemp-i-1).getGeometry().getZCoords()),
 							SI.METER
 							)
 					);
+		
+		List<Amount<Angle>> dihedralListHTail = new ArrayList<>();
+		for (int i = 0; i < hTail.getLiftingSurfaceCreator().getDihedralsBreakPoints().size(); i++) {
+			dihedralListHTail.add(
+					hTail.getLiftingSurfaceCreator().getDihedralsBreakPoints().get(i)
+					);
+		}
+		for (int i = 0; i < hTail.getLiftingSurfaceCreator().getDihedralsBreakPoints().size(); i++) {
+			dihedralListHTail.add(
+					hTail.getLiftingSurfaceCreator().getDihedralsBreakPoints().get(
+							hTail.getLiftingSurfaceCreator().getDihedralsBreakPoints().size()-1-i)
+					);
+		}
 		
 		Double[][] dataFrontViewHTail = new Double[nYPointsHTail][2];
 		IntStream.range(0, nYPointsHTail)
 		.forEach(i -> {
 			dataFrontViewHTail[i][0] = hTailBreakPointsYCoordinates.get(i).plus(hTail.getYApexConstructionAxes()).doubleValue(SI.METRE);
-			dataFrontViewHTail[i][1] = hTailThicknessZCoordinates.get(i).plus(hTail.getZApexConstructionAxes()).doubleValue(SI.METRE);
+			dataFrontViewHTail[i][1] = hTailThicknessZCoordinates.get(i)
+					.plus(hTail.getZApexConstructionAxes())
+					.plus(hTailBreakPointsYCoordinates.get(i)
+									.times(Math.sin(dihedralListHTail.get(i)
+											.doubleValue(SI.RADIAN))
+											)
+									)
+						.doubleValue(SI.METRE);
 		});
 		
 		Double[][] dataFrontViewHTailMirrored = new Double[nYPointsHTail][2];
@@ -208,7 +252,7 @@ public class AircraftTestFrontView extends Application {
 			vTailThicknessZCoordinates.add(
 					Amount.valueOf(
 							vTail.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)*
-							MyArrayUtils.getMax(vTail.getAirfoilList().get(i).getGeometry().get_zCoords()),
+							MyArrayUtils.getMax(vTail.getAirfoilList().get(i).getGeometry().getZCoords()),
 							SI.METER
 							)
 					);
@@ -216,7 +260,7 @@ public class AircraftTestFrontView extends Application {
 			vTailThicknessZCoordinates.add(
 					Amount.valueOf(
 							vTail.getLiftingSurfaceCreator().getChordsBreakPoints().get(nYPointsVTailTemp-i-1).doubleValue(SI.METER)*
-							MyArrayUtils.getMin(vTail.getAirfoilList().get(nYPointsVTailTemp-i-1).getGeometry().get_zCoords()),
+							MyArrayUtils.getMin(vTail.getAirfoilList().get(nYPointsVTailTemp-i-1).getGeometry().getZCoords()),
 							SI.METER
 							)
 					);
@@ -285,12 +329,12 @@ public class AircraftTestFrontView extends Application {
 		listDataArrayFrontView.add(dataFrontViewHTailMirrored);
 		// vTail
 		listDataArrayFrontView.add(dataFrontViewVTail);
-		// fuselage
-		listDataArrayFrontView.add(dataSectionYZUpperCurve);
-		listDataArrayFrontView.add(dataSectionYZLowerCurve);
 		// wing
 		listDataArrayFrontView.add(dataFrontViewWing);
 		listDataArrayFrontView.add(dataFrontViewWingMirrored);
+		// fuselage
+		listDataArrayFrontView.add(dataSectionYZUpperCurve);
+		listDataArrayFrontView.add(dataSectionYZLowerCurve);
 		// nacelles
 		for (int i=0; i<nacellePointsList.size(); i++)
 			listDataArrayFrontView.add(nacellePointsList.get(i));
@@ -352,7 +396,7 @@ public class AircraftTestFrontView extends Application {
 						"fill:none; stroke:black; stroke-width:2"
 						)
 				.plotAreas(true,true,true,true,true,true,true,true,true,true)
-				.areaStyles("fill:blue;","fill:blue;","fill:yellow;","fill:white;","fill:white;","fill:lightblue;","fill:lightblue;",
+				.areaStyles("fill:blue;","fill:blue;","fill:yellow;","fill:lightblue;","fill:lightblue;","fill:white;","fill:white;",
 						"fill:orange;","fill:orange;")
 				.areaOpacities(1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0)
 				.showLegend(false)
@@ -443,9 +487,6 @@ public class AircraftTestFrontView extends Application {
 			
 			String dirCabinConfiguration = va.getCabinConfigurationDirectory().getCanonicalPath();
 			System.out.println("CABIN CONFIGURATIONS ===> " + dirCabinConfiguration);
-			
-			String dirCosts = va.getCostsDirectory().getCanonicalPath();
-			System.out.println("COSTS ===> " + dirCosts);
 			
 			System.out.println("--------------");
 

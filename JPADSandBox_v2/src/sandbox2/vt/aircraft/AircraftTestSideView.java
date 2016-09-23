@@ -418,9 +418,6 @@ public class AircraftTestSideView extends Application {
 			String dirCabinConfiguration = va.getCabinConfigurationDirectory().getCanonicalPath();
 			System.out.println("CABIN CONFIGURATIONS ===> " + dirCabinConfiguration);
 			
-			String dirCosts = va.getCostsDirectory().getCanonicalPath();
-			System.out.println("COSTS ===> " + dirCosts);
-			
 			System.out.println("--------------");
 
 			//------------------------------------------------------------------------------------
@@ -434,26 +431,26 @@ public class AircraftTestSideView extends Application {
 			HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
 			
 			// default Aircraft ATR-72 ...
-			theAircraft = new Aircraft.AircraftBuilder(
-					"ATR-72",
-					AircraftEnum.ATR72,
-					aeroDatabaseReader,
-					highLiftDatabaseReader
-					).build();
+//			theAircraft = new Aircraft.AircraftBuilder(
+//					"ATR-72",
+//					AircraftEnum.ATR72,
+//					aeroDatabaseReader,
+//					highLiftDatabaseReader
+//					).build();
 
 			// reading aircraft from xml ...
-//			theAircraft = Aircraft.importFromXML(
-//					pathToXML,
-//					dirLiftingSurfaces,
-//					dirFuselages,
-//					dirEngines,
-//					dirNacelles,
-//					dirLandingGears,
-//					dirSystems,
-//					dirCabinConfiguration,
-//					dirAirfoil,
-//					aeroDatabaseReader,
-//					highLiftDatabaseReader);
+			theAircraft = Aircraft.importFromXML(
+					pathToXML,
+					dirLiftingSurfaces,
+					dirFuselages,
+					dirEngines,
+					dirNacelles,
+					dirLandingGears,
+					dirSystems,
+					dirCabinConfiguration,
+					dirAirfoil,
+					aeroDatabaseReader,
+					highLiftDatabaseReader);
 			
 			System.out.println("The Aircaraft ...");
 			System.out.println(AircraftTestSideView.theAircraft.toString());

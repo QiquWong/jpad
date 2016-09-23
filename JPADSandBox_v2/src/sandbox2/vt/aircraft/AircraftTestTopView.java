@@ -73,10 +73,6 @@ class MyArgumentsAircraft {
 			usage = "cabin configurations directory path")
 	private File _cabinConfigurationsDirectory;
 	
-	@Option(name = "-dc", aliases = { "--dir-costs" }, required = true,
-			usage = "costs directory path")
-	private File _costsDirectory;
-	
 	// receives other command line parameters than options
 	@Argument
 	public List<String> arguments = new ArrayList<String>();
@@ -115,10 +111,6 @@ class MyArgumentsAircraft {
 	
 	public File getCabinConfigurationDirectory() {
 		return _cabinConfigurationsDirectory;
-	}
-	
-	public File getCostsDirectory() {
-		return _costsDirectory;
 	}
 }
 	
@@ -347,21 +339,21 @@ public class AircraftTestTopView extends Application {
 
 		List<Double[][]> listDataArrayTopView = new ArrayList<Double[][]>();
 
-		// fuselage
-		listDataArrayTopView.add(dataOutlineXYLeftCurve);
-		listDataArrayTopView.add(dataOutlineXYRightCurve);
+		// wing
+		listDataArrayTopView.add(dataTopView);
+		listDataArrayTopView.add(dataTopViewMirrored);
 		// hTail
 		listDataArrayTopView.add(dataTopViewHTail);
 		listDataArrayTopView.add(dataTopViewMirroredHTail);
+		// fuselage
+		listDataArrayTopView.add(dataOutlineXYLeftCurve);
+		listDataArrayTopView.add(dataOutlineXYRightCurve);
 		// vTail
 		listDataArrayTopView.add(vTailRootAirfoilPoints);
 		listDataArrayTopView.add(vTailTipAirfoilPoints);
 		// nacelles
 		for (int i=0; i<nacellePointsList.size(); i++)
 			listDataArrayTopView.add(nacellePointsList.get(i));
-		// wing
-		listDataArrayTopView.add(dataTopView);
-		listDataArrayTopView.add(dataTopViewMirrored);
 
 		double xMaxTopView = 1.40*fuselage.getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
 		double xMinTopView = -1.40*fuselage.getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
@@ -424,8 +416,8 @@ public class AircraftTestTopView extends Application {
 						"fill:none; stroke:black; stroke-width:2"
 						)
 				.plotAreas(true,true,true,true,true,true,true,true,true,true,true)
-				.areaStyles("fill:white;","fill:white;","fill:blue;","fill:blue;","fill:yellow;","fill:yellow;",
-						"fill:orange;","fill:orange;","fill:lightblue;","fill:lightblue;")
+				.areaStyles("fill:lightblue;","fill:lightblue;","fill:blue;","fill:blue;","fill:white;","fill:white;",
+						"fill:yellow;","fill:yellow;","fill:orange;","fill:orange;")
 				.areaOpacities(1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0)
 				.showLegend(false)
 				.build();
@@ -515,9 +507,6 @@ public class AircraftTestTopView extends Application {
 			String dirCabinConfiguration = va.getCabinConfigurationDirectory().getCanonicalPath();
 			System.out.println("CABIN CONFIGURATIONS ===> " + dirCabinConfiguration);
 			
-			String dirCosts = va.getCostsDirectory().getCanonicalPath();
-			System.out.println("COSTS ===> " + dirCosts);
-			
 			System.out.println("--------------");
 
 			//------------------------------------------------------------------------------------
@@ -531,37 +520,29 @@ public class AircraftTestTopView extends Application {
 			HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
 			
 			// default Aircraft ATR-72 ...
-			theAircraft = new Aircraft.AircraftBuilder(
-					"ATR-72",
-					AircraftEnum.ATR72,
-					aeroDatabaseReader,
-					highLiftDatabaseReader
-					).build();
+//			theAircraft = new Aircraft.AircraftBuilder(
+//					"ATR-72",
+//					AircraftEnum.ATR72,
+//					aeroDatabaseReader,
+//					highLiftDatabaseReader
+//					).build();
 
 			// reading aircraft from xml ...
-//			theAircraft = Aircraft.importFromXML(
-//					pathToXML,
-//					dirLiftingSurfaces,
-//					dirFuselages,
-//					dirEngines,
-//					dirNacelles,
-//					dirLandingGears,
-//					dirSystems,
-//					dirCabinConfiguration,
-//					dirAirfoil,
-//					aeroDatabaseReader,
-//					highLiftDatabaseReader);
+			theAircraft = Aircraft.importFromXML(
+					pathToXML,
+					dirLiftingSurfaces,
+					dirFuselages,
+					dirEngines,
+					dirNacelles,
+					dirLandingGears,
+					dirSystems,
+					dirCabinConfiguration,
+					dirAirfoil,
+					aeroDatabaseReader,
+					highLiftDatabaseReader);
 			
 			System.out.println("The Aircaraft ...");
 			System.out.println(AircraftTestTopView.theAircraft.toString());
-			
-//			double deltaCD0 = DragCalc.calculateDeltaCD0LandingGears(
-//					theAircraft.getWing(),
-//					theAircraft.getLandingGears(),
-//					1.05,
-//					0.3213
-//					);
-//			System.out.println("\n\tdeltaCD0L_LG = " + deltaCD0 + "\n\n");
 			
 		} catch (CmdLineException | IOException e) {
 			System.err.println("Error: " + e.getMessage());

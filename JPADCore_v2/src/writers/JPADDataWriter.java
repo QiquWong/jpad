@@ -1117,7 +1117,7 @@ public class JPADDataWriter {
 		writeInputNode("Thickness_to_chord_ratio_max", airfoil.getGeometry().get_maximumThicknessOverChord(), geometry, true);
 		writeInputNode("Xcoordinate", airfoil.getGeometry().get_xCoords(), geometry, true);
 		//		writeNode("Ycoordinate", geometry, airfoil.getGeometry().get_yCoords(), true);
-		writeInputNode("Zcoordinate", airfoil.getGeometry().get_zCoords(), geometry, true);
+		writeInputNode("Zcoordinate", airfoil.getGeometry().getZCoords(), geometry, true);
 
 
 		Element aerodynamics = addElementToSubElement(JPADGlobalData.getTheXmlTree().getDescription(airfoil.getAerodynamics()), airfoilParam);
