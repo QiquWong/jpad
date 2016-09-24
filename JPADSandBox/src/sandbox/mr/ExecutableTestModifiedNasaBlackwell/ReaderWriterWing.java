@@ -29,9 +29,8 @@ import writers.JPADStaticWriteUtils;
 
 public class ReaderWriterWing {
 	
-	static InputOutputTree input = new InputOutputTree();
 
-	public void importFromXML(String pathToXML, String databaseFolderPath, String aerodynamicDatabaseFileName) throws ParserConfigurationException {
+	public void importFromXML(String pathToXML, String databaseFolderPath, String aerodynamicDatabaseFileName, InputOutputTree input) throws ParserConfigurationException {
 
 
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
@@ -47,7 +46,6 @@ public class ReaderWriterWing {
 
 		//---------------------------------------------------------------------------------
 		// OPERATING CONDITION:
-		
 		
 		Amount<Length> altitude = reader.getXMLAmountWithUnitByPath("//altitude").to(SI.METER);
 		input.setAltitude(altitude);
@@ -134,8 +132,7 @@ public class ReaderWriterWing {
 				
 				
 		double sharpnessParameterLE = aeroDatabaseReader.getDeltaYvsThickness(input.getMeanThickness(), airfoilFamilyIndex);
-				
-					
+									
 		List<String> chordDistribution = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//chord_distribution").get(0));
 		for(int i=0; i<chordDistribution.size(); i++)
 			input.getChordDistribution().add(Amount.valueOf(Double.valueOf(chordDistribution.get(i)), SI.METER));
@@ -143,7 +140,6 @@ public class ReaderWriterWing {
 		List<String> yAdimensionalStationIput = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//y_adimensional_stations").get(0));
 		for(int i=0; i<yAdimensionalStationIput.size(); i++)
 			input.getyAdimensionalStationInput().add(Double.valueOf(yAdimensionalStationIput.get(i)));
-	
 		
 		List<String> xleDistribution = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//x_le_distribution").get(0));
 		for(int i=0; i<xleDistribution.size(); i++)
@@ -176,10 +172,18 @@ public class ReaderWriterWing {
 				for(int i=0; i<alphaStarDistribution.size(); i++)
 					input.getAlphaStarDistribution().add(Amount.valueOf(Double.valueOf(alphaStarDistribution.get(i)), NonSI.DEGREE_ANGLE));
 				
+				List<String> alphaStallDistribution = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//alpha_stall_distribution").get(0));
+				for(int i=0; i<alphaStallDistribution.size(); i++)
+					input.getAlphaStallDistribution().add(Amount.valueOf(Double.valueOf(alphaStallDistribution.get(i)), NonSI.DEGREE_ANGLE));
+				
 				List<String> clMaxDistribution = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//maximum_lift_coefficient_distribution").get(0));
 				for(int i=0; i<clMaxDistribution.size(); i++)
 					input.getMaximumliftCoefficientDistribution().add(Double.valueOf(clMaxDistribution.get(i)));
 				
+				List<String> clAlphaDistribution = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//linear_slope_coefficient").get(0));
+				for(int i=0; i<clAlphaDistribution.size(); i++)
+					input.getClAlphaDistribution().add(Double.valueOf(clAlphaDistribution.get(i)));
+
 				// WARNINGS
 				
 				if ( input.getNumberOfSections() != input.getChordDistribution().size()){
@@ -211,13 +215,28 @@ public class ReaderWriterWing {
 					 System.err.println("WARNING! the number of declared section differs from the number of end of linearity angles. ( number of section = " + input.getNumberOfSections()
 					 + " ; number of end of linearity angles = " + input.getAlphaStarDistribution().size()+ " )");
 				}
-				
-				
+					
 				if ( input.getNumberOfSections() != input.getMaximumliftCoefficientDistribution().size()){
 					 System.err.println("WARNING! the number of declared section differs from the number of cl max. ( number of section = " + input.getNumberOfSections()
 					 + " ; number of cl max = " + input.getMaximumliftCoefficientDistribution().size()+ " )");
 				}
 				
+				if ( input.getNumberOfSections() != input.getAlphaStallDistribution().size()){
+					 System.err.println("WARNING! the number of declared section differs from the number of alpha stall. ( number of section = " + input.getNumberOfSections()
+					 + " ; number of alpha stall = " + input.getAlphaStallDistribution().size()+ " )");
+				}
+				
+				if ( input.getNumberOfSections() != input.getClAlphaDistribution().size()){
+					 System.err.println("WARNING! the number of declared section differs from the number of cl alpha. ( number of section = " + input.getNumberOfSections()
+					 + " ; number of cl alpha  = " + input.getClAlphaDistribution().size()+ " )");
+				}
+				
+		
+			
+			// Built of interpolated curve---------------------------------------------------------------------
+			for (int i=0; i<input.getNumberOfSections(); i++)
+			Calculator.calculateClvsAlphaAirfoil(input, i);
+			
 			}
 			
 		  // COMPLETE CURVE-------------------------------------------------------------------------------------------------	
@@ -249,11 +268,10 @@ public class ReaderWriterWing {
 				}
 					
 				
-				// Built of interpolated curve
+				// Built of interpolated curve---------------------------------------------------------------------
 				
-				int numberOfPoint = 100;
-				
-				
+				int numberOfPoint = input.getNumberOfPoint2DCurve();
+						
 				for ( int i=0; i<input.getNumberOfSections(); i++){
 					
 					double appNegValues = 0.0;
@@ -265,7 +283,7 @@ public class ReaderWriterWing {
 					}
 					
 					double alphaInitialAirfoilArray, alphaFinalAirfoilArray;
-					double [] alphaArray= null, clArray = null;
+					double [] alphaArrayCompleteCurve= null, clArrayCompleteCurve = null;
 					double clAlphaTemp = 0;
 					
 					clAlphaTemp = (input.getClAirfoils().get(i).get(1)-input.getClAirfoils().get(i).get(0))/
@@ -285,43 +303,44 @@ public class ReaderWriterWing {
 					// INTERPOLATED VALUE ARRAYS
 					
 					System.out.println("\n cl airfoil " + Arrays.toString(MyArrayUtils.convertListTodoubleArray(input.getClAirfoils().get(i))));
-					alphaArray = MyArrayUtils.linspace(alphaInitialAirfoilArray, alphaFinalAirfoilArray, numberOfPoint);
-					input.getAlphaAirfoilsInterpolated().add(i, alphaArray);
-					clArray = MyArrayUtils.convertToDoublePrimitive(MyMathUtils.getInterpolatedValue1DLinear(MyArrayUtils.convertListOfAmountodoubleArrayAngle(input.getAlphaAirfoils().get(i)), 
-							MyArrayUtils.convertListTodoubleArray(input.getClAirfoils().get(i)), alphaArray));
+					alphaArrayCompleteCurve = MyArrayUtils.linspace(alphaInitialAirfoilArray, alphaFinalAirfoilArray, numberOfPoint);
+					input.getAlphaArrayCompleteCurveAirfoil().add(i,alphaArrayCompleteCurve);
+					clArrayCompleteCurve = MyArrayUtils.convertToDoublePrimitive(MyMathUtils.getInterpolatedValue1DLinear(MyArrayUtils.convertListOfAmountodoubleArrayAngle(input.getAlphaAirfoils().get(i)), 
+							MyArrayUtils.convertListTodoubleArray(input.getClAirfoils().get(i)), alphaArrayCompleteCurve));
+					input.getClArrayCompleteCurveAirfoil().add(i,clArrayCompleteCurve);
 					
 					System.out.println(" alpha array " + Arrays.toString(MyArrayUtils.convertListOfAmountodoubleArrayAngle(input.getAlphaAirfoils().get(i))));
-					System.out.println(" alpha new " + Arrays.toString(alphaArray));
-					System.out.println(" cl array  " + Arrays.toString(clArray));
+					System.out.println(" alpha new " + Arrays.toString(alphaArrayCompleteCurve));
+					System.out.println(" cl array  " + Arrays.toString(clArrayCompleteCurve));
 				    // find alpha zero lit, alpha star, cl max
 					
 					// cl max
 					
-					input.getMaximumliftCoefficientDistribution().add(i, MyArrayUtils.getMax(clArray));
+					input.getMaximumliftCoefficientDistribution().add(i, MyArrayUtils.getMax(clArrayCompleteCurve));
 					
 					// alpha zero lift
-					double numTemp = clArray[0];
+					double numTemp = clArrayCompleteCurve[0];
 					int pos = 0;
-					for (int ii=0; ii<clArray.length; ii++){
-						if(Math.abs(clArray[ii])<Math.abs(numTemp)){
-							numTemp = clArray[ii];
+					for (int ii=0; ii<clArrayCompleteCurve.length; ii++){
+						if(Math.abs(clArrayCompleteCurve[ii])<Math.abs(numTemp)){
+							numTemp = clArrayCompleteCurve[ii];
 							pos = ii;		
 					}}
 					
-					input.getAlphaZeroLiftDistribution().add(i, Amount.valueOf(alphaArray[pos], NonSI.DEGREE_ANGLE));
+					input.getAlphaZeroLiftDistribution().add(i, Amount.valueOf(alphaArrayCompleteCurve[pos], NonSI.DEGREE_ANGLE));
 				
 					// alpha star 
 					  // cl0
-					  double numTempAlpha = alphaArray[0];
+					  double numTempAlpha = alphaArrayCompleteCurve[0];
 					  int position = 0;
-					  for (int iii=0; iii<alphaArray.length; iii++){
-						  if(Math.abs(alphaArray[iii])<Math.abs(numTempAlpha)){
-							  numTempAlpha = alphaArray[iii];
+					  for (int iii=0; iii<alphaArrayCompleteCurve.length; iii++){
+						  if(Math.abs(alphaArrayCompleteCurve[iii])<Math.abs(numTempAlpha)){
+							  numTempAlpha = alphaArrayCompleteCurve[iii];
 							  position = iii;		
 					  }}
-					  System.out.println(" cl array " + Arrays.toString(clArray));
+					  System.out.println(" cl array " + Arrays.toString(clArrayCompleteCurve));
 					  System.out.println(" position " + position);
-					  double clZeroArray = clArray[position];
+					  double clZeroArray = clArrayCompleteCurve[position];
 					  System.out.println(" alpha zero " + numTempAlpha);
 					  System.out.println(" cl zero " + clZeroArray);
 					  System.out.println(" position " + position);
@@ -335,13 +354,13 @@ public class ReaderWriterWing {
 					  
 					  double clLinear;
 					  
-					  for (int j=position; j<clArray.length; j++){
-						  clLinear = clAlphaArray*alphaArray[j] + clZeroArray;
-						  if( Math.abs(clArray[j] - clLinear) < 0.01){
+					  for (int j=position; j<clArrayCompleteCurve.length; j++){
+						  clLinear = clAlphaArray*alphaArrayCompleteCurve[j] + clZeroArray;
+						  if( Math.abs(clArrayCompleteCurve[j] - clLinear) < 0.01){
 							 posStar = posStar+1;	 
 						  }
 					  }					
-					  input.getAlphaStarDistribution().add(i, Amount.valueOf(alphaArray[posStar], NonSI.DEGREE_ANGLE));
+					  input.getAlphaStarDistribution().add(i, Amount.valueOf(alphaArrayCompleteCurve[posStar], NonSI.DEGREE_ANGLE));
 					
 				}
 				
@@ -374,7 +393,6 @@ public class ReaderWriterWing {
 		
 //	 PRINT
 //		
-
 		System.out.println("\n\nINPUT DATA\n\n");
 		
 		System.out.println("Operating Conditions");
@@ -435,11 +453,23 @@ public class ReaderWriterWing {
 		System.out.print("Cl max distribution : ");
 			System.out.print(input.getMaximumliftCoefficientDistribution());
 			
-
-	
+			System.out.println("\n AIRFOIL COMPLETE CURVE ");
+			for(int i=0; i<input.getNumberOfSections(); i++)
+				System.out.print(Arrays.toString(input.getClArrayCompleteCurveAirfoil().get(i)) + "\n");
+			
+			System.out.println("\n ALPHAS");
+			for(int i=0; i<input.getNumberOfSections(); i++)
+				System.out.print(Arrays.toString(input.getAlphaArrayCompleteCurveAirfoil().get(i)) + "\n");
+			
+//		System.out.print("Alpha Stall distribution: [");
+//			for(int i=0; i<input.getAlphaStallDistribution().size(); i++)
+//				System.out.print("  " +input.getAlphaStallDistribution().get(i).getEstimatedValue()+ " ");
+//				System.out.println("] " + input.getAlphaStallDistribution().get(0).getUnit() );	
+					
+				
 	}
 	
-	public static void writeToXML(String filenameWithPathAndExt) {
+	public static void writeToXML(String filenameWithPathAndExt, InputOutputTree input) {
 		
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 		
@@ -447,7 +477,7 @@ public class ReaderWriterWing {
 			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 			Document doc = docBuilder.newDocument();
 			
-			defineXmlTree(doc, docBuilder);
+			defineXmlTree(doc, docBuilder, input);
 			
 			JPADStaticWriteUtils.writeDocumentToXml(doc, filenameWithPathAndExt);
 
@@ -457,7 +487,7 @@ public class ReaderWriterWing {
 	}
 	
 	
-	private static void defineXmlTree(Document doc, DocumentBuilder docBuilder) {
+	private static void defineXmlTree(Document doc, DocumentBuilder docBuilder, InputOutputTree input) {
 		
 		org.w3c.dom.Element rootElement = doc.createElement("Wing_aerodynamic_executable");
 		doc.appendChild(rootElement);
@@ -550,11 +580,5 @@ public class ReaderWriterWing {
 		}
 	}
 
-	public InputOutputTree getInput() {
-		return input;
-	}
 
-	public void setInput(InputOutputTree input) {
-		this.input = input;
-	}
 }

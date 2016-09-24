@@ -36,7 +36,8 @@ public class InputOutputTree {
 
 	private int numberOfAlpha,
 	numberOfPointSemispan,
-	numberOfSections;
+	numberOfSections,
+	numberOfPoint2DCurve;
 
 	private AirfoilFamilyEnum meanAirfoilFamily;
 	private List<Amount> chordDistribution,
@@ -44,7 +45,8 @@ public class InputOutputTree {
 	dihedralDistribution,
 	twistDistribution,
 	alphaZeroLiftDistribution,
-	alphaStarDistribution;
+	alphaStarDistribution,
+	alphaStallDistribution;
 	
 	private List<List<Amount<Angle>>> alphaAirfoils;
 	private List<List<Double>> clAirfoils;
@@ -54,6 +56,9 @@ public class InputOutputTree {
 	private List<Double> maximumliftCoefficientDistribution,
 	yAdimensionalStationInput, cl0Distribution, clAlphaDistribution;
 
+	// Complete curve of input airfoils
+	List<double[]> alphaArrayCompleteCurveAirfoil;
+    List<double[]> clArrayCompleteCurveAirfoil;
 
 	// OUTPUT 
 
@@ -99,9 +104,12 @@ public class InputOutputTree {
 		twistDistribution = new ArrayList<Amount>();
 
 		alphaZeroLiftDistribution = new ArrayList<Amount>();
+		alphaStallDistribution = new ArrayList<Amount>();
 		alphaStarDistribution = new ArrayList<Amount>();
 		maximumliftCoefficientDistribution = new ArrayList<Double>();
 		yAdimensionalStationInput = new ArrayList<Double>();
+		cl0Distribution = new ArrayList<Double>();
+		clAlphaDistribution = new ArrayList<Double>();
 
 		machNumber = 0.0;
 		aspectRatio = 0.0;
@@ -119,6 +127,11 @@ public class InputOutputTree {
 		clAirfoils = new ArrayList<List<Double>>();
 		alphaAirfoilsInterpolated = new ArrayList<>();
 		cLAirfoilsInterpolated = new ArrayList<>();
+		
+		alphaArrayCompleteCurveAirfoil = new ArrayList<double[]>();
+		clArrayCompleteCurveAirfoil = new ArrayList<double[]>();
+		
+		numberOfPoint2DCurve = 100;
 		
 	}
 
@@ -576,6 +589,66 @@ public class InputOutputTree {
 
 	public void setcLAirfoilsInterpolated(List<double[]> cLAirfoilsInterpolated) {
 		this.cLAirfoilsInterpolated = cLAirfoilsInterpolated;
+	}
+
+
+	public int getNumberOfPoint2DCurve() {
+		return numberOfPoint2DCurve;
+	}
+
+
+	public void setNumberOfPoint2DCurve(int numberOfPoint2DCurve) {
+		this.numberOfPoint2DCurve = numberOfPoint2DCurve;
+	}
+
+
+	public List<Amount> getAlphaStallDistribution() {
+		return alphaStallDistribution;
+	}
+
+
+	public void setAlphaStallDistribution(List<Amount> alphaStallDistribution) {
+		this.alphaStallDistribution = alphaStallDistribution;
+	}
+
+
+	public List<double[]> getAlphaArrayCompleteCurveAirfoil() {
+		return alphaArrayCompleteCurveAirfoil;
+	}
+
+
+	public void setAlphaArrayCompleteCurveAirfoil(List<double[]> alphaArrayCompleteCurveAirfoil) {
+		this.alphaArrayCompleteCurveAirfoil = alphaArrayCompleteCurveAirfoil;
+	}
+
+
+	public List<double[]> getClArrayCompleteCurveAirfoil() {
+		return clArrayCompleteCurveAirfoil;
+	}
+
+
+	public void setClArrayCompleteCurveAirfoil(List<double[]> clArrayCompleteCurveAirfoil) {
+		this.clArrayCompleteCurveAirfoil = clArrayCompleteCurveAirfoil;
+	}
+
+
+	public List<Double> getCl0Distribution() {
+		return cl0Distribution;
+	}
+
+
+	public void setCl0Distribution(List<Double> cl0Distribution) {
+		this.cl0Distribution = cl0Distribution;
+	}
+
+
+	public List<Double> getClAlphaDistribution() {
+		return clAlphaDistribution;
+	}
+
+
+	public void setClAlphaDistribution(List<Double> clAlphaDistribution) {
+		this.clAlphaDistribution = clAlphaDistribution;
 	}
 
 

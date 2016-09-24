@@ -66,10 +66,13 @@ public class Test_Executable_Wing {
 		
 		System.out.println("--------------");
 		
+		InputOutputTree input = new InputOutputTree();
+		
 		ReaderWriterWing theReader = new ReaderWriterWing();
-		theReader.importFromXML(pathToXML,databaseDirectoryAbsolutePath , "Aerodynamic_Database_Ultimate.h5");
+		theReader.importFromXML(pathToXML,databaseDirectoryAbsolutePath , "Aerodynamic_Database_Ultimate.h5", input);
+
 		//WingAerodynamicCalc.calculateAll(theReader.getInput());
-		//theReader.writeToXML(filenameWithPathAndExt);
+		//theReader.writeToXML(filenameWithPathAndExt, input);
 
 	}
 
