@@ -1,5 +1,6 @@
 package standaloneutils.launchers;
 
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -7,13 +8,17 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 public class DummyExternalJob extends AbstractExternalJob {
 
+	public DummyExternalJob(List<String> commandInformation) {
+		super(commandInformation);
+	}
+
+
 	@Override
-	public void run() {
+	public void execute() {
 		// TODO Auto-generated method stub
 		System.out.println("Hello from DummyExternalJob::run");
 		
 	}
-
 
 	@Override
 	public void formCommandLine() {
@@ -28,17 +33,8 @@ public class DummyExternalJob extends AbstractExternalJob {
 		System.out.println("Launch job in a separate thread.");
 		dummyJob.formCommandLine();
 		
-//		Thread t = new Thread(new DummyExternalJob());
-//		t.start();
-//		t.join(); // wait until thread t ends
 		
-		ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);		
-		executor.execute(dummyJob);
-		executor.shutdown();
-		
-		System.out.println("Thread terminated.");
-		
+		System.out.println("Job terminated.");
 		
 	}
-
 }
