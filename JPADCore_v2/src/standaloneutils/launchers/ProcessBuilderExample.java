@@ -20,6 +20,7 @@ public class ProcessBuilderExample
     List<String> commands = new ArrayList<String>();
     commands.add("dir");
     commands.add(".\\src\\standaloneutils\\launchers");
+//    commands.add("--nodosfilewarning");
 //    commands.add("ls -l /var/tmp | grep tmp");
 
     // execute the command
