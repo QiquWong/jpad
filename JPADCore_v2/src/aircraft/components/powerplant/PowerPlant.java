@@ -10,6 +10,7 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
+import org.omg.CORBA._PolicyStub;
 
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
@@ -230,8 +231,19 @@ public class PowerPlant implements IPowerPlant {
 	@Override
 	public CenterOfGravity calculateCG() {
 
-		_totalCG = new CenterOfGravity();		
+		_totalCG = new CenterOfGravity();
+		
+		
 		for(int i=0; i < _engineNumber; i++) {
+			_engineList.get(i).getTheBalance().getCG().setX0(
+					_engineList.get(i).getXApexConstructionAxes()
+					);
+			_engineList.get(i).getTheBalance().getCG().setY0(
+					_engineList.get(i).getYApexConstructionAxes()
+					);
+			_engineList.get(i).getTheBalance().getCG().setZ0(
+					_engineList.get(i).getZApexConstructionAxes()
+					);
 			_engineList.get(i).getTheBalance().calculateAll();
 			_cgList.add(_engineList.get(i).getTheBalance().getCG());
 			_totalCG = _totalCG.plus(_engineList.get(i).getTheBalance().getCG()

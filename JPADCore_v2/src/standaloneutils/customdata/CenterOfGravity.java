@@ -239,7 +239,7 @@ public class CenterOfGravity {
 		return _x0;
 	}
 
-	public void set_x0(Amount<Length> _x0) {
+	public void setX0(Amount<Length> _x0) {
 		this._x0 = _x0;
 	}
 
@@ -247,7 +247,7 @@ public class CenterOfGravity {
 		return _y0;
 	}
 
-	public void set_y0(Amount<Length> _y0) {
+	public void setY0(Amount<Length> _y0) {
 		this._y0 = _y0;
 	}
 
@@ -255,7 +255,7 @@ public class CenterOfGravity {
 		return _z0;
 	}
 
-	public void set_z0(Amount<Length> _z0) {
+	public void setZ0(Amount<Length> _z0) {
 		this._z0 = _z0;
 	}
 

@@ -1295,7 +1295,6 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 				powerPlantTotalMass = powerPlantTotalMass.plus(_enginesMassList.get(i));
 			}
 			_theAircraft.getPowerPlant().setTotalMass(powerPlantTotalMass);
-			
 			_theAircraft.getPowerPlant().calculateCG();
 		}
 
