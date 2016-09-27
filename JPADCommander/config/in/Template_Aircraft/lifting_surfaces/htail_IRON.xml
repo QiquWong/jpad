@@ -6,7 +6,7 @@
 		</global_data>
 		<panels>
             <panel id="Horizontal tail panel">
-                <span unit="m">9.13</span>
+                <span unit="m">4.565</span>
                 <dihedral unit="deg">5.1</dihedral>
                 <sweep_leading_edge unit="deg">10.38</sweep_leading_edge>
                 <inner_section>

@@ -1176,7 +1176,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 			calculateLiftDistribution.getNasaBlackwell().calculate(alpha);
 
-			cLMap.getcXVsAlphaTable().put(MethodEnum.NASA_BLACKWELL, alpha, calculateLiftDistribution.getNasaBlackwell().get_cLCurrent());
+			cLMap.getcXVsAlphaTable().put(MethodEnum.NASA_BLACKWELL, alpha, calculateLiftDistribution.getNasaBlackwell().getCLCurrent());
 			cLMap.getCxyVsAlphaTable().put(MethodEnum.NASA_BLACKWELL, alpha, calculateLiftDistribution.getNasaBlackwell().get_clTotalDistribution().clone());
 			cLMap.getCcxyVsAlphaTable().put(MethodEnum.NASA_BLACKWELL, alpha, calculateLiftDistribution.getNasaBlackwell().get_ccLDistribution().clone());
 

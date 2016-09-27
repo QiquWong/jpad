@@ -8,7 +8,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/JPADConfigs"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/commons-lang/commons-lang3-3.3.2.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/guava/guava-16.0.1.jar"/>
-	<classpathentry kind="var" path="LIBRARY_FOLDER/javafx-d3/javafx-d3.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/javafx-d3/org.treez.core_1.0.0.201602152140.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/javafx-d3/org.treez.data_1.0.0.201602152140.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/javafx-d3/org.treez.javafxd3_1.0.0.201602152140.jar"/>

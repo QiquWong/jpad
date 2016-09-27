@@ -561,7 +561,7 @@ public class NasaBlackwell {
 		return _listControlPoints;
 	}
 
-	public double get_cLCurrent() {
+	public double getCLCurrent() {
 		return _cLCurrent;
 	}
 

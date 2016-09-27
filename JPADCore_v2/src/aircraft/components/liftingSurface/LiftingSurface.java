@@ -50,10 +50,12 @@ public class LiftingSurface implements ILiftingSurface {
 	private String _id = null;
 	private ComponentEnum _type;
 
-	LSAerodynamicsCalculator _theAerodynamicsCalculator;
+	private LiftingSurface _exposedWing;
+	
+	private LSAerodynamicsCalculator _theAerodynamicsCalculator;
 	// THIS HAS TO BE CHANGED IN LSAerodynamicCalculator
-	LSAerodynamicsManager _theAerodynamics;
-	CalcHighLiftDevices _highLiftCalculator;
+	private LSAerodynamicsManager _theAerodynamics;
+	private CalcHighLiftDevices _highLiftCalculator;
 	
 	private Double _positionRelativeToAttachment;
 	private Amount<Length> _xApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
@@ -2050,6 +2052,36 @@ public class LiftingSurface implements ILiftingSurface {
 
 	public void setPercentDifferenceYCG(Double[] _percentDifferenceYCG) {
 		this._percentDifferenceYCG = _percentDifferenceYCG;
+	}
+
+	public LSAerodynamicsManager getTheAerodynamics() {
+		return _theAerodynamics;
+	}
+
+	public void setTheAerodynamics(LSAerodynamicsManager _theAerodynamics) {
+		this._theAerodynamics = _theAerodynamics;
+	}
+
+	public CalcHighLiftDevices getHighLiftCalculator() {
+		return _highLiftCalculator;
+	}
+
+	public void setHighLiftCalculator(CalcHighLiftDevices _highLiftCalculator) {
+		this._highLiftCalculator = _highLiftCalculator;
+	}
+
+	/**
+	 * @return the _exposedWing
+	 */
+	public LiftingSurface getExposedWing() {
+		return _exposedWing;
+	}
+
+	/**
+	 * @param _exposedWing the _exposedWing to set
+	 */
+	public void setExposedWing(LiftingSurface _exposedWing) {
+		this._exposedWing = _exposedWing;
 	}
 	
 }

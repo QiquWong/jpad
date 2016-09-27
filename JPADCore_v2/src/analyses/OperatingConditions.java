@@ -2,6 +2,7 @@ package analyses;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.DynamicViscosity;
@@ -19,10 +20,12 @@ import configuration.MyConfiguration;
 //WARNING: Density is in g/cm3 ( = 1000 kg/m3)
 import jahuwaldt.aero.StdAtmos1976;
 import standaloneutils.JPADXmlReader;
+import standaloneutils.MyArrayUtils;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.PressureCalc;
 import standaloneutils.atmosphere.SpeedCalc;
 import standaloneutils.atmosphere.TemperatureCalc;
+import standaloneutils.customdata.MyArray;
 
 /**
  * Set the aircraft current operating conditions
@@ -164,6 +167,12 @@ public class OperatingConditions implements IOperatingConditions {
 						"//operating_conditions/alpha_array"
 						).get(0)
 				);
+		if(alphaArrayList.size() > 7) {
+			System.err.println("WARNING: ALPHA ARRAY MUST HAVE AT LEAST 7 COMPONENT !!"
+					+ "\n\tONLY THE FIRST SEVEN VALUES WILL BE CONSIDERED.");
+			while (alphaArrayList.size() > 7)
+				alphaArrayList.remove(alphaArrayList.size()-1);
+		}
 		Double[] alphaArray = new Double[alphaArrayList.size()];
 		for(int i=0; i<alphaArrayList.size(); i++)
 			alphaArray[i] = Double.valueOf(alphaArrayList.get(i));

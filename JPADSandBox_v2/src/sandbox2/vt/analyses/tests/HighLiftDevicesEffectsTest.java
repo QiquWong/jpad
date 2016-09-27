@@ -252,7 +252,7 @@ public class HighLiftDevicesEffectsTest extends Application {
 			OperatingConditions theOperatingConditions = OperatingConditions.importFromXML(pathToOperatingConditionsXML);
 
 			// Defining the LSAerodynamicsCalculator object
-			Map <String, MethodEnum> taskMap = new HashMap<>();
+			Map <String, List<MethodEnum>> taskMap = new HashMap<>();
 			LSAerodynamicsCalculator theAerodynamicCalculator = new LSAerodynamicsCalculator(
 					theAircraft.getWing(),
 					theOperatingConditions,

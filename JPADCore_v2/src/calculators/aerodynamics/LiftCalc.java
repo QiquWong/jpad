@@ -257,6 +257,67 @@ public class LiftCalc {
 		return cLclMax*kLS*kLambda*clMax*(1 - kOmega*cLAlpha*(-twist)/clMax);
 	}
 
+	public static double calculateCLAtAlphaNonLinearTrait(
+			Amount<Angle> alphaActual,
+			Amount<?> cLAlpha,
+			double cLStar,
+			Amount<Angle> alphaStar,
+			double cLmax,
+			Amount<Angle> alphaStall
+			) {
+		
+		double cLActual = 0.0;
+			
+		double[][] matrixData = { 
+				{
+					Math.pow(alphaStall.doubleValue(NonSI.DEGREE_ANGLE), 3),
+					Math.pow(alphaStall.doubleValue(NonSI.DEGREE_ANGLE), 2),
+					alphaStall.doubleValue(NonSI.DEGREE_ANGLE),
+					1.0
+				},
+				{
+					3* Math.pow(alphaStall.doubleValue(NonSI.DEGREE_ANGLE), 2),
+					2*alphaStall.doubleValue(NonSI.DEGREE_ANGLE),
+					1.0,
+					0.0
+				},
+				{
+					3* Math.pow(alphaStar.doubleValue(NonSI.DEGREE_ANGLE), 2),
+					2*alphaStar.doubleValue(NonSI.DEGREE_ANGLE),
+					1.0,
+					0.0
+				},
+				{
+					Math.pow(alphaStar.doubleValue(NonSI.DEGREE_ANGLE), 3),
+					Math.pow(alphaStar.doubleValue(NonSI.DEGREE_ANGLE), 2),
+					alphaStar.doubleValue(NonSI.DEGREE_ANGLE),
+					1.0
+				}
+		};
+		RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
+		double [] vector = {
+				cLmax,
+				0,
+				cLAlpha.to(NonSI.DEGREE_ANGLE).inverse().getEstimatedValue(),
+				cLStar
+				};
+
+		double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
+
+		double a = solSystem[0];
+		double b = solSystem[1];
+		double c = solSystem[2];
+		double d = solSystem[3];
+
+		cLActual = 
+				a * Math.pow(alphaActual.doubleValue(NonSI.DEGREE_ANGLE), 3) + 
+				b * Math.pow(alphaActual.doubleValue(NonSI.DEGREE_ANGLE), 2) + 
+				c * alphaActual.doubleValue(NonSI.DEGREE_ANGLE) + 
+				d;
+		
+		return cLActual;
+		
+	}
 
 	public static double[] calculateCLvsAlphaArrayNasaBlackwell(
 			LiftingSurface theLiftingSurface,
@@ -653,7 +714,7 @@ public class LiftCalc {
 		}
 		}
 			theNasaBlackwellCalculator.calculate(alphaAtCLMaX);
-			double cLMaxActual = theNasaBlackwellCalculator.get_cLCurrent();
+			double cLMaxActual = theNasaBlackwellCalculator.getCLCurrent();
 			return cLMaxActual;
 		}
 

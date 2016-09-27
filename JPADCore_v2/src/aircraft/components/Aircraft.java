@@ -654,6 +654,7 @@ public class Aircraft implements IAircraft {
 		updateType();
 		if((this._theFuselage != null) && (this._theWing != null)) { 
 			calculateExposedWing(_theWing, _theFuselage);
+			this._theWing.setExposedWing(this._theExposedWing);
 			this._theWing.getLiftingSurfaceCreator().setSurfaceWettedExposed(
 					this._theExposedWing.getLiftingSurfaceCreator().getSurfaceWetted()
 					);
