@@ -37,6 +37,7 @@ public class Calculator {
 		
 		int nValue = input.getNumberOfPoint2DCurve();
 		double [] clAirfoil = new double [nValue];
+		
 		double alpha;
 		
 		// set value 
