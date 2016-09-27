@@ -131,8 +131,6 @@ public class D3Plotter {
 		if (listDataArray.size() == 0)
 			return;
 
-		System.out.println("D3Plotter :: createD3Content");
-
 		// Get the D3 object
 		d3 = browser.getD3();
 		//		System.out.println("D3 version " + d3.version());
