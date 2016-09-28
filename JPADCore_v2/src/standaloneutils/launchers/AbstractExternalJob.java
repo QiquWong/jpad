@@ -2,7 +2,9 @@ package standaloneutils.launchers;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractExternalJob implements IExternalJob {
 	
@@ -10,8 +12,9 @@ public abstract class AbstractExternalJob implements IExternalJob {
 	protected File inputFile;
 	protected File binDirectory;
 	protected File cacheDirectory;
-	protected String environmentVariables;
 	protected File outputFile;
+	
+	Map<String, String> additionalEnvironment = new HashMap<String, String>();
 	
 	protected List<String> commandInformation = new ArrayList<String>();
 	protected SystemCommandExecutor systemCommandExecutor;
@@ -67,14 +70,6 @@ public abstract class AbstractExternalJob implements IExternalJob {
 	
 	public void setCacheDirectory(File cacheDirectory) {
 		this.cacheDirectory = cacheDirectory;
-	}
-	
-	public String getEnvironmentVariables() {
-		return environmentVariables;
-	}
-	
-	public void setEnvironmentVariables(String environmentVariables) {
-		this.environmentVariables = environmentVariables;
 	}
 	
 	public File getOutputFile() {

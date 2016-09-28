@@ -1,7 +1,9 @@
 package standaloneutils.launchers;
 
 import java.io.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class can be used to execute a system command from a Java application.
@@ -18,6 +20,8 @@ import java.util.List;
  */
 public class SystemCommandExecutor {
 	
+	private ProcessBuilder processBuilder;
+	Map<String, String> environment = new HashMap<String, String>();
 	private List<String> commandInformation;
 	private String adminPassword;
 	private ThreadedStreamHandler inputStreamHandler;
@@ -36,20 +40,28 @@ public class SystemCommandExecutor {
 	 * 
 	 * @param commandInformation The command you want to run.
 	 */
-	public SystemCommandExecutor(final List<String> commandInformation) {
-		if (commandInformation==null) throw new NullPointerException("SystemCommandExecutor :: The commandInformation is required.");
-		this.commandInformation = commandInformation;
+	public SystemCommandExecutor(final List<String> cmdInfo) {
+		if (cmdInfo==null) throw new NullPointerException("SystemCommandExecutor :: The commandInformation is required.");
+		this.commandInformation = cmdInfo;
 		this.adminPassword = null;
+		// Create the process builder at object construction time
+		processBuilder = new ProcessBuilder(commandInformation);
+		environment = processBuilder.environment();
 	}
 
+	public void setEnvironmentVariable(String varName, String value) {
+		if (environment != null) {
+			environment.put(varName, value);
+		}
+	}
+	
 	public int executeCommand() throws IOException, InterruptedException {
 		
 		int exitValue = -99;
 
 		try {
 			
-			ProcessBuilder pb = new ProcessBuilder(commandInformation);
-			Process process = pb.start();
+			Process process = processBuilder.start();
 
 			// you need this if you're going to write something to the command's input stream
 			// (such as when invoking the 'sudo' command, and it prompts you for a password).
@@ -95,6 +107,13 @@ public class SystemCommandExecutor {
 		return exitValue;
 	}
 
+	Map<String, String> getEnvironment() {
+		if (processBuilder != null)
+			return processBuilder.environment();
+		else
+			return null;
+	}
+	
 	/**
 	 * Get the standard output (stdout) from the command you just exec'd.
 	 */
@@ -107,6 +126,10 @@ public class SystemCommandExecutor {
 	 */
 	public StringBuilder getStandardErrorFromCommand() {
 		return errorStreamHandler.getOutputBuffer();
+	}
+
+	public ProcessBuilder getProcessBuilder() {
+		return processBuilder;
 	}
 }
 
