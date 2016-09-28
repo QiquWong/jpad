@@ -46,7 +46,8 @@ public class InputOutputTree {
 	twistDistribution,
 	alphaZeroLiftDistribution,
 	alphaStarDistribution,
-	alphaStallDistribution;
+	alphaStallDistribution,
+	alphaAnalysisValues;
 	
 	private List<List<Amount<Angle>>> alphaAirfoils;
 	private List<List<Double>> clAirfoils;
@@ -106,6 +107,7 @@ public class InputOutputTree {
 		alphaZeroLiftDistribution = new ArrayList<Amount>();
 		alphaStallDistribution = new ArrayList<Amount>();
 		alphaStarDistribution = new ArrayList<Amount>();
+		alphaAnalysisValues = new ArrayList<Amount>();
 		maximumliftCoefficientDistribution = new ArrayList<Double>();
 		yAdimensionalStationInput = new ArrayList<Double>();
 		cl0Distribution = new ArrayList<Double>();
@@ -649,6 +651,16 @@ public class InputOutputTree {
 
 	public void setClAlphaDistribution(List<Double> clAlphaDistribution) {
 		this.clAlphaDistribution = clAlphaDistribution;
+	}
+
+
+	public List<Amount> getAlphaAnalysisValues() {
+		return alphaAnalysisValues;
+	}
+
+
+	public void setAlphaAnalysisValues(List<Amount> alphaAnalysisValues) {
+		this.alphaAnalysisValues = alphaAnalysisValues;
 	}
 
 

@@ -52,15 +52,13 @@ public class ReaderWriterWing {
 	
 		double machNumber =  Double.parseDouble(reader.getXMLPropertiesByPath("//mach_number").get(0));
 		input.setMachNumber(machNumber);
-
-		int numberOfAlpha =  (int)Double.parseDouble(reader.getXMLPropertiesByPath("//number_of_alpha").get(0));
+	
+		List<String> alphaAnalysisArray = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//alpha_array_analysis").get(0));
+		for(int i=0; i<alphaAnalysisArray.size(); i++)
+			input.getAlphaAnalysisValues().add(Amount.valueOf(Double.valueOf(alphaAnalysisArray.get(i)), NonSI.DEGREE_ANGLE));
+		
+		int numberOfAlpha =  alphaAnalysisArray.size();
 		input.setNumberOfAlpha(numberOfAlpha);
-		
-		Amount<Angle> alphaInitial = reader.getXMLAmountWithUnitByPath("//alpha_initial").to(NonSI.DEGREE_ANGLE);
-		input.setAlphaInitial(alphaInitial);
-		
-		Amount<Angle> alphaFinal = reader.getXMLAmountWithUnitByPath("//alpha_final").to(NonSI.DEGREE_ANGLE);
-		input.setAlphaFinal(alphaFinal);
 		
 		
 		//----------------------------------------------------------------------------------

@@ -59,7 +59,6 @@ public class Calculator {
 		alphaArray.linspace(alphaMin, alphaMax, nValue);
 		input.getAlphaArrayCompleteCurveAirfoil().add(numberOfAirfoil, alphaArray.toArray());
 		
-		
 		// built of curve
 		for (int i=0; i<nValue; i++){
 		alpha = alphaArray.get(i);	
@@ -88,4 +87,26 @@ public class Calculator {
 		
 	}
 	
-		}
+	public static  void calculateStallPath(InputOutputTree input, int numberOfAirfoil ){
+		
+		// DATA
+		 int numberOfAlpha = 31;
+		 double alphaInitial = -2.0;
+		 double alphaFinal = 28.0;
+		 
+		 double [] alphaStallPathArray = new double[numberOfAlpha];
+		 
+		 alphaStallPathArray = MyArrayUtils.linspace(alphaInitial, alphaFinal, numberOfAlpha);
+		 
+		 
+		 
+		
+		// output values
+		// These values must to fill the field in output tree
+		
+
+		
+	}
+	}
+	
+		
