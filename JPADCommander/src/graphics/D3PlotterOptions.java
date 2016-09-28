@@ -1,11 +1,11 @@
-package d3plotter;
+package graphics;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.treez.javafxd3.d3.svg.SymbolType;
 
-import d3plotter.D3Plotter.Margin;
+import graphics.D3Plotter.Margin;
 
 public class D3PlotterOptions {
 

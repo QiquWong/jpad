@@ -27,17 +27,17 @@ public class InputManagerController {
 		
 		// get the pane of the front view
 		Main.setAircraftFrontViewPane(
-				(Pane) Main.getMainInputManagerLayout().lookup("#FrontView")
+				(Pane) Main.getMainInputManagerLayout().lookup("#FrontViewPane")
 				);
 		
 		// get the pane of the side view
 		Main.setAircraftSideViewPane(
-				(Pane) Main.getMainInputManagerLayout().lookup("#SideView")
+				(Pane) Main.getMainInputManagerLayout().lookup("#SideViewPane")
 				);
 		
 		// get the pane of the top view
 		Main.setAircraftTopViewPane(
-				(Pane) Main.getMainInputManagerLayout().lookup("#TopView")
+				(Pane) Main.getMainInputManagerLayout().lookup("#TopViewPane")
 				);
 		
 		Main.showInputManagerAircraftFromFile();

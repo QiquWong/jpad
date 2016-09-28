@@ -1,4 +1,4 @@
-package d3plotter;
+package graphics;
 
 import java.util.Arrays;
 import java.util.List;

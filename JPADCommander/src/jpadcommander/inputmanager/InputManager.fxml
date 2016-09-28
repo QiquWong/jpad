@@ -424,15 +424,15 @@
                                                                      <tabs>
                                                                         <Tab id="TopView" text="Top view">
                                                                            <content>
-                                                                              <Pane id="TopViewPane" prefHeight="200.0" prefWidth="200.0" />
+                                                                              <Pane id="TopViewPane" />
                                                                            </content></Tab>
                                                                         <Tab id="SideView" text="Side view">
                                                                            <content>
-                                                                              <Pane id="SideViewPane" prefHeight="200.0" prefWidth="200.0" />
+                                                                              <Pane id="SideViewPane" />
                                                                            </content></Tab>
                                                                         <Tab id="FrontView" text="Front view">
                                                                            <content>
-                                                                              <Pane id="FrontViewPane" prefHeight="200.0" prefWidth="200.0" />
+                                                                              <Pane id="FrontViewPane" />
                                                                            </content>
                                                                         </Tab>
                                                                      </tabs>
