@@ -10,7 +10,7 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 	 x_bar_ac_w_x_ac_over_root_chord_vs_tan_L_LE_over_beta_AR_times_tan_L_LE_lambda,
 	 x_bar_ac_w_k1_vs_lambda, x_bar_ac_w_k2_vs_L_LE_AR_lambda,
 	 d_Alpha_Vs_LambdaLE_VsDy, d_Alpha_d_Delta_2d_VS_cf_c, d_Alpha_d_Delta_2d_d_Alpha_d_Delta_3D_VS_aspectRatio,
-	 d_epsilon_d_alpha_VS_position_aspectRatio, deltaYvsThicknessRatio;
+	 d_epsilon_d_alpha_VS_position_aspectRatio, deltaYvsThicknessRatio, kOmega_vs_CLalphaOmegaClmax_vs_taperRatio_vs_AR;
 	
 	double cM0_b_k2_minus_k1, ar_v_eff_c2, x_bar_ac_w_k1, x_bar_ac_w_k2, x_bar_ac_w_xac_cr, d_Alpha_Vs_LambdaLE, deltaYvsThickness;
  
@@ -43,6 +43,8 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 		
 		d_epsilon_d_alpha_VS_position_aspectRatio = database.interpolate2DFromDatasetFunction("upwashvsposition");
 		deltaYvsThicknessRatio  =database.interpolate2DFromDatasetFunction("DeltaYvsThicknessRatio");
+		
+		kOmega_vs_CLalphaOmegaClmax_vs_taperRatio_vs_AR = database.interpolate3DFromDatasetFunction("K_Omega_vs_CLalphaOmegaFracClmax_(taperRatio)_(AR)");
 		
 		//TODO Insert other aerodynamic functions (see "Aerodynamic_Database_Ultimate.h5")
 	}
@@ -155,6 +157,23 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 		return deltaYvsThicknessRatio.value(tc, airfoilFamily);
 	}
 
+	public double getKOmegePhillipsAndAlley (
+			double cLalpha,
+			double twistEquivalent,
+			double clmaxMeanAirfoil,
+			double taperRatioEquivalent,
+			double aspectRatio
+			) {
+		
+		double cLAlphaOmegaFracClmax = (cLalpha*twistEquivalent)/clmaxMeanAirfoil;
+		
+		return kOmega_vs_CLalphaOmegaClmax_vs_taperRatio_vs_AR.value(
+				cLAlphaOmegaFracClmax,
+				taperRatioEquivalent,
+				aspectRatio
+				);
+	}
+	
 //
 //	/**
 //	 * TEST THE FUNCTIONS.

@@ -28,6 +28,7 @@ import calculators.geometry.LSGeometryCalc;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.MethodEnum;
+import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
@@ -239,20 +240,21 @@ public class LiftCalc {
 			double clMax, double cLAlpha, 
 			double tr, double sweepLE, 
 			double ar, double twist,
-			EngineTypeEnum engineType) {
+			AerodynamicDatabaseReader aeroDatabaseReader
+			) {
 
 		double cLclMax = (0.952 - 0.45*pow(tr - 0.5, 2)) * pow(ar/12., 0.03);
 		double kLambda1 = 0.15 + 18.5*(tr - 0.4)/ar;
 		double kLambda2 = 0.55 + 12.*(tr - 0.275)/ar;
 		double kLambda = 1 + kLambda1*sweepLE - kLambda2*pow(sweepLE,1.2);
 		double kLS = 1 + (0.0042*ar - 0.068)*(1 + 2.3*cLAlpha*twist/clMax);
-		double kOmega = 0.;
-
-		if (engineType.equals(EngineTypeEnum.TURBOPROP)) {
-			kOmega = 0.1;
-		} else if(engineType.equals(EngineTypeEnum.TURBOFAN)) {
-			kOmega = -0.2;
-		}
+		double kOmega = aeroDatabaseReader.getKOmegePhillipsAndAlley(
+				cLAlpha,
+				twist,
+				clMax,
+				tr,
+				ar
+				);
 
 		return cLclMax*kLS*kLambda*clMax*(1 - kOmega*cLAlpha*(-twist)/clMax);
 	}
@@ -582,9 +584,8 @@ public class LiftCalc {
 		return cLWingArray;
 	}
 
-
-
-	public static double calculateCLMax(double [] maximumLiftCoefficient, 
+	public static double calculateCLMax(
+			double[] maximumLiftCoefficient, 
 			double semispan, 
 			double surface,
 			double[] yStationsActual,
