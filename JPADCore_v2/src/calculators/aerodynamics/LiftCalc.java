@@ -561,7 +561,7 @@ public class LiftCalc {
 			alphaActual = Amount.valueOf(alphaArray.get(ii),SI.RADIAN);
 
 			calculateLiftDistribution.getNasaBlackwell().calculate(alphaActual);
-			clNasaBlackwell = calculateLiftDistribution.getNasaBlackwell().get_clTotalDistribution().toArray();
+			clNasaBlackwell = calculateLiftDistribution.getNasaBlackwell().getClTotalDistribution().toArray();
 			clNasaBlackwell[clNasaBlackwell.length-1] = 0;
 
 			for (int i=0 ; i<nPointSemiSpan ;  i++){
@@ -646,7 +646,7 @@ public class LiftCalc {
 				MyArray clDistributionArray = new MyArray();
 				
 				theNasaBlackwellCalculator.calculate(alphaInputAngle);
-				clDistributionArray = theNasaBlackwellCalculator.get_clTotalDistribution();
+				clDistributionArray = theNasaBlackwellCalculator.getClTotalDistribution();
 
 				for(int i =0; i< _nPointsSemispanWise; i++) {
 					if (found == false 
@@ -673,7 +673,7 @@ public class LiftCalc {
 							diffCLappOld = 0;
 							while ( diffCL > accuracy){
 								theNasaBlackwellCalculator.calculate(alphaNewAmount);
-								clDistributionArray = theNasaBlackwellCalculator.get_clTotalDistribution();
+								clDistributionArray = theNasaBlackwellCalculator.getClTotalDistribution();
 								diffCL = 0;
 
 								for (int m =0; m< _nPointsSemispanWise; m++) {

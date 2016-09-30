@@ -1177,7 +1177,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			calculateLiftDistribution.getNasaBlackwell().calculate(alpha);
 
 			cLMap.getcXVsAlphaTable().put(MethodEnum.NASA_BLACKWELL, alpha, calculateLiftDistribution.getNasaBlackwell().getCLCurrent());
-			cLMap.getCxyVsAlphaTable().put(MethodEnum.NASA_BLACKWELL, alpha, calculateLiftDistribution.getNasaBlackwell().get_clTotalDistribution().clone());
+			cLMap.getCxyVsAlphaTable().put(MethodEnum.NASA_BLACKWELL, alpha, calculateLiftDistribution.getNasaBlackwell().getClTotalDistribution().clone());
 			cLMap.getCcxyVsAlphaTable().put(MethodEnum.NASA_BLACKWELL, alpha, calculateLiftDistribution.getNasaBlackwell().get_ccLDistribution().clone());
 
 			cL = calculateLiftDistribution.getNasaBlackwell().get_cLEvaluated();
@@ -1933,46 +1933,46 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 		private boolean found = false;
 		private Amount<Angle> alphaAtCLMax;
 
-		public double phillipsAndAlley() {
-			double result;
-			EngineTypeEnum engineType;
-			if (theAircraft != null) {
-				engineType = theAircraft.getPowerPlant().getEngineType();
-			} else {
-				engineType = EngineTypeEnum.TURBOPROP;
-			}
+//		public double phillipsAndAlley() {
+//			double result;
+//			EngineTypeEnum engineType;
+//			if (theAircraft != null) {
+//				engineType = theAircraft.getPowerPlant().getEngineType();
+//			} else {
+//				engineType = EngineTypeEnum.TURBOPROP;
+//			}
 //			result = LiftCalc.calculateCLmaxPhillipsAndAlley(
 //					getTheLiftingSurface().get_clMaxVsY().getMean() , calculateCLAlpha.andersonSweptCompressibleSubsonic(), 
 //					taperRatioEq, getTheLiftingSurface().get_sweepLEEquivalent().getEstimatedValue(), 
 //					ar, getTheLiftingSurface().get_twistTip().getEstimatedValue(),
 //					engineType
 //					);
-			
-			result = LiftCalc.calculateCLmaxPhillipsAndAlley(
-					((MyArray) getTheLiftingSurface().getClMaxVsY()).getMean() , 5.25, 
-					taperRatioEq, getTheLiftingSurface().getSweepLEEquivalent(false).getEstimatedValue(), 
-					ar, getTheLiftingSurface().getLiftingSurfaceCreator().getTwistAtTipEquivalentWing().getEstimatedValue(),
-					engineType
-					);
-
-			cLMap.getcXMaxMap().put(MethodEnum.PHILLIPS_ALLEY, result);
-			return result;
-		}
-
-
-
-
-		public double phillipsAndAlley(EngineTypeEnum engineType) {
-			double result = LiftCalc.calculateCLmaxPhillipsAndAlley( //5.07
-					((MyArray) getTheLiftingSurface().getClMaxVsY()).getMean() , calculateCLAlpha.andersonSweptCompressibleSubsonic(), 
-					taperRatioEq, getTheLiftingSurface().getSweepLEEquivalent(false).getEstimatedValue(), 
-					ar, getTheLiftingSurface().getLiftingSurfaceCreator().getTwistAtTipEquivalentWing().getEstimatedValue(),
-					engineType
-					);
-
-			cLMap.getcXMaxMap().put(MethodEnum.PHILLIPS_ALLEY, result);
-			return result;
-		}
+//			
+//			result = LiftCalc.calculateCLmaxPhillipsAndAlley(
+//					((MyArray) getTheLiftingSurface().getClMaxVsY()).getMean() , 5.25, 
+//					taperRatioEq, getTheLiftingSurface().getSweepLEEquivalent(false).getEstimatedValue(), 
+//					ar, getTheLiftingSurface().getLiftingSurfaceCreator().getTwistAtTipEquivalentWing().getEstimatedValue(),
+//					engineType
+//					);
+//
+//			cLMap.getcXMaxMap().put(MethodEnum.PHILLIPS_ALLEY, result);
+//			return result;
+//		}
+//
+//
+//
+//
+//		public double phillipsAndAlley(EngineTypeEnum engineType) {
+//			double result = LiftCalc.calculateCLmaxPhillipsAndAlley( //5.07
+//					((MyArray) getTheLiftingSurface().getClMaxVsY()).getMean() , calculateCLAlpha.andersonSweptCompressibleSubsonic(), 
+//					taperRatioEq, getTheLiftingSurface().getSweepLEEquivalent(false).getEstimatedValue(), 
+//					ar, getTheLiftingSurface().getLiftingSurfaceCreator().getTwistAtTipEquivalentWing().getEstimatedValue(),
+//					engineType
+//					);
+//
+//			cLMap.getcXMaxMap().put(MethodEnum.PHILLIPS_ALLEY, result);
+//			return result;
+//		}
 
 		/**
 		 * Use NASA-Blackwell method for estimating the
@@ -2219,7 +2219,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 		public void allMethods() {
 			nasaBlackwell();
-			phillipsAndAlley();
+//			phillipsAndAlley();
 			schrenk();
 		}
 
@@ -4131,7 +4131,7 @@ public class CalcCdvsAlpha {
 				
 				alphaActual = Amount.valueOf(alphaCDArrayTemp[i], SI.RADIAN);
 				calculateLiftDistribution.getNasaBlackwell().calculate(alphaActual);
-				clDistribution = calculateLiftDistribution.getNasaBlackwell().get_clTotalDistribution().toArray();
+				clDistribution = calculateLiftDistribution.getNasaBlackwell().getClTotalDistribution().toArray();
 				int nValueNasaBlackwell = clDistribution.length;
 				clDistribution[clDistribution.length-1] = 0;
 			
@@ -4209,7 +4209,7 @@ public class CalcCdvsAlpha {
 				alphaActual = Amount.valueOf(alphaCDInduced[ii], SI.RADIAN);
 //				System.out.println("\n alpha Actual " + alphaActual.to(NonSI.DEGREE_ANGLE));
 				calculateLiftDistribution.getNasaBlackwell().calculate(alphaActual);
-				clDistributionInviscid = calculateLiftDistribution.getNasaBlackwell().get_clTotalDistribution().toArray();
+				clDistributionInviscid = calculateLiftDistribution.getNasaBlackwell().getClTotalDistribution().toArray();
 				int nValueNasaBlackwell = clDistributionInviscid.length;
 				alphaInduced = new Double [nValueNasaBlackwell];
 				cdDistribution = new double [nValueNasaBlackwell];
@@ -4305,7 +4305,7 @@ public class CalcCdvsAlpha {
 			double yLoc = airfoil.getGeometry().get_yStation();
 			LSAerodynamicsManager.CalcLiftDistribution calculateLiftDistribution = theLSManager.getCalculateLiftDistribution();
 			calculateLiftDistribution.getNasaBlackwell().calculate(alpha);
-			clNasaBlackwell = calculateLiftDistribution.getNasaBlackwell().get_clTotalDistribution().toArray();
+			clNasaBlackwell = calculateLiftDistribution.getNasaBlackwell().getClTotalDistribution().toArray();
 			yStations = calculateLiftDistribution.getNasaBlackwell().getyStations();
 
 			clLocal = MyMathUtils.getInterpolatedValue1DLinear(yStations, clNasaBlackwell, yLoc);

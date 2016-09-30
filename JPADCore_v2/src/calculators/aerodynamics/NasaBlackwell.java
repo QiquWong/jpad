@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.measure.quantity.Angle;
+import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
@@ -94,7 +95,6 @@ public class NasaBlackwell {
 			double altitude) {
 
 		this.mach = mach;
-		this.alphaCurrent = alpha;
 		this.altitude = altitude;
 		this.surface = surface;
 		this.semispan = semispan;
@@ -484,7 +484,7 @@ public class NasaBlackwell {
 
 	public void calculate(Amount<Angle> alpha) {
 		// prepareDiscreteSurface();
-
+		alphaCurrent = alpha.doubleValue(NonSI.DEGREE_ANGLE);
 		_alphaDistribution = new MyArray(AnglesCalc.getAlphaDistribution(
 				alpha.doubleValue(SI.RADIAN),
 				twist, 
@@ -565,7 +565,7 @@ public class NasaBlackwell {
 		return _cLCurrent;
 	}
 
-	public double get_alphaCurrent() {
+	public double getAlphaCurrent() {
 		return alphaCurrent;
 	}
 
@@ -589,7 +589,7 @@ public class NasaBlackwell {
 		return _clAdditionalDistribution;
 	}
 
-	public MyArray get_clTotalDistribution() {
+	public MyArray getClTotalDistribution() {
 		return _clTotalDistribution;
 	}
 

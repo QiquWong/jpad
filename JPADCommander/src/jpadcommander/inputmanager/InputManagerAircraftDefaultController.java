@@ -1,17 +1,33 @@
 package jpadcommander.inputmanager;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
+
+import javax.measure.quantity.Angle;
+import javax.measure.quantity.Length;
+import javax.measure.unit.SI;
+
+import org.jscience.physics.amount.Amount;
+import org.treez.javafxd3.d3.svg.SymbolType;
+import org.treez.javafxd3.javafx.JavaFxD3Browser;
 
 import aircraft.components.Aircraft;
 import configuration.enumerations.AircraftEnum;
+import configuration.enumerations.ComponentEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
+import graphics.D3Plotter;
+import graphics.D3PlotterOptions;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Worker.State;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -19,7 +35,9 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
 import jpadcommander.Main;
+import standaloneutils.MyArrayUtils;
 
 public class InputManagerAircraftDefaultController {
 
@@ -113,12 +131,898 @@ public class InputManagerAircraftDefaultController {
 		// write again
 		System.setOut(originalOut);
 
+		createAircraftTopView();
+		createAircraftSideView();
+		createAircraftFrontView();
+		
 		//////////////////////////////////////////////////////////////////////////////////
 		Main.setStatus(State.READY);
 		Main.checkStatus(Main.getStatus());
 
 	}	
 
+	public static void createAircraftTopView() {
+		
+		//--------------------------------------------------
+		// get data vectors from fuselage discretization
+		//--------------------------------------------------
+		// left curve, upperview
+		List<Amount<Length>> vX1Left = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideLCurveAmountX();
+		int nX1Left = vX1Left.size();
+		List<Amount<Length>> vY1Left = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideLCurveAmountY();
+
+		Double[][] dataOutlineXYLeftCurve = new Double[nX1Left][2];
+		IntStream.range(0, nX1Left)
+		.forEach(i -> {
+			dataOutlineXYLeftCurve[i][1] = vX1Left.get(i).doubleValue(SI.METRE);
+			dataOutlineXYLeftCurve[i][0] = vY1Left.get(i).doubleValue(SI.METRE);
+		});
+
+		// right curve, upperview
+		List<Amount<Length>> vX2Right = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideRCurveAmountX();
+		int nX2Right = vX2Right.size();
+		List<Amount<Length>> vY2Right = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideRCurveAmountY();
+
+		Double[][] dataOutlineXYRightCurve = new Double[nX2Right][2];
+		IntStream.range(0, nX2Right)
+		.forEach(i -> {
+			dataOutlineXYRightCurve[i][1] = vX2Right.get(i).doubleValue(SI.METRE);
+			dataOutlineXYRightCurve[i][0] = vY2Right.get(i).doubleValue(SI.METRE);
+		});
+
+		//--------------------------------------------------
+		// get data vectors from wing discretization
+		//--------------------------------------------------
+		List<Amount<Length>> vY = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedYs();
+		int nY = vY.size();
+		List<Amount<Length>> vChords = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedChords();
+		List<Amount<Length>> vXle = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedXle();
+		
+		Double[][] dataChordsVsY = new Double[nY][2];
+		Double[][] dataXleVsY = new Double[nY][2];
+		IntStream.range(0, nY)
+		.forEach(i -> {
+			dataChordsVsY[i][0] = vY.get(i).doubleValue(SI.METRE);
+			dataChordsVsY[i][1] = vChords.get(i).doubleValue(SI.METRE);
+			dataXleVsY[i][0] = vY.get(i).doubleValue(SI.METRE);
+			dataXleVsY[i][1] = vXle.get(i).doubleValue(SI.METRE);
+		});
+
+		Double[][] dataTopViewIsolated = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedTopViewAsArray(ComponentEnum.WING);
+		
+		Double[][] dataTopView = new Double[dataTopViewIsolated.length][dataTopViewIsolated[0].length];
+		for (int i=0; i<dataTopViewIsolated.length; i++) { 
+			dataTopView[i][0] = dataTopViewIsolated[i][0] + Main.getTheAircraft().getWing().getYApexConstructionAxes().doubleValue(SI.METER);
+			dataTopView[i][1] = dataTopViewIsolated[i][1] + Main.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER);
+		}
+		
+		Double[][] dataTopViewMirrored = new Double[dataTopView.length][dataTopView[0].length];
+		for (int i=0; i<dataTopView.length; i++) { 
+				dataTopViewMirrored[i][0] = -dataTopView[i][0];
+				dataTopViewMirrored[i][1] = dataTopView[i][1];
+		}
+
+		//--------------------------------------------------
+		// get data vectors from hTail discretization
+		//--------------------------------------------------
+		List<Amount<Length>> vYHTail = Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getDiscretizedYs();
+		int nYHTail = vYHTail.size();
+		List<Amount<Length>> vChordsHTail = Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getDiscretizedChords();
+		List<Amount<Length>> vXleHTail = Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getDiscretizedXle();
+
+		Double[][] dataChordsVsYHTail = new Double[nYHTail][2];
+		Double[][] dataXleVsYHTail = new Double[nYHTail][2];
+		IntStream.range(0, nYHTail)
+		.forEach(i -> {
+			dataChordsVsYHTail[i][0] = vYHTail.get(i).doubleValue(SI.METRE);
+			dataChordsVsYHTail[i][1] = vChordsHTail.get(i).doubleValue(SI.METRE);
+			dataXleVsYHTail[i][0] = vYHTail.get(i).doubleValue(SI.METRE);
+			dataXleVsYHTail[i][1] = vXleHTail.get(i).doubleValue(SI.METRE);
+		});
+
+		Double[][] dataTopViewIsolatedHTail = Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getDiscretizedTopViewAsArray(ComponentEnum.HORIZONTAL_TAIL);
+
+		Double[][] dataTopViewHTail = new Double[dataTopViewIsolatedHTail.length][dataTopViewIsolatedHTail[0].length];
+		for (int i=0; i<dataTopViewIsolatedHTail.length; i++) { 
+			dataTopViewHTail[i][0] = dataTopViewIsolatedHTail[i][0];
+			dataTopViewHTail[i][1] = dataTopViewIsolatedHTail[i][1] + Main.getTheAircraft().getHTail().getXApexConstructionAxes().doubleValue(SI.METER);
+		}
+
+		Double[][] dataTopViewMirroredHTail = new Double[dataTopViewHTail.length][dataTopViewHTail[0].length];
+		for (int i=0; i<dataTopViewHTail.length; i++) { 
+			dataTopViewMirroredHTail[i][0] = -dataTopViewHTail[i][0];
+			dataTopViewMirroredHTail[i][1] = dataTopViewHTail[i][1];
+		}
+
+		//--------------------------------------------------
+		// get data vectors from vTail discretization
+		//--------------------------------------------------
+		Double[] vTailRootXCoordinates = Main.getTheAircraft().getVTail().getAirfoilList().get(0).getAirfoilCreator().getXCoords();
+		Double[] vTailRootYCoordinates = Main.getTheAircraft().getVTail().getAirfoilList().get(0).getAirfoilCreator().getZCoords();
+		Double[][] vTailRootAirfoilPoints = new Double[vTailRootXCoordinates.length][2];
+		for (int i=0; i<vTailRootAirfoilPoints.length; i++) {
+			vTailRootAirfoilPoints[i][1] = (vTailRootXCoordinates[i]*Main.getTheAircraft().getVTail().getChordRoot().getEstimatedValue()) + Main.getTheAircraft().getVTail().getXApexConstructionAxes().getEstimatedValue(); 
+			vTailRootAirfoilPoints[i][0] = (vTailRootYCoordinates[i]*Main.getTheAircraft().getVTail().getChordRoot().getEstimatedValue());
+		}
+		
+		int nPointsVTail = Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getDiscretizedXle().size();
+		Double[] vTailTipXCoordinates = Main.getTheAircraft().getVTail().getAirfoilList().get(Main.getTheAircraft().getVTail().getAirfoilList().size()-1).getAirfoilCreator().getXCoords();
+		Double[] vTailTipYCoordinates = Main.getTheAircraft().getVTail().getAirfoilList().get(Main.getTheAircraft().getVTail().getAirfoilList().size()-1).getAirfoilCreator().getZCoords();
+		Double[][] vTailTipAirfoilPoints = new Double[vTailTipXCoordinates.length][2];
+		for (int i=0; i<vTailTipAirfoilPoints.length; i++) {
+			vTailTipAirfoilPoints[i][1] = (vTailTipXCoordinates[i]*Main.getTheAircraft().getVTail().getChordTip().getEstimatedValue()) 
+										  + Main.getTheAircraft().getVTail().getXApexConstructionAxes().getEstimatedValue()
+										  + Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getDiscretizedXle().get(nPointsVTail-1).getEstimatedValue(); 
+			vTailTipAirfoilPoints[i][0] = (vTailTipYCoordinates[i]*Main.getTheAircraft().getVTail().getChordTip().getEstimatedValue());
+		}
+		
+		//--------------------------------------------------
+		// get data vectors from nacelle discretization
+		//--------------------------------------------------
+		List<Double[][]> nacellePointsList = new ArrayList<Double[][]>();
+		
+		for(int i=0; i<Main.getTheAircraft().getNacelles().getNacellesList().size(); i++) {
+			
+			// upper curve, sideview
+			List<Amount<Length>> nacelleCurveX = Main.getTheAircraft().getNacelles().getNacellesList().get(i).getXCoordinatesOutline();
+			int nacelleCurveXPoints = nacelleCurveX.size();
+			List<Amount<Length>> nacelleCurveUpperY = Main.getTheAircraft().getNacelles().getNacellesList().get(i).getYCoordinatesOutlineXYRight();
+			
+			// lower curve, sideview
+			List<Amount<Length>> nacelleCurveLowerY = Main.getTheAircraft().getNacelles().getNacellesList().get(i).getYCoordinatesOutlineXYLeft();
+
+			List<Amount<Length>> dataOutlineXZCurveNacelleX = new ArrayList<>();
+			List<Amount<Length>> dataOutlineXZCurveNacelleY = new ArrayList<>();
+			
+			for(int j=0; j<nacelleCurveXPoints; j++) {
+				dataOutlineXZCurveNacelleX.add(nacelleCurveX.get(j)
+						.plus(Main.getTheAircraft().getNacelles().getNacellesList().get(i).getXApexConstructionAxes()));
+				dataOutlineXZCurveNacelleY.add(nacelleCurveUpperY.get(j)
+						.plus(Main.getTheAircraft().getNacelles().getNacellesList().get(i).getYApexConstructionAxes()));
+			}
+			
+			for(int j=0; j<nacelleCurveXPoints; j++) {
+				dataOutlineXZCurveNacelleX.add(nacelleCurveX.get(nacelleCurveXPoints-j-1) 
+						.plus(Main.getTheAircraft().getNacelles().getNacellesList().get(i).getXApexConstructionAxes()));
+				dataOutlineXZCurveNacelleY.add(nacelleCurveLowerY.get(nacelleCurveXPoints-j-1)
+						.plus(Main.getTheAircraft().getNacelles().getNacellesList().get(i).getYApexConstructionAxes()));
+			}
+			
+			dataOutlineXZCurveNacelleX.add(nacelleCurveX.get(0)
+					.plus(Main.getTheAircraft().getNacelles().getNacellesList().get(i).getXApexConstructionAxes()));
+			dataOutlineXZCurveNacelleY.add(nacelleCurveUpperY.get(0)
+					.plus(Main.getTheAircraft().getNacelles().getNacellesList().get(i).getYApexConstructionAxes()));
+			
+			
+			Double[][] dataOutlineXZCurveNacelle = new Double[dataOutlineXZCurveNacelleX.size()][2];
+			for(int j=0; j<dataOutlineXZCurveNacelleX.size(); j++) {
+				dataOutlineXZCurveNacelle[j][1] = dataOutlineXZCurveNacelleX.get(j).doubleValue(SI.METER);
+				dataOutlineXZCurveNacelle[j][0] = dataOutlineXZCurveNacelleY.get(j).doubleValue(SI.METER);
+			}
+			
+			nacellePointsList.add(dataOutlineXZCurveNacelle);
+			
+		}
+		
+		List<Double[][]> listDataArrayTopView = new ArrayList<Double[][]>();
+
+		// wing
+		listDataArrayTopView.add(dataTopView);
+		listDataArrayTopView.add(dataTopViewMirrored);
+		// hTail
+		listDataArrayTopView.add(dataTopViewHTail);
+		listDataArrayTopView.add(dataTopViewMirroredHTail);
+		// fuselage
+		listDataArrayTopView.add(dataOutlineXYLeftCurve);
+		listDataArrayTopView.add(dataOutlineXYRightCurve);
+		// vTail
+		listDataArrayTopView.add(vTailRootAirfoilPoints);
+		listDataArrayTopView.add(vTailTipAirfoilPoints);
+		// nacelles
+		for (int i=0; i<nacellePointsList.size(); i++)
+			listDataArrayTopView.add(nacellePointsList.get(i));
+
+		double xMaxTopView = 1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
+		double xMinTopView = -1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
+		double yMaxTopView = 1.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
+		double yMinTopView = -0.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
+			
+		// TODO : SEE HOW TO FIT THE IMAGE TO PARENT
+		int WIDTH = (int) Main.getAircraftTopViewPane().getPrefWidth();
+		int HEIGHT = (int) Main.getAircraftTopViewPane().getPrefHeight();
+		
+		D3PlotterOptions optionsTopView = new D3PlotterOptions.D3PlotterOptionsBuilder()
+				.widthGraph(WIDTH).heightGraph(HEIGHT)
+				.xRange(xMinTopView, xMaxTopView)
+				.yRange(yMaxTopView, yMinTopView)
+				.axisLineColor("darkblue").axisLineStrokeWidth("2px")
+				.graphBackgroundColor("blue").graphBackgroundOpacity(0.05)
+				.title("Aircraft data representation - Top View")
+				.xLabel("y (m)")
+				.yLabel("x (m)")
+				.showXGrid(true)
+				.showYGrid(true)
+				.symbolTypes(
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE
+						)
+				.symbolSizes(2,2,2,2,2,2,2,2,2,2,2,2)
+				.showSymbols(false,false,false,false,false,false,false,false,false,false,false,false) // NOTE: overloaded function
+				.symbolStyles(
+						"fill:blue; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2"
+						)
+				.lineStyles(
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2"
+						)
+				.plotAreas(true,true,true,true,true,true,true,true,true,true,true)
+				.areaStyles("fill:lightblue;","fill:lightblue;","fill:blue;","fill:blue;","fill:white;","fill:white;",
+						"fill:yellow;","fill:yellow;","fill:orange;","fill:orange;")
+				.areaOpacities(1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0)
+				.showLegend(false)
+				.build();
+		
+		D3Plotter d3Plotter = new D3Plotter(
+				optionsTopView,
+				listDataArrayTopView
+				);
+		//define d3 content as post loading hook
+		Runnable postLoadingHook = () -> {
+
+			//--------------------------------------------------
+			// Create the D3 graph
+			//--------------------------------------------------
+			d3Plotter.createD3Content();
+			
+			//--------------------------------------------------
+			// output
+			String outputFilePathTopView = Main.getOutputDirectoryPath() 
+					+ File.separator 
+					+ "AircraftTopView.svg";
+			d3Plotter.saveSVG(outputFilePathTopView);
+
+		}; // end-of-Runnable
+
+		// create the Browser/D3
+		//create browser
+		JavaFxD3Browser browserTopView = d3Plotter.getBrowser(postLoadingHook, false);
+		Scene sceneTopView = new Scene(
+				browserTopView,
+				Main.getAircraftTopViewPane().getPrefWidth(),
+				Main.getAircraftTopViewPane().getPrefHeight(),
+				Color.web("#666970")
+				);
+		Main.getAircraftTopViewPane().getChildren().add(sceneTopView.getRoot());
+	}
+	
+	public static void createAircraftSideView() {
+	
+		//--------------------------------------------------
+		// get data vectors from fuselage discretization
+		//--------------------------------------------------
+		// upper curve, sideview
+		List<Amount<Length>> vX1Upper = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZUpperCurveAmountX();
+		int nX1Upper = vX1Upper.size();
+		List<Amount<Length>> vZ1Upper = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZUpperCurveAmountZ();
+
+		Double[][] dataOutlineXZUpperCurve = new Double[nX1Upper][2];
+		IntStream.range(0, nX1Upper)
+		.forEach(i -> {
+			dataOutlineXZUpperCurve[i][0] = vX1Upper.get(i).doubleValue(SI.METRE);
+			dataOutlineXZUpperCurve[i][1] = vZ1Upper.get(i).doubleValue(SI.METRE);
+		});
+
+		// lower curve, sideview
+		List<Amount<Length>> vX2Lower = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZLowerCurveAmountX();
+		int nX2Lower = vX2Lower.size();
+		List<Amount<Length>> vZ2Lower = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZLowerCurveAmountZ();
+
+		Double[][] dataOutlineXZLowerCurve = new Double[nX2Lower][2];
+		IntStream.range(0, nX2Lower)
+		.forEach(i -> {
+			dataOutlineXZLowerCurve[i][0] = vX2Lower.get(i).doubleValue(SI.METRE);
+			dataOutlineXZLowerCurve[i][1] = vZ2Lower.get(i).doubleValue(SI.METRE);
+		});
+		
+		//--------------------------------------------------
+		// get data vectors from wing discretization
+		//--------------------------------------------------
+		Double[] wingRootXCoordinates = Main.getTheAircraft().getWing().getAirfoilList().get(0).getAirfoilCreator().getXCoords();
+		Double[] wingRootZCoordinates = Main.getTheAircraft().getWing().getAirfoilList().get(0).getAirfoilCreator().getZCoords();
+		Double[][] wingRootAirfoilPoints = new Double[wingRootXCoordinates.length][2];
+		for (int i=0; i<wingRootAirfoilPoints.length; i++) {
+			wingRootAirfoilPoints[i][0] = (wingRootXCoordinates[i]*Main.getTheAircraft().getWing().getChordRoot().getEstimatedValue()) 
+										  + Main.getTheAircraft().getWing().getXApexConstructionAxes().getEstimatedValue(); 
+			wingRootAirfoilPoints[i][1] = (wingRootZCoordinates[i]*Main.getTheAircraft().getWing().getChordRoot().getEstimatedValue())
+										  + Main.getTheAircraft().getWing().getZApexConstructionAxes().getEstimatedValue();
+		}
+		
+		int nPointsWing = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedXle().size();
+		Double[] wingTipXCoordinates = Main.getTheAircraft().getWing().getAirfoilList().get(Main.getTheAircraft().getWing().getAirfoilList().size()-1).getAirfoilCreator().getXCoords();
+		Double[] wingTipZCoordinates = Main.getTheAircraft().getWing().getAirfoilList().get(Main.getTheAircraft().getWing().getAirfoilList().size()-1).getAirfoilCreator().getZCoords();
+		Double[][] wingTipAirfoilPoints = new Double[wingTipXCoordinates.length][2];
+		for (int i=0; i<wingTipAirfoilPoints.length; i++) {
+			wingTipAirfoilPoints[i][0] = (wingTipXCoordinates[i]*Main.getTheAircraft().getWing().getChordTip().getEstimatedValue()) 
+										  + Main.getTheAircraft().getWing().getXApexConstructionAxes().getEstimatedValue()
+										  + Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedXle().get(nPointsWing-1).getEstimatedValue(); 
+			wingTipAirfoilPoints[i][1] = (wingTipZCoordinates[i]*Main.getTheAircraft().getWing().getChordTip().getEstimatedValue())
+										  + Main.getTheAircraft().getWing().getZApexConstructionAxes().getEstimatedValue();
+		}
+		
+		//--------------------------------------------------
+		// get data vectors from hTail discretization
+		//--------------------------------------------------
+		Double[] hTailRootXCoordinates = Main.getTheAircraft().getHTail().getAirfoilList().get(0).getAirfoilCreator().getXCoords();
+		Double[] hTailRootZCoordinates = Main.getTheAircraft().getHTail().getAirfoilList().get(0).getAirfoilCreator().getZCoords();
+		Double[][] hTailRootAirfoilPoints = new Double[hTailRootXCoordinates.length][2];
+		for (int i=0; i<hTailRootAirfoilPoints.length; i++) {
+			hTailRootAirfoilPoints[i][0] = (hTailRootXCoordinates[i]*Main.getTheAircraft().getHTail().getChordRoot().getEstimatedValue())
+										   + Main.getTheAircraft().getHTail().getXApexConstructionAxes().getEstimatedValue(); 
+			hTailRootAirfoilPoints[i][1] = (hTailRootZCoordinates[i]*Main.getTheAircraft().getHTail().getChordRoot().getEstimatedValue())
+										   + Main.getTheAircraft().getHTail().getZApexConstructionAxes().getEstimatedValue();
+		}
+		
+		int nPointsHTail = Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getDiscretizedXle().size();
+		Double[] hTailTipXCoordinates = Main.getTheAircraft().getHTail().getAirfoilList().get(Main.getTheAircraft().getHTail().getAirfoilList().size()-1).getAirfoilCreator().getXCoords();
+		Double[] hTailTipZCoordinates = Main.getTheAircraft().getHTail().getAirfoilList().get(Main.getTheAircraft().getHTail().getAirfoilList().size()-1).getAirfoilCreator().getZCoords();
+		Double[][] hTailTipAirfoilPoints = new Double[hTailTipXCoordinates.length][2];
+		for (int i=0; i<hTailTipAirfoilPoints.length; i++) {
+			hTailTipAirfoilPoints[i][0] = (hTailTipXCoordinates[i]*Main.getTheAircraft().getHTail().getChordTip().getEstimatedValue()) 
+										  + Main.getTheAircraft().getHTail().getXApexConstructionAxes().getEstimatedValue()
+										  + Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getDiscretizedXle().get(nPointsHTail-1).getEstimatedValue(); 
+			hTailTipAirfoilPoints[i][1] = (hTailTipZCoordinates[i]*Main.getTheAircraft().getHTail().getChordTip().getEstimatedValue())
+										  + Main.getTheAircraft().getHTail().getZApexConstructionAxes().getEstimatedValue();
+		}
+		
+		//--------------------------------------------------
+		// get data vectors from vTail discretization
+		//--------------------------------------------------
+		Double[][] dataTopViewVTail = Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getDiscretizedTopViewAsArray(ComponentEnum.VERTICAL_TAIL);
+		for(int i=0; i<dataTopViewVTail.length; i++){
+			dataTopViewVTail[i][0] += Main.getTheAircraft().getVTail().getXApexConstructionAxes().getEstimatedValue();
+			dataTopViewVTail[i][1] += Main.getTheAircraft().getVTail().getZApexConstructionAxes().getEstimatedValue();
+		}
+		
+		//--------------------------------------------------
+		// get data vectors from nacelle discretization
+		//--------------------------------------------------
+		List<Double[][]> nacellePointsList = new ArrayList<Double[][]>();
+		
+		for(int i=0; i<Main.getTheAircraft().getNacelles().getNacellesList().size(); i++) {
+			
+			// upper curve, sideview
+			List<Amount<Length>> nacelleCurveX = Main.getTheAircraft().getNacelles().getNacellesList().get(i).getXCoordinatesOutline();
+			int nacelleCurveXPoints = nacelleCurveX.size();
+			List<Amount<Length>> nacelleCurveUpperZ = Main.getTheAircraft().getNacelles().getNacellesList().get(i).getZCoordinatesOutlineXZUpper();
+			
+			// lower curve, sideview
+			List<Amount<Length>> nacelleCurveLowerZ = Main.getTheAircraft().getNacelles().getNacellesList().get(i).getZCoordinatesOutlineXZLower();
+
+			List<Amount<Length>> dataOutlineXZCurveNacelleX = new ArrayList<>();
+			List<Amount<Length>> dataOutlineXZCurveNacelleZ = new ArrayList<>();
+			
+			for(int j=0; j<nacelleCurveXPoints; j++) {
+				dataOutlineXZCurveNacelleX.add(nacelleCurveX.get(j)
+						.plus(Main.getTheAircraft().getNacelles().getNacellesList().get(i).getXApexConstructionAxes()));
+				dataOutlineXZCurveNacelleZ.add(nacelleCurveUpperZ.get(j)
+						.plus(Main.getTheAircraft().getNacelles().getNacellesList().get(i).getZApexConstructionAxes()));
+			}
+			
+			for(int j=0; j<nacelleCurveXPoints; j++) {
+				dataOutlineXZCurveNacelleX.add(nacelleCurveX.get(nacelleCurveXPoints-j-1) 
+						.plus(Main.getTheAircraft().getNacelles().getNacellesList().get(i).getXApexConstructionAxes()));
+				dataOutlineXZCurveNacelleZ.add(nacelleCurveLowerZ.get(nacelleCurveXPoints-j-1)
+						.plus(Main.getTheAircraft().getNacelles().getNacellesList().get(i).getZApexConstructionAxes()));
+			}
+			
+			dataOutlineXZCurveNacelleX.add(nacelleCurveX.get(0)
+					.plus(Main.getTheAircraft().getNacelles().getNacellesList().get(i).getXApexConstructionAxes()));
+			dataOutlineXZCurveNacelleZ.add(nacelleCurveUpperZ.get(0)
+					.plus(Main.getTheAircraft().getNacelles().getNacellesList().get(i).getZApexConstructionAxes()));
+			
+			
+			Double[][] dataOutlineXZCurveNacelle = new Double[dataOutlineXZCurveNacelleX.size()][2];
+			for(int j=0; j<dataOutlineXZCurveNacelleX.size(); j++) {
+				dataOutlineXZCurveNacelle[j][0] = dataOutlineXZCurveNacelleX.get(j).doubleValue(SI.METER);
+				dataOutlineXZCurveNacelle[j][1] = dataOutlineXZCurveNacelleZ.get(j).doubleValue(SI.METER);
+			}
+			
+			nacellePointsList.add(dataOutlineXZCurveNacelle);
+			
+		}
+		
+		List<Double[][]> listDataArraySideView = new ArrayList<Double[][]>();
+
+		// vTail
+		listDataArraySideView.add(dataTopViewVTail);
+		// fuselage
+		listDataArraySideView.add(dataOutlineXZUpperCurve);
+		listDataArraySideView.add(dataOutlineXZLowerCurve);
+		// wing
+		listDataArraySideView.add(wingRootAirfoilPoints);
+		listDataArraySideView.add(wingTipAirfoilPoints);
+		// hTail
+		listDataArraySideView.add(hTailRootAirfoilPoints);
+		listDataArraySideView.add(hTailTipAirfoilPoints);
+		// nacelles
+		for (int i=0; i<nacellePointsList.size(); i++)
+			listDataArraySideView.add(nacellePointsList.get(i));
+		
+		double xMaxSideView = 1.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
+		double xMinSideView = -0.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
+		double yMaxSideView = 1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
+		double yMinSideView = -1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
+		
+		int WIDTH = 700;
+		int HEIGHT = 600;
+		
+		D3PlotterOptions optionsSideView = new D3PlotterOptions.D3PlotterOptionsBuilder()
+				.widthGraph(WIDTH).heightGraph(HEIGHT)
+				.xRange(xMinSideView, xMaxSideView)
+				.yRange(yMinSideView, yMaxSideView)
+				.axisLineColor("darkblue").axisLineStrokeWidth("2px")
+				.graphBackgroundColor("blue").graphBackgroundOpacity(0.05)
+				.title("Aircraft data representation - Side View")
+				.xLabel("x (m)")
+				.yLabel("z (m)")
+				.showXGrid(true)
+				.showYGrid(true)
+				.symbolTypes(
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE
+						)
+				.symbolSizes(2,2,2,2,2,2,2,2,2,2,2,2,2)
+				.showSymbols(false,false,false,false,false,false,false,false,false,false,false,false,false) // NOTE: overloaded function
+				.symbolStyles(
+						"fill:blue; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2"
+						)
+				.lineStyles(
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2"
+						)
+				.plotAreas(true,true,true,true,true,true,true,true,true,true,true,true,true)
+				.areaStyles("fill:yellow;","fill:white;","fill:white;","fill:lightblue;","fill:lightblue;","fill:blue;","fill:blue;",
+						"fill:orange;","fill:orange;","fill:orange;","fill:orange;","fill:orange;","fill:orange;")
+				.areaOpacities(1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0)
+				.showLegend(false)
+				.build();
+		
+		D3Plotter d3Plotter = new D3Plotter(
+				optionsSideView,
+				listDataArraySideView
+				);
+		
+		//define d3 content as post loading hook
+		Runnable postLoadingHook = () -> {
+
+			//--------------------------------------------------
+			// Create the D3 graph
+			//--------------------------------------------------
+			d3Plotter.createD3Content();
+			
+			//--------------------------------------------------
+			// output
+			String outputFilePathSideView = Main.getOutputDirectoryPath() 
+					+ File.separator 
+					+ "AircraftSideView.svg";
+			d3Plotter.saveSVG(outputFilePathSideView);
+
+		}; // end-of-Runnable
+
+		// create the Browser/D3
+		//create browser
+		JavaFxD3Browser browserSideView = d3Plotter.getBrowser(postLoadingHook, false);
+		Scene sceneSideView = new Scene(browserSideView, WIDTH+10, HEIGHT+10, Color.web("#666970"));
+		Main.getAircraftSideViewPane().getChildren().add(sceneSideView.getRoot());		
+		
+	}
+	
+	public static void createAircraftFrontView() {
+		
+		//--------------------------------------------------
+		// get data vectors from fuselage discretization
+		//--------------------------------------------------
+		// section upper curve
+		List<Amount<Length>> vY1Upper = Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionUpperCurveAmountY();
+		int nY1Upper = vY1Upper.size();
+		List<Amount<Length>> vZ1Upper = Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionUpperCurveAmountZ();
+
+		Double[][] dataSectionYZUpperCurve = new Double[nY1Upper][2];
+		IntStream.range(0, nY1Upper)
+		.forEach(i -> {
+			dataSectionYZUpperCurve[i][0] = vY1Upper.get(i).doubleValue(SI.METRE);
+			dataSectionYZUpperCurve[i][1] = vZ1Upper.get(i).doubleValue(SI.METRE);
+		});
+
+		// section lower curve
+		List<Amount<Length>> vY2Lower = Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionLowerCurveAmountY();
+		int nY2Lower = vY2Lower.size();
+		List<Amount<Length>> vZ2Lower = Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionLowerCurveAmountZ();
+
+		Double[][] dataSectionYZLowerCurve = new Double[nY2Lower][2];
+		IntStream.range(0, nY2Lower)
+		.forEach(i -> {
+			dataSectionYZLowerCurve[i][0] = vY2Lower.get(i).doubleValue(SI.METRE);
+			dataSectionYZLowerCurve[i][1] = vZ2Lower.get(i).doubleValue(SI.METRE);
+		});
+		
+		//--------------------------------------------------
+		// get data vectors from wing discretization
+		//--------------------------------------------------
+		List<Amount<Length>> wingBreakPointsYCoordinates = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getYBreakPoints();
+		int nYPointsWingTemp = wingBreakPointsYCoordinates.size();
+		for(int i=0; i<nYPointsWingTemp; i++)
+			wingBreakPointsYCoordinates.add(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getYBreakPoints().get(nYPointsWingTemp-i-1));
+		int nYPointsWing = wingBreakPointsYCoordinates.size();
+		
+		List<Amount<Length>> wingThicknessZCoordinates = new ArrayList<Amount<Length>>();
+		for(int i=0; i<Main.getTheAircraft().getWing().getAirfoilList().size(); i++)
+			wingThicknessZCoordinates.add(
+					Amount.valueOf(
+							Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)*
+							MyArrayUtils.getMax(Main.getTheAircraft().getWing().getAirfoilList().get(i).getGeometry().getZCoords()),
+							SI.METER
+							)
+					);
+		for(int i=0; i<nYPointsWingTemp; i++) {
+			wingThicknessZCoordinates.add(
+					Amount.valueOf(
+							(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getChordsBreakPoints().get(nYPointsWingTemp-i-1).doubleValue(SI.METER)*
+									MyArrayUtils.getMin(Main.getTheAircraft().getWing().getAirfoilList().get(nYPointsWingTemp-i-1).getGeometry().getZCoords())),
+							SI.METER
+							)
+					);
+		}
+		
+		List<Amount<Angle>> dihedralList = new ArrayList<>();
+		for (int i = 0; i < Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDihedralsBreakPoints().size(); i++) {
+			dihedralList.add(
+					Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDihedralsBreakPoints().get(i)
+					);
+		}
+		for (int i = 0; i < Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDihedralsBreakPoints().size(); i++) {
+			dihedralList.add(
+					Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDihedralsBreakPoints().get(
+							Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDihedralsBreakPoints().size()-1-i)
+					);
+		}
+		
+		Double[][] dataFrontViewWing = new Double[nYPointsWing][2];
+		IntStream.range(0, nYPointsWing)
+		.forEach(i -> {
+			dataFrontViewWing[i][0] = wingBreakPointsYCoordinates.get(i).plus(Main.getTheAircraft().getWing().getYApexConstructionAxes()).doubleValue(SI.METRE);
+			dataFrontViewWing[i][1] = wingThicknessZCoordinates.get(i)
+					.plus(Main.getTheAircraft().getWing().getZApexConstructionAxes())
+						.plus(wingBreakPointsYCoordinates.get(i)
+										.times(Math.sin(dihedralList.get(i)
+												.doubleValue(SI.RADIAN))
+												)
+										)
+							.doubleValue(SI.METRE);
+		});
+		
+		Double[][] dataFrontViewWingMirrored = new Double[nYPointsWing][2];
+		IntStream.range(0, nYPointsWing)
+		.forEach(i -> {
+			dataFrontViewWingMirrored[i][0] = -dataFrontViewWing[i][0];
+			dataFrontViewWingMirrored[i][1] = dataFrontViewWing[i][1];
+		});
+		
+		//--------------------------------------------------
+		// get data vectors from hTail discretization
+		//--------------------------------------------------
+		List<Amount<Length>> hTailBreakPointsYCoordinates = Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getYBreakPoints();
+		int nYPointsHTailTemp = hTailBreakPointsYCoordinates.size();
+		for(int i=0; i<nYPointsHTailTemp; i++)
+			hTailBreakPointsYCoordinates.add(Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getYBreakPoints().get(nYPointsHTailTemp-i-1));
+		int nYPointsHTail = hTailBreakPointsYCoordinates.size();
+		
+		List<Amount<Length>> hTailThicknessZCoordinates = new ArrayList<Amount<Length>>();
+		for(int i=0; i<Main.getTheAircraft().getHTail().getAirfoilList().size(); i++)
+			hTailThicknessZCoordinates.add(
+					Amount.valueOf(
+							Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)*
+							MyArrayUtils.getMax(Main.getTheAircraft().getHTail().getAirfoilList().get(i).getGeometry().getZCoords()),
+							SI.METER
+							)
+					);
+		for(int i=0; i<nYPointsHTailTemp; i++)
+			hTailThicknessZCoordinates.add(
+					Amount.valueOf(
+							Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getChordsBreakPoints().get(nYPointsHTailTemp-i-1).doubleValue(SI.METER)*
+							MyArrayUtils.getMin(Main.getTheAircraft().getHTail().getAirfoilList().get(nYPointsHTailTemp-i-1).getGeometry().getZCoords()),
+							SI.METER
+							)
+					);
+		
+		List<Amount<Angle>> dihedralListHTail = new ArrayList<>();
+		for (int i = 0; i < Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getDihedralsBreakPoints().size(); i++) {
+			dihedralListHTail.add(
+					Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getDihedralsBreakPoints().get(i)
+					);
+		}
+		for (int i = 0; i < Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getDihedralsBreakPoints().size(); i++) {
+			dihedralListHTail.add(
+					Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getDihedralsBreakPoints().get(
+							Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getDihedralsBreakPoints().size()-1-i)
+					);
+		}
+		
+		Double[][] dataFrontViewHTail = new Double[nYPointsHTail][2];
+		IntStream.range(0, nYPointsHTail)
+		.forEach(i -> {
+			dataFrontViewHTail[i][0] = hTailBreakPointsYCoordinates.get(i).plus(Main.getTheAircraft().getHTail().getYApexConstructionAxes()).doubleValue(SI.METRE);
+			dataFrontViewHTail[i][1] = hTailThicknessZCoordinates.get(i)
+					.plus(Main.getTheAircraft().getHTail().getZApexConstructionAxes())
+					.plus(hTailBreakPointsYCoordinates.get(i)
+									.times(Math.sin(dihedralListHTail.get(i)
+											.doubleValue(SI.RADIAN))
+											)
+									)
+						.doubleValue(SI.METRE);
+		});
+		
+		Double[][] dataFrontViewHTailMirrored = new Double[nYPointsHTail][2];
+		IntStream.range(0, nYPointsHTail)
+		.forEach(i -> {
+			dataFrontViewHTailMirrored[i][0] = -dataFrontViewHTail[i][0];
+			dataFrontViewHTailMirrored[i][1] = dataFrontViewHTail[i][1];
+		});
+		
+		//--------------------------------------------------
+		// get data vectors from vTail discretization
+		//--------------------------------------------------
+		List<Amount<Length>> vTailBreakPointsYCoordinates = Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getYBreakPoints();
+		int nYPointsVTailTemp = vTailBreakPointsYCoordinates.size();
+		for(int i=0; i<nYPointsVTailTemp; i++)
+			vTailBreakPointsYCoordinates.add(Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getYBreakPoints().get(nYPointsVTailTemp-i-1));
+		int nYPointsVTail = vTailBreakPointsYCoordinates.size();
+		
+		List<Amount<Length>> vTailThicknessZCoordinates = new ArrayList<Amount<Length>>();
+		for(int i=0; i<Main.getTheAircraft().getVTail().getAirfoilList().size(); i++)
+			vTailThicknessZCoordinates.add(
+					Amount.valueOf(
+							Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)*
+							MyArrayUtils.getMax(Main.getTheAircraft().getVTail().getAirfoilList().get(i).getGeometry().getZCoords()),
+							SI.METER
+							)
+					);
+		for(int i=0; i<nYPointsVTailTemp; i++)
+			vTailThicknessZCoordinates.add(
+					Amount.valueOf(
+							Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getChordsBreakPoints().get(nYPointsVTailTemp-i-1).doubleValue(SI.METER)*
+							MyArrayUtils.getMin(Main.getTheAircraft().getVTail().getAirfoilList().get(nYPointsVTailTemp-i-1).getGeometry().getZCoords()),
+							SI.METER
+							)
+					);
+		
+		Double[][] dataFrontViewVTail = new Double[nYPointsVTail][2];
+		IntStream.range(0, nYPointsVTail)
+		.forEach(i -> {
+			dataFrontViewVTail[i][0] = vTailThicknessZCoordinates.get(i).plus(Main.getTheAircraft().getVTail().getYApexConstructionAxes()).doubleValue(SI.METRE);
+			dataFrontViewVTail[i][1] = vTailBreakPointsYCoordinates.get(i).plus(Main.getTheAircraft().getVTail().getZApexConstructionAxes()).doubleValue(SI.METRE);
+		});
+		
+		//--------------------------------------------------
+		// get data vectors from engine discretization
+		//--------------------------------------------------
+		List<Double[][]> nacellePointsList = new ArrayList<Double[][]>();
+
+		for(int i=0; i<Main.getTheAircraft().getNacelles().getNacellesList().size(); i++) {
+
+			double[] angleArray = MyArrayUtils.linspace(0.0, 2*Math.PI, 20);
+			double[] yCoordinate = new double[angleArray.length];
+			double[] zCoordinate = new double[angleArray.length];
+
+			double radius = Main.getTheAircraft().getNacelles()
+					.getNacellesList().get(i)
+					.getDiameterMax()
+					.divide(2)
+					.doubleValue(SI.METER);
+			double y0 = Main.getTheAircraft().getNacelles()
+					.getNacellesList().get(i)
+					.getYApexConstructionAxes()
+					.doubleValue(SI.METER);
+
+			double z0 = Main.getTheAircraft().getNacelles()
+					.getNacellesList().get(i)
+					.getZApexConstructionAxes()
+					.doubleValue(SI.METER);
+
+			for(int j=0; j<angleArray.length; j++) {
+				yCoordinate[j] = radius*Math.cos(angleArray[j]);
+				zCoordinate[j] = radius*Math.sin(angleArray[j]);
+			}
+
+			Double[][] nacellePoints = new Double[yCoordinate.length][2];
+			for (int j=0; j<yCoordinate.length; j++) {
+				nacellePoints[j][0] = yCoordinate[j] + y0;
+				nacellePoints[j][1] = zCoordinate[j] + z0;
+			}
+
+			nacellePointsList.add(nacellePoints);
+		}
+		
+		List<Double[][]> listDataArrayFrontView = new ArrayList<Double[][]>();
+
+		// hTail
+		listDataArrayFrontView.add(dataFrontViewHTail);
+		listDataArrayFrontView.add(dataFrontViewHTailMirrored);
+		// vTail
+		listDataArrayFrontView.add(dataFrontViewVTail);
+		// wing
+		listDataArrayFrontView.add(dataFrontViewWing);
+		listDataArrayFrontView.add(dataFrontViewWingMirrored);
+		// fuselage
+		listDataArrayFrontView.add(dataSectionYZUpperCurve);
+		listDataArrayFrontView.add(dataSectionYZLowerCurve);
+		// nacelles
+		for (int i=0; i<nacellePointsList.size(); i++)
+			listDataArrayFrontView.add(nacellePointsList.get(i));
+		
+		double yMaxFrontView = 1.20*Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METER);
+		double yMinFrontView = -1.20*Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METRE);
+		double zMaxFrontView = yMaxFrontView; 
+		double zMinFrontView = yMinFrontView;
+		
+		int WIDTH = 700;
+		int HEIGHT = 600;
+		
+		D3PlotterOptions optionsFrontView = new D3PlotterOptions.D3PlotterOptionsBuilder()
+				.widthGraph(WIDTH).heightGraph(HEIGHT)
+				.xRange(yMinFrontView, yMaxFrontView)
+				.yRange(zMinFrontView, zMaxFrontView)
+				.axisLineColor("darkblue").axisLineStrokeWidth("2px")
+				.graphBackgroundColor("blue").graphBackgroundOpacity(0.05)
+				.title("Aircraft data representation - Front View")
+				.xLabel("y (m)")
+				.yLabel("z (m)")
+				.showXGrid(true)
+				.showYGrid(true)
+				.symbolTypes(
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE
+						)
+				.symbolSizes(2,2,2,2,2,2,2,2,2,2,2)
+				.showSymbols(false,false,false,false,false,false,false,false,false,false) // NOTE: overloaded function
+				.symbolStyles(
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2"
+						)
+				.lineStyles(
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2"
+						)
+				.plotAreas(true,true,true,true,true,true,true,true,true,true)
+				.areaStyles("fill:blue;","fill:blue;","fill:yellow;","fill:lightblue;","fill:lightblue;","fill:white;","fill:white;",
+						"fill:orange;","fill:orange;")
+				.areaOpacities(1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0)
+				.showLegend(false)
+				.build();
+		
+		D3Plotter d3Plotter = new D3Plotter(
+				optionsFrontView,
+				listDataArrayFrontView
+				);
+
+		//define d3 content as post loading hook
+		Runnable postLoadingHook = () -> {
+
+			//--------------------------------------------------
+			// Create the D3 graph
+			//--------------------------------------------------
+			d3Plotter.createD3Content();
+			
+			//--------------------------------------------------
+			// output
+			String outputFilePathFrontView = Main.getOutputDirectoryPath() 
+					+ File.separator 
+					+ "AircraftFrontView.svg";
+			d3Plotter.saveSVG(outputFilePathFrontView);
+
+
+		}; // end-of-Runnable
+
+		// create the Browser/D3
+		//create browser
+		JavaFxD3Browser browserFrontView = d3Plotter.getBrowser(postLoadingHook, false);
+
+		//create the scene
+		Scene sceneFrontView = new Scene(browserFrontView, WIDTH+10, HEIGHT+10, Color.web("#666970"));
+		Main.getAircraftFrontViewPane().getChildren().add(sceneFrontView.getRoot());
+	}
+	
 	public static void logAircraftDefaultToInterface() {
 
 		// print the toString method of the aircraft inside the text area of the GUI ...

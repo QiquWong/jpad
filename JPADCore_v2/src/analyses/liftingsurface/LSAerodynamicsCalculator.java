@@ -8,41 +8,26 @@ import java.util.List;
 import java.util.Map;
 
 import javax.measure.quantity.Angle;
-import javax.measure.quantity.Area;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
-import org.apache.commons.math3.linear.MatrixUtils;
-import org.apache.commons.math3.linear.RealMatrix;
 import org.jscience.physics.amount.Amount;
 
-import com.sun.swing.internal.plaf.metal.resources.metal_zh_HK;
-
 import aircraft.auxiliary.airfoil.Airfoil;
-import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
-import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.powerplant.Engine;
 import analyses.OperatingConditions;
-import analyses.analysismodel.InnerCalculator;
-import analyses.liftingsurface.LSAerodynamicsManager.CalcCLAtAlpha;
-import analyses.liftingsurface.LSAerodynamicsManager.CalcHighLiftDevices;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.AnglesCalc;
 import calculators.aerodynamics.LiftCalc;
 import calculators.aerodynamics.NasaBlackwell;
-import calculators.stability.StabilityCalculators;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.ComponentEnum;
-import configuration.enumerations.EngineTypeEnum;
-import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.MethodEnum;
-import jahuwaldt.tools.tables.NASAReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
-import standaloneutils.customdata.MyArray;
 
 public class LSAerodynamicsCalculator {
 
@@ -97,7 +82,8 @@ public class LSAerodynamicsCalculator {
 	private Map <MethodEnum, Double> _cLMax;
 	private Map <MethodEnum, Amount<?>> _cLAlpha;
 	private Map <MethodEnum, List<Double>> _liftCoefficient3DCurve;
-	private Map <MethodEnum, List<Double>> _liftCoefficientDistribution;
+	private Map <MethodEnum, double[]> _liftCoefficientDistribution;
+	private Map <MethodEnum, double[]> _liftCoefficientDistributionAtCLMax;
 	private Map <MethodEnum, List<Amount<Force>>> _liftDistribution;
 	private Map <MethodEnum, List<Double>> _liftCoefficientDistributionBasicLoad;
 	private Map <MethodEnum, List<Amount<Force>>> _basicLoadDistribution;
@@ -287,7 +273,8 @@ public class LSAerodynamicsCalculator {
 		this._cLMax = new HashMap<MethodEnum, Double>();
 		this._cLAlpha = new HashMap<MethodEnum, Amount<?>>();
 		this._liftCoefficient3DCurve = new HashMap<MethodEnum, List<Double>>();
-		this._liftCoefficientDistribution = new HashMap<MethodEnum, List<Double>>();
+		this._liftCoefficientDistribution = new HashMap<MethodEnum, double[]>();
+		this._liftCoefficientDistributionAtCLMax = new HashMap<MethodEnum, double[]>();
 		this._liftDistribution = new HashMap<MethodEnum, List<Amount<Force>>>();
 		this._liftCoefficientDistributionBasicLoad = new HashMap<MethodEnum, List<Double>>();
 		this._basicLoadDistribution = new HashMap<MethodEnum, List<Amount<Force>>>();
@@ -1162,18 +1149,26 @@ public class LSAerodynamicsCalculator {
 		 */
 		public void nasaBlackwell() {
 
-			boolean firstIntersectionFound = false;
-			int stepsToStallCounter = 0;
-			double accuracy =0.0001;
-			double diffCL = 0;
-			double diffCLappOld = 0;
-			double diffCLapp = 0;
-			boolean findStall = false;
-			Amount<Angle> alphaNewAmount;
-
 			double[] alphaArrayNasaBlackwell = MyArrayUtils.linspace(0.0, 30, 31);
 			double[] clDistributionActualNasaBlackwell = new double[_numberOfPointSemiSpanWise]; 
-					
+			boolean firstIntersectionFound = false;
+			int indexOfFirstIntersection = 0;
+			int indexOfAlphaFirstIntersection = 0;
+			double diffCLapp = 0;
+			double diffCLappOld = 0;
+			double diffCL = 0;
+			double accuracy =0.0001;
+			double deltaAlpha = 0.0;
+			Amount<Angle> alphaNew = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+			
+			double[] twistDistributionRadians = new double[_numberOfPointSemiSpanWise];
+			double[] alphaZeroLiftDistributionRadians = new double[_numberOfPointSemiSpanWise];
+			
+			for (int i=0; i< _numberOfPointSemiSpanWise; i++) {
+				twistDistributionRadians[i] = _twistDistribution.get(i).doubleValue(SI.RADIAN);
+				alphaZeroLiftDistributionRadians[i] = _alphaZeroLiftDistribution.get(i).doubleValue(SI.RADIAN);
+			}
+			
 			NasaBlackwell theNasaBlackwellCalculator = new NasaBlackwell(
 					_theLiftingSurface.getSemiSpan().doubleValue(SI.METER),
 					_theLiftingSurface.getSurface().doubleValue(SI.SQUARE_METRE),
@@ -1181,199 +1176,122 @@ public class LSAerodynamicsCalculator {
 					MyArrayUtils.convertListOfAmountTodoubleArray(_chordDistribution),
 					MyArrayUtils.convertListOfAmountTodoubleArray(_xLEDistribution),
 					MyArrayUtils.convertListOfAmountTodoubleArray(_dihedralDistribution),
-					MyArrayUtils.convertListOfAmountTodoubleArray(_twistDistribution),
-					MyArrayUtils.convertListOfAmountTodoubleArray(_alphaZeroLiftDistribution),
+					twistDistributionRadians,
+					alphaZeroLiftDistributionRadians,
 					_vortexSemiSpanToSemiSpanRatio,
 					0.0,
 					_theOperatingConditions.getMachCurrent(),
 					_theOperatingConditions.getAltitude().doubleValue(SI.METER)
 					);
-			
+
 			// TODO: try to use nasa Blackwell also for vtail
 			if (_theLiftingSurface.getType() != ComponentEnum.VERTICAL_TAIL) {
-				for (int j=0; j < alphaArrayNasaBlackwell.length; j++) {
-					if (firstIntersectionFound == false) {
-						for(int i =0; i< _numberOfPointSemiSpanWise; i++) {
-							theNasaBlackwellCalculator.calculate(
-									Amount.valueOf(
-											alphaArrayNasaBlackwell[i],
-											NonSI.DEGREE_ANGLE).to(SI.RADIAN)
-									);
-							clDistributionActualNasaBlackwell = 
-									theNasaBlackwellCalculator
-									.get_clTotalDistribution()
-									.toArray();
-							if (firstIntersectionFound == false 
-									&& clDistributionActualNasaBlackwell[i] 
-											> _clMaxDistribution.get(i)) {
+				for (int i=0; i < alphaArrayNasaBlackwell.length; i++) {
+					if(firstIntersectionFound == false) {
+						theNasaBlackwellCalculator.calculate(
+								Amount.valueOf(
+										alphaArrayNasaBlackwell[i],
+										NonSI.DEGREE_ANGLE).to(SI.RADIAN)
+								);
+						clDistributionActualNasaBlackwell = 
+								theNasaBlackwellCalculator
+								.getClTotalDistribution()
+								.toArray();
 
-								// TODO : CONTINUE FROM HERE !!
-								
-								//@author Manuela ruocco
-								// After find the first point where CL_wing > Cl_MAX_airfoil, starts an iteration on alpha
-								// in order to improve the accuracy.
-
-								for (int k =i; k< _numberOfPointSemiSpanWise; k++) {
-									diffCLapp = ( cLMap.getCxyVsAlphaTable()
-											.get( MethodEnum.NASA_BLACKWELL,
-													alphaArray.getAsAmount(j)).get(k) -  clAirfoils.get(k));
-									diffCL = Math.max(diffCLapp, diffCLappOld);
-									diffCLappOld = diffCL;
-								}
-								if( Math.abs(diffCL) < accuracy){
-									cLMap.getcXMaxMap().put(MethodEnum.NASA_BLACKWELL, (
-											cLMap.getcXVsAlphaTable()
-											.get(MethodEnum.NASA_BLACKWELL, alphaArray.getAsAmount(j))));
-									found = true;
-									alphaAtCLMax = alphaArray.getAsAmount(j); 
-								}
-
-								else{
-									deltaAlpha = alphaArray.getAsAmount(j).getEstimatedValue()
-											- alphaArray.getAsAmount(j-1).getEstimatedValue();
-									alphaNew = alphaArray.getAsAmount(j).getEstimatedValue() - (deltaAlpha/2);
-									double alphaOld = alphaArray.getAsAmount(j).getEstimatedValue(); 
-									alphaNewAmount = Amount.valueOf(alphaNew, SI.RADIAN);
-									diffCLappOld = 0;
-									while ( diffCL > accuracy){
-										calculateCLAtAlpha.nasaBlackwell(alphaNewAmount);
-										//									cLMap.getCxyVsAlphaTable().put(MethodEnum.NASA_BLACKWELL,
-										//											alphaNewAmount, calculateLiftDistribution.getNasaBlackwell()
-										//											.get_clTotalDistribution());
-										diffCL = 0;
-
-										for (int m =0; m< _nPointsSemispanWise; m++) {
-											diffCLapp = ( cLMap.getCxyVsAlphaTable()
-													.get( MethodEnum.NASA_BLACKWELL,
-															alphaNewAmount).get(m) -  clAirfoils.get(m));
-
-											if ( diffCLapp > 0 ){
-												diffCL = Math.max(diffCLapp,diffCLappOld);
-												diffCLappOld = diffCL;
-											}
-
-										}
-										deltaAlpha = Math.abs(alphaOld - alphaNew);
-										alphaOld = alphaNew;
-										if (diffCL == 0 ){
-											alphaNew = alphaOld + (deltaAlpha/2);
-											alphaNewAmount = Amount.valueOf(alphaNew, SI.RADIAN);
-											diffCL = 1;
-											diffCLappOld = 0;
-										}
-										else { 
-											if(deltaAlpha > 0.005){
-												alphaNew = alphaOld - (deltaAlpha/2);	
-												alphaNewAmount = Amount.valueOf(alphaNew, SI.RADIAN);
-												diffCLappOld = 0;
-												if ( diffCL < accuracy) break;
-											}
-											else {
-												alphaNew = alphaOld - (deltaAlpha);	
-												alphaNewAmount = Amount.valueOf(alphaNew, SI.RADIAN);
-												diffCLappOld = 0;
-												if ( diffCL < accuracy) break;}}
-
-									}
-									alphaAtCLMax = Amount.valueOf(alphaNew, SI.RADIAN);
-									cLMap.getcXMaxMap().put(MethodEnum.NASA_BLACKWELL, (
-											cLMap.getcXVsAlphaTable()
-											.get(MethodEnum.NASA_BLACKWELL, alphaAtCLMax)))	;
-									found = true;
-								}
-								set_alphaStall(alphaAtCLMax);
+						for(int j =0; j < _numberOfPointSemiSpanWise; j++) {
+							if( clDistributionActualNasaBlackwell[j] > _clMaxDistribution.get(j)) {
+								firstIntersectionFound = true;
+								indexOfFirstIntersection = j;
+								break;
 							}
 						}
 					}
-
-					alphaAtCLMax = alphaEnd.copy(); 
-
-					while (found == false && stepsToStallCounter < 15) {
-						double alphaOld = alphaAtCLMax.getEstimatedValue();
-						alphaAtCLMax = alphaAtCLMax.plus(Amount.valueOf(toRadians(0.3), SI.RADIAN)).copy();
-						calculateCLAtAlpha.nasaBlackwell(alphaAtCLMax);
-						stepsToStallCounter++;
-
-						for(int i =0; i < _nPointsSemispanWise; i++) {
-							if (cLMap.getCxyVsAlphaTable()
-									.get(MethodEnum.NASA_BLACKWELL, alphaAtCLMax)
-									.get(i) 
-									> clAirfoils.get(i) ) {
-
-								diffCLappOld = 0;
-								for (int k =i; k< _nPointsSemispanWise; k++) {
-									diffCLapp = (cLMap.getCxyVsAlphaTable()
-											.get( MethodEnum.NASA_BLACKWELL,
-													alphaAtCLMax).get(k) -  clAirfoils.get(k));
-									diffCL = Math.max(diffCLapp, diffCLappOld);
-									diffCLappOld = diffCL;
-								}
-								if( Math.abs(diffCL) < accuracy){
-									cLMap.getcXMaxMap().put(MethodEnum.NASA_BLACKWELL, (
-											cLMap.getcXVsAlphaTable()
-											.get(MethodEnum.NASA_BLACKWELL, alphaAtCLMax)));
-									found = true;
-								}
-								else{
-									deltaAlpha = alphaAtCLMax.getEstimatedValue() - alphaAtCLMax.minus(Amount.valueOf(toRadians(0.3), SI.RADIAN)).copy().getEstimatedValue();
-									alphaNew = alphaAtCLMax.getEstimatedValue() - (deltaAlpha/2);
-									alphaNewAmount = Amount.valueOf(toRadians(alphaNew), SI.RADIAN);
-									alphaOld = alphaAtCLMax.getEstimatedValue(); 
-									alphaNewAmount = Amount.valueOf(alphaNew, SI.RADIAN);
-									diffCLappOld = 0;
-									while ( diffCL > accuracy){
-										calculateCLAtAlpha.nasaBlackwell(alphaNewAmount);
-										diffCL = 0;
-
-										for (int m =0; m< _nPointsSemispanWise; m++) {
-
-											diffCLapp = ( cLMap.getCxyVsAlphaTable()
-													.get( MethodEnum.NASA_BLACKWELL,
-															alphaNewAmount).get(m) -  clAirfoils.get(m));
-
-											if ( diffCLapp > 0 ){
-												diffCL = Math.max(diffCLapp,diffCLappOld);
-												diffCLappOld = diffCL;
-											}
-										}
-										deltaAlpha = Math.abs(alphaOld - alphaNew);
-										alphaOld = alphaNew;
-										if (diffCL == 0 ){
-											alphaNew = alphaOld + (deltaAlpha/2);
-											alphaNewAmount = Amount.valueOf(alphaNew, SI.RADIAN);
-											diffCL = 1;
-											diffCLappOld = 0;
-										}
-										else { 
-											if(deltaAlpha > 0.005){
-												alphaNew = alphaOld - (deltaAlpha/2);	
-												alphaNewAmount = Amount.valueOf(alphaNew, SI.RADIAN);
-												diffCLappOld = 0;
-												if ( diffCL < accuracy) {
-													_findStall =true;
-													break;
-												}
-											}
-											else {
-												alphaNew = alphaOld - (deltaAlpha);	
-												alphaNewAmount = Amount.valueOf(alphaNew, SI.RADIAN);
-												diffCLappOld = 0;
-												if ( diffCL < accuracy) {
-													_findStall = true;
-													break;
-												}
-											}
-										}
-									}
-									alphaAtCLMax = Amount.valueOf(alphaNew, SI.RADIAN);
-								}
-							}
-							if ( _findStall == true ) break;
-						}
-
-						set_alphaStall(alphaAtCLMax);
+					else {
+						indexOfAlphaFirstIntersection = i;
+						break;
 					}
 				}
+			}
+			
+			//@author Manuela ruocco
+			// After find the first point where CL_wing > Cl_MAX_airfoil, starts an iteration on alpha
+			// in order to improve the accuracy.
+
+			for (int k = indexOfFirstIntersection; k< _numberOfPointSemiSpanWise; k++) {
+				diffCLapp = ( clDistributionActualNasaBlackwell[k] -  _clMaxDistribution.get(k));
+				diffCL = Math.max(diffCLapp, diffCLappOld);
+				diffCLappOld = diffCL;
+			}
+			if( Math.abs(diffCL) < accuracy){
+				_cLMax.put(MethodEnum.NASA_BLACKWELL, theNasaBlackwellCalculator.getCLCurrent());
+				_alphaMaxLinear.put(
+						MethodEnum.NASA_BLACKWELL,
+						Amount.valueOf(
+								theNasaBlackwellCalculator.getAlphaCurrent(),
+								NonSI.DEGREE_ANGLE)
+						); 
+			}
+			else{
+				deltaAlpha = alphaArrayNasaBlackwell[indexOfAlphaFirstIntersection] 
+							- alphaArrayNasaBlackwell[indexOfAlphaFirstIntersection-1];
+				alphaNew = Amount.valueOf(
+						(alphaArrayNasaBlackwell[indexOfAlphaFirstIntersection] - (deltaAlpha/2)),
+						NonSI.DEGREE_ANGLE
+						).to(SI.RADIAN);
+				double alphaOld = alphaArrayNasaBlackwell[indexOfAlphaFirstIntersection]; 
+				diffCLappOld = 0;
+				while ( diffCL > accuracy){
+					diffCL = 0;
+					theNasaBlackwellCalculator.calculate(alphaNew);
+					clDistributionActualNasaBlackwell = theNasaBlackwellCalculator
+							.getClTotalDistribution()
+								.toArray();
+					for (int m =0; m< _numberOfPointSemiSpanWise; m++) {
+						diffCLapp = clDistributionActualNasaBlackwell[m] - _clMaxDistribution.get(m);
+
+						if ( diffCLapp > 0 ){
+							diffCL = Math.max(diffCLapp,diffCLappOld);
+							diffCLappOld = diffCL;
+						}
+
+					}
+					deltaAlpha = Math.abs(alphaOld - alphaNew.doubleValue(NonSI.DEGREE_ANGLE));
+					alphaOld = alphaNew.doubleValue(NonSI.DEGREE_ANGLE);
+					if (diffCL == 0){ //this means that diffCL would have been negative
+						alphaNew = Amount.valueOf(
+								alphaOld + (deltaAlpha/2),
+								NonSI.DEGREE_ANGLE
+								);
+						diffCL = 1; // generic positive value in order to enter again in the while cycle 
+						diffCLappOld = 0;
+					}
+					else { 
+						if(deltaAlpha > 0.005){
+							alphaNew = Amount.valueOf(
+									alphaOld - (deltaAlpha/2),
+									NonSI.DEGREE_ANGLE
+									);	
+							diffCLappOld = 0;
+							if ( diffCL < accuracy) break;
+						}
+						else {
+							alphaNew = Amount.valueOf(
+									alphaOld - (deltaAlpha),
+									NonSI.DEGREE_ANGLE
+									);	
+							diffCLappOld = 0;
+							if ( diffCL < accuracy) 
+								break;
+						}
+					}
+				}
+				theNasaBlackwellCalculator.calculate(alphaNew.to(SI.RADIAN));
+				_liftCoefficientDistributionAtCLMax.put(
+						MethodEnum.NASA_BLACKWELL,
+						theNasaBlackwellCalculator.getClTotalDistribution().toArray()
+						);
+				_cLMax.put(MethodEnum.NASA_BLACKWELL, theNasaBlackwellCalculator.getCLCurrent())	;
+				_alphaMaxLinear.put(MethodEnum.NASA_BLACKWELL, alphaNew);
 			}
 		}
 
@@ -1547,10 +1465,10 @@ public class LSAerodynamicsCalculator {
 	public void setLiftCoefficient3DCurve(Map<MethodEnum, List<Double>> _liftCoefficient3DCurve) {
 		this._liftCoefficient3DCurve = _liftCoefficient3DCurve;
 	}
-	public Map<MethodEnum, List<Double>> getLiftCoefficientDistribution() {
+	public Map<MethodEnum, double[]> getLiftCoefficientDistribution() {
 		return _liftCoefficientDistribution;
 	}
-	public void setLiftCoefficientDistribution(Map<MethodEnum, List<Double>> _liftCoefficientDistribution) {
+	public void setLiftCoefficientDistribution(Map<MethodEnum, double[]> _liftCoefficientDistribution) {
 		this._liftCoefficientDistribution = _liftCoefficientDistribution;
 	}
 	public Map<MethodEnum, List<Amount<Force>>> getLiftDistribution() {
@@ -1572,6 +1490,15 @@ public class LSAerodynamicsCalculator {
 	public void setBasicLoadDistribution(Map<MethodEnum, List<Amount<Force>>> _basicLoadDistribution) {
 		this._basicLoadDistribution = _basicLoadDistribution;
 	}
+	
+	public Map <MethodEnum, double[]> getLiftCoefficientDistributionAtCLMax() {
+		return _liftCoefficientDistributionAtCLMax;
+	}
+
+	public void setLiftCoefficientDistributionAtCLMax(Map <MethodEnum, double[]> _liftCoefficientDistributionAtCLMax) {
+		this._liftCoefficientDistributionAtCLMax = _liftCoefficientDistributionAtCLMax;
+	}
+
 	public Map<MethodEnum, List<Double>> getLiftCoefficientDistributionAdditionalLoad() {
 		return _liftCoefficientDistributionAdditionalLoad;
 	}
