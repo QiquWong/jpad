@@ -79,6 +79,10 @@ public class ReaderWriterWing {
 		double meanAirfoilThickness = Double.parseDouble(reader.getXMLPropertiesByPath("//max_thickness_mean_airfoil").get(0));
 		input.setMeanThickness(meanAirfoilThickness);
 		
+		double [] yApp = new double[numberOfPointSemispan];
+		yApp = MyArrayUtils.linspace(0, 1, numberOfPointSemispan);
+		input.setyStationsAdimensional(yApp);
+	
 		
 		//-------------------------------------------------------------------------------------
 		//DISTRIBUTION
@@ -128,7 +132,7 @@ public class ReaderWriterWing {
 				else if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.DOUBLE_WEDGE)
 					airfoilFamilyIndex = 8;
 				
-				
+			
 		double sharpnessParameterLE = aeroDatabaseReader.getDeltaYvsThickness(input.getMeanThickness(), airfoilFamilyIndex);
 									
 		List<String> chordDistribution = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//chord_distribution").get(0));
@@ -154,12 +158,13 @@ public class ReaderWriterWing {
 		
 		// It is possible to accept as input the main point or the complete curves
 		
-		// MAIN POINTS--------------------------------------------------------------------------------------------------------------------
 		String inputMethod = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
 						"//wing_executable/@method_input");
 		
+//----1-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+		// MAIN POINTS--------------------------------------------------------------------------------------------------------------------
 			if(inputMethod.equalsIgnoreCase("MAIN_POINTS")) {
 				
 				List<String> alphaZeroLiftDistribution = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//alpha_zero_lift_distribution").get(0));
@@ -228,15 +233,27 @@ public class ReaderWriterWing {
 					 System.err.println("WARNING! the number of declared section differs from the number of cl alpha. ( number of section = " + input.getNumberOfSections()
 					 + " ; number of cl alpha  = " + input.getClAlphaDistribution().size()+ " )");
 				}
-				
-		
-			
+							
 			// Built of interpolated curve---------------------------------------------------------------------
-			for (int i=0; i<input.getNumberOfSections(); i++)
-			Calculator.calculateClvsAlphaAirfoil(input, i);
+				
+				//alphaArray
+				double alphaMin = 0.0;
+				double alphaMax = 0.0;
+				double[] alphaMinTemp = MyArrayUtils.convertListOfAmountodoubleArray(input.getAlphaZeroLiftDistribution());
+				double[] alphaMaxTemp = MyArrayUtils.convertListOfAmountodoubleArray(input.getAlphaStallDistribution());
+				alphaMin = MyArrayUtils.getMin(alphaMinTemp);
+				alphaMax =  MyArrayUtils.getMin(alphaMaxTemp);
+				
+				input.setAlphaArrayCompleteCurveAirfoil(MyArrayUtils.linspace(alphaMin-2, alphaMax+5, input.getNumberOfPoint2DCurve()));
+				
+				// cl
+				for (int i=0; i<input.getNumberOfSections(); i++)
+					Calculator.calculateClvsAlphaAirfoil(input, i);
 			
 			}
 			
+			
+//----2-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------			
 		  // COMPLETE CURVE-------------------------------------------------------------------------------------------------	
 			else if(inputMethod.equalsIgnoreCase("COMPLETE_CURVE")) {
 			
@@ -269,6 +286,14 @@ public class ReaderWriterWing {
 				// Built of interpolated curve---------------------------------------------------------------------
 				
 				int numberOfPoint = input.getNumberOfPoint2DCurve();
+				
+				double [] alphaArrayCompleteCurve= null;
+				alphaArrayCompleteCurve = MyArrayUtils.linspace(-6, 25, 32);
+				for (int j=0; j<alphaArrayCompleteCurve.length; j++){	
+				input.getAlphaArrayCompleteCurveAirfoil().add(j,alphaArrayCompleteCurve[j]);
+				}
+				
+				System.out.println(" alpha array " + input.getAlphaArrayCompleteCurveAirfoil().size() );
 						
 				for ( int i=0; i<input.getNumberOfSections(); i++){
 					
@@ -281,7 +306,7 @@ public class ReaderWriterWing {
 					}
 					
 					double alphaInitialAirfoilArray, alphaFinalAirfoilArray;
-					double [] alphaArrayCompleteCurve= null, clArrayCompleteCurve = null;
+					double [] clArrayCompleteCurve = null;
 					double clAlphaTemp = 0;
 					
 					clAlphaTemp = (input.getClAirfoils().get(i).get(1)-input.getClAirfoils().get(i).get(0))/
@@ -295,16 +320,16 @@ public class ReaderWriterWing {
 						input.getClAirfoils().get(i).add(0, 0.0);
 						
 					}
-					alphaInitialAirfoilArray = input.getAlphaAirfoils().get(i).get(0).getEstimatedValue();
-					alphaFinalAirfoilArray = input.getAlphaAirfoils().get(i).get(input.getAlphaAirfoils().get(i).size()-1).getEstimatedValue();
 				
 					// INTERPOLATED VALUE ARRAYS
 					
 					System.out.println("\n cl airfoil " + Arrays.toString(MyArrayUtils.convertListTodoubleArray(input.getClAirfoils().get(i))));
-					alphaArrayCompleteCurve = MyArrayUtils.linspace(alphaInitialAirfoilArray, alphaFinalAirfoilArray, numberOfPoint);
-					input.getAlphaArrayCompleteCurveAirfoil().add(i,alphaArrayCompleteCurve);
-					clArrayCompleteCurve = MyArrayUtils.convertToDoublePrimitive(MyMathUtils.getInterpolatedValue1DLinear(MyArrayUtils.convertListOfAmountodoubleArrayAngle(input.getAlphaAirfoils().get(i)), 
-							MyArrayUtils.convertListTodoubleArray(input.getClAirfoils().get(i)), alphaArrayCompleteCurve));
+					
+					clArrayCompleteCurve = MyArrayUtils.convertToDoublePrimitive(
+							MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertListOfAmountTodoubleArray(input.getAlphaAirfoils().get(i)), 
+									MyArrayUtils.convertListTodoubleArray(input.getClAirfoils().get(i)), alphaArrayCompleteCurve));
+					
 					input.getClArrayCompleteCurveAirfoil().add(i,clArrayCompleteCurve);
 					
 					System.out.println(" alpha array " + Arrays.toString(MyArrayUtils.convertListOfAmountodoubleArrayAngle(input.getAlphaAirfoils().get(i))));
@@ -374,6 +399,55 @@ public class ReaderWriterWing {
 			else if(inputMethod.isEmpty() || !inputMethod.equalsIgnoreCase("MAIN_POINTS") || !inputMethod.equalsIgnoreCase("COMPLETE_CURVE")) {
 				System.err.println("No valid input! wing_executable method_input = MAIN_POINTS or COMPLETE_CURVE");
 			}
+			
+//----------------------------------------------------------------------------------------------------------------------------------------------------------//
+//                                                                                                                                                          //   
+//                                                                                                                                                          //
+//----------------------------------------------------------------------------------------------------------------------------------------------------------//
+			
+	// Bidimensional airfoil curves as matrix
+	//
+	//  --------------------------> number of point semi span
+	//  |   |
+	//  | c |
+	//  | l	|
+	//	|	|
+	//	|
+	// \/
+	// number of point 2d curve (100)
+
+			double [] clLocalCurve = new double [input.getNumberOfPoint2DCurve()];
+			
+			double [] clInputStation = new double [input.getyAdimensionalStationInput().size()];
+
+
+			for (int i=0; i<input.getNumberOfPointSemispan(); i++){
+				for (int j=0; j<input.getNumberOfPoint2DCurve(); j++){
+
+					for (int k=0; k<input.getyAdimensionalStationInput().size(); k++)	{
+						System.out.println(" alpha array " + input.getAlphaArrayCompleteCurveAirfoil().size());
+						System.out.println(" cl array " + input.getClArrayCompleteCurveAirfoil().get(k).length);
+						clInputStation[k] = MyMathUtils.getInterpolatedValue1DLinear(
+								MyArrayUtils.convertToDoublePrimitive(input.getAlphaArrayCompleteCurveAirfoil()),
+								input.getClArrayCompleteCurveAirfoil().get(k), 
+								input.getAlphaArrayCompleteCurveAirfoil().get(j));
+					}
+
+					clLocalCurve[j] = MyMathUtils.getInterpolatedValue1DLinear(
+							clInputStation, 
+							MyArrayUtils.convertToDoublePrimitive(input.getyAdimensionalStationInput()) ,
+							input.getyStationsAdimensional()[i]
+							);
+
+					input.getClAirfoilMatrix()[j][i] = clLocalCurve[j];
+				}
+
+				clLocalCurve = new double [input.getNumberOfPoint2DCurve()];
+			}
+
+			
+
+			
 			
 	// OTHER VALUES
 		double span = Math.sqrt(input.getAspectRatio() * input.getSurface().getEstimatedValue());
@@ -456,8 +530,8 @@ public class ReaderWriterWing {
 				System.out.print(Arrays.toString(input.getClArrayCompleteCurveAirfoil().get(i)) + "\n");
 			
 			System.out.println("\n ALPHAS");
-			for(int i=0; i<input.getNumberOfSections(); i++)
-				System.out.print(Arrays.toString(input.getAlphaArrayCompleteCurveAirfoil().get(i)) + "\n");
+			System.out.print((input.getAlphaArrayCompleteCurveAirfoil()) + "\n");
+			
 			
 //		System.out.print("Alpha Stall distribution: [");
 //			for(int i=0; i<input.getAlphaStallDistribution().size(); i++)
@@ -466,7 +540,6 @@ public class ReaderWriterWing {
 					
 				
 	}
-	
 	public static void writeToXML(String filenameWithPathAndExt, InputOutputTree input) {
 		
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();

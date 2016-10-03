@@ -13,6 +13,8 @@ import org.jscience.physics.amount.Amount;
 
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.FlapTypeEnum;
+import standaloneutils.MyArrayUtils;
+import standaloneutils.MyMathUtils;
 
 public class InputOutputTree {
 	//------------------------------------------------------------------------------------------
@@ -58,8 +60,10 @@ public class InputOutputTree {
 	yAdimensionalStationInput, cl0Distribution, clAlphaDistribution;
 
 	// Complete curve of input airfoils
-	List<double[]> alphaArrayCompleteCurveAirfoil;
+	double[] alphaArrayCompleteCurveAirfoil;
     List<double[]> clArrayCompleteCurveAirfoil;
+    
+    double [] [] clAirfoilMatrix;
 
 	// OUTPUT 
 
@@ -94,6 +98,8 @@ public class InputOutputTree {
 		alphaInitial = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		alphaFinal = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		sweepLE = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+
+		numberOfPoint2DCurve = 100;
 
 		altitude = Amount.valueOf(0.0, SI.METER);
 
@@ -130,10 +136,11 @@ public class InputOutputTree {
 		alphaAirfoilsInterpolated = new ArrayList<>();
 		cLAirfoilsInterpolated = new ArrayList<>();
 		
-		alphaArrayCompleteCurveAirfoil = new ArrayList<double[]>();
+		alphaArrayCompleteCurveAirfoil = new double[numberOfPoint2DCurve];
 		clArrayCompleteCurveAirfoil = new ArrayList<double[]>();
 		
-		numberOfPoint2DCurve = 100;
+		
+		clAirfoilMatrix = new double [numberOfPoint2DCurve][numberOfPointSemispan];
 		
 	}
 
@@ -614,12 +621,12 @@ public class InputOutputTree {
 	}
 
 
-	public List<double[]> getAlphaArrayCompleteCurveAirfoil() {
+	public double[] getAlphaArrayCompleteCurveAirfoil() {
 		return alphaArrayCompleteCurveAirfoil;
 	}
 
 
-	public void setAlphaArrayCompleteCurveAirfoil(List<double[]> alphaArrayCompleteCurveAirfoil) {
+	public void setAlphaArrayCompleteCurveAirfoil(double[] alphaArrayCompleteCurveAirfoil) {
 		this.alphaArrayCompleteCurveAirfoil = alphaArrayCompleteCurveAirfoil;
 	}
 
@@ -661,6 +668,16 @@ public class InputOutputTree {
 
 	public void setAlphaAnalysisValues(List<Amount> alphaAnalysisValues) {
 		this.alphaAnalysisValues = alphaAnalysisValues;
+	}
+
+
+	public double[][] getClAirfoilMatrix() {
+		return clAirfoilMatrix;
+	}
+
+
+	public void setClAirfoilMatrix(double[][] clAirfoilMatrix) {
+		this.clAirfoilMatrix = clAirfoilMatrix;
 	}
 
 
