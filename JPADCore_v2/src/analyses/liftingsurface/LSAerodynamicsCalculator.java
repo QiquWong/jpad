@@ -64,10 +64,6 @@ public class LSAerodynamicsCalculator {
 	private List<Amount<Length>> _xLEDistribution;
 	private List<Double> _clMaxDistribution;
 	
-	// THIS ENGINE HAS TO BE SET IN ACAerodynamicsManager AFTER 
-	// THE CREATION OF THE LSAerodynamicsCalculator.
-	private Engine _theEngine;
-	
 	// CRITICAL MACH NUMBER
 	private Map <MethodEnum, Double> _criticalMachNumber;
 	
@@ -1325,14 +1321,6 @@ public class LSAerodynamicsCalculator {
 	public void setTheLiftingSurface(LiftingSurface _theLiftingSurface) {
 		this._theLiftingSurface = _theLiftingSurface;
 	}
-	public Engine getTheEngine() {
-		return _theEngine;
-	}
-
-	public void setTheEngine(Engine _theEngine) {
-		this._theEngine = _theEngine;
-	}
-
 	public OperatingConditions getTheOperatingConditions() {
 		return _theOperatingConditions;
 	}
