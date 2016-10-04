@@ -22,38 +22,46 @@ public class DatcomOutputFileReader extends AbstractOutputFileReader implements 
 		return (theFile != null);
 	}
 
-	public enum LINE_POSITION {
+	public enum LINE_POSITION_PARAMS {
         MACH_NUMBER(1),
         ALTITUDE(2),
         VELOCITY(3),
         PRESSURE(4),
         TEMPERATURE(5),
-        REYNOLDS_NUMBER(6),
-        REF_AREA(7)
+        REYNOLDS_NUMBER_PER_UNITLENGTH(6),
+        REF_AREA(7),
+        REF_LENGTH_LONG(8),
+        REF_LENGTH_LAT(9),
+        MOMENT_REF_HORIZ(10),
+        MOMENT_REF_VERT(11)
         ;
 
         private final int value;
 
-        LINE_POSITION(final int newValue) {
+        LINE_POSITION_PARAMS(final int newValue) {
             value = newValue;
         }
 
         public int getValue() { return value; }
     }
 	
-	public enum VARIABLE_NAME {
+	public enum PARAMS_NAME {
         MACH_NUMBER("MACH_NUMBER"),
         ALTITUDE("ALTITUDE"),
         VELOCITY("VELOCITY"),
         PRESSURE("PRESSURE"),
         TEMPERATURE("TEMPERATURE"),
-        REYNOLDS_NUMBER("REYNOLDS_NUMBER"),
-        REF_AREA("REF_AREA")
+        REYNOLDS_NUMBER_PER_UNITLENGTH("REYNOLDS_NUMBER_PER_UNITLENGTH"),
+        REF_AREA("REF_AREA"),
+        REF_LENGTH_LONG("REF_LENGTH_LONG"),
+        REF_LENGTH_LAT("REF_LENGTH_LAT"),
+        MOMENT_REF_HORIZ("MOMENT_REF_HORIZ"),
+        MOMENT_REF_VERT("MOMENT_REF_VERT")
         ;
 
         private final String text;
 
-        VARIABLE_NAME(final String newText) {
+        PARAMS_NAME(final String newText) {
             this.text = newText;
         }
 
@@ -144,28 +152,111 @@ public class DatcomOutputFileReader extends AbstractOutputFileReader implements 
 
 							// ============================================ Mach number
 							
-							Double mach = Double.valueOf(splitString[LINE_POSITION.MACH_NUMBER.getValue()]);
+							Double mach = Double.valueOf(splitString[LINE_POSITION_PARAMS.MACH_NUMBER.getValue()]);
 							System.out.println("Mach = " + mach);
 
 							List<Number> machList = new ArrayList<Number>();
 							machList.add(mach);
-							variables.put(VARIABLE_NAME.MACH_NUMBER.toString(), machList);
+							variables.put(PARAMS_NAME.MACH_NUMBER.toString(), machList);
 
 							// ============================================ Altitude
 							
-							Double altitude = Double.valueOf(splitString[LINE_POSITION.ALTITUDE.getValue()]);
+							Double altitude = Double.valueOf(splitString[LINE_POSITION_PARAMS.ALTITUDE.getValue()]);
 							System.out.println("Altitude = " + altitude);
 
 							List<Number> altitudeList = new ArrayList<Number>();
-							machList.add(altitude);
-							variables.put(VARIABLE_NAME.ALTITUDE.toString(), altitudeList);
-							
-							// TODO: handle -->  ALTITUDE   VELOCITY    PRESSURE    TEMPERATURE
+							altitudeList.add(altitude);
+							variables.put(PARAMS_NAME.ALTITUDE.toString(), altitudeList);
 
+							// ============================================ Velocity
+							
+							Double velocity = Double.valueOf(splitString[LINE_POSITION_PARAMS.VELOCITY.getValue()]);
+							System.out.println("Velocity = " + velocity);
+
+							List<Number> velocityList = new ArrayList<Number>();
+							velocityList.add(velocity);
+							variables.put(PARAMS_NAME.VELOCITY.toString(), velocityList);
+
+							// ============================================ Pressure
+							
+							Double pressure = Double.valueOf(splitString[LINE_POSITION_PARAMS.PRESSURE.getValue()]);
+							System.out.println("Pressure = " + pressure);
+
+							List<Number> pressureList = new ArrayList<Number>();
+							pressureList.add(pressure);
+							variables.put(PARAMS_NAME.PRESSURE.toString(), pressureList);
+							
+							// ============================================ Temperature
+							
+							Double temperature = Double.valueOf(splitString[LINE_POSITION_PARAMS.TEMPERATURE.getValue()]);
+							System.out.println("Temperature = " + temperature);
+
+							List<Number> temperatureList = new ArrayList<Number>();
+							temperatureList.add(temperature);
+							variables.put(PARAMS_NAME.TEMPERATURE.toString(), temperatureList);
+
+							// ============================================ Reynolds per unit length
+							
+							Double reynoldsPerUnitLength = Double.valueOf(splitString[LINE_POSITION_PARAMS.REYNOLDS_NUMBER_PER_UNITLENGTH.getValue()]);
+							System.out.println("Reynolds per unit length = " + reynoldsPerUnitLength);
+
+							List<Number> reynoldsPerUnitLengthList = new ArrayList<Number>();
+							reynoldsPerUnitLengthList.add(reynoldsPerUnitLength);
+							variables.put(PARAMS_NAME.REYNOLDS_NUMBER_PER_UNITLENGTH.toString(), reynoldsPerUnitLengthList);
+							
+							// ============================================ Reference Area
+							
+							Double referenceArea = Double.valueOf(splitString[LINE_POSITION_PARAMS.REF_AREA.getValue()]);
+							System.out.println("Reference area = " + referenceArea);
+
+							List<Number> referenceAreaList = new ArrayList<Number>();
+							referenceAreaList.add(referenceArea);
+							variables.put(PARAMS_NAME.REF_AREA.toString(), referenceAreaList);
+
+							// ============================================ Reference length lon.
+							
+							Double referenceLengthLong = Double.valueOf(splitString[LINE_POSITION_PARAMS.REF_LENGTH_LONG.getValue()]);
+							System.out.println("Reference length long. = " + referenceLengthLong);
+
+							List<Number> referenceLengthLongList = new ArrayList<Number>();
+							referenceLengthLongList.add(referenceLengthLong);
+							variables.put(PARAMS_NAME.REF_LENGTH_LONG.toString(), referenceLengthLongList);
+							
+							// ============================================ Reference length lat.
+							
+							Double referenceLengthLat = Double.valueOf(splitString[LINE_POSITION_PARAMS.REF_LENGTH_LAT.getValue()]);
+							System.out.println("Reference length lat. = " + referenceLengthLat);
+
+							List<Number> referenceLengthLatList = new ArrayList<Number>();
+							referenceLengthLatList.add(referenceLengthLat);
+							variables.put(PARAMS_NAME.REF_LENGTH_LAT.toString(), referenceLengthLatList);
+
+							// ============================================ Moment ref. horiz.
+							
+							Double momentReferenceHoriz = Double.valueOf(splitString[LINE_POSITION_PARAMS.MOMENT_REF_HORIZ.getValue()]);
+							System.out.println("Moment reference horiz. = " + momentReferenceHoriz);
+
+							List<Number> momentReferenceHorizList = new ArrayList<Number>();
+							momentReferenceHorizList.add(momentReferenceHoriz);
+							variables.put(PARAMS_NAME.MOMENT_REF_HORIZ.toString(), momentReferenceHorizList);
+							
+							// ============================================ Moment ref. vert.
+							
+							Double momentReferenceVert = Double.valueOf(splitString[LINE_POSITION_PARAMS.MOMENT_REF_VERT.getValue()]);
+							System.out.println("Moment reference vert. = " + momentReferenceVert);
+
+							List<Number> momentReferenceVertList = new ArrayList<Number>();
+							momentReferenceVertList.add(momentReferenceVert);
+							variables.put(PARAMS_NAME.MOMENT_REF_VERT.toString(), momentReferenceVertList);
+							
+							System.out.println("==============================");
 							variables.forEach((key, value) -> {
-							    System.out.println("Key : " + key + " Value : " + value);
+							    System.out.println(key + " = " + value);
 							});
 							
+							// TODO: advance three lines and scan the alpha array vs aero-coefficients
+							
+
 						}
 					}
 				}
