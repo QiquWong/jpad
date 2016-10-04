@@ -1,8 +1,10 @@
 package standaloneutils.launchers;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class DatcomOutputFileReader extends AbstractOutputFileReader implements IOutputFileReader {
@@ -20,6 +22,46 @@ public class DatcomOutputFileReader extends AbstractOutputFileReader implements 
 		return (theFile != null);
 	}
 
+	public enum LINE_POSITION {
+        MACH_NUMBER(1),
+        ALTITUDE(2),
+        VELOCITY(3),
+        PRESSURE(4),
+        TEMPERATURE(5),
+        REYNOLDS_NUMBER(6),
+        REF_AREA(7)
+        ;
+
+        private final int value;
+
+        LINE_POSITION(final int newValue) {
+            value = newValue;
+        }
+
+        public int getValue() { return value; }
+    }
+	
+	public enum VARIABLE_NAME {
+        MACH_NUMBER("MACH_NUMBER"),
+        ALTITUDE("ALTITUDE"),
+        VELOCITY("VELOCITY"),
+        PRESSURE("PRESSURE"),
+        TEMPERATURE("TEMPERATURE"),
+        REYNOLDS_NUMBER("REYNOLDS_NUMBER"),
+        REF_AREA("REF_AREA")
+        ;
+
+        private final String text;
+
+        VARIABLE_NAME(final String newText) {
+            this.text = newText;
+        }
+
+        @Override
+        public String toString() { return text; }
+    }
+
+	
 	@Override
 	public boolean parse() {
 		if (theFile != null) { 
@@ -30,11 +72,14 @@ public class DatcomOutputFileReader extends AbstractOutputFileReader implements 
 			try (Scanner scanner =  new Scanner(theFile)) {
 				// process line-by-line
 				while (scanner.hasNextLine()){
+					
 					// processLine(scanner.nextLine());
 					//System.out.println(scanner.nextLine());
 
 					// regular expressions
 					// http://www.vogella.com/tutorials/JavaRegularExpressions/article.html
+					
+					// http://www.journaldev.com/634/regular-expression-in-java-regex-example
 
 					// datcom read
 					// https://searchcode.com/codesearch/view/3176213/
@@ -97,11 +142,30 @@ public class DatcomOutputFileReader extends AbstractOutputFileReader implements 
 							String[] splitString = (line.split("\\s+"));
 							System.out.println("Values: " + Arrays.toString(splitString));
 
-							Double mach = Double.valueOf(splitString[1]);
+							// ============================================ Mach number
+							
+							Double mach = Double.valueOf(splitString[LINE_POSITION.MACH_NUMBER.getValue()]);
 							System.out.println("Mach = " + mach);
 
+							List<Number> machList = new ArrayList<Number>();
+							machList.add(mach);
+							variables.put(VARIABLE_NAME.MACH_NUMBER.toString(), machList);
+
+							// ============================================ Altitude
+							
+							Double altitude = Double.valueOf(splitString[LINE_POSITION.ALTITUDE.getValue()]);
+							System.out.println("Altitude = " + altitude);
+
+							List<Number> altitudeList = new ArrayList<Number>();
+							machList.add(altitude);
+							variables.put(VARIABLE_NAME.ALTITUDE.toString(), altitudeList);
+							
 							// TODO: handle -->  ALTITUDE   VELOCITY    PRESSURE    TEMPERATURE
 
+							variables.forEach((key, value) -> {
+							    System.out.println("Key : " + key + " Value : " + value);
+							});
+							
 						}
 					}
 				}

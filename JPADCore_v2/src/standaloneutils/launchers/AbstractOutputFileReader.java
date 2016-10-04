@@ -2,12 +2,13 @@ package standaloneutils.launchers;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractOutputFileReader {
 	
 	protected File theFile;
-	protected Map<String, Number> variables = new HashMap<String, Number>();
+	protected Map<String, List<Number>> variables = new HashMap<String, List<Number>>();
 	
 	public AbstractOutputFileReader() {
 		
@@ -28,7 +29,7 @@ public abstract class AbstractOutputFileReader {
 		return theFile;
 	}
 
-	public Map<String, Number> getVariables() {
+	public Map<String, List<Number>> getVariables() {
 		return variables;
 	}
 	
