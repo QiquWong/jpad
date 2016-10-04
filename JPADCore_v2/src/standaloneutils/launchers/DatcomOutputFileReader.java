@@ -254,9 +254,56 @@ public class DatcomOutputFileReader extends AbstractOutputFileReader implements 
 							    System.out.println(key + " = " + value);
 							});
 							
-							// TODO: advance three lines and scan the alpha array vs aero-coefficients
+							//Advance three lines
+							System.out.println(line);
+							// advance 8 lines
+							for(int i = 0; i < 3; i++) {
+								line = scanner.nextLine();
+								System.out.println(line);
+							}
+							System.out.println("==============================");
+							// and get rows until a '0' is found in first column
+							List<String> alphaAeroCoeffLines = new ArrayList<>();
+							line = scanner.nextLine();
+							while (!line
+									.matches("^0")
+									) {
+								System.out.println("-->" + line);
+								alphaAeroCoeffLines.add(line);
+								line = scanner.nextLine();
+							}
+							System.out.println("==============================");
 							
+							// get more rows until a '0' is found in first column
+							List<String> alphaAeroCoeffLines2 = new ArrayList<>();
+							for(int k=0; k<alphaAeroCoeffLines.size(); k++) {
+								line = scanner.nextLine();
+								System.out.println("-->" + line);
+								alphaAeroCoeffLines2.add(line);
+							} 
+							System.out.println("==============================");
+							
+							// TODO check the above code
+							
+							
+//							line = scanner.nextLine();
+//							while (!line
+//									.matches("^0")
+//									) {
+//								System.out.println(line);
+//								alphaAeroCoeffLines2.add(line);
+//								line = scanner.nextLine();
+//							}
 
+							// TODO: split lines and assign coefficients
+							
+							
+//							System.out.println(line);
+//							String[] splitString = (line.split("\\s+"));
+//							System.out.println("Values: " + Arrays.toString(splitString));
+
+							
+							
 						}
 					}
 				}
