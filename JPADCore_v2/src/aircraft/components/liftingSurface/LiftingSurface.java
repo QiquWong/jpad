@@ -1500,6 +1500,7 @@ public class LiftingSurface implements ILiftingSurface {
 	
 	AirfoilCreator meanAirfoilCreator = new AirfoilCreator.AirfoilBuilder("Mean Airfoil")
 			.type(theWing.getAirfoilList().get(0).getType())
+			.family(theWing.getAirfoilList().get(0).getFamily())
 			.thicknessToChordRatio(maximumThicknessMeanAirfoil)
 			.camberRatio(camberRatioMeanAirfoil)
 			.radiusLeadingEdge(leadingEdgeRadiusMeanAirfoil)

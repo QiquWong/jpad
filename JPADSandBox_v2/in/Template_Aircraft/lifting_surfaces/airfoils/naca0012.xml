@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-    <airfoil family="NACA0012" type="CONVENTIONAL">
+    <airfoil name="NACA0012" family="4_DIGIT" type="CONVENTIONAL">
         <reference url="http://www.airfoiltools.com/airfoil/details?airfoil=n0012-il"/>
         <geometry>
             <thickness_to_chord_ratio_max>0.12</thickness_to_chord_ratio_max>

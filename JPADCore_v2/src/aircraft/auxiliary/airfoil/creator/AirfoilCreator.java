@@ -16,6 +16,7 @@ import org.jscience.physics.amount.Amount;
 
 import configuration.MyConfiguration;
 import configuration.enumerations.AirfoilEnum;
+import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.AirfoilTypeEnum;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;
@@ -23,8 +24,9 @@ import standaloneutils.MyXMLReaderUtils;
 public class AirfoilCreator implements IAirfoilCreator {
 
 	private String _id;
+	private AirfoilEnum _name;
 	private AirfoilTypeEnum _type;
-	private AirfoilEnum _family;
+	private AirfoilFamilyEnum _family;
 	private RealMatrix _NormalizedCornerPointsXZ;
 	private Double[] _xCoords;
 	private Double[] _zCoords;
@@ -61,6 +63,20 @@ public class AirfoilCreator implements IAirfoilCreator {
 		_id = id;
 	}
 
+	/**
+	 * @return the _name
+	 */
+	public AirfoilEnum getName() {
+		return _name;
+	}
+
+	/**
+	 * @param _name the _name to set
+	 */
+	public void setName(AirfoilEnum _name) {
+		this._name = _name;
+	}
+
 	@Override
 	public AirfoilTypeEnum getType() {
 		return _type;
@@ -72,12 +88,12 @@ public class AirfoilCreator implements IAirfoilCreator {
 	}
 
 	@Override
-	public AirfoilEnum getFamily() {
+	public AirfoilFamilyEnum getFamily() {
 		return _family;
 	}
 
 	@Override
-	public void setFamily(AirfoilEnum fam) {
+	public void setFamily(AirfoilFamilyEnum fam) {
 		_family = fam;
 	}
 
@@ -337,8 +353,9 @@ public class AirfoilCreator implements IAirfoilCreator {
 		private String __id;
 
 		// optional, set to default values
-		private AirfoilTypeEnum __type = AirfoilTypeEnum.CONVENTIONAL;
-		private AirfoilEnum __family = AirfoilEnum.NACA65_209;
+		private AirfoilEnum __name = AirfoilEnum.NACA65_209;
+		private AirfoilTypeEnum __type = AirfoilTypeEnum.LAMINAR;
+		private AirfoilFamilyEnum __family = AirfoilFamilyEnum.NACA_65_Series;
 
 		private RealMatrix __NormalizedCornerPointsXZ = MatrixUtils.createRealMatrix(30, 2);
 		private Double __thicknessToChordRatio = 0.12;
@@ -370,13 +387,18 @@ public class AirfoilCreator implements IAirfoilCreator {
 		public AirfoilBuilder(String id){
 			this.__id = id;
 		}
-
+		
+		public AirfoilBuilder name (AirfoilEnum name) {
+			__name = name;
+			return this;
+		}
+		
 		public AirfoilBuilder type(AirfoilTypeEnum type) {
 			__type = type;
 			return this;
 		}
 
-		public AirfoilBuilder family(AirfoilEnum fam) {
+		public AirfoilBuilder family(AirfoilFamilyEnum fam) {
 			__family = fam;
 			return this;
 		}
@@ -513,6 +535,7 @@ public class AirfoilCreator implements IAirfoilCreator {
 	
 	private AirfoilCreator(AirfoilBuilder builder) {
 		_id = builder.__id;
+		_name = builder.__name;
 		_type = builder.__type;
 		_family = builder.__family;
 		_NormalizedCornerPointsXZ = builder.__NormalizedCornerPointsXZ;
@@ -549,8 +572,12 @@ public class AirfoilCreator implements IAirfoilCreator {
 
 		System.out.println("Reading airfoil data ...");
 
-		@SuppressWarnings("unused")
-		String family = MyXMLReaderUtils
+		String nameProperty = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//airfoil/@name");
+		
+		String familyProperty = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
 						"//airfoil/@family");
@@ -559,12 +586,23 @@ public class AirfoilCreator implements IAirfoilCreator {
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
 						"//airfoil/@type");
+		
 		// check if the airfoil type given in file is a legal enumerated type
+		AirfoilEnum name = Arrays.stream(AirfoilEnum.values())
+	            .filter(e -> e.toString().equals(nameProperty))
+	            .findFirst()
+	            .orElseThrow(() -> new IllegalStateException(String.format("Unsupported airfoil name %s.", typeProperty)));
+
 		AirfoilTypeEnum type = Arrays.stream(AirfoilTypeEnum.values())
 	            .filter(e -> e.toString().equals(typeProperty))
 	            .findFirst()
 	            .orElseThrow(() -> new IllegalStateException(String.format("Unsupported airfoil type %s.", typeProperty)));
-
+		
+		AirfoilFamilyEnum family = Arrays.stream(AirfoilFamilyEnum.values())
+	            .filter(e -> e.toString().equals(familyProperty))
+	            .findFirst()
+	            .orElseThrow(() -> new IllegalStateException(String.format("Unsupported airfoil family %s.", typeProperty)));
+		
 		Double thicknessRatio = Double.valueOf(
 				MyXMLReaderUtils
 					.getXMLPropertyByPath(
@@ -703,7 +741,9 @@ public class AirfoilCreator implements IAirfoilCreator {
 
 		// create an Airfoil object with the Builder pattern
 		AirfoilCreator airfoil = new AirfoilBuilder(formedID)
+				.name(name)
 				.type(type)
+				.family(family)
 				.thicknessToChordRatio(thicknessRatio)
 				.camberRatio(camberRatio)
 				.radiusLeadingEdge(radiusLeadingEdge)

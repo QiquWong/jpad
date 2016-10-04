@@ -35,6 +35,7 @@ import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AircraftTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
+import configuration.enumerations.RegulationsEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import standaloneutils.JPADXmlReader;
@@ -55,6 +56,7 @@ public class Aircraft implements IAircraft {
 	private String _id;
 	private AeroConfigurationTypeEnum _type = AeroConfigurationTypeEnum.EMPTY;
 	private AircraftTypeEnum _typeVehicle;
+	private RegulationsEnum _regulations;
 
 	private ACAnalysisManager _theAnalysisManager;
 	
@@ -86,6 +88,7 @@ public class Aircraft implements IAircraft {
 		// required parameters
 		private String __id;
 		private AircraftTypeEnum __typeVehicle;
+		private RegulationsEnum __regulations;
 
 		// optional parameters ... defaults
 		// ...
@@ -122,6 +125,7 @@ public class Aircraft implements IAircraft {
 			case ATR72:
 				__id = "ATR-72";
 				__typeVehicle = AircraftTypeEnum.TURBOPROP;
+				__regulations = RegulationsEnum.FAR_25;
 				__theCabinConfiguration = new CabinConfiguration.ConfigurationBuilder("Aircraft cabin configuration", AircraftEnum.ATR72).build();
 				
 				__componentsList.clear();
@@ -181,6 +185,7 @@ public class Aircraft implements IAircraft {
 			case B747_100B:
 				__id = "B747-100B";
 				__typeVehicle = AircraftTypeEnum.JET;
+				__regulations = RegulationsEnum.FAR_25;
 				__theCabinConfiguration = new CabinConfiguration
 						.ConfigurationBuilder("Aircraft cabin configuration", AircraftEnum.B747_100B)
 							.build();
@@ -242,6 +247,7 @@ public class Aircraft implements IAircraft {
 			case AGILE_DC1:
 				__id = "AGILE DC-1";
 				__typeVehicle = AircraftTypeEnum.JET;
+				__regulations = RegulationsEnum.FAR_25;
 				__theCabinConfiguration = new CabinConfiguration
 						.ConfigurationBuilder("Aircraft cabin configuration", AircraftEnum.AGILE_DC1)
 							.build();
@@ -416,6 +422,11 @@ public class Aircraft implements IAircraft {
 		
 		public AircraftBuilder aircraftType(AircraftTypeEnum aircraftType) {
 			this.__typeVehicle = aircraftType;
+			return this;
+		}
+		
+		public AircraftBuilder regulations(RegulationsEnum regulations) {
+			this.__regulations = regulations;
 			return this;
 		}
 		
@@ -633,6 +644,7 @@ public class Aircraft implements IAircraft {
 		
 		this._id = builder.__id;
 		this._typeVehicle = builder.__typeVehicle;
+		this._regulations = builder.__regulations;
 		
 		this._theAnalysisManager = builder.__theAnalysisManager;
 		this._theCabinConfiguration = builder.__theCabinConfiguration;
@@ -1007,10 +1019,27 @@ public class Aircraft implements IAircraft {
 			type = AircraftTypeEnum.GENERAL_AVIATION;
 		else if(typeProperty.equalsIgnoreCase("FIGHTER"))
 			type = AircraftTypeEnum.FIGHTER;
+		else if(typeProperty.equalsIgnoreCase("ACROBATIC"))
+			type = AircraftTypeEnum.ACROBATIC;
 		else {
 			System.err.println("INVALID AIRCRAFT TYPE !!!");
 			return null;
 		}
+		
+		RegulationsEnum regulations;
+		String regulationsProperty = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@regulations");
+		if(regulationsProperty.equalsIgnoreCase("FAR_23"))
+			regulations = RegulationsEnum.FAR_23;
+		else if(regulationsProperty.equalsIgnoreCase("FAR_25"))
+			regulations = RegulationsEnum.FAR_25;
+		else {
+			System.err.println("INVALID AIRCRAFT REGULATIONS TYPE !!!");
+			return null;
+		}
+		
 		//---------------------------------------------------------------------------------
 		// FUSELAGE
 		String fuselageFileName =
@@ -1383,6 +1412,7 @@ public class Aircraft implements IAircraft {
 		Aircraft theAircraft = new AircraftBuilder(id, aeroDatabaseReader, highLiftDatabaseReader)
 				.name(id)
 				.aircraftType(type)
+				.regulations(regulations)
 				.fuselage(theFuselage)
 				.xApexFuselage(xApexFuselage)
 				.yApexFuselage(yApexFuselage)
@@ -1567,6 +1597,20 @@ public class Aircraft implements IAircraft {
 	@Override
 	public void setTypeVehicle(AircraftTypeEnum _typeVehicle) {
 		this._typeVehicle = _typeVehicle;
+	}
+
+	/**
+	 * @return the _regulations
+	 */
+	public RegulationsEnum getRegulations() {
+		return _regulations;
+	}
+
+	/**
+	 * @param _regulations the _regulations to set
+	 */
+	public void setRegulations(RegulationsEnum _regulations) {
+		this._regulations = _regulations;
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-    <airfoil family="NACA66_209" type="LAMINAR">
+    <airfoil name="NACA66_209" family="66_SERIES" type="LAMINAR">
         <geometry>
             <thickness_to_chord_ratio_max>0.14</thickness_to_chord_ratio_max>
             <camber_ratio>0.0</camber_ratio>

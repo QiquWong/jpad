@@ -58,28 +58,9 @@ public class Geometry {
 	 */
 	public Geometry(AirfoilCreator airfoilCreator, AerodynamicDatabaseReader reader) {
 
-		int airfoilFamilyIndex = 0;
-		//recognizing airfoil family
-		if(airfoilCreator.getFamily().equals(AirfoilFamilyEnum.NACA_4_Digit)) 
-			airfoilFamilyIndex = 1;
-		else if(airfoilCreator.getFamily().equals(AirfoilFamilyEnum.NACA_5_Digit))
-			airfoilFamilyIndex = 2;
-		else if(airfoilCreator.getFamily().equals(AirfoilFamilyEnum.NACA_63_Series))
-			airfoilFamilyIndex = 3;
-		else if(airfoilCreator.getFamily().equals(AirfoilFamilyEnum.NACA_64_Series))
-			airfoilFamilyIndex = 4;
-		else if(airfoilCreator.getFamily().equals(AirfoilFamilyEnum.NACA_65_Series))
-			airfoilFamilyIndex = 5;
-		else if(airfoilCreator.getFamily().equals(AirfoilFamilyEnum.NACA_66_Series))
-			airfoilFamilyIndex = 6;
-		else if(airfoilCreator.getFamily().equals(AirfoilFamilyEnum.BICONVEX))
-			airfoilFamilyIndex = 7;
-		else if(airfoilCreator.getFamily().equals(AirfoilFamilyEnum.DOUBLE_WEDGE))
-			airfoilFamilyIndex = 8;
-
 		this._deltaYPercent = reader.getDeltaYvsThickness(
 				airfoilCreator.getThicknessToChordRatio(),
-				airfoilFamilyIndex
+				airfoilCreator.getFamily()
 				);
 		this._anglePhiTE = airfoilCreator.getAngleAtTrailingEdge();
 		this._maximumThicknessOverChord = airfoilCreator.getThicknessToChordRatio();

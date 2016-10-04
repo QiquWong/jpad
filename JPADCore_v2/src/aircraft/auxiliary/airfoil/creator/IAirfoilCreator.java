@@ -6,18 +6,22 @@ import javax.measure.quantity.Length;
 import org.jscience.physics.amount.Amount;
 
 import configuration.enumerations.AirfoilEnum;
+import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.AirfoilTypeEnum;
 
 public interface IAirfoilCreator {
 	
 	String getID();
 	void setID(String id);
+
+	AirfoilEnum getName();
+	void setName(AirfoilEnum name);
 	
 	AirfoilTypeEnum getType();
 	void setType(AirfoilTypeEnum type);
 	
-	AirfoilEnum getFamily();
-	void setFamily(AirfoilEnum fam);
+	AirfoilFamilyEnum getFamily();
+	void setFamily(AirfoilFamilyEnum fam);
 
 	double[][] getNormalizedCornerPointsXZ();
 	void setNormalizedCornerPointsXZ(double[][] xz);

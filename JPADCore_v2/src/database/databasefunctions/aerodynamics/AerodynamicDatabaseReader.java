@@ -1,5 +1,6 @@
 package database.databasefunctions.aerodynamics;
 
+import configuration.enumerations.AirfoilFamilyEnum;
 import database.databasefunctions.DatabaseReader;
 import standaloneutils.MyInterpolatingFunction;
 
@@ -153,8 +154,28 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 		return d_epsilon_d_alpha_VS_position_aspectRatio.value(position, aspectRatio);
 	}
 	
-	public double getDeltaYvsThickness (double tc, int airfoilFamily) {
-		return deltaYvsThicknessRatio.value(tc, airfoilFamily);
+	public double getDeltaYvsThickness (double tc, AirfoilFamilyEnum airfoilFamily) {
+		
+		//recognizing airfoil family
+		int airfoilFamilyIndex = 0;
+		if(airfoilFamily == AirfoilFamilyEnum.NACA_4_Digit) 
+			airfoilFamilyIndex = 1;
+		else if(airfoilFamily == AirfoilFamilyEnum.NACA_5_Digit)
+			airfoilFamilyIndex = 2;
+		else if(airfoilFamily == AirfoilFamilyEnum.NACA_63_Series)
+			airfoilFamilyIndex = 3;
+		else if(airfoilFamily == AirfoilFamilyEnum.NACA_64_Series)
+			airfoilFamilyIndex = 4;
+		else if(airfoilFamily == AirfoilFamilyEnum.NACA_65_Series)
+			airfoilFamilyIndex = 5;
+		else if(airfoilFamily == AirfoilFamilyEnum.NACA_66_Series)
+			airfoilFamilyIndex = 6;
+		else if(airfoilFamily == AirfoilFamilyEnum.BICONVEX)
+			airfoilFamilyIndex = 7;
+		else if(airfoilFamily == AirfoilFamilyEnum.DOUBLE_WEDGE)
+			airfoilFamilyIndex = 8;
+		
+		return deltaYvsThicknessRatio.value(tc, airfoilFamilyIndex);
 	}
 
 	public double getKOmegePhillipsAndAlley (

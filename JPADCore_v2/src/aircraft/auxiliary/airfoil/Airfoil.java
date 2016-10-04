@@ -7,6 +7,7 @@ import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AirfoilEnum;
+import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.AirfoilStationEnum;
 import configuration.enumerations.AirfoilTypeEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
@@ -24,7 +25,8 @@ public class Airfoil {
 
 	private static Map<AirfoilEnum, Double> _kWaveDragMap = new HashMap<AirfoilEnum, Double> ();
 
-	AirfoilEnum _family;
+	AirfoilEnum _name;
+	AirfoilFamilyEnum _family;
 	AirfoilTypeEnum _type;
 	Geometry geometry;
 	Aerodynamics aerodynamics;
@@ -42,6 +44,7 @@ public class Airfoil {
 		
 		this._theAirfoilCreator = airfoilCreator;
 		this._id = airfoilCreator.getID();
+		this._name = airfoilCreator.getName();
 		this._type = airfoilCreator.getType();
 		this._family = airfoilCreator.getFamily();
 		
@@ -80,7 +83,6 @@ public class Airfoil {
 			break;
 			
 		case AGILE_DC1:
-			_family = AirfoilEnum.DFVLR_R4;
 			_type = AirfoilTypeEnum.MODERN_SUPERCRITICAL; //TODO: have to check
 
 			_theLiftingSurface = ls;
@@ -122,14 +124,6 @@ public class Airfoil {
 		_kWaveDragMap = kWaveDragMap;
 	}
 
-	public AirfoilTypeEnum getType() {
-		return _type;
-	}
-
-	public void setType(AirfoilTypeEnum _type) {
-		this._type = _type;
-	}
-
 	public Geometry getGeometry() {
 		return geometry;
 	}
@@ -138,18 +132,34 @@ public class Airfoil {
 		return aerodynamics;
 	}
 
-	public AirfoilEnum getFamily() {
-		return _family;
-	}
-
 	public void setAerodynamics(Aerodynamics aerodynamics) {
 		this.aerodynamics = aerodynamics;
 	}
-
-	public void setFamily(AirfoilEnum _family) {
-		this._family = _family;
+	
+	public AirfoilEnum getName() {
+		return _name;
 	}
 
+	public void setName(AirfoilEnum _name) {
+		this._name = _name;
+	}
+
+	public AirfoilFamilyEnum getFamily() {
+		return _family;
+	}
+
+	public void setFamily(AirfoilFamilyEnum _family) {
+		this._family = _family;
+	}
+	
+	public AirfoilTypeEnum getType() {
+		return _type;
+	}
+
+	public void setType(AirfoilTypeEnum _type) {
+		this._type = _type;
+	}
+	
 	public String getId() {
 		return _id;
 	}

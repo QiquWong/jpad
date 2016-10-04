@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-    <aircraft id="IRON" type="TURBOPROP">
+    <aircraft id="IRON" type="TURBOPROP" regulations="FAR_25">
 		<global_data>
 			<cabin_configuration file="cabin_configuration_IRON.xml"></cabin_configuration>
 		</global_data>

@@ -17,7 +17,6 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.liftingSurface.LiftingSurface;
-import aircraft.components.powerplant.Engine;
 import analyses.OperatingConditions;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.AnglesCalc;
@@ -44,6 +43,7 @@ public class LSAerodynamicsCalculator {
 	//------------------------------------------------------------------------------
 	// INPUT DATA (IMPORTED AND CALCULATED)
 	private LiftingSurface _theLiftingSurface;
+	private Airfoil _meanAirfoil;
 	private OperatingConditions _theOperatingConditions;
 	private Map <String, List<MethodEnum>> _taskMap;
 	private int _numberOfPointSemiSpanWise;
@@ -160,6 +160,14 @@ public class LSAerodynamicsCalculator {
 					this._theOperatingConditions.getAlpha()[i],
 					NonSI.DEGREE_ANGLE)
 					);
+		
+		//----------------------------------------------------------------------------------------------------------------------
+		// Calculating the mena airfoil
+		//......................................................................................................................
+		this._meanAirfoil = new Airfoil(
+				LiftingSurface.calculateMeanAirfoil(_theLiftingSurface),
+				this._theLiftingSurface.getAerodynamicDatabaseReader()
+				);
 		
 		//----------------------------------------------------------------------------------------------------------------------
 		// Calculating airfoil parameter distributions
@@ -978,13 +986,10 @@ public class LSAerodynamicsCalculator {
 	public class CalcAlphaStar {
 
 		public void meanAirfoilWithInfluenceAreas() {
-			Airfoil meanAirfoil = new Airfoil(
-					LiftingSurface.calculateMeanAirfoil(_theLiftingSurface),
-					_theLiftingSurface.getAerodynamicDatabaseReader());
-			
+						
 			_alphaStar.put(
 					MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS,
-					meanAirfoil.getAirfoilCreator().getAlphaEndLinearTrait().to(NonSI.DEGREE_ANGLE)
+					_meanAirfoil.getAirfoilCreator().getAlphaEndLinearTrait().to(NonSI.DEGREE_ANGLE)
 					);
 		}
 
@@ -1119,13 +1124,8 @@ public class LSAerodynamicsCalculator {
 				calcCLAlpha.nasaBlackwell();
 			}
 			
-			Airfoil meanAirfoil = new Airfoil(
-					LiftingSurface.calculateMeanAirfoil(_theLiftingSurface),
-					_theLiftingSurface.getAerodynamicDatabaseReader()
-					);
-			
 			double result = LiftCalc.calculateCLmaxPhillipsAndAlley( //5.07
-					meanAirfoil.getAirfoilCreator().getClMax().doubleValue(),
+					_meanAirfoil.getAirfoilCreator().getClMax().doubleValue(),
 					_cLAlpha.get(MethodEnum.NASA_BLACKWELL).to(SI.RADIAN).inverse().getEstimatedValue(), 
 					_theLiftingSurface.getLiftingSurfaceCreator().getTaperRatioEquivalentWing().doubleValue(),
 					_theLiftingSurface.getSweepLEEquivalent(false).doubleValue(SI.RADIAN),
@@ -1301,6 +1301,152 @@ public class LSAerodynamicsCalculator {
 	//............................................................................
 
 	//............................................................................
+	// ALPHA STALL INNER CLASS
+	//............................................................................
+	public class CalcAlphaStall {
+
+		// IN THIS CASE WE USE CLALPHA AND CL0 FROM ANDERSON METHOD IN ORDER TO ESTIMATE DI 
+		// ALPHA MAX LINEAR USING THE CLMAX FROM PHILLIPS AND ALLEY.
+		public void fromCLmaxPhillipsAndAlley() {
+			
+			if(_alphaMaxLinear.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC) == null) {
+				
+				if(_cLZero.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC) == null) {
+					CalcCL0 theCL0Calculator = new CalcCL0();
+					theCL0Calculator.andersonSweptCompressibleSubsonic();
+				}
+					
+				if(_cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC) == null) {
+					CalcCLAlpha theCLAlphaCalculator = new CalcCLAlpha();
+					theCLAlphaCalculator.andersonSweptCompressibleSubsonic();
+				}
+				
+				if(_cLMax.get(MethodEnum.PHILLIPS_ALLEY) == null) {
+					CalcCLmax theCLMaxCalculator = new CalcCLmax();
+					theCLMaxCalculator.phillipsAndAlley();
+				}
+				
+				_alphaMaxLinear.put(
+						MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC,
+						Amount.valueOf(
+								(_cLMax.get(MethodEnum.PHILLIPS_ALLEY) - _cLZero.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC))
+								/_cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC).to(NonSI.DEGREE_ANGLE).inverse().getEstimatedValue(),
+								NonSI.DEGREE_ANGLE
+								)
+						);
+			}
+			
+			double deltaYPercent = _theLiftingSurface.getAerodynamicDatabaseReader()
+					.getDeltaYvsThickness(
+							_meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
+							_meanAirfoil.getAirfoilCreator().getFamily()
+							);
+			
+			Amount<Angle> deltaAlpha = Amount.valueOf(
+					_theLiftingSurface.getAerodynamicDatabaseReader()
+					.getDAlphaVsLambdaLEVsDy(
+							_theLiftingSurface.getSweepLEEquivalent(false).doubleValue(NonSI.DEGREE_ANGLE),
+							deltaYPercent
+							),
+					NonSI.DEGREE_ANGLE);
+			
+			_alphaStall.put(
+					MethodEnum.PHILLIPS_ALLEY,
+					_alphaMaxLinear.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC)
+					.plus(deltaAlpha)
+					);
+		}
+		
+		public void fromAlphaMaxLineaNasaBlackwell() {
+			
+			if(_alphaMaxLinear.get(MethodEnum.NASA_BLACKWELL) == null) {
+				CalcCLmax theCLMaxCalculator = new CalcCLmax();
+				theCLMaxCalculator.nasaBlackwell();
+			}
+			
+			double deltaYPercent = _theLiftingSurface.getAerodynamicDatabaseReader()
+					.getDeltaYvsThickness(
+							_meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
+							_meanAirfoil.getAirfoilCreator().getFamily()
+							);
+			
+			Amount<Angle> deltaAlpha = Amount.valueOf(
+					_theLiftingSurface.getAerodynamicDatabaseReader()
+					.getDAlphaVsLambdaLEVsDy(
+							_theLiftingSurface.getSweepLEEquivalent(false).doubleValue(NonSI.DEGREE_ANGLE),
+							deltaYPercent
+							),
+					NonSI.DEGREE_ANGLE);
+			
+			_alphaStall.put(
+					MethodEnum.NASA_BLACKWELL,
+					_alphaMaxLinear.get(MethodEnum.NASA_BLACKWELL)
+					.plus(deltaAlpha)
+					);
+		}
+		
+	}
+	//............................................................................
+	// END OF THE ALPHA STALL INNER CLASS
+	//............................................................................
+	
+	//............................................................................
+	// ALPHA STALL INNER CLASS
+	//............................................................................
+	public class CalcLiftCurve {
+	
+		public void fromCLmaxPhillipsAndAlley() {
+		
+			
+			
+		}
+		
+		public void nasaBlackwell() {
+			
+			if(_alphaZeroLift.get(MethodEnum.INTEGRAL_MEAN_TWIST) == null) {
+				CalcAlpha0L calcAlphaZeroLift = new CalcAlpha0L();
+				calcAlphaZeroLift.integralMeanWithTwist();
+			}
+			
+			if(_cLZero.get(MethodEnum.NASA_BLACKWELL) == null) {
+				CalcCL0 calcCLZero = new CalcCL0();
+				calcCLZero.nasaBlackwell();
+			}
+			
+			if(_cLAlpha.get(MethodEnum.NASA_BLACKWELL) == null) {
+				CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
+				calcCLAlpha.nasaBlackwell();
+			}
+			
+			if(_alphaStar.get(MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS) == null) {
+				CalcAlphaStar calcAlphaStar = new CalcAlphaStar();
+				calcAlphaStar.meanAirfoilWithInfluenceAreas();
+			}
+			
+			if(_cLStar.get(MethodEnum.NASA_BLACKWELL) == null) {
+				CalcCLStar calcCLStar = new CalcCLStar();
+				calcCLStar.nasaBlackwell();
+			}
+			
+			if(_alphaStall.get(MethodEnum.NASA_BLACKWELL) == null) {
+				CalcAlphaStall calcAlphaStall = new CalcAlphaStall();
+				calcAlphaStall.fromAlphaMaxLineaNasaBlackwell();
+			}
+			
+			if(_cLMax.get(MethodEnum.NASA_BLACKWELL) == null) {
+				CalcCLmax calcCLmax = new CalcCLmax();
+				calcCLmax.nasaBlackwell();
+			}
+			
+			// TODO : BUILD ALPHA AND CL ARRAYS !!
+			
+		}
+	}		
+	//............................................................................
+	// END OF THE ALPHA STALL INNER CLASS
+	//............................................................................
+		
+	//............................................................................
 	// HIGH LIFT INNER CLASS
 	//............................................................................
 	public class CalcHighLift {
@@ -1321,6 +1467,20 @@ public class LSAerodynamicsCalculator {
 	public void setTheLiftingSurface(LiftingSurface _theLiftingSurface) {
 		this._theLiftingSurface = _theLiftingSurface;
 	}
+	/**
+	 * @return the _meanAirfoil
+	 */
+	public Airfoil getMeanAirfoil() {
+		return _meanAirfoil;
+	}
+
+	/**
+	 * @param _meanAirfoil the _meanAirfoil to set
+	 */
+	public void setMeanAirfoil(Airfoil _meanAirfoil) {
+		this._meanAirfoil = _meanAirfoil;
+	}
+
 	public OperatingConditions getTheOperatingConditions() {
 		return _theOperatingConditions;
 	}

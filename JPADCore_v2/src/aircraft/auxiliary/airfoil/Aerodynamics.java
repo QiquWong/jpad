@@ -165,7 +165,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 		 case NACA23_018:
 			 _id = airf.getId() + "1" + idCounter + "99";
 				idCounter++;
-			 airf.setFamily(AirfoilEnum.NACA23_018);	
+			 airf.setName(AirfoilEnum.NACA23_018);	
 			 _theAirfoil = airf;
 			 geometry = airf.getGeometry();
 
@@ -189,7 +189,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			 break;
 
 		 case NACA23_015:
-			 airf.setFamily(AirfoilEnum.NACA23_015);	
+			 airf.setName(AirfoilEnum.NACA23_015);	
 			 _id = airf.getId() + "1" + idCounter + "99";
 				idCounter++;
 				
@@ -215,7 +215,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			 break;
 			 
 		 case NACA23_012:
-			 airf.setFamily(AirfoilEnum.NACA23_012);	
+			 airf.setName(AirfoilEnum.NACA23_012);	
 			 _id = airf.getId() + "1" + idCounter + "99";
 				idCounter++;
 				
@@ -295,7 +295,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			break;
 			
 		 case NACA0012:
-			 airf.setFamily(AirfoilEnum.NACA0012);	
+			 airf.setName(AirfoilEnum.NACA0012);	
 			 _id = airf.getId() + "1" + idCounter + "99";
 				idCounter++;
 				
@@ -322,7 +322,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			 break;	
 			 
 		 case DFVLR_R4:
-			 airf.setFamily(AirfoilEnum.DFVLR_R4);	
+			 airf.setName(AirfoilEnum.DFVLR_R4);	
 			 _id = airf.getId() + "1" + idCounter + "99";
 				idCounter++;
 				

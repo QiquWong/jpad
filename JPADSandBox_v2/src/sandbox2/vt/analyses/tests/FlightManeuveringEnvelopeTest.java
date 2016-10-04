@@ -10,6 +10,8 @@ import org.jscience.physics.amount.Amount;
 
 import calculators.performance.FlightManeuveringEnvelopeCalc;
 import configuration.MyConfiguration;
+import configuration.enumerations.AircraftTypeEnum;
+import configuration.enumerations.RegulationsEnum;
 
 public class FlightManeuveringEnvelopeTest {
 
@@ -22,7 +24,8 @@ public class FlightManeuveringEnvelopeTest {
 		System.out.println("-----------------------------------------------------------------------\n");
 		
 		// DATA:
-		Amount<Mass> aircraftMass = Amount.valueOf(22303, SI.KILOGRAM);	
+		Amount<Mass> maxTakeOffMass = Amount.valueOf(22303, SI.KILOGRAM);	
+		Amount<Mass> maxLandingMass = Amount.valueOf(20073, SI.KILOGRAM);
 		Amount<Area> wingSurface = Amount.valueOf(64.07, SI.SQUARE_METRE);
 		double cLMaxClean = 1.675;
 		double cLMaxFullFlap = 2.545;
@@ -34,9 +37,13 @@ public class FlightManeuveringEnvelopeTest {
 		Amount<Velocity> cruisingSpeed = Amount.valueOf(151.6, SI.METERS_PER_SECOND);
 		Amount<Velocity> diveSpeed = Amount.valueOf(189.5, SI.METERS_PER_SECOND);
 		Amount<Length> altitude = Amount.valueOf(6096, SI.METER);
+		RegulationsEnum regulation = RegulationsEnum.FAR_25;
+		AircraftTypeEnum aircraftType = AircraftTypeEnum.TURBOPROP;
 		
 		// CALCULATOR OBJECT:
 		FlightManeuveringEnvelopeCalc theCalculator = new FlightManeuveringEnvelopeCalc(
+				regulation,
+				aircraftType,
 				cLMaxClean,
 				cLMaxFullFlap,
 				cLMaxInverted,
@@ -47,13 +54,19 @@ public class FlightManeuveringEnvelopeTest {
 				cLAlpha,
 				meanAerodynamicChord,
 				altitude,
-				aircraftMass,
+				maxTakeOffMass,
+				maxLandingMass,
 				wingSurface
 				);
 		theCalculator.calculateManeuveringEnvelope();
 		
 		// PRINT RESULTS:
 		MyConfiguration.customizeAmountOutput();
+		
+		System.out.println("-----------------------------------------------------------------------");
+		System.out.println(" REGULATION : " + regulation);
+		System.out.println(" AIRCRAFT TYPE : " + aircraftType);
+		System.out.println("-----------------------------------------------------------------------");
 		
 		System.out.println("\n-----------------------------------------------------------------------");
 		System.out.println(" BASIC MANEUVERING DIAGRAM");
