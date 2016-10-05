@@ -9,6 +9,8 @@ import java.util.Scanner;
 
 public class DatcomOutputFileReader extends AbstractOutputFileReader implements IOutputFileReader {
 
+	private String lenghtUnits = "";
+	private String derivUnits = "";
 	private int nAlphas = 0;
 	
 	public DatcomOutputFileReader(String outputFilePath) {
@@ -83,7 +85,16 @@ public class DatcomOutputFileReader extends AbstractOutputFileReader implements 
         CMA("CMA"),
         CYB("CYB"),
         CNB("CNB"),
-        CLB("CLB")
+        CLB("CLB"),
+        CLQ("CLQ"),
+        CMQ("CMQ"),
+        CLAD("CLAD"),
+        CMAD("CMAD"),
+        CLP("CLP"),
+        CYP("CYP"),
+        CNP("CNP"),
+        CNR("CNR"),
+        CLR("CLR")
         ;
 
         private final String text;
@@ -99,10 +110,9 @@ public class DatcomOutputFileReader extends AbstractOutputFileReader implements 
 	@Override
 	public boolean parse() {
 		if (theFile != null) { 
-			String lenghtUnits = "";
-			String derivUnits = "";
 
-			System.out.println("Parsing...\n");
+			System.out.println("==============================");
+			System.out.println("Parsing Datcom output...");
 			try (Scanner scanner =  new Scanner(theFile)) {
 				// process line-by-line
 				while (scanner.hasNextLine()){
@@ -290,7 +300,7 @@ public class DatcomOutputFileReader extends AbstractOutputFileReader implements 
 							// assign number of alpha's
 							nAlphas = alphaAeroCoeffLines1.size();
 							
-							// get more rows until a '0' is found in first column
+							// get nAlpha more rows
 							List<String> alphaAeroCoeffLines2 = new ArrayList<>();
 							for(int k=0; k<nAlphas; k++) {
 								line = scanner.nextLine();
@@ -397,22 +407,97 @@ public class DatcomOutputFileReader extends AbstractOutputFileReader implements 
 //							System.out.println("CNB: " + cnbList);
 //							System.out.println("CLB: " + clbList);
 							
-							// Print the map of variables
-							variables.forEach((key, value) -> {
-							    System.out.println(key + " = " + value);
-							});
+							// scan 15 more dummy lines
+							for (int k=0; k<15; k++) {
+								line = scanner.nextLine();
+								//System.out.println(line);
+							}
+
+							// Parse dynamic derivatives
+							List<Number> clqList = new ArrayList<Number>();
+							List<Number> cmqList = new ArrayList<Number>();
+							List<Number> cladList = new ArrayList<Number>();
+							List<Number> cmadList = new ArrayList<Number>();
+							List<Number> clpList = new ArrayList<Number>();
+							List<Number> cypList = new ArrayList<Number>();
+							List<Number> cnpList = new ArrayList<Number>();
+							List<Number> cnrList = new ArrayList<Number>();
+							List<Number> clrList = new ArrayList<Number>();
+
+							// get nAlpha more rows
+							List<String> alphaAeroCoeffLines3 = new ArrayList<>();
+							for(int k=0; k<nAlphas; k++) {
+								line = scanner.nextLine();
+								//System.out.println("-->"+line);
+								alphaAeroCoeffLines3.add(line);
+							} 
 							
+							// parse first line first
+							line = alphaAeroCoeffLines3.get(0);
+							String[] splitString2a = (line.trim().split("\\s+"));
+							//System.out.println(Arrays.toString(splitString2a));
+							
+							if (!splitString2a[1].trim().equals("NA"))
+								clqList.add(Double.valueOf(splitString2a[1]));
+							if (!splitString2a[2].trim().equals("NA"))
+								cmqList.add(Double.valueOf(splitString2a[2]));
+							if (!splitString2a[3].trim().equals("NA"))
+								cladList.add(Double.valueOf(splitString2a[3]));
+							if (!splitString2a[4].trim().equals("NA"))
+								cmadList.add(Double.valueOf(splitString2a[4]));
+							if (!splitString2a[5].trim().equals("NA"))
+								clpList.add(Double.valueOf(splitString2a[5]));
+							if (!splitString2a[6].trim().equals("NA"))
+								cypList.add(Double.valueOf(splitString2a[6]));
+							if (!splitString2a[7].trim().equals("NA"))
+								cnpList.add(Double.valueOf(splitString2a[7]));
+							if (!splitString2a[8].trim().equals("NA"))
+								cnrList.add(Double.valueOf(splitString2a[8]));
+							if (!splitString2a[9].trim().equals("NA"))
+								clrList.add(Double.valueOf(splitString2a[9]));
+
+							// parse the remaining lines
+							for (int k=1; k<nAlphas; k++) {
+								line = alphaAeroCoeffLines3.get(k);
+								String[] splitString2b = (line.trim().split("\\s+"));
+								//System.out.println(Arrays.toString(splitString2b));
+								if (!splitString2b[1].trim().equals("NA"))
+									cladList.add(Double.valueOf(splitString2b[1]));
+								if (!splitString2b[2].trim().equals("NA"))
+									cmadList.add(Double.valueOf(splitString2b[2]));
+								if (!splitString2b[3].trim().equals("NA"))
+									clpList.add(Double.valueOf(splitString2b[3]));
+								if (!splitString2b[4].trim().equals("NA"))
+									cypList.add(Double.valueOf(splitString2b[4]));
+								if (!splitString2b[5].trim().equals("NA"))
+									cnpList.add(Double.valueOf(splitString2b[5]));
+								if (!splitString2b[6].trim().equals("NA"))
+									cnrList.add(Double.valueOf(splitString2b[6]));
+								if (!splitString2b[7].trim().equals("NA"))
+									clrList.add(Double.valueOf(splitString2b[7]));
+							}	
+							
+							// put parsed values into the map of variables
+							variables.put(AERO_COEFF_NAME.CLQ.toString(), clqList);
+							variables.put(AERO_COEFF_NAME.CMQ.toString(), cmqList);
+							variables.put(AERO_COEFF_NAME.CLAD.toString(), cladList);
+							variables.put(AERO_COEFF_NAME.CMAD.toString(), cmadList);
+							variables.put(AERO_COEFF_NAME.CLP.toString(), clpList);
+							variables.put(AERO_COEFF_NAME.CYP.toString(), cypList);
+							variables.put(AERO_COEFF_NAME.CNP.toString(), cnpList);
+							variables.put(AERO_COEFF_NAME.CNR.toString(), cnrList);
+							variables.put(AERO_COEFF_NAME.CLR.toString(), clrList);
+		
 							System.out.println("==============================");
-							System.out.println("Scanning more lines...");
-							line = scanner.nextLine();
-							System.out.println(line);
 							
-							// TODO: parse the rest of the file...
+							// TODO: parse the rest of the file if necessary
+							//       delta_e increments, etc
 							
 						}
 					}
 				}
-				System.out.println("\n...parsing done");
+				System.out.println("...parsing done");
+				System.out.println("==============================");
 				return true;
 			}
 			catch (Exception e) {
@@ -424,7 +509,18 @@ public class DatcomOutputFileReader extends AbstractOutputFileReader implements 
 			return false;
 	}
 
-	
+	public String getLenghtUnits() {
+		return lenghtUnits;
+	}
+
+	public String getDerivUnits() {
+		return derivUnits;
+	}
+
+	public int getNAlphas() {
+		return nAlphas;
+	}	
+
 	public static void main(String[] args) {
 		// Set the DATCOMROOT environment variable
 		String binDirPath = System.getProperty("user.dir") + File.separator  
@@ -452,6 +548,16 @@ public class DatcomOutputFileReader extends AbstractOutputFileReader implements 
 		System.out.println("The Datcom output file is available? " + reader.isFileAvailable());
 		System.out.println("The Datcom output file to read: " + reader.getTheFile());
 		
+		// parse the file and build map of variables & values
 		reader.parse();
-	}	
+		
+		// print the map
+		Map<String, List<Number>> variables = reader.getVariables();
+		// Print the map of variables
+		variables.forEach((key, value) -> {
+		    System.out.println(key + " = " + value);
+		});
+		System.out.println("Number of alpha's = " + reader.getNAlphas());
+	}
+
 }

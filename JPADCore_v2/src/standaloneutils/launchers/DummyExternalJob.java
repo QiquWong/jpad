@@ -26,6 +26,8 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 public class DummyExternalJob extends AbstractExternalJob {
 
+	private DatcomOutputFileReader datcomOutputFileReader;
+	
 	private String formCommand() {
 		// build the system command we want to run
 		
@@ -135,11 +137,11 @@ public class DummyExternalJob extends AbstractExternalJob {
 	@Override
 	public boolean parseOutputFile() {
 		
-		DatcomOutputFileReader reader = new DatcomOutputFileReader(this.outputFile);
-		System.out.println("The Datcom output file is available? " + reader.isFileAvailable());
-		System.out.println("The Datcom output file to read: " + reader.getTheFile());
+		datcomOutputFileReader = new DatcomOutputFileReader(this.outputFile);
+		System.out.println("The Datcom output file is available? " + datcomOutputFileReader.isFileAvailable());
+		System.out.println("The Datcom output file to read: " + datcomOutputFileReader.getTheFile());
 		
-		return reader.parse();
+		return datcomOutputFileReader.parse();
 		
 	}
 
@@ -176,10 +178,22 @@ public class DummyExternalJob extends AbstractExternalJob {
 	    System.out.println("---------------------------------------------");
 	    
 	    job.parseOutputFile();
+
+		// print the map of variables
+		Map<String, List<Number>> variables = job.getDatcomOutputReader().getVariables();
+		// Print the map of variables
+		variables.forEach((key, value) -> {
+		    System.out.println(key + " = " + value);
+		});
+		System.out.println("Number of alpha's = " + job.getDatcomOutputReader().getNAlphas());
 	    
 	    System.out.println("---------------------------------------------");
 		System.out.println("Job terminated.");
 		
+	}
+
+	public DatcomOutputFileReader getDatcomOutputReader() {
+		return datcomOutputFileReader;
 	}
 
 }
