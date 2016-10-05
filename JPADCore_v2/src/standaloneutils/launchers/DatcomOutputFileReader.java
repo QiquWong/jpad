@@ -9,6 +9,10 @@ import java.util.Scanner;
 
 public class DatcomOutputFileReader extends AbstractOutputFileReader implements IOutputFileReader {
 
+	private String lenghtUnits = "";
+	private String derivUnits = "";
+	private int nAlphas = 0;
+	
 	public DatcomOutputFileReader(String outputFilePath) {
 		super(outputFilePath);
 	}
@@ -69,14 +73,46 @@ public class DatcomOutputFileReader extends AbstractOutputFileReader implements 
         public String toString() { return text; }
     }
 
+	public enum AERO_COEFF_NAME {
+        ALPHA("ALPHA"),
+        CD("CD"),
+        CL("CL"),
+        CM("CM"),
+        CN("CN"),
+        CA("CA"),
+        XCP("XCP"),
+        CLA("CLA"),
+        CMA("CMA"),
+        CYB("CYB"),
+        CNB("CNB"),
+        CLB("CLB"),
+        CLQ("CLQ"),
+        CMQ("CMQ"),
+        CLAD("CLAD"),
+        CMAD("CMAD"),
+        CLP("CLP"),
+        CYP("CYP"),
+        CNP("CNP"),
+        CNR("CNR"),
+        CLR("CLR")
+        ;
+
+        private final String text;
+
+        AERO_COEFF_NAME(final String newText) {
+            this.text = newText;
+        }
+
+        @Override
+        public String toString() { return text; }
+    }
 	
 	@Override
 	public boolean parse() {
 		if (theFile != null) { 
-			String lenghtUnits = "";
-			String derivUnits = "";
 
-			System.out.println("Parsing...\n");
+			System.out.println("==============================");
+			System.out.println("Parsing Datcom output...");
 			try (Scanner scanner =  new Scanner(theFile)) {
 				// process line-by-line
 				while (scanner.hasNextLine()){
@@ -104,9 +140,7 @@ public class DatcomOutputFileReader extends AbstractOutputFileReader implements 
 							&&
 							lenghtUnits.equals("")
 							) {
-						System.out.println(line);
 						String[] splitString = (line.trim().split("\\s+"));
-						System.out.println(Arrays.toString(splitString));
 						lenghtUnits = splitString[1].toLowerCase();
 						System.out.println("Length units: " + lenghtUnits);
 					}				
@@ -116,11 +150,9 @@ public class DatcomOutputFileReader extends AbstractOutputFileReader implements 
 							&&
 							derivUnits.equals("")
 							) {
-						System.out.println(line);
 						String[] splitString = (line.trim().split("\\s+"));
-						System.out.println(Arrays.toString(splitString));
 						derivUnits = splitString[1].toLowerCase();
-						System.out.println("Derivative units: " + derivUnits);
+						System.out.println("Deriv units: " + derivUnits);
 					}				
 
 
@@ -133,27 +165,26 @@ public class DatcomOutputFileReader extends AbstractOutputFileReader implements 
 					if (line
 							.matches("1.*AUTOMATED STABILITY AND CONTROL METHODS PER APRIL 1976 VERSION OF DATCOM.*")
 							) {
+						
 						// advance and check if this is a block with results
 						line = scanner.nextLine();
 						if (line
 								.matches(".*CHARACTERISTICS AT ANGLE OF ATTACK AND IN SIDESLIP.*")
 								) {
-							System.out.println(line);
+
 							// advance 8 lines
 							for(int i = 0; i < 8; i++) {
 								line = scanner.nextLine();
-								System.out.println(line);
 							}
+							
 							// advance and get row of numbers
 							line = scanner.nextLine();
-							System.out.println(line);
-							String[] splitString = (line.split("\\s+"));
-							System.out.println("Values: " + Arrays.toString(splitString));
+							String[] splitString0 = (line.split("\\s+"));
 
 							// ============================================ Mach number
 							
-							Double mach = Double.valueOf(splitString[LINE_POSITION_PARAMS.MACH_NUMBER.getValue()]);
-							System.out.println("Mach = " + mach);
+							Double mach = Double.valueOf(splitString0[LINE_POSITION_PARAMS.MACH_NUMBER.getValue()]);
+							//System.out.println("Mach = " + mach);
 
 							List<Number> machList = new ArrayList<Number>();
 							machList.add(mach);
@@ -161,8 +192,8 @@ public class DatcomOutputFileReader extends AbstractOutputFileReader implements 
 
 							// ============================================ Altitude
 							
-							Double altitude = Double.valueOf(splitString[LINE_POSITION_PARAMS.ALTITUDE.getValue()]);
-							System.out.println("Altitude = " + altitude);
+							Double altitude = Double.valueOf(splitString0[LINE_POSITION_PARAMS.ALTITUDE.getValue()]);
+							//System.out.println("Altitude = " + altitude);
 
 							List<Number> altitudeList = new ArrayList<Number>();
 							altitudeList.add(altitude);
@@ -170,8 +201,8 @@ public class DatcomOutputFileReader extends AbstractOutputFileReader implements 
 
 							// ============================================ Velocity
 							
-							Double velocity = Double.valueOf(splitString[LINE_POSITION_PARAMS.VELOCITY.getValue()]);
-							System.out.println("Velocity = " + velocity);
+							Double velocity = Double.valueOf(splitString0[LINE_POSITION_PARAMS.VELOCITY.getValue()]);
+							//System.out.println("Velocity = " + velocity);
 
 							List<Number> velocityList = new ArrayList<Number>();
 							velocityList.add(velocity);
@@ -179,8 +210,8 @@ public class DatcomOutputFileReader extends AbstractOutputFileReader implements 
 
 							// ============================================ Pressure
 							
-							Double pressure = Double.valueOf(splitString[LINE_POSITION_PARAMS.PRESSURE.getValue()]);
-							System.out.println("Pressure = " + pressure);
+							Double pressure = Double.valueOf(splitString0[LINE_POSITION_PARAMS.PRESSURE.getValue()]);
+							//System.out.println("Pressure = " + pressure);
 
 							List<Number> pressureList = new ArrayList<Number>();
 							pressureList.add(pressure);
@@ -188,8 +219,8 @@ public class DatcomOutputFileReader extends AbstractOutputFileReader implements 
 							
 							// ============================================ Temperature
 							
-							Double temperature = Double.valueOf(splitString[LINE_POSITION_PARAMS.TEMPERATURE.getValue()]);
-							System.out.println("Temperature = " + temperature);
+							Double temperature = Double.valueOf(splitString0[LINE_POSITION_PARAMS.TEMPERATURE.getValue()]);
+							//System.out.println("Temperature = " + temperature);
 
 							List<Number> temperatureList = new ArrayList<Number>();
 							temperatureList.add(temperature);
@@ -197,8 +228,8 @@ public class DatcomOutputFileReader extends AbstractOutputFileReader implements 
 
 							// ============================================ Reynolds per unit length
 							
-							Double reynoldsPerUnitLength = Double.valueOf(splitString[LINE_POSITION_PARAMS.REYNOLDS_NUMBER_PER_UNITLENGTH.getValue()]);
-							System.out.println("Reynolds per unit length = " + reynoldsPerUnitLength);
+							Double reynoldsPerUnitLength = Double.valueOf(splitString0[LINE_POSITION_PARAMS.REYNOLDS_NUMBER_PER_UNITLENGTH.getValue()]);
+							//System.out.println("Reynolds per unit length = " + reynoldsPerUnitLength);
 
 							List<Number> reynoldsPerUnitLengthList = new ArrayList<Number>();
 							reynoldsPerUnitLengthList.add(reynoldsPerUnitLength);
@@ -206,8 +237,8 @@ public class DatcomOutputFileReader extends AbstractOutputFileReader implements 
 							
 							// ============================================ Reference Area
 							
-							Double referenceArea = Double.valueOf(splitString[LINE_POSITION_PARAMS.REF_AREA.getValue()]);
-							System.out.println("Reference area = " + referenceArea);
+							Double referenceArea = Double.valueOf(splitString0[LINE_POSITION_PARAMS.REF_AREA.getValue()]);
+							//System.out.println("Reference area = " + referenceArea);
 
 							List<Number> referenceAreaList = new ArrayList<Number>();
 							referenceAreaList.add(referenceArea);
@@ -215,8 +246,8 @@ public class DatcomOutputFileReader extends AbstractOutputFileReader implements 
 
 							// ============================================ Reference length lon.
 							
-							Double referenceLengthLong = Double.valueOf(splitString[LINE_POSITION_PARAMS.REF_LENGTH_LONG.getValue()]);
-							System.out.println("Reference length long. = " + referenceLengthLong);
+							Double referenceLengthLong = Double.valueOf(splitString0[LINE_POSITION_PARAMS.REF_LENGTH_LONG.getValue()]);
+							//System.out.println("Reference length long. = " + referenceLengthLong);
 
 							List<Number> referenceLengthLongList = new ArrayList<Number>();
 							referenceLengthLongList.add(referenceLengthLong);
@@ -224,8 +255,8 @@ public class DatcomOutputFileReader extends AbstractOutputFileReader implements 
 							
 							// ============================================ Reference length lat.
 							
-							Double referenceLengthLat = Double.valueOf(splitString[LINE_POSITION_PARAMS.REF_LENGTH_LAT.getValue()]);
-							System.out.println("Reference length lat. = " + referenceLengthLat);
+							Double referenceLengthLat = Double.valueOf(splitString0[LINE_POSITION_PARAMS.REF_LENGTH_LAT.getValue()]);
+							//System.out.println("Reference length lat. = " + referenceLengthLat);
 
 							List<Number> referenceLengthLatList = new ArrayList<Number>();
 							referenceLengthLatList.add(referenceLengthLat);
@@ -233,8 +264,8 @@ public class DatcomOutputFileReader extends AbstractOutputFileReader implements 
 
 							// ============================================ Moment ref. horiz.
 							
-							Double momentReferenceHoriz = Double.valueOf(splitString[LINE_POSITION_PARAMS.MOMENT_REF_HORIZ.getValue()]);
-							System.out.println("Moment reference horiz. = " + momentReferenceHoriz);
+							Double momentReferenceHoriz = Double.valueOf(splitString0[LINE_POSITION_PARAMS.MOMENT_REF_HORIZ.getValue()]);
+							//System.out.println("Moment reference horiz. = " + momentReferenceHoriz);
 
 							List<Number> momentReferenceHorizList = new ArrayList<Number>();
 							momentReferenceHorizList.add(momentReferenceHoriz);
@@ -242,72 +273,231 @@ public class DatcomOutputFileReader extends AbstractOutputFileReader implements 
 							
 							// ============================================ Moment ref. vert.
 							
-							Double momentReferenceVert = Double.valueOf(splitString[LINE_POSITION_PARAMS.MOMENT_REF_VERT.getValue()]);
-							System.out.println("Moment reference vert. = " + momentReferenceVert);
+							Double momentReferenceVert = Double.valueOf(splitString0[LINE_POSITION_PARAMS.MOMENT_REF_VERT.getValue()]);
+							//System.out.println("Moment reference vert. = " + momentReferenceVert);
 
 							List<Number> momentReferenceVertList = new ArrayList<Number>();
 							momentReferenceVertList.add(momentReferenceVert);
 							variables.put(PARAMS_NAME.MOMENT_REF_VERT.toString(), momentReferenceVertList);
 							
-							System.out.println("==============================");
-							variables.forEach((key, value) -> {
-							    System.out.println(key + " = " + value);
-							});
-							
-							//Advance three lines
-							System.out.println(line);
-							// advance 8 lines
+							// Advance 3 more lines
 							for(int i = 0; i < 3; i++) {
 								line = scanner.nextLine();
-								System.out.println(line);
 							}
-							System.out.println("==============================");
-							// and get rows until a '0' is found in first column
-							List<String> alphaAeroCoeffLines = new ArrayList<>();
+							
+							// advance and get lines until a '0' is found as first character
+							List<String> alphaAeroCoeffLines1 = new ArrayList<>();
 							line = scanner.nextLine();
 							while (!line
 									.matches("^0")
+									//.matches("^0.*ALPHA.*Q/QINF.*EPSLON.*D(EPSLON)/D(ALPHA).*") // not working
 									) {
-								System.out.println("-->" + line);
-								alphaAeroCoeffLines.add(line);
+								alphaAeroCoeffLines1.add(line);
 								line = scanner.nextLine();
 							}
-							System.out.println("==============================");
+							alphaAeroCoeffLines1.remove(alphaAeroCoeffLines1.size()-1); // gotta do this - TODO check
 							
-							// get more rows until a '0' is found in first column
+							// assign number of alpha's
+							nAlphas = alphaAeroCoeffLines1.size();
+							
+							// get nAlpha more rows
 							List<String> alphaAeroCoeffLines2 = new ArrayList<>();
-							for(int k=0; k<alphaAeroCoeffLines.size(); k++) {
+							for(int k=0; k<nAlphas; k++) {
 								line = scanner.nextLine();
-								System.out.println("-->" + line);
 								alphaAeroCoeffLines2.add(line);
 							} 
+
 							System.out.println("==============================");
 							
-							// TODO check the above code
-							
-							
-//							line = scanner.nextLine();
-//							while (!line
-//									.matches("^0")
-//									) {
-//								System.out.println(line);
-//								alphaAeroCoeffLines2.add(line);
-//								line = scanner.nextLine();
-//							}
+							// Parse the stored lines and build lists of coefficients vs list of alpha's 
+							System.out.println("Parse the stored lines and build lists of coefficients vs list of alpha's");
 
-							// TODO: split lines and assign coefficients
-							
-							
-//							System.out.println(line);
-//							String[] splitString = (line.split("\\s+"));
-//							System.out.println("Values: " + Arrays.toString(splitString));
+							List<Number> alphaList = new ArrayList<Number>();
+							List<Number> cdList = new ArrayList<Number>();
+							List<Number> clList = new ArrayList<Number>();
+							List<Number> cmList = new ArrayList<Number>();
+							List<Number> cnList = new ArrayList<Number>();
+							List<Number> caList = new ArrayList<Number>();
+							List<Number> xcpList = new ArrayList<Number>();
+							List<Number> claList = new ArrayList<Number>();
+							List<Number> cmaList = new ArrayList<Number>();
+							List<Number> cybList = new ArrayList<Number>();
+							List<Number> cnbList = new ArrayList<Number>();
+							List<Number> clbList = new ArrayList<Number>();
 
+							// parse first line first
+							line = alphaAeroCoeffLines1.get(0);
+							String[] splitString1a = (line.trim().split("\\s+"));
+
+							if (!splitString1a[0].trim().equals("NA"))
+								alphaList.add(Double.valueOf(splitString1a[0].trim()));
+							if (!splitString1a[1].trim().equals("NA"))
+								cdList.add(Double.valueOf(splitString1a[1]));
+							if (!splitString1a[2].trim().equals("NA"))
+								clList.add(Double.valueOf(splitString1a[2]));
+							if (!splitString1a[3].trim().equals("NA"))
+								cmList.add(Double.valueOf(splitString1a[3]));
+							if (!splitString1a[4].trim().equals("NA"))
+								cnList.add(Double.valueOf(splitString1a[4]));
+							if (!splitString1a[5].trim().equals("NA"))
+								caList.add(Double.valueOf(splitString1a[5]));
+							if (!splitString1a[6].trim().equals("NA"))
+								xcpList.add(Double.valueOf(splitString1a[6]));
+							if (!splitString1a[7].trim().equals("NA"))
+								claList.add(Double.valueOf(splitString1a[7]));
+							if (!splitString1a[8].trim().equals("NA"))
+								cmaList.add(Double.valueOf(splitString1a[8]));
+							if (!splitString1a[9].trim().equals("NA"))
+								cybList.add(Double.valueOf(splitString1a[9]));
+							if (!splitString1a[10].trim().equals("NA"))
+								cnbList.add(Double.valueOf(splitString1a[10]));
+							if (!splitString1a[11].trim().equals("NA"))
+								clbList.add(Double.valueOf(splitString1a[11]));
 							
+							// parse the remaining lines
+							for (int k=1; k<nAlphas; k++) {
+								line = alphaAeroCoeffLines1.get(k);
+								String[] splitString1b = (line.trim().split("\\s+"));
+								if (!splitString1b[0].trim().equals("NA"))
+									alphaList.add(Double.valueOf(splitString1b[0].trim()));
+								if (!splitString1b[1].trim().equals("NA"))
+									cdList.add(Double.valueOf(splitString1b[1]));
+								if (!splitString1b[2].trim().equals("NA"))
+									clList.add(Double.valueOf(splitString1b[2]));
+								if (!splitString1b[3].trim().equals("NA"))
+									cmList.add(Double.valueOf(splitString1b[3]));
+								if (!splitString1b[4].trim().equals("NA"))
+									cnList.add(Double.valueOf(splitString1b[4]));
+								if (!splitString1b[5].trim().equals("NA"))
+									caList.add(Double.valueOf(splitString1b[5]));
+								if (!splitString1b[6].trim().equals("NA"))
+									xcpList.add(Double.valueOf(splitString1b[6]));
+								if (!splitString1b[7].trim().equals("NA"))
+									claList.add(Double.valueOf(splitString1b[7]));
+								if (!splitString1b[8].trim().equals("NA"))
+									cmaList.add(Double.valueOf(splitString1b[8]));
+								if (!splitString1b[9].trim().equals("NA"))
+									clbList.add(Double.valueOf(splitString1b[9]));
+							}
+							
+							// put parsed values into the map of variables
+							variables.put(AERO_COEFF_NAME.ALPHA.toString(), alphaList);
+							variables.put(AERO_COEFF_NAME.CD.toString(), cdList);
+							variables.put(AERO_COEFF_NAME.CL.toString(), clList);
+							variables.put(AERO_COEFF_NAME.CM.toString(), cmList);
+							variables.put(AERO_COEFF_NAME.CN.toString(), cnList);
+							variables.put(AERO_COEFF_NAME.CA.toString(), caList);
+							variables.put(AERO_COEFF_NAME.XCP.toString(), xcpList);
+							variables.put(AERO_COEFF_NAME.CLA.toString(), claList);
+							variables.put(AERO_COEFF_NAME.CMA.toString(), cmaList);
+							variables.put(AERO_COEFF_NAME.CYB.toString(), cybList);
+							variables.put(AERO_COEFF_NAME.CNB.toString(), cnbList);
+							variables.put(AERO_COEFF_NAME.CLB.toString(), clbList);
+							
+//							System.out.println("Alpha: " + alphaList);
+//							System.out.println("CD: " + cdList);
+//							System.out.println("CL: " + clList);
+//							System.out.println("CM: " + cmList);
+//							System.out.println("CN: " + cnList);
+//							System.out.println("CA: " + caList);
+//							System.out.println("XCP: " + xcpList);
+//							System.out.println("CLA: " + claList);
+//							System.out.println("CMA: " + cmaList);
+//							System.out.println("CYB: " + cybList);
+//							System.out.println("CNB: " + cnbList);
+//							System.out.println("CLB: " + clbList);
+							
+							// scan 15 more dummy lines
+							for (int k=0; k<15; k++) {
+								line = scanner.nextLine();
+								//System.out.println(line);
+							}
+
+							// Parse dynamic derivatives
+							List<Number> clqList = new ArrayList<Number>();
+							List<Number> cmqList = new ArrayList<Number>();
+							List<Number> cladList = new ArrayList<Number>();
+							List<Number> cmadList = new ArrayList<Number>();
+							List<Number> clpList = new ArrayList<Number>();
+							List<Number> cypList = new ArrayList<Number>();
+							List<Number> cnpList = new ArrayList<Number>();
+							List<Number> cnrList = new ArrayList<Number>();
+							List<Number> clrList = new ArrayList<Number>();
+
+							// get nAlpha more rows
+							List<String> alphaAeroCoeffLines3 = new ArrayList<>();
+							for(int k=0; k<nAlphas; k++) {
+								line = scanner.nextLine();
+								//System.out.println("-->"+line);
+								alphaAeroCoeffLines3.add(line);
+							} 
+							
+							// parse first line first
+							line = alphaAeroCoeffLines3.get(0);
+							String[] splitString2a = (line.trim().split("\\s+"));
+							//System.out.println(Arrays.toString(splitString2a));
+							
+							if (!splitString2a[1].trim().equals("NA"))
+								clqList.add(Double.valueOf(splitString2a[1]));
+							if (!splitString2a[2].trim().equals("NA"))
+								cmqList.add(Double.valueOf(splitString2a[2]));
+							if (!splitString2a[3].trim().equals("NA"))
+								cladList.add(Double.valueOf(splitString2a[3]));
+							if (!splitString2a[4].trim().equals("NA"))
+								cmadList.add(Double.valueOf(splitString2a[4]));
+							if (!splitString2a[5].trim().equals("NA"))
+								clpList.add(Double.valueOf(splitString2a[5]));
+							if (!splitString2a[6].trim().equals("NA"))
+								cypList.add(Double.valueOf(splitString2a[6]));
+							if (!splitString2a[7].trim().equals("NA"))
+								cnpList.add(Double.valueOf(splitString2a[7]));
+							if (!splitString2a[8].trim().equals("NA"))
+								cnrList.add(Double.valueOf(splitString2a[8]));
+							if (!splitString2a[9].trim().equals("NA"))
+								clrList.add(Double.valueOf(splitString2a[9]));
+
+							// parse the remaining lines
+							for (int k=1; k<nAlphas; k++) {
+								line = alphaAeroCoeffLines3.get(k);
+								String[] splitString2b = (line.trim().split("\\s+"));
+								//System.out.println(Arrays.toString(splitString2b));
+								if (!splitString2b[1].trim().equals("NA"))
+									cladList.add(Double.valueOf(splitString2b[1]));
+								if (!splitString2b[2].trim().equals("NA"))
+									cmadList.add(Double.valueOf(splitString2b[2]));
+								if (!splitString2b[3].trim().equals("NA"))
+									clpList.add(Double.valueOf(splitString2b[3]));
+								if (!splitString2b[4].trim().equals("NA"))
+									cypList.add(Double.valueOf(splitString2b[4]));
+								if (!splitString2b[5].trim().equals("NA"))
+									cnpList.add(Double.valueOf(splitString2b[5]));
+								if (!splitString2b[6].trim().equals("NA"))
+									cnrList.add(Double.valueOf(splitString2b[6]));
+								if (!splitString2b[7].trim().equals("NA"))
+									clrList.add(Double.valueOf(splitString2b[7]));
+							}	
+							
+							// put parsed values into the map of variables
+							variables.put(AERO_COEFF_NAME.CLQ.toString(), clqList);
+							variables.put(AERO_COEFF_NAME.CMQ.toString(), cmqList);
+							variables.put(AERO_COEFF_NAME.CLAD.toString(), cladList);
+							variables.put(AERO_COEFF_NAME.CMAD.toString(), cmadList);
+							variables.put(AERO_COEFF_NAME.CLP.toString(), clpList);
+							variables.put(AERO_COEFF_NAME.CYP.toString(), cypList);
+							variables.put(AERO_COEFF_NAME.CNP.toString(), cnpList);
+							variables.put(AERO_COEFF_NAME.CNR.toString(), cnrList);
+							variables.put(AERO_COEFF_NAME.CLR.toString(), clrList);
+		
+							System.out.println("==============================");
+							
+							// TODO: parse the rest of the file if necessary
+							//       delta_e increments, etc
 							
 						}
 					}
 				}
-				System.out.println("\n...parsing done");
+				System.out.println("...parsing done");
+				System.out.println("==============================");
 				return true;
 			}
 			catch (Exception e) {
@@ -319,7 +509,18 @@ public class DatcomOutputFileReader extends AbstractOutputFileReader implements 
 			return false;
 	}
 
-	
+	public String getLenghtUnits() {
+		return lenghtUnits;
+	}
+
+	public String getDerivUnits() {
+		return derivUnits;
+	}
+
+	public int getNAlphas() {
+		return nAlphas;
+	}	
+
 	public static void main(String[] args) {
 		// Set the DATCOMROOT environment variable
 		String binDirPath = System.getProperty("user.dir") + File.separator  
@@ -347,6 +548,16 @@ public class DatcomOutputFileReader extends AbstractOutputFileReader implements 
 		System.out.println("The Datcom output file is available? " + reader.isFileAvailable());
 		System.out.println("The Datcom output file to read: " + reader.getTheFile());
 		
+		// parse the file and build map of variables & values
 		reader.parse();
-	}	
+		
+		// print the map
+		Map<String, List<Number>> variables = reader.getVariables();
+		// Print the map of variables
+		variables.forEach((key, value) -> {
+		    System.out.println(key + " = " + value);
+		});
+		System.out.println("Number of alpha's = " + reader.getNAlphas());
+	}
+
 }
