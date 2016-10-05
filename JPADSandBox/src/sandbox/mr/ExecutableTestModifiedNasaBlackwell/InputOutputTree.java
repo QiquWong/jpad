@@ -139,7 +139,6 @@ public class InputOutputTree {
 		alphaArrayCompleteCurveAirfoil = new double[numberOfPoint2DCurve];
 		clArrayCompleteCurveAirfoil = new ArrayList<double[]>();
 		
-		
 		clAirfoilMatrix = new double [numberOfPoint2DCurve][numberOfPointSemispan];
 		
 	}
