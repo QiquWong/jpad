@@ -513,7 +513,7 @@ public class MyChartToFileUtils {
 	 * @throws IllegalAccessException 
 	 * @throws InstantiationException 
 	 */
-	public static void plotJFreeChart(
+	public static void plot(
 			List<Double[]> xList, List<Double[]> yList,
 			String chartName, String xLabelName, String yLabelName,
 			Double xMin, Double xMax, Double yMin, Double yMax,
@@ -528,7 +528,7 @@ public class MyChartToFileUtils {
 		for (int i=0; i<xList.size(); i++) {
 			// check if xList[i] and yList[i] have the same length
 			if(xList.get(i).length == yList.get(i).length){
-				XYSeries series = new XYSeries(legend.get(i));
+				XYSeries series = new XYSeries(legend.get(i), false);
 				for (int j=0; j<xList.get(i).length; j++) {
 					series.add(xList.get(i)[j], yList.get(i)[j]);
 				}
@@ -601,8 +601,8 @@ public class MyChartToFileUtils {
 		chart.getXYPlot().setDomainGridlinePaint(Color.LIGHT_GRAY);
 		chart.getXYPlot().setRangeGridlinesVisible(true);
 		chart.getXYPlot().setRangeGridlinePaint(Color.LIGHT_GRAY);
-		chart.getXYPlot().getDomainAxis().setRange(xMin - 0.1*xMin, xMax + 0.1*xMax);
-		chart.getXYPlot().getRangeAxis().setRange(yMin - 0.1*yMin, yMax + 0.1*yMax);
+		chart.getXYPlot().getDomainAxis().setRange(xMin + 0.1*xMin, xMax + 0.1*xMax);
+		chart.getXYPlot().getRangeAxis().setRange(yMin + 0.2*yMin, yMax + 0.2*yMax);
 		
 		// creation of the file .png
 		File xyChart = new File(folderPathName + fileName + ".png"); 

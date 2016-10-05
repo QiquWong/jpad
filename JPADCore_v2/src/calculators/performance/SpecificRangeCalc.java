@@ -248,7 +248,7 @@ public class SpecificRangeCalc {
 		specificRange.add(longRangeArray);
 		legend.add("Long Range");
 		
-		MyChartToFileUtils.plotJFreeChart(
+		MyChartToFileUtils.plot(
 				mach, specificRange,									// List to be plotted
 				"Specific Range v.s. Mach","Mach", "Specific Range",	// Title and labels
 				null, null, null, null,									// Axis
@@ -288,7 +288,7 @@ public class SpecificRangeCalc {
 		}
 		
 		if(engineType == EngineTypeEnum.TURBOFAN )
-			MyChartToFileUtils.plotJFreeChart(
+			MyChartToFileUtils.plot(
 					mach, sfc,
 					"SFC v.s. Mach", "Mach", "SFC",
 					null, null, null, null,
@@ -297,7 +297,7 @@ public class SpecificRangeCalc {
 					subfolderPath, "SFC"
 					);
 		else if(engineType == EngineTypeEnum.TURBOPROP)
-			MyChartToFileUtils.plotJFreeChart(
+			MyChartToFileUtils.plot(
 					mach, sfc,
 					"SFC v.s. Mach", "Mach", "SFC",
 					null, null, null, null,
@@ -323,7 +323,7 @@ public class SpecificRangeCalc {
 					mach.remove(mach.size()-1);
 				}
 		
-		MyChartToFileUtils.plotJFreeChart(
+		MyChartToFileUtils.plot(
 				mach, efficiency,
 				"Efficiency v.s. Mach", "Mach", "Efficiency",
 				null, null, null, null,
@@ -389,7 +389,7 @@ public class SpecificRangeCalc {
 			legendList.add("Drag ar MTOM = " + maxTakeOffMassArray[i]);
 		legendList.add("Thrust available");
 		
-		MyChartToFileUtils.plotJFreeChart(
+		MyChartToFileUtils.plot(
 				xList, yList,
 				"Drag-Thrust v.s. Mach at " + altitude + " m", "Mach", "Drag, Thrust",
 //				0.22, 0.5, null, 30000.0,      // TP axis

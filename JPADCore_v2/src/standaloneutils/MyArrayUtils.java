@@ -327,6 +327,16 @@ public final class MyArrayUtils {
 		return vec_d;
 	}
 
+	public static Double[] convertListOfDoubleToDoubleArray(List<Double> list){
+
+		Double[] vec_d = new Double[list.size()];
+
+		for(int i=0; i<list.size(); i++)
+			vec_d[i] = list.get(i);
+		
+		return vec_d;
+	}
+	
 	public static <T extends Quantity> List<Amount<T>> convertDoubleArrayToListOfAmount(double[] d, Unit unit) {
 
 		if ( d.length == 0 ) return null;

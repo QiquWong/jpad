@@ -1021,6 +1021,8 @@ public class Aircraft implements IAircraft {
 			type = AircraftTypeEnum.FIGHTER;
 		else if(typeProperty.equalsIgnoreCase("ACROBATIC"))
 			type = AircraftTypeEnum.ACROBATIC;
+		else if(typeProperty.equalsIgnoreCase("COMMUTER"))
+			type = AircraftTypeEnum.COMMUTER;
 		else {
 			System.err.println("INVALID AIRCRAFT TYPE !!!");
 			return null;

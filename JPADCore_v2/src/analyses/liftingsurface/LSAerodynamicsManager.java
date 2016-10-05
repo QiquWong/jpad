@@ -3154,7 +3154,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			legend.add("clean");
 			legend.add("high lift");
 
-			MyChartToFileUtils.plotJFreeChart(alphaListPlot, 
+			MyChartToFileUtils.plot(alphaListPlot, 
 					cLListPlot,
 					"CL vs alpha",
 					"alpha", 

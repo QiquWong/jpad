@@ -13,6 +13,7 @@ public enum AircraftTypeEnum {
 	BUSINESS_JET,
 	TURBOPROP, 
 	GENERAL_AVIATION,
+	COMMUTER,
 	ACROBATIC;
 
 }

@@ -11,6 +11,7 @@ import org.jscience.physics.amount.Amount;
 import calculators.performance.FlightManeuveringEnvelopeCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftTypeEnum;
+import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.RegulationsEnum;
 
 public class FlightManeuveringEnvelopeTest {
@@ -19,11 +20,13 @@ public class FlightManeuveringEnvelopeTest {
 	
 	public static void main(String[] args) {
 		
+		MyConfiguration.initWorkingDirectoryTree();
+		
 		System.out.println("-----------------------------------------------------------------------");
 		System.out.println(" JPAD TEST :: FLIGHT MANEUVERING ENVELOPE");
 		System.out.println("-----------------------------------------------------------------------\n");
 		
-		// DATA:
+		// DATA FAR-25:
 		Amount<Mass> maxTakeOffMass = Amount.valueOf(22303, SI.KILOGRAM);	
 		Amount<Mass> maxLandingMass = Amount.valueOf(20073, SI.KILOGRAM);
 		Amount<Area> wingSurface = Amount.valueOf(64.07, SI.SQUARE_METRE);
@@ -39,6 +42,23 @@ public class FlightManeuveringEnvelopeTest {
 		Amount<Length> altitude = Amount.valueOf(6096, SI.METER);
 		RegulationsEnum regulation = RegulationsEnum.FAR_25;
 		AircraftTypeEnum aircraftType = AircraftTypeEnum.TURBOPROP;
+		
+//		// DATA FAR-23:
+//		Amount<Mass> maxTakeOffMass = Amount.valueOf(3290, SI.KILOGRAM);	
+//		Amount<Mass> maxLandingMass = Amount.valueOf(2961, SI.KILOGRAM);
+//		Amount<Area> wingSurface = Amount.valueOf(25.4, SI.SQUARE_METRE);
+//		double cLMaxClean = 1.47;
+//		double cLMaxFullFlap = 2.0;
+//		double cLMaxInverted = -0.8;
+//		Amount<Length> meanAerodynamicChord = Amount.valueOf(1.87, SI.METER);
+//		Amount<?> cLAlpha = Amount.valueOf(4.985, SI.RADIAN).inverse();
+//		double positiveLimitLoadFactor = 3.491;
+//		double negativeLimitLoadFactor = -1.396;
+//		Amount<Velocity> cruisingSpeed = null;
+//		Amount<Velocity> diveSpeed = null;
+//		Amount<Length> altitude = Amount.valueOf(6096, SI.METER);
+//		RegulationsEnum regulation = RegulationsEnum.FAR_23;
+//		AircraftTypeEnum aircraftType = AircraftTypeEnum.GENERAL_AVIATION;
 		
 		// CALCULATOR OBJECT:
 		FlightManeuveringEnvelopeCalc theCalculator = new FlightManeuveringEnvelopeCalc(
@@ -59,69 +79,12 @@ public class FlightManeuveringEnvelopeTest {
 				wingSurface
 				);
 		theCalculator.calculateManeuveringEnvelope();
+		theCalculator.plotAllManeuveringEnvelopes(MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR));
 		
 		// PRINT RESULTS:
-		MyConfiguration.customizeAmountOutput();
+		System.out.println(theCalculator.toString());
 		
 		System.out.println("-----------------------------------------------------------------------");
-		System.out.println(" REGULATION : " + regulation);
-		System.out.println(" AIRCRAFT TYPE : " + aircraftType);
-		System.out.println("-----------------------------------------------------------------------");
-		
-		System.out.println("\n-----------------------------------------------------------------------");
-		System.out.println(" BASIC MANEUVERING DIAGRAM");
-		System.out.println("-----------------------------------------------------------------------");
-		System.out.println("Stall speed clean = " + theCalculator.getStallSpeedClean());
-		System.out.println("Stall speed inverted = " + theCalculator.getStallSpeedInverted());
-		System.out.println(".......................................................................");
-		System.out.println("Maneuvering speed = " + theCalculator.getManeuveringSpeed());
-		System.out.println("Positive limit load factor maneuvering speed = " + theCalculator.getPositiveLimitLoadFactor());
-		System.out.println(".......................................................................");
-		System.out.println("Cruising speed = " + theCalculator.getCruisingSpeed());
-		System.out.println("Positive limit load factor cruising speed = " + theCalculator.getPositiveLimitLoadFactor());
-		System.out.println(".......................................................................");
-		System.out.println("Dive speed = " + theCalculator.getDiveSpeed());
-		System.out.println("Positive limit load factor dive speed = " + theCalculator.getPositiveLimitLoadFactor());
-		System.out.println(".......................................................................");
-		System.out.println("Dive speed = " + theCalculator.getDiveSpeed());
-		System.out.println("Negative limit load factor dive speed = " + theCalculator.getNegativeLimitLoadFactor());
-		System.out.println(".......................................................................");
-		System.out.println("Cruising speed = " + theCalculator.getCruisingSpeed());
-		System.out.println("Negative limit load factor cruising speed = " + theCalculator.getNegativeLimitLoadFactor());
-		System.out.println(".......................................................................");
-		System.out.println("Maneuvering speed = " + theCalculator.getManeuveringSpeed());
-		System.out.println("Negative limit load factor maneuvering speed = " + theCalculator.getNegativeLimitLoadFactor());
-		System.out.println("\n-----------------------------------------------------------------------");
-		System.out.println(" FLAP CURVE ");
-		System.out.println("-----------------------------------------------------------------------");
-		System.out.println("Stall speed full flap = " + theCalculator.getStallSpeedFullFlap());
-		System.out.println(".......................................................................");
-		System.out.println("Maneuvering speed full flap = " + theCalculator.getManeuveringFlapSpeed());
-		System.out.println("Positive limit load factor full flap maneuvering speed = " + theCalculator.getPositiveLoadFactorDesignFlapSpeed());
-		System.out.println(".......................................................................");
-		System.out.println("Design speed full flap = " + theCalculator.getDesignFlapSpeed());
-		System.out.println("Positive limit load factor full flap maneuvering speed = " + theCalculator.getPositiveLoadFactorDesignFlapSpeed());
-		System.out.println("\n-----------------------------------------------------------------------");
-		System.out.println(" GUST MODIFICATION ");
-		System.out.println("-----------------------------------------------------------------------");
-		System.out.println("Maneuvering speed = " + theCalculator.getManeuveringSpeed());
-		System.out.println("Positive limit load factor maneuvering speed (GUST) = " + theCalculator.getPositiveLoadFactorManeuveringSpeed());
-		System.out.println(".......................................................................");
-		System.out.println("Cruising speed = " + theCalculator.getCruisingSpeed());
-		System.out.println("Positive limit load factor cruising speed (GUST) = " + theCalculator.getPositiveLoadFactorCruisingSpeed());
-		System.out.println(".......................................................................");
-		System.out.println("Dive speed = " + theCalculator.getDiveSpeed());
-		System.out.println("Positive limit load factor dive speed (GUST) = " + theCalculator.getPositiveLoadFactorDiveSpeed());
-		System.out.println(".......................................................................");
-		System.out.println("Dive speed = " + theCalculator.getDiveSpeed());
-		System.out.println("Negative limit load factor dive speed (GUST) = " + theCalculator.getNegativeLoadFactorDiveSpeed());
-		System.out.println(".......................................................................");
-		System.out.println("Cruising speed = " + theCalculator.getCruisingSpeed());
-		System.out.println("Negative limit load factor cruising speed (GUST) = " + theCalculator.getNegativeLoadFactorCruisingSpeed());
-		System.out.println(".......................................................................");
-		System.out.println("Maneuvering speed = " + theCalculator.getManeuveringSpeed());
-		System.out.println("Negative limit load factor maneuvering speed (GUST) = " + theCalculator.getNegativeLoadFactorManeuveringSpeed());
-		System.out.println("\n-----------------------------------------------------------------------");
 		System.out.println(" DONE !! ");
 		System.out.println("-----------------------------------------------------------------------");
 	}
