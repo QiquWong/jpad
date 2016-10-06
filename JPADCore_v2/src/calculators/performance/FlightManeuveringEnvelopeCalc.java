@@ -283,10 +283,10 @@ public class FlightManeuveringEnvelopeCalc {
 				double vDFactor = (-0.0003*this._altitude.doubleValue(NonSI.FOOT)) + 25.857;
 				
 				_gustSpeeds.add(
-						Amount.valueOf(vAFactor*0.3048, SI.METERS_PER_SECOND) // 38 ft/sec
+						Amount.valueOf(vAFactor*0.3048, SI.METERS_PER_SECOND)    // 38 ft/sec
 						);
 				_gustSpeeds.add(
-						Amount.valueOf(vCFactor*0.3048, SI.METERS_PER_SECOND)   // 25 ft/sec
+						Amount.valueOf(vCFactor*0.3048, SI.METERS_PER_SECOND)    // 25 ft/sec
 						);
 				_gustSpeeds.add(
 						Amount.valueOf(vDFactor*0.3048, SI.METERS_PER_SECOND)    // 12.5 ft/sec
@@ -298,7 +298,7 @@ public class FlightManeuveringEnvelopeCalc {
 						Amount.valueOf(-vCFactor*0.3048, SI.METERS_PER_SECOND)   // -25 ft/sec
 						);
 				_gustSpeeds.add(
-						Amount.valueOf(-vAFactor*0.3048, SI.METERS_PER_SECOND) // -38 ft/sec
+						Amount.valueOf(-vAFactor*0.3048, SI.METERS_PER_SECOND)   // -38 ft/sec
 						);
 			}
 		}
@@ -667,6 +667,13 @@ public class FlightManeuveringEnvelopeCalc {
 		//--------------------------------------------------------------------------------------
 		this._basicManeuveringDiagramSpeedEAS = new ArrayList<Amount<Velocity>>();
 		this._basicManeuveringDiagramLoadFactors = new ArrayList<Double>();
+		this._gustCurvesSpeedEAS = new ArrayList<Amount<Velocity>>();
+		this._gustCurvesLoadFactors = new ArrayList<Double>();
+		
+		this._flapManeuveringDiagramSpeedEAS = new ArrayList<Amount<Velocity>>();
+		this._flapManeuveringDiagramLoadFactors = new ArrayList<Double>();
+		this._gustCurvesSpeedEASWithFlaps = new ArrayList<Amount<Velocity>>();
+		this._gustCurvesLoadFactorsWithFlaps = new ArrayList<Double>();
 		
 		// STALL CONDITIONS:
 		this._basicManeuveringDiagramSpeedEAS.add(_stallSpeedClean);
@@ -747,8 +754,6 @@ public class FlightManeuveringEnvelopeCalc {
 		//--------------------------------------------------------------------------------------
 		// GUST CURVES:
 		//--------------------------------------------------------------------------------------
-		this._gustCurvesSpeedEAS = new ArrayList<Amount<Velocity>>();
-		this._gustCurvesLoadFactors = new ArrayList<Double>();
 		
 		// initial point
 		this._gustCurvesSpeedEAS.add(Amount.valueOf(0.0, SI.METERS_PER_SECOND));
@@ -946,42 +951,6 @@ public class FlightManeuveringEnvelopeCalc {
 		this._envelopeSpeedEAS.add(_stallSpeedInverted);
 		this._envelopeLoadFactors.add(0.0);
 		
-		List<Double[]> xList = new ArrayList<>();
-		xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_basicManeuveringDiagramSpeedEAS));
-		xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_envelopeSpeedEAS));
-		xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_gustCurvesSpeedEAS));
-		
-		List<Double[]> yList = new ArrayList<>();
-		yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_basicManeuveringDiagramLoadFactors));
-		yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_envelopeLoadFactors));
-		yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_gustCurvesLoadFactors));
-		
-		List<String> legend = new ArrayList<>();
-		legend.add("Maneuvering diagram");
-		legend.add("Envelope");
-		legend.add("Gust curves");
-		
-		try {
-			MyChartToFileUtils.plot(
-					xList, yList,
-					"Flight Maneuvering Envelope", "V (EAS)", "",
-					0.0, null, null, null, "m/s", "",
-					true, legend, 
-					folderPathName, "Flight Maneuvering Envelope"
-					);
-		} catch (InstantiationException | IllegalAccessException e) {
-			e.printStackTrace();
-		}
-		
-	}
-	
-	public void plotManeuveringEnvelopeWithFlap(String folderPathName) {
-		
-		this._flapManeuveringDiagramSpeedEAS = new ArrayList<Amount<Velocity>>();
-		this._flapManeuveringDiagramLoadFactors = new ArrayList<Double>();
-		this._gustCurvesSpeedEASWithFlaps = new ArrayList<Amount<Velocity>>();
-		this._gustCurvesLoadFactorsWithFlaps = new ArrayList<Double>();
-		
 		//--------------------------------------------------------------------------------------
 		// BASIC MANEUVERING DIAGRAM (WITH FLPAS)
 		//--------------------------------------------------------------------------------------
@@ -1103,11 +1072,17 @@ public class FlightManeuveringEnvelopeCalc {
 				);
 		
 		List<Double[]> xList = new ArrayList<>();
+		xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_basicManeuveringDiagramSpeedEAS));
+		xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_envelopeSpeedEAS));
+		xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_gustCurvesSpeedEAS));
 		xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_flapManeuveringDiagramSpeedEAS));
 		xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_envelopeSpeedEASWithFlaps));
 		xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_gustCurvesSpeedEASWithFlaps));
 		
 		List<Double[]> yList = new ArrayList<>();
+		yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_basicManeuveringDiagramLoadFactors));
+		yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_envelopeLoadFactors));
+		yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_gustCurvesLoadFactors));
 		yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_flapManeuveringDiagramLoadFactors));
 		yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_envelopeLoadFactorsWithFlaps));
 		yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_gustCurvesLoadFactorsWithFlaps));
@@ -1116,23 +1091,22 @@ public class FlightManeuveringEnvelopeCalc {
 		legend.add("Maneuvering diagram");
 		legend.add("Envelope");
 		legend.add("Gust curves");
+		legend.add("Maneuvering diagram (FLAP)");
+		legend.add("Envelope (FLAPS)");
+		legend.add("Gust curves (FLAPS)");
 		
 		try {
 			MyChartToFileUtils.plot(
 					xList, yList,
-					"Flight Maneuvering Envelope (Flap)", "V (EAS)", "",
+					"Flight Maneuvering Envelope", "V (EAS)", "",
 					0.0, null, null, null, "m/s", "",
 					true, legend, 
-					folderPathName, "Flight Maneuvering Envelope (Flap)"
+					folderPathName, "Flight Maneuvering Envelope"
 					);
 		} catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	public void plotAllManeuveringEnvelopes(String folderPathName) {
-		plotManeuveringEnvelope(folderPathName);
-		plotManeuveringEnvelopeWithFlap(folderPathName);
+		
 	}
 	
 	//--------------------------------------------------------------------------------------------

@@ -106,10 +106,6 @@ public class LiftingSurface implements ILiftingSurface {
 	private List<Double> _criticalMachVsY = new ArrayList<>();
 	private MyArray _distanceAirfoilACFromWingAC = new MyArray();
 	
-	// wing span-wise arrays : 
-	private MyArray _ellChordVsY = new MyArray(SI.METER);
-	private MyArray _clBasicY = new MyArray();
-	
 	private Amount<Length> _xACActualMRF, _xACActualLRF;
 	
 	//================================================
@@ -1957,22 +1953,6 @@ public class LiftingSurface implements ILiftingSurface {
 
 	public void setDistanceAirfoilACFromWingAC(MyArray _distanceAirfoilACFromWingAC) {
 		this._distanceAirfoilACFromWingAC = _distanceAirfoilACFromWingAC;
-	}
-
-	public MyArray getEllChordVsY() {
-		return _ellChordVsY;
-	}
-
-	public void setEllChordVsY(MyArray _ellChordVsY) {
-		this._ellChordVsY = _ellChordVsY;
-	}
-
-	public MyArray getClBasicY() {
-		return _clBasicY;
-	}
-
-	public void setClBasicY(MyArray _clBasicY) {
-		this._clBasicY = _clBasicY;
 	}
 
 	public Double getMassCorrectionFactor() {
