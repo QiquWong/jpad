@@ -59,6 +59,7 @@ public class LSAerodynamicsCalculator {
 	private List<Amount<Angle>> _alphaZeroLiftDistribution;
 	private List<Amount<Angle>> _twistDistribution;
 	private List<Amount<Length>> _chordDistribution;
+	private List<Amount<Length>> _ellipticalChordDistribution;
 	private List<Amount<Angle>> _dihedralDistribution;
 	private List<Amount<?>> _clAlphaDistribution;
 	private List<Amount<Length>> _xLEDistribution;
@@ -77,9 +78,9 @@ public class LSAerodynamicsCalculator {
 	private Map <MethodEnum, Double> _cLStar;
 	private Map <MethodEnum, Double> _cLMax;
 	private Map <MethodEnum, Amount<?>> _cLAlpha;
-	private Map <MethodEnum, List<Double>> _liftCoefficient3DCurve;
-	private Map <MethodEnum, double[]> _liftCoefficientDistribution;
+	private Map <MethodEnum, Double[]> _liftCoefficient3DCurve;
 	private Map <MethodEnum, double[]> _liftCoefficientDistributionAtCLMax;
+	private Map <MethodEnum, List<Double>> _liftCoefficientDistribution;
 	private Map <MethodEnum, List<Amount<Force>>> _liftDistribution;
 	private Map <MethodEnum, List<Double>> _liftCoefficientDistributionBasicLoad;
 	private Map <MethodEnum, List<Amount<Force>>> _basicLoadDistribution;
@@ -276,8 +277,8 @@ public class LSAerodynamicsCalculator {
 		this._cLStar = new HashMap<MethodEnum, Double>();
 		this._cLMax = new HashMap<MethodEnum, Double>();
 		this._cLAlpha = new HashMap<MethodEnum, Amount<?>>();
-		this._liftCoefficient3DCurve = new HashMap<MethodEnum, List<Double>>();
-		this._liftCoefficientDistribution = new HashMap<MethodEnum, double[]>();
+		this._liftCoefficient3DCurve = new HashMap<MethodEnum, Double[]>();
+		this._liftCoefficientDistribution = new HashMap<MethodEnum, List<Double>>();
 		this._liftCoefficientDistributionAtCLMax = new HashMap<MethodEnum, double[]>();
 		this._liftDistribution = new HashMap<MethodEnum, List<Amount<Force>>>();
 		this._liftCoefficientDistributionBasicLoad = new HashMap<MethodEnum, List<Double>>();
@@ -1396,9 +1397,60 @@ public class LSAerodynamicsCalculator {
 	public class CalcLiftCurve {
 	
 		public void fromCLmaxPhillipsAndAlley() {
-		
 			
+			if(_alphaZeroLift.get(MethodEnum.INTEGRAL_MEAN_TWIST) == null) {
+				CalcAlpha0L calcAlphaZeroLift = new CalcAlpha0L();
+				calcAlphaZeroLift.integralMeanWithTwist();
+			}
 			
+			if(_cLZero.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC) == null) {
+				CalcCL0 calcCLZero = new CalcCL0();
+				calcCLZero.andersonSweptCompressibleSubsonic();
+			}
+			
+			if(_cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC) == null) {
+				CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
+				calcCLAlpha.andersonSweptCompressibleSubsonic();
+			}
+			
+			if(_alphaStar.get(MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS) == null) {
+				CalcAlphaStar calcAlphaStar = new CalcAlphaStar();
+				calcAlphaStar.meanAirfoilWithInfluenceAreas();
+			}
+			
+			if(_cLStar.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC) == null) {
+				CalcCLStar calcCLStar = new CalcCLStar();
+				calcCLStar.andersonSweptCompressibleSubsonic();
+			}
+			
+			if(_alphaStall.get(MethodEnum.PHILLIPS_ALLEY) == null) {
+				CalcAlphaStall calcAlphaStall = new CalcAlphaStall();
+				calcAlphaStall.fromCLmaxPhillipsAndAlley();
+			}
+			
+			if(_cLMax.get(MethodEnum.PHILLIPS_ALLEY) == null) {
+				CalcCLmax calcCLmax = new CalcCLmax();
+				calcCLmax.phillipsAndAlley();
+			}
+			
+			_alphaArrayPlot = MyArrayUtils.linspaceDouble(
+					_alphaZeroLift.get(MethodEnum.INTEGRAL_MEAN_TWIST).doubleValue(NonSI.DEGREE_ANGLE)-2,
+					_alphaStall.get(MethodEnum.PHILLIPS_ALLEY).doubleValue(NonSI.DEGREE_ANGLE) + 3,
+					_numberOfAlphasPlot
+					);
+			
+			_liftCoefficient3DCurve.put(
+					MethodEnum.PHILLIPS_ALLEY,
+					LiftCalc.calculateCLvsAlphaArray(
+							_cLZero.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC),
+							_cLStar.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC),
+							_cLMax.get(MethodEnum.PHILLIPS_ALLEY),
+							_alphaStar.get(MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS),
+							_alphaStall.get(MethodEnum.PHILLIPS_ALLEY),
+							_cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC),
+							_alphaArrayPlot
+							)
+					);
 		}
 		
 		public void nasaBlackwell() {
@@ -1438,14 +1490,336 @@ public class LSAerodynamicsCalculator {
 				calcCLmax.nasaBlackwell();
 			}
 			
-			// TODO : BUILD ALPHA AND CL ARRAYS !!
+			_alphaArrayPlot = MyArrayUtils.linspaceDouble(
+					_alphaZeroLift.get(MethodEnum.INTEGRAL_MEAN_TWIST).doubleValue(NonSI.DEGREE_ANGLE)-2,
+					_alphaStall.get(MethodEnum.NASA_BLACKWELL).doubleValue(NonSI.DEGREE_ANGLE) + 3,
+					_numberOfAlphasPlot
+					);
 			
+			_liftCoefficient3DCurve.put(
+					MethodEnum.NASA_BLACKWELL,
+					LiftCalc.calculateCLvsAlphaArray(
+							_cLZero.get(MethodEnum.NASA_BLACKWELL),
+							_cLStar.get(MethodEnum.NASA_BLACKWELL),
+							_cLMax.get(MethodEnum.NASA_BLACKWELL),
+							_alphaStar.get(MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS),
+							_alphaStall.get(MethodEnum.NASA_BLACKWELL),
+							_cLAlpha.get(MethodEnum.NASA_BLACKWELL),
+							_alphaArrayPlot
+							)
+					);
 		}
 	}		
 	//............................................................................
 	// END OF THE ALPHA STALL INNER CLASS
 	//............................................................................
 		
+	//............................................................................
+	// CALC LIFT COEFFICIENT DISTRIBUTION CLASS
+	//............................................................................
+	public class CalcLiftDistributions {
+
+		public void schrenk() {
+			
+			_ellipticalChordDistribution = new ArrayList<Amount<Length>>();
+			for(int i=0; i<_numberOfPointSemiSpanWise; i++)
+				_ellipticalChordDistribution.add(
+						Amount.valueOf(
+								((4*_theLiftingSurface.getSurface().doubleValue(SI.SQUARE_METRE))
+										/(Math.PI*_theLiftingSurface.getSpan().doubleValue(SI.METER)))
+								*Math.sqrt(1-Math.pow(_etaStationDistribution[i],2)),
+								SI.METER
+								)
+						);
+
+			CalcCLAtAlpha theCLAtAlphaCalculator = new CalcCLAtAlpha();
+
+			List<Amount<Length>> ccLAdditionalSchrenk = new ArrayList<Amount<Length>>();
+			List<Amount<Length>> ccLBasicSchrenk = new ArrayList<Amount<Length>>();
+			List<Amount<Length>> ccLTotalSchrenk = new ArrayList<Amount<Length>>();
+			List<Double> gammaAdditionalSchrenk = new ArrayList<Double>();
+			List<Double> gammaBasicSchrenk = new ArrayList<Double>();
+			List<Double> gammaTotalSchrenk = new ArrayList<Double>();
+			List<Double> liftCoefficientAdditionalSchrenk = new ArrayList<Double>();
+			List<Double> liftCoefficientBasicSchrenk = new ArrayList<Double>();
+			List<Double> liftCoefficientTotalSchrenk = new ArrayList<Double>();
+			List<Amount<Force>> liftAdditionalSchrenk = new ArrayList<Amount<Force>>();
+			List<Amount<Force>> liftBasicSchrenk = new ArrayList<Amount<Force>>();
+			List<Amount<Force>> liftTotalSchrenk = new ArrayList<Amount<Force>>();
+			
+			for(int i=0; i<_numberOfAlphas; i++) {
+
+				double cLActual = theCLAtAlphaCalculator.nasaBlackwellCompleteCurve(
+						_alphaArray.get(i)
+						);
+
+				for(int j=0; j<_numberOfPointSemiSpanWise; j++) {
+					ccLAdditionalSchrenk.add(
+							_chordDistribution.get(j)
+							.plus(_ellipticalChordDistribution.get(j))
+							.divide(2)
+							.times(cLActual)
+							);
+					ccLBasicSchrenk.add(
+							_chordDistribution.get(j)
+							.times(_clAlphaDistribution.get(j)
+									.to(NonSI.DEGREE_ANGLE)
+									.inverse()
+									.getEstimatedValue())
+							.times(0.5)
+							.times(_twistDistribution.get(j).doubleValue(NonSI.DEGREE_ANGLE)
+									-_alphaZeroLiftDistribution.get(j).doubleValue(NonSI.DEGREE_ANGLE)
+									)
+							);
+					ccLTotalSchrenk.add(
+							ccLAdditionalSchrenk.get(j).plus(ccLBasicSchrenk.get(j))
+							);
+					gammaAdditionalSchrenk.add(
+							ccLAdditionalSchrenk.get(j)
+							.divide(
+									_theLiftingSurface.getSpan()
+									.times(2)
+									.doubleValue(SI.METER)
+									)
+							.getEstimatedValue()
+							);
+					gammaBasicSchrenk.add(
+							ccLBasicSchrenk.get(j)
+							.divide(
+									_theLiftingSurface.getSpan()
+									.times(2)
+									.doubleValue(SI.METER)
+									)
+							.getEstimatedValue()
+							);
+					gammaTotalSchrenk.add(
+							gammaAdditionalSchrenk.get(j) + gammaBasicSchrenk.get(j)
+							);
+					liftCoefficientAdditionalSchrenk.add(
+							ccLAdditionalSchrenk.get(j)
+							.divide(_chordDistribution.get(j)).getEstimatedValue()
+							);
+					liftCoefficientBasicSchrenk.add(
+							ccLBasicSchrenk.get(j)
+							.divide(_chordDistribution.get(j)).getEstimatedValue()
+							);
+					liftCoefficientTotalSchrenk.add(
+							ccLTotalSchrenk.get(j)
+							.divide(_chordDistribution.get(j)).getEstimatedValue()
+							);
+					liftAdditionalSchrenk.add(
+							Amount.valueOf(
+									ccLAdditionalSchrenk.get(j).doubleValue(SI.METER)
+									*_theOperatingConditions.getDynamicPressure().doubleValue(SI.PASCAL),
+									SI.NEWTON
+									)
+							);
+					liftBasicSchrenk.add(
+							Amount.valueOf(
+									ccLBasicSchrenk.get(j).doubleValue(SI.METER)
+									*_theOperatingConditions.getDynamicPressure().doubleValue(SI.PASCAL),
+									SI.NEWTON
+									)
+							);
+					liftTotalSchrenk.add(
+							Amount.valueOf(
+									ccLTotalSchrenk.get(j).doubleValue(SI.METER)
+									*_theOperatingConditions.getDynamicPressure().doubleValue(SI.PASCAL),
+									SI.NEWTON
+									)
+							);
+				}
+			}
+			_cclDistributionAdditionalLoad.put(
+					MethodEnum.SCHRENK,
+					ccLAdditionalSchrenk
+					);
+			_cclDistributionBasicLoad.put(
+					MethodEnum.SCHRENK,
+					ccLBasicSchrenk
+					);
+			_cclDistribution.put(
+					MethodEnum.SCHRENK,
+					ccLTotalSchrenk
+					);
+			_gammaDistributionAdditionalLoad.put(
+					MethodEnum.SCHRENK,
+					gammaAdditionalSchrenk
+					);
+			_gammaDistributionBasicLoad.put(
+					MethodEnum.SCHRENK,
+					gammaBasicSchrenk
+					);
+			_gammaDistribution.put(
+					MethodEnum.SCHRENK,
+					gammaTotalSchrenk
+					);
+			_liftCoefficientDistributionAdditionalLoad.put(
+					MethodEnum.SCHRENK,
+					liftCoefficientAdditionalSchrenk
+					);
+			_liftCoefficientDistributionBasicLoad.put(
+					MethodEnum.SCHRENK,
+					liftCoefficientBasicSchrenk
+					);
+			_liftCoefficientDistribution.put(
+					MethodEnum.SCHRENK,
+					liftCoefficientTotalSchrenk
+					);
+			_additionalLoadDistribution.put(
+					MethodEnum.SCHRENK,
+					liftAdditionalSchrenk
+					);
+			_basicLoadDistribution.put(
+					MethodEnum.SCHRENK,
+					liftBasicSchrenk
+					);
+			_liftDistribution.put(
+					MethodEnum.SCHRENK,
+					liftTotalSchrenk
+					);
+		}
+	
+		public void nasaBlackwell() {
+			
+			List<Amount<Length>> ccLAdditional = new ArrayList<Amount<Length>>();
+			List<Amount<Length>> ccLBasic = new ArrayList<Amount<Length>>();
+			List<Amount<Length>> ccLTotal = new ArrayList<Amount<Length>>();
+			List<Double> gammaAdditional = new ArrayList<Double>();
+			List<Double> gammaBasic = new ArrayList<Double>();
+			List<Double> gammaTotal = new ArrayList<Double>();
+			List<Double> liftCoefficientAdditional = new ArrayList<Double>();
+			List<Double> liftCoefficientBasic = new ArrayList<Double>();
+			List<Double> liftCoefficientTotal = new ArrayList<Double>();
+			List<Amount<Force>> liftAdditional = new ArrayList<Amount<Force>>();
+			List<Amount<Force>> liftBasic = new ArrayList<Amount<Force>>();
+			List<Amount<Force>> liftTotal = new ArrayList<Amount<Force>>();
+			
+			NasaBlackwell theNasaBlackwellCalculator = new NasaBlackwell(
+					_theLiftingSurface.getSemiSpan().doubleValue(SI.METER),
+					_theLiftingSurface.getSurface().doubleValue(SI.SQUARE_METRE),
+					MyArrayUtils.convertListOfAmountTodoubleArray(_yStationDistribution),
+					MyArrayUtils.convertListOfAmountTodoubleArray(_chordDistribution),
+					MyArrayUtils.convertListOfAmountTodoubleArray(_xLEDistribution),
+					MyArrayUtils.convertListOfAmountTodoubleArray(_dihedralDistribution),
+					MyArrayUtils.convertListOfAmountTodoubleArray(_twistDistribution),
+					MyArrayUtils.convertListOfAmountTodoubleArray(_alphaZeroLiftDistribution),
+					_vortexSemiSpanToSemiSpanRatio,
+					0.0,
+					_theOperatingConditions.getMachCurrent(),
+					_theOperatingConditions.getAltitude().doubleValue(SI.METER)
+					);
+			
+			for(int i=0; i<_numberOfAlphas; i++) {
+			
+				theNasaBlackwellCalculator.calculate(_alphaArray.get(i));
+				
+				for(int j=0; j<_numberOfPointSemiSpanWise; j++) {
+					ccLAdditional.add(
+							Amount.valueOf(
+									theNasaBlackwellCalculator.getClAdditionalDistribution().get(j)
+									*_chordDistribution.get(j).doubleValue(SI.METER),
+									SI.METER
+									)
+							);
+
+					// CONTINUE FROM HERE AND CHANGE THE LIST TO LIST<LIST>
+					
+				}
+			}
+			_cclDistributionAdditionalLoad.put(
+					MethodEnum.NASA_BLACKWELL,
+					ccLAdditional
+					);
+			_cclDistributionBasicLoad.put(
+					MethodEnum.NASA_BLACKWELL,
+					ccLBasic
+					);
+			_cclDistribution.put(
+					MethodEnum.NASA_BLACKWELL,
+					ccLTotal
+					);
+			_gammaDistributionAdditionalLoad.put(
+					MethodEnum.NASA_BLACKWELL,
+					gammaAdditional
+					);
+			_gammaDistributionBasicLoad.put(
+					MethodEnum.NASA_BLACKWELL,
+					gammaBasic
+					);
+			_gammaDistribution.put(
+					MethodEnum.NASA_BLACKWELL,
+					gammaTotal
+					);
+			_liftCoefficientDistributionAdditionalLoad.put(
+					MethodEnum.NASA_BLACKWELL,
+					liftCoefficientAdditional
+					);
+			_liftCoefficientDistributionBasicLoad.put(
+					MethodEnum.NASA_BLACKWELL,
+					liftCoefficientBasic
+					);
+			_liftCoefficientDistribution.put(
+					MethodEnum.NASA_BLACKWELL,
+					liftCoefficientTotal
+					);
+			_additionalLoadDistribution.put(
+					MethodEnum.NASA_BLACKWELL,
+					liftAdditional
+					);
+			_basicLoadDistribution.put(
+					MethodEnum.NASA_BLACKWELL,
+					liftBasic
+					);
+			_liftDistribution.put(
+					MethodEnum.NASA_BLACKWELL,
+					liftTotal
+					);
+		}
+
+//---------------------------------------------------------------------------------------------
+//		EVENTUALLY LATER!!
+//---------------------------------------------------------------------------------------------		
+		/**
+		 * This function calculates the lift distribution using the cl of 50 airfoil among the semispan.
+		 * This function creates a new airfoil with its own characteristics for each of 50 station and 
+		 * evaluates the local cl both in its linear trait and non linear.
+		 * 
+		 * @author Manuela Ruocco 
+		 * @param Amount<Angle> alpha
+		 * @param LiftingSurfaceCreator theWing
+		 */ 
+//		
+//		public void airfoilLiftDistribution (Amount<Angle> alpha, LiftingSurface theWing){
+//			double [] clLocalAirfoil = new double [_nPointsSemispanWise];
+//			Airfoil intermediateAirfoil;
+//			double alphaDouble = alpha.getEstimatedValue();
+//
+//			for (int i=0 ; i< _nPointsSemispanWise ; i++){
+//				intermediateAirfoil = new Airfoil(
+//						LiftingSurface.calculateAirfoilAtY(theWing, _yStations[i]),
+//						theWing.getAerodynamicDatabaseReader()
+//						);
+//				clLocalAirfoil[i] = intermediateAirfoil.getAerodynamics().calculateClAtAlpha(alphaDouble);
+//				clLocalAirfoil[_nPointsSemispanWise-1] = 0;
+//
+//			}	
+//			System.out.println(" cl distribution " + Arrays.toString(clLocalAirfoil));
+//		}
+//---------------------------------------------------------------------------------------------
+
+		public void allMethods() {
+//			if (getTheLiftingSurface().getType() != ComponentEnum.VERTICAL_TAIL) { 
+//				System.out.println("alpha " + alpha.getEstimatedValue());
+//				nasaBlackwell.calculate(alpha);
+//			}
+//			schrenk();
+		}
+	}
+	//............................................................................
+	// END OF THE ALPHA STALL INNER CLASS
+	//............................................................................
+	
 	//............................................................................
 	// HIGH LIFT INNER CLASS
 	//............................................................................
@@ -1607,16 +1981,16 @@ public class LSAerodynamicsCalculator {
 		this._cLAtAplhaActual = _cLAtAplhaActual;
 	}
 
-	public Map<MethodEnum, List<Double>> getLiftCoefficient3DCurve() {
+	public Map<MethodEnum, Double[]> getLiftCoefficient3DCurve() {
 		return _liftCoefficient3DCurve;
 	}
-	public void setLiftCoefficient3DCurve(Map<MethodEnum, List<Double>> _liftCoefficient3DCurve) {
+	public void setLiftCoefficient3DCurve(Map<MethodEnum, Double[]> _liftCoefficient3DCurve) {
 		this._liftCoefficient3DCurve = _liftCoefficient3DCurve;
 	}
-	public Map<MethodEnum, double[]> getLiftCoefficientDistribution() {
+	public Map<MethodEnum, List<Double>> getLiftCoefficientDistribution() {
 		return _liftCoefficientDistribution;
 	}
-	public void setLiftCoefficientDistribution(Map<MethodEnum, double[]> _liftCoefficientDistribution) {
+	public void setLiftCoefficientDistribution(Map<MethodEnum, List<Double>> _liftCoefficientDistribution) {
 		this._liftCoefficientDistribution = _liftCoefficientDistribution;
 	}
 	public Map<MethodEnum, List<Amount<Force>>> getLiftDistribution() {
@@ -1891,6 +2265,20 @@ public class LSAerodynamicsCalculator {
 	 */
 	public void setChordDistribution(List<Amount<Length>> _chordDistribution) {
 		this._chordDistribution = _chordDistribution;
+	}
+
+	/**
+	 * @return the _ellipticalChordDistribution
+	 */
+	public List<Amount<Length>> getEllipticalChordDistribution() {
+		return _ellipticalChordDistribution;
+	}
+
+	/**
+	 * @param _ellipticalChordDistribution the _ellipticalChordDistribution to set
+	 */
+	public void setEllipticalChordDistribution(List<Amount<Length>> _ellipticalChordDistribution) {
+		this._ellipticalChordDistribution = _ellipticalChordDistribution;
 	}
 
 	/**

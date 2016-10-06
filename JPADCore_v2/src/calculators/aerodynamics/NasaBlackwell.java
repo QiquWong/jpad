@@ -585,7 +585,7 @@ public class NasaBlackwell {
 		return _ccLDistribution;
 	}
 
-	public MyArray get_clAdditionalDistribution() {
+	public MyArray getClAdditionalDistribution() {
 		return _clAdditionalDistribution;
 	}
 

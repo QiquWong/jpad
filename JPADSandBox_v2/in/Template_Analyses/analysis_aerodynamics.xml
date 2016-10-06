@@ -54,6 +54,11 @@
 			<nacelles>
 			
 			</nacelles>
+			<aircraft>
+				<longitudinal_static_stability>
+				
+				</longitudinal_static_stability>
+			</aircraft>
         </aerodynamics>
     </analysis>
 	<plot>
