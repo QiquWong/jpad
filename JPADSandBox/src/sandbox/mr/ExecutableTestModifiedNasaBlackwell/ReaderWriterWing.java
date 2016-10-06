@@ -190,7 +190,10 @@ public class ReaderWriterWing {
 				input.getClAlphaDistribution().add(Double.valueOf(clAlphaDistribution.get(i)));
 
 			// fill cl0
-//int i=0; i<)
+			for(int i=0; i<clAlphaDistribution.size(); i++){
+				double clZero = -input.getAlphaZeroLiftDistribution().get(i).doubleValue(NonSI.DEGREE_ANGLE)*input.getClAlphaDistribution().get(i);
+				input.getCl0Distribution().add(clZero);
+			}
 			// WARNINGS
 
 			if ( input.getNumberOfSections() != input.getChordDistribution().size()){
@@ -448,6 +451,49 @@ public class ReaderWriterWing {
 		//----------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 
+		// Distributions
+
+		double[] twistInputSectionsRadians = new double [input.getNumberOfSections()] ;
+		double[] alphaZeroLiftInputSectionsRadians = new double [input.getNumberOfSections()] ;
+
+		for( int i=0; i<input.getNumberOfSections(); i++){
+			twistInputSectionsRadians[i] = input.getTwistDistribution().get(i).doubleValue(SI.RADIAN);
+			alphaZeroLiftInputSectionsRadians[i] = input.getAlphaZeroLiftDistribution().get(i).doubleValue(SI.RADIAN);
+		}
+		input.setTwistDistributionRadian(MyMathUtils.getInterpolatedValue1DLinear(
+				MyArrayUtils.convertListTodoubleArray(input.getyAdimensionalStationInput()),
+				twistInputSectionsRadians,
+				input.getyStationsAdimensional()));
+
+		input.setAlphaZeroLiftDistributionRadian(MyMathUtils.getInterpolatedValue1DLinear(
+				MyArrayUtils.convertListTodoubleArray(input.getyAdimensionalStationInput()),
+				alphaZeroLiftInputSectionsRadians,
+				input.getyStationsAdimensional()));
+
+		input.setChordCompleteDistribution(MyMathUtils.getInterpolatedValue1DLinear(
+				MyArrayUtils.convertListTodoubleArray(input.getyAdimensionalStationInput()),
+				MyArrayUtils.convertListOfAmountodoubleArray(input.getChordDistribution()),
+				input.getyStationsAdimensional()));
+
+		input.setxLECompleteDistribution(MyMathUtils.getInterpolatedValue1DLinear(
+				MyArrayUtils.convertListTodoubleArray(input.getyAdimensionalStationInput()),
+				MyArrayUtils.convertListOfAmountodoubleArray(input.getxLEDistribution()),
+				input.getyStationsAdimensional()));
+
+		input.setCompleteAirfoilClMaxDistribution(MyMathUtils.getInterpolatedValue1DLinear(
+				MyArrayUtils.convertListTodoubleArray(input.getyAdimensionalStationInput()),
+				MyArrayUtils.convertListTodoubleArray(input.getMaximumliftCoefficientDistribution()),
+				input.getyStationsAdimensional()));
+		
+		
+		//		System.out.println(" twist distribution radians " + Arrays.toString(input.getTwistDistributionRadian()));
+		//		System.out.println(" alpha zero lift distribution radians " + Arrays.toString(input.getAlphaZeroLiftDistributionRadian()));
+		//		System.out.println(" chord distribution " + Arrays.toString(input.getChordCompleteDistribution()));
+		//		System.out.println(" xle distribution " + Arrays.toString(input.getxLECompleteDistribution()));
+        //		System.out.println(" cl max distribution " + Arrays.toString(input.getCompleteAirfoilClMaxDistribution()));
+
+
+
 		// Bidimensional airfoil curves as matrix
 		//
 		//  --------------------------> number of point semi span
@@ -547,12 +593,22 @@ public class ReaderWriterWing {
 		System.out.println("Cl zero distribution " +  Arrays.toString(MyArrayUtils.convertToDoublePrimitive(input.getCl0Distribution())));
 		System.out.println("Alpha zero lift distribution " +  Arrays.toString(MyArrayUtils.convertListOfAmountodoubleArray(input.getAlphaZeroLiftDistribution())));
 
-		
+
 		System.out.println("\n ALPHA ARRAY");
 		System.out.println(Arrays.toString(input.getAlphaArrayCompleteCurveAirfoil()));
 		System.out.println("\n AIRFOIL COMPLETE CURVE ");
 		for(int i=0; i<input.getNumberOfSections(); i++)
 			System.out.print(Arrays.toString(input.getClArrayCompleteCurveAirfoil().get(i)) + "\n");
+
+
+		//		System.out.println("\n AIRFOIL MATRIX ");
+		//	 for (int i=0; i<input.getNumberOfPointSemispan(); i++){
+		//		 System.out.print(" [ ");
+		//		for (int j=0; j<input.getNumberOfPoint2DCurve(); j++){
+		//			System.out.print(input.getClAirfoilMatrix()[j][i] + ", ");
+		//		}
+		//		System.out.print(" ] " +"\n");
+		//	 }
 
 
 	}

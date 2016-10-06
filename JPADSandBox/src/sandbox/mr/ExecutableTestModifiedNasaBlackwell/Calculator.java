@@ -90,7 +90,7 @@ public class Calculator {
 		double alphaFinal = 30.0;
 		int numberOfAlpha = 35;
 		
-		double vortexSemiSpanToSemiSpanRatio = 1/(2*input.getNumberOfPointSemispan());
+		double vortexSemiSpanToSemiSpanRatio = 1.0/(2.0*input.getNumberOfPointSemispan());
 
 		double[] alphaArrayNasaBlackwell = MyArrayUtils.linspace(alphaInitial, alphaFinal, numberOfAlpha);
 		double[] clDistributionActualNasaBlackwell = new double[input.getNumberOfPointSemispan()];
@@ -110,21 +110,18 @@ public class Calculator {
 		double[] twistDistributionRadians = new double[input.getNumberOfPointSemispan()];
 		double[] alphaZeroLiftDistributionRadians = new double[input.getNumberOfPointSemispan()];
 
-		for (int i=0; i< input.getNumberOfPointSemispan(); i++) {
-			twistDistributionRadians[i] =input.getTwistDistribution().get(i).doubleValue(SI.RADIAN);
-			alphaZeroLiftDistributionRadians[i] = input.getAlphaZeroLiftDistribution().get(i).doubleValue(SI.RADIAN);
-		}
+
 
 		// Object definition
 		NasaBlackwell theNasaBlackwellCalculator = new NasaBlackwell(
 				input.getSemiSpan().doubleValue(SI.METER),
 				input.getSurface().doubleValue(SI.SQUARE_METRE),
-				MyArrayUtils.convertListTodoubleArray(input.getyAdimensionalStationInput()),
-				MyArrayUtils.convertListOfAmountodoubleArray(input.getChordDistribution()),
-				MyArrayUtils.convertListOfAmountodoubleArray(input.getxLEDistribution()),
+			    input.getyStationsAdimensional(),
+				MyArrayUtils.convertToDoublePrimitive(input.getChordCompleteDistribution()),
+				MyArrayUtils.convertToDoublePrimitive(input.getxLECompleteDistribution()),
 				MyArrayUtils.convertListOfAmountodoubleArray(input.getDihedralDistribution()),
-				twistDistributionRadians,
-				alphaZeroLiftDistributionRadians,
+				MyArrayUtils.convertToDoublePrimitive(input.getTwistDistributionRadian()),
+				MyArrayUtils.convertToDoublePrimitive(input.getAlphaZeroLiftDistributionRadian()),
 				vortexSemiSpanToSemiSpanRatio,
 				0.0,
 				input.getMachNumber(),
@@ -145,21 +142,24 @@ public class Calculator {
 							theNasaBlackwellCalculator
 							.get_clTotalDistribution()
 							.toArray();
-					
-					for (int ii=0; ii<input.getNumberOfPointSemispan(); ii++){
-					clDistributionModifiedFromAirfoil[ii] = calculateActualViscousClAirfoil(input, clDistributionActualNasaBlackwell[ii], input.getyAdimensionalStationInput().get(ii));
-					}
+	// !!!! 				
+//					for (int ii=0; ii<input.getNumberOfPointSemispan(); ii++){
+//					clDistributionModifiedFromAirfoil[ii] = calculateActualViscousClAirfoil(input, clDistributionActualNasaBlackwell[ii], input.getyAdimensionalStationInput().get(ii));
+//					}
 
 					for(int j =0; j < input.getNumberOfPointSemispan(); j++) {
-						if( clDistributionModifiedFromAirfoil[j] > input.getMaximumliftCoefficientDistribution().get(j)) {
+						if( clDistributionActualNasaBlackwell[j] > input.getCompleteAirfoilClMaxDistribution()[j]) {					
+//						if( clDistributionModifiedFromAirfoil[j] > input.getCompleteAirfoilClMaxDistribution()[j]) {
 							firstIntersectionFound = true;
 							indexOfFirstIntersection = j;
+							System.out.println(" index of first intersection " + indexOfFirstIntersection);
 							break;
 						}
 					}
 				}
 				else {
 					indexOfAlphaFirstIntersection = i;
+					System.out.println(" index of alpha first intersection " + indexOfAlphaFirstIntersection);
 					break;
 				}
 			}
@@ -169,83 +169,83 @@ System.out.println(" i index " + indexOfAlphaFirstIntersection + " this value mu
 
 		// After find the first point where CL_wing > Cl_MAX_airfoil, starts an iteration on alpha
 		// in order to improve the accuracy.
-
-		for (int k = indexOfFirstIntersection; k< input.getNumberOfPointSemispan(); k++) {
-			diffCLapp = ( clDistributionActualNasaBlackwell[k] -  input.getMaximumliftCoefficientDistribution().get(k));
-			diffCL = Math.max(diffCLapp, diffCLappOld);
-			diffCLappOld = diffCL;
-		}
-		if( Math.abs(diffCL) < accuracy){
-			_cLMax.put(MethodEnum.NASA_BLACKWELL, theNasaBlackwellCalculator.getCLCurrent());
-			_alphaMaxLinear.put(
-					MethodEnum.NASA_BLACKWELL,
-					Amount.valueOf(
-							theNasaBlackwellCalculator.getAlphaCurrent(),
-							NonSI.DEGREE_ANGLE)
-					); 
-		}
-		else{
-			deltaAlpha = alphaArrayNasaBlackwell[indexOfAlphaFirstIntersection] 
-					- alphaArrayNasaBlackwell[indexOfAlphaFirstIntersection-1];
-			alphaNew = Amount.valueOf(
-					(alphaArrayNasaBlackwell[indexOfAlphaFirstIntersection] - (deltaAlpha/2)),
-					NonSI.DEGREE_ANGLE
-					).to(SI.RADIAN);
-			double alphaOld = alphaArrayNasaBlackwell[indexOfAlphaFirstIntersection]; 
-			diffCLappOld = 0;
-			while ( diffCL > accuracy){
-				diffCL = 0;
-				theNasaBlackwellCalculator.calculate(alphaNew);
-				clDistributionActualNasaBlackwell = theNasaBlackwellCalculator
-						.get_clTotalDistribution()
-						.toArray();
-				for (int m =0; m< input.getNumberOfPointSemispan(); m++) {
-					diffCLapp = clDistributionActualNasaBlackwell[m] - input.getMaximumliftCoefficientDistribution().get(m);
-
-					if ( diffCLapp > 0 ){
-						diffCL = Math.max(diffCLapp,diffCLappOld);
-						diffCLappOld = diffCL;
-					}
-
-				}
-				deltaAlpha = Math.abs(alphaOld - alphaNew.doubleValue(NonSI.DEGREE_ANGLE));
-				alphaOld = alphaNew.doubleValue(NonSI.DEGREE_ANGLE);
-				if (diffCL == 0){ //this means that diffCL would have been negative
-					alphaNew = Amount.valueOf(
-							alphaOld + (deltaAlpha/2),
-							NonSI.DEGREE_ANGLE
-							);
-					diffCL = 1; // generic positive value in order to enter again in the while cycle 
-					diffCLappOld = 0;
-				}
-				else { 
-					if(deltaAlpha > 0.005){
-						alphaNew = Amount.valueOf(
-								alphaOld - (deltaAlpha/2),
-								NonSI.DEGREE_ANGLE
-								);	
-						diffCLappOld = 0;
-						if ( diffCL < accuracy) break;
-					}
-					else {
-						alphaNew = Amount.valueOf(
-								alphaOld - (deltaAlpha),
-								NonSI.DEGREE_ANGLE
-								);	
-						diffCLappOld = 0;
-						if ( diffCL < accuracy) 
-							break;
-					}
-				}
-			}
-			theNasaBlackwellCalculator.calculate(alphaNew.to(SI.RADIAN));
-			_liftCoefficientDistributionAtCLMax.put(
-					MethodEnum.NASA_BLACKWELL,
-					theNasaBlackwellCalculator.get_clTotalDistribution().toArray()
-					);
-			_cLMax.put(MethodEnum.NASA_BLACKWELL, theNasaBlackwellCalculator.getCLCurrent())	;
-			_alphaMaxLinear.put(MethodEnum.NASA_BLACKWELL, alphaNew);
-		}
+//
+//		for (int k = indexOfFirstIntersection; k< input.getNumberOfPointSemispan(); k++) {
+//			diffCLapp = ( clDistributionActualNasaBlackwell[k] -  input.getMaximumliftCoefficientDistribution().get(k));
+//			diffCL = Math.max(diffCLapp, diffCLappOld);
+//			diffCLappOld = diffCL;
+//		}
+//		if( Math.abs(diffCL) < accuracy){
+//			_cLMax.put(MethodEnum.NASA_BLACKWELL, theNasaBlackwellCalculator.getCLCurrent());
+//			_alphaMaxLinear.put(
+//					MethodEnum.NASA_BLACKWELL,
+//					Amount.valueOf(
+//							theNasaBlackwellCalculator.getAlphaCurrent(),
+//							NonSI.DEGREE_ANGLE)
+//					); 
+//		}
+//		else{
+//			deltaAlpha = alphaArrayNasaBlackwell[indexOfAlphaFirstIntersection] 
+//					- alphaArrayNasaBlackwell[indexOfAlphaFirstIntersection-1];
+//			alphaNew = Amount.valueOf(
+//					(alphaArrayNasaBlackwell[indexOfAlphaFirstIntersection] - (deltaAlpha/2)),
+//					NonSI.DEGREE_ANGLE
+//					).to(SI.RADIAN);
+//			double alphaOld = alphaArrayNasaBlackwell[indexOfAlphaFirstIntersection]; 
+//			diffCLappOld = 0;
+//			while ( diffCL > accuracy){
+//				diffCL = 0;
+//				theNasaBlackwellCalculator.calculate(alphaNew);
+//				clDistributionActualNasaBlackwell = theNasaBlackwellCalculator
+//						.get_clTotalDistribution()
+//						.toArray();
+//				for (int m =0; m< input.getNumberOfPointSemispan(); m++) {
+//					diffCLapp = clDistributionActualNasaBlackwell[m] - input.getMaximumliftCoefficientDistribution().get(m);
+//
+//					if ( diffCLapp > 0 ){
+//						diffCL = Math.max(diffCLapp,diffCLappOld);
+//						diffCLappOld = diffCL;
+//					}
+//
+//				}
+//				deltaAlpha = Math.abs(alphaOld - alphaNew.doubleValue(NonSI.DEGREE_ANGLE));
+//				alphaOld = alphaNew.doubleValue(NonSI.DEGREE_ANGLE);
+//				if (diffCL == 0){ //this means that diffCL would have been negative
+//					alphaNew = Amount.valueOf(
+//							alphaOld + (deltaAlpha/2),
+//							NonSI.DEGREE_ANGLE
+//							);
+//					diffCL = 1; // generic positive value in order to enter again in the while cycle 
+//					diffCLappOld = 0;
+//				}
+//				else { 
+//					if(deltaAlpha > 0.005){
+//						alphaNew = Amount.valueOf(
+//								alphaOld - (deltaAlpha/2),
+//								NonSI.DEGREE_ANGLE
+//								);	
+//						diffCLappOld = 0;
+//						if ( diffCL < accuracy) break;
+//					}
+//					else {
+//						alphaNew = Amount.valueOf(
+//								alphaOld - (deltaAlpha),
+//								NonSI.DEGREE_ANGLE
+//								);	
+//						diffCLappOld = 0;
+//						if ( diffCL < accuracy) 
+//							break;
+//					}
+//				}
+//			}
+//			theNasaBlackwellCalculator.calculate(alphaNew.to(SI.RADIAN));
+//			_liftCoefficientDistributionAtCLMax.put(
+//					MethodEnum.NASA_BLACKWELL,
+//					theNasaBlackwellCalculator.get_clTotalDistribution().toArray()
+//					);
+//			_cLMax.put(MethodEnum.NASA_BLACKWELL, theNasaBlackwellCalculator.getCLCurrent())	;
+//			_alphaMaxLinear.put(MethodEnum.NASA_BLACKWELL, alphaNew);
+//		}
 	}
 	
 	

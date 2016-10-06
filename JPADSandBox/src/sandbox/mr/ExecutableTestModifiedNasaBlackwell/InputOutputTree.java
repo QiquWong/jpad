@@ -51,6 +51,12 @@ public class InputOutputTree {
 	alphaStallDistribution,
 	alphaAnalysisValues;
 	
+	Double [] twistDistributionRadian;
+	Double [] alphaZeroLiftDistributionRadian;
+	Double [] chordCompleteDistribution;
+	Double [] xLECompleteDistribution;
+	Double [] completeAirfoilClMaxDistribution;
+	
 	private List<List<Amount<Angle>>> alphaAirfoils;
 	private List<List<Double>> clAirfoils;
 	private List<double[]> alphaAirfoilsInterpolated, cLAirfoilsInterpolated;
@@ -677,6 +683,56 @@ public class InputOutputTree {
 
 	public void setClAirfoilMatrix(double[][] clAirfoilMatrix) {
 		this.clAirfoilMatrix = clAirfoilMatrix;
+	}
+
+
+	public Double[] getTwistDistributionRadian() {
+		return twistDistributionRadian;
+	}
+
+
+	public void setTwistDistributionRadian(Double[] twistDistributionRadian) {
+		this.twistDistributionRadian = twistDistributionRadian;
+	}
+
+
+	public Double[] getAlphaZeroLiftDistributionRadian() {
+		return alphaZeroLiftDistributionRadian;
+	}
+
+
+	public void setAlphaZeroLiftDistributionRadian(Double[] alphaZeroLiftDistributionRadian) {
+		this.alphaZeroLiftDistributionRadian = alphaZeroLiftDistributionRadian;
+	}
+
+
+	public Double[] getChordCompleteDistribution() {
+		return chordCompleteDistribution;
+	}
+
+
+	public void setChordCompleteDistribution(Double[] chordCompleteDistribution) {
+		this.chordCompleteDistribution = chordCompleteDistribution;
+	}
+
+
+	public Double[] getxLECompleteDistribution() {
+		return xLECompleteDistribution;
+	}
+
+
+	public void setxLECompleteDistribution(Double[] xLECompleteDistribution) {
+		this.xLECompleteDistribution = xLECompleteDistribution;
+	}
+
+
+	public Double[] getCompleteAirfoilClMaxDistribution() {
+		return completeAirfoilClMaxDistribution;
+	}
+
+
+	public void setCompleteAirfoilClMaxDistribution(Double[] completeAirfoilClMaxDistribution) {
+		this.completeAirfoilClMaxDistribution = completeAirfoilClMaxDistribution;
 	}
 
 
