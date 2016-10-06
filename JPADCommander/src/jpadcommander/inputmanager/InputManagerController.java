@@ -3,11 +3,14 @@ package jpadcommander.inputmanager;
 import java.io.IOException;
 
 import javafx.beans.binding.Bindings;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
@@ -16,6 +19,35 @@ import javafx.scene.layout.Pane;
 import jpadcommander.Main;
 
 public class InputManagerController {
+	
+	ObservableList<String> aircraftTypeList = FXCollections.observableArrayList(
+			"JET",
+			"FIGHTER",
+			"BUSINESS_JET",
+			"TURBOPROP", 
+			"GENERAL_AVIATION",
+			"COMMUTER",
+			"ACROBATIC"
+			);
+	ObservableList<String> regulationsTypeList = FXCollections.observableArrayList(
+			"FAR-23",
+			"FAR-25"
+			);
+	
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox aircraftTypeChioseBox;
+	
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox regulationsTypeChioseBox;
+	
+	@FXML
+	@SuppressWarnings("unchecked")
+	private void initialize() {
+		aircraftTypeChioseBox.setItems(aircraftTypeList);
+		regulationsTypeChioseBox.setItems(regulationsTypeList);
+	}
 	
 	@FXML
 	private void showInputManagerAircraftFromFileContent() throws IOException {
@@ -116,6 +148,21 @@ public class InputManagerController {
 				(BorderPane) Main.getMainInputManagerLayout().lookup("#mainInputManagerAircraftSubContentFields")
 				);
 
+		// get the pane of the front view
+		Main.setAircraftFrontViewPane(
+				(Pane) Main.getMainInputManagerLayout().lookup("#FrontViewPane")
+				);
+		
+		// get the pane of the side view
+		Main.setAircraftSideViewPane(
+				(Pane) Main.getMainInputManagerLayout().lookup("#SideViewPane")
+				);
+		
+		// get the pane of the top view
+		Main.setAircraftTopViewPane(
+				(Pane) Main.getMainInputManagerLayout().lookup("#TopViewPane")
+				);
+		
 		Main.showInputManagerAircraftDefault();
 		
 		// get the choice box for the default aircraft
@@ -142,20 +189,42 @@ public class InputManagerController {
 										.get(0)
 											.lookup("#defaultAircraftChoiseBox")
 					);
-			if(Main.getChoiseBoxSelectionDefaultAircraft() != null) {
-				if(Main.getChoiseBoxSelectionDefaultAircraft().equals("ATR-72"))
-					Main.getDefaultAircraftChoiseBox().getSelectionModel().select(0);
-				else if(Main.getChoiseBoxSelectionDefaultAircraft().equals("B747-100B"))		
-					Main.getDefaultAircraftChoiseBox().getSelectionModel().select(1);
-				else if(Main.getChoiseBoxSelectionDefaultAircraft().equals("AGILE-DC1"))
-					Main.getDefaultAircraftChoiseBox().getSelectionModel().select(2);
+			if(Main.getChoiceBoxSelectionDefaultAircraft() != null) {
+				if(Main.getChoiceBoxSelectionDefaultAircraft().equals("ATR-72"))
+					Main.getDefaultAircraftChoiceBox().getSelectionModel().select(0);
+				else if(Main.getChoiceBoxSelectionDefaultAircraft().equals("B747-100B"))		
+					Main.getDefaultAircraftChoiceBox().getSelectionModel().select(1);
+				else if(Main.getChoiceBoxSelectionDefaultAircraft().equals("AGILE-DC1"))
+					Main.getDefaultAircraftChoiceBox().getSelectionModel().select(2);
 			}
 		}
 
 		// CHECK IF NO CHOICE BOX ITEM HAS BEEN SELECTED 
 		Main.getLoadButtonDefaultAircraft().disableProperty().bind(
-				Main.getDefaultAircraftChoiseBox().valueProperty().isNull()
+				Main.getDefaultAircraftChoiceBox().valueProperty().isNull()
 				);
 	}
 
+	@FXML
+	private void zoomDataLogAndMessages() {
+		
+		Main.setAircraftViewsAndDataLogSplitPane(
+				(SplitPane) Main.getMainInputManagerLayout().lookup("#aircraftViewsAndDataLogSplitPane")
+				);
+		
+		Main.getAircraftViewsAndDataLogSplitPane().setDividerPositions(0.5);
+		
+	};
+	
+
+	@FXML
+	private void zoomViews() {
+		
+		Main.setAircraftViewsAndDataLogSplitPane(
+				(SplitPane) Main.getMainInputManagerLayout().lookup("#aircraftViewsAndDataLogSplitPane")
+				);
+		
+		Main.getAircraftViewsAndDataLogSplitPane().setDividerPositions(0.9);
+		
+	};
 }

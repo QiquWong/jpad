@@ -519,7 +519,7 @@ public class NasaBlackwell {
 
 		calculate(alpha);
 		
-		gamma = get_gammaDistribution().toArray();
+		gamma = getGammaDistribution().toArray();
 //		System.out.println(" gamma " + Arrays.toString(gamma));
 
 
@@ -577,7 +577,7 @@ public class NasaBlackwell {
 		return _gammaSignedDistribution;
 	}
 
-	public MyArray get_gammaDistribution() {
+	public MyArray getGammaDistribution() {
 		return _gammaDistribution;
 	}
 

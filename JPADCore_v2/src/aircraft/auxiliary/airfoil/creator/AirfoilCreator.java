@@ -591,7 +591,7 @@ public class AirfoilCreator implements IAirfoilCreator {
 		AirfoilEnum name = Arrays.stream(AirfoilEnum.values())
 	            .filter(e -> e.toString().equals(nameProperty))
 	            .findFirst()
-	            .orElseThrow(() -> new IllegalStateException(String.format("Unsupported airfoil name %s.", typeProperty)));
+	            .orElseThrow(() -> new IllegalStateException(String.format("Unsupported airfoil name %s.", nameProperty)));
 
 		AirfoilTypeEnum type = Arrays.stream(AirfoilTypeEnum.values())
 	            .filter(e -> e.toString().equals(typeProperty))
@@ -601,7 +601,7 @@ public class AirfoilCreator implements IAirfoilCreator {
 		AirfoilFamilyEnum family = Arrays.stream(AirfoilFamilyEnum.values())
 	            .filter(e -> e.toString().equals(familyProperty))
 	            .findFirst()
-	            .orElseThrow(() -> new IllegalStateException(String.format("Unsupported airfoil family %s.", typeProperty)));
+	            .orElseThrow(() -> new IllegalStateException(String.format("Unsupported airfoil family %s.", familyProperty)));
 		
 		Double thicknessRatio = Double.valueOf(
 				MyXMLReaderUtils

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+    <analysis>
+        <weights id="JPAD Test analysis - WEIGHTS">
+			<maximum_take_off_mass unit="kg">53967.7</maximum_take_off_mass>
+			<maximum_landing_mass unit="kg">48570.93</maximum_landing_mass>
+			<maximum_zero_fuel_mass unit="kg">45569.3</maximum_zero_fuel_mass>
+			<operating_empty_mass unit="kg">33219.3</operating_empty_mass>
+			<trapped_fuel_oil_mass unit="kg">270</trapped_fuel_oil_mass>
+			<reference_range unit="nmi">1598.272</reference_range> <!-- TO BE MOVED INSIDE analysis.xml -->
+        </weights>
+    </analysis>
+</jpad_config>

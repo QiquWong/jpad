@@ -1,9 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
     <analysis>
-        <aerodynamics id="JPAD Test analysis - AERODYNAMICS">
-
-
+		<!-- 
+		plot=TRUE -> enters the plot tag.
+		plot=FALSE -> plot nothing.
+		-->
+        <aerodynamics id="JPAD Test analysis - AERODYNAMICS" plot="TRUE">
+			<wing>
+				<lift>
+					<cl_alpha method=""></cl_alpha>
+				</lift>
+				<high_lift>
+				
+				</high_lift>
+				<drag>
+				
+				</drag>
+				<pitching_moment>
+				
+				</pitching_moment>
+			</wing>
+			<horizontal_tail>
+				<lift>
+				
+				</lift>
+				<high_lift>
+				
+				</high_lift>
+				<drag>
+				
+				</drag>
+				<pitching_moment>
+				
+				</pitching_moment>
+			</horizontal_tail>
+			<vertical_tail>
+				<lift>
+				
+				</lift>
+				<high_lift>
+				
+				</high_lift>
+				<drag>
+				
+				</drag>
+				<pitching_moment>
+				
+				</pitching_moment>
+			</vertical_tail>
+			<fuselage>
+			
+			</fuselage>
+			<nacelles>
+			
+			</nacelles>
+			<aircraft>
+				<longitudinal_static_stability>
+				
+				</longitudinal_static_stability>
+			</aircraft>
         </aerodynamics>
     </analysis>
+	<plot>
+		<!-- choose which plot has to be done --> 
+		<cL_vs_alpha>TRUE</cL_vs_alpha>
+		<cL_vs_alpha_high_lift>FALSE</cL_vs_alpha_high_lift>
+		<cL_distribution>TRUE</cL_distribution>
+	</plot>
 </jpad_config>

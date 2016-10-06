@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+	<operating_conditions id="JPAD Operating Conditions">
+		<!-- angle of attack at which the user want to evaluate a generic aerodynimic output -->
+		<alpha_current unit="deg">2</alpha_current>
+		<!-- array of angles of attack to be used for the the aerodynamics distributions (max 7 values) -->
+		<alpha_array unit="deg">2;6;10;14;18;22;24</alpha_array>
+		<current_lifting_coefficient>0.61</current_lifting_coefficient>
+		<mach_current>0.62</mach_current>	
+		<altitude unit="m">9144</altitude>
+	</operating_conditions>
+</jpad_config>
+
+
+
+
+
+

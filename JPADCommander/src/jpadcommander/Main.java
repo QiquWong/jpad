@@ -25,6 +25,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
@@ -53,6 +54,10 @@ public class Main extends Application {
 	private static TextArea textAreaAircraftConsoleOutput;
 	
 	private static TextField textFieldAircraftInputFile;
+	
+	private static ChoiceBox<String> choiceBoxAircraftType;
+	
+	private static ChoiceBox<String> choiceBoxRegulationsType;
 	
 	private static TextField textFieldAircraftCabinConfiguration;
 	
@@ -112,6 +117,8 @@ public class Main extends Application {
 	private static Pane aircraftFrontViewPane;
 	private static Pane aircraftSideViewPane;
 	private static Pane aircraftTopViewPane;
+	
+	private static SplitPane aircraftViewsAndDataLogSplitPane;
 	
 	private static String inputDirectoryPath;
 	private static String outputDirectoryPath;
@@ -790,7 +797,7 @@ public class Main extends Application {
 		Main.loadButtonDefaultAircraft = loadButtonDefaultAircraft;
 	}
 
-	public static ChoiceBox<String> getDefaultAircraftChoiseBox() {
+	public static ChoiceBox<String> getDefaultAircraftChoiceBox() {
 		return defaultAircraftChoiseBox;
 	}
 
@@ -806,12 +813,54 @@ public class Main extends Application {
 		Main.inputFileAbsolutePath = inputFileAbsolutePath;
 	}
 
-	public static Object getChoiseBoxSelectionDefaultAircraft() {
+	public static Object getChoiceBoxSelectionDefaultAircraft() {
 		return choiseBoxSelectionDefaultAircraft;
 	}
 
 	public static void setChoiseBoxSelectionDefaultAircraft(Object choiseBoxSelectionDefaultAircraft) {
 		Main.choiseBoxSelectionDefaultAircraft = choiseBoxSelectionDefaultAircraft;
+	}
+
+	/**
+	 * @return the choiceBoxAircraftType
+	 */
+	public static ChoiceBox<String> getChoiceBoxAircraftType() {
+		return choiceBoxAircraftType;
+	}
+
+	/**
+	 * @param choiceBoxAircraftType the choiceBoxAircraftType to set
+	 */
+	public static void setChoiceBoxAircraftType(ChoiceBox<String> choiceBoxAircraftType) {
+		Main.choiceBoxAircraftType = choiceBoxAircraftType;
+	}
+
+	/**
+	 * @return the choiceBoxRegulationsType
+	 */
+	public static ChoiceBox<String> getChoiceBoxRegulationsType() {
+		return choiceBoxRegulationsType;
+	}
+
+	/**
+	 * @param choiceBoxRegulationsType the choiceBoxRegulationsType to set
+	 */
+	public static void setChoiceBoxRegulationsType(ChoiceBox<String> choiceBoxRegulationsType) {
+		Main.choiceBoxRegulationsType = choiceBoxRegulationsType;
+	}
+
+	/**
+	 * @return the aircraftViewsAndDataLogSplitPane
+	 */
+	public static SplitPane getAircraftViewsAndDataLogSplitPane() {
+		return aircraftViewsAndDataLogSplitPane;
+	}
+
+	/**
+	 * @param aircraftViewsAndDataLogSplitPane the aircraftViewsAndDataLogSplitPane to set
+	 */
+	public static void setAircraftViewsAndDataLogSplitPane(SplitPane aircraftViewsAndDataLogSplitPane) {
+		Main.aircraftViewsAndDataLogSplitPane = aircraftViewsAndDataLogSplitPane;
 	}
 
 }

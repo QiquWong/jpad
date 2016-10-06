@@ -18,7 +18,9 @@ import org.treez.javafxd3.javafx.JavaFxD3Browser;
 
 import aircraft.components.Aircraft;
 import configuration.enumerations.AircraftEnum;
+import configuration.enumerations.AircraftTypeEnum;
 import configuration.enumerations.ComponentEnum;
+import configuration.enumerations.RegulationsEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import graphics.D3Plotter;
@@ -38,10 +40,15 @@ import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import jpadcommander.Main;
 import standaloneutils.MyArrayUtils;
+import standaloneutils.MyXMLReaderUtils;
 
 public class InputManagerAircraftDefaultController {
 
-	ObservableList<String> defaultAircraftList = FXCollections.observableArrayList("ATR-72","B747-100B","AGILE-DC1");
+	ObservableList<String> defaultAircraftList = FXCollections.observableArrayList(
+			"ATR-72",
+			"B747-100B",
+			"AGILE-DC1"
+			);
 	
 	@FXML
 	@SuppressWarnings("rawtypes")
@@ -128,12 +135,12 @@ public class InputManagerAircraftDefaultController {
 			alert.show();
 		}
 
-		// write again
-		System.setOut(originalOut);
-
 		createAircraftTopView();
 		createAircraftSideView();
 		createAircraftFrontView();
+		
+		// write again
+		System.setOut(originalOut);
 		
 		//////////////////////////////////////////////////////////////////////////////////
 		Main.setStatus(State.READY);
@@ -328,8 +335,8 @@ public class InputManagerAircraftDefaultController {
 		double yMinTopView = -0.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
 			
 		// TODO : SEE HOW TO FIT THE IMAGE TO PARENT
-		int WIDTH = (int) Main.getAircraftTopViewPane().getPrefWidth();
-		int HEIGHT = (int) Main.getAircraftTopViewPane().getPrefHeight();
+		int WIDTH = 700;
+		int HEIGHT = 600;
 		
 		D3PlotterOptions optionsTopView = new D3PlotterOptions.D3PlotterOptionsBuilder()
 				.widthGraph(WIDTH).heightGraph(HEIGHT)
@@ -419,8 +426,8 @@ public class InputManagerAircraftDefaultController {
 		JavaFxD3Browser browserTopView = d3Plotter.getBrowser(postLoadingHook, false);
 		Scene sceneTopView = new Scene(
 				browserTopView,
-				Main.getAircraftTopViewPane().getPrefWidth(),
-				Main.getAircraftTopViewPane().getPrefHeight(),
+				WIDTH,
+				HEIGHT,
 				Color.web("#666970")
 				);
 		Main.getAircraftTopViewPane().getChildren().add(sceneTopView.getRoot());
@@ -1023,6 +1030,7 @@ public class InputManagerAircraftDefaultController {
 		Main.getAircraftFrontViewPane().getChildren().add(sceneFrontView.getRoot());
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static void logAircraftDefaultToInterface() {
 
 		// print the toString method of the aircraft inside the text area of the GUI ...
@@ -1034,6 +1042,10 @@ public class InputManagerAircraftDefaultController {
 				);
 
 		// clear all the file path text fields: 
+		if(Main.getChoiceBoxAircraftType() != null)
+			Main.getChoiceBoxAircraftType().getSelectionModel().clearSelection();
+		if(Main.getChoiceBoxRegulationsType() != null)
+			Main.getChoiceBoxRegulationsType().getSelectionModel().clearSelection();
 		if(Main.getTextFieldAircraftCabinConfiguration() != null)
 			Main.getTextFieldAircraftCabinConfiguration().clear();
 		if(Main.getTextFieldAircraftFuselageFile() != null)
@@ -1054,6 +1066,50 @@ public class InputManagerAircraftDefaultController {
 			Main.getTextFieldAircraftLandingGearsFile().clear();
 		if(Main.getTextFieldAircraftSystemsFile() != null)
 			Main.getTextFieldAircraftSystemsFile().clear();
+		
+		//---------------------------------------------------------------------------------
+		// AIRCRAFT TYPE:
+		Main.setChoiceBoxAircraftType(
+				(ChoiceBox<String>) Main.getMainInputManagerLayout().lookup("#choiceBoxAircraftType")
+				);
+		
+		AircraftTypeEnum aircraftTypeFileName = Main.getTheAircraft().getTypeVehicle();
+		
+		if(aircraftTypeFileName != null) { 
+			if(Main.getChoiceBoxAircraftType() != null) {
+				if(aircraftTypeFileName.toString().equalsIgnoreCase("JET"))
+					Main.getChoiceBoxAircraftType().getSelectionModel().select(0);
+				else if(aircraftTypeFileName.toString().equalsIgnoreCase("FIGHTER"))		
+					Main.getChoiceBoxAircraftType().getSelectionModel().select(1);
+				else if(aircraftTypeFileName.toString().equalsIgnoreCase("BUSINESS_JET"))
+					Main.getChoiceBoxAircraftType().getSelectionModel().select(2);
+				else if(aircraftTypeFileName.toString().equalsIgnoreCase("TURBOPROP"))
+					Main.getChoiceBoxAircraftType().getSelectionModel().select(3);
+				else if(aircraftTypeFileName.toString().equalsIgnoreCase("GENERAL_AVIATION"))
+					Main.getChoiceBoxAircraftType().getSelectionModel().select(4);
+				else if(aircraftTypeFileName.toString().equalsIgnoreCase("COMMUTER"))
+					Main.getChoiceBoxAircraftType().getSelectionModel().select(5);
+				else if(aircraftTypeFileName.toString().equalsIgnoreCase("ACROBATIC"))
+					Main.getChoiceBoxAircraftType().getSelectionModel().select(6);
+			}
+		}
+		
+		//---------------------------------------------------------------------------------
+		// REGULATIONS TYPE:
+		Main.setChoiceBoxRegulationsType(
+				(ChoiceBox<String>) Main.getMainInputManagerLayout().lookup("#choiceBoxRegulationsType")
+				);
+		
+		RegulationsEnum regulationsTypeFileName = Main.getTheAircraft().getRegulations();
+		
+		if(regulationsTypeFileName != null) { 
+			if(Main.getChoiceBoxRegulationsType() != null) {
+				if(regulationsTypeFileName.toString().equalsIgnoreCase("FAR_23"))
+					Main.getChoiceBoxRegulationsType().getSelectionModel().select(0);
+				else if(regulationsTypeFileName.toString().equalsIgnoreCase("FAR_25"))		
+					Main.getChoiceBoxRegulationsType().getSelectionModel().select(1);
+			}
+		}
 		
 		//---------------------------------------------------------------------------------
 		// FUSELAGE:

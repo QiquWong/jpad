@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+    <!-- Input data, shared across analysis tasks -->
+    <global_data>
+        <n_limit>2.5</n_limit>
+		<cruise_lift_coefficient>0.61</cruise_lift_coefficient>
+		<reference_range unit="nmi">1598.272</reference_range>
+		<maximum_altitude_at_maximum_speed unit="ft">30000</maximum_altitude_at_maximum_speed>
+		<maximum_cruise_mach_number>0.62</maximum_cruise_mach_number>
+		<optimum_cruise_altitude unit="ft">1598.272</optimum_cruise_altitude>
+		<optimum_cruise_mach_number>0.62</optimum_cruise_mach_number>
+		<!--??? to be defined -->
+		<block_time unit="h">1.5</block_time>
+		<flight_time unit="h">1.35</flight_time>
+		<!---->
+    </global_data>
+    <!-- Required analysis tasks -->
+    <analyses id="IRON analysis">
+        <weights 
+            file="analysis_weights_IRON.xml" 
+            method_fuselage=""
+            method_wing=""
+            method_htail=""
+            method_vtail=""
+			method_nacelles=""
+			method_landing_gears=""
+			method_systems=""
+            /> <!-- method_XXX="AVERAGED" if not present -->
+        <balance file="analysis_balance_IRON.xml"/>
+        <!--
+		<aerodynamics file="analysis_aerodynamics.xml"/>
+        <performance file="analysis_performance.xml"/>
+        <costs file="analysis_costs.xml"/>
+		-->
+    </analyses>
+</jpad_config>

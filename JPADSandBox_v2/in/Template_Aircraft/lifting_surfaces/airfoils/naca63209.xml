@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-    <airfoil  name="NACA63_209" family="63_SERIES" type="SUPERCRITICAL">
+    <airfoil  name="NACA63_209" family="NACA_63_Series" type="SUPERCRITICAL">
         <reference url="http://airfoiltools.com/airfoil/details?airfoil=naca65209-il"/>
         <geometry>
             <thickness_to_chord_ratio_max>0.090</thickness_to_chord_ratio_max>

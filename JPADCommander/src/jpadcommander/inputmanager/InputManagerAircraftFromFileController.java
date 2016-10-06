@@ -25,9 +25,12 @@ import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import graphics.D3Plotter;
 import graphics.D3PlotterOptions;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Worker.State;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
@@ -114,13 +117,12 @@ public class InputManagerAircraftFromFileController {
 				);
 
 		logAircraftFromFileToInterface();
-		
-		// write again
-		System.setOut(originalOut);
-		
 		createAircraftTopView();
 		createAircraftSideView();
 		createAircraftFrontView();
+		
+		// write again
+		System.setOut(originalOut);
 		
 		//////////////////////////////////////////////////////////////////////////////////
 		Main.setStatus(State.READY);
@@ -314,8 +316,8 @@ public class InputManagerAircraftFromFileController {
 		double yMinTopView = -0.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
 			
 		// TODO : SEE HOW TO FIT THE IMAGE TO PARENT
-		int WIDTH = (int) Main.getAircraftTopViewPane().getPrefWidth();
-		int HEIGHT = (int) Main.getAircraftTopViewPane().getPrefHeight();
+		int WIDTH = 700;
+		int HEIGHT = 600;
 		
 		D3PlotterOptions optionsTopView = new D3PlotterOptions.D3PlotterOptionsBuilder()
 				.widthGraph(WIDTH).heightGraph(HEIGHT)
@@ -403,12 +405,7 @@ public class InputManagerAircraftFromFileController {
 		// create the Browser/D3
 		//create browser
 		JavaFxD3Browser browserTopView = d3Plotter.getBrowser(postLoadingHook, false);
-		Scene sceneTopView = new Scene(
-				browserTopView,
-				Main.getAircraftTopViewPane().getPrefWidth(),
-				Main.getAircraftTopViewPane().getPrefHeight(),
-				Color.web("#666970")
-				);
+		Scene sceneTopView = new Scene(browserTopView, WIDTH+10, HEIGHT+10, Color.web("#666970"));
 		Main.getAircraftTopViewPane().getChildren().add(sceneTopView.getRoot());
 	}
 	
@@ -1009,6 +1006,7 @@ public class InputManagerAircraftFromFileController {
 		Main.getAircraftFrontViewPane().getChildren().add(sceneFrontView.getRoot());
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static void logAircraftFromFileToInterface() {
 
 		String dirLiftingSurfaces = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "lifting_surfaces";
@@ -1030,6 +1028,58 @@ public class InputManagerAircraftFromFileController {
 		// get the text field for aircraft input data
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
 
+		//---------------------------------------------------------------------------------
+		// AIRCRAFT TYPE:
+		Main.setChoiceBoxAircraftType(
+				(ChoiceBox<String>) Main.getMainInputManagerLayout().lookup("#choiceBoxAircraftType")
+				);
+		
+		String aircraftTypeFileName =
+				MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@type");
+		
+		if(aircraftTypeFileName != null) { 
+			if(Main.getChoiceBoxAircraftType() != null) {
+				if(aircraftTypeFileName.equalsIgnoreCase("JET"))
+					Main.getChoiceBoxAircraftType().getSelectionModel().select(0);
+				else if(aircraftTypeFileName.equalsIgnoreCase("FIGHTER"))		
+					Main.getChoiceBoxAircraftType().getSelectionModel().select(1);
+				else if(aircraftTypeFileName.equalsIgnoreCase("BUSINESS_JET"))
+					Main.getChoiceBoxAircraftType().getSelectionModel().select(2);
+				else if(aircraftTypeFileName.equalsIgnoreCase("TURBOPROP"))
+					Main.getChoiceBoxAircraftType().getSelectionModel().select(3);
+				else if(aircraftTypeFileName.equalsIgnoreCase("GENERAL_AVIATION"))
+					Main.getChoiceBoxAircraftType().getSelectionModel().select(4);
+				else if(aircraftTypeFileName.equalsIgnoreCase("COMMUTER"))
+					Main.getChoiceBoxAircraftType().getSelectionModel().select(5);
+				else if(aircraftTypeFileName.equalsIgnoreCase("ACROBATIC"))
+					Main.getChoiceBoxAircraftType().getSelectionModel().select(6);
+			}
+		}
+		
+		//---------------------------------------------------------------------------------
+		// REGULATIONS TYPE:
+		Main.setChoiceBoxRegulationsType(
+				(ChoiceBox<String>) Main.getMainInputManagerLayout().lookup("#choiceBoxRegulationsType")
+				);
+		
+		String regulationsTypeFileName =
+				MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@regulations");
+		
+		if(regulationsTypeFileName != null) { 
+			if(Main.getChoiceBoxRegulationsType() != null) {
+				if(regulationsTypeFileName.equalsIgnoreCase("FAR_23"))
+					Main.getChoiceBoxRegulationsType().getSelectionModel().select(0);
+				else if(regulationsTypeFileName.equalsIgnoreCase("FAR_25"))		
+					Main.getChoiceBoxRegulationsType().getSelectionModel().select(1);
+			}
+		}
+		
 		//---------------------------------------------------------------------------------
 		// CABIN CONFIGURATION:
 		Main.setTextFieldAircraftCabinConfiguration(
