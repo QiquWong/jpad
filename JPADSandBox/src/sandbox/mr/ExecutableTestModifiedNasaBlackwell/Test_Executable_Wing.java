@@ -71,6 +71,7 @@ public class Test_Executable_Wing {
 		ReaderWriterWing theReader = new ReaderWriterWing();
 		theReader.importFromXML(pathToXML,databaseDirectoryAbsolutePath , "Aerodynamic_Database_Ultimate.h5", input);
 		Calculator.calculateModifiedStallPath(input);
+		
 		//WingAerodynamicCalc.calculateAll(theReader.getInput());
 		//theReader.writeToXML(filenameWithPathAndExt, input);
 

@@ -424,6 +424,18 @@ public class ReaderWriterWing {
 				}
 				input.getAlphaZeroLiftDistribution().add(i, Amount.valueOf(input.getAlphaArrayCompleteCurveAirfoil()[pos], NonSI.DEGREE_ANGLE));
 			}
+
+			// cl Alpha
+
+			for (int i=0; i<input.getNumberOfSections(); i++){
+
+				double clAlphaTemp = (input.getClAirfoils().get(i).get(1)-
+						input.getClAirfoils().get(i).get(0))/
+						(input.getAlphaAirfoils().get(i).get(1).getEstimatedValue()-
+								input.getAlphaAirfoils().get(i).get(0).getEstimatedValue());
+
+				input.getClAlphaDistribution().add(i, clAlphaTemp);
+			}
 		}
 
 		else if(inputMethod.isEmpty() || !inputMethod.equalsIgnoreCase("MAIN_POINTS") || !inputMethod.equalsIgnoreCase("COMPLETE_CURVE")) {
@@ -484,13 +496,23 @@ public class ReaderWriterWing {
 				MyArrayUtils.convertListTodoubleArray(input.getyAdimensionalStationInput()),
 				MyArrayUtils.convertListTodoubleArray(input.getMaximumliftCoefficientDistribution()),
 				input.getyStationsAdimensional()));
-		
-		
-		//		System.out.println(" twist distribution radians " + Arrays.toString(input.getTwistDistributionRadian()));
-		//		System.out.println(" alpha zero lift distribution radians " + Arrays.toString(input.getAlphaZeroLiftDistributionRadian()));
-		//		System.out.println(" chord distribution " + Arrays.toString(input.getChordCompleteDistribution()));
-		//		System.out.println(" xle distribution " + Arrays.toString(input.getxLECompleteDistribution()));
-        //		System.out.println(" cl max distribution " + Arrays.toString(input.getCompleteAirfoilClMaxDistribution()));
+
+		input.setCompleteAirfoilClZeroDistribution(MyMathUtils.getInterpolatedValue1DLinear(
+				MyArrayUtils.convertListTodoubleArray(input.getyAdimensionalStationInput()),
+				MyArrayUtils.convertListTodoubleArray(input.getCl0Distribution()),
+				input.getyStationsAdimensional()));
+
+		input.setCompleteAirfoilClAlphaDistribution(MyMathUtils.getInterpolatedValue1DLinear(
+				MyArrayUtils.convertListTodoubleArray(input.getyAdimensionalStationInput()),
+				MyArrayUtils.convertListTodoubleArray(input.getClAlphaDistribution()),
+				input.getyStationsAdimensional()));
+
+
+		System.out.println(" twist distribution radians " + Arrays.toString(input.getTwistDistributionRadian()));
+		System.out.println(" alpha zero lift distribution radians " + Arrays.toString(input.getAlphaZeroLiftDistributionRadian()));
+		System.out.println(" chord distribution " + Arrays.toString(input.getChordCompleteDistribution()));
+		System.out.println(" xle distribution " + Arrays.toString(input.getxLECompleteDistribution()));
+		System.out.println(" cl max distribution " + Arrays.toString(input.getCompleteAirfoilClMaxDistribution()));
 
 
 
@@ -587,6 +609,9 @@ public class ReaderWriterWing {
 
 		System.out.print("Cl max distribution : ");
 		System.out.print(input.getMaximumliftCoefficientDistribution());
+
+		System.out.print("Cl alpha distribution : ");
+		System.out.print(input.getClAlphaDistribution());
 
 
 		System.out.println("\nAlpha stall distribution " +  Arrays.toString(MyArrayUtils.convertListOfAmountodoubleArray(input.getAlphaStallDistribution())));

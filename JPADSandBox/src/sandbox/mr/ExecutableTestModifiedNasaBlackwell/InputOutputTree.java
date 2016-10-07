@@ -56,6 +56,8 @@ public class InputOutputTree {
 	Double [] chordCompleteDistribution;
 	Double [] xLECompleteDistribution;
 	Double [] completeAirfoilClMaxDistribution;
+	Double [] completeAirfoilClZeroDistribution;
+	Double [] completeAirfoilClAlphaDistribution;
 	
 	private List<List<Amount<Angle>>> alphaAirfoils;
 	private List<List<Double>> clAirfoils;
@@ -733,6 +735,26 @@ public class InputOutputTree {
 
 	public void setCompleteAirfoilClMaxDistribution(Double[] completeAirfoilClMaxDistribution) {
 		this.completeAirfoilClMaxDistribution = completeAirfoilClMaxDistribution;
+	}
+
+
+	public Double[] getCompleteAirfoilClZeroDistribution() {
+		return completeAirfoilClZeroDistribution;
+	}
+
+
+	public Double[] getCompleteAirfoilClAlphaDistribution() {
+		return completeAirfoilClAlphaDistribution;
+	}
+
+
+	public void setCompleteAirfoilClZeroDistribution(Double[] completeAirfoilClZeroDistribution) {
+		this.completeAirfoilClZeroDistribution = completeAirfoilClZeroDistribution;
+	}
+
+
+	public void setCompleteAirfoilClAlphaDistribution(Double[] completeAirfoilClAlphaDistribution) {
+		this.completeAirfoilClAlphaDistribution = completeAirfoilClAlphaDistribution;
 	}
 
 

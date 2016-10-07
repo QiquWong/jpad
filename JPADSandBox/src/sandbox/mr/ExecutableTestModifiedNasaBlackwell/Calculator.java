@@ -106,11 +106,8 @@ public class Calculator {
 		double accuracy =0.0001;
 		double deltaAlpha = 0.0;
 		Amount<Angle> alphaNew = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
-
-		double[] twistDistributionRadians = new double[input.getNumberOfPointSemispan()];
-		double[] alphaZeroLiftDistributionRadians = new double[input.getNumberOfPointSemispan()];
-
-
+		
+		List<Double> cL3D = new ArrayList<Double>();
 
 		// Object definition
 		NasaBlackwell theNasaBlackwellCalculator = new NasaBlackwell(
@@ -131,25 +128,41 @@ public class Calculator {
 		// ITERATIVE PROCESS
 			
 			//Find the intersection 
+		
+		System.out.println(" eta " + Arrays.toString(input.getyStationsAdimensional()));
 			for (int i=0; i < alphaArrayNasaBlackwell.length; i++) {
 				if(firstIntersectionFound == false) {
 					theNasaBlackwellCalculator.calculate(
 							Amount.valueOf(
 									alphaArrayNasaBlackwell[i],
-									NonSI.DEGREE_ANGLE).to(SI.RADIAN)
+									NonSI.DEGREE_ANGLE)
 							);
 					clDistributionActualNasaBlackwell = 
 							theNasaBlackwellCalculator
 							.get_clTotalDistribution()
 							.toArray();
-	// !!!! 				
-//					for (int ii=0; ii<input.getNumberOfPointSemispan(); ii++){
-//					clDistributionModifiedFromAirfoil[ii] = calculateActualViscousClAirfoil(input, clDistributionActualNasaBlackwell[ii], input.getyAdimensionalStationInput().get(ii));
-//					}
+					System.out.println("\nalpha " + alphaArrayNasaBlackwell[i]);
+					System.out.println(" cl Nasa Blackwell " + Arrays.toString(clDistributionActualNasaBlackwell));
+			
+					for (int ii=0; ii<input.getNumberOfPointSemispan(); ii++){
+					clDistributionModifiedFromAirfoil[ii] = calculateActualViscousClAirfoil(
+							input,
+							clDistributionActualNasaBlackwell[ii],
+							input.getyStationsAdimensional()[ii],
+							ii);
+					
+					}
+					System.out.println(" cl correct " + Arrays.toString(clDistributionModifiedFromAirfoil));
+					double clIntegral = MyMathUtils.integrate1DTrapezoidLinear(
+							input.getyStationsAdimensional(),
+							clDistributionModifiedFromAirfoil,
+							0,
+							1);
+					cL3D.add(clIntegral);
 
 					for(int j =0; j < input.getNumberOfPointSemispan(); j++) {
-						if( clDistributionActualNasaBlackwell[j] > input.getCompleteAirfoilClMaxDistribution()[j]) {					
-//						if( clDistributionModifiedFromAirfoil[j] > input.getCompleteAirfoilClMaxDistribution()[j]) {
+//					if( clDistributionActualNasaBlackwell[j] > input.getCompleteAirfoilClMaxDistribution()[j]) {					
+					if( Math.abs((clDistributionModifiedFromAirfoil[j] - input.getCompleteAirfoilClMaxDistribution()[j]))<0.000001) {
 							firstIntersectionFound = true;
 							indexOfFirstIntersection = j;
 							System.out.println(" index of first intersection " + indexOfFirstIntersection);
@@ -166,6 +179,9 @@ public class Calculator {
 		
 System.out.println(" j index " + indexOfFirstIntersection + " this value must be diff from 50");
 System.out.println(" i index " + indexOfAlphaFirstIntersection + " this value must be diff from 31");
+
+System.out.println("cl max airfoil " + Arrays.toString(input.getCompleteAirfoilClMaxDistribution()));
+System.out.println(" cl 3d " + Arrays.toString(MyArrayUtils.convertToDoublePrimitive(cL3D)));
 
 		// After find the first point where CL_wing > Cl_MAX_airfoil, starts an iteration on alpha
 		// in order to improve the accuracy.
@@ -249,27 +265,42 @@ System.out.println(" i index " + indexOfAlphaFirstIntersection + " this value mu
 	}
 	
 	
-	public static  double calculateActualViscousClAirfoil(InputOutputTree input, double clInviscidLocal, double adimentionalStation){
+	public static  double calculateActualViscousClAirfoil(InputOutputTree input, double clInviscidLocal, double adimentionalStation, int station){
 		
 		double alphaLocalActual;
 		double clZeroLocal = MyMathUtils.getInterpolatedValue1DLinear(
-				MyArrayUtils.convertListTodoubleArray(input.getyAdimensionalStationInput()),
-				MyArrayUtils.convertListTodoubleArray(input.getCl0Distribution()), 
+				input.getyStationsAdimensional(),
+				MyArrayUtils.convertToDoublePrimitive(input.getCompleteAirfoilClZeroDistribution()), 
+				adimentionalStation
+				);
+//		System.out.println(" cl zero " + clZeroLocal);
+		
+		double clAlphaLocal = MyMathUtils.getInterpolatedValue1DLinear(
+				input.getyStationsAdimensional(),
+				MyArrayUtils.convertToDoublePrimitive(input.getCompleteAirfoilClAlphaDistribution()), 
 				adimentionalStation
 				);
 		
-		double clAlphaLocal = MyMathUtils.getInterpolatedValue1DLinear(
-				MyArrayUtils.convertListTodoubleArray(input.getyAdimensionalStationInput()),
-				MyArrayUtils.convertListTodoubleArray(input.getClAlphaDistribution()), 
-				adimentionalStation
-				);
+//		System.out.println(" cl alpha"  + clAlphaLocal);
 		
 		// First of all it is necessary to calculate the angle of attack at cl
 		
 		alphaLocalActual = (clInviscidLocal - clZeroLocal)/clAlphaLocal;
 		
+//		System.out.println(" angle of attack " + alphaLocalActual);
 		
-		return 0.0;
+		double [] clVector = new double [input.getNumberOfPoint2DCurve()];
+		for (int i=0 ; i< input.getNumberOfPoint2DCurve(); i++){
+		clVector[i] = input.getClAirfoilMatrix()[i][station];
+		}
+		double clViscousActual = MyMathUtils.getInterpolatedValue1DLinear(
+				input.getAlphaArrayCompleteCurveAirfoil(),
+				clVector,
+				alphaLocalActual
+				);
+		
+//		System.out.println("cl actual " + clViscousActual);
+		return clViscousActual;
 	}
 	
 }
