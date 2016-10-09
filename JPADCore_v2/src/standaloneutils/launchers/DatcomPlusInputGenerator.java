@@ -12,7 +12,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.text.WordUtils;
 
 public class DatcomPlusInputGenerator {
 
@@ -132,32 +135,16 @@ public class DatcomPlusInputGenerator {
 		content.add("* Flight conditions");
 		content.add("**************************************************************************");
 		content.add(
-				"$"+KEYWORDS.FLTCON.toString() + " "
-					+KEYWORDS.NMACH.toString() + "=1.0" + ", "
-					+KEYWORDS.MACH.toString() + "(1)=0.3" + ", "
-				);
-		content.add(
-				KEYWORDS.NALT.toString() + "=1.0" + ", "
-					+KEYWORDS.ALT.toString() + "(1)=1.500" + ", "
-				);
-		List<Double> alphas = Arrays.asList(
-				-16.0, -8.0, -6.0, -4.0, -2.0, 0.0, 2.0, 4.0, 8.0, 9.0,
-				10.0, 12.0, 14.0, 16.0, 18.0, 19.0, 20.0, 21.0, 22.0, 24.0);
-		content.add(
-				KEYWORDS.NALPHA.toString() + "=20.0" + ", "
-					+KEYWORDS.ALSCHD.toString() + "(1)="
-					+alphas.stream()
-				           .map(number -> String.valueOf(number))
-				           .collect(Collectors.joining(", "))
-				    +","
-				);
-		content.add(
-				KEYWORDS.GAMMA.toString() + "=0.0" + ", "
-					+KEYWORDS.LOOP.toString() + "=2.0" + ", "
-				);
-		content.add(
-				KEYWORDS.RNNUB.toString() + "=20120887.0" 
-				+"$"
+				generateBlockFLTCON(
+						Arrays.asList(0.3), // list of Mach numbers
+						Arrays.asList(1500.0), // list of altitudes
+						Arrays.asList( // list of AoA
+								-16.0, -8.0, -6.0, -4.0, -2.0, 0.0, 2.0, 4.0, 8.0, 9.0,
+								10.0, 12.0, 14.0, 16.0, 18.0, 19.0, 20.0, 21.0, 22.0, 24.0),
+						0.0, // Gamma
+						2, // Loop
+						20120887.0 // Reynolds number per unit length
+						)
 				);
 		content.add(" ");
 		content.add(" ");
@@ -165,49 +152,49 @@ public class DatcomPlusInputGenerator {
 		content.add("**************************************************************************");
 		content.add("* Reference Parameters (page 29)");
 		content.add("**************************************************************************");
-		// TODO
-/*
-
-$OPTINS BLREF=93.0,SREF=1329.9,CBARR=14.3$		
-
- */
+		content.add(
+			generateBlockOPTINS(
+					93.0, // blref
+					1329.9, // sref
+					14.3 // cbarr
+					)
+				);
 		content.add(" ");
 		content.add(" ");
 		
 		content.add("**************************************************************************");
 		content.add("* Group II     Synthesis Parameters (page 33)");
 		content.add("**************************************************************************");
-		// TODO
-/*
-
- $SYNTHS XW=28.3,ZW=-1.4,ALIW=1.0,XCG=41.3,ZCG=0.0,
-    XH=76.6,ZH=6.2,
-    XV=71.1,ZV=7.6,
-    XVF=66.2,ZVF=13.1,
-    VERTUP=.TRUE.$
- 
- */
+		content.add(
+				generateBlockSYNTHS(
+						28.3, -1.4, // xw, zw
+						1.0, // aliw
+						41.3, 0.0, // xcg, zcg
+						76.6, 6.2, // xh, zh
+						71.1, 7.6, // xv, zv
+						66.2, 13.1, // xvf, zvf
+						true // vertup
+						)
+				);
 		content.add(" ");
 		content.add(" ");
 		
 		content.add("**************************************************************************");
 		content.add("* Body Configuration Parameters (page 36)");
 		content.add("**************************************************************************");
-		// TODO
-/*
-
- $BODY NX=14.,
-    BNOSE=2.,BTAIL=2.,BLA=20.0,
-    X(1)=0.,1.38,4.83,6.90,8.97,13.8,27.6,55.2,
-       65.6,69.0,75.9,82.8,89.7,90.4,
-    ZU(1)=.69,2.07,3.45,4.38,5.87,6.90,8.28,
-        8.28,8.28,8.28,7.94,7.59,7.50,6.9,
-    ZL(1)=-.35,-1.73,-3.45,-3.80,-4.14,-4.49,-4.83,
-        -4.83,-3.45,-2.76,-0.81,1.04,4.14,6.21,
-    S(1)=.55,8.23,28.89,44.31,65.06,92.63,127.81,
-       127.81,108.11,95.68,56.88,28.39,3.64,0.11 
- 
- */
+		content.add(
+				generateBlockBODY(
+						2.0, 2.0, 20.0, // bnose, btail, bla
+						Arrays.asList( // list of x
+								0.,1.38,4.83,6.90,8.97,13.8,27.6,55.2,65.6,69.0,75.9,82.8,89.7,90.4),
+						Arrays.asList( // list of zu
+								.69,2.07,3.45,4.38,5.87,6.90,8.28,8.28,8.28,8.28,7.94,7.59,7.50,6.9),
+						Arrays.asList( // list of zl
+								-.35,-1.73,-3.45,-3.80,-4.14,-4.49,-4.83,-4.83,-3.45,-2.76,-0.81,1.04,4.14,6.21),
+						Arrays.asList( // list of s
+								.55,8.23,28.89,44.31,65.06,92.63,127.81,127.81,108.11,95.68,56.88,28.39,3.64,0.11)
+						)
+				);
 		content.add(" ");
 		content.add(" ");
 		
@@ -313,9 +300,171 @@ NACA-V-4-0012-25
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/*
 
+	$FLTCON NMACH=1.0, MACH(1)=0.3, 
+	   NALT=1.0, ALT(1)=1.500, 
+	   NALPHA=20.0, ALSCHD(1)=-16.0, -8.0, -6.0, -4.0, -2.0, 0.0, 2.0, 4.0, 8.0, 9.0, 10.0, 12.0, 14.0, 16.0, 18.0, 19.0, 20.0, 21.0, 22.0, 24.0,
+	   GAMMA=0.0, LOOP=2.0, 
+	   RNNUB=20120887.0$
+
+	 */	
+	public static String generateBlockFLTCON(
+			List<Double> machList, List<Double> altitudeList, List<Double> alphaList,
+			Double gamma, int loop, Double reynoldsPerUnitLength
+			) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("$FLTCON ")
+		  .append("NMACH=").append((double) machList.size()).append(", ");
+		sb.append("MACH(1)=");
+		machList.stream()
+				.forEach(mach -> sb.append(mach).append(", "));
+		sb.append("\n   NALT=").append((double) altitudeList.size()).append(", ");
+		sb.append("ALT(1)=");
+		altitudeList.stream()
+				.forEach(alt -> sb.append(alt).append(", "));
+		sb.append("\n   NALPHA=").append((double) alphaList.size()).append(", ");
+		sb.append("ALSCHD(1)=");
+		sb.append(
+				WordUtils.wrap( // Apache Commons Lang
+						alphaList.stream()
+						.map(value -> value.toString())
+						.collect(Collectors.joining(", "))
+						, 
+						65, // wrapLength
+						"\n      ", // newLineStr
+						false // wrapLongWords 
+						)
+				).append(",");
+		sb.append("\n   GAMMA=").append(gamma).append(", ");
+		sb.append("LOOP=").append((double)loop).append(", ");
+		sb.append("\n   RNNUB=")
+		  .append(String.format(Locale.ROOT, "%.1f", reynoldsPerUnitLength))
+		  .append("$");
+		return sb.toString();
+	}
+	
+	/*
+	
+	$OPTINS BLREF=93.0,SREF=1329.9,CBARR=14.3$
+			
+	*/
+	public static String generateBlockOPTINS(Double blref, Double sref, Double cbarr) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("$OPTINS ")
+		  .append("BLREF=").append(blref).append(", ")
+		  .append("SREF=").append(sref).append(", ")
+		  .append("CBARR=").append(blref)
+		  .append("$");
+		return sb.toString();
 	}
 
+	/*
+
+	$SYNTHS XW=28.3,ZW=-1.4,ALIW=1.0,XCG=41.3,ZCG=0.0,
+	   XH=76.6,ZH=6.2,
+	   XV=71.1,ZV=7.6,
+	   XVF=66.2,ZVF=13.1,
+	   VERTUP=.TRUE.$
+
+	*/
+	public static String generateBlockSYNTHS(
+			Double xw, Double zw,
+			Double aliw,
+			Double xcg, Double zcg,
+			Double xh, Double zh,
+			Double xv, Double zv,
+			Double xvf, Double zvf,
+			boolean vertup
+			) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("$SYNTHS ")
+		  .append("XW=").append(xw).append(", ").append("ZW=").append(zw).append(", ")
+		  .append("ALIW=").append(aliw).append(", ")
+		  .append("XCG=").append(xcg).append(", ").append("ZCG=").append(zcg).append(", ")
+		  .append("\n   XH=").append(xh).append(", ").append("ZH=").append(zh).append(", ")
+		  .append("\n   XV=").append(xv).append(", ").append("ZV=").append(zv).append(", ")
+		  .append("\n   XVF=").append(xvf).append(", ").append("ZVF=").append(zvf).append(", ")
+		  .append("\n   VERTUP=").append(".").append(String.valueOf(vertup).toUpperCase()).append(".")
+		  .append("$");
+		return sb.toString();		
+	}
+
+	/*
+
+	$BODY NX=14.,
+	BNOSE=2.,BTAIL=2.,BLA=20.0,
+	   X(1)=0.,1.38,4.83,6.90,8.97,13.8,27.6,55.2,
+	      65.6,69.0,75.9,82.8,89.7,90.4,
+	   ZU(1)=.69,2.07,3.45,4.38,5.87,6.90,8.28,
+	      8.28,8.28,8.28,7.94,7.59,7.50,6.9,
+	   ZL(1)=-.35,-1.73,-3.45,-3.80,-4.14,-4.49,-4.83,
+	      -4.83,-3.45,-2.76,-0.81,1.04,4.14,6.21,
+	   S(1)=.55,8.23,28.89,44.31,65.06,92.63,127.81,
+	      127.81,108.11,95.68,56.88,28.39,3.64,0.11$
+
+	*/
+	public static String generateBlockBODY(
+			Double bnose, Double btail, Double bla,
+			List<Double> x, List<Double> zu, List<Double> zl, List<Double> s) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("$BODY ");
+		sb.append("NX=").append((double) x.size()).append(", ");
+		sb.append("\n   X(1)=");
+		sb.append(
+				WordUtils.wrap( // Apache Commons Lang
+						x.stream()
+						.map(value -> value.toString())
+						.collect(Collectors.joining(", "))
+						, 
+						60, // wrapLength
+						"\n      ", // newLineStr
+						false // wrapLongWords 
+						)
+				).append(",");
+		sb.append("\n   ZU(1)=");
+		sb.append(
+				WordUtils.wrap( // Apache Commons Lang
+						zu.stream()
+						.map(value -> value.toString())
+						.collect(Collectors.joining(", "))
+						, 
+						60, // wrapLength
+						"\n      ", // newLineStr
+						false // wrapLongWords 
+						)
+				).append(",");
+		sb.append("\n   ZL(1)=");
+		sb.append(
+				WordUtils.wrap( // Apache Commons Lang
+						zl.stream()
+						.map(value -> value.toString())
+						.collect(Collectors.joining(", "))
+						, 
+						60, // wrapLength
+						"\n      ", // newLineStr
+						false // wrapLongWords 
+						)
+				).append(",");
+		sb.append("\n   S(1)=");
+		sb.append(
+				WordUtils.wrap( // Apache Commons Lang
+						s.stream()
+						.map(value -> value.toString())
+						.collect(Collectors.joining(", "))
+						, 
+						60, // wrapLength
+						"\n      ", // newLineStr
+						false // wrapLongWords 
+						)
+				); // no comma at the end
+		sb.append("$");
+		return sb.toString();		
+	}
+	
+	
 	public static void main(String[] args) {
 
 		// Set the DATCOMROOT environment variable
