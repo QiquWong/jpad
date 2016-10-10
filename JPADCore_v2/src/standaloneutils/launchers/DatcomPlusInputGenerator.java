@@ -205,8 +205,9 @@ public class DatcomPlusInputGenerator {
 				generateBlockGenericPLNF("WGPLNF",
 						23.8, 4.8, 12.4, // CHRDR, CHRDTP, CHRDBP
 						46.9, 31.1, 40.0, // SSPN, SSPNOP, SSPNE
-						0.25, 0.0, 1, // CHSTAT, TWISTA, TYPE
-						29.0, 26.0, 0.0, 4.0 // SAVSI, SAVSO, DHDADI, DHDADO
+						0.25, 0.0, // CHSTAT, TWISTA
+						29.0, 26.0, 0.0, 4.0, // SAVSI, SAVSO, DHDADI, DHDADO
+						1 // TYPE
 						)
 				);
 		content.add(" ");
@@ -215,15 +216,17 @@ public class DatcomPlusInputGenerator {
 		content.add("**************************************************************************");
 		content.add("* Jet Power Effects parameters (page 51)");
 		content.add("**************************************************************************");
-		// TODO
-		/*
-
- $JETPWR AIETLJ=-2.0, AMBSTP=2116.8, AMBTMP=59.7, JEALOC=42.25, 
-         JEALOC=58.0, JELLOC=15.9,   JERAD=2.065, JEVLOC=-5.2, 
-         JIALOC=34.5, JINLTA=13.4,   NENGSJ=2.0,  THSTCJ=0.0,
-         JEANGL=-2.0$ 
-
-		 */
+		content.add(
+				generateBlockJETPWR(
+						-2.0, 2116.8, 59.7, // AIETLJ, AMBSTP, AMBTMP
+						Arrays.asList(42.25, 58.0), // list of JEALOC
+						15.9, 2.065, -5.2, // JELLOC, JERAD, JEVLOC
+						34.5, 13.4, // JIALOC, JINLTA
+						2, // NENGSJ
+						0.0, // THSTCJ
+						-2.0 // JEANGL
+						)
+				);
 		content.add(" ");
 		content.add(" ");
 
@@ -231,12 +234,12 @@ public class DatcomPlusInputGenerator {
 		content.add("* Vertical Tail planform variables (page 37-38)");
 		content.add("**************************************************************************");
 		content.add(
-				// TODO: generateBlockGenericPLNF("VTPLNF",
-				generateBlockVTPLNF(
-						15.9, 4.8, 12.4, // CHRDR, CHRDTP, CHRDBP
-						27.6, 0.0, 20.7, // SSPN, SSPNOP, SSPNE
-						0.25, 0.0, 1, // CHSTAT, TWISTA, TYPE
-						33.0, 33.0 // SAVSI, SAVSO
+				generateBlockGenericPLNF("VTPLNF",
+						15.9, 4.8, null, // CHRDR, CHRDTP, CHRDBP
+						27.6, null, 20.7, // SSPN, SSPNOP, SSPNE
+						0.25, 0.0, // CHSTAT, TWISTA
+						33.0, 33.0, null, null, // SAVSI, SAVSO, DHDADI, DHDADO
+						1 // TYPE
 						)
 				);
 		content.add(" ");
@@ -246,21 +249,30 @@ public class DatcomPlusInputGenerator {
 		content.add("* Horizontal Tail planform variables (page 37-38)");
 		content.add("**************************************************************************");
 		content.add(
-				// TODO: generateBlockGenericPLNF("HTPLNF",
-				generateBlockHTPLNF(
-						12.4, 4.1, 4.1, // CHRDR, CHRDTP, CHRDBP
-						17.6, 17.6, 15.87, // SSPN, SSPNOP, SSPNE
-						0.25, 0.0, 1, // CHSTAT, TWISTA, TYPE
-						31.0, 31.0, 9.0, 0.0 // SAVSI, SAVSO, DHDADI, DHDADO
+				generateBlockGenericPLNF("HTPLNF",
+						12.4, 4.1, null, // CHRDR, CHRDTP, CHRDBP
+						17.6, null, 15.87, // SSPN, SSPNOP, SSPNE
+						0.25, 0.0, // CHSTAT, TWISTA
+						31.0, 31.0, 9.0, 0.0, // SAVSI, SAVSO, DHDADI, DHDADO
+						1 // TYPE
 						)
 				);
 		content.add(" ");
 		content.add(" ");
-
+		
 		content.add("**************************************************************************");
 		content.add("* Symetrical Flap Deflection parameters");
 		content.add("**************************************************************************");
-		// TODO
+		content.add(
+				generateBlockSYMFLP(
+						1, // FTYPE
+						Arrays.asList(-40.0, -30.0, -20.0, -10.0, 0.0, 10.0, 20.0, 30.0, 40.0), // list of deltas
+						0.0, 14.0, // SPANFI, SPANFO
+						1.72, 1.72, // CHRDFI, CHRDFO
+						1, // NTYPE
+						0.50, 0.44, 0.003, 0.002 // CB, TC, PHETE, PHETEP
+						)
+				);
 		/*
 
  $SYMFLP FTYPE=1.,NDELTA=9.,DELTA(1)=-40.,-30.,-20.,-10.,
@@ -274,14 +286,9 @@ public class DatcomPlusInputGenerator {
 		content.add("**************************************************************************");
 		content.add("* Wing Sectional Characteristics Parameters");
 		content.add("**************************************************************************");
-		// TODO
-		/*
-
-NACA-W-4-0012-25
-NACA-H-4-0012-25
-NACA-V-4-0012-25
-
-		 */
+		content.add("NACA-W-4-0012-25");
+		content.add("NACA-H-4-0012-25");
+		content.add("NACA-V-4-0012-25");
 		content.add(" ");
 		content.add(" ");
 
@@ -319,7 +326,7 @@ NACA-V-4-0012-25
 			Double gamma, int loop, Double reynoldsPerUnitLength
 			) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("$FLTCON ")
+		sb.append(" $FLTCON ")
 		.append("NMACH=").append((double) machList.size()).append(", ");
 		sb.append("MACH(1)=");
 		machList.stream()
@@ -329,7 +336,7 @@ NACA-V-4-0012-25
 		altitudeList.stream()
 		.forEach(alt -> sb.append(alt).append(", "));
 		sb.append("\n   NALPHA=").append((double) alphaList.size()).append(", ");
-		sb.append("ALSCHD(1)=");
+		sb.append("\n   ALSCHD(1)=");
 		sb.append(
 				WordUtils.wrap( // Apache Commons Lang
 						alphaList.stream()
@@ -356,7 +363,7 @@ NACA-V-4-0012-25
 	 */
 	public static String generateBlockOPTINS(Double blref, Double sref, Double cbarr) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("$OPTINS ")
+		sb.append(" $OPTINS ")
 		.append("BLREF=").append(blref).append(", ")
 		.append("SREF=").append(sref).append(", ")
 		.append("CBARR=").append(blref)
@@ -383,7 +390,7 @@ NACA-V-4-0012-25
 			boolean vertup
 			) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("$SYNTHS ")
+		sb.append(" $SYNTHS ")
 		.append("XW=").append(xw).append(", ").append("ZW=").append(zw).append(", ")
 		.append("ALIW=").append(aliw).append(", ")
 		.append("XCG=").append(xcg).append(", ").append("ZCG=").append(zcg).append(", ")
@@ -413,7 +420,7 @@ NACA-V-4-0012-25
 			Double bnose, Double btail, Double bla,
 			List<Double> x, List<Double> zu, List<Double> zl, List<Double> s) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("$BODY ");
+		sb.append(" $BODY ");
 		sb.append("NX=").append((double) x.size()).append(", ");
 		sb.append("\n   X(1)=");
 		sb.append(
@@ -469,63 +476,6 @@ NACA-V-4-0012-25
 
 	/*
 
-	 $VTPLNF CHRDR=15.9,CHRDTP=4.8,SAVSI=33.,
-	    SSPN=27.6,SSPNOP=0.,SSPNE=20.7,CHSTAT=.25,TWISTA=0.,TYPE=1.$
-
-	 or
-
-	 $VTPLNF CHRDR=15.9, CHRDTP=4.8, CHRDBP=12.4, 
-        SSPN=27.6, SSPNOP=0.0, SSPNE=20.7, CHSTAT=0.25, TWISTA=0.0, TYPE=1.0, 
-        SAVSI=33.0, SAVSO=33.0$
-
-	 */
-	public static String generateBlockVTPLNF(
-			Double chrdr, Double chrdtp, Double chrdbp,
-			Double sspn, Double sspnop, Double sspne,
-			Double chstat, Double twista, int type,
-			Double savsi, Double savso
-			) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("$VTPLNF ")
-		.append("CHRDR=").append(chrdr).append(", ").append("CHRDTP=").append(chrdtp).append(", ").append("CHRDBP=").append(chrdbp).append(", ")
-		.append("\n   SSPN=").append(sspn).append(", ").append("SSPNOP=").append(sspnop).append(", ").append("SSPNE=").append(sspne).append(", ")
-		.append("CHSTAT=").append(chstat).append(", ").append("TWISTA=").append(twista).append(", ").append("TYPE=").append((double)type).append(", ")
-		.append("\n   SAVSI=").append(savsi).append(", ").append("SAVSO=").append(savso) // no comma
-		.append("$");
-		return sb.toString();		
-	}
-
-	/*
-
-    $HTPLNF CHRDR=12.4,CHRDTP=4.1,
-	   SSPN=17.6,SSPNE=15.87,CHSTAT=.25,TWISTA=0.,TYPE=1.,
-	   SAVSI=31.,DHDADI=9.$
-	   
-	   or
-	   
-	 $HTPLNF CHRDR=12.4, CHRDTP=4.1, CHRDBP=4.1, 
-        SSPN=17.6, SSPNOP=17.6, SSPNE=15.87, CHSTAT=0.25, TWISTA=0.0, TYPE=1.0, 
-        SAVSI=31.0, SAVSO=31.0, DHDADI=0.0, DHDADO=9.0$
-	 
-     */
-	public static String generateBlockHTPLNF(
-			Double chrdr, Double chrdtp, Double chrdbp,
-			Double sspn, Double sspnop, Double sspne,
-			Double chstat, Double twista, int type,
-			Double savsi, Double savso, Double dhdadi, Double dhdado
-			) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("$HTPLNF ")
-		.append("CHRDR=").append(chrdr).append(", ").append("CHRDTP=").append(chrdtp).append(", ").append("CHRDBP=").append(chrdbp).append(", ")
-		.append("\n   SSPN=").append(sspn).append(", ").append("SSPNOP=").append(sspnop).append(", ").append("SSPNE=").append(sspne).append(", ")
-		.append("CHSTAT=").append(chstat).append(", ").append("TWISTA=").append(twista).append(", ").append("TYPE=").append((double)type).append(", ")
-		.append("\n   SAVSI=").append(savsi).append(", ").append("SAVSO=").append(savso).append(", ").append("DHDADI=").append(dhdadi).append(", ").append("DHDADO=").append(dhdado) // no comma
-		.append("$");
-		return sb.toString();		
-	}
-
-	/*
-
 ---------------------------------------------------------------------
 Wing planform variables
 ---------------------------------------------------------------------
@@ -554,41 +504,273 @@ TYPE    1.0 - Straight tapered planform
 
 Example:
 
-	$WGPLNF CHRDR=23.8,CHRDTP=4.8,CHRDBP=12.4,
-	   SSPN=46.9,SSPNOP=31.1,SSPNE=40.0,CHSTAT=.25,TWISTA=0.,TYPE=1.,
-	   SAVSI=29.,SAVSO=26.0,DHDADI=0.,DHDADO=4.$ 
+$WGPLNF CHRDR=23.8,CHRDTP=4.8,CHRDBP=12.4,
+   SSPN=46.9,SSPNOP=31.1,SSPNE=40.0,CHSTAT=.25,TWISTA=0.,TYPE=1.,
+   SAVSI=29.,SAVSO=26.0,DHDADI=0.,DHDADO=4.$ 
+	   
+or
+	
+$VTPLNF CHRDR=15.9,CHRDTP=4.8,SAVSI=33.,
+   SSPN=27.6,SSPNOP=0.,SSPNE=20.7,CHSTAT=.25,TWISTA=0.,TYPE=1.$
+
+$VTPLNF CHRDTP=3.63, SSPNE=8.85,  SSPN=9.42, CHRDR=8.3, 
+   SAVSI=32.3,  CHSTAT=0.25, TYPE=1.0$
+
+or
+
+$HTPLNF CHRDR=4.99, CHRDTP=2.48,
+   SSPN=9.42, SSPNE=9.21,
+   SAVSI=5.32,
+   CHSTAT=0.25, TWISTA=0.0,
+   DHDADI=9.2,
+   TYPE=1.0$
 
 	 */
 	public static String generateBlockGenericPLNF(
 			String key,
 			Double chrdr, Double chrdtp, Double chrdbp,
 			Double sspn, Double sspnop, Double sspne,
-			Double chstat, Double twista, int type,
-			Double savsi, Double savso, Double dhdadi, Double dhdado
+			Double chstat, Double twista,
+			Double savsi, Double savso, Double dhdadi, Double dhdado,
+			int type
 			) {
+		//------------------------------------------
+		// TODO ? manage type of wing ?
+		
 		StringBuilder sb = new StringBuilder();
-		// check the type of planform
+		// Return an empty string if key is unknown
 		if (!(key.equals("WGPLNF") || key.equals("HTPLNF") || key.equals("VTPLNF")))
 			return "";
-       	sb.append("$").append(key).append("= ");
-       	sb.append("CHRDR=").append(chrdr).append(", ").append("CHRDTP=").append(chrdtp).append(", ");
-       	if (sspnop > 0)
-       		sb.append("CHRDBP=").append(chrdbp).append(", ");
-       	sb.append("\n   SSPN=").append(sspn).append(", ");
-       	if (sspnop > 0)
-       		sb.append("SSPNOP=").append(sspnop).append(", ");
-       	sb.append("SSPNE=").append(sspne).append(", ")
-       	  .append("CHSTAT=").append(chstat).append(", ").append("TWISTA=").append(twista).append(", ").append("TYPE=").append((double)type).append(", ")
-       	  .append("\n   SAVSI=").append(savsi).append(", ");
-       	if (sspnop > 0)
-       		sb.append("SAVSO=").append(savso).append(", ");
-       	sb.append("DHDADI=").append(dhdadi);
-       	if (sspnop > 0)
-       		sb.append(", ").append("DHDADO=").append(dhdado) // no comma
-       	.append("$");
+		// print $<key>=
+       	sb.append(" $").append(key).append(" ");
+       	sb.append("CHRDR=").append(chrdr).append(", ") // Chord root
+       	  .append("CHRDTP=").append(chrdtp).append(", "); // Tip chord
+       	if (sspnop != null)
+       		sb.append("CHRDBP=").append(chrdbp).append(", "); // Chord at breakpoint. 
+       	                                                      // Not required for straight tapered planform.
+       	
+       	sb.append("\n   SSPN=").append(sspn).append(", "); // Semi-span theoretical panel from theoretical root chord
+       	
+       	if (sspnop != null)
+       		sb.append("SSPNOP=").append(sspnop).append(", "); // Semi-span outboard panel.
+                                                              // Not required for straight tapered planform
+       	
+       	sb.append("SSPNE=").append(sspne).append(", "); // Semi-span exposed panel
+       	
+       	sb.append("CHSTAT=").append(chstat).append(", "); // Reference chord station for inboard and outboard panel
+                                                          // sweep angles, fraction of chord
+       	
+       	sb.append("TWISTA=").append(twista).append(", "); // Twist angle, negative leading edge rotated down 
+                                                          // (from exposed root to tip)
+       	
+       	sb.append("\n   SAVSI=").append(savsi).append(", "); // Inboard panel sweep angle
+       	if (sspnop != null)
+       		sb.append("SAVSO=").append(savso).append(", "); // Outboard panel sweep angle
+
+       	if (dhdadi != null)
+       		sb.append("DHDADI=").append(dhdadi).append(", "); // Dihedral angle of inboard panel
+       	if (sspnop != null) {
+       		if (dhdado != null)
+       			sb.append("DHDADO=").append(dhdado).append(", "); // Dihedral angle of outboard panel. 
+       	                                                          // If DHDADI=DHDADO only input DHDADI
+       	}
+       	
+       	sb.append("TYPE=").append((double)type); // TYPE    1.0 - Straight tapered planform
+                                                 //         2.0 - Double delta planform (aspect ratio <= 3)
+                                                 //         3.0 - Cranked planform (aspect ratio > 3)
+   		// no comma       	
+       	sb.append("$");
        	return sb.toString();		
 	}
+	
+/*
+ 
+---------------------------------------------------------------------
+Jet Power Effects parameters
+---------------------------------------------------------------------
+AIETLJ  Angle of incidence of engine thrust line, deg
+AMBSTP  Ambient static pressure
+AMBTMP  Ambient temperature, deg
+JEALOC  Axial location of jet engine exit, feet
+JEANGL  Jet exit angle
+JELLOC  Lateral location of jet engine, ft
+JERAD   Radius of jet exit
+JESTMP  Jet exit static temperature
+JETOTP  Jet exit total pressure
+JEVELO  Jet exit velocity
+JEVLOC  Vertical location of jet engine exit, feet
+JIALOC  Axial location of jet engine inlet, feet
+JINLTA  Jet engine inlet area, square feet
+NENGSJ  Number of engines (1 or 2)
+THSTCJ  Thrust coefficient  2T/(PV^2*Sref)
+        Set this to 0 to keep power effects out of coefficients.
 
+Example:
+
+ $JETPWR AIETLJ=-2.0, AMBSTP=2116.8, AMBTMP=59.7, JEALOC=42.25, 
+         JEALOC=58.0, JELLOC=15.9,   JERAD=2.065, JEVLOC=-5.2, 
+         JIALOC=34.5, JINLTA=13.4,   NENGSJ=2.0,  THSTCJ=0.0,
+         JEANGL=-2.0$ 
+
+ */
+	public static String generateBlockJETPWR(
+			Double aietlj, Double ambstp, Double ambtmp, 
+			List<Double> jealocList, // AIETLJ, AMBSTP, AMBTMP, JEALOC
+			Double jelloc, Double jerad, Double jevloc, // JELLOC, JERAD, JEVLOC
+			Double jialoc, Double jinlta, int nengsj, Double thstcj, // JIALOC, JINLTA, NENGSJ, THSTCJ
+			Double jeangl // JEANGL
+			) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(" $JETPWR ");
+		sb.append("AIETLJ=").append(aietlj).append(", ");
+		sb.append("AMBSTP=").append(ambstp).append(", ");
+		sb.append("AMBTMP=").append(ambtmp).append(", ");
+		sb.append("\n   ");
+		
+		sb.append(
+				jealocList.stream()
+				.map(value -> "JEALOC="+value.toString())
+				.collect(Collectors.joining(", "))
+				).append(", ");
+
+		
+		sb.append("JELLOC=").append(jelloc).append(", ");
+		sb.append("JERAD=").append(jerad).append(", ");
+		sb.append("JEVLOC=").append(jevloc).append(", ");
+		sb.append("\n   ");
+		sb.append("JIALOC=").append(jialoc).append(", ");
+		sb.append("JINLTA=").append(jinlta).append(", ");
+		sb.append("THSTCJ=").append(thstcj).append(", ");
+		sb.append("\n   ");
+		sb.append("NENGSJ=").append((double)nengsj).append(", ");
+		sb.append("\n   ");
+		sb.append("JEANGL=").append(jeangl); // no comma
+		sb.append("$");
+		return sb.toString();		
+	}
+	
+/*
+
+---------------------------------------------------------------------
+Symetrical Flap Deflection parameters
+---------------------------------------------------------------------
+DATCOM pg 47 states :
+
+ "In general, the eight flap types defined using SYMFLP
+  (variable FTYPE) are assumed to be located on the most
+  aft lifting surface, either horizontal tail or wing if
+  a horizontal tail is not defined."
+
+FTYPE   Flap type
+           1.0  Plain flaps
+           2.0  Single slotted flaps
+           3.0  Fowler flaps
+           4.0  Double slotted flaps
+           5.0  Split flaps
+           6.0  Leading edge flap
+           7.0  Leading edge slats
+           8.0  Krueger
+NDELTA  Number of flap or slat deflection angles, max of 9
+
+DELTA   Flap deflection angles measured streamwise
+        (NDELTA values in array)
+PHETE   Tangent of airfoil trailine edge angle based on ordinates at
+        90 and 99 percent chord
+PHETEP  Tangent of airfoil trailing edge angle based on ordinates at
+        95 and 99 percent chord
+CHRDFI  Flap chord at inboard end of flap, measured parallel to
+        longitudinal axis
+CHRDFO  Flap chord at outboard end of flap, measured parallel to
+        longitudinal axis
+SPANFI  Span location of inboard end of flap, measured perpendicular
+        to vertical plane of symmetry
+SPANFO  Span location of outboard end of flap, measured perpendicular
+        to vertical plane of symmetry
+CPRMEI  Total wing chord at inboard end of flap (translating devices
+        only) measured parallel to longitudinal axis
+        (NDELTA values in array)
+           Single-slotted, Fowler, Double-slotted, leading-edge
+           slats, Krueger flap, jet flap
+CPRMEO  Total wing chord at outboard end of flap (translating devices
+        only) measured parallel to longitudinal axis
+        (NDELTA values in array)
+           Single-slotted, Fowler, Double-slotted, leading-edge
+           slats, Krueger flap, jet flap
+CAPINS                           (double-slotted flaps only)
+CAPOUT                           (double-slotted flaps only)
+DOSDEF                           (double-slotted flaps only)
+DOBCIN                           (double-slotted flaps only)
+DOBCOT                           (double-slotted flaps only)
+SCLD    Increment in section lift coefficient due to
+        deflecting flap to angle DELTA[i]      (optional)
+        (NDELTA values in array)
+SCMD    Increment in section pitching moment coefficient due to
+        deflecting flap to angle DELTA[i]      (optional)
+        (NDELTA values in array)
+CB      Average chord of the balance    (plain flaps only)
+TC      Average thickness of the control at hinge line
+                                        (plain flaps only)
+NTYPE   Type of nose
+           1.0  Round nose flap
+           2.0  Elliptic nose flap
+           3.0  Sharp nose flap
+JETFLP  Type of flap
+           1.0  Pure jet flap
+           2.0  IBF
+           3.0  EBF
+CMU     Two-dimensional jet efflux coefficient
+DELJET  Jet deflection angle
+        (NDELTA values in array)
+EFFJET  EBF Effective jet deflection angle
+        (NDELTA values in array)
+
+Example:
+
+$SYMFLP FTYPE=1.,NDELTA=9.,DELTA(1)=-40.,-30.,-20.,-10.,
+   0.,10.,20.,30.,40.,SPANFI=0.,SPANFO=14.,CHRDFI=1.72,
+   CHRDFO=1.72,NTYPE=1.0,CB=.50,TC=.44,PHETE=.003,PHETEP=.002$
+
+
+ */
+	
+	public static String generateBlockSYMFLP(
+			int ftype, // FTYPE
+			List<Double> deltaList, // DELTA
+			Double spanfi, Double spanfo, // SPANFI, SPANFO
+			Double chrdfi, Double chrdfo, // CHRDFI, CHRDFO
+			int ntype, // NTYPE
+			Double cb, Double tc, Double phete, Double phetep // CB, TC, PHETE, PHETEP
+			) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(" $SYMFLP ");
+		sb.append("FTYPE=").append((double)ftype).append(", ");
+		sb.append("NDELTA=").append((double)deltaList.size()).append(", ");
+		sb.append("\n   DELTA(1)=");
+		sb.append(
+				WordUtils.wrap( // Apache Commons Lang
+						deltaList.stream()
+						.map(value -> value.toString())
+						.collect(Collectors.joining(", "))
+						, 
+						60, // wrapLength
+						"\n      ", // newLineStr
+						false // wrapLongWords 
+						)
+				).append(",");
+		sb.append("\n   ");
+		sb.append("SPANFI=").append(spanfi).append(", ");
+		sb.append("SPANFO=").append(spanfo).append(", ");
+		sb.append("CHRDFI=").append(chrdfi).append(", ");
+		sb.append("CHRDFO=").append(chrdfo).append(", ");
+		sb.append("\n   ");
+		sb.append("NTYPE=").append((double)ntype).append(", ");
+		sb.append("CB=").append(cb).append(", ");
+		sb.append("TC=").append(tc).append(", ");
+		sb.append("PHETE=").append(phete).append(", ");
+		sb.append("PHETEP=").append(phetep); // no comma
+		sb.append("$");
+		return sb.toString();		
+	}
 	
 	public static void main(String[] args) {
 

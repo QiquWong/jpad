@@ -59,8 +59,21 @@ public class DummyExternalJob extends AbstractExternalJob {
 		this.setBinDirectory(new File(binDirPath));
 		System.out.println("Binary directory: " + this.getBinDirectory());
 
+//		// Assign the input file
+//		this.setInputFile(new File(binDirPath + File.separator 
+//				// + "B-737.dcm" // OK
+//				+ "X-airplane.dcm" // OK
+//				));
+
 		// Assign the input file
-		this.setInputFile(new File(binDirPath + File.separator + "B-737.dcm"));
+		this.setInputFile(new File(binDirPath + File.separator 
+				+ "X-airplane.dcm"
+				));
+
+		// Generate the input file
+		// TODO write the file as appropriate, template for now (B-737)
+		DatcomPlusInputGenerator.writeTemplate(this.getInputFile().getAbsolutePath());
+
 		System.out.println("Input file full path: " + this.getInputFile());
 		System.out.println("Input file name: " + this.getInputFile().getName());
 
