@@ -201,14 +201,14 @@ public class DatcomPlusInputGenerator {
 		content.add("**************************************************************************");
 		content.add("* Wing planform variables (page 37-38)");
 		content.add("**************************************************************************");
-		// TODO
-/*
-
- $WGPLNF CHRDR=23.8,CHRDTP=4.8,CHRDBP=12.4,
-    SSPN=46.9,SSPNOP=31.1,SSPNE=40.0,CHSTAT=.25,TWISTA=0.,TYPE=1.,
-    SAVSI=29.,SAVSO=26.0,DHDADI=0.,DHDADO=4.$ 
- 
- */
+		content.add(
+				generateBlockWGPLNF(
+						23.8, 4.8, 12.4, // CHRDR, CHRDTP, CHRDBP
+						46.9, 31.1, 40.0, // SSPN, SSPNOP, SSPNE
+						0.25, 0.0, 1, // CHSTAT, TWISTA, TYPE
+						29.0, 26.0, 0.0, 4.0 // SAVSI, SAVSO, DHDADI, DHDADO
+						)
+				);
 		content.add(" ");
 		content.add(" ");
 		
@@ -463,7 +463,29 @@ NACA-V-4-0012-25
 		sb.append("$");
 		return sb.toString();		
 	}
-	
+
+	/*
+
+	$WGPLNF CHRDR=23.8,CHRDTP=4.8,CHRDBP=12.4,
+	   SSPN=46.9,SSPNOP=31.1,SSPNE=40.0,CHSTAT=.25,TWISTA=0.,TYPE=1.,
+	   SAVSI=29.,SAVSO=26.0,DHDADI=0.,DHDADO=4.$ 
+
+	*/
+	public static String generateBlockWGPLNF(
+			Double chrdr, Double chrdtp, Double chrdbp,
+			Double sspn, Double sspnop, Double sspne,
+			Double chstat, Double twista, int type,
+			Double savsi, Double savso, Double dhdadi, Double dhdado
+			) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("$WGPLNF ")
+		  .append("CHRDR=").append(chrdr).append(", ").append("CHRDTP=").append(chrdtp).append(", ").append("CHRDBP=").append(chrdbp).append(", ")
+		  .append("\n   SSPN=").append(sspn).append(", ").append("SSPNOP=").append(sspnop).append(", ").append("SSPNE=").append(sspne).append(", ")
+		  .append("CHSTAT=").append(chstat).append(", ").append("TWISTA=").append(twista).append(", ").append("TYPE=").append((double)type).append(", ")
+		  .append("\n   SAVSI=").append(savsi).append(", ").append("SAVSO=").append(savso).append(", ").append("DHDADI=").append(dhdadi).append(", ").append("DHDADO=").append(dhdado) // no comma
+		  .append("$");
+		return sb.toString();		
+	}
 	
 	public static void main(String[] args) {
 
