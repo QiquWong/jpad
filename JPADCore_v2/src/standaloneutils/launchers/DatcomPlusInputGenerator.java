@@ -89,9 +89,9 @@ public class DatcomPlusInputGenerator {
 
 	public static void writeTemplate(String filePath) {
 		Path path = Paths.get(filePath);
-		
+
 		System.out.println("Writing " + path + " ...");
-		
+
 		// first delete file if exists
 		boolean pathExists =
 				Files.exists(path, new LinkOption[]{LinkOption.NOFOLLOW_LINKS});
@@ -104,23 +104,23 @@ public class DatcomPlusInputGenerator {
 				e.printStackTrace();
 			}
 		}
-		
+
 		try {
-		    // Create the empty file with default permissions, etc.
-		    Files.createFile(path);
+			// Create the empty file with default permissions, etc.
+			Files.createFile(path);
 		} catch (IOException e) {
-		    // Some sort of failure, such as permissions.
-		    // System.err.format("createFile error: %s%n", e);
-		    e.printStackTrace();
+			// Some sort of failure, such as permissions.
+			// System.err.format("createFile error: %s%n", e);
+			e.printStackTrace();
 		}
-		
+
 		// File content
 		List<String> content = new ArrayList<String>();
-		
+
 		content.add("* ");
 		content.add("* X-airplane template");
 		content.add("* ");
-		
+
 		content.add("**************************************************************************");
 		content.add("* List of Command Card");
 		content.add("**************************************************************************");
@@ -130,7 +130,7 @@ public class DatcomPlusInputGenerator {
 		content.add(KEYWORDS.DERIV.toString() + " " +KEYWORDS.RAD.toString());
 		content.add(" ");
 		content.add(" ");
-		
+
 		content.add("**************************************************************************");
 		content.add("* Flight conditions");
 		content.add("**************************************************************************");
@@ -148,20 +148,20 @@ public class DatcomPlusInputGenerator {
 				);
 		content.add(" ");
 		content.add(" ");
-		
+
 		content.add("**************************************************************************");
 		content.add("* Reference Parameters (page 29)");
 		content.add("**************************************************************************");
 		content.add(
-			generateBlockOPTINS(
-					93.0, // blref
-					1329.9, // sref
-					14.3 // cbarr
-					)
+				generateBlockOPTINS(
+						93.0, // blref
+						1329.9, // sref
+						14.3 // cbarr
+						)
 				);
 		content.add(" ");
 		content.add(" ");
-		
+
 		content.add("**************************************************************************");
 		content.add("* Group II     Synthesis Parameters (page 33)");
 		content.add("**************************************************************************");
@@ -178,7 +178,7 @@ public class DatcomPlusInputGenerator {
 				);
 		content.add(" ");
 		content.add(" ");
-		
+
 		content.add("**************************************************************************");
 		content.add("* Body Configuration Parameters (page 36)");
 		content.add("**************************************************************************");
@@ -197,12 +197,12 @@ public class DatcomPlusInputGenerator {
 				);
 		content.add(" ");
 		content.add(" ");
-		
+
 		content.add("**************************************************************************");
 		content.add("* Wing planform variables (page 37-38)");
 		content.add("**************************************************************************");
 		content.add(
-				generateBlockWGPLNF(
+				generateBlockGenericPLNF("WGPLNF",
 						23.8, 4.8, 12.4, // CHRDR, CHRDTP, CHRDBP
 						46.9, 31.1, 40.0, // SSPN, SSPNOP, SSPNE
 						0.25, 0.0, 1, // CHSTAT, TWISTA, TYPE
@@ -211,84 +211,86 @@ public class DatcomPlusInputGenerator {
 				);
 		content.add(" ");
 		content.add(" ");
-		
+
 		content.add("**************************************************************************");
 		content.add("* Jet Power Effects parameters (page 51)");
 		content.add("**************************************************************************");
 		// TODO
-/*
+		/*
 
  $JETPWR AIETLJ=-2.0, AMBSTP=2116.8, AMBTMP=59.7, JEALOC=42.25, 
          JEALOC=58.0, JELLOC=15.9,   JERAD=2.065, JEVLOC=-5.2, 
          JIALOC=34.5, JINLTA=13.4,   NENGSJ=2.0,  THSTCJ=0.0,
          JEANGL=-2.0$ 
- 
- */
+
+		 */
 		content.add(" ");
 		content.add(" ");
-		
+
 		content.add("**************************************************************************");
 		content.add("* Vertical Tail planform variables (page 37-38)");
 		content.add("**************************************************************************");
 		content.add(
+				// TODO: generateBlockGenericPLNF("VTPLNF",
 				generateBlockVTPLNF(
 						15.9, 4.8, 12.4, // CHRDR, CHRDTP, CHRDBP
 						27.6, 0.0, 20.7, // SSPN, SSPNOP, SSPNE
 						0.25, 0.0, 1, // CHSTAT, TWISTA, TYPE
 						33.0, 33.0 // SAVSI, SAVSO
 						)
-		);
+				);
 		content.add(" ");
 		content.add(" ");
-		
+
 		content.add("**************************************************************************");
 		content.add("* Horizontal Tail planform variables (page 37-38)");
 		content.add("**************************************************************************");
-		// TODO
-/*
+		content.add(
+				// TODO: generateBlockGenericPLNF("HTPLNF",
+				generateBlockHTPLNF(
+						12.4, 4.1, 4.1, // CHRDR, CHRDTP, CHRDBP
+						17.6, 17.6, 15.87, // SSPN, SSPNOP, SSPNE
+						0.25, 0.0, 1, // CHSTAT, TWISTA, TYPE
+						31.0, 31.0, 9.0, 0.0 // SAVSI, SAVSO, DHDADI, DHDADO
+						)
+				);
+		content.add(" ");
+		content.add(" ");
 
- $HTPLNF CHRDR=12.4,CHRDTP=4.1,
-    SSPN=17.6,SSPNE=15.87,CHSTAT=.25,TWISTA=0.,TYPE=1.,
-    SAVSI=31.,DHDADI=9.$
- 
- */
-		content.add(" ");
-		content.add(" ");
-		
 		content.add("**************************************************************************");
 		content.add("* Symetrical Flap Deflection parameters");
 		content.add("**************************************************************************");
 		// TODO
-/*
+		/*
 
  $SYMFLP FTYPE=1.,NDELTA=9.,DELTA(1)=-40.,-30.,-20.,-10.,
     0.,10.,20.,30.,40.,SPANFI=0.,SPANFO=14.,CHRDFI=1.72,
     CHRDFO=1.72,NTYPE=1.0,CB=.50,TC=.44,PHETE=.003,PHETEP=.002$
- 
- */
+
+		 */
 		content.add(" ");
 		content.add(" ");
-		
+
 		content.add("**************************************************************************");
 		content.add("* Wing Sectional Characteristics Parameters");
 		content.add("**************************************************************************");
 		// TODO
-/*
+		/*
 
 NACA-W-4-0012-25
 NACA-H-4-0012-25
 NACA-V-4-0012-25
- 
- */
+
+		 */
 		content.add(" ");
 		content.add(" ");
-		
+
 		content.add(KEYWORDS.CASEID.toString() + " Total: X-airplane");
-		
+
 		// write out the content
-		
+
 		System.out.println("======================================");
-		
+
 		Charset charset = Charset.forName("utf-8");
 		try (BufferedWriter writer = Files.newBufferedWriter(path, charset)) {
 			for (String line : content) {
@@ -302,7 +304,7 @@ NACA-V-4-0012-25
 			e.printStackTrace();
 		}
 	}
-	
+
 	/*
 
 	$FLTCON NMACH=1.0, MACH(1)=0.3, 
@@ -318,14 +320,14 @@ NACA-V-4-0012-25
 			) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("$FLTCON ")
-		  .append("NMACH=").append((double) machList.size()).append(", ");
+		.append("NMACH=").append((double) machList.size()).append(", ");
 		sb.append("MACH(1)=");
 		machList.stream()
-				.forEach(mach -> sb.append(mach).append(", "));
+		.forEach(mach -> sb.append(mach).append(", "));
 		sb.append("\n   NALT=").append((double) altitudeList.size()).append(", ");
 		sb.append("ALT(1)=");
 		altitudeList.stream()
-				.forEach(alt -> sb.append(alt).append(", "));
+		.forEach(alt -> sb.append(alt).append(", "));
 		sb.append("\n   NALPHA=").append((double) alphaList.size()).append(", ");
 		sb.append("ALSCHD(1)=");
 		sb.append(
@@ -342,23 +344,23 @@ NACA-V-4-0012-25
 		sb.append("\n   GAMMA=").append(gamma).append(", ");
 		sb.append("LOOP=").append((double)loop).append(", ");
 		sb.append("\n   RNNUB=")
-		  .append(String.format(Locale.ROOT, "%.1f", reynoldsPerUnitLength))
-		  .append("$");
+		.append(String.format(Locale.ROOT, "%.1f", reynoldsPerUnitLength))
+		.append("$");
 		return sb.toString();
 	}
-	
+
 	/*
-	
+
 	$OPTINS BLREF=93.0,SREF=1329.9,CBARR=14.3$
-			
-	*/
+
+	 */
 	public static String generateBlockOPTINS(Double blref, Double sref, Double cbarr) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("$OPTINS ")
-		  .append("BLREF=").append(blref).append(", ")
-		  .append("SREF=").append(sref).append(", ")
-		  .append("CBARR=").append(blref)
-		  .append("$");
+		.append("BLREF=").append(blref).append(", ")
+		.append("SREF=").append(sref).append(", ")
+		.append("CBARR=").append(blref)
+		.append("$");
 		return sb.toString();
 	}
 
@@ -370,7 +372,7 @@ NACA-V-4-0012-25
 	   XVF=66.2,ZVF=13.1,
 	   VERTUP=.TRUE.$
 
-	*/
+	 */
 	public static String generateBlockSYNTHS(
 			Double xw, Double zw,
 			Double aliw,
@@ -382,14 +384,14 @@ NACA-V-4-0012-25
 			) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("$SYNTHS ")
-		  .append("XW=").append(xw).append(", ").append("ZW=").append(zw).append(", ")
-		  .append("ALIW=").append(aliw).append(", ")
-		  .append("XCG=").append(xcg).append(", ").append("ZCG=").append(zcg).append(", ")
-		  .append("\n   XH=").append(xh).append(", ").append("ZH=").append(zh).append(", ")
-		  .append("\n   XV=").append(xv).append(", ").append("ZV=").append(zv).append(", ")
-		  .append("\n   XVF=").append(xvf).append(", ").append("ZVF=").append(zvf).append(", ")
-		  .append("\n   VERTUP=").append(".").append(String.valueOf(vertup).toUpperCase()).append(".")
-		  .append("$");
+		.append("XW=").append(xw).append(", ").append("ZW=").append(zw).append(", ")
+		.append("ALIW=").append(aliw).append(", ")
+		.append("XCG=").append(xcg).append(", ").append("ZCG=").append(zcg).append(", ")
+		.append("\n   XH=").append(xh).append(", ").append("ZH=").append(zh).append(", ")
+		.append("\n   XV=").append(xv).append(", ").append("ZV=").append(zv).append(", ")
+		.append("\n   XVF=").append(xvf).append(", ").append("ZVF=").append(zvf).append(", ")
+		.append("\n   VERTUP=").append(".").append(String.valueOf(vertup).toUpperCase()).append(".")
+		.append("$");
 		return sb.toString();		
 	}
 
@@ -406,7 +408,7 @@ NACA-V-4-0012-25
 	   S(1)=.55,8.23,28.89,44.31,65.06,92.63,127.81,
 	      127.81,108.11,95.68,56.88,28.39,3.64,0.11$
 
-	*/
+	 */
 	public static String generateBlockBODY(
 			Double bnose, Double btail, Double bla,
 			List<Double> x, List<Double> zu, List<Double> zl, List<Double> s) {
@@ -467,38 +469,15 @@ NACA-V-4-0012-25
 
 	/*
 
-	$WGPLNF CHRDR=23.8,CHRDTP=4.8,CHRDBP=12.4,
-	   SSPN=46.9,SSPNOP=31.1,SSPNE=40.0,CHSTAT=.25,TWISTA=0.,TYPE=1.,
-	   SAVSI=29.,SAVSO=26.0,DHDADI=0.,DHDADO=4.$ 
-
-	*/
-	public static String generateBlockWGPLNF(
-			Double chrdr, Double chrdtp, Double chrdbp,
-			Double sspn, Double sspnop, Double sspne,
-			Double chstat, Double twista, int type,
-			Double savsi, Double savso, Double dhdadi, Double dhdado
-			) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("$WGPLNF ")
-		  .append("CHRDR=").append(chrdr).append(", ").append("CHRDTP=").append(chrdtp).append(", ").append("CHRDBP=").append(chrdbp).append(", ")
-		  .append("\n   SSPN=").append(sspn).append(", ").append("SSPNOP=").append(sspnop).append(", ").append("SSPNE=").append(sspne).append(", ")
-		  .append("CHSTAT=").append(chstat).append(", ").append("TWISTA=").append(twista).append(", ").append("TYPE=").append((double)type).append(", ")
-		  .append("\n   SAVSI=").append(savsi).append(", ").append("SAVSO=").append(savso).append(", ").append("DHDADI=").append(dhdadi).append(", ").append("DHDADO=").append(dhdado) // no comma
-		  .append("$");
-		return sb.toString();		
-	}
-	
-	/*
-
 	 $VTPLNF CHRDR=15.9,CHRDTP=4.8,SAVSI=33.,
 	    SSPN=27.6,SSPNOP=0.,SSPNE=20.7,CHSTAT=.25,TWISTA=0.,TYPE=1.$
-	    
+
 	 or
-	 
+
 	 $VTPLNF CHRDR=15.9, CHRDTP=4.8, CHRDBP=12.4, 
         SSPN=27.6, SSPNOP=0.0, SSPNE=20.7, CHSTAT=0.25, TWISTA=0.0, TYPE=1.0, 
         SAVSI=33.0, SAVSO=33.0$
-	 
+
 	 */
 	public static String generateBlockVTPLNF(
 			Double chrdr, Double chrdtp, Double chrdbp,
@@ -508,13 +487,108 @@ NACA-V-4-0012-25
 			) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("$VTPLNF ")
-		  .append("CHRDR=").append(chrdr).append(", ").append("CHRDTP=").append(chrdtp).append(", ").append("CHRDBP=").append(chrdbp).append(", ")
-		  .append("\n   SSPN=").append(sspn).append(", ").append("SSPNOP=").append(sspnop).append(", ").append("SSPNE=").append(sspne).append(", ")
-		  .append("CHSTAT=").append(chstat).append(", ").append("TWISTA=").append(twista).append(", ").append("TYPE=").append((double)type).append(", ")
-		  .append("\n   SAVSI=").append(savsi).append(", ").append("SAVSO=").append(savso) // no comma
-		  .append("$");
+		.append("CHRDR=").append(chrdr).append(", ").append("CHRDTP=").append(chrdtp).append(", ").append("CHRDBP=").append(chrdbp).append(", ")
+		.append("\n   SSPN=").append(sspn).append(", ").append("SSPNOP=").append(sspnop).append(", ").append("SSPNE=").append(sspne).append(", ")
+		.append("CHSTAT=").append(chstat).append(", ").append("TWISTA=").append(twista).append(", ").append("TYPE=").append((double)type).append(", ")
+		.append("\n   SAVSI=").append(savsi).append(", ").append("SAVSO=").append(savso) // no comma
+		.append("$");
 		return sb.toString();		
 	}
+
+	/*
+
+    $HTPLNF CHRDR=12.4,CHRDTP=4.1,
+	   SSPN=17.6,SSPNE=15.87,CHSTAT=.25,TWISTA=0.,TYPE=1.,
+	   SAVSI=31.,DHDADI=9.$
+	   
+	   or
+	   
+	 $HTPLNF CHRDR=12.4, CHRDTP=4.1, CHRDBP=4.1, 
+        SSPN=17.6, SSPNOP=17.6, SSPNE=15.87, CHSTAT=0.25, TWISTA=0.0, TYPE=1.0, 
+        SAVSI=31.0, SAVSO=31.0, DHDADI=0.0, DHDADO=9.0$
+	 
+     */
+	public static String generateBlockHTPLNF(
+			Double chrdr, Double chrdtp, Double chrdbp,
+			Double sspn, Double sspnop, Double sspne,
+			Double chstat, Double twista, int type,
+			Double savsi, Double savso, Double dhdadi, Double dhdado
+			) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("$HTPLNF ")
+		.append("CHRDR=").append(chrdr).append(", ").append("CHRDTP=").append(chrdtp).append(", ").append("CHRDBP=").append(chrdbp).append(", ")
+		.append("\n   SSPN=").append(sspn).append(", ").append("SSPNOP=").append(sspnop).append(", ").append("SSPNE=").append(sspne).append(", ")
+		.append("CHSTAT=").append(chstat).append(", ").append("TWISTA=").append(twista).append(", ").append("TYPE=").append((double)type).append(", ")
+		.append("\n   SAVSI=").append(savsi).append(", ").append("SAVSO=").append(savso).append(", ").append("DHDADI=").append(dhdadi).append(", ").append("DHDADO=").append(dhdado) // no comma
+		.append("$");
+		return sb.toString();		
+	}
+
+	/*
+
+---------------------------------------------------------------------
+Wing planform variables
+---------------------------------------------------------------------
+CHRDR   Chord root
+CHRDBP  Chord at breakpoint. Not required for straight
+        tapered planform.
+CHRDTP  Tip chord
+SSPN    Semi-span theoretical panel from theoretical root chord
+SSPNE   Semi-span exposed panel, See diagram on pg 37.
+SSPNOP  Semi-span outboard panel. Not required for straight
+        tapered planform.
+SAVSI   Inboard panel sweep angle
+SAVSO   Outboard panel sweep angle
+CHSTAT  Reference chord station for inboard and outboard panel
+        sweep angles, fraction of chord
+TWISTA  Twist angle, negative leading edge rotated down (from
+        exposed root to tip)
+SSPNDD  Semi-span of outboard panel with dihedral
+DHDADI  Dihedral angle of inboard panel
+DHDADO  Dihedral angle of outboard panel. If DHDADI=DHDADO only
+        input DHDADI
+TYPE    1.0 - Straight tapered planform
+        2.0 - Double delta planform (aspect ratio <= 3)
+        3.0 - Cranked planform (aspect ratio > 3)
+
+
+Example:
+
+	$WGPLNF CHRDR=23.8,CHRDTP=4.8,CHRDBP=12.4,
+	   SSPN=46.9,SSPNOP=31.1,SSPNE=40.0,CHSTAT=.25,TWISTA=0.,TYPE=1.,
+	   SAVSI=29.,SAVSO=26.0,DHDADI=0.,DHDADO=4.$ 
+
+	 */
+	public static String generateBlockGenericPLNF(
+			String key,
+			Double chrdr, Double chrdtp, Double chrdbp,
+			Double sspn, Double sspnop, Double sspne,
+			Double chstat, Double twista, int type,
+			Double savsi, Double savso, Double dhdadi, Double dhdado
+			) {
+		StringBuilder sb = new StringBuilder();
+		// check the type of planform
+		if (!(key.equals("WGPLNF") || key.equals("HTPLNF") || key.equals("VTPLNF")))
+			return "";
+       	sb.append("$").append(key).append("= ");
+       	sb.append("CHRDR=").append(chrdr).append(", ").append("CHRDTP=").append(chrdtp).append(", ");
+       	if (sspnop > 0)
+       		sb.append("CHRDBP=").append(chrdbp).append(", ");
+       	sb.append("\n   SSPN=").append(sspn).append(", ");
+       	if (sspnop > 0)
+       		sb.append("SSPNOP=").append(sspnop).append(", ");
+       	sb.append("SSPNE=").append(sspne).append(", ")
+       	  .append("CHSTAT=").append(chstat).append(", ").append("TWISTA=").append(twista).append(", ").append("TYPE=").append((double)type).append(", ")
+       	  .append("\n   SAVSI=").append(savsi).append(", ");
+       	if (sspnop > 0)
+       		sb.append("SAVSO=").append(savso).append(", ");
+       	sb.append("DHDADI=").append(dhdadi);
+       	if (sspnop > 0)
+       		sb.append(", ").append("DHDADO=").append(dhdado) // no comma
+       	.append("$");
+       	return sb.toString();		
+	}
+
 	
 	public static void main(String[] args) {
 
@@ -527,7 +601,7 @@ NACA-V-4-0012-25
 				+ "Datcom" + File.separator 
 				+ "bin" 				
 				;
-		
+
 		// Assign the input file
 		File inputFile = new File(binDirPath + File.separator + "X-airplane.dcm");
 		System.out.println("Input file full path: " + inputFile);
@@ -535,7 +609,479 @@ NACA-V-4-0012-25
 		System.out.println("Input file exists? " + inputFile.exists());
 
 		DatcomPlusInputGenerator.writeTemplate(inputFile.getAbsolutePath());
-		
+
 	}
 
 }
+
+/*
+
+---------------------------------------------------------------------
+Flight Conditions
+---------------------------------------------------------------------
+WT      Vehicle Weight
+LOOP    Program Looping Control
+           1 = vary altitude and mach together, default
+           2 = vary Mach, at fixed altitude
+           3 = vary altitude, at fixed Mach
+NMACH   Number of Mach numbers or velocities to be run, max of 20
+        Note: This parameter, along with NALT, may affect the
+        proper setting of the LOOP control parameter.
+MACH    Array(20) Values of freestream Mach number
+VINF    Array(20) Values of freestream speed (unit: l/t)
+NALPHA  Number of angles of attack to be run, max of 20
+ALSCHD  Array(20) Values of angles of attack, in ascending order
+RNNUB   Array(20) Reynolds number per unit length
+        Freestream Reynolds numbers. Each array element must
+        correspond to the respective Mach number/freestream
+        speed input, use LOOP=1.0
+NALT    Number of atmospheric conditions to be run, max of 20
+        input as either altitude or pressure and temperature
+        Note: This parameter, along with NMACH, may affect the
+        proper setting of the LOOP control parameter.
+ALT     Array(20) Values of geometric altitude
+        Number of altitude and values. Note, Atmospheric conditions
+        are input either as altitude or pressure and temperature. (MAX 20)
+PINF    Array(20) Values of freestream Static Pressure
+TINF    Array(20) Values of freestream Temperature
+HYPERS  =.true.  Hypersonic analysis at all Mach numbers > 1.4
+STMACH  Upper limit of Mach numbers for subsonic analysis
+        (0.6<STMACH<0.99), Default to 0.6 if not input.
+TSMACH  Lower limit of Mach number for Supersonic analysis
+        (1.01<=TSMACH<=1.4)  Default to 1.4
+TR      Drag due to lift transition flag, for regression analysis
+        of wing-body configuration.
+        = 0.0 for no transition (default)
+        = 1.0 for transition strips or full scale flight
+GAMMA   Flight path angle
+
+---------------------------------------------------------------------
+Reference Parameters
+---------------------------------------------------------------------
+SREF    Reference area value of theoretical wing area used by program
+        if not input
+CBARR   Longitudinal reference length value of theoritcal wing
+        Mean Aerodynamic Chord used by program if not input
+BLREF   Lateral reference length value of wing span used by program
+ROUGFC  Surface roughness factor, equivalent sand roughness, default
+        to 0.16e-3 inches (Natural sheet metal)
+        0.02/0.08E-3 - Polished metal or wood
+        0.16E-3  - Natural sheet metal
+        0.25E-3  - Smooth matte paint, carefully applied
+        0.40E-3  - Standard camouflage paint, average application
+
+---------------------------------------------------------------------
+Group II, Synthesis Parameters
+---------------------------------------------------------------------
+XCG     Longitudinal location of cg (moment ref. center)
+ZCG     Vertical location of CG relative to reference plane
+XW      Longitudinal location of theoretical wing apex (where
+        leading edge would intersect long axis)
+ZW      Vertical location of theoretical wing apex relative to
+        reference plane
+ALIW    Wing root chord incident angle measured from reference plane
+XH      Longitudinal location of theoretical horizontal tail apex.
+        If HINAX is input, XH and ZH are evaluated at zero incidence.
+ZH      Vertical location of theoretical horizontal tail apex
+        relative to reference plane. If HINAX is input, XH and ZH
+        are evaluated at zero incidence.
+ALIH    Horizontal tail root chord incidence angle measured from
+        reference plane
+XV      Longitudinal location of theoretical vertical tail apex
+XVF     Longitudinal location of theoretical ventral fin apex
+ZV      Vertical location of theoretical vertical tail apex
+        This kinda makes sense only for twin tails that are canted
+ZVF     Vertical location of theoretical ventral fin apex
+        This kinda makes sense only for twin tails that are canted
+SCALE   Vehicle scale factor (multiplier to input dimensions)
+VERTUP  Vertical panel above reference plane (default=true)
+HINAX   Longitudinal location of horizontal tail hinge axis.
+        Required only for all-moveable horizontal tail trim option.
+
+---------------------------------------------------------------------
+Body Configuration Parameters
+---------------------------------------------------------------------
+Here is an error message output by DIGDAT concerning body geometry:
+IN NAMELIST BODY, ONLY THE FOLLOWING COMBINATIONS OF VARIABLES CAN BE USED
+FOR A CIRCULAR BODY, SPECIFY X AND R OR X AND S
+FOR AN ELLIPTICAL BODY, SPECIFY X AND R OR X AND S, AND THE VARIABLE ELLIP
+FOR OTHER BODY SHAPES X, R, S, AND P MUST ALL BE SPECIFIED
+
+NX      Number of longitudinal body stations at which data is
+        specified, max of 20
+X       Array(20) Longitudinal distance measured from arbitray location
+S       Array(20) Cross sectional area at station. See note above.
+P       Array(20) Periphery at station Xi. See note above.
+R       Array(20) Planform half width at station Xi. See note above.
+ZU      Array(20) Z-coordinate at upper body surface at station Xi
+        (positive when above centerline)
+        [Only required for subsonic asymmetric bodies]
+ZL      Array(20) Z-coordinate at lower body surface at station Xi
+        (negative when below centerline)
+        [Only required for subsonic asymmetric bodies]
+BNOSE   Nosecone type  1.0 = conical (rounded), 2.0 = ogive (sharp point)
+        [Not required in subsonic speed regime]
+BTAIL   Tailcone type  1.0 = conical, 2.0 = ogive, omit for lbt = 0
+        [Not required in subsonic speed regime]
+BLN     Length of body nose
+        Not required in subsonic speed regime
+BLA     Length of cylindrical afterbody segment, =0.0 for nose alone
+        or nose-tail configuration
+        Not required in subsonic speed regime
+DS      Nose bluntness diameter, zero for sharp nosebodies
+        [Hypersonic speed regime only]
+ITYPE   1.0 = straight wing, no area rule
+        2.0 = swept wing, no area rule (default)
+        3.0 = swept wing, area rule
+METHOD  1.0 = Use existing methods (default)
+        2.0 = Use Jorgensen method
+
+---------------------------------------------------------------------
+Wing planform variables
+---------------------------------------------------------------------
+CHRDR   Chord root
+CHRDBP  Chord at breakpoint. Not required for straight
+        tapered planform.
+CHRDTP  Tip chord
+SSPN    Semi-span theoretical panel from theoretical root chord
+SSPNE   Semi-span exposed panel, See diagram on pg 37.
+SSPNOP  Semi-span outboard panel. Not required for straight
+        tapered planform.
+SAVSI   Inboard panel sweep angle
+SAVSO   Outboard panel sweep angle
+CHSTAT  Reference chord station for inboard and outboard panel
+        sweep angles, fraction of chord
+TWISTA  Twist angle, negative leading edge rotated down (from
+        exposed root to tip)
+SSPNDD  Semi-span of outboard panel with dihedral
+DHDADI  Dihedral angle of inboard panel
+DHDADO  Dihedral angle of outboard panel. If DHDADI=DHDADO only
+        input DHDADI
+TYPE    1.0 - Straight tapered planform
+        2.0 - Double delta planform (aspect ratio <= 3)
+        3.0 - Cranked planform (aspect ratio > 3)
+
+---------------------------------------------------------------------
+Wing Sectional Characteristics Parameters
+---------------------------------------------------------------------
+The section aerodynamic characteristics for these surfaces are
+input using either the sectional characteristics namelists WGSCHR,
+HTSCHR, VTSCHR and VFSCHR and/or the NACA control cards. Airfoil
+characteristics are assummed constant for each panel of the planform.
+
+To avoid having to input all the airfoil sectional characteristics,
+you can specify the NACA airfoil designation. Starts in Column 1.
+
+NACA x y zzzzzz
+
+ where:
+    column 1-4   NACA
+           5     any deliminator
+           6     W, H, V, or F  Planform for which the airfoil
+                                designation applies:  Wing, Horizontal
+                                tail, Vertical tail, or Ventral fin.
+           7     any deliminator
+           8     1,4,5,6,S      Type of airfoil section: 1-series,
+                                4-digit, 5-digit, 6-series, or Supersonic
+           9     any deliminator
+          10-80  Designation, columns are free format, blanks are ignored
+
+ TOVC    Maximum airfoil section thickness fraction of chord
+         [Required input, user supplied or computed by airfoil
+         section module if airfoil defined with NACA card or
+         section coordinates]
+ DELTAY  Difference between airfoil ordinates at 6% and 15% chord,
+         percent chord (% correct ???)
+         [Required input, user supplied or computed by airfoil
+         section module if airfoil defined with NACA card or
+         section coordinates]
+ XOVC    Chord location of maximum airfoil thickness, fraction of chord
+         [Required input, user supplied or computed by airfoil
+         section module if airfoil defined with NACA card or
+         section coordinates]
+ CLI     Airfoil section design lift coefficient
+         [Required input, user supplied or computed by airfoil
+         section module if airfoil defined with NACA card or
+         section coordinates]
+ ALPHAI  Angle of attack at section design lift coefficient, deg
+         [Required input, user supplied or computed by airfoil
+         section module if airfoil defined with NACA card or
+         section coordinates]
+ CLALPA  Airfoil section lift curve slope dCl/dAlpha, per deg (array 20)
+         [Required input, user supplied or computed by airfoil
+         section module if airfoil defined with NACA card or
+         section coordinates]
+ CLMAX   Airfoil section maximum lift cofficient (array 20)
+         [Required input, user supplied or computed by airfoil
+         section module if airfoil defined with NACA card or
+         section coordinates]
+ CMO     Section zero lift pitching moment coefficient
+         [Required input, user supplied or computed by airfoil
+         section module if airfoil defined with NACA card or
+         section coordinates]
+ LERI    Airfoil leading edge radius, fraction of chord
+         [Required input, user supplied or computed by airfoil
+         section module if airfoil defined with NACA card or
+         section coordinates]
+ LERO    RLE for outboard panel, fraction of chord
+         [Required input].
+         Not required for straight tapered planforms.
+ CAMBER  Cambered airfoil flag flag
+         [Required input, user supplied or computed by airfoil
+         section module if airfoil defined with NACA card or
+         section coordinates]
+ TOVCO   t/c for outboard panel
+         [Required input, user supplied or computed by airfoil
+         section module if airfoil defined with NACA card or
+         section coordinates]
+         Not required for straight tapered planforms.
+ XOVCO   (x/c)max for outboard panel
+         [Required input, user supplied or computed by airfoil
+         section module if airfoil defined with NACA card or
+         section coordinates]
+         Not required for straight tapered planforms.
+ CMOT    Cmo for outboard panel
+         [Required input, user supplied or computed by airfoil
+         section module if airfoil defined with NACA card or
+         section coordinates]
+         Not required for straight tapered planforms.
+ CLMAXL  Airfoil maximum lift coefficient at mach = 0.0
+         [Required input, user supplied or computed by airfoil
+         section module if airfoil defined with NACA card or
+         section coordinates]
+ CLAMO   Airfoil section lift curve slope at Mach=0.0, per deg
+         [Not required for subsonic speed regime. Required input
+         for transonic speed regime, user supplied or computed if
+         NACA card supplied]
+  TCEFF  Planform effective thickness ratio, fraction of chord
+         [Not required for subsonic speed regime. Required input
+         for transonic speed regime, user supplied or computed if
+         NACA card supplied]
+ KSHARP  Wave-drag factor for sharp-nosed airfoil section, not
+         input for round-nosed airfoils
+         [Not required for subsonic speed regime. Required input
+         for transonic speed regime, user supplied or computed if
+         NACA card supplied]
+ SLOPE   Airfoil surface slope at 0,20,40,60,80 and 100% chord, deg.
+         Positive when the tangent intersects the chord plane forward
+         of the reference chord point
+         [Not required for subsonic speed regime. Required input
+         for transonic speed regime, user supplied or computed if
+         NACA card supplied]
+ ARCL    Aspect ratio classification (see table 9, pg 41)
+         [Optional input]
+ XAC     Section Aerodynamic Center, fraction of chord
+         [Optional input, computed by airfoil section module if airfoil
+         defined with NACA card or section coordinates]
+ DWASH   Subsonic downwash method flag
+         = 1.0  use DATCOM method 1
+         = 2.0  use DATCOM method 2
+         = 3.0  use DATCOM method 3
+         Supersonic, use DATCOM method 2
+         [Optional input]
+         See figure 9 on page 41.
+ YCM     Airfoil maximum camber, fraction of chord
+         [Required input, user supplied or computed by airfoil
+         section module if airfoil defined with NACA card or
+         section coordinates]
+ CLD     Conical camber design lift coefficient for M=1.0 design
+         see NACA RM A55G19 (default to 0.0)
+         [Required input]
+ TYPEIN  Type of airfoil section coordinates input for airfoil
+         section module
+         = 1.0  upper and lower surface coordinates (YUPPER and YLOWER)
+         = 2.0 Mean line and thickness distribution (MEAN and THICK)
+         [Optional input]
+ NPTS    Number of section points input, max = 50.0
+         [Optional input]
+ XCORD   Abscissas of inputs points, TYPEIN=1.0 or 2.0, XCORD(1)=0.0
+         XCORD(NPTS)= 1.0 required.
+         [Optional input]
+ YUPPER  Ordinates of upper surface, TYPEIN=1.0, fraction of chord, and
+         requires YUPPER(1)=0.0 and YUPPER(NPTS)=0.0
+         [Optional input]
+ YLOWER  Ordinates of lower surface, TYPEIN=1.0, fraction of chord,
+         and requires YLOWER(1)=0.0 and YLOWER(NPTS)=0.0
+         [Optional input]
+ MEAN    Ordinates of mean line, TYPEIN=2.0, fraction of chord, and
+         requires MEAN(1)=0.0 and MEAN(NPTS)=0.0
+         [Optional input]
+ THICK   Thickness distribution, TYPEIN=2.0, fraction of chord, and
+         requires THICK(1)=0.0 and THICK(NPTS)=0.0
+         [Optional input]
+
+---------------------------------------------------------------------
+Ground effects parameters
+---------------------------------------------------------------------
+NGH     Number of ground heights to be run, maximum of 10.
+GRDHT   Values of ground heights. Ground heights equal altitude
+        of reference plane relative to ground. Ground effect output
+        may be obtained at a maximum of ten different ground heights.
+        According to the DATCOM, the ground effects become neglible
+        when the ground height exceeds the wing span. Through
+        testing, there is a minimal effect up to twice the wing
+        span, so to keep our tables smooth, let's make the last
+        point 1.5b, and the output adds a point at 2b of 0.0. The
+        smallest value should NOT be 0.0, which would be the wing
+        sitting on the ground. It should be the height of the wing
+        with the aircraft sitting on the ground.
+
+---------------------------------------------------------------------
+Symetrical Flap Deflection parameters
+---------------------------------------------------------------------
+DATCOM pg 47 states :
+
+ "In general, the eight flap types defined using SYMFLP
+  (variable FTYPE) are assumed to be located on the most
+  aft lifting surface, either horizontal tail or wing if
+  a horizontal tail is not defined."
+
+FTYPE   Flap type
+           1.0  Plain flaps
+           2.0  Single slotted flaps
+           3.0  Fowler flaps
+           4.0  Double slotted flaps
+           5.0  Split flaps
+           6.0  Leading edge flap
+           7.0  Leading edge slats
+           8.0  Krueger
+NDELTA  Number of flap or slat deflection angles, max of 9
+
+DELTA   Flap deflection angles measured streamwise
+        (NDELTA values in array)
+PHETE   Tangent of airfoil trailine edge angle based on ordinates at
+        90 and 99 percent chord
+PHETEP  Tangent of airfoil trailing edge angle based on ordinates at
+        95 and 99 percent chord
+CHRDFI  Flap chord at inboard end of flap, measured parallel to
+        longitudinal axis
+CHRDFO  Flap chord at outboard end of flap, measured parallel to
+        longitudinal axis
+SPANFI  Span location of inboard end of flap, measured perpendicular
+        to vertical plane of symmetry
+SPANFO  Span location of outboard end of flap, measured perpendicular
+        to vertical plane of symmetry
+CPRMEI  Total wing chord at inboard end of flap (translating devices
+        only) measured parallel to longitudinal axis
+        (NDELTA values in array)
+           Single-slotted, Fowler, Double-slotted, leading-edge
+           slats, Krueger flap, jet flap
+CPRMEO  Total wing chord at outboard end of flap (translating devices
+        only) measured parallel to longitudinal axis
+        (NDELTA values in array)
+           Single-slotted, Fowler, Double-slotted, leading-edge
+           slats, Krueger flap, jet flap
+CAPINS                           (double-slotted flaps only)
+CAPOUT                           (double-slotted flaps only)
+DOSDEF                           (double-slotted flaps only)
+DOBCIN                           (double-slotted flaps only)
+DOBCOT                           (double-slotted flaps only)
+SCLD    Increment in section lift coefficient due to
+        deflecting flap to angle DELTA[i]      (optional)
+        (NDELTA values in array)
+SCMD    Increment in section pitching moment coefficient due to
+        deflecting flap to angle DELTA[i]      (optional)
+        (NDELTA values in array)
+CB      Average chord of the balance    (plain flaps only)
+TC      Average thickness of the control at hinge line
+                                        (plain flaps only)
+NTYPE   Type of nose
+           1.0  Round nose flap
+           2.0  Elliptic nose flap
+           3.0  Sharp nose flap
+JETFLP  Type of flap
+           1.0  Pure jet flap
+           2.0  IBF
+           3.0  EBF
+CMU     Two-dimensional jet efflux coefficient
+DELJET  Jet deflection angle
+        (NDELTA values in array)
+EFFJET  EBF Effective jet deflection angle
+        (NDELTA values in array)
+
+---------------------------------------------------------------------
+Asymmetrical Control Deflection parameters : Ailerons
+---------------------------------------------------------------------
+STYPE   Type
+           1.0  Flap spoiler on wing
+           2.0  Plug spoiler on wing
+           3.0  Spoiler-slot-deflection on wing
+           4.0  Plain flap aileron
+           5.0  Differentially deflected all moveable horizontal tail
+NDELTA  Number of control deflection angles, required for all controls,
+        max of 9
+DELTAL  Defelction angle for left hand plain flap aileron or left
+        hand panel all moveable horizontal tail, measured in
+        vertical plane of symmetry
+DELTAR  Defelction angle for right hand plain flap aileron or right
+        hand panel all moveable horizontal tail, measured in
+        vertical plane of symmetry
+SPANFI  Span location of inboard end of flap or spoiler control,
+        measured perpendicular to vertical plane of symmetry
+SPANFO  Span location of outboard end of flap or spoiler control,
+        measured perpendicular to vertical plane of symmetry
+PHETE   Tangent of airfoil trailing edge angle based on ordinates
+        at x/c - 0.90 and 0.99
+CHRDFI  Aileron chord at inboard end of plain flap aileron,
+        measured parallel to longitudinal axis
+CHRDFO  Aileron chord at outboard end of plain flap aileron,
+        measured parallel to longitudinal axis
+DELTAD  Projected height of deflector, spoiler-slot-deflector
+        control, fraction of chord
+DELTAS  Projected height of spoiler, flap spoiler, plug spoiler and
+        spoiler-slot-deflector control; fraction of chord
+XSOC    Distance from wing leading edge to spoiler lip measured
+        parallel to streamwise wng chord, flap and plug spoilers,
+        fraction of chord
+XSPRME  Distance from wing leading edge to spoiler hinge line
+        measured parallel to streamwise chord, flap spoiler,
+        plug spoiler and spoiler-slot-deflector control, fraction
+        of chord
+HSOC    Projected height of spoiler measured from and normal to
+        airfoil mean line, flap spoiler, plug spoiler and spoiler-
+        slot-reflector, fraction of chord
+
+---------------------------------------------------------------------
+Propulsion parameters for Propeller Power Effects
+---------------------------------------------------------------------
+AIETLP  Angle of incidence of engine thrust axis, deg
+NENGSP  Number of engines (1 or 2 only)
+THSTCP  Thrust coefficient 2T/PV^2 Sref
+PHALOC  Axial location of propeller hub
+PHVLOC  Vertical location of propeller hub
+PRPRAD  Propeller radius
+ENGFCT  Empirical normal force factor
+        Not required if blade widths are input.
+BWAPR3  Blade width at 0.3 propeller radius
+        Not required if empirical normal force factor is input.
+BWAPR6  Blade width at 0.6 propeller radius
+        Not required if empirical normal force factor is input.
+BWAPR9  Blade width at 0.9 propeller radius
+        Not required if empirical normal force factor is input.
+NOPBPE  Number of propeller blades per engine
+BAPR75  Blade angle at 0.75 propeller radius
+YP      Lateral location of engine
+CROT    .true.  Counter rotation propeller,
+        .false. Non counter rotating
+
+---------------------------------------------------------------------
+Jet Power Effects parameters
+---------------------------------------------------------------------
+AIETLJ  Angle of incidence of engine thrust line, deg
+AMBSTP  Ambient static pressure
+AMBTMP  Ambient temperature, deg
+JEALOC  Axial location of jet engine exit, feet
+JEANGL  Jet exit angle
+JELLOC  Lateral location of jet engine, ft
+JERAD   Radius of jet exit
+JESTMP  Jet exit static temperature
+JETOTP  Jet exit total pressure
+JEVELO  Jet exit velocity
+JEVLOC  Vertical location of jet engine exit, feet
+JIALOC  Axial location of jet engine inlet, feet
+JINLTA  Jet engine inlet area, square feet
+NENGSJ  Number of engines (1 or 2)
+THSTCJ  Thrust coefficient  2T/(PV^2*Sref)
+        Set this to 0 to keep power effects out of coefficients.
+
+*/

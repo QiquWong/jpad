@@ -54,7 +54,7 @@ $BODY NX=14.0,
 **************************************************************************
 * Wing planform variables (page 37-38)
 **************************************************************************
-$WGPLNF CHRDR=23.8, CHRDTP=4.8, CHRDBP=12.4, 
+$WGPLNF= CHRDR=23.8, CHRDTP=4.8, CHRDBP=12.4, 
    SSPN=46.9, SSPNOP=31.1, SSPNE=40.0, CHSTAT=0.25, TWISTA=0.0, TYPE=1.0, 
    SAVSI=29.0, SAVSO=26.0, DHDADI=0.0, DHDADO=4.0$
  
@@ -75,6 +75,9 @@ $VTPLNF CHRDR=15.9, CHRDTP=4.8, CHRDBP=12.4,
 **************************************************************************
 * Horizontal Tail planform variables (page 37-38)
 **************************************************************************
+$HTPLNF CHRDR=12.4, CHRDTP=4.1, CHRDBP=4.1, 
+   SSPN=17.6, SSPNOP=17.6, SSPNE=15.87, CHSTAT=0.25, TWISTA=0.0, TYPE=1.0, 
+   SAVSI=31.0, SAVSO=31.0, DHDADI=9.0, DHDADO=0.0$
  
  
 **************************************************************************
