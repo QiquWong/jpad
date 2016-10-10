@@ -230,13 +230,14 @@ public class DatcomPlusInputGenerator {
 		content.add("**************************************************************************");
 		content.add("* Vertical Tail planform variables (page 37-38)");
 		content.add("**************************************************************************");
-		// TODO
-/*
-
- $VTPLNF CHRDR=15.9,CHRDTP=4.8,SAVSI=33.,
-    SSPN=27.6,SSPNOP=0.,SSPNE=20.7,CHSTAT=.25,TWISTA=0.,TYPE=1.$
- 
- */
+		content.add(
+				generateBlockVTPLNF(
+						15.9, 4.8, 12.4, // CHRDR, CHRDTP, CHRDBP
+						27.6, 0.0, 20.7, // SSPN, SSPNOP, SSPNE
+						0.25, 0.0, 1, // CHSTAT, TWISTA, TYPE
+						33.0, 33.0 // SAVSI, SAVSO
+						)
+		);
 		content.add(" ");
 		content.add(" ");
 		
@@ -483,6 +484,34 @@ NACA-V-4-0012-25
 		  .append("\n   SSPN=").append(sspn).append(", ").append("SSPNOP=").append(sspnop).append(", ").append("SSPNE=").append(sspne).append(", ")
 		  .append("CHSTAT=").append(chstat).append(", ").append("TWISTA=").append(twista).append(", ").append("TYPE=").append((double)type).append(", ")
 		  .append("\n   SAVSI=").append(savsi).append(", ").append("SAVSO=").append(savso).append(", ").append("DHDADI=").append(dhdadi).append(", ").append("DHDADO=").append(dhdado) // no comma
+		  .append("$");
+		return sb.toString();		
+	}
+	
+	/*
+
+	 $VTPLNF CHRDR=15.9,CHRDTP=4.8,SAVSI=33.,
+	    SSPN=27.6,SSPNOP=0.,SSPNE=20.7,CHSTAT=.25,TWISTA=0.,TYPE=1.$
+	    
+	 or
+	 
+	 $VTPLNF CHRDR=15.9, CHRDTP=4.8, CHRDBP=12.4, 
+        SSPN=27.6, SSPNOP=0.0, SSPNE=20.7, CHSTAT=0.25, TWISTA=0.0, TYPE=1.0, 
+        SAVSI=33.0, SAVSO=33.0$
+	 
+	 */
+	public static String generateBlockVTPLNF(
+			Double chrdr, Double chrdtp, Double chrdbp,
+			Double sspn, Double sspnop, Double sspne,
+			Double chstat, Double twista, int type,
+			Double savsi, Double savso
+			) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("$VTPLNF ")
+		  .append("CHRDR=").append(chrdr).append(", ").append("CHRDTP=").append(chrdtp).append(", ").append("CHRDBP=").append(chrdbp).append(", ")
+		  .append("\n   SSPN=").append(sspn).append(", ").append("SSPNOP=").append(sspnop).append(", ").append("SSPNE=").append(sspne).append(", ")
+		  .append("CHSTAT=").append(chstat).append(", ").append("TWISTA=").append(twista).append(", ").append("TYPE=").append((double)type).append(", ")
+		  .append("\n   SAVSI=").append(savsi).append(", ").append("SAVSO=").append(savso) // no comma
 		  .append("$");
 		return sb.toString();		
 	}
