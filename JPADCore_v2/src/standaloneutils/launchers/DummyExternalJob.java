@@ -19,7 +19,10 @@ public class DummyExternalJob extends AbstractExternalJob {
 
 	private DatcomOutputFileReader datcomOutputFileReader;
 	
-	private String formCommand() {
+	/*
+	 *  TODO modify this function as appropriate
+	 */
+	public String formCommand() {
 		// build the system command we want to run
 		
 		String binShellWin32 = System.getenv("WINDIR") + File.separator
@@ -35,7 +38,7 @@ public class DummyExternalJob extends AbstractExternalJob {
 		// command line to pass to the shell prompt
 		
 		/*
-		commandInformation.add("dir");
+		commandInformation.add("dir"); // must be on Windows
 		commandInformation.add(
 				"." + File.separator
 				+ "src" + File.separator
@@ -151,6 +154,7 @@ public class DummyExternalJob extends AbstractExternalJob {
 
 	public static void main(String[] args) throws InterruptedException, IOException {
 		
+		// Instantiate the job executor object
 		DummyExternalJob job = new DummyExternalJob();
 		
 		System.out.println("--------------------------------------------- Launch job in a separate process.");

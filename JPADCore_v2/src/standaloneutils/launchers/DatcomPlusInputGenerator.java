@@ -312,15 +312,56 @@ public class DatcomPlusInputGenerator {
 		}
 	}
 
-	/*
+/*
 
-	$FLTCON NMACH=1.0, MACH(1)=0.3, 
-	   NALT=1.0, ALT(1)=1.500, 
-	   NALPHA=20.0, ALSCHD(1)=-16.0, -8.0, -6.0, -4.0, -2.0, 0.0, 2.0, 4.0, 8.0, 9.0, 10.0, 12.0, 14.0, 16.0, 18.0, 19.0, 20.0, 21.0, 22.0, 24.0,
-	   GAMMA=0.0, LOOP=2.0, 
-	   RNNUB=20120887.0$
+---------------------------------------------------------------------
+Flight Conditions
+---------------------------------------------------------------------
+WT      Vehicle Weight
+LOOP    Program Looping Control
+           1 = vary altitude and mach together, default
+           2 = vary Mach, at fixed altitude
+           3 = vary altitude, at fixed Mach
+NMACH   Number of Mach numbers or velocities to be run, max of 20
+        Note: This parameter, along with NALT, may affect the
+        proper setting of the LOOP control parameter.
+MACH    Array(20) Values of freestream Mach number
+VINF    Array(20) Values of freestream speed (unit: l/t)
+NALPHA  Number of angles of attack to be run, max of 20
+ALSCHD  Array(20) Values of angles of attack, in ascending order
+RNNUB   Array(20) Reynolds number per unit length
+        Freestream Reynolds numbers. Each array element must
+        correspond to the respective Mach number/freestream
+        speed input, use LOOP=1.0
+NALT    Number of atmospheric conditions to be run, max of 20
+        input as either altitude or pressure and temperature
+        Note: This parameter, along with NMACH, may affect the
+        proper setting of the LOOP control parameter.
+ALT     Array(20) Values of geometric altitude
+        Number of altitude and values. Note, Atmospheric conditions
+        are input either as altitude or pressure and temperature. (MAX 20)
+PINF    Array(20) Values of freestream Static Pressure
+TINF    Array(20) Values of freestream Temperature
+HYPERS  =.true.  Hypersonic analysis at all Mach numbers > 1.4
+STMACH  Upper limit of Mach numbers for subsonic analysis
+        (0.6<STMACH<0.99), Default to 0.6 if not input.
+TSMACH  Lower limit of Mach number for Supersonic analysis
+        (1.01<=TSMACH<=1.4)  Default to 1.4
+TR      Drag due to lift transition flag, for regression analysis
+        of wing-body configuration.
+        = 0.0 for no transition (default)
+        = 1.0 for transition strips or full scale flight
+GAMMA   Flight path angle
 
-	 */	
+Example:
+
+ $FLTCON NMACH=1.0, MACH(1)=0.3, 
+   NALT=1.0, ALT(1)=1.500, 
+   NALPHA=20.0, ALSCHD(1)=-16.0, -8.0, -6.0, -4.0, -2.0, 0.0, 2.0, 4.0, 8.0, 9.0, 10.0, 12.0, 14.0, 16.0, 18.0, 19.0, 20.0, 21.0, 22.0, 24.0,
+   GAMMA=0.0, LOOP=2.0, 
+   RNNUB=20120887.0$
+
+*/	
 	public static String generateBlockFLTCON(
 			List<Double> machList, List<Double> altitudeList, List<Double> alphaList,
 			Double gamma, int loop, Double reynoldsPerUnitLength
@@ -356,11 +397,28 @@ public class DatcomPlusInputGenerator {
 		return sb.toString();
 	}
 
-	/*
+/*
 
-	$OPTINS BLREF=93.0,SREF=1329.9,CBARR=14.3$
+---------------------------------------------------------------------
+Reference Parameters
+---------------------------------------------------------------------
+SREF    Reference area value of theoretical wing area used by program
+        if not input
+CBARR   Longitudinal reference length value of theoritcal wing
+        Mean Aerodynamic Chord used by program if not input
+BLREF   Lateral reference length value of wing span used by program
+ROUGFC  Surface roughness factor, equivalent sand roughness, default
+        to 0.16e-3 inches (Natural sheet metal)
+        0.02/0.08E-3 - Polished metal or wood
+        0.16E-3  - Natural sheet metal
+        0.25E-3  - Smooth matte paint, carefully applied
+        0.40E-3  - Standard camouflage paint, average application
 
-	 */
+Example:
+
+ $OPTINS BLREF=93.0,SREF=1329.9,CBARR=14.3$
+
+ */
 	public static String generateBlockOPTINS(Double blref, Double sref, Double cbarr) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(" $OPTINS ")
@@ -371,15 +429,45 @@ public class DatcomPlusInputGenerator {
 		return sb.toString();
 	}
 
-	/*
+/*
 
-	$SYNTHS XW=28.3,ZW=-1.4,ALIW=1.0,XCG=41.3,ZCG=0.0,
-	   XH=76.6,ZH=6.2,
-	   XV=71.1,ZV=7.6,
-	   XVF=66.2,ZVF=13.1,
-	   VERTUP=.TRUE.$
+---------------------------------------------------------------------
+Group II, Synthesis Parameters
+---------------------------------------------------------------------
+XCG     Longitudinal location of cg (moment ref. center)
+ZCG     Vertical location of CG relative to reference plane
+XW      Longitudinal location of theoretical wing apex (where
+        leading edge would intersect long axis)
+ZW      Vertical location of theoretical wing apex relative to
+        reference plane
+ALIW    Wing root chord incident angle measured from reference plane
+XH      Longitudinal location of theoretical horizontal tail apex.
+        If HINAX is input, XH and ZH are evaluated at zero incidence.
+ZH      Vertical location of theoretical horizontal tail apex
+        relative to reference plane. If HINAX is input, XH and ZH
+        are evaluated at zero incidence.
+ALIH    Horizontal tail root chord incidence angle measured from
+        reference plane
+XV      Longitudinal location of theoretical vertical tail apex
+XVF     Longitudinal location of theoretical ventral fin apex
+ZV      Vertical location of theoretical vertical tail apex
+        This kinda makes sense only for twin tails that are canted
+ZVF     Vertical location of theoretical ventral fin apex
+        This kinda makes sense only for twin tails that are canted
+SCALE   Vehicle scale factor (multiplier to input dimensions)
+VERTUP  Vertical panel above reference plane (default=true)
+HINAX   Longitudinal location of horizontal tail hinge axis.
+        Required only for all-moveable horizontal tail trim option.
 
-	 */
+Example:
+
+$SYNTHS XW=28.3,ZW=-1.4,ALIW=1.0,XCG=41.3,ZCG=0.0,
+   XH=76.6,ZH=6.2,
+   XV=71.1,ZV=7.6,
+   XVF=66.2,ZVF=13.1,
+   VERTUP=.TRUE.$
+
+ */
 	public static String generateBlockSYNTHS(
 			Double xw, Double zw,
 			Double aliw,
@@ -402,20 +490,60 @@ public class DatcomPlusInputGenerator {
 		return sb.toString();		
 	}
 
-	/*
+/*
 
-	$BODY NX=14.,
-	BNOSE=2.,BTAIL=2.,BLA=20.0,
-	   X(1)=0.,1.38,4.83,6.90,8.97,13.8,27.6,55.2,
-	      65.6,69.0,75.9,82.8,89.7,90.4,
-	   ZU(1)=.69,2.07,3.45,4.38,5.87,6.90,8.28,
-	      8.28,8.28,8.28,7.94,7.59,7.50,6.9,
-	   ZL(1)=-.35,-1.73,-3.45,-3.80,-4.14,-4.49,-4.83,
-	      -4.83,-3.45,-2.76,-0.81,1.04,4.14,6.21,
-	   S(1)=.55,8.23,28.89,44.31,65.06,92.63,127.81,
-	      127.81,108.11,95.68,56.88,28.39,3.64,0.11$
+---------------------------------------------------------------------
+Body Configuration Parameters
+---------------------------------------------------------------------
+Here is an error message output by DIGDAT concerning body geometry:
+IN NAMELIST BODY, ONLY THE FOLLOWING COMBINATIONS OF VARIABLES CAN BE USED
+FOR A CIRCULAR BODY, SPECIFY X AND R OR X AND S
+FOR AN ELLIPTICAL BODY, SPECIFY X AND R OR X AND S, AND THE VARIABLE ELLIP
+FOR OTHER BODY SHAPES X, R, S, AND P MUST ALL BE SPECIFIED
 
-	 */
+NX      Number of longitudinal body stations at which data is
+        specified, max of 20
+X       Array(20) Longitudinal distance measured from arbitray location
+S       Array(20) Cross sectional area at station. See note above.
+P       Array(20) Periphery at station Xi. See note above.
+R       Array(20) Planform half width at station Xi. See note above.
+ZU      Array(20) Z-coordinate at upper body surface at station Xi
+        (positive when above centerline)
+        [Only required for subsonic asymmetric bodies]
+ZL      Array(20) Z-coordinate at lower body surface at station Xi
+        (negative when below centerline)
+        [Only required for subsonic asymmetric bodies]
+BNOSE   Nosecone type  1.0 = conical (rounded), 2.0 = ogive (sharp point)
+        [Not required in subsonic speed regime]
+BTAIL   Tailcone type  1.0 = conical, 2.0 = ogive, omit for lbt = 0
+        [Not required in subsonic speed regime]
+BLN     Length of body nose
+        Not required in subsonic speed regime
+BLA     Length of cylindrical afterbody segment, =0.0 for nose alone
+        or nose-tail configuration
+        Not required in subsonic speed regime
+DS      Nose bluntness diameter, zero for sharp nosebodies
+        [Hypersonic speed regime only]
+ITYPE   1.0 = straight wing, no area rule
+        2.0 = swept wing, no area rule (default)
+        3.0 = swept wing, area rule
+METHOD  1.0 = Use existing methods (default)
+        2.0 = Use Jorgensen method
+
+Example:
+
+ $BODY NX=14.,
+   BNOSE=2.,BTAIL=2.,BLA=20.0,
+   X(1)=0.,1.38,4.83,6.90,8.97,13.8,27.6,55.2,
+      65.6,69.0,75.9,82.8,89.7,90.4,
+   ZU(1)=.69,2.07,3.45,4.38,5.87,6.90,8.28,
+      8.28,8.28,8.28,7.94,7.59,7.50,6.9,
+   ZL(1)=-.35,-1.73,-3.45,-3.80,-4.14,-4.49,-4.83,
+      -4.83,-3.45,-2.76,-0.81,1.04,4.14,6.21,
+   S(1)=.55,8.23,28.89,44.31,65.06,92.63,127.81,
+      127.81,108.11,95.68,56.88,28.39,3.64,0.11$
+
+ */
 	public static String generateBlockBODY(
 			Double bnose, Double btail, Double bla,
 			List<Double> x, List<Double> zu, List<Double> zl, List<Double> s) {
@@ -474,7 +602,7 @@ public class DatcomPlusInputGenerator {
 		return sb.toString();		
 	}
 
-	/*
+/*
 
 ---------------------------------------------------------------------
 Wing planform variables
@@ -504,28 +632,28 @@ TYPE    1.0 - Straight tapered planform
 
 Example:
 
-$WGPLNF CHRDR=23.8,CHRDTP=4.8,CHRDBP=12.4,
+ $WGPLNF CHRDR=23.8,CHRDTP=4.8,CHRDBP=12.4,
    SSPN=46.9,SSPNOP=31.1,SSPNE=40.0,CHSTAT=.25,TWISTA=0.,TYPE=1.,
    SAVSI=29.,SAVSO=26.0,DHDADI=0.,DHDADO=4.$ 
 	   
 or
 	
-$VTPLNF CHRDR=15.9,CHRDTP=4.8,SAVSI=33.,
+ $VTPLNF CHRDR=15.9,CHRDTP=4.8,SAVSI=33.,
    SSPN=27.6,SSPNOP=0.,SSPNE=20.7,CHSTAT=.25,TWISTA=0.,TYPE=1.$
 
-$VTPLNF CHRDTP=3.63, SSPNE=8.85,  SSPN=9.42, CHRDR=8.3, 
+ $VTPLNF CHRDTP=3.63, SSPNE=8.85,  SSPN=9.42, CHRDR=8.3, 
    SAVSI=32.3,  CHSTAT=0.25, TYPE=1.0$
 
 or
 
-$HTPLNF CHRDR=4.99, CHRDTP=2.48,
+ $HTPLNF CHRDR=4.99, CHRDTP=2.48,
    SSPN=9.42, SSPNE=9.21,
    SAVSI=5.32,
    CHSTAT=0.25, TWISTA=0.0,
    DHDADI=9.2,
    TYPE=1.0$
 
-	 */
+ */
 	public static String generateBlockGenericPLNF(
 			String key,
 			Double chrdr, Double chrdtp, Double chrdbp,
@@ -648,6 +776,52 @@ Example:
 		sb.append("$");
 		return sb.toString();		
 	}
+
+
+/*
+
+---------------------------------------------------------------------
+Propulsion parameters for Propeller Power Effects
+---------------------------------------------------------------------
+AIETLP  Angle of incidence of engine thrust axis, deg
+NENGSP  Number of engines (1 or 2 only)
+THSTCP  Thrust coefficient 2T/PV^2 Sref
+PHALOC  Axial location of propeller hub
+PHVLOC  Vertical location of propeller hub
+PRPRAD  Propeller radius
+ENGFCT  Empirical normal force factor
+        Not required if blade widths are input.
+BWAPR3  Blade width at 0.3 propeller radius
+        Not required if empirical normal force factor is input.
+BWAPR6  Blade width at 0.6 propeller radius
+        Not required if empirical normal force factor is input.
+BWAPR9  Blade width at 0.9 propeller radius
+        Not required if empirical normal force factor is input.
+NOPBPE  Number of propeller blades per engine
+BAPR75  Blade angle at 0.75 propeller radius
+YP      Lateral location of engine
+CROT    .true.  Counter rotation propeller,
+        .false. Non counter rotating
+
+Example:
+
+ $PROPWR AIETLP=0.0,NENGSP=2.0,THSTCP=0.0, 
+         PHALOC=4.5,PHVLOC=4.0,PRPRAD=3.75, 
+         ENGFCT=0.8,NOPBPE=3.0,
+         YP=6.0,CROT=.FALSE.$
+
+ */
+	public static String generateBlockPROPWR(
+			// TODO
+			) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(" $PROPWR ");
+		
+		// TODO
+		
+		sb.append("$");
+		return sb.toString();		
+	}
 	
 /*
 
@@ -726,7 +900,7 @@ EFFJET  EBF Effective jet deflection angle
 
 Example:
 
-$SYMFLP FTYPE=1.,NDELTA=9.,DELTA(1)=-40.,-30.,-20.,-10.,
+ $SYMFLP FTYPE=1.,NDELTA=9.,DELTA(1)=-40.,-30.,-20.,-10.,
    0.,10.,20.,30.,40.,SPANFI=0.,SPANFO=14.,CHRDFI=1.72,
    CHRDFO=1.72,NTYPE=1.0,CB=.50,TC=.44,PHETE=.003,PHETEP=.002$
 
@@ -771,7 +945,7 @@ $SYMFLP FTYPE=1.,NDELTA=9.,DELTA(1)=-40.,-30.,-20.,-10.,
 		sb.append("$");
 		return sb.toString();		
 	}
-	
+		
 	public static void main(String[] args) {
 
 		// Set the DATCOMROOT environment variable
