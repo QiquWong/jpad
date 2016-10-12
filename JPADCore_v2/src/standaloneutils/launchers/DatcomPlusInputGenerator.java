@@ -230,6 +230,22 @@ public class DatcomPlusInputGenerator {
 		content.add(" ");
 		content.add(" ");
 
+/*
+		content.add("**************************************************************************");
+		content.add("* Propeller Power Effects parameters");
+		content.add("**************************************************************************");
+		content.add(
+				generateBlockPROPWR(
+						2, 3, // NENGSP, NOPBPE
+						0.0, 0.009, // AIETLP, THSTCP, 
+						4.5, 4.0, 3.75, // PHALOC, PHVLOC, PRPRAD 
+						0.8, 6.0, // ENGFCT, YP
+						false // CROT
+						));
+		content.add(" ");
+		content.add(" ");
+ */		
+		
 		content.add("**************************************************************************");
 		content.add("* Vertical Tail planform variables (page 37-38)");
 		content.add("**************************************************************************");
@@ -812,13 +828,28 @@ Example:
 
  */
 	public static String generateBlockPROPWR(
-			// TODO
-			) {
+			int nengsp, int nopbpe, // NENGSP, NOPBPE
+			Double aietlp, Double thstcp, // AIETLP, THSTCP, 
+	        Double phaloc, Double phvloc, Double prprad, // PHALOC, PHVLOC, PRPRAD 
+	        Double engfct, Double yp, // ENGFCT, YP
+	        boolean crot // CROT
+	        ) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(" $PROPWR ");
-		
-		// TODO
-		
+		sb.append("NENGSP=").append((double)nengsp).append(", ");
+		sb.append("AIETLP=").append(aietlp).append(", ");
+		sb.append("THSTCP=").append(thstcp).append(", ");
+		sb.append("\n   ");
+		sb.append("PHALOC=").append(phaloc).append(", ");
+		sb.append("PHVLOC=").append(phvloc).append(", ");
+		sb.append("PRPRAD=").append(prprad).append(", ");
+		sb.append("\n   ");
+		sb.append("ENGFCT=").append(engfct).append(", ");
+		sb.append("NOPBPE=").append((double)nopbpe).append(", ");
+		sb.append("\n   ");
+		sb.append("YP=").append(yp).append(", ");
+		sb.append("CROT=").append(".").append(String.valueOf(crot).toUpperCase()).append(".");
+		// no comma
 		sb.append("$");
 		return sb.toString();		
 	}
