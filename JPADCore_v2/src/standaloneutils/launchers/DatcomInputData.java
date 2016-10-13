@@ -9,10 +9,11 @@ import org.apache.commons.lang3.text.WordUtils;
 
 public class DatcomInputData implements IDatcomInputData {
 
-	private boolean _TRIM = true;
-	private boolean _DAMP = true;
-	private boolean _PART = true;
-	private String _DERIV = "RAD";
+	private String _DIM;
+	private boolean _TRIM;
+	private boolean _DAMP;
+	private boolean _PART;
+	private String _DERIV;
 	
 	private int _FLTCON_NMACH = 0;
 	private List<Double> _FLTCON_MACH = new ArrayList<Double>();
@@ -29,6 +30,7 @@ public class DatcomInputData implements IDatcomInputData {
 	private Double _OPTINS_CBARR;
 
 	private Double _SYNTHS_XW;
+	private Double _SYNTHS_ZW;
 	private Double _SYNTHS_ALIW;
 	private Double _SYNTHS_XCG;
 	private Double _SYNTHS_ZCG;
@@ -41,6 +43,9 @@ public class DatcomInputData implements IDatcomInputData {
 	private boolean _SYNTHS_VERTUP;
 
 	private int _BODY_NX;
+	private Double _BODY_BNOSE;
+	private Double _BODY_BTAIL;
+	private Double _BODY_BLA;
 	private List<Double> _BODY_X = new ArrayList<Double>();
 	private List<Double> _BODY_ZU = new ArrayList<Double>();
 	private List<Double> _BODY_ZL = new ArrayList<Double>();
@@ -129,6 +134,19 @@ public class DatcomInputData implements IDatcomInputData {
     private Double _SYMFLP_PHETE;
     private Double _SYMFLP_PHETEP;
     
+	@Override
+	public String getDIM() {
+		return _DIM;
+	}
+
+	@Override
+	public void setDIM(String val) {
+		String val1 = val.toUpperCase().trim();
+		if (val1.equals("FT") || val1.equals("IN")
+				|| val1.equals("M") || val1.equals("CM"))
+		_DIM = val1.toUpperCase();
+	}
+
 	@Override
 	public boolean getTRIM() {
 		return _TRIM;
@@ -304,6 +322,18 @@ public class DatcomInputData implements IDatcomInputData {
 	}
 
 	@Override
+	public Double getSYNTHS_ZW() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setSYNTHS_ZW(Double val) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
 	public Double getSYNTHS_ALIW() {
 		// TODO Auto-generated method stub
 		return null;
@@ -419,6 +449,43 @@ public class DatcomInputData implements IDatcomInputData {
 
 	@Override
 	public void setSYNTHS_VERTUP(Double val) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public List<Double> getBODY_BNOSE() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setBODY_BNOSE(List<Double> vec) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<Double> getBODY_BTAIL() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setBODY_BTAIL(List<Double> vec) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<Double> getBODY_BLA() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setBODY_BLA(List<Double> vec) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -1416,6 +1483,7 @@ public class DatcomInputData implements IDatcomInputData {
 		
 
 		// optional parameters ... defaults
+		private String __DIM;		
 		private boolean __TRIM;
 		private boolean __DAMP;
 		private boolean __PART;
@@ -1436,6 +1504,7 @@ public class DatcomInputData implements IDatcomInputData {
 		private Double __OPTINS_CBARR;
 
 		private Double __SYNTHS_XW;
+		private Double __SYNTHS_ZW;
 		private Double __SYNTHS_ALIW;
 		private Double __SYNTHS_XCG;
 		private Double __SYNTHS_ZCG;
@@ -1448,6 +1517,9 @@ public class DatcomInputData implements IDatcomInputData {
 		private boolean __SYNTHS_VERTUP;
 
 		private int __BODY_NX;
+		private Double __BODY_BNOSE;
+		private Double __BODY_BTAIL;
+		private Double __BODY_BLA;
 		private List<Double> __BODY_X = new ArrayList<Double>();
 		private List<Double> __BODY_ZU = new ArrayList<Double>();
 		private List<Double> __BODY_ZL = new ArrayList<Double>();
@@ -1597,6 +1669,7 @@ public class DatcomInputData implements IDatcomInputData {
 		}
 		
 		private void initializeDefaultVariables() {
+			this.__DIM = "FT";
 			this.__TRIM = true;
 			this.__DAMP = true;
 			this.__PART = true;
@@ -1606,6 +1679,11 @@ public class DatcomInputData implements IDatcomInputData {
 			this.__FLTCON_MACH = Arrays.asList( // list of Mach
 					0.3);
 			this.__FLTCON_NMACH = this.__FLTCON_MACH.size(); 
+
+			this.__FLTCON_ALT.clear();
+			this.__FLTCON_ALT = Arrays.asList( // list of Mach
+					1500.0);
+			this.__FLTCON_NALT = this.__FLTCON_ALT.size(); 
 			
 			this.__FLTCON_ALSCHD.clear();
 			this.__FLTCON_ALSCHD = Arrays.asList( // list of AoA
@@ -1613,6 +1691,53 @@ public class DatcomInputData implements IDatcomInputData {
 						10.0, 12.0, 14.0, 16.0, 18.0, 19.0, 20.0, 21.0, 22.0, 24.0);
 			this.__FLTCON_NALPHA = this.__FLTCON_ALSCHD.size(); 
 
+			this.__FLTCON_RNNUB = 20120887.0;
+			
+			this.__OPTINS_BLREF = 93.0;
+			this.__OPTINS_SREF = 1329.9;
+			this.__OPTINS_CBARR = 14.3;
+			
+			this.__SYNTHS_XW = 28.3;
+			this.__SYNTHS_ZW = -1.4;
+			this.__SYNTHS_ALIW = 1.0;
+			this.__SYNTHS_XCG = 41.3;
+			this.__SYNTHS_ZCG = 0.0;
+			this.__SYNTHS_XH = 76.6;
+			this.__SYNTHS_ZH = 6.2;
+			this.__SYNTHS_XV = 71.1;
+			this.__SYNTHS_ZV = 7.6;
+			this.__SYNTHS_XVF = 66.2;
+			this.__SYNTHS_ZVF = 13.1;
+			this.__SYNTHS_VERTUP = true;
+			
+			this.__BODY_BNOSE = 2.0;
+			this.__BODY_BTAIL = 2.0;
+			this.__BODY_BLA = 2.0;
+			this.__BODY_X.clear();
+			this.__BODY_X = Arrays.asList( // list of X
+					0., 1.38, 4.83, 6.90, 8.97, 13.8, 27.6, 55.2, 65.6, 69.0, 75.9, 82.8, 89.7, 90.4);
+			this.__BODY_NX = this.__BODY_X.size(); // 14
+			this.__BODY_ZU = Arrays.asList( // list of ZU
+					0.69, 2.07, 3.45, 4.38, 5.87, 6.90, 8.28, 8.28, 8.28, 8.28, 7.94, 7.59, 7.50, 6.9);
+//			this.__BODY_
+//			this.__BODY_
+//			this.__BODY_
+//			this.__BODY_
+//			this.__BODY_
+//			 $BODY NX=14.,
+//					    BNOSE=2.,BTAIL=2.,BLA=20.0,
+//					    X(1)=0.,1.38,4.83,6.90,8.97,13.8,27.6,55.2,
+//					       65.6,69.0,75.9,82.8,89.7,90.4,
+//					    ZU(1)=.69,2.07,3.45,4.38,5.87,6.90,8.28,
+//					        8.28,8.28,8.28,7.94,7.59,7.50,6.9,
+//					    ZL(1)=-.35,-1.73,-3.45,-3.80,-4.14,-4.49,-4.83,
+//					        -4.83,-3.45,-2.76,-0.81,1.04,4.14,6.21,
+//					* Commented out by WAG, as DATCOM complained it was too much data.
+//					*    R(1)=.34,1.38,2.76,3.45,4.14,5.18,6.21,6.21,
+//					*       5.87,5.52,4.14,2.76,.69,0.0,
+//					    S(1)=.55,8.23,28.89,44.31,65.06,92.63,127.81,
+//					       127.81,108.11,95.68,56.88,28.39,3.64,0.11$			
+			
 		}
 		
 		public DatcomInputData build() {
@@ -1622,6 +1747,7 @@ public class DatcomInputData implements IDatcomInputData {
 	}
 	
 	private DatcomInputData(DatcomInputDataBuilder builder) {
+		_DIM =            builder.__DIM;
 		_TRIM =           builder.__TRIM;
 		_DAMP =           builder.__DAMP;
 		_PART =           builder.__PART;

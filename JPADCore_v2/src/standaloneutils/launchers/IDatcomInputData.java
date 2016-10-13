@@ -4,6 +4,9 @@ import java.util.List;
 
 public interface IDatcomInputData {
 
+	String getDIM();
+	void setDIM(String val);
+
 	boolean getTRIM();
 	void setTRIM(boolean val);
 	
@@ -48,6 +51,9 @@ public interface IDatcomInputData {
 
 	Double getSYNTHS_XW();
 	void setSYNTHS_XW(Double val);
+
+	Double getSYNTHS_ZW();
+	void setSYNTHS_ZW(Double val);
 	
 	Double getSYNTHS_ALIW();
 	void setSYNTHS_ALIW(Double val);
@@ -81,6 +87,15 @@ public interface IDatcomInputData {
 
 	int getBODY_NX();
 	void setBODY_NX(int val);
+
+	List<Double> getBODY_BNOSE();
+	void setBODY_BNOSE(List<Double> vec);
+
+	List<Double> getBODY_BTAIL();
+	void setBODY_BTAIL(List<Double> vec);
+
+	List<Double> getBODY_BLA();
+	void setBODY_BLA(List<Double> vec);
 	
 	List<Double> getBODY_X();
 	void setBODY_X(List<Double> vec);
