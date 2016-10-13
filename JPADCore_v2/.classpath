@@ -68,5 +68,11 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/JPADConfigs"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jfxchartext-1.0/jfxchartext-1.0.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/javaslang/javaslang-2.0.0.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/freebuilder/freebuilder-1.10.5.jar"/>
+	<classpathentry kind="src" path=".apt_generated">
+		<attributes>
+			<attribute name="optional" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

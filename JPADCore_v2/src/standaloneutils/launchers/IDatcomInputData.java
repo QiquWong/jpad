@@ -1,341 +1,192 @@
 package standaloneutils.launchers;
 
+import java.util.Arrays;
 import java.util.List;
 
+import org.inferred.freebuilder.FreeBuilder;
+
+@FreeBuilder
 public interface IDatcomInputData {
-
+	DatcomEngineType getEngineType();
+	
 	String getDIM();
-	void setDIM(String val);
-
 	boolean getTRIM();
-	void setTRIM(boolean val);
-	
 	boolean getDAMP();
-	void setDAMP(boolean val);
-	
 	boolean getPART();
-	void setPART(boolean val);
-	
 	String getDERIV();
-	void setDERIV(String val);
 	
 	List<Double> getFLTCON_MACH();
-	void setFLTCON_MACH(List<Double> vec);
-	int getFLTCON_NMACH();
-
+	// int getFLTCON_NMACH();
 	List<Double> getFLTCON_ALT();
-	void setFLTCON_ALT(List<Double> vec);
-	int getFLTCON_NALT();
-
+	// int getFLTCON_NALT();
 	List<Double> getFLTCON_ALSCHD();
-	void setFLTCON_ALSCHD(List<Double> vec);
-	int getFLTCON_NALPHA();
-
+	// int getFLTCON_NALPHA();
 	Double getFLTCON_GAMMA();
-	void setFLTCON_GAMMA(Double val);
-
 	int getFLTCON_LOOP();
-	void setFLTCON_LOOP(int val);
-
 	Double getFLTCON_RNNUB();
-	void setFLTCON_RNNUB(Double val);
-	
+
 	Double getOPTINS_BLREF();
-	void setOPTINS_BLREF(Double val);
-	
 	Double getOPTINS_SREF();
-	void setOPTINS_SREF(Double val);
-	
 	Double getOPTINS_CBARR();
-	void setOPTINS_CBARR(Double val);
 
 	Double getSYNTHS_XW();
-	void setSYNTHS_XW(Double val);
-
 	Double getSYNTHS_ZW();
-	void setSYNTHS_ZW(Double val);
-	
 	Double getSYNTHS_ALIW();
-	void setSYNTHS_ALIW(Double val);
-	
 	Double getSYNTHS_XCG();
-	void setSYNTHS_XCG(Double val);
-	
 	Double getSYNTHS_ZCG();
-	void setSYNTHS_ZCG(Double val);
-	
 	Double getSYNTHS_XH();
-	void setSYNTHS_XH(Double val);
-	
 	Double getSYNTHS_ZH();
-	void setSYNTHS_ZH(Double val);
-	
 	Double getSYNTHS_XV();
-	void setSYNTHS_XV(Double val);
-	
 	Double getSYNTHS_ZV();
-	void setSYNTHS_ZV(Double val);
-	
 	Double getSYNTHS_XVF();
-	void setSYNTHS_XVF(Double val);
-	
 	Double getSYNTHS_ZVF();
-	void setSYNTHS_ZVF(Double val);
-	
 	boolean getSYNTHS_VERTUP();
-	void setSYNTHS_VERTUP(Double val);
 
-	int getBODY_NX();
-	void setBODY_NX(int val);
-
-	List<Double> getBODY_BNOSE();
-	void setBODY_BNOSE(List<Double> vec);
-
-	List<Double> getBODY_BTAIL();
-	void setBODY_BTAIL(List<Double> vec);
-
-	List<Double> getBODY_BLA();
-	void setBODY_BLA(List<Double> vec);
-	
+	// int getBODY_NX();
+	Double getBODY_BNOSE();
+	Double getBODY_BTAIL();
+	Double getBODY_BLA();
 	List<Double> getBODY_X();
-	void setBODY_X(List<Double> vec);
-	
 	List<Double> getBODY_ZU();
-	void setBODY_ZU(List<Double> vec);
 	List<Double> getBODY_ZL();
-	void setBODY_ZL(List<Double> vec);
 	List<Double> getBODY_S();
-	void setBODY_S(List<Double> vec);
 
 	Double getWGPLNF_CHRDR();
-	void setWGPLNF_CHRDR(Double val);
-	
 	Double getWGPLNF_CHRDBP();
-	void setWGPLNF_CHRDBP(Double val);
-	
 	Double getWGPLNF_CHRDTP();
-	void setWGPLNF_CHRDTP(Double val);
-	
 	Double getWGPLNF_SSPN();
-	void setWGPLNF_SSPN(Double val);
-	
 	Double getWGPLNF_SSPNE();
-	void setWGPLNF_SSPNE(Double val);
-	
 	Double getWGPLNF_SAVSI();
-	void setWGPLNF_SAVSI(Double val);
-	
 	Double getWGPLNF_SAVSO();
-	void setWGPLNF_SAVSO(Double val);
-	
 	Double getWGPLNF_CHSTAT();
-	void setWGPLNF_CHSTAT(Double val);
-	
 	Double getWGPLNF_TWISTA();
-	void setWGPLNF_TWISTA(Double val);
-	
 	Double getWGPLNF_SSPNDD();
-	void setWGPLNF_SSPNDD(Double val);
-	
 	Double getWGPLNF_DHDADI();
-	void setWGPLNF_DHDADI(Double val);
-	
 	Double getWGPLNF_DHDADO();
-	void setWGPLNF_DHDADO(Double val);
-	
 	int getWGPLNF_TYPE();
-	void setWGPLNF_TYPE(int val);
 
 	Double getVTPLNF_CHRDR();
-	void setVTPLNF_CHRDR(Double val);
-	
 	Double getVTPLNF_CHRDBP();
-	void setVTPLNF_CHRDBP(Double val);
-	
 	Double getVTPLNF_CHRDTP();
-	void setVTPLNF_CHRDTP(Double val);
-	
 	Double getVTPLNF_SSPN();
-	void setVTPLNF_SSPN(Double val);
-	
 	Double getVTPLNF_SSPNE();
-	void setVTPLNF_SSPNE(Double val);
-	
 	Double getVTPLNF_SAVSI();
-	void setVTPLNF_SAVSI(Double val);
-	
 	Double getVTPLNF_SAVSO();
-	void setVTPLNF_SAVSO(Double val);
-	
 	Double getVTPLNF_CHSTAT();
-	void setVTPLNF_CHSTAT(Double val);
-	
 	Double getVTPLNF_TWISTA();
-	void setVTPLNF_TWISTA(Double val);
-	
 	Double getVTPLNF_SSPNDD();
-	void setVTPLNF_SSPNDD(Double val);
-	
 	Double getVTPLNF_DHDADI();
-	void setVTPLNF_DHDADI(Double val);
-	
 	Double getVTPLNF_DHDADO();
-	void setVTPLNF_DHDADO(Double val);
-	
 	int getVTPLNF_TYPE();
-	void setVTPLNF_TYPE(int val);
 
 	Double getHTPLNF_CHRDR();
-	void setHTPLNF_CHRDR(Double val);
-	
 	Double getHTPLNF_CHRDBP();
-	void setHTPLNF_CHRDBP(Double val);
-	
 	Double getHTPLNF_CHRDTP();
-	void setHTPLNF_CHRDTP(Double val);
-	
 	Double getHTPLNF_SSPN();
-	void setHTPLNF_SSPN(Double val);
-	
 	Double getHTPLNF_SSPNE();
-	void setHTPLNF_SSPNE(Double val);
-	
 	Double getHTPLNF_SAVSI();
-	void setHTPLNF_SAVSI(Double val);
-	
 	Double getHTPLNF_SAVSO();
-	void setHTPLNF_SAVSO(Double val);
-	
 	Double getHTPLNF_CHSTAT();
-	void setHTPLNF_CHSTAT(Double val);
-	
 	Double getHTPLNF_TWISTA();
-	void setHTPLNF_TWISTA(Double val);
-	
 	Double getHTPLNF_SSPNDD();
-	void setHTPLNF_SSPNDD(Double val);
-	
 	Double getHTPLNF_DHDADI();
-	void setHTPLNF_DHDADI(Double val);
-	
 	Double getHTPLNF_DHDADO();
-	void setHTPLNF_DHDADO(Double val);
-	
 	int getHTPLNF_TYPE();
-	void setHTPLNF_TYPE(int val);
 
 	Double getJETPWR_AIETLJ();
-	void setJETPWR_AIETLJ(Double val);
-	
 	Double getJETPWR_AMBSTP();
-	void setJETPWR_AMBSTP(Double val);
-	
 	Double getJETPWR_AMBTMP();
-	void setJETPWR_AMBTMP(Double val);
-	
 	List<Double> getJETPWR_JEALOC();
-	void setJETPWR_JEALOC(List<Double> vec);
-	
 	Double getJETPWR_JELLOC();
-	void setJETPWR_JELLOC(Double val);
-	
 	Double getJETPWR_JERAD();
-	void setJETPWR_JERAD(Double val);
-	
 	Double getJETPWR_JEVLOC();
-	void setJETPWR_JEVLOC(Double val);
-	
 	Double getJETPWR_JIALOC();
-	void setJETPWR_JIALOC(Double val);
-	
 	Double getJETPWR_JINLTA();
-	void setJETPWR_JINLTA(Double val);
-	
 	Double getJETPWR_THSTCJ();
-	void setJETPWR_THSTCJ(Double val);
-	
 	Double getJETPWR_JEANGL();
-	void setJETPWR_JEANGL(Double val);
-	
 	int getJETPWR_NENGSJ();
-	void setJETPWR_NENGSJ(int val);
 
 	int getPROPWR_NENGSP();
-	void setPROPWR_NENGSP(int val);
-	
 	Double getPROPWR_AIETLP();
-	void setPROPWR_AIETLP(Double val);
-	
 	Double getPROPWR_THSTCP();
-	void setPROPWR_THSTCP(Double val);
-	
 	Double getPROPWR_PHALOC();
-	void setPROPWR_PHALOC(Double val);
-	
 	Double getPROPWR_PHVLOC();
-	void setPROPWR_PHVLOC(Double val);
-	
 	Double getPROPWR_PRPRAD();
-	void setPROPWR_PRPRAD(Double val);
-	
 	Double getPROPWR_ENGFCT();
-	void setPROPWR_ENGFCT(Double val);
-	
 	Double getPROPWR_BWAPR3();
-	void setPROPWR_BWAPR3(Double val);
-	
 	Double getPROPWR_BWAPR6();
-	void setPROPWR_BWAPR6(Double val);
-	
 	Double getPROPWR_BWAPR9();
-	void setPROPWR_BWAPR9(Double val);
-	
 	int getPROPWR_NOPBPE();
-	void setPROPWR_NOPBPE(int val);
-	
 	Double getPROPWR_BAPR75();
-	void setPROPWR_BAPR75(Double val);
-	
 	Double getPROPWR_YP();
-	void setPROPWR_YP(Double val);
-	
 	boolean getPROPWR_CROT();
-	void setPROPWR_CROT(boolean val);
 
 	int getSYMFLP_FTYPE();
-	void setSYMFLP_FTYPE(int val);
-	
 	int getSYMFLP_NDELTA();
-	void setSYMFLP_NDELTA(int val);
-	
 	List<Double> getSYMFLP_DELTA();
-	void setSYMFLP_DELTA(List<Double> vec);
-	
 	Double getSYMFLP_SPANFI();
-	void setSYMFLP_SPANFI(Double val);
-	
 	Double getSYMFLP_SPANFO();
-	void setSYMFLP_SPANFO(Double val);
-	
 	Double getSYMFLP_CHRDFI();
-	void setSYMFLP_CHRDFI(Double val);
-	
 	Double getSYMFLP_CHRDFO();
-	void setSYMFLP_CHRDFO(Double val);
-	
 	int getSYMFLP_NTYPE();
-	void setSYMFLP_NTYPE(int val);
-	
 	Double getSYMFLP_CB();
-	void setSYMFLP_CB(Double val);
-	
 	Double getSYMFLP_TC();
-	void setSYMFLP_TC(Double val);
-	
 	Double getSYMFLP_PHETE();
-	void setSYMFLP_PHETE(Double val);
-	
 	Double getSYMFLP_PHETEP();
-	void setSYMFLP_PHETEP(Double val);
+	
+	/** Builder of IDatcomInputData instances. */
+	class Builder extends IDatcomInputData_Builder { 
+		public Builder() {
+			// Set defaults in the builder constructor.
+			setEngineType(DatcomEngineType.JET);
+			setDIM("FT");
+			setTRIM(true);
+			setDAMP(true);
+			setPART(true);
+			setDERIV("RAD");
+
+			addAllFLTCON_MACH(Arrays.asList( // list of Mach numbers
+					0.3));
+			addAllFLTCON_MACH(Arrays.asList( // list of Altitudes
+					1500.0));
+			addAllFLTCON_ALSCHD(Arrays.asList( // list of Altitudes
+					-16.0, -8.0, -6.0, -4.0, -2.0, 0.0, 2.0, 4.0, 8.0, 9.0,
+						10.0, 12.0, 14.0, 16.0, 18.0, 19.0, 20.0, 21.0, 22.0, 24.0));
+			setFLTCON_GAMMA(0.0);
+			setFLTCON_RNNUB(20120887.0);
+			
+			setOPTINS_BLREF(93.0);
+			setOPTINS_SREF(1329.0);
+			setOPTINS_CBARR(14.3);
+
+			setSYNTHS_XW(28.3);
+			setSYNTHS_ZW(-1.4);
+			setSYNTHS_ALIW(1.0);
+			setSYNTHS_XCG(41.3);
+			setSYNTHS_ZCG(0.0);
+			setSYNTHS_XH(76.6);
+			setSYNTHS_ZH(6.2);
+			setSYNTHS_XV(71.1);
+			setSYNTHS_ZV(7.6);
+			setSYNTHS_XVF(66.2);
+			setSYNTHS_ZVF(13.1);
+			setSYNTHS_VERTUP(true);
+
+			setBODY_BNOSE(2.0);
+			setBODY_BTAIL(2.0);
+			setBODY_BLA(2.0);
+			addAllBODY_X(Arrays.asList( // list of X
+					0., 1.38, 4.83, 6.90, 8.97, 13.8, 27.6, 55.2, 65.6, 69.0, 75.9, 82.8, 89.7, 90.4));
+			addAllBODY_ZU(Arrays.asList( // list of ZU
+					0.69, 2.07, 3.45, 4.38, 5.87, 6.90, 8.28, 8.28, 8.28, 8.28, 7.94, 7.59, 7.50, 6.9));
+			addAllBODY_ZL(Arrays.asList( // list of ZL
+					-0.35, -1.73, -3.45, -3.80, -4.14, -4.49, -4.83, -4.83, -3.45, -2.76, -0.81, 1.04, 4.14, 6.21));
+			addAllBODY_ZL(Arrays.asList( // list of S
+					0.55, 8.23, 28.89, 44.31, 65.06, 92.63, 127.81, 127.81, 108.11, 95.68, 56.88, 28.39, 3.64, 0.11));
+
+			
+			
+		}
+	}
 
 }
