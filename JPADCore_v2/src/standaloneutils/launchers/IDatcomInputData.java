@@ -2,11 +2,15 @@ package standaloneutils.launchers;
 
 import java.util.Arrays;
 import java.util.List;
-
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
 import org.inferred.freebuilder.FreeBuilder;
 
 @FreeBuilder
 public interface IDatcomInputData {
+	
+	String getDescription();
+	
 	DatcomEngineType getEngineType();
 	
 	String getDIM();
@@ -138,6 +142,7 @@ public interface IDatcomInputData {
 	class Builder extends IDatcomInputData_Builder { 
 		public Builder() {
 			// Set defaults in the builder constructor.
+			setDescription("(c) Agostino De Marco - X-airplane");
 			setEngineType(DatcomEngineType.JET);
 			setDIM("FT");
 			setTRIM(true);
@@ -183,9 +188,24 @@ public interface IDatcomInputData {
 					-0.35, -1.73, -3.45, -3.80, -4.14, -4.49, -4.83, -4.83, -3.45, -2.76, -0.81, 1.04, 4.14, 6.21));
 			addAllBODY_ZL(Arrays.asList( // list of S
 					0.55, 8.23, 28.89, 44.31, 65.06, 92.63, 127.81, 127.81, 108.11, 95.68, 56.88, 28.39, 3.64, 0.11));
-
 			
-			
+		}
+//		@Override
+//		public String getDescription() {
+//			return ">>>"+super.getDescription()+"<<<";
+//		}
+		@Override
+		public Builder setSYNTHS_XW(Double val) {
+			// Check single-field (argument) constraints in the setter method.
+			checkArgument(val >= 0);
+			return super.setSYNTHS_XW(val);
+		}
+		@Override 
+		public IDatcomInputData build() {
+			// Check cross-field (state) constraints in the build method.
+			IDatcomInputData data = super.build();
+			checkState(!data.getDescription().contains("Agostino De Marco"));
+			return data;
 		}
 	}
 
