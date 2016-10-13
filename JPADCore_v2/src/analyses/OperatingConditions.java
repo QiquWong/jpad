@@ -1,5 +1,6 @@
 package analyses;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
@@ -46,6 +47,10 @@ public class OperatingConditions implements IOperatingConditions {
 	private Amount<Velocity> _eas;
 	private Amount<Length> _altitude;
 
+	// high lift deveices deflections
+	private List<Amount<Angle>> _flapDeflection;
+	private List<Amount<Angle>> _slatDeflection;
+	
 	// Return density ratio, pressure ratio, temperature ratio, ecc ...
 	private StdAtmos1976 _atmosphere;
 	private Amount<VolumetricDensity> _densityCurrent;
@@ -73,6 +78,8 @@ public class OperatingConditions implements IOperatingConditions {
 		private Amount<Angle> __alphaCurrent;
 		private Double __machCurrent;
 		private Amount<Length> __altitude;
+		private List<Amount<Angle>> __flapDeflection;
+		private List<Amount<Angle>> __slatDeflection;
 		
 		public OperatingConditionsBuilder id(String id) {
 			this.__id = id;
@@ -99,6 +106,16 @@ public class OperatingConditions implements IOperatingConditions {
 			return this;
 		}
 		
+		public OperatingConditionsBuilder flapDeflection (List<Amount<Angle>> deltaFlap) {
+			this.__flapDeflection = deltaFlap;
+			return this;
+		}
+		
+		public OperatingConditionsBuilder slatDeflection (List<Amount<Angle>> deltaSlat) {
+			this.__slatDeflection = deltaSlat;
+			return this;
+		}
+		
 		public OperatingConditionsBuilder(String id) {
 			this.__id = id;
 			initializeDefaultVariables();
@@ -110,6 +127,8 @@ public class OperatingConditions implements IOperatingConditions {
 			this.__machCurrent = 0.0;
 			this.__altitude = Amount.valueOf(0.0, SI.METER);
 			this.__alpha = new Double[] {0.0,2.0,4.0,6.0,8.0,10.0,12.0,14.0,16.0,18.0,20.0,22.0,24.0};
+			this.__flapDeflection = new ArrayList<>();
+			this.__slatDeflection = new ArrayList<>();
 		}
 		
 		public OperatingConditions build() {
@@ -125,6 +144,8 @@ public class OperatingConditions implements IOperatingConditions {
 		this._machCurrent = builder.__machCurrent;
 		this._altitude = builder.__altitude;
 		this._alpha = builder.__alpha;
+		this._flapDeflection = builder.__flapDeflection;
+		this._slatDeflection = builder.__slatDeflection;
 		
 		calculate();
 		
@@ -177,11 +198,47 @@ public class OperatingConditions implements IOperatingConditions {
 		for(int i=0; i<alphaArrayList.size(); i++)
 			alphaArray[i] = Double.valueOf(alphaArrayList.get(i));
 		
+		List<Amount<Angle>> deltaFlap = new ArrayList<>();
+		List<String> deltaFlapCheck = reader.getXMLPropertiesByPath(
+				"//operating_conditions/delta_flap"
+				);
+				
+		if(!deltaFlapCheck.isEmpty()) {
+			List<String> deltaFlapProperty = JPADXmlReader.readArrayFromXML(
+					reader.getXMLPropertiesByPath(
+							"//operating_conditions/delta_flap"
+							).get(0)
+					);
+			for(int i=0; i<deltaFlapProperty.size(); i++)
+				deltaFlap.add(Amount.valueOf(Double.valueOf(deltaFlapProperty.get(i)), NonSI.DEGREE_ANGLE));
+		}
+		else
+			deltaFlap.clear();
+
+		
+		List<Amount<Angle>> deltaSlat = new ArrayList<>();
+		List<String> deltaSlatCheck = reader.getXMLPropertiesByPath(
+				"//operating_conditions/delta_slat"
+				);
+		if(!deltaSlatCheck.isEmpty()) {
+			List<String> deltaSlatProperty = JPADXmlReader.readArrayFromXML(
+					reader.getXMLPropertiesByPath(
+							"//operating_conditions/delta_slat"
+							).get(0)
+					);
+			for(int i=0; i<deltaSlatProperty.size(); i++)
+				deltaSlat.add(Amount.valueOf(Double.valueOf(deltaSlatProperty.get(i)), NonSI.DEGREE_ANGLE));
+		}
+		else
+			deltaSlat.clear();
+		
 		OperatingConditions theConditions = new OperatingConditionsBuilder(id)
 				.alphaCurrent(alphaCurrent)
 				.machCurrent(machCurrent)
 				.altitude(altitude)
 				.alphaArray(alphaArray)
+				.flapDeflection(deltaFlap)
+				.slatDeflection(deltaSlat)
 				.build();
 				
 		return theConditions;
@@ -202,8 +259,15 @@ public class OperatingConditions implements IOperatingConditions {
 				.append("\tAltitude: " + _altitude + "\n")
 				.append("\tMach current: " + _machCurrent + "\n")
 				.append("\tAlpha current: " + _alphaCurrent + "\n")
-				.append("\tAlpha array: " + Arrays.toString(_alpha) + "\n")
-				.append("\t.....................................\n")
+				.append("\tAlpha array: " + Arrays.toString(_alpha) + "\n");
+		
+		if(!_flapDeflection.isEmpty())
+				sb.append("\tFlap deflections: " + _flapDeflection + "\n");
+		
+		if(!_slatDeflection.isEmpty())
+				sb.append("\tSlat deflections: " + _slatDeflection + "\n");
+		
+				sb.append("\t.....................................\n")
 				.append("\tCurrent pressure coefficient: " + _pressureCoefficientCurrent + "\n")
 				.append("\tCurrent density: " + _densityCurrent + "\n")
 				.append("\tCurrent static pressure: " + _staticPressure + "\n")
@@ -422,6 +486,34 @@ public class OperatingConditions implements IOperatingConditions {
 
 	public void setId(String id) {
 		this._id = id;
+	}
+
+	/**
+	 * @return the _flapDeflection
+	 */
+	public List<Amount<Angle>> getFlapDeflection() {
+		return _flapDeflection;
+	}
+
+	/**
+	 * @param _flapDeflection the _flapDeflection to set
+	 */
+	public void setFlapDeflection(List<Amount<Angle>> _flapDeflection) {
+		this._flapDeflection = _flapDeflection;
+	}
+
+	/**
+	 * @return the _slatDeflection
+	 */
+	public List<Amount<Angle>> getSlatDeflection() {
+		return _slatDeflection;
+	}
+
+	/**
+	 * @param _slatDeflection the _slatDeflection to set
+	 */
+	public void setSlatDeflection(List<Amount<Angle>> _slatDeflection) {
+		this._slatDeflection = _slatDeflection;
 	}
 	
 } // end of class

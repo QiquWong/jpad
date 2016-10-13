@@ -54,6 +54,7 @@ public class LSAerodynamicsCalculator {
 	private Double[] _alphaArrayPlot; 
 	private Double[] _alphaArrayPlotHighLift;
 	private Double _currentMachNumber;
+	private Double _currentLiftCoefficient;
 	private double[] _etaStationDistribution; 
 	private List<Amount<Length>> _yStationDistribution;
 	private List<Amount<Angle>> _alphaZeroLiftDistribution;
@@ -101,6 +102,13 @@ public class LSAerodynamicsCalculator {
 	private Map <MethodEnum, Double> _cLStarHighLift;
 	private Map <MethodEnum, Double> _cLMaxHighLift;
 	private Map <MethodEnum, Amount<?>> _cLAlphaHighLift;
+	
+	//////////////////////////////////////////////
+	//											//
+	//		TODO: ALL DELTA HAVE TO BE MAPS	    //
+	//											//
+	//////////////////////////////////////////////
+	
 	private List<Double> _deltaCl0FlapList;
 	private Double _deltaCl0Flap;
 	private List<Double> _deltaCL0FlapList;
@@ -1888,15 +1896,88 @@ public class LSAerodynamicsCalculator {
 	//............................................................................
 	
 	//............................................................................
-	// HIGH LIFT INNER CLASS
+	// HIGH LIFT DEVICES EFFECTS INNER CLASS
 	//............................................................................
-	public class CalcHighLift {
+	public class CalcHighLiftDevicesEffects {
 		
-		// TODO : PUT HERE ALL THE METHODS OF THE CALCHIGHLIFT CLASS 
+		public void semiempirical() {
+			
+			if(_currentLiftCoefficient == null) {
+				CalcCLAtAlpha calcCLAtAlphaCalculator = new CalcCLAtAlpha();
+				calcCLAtAlphaCalculator.nasaBlackwellCompleteCurve(
+						_theOperatingConditions.getAlphaCurrent()
+						);
+			}
+			
+			LiftCalc.calculateHighLiftDevicesEffects(
+					_theLiftingSurface,
+					_theOperatingConditions,
+					_theOperatingConditions.getFlapDeflection(),
+					_theOperatingConditions.getSlatDeflection(),
+					_currentLiftCoefficient
+					);	
+			
+		}
 		
 	}	
 	//............................................................................
-	// END OF THE HIGH LIFT INNER CLASS
+	// END OF THE HIGH LIFT DEVICES EFFECTS INNER CLASS
+	//............................................................................
+	
+	//............................................................................
+	// HIGH LIFT CURVE INNER CLASS
+	//............................................................................
+	public class CalcHighLiftCurve {
+		
+		public void semiempirical() {
+			
+			if(_alphaZeroLift.get(MethodEnum.INTEGRAL_MEAN_TWIST) == null) {
+				CalcAlpha0L calcAlphaZeroLift = new CalcAlpha0L();
+				calcAlphaZeroLift.integralMeanWithTwist();
+			}
+			
+			if(_cLZero.get(MethodEnum.NASA_BLACKWELL) == null) {
+				CalcCL0 calcCLZero = new CalcCL0();
+				calcCLZero.nasaBlackwell();
+			}
+			
+			if(_cLAlpha.get(MethodEnum.NASA_BLACKWELL) == null) {
+				CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
+				calcCLAlpha.nasaBlackwell();
+			}
+			
+			if(_alphaStar.get(MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS) == null) {
+				CalcAlphaStar calcAlphaStar = new CalcAlphaStar();
+				calcAlphaStar.meanAirfoilWithInfluenceAreas();
+			}
+			
+			if(_cLStar.get(MethodEnum.NASA_BLACKWELL) == null) {
+				CalcCLStar calcCLStar = new CalcCLStar();
+				calcCLStar.nasaBlackwell();
+			}
+			
+			if(_alphaStall.get(MethodEnum.NASA_BLACKWELL) == null) {
+				CalcAlphaStall calcAlphaStall = new CalcAlphaStall();
+				calcAlphaStall.fromAlphaMaxLineaNasaBlackwell();
+			}
+			
+			if(_cLMax.get(MethodEnum.NASA_BLACKWELL) == null) {
+				CalcCLmax calcCLmax = new CalcCLmax();
+				calcCLmax.nasaBlackwell();
+			}
+			
+			if((_deltaCL0Flap == null) ||
+			   (_deltaCLmaxFlap == null) ||
+			   (_cLAlphaHighLift == null) ||
+			   (_deltaCL0Flap == null) ||
+			   (_deltaCL0Flap == null) ||
+					)
+				
+		}
+		
+	}	
+	//............................................................................
+	// END OF THE HIGH LIFT CURVE INNER CLASS
 	//............................................................................
 
 	//------------------------------------------------------------------------------
@@ -1980,6 +2061,20 @@ public class LSAerodynamicsCalculator {
 	public void setCurrentMachNumber(Double _currentMachNumber) {
 		this._currentMachNumber = _currentMachNumber;
 	}
+	/**
+	 * @return the _currentLiftCoefficient
+	 */
+	public Double getCurrentLiftCoefficient() {
+		return _currentLiftCoefficient;
+	}
+
+	/**
+	 * @param _currentLiftCoefficient the _currentLiftCoefficient to set
+	 */
+	public void setCurrentLiftCoefficient(Double _currentLiftCoefficient) {
+		this._currentLiftCoefficient = _currentLiftCoefficient;
+	}
+
 	public Map<MethodEnum, Double> getCriticalMachNumber() {
 		return _criticalMachNumber;
 	}
@@ -2137,6 +2232,7 @@ public class LSAerodynamicsCalculator {
 	public void setGammaDistribution(Map<MethodEnum, List<List<Double>>> _gammaDistribution) {
 		this._gammaDistribution = _gammaDistribution;
 	}
+
 	public Map<MethodEnum, Amount<Angle>> getAlphaZeroLiftHighLift() {
 		return _alphaZeroLiftHighLift;
 	}
