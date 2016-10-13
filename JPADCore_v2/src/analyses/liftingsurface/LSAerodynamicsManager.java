@@ -2545,7 +2545,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 			//---------------------------------------------------------------
 			// deltaClmax (slat)
-			if(deltaSlat != null) {
+			if(!deltaSlat.isEmpty()) {
 
 				List<Double> dCldDelta = new ArrayList<Double>();
 				for(int i=0; i<deltaSlat.size(); i++)
@@ -2663,7 +2663,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 			//---------------------------------------------------------------
 			// deltaCLmax (slat)
-			if(deltaSlat != null) {
+			if(!deltaSlat.isEmpty()) {
 
 				List<Double> kLambdaSlat = new ArrayList<Double>();
 				for(int i=0; i<deltaSlat.size(); i++)
@@ -2972,7 +2972,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 			double alphaStarFlap; 
 
-			if(deltaSlat == null)
+			if(!deltaSlat.isEmpty())
 				alphaStarFlap = (alphaStar + alphaStarClean)/2;
 			else
 				alphaStarFlap = alphaMaxHighLift-(alphaMax.to(SI.RADIAN).getEstimatedValue()-alphaStarClean);
@@ -3075,7 +3075,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 			double alphaStarFlap; 
 
-			if(deltaSlat == null)
+			if(!deltaSlat.isEmpty())
 				alphaStarFlap = (alphaStar + alphaStarClean)/2;
 			else
 				alphaStarFlap = alphaMaxHighLift-(alphaMax.to(SI.RADIAN).getEstimatedValue()-alphaStarClean);

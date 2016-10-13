@@ -1080,7 +1080,7 @@ public class LiftCalc {
 		
 		//---------------------------------------------------------------
 		// deltaClmax (slat)
-		if(deltaSlat != null) {
+		if(!deltaSlat.isEmpty()) {
 
 			List<Double> dCldDelta = new ArrayList<Double>();
 			for(int i=0; i<deltaSlat.size(); i++)
@@ -1121,6 +1121,9 @@ public class LiftCalc {
 				deltaClmaxSlat += theLiftingSurface.getTheAerodynamicsCalculator().getDeltaClmaxSlatList().get(i).doubleValue();
 			theLiftingSurface.getTheAerodynamicsCalculator().setDeltaClmaxSlat(deltaClmaxSlat);
 		}
+		else
+			theLiftingSurface.getTheAerodynamicsCalculator().setDeltaClmaxFlapList(null);
+			theLiftingSurface.getTheAerodynamicsCalculator().setDeltaClmaxFlap(null);
 
 		//---------------------------------------------------------------
 		// deltaCL0 (flap)
@@ -1196,7 +1199,7 @@ public class LiftCalc {
 
 		//---------------------------------------------------------------
 		// deltaCLmax (slat)
-		if(deltaSlat != null) {
+		if(!deltaSlat.isEmpty()) {
 
 			List<Double> kLambdaSlat = new ArrayList<Double>();
 			for(int i=0; i<deltaSlat.size(); i++)
@@ -1226,6 +1229,10 @@ public class LiftCalc {
 				deltaCLmaxSlat += theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCLmaxSlatList().get(i).doubleValue();
 			theLiftingSurface.getTheAerodynamicsCalculator().setDeltaCLmaxSlat(deltaCLmaxSlat);
 		}
+		else
+			theLiftingSurface.getTheAerodynamicsCalculator().setDeltaCLmaxFlapList(null);
+			theLiftingSurface.getTheAerodynamicsCalculator().setDeltaCLmaxFlap(null);
+			
 		//---------------------------------------------------------------
 		// new CLalpha
 
