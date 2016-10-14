@@ -109,22 +109,22 @@ public class LSAerodynamicsCalculator {
 	//											//
 	//////////////////////////////////////////////
 	
-	private List<Double> _deltaCl0FlapList;
-	private Double _deltaCl0Flap;
-	private List<Double> _deltaCL0FlapList;
-	private Double _deltaCL0Flap;
-	private List<Double> _deltaClmaxFlapList;
-	private Double _deltaClmaxFlap;
-	private List<Double> _deltaCLmaxFlapList;
-	private Double _deltaCLmaxFlap;
-	private List<Double> _deltaClmaxSlatList;
-	private Double _deltaClmaxSlat;
-	private List<Double> _deltaCLmaxSlatList;
-	private Double _deltaCLmaxSlat;
-	private List<Double> _deltaCDList;
-	private Double _deltaCD;
-	private List<Double> _deltaCMc4List;
-	private Double _deltaCMc4;
+	private Map <MethodEnum, List<Double>> _deltaCl0FlapList;
+	private Map <MethodEnum, Double> _deltaCl0Flap;
+	private Map <MethodEnum, List<Double>> _deltaCL0FlapList;
+	private Map <MethodEnum, Double> _deltaCL0Flap;
+	private Map <MethodEnum, List<Double>> _deltaClmaxFlapList;
+	private Map <MethodEnum, Double> _deltaClmaxFlap;
+	private Map <MethodEnum, List<Double>> _deltaCLmaxFlapList;
+	private Map <MethodEnum, Double> _deltaCLmaxFlap;
+	private Map <MethodEnum, List<Double>> _deltaClmaxSlatList;
+	private Map <MethodEnum, Double> _deltaClmaxSlat;
+	private Map <MethodEnum, List<Double>> _deltaCLmaxSlatList;
+	private Map <MethodEnum, Double> _deltaCLmaxSlat;
+	private Map <MethodEnum, List<Double>> _deltaCDList;
+	private Map <MethodEnum, Double> _deltaCD;
+	private Map <MethodEnum, List<Double>> _deltaCMc4List;
+	private Map <MethodEnum, Double> _deltaCMc4;
 	
 	// DRAG -> TODO: DEFINE VARIABLES
 	
@@ -307,14 +307,22 @@ public class LSAerodynamicsCalculator {
 		this._cLStarHighLift = new HashMap<MethodEnum, Double>();
 		this._cLMaxHighLift = new HashMap<MethodEnum, Double>();
 		this._cLAlphaHighLift = new HashMap<MethodEnum, Amount<?>>();
-		this._deltaCl0FlapList = new ArrayList<>();
-		this._deltaCL0FlapList = new ArrayList<>();
-		this._deltaClmaxFlapList = new ArrayList<>();
-		this._deltaCLmaxFlapList = new ArrayList<>();
-		this._deltaClmaxSlatList = new ArrayList<>();
-		this._deltaCLmaxSlatList = new ArrayList<>();
-		this._deltaCDList = new ArrayList<>();
-		this._deltaCMc4List = new ArrayList<>();
+		this._deltaCl0FlapList = new HashMap<MethodEnum, List<Double>>();
+		this._deltaCL0FlapList = new HashMap<MethodEnum, List<Double>>();
+		this._deltaClmaxFlapList = new HashMap<MethodEnum, List<Double>>();
+		this._deltaCLmaxFlapList = new HashMap<MethodEnum, List<Double>>();
+		this._deltaClmaxSlatList = new HashMap<MethodEnum, List<Double>>();
+		this._deltaCLmaxSlatList = new HashMap<MethodEnum, List<Double>>();
+		this._deltaCDList = new HashMap<MethodEnum, List<Double>>();
+		this._deltaCMc4List = new HashMap<MethodEnum, List<Double>>();
+		this._deltaCl0Flap = new HashMap<MethodEnum, Double>();
+		this._deltaCL0Flap = new HashMap<MethodEnum, Double>();
+		this._deltaClmaxFlap = new HashMap<MethodEnum, Double>();
+		this._deltaCLmaxFlap = new HashMap<MethodEnum, Double>();
+		this._deltaClmaxSlat = new HashMap<MethodEnum, Double>();
+		this._deltaCLmaxSlat = new HashMap<MethodEnum, Double>();
+		this._deltaCD = new HashMap<MethodEnum, Double>();
+		this._deltaCMc4 = new HashMap<MethodEnum, Double>();
 		
 		// TODO : CONTINUE WITH OTHER MAPS WHEN AVAILABLE
 		
@@ -1966,13 +1974,24 @@ public class LSAerodynamicsCalculator {
 				calcCLmax.nasaBlackwell();
 			}
 			
-			if((_deltaCL0Flap == null) ||
-			   (_deltaCLmaxFlap == null) ||
-			   (_cLAlphaHighLift == null) ||
-			   (_deltaCL0Flap == null) ||
-			   (_deltaCL0Flap == null) ||
-					)
+			if((_deltaCL0Flap.get(MethodEnum.EMPIRICAL) == null) ||
+			   (_deltaCLmaxFlap.get(MethodEnum.EMPIRICAL) == null) ||
+			   (_cLAlphaHighLift.get(MethodEnum.EMPIRICAL) == null)
+					) {
 				
+				CalcHighLiftDevicesEffects theHighLiftEffectsCalculator = new CalcHighLiftDevicesEffects();
+				theHighLiftEffectsCalculator.semiempirical();
+				
+			}
+			
+			CalcLiftCurve theCleanLiftCurveCalculator = new CalcLiftCurve();
+			theCleanLiftCurveCalculator.nasaBlackwell();
+			
+			///////////////////////////////////////
+			// TODO: SUM UP THE HIGH LIFT EFFECTS// 
+			//       ON THE CLEAN CURVE			 //
+			///////////////////////////////////////
+			
 		}
 		
 	}	
@@ -2275,100 +2294,100 @@ public class LSAerodynamicsCalculator {
 	public void setCLAlphaHighLift(Map<MethodEnum, Amount<?>> _cLAlphaHighLift) {
 		this._cLAlphaHighLift = _cLAlphaHighLift;
 	}
-	public List<Double> getDeltaCl0FlapList() {
+	public Map<MethodEnum, List<Double>> getDeltaCl0FlapList() {
 		return _deltaCl0FlapList;
 	}
-	public void setDeltaCl0FlapList(List<Double> _deltaCl0FlapList) {
+	public void setDeltaCl0FlapList(Map<MethodEnum, List<Double>> _deltaCl0FlapList) {
 		this._deltaCl0FlapList = _deltaCl0FlapList;
 	}
-	public Double getDeltaCl0Flap() {
+	public Map<MethodEnum, Double> getDeltaCl0Flap() {
 		return _deltaCl0Flap;
 	}
-	public void setDeltaCl0Flap(Double _deltaCl0Flap) {
+	public void setDeltaCl0Flap(Map<MethodEnum, Double> _deltaCl0Flap) {
 		this._deltaCl0Flap = _deltaCl0Flap;
 	}
-	public List<Double> getDeltaCL0FlapList() {
+	public Map<MethodEnum, List<Double>> getDeltaCL0FlapList() {
 		return _deltaCL0FlapList;
 	}
-	public void setDeltaCL0FlapList(List<Double> _deltaCL0FlapList) {
+	public void setDeltaCL0FlapList(Map<MethodEnum, List<Double>> _deltaCL0FlapList) {
 		this._deltaCL0FlapList = _deltaCL0FlapList;
 	}
-	public Double getDeltaCL0Flap() {
+	public Map<MethodEnum, Double> getDeltaCL0Flap() {
 		return _deltaCL0Flap;
 	}
-	public void setDeltaCL0Flap(Double _deltaCL0Flap) {
+	public void setDeltaCL0Flap(Map<MethodEnum, Double> _deltaCL0Flap) {
 		this._deltaCL0Flap = _deltaCL0Flap;
 	}
-	public List<Double> getDeltaClmaxFlapList() {
+	public Map<MethodEnum, List<Double>> getDeltaClmaxFlapList() {
 		return _deltaClmaxFlapList;
 	}
-	public void setDeltaClmaxFlapList(List<Double> _deltaClmaxFlapList) {
+	public void setDeltaClmaxFlapList(Map<MethodEnum, List<Double>> _deltaClmaxFlapList) {
 		this._deltaClmaxFlapList = _deltaClmaxFlapList;
 	}
-	public Double getDeltaClmaxFlap() {
+	public Map<MethodEnum, Double> getDeltaClmaxFlap() {
 		return _deltaClmaxFlap;
 	}
-	public void setDeltaClmaxFlap(Double _deltaClmaxFlap) {
+	public void setDeltaClmaxFlap(Map<MethodEnum, Double> _deltaClmaxFlap) {
 		this._deltaClmaxFlap = _deltaClmaxFlap;
 	}
-	public List<Double> getDeltaCLmaxFlapList() {
+	public Map<MethodEnum, List<Double>> getDeltaCLmaxFlapList() {
 		return _deltaCLmaxFlapList;
 	}
-	public void setDeltaCLmaxFlapList(List<Double> _deltaCLmaxFlapList) {
+	public void setDeltaCLmaxFlapList(Map<MethodEnum, List<Double>> _deltaCLmaxFlapList) {
 		this._deltaCLmaxFlapList = _deltaCLmaxFlapList;
 	}
-	public Double getDeltaCLmaxFlap() {
+	public Map<MethodEnum, Double> getDeltaCLmaxFlap() {
 		return _deltaCLmaxFlap;
 	}
-	public void setDeltaCLmaxFlap(Double _deltaCLmaxFlap) {
+	public void setDeltaCLmaxFlap(Map<MethodEnum, Double> _deltaCLmaxFlap) {
 		this._deltaCLmaxFlap = _deltaCLmaxFlap;
 	}
-	public List<Double> getDeltaClmaxSlatList() {
+	public Map<MethodEnum, List<Double>> getDeltaClmaxSlatList() {
 		return _deltaClmaxSlatList;
 	}
-	public void setDeltaClmaxSlatList(List<Double> _deltaClmaxSlatList) {
+	public void setDeltaClmaxSlatList(Map<MethodEnum, List<Double>> _deltaClmaxSlatList) {
 		this._deltaClmaxSlatList = _deltaClmaxSlatList;
 	}
-	public Double getDeltaClmaxSlat() {
+	public Map<MethodEnum, Double> getDeltaClmaxSlat() {
 		return _deltaClmaxSlat;
 	}
-	public void setDeltaClmaxSlat(Double _deltaClmaxSlat) {
+	public void setDeltaClmaxSlat(Map<MethodEnum, Double> _deltaClmaxSlat) {
 		this._deltaClmaxSlat = _deltaClmaxSlat;
 	}
-	public List<Double> getDeltaCLmaxSlatList() {
+	public Map<MethodEnum, List<Double>> getDeltaCLmaxSlatList() {
 		return _deltaCLmaxSlatList;
 	}
-	public void setDeltaCLmaxSlatList(List<Double> _deltaCLmaxSlatList) {
+	public void setDeltaCLmaxSlatList(Map<MethodEnum, List<Double>> _deltaCLmaxSlatList) {
 		this._deltaCLmaxSlatList = _deltaCLmaxSlatList;
 	}
-	public Double getDeltaCLmaxSlat() {
+	public Map<MethodEnum, Double> getDeltaCLmaxSlat() {
 		return _deltaCLmaxSlat;
 	}
-	public void setDeltaCLmaxSlat(Double _deltaCLmaxSlat) {
+	public void setDeltaCLmaxSlat(Map<MethodEnum, Double> _deltaCLmaxSlat) {
 		this._deltaCLmaxSlat = _deltaCLmaxSlat;
 	}
-	public List<Double> getDeltaCDList() {
+	public Map<MethodEnum, List<Double>> getDeltaCDList() {
 		return _deltaCDList;
 	}
-	public void setDeltaCDList(List<Double> _deltaCDList) {
+	public void setDeltaCDList(Map<MethodEnum, List<Double>> _deltaCDList) {
 		this._deltaCDList = _deltaCDList;
 	}
-	public Double getDeltaCD() {
+	public Map<MethodEnum, Double> getDeltaCD() {
 		return _deltaCD;
 	}
-	public void setDeltaCD(Double _deltaCD) {
+	public void setDeltaCD(Map<MethodEnum, Double> _deltaCD) {
 		this._deltaCD = _deltaCD;
 	}
-	public List<Double> getDeltaCMc4List() {
+	public Map<MethodEnum, List<Double>> getDeltaCMc4List() {
 		return _deltaCMc4List;
 	}
-	public void setDeltaCMc4List(List<Double> _deltaCMc4List) {
+	public void setDeltaCMc4List(Map<MethodEnum, List<Double>> _deltaCMc4List) {
 		this._deltaCMc4List = _deltaCMc4List;
 	}
-	public Double getDeltaCMc4() {
+	public Map<MethodEnum, Double> getDeltaCMc4() {
 		return _deltaCMc4;
 	}
-	public void setDeltaCMc4(Double _deltaCMc4) {
+	public void setDeltaCMc4(Map<MethodEnum, Double> _deltaCMc4) {
 		this._deltaCMc4 = _deltaCMc4;
 	}
 

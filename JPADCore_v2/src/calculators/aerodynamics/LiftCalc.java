@@ -6,6 +6,7 @@ import static java.lang.Math.sqrt;
 import static java.lang.Math.tan;
 import static java.lang.Math.toRadians;
 
+import java.lang.management.MemoryType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,8 @@ import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.util.MathArrays;
 import org.jscience.physics.amount.Amount;
+
+import com.ibm.icu.util.EthiopicCalendar;
 
 import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.liftingSurface.LiftingSurface;
@@ -1002,16 +1005,24 @@ public class LiftCalc {
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			cFirstCFlap.add(1+(deltaCCfFlap.get(i).doubleValue()*cfc.get(i).doubleValue()));
 
+		List<Double> deltaCl0FlapList = new ArrayList<>();
 		for(int i=0; i<flapTypeIndex.size(); i++)
-			theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCl0FlapList().add(
+			deltaCl0FlapList.add(
 					(deltaCl0First.get(i).doubleValue()*cFirstCFlap.get(i).doubleValue())
 					+(clZeroMeanFlap[i]*(cFirstCFlap.get(i).doubleValue()-1))
 					);
-
+		theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCl0FlapList().put(
+				MethodEnum.EMPIRICAL,
+				deltaCl0FlapList
+				);
+		
 		double deltaCl0Flap = 0.0;
 		for(int i=0; i<flapTypeIndex.size(); i++)
-			deltaCl0Flap += theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCl0FlapList().get(i);
-		theLiftingSurface.getTheAerodynamicsCalculator().setDeltaCl0Flap(deltaCl0Flap);
+			deltaCl0Flap += deltaCl0FlapList.get(i);
+		theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCl0Flap().put(
+				MethodEnum.EMPIRICAL,
+				deltaCl0Flap
+				);
 		
 		//---------------------------------------------------------------
 		// deltaClmax (flap)
@@ -1065,18 +1076,26 @@ public class LiftCalc {
 							)
 					);
 
+		List<Double> deltaClmaxFlapList = new ArrayList<>();
 		for(int i=0; i<flapTypeIndex.size(); i++)
-			theLiftingSurface.getTheAerodynamicsCalculator().getDeltaClmaxFlapList().add(
+			deltaClmaxFlapList.add(
 					k1.get(i).doubleValue()
 					*k2.get(i).doubleValue()
 					*k3.get(i).doubleValue()
 					*deltaClmaxBase.get(i).doubleValue()
 					);
-
+		theLiftingSurface.getTheAerodynamicsCalculator().getDeltaClmaxFlapList().put(
+				MethodEnum.EMPIRICAL,
+				deltaClmaxFlapList
+				);
+		
 		double deltaClmaxFlap = 0.0;
 		for(int i=0; i<flapTypeIndex.size(); i++)
-			deltaClmaxFlap += theLiftingSurface.getTheAerodynamicsCalculator().getDeltaClmaxFlapList().get(i).doubleValue();
-		theLiftingSurface.getTheAerodynamicsCalculator().setDeltaClmaxFlap(deltaClmaxFlap);
+			deltaClmaxFlap += deltaClmaxFlapList.get(i);
+		theLiftingSurface.getTheAerodynamicsCalculator().getDeltaClmaxFlap().put(
+				MethodEnum.EMPIRICAL,
+				deltaClmaxFlap
+				);
 		
 		//---------------------------------------------------------------
 		// deltaClmax (slat)
@@ -1107,24 +1126,72 @@ public class LiftCalc {
 						.getEtaDeltaVsDeltaSlat(deltaSlat.get(i).doubleValue(NonSI.DEGREE_ANGLE))
 						);
 
+			List<Double> deltaClmaxSlatList = new ArrayList<>();
 			for(int i=0; i<deltaSlat.size(); i++)
-				theLiftingSurface.getTheAerodynamicsCalculator().getDeltaClmaxSlatList().add(
+				deltaClmaxSlatList.add(
 						dCldDelta.get(i).doubleValue()
 						*etaMaxSlat.get(i).doubleValue()
 						*etaDeltaSlat.get(i).doubleValue()
 						*deltaSlat.get(i).doubleValue(NonSI.DEGREE_ANGLE)
 						*cExtcSlat.get(i).doubleValue()
 						);
-
+			theLiftingSurface.getTheAerodynamicsCalculator().getDeltaClmaxSlatList().put(
+					MethodEnum.EMPIRICAL,
+					deltaClmaxSlatList
+					);
+			
 			double deltaClmaxSlat = 0.0;
 			for(int i=0; i<deltaSlat.size(); i++)
-				deltaClmaxSlat += theLiftingSurface.getTheAerodynamicsCalculator().getDeltaClmaxSlatList().get(i).doubleValue();
-			theLiftingSurface.getTheAerodynamicsCalculator().setDeltaClmaxSlat(deltaClmaxSlat);
+				deltaClmaxSlat += deltaClmaxSlatList.get(i);
+			theLiftingSurface
+			.getTheAerodynamicsCalculator()
+				.getDeltaClmaxSlat()
+					.put(MethodEnum.EMPIRICAL, deltaClmaxSlat);
+			
+			//---------------------------------------------------------------
+			// deltaCLmax (slat)
+			List<Double> kLambdaSlat = new ArrayList<Double>();
+			for(int i=0; i<deltaSlat.size(); i++)
+				kLambdaSlat.add(
+						Math.pow(Math.cos(theLiftingSurface.getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().getEstimatedValue()),0.75)
+						*(1-(0.08*Math.pow(Math.cos(theLiftingSurface.getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().getEstimatedValue()), 2)))
+						);
+
+			List<Double> slatSurface = new ArrayList<Double>();
+			for(int i=0; i<deltaSlat.size(); i++)
+				slatSurface.add(
+						Math.abs(theLiftingSurface.getSpan().getEstimatedValue()
+								/2*theLiftingSurface.getLiftingSurfaceCreator().getRootChordEquivalentWing().getEstimatedValue()
+								*(2-(1-theLiftingSurface.getLiftingSurfaceCreator().getTaperRatioEquivalentWing())*(etaInSlat.get(i)+etaOutSlat.get(i)))
+								*(etaOutSlat.get(i)-etaInSlat.get(i))
+								)
+						);
+
+			List<Double> deltaCLmaxSlatList = new ArrayList<>();
+			for(int i=0; i<deltaSlat.size(); i++)
+				deltaCLmaxSlatList.add(
+						deltaClmaxSlatList.get(i)
+						*(slatSurface.get(i)/theLiftingSurface.getSurface().getEstimatedValue())
+						*kLambdaSlat.get(i));
+			theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCLmaxSlatList().put(
+					MethodEnum.EMPIRICAL,
+					deltaCLmaxSlatList
+					);
+
+			double deltaCLmaxSlat = 0.0;
+			for(int i=0; i<deltaSlat.size(); i++)
+				deltaCLmaxSlat += deltaCLmaxSlatList.get(i);
+			theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCLmaxSlat().put(
+					MethodEnum.EMPIRICAL,
+					deltaCLmaxSlat
+					);
 		}
 		else
 			theLiftingSurface.getTheAerodynamicsCalculator().setDeltaClmaxFlapList(null);
 			theLiftingSurface.getTheAerodynamicsCalculator().setDeltaClmaxFlap(null);
-
+			theLiftingSurface.getTheAerodynamicsCalculator().setDeltaCLmaxFlapList(null);
+			theLiftingSurface.getTheAerodynamicsCalculator().setDeltaCLmaxFlap(null);
+			
 		//---------------------------------------------------------------
 		// deltaCL0 (flap)
 		List<Double> kc = new ArrayList<Double>();
@@ -1143,7 +1210,8 @@ public class LiftCalc {
 					.getKbVsFlapSpanRatio(
 							etaInFlap.get(i),
 							etaOutFlap.get(i),
-							theLiftingSurface.getLiftingSurfaceCreator().getTaperRatioEquivalentWing())	
+							theLiftingSurface.getLiftingSurfaceCreator()
+								.getTaperRatioEquivalentWing())	
 					);
 
 		double cLLinearSlope = theLiftingSurface
@@ -1152,18 +1220,26 @@ public class LiftCalc {
 						.get(MethodEnum.NASA_BLACKWELL)
 							.getEstimatedValue();
 
+		List<Double> deltaCL0FlapList = new ArrayList<>();
 		for(int i=0; i<flapTypeIndex.size(); i++)
-			theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCL0FlapList().add(
+			deltaCL0FlapList.add(
 					kb.get(i).doubleValue()
 					*kc.get(i).doubleValue()
-					*theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCl0FlapList().get(i).doubleValue()
+					*deltaCl0FlapList.get(i)
 					*((cLLinearSlope)/clAlphaMeanFlap[i])
 					);
+		theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCL0FlapList().put(
+				MethodEnum.EMPIRICAL,
+				deltaCL0FlapList
+				);
 
 		double deltaCL0Flap = 0.0;
 		for(int i=0; i<flapTypeIndex.size(); i++)
-			deltaCL0Flap += theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCL0FlapList().get(i).doubleValue();
-		theLiftingSurface.getTheAerodynamicsCalculator().setDeltaCL0Flap(deltaCL0Flap);
+			deltaCL0Flap += deltaCL0FlapList.get(i);
+		theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCL0Flap().put(
+				MethodEnum.EMPIRICAL,
+				deltaCL0Flap
+				);
 		
 		//---------------------------------------------------------------
 		// deltaCLmax (flap)
@@ -1185,54 +1261,26 @@ public class LiftCalc {
 					*(1-(0.08*Math.pow(Math.cos(theLiftingSurface.getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().getEstimatedValue()), 2)))
 					);
 
+		List<Double> deltaCLmaxFlapList = new ArrayList<>();
 		for(int i=0; i<flapTypeIndex.size(); i++)
-			theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCLmaxFlapList().add(
-					theLiftingSurface.getTheAerodynamicsCalculator().getDeltaClmaxFlapList().get(i)
+			deltaCLmaxFlapList.add(
+					deltaClmaxFlapList.get(i)
 					*(flapSurface.get(i)/theLiftingSurface.getSurface().getEstimatedValue())
 					*kLambdaFlap.get(i)
 					);
-
+		theLiftingSurface
+			.getTheAerodynamicsCalculator()
+				.getDeltaCLmaxFlapList()	
+					.put(MethodEnum.EMPIRICAL, deltaCLmaxFlapList);
+		
 		double deltaCLmaxFlap = 0.0;
 		for(int i=0; i<flapTypeIndex.size(); i++)
-			deltaCLmaxFlap += theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCLmaxFlapList().get(i).doubleValue();
-		theLiftingSurface.getTheAerodynamicsCalculator().setDeltaCLmaxFlap(deltaCLmaxFlap);
+			deltaCLmaxFlap += deltaCLmaxFlapList.get(i).doubleValue();
+		theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCLmaxFlap().put(
+				MethodEnum.EMPIRICAL,
+				deltaCLmaxFlap
+				);
 
-		//---------------------------------------------------------------
-		// deltaCLmax (slat)
-		if(!deltaSlat.isEmpty()) {
-
-			List<Double> kLambdaSlat = new ArrayList<Double>();
-			for(int i=0; i<deltaSlat.size(); i++)
-				kLambdaSlat.add(
-						Math.pow(Math.cos(theLiftingSurface.getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().getEstimatedValue()),0.75)
-						*(1-(0.08*Math.pow(Math.cos(theLiftingSurface.getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().getEstimatedValue()), 2)))
-						);
-
-			List<Double> slatSurface = new ArrayList<Double>();
-			for(int i=0; i<deltaSlat.size(); i++)
-				slatSurface.add(
-						Math.abs(theLiftingSurface.getSpan().getEstimatedValue()
-								/2*theLiftingSurface.getLiftingSurfaceCreator().getRootChordEquivalentWing().getEstimatedValue()
-								*(2-(1-theLiftingSurface.getLiftingSurfaceCreator().getTaperRatioEquivalentWing())*(etaInSlat.get(i)+etaOutSlat.get(i)))
-								*(etaOutSlat.get(i)-etaInSlat.get(i))
-								)
-						);
-
-			for(int i=0; i<deltaSlat.size(); i++)
-				theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCLmaxSlatList().add(
-						theLiftingSurface.getTheAerodynamicsCalculator().getDeltaClmaxSlatList().get(i)
-						*(slatSurface.get(i)/theLiftingSurface.getSurface().getEstimatedValue())
-						*kLambdaSlat.get(i));
-
-			double deltaCLmaxSlat = 0.0;
-			for(int i=0; i<deltaSlat.size(); i++)
-				deltaCLmaxSlat += theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCLmaxSlatList().get(i).doubleValue();
-			theLiftingSurface.getTheAerodynamicsCalculator().setDeltaCLmaxSlat(deltaCLmaxSlat);
-		}
-		else
-			theLiftingSurface.getTheAerodynamicsCalculator().setDeltaCLmaxFlapList(null);
-			theLiftingSurface.getTheAerodynamicsCalculator().setDeltaCLmaxFlap(null);
-			
 		//---------------------------------------------------------------
 		// new CLalpha
 
@@ -1241,8 +1289,8 @@ public class LiftCalc {
 		for(int i=0; i<flapTypeIndex.size(); i++) {
 			cLalphaFlapList.add(
 					cLLinearSlope*(Math.PI/180)
-					*(1+((theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCL0FlapList().get(i)/
-							theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCl0FlapList().get(i))
+					*(1+((deltaCL0FlapList.get(i)/
+							deltaCl0FlapList.get(i))
 							*(cFirstCFlap.get(i)*(1-((cfc.get(i))*(1/cFirstCFlap.get(i))
 									*Math.pow(Math.sin(deltaFlap.get(i).doubleValue(SI.RADIAN)), 2)))-1))));
 			swf.add(flapSurface.get(i)/theLiftingSurface.getSurface().getEstimatedValue());
@@ -1321,18 +1369,27 @@ public class LiftCalc {
 					);
 		}
 
+		List<Double> deltaCDList = new ArrayList<>();
 		for(int i=0; i<flapTypeIndex.size(); i++) {
-			theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCDList().add(
+			deltaCDList.add(
 					delta1.get(i)*
 					delta2.get(i)*
 					delta3.get(i)
 					);
 		}
-
+		theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCDList().put(
+				MethodEnum.EMPIRICAL,
+				deltaCDList
+				);
+		
+		
 		double deltaCD = 0.0;
 		for(int i=0; i<flapTypeIndex.size(); i++)
-			deltaCD += theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCDList().get(i).doubleValue();
-		theLiftingSurface.getTheAerodynamicsCalculator().setDeltaCD(deltaCD);
+			deltaCD += deltaCDList.get(i).doubleValue();
+		theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCD().put(
+				MethodEnum.EMPIRICAL,
+				deltaCD
+				);
 
 		//---------------------------------------------------------------
 		// deltaCM_c/4
@@ -1375,14 +1432,16 @@ public class LiftCalc {
 							)
 					);
 
+		
+		List<Double> deltaCMc4List = new ArrayList<>();
 		for(int i=0; i<flapTypeIndex.size(); i++)
-			theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCMc4List().add(
+			deltaCMc4List.add(
 					(mu2.get(i)*(-(mu1.get(i)
-							*theLiftingSurface.getTheAerodynamicsCalculator().getDeltaClmaxFlapList().get(i)
+							*deltaClmaxFlapList.get(i)
 							*cFirstCFlap.get(i))-(cFirstCFlap.get(i)
 									*((cFirstCFlap.get(i))-1)
 									*(currentLiftingCoefficient + 
-											(theLiftingSurface.getTheAerodynamicsCalculator().getDeltaClmaxFlapList().get(i)
+											(deltaClmaxFlapList.get(i)
 											*(1-(flapSurface.get(i)/theLiftingSurface
 													.getSurface()
 													.getEstimatedValue()))))
@@ -1390,16 +1449,23 @@ public class LiftCalc {
 											.getAspectRatio()/(1+(theLiftingSurface
 													.getAspectRatio()/2)))
 											*mu3.get(i)
-											*theLiftingSurface.getTheAerodynamicsCalculator().getDeltaClmaxFlapList().get(i)
+											*deltaClmaxFlapList.get(i)
 											*Math.tan(theLiftingSurface
 													.getLiftingSurfaceCreator()
 													.getSweepQuarterChordEquivalentWing()
 													.getEstimatedValue()))
 					);
+		theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCMc4List().put(
+				MethodEnum.EMPIRICAL,
+				deltaCMc4List
+				);
 
 		double deltaCMC4 = 0.0;
 		for(int i=0; i<flapTypeIndex.size(); i++)
-			deltaCMC4 += theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCMc4List().get(i).doubleValue();
-		theLiftingSurface.getTheAerodynamicsCalculator().setDeltaCMc4(deltaCMC4);
+			deltaCMC4 += deltaCMc4List.get(i).doubleValue();
+		theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCMc4().put(
+				MethodEnum.EMPIRICAL,
+				deltaCMC4
+				);
 	}
 }
