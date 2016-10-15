@@ -2,6 +2,7 @@ package standaloneutils.launchers;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -68,14 +69,43 @@ public class DummyExternalJob extends AbstractExternalJob {
 //				+ "X-airplane.dcm" // OK
 //				));
 
+
+		// Generate the input file
+
+		/*
+
 		// Assign the input file
 		this.setInputFile(new File(binDirPath + File.separator 
 				+ "X-airplane.dcm"
 				));
-
-		// Generate the input file
-		// TODO write the file as appropriate, template for now (B-737)
-		DatcomPlusInputGenerator.writeTemplate(this.getInputFile().getAbsolutePath());
+		
+		// The following writes a file similar to B-737.dcm
+		DatcomPlusInputGenerator.writeTemplate(this.getInputFile().getAbsolutePath()); // Ok
+		
+		*/
+		
+		// Assign the input file
+		this.setInputFile(new File(binDirPath + File.separator 
+				+ "X-airplane-2.dcm"
+				));
+		// Generate data
+		DatcomInputData inputData = new DatcomInputData
+				.Builder()
+				/*
+				 * set a new description wrt default
+				 */
+				.setDescription("(C) Agostino De Marco, agodemar")
+				/*
+				 *  set a new list of Mach numbers  wrt default
+				 */
+				//.mutateFltcon_MACH(machNumbers -> machNumbers.clear())
+				//.addAllFltcon_MACH(Arrays.asList(0.3, 0.5))
+				/*
+				 *  build object, finally
+				 */
+				.build(); // validate for all fields to be set; Optional fields are empty	
+		// Write out the input file
+		DatcomPlusInputGenerator.writeDataToFile(inputData, this.getInputFile().getAbsolutePath());
 
 		System.out.println("Input file full path: " + this.getInputFile());
 		System.out.println("Input file name: " + this.getInputFile().getName());

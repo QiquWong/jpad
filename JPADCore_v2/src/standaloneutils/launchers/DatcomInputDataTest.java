@@ -1,32 +1,38 @@
 package standaloneutils.launchers;
 
+import java.util.Arrays;
+
 public class DatcomInputDataTest {
 
 	public static void main(String[] args) {
-		try {
-			
-			DatcomInputData inputData = new DatcomInputData
-					.Builder()
-					//.setDescription("Pippo Agostino De Marco")
-					.build(); // validate for all fields to be set; Optional fields are empty	
+		DatcomInputData inputData = new DatcomInputData
+				.Builder()
+				/*
+				 * set a new description wrt default
+				 */
+				.setDescription("(C) Agostino De Marco, agodemar")
+				/*
+				 *  set a new list of Mach numbers  wrt default
+				 */
+				.mutateFltcon_MACH(machNumbers -> machNumbers.clear())
+				.addAllFltcon_MACH(Arrays.asList(0.3, 0.5))
+				/*
+				 *  build object, finally
+				 */
+				.build(); // validate for all fields to be set; Optional fields are empty	
 
-			System.out.println("--- Test DatcomInputData ---\n");
-			//System.out.println(inputData);
+		System.out.println("--- Test DatcomInputData ---\n");
+		//System.out.println(inputData);
 
-			System.out.println(report(inputData));
-			
-			
-		} catch (Exception e) {
-			System.out.println("[Unacceptable input data]: " + e.getMessage());
-		}
+		System.out.println(formatAsDatcomPlusInput(inputData));
 
 	}
 
-	public static String report(DatcomInputData inputData) {
+	public static String formatAsDatcomPlusInput(DatcomInputData inputData) {
 
 		StringBuilder sb = new StringBuilder();
-		sb.append("Description: " + inputData.getDescription()).append("\n\n");
-		sb.append("Engine type: ").append(inputData.getEngineType()).append("\n\n");
+		sb.append("* Description: " + inputData.getDescription()).append("\n\n");
+		sb.append("* Engine type: ").append(inputData.getEngineType()).append("\n\n");
 		sb.append("*************************************\n");
 		sb.append("* List of command card\n");
 		sb.append("*************************************\n");
@@ -117,28 +123,51 @@ public class DatcomInputDataTest {
 		sb.append("\n");
 		sb.append("\n");
 		
-		sb.append("*************************************\n");
-		sb.append("* Jet Power Effects parameters \n");
-		sb.append("*************************************\n");
-		sb.append(
-				DatcomPlusInputGenerator.generateBlockJETPWR(
-						inputData.getJetpwr_AIETLJ().get(), 
-						inputData.getJetpwr_AMBSTP().get(), 
-						inputData.getJetpwr_AMBTMP().get(), 
-						inputData.getJetpwr_JEALOC().get(), 
-						inputData.getJetpwr_JELLOC().get(), 
-						inputData.getJetpwr_JERAD().get(), 
-						inputData.getJetpwr_JEVLOC().get(), 
-						inputData.getJetpwr_JIALOC().get(), 
-						inputData.getJetpwr_JINLTA().get(), 
-						inputData.getJetpwr_NENGSJ().get(), 
-						inputData.getJetpwr_THSTCJ().get(), 
-						inputData.getJetpwr_JEANGL().get()
-						)
-				);
-		sb.append("\n");
-		sb.append("\n");
-				
+		if (inputData.getEngineType() == DatcomEngineType.JET) {
+			sb.append("*************************************\n");
+			sb.append("* Jet Power Effects parameters \n");
+			sb.append("*************************************\n");
+			sb.append(
+					DatcomPlusInputGenerator.generateBlockJETPWR(
+							inputData.getJetpwr_AIETLJ().get(), 
+							inputData.getJetpwr_AMBSTP().get(), 
+							inputData.getJetpwr_AMBTMP().get(), 
+							inputData.getJetpwr_JEALOC().get(), 
+							inputData.getJetpwr_JELLOC().get(), 
+							inputData.getJetpwr_JERAD().get(), 
+							inputData.getJetpwr_JEVLOC().get(), 
+							inputData.getJetpwr_JIALOC().get(), 
+							inputData.getJetpwr_JINLTA().get(), 
+							inputData.getJetpwr_NENGSJ().get(), 
+							inputData.getJetpwr_THSTCJ().get(), 
+							inputData.getJetpwr_JEANGL().get()
+							)
+					);
+			sb.append("\n");
+			sb.append("\n");
+		}
+
+		if (inputData.getEngineType() == DatcomEngineType.PROP) {
+			sb.append("*************************************\n");
+			sb.append("* Propeller Power Effects parameters \n");
+			sb.append("*************************************\n");
+			sb.append(
+					DatcomPlusInputGenerator.generateBlockPROPWR(
+							inputData.getPropwr_NENGSP().get().intValue(), 
+							inputData.getPropwr_NOPBPE().get().intValue(), 
+							inputData.getPropwr_AIETLP().get(), 
+							inputData.getPropwr_THSTCP().get(), 
+							inputData.getPropwr_PHALOC().get(), 
+							inputData.getPropwr_PHVLOC().get(), 
+							inputData.getPropwr_PRPRAD().get(), 
+							inputData.getPropwr_ENGFCT().get(), 
+							inputData.getPropwr_YP().get(), 
+							inputData.getPropwr_CROT().get().booleanValue())
+					);
+			sb.append("\n");
+			sb.append("\n");
+		}
+		
 		
 		sb.append("*************************************\n");
 		sb.append("* Vertical Tail planform variables \n");

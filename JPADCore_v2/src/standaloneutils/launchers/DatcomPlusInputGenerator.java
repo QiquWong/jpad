@@ -87,6 +87,59 @@ public class DatcomPlusInputGenerator {
 		public String toString() { return text; }
 	}
 
+	public static void writeDataToFile(DatcomInputData inputData, String filePath) {
+		Path path = Paths.get(filePath);
+
+		System.out.println("Writing " + path + " ...");
+
+		// first delete file if exists
+		boolean pathExists =
+				Files.exists(path, new LinkOption[]{LinkOption.NOFOLLOW_LINKS});
+		if (pathExists) {
+			try {
+				System.out.println("File already exists. Overwriting ...");
+				Files.delete(path);
+			} catch (IOException e) {
+				// Some sort of failure, such as permissions.
+				e.printStackTrace();
+			}
+		}
+
+		try {
+			// Create the empty file with default permissions, etc.
+			Files.createFile(path);
+		} catch (IOException e) {
+			// Some sort of failure, such as permissions.
+			// System.err.format("createFile error: %s%n", e);
+			e.printStackTrace();
+		}
+		
+		// transfer the Datcom+ input data structure into a formatted string
+		String lines[] = 
+				DatcomPlusInputGenerator.formatAsDatcomPlusInput(inputData) // format one single string with newlines
+				.split("\\r?\\n");
+		List<String> content = Arrays.stream(lines).collect(Collectors.toList()); // split in a list of strings
+		
+		// write out the content
+
+		System.out.println("======================================");
+
+		Charset charset = Charset.forName("utf-8");
+		try (BufferedWriter writer = Files.newBufferedWriter(path, charset)) {
+			for (String line : content) {
+				System.out.println(line);
+				writer.write(line, 0, line.length());
+				writer.newLine();
+			}
+			System.out.println("======================================");
+			System.out.println("... done.");			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		
+	}
+	
 	public static void writeTemplate(String filePath) {
 		Path path = Paths.get(filePath);
 
@@ -976,7 +1029,224 @@ Example:
 		sb.append("$");
 		return sb.toString();		
 	}
+
+	public static String formatAsDatcomPlusInput(DatcomInputData inputData) {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("* Description: " + inputData.getDescription()).append("\n\n");
+		sb.append("* Engine type: ").append(inputData.getEngineType()).append("\n\n");
+		sb.append("*************************************\n");
+		sb.append("* List of command card\n");
+		sb.append("*************************************\n");
+		if(inputData.getCommand_TRIM())
+			sb.append("TRIM\n");
+		if(inputData.getCommand_DAMP())
+			sb.append("DAMP\n");
+		if(inputData.getCommand_PART())
+			sb.append("PART\n");
+		sb.append("DERIV ").append(inputData.getCommand_DERIV()).append("\n");
+		sb.append("\n");
+
+		sb.append("*************************************\n");
+		sb.append("* Flight Conditions\n");
+		sb.append("*************************************\n");
+		sb.append(
+				DatcomPlusInputGenerator.generateBlockFLTCON(
+						inputData.getFltcon_MACH(), 
+						inputData.getFltcon_ALT(), 
+						inputData.getFltcon_ALSCHD(), 
+						inputData.getFltcon_GAMMA(), 
+						inputData.getFltcon_LOOP(), 
+						inputData.getFltcon_RNNUB()
+						)
+				);
+		sb.append("\n");
+		sb.append("\n");
+
+		sb.append("*************************************\n");
+		sb.append("* Reference Parameters\n");
+		sb.append("*************************************\n");
+		sb.append(
+				DatcomPlusInputGenerator.generateBlockOPTINS(
+						inputData.getOptins_BLREF(), 
+						inputData.getOptins_SREF(), 
+						inputData.getOptins_CBARR()
+						)
+				);
+		sb.append("\n");
+		sb.append("\n");
 		
+		sb.append("*************************************\n");
+		sb.append("* Group II Synthesis Parameters\n");
+		sb.append("*************************************\n");
+		sb.append(
+				DatcomPlusInputGenerator.generateBlockSYNTHS(
+						inputData.getSynths_XW(), inputData.getSynths_ZW(), 
+						inputData.getSynths_ALIW(), 
+						inputData.getSynths_XCG(), inputData.getSynths_ZCG(), 
+						inputData.getSynths_XH(), inputData.getSynths_ZH(), 
+						inputData.getSynths_XV(), inputData.getSynths_ZV(), 
+						inputData.getSynths_XVF(), inputData.getSynths_ZVF(), 
+						inputData.getSynths_VERTUP())
+				);
+		sb.append("\n");
+		sb.append("\n");
+		
+		sb.append("*************************************\n");
+		sb.append("* Body Configuration Parameters\n");
+		sb.append("*************************************\n");
+		sb.append(
+				DatcomPlusInputGenerator.generateBlockBODY(
+						inputData.getBody_BNOSE(), inputData.getBody_BTAIL(), inputData.getBody_BLA(), 
+						inputData.getBody_X(), inputData.getBody_ZU(), inputData.getBody_ZL(), 
+						inputData.getBody_S())
+				);
+		sb.append("\n");
+		sb.append("\n");
+		
+		sb.append("*************************************\n");
+		sb.append("* Wing planform variables \n");
+		sb.append("*************************************\n");
+		sb.append(
+				DatcomPlusInputGenerator.generateBlockGenericPLNF(
+						"WGPLNF", 
+						inputData.getWgplnf_CHRDR(), inputData.getWgplnf_CHRDTP(), 
+						inputData.getWgplnf_CHRDBP().isPresent() ? inputData.getWgplnf_CHRDBP().get() : null, 
+						inputData.getWgplnf_SSPN(), 
+						inputData.getWgplnf_SSPNOP().isPresent() ? inputData.getWgplnf_SSPNOP().get() : null, 
+						inputData.getWgplnf_SSPNE(), 
+						inputData.getWgplnf_CHSTAT(), inputData.getWgplnf_TWISTA(), 
+						inputData.getWgplnf_SAVSI(), 
+						inputData.getWgplnf_SAVSO().isPresent() ? inputData.getWgplnf_SAVSO().get() : null,  
+						inputData.getWgplnf_DHDADI(), 
+						inputData.getWgplnf_DHDADO().isPresent() ? inputData.getWgplnf_DHDADO().get() : null, 
+						inputData.getWgplnf_TYPE())
+				);
+		sb.append("\n");
+		sb.append("\n");
+		
+		if (inputData.getEngineType() == DatcomEngineType.JET) {
+			sb.append("*************************************\n");
+			sb.append("* Jet Power Effects parameters \n");
+			sb.append("*************************************\n");
+			sb.append(
+					DatcomPlusInputGenerator.generateBlockJETPWR(
+							inputData.getJetpwr_AIETLJ().get(), 
+							inputData.getJetpwr_AMBSTP().get(), 
+							inputData.getJetpwr_AMBTMP().get(), 
+							inputData.getJetpwr_JEALOC().get(), 
+							inputData.getJetpwr_JELLOC().get(), 
+							inputData.getJetpwr_JERAD().get(), 
+							inputData.getJetpwr_JEVLOC().get(), 
+							inputData.getJetpwr_JIALOC().get(), 
+							inputData.getJetpwr_JINLTA().get(), 
+							inputData.getJetpwr_NENGSJ().get(), 
+							inputData.getJetpwr_THSTCJ().get(), 
+							inputData.getJetpwr_JEANGL().get()
+							)
+					);
+			sb.append("\n");
+			sb.append("\n");
+		}
+
+		if (inputData.getEngineType() == DatcomEngineType.PROP) {
+			sb.append("*************************************\n");
+			sb.append("* Propeller Power Effects parameters \n");
+			sb.append("*************************************\n");
+			sb.append(
+					DatcomPlusInputGenerator.generateBlockPROPWR(
+							inputData.getPropwr_NENGSP().get().intValue(), 
+							inputData.getPropwr_NOPBPE().get().intValue(), 
+							inputData.getPropwr_AIETLP().get(), 
+							inputData.getPropwr_THSTCP().get(), 
+							inputData.getPropwr_PHALOC().get(), 
+							inputData.getPropwr_PHVLOC().get(), 
+							inputData.getPropwr_PRPRAD().get(), 
+							inputData.getPropwr_ENGFCT().get(), 
+							inputData.getPropwr_YP().get(), 
+							inputData.getPropwr_CROT().get().booleanValue())
+					);
+			sb.append("\n");
+			sb.append("\n");
+		}
+		
+		
+		sb.append("*************************************\n");
+		sb.append("* Vertical Tail planform variables \n");
+		sb.append("*************************************\n");
+		sb.append(
+				DatcomPlusInputGenerator.generateBlockGenericPLNF(
+						"VTPLNF", 
+						inputData.getVtplnf_CHRDR(), inputData.getVtplnf_CHRDTP(), 
+						inputData.getVtplnf_CHRDBP().isPresent() ? inputData.getVtplnf_CHRDBP().get() : null, 
+						inputData.getVtplnf_SSPN(), 
+						inputData.getVtplnf_SSPNOP().isPresent() ? inputData.getVtplnf_SSPNOP().get() : null, 
+						inputData.getVtplnf_SSPNE(), 
+						inputData.getVtplnf_CHSTAT(), inputData.getVtplnf_TWISTA(), 
+						inputData.getVtplnf_SAVSI(), 
+						inputData.getVtplnf_SAVSO().isPresent() ? inputData.getVtplnf_SAVSO().get() : null,  
+						inputData.getVtplnf_DHDADI(), 
+						inputData.getVtplnf_DHDADO().isPresent() ? inputData.getVtplnf_DHDADO().get() : null, 
+						inputData.getVtplnf_TYPE())
+				);
+		sb.append("\n");
+		sb.append("\n");
+		
+		sb.append("*************************************\n");
+		sb.append("* Horizontal Tail planform variables \n");
+		sb.append("*************************************\n");
+		sb.append(
+				DatcomPlusInputGenerator.generateBlockGenericPLNF(
+						"HTPLNF", 
+						inputData.getHtplnf_CHRDR(), inputData.getHtplnf_CHRDTP(), 
+						inputData.getHtplnf_CHRDBP().isPresent() ? inputData.getHtplnf_CHRDBP().get() : null, 
+						inputData.getHtplnf_SSPN(), 
+						inputData.getHtplnf_SSPNOP().isPresent() ? inputData.getHtplnf_SSPNOP().get() : null, 
+						inputData.getHtplnf_SSPNE(), 
+						inputData.getHtplnf_CHSTAT(), inputData.getHtplnf_TWISTA(), 
+						inputData.getHtplnf_SAVSI(), 
+						inputData.getHtplnf_SAVSO().isPresent() ? inputData.getHtplnf_SAVSO().get() : null,  
+						inputData.getHtplnf_DHDADI(), 
+						inputData.getHtplnf_DHDADO().isPresent() ? inputData.getHtplnf_DHDADO().get() : null, 
+						inputData.getHtplnf_TYPE())
+				);
+		sb.append("\n");
+		sb.append("\n");
+
+		sb.append("*************************************\n");
+		sb.append("* Symetrical Flap Deflection parameters \n");
+		sb.append("*************************************\n");
+		sb.append(
+				DatcomPlusInputGenerator.generateBlockSYMFLP(
+						inputData.getSymflp_FTYPE().get(), 
+						inputData.getSymflp_DELTA().get(), 
+						inputData.getSymflp_SPANFI().get(), 
+						inputData.getSymflp_SPANFO().get(), 
+						inputData.getSymflp_CHRDFI().get(), 
+						inputData.getSymflp_CHRDFO().get(), 
+						inputData.getSymflp_NTYPE().get(), 
+						inputData.getSymflp_CB().get(), 
+						inputData.getSymflp_TC().get(), 
+						inputData.getSymflp_PHETE().get(), 
+						inputData.getSymflp_PHETEP().get())
+				);
+		sb.append("\n");
+		sb.append("\n");
+		
+		// TODO: handle this via the DatcomInputData
+		sb.append("*************************************\n");
+		sb.append("* Wing Sectional Characteristics Parameters\n");
+		sb.append("*************************************\n");
+		sb.append("NACA-W-4-0012-25\n");
+		sb.append("NACA-H-4-0012-25\n");
+		sb.append("NACA-V-4-0012-25\n");
+		sb.append("\n");
+
+		sb.append("CASEID Total: X-airplane");
+		
+		return sb.toString();
+	}
+	
 	public static void main(String[] args) {
 
 		// Set the DATCOMROOT environment variable
