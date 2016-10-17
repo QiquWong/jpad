@@ -1374,7 +1374,7 @@ public class LSAerodynamicsCalculator {
 					);
 		}
 		
-		public void fromAlphaMaxLineaNasaBlackwell() {
+		public void fromAlphaMaxLinearNasaBlackwell() {
 			
 			if(_alphaMaxLinear.get(MethodEnum.NASA_BLACKWELL) == null) {
 				CalcCLmax theCLMaxCalculator = new CalcCLmax();
@@ -1498,7 +1498,7 @@ public class LSAerodynamicsCalculator {
 			
 			if(_alphaStall.get(MethodEnum.NASA_BLACKWELL) == null) {
 				CalcAlphaStall calcAlphaStall = new CalcAlphaStall();
-				calcAlphaStall.fromAlphaMaxLineaNasaBlackwell();
+				calcAlphaStall.fromAlphaMaxLinearNasaBlackwell();
 			}
 			
 			if(_cLMax.get(MethodEnum.NASA_BLACKWELL) == null) {
@@ -1910,6 +1910,36 @@ public class LSAerodynamicsCalculator {
 		
 		public void semiempirical() {
 			
+			if(_alphaZeroLift.get(MethodEnum.INTEGRAL_MEAN_TWIST) == null) {
+				CalcAlpha0L calcAlphaZeroLift = new CalcAlpha0L();
+				calcAlphaZeroLift.integralMeanWithTwist();
+			}
+			
+			if(_cLZero.get(MethodEnum.NASA_BLACKWELL) == null) {
+				CalcCL0 calcCLZero = new CalcCL0();
+				calcCLZero.nasaBlackwell();
+			}
+			
+			if(_alphaStar.get(MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS) == null) {
+				CalcAlphaStar calcAlphaStar = new CalcAlphaStar();
+				calcAlphaStar.meanAirfoilWithInfluenceAreas();
+			}
+			
+			if(_cLStar.get(MethodEnum.NASA_BLACKWELL) == null) {
+				CalcCLStar calcCLStar = new CalcCLStar();
+				calcCLStar.nasaBlackwell();
+			}
+			
+			if(_alphaStall.get(MethodEnum.NASA_BLACKWELL) == null) {
+				CalcAlphaStall calcAlphaStall = new CalcAlphaStall();
+				calcAlphaStall.fromAlphaMaxLinearNasaBlackwell();
+			}
+			
+			if(_cLMax.get(MethodEnum.NASA_BLACKWELL) == null) {
+				CalcCLmax calcCLmax = new CalcCLmax();
+				calcCLmax.nasaBlackwell();
+			}
+			
 			if(_currentLiftCoefficient == null) {
 				CalcCLAtAlpha calcCLAtAlphaCalculator = new CalcCLAtAlpha();
 				calcCLAtAlphaCalculator.nasaBlackwellCompleteCurve(
@@ -1925,6 +1955,35 @@ public class LSAerodynamicsCalculator {
 					_currentLiftCoefficient
 					);	
 			
+			_cLZeroHighLift.put(
+					MethodEnum.EMPIRICAL,
+					_cLZero.get(MethodEnum.NASA_BLACKWELL)
+						+ _deltaCL0Flap.get(MethodEnum.EMPIRICAL)
+					);
+			
+			_alphaZeroLiftHighLift.put(
+					MethodEnum.EMPIRICAL,
+					Amount.valueOf(
+							-(_cLZero.get(MethodEnum.NASA_BLACKWELL)
+									/_cLAlphaHighLift.get(MethodEnum.EMPIRICAL)
+									.to(NonSI.DEGREE_ANGLE)
+									.inverse()
+									.getEstimatedValue()
+									),
+							NonSI.DEGREE_ANGLE)
+					);
+			
+			// TODO ADD CL STAR AND ALPHA STAR HIGH LIFT
+			
+			
+			if(_deltaCLmaxSlat.get(MethodEnum.EMPIRICAL) == null)
+				_deltaCLmaxSlat.put(MethodEnum.EMPIRICAL, 0.0);
+			_cLMaxHighLift.put(
+					MethodEnum.EMPIRICAL,
+					_cLMax.get(MethodEnum.NASA_BLACKWELL)
+					+ _deltaCLmaxFlap.get(MethodEnum.EMPIRICAL)
+					+ _deltaCLmaxSlat.get(MethodEnum.EMPIRICAL)
+					);
 		}
 		
 	}	
@@ -1938,41 +1997,6 @@ public class LSAerodynamicsCalculator {
 	public class CalcHighLiftCurve {
 		
 		public void semiempirical() {
-			
-			if(_alphaZeroLift.get(MethodEnum.INTEGRAL_MEAN_TWIST) == null) {
-				CalcAlpha0L calcAlphaZeroLift = new CalcAlpha0L();
-				calcAlphaZeroLift.integralMeanWithTwist();
-			}
-			
-			if(_cLZero.get(MethodEnum.NASA_BLACKWELL) == null) {
-				CalcCL0 calcCLZero = new CalcCL0();
-				calcCLZero.nasaBlackwell();
-			}
-			
-			if(_cLAlpha.get(MethodEnum.NASA_BLACKWELL) == null) {
-				CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
-				calcCLAlpha.nasaBlackwell();
-			}
-			
-			if(_alphaStar.get(MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS) == null) {
-				CalcAlphaStar calcAlphaStar = new CalcAlphaStar();
-				calcAlphaStar.meanAirfoilWithInfluenceAreas();
-			}
-			
-			if(_cLStar.get(MethodEnum.NASA_BLACKWELL) == null) {
-				CalcCLStar calcCLStar = new CalcCLStar();
-				calcCLStar.nasaBlackwell();
-			}
-			
-			if(_alphaStall.get(MethodEnum.NASA_BLACKWELL) == null) {
-				CalcAlphaStall calcAlphaStall = new CalcAlphaStall();
-				calcAlphaStall.fromAlphaMaxLineaNasaBlackwell();
-			}
-			
-			if(_cLMax.get(MethodEnum.NASA_BLACKWELL) == null) {
-				CalcCLmax calcCLmax = new CalcCLmax();
-				calcCLmax.nasaBlackwell();
-			}
 			
 			if((_deltaCL0Flap.get(MethodEnum.EMPIRICAL) == null) ||
 			   (_deltaCLmaxFlap.get(MethodEnum.EMPIRICAL) == null) ||
