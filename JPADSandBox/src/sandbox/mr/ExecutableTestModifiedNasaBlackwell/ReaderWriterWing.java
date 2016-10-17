@@ -508,6 +508,8 @@ public class ReaderWriterWing {
 				input.getyStationsAdimensional()));
 
 
+		System.out.println(" y adimensional input " + input.getyAdimensionalStationInput().toString());
+		System.out.println(" y  input " + Arrays.toString(input.getyStationsAdimensional()));
 		System.out.println(" twist distribution radians " + Arrays.toString(input.getTwistDistributionRadian()));
 		System.out.println(" alpha zero lift distribution radians " + Arrays.toString(input.getAlphaZeroLiftDistributionRadian()));
 		System.out.println(" chord distribution " + Arrays.toString(input.getChordCompleteDistribution()));
@@ -610,7 +612,7 @@ public class ReaderWriterWing {
 		System.out.print("Cl max distribution : ");
 		System.out.print(input.getMaximumliftCoefficientDistribution());
 
-		System.out.print("Cl alpha distribution : ");
+		System.out.print("\nCl alpha distribution : ");
 		System.out.print(input.getClAlphaDistribution());
 
 

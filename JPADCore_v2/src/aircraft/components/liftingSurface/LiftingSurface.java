@@ -1452,7 +1452,7 @@ public class LiftingSurface implements ILiftingSurface {
 		*theWing.getAirfoilList().get(i).getAirfoilCreator().getMExponentDragPolar();	
 	
 	//----------------------------------------------------------------------------------------------
-	// m exponent drag polar:
+	// Cm quarter chord:
 	double cmAlphaQuarteChordMeanAirfoil = 0;
 
 	for(int i=0; i<influenceCoefficients.size(); i++)

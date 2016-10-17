@@ -110,6 +110,20 @@ public class Calculator {
 		List<Double> cL3D = new ArrayList<Double>();
 
 		// Object definition
+		
+		System.out.println("\n\n NASA BLACKWELL");
+		System.out.println("semi span " + input.getSemiSpan().getEstimatedValue());
+		System.out.println("surface " + input.getSurface());
+		System.out.println("y station " + Arrays.toString(input.getyStationsAdimensional()));
+		System.out.println("chord " + Arrays.toString(input.getChordCompleteDistribution()));
+		System.out.println("xle distribution " + Arrays.toString(input.getxLECompleteDistribution()));
+		System.out.println("dihedral " + input.getDihedralDistribution().toString());
+		System.out.println("twist " + Arrays.toString(input.getTwistDistributionRadian()));
+		System.out.println("alpha zero lift " + Arrays.toString(input.getAlphaZeroLiftDistributionRadian()));
+		System.out.println("vortex " + vortexSemiSpanToSemiSpanRatio);
+		System.out.println("Mach " + input.getMachNumber());
+		System.out.println("Altitude " + input.getAltitude().doubleValue(SI.METER));
+		
 		NasaBlackwell theNasaBlackwellCalculator = new NasaBlackwell(
 				input.getSemiSpan().doubleValue(SI.METER),
 				input.getSurface().doubleValue(SI.SQUARE_METRE),

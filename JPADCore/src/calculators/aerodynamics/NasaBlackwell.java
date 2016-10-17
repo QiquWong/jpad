@@ -113,17 +113,14 @@ public class NasaBlackwell {
 		this.chordsVsYActual = chordsVsYActual;
 		this.xLEvsYActual = xLEvsYActual;
 		this.alpha0l = alpha0l;
+		this.twist = twist;
 
 		this.meanGeometricChord = surface/(2*semispan);
 		this.vortexSemiSpanToSemiSpanRatio = vortexSemiSpanToSemiSpanRatio;
 		this.nPointsSemispanWise = (int) (1./(2*vortexSemiSpanToSemiSpanRatio));
 
-		// TODO change the following ifs
-		if (twist.length != nPointsSemispanWise) this.twist = new double[nPointsSemispanWise];
-		else this.twist = twist;
 
-		if (dihedral.length != nPointsSemispanWise) this.dihedral = new double[nPointsSemispanWise];
-		else this.dihedral = dihedral;
+		this.dihedral = new double[nPointsSemispanWise];
 
 		vortexSemiSpan = vortexSemiSpanToSemiSpanRatio * semispan;
 		yStations = MyArrayUtils.linspace(0., semispan, nPointsSemispanWise);
@@ -781,6 +778,7 @@ private double fu(double xs, double y, double z, double s, double phi) {
 		}
 
 		_gammaDistribution = _gammaDistribution.interpolate(yy.toArray(), yStations).clone();
+		System.out.println(" gamma distribution   " + _gammaDistribution.toString());
 		_ccLDistribution = _ccLDistribution.interpolate(yy.toArray(), yStations).clone();
 		_clAdditionalDistribution = _clAdditionalDistribution.interpolate(yy.toArray(), yStations).clone();
 
