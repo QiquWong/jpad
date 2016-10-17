@@ -50,10 +50,12 @@ public class NasaBlackwellTest {
 				).build();
 		
 		Map <String, List<MethodEnum>> taskMap = new HashMap<>();
+		Map <String, List<MethodEnum>> plotMap = new HashMap<>();
 		LSAerodynamicsCalculator theLSAerodynamicsCalculator = new LSAerodynamicsCalculator(
 				theAircraft.getWing(),
 				theOperatingConditions,
-				taskMap
+				taskMap,
+				plotMap
 				);
 		
 		CalcCLmax calcCLmax = theLSAerodynamicsCalculator.new CalcCLmax();

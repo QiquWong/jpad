@@ -253,10 +253,12 @@ public class HighLiftDevicesEffectsTest extends Application {
 
 			// Defining the LSAerodynamicsCalculator object
 			Map <String, List<MethodEnum>> taskMap = new HashMap<>();
+			Map <String, List<MethodEnum>> plotMap = new HashMap<>();
 			LSAerodynamicsCalculator theAerodynamicCalculator = new LSAerodynamicsCalculator(
 					theAircraft.getWing(),
 					theOperatingConditions,
-					taskMap
+					taskMap,
+					plotMap
 					);
 			
 			// Evaluating high lift devices effects

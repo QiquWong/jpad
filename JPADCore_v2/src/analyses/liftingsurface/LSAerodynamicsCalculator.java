@@ -46,6 +46,7 @@ public class LSAerodynamicsCalculator {
 	private Airfoil _meanAirfoil;
 	private OperatingConditions _theOperatingConditions;
 	private Map <String, List<MethodEnum>> _taskMap;
+	private Map <String, List<MethodEnum>> _plotMap;
 	private int _numberOfPointSemiSpanWise;
 	private int _numberOfAlphas;
 	private int _numberOfAlphasPlot;
@@ -71,6 +72,7 @@ public class LSAerodynamicsCalculator {
 	
 	// LIFT 
 	private Map <MethodEnum, Double> _cLAtAplhaActual;
+	private Map <MethodEnum, Double> _cLAtAlphaActualHighLift;
 	private Map <MethodEnum, Amount<Angle>> _alphaZeroLift;
 	private Map <MethodEnum, Amount<Angle>> _alphaStar;
 	private Map <MethodEnum, Amount<Angle>> _alphaMaxLinear;
@@ -80,6 +82,7 @@ public class LSAerodynamicsCalculator {
 	private Map <MethodEnum, Double> _cLMax;
 	private Map <MethodEnum, Amount<?>> _cLAlpha;
 	private Map <MethodEnum, Double[]> _liftCoefficient3DCurve;
+	private Map <MethodEnum, Double[]> _liftCoefficient3DCurveHighLift;
 	private Map <MethodEnum, double[]> _liftCoefficientDistributionAtCLMax;
 	private Map <MethodEnum, List<List<Double>>> _liftCoefficientDistribution;
 	private Map <MethodEnum, List<List<Amount<Force>>>> _liftDistribution;
@@ -102,13 +105,6 @@ public class LSAerodynamicsCalculator {
 	private Map <MethodEnum, Double> _cLStarHighLift;
 	private Map <MethodEnum, Double> _cLMaxHighLift;
 	private Map <MethodEnum, Amount<?>> _cLAlphaHighLift;
-	
-	//////////////////////////////////////////////
-	//											//
-	//		TODO: ALL DELTA HAVE TO BE MAPS	    //
-	//											//
-	//////////////////////////////////////////////
-	
 	private Map <MethodEnum, List<Double>> _deltaCl0FlapList;
 	private Map <MethodEnum, Double> _deltaCl0Flap;
 	private Map <MethodEnum, List<Double>> _deltaCL0FlapList;
@@ -138,12 +134,14 @@ public class LSAerodynamicsCalculator {
 	public LSAerodynamicsCalculator (
 			LiftingSurface theLiftingSurface,
 			OperatingConditions theOperatingConditions,
-			Map <String, List<MethodEnum>> taskMap
+			Map <String, List<MethodEnum>> taskMap,
+			Map <String, List<MethodEnum>> plotMap
 			) {
 		
 		this._theLiftingSurface = theLiftingSurface;
 		this._theOperatingConditions = theOperatingConditions;
 		this._taskMap = taskMap;
+		this._plotMap = plotMap;
 		
 		initializeData();
 		initializeVariables();
@@ -170,8 +168,15 @@ public class LSAerodynamicsCalculator {
 					NonSI.DEGREE_ANGLE)
 					);
 		
+		if(_currentLiftCoefficient == null) {
+			CalcCLAtAlpha calcCLAtAlphaCalculator = new CalcCLAtAlpha();
+			calcCLAtAlphaCalculator.nasaBlackwellCompleteCurve(
+					_theOperatingConditions.getAlphaCurrent()
+					);
+		}
+		
 		//----------------------------------------------------------------------------------------------------------------------
-		// Calculating the mena airfoil
+		// Calculating the mean airfoil
 		//......................................................................................................................
 		this._meanAirfoil = new Airfoil(
 				LiftingSurface.calculateMeanAirfoil(_theLiftingSurface),
@@ -404,12 +409,12 @@ public class LSAerodynamicsCalculator {
 	//............................................................................
 	public class CalcCLAtAlpha {
 
-		public double linearDLR(double alpha) {
+		public double linearDLR(Amount<Angle> alpha) {
 			// page 3 DLR pdf
 			_cLAtAplhaActual.put(
 					MethodEnum.LINEAR_DLR,
 					LiftCalc.calcCLatAlphaLinearDLR(
-							alpha,
+							alpha.doubleValue(SI.RADIAN),
 							_theLiftingSurface.getAspectRatio()
 							)
 					);
@@ -533,235 +538,20 @@ public class LSAerodynamicsCalculator {
 		}
 
 		public void allMethods(Amount<Angle> alpha) {
-			// TODO : ADD CHECK ON ALPHA IN ORDER TO EVALUATE IF ALPHA > ALPHA STAR
-			linearAndersonCompressibleSubsonic(alpha);
-			nasaBlackwellLinear(alpha);
+			if(_alphaStar.get(MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS) == null) {
+				CalcAlphaStar theAlphaStarCalculator = new CalcAlphaStar();
+				theAlphaStarCalculator.meanAirfoilWithInfluenceAreas();
+			}
+			
+			if(alpha.doubleValue(NonSI.DEGREE_ANGLE) 
+					<= _alphaStar.get(MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS).doubleValue(NonSI.DEGREE_ANGLE)) {
+				linearDLR(alpha);
+				linearAndersonCompressibleSubsonic(alpha);
+				nasaBlackwellLinear(alpha);
+			}
+			else
+				nasaBlackwellCompleteCurve(alpha);
 		}
-
-		//////////////////////////////////////////////
-		// TODO : IMPLEMENT THESE METHODS LATER !!! //
-		//////////////////////////////////////////////
-		//						|
-		//						|
-		//						V
-//		/**
-//		 * This method evaluates CL for an alpha array having the elevator deflection as input. 
-//		 * 
-//		 * @param angle of deflection of the elevator in deg or radians
-//		 * @param chord ratio -> cf_c
-//		 *
-//		 * @return Cl array for fixed deflection
-//		 * @author  Manuela Ruocco
-//		 */
-//
-//		// The calculation of the lift coefficient with a deflection of the elevator is made by the
-//		// method calculateCLWithElevatorDeflection. This method fills the array of 20 value of CL in
-//		// its linear trait. 
-//		// The procedure used to calculate the CL is the following. It's important to know that 
-//		// it's necessary to call the method nasaBlackwellCompleteCurve in order to obtain the
-//		// cl linear slope of the horizontal tail with no elevator deflection.
-//		//
-//		// 1 . First of all the tau factor it's calculated used the method calculateTauIndex in the .. class
-//		// 2. It's necessary to get the linear slope of the horizontal tail with no elevator defletion.
-//		// 3. The alphazero lift of the deflected configuration is calculated with this formula
-//		//   alphaw= tau per delta e
-//		// 4. At this point it's possible to create an alpha array, starting from the alpha zero lift, until
-//		//   15 degrees after.
-//		// 5. the value of cl for each alpha is calculated with the formula :
-//		//  cl alfa * (alfa + t delta e)
-//
-//		public double[] calculateCLWithElevatorDeflection (
-//				List<Double[]> deltaFlap,
-//				List<FlapTypeEnum> flapType,
-//				List<Double> deltaSlat,
-//				List<Double> etaInFlap,
-//				List<Double> etaOutFlap,
-//				List<Double> etaInSlat,
-//				List<Double> etaOutSlat, 
-//				List<Double> cfc,
-//				List<Double> csc,
-//				List<Double> leRadiusSlatRatio,
-//				List<Double> cExtcSlat
-//				) {
-//
-//			// variable declaration
-//			Amount<Angle> deflection = Amount.valueOf(deltaFlap.get(0)[0], NonSI.DEGREE_ANGLE);
-//			
-//			if (deflection.getUnit() == SI.RADIAN){
-//				deflection = deflection.to(NonSI.DEGREE_ANGLE);
-//			}
-//			double deflectionAngleDeg = deflection.getEstimatedValue();
-//
-//			int nPoints = 20;
-//			double tauValue, cLLinearSlopeNoDeflection;
-//			alphaTailArray = new double [nPoints];
-//			double[] cLArray = new double [nPoints];
-//			Amount<Angle> alphaActual;
-//			double alphaStallElevator;
-//			double deltaCLMaxElevator;
-//			
-//			//linear trait
-//			StabilityCalculators theStablityCalculator = new StabilityCalculators();
-//			tauValue = theStablityCalculator.calculateTauIndex(cfc.get(0), theAircraft, deflection);
-//			cLLinearSlopeNoDeflection = getcLLinearSlopeNB()/57.3; //in deg 
-//			alphaZeroLiftDeflection = - tauValue*deflectionAngleDeg;
-//			alphaTailArray[0] = alphaZeroLiftDeflection;
-//			double qValue = - cLLinearSlopeNoDeflection *  alphaZeroLiftDeflection;
-//			double alphaTemp = 1;
-//			
-//			cLArray[0] = 0;
-//			cLArray[1] = cLLinearSlopeNoDeflection * alphaTemp + qValue;
-//
-//			double clAlpha = (cLArray[1] - cLArray[0])/Math.abs(alphaTemp-alphaTailArray[0]);
-//			
-//			// non linear trait
-//			CalcHighLiftDevices theHighLiftCalculatorLiftEffects = new CalcHighLiftDevices(
-//					_theLiftingSurface, 
-//					_theOperatingConditions,
-//					deltaFlap, 
-//					flapType, 
-//					deltaSlat, 
-//					etaInFlap,
-//					etaOutFlap,
-//					etaInSlat,
-//					etaOutSlat, 
-//					cfc, 
-//					csc, 
-//					leRadiusSlatRatio, 
-//					cExtcSlat);
-//			
-//			theHighLiftCalculatorLiftEffects.calculateHighLiftDevicesEffects();
-//			
-//			deltaCLMaxElevator = theHighLiftCalculatorLiftEffects.getDeltaCLmax_flap()*tauValue;
-//			double deltaAlphaMaxElevator =-(tauValue * deflection.getEstimatedValue())/2;
-//			double deltaAlphaMaxElevatordelta = theHighLiftCalculatorLiftEffects.getDeltaAlphaMaxFlap();
-//			CalcCLAtAlpha theCLCleanCalculator = new CalcCLAtAlpha();
-//			
-//			Airfoil meanAirfoil = new Airfoil(
-//					LiftingSurface.calculateMeanAirfoil(getTheLiftingSurface()),
-//					getTheLiftingSurface().getAerodynamicDatabaseReader()
-//					); 
-//					
-//			calcAlphaAndCLMax(meanAirfoil);
-//			Amount<Angle> alphaMax = getAlphaMaxClean().to(NonSI.DEGREE_ANGLE);
-//			double alphaStarClean = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
-//			Amount<Angle> alphaStarCleanAmount = Amount.valueOf(alphaStarClean, SI.RADIAN);
-//			double cLMax = get_cLMaxClean();
-//			double cLStarClean = theCLCleanCalculator.nasaBlackwellCompleteCurve(alphaStarCleanAmount);
-//			double cL0Elevator = cLArray[0];
-//			double alphaStar = (cLStarClean - qValue)/clAlpha;
-//			alphaStarClean = alphaStarClean*57.3;		
-//			double cLMaxElevator = cLMax + deltaCLMaxElevator;
-//			
-//				alphaStallElevator = alphaMax.getEstimatedValue() + deltaAlphaMaxElevator;
-//			
-//			double alphaStarElevator; 
-//
-//				alphaStarElevator = (alphaStar + alphaStarClean)/2;
-//			
-//			cLArray[1] = cLLinearSlopeNoDeflection * (alphaStarElevator + tauValue * deflectionAngleDeg);
-//			
-//			double[][] matrixData = { {Math.pow(alphaStallElevator, 3), Math.pow(alphaStallElevator, 2),
-//				alphaStallElevator,1.0},
-//					{3* Math.pow(alphaStallElevator, 2), 2*alphaStallElevator, 1.0, 0.0},
-//					{3* Math.pow(alphaStarElevator, 2), 2*alphaStarElevator, 1.0, 0.0},
-//					{Math.pow(alphaStarElevator, 3), Math.pow(alphaStarElevator, 2),alphaStarElevator,1.0}};
-//			RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
-//
-//			double [] vector = {cLMaxElevator, 0,clAlpha, cLArray[1]};
-//
-//			double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
-//
-//			double a = solSystem[0];
-//			double b = solSystem[1];
-//			double c = solSystem[2];
-//			double d = solSystem[3];
-//
-//			alphaTailArray = MyArrayUtils.linspace(alphaStarElevator,
-//					alphaStallElevator+ 4,
-//					nPoints-1);
-//
-//			double[] cLArrayHighLiftPlot = new double [nPoints];
-//
-//			for ( int i=0 ; i< alphaTailArray.length ; i++){
-//				alphaActual = Amount.valueOf((alphaTailArray[i]), NonSI.DEGREE_ANGLE);
-//				if (alphaActual.getEstimatedValue() <= alphaStarElevator) { 
-//					cLArray[i+1] = clAlpha * alphaActual.getEstimatedValue() + qValue;}
-//				else {
-//					cLArray[i+1] = a * Math.pow(alphaActual.getEstimatedValue(), 3) + 
-//							b * Math.pow(alphaActual.getEstimatedValue(), 2) + 
-//							c * alphaActual.getEstimatedValue() + d;
-//				}
-//
-//			}
-//					
-//			alphaArrayHTailPlot[0] = alphaZeroLiftDeflection;
-//			for(int i=1; i<nPoints ; i++){
-//				alphaArrayHTailPlot[i]= alphaTailArray[i-1];
-//			}
-//			
-//			return cLArray;
-//		}
-//
-//		/**
-//		 * This method calculates CL of an horizontal tail at alpha given as input. This method calculates linear trait 
-//		 * considering a known elevator deflection. It use the NasaBlackwell method in order to evaluate the slope of the linear trait
-//		 * This method needs that the field of cl has filled before. --> Need to call calculateCLWithElevatorDeflection
-//		 * before!
-//		 * 
-//		 * @author Manuela Ruocco
-//		 * @param Amount<Angle> alphaBody. It is the angle of attack between the direction of asimptotic 
-//		 * velocity and the reference line of fuselage.
-//		 * @param Amount<Angle> deflection of elevator in degree. 
-//		 */	
-//
-//		// In ordet to obtain a value of lift coefficient corresponding at an alpha body with a known
-//		// elevator deflection it's possible to use the method getCLHTailatAlphaBodyWithElevator.
-//
-//		public double getCLHTailatAlphaBodyWithElevator (double chordRatio,
-//				Amount<Angle> alphaBody,
-//				Amount<Angle> deflection,
-//				Amount<Angle> downwashAngle,
-//				List<Double[]> deltaFlap,
-//				List<FlapTypeEnum> flapType,
-//				List<Double> deltaSlat,
-//				List<Double> etaInFlap,
-//				List<Double> etaOutFlap,
-//				List<Double> etaInSlat,
-//				List<Double> etaOutSlat, 
-//				List<Double> cfc,
-//				List<Double> csc,
-//				List<Double> leRadiusSlatRatio,
-//				List<Double> cExtcSlat
-//				){
-//
-//			if (alphaBody.getUnit() == SI.RADIAN)
-//				alphaBody = alphaBody.to(NonSI.DEGREE_ANGLE);
-//			double alphaBodyDouble = alphaBody.getEstimatedValue();
-//
-//			if (downwashAngle.getUnit() == SI.RADIAN)
-//				downwashAngle = downwashAngle.to(NonSI.DEGREE_ANGLE);
-//			double downwashAngleDeg = downwashAngle.getEstimatedValue();
-//
-//
-//			double deflectionAngleDeg = deflection.getEstimatedValue();
-//			double alphaZeroLift = getAlphaZeroLiftDeflection();
-//
-//			double[] alphaLocalArray = getAlphaArrayHTailPlot();
-//
-//			double alphaLocal = alphaBodyDouble 
-//					- downwashAngleDeg 
-//					+ theAircraft.getHTail().getRiggingAngle().to(NonSI.DEGREE_ANGLE).getEstimatedValue();
-//
-//			double[]  clArray = calculateCLWithElevatorDeflection(
-//					deltaFlap, flapType,deltaSlat,
-//					etaInFlap, etaOutFlap, etaInSlat, etaOutSlat, 
-//					 cfc, csc, leRadiusSlatRatio, cExtcSlat
-//					);
-//			double clAtAlpha = MyMathUtils.getInterpolatedValue1DLinear(alphaLocalArray, clArray, alphaLocal);
-//
-//			return clAtAlpha;
-//		}
 	}
 	//............................................................................
 	// END OF THE CRITICAL MACH INNER CLASS
@@ -1402,6 +1192,10 @@ public class LSAerodynamicsCalculator {
 					);
 		}
 		
+		public void allMethods() {
+			fromCLmaxPhillipsAndAlley();
+			fromAlphaMaxLinearNasaBlackwell();
+		}
 	}
 	//............................................................................
 	// END OF THE ALPHA STALL INNER CLASS
@@ -1524,6 +1318,11 @@ public class LSAerodynamicsCalculator {
 							_alphaArrayPlot
 							)
 					);
+		}
+		
+		public void allMethods() {
+			fromCLmaxPhillipsAndAlley();
+			nasaBlackwell();
 		}
 	}		
 	//............................................................................
@@ -1940,13 +1739,8 @@ public class LSAerodynamicsCalculator {
 				calcCLmax.nasaBlackwell();
 			}
 			
-			if(_currentLiftCoefficient == null) {
-				CalcCLAtAlpha calcCLAtAlphaCalculator = new CalcCLAtAlpha();
-				calcCLAtAlphaCalculator.nasaBlackwellCompleteCurve(
-						_theOperatingConditions.getAlphaCurrent()
-						);
-			}
-			
+			//-----------------------------------------------------
+			// EFFECTS:
 			LiftCalc.calculateHighLiftDevicesEffects(
 					_theLiftingSurface,
 					_theOperatingConditions,
@@ -1955,12 +1749,16 @@ public class LSAerodynamicsCalculator {
 					_currentLiftCoefficient
 					);	
 			
+			//------------------------------------------------------
+			// CL ZERO HIGH LIFT
 			_cLZeroHighLift.put(
 					MethodEnum.EMPIRICAL,
 					_cLZero.get(MethodEnum.NASA_BLACKWELL)
 						+ _deltaCL0Flap.get(MethodEnum.EMPIRICAL)
 					);
 			
+			//------------------------------------------------------
+			// ALPHA ZERO LIFT HIGH LIFT
 			_alphaZeroLiftHighLift.put(
 					MethodEnum.EMPIRICAL,
 					Amount.valueOf(
@@ -1973,17 +1771,82 @@ public class LSAerodynamicsCalculator {
 							NonSI.DEGREE_ANGLE)
 					);
 			
-			// TODO ADD CL STAR AND ALPHA STAR HIGH LIFT
-			
-			
+			//------------------------------------------------------
+			// CL MAX HIGH LIFT
 			if(_deltaCLmaxSlat.get(MethodEnum.EMPIRICAL) == null)
-				_deltaCLmaxSlat.put(MethodEnum.EMPIRICAL, 0.0);
-			_cLMaxHighLift.put(
+				_cLMaxHighLift.put(
+						MethodEnum.EMPIRICAL,
+						_cLMax.get(MethodEnum.NASA_BLACKWELL)
+						+ _deltaCLmaxFlap.get(MethodEnum.EMPIRICAL)
+						);
+			else 
+				_cLMaxHighLift.put(
+						MethodEnum.EMPIRICAL,
+						_cLMax.get(MethodEnum.NASA_BLACKWELL)
+						+ _deltaCLmaxFlap.get(MethodEnum.EMPIRICAL)
+						+ _deltaCLmaxSlat.get(MethodEnum.EMPIRICAL)
+						);
+			
+			//------------------------------------------------------
+			// ALPHA STALL HIGH LIFT
+			double deltaYPercent = _theLiftingSurface.getAerodynamicDatabaseReader()
+					.getDeltaYvsThickness(
+							_meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
+							_meanAirfoil.getAirfoilCreator().getFamily()
+							);
+			
+			Amount<Angle> deltaAlpha = Amount.valueOf(
+					_theLiftingSurface.getAerodynamicDatabaseReader()
+					.getDAlphaVsLambdaLEVsDy(
+							_theLiftingSurface.getSweepLEEquivalent(false).doubleValue(NonSI.DEGREE_ANGLE),
+							deltaYPercent
+							),
+					NonSI.DEGREE_ANGLE);
+			
+			_alphaStallHighLift.put(
 					MethodEnum.EMPIRICAL,
-					_cLMax.get(MethodEnum.NASA_BLACKWELL)
-					+ _deltaCLmaxFlap.get(MethodEnum.EMPIRICAL)
-					+ _deltaCLmaxSlat.get(MethodEnum.EMPIRICAL)
+					Amount.valueOf(
+					((_cLMaxHighLift.get(MethodEnum.EMPIRICAL)
+					- _cLZeroHighLift.get(MethodEnum.EMPIRICAL))
+					/_cLAlphaHighLift.get(MethodEnum.EMPIRICAL)
+						.to(NonSI.DEGREE_ANGLE)
+							.inverse()
+								.getEstimatedValue()
+								)
+					+ deltaAlpha.doubleValue(NonSI.DEGREE_ANGLE),
+					NonSI.DEGREE_ANGLE)
 					);
+			
+			//------------------------------------------------------
+			// ALPHA STAR HIGH LIFT
+			_alphaStarHighLift.put(
+					MethodEnum.EMPIRICAL,
+					Amount.valueOf(
+							_alphaStallHighLift.get(MethodEnum.EMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE)
+							-(_alphaStall.get(MethodEnum.NASA_BLACKWELL).doubleValue(NonSI.DEGREE_ANGLE)
+									- _alphaStar.get(MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS).doubleValue(NonSI.DEGREE_ANGLE)),
+							NonSI.DEGREE_ANGLE)
+					);
+			//------------------------------------------------------
+			// ALPHA STAR HIGH LIFT
+			_cLStarHighLift.put(
+					MethodEnum.EMPIRICAL,
+					(_cLAlphaHighLift.get(MethodEnum.EMPIRICAL)
+						.to(NonSI.DEGREE_ANGLE)
+							.inverse()
+								.getEstimatedValue()
+					* _alphaStarHighLift.get(MethodEnum.EMPIRICAL)
+						.doubleValue(NonSI.DEGREE_ANGLE))
+					+ _cLZeroHighLift.get(MethodEnum.EMPIRICAL)
+					);
+			
+			//------------------------------------------------------
+			// TODO : EVENTUALLY ADD CD0 AND CMc4 HIGH LIFT
+			
+		}
+		
+		public void allMethods() {
+			semiempirical();
 		}
 		
 	}	
@@ -2008,21 +1871,71 @@ public class LSAerodynamicsCalculator {
 				
 			}
 			
-			CalcLiftCurve theCleanLiftCurveCalculator = new CalcLiftCurve();
-			theCleanLiftCurveCalculator.nasaBlackwell();
+			_alphaArrayPlotHighLift = MyArrayUtils.linspaceDouble(
+					_alphaZeroLiftHighLift.get(MethodEnum.EMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE)-2,
+					_alphaStallHighLift.get(MethodEnum.EMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE) + 3,
+					_numberOfAlphasPlot
+					);
 			
-			///////////////////////////////////////
-			// TODO: SUM UP THE HIGH LIFT EFFECTS// 
-			//       ON THE CLEAN CURVE			 //
-			///////////////////////////////////////
-			
+			_liftCoefficient3DCurveHighLift.put(
+					MethodEnum.EMPIRICAL,
+					LiftCalc.calculateCLvsAlphaArray(
+							_cLZeroHighLift.get(MethodEnum.EMPIRICAL),
+							_cLStarHighLift.get(MethodEnum.EMPIRICAL),
+							_cLMaxHighLift.get(MethodEnum.EMPIRICAL),
+							_alphaStarHighLift.get(MethodEnum.EMPIRICAL),
+							_alphaStallHighLift.get(MethodEnum.EMPIRICAL),
+							_cLAlphaHighLift.get(MethodEnum.EMPIRICAL),
+							_alphaArrayPlotHighLift
+							)
+					);			
 		}
 		
+		public void allMethods() {
+			semiempirical();
+		}
 	}	
 	//............................................................................
 	// END OF THE HIGH LIFT CURVE INNER CLASS
 	//............................................................................
 
+	//............................................................................
+	// CALC CL AT ALPHA HIGH LIFT INNER CLASS
+	//............................................................................
+	public class CalcCLAtAlphaHighLift {
+		
+		public double semiempirical(Amount<Angle> alpha) {
+		
+			double cLActual = 0.0;
+			
+			if ((_alphaArrayPlotHighLift == null) 
+					&& (_liftCoefficient3DCurveHighLift.get(MethodEnum.EMPIRICAL) == null)) {
+				
+				CalcHighLiftCurve theHighLiftCurveCalculator = new CalcHighLiftCurve();
+				theHighLiftCurveCalculator.semiempirical();
+				
+			}
+			cLActual = MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertToDoublePrimitive(_alphaArrayPlotHighLift),
+					MyArrayUtils.convertToDoublePrimitive(_liftCoefficient3DCurveHighLift
+							.get(MethodEnum.EMPIRICAL)),
+					alpha.doubleValue(NonSI.DEGREE_ANGLE)
+					);
+			
+			_cLAtAlphaActualHighLift.put(MethodEnum.EMPIRICAL, cLActual);
+			
+			return _cLAtAlphaActualHighLift.get(MethodEnum.EMPIRICAL);
+		}
+		
+		public void allMethods(Amount<Angle> alpha) {
+			semiempirical(alpha);
+		}
+		
+	}
+	//............................................................................
+	// END OF THE CALC CL AT ALPHA HIGH LIFT INNER CLASS
+	//............................................................................
+	
 	//------------------------------------------------------------------------------
 	// GETTERS & SETTERS
 	//------------------------------------------------------------------------------
@@ -2032,20 +1945,12 @@ public class LSAerodynamicsCalculator {
 	public void setTheLiftingSurface(LiftingSurface _theLiftingSurface) {
 		this._theLiftingSurface = _theLiftingSurface;
 	}
-	/**
-	 * @return the _meanAirfoil
-	 */
 	public Airfoil getMeanAirfoil() {
 		return _meanAirfoil;
 	}
-
-	/**
-	 * @param _meanAirfoil the _meanAirfoil to set
-	 */
 	public void setMeanAirfoil(Airfoil _meanAirfoil) {
 		this._meanAirfoil = _meanAirfoil;
 	}
-
 	public OperatingConditions getTheOperatingConditions() {
 		return _theOperatingConditions;
 	}
@@ -2057,6 +1962,12 @@ public class LSAerodynamicsCalculator {
 	}
 	public void setTaskMap(Map <String, List<MethodEnum>> _taskMap) {
 		this._taskMap = _taskMap;
+	}
+	public Map <String, List<MethodEnum>> getPlotMap() {
+		return _plotMap;
+	}
+	public void setPlotMap(Map <String, List<MethodEnum>> _plotMap) {
+		this._plotMap = _plotMap;
 	}
 	public int getNumberOfPointSemiSpanWise() {
 		return _numberOfPointSemiSpanWise;
@@ -2070,28 +1981,18 @@ public class LSAerodynamicsCalculator {
 	public void setNumberOfAlphas(int _numberOfAlphas) {
 		this._numberOfAlphas = _numberOfAlphas;
 	}
-	/**
-	 * @return the _numberOfAlphasPlot
-	 */
 	public int getNumberOfAlphasPlot() {
 		return _numberOfAlphasPlot;
 	}
-
-	/**
-	 * @param _numberOfAlphasPlot the _numberOfAlphasPlot to set
-	 */
 	public void setNumberOfAlphasPlot(int _numberOfAlphasPlot) {
 		this._numberOfAlphasPlot = _numberOfAlphasPlot;
 	}
-
 	public double getVortexSemiSpanToSemiSpanRatio() {
 		return _vortexSemiSpanToSemiSpanRatio;
 	}
-
 	public void setVortexSemiSpanToSemiSpanRatio(double _vortexSemiSpanToSemiSpanRatio) {
 		this._vortexSemiSpanToSemiSpanRatio = _vortexSemiSpanToSemiSpanRatio;
 	}
-
 	public List<Amount<Angle>> getAlphaArray() {
 		return _alphaArray;
 	}
@@ -2104,20 +2005,12 @@ public class LSAerodynamicsCalculator {
 	public void setCurrentMachNumber(Double _currentMachNumber) {
 		this._currentMachNumber = _currentMachNumber;
 	}
-	/**
-	 * @return the _currentLiftCoefficient
-	 */
 	public Double getCurrentLiftCoefficient() {
 		return _currentLiftCoefficient;
 	}
-
-	/**
-	 * @param _currentLiftCoefficient the _currentLiftCoefficient to set
-	 */
 	public void setCurrentLiftCoefficient(Double _currentLiftCoefficient) {
 		this._currentLiftCoefficient = _currentLiftCoefficient;
 	}
-
 	public Map<MethodEnum, Double> getCriticalMachNumber() {
 		return _criticalMachNumber;
 	}
@@ -2172,25 +2065,29 @@ public class LSAerodynamicsCalculator {
 	public void setCLAlpha(Map<MethodEnum, Amount<?>> _cLAlpha) {
 		this._cLAlpha = _cLAlpha;
 	}
-	/**
-	 * @return the _cLAtAplhaActual
-	 */
 	public Map <MethodEnum, Double> getCLAtAplhaActual() {
 		return _cLAtAplhaActual;
 	}
-
-	/**
-	 * @param _cLAtAplhaActual the _cLAtAplhaActual to set
-	 */
 	public void setCLAtAplhaActual(Map <MethodEnum, Double> _cLAtAplhaActual) {
 		this._cLAtAplhaActual = _cLAtAplhaActual;
 	}
-
+	public Map <MethodEnum, Double> getCLAtAlphaActualHighLift() {
+		return _cLAtAlphaActualHighLift;
+	}
+	public void setCLAtAlphaActualHighLift(Map <MethodEnum, Double> _cLAtAlphaActualHighLift) {
+		this._cLAtAlphaActualHighLift = _cLAtAlphaActualHighLift;
+	}
 	public Map<MethodEnum, Double[]> getLiftCoefficient3DCurve() {
 		return _liftCoefficient3DCurve;
 	}
 	public void setLiftCoefficient3DCurve(Map<MethodEnum, Double[]> _liftCoefficient3DCurve) {
 		this._liftCoefficient3DCurve = _liftCoefficient3DCurve;
+	}
+	public Map <MethodEnum, Double[]> getLiftCoefficient3DCurveHighLift() {
+		return _liftCoefficient3DCurveHighLift;
+	}
+	public void setLiftCoefficient3DCurveHighLift(Map <MethodEnum, Double[]> _liftCoefficient3DCurveHighLift) {
+		this._liftCoefficient3DCurveHighLift = _liftCoefficient3DCurveHighLift;
 	}
 	public Map<MethodEnum, List<List<Double>>> getLiftCoefficientDistribution() {
 		return _liftCoefficientDistribution;
@@ -2414,131 +2311,63 @@ public class LSAerodynamicsCalculator {
 	public void setDeltaCMc4(Map<MethodEnum, Double> _deltaCMc4) {
 		this._deltaCMc4 = _deltaCMc4;
 	}
-
-	/**
-	 * @return the _alphaArrayPlot
-	 */
 	public Double[] getAlphaArrayPlot() {
 		return _alphaArrayPlot;
 	}
-
-	/**
-	 * @param _alphaArrayPlot the _alphaArrayPlot to set
-	 */
 	public void setAlphaArrayPlot(Double[] _alphaArrayPlot) {
 		this._alphaArrayPlot = _alphaArrayPlot;
 	}
-
-	/**
-	 * @return the _alphaArrayPlotHighLift
-	 */
 	public Double[] getAlphaArrayPlotHighLift() {
 		return _alphaArrayPlotHighLift;
 	}
-
-	/**
-	 * @param _alphaArrayPlotHighLift the _alphaArrayPlotHighLift to set
-	 */
 	public void setAlphaArrayPlotHighLift(Double[] _alphaArrayPlotHighLift) {
 		this._alphaArrayPlotHighLift = _alphaArrayPlotHighLift;
 	}
-
 	public double[] getEtaStationDistribution() {
 		return _etaStationDistribution;
 	}
-
 	public void setEtaStationDistribution(double[] _etaStationDistribution) {
 		this._etaStationDistribution = _etaStationDistribution;
 	}
-
 	public List<Amount<Length>> getYStationDistribution() {
 		return _yStationDistribution;
 	}
-
 	public void setYStationDistribution(List<Amount<Length>> _yStationDistribution) {
 		this._yStationDistribution = _yStationDistribution;
 	}
-
-	/**
-	 * @return the _chordDistribution
-	 */
 	public List<Amount<Length>> getChordDistribution() {
 		return _chordDistribution;
 	}
-
-	/**
-	 * @param _chordDistribution the _chordDistribution to set
-	 */
 	public void setChordDistribution(List<Amount<Length>> _chordDistribution) {
 		this._chordDistribution = _chordDistribution;
 	}
-
-	/**
-	 * @return the _ellipticalChordDistribution
-	 */
 	public List<Amount<Length>> getEllipticalChordDistribution() {
 		return _ellipticalChordDistribution;
 	}
-
-	/**
-	 * @param _ellipticalChordDistribution the _ellipticalChordDistribution to set
-	 */
 	public void setEllipticalChordDistribution(List<Amount<Length>> _ellipticalChordDistribution) {
 		this._ellipticalChordDistribution = _ellipticalChordDistribution;
 	}
-
-	/**
-	 * @return the _dihedralDistribution
-	 */
 	public List<Amount<Angle>> getDihedralDistribution() {
 		return _dihedralDistribution;
 	}
-
-	/**
-	 * @param _dihedralDistribution the _dihedralDistribution to set
-	 */
 	public void setDihedralDistribution(List<Amount<Angle>> _dihedralDistribution) {
 		this._dihedralDistribution = _dihedralDistribution;
 	}
-
-	/**
-	 * @return the _clAlphaDistribution
-	 */
 	public List<Amount<?>> getClAlphaDistribution() {
 		return _clAlphaDistribution;
 	}
-
-	/**
-	 * @param _clAlphaDistribution the _clAlphaDistribution to set
-	 */
 	public void setClAlphaDistribution(List<Amount<?>> _clAlphaDistribution) {
 		this._clAlphaDistribution = _clAlphaDistribution;
 	}
-
-	/**
-	 * @return the _xLEDistribution
-	 */
 	public List<Amount<Length>> getXLEDistribution() {
 		return _xLEDistribution;
 	}
-
-	/**
-	 * @param _xLEDistribution the _xLEDistribution to set
-	 */
 	public void setXLEDistribution(List<Amount<Length>> _xLEDistribution) {
 		this._xLEDistribution = _xLEDistribution;
 	}
-
-	/**
-	 * @return the _clMaxDistribution
-	 */
 	public List<Double> getClMaxDistribution() {
 		return _clMaxDistribution;
 	}
-
-	/**
-	 * @param _clMaxDistribution the _clMaxDistribution to set
-	 */
 	public void setClMaxDistribution(List<Double> _clMaxDistribution) {
 		this._clMaxDistribution = _clMaxDistribution;
 	}
