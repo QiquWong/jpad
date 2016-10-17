@@ -266,8 +266,6 @@ public interface DatcomInputData {
 			setSymflp_TC(0.44);
 			setSymflp_PHETE(0.003);
 			setSymflp_PHETEP(0.002);
-
-			
 		}
 		@Override
 		public Builder setSynths_XW(Double val) {

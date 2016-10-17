@@ -183,8 +183,14 @@ public class DummyExternalJob extends AbstractExternalJob {
 				/*
 				 *  set a new list of Mach numbers  wrt default
 				 */
-				//.mutateFltcon_MACH(machNumbers -> machNumbers.clear())
-				//.addAllFltcon_MACH(Arrays.asList(0.3, 0.5))
+				.mutateFltcon_MACH(machNumbers -> machNumbers.clear())
+				//.addAllFltcon_MACH(Arrays.asList(0.3, 0.4))
+				.addAllFltcon_MACH(Arrays.asList(0.4))
+				/*
+				 *  wing position
+				 */
+				.setSynths_XW(29.3)
+				.setSynths_ZW(-1.2)
 				/*
 				 *  build object, finally
 				 */
