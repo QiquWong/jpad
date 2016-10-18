@@ -274,69 +274,67 @@ public class HighLiftDevicesEffectsTest extends Application {
 			.getTheAerodynamicsCalculator()
 			.getCLAlpha()
 			.put(MethodEnum.NASA_BLACKWELL,
-					Amount.valueOf(6.2, SI.RADIAN).inverse());
+					Amount.valueOf(6.2, SI.RADIAN.inverse()));
 			
 			LiftCalc.calculateHighLiftDevicesEffects(
 					theAircraft.getWing(),
 					theOperatingConditions,
-					deltaFlap,
-					null,
 					0.4
 					);
 			
 			//----------------------------------------------------------------------------------
 			// Results print
 			System.out.println("\ndeltaCl0_flap_list = ");
-			for(int i=0; i<theAerodynamicCalculator.getDeltaCl0FlapList().size(); i++)
-				System.out.print(theAerodynamicCalculator.getDeltaCl0FlapList().get(i) + " ");
+			for(int i=0; i<theAerodynamicCalculator.getDeltaCl0FlapList().get(MethodEnum.EMPIRICAL).size(); i++)
+				System.out.print(theAerodynamicCalculator.getDeltaCl0FlapList().get(MethodEnum.EMPIRICAL).get(i) + " ");
 
-			System.out.println("\n\ndeltaCl0_flap = \n" + theAerodynamicCalculator.getDeltaCl0Flap());
+			System.out.println("\n\ndeltaCl0_flap = \n" + theAerodynamicCalculator.getDeltaCl0Flap().get(MethodEnum.EMPIRICAL));
 
 			System.out.println("\ndeltaCL0_flap_list = ");
-			for(int i=0; i<theAerodynamicCalculator.getDeltaCL0FlapList().size(); i++)
-				System.out.print(theAerodynamicCalculator.getDeltaCL0FlapList().get(i) + " ");
+			for(int i=0; i<theAerodynamicCalculator.getDeltaCL0FlapList().get(MethodEnum.EMPIRICAL).size(); i++)
+				System.out.print(theAerodynamicCalculator.getDeltaCL0FlapList().get(MethodEnum.EMPIRICAL).get(i) + " ");
 
-			System.out.println("\n\ndeltaCL0_flap = \n" + theAerodynamicCalculator.getDeltaCl0Flap());
+			System.out.println("\n\ndeltaCL0_flap = \n" + theAerodynamicCalculator.getDeltaCL0Flap().get(MethodEnum.EMPIRICAL));
 			
 			System.out.println("\ndeltaClmax_flap_list = ");
-			for(int i=0; i<theAerodynamicCalculator.getDeltaClmaxFlapList().size(); i++)
-				System.out.print(theAerodynamicCalculator.getDeltaClmaxFlapList().get(i) + " ");
+			for(int i=0; i<theAerodynamicCalculator.getDeltaClmaxFlapList().get(MethodEnum.EMPIRICAL).size(); i++)
+				System.out.print(theAerodynamicCalculator.getDeltaClmaxFlapList().get(MethodEnum.EMPIRICAL).get(i) + " ");
 
-			System.out.println("\n\ndeltaClmax_flap = \n" + theAerodynamicCalculator.getDeltaClmaxFlap());
+			System.out.println("\n\ndeltaClmax_flap = \n" + theAerodynamicCalculator.getDeltaClmaxFlap().get(MethodEnum.EMPIRICAL));
 			
 			System.out.println("\ndeltaCLmax_flap_list = ");
-			for(int i=0; i<theAerodynamicCalculator.getDeltaCLmaxFlapList().size(); i++)
-				System.out.print(theAerodynamicCalculator.getDeltaCLmaxFlapList().get(i) + " ");
+			for(int i=0; i<theAerodynamicCalculator.getDeltaCLmaxFlapList().get(MethodEnum.EMPIRICAL).size(); i++)
+				System.out.print(theAerodynamicCalculator.getDeltaCLmaxFlapList().get(MethodEnum.EMPIRICAL).get(i) + " ");
 
-			System.out.println("\n\ndeltaCLmax_flap = \n" + theAerodynamicCalculator.getDeltaCLmaxFlap());
+			System.out.println("\n\ndeltaCLmax_flap = \n" + theAerodynamicCalculator.getDeltaCLmaxFlap().get(MethodEnum.EMPIRICAL));
 
 			if(!theAircraft.getWing().getLiftingSurfaceCreator().getSlats().isEmpty()) {
 				System.out.println("\ndeltaClmax_slat_list = ");
-				for(int i=0; i<theAerodynamicCalculator.getDeltaClmaxSlatList().size(); i++)
-					System.out.print(theAerodynamicCalculator.getDeltaClmaxSlatList().get(i) + " ");
+				for(int i=0; i<theAerodynamicCalculator.getDeltaClmaxSlatList().get(MethodEnum.EMPIRICAL).size(); i++)
+					System.out.print(theAerodynamicCalculator.getDeltaClmaxSlatList().get(MethodEnum.EMPIRICAL).get(i) + " ");
 
-				System.out.println("\n\ndeltaClmax_slat = \n" + theAerodynamicCalculator.getDeltaClmaxSlat());
+				System.out.println("\n\ndeltaClmax_slat = \n" + theAerodynamicCalculator.getDeltaClmaxSlat().get(MethodEnum.EMPIRICAL));
 
 				System.out.println("\ndeltaCLmax_slat_list = ");
-				for(int i=0; i<theAerodynamicCalculator.getDeltaCLmaxSlatList().size(); i++)
-					System.out.print(theAerodynamicCalculator.getDeltaCLmaxSlatList().get(i) + " ");
+				for(int i=0; i<theAerodynamicCalculator.getDeltaCLmaxSlatList().get(MethodEnum.EMPIRICAL).size(); i++)
+					System.out.print(theAerodynamicCalculator.getDeltaCLmaxSlatList().get(MethodEnum.EMPIRICAL).get(i) + " ");
 
-				System.out.println("\n\ndeltaCLmax_slat = \n" + theAerodynamicCalculator.getDeltaCLmaxSlat());
+				System.out.println("\n\ndeltaCLmax_slat = \n" + theAerodynamicCalculator.getDeltaCLmaxSlat().get(MethodEnum.EMPIRICAL));
 			}
 			
-			System.out.println("\n\ncLalpha_flap_list = " + theAerodynamicCalculator.getCLAlpha().get(MethodEnum.NASA_BLACKWELL));
+			System.out.println("\ncLalpha_flap = \n" + theAerodynamicCalculator.getCLAlphaHighLift().get(MethodEnum.EMPIRICAL));
 
-			System.out.println("\n\ndeltaCD_list = ");
-			for(int i=0; i<theAerodynamicCalculator.getDeltaCDList().size(); i++)
-				System.out.print(theAerodynamicCalculator.getDeltaCDList().get(i) + " ");
+			System.out.println("\ndeltaCD_list = ");
+			for(int i=0; i<theAerodynamicCalculator.getDeltaCDList().get(MethodEnum.EMPIRICAL).size(); i++)
+				System.out.print(theAerodynamicCalculator.getDeltaCDList().get(MethodEnum.EMPIRICAL).get(i) + " ");
 
-			System.out.println("\n\ndeltaCD = \n" + theAerodynamicCalculator.getDeltaCD());
+			System.out.println("\n\ndeltaCD = \n" + theAerodynamicCalculator.getDeltaCD().get(MethodEnum.EMPIRICAL));
 			
-			System.out.println("\n\ndeltaCM_c4_list = ");
-			for(int i=0; i<theAerodynamicCalculator.getDeltaCMc4List().size(); i++)
-				System.out.print(theAerodynamicCalculator.getDeltaCMc4List().get(i) + " ");
+			System.out.println("\ndeltaCM_c4_list = ");
+			for(int i=0; i<theAerodynamicCalculator.getDeltaCMc4List().get(MethodEnum.EMPIRICAL).size(); i++)
+				System.out.print(theAerodynamicCalculator.getDeltaCMc4List().get(MethodEnum.EMPIRICAL).get(i) + " ");
 
-			System.out.println("\n\ndeltaCM_c4 = \n" + theAerodynamicCalculator.getDeltaCMc4());
+			System.out.println("\n\ndeltaCM_c4 = \n" + theAerodynamicCalculator.getDeltaCMc4().get(MethodEnum.EMPIRICAL));
 			
 		} catch (CmdLineException | IOException e) {
 			System.err.println("Error: " + e.getMessage());

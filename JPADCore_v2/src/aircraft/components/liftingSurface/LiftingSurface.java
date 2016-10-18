@@ -106,8 +106,6 @@ public class LiftingSurface implements ILiftingSurface {
 	private List<Double> _criticalMachVsY = new ArrayList<>();
 	private MyArray _distanceAirfoilACFromWingAC = new MyArray();
 	
-	private Amount<Length> _xACActualMRF, _xACActualLRF;
-	
 	//================================================
 	// Builder pattern via a nested public static class
 	public static class LiftingSurfaceBuilder {
@@ -190,12 +188,32 @@ public class LiftingSurface implements ILiftingSurface {
 	
 	@Override
 	public void calculateFormFactor(double compressibilityFactor) {
-		// Wing Form Factor (ADAS pag 93 graphic or pag 9 meccanica volo appunti)
-		_formFactor = ((1 + 1.2*getThicknessMean()*
-				Math.cos(getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().doubleValue(SI.RADIAN))+
-				100*Math.pow(compressibilityFactor,3)*
-				(Math.pow(Math.cos(getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().doubleValue(SI.RADIAN)),2))*
-				Math.pow(getThicknessMean(),4)));
+
+		if(this._type == ComponentEnum.WING)
+			// Wing Form Factor (ADAS pag 93 graphic or pag 9 meccanica volo appunti)
+			_formFactor = ((1 + 1.2*getThicknessMean()*
+					Math.cos(getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().doubleValue(SI.RADIAN))+
+					100*Math.pow(compressibilityFactor,3)*
+					(Math.pow(Math.cos(getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().doubleValue(SI.RADIAN)),2))*
+					Math.pow(getThicknessMean(),4)));
+		else if(this._type == ComponentEnum.HORIZONTAL_TAIL)
+			// HTail form factor from Giovanni Nardone thesis pag.86
+			_formFactor = (1.03 
+					+ (1.85*getThicknessMean()) 
+					+ (80*Math.pow(getThicknessMean(),4))
+					);
+		else if(this._type == ComponentEnum.VERTICAL_TAIL)
+			// VTail form factor from Giovanni Nardone thesis pag.86
+			_formFactor = (1.03 
+					+ (2*getThicknessMean()) 
+					+ (60*Math.pow(getThicknessMean(),4))
+					);
+		else if(this._type == ComponentEnum.CANARD)
+			// Canard assumed as HTail
+			_formFactor = (1.03 
+					+ (1.85*getThicknessMean()) 
+					+ (80*Math.pow(getThicknessMean(),4))
+					);
 	}
 	
 	@Override
@@ -1977,22 +1995,6 @@ public class LiftingSurface implements ILiftingSurface {
 
 	public void setThicknessMean(Double _thicknessMean) {
 		this._thicknessMean = _thicknessMean;
-	}
-
-	public Amount<Length> getXacActualMRF() {
-		return _xACActualMRF;
-	}
-
-	public void setXacActualMRF(Amount<Length> _xACActualMRF) {
-		this._xACActualMRF = _xACActualMRF;
-	}
-
-	public Amount<Length> getXacActualLRF() {
-		return _xACActualLRF;
-	}
-
-	public void setXacActualLRF(Amount<Length> _xACActualLRF) {
-		this._xACActualLRF = _xACActualLRF;
 	}
 
 	public Double[] getPercentDifference() {

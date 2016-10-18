@@ -18,10 +18,12 @@ import org.jscience.physics.amount.Amount;
 import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.liftingSurface.LiftingSurface;
 import analyses.OperatingConditions;
+import analyses.analysismodel.InnerCalculator;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.AnglesCalc;
 import calculators.aerodynamics.LiftCalc;
 import calculators.aerodynamics.NasaBlackwell;
+import calculators.geometry.LSGeometryCalc;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
@@ -69,6 +71,14 @@ public class LSAerodynamicsCalculator {
 	
 	// CRITICAL MACH NUMBER
 	private Map <MethodEnum, Double> _criticalMachNumber;
+	
+	// Xac
+	/**
+	 * MRF = Mean aerodynamic chord Reference Frame
+	 * LRF = Local Reference Frame (of the lifting surface)
+	 */
+	private Map<MethodEnum, Amount<Length>> _xacMRF; 
+	private Map<MethodEnum, Amount<Length>> _xacLRF; 
 	
 	// LIFT 
 	private Map <MethodEnum, Double> _cLAtAplhaActual;
@@ -143,8 +153,8 @@ public class LSAerodynamicsCalculator {
 		this._taskMap = taskMap;
 		this._plotMap = plotMap;
 		
-		initializeData();
 		initializeVariables();
+		initializeData();
 		// TODO: ADD INITIALIZE CALCULATORS
 		
 	}
@@ -167,14 +177,6 @@ public class LSAerodynamicsCalculator {
 					this._theOperatingConditions.getAlpha()[i],
 					NonSI.DEGREE_ANGLE)
 					);
-		
-		if(_currentLiftCoefficient == null) {
-			CalcCLAtAlpha calcCLAtAlphaCalculator = new CalcCLAtAlpha();
-			calcCLAtAlphaCalculator.nasaBlackwellCompleteCurve(
-					_theOperatingConditions.getAlphaCurrent()
-					);
-		}
-		
 		//----------------------------------------------------------------------------------------------------------------------
 		// Calculating the mean airfoil
 		//......................................................................................................................
@@ -250,7 +252,7 @@ public class LSAerodynamicsCalculator {
 				yStationDistributionArray
 				);
 		for(int i=0; i<clAlphaDistributionArray.length; i++)
-			_clAlphaDistribution.add(Amount.valueOf(clAlphaDistributionArray[i], NonSI.DEGREE_ANGLE).inverse());
+			_clAlphaDistribution.add(Amount.valueOf(clAlphaDistributionArray[i], NonSI.DEGREE_ANGLE.inverse()));
 		//......................................................................................................................
 		// XLE DISTRIBUTION
 		this._xLEDistribution = new ArrayList<Amount<Length>>();
@@ -274,6 +276,16 @@ public class LSAerodynamicsCalculator {
 		for(int i=0; i<clMaxDistributionArray.length; i++)
 			_clMaxDistribution.add(clMaxDistributionArray[i]);
 
+		//----------------------------------------------------------------------------------------------------------------------
+		// Calculating the operating lifting coefficient
+		//......................................................................................................................
+		if(_currentLiftCoefficient == null) {
+			CalcCLAtAlpha calcCLAtAlphaCalculator = new CalcCLAtAlpha();
+			calcCLAtAlphaCalculator.nasaBlackwellCompleteCurve(
+					_theOperatingConditions.getAlphaCurrent()
+					);
+		}
+		
 		// TODO : ADD OTHER REQUIRED DATA (if necessary)
 
 	}
@@ -282,10 +294,15 @@ public class LSAerodynamicsCalculator {
 		
 		this._criticalMachNumber = new HashMap<MethodEnum, Double>();
 		
+		this._xacMRF = new HashMap<MethodEnum, Amount<Length>>();
+		this._xacLRF = new HashMap<MethodEnum, Amount<Length>>();
+		
 		this._alphaZeroLift = new HashMap<MethodEnum, Amount<Angle>>();
 		this._alphaStar = new HashMap<MethodEnum, Amount<Angle>>();
 		this._alphaMaxLinear = new HashMap<MethodEnum, Amount<Angle>>();
 		this._alphaStall = new HashMap<MethodEnum, Amount<Angle>>();
+		this._cLAtAplhaActual = new HashMap<MethodEnum, Double>();
+		this._cLAtAlphaActualHighLift = new HashMap<MethodEnum, Double>();
 		this._cLZero = new HashMap<MethodEnum, Double>();
 		this._cLStar = new HashMap<MethodEnum, Double>();
 		this._cLMax = new HashMap<MethodEnum, Double>();
@@ -328,6 +345,7 @@ public class LSAerodynamicsCalculator {
 		this._deltaCLmaxSlat = new HashMap<MethodEnum, Double>();
 		this._deltaCD = new HashMap<MethodEnum, Double>();
 		this._deltaCMc4 = new HashMap<MethodEnum, Double>();
+		this._liftCoefficient3DCurveHighLift = new HashMap<MethodEnum, Double[]>();
 		
 		// TODO : CONTINUE WITH OTHER MAPS WHEN AVAILABLE
 		
@@ -405,6 +423,94 @@ public class LSAerodynamicsCalculator {
 	//............................................................................
 
 	//............................................................................
+	// CALC XacCL INNER CLASS
+	//............................................................................
+	/** 
+	 * Evaluate the AC x coordinate relative to MAC
+	 */
+	public class CalcXAC extends InnerCalculator {
+
+		public void atQuarterMAC() {
+			_xacMRF.put(
+					MethodEnum.QUARTER,
+					_theLiftingSurface
+						.getLiftingSurfaceCreator()
+							.getMeanAerodynamicChord()
+								.times(0.25)
+					);
+			_xacLRF.put(
+					MethodEnum.QUARTER, 
+					_xacMRF.get(MethodEnum.QUARTER)
+						.plus(getTheLiftingSurface()
+							.getLiftingSurfaceCreator()
+								.getMeanAerodynamicChordLeadingEdgeX()
+							)
+					);
+		}
+
+		/**
+		 * @see page 555 Sforza
+		 */
+		public void deYoungHarper() {
+			_xacMRF.put(
+					MethodEnum.DEYOUNG_HARPER,
+					Amount.valueOf(
+							LSGeometryCalc.calcXacFromLEMacDeYoungHarper(
+									_theLiftingSurface.getAspectRatio(),
+									_theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER), 
+									_theLiftingSurface.getTaperRatioEquivalent(false),
+									_theLiftingSurface.getSweepQuarterChordEquivalent(false).doubleValue(SI.RADIAN)
+									),
+							SI.METER)
+					);
+			_xacLRF.put(
+					MethodEnum.DEYOUNG_HARPER,
+					_xacMRF.get(MethodEnum.DEYOUNG_HARPER)
+						.plus(getTheLiftingSurface()
+							.getLiftingSurfaceCreator()
+								.getMeanAerodynamicChordLeadingEdgeX()
+								)
+					);
+		}
+
+		/**
+		 *  page 53 Napolitano 
+		 */
+		public void datcomNapolitano() {
+			_xacMRF.put(
+					MethodEnum.NAPOLITANO_DATCOM,
+					Amount.valueOf(
+							LSGeometryCalc.calcXacFromNapolitanoDatcom(
+									_theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER),
+									_theLiftingSurface.getTaperRatioEquivalent(false),
+									_theLiftingSurface.getSweepLEEquivalent(false).doubleValue(NonSI.DEGREE_ANGLE),
+									_theLiftingSurface.getAspectRatio(),  
+									_theOperatingConditions.getMachCurrent(),
+									_theLiftingSurface.getAerodynamicDatabaseReader()
+									),
+							SI.METER)
+					);
+			_xacLRF.put(
+					MethodEnum.NAPOLITANO_DATCOM,
+					_xacMRF.get(MethodEnum.NAPOLITANO_DATCOM)
+						.plus(getTheLiftingSurface()
+								.getLiftingSurfaceCreator()
+									.getMeanAerodynamicChordLeadingEdgeX()
+							)
+					);
+		}
+
+		public void allMethods() {
+			atQuarterMAC();
+			deYoungHarper(); // Report NACA
+			datcomNapolitano();
+		}
+	}
+	//............................................................................
+	// END OF THE CALC XacCL INNER CLASS
+	//............................................................................
+	
+	//............................................................................
 	// CL AT APLHA INNER CLASS
 	//............................................................................
 	public class CalcCLAtAlpha {
@@ -440,7 +546,7 @@ public class LSAerodynamicsCalculator {
 
 			_cLAtAplhaActual.put(
 					MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC,
-					_cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC).to(NonSI.DEGREE_ANGLE).inverse().getEstimatedValue()
+					_cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
 					*alpha.to(NonSI.DEGREE_ANGLE).getEstimatedValue() + 
 					_cLZero.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC)
 					);
@@ -577,7 +683,7 @@ public class LSAerodynamicsCalculator {
 					MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC,
 					LiftCalc.calculateLiftCoefficientAtAlpha0(
 							_alphaZeroLift.get(MethodEnum.INTEGRAL_MEAN_TWIST).doubleValue(NonSI.DEGREE_ANGLE),
-							_cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC).to(NonSI.DEGREE_ANGLE).inverse().getEstimatedValue()
+							_cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
 							)
 					);
 		}
@@ -597,7 +703,7 @@ public class LSAerodynamicsCalculator {
 					MethodEnum.NASA_BLACKWELL,
 					LiftCalc.calculateLiftCoefficientAtAlpha0(
 							_alphaZeroLift.get(MethodEnum.INTEGRAL_MEAN_TWIST).doubleValue(NonSI.DEGREE_ANGLE),
-							_cLAlpha.get(MethodEnum.NASA_BLACKWELL).to(NonSI.DEGREE_ANGLE).inverse().getEstimatedValue()
+							_cLAlpha.get(MethodEnum.NASA_BLACKWELL).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
 							)
 					);
 			
@@ -844,8 +950,8 @@ public class LSAerodynamicsCalculator {
 			_cLAlpha.put(MethodEnum.NASA_BLACKWELL,
 					Amount.valueOf(
 							cLSlope,
-							SI.RADIAN
-							).inverse()
+							SI.RADIAN.inverse()
+							)
 					);
 		}
 		
@@ -859,8 +965,8 @@ public class LSAerodynamicsCalculator {
 									_theLiftingSurface.getSweepLEEquivalent(false),
 									_theLiftingSurface.getTaperRatioEquivalent(false)
 									),
-							SI.RADIAN
-							).inverse()
+							SI.RADIAN.inverse()
+							)
 					);
 		}
 
@@ -880,8 +986,8 @@ public class LSAerodynamicsCalculator {
 									MyArrayUtils.convertListOfAmountodoubleArray(_clAlphaDistribution),
 									MyArrayUtils.convertListOfAmountTodoubleArray(_theLiftingSurface.getLiftingSurfaceCreator().getDiscretizedChords())
 									),
-							NonSI.DEGREE_ANGLE
-							).inverse()
+							NonSI.DEGREE_ANGLE.inverse()
+							)
 					);
 		}
 
@@ -902,8 +1008,8 @@ public class LSAerodynamicsCalculator {
 									MyArrayUtils.convertListOfAmountodoubleArray(_clAlphaDistribution),
 									MyArrayUtils.convertListOfAmountTodoubleArray(_theLiftingSurface.getLiftingSurfaceCreator().getDiscretizedChords())
 									),
-							NonSI.DEGREE_ANGLE
-							).inverse()
+							NonSI.DEGREE_ANGLE.inverse()
+							)
 					);
 		}
 
@@ -933,7 +1039,7 @@ public class LSAerodynamicsCalculator {
 			
 			double result = LiftCalc.calculateCLmaxPhillipsAndAlley( //5.07
 					_meanAirfoil.getAirfoilCreator().getClMax().doubleValue(),
-					_cLAlpha.get(MethodEnum.NASA_BLACKWELL).to(SI.RADIAN).inverse().getEstimatedValue(), 
+					_cLAlpha.get(MethodEnum.NASA_BLACKWELL).to(SI.RADIAN.inverse()).getEstimatedValue(), 
 					_theLiftingSurface.getLiftingSurfaceCreator().getTaperRatioEquivalentWing().doubleValue(),
 					_theLiftingSurface.getSweepLEEquivalent(false).doubleValue(SI.RADIAN),
 					_theLiftingSurface.getAspectRatio(),
@@ -1137,7 +1243,7 @@ public class LSAerodynamicsCalculator {
 						MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC,
 						Amount.valueOf(
 								(_cLMax.get(MethodEnum.PHILLIPS_ALLEY) - _cLZero.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC))
-								/_cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC).to(NonSI.DEGREE_ANGLE).inverse().getEstimatedValue(),
+								/_cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
 								NonSI.DEGREE_ANGLE
 								)
 						);
@@ -1202,7 +1308,7 @@ public class LSAerodynamicsCalculator {
 	//............................................................................
 	
 	//............................................................................
-	// ALPHA STALL INNER CLASS
+	// LIFT CURVE INNER CLASS
 	//............................................................................
 	public class CalcLiftCurve {
 	
@@ -1326,7 +1432,7 @@ public class LSAerodynamicsCalculator {
 		}
 	}		
 	//............................................................................
-	// END OF THE ALPHA STALL INNER CLASS
+	// END OF THE LIFT CURVE INNER CLASS
 	//............................................................................
 		
 	//............................................................................
@@ -1378,8 +1484,7 @@ public class LSAerodynamicsCalculator {
 					ccLBasicSchrenk.get(i).add(
 							_chordDistribution.get(j)
 							.times(_clAlphaDistribution.get(j)
-									.to(NonSI.DEGREE_ANGLE)
-									.inverse()
+									.to(NonSI.DEGREE_ANGLE.inverse())
 									.getEstimatedValue())
 							.times(0.5)
 							.times(_twistDistribution.get(j).doubleValue(NonSI.DEGREE_ANGLE)
@@ -1703,6 +1808,66 @@ public class LSAerodynamicsCalculator {
 	//............................................................................
 	
 	//............................................................................
+	// CALC CD0 INNER CLASS
+	//............................................................................
+	public class CalcCD0 {
+		
+		
+		
+	}
+	//............................................................................
+	// END OF THE CALC CD0 INNER CLASS
+	//............................................................................
+	
+	//............................................................................
+	// CALC CDwave INNER CLASS
+	//............................................................................
+	public class CalcCDWave {
+		
+		
+		
+	}
+	//............................................................................
+	// END OF THE CALC CDwave INNER CLASS
+	//............................................................................
+	
+	//............................................................................
+	// CALC Cd DISTRIBUTION INNER CLASS
+	//............................................................................
+	public class CalcDragDistributions {
+		
+		
+		
+	}
+	//............................................................................
+	// END OF THE CALC Cd DISTRIBUTION INNER CLASS
+	//............................................................................
+	
+	//............................................................................
+	// CALC POLAR INNER CLASS
+	//............................................................................
+	public class CalcPolar {
+
+
+
+	}
+	//............................................................................
+	// END OF THE CALC POLAR INNER CLASS
+	//............................................................................
+
+	//............................................................................
+	// CALC CD AT ALPHA INNER CLASS
+	//............................................................................
+	public class CalcCDAtAlpha {
+		
+		
+		
+	}
+	//............................................................................
+	// END OF THE CALC CD AT ALPHA INNER CLASS
+	//............................................................................
+	
+	//............................................................................
 	// HIGH LIFT DEVICES EFFECTS INNER CLASS
 	//............................................................................
 	public class CalcHighLiftDevicesEffects {
@@ -1744,8 +1909,6 @@ public class LSAerodynamicsCalculator {
 			LiftCalc.calculateHighLiftDevicesEffects(
 					_theLiftingSurface,
 					_theOperatingConditions,
-					_theOperatingConditions.getFlapDeflection(),
-					_theOperatingConditions.getSlatDeflection(),
 					_currentLiftCoefficient
 					);	
 			
@@ -1764,8 +1927,7 @@ public class LSAerodynamicsCalculator {
 					Amount.valueOf(
 							-(_cLZero.get(MethodEnum.NASA_BLACKWELL)
 									/_cLAlphaHighLift.get(MethodEnum.EMPIRICAL)
-									.to(NonSI.DEGREE_ANGLE)
-									.inverse()
+									.to(NonSI.DEGREE_ANGLE.inverse())
 									.getEstimatedValue()
 									),
 							NonSI.DEGREE_ANGLE)
@@ -1809,9 +1971,8 @@ public class LSAerodynamicsCalculator {
 					((_cLMaxHighLift.get(MethodEnum.EMPIRICAL)
 					- _cLZeroHighLift.get(MethodEnum.EMPIRICAL))
 					/_cLAlphaHighLift.get(MethodEnum.EMPIRICAL)
-						.to(NonSI.DEGREE_ANGLE)
-							.inverse()
-								.getEstimatedValue()
+						.to(NonSI.DEGREE_ANGLE.inverse())
+						.getEstimatedValue()
 								)
 					+ deltaAlpha.doubleValue(NonSI.DEGREE_ANGLE),
 					NonSI.DEGREE_ANGLE)
@@ -1832,8 +1993,7 @@ public class LSAerodynamicsCalculator {
 			_cLStarHighLift.put(
 					MethodEnum.EMPIRICAL,
 					(_cLAlphaHighLift.get(MethodEnum.EMPIRICAL)
-						.to(NonSI.DEGREE_ANGLE)
-							.inverse()
+						.to(NonSI.DEGREE_ANGLE.inverse())
 								.getEstimatedValue()
 					* _alphaStarHighLift.get(MethodEnum.EMPIRICAL)
 						.doubleValue(NonSI.DEGREE_ANGLE))
@@ -2017,6 +2177,34 @@ public class LSAerodynamicsCalculator {
 	public void setCriticalMachNumber(Map<MethodEnum, Double> _criticalMachNumber) {
 		this._criticalMachNumber = _criticalMachNumber;
 	}
+	/**
+	 * @return the _xacMRF
+	 */
+	public Map<MethodEnum, Amount<Length>> getXacMRF() {
+		return _xacMRF;
+	}
+
+	/**
+	 * @param _xacMRF the _xacMRF to set
+	 */
+	public void setXacMRF(Map<MethodEnum, Amount<Length>> _xacMRF) {
+		this._xacMRF = _xacMRF;
+	}
+
+	/**
+	 * @return the _xacLRF
+	 */
+	public Map<MethodEnum, Amount<Length>> get_xacLRF() {
+		return _xacLRF;
+	}
+
+	/**
+	 * @param _xacLRF the _xacLRF to set
+	 */
+	public void set_xacLRF(Map<MethodEnum, Amount<Length>> _xacLRF) {
+		this._xacLRF = _xacLRF;
+	}
+
 	public Map<MethodEnum, Amount<Angle>> getAlphaZeroLift() {
 		return _alphaZeroLift;
 	}

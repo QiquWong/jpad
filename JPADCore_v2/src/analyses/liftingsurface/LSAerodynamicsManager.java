@@ -592,6 +592,9 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 	 */
 	public double calculateCD0Total() {
 
+		// TODO : THIS KExcr HAVE TO BE CALCULATED IN ACAnalysisManager 
+		//        THAT HAVE TO SET THIS VALUE THE AIRCRAFT FIELD AND TO
+		//		  THE EACH COMPONENTS FIELD WHICH REQUIRES IT
 		Double kExcr = DragCalc.calculateKExcrescences(theAircraft.getSWetTotal().doubleValue(SI.SQUARE_METRE));
 
 		calculateCd0Parasite();
