@@ -560,12 +560,16 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 		dataListGlobal.add(new Object[] {"Description","Unit","Value"});
 		dataListGlobal.add(new Object[] {"Xcg structure MAC"," ", _cgStructure.getXMAC()});
 		dataListGlobal.add(new Object[] {"Xcg structure BRF","m", _cgStructure.getXBRF().doubleValue(SI.METER)});
+		dataListGlobal.add(new Object[] {" "});
 		dataListGlobal.add(new Object[] {"Xcg structure and engines MAC","", _cgStructureAndPower.getXMAC()});
 		dataListGlobal.add(new Object[] {"Xcg structure and engines BRF","m", _cgStructureAndPower.getXBRF().doubleValue(SI.METER)});
+		dataListGlobal.add(new Object[] {" "});
 		dataListGlobal.add(new Object[] {"Xcg maximum zero fuel mass MAC","",_cgMZFM.getXMAC()});
 		dataListGlobal.add(new Object[] {"Xcg maximum zero fuel mass BRF","m",_cgMZFM.getXBRF().doubleValue(SI.METER)});
+		dataListGlobal.add(new Object[] {" "});
 		dataListGlobal.add(new Object[] {"Xcg maximum take-off mass MAC","",_cgMTOM.getXMAC()});
 		dataListGlobal.add(new Object[] {"Xcg maximum take-off mass BRF","m",_cgMTOM.getXBRF().doubleValue(SI.METER)});
+		dataListGlobal.add(new Object[] {" "});
 		dataListGlobal.add(new Object[] {"Xcg operating empty mass (max aft)","m",_xCGMaxAftAtOEM});
 		dataListGlobal.add(new Object[] {"Xcg operating empty mass (mean)","m",_xCGMeanAtOEM});
 		dataListGlobal.add(new Object[] {"Xcg operating empty mass (max for)","m",_xCGMaxForAtOEM});
@@ -622,16 +626,16 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 		if(_theAircraft.getFuselage() != null) {
 			Sheet sheetFuselage = wb.createSheet("FUSELAGE");
 			List<Object[]> dataListFuselage = new ArrayList<>();
-			dataListFuselage.add(new Object[] {"Description","Unit","Value","Percent Error"});
+			dataListFuselage.add(new Object[] {"Description","Unit","Value"});
 			dataListFuselage.add(new Object[] {"Xcg LRF","m", _theAircraft.getFuselage().getCG().getXLRF().doubleValue(SI.METER)});
 			dataListFuselage.add(new Object[] {"Ycg LRF","m", _theAircraft.getFuselage().getCG().getYLRF().doubleValue(SI.METER)});
 			dataListFuselage.add(new Object[] {"Zcg LRF","m", _theAircraft.getFuselage().getCG().getZLRF().doubleValue(SI.METER)});
+			dataListFuselage.add(new Object[] {" "});
 			dataListFuselage.add(new Object[] {"Xcg BRF","m", _theAircraft.getFuselage().getCG().getXBRF().doubleValue(SI.METER)});
 			dataListFuselage.add(new Object[] {"Ycg BRF","m", _theAircraft.getFuselage().getCG().getYBRF().doubleValue(SI.METER)});
 			dataListFuselage.add(new Object[] {"Zcg BRF","m", _theAircraft.getFuselage().getCG().getZBRF().doubleValue(SI.METER)});
 			dataListFuselage.add(new Object[] {" "});
 			dataListFuselage.add(new Object[] {"Xcg ESTIMATION METHOD COMPARISON"});
-			int indexFuselage=0;
 			for(MethodEnum methods : _theAircraft.getFuselage().getXCGMap().keySet()) {
 				if(_theAircraft.getFuselage().getXCGMap().get(methods) != null) 
 					dataListFuselage.add(
@@ -639,7 +643,6 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 									methods.toString(),
 									"m",
 									_theAircraft.getFuselage().getXCGMap().get(methods).getEstimatedValue(),
-									_theAircraft.getFuselage().getPercentDifferenceXCG()[indexFuselage]
 							}
 							);
 			}
@@ -687,16 +690,16 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 		if(_theAircraft.getWing() != null) {
 			Sheet sheetWing = wb.createSheet("WING");
 			List<Object[]> dataListWing = new ArrayList<>();
-			dataListWing.add(new Object[] {"Description","Unit","Value","Percent Error"});
+			dataListWing.add(new Object[] {"Description","Unit","Value"});
 			dataListWing.add(new Object[] {"Xcg LRF","m", _theAircraft.getWing().getCG().getXLRF().doubleValue(SI.METER)});
-			dataListWing.add(new Object[] {"Ycg LRF","m", _theAircraft.getWing().getCG().getYLRF().doubleValue(SI.METER)});
+			dataListWing.add(new Object[] {"Ycg LRF (semi-wing)","m", _theAircraft.getWing().getCG().getYLRF().doubleValue(SI.METER)});
 			dataListWing.add(new Object[] {"Zcg LRF","m", _theAircraft.getWing().getCG().getZLRF().doubleValue(SI.METER)});
+			dataListWing.add(new Object[] {" "});
 			dataListWing.add(new Object[] {"Xcg BRF","m", _theAircraft.getWing().getCG().getXBRF().doubleValue(SI.METER)});
-			dataListWing.add(new Object[] {"Ycg BRF","m", _theAircraft.getWing().getCG().getYBRF().doubleValue(SI.METER)});
+			dataListWing.add(new Object[] {"Ycg BRF (semi-wing)","m", _theAircraft.getWing().getCG().getYBRF().doubleValue(SI.METER)});
 			dataListWing.add(new Object[] {"Zcg BRF","m", _theAircraft.getWing().getCG().getZBRF().doubleValue(SI.METER)});
 			dataListWing.add(new Object[] {" "});
 			dataListWing.add(new Object[] {"Xcg ESTIMATION METHOD COMPARISON"});
-			int indexWing=0;
 			for(MethodEnum methods : _theAircraft.getWing().getXCGMap().keySet()) {
 				if(_theAircraft.getWing().getXCGMap().get(methods) != null) 
 					dataListWing.add(
@@ -704,14 +707,11 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 									methods.toString(),
 									"m",
 									_theAircraft.getWing().getXCGMap().get(methods).getEstimatedValue(),
-									_theAircraft.getWing().getPercentDifferenceXCG()[indexWing]
 							}
 							);
-				indexWing++;
 			}
 			dataListWing.add(new Object[] {" "});
 			dataListWing.add(new Object[] {"Ycg ESTIMATION METHOD COMPARISON"});
-			indexWing=0;
 			for(MethodEnum methods : _theAircraft.getWing().getYCGMap().keySet()) {
 				if(_theAircraft.getWing().getYCGMap().get(methods) != null) 
 					dataListWing.add(
@@ -719,10 +719,8 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 									methods.toString(),
 									"m",
 									_theAircraft.getWing().getYCGMap().get(methods).getEstimatedValue(),
-									_theAircraft.getWing().getPercentDifferenceYCG()[indexWing]
 							}
 							);
-				indexWing++;
 			}
 			
 			Row rowWing = sheetWing.createRow(0);
@@ -768,16 +766,16 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 		if(_theAircraft.getHTail() != null) {
 			Sheet sheetHTail = wb.createSheet("HORIZONTAL TAIL");
 			List<Object[]> dataListHTail = new ArrayList<>();
-			dataListHTail.add(new Object[] {"Description","Unit","Value","Percent Error"});
+			dataListHTail.add(new Object[] {"Description","Unit","Value"});
 			dataListHTail.add(new Object[] {"Xcg LRF","m", _theAircraft.getHTail().getCG().getXLRF().doubleValue(SI.METER)});
-			dataListHTail.add(new Object[] {"Ycg LRF","m", _theAircraft.getHTail().getCG().getYLRF().doubleValue(SI.METER)});
+			dataListHTail.add(new Object[] {"Ycg LRF (semi-tail)","m", _theAircraft.getHTail().getCG().getYLRF().doubleValue(SI.METER)});
 			dataListHTail.add(new Object[] {"Zcg LRF","m", _theAircraft.getHTail().getCG().getZLRF().doubleValue(SI.METER)});
+			dataListHTail.add(new Object[] {" "});
 			dataListHTail.add(new Object[] {"Xcg BRF","m", _theAircraft.getHTail().getCG().getXBRF().doubleValue(SI.METER)});
-			dataListHTail.add(new Object[] {"Ycg BRF","m", _theAircraft.getHTail().getCG().getYBRF().doubleValue(SI.METER)});
+			dataListHTail.add(new Object[] {"Ycg BRF (semi-tail)","m", _theAircraft.getHTail().getCG().getYBRF().doubleValue(SI.METER)});
 			dataListHTail.add(new Object[] {"Zcg BRF","m", _theAircraft.getHTail().getCG().getZBRF().doubleValue(SI.METER)});
 			dataListHTail.add(new Object[] {" "});
 			dataListHTail.add(new Object[] {"Xcg ESTIMATION METHOD COMPARISON"});
-			int indexHTail=0;
 			for(MethodEnum methods : _theAircraft.getHTail().getXCGMap().keySet()) {
 				if(_theAircraft.getHTail().getXCGMap().get(methods) != null) 
 					dataListHTail.add(
@@ -785,14 +783,11 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 									methods.toString(),
 									"m",
 									_theAircraft.getHTail().getXCGMap().get(methods).getEstimatedValue(),
-									_theAircraft.getHTail().getPercentDifferenceXCG()[indexHTail]
 							}
 							);
-				indexHTail++;
 			}
 			dataListHTail.add(new Object[] {" "});
 			dataListHTail.add(new Object[] {"Ycg ESTIMATION METHOD COMPARISON"});
-			indexHTail=0;
 			for(MethodEnum methods : _theAircraft.getHTail().getYCGMap().keySet()) {
 				if(_theAircraft.getHTail().getYCGMap().get(methods) != null) 
 					dataListHTail.add(
@@ -800,10 +795,8 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 									methods.toString(),
 									"m",
 									_theAircraft.getHTail().getYCGMap().get(methods).getEstimatedValue(),
-									_theAircraft.getHTail().getPercentDifferenceYCG()[indexHTail]
 							}
 							);
-				indexHTail++;
 			}
 			
 			Row rowHTail = sheetHTail.createRow(0);
@@ -850,16 +843,16 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 		if(_theAircraft.getVTail() != null) {
 			Sheet sheetVTail = wb.createSheet("VERTICAL TAIL");
 			List<Object[]> dataListVTail = new ArrayList<>();
-			dataListVTail.add(new Object[] {"Description","Unit","Value","Percent Error"});
+			dataListVTail.add(new Object[] {"Description","Unit","Value"});
 			dataListVTail.add(new Object[] {"Xcg LRF","m", _theAircraft.getVTail().getCG().getXLRF().doubleValue(SI.METER)});
-			dataListVTail.add(new Object[] {"Ycg LRF","m", _theAircraft.getVTail().getCG().getYLRF().doubleValue(SI.METER)});
+			dataListVTail.add(new Object[] {"Ycg LRF (semi-tail)","m", _theAircraft.getVTail().getCG().getYLRF().doubleValue(SI.METER)});
 			dataListVTail.add(new Object[] {"Zcg LRF","m", _theAircraft.getVTail().getCG().getZLRF().doubleValue(SI.METER)});
+			dataListVTail.add(new Object[] {" "});
 			dataListVTail.add(new Object[] {"Xcg BRF","m", _theAircraft.getVTail().getCG().getXBRF().doubleValue(SI.METER)});
-			dataListVTail.add(new Object[] {"Ycg BRF","m", _theAircraft.getVTail().getCG().getYBRF().doubleValue(SI.METER)});
+			dataListVTail.add(new Object[] {"Ycg BRF (semi-tail)","m", _theAircraft.getVTail().getCG().getYBRF().doubleValue(SI.METER)});
 			dataListVTail.add(new Object[] {"Zcg BRF","m", _theAircraft.getVTail().getCG().getZBRF().doubleValue(SI.METER)});
 			dataListVTail.add(new Object[] {" "});
 			dataListVTail.add(new Object[] {"Xcg ESTIMATION METHOD COMPARISON"});
-			int indexVTail=0;
 			for(MethodEnum methods : _theAircraft.getVTail().getXCGMap().keySet()) {
 				if(_theAircraft.getVTail().getXCGMap().get(methods) != null) 
 					dataListVTail.add(
@@ -867,14 +860,11 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 									methods.toString(),
 									"m",
 									_theAircraft.getVTail().getXCGMap().get(methods).getEstimatedValue(),
-									_theAircraft.getVTail().getPercentDifferenceXCG()[indexVTail]
 							}
 							);
-				indexVTail++;
 			}
 			dataListVTail.add(new Object[] {" "});
 			dataListVTail.add(new Object[] {"Ycg ESTIMATION METHOD COMPARISON"});
-			indexVTail=0;
 			for(MethodEnum methods : _theAircraft.getVTail().getYCGMap().keySet()) {
 				if(_theAircraft.getVTail().getYCGMap().get(methods) != null) 
 					dataListVTail.add(
@@ -882,10 +872,8 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 									methods.toString(),
 									"m",
 									_theAircraft.getVTail().getYCGMap().get(methods).getEstimatedValue(),
-									_theAircraft.getVTail().getPercentDifferenceYCG()[indexVTail]
 							}
 							);
-				indexVTail++;
 			}
 			
 			Row rowVTail = sheetVTail.createRow(0);
@@ -932,16 +920,16 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 		if(_theAircraft.getCanard() != null) {
 			Sheet sheetCanard = wb.createSheet("CANARD");
 			List<Object[]> dataListCanard = new ArrayList<>();
-			dataListCanard.add(new Object[] {"Description","Unit","Value","Percent Error"});
+			dataListCanard.add(new Object[] {"Description","Unit","Value"});
 			dataListCanard.add(new Object[] {"Xcg LRF","m", _theAircraft.getCanard().getCG().getXLRF().doubleValue(SI.METER)});
-			dataListCanard.add(new Object[] {"Ycg LRF","m", _theAircraft.getCanard().getCG().getYLRF().doubleValue(SI.METER)});
+			dataListCanard.add(new Object[] {"Ycg LRF (semi-canard)","m", _theAircraft.getCanard().getCG().getYLRF().doubleValue(SI.METER)});
 			dataListCanard.add(new Object[] {"Zcg LRF","m", _theAircraft.getCanard().getCG().getZLRF().doubleValue(SI.METER)});
+			dataListCanard.add(new Object[] {" "});
 			dataListCanard.add(new Object[] {"Xcg BRF","m", _theAircraft.getCanard().getCG().getXBRF().doubleValue(SI.METER)});
-			dataListCanard.add(new Object[] {"Ycg BRF","m", _theAircraft.getCanard().getCG().getYBRF().doubleValue(SI.METER)});
+			dataListCanard.add(new Object[] {"Ycg BRF (semi-canard)","m", _theAircraft.getCanard().getCG().getYBRF().doubleValue(SI.METER)});
 			dataListCanard.add(new Object[] {"Zcg BRF","m", _theAircraft.getCanard().getCG().getZBRF().doubleValue(SI.METER)});
 			dataListCanard.add(new Object[] {" "});
 			dataListCanard.add(new Object[] {"Xcg ESTIMATION METHOD COMPARISON"});
-			int indexCanard=0;
 			for(MethodEnum methods : _theAircraft.getCanard().getXCGMap().keySet()) {
 				if(_theAircraft.getCanard().getXCGMap().get(methods) != null) 
 					dataListCanard.add(
@@ -949,14 +937,11 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 									methods.toString(),
 									"m",
 									_theAircraft.getCanard().getXCGMap().get(methods).getEstimatedValue(),
-									_theAircraft.getCanard().getPercentDifferenceXCG()[indexCanard]
 							}
 							);
-				indexCanard++;
 			}
 			dataListCanard.add(new Object[] {" "});
 			dataListCanard.add(new Object[] {"Ycg ESTIMATION METHOD COMPARISON"});
-			indexCanard=0;
 			for(MethodEnum methods : _theAircraft.getCanard().getYCGMap().keySet()) {
 				if(_theAircraft.getCanard().getYCGMap().get(methods) != null) 
 					dataListCanard.add(
@@ -964,10 +949,8 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 									methods.toString(),
 									"m",
 									_theAircraft.getCanard().getYCGMap().get(methods).getEstimatedValue(),
-									_theAircraft.getCanard().getPercentDifferenceYCG()[indexCanard]
 							}
 							);
-				indexCanard++;
 			}
 			
 			Row rowCanard = sheetCanard.createRow(0);
@@ -1015,24 +998,20 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 			Sheet sheetNacelles = wb.createSheet("NACELLES");
 			List<Object[]> dataListNacelles = new ArrayList<>();
 			dataListNacelles.add(new Object[] {"Description","Unit","Value"});
-			dataListNacelles.add(new Object[] {"Total Xcg LRF","m", _theAircraft.getNacelles().getTotalCG().getXLRF().doubleValue(SI.METER)});
-			dataListNacelles.add(new Object[] {"Total Xcg BRF","m", _theAircraft.getNacelles().getTotalCG().getXBRF().doubleValue(SI.METER)});
-			dataListNacelles.add(new Object[] {"Total Ycg LRF","m", _theAircraft.getNacelles().getTotalCG().getYLRF().doubleValue(SI.METER)});
-			dataListNacelles.add(new Object[] {"Total Ycg BRF","m", _theAircraft.getNacelles().getTotalCG().getYBRF().doubleValue(SI.METER)});
-			dataListNacelles.add(new Object[] {"Total Zcg LRF","m", _theAircraft.getNacelles().getTotalCG().getZLRF().doubleValue(SI.METER)});
-			dataListNacelles.add(new Object[] {"Total Zcg BRF","m", _theAircraft.getNacelles().getTotalCG().getZBRF().doubleValue(SI.METER)});
-			dataListNacelles.add(new Object[] {" "});
 			dataListNacelles.add(new Object[] {"BALANCE ESTIMATION FOR EACH NACELLE"});
 			dataListNacelles.add(new Object[] {" "});
 			for(int iNacelle = 0; iNacelle < _theAircraft.getNacelles().getNacellesNumber(); iNacelle++) {
 				dataListNacelles.add(new Object[] {"NACELLE " + (iNacelle+1)});
 				dataListNacelles.add(new Object[] {"Xcg LRF","m", _theAircraft.getNacelles().getCGList().get(iNacelle).getXLRF().doubleValue(SI.METER)});
-				dataListNacelles.add(new Object[] {"Xcg BRF","m", _theAircraft.getNacelles().getCGList().get(iNacelle).getXBRF().doubleValue(SI.METER)});
 				dataListNacelles.add(new Object[] {"Ycg LRF","m", _theAircraft.getNacelles().getCGList().get(iNacelle).getYLRF().doubleValue(SI.METER)});
-				dataListNacelles.add(new Object[] {"Ycg BRF","m", _theAircraft.getNacelles().getCGList().get(iNacelle).getYBRF().doubleValue(SI.METER)});
 				dataListNacelles.add(new Object[] {"Zcg LRF","m", _theAircraft.getNacelles().getCGList().get(iNacelle).getZLRF().doubleValue(SI.METER)});
+				dataListNacelles.add(new Object[] {" "});
+				dataListNacelles.add(new Object[] {"Xcg BRF","m", _theAircraft.getNacelles().getCGList().get(iNacelle).getXBRF().doubleValue(SI.METER)});
+				dataListNacelles.add(new Object[] {"Ycg BRF","m", _theAircraft.getNacelles().getCGList().get(iNacelle).getYBRF().doubleValue(SI.METER)});
 				dataListNacelles.add(new Object[] {"Zcg BRF","m", _theAircraft.getNacelles().getCGList().get(iNacelle).getZBRF().doubleValue(SI.METER)});
-				dataListNacelles.add(new Object[] {" "});	
+				dataListNacelles.add(new Object[] {" "});
+				dataListNacelles.add(new Object[] {" "});
+				dataListNacelles.add(new Object[] {" "});
 			}
 			
 			Row rowNacelles = sheetNacelles.createRow(0);
@@ -1080,23 +1059,19 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 			Sheet sheetPowerPlant = wb.createSheet("POWER PLANT");
 			List<Object[]> dataListPowerPlant = new ArrayList<>();
 			dataListPowerPlant.add(new Object[] {"Description","Unit","Value"});
-			dataListPowerPlant.add(new Object[] {"Total Xcg LRF","m", _theAircraft.getPowerPlant().getTotalCG().getXLRF().doubleValue(SI.METER)});
-			dataListPowerPlant.add(new Object[] {"Total Xcg BRF","m", _theAircraft.getPowerPlant().getTotalCG().getXBRF().doubleValue(SI.METER)});
-			dataListPowerPlant.add(new Object[] {"Total Ycg LRF","m", _theAircraft.getPowerPlant().getTotalCG().getYLRF().doubleValue(SI.METER)});
-			dataListPowerPlant.add(new Object[] {"Total Ycg BRF","m", _theAircraft.getPowerPlant().getTotalCG().getYBRF().doubleValue(SI.METER)});
-			dataListPowerPlant.add(new Object[] {"Total Zcg LRF","m", _theAircraft.getPowerPlant().getTotalCG().getZLRF().doubleValue(SI.METER)});
-			dataListPowerPlant.add(new Object[] {"Total Zcg BRF","m", _theAircraft.getPowerPlant().getTotalCG().getZBRF().doubleValue(SI.METER)});
-			dataListPowerPlant.add(new Object[] {" "});
 			dataListPowerPlant.add(new Object[] {"BALANCE ESTIMATION FOR EACH ENGINE"});
 			dataListPowerPlant.add(new Object[] {" "});
 			for(int iEngines = 0; iEngines < _theAircraft.getPowerPlant().getEngineNumber(); iEngines++) {
 				dataListPowerPlant.add(new Object[] {"ENGINE " + (iEngines+1)});
 				dataListPowerPlant.add(new Object[] {"Xcg LRF","m", _theAircraft.getPowerPlant().getCGList().get(iEngines).getXLRF().doubleValue(SI.METER)});
-				dataListPowerPlant.add(new Object[] {"Xcg BRF","m", _theAircraft.getPowerPlant().getCGList().get(iEngines).getXBRF().doubleValue(SI.METER)});
 				dataListPowerPlant.add(new Object[] {"Ycg LRF","m", _theAircraft.getPowerPlant().getCGList().get(iEngines).getYLRF().doubleValue(SI.METER)});
-				dataListPowerPlant.add(new Object[] {"Ycg BRF","m", _theAircraft.getPowerPlant().getCGList().get(iEngines).getYBRF().doubleValue(SI.METER)});
 				dataListPowerPlant.add(new Object[] {"Zcg LRF","m", _theAircraft.getPowerPlant().getCGList().get(iEngines).getZLRF().doubleValue(SI.METER)});
+				dataListPowerPlant.add(new Object[] {" "});
+				dataListPowerPlant.add(new Object[] {"Xcg BRF","m", _theAircraft.getPowerPlant().getCGList().get(iEngines).getXBRF().doubleValue(SI.METER)});
+				dataListPowerPlant.add(new Object[] {"Ycg BRF","m", _theAircraft.getPowerPlant().getCGList().get(iEngines).getYBRF().doubleValue(SI.METER)});
 				dataListPowerPlant.add(new Object[] {"Zcg BRF","m", _theAircraft.getPowerPlant().getCGList().get(iEngines).getZBRF().doubleValue(SI.METER)});
+				dataListPowerPlant.add(new Object[] {" "});	
+				dataListPowerPlant.add(new Object[] {" "});	
 				dataListPowerPlant.add(new Object[] {" "});	
 			}
 			
@@ -1146,11 +1121,13 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 			List<Object[]> dataListLandingGears = new ArrayList<>();
 			dataListLandingGears.add(new Object[] {"Description","Unit","Value"});
 			dataListLandingGears.add(new Object[] {"Xcg LRF","m", _theAircraft.getLandingGears().getCG().getXLRF().doubleValue(SI.METER)});
-			dataListLandingGears.add(new Object[] {"Xcg BRF","m", _theAircraft.getLandingGears().getCG().getXBRF().doubleValue(SI.METER)});
 			dataListLandingGears.add(new Object[] {"Ycg LRF","m", _theAircraft.getLandingGears().getCG().getYLRF().doubleValue(SI.METER)});
-			dataListLandingGears.add(new Object[] {"Ycg BRF","m", _theAircraft.getLandingGears().getCG().getYBRF().doubleValue(SI.METER)});
 			dataListLandingGears.add(new Object[] {"Zcg LRF","m", _theAircraft.getLandingGears().getCG().getZLRF().doubleValue(SI.METER)});
+			dataListLandingGears.add(new Object[] {" "});
+			dataListLandingGears.add(new Object[] {"Xcg BRF","m", _theAircraft.getLandingGears().getCG().getXBRF().doubleValue(SI.METER)});
+			dataListLandingGears.add(new Object[] {"Ycg BRF","m", _theAircraft.getLandingGears().getCG().getYBRF().doubleValue(SI.METER)});
 			dataListLandingGears.add(new Object[] {"Zcg BRF","m", _theAircraft.getLandingGears().getCG().getZBRF().doubleValue(SI.METER)});
+			dataListLandingGears.add(new Object[] {" "});
 
 			Row rowLandingGears = sheetLandingGears.createRow(0);
 			Object[] objArrLandingGears = dataListLandingGears.get(0);
@@ -1240,31 +1217,31 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 	 * @param conditions
 	 * @param methodsMap
 	 */
-	public void calculateBalance(){
+	public void calculateBalance(Map<ComponentEnum, MethodEnum> _methodsMapBalance){
 
 		if(_theAircraft.getFuselage() != null) {
 			_theAircraft.getFuselage().setMassEstimated(_fuselageMass);
-			_theAircraft.getFuselage().calculateCG(_theAircraft);
+			_theAircraft.getFuselage().calculateCG(_theAircraft, _methodsMapBalance);
 		}
 		
 		if(_theAircraft.getWing() != null) {
 			_theAircraft.getWing().setMassEstimated(_wingMass);
-			_theAircraft.getWing().calculateCG(ComponentEnum.WING);
+			_theAircraft.getWing().calculateCG(ComponentEnum.WING, _methodsMapBalance);
 		}
 		
 		if(_theAircraft.getHTail() != null) {
 			_theAircraft.getHTail().setMassEstimated(_horizontalTailMass);
-			_theAircraft.getHTail().calculateCG(ComponentEnum.HORIZONTAL_TAIL);
+			_theAircraft.getHTail().calculateCG(ComponentEnum.HORIZONTAL_TAIL, _methodsMapBalance);
 		}
 		
 		if(_theAircraft.getVTail() != null) {
 			_theAircraft.getVTail().setMassEstimated(_verticalTailMass);
-			_theAircraft.getVTail().calculateCG(ComponentEnum.VERTICAL_TAIL);
+			_theAircraft.getVTail().calculateCG(ComponentEnum.VERTICAL_TAIL, _methodsMapBalance);
 		}
 		
 		if(_theAircraft.getCanard() != null) {
 			_theAircraft.getCanard().setMassEstimated(_canardMass);
-			_theAircraft.getCanard().calculateCG(ComponentEnum.CANARD);
+			_theAircraft.getCanard().calculateCG(ComponentEnum.CANARD, _methodsMapBalance);
 		}
 		
 		if(_theAircraft.getNacelles() != null) {
@@ -1358,6 +1335,14 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 
 		}
 
+		///////////////////////////////////////////////////////
+		//										     		 //
+		//	CALCULATE Zcg STRUCTURAL AND OTHER Zcg   		 //
+		//  SEE HOW TO CALCULATE WELL THE BOARDING DIAGRAM	 //
+		//  FIX THE LANDING GEAR CG IN LRF					 //	
+		//													 //
+		///////////////////////////////////////////////////////
+		
 		_cgStructure.setXBRF(
 				Amount.valueOf(prod/sum, SI.METER));
 

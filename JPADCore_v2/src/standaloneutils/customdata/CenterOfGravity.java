@@ -8,6 +8,8 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
+import configuration.enumerations.ComponentEnum;
+
 /** 
  * Holds every useful information about center of gravity.
  * Default unit of measurement: SI meters
@@ -109,24 +111,41 @@ public class CenterOfGravity {
 		_z0 = z;
 	}
 	
-	public void calculateCGinBRF() {
+	public void calculateCGinBRF(ComponentEnum type) {
 
-		if (_xBRF == null) {
-			_xBRF = Amount.valueOf(_xLRF.getEstimatedValue(), SI.METER);
-		} else {
-			_xBRF = _x0.plus(_xLRF);
+		if(type == ComponentEnum.VERTICAL_TAIL) {
+			if (_xBRF == null) {
+				_xBRF = Amount.valueOf(_xLRF.getEstimatedValue(), SI.METER);
+			} else {
+				_xBRF = _x0.plus(_xLRF);
+			}
+
+			_yBRF = Amount.valueOf(0.0, SI.METER);
+
+			if (_zBRF == null) {
+				_zBRF = Amount.valueOf(_yLRF.getEstimatedValue(), SI.METER);
+			} else {
+				_zBRF = _y0.plus(_yLRF);
+			}
 		}
+		else {
+			if (_xBRF == null) {
+				_xBRF = Amount.valueOf(_xLRF.getEstimatedValue(), SI.METER);
+			} else {
+				_xBRF = _x0.plus(_xLRF);
+			}
 
-		if (_yBRF == null) {
-			_yBRF = Amount.valueOf(_yLRF.getEstimatedValue(), SI.METER);
-		} else {
-			_yBRF = _y0.plus(_yLRF);
-		}
+			if (_yBRF == null) {
+				_yBRF = Amount.valueOf(_yLRF.getEstimatedValue(), SI.METER);
+			} else {
+				_yBRF = _y0.plus(_yLRF);
+			}
 
-		if (_zBRF == null) {
-			_zBRF = Amount.valueOf(_zLRF.getEstimatedValue(), SI.METER);
-		} else {
-			_zBRF = _z0.plus(_zLRF);
+			if (_zBRF == null) {
+				_zBRF = Amount.valueOf(_zLRF.getEstimatedValue(), SI.METER);
+			} else {
+				_zBRF = _z0.plus(_zLRF);
+			}
 		}
 	}
 

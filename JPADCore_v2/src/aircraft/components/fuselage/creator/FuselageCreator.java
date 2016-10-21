@@ -1764,8 +1764,6 @@ public class FuselageCreator implements IFuselageCreator {
 //		Amount<?> deckNum = reader.getXMLAmountWithUnitByPath("//global_data/deck_number").to(Unit.ONE);
 		
 		Amount<Length> len = reader.getXMLAmountLengthByPath("//global_data/length");
-		List<String> refMassProp = reader.getXMLPropertiesByPath("//global_data/mass_reference");
-		Amount massReference = Amount.valueOf(Double.valueOf(refMassProp.get(0)), SI.KILOGRAM);
 		Amount<Length> roughness = reader.getXMLAmountLengthByPath("//global_data/roughness");
 		
 		// NOSE TRUNK
@@ -1832,7 +1830,6 @@ public class FuselageCreator implements IFuselageCreator {
 				//GLOBAL DATA
 				.length(len)
 				.deckNumber(deckNum)
-				.massReference(massReference)
 				.roughness(roughness)
 				// NOSE TRUNK
 				.dxNoseCapPercent(dxNoseCapPercent)
@@ -1873,7 +1870,6 @@ public class FuselageCreator implements IFuselageCreator {
 		// optional parameters ... defaults
 		// ...
 		private int _deckNumber = 1;
-		private Amount<Mass> _massReference = Amount.valueOf(3300, SI.KILOGRAM);
 
 		private List<SpoilerCreator> _spoilers = new ArrayList<SpoilerCreator>();
 		private Boolean _pressurized;
@@ -1985,7 +1981,6 @@ public class FuselageCreator implements IFuselageCreator {
 				_heightN      = Amount.valueOf(-0.15*_sectionCylinderHeight.doubleValue(SI.METRE), SI.METRE);
 				_heightT      = Amount.valueOf(  0.8*(0.5*_sectionCylinderHeight.doubleValue(SI.METRE)), SI.METRE);
 
-				_massReference = Amount.valueOf(3340.6, SI.KILOGRAM);
 				_pressurized = true;
 
 				// Section parameters
@@ -2033,7 +2028,6 @@ public class FuselageCreator implements IFuselageCreator {
 				_heightN      = Amount.valueOf(-0.089*_sectionCylinderHeight.doubleValue(SI.METRE), SI.METRE);
 				_heightT      = Amount.valueOf( 0.457*(0.5*_sectionCylinderHeight.doubleValue(SI.METRE)), SI.METRE);
 
-				_massReference = Amount.valueOf(32061.0, SI.KILOGRAM);
 				_pressurized = true;
 
 				// Section parameters
@@ -2081,7 +2075,6 @@ public class FuselageCreator implements IFuselageCreator {
 				_heightN      = Amount.valueOf(-0.1698*_sectionCylinderHeight.doubleValue(SI.METRE), SI.METRE);
 				_heightT      = Amount.valueOf( 0.262*(0.5*_sectionCylinderHeight.doubleValue(SI.METRE)), SI.METRE);
 
-				_massReference = Amount.valueOf(6106.0, SI.KILOGRAM);
 				_pressurized = true;
 
 				// Section parameters
@@ -2119,11 +2112,6 @@ public class FuselageCreator implements IFuselageCreator {
 			return this;
 		}
 		
-		public FuselageBuilder massReference(Amount<Mass> massReference) {
-			_massReference = massReference;
-			return this;
-		}
-
 		public FuselageBuilder pressurized(Boolean pressurized){
 			_pressurized = pressurized;
 			return this;
@@ -2270,7 +2258,6 @@ public class FuselageCreator implements IFuselageCreator {
 	private FuselageCreator(FuselageBuilder builder) {
 		this.id = builder._id;
 		this.deckNumber = builder._deckNumber;
-		this.massReference = builder._massReference;
 		this.pressurized = builder._pressurized;
 		this.lenF = builder._lenF;
 		this.lenRatioNF = builder._lenRatioNF;
@@ -2313,7 +2300,6 @@ public class FuselageCreator implements IFuselageCreator {
 				.append("\tID: '" + id + "'\n")
 				.append("\tPressurized: '" + pressurized + "'\n")
 				.append("\tNumber of decks: " + deckNumber + "\n")
-				.append("\tMass reference: " + massReference + "\n")
 				.append("\tRoughness: " + roughness + "\n")
 				.append("\t·····································\n")
 				.append("\tLength: " + lenF + "\n")
@@ -2336,26 +2322,7 @@ public class FuselageCreator implements IFuselageCreator {
 				.append("\t·····································\n")
 				.append("\tDiscretization\n")
 				.append("\tNo. points (Nose/Cabin/Tail); " + npN + ", " + npC + ", " + npT + "\n")
-				.append("\t·····································\n")
-//
-// TODO
-//				dxNoseCapPercent;
-//				dxTailCapPercent;
-//				windshieldType;
-//				windshieldHeight;
-//				windshieldWidth;
-//				sectionCylinderLowerToTotalHeightRatio;
-//				sectionCylinderRhoUpper;
-//				sectionCylinderRhoLower;
-//				sectionNoseMidLowerToTotalHeightRatio;
-//				sectionTailMidLowerToTotalHeightRatio;
-//				sectionMidNoseRhoUpper;
-//				sectionMidTailRhoUpper;
-//				sectionMidNoseRhoLower;
-//				sectionMidTailRhoLower;
-//
-// TODO add discretized data output
-				;
+				.append("\t·····································\n");
 		
 		if(!(spoilers == null)) {
 			for (SpoilerCreator spoilers : spoilers) {

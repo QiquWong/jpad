@@ -71,6 +71,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	private Amount<Pressure> _maxDynamicPressure;
 	
 	private Map <ComponentEnum, MethodEnum> _methodsMapWeights;
+	private Map <ComponentEnum, MethodEnum> _methodsMapBalance;
 	private Map <AnalysisTypeEnum, Boolean> _executedAnalysesMap;
 	private List<ACCalculatorManager> _theCalculatorsList;
 	private List<AnalysisTypeEnum> _analysisList;
@@ -103,6 +104,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		private Amount<Duration> __flightTime;
 		
 		private Map <ComponentEnum, MethodEnum> __methodsMapWeights = new HashMap<ComponentEnum, MethodEnum>();
+		private Map <ComponentEnum, MethodEnum> __methodsMapBalance = new HashMap<ComponentEnum, MethodEnum>();
 		private Map <AnalysisTypeEnum, Boolean> __executedAnalysesMap = new HashMap<AnalysisTypeEnum, Boolean>();
 		private List<ACCalculatorManager> __theCalculatorsList = new ArrayList<ACCalculatorManager>();
 		private List<AnalysisTypeEnum> __analysisList = new ArrayList<AnalysisTypeEnum>();
@@ -169,6 +171,11 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		
 		public ACAnalysisManagerBuilder methodsMapWeights (Map<ComponentEnum, MethodEnum> methodsMapWeights) {
 			this.__methodsMapWeights = methodsMapWeights;
+			return this;
+		}
+		
+		public ACAnalysisManagerBuilder methodsMapBalance (Map<ComponentEnum, MethodEnum> methodsMapBalance) {
+			this.__methodsMapBalance = methodsMapBalance;
 			return this;
 		}
 		
@@ -245,6 +252,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		this._flightTime = builder.__flightTime;
 		
 		this._methodsMapWeights = builder.__methodsMapWeights;
+		this._methodsMapBalance = builder.__methodsMapBalance;
 		this._executedAnalysesMap = builder.__executedAnalysesMap;
 		this._theCalculatorsList = builder.__theCalculatorsList;
 		this._analysisList = builder.__analysisList;
@@ -508,14 +516,73 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		
 		//-------------------------------------------------------------------------------------------
 		// BALANCE ANALYSIS:
+		Map<ComponentEnum, MethodEnum> methodsMapBalance = new HashMap<>();
+		
 		String balanceFile = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
 						"//balance/@file");
 		
-		if(balanceFile != null) 		
+		if(balanceFile != null)  {		
 			analysisList.add(AnalysisTypeEnum.BALANCE);
-		
+			String fuselageBalanceMethod = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//balance/@method_fuselage");
+			if (fuselageBalanceMethod != null) {
+				if(fuselageBalanceMethod.equalsIgnoreCase("SFORZA")) {
+					methodsMapBalance.put(ComponentEnum.FUSELAGE, MethodEnum.SFORZA);
+				}
+				else if(fuselageBalanceMethod.equalsIgnoreCase("TORENBEEK_1982")) {
+					methodsMapBalance.put(ComponentEnum.FUSELAGE, MethodEnum.TORENBEEK_1982);
+				}
+				else 
+					methodsMapBalance.put(ComponentEnum.FUSELAGE, MethodEnum.AVERAGE);
+			}
+
+			String wingBalanceMethod = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//balance/@method_wing");
+			if(wingBalanceMethod != null) {
+				if(wingBalanceMethod.equalsIgnoreCase("SFORZA")) {
+					methodsMapBalance.put(ComponentEnum.WING, MethodEnum.SFORZA);
+				}
+				else if(wingBalanceMethod.equalsIgnoreCase("TORENBEEK_1982")) {
+					methodsMapBalance.put(ComponentEnum.WING, MethodEnum.TORENBEEK_1982);
+				}
+				else 
+					methodsMapBalance.put(ComponentEnum.WING, MethodEnum.AVERAGE);
+			}
+
+			String hTailBalanceMethod = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//balance/@method_htail");
+			if(hTailBalanceMethod != null) {
+				if(hTailBalanceMethod.equalsIgnoreCase("TORENBEEK_1982")) {
+					methodsMapBalance.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.TORENBEEK_1982);
+				}
+				else 
+					methodsMapBalance.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.AVERAGE);
+			}
+
+			String vTailBalanceMethod = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//balance/@method_vtail");
+			if(vTailBalanceMethod != null) {
+				if(vTailBalanceMethod.equalsIgnoreCase("TORENBEEK_1982")) {
+					methodsMapBalance.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.TORENBEEK_1982);
+				}
+				else 
+					methodsMapBalance.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.AVERAGE);
+			}
+
+			// FIXME : CANARD BALANCE METHODS ARE NOT DEFINED!!
+
+		}
+			
 		_balanceFileComplete = new File(
 				MyConfiguration.getDir(FoldersEnum.INPUT_DIR)
 				+ File.separator 
@@ -555,6 +622,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				.blockTime(blockTime)
 				.flightTime(flightTime)
 				.methodsMapWeights(methodsMapWeights)
+				.methodsMapBalance(methodsMapBalance)
 				.build();
 	
 		return theAnalysisManager;
@@ -633,25 +701,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 
 		if (aircraft == null) return;
 
-// 		TODO : THIS MAY BE NECESSARY FOR THE AERODYNAMIC ANALYSIS
-//		
-//		//it's possible to define a method setDatabase
-//		if (aircraft.getWing().getAerodynamicDatabaseReader() != null){
-//				aircraft.getTheAnalysisManager().getTheAerodynamics().setAerodynamicDatabaseReader(
-//						aircraft
-//						.getWing()
-//						.getAerodynamicDatabaseReader()
-//						);
-//				}
-//		
-//		if (aircraft.getWing().getHighLiftDatabaseReader() != null){
-//				aircraft.getTheAnalysisManager().getTheAerodynamics().setHighLiftDatabaseReader(
-//						aircraft
-//						.getWing()
-//						.getHighLiftDatabaseReader()
-//						);
-//				}
-				
 		if (this._analysisList.contains(AnalysisTypeEnum.WEIGHTS)) {
 			_theWeights = ACWeightsManager.importFromXML(_weightsFileComplete.getAbsolutePath(), aircraft);
 			calculateWeights(aircraft, resultsFolderPath); 
@@ -711,7 +760,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	public void calculateBalance(Aircraft aircraft, String resultsFolderPath) {
 
 		// Estimate center of gravity location
-		aircraft.getTheAnalysisManager().getTheBalance().calculateBalance();
+		aircraft.getTheAnalysisManager().getTheBalance().calculateBalance(_methodsMapBalance);
 		System.out.println(aircraft.getTheAnalysisManager().getTheBalance().toString());
 		try {
 			String balanceFolderPath = JPADStaticWriteUtils.createNewFolder(
@@ -924,6 +973,14 @@ public class ACAnalysisManager implements IACAnalysisManager {
 
 	public void setMethodsMapWeights(Map<ComponentEnum, MethodEnum> _methodsMap) {
 		this._methodsMapWeights = _methodsMap;
+	}
+
+	public Map<ComponentEnum, MethodEnum> getMethodsMapBalance() {
+		return _methodsMapBalance;
+	}
+
+	public void setMethodsMapBalance(Map<ComponentEnum, MethodEnum> _methodsMapBalance) {
+		this._methodsMapBalance = _methodsMapBalance;
 	}
 
 	public Map<AnalysisTypeEnum, Boolean> getExecutedAnalysesMap() {

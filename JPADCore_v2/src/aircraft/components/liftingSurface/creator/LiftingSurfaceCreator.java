@@ -812,8 +812,14 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		else if(type.equals(ComponentEnum.HORIZONTAL_TAIL)) { 
 
 			//---------------------------------------------------------------------------------
+			// GLOBAL DATA
+			Double compositeCorrectionFactor = Double.valueOf(reader.getXMLPropertyByPath("//global_data/composite_correction_factor"));
+			liftingSurface.setCompositeCorrectioFactor(compositeCorrectionFactor);
+			Amount<Length> roughness = reader.getXMLAmountLengthByPath("//global_data/roughness");
+			liftingSurface.setRoughness(roughness);
+			
+			//---------------------------------------------------------------------------------
 			// PANELS
-
 			NodeList nodelistPanel = MyXMLReaderUtils
 					.getXMLNodeListByPath(reader.getXmlDoc(), "//panels/panel");
 
@@ -866,8 +872,14 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		else if(type.equals(ComponentEnum.VERTICAL_TAIL)) {
 			
 			//---------------------------------------------------------------------------------
+			// GLOBAL DATA
+			Double compositeCorrectionFactor = Double.valueOf(reader.getXMLPropertyByPath("//global_data/composite_correction_factor"));
+			liftingSurface.setCompositeCorrectioFactor(compositeCorrectionFactor);
+			Amount<Length> roughness = reader.getXMLAmountLengthByPath("//global_data/roughness");
+			liftingSurface.setRoughness(roughness);
+			
+			//---------------------------------------------------------------------------------
 			// PANELS
-
 			NodeList nodelistPanel = MyXMLReaderUtils
 					.getXMLNodeListByPath(reader.getXmlDoc(), "//panels/panel");
 
@@ -921,8 +933,14 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		else if(type.equals(ComponentEnum.CANARD)) {
 
 			//---------------------------------------------------------------------------------
+			// GLOBAL DATA
+			Double compositeCorrectionFactor = Double.valueOf(reader.getXMLPropertyByPath("//global_data/composite_correction_factor"));
+			liftingSurface.setCompositeCorrectioFactor(compositeCorrectionFactor);
+			Amount<Length> roughness = reader.getXMLAmountLengthByPath("//global_data/roughness");
+			liftingSurface.setRoughness(roughness);
+			
+			//---------------------------------------------------------------------------------
 			// PANELS
-
 			NodeList nodelistPanel = MyXMLReaderUtils
 					.getXMLNodeListByPath(reader.getXmlDoc(), "//panels/panel");
 

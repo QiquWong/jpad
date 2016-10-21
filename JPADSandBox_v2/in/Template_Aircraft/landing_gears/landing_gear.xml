@@ -15,8 +15,5 @@
 			<wheel_height unit="m">1.0</wheel_height>
 			<wheel_width unit="m">0.8</wheel_width>
 		</rear_wheels_data>
-		<reference_masses>
-			<overall_reference_mass unit="kg">2500</overall_reference_mass>
-		</reference_masses>
 	</landing_gears>
 </jpad_config>

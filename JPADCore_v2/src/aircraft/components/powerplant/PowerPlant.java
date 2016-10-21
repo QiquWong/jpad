@@ -41,7 +41,6 @@ public class PowerPlant implements IPowerPlant {
 	private Amount<Mass> _totalMass,
 						 _dryMassPublicDomainTotal;
 	
-	private Double _percentTotalDifference;
 	private CenterOfGravity _totalCG;
 	
 	//============================================================================================
@@ -218,14 +217,10 @@ public class PowerPlant implements IPowerPlant {
 		_dryMassPublicDomainTotal = Amount.valueOf(0., SI.KILOGRAM);
 
 		for(int i=0; i < _engineNumber; i++) {
+			_engineList.get(i).setTotalMass(_engineList.get(i).getDryMassPublicDomain().times(1.5));
 			_totalMass = _totalMass.plus(_engineList.get(i).getTotalMass());
 			_dryMassPublicDomainTotal = _dryMassPublicDomainTotal.plus(_engineList.get(i).getTheWeights().getDryMassPublicDomain());
 		}
-
-		_percentTotalDifference = _totalMass.
-				minus(_dryMassPublicDomainTotal).
-				divide(_dryMassPublicDomainTotal).
-				getEstimatedValue()*100.;
 	}
 
 	@Override
@@ -330,10 +325,10 @@ public class PowerPlant implements IPowerPlant {
 	}
 
 	@Override
-	public Double getPercentTotalDifference() {
-		return _percentTotalDifference;
+	public void setDryMassPublicDomainTotal(Amount<Mass> dryMassTotal) {
+		this._dryMassPublicDomainTotal = dryMassTotal;
 	}
-
+	
 	@Override
 	public CenterOfGravity getTotalCG() {
 		return _totalCG;

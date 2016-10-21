@@ -53,7 +53,6 @@ public class Systems implements ISystems {
 
 		// optional parameters ... defaults
 		// ...
-		private Amount<Mass> __referenceMass;
 		private Map <MethodEnum, Amount<Mass>> __massMap = new TreeMap<MethodEnum, Amount<Mass>>();
 		private List<MethodEnum> __methodsList = new ArrayList<MethodEnum>();
 		private Map <AnalysisTypeEnum, List<MethodEnum>> __methodsMap = new HashMap<AnalysisTypeEnum, List<MethodEnum>>();
@@ -69,7 +68,6 @@ public class Systems implements ISystems {
 		}
 
 		public SystemsBuilder referenceMass (Amount<Mass> referenceMass) {
-			this.__referenceMass = referenceMass;
 			return this;
 		}
 
@@ -88,15 +86,12 @@ public class Systems implements ISystems {
 			switch(aircraftName) {
 
 			case ATR72:
-				__referenceMass = Amount.valueOf(2118, SI.KILOGRAM);
 				break;
 
 			case B747_100B:
-				__referenceMass = Amount.valueOf(15949.0, SI.KILOGRAM);
 				break;
 
 			case AGILE_DC1:
-				__referenceMass = Amount.valueOf(5087., SI.KILOGRAM);
 				break;
 			}
 		}
@@ -105,7 +100,6 @@ public class Systems implements ISystems {
 	private Systems (SystemsBuilder builder) { 
 		
 		this._id = builder.__id;
-		this._referenceMass = builder.__referenceMass;
 		
 		this._methodsMap = builder.__methodsMap;
 		this._massMap = builder.__massMap;
@@ -128,20 +122,7 @@ public class Systems implements ISystems {
 						reader.getXmlDoc(), reader.getXpath(),
 						"//@id");
 		
-		//---------------------------------------------------------------
-		//REFERENCE MASS
-		Amount<Mass> massReference = Amount
-				.valueOf(
-						Double.valueOf(
-								reader.getXMLPropertyByPath(
-										"//reference_masses/overall_reference_mass"
-										)
-								),
-						SI.KILOGRAM
-						);
-		
 		Systems aircraftSystems = new SystemsBuilder(id)
-				.referenceMass(massReference)
 				.build();
 		
 		return aircraftSystems;
@@ -157,8 +138,6 @@ public class Systems implements ISystems {
 				.append("\tSystems\n")
 				.append("\t-------------------------------------\n")
 				.append("\tID: '" + _id + "'\n")
-				.append("\t·····································\n")
-				.append("\tOverall reference mass: " + _referenceMass + "\n")
 				.append("\t·····································\n")
 				;
 		

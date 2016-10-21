@@ -15,10 +15,9 @@
 				<horizontal_tail_reference_mass unit="kg">600</horizontal_tail_reference_mass>
 				<vertical_tail_reference_mass unit="kg">400</vertical_tail_reference_mass>
 				<canard_reference_mass unit="kg"></canard_reference_mass>
-				<nacelles_reference_mass unit="kg">450;450</nacelles_reference_mass>
-				<engines_reference_mass unit="kg">300;300</engines_reference_mass>
-				<fuel_tank_reference_gears_mass unit="kg">500</fuel_tank_reference_gears_mass>
-				<landing_reference_gears_mass unit="kg">500</landing_reference_gears_mass>
+				<nacelles_reference_mass unit="kg">900</nacelles_reference_mass> <!--all nacelles-->
+				<fuel_tank_reference_mass unit="kg">500</fuel_tank_reference_mass>
+				<landing_gears_reference_gears_mass unit="kg">500</landing_gears_reference_mass>
 				<systems_reference_mass unit="kg">2000</systems_reference_mass>
 			</component_data>
         </weights>

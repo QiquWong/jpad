@@ -57,7 +57,7 @@ public class FuelTank implements IFuelTank {
 	
 	private FuelFractionDatabaseReader fuelFractionDatabase;
 	
-	private Amount<Mass> _massEstimated;
+	private Amount<Mass> _massEstimated, _massReference;
 
 	private Double _mainSparNormalizedStation;
 	private Double _secondarySparNormalizedStation;
@@ -762,6 +762,20 @@ public class FuelTank implements IFuelTank {
 		this._fuelMass = fuelMass;
 	}
 	
+	/**
+	 * @return the _massReference
+	 */
+	public Amount<Mass> getMassReference() {
+		return _massReference;
+	}
+
+	/**
+	 * @param _massReference the _massReference to set
+	 */
+	public void setMassReference(Amount<Mass> _massReference) {
+		this._massReference = _massReference;
+	}
+
 	@Override
 	public Amount<Force> getFuelWeight() {
 		return _fuelWeight;

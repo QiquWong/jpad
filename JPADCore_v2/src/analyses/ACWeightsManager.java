@@ -284,26 +284,36 @@ public class ACWeightsManager extends ACCalculatorManager implements IACWeightsM
 		this._massStructureList = builder.__massStructureList;
 		
 		// ESTIMATION OF THE REFERENCE MASS OF EACH COMPONENT (if not assigned)
-		if((_theAircraft.getFuselage() != null) && (this._fuselageReferenceMass != null))
-			this._fuselageReferenceMass = _theAircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().times(.15);
-		if((_theAircraft.getWing() != null) && (this._wingReferenceMass != null))
-			this._wingReferenceMass = _theAircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().times(.1);
-		if((_theAircraft.getHTail() != null) && (this._horizontalTailReferenceMass != null))
-			this._horizontalTailReferenceMass = _theAircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().times(.015);
-		if((_theAircraft.getVTail() != null) && (this._verticalTailReferenceMass != null))
-			this._verticalTailReferenceMass = _theAircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().times(.015);
-		if((_theAircraft.getCanard() != null) && (this._canardReferenceMass != null))
-			this._canardReferenceMass = _theAircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().times(.015);
-		if((_theAircraft.getPowerPlant() != null) && (this._engineReferenceMass != null))
-			this._engineReferenceMass = _theAircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().times(.05);
-		if((_theAircraft.getNacelles() != null) && (this._nacelleReferenceMass != null))
-			this._nacelleReferenceMass = _theAircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().times(.015);
-		if((_theAircraft.getFuelTank() != null) && (this._fuelTankReferenceMass != null))
-			this._fuelTankReferenceMass = _theAircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().times(.015);
-		if((_theAircraft.getLandingGears() != null) && (this._landingGearsReferenceMass != null))
-			this._landingGearsReferenceMass = _theAircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().times(.04);
-		if((_theAircraft.getSystems() != null) && (this._systemsReferenceMass != null))
-			_systemsReferenceMass = _theAircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().times(.04);
+		if(_theAircraft.getFuselage() != null) 
+				if(this._fuselageReferenceMass == null)
+					this._fuselageReferenceMass = _maximumZeroFuelMass.times(.15);
+		if(_theAircraft.getWing() != null)
+			if(this._wingReferenceMass == null)
+				this._wingReferenceMass = _maximumZeroFuelMass.times(.1);
+		if(_theAircraft.getHTail() != null) 
+			if(this._horizontalTailReferenceMass == null)
+				this._horizontalTailReferenceMass = _maximumZeroFuelMass.times(.015);
+		if(_theAircraft.getVTail() != null)
+			if(this._verticalTailReferenceMass == null)
+				this._verticalTailReferenceMass = _maximumZeroFuelMass.times(.015);
+		if(_theAircraft.getCanard() != null)
+			if(this._canardReferenceMass == null)
+				this._canardReferenceMass = _maximumZeroFuelMass.times(.015);
+		if(_theAircraft.getPowerPlant() != null)
+			if(this._engineReferenceMass == null)
+				this._engineReferenceMass = _maximumZeroFuelMass.times(.05);
+		if(_theAircraft.getNacelles() != null)
+			if(this._nacelleReferenceMass == null)
+				this._nacelleReferenceMass = _maximumZeroFuelMass.times(.015);
+		if(_theAircraft.getFuelTank() != null)
+			if(this._fuelTankReferenceMass == null)
+				this._fuelTankReferenceMass = _maximumZeroFuelMass.times(.015);
+		if(_theAircraft.getLandingGears() != null) 
+			if(this._landingGearsReferenceMass == null)
+				this._landingGearsReferenceMass = _maximumZeroFuelMass.times(.04);
+		if(_theAircraft.getSystems() != null)
+			if(this._systemsReferenceMass == null)
+				_systemsReferenceMass = _maximumZeroFuelMass.times(.04);
 		
 	}
 	
@@ -431,9 +441,9 @@ public class ACWeightsManager extends ACCalculatorManager implements IACWeightsM
 		//---------------------------------------------------------------
 		// ENGINE REFERENCE MASS
 		Amount<Mass> engineReferenceMass = Amount.valueOf(0.0, SI.KILOGRAM);
-		String engineReferenceMassProperty = reader.getXMLPropertyByPath("//weights/component_data/engine_reference_mass");
+		String engineReferenceMassProperty = reader.getXMLPropertyByPath("//weights/component_data/power_plant_reference_mass");
 		if(engineReferenceMassProperty != null)
-			engineReferenceMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//weights/component_data/engine_reference_mass");
+			engineReferenceMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//weights/component_data/power_plant_reference_mass");
 		else {
 			engineReferenceMass = null;
 		}
@@ -441,9 +451,9 @@ public class ACWeightsManager extends ACCalculatorManager implements IACWeightsM
 		//---------------------------------------------------------------
 		// NACELLE REFERENCE MASS
 		Amount<Mass> nacelleReferenceMass = Amount.valueOf(0.0, SI.KILOGRAM);
-		String nacelleReferenceMassProperty = reader.getXMLPropertyByPath("//weights/component_data/nacelle_reference_mass");
+		String nacelleReferenceMassProperty = reader.getXMLPropertyByPath("//weights/component_data/nacelles_reference_mass");
 		if(nacelleReferenceMassProperty != null)
-			nacelleReferenceMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//weights/component_data/nacelle_reference_mass");
+			nacelleReferenceMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//weights/component_data/nacelles_reference_mass");
 		else {
 			nacelleReferenceMass = null;
 		}
@@ -693,7 +703,15 @@ public class ACWeightsManager extends ACCalculatorManager implements IACWeightsM
 							);
 				indexFuselage++;
 			}
-			dataListFuselage.add(new Object[] {"Estimated Mass ","kg", _theAircraft.getFuselage().getMassEstimated().getEstimatedValue()});
+			dataListFuselage.add(new Object[] 
+					{"Estimated Mass ",
+							"kg",
+							_theAircraft.getFuselage().getMassEstimated().getEstimatedValue(),
+							_theAircraft.getFuselage().getMassEstimated().
+								minus(_theAircraft.getFuselage().getReferenceMass()).
+								divide(_theAircraft.getFuselage().getReferenceMass()).
+								getEstimatedValue()*100
+					});
 
 			Row rowFuselage = sheetFuselage.createRow(0);
 			Object[] objArrFuselage = dataListFuselage.get(0);
@@ -757,7 +775,15 @@ public class ACWeightsManager extends ACCalculatorManager implements IACWeightsM
 							);
 				indexWing++;
 			}
-			dataListWing.add(new Object[] {"Estimated Mass ","kg", _theAircraft.getWing().getMassEstimated().getEstimatedValue()});
+			dataListWing.add(new Object[] 
+					{"Estimated Mass ",
+							"kg",
+							_theAircraft.getWing().getMassEstimated().getEstimatedValue(),
+							_theAircraft.getWing().getMassEstimated().
+								minus(_theAircraft.getWing().getMassReference()).
+								divide(_theAircraft.getWing().getMassReference()).
+								getEstimatedValue()*100
+					});
 
 			Row rowWing = sheetWing.createRow(0);
 			Object[] objArrWing = dataListWing.get(0);
@@ -821,7 +847,15 @@ public class ACWeightsManager extends ACCalculatorManager implements IACWeightsM
 							);
 				indexHTail++;
 			}
-			dataListHTail.add(new Object[] {"Estimated Mass ","kg", _theAircraft.getHTail().getMassEstimated().getEstimatedValue()});
+			dataListHTail.add(new Object[] 
+					{"Estimated Mass ",
+							"kg",
+							_theAircraft.getHTail().getMassEstimated().getEstimatedValue(),
+							_theAircraft.getHTail().getMassEstimated().
+								minus(_theAircraft.getHTail().getMassReference()).
+								divide(_theAircraft.getHTail().getMassReference()).
+								getEstimatedValue()*100
+					});
 
 			Row rowHTail = sheetHTail.createRow(0);
 			Object[] objArrHTail = dataListHTail.get(0);
@@ -886,7 +920,15 @@ public class ACWeightsManager extends ACCalculatorManager implements IACWeightsM
 							);
 				indexVTail++;
 			}
-			dataListVTail.add(new Object[] {"Estimated Mass ","kg", _theAircraft.getVTail().getMassEstimated().getEstimatedValue()});
+			dataListVTail.add(new Object[] 
+					{"Estimated Mass ",
+							"kg",
+							_theAircraft.getVTail().getMassEstimated().getEstimatedValue(),
+							_theAircraft.getVTail().getMassEstimated().
+								minus(_theAircraft.getVTail().getMassReference()).
+								divide(_theAircraft.getVTail().getMassReference()).
+								getEstimatedValue()*100
+					});
 
 			Row rowVTail = sheetVTail.createRow(0);
 			Object[] objArrVTail = dataListVTail.get(0);
@@ -951,7 +993,15 @@ public class ACWeightsManager extends ACCalculatorManager implements IACWeightsM
 							);
 				indexCanard++;
 			}
-			dataListCanard.add(new Object[] {"Estimated Mass ","kg", _theAircraft.getCanard().getMassEstimated().getEstimatedValue()});
+			dataListCanard.add(new Object[] 
+					{"Estimated Mass ",
+							"kg",
+							_theAircraft.getCanard().getMassEstimated().getEstimatedValue(),
+							_theAircraft.getCanard().getMassEstimated().
+								minus(_theAircraft.getCanard().getMassReference()).
+								divide(_theAircraft.getCanard().getMassReference()).
+								getEstimatedValue()*100
+					});
 
 			Row rowCanard = sheetCanard.createRow(0);
 			Object[] objArrCanard = dataListCanard.get(0);
@@ -1067,15 +1117,15 @@ public class ACWeightsManager extends ACCalculatorManager implements IACWeightsM
 		if(_theAircraft.getPowerPlant() != null) {
 			Sheet sheetPowerPlant = wb.createSheet("POWER PLANT");
 			List<Object[]> dataListPowerPlant = new ArrayList<>();
-			dataListPowerPlant.add(new Object[] {"Description","Unit","Value","Percent Error"});
-			dataListPowerPlant.add(new Object[] {"Total Reference Mass","kg", _engineReferenceMass.doubleValue(SI.KILOGRAM)});
-			dataListPowerPlant.add(new Object[] {"Total mass estimated","kg",_theAircraft.getPowerPlant().getTotalMass().getEstimatedValue(),_theAircraft.getNacelles().getPercentTotalDifference()});
+			dataListPowerPlant.add(new Object[] {"Description","Unit","Value"});
+			dataListPowerPlant.add(new Object[] {"Total Dry Mass","kg", _theAircraft.getPowerPlant().getDryMassPublicDomainTotal().doubleValue(SI.KILOGRAM)});
+			dataListPowerPlant.add(new Object[] {"Total mass estimated","kg",_theAircraft.getPowerPlant().getTotalMass().getEstimatedValue()});
 			dataListPowerPlant.add(new Object[] {" "});
 			dataListPowerPlant.add(new Object[] {"WEIGHT ESTIMATION METHODS COMPARISON FOR EACH ENGINE"});
 			dataListPowerPlant.add(new Object[] {" "});
 			for(int iEngine = 0; iEngine < _theAircraft.getPowerPlant().getEngineNumber(); iEngine++) {
 				dataListPowerPlant.add(new Object[] {"ENGINE " + (iEngine+1)});
-				dataListPowerPlant.add(new Object[] {"Reference Mass","kg", _engineReferenceMass.divide(_theAircraft.getPowerPlant().getEngineNumber())});
+				dataListPowerPlant.add(new Object[] {"Dry Mass","kg", _theAircraft.getPowerPlant().getEngineList().get(iEngine).getDryMassPublicDomain().doubleValue(SI.KILOGRAM)});
 				dataListPowerPlant.add(new Object[] {"Total Mass","kg", _theAircraft.getPowerPlant().getEngineList().get(iEngine).getTotalMass().getEstimatedValue()});			
 				dataListPowerPlant.add(new Object[] {" "});
 				}
@@ -1126,7 +1176,6 @@ public class ACWeightsManager extends ACCalculatorManager implements IACWeightsM
 			List<Object[]> dataListLandingGears = new ArrayList<>();
 			dataListLandingGears.add(new Object[] {"Description","Unit","Value","Percent Error"});
 			dataListLandingGears.add(new Object[] {"Reference Mass","kg", _landingGearsReferenceMass.doubleValue(SI.KILOGRAM)});
-			dataListLandingGears.add(new Object[] {"Overall Mass","kg", _theAircraft.getLandingGears().getOverallMass().getEstimatedValue()});
 			dataListLandingGears.add(new Object[] {" "});
 			dataListLandingGears.add(new Object[] {"WEIGHT ESTIMATION METHODS COMPARISON"});
 			int indexLandingGears=0;
@@ -1142,7 +1191,15 @@ public class ACWeightsManager extends ACCalculatorManager implements IACWeightsM
 							);
 				indexLandingGears++;
 			}
-			dataListLandingGears.add(new Object[] {"Estimated Mass ","kg", _theAircraft.getLandingGears().getMassEstimated().getEstimatedValue()});
+			dataListLandingGears.add(new Object[] 
+					{"Estimated Mass ",
+							"kg",
+							_theAircraft.getLandingGears().getMassEstimated().getEstimatedValue(),
+							_theAircraft.getLandingGears().getMassEstimated().
+								minus(_theAircraft.getLandingGears().getReferenceMass()).
+								divide(_theAircraft.getLandingGears().getReferenceMass()).
+								getEstimatedValue()*100
+					});
 
 			Row rowLandingGears = sheetLandingGears.createRow(0);
 			Object[] objArrLandingGears = dataListLandingGears.get(0);
@@ -1190,7 +1247,6 @@ public class ACWeightsManager extends ACCalculatorManager implements IACWeightsM
 			List<Object[]> dataListSystems = new ArrayList<>();
 			dataListSystems.add(new Object[] {"Description","Unit","Value","Percent Error"});
 			dataListSystems.add(new Object[] {"Reference Mass","kg", _systemsReferenceMass.doubleValue(SI.KILOGRAM)});
-			dataListSystems.add(new Object[] {"Overall Mass","kg", _theAircraft.getSystems().getOverallMass().getEstimatedValue()});
 			dataListSystems.add(new Object[] {" "});
 			dataListSystems.add(new Object[] {"WEIGHT ESTIMATION METHODS COMPARISON"});
 			int indexSystems=0;
@@ -1206,7 +1262,15 @@ public class ACWeightsManager extends ACCalculatorManager implements IACWeightsM
 							);
 				indexSystems++;
 			}
-			dataListSystems.add(new Object[] {"Estimated Mass ","Kg", _theAircraft.getSystems().getMeanMass().getEstimatedValue()});
+			dataListSystems.add(new Object[] 
+					{"Estimated Mass ",
+							"kg",
+							_theAircraft.getSystems().getOverallMass().getEstimatedValue(),
+							_theAircraft.getSystems().getOverallMass().
+								minus(_theAircraft.getSystems().getReferenceMass()).
+								divide(_theAircraft.getSystems().getReferenceMass()).
+								getEstimatedValue()*100
+					});
 
 			Row rowSystems = sheetSystems.createRow(0);
 			Object[] objArrSystems = dataListSystems.get(0);
@@ -1448,7 +1512,7 @@ public class ACWeightsManager extends ACCalculatorManager implements IACWeightsM
 	public void calculateFirstGuessMTOM(Aircraft aircraft) {
 
 		if(aircraft.getFuselage() != null)
-			aircraft.getFuselage().setMass(_fuselageReferenceMass);
+			aircraft.getFuselage().getFuselageCreator().setMassReference(_fuselageReferenceMass);
 		if(aircraft.getWing() != null)
 			aircraft.getWing().setMassReference(_wingReferenceMass);
 		if(aircraft.getHTail() != null)
@@ -1458,26 +1522,42 @@ public class ACWeightsManager extends ACCalculatorManager implements IACWeightsM
 		if(aircraft.getCanard() != null)
 			aircraft.getCanard().setMassReference(_canardReferenceMass);
 		if(aircraft.getPowerPlant() != null)
-			aircraft.getPowerPlant().setTotalMass(_engineReferenceMass);
+			aircraft.getPowerPlant().setDryMassPublicDomainTotal(_engineReferenceMass);
 		if(aircraft.getNacelles() != null)
-			aircraft.getNacelles().setTotalMass(_nacelleReferenceMass);
+			aircraft.getNacelles().setMassReference(_nacelleReferenceMass);
 		if(aircraft.getFuelTank() != null)
-			aircraft.getFuelTank().setFuelMass(_fuelTankReferenceMass);
+			aircraft.getFuelTank().setMassReference(_fuelTankReferenceMass);
 		if(aircraft.getLandingGears() != null)
-			aircraft.getLandingGears().setMass(_landingGearsReferenceMass);
+			aircraft.getLandingGears().setReferenceMass(_landingGearsReferenceMass);
 		if(aircraft.getSystems() != null)
-			aircraft.getSystems().setOverallMass(_systemsReferenceMass);
+			aircraft.getSystems().setReferenceMass(_systemsReferenceMass);
 
-		aircraft.getTheAnalysisManager().getTheWeights().setStructuralMass(
-				aircraft.getFuselage().getMass().plus(
-						aircraft.getWing().getMassReference()).plus(
-								aircraft.getHTail().getMassReference()).plus(
-										aircraft.getVTail().getMassReference()).plus(
-												aircraft.getCanard().getMassReference()).plus(
-														aircraft.getNacelles().getTotalMass()).plus(
-																aircraft.getLandingGears().getOverallMass()));
+		if(aircraft.getCanard() != null)
+			aircraft.getTheAnalysisManager().getTheWeights().setMaximumTakeOffMass(
+					aircraft.getFuselage().getFuselageCreator().getMassReference().plus(
+							aircraft.getWing().getMassReference()).plus(
+									aircraft.getHTail().getMassReference()).plus(
+											aircraft.getVTail().getMassReference()).plus(
+													aircraft.getCanard().getMassReference()).plus(
+															aircraft.getNacelles().getMassReference()).plus(
+																	aircraft.getPowerPlant().getDryMassPublicDomainTotal()).plus(
+																			aircraft.getFuelTank().getMassReference()).plus(
+																					aircraft.getSystems().getReferenceMass()).plus(
+																							aircraft.getLandingGears().getReferenceMass()));
+		else
+			aircraft.getTheAnalysisManager().getTheWeights().setMaximumTakeOffMass(
+					aircraft.getFuselage().getFuselageCreator().getMassReference().plus(
+							aircraft.getWing().getMassReference()).plus(
+									aircraft.getHTail().getMassReference()).plus(
+											aircraft.getVTail().getMassReference()).plus(
+															aircraft.getNacelles().getMassReference()).plus(
+																	aircraft.getPowerPlant().getDryMassPublicDomainTotal()).plus(
+																			aircraft.getFuelTank().getMassReference()).plus(
+																					aircraft.getSystems().getReferenceMass()).plus(
+																							aircraft.getLandingGears().getReferenceMass()));
+			
 
-		System.out.println("First guess value:" + aircraft.getTheAnalysisManager().getTheWeights().getStructuralMass().getEstimatedValue());
+		System.out.println("First guess value:" + aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(SI.KILOGRAM));
 	}
 
 	public Amount<Mass> getMaximumTakeOffMass() {

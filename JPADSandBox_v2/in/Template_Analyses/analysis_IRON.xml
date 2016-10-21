@@ -26,7 +26,14 @@
 			method_landing_gears=""
 			method_systems=""
             /> <!-- method_XXX="AVERAGED" if not present -->
-        <balance file="analysis_balance_IRON.xml"/>
+        <balance
+			file="analysis_balance_IRON.xml"
+            method_fuselage=""
+            method_wing=""
+            method_htail=""
+            method_vtail=""
+			method_canard=""
+		/>
         <!--
 		<aerodynamics file="analysis_aerodynamics.xml"/>
         <performance file="analysis_performance.xml"/>

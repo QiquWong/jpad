@@ -20,11 +20,19 @@
             method_wing="ROSKAM"
             method_htail="JENKINSON"
             method_vtail="JENKINSON"
+			method_canard=""
 			method_nacelles="TORENBEEK_1976"
 			method_landing_gears="ROSKAM"
 			method_systems="TORENBEEK_2013"
             /> <!-- method_XXX="AVERAGED" if not present -->
-        <balance file="analysis_balance.xml"/>
+        <balance 
+			file="analysis_balance.xml"
+            method_fuselage=""
+            method_wing=""
+            method_htail=""
+            method_vtail=""
+			method_canard=""
+		/> <!-- method_XXX="AVERAGED" if not present -->
         <aerodynamics file="analysis_aerodynamics.xml"/>
         <performance file="analysis_performance.xml"/>
         <costs file="analysis_costs.xml"/>

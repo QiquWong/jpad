@@ -107,7 +107,6 @@ public class NacelleCreator implements INacelleCreator {
 		private Engine __theEngine = new Engine.EngineBuilder("ATR-72", EngineTypeEnum.TURBOPROP, AircraftEnum.ATR72).build();
 		
 		private Amount<Length> __roughness;
-		private Amount<Mass> __massReference;
 		private Amount<Length> __length = Amount.valueOf(0.0, SI.METER);
 		private Amount<Length> __diameterMax = Amount.valueOf(0.0, SI.METER);
 		private Double __kInlet = 0.8; // default value
@@ -122,11 +121,6 @@ public class NacelleCreator implements INacelleCreator {
 	
 		public NacelleCreatorBuilder engine (Engine theEngine) {
 			this.__theEngine = theEngine;
-			return this;
-		}
-		
-		public NacelleCreatorBuilder massReference (Amount<Mass> massRef) {
-			this.__massReference = massRef;
 			return this;
 		}
 		
@@ -195,7 +189,6 @@ public class NacelleCreator implements INacelleCreator {
 				__kLength = 0.4;
 				__kDiameterOutlet = 1.5;
 				__roughness = Amount.valueOf(0.405 * Math.pow(10,-5), SI.METRE);
-				__massReference = Amount.valueOf(409.4, SI.KILOGRAM);
 				
 				break;
 				
@@ -208,7 +201,6 @@ public class NacelleCreator implements INacelleCreator {
 				__kLength = 0.35;
 				__kDiameterOutlet = 0.0;
 				__roughness = Amount.valueOf(0.405 * Math.pow(10,-5), SI.METRE);
-				__massReference = Amount.valueOf(1184.2500, SI.KILOGRAM);
 				
 				break;
 				
@@ -221,7 +213,6 @@ public class NacelleCreator implements INacelleCreator {
 				__kLength = 0.35;
 				__kDiameterOutlet = 0.0;
 				__roughness = Amount.valueOf(0.405 * Math.pow(10,-5), SI.METRE);
-				__massReference = Amount.valueOf(380., SI.KILOGRAM);//ADAS
 				
 				break;
 			}
@@ -237,7 +228,6 @@ public class NacelleCreator implements INacelleCreator {
 		this._id = builder.__id;
 		this._theEngine = builder.__theEngine;
 		this._roughness = builder.__roughness;
-		this._massReference = builder.__massReference;
 		this._length = builder.__length;
 		this._diameterMax = builder.__diameterMax;
 		this._kInlet = builder.__kInlet;
@@ -291,8 +281,6 @@ public class NacelleCreator implements INacelleCreator {
 			engine = Engine.importFromXML(enginePath);
 		}
 		
-		@SuppressWarnings("unchecked")
-		Amount<Mass> massReference = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//global_data/reference_mass");
 		Amount<Length> roughness = reader.getXMLAmountLengthByPath("//global_data/roughness");
 		
 		Amount<Length> length = Amount.valueOf(0.0, SI.METER);
@@ -316,7 +304,6 @@ public class NacelleCreator implements INacelleCreator {
 			kDiameterOutlet = Double.valueOf(reader.getXMLPropertyByPath("//geometry/k_diameter_outlet"));
 		
 		theNacelle = new NacelleCreatorBuilder(id)
-				.massReference(massReference)
 				.engine(engine)
 				.roughness(roughness)
 				.lenght(length)
@@ -358,7 +345,6 @@ public class NacelleCreator implements INacelleCreator {
 		.append("\tZ position of the outlet diameter in LRF: " + _zPositionOutletDiameterLRF + "\n")
 		.append("\t·····································\n")
 		.append("\tSurface roughness: " + _roughness + "\n")
-		.append("\tMass reference: " + _massReference + "\n")
 		.append("\tSurface wetted: " + _surfaceWetted + "\n")
 		.append("\t·····································\n")				
 		;

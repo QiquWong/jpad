@@ -236,10 +236,13 @@ public class Nacelles implements INacelles {
 	public void calculateMass(Aircraft theAircraft, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
 
 		_totalMass = Amount.valueOf(0., SI.KILOGRAM);
-		_massReference = Amount.valueOf(0., SI.KILOGRAM);
+		_massReference = theAircraft.getTheAnalysisManager().getTheWeights().getNacelleReferenceMass();
 		initializeWeights(theAircraft);
 
 		for(int i=0; i < _nacellesNumber; i++) {
+			_nacellesList.get(i).getWeights().setMassReference(
+					theAircraft.getTheAnalysisManager().getTheWeights().getNacelleReferenceMass()
+						.divide(_nacellesNumber));
 			_nacellesList.get(i).getWeights().calculateAll();
 			if(!methodsMapWeights.get(ComponentEnum.NACELLE).equals(MethodEnum.AVERAGE))
 				_nacellesList.get(i).getWeights().setMassEstimated(
@@ -249,7 +252,7 @@ public class Nacelles implements INacelles {
 						);
 			_massList.add(_nacellesList.get(i).getWeights().getMassEstimated());
 			_totalMass = _totalMass.plus(_nacellesList.get(i).getWeights().getMassEstimated());
-			_massReference = _massReference.plus(_nacellesList.get(i).getWeights().getMassReference());
+			_massReference = _massReference.plus(theAircraft.getTheAnalysisManager().getTheWeights().getNacelleReferenceMass());
 		}
 		
 		_percentTotalDifference = _totalMass.

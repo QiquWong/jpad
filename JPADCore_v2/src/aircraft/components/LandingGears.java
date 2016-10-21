@@ -90,8 +90,6 @@ public class LandingGears implements ILandingGear {
 
 		private Double __kMainLegsLength;
 		
-		private Amount<Mass> __referenceMass;
-		
 		private Map <MethodEnum, Amount<Mass>> __massMap = new TreeMap<MethodEnum, Amount<Mass>>();
 		private Map <MethodEnum, Amount<Length>> __xCGMap = new TreeMap<MethodEnum, Amount<Length>>();
 		private List<MethodEnum> __methodsList = new ArrayList<MethodEnum>();
@@ -147,11 +145,6 @@ public class LandingGears implements ILandingGear {
 			return this;
 		}
 		
-		public LandingGearsBuilder referenceMass (Amount<Mass> referenceMass) {
-			this.__referenceMass = referenceMass;
-			return this;
-		}
-		
 		public LandingGears build() {
 			return new LandingGears(this);
 		}
@@ -175,7 +168,6 @@ public class LandingGears implements ILandingGear {
 				__frontalWheelsWidth = Amount.valueOf(0.190, SI.METER);
 				__rearWheelsHeight = Amount.valueOf(0.8636, SI.METER);
 				__rearWheelsWidth  = Amount.valueOf(0.254, SI.METER);
-				__referenceMass = Amount.valueOf(675.8, SI.KILOGRAM);
 				break;
 
 			case B747_100B:
@@ -187,7 +179,6 @@ public class LandingGears implements ILandingGear {
 				__frontalWheelsWidth = Amount.valueOf(0.4829, SI.METER);
 				__rearWheelsHeight = Amount.valueOf(1.245, SI.METER);
 				__rearWheelsWidth = Amount.valueOf(0.4829, SI.METER);
-				__referenceMass = Amount.valueOf(13900.0, SI.KILOGRAM);
 				break;
 
 			case AGILE_DC1:
@@ -209,7 +200,6 @@ public class LandingGears implements ILandingGear {
 		this._frontalWheelsWidth = builder.__frontalWheelsWidth;
 		this._rearWheelsHeight = builder.__rearWheelsHeight;
 		this._rearWheelsWidth = builder.__rearWheelsWidth;
-		this._referenceMass = builder.__referenceMass;
 		
 		this._massMap = builder.__massMap;
 		this._xCGMap = builder.__xCGMap;
@@ -277,18 +267,6 @@ public class LandingGears implements ILandingGear {
 				"//rear_wheels_data/wheel_width"
 				);
 		
-		//---------------------------------------------------------------
-		// REFERENCE MASS
-		Amount<Mass> massReference = Amount
-				.valueOf(
-						Double.valueOf(
-								reader.getXMLPropertyByPath(
-										"//reference_masses/overall_reference_mass"
-										)
-								),
-						SI.KILOGRAM
-						);
-		
 		LandingGears landingGears = new LandingGearsBuilder(id)
 				.mainLegsLength(mainGearLegsLength)
 				.kMainLegsLength(kMainLegsLength)
@@ -298,7 +276,6 @@ public class LandingGears implements ILandingGear {
 				.frontalWheelsWidth(frontalWheelsWidth)
 				.rearWheelsHeight(rearWheelsHeight)
 				.rearWheelsWidth(rearWheelsWidth)
-				.referenceMass(massReference)
 				.build();
 		
 		return landingGears;
@@ -326,8 +303,6 @@ public class LandingGears implements ILandingGear {
 				.append("\t·····································\n")
 				.append("\tRear wheels height: " + _rearWheelsHeight + "\n")
 				.append("\tRear wheels width: " + _rearWheelsWidth + "\n")
-				.append("\t·····································\n")
-				.append("\tOverall reference mass: " + _referenceMass + "\n")
 				.append("\t·····································\n")
 				;
 		
@@ -470,7 +445,7 @@ public class LandingGears implements ILandingGear {
 				_percentDifferenceXCG,
 				30.).getFilteredMean(), SI.METER));
 
-		_cg.calculateCGinBRF();
+		_cg.calculateCGinBRF(ComponentEnum.LANDING_GEAR);
 
 	}
 

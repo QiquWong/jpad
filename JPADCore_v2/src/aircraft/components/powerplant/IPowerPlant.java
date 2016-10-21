@@ -42,9 +42,8 @@ public interface IPowerPlant {
 	public void setTotalMass(Amount<Mass> totalMass);
 	
 	public Amount<Mass> getDryMassPublicDomainTotal();
+	public void setDryMassPublicDomainTotal(Amount<Mass> dryMassTotal);
 	
-	public Double getPercentTotalDifference();
-
 	public CenterOfGravity getTotalCG();
 	
 }

@@ -73,7 +73,7 @@ public class Engine implements IEngine {
 		private Double __bpr = 0.0;
 		private Amount<Power> __p0 = Amount.valueOf(0.0, SI.WATT);
 		private Amount<Force> __t0 = Amount.valueOf(0.0, SI.NEWTON);
-		private Amount<Mass> __dryMassPublicDomain = Amount.valueOf(0.0, SI.KILOGRAM);
+		private Amount<Mass> __dryMassPublicDomain = Amount.valueOf(0.0, SI.KILOGRAM); 
 		private int __numberOfCompressorStages = 0;
 		private int __numberOfShafts = 0; 
 		private double __overallPressureRatio = 0.0;
@@ -90,6 +90,11 @@ public class Engine implements IEngine {
 		
 		public EngineBuilder length (Amount<Length> length) {
 			this.__length = length;
+			return this;
+		}
+		
+		public EngineBuilder dryMass (Amount<Mass> dryMass) {
+			this.__dryMassPublicDomain = dryMass;
 			return this;
 		}
 		
@@ -115,11 +120,6 @@ public class Engine implements IEngine {
 		
 		public EngineBuilder t0 (Amount<Force> t0) {
 			this.__t0 = t0;
-			return this;
-		}
-		
-		public EngineBuilder dryMass (Amount<Mass> dryMass) {
-			this.__dryMassPublicDomain = dryMass;
 			return this;
 		}
 		
@@ -214,7 +214,7 @@ public class Engine implements IEngine {
 				//PW1700G
 				__engineType = EngineTypeEnum.TURBOFAN;
 				__length = Amount.valueOf(2.739, SI.METER);
-				__bpr = 6.0;				
+				__bpr = 6.0;	
 				__dryMassPublicDomain = Amount.valueOf(1162.6, NonSI.POUND).to(SI.KILOGRAM);
 				__t0 = Amount.valueOf(7000*AtmosphereCalc.g0.getEstimatedValue(), SI.NEWTON);
 				__numberOfCompressorStages = 5; // TODO: CHECK
@@ -241,7 +241,6 @@ public class Engine implements IEngine {
 		this._p0 = builder.__p0;
 		this._t0 = builder.__t0;
 		this._dryMassPublicDomain = builder.__dryMassPublicDomain;
-		this._totalMass = this._dryMassPublicDomain.times(1.5);
 		this._numberOfCompressorStages = builder.__numberOfCompressorStages;
 		this._numberOfShafts = builder.__numberOfShafts;
 		this._overallPressureRatio = builder.__overallPressureRatio;
@@ -448,11 +447,7 @@ public class Engine implements IEngine {
 			sb.append("\tP0: " + _p0.to(NonSI.HORSEPOWER) + "\n")
 			.append("\tT0: " + _t0.to(NonSI.POUND_FORCE) + "\n")
 			;
-		
 		sb.append("\t·····································\n");
-		
-		sb.append("\tDry mass public domain: " + _dryMassPublicDomain + "\n")
-		.append("\t·····································\n");
 		;
 		
 		return sb.toString();

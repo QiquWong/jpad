@@ -694,9 +694,31 @@ public class LiftingSurface implements ILiftingSurface {
 
 	}
 
-	public void calculateCG(ComponentEnum type) {
+	public void calculateCG(ComponentEnum type, Map<ComponentEnum, MethodEnum> methodsMap) {
 		calculateCG(MethodEnum.SFORZA, type);
 		calculateCG(MethodEnum.TORENBEEK_1982, type);
+		
+		if(!methodsMap.get(type).equals(MethodEnum.AVERAGE)) { 
+			_cg.setXLRF(_xCGMap.get(methodsMap.get(type)));
+			_cg.setYLRF(_yCGMap.get(methodsMap.get(type)));
+		}
+		else {
+			_percentDifferenceXCG = new Double[_xCGMap.size()];
+			_percentDifferenceYCG = new Double[_yCGMap.size()];
+
+			_cg.setXLRF(Amount.valueOf(JPADStaticWriteUtils.compareMethods(
+					_cg.getXLRFref(), 
+					_xCGMap,
+					_percentDifferenceXCG,
+					100.).getFilteredMean(), SI.METER));
+
+			_cg.setYLRF(Amount.valueOf(JPADStaticWriteUtils.compareMethods(
+					_cg.getYLRFref(), 
+					_yCGMap,
+					_percentDifferenceYCG,
+					100.).getFilteredMean(), SI.METER));
+		}
+		_cg.calculateCGinBRF(type);
 	}
 	
 	public void calculateCG(MethodEnum method, ComponentEnum type) {
@@ -813,7 +835,7 @@ public class LiftingSurface implements ILiftingSurface {
 
 				if (_positionRelativeToAttachment > 0.8) {
 					_yCG = Amount.valueOf(
-							0.55*(span/2) 
+							0.55*(span) 
 							, SI.METER);
 					_xCG = Amount.valueOf(
 							0.42*_liftingSurfaceCreator.getChordEquivalentAtY(_yCG.getEstimatedValue())
@@ -821,7 +843,7 @@ public class LiftingSurface implements ILiftingSurface {
 							, SI.METER);
 				} else {
 					_yCG = Amount.valueOf(
-							0.38*(span/2) 
+							0.38*(span) 
 							, SI.METER);
 					_xCG = Amount.valueOf(
 							0.42*_liftingSurfaceCreator.getChordEquivalentAtY(_yCG.getEstimatedValue())
@@ -846,22 +868,6 @@ public class LiftingSurface implements ILiftingSurface {
 		}
 
 		_methodsMap.put(AnalysisTypeEnum.BALANCE, methodsList);
-		_percentDifferenceXCG = new Double[_xCGMap.size()];
-		_percentDifferenceYCG = new Double[_yCGMap.size()];
-
-		_cg.setXLRF(Amount.valueOf(JPADStaticWriteUtils.compareMethods(
-				_cg.getXLRFref(), 
-				_xCGMap,
-				_percentDifferenceXCG,
-				30.).getFilteredMean(), SI.METER));
-
-		_cg.setYLRF(Amount.valueOf(JPADStaticWriteUtils.compareMethods(
-				_cg.getYLRFref(), 
-				_yCGMap,
-				_percentDifferenceYCG,
-				30.).getFilteredMean(), SI.METER));
-
-		_cg.calculateCGinBRF();
 
 	}
 	

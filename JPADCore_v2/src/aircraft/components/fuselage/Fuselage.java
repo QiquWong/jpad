@@ -278,18 +278,6 @@ public class Fuselage implements IFuselage {
 		return aerodynamics;
 	}
 	
-	
-	
-	///////////////////////////////////////////////////////////////////
-	// Methods for evaluation of derived quantities (mass, cd...)
-	///////////////////////////////////////////////////////////////////
-
-	public void calculateStructure(OperatingConditions conditions,
-			Aircraft configuration, 
-			MethodEnum method) {
-
-	}
-
 	public void calculateMass(Aircraft aircraft, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
 		calculateMass(aircraft, MethodEnum.RAYMER);
 		calculateMass(aircraft, MethodEnum.TORENBEEK_1976);
@@ -510,9 +498,21 @@ public class Fuselage implements IFuselage {
 //						SI.KILOGRAM);
 //	}
 
-	public void calculateCG(Aircraft aircraft) {
+	public void calculateCG(Aircraft aircraft, Map<ComponentEnum, MethodEnum> methodsMap) {
 		calculateCG(aircraft, MethodEnum.SFORZA);
 		calculateCG(aircraft, MethodEnum.TORENBEEK_1982);
+		
+		if(!methodsMap.get(ComponentEnum.FUSELAGE).equals(MethodEnum.AVERAGE)) 
+			_cg.setXLRF(_xCGMap.get(methodsMap.get(ComponentEnum.FUSELAGE)));
+		else {
+			_percentDifferenceXCG = new Double[_xCGMap.size()];
+			_cg.setXLRF(Amount.valueOf(JPADStaticWriteUtils.compareMethods(
+					_cg.getXLRFref(), 
+					_xCGMap,
+					_percentDifferenceXCG,
+					30.).getFilteredMean(), SI.METER));
+		}
+		_cg.calculateCGinBRF(ComponentEnum.FUSELAGE);
 	}
 	
 	@Override
@@ -580,15 +580,6 @@ public class Fuselage implements IFuselage {
 		}
 
 		_methodsMap.put(AnalysisTypeEnum.BALANCE, _methodsList);
-		_percentDifferenceXCG = new Double[_xCGMap.size()];
-
-		_cg.setXLRF(Amount.valueOf(JPADStaticWriteUtils.compareMethods(
-				_cg.getXLRFref(), 
-				_xCGMap,
-				_percentDifferenceXCG,
-				30.).getFilteredMean(), SI.METER));
-
-		_cg.calculateCGinBRF();
 
 	}
 

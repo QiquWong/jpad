@@ -4,7 +4,6 @@
         <global_data>
 			<deck_number>1</deck_number>
 			<length unit="m">30.0</length> 
-			<mass_reference unit="kg">3340</mass_reference>
 			<roughness unit="m">0.405e-5</roughness>
 		</global_data>
 		<nose_trunk>

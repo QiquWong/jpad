@@ -10,6 +10,7 @@ import org.jscience.physics.amount.Amount;
 import aircraft.components.nacelles.NacelleCreator;
 import analyses.analysismodel.analysiscalcmanager.BalanceManager;
 import configuration.enumerations.AnalysisTypeEnum;
+import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
 import writers.JPADStaticWriteUtils;
 
@@ -61,7 +62,7 @@ public class NacelleBalanceManager extends BalanceManager{
 				_percentDifferenceXCG,
 				30.).getFilteredMean(), SI.METER));
 		
-		_cg.calculateCGinBRF();
+		_cg.calculateCGinBRF(ComponentEnum.NACELLE);
 
 	}
 	
