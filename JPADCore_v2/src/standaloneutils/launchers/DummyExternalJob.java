@@ -177,24 +177,27 @@ public class DummyExternalJob extends AbstractExternalJob {
 		DatcomInputData inputData = new DatcomInputData
 				.Builder()
 				/*
-				 * set a new description wrt default
+				 *    Description
 				 */
 				.setDescription("(C) Agostino De Marco, agodemar")
 				/*
-				 *  set a new list of Mach numbers  wrt default
+				 *    Mach number
 				 */
-				.mutateFltcon_MACH(machNumbers -> machNumbers.clear())
-				//.addAllFltcon_MACH(Arrays.asList(0.3, 0.4))
-				.addAllFltcon_MACH(Arrays.asList(0.4))
+				//   .mutateFltcon_MACH(machNumbers -> machNumbers.clear())
+				//   //.addAllFltcon_MACH(Arrays.asList(0.3, 0.4))
+				//   .addAllFltcon_MACH(Arrays.asList(0.4))
+				.setFltcon_MACH(0.3) // only one Mach number at time permitted
 				/*
-				 *  wing position
+				 *   Wing position
 				 */
 				.setSynths_XW(29.3)
 				.setSynths_ZW(-1.2)
 				/*
-				 *  build object, finally
+				 *   Build object, finally 
+				 *   Validate for all fields to be set, Optional fields are empty	
+				 *   
 				 */
-				.build(); // validate for all fields to be set; Optional fields are empty	
+				.build();
 		
 		//-------------------------------------------------------------------------
 		// Form the final command to launch the external process

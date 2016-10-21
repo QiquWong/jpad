@@ -43,6 +43,8 @@ abstract class DatcomInputData_Builder {
     COMMAND__DAMP("command_DAMP"),
     COMMAND__PART("command_PART"),
     COMMAND__DERIV("command_DERIV"),
+    FLTCON__MACH("fltcon_MACH"),
+    FLTCON__ALT("fltcon_ALT"),
     FLTCON__GAMMA("fltcon_GAMMA"),
     FLTCON__LOOP("fltcon_LOOP"),
     FLTCON__RNNUB("fltcon_RNNUB"),
@@ -112,8 +114,8 @@ abstract class DatcomInputData_Builder {
   private boolean command_DAMP;
   private boolean command_PART;
   private String command_DERIV;
-  private final ArrayList<Double> fltcon_MACH = new ArrayList<>();
-  private final ArrayList<Double> fltcon_ALT = new ArrayList<>();
+  private Double fltcon_MACH;
+  private Double fltcon_ALT;
   private final ArrayList<Double> fltcon_ALSCHD = new ArrayList<>();
   private Double fltcon_GAMMA;
   private int fltcon_LOOP;
@@ -635,157 +637,77 @@ abstract class DatcomInputData_Builder {
   }
 
   /**
-   * Adds {@code element} to the list to be returned from {@link DatcomInputData#getFltcon_MACH()}.
+   * Sets the value to be returned by {@link DatcomInputData#getFltcon_MACH()}.
    *
    * @return this {@code Builder} object
+   * @throws NullPointerException if {@code fltcon_MACH} is null
    */
-  public DatcomInputData.Builder addFltcon_MACH(double element) {
-    this.fltcon_MACH.add(element);
+  public DatcomInputData.Builder setFltcon_MACH(Double fltcon_MACH) {
+    this.fltcon_MACH = Preconditions.checkNotNull(fltcon_MACH);
+    _unsetProperties.remove(DatcomInputData_Builder.Property.FLTCON__MACH);
     return (DatcomInputData.Builder) this;
   }
 
   /**
-   * Adds each element of {@code elements} to the list to be returned from
-   * {@link DatcomInputData#getFltcon_MACH()}.
+   * Replaces the value to be returned by {@link DatcomInputData#getFltcon_MACH()}
+   * by applying {@code mapper} to it and using the result.
    *
    * @return this {@code Builder} object
+   * @throws NullPointerException if {@code mapper} is null or returns null
+   * @throws IllegalStateException if the field has not been set
    */
-  public DatcomInputData.Builder addFltcon_MACH(double... elements) {
-    fltcon_MACH.ensureCapacity(fltcon_MACH.size() + elements.length);
-    for (double element : elements) {
-      addFltcon_MACH(element);
-    }
+  public DatcomInputData.Builder mapFltcon_MACH(UnaryOperator<Double> mapper) {
+    Preconditions.checkNotNull(mapper);
+    return setFltcon_MACH(mapper.apply(getFltcon_MACH()));
+  }
+
+  /**
+   * Returns the value that will be returned by {@link DatcomInputData#getFltcon_MACH()}.
+   *
+   * @throws IllegalStateException if the field has not been set
+   */
+  public Double getFltcon_MACH() {
+    Preconditions.checkState(
+        !_unsetProperties.contains(DatcomInputData_Builder.Property.FLTCON__MACH),
+        "fltcon_MACH not set");
+    return fltcon_MACH;
+  }
+
+  /**
+   * Sets the value to be returned by {@link DatcomInputData#getFltcon_ALT()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code fltcon_ALT} is null
+   */
+  public DatcomInputData.Builder setFltcon_ALT(Double fltcon_ALT) {
+    this.fltcon_ALT = Preconditions.checkNotNull(fltcon_ALT);
+    _unsetProperties.remove(DatcomInputData_Builder.Property.FLTCON__ALT);
     return (DatcomInputData.Builder) this;
   }
 
   /**
-   * Adds each element of {@code elements} to the list to be returned from
-   * {@link DatcomInputData#getFltcon_MACH()}.
+   * Replaces the value to be returned by {@link DatcomInputData#getFltcon_ALT()}
+   * by applying {@code mapper} to it and using the result.
    *
    * @return this {@code Builder} object
-   * @throws NullPointerException if {@code elements} is null or contains a
-   *     null element
+   * @throws NullPointerException if {@code mapper} is null or returns null
+   * @throws IllegalStateException if the field has not been set
    */
-  public DatcomInputData.Builder addAllFltcon_MACH(Iterable<? extends Double> elements) {
-    if (elements instanceof Collection) {
-      fltcon_MACH.ensureCapacity(fltcon_MACH.size() + ((Collection<?>) elements).size());
-    }
-    for (double element : elements) {
-      addFltcon_MACH(element);
-    }
-    return (DatcomInputData.Builder) this;
+  public DatcomInputData.Builder mapFltcon_ALT(UnaryOperator<Double> mapper) {
+    Preconditions.checkNotNull(mapper);
+    return setFltcon_ALT(mapper.apply(getFltcon_ALT()));
   }
 
   /**
-   * Applies {@code mutator} to the list to be returned from {@link DatcomInputData#getFltcon_MACH()}.
+   * Returns the value that will be returned by {@link DatcomInputData#getFltcon_ALT()}.
    *
-   * <p>This method mutates the list in-place. {@code mutator} is a void
-   * consumer, so any value returned from a lambda will be ignored. Take care
-   * not to call pure functions, like {@link Collection#stream()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mutator} is null
+   * @throws IllegalStateException if the field has not been set
    */
-  public DatcomInputData.Builder mutateFltcon_MACH(Consumer<? super List<Double>> mutator) {
-    // If addFltcon_MACH is overridden, this method will be updated to delegate to it
-    mutator.accept(fltcon_MACH);
-    return (DatcomInputData.Builder) this;
-  }
-
-  /**
-   * Clears the list to be returned from {@link DatcomInputData#getFltcon_MACH()}.
-   *
-   * @return this {@code Builder} object
-   */
-  public DatcomInputData.Builder clearFltcon_MACH() {
-    this.fltcon_MACH.clear();
-    return (DatcomInputData.Builder) this;
-  }
-
-  /**
-   * Returns an unmodifiable view of the list that will be returned by
-   * {@link DatcomInputData#getFltcon_MACH()}.
-   * Changes to this builder will be reflected in the view.
-   */
-  public List<Double> getFltcon_MACH() {
-    return Collections.unmodifiableList(fltcon_MACH);
-  }
-
-  /**
-   * Adds {@code element} to the list to be returned from {@link DatcomInputData#getFltcon_ALT()}.
-   *
-   * @return this {@code Builder} object
-   */
-  public DatcomInputData.Builder addFltcon_ALT(double element) {
-    this.fltcon_ALT.add(element);
-    return (DatcomInputData.Builder) this;
-  }
-
-  /**
-   * Adds each element of {@code elements} to the list to be returned from
-   * {@link DatcomInputData#getFltcon_ALT()}.
-   *
-   * @return this {@code Builder} object
-   */
-  public DatcomInputData.Builder addFltcon_ALT(double... elements) {
-    fltcon_ALT.ensureCapacity(fltcon_ALT.size() + elements.length);
-    for (double element : elements) {
-      addFltcon_ALT(element);
-    }
-    return (DatcomInputData.Builder) this;
-  }
-
-  /**
-   * Adds each element of {@code elements} to the list to be returned from
-   * {@link DatcomInputData#getFltcon_ALT()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code elements} is null or contains a
-   *     null element
-   */
-  public DatcomInputData.Builder addAllFltcon_ALT(Iterable<? extends Double> elements) {
-    if (elements instanceof Collection) {
-      fltcon_ALT.ensureCapacity(fltcon_ALT.size() + ((Collection<?>) elements).size());
-    }
-    for (double element : elements) {
-      addFltcon_ALT(element);
-    }
-    return (DatcomInputData.Builder) this;
-  }
-
-  /**
-   * Applies {@code mutator} to the list to be returned from {@link DatcomInputData#getFltcon_ALT()}.
-   *
-   * <p>This method mutates the list in-place. {@code mutator} is a void
-   * consumer, so any value returned from a lambda will be ignored. Take care
-   * not to call pure functions, like {@link Collection#stream()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mutator} is null
-   */
-  public DatcomInputData.Builder mutateFltcon_ALT(Consumer<? super List<Double>> mutator) {
-    // If addFltcon_ALT is overridden, this method will be updated to delegate to it
-    mutator.accept(fltcon_ALT);
-    return (DatcomInputData.Builder) this;
-  }
-
-  /**
-   * Clears the list to be returned from {@link DatcomInputData#getFltcon_ALT()}.
-   *
-   * @return this {@code Builder} object
-   */
-  public DatcomInputData.Builder clearFltcon_ALT() {
-    this.fltcon_ALT.clear();
-    return (DatcomInputData.Builder) this;
-  }
-
-  /**
-   * Returns an unmodifiable view of the list that will be returned by
-   * {@link DatcomInputData#getFltcon_ALT()}.
-   * Changes to this builder will be reflected in the view.
-   */
-  public List<Double> getFltcon_ALT() {
-    return Collections.unmodifiableList(fltcon_ALT);
+  public Double getFltcon_ALT() {
+    Preconditions.checkState(
+        !_unsetProperties.contains(DatcomInputData_Builder.Property.FLTCON__ALT),
+        "fltcon_ALT not set");
+    return fltcon_ALT;
   }
 
   /**
@@ -6462,8 +6384,14 @@ abstract class DatcomInputData_Builder {
         || !value.getCommand_DERIV().equals(_defaults.getCommand_DERIV())) {
       setCommand_DERIV(value.getCommand_DERIV());
     }
-    addAllFltcon_MACH(value.getFltcon_MACH());
-    addAllFltcon_ALT(value.getFltcon_ALT());
+    if (_defaults._unsetProperties.contains(DatcomInputData_Builder.Property.FLTCON__MACH)
+        || !value.getFltcon_MACH().equals(_defaults.getFltcon_MACH())) {
+      setFltcon_MACH(value.getFltcon_MACH());
+    }
+    if (_defaults._unsetProperties.contains(DatcomInputData_Builder.Property.FLTCON__ALT)
+        || !value.getFltcon_ALT().equals(_defaults.getFltcon_ALT())) {
+      setFltcon_ALT(value.getFltcon_ALT());
+    }
     addAllFltcon_ALSCHD(value.getFltcon_ALSCHD());
     if (_defaults._unsetProperties.contains(DatcomInputData_Builder.Property.FLTCON__GAMMA)
         || !value.getFltcon_GAMMA().equals(_defaults.getFltcon_GAMMA())) {
@@ -6759,8 +6687,16 @@ abstract class DatcomInputData_Builder {
             || !template.getCommand_DERIV().equals(_defaults.getCommand_DERIV()))) {
       setCommand_DERIV(template.getCommand_DERIV());
     }
-    addAllFltcon_MACH(((DatcomInputData_Builder) template).fltcon_MACH);
-    addAllFltcon_ALT(((DatcomInputData_Builder) template).fltcon_ALT);
+    if (!base._unsetProperties.contains(DatcomInputData_Builder.Property.FLTCON__MACH)
+        && (_defaults._unsetProperties.contains(DatcomInputData_Builder.Property.FLTCON__MACH)
+            || !template.getFltcon_MACH().equals(_defaults.getFltcon_MACH()))) {
+      setFltcon_MACH(template.getFltcon_MACH());
+    }
+    if (!base._unsetProperties.contains(DatcomInputData_Builder.Property.FLTCON__ALT)
+        && (_defaults._unsetProperties.contains(DatcomInputData_Builder.Property.FLTCON__ALT)
+            || !template.getFltcon_ALT().equals(_defaults.getFltcon_ALT()))) {
+      setFltcon_ALT(template.getFltcon_ALT());
+    }
     addAllFltcon_ALSCHD(((DatcomInputData_Builder) template).fltcon_ALSCHD);
     if (!base._unsetProperties.contains(DatcomInputData_Builder.Property.FLTCON__GAMMA)
         && (_defaults._unsetProperties.contains(DatcomInputData_Builder.Property.FLTCON__GAMMA)
@@ -7073,8 +7009,8 @@ abstract class DatcomInputData_Builder {
     command_DAMP = _defaults.command_DAMP;
     command_PART = _defaults.command_PART;
     command_DERIV = _defaults.command_DERIV;
-    fltcon_MACH.clear();
-    fltcon_ALT.clear();
+    fltcon_MACH = _defaults.fltcon_MACH;
+    fltcon_ALT = _defaults.fltcon_ALT;
     fltcon_ALSCHD.clear();
     fltcon_GAMMA = _defaults.fltcon_GAMMA;
     fltcon_LOOP = _defaults.fltcon_LOOP;
@@ -7217,8 +7153,8 @@ abstract class DatcomInputData_Builder {
     private final boolean command_DAMP;
     private final boolean command_PART;
     private final String command_DERIV;
-    private final List<Double> fltcon_MACH;
-    private final List<Double> fltcon_ALT;
+    private final Double fltcon_MACH;
+    private final Double fltcon_ALT;
     private final List<Double> fltcon_ALSCHD;
     private final Double fltcon_GAMMA;
     private final int fltcon_LOOP;
@@ -7489,8 +7425,8 @@ abstract class DatcomInputData_Builder {
       this.command_DAMP = builder.command_DAMP;
       this.command_PART = builder.command_PART;
       this.command_DERIV = builder.command_DERIV;
-      this.fltcon_MACH = ImmutableList.copyOf(builder.fltcon_MACH);
-      this.fltcon_ALT = ImmutableList.copyOf(builder.fltcon_ALT);
+      this.fltcon_MACH = builder.fltcon_MACH;
+      this.fltcon_ALT = builder.fltcon_ALT;
       this.fltcon_ALSCHD = ImmutableList.copyOf(builder.fltcon_ALSCHD);
       this.fltcon_GAMMA = builder.fltcon_GAMMA;
       this.fltcon_LOOP = builder.fltcon_LOOP;
@@ -7634,12 +7570,12 @@ abstract class DatcomInputData_Builder {
     }
 
     @Override
-    public List<Double> getFltcon_MACH() {
+    public Double getFltcon_MACH() {
       return fltcon_MACH;
     }
 
     @Override
-    public List<Double> getFltcon_ALT() {
+    public Double getFltcon_ALT() {
       return fltcon_ALT;
     }
 
@@ -8539,8 +8475,8 @@ abstract class DatcomInputData_Builder {
     private final boolean command_DAMP;
     private final boolean command_PART;
     private final String command_DERIV;
-    private final List<Double> fltcon_MACH;
-    private final List<Double> fltcon_ALT;
+    private final Double fltcon_MACH;
+    private final Double fltcon_ALT;
     private final List<Double> fltcon_ALSCHD;
     private final Double fltcon_GAMMA;
     private final int fltcon_LOOP;
@@ -8812,8 +8748,8 @@ abstract class DatcomInputData_Builder {
       this.command_DAMP = builder.command_DAMP;
       this.command_PART = builder.command_PART;
       this.command_DERIV = builder.command_DERIV;
-      this.fltcon_MACH = ImmutableList.copyOf(builder.fltcon_MACH);
-      this.fltcon_ALT = ImmutableList.copyOf(builder.fltcon_ALT);
+      this.fltcon_MACH = builder.fltcon_MACH;
+      this.fltcon_ALT = builder.fltcon_ALT;
       this.fltcon_ALSCHD = ImmutableList.copyOf(builder.fltcon_ALSCHD);
       this.fltcon_GAMMA = builder.fltcon_GAMMA;
       this.fltcon_LOOP = builder.fltcon_LOOP;
@@ -8979,12 +8915,18 @@ abstract class DatcomInputData_Builder {
     }
 
     @Override
-    public List<Double> getFltcon_MACH() {
+    public Double getFltcon_MACH() {
+      if (_unsetProperties.contains(DatcomInputData_Builder.Property.FLTCON__MACH)) {
+        throw new UnsupportedOperationException("fltcon_MACH not set");
+      }
       return fltcon_MACH;
     }
 
     @Override
-    public List<Double> getFltcon_ALT() {
+    public Double getFltcon_ALT() {
+      if (_unsetProperties.contains(DatcomInputData_Builder.Property.FLTCON__ALT)) {
+        throw new UnsupportedOperationException("fltcon_ALT not set");
+      }
       return fltcon_ALT;
     }
 
@@ -9925,8 +9867,12 @@ abstract class DatcomInputData_Builder {
               (!_unsetProperties.contains(DatcomInputData_Builder.Property.COMMAND__DERIV)
                   ? "command_DERIV=" + command_DERIV
                   : null),
-              "fltcon_MACH=" + fltcon_MACH,
-              "fltcon_ALT=" + fltcon_ALT,
+              (!_unsetProperties.contains(DatcomInputData_Builder.Property.FLTCON__MACH)
+                  ? "fltcon_MACH=" + fltcon_MACH
+                  : null),
+              (!_unsetProperties.contains(DatcomInputData_Builder.Property.FLTCON__ALT)
+                  ? "fltcon_ALT=" + fltcon_ALT
+                  : null),
               "fltcon_ALSCHD=" + fltcon_ALSCHD,
               (!_unsetProperties.contains(DatcomInputData_Builder.Property.FLTCON__GAMMA)
                   ? "fltcon_GAMMA=" + fltcon_GAMMA

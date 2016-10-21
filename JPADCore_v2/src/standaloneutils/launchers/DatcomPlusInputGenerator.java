@@ -189,8 +189,10 @@ public class DatcomPlusInputGenerator {
 		content.add("**************************************************************************");
 		content.add(
 				generateBlockFLTCON(
-						Arrays.asList(0.3), // list of Mach numbers
-						Arrays.asList(1500.0), // list of altitudes
+						//Arrays.asList(0.3), // list of Mach numbers
+						0.3, // Only one Mach number permitted
+						//Arrays.asList(1500.0), // list of altitudes
+						1.500, // Only one Altitude permitted
 						Arrays.asList( // list of AoA
 								-16.0, -8.0, -6.0, -4.0, -2.0, 0.0, 2.0, 4.0, 8.0, 9.0,
 								10.0, 12.0, 14.0, 16.0, 18.0, 19.0, 20.0, 21.0, 22.0, 24.0),
@@ -432,19 +434,32 @@ Example:
 
 */	
 	public static String generateBlockFLTCON(
-			List<Double> machList, List<Double> altitudeList, List<Double> alphaList,
+			//List<Double> machList,
+			Double mach,  // only one Mach number is permitted
+			//List<Double> altitudeList,
+			Double altitude, //only one Altitude permitted
+			List<Double> alphaList,
 			Double gamma, int loop, Double reynoldsPerUnitLength
 			) {
 		StringBuilder sb = new StringBuilder();
-		sb.append(" $FLTCON ")
-		.append("NMACH=").append((double) machList.size()).append(", ");
-		sb.append("MACH(1)=");
-		machList.stream()
-		.forEach(mach -> sb.append(mach).append(", "));
-		sb.append("\n   NALT=").append((double) altitudeList.size()).append(", ");
-		sb.append("ALT(1)=");
-		altitudeList.stream()
-		.forEach(alt -> sb.append(alt).append(", "));
+		sb.append(" $FLTCON ");
+		
+//		sb.append("NMACH=").append((double) machList.size()).append(", ");
+//		sb.append("MACH(1)=");
+//		machList.stream()
+//		.forEach(mach -> sb.append(mach).append(", "));
+		
+		sb.append("NMACH=1.0, ");
+		sb.append("MACH(1)=").append(mach).append(", ");
+		
+//		sb.append("\n   NALT=").append((double) altitudeList.size()).append(", ");
+//		sb.append("ALT(1)=");
+//		altitudeList.stream()
+//		.forEach(alt -> sb.append(alt).append(", "));
+
+		sb.append("\n   NALT=1.0, ");
+		sb.append("ALT(1)=").append(altitude).append(", ");
+		
 		sb.append("\n   NALPHA=").append((double) alphaList.size()).append(", ");
 		sb.append("\n   ALSCHD(1)=");
 		sb.append(

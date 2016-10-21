@@ -22,10 +22,14 @@ public interface DatcomInputData {
 	boolean getCommand_PART();
 	String getCommand_DERIV();
 	
-	List<Double> getFltcon_MACH();
+//	List<Double> getFltcon_MACH();
 	// int getFltcon_NMACH();
-	List<Double> getFltcon_ALT();
+	Double getFltcon_MACH(); // only one Mach number permitted
+	
+//	List<Double> getFltcon_ALT();
 	// int getFltcon_NALT();
+	Double getFltcon_ALT(); // Only one Altitude permitted 
+	
 	List<Double> getFltcon_ALSCHD();
 	// int getFltcon_NALPHA();
 	Double getFltcon_GAMMA();
@@ -157,10 +161,14 @@ public interface DatcomInputData {
 			setCommand_PART(true);
 			setCommand_DERIV("RAD");
 
-			addAllFltcon_MACH(Arrays.asList( // list of Mach numbers
-					0.3));
-			addAllFltcon_ALT(Arrays.asList( // list of Altitudes
-					1500.0));
+//			addAllFltcon_MACH(Arrays.asList( // list of Mach numbers
+//					0.3));
+			setFltcon_MACH(0.3);
+			
+//			addAllFltcon_ALT(Arrays.asList( // list of Altitudes
+//					1500.0));
+			setFltcon_ALT(1500.0);
+			
 			addAllFltcon_ALSCHD(Arrays.asList( // list of Altitudes
 					-16.0, -8.0, -6.0, -4.0, -2.0, 0.0, 2.0, 4.0, 8.0, 9.0,
 						10.0, 12.0, 14.0, 16.0, 18.0, 19.0, 20.0, 21.0, 22.0, 24.0));
@@ -266,6 +274,33 @@ public interface DatcomInputData {
 			setSymflp_TC(0.44);
 			setSymflp_PHETE(0.003);
 			setSymflp_PHETEP(0.002);
+		}
+		
+		//--------------------------------------------------------
+		// CONSTRAINTS
+		// 
+		// some of them are for convenience and might be removed
+		// at some point in time
+		//
+		//--------------------------------------------------------
+		
+		@Override
+		public Builder setFltcon_MACH(Double val) {
+			// Check single-field (argument) constraints in the setter method.
+			checkArgument((val > 0) && (val <= 0.85));
+			return super.setFltcon_MACH(val);
+		}
+		@Override
+		public Builder setFltcon_ALT(Double val) {
+			// Check single-field (argument) constraints in the setter method.
+			checkArgument(val > 0);
+			return super.setFltcon_ALT(val);
+		}
+		@Override
+		public Builder setFltcon_LOOP(int val) {
+			// Check single-field (argument) constraints in the setter method.
+			checkArgument(val == 2);
+			return super.setFltcon_LOOP(val);
 		}
 		@Override
 		public Builder setSynths_XW(Double val) {
