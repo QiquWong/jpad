@@ -8,7 +8,7 @@ import java.util.Map;
  * @author Agostino De Marco
  *
  */
-public interface IExternalJob {
+public interface IDatcomPlusExternalJob {
 
 	/**
 	 * Execute the external process using a ProcessBuilder object

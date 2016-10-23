@@ -7,7 +7,7 @@ import java.util.Map;
 
 // see: http://www.uavs.us/2011/12/02/matlab-avl-control/
 
-public class AVLExternalJob extends AbstractAVLExternalJob implements IAVLExternalJob {
+public class AVLExternalJob implements IAVLExternalJob {
 
 	public static void main(String[] args) {
 		// Instantiate the job executor object
