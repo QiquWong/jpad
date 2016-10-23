@@ -14,8 +14,9 @@ public class DatcomInputDataTest {
 				/*
 				 *  set a new list of Mach numbers  wrt default
 				 */
-				.mutateFltcon_MACH(machNumbers -> machNumbers.clear())
-				.addAllFltcon_MACH(Arrays.asList(0.3, 0.5))
+				//.mutateFltcon_MACH(machNumbers -> machNumbers.clear())
+				//.addAllFltcon_MACH(Arrays.asList(0.3, 0.5))
+				.setFltcon_MACH(0.3)
 				/*
 				 *  build object, finally
 				 */

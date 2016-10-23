@@ -26,11 +26,6 @@ public interface IDatcomPlusExternalJob {
 	public void setEnvironmentVariable(String varName, String value);
 
 	/**
-	 * Generate the input file(s)
-	 */    
-	public boolean generateInputFile();
-	
-	/**
 	 * Parse the results of job execution.
 	 * Return true if output file parsed successfully  
 	 */    

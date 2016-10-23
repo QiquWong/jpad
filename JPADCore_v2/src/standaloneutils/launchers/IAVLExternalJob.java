@@ -21,18 +21,12 @@ public interface IAVLExternalJob {
 	 */    
 	public void setEnvironmentVariable(String varName, String value);
 
-	/**
-	 * Generate the input file(s)
-	 */    
-	public boolean generateInputFile();
+	public File getOutputStabilityDerivativesFile();
+	public void setOutputStabilityDerivativesFile(File file);
 	
 	/**
 	 * Parse the results of job execution.
 	 * Return true if output file parsed successfully  
 	 */    
 	public boolean parseOutputStabilityDerivativesFile();
-	
-	public File getOutputStabilityDerivativesFile();
-	public void setOutputStabilityDerivativesFile(File file);
-	
 }

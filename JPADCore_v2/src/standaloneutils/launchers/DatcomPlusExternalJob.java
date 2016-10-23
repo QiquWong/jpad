@@ -106,9 +106,8 @@ public class DatcomPlusExternalJob implements IDatcomPlusExternalJob {
 		return stdErr;
 	}
 	
-	
 	/*
-	 *  TODO modify this function as appropriate
+	 *  The most important function, forms the command to be launched 
 	 */
 	public String formCommand(String binDirPath, DatcomInputData inputData) {
 		
@@ -174,7 +173,7 @@ public class DatcomPlusExternalJob implements IDatcomPlusExternalJob {
 	@Override
 	public int execute() throws IOException, InterruptedException {
 		
-		System.out.println("DummyExternalJob::execute --> launching external process");
+		System.out.println("DatcomPlusExternalJob::execute --> launching external process");
 	    
 		// allocate the executor
 	    this.systemCommandExecutor = new SystemCommandExecutor(commandInformation);
@@ -197,12 +196,6 @@ public class DatcomPlusExternalJob implements IDatcomPlusExternalJob {
 	@Override
 	public Map<String, String> getEnvironment() {
 		return systemCommandExecutor.getProcessBuilder().environment();
-	}
-
-	@Override
-	public boolean generateInputFile() {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override
