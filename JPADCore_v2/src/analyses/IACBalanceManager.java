@@ -20,15 +20,6 @@ public interface IACBalanceManager {
 	public void calculateBalance(Map<ComponentEnum, MethodEnum> methodsMapBalance);
 	public void calculateTotalCG();
 	
-	public Double getXCGMeanAtOEM();
-	public void setXCGMeanAtOEM(Double _xCGMeanAtOEM);
-
-	public Double getXCGMaxAftAtOEM();
-	public void setXCGMaxAftAtOEM(Double _xCGMaxAftAtOEM);
-
-	public Double getXCGMaxForAtOEM();
-	public void setXCGMaxForAtOEM(Double _xCGMaxForAtOEM);
-
 	public List<CenterOfGravity> getCGList();
 	public void setCGList(List<CenterOfGravity> _cgList);
 

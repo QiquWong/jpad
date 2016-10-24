@@ -605,33 +605,32 @@ public class ACWeightsManager extends ACCalculatorManager implements IACWeightsM
 		dataListGlobal.add(new Object[] {"Single passenger Mass","kg",_paxSingleMass.doubleValue(SI.KILOGRAM)});
 		dataListGlobal.add(new Object[] {" "});
 		dataListGlobal.add(new Object[] {"Maximum Take-Off Mass","kg",_maximumTakeOffMass.doubleValue(SI.KILOGRAM)});
-		dataListGlobal.add(new Object[] {"Maximum Take-Off Weight","N",_maximumTakeOffWeight.doubleValue(SI.NEWTON)});
 		dataListGlobal.add(new Object[] {"Take-Off Mass","kg",_takeOffMass.doubleValue(SI.KILOGRAM)});
-		dataListGlobal.add(new Object[] {"Take-Off Weight","N",_takeOffWeight.doubleValue(SI.NEWTON)});
 		dataListGlobal.add(new Object[] {"Maximum Landing Mass","kg",_maximumLandingMass.doubleValue(SI.KILOGRAM)});
-		dataListGlobal.add(new Object[] {"Maximum Landing Weight","N",_maximumLandingWeight.doubleValue(SI.NEWTON)});
 		dataListGlobal.add(new Object[] {"Maximum Passengers Mass","kg",_paxMassMax.doubleValue(SI.KILOGRAM)});
-		dataListGlobal.add(new Object[] {"Maximum Passengers Weight","N",(_paxMassMax.times(AtmosphereCalc.g0)).getEstimatedValue()});
 		dataListGlobal.add(new Object[] {"Fuel Mass","kg",_theAircraft.getFuelTank().getFuelMass().doubleValue(SI.KILOGRAM)});
-		dataListGlobal.add(new Object[] {"Fuel Weight","N",_theAircraft.getFuelTank().getFuelWeight().doubleValue(SI.NEWTON)});
 		dataListGlobal.add(new Object[] {"Crew Mass","kg",_crewMass.doubleValue(SI.KILOGRAM)});
-		dataListGlobal.add(new Object[] {"Crew Weight","N",_crewMass.times(AtmosphereCalc.g0).getEstimatedValue()});
 		dataListGlobal.add(new Object[] {"Maximum Zero Fuel Mass","kg",_maximumZeroFuelMass.doubleValue(SI.KILOGRAM)});
-		dataListGlobal.add(new Object[] {"Maximum Zero Fuel Weight","N",_maximumZeroFuelWeight.doubleValue(SI.NEWTON)});
 		dataListGlobal.add(new Object[] {"Zero Fuel Mass","kg",_zeroFuelMass.doubleValue(SI.KILOGRAM)});
-		dataListGlobal.add(new Object[] {"Zero Fuel Weight","N",_zeroFuelWeight.doubleValue(SI.NEWTON)});
 		dataListGlobal.add(new Object[] {"Operating Empty Mass","kg",_operatingEmptyMass.doubleValue(SI.KILOGRAM)});
-		dataListGlobal.add(new Object[] {"Operating Empty Weight","N",_operatingEmptyWeight.doubleValue(SI.NEWTON)});
 		dataListGlobal.add(new Object[] {"Empty Mass","kg",_emptyMass.doubleValue(SI.KILOGRAM)});
-		dataListGlobal.add(new Object[] {"Empty Weight","N",_emptyWeight.doubleValue(SI.NEWTON)});
 		dataListGlobal.add(new Object[] {"Manufacturer Empty Mass","kg",_manufacturerEmptyMass.doubleValue(SI.KILOGRAM)});
-		dataListGlobal.add(new Object[] {"Manufacturer Empty Weight","N",_manufacturerEmptyMass.times(AtmosphereCalc.g0).getEstimatedValue()});
 		dataListGlobal.add(new Object[] {"Operating Item Mass","kg",_operatingItemMass.doubleValue(SI.KILOGRAM)});
-		dataListGlobal.add(new Object[] {"Operating Item Weight","N",_operatingItemWeight.doubleValue(SI.NEWTON)});
 		dataListGlobal.add(new Object[] {"Trapped Fuel Oil Mass","kg",_trappedFuelOilMass.doubleValue(SI.KILOGRAM)});
-		dataListGlobal.add(new Object[] {"Trapped Fuel Oil Weight","N",_trappedFuelOilWeight.doubleValue(SI.NEWTON)});
-		dataListGlobal.add(new Object[] {"Operating Empty Mass","kg",_operatingEmptyMass.doubleValue(SI.KILOGRAM)});
+		dataListGlobal.add(new Object[] {" "});
+		dataListGlobal.add(new Object[] {"Maximum Take-Off Weight","N",_maximumTakeOffWeight.doubleValue(SI.NEWTON)});
+		dataListGlobal.add(new Object[] {"Take-Off Weight","N",_takeOffWeight.doubleValue(SI.NEWTON)});
+		dataListGlobal.add(new Object[] {"Maximum Landing Weight","N",_maximumLandingWeight.doubleValue(SI.NEWTON)});
+		dataListGlobal.add(new Object[] {"Maximum Passengers Weight","N",(_paxMassMax.times(AtmosphereCalc.g0)).getEstimatedValue()});
+		dataListGlobal.add(new Object[] {"Fuel Weight","N",_theAircraft.getFuelTank().getFuelWeight().doubleValue(SI.NEWTON)});
+		dataListGlobal.add(new Object[] {"Crew Weight","N",_crewMass.times(AtmosphereCalc.g0).getEstimatedValue()});
+		dataListGlobal.add(new Object[] {"Maximum Zero Fuel Weight","N",_maximumZeroFuelWeight.doubleValue(SI.NEWTON)});
+		dataListGlobal.add(new Object[] {"Zero Fuel Weight","N",_zeroFuelWeight.doubleValue(SI.NEWTON)});
 		dataListGlobal.add(new Object[] {"Operating Empty Weight","N",_operatingEmptyWeight.doubleValue(SI.NEWTON)});
+		dataListGlobal.add(new Object[] {"Empty Weight","N",_emptyWeight.doubleValue(SI.NEWTON)});
+		dataListGlobal.add(new Object[] {"Manufacturer Empty Weight","N",_manufacturerEmptyMass.times(AtmosphereCalc.g0).getEstimatedValue()});
+		dataListGlobal.add(new Object[] {"Operating Item Weight","N",_operatingItemWeight.doubleValue(SI.NEWTON)});
+		dataListGlobal.add(new Object[] {"Trapped Fuel Oil Weight","N",_trappedFuelOilWeight.doubleValue(SI.NEWTON)});
 		
 		CellStyle styleHead = wb.createCellStyle();
 		styleHead.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
@@ -1486,13 +1485,23 @@ public class ACWeightsManager extends ACCalculatorManager implements IACWeightsM
 		if(aircraft.getSystems() != null)
 			aircraft.getSystems().calculateMass(aircraft, MethodEnum.TORENBEEK_2013);
 
-		aircraft.getTheAnalysisManager().getTheWeights().setStructuralMass(
-				aircraft.getFuselage().getMassEstimated().plus(
-						aircraft.getWing().getMassEstimated()).plus(
-								aircraft.getHTail().getMassEstimated()).plus(
-										aircraft.getVTail().getMassEstimated()).plus(
-												aircraft.getNacelles().getTotalMass()).plus(
-														aircraft.getLandingGears().getMassEstimated()));
+		if(aircraft.getCanard() != null)
+			aircraft.getTheAnalysisManager().getTheWeights().setStructuralMass(
+					aircraft.getFuselage().getMassEstimated().plus(
+							aircraft.getWing().getMassEstimated()).plus(
+									aircraft.getHTail().getMassEstimated()).plus(
+											aircraft.getVTail().getMassEstimated()).plus(
+													aircraft.getCanard().getMassEstimated()).plus(
+															aircraft.getNacelles().getTotalMass()).plus(
+																	aircraft.getLandingGears().getMassEstimated()));
+		else
+			aircraft.getTheAnalysisManager().getTheWeights().setStructuralMass(
+					aircraft.getFuselage().getMassEstimated().plus(
+							aircraft.getWing().getMassEstimated()).plus(
+									aircraft.getHTail().getMassEstimated()).plus(
+											aircraft.getVTail().getMassEstimated()).plus(
+													aircraft.getNacelles().getTotalMass()).plus(
+															aircraft.getLandingGears().getMassEstimated()));
 
 	}
 
@@ -1501,6 +1510,7 @@ public class ACWeightsManager extends ACCalculatorManager implements IACWeightsM
 			aircraft.getSystems().calculateMass(aircraft, MethodEnum.TORENBEEK_2013);
 		if(aircraft.getCabinConfiguration() != null)
 			aircraft.getCabinConfiguration().calculateMass(aircraft, MethodEnum.TORENBEEK_2013);
+		
 		aircraft.getTheAnalysisManager().getTheWeights().setManufacturerEmptyMass(
 				aircraft.getPowerPlant().getTotalMass().plus(
 						aircraft.getTheAnalysisManager().getTheWeights().getStructuralMass()).plus(

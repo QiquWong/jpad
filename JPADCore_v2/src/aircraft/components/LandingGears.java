@@ -15,10 +15,13 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
+import com.sun.org.apache.xml.internal.utils.NSInfo;
+
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
+import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;
@@ -424,11 +427,30 @@ public class LandingGears implements ILandingGear {
 		switch(method) {
 
 		// page 337 (pdf) Sforza (2014) - Aircraft Design
-
-		//TODO : implement this !!!
 		case SFORZA : { 
 			_methodsList.add(method);
-			_xCG = Amount.valueOf(0.0, SI.METER);		
+			
+			double kFusLengthMainGear = 0.0;
+			double kFusLengthNoseGear = 0.0;
+			
+			if((aircraft.getPowerPlant().getMountingPosition() == EngineMountingPositionEnum.WING)
+					|| (aircraft.getPowerPlant().getMountingPosition() == EngineMountingPositionEnum.BURIED)) {
+				kFusLengthMainGear = 0.55;
+				kFusLengthNoseGear = 0.17;
+			}
+			else {
+				kFusLengthMainGear = 0.6;
+				kFusLengthNoseGear = 0.14;
+			}
+			_xCG = Amount.valueOf(
+					(((aircraft.getLandingGears().getNoseMass()
+							.times(aircraft.getFuselage().getLength().times(kFusLengthNoseGear)))
+					.plus(aircraft.getLandingGears().getMainMass()
+							.times(aircraft.getFuselage().getLength().times(kFusLengthMainGear))))
+					.divide(aircraft.getLandingGears().getMassMap().get(MethodEnum.TORENBEEK_1982)))
+					.getEstimatedValue(),
+					SI.METER
+					);		
 			_xCGMap.put(method, _xCG);
 		} break;
 
@@ -437,15 +459,36 @@ public class LandingGears implements ILandingGear {
 		}
 
 		_methodsMap.put(AnalysisTypeEnum.BALANCE, _methodsList);
-		_percentDifferenceXCG = new Double[_xCGMap.size()];
 
-		_cg.setXLRF(Amount.valueOf(JPADStaticWriteUtils.compareMethods(
-				_cg.getXLRFref(), 
-				_xCGMap,
-				_percentDifferenceXCG,
-				30.).getFilteredMean(), SI.METER));
-
-		_cg.calculateCGinBRF(ComponentEnum.LANDING_GEAR);
+		Amount<Length> zCGNoseLeg = aircraft.getLandingGears().getMainLegsLenght().divide(2);
+		Amount<Length> zCGMainLeg = aircraft.getLandingGears().getMainLegsLenght().divide(2);
+		Amount<Length> zCGNoseWheel = aircraft.getLandingGears().getFrontalWheelsHeight().divide(2)
+										.plus(aircraft.getLandingGears().getMainLegsLenght());
+		Amount<Length> zCGMainWheel = aircraft.getLandingGears().getRearWheelsHeight().divide(2)
+										.plus(aircraft.getLandingGears().getMainLegsLenght());
+		Amount<Length> noseLegLength = aircraft.getLandingGears().getMainLegsLenght();
+		Amount<Length> mainLegLength = aircraft.getLandingGears().getMainLegsLenght();
+		Amount<Length> noseWheelHeight = aircraft.getLandingGears().getFrontalWheelsHeight();
+		Amount<Length> mainWheelHeight = aircraft.getLandingGears().getRearWheelsHeight();
+		
+		_cg.setXBRF(_xCGMap.get(MethodEnum.SFORZA));
+		_cg.setZBRF(
+				aircraft.getLandingGears().getZApexConstructionAxes().minus(
+						Amount.valueOf(
+								((zCGNoseLeg.times(noseLegLength))
+										.plus((zCGNoseWheel).times(noseWheelHeight))
+										.plus((zCGMainLeg).times(mainLegLength))
+										.plus((zCGMainWheel).times(mainWheelHeight)))
+								.divide(noseLegLength
+										.plus(mainLegLength)
+										.plus(noseWheelHeight)
+										.plus(mainWheelHeight)
+										)
+								.getEstimatedValue(),
+								SI.METER
+								)
+						)
+				);
 
 	}
 
@@ -657,5 +700,21 @@ public class LandingGears implements ILandingGear {
 	@Override
 	public void setMountingPosition(MountingPosition _mountingPosition) {
 		this._mountingPosition = _mountingPosition;
+	}
+
+	public Amount<Mass> getMainMass() {
+		return _mainMass;
+	}
+
+	public void setMainMass(Amount<Mass> _mainMass) {
+		this._mainMass = _mainMass;
+	}
+
+	public Amount<Mass> getNoseMass() {
+		return _noseMass;
+	}
+
+	public void setNoseMass(Amount<Mass> _noseMass) {
+		this._noseMass = _noseMass;
 	}
 }

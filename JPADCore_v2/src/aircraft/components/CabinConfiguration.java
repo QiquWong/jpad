@@ -1049,20 +1049,10 @@ public class CabinConfiguration implements ICabinConfiguration {
 		CGboarding seatsCoGboarding = 
 				SeatsBlock.calculateCoGboarding(_seatsBlocksList, aircraft);
 
-		//				for (int k=0; k < seatsCoGboarding.getCurrentXCoGfrontToRearWindow().size(); k++){
-		//					_seatsCoGFrontToRearWindow.add(seatsCoGboarding.getCurrentXCoGfrontToRearWindow().get(k));
-		//					_seatsCoGrearToFrontWindow.add(seatsCoGboarding.getCurrentXCoGrearToFrontWindow().get(k));
-		//					_seatsCoGFrontToRearAisle.add(seatsCoGboarding.getCurrentXCoGfrontToRearAisle().get(k));
-		//					_seatsCoGrearToFrontAisle.add(seatsCoGboarding.getCurrentXCoGrearToFrontAisle().get(k));
-		//		
-		//					if (_seatsBlockRight.get_columns() > 2 | _seatsBlockLeft.get_columns() > 2 |
-		//							(_seatsBlockCenter != null && _seatsBlockCenter.get_columns() > 2)) {
-		//						_seatsCoGFrontToRearOther.add((Amount<Length>) seatsCoGboarding.getCurrentXCoGfrontToRearOther().get(k));
-		//						_seatsCoGrearToFrontOther.add((Amount<Length>) seatsCoGboarding.getCurrentXCoGrearToFrontOther().get(k));	
-		//					}
-		//				}
-
-		_currentMassList = seatsCoGboarding.getCurrentMassList();
+		_currentMassList = new ArrayList<>();
+		_currentMassList.add(aircraft.getTheAnalysisManager().getTheBalance().getOperatingEmptyMass());
+		_currentMassList.addAll(seatsCoGboarding.getCurrentMassList());
+		
 		_seatsCoGFrontToRearWindow = seatsCoGboarding.getCurrentXCoGfrontToRearWindow();
 		_seatsCoGrearToFrontWindow = seatsCoGboarding.getCurrentXCoGrearToFrontWindow();
 		_seatsCoGFrontToRearAisle = seatsCoGboarding.getCurrentXCoGfrontToRearAisle();
@@ -1074,8 +1064,13 @@ public class CabinConfiguration implements ICabinConfiguration {
 			_seatsCoGrearToFrontOther = seatsCoGboarding.getCurrentXCoGrearToFrontOther();	
 		}
 
-		_seatsCoGFrontToRear = seatsCoGboarding.getCurrentXCoGfrontToRear();
-		_seatsCoGRearToFront = seatsCoGboarding.getCurrentXCoGrearToFront();
+		_seatsCoGFrontToRear = new ArrayList<>();
+		_seatsCoGFrontToRear.add(aircraft.getTheAnalysisManager().getTheBalance().getCGOEM().getXBRF());
+		_seatsCoGFrontToRear.addAll(seatsCoGboarding.getCurrentXCoGfrontToRear());
+		
+		_seatsCoGRearToFront = new ArrayList<>();
+		_seatsCoGRearToFront.add(aircraft.getTheAnalysisManager().getTheBalance().getCGOEM().getXBRF());
+		_seatsCoGRearToFront.addAll(seatsCoGboarding.getCurrentXCoGrearToFront());
 
 		_xLoading.concat(MyArrayUtils.convertListOfAmountToDoubleArray(_seatsCoGFrontToRear));
 		_xLoading.concat(MyArrayUtils.convertListOfAmountToDoubleArray(_seatsCoGRearToFront));

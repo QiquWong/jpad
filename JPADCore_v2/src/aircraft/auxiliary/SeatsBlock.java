@@ -251,9 +251,9 @@ public class SeatsBlock {
 			currentXcoord = 0.;
 			currentYcoord = 0.;
 			actualRowNumber = _rowNumber;
-
+			
 			// Iterate over rows
-			for (int i = 0; i < actualRowNumber; i++) {
+			for (int i = 1; i < actualRowNumber; i++) {
 
 				_totalSeats++;
 				_seatsMatrix.setEntry(i, j, 1);
@@ -368,10 +368,10 @@ public class SeatsBlock {
 	 */
 	public static CGboarding calculateCoGboarding(List<SeatsBlock> seatsBlocks, Aircraft aircraft) {
 
-		double sumFtoR = aircraft.getTheAnalysisManager().getTheBalance().getXCGMeanAtOEM()*
+		double sumFtoR = aircraft.getTheAnalysisManager().getTheBalance().getCGOEM().getXBRF().doubleValue(SI.METER)*
 				aircraft.getTheAnalysisManager().getTheBalance().getOperatingEmptyMass().getEstimatedValue(),
 
-				sumRtoF = aircraft.getTheAnalysisManager().getTheBalance().getXCGMeanAtOEM()*
+				sumRtoF = aircraft.getTheAnalysisManager().getTheBalance().getCGOEM().getXBRF().doubleValue(SI.METER)*
 				aircraft.getTheAnalysisManager().getTheBalance().getOperatingEmptyMass().getEstimatedValue();
 
 		double currentMass, mult, emptyColumns = 0.;
@@ -399,7 +399,7 @@ public class SeatsBlock {
 								&& x._rowColumnCoordinate._column.get(j).equals(x._columns-1)) |
 								(x._position.equals(RelativePositionEnum.LEFT) && x._rowColumnCoordinate._column.get(j).equals(0)))) {
 
-					for (int i = 0; i < x._rowNumber; i++) {
+					for (int i = 0; i < x._rowNumber-1; i++) {
 
 						//						System.out.println("FRwindow-----" + currentMass);
 						sumFtoR += (x._rowColumnCoordinate._xList.get(i) + x._xCoordinate.getEstimatedValue() + x._pitch.getEstimatedValue()/2)*
@@ -431,7 +431,7 @@ public class SeatsBlock {
 						mult = 2.;
 					}
 
-					for (int i = 0; i < x._rowNumber; i++) {
+					for (int i = 0; i < x._rowNumber-1; i++) {
 
 						//						System.out.println("FRaisle-----" + currentMass);
 						sumFtoR += (x._rowColumnCoordinate._xList.get(i) + x._xCoordinate.getEstimatedValue() + x._pitch.getEstimatedValue()/2)*
@@ -469,7 +469,7 @@ public class SeatsBlock {
 				 */
 				emptyColumns = emptyColumns + x._columns - 2;
 
-				for (int i = 0; i < x._rowNumber; i++) {
+				for (int i = 0; i < x._rowNumber-1; i++) {
 
 					sumFtoR += (x._rowColumnCoordinate._xList.get(i) + x._xCoordinate.getEstimatedValue() + x._pitch.getEstimatedValue()/2)*
 							emptyColumns*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().getEstimatedValue();
@@ -503,7 +503,7 @@ public class SeatsBlock {
 				if ((window == false && aisle == false && other == false) && ((x._position.equals(RelativePositionEnum.RIGHT) && x._rowColumnCoordinate._column.get(j).equals(x._columns-1)) |
 						(x._position.equals(RelativePositionEnum.LEFT) && x._rowColumnCoordinate._column.get(j).equals(0)))) {
 
-					for (int i = x._rowNumber-1; i >= 0; i--) {
+					for (int i = x._rowNumber-2; i >= 0; i--) {
 
 						sumRtoF += (x._rowColumnCoordinate._xList.get(i) + x._xCoordinate.getEstimatedValue() + x._pitch.getEstimatedValue()/2)*
 								2*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().getEstimatedValue();
@@ -534,7 +534,7 @@ public class SeatsBlock {
 						mult = 2.;
 					}
 
-					for (int i = x._rowNumber-1; i >= 0; i--){
+					for (int i = x._rowNumber-2; i >= 0; i--){
 
 						//						System.out.println("RFailse-----" + currentMass);
 						sumRtoF += ((x._rowColumnCoordinate._xList.get(i) + x._xCoordinate.getEstimatedValue() + x._pitch.getEstimatedValue()/2)*
@@ -570,7 +570,7 @@ public class SeatsBlock {
 				 */
 				emptyColumns = x._columns - 2;
 
-				for (int i = x._rowNumber - 1; i >= 0 ; i--) {
+				for (int i = x._rowNumber - 2; i >= 0 ; i--) {
 
 					sumRtoF += (x._rowColumnCoordinate._xList.get(i) + x._xCoordinate.getEstimatedValue() + x._pitch.getEstimatedValue()/2)*
 							emptyColumns*aircraft.getTheAnalysisManager().getTheBalance().getPassengersSingleMass().getEstimatedValue();

@@ -290,12 +290,14 @@ public class Fuselage implements IFuselage {
 		
 		if(!methodsMapWeights.get(ComponentEnum.FUSELAGE).equals(MethodEnum.AVERAGE)) 
 			_massEstimated = _massMap.get(methodsMapWeights.get(ComponentEnum.FUSELAGE));
-		else 
+		else {
+			_percentDifference =  new Double[_massMap.size()];
 			_massEstimated = Amount.valueOf(JPADStaticWriteUtils.compareMethods(
 					this._fuselageCreator.getMassReference(), 
 					_massMap,
 					_percentDifference,
 					100.).getFilteredMean(), SI.KILOGRAM);
+		}
 		
 	}
 
@@ -436,15 +438,15 @@ public class Fuselage implements IFuselage {
 		}
 
 		_methodsMap.put(AnalysisTypeEnum.WEIGHTS, _methodsList);
-		_percentDifference =  new Double[_massMap.size()]; 
-
-		_massEstimated = Amount.valueOf(JPADStaticWriteUtils.compareMethods(
-				this._fuselageCreator.getMassReference(), 
-				_massMap,
-				_percentDifference,
-				100.).getFilteredMean(), SI.KILOGRAM);
-
-		_mass = Amount.valueOf(_massEstimated.getEstimatedValue(), SI.KILOGRAM); 
+//		_percentDifference =  new Double[_massMap.size()]; 
+//
+//		_massEstimated = Amount.valueOf(JPADStaticWriteUtils.compareMethods(
+//				this._fuselageCreator.getMassReference(), 
+//				_massMap,
+//				_percentDifference,
+//				100.).getFilteredMean(), SI.KILOGRAM);
+//
+//		_mass = Amount.valueOf(_massEstimated.getEstimatedValue(), SI.KILOGRAM); 
 	}
 
 	private Amount<Mass> calculateMassRaymer(Aircraft aircraft) {

@@ -226,7 +226,7 @@ public class CenterOfGravity {
 		return _zBRF;
 	}
 
-	public void set_zBRF(Amount<Length> _zBRF) {
+	public void setZBRF(Amount<Length> _zBRF) {
 		this._zBRF = _zBRF;
 	}
 

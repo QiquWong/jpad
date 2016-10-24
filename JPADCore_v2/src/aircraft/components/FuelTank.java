@@ -74,6 +74,10 @@ public class FuelTank implements IFuelTank {
 	private Amount<Length> _yCG;
 	private Amount<Length> _zCG;
 	
+	private Amount<Length> _xCGLRF;
+	private Amount<Length> _yCGLRF;
+	private Amount<Length> _zCGLRF;
+	
 	// Jet A1 fuel density : the user can set this parameter when necessary
 	private Amount<VolumetricDensity> _fuelDensity = Amount.valueOf(804.0, MyUnits.KILOGRAM_PER_CUBIC_METER);
 	private Amount<Volume> _fuelVolume = Amount.valueOf(0.0, SI.CUBIC_METRE);
@@ -541,21 +545,24 @@ public class FuelTank implements IFuelTank {
 		
 		System.out.println("\n xCG list = " + xCGPrismoidsList);
 		
-		_xCG = Amount.valueOf(0.0, SI.METER);
+		_xCGLRF = Amount.valueOf(0.0, SI.METER);
 		
 		for(int i=0; i<this._prismoidsVolumes.size(); i++)
-			_xCG = _xCG.plus(
+			_xCGLRF = _xCGLRF.plus(
 					Amount.valueOf(
 							this._prismoidsVolumes.get(i).getEstimatedValue()
 							*xCGPrismoidsList.get(i).getEstimatedValue()
 							, SI.METER
 							)
 					);
-		_xCG = _xCG.divide(this._fuelVolume.divide(2).getEstimatedValue());
-		_xCG = _xCG.plus(_theWing.getXApexConstructionAxes());
+		_xCGLRF = _xCGLRF.divide(this._fuelVolume.divide(2).getEstimatedValue());
+		_xCG = _xCGLRF.plus(_theWing.getXApexConstructionAxes());
 		
+		_yCGLRF = Amount.valueOf(0.0, SI.METER);
 		_yCG = Amount.valueOf(0.0, SI.METER);
-		_zCG = _theWing.getZCG();
+		
+		_zCGLRF = _theWing.getCG().getZLRF();
+		_zCG = _theWing.getCG().getZBRF();
 		
 	}
 
@@ -779,5 +786,47 @@ public class FuelTank implements IFuelTank {
 	@Override
 	public Amount<Force> getFuelWeight() {
 		return _fuelWeight;
+	}
+
+	/**
+	 * @return the _xCGLRF
+	 */
+	public Amount<Length> getXCGLRF() {
+		return _xCGLRF;
+	}
+
+	/**
+	 * @param _xCGLRF the _xCGLRF to set
+	 */
+	public void setXCGLRF(Amount<Length> _xCGLRF) {
+		this._xCGLRF = _xCGLRF;
+	}
+
+	/**
+	 * @return the _yCGLRF
+	 */
+	public Amount<Length> getYCGLRF() {
+		return _yCGLRF;
+	}
+
+	/**
+	 * @param _yCGLRF the _yCGLRF to set
+	 */
+	public void setYCGLRF(Amount<Length> _yCGLRF) {
+		this._yCGLRF = _yCGLRF;
+	}
+
+	/**
+	 * @return the _zCGLRF
+	 */
+	public Amount<Length> getZCGLRF() {
+		return _zCGLRF;
+	}
+
+	/**
+	 * @param _zCGLRF the _zCGLRF to set
+	 */
+	public void setZCGLRF(Amount<Length> _zCGLRF) {
+		this._zCGLRF = _zCGLRF;
 	}
 }
