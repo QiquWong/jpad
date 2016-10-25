@@ -29,6 +29,7 @@ import aircraft.components.nacelles.Nacelles;
 import aircraft.components.powerplant.Engine;
 import aircraft.components.powerplant.PowerPlant;
 import analyses.ACAnalysisManager;
+import calculators.aerodynamics.DragCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.AeroConfigurationTypeEnum;
 import configuration.enumerations.AircraftEnum;
@@ -38,6 +39,7 @@ import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.RegulationsEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
+import de.dlr.sc.tigl.Tigl.WingCoordinates;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;
 
@@ -76,6 +78,7 @@ public class Aircraft implements IAircraft {
 	private List<Object> _componentsList;
 	
 	private Amount<Area> _sWetTotal = Amount.valueOf(0.0, SI.SQUARE_METRE);
+	private Double _kExcr = 0.0;
 	private Amount<Length> _wingACToCGDistance = Amount.valueOf(0.0, SI.METER);
 	
 	private double _lifeSpan = 14.; //typical life span in year
@@ -663,6 +666,20 @@ public class Aircraft implements IAircraft {
 		
 		this._componentsList = builder.__componentsList;
 		
+		//-------------------------------------------------------------		
+		if(_thePowerPlant != null) {
+			if(_theWing != null) {
+				int indexOfEngineUpperWing = 0;
+				for(int i=0; i<_thePowerPlant.getEngineNumber(); i++) {
+					if(_thePowerPlant.getEngineList().get(i).getMountingPosition() == EngineMountingPositionEnum.WING)
+						if(_thePowerPlant.getEngineList().get(i).getZApexConstructionAxes().doubleValue(SI.METER)
+								> _theWing.getZApexConstructionAxes().doubleValue(SI.METER))
+							indexOfEngineUpperWing += 1;
+				}
+				_theWing.setNumberOfEngineOverTheWing(indexOfEngineUpperWing);
+			}
+		}
+		//-------------------------------------------------------------
 		updateType();
 		if((this._theFuselage != null) && (this._theWing != null)) { 
 			calculateExposedWing(_theWing, _theFuselage);
@@ -721,6 +738,10 @@ public class Aircraft implements IAircraft {
 			calculateLiftingSurfaceACToWingACdistance(this._theVTail);
 		if(_theCanard != null)
 			calculateLiftingSurfaceACToWingACdistance(this._theCanard);
+
+		//----------------------------------------
+		calculateSWetTotal();
+		calculateKExcrescences();
 	}
 	
 	private void updateType() {
@@ -845,7 +866,7 @@ public class Aircraft implements IAircraft {
 	
 	}
 
-	public Amount<Area> getSWetTotal() {
+	public void calculateSWetTotal() {
 		
 		if(this._theFuselage != null)
 			this._sWetTotal = this._sWetTotal.plus(this._theFuselage.getsWet());
@@ -866,8 +887,28 @@ public class Aircraft implements IAircraft {
 		if(this._theNacelles != null)
 			this._sWetTotal = this._sWetTotal.plus(this._theNacelles.getSurfaceWetted());
 		
-		return this._sWetTotal;
+	}
+	
+	public void calculateKExcrescences() {
+		_kExcr = DragCalc.calculateKExcrescences(getSWetTotal().doubleValue(SI.SQUARE_METRE));
 		
+		if(this._theFuselage != null)
+			this._theFuselage.setKExcr(_kExcr);
+		
+		if(this._theWing != null)
+			this._theWing.setKExcr(_kExcr);
+		
+		if(this._theHTail != null)
+			this._theHTail.setKExcr(_kExcr);
+		
+		if(this._theVTail != null)
+			this._theVTail.setKExcr(_kExcr);
+		
+		if(this._theCanard != null)
+			this._theCanard.setKExcr(_kExcr);
+		
+		if(this._theNacelles != null)
+			this._theNacelles.setKExcr(_kExcr);
 	}
 	
 	public void calculateArms(LiftingSurface theLiftingSurface){
@@ -1640,8 +1681,20 @@ public class Aircraft implements IAircraft {
 		this._lifeSpan = _lifeSpan;
 	}
 	
+	public Amount<Area> getSWetTotal() {
+		return _sWetTotal;
+	}
+	
 	public void setSWetTotal(Amount<Area> _sWetTotal) {
 		this._sWetTotal = _sWetTotal;
+	}
+
+	public Double getKExcr() {
+		return _kExcr;
+	}
+
+	public void setKExcr(Double kExcr) {
+		this._kExcr = kExcr;
 	}
 
 	@Override

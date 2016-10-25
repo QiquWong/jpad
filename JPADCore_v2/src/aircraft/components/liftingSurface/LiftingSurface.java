@@ -51,6 +51,8 @@ public class LiftingSurface implements ILiftingSurface {
 	private ComponentEnum _type;
 
 	private LiftingSurface _exposedWing;
+	private Double _kExcr = 0.0; 
+	private int _numberOfEngineOverTheWing = 0; 
 	
 	private LSAerodynamicsCalculator _theAerodynamicsCalculator;
 	// THIS HAS TO BE CHANGED IN LSAerodynamicCalculator
@@ -2072,5 +2074,26 @@ public class LiftingSurface implements ILiftingSurface {
 	public void setExposedWing(LiftingSurface _exposedWing) {
 		this._exposedWing = _exposedWing;
 	}
-	
+
+	/**
+	 * @return the _kExcr
+	 */
+	public Double getKExcr() {
+		return _kExcr;
+	}
+
+	/**
+	 * @param _kExcr the _kExcr to set
+	 */
+	public void setKExcr(Double _kExcr) {
+		this._kExcr = _kExcr;
+	}
+
+	public int getNumberOfEngineOverTheWing() {
+		return _numberOfEngineOverTheWing;
+	}
+
+	public void setNumberOfEngineOverTheWing(int _numberOfEngineOverTheWing) {
+		this._numberOfEngineOverTheWing = _numberOfEngineOverTheWing;
+	}
 }

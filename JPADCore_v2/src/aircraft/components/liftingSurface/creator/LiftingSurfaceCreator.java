@@ -58,6 +58,17 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 	private Amount<Length> _roughness;
 	private Amount<Angle> _dihedralMean = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 	
+	//////////////////////////////////////////////
+	//											//
+	//		THE WINGLET IS MODELED ONLY 		//
+	//		WITH ITS HEIGHT; IF FURTHER			//
+	//		ANALYSES REQUIRES THE WINGLET		//
+	//		IT COULD BE USEFUL TO DEFINE		//
+	//		AN INNER CLASS FOR THE WINGLET		//
+	//											//
+	//////////////////////////////////////////////
+	private Amount<Length> _wingletHeight;
+	
 	private Double _xTransitionUpper;
 	private Double _xTransitionLower;
 	
@@ -128,6 +139,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		private Double __secondarySparNonDimensionalPosition;
 		private Double __compositeCorrectioFactor;
 		private Amount<Length> __roughness;
+		private Amount<Length> __wingletHeight;
 		
 		private List<LiftingSurfacePanelCreator> __panels = new ArrayList<LiftingSurfacePanelCreator>();
 		private List<SymmetricFlapCreator> __symmetricFlaps = new ArrayList<SymmetricFlapCreator>();
@@ -200,6 +212,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 				__secondarySparNonDimensionalPosition = 0.55;
 				__compositeCorrectioFactor = 0.0;
 				__roughness = Amount.valueOf(0.405e-5, SI.METER);
+				__wingletHeight = Amount.valueOf(0.0, SI.METER);
 				
 				if (type.equals(ComponentEnum.WING)) {
 				AirfoilCreator airfoil1 = new AirfoilBuilder("ATR72 wing, root airfoil")
@@ -576,6 +589,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		this._secondarySparNonDimensionalPosition = builder.__secondarySparNonDimensionalPosition;
 		this._compositeCorrectioFactor = builder.__compositeCorrectioFactor;
 		this._roughness = builder.__roughness;
+		this._wingletHeight = builder.__wingletHeight;
 		
 		this._panels = builder.__panels;
 		this._symmetricFlaps = builder.__symmetricFlaps;
@@ -655,12 +669,14 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 			Double secondarySparPosition = Double.valueOf(reader.getXMLPropertyByPath("//global_data/secondary_spar_non_dimensional_position"));
 			Double compositeCorrectionFactor = Double.valueOf(reader.getXMLPropertyByPath("//global_data/composite_correction_factor"));
 			Amount<Length> roughness = reader.getXMLAmountLengthByPath("//global_data/roughness");
+			Amount<Length> wingletHeight = reader.getXMLAmountLengthByPath("//global_data/winglet_height");
 			
 			// setting these variables to the related fields of the wing
 			liftingSurface.setMainSparNonDimensionalPosition(mainSparPosition);
 			liftingSurface.setSecondarySparNonDimensionalPosition(secondarySparPosition);
 			liftingSurface.setCompositeCorrectioFactor(compositeCorrectionFactor);
 			liftingSurface.setRoughness(roughness);
+			liftingSurface.setWingletHeight(wingletHeight);
 			
 			//---------------------------------------------------------------------------------
 			// EQUIVALENT WING
@@ -3175,5 +3191,13 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	public void setXTransitionLower(Double _xTransitionLower) {
 		this._xTransitionLower = _xTransitionLower;
+	}
+	
+	public Amount<Length> getWingletHeight() {
+		return _wingletHeight;
+	}
+
+	public void setWingletHeight(Amount<Length> _wingletHeight) {
+		this._wingletHeight = _wingletHeight;
 	}
 }

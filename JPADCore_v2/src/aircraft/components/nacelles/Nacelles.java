@@ -47,6 +47,7 @@ public class Nacelles implements INacelles {
 	private Amount<Mass> _massReference;
 	
 	private Amount<Area> _surfaceWetted;
+	private Double _kExcr = 0.0;
 	
 	//============================================================================================
 	// Builder pattern 
@@ -440,5 +441,19 @@ public class Nacelles implements INacelles {
 
 	public void setDistanceBetweenOutboardNacellesY(Amount<Length> _distanceBetweenOutboardNacellesY) {
 		this._distanceBetweenOutboardNacellesY = _distanceBetweenOutboardNacellesY;
+	}
+
+	/**
+	 * @return the _kExcr
+	 */
+	public Double getKExcr() {
+		return _kExcr;
+	}
+
+	/**
+	 * @param _kExcr the _kExcr to set
+	 */
+	public void setKExcr(Double _kExcr) {
+		this._kExcr = _kExcr;
 	}
 }

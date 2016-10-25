@@ -601,8 +601,8 @@ public class MyChartToFileUtils {
 		chart.getXYPlot().setDomainGridlinePaint(Color.LIGHT_GRAY);
 		chart.getXYPlot().setRangeGridlinesVisible(true);
 		chart.getXYPlot().setRangeGridlinePaint(Color.LIGHT_GRAY);
-		chart.getXYPlot().getDomainAxis().setRange(xMin + 0.1*xMin, xMax + 0.1*xMax);
-		chart.getXYPlot().getRangeAxis().setRange(yMin + 0.2*yMin, yMax + 0.2*yMax);
+		chart.getXYPlot().getDomainAxis().setRange(xMin - Math.abs(0.1*xMin), xMax + Math.abs(0.1*xMax));
+		chart.getXYPlot().getRangeAxis().setRange(yMin - Math.abs(0.1*yMin), yMax + Math.abs(0.1*yMax));
 		
 		// creation of the file .png
 		File xyChart = new File(folderPathName + fileName + ".png"); 

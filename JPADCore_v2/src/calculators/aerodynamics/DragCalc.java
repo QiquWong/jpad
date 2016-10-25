@@ -10,9 +10,11 @@ import org.jscience.physics.amount.Amount;
 import aircraft.components.LandingGears;
 import aircraft.components.LandingGears.MountingPosition;
 import aircraft.components.liftingSurface.LiftingSurface;
+import analyses.OperatingConditions;
 import calculators.performance.LandingCalc;
 import calculators.performance.customdata.DragMap;
 import configuration.enumerations.AirfoilTypeEnum;
+import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
@@ -95,9 +97,61 @@ public class DragCalc {
 	 * @param referenceSurface
 	 * @return
 	 */
-	public static Double calculateCd0Parasite(Double formFactor, Double cf, 
-			Double sWet, Double referenceSurface){
-		return formFactor*cf*sWet/referenceSurface;
+	public static Double calculateCD0Parasite(
+			LiftingSurface theLiftingSurface,
+			OperatingConditions theOperatingConditions
+			){
+		
+		Double cD0Parasite = 0.0;
+		Double cF = 0.0;
+		Double reynolds = theOperatingConditions.calculateRe(
+				theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue(), 
+				theLiftingSurface.getLiftingSurfaceCreator().getRoughness().getEstimatedValue());
+		
+		if (theOperatingConditions.calculateReCutOff(
+				theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue(), 
+				theLiftingSurface.getLiftingSurfaceCreator().getRoughness().getEstimatedValue()) < 
+				reynolds) {
+
+			reynolds = theOperatingConditions.calculateReCutOff(
+					theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue(),
+					theLiftingSurface.getLiftingSurfaceCreator().getRoughness().getEstimatedValue());
+
+			cF  = (AerodynamicCalc.calculateCf(
+					reynolds, theOperatingConditions.getMachCurrent(), 
+					theLiftingSurface.getLiftingSurfaceCreator().getXTransitionUpper()) 
+					+ AerodynamicCalc.calculateCf(
+							reynolds, 
+							theOperatingConditions.getMachCurrent(),
+							theLiftingSurface.getLiftingSurfaceCreator().getXTransitionLower()))/2;
+
+		} else // XTRANSITION!!!
+		{
+			cF  = (AerodynamicCalc.calculateCf(
+					reynolds,
+					theOperatingConditions.getMachCurrent(),
+					theLiftingSurface.getLiftingSurfaceCreator().getXTransitionUpper()) + 
+					AerodynamicCalc.calculateCf(
+							reynolds,
+							theOperatingConditions.getMachCurrent(),
+							theLiftingSurface.getLiftingSurfaceCreator().getXTransitionLower()))/2; 
+
+		}
+
+		if (theLiftingSurface.getType() == ComponentEnum.WING) {
+			cD0Parasite = 
+					cF * theLiftingSurface.getFormFactor() 
+					* theLiftingSurface.getLiftingSurfaceCreator().getSurfaceWettedExposed().getEstimatedValue()
+					/ theLiftingSurface.getSurface().doubleValue(SI.SQUARE_METRE);			
+
+		} else { //TODO NEED TO EVALUATE Exposed Wetted surface also for Vtail and Htail
+			cD0Parasite = 
+					cF * theLiftingSurface.getFormFactor() 
+					* theLiftingSurface.getLiftingSurfaceCreator().getSurfaceWetted().doubleValue(SI.SQUARE_METRE)
+					/ theLiftingSurface.getSurface().doubleValue(SI.SQUARE_METRE);
+		}
+
+		return cD0Parasite;
 	}
 
 	/**
@@ -119,6 +173,16 @@ public class DragCalc {
 		}
 	}
 
+	public static Double calculateCDGap(LiftingSurface theLiftingSurface) {
+		Double cDGap = 0.0002*(
+				Math.pow(Math.cos(theLiftingSurface.getSweepQuarterChordEquivalent(false).doubleValue(SI.RADIAN)) ,2))
+				* 0.3 
+				* theLiftingSurface.getLiftingSurfaceCreator().getSurfaceWettedExposed().doubleValue(SI.SQUARE_METRE)
+				/ theLiftingSurface.getSurface().doubleValue(SI.SQUARE_METRE);
+
+		return cDGap; 
+	}
+	
 	/**
 	 * @author Lorenzo Attanasio
 	 * @param S_wet

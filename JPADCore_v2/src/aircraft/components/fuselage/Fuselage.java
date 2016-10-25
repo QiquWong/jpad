@@ -45,6 +45,8 @@ public class Fuselage implements IFuselage {
 	private Amount<Length> _X0, _Y0, _Z0;
 	private ComponentEnum _type = ComponentEnum.FUSELAGE; 
 
+	private Double _kExcr = 0.0;
+	
 	//-----------------------------------------------------------------------
 	// DESIGN PARAMETERS
 	//-----------------------------------------------------------------------
@@ -742,6 +744,24 @@ public class Fuselage implements IFuselage {
 
 	public void setPercentDifference(Double[] _percentDifference) {
 		this._percentDifference = _percentDifference;
+	}
+
+
+
+	/**
+	 * @return the _kExcr
+	 */
+	public Double getKExcr() {
+		return _kExcr;
+	}
+
+
+
+	/**
+	 * @param _kExcr the _kExcr to set
+	 */
+	public void setKExcr(Double _kExcr) {
+		this._kExcr = _kExcr;
 	}
 
 

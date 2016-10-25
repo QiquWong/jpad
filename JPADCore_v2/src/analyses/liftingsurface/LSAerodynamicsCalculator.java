@@ -1,26 +1,23 @@
 package analyses.liftingsurface;
 
 import static java.lang.Math.toRadians;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
-
 import org.jscience.physics.amount.Amount;
-
 import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.liftingSurface.LiftingSurface;
 import analyses.OperatingConditions;
 import analyses.analysismodel.InnerCalculator;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.AnglesCalc;
+import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
 import calculators.aerodynamics.NasaBlackwell;
 import calculators.geometry.LSGeometryCalc;
@@ -58,6 +55,7 @@ public class LSAerodynamicsCalculator {
 	private Double[] _alphaArrayPlotHighLift;
 	private Double _currentMachNumber;
 	private Double _currentLiftCoefficient;
+	private Double _currentDragCoefficient;
 	private double[] _etaStationDistribution; 
 	private List<Amount<Length>> _yStationDistribution;
 	private List<Amount<Angle>> _alphaZeroLiftDistribution;
@@ -81,8 +79,6 @@ public class LSAerodynamicsCalculator {
 	private Map<MethodEnum, Amount<Length>> _xacLRF; 
 	
 	// LIFT 
-	private Map <MethodEnum, Double> _cLAtAplhaActual;
-	private Map <MethodEnum, Double> _cLAtAlphaActualHighLift;
 	private Map <MethodEnum, Amount<Angle>> _alphaZeroLift;
 	private Map <MethodEnum, Amount<Angle>> _alphaStar;
 	private Map <MethodEnum, Amount<Angle>> _alphaMaxLinear;
@@ -91,6 +87,7 @@ public class LSAerodynamicsCalculator {
 	private Map <MethodEnum, Double> _cLStar;
 	private Map <MethodEnum, Double> _cLMax;
 	private Map <MethodEnum, Amount<?>> _cLAlpha;
+	private Map <MethodEnum, Double> _cLAtAlpha;
 	private Map <MethodEnum, Double[]> _liftCoefficient3DCurve;
 	private Map <MethodEnum, Double[]> _liftCoefficient3DCurveHighLift;
 	private Map <MethodEnum, double[]> _liftCoefficientDistributionAtCLMax;
@@ -108,6 +105,7 @@ public class LSAerodynamicsCalculator {
 	private Map <MethodEnum, List<List<Double>>> _gammaDistribution;
 	
 	// HIGH LIFT
+	private Map <MethodEnum, Double> _cLAtAlphaHighLift;
 	private Map <MethodEnum, Amount<Angle>> _alphaZeroLiftHighLift;
 	private Map <MethodEnum, Amount<Angle>> _alphaStarHighLift;
 	private Map <MethodEnum, Amount<Angle>> _alphaStallHighLift;
@@ -115,6 +113,7 @@ public class LSAerodynamicsCalculator {
 	private Map <MethodEnum, Double> _cLStarHighLift;
 	private Map <MethodEnum, Double> _cLMaxHighLift;
 	private Map <MethodEnum, Amount<?>> _cLAlphaHighLift;
+	private Map <MethodEnum, Double> _cD0HighLift;
 	private Map <MethodEnum, List<Double>> _deltaCl0FlapList;
 	private Map <MethodEnum, Double> _deltaCl0Flap;
 	private Map <MethodEnum, List<Double>> _deltaCL0FlapList;
@@ -127,14 +126,23 @@ public class LSAerodynamicsCalculator {
 	private Map <MethodEnum, Double> _deltaClmaxSlat;
 	private Map <MethodEnum, List<Double>> _deltaCLmaxSlatList;
 	private Map <MethodEnum, Double> _deltaCLmaxSlat;
-	private Map <MethodEnum, List<Double>> _deltaCDList;
-	private Map <MethodEnum, Double> _deltaCD;
+	private Map <MethodEnum, List<Double>> _deltaCD0List;
+	private Map <MethodEnum, Double> _deltaCD0;
 	private Map <MethodEnum, List<Double>> _deltaCMc4List;
 	private Map <MethodEnum, Double> _deltaCMc4;
 	
-	// DRAG -> TODO: DEFINE VARIABLES
-	
-	
+	// DRAG
+	private Map <MethodEnum, Double> _cD0;
+	private Map <MethodEnum, Double> _oswaldFactor;
+	private Map <MethodEnum, Double> _cDInduced;
+	private Map <MethodEnum, Double> _cDWave;
+	private Map <MethodEnum, Double[]> _polar3DCurve;
+	private Map <MethodEnum, List<List<Double>>> _parasiteDragCoefficientDistribution;
+	private Map <MethodEnum, List<List<Double>>> _inducedDragCoefficientDistribution;
+	private Map <MethodEnum, List<List<Double>>> _dragCoefficientDistribution;
+	private Map <MethodEnum, List<List<Amount<Force>>>> _dragDistribution;
+	private Map <MethodEnum, Double> _cDAtAlpha;
+
 	// PITCHING MOMENT -> TODO: DEFINE VARIABLES
 	
 	
@@ -285,6 +293,12 @@ public class LSAerodynamicsCalculator {
 					_theOperatingConditions.getAlphaCurrent()
 					);
 		}
+		if(_currentDragCoefficient == null) {
+			CalcCDAtAlpha calcCDAtAlphaCalculator = new CalcCDAtAlpha();
+			calcCDAtAlphaCalculator.classic(
+					_theOperatingConditions.getAlphaCurrent()
+					);
+		}
 		
 		// TODO : ADD OTHER REQUIRED DATA (if necessary)
 
@@ -301,12 +315,11 @@ public class LSAerodynamicsCalculator {
 		this._alphaStar = new HashMap<MethodEnum, Amount<Angle>>();
 		this._alphaMaxLinear = new HashMap<MethodEnum, Amount<Angle>>();
 		this._alphaStall = new HashMap<MethodEnum, Amount<Angle>>();
-		this._cLAtAplhaActual = new HashMap<MethodEnum, Double>();
-		this._cLAtAlphaActualHighLift = new HashMap<MethodEnum, Double>();
 		this._cLZero = new HashMap<MethodEnum, Double>();
 		this._cLStar = new HashMap<MethodEnum, Double>();
 		this._cLMax = new HashMap<MethodEnum, Double>();
 		this._cLAlpha = new HashMap<MethodEnum, Amount<?>>();
+		this._cLAtAlpha = new HashMap<MethodEnum, Double>();
 		this._liftCoefficient3DCurve = new HashMap<MethodEnum, Double[]>();
 		this._liftCoefficientDistribution = new HashMap<MethodEnum, List<List<Double>>>();
 		this._liftCoefficientDistributionAtCLMax = new HashMap<MethodEnum, double[]>();
@@ -322,6 +335,7 @@ public class LSAerodynamicsCalculator {
 		this._gammaDistributionAdditionalLoad = new HashMap<MethodEnum, List<List<Double>>>();
 		this._gammaDistribution = new HashMap<MethodEnum, List<List<Double>>>();
 		
+		this._cLAtAlphaHighLift = new HashMap<MethodEnum, Double>();
 		this._alphaZeroLiftHighLift = new HashMap<MethodEnum, Amount<Angle>>();
 		this._alphaStarHighLift = new HashMap<MethodEnum, Amount<Angle>>();
 		this._alphaStallHighLift = new HashMap<MethodEnum, Amount<Angle>>();
@@ -335,7 +349,7 @@ public class LSAerodynamicsCalculator {
 		this._deltaCLmaxFlapList = new HashMap<MethodEnum, List<Double>>();
 		this._deltaClmaxSlatList = new HashMap<MethodEnum, List<Double>>();
 		this._deltaCLmaxSlatList = new HashMap<MethodEnum, List<Double>>();
-		this._deltaCDList = new HashMap<MethodEnum, List<Double>>();
+		this._deltaCD0List = new HashMap<MethodEnum, List<Double>>();
 		this._deltaCMc4List = new HashMap<MethodEnum, List<Double>>();
 		this._deltaCl0Flap = new HashMap<MethodEnum, Double>();
 		this._deltaCL0Flap = new HashMap<MethodEnum, Double>();
@@ -343,12 +357,22 @@ public class LSAerodynamicsCalculator {
 		this._deltaCLmaxFlap = new HashMap<MethodEnum, Double>();
 		this._deltaClmaxSlat = new HashMap<MethodEnum, Double>();
 		this._deltaCLmaxSlat = new HashMap<MethodEnum, Double>();
-		this._deltaCD = new HashMap<MethodEnum, Double>();
+		this._deltaCD0 = new HashMap<MethodEnum, Double>();
 		this._deltaCMc4 = new HashMap<MethodEnum, Double>();
 		this._liftCoefficient3DCurveHighLift = new HashMap<MethodEnum, Double[]>();
 		
-		// TODO : CONTINUE WITH OTHER MAPS WHEN AVAILABLE
+		this._cD0 = new HashMap<MethodEnum, Double>();
+		this._oswaldFactor = new HashMap<MethodEnum, Double>();
+		this._cDInduced = new HashMap<MethodEnum, Double>();
+		this._cDWave = new HashMap<MethodEnum, Double>();
+		this._polar3DCurve = new HashMap<MethodEnum, Double[]>();
+		this._parasiteDragCoefficientDistribution = new HashMap<MethodEnum, List<List<Double>>>();
+		this._inducedDragCoefficientDistribution = new HashMap<MethodEnum, List<List<Double>>>();
+		this._dragCoefficientDistribution = new HashMap<MethodEnum, List<List<Double>>>();
+		this._dragDistribution = new HashMap<MethodEnum, List<List<Amount<Force>>>>();
+		this._cDAtAlpha = new HashMap<MethodEnum, Double>();
 		
+		// TODO : CONTINUE WITH OTHER MAPS WHEN AVAILABLE
 	}
 	
 	//............................................................................
@@ -517,14 +541,14 @@ public class LSAerodynamicsCalculator {
 
 		public double linearDLR(Amount<Angle> alpha) {
 			// page 3 DLR pdf
-			_cLAtAplhaActual.put(
-					MethodEnum.LINEAR_DLR,
-					LiftCalc.calcCLatAlphaLinearDLR(
-							alpha.doubleValue(SI.RADIAN),
-							_theLiftingSurface.getAspectRatio()
-							)
-					);
-			return _cLAtAplhaActual.get(MethodEnum.LINEAR_DLR);
+			double cLActual = LiftCalc.calcCLatAlphaLinearDLR(
+					alpha.doubleValue(SI.RADIAN),
+					_theLiftingSurface.getAspectRatio()
+					); 
+			
+			_cLAtAlpha.put(MethodEnum.LINEAR_DLR, cLActual);
+			
+			return cLActual;
 		}
 
 		/** 
@@ -544,14 +568,13 @@ public class LSAerodynamicsCalculator {
 				calcCLZero.andersonSweptCompressibleSubsonic();
 			}
 
-			_cLAtAplhaActual.put(
-					MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC,
-					_cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+			double cLActual = _cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
 					*alpha.to(NonSI.DEGREE_ANGLE).getEstimatedValue() + 
-					_cLZero.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC)
-					);
+					_cLZero.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC);
 			
-			return _cLAtAplhaActual.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC);
+			_cLAtAlpha.put(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC, cLActual);
+			
+			return cLActual;
 		}
 
 		public double nasaBlackwellLinear(Amount<Angle> alpha) {
@@ -573,12 +596,12 @@ public class LSAerodynamicsCalculator {
 
 			theNasaBlackwellCalculator.calculate(alpha.to(SI.RADIAN));
 
-			_cLAtAplhaActual.put(
+			_cLAtAlpha.put(
 					MethodEnum.LINEAR_NASA_BLACKWELL,
 					theNasaBlackwellCalculator.getCLCurrent()
 					);
 			
-			return _cLAtAplhaActual.get(MethodEnum.LINEAR_NASA_BLACKWELL);
+			return theNasaBlackwellCalculator.getCLCurrent();
 		}
 
 		/**
@@ -635,12 +658,10 @@ public class LSAerodynamicsCalculator {
 							);
 					
 				}
-				
 			}
+			_cLAtAlpha.put(MethodEnum.NASA_BLACKWELL, cLActual);
 			
-			_cLAtAplhaActual.put(MethodEnum.NASA_BLACKWELL, cLActual);
-			
-			return _cLAtAplhaActual.get(MethodEnum.NASA_BLACKWELL);
+			return cLActual;
 		}
 
 		public void allMethods(Amount<Angle> alpha) {
@@ -1093,7 +1114,6 @@ public class LSAerodynamicsCalculator {
 					_theOperatingConditions.getAltitude().doubleValue(SI.METER)
 					);
 
-			// TODO: try to use nasa Blackwell also for vtail
 			if (_theLiftingSurface.getType() != ComponentEnum.VERTICAL_TAIL) {
 				for (int i=0; i < alphaArrayNasaBlackwell.length; i++) {
 					if(firstIntersectionFound == false) {
@@ -1812,7 +1832,25 @@ public class LSAerodynamicsCalculator {
 	//............................................................................
 	public class CalcCD0 {
 		
+		public void classic() {
+			
+			Double kExcr = _theLiftingSurface.getKExcr();
+			Double cD0Parasite = DragCalc.calculateCD0Parasite(
+					_theLiftingSurface,
+					_theOperatingConditions
+					);
+			Double cD0Gap = DragCalc.calculateCDGap(_theLiftingSurface);
+			
+			_cD0.put(
+					MethodEnum.CLASSIC,
+					cD0Parasite*(1+kExcr)
+					+ cD0Gap
+					);
+		}
 		
+		public void allMethods() {
+			classic();
+		}
 		
 	}
 	//............................................................................
@@ -1820,12 +1858,166 @@ public class LSAerodynamicsCalculator {
 	//............................................................................
 	
 	//............................................................................
+	// CALC OSWALD FACTOR INNER CLASS
+	//............................................................................
+	public class CalcOswaldFactor {
+		
+		public void howe() {
+			_oswaldFactor.put(
+					MethodEnum.HOWE,
+					AerodynamicCalc.calculateOswaldHowe(
+							_theLiftingSurface.getTaperRatioEquivalent(false),
+							_theLiftingSurface.getAspectRatio(),
+							_meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
+							_theLiftingSurface.getSweepQuarterChordEquivalent(false).doubleValue(SI.RADIAN),
+							_theLiftingSurface.getNumberOfEngineOverTheWing(),
+							_theOperatingConditions.getMachCurrent()
+							)
+					);
+		}
+		
+		public void grosu(Amount<Angle> alpha) {
+			
+			CalcCLAtAlpha calcCLAtAlpha = new CalcCLAtAlpha();
+			calcCLAtAlpha.nasaBlackwellCompleteCurve(alpha);
+			
+			_oswaldFactor.put(
+					MethodEnum.GROSU,
+					AerodynamicCalc.calculateOswaldGrosu(
+							_meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
+							_theLiftingSurface.getAspectRatio(),
+							_cLAtAlpha.get(MethodEnum.NASA_BLACKWELL)
+							)
+					);
+		}
+		
+		public void raymer() {
+			_oswaldFactor.put(
+					MethodEnum.RAYMER,
+					AerodynamicCalc.calculateOswaldRaymer(
+							_theLiftingSurface.getSweepLEEquivalent(false).doubleValue(SI.RADIAN),
+							_theLiftingSurface.getAspectRatio()
+							)
+					);
+		}
+		
+		public void allMethods(Amount<Angle> alpha) {
+			howe();
+			grosu(alpha);
+			raymer();
+		}
+	}
+	//............................................................................
+	// END OF THE CALC OSWALD FACTOR INNER CLASS
+	//............................................................................
+	
+	//............................................................................
+	// CALC CDi INNER CLASS
+	//............................................................................
+	public class CalcCDInduced {
+
+		public void howe(Amount<Angle> alpha) {
+			
+			CalcCLAtAlpha calcCLAtAlpha = new CalcCLAtAlpha();
+			calcCLAtAlpha.nasaBlackwellCompleteCurve(alpha);
+			
+			if(_oswaldFactor.get(MethodEnum.HOWE) == null) {
+				CalcOswaldFactor theOswaldCalculator = new CalcOswaldFactor();
+				theOswaldCalculator.howe();
+			}
+			
+			_cDInduced.put(
+					MethodEnum.HOWE,
+					Math.pow(_cLAtAlpha.get(MethodEnum.NASA_BLACKWELL),2)
+					/(Math.PI
+					*_theLiftingSurface.getAspectRatio()
+					*_oswaldFactor.get(MethodEnum.HOWE))
+					);
+		}
+		
+		public void grosu(Amount<Angle> alpha) {
+			
+			CalcCLAtAlpha calcCLAtAlpha = new CalcCLAtAlpha();
+			calcCLAtAlpha.nasaBlackwellCompleteCurve(alpha);
+			
+			if(_oswaldFactor.get(MethodEnum.GROSU) == null) {
+				CalcOswaldFactor theOswaldCalculator = new CalcOswaldFactor();
+				theOswaldCalculator.grosu(alpha);
+			}
+			
+			_cDInduced.put(
+					MethodEnum.HOWE,
+					Math.pow(_cLAtAlpha.get(MethodEnum.NASA_BLACKWELL),2)
+					/(Math.PI
+					*_theLiftingSurface.getAspectRatio()
+					*_oswaldFactor.get(MethodEnum.GROSU))
+					);
+		}
+		
+		public void raymer(Amount<Angle> alpha) {
+			
+			CalcCLAtAlpha calcCLAtAlpha = new CalcCLAtAlpha();
+			calcCLAtAlpha.nasaBlackwellCompleteCurve(alpha);
+			
+			if(_oswaldFactor.get(MethodEnum.RAYMER) == null) {
+				CalcOswaldFactor theOswaldCalculator = new CalcOswaldFactor();
+				theOswaldCalculator.raymer();
+			}
+			
+			_cDInduced.put(
+					MethodEnum.HOWE,
+					Math.pow(_cLAtAlpha.get(MethodEnum.NASA_BLACKWELL),2)
+					/(Math.PI
+					*_theLiftingSurface.getAspectRatio()
+					*_oswaldFactor.get(MethodEnum.RAYMER))
+					);
+		}
+		
+		public void allMethods(Amount<Angle> alpha) {
+			howe(alpha);
+			grosu(alpha);
+			raymer(alpha);
+		}
+	}
+	//............................................................................
+	// END OF THE CALC CDi INNER CLASS
+	//............................................................................
+	
+	//............................................................................
 	// CALC CDwave INNER CLASS
 	//............................................................................
 	public class CalcCDWave {
 		
+		public void lockKornWithKornMason() {
+			_cDWave.put(
+					MethodEnum.LOCK_KORN_WITH_KORN_MASON,
+					DragCalc.calculateCDWaveLockKorn(
+							_currentLiftCoefficient,
+							_currentMachNumber,
+							_theLiftingSurface.getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
+							_meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
+							_meanAirfoil.getType()
+							)
+					);
+		}
 		
+		public void lockKornWithKroo() {
+			_cDWave.put(
+					MethodEnum.LOCK_KORN_WITH_KORN_MASON,
+					DragCalc.calculateCDWaveLockKorn_KrooCriticalMach(
+							_currentLiftCoefficient,
+							_currentMachNumber,
+							_theLiftingSurface.getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
+							_meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
+							_meanAirfoil.getType()
+							)
+					);
+		}
 		
+		public void allMethods() {
+			lockKornWithKornMason();
+			lockKornWithKroo();
+		}
 	}
 	//............................................................................
 	// END OF THE CALC CDwave INNER CLASS
@@ -1835,8 +2027,8 @@ public class LSAerodynamicsCalculator {
 	// CALC Cd DISTRIBUTION INNER CLASS
 	//............................................................................
 	public class CalcDragDistributions {
-		
-		
+			
+		// TODO : WAIT UNTIL MANUELA'S METHOD IS READY
 		
 	}
 	//............................................................................
@@ -1848,8 +2040,39 @@ public class LSAerodynamicsCalculator {
 	//............................................................................
 	public class CalcPolar {
 
+		public void classic() {
+			
+			if(_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL) == null) {
+				CalcLiftCurve calcLiftCurve = new CalcLiftCurve();
+				calcLiftCurve.nasaBlackwell();
+			}
+			
+			CalcCDAtAlpha calcCDAtAlpha = new CalcCDAtAlpha();
+			
+			Double[] cDArray = new Double[_numberOfAlphasPlot];
+			for(int i=0; i<_numberOfAlphasPlot; i++) {
+				cDArray[i] = calcCDAtAlpha.classic(
+						Amount.valueOf(
+								_alphaArrayPlot[i],
+								NonSI.DEGREE_ANGLE
+								).to(SI.RADIAN)
+						);
+			}
+			
+			_polar3DCurve.put(MethodEnum.CLASSIC, cDArray);
+			
+		}
+		
+		public void fromCdDistribution() {
+			
+			// TODO : WAIT UNTIL MANUELA'S METHOD IS READY
+			
+		}
 
-
+		public void allMethods() {
+			classic();
+			fromCdDistribution();
+		}
 	}
 	//............................................................................
 	// END OF THE CALC POLAR INNER CLASS
@@ -1860,7 +2083,50 @@ public class LSAerodynamicsCalculator {
 	//............................................................................
 	public class CalcCDAtAlpha {
 		
+		public double classic(Amount<Angle> alpha) {
+			
+			double cDActual = 0.0;
+			
+			if(_cD0.get(MethodEnum.CLASSIC) == null) {
+				CalcCD0 calcCD0 = new CalcCD0(); 
+				calcCD0.classic();
+			}
+			
+			// TODO : CHECK WHICH OSWALD IS BETTER !
+			if(_cDInduced.get(MethodEnum.RAYMER) == null) {
+				CalcCDInduced calcCDInduced = new CalcCDInduced(); 
+				calcCDInduced.raymer(alpha);
+			}
+			
+			if(_cDWave.get(MethodEnum.LOCK_KORN_WITH_KROO) == null) {
+				CalcCDWave calcCDWave = new CalcCDWave(); 
+				calcCDWave.lockKornWithKroo();
+			}
+			
+			_cDAtAlpha.put(
+					MethodEnum.CLASSIC,
+					_cD0.get(MethodEnum.CLASSIC)
+					+ _cDInduced.get(MethodEnum.RAYMER)
+					+ _cDWave.get(MethodEnum.LOCK_KORN_WITH_KROO)
+					);
+			
+			return cDActual;
+		}
 		
+		public double fromCdDistribution(Amount<Angle> alpha) {
+			
+			 double cDActual = 0.0;
+			 
+			 // TODO : WAIT UNTIL MANUELA'S METHOD IS READY
+			 
+			 return cDActual;
+			
+		}
+
+		public void allMethods(Amount<Angle> alpha) {
+			classic(alpha);
+			fromCdDistribution(alpha);
+		}
 		
 	}
 	//............................................................................
@@ -1902,6 +2168,11 @@ public class LSAerodynamicsCalculator {
 			if(_cLMax.get(MethodEnum.NASA_BLACKWELL) == null) {
 				CalcCLmax calcCLmax = new CalcCLmax();
 				calcCLmax.nasaBlackwell();
+			}
+			
+			if(_cD0.get(MethodEnum.CLASSIC) == null) {
+				CalcCD0 calcCD0 = new CalcCD0();
+				calcCD0.classic();
 			}
 			
 			//-----------------------------------------------------
@@ -2001,6 +2272,14 @@ public class LSAerodynamicsCalculator {
 					);
 			
 			//------------------------------------------------------
+			// CD0 HIGH LIFT
+			_cD0HighLift.put(
+					MethodEnum.EMPIRICAL,
+					_cD0.get(MethodEnum.CLASSIC)
+					+ _deltaCD0.get(MethodEnum.EMPIRICAL)
+					);
+			
+			//------------------------------------------------------
 			// TODO : EVENTUALLY ADD CD0 AND CMc4 HIGH LIFT
 			
 		}
@@ -2082,9 +2361,9 @@ public class LSAerodynamicsCalculator {
 					alpha.doubleValue(NonSI.DEGREE_ANGLE)
 					);
 			
-			_cLAtAlphaActualHighLift.put(MethodEnum.EMPIRICAL, cLActual);
+			_cLAtAlphaHighLift.put(MethodEnum.EMPIRICAL, cLActual);
 			
-			return _cLAtAlphaActualHighLift.get(MethodEnum.EMPIRICAL);
+			return cLActual;
 		}
 		
 		public void allMethods(Amount<Angle> alpha) {
@@ -2171,6 +2450,14 @@ public class LSAerodynamicsCalculator {
 	public void setCurrentLiftCoefficient(Double _currentLiftCoefficient) {
 		this._currentLiftCoefficient = _currentLiftCoefficient;
 	}
+	public Double getCurrentDragCoefficient() {
+		return _currentDragCoefficient;
+	}
+
+	public void setCurrentDragCoefficient(Double _currentDragCoefficient) {
+		this._currentDragCoefficient = _currentDragCoefficient;
+	}
+
 	public Map<MethodEnum, Double> getCriticalMachNumber() {
 		return _criticalMachNumber;
 	}
@@ -2252,18 +2539,6 @@ public class LSAerodynamicsCalculator {
 	}
 	public void setCLAlpha(Map<MethodEnum, Amount<?>> _cLAlpha) {
 		this._cLAlpha = _cLAlpha;
-	}
-	public Map <MethodEnum, Double> getCLAtAplhaActual() {
-		return _cLAtAplhaActual;
-	}
-	public void setCLAtAplhaActual(Map <MethodEnum, Double> _cLAtAplhaActual) {
-		this._cLAtAplhaActual = _cLAtAplhaActual;
-	}
-	public Map <MethodEnum, Double> getCLAtAlphaActualHighLift() {
-		return _cLAtAlphaActualHighLift;
-	}
-	public void setCLAtAlphaActualHighLift(Map <MethodEnum, Double> _cLAtAlphaActualHighLift) {
-		this._cLAtAlphaActualHighLift = _cLAtAlphaActualHighLift;
 	}
 	public Map<MethodEnum, Double[]> getLiftCoefficient3DCurve() {
 		return _liftCoefficient3DCurve;
@@ -2476,16 +2751,16 @@ public class LSAerodynamicsCalculator {
 		this._deltaCLmaxSlat = _deltaCLmaxSlat;
 	}
 	public Map<MethodEnum, List<Double>> getDeltaCDList() {
-		return _deltaCDList;
+		return _deltaCD0List;
 	}
 	public void setDeltaCDList(Map<MethodEnum, List<Double>> _deltaCDList) {
-		this._deltaCDList = _deltaCDList;
+		this._deltaCD0List = _deltaCDList;
 	}
 	public Map<MethodEnum, Double> getDeltaCD() {
-		return _deltaCD;
+		return _deltaCD0;
 	}
 	public void setDeltaCD(Map<MethodEnum, Double> _deltaCD) {
-		this._deltaCD = _deltaCD;
+		this._deltaCD0 = _deltaCD;
 	}
 	public Map<MethodEnum, List<Double>> getDeltaCMc4List() {
 		return _deltaCMc4List;
@@ -2558,5 +2833,181 @@ public class LSAerodynamicsCalculator {
 	}
 	public void setClMaxDistribution(List<Double> _clMaxDistribution) {
 		this._clMaxDistribution = _clMaxDistribution;
+	}
+
+	/**
+	 * @return the _cD0
+	 */
+	public Map <MethodEnum, Double> getCD0() {
+		return _cD0;
+	}
+
+	/**
+	 * @param _cD0 the _cD0 to set
+	 */
+	public void setCD0(Map <MethodEnum, Double> _cD0) {
+		this._cD0 = _cD0;
+	}
+
+	/**
+	 * @return the _cDInduced
+	 */
+	public Map <MethodEnum, Double> getCDInduced() {
+		return _cDInduced;
+	}
+
+	/**
+	 * @param _cDInduced the _cDInduced to set
+	 */
+	public void setCDInduced(Map <MethodEnum, Double> _cDInduced) {
+		this._cDInduced = _cDInduced;
+	}
+
+	/**
+	 * @return the _cDWave
+	 */
+	public Map <MethodEnum, Double> getCDWave() {
+		return _cDWave;
+	}
+
+	/**
+	 * @param _cDWave the _cDWave to set
+	 */
+	public void setCDWave(Map <MethodEnum, Double> _cDWave) {
+		this._cDWave = _cDWave;
+	}
+
+	/**
+	 * @return the _polar3DCurve
+	 */
+	public Map <MethodEnum, Double[]> getPolar3DCurve() {
+		return _polar3DCurve;
+	}
+
+	/**
+	 * @param _polar3DCurve the _polar3DCurve to set
+	 */
+	public void setPolar3DCurve(Map <MethodEnum, Double[]> _polar3DCurve) {
+		this._polar3DCurve = _polar3DCurve;
+	}
+
+	/**
+	 * @return the _parasiteDragCoefficientDistribution
+	 */
+	public Map <MethodEnum, List<List<Double>>> getParasiteDragCoefficientDistribution() {
+		return _parasiteDragCoefficientDistribution;
+	}
+
+	/**
+	 * @param _parasiteDragCoefficientDistribution the _parasiteDragCoefficientDistribution to set
+	 */
+	public void setParasiteDragCoefficientDistribution(Map <MethodEnum, List<List<Double>>> _parasiteDragCoefficientDistribution) {
+		this._parasiteDragCoefficientDistribution = _parasiteDragCoefficientDistribution;
+	}
+
+	/**
+	 * @return the _inducedDragCoefficientDistribution
+	 */
+	public Map <MethodEnum, List<List<Double>>> getInducedDragCoefficientDistribution() {
+		return _inducedDragCoefficientDistribution;
+	}
+
+	/**
+	 * @param _inducedDragCoefficientDistribution the _inducedDragCoefficientDistribution to set
+	 */
+	public void setInducedDragCoefficientDistribution(Map <MethodEnum, List<List<Double>>> _inducedDragCoefficientDistribution) {
+		this._inducedDragCoefficientDistribution = _inducedDragCoefficientDistribution;
+	}
+
+	/**
+	 * @return the _dragCoefficientDistribution
+	 */
+	public Map <MethodEnum, List<List<Double>>> getDragCoefficientDistribution() {
+		return _dragCoefficientDistribution;
+	}
+
+	/**
+	 * @param _dragCoefficientDistribution the _dragCoefficientDistribution to set
+	 */
+	public void setDragCoefficientDistribution(Map <MethodEnum, List<List<Double>>> _dragCoefficientDistribution) {
+		this._dragCoefficientDistribution = _dragCoefficientDistribution;
+	}
+
+	/**
+	 * @return the _dragDistribution
+	 */
+	public Map <MethodEnum, List<List<Amount<Force>>>> getDragDistribution() {
+		return _dragDistribution;
+	}
+
+	/**
+	 * @param _dragDistribution the _dragDistribution to set
+	 */
+	public void setDragDistribution(Map <MethodEnum, List<List<Amount<Force>>>> _dragDistribution) {
+		this._dragDistribution = _dragDistribution;
+	}
+
+	/**
+	 * @return the _oswaldFactor
+	 */
+	public Map <MethodEnum, Double> getOswaldFactor() {
+		return _oswaldFactor;
+	}
+
+	/**
+	 * @param _oswaldFactor the _oswaldFactor to set
+	 */
+	public void setOswaldFactor(Map <MethodEnum, Double> _oswaldFactor) {
+		this._oswaldFactor = _oswaldFactor;
+	}
+
+	/**
+	 * @return the _cLAtAlpha
+	 */
+	public Map <MethodEnum, Double> getCLAtAlpha() {
+		return _cLAtAlpha;
+	}
+
+	/**
+	 * @param _cLAtAlpha the _cLAtAlpha to set
+	 */
+	public void setCLAtAlpha(Map <MethodEnum, Double> _cLAtAlpha) {
+		this._cLAtAlpha = _cLAtAlpha;
+	}
+
+	/**
+	 * @return the _cLAtAlphaHighLift
+	 */
+	public Map <MethodEnum, Double> getCLAtAlphaHighLift() {
+		return _cLAtAlphaHighLift;
+	}
+
+	/**
+	 * @param _cLAtAlphaHighLift the _cLAtAlphaHighLift to set
+	 */
+	public void setCLAtAlphaHighLift(Map <MethodEnum, Double> _cLAtAlphaHighLift) {
+		this._cLAtAlphaHighLift = _cLAtAlphaHighLift;
+	}
+
+	/**
+	 * @return the _cDAtAlpha
+	 */
+	public Map <MethodEnum, Double> getCDAtAlpha() {
+		return _cDAtAlpha;
+	}
+
+	/**
+	 * @param _cDAtAlpha the _cDAtAlpha to set
+	 */
+	public void setCDAtAlpha(Map <MethodEnum, Double> _cDAtAlpha) {
+		this._cDAtAlpha = _cDAtAlpha;
+	}
+	
+	public Map<MethodEnum, Double> getCD0HighLift() {
+		return _cD0HighLift;
+	}
+
+	public void setCD0HighLift(Map<MethodEnum, Double> _cD0HighLift) {
+		this._cD0HighLift = _cD0HighLift;
 	}
 }

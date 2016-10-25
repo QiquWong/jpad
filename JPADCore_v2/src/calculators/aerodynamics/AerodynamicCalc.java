@@ -10,6 +10,9 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
+import aircraft.components.Aircraft;
+import aircraft.components.fuselage.Fuselage;
+import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.enumerations.AircraftTypeEnum;
 import configuration.enumerations.AirfoilTypeEnum;
 import standaloneutils.MyArrayUtils;
@@ -276,7 +279,7 @@ public class AerodynamicCalc {
 	}
 
 	/**
-	 * Evaluate oswald factor with DLR method
+	 * Evaluate oswald factor with DLR method (entire aircraft)
 	 * 
 	 * @author Lorenzo Attanasio
 	 * @see page 9 DLR pdf
@@ -292,29 +295,37 @@ public class AerodynamicCalc {
 	 * @return
 	 */
 	public static double calculateOswaldDLR(
-			double taperRatioOpt, double arW, double bW, double dihedralMean, 
-			double wingletHeight, double fuselageMaxDiam, AircraftTypeEnum typeVehicle, 
+			Aircraft theAircraft,
 			double mach) {
 
+		LiftingSurface theWing = theAircraft.getWing();
+		Fuselage theFuselage = theAircraft.getFuselage();
+		AircraftTypeEnum typeVehicle = theAircraft.getTypeVehicle();
+		
 		double ae = -0.001521, be = 10.82, f, oswald,
 				kef, e_theo, keD0, 
 				lambda_opt,
 				delta_lambda, keM = 1.;
 
-		lambda_opt = taperRatioOpt;
+		lambda_opt = 0.45
+				*Math.pow(
+						Math.E,
+						theWing.getSweepQuarterChordEquivalent(false).doubleValue(SI.RADIAN)
+						);
 		delta_lambda = -0.357 + lambda_opt;
-		//			_f = 0.0524*Math.pow(_lambda - delta_lambda,4) 
-		//					- 0.15*Math.pow(_lambda - delta_lambda,3) 
-		//					+ 0.1659*Math.pow(_lambda - delta_lambda, 2) 
-		//					- 0.0706*(_lambda - delta_lambda) + 0.0119;
-		f = 0.0524*Math.pow(1 - delta_lambda,4) 
-				- 0.15*Math.pow(1 - delta_lambda,3) 
-				+ 0.1659*Math.pow(1 - delta_lambda, 2) 
-				- 0.0706*(1 - delta_lambda) + 0.0119;
+		f = 0.0524*Math.pow(lambda_opt - delta_lambda,4) 
+				- 0.15*Math.pow(lambda_opt - delta_lambda,3) 
+				+ 0.1659*Math.pow(lambda_opt - delta_lambda, 2) 
+				- 0.0706*(lambda_opt - delta_lambda)
+				+ 0.0119;
 
-		e_theo = 1/(1 + f*arW);
+		e_theo = 1/(f*theWing.getAspectRatio());
 
-		kef = 1 - 2*Math.pow(fuselageMaxDiam/bW, 2);
+		kef = 1 - (2*
+				(Math.pow(
+						theFuselage.getSectionHeight().divide(theWing.getSpan()).getEstimatedValue(), 2)
+						)
+				);
 
 		switch(typeVehicle) {
 		case JET : keD0 = 0.873; break;
@@ -337,10 +348,11 @@ public class AerodynamicCalc {
 
 		double kWL = 2.83;
 
-		oswald = oswald*Math.pow(1+(2./kWL)*(wingletHeight/bW),2);
+		oswald = oswald*Math.pow(1+(2./kWL)*
+				(theWing.getLiftingSurfaceCreator().getWingletHeight().divide(theWing.getSpan()).getEstimatedValue()),2);
 
 		double keGamma = Math.pow(
-				Math.cos(dihedralMean),
+				Math.cos(theWing.getLiftingSurfaceCreator().getDihedralMean().doubleValue(SI.RADIAN)),
 				-2);
 		//			double keGamma = Math.pow((1 + (1/kWL)*(1/Math.cos(_dihedral) - 1)),2);
 		double eWingletGamma = oswald*keGamma;

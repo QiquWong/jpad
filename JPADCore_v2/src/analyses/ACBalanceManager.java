@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.SI;
 
@@ -1236,53 +1237,116 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 	public void createBalanceCharts(String balanceOutputFolderPath) {
 
 		int index = _theAircraft.getCabinConfiguration().getSeatsCoGFrontToRear().size();
+		Amount<Length> meanAerodynamicChordXle = _theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX();
+		Amount<Length> meanAerodynamicChord = _theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord();
 		
-		double[] seatCoGFrontToRearReferToMAC = new double[index];
-		double[] seatCoGRearToFrontReferToMAC = new double[index];
+		Double[] seatCoGFrontToRearReferToMAC = new Double[index];
+		Double[] seatCoGRearToFrontReferToMAC = new Double[index];
+		Double[] fuelCoGBeforeBoardingReferToMAC = new Double[2];
+		Double[] massWithFuelBeforeBoarding = new Double[2];
+		Double[] fuelCoGAfterBoardingReferToMAC = new Double[2];
+		Double[] massWithFuelAfterBoarding = new Double[2];
 		
-		seatCoGFrontToRearReferToMAC[0] = getCGOEM().getXMAC();
-		seatCoGRearToFrontReferToMAC[0] = seatCoGFrontToRearReferToMAC[0];
+		seatCoGFrontToRearReferToMAC[0] = getCGOEM().getXMAC() - (meanAerodynamicChord.times(0.02).doubleValue(SI.METER));
+		seatCoGRearToFrontReferToMAC[0] = getCGOEM().getXMAC() + (meanAerodynamicChord.times(0.02).doubleValue(SI.METER));  
 		
 		for (int i=0; i<index; i++) {
 			seatCoGFrontToRearReferToMAC[i] = 
 					_theAircraft
 						.getCabinConfiguration()
 							.getSeatsCoGFrontToRear().get(i)
-					.minus(_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX())
-					.divide(_theAircraft
-									.getWing()
-										.getLiftingSurfaceCreator()
-											.getMeanAerodynamicChord())
+								.minus(meanAerodynamicChord.times(0.02))
+					.minus(meanAerodynamicChordXle)
+					.divide(meanAerodynamicChord)
 					.getEstimatedValue();
 			seatCoGRearToFrontReferToMAC[i] = 
 					seatCoGRearToFrontReferToMAC[i] = 
 					_theAircraft
 						.getCabinConfiguration()
 							.getSeatsCoGRearToFront().get(i)
-					.minus(_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX())
-					.divide(_theAircraft
-									.getWing()
-										.getLiftingSurfaceCreator()
-											.getMeanAerodynamicChord())
+								.plus(meanAerodynamicChord.times(0.02))
+					.minus(meanAerodynamicChordXle)
+					.divide(meanAerodynamicChord)
 					.getEstimatedValue();
 		}
 		
-		double[][] xArrays = new double[2][_theAircraft.getCabinConfiguration().getSeatsCoGFrontToRear().size()];
-		xArrays[0] = seatCoGFrontToRearReferToMAC;
-		xArrays[1] = seatCoGRearToFrontReferToMAC;
-			
-		double[][] yArrays = new double[2][_theAircraft.getCabinConfiguration().getCurrentMassList().size()];
-		yArrays[0] = MyArrayUtils.convertListOfAmountTodoubleArray(_theAircraft.getCabinConfiguration().getCurrentMassList());
-		yArrays[1] = MyArrayUtils.convertListOfAmountTodoubleArray(_theAircraft.getCabinConfiguration().getCurrentMassList());
+		// FUEL BEFORE BOARDING
+		fuelCoGBeforeBoardingReferToMAC[0] = MyArrayUtils.getMax(seatCoGRearToFrontReferToMAC);
+		int indexOfMax = MyArrayUtils.getIndexOfMax(seatCoGRearToFrontReferToMAC);
+		massWithFuelBeforeBoarding[0] = 
+				MyArrayUtils.convertListOfAmountToDoubleArray(
+						_theAircraft.getCabinConfiguration().getCurrentMassList()
+						)[indexOfMax];
+		fuelCoGBeforeBoardingReferToMAC[1] = ((((_cgOEM.getXBRF().times(_operatingEmptyMass).getEstimatedValue())
+				+ (_theAircraft.getFuelTank().getXCG()
+						.times(_theAircraft.getFuelTank().getFuelMass()).getEstimatedValue()))
+				/(_operatingEmptyMass.plus(_theAircraft.getFuelTank().getFuelMass()).getEstimatedValue()))
+				- _theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER))
+				/ _theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER);
+		massWithFuelBeforeBoarding[1] = _operatingEmptyMass
+				.plus(_theAircraft.getFuelTank().getFuelMass())
+				.doubleValue(SI.KILOGRAM); 
+				
 		
-		MyChartToFileUtils.plotNoLegend(
-				xArrays, yArrays,
-				null, null, null, null,
-				"Xcg/c", "Mass",
-				"%", "kg",
-				balanceOutputFolderPath,
-				"Loading Cycle"
-				);
+		// FUEL AFTER BOARDING
+		fuelCoGAfterBoardingReferToMAC[0] = MyArrayUtils.getMin(seatCoGFrontToRearReferToMAC);
+		int indexOfMin = MyArrayUtils.getIndexOfMin(seatCoGFrontToRearReferToMAC);
+		massWithFuelAfterBoarding[0] = 
+				MyArrayUtils.convertListOfAmountToDoubleArray(
+						_theAircraft.getCabinConfiguration().getCurrentMassList()
+						)[indexOfMin];
+		fuelCoGAfterBoardingReferToMAC[1] = _cgMTOM.getXMAC(); 
+		massWithFuelAfterBoarding[1] = _maximumTakeOffMass.doubleValue(SI.KILOGRAM); 
+				
+		
+		List<Double[]> xList = new ArrayList<>();
+		List<Double[]> yList = new ArrayList<>();
+		List<String> legend = new ArrayList<>();
+		
+		xList.add(seatCoGFrontToRearReferToMAC);
+		xList.add(seatCoGRearToFrontReferToMAC);
+		xList.add(fuelCoGBeforeBoardingReferToMAC);
+		xList.add(fuelCoGAfterBoardingReferToMAC);
+		
+		yList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_theAircraft.getCabinConfiguration().getCurrentMassList()));
+		yList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_theAircraft.getCabinConfiguration().getCurrentMassList()));
+		yList.add(massWithFuelBeforeBoarding);
+		yList.add(massWithFuelAfterBoarding);
+		
+		legend.add("Front to Rear");
+		legend.add("Rear to Front");
+		legend.add("Fuel before boarding");
+		legend.add("Fuel after boarding");
+		
+//		double[][] xArrays = new double[2][_theAircraft.getCabinConfiguration().getSeatsCoGFrontToRear().size()];
+//		xArrays[0] = seatCoGFrontToRearReferToMAC;
+//		xArrays[1] = seatCoGRearToFrontReferToMAC;
+//			
+//		double[][] yArrays = new double[2][_theAircraft.getCabinConfiguration().getCurrentMassList().size()];
+//		yArrays[0] = MyArrayUtils.convertListOfAmountTodoubleArray(_theAircraft.getCabinConfiguration().getCurrentMassList());
+//		yArrays[1] = MyArrayUtils.convertListOfAmountTodoubleArray(_theAircraft.getCabinConfiguration().getCurrentMassList());
+		
+		try {
+			MyChartToFileUtils.plot(
+					xList, yList,
+					"Loading Cycle", "Xcg/c", "Mass",
+					null, null, null, null,
+					"%", "Kg",
+					true, legend,
+					balanceOutputFolderPath, "Loading Cycle"
+					);
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+//				xList, yList,
+//				null, null, null, null,
+//				"Xcg/c", "Mass",
+//				"%", "kg",
+//				balanceOutputFolderPath,
+//				"Loading Cycle"
+//				);
 		
 		
 	}
