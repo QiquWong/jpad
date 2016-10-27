@@ -1,6 +1,7 @@
 package standaloneutils;
 
 import java.awt.Color;
+import java.awt.Paint;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -20,12 +21,16 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.ArrayRealVector;
+import org.jfree.chart.ChartColor;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.DefaultDrawingSupplier;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -603,6 +608,23 @@ public class MyChartToFileUtils {
 		chart.getXYPlot().setRangeGridlinePaint(Color.LIGHT_GRAY);
 		chart.getXYPlot().getDomainAxis().setRange(xMin - Math.abs(0.1*xMin), xMax + Math.abs(0.1*xMax));
 		chart.getXYPlot().getRangeAxis().setRange(yMin - Math.abs(0.1*yMin), yMax + Math.abs(0.1*yMax));
+		
+		final Paint[] paintArray;
+		// create default colors but modify some colors that are hard to see
+		paintArray = ChartColor.createDefaultPaintArray();
+		paintArray[2] = ChartColor.DARK_GREEN;
+		paintArray[3] = ChartColor.DARK_YELLOW;  
+		paintArray[5] = ChartColor.DARK_CYAN;
+		paintArray[6] = ChartColor.BLACK;
+		
+		XYPlot plot = (XYPlot) chart.getPlot(); 
+		plot.setDrawingSupplier(new DefaultDrawingSupplier(
+                paintArray,
+                DefaultDrawingSupplier.DEFAULT_FILL_PAINT_SEQUENCE,
+                DefaultDrawingSupplier.DEFAULT_OUTLINE_PAINT_SEQUENCE,
+                DefaultDrawingSupplier.DEFAULT_STROKE_SEQUENCE,
+                DefaultDrawingSupplier.DEFAULT_OUTLINE_STROKE_SEQUENCE,
+                DefaultDrawingSupplier.DEFAULT_SHAPE_SEQUENCE));
 		
 		// creation of the file .png
 		File xyChart = new File(folderPathName + fileName + ".png"); 
@@ -1761,6 +1783,23 @@ public class MyChartToFileUtils {
 		xylineChart.getXYPlot().setRangeGridlinePaint(Color.LIGHT_GRAY);
 		//xylineChart.removeLegend(); 
 
+		final Paint[] paintArray;
+		// create default colors but modify some colors that are hard to see
+		paintArray = ChartColor.createDefaultPaintArray();
+		paintArray[2] = ChartColor.DARK_GREEN;
+		paintArray[3] = ChartColor.DARK_YELLOW;  
+		paintArray[5] = ChartColor.DARK_CYAN;
+		paintArray[6] = ChartColor.BLACK;
+		
+		XYPlot plot = (XYPlot) xylineChart.getPlot(); 
+		plot.setDrawingSupplier(new DefaultDrawingSupplier(
+                paintArray,
+                DefaultDrawingSupplier.DEFAULT_FILL_PAINT_SEQUENCE,
+                DefaultDrawingSupplier.DEFAULT_OUTLINE_PAINT_SEQUENCE,
+                DefaultDrawingSupplier.DEFAULT_STROKE_SEQUENCE,
+                DefaultDrawingSupplier.DEFAULT_OUTLINE_STROKE_SEQUENCE,
+                DefaultDrawingSupplier.DEFAULT_SHAPE_SEQUENCE));
+		
 		NumberAxis domain = (NumberAxis) xylineChart.getXYPlot().getDomainAxis();
 		domain.setRange(xMin, xMax);
 		//        domain.setTickUnit(new NumberTickUnit(0.1));
@@ -1834,6 +1873,23 @@ public class MyChartToFileUtils {
 		xylineChart.getXYPlot().setRangeGridlinePaint(Color.LIGHT_GRAY);
 		xylineChart.removeLegend(); 
 
+		final Paint[] paintArray;
+		// create default colors but modify some colors that are hard to see
+		paintArray = ChartColor.createDefaultPaintArray();
+		paintArray[2] = ChartColor.DARK_GREEN;
+		paintArray[3] = ChartColor.DARK_YELLOW;  
+		paintArray[5] = ChartColor.DARK_CYAN;
+		paintArray[6] = ChartColor.BLACK;
+		
+		XYPlot plot = (XYPlot) xylineChart.getPlot(); 
+		plot.setDrawingSupplier(new DefaultDrawingSupplier(
+                paintArray,
+                DefaultDrawingSupplier.DEFAULT_FILL_PAINT_SEQUENCE,
+                DefaultDrawingSupplier.DEFAULT_OUTLINE_PAINT_SEQUENCE,
+                DefaultDrawingSupplier.DEFAULT_STROKE_SEQUENCE,
+                DefaultDrawingSupplier.DEFAULT_OUTLINE_STROKE_SEQUENCE,
+                DefaultDrawingSupplier.DEFAULT_SHAPE_SEQUENCE));
+		
 		NumberAxis domain = (NumberAxis) xylineChart.getXYPlot().getDomainAxis();
 		domain.setRange(xMin, xMax);
 		//        domain.setTickUnit(new NumberTickUnit(0.1));
@@ -1891,6 +1947,22 @@ public class MyChartToFileUtils {
 		chart.getPlot().setBackgroundPaint(Color.WHITE);
 		chart.getPlot().setBackgroundAlpha(0.0f);
 
+		final Paint[] paintArray;
+		// create default colors but modify some colors that are hard to see
+		paintArray = ChartColor.createDefaultPaintArray();
+		paintArray[2] = ChartColor.DARK_GREEN;
+		paintArray[3] = ChartColor.DARK_YELLOW;  
+		paintArray[5] = ChartColor.DARK_CYAN;
+		paintArray[6] = ChartColor.BLACK;
+		
+		chart.getPlot().setDrawingSupplier(new DefaultDrawingSupplier(
+                paintArray,
+                DefaultDrawingSupplier.DEFAULT_FILL_PAINT_SEQUENCE,
+                DefaultDrawingSupplier.DEFAULT_OUTLINE_PAINT_SEQUENCE,
+                DefaultDrawingSupplier.DEFAULT_STROKE_SEQUENCE,
+                DefaultDrawingSupplier.DEFAULT_OUTLINE_STROKE_SEQUENCE,
+                DefaultDrawingSupplier.DEFAULT_SHAPE_SEQUENCE));
+		
 		File chartFile = new File(filenameWithPath + ".png"); 
 
 		try {
