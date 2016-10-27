@@ -71,7 +71,7 @@ public class SeatsBlock {
 	 * @author Lorenzo Attanasio
 	 *
 	 */
-	private class RowColumnCoordinate {
+	public class RowColumnCoordinate {
 
 		private List<Integer> _column = new ArrayList<Integer>();
 		private List<Integer> _rowList = new ArrayList<Integer>();
@@ -101,6 +101,12 @@ public class SeatsBlock {
 		public void setColumn(int j) {
 			_column.add(j);
 		}
+		
+		@SuppressWarnings("unused")
+		public List<Double> getXList() {
+			return _xList;
+		}
+		
 	}
 
 	/**

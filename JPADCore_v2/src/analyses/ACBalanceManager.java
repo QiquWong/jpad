@@ -36,6 +36,7 @@ import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyXLSUtils;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.customdata.CenterOfGravity;
+import standaloneutils.customdata.MyArray;
 
 /**
  * Manage the calculations for estimating the aircraft balance.
@@ -1289,8 +1290,43 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 				
 		
 		// FUEL AFTER BOARDING
-		fuelCoGAfterBoardingReferToMAC[0] = MyArrayUtils.getMin(seatCoGFrontToRearReferToMAC);
-		int indexOfMin = MyArrayUtils.getIndexOfMin(seatCoGFrontToRearReferToMAC);
+		/**
+		 * finding the beginning of the last column during boarding 
+		 * (the last zero in the xList of rowColumnCoordinate)
+		 */
+		List<Integer> indexOfZeroList = new ArrayList<>();
+		for(int i=0; 
+				i<_theAircraft.getCabinConfiguration().getSeatsBlocksList().get(0).get_rowColumnCoordinate().getXList().size();
+				i++) {
+			if(_theAircraft
+					.getCabinConfiguration()
+						.getSeatsBlocksList().get(0)
+							.get_rowColumnCoordinate()
+								.getXList().get(i)
+									== 0.0)
+				indexOfZeroList.add(i);
+		}
+		
+		/**
+		 * the current seatCoGFrontToRear is the one starting from the last zero found
+		 */
+		List<Double> currentSeatCoGFrontToRear = new ArrayList<>();
+		for(int i=indexOfZeroList.get(indexOfZeroList.size()-1);
+				i<seatCoGFrontToRearReferToMAC.length;
+				i++)
+			currentSeatCoGFrontToRear.add(seatCoGFrontToRearReferToMAC[i]);
+			
+		Double[] currentSeatCoGFrontToRearArray = MyArrayUtils.convertListOfDoubleToDoubleArray(currentSeatCoGFrontToRear);
+		
+		/**
+		 * The minimum value and its index has to be searched in the current list. 
+		 * Then the index of the last zero is added in order to retrieve the real index of min
+		 * of the last part of the boarding diagram
+		 */
+		fuelCoGAfterBoardingReferToMAC[0] = MyArrayUtils.getMin(currentSeatCoGFrontToRearArray);
+		int indexOfMin = 
+				MyArrayUtils.getIndexOfMin(currentSeatCoGFrontToRearArray)
+				+ indexOfZeroList.get(indexOfZeroList.size()-1);
 		massWithFuelAfterBoarding[0] = 
 				MyArrayUtils.convertListOfAmountToDoubleArray(
 						_theAircraft.getCabinConfiguration().getCurrentMassList()
@@ -1317,14 +1353,6 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 		legend.add("Rear to Front");
 		legend.add("Fuel before boarding");
 		legend.add("Fuel after boarding");
-		
-//		double[][] xArrays = new double[2][_theAircraft.getCabinConfiguration().getSeatsCoGFrontToRear().size()];
-//		xArrays[0] = seatCoGFrontToRearReferToMAC;
-//		xArrays[1] = seatCoGRearToFrontReferToMAC;
-//			
-//		double[][] yArrays = new double[2][_theAircraft.getCabinConfiguration().getCurrentMassList().size()];
-//		yArrays[0] = MyArrayUtils.convertListOfAmountTodoubleArray(_theAircraft.getCabinConfiguration().getCurrentMassList());
-//		yArrays[1] = MyArrayUtils.convertListOfAmountTodoubleArray(_theAircraft.getCabinConfiguration().getCurrentMassList());
 		
 		try {
 			MyChartToFileUtils.plot(
