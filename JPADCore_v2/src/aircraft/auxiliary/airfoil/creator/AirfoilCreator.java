@@ -360,7 +360,7 @@ public class AirfoilCreator implements IAirfoilCreator {
 		private RealMatrix __NormalizedCornerPointsXZ = MatrixUtils.createRealMatrix(30, 2);
 		private Double __thicknessToChordRatio = 0.12;
 		private Double __camberRatio = 0.9;
-		private Amount<Length> __radiusLeadingEdge = Amount.valueOf(0.015, SI.METER);
+		private Amount<Length> __radiusLeadingEdge = Amount.valueOf(0.15, SI.METER);
 		private Double[] __xCoords;
 		private Double[] __zCoords;
 		private Amount<Angle> __angleAtTrailingEdge = Amount.valueOf(4.0,1e-8,NonSI.DEGREE_ANGLE);
