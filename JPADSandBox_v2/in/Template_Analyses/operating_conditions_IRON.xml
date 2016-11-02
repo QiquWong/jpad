@@ -8,7 +8,7 @@
 		<mach_current>0.62</mach_current>	
 		<altitude unit="m">9144</altitude>
 		<delta_flap unit="deg">40;40</delta_flap>
-		<delta_slat unit="deg">25;25</delta_slat>
+		<delta_slat unit="deg"></delta_slat>
 	</operating_conditions>
 </jpad_config>
 

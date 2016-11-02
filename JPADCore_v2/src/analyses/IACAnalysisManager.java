@@ -41,9 +41,12 @@ public interface IACAnalysisManager {
 	public Aircraft getTheAircraft();
 	public void setTheAircraft(Aircraft _theAircraft);
 
-	public Double getNLimit();
-	public void setNLimit(Double _nLimit);
+	public Double getPositiveLimitLoadFactor();
+	public void setPositiveLimitLoadFactor(Double _nLimit);
 
+	public Double getNegativeLimitLoadFactor();
+	public void setNegativeLimitLoadFactor(Double _nLimit);
+	
 	public Double getCruiseCL();
 	public void setCruiseCL(Double _cruiseCL);
 

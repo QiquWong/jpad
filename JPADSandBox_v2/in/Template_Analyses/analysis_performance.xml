@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
     <analysis>
-        <performance id="JPAD Test analysis - PERFORMANCE">
-
-
+        <performance
+			id="JPAD Test analysis - PERFORMANCE"
+			weights_from_xls_file="false" 
+			file_weights="Weights.xlsx"
+			aerodynamics_from_xls_file="false" 
+			file_aerodynamics="Aerodynamics.xlsx"
+			>
+			<maximum_take_off_mass unit="kg">57361.6342</maximum_take_off_mass>
+			<maximum_landing_mass unit="kg">52133.41578</maximum_landing_mass>
+			<maximum_zero_fuel_mass unit="kg">45966.95085</maximum_zero_fuel_mass>
+			<operating_empty_mass unit="kg">33096.95085</operating_empty_mass>
+			<maximum_fuel_mass unit="kg">11959.06668</maximum_fuel_mass>
         </performance>
     </analysis>
 </jpad_config>

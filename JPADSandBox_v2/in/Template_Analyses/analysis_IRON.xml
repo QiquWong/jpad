@@ -2,7 +2,8 @@
 <jpad_config>
     <!-- Input data, shared across analysis tasks -->
     <global_data>
-        <n_limit>2.5</n_limit>
+        <positive_limit_load_factor>2.5</positive_limit_load_factor>
+		<negative_limit_load_factor>-1.0</negative_limit_load_factor>
 		<cruise_lift_coefficient>0.61</cruise_lift_coefficient>
 		<reference_range unit="nmi">1598.272</reference_range>
 		<maximum_altitude_at_maximum_speed unit="ft">30000</maximum_altitude_at_maximum_speed>

@@ -35,6 +35,7 @@ public class Engine implements IEngine {
 	//------------------------------------------
 	// only for propeller driven engines
 	private Amount<Length> _propellerDiameter;
+	private Double _etaPropeller;
 	private int _numberOfBlades;
 	//------------------------------------------
 	
@@ -70,6 +71,7 @@ public class Engine implements IEngine {
 		private Amount<Length> __length = Amount.valueOf(0.0, SI.METER);
 		private Amount<Length> __propellerDiameter = Amount.valueOf(0.0, SI.METER);
 		private int __numberOfBlades = 0;
+		private Double __etaPropeller = 0.0;
 		private Double __bpr = 0.0;
 		private Amount<Power> __p0 = Amount.valueOf(0.0, SI.WATT);
 		private Amount<Force> __t0 = Amount.valueOf(0.0, SI.NEWTON);
@@ -105,6 +107,11 @@ public class Engine implements IEngine {
 		
 		public EngineBuilder numberOfBlades (int nBlades) {
 			this.__numberOfBlades = nBlades;
+			return this;
+		}
+		
+		public EngineBuilder etaPropeller (Double eta) {
+			this.__etaPropeller = eta;
 			return this;
 		}
 		
@@ -189,6 +196,7 @@ public class Engine implements IEngine {
 				__length = Amount.valueOf(2.13, SI.METER);
 				__propellerDiameter = Amount.valueOf(3.93, SI.METER);
 				__numberOfBlades = 6;
+				__etaPropeller = 0.85;
 				__dryMassPublicDomain = Amount.valueOf(1064., NonSI.POUND).to(SI.KILOGRAM);
 				__p0 = Amount.valueOf(2750., NonSI.HORSEPOWER).to(SI.WATT);
 				__numberOfCompressorStages = 5;
@@ -237,6 +245,7 @@ public class Engine implements IEngine {
 		this._length = builder.__length;
 		this._propellerDiameter = builder.__propellerDiameter;
 		this._numberOfBlades = builder.__numberOfBlades;
+		this._etaPropeller = builder.__etaPropeller;
 		this._bpr = builder.__bpr;
 		this._p0 = builder.__p0;
 		this._t0 = builder.__t0;
@@ -330,6 +339,7 @@ public class Engine implements IEngine {
 			@SuppressWarnings("unchecked")
 			Amount<Mass> dryMass = ((Amount<Mass>) reader.getXMLAmountWithUnitByPath("//specifications/dry_mass")); 
 			int numberOfPropellerBlades = Integer.valueOf(reader.getXMLPropertyByPath("//specifications/number_of_propeller_blades"));
+			Double etaPropeller = Double.valueOf(reader.getXMLPropertyByPath("//specifications/eta_propeller"));
 			Integer numberOfCompressorStages = Integer.valueOf(reader.getXMLPropertyByPath("//specifications/number_of_compressor_stages"));
 			Integer numberOfShafts = Integer.valueOf(reader.getXMLPropertyByPath("//specifications/number_of_shafts"));
 			Double overallPressureRatio = Double.valueOf(reader.getXMLPropertyByPath("//specifications/overall_pressure_ratio"));
@@ -340,6 +350,7 @@ public class Engine implements IEngine {
 					.length(length)
 					.propellerDiameter(propellerDiameter)
 					.numberOfBlades(numberOfPropellerBlades)
+					.etaPropeller(etaPropeller)
 					.p0(staticPower)
 					.dryMass(dryMass)
 					.numberOfCompressorStages(numberOfCompressorStages)
@@ -357,6 +368,7 @@ public class Engine implements IEngine {
 			@SuppressWarnings("unchecked")
 			Amount<Mass> dryMass = ((Amount<Mass>) reader.getXMLAmountWithUnitByPath("//specifications/dry_mass")); 
 			int numberOfPropellerBlades = Integer.valueOf(reader.getXMLPropertyByPath("//specifications/number_of_propeller_blades"));
+			Double etaPropeller = Double.valueOf(reader.getXMLPropertyByPath("//specifications/eta_propeller"));
 			
 			theEngine = new EngineBuilder(id, engineType)
 					.id(id)
@@ -364,6 +376,7 @@ public class Engine implements IEngine {
 					.length(length)
 					.propellerDiameter(propellerDiameter)
 					.numberOfBlades(numberOfPropellerBlades)
+					.etaPropeller(etaPropeller)
 					.p0(staticPower)
 					.dryMass(dryMass)
 					.build();
@@ -601,6 +614,20 @@ public class Engine implements IEngine {
 	@Override
 	public void setNumberOfBlades(int _nBlades) {
 		this._numberOfBlades = _nBlades;
+	}
+
+	/**
+	 * @return the _etaPropeller
+	 */
+	public Double getEtaPropeller() {
+		return _etaPropeller;
+	}
+
+	/**
+	 * @param _etaPropeller the _etaPropeller to set
+	 */
+	public void setEtaPropeller(Double _etaPropeller) {
+		this._etaPropeller = _etaPropeller;
 	}
 
 	@Override

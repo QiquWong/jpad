@@ -194,6 +194,20 @@ public class LSAerodynamicsCalculator {
 				);
 		
 		//----------------------------------------------------------------------------------------------------------------------
+		// Calculating lifting surface Form Factor
+		//......................................................................................................................
+		double compressibilityFactor = 1.
+				/ Math.sqrt(
+						1 - Math.pow(_theOperatingConditions.getMachCurrent(), 2)
+						* (Math.pow(Math.cos(
+								_theLiftingSurface.getSweepQuarterChordEquivalent(false)
+									.doubleValue(SI.RADIAN)),2)
+								)
+						);
+		this._theLiftingSurface.calculateThicknessMean();
+		this._theLiftingSurface.calculateFormFactor(compressibilityFactor);
+		
+		//----------------------------------------------------------------------------------------------------------------------
 		// Calculating airfoil parameter distributions
 		//......................................................................................................................
 		// ETA STATIONS E Y STATIONS
@@ -289,13 +303,13 @@ public class LSAerodynamicsCalculator {
 		//......................................................................................................................
 		if(_currentLiftCoefficient == null) {
 			CalcCLAtAlpha calcCLAtAlphaCalculator = new CalcCLAtAlpha();
-			calcCLAtAlphaCalculator.nasaBlackwellCompleteCurve(
+			_currentLiftCoefficient = calcCLAtAlphaCalculator.nasaBlackwellCompleteCurve(
 					_theOperatingConditions.getAlphaCurrent()
 					);
 		}
 		if(_currentDragCoefficient == null) {
 			CalcCDAtAlpha calcCDAtAlphaCalculator = new CalcCDAtAlpha();
-			calcCDAtAlphaCalculator.classic(
+			_currentDragCoefficient = calcCDAtAlphaCalculator.classic(
 					_theOperatingConditions.getAlphaCurrent()
 					);
 		}
@@ -1965,7 +1979,7 @@ public class LSAerodynamicsCalculator {
 			}
 			
 			_cDInduced.put(
-					MethodEnum.HOWE,
+					MethodEnum.RAYMER,
 					Math.pow(_cLAtAlpha.get(MethodEnum.NASA_BLACKWELL),2)
 					/(Math.PI
 					*_theLiftingSurface.getAspectRatio()
@@ -2003,7 +2017,7 @@ public class LSAerodynamicsCalculator {
 		
 		public void lockKornWithKroo() {
 			_cDWave.put(
-					MethodEnum.LOCK_KORN_WITH_KORN_MASON,
+					MethodEnum.LOCK_KORN_WITH_KROO,
 					DragCalc.calculateCDWaveLockKorn_KrooCriticalMach(
 							_currentLiftCoefficient,
 							_currentMachNumber,
@@ -2028,7 +2042,20 @@ public class LSAerodynamicsCalculator {
 	//............................................................................
 	public class CalcDragDistributions {
 			
-		// TODO : WAIT UNTIL MANUELA'S METHOD IS READY
+		public void fromNasaBlackwellLiftDistributions() {
+			
+			// PARASITE DRAG COEFFICIENT DISTRIBUTION:
+			
+			
+			// INDUCED DRAG COEFFICIENT DISTRIBUTION:
+			
+			
+			// DRAG COEFFICIENT DISTRIBUTION:
+			
+			
+			// DRAG DISTRIBUTION:
+			
+		}
 		
 	}
 	//............................................................................
