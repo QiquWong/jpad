@@ -2,13 +2,16 @@ package standaloneutils.launchers;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 // see: http://www.uavs.us/2011/12/02/matlab-avl-control/
 
@@ -56,23 +59,22 @@ public class AVLExternalJob implements IAVLExternalJob {
 				));
 		
 		// Clean previously generated outputs
-		Path path1 = FileSystems.getDefault().getPath(
-				binDirPath + File.separator + "newData1.st");
-		Path path2 = FileSystems.getDefault().getPath(
-				binDirPath + File.separator + "newData1.sb");
-		Path path3 = FileSystems.getDefault().getPath(
-				binDirPath + File.separator + "newData1.eig");
+		Stream<String> fileNames = Stream.of("newData1.st", "newData1.sb", "newData1.eig");
+		fileNames.forEach(name -> {
+			Path path = FileSystems.getDefault().getPath(
+					binDirPath + File.separator + name);
+			try {
+				System.out.println("Deleting file: " + path);
+				Files.delete(path);
+			} catch (NoSuchFileException e) {
+			    System.err.format("%s: no such" + " file or directory%n", path);
+			} catch (DirectoryNotEmptyException e) {
+			    System.err.format("%s not empty%n", path);
+			} catch (IOException e) {
+				System.err.println(e);
+			}
+		});
 
-        try {
-        	System.out.println("Deleting file: " + path1);
-            Files.delete(path1);
-        	System.out.println("Deleting file: " + path2);
-            Files.delete(path2);
-        	System.out.println("Deleting file: " + path3);
-            Files.delete(path3);
-        } catch (IOException | SecurityException e) {
-            System.err.println(e);
-        }
 
 		//-------------------------------------------------------------------------
 		// Generate data
