@@ -23,7 +23,7 @@ public interface AVLInputData {
 //	Optional<Double> getWgplnf_CHRDBP();
 
 	
-	/** Builder of IDatcomInputData instances. */
+	/** Builder of AVLInputData instances. */
 	class Builder extends AVLInputData_Builder {
 		
 		public Builder() {

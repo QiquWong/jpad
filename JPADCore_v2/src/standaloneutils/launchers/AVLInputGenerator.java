@@ -69,7 +69,7 @@ public class AVLInputGenerator {
 		}
 	}
 
-	public static String formatAsAVLPlusInput(AVLInputData inputData) {
+	public static String formatAsAVLInput(AVLInputData inputData) {
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("# -Unnamed-\n");
