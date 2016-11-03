@@ -44,7 +44,7 @@ public class ACPerformanceCalculator {
 	private Aircraft _theAircraft;
 	private OperatingConditions _theOperatingConditions;
 	//..............................................................................
-	// Wiehgts
+	// Weights
 	private Amount<Mass> _maximumTakeOffMass;
 	private Amount<Mass> _maximumLandingMass;
 	private Amount<Mass> _maximumZeroFuelMass;

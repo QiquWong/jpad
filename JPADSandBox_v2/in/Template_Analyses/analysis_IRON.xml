@@ -26,7 +26,7 @@
 			method_nacelles=""
 			method_landing_gears=""
 			method_systems=""
-            /> <!-- method_XXX="AVERAGED" if not present -->
+            /> <!-- method_XXX="AVERAGED" if empty string -->
         <balance
 			file="analysis_balance_IRON.xml"
             method_fuselage=""
@@ -34,13 +34,13 @@
             method_htail=""
             method_vtail=""
 			method_canard=""
-		/> <!-- method_XXX="AVERAGED" if not present -->
+		/> <!-- method_XXX="AVERAGED" if empty string -->
 		<performance 
 			file="analysis_performance.xml"
 			take-off="TRUE"
 			climb="TRUE"
 			cruise="TRUE"
-			landing="TURE"
+			landing="TRUE"
 			payload_range="TRUE"
 			V-n_diagram="TRUE"
 		/>
