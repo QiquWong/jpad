@@ -8,7 +8,7 @@
 		<reference_range unit="nmi">1598.272</reference_range>
 		<maximum_altitude_at_maximum_speed unit="ft">30000</maximum_altitude_at_maximum_speed>
 		<maximum_cruise_mach_number>0.62</maximum_cruise_mach_number>
-		<optimum_cruise_altitude unit="ft">1598.272</optimum_cruise_altitude>
+		<optimum_cruise_altitude unit="ft">30000</optimum_cruise_altitude>
 		<optimum_cruise_mach_number>0.62</optimum_cruise_mach_number>
 		<!--??? to be defined -->
 		<block_time unit="h">1.5</block_time>
@@ -34,10 +34,18 @@
             method_htail=""
             method_vtail=""
 			method_canard=""
+		/> <!-- method_XXX="AVERAGED" if not present -->
+		<performance 
+			file="analysis_performance.xml"
+			take-off="TRUE"
+			climb="TRUE"
+			cruise="TRUE"
+			landing="TURE"
+			payload_range="TRUE"
+			V-n_diagram="TRUE"
 		/>
         <!--
 		<aerodynamics file="analysis_aerodynamics.xml"/>
-        <performance file="analysis_performance.xml"/>
         <costs file="analysis_costs.xml"/>
 		-->
     </analyses>

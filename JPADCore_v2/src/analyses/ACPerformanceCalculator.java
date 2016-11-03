@@ -2,9 +2,7 @@ package analyses;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.List;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Duration;
@@ -149,7 +147,6 @@ public class ACPerformanceCalculator {
 		private Amount<Length> __obstacleTakeOff = Amount.valueOf(35, NonSI.FOOT).to(SI.METER);
 		private Double __mu = 0.03;
 		private Double __muBrake = 0.4;
-		private Double __throttleSetting = 0.0;
 		private Double __kRotation = 1.05;
 		private Double __kLiftOff = 1.1;
 		private Double __kCLmax = 0.85;
@@ -163,8 +160,9 @@ public class ACPerformanceCalculator {
 		private Double __kTouchDown = 1.15;
 		private Amount<Duration> __freeRollDuration = Amount.valueOf(2.0, SI.SECOND);
 		//..............................................................................
-		// Flight maneuvering envelope
-		private Double __cLmaxInverted;
+		// Other data
+		private Double __throttleSetting = 0.0;
+		private Double __cLmaxInverted = -1.0;
 		//..............................................................................
 		
 		public ACPerformanceCalculatorBuilder id(String id) {
@@ -413,6 +411,7 @@ public class ACPerformanceCalculator {
 						reader.getXmlDoc(), reader.getXpath(),
 						"//@id");
 
+		//---------------------------------------------------------------------------------------
 		// WEIGHTS FROM FILE INSTRUCTION
 		String fileWeightsXLS = MyXMLReaderUtils
 				.getXMLPropertyByPath(
@@ -428,6 +427,7 @@ public class ACPerformanceCalculator {
 		else
 			readWeightsFromXLSFlag = Boolean.FALSE;
 		
+		//---------------------------------------------------------------------------------------
 		// AERODYNAMICS FROM FILE INSTRUCTION
 		String fileAerodynamicsXLS = MyXMLReaderUtils
 				.getXMLPropertyByPath(
@@ -519,33 +519,33 @@ public class ACPerformanceCalculator {
 		else {
 			//---------------------------------------------------------------
 			// MAXIMUM TAKE-OFF MASS
-			String maximumTakeOffMassProperty = reader.getXMLPropertyByPath("//performance/maximum_take_off_mass");
+			String maximumTakeOffMassProperty = reader.getXMLPropertyByPath("//performance/weights/maximum_take_off_mass");
 			if(maximumTakeOffMassProperty != null)
-				maximumTakeOffMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//performance/maximum_take_off_mass");
+				maximumTakeOffMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//performance/weights/maximum_take_off_mass");
 			
 			//---------------------------------------------------------------
 			// MAXIMUM LANDING MASS
-			String maximumLandingMassProperty = reader.getXMLPropertyByPath("//performance/maximum_landing_mass");
+			String maximumLandingMassProperty = reader.getXMLPropertyByPath("//performance/weights/maximum_landing_mass");
 			if(maximumLandingMassProperty != null)
-				maximumLandingMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//performance/maximum_landing_mass");
+				maximumLandingMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//performance/weights/maximum_landing_mass");
 			
 			//---------------------------------------------------------------
 			// MAXIMUM ZERO FUEL MASS
-			String maximumZeroFuelMassProperty = reader.getXMLPropertyByPath("//performance/maximum_zero_fuel_mass");
+			String maximumZeroFuelMassProperty = reader.getXMLPropertyByPath("//performance/weights/maximum_zero_fuel_mass");
 			if(maximumZeroFuelMassProperty != null)
-				maximumZeroFuelMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//performance/maximum_zero_fuel_mass");
+				maximumZeroFuelMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//performance/weights/maximum_zero_fuel_mass");
 			
 			//---------------------------------------------------------------
 			// OPERATING EMPTY MASS
-			String operatingEmptyMassProperty = reader.getXMLPropertyByPath("//balance/operating_empty_mass");
+			String operatingEmptyMassProperty = reader.getXMLPropertyByPath("//performance/weights/operating_empty_mass");
 			if(operatingEmptyMassProperty != null)
-				operatingEmptyMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//balance/operating_empty_mass");
+				operatingEmptyMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//performance/weights/operating_empty_mass");
 			
 			//---------------------------------------------------------------
 			// MAXIMUM FUEL MASS
-			String maximumFuelMassProperty = reader.getXMLPropertyByPath("//performance/maximum_fuel_mass");
+			String maximumFuelMassProperty = reader.getXMLPropertyByPath("//performance/weights/maximum_fuel_mass");
 			if(maximumFuelMassProperty != null)
-				maximumFuelMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//performance/maximum_fuel_mass");
+				maximumFuelMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//performance/weights/maximum_fuel_mass");
 		}
 		
 		//===========================================================================================
@@ -556,7 +556,135 @@ public class ACPerformanceCalculator {
 		 * Otherwise it ignores the xls file and reads the input data from the xml.
 		 */
 
-		// TODO : READ ALL REQUIRED DATA
+		Double cD0 = null;
+		Double oswald = null;
+		Double cLmaxClean = null;
+		Amount<?> cLAlphaClean = null;
+		Double deltaCD0HighLift = null;
+		Double deltaCD0LandingGear = null;
+		Double cLmaxTakeOff = null;
+		Double cLZeroTakeOff = null;
+		Double cLmaxLanding = null;
+		
+		if(readAerodynamicsFromXLSFlag == Boolean.TRUE) {
+			
+			File aerodynamicsFile = new File(
+					MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR)
+					+ theAircraft.getId() 
+					+ File.separator
+					+ "AERODYNAMICS"
+					+ File.separator
+					+ fileAerodynamicsXLS);
+			if(aerodynamicsFile.exists()) {
+
+				FileInputStream readerXLS = new FileInputStream(aerodynamicsFile);
+				Workbook workbook;
+				if (aerodynamicsFile.getAbsolutePath().endsWith(".xls")) {
+					workbook = new HSSFWorkbook(readerXLS);
+				}
+				else if (aerodynamicsFile.getAbsolutePath().endsWith(".xlsx")) {
+					workbook = new XSSFWorkbook(readerXLS);
+				}
+				else {
+					throw new IllegalArgumentException("I don't know how to create that kind of new file");
+				}
+				
+				// TODO : READ ALL REQUIRED DATA FROM THE AERODYNAMICS XML
+			}
+		}
+		else {
+			//---------------------------------------------------------------
+			// CD0
+			String cD0Property = reader.getXMLPropertyByPath("//performance/aerodynamics/cD0");
+			if(cD0Property != null)
+				cD0 = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/cD0"));
+			//---------------------------------------------------------------
+			// OSWALD
+			String oswladProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/oswald");
+			if(oswladProperty != null)
+				oswald = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/oswald"));
+			//---------------------------------------------------------------
+			// CLmax CLEAN
+			String cLmaxCleanProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/cLmax_clean_configuration");
+			if(cLmaxCleanProperty != null)
+				cLmaxClean = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/cLmax_clean_configuration"));
+			//---------------------------------------------------------------
+			// CLalpha CLEAN
+			String cLAlphaCleanProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/cL_alpha_clean_configuration");
+			if(cLAlphaCleanProperty != null)
+				cLAlphaClean = Amount.valueOf(
+							Double.valueOf(
+									reader.getXMLPropertyByPath(
+											"//performance/aerodynamics/cL_alpha_clean_configuration"
+											)
+									),
+									NonSI.DEGREE_ANGLE.inverse()
+									);
+			//---------------------------------------------------------------
+			// DeltaCD0 HIGH LIFT
+			String deltaCD0HighLiftProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_high_lift");
+			if(deltaCD0HighLiftProperty != null)
+				deltaCD0HighLift = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_high_lift"));
+			//---------------------------------------------------------------
+			// DeltaCD0 LANDING GEARS
+			String deltaCD0LandingGearsProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_landing_gears");
+			if(deltaCD0LandingGearsProperty != null)
+				deltaCD0LandingGear = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_landing_gears"));
+			//---------------------------------------------------------------
+			// CLmax TAKE-OFF
+			String cLmaxTakeOffProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/cLmax_take_off_configuration");
+			if(cLmaxTakeOffProperty != null)
+				cLmaxTakeOff = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/cLmax_take_off_configuration"));
+			//---------------------------------------------------------------
+			// CL0 TAKE-OFF
+			String cL0TakeOffProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/cL0_take_off_configuration");
+			if(cL0TakeOffProperty != null)
+				cLZeroTakeOff = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/cL0_take_off_configuration"));
+			//---------------------------------------------------------------
+			// CLmax LANDING
+			String cLmaxLandingProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/cLmax_landing_configuration");
+			if(cLmaxLandingProperty != null)
+				cLmaxLanding = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/cLmax_landing_configuration"));
+		}
+		
+		//===========================================================================================
+		// READING AERODYNAMICS DATA ...	
+
+		Amount<Angle> alphaGround = null;
+		Amount<Velocity> windSpeed = null;
+		Amount<Length> obstacleTakeOff = null;
+		Double mu = null;
+		Double muBrake = null;
+		Double kRotation = null;
+		Double kLiftOff = null;
+		Double kCLmax = null;
+		Double kDragDueToEngineFailure = null;
+		Double kAlphaDot = null;
+		Double alphaReductionRate = null;
+		Amount<Length> obstacleLanding = null;
+		Amount<Angle> thetaApproach = null;
+		Double kApproach = null;
+		Double kFlare = null;
+		Double kTouchDown = null;
+		Amount<Duration> freeRollDuration = null;
+		
+		//---------------------------------------------------------------
+		// ALPHA GROUND
+		String alphaGroundProperty = reader.getXMLPropertyByPath("//performance/takeoff_landing/alpha_ground");
+		if(alphaGroundProperty != null)
+			alphaGround = Amount.valueOf(Double.valueOf(reader.getXMLPropertyByPath("//performance/takeoff_landing/alpha_ground")), NonSI.DEGREE_ANGLE);
+		
+		//---------------------------------------------------------------
+		// WIND SPEED
+		String windSpeedProperty = reader.getXMLPropertyByPath("//performance/takeoff_landing/wind_speed_along_runway");
+		if(windSpeedProperty != null)
+			windSpeed = Amount.valueOf(Double.valueOf(reader.getXMLPropertyByPath("//performance/takeoff_landing/wind_speed_along_runway")), SI.METERS_PER_SECOND);
+		
+		//---------------------------------------------------------------
+		// OBSTACLE TAKE-OFF
+		String obstacleTakeOffProperty = reader.getXMLPropertyByPath("//performance/takeoff_landing/obstacle_take_off");
+		if(obstacleTakeOffProperty != null)
+			obstacleTakeOff = Amount.valueOf(Double.valueOf(reader.getXMLPropertyByPath("//performance/takeoff_landing/obstacle_take_off")), SI.METER);
 		
 		//===========================================================================================
 		// BUILDING THE CALCULATOR ...
@@ -569,6 +697,15 @@ public class ACPerformanceCalculator {
 				.maximumZeroFuelMass(maximumZeroFuelMass)
 				.operatingEmptyMass(operatingEmptyMass)
 				.maximumFuelMass(maximumFuelMass)
+				.cD0(cD0)
+				.oswald(oswald)
+				.cLmaxClean(cLmaxClean)
+				.cLAlphaClean(cLAlphaClean)
+				.deltaCD0HighLift(deltaCD0HighLift)
+				.deltaCD0LandinGear(deltaCD0LandingGear)
+				.cLmaxTakeOff(cLmaxTakeOff)
+				.cLZeroTakeOff(cLZeroTakeOff)
+				.cLmaxLanding(cLmaxLanding)
 				// TODO : INSERT ALL THE REQUIRED DATA
 				.build();
 		

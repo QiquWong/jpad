@@ -8,11 +8,49 @@
 			aerodynamics_from_xls_file="false" 
 			file_aerodynamics="Aerodynamics.xlsx"
 			>
-			<maximum_take_off_mass unit="kg">57361.6342</maximum_take_off_mass>
-			<maximum_landing_mass unit="kg">52133.41578</maximum_landing_mass>
-			<maximum_zero_fuel_mass unit="kg">45966.95085</maximum_zero_fuel_mass>
-			<operating_empty_mass unit="kg">33096.95085</operating_empty_mass>
-			<maximum_fuel_mass unit="kg">11959.06668</maximum_fuel_mass>
+			<weights>
+				<maximum_take_off_mass unit="kg">57361.6342</maximum_take_off_mass>
+				<maximum_landing_mass unit="kg">52133.41578</maximum_landing_mass>
+				<maximum_zero_fuel_mass unit="kg">45966.95085</maximum_zero_fuel_mass>
+				<operating_empty_mass unit="kg">33096.95085</operating_empty_mass>
+				<maximum_fuel_mass unit="kg">11959.06668</maximum_fuel_mass>
+			</weights>
+			<aerodynamics>
+				<cD0>0.0254</cD0>
+				<oswald>0.8</oswald>
+				<cLmax_clean_configuration>1.61</cLmax_clean_configuration>
+				<cL_alpha_clean_configuration unit="1/deg">0.11</cL_alpha_clean_configuration>
+				<delta_CD0_high_lift>0.017</deltaCD0_high_lift>
+				<delta_CD0_landing_gears>0.015</delta_CD0_landing_gears>
+				<cLmax_take_off_configuration>2.4</cLmax_take_off_configuration>
+				<cL0_take_off_configuration>1.647</cL0_take_off_configuration>
+				<cLmax_landing_configuration>3.0</cLmax_landing_configuration>
+			</aerodynamics>
+			<!-- the following data can be assigned between tags, or not. If not, default values are used -->
+			<takeoff_landing>
+				<alpha_ground unit="deg"></alpha_ground> <!-- angle of attack in BRF along the runway (dafault = 0°)-->
+				<wind_speed_along_runway unit="m/s"></wind_speed_along_runway> <!-- positive if behind the aircraft (default = 0m/s)-->
+				<obstacle_take_off unit="ft"></obstacle_take_off> <!-- default = 35 ft -->
+				<wheels_friction_coefficient></wheels_friction_coefficient> <!-- default = 0.03 -->
+				<wheels_friction_coefficient_with_brakes></wheels_friction_coefficient_with_brakes> <!-- default = 0.4 -->
+				<k_rotation></k_Rotation> <!-- V_rotation/V_stall in take-off (default = 1.05) -->
+				<k_lift_off></k_lift_off> <!-- V_lift-off/V_stall in take-off (default = 1.1) -->
+				<k_cLmax></k_cLmax> <!-- percentage of the CLmax,TO not to be surpassed during the rotation  (default = 0.85)-->
+				<k_drag_due_to_engine_failure></k_drag_due_to_engine_failure> <!-- percentage of the drag coefficent increase in OEI condition (default = 1.1) -->
+				<k_alpha_dot></k_alpha_dot> <!-- indicates how fast the rotation maneuver is - faster with increasing k_alpha_dot - (default 0.04) -->
+				<alpha_reduction_rate unit="deg/s"></alpha_reduction_rate> <!-- negative angular velocity after reaching max allowed CL in rotation (default = -4 deg/s)-->
+				<obstacle_landing unit="ft"></obstacle_landing> <!-- default = 50ft -->
+				<theta_approach unit="deg"></theta_approach> <!-- default = 3deg -->
+				<k_approach></k_approach> <!-- V_approach/V_stall in landing (default = 1.3) -->
+				<k_flare></k_flare> <!-- V_flare/V_stall in landing (default = 1.23) -->
+				<k_touch_down></k_touch_down> <!-- V_touch_down/V_stall in landing (default = 1.15) -->
+				<free_roll_duration unit="s"></free_roll_duration> <!-- default = 2s -->
+			</takeoff_landing>
+			<!-- the following data can be assigned or not. If not default values are used -->
+			<other_data>
+				<throttle_setting></throttle_setting> <!-- to be assigned for the wanted performance (default = 0.0) -->
+				<cLmax_inverted></cLmax_inverted> <!-- to be assigned for the maneuvering flight and gust envelope (default = -1.0) --> 
+			</other_data>
         </performance>
     </analysis>
 </jpad_config>
