@@ -279,7 +279,8 @@ public class ACAnalysisManager implements IACAnalysisManager {
 						reader.getXmlDoc(), reader.getXpath(),
 						"//@id");
 		
-		Double nLimit = Double.valueOf(reader.getXMLPropertyByPath("//global_data/n_limit"));
+		Double nLimit = Double.valueOf(reader.getXMLPropertyByPath("//global_data/positive_limit_load_factor"));
+		// TODO: read also negative_limit_load_factor
 		Double cruiseCL = Double.valueOf(reader.getXMLPropertyByPath("//global_data/cruise_lift_coefficient"));
 		Amount<Length> referenceRange = reader.getXMLAmountLengthByPath("//global_data/reference_range");
 		Amount<Length> maxAltitudeMaxSpeed = reader.getXMLAmountLengthByPath("//global_data/maximum_altitude_at_maximum_speed");
