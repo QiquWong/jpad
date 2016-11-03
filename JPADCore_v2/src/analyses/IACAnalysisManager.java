@@ -113,8 +113,8 @@ public interface IACAnalysisManager {
 	public ACAerodynamicsManager getTheAerodynamics();
 	public void setTheAerodynamics(ACAerodynamicsManager theAerodynamics);
 
-	public ACPerformanceManager getThePerformance();
-	public void setThePerformance(ACPerformanceManager thePerformance);
+	public ACPerformanceCalculator getThePerformance();
+	public void setThePerformance(ACPerformanceCalculator thePerformance);
 
 	public ACCostsManager getTheCosts();
 	public void setTheCosts(ACCostsManager theCosts);

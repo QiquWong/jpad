@@ -25,6 +25,7 @@ import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
+import configuration.enumerations.PerformanceEnum;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
@@ -46,7 +47,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	private ACWeightsManager _theWeights;
 	private ACBalanceManager _theBalance;
 	private ACAerodynamicsManager _theAerodynamics;
-	private ACPerformanceManager _thePerformance;
+	private ACPerformanceCalculator _thePerformance;
 	private ACCostsManager _theCosts;
 	
 	// INPUT DATA: 
@@ -73,9 +74,14 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	
 	private Map <ComponentEnum, MethodEnum> _methodsMapWeights;
 	private Map <ComponentEnum, MethodEnum> _methodsMapBalance;
+	private List<PerformanceEnum> _taskListPerformance;
 	private Map <AnalysisTypeEnum, Boolean> _executedAnalysesMap;
 	private List<ACCalculatorManager> _theCalculatorsList;
 	private List<AnalysisTypeEnum> _analysisList;
+	private Boolean _plotBalance;
+	private Boolean _plotAerodynamics;
+	private Boolean _plotPerformance;
+	private Boolean _plotCosts;
 	
 	private static File _weightsFileComplete;
 	private static File _balanceFileComplete;
@@ -94,7 +100,8 @@ public class ACAnalysisManager implements IACAnalysisManager {
 
 		// optional parameters ... defaults
 		// ...
-		private Double __nLimit;
+		private Double __positiveLimitLoadFactor;
+		private Double __negativeLimitLoadFactor;
 		private Double __cruiseCL;
 		private Amount<Length> __referenceRange;
 		private Amount<Length> __maxAltitudeAtMaxSpeed;
@@ -106,9 +113,15 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		
 		private Map <ComponentEnum, MethodEnum> __methodsMapWeights = new HashMap<ComponentEnum, MethodEnum>();
 		private Map <ComponentEnum, MethodEnum> __methodsMapBalance = new HashMap<ComponentEnum, MethodEnum>();
+		private List<PerformanceEnum> __taskListPerfromance = new ArrayList<PerformanceEnum>();
 		private Map <AnalysisTypeEnum, Boolean> __executedAnalysesMap = new HashMap<AnalysisTypeEnum, Boolean>();
 		private List<ACCalculatorManager> __theCalculatorsList = new ArrayList<ACCalculatorManager>();
 		private List<AnalysisTypeEnum> __analysisList = new ArrayList<AnalysisTypeEnum>();
+		
+		private Boolean __plotBalance = Boolean.FALSE;
+		private Boolean __plotAerodynamics = Boolean.FALSE;
+		private Boolean __plotPerformance = Boolean.FALSE;
+		private Boolean __plotCosts = Boolean.FALSE;
 		
 		public ACAnalysisManagerBuilder id (String id) {
 			this.__id = id;
@@ -125,8 +138,33 @@ public class ACAnalysisManager implements IACAnalysisManager {
 			return this;
 		}
 		
-		public ACAnalysisManagerBuilder nLimit (Double nLimit) {
-			this.__nLimit = nLimit;
+		public ACAnalysisManagerBuilder plotBalance (Boolean plotBalance){
+			this.__plotBalance = plotBalance;
+			return this;
+		}
+		
+		public ACAnalysisManagerBuilder plotAerodynamics (Boolean plotAerodynamics){
+			this.__plotAerodynamics = plotAerodynamics;
+			return this;
+		}
+		
+		public ACAnalysisManagerBuilder plotPerformance (Boolean plotPerformance){
+			this.__plotPerformance = plotPerformance;
+			return this;
+		}
+		
+		public ACAnalysisManagerBuilder plotCosts (Boolean plotCosts){
+			this.__plotCosts = plotCosts;
+			return this;
+		}
+		
+		public ACAnalysisManagerBuilder positiveLimitLoadFactor (Double nLimit) {
+			this.__positiveLimitLoadFactor = nLimit;
+			return this;
+		}
+		
+		public ACAnalysisManagerBuilder negativeLimitLoadFactor (Double nLimitNeg) {
+			this.__negativeLimitLoadFactor = nLimitNeg;
 			return this;
 		}
 		
@@ -180,6 +218,11 @@ public class ACAnalysisManager implements IACAnalysisManager {
 			return this;
 		}
 		
+		public ACAnalysisManagerBuilder taskListPerfromance (List<PerformanceEnum> taskListPerfromance) {
+			this.__taskListPerfromance = taskListPerfromance;
+			return this;
+		}
+		
 		public ACAnalysisManagerBuilder(String id, Aircraft theAircraft) {
 			this.__id = id;
 			this.__theAircraft = theAircraft;
@@ -196,7 +239,8 @@ public class ACAnalysisManager implements IACAnalysisManager {
 			
 			switch(aircraftName) {
 			case ATR72:
-				__nLimit = 2.5;
+				__positiveLimitLoadFactor = 2.5;
+				__negativeLimitLoadFactor = -1.0;
 				__maxAltitudeAtMaxSpeed = Amount.valueOf(16000., NonSI.FOOT).to(SI.METER);
 				__machMaxCruise = 0.45;
 				__altitudeOptimumCruise = Amount.valueOf(16000., NonSI.FOOT).to(SI.METER);
@@ -208,7 +252,8 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				break;
 				
 			case B747_100B:
-				__nLimit = 2.5;
+				__positiveLimitLoadFactor = 2.5;
+				__negativeLimitLoadFactor = -1.0;
 				__maxAltitudeAtMaxSpeed = Amount.valueOf(35000., NonSI.FOOT).to(SI.METER);
 				__machMaxCruise = 0.89;
 				__altitudeOptimumCruise = Amount.valueOf(35000., NonSI.FOOT).to(SI.METER);
@@ -220,7 +265,8 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				break;
 				
 			case AGILE_DC1:
-				__nLimit = 2.5;
+				__positiveLimitLoadFactor = 2.5;
+				__negativeLimitLoadFactor = -1.0;
 				__maxAltitudeAtMaxSpeed = Amount.valueOf(36000., NonSI.FOOT).to(SI.METER);
 				__machMaxCruise = 0.82;
 				__altitudeOptimumCruise = Amount.valueOf(36000., NonSI.FOOT).to(SI.METER);
@@ -242,7 +288,8 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		
 		this._id = builder.__id;
 		this._theAircraft = builder.__theAircraft;
-		this._positiveLimitLoadFactor = builder.__nLimit;
+		this._positiveLimitLoadFactor = builder.__positiveLimitLoadFactor;
+		this._negativeLimitLoadFactor = builder.__negativeLimitLoadFactor;
 		this._cruiseCL = builder.__cruiseCL;
 		this._referenceRange = builder.__referenceRange;
 		this._maxAltitudeAtMaxSpeed = builder.__maxAltitudeAtMaxSpeed;
@@ -254,9 +301,15 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		
 		this._methodsMapWeights = builder.__methodsMapWeights;
 		this._methodsMapBalance = builder.__methodsMapBalance;
+		this._taskListPerformance = builder.__taskListPerfromance;
 		this._executedAnalysesMap = builder.__executedAnalysesMap;
 		this._theCalculatorsList = builder.__theCalculatorsList;
 		this._analysisList = builder.__analysisList;
+		
+		this._plotBalance = builder.__plotBalance;
+		this._plotAerodynamics = builder.__plotAerodynamics;
+		this._plotPerformance = builder.__plotPerformance;
+		this._plotCosts = builder.__plotCosts;
 		
 		calculateDependentVariables();
 
@@ -279,8 +332,8 @@ public class ACAnalysisManager implements IACAnalysisManager {
 						reader.getXmlDoc(), reader.getXpath(),
 						"//@id");
 		
-		Double nLimit = Double.valueOf(reader.getXMLPropertyByPath("//global_data/positive_limit_load_factor"));
-		// TODO: read also negative_limit_load_factor
+		Double positiveLimitLoadFactor = Double.valueOf(reader.getXMLPropertyByPath("//global_data/positive_limit_load_factor"));
+		Double negativeLimitLoadFactor = Double.valueOf(reader.getXMLPropertyByPath("//global_data/negative_limit_load_factor"));
 		Double cruiseCL = Double.valueOf(reader.getXMLPropertyByPath("//global_data/cruise_lift_coefficient"));
 		Amount<Length> referenceRange = reader.getXMLAmountLengthByPath("//global_data/reference_range");
 		Amount<Length> maxAltitudeMaxSpeed = reader.getXMLAmountLengthByPath("//global_data/maximum_altitude_at_maximum_speed");
@@ -303,6 +356,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		
 			analysisList.add(AnalysisTypeEnum.WEIGHTS);
 			
+			////////////////////////////////////////////////////////////////////////////////////
 			String fuselageWeightsMethod = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
@@ -336,6 +390,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 					methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.AVERAGE);
 			}
 
+			////////////////////////////////////////////////////////////////////////////////////
 			String wingWeightsMethod = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
@@ -366,6 +421,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 					methodsMapWeights.put(ComponentEnum.WING, MethodEnum.AVERAGE);
 			}
 			
+			////////////////////////////////////////////////////////////////////////////////////			
 			String hTailWeightsMethod = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
@@ -396,6 +452,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 					methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.AVERAGE);
 			}
 			
+			////////////////////////////////////////////////////////////////////////////////////
 			String vTailWeightsMethod = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
@@ -426,6 +483,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 					methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.AVERAGE);
 			}
 			
+			////////////////////////////////////////////////////////////////////////////////////
 			String canardWeightsMethod = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
@@ -456,6 +514,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 					methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.AVERAGE);
 			}
 			
+			////////////////////////////////////////////////////////////////////////////////////
 			String nacellesWeightsMethod = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
@@ -474,6 +533,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 					methodsMapWeights.put(ComponentEnum.NACELLE, MethodEnum.AVERAGE);
 			}
 			
+			////////////////////////////////////////////////////////////////////////////////////
 			String landingGearsWeightsMethod = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
@@ -495,6 +555,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 					methodsMapWeights.put(ComponentEnum.LANDING_GEAR, MethodEnum.AVERAGE);
 			}
 			
+			////////////////////////////////////////////////////////////////////////////////////
 			String systemsWeightsMethod = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
@@ -519,14 +580,28 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		//-------------------------------------------------------------------------------------------
 		// BALANCE ANALYSIS:
 		Map<ComponentEnum, MethodEnum> methodsMapBalance = new HashMap<>();
+		Boolean plotBalance = null;
 		
 		String balanceFile = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
 						"//balance/@file");
 		
+		String plotBalanceString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//balance/@plot");
+		if(plotBalanceString.equalsIgnoreCase("FALSE"))
+			plotBalance = Boolean.FALSE;
+		else if(plotBalanceString.equalsIgnoreCase("TRUE"))
+			plotBalance = Boolean.TRUE;
+		else
+			System.err.println("ERRORE : SPECIFY THE PLOT TAG!!");
+		
 		if(balanceFile != null)  {		
 			analysisList.add(AnalysisTypeEnum.BALANCE);
+			
+			////////////////////////////////////////////////////////////////////////////////////
 			String fuselageBalanceMethod = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
@@ -541,7 +616,8 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				else 
 					methodsMapBalance.put(ComponentEnum.FUSELAGE, MethodEnum.AVERAGE);
 			}
-
+			
+			////////////////////////////////////////////////////////////////////////////////////
 			String wingBalanceMethod = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
@@ -556,7 +632,8 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				else 
 					methodsMapBalance.put(ComponentEnum.WING, MethodEnum.AVERAGE);
 			}
-
+			
+			////////////////////////////////////////////////////////////////////////////////////
 			String hTailBalanceMethod = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
@@ -568,7 +645,8 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				else 
 					methodsMapBalance.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.AVERAGE);
 			}
-
+			
+			////////////////////////////////////////////////////////////////////////////////////
 			String vTailBalanceMethod = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
@@ -580,8 +658,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				else 
 					methodsMapBalance.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.AVERAGE);
 			}
-
-			// FIXME : CANARD BALANCE METHODS ARE NOT DEFINED!!
 
 		}
 			
@@ -602,6 +678,150 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		// PERFORMANCE ANALYSIS:
 		
 		// TODO: IMPLEMENT THIS!
+		List<PerformanceEnum> taskListPerformance = new ArrayList<PerformanceEnum>();
+		Boolean plotPerformance = Boolean.FALSE;
+		
+		String performanceFile = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//performance/@file");
+		
+		String plotPerfromanceString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//performance/@plot");
+		if(plotPerfromanceString.equalsIgnoreCase("FALSE"))
+			plotPerformance = Boolean.FALSE;
+		else if(plotPerfromanceString.equalsIgnoreCase("TRUE"))
+			plotPerformance = Boolean.TRUE;
+		else
+			System.err.println("ERRORE : SPECIFY THE PLOT TAG!!");
+		
+		if(performanceFile != null)  {		
+			analysisList.add(AnalysisTypeEnum.PERFORMANCE);
+			
+			////////////////////////////////////////////////////////////////////////////////////
+			Boolean takeOffFlag = Boolean.FALSE;
+			String takeOffFlagProperty = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//performance/@take_off");
+			if (takeOffFlagProperty != null) {
+				if(takeOffFlagProperty.equalsIgnoreCase("TRUE")) {
+					takeOffFlag = Boolean.TRUE;
+				}
+				else if(takeOffFlagProperty.equalsIgnoreCase("FALSE")) {
+					takeOffFlag = Boolean.FALSE;
+				}
+				else 
+					System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE TAKE-OFF ATTRIBUTE!");
+			}
+			if(takeOffFlag == Boolean.TRUE) 
+				taskListPerformance.add(PerformanceEnum.TAKE_OFF);
+			
+			////////////////////////////////////////////////////////////////////////////////////
+			Boolean climbFlag = Boolean.FALSE;
+			String climbFlagProperty = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//performance/@climb");
+			if (climbFlagProperty != null) {
+				if(climbFlagProperty.equalsIgnoreCase("TRUE")) {
+					climbFlag = Boolean.TRUE;
+				}
+				else if(climbFlagProperty.equalsIgnoreCase("FALSE")) {
+					climbFlag = Boolean.FALSE;
+				}
+				else 
+					System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE CLIMB ATTRIBUTE!");
+			}
+			if(climbFlag == Boolean.TRUE) 
+				taskListPerformance.add(PerformanceEnum.CLIMB);
+			
+			////////////////////////////////////////////////////////////////////////////////////
+			Boolean cruiseFlag = Boolean.FALSE;
+			String cruiseFlagProperty = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//performance/@cruise");
+			if (cruiseFlagProperty != null) {
+				if(cruiseFlagProperty.equalsIgnoreCase("TRUE")) {
+					cruiseFlag = Boolean.TRUE;
+				}
+				else if(cruiseFlagProperty.equalsIgnoreCase("FALSE")) {
+					cruiseFlag = Boolean.FALSE;
+				}
+				else 
+					System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE CRUISE ATTRIBUTE!");
+			}
+			if(cruiseFlag == Boolean.TRUE) 
+				taskListPerformance.add(PerformanceEnum.CRUISE);
+			
+			////////////////////////////////////////////////////////////////////////////////////
+			Boolean landingFlag = Boolean.FALSE;
+			String landingFlagProperty = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//performance/@landing");
+			if (landingFlagProperty != null) {
+				if(landingFlagProperty.equalsIgnoreCase("TRUE")) {
+					landingFlag = Boolean.TRUE;
+				}
+				else if(landingFlagProperty.equalsIgnoreCase("FALSE")) {
+					landingFlag = Boolean.FALSE;
+				}
+				else 
+					System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE LANDING ATTRIBUTE!");
+			}
+			if(landingFlag == Boolean.TRUE) 
+				taskListPerformance.add(PerformanceEnum.LANDING);
+
+			////////////////////////////////////////////////////////////////////////////////////
+			Boolean payloadRangeFlag = Boolean.FALSE;
+			String payloadRangeFlagProperty = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//performance/@landing");
+			if (payloadRangeFlagProperty != null) {
+				if(payloadRangeFlagProperty.equalsIgnoreCase("TRUE")) {
+					payloadRangeFlag = Boolean.TRUE;
+				}
+				else if(payloadRangeFlagProperty.equalsIgnoreCase("FALSE")) {
+					payloadRangeFlag = Boolean.FALSE;
+				}
+				else 
+					System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE LANDING ATTRIBUTE!");
+			}
+			if(payloadRangeFlag == Boolean.TRUE) 
+				taskListPerformance.add(PerformanceEnum.PAYLOAD_RANGE);
+			
+			////////////////////////////////////////////////////////////////////////////////////
+			Boolean VnDiagramFlag = Boolean.FALSE;
+			String VnDiagramFlagProperty = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//performance/@landing");
+			if (VnDiagramFlagProperty != null) {
+				if(VnDiagramFlagProperty.equalsIgnoreCase("TRUE")) {
+					VnDiagramFlag = Boolean.TRUE;
+				}
+				else if(VnDiagramFlagProperty.equalsIgnoreCase("FALSE")) {
+					VnDiagramFlag = Boolean.FALSE;
+				}
+				else 
+					System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE LANDING ATTRIBUTE!");
+			}
+			if(VnDiagramFlag == Boolean.TRUE) 
+				taskListPerformance.add(PerformanceEnum.V_n_DIAGRAM);
+		}
+
+		_performanceFileComplete = new File(
+				MyConfiguration.getDir(FoldersEnum.INPUT_DIR)
+				+ File.separator 
+				+ "Template_Analyses"
+				+ File.separator
+				+ performanceFile
+				);
 		
 		//-------------------------------------------------------------------------------------------
 		// COSTS ANALYSIS:
@@ -614,7 +834,8 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				theAircraft
 				)
 				.analysisList(analysisList)
-				.nLimit(nLimit)
+				.positiveLimitLoadFactor(positiveLimitLoadFactor)
+				.negativeLimitLoadFactor(negativeLimitLoadFactor)
 				.cruiseCL(cruiseCL)
 				.referenceRange(referenceRange)
 				.maxAltitudeAtMaxSpeed(maxAltitudeMaxSpeed)
@@ -625,6 +846,9 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				.flightTime(flightTime)
 				.methodsMapWeights(methodsMapWeights)
 				.methodsMapBalance(methodsMapBalance)
+				.plotBalance(plotBalance)
+				.taskListPerfromance(taskListPerformance)
+				.plotPerformance(plotPerformance)
 				.build();
 	
 		return theAnalysisManager;
@@ -642,7 +866,8 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				.append("\t-------------------------------------\n")
 				.append("\tAircraft in exam: " + _theAircraft.getId() + "\n")
 				.append("\t·····································\n")
-				.append("\tn Limit: " + _positiveLimitLoadFactor + "\n")
+				.append("\tPositive limit load factor: " + _positiveLimitLoadFactor + "\n")
+				.append("\tNegative limit load factor: " + _negativeLimitLoadFactor + "\n")
 				.append("\tCruise CL: " + _cruiseCL + "\n")
 				.append("\tReference range: " + _referenceRange + "\n")
 				.append("\tMaximum altitude at maximum speed: " + _maxAltitudeAtMaxSpeed + "\n")
@@ -703,28 +928,45 @@ public class ACAnalysisManager implements IACAnalysisManager {
 
 		if (aircraft == null) return;
 
+		////////////////////////////////////////////////////////////////
 		if (this._analysisList.contains(AnalysisTypeEnum.WEIGHTS)) {
-			_theWeights = ACWeightsManager.importFromXML(_weightsFileComplete.getAbsolutePath(), aircraft);
+			_theWeights = ACWeightsManager.importFromXML(
+					_weightsFileComplete.getAbsolutePath(),
+					aircraft
+					);
 			calculateWeights(aircraft, resultsFolderPath); 
 			_executedAnalysesMap.put(AnalysisTypeEnum.WEIGHTS, true);
 		}
-
+		////////////////////////////////////////////////////////////////
 		if (this._analysisList.contains(AnalysisTypeEnum.BALANCE)) {
-			_theBalance = ACBalanceManager.importFromXML(_balanceFileComplete.getAbsolutePath(), aircraft);
+			_theBalance = ACBalanceManager.importFromXML(
+					_balanceFileComplete.getAbsolutePath(),
+					aircraft
+					);
 			calculateBalance(aircraft, resultsFolderPath);
 			_executedAnalysesMap.put(AnalysisTypeEnum.BALANCE, true);
 		}
-
+		////////////////////////////////////////////////////////////////
 		if (this._analysisList.contains(AnalysisTypeEnum.AERODYNAMIC)) {
-			calculateAerodynamics(theOperatingConditions, aircraft, resultsFolderPath);
+			// TODO : BUILD THE AERODYNAMICS MANAGER WHEN AVAILABLE
+			calculateAerodynamics(
+					theOperatingConditions,
+					aircraft,
+					resultsFolderPath
+					);
 			_executedAnalysesMap.put(AnalysisTypeEnum.AERODYNAMIC, true);
 		}
-		
+		////////////////////////////////////////////////////////////////
 		if (this._analysisList.contains(AnalysisTypeEnum.PERFORMANCE)) {
+			_thePerformance = ACPerformanceCalculator.importFromXML(
+					_performanceFileComplete.getAbsolutePath(), 
+					aircraft,
+					theOperatingConditions
+					);
 			calculatePerformances(aircraft, resultsFolderPath);
 			_executedAnalysesMap.put(AnalysisTypeEnum.PERFORMANCE, true);
 		}
-		
+		////////////////////////////////////////////////////////////////
 		if (this._analysisList.contains(AnalysisTypeEnum.COSTS)) {
 			calculateCosts(aircraft, resultsFolderPath);
 			_executedAnalysesMap.put(AnalysisTypeEnum.COSTS, true);
@@ -772,7 +1014,8 @@ public class ACAnalysisManager implements IACAnalysisManager {
 			aircraft.getTheAnalysisManager().getTheBalance().toXLSFile(
 					balanceFolderPath
 					+ "Balance");
-			aircraft.getTheAnalysisManager().getTheBalance().createBalanceCharts(balanceFolderPath);
+			if(_plotBalance == Boolean.TRUE)
+				aircraft.getTheAnalysisManager().getTheBalance().createBalanceCharts(balanceFolderPath);
 		} catch (InvalidFormatException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -802,17 +1045,14 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	}
 	
 	public void calculatePerformances(Aircraft aircraft, String resultsFolderPath) {
-		aircraft.getTheAnalysisManager().getThePerformance().calculateAllPerformance();
 		
 		// TODO : ADD toString AND toXLSFile METHODS WHEN AVAILABLE !
-		
 	}
 	
 	public void calculateCosts(Aircraft aircraft, String resultsFolderPath) {
 		aircraft.getTheAnalysisManager().getTheCosts().calculateAll();
 		
 		// TODO : ADD toString AND toXLSFile METHODS WHEN AVAILABLE !
-		
 	}
 
 	// GETTERS & SETTERS:
@@ -1033,11 +1273,11 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		this._theAerodynamics = theAerodynamics;
 	}
 
-	public ACPerformanceManager getThePerformance() {
+	public ACPerformanceCalculator getThePerformance() {
 		return _thePerformance;
 	}
 
-	public void setThePerformance(ACPerformanceManager thePerformance) {
+	public void setThePerformance(ACPerformanceCalculator thePerformance) {
 		this._thePerformance = thePerformance;
 	}
 
@@ -1095,5 +1335,45 @@ public class ACAnalysisManager implements IACAnalysisManager {
 
 	public void setCostsFileComplete(File _costsFileComplete) {
 		ACAnalysisManager._costsFileComplete = _costsFileComplete;
+	}
+
+	public Boolean getPlotBalance() {
+		return _plotBalance;
+	}
+
+	public void setPlotBalance(Boolean _plotBalance) {
+		this._plotBalance = _plotBalance;
+	}
+
+	public Boolean getPlotAerodynamics() {
+		return _plotAerodynamics;
+	}
+
+	public void setPlotAerodynamics(Boolean _plotAerodynamics) {
+		this._plotAerodynamics = _plotAerodynamics;
+	}
+
+	public Boolean getPlotPerformance() {
+		return _plotPerformance;
+	}
+
+	public void setPlotPerformance(Boolean _plotPerformance) {
+		this._plotPerformance = _plotPerformance;
+	}
+
+	public Boolean getPlotCosts() {
+		return _plotCosts;
+	}
+
+	public void setPlotCosts(Boolean _plotCosts) {
+		this._plotCosts = _plotCosts;
+	}
+
+	public List<PerformanceEnum> getTaskListPerformance() {
+		return _taskListPerformance;
+	}
+
+	public void setTaskListPerformance(List<PerformanceEnum> _taskListPerformance) {
+		this._taskListPerformance = _taskListPerformance;
 	}
 }

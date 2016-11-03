@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+	<!-- 
+	plot=TRUE -> enters the plot tag in the specified file.
+	plot=FALSE -> plots nothing.
+	-->
 <jpad_config>
     <!-- Input data, shared across analysis tasks -->
     <global_data>
@@ -15,7 +19,7 @@
 		<flight_time unit="h">1.35</flight_time>
 		<!---->
     </global_data>
-    <!-- Required analysis tasks -->
+    <!-- Required analysis tasks - comment the tag of the analysis if not needed -->
     <analyses id="IRON analysis">
         <weights 
             file="analysis_weights_IRON.xml" 
@@ -29,6 +33,7 @@
             /> <!-- method_XXX="AVERAGED" if empty string -->
         <balance
 			file="analysis_balance_IRON.xml"
+			plot="TRUE"
             method_fuselage=""
             method_wing=""
             method_htail=""
@@ -37,12 +42,13 @@
 		/> <!-- method_XXX="AVERAGED" if empty string -->
 		<performance 
 			file="analysis_performance.xml"
-			take-off="TRUE"
+			plot="TRUE"
+			take_off="TRUE"
 			climb="TRUE"
 			cruise="TRUE"
 			landing="TRUE"
 			payload_range="TRUE"
-			V-n_diagram="TRUE"
+			V_n_diagram="TRUE"
 		/>
         <!--
 		<aerodynamics file="analysis_aerodynamics.xml"/>

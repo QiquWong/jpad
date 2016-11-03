@@ -16,7 +16,9 @@
 				<maximum_fuel_mass unit="kg">11959.06668</maximum_fuel_mass>
 			</weights>
 			<aerodynamics>
-				<cD0>0.0254</cD0>
+				<current_lifting_coefficient>0.6</current_lifting_coefficient>
+				<current_drag_coefficient>0.0329</current_drag_coefficient>
+				<cD0>0.0227</cD0>
 				<oswald>0.8</oswald>
 				<cLmax_clean_configuration>1.61</cLmax_clean_configuration>
 				<cL_alpha_clean_configuration unit="1/deg">0.11</cL_alpha_clean_configuration>
@@ -53,4 +55,26 @@
 			</other_data>
         </performance>
     </analysis>
+	<plot>
+		<takeoff>
+			<simulations>TRUE</simulations>
+			<balanced_field_length>TRUE</balanced_field_length>
+		</takeoff>
+		<climb>
+			<!-- ADD CHARTS -->
+		</climb>
+		<cruise>
+			<thrust_drag>TRUE</thrust_drag>
+			<efficiency>TRUE</efficiency>
+			<sfc>TRUE</sfc>
+			<cruise_grid>TRUE</cruise_grid>
+			<flight_envelope>TRUE</flight_envelope>
+			<!-- ADD CHARTS -->
+		</cruise>
+		<landing>
+			<simulations>TRUE</simulations>
+		</landing>
+		<payload_range>TRUE</payload_range>
+		<maneuvering_flight_and_gust_envelope>TRUE</maneuvering_flight_and_gust_envelope>
+	</plot>
 </jpad_config>
