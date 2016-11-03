@@ -179,13 +179,13 @@ public class LiftingSurface implements ILiftingSurface {
 	}
 	
 	@Override
-	public double calculateThicknessMean() {
+	public void calculateThicknessMean() {
 		Airfoil meanAirfoil = new Airfoil(
 				calculateMeanAirfoil(this),
 				this._aeroDatabaseReader
 				);
 		
-		return meanAirfoil.getAirfoilCreator().getThicknessToChordRatio();
+		_thicknessMean = meanAirfoil.getAirfoilCreator().getThicknessToChordRatio();
 	}
 	
 	@Override

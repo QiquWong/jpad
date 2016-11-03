@@ -6,28 +6,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.measure.quantity.Angle;
-import javax.measure.unit.NonSI;
-import javax.measure.unit.SI;
-
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.jscience.physics.amount.Amount;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import aircraft.components.Aircraft;
-import analyses.ACAnalysisManager;
-import analyses.ACWeightsManager;
 import analyses.OperatingConditions;
 import analyses.liftingsurface.LSAerodynamicsCalculator;
+import analyses.liftingsurface.LSAerodynamicsCalculator.CalcCLAlpha;
 import calculators.aerodynamics.LiftCalc;
-import calculators.aerodynamics.NasaBlackwell;
 import configuration.MyConfiguration;
-import configuration.enumerations.AircraftEnum;
-import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
@@ -35,7 +25,6 @@ import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import standaloneutils.JPADXmlReader;
-import writers.JPADStaticWriteUtils;
 
 class MyArgumentsHighLiftTest {
 	@Option(name = "-i", aliases = { "--input" }, required = true,
@@ -218,29 +207,27 @@ public class HighLiftDevicesEffectsTest extends Application {
 			HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
 			
 			// default Aircraft ATR-72 ...
-			theAircraft = new Aircraft.AircraftBuilder(
-					"ATR-72",
-					AircraftEnum.ATR72,
-					aeroDatabaseReader,
-					highLiftDatabaseReader
-					)
-					.build();
+//			theAircraft = new Aircraft.AircraftBuilder(
+//					"ATR-72",
+//					AircraftEnum.ATR72,
+//					aeroDatabaseReader,
+//					highLiftDatabaseReader
+//					)
+//					.build();
 
 			// reading aircraft from xml ... 
-//			theAircraft = Aircraft.importFromXML(
-//					pathToXML,
-//					dirLiftingSurfaces,
-//					dirFuselages,
-//					dirEngines,
-//					dirNacelles,
-//					dirLandingGears,
-//					dirSystems,
-//					dirCabinConfiguration,
-//					dirAirfoil,
-//					dirCosts,
-//					aeroDatabaseReader,
-//					highLiftDatabaseReader);
-//			theAircraft.setTheWieghts(ACWeightsManager.importFromXML(pathToXMLWeights, theAircraft));
+			theAircraft = Aircraft.importFromXML(
+					pathToXML,
+					dirLiftingSurfaces,
+					dirFuselages,
+					dirEngines,
+					dirNacelles,
+					dirLandingGears,
+					dirSystems,
+					dirCabinConfiguration,
+					dirAirfoil,
+					aeroDatabaseReader,
+					highLiftDatabaseReader);
 			
 			// Set the folders tree
 			MyConfiguration.initWorkingDirectoryTree(
@@ -260,26 +247,15 @@ public class HighLiftDevicesEffectsTest extends Application {
 					taskMap,
 					plotMap
 					);
-			
-			// Evaluating high lift devices effects
-			List<Amount<Angle>> deltaFlap = new ArrayList<>();
-			deltaFlap.add(Amount.valueOf(40, NonSI.DEGREE_ANGLE));
-			deltaFlap.add(Amount.valueOf(40, NonSI.DEGREE_ANGLE));
+			CalcCLAlpha theCLAlphaCalculator = theAerodynamicCalculator.new CalcCLAlpha();
+			theCLAlphaCalculator.nasaBlackwell();
 			
 			theAircraft.getWing().setTheAerodynamicsCalculator(theAerodynamicCalculator);
-			
-			// Evaluating CLAlpha clean
-			// TODO: MOVE THE CalcCLAlpha INNER CLASS TO THE LSAerodynamicsCalculator
-			theAircraft.getWing()
-			.getTheAerodynamicsCalculator()
-			.getCLAlpha()
-			.put(MethodEnum.NASA_BLACKWELL,
-					Amount.valueOf(6.2, SI.RADIAN.inverse()));
 			
 			LiftCalc.calculateHighLiftDevicesEffects(
 					theAircraft.getWing(),
 					theOperatingConditions,
-					0.4
+					theAerodynamicCalculator.getCurrentLiftCoefficient()
 					);
 			
 			//----------------------------------------------------------------------------------

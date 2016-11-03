@@ -50,7 +50,8 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	private ACCostsManager _theCosts;
 	
 	// INPUT DATA: 
-	private Double _nLimit;
+	private Double _positiveLimitLoadFactor;
+	private Double _negativeLimitLoadFactor;
 	private Double _cruiseCL;
 	private Amount<Length> _referenceRange;
 	private Amount<Length> _maxAltitudeAtMaxSpeed;
@@ -241,7 +242,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		
 		this._id = builder.__id;
 		this._theAircraft = builder.__theAircraft;
-		this._nLimit = builder.__nLimit;
+		this._positiveLimitLoadFactor = builder.__nLimit;
 		this._cruiseCL = builder.__cruiseCL;
 		this._referenceRange = builder.__referenceRange;
 		this._maxAltitudeAtMaxSpeed = builder.__maxAltitudeAtMaxSpeed;
@@ -640,7 +641,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				.append("\t-------------------------------------\n")
 				.append("\tAircraft in exam: " + _theAircraft.getId() + "\n")
 				.append("\t·····································\n")
-				.append("\tn Limit: " + _nLimit + "\n")
+				.append("\tn Limit: " + _positiveLimitLoadFactor + "\n")
 				.append("\tCruise CL: " + _cruiseCL + "\n")
 				.append("\tReference range: " + _referenceRange + "\n")
 				.append("\tMaximum altitude at maximum speed: " + _maxAltitudeAtMaxSpeed + "\n")
@@ -670,7 +671,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	 */
 	public void calculateDependentVariables() {
 
-		_nUltimate = 1.5 * _nLimit;
+		_nUltimate = 1.5 * _positiveLimitLoadFactor;
 		
 		// Maximum cruise TAS
 		_vMaxCruise = Amount.valueOf(
@@ -831,12 +832,20 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		this._theAircraft = _theAircraft;
 	}
 
-	public Double getNLimit() {
-		return _nLimit;
+	public Double getPositiveLimitLoadFactor() {
+		return _positiveLimitLoadFactor;
 	}
 
-	public void setNLimit(Double _nLimit) {
-		this._nLimit = _nLimit;
+	public void setPositiveLimitLoadFactor(Double _positiveLimitLoadFactor) {
+		this._positiveLimitLoadFactor = _positiveLimitLoadFactor;
+	}
+
+	public Double getNegativeLimitLoadFactor() {
+		return _negativeLimitLoadFactor;
+	}
+	
+	public void setNegativeLimitLoadFactor(Double _negativeLimitLoadFactor) {
+		this._negativeLimitLoadFactor = _negativeLimitLoadFactor;
 	}
 
 	public Double getCruiseCL() {

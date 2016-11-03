@@ -773,13 +773,16 @@ public class LiftCalc {
 			etaInFlap.add(flapList.get(i).getInnerStationSpanwisePosition());
 			etaOutFlap.add(flapList.get(i).getOuterStationSpanwisePosition());
 			cfc.add(flapList.get(i).getMeanChordRatio());
-			if(!slatList.isEmpty()) {
+		}
+		if(!slatList.isEmpty()) {
+			for(int i=0; i<slatList.size(); i++) {
 				etaInSlat.add(slatList.get(i).getInnerStationSpanwisePosition());
 				etaOutSlat.add(slatList.get(i).getOuterStationSpanwisePosition());
 				csc.add(slatList.get(i).getMeanChordRatio());
 				cExtcSlat.add(slatList.get(i).getExtensionRatio());
 			}
 		}
+		
 		//--------------------------------------------
 		// Creating arrays of the required parameters to be interpolated:
 		double [] clAlphaMeanFlap = new double [flapList.size()];
@@ -1184,11 +1187,12 @@ public class LiftCalc {
 					deltaCLmaxSlat
 					);
 		}
-		else
+		else {
 			theLiftingSurface.getTheAerodynamicsCalculator().setDeltaClmaxSlatList(null);
 			theLiftingSurface.getTheAerodynamicsCalculator().setDeltaClmaxSlat(null);
 			theLiftingSurface.getTheAerodynamicsCalculator().setDeltaCLmaxSlatList(null);
 			theLiftingSurface.getTheAerodynamicsCalculator().setDeltaCLmaxSlat(null);
+		}
 			
 		//---------------------------------------------------------------
 		// deltaCL0 (flap)

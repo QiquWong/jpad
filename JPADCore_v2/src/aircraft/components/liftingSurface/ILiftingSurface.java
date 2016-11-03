@@ -54,7 +54,7 @@ public interface ILiftingSurface {
 	public Amount<Angle> getSweepHalfChordEquivalent(Boolean recalculate);
 	public Amount<Angle> getSweepQuarterChordEquivalent(Boolean recalculate);
 	
-	public double calculateThicknessMean();
+	public void calculateThicknessMean();
 	public void calculateFormFactor(double compressibilityFactor);
 	
 	public void calculateGeometry(ComponentEnum type, Boolean mirrored);
