@@ -67,22 +67,22 @@ public class NacelleAerodynamicsManager extends AerodynamicsManager{
 
 		double kExcr = DragCalc.calculateKExcrescences(_theAircraft.getSWetTotal().doubleValue(SI.SQUARE_METRE)); 
 
-		calculateCd0Parasite();
+//		calculateCd0Parasite();
 		calculateCd0Base();
 		calculateCd0Total(kExcr);
 
 	}
 
-	public double calculateCd0Parasite() {
-
-		_cd0Parasite = DragCalc.calculateCd0Parasite(
-				_theNacelle.calculateFormFactor(), 
-				_cF, 
-				_theNacelle.getSurfaceWetted().getEstimatedValue(), 
-				_wingSurface.getEstimatedValue());
-
-		return _cd0Parasite;
-	}
+//	public double calculateCd0Parasite() {
+//
+//		_cd0Parasite = DragCalc.calculateCd0Parasite(
+//				_theNacelle.calculateFormFactor(), 
+//				_cF, 
+//				_theNacelle.getSurfaceWetted().getEstimatedValue(), 
+//				_wingSurface.getEstimatedValue());
+//
+//		return _cd0Parasite;
+//	}
 
 	public double calculateCd0Base() {
 		_cd0Base = DragCalc.calculateCd0Base(
