@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.xml.parsers.ParserConfigurationException;
@@ -80,6 +81,21 @@ public class Test_Stability{
 		System.out.println(" alpha " + alphaDeg);
 		
 		System.out.println("alpha " + alphaTry);
+		
+		List<Amount<Angle>> metri = new ArrayList<>();
+		metri.add(0, alphaTry);
+		
+		metri.add(1, alphadeg);
+		
+		List<Double> metrid = new ArrayList<>();
+		metrid.add(0,1.0);
+		
+		metrid.add(1, 2.1);
+		
+		
+		System.out.println(" array " + metri);
+		
+		System.out.println(" array " + metrid);
 		
 		// read
 		// initialize
