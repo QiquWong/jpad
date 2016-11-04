@@ -4,8 +4,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.measure.quantity.Angle;
+import javax.measure.unit.NonSI;
+import javax.measure.unit.SI;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.jscience.physics.amount.Amount;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -67,6 +71,21 @@ public class Test_Stability{
 		
 		System.out.println("--------------");
 		
+		Amount<Angle> alphaTry = Amount.valueOf(13, NonSI.DEGREE_ANGLE);
+		System.out.println(" alpha " + alphaTry);
+		
+		Amount<Angle> alphadeg = alphaTry.to(NonSI.DEGREE_ANGLE);
+		System.out.println(" alpha " + alphadeg);
+		double alphaDeg = alphaTry.doubleValue(SI.RADIAN);
+		System.out.println(" alpha " + alphaDeg);
+		
+		System.out.println("alpha " + alphaTry);
+		
+		// read
+		// initialize
+		// print
+		// calculator
+
 //		InputOutputTree input = new InputOutputTree();
 //		
 //		ReaderWriterWing theReader = new ReaderWriterWing();
