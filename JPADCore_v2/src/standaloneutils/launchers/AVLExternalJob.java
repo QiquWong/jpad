@@ -374,8 +374,4 @@ public class AVLExternalJob implements IAVLExternalJob {
 		
 		return this.getCommandLine();
 	}
-	
-	
-	
-
 }

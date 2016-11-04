@@ -39,10 +39,11 @@ public interface AVLWing {
 			addAllSections(new ArrayList<AVLWingSection>());
 
 		}
+		public Builder appendSection(AVLWingSection section) {
+			addSections(section);
+			return this;
+		}
 	}
 	
-	default void appendSection(AVLWingSection section) {
-		getSections().add(section);
-	}
 	
 }
