@@ -9,8 +9,6 @@ public interface AVLBodySection {
 
 	String getDescription();
 	Double[] getOrigin();
-	Double getChord();
-	Double getTwist();
 	File getBodySectionCoordFile();
 
 	/** Builder of AVLBodySection instances. */
@@ -20,9 +18,6 @@ public interface AVLBodySection {
 			// Set defaults in the builder constructor.
 			setDescription("SECTION");
 			setOrigin(new Double[]{0.0, 0.0, 0.0});
-			setChord(0.0);
-			setTwist(0.0);
-			setBodySectionCoordFile(null);
 		}
 	}
 	

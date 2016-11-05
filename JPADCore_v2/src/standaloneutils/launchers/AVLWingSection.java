@@ -25,7 +25,6 @@ public interface AVLWingSection {
 			setOrigin(new Double[]{0.0, 0.0, 0.0});
 			setChord(0.0);
 			setTwist(0.0);
-			setAirfoilCoordFile(null);
 			clearControlSurfaces();
 			addAllControlSurfaces(new ArrayList<AVLWingSectionControlSurface>());
 		}
@@ -33,7 +32,5 @@ public interface AVLWingSection {
 			addControlSurfaces(controlSurface);
 			return this;
 		}
-	}	
-
-	
+	}
 }
