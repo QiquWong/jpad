@@ -30,9 +30,6 @@ public class Test_Stability{
 			usage = "my input file")
 	private File _inputFile;
 	
-	@Option(name = "-d", aliases = { "--database-path" }, required = true,
-			usage = "path for database files")
-	private File _databasePath;
 
 	// declaration necessary for Concrete Object usage
 	public CmdLineParser theCmdLineParser;
@@ -56,13 +53,8 @@ public class Test_Stability{
 		Test_Stability theTestObject = new Test_Stability();
 		theTestObject.theCmdLineParser.parseArgument(args);
 		
-		String databaseDirectoryAbsolutePath = theTestObject.get_databasePath().getAbsolutePath();
-		
 		// Set the folders tree
-				MyConfiguration.initWorkingDirectoryTree(MyConfiguration.currentDirectoryString,
-						MyConfiguration.inputDirectory, 
-						MyConfiguration.outputDirectory,
-						databaseDirectoryAbsolutePath); // coming from main arguments
+				MyConfiguration.initWorkingDirectoryTree();
 
 				String pathToXML = theTestObject.get_inputFile().getAbsolutePath();
 				String filenameWithPathAndExt = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR)+ "Stability_Output.xml"; 
@@ -97,6 +89,14 @@ public class Test_Stability{
 		
 		System.out.println(" array " + metrid);
 		
+		StabilityCalculator theCalculator = new StabilityCalculator();
+		ReaderWriter theReader = new ReaderWriter();
+		theReader.importFromXML(
+				pathToXML, 
+				theCalculator
+				);
+		
+		theCalculator.printAllData();
 		// read
 		// initialize
 		// print
@@ -124,12 +124,5 @@ public class Test_Stability{
 		this._inputFile = _inputFile;
 	}
 	
-	public File get_databasePath() {
-		return _databasePath;
-	}
-
-	public void set_databasePath(File _databasePath) {
-		this._databasePath = _databasePath;
-	}
 }
 
