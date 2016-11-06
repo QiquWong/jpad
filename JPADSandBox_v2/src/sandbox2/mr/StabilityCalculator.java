@@ -11,6 +11,7 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
+import analyses.ACPerformanceCalculator.ACPerformanceCalculatorBuilder;
 import configuration.enumerations.AirfoilEnum;
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.ConditionEnum;
@@ -193,8 +194,6 @@ public class StabilityCalculator {
 
 	//Stability -------------------------------------------
 	//----------------------------------------------------------------
-
-
 
 	/*****************************************************************************************************************************************
 	 * In this section the arrays are initialized. These initialization wont be made in the final version because                            *

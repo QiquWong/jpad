@@ -24,6 +24,7 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
 import configuration.MyConfiguration;
+import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.PerformanceEnum;
 import configuration.enumerations.PerformancePlotEnum;
@@ -43,6 +44,7 @@ import sun.misc.Perf;
 public class ReaderWriter{
 
 
+	@SuppressWarnings("unchecked")
 	public void importFromXML(
 			String pathToXML,
 			StabilityCalculator theStabilityCalculator
@@ -69,7 +71,41 @@ public class ReaderWriter{
 		theStabilityCalculator.setZCGAircraft((Amount<Length>) reader.getXMLAmountWithUnitByPath("//operating_conditions/z_cg"));
 		theStabilityCalculator.setAltitude((Amount<Length>) reader.getXMLAmountWithUnitByPath("//operating_conditions/altitude"));
 		theStabilityCalculator.setMachCurrent(Double.valueOf(reader.getXMLPropertyByPath("//operating_conditions/mach_number")));
+		theStabilityCalculator.setReynoldsCurrent(Double.valueOf(reader.getXMLPropertyByPath("//operating_conditions/Reynolds_number")));
 		
-		//TODO continue here 
+		String condition = reader.getXMLPropertyByPath("//operating_conditions/condition");
+		System.out.println(" condition " + condition);
+		if ( condition.equals("TAKE_OFF") || condition.equals("take_off") )
+			theStabilityCalculator.setTheCondition(ConditionEnum.TAKE_OFF);
+		if ( condition.equals("CRUISE") || condition.equals("cruise") )
+			theStabilityCalculator.setTheCondition(ConditionEnum.CRUISE);
+		if ( condition.equals("LANDING") ||condition.equals("landing"))
+			theStabilityCalculator.setTheCondition(ConditionEnum.LANDING);
+
+		theStabilityCalculator.setAlphaBodyInitial((Amount<Angle>) reader.getXMLAmountWithUnitByPath("//operating_conditions/alpha_body_initial"));
+		theStabilityCalculator.setAlphaBodyFinal((Amount<Angle>) reader.getXMLAmountWithUnitByPath("//operating_conditions/alpha_body_final"));
+		theStabilityCalculator.setNumberOfAlphasBody((int)Double.parseDouble((reader.getXMLPropertyByPath("//operating_conditions/number_of_alphas_body"))));
+		
+		//---------------------------------------------------------------------------------
+		// WING:
+		
+		theStabilityCalculator.setXApexWing((Amount<Length>) reader.getXMLAmountWithUnitByPath("//wing/position/x"));
+		theStabilityCalculator.setYApexWing((Amount<Length>) reader.getXMLAmountWithUnitByPath("//wing/position/y"));
+		theStabilityCalculator.setZApexWing((Amount<Length>) reader.getXMLAmountWithUnitByPath("//wing/position/z"));
+		
+		//---------------------------------------------------------------------------------
+		// FUSELAGE:
+		
+		//---------------------------------------------------------------------------------
+		// HORIZONTAL TAIL:
+		
+		//---------------------------------------------------------------------------------
+		// ELEVATOR:
+		
+		//---------------------------------------------------------------------------------
+		// ENGINE:
+		
+		
+		
 	}
 }
