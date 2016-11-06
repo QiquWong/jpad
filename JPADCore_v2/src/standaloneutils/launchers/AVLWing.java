@@ -14,6 +14,7 @@ public interface AVLWing {
 	Double[] getOrigin();
 	Double getSweep();
 	Double getDihedral();
+	Double getIncidence();
 	AVLWingConfiguration getConfiguration();
 	List<AVLWingSection> getSections();
 	
@@ -29,6 +30,7 @@ public interface AVLWing {
 			setOrigin(new Double[]{0.0, 0.0, 0.0});
 			setSweep(0.0);
 			setDihedral(0.0);
+			setIncidence(0.0);
 			
 			getConfigurationBuilder().setNSpanwise(10);
 			getConfigurationBuilder().setNChordwise(5);
