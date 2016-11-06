@@ -8,7 +8,7 @@
                 <altitude unit="m">0</altitude>
                 <mach_number>0.13</mach_number>
 				<!-- Reynolds number reffered to MAC  -->
-				<Reynolds_number></Reynolds_number>
+				<Reynolds_number>6000000</Reynolds_number>
 				<!-- definition of alpha body array analysis  -->
 				<alpha_body_initial unit="°">-1</alpha_body_initial>
                 <alpha_body_final unit="°">16</alpha_body_final>
