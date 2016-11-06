@@ -10,30 +10,47 @@ import static com.google.common.base.Preconditions.checkState;
 import org.inferred.freebuilder.FreeBuilder;
 
 @FreeBuilder
-public interface AVLInputData {
+public interface AVLMainInputData {
 	
 	String getDescription();
 	
-	Double getMain_Mach();
-	Integer getMain_IYsym();
-	Integer getMain_IZsym();
-	Double getMain_Zsym();
+	Double getMach();
+	Integer getIYsym();
+	Integer getIZsym();
+	Double getZsym();
+	
+	Double getSref();
+	Double getCref();
+	Double getBref();
 
+	Double getXref();
+	Double getYref();
+	Double getZref();
+
+	Double getCD0ref();
+	
 //	Double getWgplnf_CHRDR();
 //	Optional<Double> getWgplnf_CHRDBP();
 
 	
 	/** Builder of AVLInputData instances. */
-	class Builder extends AVLInputData_Builder {
+	class Builder extends AVLMainInputData_Builder {
 		
 		public Builder() {
 			// Set defaults in the builder constructor.
 			setDescription("(c) Agostino De Marco - X-airplane");
-						
-			setMain_IYsym(0);
-			setMain_IZsym(0);
-			setMain_Zsym(0.0);
-
+			setMach(0.3);
+			setIYsym(0);
+			setIZsym(0);
+			setZsym(0.0);
+			setSref(124.862);
+			setCref(4.235);
+			setBref(35.66);
+			setXref(18.288);
+			setYref(0.0);
+			setZref(0.0);
+			setCD0ref(0.020);
+			
 			// TODO ... the rest
 		}
 		
@@ -46,14 +63,17 @@ public interface AVLInputData {
 		//--------------------------------------------------------
 		
 		@Override
-		public Builder setMain_Mach(Double val) {
+		public Builder setMach(Double val) {
 			// Check single-field (argument) constraints in the setter method.
-			checkArgument((val > 0) && (val <= 0.85));
-			return super.setMain_Mach(val);
+			checkArgument((val >= 0) && (val <= 0.85));
+			return super.setMach(val);
 		}
+		
+		// TODO: more constraints on Sref, Cref, Bref etc as appropriate
+		
 		@Override 
-		public AVLInputData build() {
-			AVLInputData data = super.build();
+		public AVLMainInputData build() {
+			AVLMainInputData data = super.build();
 			
 			// Check cross-field (state) constraints in the build method.
 			//checkState(data.getDescription().contains("Agostino De Marco"));

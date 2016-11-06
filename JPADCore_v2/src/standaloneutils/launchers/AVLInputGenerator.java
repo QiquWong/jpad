@@ -13,7 +13,7 @@ import java.util.List;
 public class AVLInputGenerator {
 
 	
-	public static void writeDataToFile(AVLInputData inputData, String filePath) {
+	public static void writeDataToFile(AVLMainInputData inputData, String filePath) {
 		// TODO
 	}
 
@@ -69,7 +69,7 @@ public class AVLInputGenerator {
 		}
 	}
 
-	public static String formatAsAVLInput(AVLInputData inputData) {
+	public static String formatAsAVLInput(AVLMainInputData inputData) {
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("# -Unnamed-\n");

@@ -35,7 +35,5 @@ public interface AVLAircraft {
 			return this;
 		}
 	}	
-	
-
 
 }
