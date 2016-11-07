@@ -352,9 +352,79 @@ public class JPADXmlReader {
 		}
 		return outputStrings;
 	}
+	
+	/**
+	 * This method reads arrays of double from xml. 
+	 * 
+	 * @author Manuela Ruocco
+	 */
+	public List<Double> readArrayDoubleFromXML(String inputStringInitial){
+		
+		String inputString = this.getXMLPropertiesByPath(inputStringInitial).get(0);
+
+		List<Double> outputStrings = new ArrayList<Double>();
+		String tempString = new String();
+		Double tempDouble;
+		int n, m;
+
+		inputString = inputString.trim();
+
+		int openParenthesisCheck = inputString.indexOf('[');
+
+		if ( openParenthesisCheck == -1){
+			inputString = "[" + inputString;
+		}
+
+		int closeParenthesisCheck = inputString.indexOf(']');
+
+		if ( closeParenthesisCheck == -1){
+			inputString = inputString + "]";
+		}
+
+		// First value
+		boolean checkOnlyOneElement = false;
+
+		n = inputString.indexOf(',');
+		if ( n == -1){
+			n = inputString.indexOf(';');
+			if ( n == -1 ) {
+				n = inputString.indexOf(']');
+				checkOnlyOneElement = true;
+			}
+		}
+
+		tempString = inputString.substring(1, n);
+		tempDouble = Double.valueOf(tempString.trim());
+
+		outputStrings.add(tempDouble);
+		// Following values
+
+		while ( (n!= -1) && (checkOnlyOneElement == false) ){
+
+			m = n;
+			tempString = new String();
+
+			n = inputString.indexOf(',', m+1);
+			if ( n == -1){
+				n = inputString.indexOf(';', m+1);
+			}
+			if( n != -1){
+				tempString = inputString.substring(m+1, n);}
+
+			else{
+				int k = inputString.indexOf(']');
+				tempString = inputString.substring(m+1, k)	;
+			}
+			tempDouble = Double.valueOf(tempString.trim());
+
+			outputStrings.add(tempDouble);
+		}
+		return outputStrings;
+	}
+	
 
 	/**
-	 * This method reads list of amount from xml 
+	 * This method reads list of amount from xml . The amounts must have the same units.
 	 * 
 	 * @author Manuela Ruocco
 	 */

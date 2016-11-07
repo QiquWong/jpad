@@ -20,6 +20,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.util.SystemOutLogger;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jscience.physics.amount.Amount;
 
@@ -146,12 +147,26 @@ public class ReaderWriter{
 
 		theStabilityCalculator.setWingMaxThicknessMeanAirfoil(Double.parseDouble((reader.getXMLPropertyByPath("//wing/global/max_thickness_mean_airfoil"))));
 
-		theStabilityCalculator.setZApexWing((Amount<Length>) reader.getXMLAmountWithUnitByPath("//wing/position/z"));
+		//distributions
+		
+		theStabilityCalculator.setWingYAdimensionalBreakPoints(reader.readArrayDoubleFromXML("//wing/distribution/geometry/y_adimensional_stations"));
+		
+		theStabilityCalculator.setWingChordsBreakPoints(reader.readArrayofAmountFromXML("//wing/distribution/geometry/chord_distribution"));
+		theStabilityCalculator.setWingXleBreakPoints(reader.readArrayofAmountFromXML("//wing/distribution/geometry/x_le_distribution"));
+		theStabilityCalculator.setWingTwistBreakPoints(reader.readArrayofAmountFromXML("//wing/distribution/geometry/twist_distribution"));
+		theStabilityCalculator.setWingDihedralBreakPoints(reader.readArrayofAmountFromXML("//wing/distribution/geometry/dihedral_distribution"));
+		
+		theStabilityCalculator.setWingAlphaZeroLiftBreakPoints(reader.readArrayofAmountFromXML("//wing/distribution/aerodynamics/alpha_zero_lift_distribution"));
+		theStabilityCalculator.setWingAlphaStarBreakPoints(reader.readArrayofAmountFromXML("//wing/distribution/aerodynamics/alpha_star_distribution"));
+		
+		theStabilityCalculator.setWingClMaxBreakPoints(reader.readArrayDoubleFromXML("//wing/distribution/aerodynamics/maximum_lift_coefficient_distribution"));
 
-		List<Amount<Length>> chordDistribution = reader.readArrayofAmountFromXML("//wing/distribution/geometry/chord_distribution");
-		Amount<Length> chordRoot = chordDistribution.get(0);
-		System.out.println(" chord root " + chordRoot);
-		theStabilityCalculator.setWingChordsBreakPoints(chordDistribution);
+		//---------------------------------------------------------------------------------
+		// HIGH LIFT DEVICES:
+		
+		if (theStabilityCalculator.)
+		
+		
 		//---------------------------------------------------------------------------------
 		// FUSELAGE:
 
