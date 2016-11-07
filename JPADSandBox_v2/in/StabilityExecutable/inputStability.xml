@@ -57,7 +57,6 @@
                     <aerodynamics>
 						<alpha_zero_lift_distribution unit="°">[-1.1,-1.1, -1.1]</alpha_zero_lift_distribution>
 						<alpha_star_distribution unit="°">[8,8,8]</alpha_star_distribution>
-						<alpha_stall_distribution unit="°">[15,15.2, 15.2]</alpha_stall_distribution>
 						<maximum_lift_coefficient_distribution>[1.567,1.516,1.516]</maximum_lift_coefficient_distribution>
 					</aerodynamics>	
              </distribution>
