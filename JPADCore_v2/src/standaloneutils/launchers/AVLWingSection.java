@@ -3,7 +3,9 @@ package standaloneutils.launchers;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import org.apache.commons.math3.linear.RealMatrix;
 import org.inferred.freebuilder.FreeBuilder;
 
 @FreeBuilder
@@ -13,7 +15,10 @@ public interface AVLWingSection {
 	Double[] getOrigin();
 	Double getChord();
 	Double getTwist();
-	File getAirfoilCoordFile();
+	Optional<File> getAirfoilCoordFile();
+	Optional<RealMatrix> getAirfoilSectionInline();
+
+	
 	List<AVLWingSectionControlSurface> getControlSurfaces();
 
 	/** Builder of AVLWingSection instances. */

@@ -1,8 +1,11 @@
 package standaloneutils.launchers;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import org.apache.commons.math3.linear.RealMatrix;
 import org.inferred.freebuilder.FreeBuilder;
 
 @FreeBuilder
@@ -19,24 +22,15 @@ public interface AVLBody {
 	Double getBSpace();
 	
 	boolean isDuplicated();
+	Double getYDupl();
+	
 	Double[] getOrigin();
+	Double[] getScale();
 	
-	List<Double> getLengths();
-	Double getLengthTotal();
-	Double getLengthNose();
-	Double getLengthTail();
+	Optional<File> getBodyCoordFile();
+	
+	Optional<RealMatrix> getBodySectionInline();
 
-	List<Double> getWidths();
-	Double getWidthMax();
-
-	List<Double> getHeights();
-	Double getHeightMax();
-	
-	List<AVLBodySection> getSectionsHorizontal();
-	List<AVLBodySection> getSectionsVertical();
-	
-	AVLBodyConfiguration getConfiguration();
-	
 	/** Builder of AVLBody instances. */
 	class Builder extends AVLBody_Builder {
 		
@@ -48,42 +42,11 @@ public interface AVLBody {
 			setBSpace(1.0);
 			
 			setDuplicated(false);
+			setYDupl(0.0);
+			
 			setOrigin(new Double[]{0.0, 0.0, 0.0});
+			setScale(new Double[]{1.0, 1.0, 1.0});
 			
-			clearLengths();
-			addAllLengths(new ArrayList<Double>());
-			setLengthTotal(0.0);
-			setLengthNose(0.0);
-			setLengthTail(0.0);
-
-			clearWidths();
-			addAllWidths(new ArrayList<Double>());
-			setWidthMax(0.0);
-
-			clearHeights();
-			addAllHeights(new ArrayList<Double>());
-			setHeightMax(0.0);
-			
-			clearSectionsHorizontal();
-			addAllSectionsHorizontal(new ArrayList<AVLBodySection>());
-			clearSectionsVertical();
-			addAllSectionsVertical(new ArrayList<AVLBodySection>());
-
-			getConfigurationBuilder().setNSpanwise(10);
-			getConfigurationBuilder().setNChordwise(5);
-			getConfigurationBuilder().setSSpace(1.0);
-			getConfigurationBuilder().setCSpace(1.0);
-			
-		}
-		public Builder appendSection(AVLBodySection section, String orientation) {
-			/*
-			 * adds a section to the body vertical or horizontal segment
-			 */
-			if (orientation.toUpperCase().equals("HORIZONTAL"))
-				addSectionsHorizontal(section);
-			if (orientation.toUpperCase().equals("VERTICAL"))
-				addSectionsVertical(section);
-			return this;
 		}
 	}
 	

@@ -1,7 +1,12 @@
 package standaloneutils.launchers;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Locale;
+
+import org.apache.commons.math3.linear.MatrixUtils;
+import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.poi.util.SystemOutLogger;
 
 public class AVLInputDataTest {
 
@@ -36,11 +41,23 @@ public class AVLInputDataTest {
 							new AVLWingSection
 								.Builder()
 								.setDescription("Root section")
+								/*
 								.setAirfoilCoordFile(
 									new File(binDirPath + File.separator 
 										+ "ag38.dat"
 									)
 								)
+								*/
+								.setAirfoilSectionInline(
+									/*
+									 * Inline section coordinates formatted as airfoil section: 
+									 *    This is useful when the real airfoil shape is known.
+									 *    Such a 2D array would be filled programmatically and 
+									 *    the AFIL/<airfoil-section>.dat couple would not be 
+									 *    required (no auxiliary file to write).
+									 */
+									getAG38AirfoilSection()
+								)								
 								.setOrigin(new Double[]{0.0, 0.0, 0.0})
 								.setChord(3.0)
 								.setTwist(0.0)
@@ -50,10 +67,22 @@ public class AVLInputDataTest {
 							new AVLWingSection
 								.Builder()
 								.setDescription("Tip section")
+								/*
 								.setAirfoilCoordFile(
 									new File(binDirPath + File.separator 
 										+ "ag38.dat"
 									)
+								)
+								*/
+								.setAirfoilSectionInline(
+									/*
+									 * Inline section coordinates formatted as airfoil section: 
+									 *    This is useful when the real airfoil shape is known.
+									 *    Such a 2D array would be filled programmatically and 
+									 *    the AFIL/<airfoil-section>.dat couple would not be 
+									 *    required (no auxiliary file to write).
+									 */
+									getAG38AirfoilSection()
 								)
 								.setOrigin(new Double[]{0.0, 12.0, 0.0})
 								.setChord(1.5)
@@ -121,6 +150,43 @@ public class AVLInputDataTest {
 					new AVLBody
 						.Builder()
 						.setDescription("theFuselage")
+						/*
+						.setBodyCoordFile(
+							new File(binDirPath + File.separator 
+								+ "sub.dat"
+							)
+						)
+						*/
+						.setBodySectionInline(
+							/*
+							 * Inline body-section coordinates formatted as airfoil section: 
+							 *    x --> X-coordinate of the section parallel to YZ-plane
+							 *    y --> radius of the equivalent circular section, 
+							 *          i.e. a circle of the same area of body's real section 
+							 *          
+							 *    This is useful when the real fuselage shape is known and equivalent sections
+							 *    are calculated on the fly. Such a 2D array would be filled programmatically
+							 *    and the BFIL/<body-section>.dat couple would not be required (no auxiliary file 
+							 *    to write).
+							 */
+							MatrixUtils.createRealMatrix(
+									new double[][]{
+										{1.0, 0.000},
+										{0.9, 0.010},
+										{0.8, 0.015},
+										{0.5, 0.020},
+										{0.2, 0.015},
+										{0.1, 0.010},
+										{0.0, 0.000},
+										{0.1,-0.010},
+										{0.2,-0.015},
+										{0.5,-0.020},
+										{0.8,-0.015},
+										{0.9,-0.010},
+										{1.0, 0.000}
+									}
+							)
+						)
 						.build()
 					)
 				// -------------------------------------- build the aircraft, finally
@@ -427,8 +493,8 @@ NOLOAD
 				).append("\n");
 		sb.append(
 			String.format(Locale.ROOT, "%1$-11d %2$-11.5g %3$-11d %4$-11.5g", 
-				wing.getConfiguration().getNChordwise(), wing.getConfiguration().getCSpace(), 
-				wing.getConfiguration().getNSpanwise(), wing.getConfiguration().getSSpace())
+				wing.getNChordwise(), wing.getCSpace(), 
+				wing.getNSpanwise(), wing.getSSpace())
 				).append("\n");
 
 		if (wing.isSymmetric()) {
@@ -443,6 +509,14 @@ NOLOAD
 		  .append("ANGLE\n");
 		sb.append(wing.getIncidence()).append("\n");
 
+		sb.append("#\n")
+		  .append("# x,y,z scale factors for whole surface\n")
+		  .append("SCALE\n");
+		sb.append(
+				String.format(Locale.ROOT, "%1$-11.5g %2$-11.5g %3$-11.5g", 
+					wing.getScale()[0], wing.getScale()[1], wing.getScale()[2])
+					).append("\n");
+		
 		sb.append("#\n")
 		  .append("# x,y,z bias for whole surface\n")
 		  .append("TRANSLATE\n");
@@ -568,9 +642,27 @@ The optional X1 X2 parameters are used as in AIRFOIL.
 					section.getOrigin()[0], section.getOrigin()[1], section.getOrigin()[2], 
 					section.getChord(), section.getTwist())
 					).append("\n");
-		sb.append("AFIL").append("\n");
-		sb.append(section.getAirfoilCoordFile().getName()).append("\n");
+		
+		// sb.append("AFIL").append("\n");
+		// sb.append(section.getAirfoilCoordFile().getName()).append("\n");
 
+		// in case a body-section file is given
+		if (section.getAirfoilCoordFile().isPresent()) {
+			sb.append("AFIL").append("\n");
+			sb.append(section.getAirfoilCoordFile().get().getName()).append("\n");			
+		} 
+
+		// in case a body-section is given inline
+		if (section.getAirfoilSectionInline().isPresent()) {
+			sb.append("AIRFOIL").append("\n");
+			Arrays.asList(section.getAirfoilSectionInline().get().getData()).stream()
+				.forEach(pair -> 
+					sb.append(
+						String.format(Locale.ROOT, "%1$-11.5g %2$-11.5g", pair[0], pair[1])
+					).append("\n")
+				);
+		} 
+		
 		// format controls
 		section.getControlSurfaces().stream()
 			.forEach(controlSurface ->
@@ -801,32 +893,236 @@ Same function as for a surface, described earlier.
 				body.getNBody(), body.getBSpace())
 				).append("\n");
 
-//		if (body.isDuplicated()) {
-//			sb.append("#\n")
-//			  .append("# reflect image body about y=0 plane\n")
-//			  .append("YDUPLICATE\n");
-//			sb.append("0.0").append("\n");
-//		}
-//
-//		sb.append("#\n")
-//		  .append("# twist angle bias for whole surface\n")
-//		  .append("ANGLE\n");
-//		sb.append(wing.getIncidence()).append("\n");
-//
-//		sb.append("#\n")
-//		  .append("# x,y,z bias for whole surface\n")
-//		  .append("TRANSLATE\n");
-//		sb.append(
-//				String.format(Locale.ROOT, "%1$-11.5g %2$-11.5g %3$-11.5g", 
-//					wing.getOrigin()[0], wing.getOrigin()[1], wing.getOrigin()[2])
-//					).append("\n");
-//		
+		if (body.isDuplicated()) {
+			sb.append("YDUPLICATE\n");
+			sb.append(body.getYDupl()).append("\n");
+		}
+
+		sb.append("#\n")
+		  .append("# x,y,z scale factors for whole body\n")
+		  .append("SCALE\n");
+		sb.append(
+				String.format(Locale.ROOT, "%1$-11.5g %2$-11.5g %3$-11.5g", 
+					body.getScale()[0], body.getScale()[1], body.getScale()[2])
+					).append("\n");
 		
+		sb.append("#\n")
+		  .append("# x,y,z bias for whole body\n")
+		  .append("TRANSLATE\n");
+		sb.append(
+				String.format(Locale.ROOT, "%1$-11.5g %2$-11.5g %3$-11.5g", 
+					body.getOrigin()[0], body.getOrigin()[1], body.getOrigin()[2])
+					).append("\n");
+
+		// in case a body-section file is given
+		if (body.getBodyCoordFile().isPresent()) {
+			sb.append("BFIL").append("\n");
+			sb.append(body.getBodyCoordFile().get().getName()).append("\n");			
+		} 
+
+		// in case a body-section is given inline
+		if (body.getBodySectionInline().isPresent()) {
+			sb.append("AIRFOIL").append("\n");
+			Arrays.asList(body.getBodySectionInline().get().getData()).stream()
+				.forEach(pair -> 
+					sb.append(
+						String.format(Locale.ROOT, "%1$-11.5g %2$-11.5g", pair[0], pair[1])
+					).append("\n")
+				);
+		} 
 		
 		sb.append("#\n")
 		  .append("#==============================================================\n")
 		  .append("#\n");
 		
 		return sb.toString();
+	}
+	
+	// See file: ag38.dat
+	static RealMatrix getAG38AirfoilSection() {
+		return MatrixUtils.createRealMatrix(
+				new double[][]{
+					{0.999999 ,  0.004704},
+					{0.993621 ,  0.005696},
+					{0.983682 ,  0.007241},
+					{0.972066 ,  0.009047},
+					{0.959633 ,  0.010981},
+					{0.946835 ,  0.012971},
+					{0.933981 ,  0.014969},
+					{0.921234 ,  0.016952},
+					{0.908447 ,  0.018940},
+					{0.895764 ,  0.020914},
+					{0.882852 ,  0.022914},
+					{0.870677 ,  0.024564},
+					{0.857810 ,  0.026064},
+					{0.844779 ,  0.027481},
+					{0.831613 ,  0.028913},
+					{0.818263 ,  0.030364},
+					{0.804818 ,  0.031827},
+					{0.791388 ,  0.033286},
+					{0.777951 ,  0.034747},
+					{0.764549 ,  0.036205},
+					{0.751106 ,  0.037667},
+					{0.737702 ,  0.039124},
+					{0.724342 ,  0.040577},
+					{0.711051 ,  0.042022},
+					{0.697928 ,  0.043448},
+					{0.685186 ,  0.044836},
+					{0.672293 ,  0.046199},
+					{0.658783 ,  0.047537},
+					{0.647516 ,  0.048556},
+					{0.635011 ,  0.049622},
+					{0.622485 ,  0.050624},
+					{0.609531 ,  0.051627},
+					{0.596533 ,  0.052634},
+					{0.583312 ,  0.053658},
+					{0.569976 ,  0.054692},
+					{0.556633 ,  0.055727},
+					{0.543315 ,  0.056758},
+					{0.530000 ,  0.057791},
+					{0.516728 ,  0.058820},
+					{0.503472 ,  0.059846},
+					{0.490290 ,  0.060869},
+					{0.477236 ,  0.061880},
+					{0.464539 ,  0.062866},
+					{0.452148 ,  0.063819},
+					{0.439870 ,  0.064696},
+					{0.427640 ,  0.065505},
+					{0.415386 ,  0.066252},
+					{0.403250 ,  0.066927},
+					{0.391172 ,  0.067542},
+					{0.379063 ,  0.068100},
+					{0.366729 ,  0.068612},
+					{0.354113 ,  0.069073},
+					{0.341333 ,  0.069479},
+					{0.328488 ,  0.069821},
+					{0.315654 ,  0.070095},
+					{0.302897 ,  0.070294},
+					{0.290182 ,  0.070419},
+					{0.277486 ,  0.070467},
+					{0.264739 ,  0.070440},
+					{0.251950 ,  0.070331},
+					{0.239044 ,  0.070136},
+					{0.226021 ,  0.069844},
+					{0.212912 ,  0.069446},
+					{0.199800 ,  0.068938},
+					{0.186742 ,  0.068312},
+					{0.173780 ,  0.067562},
+					{0.160907 ,  0.066679},
+					{0.148128 ,  0.065652},
+					{0.135369 ,  0.064462},
+					{0.122667 ,  0.063091},
+					{0.110044 ,  0.061522},
+					{0.097563 ,  0.059738},
+					{0.086115 ,  0.057868},
+					{0.075071 ,  0.055815},
+					{0.064507 ,  0.053584},
+					{0.054572 ,  0.051199},
+					{0.045308 ,  0.048667},
+					{0.036786 ,  0.046008},
+					{0.029161 ,  0.043281},
+					{0.022616 ,  0.040585},
+					{0.017243 ,  0.038018},
+					{0.012940 ,  0.035620},
+					{0.009579 ,  0.033433},
+					{0.007013 ,  0.031471},
+					{0.005102 ,  0.029742},
+					{0.003685 ,  0.028228},
+					{0.002589 ,  0.026840},
+					{0.001700 ,  0.025486},
+					{0.000978 ,  0.024106},
+					{0.000451 ,  0.022746},
+					{0.000094 ,  0.021225},
+					{0.000009 ,  0.019745},
+					{0.000172 ,  0.018622},
+					{0.000581 ,  0.017457},
+					{0.001293 ,  0.016280},
+					{0.002383 ,  0.015135},
+					{0.003836 ,  0.014081},
+					{0.005649 ,  0.013115},
+					{0.007886 ,  0.012203},
+					{0.010612 ,  0.011326},
+					{0.013931 ,  0.010463},
+					{0.018027 ,  0.009582},
+					{0.023174 ,  0.008665},
+					{0.029676 ,  0.007708},
+					{0.037756 ,  0.006738},
+					{0.047349 ,  0.005792},
+					{0.058120 ,  0.004930},
+					{0.069666 ,  0.004170},
+					{0.081678 ,  0.003507},
+					{0.093975 ,  0.002937},
+					{0.106461 ,  0.002451},
+					{0.119072 ,  0.002040},
+					{0.131774 ,  0.001694},
+					{0.144550 ,  0.001399},
+					{0.157380 ,  0.001147},
+					{0.170260 ,  0.000929},
+					{0.183177 ,  0.000744},
+					{0.196137 ,  0.000585},
+					{0.209128 ,  0.000450},
+					{0.222152 ,  0.000335},
+					{0.235196 ,  0.000245},
+					{0.248262 ,  0.000172},
+					{0.261351 ,  0.000117},
+					{0.274460 ,  0.000077},
+					{0.287589 ,  0.000040},
+					{0.300735 ,  0.000018},
+					{0.313898 ,  0.000004},
+					{0.327086 , -0.000005},
+					{0.340287 , -0.000003},
+					{0.353486 , -0.000003},
+					{0.366689 , -0.000003},
+					{0.379895 , -0.000001},
+					{0.393109 , -0.000003},
+					{0.406322 , -0.000002},
+					{0.419532 ,  0.000001},
+					{0.432737 , -0.000003},
+					{0.445943 ,  0.000001},
+					{0.459157 ,  0.000002},
+					{0.472370 , -0.000001},
+					{0.485577 ,  0.000002},
+					{0.498782 ,  0.000001},
+					{0.511992 ,  0.000000},
+					{0.525205 ,  0.000001},
+					{0.538418 , -0.000001},
+					{0.551625 , -0.000001},
+					{0.564826 ,  0.000001},
+					{0.578028 , -0.000001},
+					{0.591236 , -0.000002},
+					{0.604443 ,  0.000000},
+					{0.617649 ,  0.000000},
+					{0.630860 , -0.000001},
+					{0.644076 ,  0.000000},
+					{0.657286 ,  0.000000},
+					{0.670495 ,  0.000002},
+					{0.683700 ,  0.000000},
+					{0.696909 ,  0.000001},
+					{0.710122 , -0.000001},
+					{0.723334 ,  0.000000},
+					{0.736542 , -0.000002},
+					{0.749746 , -0.000002},
+					{0.762958 , -0.000001},
+					{0.776172 ,  0.000000},
+					{0.789383 ,  0.000000},
+					{0.802589 ,  0.000001},
+					{0.815788 ,  0.000001},
+					{0.828992 ,  0.000001},
+					{0.842199 ,  0.000002},
+					{0.855403 , -0.000002},
+					{0.868602 , -0.000002},
+					{0.881798 , -0.000002},
+					{0.895001 , -0.000002},
+					{0.908208 , -0.000001},
+					{0.921420 ,  0.000000},
+					{0.934616 ,  0.000001},
+					{0.947766 ,  0.000002},
+					{0.960776 ,  0.000000},
+					{0.973384 ,  0.000000},
+					{0.984990 ,  0.000000},
+					{0.994806 ,  0.000000},
+					{1.000000 ,  0.000001}
+				}
+			);
 	}
 }

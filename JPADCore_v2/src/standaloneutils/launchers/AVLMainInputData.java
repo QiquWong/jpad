@@ -51,7 +51,6 @@ public interface AVLMainInputData {
 			setZref(0.0);
 			setCD0ref(0.020);
 			
-			// TODO ... the rest
 		}
 		
 		//--------------------------------------------------------

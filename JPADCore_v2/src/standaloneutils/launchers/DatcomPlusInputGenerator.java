@@ -136,8 +136,6 @@ public class DatcomPlusInputGenerator {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		
 	}
 	
 	public static void writeTemplate(String filePath) {
