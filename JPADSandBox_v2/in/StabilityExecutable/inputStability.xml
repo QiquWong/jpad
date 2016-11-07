@@ -47,7 +47,7 @@
              </global>
              <distribution>
                    <geometry>
-						<y_adimensional_stations>[0,0.33,1]</y_adimensional_stations>
+						<y_adimensional_stations>[0;0.33,1]</y_adimensional_stations>
 						<chord_distribution unit="m">[1.4224,1.3,0.7112]</chord_distribution>
 						<!-- XLE is in LRF, so the root value of XLE  must be zero -->
 						<x_le_distribution unit="m">[0,1,2.433]</x_le_distribution>
@@ -113,7 +113,7 @@
         </wing>
 		<fuselage>
       	<!-- The fuselage doesn't need the position because its origin is the origib of BRF (0,0,0) -->
-      	 	<fuselageDiameter  unit="m">unit="m">3.4500</fuselageDiameter>
+      	 	<fuselageDiameter  unit="m">3.4500</fuselageDiameter>
             <fuselageLength unit="m">30.0</fuselageLength>
 			<!--Nose fineness ratio is the ratio between nose fuselage length and maximum fuselage diameter. It varies between [1.2-1.7] -->
 			<noseFinenessRatio>1.60</noseFinenessRatio>

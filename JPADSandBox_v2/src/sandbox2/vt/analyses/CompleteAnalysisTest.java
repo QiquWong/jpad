@@ -241,6 +241,8 @@ public class CompleteAnalysisTest extends Application {
 					aeroDatabaseReader,
 					highLiftDatabaseReader);
 			
+//			System.out.println(theAircraft.toString());
+			
 			// Set the folders tree
 			MyConfiguration.initWorkingDirectoryTree(
 					MyConfiguration.currentDirectoryString,

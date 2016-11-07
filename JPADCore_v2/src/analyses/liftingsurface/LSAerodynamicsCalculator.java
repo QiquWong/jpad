@@ -2018,7 +2018,7 @@ public class LSAerodynamicsCalculator {
 		public void lockKornWithKroo() {
 			_cDWave.put(
 					MethodEnum.LOCK_KORN_WITH_KROO,
-					DragCalc.calculateCDWaveLockKorn_KrooCriticalMach(
+					DragCalc.calculateCDWaveLockKornCriticalMachKroo(
 							_currentLiftCoefficient,
 							_currentMachNumber,
 							_theLiftingSurface.getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),

@@ -326,7 +326,7 @@ public class DragCalc {
 	 * @param airfoilType
 	 * @return
 	 */
-	public static double calculateCDWaveLockKorn_KrooCriticalMach(double cL, double mach, 
+	public static double calculateCDWaveLockKornCriticalMachKroo(double cL, double mach, 
 			double sweepHalfChord, double tcMax, AirfoilTypeEnum airfoilType) {
 		return calculateCDWaveLockKorn(cL, mach, AerodynamicCalc.calculateMachCriticalKroo(cL, Amount.valueOf(sweepHalfChord,SI.RADIAN), tcMax, airfoilType));
 	}

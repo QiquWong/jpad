@@ -1034,8 +1034,8 @@ public class ACAnalysisManager implements IACAnalysisManager {
 			Aircraft aircraft,
 			String resultsFolderPath) {
 
-		aircraft.getTheAnalysisManager().getTheAerodynamics().initialize(theOperatingConditions);
-		aircraft.getTheAnalysisManager().getTheAerodynamics().calculateAll(theOperatingConditions);
+		// aircraft.getTheAnalysisManager().getTheAerodynamics().initialize(theOperatingConditions);
+		// aircraft.getTheAnalysisManager().getTheAerodynamics().calculateAll(theOperatingConditions);
 
 		// TODO : ADD toString AND toXLSFile METHODS WHEN AVAILABLE !
 		
@@ -1046,7 +1046,9 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	
 	public void calculatePerformances(Aircraft aircraft, String resultsFolderPath) {
 		
-		// TODO : ADD toString AND toXLSFile METHODS WHEN AVAILABLE !
+		aircraft.getTheAnalysisManager().getThePerformance().calculatePerformance(resultsFolderPath);
+		System.out.println(aircraft.getTheAnalysisManager().getThePerformance().toString());
+		
 	}
 	
 	public void calculateCosts(Aircraft aircraft, String resultsFolderPath) {

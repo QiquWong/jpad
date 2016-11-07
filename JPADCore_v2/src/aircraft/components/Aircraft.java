@@ -1136,6 +1136,7 @@ public class Aircraft implements IAircraft {
 		Amount<Length> xApexWing = Amount.valueOf(0.0, SI.METER);
 		Amount<Length> yApexWing = Amount.valueOf(0.0, SI.METER);
 		Amount<Length> zApexWing = Amount.valueOf(0.0, SI.METER);
+		Amount<Angle> riggingAngleWing = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		
 		if(wingFileName != null) {
 			String wingPath = liftingSurfacesDir + File.separator + wingFileName;
@@ -1150,6 +1151,8 @@ public class Aircraft implements IAircraft {
 			xApexWing = reader.getXMLAmountLengthByPath("//wing/position/x");
 			yApexWing = reader.getXMLAmountLengthByPath("//wing/position/y");
 			zApexWing = reader.getXMLAmountLengthByPath("//wing/position/z");
+			riggingAngleWing = reader.getXMLAmountAngleByPath("//wing/rigging_angle");
+			theWing.setRiggingAngle(riggingAngleWing);
 		}
 		
 		//---------------------------------------------------------------------------------
@@ -1164,6 +1167,7 @@ public class Aircraft implements IAircraft {
 		Amount<Length> xApexHTail = Amount.valueOf(0.0, SI.METER);
 		Amount<Length> yApexHTail = Amount.valueOf(0.0, SI.METER);
 		Amount<Length> zApexHTail = Amount.valueOf(0.0, SI.METER);
+		Amount<Angle> riggingAngleHTail = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		
 		if(hTailFileName != null) {
 			String hTailPath = liftingSurfacesDir + File.separator + hTailFileName;
@@ -1178,6 +1182,8 @@ public class Aircraft implements IAircraft {
 			xApexHTail = reader.getXMLAmountLengthByPath("//horizontal_tail/position/x");
 			yApexHTail = reader.getXMLAmountLengthByPath("//horizontal_tail/position/y");
 			zApexHTail = reader.getXMLAmountLengthByPath("//horizontal_tail/position/z");
+			riggingAngleHTail = reader.getXMLAmountAngleByPath("//horizontal_tail/rigging_angle");
+			theHorizontalTail.setRiggingAngle(riggingAngleHTail);
 		}
 		
 		//---------------------------------------------------------------------------------
@@ -1192,6 +1198,7 @@ public class Aircraft implements IAircraft {
 		Amount<Length> xApexVTail = Amount.valueOf(0.0, SI.METER);
 		Amount<Length> yApexVTail = Amount.valueOf(0.0, SI.METER);
 		Amount<Length> zApexVTail = Amount.valueOf(0.0, SI.METER);
+		Amount<Angle> riggingAngleVTail = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		
 		if(vTailFileName != null) {
 			String vTailPath = liftingSurfacesDir + File.separator + vTailFileName;
@@ -1206,6 +1213,8 @@ public class Aircraft implements IAircraft {
 			xApexVTail = reader.getXMLAmountLengthByPath("//vertical_tail/position/x");
 			yApexVTail = reader.getXMLAmountLengthByPath("//vertical_tail/position/y");
 			zApexVTail = reader.getXMLAmountLengthByPath("//vertical_tail/position/z");
+			riggingAngleVTail = reader.getXMLAmountAngleByPath("//vertical_tail/rigging_angle");
+			theVerticalTail.setRiggingAngle(riggingAngleVTail);
 		}
 		
 		//---------------------------------------------------------------------------------
@@ -1220,6 +1229,7 @@ public class Aircraft implements IAircraft {
 		Amount<Length> xApexCanard = Amount.valueOf(0.0, SI.METER);
 		Amount<Length> yApexCanard = Amount.valueOf(0.0, SI.METER);
 		Amount<Length> zApexCanard = Amount.valueOf(0.0, SI.METER);
+		Amount<Angle> riggingAngleCanard = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		
 		if(canardFileName != null) {
 			String canardPath = liftingSurfacesDir + File.separator + canardFileName;
@@ -1234,6 +1244,8 @@ public class Aircraft implements IAircraft {
 			xApexCanard = reader.getXMLAmountLengthByPath("//canard/position/x");
 			yApexCanard = reader.getXMLAmountLengthByPath("//canard/position/y");
 			zApexCanard = reader.getXMLAmountLengthByPath("//canard/position/z");
+			riggingAngleCanard = reader.getXMLAmountAngleByPath("//canard/rigging_angle");
+			theCanard.setRiggingAngle(riggingAngleCanard);
 		}
 		
 		//---------------------------------------------------------------------------------

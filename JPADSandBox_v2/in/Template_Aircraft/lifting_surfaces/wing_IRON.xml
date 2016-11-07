@@ -55,16 +55,16 @@
             <symmetric_flap id="Inner flap" type="FOWLER">
                 <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.1</inner_station_spanwise_position>
                 <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.3</outer_station_spanwise_position>
-                <inner_chord_ratio>0.35</inner_chord_ratio>
-				<outer_chord_ratio>0.35</outer_chord_ratio>
+                <inner_chord_ratio>0.32</inner_chord_ratio>
+				<outer_chord_ratio>0.32</outer_chord_ratio>
                 <min_deflection unit="deg">0.0</min_deflection>
 				<max_deflection unit="deg">40.0</max_deflection>
             </symmetric_flap>
 			<symmetric_flap id="Outer flap" type="FOWLER">
                 <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.31</inner_station_spanwise_position>
                 <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.78</outer_station_spanwise_position>
-                <inner_chord_ratio>0.35</inner_chord_ratio>
-				<outer_chord_ratio>0.35</outer_chord_ratio>
+                <inner_chord_ratio>0.32</inner_chord_ratio>
+				<outer_chord_ratio>0.32</outer_chord_ratio>
                 <min_deflection unit="deg">0.0</min_deflection>
 				<max_deflection unit="deg">40.0</max_deflection>
             </symmetric_flap>

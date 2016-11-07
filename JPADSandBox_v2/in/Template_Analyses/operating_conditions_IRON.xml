@@ -5,8 +5,8 @@
 		<alpha_current unit="deg">2</alpha_current>
 		<!-- array of angles of attack to be used for the the aerodynamics distributions (max 7 values) -->
 		<alpha_array unit="deg">2;6;10;14;18;22;24</alpha_array>
-		<mach_current>0.62</mach_current>	
-		<altitude unit="m">9144</altitude>
+		<mach_current>0.15</mach_current>	
+		<altitude unit="m">0.0</altitude>
 		<delta_flap unit="deg">20;20</delta_flap>
 		<delta_slat unit="deg"></delta_slat>
 	</operating_conditions>
