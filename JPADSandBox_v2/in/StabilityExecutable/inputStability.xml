@@ -47,7 +47,7 @@
              </global>
              <distribution>
                    <geometry>
-						<y_adimensional_stations>[0,0.33,1]</y_adimensional_stations>
+						<y_adimensional_stations>[0;0.33,1]</y_adimensional_stations>
 						<chord_distribution unit="m">[1.4224,1.3,0.7112]</chord_distribution>
 						<!-- XLE is in LRF, so the root value of XLE  must be zero -->
 						<x_le_distribution unit="m">[0,1,2.433]</x_le_distribution>

@@ -25,6 +25,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+import com.google.common.base.CharMatcher;
+import com.google.common.base.Splitter;
+
 import aircraft.components.Aircraft;
 import analyses.OperatingConditions;
 
@@ -376,16 +379,16 @@ public class JPADXmlReader {
 
 		inputString = inputString.trim();
 		String [] arraysString = null ;
-		int commaIndex = inputString.indexOf(';');
-		if (commaIndex == -1 ){
-			arraysString = inputString.split(",");
-		}
+		inputString = inputString.replaceAll(";", ",");
+		arraysString = inputString.split(",");
+
 		for(int i=0; i<arraysString.length; i++){
 			outputStrings.add(Double.valueOf(arraysString[i].trim()));
 		}
 
 		return outputStrings;
 	}
+
 
 
 	public List<Double> readArrayDoubleFromXML(String inputStringInitial){
@@ -396,7 +399,6 @@ public class JPADXmlReader {
 		String tempString = new String();
 		Double tempDouble;
 		int n, m;
-
 		inputString = inputString.trim();
 
 		int openParenthesisCheck = inputString.indexOf('[');
@@ -453,97 +455,55 @@ public class JPADXmlReader {
 	}
 
 
-		/**
-		 * This method reads list of amount from xml . The amounts must have the same units.
-		 * 
-		 * @author Manuela Ruocco
-		 */
+	/**
+	 * This method reads list of amount from xml . The amounts must have the same units.
+	 * 
+	 * @author Manuela Ruocco
+	 */
 
 
-		@SuppressWarnings("null")
-		public <T extends Quantity> List<Amount<T>> readArrayofAmountFromXML(String inputStringInitial){
+	@SuppressWarnings("null")
+	public <T extends Quantity> List<Amount<T>> readArrayofAmountFromXML(String inputStringInitial){
 
-			String inputString = this.getXMLPropertiesByPath(inputStringInitial).get(0);
+		String inputString = this.getXMLPropertiesByPath(inputStringInitial).get(0);
 
-			String valueStr = MyXMLReaderUtils.getXMLPropertyByPath(_xmlDoc, _xpath, inputStringInitial + "/text()");
-			String unitStr = MyXMLReaderUtils.getXMLPropertyByPath(_xmlDoc, _xpath, inputStringInitial + "/@unit");
+		String valueStr = MyXMLReaderUtils.getXMLPropertyByPath(_xmlDoc, _xpath, inputStringInitial + "/text()");
+		String unitStr = MyXMLReaderUtils.getXMLPropertyByPath(_xmlDoc, _xpath, inputStringInitial + "/@unit");
+		List<Amount<T>> outputList = new ArrayList<Amount<T>>();
+		inputString = inputString.trim();
 
-			List<Amount<T>> outputList = new ArrayList<Amount<T>>();
-			String tempString = new String();
-			int n, m;
+		int openParenthesisCheck = inputString.indexOf('[');
+		int closeParenthesisCheck = inputString.indexOf(']');
+		if ( openParenthesisCheck != -1){
+			inputString = inputString.substring(openParenthesisCheck+1, inputString.length());
+		}
+		if ( closeParenthesisCheck != -1){
+			inputString = inputString.substring(0, closeParenthesisCheck-1);
+		}
 
-			inputString = inputString.trim();
+		inputString = inputString.trim();
 
-			int openParenthesisCheck = inputString.indexOf('[');
+		String [] arraysString = null ;
+		inputString = inputString.replaceAll(";", ",");
+		arraysString = inputString.split(",");
 
-			if ( openParenthesisCheck == -1){
-				inputString = "[" + inputString;
-			}
+		for(int i=0; i<arraysString.length; i++){
 
-			int closeParenthesisCheck = inputString.indexOf(']');
-
-			if ( closeParenthesisCheck == -1){
-				inputString = inputString + "]";
-			}
-
-			// First value
-			boolean checkOnlyOneElement = false;
-
-			n = inputString.indexOf(',');
-			if ( n == -1){
-				n = inputString.indexOf(';');
-				if ( n == -1 ) {
-					n = inputString.indexOf(']');
-					checkOnlyOneElement = true;
-				}
-			}
-
-			tempString = inputString.substring(1, n);
-			tempString = tempString.trim();
-
-			Double value = Double.parseDouble(tempString);
-
+			Double value = Double.parseDouble(arraysString[i].trim());
 			Amount<?> tempAmount =  Amount.valueOf(value, Unit.valueOf(unitStr));
-			//	List<Amount<?>> outputList = new ArrayList<Amount<Unit.valueOf(unitStr).>>();
-
 			outputList.add((Amount<T>) tempAmount);
 
-
-			// Following values
-
-			while ( (n!= -1) && (checkOnlyOneElement == false) ){
-
-				m = n;
-				tempString = new String();
-
-				n = inputString.indexOf(',', m+1);
-				if ( n == -1){
-					n = inputString.indexOf(';', m+1);
-				}
-				if( n != -1){
-					tempString = inputString.substring(m+1, n);}
-
-				else{
-					int k = inputString.indexOf(']');
-					tempString = inputString.substring(m+1, k)	;
-				}
-				tempString = tempString.trim();
-
-				value = Double.parseDouble(tempString);
-				tempAmount =  Amount.valueOf(value, Unit.valueOf(unitStr));
-				outputList.add((Amount<T>) tempAmount);
-
-			}
-			return outputList;
 		}
-
-
-		public Document getXmlDoc() {
-			return _xmlDoc;
-		}
-
-		public XPath getXpath() {
-			return _xpath;
-		}
-
+		return outputList;
 	}
+
+
+	public Document getXmlDoc() {
+		return _xmlDoc;
+	}
+
+	public XPath getXpath() {
+		return _xpath;
+	}
+
+}

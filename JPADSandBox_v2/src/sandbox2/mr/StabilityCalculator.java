@@ -19,7 +19,7 @@ import configuration.enumerations.FlapTypeEnum;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
 
-/*************************************************************************************************************************
+/************************************************************************************************************************
  * THIS CLASS IS A PROTOTYPE OF THE NEW ACStabilityManager																*
  * After it will be necessary to change the name of the class and to read the data from other analysis, not from file.  *
  * Moreover the Test_Stability class will be the new test class of the executable										*
