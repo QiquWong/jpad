@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Quantity;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 import javax.xml.parsers.DocumentBuilder;
@@ -217,8 +218,8 @@ public class JPADXmlReader {
 		return MyXMLReaderUtils.getXMLAmountAngleByPath(_xmlDoc, _xpath, expression);
 
 	}
-	
-	
+
+
 	// TODO: implement similar functions, such as:
 	// getXMLAmountSurfaceByPath
 	// getXMLAmountVolumeByPath
@@ -290,28 +291,28 @@ public class JPADXmlReader {
 	 * @author Manuela Ruocco
 	 */
 	public static List<String> readArrayFromXML(String inputString){
-		
+
 		List<String> outputStrings = new ArrayList<String>();
 		String tempString = new String();
 		int n, m;
-		
+
 		inputString = inputString.trim();
-		
+
 		int openParenthesisCheck = inputString.indexOf('[');
-		
+
 		if ( openParenthesisCheck == -1){
 			inputString = "[" + inputString;
 		}
-		
+
 		int closeParenthesisCheck = inputString.indexOf(']');
-		
+
 		if ( closeParenthesisCheck == -1){
 			inputString = inputString + "]";
 		}
-		
+
 		// First value
 		boolean checkOnlyOneElement = false;
-		
+
 		n = inputString.indexOf(',');
 		if ( n == -1){
 			n = inputString.indexOf(';');
@@ -320,39 +321,123 @@ public class JPADXmlReader {
 				checkOnlyOneElement = true;
 			}
 		}
-		
+
 		tempString = inputString.substring(1, n);
 		tempString = tempString.trim();
-		
+
 		outputStrings.add(tempString);
-		
-		
+
+
 		// Following values
-		
+
 		while ( (n!= -1) && (checkOnlyOneElement == false) ){
-			
+
 			m = n;
 			tempString = new String();
-			
+
 			n = inputString.indexOf(',', m+1);
 			if ( n == -1){
 				n = inputString.indexOf(';', m+1);
 			}
 			if( n != -1){
-			tempString = inputString.substring(m+1, n);}
-			
+				tempString = inputString.substring(m+1, n);}
+
 			else{
 				int k = inputString.indexOf(']');
-			tempString = inputString.substring(m+1, k)	;
+				tempString = inputString.substring(m+1, k)	;
 			}
 			tempString = tempString.trim();
-			
+
 			outputStrings.add(tempString);
 		}
 		return outputStrings;
-}
-	
-	
+	}
+
+	/**
+	 * This method reads list of amount from xml 
+	 * 
+	 * @author Manuela Ruocco
+	 */
+
+
+	@SuppressWarnings("null")
+	public <T extends Quantity> List<Amount<T>> readArrayofAmountFromXML(String inputStringInitial){
+
+		String inputString = this.getXMLPropertiesByPath(inputStringInitial).get(0);
+
+		String valueStr = MyXMLReaderUtils.getXMLPropertyByPath(_xmlDoc, _xpath, inputStringInitial + "/text()");
+		String unitStr = MyXMLReaderUtils.getXMLPropertyByPath(_xmlDoc, _xpath, inputStringInitial + "/@unit");
+
+		List<Amount<T>> outputList = new ArrayList<Amount<T>>();
+		String tempString = new String();
+		int n, m;
+
+		inputString = inputString.trim();
+
+		int openParenthesisCheck = inputString.indexOf('[');
+
+		if ( openParenthesisCheck == -1){
+			inputString = "[" + inputString;
+		}
+
+		int closeParenthesisCheck = inputString.indexOf(']');
+
+		if ( closeParenthesisCheck == -1){
+			inputString = inputString + "]";
+		}
+
+		// First value
+		boolean checkOnlyOneElement = false;
+
+		n = inputString.indexOf(',');
+		if ( n == -1){
+			n = inputString.indexOf(';');
+			if ( n == -1 ) {
+				n = inputString.indexOf(']');
+				checkOnlyOneElement = true;
+			}
+		}
+
+		tempString = inputString.substring(1, n);
+		tempString = tempString.trim();
+
+		Double value = Double.parseDouble(tempString);
+
+		Amount<?> tempAmount =  Amount.valueOf(value, Unit.valueOf(unitStr));
+		//	List<Amount<?>> outputList = new ArrayList<Amount<Unit.valueOf(unitStr).>>();
+
+		outputList.add((Amount<T>) tempAmount);
+
+
+		// Following values
+
+		while ( (n!= -1) && (checkOnlyOneElement == false) ){
+
+			m = n;
+			tempString = new String();
+
+			n = inputString.indexOf(',', m+1);
+			if ( n == -1){
+				n = inputString.indexOf(';', m+1);
+			}
+			if( n != -1){
+				tempString = inputString.substring(m+1, n);}
+
+			else{
+				int k = inputString.indexOf(']');
+				tempString = inputString.substring(m+1, k)	;
+			}
+			tempString = tempString.trim();
+
+			value = Double.parseDouble(tempString);
+			tempAmount =  Amount.valueOf(value, Unit.valueOf(unitStr));
+			outputList.add((Amount<T>) tempAmount);
+
+		}
+		return outputList;
+	}
+
+
 	public Document getXmlDoc() {
 		return _xmlDoc;
 	}

@@ -421,6 +421,7 @@ public class StabilityCalculator {
 		System.out.println("Span = " + this._wingSpan);
 		System.out.println("Adimensional kink station = " + this._wingAdimentionalKinkStation);
 		System.out.println("y Adimensional Stations --> " + this._wingYAdimensionalBreakPoints);
+		System.out.println("Mean airfoil type --> " + this._wingMeanAirfoilFamily);
 		System.out.println("Distributions: " );
 		System.out.println("Chord Break Points --> " + this._wingChordsBreakPoints);
 		System.out.println("XLE Break Points --> " + this._wingXleBreakPoints);
