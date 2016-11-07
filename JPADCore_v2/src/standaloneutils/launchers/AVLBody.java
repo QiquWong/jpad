@@ -14,9 +14,13 @@ public interface AVLBody {
 	 */
 	
 	String getDescription();
-	boolean isSymmetric();
+	
+	Integer getNBody();
+	Double getBSpace();
+	
+	boolean isDuplicated();
 	Double[] getOrigin();
-
+	
 	List<Double> getLengths();
 	Double getLengthTotal();
 	Double getLengthNose();
@@ -39,7 +43,11 @@ public interface AVLBody {
 		public Builder() {
 			// Set defaults in the builder constructor.
 			setDescription("BODY");
-			setSymmetric(true);
+			
+			setNBody(15);
+			setBSpace(1.0);
+			
+			setDuplicated(false);
 			setOrigin(new Double[]{0.0, 0.0, 0.0});
 			
 			clearLengths();

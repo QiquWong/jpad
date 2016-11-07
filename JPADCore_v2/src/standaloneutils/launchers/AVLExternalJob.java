@@ -90,7 +90,7 @@ public class AVLExternalJob implements IAVLExternalJob {
 				/*
 				 *    Mach number
 				 */
-				.setMain_Mach(0.3) // only one Mach number at time permitted
+				.setMach(0.3) // only one Mach number at time permitted
 				/*
 				 *   Wing position
 				 */
