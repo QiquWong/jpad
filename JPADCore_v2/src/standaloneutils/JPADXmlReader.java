@@ -3,6 +3,7 @@ package standaloneutils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.measure.quantity.Angle;
@@ -352,14 +353,43 @@ public class JPADXmlReader {
 		}
 		return outputStrings;
 	}
-	
+
 	/**
 	 * This method reads arrays of double from xml. 
 	 * 
 	 * @author Manuela Ruocco
 	 */
+	public List<Double> readArrayDoubleFromXMLSplit(String inputStringInitial){
+
+		String inputString = this.getXMLPropertiesByPath(inputStringInitial).get(0);
+
+		inputString = inputString.trim();
+		List<Double> outputStrings = new ArrayList<>(); 
+		int openParenthesisCheck = inputString.indexOf('[');
+		int closeParenthesisCheck = inputString.indexOf(']');
+		if ( openParenthesisCheck != -1){
+			inputString = inputString.substring(openParenthesisCheck+1, inputString.length());
+		}
+		if ( closeParenthesisCheck != -1){
+			inputString = inputString.substring(0, closeParenthesisCheck-1);
+		}
+
+		inputString = inputString.trim();
+		String [] arraysString = null ;
+		int commaIndex = inputString.indexOf(';');
+		if (commaIndex == -1 ){
+			arraysString = inputString.split(",");
+		}
+		for(int i=0; i<arraysString.length; i++){
+			outputStrings.add(Double.valueOf(arraysString[i].trim()));
+		}
+
+		return outputStrings;
+	}
+
+
 	public List<Double> readArrayDoubleFromXML(String inputStringInitial){
-		
+
 		String inputString = this.getXMLPropertiesByPath(inputStringInitial).get(0);
 
 		List<Double> outputStrings = new ArrayList<Double>();
@@ -421,99 +451,99 @@ public class JPADXmlReader {
 		}
 		return outputStrings;
 	}
-	
-
-	/**
-	 * This method reads list of amount from xml . The amounts must have the same units.
-	 * 
-	 * @author Manuela Ruocco
-	 */
 
 
-	@SuppressWarnings("null")
-	public <T extends Quantity> List<Amount<T>> readArrayofAmountFromXML(String inputStringInitial){
+		/**
+		 * This method reads list of amount from xml . The amounts must have the same units.
+		 * 
+		 * @author Manuela Ruocco
+		 */
 
-		String inputString = this.getXMLPropertiesByPath(inputStringInitial).get(0);
 
-		String valueStr = MyXMLReaderUtils.getXMLPropertyByPath(_xmlDoc, _xpath, inputStringInitial + "/text()");
-		String unitStr = MyXMLReaderUtils.getXMLPropertyByPath(_xmlDoc, _xpath, inputStringInitial + "/@unit");
+		@SuppressWarnings("null")
+		public <T extends Quantity> List<Amount<T>> readArrayofAmountFromXML(String inputStringInitial){
 
-		List<Amount<T>> outputList = new ArrayList<Amount<T>>();
-		String tempString = new String();
-		int n, m;
+			String inputString = this.getXMLPropertiesByPath(inputStringInitial).get(0);
 
-		inputString = inputString.trim();
+			String valueStr = MyXMLReaderUtils.getXMLPropertyByPath(_xmlDoc, _xpath, inputStringInitial + "/text()");
+			String unitStr = MyXMLReaderUtils.getXMLPropertyByPath(_xmlDoc, _xpath, inputStringInitial + "/@unit");
 
-		int openParenthesisCheck = inputString.indexOf('[');
+			List<Amount<T>> outputList = new ArrayList<Amount<T>>();
+			String tempString = new String();
+			int n, m;
 
-		if ( openParenthesisCheck == -1){
-			inputString = "[" + inputString;
-		}
+			inputString = inputString.trim();
 
-		int closeParenthesisCheck = inputString.indexOf(']');
+			int openParenthesisCheck = inputString.indexOf('[');
 
-		if ( closeParenthesisCheck == -1){
-			inputString = inputString + "]";
-		}
-
-		// First value
-		boolean checkOnlyOneElement = false;
-
-		n = inputString.indexOf(',');
-		if ( n == -1){
-			n = inputString.indexOf(';');
-			if ( n == -1 ) {
-				n = inputString.indexOf(']');
-				checkOnlyOneElement = true;
+			if ( openParenthesisCheck == -1){
+				inputString = "[" + inputString;
 			}
-		}
 
-		tempString = inputString.substring(1, n);
-		tempString = tempString.trim();
+			int closeParenthesisCheck = inputString.indexOf(']');
 
-		Double value = Double.parseDouble(tempString);
+			if ( closeParenthesisCheck == -1){
+				inputString = inputString + "]";
+			}
 
-		Amount<?> tempAmount =  Amount.valueOf(value, Unit.valueOf(unitStr));
-		//	List<Amount<?>> outputList = new ArrayList<Amount<Unit.valueOf(unitStr).>>();
+			// First value
+			boolean checkOnlyOneElement = false;
 
-		outputList.add((Amount<T>) tempAmount);
-
-
-		// Following values
-
-		while ( (n!= -1) && (checkOnlyOneElement == false) ){
-
-			m = n;
-			tempString = new String();
-
-			n = inputString.indexOf(',', m+1);
+			n = inputString.indexOf(',');
 			if ( n == -1){
-				n = inputString.indexOf(';', m+1);
+				n = inputString.indexOf(';');
+				if ( n == -1 ) {
+					n = inputString.indexOf(']');
+					checkOnlyOneElement = true;
+				}
 			}
-			if( n != -1){
-				tempString = inputString.substring(m+1, n);}
 
-			else{
-				int k = inputString.indexOf(']');
-				tempString = inputString.substring(m+1, k)	;
-			}
+			tempString = inputString.substring(1, n);
 			tempString = tempString.trim();
 
-			value = Double.parseDouble(tempString);
-			tempAmount =  Amount.valueOf(value, Unit.valueOf(unitStr));
+			Double value = Double.parseDouble(tempString);
+
+			Amount<?> tempAmount =  Amount.valueOf(value, Unit.valueOf(unitStr));
+			//	List<Amount<?>> outputList = new ArrayList<Amount<Unit.valueOf(unitStr).>>();
+
 			outputList.add((Amount<T>) tempAmount);
 
+
+			// Following values
+
+			while ( (n!= -1) && (checkOnlyOneElement == false) ){
+
+				m = n;
+				tempString = new String();
+
+				n = inputString.indexOf(',', m+1);
+				if ( n == -1){
+					n = inputString.indexOf(';', m+1);
+				}
+				if( n != -1){
+					tempString = inputString.substring(m+1, n);}
+
+				else{
+					int k = inputString.indexOf(']');
+					tempString = inputString.substring(m+1, k)	;
+				}
+				tempString = tempString.trim();
+
+				value = Double.parseDouble(tempString);
+				tempAmount =  Amount.valueOf(value, Unit.valueOf(unitStr));
+				outputList.add((Amount<T>) tempAmount);
+
+			}
+			return outputList;
 		}
-		return outputList;
+
+
+		public Document getXmlDoc() {
+			return _xmlDoc;
+		}
+
+		public XPath getXpath() {
+			return _xpath;
+		}
+
 	}
-
-
-	public Document getXmlDoc() {
-		return _xmlDoc;
-	}
-
-	public XPath getXpath() {
-		return _xpath;
-	}
-
-}

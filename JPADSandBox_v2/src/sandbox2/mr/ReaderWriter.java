@@ -61,11 +61,11 @@ public class ReaderWriter{
 		//------------------------------------------------------------------------------------
 		// Setup database(s)
 
-		//		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
-		//		String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
-		//		String highLiftDatabaseFileName = "HighLiftDatabase.h5";
-		//		AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
-		//		HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
+				String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
+				String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
+				String highLiftDatabaseFileName = "HighLiftDatabase.h5";
+				AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
+				HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
 
 		//---------------------------------------------------------------------------------
 		// OPERATING CONDITION:
@@ -161,15 +161,24 @@ public class ReaderWriter{
 		
 		theStabilityCalculator.setWingClMaxBreakPoints(reader.readArrayDoubleFromXML("//wing/distribution/aerodynamics/maximum_lift_coefficient_distribution"));
 
+
+		
+		System.out.println("y adim " + theStabilityCalculator.getWingYAdimensionalBreakPoints());
 		//---------------------------------------------------------------------------------
 		// HIGH LIFT DEVICES:
 		
-		if (theStabilityCalculator.)
+		if (theStabilityCalculator.getTheCondition() == ConditionEnum.TAKE_OFF || theStabilityCalculator.getTheCondition() == ConditionEnum.LANDING) {
+			
+			
+		}
 		
-		
-		//---------------------------------------------------------------------------------
+	    //---------------------------------------------------------------------------------
 		// FUSELAGE:
 
+		theStabilityCalculator.setFuselageDiameter((Amount<Length>) reader.getXMLAmountWithUnitByPath("//fuselage/fuselageDiameter"));
+		theStabilityCalculator.setFuselageLength((Amount<Length>) reader.getXMLAmountWithUnitByPath("//fuselage/fuselageLength"));
+		theStabilityCalculator.setFuselageFinessRatio(Double.parseDouble((reader.getXMLPropertyByPath("//fuselage/noseFinenessRatio"))));
+		
 		//---------------------------------------------------------------------------------
 		// HORIZONTAL TAIL:
 

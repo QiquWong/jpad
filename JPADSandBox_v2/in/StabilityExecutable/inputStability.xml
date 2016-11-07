@@ -113,7 +113,7 @@
         </wing>
 		<fuselage>
       	<!-- The fuselage doesn't need the position because its origin is the origib of BRF (0,0,0) -->
-      	 	<fuselageDiameter  unit="m">unit="m">3.4500</fuselageDiameter>
+      	 	<fuselageDiameter  unit="m">3.4500</fuselageDiameter>
             <fuselageLength unit="m">30.0</fuselageLength>
 			<!--Nose fineness ratio is the ratio between nose fuselage length and maximum fuselage diameter. It varies between [1.2-1.7] -->
 			<noseFinenessRatio>1.60</noseFinenessRatio>
