@@ -1,6 +1,5 @@
 package calculators.performance;
 
-import java.io.File;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -27,15 +26,13 @@ import aircraft.components.Aircraft;
 import analyses.OperatingConditions;
 import analyses.liftingsurface.LSAerodynamicsManager.CalcHighLiftDevices;
 import calculators.performance.customdata.TakeOffResultsMap;
-import configuration.MyConfiguration;
 import configuration.enumerations.EngineOperatingConditionEnum;
-import configuration.enumerations.FoldersEnum;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyInterpolatingFunction;
+import standaloneutils.MyMathUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
-import writers.JPADStaticWriteUtils;
 
 /**
  * This class have the purpose of calculating the required take-off field length
@@ -60,7 +57,6 @@ public class TakeOffCalc {
 
 	private Aircraft aircraft;
 	private OperatingConditions theConditions;
-	private CalcHighLiftDevices highLiftCalculator;
 	private Amount<Duration> dtRot, dtHold,	
 	dtRec = Amount.valueOf(3, SI.SECOND),
 	tHold = Amount.valueOf(10000.0, SI.SECOND), // initialization to an impossible time
@@ -81,7 +77,7 @@ public class TakeOffCalc {
 	private List<Amount<Force>> thrust, thrustHorizontal, thrustVertical, lift, drag, friction, totalForce;
 	private List<Amount<Length>> groundDistance, verticalDistance;
 	private double kAlphaDot, kcLMax, kRot, kLO, phi, mu, muBrake, cLmaxTO, kGround, alphaDotInitial,
-	alphaRed, cL0, cLground, kFailure, k1, k2;
+	alphaRed, cL0, cLground, kFailure;
 	private Double vFailure;
 	private boolean isAborted;
 	
@@ -99,187 +95,11 @@ public class TakeOffCalc {
 
 	//-------------------------------------------------------------------------------------
 	// BUILDER:
-
-	/**************************************************************************************
-	 * This builder has the purpose of pass input to the class fields and to initialize all
-	 * lists with the correct initial values in order to setup the take-off length calculation
-	 * 
-	 * @author Vittorio Trifari
-	 * @param aircraft
-	 * @param theConditions
-	 * @param highLiftCalculator instance of LSAerodynamicManager inner class for managing
-	 * 		  and slat effects
-	 * @param dtRot time interval of the rotation phase
-	 * @param dtHold time interval of the constant CL phase
-	 * @param kcLMax percentage of the CLmaxTO not to be surpasses
-	 * @param kRot percentage of VstallTO which defines the rotation speed
-	 * @param kLO percentage of VstallTO which defines the lift-off speed
-	 * @param kFailure parameter which defines the drag increment due to engine failure
-	 * @param k1 linear correction factor of the parabolic drag polar at high CL
-	 * @param k2 quadratic correction factor of the parabolic drag polar at high CL
-	 * @param phi throttle setting
-	 * @param kAlphaDot coefficient which defines the decrease of alpha_dot during manouvering
-	 * @param alphaRed constant negative pitching angular velocity to be maintained after holding 
-	 * the CL constant
-	 * @param mu friction coefficient without brakes action
-	 * @param muBrake friction coefficient with brakes activated
-	 * @param wingToGroundDistance
-	 * @param obstacle
-	 * @param vWind
-	 * @param alphaGround
-	 * @param iw
-	 */
-	public TakeOffCalc(
-			Aircraft aircraft,
-			OperatingConditions theConditions,
-			CalcHighLiftDevices highLiftCalculator,
-			Amount<Duration> dtRot,
-			Amount<Duration> dtHold,
-			double kcLMax,
-			double kRot,
-			double kLO,
-			double kFailure,
-			double k1,
-			double k2,
-			double phi,
-			double kAlphaDot,
-			double alphaRed,
-			double mu,
-			double muBrake,
-			double deltaCD0LandingGear,
-			Amount<Length> wingToGroundDistance,
-			Amount<Length> obstacle,
-			Amount<Velocity> vWind,
-			Amount<Angle> alphaGround,
-			Amount<Angle> iw
-			) {
-
-		// Required data
-		this.aircraft = aircraft;
-		this.theConditions = theConditions;
-		this.highLiftCalculator = highLiftCalculator;
-		this.dtRot = dtRot;
-		this.dtHold = dtHold;
-		this.kcLMax = kcLMax;
-		this.kRot = kRot;
-		this.kLO = kLO;
-		this.kFailure = kFailure;
-		this.k1 = k1;
-		this.k2 = k2;
-		this.phi = phi;
-		this.kAlphaDot = kAlphaDot;
-		this.alphaRed = alphaRed;
-		this.mu = mu;
-		this.muBrake = muBrake;
-		this.wingToGroundDistance = wingToGroundDistance;
-		this.obstacle = obstacle;
-		this.vWind = vWind;
-		this.alphaGround = alphaGround;
-		this.iw = iw;
-		this.deltaCD0LandingGear = deltaCD0LandingGear;
-		
-		this.oswald = aircraft.getTheAnalysisManager().getTheAerodynamics().get_oswald();
-		this.cD0 = aircraft.getTheAnalysisManager().getTheAerodynamics().get_cD0();
-		
-		// CalcHighLiftDevices object to manage flap/slat effects
-		highLiftCalculator.calculateHighLiftDevicesEffects();
-		cLmaxTO = highLiftCalculator.getcL_Max_Flap();
-		cL0 = highLiftCalculator.calcCLatAlphaHighLiftDevice(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
-		cLground = highLiftCalculator.calcCLatAlphaHighLiftDevice(getAlphaGround().plus(iw));
-		cLalphaFlap = highLiftCalculator.getcLalpha_new();
-		this.deltaCD0FlapLandinGears = highLiftCalculator.getDeltaCD() + this.deltaCD0LandingGear;
-		
-		// Reference velocities definition
-		vSTakeOff = Amount.valueOf(
-				SpeedCalc.calculateSpeedStall(
-						theConditions.getAltitude().getEstimatedValue(),
-						aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffWeight().getEstimatedValue(),
-						aircraft.getWing().getSurface().getEstimatedValue(),
-						cLmaxTO
-						),
-				SI.METERS_PER_SECOND);
-		vRot = vSTakeOff.times(kRot);
-		vLO = vSTakeOff.times(kLO);
-		
-		// McCormick interpolated function --> See the excel file into JPAD DOCS
-		double hb = wingToGroundDistance.divide(aircraft.getWing().getSpan().times(Math.PI/4)).getEstimatedValue();
-		kGround = - 622.44*(Math.pow(hb, 5)) + 624.46*(Math.pow(hb, 4)) - 255.24*(Math.pow(hb, 3))
-				+ 47.105*(Math.pow(hb, 2)) - 0.6378*hb + 0.0055;
-		
-		System.out.println("\n-----------------------------------------------------------");
-		System.out.println("CLmaxTO = " + cLmaxTO);
-		System.out.println("CL0 = " + cL0);
-		System.out.println("CLground = " + cLground);
-		System.out.println("CD0 clean = " + cD0);
-		System.out.println("Delta CD0 flap = " + highLiftCalculator.getDeltaCD());
-		System.out.println("Delta CD0 landing gears = " + this.deltaCD0LandingGear);
-		System.out.println("CD0 TakeOff = " + (cD0 + deltaCD0FlapLandinGears));
-		System.out.println("Induced CD TakeOff = " + ((Math.pow(cLground, 2)*kGround)
-				/(Math.PI*aircraft.getWing().getAspectRatio()*aircraft.getTheAnalysisManager().getTheAerodynamics().get_oswald())));
-		System.out.println("VsTO = " + vSTakeOff);
-		System.out.println("VRot = " + vRot);
-		System.out.println("VLO = " + vLO);
-		System.out.println("-----------------------------------------------------------\n");
-
-		// List initialization
-		this.time = new ArrayList<Amount<Duration>>();
-		this.speed = new ArrayList<Amount<Velocity>>();
-		this.thrust = new ArrayList<Amount<Force>>();
-		this.thrustHorizontal = new ArrayList<Amount<Force>>();
-		this.thrustVertical = new ArrayList<Amount<Force>>();
-		this.alpha = new ArrayList<Amount<Angle>>();
-		this.alphaDot = new ArrayList<Double>();
-		this.gamma = new ArrayList<Amount<Angle>>();
-		this.gammaDot = new ArrayList<Double>();
-		this.theta = new ArrayList<Amount<Angle>>();
-		this.cL = new ArrayList<Double>();
-		this.lift = new ArrayList<Amount<Force>>();
-		this.loadFactor = new ArrayList<Double>();
-		this.cD = new ArrayList<Double>();
-		this.drag = new ArrayList<Amount<Force>>();
-		this.friction = new ArrayList<Amount<Force>>();
-		this.totalForce = new ArrayList<Amount<Force>>();
-		this.acceleration = new ArrayList<Amount<Acceleration>>();
-		this.rateOfClimb = new ArrayList<Amount<Velocity>>();
-		this.groundDistance = new ArrayList<Amount<Length>>();
-		this.verticalDistance = new ArrayList<Amount<Length>>();
-		
-		takeOffResults.initialize();
-	}
 	
-	/*******************************************************************************
+	/**
 	 * This builder is an overload of the previous one designed to allow the user 
 	 * to perform the take-off distance calculation without doing all flaps analysis.
 	 * This may come in handy when only few data are available.
-	 * 
-	 * @author Vittorio Trifari
-	 * @param aircraft
-	 * @param theConditions
-	 * @param dtRot time interval of the rotation phase
-	 * @param dtHold time interval of the constant CL phase
-	 * @param kcLMax percentage of the CLmaxTO not to be surpasses
-	 * @param kRot percentage of VstallTO which defines the rotation speed
-	 * @param kLO percentage of VstallTO which defines the lift-off speed
-	 * @param kFailure parameter which defines the drag increment due to engine failure
-	 * @param k1 linear correction factor of the parabolic drag polar at high CL
-	 * @param k2 quadratic correction factor of the parabolic drag polar at high CL
-	 * @param phi throttle setting
-	 * @param kAlphaDot coefficient which defines the decrease of alpha_dot during manouvering
-	 * @param alphaRed constant negative pitching angular velocity to be maintained after holding 
-	 * the CL constant
-	 * @param mu friction coefficient without brakes action
-	 * @param muBrake friction coefficient with brakes activated
-	 * @param wingToGroundDistance
-	 * @param obstacle
-	 * @param vWind
-	 * @param alphaGround
-	 * @param iw
-	 * @param cD0
-	 * @param oswald
-	 * @param cLmaxTO
-	 * @param cL0
-	 * @param cLalphaFlap
-	 * @param deltaCD0FlapLandingGears
 	 */
 	public TakeOffCalc(
 			Aircraft aircraft,
@@ -290,8 +110,6 @@ public class TakeOffCalc {
 			double kRot,
 			double kLO,
 			double kFailure,
-			double k1,
-			double k2,
 			double phi,
 			double kAlphaDot,
 			double alphaRed,
@@ -305,7 +123,8 @@ public class TakeOffCalc {
 			double cD0,
 			double oswald,
 			double cLmaxTO,
-			double cL0,
+			double cLZeroTO,
+			double cLGround,
 			double cLalphaFlap,
 			double deltaCD0FlapLandingGears
 			) {
@@ -319,8 +138,6 @@ public class TakeOffCalc {
 		this.kRot = kRot;
 		this.kLO = kLO;
 		this.kFailure = kFailure;
-		this.k1 = k1;
-		this.k2 = k2;
 		this.phi = phi;
 		this.kAlphaDot = kAlphaDot;
 		this.alphaRed = alphaRed;
@@ -335,9 +152,9 @@ public class TakeOffCalc {
 		this.oswald = oswald;
 		this.deltaCD0FlapLandinGears = deltaCD0FlapLandingGears;
 		this.cLmaxTO = cLmaxTO;
-		this.cL0 = cL0; 
+		this.cL0 = cLZeroTO;
 		this.cLalphaFlap = cLalphaFlap;
-		this.cLground = cL0 + (cLalphaFlap*iw.getEstimatedValue());
+		this.cLground = cLGround;
 		
 		// Reference velocities definition
 		vSTakeOff = Amount.valueOf(
@@ -353,10 +170,10 @@ public class TakeOffCalc {
 		
 		System.out.println("\n-----------------------------------------------------------");
 		System.out.println("CLmaxTO = " + cLmaxTO);
-		System.out.println("CL0 = " + cL0);
-		System.out.println("CLground = " + cLground);
+		System.out.println("CL0 = " + cLZeroTO);
+		System.out.println("CLground = " + cLGround);
 		System.out.println("CD0 clean = " + cD0);
-		System.out.println("Delta CD0 flap + landing gears = " + this.deltaCD0FlapLandinGears);
+		System.out.println("Delta CD0 flap + landing gears = " + deltaCD0FlapLandinGears);
 		System.out.println("CD0 TakeOff = " + (cD0 + deltaCD0FlapLandinGears));
 		System.out.println("VsTO = " + vSTakeOff);
 		System.out.println("VRot = " + vRot);
@@ -455,6 +272,8 @@ public class TakeOffCalc {
 		System.out.println("---------------------------------------------------");
 		System.out.println("CalcTakeOff :: ODE integration\n\n");
 
+		initialize();
+		
 		this.isAborted = isAborted;
 		// failure check
 		if(vFailure == null)
@@ -522,8 +341,9 @@ public class TakeOffCalc {
 			public double g(double t, double[] x) {
 				double speed = x[1];
 				
-				if(t < tRec.getEstimatedValue())
+				if(t < tRec.getEstimatedValue()) {
 					return speed - vRot.getEstimatedValue();
+				}
 				else
 					return 10; // a generic positive value used to make the event trigger once
 			}
@@ -544,7 +364,6 @@ public class TakeOffCalc {
 
 				// COLLECTING DATA IN TakeOffResultsMap
 				System.out.println("\n\tCOLLECTING DATA AT THE END OF GROUND ROLL PHASE ...");
-				takeOffResults.initialize();
 				takeOffResults.collectResults(
 						time.get(time.size()-1),
 						thrust.get(thrust.size()-1),
@@ -637,7 +456,6 @@ public class TakeOffCalc {
 
 				// COLLECTING DATA IN TakeOffResultsMap
 				System.out.println("\n\tCOLLECTING DATA AT THE END OF AIRBORNE PHASE ...");
-				takeOffResults.initialize();
 				takeOffResults.collectResults(
 						time.get(time.size()-1),
 						thrust.get(thrust.size()-1),
@@ -757,6 +575,22 @@ public class TakeOffCalc {
 				
 				// CHECK TO BE DONE ONLY IF isAborted IS FALSE!!
 				if(!isAborted) {
+					
+//					if(t>tRot.getEstimatedValue()) {
+//						System.out.println("Load factor - 1 = " + 
+//								TakeOffCalc.this.getLoadFactor().get(TakeOffCalc.this.getLoadFactor().size()-1)
+//								);
+//						System.out.println("Load factor - 1 = " + 
+//								(TakeOffCalc.this.getLoadFactor().get(TakeOffCalc.this.getLoadFactor().size()-1) - 1)
+//								);
+//						System.err.println("CL - kCLmax*CLmaxTO = " +
+//								(TakeOffCalc.this.getcL().get(TakeOffCalc.this.getcL().size()-1) - (kcLMax*cLmaxTO))
+//								);
+//						System.err.println("CL = " +
+//								TakeOffCalc.this.getcL().get(TakeOffCalc.this.getcL().size()-1)
+//								);
+//					}
+					
 					// CHECK ON LOAD FACTOR --> END ROTATION WHEN n=1
 					if((t > tRot.getEstimatedValue()) && (tEndRot.getEstimatedValue() == 10000.0) &&
 							(TakeOffCalc.this.getLoadFactor().get(TakeOffCalc.this.getLoadFactor().size()-1) > 1) &&
@@ -771,7 +605,6 @@ public class TakeOffCalc {
 								);
 						// COLLECTING DATA IN TakeOffResultsMap
 						System.out.println("\n\tCOLLECTING DATA AT THE END OF ROTATION PHASE ...");
-						takeOffResults.initialize();
 						takeOffResults.collectResults(
 								time.get(time.size()-1),
 								thrust.get(thrust.size()-1),
@@ -1198,7 +1031,7 @@ public class TakeOffCalc {
 						NonSI.DEGREE_ANGLE)
 						);
 				//----------------------------------------------------------------------------------------
-				// CL:
+				// CL:				
 				TakeOffCalc.this.getcL().add(
 						((DynamicsEquationsTakeOff)ode).cL(
 								x[1],
@@ -1250,6 +1083,8 @@ public class TakeOffCalc {
 	 */
 	public void calculateBalancedFieldLength() {
 
+		// FIXME !!
+		
 		final PrintStream originalOut = System.out;
 		PrintStream filterStream = new PrintStream(new OutputStream() {
 		    public void write(int b) {
@@ -1262,7 +1097,7 @@ public class TakeOffCalc {
 		failureSpeedArray = MyArrayUtils.linspace(
 				2.0,
 				vLO.getEstimatedValue(),
-				120);
+				50);
 		// continued take-off array
 		continuedTakeOffArray = new double[failureSpeedArray.length];
 		// aborted take-off array
@@ -1317,12 +1152,9 @@ public class TakeOffCalc {
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException
 	 */
-	public void createTakeOffCharts() throws InstantiationException, IllegalAccessException {
+	public void createTakeOffCharts(String takeOffFolderPath) throws InstantiationException, IllegalAccessException {
 
 		System.out.println("\n---------WRITING TAKE-OFF PERFORMANCE CHARTS TO FILE-----------");
-
-		String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR);
-		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "Take-Off_Performance" + File.separator);
 
 		// data setup
 		double[] time = new double[getTime().size()];
@@ -1421,14 +1253,14 @@ public class TakeOffCalc {
 					groundDistance, verticalDistance,
 					0.0, null, 0.0, null,
 					"Ground Distance", "Altitude", "m", "m",
-					subfolderPath, "TakeOff_Trajectory");
+					takeOffFolderPath, "TakeOff_Trajectory");
 
 			// vertical distance v.s. time
 			MyChartToFileUtils.plotNoLegend(
 					time, verticalDistance,
 					0.0, null, 0.0, null,
 					"Time", "Altitude", "s", "m",
-					subfolderPath, "Altitude_evolution");
+					takeOffFolderPath, "Altitude_evolution");
 		}
 		
 		// speed v.s. time
@@ -1436,42 +1268,42 @@ public class TakeOffCalc {
 				time, speed,
 				0.0, null, 0.0, null,
 				"Time", "Speed", "s", "m/s",
-				subfolderPath, "Speed_evolution");
+				takeOffFolderPath, "Speed_evolution");
 
 		// speed v.s. ground distance
 		MyChartToFileUtils.plotNoLegend(
 				groundDistance, speed,
 				0.0, null, 0.0, null,
 				"Ground Distance", "Speed", "m", "m/s",
-				subfolderPath, "Speed_vs_GroundDistance");
+				takeOffFolderPath, "Speed_vs_GroundDistance");
 
 		// acceleration v.s. time
 		MyChartToFileUtils.plotNoLegend(
 				time, acceleration,
 				0.0, null, null, null,
 				"Time", "Acceleration", "s", "m/(s^2)",
-				subfolderPath, "Acceleration_evolution");
+				takeOffFolderPath, "Acceleration_evolution");
 
 		// acceleration v.s. time
 		MyChartToFileUtils.plotNoLegend(
 				groundDistance, acceleration,
 				0.0, null, null, null,
 				"Ground Distance", "Acceleration", "m", "m/(s^2)",
-				subfolderPath, "Acceleration_vs_GroundDistance");
+				takeOffFolderPath, "Acceleration_vs_GroundDistance");
 
 		// load factor v.s. time
 		MyChartToFileUtils.plotNoLegend(
 				time, loadFactor,
 				0.0, null, 0.0, null,
 				"Time", "Load Factor", "s", "",
-				subfolderPath, "LoadFactor_evolution");
+				takeOffFolderPath, "LoadFactor_evolution");
 
 		// load factor v.s. ground distance
 		MyChartToFileUtils.plotNoLegend(
 				groundDistance, loadFactor,
 				0.0, null, 0.0, null,
 				"Ground distance", "Load Factor", "m", "",
-				subfolderPath, "LoadFactor_vs_GroundDistance");
+				takeOffFolderPath, "LoadFactor_vs_GroundDistance");
 
 		if(!isAborted) {
 			// Rate of Climb v.s. Time
@@ -1479,14 +1311,14 @@ public class TakeOffCalc {
 					time, rateOfClimb,
 					0.0, null, 0.0, null,
 					"Time", "Rate of Climb", "s", "m/s",
-					subfolderPath, "RateOfClimb_evolution");
+					takeOffFolderPath, "RateOfClimb_evolution");
 
 			// Rate of Climb v.s. Ground distance
 			MyChartToFileUtils.plotNoLegend(
 					groundDistance, rateOfClimb,
 					0.0, null, 0.0, null,
 					"Ground distance", "Rate of Climb", "m", "m/s",
-					subfolderPath, "RateOfClimb_vs_GroundDistance");
+					takeOffFolderPath, "RateOfClimb_vs_GroundDistance");
 		}
 		
 		// CL v.s. Time
@@ -1494,14 +1326,14 @@ public class TakeOffCalc {
 				time, cL,
 				0.0, null, 0.0, null,
 				"Time", "CL", "s", "",
-				subfolderPath, "CL_evolution");
+				takeOffFolderPath, "CL_evolution");
 
 		// CL v.s. Ground distance
 		MyChartToFileUtils.plotNoLegend(
 				groundDistance, cL,
 				0.0, null, 0.0, null,
 				"Ground distance", "CL", "m", "",
-				subfolderPath, "CL_vs_GroundDistance");
+				takeOffFolderPath, "CL_vs_GroundDistance");
 
 		// Horizontal Forces v.s. Time
 		double[][] xMatrix1 = new double[5][totalForce.length];
@@ -1520,7 +1352,7 @@ public class TakeOffCalc {
 				0.0, null, null, null,
 				"Time", "Horizontal Forces", "s", "N",
 				new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "W*sin(gamma)"},
-				subfolderPath, "HorizontalForces_evolution");
+				takeOffFolderPath, "HorizontalForces_evolution");
 
 		// Horizontal Forces v.s. Ground Distance
 		double[][] xMatrix2 = new double[5][totalForce.length];
@@ -1539,7 +1371,7 @@ public class TakeOffCalc {
 				0.0, null, null, null,
 				"Ground Distance", "Horizontal Forces", "m", "N",
 				new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "W*sin(gamma)"},
-				subfolderPath, "HorizontalForces_vs_GroundDistance");
+				takeOffFolderPath, "HorizontalForces_vs_GroundDistance");
 
 		// Vertical Forces v.s. Time
 		double[][] xMatrix3 = new double[3][totalForce.length];
@@ -1556,7 +1388,7 @@ public class TakeOffCalc {
 				0.0, null, null, null,
 				"Time", "Vertical Forces", "s", "N",
 				new String[] {"Lift", "Thrust Vertical", "W*cos(gamma)"},
-				subfolderPath, "VerticalForces_evolution");
+				takeOffFolderPath, "VerticalForces_evolution");
 
 		// Vertical Forces v.s. ground distance
 		double[][] xMatrix4 = new double[3][totalForce.length];
@@ -1573,7 +1405,7 @@ public class TakeOffCalc {
 				0.0, null, null, null,
 				"Ground distance", "Vertical Forces", "m", "N",
 				new String[] {"Lift", "Thrust Vertical", "W*cos(gamma)"},
-				subfolderPath, "VerticalForces_vs_GroundDistance");
+				takeOffFolderPath, "VerticalForces_vs_GroundDistance");
 
 		if(!isAborted) {
 			// Angles v.s. time
@@ -1591,7 +1423,7 @@ public class TakeOffCalc {
 					0.0, null, null, null,
 					"Time", "Angles", "s", "deg",
 					new String[] {"Alpha Body", "Theta", "Gamma"},
-					subfolderPath, "Angles_evolution");
+					takeOffFolderPath, "Angles_evolution");
 
 			// Angles v.s. Ground Distance
 			double[][] xMatrix6 = new double[3][totalForce.length];
@@ -1608,7 +1440,7 @@ public class TakeOffCalc {
 					0.0, null, null, null,
 					"Ground Distance", "Angles", "m", "deg",
 					new String[] {"Alpha Body", "Theta", "Gamma"},
-					subfolderPath, "Angles_vs_GroundDistance");
+					takeOffFolderPath, "Angles_vs_GroundDistance");
 
 			// Angular velocity v.s. time
 			double[][] xMatrix7 = new double[2][totalForce.length];
@@ -1624,7 +1456,7 @@ public class TakeOffCalc {
 					0.0, null, null, null,
 					"Time", "Angular Velocity", "s", "deg/s",
 					new String[] {"Alpha_dot", "Gamma_dot"},
-					subfolderPath, "AngularVelocity_evolution");
+					takeOffFolderPath, "AngularVelocity_evolution");
 
 			// Angular velocity v.s. Ground Distance
 			double[][] xMatrix8 = new double[2][totalForce.length];
@@ -1640,7 +1472,7 @@ public class TakeOffCalc {
 					0.0, null, null, null,
 					"Ground Distance", "Angular Velocity", "m", "deg/s",
 					new String[] {"Alpha_dot", "Gamma_dot"},
-					subfolderPath, "AngularVelocity_vs_GroundDistance");
+					takeOffFolderPath, "AngularVelocity_vs_GroundDistance");
 		}
 		
 		System.out.println("\n---------------------------DONE!-------------------------------");
@@ -1654,12 +1486,9 @@ public class TakeOffCalc {
 	 *
 	 * @author Vittorio Trifari
 	 */
-	public void createBalancedFieldLengthChart() {
+	public void createBalancedFieldLengthChart(String takeOffFolderPath) {
 
 		System.out.println("\n-------WRITING BALANCED TAKE-OFF DISTANCE CHART TO FILE--------");
-
-		String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR);
-		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "Take-Off_Performance" + File.separator);
 
 		for(int i=0; i<failureSpeedArray.length; i++)
 			failureSpeedArray[i] = failureSpeedArray[i]/vSTakeOff.getEstimatedValue();
@@ -1674,7 +1503,7 @@ public class TakeOffCalc {
 				null, null, null, null,
 				"Vfailure/VsTO", "Distance", "", "m",
 				new String[] {"OEI Take-Off", "Aborted Take-Off"},
-				subfolderPath, "BalancedTakeOffLength");
+				takeOffFolderPath, "BalancedTakeOffLength");
 
 		System.out.println("\n---------------------------DONE!-------------------------------");
 	}
@@ -1703,8 +1532,6 @@ public class TakeOffCalc {
 			deltaCD0 = TakeOffCalc.this.getDeltaCD0FlapLandinGears();
 			oswald = TakeOffCalc.this.getOswald();
 			ar = aircraft.getWing().getAspectRatio();
-			k1 = TakeOffCalc.this.getK1();
-			k2 = TakeOffCalc.this.getK2();
 			kGround = TakeOffCalc.this.getkGround();
 			vWind = TakeOffCalc.this.getvWind().getEstimatedValue();
 			altitude = TakeOffCalc.this.getTheConditions().getAltitude().getEstimatedValue();
@@ -1776,7 +1603,7 @@ public class TakeOffCalc {
 
 			if (time < tFaiulre.getEstimatedValue())
 				theThrust =	ThrustCalc.calculateThrustDatabase(
-						TakeOffCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getT0().getEstimatedValue(),
+						TakeOffCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
 						TakeOffCalc.this.getAircraft().getPowerPlant().getEngineNumber(),
 						TakeOffCalc.this.getPhi(),
 						TakeOffCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
@@ -1793,7 +1620,7 @@ public class TakeOffCalc {
 						);
 			else
 				theThrust =	ThrustCalc.calculateThrustDatabase(
-						TakeOffCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getT0().getEstimatedValue(),
+						TakeOffCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
 						TakeOffCalc.this.getAircraft().getPowerPlant().getEngineNumber() - 1,
 						TakeOffCalc.this.getPhi(),
 						TakeOffCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
@@ -1814,15 +1641,26 @@ public class TakeOffCalc {
 
 		public double cD(double cL) {
 
-			double cD = 0.0;
-
-			if(cL < 1.2) {
-				cD = cD0 + deltaCD0 + ((Math.pow(cL, 2)/(Math.PI*ar*oswald))*kGround);
-			}
-			else { 
-				cD = cD0 + deltaCD0 + ((Math.pow(cL, 2)/(Math.PI*ar*oswald))*kGround)
-						+ (k1*(cL - 1.2)) + (k2*(Math.pow((cL - 1.2), 2))) ;
-			}
+			double cD = MyMathUtils
+					.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertToDoublePrimitive(
+									aircraft.getTheAnalysisManager().getThePerformance().getPolarCLTakeOff()
+									),
+							MyArrayUtils.convertToDoublePrimitive(
+									aircraft.getTheAnalysisManager().getThePerformance().getPolarCDTakeOff()
+									),
+							cL
+							);
+			
+//			double cD = 0.0;
+//			
+//			if(cL < 1.2) {
+//				cD = cD0 + deltaCD0 + ((Math.pow(cL, 2)/(Math.PI*ar*oswald))*kGround);
+//			}
+//			else { 
+//				cD = cD0 + deltaCD0 + ((Math.pow(cL, 2)/(Math.PI*ar*oswald))*kGround)
+//						+ (k1*(cL - 1.2)) + (k2*(Math.pow((cL - 1.2), 2))) ;
+//			}
 
 			return cD;
 		}
@@ -1854,6 +1692,7 @@ public class TakeOffCalc {
 				double alphaWing = alpha + TakeOffCalc.this.getIw().getEstimatedValue();
 
 				return cL0 + (cLalpha*alphaWing);
+				
 			}
 			else
 				return (2*weight*Math.cos(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))/
@@ -1933,14 +1772,6 @@ public class TakeOffCalc {
 
 	public void setTheConditions(OperatingConditions theConditions) {
 		this.theConditions = theConditions;
-	}
-
-	public CalcHighLiftDevices getHighLiftCalculator() {
-		return highLiftCalculator;
-	}
-
-	public void setHighLiftCalculator(CalcHighLiftDevices highLiftCalculator) {
-		this.highLiftCalculator = highLiftCalculator;
 	}
 
 	public Amount<Duration> getDtRot() {
@@ -2299,14 +2130,6 @@ public class TakeOffCalc {
 		return kcLMax;
 	}
 
-	public double getK1() {
-		return k1;
-	}
-
-	public double getK2() {
-		return k2;
-	}
-
 	public double getPhi() {
 		return phi;
 	}
@@ -2465,14 +2288,6 @@ public class TakeOffCalc {
 
 	public void setPhi(double phi) {
 		this.phi = phi;
-	}
-
-	public void setK1(double k1) {
-		this.k1 = k1;
-	}
-
-	public void setK2(double k2) {
-		this.k2 = k2;
 	}
 
 	public Amount<Duration> gettRec() {

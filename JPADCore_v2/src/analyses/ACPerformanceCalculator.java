@@ -22,14 +22,17 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
+import calculators.aerodynamics.DragCalc;
+import calculators.performance.TakeOffCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.PerformanceEnum;
 import configuration.enumerations.PerformancePlotEnum;
 import standaloneutils.JPADXmlReader;
+import standaloneutils.MyArrayUtils;
 import standaloneutils.MyXLSUtils;
 import standaloneutils.MyXMLReaderUtils;
-import sun.misc.Perf;
+import writers.JPADStaticWriteUtils;
 
 public class ACPerformanceCalculator {
 
@@ -61,15 +64,28 @@ public class ACPerformanceCalculator {
 	private Double _currentDragCoefficient;
 	private Double _cD0;
 	private Double _oswald;
+	private Double _oswaldTakeOff;
+	private Double _oswaldLanding;
 	private Double _cLmaxClean;
 	private Amount<?> _cLAlphaClean;
-	private Double _deltaCD0HighLift;
+	private Amount<?> _cLAlphaHighLift;
+	private Double _deltaCD0TakeOff;
+	private Double _deltaCD0Landing;
 	private Double _deltaCD0LandingGear;
 	private Double _cLmaxTakeOff;
 	private Double _cLZeroTakeOff;
+	private Double _cLGround;
 	private Double _cLmaxLanding;
+	private Double[] _polarCLCruise;
+	private Double[] _polarCDCruise;
+	private Double[] _polarCLTakeOff;
+	private Double[] _polarCDTakeOff;
+	private Double[] _polarCLLanding;
+	private Double[] _polarCDLanding;	
 	//..............................................................................
 	// Take-off & Landing
+	private Amount<Duration> _dtRotation;
+	private Amount<Duration> _dtHold;
 	private Amount<Angle> _alphaGround;
 	private Amount<Velocity> _windSpeed;
 	private Amount<Length> _obstacleTakeOff;
@@ -100,7 +116,17 @@ public class ACPerformanceCalculator {
 	// OUTPUT DATA
 	//..............................................................................
 	// Take-Off
-	// TODO
+	private Amount<Length> _takeOffDistanceAOE;
+	private Amount<Length> _takeOffDistanceFAR25;
+	private Amount<Length> _balancedFieldLength;
+	private Amount<Length> _groundRoll;
+	private Amount<Length> _rotation;
+	private Amount<Length> _airborne;
+	private Amount<Velocity> _vStallTakeOff;
+	private Amount<Velocity> _vRotation;
+	private Amount<Velocity> _vLiftOff;
+	private Amount<Velocity> _v1;
+	private Amount<Velocity> _v2;
 	
 	//..............................................................................
 	// Climb
@@ -146,15 +172,28 @@ public class ACPerformanceCalculator {
 		private Double __currentDragCoefficient;
 		private Double __cD0;
 		private Double __oswald;
+		private Double __oswaldTakeOff;
+		private Double __oswaldLanding;
 		private Double __cLmaxClean;
 		private Amount<?> __cLAlphaClean;
-		private Double __deltaCD0HighLift;
+		private Amount<?> __cLAlphaHighLift;
+		private Double __deltaCD0TakeOff;
+		private Double __deltaCD0Landing;
 		private Double __deltaCD0LandingGear;
 		private Double __cLmaxTakeOff;
 		private Double __cLZeroTakeOff;
+		private Double __cLGround;
 		private Double __cLmaxLanding;
+		private Double[] __polarCLCruise;
+		private Double[] __polarCDCruise;
+		private Double[] __polarCLTakeOff;
+		private Double[] __polarCDTakeOff;
+		private Double[] __polarCLLanding;
+		private Double[] __polarCDLanding;	
 		//..............................................................................
 		// Take-off & Landing
+		private Amount<Duration> __dtRotation = Amount.valueOf(3.0, SI.SECOND);
+		private Amount<Duration> __dtHold = Amount.valueOf(0.5, SI.SECOND);
 		private Amount<Angle> __alphaGround = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		private Amount<Velocity> __windSpeed = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
 		private Amount<Length> __obstacleTakeOff = Amount.valueOf(35, NonSI.FOOT).to(SI.METER);
@@ -162,7 +201,7 @@ public class ACPerformanceCalculator {
 		private Double __muBrake = 0.4;
 		private Double __kRotation = 1.05;
 		private Double __kLiftOff = 1.1;
-		private Double __kCLmax = 0.85;
+		private Double __kCLmax = 0.9;
 		private Double __kDragDueToEngineFailure = 1.1;
 		private Double __kAlphaDot = 0.04;
 		private Double __alphaReductionRate = -4.0; //(deg/s)
@@ -241,6 +280,16 @@ public class ACPerformanceCalculator {
 			return this;
 		}
 		
+		public ACPerformanceCalculatorBuilder oswaldTakeOff(Double eTO) {
+			this.__oswaldTakeOff = eTO;
+			return this;
+		}
+		
+		public ACPerformanceCalculatorBuilder oswaldLanding(Double eLND) {
+			this.__oswaldLanding = eLND;
+			return this;
+		}
+		
 		public ACPerformanceCalculatorBuilder cLmaxClean(Double cLmaxClean) {
 			this.__cLmaxClean = cLmaxClean;
 			return this;
@@ -251,8 +300,48 @@ public class ACPerformanceCalculator {
 			return this;
 		}
 		
-		public ACPerformanceCalculatorBuilder deltaCD0HighLift(Double deltaCD0HighLift) {
-			this.__deltaCD0HighLift = deltaCD0HighLift;
+		public ACPerformanceCalculatorBuilder cLAlphaHighLift(Amount<?> cLAlphaHighLift) {
+			this.__cLAlphaHighLift = cLAlphaHighLift;
+			return this;
+		}
+		
+		public ACPerformanceCalculatorBuilder polarCLCruise (Double[] polarCLCruise) {
+			this.__polarCLCruise = polarCLCruise;
+			return this;
+		}
+		
+		public ACPerformanceCalculatorBuilder polarCDCruise (Double[] polarCDCruise) {
+			this.__polarCDCruise = polarCDCruise;
+			return this;
+		}
+		
+		public ACPerformanceCalculatorBuilder polarCLTakeOff (Double[] polarCLTakeOff) {
+			this.__polarCLTakeOff = polarCLTakeOff;
+			return this;
+		}
+		
+		public ACPerformanceCalculatorBuilder polarCDTakeOff (Double[] polarCDTakeOff) {
+			this.__polarCDTakeOff = polarCDTakeOff;
+			return this;
+		}
+		
+		public ACPerformanceCalculatorBuilder polarCLLanding (Double[] polarCLLanding) {
+			this.__polarCLLanding = polarCLLanding;
+			return this;
+		}
+		
+		public ACPerformanceCalculatorBuilder polarCDLanding (Double[] polarCDLanding) {
+			this.__polarCDLanding = polarCDLanding;
+			return this;
+		}
+		
+		public ACPerformanceCalculatorBuilder deltaCD0TakeOff(Double deltaCD0TakeOff) {
+			this.__deltaCD0TakeOff = deltaCD0TakeOff;
+			return this;
+		}
+		
+		public ACPerformanceCalculatorBuilder deltaCD0Landing(Double deltaCD0Landing) {
+			this.__deltaCD0Landing = deltaCD0Landing;
 			return this;
 		}
 		
@@ -271,8 +360,23 @@ public class ACPerformanceCalculator {
 			return this;
 		}
 		
+		public ACPerformanceCalculatorBuilder cLGround(Double cLGround) {
+			this.__cLGround = cLGround;
+			return this;
+		}
+		
 		public ACPerformanceCalculatorBuilder cLmaxLanding(Double cLmaxLanding) {
 			this.__cLmaxLanding = cLmaxLanding;
+			return this;
+		}
+		
+		public ACPerformanceCalculatorBuilder dtRotation(Amount<Duration> dtRotation) {
+			this.__dtRotation = dtRotation;
+			return this;
+		}
+		
+		public ACPerformanceCalculatorBuilder dtHold(Amount<Duration> dtHold) {
+			this.__dtHold = dtHold;
 			return this;
 		}
 		
@@ -403,14 +507,27 @@ public class ACPerformanceCalculator {
 		this._currentDragCoefficient = builder.__currentDragCoefficient;
 		this._cD0 = builder.__cD0;
 		this._oswald = builder.__oswald;
+		this._oswaldTakeOff = builder.__oswaldTakeOff;
+		this._oswaldLanding = builder.__oswaldLanding;
 		this._cLmaxClean = builder.__cLmaxClean;
 		this._cLAlphaClean = builder.__cLAlphaClean;
-		this._deltaCD0HighLift = builder.__deltaCD0HighLift;
+		this._cLAlphaHighLift = builder.__cLAlphaHighLift;
+		this._deltaCD0TakeOff = builder.__deltaCD0TakeOff;
+		this._deltaCD0Landing = builder.__deltaCD0Landing;
 		this._deltaCD0LandingGear = builder.__deltaCD0LandingGear;
 		this._cLmaxTakeOff = builder.__cLmaxTakeOff;
 		this._cLZeroTakeOff = builder.__cLZeroTakeOff;
+		this._cLGround = builder.__cLGround;
 		this._cLmaxLanding = builder.__cLmaxLanding;
+		this._polarCLCruise = builder.__polarCLCruise;
+		this._polarCDCruise = builder.__polarCDCruise;
+		this._polarCLTakeOff = builder.__polarCLTakeOff;
+		this._polarCDTakeOff = builder.__polarCDTakeOff;
+		this._polarCLLanding = builder.__polarCLLanding;
+		this._polarCDLanding = builder.__polarCDLanding;
 		
+		this._dtRotation = builder.__dtRotation;
+		this._dtHold = builder.__dtHold;
 		this._alphaGround = builder.__alphaGround;
 		this._windSpeed = builder.__windSpeed;
 		this._obstacleTakeOff = builder.__obstacleTakeOff;
@@ -605,13 +722,24 @@ public class ACPerformanceCalculator {
 		Double currentDragCoefficient = null;
 		Double cD0 = null;
 		Double oswald = null;
+		Double oswaldTakeOff = null;
+		Double oswaldLanding = null;
 		Double cLmaxClean = null;
 		Amount<?> cLAlphaClean = null;
-		Double deltaCD0HighLift = null;
-		Double deltaCD0LandingGear = null;
+		Amount<?> cLAlphaHighLift = null;
+		Double deltaCD0TakeOff = null;
+		Double deltaCD0Landing = null;
+		Double deltaCD0LandingGears = null;
 		Double cLmaxTakeOff = null;
 		Double cLZeroTakeOff = null;
+		Double cLGround = null;
 		Double cLmaxLanding = null;
+		Double[] polarCLCruise = null;
+		Double[] polarCDCruise = null;
+		Double[] polarCLTakeOff = null;
+		Double[] polarCDTakeOff = null;
+		Double[] polarCLLanding = null;
+		Double[] polarCDLanding = null;
 		
 		if(readAerodynamicsFromXLSFlag == Boolean.TRUE) {
 			
@@ -622,6 +750,7 @@ public class ACPerformanceCalculator {
 					+ "AERODYNAMICS"
 					+ File.separator
 					+ fileAerodynamicsXLS);
+			
 			if(aerodynamicsFile.exists()) {
 
 				FileInputStream readerXLS = new FileInputStream(aerodynamicsFile);
@@ -640,6 +769,21 @@ public class ACPerformanceCalculator {
 			}
 		}
 		else {
+			
+			Boolean parabolicDragPolarFlag = Boolean.FALSE;
+			String paraboliDragPolarProperty = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//@parabolicDragPolar");
+			if(paraboliDragPolarProperty.equalsIgnoreCase("TRUE"))
+				parabolicDragPolarFlag = Boolean.TRUE;
+			else if(paraboliDragPolarProperty.equalsIgnoreCase("FALSE"))
+				parabolicDragPolarFlag = Boolean.FALSE;
+			else {
+				System.err.println("ERROR : parabolicDragPolar HAS TO BE TRUE/FALSE !");
+				return null;
+			}
+			
 			//...............................................................
 			// CURRENT CL
 			String currentLiftingCoefficientProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/current_lifting_coefficient");
@@ -661,6 +805,16 @@ public class ACPerformanceCalculator {
 			if(oswladProperty != null)
 				oswald = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/oswald"));
 			//...............................................................
+			// OSWALD TO
+			String oswladTOProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_take_off");
+			if(oswladTOProperty != null)
+				oswaldTakeOff = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_take_off"));
+			//...............................................................
+			// OSWALD LND
+			String oswladLNDProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_landing");
+			if(oswladLNDProperty != null)
+				oswaldLanding = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_landing"));
+			//...............................................................
 			// CLmax CLEAN
 			String cLmaxCleanProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/cLmax_clean_configuration");
 			if(cLmaxCleanProperty != null)
@@ -678,15 +832,32 @@ public class ACPerformanceCalculator {
 									NonSI.DEGREE_ANGLE.inverse()
 									);
 			//...............................................................
-			// DeltaCD0 HIGH LIFT
-			String deltaCD0HighLiftProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_high_lift");
-			if(deltaCD0HighLiftProperty != null)
-				deltaCD0HighLift = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_high_lift"));
+			// CLalpha HIGH LIFT
+			String cLAlphaHighLiftProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/cL_alpha_high_lift");
+			if(cLAlphaHighLiftProperty != null)
+				cLAlphaHighLift = Amount.valueOf(
+							Double.valueOf(
+									reader.getXMLPropertyByPath(
+											"//performance/aerodynamics/cL_alpha_high_lift"
+											)
+									),
+									NonSI.DEGREE_ANGLE.inverse()
+									);
+			//...............................................................
+			// DeltaCD0 TAKE-OFF
+			String deltaCD0TakeOffProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_take_off");
+			if(deltaCD0TakeOffProperty != null)
+				deltaCD0TakeOff = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_take_off"));
+			//...............................................................
+			// DeltaCD0 LANDING
+			String deltaCD0LandingProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_landing");
+			if(deltaCD0LandingProperty != null)
+				deltaCD0Landing = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_landing"));
 			//...............................................................
 			// DeltaCD0 LANDING GEARS
 			String deltaCD0LandingGearsProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_landing_gears");
 			if(deltaCD0LandingGearsProperty != null)
-				deltaCD0LandingGear = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_landing_gears"));
+				deltaCD0LandingGears = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_landing_gears"));
 			//...............................................................
 			// CLmax TAKE-OFF
 			String cLmaxTakeOffProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/cLmax_take_off_configuration");
@@ -698,32 +869,163 @@ public class ACPerformanceCalculator {
 			if(cL0TakeOffProperty != null)
 				cLZeroTakeOff = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/cL0_take_off_configuration"));
 			//...............................................................
+			// CL GROUND TAKE-OFF
+			String cLGroundProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/cL_ground");
+			if(cLGroundProperty != null)
+				cLGround = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/cL_ground"));
+			//...............................................................
 			// CLmax LANDING
 			String cLmaxLandingProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/cLmax_landing_configuration");
 			if(cLmaxLandingProperty != null)
 				cLmaxLanding = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/cLmax_landing_configuration"));
+			
+			if(parabolicDragPolarFlag == Boolean.FALSE) {
+				
+				//...............................................................
+				// POLAR CURVE CRUISE
+				List<String> polarCLCruiseProperty = reader.getXMLPropertiesByPath("//performance/aerodynamics/polar_curves/cruise/polar_curve_CL");
+				if(!polarCLCruiseProperty.isEmpty()) {
+					polarCLCruise = MyArrayUtils.convertListOfDoubleToDoubleArray(
+							reader.readArrayDoubleFromXML("//performance/aerodynamics/polar_curves/cruise/polar_curve_CL")
+							); 
+				}
+				List<String> polarCDCruiseProperty = reader.getXMLPropertiesByPath("//performance/aerodynamics/polar_curves/cruise/polar_curve_CD");
+				if(!polarCDCruiseProperty.isEmpty()) {
+					polarCDCruise = MyArrayUtils.convertListOfDoubleToDoubleArray(
+							reader.readArrayDoubleFromXML("//performance/aerodynamics/polar_curves/cruise/polar_curve_CD")
+							); 
+				}
+				//...............................................................
+				// POLAR CURVE TAKE-OFF
+				List<String> polarCLTakeOffProperty = reader.getXMLPropertiesByPath("//performance/aerodynamics/polar_curves/take_off/polar_curve_CL");
+				if(!polarCLTakeOffProperty.isEmpty()) {
+					polarCLTakeOff = MyArrayUtils.convertListOfDoubleToDoubleArray(
+							reader.readArrayDoubleFromXML("//performance/aerodynamics/polar_curves/take_off/polar_curve_CL")
+							); 
+				}
+				List<String> polarCDTakeOffProperty = reader.getXMLPropertiesByPath("//performance/aerodynamics/polar_curves/take_off/polar_curve_CD");
+				if(!polarCDTakeOffProperty.isEmpty()) {
+					polarCDTakeOff = MyArrayUtils.convertListOfDoubleToDoubleArray(
+							reader.readArrayDoubleFromXML("//performance/aerodynamics/polar_curves/take_off/polar_curve_CD")
+							); 
+				}
+				//...............................................................
+				// POLAR CURVE LANDING
+				List<String> polarCLLandingProperty = reader.getXMLPropertiesByPath("//performance/aerodynamics/polar_curves/landing/polar_curve_CL");
+				if(!polarCLLandingProperty.isEmpty()) {
+					polarCLLanding = MyArrayUtils.convertListOfDoubleToDoubleArray(
+							reader.readArrayDoubleFromXML("//performance/aerodynamics/polar_curves/landing/polar_curve_CL")
+							);
+				}
+				List<String> polarCDLandingProperty = reader.getXMLPropertiesByPath("//performance/aerodynamics/polar_curves/landing/polar_curve_CD");
+				if(!polarCDLandingProperty.isEmpty()) {
+					polarCDLanding = MyArrayUtils.convertListOfDoubleToDoubleArray(
+							reader.readArrayDoubleFromXML("//performance/aerodynamics/polar_curves/landing/polar_curve_CD")
+							); 
+				}
+			}
+			else {
+				
+				int numberOfPolarPoints = 50;
+				
+				//...............................................................
+				// POLAR CURVE CRUISE
+				polarCLCruise = MyArrayUtils.linspaceDouble(-0.2, cLmaxClean+0.2, numberOfPolarPoints);				
+				polarCDCruise = new Double[polarCLCruise.length];
+				
+				//...............................................................
+				// POLAR CURVE TAKE-OFF
+				polarCLTakeOff = MyArrayUtils.linspaceDouble(-0.2, cLmaxTakeOff+0.2, numberOfPolarPoints);
+				polarCDTakeOff = new Double[polarCLTakeOff.length]; 
+				
+				//...............................................................
+				// POLAR CURVE LANDING
+				polarCLLanding = MyArrayUtils.linspaceDouble(-0.2, cLmaxLanding+0.2, numberOfPolarPoints);
+				polarCDLanding = new Double[polarCLLanding.length];
+				
+				// building the CD arrays...
+				for(int i=0; i<numberOfPolarPoints; i++) {
+					polarCDCruise[i] = DragCalc.calculateCDTotal(
+							cD0,
+							polarCLCruise[i],
+							theAircraft.getWing().getAspectRatio(),
+							oswald, 
+							theOperatingConditions.getMachCurrent(),
+							DragCalc.calculateCDWaveLockKornCriticalMachKroo(
+									polarCLCruise[i],
+									theOperatingConditions.getMachCurrent(),
+									theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
+									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(),
+									theAircraft.getWing().getAirfoilList().get(0).getType()
+									)
+							);
+					polarCDTakeOff[i] = DragCalc.calculateCDTotal(
+							cD0 + deltaCD0TakeOff + deltaCD0LandingGears,
+							polarCLTakeOff[i],
+							theAircraft.getWing().getAspectRatio(),
+							oswaldTakeOff, 
+							theOperatingConditions.getMachCurrent(),
+							DragCalc.calculateCDWaveLockKornCriticalMachKroo(
+									polarCLTakeOff[i],
+									theOperatingConditions.getMachCurrent(),
+									theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
+									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(),
+									theAircraft.getWing().getAirfoilList().get(0).getType()
+									)
+							);
+					polarCDCruise[i] = DragCalc.calculateCDTotal(
+							cD0 + deltaCD0Landing + deltaCD0LandingGears,
+							polarCLLanding[i],
+							theAircraft.getWing().getAspectRatio(),
+							oswaldLanding, 
+							theOperatingConditions.getMachCurrent(),
+							DragCalc.calculateCDWaveLockKornCriticalMachKroo(
+									polarCLLanding[i],
+									theOperatingConditions.getMachCurrent(),
+									theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
+									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(),
+									theAircraft.getWing().getAirfoilList().get(0).getType()
+									)
+							);
+				}
+			}
 		}
 		
 		//===========================================================================================
 		// READING TAKE-OFF AND LANDING DATA ...	
 
-		Amount<Angle> alphaGround = null;
-		Amount<Velocity> windSpeed = null;
-		Amount<Length> obstacleTakeOff = null;
-		Double mu = null;
-		Double muBrake = null;
-		Double kRotation = null;
-		Double kLiftOff = null;
-		Double kCLmax = null;
-		Double kDragDueToEngineFailure = null;
-		Double kAlphaDot = null;
-		Double alphaReductionRate = null;
-		Amount<Length> obstacleLanding = null;
-		Amount<Angle> thetaApproach = null;
-		Double kApproach = null;
-		Double kFlare = null;
-		Double kTouchDown = null;
-		Amount<Duration> freeRollDuration = null;
+		// default values
+		Amount<Duration> dtRotation = Amount.valueOf(3.0, SI.SECOND);
+		Amount<Duration> dtHold = Amount.valueOf(0.5, SI.SECOND);
+		Amount<Angle> alphaGround = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		Amount<Velocity> windSpeed = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
+		Amount<Length> obstacleTakeOff = Amount.valueOf(35, NonSI.FOOT).to(SI.METER);
+		Double mu = 0.03;
+		Double muBrake = 0.4;
+		Double kRotation = 1.05;
+		Double kLiftOff = 1.1;
+		Double kCLmax = 0.9;
+		Double kDragDueToEngineFailure = 1.1;
+		Double kAlphaDot = 0.04;
+		Double alphaReductionRate = -4.0;
+		Amount<Length> obstacleLanding = Amount.valueOf(50, NonSI.FOOT).to(SI.METER);
+		Amount<Angle> thetaApproach = Amount.valueOf(3.0, NonSI.DEGREE_ANGLE);
+		Double kApproach = 1.3;
+		Double kFlare = 1.23;
+		Double kTouchDown = 1.15;
+		Amount<Duration> freeRollDuration = Amount.valueOf(2.0, SI.SECOND);
+		
+		//...............................................................
+		// dt ROTATION
+		String dtRotationProperty = reader.getXMLPropertyByPath("//performance/takeoff_landing/dt_rotation");
+		if(dtRotationProperty != null)
+			dtRotation = Amount.valueOf(Double.valueOf(reader.getXMLPropertyByPath("//performance/takeoff_landing/dt_rotation")), SI.SECOND);				
+		
+		//...............................................................
+		// dt HOLD
+		String dtHoldProperty = reader.getXMLPropertyByPath("//performance/takeoff_landing/dt_hold");
+		if(dtHoldProperty != null)
+			dtHold = Amount.valueOf(Double.valueOf(reader.getXMLPropertyByPath("//performance/takeoff_landing/dt_hold")), SI.SECOND);				
 		
 		//...............................................................
 		// ALPHA GROUND
@@ -940,13 +1242,26 @@ public class ACPerformanceCalculator {
 				.currentDragCoefficient(currentDragCoefficient)
 				.cD0(cD0)
 				.oswald(oswald)
+				.oswaldTakeOff(oswaldTakeOff)
+				.oswaldLanding(oswaldLanding)
 				.cLmaxClean(cLmaxClean)
 				.cLAlphaClean(cLAlphaClean)
-				.deltaCD0HighLift(deltaCD0HighLift)
-				.deltaCD0LandinGear(deltaCD0LandingGear)
+				.cLAlphaHighLift(cLAlphaHighLift)
+				.deltaCD0TakeOff(deltaCD0TakeOff)
+				.deltaCD0Landing(deltaCD0Landing)
+				.deltaCD0LandinGear(deltaCD0LandingGears)
 				.cLmaxTakeOff(cLmaxTakeOff)
 				.cLZeroTakeOff(cLZeroTakeOff)
+				.cLGround(cLGround)
 				.cLmaxLanding(cLmaxLanding)
+				.polarCLCruise(polarCLCruise)
+				.polarCDCruise(polarCDCruise)
+				.polarCLTakeOff(polarCLTakeOff)
+				.polarCDTakeOff(polarCDTakeOff)
+				.polarCLLanding(polarCLLanding)
+				.polarCDLanding(polarCDLanding)
+				.dtRotation(dtRotation)
+				.dtHold(dtHold)
 				.alphaGround(alphaGround)
 				.windSpeed(windSpeed)
 				.obstacleTakeOff(obstacleTakeOff)
@@ -983,6 +1298,166 @@ public class ACPerformanceCalculator {
 	// -IMPLEMENT THE INNER CLASSES					//
 	//								 		   		//
 	//////////////////////////////////////////////////
+	
+	/**
+	 * This method reads the task list, initializes the related calculators inner classes and 
+	 * performe the required calculation
+	 */
+	public void calculatePerformance(String resultsFolderPath) {
+		
+		String performanceFolderPath = JPADStaticWriteUtils.createNewFolder(
+				resultsFolderPath 
+				+ "PERFORMANCE"
+				+ File.separator
+				);
+		
+		if(_taskList.contains(PerformanceEnum.TAKE_OFF)) {
+			
+			String takeOffFolderPath = JPADStaticWriteUtils.createNewFolder(
+					performanceFolderPath 
+					+ "TAKE_OFF"
+					+ File.separator
+					);
+			
+			CalcTakeOff calcTakeOff = new CalcTakeOff();
+			calcTakeOff.performTakeOffSimulation(takeOffFolderPath);
+			
+		}
+		
+		// TODO : CONTINUE WITH OTHER ANALYSES
+		
+	}
+	
+	@Override
+	public String toString() {
+		
+		MyConfiguration.customizeAmountOutput();
+
+		StringBuilder sb = new StringBuilder()
+				.append("\n\n\t-------------------------------------\n")
+				.append("\tPerformance Analysis\n")
+				.append("\t-------------------------------------\n")
+				;
+		if(_taskList.contains(PerformanceEnum.TAKE_OFF)) {
+			
+			sb.append("\tTAKE-OFF\n")
+			.append("\t.....................................\n")
+			.append("\tGround roll distance = " + _groundRoll + "\n")
+			.append("\tRotation distance = " + _rotation + "\n")
+			.append("\tAirborne distance = " + _airborne + "\n")
+			.append("\tAOE take-off distance = " + _takeOffDistanceAOE + "\n")
+			.append("\tFAR-25 take-off field length = " + _takeOffDistanceFAR25 + "\n")
+			.append("\tBalanced field length = " + _balancedFieldLength + "\n")
+			.append("\t.....................................\n")
+			.append("\tStall speed take-off (VsTO)= " + _vStallTakeOff + "\n")
+			.append("\tDecision speed (V1) = " + _v1 + "\n")
+			.append("\tRotation speed (V_Rot) = " + _vRotation + "\n")
+			.append("\tLift-off speed (V_LO) = " + _vLiftOff + "\n")
+			.append("\tTake-off safety speed (V2) = " + _v2 + "\n")
+			.append("\t-------------------------------------\n")
+			;
+			
+		}
+
+		// TODO : COMPLETE ME !
+		
+		return sb.toString();
+	}
+	
+	
+	//............................................................................
+	// TAKE-OFF INNER CLASS
+	//............................................................................
+	public class CalcTakeOff {
+		
+		public void performTakeOffSimulation(String takeOffFolderPath) {
+			
+			Amount<Length> wingToGroundDistance = 
+					_theAircraft.getFuselage().getHeightFromGround()
+					.plus(_theAircraft.getFuselage().getSectionHeight().divide(2))
+					.plus(_theAircraft.getWing().getZApexConstructionAxes()
+							.plus(_theAircraft.getWing().getSemiSpan()
+									.times(Math.sin(
+											_theAircraft.getWing()	
+											.getLiftingSurfaceCreator()	
+											.getDihedralMean()
+											.doubleValue(SI.RADIAN)
+											)
+											)
+									)
+							);
+			
+			double deltaCD0HighLiftAndLandingGears = _deltaCD0TakeOff + _deltaCD0LandingGear;
+			
+			TakeOffCalc theTakeOffCalculator = new TakeOffCalc(
+					_theAircraft,
+					_theOperatingConditions,
+					_dtRotation,
+					_dtHold,
+					_kCLmax,
+					_kRotation,
+					_kLiftOff,
+					_kDragDueToEnigneFailure,
+					1.0, // throttle setting
+					_kAlphaDot,
+					_alphaReductionRate,
+					_mu,
+					_muBrake,
+					wingToGroundDistance,
+					_obstacleTakeOff,
+					_windSpeed,
+					_alphaGround,
+					_theAircraft.getWing().getRiggingAngle(),
+					_cD0,
+					_oswald,
+					_cLmaxTakeOff,
+					_cLZeroTakeOff,
+					_cLGround,
+					_cLAlphaHighLift.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
+					deltaCD0HighLiftAndLandingGears
+					);
+			
+			//------------------------------------------------------------
+			// SIMULATION
+			theTakeOffCalculator.calculateTakeOffDistanceODE(null, false);
+			
+			// Distances:
+			_groundRoll = theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(0);
+			_rotation = theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(1).minus(_groundRoll);
+			_airborne = theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(2).minus(_rotation).minus(_groundRoll);
+			_takeOffDistanceAOE = _groundRoll.plus(_rotation).plus(_airborne);
+			_takeOffDistanceFAR25 = _takeOffDistanceAOE.times(1.15);
+			
+			// Velocities:
+			_vStallTakeOff = theTakeOffCalculator.getvSTakeOff();
+			_vRotation = theTakeOffCalculator.getvRot();
+			_vLiftOff = theTakeOffCalculator.getvLO();
+			_v1 = theTakeOffCalculator.getV1();
+			_v2 = theTakeOffCalculator.getTakeOffResults().getSpeed().get(2);
+			
+			if(_plotList.contains(PerformancePlotEnum.TAKE_OFF_SIMULATIONS))
+				try {
+					theTakeOffCalculator.createTakeOffCharts(takeOffFolderPath);
+				} catch (InstantiationException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+			
+			//------------------------------------------------------------
+			// BALANCED FIELD LENGTH
+			theTakeOffCalculator.calculateBalancedFieldLength();
+			
+			_balancedFieldLength = theTakeOffCalculator.getBalancedFieldLength();
+			
+			if(_plotList.contains(PerformancePlotEnum.BALANCED_FIELD_LENGTH))
+				theTakeOffCalculator.createBalancedFieldLengthChart(takeOffFolderPath);
+		}
+		
+	}
+	//............................................................................
+	// END OF THE TAKE-OFF INNER CLASS
+	//............................................................................
 	
 	
 	//------------------------------------------------------------------------------
@@ -1060,6 +1535,22 @@ public class ACPerformanceCalculator {
 	public void setOswald(Double _oswald) {
 		this._oswald = _oswald;
 	}
+	public Double getOswaldTakeOff() {
+		return _oswaldTakeOff;
+	}
+
+	public void setOswaldTakeOff(Double _oswaldTakeOff) {
+		this._oswaldTakeOff = _oswaldTakeOff;
+	}
+
+	public Double getOswaldLanding() {
+		return _oswaldLanding;
+	}
+
+	public void setOswaldLanding(Double _oswaldLanding) {
+		this._oswaldLanding = _oswaldLanding;
+	}
+
 	public Double getCLmaxClean() {
 		return _cLmaxClean;
 	}
@@ -1071,6 +1562,26 @@ public class ACPerformanceCalculator {
 	}
 	public void setCLAlphaClean(Amount<?> _cLAlphaClean) {
 		this._cLAlphaClean = _cLAlphaClean;
+	}
+	public Amount<?> getCLAlphaHighLift() {
+		return _cLAlphaHighLift;
+	}
+
+	public void setCLAlphaHighLift(Amount<?> _cLAlphaHighLift) {
+		this._cLAlphaHighLift = _cLAlphaHighLift;
+	}
+
+	public Amount<Duration> getDtRotation() {
+		return _dtRotation;
+	}
+	public void setDtRotation(Amount<Duration> _dtRotation) {
+		this._dtRotation = _dtRotation;
+	}
+	public Amount<Duration> getDtHold() {
+		return _dtHold;
+	}
+	public void setDtHold(Amount<Duration> _dtHold) {
+		this._dtHold = _dtHold;
 	}
 	public Amount<Angle> getAlphaGround() {
 		return _alphaGround;
@@ -1103,10 +1614,16 @@ public class ACPerformanceCalculator {
 		this._muBrake = _muBrake;
 	}
 	public Double getDeltaCD0HighLift() {
-		return _deltaCD0HighLift;
+		return _deltaCD0TakeOff;
 	}
-	public void setDeltaCD0HighLift(Double _deltaCD0HighLift) {
-		this._deltaCD0HighLift = _deltaCD0HighLift;
+	public void setDeltaCD0TakeOff(Double _deltaCD0TakeOff) {
+		this._deltaCD0TakeOff = _deltaCD0TakeOff;
+	}
+	public Double getDeltaCD0Landing() {
+		return _deltaCD0Landing;
+	}
+	public void setDeltaCD0Landing(Double _deltaCD0Landing) {
+		this._deltaCD0Landing = _deltaCD0Landing;
 	}
 	public Double getDeltaCD0LandingGear() {
 		return _deltaCD0LandingGear;
@@ -1120,6 +1637,14 @@ public class ACPerformanceCalculator {
 	public void setCLmaxTakeOff(Double _cLmaxTakeOff) {
 		this._cLmaxTakeOff = _cLmaxTakeOff;
 	}
+	public Double getCLGround() {
+		return _cLGround;
+	}
+
+	public void setCLGround(Double _cLGround) {
+		this._cLGround = _cLGround;
+	}
+
 	public Double getCLZeroTakeOff() {
 		return _cLZeroTakeOff;
 	}
@@ -1227,5 +1752,141 @@ public class ACPerformanceCalculator {
 	}
 	public void setPlotList(List<PerformancePlotEnum> _plotList) {
 		this._plotList = _plotList;
+	}
+
+	public Amount<Length> getTakeOffDistanceAOE() {
+		return _takeOffDistanceAOE;
+	}
+
+	public void setTakeOffDistanceAOE(Amount<Length> _takeOffDistanceAOE) {
+		this._takeOffDistanceAOE = _takeOffDistanceAOE;
+	}
+
+	public Amount<Length> getTakeOffDistanceFAR25() {
+		return _takeOffDistanceFAR25;
+	}
+
+	public void setTakeOffDistanceFAR25(Amount<Length> _takeOffDistanceFAR25) {
+		this._takeOffDistanceFAR25 = _takeOffDistanceFAR25;
+	}
+
+	public Amount<Length> getBalancedFieldLength() {
+		return _balancedFieldLength;
+	}
+
+	public void setBalancedFieldLength(Amount<Length> _balancedFieldLength) {
+		this._balancedFieldLength = _balancedFieldLength;
+	}
+
+	public Amount<Length> getGroundRoll() {
+		return _groundRoll;
+	}
+
+	public void setGroundRoll(Amount<Length> _groundRoll) {
+		this._groundRoll = _groundRoll;
+	}
+
+	public Amount<Length> getRotation() {
+		return _rotation;
+	}
+
+	public void setRotation(Amount<Length> _rotation) {
+		this._rotation = _rotation;
+	}
+
+	public Amount<Length> getAirborne() {
+		return _airborne;
+	}
+
+	public void setAirborne(Amount<Length> _airborne) {
+		this._airborne = _airborne;
+	}
+
+	public Amount<Velocity> getVStallTakeOff() {
+		return _vStallTakeOff;
+	}
+
+	public void setVStallTakeOff(Amount<Velocity> _vsTO) {
+		this._vStallTakeOff = _vsTO;
+	}
+
+	public Amount<Velocity> getVRotation() {
+		return _vRotation;
+	}
+
+	public void setVRotation(Amount<Velocity> _vRotation) {
+		this._vRotation = _vRotation;
+	}
+
+	public Amount<Velocity> getVLiftOff() {
+		return _vLiftOff;
+	}
+
+	public void setVLiftOff(Amount<Velocity> _vLiftOff) {
+		this._vLiftOff = _vLiftOff;
+	}
+
+	public Amount<Velocity> getV1() {
+		return _v1;
+	}
+
+	public void setV1(Amount<Velocity> _v1) {
+		this._v1 = _v1;
+	}
+
+	public Amount<Velocity> getV2() {
+		return _v2;
+	}
+
+	public void setV2(Amount<Velocity> _v2) {
+		this._v2 = _v2;
+	}
+
+	public Double[] getPolarCLCruise() {
+		return _polarCLCruise;
+	}
+
+	public void setPolarCLCruise(Double[] _polarCLCruise) {
+		this._polarCLCruise = _polarCLCruise;
+	}
+
+	public Double[] getPolarCDCruise() {
+		return _polarCDCruise;
+	}
+
+	public void setPolarCDCruise(Double[] _polarCDCruise) {
+		this._polarCDCruise = _polarCDCruise;
+	}
+
+	public Double[] getPolarCLTakeOff() {
+		return _polarCLTakeOff;
+	}
+
+	public void setPolarCLTakeOff(Double[] _polarCLTakeOff) {
+		this._polarCLTakeOff = _polarCLTakeOff;
+	}
+
+	public Double[] getPolarCDTakeOff() {
+		return _polarCDTakeOff;
+	}
+
+	public void setPolarCDTakeOff(Double[] _polarCDTakeOff) {
+		this._polarCDTakeOff = _polarCDTakeOff;
+	}
+
+	public Double[] getPolarCLLanding() {
+		return _polarCLLanding;
+	}
+
+	public void setPolarCLLanding(Double[] _polarCLLanding) {
+		this._polarCLLanding = _polarCLLanding;
+	}
+
+	public Double[] getPolarCDLanding() {
+		return _polarCDLanding;
+	}
+
+	public void setPolarCDLanding(Double[] _polarCDLanding) {
+		this._polarCDLanding = _polarCDLanding;
 	}
 }
