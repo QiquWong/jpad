@@ -8,8 +8,8 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.Duration;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Mass;
 import javax.measure.quantity.Velocity;
-import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.apache.commons.math3.exception.DimensionMismatchException;
@@ -30,6 +30,7 @@ import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.FoldersEnum;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
+import standaloneutils.MyMathUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
 import writers.JPADStaticWriteUtils;
@@ -61,6 +62,7 @@ public class LandingCalc {
 	private Aircraft aircraft;
 	private OperatingConditions theConditions;
 	private CalcHighLiftDevices highLiftCalculator;
+	private Amount<Mass> maxLandingMass;
 	private Amount<Duration> nFreeRoll;
 	private Amount<Velocity> vSLanding, vA, vFlare, vTD, vWind;
 	private Amount<Length> wingToGroundDistance, obstacle, sApproach, sFlare, sGround, sTotal;
@@ -71,133 +73,11 @@ public class LandingCalc {
 	private List<Amount<Acceleration>> acceleration;
 	private List<Amount<Force>> thrust, lift, drag, friction, totalForce;
 	private List<Amount<Length>> landingDistance, verticalDistance;
-	private double mu, muBrake, cLmaxLanding, kGround, cL0, cLground, kA, kFlare, kTD, phiRev;
+	private double mu, muBrake, cLmaxLanding, kGround, cL0Landing, cLground, kA, kFlare, kTD, phiRev;
 	private double oswald, cD0, cLalphaFlap, deltaCD0Spoiler, deltaCD0LandignGear, deltaCD0FlapLandinGearsSpoilers;
 
 	//-------------------------------------------------------------------------------------
 	// BUILDER:
-
-	/**************************************************************************************
-	 * This builder has the purpose of pass input to the class fields and to initialize all
-	 * lists with the correct initial values in order to setup the landing field length 
-	 * calculation
-	 * 
-	 * @author Vittorio Trifari
-	 * @param aircraft
-	 * @param theConditions
-	 * @param highLiftCalculator instance of LSAerodynamicManager inner class for managing
-	 * 		  and slat effects
-	 * @param kA percentage of the stall speed in landing which defines the approach speed
-	 * @param kFlare percentage of the stall speed in landing which defines the flare speed
-	 * @param kTD percentage of the stall speed in landing which defines the touch-down speed
-	 * @param phiApproach throttle setting in approach phase
-	 * @param phiRev throttle setting for the reverse thrust
-	 * @param mu friction coefficient without brakes action
-	 * @param muBrake friction coefficient with brakes activated
-	 * @param wingToGroundDistance
-	 * @param obstacle
-	 * @param vWind
-	 * @param alphaGround
-	 * @param iw
-	 */
-	public LandingCalc(
-			Aircraft aircraft,
-			OperatingConditions theConditions,
-			CalcHighLiftDevices highLiftCalculator,
-			double kA,
-			double kFlare, 
-			double kTD,
-			double mu,
-			double muBrake,
-			double deltaCD0LandingGear,
-			double deltaCD0Spoiler,
-			Amount<Length> wingToGroundDistance,
-			Amount<Length> obstacle,
-			Amount<Velocity> vWind,
-			Amount<Angle> alphaGround,
-			Amount<Angle> iw,
-			Amount<Angle> thetaApproach,
-			Amount<Duration> nFreeRoll
-			) {
-
-		this.aircraft = aircraft;
-		this.theConditions = theConditions;
-		this.highLiftCalculator = highLiftCalculator;
-		this.kA = kA;
-		this.kFlare = kFlare;
-		this.kTD = kTD;
-		this.mu = mu;
-		this.muBrake = muBrake;
-		this.wingToGroundDistance = wingToGroundDistance;
-		this.obstacle = obstacle;
-		this.vWind = vWind;
-		this.alphaGround = alphaGround;
-		this.iw = iw;
-		this.thetaApproach = thetaApproach;
-		this.nFreeRoll = nFreeRoll;
-		this.deltaCD0LandignGear = deltaCD0LandingGear;
-		this.deltaCD0Spoiler = deltaCD0Spoiler;
-		
-		this.oswald = aircraft.getTheAnalysisManager().getTheAerodynamics().get_oswald();
-		this.cD0 = aircraft.getTheAnalysisManager().getTheAerodynamics().get_cD0();
-
-		// CalcHighLiftDevices object to manage flap/slat effects
-		highLiftCalculator.calculateHighLiftDevicesEffects();
-		cLmaxLanding = highLiftCalculator.getcL_Max_Flap();
-		cL0 = highLiftCalculator.calcCLatAlphaHighLiftDevice(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
-		cLground = highLiftCalculator.calcCLatAlphaHighLiftDevice(getAlphaGround().plus(iw));
-		cLalphaFlap = highLiftCalculator.getcLalpha_new();
-		this.deltaCD0FlapLandinGearsSpoilers = highLiftCalculator.getDeltaCD() + this.deltaCD0LandignGear + this.deltaCD0Spoiler;
-
-		// Reference velocities definition
-		vSLanding = Amount.valueOf(
-				SpeedCalc.calculateSpeedStall(
-						theConditions.getAltitude().getEstimatedValue(),
-						aircraft.getTheAnalysisManager().getTheWeights().getMaximumLandingWeight().getEstimatedValue(),
-						aircraft.getWing().getSurface().getEstimatedValue(),
-						cLmaxLanding
-						),
-				SI.METERS_PER_SECOND);
-		vA = vSLanding.times(kA);
-		vFlare = vSLanding.times(kFlare);
-		vTD = vSLanding.times(kTD);
-
-		// McCormick interpolated function --> See the excel file into JPAD DOCS
-		double hb = wingToGroundDistance.divide(aircraft.getWing().getSpan().times(Math.PI/4)).getEstimatedValue();
-		kGround = - 622.44*(Math.pow(hb, 5)) + 624.46*(Math.pow(hb, 4)) - 255.24*(Math.pow(hb, 3))
-				+ 47.105*(Math.pow(hb, 2)) - 0.6378*hb + 0.0055;
-		
-		System.out.println("\n-----------------------------------------------------------");
-		System.out.println("CLmaxLanding = " + cLmaxLanding);
-		System.out.println("CL0 = " + cL0);
-		System.out.println("CLground = " + cLground);
-		System.out.println("CD0 clean = " + cD0);
-		System.out.println("Delta CD0 flap = " + highLiftCalculator.getDeltaCD());
-		System.out.println("Delta CD0 landing gears = " + this.deltaCD0LandignGear);
-		System.out.println("Delta CD0 spoilers = " + this.deltaCD0Spoiler);
-		System.out.println("CD0 Landing = " + (cD0 + deltaCD0FlapLandinGearsSpoilers));
-		System.out.println("Induced CD Landing = " + ((Math.pow(cLground, 2)*kGround)
-				/(Math.PI*aircraft.getWing().getAspectRatio()*aircraft.getTheAnalysisManager().getTheAerodynamics().get_oswald())));
-		System.out.println("VsLanding = " + vSLanding);
-		System.out.println("V_Approach = " + vA);
-		System.out.println("V_Flare = " + vFlare);
-		System.out.println("V_TouchDown = " + vTD);
-		System.out.println("-----------------------------------------------------------\n");
-
-		// List initialization
-		this.time = new ArrayList<Amount<Duration>>();
-		this.speed = new ArrayList<Amount<Velocity>>();
-		this.thrust = new ArrayList<Amount<Force>>();
-		this.lift = new ArrayList<Amount<Force>>();
-		this.loadFactor = new ArrayList<Double>();
-		this.drag = new ArrayList<Amount<Force>>();
-		this.friction = new ArrayList<Amount<Force>>();
-		this.totalForce = new ArrayList<Amount<Force>>();
-		this.acceleration = new ArrayList<Amount<Acceleration>>();
-		this.landingDistance = new ArrayList<Amount<Length>>();
-		this.verticalDistance = new ArrayList<Amount<Length>>();
-
-	}
 
 	/********************************************************************************************
 	 * This builder is an overload of the previous one designed to allow the user 
@@ -222,13 +102,14 @@ public class LandingCalc {
 	 * @param cD0
 	 * @param oswald
 	 * @param cLmaxLanding
-	 * @param cL0
+	 * @param cL0Landing
 	 * @param cLalphaFlap
 	 * @param deltaCD0FlapLandingGears 
 	 */
 	public LandingCalc(
 			Aircraft aircraft,
 			OperatingConditions theConditions,
+			Amount<Mass> maxLandingMass,
 			double kA,
 			double kFlare, 
 			double kTD,
@@ -243,7 +124,7 @@ public class LandingCalc {
 			double cD0,
 			double oswald,
 			double cLmaxLanding,
-			double cL0,
+			double cL0Landing,
 			double cLalphaFlap,
 			double deltaCD0FlapLandingGears,
 			Amount<Duration> nFreeRoll
@@ -252,6 +133,7 @@ public class LandingCalc {
 		// Required data
 		this.aircraft = aircraft;
 		this.theConditions = theConditions;
+		this.maxLandingMass = maxLandingMass;
 		this.kA = kA;
 		this.kFlare = kFlare;
 		this.kTD = kTD;
@@ -267,17 +149,17 @@ public class LandingCalc {
 		this.oswald = oswald;
 		this.cLmaxLanding = cLmaxLanding;
 		this.deltaCD0FlapLandinGearsSpoilers = deltaCD0FlapLandingGears;
-		this.cL0 = cL0; 
+		this.cL0Landing = cL0Landing; 
 		this.cLalphaFlap = cLalphaFlap;
 		this.nFreeRoll = nFreeRoll;
 		
-		this.cLground = cL0 + (cLalphaFlap*iw.getEstimatedValue());
+		this.cLground = cL0Landing + (cLalphaFlap*iw.getEstimatedValue());
 
 		// Reference velocities definition
 		vSLanding = Amount.valueOf(
 				SpeedCalc.calculateSpeedStall(
 						theConditions.getAltitude().getEstimatedValue(),
-						aircraft.getTheAnalysisManager().getTheWeights().getMaximumLandingWeight().getEstimatedValue(),
+						maxLandingMass.times(AtmosphereCalc.g0).getEstimatedValue(),
 						aircraft.getWing().getSurface().getEstimatedValue(),
 						cLmaxLanding
 						),
@@ -288,7 +170,7 @@ public class LandingCalc {
 
 		System.out.println("\n-----------------------------------------------------------");
 		System.out.println("CLmaxLanding = " + cLmaxLanding);
-		System.out.println("CL0 = " + cL0);
+		System.out.println("CL0 = " + cL0Landing);
 		System.out.println("CLground = " + cLground);
 		System.out.println("VsLanding = " + vSLanding);
 		System.out.println("V_Approach = " + vA);
@@ -412,6 +294,8 @@ public class LandingCalc {
 	public void calculateGroundRollLandingODE(double phiRev) {
 
 		this.phiRev = phiRev;
+		
+		initialize();
 		
 		System.out.println("---------------------------------------------------");
 		System.out.println("CalcLanding :: Ground Roll ODE integration\n\n");
@@ -598,12 +482,9 @@ public class LandingCalc {
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException
 	 */
-	public void createLandingCharts() throws InstantiationException, IllegalAccessException {
+	public void createLandingCharts(String landingFolderPath) throws InstantiationException, IllegalAccessException {
 
 		System.out.println("\n---------WRITING GROUND ROLL PERFORMANCE CHARTS TO FILE-----------");
-
-		String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR);
-		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "Landing_Performance" + File.separator);
 
 		// data setup
 		double[] groundDistance = new double[getLandingDistance().size()];
@@ -652,7 +533,7 @@ public class LandingCalc {
 
 		double[] weight = new double[getTime().size()];
 		for(int i=0; i<weight.length; i++)
-			weight[i] = aircraft.getTheAnalysisManager().getTheWeights().getMaximumLandingWeight().getEstimatedValue();
+			weight[i] = maxLandingMass.times(AtmosphereCalc.g0).getEstimatedValue();
 
 		// landing trajectory and speed
 		double[][] xMatrix1 = new double[2][groundDistance.length];
@@ -668,21 +549,21 @@ public class LandingCalc {
 				0.0, null, -1.0, null,
 				"Ground Distance", "", "m", "",
 				new String[] {"Landing Trajectory", "Speed (m/s)"},
-				subfolderPath, "TrajectoryAndSpeed_vs_GroundDistance");
+				landingFolderPath, "TrajectoryAndSpeed_vs_GroundDistance");
 		
 		// acceleration v.s. ground roll distance
 		MyChartToFileUtils.plotNoLegend(
 				groundRollDistance, acceleration,
 				sApproach.plus(sFlare).getEstimatedValue(), null, null, null,
 				"Ground Roll Distance", "Acceleration", "m", "m/(s^2)",
-				subfolderPath, "Acceleration_vs_GroundDistance");
+				landingFolderPath, "Acceleration_vs_GroundDistance");
 
 		// load factor v.s. ground roll distance
 		MyChartToFileUtils.plotNoLegend(
 				groundRollDistance, loadFactor,
 				sApproach.plus(sFlare).getEstimatedValue(), null, 0.0, null,
 				"Ground Roll distance", "Load Factor", "m", "",
-				subfolderPath, "LoadFactor_vs_GroundDistance");
+				landingFolderPath, "LoadFactor_vs_GroundDistance");
 
 		// Horizontal Forces v.s. ground roll distance
 		double[][] xMatrix2 = new double[4][totalForce.length];
@@ -700,7 +581,7 @@ public class LandingCalc {
 				sApproach.plus(sFlare).getEstimatedValue(), null, null, null,
 				"Ground Roll Distance", "Horizontal Forces", "m", "N",
 				new String[] {"Total Force", "Thrust", "Drag", "Friction"},
-				subfolderPath, "HorizontalForces_vs_GroundDistance");
+				landingFolderPath, "HorizontalForces_vs_GroundDistance");
 
 		// Vertical Forces v.s. ground roll distance
 		double[][] xMatrix3 = new double[2][totalForce.length];
@@ -716,7 +597,7 @@ public class LandingCalc {
 				sApproach.plus(sFlare).getEstimatedValue(), null, null, null,
 				"Ground Roll distance", "Vertical Forces", "m", "N",
 				new String[] {"Lift", "Weight"},
-				subfolderPath, "VerticalForces_vs_GroundDistance");
+				landingFolderPath, "VerticalForces_vs_GroundDistance");
 		
 		System.out.println("\n---------------------------DONE!-------------------------------");
 	}
@@ -745,7 +626,7 @@ public class LandingCalc {
 		public DynamicsEquationsLanding() {
 
 			// constants and known values
-			weight = aircraft.getTheAnalysisManager().getTheWeights().getMaximumLandingWeight().getEstimatedValue();
+			weight = maxLandingMass.times(AtmosphereCalc.g0).getEstimatedValue();
 			g0 = AtmosphereCalc.g0.getEstimatedValue();
 			mu = LandingCalc.this.mu;
 			muBrake = LandingCalc.this.muBrake;
@@ -806,8 +687,16 @@ public class LandingCalc {
 
 		public double drag(double speed) {
 
-			double cD = cD0 + deltaCD0 + 
-					((Math.pow(cLground, 2)/(Math.PI*ar*oswald))*kGround);
+			double cD = MyMathUtils
+					.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertToDoublePrimitive(
+									aircraft.getTheAnalysisManager().getThePerformance().getPolarCLLanding()
+									),
+							MyArrayUtils.convertToDoublePrimitive(
+									aircraft.getTheAnalysisManager().getThePerformance().getPolarCDLanding()
+									),
+							LandingCalc.this.getcLground()
+							);
 
 			return 	0.5
 					*aircraft.getWing().getSurface().getEstimatedValue()
@@ -1006,10 +895,10 @@ public class LandingCalc {
 		this.kGround = kGround;
 	}
 	public double getcL0() {
-		return cL0;
+		return cL0Landing;
 	}
 	public void setcL0(double cL0) {
-		this.cL0 = cL0;
+		this.cL0Landing = cL0;
 	}
 	public double getcLground() {
 		return cLground;
@@ -1116,5 +1005,13 @@ public class LandingCalc {
 
 	public void setDeltaCD0Spoiler(double deltaCD0Spoiler) {
 		this.deltaCD0Spoiler = deltaCD0Spoiler;
+	}
+
+	public Amount<Mass> getMaxLandingMass() {
+		return maxLandingMass;
+	}
+
+	public void setMaxLandingMass(Amount<Mass> maxLandingMass) {
+		this.maxLandingMass = maxLandingMass;
 	}
 }

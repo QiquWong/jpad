@@ -8,7 +8,7 @@
 		<specifications>
 			<number_of_propeller_blades>6</number_of_propeller_blades>
 			<eta_propeller>0.85</eta_propeller>
-			<static_power unit="hp">7176.55</static_power>
+			<static_power unit="hp">7694.67</static_power>
 			<dry_mass unit="kg">4154.2</dry_mass>
 			<number_of_compressor_stages>5</number_of_compressor_stages>
 			<number_of_shafts>2</number_of_shafts>

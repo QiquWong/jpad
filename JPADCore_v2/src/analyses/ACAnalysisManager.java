@@ -16,6 +16,8 @@ import javax.measure.unit.SI;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jscience.physics.amount.Amount;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import aircraft.components.Aircraft;
 import analyses.costs.ACCostsManager;
@@ -347,482 +349,500 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		// WEIGHTS ANALYSIS:
 		Map<ComponentEnum, MethodEnum> methodsMapWeights = new HashMap<>();
 		
-		String weightsFile = MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//weights/@file");
+		NodeList weightsTag = MyXMLReaderUtils
+				.getXMLNodeListByPath(reader.getXmlDoc(), "//weights");
 		
-		if(weightsFile != null) {
-		
-			analysisList.add(AnalysisTypeEnum.WEIGHTS);
-			
-			////////////////////////////////////////////////////////////////////////////////////
-			String fuselageWeightsMethod = MyXMLReaderUtils
+		if(weightsTag != null) {
+
+			String weightsFile = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
-							"//weights/@method_fuselage");
-			if (fuselageWeightsMethod != null) {
-				if(fuselageWeightsMethod.equalsIgnoreCase("RAYMER")) {
-					methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.RAYMER);
+							"//weights/@file");
+
+			if(weightsFile != null) {
+
+				analysisList.add(AnalysisTypeEnum.WEIGHTS);
+
+				////////////////////////////////////////////////////////////////////////////////////
+				String fuselageWeightsMethod = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//weights/@method_fuselage");
+				if (fuselageWeightsMethod != null) {
+					if(fuselageWeightsMethod.equalsIgnoreCase("RAYMER")) {
+						methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.RAYMER);
+					}
+					else if(fuselageWeightsMethod.equalsIgnoreCase("TORENBEEK_1976")) {
+						methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.TORENBEEK_1976);
+					}
+					else if(fuselageWeightsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
+						methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.TORENBEEK_2013);
+					}
+					else if(fuselageWeightsMethod.equalsIgnoreCase("JENKINSON")) {
+						methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.JENKINSON);
+					}
+					else if(fuselageWeightsMethod.equalsIgnoreCase("KROO")) {
+						methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.KROO);
+					}
+					else if(fuselageWeightsMethod.equalsIgnoreCase("SADRAY")) {
+						methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.SADRAY);
+					}
+					else if(fuselageWeightsMethod.equalsIgnoreCase("NICOLAI_1984")) {
+						methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.NICOLAI_1984);
+					}
+					else if(fuselageWeightsMethod.equalsIgnoreCase("ROSKAM")) {
+						methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.ROSKAM);
+					}
+					else 
+						methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.AVERAGE);
 				}
-				else if(fuselageWeightsMethod.equalsIgnoreCase("TORENBEEK_1976")) {
-					methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.TORENBEEK_1976);
+
+				////////////////////////////////////////////////////////////////////////////////////
+				String wingWeightsMethod = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//weights/@method_wing");
+				if(wingWeightsMethod != null) {
+					if(wingWeightsMethod.equalsIgnoreCase("KROO")) {
+						methodsMapWeights.put(ComponentEnum.WING, MethodEnum.KROO);
+					}
+					else if(wingWeightsMethod.equalsIgnoreCase("JENKINSON")) {
+						methodsMapWeights.put(ComponentEnum.WING, MethodEnum.JENKINSON);
+					}
+					else if(wingWeightsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
+						methodsMapWeights.put(ComponentEnum.WING, MethodEnum.TORENBEEK_2013);
+					}
+					else if(wingWeightsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
+						methodsMapWeights.put(ComponentEnum.WING, MethodEnum.TORENBEEK_1982);
+					}
+					else if(wingWeightsMethod.equalsIgnoreCase("RAYMER")) {
+						methodsMapWeights.put(ComponentEnum.WING, MethodEnum.RAYMER);
+					}
+					else if(wingWeightsMethod.equalsIgnoreCase("SADRAY")) {
+						methodsMapWeights.put(ComponentEnum.WING, MethodEnum.SADRAY);
+					}
+					else if(wingWeightsMethod.equalsIgnoreCase("ROSKAM")) {
+						methodsMapWeights.put(ComponentEnum.WING, MethodEnum.ROSKAM);
+					}
+					else 
+						methodsMapWeights.put(ComponentEnum.WING, MethodEnum.AVERAGE);
 				}
-				else if(fuselageWeightsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
-					methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.TORENBEEK_2013);
+
+				////////////////////////////////////////////////////////////////////////////////////			
+				String hTailWeightsMethod = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//weights/@method_htail");
+				if(hTailWeightsMethod != null) {
+					if(hTailWeightsMethod.equalsIgnoreCase("KROO")) {
+						methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.KROO);
+					}
+					else if(hTailWeightsMethod.equalsIgnoreCase("JENKINSON")) {
+						methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.JENKINSON);
+					}
+					else if(hTailWeightsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
+						methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.TORENBEEK_2013);
+					}
+					else if(hTailWeightsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
+						methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.TORENBEEK_1982);
+					}
+					else if(hTailWeightsMethod.equalsIgnoreCase("RAYMER")) {
+						methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.RAYMER);
+					}
+					else if(hTailWeightsMethod.equalsIgnoreCase("SADRAY")) {
+						methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.SADRAY);
+					}
+					else if(hTailWeightsMethod.equalsIgnoreCase("ROSKAM")) {
+						methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.ROSKAM);
+					}
+					else 
+						methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.AVERAGE);
 				}
-				else if(fuselageWeightsMethod.equalsIgnoreCase("JENKINSON")) {
-					methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.JENKINSON);
+
+				////////////////////////////////////////////////////////////////////////////////////
+				String vTailWeightsMethod = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//weights/@method_vtail");
+				if(vTailWeightsMethod != null) {
+					if(vTailWeightsMethod.equalsIgnoreCase("KROO")) {
+						methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.KROO);
+					}
+					else if(vTailWeightsMethod.equalsIgnoreCase("JENKINSON")) {
+						methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.JENKINSON);
+					}
+					else if(vTailWeightsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
+						methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.TORENBEEK_2013);
+					}
+					else if(vTailWeightsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
+						methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.TORENBEEK_1982);
+					}
+					else if(vTailWeightsMethod.equalsIgnoreCase("RAYMER")) {
+						methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.RAYMER);
+					}
+					else if(vTailWeightsMethod.equalsIgnoreCase("SADRAY")) {
+						methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.SADRAY);
+					}
+					else if(vTailWeightsMethod.equalsIgnoreCase("ROSKAM")) {
+						methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.ROSKAM);
+					}
+					else 
+						methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.AVERAGE);
 				}
-				else if(fuselageWeightsMethod.equalsIgnoreCase("KROO")) {
-					methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.KROO);
+
+				////////////////////////////////////////////////////////////////////////////////////
+				String canardWeightsMethod = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//weights/@method_canard");
+				if(canardWeightsMethod != null) {
+					if(canardWeightsMethod.equalsIgnoreCase("KROO")) {
+						methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.KROO);
+					}
+					else if(canardWeightsMethod.equalsIgnoreCase("JENKINSON")) {
+						methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.JENKINSON);
+					}
+					else if(canardWeightsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
+						methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.TORENBEEK_2013);
+					}
+					else if(canardWeightsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
+						methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.TORENBEEK_1982);
+					}
+					else if(canardWeightsMethod.equalsIgnoreCase("RAYMER")) {
+						methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.RAYMER);
+					}
+					else if(canardWeightsMethod.equalsIgnoreCase("SADRAY")) {
+						methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.SADRAY);
+					}
+					else if(canardWeightsMethod.equalsIgnoreCase("ROSKAM")) {
+						methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.ROSKAM);
+					}
+					else 
+						methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.AVERAGE);
 				}
-				else if(fuselageWeightsMethod.equalsIgnoreCase("SADRAY")) {
-					methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.SADRAY);
+
+				////////////////////////////////////////////////////////////////////////////////////
+				String nacellesWeightsMethod = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//weights/@method_nacelles");
+				if(nacellesWeightsMethod != null) {
+					if(nacellesWeightsMethod.equalsIgnoreCase("JENKINSON")) {
+						methodsMapWeights.put(ComponentEnum.NACELLE, MethodEnum.JENKINSON);
+					}
+					else if(nacellesWeightsMethod.equalsIgnoreCase("TORENBEEK_1976")) {
+						methodsMapWeights.put(ComponentEnum.NACELLE, MethodEnum.TORENBEEK_1976);
+					}
+					else if(nacellesWeightsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
+						methodsMapWeights.put(ComponentEnum.NACELLE, MethodEnum.TORENBEEK_1982);
+					}
+					else 
+						methodsMapWeights.put(ComponentEnum.NACELLE, MethodEnum.AVERAGE);
 				}
-				else if(fuselageWeightsMethod.equalsIgnoreCase("NICOLAI_1984")) {
-					methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.NICOLAI_1984);
+
+				////////////////////////////////////////////////////////////////////////////////////
+				String landingGearsWeightsMethod = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//weights/@method_landing_gears");
+				if(landingGearsWeightsMethod != null) {
+					if(landingGearsWeightsMethod.equalsIgnoreCase("ROSKAM")) {
+						methodsMapWeights.put(ComponentEnum.LANDING_GEAR, MethodEnum.ROSKAM);
+					}
+					else if(landingGearsWeightsMethod.equalsIgnoreCase("STANFORD")) {
+						methodsMapWeights.put(ComponentEnum.LANDING_GEAR, MethodEnum.STANFORD);
+					}
+					else if(landingGearsWeightsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
+						methodsMapWeights.put(ComponentEnum.LANDING_GEAR, MethodEnum.TORENBEEK_1982);
+					}
+					else if(landingGearsWeightsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
+						methodsMapWeights.put(ComponentEnum.LANDING_GEAR, MethodEnum.TORENBEEK_2013);
+					}
+					else 
+						methodsMapWeights.put(ComponentEnum.LANDING_GEAR, MethodEnum.AVERAGE);
 				}
-				else if(fuselageWeightsMethod.equalsIgnoreCase("ROSKAM")) {
-					methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.ROSKAM);
+
+				////////////////////////////////////////////////////////////////////////////////////
+				String systemsWeightsMethod = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//weights/@method_systems");
+				if(systemsWeightsMethod != null) {
+					if(systemsWeightsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
+						methodsMapWeights.put(ComponentEnum.SYSTEMS, MethodEnum.TORENBEEK_2013);
+					}
+					else 
+						methodsMapWeights.put(ComponentEnum.SYSTEMS, MethodEnum.AVERAGE);
 				}
-				else 
-					methodsMapWeights.put(ComponentEnum.FUSELAGE, MethodEnum.AVERAGE);
 			}
 
-			////////////////////////////////////////////////////////////////////////////////////
-			String wingWeightsMethod = MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//weights/@method_wing");
-			if(wingWeightsMethod != null) {
-				if(wingWeightsMethod.equalsIgnoreCase("KROO")) {
-					methodsMapWeights.put(ComponentEnum.WING, MethodEnum.KROO);
-				}
-				else if(wingWeightsMethod.equalsIgnoreCase("JENKINSON")) {
-					methodsMapWeights.put(ComponentEnum.WING, MethodEnum.JENKINSON);
-				}
-				else if(wingWeightsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
-					methodsMapWeights.put(ComponentEnum.WING, MethodEnum.TORENBEEK_2013);
-				}
-				else if(wingWeightsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
-					methodsMapWeights.put(ComponentEnum.WING, MethodEnum.TORENBEEK_1982);
-				}
-				else if(wingWeightsMethod.equalsIgnoreCase("RAYMER")) {
-					methodsMapWeights.put(ComponentEnum.WING, MethodEnum.RAYMER);
-				}
-				else if(wingWeightsMethod.equalsIgnoreCase("SADRAY")) {
-					methodsMapWeights.put(ComponentEnum.WING, MethodEnum.SADRAY);
-				}
-				else if(wingWeightsMethod.equalsIgnoreCase("ROSKAM")) {
-					methodsMapWeights.put(ComponentEnum.WING, MethodEnum.ROSKAM);
-				}
-				else 
-					methodsMapWeights.put(ComponentEnum.WING, MethodEnum.AVERAGE);
-			}
-			
-			////////////////////////////////////////////////////////////////////////////////////			
-			String hTailWeightsMethod = MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//weights/@method_htail");
-			if(hTailWeightsMethod != null) {
-				if(hTailWeightsMethod.equalsIgnoreCase("KROO")) {
-					methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.KROO);
-				}
-				else if(hTailWeightsMethod.equalsIgnoreCase("JENKINSON")) {
-					methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.JENKINSON);
-				}
-				else if(hTailWeightsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
-					methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.TORENBEEK_2013);
-				}
-				else if(hTailWeightsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
-					methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.TORENBEEK_1982);
-				}
-				else if(hTailWeightsMethod.equalsIgnoreCase("RAYMER")) {
-					methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.RAYMER);
-				}
-				else if(hTailWeightsMethod.equalsIgnoreCase("SADRAY")) {
-					methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.SADRAY);
-				}
-				else if(hTailWeightsMethod.equalsIgnoreCase("ROSKAM")) {
-					methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.ROSKAM);
-				}
-				else 
-					methodsMapWeights.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.AVERAGE);
-			}
-			
-			////////////////////////////////////////////////////////////////////////////////////
-			String vTailWeightsMethod = MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//weights/@method_vtail");
-			if(vTailWeightsMethod != null) {
-				if(vTailWeightsMethod.equalsIgnoreCase("KROO")) {
-					methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.KROO);
-				}
-				else if(vTailWeightsMethod.equalsIgnoreCase("JENKINSON")) {
-					methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.JENKINSON);
-				}
-				else if(vTailWeightsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
-					methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.TORENBEEK_2013);
-				}
-				else if(vTailWeightsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
-					methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.TORENBEEK_1982);
-				}
-				else if(vTailWeightsMethod.equalsIgnoreCase("RAYMER")) {
-					methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.RAYMER);
-				}
-				else if(vTailWeightsMethod.equalsIgnoreCase("SADRAY")) {
-					methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.SADRAY);
-				}
-				else if(vTailWeightsMethod.equalsIgnoreCase("ROSKAM")) {
-					methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.ROSKAM);
-				}
-				else 
-					methodsMapWeights.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.AVERAGE);
-			}
-			
-			////////////////////////////////////////////////////////////////////////////////////
-			String canardWeightsMethod = MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//weights/@method_canard");
-			if(canardWeightsMethod != null) {
-				if(canardWeightsMethod.equalsIgnoreCase("KROO")) {
-					methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.KROO);
-				}
-				else if(canardWeightsMethod.equalsIgnoreCase("JENKINSON")) {
-					methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.JENKINSON);
-				}
-				else if(canardWeightsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
-					methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.TORENBEEK_2013);
-				}
-				else if(canardWeightsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
-					methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.TORENBEEK_1982);
-				}
-				else if(canardWeightsMethod.equalsIgnoreCase("RAYMER")) {
-					methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.RAYMER);
-				}
-				else if(canardWeightsMethod.equalsIgnoreCase("SADRAY")) {
-					methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.SADRAY);
-				}
-				else if(canardWeightsMethod.equalsIgnoreCase("ROSKAM")) {
-					methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.ROSKAM);
-				}
-				else 
-					methodsMapWeights.put(ComponentEnum.CANARD, MethodEnum.AVERAGE);
-			}
-			
-			////////////////////////////////////////////////////////////////////////////////////
-			String nacellesWeightsMethod = MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//weights/@method_nacelles");
-			if(nacellesWeightsMethod != null) {
-				if(nacellesWeightsMethod.equalsIgnoreCase("JENKINSON")) {
-					methodsMapWeights.put(ComponentEnum.NACELLE, MethodEnum.JENKINSON);
-				}
-				else if(nacellesWeightsMethod.equalsIgnoreCase("TORENBEEK_1976")) {
-					methodsMapWeights.put(ComponentEnum.NACELLE, MethodEnum.TORENBEEK_1976);
-				}
-				else if(nacellesWeightsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
-					methodsMapWeights.put(ComponentEnum.NACELLE, MethodEnum.TORENBEEK_1982);
-				}
-				else 
-					methodsMapWeights.put(ComponentEnum.NACELLE, MethodEnum.AVERAGE);
-			}
-			
-			////////////////////////////////////////////////////////////////////////////////////
-			String landingGearsWeightsMethod = MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//weights/@method_landing_gears");
-			if(landingGearsWeightsMethod != null) {
-				if(landingGearsWeightsMethod.equalsIgnoreCase("ROSKAM")) {
-					methodsMapWeights.put(ComponentEnum.LANDING_GEAR, MethodEnum.ROSKAM);
-				}
-				else if(landingGearsWeightsMethod.equalsIgnoreCase("STANFORD")) {
-					methodsMapWeights.put(ComponentEnum.LANDING_GEAR, MethodEnum.STANFORD);
-				}
-				else if(landingGearsWeightsMethod.equalsIgnoreCase("TORENBEEK_1982")) {
-					methodsMapWeights.put(ComponentEnum.LANDING_GEAR, MethodEnum.TORENBEEK_1982);
-				}
-				else if(landingGearsWeightsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
-					methodsMapWeights.put(ComponentEnum.LANDING_GEAR, MethodEnum.TORENBEEK_2013);
-				}
-				else 
-					methodsMapWeights.put(ComponentEnum.LANDING_GEAR, MethodEnum.AVERAGE);
-			}
-			
-			////////////////////////////////////////////////////////////////////////////////////
-			String systemsWeightsMethod = MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//weights/@method_systems");
-			if(systemsWeightsMethod != null) {
-				if(systemsWeightsMethod.equalsIgnoreCase("TORENBEEK_2013")) {
-					methodsMapWeights.put(ComponentEnum.SYSTEMS, MethodEnum.TORENBEEK_2013);
-				}
-				else 
-					methodsMapWeights.put(ComponentEnum.SYSTEMS, MethodEnum.AVERAGE);
-			}
+			_weightsFileComplete = new File(
+					MyConfiguration.getDir(FoldersEnum.INPUT_DIR)
+					+ File.separator 
+					+ "Template_Analyses"
+					+ File.separator
+					+ weightsFile
+					);
 		}
-		
-		_weightsFileComplete = new File(
-				MyConfiguration.getDir(FoldersEnum.INPUT_DIR)
-				+ File.separator 
-				+ "Template_Analyses"
-				+ File.separator
-				+ weightsFile
-				);
-		
 		//-------------------------------------------------------------------------------------------
 		// BALANCE ANALYSIS:
 		Map<ComponentEnum, MethodEnum> methodsMapBalance = new HashMap<>();
 		Boolean plotBalance = null;
-		
-		String balanceFile = MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//balance/@file");
-		
-		String plotBalanceString = MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//balance/@plot");
-		if(plotBalanceString.equalsIgnoreCase("FALSE"))
-			plotBalance = Boolean.FALSE;
-		else if(plotBalanceString.equalsIgnoreCase("TRUE"))
-			plotBalance = Boolean.TRUE;
-		else
-			System.err.println("ERRORE : SPECIFY THE PLOT TAG!!");
-		
-		if(balanceFile != null)  {		
-			analysisList.add(AnalysisTypeEnum.BALANCE);
-			
-			////////////////////////////////////////////////////////////////////////////////////
-			String fuselageBalanceMethod = MyXMLReaderUtils
+
+		NodeList balanceTag = MyXMLReaderUtils
+				.getXMLNodeListByPath(reader.getXmlDoc(), "//balance");
+		Node balanceNode = balanceTag.item(0);
+
+		if(balanceNode != null) {
+
+			String balanceFile = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
-							"//balance/@method_fuselage");
-			if (fuselageBalanceMethod != null) {
-				if(fuselageBalanceMethod.equalsIgnoreCase("SFORZA")) {
-					methodsMapBalance.put(ComponentEnum.FUSELAGE, MethodEnum.SFORZA);
-				}
-				else if(fuselageBalanceMethod.equalsIgnoreCase("TORENBEEK_1982")) {
-					methodsMapBalance.put(ComponentEnum.FUSELAGE, MethodEnum.TORENBEEK_1982);
-				}
-				else 
-					methodsMapBalance.put(ComponentEnum.FUSELAGE, MethodEnum.AVERAGE);
-			}
-			
-			////////////////////////////////////////////////////////////////////////////////////
-			String wingBalanceMethod = MyXMLReaderUtils
+							"//balance/@file");
+
+			String plotBalanceString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
-							"//balance/@method_wing");
-			if(wingBalanceMethod != null) {
-				if(wingBalanceMethod.equalsIgnoreCase("SFORZA")) {
-					methodsMapBalance.put(ComponentEnum.WING, MethodEnum.SFORZA);
+							"//balance/@plot");
+			if(plotBalanceString.equalsIgnoreCase("FALSE"))
+				plotBalance = Boolean.FALSE;
+			else if(plotBalanceString.equalsIgnoreCase("TRUE"))
+				plotBalance = Boolean.TRUE;
+			else
+				System.err.println("ERRORE : SPECIFY THE PLOT TAG!!");
+
+			if(balanceFile != null)  {		
+				analysisList.add(AnalysisTypeEnum.BALANCE);
+
+				////////////////////////////////////////////////////////////////////////////////////
+				String fuselageBalanceMethod = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//balance/@method_fuselage");
+				if (fuselageBalanceMethod != null) {
+					if(fuselageBalanceMethod.equalsIgnoreCase("SFORZA")) {
+						methodsMapBalance.put(ComponentEnum.FUSELAGE, MethodEnum.SFORZA);
+					}
+					else if(fuselageBalanceMethod.equalsIgnoreCase("TORENBEEK_1982")) {
+						methodsMapBalance.put(ComponentEnum.FUSELAGE, MethodEnum.TORENBEEK_1982);
+					}
+					else 
+						methodsMapBalance.put(ComponentEnum.FUSELAGE, MethodEnum.AVERAGE);
 				}
-				else if(wingBalanceMethod.equalsIgnoreCase("TORENBEEK_1982")) {
-					methodsMapBalance.put(ComponentEnum.WING, MethodEnum.TORENBEEK_1982);
+
+				////////////////////////////////////////////////////////////////////////////////////
+				String wingBalanceMethod = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//balance/@method_wing");
+				if(wingBalanceMethod != null) {
+					if(wingBalanceMethod.equalsIgnoreCase("SFORZA")) {
+						methodsMapBalance.put(ComponentEnum.WING, MethodEnum.SFORZA);
+					}
+					else if(wingBalanceMethod.equalsIgnoreCase("TORENBEEK_1982")) {
+						methodsMapBalance.put(ComponentEnum.WING, MethodEnum.TORENBEEK_1982);
+					}
+					else 
+						methodsMapBalance.put(ComponentEnum.WING, MethodEnum.AVERAGE);
 				}
-				else 
-					methodsMapBalance.put(ComponentEnum.WING, MethodEnum.AVERAGE);
-			}
-			
-			////////////////////////////////////////////////////////////////////////////////////
-			String hTailBalanceMethod = MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//balance/@method_htail");
-			if(hTailBalanceMethod != null) {
-				if(hTailBalanceMethod.equalsIgnoreCase("TORENBEEK_1982")) {
-					methodsMapBalance.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.TORENBEEK_1982);
+
+				////////////////////////////////////////////////////////////////////////////////////
+				String hTailBalanceMethod = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//balance/@method_htail");
+				if(hTailBalanceMethod != null) {
+					if(hTailBalanceMethod.equalsIgnoreCase("TORENBEEK_1982")) {
+						methodsMapBalance.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.TORENBEEK_1982);
+					}
+					else 
+						methodsMapBalance.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.AVERAGE);
 				}
-				else 
-					methodsMapBalance.put(ComponentEnum.HORIZONTAL_TAIL, MethodEnum.AVERAGE);
-			}
-			
-			////////////////////////////////////////////////////////////////////////////////////
-			String vTailBalanceMethod = MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//balance/@method_vtail");
-			if(vTailBalanceMethod != null) {
-				if(vTailBalanceMethod.equalsIgnoreCase("TORENBEEK_1982")) {
-					methodsMapBalance.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.TORENBEEK_1982);
+
+				////////////////////////////////////////////////////////////////////////////////////
+				String vTailBalanceMethod = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//balance/@method_vtail");
+				if(vTailBalanceMethod != null) {
+					if(vTailBalanceMethod.equalsIgnoreCase("TORENBEEK_1982")) {
+						methodsMapBalance.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.TORENBEEK_1982);
+					}
+					else 
+						methodsMapBalance.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.AVERAGE);
 				}
-				else 
-					methodsMapBalance.put(ComponentEnum.VERTICAL_TAIL, MethodEnum.AVERAGE);
+
 			}
 
+			_balanceFileComplete = new File(
+					MyConfiguration.getDir(FoldersEnum.INPUT_DIR)
+					+ File.separator 
+					+ "Template_Analyses"
+					+ File.separator
+					+ balanceFile
+					);
+
 		}
-			
-		_balanceFileComplete = new File(
-				MyConfiguration.getDir(FoldersEnum.INPUT_DIR)
-				+ File.separator 
-				+ "Template_Analyses"
-				+ File.separator
-				+ balanceFile
-				);
-		
 		//-------------------------------------------------------------------------------------------
 		// AERODYNAMIC ANALYSIS:
-		
+
 		// TODO: IMPLEMENT THIS!
-		
+
 		//-------------------------------------------------------------------------------------------
 		// PERFORMANCE ANALYSIS:
-		
-		// TODO: IMPLEMENT THIS!
+
 		List<PerformanceEnum> taskListPerformance = new ArrayList<PerformanceEnum>();
 		Boolean plotPerformance = Boolean.FALSE;
-		
-		String performanceFile = MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//performance/@file");
-		
-		String plotPerfromanceString = MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//performance/@plot");
-		if(plotPerfromanceString.equalsIgnoreCase("FALSE"))
-			plotPerformance = Boolean.FALSE;
-		else if(plotPerfromanceString.equalsIgnoreCase("TRUE"))
-			plotPerformance = Boolean.TRUE;
-		else
-			System.err.println("ERRORE : SPECIFY THE PLOT TAG!!");
-		
-		if(performanceFile != null)  {		
-			analysisList.add(AnalysisTypeEnum.PERFORMANCE);
-			
-			////////////////////////////////////////////////////////////////////////////////////
-			Boolean takeOffFlag = Boolean.FALSE;
-			String takeOffFlagProperty = MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//performance/@take_off");
-			if (takeOffFlagProperty != null) {
-				if(takeOffFlagProperty.equalsIgnoreCase("TRUE")) {
-					takeOffFlag = Boolean.TRUE;
-				}
-				else if(takeOffFlagProperty.equalsIgnoreCase("FALSE")) {
-					takeOffFlag = Boolean.FALSE;
-				}
-				else 
-					System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE TAKE-OFF ATTRIBUTE!");
-			}
-			if(takeOffFlag == Boolean.TRUE) 
-				taskListPerformance.add(PerformanceEnum.TAKE_OFF);
-			
-			////////////////////////////////////////////////////////////////////////////////////
-			Boolean climbFlag = Boolean.FALSE;
-			String climbFlagProperty = MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//performance/@climb");
-			if (climbFlagProperty != null) {
-				if(climbFlagProperty.equalsIgnoreCase("TRUE")) {
-					climbFlag = Boolean.TRUE;
-				}
-				else if(climbFlagProperty.equalsIgnoreCase("FALSE")) {
-					climbFlag = Boolean.FALSE;
-				}
-				else 
-					System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE CLIMB ATTRIBUTE!");
-			}
-			if(climbFlag == Boolean.TRUE) 
-				taskListPerformance.add(PerformanceEnum.CLIMB);
-			
-			////////////////////////////////////////////////////////////////////////////////////
-			Boolean cruiseFlag = Boolean.FALSE;
-			String cruiseFlagProperty = MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//performance/@cruise");
-			if (cruiseFlagProperty != null) {
-				if(cruiseFlagProperty.equalsIgnoreCase("TRUE")) {
-					cruiseFlag = Boolean.TRUE;
-				}
-				else if(cruiseFlagProperty.equalsIgnoreCase("FALSE")) {
-					cruiseFlag = Boolean.FALSE;
-				}
-				else 
-					System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE CRUISE ATTRIBUTE!");
-			}
-			if(cruiseFlag == Boolean.TRUE) 
-				taskListPerformance.add(PerformanceEnum.CRUISE);
-			
-			////////////////////////////////////////////////////////////////////////////////////
-			Boolean landingFlag = Boolean.FALSE;
-			String landingFlagProperty = MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//performance/@landing");
-			if (landingFlagProperty != null) {
-				if(landingFlagProperty.equalsIgnoreCase("TRUE")) {
-					landingFlag = Boolean.TRUE;
-				}
-				else if(landingFlagProperty.equalsIgnoreCase("FALSE")) {
-					landingFlag = Boolean.FALSE;
-				}
-				else 
-					System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE LANDING ATTRIBUTE!");
-			}
-			if(landingFlag == Boolean.TRUE) 
-				taskListPerformance.add(PerformanceEnum.LANDING);
 
-			////////////////////////////////////////////////////////////////////////////////////
-			Boolean payloadRangeFlag = Boolean.FALSE;
-			String payloadRangeFlagProperty = MyXMLReaderUtils
+		NodeList performanceTag = MyXMLReaderUtils
+				.getXMLNodeListByPath(reader.getXmlDoc(), "//performance");
+		Node performanceNode = performanceTag.item(0);
+
+		if(performanceNode != null) {
+
+			String performanceFile = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
-							"//performance/@landing");
-			if (payloadRangeFlagProperty != null) {
-				if(payloadRangeFlagProperty.equalsIgnoreCase("TRUE")) {
-					payloadRangeFlag = Boolean.TRUE;
-				}
-				else if(payloadRangeFlagProperty.equalsIgnoreCase("FALSE")) {
-					payloadRangeFlag = Boolean.FALSE;
-				}
-				else 
-					System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE LANDING ATTRIBUTE!");
-			}
-			if(payloadRangeFlag == Boolean.TRUE) 
-				taskListPerformance.add(PerformanceEnum.PAYLOAD_RANGE);
-			
-			////////////////////////////////////////////////////////////////////////////////////
-			Boolean VnDiagramFlag = Boolean.FALSE;
-			String VnDiagramFlagProperty = MyXMLReaderUtils
+							"//performance/@file");
+
+			String plotPerfromanceString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
-							"//performance/@landing");
-			if (VnDiagramFlagProperty != null) {
-				if(VnDiagramFlagProperty.equalsIgnoreCase("TRUE")) {
-					VnDiagramFlag = Boolean.TRUE;
+							"//performance/@plot");
+			if(plotPerfromanceString.equalsIgnoreCase("FALSE"))
+				plotPerformance = Boolean.FALSE;
+			else if(plotPerfromanceString.equalsIgnoreCase("TRUE"))
+				plotPerformance = Boolean.TRUE;
+			else
+				System.err.println("ERRORE : SPECIFY THE PLOT TAG!!");
+
+			if(performanceFile != null)  {		
+				analysisList.add(AnalysisTypeEnum.PERFORMANCE);
+
+				////////////////////////////////////////////////////////////////////////////////////
+				Boolean takeOffFlag = Boolean.FALSE;
+				String takeOffFlagProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//performance/@take_off");
+				if (takeOffFlagProperty != null) {
+					if(takeOffFlagProperty.equalsIgnoreCase("TRUE")) {
+						takeOffFlag = Boolean.TRUE;
+					}
+					else if(takeOffFlagProperty.equalsIgnoreCase("FALSE")) {
+						takeOffFlag = Boolean.FALSE;
+					}
+					else 
+						System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE TAKE-OFF ATTRIBUTE!");
 				}
-				else if(VnDiagramFlagProperty.equalsIgnoreCase("FALSE")) {
-					VnDiagramFlag = Boolean.FALSE;
+				if(takeOffFlag == Boolean.TRUE) 
+					taskListPerformance.add(PerformanceEnum.TAKE_OFF);
+
+				////////////////////////////////////////////////////////////////////////////////////
+				Boolean climbFlag = Boolean.FALSE;
+				String climbFlagProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//performance/@climb");
+				if (climbFlagProperty != null) {
+					if(climbFlagProperty.equalsIgnoreCase("TRUE")) {
+						climbFlag = Boolean.TRUE;
+					}
+					else if(climbFlagProperty.equalsIgnoreCase("FALSE")) {
+						climbFlag = Boolean.FALSE;
+					}
+					else 
+						System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE CLIMB ATTRIBUTE!");
 				}
-				else 
-					System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE LANDING ATTRIBUTE!");
+				if(climbFlag == Boolean.TRUE) 
+					taskListPerformance.add(PerformanceEnum.CLIMB);
+
+				////////////////////////////////////////////////////////////////////////////////////
+				Boolean cruiseFlag = Boolean.FALSE;
+				String cruiseFlagProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//performance/@cruise");
+				if (cruiseFlagProperty != null) {
+					if(cruiseFlagProperty.equalsIgnoreCase("TRUE")) {
+						cruiseFlag = Boolean.TRUE;
+					}
+					else if(cruiseFlagProperty.equalsIgnoreCase("FALSE")) {
+						cruiseFlag = Boolean.FALSE;
+					}
+					else 
+						System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE CRUISE ATTRIBUTE!");
+				}
+				if(cruiseFlag == Boolean.TRUE) 
+					taskListPerformance.add(PerformanceEnum.CRUISE);
+
+				////////////////////////////////////////////////////////////////////////////////////
+				Boolean landingFlag = Boolean.FALSE;
+				String landingFlagProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//performance/@landing");
+				if (landingFlagProperty != null) {
+					if(landingFlagProperty.equalsIgnoreCase("TRUE")) {
+						landingFlag = Boolean.TRUE;
+					}
+					else if(landingFlagProperty.equalsIgnoreCase("FALSE")) {
+						landingFlag = Boolean.FALSE;
+					}
+					else 
+						System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE LANDING ATTRIBUTE!");
+				}
+				if(landingFlag == Boolean.TRUE) 
+					taskListPerformance.add(PerformanceEnum.LANDING);
+
+				////////////////////////////////////////////////////////////////////////////////////
+				Boolean payloadRangeFlag = Boolean.FALSE;
+				String payloadRangeFlagProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//performance/@landing");
+				if (payloadRangeFlagProperty != null) {
+					if(payloadRangeFlagProperty.equalsIgnoreCase("TRUE")) {
+						payloadRangeFlag = Boolean.TRUE;
+					}
+					else if(payloadRangeFlagProperty.equalsIgnoreCase("FALSE")) {
+						payloadRangeFlag = Boolean.FALSE;
+					}
+					else 
+						System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE LANDING ATTRIBUTE!");
+				}
+				if(payloadRangeFlag == Boolean.TRUE) 
+					taskListPerformance.add(PerformanceEnum.PAYLOAD_RANGE);
+
+				////////////////////////////////////////////////////////////////////////////////////
+				Boolean VnDiagramFlag = Boolean.FALSE;
+				String VnDiagramFlagProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//performance/@landing");
+				if (VnDiagramFlagProperty != null) {
+					if(VnDiagramFlagProperty.equalsIgnoreCase("TRUE")) {
+						VnDiagramFlag = Boolean.TRUE;
+					}
+					else if(VnDiagramFlagProperty.equalsIgnoreCase("FALSE")) {
+						VnDiagramFlag = Boolean.FALSE;
+					}
+					else 
+						System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE LANDING ATTRIBUTE!");
+				}
+				if(VnDiagramFlag == Boolean.TRUE) 
+					taskListPerformance.add(PerformanceEnum.V_n_DIAGRAM);
 			}
-			if(VnDiagramFlag == Boolean.TRUE) 
-				taskListPerformance.add(PerformanceEnum.V_n_DIAGRAM);
+
+			_performanceFileComplete = new File(
+					MyConfiguration.getDir(FoldersEnum.INPUT_DIR)
+					+ File.separator 
+					+ "Template_Analyses"
+					+ File.separator
+					+ performanceFile
+					);
+
 		}
-
-		_performanceFileComplete = new File(
-				MyConfiguration.getDir(FoldersEnum.INPUT_DIR)
-				+ File.separator 
-				+ "Template_Analyses"
-				+ File.separator
-				+ performanceFile
-				);
-		
 		//-------------------------------------------------------------------------------------------
 		// COSTS ANALYSIS:
 		

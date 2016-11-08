@@ -18,6 +18,7 @@ import analyses.liftingsurface.LSAerodynamicsCalculator;
 import analyses.liftingsurface.LSAerodynamicsCalculator.CalcCLAlpha;
 import calculators.aerodynamics.LiftCalc;
 import configuration.MyConfiguration;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
@@ -207,27 +208,27 @@ public class HighLiftDevicesEffectsTest extends Application {
 			HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
 			
 			// default Aircraft ATR-72 ...
-//			theAircraft = new Aircraft.AircraftBuilder(
-//					"ATR-72",
-//					AircraftEnum.ATR72,
-//					aeroDatabaseReader,
-//					highLiftDatabaseReader
-//					)
-//					.build();
+			theAircraft = new Aircraft.AircraftBuilder(
+					"ATR-72",
+					AircraftEnum.ATR72,
+					aeroDatabaseReader,
+					highLiftDatabaseReader
+					)
+					.build();
 
 			// reading aircraft from xml ... 
-			theAircraft = Aircraft.importFromXML(
-					pathToXML,
-					dirLiftingSurfaces,
-					dirFuselages,
-					dirEngines,
-					dirNacelles,
-					dirLandingGears,
-					dirSystems,
-					dirCabinConfiguration,
-					dirAirfoil,
-					aeroDatabaseReader,
-					highLiftDatabaseReader);
+//			theAircraft = Aircraft.importFromXML(
+//					pathToXML,
+//					dirLiftingSurfaces,
+//					dirFuselages,
+//					dirEngines,
+//					dirNacelles,
+//					dirLandingGears,
+//					dirSystems,
+//					dirCabinConfiguration,
+//					dirAirfoil,
+//					aeroDatabaseReader,
+//					highLiftDatabaseReader);
 			
 			// Set the folders tree
 			MyConfiguration.initWorkingDirectoryTree(

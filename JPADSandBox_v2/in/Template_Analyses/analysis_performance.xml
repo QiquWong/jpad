@@ -2,40 +2,42 @@
 <jpad_config>
     <analysis>
         <performance
-			id="JPAD Test analysis - PERFORMANCE"
+			id="ATR72 - PERFORMANCE"
 			weights_from_xls_file="false" 
 			file_weights="Weights.xlsx"
 			aerodynamics_from_xls_file="false" 
 			file_aerodynamics="Aerodynamics.xlsx"
 			>
 			<weights>
-				<maximum_take_off_mass unit="kg">57361.6342</maximum_take_off_mass>
-				<maximum_landing_mass unit="kg">52133.41578</maximum_landing_mass>
-				<maximum_zero_fuel_mass unit="kg">45966.95085</maximum_zero_fuel_mass>
-				<operating_empty_mass unit="kg">33096.95085</operating_empty_mass>
-				<maximum_fuel_mass unit="kg">11959.06668</maximum_fuel_mass>
+				<maximum_take_off_mass unit="kg">22500.0</maximum_take_off_mass>
+				<maximum_landing_mass unit="kg">20250.0</maximum_landing_mass>
+				<maximum_zero_fuel_mass unit="kg">20300.0</maximum_zero_fuel_mass>
+				<operating_empty_mass unit="kg">12950.0</operating_empty_mass>
+				<maximum_fuel_mass unit="kg">5000.0</maximum_fuel_mass>
 			</weights>
 			<aerodynamics parabolicDragPolar="TRUE"> <!-- if TRUE uses a parabolic drag polar with wave drag correction; otherwise it reads the polar_curves tag -->
-				<current_lifting_coefficient>0.6</current_lifting_coefficient>
-				<current_drag_coefficient>0.0329</current_drag_coefficient>
-				<cD0>0.0227</cD0>
+				<current_lifting_coefficient></current_lifting_coefficient>
+				<current_drag_coefficient></current_drag_coefficient>
+				<cD0>0.0281</cD0>
 				<oswald>0.83</oswald> 
 				<oswald_take_off>0.81</oswald_take_off>
 				<oswald_landing>0.79</oswald_landing>
-				<cLmax_clean_configuration>1.61</cLmax_clean_configuration>
-				<cL_alpha_clean_configuration unit="1/deg">0.106</cL_alpha_clean_configuration>
-				<cL_alpha_high_lift unit="1/deg">0.108</cL_alpha_high_lift>
-				<delta_CD0_take_off>0.013</delta_CD0_take_off>
-				<delta_CD0_landing>0.017</delta_CD0_landing>
-				<delta_CD0_landing_gears>0.015</delta_CD0_landing_gears>
-				<cLmax_take_off_configuration>2.4</cLmax_take_off_configuration>
-				<cL0_take_off_configuration>1.3</cL0_take_off_configuration>
-				<cL_ground>1.516</cL_ground>
-				<cLmax_landing_configuration>3.0</cLmax_landing_configuration>
+				<cLmax_clean_configuration>1.6</cLmax_clean_configuration>
+				<cL_alpha_clean_configuration unit="1/deg">0.09</cL_alpha_clean_configuration>
+				<cL_alpha_take_off unit="1/deg">0.0905</cL_alpha_take_off>
+				<cL_alpha_landing unit="1/deg">0.0925</cL_alpha_landing>
+				<delta_CD0_take_off>0.0167</delta_CD0_take_off>
+				<delta_CD0_landing>0.0673</delta_CD0_landing>
+				<delta_CD0_landing_gears>0.014</delta_CD0_landing_gears>
+				<delta_CD0_spoilers>0.011</delta_CD0_spoilers>
+				<cLmax_take_off_configuration>2.05</cLmax_take_off_configuration>
+				<cL0_take_off_configuration>0.801</cL0_take_off_configuration>
+				<cLmax_landing_configuration>2.63</cLmax_landing_configuration>
+				<cL0_landing_configuration>1.2577</cL0_landing_configuration>
 				<polar_curves>
 					<cruise>
-						<polar_curve_CL>-0.2;-0.15;-0.1;-0.05;0.0;0.05;0.1;0.15;0.2;0.25;0.3;0.35;0.4;0.45;0.5;0.55;0.6;0.65;0.7;0.75;0.8;0.85;0.9;0.95;1</polar_curve_CL>
-						<polar_curve_CD>0.03898575;0.037821378;0.036786972;0.035916396;0.035235185;0.034761522;0.03450724;0.034478814;0.034678355;0.035104609;0.035753948;0.036621369;0.037701485;0.038989522;0.040482314;0.0421793;0.044083514;0.046202586;0.048549733;0.051144754;0.054015029;0.05719651;0.060734718;0.064685736;0.069117208</polar_curve_CD>
+						<polar_curve_CL></polar_curve_CL>
+						<polar_curve_CD></polar_curve_CD>
 					</cruise>
 					<take_off>
 						<polar_curve_CL></polar_curve_CL>
@@ -55,13 +57,13 @@
 				<wind_speed_along_runway unit="m/s"></wind_speed_along_runway> <!-- positive if behind the aircraft (default = 0m/s)-->
 				<obstacle_take_off unit="ft"></obstacle_take_off> <!-- default = 35 ft -->
 				<wheels_friction_coefficient></wheels_friction_coefficient> <!-- default = 0.03 -->
-				<wheels_friction_coefficient_with_brakes></wheels_friction_coefficient_with_brakes> <!-- default = 0.4 -->
+				<wheels_friction_coefficient_with_brakes>0.5</wheels_friction_coefficient_with_brakes> <!-- default = 0.4 -->
 				<k_rotation></k_rotation> <!-- V_rotation/V_stall in take-off (default = 1.05) -->
-				<k_lift_off></k_lift_off> <!-- V_lift-off/V_stall in take-off (default = 1.1) -->
-				<k_cLmax></k_cLmax> <!-- percentage of the CLmax,TO not to be surpassed during the rotation  (default = 0.9)-->
+				<k_lift_off>1.13</k_lift_off> <!-- V_lift-off/V_stall in take-off (default = 1.1) -->
+				<k_cLmax>0.85</k_cLmax> <!-- percentage of the CLmax,TO not to be surpassed during the rotation  (default = 0.9)-->
 				<k_drag_due_to_engine_failure></k_drag_due_to_engine_failure> <!-- percentage of the drag coefficent increase in OEI condition (default = 1.1) -->
-				<k_alpha_dot></k_alpha_dot> <!-- indicates how fast the rotation maneuver is - faster with increasing k_alpha_dot - (default 0.04) -->
-				<alpha_reduction_rate unit="deg/s"></alpha_reduction_rate> <!-- negative angular velocity after reaching max allowed CL in rotation (default = -4 deg/s)-->
+				<k_alpha_dot>0.05</k_alpha_dot> <!-- indicates how fast the rotation maneuver is - faster with increasing k_alpha_dot - (default 0.04) -->
+				<alpha_reduction_rate unit="deg/s">-3</alpha_reduction_rate> <!-- negative angular velocity after reaching max allowed CL in rotation (default = -4 deg/s)-->
 				<obstacle_landing unit="ft"></obstacle_landing> <!-- default = 50ft -->
 				<theta_approach unit="deg"></theta_approach> <!-- default = 3deg -->
 				<k_approach></k_approach> <!-- V_approach/V_stall in landing (default = 1.3) -->
@@ -78,24 +80,24 @@
     </analysis>
 	<plot>
 		<takeoff>
-			<simulations>TRUE</simulations>
-			<balanced_field_length>TRUE</balanced_field_length>
+			<simulations perform="TRUE"/>
+			<balanced_field_length perform="TRUE"/>
 		</takeoff>
 		<climb>
 			<!-- ADD CHARTS -->
 		</climb>
 		<cruise>
-			<thrust_drag>TRUE</thrust_drag>
-			<efficiency>TRUE</efficiency>
-			<sfc>TRUE</sfc>
-			<cruise_grid>TRUE</cruise_grid>
-			<flight_envelope>TRUE</flight_envelope>
+			<thrust_drag perform="TRUE"/>
+			<efficiency perform="TRUE"/>
+			<sfc perform="TRUE"/>
+			<cruise_grid perform="TRUE"/>
+			<flight_envelope perform="TRUE"/>
 			<!-- ADD CHARTS -->
 		</cruise>
 		<landing>
-			<simulations>TRUE</simulations>
+			<simulations perform="TRUE"/>
 		</landing>
-		<payload_range>TRUE</payload_range>
-		<maneuvering_flight_and_gust_envelope>TRUE</maneuvering_flight_and_gust_envelope>
+		<payload_range perform="TRUE"/>
+		<maneuvering_flight_and_gust_envelope perform="TRUE"/>
 	</plot>
 </jpad_config>

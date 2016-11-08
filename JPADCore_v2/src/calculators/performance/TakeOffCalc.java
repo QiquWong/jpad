@@ -9,6 +9,7 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.Duration;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Mass;
 import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
@@ -66,6 +67,7 @@ public class TakeOffCalc {
 	tClimb = Amount.valueOf(10000.0, SI.SECOND),  // initialization to an impossible time
 	tFaiulre = Amount.valueOf(10000.0, SI.SECOND), // initialization to an impossible time
 	tRec = Amount.valueOf(10000.0, SI.SECOND); // initialization to an impossible time
+	private Amount<Mass> maxTakeOffMass; 
 	private Amount<Velocity> vSTakeOff, vRot, vLO, vWind, v1;
 	private Amount<Length> wingToGroundDistance, obstacle, balancedFieldLength;
 	private Amount<Angle> alphaGround, iw;
@@ -104,6 +106,7 @@ public class TakeOffCalc {
 	public TakeOffCalc(
 			Aircraft aircraft,
 			OperatingConditions theConditions,
+			Amount<Mass> maxTakeOffMass,
 			Amount<Duration> dtRot,
 			Amount<Duration> dtHold,
 			double kcLMax,
@@ -124,7 +127,6 @@ public class TakeOffCalc {
 			double oswald,
 			double cLmaxTO,
 			double cLZeroTO,
-			double cLGround,
 			double cLalphaFlap,
 			double deltaCD0FlapLandingGears
 			) {
@@ -132,6 +134,7 @@ public class TakeOffCalc {
 		// Required data
 		this.aircraft = aircraft;
 		this.theConditions = theConditions;
+		this.maxTakeOffMass = maxTakeOffMass;
 		this.dtRot = dtRot;
 		this.dtHold = dtHold;
 		this.kcLMax = kcLMax;
@@ -154,13 +157,14 @@ public class TakeOffCalc {
 		this.cLmaxTO = cLmaxTO;
 		this.cL0 = cLZeroTO;
 		this.cLalphaFlap = cLalphaFlap;
-		this.cLground = cLGround;
+		
+		this.cLground = cL0 + (cLalphaFlap*iw.getEstimatedValue());
 		
 		// Reference velocities definition
 		vSTakeOff = Amount.valueOf(
 				SpeedCalc.calculateSpeedStall(
 						theConditions.getAltitude().getEstimatedValue(),
-						aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffWeight().getEstimatedValue(),
+						maxTakeOffMass.times(AtmosphereCalc.g0).getEstimatedValue(),
 						aircraft.getWing().getSurface().getEstimatedValue(),
 						cLmaxTO
 						),
@@ -171,7 +175,7 @@ public class TakeOffCalc {
 		System.out.println("\n-----------------------------------------------------------");
 		System.out.println("CLmaxTO = " + cLmaxTO);
 		System.out.println("CL0 = " + cLZeroTO);
-		System.out.println("CLground = " + cLGround);
+		System.out.println("CLground = " + cLground);
 		System.out.println("CD0 clean = " + cD0);
 		System.out.println("Delta CD0 flap + landing gears = " + deltaCD0FlapLandinGears);
 		System.out.println("CD0 TakeOff = " + (cD0 + deltaCD0FlapLandinGears));
@@ -575,21 +579,6 @@ public class TakeOffCalc {
 				
 				// CHECK TO BE DONE ONLY IF isAborted IS FALSE!!
 				if(!isAborted) {
-					
-//					if(t>tRot.getEstimatedValue()) {
-//						System.out.println("Load factor - 1 = " + 
-//								TakeOffCalc.this.getLoadFactor().get(TakeOffCalc.this.getLoadFactor().size()-1)
-//								);
-//						System.out.println("Load factor - 1 = " + 
-//								(TakeOffCalc.this.getLoadFactor().get(TakeOffCalc.this.getLoadFactor().size()-1) - 1)
-//								);
-//						System.err.println("CL - kCLmax*CLmaxTO = " +
-//								(TakeOffCalc.this.getcL().get(TakeOffCalc.this.getcL().size()-1) - (kcLMax*cLmaxTO))
-//								);
-//						System.err.println("CL = " +
-//								TakeOffCalc.this.getcL().get(TakeOffCalc.this.getcL().size()-1)
-//								);
-//					}
 					
 					// CHECK ON LOAD FACTOR --> END ROTATION WHEN n=1
 					if((t > tRot.getEstimatedValue()) && (tEndRot.getEstimatedValue() == 10000.0) &&
@@ -1095,9 +1084,9 @@ public class TakeOffCalc {
 		
 		// failure speed array
 		failureSpeedArray = MyArrayUtils.linspace(
-				2.0,
-				vLO.getEstimatedValue(),
-				50);
+				vSTakeOff.times(0.5).getEstimatedValue(),
+				vRot.getEstimatedValue(),
+				10);
 		// continued take-off array
 		continuedTakeOffArray = new double[failureSpeedArray.length];
 		// aborted take-off array
@@ -1105,10 +1094,10 @@ public class TakeOffCalc {
 
 		// iterative take-off distance calculation for both conditions
 		for(int i=0; i<failureSpeedArray.length; i++) {
-			initialize();
+//			initialize();
 			calculateTakeOffDistanceODE(failureSpeedArray[i], false);
 			continuedTakeOffArray[i] = getGroundDistance().get(groundDistance.size()-1).getEstimatedValue();
-			initialize();
+//			initialize();
 			calculateTakeOffDistanceODE(failureSpeedArray[i], true);
 			abortedTakeOffArray[i] = getGroundDistance().get(groundDistance.size()-1).getEstimatedValue();
 		}
@@ -1239,12 +1228,12 @@ public class TakeOffCalc {
 
 		double[] weightVertical = new double[getTime().size()];
 		for(int i=0; i<weightVertical.length; i++)
-			weightVertical[i] = aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffWeight().getEstimatedValue()
+			weightVertical[i] = maxTakeOffMass.times(AtmosphereCalc.g0).getEstimatedValue()
 			*Math.cos(getGamma().get(i).to(SI.RADIAN).getEstimatedValue());
 
 		double[] weightHorizontal = new double[getTime().size()];
 		for(int i=0; i<weightHorizontal.length; i++)
-			weightHorizontal[i] = aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffWeight().getEstimatedValue()
+			weightHorizontal[i] = maxTakeOffMass.times(AtmosphereCalc.g0).getEstimatedValue()
 			*Math.sin(getGamma().get(i).to(SI.RADIAN).getEstimatedValue());
 
 		if(!isAborted) {
@@ -1516,7 +1505,7 @@ public class TakeOffCalc {
 
 	public class DynamicsEquationsTakeOff implements FirstOrderDifferentialEquations {
 
-		double weight, altitude, g0, mu, kAlpha, cD0, deltaCD0, oswald, ar, k1, k2, kGround, vWind, alphaDotInitial;
+		double weight, altitude, g0, mu, kAlpha, cD0, deltaCD0, oswald, ar, kGround, vWind, alphaDotInitial;
 
 		// visible variables
 		public double alpha, gamma;
@@ -1524,7 +1513,7 @@ public class TakeOffCalc {
 		public DynamicsEquationsTakeOff() {
 
 			// constants and known values
-			weight = aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffWeight().getEstimatedValue();
+			weight = maxTakeOffMass.times(AtmosphereCalc.g0).getEstimatedValue();
 			g0 = AtmosphereCalc.g0.getEstimatedValue();
 			mu = TakeOffCalc.this.mu;
 			kAlpha = TakeOffCalc.this.kAlphaDot;
@@ -1652,16 +1641,6 @@ public class TakeOffCalc {
 							cL
 							);
 			
-//			double cD = 0.0;
-//			
-//			if(cL < 1.2) {
-//				cD = cD0 + deltaCD0 + ((Math.pow(cL, 2)/(Math.PI*ar*oswald))*kGround);
-//			}
-//			else { 
-//				cD = cD0 + deltaCD0 + ((Math.pow(cL, 2)/(Math.PI*ar*oswald))*kGround)
-//						+ (k1*(cL - 1.2)) + (k2*(Math.pow((cL - 1.2), 2))) ;
-//			}
-
 			return cD;
 		}
 
@@ -2336,5 +2315,13 @@ public class TakeOffCalc {
 
 	public void setDeltaCD0LandingGear(double deltaCD0LandingGear) {
 		this.deltaCD0LandingGear = deltaCD0LandingGear;
+	}
+
+	public Amount<Mass> getMaxTakeOffMass() {
+		return maxTakeOffMass;
+	}
+
+	public void setMaxTakeOffMass(Amount<Mass> maxTakeOffMass) {
+		this.maxTakeOffMass = maxTakeOffMass;
 	}
 }

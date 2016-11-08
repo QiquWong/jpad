@@ -41,7 +41,7 @@
 			method_canard=""
 		/> <!-- method_XXX="AVERAGED" if empty string -->
 		<performance 
-			file="analysis_performance.xml"
+			file="analysis_performance_IRON.xml"
 			plot="TRUE"
 			take_off="TRUE"
 			climb="TRUE"
