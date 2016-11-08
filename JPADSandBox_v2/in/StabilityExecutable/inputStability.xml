@@ -214,4 +214,50 @@
 				<overall_pressure_ratio>15.0</overall_pressure_ratio>
 			</specifications>
 		</engine>
+<!-- It is possible the plots using TRUE as value of the specific plot. If no plots are required it is possible to set <plot plot="FALSE"> as attribute of plot.  -->
+	<plot plot="TRUE">
+		<lift>
+			<wing>
+				<CL_high_lift_curve>TRUE</CL_high_lift_curve>		
+			</wing>
+			<horizontal_tail>
+			    <CL_clean_curve>TRUE</CL_clean_curve>
+				<CL_curve_with_elevator_deflections>TRUE</CL_curve_with_elevator_deflections>		
+			</horizontal_tail>
+		</lift>
+		<drag>
+			<wing>
+			   <polar_drag>TRUE</polar_drag>
+			   <polar_drag_with_high_lift_devices>TRUE</polar_drag_with_high_lift_devices>
+			</wing>
+			<horizontal_tail>
+			   <polar_drag>TRUE</polar_drag>
+			</horizontal_tail>
+		</drag>
+		<moment>
+			<wing>
+			   <moment_coefficient_respect_to_quarter_chord>TRUE</moment_coefficient_respect_to_quarter_chord>
+			   <moment_coefficient_respect_to_aerodynamic_center>TRUE</moment_coefficient_respect_to_aerodynamic_center>
+			</wing>
+			<horizontal_tail>
+			   <moment_coefficient_respect_to_quarter_chord>TRUE</moment_coefficient_respect_to_quarter_chord>
+			   <moment_coefficient_respect_to_aerodynamic_center>TRUE</moment_coefficient_respect_to_aerodynamic_center>
+			</horizontal_tail>
+			<fuselage>
+			   <moment_coefficient>TRUE</moment_coefficient>
+			</fuselage>
+			<engine>
+			   <moment_coefficient>TRUE</moment_coefficient>
+			</engine>
+		</moment>
+		<stability>
+			 <CM_cg_vs_alpha_body_components>TRUE</CM_cg_vs_alpha_body_components>
+			 <CM_cg_vs_alpha_body_aircraft>TRUE</CM_cg_vs_alpha_body_aircraft>	
+			 <CM_cg_vs_alpha_body_aircraft_var_deltae>TRUE</CM_cg_vs_alpha_body_aircraft_var_deltae>		
+			 <CL_tot_vs_alpha_body_aircraft_var_deltae>TRUE</CL_tot_vs_alpha_body_aircraft_var_deltae>
+			 <CM_cg_vs_CL_tot_var_deltae>TRUE</CM_cg_vs_CL_tot_var_deltae>
+		     <delya_e_equilibrium>TRUE</delya_e_equilibrium>
+			 <neutral_point_stick_fixed>TRUE</neutral_point_stick_fixed>
+		</stability>	
+	</plot>
 </Longitudinal_static_stability_executable>
