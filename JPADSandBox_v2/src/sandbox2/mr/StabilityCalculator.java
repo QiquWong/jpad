@@ -13,6 +13,7 @@ import org.jscience.physics.amount.Amount;
 
 import analyses.ACPerformanceCalculator.ACPerformanceCalculatorBuilder;
 import configuration.MyConfiguration;
+import configuration.enumerations.AerodynamicAndStabilityPlotEnum;
 import configuration.enumerations.AirfoilEnum;
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.ConditionEnum;
@@ -176,6 +177,13 @@ public class StabilityCalculator {
 	private Amount<Angle> _tiltingAngle;
 	// TODO: continue?
 
+	//PLOT-----------------------------------------------
+	//----------------------------------------------------------------
+
+	private List<AerodynamicAndStabilityPlotEnum> _plotList = new ArrayList<AerodynamicAndStabilityPlotEnum>();
+	private boolean _plotCheck;
+	
+	
 	//-------------------------------------------------------------------------------------------------------------------------
 	//----------------------------------
 	// VARIABLE DECLARATION			   ||
@@ -586,6 +594,22 @@ public class StabilityCalculator {
 
 		System.out.println("\nEngines ----------\n-------------------");
 	}
+
+	
+	/******************************************************************************************************************************************
+	 * Following there are the calculators                                                                                                    *
+	 * 												*																						  *
+	 *****************************************************************************************************************************************/
+	
+	//--------------------------------------------------------------------------------------------------------
+	//CALCULATORS---------------------------------------													 |
+	//--------------------------------------------------------------------------------------------------------
+	
+	
+	
+	
+	
+	
 	//Getters and setters
 
 
@@ -1371,6 +1395,22 @@ public class StabilityCalculator {
 
 	public void setTiltingAngle(Amount<Angle> _tiltingAngle) {
 		this._tiltingAngle = _tiltingAngle;
+	}
+
+	public boolean getPlotCheck() {
+		return _plotCheck;
+	}
+
+	public void setPlotCheck(boolean plotCheck) {
+		this._plotCheck = plotCheck;
+	}
+
+	public List<AerodynamicAndStabilityPlotEnum> getPlotList() {
+		return _plotList;
+	}
+
+	public void setPlotList(List<AerodynamicAndStabilityPlotEnum> plotList) {
+		this._plotList = plotList;
 	}
 
 }

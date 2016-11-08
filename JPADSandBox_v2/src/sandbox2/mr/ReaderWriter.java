@@ -22,11 +22,13 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.util.SystemOutLogger;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.eclipse.ui.internal.themes.ThemesExtension;
 import org.jscience.physics.amount.Amount;
 
 
 import aircraft.components.Aircraft;
 import configuration.MyConfiguration;
+import configuration.enumerations.AerodynamicAndStabilityPlotEnum;
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.FlapTypeEnum;
@@ -341,6 +343,35 @@ public class ReaderWriter{
 		// ENGINE:
 
 
+		
+		//---------------------------------------------------------------------------------
+		// PLOT:
+		
+		// plot flag
+		boolean plotFlag = false;
+		String plotString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@plot");
+		if(plotString.equalsIgnoreCase("true"))
+			plotFlag = Boolean.TRUE;
+		
+		theStabilityCalculator.setPlotCheck(plotFlag);
+		
+		
+		if( theStabilityCalculator.getPlotCheck() == Boolean.TRUE ) {
+			
+			// CL vs Alpha wing
+			String wingLift = reader.getXMLPropertyByPath("//plot/lift/wing/CL_clean_curve");
+			if (wingLift != null) {
+				if(wingLift.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.WING_CL_CURVE_CLEAN);
+			}
+			
+			// CL vs Alpha wing high lift 
+			//TODO continue here
+			
+		}
 
 	}
 }
