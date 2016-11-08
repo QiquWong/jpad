@@ -11,13 +11,13 @@ v 10.0000
 
 x
 st
-.\newData1.st
+.\newData2.st
 sb
-.\newData1.sb
+.\newData2.sb
 
 MODE
 n
 w
-.\newData1.eig
+.\newData2.eig
 
 Quit
