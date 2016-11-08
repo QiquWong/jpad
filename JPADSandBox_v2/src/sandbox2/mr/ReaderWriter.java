@@ -29,6 +29,7 @@ import aircraft.components.Aircraft;
 import configuration.MyConfiguration;
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.ConditionEnum;
+import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.PerformanceEnum;
 import configuration.enumerations.PerformancePlotEnum;
@@ -61,11 +62,11 @@ public class ReaderWriter{
 		//------------------------------------------------------------------------------------
 		// Setup database(s)
 
-				String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
-				String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
-				String highLiftDatabaseFileName = "HighLiftDatabase.h5";
-				AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
-				HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
+		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
+		String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
+		String highLiftDatabaseFileName = "HighLiftDatabase.h5";
+		AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
+		HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
 
 		//---------------------------------------------------------------------------------
 		// OPERATING CONDITION:
@@ -78,7 +79,7 @@ public class ReaderWriter{
 		theStabilityCalculator.setReynoldsCurrent(Double.valueOf(reader.getXMLPropertyByPath("//operating_conditions/Reynolds_number")));
 
 		String condition = reader.getXMLPropertyByPath("//operating_conditions/condition");
-		System.out.println(" condition " + condition);
+
 		if ( condition.equals("TAKE_OFF") || condition.equals("take_off") )
 			theStabilityCalculator.setTheCondition(ConditionEnum.TAKE_OFF);
 		if ( condition.equals("CRUISE") || condition.equals("cruise") )
@@ -99,7 +100,7 @@ public class ReaderWriter{
 
 		theStabilityCalculator.setWingSurface((Amount<Area>) reader.getXMLAmountWithUnitByPath("//wing/global/surface"));
 		theStabilityCalculator.setWingAspectRatio(Double.valueOf(reader.getXMLPropertyByPath("//wing/global/aspect_ratio")));
-		theStabilityCalculator.setHTailNumberOfPointSemiSpanWise((int)Double.parseDouble((reader.getXMLPropertyByPath("//wing/global/number_of_point_semispan"))));
+		theStabilityCalculator.setWingNumberOfPointSemiSpanWise((int)Double.parseDouble((reader.getXMLPropertyByPath("//wing/global/number_of_point_semispan"))));
 		theStabilityCalculator.setWingAdimentionalKinkStation(Double.parseDouble((reader.getXMLPropertyByPath("//wing/global/adimensional_kink_station"))));
 		theStabilityCalculator.setWingNumberOfGivenSections((int)Double.parseDouble((reader.getXMLPropertyByPath("//wing/global/number_of_given_sections"))));
 
@@ -148,31 +149,111 @@ public class ReaderWriter{
 		theStabilityCalculator.setWingMaxThicknessMeanAirfoil(Double.parseDouble((reader.getXMLPropertyByPath("//wing/global/max_thickness_mean_airfoil"))));
 
 		//distributions
-		
+
 		theStabilityCalculator.setWingYAdimensionalBreakPoints(reader.readArrayDoubleFromXMLSplit("//wing/distribution/geometry/y_adimensional_stations"));
-		
+
 		theStabilityCalculator.setWingChordsBreakPoints(reader.readArrayofAmountFromXML("//wing/distribution/geometry/chord_distribution"));
 		theStabilityCalculator.setWingXleBreakPoints(reader.readArrayofAmountFromXML("//wing/distribution/geometry/x_le_distribution"));
 		theStabilityCalculator.setWingTwistBreakPoints(reader.readArrayofAmountFromXML("//wing/distribution/geometry/twist_distribution"));
 		theStabilityCalculator.setWingDihedralBreakPoints(reader.readArrayofAmountFromXML("//wing/distribution/geometry/dihedral_distribution"));
-		
 		theStabilityCalculator.setWingAlphaZeroLiftBreakPoints(reader.readArrayofAmountFromXML("//wing/distribution/aerodynamics/alpha_zero_lift_distribution"));
 		theStabilityCalculator.setWingAlphaStarBreakPoints(reader.readArrayofAmountFromXML("//wing/distribution/aerodynamics/alpha_star_distribution"));
-		
 		theStabilityCalculator.setWingClMaxBreakPoints(reader.readArrayDoubleFromXMLSplit("//wing/distribution/aerodynamics/maximum_lift_coefficient_distribution"));
 
 
 		//---------------------------------------------------------------------------------
 		// HIGH LIFT DEVICES:
-		
+
 		if (theStabilityCalculator.getTheCondition() == ConditionEnum.TAKE_OFF || theStabilityCalculator.getTheCondition() == ConditionEnum.LANDING) {
+
+			//flaps
+			theStabilityCalculator.setWingNumberOfFlaps(reader.getXMLPropertiesByPath("//wing/high_lift_devices/flaps/flap/flap_type").size());
+
+			//initialize array
+			theStabilityCalculator.setWingFlapType(new ArrayList<>());
+			theStabilityCalculator.setWingFlapCfC(new ArrayList<>());
+			theStabilityCalculator.setWingDeltaFlap(new ArrayList<>());
+			theStabilityCalculator.setWingEtaInFlap(new ArrayList<>());
+			theStabilityCalculator.setWingEtaOutFlap(new ArrayList<>());
+
+			//reading flap type
+			List<String> flapsType = reader.getXMLPropertiesByPath("//wing/high_lift_devices/flaps/flap/flap_type");
+			for(int i=0; i<flapsType.size(); i++) {
+				if(flapsType.get(i).equals("SINGLE_SLOTTED"))
+					theStabilityCalculator.getWingFlapType().add(FlapTypeEnum.SINGLE_SLOTTED);
+				else if(flapsType.get(i).equals("DOUBLE_SLOTTED"))
+					theStabilityCalculator.getWingFlapType().add(FlapTypeEnum.DOUBLE_SLOTTED);
+				else if(flapsType.get(i).equals("PLAIN"))
+					theStabilityCalculator.getWingFlapType().add(FlapTypeEnum.PLAIN);
+				else if(flapsType.get(i).equals("FOWLER"))
+					theStabilityCalculator.getWingFlapType().add(FlapTypeEnum.FOWLER);
+				else if(flapsType.get(i).equals("TRIPLE_SLOTTED"))
+					theStabilityCalculator.getWingFlapType().add(FlapTypeEnum.TRIPLE_SLOTTED);
+				else {
+					System.err.println("NO VALID FLAP TYPE!!");
+					return;
+				}	
+			}
+
+			for(int i=0; i<flapsType.size(); i++) {
+				theStabilityCalculator.getWingFlapCfC().add(Double.parseDouble((reader.getXMLPropertiesByPath("//wing/high_lift_devices/flaps/flap/flap_chord_ratio")).get(i)));
+			}
+
+			for(int i=0; i<flapsType.size(); i++) {
+				theStabilityCalculator.getWingDeltaFlap().add(
+						Amount.valueOf(
+								Double.parseDouble(reader.getXMLPropertiesByPath("//wing/high_lift_devices/flaps/flap/flap_deflection").get(i))
+								,NonSI.DEGREE_ANGLE)
+						);
+			}
 			
+			for(int i=0; i<flapsType.size(); i++) {
+				theStabilityCalculator.getWingEtaInFlap().add(Double.parseDouble((reader.getXMLPropertiesByPath("//wing/high_lift_devices/flaps/flap/flap_non_dimensional_inner_station")).get(i)));
+			}
 			
+			for(int i=0; i<flapsType.size(); i++) {
+				theStabilityCalculator.getWingEtaOutFlap().add(Double.parseDouble((reader.getXMLPropertiesByPath("//wing/high_lift_devices/flaps/flap/flap_non_dimensional_outer_station")).get(i)));
+			}
+		
 			
+			//Slats
+			theStabilityCalculator.setWingNumberOfSlats(reader.getXMLPropertiesByPath("//wing/high_lift_devices/slats/slat/slat_deflection").size());
+
+			//initialize array
+			theStabilityCalculator.setWingSlatCsC(new ArrayList<>());
+			theStabilityCalculator.setWingCExtCSlat(new ArrayList<>());
+			theStabilityCalculator.setWingEtaInSlat(new ArrayList<>());
+			theStabilityCalculator.setWingEtaOutSlat(new ArrayList<>());
+			theStabilityCalculator.setWingDeltaSlat(new ArrayList<>());
+			
+			// Values
+			for(int i=0; i<theStabilityCalculator.getWingNumberOfSlats(); i++) {
+				theStabilityCalculator.getWingSlatCsC().add(Double.parseDouble((reader.getXMLPropertiesByPath("//wing/high_lift_devices/slats/slat/slat_deflection")).get(i)));
+			}
+			
+			for(int i=0; i<theStabilityCalculator.getWingNumberOfSlats(); i++) {
+				theStabilityCalculator.getWingCExtCSlat().add(Double.parseDouble((reader.getXMLPropertiesByPath("//wing/high_lift_devices/slats/slat/slat_extension_ratio")).get(i)));
+			}
+			
+			for(int i=0; i<theStabilityCalculator.getWingNumberOfSlats(); i++) {
+				theStabilityCalculator.getWingEtaInSlat().add(Double.parseDouble((reader.getXMLPropertiesByPath("//wing/high_lift_devices/slats/slat/slat_non_dimensional_inner_station")).get(i)));
+			}
+
+			for(int i=0; i<theStabilityCalculator.getWingNumberOfSlats(); i++) {
+				theStabilityCalculator.getWingEtaOutSlat().add(Double.parseDouble((reader.getXMLPropertiesByPath("//wing/high_lift_devices/slats/slat/slat_non_dimensional_outer_station")).get(i)));
+			}
+
+			for(int i=0; i<theStabilityCalculator.getWingNumberOfSlats(); i++) {
+				theStabilityCalculator.getWingDeltaSlat().add(
+						Amount.valueOf(
+								Double.parseDouble(reader.getXMLPropertiesByPath("//wing/high_lift_devices/slats/slat/slat_deflection").get(i))
+								,NonSI.DEGREE_ANGLE)
+						);
+			}
 			
 		}
-		
-	    //---------------------------------------------------------------------------------
+
+		//---------------------------------------------------------------------------------
 		// FUSELAGE:
 
 		theStabilityCalculator.setFuselageDiameter((Amount<Length>) reader.getXMLAmountWithUnitByPath("//fuselage/fuselageDiameter"));
@@ -183,7 +264,7 @@ public class ReaderWriter{
 		theStabilityCalculator.setFuselageWindshieldAngle((Amount<Angle>)reader.getXMLAmountWithUnitByPath("//fuselage/windshieldAngle"));
 		theStabilityCalculator.setFuselageUpSweepAngle((Amount<Angle>)reader.getXMLAmountWithUnitByPath("//fuselage/upsweepAngle"));
 		theStabilityCalculator.setFuselageXPercentPositionPole(Double.parseDouble((reader.getXMLPropertyByPath("//fuselage/xPercentPositionPole"))));
-		
+
 		//---------------------------------------------------------------------------------
 		// HORIZONTAL TAIL:
 
@@ -238,23 +319,24 @@ public class ReaderWriter{
 			airfoilFamilyIndex = 8;
 
 		theStabilityCalculator.setHTailMaxThicknessMeanAirfoil(Double.parseDouble((reader.getXMLPropertyByPath("//horizontal_tail/global/max_thickness_mean_airfoil"))));
-		
+
 		//distribution
 		theStabilityCalculator.setHTailYAdimensionalBreakPoints(reader.readArrayDoubleFromXML("//horizontal_tail/distribution/geometry/y_adimensional_stations"));
-		
 		theStabilityCalculator.setHTailChordsBreakPoints(reader.readArrayofAmountFromXML("//horizontal_tail/distribution/geometry/chord_distribution"));
 		theStabilityCalculator.setHTailXleBreakPoints(reader.readArrayofAmountFromXML("//horizontal_tail/distribution/geometry/x_le_distribution"));
 		theStabilityCalculator.setHTailTwistBreakPoints(reader.readArrayofAmountFromXML("//horizontal_tail/distribution/geometry/twist_distribution"));
 		theStabilityCalculator.setHTailDihedralBreakPoints(reader.readArrayofAmountFromXML("//horizontal_tail/distribution/geometry/dihedral_distribution"));
-		
 		theStabilityCalculator.setHTailAlphaZeroLiftBreakPoints(reader.readArrayofAmountFromXML("//horizontal_tail/distribution/aerodynamics/alpha_zero_lift_distribution"));
 		theStabilityCalculator.setHTailAlphaStarBreakPoints(reader.readArrayofAmountFromXML("//horizontal_tail/distribution/aerodynamics/alpha_star_distribution"));
-		
 		theStabilityCalculator.setHTailClMaxBreakPoints(reader.readArrayDoubleFromXML("//horizontal_tail/distribution/aerodynamics/maximum_lift_coefficient_distribution"));
-		
+
 		//---------------------------------------------------------------------------------
 		// ELEVATOR:
-
+		theStabilityCalculator.setAnglesOfElevatorDeflection(reader.readArrayofAmountFromXML("//horizontal_tail/elevator/angles_of_elevator_deflection"));
+		theStabilityCalculator.setElevatorCfC(Double.valueOf(reader.getXMLPropertyByPath("//horizontal_tail/elevator/elevator_chord_ratio")));
+		theStabilityCalculator.setElevatorEtaIn(Double.valueOf(reader.getXMLPropertyByPath("//horizontal_tail/elevator/elevator_non_dimensional_inner_station")));
+		theStabilityCalculator.setElevatorEtaOut(Double.valueOf(reader.getXMLPropertyByPath("//horizontal_tail/elevator/elevator_non_dimensional_outer_station")));
+		
 		//---------------------------------------------------------------------------------
 		// ENGINE:
 

@@ -12,6 +12,7 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
 import analyses.ACPerformanceCalculator.ACPerformanceCalculatorBuilder;
+import configuration.MyConfiguration;
 import configuration.enumerations.AirfoilEnum;
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.ConditionEnum;
@@ -97,12 +98,14 @@ public class StabilityCalculator {
 
 	//High lift devices -------------------------------------------
 	//----------------------------------------------------------------
-	private List<Double[]> _wingDeltaFlap;
+	private int _wingNumberOfFlaps;
+	private int _wingNumberOfSlats;
+	private List<Amount<Angle>> _wingDeltaFlap;
 	private List<FlapTypeEnum> _wingFlapType;
 	private List<Double> _wingEtaInFlap;
 	private List<Double> _wingEtaOutFlap;
 	private List<Double> _wingFlapCfC;
-	private List<Double> _wingDeltaSlat;
+	private List<Amount<Angle>> _wingDeltaSlat;
 	private List<Double> _wingEtaInSlat;
 	private List<Double> _wingEtaOutSlat;
 	private List<Double> _wingSlatCsC;
@@ -251,6 +254,7 @@ public class StabilityCalculator {
 				1.0,
 				this._wingNumberOfPointSemiSpanWise);
 
+		this._wingYAdimensionalDistribution = new ArrayList<>();
 		for (int i=0; i<_wingNumberOfPointSemiSpanWise; i++){
 			this._wingYAdimensionalDistribution.add(
 					yAdimentionalDistributionTemp[i]
@@ -259,6 +263,7 @@ public class StabilityCalculator {
 
 		//h tail
 		yAdimentionalDistributionTemp = new double[this._hTailNumberOfPointSemiSpanWise];
+		this._hTailYAdimensionalDistribution = new ArrayList<>();
 		yAdimentionalDistributionTemp = MyArrayUtils.linspace(
 				0.0,
 				1.0,
@@ -278,6 +283,7 @@ public class StabilityCalculator {
 				this._wingSemiSpan.doubleValue(SI.METER),
 				this._wingNumberOfPointSemiSpanWise);
 
+		this._wingYDistribution = new ArrayList<>();
 		for (int i=0; i<_wingNumberOfPointSemiSpanWise; i++){
 			this._wingYDistribution.add(
 					Amount.valueOf(yDistributionTemp[i], SI.METER)
@@ -291,18 +297,22 @@ public class StabilityCalculator {
 				this._hTailSemiSpan.doubleValue(SI.METER),
 				this._hTailNumberOfPointSemiSpanWise);
 
+		this._hTailYDistribution = new ArrayList<>();
 		for (int i=0; i<_hTailNumberOfPointSemiSpanWise; i++){
 			this._hTailYDistribution.add(
 					Amount.valueOf(yDistributionTemp[i], SI.METER)
 					);
 		}
 
+
+		//WING--------------------------------------------------------
 		// chords
 		Double [] chordDistributionArray = MyMathUtils.getInterpolatedValue1DLinear(
 				MyArrayUtils.convertToDoublePrimitive(_wingYAdimensionalBreakPoints),
 				MyArrayUtils.convertListOfAmountTodoubleArray(_wingChordsBreakPoints),
 				MyArrayUtils.convertToDoublePrimitive(_wingYAdimensionalDistribution)
 				);	
+		this._wingChordsDistribution = new ArrayList<>();
 		for(int i=0; i<chordDistributionArray.length; i++)
 			_wingChordsDistribution.add(Amount.valueOf(chordDistributionArray[i], SI.METER));
 
@@ -312,6 +322,7 @@ public class StabilityCalculator {
 				MyArrayUtils.convertListOfAmountTodoubleArray(_wingXleBreakPoints),
 				MyArrayUtils.convertToDoublePrimitive(_wingYAdimensionalDistribution)
 				);	
+		this._wingXleDistribution = new ArrayList<>();
 		for(int i=0; i<xleDistributionArray.length; i++)
 			_wingXleDistribution.add(Amount.valueOf(xleDistributionArray[i], SI.METER));
 
@@ -321,6 +332,7 @@ public class StabilityCalculator {
 				MyArrayUtils.convertListOfAmountTodoubleArray(_wingTwistBreakPoints),
 				MyArrayUtils.convertToDoublePrimitive(_wingYAdimensionalDistribution)
 				);	
+		this._wingTwistDistribution = new ArrayList<>();
 		for(int i=0; i<twistDistributionArray.length; i++)
 			_wingTwistDistribution.add(Amount.valueOf(twistDistributionArray[i], NonSI.DEGREE_ANGLE));
 
@@ -330,6 +342,7 @@ public class StabilityCalculator {
 				MyArrayUtils.convertListOfAmountTodoubleArray(_wingDihedralBreakPoints),
 				MyArrayUtils.convertToDoublePrimitive(_wingYAdimensionalDistribution)
 				);	
+		this._wingDihedralDistribution = new ArrayList<>();
 		for(int i=0; i<dihedralDistributionArray.length; i++)
 			_wingDihedralDistribution.add(Amount.valueOf(dihedralDistributionArray[i], NonSI.DEGREE_ANGLE));
 
@@ -339,6 +352,7 @@ public class StabilityCalculator {
 				MyArrayUtils.convertListOfAmountTodoubleArray(_wingAlphaZeroLiftBreakPoints),
 				MyArrayUtils.convertToDoublePrimitive(_wingYAdimensionalDistribution)
 				);	
+		this._wingAlphaZeroLiftDistribution = new ArrayList<>();
 		for(int i=0; i<alphaZeroLiftDistributionArray.length; i++)
 			_wingAlphaZeroLiftDistribution.add(Amount.valueOf(alphaZeroLiftDistributionArray[i], NonSI.DEGREE_ANGLE));
 
@@ -348,6 +362,7 @@ public class StabilityCalculator {
 				MyArrayUtils.convertListOfAmountTodoubleArray(_wingAlphaStarBreakPoints),
 				MyArrayUtils.convertToDoublePrimitive(_wingYAdimensionalDistribution)
 				);	
+		this._wingAlphaStarDistribution = new ArrayList<>();
 		for(int i=0; i<alphaStarDistributionArray.length; i++)
 			_wingAlphaStarDistribution.add(Amount.valueOf(alphaStarDistributionArray[i], NonSI.DEGREE_ANGLE));
 
@@ -357,8 +372,80 @@ public class StabilityCalculator {
 				MyArrayUtils.convertToDoublePrimitive(_wingClMaxBreakPoints),
 				MyArrayUtils.convertToDoublePrimitive(_wingYAdimensionalDistribution)
 				);	
+		this._wingClMaxDistribution = new ArrayList<>();
 		for(int i=0; i<clMaxDistributionArray.length; i++)
 			_wingClMaxDistribution.add(clMaxDistributionArray[i]);
+
+		//HTAIL----------------------------
+		// chords
+		Double [] chordDistributionArrayHtail = MyMathUtils.getInterpolatedValue1DLinear(
+				MyArrayUtils.convertToDoublePrimitive(_hTailYAdimensionalBreakPoints),
+				MyArrayUtils.convertListOfAmountTodoubleArray(_hTailChordsBreakPoints),
+				MyArrayUtils.convertToDoublePrimitive(_hTailYAdimensionalDistribution)
+				);	
+		this._hTailChordsDistribution = new ArrayList<>();
+		for(int i=0; i<chordDistributionArrayHtail.length; i++)
+			_hTailChordsDistribution.add(Amount.valueOf(chordDistributionArrayHtail[i], SI.METER));
+
+		// xle
+		Double [] xleDistributionArrayHtail = MyMathUtils.getInterpolatedValue1DLinear(
+				MyArrayUtils.convertToDoublePrimitive(_hTailYAdimensionalBreakPoints),
+				MyArrayUtils.convertListOfAmountTodoubleArray(_hTailXleBreakPoints),
+				MyArrayUtils.convertToDoublePrimitive(_hTailYAdimensionalDistribution)
+				);	
+		this._hTailXleDistribution = new ArrayList<>();
+		for(int i=0; i<xleDistributionArrayHtail.length; i++)
+			_hTailXleDistribution.add(Amount.valueOf(xleDistributionArrayHtail[i], SI.METER));
+
+		// twist
+		Double [] twistDistributionArrayHtail = MyMathUtils.getInterpolatedValue1DLinear(
+				MyArrayUtils.convertToDoublePrimitive(_hTailYAdimensionalBreakPoints),
+				MyArrayUtils.convertListOfAmountTodoubleArray(_hTailTwistBreakPoints),
+				MyArrayUtils.convertToDoublePrimitive(_hTailYAdimensionalDistribution)
+				);	
+		this._hTailTwistDistribution = new ArrayList<>();
+		for(int i=0; i<twistDistributionArrayHtail.length; i++)
+			_hTailTwistDistribution.add(Amount.valueOf(twistDistributionArrayHtail[i], NonSI.DEGREE_ANGLE));
+
+		// dihedral
+		Double [] dihedralDistributionArrayHtail = MyMathUtils.getInterpolatedValue1DLinear(
+				MyArrayUtils.convertToDoublePrimitive(_hTailYAdimensionalBreakPoints),
+				MyArrayUtils.convertListOfAmountTodoubleArray(_hTailDihedralBreakPoints),
+				MyArrayUtils.convertToDoublePrimitive(_hTailYAdimensionalDistribution)
+				);	
+		this._hTailDihedralDistribution = new ArrayList<>();
+		for(int i=0; i<dihedralDistributionArrayHtail.length; i++)
+			_hTailDihedralDistribution.add(Amount.valueOf(dihedralDistributionArrayHtail[i], NonSI.DEGREE_ANGLE));
+
+		// alpha zero lift
+		Double [] alphaZeroLiftDistributionArrayHtail = MyMathUtils.getInterpolatedValue1DLinear(
+				MyArrayUtils.convertToDoublePrimitive(_hTailYAdimensionalBreakPoints),
+				MyArrayUtils.convertListOfAmountTodoubleArray(_hTailAlphaZeroLiftBreakPoints),
+				MyArrayUtils.convertToDoublePrimitive(_hTailYAdimensionalDistribution)
+				);	
+		this._hTailAlphaZeroLiftDistribution = new ArrayList<>();
+		for(int i=0; i<alphaZeroLiftDistributionArrayHtail.length; i++)
+			_hTailAlphaZeroLiftDistribution.add(Amount.valueOf(alphaZeroLiftDistributionArrayHtail[i], NonSI.DEGREE_ANGLE));
+
+		// alpha star
+		Double [] alphaStarDistributionArrayHtail = MyMathUtils.getInterpolatedValue1DLinear(
+				MyArrayUtils.convertToDoublePrimitive(_hTailYAdimensionalBreakPoints),
+				MyArrayUtils.convertListOfAmountTodoubleArray(_hTailAlphaStarBreakPoints),
+				MyArrayUtils.convertToDoublePrimitive(_hTailYAdimensionalDistribution)
+				);	
+		this._hTailAlphaStarDistribution = new ArrayList<>();
+		for(int i=0; i<alphaStarDistributionArrayHtail.length; i++)
+			_hTailAlphaStarDistribution.add(Amount.valueOf(alphaStarDistributionArrayHtail[i], NonSI.DEGREE_ANGLE));
+
+		// cl max
+		Double [] clMaxDistributionArrayHtail = MyMathUtils.getInterpolatedValue1DLinear(
+				MyArrayUtils.convertToDoublePrimitive(_hTailYAdimensionalBreakPoints),
+				MyArrayUtils.convertToDoublePrimitive(_hTailClMaxBreakPoints),
+				MyArrayUtils.convertToDoublePrimitive(_hTailYAdimensionalDistribution)
+				);	
+		this._hTailClMaxDistribution = new ArrayList<>();
+		for(int i=0; i<clMaxDistributionArrayHtail.length; i++)
+			_hTailClMaxDistribution.add(clMaxDistributionArrayHtail[i]);
 
 	}
 
@@ -377,6 +464,7 @@ public class StabilityCalculator {
 
 		// fill the array of alpha Body
 
+		this._alphasBody = new ArrayList<>();
 		for (int i=0; i<_numberOfAlphasBody; i++){
 			this._alphasBody.add(
 					Amount.valueOf(alphaBodyTemp[i], NonSI.DEGREE_ANGLE)
@@ -394,7 +482,11 @@ public class StabilityCalculator {
 	 * When this class will begin the ACStabilityManager, this method will be simply eliminated            									 *
 	 * 												*																						 *
 	 *****************************************************************************************************************************************/
+	
+	
 	public void printAllData(){
+		MyConfiguration.customizeAmountOutput();
+		
 		System.out.println("LONGITUDINAL STATIC STABILITY TEST");
 		System.out.println("------------------------------------------------------------------------------");
 
@@ -438,15 +530,19 @@ public class StabilityCalculator {
 		System.out.println("Alpha star Distribution --> " + this._wingAlphaStarDistribution);
 		System.out.println("Cl max Distribution --> " + this._wingClMaxDistribution);
 
-		System.out.println("\nHIGH LIFT DEVICES ----------\n-------------------");
-		System.out.println("Number of flaps = " + this._wingFlapType.size());
-		System.out.println("Flaps type --> " + this._wingFlapType);
-		System.out.println("Eta in Flaps --> " + this._wingEtaInFlap);
-		System.out.println("Eta out Flaps --> " + this._wingEtaOutFlap);
-		System.out.println("Flap chord ratio --> " + this._wingFlapCfC);
-		System.out.println("\nNumber of Slats --> " + this._wingSlatCsC.size());
-		System.out.println("Eta in Slats --> " + this._wingEtaInSlat);
-		System.out.println("Eta out SLats --> " + this._wingEtaOutSlat);
+		if (this._theCondition == ConditionEnum.TAKE_OFF || this._theCondition == ConditionEnum.LANDING) { 
+			System.out.println("\nHIGH LIFT DEVICES ----------\n-------------------");
+			System.out.println("Number of flaps = " + this._wingNumberOfFlaps);
+			System.out.println("Flaps type --> " + this._wingFlapType);
+			System.out.println("Eta in Flaps --> " + this._wingEtaInFlap);
+			System.out.println("Eta out Flaps --> " + this._wingEtaOutFlap);
+			System.out.println("Flap chord ratio --> " + this._wingFlapCfC);
+			System.out.println("Flap deflection --> " + this._wingDeltaFlap);
+			System.out.println("\nNumber of Slats --> " + this._wingSlatCsC.size());
+			System.out.println("Slat deflection --> " + this._wingDeltaSlat);
+			System.out.println("Eta in Slats --> " + this._wingEtaInSlat);
+			System.out.println("Eta out SLats --> " + this._wingEtaOutSlat);
+		}
 
 		System.out.println("\nFUSELAGE----------\n-------------------");
 		System.out.println("Fuselage diameter = " + this._fuselageDiameter);
@@ -482,6 +578,7 @@ public class StabilityCalculator {
 		System.out.println("Cl max Distribution --> " + this._hTailClMaxDistribution);
 
 		System.out.println("\nELEVATOR ----------\n-------------------");
+		System.out.println("Angles of Elevator Deflection " + this._anglesOfElevatorDeflection);
 		System.out.println("Flaps type --> " + this._elevatorType);
 		System.out.println("Eta in Elevator = " + this._elevatorEtaIn);
 		System.out.println("Eta out Elevator = " + this._elevatorEtaOut);
@@ -656,7 +753,7 @@ public class StabilityCalculator {
 		return _wingClMaxDistribution;
 	}
 
-	public List<Double[]> getWingDeltaFlap() {
+	public List<Amount<Angle>> getWingDeltaFlap() {
 		return _wingDeltaFlap;
 	}
 
@@ -676,7 +773,7 @@ public class StabilityCalculator {
 		return _wingFlapCfC;
 	}
 
-	public List<Double> getWingDeltaSlat() {
+	public List<Amount<Angle>> getWingDeltaSlat() {
 		return _wingDeltaSlat;
 	}
 
@@ -1040,7 +1137,23 @@ public class StabilityCalculator {
 		this._wingClMaxDistribution = _wingClMaxDistribution;
 	}
 
-	public void setWingDeltaFlap(List<Double[]> _wingDeltaFlap) {
+	public int getWingNumberOfFlaps() {
+		return _wingNumberOfFlaps;
+	}
+
+	public void setWingNumberOfFlaps(int _wingNumberOfFlaps) {
+		this._wingNumberOfFlaps = _wingNumberOfFlaps;
+	}
+
+	public int getWingNumberOfSlats() {
+		return _wingNumberOfSlats;
+	}
+
+	public void setWingNumberOfSlats(int _wingNumberOfSlats) {
+		this._wingNumberOfSlats = _wingNumberOfSlats;
+	}
+
+	public void setWingDeltaFlap(List<Amount<Angle>> _wingDeltaFlap) {
 		this._wingDeltaFlap = _wingDeltaFlap;
 	}
 
@@ -1060,7 +1173,7 @@ public class StabilityCalculator {
 		this._wingFlapCfC = _wingFlapCfC;
 	}
 
-	public void setWingDeltaSlat(List<Double> _wingDeltaSlat) {
+	public void setWingDeltaSlat(List<Amount<Angle>> _wingDeltaSlat) {
 		this._wingDeltaSlat = _wingDeltaSlat;
 	}
 

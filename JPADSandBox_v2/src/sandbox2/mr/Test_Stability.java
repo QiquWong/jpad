@@ -96,6 +96,8 @@ public class Test_Stability{
 				theCalculator
 				);
 		
+		theCalculator.initializeData();
+		theCalculator.initializeAlphaArrays();
 		theCalculator.printAllData();
 		// read
 		// initialize

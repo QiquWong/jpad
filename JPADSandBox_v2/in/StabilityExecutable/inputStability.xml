@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- All units can be choose by user with the exception of surfaces deflections. All values of each array must have the same unit-->        
  <Longitudinal_static_stability_executable> 
         <operating_conditions>
 				<!-- This is the position of the aircraft CG in the BRF -->
@@ -13,9 +14,9 @@
 				<alpha_body_initial unit="°">-1</alpha_body_initial>
                 <alpha_body_final unit="°">16</alpha_body_final>
                 <number_of_alphas_body>30</number_of_alphas_body>
-				<condition>CRUISE</condition>
-				<!--
 				<condition>TAKE_OFF</condition>
+				<!--
+				<condition>CRUISE</condition>
 				<condition>LANDING</condition>
 				-->
         </operating_conditions>
@@ -62,18 +63,30 @@
              </distribution>
 			 <high_lift_devices>
 			 <!-- if condition = CRUISE, these field will be not read  -->
-			 <flaps>
+			  <flaps>
 			 <!-- It is possible to set a variable number of flap and slat using different id using progressive numbers   -->
                  <flap id = "1">
                      <flap_type>FOWLER</flap_type>
+					 <!--
+					 <flap_type>SINGLE_SLOTTED</flap_type>
+					 <flap_type>DOUBLE_SLOTTED</flap_type>
+					 <flap_type>PLAIN</flap_type>
+					 <flap_type>TRIPLE_SLOTTED</flap_type> -->
                      <flap_chord_ratio>0.285</flap_chord_ratio>
+					 <!-- This value must be in degree -->
                      <flap_deflection unit = "°">40</flap_deflection>
                      <flap_non_dimensional_inner_station>0.12</flap_non_dimensional_inner_station>
                      <flap_non_dimensional_outer_station>0.4</flap_non_dimensional_outer_station>
                  </flap>
                  <flap id = "2">
                      <flap_type>FOWLER</flap_type>
+					  <!--
+					 <flap_type>SINGLE_SLOTTED</flap_type>
+					 <flap_type>DOUBLE_SLOTTED</flap_type>
+					 <flap_type>PLAIN</flap_type>
+					 <flap_type>TRIPLE_SLOTTED</flap_type> -->
                      <flap_chord_ratio>0.32</flap_chord_ratio>
+					 <!-- This value must be in degree -->
                      <flap_deflection unit = "°">40</flap_deflection>
                      <flap_non_dimensional_inner_station>0.4</flap_non_dimensional_inner_station>
                      <flap_non_dimensional_outer_station>0.75</flap_non_dimensional_outer_station>
@@ -81,6 +94,7 @@
              </flaps>
              <slats>
                  <slat id = "1">
+				 <!-- This value must be in degree -->
                      <slat_deflection unit = "°">25</slat_deflection>
                      <slat_chord_ratio>0.055</slat_chord_ratio>
                      <slat_extension_ratio>1.1</slat_extension_ratio>
@@ -88,6 +102,7 @@
                      <slat_non_dimensional_outer_station>0.33</slat_non_dimensional_outer_station>
                  </slat>
                  <slat id = "2">
+				 <!-- This value must be in degree -->
                      <slat_deflection unit = "°">25</slat_deflection>
                      <slat_chord_ratio unit = "">0.085</slat_chord_ratio>
                      <slat_extension_ratio>1.1</slat_extension_ratio>
@@ -95,6 +110,7 @@
                      <slat_non_dimensional_outer_station>0.56</slat_non_dimensional_outer_station>
                  </slat>
                  <slat id = "3">
+				 <!-- This value must be in degree -->
                      <slat_deflection unit = "°">25</slat_deflection>
                      <slat_chord_ratio>0.095</slat_chord_ratio>
                      <slat_extension_ratio>1.1</slat_extension_ratio>
@@ -102,6 +118,7 @@
                      <slat_non_dimensional_outer_station>0.73</slat_non_dimensional_outer_station>
                  </slat>
 			 	<slat id = "4">
+				<!-- This value must be in degree -->
                      <slat_deflection unit = "°">25</slat_deflection>
                      <slat_chord_ratio>0.11</slat_chord_ratio>
                      <slat_extension_ratio>1.1</slat_extension_ratio>
@@ -160,20 +177,20 @@
 					<chord_distribution unit="m">[1.4224,0.7112]</chord_distribution>
 					<!-- XLE is in LRF, so the root value of XLE  must be zero -->
 					<x_le_distribution unit="m">[0,2.433]</x_le_distribution>
-					<twist_distribution unit="°">[0,0]</twist_distribution>
+					<twist_distribution unit="°">[0,-2]</twist_distribution>
 					<dihedral_distribution unit="°">[0,0]</dihedral_distribution>
                 </geometry>
                 <aerodynamics>
-					<alpha_zero_lift_distribution unit="°">[-1.1, -1.1]</alpha_zero_lift_distribution>
-					<alpha_star_distribution unit="°">[8,8]</alpha_star_distribution>
-					<alpha_stall_distribution unit="°">[15, 15.2]</alpha_stall_distribution>
+					<alpha_zero_lift_distribution unit="°">[-2, -2]</alpha_zero_lift_distribution>
+					<alpha_star_distribution unit="°">[6,6]</alpha_star_distribution>
+					<alpha_stall_distribution unit="°">[18, 16]</alpha_stall_distribution>
 					<linear_slope_coefficient unit="1/°">[0.10, 0.10]</linear_slope_coefficient>
-					<maximum_lift_coefficient_distribution>[1.567,1.516]</maximum_lift_coefficient_distribution>
+					<maximum_lift_coefficient_distribution>[1.2,1.1]</maximum_lift_coefficient_distribution>
 			    </aerodynamics>	
             </distribution>
 			<elevator>
       		    <!-- these values must be 7 or less  -->
-				<angles_of_elevator_deflection>[-25,-20,-15,-10,-5,0,5]</angles_of_elevator_deflection>
+				<angles_of_elevator_deflection unit="°">[-25,-20,-15,-10,-5,0,5]</angles_of_elevator_deflection>
 				<!-- elevator is automatically modelled as plain flap  -->
                 <elevator_chord_ratio>0.285</elevator_chord_ratio>
                 <elevator_deflection unit = "°">40</elevator_deflection>
