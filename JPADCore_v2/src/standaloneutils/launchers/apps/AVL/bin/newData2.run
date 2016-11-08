@@ -1,4 +1,4 @@
-LOAD .\allegro.avl
+LOAD .\newData2.avl
 MASS .\allegro.mass
 MSET
 0

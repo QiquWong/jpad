@@ -931,7 +931,7 @@ public class AVLInputGenerator {
 						controlSurface.getHingeVector()[0], controlSurface.getHingeVector()[1], controlSurface.getHingeVector()[2],
 						controlSurface.getSignDuplicate()
 					)
-			  ).append(" | name, gain,  Xhinge,  (X,Y,Z)hvec,  SgnDup\n");
+			  ).append(" ! name, gain,  Xhinge,  (X,Y,Z)hvec,  SgnDup\n");
 			
 			return sb.toString();
 		}

@@ -18,8 +18,9 @@ import org.apache.commons.math3.linear.MatrixUtils;
 // see: http://www.uavs.us/2011/12/02/matlab-avl-control/
 
 public class AVLExternalJob implements IAVLExternalJob {
-	
-	protected File configFile;
+
+	protected File executableFile;
+	protected File runFile;
 	protected File inputFile;
 	protected File binDirectory;
 	protected File cacheDirectory;
@@ -55,13 +56,21 @@ public class AVLExternalJob implements IAVLExternalJob {
 		job.setBinDirectory(new File(binDirPath));
 		System.out.println("Binary directory: " + job.getBinDirectory());
 
+		// Establish the path to executable file
+		job.setExecutableFile(new File(binDirPath + File.separator + "avl.exe"));
+		System.out.println("Executable file: " + job.getExecutableFile());
+		
+		// Establish the path to the cache directory - TODO: for now the same as bin dir
+		job.setCacheDirectory(new File(binDirPath));
+		System.out.println("Cache directory: " + job.getCacheDirectory());
+		
 		// Assign the input file
-		job.setInputFile(new File(binDirPath + File.separator 
-				+ "newData1.run"
+		job.setInputAVLFile(new File(binDirPath + File.separator 
+				+ "newData2.avl"
 				));
 		
 		// Clean previously generated outputs
-		Stream<String> fileNames = Stream.of("newData1.st", "newData1.sb", "newData1.eig");
+		Stream<String> fileNames = Stream.of("newData2.st", "newData2.sb", "newData2.eig");
 		fileNames.forEach(name -> {
 			Path path = FileSystems.getDefault().getPath(
 					binDirPath + File.separator + name);
@@ -69,9 +78,9 @@ public class AVLExternalJob implements IAVLExternalJob {
 				System.out.println("Deleting file: " + path);
 				Files.delete(path);
 			} catch (NoSuchFileException e) {
-			    System.err.format("%s: no such" + " file or directory%n", path);
+			    System.err.format("%s: no such" + " file or directory: %1$s\n", path);
 			} catch (DirectoryNotEmptyException e) {
-			    System.err.format("%s not empty%n", path);
+			    System.err.format("%1Ss not empty\n", path);
 			} catch (IOException e) {
 				System.err.println(e);
 			}
@@ -262,7 +271,7 @@ public class AVLExternalJob implements IAVLExternalJob {
 		
 		//-------------------------------------------------------------------------
 		// Form the final command to launch the external process
-		String commandLine = job.formCommand(binDirPath, inputData, aircraft);
+		String commandLine = job.formCommand(inputData, aircraft);
 
 		// Print out the command line
 		System.out.println("Command line: " + commandLine);
@@ -310,7 +319,7 @@ public class AVLExternalJob implements IAVLExternalJob {
 	/*
 	 *  TODO modify this function as appropriate
 	 */
-	private String formCommand(String binDirPath, AVLMainInputData inputData, AVLAircraft aircraft) {
+	private String formCommand(AVLMainInputData inputData, AVLAircraft aircraft) {
 
 		// build the system command we want to run
 		// TODO: handle Win32 and Win64 with separate tags,
@@ -339,15 +348,15 @@ public class AVLExternalJob implements IAVLExternalJob {
 		//			DatcomPlusInputGenerator.writeTemplate(this.getInputFile().getAbsolutePath()); // Ok
 
 		// Write out the input file
-		AVLInputGenerator.writeDataToFile(inputData, aircraft, this.getInputFile().getAbsolutePath());
+		AVLInputGenerator.writeDataToFile(inputData, aircraft, this.getInputAVLFile().getAbsolutePath());
 
-		System.out.println("Input file full path: " + this.getInputFile());
-		System.out.println("Input file name: " + this.getInputFile().getName());
+		System.out.println("Input AVL file full path: " + this.getInputAVLFile());
+		System.out.println("Input AVL file name: " + this.getInputAVLFile().getName());
 
 		// Assign the output file
 		this.setOutputFile(
-				new File(binDirPath + File.separator 
-						+ this.getInputFile().getName().replaceFirst(".avl", ".st")
+				new File(this.getBinDirectory() + File.separator 
+						+ this.getInputAVLFile().getName().replaceFirst(".avl", ".st")
 						)
 				);
 
@@ -355,16 +364,27 @@ public class AVLExternalJob implements IAVLExternalJob {
 		System.out.println("Output file name: " + this.getOutputFile().getName());
 
 		commandInformation.add(
-				"cd " + binDirPath
+				"cd " + this.getBinDirectory()
 				);
 		commandInformation.add(
 				"& "
-						+ "avl.exe < " + this.getInputFile().getAbsolutePath() // .getName()
+						+ this.getExecutableFile().getName() + " < " + this.getInputAVLFile().getAbsolutePath() // .getName()
 				);
 
 		return this.getCommandLine();
 	}
 
+	@Override
+	public File getExecutableFile() {
+		return executableFile;
+	}
+
+	@Override
+	public void setExecutableFile(File file) {
+		this.executableFile = file;
+		
+	}
+	
 	@Override
 	public int execute() throws IOException, InterruptedException {
 		
@@ -419,38 +439,47 @@ public class AVLExternalJob implements IAVLExternalJob {
 		return commandInformation;
 	} 
 
+	@Override
 	public String getCommandLine() {
 		return String.join(" ", commandInformation);
 	} 
 	
-	public File getConfigFile() {
-		return configFile;
+	@Override
+	public File getInputRunFile() {
+		return runFile;
 	}
 	
-	public void setConfigFile(File configFile) {
-		this.configFile = configFile;
+	@Override
+	public void setInputRunFile(File file) {
+		this.runFile = file;
 	}
 	
-	public File getInputFile() {
+	@Override
+	public File getInputAVLFile() {
 		return inputFile;
 	}
 	
-	public void setInputFile(File inputFile) {
+	@Override
+	public void setInputAVLFile(File inputFile) {
 		this.inputFile = inputFile;
 	}
 	
+	@Override
 	public File getBinDirectory() {
 		return binDirectory;
 	}
 	
+	@Override
 	public void setBinDirectory(File binDirectory) {
 		this.binDirectory = binDirectory;
 	}
 	
+	@Override
 	public File getCacheDirectory() {
 		return cacheDirectory;
 	}
 	
+	@Override
 	public void setCacheDirectory(File cacheDirectory) {
 		this.cacheDirectory = cacheDirectory;
 	}
@@ -463,73 +492,19 @@ public class AVLExternalJob implements IAVLExternalJob {
 		this.outputFile = outputFile;
 	}
 	
+	@Override
 	public SystemCommandExecutor getSystemCommandExecutor() {
 		return systemCommandExecutor;
 	}
 
+	@Override
 	public StringBuilder getStdOut() {
 		return stdOut;
 	}
 
+	@Override
 	public StringBuilder getStdErr() {
 		return stdErr;
 	}
-	
-	/*
-	 *  The most important function, forms the command to be launched 
-	 */
-	public String formCommand(String binDirPath, DatcomInputData inputData) {
-		
-		// build the system command we want to run
-		// TODO: handle Win32 and Win64 with separate tags,
-		//       handle Linux and Mac iOS as well
-		String binShellWin32 = System.getenv("WINDIR") + File.separator
-				+ "syswow64"  + File.separator
-				+ "cmd.exe"
-				;
-		System.out.println("Shell Win32 launcher: " + binShellWin32);
-		
-		// the Win32 shell cmd.exe
-		commandInformation.add(binShellWin32);
-		// option /C to cmd.exe
-		commandInformation.add("/C");
-		// command line to pass to the shell prompt
-		
-//		commandInformation.add("dir"); // must be on Windows
-//		commandInformation.add(
-//				"." + File.separator
-//				+ "src" + File.separator
-//				+ "standaloneutils" + File.separator
-//				+ "launchers"
-//				);
-		
-//		// The following writes a file similar to B-737.dcm
-//		DatcomPlusInputGenerator.writeTemplate(this.getInputFile().getAbsolutePath()); // Ok
-		
-		// Write out the input file
-		DatcomPlusInputGenerator.writeDataToFile(inputData, this.getInputFile().getAbsolutePath());
 
-		System.out.println("Input file full path: " + this.getInputFile());
-		System.out.println("Input file name: " + this.getInputFile().getName());
-
-		// Assign the output file
-		this.setOutputStabilityDerivativesFile(
-				new File(binDirPath + File.separator 
-					+ this.getInputFile().getName().replaceFirst(".avl", ".st")
-				)
-			);
-		
-		System.out.println("Output file full path: " + this.getOutputFile());
-		System.out.println("Output file name: " + this.getOutputFile().getName());
-		
-		commandInformation.add(
-				"cd " + binDirPath
-				);
-		commandInformation.add(
-				"& "
-				+ "avl.exe < " + this.getInputFile().getAbsolutePath() // .getName()
-				);
-		
-		return this.getCommandLine();
-	}
 }

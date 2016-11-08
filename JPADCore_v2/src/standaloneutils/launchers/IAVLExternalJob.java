@@ -10,6 +10,9 @@ public interface IAVLExternalJob {
 	 * Execute the external process using a ProcessBuilder object
 	 */    
 	public int execute() throws IOException, InterruptedException;
+
+	public File getExecutableFile();
+	public void setExecutableFile(File file);
 	
 	/**
 	 * Get the map of environment variables and their values
@@ -29,4 +32,28 @@ public interface IAVLExternalJob {
 	 * Return true if output file parsed successfully  
 	 */    
 	public boolean parseOutputStabilityDerivativesFile();
+
+	StringBuilder getStdOut();
+
+	StringBuilder getStdErr();
+
+	SystemCommandExecutor getSystemCommandExecutor();
+
+	void setCacheDirectory(File cacheDirectory);
+
+	File getCacheDirectory();
+
+	void setBinDirectory(File binDirectory);
+
+	File getBinDirectory();
+
+	String getCommandLine();
+
+	File getInputRunFile();
+
+	void setInputRunFile(File file);
+
+	File getInputAVLFile();
+
+	void setInputAVLFile(File inputFile);
 }
