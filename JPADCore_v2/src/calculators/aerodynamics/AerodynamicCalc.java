@@ -5,6 +5,7 @@ import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
@@ -398,6 +399,49 @@ public class AerodynamicCalc {
 
 	public static Double calculateCoolings(double cd0) {
 		return cd0*0.08;
+	}
+	
+	/**
+	 * This method evaluates the downwash gradient using Roskam method
+	 * 
+	 * @author Manuela Ruocco
+
+	 */
+	public static Double calculateDownwashRoskam(double aspectRatio, double taperRatio, double adimensionalHorizontalDistance, 
+			double adimensionalVetricalDistance, Amount<Angle> sweepQuaterChord) {
+		
+		double ka = (1/aspectRatio)-(1/(1+Math.pow(aspectRatio, 1.7)));
+		double kL = (10-3*taperRatio)/7;
+		double kH = (
+				1-adimensionalHorizontalDistance) /
+				Math.pow(
+						(2*adimensionalVetricalDistance), (1/3));
+		
+		Double downwashGradient = 4.44*(ka*kL*kH*Math.sqrt(Math.cos(sweepQuaterChord.doubleValue(SI.RADIAN))));
+		return downwashGradient;
+	}
+	
+	/**
+	 * This method evaluates the downwash gradient using Roskam method
+	 * 
+	 * @author Manuela Ruocco
+
+	 */
+	public static Double calculateDownwashRoskamWithMachEffect(double aspectRatio, double taperRatio, double adimensionalHorizontalDistance, 
+			double adimensionalVetricalDistance, Amount<Angle> sweepQuaterChord, double clAlphaMachZero, double clAlpha) {
+		
+		double ka = (1/aspectRatio)-(1/(1+Math.pow(aspectRatio, 1.7)));
+		double kL = (10-3*taperRatio)/7;
+		double kH = (
+				1-adimensionalHorizontalDistance) /
+				Math.pow(
+						(2*adimensionalVetricalDistance), (1/3));
+		
+		double machCorrection = clAlpha/clAlphaMachZero;
+		
+		Double downwashGradientMachZero = 4.44*(ka*kL*kH*Math.sqrt(Math.cos(sweepQuaterChord.doubleValue(SI.RADIAN))));
+		Double downwashGradientMach = machCorrection * downwashGradientMachZero;
+		return downwashGradientMach;
 	}
 
 }

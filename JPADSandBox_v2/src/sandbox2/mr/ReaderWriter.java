@@ -70,6 +70,19 @@ public class ReaderWriter{
 		AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
 		HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
 
+		//-------------------------------------------------------------------------------
+		// DOWNWASH
+
+		String DownwashString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@downwash");
+		if(DownwashString.equalsIgnoreCase("CONSTANT"))
+			theStabilityCalculator.setDownwashConstant(Boolean.TRUE);
+		else if (DownwashString.equalsIgnoreCase("variable"))
+			theStabilityCalculator.setDownwashConstant(Boolean.FALSE);
+
+
 		//---------------------------------------------------------------------------------
 		// OPERATING CONDITION:
 
@@ -101,6 +114,7 @@ public class ReaderWriter{
 		theStabilityCalculator.setZApexWing((Amount<Length>) reader.getXMLAmountWithUnitByPath("//wing/position/z"));
 
 		theStabilityCalculator.setWingSurface((Amount<Area>) reader.getXMLAmountWithUnitByPath("//wing/global/surface"));
+		theStabilityCalculator.setWingAngleOfIncidence((Amount<Angle>) reader.getXMLAmountWithUnitByPath("//wing/global/angle_of_incidence"));
 		theStabilityCalculator.setWingAspectRatio(Double.valueOf(reader.getXMLPropertyByPath("//wing/global/aspect_ratio")));
 		theStabilityCalculator.setWingNumberOfPointSemiSpanWise((int)Double.parseDouble((reader.getXMLPropertyByPath("//wing/global/number_of_point_semispan"))));
 		theStabilityCalculator.setWingAdimentionalKinkStation(Double.parseDouble((reader.getXMLPropertyByPath("//wing/global/adimensional_kink_station"))));
@@ -208,16 +222,16 @@ public class ReaderWriter{
 								,NonSI.DEGREE_ANGLE)
 						);
 			}
-			
+
 			for(int i=0; i<flapsType.size(); i++) {
 				theStabilityCalculator.getWingEtaInFlap().add(Double.parseDouble((reader.getXMLPropertiesByPath("//wing/high_lift_devices/flaps/flap/flap_non_dimensional_inner_station")).get(i)));
 			}
-			
+
 			for(int i=0; i<flapsType.size(); i++) {
 				theStabilityCalculator.getWingEtaOutFlap().add(Double.parseDouble((reader.getXMLPropertiesByPath("//wing/high_lift_devices/flaps/flap/flap_non_dimensional_outer_station")).get(i)));
 			}
-		
-			
+
+
 			//Slats
 			theStabilityCalculator.setWingNumberOfSlats(reader.getXMLPropertiesByPath("//wing/high_lift_devices/slats/slat/slat_deflection").size());
 
@@ -227,16 +241,16 @@ public class ReaderWriter{
 			theStabilityCalculator.setWingEtaInSlat(new ArrayList<>());
 			theStabilityCalculator.setWingEtaOutSlat(new ArrayList<>());
 			theStabilityCalculator.setWingDeltaSlat(new ArrayList<>());
-			
+
 			// Values
 			for(int i=0; i<theStabilityCalculator.getWingNumberOfSlats(); i++) {
 				theStabilityCalculator.getWingSlatCsC().add(Double.parseDouble((reader.getXMLPropertiesByPath("//wing/high_lift_devices/slats/slat/slat_deflection")).get(i)));
 			}
-			
+
 			for(int i=0; i<theStabilityCalculator.getWingNumberOfSlats(); i++) {
 				theStabilityCalculator.getWingCExtCSlat().add(Double.parseDouble((reader.getXMLPropertiesByPath("//wing/high_lift_devices/slats/slat/slat_extension_ratio")).get(i)));
 			}
-			
+
 			for(int i=0; i<theStabilityCalculator.getWingNumberOfSlats(); i++) {
 				theStabilityCalculator.getWingEtaInSlat().add(Double.parseDouble((reader.getXMLPropertiesByPath("//wing/high_lift_devices/slats/slat/slat_non_dimensional_inner_station")).get(i)));
 			}
@@ -252,7 +266,7 @@ public class ReaderWriter{
 								,NonSI.DEGREE_ANGLE)
 						);
 			}
-			
+
 		}
 
 		//---------------------------------------------------------------------------------
@@ -275,6 +289,7 @@ public class ReaderWriter{
 		theStabilityCalculator.setZApexHTail((Amount<Length>) reader.getXMLAmountWithUnitByPath("//horizontal_tail/position/z"));
 
 		theStabilityCalculator.setHTailSurface((Amount<Area>) reader.getXMLAmountWithUnitByPath("//horizontal_tail/global/surface"));
+		theStabilityCalculator.setHTailAngleOfIncidence((Amount<Angle>) reader.getXMLAmountWithUnitByPath("//horizontal_tail/global/angle_of_incidence"));
 		theStabilityCalculator.setHTailAspectRatio(Double.valueOf(reader.getXMLPropertyByPath("//horizontal_tail/global/aspect_ratio")));
 		theStabilityCalculator.setHTailNumberOfPointSemiSpanWise((int)Double.parseDouble((reader.getXMLPropertyByPath("//horizontal_tail/global/number_of_point_semispan"))));
 		theStabilityCalculator.setHTailnumberOfGivenSections((int)Double.parseDouble((reader.getXMLPropertyByPath("//horizontal_tail/global/number_of_given_sections"))));
@@ -338,15 +353,15 @@ public class ReaderWriter{
 		theStabilityCalculator.setElevatorCfC(Double.valueOf(reader.getXMLPropertyByPath("//horizontal_tail/elevator/elevator_chord_ratio")));
 		theStabilityCalculator.setElevatorEtaIn(Double.valueOf(reader.getXMLPropertyByPath("//horizontal_tail/elevator/elevator_non_dimensional_inner_station")));
 		theStabilityCalculator.setElevatorEtaOut(Double.valueOf(reader.getXMLPropertyByPath("//horizontal_tail/elevator/elevator_non_dimensional_outer_station")));
-		
+
 		//---------------------------------------------------------------------------------
 		// ENGINE:
 
 
-		
+
 		//---------------------------------------------------------------------------------
 		// PLOT:
-		
+
 		// plot flag
 		boolean plotFlag = false;
 		String plotString = MyXMLReaderUtils
@@ -355,23 +370,180 @@ public class ReaderWriter{
 						"//@plot");
 		if(plotString.equalsIgnoreCase("true"))
 			plotFlag = Boolean.TRUE;
-		
+
 		theStabilityCalculator.setPlotCheck(plotFlag);
-		
-		
+
+
 		if( theStabilityCalculator.getPlotCheck() == Boolean.TRUE ) {
-			
+
+			//LIFT
 			// CL vs Alpha wing
 			String wingLift = reader.getXMLPropertyByPath("//plot/lift/wing/CL_clean_curve");
 			if (wingLift != null) {
 				if(wingLift.equalsIgnoreCase("TRUE")) 
 					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.WING_CL_CURVE_CLEAN);
 			}
-			
+
 			// CL vs Alpha wing high lift 
-			//TODO continue here
-			
+			String wingLiftHighLift = reader.getXMLPropertyByPath("//plot/lift/wing/CL_high_lift_curve");
+			if (wingLiftHighLift != null) {
+				if(wingLiftHighLift.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.WING_CL_CURVE_HIGH_LIFT);
+			}
+
+			// CL vs Alpha horizontal tail
+			String hTailLift = reader.getXMLPropertyByPath("//plot/lift/horizontal_tail/CL_clean_curve");
+			if (hTailLift != null) {
+				if(hTailLift.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.HTAIL_CL_CURVE_CLEAN);
+			}
+
+			// CL vs Alpha horizontal tail high lift
+			String hTailLiftHighLift = reader.getXMLPropertyByPath("//plot/lift/horizontal_tail/CL_curve_with_elevator_deflections");
+			if (hTailLiftHighLift != null) {
+				if(hTailLiftHighLift.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.HTAIL_CL_CURVE_ELEVATOR);
+			}			
+
+
+			//DRAG
+			// CD vs Alpha wing
+			String wingPolarDrag = reader.getXMLPropertyByPath("//plot/drag/wing/polar_drag");
+			if (wingPolarDrag != null) {
+				if(wingPolarDrag.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.WING_POLAR_CURVE_CLEAN);
+			}
+
+			// CD vs Alpha wing highlift
+			String wingPolarDragHighLift = reader.getXMLPropertyByPath("//plot/drag/wing/polar_drag_with_high_lift_devices");
+			if (wingPolarDragHighLift != null) {
+				if(wingPolarDragHighLift.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.WING_POLAR_CURVE_HIGHLIFT);
+			}
+
+			// CD vs Alpha horizontal tail
+			String horizontalTailPolarDrag = reader.getXMLPropertyByPath("//plot/drag/horizontal_tail/polar_drag_with_high_lift_devices");
+			if (horizontalTailPolarDrag != null) {
+				if(horizontalTailPolarDrag.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.HTAIL_POLAR_CURVE_CLEAN);
+			}
+
+			//MOMENT
+			// CM wing respect to c4
+			String wingMomentQuarter = reader.getXMLPropertyByPath("//plot/moment/wing/moment_coefficient_respect_to_quarter_chord");
+			if (wingMomentQuarter != null) {
+				if(wingMomentQuarter.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.WING_CM_QUARTER_CHORD);
+			}
+
+			// CM wing respect to ac
+			String wingMomentAC = reader.getXMLPropertyByPath("//plot/moment/wing/moment_coefficient_respect_to_aerodynamic_center");
+			if (wingMomentAC != null) {
+				if(wingMomentAC.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.WING_CM_AERODYNAMIC_CENTER);
+			}
+
+			// CM horizontal tail respect to c4
+			String horizoMomentQuarter = reader.getXMLPropertyByPath("//plot/moment/horizontal_tail/moment_coefficient_respect_to_quarter_chord");
+			if (horizoMomentQuarter != null) {
+				if(horizoMomentQuarter.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.HTAIL_CM_QUARTER_CHORD);
+			}
+
+			// CM horizontal tail respect to ac
+			String hTailMomentAC = reader.getXMLPropertyByPath("//plot/moment/horizontal_tail/moment_coefficient_respect_to_aerodynamic_center");
+			if ( hTailMomentAC != null) {
+				if( hTailMomentAC.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.HTAIL_CM_AERODYNAMIC_CENTER);
+			}
+
+			// CM fuselage
+			String fuselageMoment = reader.getXMLPropertyByPath("//plot/moment/fuselage/moment_coefficient");
+			if ( fuselageMoment != null) {
+				if( fuselageMoment.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.FUSELAGE_CM_PLOT);
+			}
+
+			// CM engine direct
+			String engineDirect = reader.getXMLPropertyByPath("//plot/moment/engine/propulsive_System_CM_direct_effects");
+			if ( engineDirect != null) {
+				if( engineDirect.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.PROPULSIVE_SYSTEM_CM_DIRECT_EFFECTS);
+			}
+
+			// CM engine non direct
+			String engineNonDirect = reader.getXMLPropertyByPath("//plot/moment/engine/propulsive_System_CM_indirect_effects");
+			if ( engineNonDirect != null) {
+				if( engineNonDirect.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.PROPULSIVE_SYSTEM_CM_NON_DIRECT_EFFECTS);
+			}
+
+			//STABILITY
+			// CM alpha component
+			String cmAlphaComponent = reader.getXMLPropertyByPath("//plot/stability/CM_cg_vs_alpha_body_components");
+			if ( cmAlphaComponent != null) {
+				if( cmAlphaComponent.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.AIRCRAFT_CM_VS_ALPHA_BODY_COMPONENTS);
+			}
+
+			// CM alpha aircraft
+			String cmAlphaAircraft = reader.getXMLPropertyByPath("//plot/stability/CM_cg_vs_alpha_body_aircraft");
+			if ( cmAlphaAircraft != null) {
+				if( cmAlphaAircraft.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.AIRCRAFT_CM_VS_ALPHA_BODY);	
+			}
+
+			// CM alpha aircraft delta e
+			String cmAlphaVarDeltaE = reader.getXMLPropertyByPath("//plot/stability/CM_cg_vs_alpha_body_aircraft_var_deltae");
+			if ( cmAlphaVarDeltaE != null) {
+				if( cmAlphaVarDeltaE.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.AIRCRAFT_CM_VS_ALPHA_BODY_DELTAE);	
+			}
+
+			// Cl alpha aircraft delta e
+			String cmlTotVarDeltaE = reader.getXMLPropertyByPath("//plot/stability/CL_tot_vs_alpha_body_aircraft_var_deltae");
+			if ( cmlTotVarDeltaE != null) {
+				if( cmlTotVarDeltaE.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.AIRCRAFT_CL_VS_ALPHA_BODY_DELTAE);	
+			}
+
+			// Cl alpha aircraft delta e
+			String cmCLDeltaE = reader.getXMLPropertyByPath("//plot/stability/CM_cg_vs_CL_tot_var_deltae");
+			if ( cmCLDeltaE != null) {
+				if( cmCLDeltaE.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.AIRCRAFT_CM_VS_CL_DELTAE);	
+			}
+
+			// Downwash angle
+			String downwashAngle = reader.getXMLPropertyByPath("//plot/stability/Downwash_angle");
+			if ( downwashAngle != null) {
+				if( downwashAngle.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.DOWNWASH_ANGLE);	
+			}
+
+			// Downwash gradient
+			String downwashGrdient = reader.getXMLPropertyByPath("//plot/stability/Downwash_gradient");
+			if ( downwashGrdient != null) {
+				if( downwashGrdient.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.DOWNWASH_GRADIENT);	
+			}
+
+			// delta e equilibrium
+			String deltaEEquilibrium = reader.getXMLPropertyByPath("//plot/stability/delta_e_equilibrium");
+			if ( deltaEEquilibrium != null) {
+				if( deltaEEquilibrium.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.DELTA_E_EQUILIBRIUM);	
+			}
+
+			// neutral point stick fixed
+			String neutralPoint = reader.getXMLPropertyByPath("//plot/stability/neutral_point_stick_fixed");
+			if ( neutralPoint != null) {
+				if( neutralPoint.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.NEUTRAL_POINT);	
+			}
+
 		}
+
 
 	}
 }

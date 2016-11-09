@@ -20,6 +20,7 @@ import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.FlapTypeEnum;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
+import standaloneutils.MyVariableToWrite;
 
 /************************************************************************************************************************
  * THIS CLASS IS A PROTOTYPE OF THE NEW ACStabilityManager																*
@@ -59,6 +60,8 @@ public class StabilityCalculator {
 
 	private ConditionEnum _theCondition;
 
+	private boolean _downwashConstant; // se TRUE--> constant, se FALSE--> variable
+	
 	//Wing -------------------------------------------
 	//----------------------------------------------------------------
 	private Amount<Length> _xApexWing;
@@ -72,6 +75,7 @@ public class StabilityCalculator {
 	private int _wingNumberOfPointSemiSpanWise;
 	private Double _wingAdimentionalKinkStation;
 	private int _wingNumberOfGivenSections;
+	private Amount<Angle> _wingAngleOfIncidence;
 
 	private AirfoilFamilyEnum _wingMeanAirfoilFamily;
 	private Double _wingMaxThicknessMeanAirfoil;
@@ -147,6 +151,7 @@ public class StabilityCalculator {
 	private List<Double> _hTailYAdimensionalBreakPoints;
 	private List<Amount<Length>> _hTailYBreakPoints;
 	private List<Double> _hTailYAdimensionalDistribution;  // not from input
+	private Amount<Angle> _hTailAngleOfIncidence;
 	private List<Amount<Length>> _hTailYDistribution;
 	private List<Amount<Length>> _hTailChordsBreakPoints;
 	private List<Amount<Length>> _hTailChordsDistribution;  // not from input
@@ -190,7 +195,13 @@ public class StabilityCalculator {
 	// output    					   ||
 	//----------------------------------
 
-
+	//AnglesArray-------------------------------------
+	//----------------------------------------------------------------
+	private List<Amount<Angle>> _alphasWing;
+	private List<Amount<Angle>> _alphasTail;
+	private List<Amount<Angle>> _downwashAngle;
+	private List<Amount<Angle>> _downwashGradient;
+	
 	//Lift -------------------------------------------
 	//----------------------------------------------------------------
 
@@ -481,9 +492,40 @@ public class StabilityCalculator {
 
 		// alpha wing array
 
+		this._alphasWing = new ArrayList<>();
+		for (int i=0; i<_numberOfAlphasBody; i++){
+			this._alphasWing.add(
+					Amount.valueOf((
+							this._alphasBody.get(i).doubleValue(NonSI.DEGREE_ANGLE) + this._wingAngleOfIncidence.doubleValue(NonSI.DEGREE_ANGLE))
+							, NonSI.DEGREE_ANGLE
+							)
+					);
+		}
+
 		// downwash calculator
+		this._downwashAngle = new ArrayList<>();
+		this._downwashGradient = new ArrayList<>();
+		
+		if ( this._downwashConstant == Boolean.TRUE){
+			// DOWNWASH CONSTANT
+		}
+		
+		if ( this._downwashConstant == Boolean.FALSE){
+			// DOWNWASH variable
+		}
+		
 
 		// alpha tail array
+		this._alphasTail = new ArrayList<>();
+		for (int i=0; i<_numberOfAlphasBody; i++){
+			this._alphasTail.add(
+					Amount.valueOf((
+							this._alphasBody.get(i).doubleValue(NonSI.DEGREE_ANGLE) + this._wingAngleOfIncidence.doubleValue(NonSI.DEGREE_ANGLE)-
+							this._downwashAngle.get(i).doubleValue(NonSI.DEGREE_ANGLE) - this._wingAngleOfIncidence.doubleValue(NonSI.DEGREE_ANGLE))
+							, NonSI.DEGREE_ANGLE
+							)
+					);
+		}
 	}
 
 	/*****************************************************************************************************************************************
@@ -510,7 +552,8 @@ public class StabilityCalculator {
 		System.out.println("Mach number Current = " + this._machCurrent);
 		System.out.println("Reynolds number Current = " + this._reynoldsCurrent);
 		System.out.println("Altitude = " + this._altitude);
-		System.out.println("Alphas Body array --> " + this._alphasBody);
+		MyArrayUtils.writeListOfAmountAsExcelFormat(this._alphasBody, "Alphas Body array", ",");
+		MyArrayUtils.writeListOfAmountAsExcelFormat(this._alphasWing, "Alphas Wing array", ",");
 
 		System.out.println("\nWING ----------\n-------------------");
 		System.out.println("X apex = " + this._xApexWing);
@@ -530,13 +573,14 @@ public class StabilityCalculator {
 		System.out.println("Alpha zero lift Break Points --> " + this._wingAlphaZeroLiftBreakPoints);
 		System.out.println("Alpha star Break Points --> " + this._wingAlphaStarBreakPoints);
 		System.out.println("Cl max Break Points --> " + this._wingClMaxBreakPoints);
-		System.out.println("Chord Distribution --> " + this._wingChordsDistribution);
-		System.out.println("XLE Distribution --> " + this._wingXleDistribution);
-		System.out.println("Twist Distribution --> " + this._wingTwistDistribution);
-		System.out.println("Dihedral Distribution --> " + this._wingDihedralDistribution);
-		System.out.println("Alpha zero lift Distribution --> " + this._wingAlphaZeroLiftDistribution);
-		System.out.println("Alpha star Distribution --> " + this._wingAlphaStarDistribution);
-		System.out.println("Cl max Distribution --> " + this._wingClMaxDistribution);
+		
+		//distribution		
+		MyArrayUtils.writeListOfAmountAsExcelFormat(this._wingChordsDistribution, "Chord Distribution", ",");
+		MyArrayUtils.writeListOfAmountAsExcelFormat(this._wingXleDistribution, "XLE Distribution", ",");
+		MyArrayUtils.writeListOfAmountAsExcelFormat(this._wingTwistDistribution, "Twist Distribution", ",");
+		MyArrayUtils.writeListOfAmountAsExcelFormat(this._wingDihedralDistribution, "Dihedral Distribution", ",");
+		MyArrayUtils.writeListOfAmountAsExcelFormat(this._wingAlphaStarDistribution, "Alpha star Distribution", ",");
+		System.out.println("\nCl max Distribution --> " + this._wingClMaxDistribution);
 
 		if (this._theCondition == ConditionEnum.TAKE_OFF || this._theCondition == ConditionEnum.LANDING) { 
 			System.out.println("\nHIGH LIFT DEVICES ----------\n-------------------");
@@ -577,22 +621,26 @@ public class StabilityCalculator {
 		System.out.println("Alpha zero lift Break Points --> " + this._hTailAlphaZeroLiftBreakPoints);
 		System.out.println("Alpha star Break Points --> " + this._hTailAlphaStarBreakPoints);
 		System.out.println("Cl max Break Points --> " + this._hTailClMaxBreakPoints);
-		System.out.println("Chord Distribution --> " + this._hTailChordsDistribution);
-		System.out.println("XLE Distribution --> " + this._hTailXleDistribution);
-		System.out.println("Twist Distribution --> " + this._hTailTwistDistribution);
-		System.out.println("Dihedral Distribution --> " + this._hTailDihedralDistribution);
-		System.out.println("Alpha zero lift Distribution --> " + this._hTailAlphaZeroLiftDistribution);
-		System.out.println("Alpha star Distribution --> " + this._hTailAlphaStarDistribution);
-		System.out.println("Cl max Distribution --> " + this._hTailClMaxDistribution);
+		
+		MyArrayUtils.writeListOfAmountAsExcelFormat(this._hTailChordsDistribution, "Chord Distribution", ",");
+		MyArrayUtils.writeListOfAmountAsExcelFormat(this._hTailXleDistribution, "XLE Distribution", ",");
+		MyArrayUtils.writeListOfAmountAsExcelFormat(this._hTailTwistDistribution, "Twist Distribution", ",");
+		MyArrayUtils.writeListOfAmountAsExcelFormat(this._hTailDihedralDistribution, "Dihedral Distribution", ",");
+		MyArrayUtils.writeListOfAmountAsExcelFormat(this._hTailAlphaStarDistribution, "Alpha star Distribution", ",");
+		System.out.println("\nCl max Distribution --> " + this._hTailClMaxDistribution);
 
 		System.out.println("\nELEVATOR ----------\n-------------------");
-		System.out.println("Angles of Elevator Deflection " + this._anglesOfElevatorDeflection);
-		System.out.println("Flaps type --> " + this._elevatorType);
+		MyArrayUtils.writeListOfAmountAsExcelFormat(this._anglesOfElevatorDeflection,"Angles of Elevator Deflection ", ",");
+		System.out.println("\nFlaps type --> " + this._elevatorType);
 		System.out.println("Eta in Elevator = " + this._elevatorEtaIn);
 		System.out.println("Eta out Elevator = " + this._elevatorEtaOut);
 		System.out.println("Elevator chord ratio = " + this._elevatorCfC);
 
 		System.out.println("\nEngines ----------\n-------------------");
+		
+		System.out.println("PLOT LIST");
+		for (int i=0; i<this._plotList.size(); i++)
+		System.out.println( this._plotList.get(i));
 	}
 
 	
@@ -606,12 +654,20 @@ public class StabilityCalculator {
 	//--------------------------------------------------------------------------------------------------------
 	
 	
-	
+	public void downwashCalculator(){}
 	
 	
 	
 	//Getters and setters
 
+
+	public boolean getDownwashConstant() {
+		return _downwashConstant;
+	}
+
+	public void setDownwashConstant(boolean _downwashConstant) {
+		this._downwashConstant = _downwashConstant;
+	}
 
 	public Amount<Length> getXCGAircraft() {
 		return _xCGAircraft;
@@ -1411,6 +1467,54 @@ public class StabilityCalculator {
 
 	public void setPlotList(List<AerodynamicAndStabilityPlotEnum> plotList) {
 		this._plotList = plotList;
+	}
+
+	public List<Amount<Angle>> get_alphasWing() {
+		return _alphasWing;
+	}
+
+	public List<Amount<Angle>> get_alphasTail() {
+		return _alphasTail;
+	}
+
+	public List<Amount<Angle>> get_downwashAngle() {
+		return _downwashAngle;
+	}
+
+	public List<Amount<Angle>> get_downwashGradient() {
+		return _downwashGradient;
+	}
+
+	public void set_alphasWing(List<Amount<Angle>> _alphasWing) {
+		this._alphasWing = _alphasWing;
+	}
+
+	public void set_alphasTail(List<Amount<Angle>> _alphasTail) {
+		this._alphasTail = _alphasTail;
+	}
+
+	public void set_downwashAngle(List<Amount<Angle>> _downwashAngle) {
+		this._downwashAngle = _downwashAngle;
+	}
+
+	public void set_downwashGradient(List<Amount<Angle>> _downwashGradient) {
+		this._downwashGradient = _downwashGradient;
+	}
+
+	public Amount<Angle> getWingAngleOfIncidence() {
+		return _wingAngleOfIncidence;
+	}
+
+	public void setWingAngleOfIncidence(Amount<Angle> _wingAngleOfIncidence) {
+		this._wingAngleOfIncidence = _wingAngleOfIncidence;
+	}
+
+	public Amount<Angle> getHTailAngleOfIncidence() {
+		return _hTailAngleOfIncidence;
+	}
+
+	public void setHTailAngleOfIncidence(Amount<Angle> _hTailAngleOfIncidence) {
+		this._hTailAngleOfIncidence = _hTailAngleOfIncidence;
 	}
 
 }

@@ -1233,7 +1233,7 @@ public class ACStabilityManager {
 
 		// Induced Drag 
 
-		inducedCDWingArray = theCDWingArrayCalculator.calculateCDInduced(alphaMinWing, alphaMaxWing, nValueAlpha);
+	//	inducedCDWingArray = theCDWingArrayCalculator.calculateCDInduced(alphaMinWing, alphaMaxWing, nValueAlpha);
 
 		//		System.out.println(" cd induced");
 		//		for(int i=0 ; i<inducedCDWingArray.length; i++){
@@ -1255,7 +1255,8 @@ public class ACStabilityManager {
 		cDWingArray =  new double [nValueAlpha];
 		cDWingCleanArray = new double [nValueAlpha];
 		for (int i = 0; i<nValueAlpha; i++){
-			cDWingCleanArray[i] = parasiteCDWingCleanArray[i]+ inducedCDWingArray[i];
+			cDWingCleanArray[i] = parasiteCDWingCleanArray[i];
+					//+ inducedCDWingArray[i];
 		}
 
 		cDWingArray = cDWingCleanArray;
@@ -1380,28 +1381,28 @@ public class ACStabilityManager {
 				System.out.println("\n-------------------------------------");
 				System.out.println("\t \t \tWRITING INDUCED CD vs CL CHART TO FILE  ");
 
-				MyChartToFileUtils.plotNoLegend(
-						alphaWingStabilityArray.toArray(),inducedCDWingArray, 
-						null, null, null, null,
-						"alpha_w", "CD_induced",
-						"deg", "",
-						subfolderPath, "Induced Drag coefficient vs Alpha Wing for WING ");
-				System.out.println("\n\n\t\t\tDONE");
+//				MyChartToFileUtils.plotNoLegend(
+//						alphaWingStabilityArray.toArray(),inducedCDWingArray, 
+//						null, null, null, null,
+//						"alpha_w", "CD_induced",
+//						"deg", "",
+//						subfolderPath, "Induced Drag coefficient vs Alpha Wing for WING ");
+//				System.out.println("\n\n\t\t\tDONE");
 
 				System.out.println("\n-------------------------------------");
 				System.out.println("\t \t \tWRITING TOTAL CD vs CL CHART TO FILE  ");
 
-				double [][] theCDWingMatrix = {parasiteCDWingCleanArray, inducedCDWingArray, cDWingCleanArray};
-				double [][] theAlphaCDMatrix = { alphaWingStabilityArray.toArray(), alphaWingStabilityArray.toArray(), alphaWingStabilityArray.toArray()};
-				String [] legend = {"parasite Drag Cefficient", "induced Drag Coefficient", "Total Drag Coefficient"};
-
-				MyChartToFileUtils.plot(
-						theAlphaCDMatrix, theCDWingMatrix, 
-						null, null, null, null,
-						"alpha_w", "CD",
-						"deg", "",
-						legend,
-						subfolderPath, "Total Drag coefficient vs Alpha Wing for WING ");
+//				double [][] theCDWingMatrix = {parasiteCDWingCleanArray, inducedCDWingArray, cDWingCleanArray};
+//				double [][] theAlphaCDMatrix = { alphaWingStabilityArray.toArray(), alphaWingStabilityArray.toArray(), alphaWingStabilityArray.toArray()};
+//				String [] legend = {"parasite Drag Cefficient", "induced Drag Coefficient", "Total Drag Coefficient"};
+//
+//				MyChartToFileUtils.plot(
+//						theAlphaCDMatrix, theCDWingMatrix, 
+//						null, null, null, null,
+//						"alpha_w", "CD",
+//						"deg", "",
+//						legend,
+//						subfolderPath, "Total Drag coefficient vs Alpha Wing for WING ");
 
 				System.out.println(" \n\n\t\tDONE");
 
@@ -1477,13 +1478,14 @@ public class ACStabilityManager {
 		// Induced Drag 
 		inducedCDHTailArray = new double [nValueAlpha];
 
-		inducedCDHTailArray = theCDHtailArrayCalculator.calculateCDInduced(alphaMin,alphaMax, nValueAlpha);
+	//	inducedCDHTailArray = theCDHtailArrayCalculator.calculateCDInduced(alphaMin,alphaMax, nValueAlpha);
 
 		// Total drag
 
 		cDHTailCleanArray = new double [nValueAlpha];
 		for (int i = 0; i<nValueAlpha; i++){
-			cDHTailCleanArray[i] = parasiteCDHTailCleanArray[i]+inducedCDHTailArray[i];
+			cDHTailCleanArray[i] = parasiteCDHTailCleanArray[i];
+					//+inducedCDHTailArray[i];
 		}
 
 

@@ -43,6 +43,7 @@ public final class MyArrayUtils {
 				list.add(d[i][j]);
 		return ArrayUtils.toPrimitive(list.toArray(new Double[list.size()]));
 	}
+	
 
 	/**
 	 * Concatenate two matrices a,b to get a new matrix:
@@ -738,4 +739,23 @@ public final class MyArrayUtils {
 
 		return d;
 	}
+	
+	/**
+	 * This method allows to print a list of amount in format name (unit) --> [ value1 (separator) value2...]. This is useful to copy array in excel
+	 * @author Manuela Ruocco
+	 *
+	 * @param start
+	 * @param end
+	 * @param nPoints
+	 * @return
+	 */
+public static <T extends Quantity> void writeListOfAmountAsExcelFormat( List<Amount<T>> list, String name, String separator) {
+		
+		System.out.print("\n" + name + " (" + list.get(0).getUnit() + ") --> [");
+		for (int i=0; i<list.size()-1; i++){
+		System.out.print(list.get(i).getEstimatedValue() + " " + separator + " ");
+		}
+		System.out.print(list.get(list.size()-1).getEstimatedValue() + " ] ");
+	}
 }
+

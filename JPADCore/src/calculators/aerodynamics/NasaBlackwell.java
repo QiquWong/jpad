@@ -778,7 +778,7 @@ private double fu(double xs, double y, double z, double s, double phi) {
 		}
 
 		_gammaDistribution = _gammaDistribution.interpolate(yy.toArray(), yStations).clone();
-		System.out.println(" gamma distribution   " + _gammaDistribution.toString());
+
 		_ccLDistribution = _ccLDistribution.interpolate(yy.toArray(), yStations).clone();
 		_clAdditionalDistribution = _clAdditionalDistribution.interpolate(yy.toArray(), yStations).clone();
 

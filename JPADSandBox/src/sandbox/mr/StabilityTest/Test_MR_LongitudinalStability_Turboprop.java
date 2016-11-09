@@ -128,7 +128,7 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		
 		//------------------------------------------------------------------------------------
 		// Default Aircraft
-		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.ATR72);
+		Aircraft aircraft = Aircraft.createDefaultAircraft(AircraftEnum.AGILE_DC1);
 		aircraft.set_name("ATR-72");
 		System.out.println("\nDefault aircraft: " + aircraft.get_name() + "\n");
 
