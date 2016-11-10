@@ -1,5 +1,7 @@
 package sandbox2.mr;
 
+import static java.lang.Math.toRadians;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +21,7 @@ import analyses.ACPerformanceCalculator.ACPerformanceCalculatorBuilder;
 import analyses.OperatingConditions;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.AnglesCalc;
+import calculators.aerodynamics.NasaBlackwell;
 import configuration.MyConfiguration;
 import configuration.enumerations.AerodynamicAndStabilityPlotEnum;
 import configuration.enumerations.AircraftEnum;
@@ -91,6 +94,7 @@ public class StabilityExecutableManager {
 	private Amount<Angle> _wingAngleOfIncidence;
 	private Double _wingTaperRatio;
 	private Amount<Angle> _wingSweepQuarterChord;
+	private Double _wingVortexSemiSpanToSemiSpanRatio;
 
 	private AirfoilFamilyEnum _wingMeanAirfoilFamily;
 	private Double _wingMaxThicknessMeanAirfoil;
@@ -114,6 +118,7 @@ public class StabilityExecutableManager {
 	private List<Amount<Angle>> _wingAlphaStarDistribution;  // not from input
 	private List<Double> _wingClMaxBreakPoints;
 	private List<Double> _wingClMaxDistribution;  // not from input
+
 
 
 	//High lift devices -------------------------------------------
@@ -161,6 +166,7 @@ public class StabilityExecutableManager {
 
 	private AirfoilFamilyEnum _hTailMeanAirfoilFamily;
 	private Double _hTailMaxThicknessMeanAirfoil;
+	private Double _hTailVortexSemiSpanToSemiSpanRatio;
 
 	// input distributions
 	private List<Double> _hTailYAdimensionalBreakPoints;
@@ -304,6 +310,8 @@ public class StabilityExecutableManager {
 				NonSI.DEGREE_ANGLE);
 
 
+		this._wingVortexSemiSpanToSemiSpanRatio = 1./(2*this._wingNumberOfPointSemiSpanWise);
+		this._hTailVortexSemiSpanToSemiSpanRatio = 1./(2*this._hTailNumberOfPointSemiSpanWise);
 
 		//---------------
 		// Arrays        |
@@ -564,12 +572,13 @@ public class StabilityExecutableManager {
 			}
 		}
 		
+
 		if (this._zApexWing.doubleValue(SI.METER) < this._zApexHTail.doubleValue(SI.METER)  ){
 			
 			this._verticalDistanceZeroLiftDirectionWingHTail = Amount.valueOf(
 					this._verticalDistanceZeroLiftDirectionWingHTail.doubleValue(SI.METER) + (
 							this._horizontalDistanceQuarterChordWingHTail.doubleValue(SI.METER)*
-							Math.tan(this._wingAngleOfIncidence.doubleValue(SI.RADIAN) +
+							Math.tan(this._wingAngleOfIncidence.doubleValue(SI.RADIAN) -
 									this._alphaZeroLift.doubleValue(SI.RADIAN))),
 					SI.METER);
 		}
@@ -579,14 +588,11 @@ public class StabilityExecutableManager {
 			this._verticalDistanceZeroLiftDirectionWingHTail = Amount.valueOf(
 					this._verticalDistanceZeroLiftDirectionWingHTail.doubleValue(SI.METER) - (
 							this._horizontalDistanceQuarterChordWingHTail.doubleValue(SI.METER)*
-							Math.tan(this._wingAngleOfIncidence.doubleValue(SI.RADIAN) +
+							Math.tan(this._wingAngleOfIncidence.doubleValue(SI.RADIAN)-
 									this._alphaZeroLift.doubleValue(SI.RADIAN))),
 					SI.METER);
 		}
 		
-		
-		System.out.println(" horizontal distance " + this._horizontalDistanceQuarterChordWingHTail);
-		System.out.println(" vertical distance " + this._verticalDistanceZeroLiftDirectionWingHTail);
 	}
 
 
@@ -630,23 +636,74 @@ public class StabilityExecutableManager {
 
 		if ( this._downwashConstant == Boolean.TRUE){
 			// DOWNWASH CONSTANT
-			AerodynamicCalc.calculateDownwashRoskam(
+			
+			// calculate cl alpha
+			// MACH 0
+			
+			NasaBlackwell theNasaBlackwellCalculatorMachZero = new NasaBlackwell(
+					this._wingSemiSpan.doubleValue(SI.METER),
+					this._wingSurface.doubleValue(SI.SQUARE_METRE),
+					MyArrayUtils.convertListOfAmountTodoubleArray(this._wingYDistribution),
+					MyArrayUtils.convertListOfAmountTodoubleArray(this._wingChordsDistribution),
+					MyArrayUtils.convertListOfAmountTodoubleArray(this._wingXleDistribution),
+					MyArrayUtils.convertListOfAmountTodoubleArray(this._wingDihedralDistribution),
+					MyArrayUtils.convertListOfAmountTodoubleArray(this._wingTwistDistribution),
+					MyArrayUtils.convertListOfAmountTodoubleArray(this._wingAlphaZeroLiftDistribution),
+					_wingVortexSemiSpanToSemiSpanRatio,
+					0.0,
+					0.0,
+					this.getAltitude().doubleValue(SI.METER)
+					);
+			
+			NasaBlackwell theNasaBlackwellCalculatorMachActual = new NasaBlackwell(
+					this._wingSemiSpan.doubleValue(SI.METER),
+					this._wingSurface.doubleValue(SI.SQUARE_METRE),
+					MyArrayUtils.convertListOfAmountTodoubleArray(this._wingYDistribution),
+					MyArrayUtils.convertListOfAmountTodoubleArray(this._wingChordsDistribution),
+					MyArrayUtils.convertListOfAmountTodoubleArray(this._wingXleDistribution),
+					MyArrayUtils.convertListOfAmountTodoubleArray(this._wingDihedralDistribution),
+					MyArrayUtils.convertListOfAmountTodoubleArray(this._wingTwistDistribution),
+					MyArrayUtils.convertListOfAmountTodoubleArray(this._wingAlphaZeroLiftDistribution),
+					_wingVortexSemiSpanToSemiSpanRatio,
+					0.0,
+					this._machCurrent,
+					this.getAltitude().doubleValue(SI.METER)
+					);
+			
+			theNasaBlackwellCalculatorMachZero.calculate(Amount.valueOf(toRadians(0.), SI.RADIAN));
+			double clOneMachZero = theNasaBlackwellCalculatorMachZero.getCLCurrent();
+			theNasaBlackwellCalculatorMachZero.calculate(Amount.valueOf(toRadians(4.), SI.RADIAN));
+			double clTwoMachZero = theNasaBlackwellCalculatorMachZero.getCLCurrent();
+			
+			theNasaBlackwellCalculatorMachActual.calculate(Amount.valueOf(toRadians(0.), SI.RADIAN));
+			double clOneMachActual = theNasaBlackwellCalculatorMachActual.getCLCurrent();
+			theNasaBlackwellCalculatorMachActual.calculate(Amount.valueOf(toRadians(4.), SI.RADIAN));
+			double clTwoMachActual = theNasaBlackwellCalculatorMachActual.getCLCurrent();
+			
+		
+			double cLAlphaMachZero = (clTwoMachZero-clOneMachZero)/toRadians(4);
+			double cLAlphaMachActual = (clTwoMachActual-clOneMachActual)/toRadians(4);
+			
+			
+			double downwashGradientConstant = AerodynamicCalc.calculateDownwashRoskamWithMachEffect(
 					this._wingAspectRatio, 
 					this._wingTaperRatio, 
 					this._horizontalDistanceQuarterChordWingHTail.doubleValue(SI.METER)/this._wingSpan.doubleValue(SI.METER), 
 					this._verticalDistanceZeroLiftDirectionWingHTail.doubleValue(SI.METER)/this._wingSpan.doubleValue(SI.METER), 
-					this._wingSweepQuarterChord 
-//					clAlphaMachZero, 
-//					clAlpha
+					this._wingSweepQuarterChord,
+					cLAlphaMachZero, 
+					cLAlphaMachActual
 					);
+			
+			System.out.println(" downwash gradient " + downwashGradientConstant);
 		}
 
 		if ( this._downwashConstant == Boolean.FALSE){
 			// DOWNWASH variable
 		}
 
-//
-//		// alpha tail array
+
+		// alpha tail array
 //		this._alphasTail = new ArrayList<>();
 //		for (int i=0; i<_numberOfAlphasBody; i++){
 //			this._alphasTail.add(
