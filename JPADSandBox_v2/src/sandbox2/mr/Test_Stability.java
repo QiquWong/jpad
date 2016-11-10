@@ -89,7 +89,7 @@ public class Test_Stability{
 		
 		System.out.println(" array " + metrid);
 		
-		StabilityCalculator theCalculator = new StabilityCalculator();
+		StabilityExecutableManager theCalculator = new StabilityExecutableManager();
 		ReaderWriter theReader = new ReaderWriter();
 		theReader.importFromXML(
 				pathToXML, 
@@ -98,6 +98,7 @@ public class Test_Stability{
 		
 		theCalculator.initializeData();
 		theCalculator.initializeAlphaArrays();
+		
 		theCalculator.printAllData();
 		// read
 		// initialize

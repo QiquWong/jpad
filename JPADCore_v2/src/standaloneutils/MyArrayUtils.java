@@ -749,7 +749,7 @@ public final class MyArrayUtils {
 	 * @param nPoints
 	 * @return
 	 */
-public static <T extends Quantity> void writeListOfAmountAsExcelFormat( List<Amount<T>> list, String name, String separator) {
+public static <T extends Quantity> void printListOfAmountWithUnitsInEvidence( List<Amount<T>> list, String name, String separator) {
 		
 		System.out.print("\n" + name + " (" + list.get(0).getUnit() + ") --> [");
 		for (int i=0; i<list.size()-1; i++){

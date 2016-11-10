@@ -408,7 +408,7 @@ public class AerodynamicCalc {
 
 	 */
 	public static Double calculateDownwashRoskam(double aspectRatio, double taperRatio, double adimensionalHorizontalDistance, 
-			double adimensionalVetricalDistance, Amount<Angle> sweepQuaterChord) {
+			double adimensionalVetricalDistance, Amount<Angle> sweepQuarterChord) {
 		
 		double ka = (1/aspectRatio)-(1/(1+Math.pow(aspectRatio, 1.7)));
 		double kL = (10-3*taperRatio)/7;
@@ -417,7 +417,7 @@ public class AerodynamicCalc {
 				Math.pow(
 						(2*adimensionalVetricalDistance), (1/3));
 		
-		Double downwashGradient = 4.44*(ka*kL*kH*Math.sqrt(Math.cos(sweepQuaterChord.doubleValue(SI.RADIAN))));
+		Double downwashGradient = 4.44*(ka*kL*kH*Math.sqrt(Math.cos(sweepQuarterChord.doubleValue(SI.RADIAN))));
 		return downwashGradient;
 	}
 	
@@ -428,18 +428,17 @@ public class AerodynamicCalc {
 
 	 */
 	public static Double calculateDownwashRoskamWithMachEffect(double aspectRatio, double taperRatio, double adimensionalHorizontalDistance, 
-			double adimensionalVetricalDistance, Amount<Angle> sweepQuaterChord, double clAlphaMachZero, double clAlpha) {
-		
-		double ka = (1/aspectRatio)-(1/(1+Math.pow(aspectRatio, 1.7)));
-		double kL = (10-3*taperRatio)/7;
-		double kH = (
-				1-adimensionalHorizontalDistance) /
-				Math.pow(
-						(2*adimensionalVetricalDistance), (1/3));
-		
+			double adimensionalVetricalDistance, Amount<Angle> sweepQuarterChord, double clAlphaMachZero, double clAlpha) {
+
 		double machCorrection = clAlpha/clAlphaMachZero;
+		Double downwashGradientMachZero = calculateDownwashRoskam(
+				aspectRatio,
+				taperRatio, 
+				adimensionalHorizontalDistance,
+				adimensionalVetricalDistance, 
+				sweepQuarterChord
+				);
 		
-		Double downwashGradientMachZero = 4.44*(ka*kL*kH*Math.sqrt(Math.cos(sweepQuaterChord.doubleValue(SI.RADIAN))));
 		Double downwashGradientMach = machCorrection * downwashGradientMachZero;
 		return downwashGradientMach;
 	}

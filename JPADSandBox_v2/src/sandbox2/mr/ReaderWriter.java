@@ -54,7 +54,7 @@ public class ReaderWriter{
 	@SuppressWarnings("unchecked")
 	public void importFromXML(
 			String pathToXML,
-			StabilityCalculator theStabilityCalculator
+			StabilityExecutableManager theStabilityCalculator
 			) throws ParserConfigurationException {
 
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
