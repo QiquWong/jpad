@@ -252,10 +252,20 @@ public class HighLiftDevicesEffectsTest extends Application {
 			theCLAlphaCalculator.nasaBlackwell();
 			
 			theAircraft.getWing().setTheAerodynamicsCalculator(theAerodynamicCalculator);
+
+//			// TAKE-OFF
+//			LiftCalc.calculateHighLiftDevicesEffects(
+//					theAircraft.getWing(),
+//					theOperatingConditions.getFlapDeflectionTakeOff(),
+//					theOperatingConditions.getSlatDeflectionTakeOff(),
+//					theAerodynamicCalculator.getCurrentLiftCoefficient()
+//					);
 			
+			// LANDING
 			LiftCalc.calculateHighLiftDevicesEffects(
 					theAircraft.getWing(),
-					theOperatingConditions,
+					theOperatingConditions.getFlapDeflectionLanding(),
+					theOperatingConditions.getSlatDeflectionLanding(),
 					theAerodynamicCalculator.getCurrentLiftCoefficient()
 					);
 			

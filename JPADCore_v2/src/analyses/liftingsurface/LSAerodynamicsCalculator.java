@@ -301,6 +301,14 @@ public class LSAerodynamicsCalculator {
 		//----------------------------------------------------------------------------------------------------------------------
 		// Calculating the operating lifting coefficient
 		//......................................................................................................................
+		
+		////////////////////////////////////////
+		//									  //
+		//	TODO: WARINING! CRUISE, TAKE-OFF  //
+		//		  AND LANDING CONDITIONS 	  //
+		//		  HAVE TO BE DISTINGUISHED    //
+		// 									  //
+		////////////////////////////////////////
 		if(_currentLiftCoefficient == null) {
 			CalcCLAtAlpha calcCLAtAlphaCalculator = new CalcCLAtAlpha();
 			_currentLiftCoefficient = calcCLAtAlphaCalculator.nasaBlackwellCompleteCurve(
@@ -310,7 +318,9 @@ public class LSAerodynamicsCalculator {
 		if(_currentDragCoefficient == null) {
 			CalcCDAtAlpha calcCDAtAlphaCalculator = new CalcCDAtAlpha();
 			_currentDragCoefficient = calcCDAtAlphaCalculator.classic(
-					_theOperatingConditions.getAlphaCurrent()
+					_theOperatingConditions.getAlphaCurrent(),
+					_theOperatingConditions.getMachCurrent(),
+					_theOperatingConditions.getAltitude()
 					);
 		}
 		
@@ -1565,21 +1575,21 @@ public class LSAerodynamicsCalculator {
 					liftAdditionalSchrenk.get(i).add(
 							Amount.valueOf(
 									ccLAdditionalSchrenk.get(i).get(j).doubleValue(SI.METER)
-									*_theOperatingConditions.getDynamicPressure().doubleValue(SI.PASCAL),
+									*_theOperatingConditions.getDynamicPressureCruise().doubleValue(SI.PASCAL),
 									SI.NEWTON
 									)
 							);
 					liftBasicSchrenk.get(i).add(
 							Amount.valueOf(
 									ccLBasicSchrenk.get(i).get(j).doubleValue(SI.METER)
-									*_theOperatingConditions.getDynamicPressure().doubleValue(SI.PASCAL),
+									*_theOperatingConditions.getDynamicPressureCruise().doubleValue(SI.PASCAL),
 									SI.NEWTON
 									)
 							);
 					liftTotalSchrenk.get(i).add(
 							Amount.valueOf(
 									ccLTotalSchrenk.get(i).get(j).doubleValue(SI.METER)
-									*_theOperatingConditions.getDynamicPressure().doubleValue(SI.PASCAL),
+									*_theOperatingConditions.getDynamicPressureCruise().doubleValue(SI.PASCAL),
 									SI.NEWTON
 									)
 							);
@@ -1636,6 +1646,12 @@ public class LSAerodynamicsCalculator {
 		}
 	
 		public void nasaBlackwell() {
+			
+			//////////////////////////////////////////////////////////////
+			//															//
+			//		TODO : DISTINGUISH CRUISE, TAKE-OFF AND LANDING		//
+			//														    //
+			//////////////////////////////////////////////////////////////
 			
 			List<List<Amount<Length>>> ccLAdditional = new ArrayList<>();
 			List<List<Amount<Length>>> ccLBasic = new ArrayList<>();
@@ -1730,21 +1746,21 @@ public class LSAerodynamicsCalculator {
 					liftTotal.get(i).add(
 							Amount.valueOf(
 									ccLTotal.get(i).get(j).doubleValue(SI.METER)
-									*_theOperatingConditions.getDynamicPressure().doubleValue(SI.PASCAL),
+									*_theOperatingConditions.getDynamicPressureCruise().doubleValue(SI.PASCAL),
 									SI.NEWTON
 									)
 							);
 					liftBasic.get(i).add(
 							Amount.valueOf(
 									ccLBasic.get(i).get(j).doubleValue(SI.METER)
-									*_theOperatingConditions.getDynamicPressure().doubleValue(SI.PASCAL),
+									*_theOperatingConditions.getDynamicPressureCruise().doubleValue(SI.PASCAL),
 									SI.NEWTON
 									)
 							);
 					liftAdditional.get(i).add(
 							Amount.valueOf(
 									ccLAdditional.get(i).get(j).doubleValue(SI.METER)
-									*_theOperatingConditions.getDynamicPressure().doubleValue(SI.PASCAL),
+									*_theOperatingConditions.getDynamicPressureCruise().doubleValue(SI.PASCAL),
 									SI.NEWTON
 									)
 							);
@@ -1846,12 +1862,18 @@ public class LSAerodynamicsCalculator {
 	//............................................................................
 	public class CalcCD0 {
 		
-		public void classic() {
+		public void classic(
+				Double mach,
+				Amount<Length> altitude
+				) {
 			
 			Double kExcr = _theLiftingSurface.getKExcr();
+			
 			Double cD0Parasite = DragCalc.calculateCD0Parasite(
 					_theLiftingSurface,
-					_theOperatingConditions
+					_theOperatingConditions.getMachTransonicThreshold(),
+					mach,
+					altitude
 					);
 			Double cD0Gap = DragCalc.calculateCDGap(_theLiftingSurface);
 			
@@ -1862,8 +1884,11 @@ public class LSAerodynamicsCalculator {
 					);
 		}
 		
-		public void allMethods() {
-			classic();
+		public void allMethods(
+				Double mach,
+				Amount<Length> altitude
+				) {
+			classic(mach, altitude);
 		}
 		
 	}
@@ -2067,7 +2092,10 @@ public class LSAerodynamicsCalculator {
 	//............................................................................
 	public class CalcPolar {
 
-		public void classic() {
+		public void classic(
+				Double mach,
+				Amount<Length> altitude
+				) {
 			
 			if(_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL) == null) {
 				CalcLiftCurve calcLiftCurve = new CalcLiftCurve();
@@ -2082,7 +2110,9 @@ public class LSAerodynamicsCalculator {
 						Amount.valueOf(
 								_alphaArrayPlot[i],
 								NonSI.DEGREE_ANGLE
-								).to(SI.RADIAN)
+								).to(SI.RADIAN),
+						mach,
+						altitude
 						);
 			}
 			
@@ -2096,8 +2126,11 @@ public class LSAerodynamicsCalculator {
 			
 		}
 
-		public void allMethods() {
-			classic();
+		public void allMethods(
+				Double mach,
+				Amount<Length> altitude
+				) {
+			classic(mach, altitude);
 			fromCdDistribution();
 		}
 	}
@@ -2110,13 +2143,16 @@ public class LSAerodynamicsCalculator {
 	//............................................................................
 	public class CalcCDAtAlpha {
 		
-		public double classic(Amount<Angle> alpha) {
+		public double classic(
+				Amount<Angle> alpha,
+				Double mach,
+				Amount<Length> altitude) {
 			
 			double cDActual = 0.0;
 			
 			if(_cD0.get(MethodEnum.CLASSIC) == null) {
 				CalcCD0 calcCD0 = new CalcCD0(); 
-				calcCD0.classic();
+				calcCD0.classic(mach, altitude);
 			}
 			
 			// TODO : CHECK WHICH OSWALD IS BETTER !
@@ -2150,8 +2186,12 @@ public class LSAerodynamicsCalculator {
 			
 		}
 
-		public void allMethods(Amount<Angle> alpha) {
-			classic(alpha);
+		public void allMethods(
+				Amount<Angle> alpha,
+				Double mach,
+				Amount<Length> altitude
+				) {
+			classic(alpha, mach, altitude);
 			fromCdDistribution(alpha);
 		}
 		
@@ -2165,7 +2205,12 @@ public class LSAerodynamicsCalculator {
 	//............................................................................
 	public class CalcHighLiftDevicesEffects {
 		
-		public void semiempirical() {
+		public void semiempirical(
+				List<Amount<Angle>> flapDeflection, 
+				List<Amount<Angle>> slatDeflection,
+				Double mach,
+				Amount<Length> altitude
+				) {
 			
 			if(_alphaZeroLift.get(MethodEnum.INTEGRAL_MEAN_TWIST) == null) {
 				CalcAlpha0L calcAlphaZeroLift = new CalcAlpha0L();
@@ -2199,14 +2244,15 @@ public class LSAerodynamicsCalculator {
 			
 			if(_cD0.get(MethodEnum.CLASSIC) == null) {
 				CalcCD0 calcCD0 = new CalcCD0();
-				calcCD0.classic();
+				calcCD0.classic(mach, altitude);
 			}
 			
 			//-----------------------------------------------------
 			// EFFECTS:
 			LiftCalc.calculateHighLiftDevicesEffects(
 					_theLiftingSurface,
-					_theOperatingConditions,
+					flapDeflection,
+					slatDeflection,
 					_currentLiftCoefficient
 					);	
 			
@@ -2307,12 +2353,17 @@ public class LSAerodynamicsCalculator {
 					);
 			
 			//------------------------------------------------------
-			// TODO : EVENTUALLY ADD CD0 AND CMc4 HIGH LIFT
+			// TODO : EVENTUALLY ADD CMc4 HIGH LIFT
 			
 		}
 		
-		public void allMethods() {
-			semiempirical();
+		public void allMethods(
+				List<Amount<Angle>> flapDeflection,
+				List<Amount<Angle>> slatDeflection,
+				Double mach,
+				Amount<Length> altitude
+				) {
+			semiempirical(flapDeflection, slatDeflection, mach, altitude);
 		}
 		
 	}	
@@ -2325,7 +2376,12 @@ public class LSAerodynamicsCalculator {
 	//............................................................................
 	public class CalcHighLiftCurve {
 		
-		public void semiempirical() {
+		public void semiempirical(
+				List<Amount<Angle>> flapDeflection,
+				List<Amount<Angle>> slatDeflection,
+				Double mach,
+				Amount<Length> altitude
+				) {
 			
 			if((_deltaCL0Flap.get(MethodEnum.EMPIRICAL) == null) ||
 			   (_deltaCLmaxFlap.get(MethodEnum.EMPIRICAL) == null) ||
@@ -2333,7 +2389,12 @@ public class LSAerodynamicsCalculator {
 					) {
 				
 				CalcHighLiftDevicesEffects theHighLiftEffectsCalculator = new CalcHighLiftDevicesEffects();
-				theHighLiftEffectsCalculator.semiempirical();
+				theHighLiftEffectsCalculator.semiempirical(
+						flapDeflection,
+						slatDeflection,
+						mach,
+						altitude
+						);
 				
 			}
 			
@@ -2357,8 +2418,13 @@ public class LSAerodynamicsCalculator {
 					);			
 		}
 		
-		public void allMethods() {
-			semiempirical();
+		public void allMethods(
+				List<Amount<Angle>> flapDeflection,
+				List<Amount<Angle>> slatDeflection,
+				Double mach,
+				Amount<Length> altitude
+				) {
+			semiempirical(flapDeflection, slatDeflection, mach, altitude);
 		}
 	}	
 	//............................................................................
@@ -2370,7 +2436,13 @@ public class LSAerodynamicsCalculator {
 	//............................................................................
 	public class CalcCLAtAlphaHighLift {
 		
-		public double semiempirical(Amount<Angle> alpha) {
+		public double semiempirical(
+				Amount<Angle> alpha, 
+				List<Amount<Angle>> flapDeflection,
+				List<Amount<Angle>> slatDeflection,
+				Double mach,
+				Amount<Length> altitude
+				) {
 		
 			double cLActual = 0.0;
 			
@@ -2378,7 +2450,7 @@ public class LSAerodynamicsCalculator {
 					&& (_liftCoefficient3DCurveHighLift.get(MethodEnum.EMPIRICAL) == null)) {
 				
 				CalcHighLiftCurve theHighLiftCurveCalculator = new CalcHighLiftCurve();
-				theHighLiftCurveCalculator.semiempirical();
+				theHighLiftCurveCalculator.semiempirical(flapDeflection, slatDeflection, mach, altitude);
 				
 			}
 			cLActual = MyMathUtils.getInterpolatedValue1DLinear(
@@ -2393,8 +2465,14 @@ public class LSAerodynamicsCalculator {
 			return cLActual;
 		}
 		
-		public void allMethods(Amount<Angle> alpha) {
-			semiempirical(alpha);
+		public void allMethods(
+				Amount<Angle> alpha,
+				List<Amount<Angle>> flapDeflection,
+				List<Amount<Angle>> slatDeflection,
+				Double mach,
+				Amount<Length> altitude
+				) {
+			semiempirical(alpha, flapDeflection, slatDeflection, mach, altitude);
 		}
 		
 	}

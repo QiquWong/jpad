@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.measure.quantity.Area;
+import javax.measure.quantity.Length;
 import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
@@ -11,7 +12,6 @@ import aircraft.components.LandingGears;
 import aircraft.components.LandingGears.MountingPosition;
 import aircraft.components.liftingSurface.LiftingSurface;
 import analyses.OperatingConditions;
-import calculators.performance.LandingCalc;
 import calculators.performance.customdata.DragMap;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.ComponentEnum;
@@ -99,41 +99,50 @@ public class DragCalc {
 	 */
 	public static Double calculateCD0Parasite(
 			LiftingSurface theLiftingSurface,
-			OperatingConditions theOperatingConditions
+			Double machTransonicThreshold,
+			Double mach,
+			Amount<Length> altitude
 			){
 		
 		Double cD0Parasite = 0.0;
 		Double cF = 0.0;
-		Double reynolds = theOperatingConditions.calculateRe(
-				theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue(), 
-				theLiftingSurface.getLiftingSurfaceCreator().getRoughness().getEstimatedValue());
 		
-		if (theOperatingConditions.calculateReCutOff(
+		Double reynolds = AerodynamicCalc.calculateReynolds(
+				altitude.doubleValue(SI.METER),
+				mach,
+				theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()
+				);
+		
+		if (AerodynamicCalc.calculateReCutOff(
+				mach,
+				machTransonicThreshold,
 				theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue(), 
 				theLiftingSurface.getLiftingSurfaceCreator().getRoughness().getEstimatedValue()) < 
 				reynolds) {
 
-			reynolds = theOperatingConditions.calculateReCutOff(
-					theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue(),
+			reynolds = AerodynamicCalc.calculateReCutOff(
+					mach,
+					machTransonicThreshold,
+					theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue(), 
 					theLiftingSurface.getLiftingSurfaceCreator().getRoughness().getEstimatedValue());
 
 			cF  = (AerodynamicCalc.calculateCf(
-					reynolds, theOperatingConditions.getMachCurrent(), 
+					reynolds, mach, 
 					theLiftingSurface.getLiftingSurfaceCreator().getXTransitionUpper()) 
 					+ AerodynamicCalc.calculateCf(
 							reynolds, 
-							theOperatingConditions.getMachCurrent(),
+							mach,
 							theLiftingSurface.getLiftingSurfaceCreator().getXTransitionLower()))/2;
 
 		} else // XTRANSITION!!!
 		{
 			cF  = (AerodynamicCalc.calculateCf(
 					reynolds,
-					theOperatingConditions.getMachCurrent(),
+					mach,
 					theLiftingSurface.getLiftingSurfaceCreator().getXTransitionUpper()) + 
 					AerodynamicCalc.calculateCf(
 							reynolds,
-							theOperatingConditions.getMachCurrent(),
+							mach,
 							theLiftingSurface.getLiftingSurfaceCreator().getXTransitionLower()))/2; 
 
 		}

@@ -25,7 +25,6 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
 import analyses.OperatingConditions;
-import analyses.liftingsurface.LSAerodynamicsManager.CalcHighLiftDevices;
 import calculators.performance.customdata.TakeOffResultsMap;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import standaloneutils.MyArrayUtils;
@@ -1072,8 +1071,6 @@ public class TakeOffCalc {
 	 */
 	public void calculateBalancedFieldLength() {
 
-		// FIXME !!
-		
 		final PrintStream originalOut = System.out;
 		PrintStream filterStream = new PrintStream(new OutputStream() {
 		    public void write(int b) {

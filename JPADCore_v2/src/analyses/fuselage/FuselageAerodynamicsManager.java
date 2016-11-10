@@ -114,11 +114,13 @@ public class FuselageAerodynamicsManager extends analyses.analysismodel.analysis
 
 		double kExcr = DragCalc.calculateKExcrescences(_theAircraft.getSWetTotal().doubleValue(SI.SQUARE_METRE));
 
+		// TODO : (Vittorio) GIVE THE POSSIBILITY TO ASSIGN MACH AND ALTITUDE IN DIFFERENT CONDITIONS !!
 		_cF = AerodynamicCalc.calculateCf(
-				_theOperatingConditions.calculateRe(
-						_len_F.getEstimatedValue(), 
-						_roughness.getEstimatedValue()
-						),
+				AerodynamicCalc.calculateReynolds(
+						_theOperatingConditions.getAltitude().getEstimatedValue(),
+						_theOperatingConditions.getMachCurrent(),
+						_len_F.getEstimatedValue()
+						), 
 				_theOperatingConditions.getMachCurrent().doubleValue(), 
 				0.
 				);

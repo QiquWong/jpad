@@ -1,6 +1,5 @@
 package calculators.performance;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import javax.measure.quantity.Acceleration;
@@ -25,15 +24,12 @@ import org.jscience.physics.amount.Amount;
 import aircraft.components.Aircraft;
 import analyses.OperatingConditions;
 import analyses.liftingsurface.LSAerodynamicsManager.CalcHighLiftDevices;
-import configuration.MyConfiguration;
 import configuration.enumerations.EngineOperatingConditionEnum;
-import configuration.enumerations.FoldersEnum;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyMathUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
-import writers.JPADStaticWriteUtils;
 
 /**
  * This class have the purpose of calculating the required landing field length
@@ -74,7 +70,7 @@ public class LandingCalc {
 	private List<Amount<Force>> thrust, lift, drag, friction, totalForce;
 	private List<Amount<Length>> landingDistance, verticalDistance;
 	private double mu, muBrake, cLmaxLanding, kGround, cL0Landing, cLground, kA, kFlare, kTD, phiRev;
-	private double oswald, cD0, cLalphaFlap, deltaCD0Spoiler, deltaCD0LandignGear, deltaCD0FlapLandinGearsSpoilers;
+	private double oswald, cD0, cLalphaFlap, deltaCD0FlapLandinGearsSpoilers;
 
 	//-------------------------------------------------------------------------------------
 	// BUILDER:
@@ -104,7 +100,7 @@ public class LandingCalc {
 	 * @param cLmaxLanding
 	 * @param cL0Landing
 	 * @param cLalphaFlap
-	 * @param deltaCD0FlapLandingGears 
+	 * @param deltaCD0FlapLandingGearsAndSpoilers 
 	 */
 	public LandingCalc(
 			Aircraft aircraft,
@@ -126,7 +122,7 @@ public class LandingCalc {
 			double cLmaxLanding,
 			double cL0Landing,
 			double cLalphaFlap,
-			double deltaCD0FlapLandingGears,
+			double deltaCD0FlapLandingGearsAndSpoilers,
 			Amount<Duration> nFreeRoll
 			) {
 
@@ -148,7 +144,7 @@ public class LandingCalc {
 		this.cD0 = cD0;
 		this.oswald = oswald;
 		this.cLmaxLanding = cLmaxLanding;
-		this.deltaCD0FlapLandinGearsSpoilers = deltaCD0FlapLandingGears;
+		this.deltaCD0FlapLandinGearsSpoilers = deltaCD0FlapLandingGearsAndSpoilers;
 		this.cL0Landing = cL0Landing; 
 		this.cLalphaFlap = cLalphaFlap;
 		this.nFreeRoll = nFreeRoll;
@@ -294,8 +290,6 @@ public class LandingCalc {
 	public void calculateGroundRollLandingODE(double phiRev) {
 
 		this.phiRev = phiRev;
-		
-		initialize();
 		
 		System.out.println("---------------------------------------------------");
 		System.out.println("CalcLanding :: Ground Roll ODE integration\n\n");
@@ -990,27 +984,9 @@ public class LandingCalc {
 	public void setThetaApproach(Amount<Angle> thetaApproach) {
 		this.thetaApproach = thetaApproach;
 	}
-
-	public double getDeltaCD0LandignGear() {
-		return deltaCD0LandignGear;
-	}
-
-	public void setDeltaCD0LandignGear(double deltaCD0LandignGear) {
-		this.deltaCD0LandignGear = deltaCD0LandignGear;
-	}
-
-	public double getDeltaCD0Spoiler() {
-		return deltaCD0Spoiler;
-	}
-
-	public void setDeltaCD0Spoiler(double deltaCD0Spoiler) {
-		this.deltaCD0Spoiler = deltaCD0Spoiler;
-	}
-
 	public Amount<Mass> getMaxLandingMass() {
 		return maxLandingMass;
 	}
-
 	public void setMaxLandingMass(Amount<Mass> maxLandingMass) {
 		this.maxLandingMass = maxLandingMass;
 	}

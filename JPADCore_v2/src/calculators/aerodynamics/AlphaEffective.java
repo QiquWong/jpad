@@ -3,6 +3,7 @@ package calculators.aerodynamics;
 import java.util.List;
 
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Velocity;
 
 import org.jscience.physics.amount.Amount;
 
@@ -90,7 +91,8 @@ public class AlphaEffective {
 
 
 	public double[] calculateAlphaEffective(
-			Amount<Angle> alphaInitial){
+			Amount<Angle> alphaInitial,
+			Amount<Velocity> vTAS){
 		double velocity;
 		double[] alphaEffective = new double[numberOfPoints];
 		double [] addend = new double[numberOfPoints];
@@ -112,7 +114,7 @@ public class AlphaEffective {
 		influenceFactor = theCalculator.getInfluenceFactor();
 		gamma = theCalculator.getGamma();
 
-		velocity = theOperatingConditions.getTAS().getEstimatedValue(); //meters per second
+		velocity = vTAS.getEstimatedValue(); //meters per second
 		//velocity = SpeedCalc.calculateTAS(mach, altitude);
 
 

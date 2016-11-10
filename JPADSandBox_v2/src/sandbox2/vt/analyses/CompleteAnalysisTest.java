@@ -2,6 +2,8 @@ package sandbox2.vt.analyses;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,13 +16,10 @@ import org.kohsuke.args4j.Option;
 
 import aircraft.components.Aircraft;
 import analyses.ACAnalysisManager;
-import analyses.ACWeightsManager;
 import analyses.OperatingConditions;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
-import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FoldersEnum;
-import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import javafx.application.Application;
@@ -161,10 +160,17 @@ public class CompleteAnalysisTest extends Application {
 		// TODO: check out this as an alternative
 		// https://blog.codecentric.de/en/2015/09/javafx-how-to-easily-implement-application-preloader-2/
 
+		final PrintStream originalOut = System.out;
+		PrintStream filterStream = new PrintStream(new OutputStream() {
+		    public void write(int b) {
+		         // write nothing
+		    }
+		});
+		
 		System.out.println("-------------------");
 		System.out.println("Complete Analysis Test");
 		System.out.println("-------------------");
-
+		
 		MyArgumentsAnalysis va = new MyArgumentsAnalysis();
 		CompleteAnalysisTest.theCmdLineParser = new CmdLineParser(va);
 
@@ -217,6 +223,13 @@ public class CompleteAnalysisTest extends Application {
 			String highLiftDatabaseFileName = "HighLiftDatabase.h5";
 			AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
 			HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
+
+			////////////////////////////////////////////////////////////////////////
+			// Aircraft creation
+			System.out.println("\n\n\tCreating the Aircraft ... \n\n");
+			
+			// deactivating system.out
+			System.setOut(filterStream);
 			
 			// default Aircraft ATR-72 ...
 			theAircraft = new Aircraft.AircraftBuilder(
@@ -241,8 +254,12 @@ public class CompleteAnalysisTest extends Application {
 //					aeroDatabaseReader,
 //					highLiftDatabaseReader);
 			
-//			System.out.println(theAircraft.toString());
+			// activating system.out
+			System.setOut(originalOut);			
+			System.out.println(theAircraft.toString());
+			System.setOut(filterStream);
 			
+			////////////////////////////////////////////////////////////////////////
 			// Set the folders tree
 			MyConfiguration.initWorkingDirectoryTree(
 					MyConfiguration.currentDirectoryString,
@@ -251,13 +268,35 @@ public class CompleteAnalysisTest extends Application {
 			String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR); 
 			String aircraftFolder = JPADStaticWriteUtils.createNewFolder(folderPath + theAircraft.getId() + File.separator);
 			String subfolderPath = JPADStaticWriteUtils.createNewFolder(aircraftFolder);
-			
+
+			////////////////////////////////////////////////////////////////////////
 			// Defining the operating conditions ...
+			System.setOut(originalOut);
+			System.out.println("\n\n\tDefining the operating conditions ... \n\n");
+			System.setOut(filterStream);
 			OperatingConditions theOperatingConditions = OperatingConditions.importFromXML(pathToOperatingConditionsXML);
+			System.setOut(originalOut);
+			System.out.println(theOperatingConditions.toString());
+			System.setOut(filterStream);
 			
+			////////////////////////////////////////////////////////////////////////
 			// Analyzing the aircraft
+			System.setOut(originalOut);
+			System.out.println("\n\n\tRunning requested analyses ... \n\n");
+			System.setOut(filterStream);
 			theAircraft.setTheAnalysisManager(ACAnalysisManager.importFromXML(pathToAnalysesXML, theAircraft));
 			theAircraft.getTheAnalysisManager().doAnalysis(theAircraft, theOperatingConditions, subfolderPath);
+			System.setOut(originalOut);
+			System.out.println("\n\n\tDone!! \n\n");
+			System.setOut(filterStream);
+			
+			////////////////////////////////////////////////////////////////////////
+			// Printing results (activating system.out)
+			System.setOut(originalOut);
+			System.out.println("\n\n\tPrinting results ... \n\n");
+			System.out.println(theAircraft.getTheAnalysisManager().toString());
+			System.out.println("\n\n\tDone!! \n\n");
+			System.setOut(filterStream);
 			
 		} catch (CmdLineException | IOException e) {
 			System.err.println("Error: " + e.getMessage());

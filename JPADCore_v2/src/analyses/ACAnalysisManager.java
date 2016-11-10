@@ -237,6 +237,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 			initializeDefaultData(aircraftName);
 		}
 
+		@SuppressWarnings("incomplete-switch")
 		private void initializeDefaultData(AircraftEnum aircraftName) {
 			
 			switch(aircraftName) {
@@ -908,6 +909,15 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				.append("\tMax dynamic pressure: " + _maxDynamicPressure + "\n")
 				.append("\t·····································\n")
 				;
+		if(_executedAnalysesMap.get(AnalysisTypeEnum.WEIGHTS) == true)
+			sb.append(_theAircraft.getTheAnalysisManager().getTheWeights().toString());
+		if(_executedAnalysesMap.get(AnalysisTypeEnum.BALANCE) == true)
+			sb.append(_theAircraft.getTheAnalysisManager().getTheBalance().toString());
+
+		// TODO : ADD OTHER ANALYSES toString
+		
+		if(_executedAnalysesMap.get(AnalysisTypeEnum.PERFORMANCE) == true)
+			sb.append(_theAircraft.getTheAnalysisManager().getThePerformance().toString());
 		
 		return sb.toString();
 	}
@@ -947,7 +957,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 			) throws IOException {
 
 		if (aircraft == null) return;
-
+		
 		////////////////////////////////////////////////////////////////
 		if (this._analysisList.contains(AnalysisTypeEnum.WEIGHTS)) {
 			_theWeights = ACWeightsManager.importFromXML(
@@ -991,7 +1001,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 			calculateCosts(aircraft, resultsFolderPath);
 			_executedAnalysesMap.put(AnalysisTypeEnum.COSTS, true);
 		}
-		
+				
 	} // end of constructor
 
 	public void calculateWeights(Aircraft aircraft, String resultsFolderPath) {
@@ -1001,7 +1011,8 @@ public class ACAnalysisManager implements IACAnalysisManager {
 
 		// Evaluate aircraft masses
 		aircraft.getTheAnalysisManager().getTheWeights().calculateAllMasses(aircraft, _methodsMapWeights);
-		System.out.println(aircraft.getTheAnalysisManager().getTheWeights().toString());
+
+		// Plot
 		try {
 			String weightsFolderPath = JPADStaticWriteUtils.createNewFolder(
 					resultsFolderPath 
@@ -1025,7 +1036,8 @@ public class ACAnalysisManager implements IACAnalysisManager {
 
 		// Estimate center of gravity location
 		aircraft.getTheAnalysisManager().getTheBalance().calculateBalance(_methodsMapBalance);
-		System.out.println(aircraft.getTheAnalysisManager().getTheBalance().toString());
+		
+		// Plot
 		try {
 			String balanceFolderPath = JPADStaticWriteUtils.createNewFolder(
 					resultsFolderPath 
@@ -1065,9 +1077,9 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	}
 	
 	public void calculatePerformances(Aircraft aircraft, String resultsFolderPath) {
-		
+
+		// Execute analysis
 		aircraft.getTheAnalysisManager().getThePerformance().calculatePerformance(resultsFolderPath);
-		System.out.println(aircraft.getTheAnalysisManager().getThePerformance().toString());
 		
 	}
 	
@@ -1077,6 +1089,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		// TODO : ADD toString AND toXLSFile METHODS WHEN AVAILABLE !
 	}
 
+	//////////////////////////////////////////////////////////////////////////
 	// GETTERS & SETTERS:
 	
 	public String getId() {

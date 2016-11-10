@@ -2567,7 +2567,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 	private void reportDiscretizedVariables(){
 
 		System.out.println("=====================================================");
-		System.out.println("Spanwise discretized wing, size " + _spanwiseDiscretizedVariables.size());
+		System.out.println("Spanwise discretized " + this._type + ", size " + _spanwiseDiscretizedVariables.size());
 
 		System.out.println("Y, chord, Xle, Zle, twist");
 
@@ -2883,6 +2883,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 					sb.append(symmetricFlap.toString());
 				}
 			}
+			
 			reportDiscretizedVariables();
 
 			sb

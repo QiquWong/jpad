@@ -212,22 +212,22 @@ public class FlightManeuveringEnvelopeCalc {
 				double vDFactor = (-0.0004*this._altitude.doubleValue(NonSI.FOOT)) + 33.333;
 				
 				_gustSpeeds.add(
-						Amount.valueOf(vAFactor*0.3048, SI.METERS_PER_SECOND) // 38 ft/sec
+						Amount.valueOf(vAFactor*0.3048, SI.METERS_PER_SECOND) 
 						);
 				_gustSpeeds.add(
-						Amount.valueOf(vCFactor*0.3048, SI.METERS_PER_SECOND)   // 25 ft/sec
+						Amount.valueOf(vCFactor*0.3048, SI.METERS_PER_SECOND) 
 						);
 				_gustSpeeds.add(
-						Amount.valueOf(vDFactor*0.3048, SI.METERS_PER_SECOND)    // 12.5 ft/sec
+						Amount.valueOf(vDFactor*0.3048, SI.METERS_PER_SECOND) 
 						);
 				_gustSpeeds.add(
-						Amount.valueOf(-vDFactor*0.3048, SI.METERS_PER_SECOND)   // -12.5 ft/sec
+						Amount.valueOf(-vDFactor*0.3048, SI.METERS_PER_SECOND)
 						);
 				_gustSpeeds.add(
-						Amount.valueOf(-vCFactor*0.3048, SI.METERS_PER_SECOND)   // -25 ft/sec
+						Amount.valueOf(-vCFactor*0.3048, SI.METERS_PER_SECOND) 
 						);
 				_gustSpeeds.add(
-						Amount.valueOf(-vDFactor*0.3048, SI.METERS_PER_SECOND) // -38 ft/sec
+						Amount.valueOf(-vDFactor*0.3048, SI.METERS_PER_SECOND) 
 						);
 			}
 		}
@@ -259,22 +259,22 @@ public class FlightManeuveringEnvelopeCalc {
 				double vDFactor = (-0.0004*this._altitude.doubleValue(NonSI.FOOT)) + 28;
 				
 				_gustSpeeds.add(
-						Amount.valueOf(vAFactor*0.3048, SI.METERS_PER_SECOND) // 38 ft/sec
+						Amount.valueOf(vAFactor*0.3048, SI.METERS_PER_SECOND) 
 						);
 				_gustSpeeds.add(
-						Amount.valueOf(vCFactor*0.3048, SI.METERS_PER_SECOND)   // 25 ft/sec
+						Amount.valueOf(vCFactor*0.3048, SI.METERS_PER_SECOND) 
 						);
 				_gustSpeeds.add(
-						Amount.valueOf(vDFactor*0.3048, SI.METERS_PER_SECOND)    // 12.5 ft/sec
+						Amount.valueOf(vDFactor*0.3048, SI.METERS_PER_SECOND) 
 						);
 				_gustSpeeds.add(
-						Amount.valueOf(-vDFactor*0.3048, SI.METERS_PER_SECOND)   // -12.5 ft/sec
+						Amount.valueOf(-vDFactor*0.3048, SI.METERS_PER_SECOND)
 						);
 				_gustSpeeds.add(
-						Amount.valueOf(-vCFactor*0.3048, SI.METERS_PER_SECOND)   // -25 ft/sec
+						Amount.valueOf(-vCFactor*0.3048, SI.METERS_PER_SECOND)
 						);
 				_gustSpeeds.add(
-						Amount.valueOf(-vAFactor*0.3048, SI.METERS_PER_SECOND) // -38 ft/sec
+						Amount.valueOf(-vAFactor*0.3048, SI.METERS_PER_SECOND)
 						);
 			}
 			else {
@@ -400,19 +400,20 @@ public class FlightManeuveringEnvelopeCalc {
 		double muGust = (2*this._maxTakeOffMass.doubleValue(SI.KILOGRAM))
 				/(density
 						*this._meanAerodynamicChord.doubleValue(SI.METER)
-						*this._cLAlpha.to(SI.RADIAN).inverse().getEstimatedValue()
+						*this._cLAlpha.to(SI.RADIAN.inverse()).getEstimatedValue()
 						*this._wingSurface.doubleValue(SI.SQUARE_METRE)
 						);
 		double kGust = (0.88*muGust)/(5.3 + muGust);
 
-		if((_regulations != RegulationsEnum.FAR_23)
-				&& (_aircraftType != AircraftTypeEnum.COMMUTER)) {
+		if((_regulations == RegulationsEnum.FAR_25)
+				|| ((_regulations == RegulationsEnum.FAR_23) 
+				&& (_aircraftType == AircraftTypeEnum.COMMUTER))) {
 			
 			this._positiveLoadFactorManeuveringSpeedWithGust = 1 + (
 					(
 							(kGust
 									*this._gustSpeeds.get(0).doubleValue(SI.METERS_PER_SECOND)
-									*this._cLAlpha.to(SI.RADIAN).inverse().getEstimatedValue()
+									*this._cLAlpha.to(SI.RADIAN.inverse()).getEstimatedValue()
 									*1.225
 									*this._wingSurface.doubleValue(SI.SQUARE_METRE))
 							/(2*AtmosphereCalc.g0.getEstimatedValue()*this._maxTakeOffMass.doubleValue(SI.KILOGRAM))
@@ -424,7 +425,7 @@ public class FlightManeuveringEnvelopeCalc {
 					(
 							(kGust
 									*this._gustSpeeds.get(5).doubleValue(SI.METERS_PER_SECOND)
-									*this._cLAlpha.to(SI.RADIAN).inverse().getEstimatedValue()
+									*this._cLAlpha.to(SI.RADIAN.inverse()).getEstimatedValue()
 									*1.225
 									*this._wingSurface.doubleValue(SI.SQUARE_METRE))
 							/(2*AtmosphereCalc.g0.getEstimatedValue()*this._maxTakeOffMass.doubleValue(SI.KILOGRAM))
@@ -437,7 +438,7 @@ public class FlightManeuveringEnvelopeCalc {
 				(
 						(kGust
 								*this._gustSpeeds.get(1).doubleValue(SI.METERS_PER_SECOND)
-								*this._cLAlpha.to(SI.RADIAN).inverse().getEstimatedValue()
+								*this._cLAlpha.to(SI.RADIAN.inverse()).getEstimatedValue()
 								*1.225
 								*this._wingSurface.doubleValue(SI.SQUARE_METRE))
 						/(2*AtmosphereCalc.g0.getEstimatedValue()*this._maxTakeOffMass.doubleValue(SI.KILOGRAM))
@@ -449,7 +450,7 @@ public class FlightManeuveringEnvelopeCalc {
 				(
 						(kGust
 								*this._gustSpeeds.get(2).doubleValue(SI.METERS_PER_SECOND)
-								*this._cLAlpha.to(SI.RADIAN).inverse().getEstimatedValue()
+								*this._cLAlpha.to(SI.RADIAN.inverse()).getEstimatedValue()
 								*1.225
 								*this._wingSurface.doubleValue(SI.SQUARE_METRE))
 						/(2*AtmosphereCalc.g0.getEstimatedValue()*this._maxTakeOffMass.doubleValue(SI.KILOGRAM))
@@ -461,7 +462,7 @@ public class FlightManeuveringEnvelopeCalc {
 				(
 						(kGust
 								*this._gustSpeeds.get(3).doubleValue(SI.METERS_PER_SECOND)
-								*this._cLAlpha.to(SI.RADIAN).inverse().getEstimatedValue()
+								*this._cLAlpha.to(SI.RADIAN.inverse()).getEstimatedValue()
 								*1.225
 								*this._wingSurface.doubleValue(SI.SQUARE_METRE))
 						/(2*AtmosphereCalc.g0.getEstimatedValue()*this._maxTakeOffMass.doubleValue(SI.KILOGRAM))
@@ -473,7 +474,7 @@ public class FlightManeuveringEnvelopeCalc {
 				(
 						(kGust
 								*this._gustSpeeds.get(4).doubleValue(SI.METERS_PER_SECOND)
-								*this._cLAlpha.to(SI.RADIAN).inverse().getEstimatedValue()
+								*this._cLAlpha.to(SI.RADIAN.inverse()).getEstimatedValue()
 								*1.225
 								*this._wingSurface.doubleValue(SI.SQUARE_METRE))
 						/(2*AtmosphereCalc.g0.getEstimatedValue()*this._maxTakeOffMass.doubleValue(SI.KILOGRAM))
@@ -488,7 +489,7 @@ public class FlightManeuveringEnvelopeCalc {
 				(
 						(kGust
 								*this._gustSpeedsFlap.get(0).doubleValue(SI.METERS_PER_SECOND)
-								*this._cLAlpha.to(SI.RADIAN).inverse().getEstimatedValue()
+								*this._cLAlpha.to(SI.RADIAN.inverse()).getEstimatedValue()
 								*1.225
 								*this._wingSurface.doubleValue(SI.SQUARE_METRE))
 						/(2*AtmosphereCalc.g0.getEstimatedValue()*this._maxTakeOffMass.doubleValue(SI.KILOGRAM))
@@ -500,7 +501,7 @@ public class FlightManeuveringEnvelopeCalc {
 				(
 						(kGust
 								*this._gustSpeedsFlap.get(1).doubleValue(SI.METERS_PER_SECOND)
-								*this._cLAlpha.to(SI.RADIAN).inverse().getEstimatedValue()
+								*this._cLAlpha.to(SI.RADIAN.inverse()).getEstimatedValue()
 								*1.225
 								*this._wingSurface.doubleValue(SI.SQUARE_METRE))
 						/(2*AtmosphereCalc.g0.getEstimatedValue()*this._maxTakeOffMass.doubleValue(SI.KILOGRAM))
@@ -517,144 +518,143 @@ public class FlightManeuveringEnvelopeCalc {
 		StringBuilder sb = new StringBuilder();
 		
 		if(_regulations == RegulationsEnum.FAR_23) {
-			sb.append("-----------------------------------------------------------------------\n")
-			.append(" REGULATION : " + _regulations + "\n")
-			.append(" AIRCRAFT TYPE : " + _aircraftType + "\n")
-			.append("-----------------------------------------------------------------------\n")
-			.append("\n-----------------------------------------------------------------------\n")
-			.append(" BASIC MANEUVERING DIAGRAM" + "\n")
-			.append("-----------------------------------------------------------------------\n")
-			.append("Stall speed clean = " + getStallSpeedClean() + "\n")
-			.append("Stall speed inverted = " + getStallSpeedInverted() + "\n")
-			.append(".......................................................................\n")
-			.append("Maneuvering speed = " + getManeuveringSpeed() + "\n")
-			.append("Positive limit load factor maneuvering speed = " + getPositiveLoadFactorManeuveringSpeed() + "\n")
-			.append(".......................................................................\n")
-			.append("Cruising speed = " + getCruisingSpeed() + "\n")
-			.append("Positive limit load factor cruising speed = " + getPositiveLoadFactorCruisingSpeed() + "\n")
-			.append(".......................................................................\n")
-			.append("Dive speed = " + getDiveSpeed() + "\n")
-			.append("Positive limit load factor dive speed = " + getPositiveLoadFactorDiveSpeed() + "\n")
-			.append(".......................................................................\n")
-			.append("Dive speed = " + getDiveSpeed() + "\n")
-			.append("Negative limit load factor dive speed = " + getNegativeLoadFactorDiveSpeed() + "\n")
-			.append(".......................................................................\n")
-			.append("Cruising speed = " + getCruisingSpeed() + "\n")
-			.append("Negative limit load factor cruising speed = " + getNegativeLoadFactorCruisingSpeed() + "\n")
-			.append(".......................................................................\n")
-			.append("Maneuvering speed inverted = " + getManeuveringSpeedInverted() + "\n")
-			.append("Negative limit load factor maneuvering speed inverted = " + getNegativeLoadFactorManeuveringSpeedInverted() + "\n")
-			.append("\n-----------------------------------------------------------------------\n")
-			.append(" FLAP MANEUVERING DIAGRAM " + "\n")
-			.append("-----------------------------------------------------------------------\n")
-			.append("Stall speed full flap = " + getStallSpeedFullFlap() + "\n")
-			.append(".......................................................................\n")
-			.append("Maneuvering speed full flap = " + getManeuveringFlapSpeed() + "\n")
-			.append("Positive limit load factor full flap maneuvering speed = " + getPositiveLoadFactorDesignFlapSpeed() + "\n")
-			.append(".......................................................................\n")
-			.append("Design speed full flap = " + getDesignFlapSpeed() + "\n")
-			.append("Positive limit load factor full flap maneuvering speed = " + getPositiveLoadFactorDesignFlapSpeed() + "\n")
-			.append("\n-----------------------------------------------------------------------\n")
-			.append(" GUST MODIFICATION (NO FLAP)" + "\n")
-			.append("-----------------------------------------------------------------------\n");
+			sb.append("\t-------------------------------------\n")
+			.append("\t\tRegulation : " + _regulations + "\n")
+			.append("\t\tAicraft type : " + _aircraftType + "\n")
+			.append("\t\t.....................................\n")
+			.append("\t\tBASIC MANEUVERING DIAGRAM" + "\n")
+			.append("\t\t.....................................\n")
+			.append("\t\t\tStall speed clean = " + getStallSpeedClean() + "\n")
+			.append("\t\t\tStall speed inverted = " + getStallSpeedInverted() + "\n")
+			.append("\t\t\t_____________________________________\n")
+			.append("\t\t\tManeuvering speed = " + getManeuveringSpeed() + "\n")
+			.append("\t\t\tPositive limit load factor maneuvering speed = " + getPositiveLoadFactorManeuveringSpeed() + "\n")
+			.append("\t\t\t_____________________________________\n")
+			.append("\t\t\tCruising speed = " + getCruisingSpeed() + "\n")
+			.append("\t\t\tPositive limit load factor cruising speed = " + getPositiveLoadFactorCruisingSpeed() + "\n")
+			.append("\t\t\t_____________________________________\n")
+			.append("\t\t\tDive speed = " + getDiveSpeed() + "\n")
+			.append("\t\t\tPositive limit load factor dive speed = " + getPositiveLoadFactorDiveSpeed() + "\n")
+			.append("\t\t\t_____________________________________\n")
+			.append("\t\t\tDive speed = " + getDiveSpeed() + "\n")
+			.append("\t\t\tNegative limit load factor dive speed = " + getNegativeLoadFactorDiveSpeed() + "\n")
+			.append("\t\t\t_____________________________________\n")
+			.append("\t\t\tCruising speed = " + getCruisingSpeed() + "\n")
+			.append("\t\t\tNegative limit load factor cruising speed = " + getNegativeLoadFactorCruisingSpeed() + "\n")
+			.append("\t\t\t_____________________________________\n")
+			.append("\t\t\tManeuvering speed inverted = " + getManeuveringSpeedInverted() + "\n")
+			.append("\t\t\tNegative limit load factor maneuvering speed inverted = " + getNegativeLoadFactorManeuveringSpeedInverted() + "\n")
+			.append("\t\t.....................................\n")
+			.append("\t\tFLAP MANEUVERING DIAGRAM " + "\n")
+			.append("\t\t.....................................\n")
+			.append("\t\t\tStall speed full flap = " + getStallSpeedFullFlap() + "\n")
+			.append("\t\t\t_____________________________________\n")
+			.append("\t\t\tManeuvering speed full flap = " + getManeuveringFlapSpeed() + "\n")
+			.append("\t\t\tPositive limit load factor full flap maneuvering speed = " + getPositiveLoadFactorDesignFlapSpeed() + "\n")
+			.append("\t\t\t_____________________________________\n")
+			.append("\t\t\tDesign speed full flap = " + getDesignFlapSpeed() + "\n")
+			.append("\t\t\tPositive limit load factor full flap maneuvering speed = " + getPositiveLoadFactorDesignFlapSpeed() + "\n")
+			.append("\t\t.....................................\n")
+			.append("\t\tGUST MODIFICATION (NO FLAP)" + "\n")
+			.append("\t\t.....................................\n");
 
 			if (_aircraftType != AircraftTypeEnum.COMMUTER)
-				sb.append("Maneuvering speed = " + getManeuveringSpeed() + "\n")
-				.append("Positive limit load factor maneuvering speed (GUST) = " + getPositiveLoadFactorManeuveringSpeedWithGust() + "\n")
-				.append(".......................................................................\n");		
+				sb.append("\t\t\tManeuvering speed = " + getManeuveringSpeed() + "\n")
+				.append("\t\t\tPositive limit load factor maneuvering speed (GUST) = " + getPositiveLoadFactorManeuveringSpeedWithGust() + "\n")
+				.append("\t\t\t_____________________________________\n");		
 
-			sb.append("Cruising speed = " + getCruisingSpeed() + "\n")
-			.append("Positive limit load factor cruising speed (GUST) = " + getPositiveLoadFactorCruisingSpeedWithGust() + "\n")
-			.append(".......................................................................\n")
-			.append("Dive speed = " + getDiveSpeed() + "\n")
-			.append("Positive limit load factor dive speed (GUST) = " + getPositiveLoadFactorDiveSpeedWithGust() + "\n")
-			.append(".......................................................................\n")
-			.append("Dive speed = " + getDiveSpeed() + "\n")
-			.append("Negative limit load factor dive speed (GUST) = " + getNegativeLoadFactorDiveSpeedWithGust() + "\n")
-			.append(".......................................................................\n")
-			.append("Cruising speed = " + getCruisingSpeed() + "\n")
-			.append("Negative limit load factor cruising speed (GUST) = " + getNegativeLoadFactorCruisingSpeedWithGust() + "\n");
+			sb.append("\t\t\tCruising speed = " + getCruisingSpeed() + "\n")
+			.append("\t\t\tPositive limit load factor cruising speed (GUST) = " + getPositiveLoadFactorCruisingSpeedWithGust() + "\n")
+			.append("\t\t\t_____________________________________\n")
+			.append("\t\t\tDive speed = " + getDiveSpeed() + "\n")
+			.append("\t\t\tPositive limit load factor dive speed (GUST) = " + getPositiveLoadFactorDiveSpeedWithGust() + "\n")
+			.append("\t\t\t_____________________________________\n")
+			.append("\t\t\tDive speed = " + getDiveSpeed() + "\n")
+			.append("\t\t\tNegative limit load factor dive speed (GUST) = " + getNegativeLoadFactorDiveSpeedWithGust() + "\n")
+			.append("\t\t\t_____________________________________\n")
+			.append("\t\t\tCruising speed = " + getCruisingSpeed() + "\n")
+			.append("\t\t\tNegative limit load factor cruising speed (GUST) = " + getNegativeLoadFactorCruisingSpeedWithGust() + "\n");
 
 			if (_aircraftType != AircraftTypeEnum.COMMUTER)
-				sb.append(".......................................................................\n")
-				.append("Maneuvering speed = " + getManeuveringSpeedInverted() + "\n")
-				.append("Negative limit load factor maneuvering speed (GUST) = " + getNegativeLoadFactorManeuveringSpeedInvertedWithGust()+ "\n");
+				sb.append("\t\t\t_____________________________________\n")
+				.append("\t\t\tManeuvering speed = " + getManeuveringSpeedInverted() + "\n")
+				.append("\t\t\tNegative limit load factor maneuvering speed (GUST) = " + getNegativeLoadFactorManeuveringSpeedInvertedWithGust()+ "\n");
 			
-			sb.append("\n-----------------------------------------------------------------------\n")
-			.append(" GUST MODIFICATION (WITH FLAP)" + "\n")
-			.append("-----------------------------------------------------------------------\n")
-			.append("Design flap speed = " + getDesignFlapSpeed() + "\n")
-			.append("Positive limit load factor design flap speed (GUST) = " + getPositiveLoadFactorDesignFlapSpeedWithGust() + "\n")
-			.append(".......................................................................\n")
-			.append("Design flap speed = " + getDesignFlapSpeed() + "\n")
-			.append("Negative limit load factor design flap speed (GUST) = " + getNegativeLoadFactorDesignFlapSpeedWithGust()+ "\n");
+			sb.append("\t\t.....................................\n")
+			.append("\t\tGUST MODIFICATION (WITH FLAP)" + "\n")
+			.append("\t\t.....................................\n")
+			.append("\t\t\tDesign flap speed = " + getDesignFlapSpeed() + "\n")
+			.append("\t\t\tPositive limit load factor design flap speed (GUST) = " + getPositiveLoadFactorDesignFlapSpeedWithGust() + "\n")
+			.append("\t\t\t_____________________________________\n")
+			.append("\t\t\tDesign flap speed = " + getDesignFlapSpeed() + "\n")
+			.append("\t\t\tNegative limit load factor design flap speed (GUST) = " + getNegativeLoadFactorDesignFlapSpeedWithGust()+ "\n");
 		}
 		else {
-			sb.append("-----------------------------------------------------------------------\n")
-			.append(" REGULATION : " + _regulations + "\n")
-			.append(" AIRCRAFT TYPE : " + _aircraftType + "\n")
-			.append("-----------------------------------------------------------------------\n")
-			.append("\n-----------------------------------------------------------------------\n")
-			.append(" BASIC MANEUVERING DIAGRAM" + "\n")
-			.append("-----------------------------------------------------------------------\n")
-			.append("Stall speed clean = " + getStallSpeedClean() + "\n")
-			.append("Stall speed inverted = " + getStallSpeedInverted() + "\n")
-			.append(".......................................................................\n")
-			.append("Maneuvering speed = " + getManeuveringSpeed() + "\n")
-			.append("Positive limit load factor maneuvering speed = " + getPositiveLoadFactorManeuveringSpeed() + "\n")
-			.append(".......................................................................\n")
-			.append("Cruising speed = " + getCruisingSpeed() + "\n")
-			.append("Positive limit load factor cruising speed = " + getPositiveLoadFactorCruisingSpeed() + "\n")
-			.append(".......................................................................\n")
-			.append("Dive speed = " + getDiveSpeed() + "\n")
-			.append("Positive limit load factor dive speed = " + getPositiveLoadFactorDiveSpeed() + "\n")
-			.append(".......................................................................\n")
-			.append("Dive speed = " + getDiveSpeed() + "\n")
-			.append("Negative limit load factor dive speed = " + getNegativeLoadFactorDiveSpeed() + "\n")
-			.append(".......................................................................\n")
-			.append("Cruising speed = " + getCruisingSpeed() + "\n")
-			.append("Negative limit load factor cruising speed = " + getNegativeLoadFactorCruisingSpeed() + "\n")
-			.append(".......................................................................\n")
-			.append("Maneuvering speed inverted = " + getManeuveringSpeedInverted() + "\n")
-			.append("Negative limit load factor maneuvering speed inverted = " + getNegativeLoadFactorManeuveringSpeedInverted() + "\n")
-			.append("\n-----------------------------------------------------------------------\n")
-			.append(" FLAP MANEUVERING DIAGRAM " + "\n")
-			.append("-----------------------------------------------------------------------\n")
-			.append("Stall speed full flap = " + getStallSpeedFullFlap() + "\n")
-			.append(".......................................................................\n")
-			.append("Maneuvering speed full flap = " + getManeuveringFlapSpeed() + "\n")
-			.append("Positive limit load factor full flap maneuvering speed = " + getPositiveLoadFactorDesignFlapSpeed() + "\n")
-			.append(".......................................................................\n")
-			.append("Design speed full flap = " + getDesignFlapSpeed() + "\n")
-			.append("Positive limit load factor full flap maneuvering speed = " + getPositiveLoadFactorDesignFlapSpeed() + "\n")
-			.append("\n-----------------------------------------------------------------------\n")
-			.append(" GUST MODIFICATION (NO FLAP)" + "\n")
-			.append("-----------------------------------------------------------------------\n")
-			.append("Maneuvering speed = " + getManeuveringSpeed() + "\n")
-			.append("Positive limit load factor maneuvering speed (GUST) = " + getPositiveLoadFactorManeuveringSpeedWithGust() + "\n")
-			.append(".......................................................................\n")		
-			.append("Cruising speed = " + getCruisingSpeed() + "\n")
-			.append("Positive limit load factor cruising speed (GUST) = " + getPositiveLoadFactorCruisingSpeedWithGust() + "\n")
-			.append(".......................................................................\n")
-			.append("Dive speed = " + getDiveSpeed() + "\n")
-			.append("Positive limit load factor dive speed (GUST) = " + getPositiveLoadFactorDiveSpeedWithGust() + "\n")
-			.append(".......................................................................\n")
-			.append("Dive speed = " + getDiveSpeed() + "\n")
-			.append("Negative limit load factor dive speed (GUST) = " + getNegativeLoadFactorDiveSpeedWithGust() + "\n")
-			.append(".......................................................................\n")
-			.append("Cruising speed = " + getCruisingSpeed() + "\n")
-			.append("Negative limit load factor cruising speed (GUST) = " + getNegativeLoadFactorCruisingSpeedWithGust() + "\n")
-			.append(".......................................................................\n")
-			.append("Maneuvering speed = " + getManeuveringSpeedInverted() + "\n")
-			.append("Negative limit load factor maneuvering speed (GUST) = " + getNegativeLoadFactorManeuveringSpeedInvertedWithGust()+ "\n")
-			.append("\n-----------------------------------------------------------------------\n")
-			.append(" GUST MODIFICATION (WITH FLAP)" + "\n")
-			.append("-----------------------------------------------------------------------\n")
-			.append("Design flap speed = " + getDesignFlapSpeed() + "\n")
-			.append("Positive limit load factor design flap speed (GUST) = " + getPositiveLoadFactorDesignFlapSpeedWithGust() + "\n")
-			.append(".......................................................................\n")
-			.append("Design flap speed = " + getDesignFlapSpeed() + "\n")
-			.append("Negative limit load factor design flap speed (GUST) = " + getNegativeLoadFactorDesignFlapSpeedWithGust()+ "\n");
+			sb.append("\t-------------------------------------\n")
+			.append("\t\tREGULATION : " + _regulations + "\n")
+			.append("\t\tAIRCRAFT TYPE : " + _aircraftType + "\n")
+			.append("\t\t.....................................\n")
+			.append("\t\tBASIC MANEUVERING DIAGRAM" + "\n")
+			.append("\t\t.....................................\n")
+			.append("\t\t\tStall speed clean = " + getStallSpeedClean() + "\n")
+			.append("\t\t\tStall speed inverted = " + getStallSpeedInverted() + "\n")
+			.append("\t\t\t_____________________________________\n")
+			.append("\t\t\tManeuvering speed = " + getManeuveringSpeed() + "\n")
+			.append("\t\t\tPositive limit load factor maneuvering speed = " + getPositiveLoadFactorManeuveringSpeed() + "\n")
+			.append("\t\t\t_____________________________________\n")
+			.append("\t\t\tCruising speed = " + getCruisingSpeed() + "\n")
+			.append("\t\t\tPositive limit load factor cruising speed = " + getPositiveLoadFactorCruisingSpeed() + "\n")
+			.append("\t\t\t_____________________________________\n")
+			.append("\t\t\tDive speed = " + getDiveSpeed() + "\n")
+			.append("\t\t\tPositive limit load factor dive speed = " + getPositiveLoadFactorDiveSpeed() + "\n")
+			.append("\t\t\t_____________________________________\n")
+			.append("\t\t\tDive speed = " + getDiveSpeed() + "\n")
+			.append("\t\t\tNegative limit load factor dive speed = " + getNegativeLoadFactorDiveSpeed() + "\n")
+			.append("\t\t\t_____________________________________\n")
+			.append("\t\t\tCruising speed = " + getCruisingSpeed() + "\n")
+			.append("\t\t\tNegative limit load factor cruising speed = " + getNegativeLoadFactorCruisingSpeed() + "\n")
+			.append("\t\t\t_____________________________________\n")
+			.append("\t\t\tManeuvering speed inverted = " + getManeuveringSpeedInverted() + "\n")
+			.append("\t\t\tNegative limit load factor maneuvering speed inverted = " + getNegativeLoadFactorManeuveringSpeedInverted() + "\n")
+			.append("\t\t.....................................\n")
+			.append("\t\tFLAP MANEUVERING DIAGRAM " + "\n")
+			.append("\t\t.....................................\n")
+			.append("\t\t\tStall speed full flap = " + getStallSpeedFullFlap() + "\n")
+			.append("\t\t\t_____________________________________\n")
+			.append("\t\t\tManeuvering speed full flap = " + getManeuveringFlapSpeed() + "\n")
+			.append("\t\t\tPositive limit load factor full flap maneuvering speed = " + getPositiveLoadFactorDesignFlapSpeed() + "\n")
+			.append("\t\t\t_____________________________________\n")
+			.append("\t\t\tDesign speed full flap = " + getDesignFlapSpeed() + "\n")
+			.append("\t\t\tPositive limit load factor full flap maneuvering speed = " + getPositiveLoadFactorDesignFlapSpeed() + "\n")
+			.append("\t\t.....................................\n")
+			.append("\t\tGUST MODIFICATION (NO FLAP)" + "\n")
+			.append("\t\t.....................................\n")
+			.append("\t\t\tManeuvering speed = " + getManeuveringSpeed() + "\n")
+			.append("\t\t\tPositive limit load factor maneuvering speed (GUST) = " + getPositiveLoadFactorManeuveringSpeedWithGust() + "\n")
+			.append("\t\t\t_____________________________________\n")		
+			.append("\t\t\tCruising speed = " + getCruisingSpeed() + "\n")
+			.append("\t\t\tPositive limit load factor cruising speed (GUST) = " + getPositiveLoadFactorCruisingSpeedWithGust() + "\n")
+			.append("\t\t\t_____________________________________\n")
+			.append("\t\t\tDive speed = " + getDiveSpeed() + "\n")
+			.append("\t\t\tPositive limit load factor dive speed (GUST) = " + getPositiveLoadFactorDiveSpeedWithGust() + "\n")
+			.append("\t\t\t_____________________________________\n")
+			.append("\t\t\tDive speed = " + getDiveSpeed() + "\n")
+			.append("\t\t\tNegative limit load factor dive speed (GUST) = " + getNegativeLoadFactorDiveSpeedWithGust() + "\n")
+			.append("\t\t\t_____________________________________\n")
+			.append("\t\t\tCruising speed = " + getCruisingSpeed() + "\n")
+			.append("\t\t\tNegative limit load factor cruising speed (GUST) = " + getNegativeLoadFactorCruisingSpeedWithGust() + "\n")
+			.append("\t\t\t_____________________________________\n")
+			.append("\t\t\tManeuvering speed = " + getManeuveringSpeedInverted() + "\n")
+			.append("\t\t\tNegative limit load factor maneuvering speed (GUST) = " + getNegativeLoadFactorManeuveringSpeedInvertedWithGust()+ "\n")
+			.append("\t\t.....................................\n")
+			.append("\t\tGUST MODIFICATION (WITH FLAP)" + "\n")
+			.append("\t\t.....................................\n")
+			.append("\t\t\tDesign flap speed = " + getDesignFlapSpeed() + "\n")
+			.append("\t\t\tPositive limit load factor design flap speed (GUST) = " + getPositiveLoadFactorDesignFlapSpeedWithGust() + "\n")
+			.append("\t\t\t_____________________________________\n")
+			.append("\t\t\tDesign flap speed = " + getDesignFlapSpeed() + "\n")
+			.append("\t\t\tNegative limit load factor design flap speed (GUST) = " + getNegativeLoadFactorDesignFlapSpeedWithGust()+ "\n")
+			;
 			
 		}
 		return sb.toString();

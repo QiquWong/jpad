@@ -23,6 +23,7 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
 import calculators.aerodynamics.DragCalc;
+import calculators.performance.FlightManeuveringEnvelopeCalc;
 import calculators.performance.LandingCalc;
 import calculators.performance.TakeOffCalc;
 import configuration.MyConfiguration;
@@ -94,7 +95,6 @@ public class ACPerformanceCalculator {
 	private Amount<Length> _obstacleTakeOff;
 	private Double _mu;
 	private Double _muBrake;
-	private Double _throttleSetting;
 	private Double _kRotation;
 	private Double _kLiftOff;
 	private Double _kCLmax;
@@ -108,7 +108,7 @@ public class ACPerformanceCalculator {
 	private Double _kTouchDown;
 	private Amount<Duration> _freeRollDuration;
 	//..............................................................................
-	// Flight maneuvering envelope
+	// Other data
 	private Double _cLmaxInverted;
 	//..............................................................................
 	// Plot and Task Maps
@@ -119,6 +119,7 @@ public class ACPerformanceCalculator {
 	// OUTPUT DATA
 	//..............................................................................
 	// Take-Off
+	private TakeOffCalc _theTakeOffCalculator;
 	private Amount<Length> _takeOffDistanceAOE;
 	private Amount<Length> _takeOffDistanceFAR25;
 	private Amount<Length> _balancedFieldLength;
@@ -141,6 +142,7 @@ public class ACPerformanceCalculator {
 	
 	//..............................................................................
 	// Landing
+	private LandingCalc _theLandingCalculator;
 	private Amount<Length> _landingDistance;
 	private Amount<Length> _landingDistanceFAR25;
 	private Amount<Length> _groundRollDistanceLanding;
@@ -157,7 +159,29 @@ public class ACPerformanceCalculator {
 	
 	//..............................................................................
 	// Maneuvering and Gust Flight Envelope 
-	// TODO
+	private FlightManeuveringEnvelopeCalc _theEnvelopeCalculator;
+	private Amount<Velocity> _stallSpeedFullFlap;
+	private Amount<Velocity> _stallSpeedClean;
+	private Amount<Velocity> _stallSpeedInverted;
+	private Amount<Velocity> _maneuveringSpeed;
+	private Amount<Velocity> _maneuveringFlapSpeed;
+	private Amount<Velocity> _maneuveringSpeedInverted;
+	private Amount<Velocity> _designFlapSpeed;
+	private Double _positiveLoadFactorManeuveringSpeed;
+	private Double _positiveLoadFactorCruisingSpeed;
+	private Double _positiveLoadFactorDiveSpeed;
+	private Double _positiveLoadFactorDesignFlapSpeed;
+	private Double _negativeLoadFactorManeuveringSpeedInverted;
+	private Double _negativeLoadFactorCruisingSpeed;
+	private Double _negativeLoadFactorDiveSpeed;
+	private Double _positiveLoadFactorManeuveringSpeedWithGust;
+	private Double _positiveLoadFactorCruisingSpeedWithGust;
+	private Double _positiveLoadFactorDiveSpeedWithGust;
+	private Double _positiveLoadFactorDesignFlapSpeedWithGust;
+	private Double _negativeLoadFactorManeuveringSpeedInvertedWithGust;
+	private Double _negativeLoadFactorCruisingSpeedWithGust;
+	private Double _negativeLoadFactorDiveSpeedWithGust;
+	private Double _negativeLoadFactorDesignFlapSpeedWithGust;
 	
 	//============================================================================================
 	// Builder pattern 
@@ -226,7 +250,6 @@ public class ACPerformanceCalculator {
 		private Amount<Duration> __freeRollDuration = Amount.valueOf(2.0, SI.SECOND);
 		//..............................................................................
 		// Other data
-		private Double __throttleSetting = 0.0;
 		private Double __cLmaxInverted = -1.0;
 		//..............................................................................
 		private List<PerformanceEnum> __taskList = new ArrayList<PerformanceEnum>();
@@ -433,11 +456,6 @@ public class ACPerformanceCalculator {
 			return this;
 		}
 		
-		public ACPerformanceCalculatorBuilder throttleSetting(Double phi) {
-			this.__throttleSetting = phi;
-			return this;
-		}
-		
 		public ACPerformanceCalculatorBuilder kRotation(Double kRot) {
 			this.__kRotation = kRot;
 			return this;
@@ -571,7 +589,6 @@ public class ACPerformanceCalculator {
 		this._kTouchDown = builder.__kTouchDown;
 		this._freeRollDuration = builder.__freeRollDuration;
 		
-		this._throttleSetting = builder.__throttleSetting;
 		this._cLmaxInverted = builder.__cLmaxInverted;
 		
 		this._taskList = builder.__taskList;
@@ -1179,14 +1196,7 @@ public class ACPerformanceCalculator {
 		
 		//===========================================================================================
 		// READING OTHER DATA ...	
-		Double throttleSetting = null;
-		Double cLmaxInverted = null;
-		
-		//...............................................................
-		// THROTTLE SETTING
-		String throttleSettingProperty = reader.getXMLPropertyByPath("//performance/takeoff_landing/throttle_setting");
-		if(throttleSettingProperty != null)
-			throttleSetting = Double.valueOf(reader.getXMLPropertyByPath("//performance/takeoff_landing/throttle_setting"));
+		Double cLmaxInverted = -1.0;
 		
 		//...............................................................
 		// CL MAX INVERTED
@@ -1359,7 +1369,6 @@ public class ACPerformanceCalculator {
 				.kFlare(kFlare)
 				.kTouchDown(kTouchDown)
 				.freeRollDuration(freeRollDuration)
-				.throttleSetting(throttleSetting)
 				.cLmaxInverted(cLmaxInverted)
 				// TODO : INSERT ALL THE REQUIRED DATA
 				.taskList(theAircraft.getTheAnalysisManager().getTaskListPerformance())
@@ -1417,6 +1426,19 @@ public class ACPerformanceCalculator {
 			
 		}
 		
+		if(_taskList.contains(PerformanceEnum.V_n_DIAGRAM)) {
+			
+			String maneuveringFlightAndGustEnvelopeFolderPath = JPADStaticWriteUtils.createNewFolder(
+					performanceFolderPath 
+					+ "V-n_DIAGRAM"
+					+ File.separator
+					);
+			
+			CalcFlightManeuveringAndGustEnvelope calcEnvelope =  new CalcFlightManeuveringAndGustEnvelope();
+			calcEnvelope.fromRegulations(maneuveringFlightAndGustEnvelopeFolderPath);
+			
+		}
+		
 		// TODO : CONTINUE WITH OTHER ANALYSES
 		
 	}
@@ -1434,19 +1456,19 @@ public class ACPerformanceCalculator {
 		if(_taskList.contains(PerformanceEnum.TAKE_OFF)) {
 			
 			sb.append("\tTAKE-OFF\n")
-			.append("\t.....................................\n")
-			.append("\tGround roll distance = " + _groundRollDistanceTakeOff + "\n")
-			.append("\tRotation distance = " + _rotationDistanceTakeOff + "\n")
-			.append("\tAirborne distance = " + _airborneDistanceTakeOff + "\n")
-			.append("\tAOE take-off distance = " + _takeOffDistanceAOE + "\n")
-			.append("\tFAR-25 take-off field length = " + _takeOffDistanceFAR25 + "\n")
-			.append("\tBalanced field length = " + _balancedFieldLength + "\n")
-			.append("\t.....................................\n")
-			.append("\tStall speed take-off (VsTO)= " + _vStallTakeOff + "\n")
-			.append("\tDecision speed (V1) = " + _v1 + "\n")
-			.append("\tRotation speed (V_Rot) = " + _vRotation + "\n")
-			.append("\tLift-off speed (V_LO) = " + _vLiftOff + "\n")
-			.append("\tTake-off safety speed (V2) = " + _v2 + "\n")
+			.append("\t-------------------------------------\n")
+			.append("\t\tGround roll distance = " + _groundRollDistanceTakeOff + "\n")
+			.append("\t\tRotation distance = " + _rotationDistanceTakeOff + "\n")
+			.append("\t\tAirborne distance = " + _airborneDistanceTakeOff + "\n")
+			.append("\t\tAOE take-off distance = " + _takeOffDistanceAOE + "\n")
+			.append("\t\tFAR-25 take-off field length = " + _takeOffDistanceFAR25 + "\n")
+			.append("\t\tBalanced field length = " + _balancedFieldLength + "\n")
+			.append("\t\t.....................................\n")
+			.append("\t\tStall speed take-off (VsTO)= " + _vStallTakeOff + "\n")
+			.append("\t\tDecision speed (V1) = " + _v1 + "\n")
+			.append("\t\tRotation speed (V_Rot) = " + _vRotation + "\n")
+			.append("\t\tLift-off speed (V_LO) = " + _vLiftOff + "\n")
+			.append("\t\tTake-off safety speed (V2) = " + _v2 + "\n")
 			.append("\t-------------------------------------\n")
 			;
 			
@@ -1454,22 +1476,26 @@ public class ACPerformanceCalculator {
 		if(_taskList.contains(PerformanceEnum.LANDING)) {
 			
 			sb.append("\tLANDING\n")
-			.append("\t.....................................\n")
-			.append("\tGround roll distance = " + _groundRollDistanceLanding + "\n")
-			.append("\tFlare distance = " + _flareDistanceLanding + "\n")
-			.append("\tAirborne distance = " + _airborneDistanceLanding + "\n")
-			.append("\tLanding distance = " + _landingDistance + "\n")
-			.append("\tFAR-25 landing field length = " + _landingDistanceFAR25 + "\n")
-			.append("\t.....................................\n")
-			.append("\tStall speed landing (VsLND)= " + _vStallLanding + "\n")
-			.append("\tTouchdown speed (V_TD) = " + _vTouchDown + "\n")
-			.append("\tFlare speed (V_Flare) = " + _vFlare + "\n")
-			.append("\tApproach speed (V_Approach) = " + _vApproach + "\n")
+			.append("\t-------------------------------------\n")
+			.append("\t\tGround roll distance = " + _groundRollDistanceLanding + "\n")
+			.append("\t\tFlare distance = " + _flareDistanceLanding + "\n")
+			.append("\t\tAirborne distance = " + _airborneDistanceLanding + "\n")
+			.append("\t\tLanding distance = " + _landingDistance + "\n")
+			.append("\t\tFAR-25 landing field length = " + _landingDistanceFAR25 + "\n")
+			.append("\t\t.....................................\n")
+			.append("\t\tStall speed landing (VsLND)= " + _vStallLanding + "\n")
+			.append("\t\tTouchdown speed (V_TD) = " + _vTouchDown + "\n")
+			.append("\t\tFlare speed (V_Flare) = " + _vFlare + "\n")
+			.append("\t\tApproach speed (V_Approach) = " + _vApproach + "\n")
 			.append("\t-------------------------------------\n")
 			;
 			
 		}
-
+		if(_taskList.contains(PerformanceEnum.V_n_DIAGRAM)) {
+			sb.append("\tV-n DIAGRAM\n")
+			.append(_theEnvelopeCalculator.toString());
+		}
+		
 		// TODO : COMPLETE ME !
 		
 		return sb.toString();
@@ -1500,7 +1526,7 @@ public class ACPerformanceCalculator {
 			
 			double deltaCD0HighLiftAndLandingGears = _deltaCD0TakeOff + _deltaCD0LandingGear;
 			
-			TakeOffCalc theTakeOffCalculator = new TakeOffCalc(
+			_theTakeOffCalculator = new TakeOffCalc(
 					_theAircraft,
 					_theOperatingConditions,
 					_maximumTakeOffMass,
@@ -1530,24 +1556,24 @@ public class ACPerformanceCalculator {
 			
 			//------------------------------------------------------------
 			// SIMULATION
-			theTakeOffCalculator.calculateTakeOffDistanceODE(null, false);
+			_theTakeOffCalculator.calculateTakeOffDistanceODE(null, false);
 
 			// Distances:
-			_groundRollDistanceTakeOff = theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(0);
-			_rotationDistanceTakeOff = theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(1).minus(_groundRollDistanceTakeOff);
-			_airborneDistanceTakeOff = theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(2).minus(_rotationDistanceTakeOff).minus(_groundRollDistanceTakeOff);
+			_groundRollDistanceTakeOff = _theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(0);
+			_rotationDistanceTakeOff = _theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(1).minus(_groundRollDistanceTakeOff);
+			_airborneDistanceTakeOff = _theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(2).minus(_rotationDistanceTakeOff).minus(_groundRollDistanceTakeOff);
 			_takeOffDistanceAOE = _groundRollDistanceTakeOff.plus(_rotationDistanceTakeOff).plus(_airborneDistanceTakeOff);
 			_takeOffDistanceFAR25 = _takeOffDistanceAOE.times(1.15);
 			
 			// Velocities:
-			_vStallTakeOff = theTakeOffCalculator.getvSTakeOff();
-			_vRotation = theTakeOffCalculator.getvRot();
-			_vLiftOff = theTakeOffCalculator.getvLO();
-			_v2 = theTakeOffCalculator.getTakeOffResults().getSpeed().get(2);
+			_vStallTakeOff = _theTakeOffCalculator.getvSTakeOff();
+			_vRotation = _theTakeOffCalculator.getvRot();
+			_vLiftOff = _theTakeOffCalculator.getvLO();
+			_v2 = _theTakeOffCalculator.getTakeOffResults().getSpeed().get(2);
 			
 			if(_plotList.contains(PerformancePlotEnum.TAKE_OFF_SIMULATIONS))
 				try {
-					theTakeOffCalculator.createTakeOffCharts(takeOffFolderPath);
+					_theTakeOffCalculator.createTakeOffCharts(takeOffFolderPath);
 				} catch (InstantiationException e) {
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {
@@ -1556,13 +1582,13 @@ public class ACPerformanceCalculator {
 			
 			//------------------------------------------------------------
 			// BALANCED FIELD LENGTH
-			theTakeOffCalculator.calculateBalancedFieldLength();
+			_theTakeOffCalculator.calculateBalancedFieldLength();
 			
-			_v1 = theTakeOffCalculator.getV1();
-			_balancedFieldLength = theTakeOffCalculator.getBalancedFieldLength();
+			_v1 = _theTakeOffCalculator.getV1();
+			_balancedFieldLength = _theTakeOffCalculator.getBalancedFieldLength();
 			
 			if(_plotList.contains(PerformancePlotEnum.BALANCED_FIELD_LENGTH))
-				theTakeOffCalculator.createBalancedFieldLengthChart(takeOffFolderPath);
+				_theTakeOffCalculator.createBalancedFieldLengthChart(takeOffFolderPath);
 		}
 		
 	}
@@ -1594,7 +1620,7 @@ public class ACPerformanceCalculator {
 			
 			double deltaCD0HighLiftLandingGearsAndSpoilers = _deltaCD0Landing + _deltaCD0LandingGear + _deltaCD0Spoliers;
 			
-			LandingCalc theLandingCalculator = new LandingCalc(
+			_theLandingCalculator = new LandingCalc(
 					_theAircraft, 
 					_theOperatingConditions,
 					_maximumLandingMass,
@@ -1620,29 +1646,24 @@ public class ACPerformanceCalculator {
 			
 			//------------------------------------------------------------
 			// SIMULATION
-			theLandingCalculator.calculateLandingDistance(0.0);
+			_theLandingCalculator.calculateLandingDistance(0.0);
 			
 			// Distances:
-			_groundRollDistanceLanding = theLandingCalculator.getsGround();
-			_flareDistanceLanding = theLandingCalculator.getsFlare();
-			_airborneDistanceLanding = theLandingCalculator.getsApproach();
-			_landingDistance = theLandingCalculator.getsTotal();
-			_landingDistanceFAR25 = theLandingCalculator.getsTotal().divide(0.6);
+			_groundRollDistanceLanding = _theLandingCalculator.getsGround();
+			_flareDistanceLanding = _theLandingCalculator.getsFlare();
+			_airborneDistanceLanding = _theLandingCalculator.getsApproach();
+			_landingDistance = _theLandingCalculator.getsTotal();
+			_landingDistanceFAR25 = _theLandingCalculator.getsTotal().divide(0.6);
 			
 			// Velocities:
-			_vStallLanding = theLandingCalculator.getvSLanding();
-			_vTouchDown = theLandingCalculator.getvTD();
-			_vFlare = theLandingCalculator.getvFlare();
-			_vApproach = theLandingCalculator.getvA();
+			_vStallLanding = _theLandingCalculator.getvSLanding();
+			_vTouchDown = _theLandingCalculator.getvTD();
+			_vFlare = _theLandingCalculator.getvFlare();
+			_vApproach = _theLandingCalculator.getvA();
 			
 			if(_plotList.contains(PerformancePlotEnum.LANDING_SIMULATIONS)) {
 				try {
-					//////////////////////
-					//					//
-					//		FIXME!! 	//
-					//					//
-					//////////////////////
-					theLandingCalculator.createLandingCharts(landingFolderPath);
+					_theLandingCalculator.createLandingCharts(landingFolderPath);
 				} catch (InstantiationException e) {
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {
@@ -1654,6 +1675,66 @@ public class ACPerformanceCalculator {
 	}
 	//............................................................................
 	// END OF THE LANDING INNER CLASS
+	//............................................................................
+	
+	//............................................................................
+	// FLIGHT MANEUVERING AND GUST ENVELOPE INNER CLASS
+	//............................................................................
+	public class CalcFlightManeuveringAndGustEnvelope {
+		
+		public void fromRegulations(String maneuveringEnvelopeFolderPath) {
+			
+			_theEnvelopeCalculator = new FlightManeuveringEnvelopeCalc(
+					_theAircraft.getRegulations(),
+					_theAircraft.getTypeVehicle(),
+					_cLmaxClean,
+					_cLmaxLanding,
+					_cLmaxInverted,
+					_theAircraft.getTheAnalysisManager().getPositiveLimitLoadFactor(),
+					_theAircraft.getTheAnalysisManager().getNegativeLimitLoadFactor(),
+					_theAircraft.getTheAnalysisManager().getVMaxCruise(),
+					_theAircraft.getTheAnalysisManager().getVDive(),
+					_cLAlphaClean.to(SI.RADIAN),
+					_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord(),
+					_theOperatingConditions.getAltitude(),
+					_maximumTakeOffMass,
+					_maximumLandingMass,
+					_theAircraft.getWing().getSurface()
+					);
+			
+			_theEnvelopeCalculator.calculateManeuveringEnvelope();
+			
+			_stallSpeedClean = _theEnvelopeCalculator.getStallSpeedClean();
+			_stallSpeedFullFlap = _theEnvelopeCalculator.getStallSpeedFullFlap();
+			_stallSpeedInverted = _theEnvelopeCalculator.getStallSpeedInverted();
+			_maneuveringSpeed = _theEnvelopeCalculator.getManeuveringSpeed();
+			_maneuveringFlapSpeed = _theEnvelopeCalculator.getManeuveringFlapSpeed();
+			_maneuveringSpeedInverted = _theEnvelopeCalculator.getManeuveringSpeedInverted();
+			_designFlapSpeed = _theEnvelopeCalculator.getDesignFlapSpeed();
+			_positiveLoadFactorManeuveringSpeed = _theEnvelopeCalculator.getPositiveLoadFactorManeuveringSpeed();
+			_positiveLoadFactorCruisingSpeed = _theEnvelopeCalculator.getPositiveLoadFactorCruisingSpeed();
+			_positiveLoadFactorDiveSpeed = _theEnvelopeCalculator.getPositiveLoadFactorDiveSpeed();
+			_positiveLoadFactorDesignFlapSpeed = _theEnvelopeCalculator.getPositiveLoadFactorDesignFlapSpeed();
+			_negativeLoadFactorManeuveringSpeedInverted = _theEnvelopeCalculator.getNegativeLoadFactorManeuveringSpeedInverted();
+			_negativeLoadFactorCruisingSpeed = _theEnvelopeCalculator.getNegativeLoadFactorCruisingSpeed();
+			_negativeLoadFactorDiveSpeed = _theEnvelopeCalculator.getNegativeLoadFactorDiveSpeed();
+			_positiveLoadFactorManeuveringSpeedWithGust = _theEnvelopeCalculator.getPositiveLoadFactorManeuveringSpeedWithGust();
+			_positiveLoadFactorCruisingSpeedWithGust = _theEnvelopeCalculator.getPositiveLoadFactorCruisingSpeedWithGust();
+			_positiveLoadFactorDiveSpeedWithGust = _theEnvelopeCalculator.getPositiveLoadFactorDiveSpeedWithGust();
+			_positiveLoadFactorDesignFlapSpeedWithGust = _theEnvelopeCalculator.getPositiveLoadFactorDesignFlapSpeedWithGust();
+			_negativeLoadFactorManeuveringSpeedInvertedWithGust = _theEnvelopeCalculator.getNegativeLoadFactorManeuveringSpeedInvertedWithGust();
+			_negativeLoadFactorCruisingSpeedWithGust = _theEnvelopeCalculator.getNegativeLoadFactorCruisingSpeedWithGust();
+			_negativeLoadFactorDiveSpeedWithGust = _theEnvelopeCalculator.getNegativeLoadFactorDiveSpeedWithGust();
+			_negativeLoadFactorDesignFlapSpeedWithGust = _theEnvelopeCalculator.getNegativeLoadFactorDesignFlapSpeedWithGust();
+		
+			if(_plotList.contains(PerformancePlotEnum.FLIGHT_MANEUVERING_AND_GUST_DIAGRAM)) 
+				_theEnvelopeCalculator.plotManeuveringEnvelope(maneuveringEnvelopeFolderPath);;
+			
+		}
+		
+	}
+	//............................................................................
+	// END OF THE FLIGHT MANEUVERING AND GUST ENVELOPE INNER CLASS
 	//............................................................................
 	
 	//------------------------------------------------------------------------------
@@ -1941,12 +2022,6 @@ public class ACPerformanceCalculator {
 	public void setCLmaxInverted(Double _cLmaxInverted) {
 		this._cLmaxInverted = _cLmaxInverted;
 	}
-	public Double getThrottleSetting() {
-		return _throttleSetting;
-	}
-	public void setThrottleSetting(Double _throttleSetting) {
-		this._throttleSetting = _throttleSetting;
-	}
 	public List<PerformanceEnum> getTaskList() {
 		return _taskList;
 	}
@@ -2166,5 +2241,206 @@ public class ACPerformanceCalculator {
 
 	public void setVTouchDown(Amount<Velocity> _vTouchDown) {
 		this._vTouchDown = _vTouchDown;
+	}
+
+	public Amount<Velocity> getStallSpeedFullFlap() {
+		return _stallSpeedFullFlap;
+	}
+
+	public void setStallSpeedFullFlap(Amount<Velocity> _stallSpeedFullFlap) {
+		this._stallSpeedFullFlap = _stallSpeedFullFlap;
+	}
+
+	public Amount<Velocity> getStallSpeedClean() {
+		return _stallSpeedClean;
+	}
+
+	public void setStallSpeedClean(Amount<Velocity> _stallSpeedClean) {
+		this._stallSpeedClean = _stallSpeedClean;
+	}
+
+	public Amount<Velocity> getStallSpeedInverted() {
+		return _stallSpeedInverted;
+	}
+
+	public void setStallSpeedInverted(Amount<Velocity> _stallSpeedInverted) {
+		this._stallSpeedInverted = _stallSpeedInverted;
+	}
+
+	public Amount<Velocity> getManeuveringSpeed() {
+		return _maneuveringSpeed;
+	}
+
+	public void setManeuveringSpeed(Amount<Velocity> _maneuveringSpeed) {
+		this._maneuveringSpeed = _maneuveringSpeed;
+	}
+
+	public Amount<Velocity> getManeuveringFlapSpeed() {
+		return _maneuveringFlapSpeed;
+	}
+
+	public void setManeuveringFlapSpeed(Amount<Velocity> _maneuveringFlapSpeed) {
+		this._maneuveringFlapSpeed = _maneuveringFlapSpeed;
+	}
+
+	public Amount<Velocity> getManeuveringSpeedInverted() {
+		return _maneuveringSpeedInverted;
+	}
+
+	public void setManeuveringSpeedInverted(Amount<Velocity> _maneuveringSpeedInverted) {
+		this._maneuveringSpeedInverted = _maneuveringSpeedInverted;
+	}
+
+	public Amount<Velocity> getDesignFlapSpeed() {
+		return _designFlapSpeed;
+	}
+
+	public void setDesignFlapSpeed(Amount<Velocity> _designFlapSpeed) {
+		this._designFlapSpeed = _designFlapSpeed;
+	}
+
+	public Double getPositiveLoadFactorManeuveringSpeed() {
+		return _positiveLoadFactorManeuveringSpeed;
+	}
+
+	public void setPositiveLoadFactorManeuveringSpeed(Double _positiveLoadFactorManeuveringSpeed) {
+		this._positiveLoadFactorManeuveringSpeed = _positiveLoadFactorManeuveringSpeed;
+	}
+
+	public Double getPositiveLoadFactorCruisingSpeed() {
+		return _positiveLoadFactorCruisingSpeed;
+	}
+
+	public void setPositiveLoadFactorCruisingSpeed(Double _positiveLoadFactorCruisingSpeed) {
+		this._positiveLoadFactorCruisingSpeed = _positiveLoadFactorCruisingSpeed;
+	}
+
+	public Double getPositiveLoadFactorDiveSpeed() {
+		return _positiveLoadFactorDiveSpeed;
+	}
+
+	public void setPositiveLoadFactorDiveSpeed(Double _positiveLoadFactorDiveSpeed) {
+		this._positiveLoadFactorDiveSpeed = _positiveLoadFactorDiveSpeed;
+	}
+
+	public Double getPositiveLoadFactorDesignFlapSpeed() {
+		return _positiveLoadFactorDesignFlapSpeed;
+	}
+
+	public void setPositiveLoadFactorDesignFlapSpeed(Double _positiveLoadFactorDesignFlapSpeed) {
+		this._positiveLoadFactorDesignFlapSpeed = _positiveLoadFactorDesignFlapSpeed;
+	}
+
+	public Double getNegativeLoadFactorManeuveringSpeedInverted() {
+		return _negativeLoadFactorManeuveringSpeedInverted;
+	}
+
+	public void setNegativeLoadFactorManeuveringSpeedInverted(Double _negativeLoadFactorManeuveringSpeedInverted) {
+		this._negativeLoadFactorManeuveringSpeedInverted = _negativeLoadFactorManeuveringSpeedInverted;
+	}
+
+	public Double getNegativeLoadFactorCruisingSpeed() {
+		return _negativeLoadFactorCruisingSpeed;
+	}
+
+	public void setNegativeLoadFactorCruisingSpeed(Double _negativeLoadFactorCruisingSpeed) {
+		this._negativeLoadFactorCruisingSpeed = _negativeLoadFactorCruisingSpeed;
+	}
+
+	public Double getNegativeLoadFactorDiveSpeed() {
+		return _negativeLoadFactorDiveSpeed;
+	}
+
+	public void setNegativeLoadFactorDiveSpeed(Double _negativeLoadFactorDiveSpeed) {
+		this._negativeLoadFactorDiveSpeed = _negativeLoadFactorDiveSpeed;
+	}
+
+	public Double getPositiveLoadFactorManeuveringSpeedWithGust() {
+		return _positiveLoadFactorManeuveringSpeedWithGust;
+	}
+
+	public void setPositiveLoadFactorManeuveringSpeedWithGust(Double _positiveLoadFactorManeuveringSpeedWithGust) {
+		this._positiveLoadFactorManeuveringSpeedWithGust = _positiveLoadFactorManeuveringSpeedWithGust;
+	}
+
+	public Double getPositiveLoadFactorCruisingSpeedWithGust() {
+		return _positiveLoadFactorCruisingSpeedWithGust;
+	}
+
+	public void setPositiveLoadFactorCruisingSpeedWithGust(Double _positiveLoadFactorCruisingSpeedWithGust) {
+		this._positiveLoadFactorCruisingSpeedWithGust = _positiveLoadFactorCruisingSpeedWithGust;
+	}
+
+	public Double getPositiveLoadFactorDiveSpeedWithGust() {
+		return _positiveLoadFactorDiveSpeedWithGust;
+	}
+
+	public void setPositiveLoadFactorDiveSpeedWithGust(Double _positiveLoadFactorDiveSpeedWithGust) {
+		this._positiveLoadFactorDiveSpeedWithGust = _positiveLoadFactorDiveSpeedWithGust;
+	}
+
+	public Double getPositiveLoadFactorDesignFlapSpeedWithGust() {
+		return _positiveLoadFactorDesignFlapSpeedWithGust;
+	}
+
+	public void setPositiveLoadFactorDesignFlapSpeedWithGust(Double _positiveLoadFactorDesignFlapSpeedWithGust) {
+		this._positiveLoadFactorDesignFlapSpeedWithGust = _positiveLoadFactorDesignFlapSpeedWithGust;
+	}
+
+	public Double getNegativeLoadFactorManeuveringSpeedInvertedWithGust() {
+		return _negativeLoadFactorManeuveringSpeedInvertedWithGust;
+	}
+
+	public void setNegativeLoadFactorManeuveringSpeedInvertedWithGust(
+			Double _negativeLoadFactorManeuveringSpeedInvertedWithGust) {
+		this._negativeLoadFactorManeuveringSpeedInvertedWithGust = _negativeLoadFactorManeuveringSpeedInvertedWithGust;
+	}
+
+	public Double getNegativeLoadFactorCruisingSpeedWithGust() {
+		return _negativeLoadFactorCruisingSpeedWithGust;
+	}
+
+	public void setNegativeLoadFactorCruisingSpeedWithGust(Double _negativeLoadFactorCruisingSpeedWithGust) {
+		this._negativeLoadFactorCruisingSpeedWithGust = _negativeLoadFactorCruisingSpeedWithGust;
+	}
+
+	public Double getNegativeLoadFactorDiveSpeedWithGust() {
+		return _negativeLoadFactorDiveSpeedWithGust;
+	}
+
+	public void setNegativeLoadFactorDiveSpeedWithGust(Double _negativeLoadFactorDiveSpeedWithGust) {
+		this._negativeLoadFactorDiveSpeedWithGust = _negativeLoadFactorDiveSpeedWithGust;
+	}
+
+	public Double getNegativeLoadFactorDesignFlapSpeedWithGust() {
+		return _negativeLoadFactorDesignFlapSpeedWithGust;
+	}
+
+	public void setNegativeLoadFactorDesignFlapSpeedWithGust(Double _negativeLoadFactorDesignFlapSpeedWithGust) {
+		this._negativeLoadFactorDesignFlapSpeedWithGust = _negativeLoadFactorDesignFlapSpeedWithGust;
+	}
+
+	public TakeOffCalc getTheTakeOffCalculator() {
+		return _theTakeOffCalculator;
+	}
+
+	public void setTheTakeOffCalculator(TakeOffCalc _theTakeOffCalculator) {
+		this._theTakeOffCalculator = _theTakeOffCalculator;
+	}
+
+	public LandingCalc getTheLandingCalculator() {
+		return _theLandingCalculator;
+	}
+
+	public void setTheLandingCalculator(LandingCalc _theLandingCalculator) {
+		this._theLandingCalculator = _theLandingCalculator;
+	}
+
+	public FlightManeuveringEnvelopeCalc getTheEnvelopeCalculator() {
+		return _theEnvelopeCalculator;
+	}
+
+	public void setTheEnvelopeCalculator(FlightManeuveringEnvelopeCalc _theEnvelopeCalculator) {
+		this._theEnvelopeCalculator = _theEnvelopeCalculator;
 	}
 }
