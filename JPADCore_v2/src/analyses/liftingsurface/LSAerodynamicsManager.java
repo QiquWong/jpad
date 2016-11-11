@@ -359,8 +359,8 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 
 	public void initializeDataFromOperatingConditions(OperatingConditions ops) {
 		initializeOperatingConditions(
-				ops.getAltitude().doubleValue(SI.METER), 
-				ops.getMachCurrent(),
+				ops.getAltitudeCruise().doubleValue(SI.METER), 
+				ops.getMachCruise(),
 				ops.getAlphaCurrent().doubleValue(SI.RADIAN));
 	}
 
@@ -1097,7 +1097,7 @@ public class LSAerodynamicsManager extends AerodynamicsManager{
 			getTheLiftingSurface().setXacActualMRF(Amount.valueOf(
 					LSGeometryCalc.calcXacFromNapolitanoDatcom(getTheLiftingSurface().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER),
 							taperRatioEq ,sweepHalfChordEq, ar,  
-							theOperatingConditions.getMachCurrent(),
+							theOperatingConditions.getMachCruise(),
 							//theLiftingSurface.getAerodynamics().get_AerodynamicDatabaseReader() ), SI.METER);
 							theAircraft.getTheAnalysisManager().getTheAerodynamics().get_aerodynamicDatabaseReader() ),SI.METER));
 			double xacNapolitano=getTheLiftingSurface().getXacActualMRF().getEstimatedValue();

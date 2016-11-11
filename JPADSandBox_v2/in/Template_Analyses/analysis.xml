@@ -20,7 +20,7 @@
 		<!---->
     </global_data>
     <!-- Required analysis tasks - comment the tag of the analysis if not needed -->
-    <analyses id="IRON analysis">
+    <analyses id="ATR-72 analysis">
 		<weights 
             file="analysis_weights.xml" 
             method_fuselage=""

@@ -443,8 +443,8 @@ public class JPADDataWriter {
 	}
 
 	private void writeOperatingConditionsInput(OperatingConditions conditions, Element operatingNode) {
-		writeInputNode("Altitude", conditions.getAltitude(), operatingNode, true);
-		writeInputNode("Mach_number", conditions.getMachCurrent(), operatingNode, true);		
+		writeInputNode("Altitude", conditions.getAltitudeCruise(), operatingNode, true);
+		writeInputNode("Mach_number", conditions.getMachCruise(), operatingNode, true);		
 	}
 
 	private void writeOperatingConditionsOutput(OperatingConditions conditions, Element analysisNode){

@@ -172,7 +172,7 @@ public class LSAerodynamicsCalculator {
 	//------------------------------------------------------------------------------
 	private void initializeData() {
 		
-		this._currentMachNumber = this._theOperatingConditions.getMachCurrent();
+		this._currentMachNumber = this._theOperatingConditions.getMachCruise();
 		this._numberOfAlphas = this._theOperatingConditions.getAlpha().length;
 		this._numberOfAlphasPlot = 50;
 		this._numberOfPointSemiSpanWise = 50;
@@ -198,7 +198,7 @@ public class LSAerodynamicsCalculator {
 		//......................................................................................................................
 		double compressibilityFactor = 1.
 				/ Math.sqrt(
-						1 - Math.pow(_theOperatingConditions.getMachCurrent(), 2)
+						1 - Math.pow(_theOperatingConditions.getMachCruise(), 2)
 						* (Math.pow(Math.cos(
 								_theLiftingSurface.getSweepQuarterChordEquivalent(false)
 									.doubleValue(SI.RADIAN)),2)
@@ -319,8 +319,8 @@ public class LSAerodynamicsCalculator {
 			CalcCDAtAlpha calcCDAtAlphaCalculator = new CalcCDAtAlpha();
 			_currentDragCoefficient = calcCDAtAlphaCalculator.classic(
 					_theOperatingConditions.getAlphaCurrent(),
-					_theOperatingConditions.getMachCurrent(),
-					_theOperatingConditions.getAltitude()
+					_theOperatingConditions.getMachCruise(),
+					_theOperatingConditions.getAltitudeCruise()
 					);
 		}
 		
@@ -533,7 +533,7 @@ public class LSAerodynamicsCalculator {
 									_theLiftingSurface.getTaperRatioEquivalent(false),
 									_theLiftingSurface.getSweepLEEquivalent(false).doubleValue(NonSI.DEGREE_ANGLE),
 									_theLiftingSurface.getAspectRatio(),  
-									_theOperatingConditions.getMachCurrent(),
+									_theOperatingConditions.getMachCruise(),
 									_theLiftingSurface.getAerodynamicDatabaseReader()
 									),
 							SI.METER)
@@ -614,8 +614,8 @@ public class LSAerodynamicsCalculator {
 					MyArrayUtils.convertListOfAmountTodoubleArray(_alphaZeroLiftDistribution),
 					_vortexSemiSpanToSemiSpanRatio,
 					alpha.doubleValue(SI.RADIAN),
-					_theOperatingConditions.getMachCurrent(),
-					_theOperatingConditions.getAltitude().doubleValue(SI.METER)
+					_theOperatingConditions.getMachCruise(),
+					_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
 					);
 
 			theNasaBlackwellCalculator.calculate(alpha.to(SI.RADIAN));
@@ -1006,7 +1006,7 @@ public class LSAerodynamicsCalculator {
 					Amount.valueOf(
 							LiftCalc.calculateCLalphaPolhamus(
 									_theLiftingSurface.getAspectRatio(),
-									_theOperatingConditions.getMachCurrent(), 
+									_theOperatingConditions.getMachCruise(), 
 									_theLiftingSurface.getSweepLEEquivalent(false),
 									_theLiftingSurface.getTaperRatioEquivalent(false)
 									),
@@ -1023,7 +1023,7 @@ public class LSAerodynamicsCalculator {
 			_cLAlpha.put(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC,
 					Amount.valueOf(
 							LiftCalc.calcCLalphaAndersonSweptCompressibleSubsonic(
-									_theOperatingConditions.getMachCurrent(),
+									_theOperatingConditions.getMachCruise(),
 									_theLiftingSurface.getAspectRatio(),
 									_theLiftingSurface.getSemiSpan().doubleValue(SI.METER),
 									_theLiftingSurface.getSweepHalfChordEquivalent(false).doubleValue(NonSI.DEGREE_ANGLE), 
@@ -1134,8 +1134,8 @@ public class LSAerodynamicsCalculator {
 					alphaZeroLiftDistributionRadians,
 					_vortexSemiSpanToSemiSpanRatio,
 					0.0,
-					_theOperatingConditions.getMachCurrent(),
-					_theOperatingConditions.getAltitude().doubleValue(SI.METER)
+					_theOperatingConditions.getMachCruise(),
+					_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
 					);
 
 			if (_theLiftingSurface.getType() != ComponentEnum.VERTICAL_TAIL) {
@@ -1677,8 +1677,8 @@ public class LSAerodynamicsCalculator {
 					MyArrayUtils.convertListOfAmountTodoubleArray(_alphaZeroLiftDistribution),
 					_vortexSemiSpanToSemiSpanRatio,
 					0.0,
-					_theOperatingConditions.getMachCurrent(),
-					_theOperatingConditions.getAltitude().doubleValue(SI.METER)
+					_theOperatingConditions.getMachCruise(),
+					_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
 					);
 			
 			NasaBlackwell theNasaBlackwellCalculatorAlphaZeroLift = new NasaBlackwell(
@@ -1692,8 +1692,8 @@ public class LSAerodynamicsCalculator {
 					MyArrayUtils.convertListOfAmountTodoubleArray(_alphaZeroLiftDistribution),
 					_vortexSemiSpanToSemiSpanRatio,
 					0.0,
-					_theOperatingConditions.getMachCurrent(),
-					_theOperatingConditions.getAltitude().doubleValue(SI.METER)
+					_theOperatingConditions.getMachCruise(),
+					_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
 					);
 			
 			if(_alphaZeroLift.get(MethodEnum.INTEGRAL_MEAN_TWIST) == null) {
@@ -1910,7 +1910,7 @@ public class LSAerodynamicsCalculator {
 							_meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
 							_theLiftingSurface.getSweepQuarterChordEquivalent(false).doubleValue(SI.RADIAN),
 							_theLiftingSurface.getNumberOfEngineOverTheWing(),
-							_theOperatingConditions.getMachCurrent()
+							_theOperatingConditions.getMachCruise()
 							)
 					);
 		}

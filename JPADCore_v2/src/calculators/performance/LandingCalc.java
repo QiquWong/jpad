@@ -123,6 +123,7 @@ public class LandingCalc {
 			double cL0Landing,
 			double cLalphaFlap,
 			double deltaCD0FlapLandingGearsAndSpoilers,
+			double reverseThrottle,
 			Amount<Duration> nFreeRoll
 			) {
 
@@ -147,6 +148,7 @@ public class LandingCalc {
 		this.deltaCD0FlapLandinGearsSpoilers = deltaCD0FlapLandingGearsAndSpoilers;
 		this.cL0Landing = cL0Landing; 
 		this.cLalphaFlap = cLalphaFlap;
+		this.phiRev = reverseThrottle;
 		this.nFreeRoll = nFreeRoll;
 		
 		this.cLground = cL0Landing + (cLalphaFlap*iw.getEstimatedValue());
@@ -154,7 +156,7 @@ public class LandingCalc {
 		// Reference velocities definition
 		vSLanding = Amount.valueOf(
 				SpeedCalc.calculateSpeedStall(
-						theConditions.getAltitude().getEstimatedValue(),
+						theConditions.getAltitudeLanding().getEstimatedValue(),
 						maxLandingMass.times(AtmosphereCalc.g0).getEstimatedValue(),
 						aircraft.getWing().getSurface().getEstimatedValue(),
 						cLmaxLanding
@@ -287,10 +289,8 @@ public class LandingCalc {
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public void calculateGroundRollLandingODE(double phiRev) {
+	public void calculateGroundRollLandingODE() {
 
-		this.phiRev = phiRev;
-		
 		System.out.println("---------------------------------------------------");
 		System.out.println("CalcLanding :: Ground Roll ODE integration\n\n");
 
@@ -602,9 +602,9 @@ public class LandingCalc {
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public void calculateLandingDistance(double phiRev) {
+	public void calculateLandingDistance() {
 		calculateAirborneDistance();
-		calculateGroundRollLandingODE(phiRev);
+		calculateGroundRollLandingODE();
 	}
 	
 	//-------------------------------------------------------------------------------------
@@ -668,9 +668,9 @@ public class LandingCalc {
 					LandingCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
 					LandingCalc.this.getAircraft().getPowerPlant().getEngineType(),
 					EngineOperatingConditionEnum.TAKE_OFF,
-					LandingCalc.this.getTheConditions().getAltitude().getEstimatedValue(),
+					LandingCalc.this.getTheConditions().getAltitudeLanding().getEstimatedValue(),
 					SpeedCalc.calculateMach(
-							LandingCalc.this.getTheConditions().getAltitude().getEstimatedValue(),
+							LandingCalc.this.getTheConditions().getAltitudeLanding().getEstimatedValue(),
 							speed + 
 							LandingCalc.this.getvWind().getEstimatedValue()
 							)
@@ -695,7 +695,7 @@ public class LandingCalc {
 			return 	0.5
 					*aircraft.getWing().getSurface().getEstimatedValue()
 					*AtmosphereCalc.getDensity(
-							theConditions.getAltitude().getEstimatedValue())
+							theConditions.getAltitudeLanding().getEstimatedValue())
 					*(Math.pow((speed + vWind), 2))
 					*cD;
 		}
@@ -705,7 +705,7 @@ public class LandingCalc {
 			return 	0.5
 					*aircraft.getWing().getSurface().getEstimatedValue()
 					*AtmosphereCalc.getDensity(
-							theConditions.getAltitude().getEstimatedValue())
+							theConditions.getAltitudeLanding().getEstimatedValue())
 					*(Math.pow((speed + vWind), 2))
 					*LandingCalc.this.getcLground();
 		}

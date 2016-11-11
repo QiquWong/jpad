@@ -25,6 +25,7 @@ import aircraft.components.Aircraft;
 import calculators.aerodynamics.DragCalc;
 import calculators.performance.FlightManeuveringEnvelopeCalc;
 import calculators.performance.LandingCalc;
+import calculators.performance.PayloadRangeCalc;
 import calculators.performance.TakeOffCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.FoldersEnum;
@@ -1015,10 +1016,10 @@ public class ACPerformanceCalculator {
 							polarCLCruise[i],
 							theAircraft.getWing().getAspectRatio(),
 							oswald, 
-							theOperatingConditions.getMachCurrent(),
+							theOperatingConditions.getMachCruise(),
 							DragCalc.calculateCDWaveLockKornCriticalMachKroo(
 									polarCLCruise[i],
-									theOperatingConditions.getMachCurrent(),
+									theOperatingConditions.getMachCruise(),
 									theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
 									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(),
 									theAircraft.getWing().getAirfoilList().get(0).getType()
@@ -1029,10 +1030,10 @@ public class ACPerformanceCalculator {
 							polarCLTakeOff[i],
 							theAircraft.getWing().getAspectRatio(),
 							oswaldTakeOff, 
-							theOperatingConditions.getMachCurrent(),
+							theOperatingConditions.getMachCruise(),
 							DragCalc.calculateCDWaveLockKornCriticalMachKroo(
 									polarCLTakeOff[i],
-									theOperatingConditions.getMachCurrent(),
+									theOperatingConditions.getMachCruise(),
 									theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
 									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(),
 									theAircraft.getWing().getAirfoilList().get(0).getType()
@@ -1043,10 +1044,10 @@ public class ACPerformanceCalculator {
 							polarCLLanding[i],
 							theAircraft.getWing().getAspectRatio(),
 							oswaldLanding, 
-							theOperatingConditions.getMachCurrent(),
+							theOperatingConditions.getMachCruise(),
 							DragCalc.calculateCDWaveLockKornCriticalMachKroo(
 									polarCLLanding[i],
-									theOperatingConditions.getMachCurrent(),
+									theOperatingConditions.getMachCruise(),
 									theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
 									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(),
 									theAircraft.getWing().getAirfoilList().get(0).getType()
@@ -1536,7 +1537,7 @@ public class ACPerformanceCalculator {
 					_kRotation,
 					_kLiftOff,
 					_kDragDueToEnigneFailure,
-					1.0, // throttle setting
+					_theOperatingConditions.getThrottleTakeOff(), // throttle setting
 					_kAlphaDot,
 					_alphaReductionRate,
 					_mu,
@@ -1547,7 +1548,7 @@ public class ACPerformanceCalculator {
 					_alphaGround,
 					_theAircraft.getWing().getRiggingAngle(),
 					_cD0,
-					_oswald,
+					_oswaldTakeOff,
 					_cLmaxTakeOff,
 					_cLZeroTakeOff,
 					_cLAlphaTakeOff.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
@@ -1641,12 +1642,13 @@ public class ACPerformanceCalculator {
 					_cLZeroLanding,
 					_cLAlphaTakeOff.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
 					deltaCD0HighLiftLandingGearsAndSpoilers,
+					_theOperatingConditions.getReverseThrottleLanding(),
 					_freeRollDuration
 					);
 			
 			//------------------------------------------------------------
 			// SIMULATION
-			_theLandingCalculator.calculateLandingDistance(0.0);
+			_theLandingCalculator.calculateLandingDistance();
 			
 			// Distances:
 			_groundRollDistanceLanding = _theLandingCalculator.getsGround();
@@ -1678,6 +1680,22 @@ public class ACPerformanceCalculator {
 	//............................................................................
 	
 	//............................................................................
+	// PAYLOAD-RANGE INNER CLASS
+	//............................................................................
+	public class CalcPayloadRange {
+		
+		public void fromRangeBreguet() {
+			
+					
+			
+		}
+		
+	}
+	//............................................................................
+	// END OF THE PAYLOAD-RANGE INNER CLASS
+	//............................................................................
+	
+	//............................................................................
 	// FLIGHT MANEUVERING AND GUST ENVELOPE INNER CLASS
 	//............................................................................
 	public class CalcFlightManeuveringAndGustEnvelope {
@@ -1696,7 +1714,7 @@ public class ACPerformanceCalculator {
 					_theAircraft.getTheAnalysisManager().getVDive(),
 					_cLAlphaClean.to(SI.RADIAN),
 					_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord(),
-					_theOperatingConditions.getAltitude(),
+					_theOperatingConditions.getAltitudeCruise(),
 					_maximumTakeOffMass,
 					_maximumLandingMass,
 					_theAircraft.getWing().getSurface()
@@ -1735,7 +1753,7 @@ public class ACPerformanceCalculator {
 	}
 	//............................................................................
 	// END OF THE FLIGHT MANEUVERING AND GUST ENVELOPE INNER CLASS
-	//............................................................................
+	//............................................................................	
 	
 	//------------------------------------------------------------------------------
 	// GETTERS & SETTERS

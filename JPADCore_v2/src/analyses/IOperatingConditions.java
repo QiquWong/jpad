@@ -18,7 +18,7 @@ public interface IOperatingConditions {
 
 	public void calculate();
 	
-	public Double getMachCurrent();
+	public Double getMachCruise();
 	public void setMachCurrent(Double _mach);
 
 	public Double getMachTransonicThreshold();
@@ -27,7 +27,7 @@ public interface IOperatingConditions {
 	public Double[] getAlpha();
 	public void setAlpha(Double _alpha[]);
 	
-	public Amount<Length> getAltitude();
+	public Amount<Length> getAltitudeCruise();
 	public void setAltitude(Amount<Length> _altitude);
 
 	public Amount<Angle> getAlphaCurrent();

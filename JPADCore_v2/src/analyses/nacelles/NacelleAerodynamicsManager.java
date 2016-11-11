@@ -47,8 +47,8 @@ public class NacelleAerodynamicsManager extends AerodynamicsManager{
 	
 	@Override
 	public void initializeDependentData() {
-		_mach = _theOperatingConditions.getMachCurrent();
-		_altitude = _theOperatingConditions.getAltitude().doubleValue(SI.METER);
+		_mach = _theOperatingConditions.getMachCruise();
+		_altitude = _theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER);
 		_wingSurface = _theAircraft.getWing().getSurface();
 	}
 

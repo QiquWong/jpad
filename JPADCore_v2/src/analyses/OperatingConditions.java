@@ -679,7 +679,7 @@ public class OperatingConditions implements IOperatingConditions {
 
 	// GETTERS AND SETTERS ---------------------------------------------------------
 
-	public Double getMachCurrent() {
+	public Double getMachCruise() {
 		return _machCruise;
 	}
 
@@ -703,7 +703,7 @@ public class OperatingConditions implements IOperatingConditions {
 		this._alpha = _alpha;
 	}
 
-	public Amount<Length> getAltitude() {
+	public Amount<Length> getAltitudeCruise() {
 		return _altitudeCruise;
 	}
 

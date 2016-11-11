@@ -49,7 +49,7 @@ public class AlphaEffective {
 
 		vortexSemiSpanToSemiSpanRatio = theLSManager.get_vortexSemiSpanToSemiSpanRatio();
 		vortexSemiSpan = vortexSemiSpanToSemiSpanRatio * theWing.getSemiSpan().getEstimatedValue();
-		mach = theOperatingConditions.getMachCurrent();
+		mach = theOperatingConditions.getMachCruise();
 		semispan = theWing.getSemiSpan().getEstimatedValue();
 
 		dihedral = MyArrayUtils
@@ -79,7 +79,7 @@ public class AlphaEffective {
 						theWing.getLiftingSurfaceCreator().getXLEBreakPoints()
 						);
 		surface = theWing.getSurface().getEstimatedValue();
-		altitude = theOperatingConditions.getAltitude().getEstimatedValue();
+		altitude = theOperatingConditions.getAltitudeCruise().getEstimatedValue();
 
 		alpha0l = theLSManager.get_alpha0lDistribution().toArray();
 	}

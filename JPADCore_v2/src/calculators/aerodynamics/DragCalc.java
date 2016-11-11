@@ -1,7 +1,9 @@
 package calculators.aerodynamics;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
@@ -18,6 +20,7 @@ import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
+import standaloneutils.customdata.DragPolarPoint;
 
 public class DragCalc {
 
@@ -521,4 +524,46 @@ public class DragCalc {
 		return (kn*(sWetNose/sWet) + kc*(sWetCabin/sWet) + kt*(sWetTail/sWet))*cDFlatPlate*sWet/sFront; 
 	}
 
+	public static Map<String, Double> calculateMaximumEfficiency(double ar, double e, double cD0, double rho, double W, double S) {
+		
+		Map<String, Double> results = new HashMap<String, Double>();
+		
+		results.put("E_max", Math.sqrt(Math.PI*ar*e/(4*cD0)));
+		results.put("CL_E", Math.sqrt(Math.PI*ar*e*cD0));
+		results.put("CD_E", 2*cD0);
+		results.put("Drag_E", W/results.get("E_max"));
+		results.put("Speed_E", Math.sqrt(2*W/(rho*S*results.get("CL_E"))));
+		
+		return results;
+	}
+
+	public static Map<String, Double> calculateMinimumPower(double ar, double e, double cD0, double rho, double W, double S) {
+		
+		Map<String, Double> results = new HashMap<String, Double>();
+		
+		results.put("E_P", Math.sqrt(0.75)*Math.sqrt(Math.PI*ar*e/(4*cD0)));
+		results.put("CL_P", Math.sqrt(3)*Math.sqrt(Math.PI*ar*e*cD0));
+		results.put("CD_P", 4*cD0);
+		results.put("Drag_P", (W/(Math.sqrt(Math.PI*ar*e/(4*cD0))))*2./Math.sqrt(3));
+		results.put("Speed_P", (Math.sqrt(2*W/Math.sqrt(Math.PI*ar*e*cD0)))/Math.pow(3, 0.25));
+		results.put("Power_P", W*results.get("Speed_P")/results.get("E_P"));
+		results.put("Power_E", results.get("Power_P")*Math.pow(27, 0.25)/2.0);
+		
+		return results;
+	}
+
+	public static Map<String, Double> calculateMaximumRange(double ar, double e, double cD0, double rho, double W, double S) {
+		
+		Map<String, Double> results = new HashMap<String, Double>();
+		
+		results.put("E_A", Math.sqrt(0.75)*Math.sqrt(Math.PI*ar*e/(4*cD0)));
+		results.put("CL_A", (Math.sqrt(Math.PI*ar*e*cD0))/Math.sqrt(3));
+		results.put("CD_A", (4./3.)*cD0);
+		results.put("Drag_A", (W/(Math.sqrt(Math.PI*ar*e/(4*cD0))))*2./Math.sqrt(3));
+		results.put("Speed_A", (Math.sqrt(2*W/Math.sqrt(Math.PI*ar*e*cD0)))*Math.pow(3, 0.25));
+		results.put("Power_A", Math.sqrt(3)*(W*((Math.sqrt(2*W/Math.sqrt(Math.PI*ar*e*cD0)))/Math.pow(3, 0.25))/Math.sqrt(0.75)*Math.sqrt(Math.PI*ar*e/(4*cD0))));
+		
+		return results;
+	}
+	
 }

@@ -173,7 +173,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		dxH = aircraft.getHTail().getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance().getEstimatedValue();
 		niHT = aircraft.getHTail().getLiftingSurfaceCreator().getVolumetricRatio();
 
-		mach = _theOperatingConditions.getMachCurrent();
+		mach = _theOperatingConditions.getMachCruise();
 		_machDragPolar.add(mach - 0.1);
 		_machDragPolar.add(mach + (1-Math.pow(mach, 0.37)));
 		_machDragPolar.add(mach);
@@ -285,7 +285,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		_cD0Total = (_cD0 + _cDRough + _cDCool);
 
 		if (_theOperatingConditions != null 
-				&& mach == _theOperatingConditions.getMachCurrent()) {
+				&& mach == _theOperatingConditions.getMachCruise()) {
 			_cD0Map.put(ComponentEnum.FUSELAGE, _theAircraft.getFuselage().getAerodynamics().get_cD0Total());
 			_cD0Map.put(ComponentEnum.WING, _theAircraft.getWing().getAerodynamics().get_cD0Total());
 			_cD0Map.put(ComponentEnum.NACELLE, _theAircraft.getNacelles().getCD0Total());
@@ -865,26 +865,26 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		// Evaluate all wing parameters
 		if (aircraft.getWing() != null) {
 			aircraft.getWing().getAerodynamics().set_cLCurrent(aircraft.getTheAnalysisManager().getCruiseCL());
-			aircraft.getWing().getAerodynamics().calculateAll(_theOperatingConditions.getMachCurrent(), alphaRoot);
+			aircraft.getWing().getAerodynamics().calculateAll(_theOperatingConditions.getMachCruise(), alphaRoot);
 		} 
 
 		// Evaluate all Htail parameters
 		if (aircraft.getHTail() != null) {
 			// TODO: change Htail CL
 			aircraft.getHTail().getAerodynamics().set_cLCurrent(aircraft.getTheAnalysisManager().getCruiseCL());
-			aircraft.getHTail().getAerodynamics().calculateAll(_theOperatingConditions.getMachCurrent(),alphaRoot);
+			aircraft.getHTail().getAerodynamics().calculateAll(_theOperatingConditions.getMachCruise(),alphaRoot);
 		}
 
 		// Evaluate all Vtail parameters
 		if (aircraft.getVTail() != null) {
 			aircraft.getVTail().getAerodynamics().set_cLCurrent(0.0);
-			aircraft.getVTail().getAerodynamics().calculateAll(_theOperatingConditions.getMachCurrent(),alphaRoot);
+			aircraft.getVTail().getAerodynamics().calculateAll(_theOperatingConditions.getMachCruise(),alphaRoot);
 		}
 
 		// Evaluate all canard parameters
 		if (aircraft.getCanard() != null) {
 			aircraft.getCanard().getAerodynamics().set_cLCurrent(aircraft.getTheAnalysisManager().getCruiseCL());
-			aircraft.getCanard().getAerodynamics().calculateAll(_theOperatingConditions.getMachCurrent(),alphaRoot);
+			aircraft.getCanard().getAerodynamics().calculateAll(_theOperatingConditions.getMachCruise(),alphaRoot);
 		}
 
 		// Evaluate all nacelle parameters

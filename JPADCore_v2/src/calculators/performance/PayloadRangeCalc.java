@@ -2,7 +2,10 @@ package calculators.performance;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
@@ -21,6 +24,7 @@ import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
 import configuration.MyConfiguration;
+import configuration.enumerations.AircraftTypeEnum;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.AirplaneType;
 import configuration.enumerations.EngineOperatingConditionEnum;
@@ -55,115 +59,167 @@ public class PayloadRangeCalc{
 	// VARIABLE DECLARATION
 	
 	// INPUT DATA:
-	// 84 kg assumed for each passenger + 15 kg baggage (EASA 2008.C.06) 
-	private Amount<Mass> paxSingleMass = Amount.valueOf(99.0, SI.KILOGRAM);
+	private Aircraft theAircraft;
+	private Amount<Mass> paxSingleMass;
 	private Amount<Mass> maxTakeOffMass;
 	private Amount<Mass> operatingEmptyMass; 
 	private Amount<Angle> sweepLEEquivalent;
 	private Amount<Angle> sweepHalfChordEquivalent;
 	private Amount<Area> surface;
-	private ACAerodynamicsManager aerodynamicAnalysis;
+	private Amount<Length> altitude;
 	private FuelFractionDatabaseReader fuelFractionDatabase;
-	private double cd0;
+	private double cD0;
 	private double oswald;
-	private double cl;
+	private double cL;
 	private double ar;
 	private double tcMax;
 	private double byPassRatio;
-	private double altitude;
-	private double currentMach;
+	private double cruiseMach;
 	private double nPassMax;
-	private double eta = 0.85;
+	private double etaPropeller;
 	private double sfc;
 	private AirfoilTypeEnum airfoilType;	
-	private AirplaneType airplaneType;
+	private AircraftTypeEnum aircraftType;
 	private EngineTypeEnum engineType;
+	private double[][] fuelFractionTable;
 
-	// TO EVALUATE: 
+	// TO EVALUATE:
+	private Map<String,Double> pointE = new HashMap<String, Double>();
+	private Map<String,Double> pointP = new HashMap<String, Double>();
+	private Map<String,Double> pointA = new HashMap<String, Double>();
+	
 	private Amount<Mass> fuelMass, maxFuelMass, takeOffMass, payloadMaxFuel,
 						 maxTakeOffMass_current;
-	private Amount<Length> range;
-	private double rangeBreguet, bestRangeMach, nPassActual, cd, criticalMach;
+	private Amount<Length> rangeAtMaxPayload, rangeAtMaxFuel, rangeAtZeroPayload;
+	private double rangeBreguet, bestRangeMach, nPassActual, cD, criticalMach, mffRatio;
 	private double[][] rangeMatrix, payloadMatrix;
- 
 
 	//-------------------------------------------------------------------------------------
 	// BUILDER
 	
-	// Builder used only for StandAlone version 
-	public PayloadRangeCalc(
+	public PayloadRangeCalc (
+			Aircraft theAircraft,
+			OperatingConditions theOperatingConditions,
 			Amount<Mass> maxTakeOffMass,
 			Amount<Mass> operatingEmptyMass,
 			Amount<Mass> maxFuelMass,
-			Amount<Angle> sweepHalfChordEquivalent,
-			double nPassMax,
-			double cl,
-			double tcMax,
-			AirplaneType airplaneType,
-			EngineTypeEnum engineType,
-			AirfoilTypeEnum airfoilType,
-			ACAerodynamicsManager analysis,
-			FuelFractionDatabaseReader fuelFraction){
+			double cD0,
+			double oswald,
+			double cruiseMach,
+			Amount<Length> altitude,
+			Amount<Mass> passengerSingleMass
+			) {
 		
+		this.theAircraft = theAircraft;
 		this.maxTakeOffMass = maxTakeOffMass;
 		this.operatingEmptyMass = operatingEmptyMass;
 		this.maxFuelMass = maxFuelMass;
-		this.sweepHalfChordEquivalent = sweepHalfChordEquivalent;
-		this.nPassMax = nPassMax;
-		this.cl = cl;
-		this.tcMax = tcMax;
-		this.airplaneType = airplaneType;
-		this.engineType = engineType;
-		this.airfoilType = airfoilType;
-		this.aerodynamicAnalysis = analysis;
-		this.fuelFractionDatabase = fuelFraction;
-	};
-	
-	// Builder used in case of a given aircraft object
-	public PayloadRangeCalc(
-			OperatingConditions theConditions,
-			Aircraft theAircraft,
-			AirplaneType type){
+		this.nPassMax = theAircraft.getCabinConfiguration().getMaxPax();
+		this.paxSingleMass = passengerSingleMass;				
 		
-		airplaneType = type;
+		this.surface = theAircraft.getWing().getSurface();
+		this.ar = theAircraft.getWing().getAspectRatio();
+		this.cruiseMach = cruiseMach;
+		this.altitude = altitude;
+		this.sweepLEEquivalent = theAircraft.getWing().getSweepLEEquivalent(false);
+		this.sweepHalfChordEquivalent = theAircraft.getWing().getSweepHalfChordEquivalent(false);
 		
-		maxTakeOffMass = theAircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass();
-		operatingEmptyMass = theAircraft.getTheAnalysisManager().getTheWeights().getOperatingEmptyMass();
-		maxFuelMass = theAircraft.getFuelTank().getFuelMass();
-		nPassMax = theAircraft.getCabinConfiguration().getMaxPax();
-		airfoilType = theAircraft.getWing().getAirfoilList().get(0).getType();
-		engineType = theAircraft.getPowerPlant().getEngineType();
+		this.aircraftType = theAircraft.getTypeVehicle();
+		this.engineType = theAircraft.getPowerPlant().getEngineType();
+		this.airfoilType = theAircraft.getWing().getAirfoilList().get(0).getType();
+		
+		///////////////////////////////////////////////////////////////////////////////////////
+		// Defining the fuel fraction ratio as function of the aircraft type:
+		this.fuelFractionDatabase = theAircraft.getFuelTank().getFuelFractionDatabase();
+		try {
+			this.fuelFractionTable = fuelFractionDatabase.getFuelFractionTable("FuelFractions_Roskam");
+		} catch (HDF5LibraryException e) {
+			e.printStackTrace();
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+		}
+		
+		this.mffRatio = 1.0;
+		
+		switch (aircraftType){
 
-		surface = theAircraft.getWing().getSurface();
-		ar = theAircraft.getWing().getAspectRatio();
-		currentMach = theConditions.getMachCurrent();
-		altitude = theConditions.getAltitude().getEstimatedValue();
-		sweepLEEquivalent = theAircraft.getWing().getSweepLEEquivalent(false);
-		sweepHalfChordEquivalent = theAircraft.getWing().getSweepHalfChordEquivalent(false);
+		case TURBOPROP: int indexTurboprop = 5;
+		for (int i=0; i<fuelFractionTable[indexTurboprop].length; i++)
+			mffRatio *= fuelFractionTable[indexTurboprop][i]; 
+		break;
+
+		case JET: int indexJet = 6;
+		for (int i=0; i<fuelFractionTable[indexJet].length; i++)
+			mffRatio *= fuelFractionTable[indexJet][i]; 
+		break;
+
+		case BUSINESS_JET: int indexBusinessJet = 4;
+		for (int i=0; i<fuelFractionTable[indexBusinessJet].length; i++)
+			mffRatio *= fuelFractionTable[indexBusinessJet][i]; 
+		break;
+
+		case FIGHTER: int indexFighter = 8;
+		for (int i=0; i<fuelFractionTable[indexFighter].length; i++)
+			mffRatio *= fuelFractionTable[indexFighter][i]; 
+		break;
+
+		case ACROBATIC: int indexAcrobatic = 7;
+		for (int i=0; i<fuelFractionTable[indexAcrobatic].length; i++)
+			mffRatio *= fuelFractionTable[indexAcrobatic][i]; 
+		break;
+
+		case COMMUTER: int indexCommuter = 5;
+		for (int i=0; i<fuelFractionTable[indexCommuter].length; i++)
+			mffRatio *= fuelFractionTable[indexCommuter][i]; 
+		break;
+
+		case GENERAL_AVIATION:
+		if(theAircraft.getPowerPlant().getEngineNumber() == 1) {
+			int indexSingleEngine = 1;	
+			for (int i=0; i<fuelFractionTable[indexSingleEngine].length; i++)
+				mffRatio *= fuelFractionTable[indexSingleEngine][i];
+		}
+		else if(theAircraft.getPowerPlant().getEngineNumber() == 2) {
+			int indexTwinEngine = 2;
+			for (int i=0; i<fuelFractionTable[indexTwinEngine].length; i++)
+				mffRatio *= fuelFractionTable[indexTwinEngine][i];
+		}
+		break;
+		}
 		
-		/* TODO: WHEN OTHER ENGINE DATA WILL BE AVAIABLE FIX THIS
-		 * this works for turbofan and turboprop engine only (which are what we're analyzing). 
-		 */
-		if (engineType == EngineTypeEnum.TURBOFAN)
-			byPassRatio = theAircraft.getPowerPlant().getEngineList().get(0).getBPR();
-		else
-			byPassRatio = 0.0;
+		///////////////////////////////////////////////////////////////////////////////////////
+		// Check if cruise Mach number is lower than the critical Mach number
+		checkCriticalMach(cruiseMach);
 		
-		Airfoil meanAirfoil = new Airfoil(
-				LiftingSurface.calculateMeanAirfoil(theAircraft.getWing()),
-				theAircraft.getWing().getAerodynamicDatabaseReader());
-		
-		tcMax = meanAirfoil.getAirfoilCreator().getThicknessToChordRatio();
-		cd0 = theAircraft.getTheAnalysisManager().getTheAerodynamics().calculateCD0Total();
-		oswald = theAircraft.getTheAnalysisManager().getTheAerodynamics().calculateOswald(currentMach, MethodEnum.HOWE);
-		cl = LiftCalc.calcCLatAlphaLinearDLR(
-				theConditions.getAlphaCurrent().getEstimatedValue(),
-				theAircraft.getWing().getAspectRatio()
+		///////////////////////////////////////////////////////////////////////////////////////
+		// Calculating the drag polar characteristic points of interest
+		pointE = DragCalc.calculateMaximumEfficiency(
+				cruiseMach,
+				oswald,
+				cD0,
+				theOperatingConditions.getDensityCruise().getEstimatedValue(),
+				maxTakeOffMass.to(SI.KILOGRAM).times(AtmosphereCalc.g0).getEstimatedValue(),
+				theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE)
 				);
-	
-		
-		aerodynamicAnalysis = theAircraft.getTheAnalysisManager().getTheAerodynamics();
-		fuelFractionDatabase = theAircraft.getFuelTank().getFuelFractionDatabase();
+		pointP = DragCalc.calculateMinimumPower(
+				cruiseMach,
+				oswald,
+				cD0,
+				theOperatingConditions.getDensityCruise().getEstimatedValue(),
+				maxTakeOffMass.to(SI.KILOGRAM).times(AtmosphereCalc.g0).getEstimatedValue(),
+				theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE)
+				);
+		pointA = DragCalc.calculateMaximumRange(
+				cruiseMach,
+				oswald,
+				cD0,
+				theOperatingConditions.getDensityCruise().getEstimatedValue(),
+				maxTakeOffMass.to(SI.KILOGRAM).times(AtmosphereCalc.g0).getEstimatedValue(),
+				theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE)
+				);
+		///////////////////////////////////////////////////////////////////////////////////////
+		// Calculating best range Mach number
+		calculateBestRangeMach();
 	}
 
 	//-------------------------------------------------------------------------------------
@@ -174,55 +230,27 @@ public class PayloadRangeCalc{
 	 * the number of Mach related to the Best Range condition.
 	 * 
 	 * @author Vittorio Trifari
-	 * @param engineType
-	 * @param surface Wing surface in [m^2] 
-	 * @param ar Wing aspect ratio
-	 * @param oswald Oswald factor of the wing
-	 * @param cd0 
-	 * @param altitude
 	 * @return bestRangeMach the Mach number relative to the Best Range condition.
 	 */
-	public double calculateBestRangeMach(
-			EngineTypeEnum engineType,
-			Amount<Area> surface,
-			double ar,
-			double oswald,
-			double cd0,
-			double altitude){
+	public void calculateBestRangeMach(){
 		
 		if (engineType == EngineTypeEnum.PISTON  ||
 				engineType == EngineTypeEnum.TURBOPROP) {
-			
-			aerodynamicAnalysis.calculateDragPolarPoints(
-					ar,
-					oswald,
-					cd0,
-					AtmosphereCalc.getDensity(altitude),
-					maxTakeOffMass.getEstimatedValue()*9.81,
-					surface.getEstimatedValue());
-			
+				
 			bestRangeMach = SpeedCalc.calculateMach(
-					altitude,
-					aerodynamicAnalysis.getvE());
+					altitude.doubleValue(SI.METER),
+					pointE.get("Speed_E")
+					);
 		}
 		else if (engineType == EngineTypeEnum.TURBOJET ||
 				engineType == EngineTypeEnum.TURBOFAN ||
 				engineType == EngineTypeEnum.RAMJET   ||
 				engineType == EngineTypeEnum.PROPFAN)  {
 			
-			aerodynamicAnalysis.calculateDragPolarPoints(
-					ar,
-					oswald,
-					cd0,
-					AtmosphereCalc.getDensity(altitude),
-					maxTakeOffMass.getEstimatedValue()*9.81,
-					surface.getEstimatedValue());
-			
 			bestRangeMach = SpeedCalc.calculateMach(
-					altitude,
-					aerodynamicAnalysis.getvA());
+					altitude.doubleValue(SI.METER),
+					pointA.get("Speed_A"));
 		}
-		return bestRangeMach;
 	}
 
 	/**************************************************************************************
@@ -233,10 +261,10 @@ public class PayloadRangeCalc{
 	 * @param currentMach
 	 * @return check boolean that is true if the current Mach is lower than the critical one
 	 */
-	public boolean checkCriticalMach(double currentMach){
+	private boolean checkCriticalMach(double currentMach){
 		
 		criticalMach = AerodynamicCalc.calculateMachCriticalKroo(
-				cl,
+				cL,
 				sweepHalfChordEquivalent,
 				tcMax,
 				airfoilType);
@@ -253,39 +281,15 @@ public class PayloadRangeCalc{
 	 * in case of Maximum TO Weight and Max Payload.
 	 *
 	 * @author Vittorio Trifari
-	 * @param maxTakeOffMass
-	 * @param sweepHalfChordEquivalent Sweep angle at 50% of the equivalent wing chord
-	 * @param surface Wing surface in [m^2]
-	 * @param cd0
-	 * @param oswald Oswald factor of the wing
-	 * @param cl
-	 * @param ar Aspect ratio of the wing
-	 * @param tcMax mean maximum thickness of the wing
-	 * @param byPassRatio By Pass Ratio
-	 * @param eta Propeller efficiency
-	 * @param altitude 
-	 * @param currentMach
 	 * @param isBestRange This value is true if it's a best range condition, otherwise it's false
 	 * @return range the range value in [nmi]
-	 * @throws HDF5LibraryException
-	 * @throws NullPointerException
 	 */
-	public Amount<Length> calcRangeAtMaxPayload(
-			Amount<Mass> maxTakeOffMass,
-			Amount<Angle> sweepHalfChordEquivalent,
-			Amount<Area> surface,
-			double cd0, double oswald,
-			double cl, double ar,
-			double tcMax, double byPassRatio, double eta,
-			double altitude, double currentMach,
-			boolean isBestRange)
-					throws HDF5LibraryException, NullPointerException {	
+	public void calcRangeAtMaxPayload(boolean isBestRange) {	
 		
 		/* 
 		 * first of all it's necessary to calculate the fuel weight the airplane 
 		 * can take on board @ MTOW and max Payload.
 		 */
-
 		fuelMass = maxTakeOffMass.minus(operatingEmptyMass).minus(paxSingleMass.times(nPassMax));
 		Amount<? extends Quantity> fuelFraction  = fuelMass.divide(maxTakeOffMass);
 		double mff = 1-fuelFraction.getEstimatedValue();
@@ -296,172 +300,18 @@ public class PayloadRangeCalc{
 		 * the cruise (eventually loiter and diversion) ratio which has to be 
 		 * derived from mff dividing by all other phases ratios.
 		 */
-
-		double[][] fuelFractionTable = fuelFractionDatabase.getFuelFractionTable("FuelFractions_Roskam");
-		double ratio = 1.0;
-
-		//TODO: WHEN UNKNOWN ARICRAFTS DATA WILL BE AVAIABLE, MODIFY THE ERROR MESSAGE.
-
-		switch (airplaneType){
-
-		case PISTON_HOMEBUILT: int index1 = 1;
-		for (int i=0; i<fuelFractionTable[0].length; i++){
-			ratio *= fuelFractionTable[index1][i]; 
-		}
-		System.err.println("-------------------------------------------------------");
-		System.err.println("CAN'T PROCEED - DATA NOT AVAIABLE FOR THIS AIRCRAFT YET");
-		System.err.println("NULL POINTER EXCEPTION WILL BE SHOWN");
-		System.err.println("-------------------------------------------------------");
-		System.err.println(" ");
-		return null;
-
-		case PISTON_SINGLE_ENGINE: int index2 = 2;
-		for (int i=0; i<fuelFractionTable[1].length; i++){
-			ratio *= fuelFractionTable[index2][i]; 
-		}
-		System.err.println("-------------------------------------------------------");
-		System.err.println("CAN'T PROCEED - DATA NOT AVAIABLE FOR THIS AIRCRAFT YET");
-		System.err.println("NULL POINTER EXCEPTION WILL BE SHOWN");
-		System.err.println("-------------------------------------------------------");
-		System.err.println(" ");
-		return null;
-
-		case PISTON_TWIN_ENGINE: int index3 = 3;
-		for (int i=0; i<fuelFractionTable[2].length; i++){
-			ratio *= fuelFractionTable[index3][i]; 
-		}
-		System.err.println("-------------------------------------------------------");
-		System.err.println("CAN'T PROCEED - DATA NOT AVAIABLE FOR THIS AIRCRAFT YET");
-		System.err.println("NULL POINTER EXCEPTION WILL BE SHOWN");
-		System.err.println("-------------------------------------------------------");
-		System.err.println(" ");
-		return null;
-
-		case PISTON_AGRICULTURAL: int index4 = 4;
-		for (int i=0; i<fuelFractionTable[3].length; i++){
-			ratio *= fuelFractionTable[index4][i]; 
-		}
-		System.err.println("-------------------------------------------------------");
-		System.err.println("CAN'T PROCEED - DATA NOT AVAIABLE FOR THIS AIRCRAFT YET");
-		System.err.println("NULL POINTER EXCEPTION WILL BE SHOWN");
-		System.err.println("-------------------------------------------------------");
-		System.err.println(" ");
-		return null;
-
-		case TURBOFAN_BUSINESS_JETS: int index5 = 5;
-		for (int i=0; i<fuelFractionTable[4].length; i++){
-			ratio *= fuelFractionTable[index5][i]; 
-		} 
-		System.err.println("-------------------------------------------------------");
-		System.err.println("CAN'T PROCEED - DATA NOT AVAIABLE FOR THIS AIRCRAFT YET");
-		System.err.println("NULL POINTER EXCEPTION WILL BE SHOWN");
-		System.err.println("-------------------------------------------------------");
-		System.err.println(" ");
-		return null;
-
-		case TURBOPROP_REGIONAL: int index6 = 6;
-		for (int i=0; i<fuelFractionTable[5].length; i++){
-			ratio *= fuelFractionTable[index6][i]; 
-		}
-		break;
-
-		case TURBOFAN_TRANSPORT_JETS: int index7 = 7;
-		for (int i=0; i<fuelFractionTable[6].length; i++){
-			ratio *= fuelFractionTable[index7][i]; 
-		}
-		break;
-
-		case MILITARY_TRAINERS: int index8 = 8;
-		for (int i=0; i<fuelFractionTable[7].length; i++){
-			ratio *= fuelFractionTable[index8][i]; 
-		}
-		System.err.println("-------------------------------------------------------");
-		System.err.println("CAN'T PROCEED - DATA NOT AVAIABLE FOR THIS AIRCRAFT YET");
-		System.err.println("NULL POINTER EXCEPTION WILL BE SHOWN");
-		System.err.println("-------------------------------------------------------");
-		System.err.println(" ");
-		return null;
-
-		case MILITARY_FIGHTERS: int index9 = 9;
-		for (int i=0; i<fuelFractionTable[8].length; i++){
-			ratio *= fuelFractionTable[index9][i]; 
-		}
-		System.err.println("-------------------------------------------------------");
-		System.err.println("CAN'T PROCEED - DATA NOT AVAIABLE FOR THIS AIRCRAFT YET");
-		System.err.println("NULL POINTER EXCEPTION WILL BE SHOWN");
-		System.err.println("-------------------------------------------------------");
-		System.err.println(" ");
-		return null;
-
-		case MILITARY_PATROL_BOMB_TRANSPORT: int index10 = 10;
-		for (int i=0; i<fuelFractionTable[9].length; i++){
-			ratio *= fuelFractionTable[index10][i]; 
-		}
-		System.err.println("-------------------------------------------------------");
-		System.err.println("CAN'T PROCEED - DATA NOT AVAIABLE FOR THIS AIRCRAFT YET");
-		System.err.println("NULL POINTER EXCEPTION WILL BE SHOWN");
-		System.err.println("-------------------------------------------------------");
-		System.err.println(" ");
-		return null;
-
-		case FLYING_BOATS_AMPHIBIOUS_FLOATAIRPLANES: int index11 = 11;
-		for (int i=0; i<fuelFractionTable[10].length; i++){
-			ratio *= fuelFractionTable[index11][i]; 
-		}
-		System.err.println("-------------------------------------------------------");
-		System.err.println("CAN'T PROCEED - DATA NOT AVAIABLE FOR THIS AIRCRAFT YET");
-		System.err.println("NULL POINTER EXCEPTION WILL BE SHOWN");
-		System.err.println("-------------------------------------------------------");
-		System.err.println(" ");
-		return null;
-
-		case SUPERSONIC_CRUISE: int index12 = 12;
-		for (int i=0; i<fuelFractionTable[11].length; i++){
-			ratio *= fuelFractionTable[index12][i]; 
-		}
-		System.err.println("-------------------------------------------------------");
-		System.err.println("CAN'T PROCEED - DATA NOT AVAIABLE FOR THIS AIRCRAFT YET");
-		System.err.println("NULL POINTER EXCEPTION WILL BE SHOWN");
-		System.err.println("-------------------------------------------------------");
-		System.err.println(" ");
-		return null;
-		}
-
-		double breguetRatio = ratio/mff; 
+		double breguetRatio = mffRatio/mff; 
 
 		if (isBestRange &&
 				(engineType==EngineTypeEnum.PISTON ||
-				 engineType==EngineTypeEnum.TURBOPROP)) {
+				engineType==EngineTypeEnum.TURBOPROP)) {
 
-			aerodynamicAnalysis.calculateDragPolarPoints(
-					ar,
-					oswald,
-					cd0,
-					AtmosphereCalc.getDensity(altitude),
-					maxTakeOffMass.getEstimatedValue()*9.81,
-					surface.getEstimatedValue()
-					);
-
-			sfc = EngineDatabaseManager.getSFC(
-					calculateBestRangeMach(
-							engineType,
-							surface,
-							ar,
-							oswald,
-							cd0,
-							altitude
-							),
-					altitude,
+						sfc = EngineDatabaseManager.getSFC(
+					bestRangeMach,
+					altitude.doubleValue(SI.METER),
 					EngineDatabaseManager.getThrustRatio(
-							calculateBestRangeMach(
-									engineType,
-									surface,
-									ar,
-									oswald,
-									cd0,
-									altitude
-									),
-							altitude,
+							bestRangeMach,
+							altitude.doubleValue(SI.METER),
 							byPassRatio,
 							engineType,
 							EngineOperatingConditionEnum.CRUISE
@@ -471,14 +321,14 @@ public class PayloadRangeCalc{
 					EngineOperatingConditionEnum.CRUISE
 					);
 			
-			cl = aerodynamicAnalysis.getcLE();
-			cd = aerodynamicAnalysis.getcDE();
+			cL = pointE.get("CL_E");
+			cD = pointE.get("CD_E");
 			
 			rangeBreguet = RangeCalc.calculateRangeBreguetPropellerSFC(
-					eta,
+					etaPropeller,
 					sfc,
-					cl,
-					cd,
+					cL,
+					cD,
 					breguetRatio
 					);
 		}
@@ -487,11 +337,11 @@ public class PayloadRangeCalc{
 				 engineType==EngineTypeEnum.TURBOPROP)) {
 
 			sfc = EngineDatabaseManager.getSFC(
-					currentMach,
-					altitude,
+					cruiseMach,
+					altitude.doubleValue(SI.METER),
 					EngineDatabaseManager.getThrustRatio(
-							currentMach,
-							altitude,
+							cruiseMach,
+							altitude.doubleValue(SI.METER),
 							byPassRatio,
 							engineType,
 							EngineOperatingConditionEnum.CRUISE
@@ -501,22 +351,22 @@ public class PayloadRangeCalc{
 					EngineOperatingConditionEnum.CRUISE
 					);
 			
-			cd = DragCalc.calculateCDTotal(
-					cd0,
-					cl,
+			cD = DragCalc.calculateCDTotal(
+					cD0,
+					cL,
 					ar,
 					oswald,
-					currentMach,
+					cruiseMach,
 					sweepHalfChordEquivalent.getEstimatedValue(),
 					tcMax,
 					airfoilType
 					);
 			
 			rangeBreguet = RangeCalc.calculateRangeBreguetPropellerSFC(
-					eta,
+					etaPropeller,
 					sfc,
-					cl,
-					cd,
+					cL,
+					cD,
 					breguetRatio
 					);
 		}
@@ -525,30 +375,13 @@ public class PayloadRangeCalc{
 				 engineType == EngineTypeEnum.TURBOJET ||
 				 engineType == EngineTypeEnum.PROPFAN  ||
 				 engineType == EngineTypeEnum.RAMJET)) {
-
-			aerodynamicAnalysis.calculateDragPolarPoints(
-					ar,
-					oswald,
-					cd0,
-					AtmosphereCalc.getDensity(altitude),
-					maxTakeOffMass.getEstimatedValue()*9.81,
-					surface.getEstimatedValue());
-
-			bestRangeMach = calculateBestRangeMach(
-					engineType,
-					surface,
-					ar,
-					oswald,
-					cd0,
-					altitude
-					);
 			
 			sfc = EngineDatabaseManager.getSFC(
 					bestRangeMach,
-					altitude,
+					altitude.doubleValue(SI.METER),
 					EngineDatabaseManager.getThrustRatio(
 							bestRangeMach,
-							altitude,
+							altitude.doubleValue(SI.METER),
 							byPassRatio,
 							engineType,
 							EngineOperatingConditionEnum.CRUISE
@@ -558,19 +391,19 @@ public class PayloadRangeCalc{
 					EngineOperatingConditionEnum.CRUISE
 					);
 			
-			cl = aerodynamicAnalysis.getcLA();
-			cd = aerodynamicAnalysis.getcDA();
+			cL = pointA.get("CL_A");
+			cD = pointA.get("CD_A");
 			
 			rangeBreguet = RangeCalc.calculateRangeBreguetJetSFCJ(
 					Amount.valueOf(
 							SpeedCalc.calculateTAS(
 									bestRangeMach,
-									altitude
+									altitude.doubleValue(SI.METER)
 									),
 							SI.METERS_PER_SECOND).to(NonSI.KILOMETERS_PER_HOUR),
 					sfc,
-					cl,
-					cd,
+					cL,
+					cD,
 					breguetRatio);
 		}
 		else if (!isBestRange &&
@@ -580,11 +413,11 @@ public class PayloadRangeCalc{
 				 engineType == EngineTypeEnum.RAMJET)) {
 
 			sfc = EngineDatabaseManager.getSFC(
-					currentMach,
-					altitude,
+					cruiseMach,
+					altitude.doubleValue(SI.METER),
 					EngineDatabaseManager.getThrustRatio(
-							currentMach,
-							altitude,
+							cruiseMach,
+							altitude.doubleValue(SI.METER),
 							byPassRatio,
 							engineType,
 							EngineOperatingConditionEnum.CRUISE),
@@ -592,12 +425,12 @@ public class PayloadRangeCalc{
 					engineType,
 					EngineOperatingConditionEnum.CRUISE);
 			
-			cd = DragCalc.calculateCDTotal(
-					cd0,
-					cl,
+			cD = DragCalc.calculateCDTotal(
+					cD0,
+					cL,
 					ar,
 					oswald,
-					currentMach,
+					cruiseMach,
 					sweepHalfChordEquivalent.getEstimatedValue(),
 					tcMax,
 					airfoilType);
@@ -605,35 +438,34 @@ public class PayloadRangeCalc{
 			rangeBreguet = RangeCalc.calculateRangeBreguetJetSFCJ(
 					Amount.valueOf(
 							SpeedCalc.calculateTAS(
-									currentMach,
-									altitude
+									cruiseMach,
+									altitude.doubleValue(SI.METER)
 									),
 							SI.METERS_PER_SECOND).to(NonSI.KILOMETERS_PER_HOUR),
 					sfc,
-					cl,
-					cd,
+					cL,
+					cD,
 					breguetRatio);
 		}
 
-		range = Amount.valueOf(rangeBreguet, SI.KILOMETER).to(NonSI.NAUTICAL_MILE);
+		rangeAtMaxPayload = Amount.valueOf(rangeBreguet, SI.KILOMETER).to(NonSI.NAUTICAL_MILE);
 		//---------------------------------------------------------------------------
 		// RESULTS PRINT:
 		System.out.println("-----------------------------------------------------------");
 		System.out.println("RANGE @ MAX PAYLOAD");
 		System.out.println("-----------------------------------------------------------");
-		System.out.println("Range = " + range.getEstimatedValue() + " " +
-				range.getUnit() + " \n\t@ Max TO Mass of " + 
+		System.out.println("Range = " + rangeAtMaxPayload.getEstimatedValue() + " " +
+				rangeAtMaxPayload.getUnit() + " \n\t@ Max TO Mass of " + 
 				maxTakeOffMass.getEstimatedValue() + " " +
 				maxTakeOffMass.getUnit() + "\n\t@ Max Payload Mass of " + 
 				paxSingleMass.times(nPassMax).getEstimatedValue() + " " +
 				paxSingleMass.getUnit() + " \n\t@ Fuel Mass of " + 
 				fuelMass.getEstimatedValue() + " " +
 				fuelMass.getUnit() + "\n\twith " + nPassMax + " passengers" +
-				"\n\n\t\t SFC = " + sfc + "\n\n\t\t cL = " + cl + "\n\t\t cd = " + cd +
-				"\n\t\t\t Efficiency = " + (cl/cd));
+				"\n\n\t\t SFC = " + sfc + "\n\n\t\t cL = " + cL + "\n\t\t cd = " + cD +
+				"\n\t\t\t Efficiency = " + (cL/cD));
 		System.out.println("-----------------------------------------------------------");
 		System.out.println(" ");
-		return range;
 	}
 
 	/******************************************************************************************
@@ -641,33 +473,10 @@ public class PayloadRangeCalc{
 	 * in case of Maximum TO Weight and Max Fuel.
 	 * 
 	 * @author Vittorio Trifari
-	 * @param maxTakeOffMass
-	 * @param sweepHalfChordEquivalent Sweep angle at 50% of the equivalent wing chord
-	 * @param surface Wing surface in [m^2]
-	 * @param cd0
-	 * @param oswald Oswald factor of the wing
-	 * @param cl
-	 * @param ar Aspect ratio of the wing
-	 * @param tcMax mean maximum thickness of the wing
-	 * @param byPassRatio By Pass Ratio
-	 * @param eta Propeller efficiency
-	 * @param altitude 
-	 * @param currentMach
 	 * @param isBestRange This value is true if it's a best range condition, otherwise it's false
 	 * @return range the range value in [nmi]
-	 * @throws HDF5LibraryException
-	 * @throws NullPointerException
 	 */
-	public Amount<Length> calcRangeAtMaxFuel(
-			Amount<Mass> maxTakeOffMass,
-			Amount<Angle> sweepHalfChordEquivalent,
-			Amount<Area> surface,
-			double cd0, double oswald,
-			double cl, double ar,
-			double tcMax, double byPassRatio, double eta,
-			double altitude, double currentMach,
-			boolean isBestRange) 
-					throws HDF5LibraryException, NullPointerException{	
+	public void calcRangeAtMaxFuel(boolean isBestRange) {	
 		/* 
 		 * first of all it's necessary to calculate the max fuel weight the airplane 
 		 * can take on board @ MTOW.
@@ -683,172 +492,18 @@ public class PayloadRangeCalc{
 		 * the cruise (eventually loiter and diversion) ratio which has to be 
 		 * derived from mff dividing by all other phases ratios.
 		 */
-
-		double[][] fuelFractionTable = fuelFractionDatabase.getFuelFractionTable("FuelFractions_Roskam");
-		double ratio = 1.0;
-
-		//TODO: WHEN UNKNOWN ARICRAFTS DATA WILL BE AVAIABLE, MODIFY THE ERROR MESSAGE.
-
-		switch (airplaneType){
-
-		case PISTON_HOMEBUILT: int index1 = 1;
-		for (int i=0; i<fuelFractionTable[0].length; i++){
-			ratio *= fuelFractionTable[index1][i]; 
-		}
-		System.err.println("-------------------------------------------------------");
-		System.err.println("CAN'T PROCEED - DATA NOT AVAIABLE FOR THIS AIRCRAFT YET");
-		System.err.println("NULL POINTER EXCEPTION WILL BE SHOWN");
-		System.err.println("-------------------------------------------------------");
-		System.err.println(" ");
-		return null;
-
-		case PISTON_SINGLE_ENGINE: int index2 = 2;
-		for (int i=0; i<fuelFractionTable[1].length; i++){
-			ratio *= fuelFractionTable[index2][i]; 
-		}
-		System.err.println("-------------------------------------------------------");
-		System.err.println("CAN'T PROCEED - DATA NOT AVAIABLE FOR THIS AIRCRAFT YET");
-		System.err.println("NULL POINTER EXCEPTION WILL BE SHOWN");
-		System.err.println("-------------------------------------------------------");
-		System.err.println(" ");
-		return null;
-
-		case PISTON_TWIN_ENGINE: int index3 = 3;
-		for (int i=0; i<fuelFractionTable[2].length; i++){
-			ratio *= fuelFractionTable[index3][i]; 
-		}
-		System.err.println("-------------------------------------------------------");
-		System.err.println("CAN'T PROCEED - DATA NOT AVAIABLE FOR THIS AIRCRAFT YET");
-		System.err.println("NULL POINTER EXCEPTION WILL BE SHOWN");
-		System.err.println("-------------------------------------------------------");
-		System.err.println(" ");
-		return null;
-
-		case PISTON_AGRICULTURAL: int index4 = 4;
-		for (int i=0; i<fuelFractionTable[3].length; i++){
-			ratio *= fuelFractionTable[index4][i]; 
-		}
-		System.err.println("-------------------------------------------------------");
-		System.err.println("CAN'T PROCEED - DATA NOT AVAIABLE FOR THIS AIRCRAFT YET");
-		System.err.println("NULL POINTER EXCEPTION WILL BE SHOWN");
-		System.err.println("-------------------------------------------------------");
-		System.err.println(" ");
-		return null;
-
-		case TURBOFAN_BUSINESS_JETS: int index5 = 5;
-		for (int i=0; i<fuelFractionTable[4].length; i++){
-			ratio *= fuelFractionTable[index5][i]; 
-		} 
-		System.err.println("-------------------------------------------------------");
-		System.err.println("CAN'T PROCEED - DATA NOT AVAIABLE FOR THIS AIRCRAFT YET");
-		System.err.println("NULL POINTER EXCEPTION WILL BE SHOWN");
-		System.err.println("-------------------------------------------------------");
-		System.err.println(" ");
-		return null;
-
-		case TURBOPROP_REGIONAL: int index6 = 6;
-		for (int i=0; i<fuelFractionTable[5].length; i++){
-			ratio *= fuelFractionTable[index6][i]; 
-		}
-		break;
-
-		case TURBOFAN_TRANSPORT_JETS: int index7 = 7;
-		for (int i=0; i<fuelFractionTable[6].length; i++){
-			ratio *= fuelFractionTable[index7][i]; 
-		}
-		break;
-
-		case MILITARY_TRAINERS: int index8 = 8;
-		for (int i=0; i<fuelFractionTable[7].length; i++){
-			ratio *= fuelFractionTable[index8][i]; 
-		}
-		System.err.println("-------------------------------------------------------");
-		System.err.println("CAN'T PROCEED - DATA NOT AVAIABLE FOR THIS AIRCRAFT YET");
-		System.err.println("NULL POINTER EXCEPTION WILL BE SHOWN");
-		System.err.println("-------------------------------------------------------");
-		System.err.println(" ");
-		return null;
-
-		case MILITARY_FIGHTERS: int index9 = 9;
-		for (int i=0; i<fuelFractionTable[8].length; i++){
-			ratio *= fuelFractionTable[index9][i]; 
-		}
-		System.err.println("-------------------------------------------------------");
-		System.err.println("CAN'T PROCEED - DATA NOT AVAIABLE FOR THIS AIRCRAFT YET");
-		System.err.println("NULL POINTER EXCEPTION WILL BE SHOWN");
-		System.err.println("-------------------------------------------------------");
-		System.err.println(" ");
-		return null;
-
-		case MILITARY_PATROL_BOMB_TRANSPORT: int index10 = 10;
-		for (int i=0; i<fuelFractionTable[9].length; i++){
-			ratio *= fuelFractionTable[index10][i]; 
-		}
-		System.err.println("-------------------------------------------------------");
-		System.err.println("CAN'T PROCEED - DATA NOT AVAIABLE FOR THIS AIRCRAFT YET");
-		System.err.println("NULL POINTER EXCEPTION WILL BE SHOWN");
-		System.err.println("-------------------------------------------------------");
-		System.err.println(" ");
-		return null;
-
-		case FLYING_BOATS_AMPHIBIOUS_FLOATAIRPLANES: int index11 = 11;
-		for (int i=0; i<fuelFractionTable[10].length; i++){
-			ratio *= fuelFractionTable[index11][i]; 
-		}
-		System.err.println("-------------------------------------------------------");
-		System.err.println("CAN'T PROCEED - DATA NOT AVAIABLE FOR THIS AIRCRAFT YET");
-		System.err.println("NULL POINTER EXCEPTION WILL BE SHOWN");
-		System.err.println("-------------------------------------------------------");
-		System.err.println(" ");
-		return null;
-
-		case SUPERSONIC_CRUISE: int index12 = 12;
-		for (int i=0; i<fuelFractionTable[11].length; i++){
-			ratio *= fuelFractionTable[index12][i]; 
-		}
-		System.err.println("-------------------------------------------------------");
-		System.err.println("CAN'T PROCEED - DATA NOT AVAIABLE FOR THIS AIRCRAFT YET");
-		System.err.println("NULL POINTER EXCEPTION WILL BE SHOWN");
-		System.err.println("-------------------------------------------------------");
-		System.err.println(" ");
-		return null;
-		}
-
-		double breguetRatio = ratio/mff; 
+		double breguetRatio = mffRatio/mff; 
 
 		if (isBestRange &&
 				(engineType==EngineTypeEnum.PISTON ||
 				 engineType==EngineTypeEnum.TURBOPROP)) {
 
-			aerodynamicAnalysis.calculateDragPolarPoints(
-					ar,
-					oswald,
-					cd0,
-					AtmosphereCalc.getDensity(altitude),
-					maxTakeOffMass.getEstimatedValue()*9.81,
-					surface.getEstimatedValue()
-					);
-
 			sfc = EngineDatabaseManager.getSFC(
-					calculateBestRangeMach(
-							engineType,
-							surface,
-							ar,
-							oswald,
-							cd0,
-							altitude
-							),
-					altitude,
+					bestRangeMach,
+					altitude.doubleValue(SI.METER),
 					EngineDatabaseManager.getThrustRatio(
-							calculateBestRangeMach(
-									engineType,
-									surface,
-									ar,
-									oswald,
-									cd0,
-									altitude
-									),
-							altitude,
+							bestRangeMach,
+							altitude.doubleValue(SI.METER),
 							byPassRatio,
 							engineType,
 							EngineOperatingConditionEnum.CRUISE
@@ -858,14 +513,14 @@ public class PayloadRangeCalc{
 					EngineOperatingConditionEnum.CRUISE
 					);
 
-			cl = aerodynamicAnalysis.getcLE();
-			cd = aerodynamicAnalysis.getcDE();
+			cL = pointE.get("CL_E");
+			cD = pointE.get("CD_E");
 
 			rangeBreguet = RangeCalc.calculateRangeBreguetPropellerSFC(
-					eta,
+					etaPropeller,
 					sfc,
-					cl,
-					cd,
+					cL,
+					cD,
 					breguetRatio
 					);
 		}
@@ -874,11 +529,11 @@ public class PayloadRangeCalc{
 				 engineType==EngineTypeEnum.TURBOPROP)) {
 
 			sfc = EngineDatabaseManager.getSFC(
-					currentMach,
-					altitude,
+					cruiseMach,
+					altitude.doubleValue(SI.METER),
 					EngineDatabaseManager.getThrustRatio(
-							currentMach,
-							altitude,
+							cruiseMach,
+							altitude.doubleValue(SI.METER),
 							byPassRatio,
 							engineType,
 							EngineOperatingConditionEnum.CRUISE
@@ -888,22 +543,22 @@ public class PayloadRangeCalc{
 					EngineOperatingConditionEnum.CRUISE
 					);
 
-			cd = DragCalc.calculateCDTotal(
-					cd0,
-					cl,
+			cD = DragCalc.calculateCDTotal(
+					cD0,
+					cL,
 					ar,
 					oswald,
-					currentMach,
+					cruiseMach,
 					sweepHalfChordEquivalent.getEstimatedValue(),
 					tcMax,
 					airfoilType
 					);
 
 			rangeBreguet = RangeCalc.calculateRangeBreguetPropellerSFC(
-					eta,
+					etaPropeller,
 					sfc,
-					cl,
-					cd,
+					cL,
+					cD,
 					breguetRatio
 					);
 		}
@@ -913,29 +568,12 @@ public class PayloadRangeCalc{
 				 engineType == EngineTypeEnum.PROPFAN  ||
 				 engineType == EngineTypeEnum.RAMJET)) {
 
-			aerodynamicAnalysis.calculateDragPolarPoints(
-					ar,
-					oswald,
-					cd0,
-					AtmosphereCalc.getDensity(altitude),
-					maxTakeOffMass.getEstimatedValue()*9.81,
-					surface.getEstimatedValue());
-
-			bestRangeMach = calculateBestRangeMach(
-					engineType,
-					surface,
-					ar,
-					oswald,
-					cd0,
-					altitude
-					);
-
 			sfc = EngineDatabaseManager.getSFC(
 					bestRangeMach,
-					altitude,
+					altitude.doubleValue(SI.METER),
 					EngineDatabaseManager.getThrustRatio(
 							bestRangeMach,
-							altitude,
+							altitude.doubleValue(SI.METER),
 							byPassRatio,
 							engineType,
 							EngineOperatingConditionEnum.CRUISE
@@ -945,19 +583,19 @@ public class PayloadRangeCalc{
 					EngineOperatingConditionEnum.CRUISE
 					);
 
-			cl = aerodynamicAnalysis.getcLA();
-			cd = aerodynamicAnalysis.getcDA();
+			cL = pointA.get("CL_A");
+			cD = pointA.get("CD_A");
 
 			rangeBreguet = RangeCalc.calculateRangeBreguetJetSFCJ(
 					Amount.valueOf(
 							SpeedCalc.calculateTAS(
 									bestRangeMach,
-									altitude
+									altitude.doubleValue(SI.METER)
 									),
 							SI.METERS_PER_SECOND).to(NonSI.KILOMETERS_PER_HOUR),
 					sfc,
-					cl,
-					cd,
+					cL,
+					cD,
 					breguetRatio);
 		}
 		else if (!isBestRange &&
@@ -967,11 +605,11 @@ public class PayloadRangeCalc{
 				 engineType == EngineTypeEnum.RAMJET)) {
 
 			sfc = EngineDatabaseManager.getSFC(
-					currentMach,
-					altitude,
+					cruiseMach,
+					altitude.doubleValue(SI.METER),
 					EngineDatabaseManager.getThrustRatio(
-							currentMach,
-							altitude,
+							cruiseMach,
+							altitude.doubleValue(SI.METER),
 							byPassRatio,
 							engineType,
 							EngineOperatingConditionEnum.CRUISE),
@@ -979,12 +617,12 @@ public class PayloadRangeCalc{
 					engineType,
 					EngineOperatingConditionEnum.CRUISE);
 
-			cd = DragCalc.calculateCDTotal(
-					cd0,
-					cl,
+			cD = DragCalc.calculateCDTotal(
+					cD0,
+					cL,
 					ar,
 					oswald,
-					currentMach,
+					cruiseMach,
 					sweepHalfChordEquivalent.getEstimatedValue(),
 					tcMax,
 					airfoilType);
@@ -992,35 +630,34 @@ public class PayloadRangeCalc{
 			rangeBreguet = RangeCalc.calculateRangeBreguetJetSFCJ(
 					Amount.valueOf(
 							SpeedCalc.calculateTAS(
-									currentMach,
-									altitude
+									cruiseMach,
+									altitude.doubleValue(SI.METER)
 									),
 							SI.METERS_PER_SECOND).to(NonSI.KILOMETERS_PER_HOUR),
 					sfc,
-					cl,
-					cd,
+					cL,
+					cD,
 					breguetRatio);
 		}
 
-		range = Amount.valueOf(rangeBreguet, SI.KILOMETER).to(NonSI.NAUTICAL_MILE);
+		rangeAtMaxFuel = Amount.valueOf(rangeBreguet, SI.KILOMETER).to(NonSI.NAUTICAL_MILE);
 		//---------------------------------------------------------------------------
 		// RESULTS PRINT:
 		System.out.println("-----------------------------------------------------------");
 		System.out.println("RANGE @ MAX FUEL");
 		System.out.println("-----------------------------------------------------------");
-		System.out.println("Range = " + range.getEstimatedValue() + " " +
-				range.getUnit() + " \n\t@ Max TO Mass of " + 
+		System.out.println("Range = " + rangeAtMaxPayload.getEstimatedValue() + " " +
+				rangeAtMaxPayload.getUnit() + " \n\t@ Max TO Mass of " + 
 				maxTakeOffMass.getEstimatedValue() + " " +
 				maxTakeOffMass.getUnit() + "\n\t@ Payload Mass of " + 
 				paxSingleMass.times(nPassActual).getEstimatedValue() + " " +
 				paxSingleMass.getUnit() + " \n\t@ Max Fuel Mass of " + 
 				maxFuelMass.getEstimatedValue() + " " +
 				maxFuelMass.getUnit() + "\n\twith " + Math.ceil(nPassActual) + " passengers" +
-				"\n\n\t\t SFC = " + sfc + "\n\n\t\t cL = " + cl + "\n\t\t cd = " + cd +
-				"\n\t\t\t Efficiency = " + (cl/cd));
+				"\n\n\t\t SFC = " + sfc + "\n\n\t\t cL = " + cL + "\n\t\t cd = " + cD +
+				"\n\t\t\t Efficiency = " + (cL/cD));
 		System.out.println("-----------------------------------------------------------");
 		System.out.println(" ");
-		return range;
 	}
 
 	/******************************************************************************************
@@ -1028,34 +665,12 @@ public class PayloadRangeCalc{
 	 * in case of Maximum TO Weight and Max Fuel.
 	 * 
 	 * @author Vittorio Trifari
-	 * @param maxTakeOffMass
-	 * @param sweepHalfChordEquivalent Sweep angle at 50% of the equivalent wing chord
-	 * @param surface Wing surface in [m^2]
-	 * @param cd0
-	 * @param oswald Oswald factor of the wing
-	 * @param cl
-	 * @param ar Aspect ratio of the wing
-	 * @param tcMax mean maximum thickness of the wing
-	 * @param byPassRatio By Pass Ratio
-	 * @param eta Propeller efficiency
-	 * @param altitude 
-	 * @param currentMach
 	 * @param isBestRange This value is true if it's a best range condition, otherwise it's false
 	 * @return range the range value in [nmi]
 	 * @throws HDF5LibraryException
 	 * @throws NullPointerException
 	 */
-	public Amount<Length> calcRangeAtZeroPayload(
-			Amount<Mass> maxTakeOffMass,
-			Amount<Angle> sweepHalfChordEquivalent,
-			Amount<Area> surface,
-			double cd0, double oswald,
-			double cl, double ar,
-			double tcMax, double byPassRatio, double eta,
-			double altitude, double currentMach,
-			boolean isBestRange) 
-					throws HDF5LibraryException, NullPointerException
-	{		
+	public void calcRangeAtZeroPayload(boolean isBestRange) {		
 		/* 
 		 * first of all it's necessary to calculate the max fuel weight the airplane 
 		 * can take on board @ zero Payload.
@@ -1070,172 +685,18 @@ public class PayloadRangeCalc{
 		 * the cruise (eventually loiter and diversion) ratio which has to be 
 		 * derived from mff dividing by all other phases ratios.
 		 */
-		
-		double[][] fuelFractionTable = fuelFractionDatabase.getFuelFractionTable("FuelFractions_Roskam");
-		double ratio = 1.0;
-
-		//TODO: WHEN UNKNOWN ARICRAFTS DATA WILL BE AVAIABLE, MODIFY THE ERROR MESSAGE.
-
-		switch (airplaneType){
-
-		case PISTON_HOMEBUILT: int index1 = 1;
-		for (int i=0; i<fuelFractionTable[0].length; i++){
-			ratio *= fuelFractionTable[index1][i]; 
-		}
-		System.err.println("-------------------------------------------------------");
-		System.err.println("CAN'T PROCEED - DATA NOT AVAIABLE FOR THIS AIRCRAFT YET");
-		System.err.println("NULL POINTER EXCEPTION WILL BE SHOWN");
-		System.err.println("-------------------------------------------------------");
-		System.err.println(" ");
-		return null;
-
-		case PISTON_SINGLE_ENGINE: int index2 = 2;
-		for (int i=0; i<fuelFractionTable[1].length; i++){
-			ratio *= fuelFractionTable[index2][i]; 
-		}
-		System.err.println("-------------------------------------------------------");
-		System.err.println("CAN'T PROCEED - DATA NOT AVAIABLE FOR THIS AIRCRAFT YET");
-		System.err.println("NULL POINTER EXCEPTION WILL BE SHOWN");
-		System.err.println("-------------------------------------------------------");
-		System.err.println(" ");
-		return null;
-
-		case PISTON_TWIN_ENGINE: int index3 = 3;
-		for (int i=0; i<fuelFractionTable[2].length; i++){
-			ratio *= fuelFractionTable[index3][i]; 
-		}
-		System.err.println("-------------------------------------------------------");
-		System.err.println("CAN'T PROCEED - DATA NOT AVAIABLE FOR THIS AIRCRAFT YET");
-		System.err.println("NULL POINTER EXCEPTION WILL BE SHOWN");
-		System.err.println("-------------------------------------------------------");
-		System.err.println(" ");
-		return null;
-
-		case PISTON_AGRICULTURAL: int index4 = 4;
-		for (int i=0; i<fuelFractionTable[3].length; i++){
-			ratio *= fuelFractionTable[index4][i]; 
-		}
-		System.err.println("-------------------------------------------------------");
-		System.err.println("CAN'T PROCEED - DATA NOT AVAIABLE FOR THIS AIRCRAFT YET");
-		System.err.println("NULL POINTER EXCEPTION WILL BE SHOWN");
-		System.err.println("-------------------------------------------------------");
-		System.err.println(" ");
-		return null;
-
-		case TURBOFAN_BUSINESS_JETS: int index5 = 5;
-		for (int i=0; i<fuelFractionTable[4].length; i++){
-			ratio *= fuelFractionTable[index5][i]; 
-		} 
-		System.err.println("-------------------------------------------------------");
-		System.err.println("CAN'T PROCEED - DATA NOT AVAIABLE FOR THIS AIRCRAFT YET");
-		System.err.println("NULL POINTER EXCEPTION WILL BE SHOWN");
-		System.err.println("-------------------------------------------------------");
-		System.err.println(" ");
-		return null;
-
-		case TURBOPROP_REGIONAL: int index6 = 6;
-		for (int i=0; i<fuelFractionTable[5].length; i++){
-			ratio *= fuelFractionTable[index6][i]; 
-		}
-		break;
-
-		case TURBOFAN_TRANSPORT_JETS: int index7 = 7;
-		for (int i=0; i<fuelFractionTable[6].length; i++){
-			ratio *= fuelFractionTable[index7][i]; 
-		}
-		break;
-
-		case MILITARY_TRAINERS: int index8 = 8;
-		for (int i=0; i<fuelFractionTable[7].length; i++){
-			ratio *= fuelFractionTable[index8][i]; 
-		}
-		System.err.println("-------------------------------------------------------");
-		System.err.println("CAN'T PROCEED - DATA NOT AVAIABLE FOR THIS AIRCRAFT YET");
-		System.err.println("NULL POINTER EXCEPTION WILL BE SHOWN");
-		System.err.println("-------------------------------------------------------");
-		System.err.println(" ");
-		return null;
-
-		case MILITARY_FIGHTERS: int index9 = 9;
-		for (int i=0; i<fuelFractionTable[8].length; i++){
-			ratio *= fuelFractionTable[index9][i]; 
-		}
-		System.err.println("-------------------------------------------------------");
-		System.err.println("CAN'T PROCEED - DATA NOT AVAIABLE FOR THIS AIRCRAFT YET");
-		System.err.println("NULL POINTER EXCEPTION WILL BE SHOWN");
-		System.err.println("-------------------------------------------------------");
-		System.err.println(" ");
-		return null;
-
-		case MILITARY_PATROL_BOMB_TRANSPORT: int index10 = 10;
-		for (int i=0; i<fuelFractionTable[9].length; i++){
-			ratio *= fuelFractionTable[index10][i]; 
-		}
-		System.err.println("-------------------------------------------------------");
-		System.err.println("CAN'T PROCEED - DATA NOT AVAIABLE FOR THIS AIRCRAFT YET");
-		System.err.println("NULL POINTER EXCEPTION WILL BE SHOWN");
-		System.err.println("-------------------------------------------------------");
-		System.err.println(" ");
-		return null;
-
-		case FLYING_BOATS_AMPHIBIOUS_FLOATAIRPLANES: int index11 = 11;
-		for (int i=0; i<fuelFractionTable[10].length; i++){
-			ratio *= fuelFractionTable[index11][i]; 
-		}
-		System.err.println("-------------------------------------------------------");
-		System.err.println("CAN'T PROCEED - DATA NOT AVAIABLE FOR THIS AIRCRAFT YET");
-		System.err.println("NULL POINTER EXCEPTION WILL BE SHOWN");
-		System.err.println("-------------------------------------------------------");
-		System.err.println(" ");
-		return null;
-
-		case SUPERSONIC_CRUISE: int index12 = 12;
-		for (int i=0; i<fuelFractionTable[11].length; i++){
-			ratio *= fuelFractionTable[index12][i]; 
-		}
-		System.err.println("-------------------------------------------------------");
-		System.err.println("CAN'T PROCEED - DATA NOT AVAIABLE FOR THIS AIRCRAFT YET");
-		System.err.println("NULL POINTER EXCEPTION WILL BE SHOWN");
-		System.err.println("-------------------------------------------------------");
-		System.err.println(" ");
-		return null;
-		}
-
-		double breguetRatio = ratio/mff; 
+		double breguetRatio = mffRatio/mff; 
 
 		if (isBestRange &&
 				(engineType==EngineTypeEnum.PISTON ||
 				 engineType==EngineTypeEnum.TURBOPROP)) {
 
-			aerodynamicAnalysis.calculateDragPolarPoints(
-					ar,
-					oswald,
-					cd0,
-					AtmosphereCalc.getDensity(altitude),
-					maxTakeOffMass.getEstimatedValue()*9.81,
-					surface.getEstimatedValue()
-					);
-
 			sfc = EngineDatabaseManager.getSFC(
-					calculateBestRangeMach(
-							engineType,
-							surface,
-							ar,
-							oswald,
-							cd0,
-							altitude
-							),
-					altitude,
+					bestRangeMach,
+					altitude.doubleValue(SI.METER),
 					EngineDatabaseManager.getThrustRatio(
-							calculateBestRangeMach(
-									engineType,
-									surface,
-									ar,
-									oswald,
-									cd0,
-									altitude
-									),
-							altitude,
+							bestRangeMach,
+							altitude.doubleValue(SI.METER),
 							byPassRatio,
 							engineType,
 							EngineOperatingConditionEnum.CRUISE
@@ -1245,14 +706,14 @@ public class PayloadRangeCalc{
 					EngineOperatingConditionEnum.CRUISE
 					);
 
-			cl = aerodynamicAnalysis.getcLE();
-			cd = aerodynamicAnalysis.getcDE();
+			cL = pointE.get("CL_E");
+			cD = pointE.get("CD_E");
 
 			rangeBreguet = RangeCalc.calculateRangeBreguetPropellerSFC(
-					eta,
+					etaPropeller,
 					sfc,
-					cl,
-					cd,
+					cL,
+					cD,
 					breguetRatio
 					);
 		}
@@ -1261,11 +722,11 @@ public class PayloadRangeCalc{
 				 engineType==EngineTypeEnum.TURBOPROP)) {
 
 			sfc = EngineDatabaseManager.getSFC(
-					currentMach,
-					altitude,
+					cruiseMach,
+					altitude.doubleValue(SI.METER),
 					EngineDatabaseManager.getThrustRatio(
-							currentMach,
-							altitude,
+							cruiseMach,
+							altitude.doubleValue(SI.METER),
 							byPassRatio,
 							engineType,
 							EngineOperatingConditionEnum.CRUISE
@@ -1275,22 +736,22 @@ public class PayloadRangeCalc{
 					EngineOperatingConditionEnum.CRUISE
 					);
 
-			cd = DragCalc.calculateCDTotal(
-					cd0,
-					cl,
+			cD = DragCalc.calculateCDTotal(
+					cD0,
+					cL,
 					ar,
 					oswald,
-					currentMach,
+					cruiseMach,
 					sweepHalfChordEquivalent.getEstimatedValue(),
 					tcMax,
 					airfoilType
 					);
 
 			rangeBreguet = RangeCalc.calculateRangeBreguetPropellerSFC(
-					eta,
+					etaPropeller,
 					sfc,
-					cl,
-					cd,
+					cL,
+					cD,
 					breguetRatio
 					);
 		}
@@ -1300,29 +761,12 @@ public class PayloadRangeCalc{
 				 engineType == EngineTypeEnum.PROPFAN  ||
 				 engineType == EngineTypeEnum.RAMJET)) {
 
-			aerodynamicAnalysis.calculateDragPolarPoints(
-					ar,
-					oswald,
-					cd0,
-					AtmosphereCalc.getDensity(altitude),
-					maxTakeOffMass.getEstimatedValue()*9.81,
-					surface.getEstimatedValue());
-
-			bestRangeMach = calculateBestRangeMach(
-					engineType,
-					surface,
-					ar,
-					oswald,
-					cd0,
-					altitude
-					);
-
 			sfc = EngineDatabaseManager.getSFC(
 					bestRangeMach,
-					altitude,
+					altitude.doubleValue(SI.METER),
 					EngineDatabaseManager.getThrustRatio(
 							bestRangeMach,
-							altitude,
+							altitude.doubleValue(SI.METER),
 							byPassRatio,
 							engineType,
 							EngineOperatingConditionEnum.CRUISE
@@ -1332,19 +776,19 @@ public class PayloadRangeCalc{
 					EngineOperatingConditionEnum.CRUISE
 					);
 
-			cl = aerodynamicAnalysis.getcLA();
-			cd = aerodynamicAnalysis.getcDA();
+			cL = pointA.get("CL_A");
+			cD = pointA.get("CD_A");
 
 			rangeBreguet = RangeCalc.calculateRangeBreguetJetSFCJ(
 					Amount.valueOf(
 							SpeedCalc.calculateTAS(
 									bestRangeMach,
-									altitude
+									altitude.doubleValue(SI.METER)
 									),
 							SI.METERS_PER_SECOND).to(NonSI.KILOMETERS_PER_HOUR),
 					sfc,
-					cl,
-					cd,
+					cL,
+					cD,
 					breguetRatio);
 		}
 		else if (!isBestRange &&
@@ -1354,11 +798,11 @@ public class PayloadRangeCalc{
 				 engineType == EngineTypeEnum.RAMJET)) {
 
 			sfc = EngineDatabaseManager.getSFC(
-					currentMach,
-					altitude,
+					cruiseMach,
+					altitude.doubleValue(SI.METER),
 					EngineDatabaseManager.getThrustRatio(
-							currentMach,
-							altitude,
+							cruiseMach,
+							altitude.doubleValue(SI.METER),
 							byPassRatio,
 							engineType,
 							EngineOperatingConditionEnum.CRUISE),
@@ -1366,12 +810,12 @@ public class PayloadRangeCalc{
 					engineType,
 					EngineOperatingConditionEnum.CRUISE);
 
-			cd = DragCalc.calculateCDTotal(
-					cd0,
-					cl,
+			cD = DragCalc.calculateCDTotal(
+					cD0,
+					cL,
 					ar,
 					oswald,
-					currentMach,
+					cruiseMach,
 					sweepHalfChordEquivalent.getEstimatedValue(),
 					tcMax,
 					airfoilType);
@@ -1379,34 +823,33 @@ public class PayloadRangeCalc{
 			rangeBreguet = RangeCalc.calculateRangeBreguetJetSFCJ(
 					Amount.valueOf(
 							SpeedCalc.calculateTAS(
-									currentMach,
-									altitude
+									cruiseMach,
+									altitude.doubleValue(SI.METER)
 									),
 							SI.METERS_PER_SECOND).to(NonSI.KILOMETERS_PER_HOUR),
 					sfc,
-					cl,
-					cd,
+					cL,
+					cD,
 					breguetRatio);
 		}
 
-		range = Amount.valueOf(rangeBreguet, SI.KILOMETER).to(NonSI.NAUTICAL_MILE);
+		rangeAtZeroPayload = Amount.valueOf(rangeBreguet, SI.KILOMETER).to(NonSI.NAUTICAL_MILE);
 		//---------------------------------------------------------------------------
 		// RESULTS PRINT:
 		System.out.println("-----------------------------------------------------------");
 		System.out.println("RANGE @ ZERO PAYLOAD");
 		System.out.println("-----------------------------------------------------------");
-		System.out.println("Range = " + range.getEstimatedValue() + " " +
-				range.getUnit() + " \n\t@ TO Mass of " + 
+		System.out.println("Range = " + rangeAtMaxPayload.getEstimatedValue() + " " +
+				rangeAtMaxPayload.getUnit() + " \n\t@ TO Mass of " + 
 				takeOffMass.getEstimatedValue() + " " +
 				takeOffMass.getUnit() + "\n\t@ Payload Mass of 0 " + 
 				paxSingleMass.getUnit() + " \n\t@ Max Fuel Mass of " + 
 				maxFuelMass.getEstimatedValue() + " " +
 				maxFuelMass.getUnit() + "\n\twith 0 passengers" +
-				"\n\n\t\t SFC = " + sfc + "\n\n\t\t cL = " + cl + "\n\t\t cd = " + cd +
-				"\n\t\t\t Efficiency = " + (cl/cd));
+				"\n\n\t\t SFC = " + sfc + "\n\n\t\t cL = " + cL + "\n\t\t cd = " + cD +
+				"\n\t\t\t Efficiency = " + (cL/cD));
 		System.out.println("-----------------------------------------------------------");
 		System.out.println(" ");
-		return range;
 	}
 
 	/******************************************************************************************
@@ -1414,89 +857,30 @@ public class PayloadRangeCalc{
 	 * Payload-Range plot.
 	 * 
 	 * @author Vittorio Trifari
-	 * @param maxTakeOffMass
-	 * @param sweepHalfChordEquivalent Sweep angle at 50% of the equivalent wing chord
-	 * @param surface Wing surface in [m^2]
-	 * @param cd0
-	 * @param oswald Oswald factor of the wing
-	 * @param cl
-	 * @param ar Aspect ratio of the wing
-	 * @param tcMax mean maximum thickness of the wing
-	 * @param byPassRatio By Pass Ratio
-	 * @param eta Propeller efficiency
-	 * @param altitude 
-	 * @param currentMach
 	 * @param isBestRange This value is true if it's a best range condition, otherwise it's false
-	 * @return range the range value in [nmi]
-	 * @throws HDF5LibraryException
-	 * @throws NullPointerException
 	 * 
 	 * @return vRange the List of Range values in [nmi]
 	 */
-	public List<Amount<Length>> createRangeArray(
-			Amount<Mass> maxTakeOffMass,
-			Amount<Angle> sweepHalfChordEquivalent,
-			Amount<Area> surface,
-			double cd0, double oswald,
-			double cl, double ar,
-			double tcMax, double byPassRatio, double eta,
-			double altitude, double currentMach,
-			boolean isBestRange)
+	public List<Amount<Length>> createRangeArray(boolean isBestRange)
 					throws HDF5LibraryException, NullPointerException{
 
 		List<Amount<Length>> vRange = new ArrayList<Amount<Length>>();
 
 		System.out.println("-----------BUILDING RANGE ARRAY COMPONENTS-----------------");
 		System.out.println();
+		
+		calcRangeAtMaxPayload(isBestRange);
+		calcRangeAtMaxFuel(isBestRange);
+		calcRangeAtZeroPayload(isBestRange);
+		
 		// POINT 1
 		vRange.add(Amount.valueOf(0.0, NonSI.NAUTICAL_MILE));
 		// POINT 2
-		vRange.add(calcRangeAtMaxPayload(
-				maxTakeOffMass,
-				sweepHalfChordEquivalent,
-				surface,
-				cd0,
-				oswald,
-				cl,
-				ar,
-				tcMax,
-				byPassRatio,
-				eta,
-				altitude,
-				currentMach,
-				isBestRange));
+		vRange.add(rangeAtMaxPayload);
 		// POINT 3
-		vRange.add(calcRangeAtMaxFuel(
-				maxTakeOffMass,
-				sweepHalfChordEquivalent,
-				surface,
-				cd0,
-				oswald,
-				cl,
-				ar,
-				tcMax,
-				byPassRatio,
-				eta,
-				altitude,
-				currentMach,
-				isBestRange));
+		vRange.add(rangeAtMaxFuel);
 		// POINT 4
-		vRange.add(calcRangeAtZeroPayload(
-				maxTakeOffMass,
-				sweepHalfChordEquivalent,
-				surface,
-				cd0,
-				oswald,
-				cl,
-				ar,
-				tcMax,
-				byPassRatio,
-				eta,
-				altitude,
-				currentMach,
-				isBestRange
-				)
-				);
+		vRange.add(rangeAtZeroPayload);
 
 		return vRange;
 	}
@@ -1522,32 +906,25 @@ public class PayloadRangeCalc{
 	 * @throws HDF5LibraryException
 	 * @throws NullPointerException
 	 */
-	public void createPayloadRangeMatrices(
-			Amount<Angle> sweepHalfChordEquivalent,
-			Amount<Area> surface,
-			double cd0, double oswald,
-			double cl, double ar,
-			double tcMax, double byPassRatio, double eta,
-			double altitude, double currentMach,
-			boolean isBestRange)
+	public void createPayloadRangeMatrices(boolean isBestRange)
 					throws HDF5LibraryException, NullPointerException{
 		
 		System.out.println("-----------BUILDING RANGE MATRIX COMPONENTS-----------------");
 		System.out.println();
 		
-		double[] massArray_MTOM = new double[5];
+		double[] massArrayMTOM = new double[5];
 		rangeMatrix = new double [5][4];
 		payloadMatrix = new double [5][4];
 		
 		// generating variation of mass of 5% until -20% of maxTakeOffMass
 		for (int i=0; i<5; i++){
-			massArray_MTOM[i] = maxTakeOffMass.getEstimatedValue()*(1-0.05*(4-i));
+			massArrayMTOM[i] = maxTakeOffMass.getEstimatedValue()*(1-0.05*(4-i));
 		}
 
 		// setting the i-value of the mass array to the current maxTakeOffMass
 		for (int i=0; i<5; i++){
 			for (int j=0; j<4; j++){
-				maxTakeOffMass_current = Amount.valueOf(massArray_MTOM[i], SI.KILOGRAM);
+				maxTakeOffMass_current = Amount.valueOf(massArrayMTOM[i], SI.KILOGRAM);
 				switch (j){
 				case 0:
 					rangeMatrix[i][j] = 0.0;
@@ -1555,54 +932,18 @@ public class PayloadRangeCalc{
 					break;
 				case 1:
 					rangeMatrix[i][j] =	calcRangeAtMaxPayload(
-							maxTakeOffMass_current,
-							sweepHalfChordEquivalent,
-							surface,
-							cd0,
-							oswald,
-							cl,
-							ar,
-							tcMax,
-							byPassRatio,
-							eta,
-							altitude,
-							currentMach,
 							isBestRange
 							).getEstimatedValue();	
 					payloadMatrix[i][j] = nPassMax;
 					break;
 				case 2:
 					rangeMatrix[i][j] =	calcRangeAtMaxFuel(
-							maxTakeOffMass_current,
-							sweepHalfChordEquivalent,
-							surface,
-							cd0,
-							oswald,
-							cl,
-							ar,
-							tcMax,
-							byPassRatio,
-							eta,
-							altitude,
-							currentMach,
 							isBestRange
 							).getEstimatedValue();
 					payloadMatrix[i][j] = Math.round(getnPassActual());
 					break;
 				case 3:
 					rangeMatrix[i][j] =	calcRangeAtZeroPayload(
-							maxTakeOffMass_current,
-							sweepHalfChordEquivalent,
-							surface,
-							cd0,
-							oswald,
-							cl,
-							ar,
-							tcMax,
-							byPassRatio,
-							eta,
-							altitude,
-							currentMach,
 							isBestRange
 							).getEstimatedValue();
 					payloadMatrix[i][j] = 0;
@@ -1610,6 +951,12 @@ public class PayloadRangeCalc{
 				}
 			}
 		}
+		
+		//////////////////////////////////////////
+		//										//
+		// TODO:  FIX ERRORS. ADD toString()	//
+		//									    //
+		//////////////////////////////////////////
 		
 		System.out.println("-----------------------------------------------------------");
 		System.out.println("RANGE MATRIX [nmi]");
@@ -1686,19 +1033,19 @@ public class PayloadRangeCalc{
 		String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR) + File.separator;
 		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "PayloadRange" + File.separator);
 
-		double bestRange_double_Array[] = MyArrayUtils.convertListOfAmountTodoubleArray(vRange_BR);
-		double currentRange_double_Array[] = MyArrayUtils.convertListOfAmountTodoubleArray(vRange_CM);
-		double payload_double_Array[]= MyArrayUtils.convertToDoublePrimitive(vPayload);
+		double bestRangeDoubleArray[] = MyArrayUtils.convertListOfAmountTodoubleArray(vRange_BR);
+		double currentRangeDoubleArray[] = MyArrayUtils.convertListOfAmountTodoubleArray(vRange_CM);
+		double payloadDoubleArray[]= MyArrayUtils.convertToDoublePrimitive(vPayload);
 
-		double[][] range_double_Arrays = new double[2][4];
+		double[][] rangeDoubleArrays = new double[2][4];
 		for (int i=0; i<4; i++){
-			range_double_Arrays[0][i] = bestRange_double_Array[i];
-			range_double_Arrays[1][i] = currentRange_double_Array[i];
+			rangeDoubleArrays[0][i] = bestRangeDoubleArray[i];
+			rangeDoubleArrays[1][i] = currentRangeDoubleArray[i];
 		}
-		double[][] payload_double_Arrays = new double[2][4];
+		double[][] payloadDoubleArrays = new double[2][4];
 		for (int i=0; i<4; i++){
-			payload_double_Arrays[0][i] = payload_double_Array[i];
-			payload_double_Arrays[1][i] = payload_double_Array[i];
+			payloadDoubleArrays[0][i] = payloadDoubleArray[i];
+			payloadDoubleArrays[1][i] = payloadDoubleArray[i];
 		}
 
 		String[] legendValue = new String[2];
@@ -1706,7 +1053,7 @@ public class PayloadRangeCalc{
 		legendValue[1] = "Current Condition at Mach = " + currentMach;
 
 		MyChartToFileUtils.plot(
-				range_double_Arrays, payload_double_Arrays,	// array to plot
+				rangeDoubleArrays, payloadDoubleArrays,	// array to plot
 				null, null, 0.0, null,					    // axis with limits
 				"Range", "Payload", "nmi", "No. Pass",	    // label with unit
 				legendValue,								// legend
@@ -1722,7 +1069,7 @@ public class PayloadRangeCalc{
 	 * @param vRange_CM array of range values to plot (Current Mach condition)
 	 * @param vPayload array of payload (in No. Pass) to plot
 	 * @param bestRangeMach the evaluated Mach number for Best Range condition
-	 * @param currentMach the actual Mach number
+	 * @param cruiseMach the actual Mach number
 	 */
 	public void createPayloadRangeCharts_MaxTakeOffMass(
 			double[][] rangeMatrix,
@@ -1753,6 +1100,21 @@ public class PayloadRangeCalc{
 	
 	//----------------------------------------------------------------------------
 	// GETTERS & SETTERS:
+	public Aircraft getTheAircraft() {
+		return theAircraft;
+	}
+
+	public void setTheAircraft(Aircraft theAircraft) {
+		this.theAircraft = theAircraft;
+	}
+
+	public Amount<Mass> getPaxSingleMass() {
+		return paxSingleMass;
+	}
+
+	public void setPaxSingleMass(Amount<Mass> paxSingleMass) {
+		this.paxSingleMass = paxSingleMass;
+	}
 
 	public Amount<Mass> getMaxTakeOffMass() {
 		return maxTakeOffMass;
@@ -1760,10 +1122,6 @@ public class PayloadRangeCalc{
 
 	public void setMaxTakeOffMass(Amount<Mass> maxTakeOffMass) {
 		this.maxTakeOffMass = maxTakeOffMass;
-	}
-
-	public Amount<Mass> getMaxTakeOffMass_current() {
-		return maxTakeOffMass_current;
 	}
 
 	public Amount<Mass> getOperatingEmptyMass() {
@@ -1798,12 +1156,28 @@ public class PayloadRangeCalc{
 		this.surface = surface;
 	}
 
-	public double getCd0() {
-		return cd0;
+	public Amount<Length> getAltitude() {
+		return altitude;
 	}
 
-	public void setCd0(double cd0) {
-		this.cd0 = cd0;
+	public void setAltitude(Amount<Length> altitude) {
+		this.altitude = altitude;
+	}
+
+	public FuelFractionDatabaseReader getFuelFractionDatabase() {
+		return fuelFractionDatabase;
+	}
+
+	public void setFuelFractionDatabase(FuelFractionDatabaseReader fuelFractionDatabase) {
+		this.fuelFractionDatabase = fuelFractionDatabase;
+	}
+
+	public double getcD0() {
+		return cD0;
+	}
+
+	public void setcD0(double cD0) {
+		this.cD0 = cD0;
 	}
 
 	public double getOswald() {
@@ -1814,12 +1188,12 @@ public class PayloadRangeCalc{
 		this.oswald = oswald;
 	}
 
-	public double getCl() {
-		return cl;
+	public double getcL() {
+		return cL;
 	}
 
-	public void setCl(double cl) {
-		this.cl = cl;
+	public void setcL(double cL) {
+		this.cL = cL;
 	}
 
 	public double getAr() {
@@ -1842,29 +1216,16 @@ public class PayloadRangeCalc{
 		return byPassRatio;
 	}
 
-	public double setByPassRatio(double byPassRatio) {
+	public void setByPassRatio(double byPassRatio) {
 		this.byPassRatio = byPassRatio;
-		return this.byPassRatio;
 	}
 
-	public double getAltitude() {
-		return altitude;
+	public double getCruiseMach() {
+		return cruiseMach;
 	}
 
-	public void setAltitude(double altitude) {
-		this.altitude = altitude;
-	}
-
-	public double getCurrentMach() {
-		return currentMach;
-	}
-
-	public void setCurrentMach(double currentMach) {
-		this.currentMach = currentMach;
-	}
-
-	public double getCriticalMach() {
-		return criticalMach;
+	public void setCruiseMach(double cruiseMach) {
+		this.cruiseMach = cruiseMach;
 	}
 
 	public double getnPassMax() {
@@ -1875,12 +1236,36 @@ public class PayloadRangeCalc{
 		this.nPassMax = nPassMax;
 	}
 
+	public double getEtaPropeller() {
+		return etaPropeller;
+	}
+
+	public void setEtaPropeller(double etaPropeller) {
+		this.etaPropeller = etaPropeller;
+	}
+
+	public double getSfc() {
+		return sfc;
+	}
+
+	public void setSfc(double sfc) {
+		this.sfc = sfc;
+	}
+
 	public AirfoilTypeEnum getAirfoilType() {
 		return airfoilType;
 	}
 
 	public void setAirfoilType(AirfoilTypeEnum airfoilType) {
 		this.airfoilType = airfoilType;
+	}
+
+	public AircraftTypeEnum getAircraftType() {
+		return aircraftType;
+	}
+
+	public void setAircraftType(AircraftTypeEnum aircraftType) {
+		this.aircraftType = aircraftType;
 	}
 
 	public EngineTypeEnum getEngineType() {
@@ -1891,6 +1276,22 @@ public class PayloadRangeCalc{
 		this.engineType = engineType;
 	}
 
+	public double[][] getFuelFractionTable() {
+		return fuelFractionTable;
+	}
+
+	public void setFuelFractionTable(double[][] fuelFractionTable) {
+		this.fuelFractionTable = fuelFractionTable;
+	}
+
+	public Amount<Mass> getFuelMass() {
+		return fuelMass;
+	}
+
+	public void setFuelMass(Amount<Mass> fuelMass) {
+		this.fuelMass = fuelMass;
+	}
+
 	public Amount<Mass> getMaxFuelMass() {
 		return maxFuelMass;
 	}
@@ -1899,38 +1300,139 @@ public class PayloadRangeCalc{
 		this.maxFuelMass = maxFuelMass;
 	}
 
-	public Amount<Mass> getPaxSingleMass() {
-		return paxSingleMass;
+	public Amount<Mass> getTakeOffMass() {
+		return takeOffMass;
 	}
 
-	public void setPaxSingleMass(Amount<Mass> paxSingleMass) {
-		this.paxSingleMass = paxSingleMass;
+	public void setTakeOffMass(Amount<Mass> takeOffMass) {
+		this.takeOffMass = takeOffMass;
 	}
 
-	public double getnPassActual() {
-		return nPassActual;
+	public Amount<Mass> getPayloadMaxFuel() {
+		return payloadMaxFuel;
 	}
 
-	public double getEta() {
-		return eta;
+	public void setPayloadMaxFuel(Amount<Mass> payloadMaxFuel) {
+		this.payloadMaxFuel = payloadMaxFuel;
 	}
 
-	public void setEta(double eta) {
-		this.eta = eta;
+	public Amount<Mass> getMaxTakeOffMass_current() {
+		return maxTakeOffMass_current;
+	}
+
+	public void setMaxTakeOffMass_current(Amount<Mass> maxTakeOffMass_current) {
+		this.maxTakeOffMass_current = maxTakeOffMass_current;
+	}
+
+	public Amount<Length> getRange() {
+		return rangeAtMaxPayload;
+	}
+
+	public void setRange(Amount<Length> range) {
+		this.rangeAtMaxPayload = range;
+	}
+
+	public double getRangeBreguet() {
+		return rangeBreguet;
+	}
+
+	public void setRangeBreguet(double rangeBreguet) {
+		this.rangeBreguet = rangeBreguet;
 	}
 
 	public double getBestRangeMach() {
 		return bestRangeMach;
 	}
 
-	public double getSfc_current_mach() {
-		return sfc;
+	public void setBestRangeMach(double bestRangeMach) {
+		this.bestRangeMach = bestRangeMach;
 	}
+
+	public double getnPassActual() {
+		return nPassActual;
+	}
+
+	public void setnPassActual(double nPassActual) {
+		this.nPassActual = nPassActual;
+	}
+
+	public double getcD() {
+		return cD;
+	}
+
+	public void setcD(double cD) {
+		this.cD = cD;
+	}
+
+	public double getCriticalMach() {
+		return criticalMach;
+	}
+
+	public void setCriticalMach(double criticalMach) {
+		this.criticalMach = criticalMach;
+	}
+
+	public double getMffRatio() {
+		return mffRatio;
+	}
+
+	public void setMffRatio(double mffRatio) {
+		this.mffRatio = mffRatio;
+	}
+
 	public double[][] getRangeMatrix() {
 		return rangeMatrix;
 	}
 
+	public void setRangeMatrix(double[][] rangeMatrix) {
+		this.rangeMatrix = rangeMatrix;
+	}
+
 	public double[][] getPayloadMatrix() {
 		return payloadMatrix;
+	}
+
+	public void setPayloadMatrix(double[][] payloadMatrix) {
+		this.payloadMatrix = payloadMatrix;
+	}
+
+	public Map<String,Double> getPointE() {
+		return pointE;
+	}
+
+	public void setPointE(Map<String,Double> pointE) {
+		this.pointE = pointE;
+	}
+
+	public Map<String,Double> getPointP() {
+		return pointP;
+	}
+
+	public void setPointP(Map<String,Double> pointP) {
+		this.pointP = pointP;
+	}
+
+	public Map<String,Double> getPointA() {
+		return pointA;
+	}
+
+	public void setPointA(Map<String,Double> pointA) {
+		this.pointA = pointA;
+	}
+
+	public Amount<Length> getRangeAtMaxFuel() {
+		return rangeAtMaxFuel;
+	}
+
+	public void setRangeAtMaxFuel(Amount<Length> rangeAtMaxFuel) {
+		this.rangeAtMaxFuel = rangeAtMaxFuel;
+	}
+
+	public Amount<Length> getRangeAtZeroPayload() {
+		return rangeAtZeroPayload;
+	}
+
+	public void setRangeAtZeroPayload(Amount<Length> rangeAtZeroPayload) {
+		this.rangeAtZeroPayload = rangeAtZeroPayload;
 	}
 }

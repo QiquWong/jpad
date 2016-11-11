@@ -117,11 +117,11 @@ public class FuselageAerodynamicsManager extends analyses.analysismodel.analysis
 		// TODO : (Vittorio) GIVE THE POSSIBILITY TO ASSIGN MACH AND ALTITUDE IN DIFFERENT CONDITIONS !!
 		_cF = AerodynamicCalc.calculateCf(
 				AerodynamicCalc.calculateReynolds(
-						_theOperatingConditions.getAltitude().getEstimatedValue(),
-						_theOperatingConditions.getMachCurrent(),
+						_theOperatingConditions.getAltitudeCruise().getEstimatedValue(),
+						_theOperatingConditions.getMachCruise(),
 						_len_F.getEstimatedValue()
 						), 
-				_theOperatingConditions.getMachCurrent().doubleValue(), 
+				_theOperatingConditions.getMachCruise().doubleValue(), 
 				0.
 				);
 
