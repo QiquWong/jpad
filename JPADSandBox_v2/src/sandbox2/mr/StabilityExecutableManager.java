@@ -31,9 +31,12 @@ import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
+import configuration.enumerations.PerformanceEnum;
+import configuration.enumerations.PerformancePlotEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import standaloneutils.MyArrayUtils;
+import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyMathUtils;
 import standaloneutils.MyVariableToWrite;
 
@@ -214,7 +217,11 @@ public class StabilityExecutableManager {
 	//----------------------------------------------------------------
 	private Amount<Length> _horizontalDistanceQuarterChordWingHTail; // distance to use in Roskam downwash method. DIMENSIONAL
 	private Amount<Length> _verticalDistanceZeroLiftDirectionWingHTail;
-
+	private Amount<Length> _horizontalDistanceQuarterChordWingHTailNOANGLE; // this is the distance between the ac of wing and h tail mesured along
+	      // the BRF 
+	private Amount<Length> _verticalDistanceZeroLiftDirectionWingHTailNOANGLE; // this is the distance between the ac of wing and h tail mesured along
+         // the BRF 
+	
 	//-------------------------------------------------------------------------------------------------------------------------
 	//----------------------------------
 	// VARIABLE DECLARATION			   ||
@@ -225,14 +232,16 @@ public class StabilityExecutableManager {
 	//----------------------------------------------------------------
 	private List<Amount<Angle>> _alphasWing;
 	private List<Amount<Angle>> _alphasTail;
-	private List<Amount<Angle>> _downwashAngle;
-	private List<Amount<Angle>> _downwashGradient;
+	private List<Amount<Angle>> _downwashAngleVariable;
+	private List<Amount<Angle>> _downwashGradientVariable;
+	private List<Double> _downwashGradientConstant;
+	private List<Amount<Angle>> _downwashAngleConstant;
 
 	//Lift -------------------------------------------
 	//----------------------------------------------------------------
 
 	// taken from LSAerodynamicsCalculator
-	private Amount<Angle> _alphaZeroLift;
+	private Amount<Angle> _wingAlphaZeroLift;
 	private Amount<Angle> _alphaStar;
 	private Amount<Angle> _alphaMaxLinear;
 	private Amount<Angle> _alphaStall;
@@ -534,11 +543,10 @@ public class StabilityExecutableManager {
 				(this._xApexWing.doubleValue(SI.METER) + this._wingChordsBreakPoints.get(0).doubleValue(SI.METER)/4),
 				SI.METER
 				);
+		
+		if ( this._wingAlphaZeroLift == null ){
 
-
-		if ( this._alphaZeroLift == null ){
-
-			this._alphaZeroLift = (
+			this._wingAlphaZeroLift = (
 					Amount.valueOf(
 							AnglesCalc.alpha0LintegralMeanWithTwist(
 									this._wingSurface.doubleValue(SI.SQUARE_METRE),
@@ -550,7 +558,6 @@ public class StabilityExecutableManager {
 									),
 							NonSI.DEGREE_ANGLE
 							));
-			System.out.println(" alphazero =  --> " + this._alphaZeroLift);
 		}
 		
 		if ( (this._zApexWing.doubleValue(SI.METER) > 0 && this._zApexHTail.doubleValue(SI.METER) > 0 ) ||
@@ -579,7 +586,7 @@ public class StabilityExecutableManager {
 					this._verticalDistanceZeroLiftDirectionWingHTail.doubleValue(SI.METER) + (
 							this._horizontalDistanceQuarterChordWingHTail.doubleValue(SI.METER)*
 							Math.tan(this._wingAngleOfIncidence.doubleValue(SI.RADIAN) -
-									this._alphaZeroLift.doubleValue(SI.RADIAN))),
+									this._wingAlphaZeroLift.doubleValue(SI.RADIAN))),
 					SI.METER);
 		}
 		
@@ -589,9 +596,22 @@ public class StabilityExecutableManager {
 					this._verticalDistanceZeroLiftDirectionWingHTail.doubleValue(SI.METER) - (
 							this._horizontalDistanceQuarterChordWingHTail.doubleValue(SI.METER)*
 							Math.tan(this._wingAngleOfIncidence.doubleValue(SI.RADIAN)-
-									this._alphaZeroLift.doubleValue(SI.RADIAN))),
+									this._wingAlphaZeroLift.doubleValue(SI.RADIAN))),
 					SI.METER);
 		}
+		
+		this._horizontalDistanceQuarterChordWingHTailNOANGLE =  this._horizontalDistanceQuarterChordWingHTail;
+		this._verticalDistanceZeroLiftDirectionWingHTailNOANGLE = this._verticalDistanceZeroLiftDirectionWingHTail ;		
+		
+		this._verticalDistanceZeroLiftDirectionWingHTail = Amount.valueOf(
+				this._verticalDistanceZeroLiftDirectionWingHTail.doubleValue(SI.METER) * 
+				Math.cos(this._wingAngleOfIncidence.doubleValue(SI.RADIAN)-
+									this._wingAlphaZeroLift.doubleValue(SI.RADIAN)), SI.METER);
+		
+		this._horizontalDistanceQuarterChordWingHTail = Amount.valueOf(
+				this._horizontalDistanceQuarterChordWingHTail.doubleValue(SI.METER) * 
+				Math.cos(this._wingAngleOfIncidence.doubleValue(SI.RADIAN)-
+									this._wingAlphaZeroLift.doubleValue(SI.RADIAN)), SI.METER);
 		
 	}
 
@@ -631,15 +651,12 @@ public class StabilityExecutableManager {
 		}
 
 		// downwash calculator
-		this._downwashAngle = new ArrayList<>();
-		this._downwashGradient = new ArrayList<>();
-
-		if ( this._downwashConstant == Boolean.TRUE){
-			// DOWNWASH CONSTANT
+		this._downwashAngleVariable = new ArrayList<>();
+		this._downwashGradientVariable = new ArrayList<>();
+		this._downwashAngleConstant = new ArrayList<>();
+		this._downwashGradientConstant = new ArrayList<>();
 			
-			// calculate cl alpha
-			// MACH 0
-			
+			// calculate cl alpha at M=0 and M=current
 			NasaBlackwell theNasaBlackwellCalculatorMachZero = new NasaBlackwell(
 					this._wingSemiSpan.doubleValue(SI.METER),
 					this._wingSurface.doubleValue(SI.SQUARE_METRE),
@@ -683,8 +700,7 @@ public class StabilityExecutableManager {
 		
 			double cLAlphaMachZero = (clTwoMachZero-clOneMachZero)/toRadians(4);
 			double cLAlphaMachActual = (clTwoMachActual-clOneMachActual)/toRadians(4);
-			
-			
+
 			double downwashGradientConstant = AerodynamicCalc.calculateDownwashRoskamWithMachEffect(
 					this._wingAspectRatio, 
 					this._wingTaperRatio, 
@@ -694,12 +710,24 @@ public class StabilityExecutableManager {
 					cLAlphaMachZero, 
 					cLAlphaMachActual
 					);
-			
-			System.out.println(" downwash gradient " + downwashGradientConstant);
-		}
+		
+			for (int i=0; i<this._numberOfAlphasBody; i++){
+		 _downwashGradientConstant.add(downwashGradientConstant);}
+		 
+		 //fill the downwash array
+		 for (int i=0; i<this._numberOfAlphasBody; i++){
+			 this._downwashAngleConstant.add(i,
+					 Amount.valueOf(
+					 this._downwashGradientConstant.get(i)*(
+							 this._alphasBody.get(i).doubleValue(NonSI.DEGREE_ANGLE) - (-
+									 this._wingAngleOfIncidence.doubleValue(NonSI.DEGREE_ANGLE) + 
+									 this._wingAlphaZeroLift.doubleValue(NonSI.DEGREE_ANGLE))), NonSI.DEGREE_ANGLE));
+		 }
 
 		if ( this._downwashConstant == Boolean.FALSE){
 			// DOWNWASH variable
+			
+			
 		}
 
 
@@ -826,11 +854,115 @@ public class StabilityExecutableManager {
 
 		System.out.println("\nEngines ----------\n-------------------");
 
-		System.out.println("PLOT LIST");
+		System.out.println("\nPLOT LIST ----------\n-------------------");
 		for (int i=0; i<this._plotList.size(); i++)
 			System.out.println( this._plotList.get(i));
 	}
 
+	
+	public String printAllResults(){
+		
+			
+			MyConfiguration.customizeAmountOutput();
+
+
+			StringBuilder sb = new StringBuilder()
+					.append("\n\n---------------------------------------\n")
+					.append("Longitudinal Static Stability Results\n")
+					.append("---------------------------------------\n")
+					;
+			
+				sb.append("LIFT\n")
+				.append("-------------------------------------\n")
+				.append("\tWing\n")
+				.append("\t-------------------------------------\n")
+				.append("\t\tDownwash Gradient Constant = " + _downwashGradientConstant.get(0)+ "\n")
+				.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this._downwashAngleConstant, "\t\tDownwash angle with Constant Gradient", ","))
+				.append("\t-------------------------------------\n")
+				;
+					
+				sb.append("\tFuselage\n")
+				.append("\t-------------------------------------\n")
+				.append("\t\tGround roll distance = " + _downwashGradientConstant + "\n")
+				.append("\t-------------------------------------\n")
+				;
+				
+				sb.append("\tHorizontal Tail\n")
+				.append("\t-------------------------------------\n")
+				.append("\t\tGround roll distance = " + _downwashGradientConstant + "\n")
+				.append("\t-------------------------------------\n")
+				;
+				
+				sb.append("DRAG\n")
+				.append("-------------------------------------\n")
+				.append("\tWing\n")
+				.append("\t-------------------------------------\n")
+				.append("\t\tDownwash Gradient Constant = " + _downwashGradientConstant+ "\n")
+				.append("\t-------------------------------------\n")
+				;
+
+				return sb.toString();
+		
+	}
+	
+	public void plot( String folderPathName) throws InstantiationException, IllegalAccessException{
+	
+		if(_plotList.contains(AerodynamicAndStabilityPlotEnum.DOWNWASH_ANGLE)) {
+			
+			List<Double[]> xList = new ArrayList<>();
+			List<Double[]> yList = new ArrayList<>();
+			List<String> legend = new ArrayList<>();
+			
+			xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasBody));
+			yList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_downwashAngleConstant));
+			legend.add("null");
+			
+			if ( this._downwashConstant == Boolean.TRUE){
+			MyChartToFileUtils.plot(
+					xList, 
+					yList, 
+					"Downwash Angle", 
+					"alpha_b", "epsilon", 
+					null, null,
+					null, null,
+					"deg", "deg",
+					false,
+					legend,
+					folderPathName,
+					"Downwash Angle");
+			
+			System.out.println("Plot Downwash Angle Chart ---> DONE \n");
+			}
+		}
+			
+		if(_plotList.contains(AerodynamicAndStabilityPlotEnum.DOWNWASH_GRADIENT)) {
+			
+			List<Double[]> xList = new ArrayList<>();
+			List<Double[]> yList = new ArrayList<>();
+			List<String> legend = new ArrayList<>();
+			
+			xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasBody));
+			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_downwashGradientConstant));
+			legend.add("null");
+			
+			if ( this._downwashConstant == Boolean.TRUE){
+			MyChartToFileUtils.plot(
+					xList, 
+					yList, 
+					"Downwash Gradient", 
+					"alpha_b", "d epsilon / d alpha", 
+					null, null,
+					null, null,
+					"deg", "",
+					false,
+					legend,
+					folderPathName,
+					"Downwash Gradient");
+			
+			System.out.println("Plot Downwash Gradient Chart ---> DONE \n");
+			}
+		}
+	}
 
 	/******************************************************************************************************************************************
 	 * Following there are the calculators                                                                                                    *
@@ -1666,11 +1798,11 @@ public class StabilityExecutableManager {
 	}
 
 	public List<Amount<Angle>> get_downwashAngle() {
-		return _downwashAngle;
+		return _downwashAngleVariable;
 	}
 
 	public List<Amount<Angle>> get_downwashGradient() {
-		return _downwashGradient;
+		return _downwashGradientVariable;
 	}
 
 	public void set_alphasWing(List<Amount<Angle>> _alphasWing) {
@@ -1682,11 +1814,11 @@ public class StabilityExecutableManager {
 	}
 
 	public void set_downwashAngle(List<Amount<Angle>> _downwashAngle) {
-		this._downwashAngle = _downwashAngle;
+		this._downwashAngleVariable = _downwashAngle;
 	}
 
 	public void set_downwashGradient(List<Amount<Angle>> _downwashGradient) {
-		this._downwashGradient = _downwashGradient;
+		this._downwashGradientVariable = _downwashGradient;
 	}
 
 	public Amount<Angle> getWingAngleOfIncidence() {

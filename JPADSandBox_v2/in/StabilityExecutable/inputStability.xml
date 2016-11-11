@@ -12,7 +12,7 @@
 				<!-- Reynolds number reffered to MAC  -->
 				<Reynolds_number>6000000</Reynolds_number>
 				<!-- definition of alpha body array analysis  -->
-				<alpha_body_initial unit="°">-1</alpha_body_initial>
+				<alpha_body_initial unit="°">-6</alpha_body_initial>
                 <alpha_body_final unit="°">16</alpha_body_final>
                 <number_of_alphas_body>30</number_of_alphas_body>
 				<condition>TAKE_OFF</condition>
@@ -24,16 +24,16 @@
        <wing>
 			<position>
 			<!-- This is the position of the component in BRF. The BRF has origin in 0,0,0 -->
-                    <x unit="m">19.09</x>
+                    <x unit="m">4.43</x>
                     <y unit="m">0.0</y>
-                    <z unit="m">2.22</z>
+                    <z unit="m">0.6</z>
             </position>
             <global>
-                <surface unit="m²">6.82</surface>
-                <aspect_ratio>6</aspect_ratio>
+                <surface unit="m²">25.4</surface>
+                <aspect_ratio>7.7</aspect_ratio>
                 <number_of_point_semispan>50</number_of_point_semispan>
                 <adimensional_kink_station>0.33</adimensional_kink_station>
-				<angle_of_incidence unit="°">2</angle_of_incidence>
+				<angle_of_incidence unit="°">1</angle_of_incidence>
 				<number_of_given_sections>3</number_of_given_sections>
 				<!-- If your airfoil isn’t in the list, you can use the most similar one. -->
 				<mean_airfoil_family>NACA_64_SERIES</mean_airfoil_family>
@@ -51,14 +51,14 @@
              <distribution>
                    <geometry>
 						<y_adimensional_stations>[0;0.33,1]</y_adimensional_stations>
-						<chord_distribution unit="m">[1.4224,1.3,0.7112]</chord_distribution>
+						<chord_distribution unit="m">[1.4224,1.3,1.02]</chord_distribution>
 						<!-- XLE is in LRF, so the root value of XLE  must be zero -->
-						<x_le_distribution unit="m">[0,1,2.433]</x_le_distribution>
+						<x_le_distribution unit="m">[0,0,0]</x_le_distribution>
 						<twist_distribution unit="°">[0,0,0]</twist_distribution>
 						<dihedral_distribution unit="°">[0,0,0]</dihedral_distribution>
                     </geometry>
                     <aerodynamics>
-						<alpha_zero_lift_distribution unit="°">[-1.1,-1.1, -1.1]</alpha_zero_lift_distribution>
+						<alpha_zero_lift_distribution unit="°">[-1.5,-3, -3]</alpha_zero_lift_distribution>
 						<alpha_star_distribution unit="°">[8,8,8]</alpha_star_distribution>
 						<maximum_lift_coefficient_distribution>[1.567,1.516,1.516]</maximum_lift_coefficient_distribution>
 					</aerodynamics>	
@@ -150,9 +150,9 @@
 		<horizontal_tail>
 		    <position>
 			<!-- This is the position of the component in BRF. The BRF has origin in 0,0,0 -->
-               <x unit="m">31.54</x>
+               <x unit="m">10.43</x>
                <y unit="m">0.0</y>
-               <z unit="m">1.34</z>
+               <z unit="m">0.01</z>
             </position>
 			<global>
                 <surface unit="m²">6.82</surface>

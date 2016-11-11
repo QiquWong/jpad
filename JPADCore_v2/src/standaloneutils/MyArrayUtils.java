@@ -757,5 +757,18 @@ public static <T extends Quantity> void printListOfAmountWithUnitsInEvidence( Li
 		}
 		System.out.print(list.get(list.size()-1).getEstimatedValue() + " ] ");
 	}
+
+public static <T extends Quantity> String ListOfAmountWithUnitsInEvidenceString( List<Amount<T>> list, String name, String separator) {
+	
+	String st = null;
+	st =  name + " (" + list.get(0).getUnit() + ") --> [";
+			
+	for (int i=0; i<list.size()-1; i++){
+		st = st + list.get(i).getEstimatedValue() + " " + separator + " ";
+	}
+	st = st + list.get(list.size()-1).getEstimatedValue() + "] " + "\n";
+
+	return st;
+}
 }
 

@@ -409,15 +409,17 @@ public class AerodynamicCalc {
 	 */
 	public static Double calculateDownwashRoskam(double aspectRatio, double taperRatio, double adimensionalHorizontalDistance, 
 			double adimensionalVetricalDistance, Amount<Angle> sweepQuarterChord) {
-		
+
 		double ka = (1/aspectRatio)-(1/(1+Math.pow(aspectRatio, 1.7)));
 		double kL = (10-3*taperRatio)/7;
 		double kH = (
-				1-adimensionalHorizontalDistance) /
-				Math.pow(
-						(2*adimensionalVetricalDistance), (1/3));
-		
-		Double downwashGradient = 4.44*(ka*kL*kH*Math.sqrt(Math.cos(sweepQuarterChord.doubleValue(SI.RADIAN))));
+				1-adimensionalVetricalDistance) /
+				Math.cbrt(
+						2*adimensionalHorizontalDistance);
+
+		Double downwashGradient =4.44* Math.pow(
+				(ka*kL*kH*Math.sqrt(Math.cos(sweepQuarterChord.doubleValue(SI.RADIAN)))), 
+				1.19);
 		return downwashGradient;
 	}
 	

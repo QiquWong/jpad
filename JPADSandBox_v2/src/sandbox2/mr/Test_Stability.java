@@ -19,6 +19,7 @@ import org.kohsuke.args4j.Option;
 import configuration.MyConfiguration;
 import configuration.enumerations.FoldersEnum;
 import standaloneutils.JPADXmlReader;
+import writers.JPADStaticWriteUtils;
 
 
 public class Test_Stability{
@@ -57,7 +58,21 @@ public class Test_Stability{
 				MyConfiguration.initWorkingDirectoryTree();
 
 				String pathToXML = theTestObject.get_inputFile().getAbsolutePath();
-				String filenameWithPathAndExt = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR)+ "Stability_Output.xml"; 
+				String filenameWithPathAndExt = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR)+"Stability_Output"+ "Stability_Output.xml"; 
+				
+				String outputPath = JPADStaticWriteUtils.createNewFolder(
+						MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR) + 
+						File.separator +
+						"Longitudinal Static Stability Output"+
+					    File.separator 
+						);
+			
+				String outputChartPath = JPADStaticWriteUtils.createNewFolder(
+						outputPath +
+						File.separator +
+						"Wing Charts"+
+						File.separator
+						);
 				
 
 		System.out.println("INPUT FILE ===> " + pathToXML);
@@ -98,8 +113,10 @@ public class Test_Stability{
 		
 		theCalculator.initializeData();
 		theCalculator.initializeAlphaArrays();
-		
 		theCalculator.printAllData();
+		String sb = theCalculator.printAllResults();
+		System.out.println(sb);
+		theCalculator.plot(outputChartPath);
 		// read
 		// initialize
 		// print
