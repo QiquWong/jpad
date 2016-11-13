@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- All units can be choose by user with the exception of surfaces deflections. All values of each array must have the same unit-->    
 <!-- It is possible to choose a constant downwash calculation, or variable with the flag-->     
- <Longitudinal_static_stability_executable downwash="CONSTANT"> <!-- Longitudinal_static_stability_executable downwash="VARIABLE" -->
+ <Longitudinal_static_stability_executable downwash="VARIABLE"> <!-- Longitudinal_static_stability_executable downwash="VARIABLE" -->
+ <!-- Longitudinal_static_stability_executable downwash="CONSTANT" -->
         <operating_conditions>
 				<!-- This is the position of the aircraft CG in the BRF -->
                 <x_cg unit="m">19.09</x_cg>
@@ -14,7 +15,7 @@
 				<!-- definition of alpha body array analysis  -->
 				<alpha_body_initial unit="°">-6</alpha_body_initial>
                 <alpha_body_final unit="°">16</alpha_body_final>
-                <number_of_alphas_body>30</number_of_alphas_body>
+                <number_of_alphas_body>40</number_of_alphas_body>
 				<condition>TAKE_OFF</condition>
 				<!--
 				<condition>CRUISE</condition>
@@ -35,6 +36,8 @@
                 <adimensional_kink_station>0.33</adimensional_kink_station>
 				<angle_of_incidence unit="°">1</angle_of_incidence>
 				<number_of_given_sections>3</number_of_given_sections>
+				<sweep_quarter_chord unit="°">0</sweep_quarter_chord>
+				<sweep_LE unit="°">0</sweep_LE>
 				<!-- If your airfoil isn’t in the list, you can use the most similar one. -->
 				<mean_airfoil_family>NACA_64_SERIES</mean_airfoil_family>
 				<!--

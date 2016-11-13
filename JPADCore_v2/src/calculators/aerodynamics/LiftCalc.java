@@ -324,6 +324,25 @@ public class LiftCalc {
 		
 	}
 
+	public static Double[] calculateCLAlphaArray( //1/deg
+		Double[] cL3DCurve,
+		List<Amount<Angle>> alphaArray
+			) {
+		
+	Double [] cLAlphaArray = new Double [cL3DCurve.length];
+	
+
+	for (int i=0 ; i<alphaArray.size()-1; i++){
+			cLAlphaArray[i] = (cL3DCurve[i+1] - cL3DCurve[i])/
+					(alphaArray.get(i+1).doubleValue(SI.RADIAN) - alphaArray.get(i).doubleValue(SI.RADIAN));			
+		
+	}
+	cLAlphaArray[cLAlphaArray.length-1] = cLAlphaArray[cLAlphaArray.length-2];
+	return cLAlphaArray; // 1/deg
+	}
+	
+	
+	
 	public static Double[] calculateCLvsAlphaArray(
 			double cL0,
 			double cLStar,

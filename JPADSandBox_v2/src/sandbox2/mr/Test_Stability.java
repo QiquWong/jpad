@@ -113,6 +113,9 @@ public class Test_Stability{
 		
 		theCalculator.initializeData();
 		theCalculator.initializeAlphaArrays();
+		theCalculator.calculateWingLiftCharacteristics();
+		theCalculator.initializeDownwashArray();
+		//...
 		theCalculator.printAllData();
 		String sb = theCalculator.printAllResults();
 		System.out.println(sb);

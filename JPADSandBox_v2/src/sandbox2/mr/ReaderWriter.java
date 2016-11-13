@@ -119,7 +119,9 @@ public class ReaderWriter{
 		theStabilityCalculator.setWingNumberOfPointSemiSpanWise((int)Double.parseDouble((reader.getXMLPropertyByPath("//wing/global/number_of_point_semispan"))));
 		theStabilityCalculator.setWingAdimentionalKinkStation(Double.parseDouble((reader.getXMLPropertyByPath("//wing/global/adimensional_kink_station"))));
 		theStabilityCalculator.setWingNumberOfGivenSections((int)Double.parseDouble((reader.getXMLPropertyByPath("//wing/global/number_of_given_sections"))));
-
+		theStabilityCalculator.setWingSweepQuarterChord((Amount<Angle>) reader.getXMLAmountWithUnitByPath("//wing/global/sweep_quarter_chord"));
+		theStabilityCalculator.setWingSweepLE((Amount<Angle>) reader.getXMLAmountWithUnitByPath("//wing/global/sweep_LE"));
+		
 		List<String> airfoilFamilyProperty = reader.getXMLPropertiesByPath("//wing/global/mean_airfoil_family");
 
 		//airfoil type
