@@ -1403,7 +1403,6 @@ public class LSAerodynamicsCalculator {
 					MethodEnum.PHILLIPS_ALLEY,
 					LiftCalc.calculateCLvsAlphaArray(
 							_cLZero.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC),
-							_cLStar.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC),
 							_cLMax.get(MethodEnum.PHILLIPS_ALLEY),
 							_alphaStar.get(MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS),
 							_alphaStall.get(MethodEnum.PHILLIPS_ALLEY),
@@ -1460,7 +1459,6 @@ public class LSAerodynamicsCalculator {
 					MethodEnum.NASA_BLACKWELL,
 					LiftCalc.calculateCLvsAlphaArray(
 							_cLZero.get(MethodEnum.NASA_BLACKWELL),
-							_cLStar.get(MethodEnum.NASA_BLACKWELL),
 							_cLMax.get(MethodEnum.NASA_BLACKWELL),
 							_alphaStar.get(MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS),
 							_alphaStall.get(MethodEnum.NASA_BLACKWELL),
@@ -2408,7 +2406,6 @@ public class LSAerodynamicsCalculator {
 					MethodEnum.EMPIRICAL,
 					LiftCalc.calculateCLvsAlphaArray(
 							_cLZeroHighLift.get(MethodEnum.EMPIRICAL),
-							_cLStarHighLift.get(MethodEnum.EMPIRICAL),
 							_cLMaxHighLift.get(MethodEnum.EMPIRICAL),
 							_alphaStarHighLift.get(MethodEnum.EMPIRICAL),
 							_alphaStallHighLift.get(MethodEnum.EMPIRICAL),

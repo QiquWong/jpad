@@ -303,7 +303,7 @@ public class LiftCalc {
 		double [] vector = {
 				cLmax,
 				0,
-				cLAlpha.to(NonSI.DEGREE_ANGLE).inverse().getEstimatedValue(),
+				cLAlpha.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
 				cLStar
 				};
 
@@ -345,7 +345,6 @@ public class LiftCalc {
 	
 	public static Double[] calculateCLvsAlphaArray(
 			double cL0,
-			double cLStar,
 			double cLmax,
 			Amount<Angle> alphaStar,
 			Amount<Angle> alphaStall,
@@ -360,9 +359,17 @@ public class LiftCalc {
 		double c = 0.0;
 		double d = 0.0;
 		
+		
+		double clstarprima = (cLAlpha.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+				* alphaStar.doubleValue(NonSI.DEGREE_ANGLE))
+				+ cL0;
+
+		double cLStar = (cLAlpha.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+				* alphaStar.doubleValue(NonSI.DEGREE_ANGLE))
+				+ cL0;
 		for(int i=0; i<alphaArray.length; i++) {
 			if(alphaArray[i] <= alphaStar.doubleValue(NonSI.DEGREE_ANGLE)) {
-				cLArray[i] = (cLAlpha.to(NonSI.DEGREE_ANGLE).inverse().getEstimatedValue()
+				cLArray[i] = (cLAlpha.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
 						* alphaArray[i])
 						+ cL0;
 			}
@@ -385,11 +392,12 @@ public class LiftCalc {
 										alphaStar.doubleValue(NonSI.DEGREE_ANGLE),
 										1.0}
 									};
+
 				RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
 				double [] vector = {
 						cLmax,
 						0,
-						cLAlpha.to(NonSI.DEGREE_ANGLE).inverse().getEstimatedValue(),
+						cLAlpha.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
 						cLStar
 						};
 
@@ -405,9 +413,13 @@ public class LiftCalc {
 						c * alphaArray[i] +
 						d;
 			}
-				
 		}
 		
+		double clStardopo = a * Math.pow( alphaStar.doubleValue(NonSI.DEGREE_ANGLE), 3) + 
+				b * Math.pow( alphaStar.doubleValue(NonSI.DEGREE_ANGLE), 2) + 
+				c *  alphaStar.doubleValue(NonSI.DEGREE_ANGLE) +
+				d;
+
 		return cLArray;
 	}
 

@@ -3,6 +3,7 @@ package sandbox2.mr;
 import static java.lang.Math.toRadians;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -224,12 +225,15 @@ public class StabilityExecutableManager {
 	      // the BRF 
 	private Amount<Length> _verticalDistanceZeroLiftDirectionWingHTailNOANGLE; // this is the distance between the ac of wing and h tail mesured along
          // the BRF 
-	
+	private Amount<Length> _verticalDistanceZeroLiftDirectionWingHTailCOMPLETE;
 	String databaseFolderPath;
 	String aerodynamicDatabaseFileName;
 	String highLiftDatabaseFileName;
 	AerodynamicDatabaseReader aeroDatabaseReader;
 	HighLiftDatabaseReader highLiftDatabaseReader;
+	
+	double [] alphaZeroLiftRad;
+	double [] twistDistributionRad ;
 	
 	//-------------------------------------------------------------------------------------------------------------------------
 	//----------------------------------
@@ -247,6 +251,8 @@ public class StabilityExecutableManager {
 	private List<Amount<Angle>> _downwashAngleVariable;
 	private List<Amount<Length>> _horizontalDistance;
 	private List<Amount<Length>> _verticalDistance;
+	private List<Amount<Length>> _horizontalDistanceConstant = new ArrayList<>();
+	private List<Amount<Length>> _verticalDistanceConstant = new ArrayList<>();
 	
 
 	//Lift -------------------------------------------
@@ -266,10 +272,39 @@ public class StabilityExecutableManager {
 	private Double _cLAtAlpha;
 	private Double[] _wingliftCoefficient3DCurve;
 	private Double[] _wingliftCoefficient3DCurveHighLift;
-	private Double[] _wingliftCoefficientDistributionAtCLMax;
 	private double [] _wingliftCoefficientDistributionatCLMax;
 	private Double [] _wingclAlphaArray;
 
+	
+	//High Lift--------------------------------------
+	//----------------------------------------------------------------
+	private Double _cLAtAlphaHighLift;
+	private Amount<Angle> _alphaZeroLiftHighLift;
+	private Amount<Angle> _alphaStarHighLift;
+	private Amount<Angle> _alphaStallHighLift;
+	private Double _cLZeroHighLift;
+	private Double _cLStarHighLift;
+	private Double _cLMaxHighLift;
+	private Amount<?> _cLAlphaHighLift;
+	private Double _cD0HighLift;
+	private List<Double> _deltaCl0FlapList;
+	private Double _deltaCl0Flap;
+	private List<Double> _deltaCL0FlapList;
+	private Double _deltaCL0Flap;
+	private List<Double> _deltaClmaxFlapList;
+	private Double _deltaClmaxFlap;
+	private List<Double> _deltaCLmaxFlapList;
+	private Double _deltaCLmaxFlap;
+	private List<Double> _deltaClmaxSlatList;
+	private Double _deltaClmaxSlat;
+	private List<Double> _deltaCLmaxSlatList;
+	private Double _deltaCLmaxSlat;
+	private List<Double> _deltaCD0List;
+	private Double _deltaCD0;
+	private List<Double> _deltaCMc4List;
+	private Double _deltaCMc4;
+	
+	
 	//Drag -------------------------------------------
 	//----------------------------------------------------------------
 
@@ -555,6 +590,13 @@ public class StabilityExecutableManager {
 			_hTailClMaxDistribution.add(clMaxDistributionArrayHtail[i]);
 
 		
+		alphaZeroLiftRad = new double [_wingNumberOfPointSemiSpanWise];
+		twistDistributionRad = new double [_wingNumberOfPointSemiSpanWise];
+		for (int i=0; i<_wingNumberOfPointSemiSpanWise; i++){
+			alphaZeroLiftRad[i] = _wingAlphaZeroLiftDistribution.get(i).doubleValue(SI.RADIAN);
+			twistDistributionRad[i] =  _wingTwistDistribution.get(i).doubleValue(SI.RADIAN);
+		}
+		
 		
 		
 		//---------------
@@ -586,11 +628,11 @@ public class StabilityExecutableManager {
 		if ( (this._zApexWing.doubleValue(SI.METER) > 0 && this._zApexHTail.doubleValue(SI.METER) > 0 ) ||
 				(this._zApexWing.doubleValue(SI.METER) < 0 && this._zApexHTail.doubleValue(SI.METER) < 0 )){
 		this._verticalDistanceZeroLiftDirectionWingHTail = Amount.valueOf(
-				Math.abs(this._zApexHTail.doubleValue(SI.METER) - this._zApexWing.doubleValue(SI.METER)), SI.METER);
+				this._zApexHTail.doubleValue(SI.METER) - this._zApexWing.doubleValue(SI.METER), SI.METER);
 		}
 		
 		if ( (this._zApexWing.doubleValue(SI.METER) > 0 && this._zApexHTail.doubleValue(SI.METER) < 0 ) ||
-				(this._zApexWing.doubleValue(SI.METER) < 0 && this._zApexHTail.doubleValue(SI.METER) > 0 )){
+				(this._zApexWing.doubleValue(SI.METER) < 0 && this._zApexHTail.doubleValue(SI.METER) > 0 )){ // different sides
 			if(this._zApexWing.doubleValue(SI.METER) < 0 ){
 				this._verticalDistanceZeroLiftDirectionWingHTail = Amount.valueOf(
 						this._zApexHTail.doubleValue(SI.METER) + Math.abs(this._zApexWing.doubleValue(SI.METER)), SI.METER);	
@@ -602,12 +644,16 @@ public class StabilityExecutableManager {
 			}
 		}
 		
+		// vertical and horizontal distances from AC
+		
+		this._verticalDistanceZeroLiftDirectionWingHTailNOANGLE = this._verticalDistanceZeroLiftDirectionWingHTail ;		
+		this._horizontalDistanceQuarterChordWingHTailNOANGLE =  this._horizontalDistanceQuarterChordWingHTail;
 
 		if (this._zApexWing.doubleValue(SI.METER) < this._zApexHTail.doubleValue(SI.METER)  ){
 			
 			this._verticalDistanceZeroLiftDirectionWingHTail = Amount.valueOf(
-					this._verticalDistanceZeroLiftDirectionWingHTail.doubleValue(SI.METER) + (
-							this._horizontalDistanceQuarterChordWingHTail.doubleValue(SI.METER)*
+					this._verticalDistanceZeroLiftDirectionWingHTail.doubleValue(SI.METER) - (
+							(this._horizontalDistanceQuarterChordWingHTail.doubleValue(SI.METER) - 0.75 * this._wingChordsBreakPoints.get(0).doubleValue(SI.METER))*
 							Math.tan(this._wingAngleOfIncidence.doubleValue(SI.RADIAN) -
 									this._wingAlphaZeroLift.doubleValue(SI.RADIAN))),
 					SI.METER);
@@ -616,15 +662,15 @@ public class StabilityExecutableManager {
 		if (this._zApexWing.doubleValue(SI.METER) > this._zApexHTail.doubleValue(SI.METER)  ){
 			
 			this._verticalDistanceZeroLiftDirectionWingHTail = Amount.valueOf(
-					this._verticalDistanceZeroLiftDirectionWingHTail.doubleValue(SI.METER) - (
-							this._horizontalDistanceQuarterChordWingHTail.doubleValue(SI.METER)*
+					this._verticalDistanceZeroLiftDirectionWingHTail.doubleValue(SI.METER) + (
+							(this._horizontalDistanceQuarterChordWingHTail.doubleValue(SI.METER) - 0.75 * this._wingChordsBreakPoints.get(0).doubleValue(SI.METER))*
 							Math.tan(this._wingAngleOfIncidence.doubleValue(SI.RADIAN)-
 									this._wingAlphaZeroLift.doubleValue(SI.RADIAN))),
 					SI.METER);
 		}
-		
-		this._horizontalDistanceQuarterChordWingHTailNOANGLE =  this._horizontalDistanceQuarterChordWingHTail;
-		this._verticalDistanceZeroLiftDirectionWingHTailNOANGLE = this._verticalDistanceZeroLiftDirectionWingHTail ;		
+			
+		// distance along direction
+		this._verticalDistanceZeroLiftDirectionWingHTailCOMPLETE = this._verticalDistanceZeroLiftDirectionWingHTail ;		
 		
 		this._verticalDistanceZeroLiftDirectionWingHTail = Amount.valueOf(
 				this._verticalDistanceZeroLiftDirectionWingHTail.doubleValue(SI.METER) * 
@@ -636,7 +682,7 @@ public class StabilityExecutableManager {
 				Math.cos(this._wingAngleOfIncidence.doubleValue(SI.RADIAN)-
 									this._wingAlphaZeroLift.doubleValue(SI.RADIAN)), SI.METER);
 		
-	
+	System.out.println(" VERTICAL DISTANCE " + _verticalDistanceZeroLiftDirectionWingHTail);
 
 	}
 
@@ -685,6 +731,7 @@ public class StabilityExecutableManager {
 		this._downwashGradientConstant = new ArrayList<>();
 			
 			// calculate cl alpha at M=0 and M=current
+		if ( this._downwashConstant == Boolean.TRUE){
 			NasaBlackwell theNasaBlackwellCalculatorMachZero = new NasaBlackwell(
 					this._wingSemiSpan.doubleValue(SI.METER),
 					this._wingSurface.doubleValue(SI.SQUARE_METRE),
@@ -692,8 +739,8 @@ public class StabilityExecutableManager {
 					MyArrayUtils.convertListOfAmountTodoubleArray(this._wingChordsDistribution),
 					MyArrayUtils.convertListOfAmountTodoubleArray(this._wingXleDistribution),
 					MyArrayUtils.convertListOfAmountTodoubleArray(this._wingDihedralDistribution),
-					MyArrayUtils.convertListOfAmountTodoubleArray(this._wingTwistDistribution),
-					MyArrayUtils.convertListOfAmountTodoubleArray(this._wingAlphaZeroLiftDistribution),
+					twistDistributionRad,
+					alphaZeroLiftRad,
 					_wingVortexSemiSpanToSemiSpanRatio,
 					0.0,
 					0.0,
@@ -718,6 +765,8 @@ public class StabilityExecutableManager {
 					cLAlphaMachZero, 
 					this._wingcLAlphaRad
 					);
+			
+			
 		
 			for (int i=0; i<this._numberOfAlphasBody; i++){
 		 _downwashGradientConstant.add(downwashGradientConstant);}
@@ -731,6 +780,7 @@ public class StabilityExecutableManager {
 									 this._wingAngleOfIncidence.doubleValue(NonSI.DEGREE_ANGLE) + 
 									 this._wingAlphaZeroLift.doubleValue(NonSI.DEGREE_ANGLE))), NonSI.DEGREE_ANGLE));
 		 }
+		}
 
 		if ( this._downwashConstant == Boolean.FALSE){
 		
@@ -746,6 +796,7 @@ public class StabilityExecutableManager {
 					this._wingAlphaZeroLift, 
 					this._horizontalDistanceQuarterChordWingHTailNOANGLE, 
 					this._verticalDistanceZeroLiftDirectionWingHTailNOANGLE, 
+					this._verticalDistanceZeroLiftDirectionWingHTailCOMPLETE,
 					this._zApexWing, 
 					this._zApexHTail, 
 					MyArrayUtils.convertToDoublePrimitive(this._wingclAlphaArray),
@@ -757,7 +808,27 @@ public class StabilityExecutableManager {
 			_downwashAngleVariable= theStabilityCalculator.getDownwashAngle();
 			_horizontalDistance = theStabilityCalculator.getHorizontalDistance();
 			_verticalDistance = theStabilityCalculator.getVerticalDistance();
+
+			for (int i=0; i<_downwashAngleVariable.size(); i++){
+			_horizontalDistanceConstant.add(i,_horizontalDistance.get(0));
+			_verticalDistanceConstant.add(i,_verticalDistance.get(0));
+			}
 			
+			double downwashGradientConstant  =  _downwashGradientVariable.get(0);
+			
+			
+		
+			for (int i=0; i<this._numberOfAlphasBody; i++){
+		 _downwashGradientConstant.add(i,downwashGradientConstant);}
+		 
+		 //fill the downwash array
+		 for (int i=0; i<this._numberOfAlphasBody; i++){
+			 this._downwashAngleConstant.add(i,
+					 Amount.valueOf(
+					 this._downwashGradientConstant.get(i)*(
+							 this._alphasBody.get(i).doubleValue(NonSI.DEGREE_ANGLE) - (-
+									 this._wingAngleOfIncidence.doubleValue(NonSI.DEGREE_ANGLE) + 
+									 this._wingAlphaZeroLift.doubleValue(NonSI.DEGREE_ANGLE))), NonSI.DEGREE_ANGLE));}
 			
 		}
 
@@ -802,7 +873,7 @@ public class StabilityExecutableManager {
 		MyArrayUtils.printListOfAmountWithUnitsInEvidence(this._alphasBody, "Alphas Body array", ",");
 		MyArrayUtils.printListOfAmountWithUnitsInEvidence(this._alphasWing, "Alphas Wing array", ",");
 
-		System.out.println("\nWING ----------\n-------------------");
+		System.out.println("\n\nWING ----------\n-------------------");
 		System.out.println("X apex = " + this._xApexWing);
 		System.out.println("Y apex = " + this._yApexWing);
 		System.out.println("Z apex = " + this._zApexWing);
@@ -907,19 +978,19 @@ public class StabilityExecutableManager {
 				.append("-------------------------------------\n")
 				.append("\tWing\n")
 				.append("\t-------------------------------------\n")
+				.append("\t\talpha zero lift = " + _wingAlphaZeroLift+ "\n" )
+				.append("\t\tCL zero = " + _wingcLZero+ "\n")
+				.append("\t\tCL alpha = " + _wingclAlpha+ "\n")
+				.append("\t\tCL star = " + _wingcLStar+ "\n")
+				.append("\t\tAlpha star = " + _wingalphaStar+ "\n")
+				.append("\t\tCL max = " + _wingcLMax+ "\n")
+				.append("\t\tAlpha stall = " + _wingalphaStall+ "\n")
+				.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this. _alphasWing, "\t\tAlpha Wing", ","))
+				.append("\t\tCL 3D Curve = " + Arrays.toString(_wingliftCoefficient3DCurve)+ "\n")
+				.append("\t\tEta stations = " + _wingYAdimensionalDistribution+ "\n")
+				.append("\t\tCl distribution at CL max = " + Arrays.toString(_wingliftCoefficientDistributionatCLMax) + "\n")
 				.append("\t\tDownwash Gradient Constant = " + _downwashGradientConstant.get(0)+ "\n")
 				.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this._downwashAngleConstant, "\t\tDownwash angle with Constant Gradient", ","))
-				.append("\talpha zero lift = " + _wingAlphaZeroLift)
-				.append("\tCL zero = " + _wingcLZero+ "\n")
-				.append("\tCL alpha = " + _wingclAlpha+ "\n")
-				.append("\tCL star = " + _wingcLStar+ "\n")
-				.append("\tAlpha star = " + _wingalphaStar+ "\n")
-				.append("\tCL max = " + _wingcLMax+ "\n")
-				.append("\tAlpha stall = " + _wingalphaStall+ "\n")
-				.append("\tAlpha Wing = " + _alphasWing+ "\n")
-				.append("\tCL 3D Curve = " + _wingliftCoefficient3DCurve+ "\n")
-				.append("\tEta stations = " + _wingYAdimensionalDistribution+ "\n")
-				.append("\tCl distribution at CL max = " + _wingliftCoefficientDistributionAtCLMax+ "\n")
 				.append("\t-------------------------------------\n")
 				;
 					
@@ -1062,6 +1133,58 @@ public class StabilityExecutableManager {
 						"Downwash Gradient");
 
 				System.out.println("Plot Downwash Gradient Chart ---> DONE \n");
+				
+				xList = new ArrayList<>();
+				yList = new ArrayList<>();
+				legend = new ArrayList<>();
+
+				xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasBody));
+				xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasBody));
+				yList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_horizontalDistanceConstant));
+				yList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_horizontalDistance));
+				legend.add("Downwash gradient constant");
+				legend.add("Downwash gradient variable");
+
+				MyChartToFileUtils.plot(
+						xList, 
+						yList, 
+						"Horizontal Distance", 
+						"alpha_b", "x dist", 
+						null, null,
+						null, null,
+						"deg", "m",
+						true,
+						legend,
+						folderPathName,
+						"Horizontal Distance");
+
+				System.out.println("Plot Horizontal Distance Chart ---> DONE \n");
+				
+				xList = new ArrayList<>();
+				yList = new ArrayList<>();
+				legend = new ArrayList<>();
+
+				xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasBody));
+				xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasBody));
+				yList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_verticalDistanceConstant));
+				yList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_verticalDistance));
+				legend.add("Downwash gradient constant");
+				legend.add("Downwash gradient variable");
+
+				MyChartToFileUtils.plot(
+						xList, 
+						yList, 
+						"Vertical Distance", 
+						"alpha_b", "z dist", 
+						null, null,
+						null, null,
+						"deg", "m",
+						true,
+						legend,
+						folderPathName,
+						"Vertical Distance");
+
+				System.out.println("Plot Vertical Distance Chart ---> DONE \n");
 			}
 		}
 		
@@ -1090,6 +1213,40 @@ public class StabilityExecutableManager {
 						"lift coeff");
 
 				System.out.println("Plot Downwash Angle Chart ---> DONE \n");
+			
+			
+			// CL DISTRIBUTION AT CL MAX
+		
+
+				xList = new ArrayList<>();
+				yList = new ArrayList<>();
+				legend = new ArrayList<>();
+
+				Double[] _wingliftCLMaxDistribution = new Double [_wingNumberOfPointSemiSpanWise];
+				for (int i=0; i< _wingNumberOfPointSemiSpanWise ; i++){
+					_wingliftCLMaxDistribution[i] = _wingliftCoefficientDistributionatCLMax[i];
+				}
+				xList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_wingYAdimensionalDistribution));
+				xList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_wingYAdimensionalDistribution));
+				yList.add(_wingliftCLMaxDistribution);
+				yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_wingClMaxDistribution));
+				legend.add("Cl distribution at CL max");
+				legend.add("Cl max airfoils");
+
+				MyChartToFileUtils.plot(
+						xList, 
+						yList, 
+						"Cl distribution at CL max", 
+						"eta", "Cl", 
+						null, null,
+						null, null,
+						"", "",
+						true,
+						legend,
+						folderPathName,
+						"Cl distribution at CL max");
+
+				System.out.println("Plot Cl distribution at CL max ---> DONE \n");
 			}
 
 	}
@@ -1109,12 +1266,6 @@ public class StabilityExecutableManager {
 	public void calculateWingLiftCharacteristics(){
 		//------------WING VALUES
 		
-		double [] alphaZeroLiftRad = new double [_wingNumberOfPointSemiSpanWise];
-		double [] twistDistributionRad = new double [_wingNumberOfPointSemiSpanWise];
-		for (int i=0; i<_wingNumberOfPointSemiSpanWise; i++){
-			alphaZeroLiftRad[i] = _wingAlphaZeroLiftDistribution.get(i).doubleValue(SI.RADIAN);
-			twistDistributionRad[i] =  _wingTwistDistribution.get(i).doubleValue(SI.RADIAN);
-		}
 		NasaBlackwell theNasaBlackwellCalculatorMachActual = new NasaBlackwell(
 				this._wingSemiSpan.doubleValue(SI.METER),
 				this._wingSurface.doubleValue(SI.SQUARE_METRE),
@@ -1138,7 +1289,8 @@ public class StabilityExecutableManager {
 		
 		this._wingcLAlphaRad = (clTwoMachActual-clOneMachActual)/toRadians(4);
 		this._wingcLAlphaDeg = (clTwoMachActual-clOneMachActual)/(4);
-		this._wingclAlpha = Amount.valueOf( this._wingcLAlphaDeg , NonSI.DEGREE_ANGLE.inverse());
+
+		this._wingclAlpha = Amount.valueOf( this._wingcLAlphaRad , SI.RADIAN.inverse());
 
 
 		// alpha zero lift is calculated before
@@ -1209,17 +1361,20 @@ public class StabilityExecutableManager {
 				this._wingalphaMaxLinear
 				.plus(deltaAlpha);
 	
-		
-	
+
 		this._wingliftCoefficient3DCurve = LiftCalc.calculateCLvsAlphaArray(
 				this._wingcLZero,
-				this._wingcLStar,
 				this._wingcLMax,
 				this._wingalphaStar,
 				this._wingalphaStall,
 				this._wingclAlpha,
 				MyArrayUtils.convertListOfAmountToDoubleArray(this._alphasWing)
 				);
+	}
+	
+	public void calculateWingHighLiftCharacteristics(){
+		
+		
 	}
 
 

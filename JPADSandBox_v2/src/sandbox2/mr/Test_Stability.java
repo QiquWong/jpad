@@ -17,6 +17,7 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import configuration.MyConfiguration;
+import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.FoldersEnum;
 import standaloneutils.JPADXmlReader;
 import writers.JPADStaticWriteUtils;
@@ -115,6 +116,9 @@ public class Test_Stability{
 		theCalculator.initializeAlphaArrays();
 		theCalculator.calculateWingLiftCharacteristics();
 		theCalculator.initializeDownwashArray();
+		if (theCalculator.getTheCondition() == ConditionEnum.TAKE_OFF || theCalculator.getTheCondition() == ConditionEnum.LANDING){
+			theCalculator.calculateWingHighLiftCharacteristics();
+		}
 		//...
 		theCalculator.printAllData();
 		String sb = theCalculator.printAllResults();

@@ -60,6 +60,7 @@ public class StabilityExecutableCalculator {
 			Amount<Angle> wingAlphaZeroLift,
 			Amount<Length> horizontalDistanceInitial,
 			Amount<Length> verticalDistanceInitial,
+			Amount<Length> verticalDistanceInitialComplete,
 			Amount<Length> zACWing,
 			Amount<Length> zACHtail,
 			double [] clAlphaArray,
@@ -68,37 +69,45 @@ public class StabilityExecutableCalculator {
 			){
 		
 		double cRoot = rootChord.doubleValue(SI.METER);
-		double semiWingSpan = semiSpanWing.doubleValue(SI.METER);
-		double sweepQuarterChordEq = sweepQuarterChord.doubleValue(SI.RADIAN);
-        double x0Value = horizontalDistanceInitial.doubleValue(SI.METER);
 		double iw = wingAngleOfIncidence.doubleValue(SI.RADIAN); //rad 
 		double alphaZeroLift = wingAlphaZeroLift.doubleValue(SI.RADIAN); //rad; 
 		double zTemp , xTemp;
-		
-		double deltaZ = 0.75 * cRoot * Math.sin(iw);
-		double zApp = verticalDistanceInitial.doubleValue(SI.METER);
-		double m0Value = 0;
 
-		if ( zACWing.doubleValue(SI.METER) < zACHtail.doubleValue(SI.METER) ) {
-			m0Value = Math.abs(zApp + deltaZ);
+		double m0Value = 0;
+		double d0Value = 0;
+		double angle =0.0;
+
+
+		if ( zACHtail.doubleValue(SI.METER) > zACWing.doubleValue(SI.METER) ) {
+			if ( verticalDistanceInitial.doubleValue(SI.METER) < 0 )
+				m0Value = verticalDistanceInitial.doubleValue(SI.METER) - 0.75 * cRoot * Math.sin(wingAngleOfIncidence.doubleValue(SI.RADIAN));
+			if ( verticalDistanceInitial.doubleValue(SI.METER) < 0 )
+				m0Value = verticalDistanceInitial.doubleValue(SI.METER) + 0.75 * cRoot * Math.sin(wingAngleOfIncidence.doubleValue(SI.RADIAN));	
 		}
-		
-		if ( zACWing.doubleValue(SI.METER) > zACHtail.doubleValue(SI.METER) ) {
-			m0Value = Math.abs(zApp - deltaZ);
+
+		if ( zACHtail.doubleValue(SI.METER) < zACWing.doubleValue(SI.METER) ) {
+			if ( verticalDistanceInitial.doubleValue(SI.METER) < 0 )
+				m0Value = verticalDistanceInitial.doubleValue(SI.METER) + 0.75 * cRoot * Math.sin(wingAngleOfIncidence.doubleValue(SI.RADIAN));
+			if ( verticalDistanceInitial.doubleValue(SI.METER) > 0 )
+				m0Value = verticalDistanceInitial.doubleValue(SI.METER) - 0.75 * cRoot * Math.sin(wingAngleOfIncidence.doubleValue(SI.RADIAN));
 		}
-		
-		if ( zACHtail.doubleValue(SI.METER) < zACWing.doubleValue(SI.METER))
-			m0Value = -m0Value;
+
+
+		d0Value = horizontalDistanceInitial.doubleValue(SI.METER) - 0.75 * cRoot * Math.cos(wingAngleOfIncidence.doubleValue(SI.RADIAN));
 		
 		
 		double dValue = Math.sqrt((Math.pow(m0Value, 2)) 
-				+ (Math.pow(x0Value - ((0.75) * cRoot * Math.cos(iw)), 2)));
+				+(Math.pow(d0Value, 2)));
 		
-		double phiAngle = Math.atan(( m0Value)/(x0Value - ((0.75) * cRoot * Math.cos(iw))));  // rad	
+		double phiAngle = Math.atan(( m0Value)/(d0Value));  // rad	
 		
-		double angle = phiAngle + iw - alphaZeroLift;
+		if ( zACHtail.doubleValue(SI.METER) > zACWing.doubleValue(SI.METER) ) {
+		angle = phiAngle + iw - alphaZeroLift;}
+		if ( zACHtail.doubleValue(SI.METER) < zACWing.doubleValue(SI.METER) ) {
+		angle =  -iw + alphaZeroLift;}
 		
-		double zDistanceZero = dValue * Math.sin(angle);
+		double zDistanceZero = verticalDistanceInitialComplete.doubleValue(SI.METER) * Math.cos(angle);
+		System.out.println(" VERTICAL DISTANCE VARIABLE " + zDistanceZero);
 		double xDistanceZero = (dValue * Math.cos(angle)) + ( (0.75) * cRoot * Math.cos(Math.abs(alphaZeroLift)));
 
 		// Alpha Absolute array 
@@ -157,7 +166,7 @@ public class StabilityExecutableCalculator {
 			
 			
 			
-			zTemp = dValue * Math.sin(angle - i * deltaAlpha + epsilonTempRad);
+			zTemp = verticalDistanceInitialComplete.doubleValue(SI.METER) * Math.cos(angle - i * deltaAlpha + epsilonTempRad);
 			xTemp = (dValue * Math.cos(angle - i*deltaAlpha + epsilonTempRad)) + 
 					( (0.74) * cRoot * Math.cos(Math.abs(alphaZeroLift - i*deltaAlpha + epsilonTempRad)));
 			
@@ -174,7 +183,7 @@ public class StabilityExecutableCalculator {
 			downwashRad = Amount.valueOf(
 					Math.toRadians(downwashArray[i]), SI.RADIAN).getEstimatedValue();
 			
-			zDistanceArray[i] = dValue * Math.sin(angle - i * deltaAlpha + downwashRad);
+			zDistanceArray[i] = verticalDistanceInitialComplete.doubleValue(SI.METER) * Math.cos(angle - i * deltaAlpha + downwashRad);
 			xDistanceArray[i] = (dValue * Math.cos(angle - i*deltaAlpha +downwashRad)) + 
 					( (0.75) * cRoot * Math.cos(Math.abs(alphaZeroLift - i*deltaAlpha + downwashRad)));
 			
@@ -190,7 +199,7 @@ public class StabilityExecutableCalculator {
 			downwashRad = Amount.valueOf(
 					Math.toRadians(downwashArray[i]), SI.RADIAN).getEstimatedValue();
 			
-			zDistanceArray[i] = dValue * Math.sin(angle - i * deltaAlpha + downwashRad);
+			zDistanceArray[i] = verticalDistanceInitialComplete.doubleValue(SI.METER) * Math.cos(angle - i * deltaAlpha + downwashRad);
 			xDistanceArray[i] = (dValue * Math.cos(angle - i*deltaAlpha +downwashRad)) + 
 					( (0.75) * cRoot * Math.cos(Math.abs(alphaZeroLift - i*deltaAlpha + downwashRad)));
 			
@@ -207,6 +216,7 @@ public class StabilityExecutableCalculator {
 			alphaBodyArray[i] = alphaAbsoluteArray[i] - Math.toDegrees(iw) + Math.toDegrees(alphaZeroLift);
 			
 		}
+		
 		System.out.println("\n Downwash Arrays");
 		System.out.println("DownwashGradient " + Arrays.toString(downwashGradientArray));
 		System.out.println("Downwash Angle (deg) " + Arrays.toString(downwashArray));
@@ -240,6 +250,19 @@ public class StabilityExecutableCalculator {
 				zDistanceArray,
 				alphaBody
 				);
+		
+		int k=0, j=0;
+	
+		while ( alphaBodyArray[0] > alphaBody[j]){
+			j++;
+		}
+		
+		double gradientTemporary = (downwashArrayTemporary[j+2]-downwashArrayTemporary[j+1])/( alphaBodyArray[j+2]- alphaBodyArray[j+1]);
+		
+		while ( alphaBodyArray[0] > alphaBody[k]){
+			downwashArrayTemporary[k] = gradientTemporary*(alphaBodyArray[k]-alphaBodyArray[j+1])+downwashArrayTemporary[j+1];
+			k++;
+		}
 				
 		for (int i=0; i<alphaBody.length; i++){
 		downwashGradient.add(downwashGradientArrayTemporary[i]);
@@ -263,11 +286,11 @@ public class StabilityExecutableCalculator {
 		double mpow=Math.pow(mVerticalDistance/semispanWing.doubleValue(SI.METER), 2);
 
 		keGamma=(0.1124+0.1265*sweepQuarterChord.doubleValue(SI.RADIAN)+0.1766*Math.pow(sweepQuarterChord.doubleValue(SI.RADIAN),2))
-				/rPow+0.1024/rHorizontalDistance+2;
-		keGammaZero=0.1124/rPow+0.1024/rHorizontalDistance+2;
+				/rPow+0.1024/(rHorizontalDistance/semispanWing.doubleValue(SI.METER))+2;
+		keGammaZero=0.1124/rPow+0.1024/(rHorizontalDistance/semispanWing.doubleValue(SI.METER))+2;
 
 		double kFraction=keGamma/keGammaZero;
-		double first= (rHorizontalDistance/(rPow+ mpow))*(0.4876/Math.sqrt(rPow+0.6319+mpow));
+		double first= ((rHorizontalDistance/semispanWing.doubleValue(SI.METER))/(rPow+ mpow))*(0.4876/Math.sqrt(rPow+0.6319+mpow));
 		double second= 1+Math.pow(rPow/(rPow+0.7915+5.0734*mpow),0.3113);
 		double third = 1-Math.sqrt(mpow/(1+mpow));
 
