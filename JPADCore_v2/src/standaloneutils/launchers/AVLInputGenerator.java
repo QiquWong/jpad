@@ -19,7 +19,7 @@ import org.apache.commons.math3.linear.RealMatrix;
 
 public class AVLInputGenerator {
 
-	public static void writeDataToFile(AVLMainInputData inputData, AVLAircraft aircraft, String filePath) {
+	public static void writeDataToAVLFile(AVLMainInputData inputData, AVLAircraft aircraft, String filePath) {
 		
 		Path path = Paths.get(filePath);
 
@@ -71,7 +71,7 @@ public class AVLInputGenerator {
 		}
 	}
 
-	public static void writeTemplate(String filePath) {
+	public static void writeTemplateAVLFile(String filePath) {
 		Path path = Paths.get(filePath);
 
 		System.out.println("Writing " + path + " ...");
@@ -300,6 +300,58 @@ public class AVLInputGenerator {
 			e.printStackTrace();
 		}
 	}
+	
+	public static void writeDataToMassFile(AVLMassInputData massData, String filePath) {
+		
+		Path path = Paths.get(filePath);
+
+		System.out.println("Writing " + path + " ...");
+
+		// first delete file if exists
+		boolean pathExists =
+				Files.exists(path, new LinkOption[]{LinkOption.NOFOLLOW_LINKS});
+		if (pathExists) {
+			try {
+				System.out.println("File already exists. Overwriting ...");
+				Files.delete(path);
+			} catch (IOException e) {
+				// Some sort of failure, such as permissions.
+				e.printStackTrace();
+			}
+		}
+
+		try {
+			// Create the empty file with default permissions, etc.
+			Files.createFile(path);
+		} catch (IOException e) {
+			// Some sort of failure, such as permissions.
+			// System.err.format("createFile error: %s%n", e);
+			e.printStackTrace();
+		}
+		
+		// transfer the AVL-Mass input data structures into a formatted string
+		String lines[] = 
+				AVLInputGenerator.formatAsMassInput(massData) // format one single string with newlines
+				.split("\\r?\\n");
+		List<String> content = Arrays.stream(lines).collect(Collectors.toList()); // split in a list of strings
+		
+		// write out the content
+
+		System.out.println("======================================");
+
+		Charset charset = Charset.forName("utf-8");
+		try (BufferedWriter writer = Files.newBufferedWriter(path, charset)) {
+			for (String line : content) {
+				System.out.println(line);
+				writer.write(line, 0, line.length());
+				writer.newLine();
+			}
+			System.out.println("======================================");
+			System.out.println("... done.");			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/* From file: avl_doc.txt - Surface and Body data
 
@@ -351,66 +403,66 @@ public class AVLInputGenerator {
 	      etc.
 	 	
 	*/
-		public static String formatAsAVLInput(AVLMainInputData inputData, AVLAircraft aircraft) {
+	public static String formatAsAVLInput(AVLMainInputData inputData, AVLAircraft aircraft) {
 
-			StringBuilder sb = new StringBuilder();
-			sb.append(aircraft.getDescription()).append("\n");
-			
-			// format main configuration data
-			sb.append(formatAsAVLMainInputData(inputData));
-			
-			sb.append("#\n")
-			  .append("#==============================================================\n")
-			  .append("#\n");
-			
-			// format wings
-			aircraft.getWings().stream()
-				.forEach( wing ->
-					sb.append(formatAsAVLWing(wing))
-				);
-			
-			// format bodies
-			aircraft.getBodies().stream()
-			.forEach( body ->
-				sb.append(formatAsAVLBody(body))
-			);
-			
-			return sb.toString();
-		}
+		StringBuilder sb = new StringBuilder();
+		sb.append(aircraft.getDescription()).append("\n");
 		
-		public static String formatAsAVLMainInputData(AVLMainInputData inputData) {
-			StringBuilder sb = new StringBuilder();
-			sb.append("#Mach").append("\n");
-			sb.append(inputData.getMach()).append("\n");
+		// format main configuration data
+		sb.append(formatAsAVLMainInputData(inputData));
+		
+		sb.append("#\n")
+		  .append("#==============================================================\n")
+		  .append("#\n");
+		
+		// format wings
+		aircraft.getWings().stream()
+			.forEach( wing ->
+				sb.append(formatAsAVLWing(wing))
+			);
+		
+		// format bodies
+		aircraft.getBodies().stream()
+		.forEach( body ->
+			sb.append(formatAsAVLBody(body))
+		);
+		
+		return sb.toString();
+	}
+	
+	public static String formatAsAVLMainInputData(AVLMainInputData inputData) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("#Mach").append("\n");
+		sb.append(inputData.getMach()).append("\n");
 
-			sb.append(String.format(Locale.ROOT, "%1$-11s %2$-11s %3$-11s", 
-					"#IYsym", "IZsym", "ZSym")
-					).append("\n");
-			sb.append(String.format(Locale.ROOT, "%1$-11d %2$-11d %3$-11.5g", 
-					inputData.getIYsym(), inputData.getIZsym(), inputData.getZsym())
-					).append("\n");
+		sb.append(String.format(Locale.ROOT, "%1$-11s %2$-11s %3$-11s", 
+				"#IYsym", "IZsym", "ZSym")
+				).append("\n");
+		sb.append(String.format(Locale.ROOT, "%1$-11d %2$-11d %3$-11.5g", 
+				inputData.getIYsym(), inputData.getIZsym(), inputData.getZsym())
+				).append("\n");
 
-			sb.append(String.format(Locale.ROOT, "%1$-11s %2$-11s %3$-11s (meters)", 
-					"#Sref", "Cref", "Bref")
-					).append("\n");
-			sb.append(
-				String.format(Locale.ROOT, "%1$-11.5g %2$-11.5g %3$-11.5g", 
-					inputData.getSref(), inputData.getCref(), inputData.getBref())
-					).append("\n");
+		sb.append(String.format(Locale.ROOT, "%1$-11s %2$-11s %3$-11s (meters)", 
+				"#Sref", "Cref", "Bref")
+				).append("\n");
+		sb.append(
+			String.format(Locale.ROOT, "%1$-11.5g %2$-11.5g %3$-11.5g", 
+				inputData.getSref(), inputData.getCref(), inputData.getBref())
+				).append("\n");
 
-			sb.append(String.format(Locale.ROOT, "%1$-11s %2$-11s %3$-11s (meters)", 
-					"#Xref", "Yref", "Zref")
-					).append("\n");
-			sb.append(
-				String.format(Locale.ROOT, "%1$-11.5g %2$-11.5g %3$-11.5g", 
-					inputData.getXref(), inputData.getYref(), inputData.getZref())
-					).append("\n");
+		sb.append(String.format(Locale.ROOT, "%1$-11s %2$-11s %3$-11s (meters)", 
+				"#Xref", "Yref", "Zref")
+				).append("\n");
+		sb.append(
+			String.format(Locale.ROOT, "%1$-11.5g %2$-11.5g %3$-11.5g", 
+				inputData.getXref(), inputData.getYref(), inputData.getZref())
+				).append("\n");
 
-			sb.append("#CD0ref").append("\n");
-			sb.append(inputData.getCD0ref()).append("\n");
-			
-			return sb.toString();
-		}
+		sb.append("#CD0ref").append("\n");
+		sb.append(inputData.getCD0ref()).append("\n");
+		
+		return sb.toString();
+	}
 
 	/* From file: avl_doc.txt - Surface-definition keywords and data formats
 
@@ -582,65 +634,65 @@ public class AVLInputGenerator {
 	NOLOAD
 
 	*/
-		public static String formatAsAVLWing(AVLWing wing) {
-			StringBuilder sb = new StringBuilder();
-			sb.append("SURFACE").append("\n");
-			sb.append(wing.getDescription()).append("\n");
-			
-			// wing main data
-			sb.append(String.format(Locale.ROOT, "%1$-11s %2$-11s %3$-11s %4$-11s", 
-					"#Nchord", "Cspace", "Nspan", "Sspace")
-					).append("\n");
-			sb.append(
-				String.format(Locale.ROOT, "%1$-11d %2$-11.5g %3$-11d %4$-11.5g", 
-					wing.getNChordwise(), wing.getCSpace(), 
-					wing.getNSpanwise(), wing.getSSpace())
-					).append("\n");
+	public static String formatAsAVLWing(AVLWing wing) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("SURFACE").append("\n");
+		sb.append(wing.getDescription()).append("\n");
+		
+		// wing main data
+		sb.append(String.format(Locale.ROOT, "%1$-11s %2$-11s %3$-11s %4$-11s", 
+				"#Nchord", "Cspace", "Nspan", "Sspace")
+				).append("\n");
+		sb.append(
+			String.format(Locale.ROOT, "%1$-11d %2$-11.5g %3$-11d %4$-11.5g", 
+				wing.getNChordwise(), wing.getCSpace(), 
+				wing.getNSpanwise(), wing.getSSpace())
+				).append("\n");
 
-			if (wing.isSymmetric()) {
-				sb.append("#\n")
-				  .append("# reflect image wing about y=0 plane\n")
-				  .append("YDUPLICATE\n");
-				sb.append("0.0").append("\n");
-			}
-
+		if (wing.isSymmetric()) {
 			sb.append("#\n")
-			  .append("# twist angle bias for whole surface\n")
-			  .append("ANGLE\n");
-			sb.append(wing.getIncidence()).append("\n");
-
-			sb.append("#\n")
-			  .append("# x,y,z scale factors for whole surface\n")
-			  .append("SCALE\n");
-			sb.append(
-					String.format(Locale.ROOT, "%1$-11.5g %2$-11.5g %3$-11.5g", 
-						wing.getScale()[0], wing.getScale()[1], wing.getScale()[2])
-						).append("\n");
-			
-			sb.append("#\n")
-			  .append("# x,y,z bias for whole surface\n")
-			  .append("TRANSLATE\n");
-			sb.append(
-					String.format(Locale.ROOT, "%1$-11.5g %2$-11.5g %3$-11.5g", 
-						wing.getOrigin()[0], wing.getOrigin()[1], wing.getOrigin()[2])
-						).append("\n");
-			
-			sb.append("#--------------------------------------------------------------\n")
-			  .append("#    Xle         Yle         Zle         chord       angle   [Nspan  Sspace]\n")
-			  .append("#\n");
-			
-			// format sections
-			wing.getSections().stream()
-				.forEach(section ->
-					sb.append(formatAsAVLWingSection(section))
-				);
-			
-			sb.append("#\n")
-			  .append("#==============================================================\n")
-			  .append("#\n");
-
-			return sb.toString();
+			  .append("# reflect image wing about y=0 plane\n")
+			  .append("YDUPLICATE\n");
+			sb.append("0.0").append("\n");
 		}
+
+		sb.append("#\n")
+		  .append("# twist angle bias for whole surface\n")
+		  .append("ANGLE\n");
+		sb.append(wing.getIncidence()).append("\n");
+
+		sb.append("#\n")
+		  .append("# x,y,z scale factors for whole surface\n")
+		  .append("SCALE\n");
+		sb.append(
+				String.format(Locale.ROOT, "%1$-11.5g %2$-11.5g %3$-11.5g", 
+					wing.getScale()[0], wing.getScale()[1], wing.getScale()[2])
+					).append("\n");
+		
+		sb.append("#\n")
+		  .append("# x,y,z bias for whole surface\n")
+		  .append("TRANSLATE\n");
+		sb.append(
+				String.format(Locale.ROOT, "%1$-11.5g %2$-11.5g %3$-11.5g", 
+					wing.getOrigin()[0], wing.getOrigin()[1], wing.getOrigin()[2])
+					).append("\n");
+		
+		sb.append("#--------------------------------------------------------------\n")
+		  .append("#    Xle         Yle         Zle         chord       angle   [Nspan  Sspace]\n")
+		  .append("#\n");
+		
+		// format sections
+		wing.getSections().stream()
+			.forEach(section ->
+				sb.append(formatAsAVLWingSection(section))
+			);
+		
+		sb.append("#\n")
+		  .append("#==============================================================\n")
+		  .append("#\n");
+
+		return sb.toString();
+	}
 
 	/* From file: avl_doc.txt - Section keywords and data formats
 
@@ -734,45 +786,45 @@ public class AVLInputGenerator {
 	*****
 
 	*/
-		public static String formatAsAVLWingSection(AVLWingSection section) {
-			StringBuilder sb = new StringBuilder();
-			sb.append("SECTION").append("\n");
-			sb.append(
-					String.format(Locale.ROOT, "     %1$-11.5g %2$-11.5g %3$-11.5g %4$-11.5g %5$-11.5g", 
-						section.getOrigin()[0], section.getOrigin()[1], section.getOrigin()[2], 
-						section.getChord(), section.getTwist())
-						).append("\n");
+	public static String formatAsAVLWingSection(AVLWingSection section) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("SECTION").append("\n");
+		sb.append(
+				String.format(Locale.ROOT, "     %1$-11.5g %2$-11.5g %3$-11.5g %4$-11.5g %5$-11.5g", 
+					section.getOrigin()[0], section.getOrigin()[1], section.getOrigin()[2], 
+					section.getChord(), section.getTwist())
+					).append("\n");
 
-			// sb.append("AFIL").append("\n");
-			// sb.append(section.getAirfoilCoordFile().getName()).append("\n");
+		// sb.append("AFIL").append("\n");
+		// sb.append(section.getAirfoilCoordFile().getName()).append("\n");
 
-			// in case a body-section file is given
-			if (section.getAirfoilCoordFile().isPresent()) {
-				sb.append("AFIL").append("\n");
-				sb.append(section.getAirfoilCoordFile().get().getName()).append("\n");			
-			} 
+		// in case a body-section file is given
+		if (section.getAirfoilCoordFile().isPresent()) {
+			sb.append("AFIL").append("\n");
+			sb.append(section.getAirfoilCoordFile().get().getName()).append("\n");			
+		} 
 
-			// in case a body-section is given inline
-			if (section.getAirfoilSectionInline().isPresent()) {
-				sb.append("AIRFOIL").append("\n");
-				Arrays.asList(section.getAirfoilSectionInline().get().getData()).stream()
-					.forEach(pair -> 
-						sb.append(
-							String.format(Locale.ROOT, "%1$-11.5g %2$-11.5g", pair[0], pair[1])
-						).append("\n")
-					);
-			} 
-
-			// format controls
-			section.getControlSurfaces().stream()
-				.forEach(controlSurface ->
-					sb.append(formatAsAVLWingSectionControlSurface(controlSurface))
+		// in case a body-section is given inline
+		if (section.getAirfoilSectionInline().isPresent()) {
+			sb.append("AIRFOIL").append("\n");
+			Arrays.asList(section.getAirfoilSectionInline().get().getData()).stream()
+				.forEach(pair -> 
+					sb.append(
+						String.format(Locale.ROOT, "%1$-11.5g %2$-11.5g", pair[0], pair[1])
+					).append("\n")
 				);
-			
-			sb.append("#-----------------------\n");
+		} 
 
-			return sb.toString();
-		}
+		// format controls
+		section.getControlSurfaces().stream()
+			.forEach(controlSurface ->
+				sb.append(formatAsAVLWingSectionControlSurface(controlSurface))
+			);
+		
+		sb.append("#-----------------------\n");
+
+		return sb.toString();
+	}
 
 	/* From file: avl_doc.txt - Control keywords and data formats
 
@@ -921,20 +973,20 @@ public class AVLInputGenerator {
 	which is the correct mirror image of the previous case if "aileron" is negative.
 
 	*/
-		public static String formatAsAVLWingSectionControlSurface(AVLWingSectionControlSurface controlSurface) {
-			StringBuilder sb = new StringBuilder();
-			sb.append("CONTROL").append("\n");
-			sb.append(
-					String.format(Locale.ROOT, "%1$s  %2$-7.4g %3$-7.4g %4$-7.4g %5$-7.4g %6$-7.4g %7$-7.4g", 
-						controlSurface.getDescription().replaceAll(" ", "_"), // replace spaces in description
-						controlSurface.getGain(), controlSurface.getXHinge(),
-						controlSurface.getHingeVector()[0], controlSurface.getHingeVector()[1], controlSurface.getHingeVector()[2],
-						controlSurface.getSignDuplicate()
-					)
-			  ).append(" ! name, gain,  Xhinge,  (X,Y,Z)hvec,  SgnDup\n");
-			
-			return sb.toString();
-		}
+	public static String formatAsAVLWingSectionControlSurface(AVLWingSectionControlSurface controlSurface) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("CONTROL").append("\n");
+		sb.append(
+				String.format(Locale.ROOT, "%1$s  %2$-7.4g %3$-7.4g %4$-7.4g %5$-7.4g %6$-7.4g %7$-7.4g", 
+					controlSurface.getDescription().replaceAll(" ", "_"), // replace spaces in description
+					controlSurface.getGain(), controlSurface.getXHinge(),
+					controlSurface.getHingeVector()[0], controlSurface.getHingeVector()[1], controlSurface.getHingeVector()[2],
+					controlSurface.getSignDuplicate()
+				)
+		  ).append(" ! name, gain,  Xhinge,  (X,Y,Z)hvec,  SgnDup\n");
+		
+		return sb.toString();
+	}
 		
 	/* From file: avl_doc.txt - Body-definition keywords and data formats
 
@@ -979,254 +1031,295 @@ public class AVLInputGenerator {
 	*****
 		
 	*/
-		public static String formatAsAVLBody(AVLBody body) {
-			StringBuilder sb = new StringBuilder();
-			sb.append("BODY").append("\n");
-			sb.append(body.getDescription()).append("\n");
+	public static String formatAsAVLBody(AVLBody body) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("BODY").append("\n");
+		sb.append(body.getDescription()).append("\n");
+	
+		// wing main data
+		sb.append(String.format(Locale.ROOT, "%1$-11s %2$-11s", 
+				"#Nbody", "Bspace")
+				).append("\n");
+		sb.append(
+			String.format(Locale.ROOT, "%1$-11d %2$-11.5g", 
+				body.getNBody(), body.getBSpace())
+				).append("\n");
+
+		if (body.isDuplicated()) {
+			sb.append("YDUPLICATE\n");
+			sb.append(body.getYDupl()).append("\n");
+		}
+
+		sb.append("#\n")
+		  .append("# x,y,z scale factors for whole body\n")
+		  .append("SCALE\n");
+		sb.append(
+				String.format(Locale.ROOT, "%1$-11.5g %2$-11.5g %3$-11.5g", 
+					body.getScale()[0], body.getScale()[1], body.getScale()[2])
+					).append("\n");
 		
-			// wing main data
-			sb.append(String.format(Locale.ROOT, "%1$-11s %2$-11s", 
-					"#Nbody", "Bspace")
+		sb.append("#\n")
+		  .append("# x,y,z bias for whole body\n")
+		  .append("TRANSLATE\n");
+		sb.append(
+				String.format(Locale.ROOT, "%1$-11.5g %2$-11.5g %3$-11.5g", 
+					body.getOrigin()[0], body.getOrigin()[1], body.getOrigin()[2])
 					).append("\n");
-			sb.append(
-				String.format(Locale.ROOT, "%1$-11d %2$-11.5g", 
-					body.getNBody(), body.getBSpace())
-					).append("\n");
 
-			if (body.isDuplicated()) {
-				sb.append("YDUPLICATE\n");
-				sb.append(body.getYDupl()).append("\n");
-			}
+		// in case a body-section file is given
+		if (body.getBodyCoordFile().isPresent()) {
+			sb.append("BFIL").append("\n");
+			sb.append(body.getBodyCoordFile().get().getName()).append("\n");			
+		} 
 
-			sb.append("#\n")
-			  .append("# x,y,z scale factors for whole body\n")
-			  .append("SCALE\n");
-			sb.append(
-					String.format(Locale.ROOT, "%1$-11.5g %2$-11.5g %3$-11.5g", 
-						body.getScale()[0], body.getScale()[1], body.getScale()[2])
-						).append("\n");
-			
-			sb.append("#\n")
-			  .append("# x,y,z bias for whole body\n")
-			  .append("TRANSLATE\n");
-			sb.append(
-					String.format(Locale.ROOT, "%1$-11.5g %2$-11.5g %3$-11.5g", 
-						body.getOrigin()[0], body.getOrigin()[1], body.getOrigin()[2])
-						).append("\n");
-
-			// in case a body-section file is given
-			if (body.getBodyCoordFile().isPresent()) {
-				sb.append("BFIL").append("\n");
-				sb.append(body.getBodyCoordFile().get().getName()).append("\n");			
-			} 
-
-			// in case a body-section is given inline
-			if (body.getBodySectionInline().isPresent()) {
-				sb.append("AIRFOIL").append("\n");
-				Arrays.asList(body.getBodySectionInline().get().getData()).stream()
-					.forEach(pair -> 
-						sb.append(
-							String.format(Locale.ROOT, "%1$-11.5g %2$-11.5g", pair[0], pair[1])
-						).append("\n")
-					);
-			} 
-			
-			sb.append("#\n")
-			  .append("#==============================================================\n")
-			  .append("#\n");
-			
-			return sb.toString();
-		}
-
-		// See file: ag38.dat
-		static RealMatrix getAG38AirfoilSection() {
-			return MatrixUtils.createRealMatrix(
-					new double[][]{
-						{0.999999 ,  0.004704},
-						{0.993621 ,  0.005696},
-						{0.983682 ,  0.007241},
-						{0.972066 ,  0.009047},
-						{0.959633 ,  0.010981},
-						{0.946835 ,  0.012971},
-						{0.933981 ,  0.014969},
-						{0.921234 ,  0.016952},
-						{0.908447 ,  0.018940},
-						{0.895764 ,  0.020914},
-						{0.882852 ,  0.022914},
-						{0.870677 ,  0.024564},
-						{0.857810 ,  0.026064},
-						{0.844779 ,  0.027481},
-						{0.831613 ,  0.028913},
-						{0.818263 ,  0.030364},
-						{0.804818 ,  0.031827},
-						{0.791388 ,  0.033286},
-						{0.777951 ,  0.034747},
-						{0.764549 ,  0.036205},
-						{0.751106 ,  0.037667},
-						{0.737702 ,  0.039124},
-						{0.724342 ,  0.040577},
-						{0.711051 ,  0.042022},
-						{0.697928 ,  0.043448},
-						{0.685186 ,  0.044836},
-						{0.672293 ,  0.046199},
-						{0.658783 ,  0.047537},
-						{0.647516 ,  0.048556},
-						{0.635011 ,  0.049622},
-						{0.622485 ,  0.050624},
-						{0.609531 ,  0.051627},
-						{0.596533 ,  0.052634},
-						{0.583312 ,  0.053658},
-						{0.569976 ,  0.054692},
-						{0.556633 ,  0.055727},
-						{0.543315 ,  0.056758},
-						{0.530000 ,  0.057791},
-						{0.516728 ,  0.058820},
-						{0.503472 ,  0.059846},
-						{0.490290 ,  0.060869},
-						{0.477236 ,  0.061880},
-						{0.464539 ,  0.062866},
-						{0.452148 ,  0.063819},
-						{0.439870 ,  0.064696},
-						{0.427640 ,  0.065505},
-						{0.415386 ,  0.066252},
-						{0.403250 ,  0.066927},
-						{0.391172 ,  0.067542},
-						{0.379063 ,  0.068100},
-						{0.366729 ,  0.068612},
-						{0.354113 ,  0.069073},
-						{0.341333 ,  0.069479},
-						{0.328488 ,  0.069821},
-						{0.315654 ,  0.070095},
-						{0.302897 ,  0.070294},
-						{0.290182 ,  0.070419},
-						{0.277486 ,  0.070467},
-						{0.264739 ,  0.070440},
-						{0.251950 ,  0.070331},
-						{0.239044 ,  0.070136},
-						{0.226021 ,  0.069844},
-						{0.212912 ,  0.069446},
-						{0.199800 ,  0.068938},
-						{0.186742 ,  0.068312},
-						{0.173780 ,  0.067562},
-						{0.160907 ,  0.066679},
-						{0.148128 ,  0.065652},
-						{0.135369 ,  0.064462},
-						{0.122667 ,  0.063091},
-						{0.110044 ,  0.061522},
-						{0.097563 ,  0.059738},
-						{0.086115 ,  0.057868},
-						{0.075071 ,  0.055815},
-						{0.064507 ,  0.053584},
-						{0.054572 ,  0.051199},
-						{0.045308 ,  0.048667},
-						{0.036786 ,  0.046008},
-						{0.029161 ,  0.043281},
-						{0.022616 ,  0.040585},
-						{0.017243 ,  0.038018},
-						{0.012940 ,  0.035620},
-						{0.009579 ,  0.033433},
-						{0.007013 ,  0.031471},
-						{0.005102 ,  0.029742},
-						{0.003685 ,  0.028228},
-						{0.002589 ,  0.026840},
-						{0.001700 ,  0.025486},
-						{0.000978 ,  0.024106},
-						{0.000451 ,  0.022746},
-						{0.000094 ,  0.021225},
-						{0.000009 ,  0.019745},
-						{0.000172 ,  0.018622},
-						{0.000581 ,  0.017457},
-						{0.001293 ,  0.016280},
-						{0.002383 ,  0.015135},
-						{0.003836 ,  0.014081},
-						{0.005649 ,  0.013115},
-						{0.007886 ,  0.012203},
-						{0.010612 ,  0.011326},
-						{0.013931 ,  0.010463},
-						{0.018027 ,  0.009582},
-						{0.023174 ,  0.008665},
-						{0.029676 ,  0.007708},
-						{0.037756 ,  0.006738},
-						{0.047349 ,  0.005792},
-						{0.058120 ,  0.004930},
-						{0.069666 ,  0.004170},
-						{0.081678 ,  0.003507},
-						{0.093975 ,  0.002937},
-						{0.106461 ,  0.002451},
-						{0.119072 ,  0.002040},
-						{0.131774 ,  0.001694},
-						{0.144550 ,  0.001399},
-						{0.157380 ,  0.001147},
-						{0.170260 ,  0.000929},
-						{0.183177 ,  0.000744},
-						{0.196137 ,  0.000585},
-						{0.209128 ,  0.000450},
-						{0.222152 ,  0.000335},
-						{0.235196 ,  0.000245},
-						{0.248262 ,  0.000172},
-						{0.261351 ,  0.000117},
-						{0.274460 ,  0.000077},
-						{0.287589 ,  0.000040},
-						{0.300735 ,  0.000018},
-						{0.313898 ,  0.000004},
-						{0.327086 , -0.000005},
-						{0.340287 , -0.000003},
-						{0.353486 , -0.000003},
-						{0.366689 , -0.000003},
-						{0.379895 , -0.000001},
-						{0.393109 , -0.000003},
-						{0.406322 , -0.000002},
-						{0.419532 ,  0.000001},
-						{0.432737 , -0.000003},
-						{0.445943 ,  0.000001},
-						{0.459157 ,  0.000002},
-						{0.472370 , -0.000001},
-						{0.485577 ,  0.000002},
-						{0.498782 ,  0.000001},
-						{0.511992 ,  0.000000},
-						{0.525205 ,  0.000001},
-						{0.538418 , -0.000001},
-						{0.551625 , -0.000001},
-						{0.564826 ,  0.000001},
-						{0.578028 , -0.000001},
-						{0.591236 , -0.000002},
-						{0.604443 ,  0.000000},
-						{0.617649 ,  0.000000},
-						{0.630860 , -0.000001},
-						{0.644076 ,  0.000000},
-						{0.657286 ,  0.000000},
-						{0.670495 ,  0.000002},
-						{0.683700 ,  0.000000},
-						{0.696909 ,  0.000001},
-						{0.710122 , -0.000001},
-						{0.723334 ,  0.000000},
-						{0.736542 , -0.000002},
-						{0.749746 , -0.000002},
-						{0.762958 , -0.000001},
-						{0.776172 ,  0.000000},
-						{0.789383 ,  0.000000},
-						{0.802589 ,  0.000001},
-						{0.815788 ,  0.000001},
-						{0.828992 ,  0.000001},
-						{0.842199 ,  0.000002},
-						{0.855403 , -0.000002},
-						{0.868602 , -0.000002},
-						{0.881798 , -0.000002},
-						{0.895001 , -0.000002},
-						{0.908208 , -0.000001},
-						{0.921420 ,  0.000000},
-						{0.934616 ,  0.000001},
-						{0.947766 ,  0.000002},
-						{0.960776 ,  0.000000},
-						{0.973384 ,  0.000000},
-						{0.984990 ,  0.000000},
-						{0.994806 ,  0.000000},
-						{1.000000 ,  0.000001}
-					}
+		// in case a body-section is given inline
+		if (body.getBodySectionInline().isPresent()) {
+			sb.append("AIRFOIL").append("\n");
+			Arrays.asList(body.getBodySectionInline().get().getData()).stream()
+				.forEach(pair -> 
+					sb.append(
+						String.format(Locale.ROOT, "%1$-11.5g %2$-11.5g", pair[0], pair[1])
+					).append("\n")
 				);
-			
-		}
-}
+		} 
+		
+		sb.append("#\n")
+		  .append("#==============================================================\n")
+		  .append("#\n");
+		
+		return sb.toString();
+	}
+
+	public static String formatAsMassInput(AVLMassInputData massData) {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("#").append("\n");
+		sb.append("#  xyz is location of item's own CG").append("\n");
+		sb.append("#  Ixx.. are item's inertias about item's own CG").append("\n");
+		sb.append("#").append("\n");
+		sb.append("#  x back, y right, z up").append("\n");
+		sb.append("#").append("\n");
+		sb.append("#  x,y,z system here must have origin").append("\n");
+		sb.append("#  at same location as AVL input file").append("\n");
+		sb.append("#").append("\n");
+		
+		// Unit data
+		sb.append(
+			String.format(Locale.ROOT, "Lunit = %1$.5g m", massData.getLUnit())).append("\n");
+		sb.append(
+			String.format(Locale.ROOT, "Munit = %1$.5g kg", massData.getMUnit())).append("\n");
+		sb.append(
+				String.format(Locale.ROOT, "Tunit = %1$.5g s", massData.getTUnit())).append("\n");
+		sb.append("#").append("\n");
+		sb.append("#  mass   x     y     z      Ixx     Iyy     Izz   [ Ixy  Ixz  Iyz ]").append("\n");
+		
+		sb.append("#").append("\n");
+
+		massData.getMassProperties().stream()
+			.forEach(t -> {
+				sb.append(
+						String.format(
+							Locale.ROOT, 
+							"%1$11.3f %2$11.5f %3$11.5f %4$11.5f %5$14.3f %6$14.3f %7$14.3f %8$10.3f %9$10.3f %10$10.3f", 
+							t._1._1, t._1._2, t._1._3, t._1._4,
+							t._2._1, t._2._2, t._2._3, t._2._4, t._2._5, t._2._6
+								)
+						).append("\n");
+			});
+	
+		return sb.toString();
+	}
+		
+		
+	// See file: ag38.dat
+	static RealMatrix getAG38AirfoilSection() {
+		return MatrixUtils.createRealMatrix(
+			new double[][]{
+				{0.999999 ,  0.004704},
+				{0.993621 ,  0.005696},
+				{0.983682 ,  0.007241},
+				{0.972066 ,  0.009047},
+				{0.959633 ,  0.010981},
+				{0.946835 ,  0.012971},
+				{0.933981 ,  0.014969},
+				{0.921234 ,  0.016952},
+				{0.908447 ,  0.018940},
+				{0.895764 ,  0.020914},
+				{0.882852 ,  0.022914},
+				{0.870677 ,  0.024564},
+				{0.857810 ,  0.026064},
+				{0.844779 ,  0.027481},
+				{0.831613 ,  0.028913},
+				{0.818263 ,  0.030364},
+				{0.804818 ,  0.031827},
+				{0.791388 ,  0.033286},
+				{0.777951 ,  0.034747},
+				{0.764549 ,  0.036205},
+				{0.751106 ,  0.037667},
+				{0.737702 ,  0.039124},
+				{0.724342 ,  0.040577},
+				{0.711051 ,  0.042022},
+				{0.697928 ,  0.043448},
+				{0.685186 ,  0.044836},
+				{0.672293 ,  0.046199},
+				{0.658783 ,  0.047537},
+				{0.647516 ,  0.048556},
+				{0.635011 ,  0.049622},
+				{0.622485 ,  0.050624},
+				{0.609531 ,  0.051627},
+				{0.596533 ,  0.052634},
+				{0.583312 ,  0.053658},
+				{0.569976 ,  0.054692},
+				{0.556633 ,  0.055727},
+				{0.543315 ,  0.056758},
+				{0.530000 ,  0.057791},
+				{0.516728 ,  0.058820},
+				{0.503472 ,  0.059846},
+				{0.490290 ,  0.060869},
+				{0.477236 ,  0.061880},
+				{0.464539 ,  0.062866},
+				{0.452148 ,  0.063819},
+				{0.439870 ,  0.064696},
+				{0.427640 ,  0.065505},
+				{0.415386 ,  0.066252},
+				{0.403250 ,  0.066927},
+				{0.391172 ,  0.067542},
+				{0.379063 ,  0.068100},
+				{0.366729 ,  0.068612},
+				{0.354113 ,  0.069073},
+				{0.341333 ,  0.069479},
+				{0.328488 ,  0.069821},
+				{0.315654 ,  0.070095},
+				{0.302897 ,  0.070294},
+				{0.290182 ,  0.070419},
+				{0.277486 ,  0.070467},
+				{0.264739 ,  0.070440},
+				{0.251950 ,  0.070331},
+				{0.239044 ,  0.070136},
+				{0.226021 ,  0.069844},
+				{0.212912 ,  0.069446},
+				{0.199800 ,  0.068938},
+				{0.186742 ,  0.068312},
+				{0.173780 ,  0.067562},
+				{0.160907 ,  0.066679},
+				{0.148128 ,  0.065652},
+				{0.135369 ,  0.064462},
+				{0.122667 ,  0.063091},
+				{0.110044 ,  0.061522},
+				{0.097563 ,  0.059738},
+				{0.086115 ,  0.057868},
+				{0.075071 ,  0.055815},
+				{0.064507 ,  0.053584},
+				{0.054572 ,  0.051199},
+				{0.045308 ,  0.048667},
+				{0.036786 ,  0.046008},
+				{0.029161 ,  0.043281},
+				{0.022616 ,  0.040585},
+				{0.017243 ,  0.038018},
+				{0.012940 ,  0.035620},
+				{0.009579 ,  0.033433},
+				{0.007013 ,  0.031471},
+				{0.005102 ,  0.029742},
+				{0.003685 ,  0.028228},
+				{0.002589 ,  0.026840},
+				{0.001700 ,  0.025486},
+				{0.000978 ,  0.024106},
+				{0.000451 ,  0.022746},
+				{0.000094 ,  0.021225},
+				{0.000009 ,  0.019745},
+				{0.000172 ,  0.018622},
+				{0.000581 ,  0.017457},
+				{0.001293 ,  0.016280},
+				{0.002383 ,  0.015135},
+				{0.003836 ,  0.014081},
+				{0.005649 ,  0.013115},
+				{0.007886 ,  0.012203},
+				{0.010612 ,  0.011326},
+				{0.013931 ,  0.010463},
+				{0.018027 ,  0.009582},
+				{0.023174 ,  0.008665},
+				{0.029676 ,  0.007708},
+				{0.037756 ,  0.006738},
+				{0.047349 ,  0.005792},
+				{0.058120 ,  0.004930},
+				{0.069666 ,  0.004170},
+				{0.081678 ,  0.003507},
+				{0.093975 ,  0.002937},
+				{0.106461 ,  0.002451},
+				{0.119072 ,  0.002040},
+				{0.131774 ,  0.001694},
+				{0.144550 ,  0.001399},
+				{0.157380 ,  0.001147},
+				{0.170260 ,  0.000929},
+				{0.183177 ,  0.000744},
+				{0.196137 ,  0.000585},
+				{0.209128 ,  0.000450},
+				{0.222152 ,  0.000335},
+				{0.235196 ,  0.000245},
+				{0.248262 ,  0.000172},
+				{0.261351 ,  0.000117},
+				{0.274460 ,  0.000077},
+				{0.287589 ,  0.000040},
+				{0.300735 ,  0.000018},
+				{0.313898 ,  0.000004},
+				{0.327086 , -0.000005},
+				{0.340287 , -0.000003},
+				{0.353486 , -0.000003},
+				{0.366689 , -0.000003},
+				{0.379895 , -0.000001},
+				{0.393109 , -0.000003},
+				{0.406322 , -0.000002},
+				{0.419532 ,  0.000001},
+				{0.432737 , -0.000003},
+				{0.445943 ,  0.000001},
+				{0.459157 ,  0.000002},
+				{0.472370 , -0.000001},
+				{0.485577 ,  0.000002},
+				{0.498782 ,  0.000001},
+				{0.511992 ,  0.000000},
+				{0.525205 ,  0.000001},
+				{0.538418 , -0.000001},
+				{0.551625 , -0.000001},
+				{0.564826 ,  0.000001},
+				{0.578028 , -0.000001},
+				{0.591236 , -0.000002},
+				{0.604443 ,  0.000000},
+				{0.617649 ,  0.000000},
+				{0.630860 , -0.000001},
+				{0.644076 ,  0.000000},
+				{0.657286 ,  0.000000},
+				{0.670495 ,  0.000002},
+				{0.683700 ,  0.000000},
+				{0.696909 ,  0.000001},
+				{0.710122 , -0.000001},
+				{0.723334 ,  0.000000},
+				{0.736542 , -0.000002},
+				{0.749746 , -0.000002},
+				{0.762958 , -0.000001},
+				{0.776172 ,  0.000000},
+				{0.789383 ,  0.000000},
+				{0.802589 ,  0.000001},
+				{0.815788 ,  0.000001},
+				{0.828992 ,  0.000001},
+				{0.842199 ,  0.000002},
+				{0.855403 , -0.000002},
+				{0.868602 , -0.000002},
+				{0.881798 , -0.000002},
+				{0.895001 , -0.000002},
+				{0.908208 , -0.000001},
+				{0.921420 ,  0.000000},
+				{0.934616 ,  0.000001},
+				{0.947766 ,  0.000002},
+				{0.960776 ,  0.000000},
+				{0.973384 ,  0.000000},
+				{0.984990 ,  0.000000},
+				{0.994806 ,  0.000000},
+				{1.000000 ,  0.000001}
+			}
+		);		
+	}
+
+} // end-of-class AVLInputGenerator
 
 /*
 

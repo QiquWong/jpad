@@ -1,5 +1,5 @@
 LOAD .\newData2.avl
-MASS .\allegro.mass
+MASS .\newData2.mass
 MSET
 0
 PLOP

@@ -56,4 +56,8 @@ public interface IAVLExternalJob {
 	File getInputAVLFile();
 
 	void setInputAVLFile(File inputFile);
+
+	File getInputMassFile();
+
+	void setInputMassFile(File massFile);
 }
