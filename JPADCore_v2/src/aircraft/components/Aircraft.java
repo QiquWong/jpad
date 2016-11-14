@@ -307,6 +307,8 @@ public class Aircraft implements IAircraft {
 				__theSystems.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
 				
 				break;
+			default:
+				break;
 			
 			}
 		}

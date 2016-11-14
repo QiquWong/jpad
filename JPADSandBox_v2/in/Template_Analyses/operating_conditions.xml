@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-	<operating_conditions id="JPAD Operating Conditions">
+	<operating_conditions id="ATR72 - Operating Conditions">
 		<global_data>
 			<!-- angle of attack at which the user wants to evaluate a generic aerodynamic output -->
 			<alpha_current unit="deg">2</alpha_current>
@@ -9,7 +9,7 @@
 		</global_data>
 		<cruise> 
 			<mach>0.43</mach>	
-			<altitude unit="m">9144.0</altitude>
+			<altitude unit="m">6000.0</altitude>
 			<throttle>0.75</throttle>
 		</cruise>
 		<take_off>

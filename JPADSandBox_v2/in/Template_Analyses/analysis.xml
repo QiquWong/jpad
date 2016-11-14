@@ -8,12 +8,12 @@
     <global_data>
         <positive_limit_load_factor>2.5</positive_limit_load_factor>
 		<negative_limit_load_factor>-1.0</negative_limit_load_factor>
-		<cruise_lift_coefficient>0.61</cruise_lift_coefficient>
-		<reference_range unit="nmi">1598.272</reference_range>
-		<maximum_altitude_at_maximum_speed unit="ft">30000</maximum_altitude_at_maximum_speed>
-		<maximum_cruise_mach_number>0.62</maximum_cruise_mach_number>
-		<optimum_cruise_altitude unit="ft">30000</optimum_cruise_altitude>
-		<optimum_cruise_mach_number>0.62</optimum_cruise_mach_number>
+		<cruise_lift_coefficient>0.42</cruise_lift_coefficient>
+		<reference_range unit="nmi">890.272</reference_range>
+		<maximum_altitude_at_maximum_speed unit="ft">19685.0</maximum_altitude_at_maximum_speed>
+		<maximum_cruise_mach_number>0.42</maximum_cruise_mach_number>
+		<optimum_cruise_altitude unit="ft">19685.0</optimum_cruise_altitude>
+		<optimum_cruise_mach_number>0.42</optimum_cruise_mach_number>
 		<!--??? to be defined -->
 		<block_time unit="h">1.5</block_time>
 		<flight_time unit="h">1.35</flight_time>
@@ -21,6 +21,7 @@
     </global_data>
     <!-- Required analysis tasks - comment the tag of the analysis if not needed -->
     <analyses id="ATR-72 analysis">
+		<!--
 		<weights 
             file="analysis_weights.xml" 
             method_fuselage=""
@@ -31,7 +32,9 @@
 			method_landing_gears=""
 			method_systems=""
             /> 
+		-->
 		<!-- method_XXX="AVERAGED" if empty string -->
+		<!--
 		<balance
 			file="analysis_balance.xml"
 			plot="TRUE"
@@ -41,6 +44,7 @@
             method_vtail=""
 			method_canard=""
 		/> 
+		-->
 		<!-- method_XXX="AVERAGED" if empty string -->
 		<performance 
 			file="analysis_performance.xml"

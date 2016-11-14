@@ -26,7 +26,11 @@ import calculators.aerodynamics.DragCalc;
 import calculators.performance.FlightManeuveringEnvelopeCalc;
 import calculators.performance.LandingCalc;
 import calculators.performance.PayloadRangeCalc;
+import calculators.performance.PerformanceCalcUtils;
+import calculators.performance.RateOfClimbCalc;
 import calculators.performance.TakeOffCalc;
+import calculators.performance.customdata.CeilingMap;
+import calculators.performance.customdata.RCMap;
 import configuration.MyConfiguration;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.PerformanceEnum;
@@ -35,6 +39,7 @@ import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyXLSUtils;
 import standaloneutils.MyXMLReaderUtils;
+import sun.misc.Perf;
 import writers.JPADStaticWriteUtils;
 
 public class ACPerformanceCalculator {
@@ -61,12 +66,13 @@ public class ACPerformanceCalculator {
 	private Amount<Mass> _maximumZeroFuelMass;
 	private Amount<Mass> _operatingEmptyMass;
 	private Amount<Mass> _maximumFuelMass;
+	private Amount<Mass> _singlePassengerMass;
 	//..............................................................................
 	// Aerodynamics
 	private Double _currentLiftingCoefficient;
 	private Double _currentDragCoefficient;
 	private Double _cD0;
-	private Double _oswald;
+	private Double _oswaldCruise;
 	private Double _oswaldTakeOff;
 	private Double _oswaldLanding;
 	private Double _cLmaxClean;
@@ -135,7 +141,10 @@ public class ACPerformanceCalculator {
 	
 	//..............................................................................
 	// Climb
-	// TODO
+	private List<RCMap> _rcMapAOE;
+	private List<RCMap> _rcMapOEI;
+	private List<CeilingMap> _ceilingMapAOE;
+	private List<CeilingMap> _ceilingMapOEI;
 	
 	//..............................................................................
 	// Cruise
@@ -156,8 +165,54 @@ public class ACPerformanceCalculator {
 	
 	//..............................................................................
 	// Payload-Range
-	// TODO
+	private PayloadRangeCalc _thePayloadRangeCalculator;
 	
+	private Double _bestRangeMach;
+	
+	private Amount<Length> _rangeAtMaxPayloadBestRange;
+	private Amount<Length> _rangeAtMaxPayloadCurrentMach;
+	private Amount<Mass> _fuelMassAtMaxPayload;
+	private Double _cLAtMaxPayloadBestRange;
+	private Double _cLAtMaxPayloadCurrentMach;
+	private Double _cDAtMaxPayloadBestRange;
+	private Double _cDAtMaxPayloadCurrentMach;
+	private Double _efficiencyAtMaxPayloadBestRange;
+	private Double _efficiencyAtMaxPayloadCurrentMach;
+	private Double _sfcAtMaxPayloadBestRange;
+	private Double _sfcAtMaxPayloadCurrentMach;
+	
+	private Amount<Length> _rangeAtMaxFuelBestRange;
+	private Amount<Length> _rangeAtMaxFuelCurrentMach;
+	private Amount<Mass> _payloadAtMaxFuel;
+	private Double _numberOfPassengersAtMaxFuel;
+	private Double _cLAtMaxFuelBestRange;
+	private Double _cLAtMaxFuelCurrentMach;
+	private Double _cDAtMaxFuelBestRange;
+	private Double _cDAtMaxFuelCurrentMach;
+	private Double _efficiencyAtMaxFuelBestRange;
+	private Double _efficiencyAtMaxFuelCurrentMach;
+	private Double _sfcAtZeroPayloadBestRange;
+	private Double _sfcAtMaxFuelCurrentMach;	
+	
+	private Amount<Length> _rangeAtZeroPayloadBestRange;
+	private Amount<Length> _rangeAtZeroPayloadCurrentMach;
+	private Amount<Mass> _takeOffMassAtZeroPayload;
+	private Double _cLAtZeroPayloadBestRange;
+	private Double _cLAtZeroPayloadCurrentMach;
+	private Double _cDAtZeroPayloadBestRange;
+	private Double _cDAtZeroPayloadCurrentMach;
+	private Double _efficiencyAtZeroPayloadBestRange;
+	private Double _efficiencyAtZeroPayloadCurrentMach;
+	private Double _sfcAtMaxFuelBestRange;	
+	private Double _sfcAtZeroPayloadCurrentMach;
+	
+	private List<Amount<Length>> _rangeArrayBestRange;
+	private List<Amount<Length>> _rangeArrayCurrentMach;
+	private List<Double> _payloadArray;
+	
+	private double[][] _rangeMatrix;
+	private double[][] _payloadMatrix;
+
 	//..............................................................................
 	// Maneuvering and Gust Flight Envelope 
 	private FlightManeuveringEnvelopeCalc _theEnvelopeCalculator;
@@ -202,6 +257,7 @@ public class ACPerformanceCalculator {
 		private Amount<Mass> __maximumZeroFuelMass;
 		private Amount<Mass> __operatingEmptyMass;
 		private Amount<Mass> __maximumFuelMass;
+		private Amount<Mass> __singlePassengerMass;
 		//..............................................................................
 		// Aerodynamics
 		private Double __currentLiftingCoefficient;
@@ -294,6 +350,11 @@ public class ACPerformanceCalculator {
 		
 		public ACPerformanceCalculatorBuilder maximumFuelMass(Amount<Mass> maximumFuelMass) {
 			this.__maximumFuelMass = maximumFuelMass;
+			return this;
+		}
+		
+		public ACPerformanceCalculatorBuilder singlePassengerMass(Amount<Mass> singlePassengerMass) {
+			this.__singlePassengerMass = singlePassengerMass;
 			return this;
 		}
 		
@@ -544,11 +605,12 @@ public class ACPerformanceCalculator {
 		this._maximumZeroFuelMass = builder.__maximumZeroFuelMass;
 		this._operatingEmptyMass = builder.__operatingEmptyMass;
 		this._maximumFuelMass = builder.__maximumFuelMass;
+		this._singlePassengerMass = builder.__singlePassengerMass;
 		
 		this._currentLiftingCoefficient = builder.__currentLiftingCoefficient;
 		this._currentDragCoefficient = builder.__currentDragCoefficient;
 		this._cD0 = builder.__cD0;
-		this._oswald = builder.__oswald;
+		this._oswaldCruise = builder.__oswald;
 		this._oswaldTakeOff = builder.__oswaldTakeOff;
 		this._oswaldLanding = builder.__oswaldLanding;
 		this._cLmaxClean = builder.__cLmaxClean;
@@ -660,6 +722,7 @@ public class ACPerformanceCalculator {
 		Amount<Mass> maximumZeroFuelMass = null;
 		Amount<Mass> operatingEmptyMass = null;
 		Amount<Mass> maximumFuelMass = null;
+		Amount<Mass> singlePassengerMass = null;
 		
 		if(readWeightsFromXLSFlag == Boolean.TRUE) {
 
@@ -715,6 +778,11 @@ public class ACPerformanceCalculator {
 				Cell maximumFuelMassCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Fuel Mass").get(0)).getCell(2);
 				if(maximumFuelMassCell != null)
 					maximumFuelMass = Amount.valueOf(maximumFuelMassCell.getNumericCellValue(), SI.KILOGRAM);
+				//...............................................................
+				// SINGLE PASSENGER MASS
+				Cell singlePassengerMassCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Single passenger Mass").get(0)).getCell(2);
+				if(singlePassengerMassCell != null)
+					singlePassengerMass = Amount.valueOf(singlePassengerMassCell.getNumericCellValue(), SI.KILOGRAM);
 			}
 			else {
 				System.err.println("FILE '" + weightsFile.getAbsolutePath() + "' NOT FOUND!! \n\treturning...");
@@ -751,6 +819,12 @@ public class ACPerformanceCalculator {
 			String maximumFuelMassProperty = reader.getXMLPropertyByPath("//performance/weights/maximum_fuel_mass");
 			if(maximumFuelMassProperty != null)
 				maximumFuelMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//performance/weights/maximum_fuel_mass");
+			
+			//...............................................................
+			// SINGLE PASSENGER MASS
+			String singlePassengerMassProperty = reader.getXMLPropertyByPath("//performance/weights/single_passenger_mass");
+			if(singlePassengerMassProperty != null)
+				singlePassengerMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//performance/weights/single_passenger_mass");
 		}
 		
 		//===========================================================================================
@@ -1209,111 +1283,127 @@ public class ACPerformanceCalculator {
 		// READING PLOT LIST ...	
 		List<PerformancePlotEnum> plotList = new ArrayList<PerformancePlotEnum>();
 		if(theAircraft.getTheAnalysisManager().getPlotPerformance() == Boolean.TRUE) {
-			
+
 			//...............................................................
 			// TAKE-OFF
-			String takeOffSimulationsProperty = MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//plot/takeoff/simulations/@perform");
-			if (takeOffSimulationsProperty != null) {
-				if(takeOffSimulationsProperty.equalsIgnoreCase("TRUE")) 
-					plotList.add(PerformancePlotEnum.TAKE_OFF_SIMULATIONS);
+			if(theAircraft.getTheAnalysisManager().getTaskListPerformance().contains(PerformanceEnum.TAKE_OFF)) {
+				String takeOffSimulationsProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//plot/takeoff/simulations/@perform");
+				if (takeOffSimulationsProperty != null) {
+					if(takeOffSimulationsProperty.equalsIgnoreCase("TRUE")) 
+						plotList.add(PerformancePlotEnum.TAKE_OFF_SIMULATIONS);
 				}
-			
-			String balancedFieldLengthChartProperty = MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//plot/takeoff/balanced_field_length/@perform");
-			if (balancedFieldLengthChartProperty != null) {
-				if(balancedFieldLengthChartProperty.equalsIgnoreCase("TRUE")) 
-					plotList.add(PerformancePlotEnum.BALANCED_FIELD_LENGTH);
+
+				String balancedFieldLengthChartProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//plot/takeoff/balanced_field_length/@perform");
+				if (balancedFieldLengthChartProperty != null) {
+					if(balancedFieldLengthChartProperty.equalsIgnoreCase("TRUE")) 
+						plotList.add(PerformancePlotEnum.BALANCED_FIELD_LENGTH);
 				}
-				
+			}				
 			//...............................................................
 			// CLIMB 
-			
-			// TODO : COMPLETE ME !!
-			
+			if(theAircraft.getTheAnalysisManager().getTaskListPerformance().contains(PerformanceEnum.CLIMB)) {
+
+				// TODO : COMPLETE ME !!
+
+			}
+
 			//...............................................................
 			// CRUISE
-			String thrustDragChartProperty = MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//plot/cruise/thrust_drag/@perform");
-			if (thrustDragChartProperty != null) {
-				if(thrustDragChartProperty.equalsIgnoreCase("TRUE")) 
-					plotList.add(PerformancePlotEnum.THRUST_DRAG_CURVES);
+			if(theAircraft.getTheAnalysisManager().getTaskListPerformance().contains(PerformanceEnum.CRUISE)) {
+
+				String thrustDragChartProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//plot/cruise/thrust_drag/@perform");
+				if (thrustDragChartProperty != null) {
+					if(thrustDragChartProperty.equalsIgnoreCase("TRUE")) 
+						plotList.add(PerformancePlotEnum.THRUST_DRAG_CURVES);
 				}
-			
-			String efficiencyChartProperty = MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//plot/cruise/efficiency/@perform");
-			if (efficiencyChartProperty != null) {
-				if(efficiencyChartProperty.equalsIgnoreCase("TRUE")) 
-					plotList.add(PerformancePlotEnum.EFFICIENCY_CURVES);
+
+				String efficiencyChartProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//plot/cruise/efficiency/@perform");
+				if (efficiencyChartProperty != null) {
+					if(efficiencyChartProperty.equalsIgnoreCase("TRUE")) 
+						plotList.add(PerformancePlotEnum.EFFICIENCY_CURVES);
 				}
-			
-			String sfcChartProperty = MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//plot/cruise/sfc/@perform");
-			if (sfcChartProperty != null) {
-				if(sfcChartProperty.equalsIgnoreCase("TRUE")) 
-					plotList.add(PerformancePlotEnum.SFC_CURVE);
+
+				String sfcChartProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//plot/cruise/sfc/@perform");
+				if (sfcChartProperty != null) {
+					if(sfcChartProperty.equalsIgnoreCase("TRUE")) 
+						plotList.add(PerformancePlotEnum.SFC_CURVE);
 				}
-			
-			String cruiseGridChartProperty = MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//plot/cruise/cruise_grid/@perform");
-			if (cruiseGridChartProperty != null) {
-				if(cruiseGridChartProperty.equalsIgnoreCase("TRUE")) 
-					plotList.add(PerformancePlotEnum.CRUISE_GRID_CHART);
+
+				String cruiseGridChartProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//plot/cruise/cruise_grid/@perform");
+				if (cruiseGridChartProperty != null) {
+					if(cruiseGridChartProperty.equalsIgnoreCase("TRUE")) 
+						plotList.add(PerformancePlotEnum.CRUISE_GRID_CHART);
 				}
-			
-			String cruiseFlightEnvelopeChartProperty = MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//plot/cruise/flight_envelope/@perform");
-			if (cruiseFlightEnvelopeChartProperty != null) {
-				if(cruiseFlightEnvelopeChartProperty.equalsIgnoreCase("TRUE")) 
-					plotList.add(PerformancePlotEnum.CRUISE_FLIGHT_ENVELOPE);
+
+				String cruiseFlightEnvelopeChartProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//plot/cruise/flight_envelope/@perform");
+				if (cruiseFlightEnvelopeChartProperty != null) {
+					if(cruiseFlightEnvelopeChartProperty.equalsIgnoreCase("TRUE")) 
+						plotList.add(PerformancePlotEnum.CRUISE_FLIGHT_ENVELOPE);
 				}
-			
+
+			}
 			//...............................................................
 			// LANDING
-			String landingSimulationsProperty = MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//plot/landing/simulations/@perform");
-			if (landingSimulationsProperty != null) {
-				if(landingSimulationsProperty.equalsIgnoreCase("TRUE")) 
-					plotList.add(PerformancePlotEnum.LANDING_SIMULATIONS);
+			if(theAircraft.getTheAnalysisManager().getTaskListPerformance().contains(PerformanceEnum.LANDING)) {
+
+				String landingSimulationsProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//plot/landing/simulations/@perform");
+				if (landingSimulationsProperty != null) {
+					if(landingSimulationsProperty.equalsIgnoreCase("TRUE")) 
+						plotList.add(PerformancePlotEnum.LANDING_SIMULATIONS);
 				}
-			
+
+			}
 			//...............................................................
 			// PAYLOAD-RANGE
-			String payloadRangeProperty = MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//plot/payload_range/@perform");
-			if (payloadRangeProperty != null) {
-				if(payloadRangeProperty.equalsIgnoreCase("TRUE")) 
-					plotList.add(PerformancePlotEnum.PAYLOAD_RANGE);
+			if(theAircraft.getTheAnalysisManager().getTaskListPerformance().contains(PerformanceEnum.PAYLOAD_RANGE)) {
+
+				String payloadRangeProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//plot/payload_range/@perform");
+				if (payloadRangeProperty != null) {
+					if(payloadRangeProperty.equalsIgnoreCase("TRUE")) 
+						plotList.add(PerformancePlotEnum.PAYLOAD_RANGE);
 				}
-			
+
+			}
 			//...............................................................
 			// V-n DIAGRAM
-			String maneuveringFlightAndGustEnvelopeProperty = MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//plot/maneuvering_flight_and_gust_envelope/@perform");
-			if (maneuveringFlightAndGustEnvelopeProperty != null) {
-				if(maneuveringFlightAndGustEnvelopeProperty.equalsIgnoreCase("TRUE")) 
-					plotList.add(PerformancePlotEnum.FLIGHT_MANEUVERING_AND_GUST_DIAGRAM);
+			if(theAircraft.getTheAnalysisManager().getTaskListPerformance().contains(PerformanceEnum.V_n_DIAGRAM)) {
+
+				String maneuveringFlightAndGustEnvelopeProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//plot/maneuvering_flight_and_gust_envelope/@perform");
+				if (maneuveringFlightAndGustEnvelopeProperty != null) {
+					if(maneuveringFlightAndGustEnvelopeProperty.equalsIgnoreCase("TRUE")) 
+						plotList.add(PerformancePlotEnum.FLIGHT_MANEUVERING_AND_GUST_DIAGRAM);
 				}
+			}
 		}
 		
 		//===========================================================================================
@@ -1327,6 +1417,7 @@ public class ACPerformanceCalculator {
 				.maximumZeroFuelMass(maximumZeroFuelMass)
 				.operatingEmptyMass(operatingEmptyMass)
 				.maximumFuelMass(maximumFuelMass)
+				.singlePassengerMass(singlePassengerMass)
 				.currentLiftingCoefficient(currentLiftingCoefficient)
 				.currentDragCoefficient(currentDragCoefficient)
 				.cD0(cD0)
@@ -1385,7 +1476,7 @@ public class ACPerformanceCalculator {
 	// -ADD THE toString AND THE toXLS METHODS  	//
 	// -IMPLEMENT THE CALCULATOR AOE AND OEI 		//
 	// 	WHICH CALLS FOR THE REQUIRED NESTED CLASSES	//
-	// -IMPLEMENT THE INNER CLASSES					//
+	// -IMPLEMENT ALL THE INNER CLASSES				//
 	//								 		   		//
 	//////////////////////////////////////////////////
 	
@@ -1425,6 +1516,19 @@ public class ACPerformanceCalculator {
 			CalcLanding calcLanding = new CalcLanding();
 			calcLanding.performLandingSimulation(landingFolderPath);
 			
+		}
+		
+		if(_taskList.contains(PerformanceEnum.PAYLOAD_RANGE)) {
+		
+			String payloadRangeFolderPath = JPADStaticWriteUtils.createNewFolder(
+					performanceFolderPath 
+					+ "PAYLOAD_RANGE"
+					+ File.separator
+					);
+			
+			CalcPayloadRange calcPayloadRange = new CalcPayloadRange();
+			calcPayloadRange.fromRangeBreguet(payloadRangeFolderPath);
+		
 		}
 		
 		if(_taskList.contains(PerformanceEnum.V_n_DIAGRAM)) {
@@ -1492,6 +1596,11 @@ public class ACPerformanceCalculator {
 			;
 			
 		}
+		if(_taskList.contains(PerformanceEnum.PAYLOAD_RANGE)) {
+			sb.append("\tPAYLOAD-RANGE\n")
+			.append(_thePayloadRangeCalculator.toString());
+		}
+
 		if(_taskList.contains(PerformanceEnum.V_n_DIAGRAM)) {
 			sb.append("\tV-n DIAGRAM\n")
 			.append(_theEnvelopeCalculator.toString());
@@ -1598,6 +1707,82 @@ public class ACPerformanceCalculator {
 	//............................................................................
 	
 	//............................................................................
+	// CLIMB INNER CLASS
+	//............................................................................
+	public class CalcClimb {
+
+		public void calculateRCandCeiling() {
+//			
+//			//----------------------------------------------------------------------------------
+//			// ALL OPERATIVE ENGINES (AOE)
+//			_rcMapAOE = new ArrayList<RCMap>();
+//			_rcMapAOE.addAll(
+//					RateOfClimbCalc.calculateRC(
+//							altitude,
+//							phi,
+//							weight,
+//							flightCondition, 
+//							t0,
+//							nEngine,
+//							bpr,
+//							surface,
+//							ar,
+//							sweepHalfChord,
+//							tcMax,
+//							airfoilType, 
+//							cLmax,
+//							cD0,
+//							oswald,
+//							dragList,
+//							thrustList
+//							)
+//					);
+//
+//			_ceilingMapAOE = new ArrayList<CeilingMap>();
+//			_ceilingMapAOE.addAll(
+//					PerformanceCalcUtils.calculateCeiling(
+//							altitude,
+//							phi,
+//							weight,
+//							flightCondition,
+//							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+//							_rcMapAOE
+//							)
+//					);
+//			
+//			//----------------------------------------------------------------------------------
+//			// ONE ENGINE INOPERATIVE (OEI)
+//			_rcMapAOE = new ArrayList<RCMap>();
+//			_rcMapAOE.addAll(
+//					RateOfClimbCalc.calculateRC(
+//							altitude,
+//							phi,
+//							weight,
+//							flightCondition, 
+//							bpr,
+//							dragList,
+//							thrustList
+//							)
+//					);
+//
+//			_ceilingMapOEI = new ArrayList<CeilingMap>();
+//			_ceilingMapOEI.addAll(
+//					PerformanceCalcUtils.calculateCeiling(
+//							altitude,
+//							phi,
+//							weight,
+//							flightCondition,
+//							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+//							_rcMapOEI
+//							)
+//					);
+		}
+	}
+	//............................................................................
+	// END OF THE CLIMB INNER CLASS
+	//............................................................................
+	
+	//............................................................................
 	// LANDING INNER CLASS
 	//............................................................................
 	public class CalcLanding {
@@ -1673,7 +1858,6 @@ public class ACPerformanceCalculator {
 				}
 			}
 		}
-		
 	}
 	//............................................................................
 	// END OF THE LANDING INNER CLASS
@@ -1684,12 +1868,84 @@ public class ACPerformanceCalculator {
 	//............................................................................
 	public class CalcPayloadRange {
 		
-		public void fromRangeBreguet() {
+		public void fromRangeBreguet(String payloadRangeFolderPath) {
 			
-					
+			_thePayloadRangeCalculator = new PayloadRangeCalc(
+					_theAircraft,
+					_theOperatingConditions,
+					_maximumTakeOffMass,
+					_operatingEmptyMass,
+					_maximumFuelMass,
+					_cD0,
+					_oswaldCruise,
+					_theOperatingConditions.getMachCruise(),
+					_theOperatingConditions.getAltitudeCruise(),
+					_singlePassengerMass
+					);
 			
+			//------------------------------------------------------------
+			// CRUISE MACH AND BEST RANGE MACH COMPARISON
+			_thePayloadRangeCalculator.createPayloadRangeMachComparison();
+			
+			//------------------------------------------------------------
+			// MAX TAKE-OFF MASS PARAMETERIZATION
+			_thePayloadRangeCalculator.createPayloadRangeMaxTakeOffMassParameterization();
+			
+			//------------------------------------------------------------
+			// COLLECTING RESULTS
+			_bestRangeMach = _thePayloadRangeCalculator.getBestRangeMach();
+			
+			_rangeAtMaxPayloadBestRange = _thePayloadRangeCalculator.getRangeAtMaxPayloadBestRange();
+			_rangeAtMaxPayloadCurrentMach = _thePayloadRangeCalculator.getRangeAtMaxPayloadCurrentMach();
+			_fuelMassAtMaxPayload = _thePayloadRangeCalculator.getFuelMass();
+			_cLAtMaxPayloadBestRange = _thePayloadRangeCalculator.getcLAtMaxPayloadBestRange();
+			_cLAtMaxPayloadCurrentMach = _thePayloadRangeCalculator.getcLAtMaxPayloadCurrentMach();
+			_cDAtMaxPayloadBestRange = _thePayloadRangeCalculator.getcDAtMaxPayloadBestRange();
+			_cDAtMaxPayloadCurrentMach = _thePayloadRangeCalculator.getcDAtMaxPayloadCurrentMach();
+			_efficiencyAtMaxPayloadBestRange = _thePayloadRangeCalculator.getEfficiencyAtMaxPayloadBestRange();
+			_efficiencyAtMaxPayloadCurrentMach = _thePayloadRangeCalculator.getEfficiencyAtMaxPayloadCurrentMach();
+			_sfcAtMaxPayloadBestRange = _thePayloadRangeCalculator.getSfcAtMaxPayloadBestRange();
+			_sfcAtMaxPayloadCurrentMach = _thePayloadRangeCalculator.getSfcAtMaxPayloadCurrentMach();
+			
+			_rangeAtMaxFuelBestRange = _thePayloadRangeCalculator.getRangeAtMaxFuelBestRange();
+			_rangeAtMaxFuelCurrentMach = _thePayloadRangeCalculator.getRangeAtMaxFuelCurrentMach();
+			_payloadAtMaxFuel = _thePayloadRangeCalculator.getPayloadMaxFuel();
+			_numberOfPassengersAtMaxFuel = _thePayloadRangeCalculator.getnPassActual();
+			_cLAtMaxFuelBestRange = _thePayloadRangeCalculator.getcLAtMaxFuelBestRange();
+			_cLAtMaxFuelCurrentMach = _thePayloadRangeCalculator.getcLAtMaxFuelCurrentMach();
+			_cDAtMaxFuelBestRange = _thePayloadRangeCalculator.getcDAtMaxFuelBestRange();
+			_cDAtMaxFuelCurrentMach = _thePayloadRangeCalculator.getcDAtMaxFuelCurrentMach();
+			_efficiencyAtMaxFuelBestRange = _thePayloadRangeCalculator.getEfficiencyAtMaxFuelBestRange();
+			_efficiencyAtMaxFuelCurrentMach = _thePayloadRangeCalculator.getEfficiencyAtMaxFuelCurrentMach();
+			_sfcAtZeroPayloadBestRange = _thePayloadRangeCalculator.getSfcAtMaxFuelBestRange();
+			_sfcAtMaxFuelCurrentMach = _thePayloadRangeCalculator.getSfcAtMaxFuelCurrentMach();	
+			
+			_rangeAtZeroPayloadBestRange = _thePayloadRangeCalculator.getRangeAtZeroPayloadBestRange();
+			_rangeAtZeroPayloadCurrentMach = _thePayloadRangeCalculator.getRangeAtZeroPayloadCurrentMach();
+			_takeOffMassAtZeroPayload = _thePayloadRangeCalculator.getTakeOffMass();
+			_cLAtZeroPayloadBestRange = _thePayloadRangeCalculator.getcLAtZeroPayloadBestRange();
+			_cLAtZeroPayloadCurrentMach = _thePayloadRangeCalculator.getcLAtZeroPayloadCurrentMach();
+			_cDAtZeroPayloadBestRange = _thePayloadRangeCalculator.getcDAtZeroPayloadBestRange();
+			_cDAtZeroPayloadCurrentMach = _thePayloadRangeCalculator.getcDAtZeroPayloadCurrentMach();
+			_efficiencyAtZeroPayloadBestRange = _thePayloadRangeCalculator.getEfficiencyAtZeroPayloadBestRange();
+			_efficiencyAtZeroPayloadCurrentMach = _thePayloadRangeCalculator.getEfficiencyAtZeroPayloadCurrentMach();
+			_sfcAtMaxFuelBestRange = _thePayloadRangeCalculator.getSfcAtZeroPayloadBestRange();	
+			_sfcAtZeroPayloadCurrentMach = _thePayloadRangeCalculator.getSfcAtZeroPayloadCurrentMach();
+			
+			_rangeArrayBestRange = _thePayloadRangeCalculator.getRangeArrayBestRange();
+			_rangeArrayCurrentMach = _thePayloadRangeCalculator.getRangeArrayCurrentMach();
+			_payloadArray = _thePayloadRangeCalculator.getPayloadArray();
+			
+			_rangeMatrix = _thePayloadRangeCalculator.getRangeMatrix();
+			_payloadMatrix = _thePayloadRangeCalculator.getPayloadMatrix();
+			
+			//------------------------------------------------------------
+			// PLOT
+			if(_plotList.contains(PerformancePlotEnum.PAYLOAD_RANGE)) {
+				_thePayloadRangeCalculator.createPayloadRangeChartsMachParameterization(payloadRangeFolderPath);
+				_thePayloadRangeCalculator.createPayloadRangeChartsMaxTakeOffMassParameterization(payloadRangeFolderPath);
+			}
 		}
-		
 	}
 	//............................................................................
 	// END OF THE PAYLOAD-RANGE INNER CLASS
@@ -1806,6 +2062,14 @@ public class ACPerformanceCalculator {
 	public void setMaximumFuelMass(Amount<Mass> _maximumFuelMass) {
 		this._maximumFuelMass = _maximumFuelMass;
 	}
+	public Amount<Mass> getSinglePassengerMass() {
+		return _singlePassengerMass;
+	}
+
+	public void setSinglePassengerMass(Amount<Mass> _singlePassengerMass) {
+		this._singlePassengerMass = _singlePassengerMass;
+	}
+
 	public Double getCurrentLiftingCoefficient() {
 		return _currentLiftingCoefficient;
 	}
@@ -1824,11 +2088,11 @@ public class ACPerformanceCalculator {
 	public void setCD0(Double _cD0) {
 		this._cD0 = _cD0;
 	}
-	public Double getOswald() {
-		return _oswald;
+	public Double getOswaldCruise() {
+		return _oswaldCruise;
 	}
-	public void setOswald(Double _oswald) {
-		this._oswald = _oswald;
+	public void setOswaldCruise(Double _oswald) {
+		this._oswaldCruise = _oswald;
 	}
 	public Double getOswaldTakeOff() {
 		return _oswaldTakeOff;
@@ -2460,5 +2724,333 @@ public class ACPerformanceCalculator {
 
 	public void setTheEnvelopeCalculator(FlightManeuveringEnvelopeCalc _theEnvelopeCalculator) {
 		this._theEnvelopeCalculator = _theEnvelopeCalculator;
+	}
+
+	public PayloadRangeCalc getThePayloadRangeCalculator() {
+		return _thePayloadRangeCalculator;
+	}
+
+	public void setThePayloadRangeCalculator(PayloadRangeCalc _thePayloadRangeCalculator) {
+		this._thePayloadRangeCalculator = _thePayloadRangeCalculator;
+	}
+
+	public Double getBestRangeMach() {
+		return _bestRangeMach;
+	}
+
+	public void setBestRangeMach(Double bestRangeMach) {
+		this._bestRangeMach = bestRangeMach;
+	}
+
+	public Amount<Length> getRangeAtMaxPayloadBestRange() {
+		return _rangeAtMaxPayloadBestRange;
+	}
+
+	public void setRangeAtMaxPayloadBestRange(Amount<Length> rangeAtMaxPayloadBestRange) {
+		this._rangeAtMaxPayloadBestRange = rangeAtMaxPayloadBestRange;
+	}
+
+	public Amount<Length> getRangeAtMaxPayloadCurrentMach() {
+		return _rangeAtMaxPayloadCurrentMach;
+	}
+
+	public void setRangeAtMaxPayloadCurrentMach(Amount<Length> rangeAtMaxPayloadCurrentMach) {
+		this._rangeAtMaxPayloadCurrentMach = rangeAtMaxPayloadCurrentMach;
+	}
+
+	public Amount<Mass> getFuelMassAtMaxPayload() {
+		return _fuelMassAtMaxPayload;
+	}
+
+	public void setFuelMassAtMaxPayload(Amount<Mass> fuelMassAtMaxPayload) {
+		this._fuelMassAtMaxPayload = fuelMassAtMaxPayload;
+	}
+
+	public Double getcLAtMaxPayloadBestRange() {
+		return _cLAtMaxPayloadBestRange;
+	}
+
+	public void setcLAtMaxPayloadBestRange(Double cLAtMaxPayloadBestRange) {
+		this._cLAtMaxPayloadBestRange = cLAtMaxPayloadBestRange;
+	}
+
+	public Double getcLAtMaxPayloadCurrentMach() {
+		return _cLAtMaxPayloadCurrentMach;
+	}
+
+	public void setcLAtMaxPayloadCurrentMach(Double cLAtMaxPayloadCurrentMach) {
+		this._cLAtMaxPayloadCurrentMach = cLAtMaxPayloadCurrentMach;
+	}
+
+	public Double getcDAtMaxPayloadBestRange() {
+		return _cDAtMaxPayloadBestRange;
+	}
+
+	public void setcDAtMaxPayloadBestRange(Double cDAtMaxPayloadBestRange) {
+		this._cDAtMaxPayloadBestRange = cDAtMaxPayloadBestRange;
+	}
+
+	public Double getcDAtMaxPayloadCurrentMach() {
+		return _cDAtMaxPayloadCurrentMach;
+	}
+
+	public void setcDAtMaxPayloadCurrentMach(Double cDAtMaxPayloadCurrentMach) {
+		this._cDAtMaxPayloadCurrentMach = cDAtMaxPayloadCurrentMach;
+	}
+
+	public Double getEfficiencyAtMaxPayloadBestRange() {
+		return _efficiencyAtMaxPayloadBestRange;
+	}
+
+	public void setEfficiencyAtMaxPayloadBestRange(Double efficiencyAtMaxPayloadBestRange) {
+		this._efficiencyAtMaxPayloadBestRange = efficiencyAtMaxPayloadBestRange;
+	}
+
+	public Double getEfficiencyAtMaxPayloadCurrentMach() {
+		return _efficiencyAtMaxPayloadCurrentMach;
+	}
+
+	public void setEfficiencyAtMaxPayloadCurrentMach(Double efficiencyAtMaxPayloadCurrentMach) {
+		this._efficiencyAtMaxPayloadCurrentMach = efficiencyAtMaxPayloadCurrentMach;
+	}
+
+	public Double getSfcAtMaxPayloadBestRange() {
+		return _sfcAtMaxPayloadBestRange;
+	}
+
+	public void setSfcAtMaxPayloadBestRange(Double sfcAtMaxPayloadBestRange) {
+		this._sfcAtMaxPayloadBestRange = sfcAtMaxPayloadBestRange;
+	}
+
+	public Double getSfcAtMaxPayloadCurrentMach() {
+		return _sfcAtMaxPayloadCurrentMach;
+	}
+
+	public void setSfcAtMaxPayloadCurrentMach(Double sfcAtMaxPayloadCurrentMach) {
+		this._sfcAtMaxPayloadCurrentMach = sfcAtMaxPayloadCurrentMach;
+	}
+
+	public Amount<Length> getRangeAtMaxFuelBestRange() {
+		return _rangeAtMaxFuelBestRange;
+	}
+
+	public void setRangeAtMaxFuelBestRange(Amount<Length> rangeAtMaxFuelBestRange) {
+		this._rangeAtMaxFuelBestRange = rangeAtMaxFuelBestRange;
+	}
+
+	public Amount<Length> getRangeAtMaxFuelCurrentMach() {
+		return _rangeAtMaxFuelCurrentMach;
+	}
+
+	public void setRangeAtMaxFuelCurrentMach(Amount<Length> rangeAtMaxFuelCurrentMach) {
+		this._rangeAtMaxFuelCurrentMach = rangeAtMaxFuelCurrentMach;
+	}
+
+	public Amount<Mass> getPayloadAtMaxFuel() {
+		return _payloadAtMaxFuel;
+	}
+
+	public void setPayloadAtMaxFuel(Amount<Mass> payloadAtMaxFuel) {
+		this._payloadAtMaxFuel = payloadAtMaxFuel;
+	}
+
+	public Double getNumberOfPassengersAtMaxFuel() {
+		return _numberOfPassengersAtMaxFuel;
+	}
+
+	public void setNumberOfPassengersAtMaxFuel(Double numberOfPassengersAtMaxFuel) {
+		this._numberOfPassengersAtMaxFuel = numberOfPassengersAtMaxFuel;
+	}
+
+	public Double getcLAtMaxFuelBestRange() {
+		return _cLAtMaxFuelBestRange;
+	}
+
+	public void setcLAtMaxFuelBestRange(Double cLAtMaxFuelBestRange) {
+		this._cLAtMaxFuelBestRange = cLAtMaxFuelBestRange;
+	}
+
+	public Double getcLAtMaxFuelCurrentMach() {
+		return _cLAtMaxFuelCurrentMach;
+	}
+
+	public void setcLAtMaxFuelCurrentMach(Double cLAtMaxFuelCurrentMach) {
+		this._cLAtMaxFuelCurrentMach = cLAtMaxFuelCurrentMach;
+	}
+
+	public Double getcDAtMaxFuelBestRange() {
+		return _cDAtMaxFuelBestRange;
+	}
+
+	public void setcDAtMaxFuelBestRange(Double cDAtMaxFuelBestRange) {
+		this._cDAtMaxFuelBestRange = cDAtMaxFuelBestRange;
+	}
+
+	public Double getcDAtMaxFuelCurrentMach() {
+		return _cDAtMaxFuelCurrentMach;
+	}
+
+	public void setcDAtMaxFuelCurrentMach(Double cDAtMaxFuelCurrentMach) {
+		this._cDAtMaxFuelCurrentMach = cDAtMaxFuelCurrentMach;
+	}
+
+	public Double getEfficiencyAtMaxFuelBestRange() {
+		return _efficiencyAtMaxFuelBestRange;
+	}
+
+	public void setEfficiencyAtMaxFuelBestRange(Double efficiencyAtMaxFuelBestRange) {
+		this._efficiencyAtMaxFuelBestRange = efficiencyAtMaxFuelBestRange;
+	}
+
+	public Double getEfficiencyAtMaxFuelCurrentMach() {
+		return _efficiencyAtMaxFuelCurrentMach;
+	}
+
+	public void setEfficiencyAtMaxFuelCurrentMach(Double efficiencyAtMaxFuelCurrentMach) {
+		this._efficiencyAtMaxFuelCurrentMach = efficiencyAtMaxFuelCurrentMach;
+	}
+
+	public Double getSfcAtZeroPayloadBestRange() {
+		return _sfcAtZeroPayloadBestRange;
+	}
+
+	public void setSfcAtZeroPayloadBestRange(Double sfcAtZeroPayloadBestRange) {
+		this._sfcAtZeroPayloadBestRange = sfcAtZeroPayloadBestRange;
+	}
+
+	public Double getSfcAtMaxFuelCurrentMach() {
+		return _sfcAtMaxFuelCurrentMach;
+	}
+
+	public void setSfcAtMaxFuelCurrentMach(Double sfcAtMaxFuelCurrentMach) {
+		this._sfcAtMaxFuelCurrentMach = sfcAtMaxFuelCurrentMach;
+	}
+
+	public Amount<Length> getRangeAtZeroPayloadBestRange() {
+		return _rangeAtZeroPayloadBestRange;
+	}
+
+	public void setRangeAtZeroPayloadBestRange(Amount<Length> rangeAtZeroPayloadBestRange) {
+		this._rangeAtZeroPayloadBestRange = rangeAtZeroPayloadBestRange;
+	}
+
+	public Amount<Length> getRangeAtZeroPayloadCurrentMach() {
+		return _rangeAtZeroPayloadCurrentMach;
+	}
+
+	public void setRangeAtZeroPayloadCurrentMach(Amount<Length> rangeAtZeroPayloadCurrentMach) {
+		this._rangeAtZeroPayloadCurrentMach = rangeAtZeroPayloadCurrentMach;
+	}
+
+	public Amount<Mass> getTakeOffMassAtZeroPayload() {
+		return _takeOffMassAtZeroPayload;
+	}
+
+	public void setTakeOffMassAtZeroPayload(Amount<Mass> takeOffMassAtZeroPayload) {
+		this._takeOffMassAtZeroPayload = takeOffMassAtZeroPayload;
+	}
+
+	public Double getcLAtZeroPayloadBestRange() {
+		return _cLAtZeroPayloadBestRange;
+	}
+
+	public void setcLAtZeroPayloadBestRange(Double cLAtZeroPayloadBestRange) {
+		this._cLAtZeroPayloadBestRange = cLAtZeroPayloadBestRange;
+	}
+
+	public Double getcLAtZeroPayloadCurrentMach() {
+		return _cLAtZeroPayloadCurrentMach;
+	}
+
+	public void setcLAtZeroPayloadCurrentMach(Double cLAtZeroPayloadCurrentMach) {
+		this._cLAtZeroPayloadCurrentMach = cLAtZeroPayloadCurrentMach;
+	}
+
+	public Double getcDAtZeroPayloadBestRange() {
+		return _cDAtZeroPayloadBestRange;
+	}
+
+	public void setcDAtZeroPayloadBestRange(Double cDAtZeroPayloadBestRange) {
+		this._cDAtZeroPayloadBestRange = cDAtZeroPayloadBestRange;
+	}
+
+	public Double getcDAtZeroPayloadCurrentMach() {
+		return _cDAtZeroPayloadCurrentMach;
+	}
+
+	public void setcDAtZeroPayloadCurrentMach(Double cDAtZeroPayloadCurrentMach) {
+		this._cDAtZeroPayloadCurrentMach = cDAtZeroPayloadCurrentMach;
+	}
+
+	public Double getEfficiencyAtZeroPayloadBestRange() {
+		return _efficiencyAtZeroPayloadBestRange;
+	}
+
+	public void setEfficiencyAtZeroPayloadBestRange(Double efficiencyAtZeroPayloadBestRange) {
+		this._efficiencyAtZeroPayloadBestRange = efficiencyAtZeroPayloadBestRange;
+	}
+
+	public Double getEfficiencyAtZeroPayloadCurrentMach() {
+		return _efficiencyAtZeroPayloadCurrentMach;
+	}
+
+	public void setEfficiencyAtZeroPayloadCurrentMach(double efficiencyAtZeroPayloadCurrentMach) {
+		this._efficiencyAtZeroPayloadCurrentMach = efficiencyAtZeroPayloadCurrentMach;
+	}
+
+	public Double getSfcAtMaxFuelBestRange() {
+		return _sfcAtMaxFuelBestRange;
+	}
+
+	public void setSfcAtMaxFuelBestRange(Double sfcAtMaxFuelBestRange) {
+		this._sfcAtMaxFuelBestRange = sfcAtMaxFuelBestRange;
+	}
+
+	public Double getSfcAtZeroPayloadCurrentMach() {
+		return _sfcAtZeroPayloadCurrentMach;
+	}
+
+	public void setSfcAtZeroPayloadCurrentMach(Double sfcAtZeroPayloadCurrentMach) {
+		this._sfcAtZeroPayloadCurrentMach = sfcAtZeroPayloadCurrentMach;
+	}
+
+	public List<Amount<Length>> getRangeArrayBestRange() {
+		return _rangeArrayBestRange;
+	}
+
+	public void setRangeArrayBestRange(List<Amount<Length>> rangeArrayBestRange) {
+		this._rangeArrayBestRange = rangeArrayBestRange;
+	}
+
+	public List<Amount<Length>> getRangeArrayCurrentMach() {
+		return _rangeArrayCurrentMach;
+	}
+
+	public void setRangeArrayCurrentMach(List<Amount<Length>> rangeArrayCurrentMach) {
+		this._rangeArrayCurrentMach = rangeArrayCurrentMach;
+	}
+
+	public List<Double> getPayloadArray() {
+		return _payloadArray;
+	}
+
+	public void setPayloadArray(List<Double> payloadArray) {
+		this._payloadArray = payloadArray;
+	}
+
+	public double[][] getRangeMatrix() {
+		return _rangeMatrix;
+	}
+
+	public void setRangeMatrix(double[][] rangeMatrix) {
+		this._rangeMatrix = rangeMatrix;
+	}
+
+	public double[][] getPayloadMatrix() {
+		return _payloadMatrix;
+	}
+
+	public void setPayloadMatrix(double[][] payloadMatrix) {
+		this._payloadMatrix = payloadMatrix;
 	}
 }

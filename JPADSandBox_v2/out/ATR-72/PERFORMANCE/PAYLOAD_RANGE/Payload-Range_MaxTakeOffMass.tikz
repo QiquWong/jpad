@@ -1,0 +1,74 @@
+%Payload-Range_MaxTakeOffMass
+\begin{tikzpicture}
+
+\begin{axis}[
+width=\figurewidth,
+height=\figureheight,
+scaled ticks=false, tick label style={/pgf/number format/fixed},
+xmin=0.0,
+xmax=2191.71205498302,
+xlabel={Range (nmi)},
+xmajorgrids,
+ymin=0.0,
+ymax=77.76,
+ylabel={Payload (No. Pass)},
+ymajorgrids,
+legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
+]
+
+\addplot [
+color=black,
+solid
+]
+table[row sep=crcr]{
+0.0	72.0\\
+-1174.333100013566	72.0\\
+2024.8883724548596	1.0\\
+2029.3630138731667	0.0\\
+} node[above,pos=0.1] {MTOM =  = 18000  Kg };
+
+\addplot [
+color=black,
+densely dashed
+]
+table[row sep=crcr]{
+0.0	72.0\\
+-754.3659076148139	72.0\\
+1927.2437338938062	12.0\\
+2029.3630138731667	0.0\\
+} node[above,pos=0.16] {19100  Kg };
+
+\addplot [
+color=black,
+dashdotted
+]
+table[row sep=crcr]{
+0.0	72.0\\
+-328.5762947981881	72.0\\
+1834.8862204196455	23.0\\
+2029.3630138731667	0.0\\
+} node[above,pos=0.22] {20300  Kg };
+
+\addplot [
+color=black,
+dashed
+]
+table[row sep=crcr]{
+0.0	72.0\\
+99.37589576194867	72.0\\
+1747.215101522244	35.0\\
+2029.3630138731667	0.0\\
+} node[above,pos=0.28] {21400  Kg };
+
+\addplot [
+color=black,
+dotted
+]
+table[row sep=crcr]{
+0.0	72.0\\
+526.3227070706766	72.0\\
+1663.790464724305	46.0\\
+2029.3630138731667	0.0\\
+} node[above,pos=0.34] {22500  Kg };
+\end{axis}
+\end{tikzpicture}%

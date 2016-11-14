@@ -37,13 +37,13 @@ public class RateOfClimbCalc {
 	 * @return
 	 */
 	public static List<RCMap> calculateRC(
-			double[] altitude, double[] phi, double[] weight,
+			double[] altitude,
+			double[] phi,
+			double[] weight,
 			EngineOperatingConditionEnum[] flightCondition,
-			double t0, int nEngine, double bpr,
-			double surface, double ar, double sweepHalfChord,
-			double tcMax, AirfoilTypeEnum airfoilType, 
-			double cLmax, double cD0, double oswald,
-			List<DragMap> listDrag, List<ThrustMap> listThrust
+			double bpr,
+			List<DragMap> listDrag,
+			List<ThrustMap> listThrust
 			) {
 
 		double[] speed = null;

@@ -1,0 +1,41 @@
+%Payload-Range_Mach
+\begin{tikzpicture}
+
+\begin{axis}[
+width=\figurewidth,
+height=\figureheight,
+scaled ticks=false, tick label style={/pgf/number format/fixed},
+xmin=0.0,
+xmax=3339.320703500082,
+xlabel={Range (nmi)},
+xmajorgrids,
+ymin=0.0,
+ymax=77.76,
+ylabel={Payload (No. Pass)},
+ymajorgrids,
+legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
+]
+
+\addplot [
+color=black,
+solid
+]
+table[row sep=crcr]{
+0.0	72.0\\
+711.8668535805579	72.0\\
+2250.325260964999	46.0\\
+3091.9636143519274	0.0\\
+};
+
+\addplot [
+color=black,
+densely dashed
+]
+table[row sep=crcr]{
+0.0	72.0\\
+526.3227070706766	72.0\\
+1663.790464724305	46.0\\
+2029.3630138731667	0.0\\
+};
+\end{axis}
+\end{tikzpicture}%

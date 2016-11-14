@@ -14,6 +14,7 @@
 				<maximum_zero_fuel_mass unit="kg">45966.95085</maximum_zero_fuel_mass>
 				<operating_empty_mass unit="kg">33096.95085</operating_empty_mass>
 				<maximum_fuel_mass unit="kg">11959.06668</maximum_fuel_mass>
+				<single_passenger_mass unit="kg">99.0</single_passenger_mass>
 			</weights>
 			<aerodynamics parabolicDragPolar="TRUE"> <!-- if TRUE uses a parabolic drag polar with wave drag correction; otherwise it reads the polar_curves tag -->
 				<current_lifting_coefficient>0.6</current_lifting_coefficient>

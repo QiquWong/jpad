@@ -22,9 +22,6 @@ public interface IFuelTank {
 	
 	public void calculateCG();
 	
-	public FuelFractionDatabaseReader getFuelFractionDatabase();
-	public void setFuelFractionDatabase(FuelFractionDatabaseReader fuelFractionDatabase);
-	
 	public String getId();
 	public void setId(String _id);
 	

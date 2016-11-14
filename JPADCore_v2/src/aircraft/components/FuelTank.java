@@ -55,8 +55,6 @@ public class FuelTank implements IFuelTank {
 	private Amount<Length> _yApexConstructionAxes;
 	private Amount<Length> _zApexConstructionAxes;
 	
-	private FuelFractionDatabaseReader fuelFractionDatabase;
-	
 	private Amount<Mass> _massEstimated, _massReference;
 
 	private Double _mainSparNormalizedStation;
@@ -599,16 +597,6 @@ public class FuelTank implements IFuelTank {
 		
 	}
 	
-	@Override
-	public FuelFractionDatabaseReader getFuelFractionDatabase() {
-		return fuelFractionDatabase;
-	}
-	
-	@Override
-	public void setFuelFractionDatabase(FuelFractionDatabaseReader fuelFractionDatabase) {
-		this.fuelFractionDatabase = fuelFractionDatabase;
-	}
-
 	@Override
 	public String getId() {
 		return _id;

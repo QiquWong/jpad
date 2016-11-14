@@ -315,13 +315,20 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		this._plotCosts = builder.__plotCosts;
 		
 		calculateDependentVariables();
-
+		
+		//-------------------------------------------------
+		// EXECUTED ANALYSIS MAP INITIALIZATION
+		this._executedAnalysesMap.put(AnalysisTypeEnum.WEIGHTS, false);
+		this._executedAnalysesMap.put(AnalysisTypeEnum.BALANCE, false);
+		this._executedAnalysesMap.put(AnalysisTypeEnum.AERODYNAMIC, false);
+		this._executedAnalysesMap.put(AnalysisTypeEnum.PERFORMANCE, false);
+		this._executedAnalysesMap.put(AnalysisTypeEnum.COSTS, false);
 	}
 
 	//============================================================================================
 	// End of the builder pattern 
 	//============================================================================================
-	
+		
 	public static ACAnalysisManager importFromXML (String pathToXML, Aircraft theAircraft) throws IOException {
 		
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
@@ -715,7 +722,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 			else if(plotPerfromanceString.equalsIgnoreCase("TRUE"))
 				plotPerformance = Boolean.TRUE;
 			else
-				System.err.println("ERRORE : SPECIFY THE PLOT TAG!!");
+				System.err.println("ERROR : SPECIFY THE PLOT TAG!!");
 
 			if(performanceFile != null)  {		
 				analysisList.add(AnalysisTypeEnum.PERFORMANCE);
@@ -801,7 +808,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				String payloadRangeFlagProperty = MyXMLReaderUtils
 						.getXMLPropertyByPath(
 								reader.getXmlDoc(), reader.getXpath(),
-								"//performance/@landing");
+								"//performance/@payload_range");
 				if (payloadRangeFlagProperty != null) {
 					if(payloadRangeFlagProperty.equalsIgnoreCase("TRUE")) {
 						payloadRangeFlag = Boolean.TRUE;

@@ -196,7 +196,7 @@ public class Engine implements IEngine {
 				__length = Amount.valueOf(2.13, SI.METER);
 				__propellerDiameter = Amount.valueOf(3.93, SI.METER);
 				__numberOfBlades = 6;
-				__etaPropeller = 0.85;
+				__etaPropeller = 0.8;
 				__dryMassPublicDomain = Amount.valueOf(1064., NonSI.POUND).to(SI.KILOGRAM);
 				__p0 = Amount.valueOf(2750., NonSI.HORSEPOWER).to(SI.WATT);
 				__numberOfCompressorStages = 5;
