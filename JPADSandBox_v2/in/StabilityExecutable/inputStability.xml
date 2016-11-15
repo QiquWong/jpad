@@ -60,9 +60,12 @@
 						<x_le_distribution unit="m">[0,0,0]</x_le_distribution>
 						<twist_distribution unit="°">[0,0,0]</twist_distribution>
 						<dihedral_distribution unit="°">[0,0,0]</dihedral_distribution>
+						<max_thickness_airfoil>[0.17,0.17,0.14]</max_thickness_airfoil>
+						<radius_leading_edge unit="m">[0.15,0.15,0.15]</radius_leading_edge>
                     </geometry>
                     <aerodynamics>
 						<alpha_zero_lift_distribution unit="°">[-1.5,-3, -3]</alpha_zero_lift_distribution>
+						<cl_alpha_distribution unit="1/deg">[0.11,0.11,0.11]</cl_alpha_distribution>
 						<alpha_star_distribution unit="°">[8,8,8]</alpha_star_distribution>
 						<maximum_lift_coefficient_distribution>[1.567,1.516,1.516]</maximum_lift_coefficient_distribution>
 					</aerodynamics>	

@@ -122,6 +122,7 @@ public class ReaderWriter{
 		theStabilityCalculator.setWingSweepQuarterChord((Amount<Angle>) reader.getXMLAmountWithUnitByPath("//wing/global/sweep_quarter_chord"));
 		theStabilityCalculator.setWingSweepLE((Amount<Angle>) reader.getXMLAmountWithUnitByPath("//wing/global/sweep_LE"));
 		
+		
 		List<String> airfoilFamilyProperty = reader.getXMLPropertiesByPath("//wing/global/mean_airfoil_family");
 
 		//airfoil type
@@ -177,7 +178,9 @@ public class ReaderWriter{
 		theStabilityCalculator.setWingAlphaZeroLiftBreakPoints(reader.readArrayofAmountFromXML("//wing/distribution/aerodynamics/alpha_zero_lift_distribution"));
 		theStabilityCalculator.setWingAlphaStarBreakPoints(reader.readArrayofAmountFromXML("//wing/distribution/aerodynamics/alpha_star_distribution"));
 		theStabilityCalculator.setWingClMaxBreakPoints(reader.readArrayDoubleFromXMLSplit("//wing/distribution/aerodynamics/maximum_lift_coefficient_distribution"));
-
+		theStabilityCalculator.setWingClAlphaBreakPointsDeg(reader.readArrayDoubleFromXMLSplit("//wing/distribution/aerodynamics/cl_alpha_distribution"));
+		theStabilityCalculator.setWingMaxThicknessBreakPoints(reader.readArrayDoubleFromXMLSplit("//wing/distribution/geometry/max_thickness_airfoil"));
+		theStabilityCalculator.setWingLERadiusBreakPoints(reader.readArrayofAmountFromXML("//wing/distribution/geometry/radius_leading_edge"));
 
 		//---------------------------------------------------------------------------------
 		// HIGH LIFT DEVICES:
