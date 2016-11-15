@@ -21,7 +21,9 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jscience.physics.amount.Amount;
 
+import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.Aircraft;
+import aircraft.components.liftingSurface.LiftingSurface;
 import calculators.aerodynamics.DragCalc;
 import calculators.performance.FlightManeuveringEnvelopeCalc;
 import calculators.performance.LandingCalc;
@@ -29,17 +31,23 @@ import calculators.performance.PayloadRangeCalc;
 import calculators.performance.PerformanceCalcUtils;
 import calculators.performance.RateOfClimbCalc;
 import calculators.performance.TakeOffCalc;
+import calculators.performance.ThrustCalc;
 import calculators.performance.customdata.CeilingMap;
+import calculators.performance.customdata.DragMap;
 import calculators.performance.customdata.RCMap;
+import calculators.performance.customdata.ThrustMap;
 import configuration.MyConfiguration;
+import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.PerformanceEnum;
 import configuration.enumerations.PerformancePlotEnum;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
+import standaloneutils.MyMathUtils;
 import standaloneutils.MyXLSUtils;
 import standaloneutils.MyXMLReaderUtils;
-import sun.misc.Perf;
+import standaloneutils.atmosphere.AtmosphereCalc;
+import standaloneutils.atmosphere.SpeedCalc;
 import writers.JPADStaticWriteUtils;
 
 public class ACPerformanceCalculator {
@@ -117,6 +125,7 @@ public class ACPerformanceCalculator {
 	//..............................................................................
 	// Other data
 	private Double _cLmaxInverted;
+	private Amount<Velocity> _climbSpeed;
 	//..............................................................................
 	// Plot and Task Maps
 	private List<PerformanceEnum> _taskList;
@@ -138,18 +147,29 @@ public class ACPerformanceCalculator {
 	private Amount<Velocity> _vLiftOff;
 	private Amount<Velocity> _v1;
 	private Amount<Velocity> _v2;
-	
 	//..............................................................................
 	// Climb
 	private List<RCMap> _rcMapAOE;
 	private List<RCMap> _rcMapOEI;
-	private List<CeilingMap> _ceilingMapAOE;
-	private List<CeilingMap> _ceilingMapOEI;
+	private CeilingMap _ceilingMapAOE;
+	private CeilingMap _ceilingMapOEI;
 	
+	private Amount<Velocity> _maxRateOfClimbAtCruiseAltitudeAOE;
+	private Amount<Angle> _maxThetaAtCruiseAltitudeAOE;
+	private Amount<Length> _absoluteCeilingAOE;
+	private Amount<Length> _serviceCeilingAOE;
+	private Amount<Duration> _minimumClimbTimeAOE;
+	private Amount<Duration> _climbTimeAtSpecificClimbSpeedAOE;
+	
+	private Amount<Velocity> _maxRateOfClimbAtCruiseAltitudeOEI;
+	private Amount<Angle> _maxThetaAtCruiseAltitudeOEI;
+	private Amount<Length> _absoluteCeilingOEI;
+	private Amount<Length> _serviceCeilingOEI;
+	private Amount<Duration> _minimumClimbTimeOEI;
+	private Amount<Duration> _climbTimeAtSpecificClimbSpeedOEI;
 	//..............................................................................
 	// Cruise
 	// TODO
-	
 	//..............................................................................
 	// Landing
 	private LandingCalc _theLandingCalculator;
@@ -162,7 +182,6 @@ public class ACPerformanceCalculator {
 	private Amount<Velocity> _vApproach;
 	private Amount<Velocity> _vFlare;
 	private Amount<Velocity> _vTouchDown;
-	
 	//..............................................................................
 	// Payload-Range
 	private PayloadRangeCalc _thePayloadRangeCalculator;
@@ -212,7 +231,6 @@ public class ACPerformanceCalculator {
 	
 	private double[][] _rangeMatrix;
 	private double[][] _payloadMatrix;
-
 	//..............................................................................
 	// Maneuvering and Gust Flight Envelope 
 	private FlightManeuveringEnvelopeCalc _theEnvelopeCalculator;
@@ -308,6 +326,7 @@ public class ACPerformanceCalculator {
 		//..............................................................................
 		// Other data
 		private Double __cLmaxInverted = -1.0;
+		private Amount<Velocity> __climbSpeed;
 		//..............................................................................
 		private List<PerformanceEnum> __taskList = new ArrayList<PerformanceEnum>();
 		private List<PerformancePlotEnum> __plotList = new ArrayList<PerformancePlotEnum>();
@@ -578,6 +597,11 @@ public class ACPerformanceCalculator {
 			return this;
 		}
 		
+		public ACPerformanceCalculatorBuilder climbSpeed(Amount<Velocity> climbSpeed) {
+			this.__climbSpeed = climbSpeed;
+			return this;
+		}
+		
 		public ACPerformanceCalculatorBuilder taskList(List<PerformanceEnum> taskList) {
 			this.__taskList = taskList;
 			return this;
@@ -653,6 +677,7 @@ public class ACPerformanceCalculator {
 		this._freeRollDuration = builder.__freeRollDuration;
 		
 		this._cLmaxInverted = builder.__cLmaxInverted;
+		this._climbSpeed = builder.__climbSpeed;
 		
 		this._taskList = builder.__taskList;
 		this._plotList = builder.__plotList;
@@ -1272,12 +1297,19 @@ public class ACPerformanceCalculator {
 		//===========================================================================================
 		// READING OTHER DATA ...	
 		Double cLmaxInverted = -1.0;
+		Amount<Velocity> climbSpeed = null;
 		
 		//...............................................................
 		// CL MAX INVERTED
 		String cLmaxInvertedProperty = reader.getXMLPropertyByPath("//performance/takeoff_landing/cLmax_inverted");
 		if(cLmaxInvertedProperty != null)
 			cLmaxInverted = Double.valueOf(reader.getXMLPropertyByPath("//performance/takeoff_landing/cLmax_inverted"));
+		
+		//...............................................................
+		// CLIMB SPEED
+		String climbSpeedProperty = reader.getXMLPropertyByPath("//performance/takeoff_landing/cLmax_inverted");
+		if(climbSpeedProperty != null)
+			climbSpeed = Amount.valueOf(Double.valueOf(reader.getXMLPropertyByPath("//performance/takeoff_landing/cLmax_inverted")), SI.METERS_PER_SECOND);
 		
 		//===========================================================================================
 		// READING PLOT LIST ...	
@@ -1309,8 +1341,51 @@ public class ACPerformanceCalculator {
 			// CLIMB 
 			if(theAircraft.getTheAnalysisManager().getTaskListPerformance().contains(PerformanceEnum.CLIMB)) {
 
-				// TODO : COMPLETE ME !!
+				String thrustDragClimbCurvesProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//plot/climb/thrust_drag/@perform");
+				if (thrustDragClimbCurvesProperty != null) {
+					if(thrustDragClimbCurvesProperty.equalsIgnoreCase("TRUE")) 
+						plotList.add(PerformancePlotEnum.THRUST_DRAG_CURVES_CLIMB);
+				}
+				
+				String rateOfClimbCurvesProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//plot/climb/rate_of_climb_curves/@perform");
+				if (rateOfClimbCurvesProperty != null) {
+					if(rateOfClimbCurvesProperty.equalsIgnoreCase("TRUE")) 
+						plotList.add(PerformancePlotEnum.RATE_OF_CLIMB_CURVES);
+				}
 
+				String climbAngleCurvesProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//plot/climb/climb_angle_curves/@perform");
+				if (climbAngleCurvesProperty != null) {
+					if(climbAngleCurvesProperty.equalsIgnoreCase("TRUE")) 
+						plotList.add(PerformancePlotEnum.CLIMB_ANGLE_CURVES);
+				}
+				
+				String maxRateOfClimbEnvelopeProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//plot/climb/max_rate_of_climb_envelope/@perform");
+				if (maxRateOfClimbEnvelopeProperty != null) {
+					if(maxRateOfClimbEnvelopeProperty.equalsIgnoreCase("TRUE")) 
+						plotList.add(PerformancePlotEnum.MAX_RATE_OF_CLIMB_ENVELOPE);
+				}
+				
+				String maxClimbAngleEnvelopeProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//plot/climb/max_climb_angle_envelope/@perform");
+				if (maxClimbAngleEnvelopeProperty != null) {
+					if(maxClimbAngleEnvelopeProperty.equalsIgnoreCase("TRUE")) 
+						plotList.add(PerformancePlotEnum.MAX_CLIMB_ANGLE_ENVELOPE);
+				}
+				
 			}
 
 			//...............................................................
@@ -1323,7 +1398,7 @@ public class ACPerformanceCalculator {
 								"//plot/cruise/thrust_drag/@perform");
 				if (thrustDragChartProperty != null) {
 					if(thrustDragChartProperty.equalsIgnoreCase("TRUE")) 
-						plotList.add(PerformancePlotEnum.THRUST_DRAG_CURVES);
+						plotList.add(PerformancePlotEnum.THRUST_DRAG_CURVES_CRUISE);
 				}
 
 				String efficiencyChartProperty = MyXMLReaderUtils
@@ -1462,7 +1537,7 @@ public class ACPerformanceCalculator {
 				.kTouchDown(kTouchDown)
 				.freeRollDuration(freeRollDuration)
 				.cLmaxInverted(cLmaxInverted)
-				// TODO : INSERT ALL THE REQUIRED DATA
+				.climbSpeed(climbSpeed)
 				.taskList(theAircraft.getTheAnalysisManager().getTaskListPerformance())
 				.plotList(plotList)
 				.build();
@@ -1505,6 +1580,19 @@ public class ACPerformanceCalculator {
 			
 		}
 		
+		if(_taskList.contains(PerformanceEnum.CLIMB)) {
+			
+			String climbFolderPath = JPADStaticWriteUtils.createNewFolder(
+					performanceFolderPath 
+					+ "CLIMB"
+					+ File.separator
+					);
+			
+			CalcClimb calcClimb = new CalcClimb();
+			calcClimb.calculateClimbPerformance(climbFolderPath);
+			
+		}
+		
 		if(_taskList.contains(PerformanceEnum.LANDING)) {
 			
 			String landingFolderPath = JPADStaticWriteUtils.createNewFolder(
@@ -1544,8 +1632,6 @@ public class ACPerformanceCalculator {
 			
 		}
 		
-		// TODO : CONTINUE WITH OTHER ANALYSES
-		
 	}
 	
 	@Override
@@ -1578,6 +1664,28 @@ public class ACPerformanceCalculator {
 			;
 			
 		}
+		if(_taskList.contains(PerformanceEnum.CLIMB)) {
+			
+			sb.append("\tCLIMB\n")
+			.append("\t-------------------------------------\n")
+			.append("\t\tAbsolute ceiling AOE = " + _absoluteCeilingAOE + "\n")
+			.append("\t\tService ceiling AOE = " + _serviceCeilingAOE + "\n")
+			.append("\t\tMaximum rate of climb at cruise altitude AOE = " + _maxRateOfClimbAtCruiseAltitudeAOE + "\n")
+			.append("\t\tMaximum theta at cruise altitude AOE = " + _maxThetaAtCruiseAltitudeAOE + "\n")
+			.append("\t\tMinimum time to climb AOE = " + _minimumClimbTimeAOE + "\n");
+			if(_climbTimeAtSpecificClimbSpeedAOE != null)
+				sb.append("\t\tTime to climb at given climb speed AOE = " + _climbTimeAtSpecificClimbSpeedAOE + "\n");
+			
+			sb.append("\t\t.....................................\n")
+			.append("\t\tAbsolute ceiling OEI = " + _absoluteCeilingOEI + "\n")
+			.append("\t\tService ceiling OEI = " + _serviceCeilingOEI + "\n")
+			.append("\t\tMaximum rate of climb at cruise altitude OEI = " + _maxRateOfClimbAtCruiseAltitudeOEI + "\n")
+			.append("\t\tMaximum theta at cruise altitude OEI = " + _maxThetaAtCruiseAltitudeOEI + "\n")
+			.append("\t\tMinimum time to climb OEI = " + _minimumClimbTimeAOE + "\n");
+			if(_climbTimeAtSpecificClimbSpeedOEI != null)
+				sb.append("\t\tTime to climb at given climb speed OEI = " + _climbTimeAtSpecificClimbSpeedOEI + "\n");
+			
+		}
 		if(_taskList.contains(PerformanceEnum.LANDING)) {
 			
 			sb.append("\tLANDING\n")
@@ -1605,8 +1713,6 @@ public class ACPerformanceCalculator {
 			sb.append("\tV-n DIAGRAM\n")
 			.append(_theEnvelopeCalculator.toString());
 		}
-		
-		// TODO : COMPLETE ME !
 		
 		return sb.toString();
 	}
@@ -1711,84 +1817,223 @@ public class ACPerformanceCalculator {
 	//............................................................................
 	public class CalcClimb {
 
-		public void calculateRCandCeiling() {
-//			
-//			//----------------------------------------------------------------------------------
-//			// ALL OPERATIVE ENGINES (AOE)
-//			_rcMapAOE = new ArrayList<RCMap>();
-//			_rcMapAOE.addAll(
-//					RateOfClimbCalc.calculateRC(
-//							altitude,
-//							phi,
-//							weight,
-//							flightCondition, 
-//							t0,
-//							nEngine,
-//							bpr,
-//							surface,
-//							ar,
-//							sweepHalfChord,
-//							tcMax,
-//							airfoilType, 
-//							cLmax,
-//							cD0,
-//							oswald,
-//							dragList,
-//							thrustList
-//							)
-//					);
-//
-//			_ceilingMapAOE = new ArrayList<CeilingMap>();
-//			_ceilingMapAOE.addAll(
-//					PerformanceCalcUtils.calculateCeiling(
-//							altitude,
-//							phi,
-//							weight,
-//							flightCondition,
-//							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-//							_rcMapAOE
-//							)
-//					);
-//			
-//			//----------------------------------------------------------------------------------
-//			// ONE ENGINE INOPERATIVE (OEI)
-//			_rcMapAOE = new ArrayList<RCMap>();
-//			_rcMapAOE.addAll(
-//					RateOfClimbCalc.calculateRC(
-//							altitude,
-//							phi,
-//							weight,
-//							flightCondition, 
-//							bpr,
-//							dragList,
-//							thrustList
-//							)
-//					);
-//
-//			_ceilingMapOEI = new ArrayList<CeilingMap>();
-//			_ceilingMapOEI.addAll(
-//					PerformanceCalcUtils.calculateCeiling(
-//							altitude,
-//							phi,
-//							weight,
-//							flightCondition,
-//							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-//							_rcMapOEI
-//							)
-//					);
+		public void calculateClimbPerformance(String climbFolderPath) {
+			
+			Airfoil meanAirfoil = new Airfoil(
+					LiftingSurface.calculateMeanAirfoil(_theAircraft.getWing()),
+					_theAircraft.getWing().getAerodynamicDatabaseReader()
+					);
+			
+			double[] altitudeArray = MyArrayUtils.linspace(
+					0.0,
+					_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+					5
+					);
+								
+			//----------------------------------------------------------------------------------
+			// ALL OPERATIVE ENGINES (AOE)
+			_rcMapAOE = new ArrayList<RCMap>();
+			
+			List<DragMap> dragListAOE = new ArrayList<DragMap>();
+			List<ThrustMap> thrustListAOE = new ArrayList<ThrustMap>();
+			
+			for(int i=0; i<altitudeArray.length; i++) {
+				//..................................................................................................
+				double[] speedArray = MyArrayUtils.linspace(
+						SpeedCalc.calculateSpeedStall(
+								altitudeArray[i],
+								_maximumTakeOffMass.times(AtmosphereCalc.g0).getEstimatedValue(),
+								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_cLmaxClean
+								),
+						SpeedCalc.calculateTAS(
+								_theOperatingConditions.getMachCruise(),
+								altitudeArray[i]
+								),
+						100
+						);
+				//..................................................................................................
+				dragListAOE.add(
+						DragCalc.calculateDragAndPowerRequired(
+								altitudeArray[i],
+								_maximumTakeOffMass.times(AtmosphereCalc.g0).getEstimatedValue(),
+								speedArray,
+								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE), 
+								_cLmaxClean,
+								_cD0,
+								_theAircraft.getWing().getAspectRatio(),
+								_oswaldCruise,
+								_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN), 
+								meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
+								meanAirfoil.getAirfoilCreator().getType()
+								)
+						);
+				//..................................................................................................
+				thrustListAOE.add(
+						ThrustCalc.calculateThrustAndPowerAvailable(
+								altitudeArray[i],
+								1.0, 	// throttle setting array
+								speedArray,
+								EngineOperatingConditionEnum.CLIMB,
+								_theAircraft.getPowerPlant().getEngineType(), 
+								_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+								_theAircraft.getPowerPlant().getEngineNumber(),
+								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR()
+								)
+						);
+			}
+			//..................................................................................................
+			_rcMapAOE.addAll(
+					RateOfClimbCalc.calculateRC(
+							altitudeArray,
+							new double[] {1.0}, 	// throttle setting array
+							new double[] {_maximumTakeOffMass.times(AtmosphereCalc.g0).getEstimatedValue()},
+							new EngineOperatingConditionEnum[] {EngineOperatingConditionEnum.CLIMB}, 
+							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+							dragListAOE,
+							thrustListAOE
+							)
+					);
+			//..................................................................................................
+			_ceilingMapAOE = PerformanceCalcUtils.calculateCeiling(_rcMapAOE);
+			//..................................................................................................
+			// COLLECTING RESULTS
+			_absoluteCeilingAOE = Amount.valueOf(
+					_ceilingMapAOE.getAbsoluteCeiling(),
+					SI.METER
+					);
+			
+			_serviceCeilingAOE = Amount.valueOf(
+					_ceilingMapAOE.getServiceCeiling(),
+					SI.METER
+					);
+			
+			_maxRateOfClimbAtCruiseAltitudeAOE = Amount.valueOf(
+					_rcMapAOE.get(_rcMapAOE.size()-1).getRCmax(),
+					SI.METERS_PER_SECOND
+					);
+			
+			_maxThetaAtCruiseAltitudeAOE = Amount.valueOf(
+					_rcMapAOE.get(_rcMapAOE.size()-1).getTheta(),
+					SI.RADIAN
+					).to(NonSI.DEGREE_ANGLE);
+			
+			_minimumClimbTimeAOE = PerformanceCalcUtils.calculateMinimumClimbTime(_rcMapAOE).to(NonSI.MINUTE);
+			
+			if(_climbSpeed != null)
+				_climbTimeAtSpecificClimbSpeedAOE = PerformanceCalcUtils.calculateClimbTime(_rcMapAOE, _climbSpeed).to(NonSI.MINUTE);
+			
+			//----------------------------------------------------------------------------------
+			// ONE ENGINE INOPERATIVE (OEI)
+			_rcMapOEI = new ArrayList<RCMap>();
+			
+			List<DragMap> dragListOEI = new ArrayList<DragMap>();
+			List<ThrustMap> thrustListOEI = new ArrayList<ThrustMap>();
+			
+			for(int i=0; i<altitudeArray.length; i++) {
+				//..................................................................................................
+				double[] speedArrayOEI = MyArrayUtils.linspace(
+						SpeedCalc.calculateSpeedStall(
+								altitudeArray[i],
+								_maximumTakeOffMass.times(AtmosphereCalc.g0).getEstimatedValue(),
+								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_cLmaxClean
+								),
+						SpeedCalc.calculateTAS(
+								_theOperatingConditions.getMachCruise(),
+								altitudeArray[i]
+								),
+						100
+						);
+				//..................................................................................................
+				dragListOEI.add(
+						DragCalc.calculateDragAndPowerRequired(
+								altitudeArray[i],
+								_maximumTakeOffMass.times(AtmosphereCalc.g0).getEstimatedValue(),
+								speedArrayOEI,
+								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE), 
+								_cLmaxClean,
+								_cD0,
+								_theAircraft.getWing().getAspectRatio(),
+								_oswaldCruise,
+								_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN), 
+								meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
+								meanAirfoil.getAirfoilCreator().getType()
+								)
+						);
+				//..................................................................................................
+				thrustListOEI.add(
+						ThrustCalc.calculateThrustAndPowerAvailable(
+								altitudeArray[i],
+								1.0, 	// throttle setting array
+								speedArrayOEI,
+								EngineOperatingConditionEnum.CLIMB,
+								_theAircraft.getPowerPlant().getEngineType(), 
+								_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+								_theAircraft.getPowerPlant().getEngineNumber()-1,
+								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR()
+								)
+						);
+			}
+			//..................................................................................................
+			_rcMapOEI.addAll(
+					RateOfClimbCalc.calculateRC(
+							altitudeArray,
+							new double[] {1.0}, 	// throttle setting array
+							new double[] {_maximumTakeOffMass.times(AtmosphereCalc.g0).getEstimatedValue()},
+							new EngineOperatingConditionEnum[] {EngineOperatingConditionEnum.CLIMB}, 
+							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+							dragListOEI,
+							thrustListOEI
+							)
+					);
+			//..................................................................................................
+			_ceilingMapOEI = PerformanceCalcUtils.calculateCeiling(_rcMapOEI);
+			//..................................................................................................
+			// COLLECTING RESULTS
+			_absoluteCeilingOEI = Amount.valueOf(
+					_ceilingMapOEI.getAbsoluteCeiling(),
+					SI.METER
+					);
+			
+			_serviceCeilingOEI = Amount.valueOf(
+					_ceilingMapOEI.getServiceCeiling(),
+					SI.METER
+					);
+			
+			_maxRateOfClimbAtCruiseAltitudeOEI = Amount.valueOf(
+					_rcMapOEI.get(_rcMapOEI.size()-1).getRCmax(),
+					SI.METERS_PER_SECOND
+					);
+			
+			_maxThetaAtCruiseAltitudeOEI = Amount.valueOf(
+					_rcMapOEI.get(_rcMapOEI.size()-1).getTheta(),
+					SI.RADIAN
+					).to(NonSI.DEGREE_ANGLE);
+			
+			// FIXME !!
+			_minimumClimbTimeOEI = PerformanceCalcUtils.calculateMinimumClimbTime(_rcMapOEI).to(NonSI.MINUTE);
+			
+			if(_climbSpeed != null)
+				_climbTimeAtSpecificClimbSpeedOEI = PerformanceCalcUtils.calculateClimbTime(_rcMapOEI, _climbSpeed).to(NonSI.MINUTE);
+			
+			//----------------------------------------------------------------------------------
+			// PLOT
+			
+			// TODO : COMPLETE ME !
 		}
 	}
 	//............................................................................
 	// END OF THE CLIMB INNER CLASS
 	//............................................................................
-	
+
 	//............................................................................
 	// LANDING INNER CLASS
 	//............................................................................
 	public class CalcLanding {
-		
+
 		public void performLandingSimulation(String landingFolderPath) {
-		
+
 			Amount<Length> wingToGroundDistance = 
 					_theAircraft.getFuselage().getHeightFromGround()
 					.plus(_theAircraft.getFuselage().getSectionHeight().divide(2))
@@ -3052,5 +3297,141 @@ public class ACPerformanceCalculator {
 
 	public void setPayloadMatrix(double[][] payloadMatrix) {
 		this._payloadMatrix = payloadMatrix;
+	}
+
+	public Amount<Velocity> getMaxRateOfClimbAtCruiseAltitudeAOE() {
+		return _maxRateOfClimbAtCruiseAltitudeAOE;
+	}
+
+	public void setMaxRateOfClimbAtCruiseAltitudeAOE(Amount<Velocity> _maxRateOfClimbAtCruiseAltitude) {
+		this._maxRateOfClimbAtCruiseAltitudeAOE = _maxRateOfClimbAtCruiseAltitude;
+	}
+
+	public Amount<Angle> getMaxThetaAtCruiseAltitudeAOE() {
+		return _maxThetaAtCruiseAltitudeAOE;
+	}
+
+	public void setMaxThetaAtCruiseAltitudeAOE(Amount<Angle> _maxThetaAtCruiseAltitude) {
+		this._maxThetaAtCruiseAltitudeAOE = _maxThetaAtCruiseAltitude;
+	}
+
+	public Amount<Length> getAbsoluteCeilingAOE() {
+		return _absoluteCeilingAOE;
+	}
+
+	public void setAbsoluteCeilingAOE(Amount<Length> _absoluteCeiling) {
+		this._absoluteCeilingAOE = _absoluteCeiling;
+	}
+
+	public Amount<Length> getServiceCeilingAOE() {
+		return _serviceCeilingAOE;
+	}
+
+	public void setServiceCeilingAOE(Amount<Length> _serviceCeiling) {
+		this._serviceCeilingAOE = _serviceCeiling;
+	}
+
+	public Amount<Duration> getMinimumClimbTimeAOE() {
+		return _minimumClimbTimeAOE;
+	}
+
+	public void setMinimumClimbTimeAOE(Amount<Duration> _minimumClimbTime) {
+		this._minimumClimbTimeAOE = _minimumClimbTime;
+	}
+
+	public Amount<Duration> getClimbTimeAtSpecificClimbSpeedAOE() {
+		return _climbTimeAtSpecificClimbSpeedAOE;
+	}
+
+	public void setClimbTimeAtSpecificClimbSpeedAOE(Amount<Duration> _climbTimeAtSpecificClimbSpeed) {
+		this._climbTimeAtSpecificClimbSpeedAOE = _climbTimeAtSpecificClimbSpeed;
+	}
+
+	public Amount<Velocity> getMaxRateOfClimbAtCruiseAltitudeOEI() {
+		return _maxRateOfClimbAtCruiseAltitudeOEI;
+	}
+
+	public void setMaxRateOfClimbAtCruiseAltitudeOEI(Amount<Velocity> _maxRateOfClimbAtCruiseAltitudeOEI) {
+		this._maxRateOfClimbAtCruiseAltitudeOEI = _maxRateOfClimbAtCruiseAltitudeOEI;
+	}
+
+	public Amount<Angle> getMaxThetaAtCruiseAltitudeOEI() {
+		return _maxThetaAtCruiseAltitudeOEI;
+	}
+
+	public void setMaxThetaAtCruiseAltitudeOEI(Amount<Angle> _maxThetaAtCruiseAltitudeOEI) {
+		this._maxThetaAtCruiseAltitudeOEI = _maxThetaAtCruiseAltitudeOEI;
+	}
+
+	public Amount<Length> getAbsoluteCeilingOEI() {
+		return _absoluteCeilingOEI;
+	}
+
+	public void setAbsoluteCeilingOEI(Amount<Length> _absoluteCeilingOEI) {
+		this._absoluteCeilingOEI = _absoluteCeilingOEI;
+	}
+
+	public Amount<Length> getServiceCeilingOEI() {
+		return _serviceCeilingOEI;
+	}
+
+	public void setServiceCeilingOEI(Amount<Length> _serviceCeilingOEI) {
+		this._serviceCeilingOEI = _serviceCeilingOEI;
+	}
+
+	public Amount<Duration> getMinimumClimbTimeOEI() {
+		return _minimumClimbTimeOEI;
+	}
+
+	public void setMinimumClimbTimeOEI(Amount<Duration> _minimumClimbTimeOEI) {
+		this._minimumClimbTimeOEI = _minimumClimbTimeOEI;
+	}
+
+	public Amount<Duration> getClimbTimeAtSpecificClimbSpeedOEI() {
+		return _climbTimeAtSpecificClimbSpeedOEI;
+	}
+
+	public void setClimbTimeAtSpecificClimbSpeedOEI(Amount<Duration> _climbTimeAtSpecificClimbSpeedOEI) {
+		this._climbTimeAtSpecificClimbSpeedOEI = _climbTimeAtSpecificClimbSpeedOEI;
+	}
+
+	public List<RCMap> getRCMapAOE() {
+		return _rcMapAOE;
+	}
+
+	public void setRCMapAOE(List<RCMap> _rcMapAOE) {
+		this._rcMapAOE = _rcMapAOE;
+	}
+
+	public List<RCMap> getRCMapOEI() {
+		return _rcMapOEI;
+	}
+
+	public void setRCMapOEI(List<RCMap> _rcMapOEI) {
+		this._rcMapOEI = _rcMapOEI;
+	}
+
+	public CeilingMap getCeilingMapAOE() {
+		return _ceilingMapAOE;
+	}
+
+	public void setCeilingMapAOE(CeilingMap _ceilingMapAOE) {
+		this._ceilingMapAOE = _ceilingMapAOE;
+	}
+
+	public CeilingMap getCeilingMapOEI() {
+		return _ceilingMapOEI;
+	}
+
+	public void setCeilingMapOEI(CeilingMap _ceilingMapOEI) {
+		this._ceilingMapOEI = _ceilingMapOEI;
+	}
+
+	public Amount<Velocity> getClimbSpeed() {
+		return _climbSpeed;
+	}
+
+	public void setClimbSpeed(Amount<Velocity> _climbSpeed) {
+		this._climbSpeed = _climbSpeed;
 	}
 }

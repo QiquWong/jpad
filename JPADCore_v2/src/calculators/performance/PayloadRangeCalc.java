@@ -14,7 +14,10 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
+import aircraft.auxiliary.airfoil.Airfoil;
+import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import aircraft.components.Aircraft;
+import aircraft.components.liftingSurface.LiftingSurface;
 import analyses.OperatingConditions;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.DragCalc;
@@ -159,6 +162,12 @@ public class PayloadRangeCalc{
 		this.cD0 = cD0;
 		this.oswald = oswald;
 		this.etaPropeller = theAircraft.getPowerPlant().getEngineList().get(0).getEtaPropeller();
+		
+		Airfoil meanAirfoil = new Airfoil(
+				LiftingSurface.calculateMeanAirfoil(theAircraft.getWing()),
+				theAircraft.getWing().getAerodynamicDatabaseReader()
+				);
+		this.tcMax = meanAirfoil.getAirfoilCreator().getThicknessToChordRatio();
 		
 		this.aircraftType = theAircraft.getTypeVehicle();
 		this.engineType = theAircraft.getPowerPlant().getEngineType();

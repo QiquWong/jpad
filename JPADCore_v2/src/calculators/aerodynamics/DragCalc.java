@@ -359,7 +359,7 @@ public class DragCalc {
 			double cd0, double cL, double ar, double e, double mach, 
 			double sweepHalfChord, double tcMax, AirfoilTypeEnum airfoilType) {
 		return calculateCDTotal(cd0, cL, ar, e, mach, 
-				calculateCDWaveLockKorn(cL, mach, sweepHalfChord, tcMax, airfoilType));
+				calculateCDWaveLockKornCriticalMachKroo(cL, mach, sweepHalfChord, tcMax, airfoilType));
 	}
 	
 	/**

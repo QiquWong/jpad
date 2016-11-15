@@ -74,18 +74,22 @@
 			</takeoff_landing>
 			<!-- the following data can be assigned or not. If not default values are used -->
 			<other_data>
-				<throttle_setting></throttle_setting> <!-- to be assigned for the wanted performance (default = 0.0) -->
 				<cLmax_inverted></cLmax_inverted> <!-- to be assigned for the maneuvering flight and gust envelope (default = -1.0) --> 
+				<climb_speed></climb_speed>
 			</other_data>
         </performance>
     </analysis>
 	<plot>
 		<takeoff>
-			<simulations perform="TRUE"/>
-			<balanced_field_length perform="TRUE"/>
+			<simulations perform="FALSE"/>
+			<balanced_field_length perform="FALSE"/>
 		</takeoff>
 		<climb>
-			<!-- ADD CHARTS -->
+			<thrust_drag perform="TRUE"/>
+			<rate_of_climb_curves perform="TRUE"/>
+			<climb_angle_curves perform="TRUE"/>
+			<max_rate_of_climb_envelope perform="TRUE"/>
+			<max_climb_angle_envelope perform="TRUE"/>
 		</climb>
 		<cruise>
 			<thrust_drag perform="TRUE"/>
@@ -96,9 +100,9 @@
 			<!-- ADD CHARTS -->
 		</cruise>
 		<landing>
-			<simulations perform="TRUE"/>
+			<simulations perform="FALSE"/>
 		</landing>
-		<payload_range perform="TRUE"/>
-		<maneuvering_flight_and_gust_envelope perform="TRUE"/>
+		<payload_range perform="FALSE"/>
+		<maneuvering_flight_and_gust_envelope perform="FALSE"/>
 	</plot>
 </jpad_config>

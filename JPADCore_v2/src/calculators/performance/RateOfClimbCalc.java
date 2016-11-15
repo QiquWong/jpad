@@ -48,13 +48,13 @@ public class RateOfClimbCalc {
 
 		double[] speed = null;
 		double[] powerAvailable, powerRequired;
-		double RCMax = 0., RCMaxSpeed = 0.;
 		List<RCMap> list = new ArrayList<RCMap>();
 
 		for(int f=0; f<flightCondition.length; f++) {
 			for (int p=0; p<phi.length; p++) {
 				for (int w=0; w<weight.length; w++) { 
 					for(int i=0; i<altitude.length; i++) {
+						double RCMax = 0., RCMaxSpeed = 0.;
 
 						powerAvailable = PerformanceDataManager.getPowerAvailable(altitude[i], phi[p],
 								flightCondition[f], bpr, listThrust);
@@ -111,13 +111,14 @@ public class RateOfClimbCalc {
 	 * @return
 	 */
 	public static RCMap calculateRC(
-			double altitude, double phi, double weight,
-			EngineOperatingConditionEnum flightCondition, EngineTypeEnum engineType,
-			double t0, int nEngine, double bpr,
-			double surface, double ar, double sweepHalfChord,
-			double tcMax, AirfoilTypeEnum airfoilType, 
-			double cLmax, double cD0, double oswald,
-			List<DragMap> listDrag, List<ThrustMap> listThrust
+			double altitude,
+			double phi,
+			double weight,
+			EngineOperatingConditionEnum flightCondition,
+			EngineTypeEnum engineType,
+			double bpr,
+			List<DragMap> listDrag,
+			List<ThrustMap> listThrust
 			) {
 
 		double[] speed = null;

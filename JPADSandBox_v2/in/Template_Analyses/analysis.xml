@@ -49,12 +49,12 @@
 		<performance 
 			file="analysis_performance.xml"
 			plot="TRUE"
-			take_off="TRUE"
+			take_off="FALSE"
 			climb="TRUE"
-			cruise="TRUE"
-			landing="TRUE"
-			payload_range="TRUE"
-			V_n_diagram="TRUE"
+			cruise="FALSE"
+			landing="FALSE"
+			payload_range="FALSE"
+			V_n_diagram="FALSE"
 		/>
         <!--
 		<aerodynamics file="analysis_aerodynamics.xml"/>

@@ -7,9 +7,13 @@ import javax.measure.quantity.Duration;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
+import javax.measure.unit.SI;
 
 import org.apache.commons.math3.analysis.solvers.AllowedSolution;
 import org.jscience.physics.amount.Amount;
+
+import com.sun.org.apache.bcel.internal.generic.RET;
+import com.sun.org.apache.regexp.internal.recompile;
 
 import calculators.performance.customdata.CeilingMap;
 import calculators.performance.customdata.DragMap;
@@ -225,6 +229,34 @@ public class PerformanceCalcUtils {
 				bpr, flightCondition);
 	}
 
+	public static CeilingMap calculateCeiling(List<RCMap> listRC) {
+		
+		int nAlt = listRC.size();
+		double[] altitude = new double[nAlt];
+		double[] RCMaxAtAltitude = new double[nAlt];
+
+		for (int i=0; i < nAlt; i++) {
+			RCMaxAtAltitude[i] = listRC.get(i).getRCmax();
+			altitude[i] = listRC.get(i).getAltitude();
+		}
+
+		int M=0;
+		for (int i=0; i < nAlt; i++){
+			if (RCMaxAtAltitude[i] != 0.) M=M+1;
+		}
+
+		double K = MyMathUtils.calculateSlopeLinear( RCMaxAtAltitude[M-1], RCMaxAtAltitude[M-2], 
+				altitude[M-1], altitude[M-2]);
+		double absoluteCeiling = calculateCeilingInterp( 0.0, altitude[M-2], 
+				RCMaxAtAltitude[M-2], K);
+		double serviceCeiling = calculateCeilingInterp( 0.5, altitude[M-2], 
+				RCMaxAtAltitude[M-2], K);
+
+		return new CeilingMap(absoluteCeiling, serviceCeiling, listRC.get(0).getWeight(), listRC.get(0).getPhi(),
+				listRC.get(0).getBpr(), listRC.get(0).getFlightCondition());
+		
+	}
+	
 	/**FIXME: this method still needs to be tested
 	 * @author Lorenzo Attanasio
 	 * @deprecated
@@ -337,6 +369,51 @@ public class PerformanceCalcUtils {
 				altitude, phi, weight, bpr, flightCondition,
 				maxSpeed, minSpeed);
 
+	}
+	
+	public static Amount<Duration> calculateClimbTime (
+			List<RCMap> rcList,
+			Amount<Velocity> speed
+			) {
+		
+		double[] rcInverseArray = new double[rcList.size()];
+		double[] altitudeArray = new double[rcList.size()];
+		
+		
+		
+		for(int i=0; i<rcInverseArray.length; i++) {
+			rcInverseArray[i] = 1/(MyMathUtils.getInterpolatedValue1DLinear(
+						rcList.get(i).getSpeed(),
+						rcList.get(i).getRC(),
+						speed.doubleValue(SI.METERS_PER_SECOND)
+						)
+					);
+			altitudeArray[i] = rcList.get(i).getAltitude();
+		}
+		
+		double time = MyMathUtils.integrate1DSimpsonSpline(altitudeArray, rcInverseArray);
+		
+		Amount<Duration> climbTime = Amount.valueOf(time, SI.SECOND);
+		
+		return climbTime;
+		
+	}
+	
+	public static Amount<Duration> calculateMinimumClimbTime (List<RCMap> rcList) {
+			
+		double[] rcMaxInverseArray = new double[rcList.size()];
+		double[] altitudeArray = new double[rcList.size()];
+		
+		for(int i=0; i<rcMaxInverseArray.length; i++) {
+			rcMaxInverseArray[i] = 1/rcList.get(i).getRCmax();
+			altitudeArray[i] = rcList.get(i).getAltitude();
+		}
+		
+		double time = MyMathUtils.integrate1DSimpsonSpline(altitudeArray, rcMaxInverseArray);
+		
+		Amount<Duration> minimumClimbTime = Amount.valueOf(time, SI.SECOND);
+		
+		return minimumClimbTime;
 	}
 	
 	/**
