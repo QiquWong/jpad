@@ -14,13 +14,14 @@
 				<!-- Reynolds number reffered to MAC  -->
 				<Reynolds_number>6000000</Reynolds_number>
 				<!-- definition of alpha body array analysis  -->
-				<alpha_body_initial unit="°">-6</alpha_body_initial>
+				<alpha_body_initial unit="°">-19</alpha_body_initial> <!-- must be > (than wingALPAzeroLift - iw) [ about -4 cruise, -16 take off] -->)
                 <alpha_body_final unit="°">16</alpha_body_final>
                 <number_of_alphas_body>60</number_of_alphas_body>
 				<condition>TAKE_OFF</condition>
 				<!--
 				<condition>CRUISE</condition>
 				<condition>LANDING</condition>
+				<condition>TAKE_OFF</condition>
 				-->
         </operating_conditions>
        <wing>

@@ -48,6 +48,7 @@ public class StabilityExecutableCalculator {
 	List<Amount<Length>> verticalDistance = new ArrayList<>();
 	List<Amount<Angle>> downwashAngle = new ArrayList<>();
 	List<Double> downwashGradient = new ArrayList<>();
+	Amount<Angle> epsilonZero;
 	
 	//FINAL variables CLMAX
 	double cLMaxFinal;
@@ -60,173 +61,228 @@ public class StabilityExecutableCalculator {
 	String highLiftDatabaseFileName;
 	AerodynamicDatabaseReader aeroDatabaseReader;
 	HighLiftDatabaseReader highLiftDatabaseReader;
+	double downwashGradientConstant;
+	Amount<Length> verticalDistanceConstant;
 	
 
 	
 	public void calculateDownwashNonLinearSlingerland(
-			Amount<Length> rootChord,
-			Amount<Length> semiSpanWing,
-			Amount<Angle> sweepQuarterChord,
-			double aspectRatio,
-			Amount<Angle> wingAngleOfIncidence,
-			Amount<Angle> wingAlphaZeroLift,
+			StabilityExecutableManager theStabilityManager,
+			ConditionEnum theCondition,
 			Amount<Length> horizontalDistanceInitial,
 			Amount<Length> verticalDistanceInitial,
-			Amount<Length> verticalDistanceInitialComplete,
-			Amount<Length> zACWing,
-			Amount<Length> zACHtail,
 			double [] clAlphaArray,
-			double []  alphaWingArrayforCLAlpha, // 1/rad
+			double []  alphasWing, // deg
 			double [] alphaBody //deg
 			){
 		
-		double cRoot = rootChord.doubleValue(SI.METER);
-		double iw = wingAngleOfIncidence.doubleValue(SI.RADIAN); //rad 
-		double alphaZeroLift = wingAlphaZeroLift.doubleValue(SI.RADIAN); //rad; 
-		double zTemp , xTemp;
-
-		double m0Value = 0;
-		double d0Value = 0;
-		double angle =0.0;
-
-
-		if ( zACHtail.doubleValue(SI.METER) > zACWing.doubleValue(SI.METER) ) {
-			if ( verticalDistanceInitial.doubleValue(SI.METER) < 0 )
-				m0Value = verticalDistanceInitial.doubleValue(SI.METER) - 0.75 * cRoot * Math.sin(wingAngleOfIncidence.doubleValue(SI.RADIAN));
-			if ( verticalDistanceInitial.doubleValue(SI.METER) < 0 )
-				m0Value = verticalDistanceInitial.doubleValue(SI.METER) + 0.75 * cRoot * Math.sin(wingAngleOfIncidence.doubleValue(SI.RADIAN));	
+		
+		double zApexWing = theStabilityManager.getZApexWing().doubleValue(SI.METER);
+		double zApexHTail = theStabilityManager.getZApexHTail().doubleValue(SI.METER);
+		
+		// angles
+		double iw = theStabilityManager.getWingAngleOfIncidence().doubleValue(SI.RADIAN); //rad
+		double alphaZeroLift = 0 ; //rad
+		if(theCondition == ConditionEnum.CRUISE){
+		alphaZeroLift = theStabilityManager.getWingAlphaZeroLift().doubleValue(SI.RADIAN); 
 		}
-
-		if ( zACHtail.doubleValue(SI.METER) < zACWing.doubleValue(SI.METER) ) {
-			if ( verticalDistanceInitial.doubleValue(SI.METER) < 0 )
-				m0Value = verticalDistanceInitial.doubleValue(SI.METER) + 0.75 * cRoot * Math.sin(wingAngleOfIncidence.doubleValue(SI.RADIAN));
-			if ( verticalDistanceInitial.doubleValue(SI.METER) > 0 )
-				m0Value = verticalDistanceInitial.doubleValue(SI.METER) - 0.75 * cRoot * Math.sin(wingAngleOfIncidence.doubleValue(SI.RADIAN));
+		if(theCondition == ConditionEnum.TAKE_OFF || theCondition == ConditionEnum.LANDING){
+			alphaZeroLift = theStabilityManager.getAlphaZeroLiftHighLift().doubleValue(SI.RADIAN);  	
 		}
-
-
-		d0Value = horizontalDistanceInitial.doubleValue(SI.METER) - 0.75 * cRoot * Math.cos(wingAngleOfIncidence.doubleValue(SI.RADIAN));
 		
+		double startingAngle = iw - alphaZeroLift; // rad
 		
-		double dValue = Math.sqrt((Math.pow(m0Value, 2)) 
-				+(Math.pow(d0Value, 2)));
-		
-		double phiAngle = Math.atan(( m0Value)/(d0Value));  // rad	
-		
-		if ( zACHtail.doubleValue(SI.METER) > zACWing.doubleValue(SI.METER) ) {
-		angle = phiAngle + iw - alphaZeroLift;}
-		if ( zACHtail.doubleValue(SI.METER) < zACWing.doubleValue(SI.METER) ) {
-		angle =  -iw + alphaZeroLift;}
-		
-		double zDistanceZero = verticalDistanceInitialComplete.doubleValue(SI.METER) * Math.cos(angle);
-		System.out.println(" VERTICAL DISTANCE VARIABLE " + zDistanceZero);
-		double xDistanceZero = (dValue * Math.cos(angle)) + ( (0.75) * cRoot * Math.cos(Math.abs(alphaZeroLift)));
-
 		// Alpha Absolute array 
 		
-		double alphaFirst = 0.0;
-		double alphaLast = 20.0;
-		int nValue = (int) Math.ceil(( alphaLast - alphaFirst ) * 4); //0.25 deg
+				double alphaFirst = 0.0;
+				double alphaLast = 40.0;
+				int nValue = 100;
 
-		double [] alphaAbsoluteArray =  MyArrayUtils.linspace(alphaFirst, alphaLast, nValue);
-		double [] alphaWingArray =  new double [alphaAbsoluteArray.length];
-		for(int i=0; i< alphaAbsoluteArray.length; i++){
-			alphaWingArray[i] = alphaAbsoluteArray[i]+alphaZeroLift*57.3;
-		}
-		double deltaAlpha = Amount.valueOf(
-				Math.toRadians(alphaAbsoluteArray[1] - alphaAbsoluteArray[0]), SI.RADIAN).getEstimatedValue();
+				double [] alphaAbsoluteArray =  MyArrayUtils.linspace(alphaFirst, alphaLast, nValue); //deg
+				double [] alphaWingArray =  new double [alphaAbsoluteArray.length]; //deg
+				for(int i=0; i< alphaAbsoluteArray.length; i++){
+					alphaWingArray[i] = alphaAbsoluteArray[i]+alphaZeroLift*57.3; 
+				}
+				double deltaAlpha = Amount.valueOf(
+						Math.toRadians(alphaAbsoluteArray[1] - alphaAbsoluteArray[0]), SI.RADIAN).getEstimatedValue(); // rad
 
-		Double[] cLAlphaArray = MyMathUtils.getInterpolatedValue1DLinear(
-				alphaWingArrayforCLAlpha,
-				clAlphaArray, 
-				alphaWingArray);
+				Double[] cLAlphaArray = MyMathUtils.getInterpolatedValue1DLinear(
+						alphasWing,
+						clAlphaArray, 
+						alphaWingArray);
+		
 				
+		// calculate first values
+				Amount<Length> zDistanceZero = null;
+				Amount<Length> xDistanceZero = horizontalDistanceInitial; 
+				
+				if (zApexWing < zApexHTail  ){
+
+					zDistanceZero = Amount.valueOf(
+							verticalDistanceInitial.doubleValue(SI.METER) + (
+									(horizontalDistanceInitial.doubleValue(SI.METER) *
+									Math.tan(startingAngle))),
+							SI.METER);
+				}
+
+				if (zApexWing > zApexHTail  ){
+
+					zDistanceZero = Amount.valueOf(
+							verticalDistanceInitial.doubleValue(SI.METER) - (
+									(horizontalDistanceInitial.doubleValue(SI.METER) *
+									Math.tan(startingAngle))),
+							SI.METER);
+				}
+
+				zDistanceZero = Amount.valueOf(
+						zDistanceZero.doubleValue(SI.METER) * 
+						Math.cos(startingAngle), SI.METER);
+				
+
+
 		
 		double epsilonTemp, zDistTemp, downwashRad, epsilonTempRad,  downwashGradientArrayTemp;
-		
+		double zTemp;
+		Amount<Angle> epsilonZero;
 		// Initialize Array
 		
 		double [] downwashArray = new double [nValue];
 		double [] downwashGradientArray = new double [nValue];
 		double [] alphaBodyArray = new double [nValue];
 		double [] zDistanceArray = new double [nValue];
-		double [] xDistanceArray = new double [nValue];
-		
+		double [] xDistanceArray = new double [nValue];	
 		
 		// First step
 		
-		downwashArray[0] = 0.0;
-		zDistanceArray[0] = zDistanceZero;
-		xDistanceArray[0] = xDistanceZero;
+
+		zDistanceArray[0] = zDistanceZero.doubleValue(SI.METER);
+		xDistanceArray[0] = xDistanceZero.doubleValue(SI.METER);
 		downwashGradientArray[0] = calculateDownwashGradientSlingerland( xDistanceArray[0],
 				zDistanceArray[0], 
 				cLAlphaArray[0], 
-				sweepQuarterChord,
-				aspectRatio,
-				semiSpanWing
+				theStabilityManager.getWingSweepQuarterChord(),
+				theStabilityManager.getWingAspectRatio(),
+				theStabilityManager.getWingSemiSpan()
 				);
-		alphaBodyArray[0] = alphaAbsoluteArray[0]- Math.toDegrees(iw) + Math.toDegrees(alphaZeroLift);
+
+		epsilonZero = Amount.valueOf(downwashGradientArray[0]*(-alphaZeroLift*57.3), NonSI.DEGREE_ANGLE);
 		
-		
+		downwashArray[0] = epsilonZero.doubleValue(NonSI.DEGREE_ANGLE) + downwashGradientArray[0]*alphaWingArray[0];
+		alphaBodyArray[0] = alphaAbsoluteArray[0] - Math.toDegrees(iw) + Math.toDegrees(alphaZeroLift);
+
+		this.epsilonZero = epsilonZero;
+		this.downwashGradientConstant = downwashGradientArray[0];
+		this.verticalDistanceConstant = Amount.valueOf(zDistanceArray[0], SI.METER);
 		// Other step
 		
 		for ( int i = 1 ; i<alphaAbsoluteArray.length ; i++){
 			
-			epsilonTemp = downwashGradientArray[i-1] * alphaAbsoluteArray[i]; // epsilon in deg, using gradient at previous step
+			epsilonTemp = epsilonZero.doubleValue(NonSI.DEGREE_ANGLE) + downwashGradientArray[i-1]*alphaWingArray[i];
 			epsilonTempRad = Amount.valueOf(
 					Math.toRadians(epsilonTemp), SI.RADIAN).getEstimatedValue();
-			
-			
-			
-			zTemp = verticalDistanceInitialComplete.doubleValue(SI.METER) * Math.cos(angle - i * deltaAlpha + epsilonTempRad);
-			xTemp = (dValue * Math.cos(angle - i*deltaAlpha + epsilonTempRad)) + 
-					( (0.74) * cRoot * Math.cos(Math.abs(alphaZeroLift - i*deltaAlpha + epsilonTempRad)));
-			
-			
-			downwashGradientArrayTemp = calculateDownwashGradientSlingerland( xTemp,
+
+			if (zApexWing < zApexHTail  ){
+
+				zTemp = 
+						verticalDistanceInitial.doubleValue(SI.METER) + (
+								(horizontalDistanceInitial.doubleValue(SI.METER) *
+								Math.tan(startingAngle- i * deltaAlpha + epsilonTempRad)));
+			}
+
+			if (zApexWing > zApexHTail  ){
+
+				zTemp = 
+						verticalDistanceInitial.doubleValue(SI.METER) - (
+								(horizontalDistanceInitial.doubleValue(SI.METER) *
+								Math.tan(startingAngle- i * deltaAlpha + epsilonTempRad)));
+			}
+
+			zTemp = 
+					zDistanceZero.doubleValue(SI.METER) * 
+					Math.cos(startingAngle- i * deltaAlpha + epsilonTempRad);
+	
+		
+			downwashGradientArrayTemp = calculateDownwashGradientSlingerland( 
+					xDistanceZero.doubleValue(SI.METER),
 					zTemp, 
-					cLAlphaArray[0], 
-					sweepQuarterChord,
-					aspectRatio,
-					semiSpanWing
+					cLAlphaArray[i], 
+					theStabilityManager.getWingSweepQuarterChord(),
+					theStabilityManager.getWingAspectRatio(),
+					theStabilityManager.getWingSemiSpan()
 					);
 					
-			downwashArray[i] = downwashArray[i-1] + downwashGradientArrayTemp * deltaAlpha*57.3; 
+			downwashArray[i] = epsilonZero.doubleValue(NonSI.DEGREE_ANGLE) + downwashGradientArrayTemp*alphaWingArray[i];
+				
 			downwashRad = Amount.valueOf(
 					Math.toRadians(downwashArray[i]), SI.RADIAN).getEstimatedValue();
-			
-			zDistanceArray[i] = verticalDistanceInitialComplete.doubleValue(SI.METER) * Math.cos(angle - i * deltaAlpha + downwashRad);
-			xDistanceArray[i] = (dValue * Math.cos(angle - i*deltaAlpha +downwashRad)) + 
-					( (0.75) * cRoot * Math.cos(Math.abs(alphaZeroLift - i*deltaAlpha + downwashRad)));
-			
-			downwashGradientArray[i] = calculateDownwashGradientSlingerland( xDistanceArray[i],
-					zDistanceArray[i], 
+	
+					if (zApexWing < zApexHTail  ){
+
+						zDistanceArray[i] =
+								verticalDistanceInitial.doubleValue(SI.METER) + (
+										(horizontalDistanceInitial.doubleValue(SI.METER) *
+										Math.tan(startingAngle- i * deltaAlpha + downwashRad)));
+					}
+
+					if (zApexWing > zApexHTail  ){
+
+						zDistanceArray[i] =
+								verticalDistanceInitial.doubleValue(SI.METER) - (
+										(horizontalDistanceInitial.doubleValue(SI.METER) *
+										Math.tan(startingAngle- i * deltaAlpha + downwashRad)));
+					}
+
+					zDistanceArray[i] =
+							zDistanceZero.doubleValue(SI.METER) * 
+							Math.cos(startingAngle- i * deltaAlpha + downwashRad);
+
+			downwashGradientArray[i] = calculateDownwashGradientSlingerland( 
+					xDistanceZero.doubleValue(SI.METER),
+					zDistanceArray[i],
 					cLAlphaArray[i], 
-					sweepQuarterChord,
-					aspectRatio,
-					semiSpanWing
+					theStabilityManager.getWingSweepQuarterChord(),
+					theStabilityManager.getWingAspectRatio(),
+					theStabilityManager.getWingSemiSpan()
 					);
 
-			downwashArray[i] = downwashArray[i-1] + downwashGradientArray[i] * deltaAlpha*57.3; 
+			downwashArray[i] = epsilonZero.doubleValue(NonSI.DEGREE_ANGLE) + downwashGradientArray[i]*alphaWingArray[i];
+
 			downwashRad = Amount.valueOf(
 					Math.toRadians(downwashArray[i]), SI.RADIAN).getEstimatedValue();
 			
-			zDistanceArray[i] = verticalDistanceInitialComplete.doubleValue(SI.METER) * Math.cos(angle - i * deltaAlpha + downwashRad);
-			xDistanceArray[i] = (dValue * Math.cos(angle - i*deltaAlpha +downwashRad)) + 
-					( (0.75) * cRoot * Math.cos(Math.abs(alphaZeroLift - i*deltaAlpha + downwashRad)));
-			
-			downwashGradientArray[i] = calculateDownwashGradientSlingerland( xDistanceArray[i],
-					zDistanceArray[i], 
+			if (zApexWing < zApexHTail  ){
+
+				zDistanceArray[i] =
+						verticalDistanceInitial.doubleValue(SI.METER) + (
+								(horizontalDistanceInitial.doubleValue(SI.METER) *
+								Math.tan(startingAngle- i * deltaAlpha + downwashRad)));
+			}
+
+			if (zApexWing > zApexHTail  ){
+
+				zDistanceArray[i] =
+						verticalDistanceInitial.doubleValue(SI.METER) - (
+								(horizontalDistanceInitial.doubleValue(SI.METER) *
+								Math.tan(startingAngle- i * deltaAlpha + downwashRad)));
+			}
+
+			zDistanceArray[i] =
+					zDistanceZero.doubleValue(SI.METER) * 
+					Math.cos(startingAngle- i * deltaAlpha + downwashRad);
+
+			xDistanceArray[i] = xDistanceZero.doubleValue(SI.METER);
+			downwashGradientArray[i] = calculateDownwashGradientSlingerland( 
+					xDistanceZero.doubleValue(SI.METER),
+					zDistanceArray[i],
 					cLAlphaArray[i], 
-					sweepQuarterChord,
-					aspectRatio,
-					semiSpanWing
+					theStabilityManager.getWingSweepQuarterChord(),
+					theStabilityManager.getWingAspectRatio(),
+					theStabilityManager.getWingSemiSpan()
 					);
 			
-			downwashArray[i] = downwashArray[i-1] + downwashGradientArray[i] * deltaAlpha*57.3; 
-			
+			downwashArray[i] = epsilonZero.doubleValue(NonSI.DEGREE_ANGLE) + downwashGradientArray[i]*alphaWingArray[i];
 			alphaBodyArray[i] = alphaAbsoluteArray[i] - Math.toDegrees(iw) + Math.toDegrees(alphaZeroLift);
-			
+
 		}
 		
 		System.out.println("\n Downwash Arrays");
@@ -1212,6 +1268,30 @@ public class StabilityExecutableCalculator {
 
 	public void setLiftDistributionAtCLMax(double[] liftDistributionAtCLMax) {
 		this.liftDistributionAtCLMax = liftDistributionAtCLMax;
+	}
+
+	public Amount<Angle> getEpsilonZero() {
+		return epsilonZero;
+	}
+
+	public void setEpsilonZero(Amount<Angle> epsilonZero) {
+		this.epsilonZero = epsilonZero;
+	}
+
+	public double getDownwashGradientConstant() {
+		return downwashGradientConstant;
+	}
+
+	public void setDownwashGradientConstant(double downwashGradientConstant) {
+		this.downwashGradientConstant = downwashGradientConstant;
+	}
+
+	public Amount<Length> getVerticalDistanceConstant() {
+		return verticalDistanceConstant;
+	}
+
+	public void setVerticalDistanceConstant(Amount<Length> verticalDistanceConstant) {
+		this.verticalDistanceConstant = verticalDistanceConstant;
 	}
 
 }
