@@ -9,8 +9,8 @@
                 <x_cg unit="m">20.18</x_cg>
                 <y_cg unit="m">0.0</y_cg>
                 <z_cg unit="m">-0.75</z_cg>
-                <altitude unit="m">6000</altitude>
-                <mach_number>0.6</mach_number>
+                <altitude unit="m">0</altitude>
+                <mach_number>0.12</mach_number>
 				<!-- Reynolds number reffered to MAC  -->
 				<Reynolds_number>6000000</Reynolds_number>
 				<!-- definition of alpha body array analysis  -->

@@ -249,7 +249,7 @@ public class ReaderWriter{
 
 			// Values
 			for(int i=0; i<theStabilityCalculator.getWingNumberOfSlats(); i++) {
-				theStabilityCalculator.getWingSlatCsC().add(Double.parseDouble((reader.getXMLPropertiesByPath("//wing/high_lift_devices/slats/slat/slat_deflection")).get(i)));
+				theStabilityCalculator.getWingSlatCsC().add(Double.parseDouble((reader.getXMLPropertiesByPath("//wing/high_lift_devices/slats/slat/slat_chord_ratio")).get(i)));
 			}
 
 			for(int i=0; i<theStabilityCalculator.getWingNumberOfSlats(); i++) {

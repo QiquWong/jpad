@@ -697,23 +697,25 @@ public class StabilityExecutableManager {
 		this._verticalDistanceZeroLiftDirectionWingHTailNOANGLE = this._verticalDistanceZeroLiftDirectionWingHTail ;		
 		this._horizontalDistanceQuarterChordWingHTailNOANGLE =  this._horizontalDistanceQuarterChordWingHTail;
 
+		// the horizontal distance is always the same, the vertical changes in function of the angle of attack.
+		
 		if (this._zApexWing.doubleValue(SI.METER) < this._zApexHTail.doubleValue(SI.METER)  ){
 
 			this._verticalDistanceZeroLiftDirectionWingHTail = Amount.valueOf(
-					this._verticalDistanceZeroLiftDirectionWingHTail.doubleValue(SI.METER) - (
-							(this._horizontalDistanceQuarterChordWingHTail.doubleValue(SI.METER) - 0.75 * this._wingChordsBreakPoints.get(0).doubleValue(SI.METER))*
+					this._verticalDistanceZeroLiftDirectionWingHTail.doubleValue(SI.METER) + (
+							(this._horizontalDistanceQuarterChordWingHTail.doubleValue(SI.METER) *
 							Math.tan(this._wingAngleOfIncidence.doubleValue(SI.RADIAN) -
-									this._wingAlphaZeroLift.doubleValue(SI.RADIAN))),
+									this._wingAlphaZeroLift.doubleValue(SI.RADIAN)))),
 					SI.METER);
 		}
 
 		if (this._zApexWing.doubleValue(SI.METER) > this._zApexHTail.doubleValue(SI.METER)  ){
 
 			this._verticalDistanceZeroLiftDirectionWingHTail = Amount.valueOf(
-					this._verticalDistanceZeroLiftDirectionWingHTail.doubleValue(SI.METER) + (
-							(this._horizontalDistanceQuarterChordWingHTail.doubleValue(SI.METER) - 0.75 * this._wingChordsBreakPoints.get(0).doubleValue(SI.METER))*
-							Math.tan(this._wingAngleOfIncidence.doubleValue(SI.RADIAN)-
-									this._wingAlphaZeroLift.doubleValue(SI.RADIAN))),
+					this._verticalDistanceZeroLiftDirectionWingHTail.doubleValue(SI.METER) - (
+							(this._horizontalDistanceQuarterChordWingHTail.doubleValue(SI.METER) *
+							Math.tan(this._wingAngleOfIncidence.doubleValue(SI.RADIAN) -
+									this._wingAlphaZeroLift.doubleValue(SI.RADIAN)))),
 					SI.METER);
 		}
 
@@ -725,12 +727,9 @@ public class StabilityExecutableManager {
 				Math.cos(this._wingAngleOfIncidence.doubleValue(SI.RADIAN)-
 						this._wingAlphaZeroLift.doubleValue(SI.RADIAN)), SI.METER);
 
-		this._horizontalDistanceQuarterChordWingHTail = Amount.valueOf(
-				this._horizontalDistanceQuarterChordWingHTail.doubleValue(SI.METER) * 
-				Math.cos(this._wingAngleOfIncidence.doubleValue(SI.RADIAN)-
-						this._wingAlphaZeroLift.doubleValue(SI.RADIAN)), SI.METER);
 
-		System.out.println(" VERTICAL DISTANCE " + _verticalDistanceZeroLiftDirectionWingHTail);
+		System.out.println(" HORIZONTAL DISTANCE FIRST VALUE " + _horizontalDistanceQuarterChordWingHTail + "this value is the same");
+		System.out.println(" VERTICAL DISTANCE FIRST VALUE " + _verticalDistanceZeroLiftDirectionWingHTail);
 
 	}
 
@@ -1256,6 +1255,7 @@ public class StabilityExecutableManager {
 		// CL ALPHA
 		if(_plotList.contains(AerodynamicAndStabilityPlotEnum.WING_CL_CURVE_CLEAN)) {
 
+			
 			List<Double[]> xList = new ArrayList<>();
 			List<Double[]> yList = new ArrayList<>();
 			List<String> legend = new ArrayList<>();
@@ -1299,7 +1299,7 @@ public class StabilityExecutableManager {
 			MyChartToFileUtils.plot(
 					xList, 
 					yList, 
-					"Cl distribution at CL max", 
+					"Cl distribution at CL max Clean", 
 					"eta", "Cl", 
 					null, null,
 					null, null,
@@ -1307,7 +1307,7 @@ public class StabilityExecutableManager {
 					true,
 					legend,
 					folderPathName,
-					"Cl distribution at CL max");
+					"Cl distribution at CL max Clean");
 
 			System.out.println("Plot Cl distribution at CL max ---> DONE \n");
 			
@@ -1317,9 +1317,12 @@ public class StabilityExecutableManager {
 			yList = new ArrayList<>();
 			legend = new ArrayList<>();
 
+			xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasWing));
 			xList.add(_alphaArrayPlotHighLift);
+			yList.add(_wingliftCoefficient3DCurve);
 			yList.add(_wingLiftCoefficient3DCurveHighLift);
-			legend.add("null");
+			legend.add("Clean");
+			legend.add("High lift " + _theCondition);
 
 			MyChartToFileUtils.plot(
 					xList, 
@@ -1329,7 +1332,7 @@ public class StabilityExecutableManager {
 					null, null,
 					null, null,
 					"deg", "",
-					false,
+					true,
 					legend,
 					folderPathName,
 					"Wing Lift Coefficient 3D curve High lift ");
@@ -1348,9 +1351,6 @@ public class StabilityExecutableManager {
 	//--------------------------------------------------------------------------------------------------------
 	//CALCULATORS---------------------------------------													 |
 	//--------------------------------------------------------------------------------------------------------
-
-
-	public void downwashCalculator(){}
 
 	public void calculateWingLiftCharacteristics(){
 		//------------WING VALUES
@@ -1496,7 +1496,7 @@ public class StabilityExecutableManager {
 		// ALPHA ZERO LIFT HIGH LIFT
 		_alphaZeroLiftHighLift = 
 				Amount.valueOf(
-						-(_wingcLZero /_cLAlphaHighLiftDEG),
+						-(_cLZeroHighLift /_cLAlphaHighLiftDEG),
 						NonSI.DEGREE_ANGLE
 						);
 
@@ -1531,7 +1531,7 @@ public class StabilityExecutableManager {
 				NonSI.DEGREE_ANGLE);
 		
 		_alphaStallHighLift=
-				Amount.valueOf(((_cLMaxHighLift - _cLZeroHighLift /_cLAlphaHighLiftDEG) + deltaAlpha.doubleValue(NonSI.DEGREE_ANGLE)),
+				Amount.valueOf((((_cLMaxHighLift - _cLZeroHighLift) /_cLAlphaHighLiftDEG) + deltaAlpha.doubleValue(NonSI.DEGREE_ANGLE)),
 				NonSI.DEGREE_ANGLE);
 		
 		//------------------------------------------------------

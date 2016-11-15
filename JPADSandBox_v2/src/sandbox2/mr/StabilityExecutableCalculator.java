@@ -708,8 +708,8 @@ public class StabilityExecutableCalculator {
 			deltaCl0First.add(
 					alphaDelta.get(i).doubleValue()
 					*etaDeltaFlap.get(i).doubleValue()
-					*flapDeflections.get(i).doubleValue(NonSI.DEGREE_ANGLE)
-					*(clAlphaMeanFlap[i]/57.3)
+					*flapDeflections.get(i).doubleValue(SI.RADIAN)
+					*(clAlphaMeanFlap[i]*57.3)
 					);
 
 		List<Double> deltaCCfFlap = new ArrayList<Double>();
@@ -913,7 +913,7 @@ public class StabilityExecutableCalculator {
 					kb.get(i).doubleValue()
 					*kc.get(i).doubleValue()
 					*deltaCl0FlapList.get(i)
-					*((cLLinearSlope)/(clAlphaMeanFlap[i]/57.3))
+					*((cLLinearSlope)/(clAlphaMeanFlap[i]))
 					);
 		theStabilityManager.setDeltaCL0FlapList(deltaCL0FlapList);
 
