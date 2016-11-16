@@ -50,7 +50,6 @@
 				<mean_airfoil_family>BICONVEX</mean_airfoil_family>
 				<mean_airfoil_family>DOUBLE_WEDGE</mean_airfoil_family>
 				-->
-				<max_thickness_mean_airfoil>0.12</max_thickness_mean_airfoil>
              </global>
              <distribution>
                    <geometry>

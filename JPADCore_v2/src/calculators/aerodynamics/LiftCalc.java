@@ -22,6 +22,7 @@ import org.jscience.physics.amount.Amount;
 import com.ibm.icu.util.EthiopicCalendar;
 
 import aircraft.auxiliary.airfoil.Airfoil;
+import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.creator.SlatCreator;
 import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
@@ -32,6 +33,7 @@ import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
+import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
@@ -1502,5 +1504,44 @@ public class LiftCalc {
 				MethodEnum.EMPIRICAL,
 				deltaCMC4
 				);
+	}
+	
+	
+	public double calculateTauIndexElevator(
+			double chordRatioElevator,
+			double aspectRatioHorizontalTail,
+			HighLiftDatabaseReader highLiftDatabaseReader,
+			AerodynamicDatabaseReader aeroDatabaseReader,
+			Amount<Angle> elevatorDeflection
+			)
+	{
+		double deflectionAngleDeg;
+
+		if(elevatorDeflection.doubleValue(NonSI.DEGREE_ANGLE)<0){
+			deflectionAngleDeg = -elevatorDeflection.doubleValue(NonSI.DEGREE_ANGLE);
+			}
+
+		else{
+			deflectionAngleDeg = elevatorDeflection.doubleValue(NonSI.DEGREE_ANGLE);
+			}
+
+
+		double etaDelta = highLiftDatabaseReader
+				.getEtaDeltaVsDeltaFlapPlain(deflectionAngleDeg, chordRatioElevator);
+		
+		double deltaAlpha2D = aeroDatabaseReader
+				.getD_Alpha_d_Delta_2d_VS_cf_c(chordRatioElevator);
+
+
+		double deltaAlpha2D3D = aeroDatabaseReader
+				.getD_Alpha_d_Delta_2d_d_Alpha_d_Delta_3D_VS_aspectRatio(
+						aspectRatioHorizontalTail,
+						deltaAlpha2D
+						);
+
+		double tauIndex = deltaAlpha2D3D * deltaAlpha2D * etaDelta;
+
+
+		return tauIndex;
 	}
 }

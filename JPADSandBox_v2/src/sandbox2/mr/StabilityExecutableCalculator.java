@@ -68,7 +68,6 @@ public class StabilityExecutableCalculator {
 	
 	public void calculateDownwashNonLinearSlingerland(
 			StabilityExecutableManager theStabilityManager,
-			ConditionEnum theCondition,
 			Amount<Length> horizontalDistanceInitial,
 			Amount<Length> verticalDistanceInitial,
 			double [] clAlphaArray,
@@ -83,13 +82,8 @@ public class StabilityExecutableCalculator {
 		// angles
 		double iw = theStabilityManager.getWingAngleOfIncidence().doubleValue(SI.RADIAN); //rad
 		double alphaZeroLift = 0 ; //rad
-		if(theCondition == ConditionEnum.CRUISE){
-		alphaZeroLift = theStabilityManager.getWingAlphaZeroLift().doubleValue(SI.RADIAN); 
-		}
-		if(theCondition == ConditionEnum.TAKE_OFF || theCondition == ConditionEnum.LANDING){
-			alphaZeroLift = theStabilityManager.getAlphaZeroLiftHighLift().doubleValue(SI.RADIAN);  	
-		}
-		
+		alphaZeroLift = theStabilityManager.getWingAlphaZeroLiftCONDITION().doubleValue(SI.RADIAN); 
+
 		double startingAngle = iw - alphaZeroLift; // rad
 		
 		// Alpha Absolute array 
@@ -101,7 +95,7 @@ public class StabilityExecutableCalculator {
 				double [] alphaAbsoluteArray =  MyArrayUtils.linspace(alphaFirst, alphaLast, nValue); //deg
 				double [] alphaWingArray =  new double [alphaAbsoluteArray.length]; //deg
 				for(int i=0; i< alphaAbsoluteArray.length; i++){
-					alphaWingArray[i] = alphaAbsoluteArray[i]+alphaZeroLift*57.3; 
+					alphaWingArray[i] = alphaAbsoluteArray[i] + alphaZeroLift*57.3; 
 				}
 				double deltaAlpha = Amount.valueOf(
 						Math.toRadians(alphaAbsoluteArray[1] - alphaAbsoluteArray[0]), SI.RADIAN).getEstimatedValue(); // rad
@@ -138,12 +132,10 @@ public class StabilityExecutableCalculator {
 						zDistanceZero.doubleValue(SI.METER) * 
 						Math.cos(startingAngle), SI.METER);
 				
-
-
-		
 		double epsilonTemp, zDistTemp, downwashRad, epsilonTempRad,  downwashGradientArrayTemp;
-		double zTemp;
+		double zTemp = 0;
 		Amount<Angle> epsilonZero;
+		
 		// Initialize Array
 		
 		double [] downwashArray = new double [nValue];
@@ -154,7 +146,6 @@ public class StabilityExecutableCalculator {
 		
 		// First step
 		
-
 		zDistanceArray[0] = zDistanceZero.doubleValue(SI.METER);
 		xDistanceArray[0] = xDistanceZero.doubleValue(SI.METER);
 		downwashGradientArray[0] = calculateDownwashGradientSlingerland( xDistanceArray[0],
@@ -173,8 +164,8 @@ public class StabilityExecutableCalculator {
 		this.epsilonZero = epsilonZero;
 		this.downwashGradientConstant = downwashGradientArray[0];
 		this.verticalDistanceConstant = Amount.valueOf(zDistanceArray[0], SI.METER);
-		// Other step
 		
+		// Other step
 		for ( int i = 1 ; i<alphaAbsoluteArray.length ; i++){
 			
 			epsilonTemp = epsilonZero.doubleValue(NonSI.DEGREE_ANGLE) + downwashGradientArray[i-1]*alphaWingArray[i];
@@ -198,7 +189,7 @@ public class StabilityExecutableCalculator {
 			}
 
 			zTemp = 
-					zDistanceZero.doubleValue(SI.METER) * 
+					zTemp * 
 					Math.cos(startingAngle- i * deltaAlpha + epsilonTempRad);
 	
 		
@@ -233,7 +224,7 @@ public class StabilityExecutableCalculator {
 					}
 
 					zDistanceArray[i] =
-							zDistanceZero.doubleValue(SI.METER) * 
+							zDistanceArray[i] * 
 							Math.cos(startingAngle- i * deltaAlpha + downwashRad);
 
 			downwashGradientArray[i] = calculateDownwashGradientSlingerland( 
@@ -267,7 +258,7 @@ public class StabilityExecutableCalculator {
 			}
 
 			zDistanceArray[i] =
-					zDistanceZero.doubleValue(SI.METER) * 
+					zDistanceArray[i] * 
 					Math.cos(startingAngle- i * deltaAlpha + downwashRad);
 
 			xDistanceArray[i] = xDistanceZero.doubleValue(SI.METER);
@@ -282,19 +273,16 @@ public class StabilityExecutableCalculator {
 			
 			downwashArray[i] = epsilonZero.doubleValue(NonSI.DEGREE_ANGLE) + downwashGradientArray[i]*alphaWingArray[i];
 			alphaBodyArray[i] = alphaAbsoluteArray[i] - Math.toDegrees(iw) + Math.toDegrees(alphaZeroLift);
-
 		}
 		
-		System.out.println("\n Downwash Arrays");
-		System.out.println("DownwashGradient " + Arrays.toString(downwashGradientArray));
-		System.out.println("Downwash Angle (deg) " + Arrays.toString(downwashArray));
-		System.out.println("Alpha Absolute (deg) " + Arrays.toString(alphaAbsoluteArray));
-		System.out.println("Alpha Body (deg)" + Arrays.toString(alphaBodyArray));
-		System.out.println("m Distances  (m) " + Arrays.toString(zDistanceArray));	
-		System.out.println("x Distances (m) " + Arrays.toString(xDistanceArray));	
-		
-		
-		
+//		System.out.println("\n Downwash Arrays");
+//		System.out.println("DownwashGradient " + Arrays.toString(downwashGradientArray));
+//		System.out.println("Downwash Angle (deg) " + Arrays.toString(downwashArray));
+//		System.out.println("Alpha Absolute (deg) " + Arrays.toString(alphaAbsoluteArray));
+//		System.out.println("Alpha Body (deg)" + Arrays.toString(alphaBodyArray));
+//		System.out.println("m Distances  (m) " + Arrays.toString(zDistanceArray));	
+//		System.out.println("x Distances (m) " + Arrays.toString(xDistanceArray));	
+
 		Double[] downwashArrayTemporary = MyMathUtils.getInterpolatedValue1DLinear(
 				alphaBodyArray,
 				downwashArray,
@@ -1214,6 +1202,246 @@ public class StabilityExecutableCalculator {
 		return influenceFactors;
 }
 
+	public static double[] calculateInfluenceFactorsMeanAirfoilElevator(
+			double etaIn,
+			double etaOut,
+			StabilityExecutableManager theStabilityManager
+			
+			) throws InstantiationException, IllegalAccessException{
+
+		double [] influenceAreas = new double [2];
+		double [] influenceFactors = new double [2];
+		
+		double chordIn = MyMathUtils.getInterpolatedValue1DLinear(
+				MyArrayUtils.convertToDoublePrimitive(
+						theStabilityManager.getHTailYAdimensionalBreakPoints()
+						),
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						theStabilityManager.getHTailChordsBreakPoints()
+						),
+				etaIn
+				);
+
+		double chordOut = MyMathUtils.getInterpolatedValue1DLinear(
+				MyArrayUtils.convertToDoublePrimitive(
+						theStabilityManager.getHTailYAdimensionalBreakPoints()
+						),
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						theStabilityManager.getHTailChordsBreakPoints()
+						),
+				etaOut
+				);
+		
+		influenceAreas[0] = (chordIn * ((etaOut - etaIn)*theStabilityManager.getHTailSemiSpan().doubleValue(SI.METER)))/2;
+		influenceAreas[1] = (chordOut * ((etaOut - etaIn)*theStabilityManager.getHTailSemiSpan().doubleValue(SI.METER)))/2;
+		
+		// it returns the influence coefficient
+		
+		influenceFactors[0] = influenceAreas[0]/(influenceAreas[0] + influenceAreas[1]);
+		influenceFactors[1] = influenceAreas[1]/(influenceAreas[0] + influenceAreas[1]);
+		
+		return influenceFactors;
+}
+	
+	public void calculateElevatorEffects(
+			StabilityExecutableManager theStabilityManager,
+			Amount<Angle> elevatorDeflectionAngle
+			) {
+		
+		double [] elevatorInfluenceFactor = new double [2];
+		double cfc = theStabilityManager.getElevatorCfC();
+		
+		// set elevator type --> plain flap
+		
+		Double elevatorTypeIndex = 3.0;
+		Double deltaElevatorRef = 60.0;
+		Double cLalphaFlapList, swf, deltaCCfElevator, cFirstCElevator;
+		
+		deltaCCfElevator =(
+				highLiftDatabaseReader
+				.getDeltaCCfVsDeltaFlap(
+						elevatorDeflectionAngle.doubleValue(NonSI.DEGREE_ANGLE),
+						elevatorTypeIndex
+						));
+
+		cFirstCElevator = (1+(deltaCCfElevator*theStabilityManager.getElevatorCfC()));
+		
+		double maxTicknessFlapStationsIn = MyMathUtils.getInterpolatedValue1DLinear( 
+				MyArrayUtils.convertToDoublePrimitive(theStabilityManager.getHTailYAdimensionalBreakPoints()),
+				MyArrayUtils.convertToDoublePrimitive(theStabilityManager.getHTailMaxThicknessBreakPoints()),
+				theStabilityManager.getElevatorEtaIn());
+		
+		double maxTicknessFlapStationsOut = MyMathUtils.getInterpolatedValue1DLinear( 
+				MyArrayUtils.convertToDoublePrimitive(theStabilityManager.getHTailYAdimensionalBreakPoints()),
+				MyArrayUtils.convertToDoublePrimitive(theStabilityManager.getHTailMaxThicknessBreakPoints()),
+				theStabilityManager.getElevatorEtaOut());
+		
+		double clAlphaFlapStationsIn = MyMathUtils.getInterpolatedValue1DLinear( 
+				MyArrayUtils.convertToDoublePrimitive(theStabilityManager.getHTailYAdimensionalBreakPoints()),
+				MyArrayUtils.convertToDoublePrimitive(theStabilityManager.getHTailClAlphaBreakPointsDeg()),
+				theStabilityManager.getElevatorEtaIn());
+		
+		double clAlphaFlapStationsOut = MyMathUtils.getInterpolatedValue1DLinear( 
+				MyArrayUtils.convertToDoublePrimitive(theStabilityManager.getHTailYAdimensionalBreakPoints()),
+				MyArrayUtils.convertToDoublePrimitive(theStabilityManager.getHTailClAlphaBreakPointsDeg()),
+				theStabilityManager.getElevatorEtaOut());
+		
+		double clZeroFlapStationsIn = MyMathUtils.getInterpolatedValue1DLinear( 
+				MyArrayUtils.convertToDoublePrimitive(theStabilityManager.getHTailYAdimensionalBreakPoints()),
+				MyArrayUtils.convertToDoublePrimitive(theStabilityManager.getHTailCl0BreakPoints()),
+				theStabilityManager.getElevatorEtaIn());
+		
+		double clZeroFlapStationsOut = MyMathUtils.getInterpolatedValue1DLinear( 
+				MyArrayUtils.convertToDoublePrimitive(theStabilityManager.getHTailYAdimensionalBreakPoints()),
+				MyArrayUtils.convertToDoublePrimitive(theStabilityManager.getHTailCl0BreakPoints()),
+				theStabilityManager.getElevatorEtaOut());
+		
+		Double maxTicknessMeanElevator = maxTicknessFlapStationsIn* elevatorInfluenceFactor[0] + 
+				maxTicknessFlapStationsOut* elevatorInfluenceFactor[1];
+		
+		Double clAlphaMeanElevator = clAlphaFlapStationsIn * elevatorInfluenceFactor[0] + 
+				clAlphaFlapStationsOut*elevatorInfluenceFactor[1];
+		
+		Double cl0MeanElevator = clZeroFlapStationsIn * elevatorInfluenceFactor[0] + 
+				clZeroFlapStationsOut*elevatorInfluenceFactor[1];
+		
+		//---------------------------------------------------------------
+		// deltaClmax 
+		
+		Double deltaClmaxBase;
+			deltaClmaxBase =highLiftDatabaseReader.getDeltaCLmaxBaseVsTc(maxTicknessMeanElevator,elevatorTypeIndex);
+		Double k1 = null;
+			if (cfc <= 0.30)
+				k1 = (highLiftDatabaseReader.getK1vsFlapChordRatio(cfc, elevatorTypeIndex));
+			else if ((cfc > 0.30))
+				k1 = ((608.31*Math.pow(cfc, 5))-(626.15*Math.pow(cfc, 4))+(263.4*Math.pow(cfc, 3))-(62.946*Math.pow(cfc, 2))
+						+(10.638*cfc)+0.0064);
+		Double k2 = null;
+			k2 = highLiftDatabaseReader
+					.getK2VsDeltaFlap(
+							elevatorDeflectionAngle.doubleValue(NonSI.DEGREE_ANGLE),
+							elevatorTypeIndex
+							);
+		Double k3= null;
+			k3=highLiftDatabaseReader
+					.getK3VsDfDfRef(
+							elevatorDeflectionAngle.doubleValue(NonSI.DEGREE_ANGLE),
+							deltaElevatorRef,
+							elevatorTypeIndex
+							);
+		Double deltaClmaxElevator;
+		deltaClmaxElevator=
+					k1*k2*k3*deltaClmaxBase.doubleValue();
+		
+		//---------------------------------------------------------------
+		// deltaCLmax
+		Double elevatorSurface;
+		elevatorSurface =
+					Math.abs(
+							theStabilityManager.getHTailSpan().doubleValue(SI.METER)							
+							/2*theStabilityManager.getHTailChordsBreakPoints().get(0).doubleValue(SI.METER)
+							*(2-((1-theStabilityManager.getHTailTaperRatio())*
+									(theStabilityManager.getElevatorEtaIn()+
+											theStabilityManager.getElevatorEtaOut())))
+							*(theStabilityManager.getElevatorEtaOut()-theStabilityManager.getElevatorEtaIn())
+							);
+
+		Double kLambdaFlap;
+
+			kLambdaFlap=
+					Math.pow(Math.cos(theStabilityManager.getHTailSweepQuarterChord().doubleValue(SI.RADIAN)),0.75)
+					*(1-(0.08*Math.pow(Math.cos(theStabilityManager.getHTailSweepQuarterChord().doubleValue(SI.RADIAN)), 2)))
+					;
+
+		Double deltaCLmaxElevator;
+		 deltaCLmaxElevator = 
+				 deltaClmaxElevator
+					*(elevatorSurface/theStabilityManager.getHTailSurface().doubleValue(SI.SQUARE_METRE))*kLambdaFlap;
+		 
+		theStabilityManager
+			.getDeltaCLMaxElevator().put(elevatorDeflectionAngle, deltaCLmaxElevator);
+
+		
+		//---------------------------------------------
+		// deltaCl0 
+		Double thetaF = Math.acos((2*theStabilityManager.getElevatorCfC())-1);
+		Double alphaDelta = (1-((thetaF-Math.sin(thetaF))/Math.PI));
+
+		Double etaDeltaFlap = highLiftDatabaseReader
+						.getEtaDeltaVsDeltaFlapPlain(
+								elevatorDeflectionAngle.doubleValue(NonSI.DEGREE_ANGLE),
+								theStabilityManager.getElevatorCfC()
+								);
+				
+		Double deltaCl0First =
+					alphaDelta.doubleValue()
+					*etaDeltaFlap.doubleValue()
+					*elevatorDeflectionAngle.doubleValue(SI.RADIAN)
+					*(clAlphaMeanElevator*57.3);
+
+		Double deltaCCfFlap = 
+					highLiftDatabaseReader
+					.getDeltaCCfVsDeltaFlap(
+							elevatorDeflectionAngle.doubleValue(NonSI.DEGREE_ANGLE),
+							elevatorTypeIndex
+							);
+
+		Double cFirstCFlap = (1+(deltaCCfElevator*theStabilityManager.getElevatorCfC()));
+
+		Double deltaCl0FlapList = (
+					(deltaCl0First*cFirstCElevator)
+					+(cl0MeanElevator*(cFirstCElevator-1))
+					);
+		
+		double deltaCl0Flap = 0.0;
+			deltaCl0Flap = deltaCl0FlapList;
+	//---------------------------------------------
+    // deltaCL0 
+			Double kc = (highLiftDatabaseReader
+						.getKcVsAR(
+								theStabilityManager.getHTailAspectRatio(),
+								alphaDelta)	
+						);
+
+			Double kb = highLiftDatabaseReader
+						.getKbVsFlapSpanRatio(
+								theStabilityManager.getElevatorEtaIn(),
+								theStabilityManager.getElevatorEtaOut(),
+								theStabilityManager.getHTailTaperRatio());
+
+			double cLLinearSlope = theStabilityManager.getHTailcLAlphaDeg();
+
+			double deltaCL0Flap = (
+						kb
+						*kc
+						*deltaCl0FlapList
+						*((cLLinearSlope)/(clAlphaMeanElevator))
+						);
+			double deltaCL0FlapList = deltaCL0Flap ;
+			theStabilityManager.getDeltacLZeroElevator().put(elevatorDeflectionAngle, deltaCL0FlapList);
+			
+		//---------------------------------------------------------------
+		// new CLalpha
+
+			cLalphaFlapList = (
+					cLLinearSlope
+					*(1+((deltaCL0FlapList/
+							deltaCl0FlapList)
+							*(cFirstCElevator*(
+									1-((theStabilityManager.getElevatorCfC())*(1/cFirstCElevator)
+									*Math.pow(Math.sin(elevatorDeflectionAngle.doubleValue(SI.RADIAN)), 2)))-1))));
+			swf = elevatorSurface/theStabilityManager.getWingSurface().doubleValue(SI.SQUARE_METRE);
+
+		double cLAlphaFlap = 0.0;
+		cLAlphaFlap = cLalphaFlapList*swf;
+
+		cLAlphaFlap /= swf;
+		
+		theStabilityManager.getCLAlphaElevatorDeg().put(elevatorDeflectionAngle, cLAlphaFlap);
+		
+		
+		
+	}
 	public List<Amount<Length>> getHorizontalDistance() {
 		return horizontalDistance;
 	}

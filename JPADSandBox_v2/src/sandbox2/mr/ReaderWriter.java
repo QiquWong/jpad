@@ -165,8 +165,6 @@ public class ReaderWriter{
 		else if(theStabilityCalculator.getWingMeanAirfoilFamily()  == AirfoilFamilyEnum.DOUBLE_WEDGE)
 			airfoilFamilyIndex = 8;
 
-		theStabilityCalculator.setWingMaxThicknessMeanAirfoil(Double.parseDouble((reader.getXMLPropertyByPath("//wing/global/max_thickness_mean_airfoil"))));
-
 		//distributions
 
 		theStabilityCalculator.setWingYAdimensionalBreakPoints(reader.readArrayDoubleFromXMLSplit("//wing/distribution/geometry/y_adimensional_stations"));
@@ -299,49 +297,49 @@ public class ReaderWriter{
 		theStabilityCalculator.setHTailNumberOfPointSemiSpanWise((int)Double.parseDouble((reader.getXMLPropertyByPath("//horizontal_tail/global/number_of_point_semispan"))));
 		theStabilityCalculator.setHTailnumberOfGivenSections((int)Double.parseDouble((reader.getXMLPropertyByPath("//horizontal_tail/global/number_of_given_sections"))));
 
-		List<String> airfoilHtailFamilyProperty = reader.getXMLPropertiesByPath("//wing/global/mean_airfoil_family");
+		List<String> airfoilHtailFamilyProperty = reader.getXMLPropertiesByPath("//horizontal_tail/global/mean_airfoil_family");
 		//airfoil type
 		if(airfoilHtailFamilyProperty.get(0).equals("NACA_4_DIGIT"))
-			theStabilityCalculator.setWingMeanAirfoilFamily(AirfoilFamilyEnum.NACA_4_Digit);
+			theStabilityCalculator.setHTailMeanAirfoilFamily(AirfoilFamilyEnum.NACA_4_Digit);
 		else if(airfoilHtailFamilyProperty.get(0).equals("NACA_5_DIGIT"))
-			theStabilityCalculator.setWingMeanAirfoilFamily(AirfoilFamilyEnum.NACA_5_Digit);
+			theStabilityCalculator.setHTailMeanAirfoilFamily(AirfoilFamilyEnum.NACA_5_Digit);
 		else if(airfoilHtailFamilyProperty.get(0).equals("NACA_63_SERIES"))
-			theStabilityCalculator.setWingMeanAirfoilFamily(AirfoilFamilyEnum.NACA_63_Series);
+			theStabilityCalculator.setHTailMeanAirfoilFamily(AirfoilFamilyEnum.NACA_63_Series);
 		else if(airfoilHtailFamilyProperty.get(0).equals("NACA_64_SERIES"))
-			theStabilityCalculator.setWingMeanAirfoilFamily(AirfoilFamilyEnum.NACA_64_Series);
+			theStabilityCalculator.setHTailMeanAirfoilFamily(AirfoilFamilyEnum.NACA_64_Series);
 		else if(airfoilHtailFamilyProperty.get(0).equals("NACA_65_SERIES"))
-			theStabilityCalculator.setWingMeanAirfoilFamily(AirfoilFamilyEnum.NACA_65_Series);
+			theStabilityCalculator.setHTailMeanAirfoilFamily(AirfoilFamilyEnum.NACA_65_Series);
 		else if(airfoilHtailFamilyProperty.get(0).equals("NACA_66_SERIES"))
-			theStabilityCalculator.setWingMeanAirfoilFamily(AirfoilFamilyEnum.NACA_66_Series);
+			theStabilityCalculator.setHTailMeanAirfoilFamily(AirfoilFamilyEnum.NACA_66_Series);
 		else if(airfoilHtailFamilyProperty.get(0).equals("BICONVEX"))
-			theStabilityCalculator.setWingMeanAirfoilFamily(AirfoilFamilyEnum.BICONVEX);
+			theStabilityCalculator.setHTailMeanAirfoilFamily(AirfoilFamilyEnum.BICONVEX);
 		else if(airfoilHtailFamilyProperty.get(0).equals("DOUBLE_WEDGE"))
-			theStabilityCalculator.setWingMeanAirfoilFamily(AirfoilFamilyEnum.DOUBLE_WEDGE);
+			theStabilityCalculator.setHTailMeanAirfoilFamily(AirfoilFamilyEnum.DOUBLE_WEDGE);
 		else {
 			System.err.println("NO VALID FAMILY TYPE!!");
 			return;
 		}
 		//recognizing airfoil family
 		airfoilFamilyIndex = 0;
-		if(theStabilityCalculator.getWingMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_4_Digit) 
+		if(theStabilityCalculator.getHTailMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_4_Digit) 
 			airfoilFamilyIndex = 1;
-		else if(theStabilityCalculator.getWingMeanAirfoilFamily()  == AirfoilFamilyEnum.NACA_5_Digit)
+		else if(theStabilityCalculator.getHTailMeanAirfoilFamily()  == AirfoilFamilyEnum.NACA_5_Digit)
 			airfoilFamilyIndex = 2;
-		else if(theStabilityCalculator.getWingMeanAirfoilFamily()  == AirfoilFamilyEnum.NACA_63_Series)
+		else if(theStabilityCalculator.getHTailMeanAirfoilFamily()  == AirfoilFamilyEnum.NACA_63_Series)
 			airfoilFamilyIndex = 3;
-		else if(theStabilityCalculator.getWingMeanAirfoilFamily()  == AirfoilFamilyEnum.NACA_64_Series)
+		else if(theStabilityCalculator.getHTailMeanAirfoilFamily()  == AirfoilFamilyEnum.NACA_64_Series)
 			airfoilFamilyIndex = 4;
-		else if(theStabilityCalculator.getWingMeanAirfoilFamily()  == AirfoilFamilyEnum.NACA_65_Series)
+		else if(theStabilityCalculator.getHTailMeanAirfoilFamily()  == AirfoilFamilyEnum.NACA_65_Series)
 			airfoilFamilyIndex = 5;
-		else if(theStabilityCalculator.getWingMeanAirfoilFamily()  == AirfoilFamilyEnum.NACA_66_Series)
+		else if(theStabilityCalculator.getHTailMeanAirfoilFamily()  == AirfoilFamilyEnum.NACA_66_Series)
 			airfoilFamilyIndex = 6;
-		else if(theStabilityCalculator.getWingMeanAirfoilFamily()  == AirfoilFamilyEnum.BICONVEX)
+		else if(theStabilityCalculator.getHTailMeanAirfoilFamily()  == AirfoilFamilyEnum.BICONVEX)
 			airfoilFamilyIndex = 7;
-		else if(theStabilityCalculator.getWingMeanAirfoilFamily()  == AirfoilFamilyEnum.DOUBLE_WEDGE)
+		else if(theStabilityCalculator.getHTailMeanAirfoilFamily()  == AirfoilFamilyEnum.DOUBLE_WEDGE)
 			airfoilFamilyIndex = 8;
 
-		theStabilityCalculator.setHTailMaxThicknessMeanAirfoil(Double.parseDouble((reader.getXMLPropertyByPath("//horizontal_tail/global/max_thickness_mean_airfoil"))));
-
+		theStabilityCalculator.setHTailMaxThicknessBreakPoints(reader.readArrayDoubleFromXMLSplit("//horizontal_tail/distribution/geometry/max_thickness_airfoil"));
+		
 		//distribution
 		theStabilityCalculator.setHTailYAdimensionalBreakPoints(reader.readArrayDoubleFromXML("//horizontal_tail/distribution/geometry/y_adimensional_stations"));
 		theStabilityCalculator.setHTailChordsBreakPoints(reader.readArrayofAmountFromXML("//horizontal_tail/distribution/geometry/chord_distribution"));
@@ -351,6 +349,7 @@ public class ReaderWriter{
 		theStabilityCalculator.setHTailAlphaZeroLiftBreakPoints(reader.readArrayofAmountFromXML("//horizontal_tail/distribution/aerodynamics/alpha_zero_lift_distribution"));
 		theStabilityCalculator.setHTailAlphaStarBreakPoints(reader.readArrayofAmountFromXML("//horizontal_tail/distribution/aerodynamics/alpha_star_distribution"));
 		theStabilityCalculator.setHTailClMaxBreakPoints(reader.readArrayDoubleFromXML("//horizontal_tail/distribution/aerodynamics/maximum_lift_coefficient_distribution"));
+		theStabilityCalculator.setHTailClAlphaBreakPointsDeg(reader.readArrayDoubleFromXML("//horizontal_tail/distribution/aerodynamics/linear_slope_coefficient"));
 
 		//---------------------------------------------------------------------------------
 		// ELEVATOR:
