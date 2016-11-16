@@ -25,6 +25,7 @@ import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
 import standaloneutils.MyArrayUtils;
+import standaloneutils.MyInterpolatingFunction;
 import standaloneutils.MyMathUtils;
 import standaloneutils.atmosphere.SpeedCalc;
 
@@ -233,24 +234,38 @@ public class PerformanceCalcUtils {
 		
 		int nAlt = listRC.size();
 		double[] altitude = new double[nAlt];
-		double[] RCMaxAtAltitude = new double[nAlt];
+		double[] altitudeFitted = MyArrayUtils.linspace(
+				0.0,
+				listRC.get(listRC.size()-1).getAltitude(),
+				100
+				);
+		double[] rcMaxAtAltitude = new double[nAlt];
+		double[] rcMaxAtAltitudeFitted = new double[altitudeFitted.length];
 
 		for (int i=0; i < nAlt; i++) {
-			RCMaxAtAltitude[i] = listRC.get(i).getRCmax();
+			rcMaxAtAltitude[i] = listRC.get(i).getRCmax();
 			altitude[i] = listRC.get(i).getAltitude();
 		}
 
+		for(int i=0; i< altitudeFitted.length; i++) {
+			rcMaxAtAltitudeFitted[i] = MyMathUtils.getInterpolatedValue1DLinear(
+					altitude,
+					rcMaxAtAltitude,
+					altitudeFitted[i]
+					);
+		}
+		
 		int M=0;
-		for (int i=0; i < nAlt; i++){
-			if (RCMaxAtAltitude[i] != 0.) M=M+1;
+		for (int i=0; i < altitudeFitted.length; i++){
+			if (rcMaxAtAltitudeFitted[i] > 0.) M=M+1;
 		}
 
-		double K = MyMathUtils.calculateSlopeLinear( RCMaxAtAltitude[M-1], RCMaxAtAltitude[M-2], 
-				altitude[M-1], altitude[M-2]);
-		double absoluteCeiling = calculateCeilingInterp( 0.0, altitude[M-2], 
-				RCMaxAtAltitude[M-2], K);
-		double serviceCeiling = calculateCeilingInterp( 0.5, altitude[M-2], 
-				RCMaxAtAltitude[M-2], K);
+		double K = MyMathUtils.calculateSlopeLinear( rcMaxAtAltitudeFitted[M-1], rcMaxAtAltitudeFitted[M-2], 
+				altitudeFitted[M-1], altitudeFitted[M-2]);
+		double absoluteCeiling = calculateCeilingInterp( 0.0, altitudeFitted[M-2], 
+				rcMaxAtAltitudeFitted[M-2], K);
+		double serviceCeiling = calculateCeilingInterp( 0.5, altitudeFitted[M-2], 
+				rcMaxAtAltitudeFitted[M-2], K);
 
 		return new CeilingMap(absoluteCeiling, serviceCeiling, listRC.get(0).getWeight(), listRC.get(0).getPhi(),
 				listRC.get(0).getBpr(), listRC.get(0).getFlightCondition());
@@ -391,7 +406,12 @@ public class PerformanceCalcUtils {
 			altitudeArray[i] = rcList.get(i).getAltitude();
 		}
 		
-		double time = MyMathUtils.integrate1DSimpsonSpline(altitudeArray, rcInverseArray);
+		double time = MyMathUtils.integrate1DTrapezoidLinear(
+				altitudeArray,
+				rcInverseArray,
+				altitudeArray[0],
+				altitudeArray[altitudeArray.length-1]
+				);
 		
 		Amount<Duration> climbTime = Amount.valueOf(time, SI.SECOND);
 		
@@ -401,15 +421,20 @@ public class PerformanceCalcUtils {
 	
 	public static Amount<Duration> calculateMinimumClimbTime (List<RCMap> rcList) {
 			
-		double[] rcMaxInverseArray = new double[rcList.size()];
-		double[] altitudeArray = new double[rcList.size()];
+		List<Double> rcMaxInverseArray = new ArrayList<Double>();
+		List<Double> altitudeList = new ArrayList<Double>();
 		
-		for(int i=0; i<rcMaxInverseArray.length; i++) {
-			rcMaxInverseArray[i] = 1/rcList.get(i).getRCmax();
-			altitudeArray[i] = rcList.get(i).getAltitude();
+		for(int i=0; i<rcList.size(); i++) {
+			if(rcList.get(i).getRCmax() > 0.0) {
+				rcMaxInverseArray.add(1/rcList.get(i).getRCmax());
+				altitudeList.add(rcList.get(i).getAltitude());
+			}
 		}
 		
-		double time = MyMathUtils.integrate1DSimpsonSpline(altitudeArray, rcMaxInverseArray);
+		double time = MyMathUtils.integrate1DSimpsonSpline(
+				MyArrayUtils.convertToDoublePrimitive(altitudeList),
+				MyArrayUtils.convertToDoublePrimitive(rcMaxInverseArray)
+				);
 		
 		Amount<Duration> minimumClimbTime = Amount.valueOf(time, SI.SECOND);
 		

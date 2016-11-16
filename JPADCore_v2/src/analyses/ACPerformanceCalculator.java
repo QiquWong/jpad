@@ -43,7 +43,6 @@ import configuration.enumerations.PerformanceEnum;
 import configuration.enumerations.PerformancePlotEnum;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
-import standaloneutils.MyMathUtils;
 import standaloneutils.MyXLSUtils;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
@@ -161,8 +160,6 @@ public class ACPerformanceCalculator {
 	private Amount<Duration> _minimumClimbTimeAOE;
 	private Amount<Duration> _climbTimeAtSpecificClimbSpeedAOE;
 	
-	private Amount<Velocity> _maxRateOfClimbAtCruiseAltitudeOEI;
-	private Amount<Angle> _maxThetaAtCruiseAltitudeOEI;
 	private Amount<Length> _absoluteCeilingOEI;
 	private Amount<Length> _serviceCeilingOEI;
 	private Amount<Duration> _minimumClimbTimeOEI;
@@ -1679,9 +1676,7 @@ public class ACPerformanceCalculator {
 			sb.append("\t\t.....................................\n")
 			.append("\t\tAbsolute ceiling OEI = " + _absoluteCeilingOEI + "\n")
 			.append("\t\tService ceiling OEI = " + _serviceCeilingOEI + "\n")
-			.append("\t\tMaximum rate of climb at cruise altitude OEI = " + _maxRateOfClimbAtCruiseAltitudeOEI + "\n")
-			.append("\t\tMaximum theta at cruise altitude OEI = " + _maxThetaAtCruiseAltitudeOEI + "\n")
-			.append("\t\tMinimum time to climb OEI = " + _minimumClimbTimeAOE + "\n");
+			.append("\t\tMinimum time to climb at absolute ceiling OEI = " + _minimumClimbTimeOEI + "\n");
 			if(_climbTimeAtSpecificClimbSpeedOEI != null)
 				sb.append("\t\tTime to climb at given climb speed OEI = " + _climbTimeAtSpecificClimbSpeedOEI + "\n");
 			
@@ -1915,8 +1910,8 @@ public class ACPerformanceCalculator {
 			
 			_maxThetaAtCruiseAltitudeAOE = Amount.valueOf(
 					_rcMapAOE.get(_rcMapAOE.size()-1).getTheta(),
-					SI.RADIAN
-					).to(NonSI.DEGREE_ANGLE);
+					NonSI.DEGREE_ANGLE
+					);
 			
 			_minimumClimbTimeAOE = PerformanceCalcUtils.calculateMinimumClimbTime(_rcMapAOE).to(NonSI.MINUTE);
 			
@@ -1967,7 +1962,7 @@ public class ACPerformanceCalculator {
 								altitudeArray[i],
 								1.0, 	// throttle setting array
 								speedArrayOEI,
-								EngineOperatingConditionEnum.CLIMB,
+								EngineOperatingConditionEnum.CONTINUOUS,
 								_theAircraft.getPowerPlant().getEngineType(), 
 								_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
 								_theAircraft.getPowerPlant().getEngineNumber()-1,
@@ -1981,7 +1976,7 @@ public class ACPerformanceCalculator {
 							altitudeArray,
 							new double[] {1.0}, 	// throttle setting array
 							new double[] {_maximumTakeOffMass.times(AtmosphereCalc.g0).getEstimatedValue()},
-							new EngineOperatingConditionEnum[] {EngineOperatingConditionEnum.CLIMB}, 
+							new EngineOperatingConditionEnum[] {EngineOperatingConditionEnum.CONTINUOUS}, 
 							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
 							dragListOEI,
 							thrustListOEI
@@ -2000,18 +1995,7 @@ public class ACPerformanceCalculator {
 					_ceilingMapOEI.getServiceCeiling(),
 					SI.METER
 					);
-			
-			_maxRateOfClimbAtCruiseAltitudeOEI = Amount.valueOf(
-					_rcMapOEI.get(_rcMapOEI.size()-1).getRCmax(),
-					SI.METERS_PER_SECOND
-					);
-			
-			_maxThetaAtCruiseAltitudeOEI = Amount.valueOf(
-					_rcMapOEI.get(_rcMapOEI.size()-1).getTheta(),
-					SI.RADIAN
-					).to(NonSI.DEGREE_ANGLE);
-			
-			// FIXME !!
+					
 			_minimumClimbTimeOEI = PerformanceCalcUtils.calculateMinimumClimbTime(_rcMapOEI).to(NonSI.MINUTE);
 			
 			if(_climbSpeed != null)
@@ -3345,22 +3329,6 @@ public class ACPerformanceCalculator {
 
 	public void setClimbTimeAtSpecificClimbSpeedAOE(Amount<Duration> _climbTimeAtSpecificClimbSpeed) {
 		this._climbTimeAtSpecificClimbSpeedAOE = _climbTimeAtSpecificClimbSpeed;
-	}
-
-	public Amount<Velocity> getMaxRateOfClimbAtCruiseAltitudeOEI() {
-		return _maxRateOfClimbAtCruiseAltitudeOEI;
-	}
-
-	public void setMaxRateOfClimbAtCruiseAltitudeOEI(Amount<Velocity> _maxRateOfClimbAtCruiseAltitudeOEI) {
-		this._maxRateOfClimbAtCruiseAltitudeOEI = _maxRateOfClimbAtCruiseAltitudeOEI;
-	}
-
-	public Amount<Angle> getMaxThetaAtCruiseAltitudeOEI() {
-		return _maxThetaAtCruiseAltitudeOEI;
-	}
-
-	public void setMaxThetaAtCruiseAltitudeOEI(Amount<Angle> _maxThetaAtCruiseAltitudeOEI) {
-		this._maxThetaAtCruiseAltitudeOEI = _maxThetaAtCruiseAltitudeOEI;
 	}
 
 	public Amount<Length> getAbsoluteCeilingOEI() {

@@ -10,6 +10,7 @@ import calculators.performance.customdata.ThrustMap;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
+import standaloneutils.MyArrayUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
 
@@ -54,7 +55,7 @@ public class RateOfClimbCalc {
 			for (int p=0; p<phi.length; p++) {
 				for (int w=0; w<weight.length; w++) { 
 					for(int i=0; i<altitude.length; i++) {
-						double RCMax = 0., RCMaxSpeed = 0.;
+						double rcMax = 0., rcMaxSpeed = 0.;
 
 						powerAvailable = PerformanceDataManager.getPowerAvailable(altitude[i], phi[p],
 								flightCondition[f], bpr, listThrust);
@@ -63,22 +64,19 @@ public class RateOfClimbCalc {
 						speed = PerformanceDataManager.getSpeed(altitude[i], phi[p],
 								flightCondition[f], bpr, listThrust);
 
-						double[] RC = new double[powerAvailable.length];
+						double[] rc = new double[powerAvailable.length];
 
 						for (int pa=0; pa<powerAvailable.length; pa++) {
-							RC[pa] = (powerAvailable[pa] - powerRequired[pa])/weight[w]; 
-							//							gamma[pa] = Math.asin(RC[pa]/speed[pa]);
-
-							if( RC[pa] > RCMax) { 
-								RCMax = RC[pa];
-								RCMaxSpeed = speed[pa];
-								//								theta = Math.asin(RCMax/RCMaxSpeed);
-							}
+							rc[pa] = (powerAvailable[pa] - powerRequired[pa])/weight[w]; 
 						}
+						
+						rcMax = MyArrayUtils.getMax(rc);
+						int rcMaxSpeedIndex = MyArrayUtils.getIndexOfMax(rc);
+						rcMaxSpeed = rc[rcMaxSpeedIndex];
 
 						list.add(new RCMap(altitude[i], phi[p], powerRequired, 
-								powerAvailable, RC, RCMax, bpr, weight[w], 
-								flightCondition[f], speed, RCMaxSpeed));
+								powerAvailable, rc, rcMax, bpr, weight[w], 
+								flightCondition[f], speed, rcMaxSpeed));
 
 					}
 				}

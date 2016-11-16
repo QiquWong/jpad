@@ -56,7 +56,7 @@ public class TurbopropEngineDatabaseReader extends EngineDatabaseReader{
 
 	@Override
 	public double getThrustContinuous(double mach, double altitude, double bpr) {
-		return continuousThrustFunction.value(mach, altitude);
+		return continuousThrustFunction.value(mach, altitude/0.3048);
 	}
 	
 	@Override
