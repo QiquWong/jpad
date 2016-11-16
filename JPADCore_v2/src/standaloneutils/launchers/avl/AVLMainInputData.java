@@ -1,4 +1,4 @@
-package standaloneutils.launchers;
+package standaloneutils.launchers.avl;
 
 import java.util.Arrays;
 import java.util.List;

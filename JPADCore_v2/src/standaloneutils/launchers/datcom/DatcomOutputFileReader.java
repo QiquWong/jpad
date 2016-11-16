@@ -1,4 +1,4 @@
-package standaloneutils.launchers;
+package standaloneutils.launchers.datcom;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -6,6 +6,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+
+import standaloneutils.launchers.AbstractOutputFileReader;
+import standaloneutils.launchers.IOutputFileReader;
 
 public class DatcomOutputFileReader extends AbstractOutputFileReader implements IOutputFileReader {
 

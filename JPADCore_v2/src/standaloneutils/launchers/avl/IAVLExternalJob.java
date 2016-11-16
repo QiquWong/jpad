@@ -1,8 +1,10 @@
-package standaloneutils.launchers;
+package standaloneutils.launchers.avl;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+
+import standaloneutils.launchers.SystemCommandExecutor;
 
 public interface IAVLExternalJob {
 	
@@ -26,6 +28,9 @@ public interface IAVLExternalJob {
 
 	public File getOutputStabilityDerivativesFile();
 	public void setOutputStabilityDerivativesFile(File file);
+
+	public File getOutputStabilityDerivativesBodyAxesFile();
+	public void setOutputStabilityDerivativesBodyAxesFile(File file);
 	
 	/**
 	 * Parse the results of job execution.

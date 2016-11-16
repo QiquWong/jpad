@@ -1,4 +1,4 @@
-package standaloneutils.launchers;
+package standaloneutils.launchers.datcom;
 
 import java.io.BufferedWriter;
 import java.io.File;

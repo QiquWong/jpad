@@ -1,4 +1,4 @@
-package standaloneutils.launchers;
+package standaloneutils.launchers.avl;
 
 import java.io.File;
 

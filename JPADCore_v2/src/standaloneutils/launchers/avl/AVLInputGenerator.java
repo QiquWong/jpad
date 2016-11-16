@@ -1,4 +1,4 @@
-package standaloneutils.launchers;
+package standaloneutils.launchers.avl;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -332,6 +332,57 @@ public class AVLInputGenerator {
 		// transfer the AVL-Mass input data structures into a formatted string
 		String lines[] = 
 				AVLInputGenerator.formatAsMassInput(massData) // format one single string with newlines
+				.split("\\r?\\n");
+		List<String> content = Arrays.stream(lines).collect(Collectors.toList()); // split in a list of strings
+		
+		// write out the content
+
+		System.out.println("======================================");
+
+		Charset charset = Charset.forName("utf-8");
+		try (BufferedWriter writer = Files.newBufferedWriter(path, charset)) {
+			for (String line : content) {
+				System.out.println(line);
+				writer.write(line, 0, line.length());
+				writer.newLine();
+			}
+			System.out.println("======================================");
+			System.out.println("... done.");			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void writeDataToRunFile(AVLMacro avlMacro, String filePath) {
+		Path path = Paths.get(filePath);
+
+		System.out.println("Writing " + path + " ...");
+
+		// first delete file if exists
+		boolean pathExists =
+				Files.exists(path, new LinkOption[]{LinkOption.NOFOLLOW_LINKS});
+		if (pathExists) {
+			try {
+				System.out.println("File already exists. Overwriting ...");
+				Files.delete(path);
+			} catch (IOException e) {
+				// Some sort of failure, such as permissions.
+				e.printStackTrace();
+			}
+		}
+
+		try {
+			// Create the empty file with default permissions, etc.
+			Files.createFile(path);
+		} catch (IOException e) {
+			// Some sort of failure, such as permissions.
+			// System.err.format("createFile error: %s%n", e);
+			e.printStackTrace();
+		}
+		
+		// transfer the AVL macro input data structures into a formatted string
+		String lines[] = 
+				avlMacro.format() // format one single string with newlines
 				.split("\\r?\\n");
 		List<String> content = Arrays.stream(lines).collect(Collectors.toList()); // split in a list of strings
 		
@@ -1129,8 +1180,7 @@ public class AVLInputGenerator {
 	
 		return sb.toString();
 	}
-		
-		
+
 	// See file: ag38.dat
 	static RealMatrix getAG38AirfoilSection() {
 		return MatrixUtils.createRealMatrix(

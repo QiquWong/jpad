@@ -1,4 +1,4 @@
-package standaloneutils.launchers;
+package standaloneutils.launchers.datcom;
 
 public enum DatcomEngineType {
 	JET("JET"),

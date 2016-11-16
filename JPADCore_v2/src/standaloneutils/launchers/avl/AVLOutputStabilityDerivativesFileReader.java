@@ -1,4 +1,7 @@
-package standaloneutils.launchers;
+package standaloneutils.launchers.avl;
+
+import standaloneutils.launchers.AbstractOutputFileReader;
+import standaloneutils.launchers.IOutputFileReader;
 
 public class AVLOutputStabilityDerivativesFileReader  extends AbstractOutputFileReader implements IOutputFileReader  {
 
