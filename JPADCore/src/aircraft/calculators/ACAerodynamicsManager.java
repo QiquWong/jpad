@@ -574,6 +574,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 			alphaZeroLift = - cLZeroWing/ cLAlphaWing;
 			
 		}
+		
 		cLZeroWingBody = -cLAlphaWingBody * alphaZeroLift;
 
 		double alphaTempWing = (cLMaxWingClean - cLZeroWing)/cLAlphaWing;

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
@@ -1507,7 +1508,7 @@ public class LiftCalc {
 	}
 	
 	
-	public double calculateTauIndexElevator(
+	public static double calculateTauIndexElevator(
 			double chordRatioElevator,
 			double aspectRatioHorizontalTail,
 			HighLiftDatabaseReader highLiftDatabaseReader,
@@ -1543,5 +1544,21 @@ public class LiftCalc {
 
 
 		return tauIndex;
+	}
+	
+	// returns the cl alpha in the same unit of cl alpha wing
+	
+	public static double calculateCLAlphaFuselage(
+			double cLAlphaWing, 
+			Amount<Length> wingSpan,
+			Amount<Length> equivalentDiameterAtWingStation
+			){
+		
+		//Sforza p64
+		double d = equivalentDiameterAtWingStation.doubleValue(SI.METER);
+		double b = wingSpan.doubleValue(SI.METER);
+		double cLAlphaFuselage = (1.0+((1/4.0)*(d/b))-((1/40.0)*Math.pow((d/b), 2)))*cLAlphaWing;
+	
+		return cLAlphaFuselage;
 	}
 }

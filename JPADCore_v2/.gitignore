@@ -1,7 +1,0 @@
-/.apt_generated/
-
-!/src/standaloneutils/launchers/apps/
-
-/src/standaloneutils/launchers/apps/*
-!/src/standaloneutils/launchers/apps/AVL/
-!/src/standaloneutils/launchers/apps/Datcom/

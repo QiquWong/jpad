@@ -4,6 +4,7 @@
 <!-- If CONSTANT the downwash is calculated using Roskam method, if variable using Slingerland method-->   
  <Longitudinal_static_stability_executable downwash="VARIABLE"> <!-- Longitudinal_static_stability_executable downwash="VARIABLE" -->
  <!-- Longitudinal_static_stability_executable downwash="CONSTANT" -->
+ <aircraft_name>IRON</aircraft_name>
         <operating_conditions>
 				<!-- This is the position of the aircraft CG in the BRF -->
                 <x_cg unit="m">20.18</x_cg>
@@ -14,9 +15,9 @@
 				<!-- Reynolds number reffered to MAC  -->
 				<Reynolds_number>6000000</Reynolds_number>
 				<!-- definition of alpha body array analysis  -->
-				<alpha_body_initial unit="°">-18</alpha_body_initial> <!-- must be about equal to( wingALPAzeroLift - iw) [ about -4 cruise, -19 landing] -->)
-                <alpha_body_final unit="°">16</alpha_body_final> <!-- must be >( wingALPAstall - iw) [ about 18 cruise, 20 landing] -->)
-                <number_of_alphas_body>60</number_of_alphas_body>
+				<alpha_body_initial unit="°">-5</alpha_body_initial> <!-- must be about equal to( wingALPAzeroLift - iw) [ about -5 cruise, -19 landing] -->)
+                <alpha_body_final unit="°">20.5</alpha_body_final> <!-- must be >( wingALPAstall - iw) [ about 20 cruise, 23 landing] -->)
+                <number_of_alphas_body>70</number_of_alphas_body>
 				<condition>CRUISE</condition>
 				<!--
 				<condition>CRUISE</condition>
@@ -24,7 +25,16 @@
 				<condition>TAKE_OFF</condition>
 				-->
         </operating_conditions>
-       <wing>
+<!-- It is possible to choose the method to evaluate the drag polar of lifting surfaces. All data are given in the section <polar> below.
+INPUT: the 3D polar of the lifting surface is given as input
+CALCULATED_PARABOLIC: the drag polar is calculated using the parabolic formula CL0+kCL^2
+CALCULATED_INPUT_AIRFOIL: the drag of the lifting surface is calculated starting from the 2D polar of airfoils given as input
+CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated starting from the 2D polar of airfoils carculated using databases ---->    		
+       <wing wingPolar="INPUT">
+	   <!-- <wing polar="INPUT"> -->
+	   <!-- <wing polar="CALCULATED_PARABOLIC"> -->
+	   <!-- <wing polar="CALCULATED_INPUT_AIRFOIL"> -->
+	   <!-- <wing polar="CALCULATED_DATABASE_AIRFOIL"> -->
 			<position>
 			<!-- This is the position of the component in BRF. The BRF has origin in 0,0,0 -->
                     <x unit="m">19.09</x>
@@ -52,6 +62,14 @@
 				<mean_airfoil_family>DOUBLE_WEDGE</mean_airfoil_family>
 				-->
              </global>
+			 <polar>
+			 <!-- <"INPUT"> -->
+			 	<alphas_wing_for_polar_curve>[1,2,3,4,5,6,7,8]</alphas_wing_for_polar_curve>
+				<polar_curve>[1,2,3,4,5,6,7,8]</polar_curve>
+				<!-- <"CALCULATED_INPUT_AIRFOIL"> -->
+				<alphas_local_for_polar_curve>[1,2,3,4,5,6,7,8]</alphas_local_for_polar_curve>
+				<polar_curve>[1,2,3,4,5,6,7,8]</polar_curve>
+			 </polar>
              <distribution>
                    <geometry>
 						<y_adimensional_stations>[0;0.3,1]</y_adimensional_stations>
@@ -151,22 +169,32 @@
             <windshieldAngle unit="°">39.7</windshieldAngle>
 			<!--Upsweep angle is the upward curvature angle of the aft fuselage. It varies between [10 deg - 18 deg]-->
 			<upsweepAngle unit="°">13.6 </upsweepAngle>
-			<!--xPercentPositionPole is the position along x-axis of the reference moment point. It can be equal to 0.35, 0.50 or 0.60 which corresponds to 35%, 50% or 60% of fuselage length respectively-->
+			<!--xPercentPositionPole is the position along x-axis of the reference moment point. It can be equal to 0.35, 0.50 or 0.60 which corresponds to 35%, 50% or 60% of 
+fuselage length respectively-->
             <xPercentPositionPole>0.5</xPercentPositionPole>
 		</fuselage>
-		<horizontal_tail>
+		<!-- It is possible to choose the method to evaluate the drag polar of lifting surfaces. All data are given in the section <polar> below.
+INPUT: the 3D polar of the lifting surface is given as input
+CALCULATED_PARABOLIC: the drag polar is calculated using the parabolic formula CL0+kCL^2
+CALCULATED_INPUT_AIRFOIL: the drag of the lifting surface is calculated starting from the 2D polar of airfoils given as input
+CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated starting from the 2D polar of airfoils carculated using databases ---->  
+		<horizontal_tail hTailPolar="INPUT">
+	    <!-- <horizontal_tail polar="INPUT"> -->
+	    <!-- <horizontal_tail polar="CALCULATED_PARABOLIC"> -->
+	    <!-- <horizontal_tail polar="CALCULATED_INPUT_AIRFOIL"> -->
+	    <!-- <horizontal_tail polar="CALCULATED_DATABASE_AIRFOIL"> -->
 		    <position>
 			<!-- This is the position of the component in BRF. The BRF has origin in 0,0,0 -->
                <x unit="m">24.6</x>
                <y unit="m">0.0</y>
-               <z unit="m">7.76</z>
+               <z unit="m">7.72</z>
             </position>
 			<global>
-                <surface unit="m²">6.82</surface>
-                <aspect_ratio>6</aspect_ratio>
-                <number_of_point_semispan>50</number_of_point_semispan>
-                <adimensional_kink_station>0.33</adimensional_kink_station>
-				<angle_of_incidence unit="°">-1</angle_of_incidence>
+                <surface unit="m²">33.49</surface>
+                <aspect_ratio>2.49</aspect_ratio>
+                <number_of_point_semispan>100</number_of_point_semispan>
+                <adimensional_kink_station>1</adimensional_kink_station>
+				<angle_of_incidence unit="°">-2</angle_of_incidence>
 				<!-- In this version this value must be 2. -->
 				<number_of_given_sections>2</number_of_given_sections>
 				<!-- If your airfoil isn’t in the list, you can use the most similar one. -->
@@ -181,32 +209,40 @@
 				<mean_airfoil_family>DOUBLE_WEDGE</mean_airfoil_family>
 				-->
             </global>
+			 <polar>
+			 <!-- <"INPUT"> -->
+			 	<alphas_wing_for_polar_curve>[1,2,3,4,5,6,7,8]</alphas_wing_for_polar_curve>
+				<polar_curve>[1,2,3,4,5,6,7,8]</polar_curve>
+			<!-- <"CALCULATED_INPUT_AIRFOIL"> -->
+				<alphas_local_for_polar_curve>[1,2,3,4,5,6,7,8]</alphas_local_for_polar_curve>
+				<polar_curve>[1,2,3,4,5,6,7,8]</polar_curve>
+			</polar>
             <distribution>
                 <geometry>
 					<y_adimensional_stations>[0,1]</y_adimensional_stations>
-					<chord_distribution unit="m">[1.4224,0.7112]</chord_distribution>
+					<chord_distribution unit="m">[4.4,2.86]</chord_distribution>
 					<!-- XLE is in LRF, so the root value of XLE  must be zero -->
-					<x_le_distribution unit="m">[0,2.433]</x_le_distribution>
-					<twist_distribution unit="°">[0,-2]</twist_distribution>
+					<x_le_distribution unit="m">[0,2]</x_le_distribution>
+					<twist_distribution unit="°">[0,0]</twist_distribution>
 					<dihedral_distribution unit="°">[0,0]</dihedral_distribution>
-					<max_thickness_airfoil>[0.14,0.14]</max_thickness_airfoil>
+					<max_thickness_airfoil>[0.12,0.12]</max_thickness_airfoil>
                 </geometry>
                 <aerodynamics>
-					<alpha_zero_lift_distribution unit="°">[-2, -2]</alpha_zero_lift_distribution>
-					<alpha_star_distribution unit="°">[6,6]</alpha_star_distribution>
-					<alpha_stall_distribution unit="°">[18, 16]</alpha_stall_distribution>
+					<alpha_zero_lift_distribution unit="°">[0.0,0.0]</alpha_zero_lift_distribution>
+					<alpha_star_distribution unit="°">[8,8]</alpha_star_distribution>
+					<alpha_stall_distribution unit="°">[13, 13]</alpha_stall_distribution>
 					<linear_slope_coefficient unit="1/°">[0.10, 0.10]</linear_slope_coefficient>
-					<maximum_lift_coefficient_distribution>[1.2,1.1]</maximum_lift_coefficient_distribution>
+					<maximum_lift_coefficient_distribution>[1.3,1.3]</maximum_lift_coefficient_distribution>
 			    </aerodynamics>	
             </distribution>
 			<elevator>
       		    <!-- these values must be 7 or less  -->
 				<angles_of_elevator_deflection unit="°">[-25,-20,-15,-10,-5,0,5]</angles_of_elevator_deflection>
 				<!-- elevator is automatically modelled as plain flap  -->
-                <elevator_chord_ratio>0.285</elevator_chord_ratio>
+                <elevator_chord_ratio>0.3</elevator_chord_ratio>
                 <elevator_deflection unit = "°">40</elevator_deflection>
                 <elevator_non_dimensional_inner_station>0.12</elevator_non_dimensional_inner_station>
-                <elevator_non_dimensional_outer_station>0.4</elevator_non_dimensional_outer_station>
+                <elevator_non_dimensional_outer_station>0.9</elevator_non_dimensional_outer_station>
 			</elevator>
 		</horizontal_tail>
 		<!-- must be modified?  -->

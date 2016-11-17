@@ -61,20 +61,6 @@ public class Test_Stability{
 				String pathToXML = theTestObject.get_inputFile().getAbsolutePath();
 				String filenameWithPathAndExt = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR)+"Stability_Output"+ "Stability_Output.xml"; 
 				
-				String outputPath = JPADStaticWriteUtils.createNewFolder(
-						MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR) + 
-						File.separator +
-						"Longitudinal Static Stability Output"+
-					    File.separator 
-						);
-			
-				String outputChartPath = JPADStaticWriteUtils.createNewFolder(
-						outputPath +
-						File.separator +
-						"Wing Charts"+
-						File.separator
-						);
-				
 
 		System.out.println("INPUT FILE ===> " + pathToXML);
 		
@@ -82,6 +68,8 @@ public class Test_Stability{
 		
 		Amount<Angle> alphaTry = Amount.valueOf(13, NonSI.DEGREE_ANGLE);
 		System.out.println(" alpha " + alphaTry);
+		System.out.println(alphaTry.opposite());
+		System.out.println(alphaTry);
 		
 		Amount<Angle> alphadeg = alphaTry.to(NonSI.DEGREE_ANGLE);
 		System.out.println(" alpha " + alphadeg);
@@ -111,14 +99,40 @@ public class Test_Stability{
 				pathToXML, 
 				theCalculator
 				);
+
+		// output folder
+		String outputPathPartial = JPADStaticWriteUtils.createNewFolder(
+				MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR) + 
+				File.separator +
+				"Longitudinal Static Stability Output"+
+			    File.separator 
+				);
+		
+		String outputPath = JPADStaticWriteUtils.createNewFolder(
+				outputPathPartial + 
+				File.separator +
+				theCalculator.getAircraftName()+
+			    File.separator 
+				);
+		
+		String outputChartPath = JPADStaticWriteUtils.createNewFolder(
+				outputPath +
+				File.separator +
+				"Wing Charts"+
+				File.separator
+				);
 		
 		theCalculator.initializeData();
+		theCalculator.initializeCalculators();
 		theCalculator.calculateWingLiftCharacteristics();
 		if (theCalculator.getTheCondition() == ConditionEnum.TAKE_OFF || theCalculator.getTheCondition() == ConditionEnum.LANDING){
 			theCalculator.calculateWingHighLiftCharacteristics();
 		}
 		theCalculator.initializeDownwashArray();
 		theCalculator.initializeHTailArray();
+		theCalculator.calculateHTailLiftCharacteristics();
+		theCalculator.calculateHTailLiftCharacteristicsWithElevatorDeflection();
+		theCalculator.calculateWingFuselageLiftCharacterstics();
 		//...
 		theCalculator.printAllData();
 		String sb = theCalculator.printAllResults();

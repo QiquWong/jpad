@@ -281,8 +281,6 @@ public class StabilityCalculator {
 
 
 			// alpha Star
-
-
 			double alphaStarClean = meanAirfoil.getAerodynamics().get_alphaStar().to(NonSI.DEGREE_ANGLE).getEstimatedValue();
 			double clStarClean = clAlphaClean  * alphaStarClean;
 			double alphaStarNew = (clStarClean - qValue)/clAlphaDeltaE;
@@ -290,18 +288,13 @@ public class StabilityCalculator {
 			double alphaStarElevator = alphaStarClean + (-tauValue*deltaE);
 			double cLstarElevator = clAlphaDeltaE * alphaStarElevator + qValue;
 
-
 			// alpha max and cl max
 
 			double alphaMaxClean = hTail.getAerodynamics().get_alphaMaxClean().to(NonSI.DEGREE_ANGLE).getEstimatedValue();
 			double cLMaxClean =hTail.getAerodynamics().get_cLMaxClean();
 
-
-
-
 			double deltaAlphaMax;
-
-		
+	
 			deltaAlphaMax = theHighLiftCalculator.getDeltaAlphaMaxFlap();
 
 			
