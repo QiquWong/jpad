@@ -1,0 +1,23 @@
+LOAD .\allegro.avl
+MASS .\allegro.mass
+MSET
+0
+PLOP
+g
+
+OPER
+c1
+v 10.0000
+
+x
+st
+.\newData1.st
+sb
+.\newData1.sb
+
+MODE
+n
+w
+.\newData1.eig
+
+Quit
