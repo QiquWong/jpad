@@ -1,0 +1,32 @@
+%Max_Rate_of_Climb_envelope_(AOE)
+\begin{tikzpicture}
+
+\begin{axis}[
+width=\figurewidth,
+height=\figureheight,
+scaled ticks=false, tick label style={/pgf/number format/fixed},
+xmin=0.0,
+xmax=8.003318380227448,
+xlabel={Maximum Rate of Climb (m/s)},
+xmajorgrids,
+ymin=0.0,
+ymax=8483.720134286992,
+ylabel={Altitude (m)},
+ymajorgrids,
+legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
+]
+
+\addplot [
+color=black,
+solid
+]
+table[row sep=crcr]{
+0.0	7855.296420636103\\
+2.173408169418179	6000.0\\
+3.930600291316156	4500.0\\
+5.354608800590665	3000.0\\
+6.83850667144366	1500.0\\
+7.410479981692081	0.0\\
+};
+\end{axis}
+\end{tikzpicture}%

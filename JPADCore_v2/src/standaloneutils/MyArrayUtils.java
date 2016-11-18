@@ -170,11 +170,13 @@ public final class MyArrayUtils {
 		return max;
 	}
 
+	@Deprecated
 	public static double getMax(double[] d) {
 		MathArrays.sortInPlace(d);
 		return d[d.length-1];
 	}
 
+	@Deprecated
 	public static double getMin(double[] d) {
 		MathArrays.sortInPlace(d);
 		return d[0];
@@ -612,6 +614,18 @@ public final class MyArrayUtils {
 		return result;
 	}
 
+	/**
+	 * This method accepts an array and multiply each element by the double value 
+	 * given as second input.
+	 * 
+	 * @author Vittorio Trifari
+	 * @param vec
+	 * @return
+	 */
+	public static double[] scaleArray(double[] vec, double d) {
+		return Arrays.stream(vec).map(i -> i*d).toArray();
+	}
+	
 	public static double[] abs(double[] d) {
 
 		double[] dd = new double[d.length];

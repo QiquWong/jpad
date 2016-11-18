@@ -20,7 +20,8 @@
 				<current_lifting_coefficient></current_lifting_coefficient>
 				<current_drag_coefficient></current_drag_coefficient>
 				<cD0>0.0317</cD0>
-				<oswald>0.7585</oswald> 
+				<oswald_cruise>0.7585</oswald_cruise> 
+				<oswald_climb>0.75</oswald_climb>
 				<oswald_take_off>0.73</oswald_take_off>
 				<oswald_landing>0.71</oswald_landing>
 				<cLmax_clean_configuration>1.6</cLmax_clean_configuration>
@@ -40,6 +41,10 @@
 						<polar_curve_CL></polar_curve_CL>
 						<polar_curve_CD></polar_curve_CD>
 					</cruise>
+					<climb>
+						<polar_curve_CL></polar_curve_CL>
+						<polar_curve_CD></polar_curve_CD>
+					</climb>
 					<take_off>
 						<polar_curve_CL></polar_curve_CL>
 						<polar_curve_CD></polar_curve_CD>
@@ -90,7 +95,6 @@
 			<rate_of_climb_curves perform="TRUE"/>
 			<climb_angle_curves perform="TRUE"/>
 			<max_rate_of_climb_envelope perform="TRUE"/>
-			<max_climb_angle_envelope perform="TRUE"/>
 		</climb>
 		<cruise>
 			<thrust_drag perform="TRUE"/>

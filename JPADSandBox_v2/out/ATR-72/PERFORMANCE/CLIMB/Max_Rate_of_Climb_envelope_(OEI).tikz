@@ -1,0 +1,32 @@
+%Max_Rate_of_Climb_envelope_(OEI)
+\begin{tikzpicture}
+
+\begin{axis}[
+width=\figurewidth,
+height=\figureheight,
+scaled ticks=false, tick label style={/pgf/number format/fixed},
+xmin=0.0,
+xmax=2.322161026608961,
+xlabel={Maximum Rate of Climb (m/s)},
+xmajorgrids,
+ymin=0.0,
+ymax=6480.0,
+ylabel={Altitude (m)},
+ymajorgrids,
+legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
+]
+
+\addplot [
+color=black,
+solid
+]
+table[row sep=crcr]{
+0.0	4726.756551450688\\
+-1.0489677774870527	6000.0\\
+0.18681448239680076	4500.0\\
+1.4483047519179375	3000.0\\
+1.7999882908808056	1500.0\\
+2.150149098712001	0.0\\
+};
+\end{axis}
+\end{tikzpicture}%

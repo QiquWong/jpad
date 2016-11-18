@@ -86,10 +86,10 @@
 		</takeoff>
 		<climb>
 			<thrust_drag perform="TRUE"/>
+			<power_needed_and_available perform="TRUE"/>
 			<rate_of_climb_curves perform="TRUE"/>
 			<climb_angle_curves perform="TRUE"/>
 			<max_rate_of_climb_envelope perform="TRUE"/>
-			<max_climb_angle_envelope perform="TRUE"/>
 		</climb>
 		<cruise>
 			<thrust_drag perform="TRUE"/>

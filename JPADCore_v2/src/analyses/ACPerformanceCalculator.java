@@ -81,6 +81,7 @@ public class ACPerformanceCalculator {
 	private Double _currentDragCoefficient;
 	private Double _cD0;
 	private Double _oswaldCruise;
+	private Double _oswaldClimb;
 	private Double _oswaldTakeOff;
 	private Double _oswaldLanding;
 	private Double _cLmaxClean;
@@ -97,6 +98,8 @@ public class ACPerformanceCalculator {
 	private Double _cLZeroLanding;
 	private Double[] _polarCLCruise;
 	private Double[] _polarCDCruise;
+	private Double[] _polarCLClimb;
+	private Double[] _polarCDClimb;
 	private Double[] _polarCLTakeOff;
 	private Double[] _polarCDTakeOff;
 	private Double[] _polarCLLanding;
@@ -279,7 +282,8 @@ public class ACPerformanceCalculator {
 		private Double __currentLiftingCoefficient;
 		private Double __currentDragCoefficient;
 		private Double __cD0;
-		private Double __oswald;
+		private Double __oswaldCruise;
+		private Double __oswaldClimb;
 		private Double __oswaldTakeOff;
 		private Double __oswaldLanding;
 		private Double __cLmaxClean;
@@ -296,6 +300,8 @@ public class ACPerformanceCalculator {
 		private Double __cLZeroLanding;
 		private Double[] __polarCLCruise;
 		private Double[] __polarCDCruise;
+		private Double[] __polarCLClimb;
+		private Double[] __polarCDClimb;
 		private Double[] __polarCLTakeOff;
 		private Double[] __polarCDTakeOff;
 		private Double[] __polarCLLanding;
@@ -390,8 +396,13 @@ public class ACPerformanceCalculator {
 			return this;
 		}
 		
-		public ACPerformanceCalculatorBuilder oswald(Double e) {
-			this.__oswald = e;
+		public ACPerformanceCalculatorBuilder oswaldCruise(Double e) {
+			this.__oswaldCruise = e;
+			return this;
+		}
+		
+		public ACPerformanceCalculatorBuilder oswaldClimb(Double eClimb) {
+			this.__oswaldClimb = eClimb;
 			return this;
 		}
 		
@@ -432,6 +443,16 @@ public class ACPerformanceCalculator {
 		
 		public ACPerformanceCalculatorBuilder polarCDCruise (Double[] polarCDCruise) {
 			this.__polarCDCruise = polarCDCruise;
+			return this;
+		}
+		
+		public ACPerformanceCalculatorBuilder polarCLClimb (Double[] polarCLClimb) {
+			this.__polarCLClimb = polarCLClimb;
+			return this;
+		}
+		
+		public ACPerformanceCalculatorBuilder polarCDClimb (Double[] polarCDClimb) {
+			this.__polarCDClimb = polarCDClimb;
 			return this;
 		}
 		
@@ -632,7 +653,8 @@ public class ACPerformanceCalculator {
 		this._currentLiftingCoefficient = builder.__currentLiftingCoefficient;
 		this._currentDragCoefficient = builder.__currentDragCoefficient;
 		this._cD0 = builder.__cD0;
-		this._oswaldCruise = builder.__oswald;
+		this._oswaldCruise = builder.__oswaldCruise;
+		this._oswaldClimb = builder.__oswaldClimb;
 		this._oswaldTakeOff = builder.__oswaldTakeOff;
 		this._oswaldLanding = builder.__oswaldLanding;
 		this._cLmaxClean = builder.__cLmaxClean;
@@ -649,6 +671,8 @@ public class ACPerformanceCalculator {
 		this._cLZeroLanding = builder.__cLZeroLanding;
 		this._polarCLCruise = builder.__polarCLCruise;
 		this._polarCDCruise = builder.__polarCDCruise;
+		this._polarCLClimb = builder.__polarCLClimb;
+		this._polarCDClimb = builder.__polarCDClimb;
 		this._polarCLTakeOff = builder.__polarCLTakeOff;
 		this._polarCDTakeOff = builder.__polarCDTakeOff;
 		this._polarCLLanding = builder.__polarCLLanding;
@@ -861,7 +885,8 @@ public class ACPerformanceCalculator {
 		Double currentLiftingCoefficient = null;
 		Double currentDragCoefficient = null;
 		Double cD0 = null;
-		Double oswald = null;
+		Double oswaldCruise = null;
+		Double oswaldClimb = null;
 		Double oswaldTakeOff = null;
 		Double oswaldLanding = null;
 		Double cLmaxClean = null;
@@ -878,6 +903,8 @@ public class ACPerformanceCalculator {
 		Double cLZeroLanding = null;
 		Double[] polarCLCruise = null;
 		Double[] polarCDCruise = null;
+		Double[] polarCLClimb = null;
+		Double[] polarCDClimb = null;
 		Double[] polarCLTakeOff = null;
 		Double[] polarCDTakeOff = null;
 		Double[] polarCLLanding = null;
@@ -946,10 +973,15 @@ public class ACPerformanceCalculator {
 			if(cD0Property != null)
 				cD0 = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/cD0"));
 			//...............................................................
-			// OSWALD
-			String oswladProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/oswald");
-			if(oswladProperty != null)
-				oswald = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/oswald"));
+			// OSWALD CRUISE
+			String oswladCruiseProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_cruise");
+			if(oswladCruiseProperty != null)
+				oswaldCruise = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_cruise"));
+			//...............................................................
+			// OSWALD CLIMB
+			String oswladClimbProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_climb");
+			if(oswladClimbProperty != null)
+				oswaldClimb = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_climb"));
 			//...............................................................
 			// OSWALD TO
 			String oswladTOProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_take_off");
@@ -1059,6 +1091,20 @@ public class ACPerformanceCalculator {
 							); 
 				}
 				//...............................................................
+				// POLAR CURVE CLIMB
+				List<String> polarCLClimbProperty = reader.getXMLPropertiesByPath("//performance/aerodynamics/polar_curves/climb/polar_curve_CL");
+				if(!polarCLClimbProperty.isEmpty()) {
+					polarCLClimb = MyArrayUtils.convertListOfDoubleToDoubleArray(
+							reader.readArrayDoubleFromXML("//performance/aerodynamics/polar_curves/climb/polar_curve_CL")
+							); 
+				}
+				List<String> polarCDClimbProperty = reader.getXMLPropertiesByPath("//performance/aerodynamics/polar_curves/climb/polar_curve_CD");
+				if(!polarCDClimbProperty.isEmpty()) {
+					polarCDClimb = MyArrayUtils.convertListOfDoubleToDoubleArray(
+							reader.readArrayDoubleFromXML("//performance/aerodynamics/polar_curves/climb/polar_curve_CD")
+							); 
+				}
+				//...............................................................
 				// POLAR CURVE TAKE-OFF
 				List<String> polarCLTakeOffProperty = reader.getXMLPropertiesByPath("//performance/aerodynamics/polar_curves/take_off/polar_curve_CL");
 				if(!polarCLTakeOffProperty.isEmpty()) {
@@ -1097,6 +1143,11 @@ public class ACPerformanceCalculator {
 				polarCDCruise = new Double[polarCLCruise.length];
 				
 				//...............................................................
+				// POLAR CURVE CLIMB
+				polarCLClimb = MyArrayUtils.linspaceDouble(-0.2, cLmaxClean+0.2, numberOfPolarPoints);				
+				polarCDClimb = new Double[polarCLClimb.length];
+				
+				//...............................................................
 				// POLAR CURVE TAKE-OFF
 				polarCLTakeOff = MyArrayUtils.linspaceDouble(-0.2, cLmaxTakeOff+0.2, numberOfPolarPoints);
 				polarCDTakeOff = new Double[polarCLTakeOff.length]; 
@@ -1108,11 +1159,25 @@ public class ACPerformanceCalculator {
 				
 				// building the CD arrays...
 				for(int i=0; i<numberOfPolarPoints; i++) {
+					polarCDClimb[i] = DragCalc.calculateCDTotal(
+							cD0,
+							polarCLClimb[i],
+							theAircraft.getWing().getAspectRatio(),
+							oswaldClimb, 
+							theOperatingConditions.getMachClimb(),
+							DragCalc.calculateCDWaveLockKornCriticalMachKroo(
+									polarCLCruise[i],
+									theOperatingConditions.getMachClimb(),
+									theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
+									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(),
+									theAircraft.getWing().getAirfoilList().get(0).getType()
+									)
+							);
 					polarCDCruise[i] = DragCalc.calculateCDTotal(
 							cD0,
 							polarCLCruise[i],
 							theAircraft.getWing().getAspectRatio(),
-							oswald, 
+							oswaldCruise, 
 							theOperatingConditions.getMachCruise(),
 							DragCalc.calculateCDWaveLockKornCriticalMachKroo(
 									polarCLCruise[i],
@@ -1382,17 +1447,7 @@ public class ACPerformanceCalculator {
 				if (maxRateOfClimbEnvelopeProperty != null) {
 					if(maxRateOfClimbEnvelopeProperty.equalsIgnoreCase("TRUE")) 
 						plotList.add(PerformancePlotEnum.MAX_RATE_OF_CLIMB_ENVELOPE);
-				}
-				
-				String maxClimbAngleEnvelopeProperty = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//plot/climb/max_climb_angle_envelope/@perform");
-				if (maxClimbAngleEnvelopeProperty != null) {
-					if(maxClimbAngleEnvelopeProperty.equalsIgnoreCase("TRUE")) 
-						plotList.add(PerformancePlotEnum.MAX_CLIMB_ANGLE_ENVELOPE);
-				}
-				
+				}				
 			}
 
 			//...............................................................
@@ -1503,7 +1558,8 @@ public class ACPerformanceCalculator {
 				.currentLiftingCoefficient(currentLiftingCoefficient)
 				.currentDragCoefficient(currentDragCoefficient)
 				.cD0(cD0)
-				.oswald(oswald)
+				.oswaldCruise(oswaldCruise)
+				.oswaldClimb(oswaldClimb)
 				.oswaldTakeOff(oswaldTakeOff)
 				.oswaldLanding(oswaldLanding)
 				.cLmaxClean(cLmaxClean)
@@ -1520,6 +1576,8 @@ public class ACPerformanceCalculator {
 				.cLZeroLanding(cLZeroLanding)
 				.polarCLCruise(polarCLCruise)
 				.polarCDCruise(polarCDCruise)
+				.polarCLClimb(polarCLClimb)
+				.polarCDClimb(polarCDClimb)
 				.polarCLTakeOff(polarCLTakeOff)
 				.polarCDTakeOff(polarCDTakeOff)
 				.polarCLLanding(polarCLLanding)
@@ -1556,8 +1614,6 @@ public class ACPerformanceCalculator {
 	//								 		   		//
 	// TODO:						 		   		//
 	// -ADD THE toString AND THE toXLS METHODS  	//
-	// -IMPLEMENT THE CALCULATOR AOE AND OEI 		//
-	// 	WHICH CALLS FOR THE REQUIRED NESTED CLASSES	//
 	// -IMPLEMENT ALL THE INNER CLASSES				//
 	//								 		   		//
 	//////////////////////////////////////////////////
@@ -1859,6 +1915,9 @@ public class ACPerformanceCalculator {
 						);
 				//..................................................................................................
 				dragListAOE.add(
+						
+						// TODO : LINK THE POLAR FIELDS WITH THE DRAG CALCULATION !!!
+						
 						DragCalc.calculateDragAndPowerRequired(
 								altitudeArray[i],
 								_maximumTakeOffMass.times(AtmosphereCalc.g0).getEstimatedValue(),
@@ -2017,27 +2076,29 @@ public class ACPerformanceCalculator {
 				
 				//.......................................................
 				// AOE
-				List<Double[]> speedAOE = new ArrayList<Double[]>();
+				List<Double[]> speed = new ArrayList<Double[]>();
 				List<Double[]> dragAndThrustAOE = new ArrayList<Double[]>();
-				List<String> legendAOE = new ArrayList<String>();
+				List<String> legend = new ArrayList<String>();
 				
-				for (int i=0; i<thrustListAOE.size(); i++) {
-					speedAOE.add(MyArrayUtils.convertFromDoublePrimitive(dragListAOE.get(i).getSpeed()));
+				for (int i=0; i<dragListAOE.size(); i++) {
+					speed.add(MyArrayUtils.convertFromDoublePrimitive(dragListAOE.get(i).getSpeed()));
 					dragAndThrustAOE.add(MyArrayUtils.convertFromDoublePrimitive(dragListAOE.get(i).getDrag()));
-					legendAOE.add("Drag at " + dragListAOE.get(i).getAltitude() + " m");
-					speedAOE.add(MyArrayUtils.convertFromDoublePrimitive(thrustListAOE.get(i).getSpeed()));
+					legend.add("Drag at " + dragListAOE.get(i).getAltitude() + " m");
+				}
+				for (int i=0; i<thrustListAOE.size(); i++) {
+					speed.add(MyArrayUtils.convertFromDoublePrimitive(thrustListAOE.get(i).getSpeed()));
 					dragAndThrustAOE.add(MyArrayUtils.convertFromDoublePrimitive(thrustListAOE.get(i).getThrust()));
-					legendAOE.add("Thrust at " + thrustListAOE.get(i).getAltitude() + " m");
+					legend.add("Thrust at " + thrustListAOE.get(i).getAltitude() + " m");
 				}
 				
 				try {
 					MyChartToFileUtils.plot(
-							speedAOE, dragAndThrustAOE,
+							speed, dragAndThrustAOE,
 							"Drag and Thrust curves (AOE)",
 							"Speed", "Forces",
 							null, null, null, null,
-							"m", "N",
-							true, legendAOE,
+							"m/s", "N",
+							true, legend,
 							climbFolderPath, "Drag_and_Thrust_curves_CLIMB_AOE"
 							);
 				} catch (InstantiationException e) {
@@ -2048,28 +2109,24 @@ public class ACPerformanceCalculator {
 				
 				//.......................................................
 				// OEI
-				List<Double[]> speedOEI = new ArrayList<Double[]>();
 				List<Double[]> dragAndThrustOEI = new ArrayList<Double[]>();
-				List<String> legendOEI = new ArrayList<String>();
 				
-				for (int i=0; i<thrustListOEI.size(); i++) {
-					speedOEI.add(MyArrayUtils.convertFromDoublePrimitive(dragListOEI.get(i).getSpeed()));
+				for (int i=0; i<dragListOEI.size(); i++) {
 					dragAndThrustOEI.add(MyArrayUtils.convertFromDoublePrimitive(dragListOEI.get(i).getDrag()));
-					legendOEI.add("Drag at " + dragListOEI.get(i).getAltitude() + " m");
-					speedOEI.add(MyArrayUtils.convertFromDoublePrimitive(thrustListOEI.get(i).getSpeed()));
+				}
+				for (int i=0; i<thrustListOEI.size(); i++) {
 					dragAndThrustOEI.add(MyArrayUtils.convertFromDoublePrimitive(thrustListOEI.get(i).getThrust()));
-					legendOEI.add("Thrust at " + thrustListOEI.get(i).getAltitude() + " m");
 				}
 				
 				try {
 					MyChartToFileUtils.plot(
-							speedOEI, dragAndThrustOEI,
+							speed, dragAndThrustOEI,
 							"Drag and Thrust curves (OEI)",
 							"Speed", "Forces",
 							null, null, null, null,
-							"m", "N",
-							true, legendAOE,
-							climbFolderPath, "Drag_and_Thrust_curves_CLIMB_OEI"
+							"m/s", "N",
+							true, legend,
+							climbFolderPath, "Drag_and_Thrust_curves_CONTINOUS_OEI"
 							);
 				} catch (InstantiationException e) {
 					e.printStackTrace();
@@ -2082,27 +2139,29 @@ public class ACPerformanceCalculator {
 				
 				//.......................................................
 				// AOE
-				List<Double[]> speedAOE = new ArrayList<Double[]>();
+				List<Double[]> speed = new ArrayList<Double[]>();
 				List<Double[]> powerNeededAndAvailableAOE = new ArrayList<Double[]>();
-				List<String> legendAOE = new ArrayList<String>();
+				List<String> legend = new ArrayList<String>();
 				
-				for (int i=0; i<thrustListAOE.size(); i++) {
-					speedAOE.add(MyArrayUtils.convertFromDoublePrimitive(dragListAOE.get(i).getSpeed()));
+				for (int i=0; i<dragListAOE.size(); i++) {
+					speed.add(MyArrayUtils.convertFromDoublePrimitive(dragListAOE.get(i).getSpeed()));
 					powerNeededAndAvailableAOE.add(MyArrayUtils.convertFromDoublePrimitive(dragListAOE.get(i).getPower()));
-					legendAOE.add("Power needed at " + dragListAOE.get(i).getAltitude() + " m");
-					speedAOE.add(MyArrayUtils.convertFromDoublePrimitive(thrustListAOE.get(i).getSpeed()));
+					legend.add("Power needed at " + dragListAOE.get(i).getAltitude() + " m");
+				}
+				for (int i=0; i<thrustListAOE.size(); i++) {
+					speed.add(MyArrayUtils.convertFromDoublePrimitive(thrustListAOE.get(i).getSpeed()));
 					powerNeededAndAvailableAOE.add(MyArrayUtils.convertFromDoublePrimitive(thrustListAOE.get(i).getPower()));
-					legendAOE.add("Power available at " + thrustListAOE.get(i).getAltitude() + " m");
+					legend.add("Power available at " + thrustListAOE.get(i).getAltitude() + " m");
 				}
 				
 				try {
 					MyChartToFileUtils.plot(
-							speedAOE, powerNeededAndAvailableAOE,
+							speed, powerNeededAndAvailableAOE,
 							"Power Needed and Power Available curves (AOE)",
 							"Speed", "Power",
 							null, null, null, null,
-							"m", "W",
-							true, legendAOE,
+							"m/s", "W",
+							true, legend,
 							climbFolderPath, "Power_Needed_and_Power_Available_curves_CLIMB_AOE"
 							);
 				} catch (InstantiationException e) {
@@ -2113,28 +2172,24 @@ public class ACPerformanceCalculator {
 				
 				//.......................................................
 				// OEI
-				List<Double[]> speedOEI = new ArrayList<Double[]>();
 				List<Double[]> powerNeededAndAvailableOEI = new ArrayList<Double[]>();
-				List<String> legendOEI = new ArrayList<String>();
 				
-				for (int i=0; i<thrustListOEI.size(); i++) {
-					speedOEI.add(MyArrayUtils.convertFromDoublePrimitive(dragListOEI.get(i).getSpeed()));
+				for (int i=0; i<dragListOEI.size(); i++) {
 					powerNeededAndAvailableOEI.add(MyArrayUtils.convertFromDoublePrimitive(dragListOEI.get(i).getPower()));
-					legendOEI.add("Power needed at " + dragListOEI.get(i).getAltitude() + " m");
-					speedOEI.add(MyArrayUtils.convertFromDoublePrimitive(thrustListOEI.get(i).getSpeed()));
+				}
+				for (int i=0; i<thrustListOEI.size(); i++) {
 					powerNeededAndAvailableOEI.add(MyArrayUtils.convertFromDoublePrimitive(thrustListOEI.get(i).getPower()));
-					legendOEI.add("Power available at " + thrustListOEI.get(i).getAltitude() + " m");
 				}
 				
 				try {
 					MyChartToFileUtils.plot(
-							speedAOE, powerNeededAndAvailableAOE,
+							speed, powerNeededAndAvailableOEI,
 							"Power Needed and Power Available curves (OEI)",
 							"Speed", "Power",
 							null, null, null, null,
-							"m", "W",
-							true, legendAOE,
-							climbFolderPath, "Power_Needed_and_Power_Available_curves_CLIMB_OEI"
+							"m/s", "W",
+							true, legend,
+							climbFolderPath, "Power_Needed_and_Power_Available_curves_CONTINOUS_OEI"
 							);
 				} catch (InstantiationException e) {
 					e.printStackTrace();
@@ -2145,22 +2200,170 @@ public class ACPerformanceCalculator {
 			}
 			if(_plotList.contains(PerformancePlotEnum.RATE_OF_CLIMB_CURVES)) {
 				
+				//.......................................................
+				// AOE
+				List<Double[]> speed = new ArrayList<Double[]>();
+				List<Double[]> rateOfClimbAOE = new ArrayList<Double[]>();
+				List<String> legend = new ArrayList<String>();
 				
+				for (int i=0; i<_rcMapAOE.size(); i++) {
+					speed.add(MyArrayUtils.convertFromDoublePrimitive(_rcMapAOE.get(i).getSpeed()));
+					rateOfClimbAOE.add(MyArrayUtils.convertFromDoublePrimitive(_rcMapAOE.get(i).getRC()));
+					legend.add("Rate of climb at " + _rcMapAOE.get(i).getAltitude() + " m");
+				}
+				
+				try {
+					MyChartToFileUtils.plot(
+							speed, rateOfClimbAOE,
+							"Rate of Climb curves (AOE)",
+							"Speed", "Rate of Climb",
+							null, null, null, null,
+							"m/s", "m/s",
+							true, legend,
+							climbFolderPath, "Rate_of_Climb_curves_AOE"
+							);
+				} catch (InstantiationException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+				
+				//.......................................................
+				// OEI
+				List<Double[]> rateOfClimbOEI = new ArrayList<Double[]>();
+				
+				for (int i=0; i<_rcMapOEI.size(); i++) {
+					rateOfClimbOEI.add(MyArrayUtils.convertFromDoublePrimitive(_rcMapOEI.get(i).getRC()));
+				}
+				
+				try {
+					MyChartToFileUtils.plot(
+							speed, rateOfClimbOEI,
+							"Rate of Climb curves (OEI)",
+							"Speed", "Rate of Climb",
+							null, null, null, null,
+							"m/s", "m/s",
+							true, legend,
+							climbFolderPath, "Rate_of_Climb_curves_OEI"
+							);
+				} catch (InstantiationException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
 				
 			}
 			if(_plotList.contains(PerformancePlotEnum.CLIMB_ANGLE_CURVES)) {
 				
+				//.......................................................
+				// AOE
+				List<Double[]> speed = new ArrayList<Double[]>();
+				List<Double[]> climbAngleAOE = new ArrayList<Double[]>();
+				List<String> legend = new ArrayList<String>();
 				
+				for (int i=0; i<_rcMapAOE.size(); i++) {
+					speed.add(MyArrayUtils.convertFromDoublePrimitive(_rcMapAOE.get(i).getSpeed()));
+					climbAngleAOE.add(
+							MyArrayUtils.convertFromDoublePrimitive(
+									MyArrayUtils.scaleArray(
+											_rcMapAOE.get(i).getGamma(),
+											57.3)
+									)
+							);
+					legend.add("Climb angle at " + _rcMapAOE.get(i).getAltitude() + " m");
+				}
+				
+				try {
+					MyChartToFileUtils.plot(
+							speed, climbAngleAOE,
+							"Climb angle curves (AOE)",
+							"Speed", "Climb angle",
+							null, null, null, null,
+							"m/s", "deg",
+							true, legend,
+							climbFolderPath, "Climb_angle_curves_AOE"
+							);
+				} catch (InstantiationException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+				
+				//.......................................................
+				// OEI
+				List<Double[]> climbAngleOEI = new ArrayList<Double[]>();
+				
+				for (int i=0; i<_rcMapOEI.size(); i++) {
+					climbAngleOEI.add(
+							MyArrayUtils.convertFromDoublePrimitive(
+									MyArrayUtils.scaleArray(
+											_rcMapOEI.get(i).getGamma(),
+											57.3)
+									)
+							);
+				}
+				
+				try {
+					MyChartToFileUtils.plot(
+							speed, climbAngleOEI,
+							"Climb angle curves (OEI)",
+							"Speed", "Climb angle",
+							null, null, null, null,
+							"m/s", "deg",
+							true, legend,
+							climbFolderPath, "Climb_angle_curves_OEI"
+							);
+				} catch (InstantiationException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
 				
 			}
 			if(_plotList.contains(PerformancePlotEnum.MAX_RATE_OF_CLIMB_ENVELOPE)) {
 				
+				//.......................................................
+				// AOE
+				List<Double> maxRateOfClimbListAOE = new ArrayList<Double>();
+				List<Double> altitudeListAOE = new ArrayList<Double>();
 				
+				maxRateOfClimbListAOE.add(0.0);
+				altitudeListAOE.add(_absoluteCeilingAOE.doubleValue(SI.METER));
+				for(int i=0; i<_rcMapAOE.size(); i++) {
+					maxRateOfClimbListAOE.add(_rcMapAOE.get(_rcMapAOE.size()-1-i).getRCmax());
+					altitudeListAOE.add(_rcMapAOE.get(_rcMapAOE.size()-1-i).getAltitude());
+				}
 				
-			}
-			if(_plotList.contains(PerformancePlotEnum.MAX_CLIMB_ANGLE_ENVELOPE)) {
+				MyChartToFileUtils.plotNoLegend(
+						MyArrayUtils.convertToDoublePrimitive(maxRateOfClimbListAOE),
+						MyArrayUtils.convertToDoublePrimitive(altitudeListAOE),
+						0.0, null, 0.0, null,
+						"Maximum Rate of Climb", "Altitude",
+						"m/s", "m",
+						climbFolderPath, "Max_Rate_of_Climb_envelope_(AOE)"
+						);
+					
 				
+				//.......................................................
+				// OEI
+				List<Double> maxRateOfClimbListOEI = new ArrayList<Double>();
+				List<Double> altitudeListOEI = new ArrayList<Double>();
 				
+				maxRateOfClimbListOEI.add(0.0);
+				altitudeListOEI.add(_absoluteCeilingOEI.doubleValue(SI.METER));
+				for(int i=0; i<_rcMapOEI.size(); i++) {
+					maxRateOfClimbListOEI.add(_rcMapOEI.get(_rcMapOEI.size()-1-i).getRCmax());
+					altitudeListOEI.add(_rcMapOEI.get(_rcMapOEI.size()-1-i).getAltitude());
+				}
+				
+				MyChartToFileUtils.plotNoLegend(
+						MyArrayUtils.convertToDoublePrimitive(maxRateOfClimbListOEI),
+						MyArrayUtils.convertToDoublePrimitive(altitudeListOEI),
+						0.0, null, 0.0, null,
+						"Maximum Rate of Climb", "Altitude",
+						"m/s", "m",
+						climbFolderPath, "Max_Rate_of_Climb_envelope_(OEI)"
+						);
 				
 			}
 		}
@@ -2169,6 +2372,32 @@ public class ACPerformanceCalculator {
 	// END OF THE CLIMB INNER CLASS
 	//............................................................................
 
+	//............................................................................
+	// CRUISE INNER CLASS
+	//............................................................................
+	public class CalcCruise {
+		
+		public void calculateFlightEnvelope() {
+			
+		}
+		
+		public void calculateSfcCurve() {
+			
+		}
+		
+		public void calculateEfficiency() {
+			
+		}
+		
+		public void calculateCruiseGrid() {
+			
+		}
+		
+	}
+	//............................................................................
+	// END OF THE CRUISE INNER CLASS
+	//............................................................................
+	
 	//............................................................................
 	// LANDING INNER CLASS
 	//............................................................................
@@ -2481,6 +2710,20 @@ public class ACPerformanceCalculator {
 	public void setOswaldCruise(Double _oswald) {
 		this._oswaldCruise = _oswald;
 	}
+	/**
+	 * @return the _oswaldClimb
+	 */
+	public Double getOswaldClimb() {
+		return _oswaldClimb;
+	}
+
+	/**
+	 * @param _oswaldClimb the _oswaldClimb to set
+	 */
+	public void setOswaldClimb(Double _oswaldClimb) {
+		this._oswaldClimb = _oswaldClimb;
+	}
+
 	public Double getOswaldTakeOff() {
 		return _oswaldTakeOff;
 	}
@@ -2806,6 +3049,22 @@ public class ACPerformanceCalculator {
 
 	public void setPolarCDCruise(Double[] _polarCDCruise) {
 		this._polarCDCruise = _polarCDCruise;
+	}
+
+	public Double[] getPolarCLClimb() {
+		return _polarCLClimb;
+	}
+
+	public void setPolarCLClimb(Double[] _polarCLClimb) {
+		this._polarCLClimb = _polarCLClimb;
+	}
+
+	public Double[] getPolarCDClimb() {
+		return _polarCDClimb;
+	}
+
+	public void setPolarCDClimb(Double[] _polarCDClimb) {
+		this._polarCDClimb = _polarCDClimb;
 	}
 
 	public Double[] getPolarCLTakeOff() {

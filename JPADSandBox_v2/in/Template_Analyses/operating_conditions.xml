@@ -7,6 +7,9 @@
 			<!-- array of angles of attack to be used for the the aerodynamics distributions (max 7 values) -->
 			<alpha_array unit="deg">2;6;10;14;18;22;24</alpha_array>
 		</global_data>
+		<climb>
+			<mach>0.3</mach>
+		</climb>
 		<cruise> 
 			<mach>0.43</mach>	
 			<altitude unit="m">6000.0</altitude>

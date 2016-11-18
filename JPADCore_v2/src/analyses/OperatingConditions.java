@@ -42,6 +42,9 @@ public class OperatingConditions implements IOperatingConditions {
 	private Amount<Angle> _alphaCurrent;
 	private Double _machTransonicThreshold = 0.7;
 	
+	// Climb data
+	private Double _machClimb;
+	
 	// Cruise data
 	private Amount<Length> _altitudeCruise;
 	private Double _machCruise;
@@ -125,6 +128,9 @@ public class OperatingConditions implements IOperatingConditions {
 		private Double[] __alpha;
 		private Amount<Angle> __alphaCurrent;
 		
+		// Climb data
+		private Double __machClimb;
+		
 		// Cruise data
 		private Amount<Length> __altitudeCruise;
 		private Double __machCruise;
@@ -161,6 +167,11 @@ public class OperatingConditions implements IOperatingConditions {
 		
 		public OperatingConditionsBuilder machCruise (Double machCruise) {
 			this.__machCruise = machCruise;
+			return this;
+		}
+		
+		public OperatingConditionsBuilder machClimb (Double machClimb) {
+			this.__machClimb = machClimb;
 			return this;
 		}
 		
@@ -235,6 +246,8 @@ public class OperatingConditions implements IOperatingConditions {
 			this.__alphaCurrent = Amount.valueOf(2.0, NonSI.DEGREE_ANGLE);
 			this.__alpha = new Double[] {2.0,6.0,10.0,14.0,18.0,22.0,24.0};
 			
+			this.__machClimb = 0.3;
+			
 			this.__machCruise = 0.6;
 			this.__altitudeCruise = Amount.valueOf(6000.0, SI.METER);
 			this.__throttleCruise = 0.8;
@@ -265,6 +278,8 @@ public class OperatingConditions implements IOperatingConditions {
 		
 		this._alpha = builder.__alpha;
 		this._alphaCurrent = builder.__alphaCurrent;
+		
+		this._machClimb = builder.__machClimb;
 		
 		this._machCruise = builder.__machCruise;
 		this._altitudeCruise = builder.__altitudeCruise;
@@ -334,6 +349,13 @@ public class OperatingConditions implements IOperatingConditions {
 				alphaArray[i] = Double.valueOf(alphaArrayList.get(i));
 		}
 		
+		///////////////////////////////////////////////////////////////
+		// CLIMB DATA:
+		Double machClimb = null;
+		
+		String machClimbProperty = reader.getXMLPropertyByPath("//climb/mach");
+		if(machClimbProperty != null)
+			machClimb = Double.valueOf(reader.getXMLPropertyByPath("//climb/mach"));
 		///////////////////////////////////////////////////////////////
 		// CRUISE DATA:
 		Double machCruise = null;
@@ -456,6 +478,7 @@ public class OperatingConditions implements IOperatingConditions {
 		OperatingConditions theConditions = new OperatingConditionsBuilder(id)
 				.alphaCurrent(alphaCurrent)
 				.alphaArray(alphaArray)
+				.machClimb(machClimb)
 				.machCruise(machCruise)
 				.altitudeCruise(altitudeCruise)
 				.throttleCruise(throttleCruise)
@@ -488,6 +511,8 @@ public class OperatingConditions implements IOperatingConditions {
 				.append("\t.....................................\n")
 				.append("\tAlpha array: " + Arrays.toString(_alpha) + "\n")
 				.append("\tAlpha current: " + _alphaCurrent + "\n")
+				.append("\t.....................................\n")
+				.append("\tMach Climb: " + _machClimb + "\n")
 				.append("\t.....................................\n")
 				.append("\tMach Cruise: " + _machCruise + "\n")
 				.append("\tAltitude Cruise: " + _altitudeCruise + "\n")
@@ -729,6 +754,20 @@ public class OperatingConditions implements IOperatingConditions {
 
 	public void setId(String id) {
 		this._id = id;
+	}
+
+	/**
+	 * @return the _machClimb
+	 */
+	public Double getMachClimb() {
+		return _machClimb;
+	}
+
+	/**
+	 * @param _machClimb the _machClimb to set
+	 */
+	public void setMachClimb(Double _machClimb) {
+		this._machClimb = _machClimb;
 	}
 
 	public Double getThrottleCruise() {

@@ -80,17 +80,36 @@ public class MyChartToFileUtils {
 		MyChartToFileUtils.styleList.add("densely dashed");
 		MyChartToFileUtils.styleList.add("dashdotted");
 		MyChartToFileUtils.styleList.add("dashed");
-		MyChartToFileUtils.styleList.add("dotted");
-		MyChartToFileUtils.styleList.add("loosely dashed");
+		MyChartToFileUtils.styleList.add("densely dashdotted");
+		MyChartToFileUtils.styleList.add("densely dotted");
 		MyChartToFileUtils.styleList.add("dashdotdotted");
-
+		MyChartToFileUtils.styleList.add("densely dashdotdetted");
+		MyChartToFileUtils.styleList.add("loosely dashed");
+		MyChartToFileUtils.styleList.add("loosely dashdotted");
+		
+//		MyChartToFileUtils.colorList.add("red");
+//		MyChartToFileUtils.colorList.add("darkred");
+//		MyChartToFileUtils.colorList.add("blue");
+//		MyChartToFileUtils.colorList.add("darkblue");
+//		MyChartToFileUtils.colorList.add("darkgrey");
+//		MyChartToFileUtils.colorList.add("black");
+//		MyChartToFileUtils.colorList.add("darkyellow");
+//		MyChartToFileUtils.colorList.add("orange");
+//		MyChartToFileUtils.colorList.add("pink");
+//		MyChartToFileUtils.colorList.add("magenta"); 
+//		MyChartToFileUtils.colorList.add("cyan");
+//		MyChartToFileUtils.colorList.add("darkcyan");
+		
 		MyChartToFileUtils.colorList.add("black");
 		MyChartToFileUtils.colorList.add("blue");
 		MyChartToFileUtils.colorList.add("red");
-		MyChartToFileUtils.colorList.add("green");
+		MyChartToFileUtils.colorList.add("darkgreen");
+		MyChartToFileUtils.colorList.add("darkyellow");
 		MyChartToFileUtils.colorList.add("brown");
+		MyChartToFileUtils.colorList.add("magenta");
 		MyChartToFileUtils.colorList.add("orange");
 		MyChartToFileUtils.colorList.add("cyan");
+		MyChartToFileUtils.colorList.add("darkcyan");
 
 	}
 	
@@ -612,10 +631,16 @@ public class MyChartToFileUtils {
 		final Paint[] paintArray;
 		// create default colors but modify some colors that are hard to see
 		paintArray = ChartColor.createDefaultPaintArray();
-		paintArray[2] = ChartColor.DARK_GREEN;
-		paintArray[3] = ChartColor.DARK_YELLOW;  
-		paintArray[5] = ChartColor.DARK_CYAN;
-		paintArray[6] = ChartColor.BLACK;
+		paintArray[0] = ChartColor.BLACK;
+		paintArray[1] = ChartColor.BLUE;
+		paintArray[2] = ChartColor.RED;
+		paintArray[3] = ChartColor.DARK_GREEN;
+		paintArray[4] = ChartColor.DARK_YELLOW;
+		paintArray[5] = ChartColor.DARK_GRAY;
+		paintArray[6] = ChartColor.DARK_BLUE;
+		paintArray[7] = ChartColor.DARK_RED;
+		paintArray[8] = ChartColor.ORANGE;
+		paintArray[9] = ChartColor.VERY_DARK_GREEN;
 		
 		XYPlot plot = (XYPlot) chart.getPlot(); 
 		plot.setDrawingSupplier(new DefaultDrawingSupplier(
@@ -1786,10 +1811,16 @@ public class MyChartToFileUtils {
 		final Paint[] paintArray;
 		// create default colors but modify some colors that are hard to see
 		paintArray = ChartColor.createDefaultPaintArray();
-		paintArray[2] = ChartColor.DARK_GREEN;
-		paintArray[3] = ChartColor.DARK_YELLOW;  
-		paintArray[5] = ChartColor.DARK_CYAN;
-		paintArray[6] = ChartColor.BLACK;
+		paintArray[0] = ChartColor.BLACK;
+		paintArray[1] = ChartColor.BLUE;
+		paintArray[2] = ChartColor.RED;
+		paintArray[3] = ChartColor.DARK_GREEN;
+		paintArray[4] = ChartColor.DARK_YELLOW;
+		paintArray[5] = ChartColor.DARK_GRAY;
+		paintArray[6] = ChartColor.DARK_BLUE;
+		paintArray[7] = ChartColor.DARK_RED;
+		paintArray[8] = ChartColor.ORANGE;
+		paintArray[9] = ChartColor.VERY_DARK_GREEN;
 		
 		XYPlot plot = (XYPlot) xylineChart.getPlot(); 
 		plot.setDrawingSupplier(new DefaultDrawingSupplier(
@@ -1876,10 +1907,16 @@ public class MyChartToFileUtils {
 		final Paint[] paintArray;
 		// create default colors but modify some colors that are hard to see
 		paintArray = ChartColor.createDefaultPaintArray();
-		paintArray[2] = ChartColor.DARK_GREEN;
-		paintArray[3] = ChartColor.DARK_YELLOW;  
-		paintArray[5] = ChartColor.DARK_CYAN;
-		paintArray[6] = ChartColor.BLACK;
+		paintArray[0] = ChartColor.BLACK;
+		paintArray[1] = ChartColor.BLUE;
+		paintArray[2] = ChartColor.RED;
+		paintArray[3] = ChartColor.DARK_GREEN;
+		paintArray[4] = ChartColor.DARK_YELLOW;
+		paintArray[5] = ChartColor.DARK_GRAY;
+		paintArray[6] = ChartColor.DARK_BLUE;
+		paintArray[7] = ChartColor.DARK_RED;
+		paintArray[8] = ChartColor.ORANGE;
+		paintArray[9] = ChartColor.VERY_DARK_GREEN;
 		
 		XYPlot plot = (XYPlot) xylineChart.getPlot(); 
 		plot.setDrawingSupplier(new DefaultDrawingSupplier(
@@ -1950,10 +1987,16 @@ public class MyChartToFileUtils {
 		final Paint[] paintArray;
 		// create default colors but modify some colors that are hard to see
 		paintArray = ChartColor.createDefaultPaintArray();
-		paintArray[2] = ChartColor.DARK_GREEN;
-		paintArray[3] = ChartColor.DARK_YELLOW;  
-		paintArray[5] = ChartColor.DARK_CYAN;
-		paintArray[6] = ChartColor.BLACK;
+		paintArray[0] = ChartColor.BLACK;
+		paintArray[1] = ChartColor.BLUE;
+		paintArray[2] = ChartColor.RED;
+		paintArray[3] = ChartColor.DARK_GREEN;
+		paintArray[4] = ChartColor.DARK_YELLOW;
+		paintArray[5] = ChartColor.DARK_GRAY;
+		paintArray[6] = ChartColor.DARK_BLUE;
+		paintArray[7] = ChartColor.DARK_RED;
+		paintArray[8] = ChartColor.ORANGE;
+		paintArray[9] = ChartColor.VERY_DARK_GREEN;
 		
 		chart.getPlot().setDrawingSupplier(new DefaultDrawingSupplier(
                 paintArray,

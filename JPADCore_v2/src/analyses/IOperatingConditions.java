@@ -21,6 +21,9 @@ public interface IOperatingConditions {
 	public Double getMachCruise();
 	public void setMachCurrent(Double _mach);
 
+	public Double getMachClimb();
+	public void setMachClimb(Double _mach);
+	
 	public Double getMachTransonicThreshold();
 	public void setMachTransonicThreshold(Double _machTransonicThreshold);
 
