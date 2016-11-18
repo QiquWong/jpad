@@ -110,7 +110,7 @@ public class AlphaEffective {
 				dihedral, twist,alpha0l, vortexSemiSpanToSemiSpanRatio,
 				alphaInitial.getEstimatedValue(), mach, altitude);
 
-		theCalculator.calculateDownwash(alphaInitial);
+		theCalculator.calculateVerticalVelocity(alphaInitial);
 		influenceFactor = theCalculator.getInfluenceFactor();
 		gamma = theCalculator.getGamma();
 

@@ -363,7 +363,62 @@ public class ReaderWriter{
 		//---------------------------------------------------------------------------------
 		// ENGINE:
 
-
+		//---------------------------------------------------------------------------------
+		// LIFT CURVE OF AIRFOIL:
+		
+		//wing
+		String wingLiftAirfoilMethod = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@WingAirfoilLiftCurve");
+		if(wingLiftAirfoilMethod.equalsIgnoreCase("INPUT"))
+			theStabilityCalculator.setWingairfoilLiftCoefficientCurve(MethodEnum.INPUT);
+		if(wingLiftAirfoilMethod.equalsIgnoreCase("CALCULATED"))
+			theStabilityCalculator.setWingairfoilLiftCoefficientCurve(MethodEnum.CLASSIC);
+		
+		if(theStabilityCalculator.getWingairfoilLiftCoefficientCurve()==MethodEnum.INPUT){
+			for (int i=0; i<theStabilityCalculator.getWingNumberOfGivenSections(); i++){
+				List<String> alphasWing = new ArrayList<>();
+				List<Amount<Angle>> alphasWingAmount = new ArrayList<>();
+				alphasWing =JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//wing/airfoil_lift_curve/alpha").get(i));
+				List<String> clWing = new ArrayList<>();
+				List<Double> clWingAmount = new ArrayList<>();
+				clWing =JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//wing/airfoil_lift_curve/lift_coefficient").get(i));
+				for (int ii=0; ii<clWing.size(); ii++){
+					clWingAmount.add(Double.valueOf(clWing.get(ii)));
+					alphasWingAmount.add(Amount.valueOf(Double.valueOf(alphasWing.get(ii)),NonSI.DEGREE_ANGLE));
+				}
+				theStabilityCalculator.getClDistributionAirfoilsWing().add(i,clWingAmount);
+				theStabilityCalculator.getAlphaAirfoilsWing().add(i,alphasWingAmount);
+			}
+		}
+		
+		//horizontal tail
+		String hTailLiftAirfoilMethod = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@HtailAirfoilLiftCurve");
+		if(hTailLiftAirfoilMethod.equalsIgnoreCase("INPUT"))
+			theStabilityCalculator.setHTailairfoilLiftCoefficientCurve(MethodEnum.INPUT);
+		if(hTailLiftAirfoilMethod.equalsIgnoreCase("CALCULATED"))
+			theStabilityCalculator.setHTailairfoilLiftCoefficientCurve(MethodEnum.CLASSIC);
+		
+		if(theStabilityCalculator.getHTailairfoilLiftCoefficientCurve()==MethodEnum.INPUT){
+			for (int i=0; i<theStabilityCalculator.getHTailnumberOfGivenSections(); i++){
+				List<String> alphasHTail = new ArrayList<>();
+				List<Amount<Angle>> alphasHTailAmount = new ArrayList<>();
+				alphasHTail =JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//horizontal_tail/airfoil_lift_curve/alpha").get(i));
+				List<String> clHTail = new ArrayList<>();
+				List<Double> clHTailAmount = new ArrayList<>();
+				clHTail =JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//horizontal_tail/airfoil_lift_curve/lift_coefficient").get(i));
+				for (int ii=0; ii<clHTail.size(); ii++){
+					clHTailAmount.add(Double.valueOf(clHTail.get(ii)));
+					alphasHTailAmount.add(Amount.valueOf(Double.valueOf(alphasHTail.get(ii)),NonSI.DEGREE_ANGLE));
+				}
+				theStabilityCalculator.getClDistributionAirfoilsHTail().add(i,clHTailAmount);
+				theStabilityCalculator.getAlphaAirfoilsHTail().add(i,alphasHTailAmount);
+			}
+		}
 		//---------------------------------------------------------------------------------
 		// DRAG POLAR:
 		
@@ -381,46 +436,64 @@ public class ReaderWriter{
 		if(wingDragMethod.equalsIgnoreCase("CALCULATED_DATABASE_AIRFOIL"))
 			theStabilityCalculator.setwingDragMethod(MethodEnum.AIRFOIL_DISTRIBUTION);
 		
-//		
-//		if(theStabilityCalculator.getwingDragMethod()==MethodEnum.INPUT){
-//			theStabilityCalculator.setAlphaWingDragPolar(reader.readArrayofAmountFromXML("//wing/polar/alphas_wing_for_polar_curve"));
-//			theStabilityCalculator.setcDPolarWing(reader.readArrayDoubleFromXML("//wing/polar/polar_curve"));
-//		}
-//		
-//
-//		if(theStabilityCalculator.getwingDragMethod()==MethodEnum.AIRFOIL_INPUT){
-//			List<String> alphasWing = reader.getXMLPropertiesByPath("//wing/polar/alphas_local_for_polar_curve");
-//			List<String> cdWing = reader.getXMLPropertiesByPath("//wing/polar/polar_curve");
-//			for (int i=0; i<theStabilityCalculator.getWingNumberOfGivenSections(); i++){
-//			theStabilityCalculator.getAlphaAirfoilWingDragPolar().add(alphasWing.get(i));
-//			theStabilityCalculator.getcDPolarAirfoilsWing().add(cdWing.get(i));
-//		}
-//		
-//		//h tail
-//		String hTailDragMethod = MyXMLReaderUtils
-//				.getXMLPropertyByPath(
-//						reader.getXmlDoc(), reader.getXpath(),
-//						"//@hTailPolarPolar");
-//		if(hTailDragMethod.equalsIgnoreCase("INPUT"))
-//			theStabilityCalculator.setHTailDragMethod(MethodEnum.INPUT);
-//		if(hTailDragMethod.equalsIgnoreCase("CALCULATED_PARABOLIC"))
-//			theStabilityCalculator.setHTailDragMethod(MethodEnum.CLASSIC);
-//		if(hTailDragMethod.equalsIgnoreCase("CALCULATED_INPUT_AIRFOIL"))
-//			theStabilityCalculator.setHTailDragMethod(MethodEnum.AIRFOIL_INPUT);
-//		if(hTailDragMethod.equalsIgnoreCase("CALCULATED_DATABASE_AIRFOIL"))
-//			theStabilityCalculator.setHTailDragMethod(MethodEnum.AIRFOIL_DISTRIBUTION);
-//		
-//		if(theStabilityCalculator.getHTailDragMethod()==MethodEnum.INPUT){
-//		theStabilityCalculator.setAlphahTailDragPolar(reader.readArrayofAmountFromXML("//horizontal_tail/polar/alphas_wing_for_polar_curve"));
-//		theStabilityCalculator.setcDPolarhTail(reader.readArrayDoubleFromXML("//horizontal_tail/polar/polar_curve"));
-//		}
-//		if(theStabilityCalculator.getHTailDragMethod()==MethodEnum.AIRFOIL_INPUT){
-//			List<String> alphasHTail = reader.getXMLPropertiesByPath("//horizontal_tail/polar/alphas_local_for_polar_curve");
-//			List<String> cdHTail = reader.getXMLPropertiesByPath("//horizontal_tail/polar/polar_curve");
-//			for (int i=0; i<theStabilityCalculator.getWingNumberOfGivenSections(); i++){
-//			theStabilityCalculator.getAlphaAirfoilHTailDragPolar().add(alphasWing.get(i));
-//			theStabilityCalculator.getcDPolarAirfoilsHTail().add(cdWing.get(i));}
-//		}
+		
+		if(theStabilityCalculator.getwingDragMethod()==MethodEnum.INPUT){
+			theStabilityCalculator.setclWingDragPolar(reader.readArrayDoubleFromXML("//wing/polar/cl_polar_curve"));
+			theStabilityCalculator.setcDPolarWing(reader.readArrayDoubleFromXML("//wing/polar/cd_polar_curve"));
+		}
+		
+
+		if(theStabilityCalculator.getwingDragMethod()==MethodEnum.AIRFOIL_INPUT){
+			for (int i=0; i<theStabilityCalculator.getWingNumberOfGivenSections(); i++){
+				List<String> clWing = new ArrayList<>();
+				List<Double> clWingAmount = new ArrayList<>();
+				clWing =JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//wing/polar/cl_polar_curve").get(i));
+				List<String> cdWing = new ArrayList<>();
+				List<Double> cdWingAmount = new ArrayList<>();
+				cdWing =JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//wing/polar/cd_polar_curve").get(i));
+				for (int ii=0; ii<clWing.size(); ii++){
+					clWingAmount.add(Double.valueOf(clWing.get(ii)));
+					cdWingAmount.add(Double.valueOf(cdWing.get(ii)));
+				}
+				theStabilityCalculator.getClPolarAirfoilWingDragPolar().add(i,clWingAmount);
+				theStabilityCalculator.getcDPolarAirfoilsWing().add(i,cdWingAmount);
+			}
+		}
+		
+		//h tail
+		String hTailDragMethod = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@hTailPolar");
+		if(hTailDragMethod.equalsIgnoreCase("INPUT"))
+			theStabilityCalculator.setHTailDragMethod(MethodEnum.INPUT);
+		if(hTailDragMethod.equalsIgnoreCase("CALCULATED_PARABOLIC"))
+			theStabilityCalculator.setHTailDragMethod(MethodEnum.CLASSIC);
+		if(hTailDragMethod.equalsIgnoreCase("CALCULATED_INPUT_AIRFOIL"))
+			theStabilityCalculator.setHTailDragMethod(MethodEnum.AIRFOIL_INPUT);
+		if(hTailDragMethod.equalsIgnoreCase("CALCULATED_DATABASE_AIRFOIL"))
+			theStabilityCalculator.setHTailDragMethod(MethodEnum.AIRFOIL_DISTRIBUTION);
+		
+		if(theStabilityCalculator.getHTailDragMethod()==MethodEnum.INPUT){
+			theStabilityCalculator.setcLhTailDragPolar(reader.readArrayDoubleFromXML("//horizontal_tail/polar/cl_polar_curve"));
+			theStabilityCalculator.setcDPolarhTail(reader.readArrayDoubleFromXML("//horizontal_tail/polar/cd_polar_curve"));
+		}
+		if(theStabilityCalculator.getHTailDragMethod()==MethodEnum.AIRFOIL_INPUT){
+			for (int i=0; i<theStabilityCalculator.getHTailnumberOfGivenSections(); i++){
+				List<String> clTail = new ArrayList<>();
+				List<Double> clTailAmount = new ArrayList<>();
+				clTail =JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//horizontal_tail/polar/cl_polar_curve").get(i));
+				List<String> cdTail = new ArrayList<>();
+				List<Double> cdTailAmount = new ArrayList<>();
+				cdTail =JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//horizontal_tail/polar/cd_polar_curve").get(i));
+				for (int ii=0; ii<clTail.size(); ii++){
+					clTailAmount.add(Double.valueOf(clTail.get(ii)));
+					cdTailAmount.add(Double.valueOf(cdTail.get(ii)));
+				}
+				theStabilityCalculator.getClPolarAirfoilHTailDragPolar().add(i,clTailAmount);
+				theStabilityCalculator.getcDPolarAirfoilsHTail().add(i,cdTailAmount);
+			}
+		}
 
 		//---------------------------------------------------------------------------------
 		// PLOT:

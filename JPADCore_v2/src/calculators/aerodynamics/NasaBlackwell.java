@@ -501,7 +501,7 @@ public class NasaBlackwell {
 	 * @author Manuela Ruocco
 	 * @param Amount<Angle> alpha : Initial angle of attack in radians 
 	 */
-	public void calculateDownwash(Amount<Angle> alpha) {
+	public void calculateVerticalVelocity(Amount<Angle> alpha) {
 
 		influenceFactor = new double [nPointsSemispanWise] [nPointsSemispanWise];
 		gamma = new double [nPointsSemispanWise];
@@ -514,6 +514,7 @@ public class NasaBlackwell {
 						_listControlPoints.get(i), _listVortexPoints.get(j), 
 						vortexSemiSpan, 
 						dihedral[j]);
+				
 			}
 		}
 

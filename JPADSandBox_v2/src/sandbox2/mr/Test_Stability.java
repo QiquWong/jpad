@@ -133,6 +133,8 @@ public class Test_Stability{
 		theCalculator.calculateHTailLiftCharacteristics();
 		theCalculator.calculateHTailLiftCharacteristicsWithElevatorDeflection();
 		theCalculator.calculateWingFuselageLiftCharacterstics();
+		theCalculator.initializeDragArray();
+		theCalculator.calculateWingDragCharacterstics();
 		//...
 		theCalculator.printAllData();
 		String sb = theCalculator.printAllResults();

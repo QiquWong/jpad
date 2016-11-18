@@ -29,8 +29,9 @@
 INPUT: the 3D polar of the lifting surface is given as input
 CALCULATED_PARABOLIC: the drag polar is calculated using the parabolic formula CL0+kCL^2
 CALCULATED_INPUT_AIRFOIL: the drag of the lifting surface is calculated starting from the 2D polar of airfoils given as input
-CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated starting from the 2D polar of airfoils carculated using databases ---->    		
-       <wing wingPolar="INPUT">
+CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated starting from the 2D polar of airfoils carculated using databases -->    		
+       <wing WingAirfoilLiftCurve="INPUT" wingPolar="CALCULATED_INPUT_AIRFOIL">
+	   <!-- <wing airfoilLiftCurve="CALCULATED"> -->
 	   <!-- <wing polar="INPUT"> -->
 	   <!-- <wing polar="CALCULATED_PARABOLIC"> -->
 	   <!-- <wing polar="CALCULATED_INPUT_AIRFOIL"> -->
@@ -63,13 +64,26 @@ CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated start
 				-->
              </global>
 			 <polar>
-			 <!-- <"INPUT"> -->
-			 	<alphas_wing_for_polar_curve>[1,2,3,4,5,6,7,8]</alphas_wing_for_polar_curve>
-				<polar_curve>[1,2,3,4,5,6,7,8]</polar_curve>
+			 <!-- <"INPUT"> . NB: The polar is given in the current condition  
+			 	<cl_polar_curve>[1,2,3,4,5,6,7,8]</cl_polar_curve>
+				<cd_polar_curve>[1,2,3,4,5,6,7,8]</cd_polar_curve> -->
 				<!-- <"CALCULATED_INPUT_AIRFOIL"> -->
-				<alphas_local_for_polar_curve>[1,2,3,4,5,6,7,8]</alphas_local_for_polar_curve>
-				<polar_curve>[1,2,3,4,5,6,7,8]</polar_curve>
+				<!-- for each airfoil of input station. The polar is given in the current condition-->
+				<cl_polar_curve station="ROOT">[0.1813 , 0.2997 , 0.4138 , 0.5083 , 0.5935 , 0.686 , 0.7792 , 0.8686 , 0.9566 , 1.0455 , 1.1367 , 1.2278 , 1.316 , 1.4002 , 1.4543 , 1.596 , 1.775 , 1.81692]</cl_polar_curve>
+				<cd_polar_curve>[0.00472 , 0.0042 , 0.00382 , 0.00411 , 0.00529 , 0.0062 , 0.00688 , 0.00773 , 0.00867 , 0.00966 , 0.01062 , 0.01163 , 0.01279 , 0.01415 , 0.0169 , 0.02127 , 0.025746 , 0.031428]</cd_polar_curve>
+				<cl_polar_curve station="KINK">[0.507 , 0.5507 , 0.5904 , 0.6793 , 0.772 , 0.8604 , 0.946 , 1.0329 , 1.1209 , 1.2102 , 1.2539 , 1.2968 , 1.3183 , 1.3338 , 1.3798 , 1.432 , 1.4752 , 1.493 , 1.5057 , 1.5798 , 1.6423 , 1.7077 , 1.7347 , 1.7703 , 1.7822 , 1.7999 , 1.8295 , 1.8695 , 1.9147]</cl_polar_curve>
+				<cd_polar_curve>[0.00373 , 0.0043 , 0.00503 , 0.0061 , 0.00682 , 0.00763 , 0.00857 , 0.00952 , 0.01048 , 0.01142 , 0.01195 , 0.0125 , 0.01279 , 0.01303 , 0.01377 , 0.01645 , 0.01706 , 0.01755 , 0.01828 , 0.02014 , 0.02266 , 0.02512 , 0.02671 , 0.02785 , 0.02878 , 0.03019 , 0.03087 , 0.0354 , 0.03985]</cd_polar_curve>
+				<cl_polar_curve station="TIP">[0.2881 , 0.3986 , 0.4949 , 0.5937 , 0.6953 , 0.7997 , 0.9057 , 1.0095 , 1.0999 , 1.18295 , 1.26527 , 1.34233 , 1.41152 , 1.47913 , 1.52333]</cl_polar_curve>
+				<cd_polar_curve>[0.00341 , 0.00388 , 0.00518 , 0.00637 , 0.00737 , 0.00815 , 0.00877 , 0.00943 , 0.01069 , 0.011886 , 0.013177 , 0.014767 , 0.016739 , 0.018995 , 0.021905]</cd_polar_curve>
 			 </polar>
+			 <airfoil_lift_curve>
+				<alpha station = "ROOT" unit="°">[-3,-2,-1,0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 13 , 16, 17]</alpha>
+				<lift_coefficient>[0.1813 , 0.2997 , 0.4138 , 0.5083 , 0.5935 , 0.686 , 0.7792 , 0.8686 , 0.9566 , 1.0455 , 1.1367 , 1.2278 , 1.316 , 1.4002 , 1.4543 , 1.596 , 1.775 , 1.81692]</lift_coefficient>
+				<alpha station = "KINK" unit="°">[0 , 0.5 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 8.5 , 9 , 9.25 , 9.438 , 10 , 11 , 11.5 , 11.75 , 12 , 13 , 14 , 15 , 15.5 , 16 , 16.25 , 16.625 , 17 , 18 , 19]</alpha>
+				<lift_coefficient>[0.507 , 0.5507 , 0.5904 , 0.6793 , 0.772 , 0.8604 , 0.946 , 1.0329 , 1.1209 , 1.2102 , 1.2539 , 1.2968 , 1.3183 , 1.3338 , 1.3798 , 1.432 , 1.4752 , 1.493 , 1.5057 , 1.5798 , 1.6423 , 1.7077 , 1.7347 , 1.7703 , 1.7822 , 1.7999 , 1.8295 , 1.8695 , 1.9147]</lift_coefficient>
+				<alpha station = "TIP" unit="°">[0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 12 , 13 , 14]</alpha>
+				<lift_coefficient>[0.2881 , 0.3986 , 0.4949 , 0.5937 , 0.6953 , 0.7997 , 0.9057 , 1.0095 , 1.0999 , 1.18295 , 1.26527 , 1.34233 , 1.41152 , 1.47913 , 1.52333]</lift_coefficient>
+			</airfoil_lift_curve>
              <distribution>
                    <geometry>
 						<y_adimensional_stations>[0;0.3,1]</y_adimensional_stations>
@@ -177,8 +191,9 @@ fuselage length respectively-->
 INPUT: the 3D polar of the lifting surface is given as input
 CALCULATED_PARABOLIC: the drag polar is calculated using the parabolic formula CL0+kCL^2
 CALCULATED_INPUT_AIRFOIL: the drag of the lifting surface is calculated starting from the 2D polar of airfoils given as input
-CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated starting from the 2D polar of airfoils carculated using databases ---->  
-		<horizontal_tail hTailPolar="INPUT">
+CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated starting from the 2D polar of airfoils carculated using databases -->  
+		<horizontal_tail HtailAirfoilLiftCurve="INPUT" hTailPolar="CALCULATED_INPUT_AIRFOIL">
+		<!-- <horizontal_tail airfoilLiftCurve="CALCULATED"> -->
 	    <!-- <horizontal_tail polar="INPUT"> -->
 	    <!-- <horizontal_tail polar="CALCULATED_PARABOLIC"> -->
 	    <!-- <horizontal_tail polar="CALCULATED_INPUT_AIRFOIL"> -->
@@ -210,13 +225,22 @@ CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated start
 				-->
             </global>
 			 <polar>
-			 <!-- <"INPUT"> -->
-			 	<alphas_wing_for_polar_curve>[1,2,3,4,5,6,7,8]</alphas_wing_for_polar_curve>
-				<polar_curve>[1,2,3,4,5,6,7,8]</polar_curve>
+			 <!-- <"INPUT">  NB: The polar is given in the current condition  
+			 	<cl_polar_curve>[1,2,3,4,5,6,7,8]</cl_polar_curve>
+				<cd_polar_curve>[1,2,3,4,5,6,7,8]</cd_polar_curve> -->
 			<!-- <"CALCULATED_INPUT_AIRFOIL"> -->
-				<alphas_local_for_polar_curve>[1,2,3,4,5,6,7,8]</alphas_local_for_polar_curve>
-				<polar_curve>[1,2,3,4,5,6,7,8]</polar_curve>
+			<!-- for each airfoil of input station . The polar is given in the current condition-->
+				<cl_polar_curve station="ROOT">[1,2,3,4,5,6,7,8]</cl_polar_curve>
+				<cd_polar_curve>[1,2,3,4,5,6,7,8]</cd_polar_curve>
+				<cl_polar_curve station="TIP">[1,2,3,4,5,6,7,8]</cl_polar_curve>
+				<cd_polar_curve>[1,2,3,4,5,6,7,8]</cd_polar_curve>
 			</polar>
+			<airfoil_lift_curve>
+				<alpha station = "ROOT" unit="°">[0,1,2,3,4,5,6,7]</alpha>
+				<lift_coefficient>[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8]</lift_coefficient>
+				<alpha station = "TIP" unit="°">[0,1,2,3,4,5,6,7]</alpha>
+				<lift_coefficient>[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8]</lift_coefficient>
+			</airfoil_lift_curve>
             <distribution>
                 <geometry>
 					<y_adimensional_stations>[0,1]</y_adimensional_stations>
