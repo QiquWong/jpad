@@ -43,6 +43,7 @@ import configuration.enumerations.PerformanceEnum;
 import configuration.enumerations.PerformancePlotEnum;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
+import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyXLSUtils;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
@@ -1347,6 +1348,15 @@ public class ACPerformanceCalculator {
 						plotList.add(PerformancePlotEnum.THRUST_DRAG_CURVES_CLIMB);
 				}
 				
+				String powerNeededAndAvailableClimbCurvesProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//plot/climb/power_needed_and_available/@perform");
+				if (powerNeededAndAvailableClimbCurvesProperty != null) {
+					if(powerNeededAndAvailableClimbCurvesProperty.equalsIgnoreCase("TRUE")) 
+						plotList.add(PerformancePlotEnum.POWER_NEEDED_AND_AVAILABLE_CURVES_CLIMB);
+				}
+				
 				String rateOfClimbCurvesProperty = MyXMLReaderUtils
 						.getXMLPropertyByPath(
 								reader.getXmlDoc(), reader.getXpath(),
@@ -2003,8 +2013,156 @@ public class ACPerformanceCalculator {
 			
 			//----------------------------------------------------------------------------------
 			// PLOT
-			
-			// TODO : COMPLETE ME !
+			if(_plotList.contains(PerformancePlotEnum.THRUST_DRAG_CURVES_CLIMB)) {
+				
+				//.......................................................
+				// AOE
+				List<Double[]> speedAOE = new ArrayList<Double[]>();
+				List<Double[]> dragAndThrustAOE = new ArrayList<Double[]>();
+				List<String> legendAOE = new ArrayList<String>();
+				
+				for (int i=0; i<thrustListAOE.size(); i++) {
+					speedAOE.add(MyArrayUtils.convertFromDoublePrimitive(dragListAOE.get(i).getSpeed()));
+					dragAndThrustAOE.add(MyArrayUtils.convertFromDoublePrimitive(dragListAOE.get(i).getDrag()));
+					legendAOE.add("Drag at " + dragListAOE.get(i).getAltitude() + " m");
+					speedAOE.add(MyArrayUtils.convertFromDoublePrimitive(thrustListAOE.get(i).getSpeed()));
+					dragAndThrustAOE.add(MyArrayUtils.convertFromDoublePrimitive(thrustListAOE.get(i).getThrust()));
+					legendAOE.add("Thrust at " + thrustListAOE.get(i).getAltitude() + " m");
+				}
+				
+				try {
+					MyChartToFileUtils.plot(
+							speedAOE, dragAndThrustAOE,
+							"Drag and Thrust curves (AOE)",
+							"Speed", "Forces",
+							null, null, null, null,
+							"m", "N",
+							true, legendAOE,
+							climbFolderPath, "Drag_and_Thrust_curves_CLIMB_AOE"
+							);
+				} catch (InstantiationException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+				
+				//.......................................................
+				// OEI
+				List<Double[]> speedOEI = new ArrayList<Double[]>();
+				List<Double[]> dragAndThrustOEI = new ArrayList<Double[]>();
+				List<String> legendOEI = new ArrayList<String>();
+				
+				for (int i=0; i<thrustListOEI.size(); i++) {
+					speedOEI.add(MyArrayUtils.convertFromDoublePrimitive(dragListOEI.get(i).getSpeed()));
+					dragAndThrustOEI.add(MyArrayUtils.convertFromDoublePrimitive(dragListOEI.get(i).getDrag()));
+					legendOEI.add("Drag at " + dragListOEI.get(i).getAltitude() + " m");
+					speedOEI.add(MyArrayUtils.convertFromDoublePrimitive(thrustListOEI.get(i).getSpeed()));
+					dragAndThrustOEI.add(MyArrayUtils.convertFromDoublePrimitive(thrustListOEI.get(i).getThrust()));
+					legendOEI.add("Thrust at " + thrustListOEI.get(i).getAltitude() + " m");
+				}
+				
+				try {
+					MyChartToFileUtils.plot(
+							speedOEI, dragAndThrustOEI,
+							"Drag and Thrust curves (OEI)",
+							"Speed", "Forces",
+							null, null, null, null,
+							"m", "N",
+							true, legendAOE,
+							climbFolderPath, "Drag_and_Thrust_curves_CLIMB_OEI"
+							);
+				} catch (InstantiationException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+				
+			}
+			if(_plotList.contains(PerformancePlotEnum.POWER_NEEDED_AND_AVAILABLE_CURVES_CLIMB)) {
+				
+				//.......................................................
+				// AOE
+				List<Double[]> speedAOE = new ArrayList<Double[]>();
+				List<Double[]> powerNeededAndAvailableAOE = new ArrayList<Double[]>();
+				List<String> legendAOE = new ArrayList<String>();
+				
+				for (int i=0; i<thrustListAOE.size(); i++) {
+					speedAOE.add(MyArrayUtils.convertFromDoublePrimitive(dragListAOE.get(i).getSpeed()));
+					powerNeededAndAvailableAOE.add(MyArrayUtils.convertFromDoublePrimitive(dragListAOE.get(i).getPower()));
+					legendAOE.add("Power needed at " + dragListAOE.get(i).getAltitude() + " m");
+					speedAOE.add(MyArrayUtils.convertFromDoublePrimitive(thrustListAOE.get(i).getSpeed()));
+					powerNeededAndAvailableAOE.add(MyArrayUtils.convertFromDoublePrimitive(thrustListAOE.get(i).getPower()));
+					legendAOE.add("Power available at " + thrustListAOE.get(i).getAltitude() + " m");
+				}
+				
+				try {
+					MyChartToFileUtils.plot(
+							speedAOE, powerNeededAndAvailableAOE,
+							"Power Needed and Power Available curves (AOE)",
+							"Speed", "Power",
+							null, null, null, null,
+							"m", "W",
+							true, legendAOE,
+							climbFolderPath, "Power_Needed_and_Power_Available_curves_CLIMB_AOE"
+							);
+				} catch (InstantiationException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+				
+				//.......................................................
+				// OEI
+				List<Double[]> speedOEI = new ArrayList<Double[]>();
+				List<Double[]> powerNeededAndAvailableOEI = new ArrayList<Double[]>();
+				List<String> legendOEI = new ArrayList<String>();
+				
+				for (int i=0; i<thrustListOEI.size(); i++) {
+					speedOEI.add(MyArrayUtils.convertFromDoublePrimitive(dragListOEI.get(i).getSpeed()));
+					powerNeededAndAvailableOEI.add(MyArrayUtils.convertFromDoublePrimitive(dragListOEI.get(i).getPower()));
+					legendOEI.add("Power needed at " + dragListOEI.get(i).getAltitude() + " m");
+					speedOEI.add(MyArrayUtils.convertFromDoublePrimitive(thrustListOEI.get(i).getSpeed()));
+					powerNeededAndAvailableOEI.add(MyArrayUtils.convertFromDoublePrimitive(thrustListOEI.get(i).getPower()));
+					legendOEI.add("Power available at " + thrustListOEI.get(i).getAltitude() + " m");
+				}
+				
+				try {
+					MyChartToFileUtils.plot(
+							speedAOE, powerNeededAndAvailableAOE,
+							"Power Needed and Power Available curves (OEI)",
+							"Speed", "Power",
+							null, null, null, null,
+							"m", "W",
+							true, legendAOE,
+							climbFolderPath, "Power_Needed_and_Power_Available_curves_CLIMB_OEI"
+							);
+				} catch (InstantiationException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+				
+			}
+			if(_plotList.contains(PerformancePlotEnum.RATE_OF_CLIMB_CURVES)) {
+				
+				
+				
+			}
+			if(_plotList.contains(PerformancePlotEnum.CLIMB_ANGLE_CURVES)) {
+				
+				
+				
+			}
+			if(_plotList.contains(PerformancePlotEnum.MAX_RATE_OF_CLIMB_ENVELOPE)) {
+				
+				
+				
+			}
+			if(_plotList.contains(PerformancePlotEnum.MAX_CLIMB_ANGLE_ENVELOPE)) {
+				
+				
+				
+			}
 		}
 	}
 	//............................................................................

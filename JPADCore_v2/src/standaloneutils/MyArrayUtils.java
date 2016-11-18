@@ -328,6 +328,17 @@ public final class MyArrayUtils {
 		return vec_d;
 	}
 
+	public static Double[] convertFromDoublePrimitive(double[] vec) {
+		
+		Double[] vec_D = new Double[vec.length];
+		
+		for (int i=0; i<vec.length; i++)
+			vec_D[i] = Double.valueOf(vec[i]);
+		
+		return vec_D;
+		
+	}
+	
 	public static Double[] convertListOfDoubleToDoubleArray(List<Double> list){
 
 		Double[] vec_d = new Double[list.size()];
@@ -336,6 +347,16 @@ public final class MyArrayUtils {
 			vec_d[i] = list.get(i);
 		
 		return vec_d;
+	}
+	
+	public static List<Double> convertDoubleArrayToListDouble(Double[] vec){
+
+		List<Double> list = new ArrayList<Double>();
+
+		for(int i=0; i<vec.length; i++)
+			list.add(vec[i]);
+		
+		return list;
 	}
 	
 	public static <T extends Quantity> List<Amount<T>> convertDoubleArrayToListOfAmount(double[] d, Unit unit) {

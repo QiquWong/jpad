@@ -264,8 +264,8 @@ public class HighLiftDevicesEffectsTest extends Application {
 			// LANDING
 			LiftCalc.calculateHighLiftDevicesEffects(
 					theAircraft.getWing(),
-					theOperatingConditions.getFlapDeflectionLanding(),
-					theOperatingConditions.getSlatDeflectionLanding(),
+					theOperatingConditions.getFlapDeflectionTakeOff(),
+					theOperatingConditions.getSlatDeflectionTakeOff(),
 					theAerodynamicCalculator.getCurrentLiftCoefficient()
 					);
 			
