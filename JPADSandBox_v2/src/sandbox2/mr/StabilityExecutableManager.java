@@ -452,6 +452,7 @@ public class StabilityExecutableManager {
 	//CALCULATED_INPUT_AIRFOIL-wing
 	private List<List<Double>> clPolarAirfoilWingDragPolar = new ArrayList<List<Double>>();
 	private List<List<Double>> cDPolarAirfoilsWing= new ArrayList<List<Double>>();
+	private List<List<Double>> _wingCdAirfoilDistributionInputStations = new ArrayList<List<Double>>();
 	private List<List<Double>> _wingCdAirfoilDistribution = new ArrayList<List<Double>>();
 
 	//INPUT-htail
@@ -2315,10 +2316,48 @@ public class StabilityExecutableManager {
 				for (int ii=0; ii<cdPolarStation.length; ii++){
 					cdPolarStationList.add(ii, cdPolarStation[ii]);
 				}
-				_wingCdAirfoilDistribution.add(i,cdPolarStationList);			
+				_wingCdAirfoilDistributionInputStations.add(i,cdPolarStationList);			
 			}
 		}
-
+		
+		// Bidimensional airfoil curves as matrix
+		//
+		//  --------------------------> number of point semi span
+		//  |   |
+		//  | a |
+		//  | l	|
+		//	| p	|
+		//	| h
+		//  | a
+		//  |
+		// \/
+		// number of point 2d curve
+		
+		// initialize cd
+		for (int i=0; i<_wingNumberOfPointSemiSpanWise; i++){
+			_wingCdAirfoilDistribution.add(_wingCdAirfoilDistributionInputStations.get(0));
+		}
+		double [] cdStar ,cdDistribution;
+		
+		for (int i=0; i<_numberOfAlphasBody; i++){
+			cdStar =   new double [_wingNumberOfGivenSections];
+			cdDistribution = new double [_wingNumberOfPointSemiSpanWise];
+			for (int ii=0; ii<_wingNumberOfGivenSections; ii++){
+				cdStar[ii] = _wingCdAirfoilDistributionInputStations.get(ii).get(i);
+			}// given station
+			
+			for (int iii=0; iii<_wingNumberOfPointSemiSpanWise; iii++){
+				cdDistribution [iii] = MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertToDoublePrimitive(_wingYAdimensionalBreakPoints),
+						cdStar, 
+						_wingYAdimensionalDistribution.get(iii)
+						);
+			
+			_wingCdAirfoilDistribution.get(iii).set(i, cdDistribution[iii]);
+			}//semispanwise
+		} // alpha 
+		
+		
 			// TODO 
 			if(this._wingDragMethod==MethodEnum.CLASSIC){}
 			if(this._wingDragMethod==MethodEnum.AIRFOIL_DISTRIBUTION){}
