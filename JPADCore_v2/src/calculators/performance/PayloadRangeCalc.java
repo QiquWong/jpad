@@ -12,10 +12,10 @@ import javax.measure.quantity.Mass;
 import javax.measure.quantity.Quantity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+
 import org.jscience.physics.amount.Amount;
 
 import aircraft.auxiliary.airfoil.Airfoil;
-import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LiftingSurface;
 import analyses.OperatingConditions;
@@ -32,6 +32,7 @@ import database.databasefunctions.engine.EngineDatabaseManager;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
+import standaloneutils.MyMathUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
 
@@ -64,6 +65,8 @@ public class PayloadRangeCalc{
 	private Amount<Length> altitude;
 	private FuelFractionDatabaseReader fuelFractionDatabase;
 	private double cD0;
+	private Double[] polarCL;
+	private Double[] polarCD;
 	private double oswald;
 	private double ar;
 	private double tcMax;
@@ -139,7 +142,8 @@ public class PayloadRangeCalc{
 			Amount<Mass> maxTakeOffMass,
 			Amount<Mass> operatingEmptyMass,
 			Amount<Mass> maxFuelMass,
-			double cD0,
+			Double[] polarCL,
+			Double[] polarCD,
 			double oswald,
 			double cruiseMach,
 			Amount<Length> altitude,
@@ -159,7 +163,9 @@ public class PayloadRangeCalc{
 		this.cruiseMach = cruiseMach;
 		this.altitude = altitude;
 		this.sweepHalfChordEquivalent = theAircraft.getWing().getSweepHalfChordEquivalent(false);
-		this.cD0 = cD0;
+		this.polarCL = polarCL;
+		this.polarCD = polarCD;
+		this.cD0 = MyArrayUtils.getMin(this.polarCD);
 		this.oswald = oswald;
 		this.etaPropeller = theAircraft.getPowerPlant().getEngineList().get(0).getEtaPropeller();
 		
@@ -438,15 +444,10 @@ public class PayloadRangeCalc{
 					altitude.doubleValue(SI.METER)
 					);
 			
-			cDAtMaxPayloadCurrentMach = DragCalc.calculateCDTotal(
-					cD0,
-					cLAtMaxPayloadCurrentMach,
-					ar,
-					oswald,
-					cruiseMach,
-					sweepHalfChordEquivalent.getEstimatedValue(),
-					tcMax,
-					airfoilType
+			cDAtMaxPayloadCurrentMach = MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertToDoublePrimitive(polarCL),
+					MyArrayUtils.convertToDoublePrimitive(polarCD),
+					cLAtMaxPayloadCurrentMach
 					);
 
 			efficiencyAtMaxPayloadCurrentMach = cLAtMaxPayloadCurrentMach/cDAtMaxPayloadCurrentMach;
@@ -539,15 +540,11 @@ public class PayloadRangeCalc{
 					altitude.doubleValue(SI.METER)
 					);
 			
-			cDAtMaxPayloadCurrentMach = DragCalc.calculateCDTotal(
-					cD0,
-					cLAtMaxPayloadCurrentMach,
-					ar,
-					oswald,
-					cruiseMach,
-					sweepHalfChordEquivalent.getEstimatedValue(),
-					tcMax,
-					airfoilType);
+			cDAtMaxPayloadCurrentMach = MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertToDoublePrimitive(polarCL),
+					MyArrayUtils.convertToDoublePrimitive(polarCD),
+					cLAtMaxPayloadCurrentMach
+					);
 						
 			efficiencyAtMaxPayloadCurrentMach = cLAtMaxPayloadCurrentMach/cDAtMaxPayloadCurrentMach;
 			
@@ -671,15 +668,10 @@ public class PayloadRangeCalc{
 					altitude.doubleValue(SI.METER)
 					);
 			
-			cDAtMaxFuelCurrentMach = DragCalc.calculateCDTotal(
-					cD0,
-					cLAtMaxFuelCurrentMach,
-					ar,
-					oswald,
-					cruiseMach,
-					sweepHalfChordEquivalent.getEstimatedValue(),
-					tcMax,
-					airfoilType
+			cDAtMaxFuelCurrentMach = MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertToDoublePrimitive(polarCL),
+					MyArrayUtils.convertToDoublePrimitive(polarCD),
+					cLAtMaxFuelCurrentMach
 					);
 
 			efficiencyAtMaxFuelCurrentMach = cLAtMaxFuelCurrentMach/cDAtMaxFuelCurrentMach;
@@ -772,15 +764,11 @@ public class PayloadRangeCalc{
 					altitude.doubleValue(SI.METER)
 					);
 			
-			cDAtMaxFuelCurrentMach = DragCalc.calculateCDTotal(
-					cD0,
-					cLAtMaxFuelCurrentMach,
-					ar,
-					oswald,
-					cruiseMach,
-					sweepHalfChordEquivalent.getEstimatedValue(),
-					tcMax,
-					airfoilType);
+			cDAtMaxFuelCurrentMach = MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertToDoublePrimitive(polarCL),
+					MyArrayUtils.convertToDoublePrimitive(polarCD),
+					cLAtMaxFuelCurrentMach
+					);
 
 			efficiencyAtMaxFuelCurrentMach = cLAtMaxFuelCurrentMach/cDAtMaxFuelCurrentMach;
 			
@@ -900,15 +888,10 @@ public class PayloadRangeCalc{
 					altitude.doubleValue(SI.METER)
 					);
 			
-			cDAtZeroPayloadCurrentMach = DragCalc.calculateCDTotal(
-					cD0,
-					cLAtZeroPayloadCurrentMach,
-					ar,
-					oswald,
-					cruiseMach,
-					sweepHalfChordEquivalent.getEstimatedValue(),
-					tcMax,
-					airfoilType
+			cDAtZeroPayloadCurrentMach = MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertToDoublePrimitive(polarCL),
+					MyArrayUtils.convertToDoublePrimitive(polarCD),
+					cLAtZeroPayloadCurrentMach
 					);
 
 			efficiencyAtZeroPayloadCurrentMach = cLAtZeroPayloadCurrentMach/cDAtZeroPayloadCurrentMach;
@@ -1001,15 +984,11 @@ public class PayloadRangeCalc{
 					altitude.doubleValue(SI.METER)
 					);
 			
-			cDAtZeroPayloadCurrentMach = DragCalc.calculateCDTotal(
-					cD0,
-					cLAtZeroPayloadCurrentMach,
-					ar,
-					oswald,
-					cruiseMach,
-					sweepHalfChordEquivalent.getEstimatedValue(),
-					tcMax,
-					airfoilType);
+			cDAtZeroPayloadCurrentMach = MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertToDoublePrimitive(polarCL),
+					MyArrayUtils.convertToDoublePrimitive(polarCD),
+					cLAtZeroPayloadCurrentMach
+					);
 
 			rangeBreguet = RangeCalc.calculateRangeBreguetJetSFCJ(
 					Amount.valueOf(
@@ -1650,6 +1629,22 @@ public class PayloadRangeCalc{
 	}
 	public void setPayloadMatrix(double[][] payloadMatrix) {
 		this.payloadMatrix = payloadMatrix;
+	}
+
+	public Double[] getPolarCL() {
+		return polarCL;
+	}
+
+	public void setPolarCL(Double[] polarCL) {
+		this.polarCL = polarCL;
+	}
+
+	public Double[] getPolarCD() {
+		return polarCD;
+	}
+
+	public void setPolarCD(Double[] polarCD) {
+		this.polarCD = polarCD;
 	}
 	
 }

@@ -18,6 +18,7 @@ import calculators.performance.customdata.DragMap;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
+import standaloneutils.MyMathUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
 import standaloneutils.customdata.DragPolarPoint;
@@ -416,6 +417,41 @@ public class DragCalc {
 	}
 	
 	/**
+	 * This method allows the user to evaluate the drag as function of the speed using a known 
+	 * polar curve. (Useful when the parabolic polar model is too simple)
+	 * 
+	 * @author Vittorio Trifari
+	 * @param weight
+	 * @param altitude
+	 * @param surface
+	 * @param polarCL
+	 * @param polarCD
+	 * @param speed
+	 * @param sweepHalfChord
+	 * @param tcMax
+	 * @param airfoilType
+	 * @return
+	 */
+	public static double[] calculateDragVsSpeed(
+			double weight, double altitude, 
+			double surface, 
+			double[] polarCL,
+			double[] polarCD,
+			double speed[], 
+			double sweepHalfChord, double tcMax, AirfoilTypeEnum airfoilType
+			) {
+
+		double cL, cD;
+		double[] drag = new double[speed.length];
+		for (int i=0; i< speed.length; i++){
+			cL = LiftCalc.calculateLiftCoeff(weight, speed[i], surface, altitude);
+			cD = MyMathUtils.getInterpolatedValue1DLinear(polarCL, polarCD, cL);
+			drag[i] = calculateDragAtSpeed(weight, altitude, surface, speed[i], cD);
+		}
+		return drag;
+	}
+	
+	/**
 	 * @author Lorenzo Attanasio
 	 * @param altitude (m)
 	 * @param phi
@@ -480,9 +516,53 @@ public class DragCalc {
 				calculateDragVsSpeed(weight, altitude, 
 						surface, cD0, ar, oswald, speed, sweepHalfChord, tcMax, airfoilType), 
 						speed);
-
 	}
 
+	/**
+	 * This methods allows the user to evaluate required power and drag using a known polar curve
+	 * given as input.
+	 * 
+	 * @author Vittorio Trifari
+	 * @param altitude
+	 * @param weight
+	 * @param speed
+	 * @param surface
+	 * @param CLmax
+	 * @param polarCL
+	 * @param polarCD
+	 * @param sweepHalfChord
+	 * @param tcMax
+	 * @param airfoilType
+	 * @return
+	 */
+	public static DragMap calculateDragAndPowerRequired(
+			double altitude, double weight, double[] speed,
+			double surface,
+			double CLmax,
+			double polarCL[],
+			double polarCD[],
+			double sweepHalfChord,
+			double tcMax, 
+			AirfoilTypeEnum airfoilType) {
+
+		return new DragMap(
+				weight,
+				altitude, 
+				calculateDragVsSpeed(
+						weight,
+						altitude,
+						surface,
+						polarCL,
+						polarCD,
+						speed,
+						sweepHalfChord,
+						tcMax,
+						airfoilType
+						), 
+				speed
+				);
+	}
+	
 	/**
 	 * @author Lorenzo Attanasio
 	 * @param rho density (kg/m3)

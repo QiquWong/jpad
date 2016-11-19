@@ -6,7 +6,7 @@ width=\figurewidth,
 height=\figureheight,
 scaled ticks=false, tick label style={/pgf/number format/fixed},
 xmin=0.0,
-xmax=2.322161026608961,
+xmax=2.9333550982719467,
 xlabel={Maximum Rate of Climb (m/s)},
 xmajorgrids,
 ymin=0.0,
@@ -21,12 +21,12 @@ color=black,
 solid
 ]
 table[row sep=crcr]{
-0.0	4726.756551450688\\
--1.0489677774870527	6000.0\\
-0.18681448239680076	4500.0\\
-1.4483047519179375	3000.0\\
-1.7999882908808056	1500.0\\
-2.150149098712001	0.0\\
+0.0	4821.987597323721\\
+-1.0980183558345797	6000.0\\
+0.3001227248620721	4500.0\\
+1.721192333690341	3000.0\\
+2.2116732875408944	1500.0\\
+2.7160695354369877	0.0\\
 };
 \end{axis}
 \end{tikzpicture}%

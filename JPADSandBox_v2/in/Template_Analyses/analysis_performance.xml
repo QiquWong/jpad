@@ -86,8 +86,8 @@
     </analysis>
 	<plot>
 		<takeoff>
-			<simulations perform="FALSE"/>
-			<balanced_field_length perform="FALSE"/>
+			<simulations perform="TRUE"/>
+			<balanced_field_length perform="TRUE"/>
 		</takeoff>
 		<climb>
 			<thrust_drag perform="TRUE"/>
@@ -105,9 +105,9 @@
 			<!-- ADD CHARTS -->
 		</cruise>
 		<landing>
-			<simulations perform="FALSE"/>
+			<simulations perform="TRUE"/>
 		</landing>
-		<payload_range perform="FALSE"/>
-		<maneuvering_flight_and_gust_envelope perform="FALSE"/>
+		<payload_range perform="TRUE"/>
+		<maneuvering_flight_and_gust_envelope perform="TRUE"/>
 	</plot>
 </jpad_config>

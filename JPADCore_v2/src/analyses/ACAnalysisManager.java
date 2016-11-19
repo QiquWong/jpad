@@ -827,7 +827,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				String VnDiagramFlagProperty = MyXMLReaderUtils
 						.getXMLPropertyByPath(
 								reader.getXmlDoc(), reader.getXpath(),
-								"//performance/@landing");
+								"//performance/@V_n_diagram");
 				if (VnDiagramFlagProperty != null) {
 					if(VnDiagramFlagProperty.equalsIgnoreCase("TRUE")) {
 						VnDiagramFlag = Boolean.TRUE;
@@ -939,11 +939,11 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		// Maximum cruise TAS
 		_vMaxCruise = Amount.valueOf(
 				_machMaxCruise * 
-				OperatingConditions.getAtmosphere(_maxAltitudeAtMaxSpeed.getEstimatedValue()).getSpeedOfSound(), 
+				OperatingConditions.getAtmosphere(_maxAltitudeAtMaxSpeed.doubleValue(SI.METER)).getSpeedOfSound(), 
 				SI.METERS_PER_SECOND);
 		_vMaxCruiseEAS = _vMaxCruise.
 				times(Math.sqrt(
-						OperatingConditions.getAtmosphere(_maxAltitudeAtMaxSpeed.getEstimatedValue()).getDensityRatio()));
+						OperatingConditions.getAtmosphere(_maxAltitudeAtMaxSpeed.doubleValue(SI.METER)).getDensityRatio()));
 
 		_vOptimumCruise = Amount.valueOf(_machOptimumCruise*AtmosphereCalc.getSpeedOfSound(_altitudeOptimumCruise.doubleValue(SI.METER)), SI.METERS_PER_SECOND);
 		

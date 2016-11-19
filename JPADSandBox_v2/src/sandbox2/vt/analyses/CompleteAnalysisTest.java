@@ -166,6 +166,7 @@ public class CompleteAnalysisTest extends Application {
 		         // write nothing
 		    }
 		});
+		long startTime = System.currentTimeMillis();        
 		
 		System.out.println("-------------------");
 		System.out.println("Complete Analysis Test");
@@ -296,6 +297,10 @@ public class CompleteAnalysisTest extends Application {
 			System.out.println("\n\n\tPrinting results ... \n\n");
 			System.out.println(theAircraft.getTheAnalysisManager().toString());
 			System.out.println("\n\n\tDone!! \n\n");
+			
+			long estimatedTime = System.currentTimeMillis() - startTime;
+			System.out.println("\n\n\t TIME ESTIMATED = " + (estimatedTime/1000) + " seconds");
+			
 			System.setOut(filterStream);
 			
 		} catch (CmdLineException | IOException e) {

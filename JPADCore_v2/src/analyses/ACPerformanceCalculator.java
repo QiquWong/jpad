@@ -1746,6 +1746,8 @@ public class ACPerformanceCalculator {
 			if(_climbTimeAtSpecificClimbSpeedOEI != null)
 				sb.append("\t\tTime to climb at given climb speed OEI = " + _climbTimeAtSpecificClimbSpeedOEI + "\n");
 			
+			sb.append("\t-------------------------------------\n");
+			
 		}
 		if(_taskList.contains(PerformanceEnum.LANDING)) {
 			
@@ -1895,12 +1897,14 @@ public class ACPerformanceCalculator {
 			// ALL OPERATIVE ENGINES (AOE)
 			_rcMapAOE = new ArrayList<RCMap>();
 			
-			List<DragMap> dragListAOE = new ArrayList<DragMap>();
+			List<DragMap> dragList = new ArrayList<DragMap>();
 			List<ThrustMap> thrustListAOE = new ArrayList<ThrustMap>();
+			
+			double[] speedArray = new double[100];
 			
 			for(int i=0; i<altitudeArray.length; i++) {
 				//..................................................................................................
-				double[] speedArray = MyArrayUtils.linspace(
+				speedArray = MyArrayUtils.linspace(
 						SpeedCalc.calculateSpeedStall(
 								altitudeArray[i],
 								_maximumTakeOffMass.times(AtmosphereCalc.g0).getEstimatedValue(),
@@ -1914,24 +1918,22 @@ public class ACPerformanceCalculator {
 						100
 						);
 				//..................................................................................................
-				dragListAOE.add(
-						
-						// TODO : LINK THE POLAR FIELDS WITH THE DRAG CALCULATION !!!
+				dragList.add(
 						
 						DragCalc.calculateDragAndPowerRequired(
 								altitudeArray[i],
 								_maximumTakeOffMass.times(AtmosphereCalc.g0).getEstimatedValue(),
 								speedArray,
-								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE), 
+								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 								_cLmaxClean,
-								_cD0,
-								_theAircraft.getWing().getAspectRatio(),
-								_oswaldCruise,
-								_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN), 
+								MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
+								MyArrayUtils.convertToDoublePrimitive(_polarCDClimb),
+								_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
 								meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
 								meanAirfoil.getAirfoilCreator().getType()
 								)
 						);
+						
 				//..................................................................................................
 				thrustListAOE.add(
 						ThrustCalc.calculateThrustAndPowerAvailable(
@@ -1954,7 +1956,7 @@ public class ACPerformanceCalculator {
 							new double[] {_maximumTakeOffMass.times(AtmosphereCalc.g0).getEstimatedValue()},
 							new EngineOperatingConditionEnum[] {EngineOperatingConditionEnum.CLIMB}, 
 							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-							dragListAOE,
+							dragList,
 							thrustListAOE
 							)
 					);
@@ -1991,46 +1993,15 @@ public class ACPerformanceCalculator {
 			// ONE ENGINE INOPERATIVE (OEI)
 			_rcMapOEI = new ArrayList<RCMap>();
 			
-			List<DragMap> dragListOEI = new ArrayList<DragMap>();
 			List<ThrustMap> thrustListOEI = new ArrayList<ThrustMap>();
 			
 			for(int i=0; i<altitudeArray.length; i++) {
-				//..................................................................................................
-				double[] speedArrayOEI = MyArrayUtils.linspace(
-						SpeedCalc.calculateSpeedStall(
-								altitudeArray[i],
-								_maximumTakeOffMass.times(AtmosphereCalc.g0).getEstimatedValue(),
-								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
-								_cLmaxClean
-								),
-						SpeedCalc.calculateTAS(
-								_theOperatingConditions.getMachCruise(),
-								altitudeArray[i]
-								),
-						100
-						);
-				//..................................................................................................
-				dragListOEI.add(
-						DragCalc.calculateDragAndPowerRequired(
-								altitudeArray[i],
-								_maximumTakeOffMass.times(AtmosphereCalc.g0).getEstimatedValue(),
-								speedArrayOEI,
-								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE), 
-								_cLmaxClean,
-								_cD0,
-								_theAircraft.getWing().getAspectRatio(),
-								_oswaldCruise,
-								_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN), 
-								meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
-								meanAirfoil.getAirfoilCreator().getType()
-								)
-						);
 				//..................................................................................................
 				thrustListOEI.add(
 						ThrustCalc.calculateThrustAndPowerAvailable(
 								altitudeArray[i],
 								1.0, 	// throttle setting array
-								speedArrayOEI,
+								speedArray,
 								EngineOperatingConditionEnum.CONTINUOUS,
 								_theAircraft.getPowerPlant().getEngineType(), 
 								_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
@@ -2047,7 +2018,7 @@ public class ACPerformanceCalculator {
 							new double[] {_maximumTakeOffMass.times(AtmosphereCalc.g0).getEstimatedValue()},
 							new EngineOperatingConditionEnum[] {EngineOperatingConditionEnum.CONTINUOUS}, 
 							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-							dragListOEI,
+							dragList,
 							thrustListOEI
 							)
 					);
@@ -2080,10 +2051,10 @@ public class ACPerformanceCalculator {
 				List<Double[]> dragAndThrustAOE = new ArrayList<Double[]>();
 				List<String> legend = new ArrayList<String>();
 				
-				for (int i=0; i<dragListAOE.size(); i++) {
-					speed.add(MyArrayUtils.convertFromDoublePrimitive(dragListAOE.get(i).getSpeed()));
-					dragAndThrustAOE.add(MyArrayUtils.convertFromDoublePrimitive(dragListAOE.get(i).getDrag()));
-					legend.add("Drag at " + dragListAOE.get(i).getAltitude() + " m");
+				for (int i=0; i<dragList.size(); i++) {
+					speed.add(MyArrayUtils.convertFromDoublePrimitive(dragList.get(i).getSpeed()));
+					dragAndThrustAOE.add(MyArrayUtils.convertFromDoublePrimitive(dragList.get(i).getDrag()));
+					legend.add("Drag at " + dragList.get(i).getAltitude() + " m");
 				}
 				for (int i=0; i<thrustListAOE.size(); i++) {
 					speed.add(MyArrayUtils.convertFromDoublePrimitive(thrustListAOE.get(i).getSpeed()));
@@ -2111,8 +2082,8 @@ public class ACPerformanceCalculator {
 				// OEI
 				List<Double[]> dragAndThrustOEI = new ArrayList<Double[]>();
 				
-				for (int i=0; i<dragListOEI.size(); i++) {
-					dragAndThrustOEI.add(MyArrayUtils.convertFromDoublePrimitive(dragListOEI.get(i).getDrag()));
+				for (int i=0; i<dragList.size(); i++) {
+					dragAndThrustOEI.add(MyArrayUtils.convertFromDoublePrimitive(dragList.get(i).getDrag()));
 				}
 				for (int i=0; i<thrustListOEI.size(); i++) {
 					dragAndThrustOEI.add(MyArrayUtils.convertFromDoublePrimitive(thrustListOEI.get(i).getThrust()));
@@ -2143,10 +2114,10 @@ public class ACPerformanceCalculator {
 				List<Double[]> powerNeededAndAvailableAOE = new ArrayList<Double[]>();
 				List<String> legend = new ArrayList<String>();
 				
-				for (int i=0; i<dragListAOE.size(); i++) {
-					speed.add(MyArrayUtils.convertFromDoublePrimitive(dragListAOE.get(i).getSpeed()));
-					powerNeededAndAvailableAOE.add(MyArrayUtils.convertFromDoublePrimitive(dragListAOE.get(i).getPower()));
-					legend.add("Power needed at " + dragListAOE.get(i).getAltitude() + " m");
+				for (int i=0; i<dragList.size(); i++) {
+					speed.add(MyArrayUtils.convertFromDoublePrimitive(dragList.get(i).getSpeed()));
+					powerNeededAndAvailableAOE.add(MyArrayUtils.convertFromDoublePrimitive(dragList.get(i).getPower()));
+					legend.add("Power needed at " + dragList.get(i).getAltitude() + " m");
 				}
 				for (int i=0; i<thrustListAOE.size(); i++) {
 					speed.add(MyArrayUtils.convertFromDoublePrimitive(thrustListAOE.get(i).getSpeed()));
@@ -2174,8 +2145,8 @@ public class ACPerformanceCalculator {
 				// OEI
 				List<Double[]> powerNeededAndAvailableOEI = new ArrayList<Double[]>();
 				
-				for (int i=0; i<dragListOEI.size(); i++) {
-					powerNeededAndAvailableOEI.add(MyArrayUtils.convertFromDoublePrimitive(dragListOEI.get(i).getPower()));
+				for (int i=0; i<dragList.size(); i++) {
+					powerNeededAndAvailableOEI.add(MyArrayUtils.convertFromDoublePrimitive(dragList.get(i).getPower()));
 				}
 				for (int i=0; i<thrustListOEI.size(); i++) {
 					powerNeededAndAvailableOEI.add(MyArrayUtils.convertFromDoublePrimitive(thrustListOEI.get(i).getPower()));
@@ -2492,7 +2463,8 @@ public class ACPerformanceCalculator {
 					_maximumTakeOffMass,
 					_operatingEmptyMass,
 					_maximumFuelMass,
-					_cD0,
+					_polarCLCruise,
+					_polarCDCruise,
 					_oswaldCruise,
 					_theOperatingConditions.getMachCruise(),
 					_theOperatingConditions.getAltitudeCruise(),
