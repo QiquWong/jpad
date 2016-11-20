@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Duration;
+import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.Velocity;
@@ -170,7 +171,13 @@ public class ACPerformanceCalculator {
 	private Amount<Duration> _climbTimeAtSpecificClimbSpeedOEI;
 	//..............................................................................
 	// Cruise
-	// TODO
+	private List<DragMap> _dragListAltitudeParameterization;
+	private List<ThrustMap> _thrustListAltitudeParameterization;
+	private List<DragMap> _dragListWeightParameterization;
+	private List<ThrustMap> _thrustListWeightParameterization;
+	private List<Amount<Force>> _weightListCruise;
+	private List<Amount<Length>> _altitudeListCruise;
+	
 	//..............................................................................
 	// Landing
 	private LandingCalc _theLandingCalculator;
@@ -1463,6 +1470,15 @@ public class ACPerformanceCalculator {
 						plotList.add(PerformancePlotEnum.THRUST_DRAG_CURVES_CRUISE);
 				}
 
+				String powerNeededAndAvailableCruiseCurvesProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//plot/cruise/power_needed_and_available/@perform");
+				if (powerNeededAndAvailableCruiseCurvesProperty != null) {
+					if(powerNeededAndAvailableCruiseCurvesProperty.equalsIgnoreCase("TRUE")) 
+						plotList.add(PerformancePlotEnum.POWER_NEEDED_AND_AVAILABLE_CURVES_CRUISE);
+				}
+				
 				String efficiencyChartProperty = MyXMLReaderUtils
 						.getXMLPropertyByPath(
 								reader.getXmlDoc(), reader.getXpath(),
@@ -1653,6 +1669,57 @@ public class ACPerformanceCalculator {
 			
 			CalcClimb calcClimb = new CalcClimb();
 			calcClimb.calculateClimbPerformance(climbFolderPath);
+			
+		}
+		
+		if(_taskList.contains(PerformanceEnum.CRUISE)) {
+			
+			String cruiseFolderPath = JPADStaticWriteUtils.createNewFolder(
+					performanceFolderPath 
+					+ "CRUISE"
+					+ File.separator
+					);
+			
+			_altitudeListCruise = new ArrayList<Amount<Length>>();
+			_weightListCruise = new ArrayList<Amount<Force>>();
+			
+			for(int i=0; i<5; i++) {
+				_altitudeListCruise.add(
+						Amount.valueOf(
+								Math.round(
+										_theOperatingConditions.getAltitudeCruise()
+										.minus(_theOperatingConditions.getAltitudeCruise()
+												.times(0.25*(i)
+														)
+												)
+										.getEstimatedValue()
+										),
+								SI.METER
+								)
+						);
+				_weightListCruise.add(
+						Amount.valueOf(
+								Math.round(
+										(_maximumTakeOffMass.times(AtmosphereCalc.g0))
+										.minus((_maximumTakeOffMass.times(AtmosphereCalc.g0))
+												.times(0.05*(4-i))
+												)
+										.getEstimatedValue()
+										),
+								SI.NEWTON
+								)
+						);
+						
+			}
+			
+			CalcCruise calcCruise = new CalcCruise();
+			calcCruise.calculateThrustAndDrag();
+			calcCruise.calculateFlightEnvelope();
+			calcCruise.calculateEfficiency();
+			calcCruise.calculateSfcCurve();
+			calcCruise.calculateCruiseGrid();
+			if(_theAircraft.getTheAnalysisManager().getPlotPerformance() == true)
+				calcCruise.plotCruiseOutput(cruiseFolderPath);
 			
 		}
 		
@@ -2348,6 +2415,133 @@ public class ACPerformanceCalculator {
 	//............................................................................
 	public class CalcCruise {
 		
+		public void calculateThrustAndDrag() {
+			
+			//--------------------------------------------------------------------
+			// ALTITUDE PARAMETERIZATION AT FIXED WEIGHT
+			Airfoil meanAirfoil = new Airfoil(
+					LiftingSurface.calculateMeanAirfoil(_theAircraft.getWing()),
+					_theAircraft.getWing().getAerodynamicDatabaseReader()
+					);
+			
+			_dragListAltitudeParameterization = new ArrayList<DragMap>();
+			_thrustListAltitudeParameterization = new ArrayList<ThrustMap>();
+			
+			double[] speedArrayAltitudeParameterization = new double[100];
+			
+			for(int i=0; i<_altitudeListCruise.size(); i++) {
+				//..................................................................................................
+				speedArrayAltitudeParameterization = MyArrayUtils.linspace(
+						SpeedCalc.calculateSpeedStall(
+								_altitudeListCruise.get(i).doubleValue(SI.METER),
+								_maximumTakeOffMass.times(AtmosphereCalc.g0).getEstimatedValue(),
+								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_cLmaxClean
+								),
+						SpeedCalc.calculateTAS(
+								_theOperatingConditions.getMachCruise(),
+								_altitudeListCruise.get(i).doubleValue(SI.METER)
+								),
+						100
+						);
+				//..................................................................................................
+				_dragListAltitudeParameterization.add(
+						DragCalc.calculateDragAndPowerRequired(
+								_altitudeListCruise.get(i).doubleValue(SI.METER),
+								_maximumTakeOffMass.times(AtmosphereCalc.g0).getEstimatedValue(),
+								speedArrayAltitudeParameterization,
+								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_cLmaxClean,
+								MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
+								MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
+								_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
+								meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
+								meanAirfoil.getAirfoilCreator().getType()
+								)
+						);
+						
+				//..................................................................................................
+				_thrustListAltitudeParameterization.add(
+						ThrustCalc.calculateThrustAndPowerAvailable(
+								_altitudeListCruise.get(i).doubleValue(SI.METER),
+								1.0, 	// throttle setting array
+								speedArrayAltitudeParameterization,
+								EngineOperatingConditionEnum.CRUISE,
+								_theAircraft.getPowerPlant().getEngineType(), 
+								_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+								_theAircraft.getPowerPlant().getEngineNumber(),
+								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR()
+								)
+						);
+			}
+			
+			//--------------------------------------------------------------------
+			// WEIGHT PARAMETERIZATION AT FIXED ALTITUDE
+			_dragListWeightParameterization = new ArrayList<DragMap>();
+			_thrustListWeightParameterization = new ArrayList<ThrustMap>();
+			
+			
+			double[] speedArrayWeightParameterization = new double[100];
+			
+			for(int i=0; i<_weightListCruise.size(); i++) {
+				//..................................................................................................
+				speedArrayWeightParameterization = MyArrayUtils.linspace(
+						SpeedCalc.calculateSpeedStall(
+								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+								_weightListCruise.get(i).doubleValue(SI.NEWTON),
+								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_cLmaxClean
+								),
+						SpeedCalc.calculateTAS(
+								_theOperatingConditions.getMachCruise(),
+								_altitudeListCruise.get(i).doubleValue(SI.METER)
+								),
+						100
+						);
+				//..................................................................................................
+				_dragListWeightParameterization.add(
+						DragCalc.calculateDragAndPowerRequired(
+								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+								_weightListCruise.get(i).doubleValue(SI.NEWTON),
+								speedArrayWeightParameterization,
+								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_cLmaxClean,
+								MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
+								MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
+								_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
+								meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
+								meanAirfoil.getAirfoilCreator().getType()
+								)
+						);
+						
+			}
+			//..................................................................................................
+			_thrustListWeightParameterization.add(
+					ThrustCalc.calculateThrustAndPowerAvailable(
+							_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+							1.0, 	// throttle setting array
+							MyArrayUtils.linspace(
+									SpeedCalc.calculateSpeedStall(
+											_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+											_weightListCruise.get(0).doubleValue(SI.NEWTON),
+											_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+											_cLmaxClean
+											),
+									SpeedCalc.calculateTAS(
+											_theOperatingConditions.getMachCruise(),
+											_altitudeListCruise.get(_altitudeListCruise.size()-1).doubleValue(SI.METER)
+											),
+									100
+									),
+							EngineOperatingConditionEnum.CRUISE,
+							_theAircraft.getPowerPlant().getEngineType(), 
+							_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+							_theAircraft.getPowerPlant().getEngineNumber(),
+							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR()
+							)
+					);
+		}
+		
 		public void calculateFlightEnvelope() {
 			
 		}
@@ -2362,6 +2556,169 @@ public class ACPerformanceCalculator {
 		
 		public void calculateCruiseGrid() {
 			
+		}
+		
+		public void plotCruiseOutput(String cruiseFolderPath) {
+			
+			if(_plotList.contains(PerformancePlotEnum.THRUST_DRAG_CURVES_CRUISE)) {
+				
+				//--------------------------------------------------------------------
+				// ALTITUDE PARAMETERIZATION AT FIXED WEIGHT
+				List<Double[]> speedAltitudeParameterization = new ArrayList<Double[]>();
+				List<Double[]> dragAndThrustAltitudes = new ArrayList<Double[]>();
+				List<String> legendAltitudes = new ArrayList<String>();
+				
+				for (int i=0; i<_dragListAltitudeParameterization.size(); i++) {
+					speedAltitudeParameterization.add(MyArrayUtils.convertFromDoublePrimitive(_dragListAltitudeParameterization.get(i).getSpeed()));
+					dragAndThrustAltitudes.add(MyArrayUtils.convertFromDoublePrimitive(_dragListAltitudeParameterization.get(i).getDrag()));
+					legendAltitudes.add("Drag at " + _dragListAltitudeParameterization.get(i).getAltitude() + " m");
+				}
+				for (int i=0; i<_thrustListAltitudeParameterization.size(); i++) {
+					speedAltitudeParameterization.add(MyArrayUtils.convertFromDoublePrimitive(_thrustListAltitudeParameterization.get(i).getSpeed()));
+					dragAndThrustAltitudes.add(MyArrayUtils.convertFromDoublePrimitive(_thrustListAltitudeParameterization.get(i).getThrust()));
+					legendAltitudes.add("Thrust at " + _thrustListAltitudeParameterization.get(i).getAltitude() + " m");
+				}
+				
+				try {
+					MyChartToFileUtils.plot(
+							speedAltitudeParameterization, dragAndThrustAltitudes,
+							"Drag and Thrust curves at different altitudes",
+							"Speed", "Forces",
+							null, null, null, null,
+							"m/s", "N",
+							true, legendAltitudes,
+							cruiseFolderPath, "Drag_and_Thrust_curves_altitudes"
+							);
+				} catch (InstantiationException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+
+				//--------------------------------------------------------------------
+				// WEIGHT PARAMETERIZATION AT FIXED ALTITUDE
+				List<Double[]> speedWeightsParameterization = new ArrayList<Double[]>();
+				List<Double[]> dragAndThrustWeights = new ArrayList<Double[]>();
+				List<String> legendWeights = new ArrayList<String>();
+				
+				for (int i=0; i<_dragListWeightParameterization.size(); i++) {
+					speedWeightsParameterization.add(MyArrayUtils.convertFromDoublePrimitive(_dragListWeightParameterization.get(i).getSpeed()));
+					dragAndThrustWeights.add(MyArrayUtils.convertFromDoublePrimitive(_dragListWeightParameterization.get(i).getDrag()));
+					legendWeights.add("Drag at " + Math.round(_dragListWeightParameterization.get(i).getWeight()/9.81) + " kg");
+				}
+				speedWeightsParameterization.add(MyArrayUtils.convertFromDoublePrimitive(_thrustListWeightParameterization.get(0).getSpeed()));
+				dragAndThrustWeights.add(MyArrayUtils.convertFromDoublePrimitive(_thrustListWeightParameterization.get(0).getThrust()));
+				legendWeights.add("Thrust");
+				
+				try {
+					MyChartToFileUtils.plot(
+							speedWeightsParameterization, dragAndThrustWeights,
+							"Drag and Thrust curves at different weights",
+							"Speed", "Forces",
+							null, null, null, null,
+							"m/s", "N",
+							true, legendWeights,
+							cruiseFolderPath, "Drag_and_Thrust_curves_weights"
+							);
+				} catch (InstantiationException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+				
+			}
+			
+			if(_plotList.contains(PerformancePlotEnum.POWER_NEEDED_AND_AVAILABLE_CURVES_CRUISE)) {
+				
+				//--------------------------------------------------------------------
+				// ALTITUDE PARAMETERIZATION AT FIXED WEIGHT
+				List<Double[]> speedAltitudeParameterization = new ArrayList<Double[]>();
+				List<Double[]> powerNeededAndAvailableAltitudes = new ArrayList<Double[]>();
+				List<String> legendAltitudes = new ArrayList<String>();
+				
+				for (int i=0; i<_dragListAltitudeParameterization.size(); i++) {
+					speedAltitudeParameterization.add(MyArrayUtils.convertFromDoublePrimitive(_dragListAltitudeParameterization.get(i).getSpeed()));
+					powerNeededAndAvailableAltitudes.add(MyArrayUtils.convertFromDoublePrimitive(_dragListAltitudeParameterization.get(i).getPower()));
+					legendAltitudes.add("Power needed at " + _dragListAltitudeParameterization.get(i).getAltitude() + " m");
+				}
+				for (int i=0; i<_thrustListAltitudeParameterization.size(); i++) {
+					speedAltitudeParameterization.add(MyArrayUtils.convertFromDoublePrimitive(_thrustListAltitudeParameterization.get(i).getSpeed()));
+					powerNeededAndAvailableAltitudes.add(MyArrayUtils.convertFromDoublePrimitive(_thrustListAltitudeParameterization.get(i).getPower()));
+					legendAltitudes.add("Power available at " + _thrustListAltitudeParameterization.get(i).getAltitude() + " m");
+				}
+				
+				try {
+					MyChartToFileUtils.plot(
+							speedAltitudeParameterization, powerNeededAndAvailableAltitudes,
+							"Power needed and available at different altitudes",
+							"Speed", "Powers",
+							null, null, null, null,
+							"m/s", "W",
+							true, legendAltitudes,
+							cruiseFolderPath, "Power_needed_and_available_altitudes"
+							);
+				} catch (InstantiationException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+
+				//--------------------------------------------------------------------
+				// WEIGHT PARAMETERIZATION AT FIXED ALTITUDE
+				List<Double[]> speedWeightsParameterization = new ArrayList<Double[]>();
+				List<Double[]> powerNeededAndAvailableWeights = new ArrayList<Double[]>();
+				List<String> legendWeights = new ArrayList<String>();
+				
+				for (int i=0; i<_dragListWeightParameterization.size(); i++) {
+					speedWeightsParameterization.add(MyArrayUtils.convertFromDoublePrimitive(_dragListWeightParameterization.get(i).getSpeed()));
+					powerNeededAndAvailableWeights.add(MyArrayUtils.convertFromDoublePrimitive(_dragListWeightParameterization.get(i).getPower()));
+					legendWeights.add("Power needed at " + Math.round(_dragListWeightParameterization.get(i).getWeight()/9.81) + " kg");
+				}
+				speedWeightsParameterization.add(MyArrayUtils.convertFromDoublePrimitive(_thrustListWeightParameterization.get(0).getSpeed()));
+				powerNeededAndAvailableWeights.add(MyArrayUtils.convertFromDoublePrimitive(_thrustListWeightParameterization.get(0).getPower()));
+				legendWeights.add("Power available");
+				
+				try {
+					MyChartToFileUtils.plot(
+							speedWeightsParameterization, powerNeededAndAvailableWeights,
+							"Power needed and available at different weights",
+							"Speed", "Powers",
+							null, null, null, null,
+							"m/s", "W",
+							true, legendWeights,
+							cruiseFolderPath, "Power_needed_and_available_weights"
+							);
+				} catch (InstantiationException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+				
+			}
+			
+			if(_plotList.contains(PerformancePlotEnum.CRUISE_FLIGHT_ENVELOPE)) {
+				
+				
+				
+			}
+			
+			if(_plotList.contains(PerformancePlotEnum.EFFICIENCY_CURVES)) {
+				
+				
+				
+			}
+			
+			if(_plotList.contains(PerformancePlotEnum.SFC_CURVE)) {
+				
+				
+				
+			}
+			
+			if(_plotList.contains(PerformancePlotEnum.CRUISE_GRID_CHART)) {
+				
+				
+				
+			}
 		}
 		
 	}
@@ -3790,5 +4147,74 @@ public class ACPerformanceCalculator {
 
 	public void setClimbSpeed(Amount<Velocity> _climbSpeed) {
 		this._climbSpeed = _climbSpeed;
+	}
+
+	/**
+	 * @return the _dragListAltitudeParameterization
+	 */
+	public List<DragMap> getDragListAltitudeParameterization() {
+		return _dragListAltitudeParameterization;
+	}
+
+	/**
+	 * @param _dragListAltitudeParameterization the _dragListAltitudeParameterization to set
+	 */
+	public void setDragListAltitudeParameterization(List<DragMap> _dragListAltitudeParameterization) {
+		this._dragListAltitudeParameterization = _dragListAltitudeParameterization;
+	}
+
+	/**
+	 * @return the _thrustListAltitudeParameterization
+	 */
+	public List<ThrustMap> getThrustListAltitudeParameterization() {
+		return _thrustListAltitudeParameterization;
+	}
+
+	/**
+	 * @param _thrustListAltitudeParameterization the _thrustListAltitudeParameterization to set
+	 */
+	public void setThrustListAltitudeParameterization(List<ThrustMap> _thrustListAltitudeParameterization) {
+		this._thrustListAltitudeParameterization = _thrustListAltitudeParameterization;
+	}
+
+	/**
+	 * @return the _dragListWeightParameterization
+	 */
+	public List<DragMap> getDragListWeightParameterization() {
+		return _dragListWeightParameterization;
+	}
+
+	/**
+	 * @param _dragListWeightParameterization the _dragListWeightParameterization to set
+	 */
+	public void setDragListWeightParameterization(List<DragMap> _dragListWeightParameterization) {
+		this._dragListWeightParameterization = _dragListWeightParameterization;
+	}
+
+	/**
+	 * @return the _thrustListWeightParameterization
+	 */
+	public List<ThrustMap> getThrustListWeightParameterization() {
+		return _thrustListWeightParameterization;
+	}
+
+	public void setThrustListWeightParameterization(List<ThrustMap> _thrustListWeightParameterization) {
+		this._thrustListWeightParameterization = _thrustListWeightParameterization;
+	}
+
+	public List<Amount<Force>> getWeightListCruise() {
+		return _weightListCruise;
+	}
+
+	public void setWeightListCruise(List<Amount<Force>> _weightListCruise) {
+		this._weightListCruise = _weightListCruise;
+	}
+
+	public List<Amount<Length>> getAltitudeListCruise() {
+		return _altitudeListCruise;
+	}
+
+	public void setAltitudeListCruise(List<Amount<Length>> _altitudeListCruise) {
+		this._altitudeListCruise = _altitudeListCruise;
 	}
 }

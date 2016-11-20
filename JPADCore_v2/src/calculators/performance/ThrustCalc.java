@@ -146,8 +146,8 @@ public class ThrustCalc {
 		
 		kCorrection = 1.0;
 		
-		if(flightCondition == EngineOperatingConditionEnum.CRUISE)
-			kCorrection = 1.43279165;	// FIXME: More in depth analysis required
+//		if(flightCondition == EngineOperatingConditionEnum.CRUISE)
+//			kCorrection = 1.43279165;	// FIXME: More in depth analysis required
 		
 		double thrustRatio = EngineDatabaseManager.getThrustRatio(mach, altitude, bpr, engineType, flightCondition);
 		

@@ -639,8 +639,8 @@ public class MyChartToFileUtils {
 		paintArray[5] = ChartColor.DARK_GRAY;
 		paintArray[6] = ChartColor.DARK_BLUE;
 		paintArray[7] = ChartColor.DARK_RED;
-		paintArray[8] = ChartColor.ORANGE;
-		paintArray[9] = ChartColor.VERY_DARK_GREEN;
+		paintArray[8] = ChartColor.VERY_DARK_GREEN;
+		paintArray[9] = ChartColor.ORANGE;
 		
 		XYPlot plot = (XYPlot) chart.getPlot(); 
 		plot.setDrawingSupplier(new DefaultDrawingSupplier(
@@ -1819,8 +1819,8 @@ public class MyChartToFileUtils {
 		paintArray[5] = ChartColor.DARK_GRAY;
 		paintArray[6] = ChartColor.DARK_BLUE;
 		paintArray[7] = ChartColor.DARK_RED;
-		paintArray[8] = ChartColor.ORANGE;
-		paintArray[9] = ChartColor.VERY_DARK_GREEN;
+		paintArray[8] = ChartColor.VERY_DARK_GREEN;
+		paintArray[9] = ChartColor.ORANGE;
 		
 		XYPlot plot = (XYPlot) xylineChart.getPlot(); 
 		plot.setDrawingSupplier(new DefaultDrawingSupplier(
@@ -1915,8 +1915,8 @@ public class MyChartToFileUtils {
 		paintArray[5] = ChartColor.DARK_GRAY;
 		paintArray[6] = ChartColor.DARK_BLUE;
 		paintArray[7] = ChartColor.DARK_RED;
-		paintArray[8] = ChartColor.ORANGE;
-		paintArray[9] = ChartColor.VERY_DARK_GREEN;
+		paintArray[8] = ChartColor.VERY_DARK_GREEN;
+		paintArray[9] = ChartColor.ORANGE;
 		
 		XYPlot plot = (XYPlot) xylineChart.getPlot(); 
 		plot.setDrawingSupplier(new DefaultDrawingSupplier(
@@ -1995,8 +1995,8 @@ public class MyChartToFileUtils {
 		paintArray[5] = ChartColor.DARK_GRAY;
 		paintArray[6] = ChartColor.DARK_BLUE;
 		paintArray[7] = ChartColor.DARK_RED;
-		paintArray[8] = ChartColor.ORANGE;
-		paintArray[9] = ChartColor.VERY_DARK_GREEN;
+		paintArray[8] = ChartColor.VERY_DARK_GREEN;
+		paintArray[9] = ChartColor.ORANGE;
 		
 		chart.getPlot().setDrawingSupplier(new DefaultDrawingSupplier(
                 paintArray,

@@ -93,11 +93,11 @@
 		</climb>
 		<cruise>
 			<thrust_drag perform="TRUE"/>
+			<power_needed_and_available perform="TRUE"/>
 			<efficiency perform="TRUE"/>
 			<sfc perform="TRUE"/>
 			<cruise_grid perform="TRUE"/>
 			<flight_envelope perform="TRUE"/>
-			<!-- ADD CHARTS -->
 		</cruise>
 		<landing>
 			<simulations perform="TRUE"/>
