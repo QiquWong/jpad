@@ -1424,7 +1424,7 @@ public class StabilityExecutableCalculator {
 //			System.out.println("Velocity " + velocity);
 
 			inducedAngleOfAttack.add(i, Amount.valueOf(
-					Math.atan(verticalVelocity[i]/Tas.doubleValue(SI.METERS_PER_SECOND))/2,SI.RADIAN));
+					Math.atan(verticalVelocity[i]/Tas.doubleValue(SI.METERS_PER_SECOND))*57.3/2,NonSI.DEGREE_ANGLE));
 
 //			System.out.println( alphaInduced[i]);
 		//	System.out.println( yStationsActual[i]/semispan);		

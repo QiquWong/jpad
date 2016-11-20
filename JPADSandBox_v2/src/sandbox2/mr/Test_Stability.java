@@ -135,6 +135,7 @@ public class Test_Stability{
 		theCalculator.calculateWingFuselageLiftCharacterstics();
 		theCalculator.initializeDragArray();
 		theCalculator.calculateWingDragCharacterstics();
+		theCalculator.calculateHTailDragCharacterstics();
 		//...
 		theCalculator.printAllData();
 		String sb = theCalculator.printAllResults();
