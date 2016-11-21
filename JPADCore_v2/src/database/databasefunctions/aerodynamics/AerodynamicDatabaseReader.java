@@ -128,10 +128,12 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 	 */
 	
 	public double getX_bar_ac_w_x_ac_over_root_chord_vs_tan_L_LE_over_beta_AR_times_tan_L_LE_lambda(double taperRatio, double sweepAngleLE, double mach, double aspectRatio) {
-		double tgSweepAngleLe = Math.tan(sweepAngleLE);
-		double v3 = tgSweepAngleLe/(Math.sqrt(1- Math.pow(mach,2)));
-		if (v3 < 1) {}
-		else v3 = (Math.sqrt(1- Math.pow(mach,2)))/tgSweepAngleLe;
+		double tgSweepAngleLe = Math.tan(sweepAngleLE/57.3);
+		double v3;
+		if(mach>1)
+		v3 = (Math.sqrt(1- Math.pow(mach,2)))/tgSweepAngleLe;
+		else
+		v3 = tgSweepAngleLe/(Math.sqrt(1- Math.pow(mach,2)));
 	    return x_bar_ac_w_x_ac_over_root_chord_vs_tan_L_LE_over_beta_AR_times_tan_L_LE_lambda.value( v3, aspectRatio*tgSweepAngleLe, taperRatio );
 	}
 	

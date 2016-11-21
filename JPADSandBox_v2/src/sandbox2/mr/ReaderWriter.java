@@ -366,59 +366,59 @@ public class ReaderWriter{
 		//---------------------------------------------------------------------------------
 		// LIFT CURVE OF AIRFOIL:
 		
-//		//wing
-//		String wingLiftAirfoilMethod = MyXMLReaderUtils
-//				.getXMLPropertyByPath(
-//						reader.getXmlDoc(), reader.getXpath(),
-//						"//@WingAirfoilLiftCurve");
-//		if(wingLiftAirfoilMethod.equalsIgnoreCase("INPUT"))
-//			theStabilityCalculator.setWingairfoilLiftCoefficientCurve(MethodEnum.INPUT);
-//		if(wingLiftAirfoilMethod.equalsIgnoreCase("CALCULATED"))
-//			theStabilityCalculator.setWingairfoilLiftCoefficientCurve(MethodEnum.CLASSIC);
-//		
-//		if(theStabilityCalculator.getWingairfoilLiftCoefficientCurve()==MethodEnum.INPUT){
-//			for (int i=0; i<theStabilityCalculator.getWingNumberOfGivenSections(); i++){
-//				List<String> alphasWing = new ArrayList<>();
-//				List<Amount<Angle>> alphasWingAmount = new ArrayList<>();
-//				alphasWing =JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//wing/airfoil_lift_curve/alpha").get(i));
-//				List<String> clWing = new ArrayList<>();
-//				List<Double> clWingAmount = new ArrayList<>();
-//				clWing =JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//wing/airfoil_lift_curve/lift_coefficient").get(i));
-//				for (int ii=0; ii<clWing.size(); ii++){
-//					clWingAmount.add(Double.valueOf(clWing.get(ii)));
-//					alphasWingAmount.add(Amount.valueOf(Double.valueOf(alphasWing.get(ii)),NonSI.DEGREE_ANGLE));
-//				}
-//				theStabilityCalculator.getClDistributionAirfoilsWing().add(i,clWingAmount);
-//				theStabilityCalculator.getAlphaAirfoilsWing().add(i,alphasWingAmount);
-//			}
-//		}
-//		
-//		//horizontal tail
-//		String hTailLiftAirfoilMethod = MyXMLReaderUtils
-//				.getXMLPropertyByPath(
-//						reader.getXmlDoc(), reader.getXpath(),
-//						"//@HtailAirfoilLiftCurve");
-//		if(hTailLiftAirfoilMethod.equalsIgnoreCase("INPUT"))
-//			theStabilityCalculator.setHTailairfoilLiftCoefficientCurve(MethodEnum.INPUT);
-//		if(hTailLiftAirfoilMethod.equalsIgnoreCase("CALCULATED"))
-//			theStabilityCalculator.setHTailairfoilLiftCoefficientCurve(MethodEnum.CLASSIC);
-//		
-//		if(theStabilityCalculator.getHTailairfoilLiftCoefficientCurve()==MethodEnum.INPUT){
-//			for (int i=0; i<theStabilityCalculator.getHTailnumberOfGivenSections(); i++){
-//				List<String> alphasHTail = new ArrayList<>();
-//				List<Amount<Angle>> alphasHTailAmount = new ArrayList<>();
-//				alphasHTail =JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//horizontal_tail/airfoil_lift_curve/alpha").get(i));
-//				List<String> clHTail = new ArrayList<>();
-//				List<Double> clHTailAmount = new ArrayList<>();
-//				clHTail =JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//horizontal_tail/airfoil_lift_curve/lift_coefficient").get(i));
-//				for (int ii=0; ii<clHTail.size(); ii++){
-//					clHTailAmount.add(Double.valueOf(clHTail.get(ii)));
-//					alphasHTailAmount.add(Amount.valueOf(Double.valueOf(alphasHTail.get(ii)),NonSI.DEGREE_ANGLE));
-//				}
-//				theStabilityCalculator.getClDistributionAirfoilsHTail().add(i,clHTailAmount);
-//				theStabilityCalculator.getAlphaAirfoilsHTail().add(i,alphasHTailAmount);
-//			}
-//		}
+		//wing
+		String wingLiftAirfoilMethod = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@WingAirfoilLiftCurve");
+		if(wingLiftAirfoilMethod.equalsIgnoreCase("INPUT"))
+			theStabilityCalculator.setWingairfoilLiftCoefficientCurve(MethodEnum.INPUT);
+		if(wingLiftAirfoilMethod.equalsIgnoreCase("CALCULATED"))
+			theStabilityCalculator.setWingairfoilLiftCoefficientCurve(MethodEnum.CLASSIC);
+		
+		if(theStabilityCalculator.getWingairfoilLiftCoefficientCurve()==MethodEnum.INPUT){
+			for (int i=0; i<theStabilityCalculator.getWingNumberOfGivenSections(); i++){
+				List<String> alphasWing = new ArrayList<>();
+				List<Amount<Angle>> alphasWingAmount = new ArrayList<>();
+				alphasWing =JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//wing/airfoil_lift_curve/alpha").get(i));
+				List<String> clWing = new ArrayList<>();
+				List<Double> clWingAmount = new ArrayList<>();
+				clWing =JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//wing/airfoil_lift_curve/lift_coefficient").get(i));
+				for (int ii=0; ii<clWing.size(); ii++){
+					clWingAmount.add(Double.valueOf(clWing.get(ii)));
+					alphasWingAmount.add(Amount.valueOf(Double.valueOf(alphasWing.get(ii)),NonSI.DEGREE_ANGLE));
+				}
+				theStabilityCalculator.getClDistributionAirfoilsWing().add(i,clWingAmount);
+				theStabilityCalculator.getAlphaAirfoilsWing().add(i,alphasWingAmount);
+			}
+		}
+		
+		//horizontal tail
+		String hTailLiftAirfoilMethod = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@HtailAirfoilLiftCurve");
+		if(hTailLiftAirfoilMethod.equalsIgnoreCase("INPUT"))
+			theStabilityCalculator.setHTailairfoilLiftCoefficientCurve(MethodEnum.INPUT);
+		if(hTailLiftAirfoilMethod.equalsIgnoreCase("CALCULATED"))
+			theStabilityCalculator.setHTailairfoilLiftCoefficientCurve(MethodEnum.CLASSIC);
+		
+		if(theStabilityCalculator.getHTailairfoilLiftCoefficientCurve()==MethodEnum.INPUT){
+			for (int i=0; i<theStabilityCalculator.getHTailnumberOfGivenSections(); i++){
+				List<String> alphasHTail = new ArrayList<>();
+				List<Amount<Angle>> alphasHTailAmount = new ArrayList<>();
+				alphasHTail =JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//horizontal_tail/airfoil_lift_curve/alpha").get(i));
+				List<String> clHTail = new ArrayList<>();
+				List<Double> clHTailAmount = new ArrayList<>();
+				clHTail =JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//horizontal_tail/airfoil_lift_curve/lift_coefficient").get(i));
+				for (int ii=0; ii<clHTail.size(); ii++){
+					clHTailAmount.add(Double.valueOf(clHTail.get(ii)));
+					alphasHTailAmount.add(Amount.valueOf(Double.valueOf(alphasHTail.get(ii)),NonSI.DEGREE_ANGLE));
+				}
+				theStabilityCalculator.getClDistributionAirfoilsHTail().add(i,clHTailAmount);
+				theStabilityCalculator.getAlphaAirfoilsHTail().add(i,alphasHTailAmount);
+			}
+		}
 		//---------------------------------------------------------------------------------
 		// DRAG POLAR:
 		

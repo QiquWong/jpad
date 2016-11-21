@@ -1,5 +1,6 @@
 package sandbox2.mr;
 
+import static java.lang.Math.pow;
 import static java.lang.Math.toRadians;
 
 import java.util.ArrayList;
@@ -7,6 +8,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
@@ -25,7 +28,9 @@ import analyses.OperatingConditions;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.AnglesCalc;
 import calculators.aerodynamics.LiftCalc;
+import calculators.aerodynamics.MomentCalc;
 import calculators.aerodynamics.NasaBlackwell;
+import calculators.geometry.LSGeometryCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.AerodynamicAndStabilityPlotEnum;
 import configuration.enumerations.AircraftEnum;
@@ -39,6 +44,10 @@ import configuration.enumerations.PerformanceEnum;
 import configuration.enumerations.PerformancePlotEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
+import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
+import javaslang.Tuple;
+import javaslang.Tuple2;
+import javaslang.Tuple5;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyMathUtils;
@@ -173,6 +182,7 @@ public class StabilityExecutableManager {
 	private Amount<Angle> _fuselageWindshieldAngle;
 	private Amount<Angle> _fuselageUpSweepAngle;
 	private Double _fuselageXPercentPositionPole;
+	private Amount<Area> _fuselageFrontSurface;
 
 
 	//Horizontal Tail -------------------------------------------
@@ -228,6 +238,8 @@ public class StabilityExecutableManager {
 	private List<Double> _hTailMaxThicknessDistribution;  // not from input 
 	private List<Double> _hTailClAlphaBreakPointsDeg;
 	private List<Double> _hTailCl0BreakPoints;
+	private List<Double> _hTailCl0Distribution  = new ArrayList<>();  // not from input
+	private List<Double> _hTailClAlphaistributionDeg  = new ArrayList<>();;
 
 	//Elevator-------------------------------------------
 	//----------------------------------------------------------------
@@ -267,8 +279,10 @@ public class StabilityExecutableManager {
 	String databaseFolderPath;
 	String aerodynamicDatabaseFileName;
 	String highLiftDatabaseFileName;
+	String fusDesDatabaseFileName;
 	AerodynamicDatabaseReader aeroDatabaseReader;
 	HighLiftDatabaseReader highLiftDatabaseReader;
+	FusDesDatabaseReader fusDesDatabaseReader;
 	double [] alphaZeroLiftRad;
 	double [] twistDistributionRad;
 	double [] alphaZeroLiftRadHTail;
@@ -484,8 +498,31 @@ public class StabilityExecutableManager {
 
 	//Moment -------------------------------------------
 	//----------------------------------------------------------------
+	
+	//wing
+	private Map<MethodEnum, Amount<Length>> _wingXACLRF = new HashMap<MethodEnum, Amount<Length>>();
+	private Map<MethodEnum, Amount<Length>> _wingXACMAC = new HashMap<MethodEnum, Amount<Length>>();
+	private Map<MethodEnum, Double> _wingXACMACpercent = new HashMap<MethodEnum, Double>();
+	private Map<MethodEnum, Amount<Length>> _wingXACBRF = new HashMap<MethodEnum, Amount<Length>>();
+	private Amount<Length> _wingMAC;
+	private Amount<Length>_wingMeanAerodynamicChordLeadingEdgeX;
+	
+	//h tail
+	private Map<MethodEnum, Amount<Length>> _hTailXACLRF = new HashMap<MethodEnum, Amount<Length>>();
+	private Map<MethodEnum, Amount<Length>> _hTailXACBRF = new HashMap<MethodEnum, Amount<Length>>();
+	private Map<MethodEnum, Amount<Length>> _hTailXACMAC = new HashMap<MethodEnum, Amount<Length>>();
+	private Map<MethodEnum, Double> _hTailXACMACpercent = new HashMap<MethodEnum, Double>();
+	private Amount<Length> _hTailMAC;
+	private Amount<Length> _hTailMeanAerodynamicChordLeadingEdgeX;
+	
+	//fuselage
+	private Map<MethodEnum, Double> _fuselageCM0 = new HashMap<MethodEnum, Double>();
+	private Map<MethodEnum, Double> _fuselageCMAlpha = new HashMap<MethodEnum, Double>();
+	private List<Double> _fuselageMomentCoefficient = new ArrayList<Double>();
+	private Map<MethodEnum, Amount<Length>> _wingBodyXACBRF = new HashMap<MethodEnum, Amount<Length>>();
+	private Double _deltaXACdueToFuselage;
 
-
+	
 	//Stability -------------------------------------------
 	//----------------------------------------------------------------
 
@@ -507,8 +544,10 @@ public class StabilityExecutableManager {
 		databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
 		aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
 		highLiftDatabaseFileName = "HighLiftDatabase.h5";
+		fusDesDatabaseFileName = "FusDes_database.h5";
 		aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
 		highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
+		fusDesDatabaseReader = new FusDesDatabaseReader(databaseFolderPath, fusDesDatabaseFileName);
 
 		// dependent variables
 
@@ -882,6 +921,27 @@ public class StabilityExecutableManager {
 									- this._hTailAlphaZeroLiftBreakPoints.get(i).doubleValue(NonSI.DEGREE_ANGLE)*
 									this._hTailClAlphaBreakPointsDeg.get(i)) ;
 						}
+						
+						//cl alpha
+						Double [] clAlphaDistributionArrayTail = MyMathUtils.getInterpolatedValue1DLinear(
+								MyArrayUtils.convertToDoublePrimitive(_hTailYAdimensionalBreakPoints),
+								MyArrayUtils.convertToDoublePrimitive(_hTailClAlphaBreakPointsDeg),
+								MyArrayUtils.convertToDoublePrimitive(_hTailYAdimensionalDistribution)
+								);	
+						this._hTailClAlphaistributionDeg = new ArrayList<>();
+						for(int i=0; i<clAlphaDistributionArrayTail.length; i++)
+							_hTailClAlphaistributionDeg.add(clAlphaDistributionArrayTail[i]);
+
+						//cl zero
+			
+						Double [] clZeroDistributionTail = MyMathUtils.getInterpolatedValue1DLinear(
+								MyArrayUtils.convertToDoublePrimitive(_hTailYAdimensionalBreakPoints),
+								MyArrayUtils.convertToDoublePrimitive(_hTailCl0BreakPoints),
+								MyArrayUtils.convertToDoublePrimitive(_hTailYAdimensionalDistribution)
+								);	
+						for(int i=0; i<clZeroDistributionTail.length; i++)
+							_hTailCl0Distribution.add(clZeroDistributionTail[i]);
+
 
 						//---------------
 						// Other values       |
@@ -921,6 +981,9 @@ public class StabilityExecutableManager {
 
 						// the horizontal distance is always the same, the vertical changes in function of the angle of attack.
 
+	// FUSELAGE -----------
+						
+ _fuselageFrontSurface = Amount.valueOf(Math.PI*Math.pow(_fuselageDiameter.doubleValue(SI.METER), 2)/4, SI.SQUARE_METRE);
 
 	}
 
@@ -1225,8 +1288,8 @@ public class StabilityExecutableManager {
 			int sec;
 			for (int i = 0; i< this._wingNumberOfGivenSections; i++){
 				sec =i+1;
-				System.out.println("\t\tcl polar section " + sec + " =  -->" + clPolarAirfoilWingDragPolar.get(i) + "\n");
-				System.out.println("\t\tcd polar section " + sec + " =  -->" + cDPolarAirfoilsWing.get(i) + "\n");
+				System.out.println("\tcl polar section " + sec + " =  -->" + clPolarAirfoilWingDragPolar.get(i));
+				System.out.println("\tcd polar section " + sec + " =  -->" + cDPolarAirfoilsWing.get(i) );
 			}
 		}
 		if(_wingDragMethod == MethodEnum.INPUT){
@@ -1374,14 +1437,12 @@ public class StabilityExecutableManager {
 			.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this._downwashAngleVariableSlingerland, "\t\tDownwash angle with Variable Gradient Slingerland", ","))
 			.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this._horizontalDistance, "\t\thorizontal distance Variable Slingerland", ","))
 			.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this._verticalDistance, "\t\tVertical distance with Variable Gradient Slingerland", ","))
-			.append("\t-------------------------------------\n")
 			;
 		}
 
 
-		sb.append("\tFuselage\n")
-		.append("\t-------------------------------------\n")
-		.append("\t\tGround roll distance = " + _wingcLZero + "\n")
+		sb.append("\t-------------------------------------\n")
+		.append("\tFuselage\n")
 		.append("\t-------------------------------------\n")
 		.append("\t\talpha zero lift = " + _wingAlphaZeroLift+ "\n" )
 		.append("\t\tCL zero = " + _fuselageWingClZero+ "\n")
@@ -1393,7 +1454,8 @@ public class StabilityExecutableManager {
 		.append("\t\tCL 3D Curve = " + Arrays.toString(_fuselagewingliftCoefficient3DCurve)+ "\n")
 		;
 
-		sb.append("\tHorizontal Tail\n")
+		sb.append("\t-------------------------------------\n")
+		.append("\tHorizontal Tail\n")
 		.append("\t-------------------------------------\n")
 		.append("\t\talpha zero lift = " + _hTailAlphaZeroLift+ "\n" )
 		.append("\t\tCL zero = " + _hTailcLZero+ "\n")
@@ -1408,9 +1470,8 @@ public class StabilityExecutableManager {
 		.append("\t\tCl distribution at CL max = " + Arrays.toString(_hTailliftCoefficientDistributionatCLMax) + "\n")
 		;
 
-		sb.append("ELEVATOR\n")
-		.append("-------------------------------------\n")
-		.append("\tWing\n")
+		sb.append("\t-------------------------------------\n")
+		.append("\tElevator\n")
 		.append("\t-------------------------------------\n")
 		.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this._alphasTail, "\t\tAlpha Tail", ","))
 		;	
@@ -1421,16 +1482,17 @@ public class StabilityExecutableManager {
 		}
 
 
-		sb.append("DRAG\n")
+		sb.append("\nDRAG\n")
 		.append("-------------------------------------\n")
 		.append("\tWing\n")
 		.append("\t-------------------------------------\n")
 		;
 		if(_wingDragMethod == MethodEnum.AIRFOIL_INPUT){
-			sb.append("\t\tCL Wing = " + _wingliftCoefficient3DCurveCONDITION+ "\n")
+			sb.append("\t\tCL Wing = " + Arrays.toString(_wingliftCoefficient3DCurveCONDITION) + "\n")
 			.append("\t\tCD Parasite = " + _wingParasiteDragCoefficientDistribution+ "\n")
 			.append("\t\tCD Induced = " + _wingInducedDragCoefficientDistribution+ "\n")
 			.append("\t\tCD Total = " + _wingDragCoefficient3DCurve+ "\n")
+			.append("\t\tEta stations = " + _wingYAdimensionalDistribution+ "\n")
 			.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(_wingInducedAngleOfAttack.get(0), "\t\tInduced angle of Attack at " + _alphasWing.get(0) , ","))
 			.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(_wingInducedAngleOfAttack.get((int) Math.ceil(_numberOfAlphasBody/2)), "\t\tInduced angle of Attack at " + _alphasWing.get((int) Math.ceil(_numberOfAlphasBody/2)) , ","))
 			.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(_wingInducedAngleOfAttack.get(_numberOfAlphasBody-1), "\t\tInduced angle of Attack at " + _alphasWing.get(_numberOfAlphasBody-1) , ","))
@@ -1445,14 +1507,16 @@ public class StabilityExecutableManager {
 			;
 		}
 
-		sb.append("\tHorizontal Tail\n")
+		sb.append("\t-------------------------------------\n")
+		.append("\tHorizontal Tail\n")
 		.append("\t-------------------------------------\n")
 		;
 		if(_hTailDragMethod == MethodEnum.AIRFOIL_INPUT){
-			sb.append("\t\tCL Htail = " + _hTailliftCoefficient3DCurveCONDITION+ "\n")
+			sb.append("\t\tCL Htail = " + Arrays.toString(_hTailliftCoefficient3DCurve) + "\n")
 			.append("\t\tCD Parasite = " + _hTailParasiteDragCoefficientDistribution+ "\n")
 			.append("\t\tCD Induced = " + _hTailInducedDragCoefficientDistribution+ "\n")
 			.append("\t\tCD Total = " + _hTailDragCoefficient3DCurve+ "\n")
+			.append("\t\tEta stations = " + _hTailYAdimensionalDistribution+ "\n")
 			.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(_hTailInducedAngleOfAttack.get(0), "\t\tInduced angle of Attack at " + _alphasTail.get(0) , ","))
 			.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(_hTailInducedAngleOfAttack.get((int) Math.ceil(_numberOfAlphasBody/2)), "\t\tInduced angle of Attack at " + _alphasTail.get((int) Math.ceil(_numberOfAlphasBody/2)) , ","))
 			.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(_hTailInducedAngleOfAttack.get(_numberOfAlphasBody-1), "\t\tInduced angle of Attack at " + _alphasTail.get(_numberOfAlphasBody-1) , ","))
@@ -1467,8 +1531,37 @@ public class StabilityExecutableManager {
 			;
 		}
 		
+		sb.append("\nMOMENT\n")
+		.append("-------------------------------------\n")
+		.append("\tWing\n")
+		.append("\t-------------------------------------\n")
+		.append("\t\tMAC = " +_wingMAC+ "\n")
+		.append("\t\tXAC MAC = " +_wingXACMAC+ "\n")
+		.append("\t\tXAC MAC percent = " +_wingXACMACpercent+ "\n")
+		.append("\t\tXAC LRF = " +_wingXACLRF+ "\n")
+		.append("\t\tXAC BRF = " +_wingXACBRF+ "\n")
+		.append("\t\tDelta ac due to fuselage = " + _deltaXACdueToFuselage + "\n")
+		.append("\t\tXAC wing body BRF = " +_wingBodyXACBRF+ "\n")
+		;
 		
+		sb.append("\t-------------------------------------\n")
+		.append("\tHorizontal Tail\n")
+		.append("\t-------------------------------------\n")
+		.append("\t\tMAC = " +_hTailMAC+ "\n")
+		.append("\t\tXAC MAC = " +_hTailXACMAC+ "\n")
+		.append("\t\tXAC MAC percent = " +_hTailXACMACpercent+ "\n")
+		.append("\t\tXAC LRF = " +_hTailXACLRF+ "\n")
+		.append("\t\tXAC BRF = " +_hTailXACBRF+ "\n")
+		;
 		
+		sb.append("\t-------------------------------------\n")
+		.append("\tFuselage\n")
+		.append("\t-------------------------------------\n")
+		.append("\t\tCM0 = " +_fuselageCM0+ "\n")
+		.append("\t\tCM alpha = " +_fuselageCMAlpha+ "\n")
+		.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this. _alphasBody, "\t\tAlpha Body", ","))
+		.append("\t\tCM fuselage = " +_fuselageMomentCoefficient+ "\n")
+		;
 		return sb.toString();
 
 	}
@@ -2093,6 +2186,34 @@ public class StabilityExecutableManager {
 			}
 		}
 
+		// MOMENT
+		//------------------------------------------------------------------------------------------------------------
+		if(_plotList.contains(AerodynamicAndStabilityPlotEnum.FUSELAGE_CM_PLOT)) {
+
+			List<Double[]> xList = new ArrayList<>();
+			List<Double[]> yList = new ArrayList<>();
+			List<String> legend = new ArrayList<>();
+
+			xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasBody));
+			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_fuselageMomentCoefficient));
+			legend.add("null");
+
+			MyChartToFileUtils.plot(
+					xList, 
+					yList, 
+					"Fuselage Moment Coefficient", 
+					"alpha_b", "CM", 
+					null, null,
+					null, null,
+					"deg", "",
+					false,
+					legend,
+					folderPathName,
+					"Fuselage Moment Coefficient");
+
+			System.out.println("Plot Fuselage Moment Coefficient Chart ---> DONE \n");
+		}
+		
 	}
 
 	/******************************************************************************************************************************************
@@ -2627,69 +2748,69 @@ public class StabilityExecutableManager {
 			if(this._wingDragMethod==MethodEnum.AIRFOIL_DISTRIBUTION){}
 	
 
-//		//-----------cl curve--------------------------------
-//		if(_wingairfoilLiftCoefficientCurve == MethodEnum.INPUT){
-//			for (int i=0; i<_wingNumberOfGivenSections; i++){
-//				List<Double> clStationList = new ArrayList<>();
-//				Double [] clStation = MyMathUtils.getInterpolatedValue1DLinear(
-//						MyArrayUtils.convertListOfAmountTodoubleArray(alphaAirfoilsWing.get(i)), 
-//						MyArrayUtils.convertToDoublePrimitive(clDistributionAirfoilsWing.get(i)), 
-//						MyArrayUtils.convertListOfAmountTodoubleArray(_alphasWing)
-//						);	
-//				for (int ii=0; ii<clStation.length; ii++){
-//					clStationList.add(ii, clStation[ii]);
-//				}
-//				_wingCLAirfoilsDistribution.add(i,clStationList);			
-//			}
-//		}
-//		
-//		// Bidimensional airfoil curves as matrix
-//		//
-//		//  --------------------------> number of point semi span
-//		//  |   |
-//		//  | a |
-//		//  | l	|
-//		//	| p	|
-//		//	| h
-//		//  | a
-//		//  |
-//		// \/
-//		// number of point 2d curve
-//		
-//		// initialize cd
-//		for (int i=0; i<_wingNumberOfPointSemiSpanWise; i++){
-//			_wingCLAirfoilsDistributionFinal.add(_wingCLAirfoilsDistribution.get(0));
-//		}
-//		double [] clStar ,clDistribution;
-//		double [][] clMatrix = new double [_numberOfAlphasBody][_wingNumberOfPointSemiSpanWise];
-//		
-//		for (int i=0; i<_numberOfAlphasBody; i++){
-//			clStar =   new double [_wingNumberOfGivenSections];
-//			clDistribution = new double [_wingNumberOfPointSemiSpanWise];
-//			for (int ii=0; ii<_wingNumberOfGivenSections; ii++){
-//				clStar[ii] = _wingCLAirfoilsDistribution.get(ii).get(i);
-//			}// given station
-//			
-//			for (int iii=0; iii<_wingNumberOfPointSemiSpanWise; iii++){
-//				clDistribution [iii] = MyMathUtils.getInterpolatedValue1DLinear(
-//						MyArrayUtils.convertToDoublePrimitive(_wingYAdimensionalBreakPoints),
-//						clStar, 
-//						_wingYAdimensionalDistribution.get(iii)
-//						);
-//	
-//					clMatrix[i][iii] = clDistribution[iii];
-//			}//semispanwise
-//		} // alpha 
-//		
-//		// filling the list of list 
-//		
-//		for (int k=0; k<_wingNumberOfPointSemiSpanWise; k++){
-//			Double [] clListTemp = new Double [_numberOfAlphasBody];
-//			for (int kk=0; kk<_numberOfAlphasBody; kk++){
-//				clListTemp [kk] = clMatrix[kk][k];
-//			}
-//			_wingCLAirfoilsDistributionFinal.add(k,MyArrayUtils.convertDoubleArrayToListDouble(clListTemp));
-//	}
+		//-----------cl curve--------------------------------
+		if(_wingairfoilLiftCoefficientCurve == MethodEnum.INPUT){
+			for (int i=0; i<_wingNumberOfGivenSections; i++){
+				List<Double> clStationList = new ArrayList<>();
+				Double [] clStation = MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertListOfAmountTodoubleArray(alphaAirfoilsWing.get(i)), 
+						MyArrayUtils.convertToDoublePrimitive(clDistributionAirfoilsWing.get(i)), 
+						MyArrayUtils.convertListOfAmountTodoubleArray(_alphasWing)
+						);	
+				for (int ii=0; ii<clStation.length; ii++){
+					clStationList.add(ii, clStation[ii]);
+				}
+				_wingCLAirfoilsDistribution.add(i,clStationList);			
+			}
+		}
+		
+		// Bidimensional airfoil curves as matrix
+		//
+		//  --------------------------> number of point semi span
+		//  |   |
+		//  | a |
+		//  | l	|
+		//	| p	|
+		//	| h
+		//  | a
+		//  |
+		// \/
+		// number of point 2d curve
+		
+		// initialize cd
+		for (int i=0; i<_wingNumberOfPointSemiSpanWise; i++){
+			_wingCLAirfoilsDistributionFinal.add(_wingCLAirfoilsDistribution.get(0));
+		}
+		double [] clStar ,clDistribution;
+		double [][] clMatrix = new double [_numberOfAlphasBody][_wingNumberOfPointSemiSpanWise];
+		
+		for (int i=0; i<_numberOfAlphasBody; i++){
+			clStar =   new double [_wingNumberOfGivenSections];
+			clDistribution = new double [_wingNumberOfPointSemiSpanWise];
+			for (int ii=0; ii<_wingNumberOfGivenSections; ii++){
+				clStar[ii] = _wingCLAirfoilsDistribution.get(ii).get(i);
+			}// given station
+			
+			for (int iii=0; iii<_wingNumberOfPointSemiSpanWise; iii++){
+				clDistribution [iii] = MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertToDoublePrimitive(_wingYAdimensionalBreakPoints),
+						clStar, 
+						_wingYAdimensionalDistribution.get(iii)
+						);
+	
+					clMatrix[i][iii] = clDistribution[iii];
+			}//semispanwise
+		} // alpha 
+		
+		// filling the list of list 
+		
+		for (int k=0; k<_wingNumberOfPointSemiSpanWise; k++){
+			Double [] clListTemp = new Double [_numberOfAlphasBody];
+			for (int kk=0; kk<_numberOfAlphasBody; kk++){
+				clListTemp [kk] = clMatrix[kk][k];
+			}
+			_wingCLAirfoilsDistributionFinal.add(k,MyArrayUtils.convertDoubleArrayToListDouble(clListTemp));
+	}
 		
 		
 // HORIZONTAL TAIL ----------------------------------------
@@ -2772,68 +2893,68 @@ public class StabilityExecutableManager {
 		if(this._hTailDragMethod==MethodEnum.CLASSIC){}
 		if(this._hTailDragMethod==MethodEnum.AIRFOIL_DISTRIBUTION){}
 		
-//		//-----------cl curve--------------------------------
-//		if(_hTailairfoilLiftCoefficientCurve == MethodEnum.INPUT){
-//			for (int i=0; i<_hTailnumberOfGivenSections; i++){
-//				List<Double> clStationList = new ArrayList<>();
-//				Double [] clStation = MyMathUtils.getInterpolatedValue1DLinear(
-//						MyArrayUtils.convertListOfAmountTodoubleArray(alphaAirfoilsHTail.get(i)), 
-//						MyArrayUtils.convertToDoublePrimitive(clDistributionAirfoilsHTail.get(i)), 
-//						MyArrayUtils.convertListOfAmountTodoubleArray(_alphasTail)
-//						);	
-//				for (int ii=0; ii<clStation.length; ii++){
-//					clStationList.add(ii, clStation[ii]);
-//				}
-//				_hTailCLAirfoilsDistribution.add(i,clStationList);			
-//			}
-//		}
-//		
-//		// Bidimensional airfoil curves as matrix
-//		//
-//		//  --------------------------> number of point semi span
-//		//  |   |
-//		//  | a |
-//		//  | l	|
-//		//	| p	|
-//		//	| h
-//		//  | a
-//		//  |
-//		// \/
-//		// number of point 2d curve
-//		
-//		// initialize cd
-//		for (int i=0; i<_hTailNumberOfPointSemiSpanWise; i++){
-//			_hTailCLAirfoilsDistributionFinal.add(_hTailCLAirfoilsDistribution.get(0));
-//		}
-//		double [][] clMatrixTail = new double [_numberOfAlphasBody][_hTailNumberOfPointSemiSpanWise];
-//		
-//		for (int i=0; i<_numberOfAlphasBody; i++){
-//			clStar =   new double [_hTailnumberOfGivenSections];
-//			clDistribution = new double [_hTailNumberOfPointSemiSpanWise];
-//			for (int ii=0; ii<_hTailnumberOfGivenSections; ii++){
-//				clStar[ii] = _hTailCLAirfoilsDistribution.get(ii).get(i);
-//			}// given station
-//			
-//			for (int iii=0; iii<_hTailNumberOfPointSemiSpanWise; iii++){
-//				clDistribution [iii] = MyMathUtils.getInterpolatedValue1DLinear(
-//						MyArrayUtils.convertToDoublePrimitive(_hTailYAdimensionalBreakPoints),
-//						clStar, 
-//						_hTailYAdimensionalDistribution.get(iii)
-//						);
-//	
-//					clMatrixTail[i][iii] = clDistribution[iii];
-//			}//semispanwise
-//		} // alpha 
-//		
-//		// filling the list of list 
-//		
-//		for (int k=0; k<_hTailNumberOfPointSemiSpanWise; k++){
-//			Double [] clListTemp = new Double [_numberOfAlphasBody];
-//			for (int kk=0; kk<_numberOfAlphasBody; kk++){
-//				clListTemp [kk] = clMatrixTail[kk][k];
-//			}
-//			_hTailCLAirfoilsDistributionFinal.add(k,MyArrayUtils.convertDoubleArrayToListDouble(clListTemp));
-//		}
+		//-----------cl curve--------------------------------
+		if(_hTailairfoilLiftCoefficientCurve == MethodEnum.INPUT){
+			for (int i=0; i<_hTailnumberOfGivenSections; i++){
+				List<Double> clStationList = new ArrayList<>();
+				Double [] clStation = MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertListOfAmountTodoubleArray(alphaAirfoilsHTail.get(i)), 
+						MyArrayUtils.convertToDoublePrimitive(clDistributionAirfoilsHTail.get(i)), 
+						MyArrayUtils.convertListOfAmountTodoubleArray(_alphasTail)
+						);	
+				for (int ii=0; ii<clStation.length; ii++){
+					clStationList.add(ii, clStation[ii]);
+				}
+				_hTailCLAirfoilsDistribution.add(i,clStationList);			
+			}
+		}
+		
+		// Bidimensional airfoil curves as matrix
+		//
+		//  --------------------------> number of point semi span
+		//  |   |
+		//  | a |
+		//  | l	|
+		//	| p	|
+		//	| h
+		//  | a
+		//  |
+		// \/
+		// number of point 2d curve
+		
+		// initialize cd
+		for (int i=0; i<_hTailNumberOfPointSemiSpanWise; i++){
+			_hTailCLAirfoilsDistributionFinal.add(_hTailCLAirfoilsDistribution.get(0));
+		}
+		double [][] clMatrixTail = new double [_numberOfAlphasBody][_hTailNumberOfPointSemiSpanWise];
+		
+		for (int i=0; i<_numberOfAlphasBody; i++){
+			clStar =   new double [_hTailnumberOfGivenSections];
+			clDistribution = new double [_hTailNumberOfPointSemiSpanWise];
+			for (int ii=0; ii<_hTailnumberOfGivenSections; ii++){
+				clStar[ii] = _hTailCLAirfoilsDistribution.get(ii).get(i);
+			}// given station
+			
+			for (int iii=0; iii<_hTailNumberOfPointSemiSpanWise; iii++){
+				clDistribution [iii] = MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertToDoublePrimitive(_hTailYAdimensionalBreakPoints),
+						clStar, 
+						_hTailYAdimensionalDistribution.get(iii)
+						);
+	
+					clMatrixTail[i][iii] = clDistribution[iii];
+			}//semispanwise
+		} // alpha 
+		
+		// filling the list of list 
+		
+		for (int k=0; k<_hTailNumberOfPointSemiSpanWise; k++){
+			Double [] clListTemp = new Double [_numberOfAlphasBody];
+			for (int kk=0; kk<_numberOfAlphasBody; kk++){
+				clListTemp [kk] = clMatrixTail[kk][k];
+			}
+			_hTailCLAirfoilsDistributionFinal.add(k,MyArrayUtils.convertDoubleArrayToListDouble(clListTemp));
+		}
 	}
 
 	public void calculateWingDragCharacterstics(){
@@ -2882,20 +3003,46 @@ public class StabilityExecutableManager {
 			}
 		
 			double [] cdInducedDistributionAtAlpha, clInducedDistributionAtAlpha;
+			double [] clInducedDistributionAtAlphaNew, alphaDistribution;
+			
 			for (int i=0; i<_numberOfAlphasBody; i++){
 				cdInducedDistributionAtAlpha = new double [_wingNumberOfPointSemiSpanWise];
 				clInducedDistributionAtAlpha = new double [_wingNumberOfPointSemiSpanWise];
+				clInducedDistributionAtAlphaNew = new double [_wingNumberOfPointSemiSpanWise];
+				alphaDistribution = new double [_wingNumberOfPointSemiSpanWise];
+				
 				theNasaBlackwellCalculatorMachActualWing.calculate(_alphasWing.get(i));
 				clInducedDistributionAtAlpha = theNasaBlackwellCalculatorMachActualWing.getClTotalDistribution().toArray();
-//				System.out.println(" alpha = "+  _alphasWing.get(i));
+				
+// HERE -->  modify the process. Starting form cdInduced distribution--> alpha Distribution --> cl New distribution --> cdNew distribution
+
+				
+				
+				
+				//				System.out.println(" alpha = "+  _alphasWing.get(i));
 //				System.out.println(" cl " + Arrays.toString(clInducedDistributionAtAlpha));
 //				System.out.println(" ETA STATION " + _wingYAdimensionalDistribution +"\n");
 //				MyArrayUtils.printListOfAmountWithUnitsInEvidence(_wingInducedAngleOfAttack.get(i), "cdInducedDistributionAtAlpha", ",");
 //				System.out.println("\n");
+		
+				
 				for (int ii=0; ii<_wingNumberOfPointSemiSpanWise; ii++){
-					cdInducedDistributionAtAlpha[ii] = clInducedDistributionAtAlpha[ii] * 
+					alphaDistribution [ii] = (clInducedDistributionAtAlpha[ii] - _wingCl0Distribution.get(ii))/
+							_wingClAlphaDistributionDeg.get(ii);
+					clInducedDistributionAtAlphaNew[ii] = MyMathUtils.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertListOfAmountTodoubleArray(_alphasWing),
+							MyArrayUtils.convertToDoublePrimitive(
+									MyArrayUtils.convertListOfDoubleToDoubleArray(
+											_wingCLAirfoilsDistributionFinal.get(i))),
+							alphaDistribution[ii]
+							);
+					
+					cdInducedDistributionAtAlpha[ii] = clInducedDistributionAtAlphaNew[ii] * 
 							Math.tan(_wingInducedAngleOfAttack.get(i).get(ii).doubleValue(SI.RADIAN));
 				}
+
+//				System.out.println(" cd induced distribution at alpha " + _alphasBody.get(i) + " = " + Arrays.toString(cdInducedDistributionAtAlpha));
+//				System.out.println(" eta stations " + _wingYAdimensionalDistribution);
 				
 				_wingInducedDragCoefficientDistribution.add(
 						i,
@@ -2951,24 +3098,38 @@ public class StabilityExecutableManager {
 						));
 			}
 		
-			double [] cdInducedDistributionAtAlpha, clInducedDistributionAtAlpha;
+			double [] cdInducedDistributionAtAlpha, clInducedDistributionAtAlpha, alphaDistributionTail, clInducedDistributionAtAlphaNew;
 			for (int i=0; i<_numberOfAlphasBody; i++){
 				cdInducedDistributionAtAlpha = new double [_hTailNumberOfPointSemiSpanWise];
 				clInducedDistributionAtAlpha = new double [_hTailNumberOfPointSemiSpanWise];
+				alphaDistributionTail = new double [_hTailNumberOfPointSemiSpanWise];
+				clInducedDistributionAtAlphaNew = new double [_hTailNumberOfPointSemiSpanWise];
+				
 				theNasaBlackwellCalculatorMachActualHTail.calculate(_alphasTail.get(i));
 				clInducedDistributionAtAlpha = theNasaBlackwellCalculatorMachActualHTail.getClTotalDistribution().toArray();
 
 				for (int ii=0; ii<_hTailNumberOfPointSemiSpanWise; ii++){
-					cdInducedDistributionAtAlpha[ii] = clInducedDistributionAtAlpha[ii] * 
+					alphaDistributionTail [ii] = (clInducedDistributionAtAlpha[ii] - _hTailCl0Distribution.get(ii))/
+							_hTailClAlphaistributionDeg.get(ii);
+					clInducedDistributionAtAlphaNew[ii] = MyMathUtils.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertListOfAmountTodoubleArray(_alphasTail),
+							MyArrayUtils.convertToDoublePrimitive(
+									MyArrayUtils.convertListOfDoubleToDoubleArray(
+											_hTailCLAirfoilsDistributionFinal.get(i))),
+							alphaDistributionTail[ii]
+							);
+					
+					cdInducedDistributionAtAlpha[ii] = clInducedDistributionAtAlphaNew[ii] * 
 							Math.tan(_hTailInducedAngleOfAttack.get(i).get(ii).doubleValue(SI.RADIAN));
 				}
-				
-				_hTailInducedDragCoefficientDistribution.add(
-						i,
-						MyMathUtils.integrate1DSimpsonSpline(
-								MyArrayUtils.convertToDoublePrimitive(_hTailYAdimensionalDistribution),
-								cdInducedDistributionAtAlpha)
-						);
+					_hTailInducedDragCoefficientDistribution.add(
+							i,
+							MyMathUtils.integrate1DSimpsonSpline(
+									MyArrayUtils.convertToDoublePrimitive(_hTailYAdimensionalDistribution),
+									cdInducedDistributionAtAlpha));
+	
+			}
+						
 			}
 			
 			
@@ -2982,16 +3143,232 @@ public class StabilityExecutableManager {
 			
 		}
 
+
+	public void calculateWingXAC(){
 		
+		// MAC
+		Double mac = MyMathUtils.integrate1DSimpsonSpline(
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						_wingYDistribution), // y
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						_wingChordsDistribution.stream()
+						.map(c -> c.pow(2))
+						.collect(Collectors.toList())
+						) // c^2
+				);
+		mac = 2.0 * mac / _wingSurface.doubleValue(SI.SQUARE_METRE); // *= 2/S
+		_wingMAC = Amount.valueOf(mac,1e-9,SI.METRE);
 		
+		Tuple2<
+		List<Amount<Length>>, // Xle
+		List<Amount<Length>>  // c
+	> xleTimeCTuple = Tuple.of(_wingXleDistribution, _wingChordsDistribution);
+	
+	List<Double> xleTimeC = IntStream.range(0, _wingYDistribution.size())
+			.mapToObj(i -> 
+				xleTimeCTuple._1.get(i).doubleValue(SI.METRE)
+				*xleTimeCTuple._2.get(i).doubleValue(SI.METRE)) // xle * c
+			.collect(Collectors.toList());
+	
+	Double xle = MyMathUtils.integrate1DSimpsonSpline(
+			MyArrayUtils.convertListOfAmountTodoubleArray(
+					_wingYDistribution), // y
+			MyArrayUtils.convertToDoublePrimitive(xleTimeC) // xle * c
+		);
+	
+	
+		xle = 2.0 * xle / _wingSurface.doubleValue(SI.SQUARE_METRE);
+		_wingMeanAerodynamicChordLeadingEdgeX = Amount.valueOf(xle,1e-9,SI.METRE);
+	
+	  // AC 
+		// de young harper
+		Amount<Length> _wingXACMRFdeYoung;
+		
+		_wingXACMAC.put(MethodEnum.DEYOUNG_HARPER,
+				Amount.valueOf(LSGeometryCalc.calcXacFromLEMacDeYoungHarper(
+				_wingAspectRatio,
+				_wingMAC.doubleValue(SI.METER), 
+				_wingTaperRatio,
+				_wingSweepQuarterChord.doubleValue(SI.RADIAN)
+				),
+				SI.METER));
+		
+		_wingXACMACpercent.put(MethodEnum.DEYOUNG_HARPER, 
+				(_wingXACMAC.get(MethodEnum.DEYOUNG_HARPER).doubleValue(SI.METER) / _wingMAC.doubleValue(SI.METER))
+				);
+		
+		_wingXACLRF.put(MethodEnum.DEYOUNG_HARPER,
+				_wingXACMAC.get(MethodEnum.DEYOUNG_HARPER).plus(_wingMeanAerodynamicChordLeadingEdgeX));
+		
+		_wingXACBRF.put(MethodEnum.DEYOUNG_HARPER,
+				_wingXACMAC.get(MethodEnum.DEYOUNG_HARPER).plus(_wingMeanAerodynamicChordLeadingEdgeX).plus(_xApexWing));
+		
+		 // Napolitano Datcom
+		Amount<Length> _wingXACMRFNapolitano;
+		
+		_wingXACMAC.put(MethodEnum.NAPOLITANO_DATCOM,
+				Amount.valueOf(
+						LSGeometryCalc.calcXacFromNapolitanoDatcom(
+								_wingMAC.doubleValue(SI.METER),
+								_wingTaperRatio,
+								_wingSweepLE.doubleValue(NonSI.DEGREE_ANGLE),
+								_wingAspectRatio,  
+								_machCurrent,
+								aeroDatabaseReader
+								),
+						SI.METER));
+		
+		_wingXACMACpercent.put(MethodEnum.NAPOLITANO_DATCOM, 
+				(_wingXACMAC.get(MethodEnum.NAPOLITANO_DATCOM).doubleValue(SI.METER) / _wingMAC.doubleValue(SI.METER))
+				);
+		
+		_wingXACLRF.put(
+				MethodEnum.NAPOLITANO_DATCOM,
+				_wingXACMAC.get(MethodEnum.NAPOLITANO_DATCOM).plus(_wingMeanAerodynamicChordLeadingEdgeX)
+						);
+		
+		_wingXACBRF.put(MethodEnum.NAPOLITANO_DATCOM,
+				_wingXACMAC.get(MethodEnum.NAPOLITANO_DATCOM).plus(_wingMeanAerodynamicChordLeadingEdgeX).plus(_xApexWing));
+
+	}
+	public void calculateWingBodyXAC(){
+		_deltaXACdueToFuselage = - (_fuselageCMAlpha.get(MethodEnum.FUSDES)/_wingcLAlphaDegCONDITION);
+		
+		_wingBodyXACBRF.put(MethodEnum.DEYOUNG_HARPER,
+				Amount.valueOf(_wingXACBRF.get(MethodEnum.DEYOUNG_HARPER).doubleValue(SI.METER) + _deltaXACdueToFuselage,
+						SI.METER)
+				);
+		
+		_wingBodyXACBRF.put(MethodEnum.NAPOLITANO_DATCOM,
+				Amount.valueOf(_wingXACBRF.get(MethodEnum.NAPOLITANO_DATCOM).doubleValue(SI.METER) + _deltaXACdueToFuselage,
+						SI.METER)
+				);
 		
 	}
-	public void calculateWingMomentCharacterstics(){}
+	
+	public void calculateHTailXAC(){	
+		// MAC
+		Double mac = MyMathUtils.integrate1DSimpsonSpline(
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						_hTailYDistribution), // y
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						_hTailChordsDistribution.stream()
+						.map(c -> c.pow(2))
+						.collect(Collectors.toList())
+						) // c^2
+				);
+		mac = 2.0 * mac / _hTailSurface.doubleValue(SI.SQUARE_METRE); // *= 2/S
+		_hTailMAC = Amount.valueOf(mac,1e-9,SI.METRE);
+		
+		Tuple2<
+		List<Amount<Length>>, // Xle
+		List<Amount<Length>>  // c
+	> xleTimeCTuple = Tuple.of(_hTailXleDistribution, _hTailChordsDistribution);
+	
+	List<Double> xleTimeC = IntStream.range(0, _hTailYDistribution.size())
+			.mapToObj(i -> 
+				xleTimeCTuple._1.get(i).doubleValue(SI.METRE)
+				*xleTimeCTuple._2.get(i).doubleValue(SI.METRE)) // xle * c
+			.collect(Collectors.toList());
+	
+	Double xle = MyMathUtils.integrate1DSimpsonSpline(
+			MyArrayUtils.convertListOfAmountTodoubleArray(
+					_hTailYDistribution), // y
+			MyArrayUtils.convertToDoublePrimitive(xleTimeC) // xle * c
+		);
+	
+	
+		xle = 2.0 * xle / _hTailSurface.doubleValue(SI.SQUARE_METRE);
+		_hTailMeanAerodynamicChordLeadingEdgeX = Amount.valueOf(xle,1e-9,SI.METRE);
+	
+	  // AC 
+		// de young harper
+		Amount<Length> _wingXACMRFdeYoung;
+		
+		_hTailXACMAC.put(MethodEnum.DEYOUNG_HARPER,
+				Amount.valueOf(LSGeometryCalc.calcXacFromLEMacDeYoungHarper(
+				_hTailAspectRatio,
+				_hTailMAC.doubleValue(SI.METER), 
+				_hTailTaperRatio,
+				_hTailSweepQuarterChord.doubleValue(SI.RADIAN)
+				),
+				SI.METER));
+		
+		_hTailXACMACpercent.put(MethodEnum.DEYOUNG_HARPER, 
+				(_hTailXACMAC.get(MethodEnum.DEYOUNG_HARPER).doubleValue(SI.METER) / _hTailMAC.doubleValue(SI.METER))
+				);
+		
+		_hTailXACLRF.put(MethodEnum.DEYOUNG_HARPER,
+				_hTailXACMAC.get(MethodEnum.DEYOUNG_HARPER).plus(_hTailMeanAerodynamicChordLeadingEdgeX));
+		
+		 // Napolitano Datcom
+		Amount<Length> _wingXACMRFNapolitano;
+		
+		_hTailXACMAC.put(MethodEnum.NAPOLITANO_DATCOM,
+				Amount.valueOf(
+						LSGeometryCalc.calcXacFromNapolitanoDatcom(
+								_hTailMAC.doubleValue(SI.METER),
+								_hTailTaperRatio,
+								_hTailSweepLE.doubleValue(NonSI.DEGREE_ANGLE),
+								_hTailAspectRatio,  
+								_machCurrent,
+								aeroDatabaseReader
+								),
+						SI.METER));
+		
+		_hTailXACMACpercent.put(MethodEnum.NAPOLITANO_DATCOM, 
+				(_hTailXACMAC.get(MethodEnum.NAPOLITANO_DATCOM).doubleValue(SI.METER) / _hTailMAC.doubleValue(SI.METER))
+				);
+		
+		_hTailXACLRF.put(
+				MethodEnum.NAPOLITANO_DATCOM,
+				_hTailXACMAC.get(MethodEnum.NAPOLITANO_DATCOM).plus(_hTailMeanAerodynamicChordLeadingEdgeX)
+						);
+		
+		_hTailXACBRF.put(MethodEnum.NAPOLITANO_DATCOM,
+				_hTailXACMAC.get(MethodEnum.DEYOUNG_HARPER).plus(_wingMeanAerodynamicChordLeadingEdgeX).plus(_xApexHTail));
+
+	}
+	public void calculateWingMomentCharacterstics(){
+		
+	}
 	public void calculateHtailMomentCharacterstics(){}
-	public void calculateFuselageMomentCharacterstics(){}
-	public void calculateWingXAC(){}
-	public void calculateWingBodyXAC(){}
-	public void calculateHTailXAC(){}
+	public void calculateFuselageMomentCharacterstics(){
+		// fusdes
+		double fusSurfRatio = _fuselageFrontSurface.doubleValue(SI.SQUARE_METRE)/
+				  _wingSurface.doubleValue(SI.SQUARE_METRE);
+		
+		fusDesDatabaseReader.runAnalysis(
+				_fuselageNoseFinessRatio,
+				_fuselageWindshieldAngle.doubleValue(NonSI.DEGREE_ANGLE), 
+				_fuselageFinessRatio, 
+				_fuselageTailFinessRatio, 
+				_fuselageUpSweepAngle.doubleValue(NonSI.DEGREE_ANGLE),
+				_fuselageXPercentPositionPole);
+		
+		_fuselageCM0.put(MethodEnum.FUSDES,MomentCalc.calcCM0Fuselage(
+				fusDesDatabaseReader.getCM0FR(),
+				fusDesDatabaseReader.getdCMn(),
+				fusDesDatabaseReader.getdCMt())* 
+				fusSurfRatio*_fuselageDiameter.doubleValue(SI.METER)/
+				_wingMAC.doubleValue(SI.METRE));
+
+		_fuselageCMAlpha.put(MethodEnum.FUSDES, MomentCalc.calcCMAlphaFuselage(
+				fusDesDatabaseReader.getCMaFR(),
+				fusDesDatabaseReader.getdCMan(),
+				fusDesDatabaseReader.getdCMat())* 
+				fusSurfRatio*_fuselageDiameter.doubleValue(SI.METER)/
+				_wingMAC.doubleValue(SI.METRE));
+		
+		// Array 
+
+		for (int i=0; i<_numberOfAlphasBody; i++){
+			_fuselageMomentCoefficient.add(i,
+					_fuselageCMAlpha.get(MethodEnum.FUSDES)*(
+							_alphasBody.get(i).doubleValue(NonSI.DEGREE_ANGLE) - 
+							_wingAlphaZeroLiftCONDITION.doubleValue(NonSI.DEGREE_ANGLE)) + _fuselageCM0.get(MethodEnum.FUSDES));
+		}
+	}
 
 
 	//Getters and setters
