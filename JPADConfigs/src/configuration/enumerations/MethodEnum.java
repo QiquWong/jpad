@@ -20,6 +20,7 @@ public enum MethodEnum {
 	DLR,
 	DLR_NITA_SCHOLZ,
 	EMPIRICAL,
+	FUSDES,
 	GROSU,
 	HARRIS, 
 	HOWE,

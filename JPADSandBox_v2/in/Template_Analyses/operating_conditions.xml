@@ -13,7 +13,7 @@
 		<cruise> 
 			<mach>0.43</mach>	
 			<altitude unit="m">6000.0</altitude>
-			<throttle>0.75</throttle>
+			<throttle>0.85</throttle>
 		</cruise>
 		<take_off>
 			<mach></mach> <!-- default = 0.2 -->

@@ -35,6 +35,8 @@ import calculators.performance.TakeOffCalc;
 import calculators.performance.ThrustCalc;
 import calculators.performance.customdata.CeilingMap;
 import calculators.performance.customdata.DragMap;
+import calculators.performance.customdata.DragThrustIntersectionMap;
+import calculators.performance.customdata.FlightEnvelopeMap;
 import calculators.performance.customdata.RCMap;
 import calculators.performance.customdata.ThrustMap;
 import configuration.MyConfiguration;
@@ -177,6 +179,9 @@ public class ACPerformanceCalculator {
 	private List<ThrustMap> _thrustListWeightParameterization;
 	private List<Amount<Force>> _weightListCruise;
 	private List<Amount<Length>> _altitudeListCruise;
+	
+	private List<DragThrustIntersectionMap> _intersectionList;
+	private List<FlightEnvelopeMap> _cruiseEnvelopeList;
 	
 	//..............................................................................
 	// Landing
@@ -2434,7 +2439,12 @@ public class ACPerformanceCalculator {
 				speedArrayAltitudeParameterization = MyArrayUtils.linspace(
 						SpeedCalc.calculateSpeedStall(
 								_altitudeListCruise.get(i).doubleValue(SI.METER),
-								_maximumTakeOffMass.times(AtmosphereCalc.g0).getEstimatedValue(),
+								((_maximumTakeOffMass
+											.plus(_maximumLandingMass)
+											.divide(2))
+										.times(AtmosphereCalc.g0)
+										.getEstimatedValue()
+										),
 								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 								_cLmaxClean
 								),
@@ -2448,7 +2458,12 @@ public class ACPerformanceCalculator {
 				_dragListAltitudeParameterization.add(
 						DragCalc.calculateDragAndPowerRequired(
 								_altitudeListCruise.get(i).doubleValue(SI.METER),
-								_maximumTakeOffMass.times(AtmosphereCalc.g0).getEstimatedValue(),
+								((_maximumTakeOffMass
+										.plus(_maximumLandingMass)
+										.divide(2))
+									.times(AtmosphereCalc.g0)
+									.getEstimatedValue()
+									),
 								speedArrayAltitudeParameterization,
 								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 								_cLmaxClean,
@@ -2464,7 +2479,7 @@ public class ACPerformanceCalculator {
 				_thrustListAltitudeParameterization.add(
 						ThrustCalc.calculateThrustAndPowerAvailable(
 								_altitudeListCruise.get(i).doubleValue(SI.METER),
-								1.0, 	// throttle setting array
+								_theOperatingConditions.getThrottleCruise(),
 								speedArrayAltitudeParameterization,
 								EngineOperatingConditionEnum.CRUISE,
 								_theAircraft.getPowerPlant().getEngineType(), 
@@ -2519,7 +2534,7 @@ public class ACPerformanceCalculator {
 			_thrustListWeightParameterization.add(
 					ThrustCalc.calculateThrustAndPowerAvailable(
 							_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-							1.0, 	// throttle setting array
+							_theOperatingConditions.getThrottleCruise(),
 							MyArrayUtils.linspace(
 									SpeedCalc.calculateSpeedStall(
 											_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
@@ -2543,9 +2558,112 @@ public class ACPerformanceCalculator {
 		}
 		
 		public void calculateFlightEnvelope() {
+
+			Airfoil meanAirfoil = new Airfoil(
+					LiftingSurface.calculateMeanAirfoil(_theAircraft.getWing()),
+					_theAircraft.getWing().getAerodynamicDatabaseReader()
+					);
 			
-		}
+			_intersectionList = new ArrayList<>();
+			_cruiseEnvelopeList = new ArrayList<>();
+			
+			double[] altitudeArray = MyArrayUtils.linspace(0.0, 15000, 100);
+			double[] speedArray = new double[100];
+			List<DragMap> dragList = new ArrayList<>();
+			List<ThrustMap> thrustList = new ArrayList<>();
+			
+			for(int i=0; i<altitudeArray.length; i++) {
+				//..................................................................................................
+				speedArray = MyArrayUtils.linspace(
+						SpeedCalc.calculateSpeedStall(
+								altitudeArray[i],
+								((_maximumTakeOffMass.plus(_maximumLandingMass)).divide(2)).times(AtmosphereCalc.g0).getEstimatedValue(),
+								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_cLmaxClean
+								),
+						SpeedCalc.calculateTAS(1.0, altitudeArray[i]),
+						100
+						);
+				//..................................................................................................
+				dragList.add(
+						DragCalc.calculateDragAndPowerRequired(
+								altitudeArray[i],
+								((_maximumTakeOffMass
+										.plus(_maximumLandingMass)
+										.divide(2))
+									.times(AtmosphereCalc.g0)
+									.getEstimatedValue()
+									),
+								speedArray,
+								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_cLmaxClean,
+								MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
+								MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
+								_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
+								meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
+								meanAirfoil.getAirfoilCreator().getType()
+								)
+						);
+						
+				//..................................................................................................
+				thrustList.add(
+						ThrustCalc.calculateThrustAndPowerAvailable(
+								altitudeArray[i],
+								_theOperatingConditions.getThrottleCruise(),
+								speedArray,
+								EngineOperatingConditionEnum.CRUISE,
+								_theAircraft.getPowerPlant().getEngineType(), 
+								_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+								_theAircraft.getPowerPlant().getEngineNumber(),
+								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR()
+								)
+						);
+			}
+			for(int i=0; i<altitudeArray.length; i++) {
+				//..................................................................................................
+				speedArray = MyArrayUtils.linspace(
+						SpeedCalc.calculateSpeedStall(
+								altitudeArray[i],
+								((_maximumTakeOffMass.plus(_maximumLandingMass)).divide(2)).times(AtmosphereCalc.g0).getEstimatedValue(),
+								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_cLmaxClean
+								),
+						SpeedCalc.calculateTAS(1.0, altitudeArray[i]),
+						100
+						);
+				//..................................................................................................
+				_intersectionList.add(
+						PerformanceCalcUtils.calculateDragThrustIntersection(
+								altitudeArray[i],
+								speedArray,
+								((_maximumTakeOffMass.plus(_maximumLandingMass)).divide(2)).times(AtmosphereCalc.g0).getEstimatedValue(),
+								_theOperatingConditions.getThrottleCruise(),
+								EngineOperatingConditionEnum.CRUISE,
+								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_cLmaxClean,
+								dragList,
+								thrustList
+								)
+						);
+			}
+			for (int i=0; i<altitudeArray.length; i++) 
+				_cruiseEnvelopeList.add(
+						PerformanceCalcUtils.calculateEnvelope(
+								altitudeArray[i],
+								((_maximumTakeOffMass.plus(_maximumLandingMass)).divide(2)).times(AtmosphereCalc.g0).getEstimatedValue(),
+								_theOperatingConditions.getThrottleCruise(),
+								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_cLmaxClean,
+								EngineOperatingConditionEnum.CRUISE,
+								_intersectionList
+								)
+						);
+			System.out.println("");
 		
+		}
+
 		public void calculateSfcCurve() {
 			
 		}
@@ -2557,7 +2675,7 @@ public class ACPerformanceCalculator {
 		public void calculateCruiseGrid() {
 			
 		}
-		
+				
 		public void plotCruiseOutput(String cruiseFolderPath) {
 			
 			if(_plotList.contains(PerformancePlotEnum.THRUST_DRAG_CURVES_CRUISE)) {
@@ -2698,7 +2816,64 @@ public class ACPerformanceCalculator {
 			
 			if(_plotList.contains(PerformancePlotEnum.CRUISE_FLIGHT_ENVELOPE)) {
 				
+				List<Double> altitudeList = new ArrayList<>();
+				List<Double> speedTASList = new ArrayList<>();
+				List<Double> speedCASList = new ArrayList<>();
+				List<Double> machList = new ArrayList<>();
+			
+				for(int i=0; i<_cruiseEnvelopeList.size(); i++) {
+					
+					double sigma = OperatingConditions.getAtmosphere(
+							_cruiseEnvelopeList.get(i).getAltitude()
+							).getDensity()*1000/1.225; 
+					
+					// MIN VALUES
+					if(_cruiseEnvelopeList.get(i).getMinSpeed() != 0.0) {
+						altitudeList.add(_cruiseEnvelopeList.get(i).getAltitude());
+						speedTASList.add(_cruiseEnvelopeList.get(i).getMinSpeed());
+						speedCASList.add(_cruiseEnvelopeList.get(i).getMinSpeed()*(Math.sqrt(sigma)));
+						machList.add(_cruiseEnvelopeList.get(i).getMinMach());
+					}
+				}
+				for(int i=0; i<_cruiseEnvelopeList.size(); i++) {
+					
+					double sigma = OperatingConditions.getAtmosphere(
+							_cruiseEnvelopeList.get(_cruiseEnvelopeList.size()-1-i).getAltitude()
+							).getDensity()*1000/1.225; 
+					
+					// MAX VALUES
+					if(_cruiseEnvelopeList.get(_cruiseEnvelopeList.size()-1-i).getMaxSpeed() != 0.0) {
+						altitudeList.add(_cruiseEnvelopeList.get(_cruiseEnvelopeList.size()-1-i).getAltitude());
+						speedTASList.add(_cruiseEnvelopeList.get(_cruiseEnvelopeList.size()-1-i).getMaxSpeed());
+						speedCASList.add(_cruiseEnvelopeList.get(_cruiseEnvelopeList.size()-1-i).getMaxSpeed()*(Math.sqrt(sigma)));
+						machList.add(_cruiseEnvelopeList.get(_cruiseEnvelopeList.size()-1-i).getMaxMach());
+					}
+				}
 				
+				MyChartToFileUtils.plotNoLegend(
+						MyArrayUtils.convertToDoublePrimitive(speedTASList),
+						MyArrayUtils.convertToDoublePrimitive(altitudeList),
+						0.0, null, 0.0, null,
+						"Speed(TAS)", "Altitude",
+						"m/s", "m",
+						cruiseFolderPath, "Cruise_flight_envelope_TAS"
+						);
+				MyChartToFileUtils.plotNoLegend(
+						MyArrayUtils.convertToDoublePrimitive(speedCASList),
+						MyArrayUtils.convertToDoublePrimitive(altitudeList),
+						0.0, null, 0.0, null,
+						"Speed(CAS)", "Altitude",
+						"m/s", "m",
+						cruiseFolderPath, "Cruise_flight_envelope_CAS"
+						);
+				MyChartToFileUtils.plotNoLegend(
+						MyArrayUtils.convertToDoublePrimitive(machList),
+						MyArrayUtils.convertToDoublePrimitive(altitudeList),
+						0.0, null, 0.0, null,
+						"Mach", "Altitude",
+						" ", "m",
+						cruiseFolderPath, "Cruise_flight_envelope_MACH"
+						);
 				
 			}
 			
@@ -2954,6 +3129,18 @@ public class ACPerformanceCalculator {
 	}
 	//............................................................................
 	// END OF THE FLIGHT MANEUVERING AND GUST ENVELOPE INNER CLASS
+	//............................................................................	
+	
+	//............................................................................
+	// MISSION PROFILE INNER CLASS
+	//............................................................................
+	public class CalcMissionProfile {
+		
+		// TODO : COMPLETE ME !!
+		
+	}
+	//............................................................................
+	// END OF THE MISSION PROFILE INNER CLASS
 	//............................................................................	
 	
 	//------------------------------------------------------------------------------
