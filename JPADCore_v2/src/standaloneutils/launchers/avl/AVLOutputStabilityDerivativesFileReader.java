@@ -35,7 +35,7 @@ public class AVLOutputStabilityDerivativesFileReader  extends AbstractOutputFile
 		if (theFile != null) { 
 
 			System.out.println("==============================");
-			System.out.println("Parsing " + theFile.getAbsolutePath() + "...");
+			System.out.println("Parsing " + theFile.getAbsolutePath() + " ...");
 			
 			try (Scanner scanner =  new Scanner(theFile)) {
 				// process line-by-line
