@@ -14,6 +14,7 @@ import org.jscience.physics.amount.Amount;
 
 import com.sun.org.apache.bcel.internal.generic.RET;
 import com.sun.org.apache.regexp.internal.recompile;
+import com.sun.org.glassfish.external.amx.AMX;
 
 import calculators.performance.customdata.CeilingMap;
 import calculators.performance.customdata.DragMap;
@@ -84,36 +85,31 @@ public class PerformanceCalcUtils {
 		Double speedMin = null, speedMax = null;
 		double stallSpeed = SpeedCalc.calculateSpeedStall(altitude, weight, surface, cLmax);
 
-		//		double[] diff = MyArrayUtils.abs(MyArrayUtils.MathArrays.ebeSubtract(thrust, drag));
-		//		double[] diff2 = diff;
-		//		Arrays.sort(diff2);
-		//		
-		//		int min1 = ArrayUtils.indexOf(diff, diff2[0]);
-		//		int min2 = ArrayUtils.indexOf(diff, diff2[1]);
-		//		
-		//		double lowerBound = speed[min1+1];
-		//		double upperBound = speed[min2-1];
-		//		
-		//		if (lowerBound < speed[0] || upperBound < speed[0]) {
-		//			lowerBound = speed[0];
-		//			upperBound = speed[1];
-		//		} else if (lowerBound > speed[speed.length - 1] || upperBound > speed[speed.length - 1]) {
-		//			lowerBound = speed[speed.length - 2];
-		//			upperBound = speed[speed.length - 1];
-		//		} 
-
-//		speedMin = MyArrayUtils.intersectArraysBrent(speed, thrust, drag, stallSpeed, stallSpeed+30, AllowedSolution.BELOW_SIDE);
-//		speedMax = MyArrayUtils.intersectArraysBrent(speed, thrust, drag, stallSpeed+30, speed[speed.length-1], AllowedSolution.ABOVE_SIDE);
-
 		double[] intersection = MyArrayUtils.intersectArraysSimple(thrust, drag);
 		List<Double> intersectionSpeed = new ArrayList<Double>();
 		for(int i=0; i<intersection.length; i++)
 			if(intersection[i] != 0.0)
 				intersectionSpeed.add(speed[i]);
 		
+		int min = MyArrayUtils.getIndexOfMin(drag);
+		double speedOfIndexMin = speed[min];
 		
-		speedMin = intersectionSpeed.get(0);
-		speedMax = intersectionSpeed.get(1);
+		if(!intersectionSpeed.isEmpty()) {
+			if(intersectionSpeed.size() == 1) {
+				if(intersectionSpeed.get(0) < speedOfIndexMin)
+					speedMin = intersectionSpeed.get(0);
+				else
+					speedMax = intersectionSpeed.get(0);
+			}
+			else {
+				for(int i=0; i<intersectionSpeed.size(); i++) {
+					if(intersectionSpeed.get(i) < speedOfIndexMin)
+						speedMin = intersectionSpeed.get(i);
+					else
+						speedMax = intersectionSpeed.get(i);
+				}
+			}
+		}
 		
 		if (speedMin != null && stallSpeed > speedMin) speedMin = stallSpeed;
 		else if (speedMin == null && speedMax != null) speedMin = stallSpeed;
@@ -121,6 +117,8 @@ public class PerformanceCalcUtils {
 			speedMin = 0.;
 			speedMax = 0.;
 		}
+		
+		
 
 		if (speedMax == null) speedMax = 0.;
 
@@ -440,6 +438,26 @@ public class PerformanceCalcUtils {
 		
 		return minimumClimbTime;
 	}
+	
+	public static Amount<Duration> calcCruiseTime(
+			Amount<Length> range,
+			Amount<Length> climbDistance,
+			Amount<Length> descentDistance,
+			Amount<Velocity> cruiseSpeed
+			) {
+		
+		return Amount.valueOf(
+				(range.to(SI.METER)
+						.minus(climbDistance.to(SI.METER))
+						.minus(descentDistance.to(SI.METER))
+						)
+				.divide(cruiseSpeed.to(SI.METERS_PER_SECOND))
+				.getEstimatedValue(),
+				SI.SECOND
+				);
+		
+	};
+	
 	
 	/**
 	 * 
