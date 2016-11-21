@@ -2963,7 +2963,7 @@ public class StabilityExecutableManager {
 		if(this._wingDragMethod==MethodEnum.AIRFOIL_INPUT){
 			
 			// PARASITE DRAG-----------------------------------------
-			double [] cdDistributionAtAlpha;
+			double [] cdDistributionAtAlpha, cCd;
 //			System.out.println("cl" + Arrays.toString(_wingliftCoefficient3DCurveCONDITION));
 //			System.out.println(" WING CD DISTRIBUTION 1 STAZIONE " + _wingCdAirfoilDistribution.get(0));
 //			System.out.println(" WING CD DISTRIBUTION 12 STAZIONE " + _wingCdAirfoilDistribution.get(_wingNumberOfPointSemiSpanWise-1));
@@ -2974,15 +2974,17 @@ public class StabilityExecutableManager {
 			
 			for (int i=0; i<_numberOfAlphasBody; i++){
 				cdDistributionAtAlpha = new double [_wingNumberOfPointSemiSpanWise];
+				cCd =  new double [_wingNumberOfPointSemiSpanWise];
 				for (int ii=0; ii<_wingNumberOfPointSemiSpanWise; ii++){
 					cdDistributionAtAlpha[ii] = _wingCdAirfoilDistribution.get(ii).get(i);
+					cCd[ii] = _wingChordsDistribution.get(ii).doubleValue(SI.METER) * cdDistributionAtAlpha[ii];
 				}				
 //				System.out.println(" eta station " + _wingYAdimensionalDistribution);
 //				System.out.println("CD DISTRIBUZIONE A ALPHA " +  _alphasBody.get(i)+ Arrays.toString(cdDistributionAtAlpha));
 				_wingParasiteDragCoefficientDistribution.add(
 						i,
-						MyMathUtils.integrate1DSimpsonSpline(
-								MyArrayUtils.convertToDoublePrimitive(_wingYAdimensionalDistribution),
+						(2/_wingSurface.doubleValue(SI.SQUARE_METRE))* MyMathUtils.integrate1DSimpsonSpline(
+								MyArrayUtils.convertListOfAmountTodoubleArray(_wingYDistribution),
 								cdDistributionAtAlpha)
 						);
 				
@@ -3010,6 +3012,7 @@ public class StabilityExecutableManager {
 				clInducedDistributionAtAlpha = new double [_wingNumberOfPointSemiSpanWise];
 				clInducedDistributionAtAlphaNew = new double [_wingNumberOfPointSemiSpanWise];
 				alphaDistribution = new double [_wingNumberOfPointSemiSpanWise];
+				cCd = new double [_wingNumberOfPointSemiSpanWise];
 				
 				theNasaBlackwellCalculatorMachActualWing.calculate(_alphasWing.get(i));
 				clInducedDistributionAtAlpha = theNasaBlackwellCalculatorMachActualWing.getClTotalDistribution().toArray();
@@ -3039,6 +3042,8 @@ public class StabilityExecutableManager {
 					
 					cdInducedDistributionAtAlpha[ii] = clInducedDistributionAtAlphaNew[ii] * 
 							Math.tan(_wingInducedAngleOfAttack.get(i).get(ii).doubleValue(SI.RADIAN));
+					
+					cCd[ii] = _wingChordsDistribution.get(ii).doubleValue(SI.METER) * cdInducedDistributionAtAlpha[ii];
 				}
 
 //				System.out.println(" cd induced distribution at alpha " + _alphasBody.get(i) + " = " + Arrays.toString(cdInducedDistributionAtAlpha));
@@ -3046,8 +3051,8 @@ public class StabilityExecutableManager {
 				
 				_wingInducedDragCoefficientDistribution.add(
 						i,
-						MyMathUtils.integrate1DSimpsonSpline(
-								MyArrayUtils.convertToDoublePrimitive(_wingYAdimensionalDistribution),
+						(2/_wingSurface.doubleValue(SI.SQUARE_METRE)) * MyMathUtils.integrate1DSimpsonSpline(
+								MyArrayUtils.convertListOfAmountTodoubleArray(_wingYDistribution),
 								cdInducedDistributionAtAlpha)
 						);
 			}
@@ -3070,17 +3075,19 @@ public class StabilityExecutableManager {
 		if(this._hTailDragMethod==MethodEnum.AIRFOIL_INPUT){
 			
 			// PARASITE DRAG-----------------------------------------
-			double [] cdDistributionAtAlpha;
+			double [] cdDistributionAtAlpha, cCd = null;
 			for (int i=0; i<_numberOfAlphasBody; i++){
 				cdDistributionAtAlpha = new double [_hTailNumberOfPointSemiSpanWise];
+				cCd = new double [_hTailNumberOfPointSemiSpanWise];
 				for (int ii=0; ii<_hTailNumberOfPointSemiSpanWise; ii++){
 					cdDistributionAtAlpha[ii] = _hTailCdAirfoilDistribution.get(ii).get(i);
+					cCd[ii] = cdDistributionAtAlpha[ii]*_hTailChordsDistribution.get(ii).doubleValue(SI.METER);
 				}				
 			_hTailParasiteDragCoefficientDistribution.add(
 						i,
-						MyMathUtils.integrate1DSimpsonSpline(
-								MyArrayUtils.convertToDoublePrimitive(_hTailYAdimensionalDistribution),
-								cdDistributionAtAlpha)
+						(2/_hTailSurface.doubleValue(SI.SQUARE_METRE))*MyMathUtils.integrate1DSimpsonSpline(
+								MyArrayUtils.convertListOfAmountTodoubleArray(_hTailYDistribution),
+								cCd)
 						);
 
 			}
@@ -3104,6 +3111,7 @@ public class StabilityExecutableManager {
 				clInducedDistributionAtAlpha = new double [_hTailNumberOfPointSemiSpanWise];
 				alphaDistributionTail = new double [_hTailNumberOfPointSemiSpanWise];
 				clInducedDistributionAtAlphaNew = new double [_hTailNumberOfPointSemiSpanWise];
+				cCd = new double [_hTailNumberOfPointSemiSpanWise];
 				
 				theNasaBlackwellCalculatorMachActualHTail.calculate(_alphasTail.get(i));
 				clInducedDistributionAtAlpha = theNasaBlackwellCalculatorMachActualHTail.getClTotalDistribution().toArray();
@@ -3121,12 +3129,14 @@ public class StabilityExecutableManager {
 					
 					cdInducedDistributionAtAlpha[ii] = clInducedDistributionAtAlphaNew[ii] * 
 							Math.tan(_hTailInducedAngleOfAttack.get(i).get(ii).doubleValue(SI.RADIAN));
+					
+					cCd[ii] = _hTailChordsDistribution.get(ii).doubleValue(SI.METER)*cdInducedDistributionAtAlpha[ii];
 				}
 					_hTailInducedDragCoefficientDistribution.add(
 							i,
-							MyMathUtils.integrate1DSimpsonSpline(
-									MyArrayUtils.convertToDoublePrimitive(_hTailYAdimensionalDistribution),
-									cdInducedDistributionAtAlpha));
+							(2/_hTailSurface.doubleValue(SI.SQUARE_METRE))*MyMathUtils.integrate1DSimpsonSpline(
+									MyArrayUtils.convertListOfAmountTodoubleArray(_hTailYDistribution),
+									cCd));
 	
 			}
 						
