@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+	<operating_conditions id="ATR72-AVL_Test - Operating Conditions">
+		<global_data>
+			<!-- angle of attack at which the user wants to evaluate a generic aerodynamic output -->
+			<alpha_current unit="deg">2</alpha_current>
+			<!-- array of angles of attack to be used for the the aerodynamics distributions (max 7 values) -->
+			<alpha_array unit="deg">2;6;10;14;18;22;24</alpha_array>
+		</global_data>
+		<climb>
+			<mach>0.3</mach>
+		</climb>
+		<cruise> 
+			<mach>0.43</mach>	
+			<altitude unit="m">6000.0</altitude>
+			<throttle>1.0</throttle>
+		</cruise>
+		<take_off>
+			<mach></mach> <!-- default = 0.2 -->
+			<altitude unit="m">0.0</altitude> <!-- default = 0.0 -->
+			<throttle></throttle> <!-- default = 1.0 -->
+			<delta_flap unit="deg">20;20</delta_flap>
+			<delta_slat unit="deg"></delta_slat>
+		</take_off>
+		<landing>
+			<mach></mach> <!-- default = 0.2 -->
+			<altitude unit="m"></altitude> <!-- default = 0.0 -->
+			<reverse_throttle></reverse_throttle> <!-- default = 0.0 -->
+			<delta_flap unit="deg">40;40</delta_flap>
+			<delta_slat unit="deg"></delta_slat>
+		</landing>
+	</operating_conditions>
+</jpad_config>
+
+
+
+
+
+

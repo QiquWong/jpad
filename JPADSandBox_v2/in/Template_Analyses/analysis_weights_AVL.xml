@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+    <analysis>
+        <weights id="JPAD Test analysis - WEIGHTS">
+			<global_data>
+				<maximum_take_off_mass unit="kg">300000</maximum_take_off_mass>
+				<maximum_landing_mass unit="kg">270000</maximum_landing_mass>
+				<maximum_zero_fuel_mass unit="kg">220000</maximum_zero_fuel_mass>
+				<operating_empty_mass unit="kg">150000</operating_empty_mass>
+				<trapped_fuel_oil_mass unit="kg">1000</trapped_fuel_oil_mass>
+			</global_data>
+			<component_data>
+				<fuselage_reference_mass unit="kg">3000</fuselage_reference_mass>
+				<wing_reference_mass unit="kg">2000</wing_reference_mass>
+				<horizontal_tail_reference_mass unit="kg">600</horizontal_tail_reference_mass>
+				<vertical_tail_reference_mass unit="kg">400</vertical_tail_reference_mass>
+				<canard_reference_mass unit="kg"></canard_reference_mass>
+				<nacelles_reference_mass unit="kg">900</nacelles_reference_mass> <!--all nacelles-->
+				<fuel_tank_reference_mass unit="kg">500</fuel_tank_reference_mass>
+				<landing_gears_reference_mass unit="kg">500</landing_gears_reference_mass>
+				<systems_reference_mass unit="kg">2000</systems_reference_mass>
+			</component_data>
+        </weights>
+    </analysis>
+</jpad_config>

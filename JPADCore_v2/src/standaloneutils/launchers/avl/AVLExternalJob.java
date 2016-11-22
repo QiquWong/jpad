@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.apache.commons.math3.linear.MatrixUtils;
@@ -123,7 +124,7 @@ public class AVLExternalJob implements IAVLExternalJob {
 		
 		AVLAircraft aircraft = job.importToAVLAircraft(null); // pass a null Aircraft object
 		
-		AVLMassInputData massData = job.importToMassInputData(); // TODO: pass JPADAircraft/Analysis structure
+		AVLMassInputData massData = job.importToMassInputData(null); // TODO: pass JPADAircraft/Analysis structure
 		
 		AVLMacro avlMacro = job.formRunMacro(); // TODO: modify this as appropriate
 		
@@ -204,33 +205,38 @@ public class AVLExternalJob implements IAVLExternalJob {
 			System.out.println("\n\n\n Aircraft NOT NULL");
 			System.out.println("Span: " + theAircraft.getWing().getSpan().doubleValue(SI.METER));
 			System.out.println("\n\n\n");
-			
-			return
-				new AVLMainInputData
-						.Builder()
-						.setDescription("JPAD Aircraft: " + theAircraft.getId())
-						/*
-						 *    Mach number
-						 */
-						.setMach(theOperatingConditions.getMachCruise())
-						/*
-						 *    Span (m)
-						 */
-						.setBref(theAircraft.getWing().getSpan().doubleValue(SI.METER))
-						/*
-						 *    Reference chord (m)
-						 */
-						.setCref(theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))
-						/*
-						 *    Reference surface (m^2)
-						 */
-						.setSref(theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE))
-						/*
-						 *   Build object, finally 
-						 *   Validate for all fields to be set, Optional fields are empty	
-						 *   
-						 */
-						.build();
+
+			return new AVLMainInputData
+				.Builder()
+				.setDescription("JPAD Aircraft: " + theAircraft.getId())
+				/*
+				 *    Mach number
+				 */
+				.setMach(theOperatingConditions.getMachCruise())
+				/*
+				 *    Span (m)
+				 */
+				.setBref(theAircraft.getWing().getSpan().doubleValue(SI.METER))
+				/*
+				 *    Reference chord (m)
+				 */
+				.setCref(theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))
+				/*
+				 *    Reference surface (m^2)
+				 */
+				.setSref(theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE))
+				/*
+				 *   CG
+				 */
+				.setXref(theAircraft.getTheAnalysisManager().getTheBalance().getCGMTOM().getXBRF().doubleValue(SI.METER))
+				.setYref(theAircraft.getTheAnalysisManager().getTheBalance().getCGMTOM().getYBRF().doubleValue(SI.METER))
+				.setZref(theAircraft.getTheAnalysisManager().getTheBalance().getCGMTOM().getZBRF().doubleValue(SI.METER))
+				/*
+				 *   Build object, finally 
+				 *   Validate for all fields to be set, Optional fields are empty	
+				 *   
+				 */
+				.build();
 		}
 		return
 			new AVLMainInputData
@@ -253,104 +259,56 @@ public class AVLExternalJob implements IAVLExternalJob {
 			System.err.println("AVLExternalJob error: binDirectory unassigned");
 			return null;
 		}
-		return // assign the aircraft as a collection of wings and bodies
-			new AVLAircraft
-				.Builder()
-				.setDescription("The aircraft - agodemar")
-				.appendWing( //----------------------------------------------- wing 1
-					new AVLWing
-						.Builder()
-						.setDescription("Main wing")
-						.addSections( //-------------------------------------- wing 1 - section 1
-							new AVLWingSection
-								.Builder()
-								.setDescription("Root section")
-								.setAirfoilCoordFile(
-									new File(this.binDirectory.getAbsolutePath() + File.separator 
-										+ "ag38.dat"
-									) // TODO: produce .dat file on the fly
-								)
-								/*
-								.setAirfoilSectionInline(
-									// Inline section coordinates formatted as airfoil section: 
-									//    This is useful when the real airfoil shape is known.
-									//    Such a 2D array would be filled programmatically and 
-									//    the AFIL/<airfoil-section>.dat couple would not be 
-									//    required (no auxiliary file to write).
-									AVLInputGenerator.getAG38AirfoilSection()
-								)								
-						        */
-								.setOrigin(new Double[]{0.0, 0.0, 0.0})
-								.setChord(3.0)
-								.setTwist(0.0)
-								.build()
-							)
-						.addSections( //-------------------------------------- wing 1 - section 2
-							new AVLWingSection
-								.Builder()
-								.setDescription("Tip section")
-								.setAirfoilCoordFile(
-									new File(this.binDirectory.getAbsolutePath() + File.separator 
-										+ "ag38.dat"
-									) // TODO: produce .dat file on the fly
-								)
-								/*
-								.setAirfoilSectionInline(
-									// Inline section coordinates formatted as airfoil section: 
-									//    This is useful when the real airfoil shape is known.
-									//    Such a 2D array would be filled programmatically and 
-									//    the AFIL/<airfoil-section>.dat couple would not be 
-									//    required (no auxiliary file to write).
-									AVLInputGenerator.getAG38AirfoilSection()
-								)
-								 */
-								.setOrigin(new Double[]{0.0, 12.0, 0.0})
-								.setChord(1.5)
-								.setTwist(0.0)
-								.build()
-							)
-						.build()
-					)
-				.appendWing( //----------------------------------------------- wing 2
-					new AVLWing
-						.Builder()
-						.setDescription("Horizontal tail")
-						.setOrigin(new Double[]{15.0, 0.0, 1.25})
-						.addSections( //-------------------------------------- wing 2 - section 1
-							new AVLWingSection
-								.Builder()
-								.setDescription("Root section")
-								.setAirfoilCoordFile(
-									new File(this.binDirectory.getAbsolutePath() + File.separator 
-										+ "ag38.dat"
+		if (theAircraft != null)
+			return  // assign the aircraft getting data from theAircraft object
+				new AVLAircraft
+					.Builder()
+					.setDescription(theAircraft.getId() + " (AVL_Test)")
+					.appendWing( //----------------------------------------------- wing 1
+						new AVLWing
+							.Builder()
+							.setDescription(theAircraft.getWing().getId())
+							.setIncidence(theAircraft.getWing().getRiggingAngle().doubleValue(NonSI.DEGREE_ANGLE))
+							.addSections( //-------------------------------------- wing 1 - section 1
+								new AVLWingSection
+									.Builder()
+									.setDescription("Root section")
+									.setAirfoilCoordFile(
+										new File(this.binDirectory.getAbsolutePath() + File.separator 
+											+ "ag38.dat"
+										) // TODO: produce .dat file on the fly
 									)
+									/*
+									.setAirfoilSectionInline(
+										// Inline section coordinates formatted as airfoil section: 
+										//    This is useful when the real airfoil shape is known.
+										//    Such a 2D array would be filled programmatically and 
+										//    the AFIL/<airfoil-section>.dat couple would not be 
+										//    required (no auxiliary file to write).
+										AVLInputGenerator.getAG38AirfoilSection()
+									)								
+							        */
+									.setOrigin(new Double[]{
+											theAircraft.getWing().getXApexConstructionAxes().doubleValue(SI.METER), 
+											theAircraft.getWing().getYApexConstructionAxes().doubleValue(SI.METER), 
+											theAircraft.getWing().getZApexConstructionAxes().doubleValue(SI.METER)})
+									.setChord(
+											theAircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
+											)
+									.setTwist(0.0)
+									.build()
 								)
-								.setOrigin(new Double[]{0.0, 0.0, 0.0})
-								.setChord(1.2)
-								.setTwist(0.0)
-								.addControlSurfaces(
-									new AVLWingSectionControlSurface
-										.Builder()
-										.setDescription("Elevator")
-										.setGain(1.0)
-										.setXHinge(0.6)
-										.setHingeVector(new Double[]{0.0, 1.0, 0.0})
-										.setSignDuplicate(1.0)
-										.build()
-								)
-								.build()
-							)
-						.addSections(
-							new AVLWingSection
-								.Builder()
-								.setDescription("Tip section")
-								.setAirfoilCoordFile(
-									new File(this.binDirectory.getAbsolutePath() + File.separator 
-										+ "ag38.dat"
-									) // TODO: produce .dat file on the fly
-								)
-								/*
-								.setAirfoilSectionInline(
+							.addSections( //-------------------------------------- wing 1 - section 2
+								new AVLWingSection
+									.Builder()
+									.setDescription("Tip section")
+									.setAirfoilCoordFile(
+										new File(this.binDirectory.getAbsolutePath() + File.separator 
+											+ "ag38.dat"
+										) // TODO: produce .dat file on the fly
+									)
+									/*
+									.setAirfoilSectionInline(
 										// Inline section coordinates formatted as airfoil section: 
 										//    This is useful when the real airfoil shape is known.
 										//    Such a 2D array would be filled programmatically and 
@@ -358,11 +316,32 @@ public class AVLExternalJob implements IAVLExternalJob {
 										//    required (no auxiliary file to write).
 										AVLInputGenerator.getAG38AirfoilSection()
 									)
-								*/
-								.setOrigin(new Double[]{0.0, 3.5, 0.0})
-								.setChord(1.2)
-								.setTwist(0.0)
-								.addControlSurfaces(
+									 */
+									.setOrigin(new Double[]{0.0, 12.0, 0.0})
+									.setChord(1.5)
+									.setTwist(0.0)
+									.build()
+								)
+							.build()
+						)
+					.appendWing( //----------------------------------------------- wing 2
+						new AVLWing
+							.Builder()
+							.setDescription("Horizontal tail")
+							.setOrigin(new Double[]{15.0, 0.0, 1.25})
+							.addSections( //-------------------------------------- wing 2 - section 1
+								new AVLWingSection
+									.Builder()
+									.setDescription("Root section")
+									.setAirfoilCoordFile(
+										new File(this.binDirectory.getAbsolutePath() + File.separator 
+											+ "ag38.dat"
+										)
+									)
+									.setOrigin(new Double[]{0.0, 0.0, 0.0})
+									.setChord(1.2)
+									.setTwist(0.0)
+									.addControlSurfaces(
 										new AVLWingSectionControlSurface
 											.Builder()
 											.setDescription("Elevator")
@@ -371,68 +350,269 @@ public class AVLExternalJob implements IAVLExternalJob {
 											.setHingeVector(new Double[]{0.0, 1.0, 0.0})
 											.setSignDuplicate(1.0)
 											.build()
+									)
+									.build()
 								)
-								.build()
-							)
-						.build()
-					)
-				.appendBody( //----------------------------------------------- body 1
-					new AVLBody
-						.Builder()
-						.setDescription("theFuselage")
-						.setBodyCoordFile(
-							new File(this.binDirectory.getAbsolutePath() + File.separator 
-								+ "sub.dat"
-							) // TODO: produce .dat file on the fly
+							.addSections(
+								new AVLWingSection
+									.Builder()
+									.setDescription("Tip section")
+									.setAirfoilCoordFile(
+										new File(this.binDirectory.getAbsolutePath() + File.separator 
+											+ "ag38.dat"
+										) // TODO: produce .dat file on the fly
+									)
+									/*
+									.setAirfoilSectionInline(
+											// Inline section coordinates formatted as airfoil section: 
+											//    This is useful when the real airfoil shape is known.
+											//    Such a 2D array would be filled programmatically and 
+											//    the AFIL/<airfoil-section>.dat couple would not be 
+											//    required (no auxiliary file to write).
+											AVLInputGenerator.getAG38AirfoilSection()
+										)
+									*/
+									.setOrigin(new Double[]{0.0, 3.5, 0.0})
+									.setChord(1.2)
+									.setTwist(0.0)
+									.addControlSurfaces(
+											new AVLWingSectionControlSurface
+												.Builder()
+												.setDescription("Elevator")
+												.setGain(1.0)
+												.setXHinge(0.6)
+												.setHingeVector(new Double[]{0.0, 1.0, 0.0})
+												.setSignDuplicate(1.0)
+												.build()
+									)
+									.build()
+								)
+							.build()
 						)
-						/*
-						.setBodySectionInline(
-							// Inline body-section coordinates formatted as airfoil section: 
-							//    x --> X-coordinate of the section parallel to YZ-plane
-							//    y --> radius of the equivalent circular section, 
-							//          i.e. a circle of the same area of body's real section 
-							//          
-							//    This is useful when the real fuselage shape is known and equivalent sections
-							//    are calculated on the fly. Such a 2D array would be filled programmatically
-							//    and the BFIL/<body-section>.dat couple would not be required (no auxiliary file 
-							//    to write).
-							MatrixUtils.createRealMatrix(
-									new double[][]{
-										{1.0, 0.000},
-										{0.9, 0.010},
-										{0.8, 0.015},
-										{0.5, 0.020},
-										{0.2, 0.015},
-										{0.1, 0.010},
-										{0.0, 0.000},
-										{0.1,-0.010},
-										{0.2,-0.015},
-										{0.5,-0.020},
-										{0.8,-0.015},
-										{0.9,-0.010},
-										{1.0, 0.000}
-									}
+					.appendBody( //----------------------------------------------- body 1
+						new AVLBody
+							.Builder()
+							.setDescription("theFuselage")
+							.setBodyCoordFile(
+								new File(this.binDirectory.getAbsolutePath() + File.separator 
+									+ "sub.dat"
+								) // TODO: produce .dat file on the fly
 							)
+							/*
+							.setBodySectionInline(
+								// Inline body-section coordinates formatted as airfoil section: 
+								//    x --> X-coordinate of the section parallel to YZ-plane
+								//    y --> radius of the equivalent circular section, 
+								//          i.e. a circle of the same area of body's real section 
+								//          
+								//    This is useful when the real fuselage shape is known and equivalent sections
+								//    are calculated on the fly. Such a 2D array would be filled programmatically
+								//    and the BFIL/<body-section>.dat couple would not be required (no auxiliary file 
+								//    to write).
+								MatrixUtils.createRealMatrix(
+										new double[][]{
+											{1.0, 0.000},
+											{0.9, 0.010},
+											{0.8, 0.015},
+											{0.5, 0.020},
+											{0.2, 0.015},
+											{0.1, 0.010},
+											{0.0, 0.000},
+											{0.1,-0.010},
+											{0.2,-0.015},
+											{0.5,-0.020},
+											{0.8,-0.015},
+											{0.9,-0.010},
+											{1.0, 0.000}
+										}
+								)
+							)
+							*/
+							.build()
 						)
-						*/
-						.build()
-					)
-				// -------------------------------------- build the aircraft, finally
-				.build();
+					// -------------------------------------- build the aircraft, finally
+					.build();
+					
+		else
+			return // assign the aircraft as a collection of wings and bodies
+				new AVLAircraft
+					.Builder()
+					.setDescription("The aircraft - agodemar")
+					.appendWing( //----------------------------------------------- wing 1
+						new AVLWing
+							.Builder()
+							.setDescription("Main wing")
+							.addSections( //-------------------------------------- wing 1 - section 1
+								new AVLWingSection
+									.Builder()
+									.setDescription("Root section")
+									.setAirfoilCoordFile(
+										new File(this.binDirectory.getAbsolutePath() + File.separator 
+											+ "ag38.dat"
+										) // TODO: produce .dat file on the fly
+									)
+									/*
+									.setAirfoilSectionInline(
+										// Inline section coordinates formatted as airfoil section: 
+										//    This is useful when the real airfoil shape is known.
+										//    Such a 2D array would be filled programmatically and 
+										//    the AFIL/<airfoil-section>.dat couple would not be 
+										//    required (no auxiliary file to write).
+										AVLInputGenerator.getAG38AirfoilSection()
+									)								
+							        */
+									.setOrigin(new Double[]{0.0, 0.0, 0.0})
+									.setChord(3.0)
+									.setTwist(0.0)
+									.build()
+								)
+							.addSections( //-------------------------------------- wing 1 - section 2
+								new AVLWingSection
+									.Builder()
+									.setDescription("Tip section")
+									.setAirfoilCoordFile(
+										new File(this.binDirectory.getAbsolutePath() + File.separator 
+											+ "ag38.dat"
+										) // TODO: produce .dat file on the fly
+									)
+									/*
+									.setAirfoilSectionInline(
+										// Inline section coordinates formatted as airfoil section: 
+										//    This is useful when the real airfoil shape is known.
+										//    Such a 2D array would be filled programmatically and 
+										//    the AFIL/<airfoil-section>.dat couple would not be 
+										//    required (no auxiliary file to write).
+										AVLInputGenerator.getAG38AirfoilSection()
+									)
+									 */
+									.setOrigin(new Double[]{0.0, 12.0, 0.0})
+									.setChord(1.5)
+									.setTwist(0.0)
+									.build()
+								)
+							.build()
+						)
+					.appendWing( //----------------------------------------------- wing 2
+						new AVLWing
+							.Builder()
+							.setDescription("Horizontal tail")
+							.setOrigin(new Double[]{15.0, 0.0, 1.25})
+							.addSections( //-------------------------------------- wing 2 - section 1
+								new AVLWingSection
+									.Builder()
+									.setDescription("Root section")
+									.setAirfoilCoordFile(
+										new File(this.binDirectory.getAbsolutePath() + File.separator 
+											+ "ag38.dat"
+										)
+									)
+									.setOrigin(new Double[]{0.0, 0.0, 0.0})
+									.setChord(1.2)
+									.setTwist(0.0)
+									.addControlSurfaces(
+										new AVLWingSectionControlSurface
+											.Builder()
+											.setDescription("Elevator")
+											.setGain(1.0)
+											.setXHinge(0.6)
+											.setHingeVector(new Double[]{0.0, 1.0, 0.0})
+											.setSignDuplicate(1.0)
+											.build()
+									)
+									.build()
+								)
+							.addSections(
+								new AVLWingSection
+									.Builder()
+									.setDescription("Tip section")
+									.setAirfoilCoordFile(
+										new File(this.binDirectory.getAbsolutePath() + File.separator 
+											+ "ag38.dat"
+										) // TODO: produce .dat file on the fly
+									)
+									/*
+									.setAirfoilSectionInline(
+											// Inline section coordinates formatted as airfoil section: 
+											//    This is useful when the real airfoil shape is known.
+											//    Such a 2D array would be filled programmatically and 
+											//    the AFIL/<airfoil-section>.dat couple would not be 
+											//    required (no auxiliary file to write).
+											AVLInputGenerator.getAG38AirfoilSection()
+										)
+									*/
+									.setOrigin(new Double[]{0.0, 3.5, 0.0})
+									.setChord(1.2)
+									.setTwist(0.0)
+									.addControlSurfaces(
+											new AVLWingSectionControlSurface
+												.Builder()
+												.setDescription("Elevator")
+												.setGain(1.0)
+												.setXHinge(0.6)
+												.setHingeVector(new Double[]{0.0, 1.0, 0.0})
+												.setSignDuplicate(1.0)
+												.build()
+									)
+									.build()
+								)
+							.build()
+						)
+					.appendBody( //----------------------------------------------- body 1
+						new AVLBody
+							.Builder()
+							.setDescription("theFuselage")
+							.setBodyCoordFile(
+								new File(this.binDirectory.getAbsolutePath() + File.separator 
+									+ "sub.dat"
+								) // TODO: produce .dat file on the fly
+							)
+							/*
+							.setBodySectionInline(
+								// Inline body-section coordinates formatted as airfoil section: 
+								//    x --> X-coordinate of the section parallel to YZ-plane
+								//    y --> radius of the equivalent circular section, 
+								//          i.e. a circle of the same area of body's real section 
+								//          
+								//    This is useful when the real fuselage shape is known and equivalent sections
+								//    are calculated on the fly. Such a 2D array would be filled programmatically
+								//    and the BFIL/<body-section>.dat couple would not be required (no auxiliary file 
+								//    to write).
+								MatrixUtils.createRealMatrix(
+										new double[][]{
+											{1.0, 0.000},
+											{0.9, 0.010},
+											{0.8, 0.015},
+											{0.5, 0.020},
+											{0.2, 0.015},
+											{0.1, 0.010},
+											{0.0, 0.000},
+											{0.1,-0.010},
+											{0.2,-0.015},
+											{0.5,-0.020},
+											{0.8,-0.015},
+											{0.9,-0.010},
+											{1.0, 0.000}
+										}
+								)
+							)
+							*/
+							.build()
+						)
+					// -------------------------------------- build the aircraft, finally
+					.build();
 	}
 	
-	public AVLMassInputData importToMassInputData() { // TODO: pass JPADAircraft / JPAD structures
-		// NOTE: these data might come from the outside, generated by the 
-		//       aircraft design process
+	public AVLMassInputData importToMassInputData(Aircraft theAircraft) {
+		// if (theAircraft != null) // TODO
 		return
 			new AVLMassInputData
 					.Builder()
 					.setDescription("(C) Agostino De Marco, agodemar, mass properties")
-					.setLUnit(0.0254)
-					.setMUnit(0.001)
+					.setLUnit(1.0)
+					.setMUnit(1.0)
 					.addMassProperties( // wing center panel
 						Tuple.of(
-							Tuple.of(156.0, 4.0, 0.0, 0.0), // mass, x, y, z
+							Tuple.of(200.0, 14.0, 0.0, 0.0), // mass, x, y, z
 							Tuple.of(11700.0, 832.0, 12532.0, 0.0, 0.0, 0.0) // Ixx, Iyy, Izz, Ixy, Ixz, Iyz
 						)
 					)

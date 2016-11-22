@@ -277,9 +277,9 @@ public class AVLExternalJobTest extends Application {
 //			System.setOut(filterStream);
 			
 
-//			String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR); 
-//			String aircraftFolder = JPADStaticWriteUtils.createNewFolder(folderPath + theAircraft.getId() + File.separator);
-//			String subfolderPath = JPADStaticWriteUtils.createNewFolder(aircraftFolder);
+			String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR); 
+			String aircraftFolder = JPADStaticWriteUtils.createNewFolder(folderPath + theAircraft.getId() + "_AVL" + File.separator);
+			String subfolderPath = JPADStaticWriteUtils.createNewFolder(aircraftFolder);
 
 			////////////////////////////////////////////////////////////////////////
 			// Defining the operating conditions ...
@@ -294,20 +294,20 @@ public class AVLExternalJobTest extends Application {
 			////////////////////////////////////////////////////////////////////////
 			// Analyzing the aircraft
 //			System.setOut(originalOut);
-//			System.out.println("\n\n\tRunning requested analyses ... \n\n");
+			System.out.println("\n\n\tRunning requested analyses ... \n\n");
 //			System.setOut(filterStream);
-//			theAircraft.setTheAnalysisManager(ACAnalysisManager.importFromXML(pathToAnalysesXML, theAircraft));
-//			theAircraft.getTheAnalysisManager().doAnalysis(theAircraft, theOperatingConditions, subfolderPath);
+			theAircraft.setTheAnalysisManager(ACAnalysisManager.importFromXML(pathToAnalysesXML, theAircraft));
+			theAircraft.getTheAnalysisManager().doAnalysis(theAircraft, theOperatingConditions, subfolderPath);
 //			System.setOut(originalOut);
-//			System.out.println("\n\n\tDone!! \n\n");
+			System.out.println("\n\n\tDone!! \n\n");
 //			System.setOut(filterStream);
 			
 			////////////////////////////////////////////////////////////////////////
 			// Printing results (activating system.out)
 //			System.setOut(originalOut);
-//			System.out.println("\n\n\tPrinting results ... \n\n");
-//			System.out.println(theAircraft.getTheAnalysisManager().toString());
-//			System.out.println("\n\n\tDone!! \n\n");
+			System.out.println("\n\n\tPrinting results ... \n\n");
+			System.out.println(theAircraft.getTheAnalysisManager().toString());
+			System.out.println("\n\n\tDone!! \n\n");
 			
 			
 			//---------------------------------------------------------------------------------------
@@ -341,7 +341,7 @@ public class AVLExternalJobTest extends Application {
 			//-----------------------------------------------------------------------------------------------------
 			// Handle file names according to a given base-name
 			// Must assign this to avoid NullPointerException
-			job.setBaseName("newData2");
+			job.setBaseName("newData3");
 			
 			// gather files and clean up before execution
 			List<String> fileNames = new ArrayList<>();
@@ -385,7 +385,7 @@ public class AVLExternalJobTest extends Application {
 			
 			AVLAircraft aircraft = job.importToAVLAircraft(theAircraft);
 			
-			AVLMassInputData massData = job.importToMassInputData(); // TODO: pass JPADAircraft structure
+			AVLMassInputData massData = job.importToMassInputData(theAircraft);
 			
 			AVLMacro avlMacro = job.formRunMacro(); // TODO: modify this as appropriate
 			
