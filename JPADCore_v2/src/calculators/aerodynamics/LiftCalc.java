@@ -68,6 +68,21 @@ public class LiftCalc {
 	}
 
 	/**
+	 * This method allows the user to evaluate the lift with an assigned CL, assuming a leveled
+	 * flight at which L=W;
+	 * 
+	 * @author Vittorio Trifari
+	 * @param speed
+	 * @param surface
+	 * @param altitude
+	 * @param cL
+	 * @return
+	 */
+	public static double calculateLift(double speed, double surface, double altitude, double cL) {
+		return 0.5*AtmosphereCalc.getDensity(altitude)*surface*Math.pow(speed, 2)*cL;
+	}
+	
+	/**
 	 * @author Lorenzo Attanasio
 	 * 
 	 * @param lift

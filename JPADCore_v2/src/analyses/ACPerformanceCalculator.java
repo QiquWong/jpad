@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Duration;
@@ -25,7 +27,9 @@ import org.jscience.physics.amount.Amount;
 import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LiftingSurface;
+import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.DragCalc;
+import calculators.aerodynamics.LiftCalc;
 import calculators.performance.FlightManeuveringEnvelopeCalc;
 import calculators.performance.LandingCalc;
 import calculators.performance.PayloadRangeCalc;
@@ -47,6 +51,7 @@ import configuration.enumerations.PerformancePlotEnum;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
+import standaloneutils.MyMathUtils;
 import standaloneutils.MyXLSUtils;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
@@ -182,6 +187,9 @@ public class ACPerformanceCalculator {
 	
 	private List<DragThrustIntersectionMap> _intersectionList;
 	private List<FlightEnvelopeMap> _cruiseEnvelopeList;
+	
+	private Map<String, List<Double>> _efficiencyMapAltitude;
+	private Map<String, List<Double>> _efficiencyMapWeight;
 	
 	//..............................................................................
 	// Landing
@@ -1493,15 +1501,6 @@ public class ACPerformanceCalculator {
 						plotList.add(PerformancePlotEnum.EFFICIENCY_CURVES);
 				}
 
-				String sfcChartProperty = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//plot/cruise/sfc/@perform");
-				if (sfcChartProperty != null) {
-					if(sfcChartProperty.equalsIgnoreCase("TRUE")) 
-						plotList.add(PerformancePlotEnum.SFC_CURVE);
-				}
-
 				String cruiseGridChartProperty = MyXMLReaderUtils
 						.getXMLPropertyByPath(
 								reader.getXmlDoc(), reader.getXpath(),
@@ -1721,7 +1720,6 @@ public class ACPerformanceCalculator {
 			calcCruise.calculateThrustAndDrag();
 			calcCruise.calculateFlightEnvelope();
 			calcCruise.calculateEfficiency();
-			calcCruise.calculateSfcCurve();
 			calcCruise.calculateCruiseGrid();
 			if(_theAircraft.getTheAnalysisManager().getPlotPerformance() == true)
 				calcCruise.plotCruiseOutput(cruiseFolderPath);
@@ -2567,8 +2565,10 @@ public class ACPerformanceCalculator {
 			_intersectionList = new ArrayList<>();
 			_cruiseEnvelopeList = new ArrayList<>();
 			
-			double[] altitudeArray = MyArrayUtils.linspace(0.0, 15000, 100);
-			double[] speedArray = new double[100];
+			int nPointSpeed = 500;
+			int nPointAltitude = 50;
+			double[] altitudeArray = MyArrayUtils.linspace(0.0, 15000, nPointAltitude);
+			double[] speedArray = new double[nPointSpeed];
 			List<DragMap> dragList = new ArrayList<>();
 			List<ThrustMap> thrustList = new ArrayList<>();
 			
@@ -2582,7 +2582,7 @@ public class ACPerformanceCalculator {
 								_cLmaxClean
 								),
 						SpeedCalc.calculateTAS(1.0, altitudeArray[i]),
-						100
+						nPointSpeed
 						);
 				//..................................................................................................
 				dragList.add(
@@ -2629,7 +2629,7 @@ public class ACPerformanceCalculator {
 								_cLmaxClean
 								),
 						SpeedCalc.calculateTAS(1.0, altitudeArray[i]),
-						100
+						nPointSpeed
 						);
 				//..................................................................................................
 				_intersectionList.add(
@@ -2660,16 +2660,72 @@ public class ACPerformanceCalculator {
 								_intersectionList
 								)
 						);
-			System.out.println("");
-		
 		}
 
-		public void calculateSfcCurve() {
-			
-		}
-		
 		public void calculateEfficiency() {
 			
+			_efficiencyMapAltitude = new HashMap<>();
+			_efficiencyMapWeight = new HashMap<>();
+			
+			//--------------------------------------------------------------------
+			// ALTITUDE PARAMETERIZATION AT FIXED WEIGHT
+			for(int i=0; i<_dragListAltitudeParameterization.size(); i++) {
+				List<Double> liftAltitudeParameterization = new ArrayList<>();
+				List<Double> efficiencyListCurrentAltitude = new ArrayList<>();
+				for(int j=0; j<_dragListAltitudeParameterization.get(i).getSpeed().length; j++) {
+					liftAltitudeParameterization.add(
+							LiftCalc.calculateLift(
+									_dragListAltitudeParameterization.get(i).getSpeed()[j],
+									_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+									_dragListAltitudeParameterization.get(i).getAltitude(),
+									LiftCalc.calculateLiftCoeff(
+											((_maximumTakeOffMass.plus(_maximumLandingMass)).divide(2)).times(AtmosphereCalc.g0).getEstimatedValue(),
+											_dragListAltitudeParameterization.get(i).getSpeed()[j],
+											_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+											_dragListAltitudeParameterization.get(i).getAltitude()
+											)
+									)			
+							);
+					efficiencyListCurrentAltitude.add(
+							liftAltitudeParameterization.get(j)
+							/ _dragListAltitudeParameterization.get(i).getDrag()[j]
+							);
+				}
+				_efficiencyMapAltitude.put(
+						"Altitude = " + _dragListAltitudeParameterization.get(i).getAltitude(),
+						efficiencyListCurrentAltitude
+						);
+			}
+			
+			//--------------------------------------------------------------------
+			// WEIGHT PARAMETERIZATION AT FIXED ALTITUDE
+			for(int i=0; i<_dragListWeightParameterization.size(); i++) {
+				List<Double> liftWeightParameterization = new ArrayList<>();
+				List<Double> efficiencyListCurrentWeight = new ArrayList<>();
+				for(int j=0; j<_dragListWeightParameterization.get(i).getSpeed().length; j++) {
+					liftWeightParameterization.add(
+							LiftCalc.calculateLift(
+									_dragListWeightParameterization.get(i).getSpeed()[j],
+									_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+									_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+									LiftCalc.calculateLiftCoeff(
+											_dragListWeightParameterization.get(i).getWeight(),
+											_dragListWeightParameterization.get(i).getSpeed()[j],
+											_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+											_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+											)
+									)			
+							);
+					efficiencyListCurrentWeight.add(
+							liftWeightParameterization.get(j)
+							/ _dragListWeightParameterization.get(i).getDrag()[j]
+							);
+				}
+				_efficiencyMapWeight.put(
+						"Weight = " + _dragListWeightParameterization.get(i).getWeight(),
+						efficiencyListCurrentWeight
+						);
+			}			
 		}
 		
 		public void calculateCruiseGrid() {
@@ -2853,7 +2909,7 @@ public class ACPerformanceCalculator {
 				MyChartToFileUtils.plotNoLegend(
 						MyArrayUtils.convertToDoublePrimitive(speedTASList),
 						MyArrayUtils.convertToDoublePrimitive(altitudeList),
-						0.0, null, 0.0, null,
+						null, null, 0.0, null,
 						"Speed(TAS)", "Altitude",
 						"m/s", "m",
 						cruiseFolderPath, "Cruise_flight_envelope_TAS"
@@ -2861,7 +2917,7 @@ public class ACPerformanceCalculator {
 				MyChartToFileUtils.plotNoLegend(
 						MyArrayUtils.convertToDoublePrimitive(speedCASList),
 						MyArrayUtils.convertToDoublePrimitive(altitudeList),
-						0.0, null, 0.0, null,
+						null, null, 0.0, null,
 						"Speed(CAS)", "Altitude",
 						"m/s", "m",
 						cruiseFolderPath, "Cruise_flight_envelope_CAS"
@@ -2869,9 +2925,9 @@ public class ACPerformanceCalculator {
 				MyChartToFileUtils.plotNoLegend(
 						MyArrayUtils.convertToDoublePrimitive(machList),
 						MyArrayUtils.convertToDoublePrimitive(altitudeList),
-						0.0, null, 0.0, null,
+						null, null, 0.0, null,
 						"Mach", "Altitude",
-						" ", "m",
+						"", "m",
 						cruiseFolderPath, "Cruise_flight_envelope_MACH"
 						);
 				
@@ -2879,12 +2935,83 @@ public class ACPerformanceCalculator {
 			
 			if(_plotList.contains(PerformancePlotEnum.EFFICIENCY_CURVES)) {
 				
+				//--------------------------------------------------------------------
+				// ALTITUDE PARAMETERIZATION AT FIXED WEIGHT
+				List<Double[]> speedListAltitudeParameterization = new ArrayList<>();
+				List<Double[]> efficiencyListAltitudeParameterization = new ArrayList<>();
+				List<String> legendAltitude = new ArrayList<>();
+				for(int i=0; i<_dragListAltitudeParameterization.size(); i++) {
+					speedListAltitudeParameterization.add(
+							MyArrayUtils.convertFromDoublePrimitive(
+									_dragListAltitudeParameterization.get(i).getSpeed()
+									)
+							);
+					efficiencyListAltitudeParameterization.add(
+							MyArrayUtils.convertFromDoublePrimitive(
+									MyArrayUtils.convertToDoublePrimitive(
+											_efficiencyMapAltitude.get(
+													"Altitude = " + _dragListAltitudeParameterization.get(i).getAltitude()
+													)
+											)
+									)
+							);
+					legendAltitude.add("Altitude = " + _dragListAltitudeParameterization.get(i).getAltitude());
+				}
 				
+				try {
+					MyChartToFileUtils.plot(
+							speedListAltitudeParameterization, efficiencyListAltitudeParameterization,
+							"Efficiency curves at different altitudes",
+							"Speed", "Efficiency",
+							null, null, null, null,
+							"m/s", "",
+							true, legendAltitude,
+							cruiseFolderPath, "Efficiency_curves_altitude"
+							);
+				} catch (InstantiationException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
 				
-			}
-			
-			if(_plotList.contains(PerformancePlotEnum.SFC_CURVE)) {
+				//--------------------------------------------------------------------
+				// WEIGHT PARAMETERIZATION AT FIXED ALTITUDE
+				List<Double[]> speedListWeightParameterization = new ArrayList<>();
+				List<Double[]> efficiencyListWeightParameterization = new ArrayList<>();
+				List<String> legendWeight = new ArrayList<>();
+				for(int i=0; i<_dragListWeightParameterization.size(); i++) {
+					speedListWeightParameterization.add(
+							MyArrayUtils.convertFromDoublePrimitive(
+									_dragListWeightParameterization.get(i).getSpeed()
+									)
+							);
+					efficiencyListWeightParameterization.add(
+							MyArrayUtils.convertFromDoublePrimitive(
+									MyArrayUtils.convertToDoublePrimitive(
+											_efficiencyMapWeight.get(
+													"Weight = " + _dragListWeightParameterization.get(i).getWeight()
+													)
+											)
+									)
+							);
+					legendWeight.add("Weight = " + _dragListWeightParameterization.get(i).getWeight());
+				}
 				
+				try {
+					MyChartToFileUtils.plot(
+							speedListWeightParameterization, efficiencyListWeightParameterization,
+							"Efficiency curves at different weights",
+							"Speed", "Efficiency",
+							null, null, null, null,
+							"m/s", "",
+							true, legendWeight,
+							cruiseFolderPath, "Efficiency_curves_weights"
+							);
+				} catch (InstantiationException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
 				
 				
 			}
@@ -4403,5 +4530,21 @@ public class ACPerformanceCalculator {
 
 	public void setAltitudeListCruise(List<Amount<Length>> _altitudeListCruise) {
 		this._altitudeListCruise = _altitudeListCruise;
+	}
+
+	public Map<String, List<Double>> getEfficiencyMapAltitude() {
+		return _efficiencyMapAltitude;
+	}
+
+	public void setEfficiencyMapAltitude(Map<String, List<Double>> _efficiencyMapAltitude) {
+		this._efficiencyMapAltitude = _efficiencyMapAltitude;
+	}
+
+	public Map<String, List<Double>> getEfficiencyMapWeight() {
+		return _efficiencyMapWeight;
+	}
+
+	public void setEfficiencyMapWeight(Map<String, List<Double>> _efficiencyMapWeight) {
+		this._efficiencyMapWeight = _efficiencyMapWeight;
 	}
 }
