@@ -147,14 +147,10 @@ public class SpecificRangeCalc {
 	public static void createSpecificRangeChart(
 			List<Double[]> specificRange,
 			List<Double[]> mach,
-			List<String> legend
+			List<String> legend,
+			String performanceFolderPath
 			) throws InstantiationException, IllegalAccessException{
 
-		System.out.println("\n------WRITING SPECIFIC RANGE v.s. MACH CHART TO FILE-------");
-
-		String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR);
-		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "SpecificRange" + File.separator);
-		
 		// creating and adding maximum values curve to Lists
 		Double[] maxArray = new Double[specificRange.size()];
 		Double[] machMaxArray = new Double[specificRange.size()];
@@ -197,7 +193,7 @@ public class SpecificRangeCalc {
 				null, null, null, null,									// Axis
 				"", "nmi/lbs",											// Units			
 				true, legend,											// Legend visibility and values
-				subfolderPath, "SpecificRange"							// output information
+				performanceFolderPath, "Cruise_Grid"							// output information
 				);
 	}
 	
