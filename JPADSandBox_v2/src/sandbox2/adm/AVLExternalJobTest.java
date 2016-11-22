@@ -362,6 +362,7 @@ public class AVLExternalJobTest extends Application {
 					System.err.println(e);
 				}
 			});
+			// TODO delete all files like <base-name>_airfoil*.dat
 			
 			// Assign the main .avl input file
 			job.setInputAVLFile(new File(binDirPath + File.separator + job.getBaseName()+".avl"));

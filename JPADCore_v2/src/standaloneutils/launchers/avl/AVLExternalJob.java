@@ -259,7 +259,9 @@ public class AVLExternalJob implements IAVLExternalJob {
 			System.err.println("AVLExternalJob error: binDirectory unassigned");
 			return null;
 		}
-		if (theAircraft != null)
+		if (theAircraft != null) {
+			// airfoil folder
+			
 			return  // assign the aircraft getting data from theAircraft object
 				new AVLAircraft
 					.Builder()
@@ -273,10 +275,11 @@ public class AVLExternalJob implements IAVLExternalJob {
 								new AVLWingSection
 									.Builder()
 									.setDescription("Root section")
-									.setAirfoilCoordFile(
+									.setAirfoilObject(theAircraft.getWing().getAirfoilList().get(0)) // 1. set source first
+									.setAirfoilCoordFile( // 2. set airfoil name
 										new File(this.binDirectory.getAbsolutePath() + File.separator 
-											+ "ag38.dat"
-										) // TODO: produce .dat file on the fly
+											+ getBaseName() + "_airfoil_root.dat"
+										)
 									)
 									/*
 									.setAirfoilSectionInline(
@@ -432,8 +435,8 @@ public class AVLExternalJob implements IAVLExternalJob {
 						)
 					// -------------------------------------- build the aircraft, finally
 					.build();
-					
-		else
+			}
+		else // Default aircraft
 			return // assign the aircraft as a collection of wings and bodies
 				new AVLAircraft
 					.Builder()
