@@ -15,10 +15,13 @@
 				<!-- Reynolds number reffered to MAC  -->
 				<Reynolds_number>6000000</Reynolds_number>
 				<!-- definition of alpha body array analysis  -->
-				<alpha_body_initial unit="°">-5</alpha_body_initial> <!-- must be about equal to( wingALPAzeroLift - iw) [ about -5 cruise, -19 landing] -->)
-                <alpha_body_final unit="°">21</alpha_body_final> <!-- must be >( wingALPAstall - iw) [ about 20 cruise, 23 landing] -->)
+				<alpha_body_initial unit="°">-5</alpha_body_initial> <!-- must be about equal to( wingALPAzeroLift - iw) [ about -5 cruise, -19 landing] -->
+                <alpha_body_final unit="°">21</alpha_body_final> <!-- must be >( wingALPAstall - iw) [ about 20 cruise, 23 landing] -->
                 <number_of_alphas_body>60</number_of_alphas_body>
 				<condition>CRUISE</condition>
+				<!-- This is the pole for the calculation of the moment referred to the MAC. The momentum respect to the aerodynamic center is automatically calculated -->
+				<wing_momentum_pole>[0.25,0.3, 0.6, 0.9, 0.83]</wing_momentum_pole>
+				<horizontal_tail_momentum_pole>[0.25,0.3]</horizontal_tail_momentum_pole>
 				<!--
 				<condition>CRUISE</condition>
 				<condition>LANDING</condition>
@@ -100,6 +103,8 @@ CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated start
 						<cl_alpha_distribution unit="1/deg">[0.11,0.11,0.11]</cl_alpha_distribution>
 						<alpha_star_distribution unit="°">[8,8,10]</alpha_star_distribution>
 						<maximum_lift_coefficient_distribution>[1.87,1.87,1.55]</maximum_lift_coefficient_distribution>
+						<x_ac_referred_to_chord>[0.25,0.25,0.25]</x_ac_referred_to_chord>
+						<c_m_ac>[0.01,0.01,0.01]</c_m_ac>
 					</aerodynamics>	
              </distribution>
 			 <high_lift_devices>
@@ -257,6 +262,8 @@ CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated start
 					<alpha_stall_distribution unit="°">[13, 13]</alpha_stall_distribution>
 					<linear_slope_coefficient unit="1/°">[0.10, 0.10]</linear_slope_coefficient>
 					<maximum_lift_coefficient_distribution>[1.3,1.3]</maximum_lift_coefficient_distribution>
+					<x_ac_referred_to_chord>[0.20,0.20]</x_ac_referred_to_chord>
+					<c_m_ac>[0.02,0.02]</c_m_ac>
 			    </aerodynamics>	
             </distribution>
 			<elevator>

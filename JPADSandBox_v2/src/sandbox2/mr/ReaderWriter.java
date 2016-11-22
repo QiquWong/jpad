@@ -107,7 +107,8 @@ public class ReaderWriter{
 		theStabilityCalculator.setAlphaBodyInitial((Amount<Angle>) reader.getXMLAmountWithUnitByPath("//operating_conditions/alpha_body_initial"));
 		theStabilityCalculator.setAlphaBodyFinal((Amount<Angle>) reader.getXMLAmountWithUnitByPath("//operating_conditions/alpha_body_final"));
 		theStabilityCalculator.setNumberOfAlphasBody((int)Double.parseDouble((reader.getXMLPropertyByPath("//operating_conditions/number_of_alphas_body"))));
-
+		theStabilityCalculator.setWingMomentumPole(reader.readArrayDoubleFromXMLSplit("//operating_conditions/wing_momentum_pole"));
+		theStabilityCalculator.setHTailMomentumPole(reader.readArrayDoubleFromXMLSplit("//operating_conditions/horizontal_tail_momentum_pole"));
 		//---------------------------------------------------------------------------------
 		// WING:
 
@@ -123,6 +124,7 @@ public class ReaderWriter{
 		theStabilityCalculator.setWingNumberOfGivenSections((int)Double.parseDouble((reader.getXMLPropertyByPath("//wing/global/number_of_given_sections"))));
 		theStabilityCalculator.setWingSweepQuarterChord((Amount<Angle>) reader.getXMLAmountWithUnitByPath("//wing/global/sweep_quarter_chord"));
 		theStabilityCalculator.setWingSweepLE((Amount<Angle>) reader.getXMLAmountWithUnitByPath("//wing/global/sweep_LE"));
+		
 		
 		
 		List<String> airfoilFamilyProperty = reader.getXMLPropertiesByPath("//wing/global/mean_airfoil_family");
@@ -181,7 +183,9 @@ public class ReaderWriter{
 		theStabilityCalculator.setWingClAlphaBreakPointsDeg(reader.readArrayDoubleFromXMLSplit("//wing/distribution/aerodynamics/cl_alpha_distribution"));
 		theStabilityCalculator.setWingMaxThicknessBreakPoints(reader.readArrayDoubleFromXMLSplit("//wing/distribution/geometry/max_thickness_airfoil"));
 		theStabilityCalculator.setWingLERadiusBreakPoints(reader.readArrayofAmountFromXML("//wing/distribution/geometry/radius_leading_edge"));
-
+		
+		theStabilityCalculator.setWingXACBreakPoints(reader.readArrayDoubleFromXMLSplit("//wing/distribution/aerodynamics/x_ac_referred_to_chord"));
+		theStabilityCalculator.setWingCmACBreakPoints(reader.readArrayDoubleFromXMLSplit("//wing/distribution/aerodynamics/c_m_ac"));
 		//---------------------------------------------------------------------------------
 		// HIGH LIFT DEVICES:
 
@@ -352,7 +356,9 @@ public class ReaderWriter{
 		theStabilityCalculator.setHTailAlphaStarBreakPoints(reader.readArrayofAmountFromXML("//horizontal_tail/distribution/aerodynamics/alpha_star_distribution"));
 		theStabilityCalculator.setHTailClMaxBreakPoints(reader.readArrayDoubleFromXML("//horizontal_tail/distribution/aerodynamics/maximum_lift_coefficient_distribution"));
 		theStabilityCalculator.setHTailClAlphaBreakPointsDeg(reader.readArrayDoubleFromXML("//horizontal_tail/distribution/aerodynamics/linear_slope_coefficient"));
-
+		theStabilityCalculator.setHTailXACBreakPoints(reader.readArrayDoubleFromXMLSplit("//horizontal_tail/distribution/aerodynamics/x_ac_referred_to_chord"));
+		theStabilityCalculator.setHTailCmACBreakPoints(reader.readArrayDoubleFromXMLSplit("//horizontal_tail/distribution/aerodynamics/c_m_ac"));
+	
 		//---------------------------------------------------------------------------------
 		// ELEVATOR:
 		theStabilityCalculator.setAnglesOfElevatorDeflection(reader.readArrayofAmountFromXML("//horizontal_tail/elevator/angles_of_elevator_deflection"));

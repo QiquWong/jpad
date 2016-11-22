@@ -95,6 +95,10 @@ public class StabilityExecutableManager {
 
 	private boolean _downwashConstant; // se TRUE--> constant, se FALSE--> variable
 
+	private List<Double> _wingMomentumPole;  // pole adimentionalized on MAC
+	private List<Double> _hTailMomentumPole; // pole adimentionalized on MAC
+	
+	
 	//Wing -------------------------------------------
 	//----------------------------------------------------------------
 	private Amount<Length> _xApexWing;
@@ -147,6 +151,10 @@ public class StabilityExecutableManager {
 	private List<Double> _wingCl0BreakPoints;
 	private List<Double> _wingCl0Distribution;  // not from input
 	private List<Double> _wingClAlphaBreakPointsDeg;
+	private List<Double> _wingXACBreakPoints;
+	private List<Double> _wingXACDistribution;  // not from input
+	private List<Double> _wingCmACBreakPoints;
+	private List<Double> _wingCmACDistribution;  // not from input
 
 	private List<Double> _wingClAlphaDistributionDeg;
 	private List<Double> _wingMaxThicknessBreakPoints;
@@ -239,7 +247,11 @@ public class StabilityExecutableManager {
 	private List<Double> _hTailClAlphaBreakPointsDeg;
 	private List<Double> _hTailCl0BreakPoints;
 	private List<Double> _hTailCl0Distribution  = new ArrayList<>();  // not from input
-	private List<Double> _hTailClAlphaistributionDeg  = new ArrayList<>();;
+	private List<Double> _hTailClAlphaistributionDeg  = new ArrayList<>();
+	private List<Double> _hTailXACBreakPoints;
+	private List<Double> _hTailXACDistribution;  // not from input
+	private List<Double> _hTailCmACBreakPoints;
+	private List<Double> _hTailCmACDistribution;  // not from input
 
 	//Elevator-------------------------------------------
 	//----------------------------------------------------------------
@@ -506,6 +518,8 @@ public class StabilityExecutableManager {
 	private Map<MethodEnum, Amount<Length>> _wingXACBRF = new HashMap<MethodEnum, Amount<Length>>();
 	private Amount<Length> _wingMAC;
 	private Amount<Length>_wingMeanAerodynamicChordLeadingEdgeX;
+	private List<Double> _wingMomentCoefficientAC =  new ArrayList<Double>();
+	private List<List<Double>> _wingMomentCoefficients =  new ArrayList<List<Double>>();
 	
 	//h tail
 	private Map<MethodEnum, Amount<Length>> _hTailXACLRF = new HashMap<MethodEnum, Amount<Length>>();
@@ -821,6 +835,26 @@ public class StabilityExecutableManager {
 									_wingMaxThicknessBreakPoints.get(1) * kTip;
 						}
 
+						//x ac airfoils
+						Double [] xacDistributionArray = MyMathUtils.getInterpolatedValue1DLinear(
+								MyArrayUtils.convertToDoublePrimitive(_wingYAdimensionalBreakPoints),
+								MyArrayUtils.convertToDoublePrimitive(_wingXACBreakPoints),
+								MyArrayUtils.convertToDoublePrimitive(_wingYAdimensionalDistribution)
+								);	
+						this._wingXACDistribution = new ArrayList<>();
+						for(int i=0; i<xacDistributionArray.length; i++)
+							_wingXACDistribution.add(xacDistributionArray[i]);
+						
+						//cmac airfoil
+						Double [] cmacDistributionArray = MyMathUtils.getInterpolatedValue1DLinear(
+								MyArrayUtils.convertToDoublePrimitive(_wingYAdimensionalBreakPoints),
+								MyArrayUtils.convertToDoublePrimitive(_wingCmACBreakPoints),
+								MyArrayUtils.convertToDoublePrimitive(_wingYAdimensionalDistribution)
+								);	
+						this._wingCmACDistribution = new ArrayList<>();
+						for(int i=0; i<cmacDistributionArray.length; i++)
+							_wingCmACDistribution.add(cmacDistributionArray[i]);
+						
 						//HTAIL----------------------------
 						// chords
 						Double [] chordDistributionArrayHtail = MyMathUtils.getInterpolatedValue1DLinear(
@@ -891,6 +925,26 @@ public class StabilityExecutableManager {
 						this._hTailClMaxDistribution = new ArrayList<>();
 						for(int i=0; i<clMaxDistributionArrayHtail.length; i++)
 							_hTailClMaxDistribution.add(clMaxDistributionArrayHtail[i]);
+						
+						//x ac airfoils
+						Double [] xacDistributionArrayHtail = MyMathUtils.getInterpolatedValue1DLinear(
+								MyArrayUtils.convertToDoublePrimitive(_hTailYAdimensionalBreakPoints),
+								MyArrayUtils.convertToDoublePrimitive(_hTailXACBreakPoints),
+								MyArrayUtils.convertToDoublePrimitive(_hTailYAdimensionalDistribution)
+								);	
+						this._hTailXACDistribution = new ArrayList<>();
+						for(int i=0; i<xacDistributionArrayHtail.length; i++)
+							_hTailXACDistribution.add(xacDistributionArrayHtail[i]);
+						
+						//cmac airfoil
+						Double [] cmacDistributionArrayHTail = MyMathUtils.getInterpolatedValue1DLinear(
+								MyArrayUtils.convertToDoublePrimitive(_hTailYAdimensionalBreakPoints),
+								MyArrayUtils.convertToDoublePrimitive(_hTailCmACBreakPoints),
+								MyArrayUtils.convertToDoublePrimitive(_hTailYAdimensionalDistribution)
+								);	
+						this._hTailCmACDistribution = new ArrayList<>();
+						for(int i=0; i<cmacDistributionArrayHTail.length; i++)
+							_hTailCmACDistribution.add(cmacDistributionArrayHTail[i]);
 
 
 						alphaZeroLiftRad = new double [_wingNumberOfPointSemiSpanWise];
@@ -981,6 +1035,7 @@ public class StabilityExecutableManager {
 
 						// the horizontal distance is always the same, the vertical changes in function of the angle of attack.
 
+						
 	// FUSELAGE -----------
 						
  _fuselageFrontSurface = Amount.valueOf(Math.PI*Math.pow(_fuselageDiameter.doubleValue(SI.METER), 2)/4, SI.SQUARE_METRE);
@@ -1536,6 +1591,7 @@ public class StabilityExecutableManager {
 		.append("\tWing\n")
 		.append("\t-------------------------------------\n")
 		.append("\t\tMAC = " +_wingMAC+ "\n")
+		.append("\t\tx MAC = " +_wingMeanAerodynamicChordLeadingEdgeX+ "\n")
 		.append("\t\tXAC MAC = " +_wingXACMAC+ "\n")
 		.append("\t\tXAC MAC percent = " +_wingXACMACpercent+ "\n")
 		.append("\t\tXAC LRF = " +_wingXACLRF+ "\n")
@@ -1824,7 +1880,7 @@ public class StabilityExecutableManager {
 						folderPathName,
 						"Wing Lift Coefficient 3D curve High lift ");
 
-				System.out.println("Plot CL high lift Chart ---> DONE \n");
+				
 			}
 		}
 
@@ -2212,6 +2268,86 @@ public class StabilityExecutableManager {
 					"Fuselage Moment Coefficient");
 
 			System.out.println("Plot Fuselage Moment Coefficient Chart ---> DONE \n");
+//			System.out.println("Plot CL high lift Chart ---> DONE \n");
+//			System.out.println("xac wing " + _wingXACBreakPoints);
+//			System.out.println("xac wing distribution " + _wingXACDistribution);
+//			System.out.println("xac h tail " + _hTailXACBreakPoints);
+//			System.out.println("xac h tail distribution " + _hTailXACDistribution);
+//			System.out.println("cmac wing " + _wingCmACBreakPoints);
+//			System.out.println("cmac wing distribution " + _wingCmACDistribution);
+//			System.out.println("cmac h tail " + _hTailCmACBreakPoints);
+//			System.out.println("cmac h tail distribution " + _hTailCmACDistribution);
+//			System.out.println("poli wing " + _wingMomentumPole);
+//			System.out.println("poli htail " + _hTailMomentumPole);
+			
+		}
+		if(_plotList.contains(AerodynamicAndStabilityPlotEnum.WING_CM_AERODYNAMIC_CENTER)) {
+
+			List<Double[]> xList = new ArrayList<>();
+			List<Double[]> yList = new ArrayList<>();
+			List<String> legend = new ArrayList<>();
+
+			xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasWing));
+			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_wingMomentCoefficientAC));
+			legend.add("null");
+
+			MyChartToFileUtils.plot(
+					xList, 
+					yList, 
+					"Wing Moment Coefficient", 
+					"alpha_w", "CM", 
+					null, null,
+					null, null,
+					"deg", "",
+					false,
+					legend,
+					folderPathName,
+					"Wing Moment Coefficient");
+
+		System.out.println("Plot Wing Moment Coefficient Chart respect to AC---> DONE \n");
+		}
+
+		if(_plotList.contains(AerodynamicAndStabilityPlotEnum.WING_CM_AERODYNAMIC_CENTER)) {
+
+			List<Double[]> xList = new ArrayList<>();
+			List<Double[]> yList = new ArrayList<>();
+			List<String> legend = new ArrayList<>();
+			
+			for (int i=0; i<_wingMomentumPole.size(); i++){
+			xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasWing));
+			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_wingMomentCoefficients.get(i)));
+			legend.add("pole = "+ _wingMomentumPole.get(i));}
+
+			if (_wingMomentumPole.size() ==1){
+			MyChartToFileUtils.plot(
+					xList, 
+					yList, 
+					"Wing Moment Coefficient", 
+					"alpha_w", "CM", 
+					null, null,
+					null, null,
+					"deg", "",
+					false,
+					legend,
+					folderPathName,
+					"Wing Moment Coefficient");
+			}
+			else{
+			MyChartToFileUtils.plot(
+					xList, 
+					yList, 
+					"Wing Moment Coefficient", 
+					"alpha_w", "CM", 
+					null, null,
+					null, null,
+					"deg", "",
+					true,
+					legend,
+					folderPathName,
+					"Wing Moment Coefficient");
+			}
+
+		System.out.println("Plot Wing Moment Coefficient Chart respect to another pole---> DONE \n");
 		}
 		
 	}
@@ -2985,7 +3121,7 @@ public class StabilityExecutableManager {
 						i,
 						(2/_wingSurface.doubleValue(SI.SQUARE_METRE))* MyMathUtils.integrate1DSimpsonSpline(
 								MyArrayUtils.convertListOfAmountTodoubleArray(_wingYDistribution),
-								cdDistributionAtAlpha)
+								cCd)
 						);
 				
 //				System.out.println(" cl wing " + Arrays.toString(_wingliftCoefficient3DCurveCONDITION)) ;
@@ -3053,7 +3189,7 @@ public class StabilityExecutableManager {
 						i,
 						(2/_wingSurface.doubleValue(SI.SQUARE_METRE)) * MyMathUtils.integrate1DSimpsonSpline(
 								MyArrayUtils.convertListOfAmountTodoubleArray(_wingYDistribution),
-								cdInducedDistributionAtAlpha)
+								cCd)
 						);
 			}
 			
@@ -3339,7 +3475,125 @@ public class StabilityExecutableManager {
 				_hTailXACMAC.get(MethodEnum.DEYOUNG_HARPER).plus(_wingMeanAerodynamicChordLeadingEdgeX).plus(_xApexHTail));
 
 	}
+	public void calculateWingMomentCharactersticswithAC(){
+		// AC ---------------------------------------------------------------------------------
+		double[] distancesArrayAC = new double[_wingNumberOfPointSemiSpanWise];
+		double[] clDistribution = new double[_wingNumberOfPointSemiSpanWise];
+		double[] cmDistribution = new double[_wingNumberOfPointSemiSpanWise];
+		double[] cCm = new double[_wingNumberOfPointSemiSpanWise];
+		double[] alphaDistribution = new double[_wingNumberOfPointSemiSpanWise];
+		double[] clInducedDistributionAtAlphaNew = new double[_wingNumberOfPointSemiSpanWise];
+		
+		System.out.println("mean aerod le " + _wingMeanAerodynamicChordLeadingEdgeX);
+		System.out.println("mean xac mac  " + _wingXACMAC.get(MethodEnum.DEYOUNG_HARPER));
+		System.out.println("wing le  " + _wingXleDistribution);
+		System.out.println("wing ac  " + _wingXACDistribution);
+		System.out.println("wing chord  " + _wingChordsDistribution);
+		  // poles
+		for(int i=0; i<_wingNumberOfPointSemiSpanWise; i++){
+			distancesArrayAC[i] =
+					(_wingMeanAerodynamicChordLeadingEdgeX.doubleValue(SI.METER) + _wingXACMAC.get(MethodEnum.DEYOUNG_HARPER).doubleValue(SI.METER)) - 
+					(_wingXleDistribution.get(i).doubleValue(SI.METER) + (_wingXACDistribution.get(i)*_wingChordsDistribution.get(i).doubleValue(SI.METER)));
+		}
+		
+		for (int i=0; i<_numberOfAlphasBody; i++){
+			System.out.println("ALPHA " + _alphasWing.get(i));
+			clDistribution = new double[_wingNumberOfPointSemiSpanWise];
+			alphaDistribution = new double[_wingNumberOfPointSemiSpanWise];
+		    clInducedDistributionAtAlphaNew = new double[_wingNumberOfPointSemiSpanWise];
+			theNasaBlackwellCalculatorMachActualWing.calculate(_alphasWing.get(i));
+			clDistribution = theNasaBlackwellCalculatorMachActualWing.getClTotalDistribution().toArray();
+			System.out.println(" cl distribution " +  Arrays.toString(clDistribution));
+			for (int ii=0; ii<_wingNumberOfPointSemiSpanWise; ii++){
+				alphaDistribution [ii] = (clDistribution[ii] - _wingCl0Distribution.get(ii))/
+						_wingClAlphaDistributionDeg.get(ii);
+				clInducedDistributionAtAlphaNew[ii] = MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertListOfAmountTodoubleArray(_alphasWing),
+						MyArrayUtils.convertToDoublePrimitive(
+								MyArrayUtils.convertListOfDoubleToDoubleArray(
+										_wingCLAirfoilsDistributionFinal.get(i))),
+						alphaDistribution[ii]
+						);
+			cmDistribution [ii] = clInducedDistributionAtAlphaNew[ii] * distancesArrayAC[ii]/
+					_wingChordsDistribution.get(ii).doubleValue(SI.METER) + _wingCmACDistribution.get(ii);
+			cCm[ii] = cmDistribution [ii] * _wingChordsDistribution.get(ii).doubleValue(SI.METER) *
+					_wingChordsDistribution.get(ii).doubleValue(SI.METER) ;
+			}
+			System.out.println(" distances Array " + Arrays.toString( distancesArrayAC));
+			System.out.println(" cm " + Arrays.toString(cmDistribution));
+			System.out.println(" chord " + _wingChordsDistribution);
+			System.out.println(" ccm " + Arrays.toString(cCm));
+			_wingMomentCoefficientAC.add(
+					i,
+					(2/_wingSurface.doubleValue(SI.SQUARE_METRE))* MyMathUtils.integrate1DSimpsonSpline(
+							MyArrayUtils.convertListOfAmountTodoubleArray(_wingYDistribution),
+							cCm)
+					);
+		}
+		
+	}
+	
+	public void calculateWingMomentCharactersticswithCP(){
+		
+	}
+	
 	public void calculateWingMomentCharacterstics(){
+		for (int j=0; j<_wingMomentumPole.size(); j++){
+		// AC ---------------------------------------------------------------------------------
+		double[] distancesArrayAC = new double[_wingNumberOfPointSemiSpanWise];
+		double[] clDistribution = new double[_wingNumberOfPointSemiSpanWise];
+		double[] cmDistribution = new double[_wingNumberOfPointSemiSpanWise];
+		double[] cCm = new double[_wingNumberOfPointSemiSpanWise];
+		double[] alphaDistribution = new double[_wingNumberOfPointSemiSpanWise];
+		double[] clInducedDistributionAtAlphaNew = new double[_wingNumberOfPointSemiSpanWise];
+		Double[] cmFinal = new Double[_numberOfAlphasBody];
+		
+		System.out.println("mean aerod le " + _wingMeanAerodynamicChordLeadingEdgeX);
+		System.out.println("mean xac mac  " + _wingXACMAC.get(MethodEnum.DEYOUNG_HARPER));
+		System.out.println("wing le  " + _wingXleDistribution);
+		System.out.println("wing ac  " + _wingXACDistribution);
+		System.out.println("wing chord  " + _wingChordsDistribution);
+		  // poles
+		for(int i=0; i<_wingNumberOfPointSemiSpanWise; i++){
+			distancesArrayAC[i] =
+					(_wingMeanAerodynamicChordLeadingEdgeX.doubleValue(SI.METER) + _wingMomentumPole.get(j)) - 
+					(_wingXleDistribution.get(i).doubleValue(SI.METER) + (_wingXACDistribution.get(i)*_wingChordsDistribution.get(i).doubleValue(SI.METER)));
+		}
+		
+		for (int i=0; i<_numberOfAlphasBody; i++){
+			System.out.println("ALPHA " + _alphasWing.get(i));
+			clDistribution = new double[_wingNumberOfPointSemiSpanWise];
+			alphaDistribution = new double[_wingNumberOfPointSemiSpanWise];
+		    clInducedDistributionAtAlphaNew = new double[_wingNumberOfPointSemiSpanWise];
+			theNasaBlackwellCalculatorMachActualWing.calculate(_alphasWing.get(i));
+			clDistribution = theNasaBlackwellCalculatorMachActualWing.getClTotalDistribution().toArray();
+			System.out.println(" cl distribution " +  Arrays.toString(clDistribution));
+			for (int ii=0; ii<_wingNumberOfPointSemiSpanWise; ii++){
+				alphaDistribution [ii] = (clDistribution[ii] - _wingCl0Distribution.get(ii))/
+						_wingClAlphaDistributionDeg.get(ii);
+				clInducedDistributionAtAlphaNew[ii] = MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertListOfAmountTodoubleArray(_alphasWing),
+						MyArrayUtils.convertToDoublePrimitive(
+								MyArrayUtils.convertListOfDoubleToDoubleArray(
+										_wingCLAirfoilsDistributionFinal.get(i))),
+						alphaDistribution[ii]
+						);
+			cmDistribution [ii] = clInducedDistributionAtAlphaNew[ii] * distancesArrayAC[ii]/
+					_wingChordsDistribution.get(ii).doubleValue(SI.METER) + _wingCmACDistribution.get(ii);
+			cCm[ii] = cmDistribution [ii] * _wingChordsDistribution.get(ii).doubleValue(SI.METER) *
+					_wingChordsDistribution.get(ii).doubleValue(SI.METER) ;
+			}
+			System.out.println(" distances Array " + Arrays.toString( distancesArrayAC));
+			System.out.println(" cm " + Arrays.toString(cmDistribution));
+			System.out.println(" chord " + _wingChordsDistribution);
+			System.out.println(" ccm " + Arrays.toString(cCm));
+			cmFinal[i]=
+					(2/_wingSurface.doubleValue(SI.SQUARE_METRE))* MyMathUtils.integrate1DSimpsonSpline(
+							MyArrayUtils.convertListOfAmountTodoubleArray(_wingYDistribution),
+							cCm);
+		}
+		_wingMomentCoefficients.add(MyArrayUtils.convertDoubleArrayToListDouble(cmFinal));
+		}
 		
 	}
 	public void calculateHtailMomentCharacterstics(){}
@@ -5016,5 +5270,85 @@ public class StabilityExecutableManager {
 
 	public void setHTailCLAirfoilsDistribution(List<List<Double>> _hTailCLAirfoilsDistribution) {
 		this._hTailCLAirfoilsDistribution = _hTailCLAirfoilsDistribution;
+	}
+
+	public List<Double> getWingXACBreakPoints() {
+		return _wingXACBreakPoints;
+	}
+
+	public List<Double> getWingXACDistribution() {
+		return _wingXACDistribution;
+	}
+
+	public List<Double> getWingCmACBreakPoints() {
+		return _wingCmACBreakPoints;
+	}
+
+	public List<Double> getWingCmACDistribution() {
+		return _wingCmACDistribution;
+	}
+
+	public List<Double> getHTailXACBreakPoints() {
+		return _hTailXACBreakPoints;
+	}
+
+	public List<Double> getHTailXACDistribution() {
+		return _hTailXACDistribution;
+	}
+
+	public List<Double> geHTailCmACBreakPoints() {
+		return _hTailCmACBreakPoints;
+	}
+
+	public List<Double> getHTailCmACDistribution() {
+		return _hTailCmACDistribution;
+	}
+
+	public void setWingXACBreakPoints(List<Double> _wingXACBreakPoints) {
+		this._wingXACBreakPoints = _wingXACBreakPoints;
+	}
+
+	public void setWingXACDistribution(List<Double> _wingXACDistribution) {
+		this._wingXACDistribution = _wingXACDistribution;
+	}
+
+	public void setWingCmACBreakPoints(List<Double> _wingCmACBreakPoints) {
+		this._wingCmACBreakPoints = _wingCmACBreakPoints;
+	}
+
+	public void setWingCmACDistribution(List<Double> _wingCmACDistribution) {
+		this._wingCmACDistribution = _wingCmACDistribution;
+	}
+
+	public void setHTailXACBreakPoints(List<Double> _hTailXACBreakPoints) {
+		this._hTailXACBreakPoints = _hTailXACBreakPoints;
+	}
+
+	public void setHTailXACDistribution(List<Double> _hTailXACDistribution) {
+		this._hTailXACDistribution = _hTailXACDistribution;
+	}
+
+	public void setHTailCmACBreakPoints(List<Double> _hTailCmACBreakPoints) {
+		this._hTailCmACBreakPoints = _hTailCmACBreakPoints;
+	}
+
+	public void setHTailCmACDistribution(List<Double> _hTailCmACDistribution) {
+		this._hTailCmACDistribution = _hTailCmACDistribution;
+	}
+
+	public List<Double> getWingMomentumPole() {
+		return _wingMomentumPole;
+	}
+
+	public List<Double> getHTailMomentumPole() {
+		return _hTailMomentumPole;
+	}
+
+	public void setWingMomentumPole(List<Double> _wingMomentumPole) {
+		this._wingMomentumPole = _wingMomentumPole;
+	}
+
+	public void setHTailMomentumPole(List<Double> _hTailMomentumPole) {
+		this._hTailMomentumPole = _hTailMomentumPole;
 	}
 }
