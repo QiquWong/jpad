@@ -27,7 +27,6 @@ import org.jscience.physics.amount.Amount;
 import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LiftingSurface;
-import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
 import calculators.performance.FlightManeuveringEnvelopeCalc;
@@ -35,6 +34,7 @@ import calculators.performance.LandingCalc;
 import calculators.performance.PayloadRangeCalc;
 import calculators.performance.PerformanceCalcUtils;
 import calculators.performance.RateOfClimbCalc;
+import calculators.performance.SpecificRangeCalc;
 import calculators.performance.TakeOffCalc;
 import calculators.performance.ThrustCalc;
 import calculators.performance.customdata.CeilingMap;
@@ -51,7 +51,6 @@ import configuration.enumerations.PerformancePlotEnum;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
-import standaloneutils.MyMathUtils;
 import standaloneutils.MyXLSUtils;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
@@ -190,6 +189,8 @@ public class ACPerformanceCalculator {
 	
 	private Map<String, List<Double>> _efficiencyMapAltitude;
 	private Map<String, List<Double>> _efficiencyMapWeight;
+	
+	private Map<String, Double[]> _specificRangeMap;
 	
 	//..............................................................................
 	// Landing
@@ -2730,6 +2731,70 @@ public class ACPerformanceCalculator {
 		
 		public void calculateCruiseGrid() {
 			
+			List<DragThrustIntersectionMap> intersectionList = new ArrayList<>();
+			for(int i=0; i<_dragListWeightParameterization.size(); i++) {
+				intersectionList.add(
+						PerformanceCalcUtils.calculateDragThrustIntersection(
+								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+								_dragListWeightParameterization.get(i).getSpeed(),
+								_weightListCruise.get(i).doubleValue(SI.NEWTON),
+								_theOperatingConditions.getThrottleCruise(),
+								EngineOperatingConditionEnum.CRUISE,
+								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_cLmaxClean,
+								_dragListWeightParameterization,
+								_thrustListWeightParameterization
+								)
+						);
+			}
+					
+			List<Double[]> machList = new ArrayList<Double[]>();
+			for(int i=0; i<_weightListCruise.size(); i++) 
+				machList.add(MyArrayUtils.linspaceDouble(
+						intersectionList.get(i).getMinMach(),
+						intersectionList.get(i).getMaxMach(),
+						250));
+			
+			List<Double[]> sfcList = new ArrayList<Double[]>();
+			for(int i=0; i<_weightListCruise.size(); i++)
+				sfcList.add(SpecificRangeCalc.calculateSfcVsMach(
+						machList.get(i),
+						_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+						_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+						_theAircraft.getPowerPlant().getEngineType()
+						));
+			
+			List<Double[]> efficiencyList = new ArrayList<Double[]>();
+			for(int i=0; i<_weightListCruise.size(); i++) {
+				Double[] efficiencyArray = new Double[_dragListWeightParameterization.size()];
+				for(int j=0; j<_efficiencyMapWeight.get("Weight = " + _dragListWeightParameterization.get(i).getWeight()).size(); j++) {
+					efficiencyArray[j] = _efficiencyMapWeight
+							.get("Weight = " + _dragListWeightParameterization.get(i).getWeight())
+							.get(j);
+				}
+				efficiencyList.add(efficiencyArray);
+			}
+					
+			_specificRangeMap = new HashMap<>();
+			for (int i=0; i<_weightListCruise.size(); i++)
+				_specificRangeMap.put(
+						"Weight = " + _weightListCruise.get(i),
+						SpecificRangeCalc.calculateSpecificRangeVsMach(
+								Amount.valueOf(
+										_weightListCruise.get(i).divide(AtmosphereCalc.g0).getEstimatedValue(),
+										SI.KILOGRAM
+										),
+								machList.get(i),
+								sfcList.get(i),
+								efficiencyList.get(i),
+								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+								_theAircraft.getPowerPlant().getEngineList().get(0).getEtaPropeller(),
+								_theAircraft.getPowerPlant().getEngineType()
+								)
+						);
+
 		}
 				
 		public void plotCruiseOutput(String cruiseFolderPath) {
@@ -3017,7 +3082,6 @@ public class ACPerformanceCalculator {
 			}
 			
 			if(_plotList.contains(PerformancePlotEnum.CRUISE_GRID_CHART)) {
-				
 				
 				
 			}
