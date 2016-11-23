@@ -142,6 +142,7 @@ public class Test_Stability{
 		theCalculator.calculateWingBodyXAC();
 		theCalculator.calculateWingMomentCharactersticswithAC();
 		theCalculator.calculateWingMomentCharacterstics();
+		theCalculator.calculateWingMomentCharactersticswithCP();
 		//...
 		theCalculator.printAllData();
 		String sb = theCalculator.printAllResults();

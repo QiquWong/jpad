@@ -13,14 +13,14 @@
                 <altitude unit="m">0</altitude>
                 <mach_number>0.12</mach_number>
 				<!-- Reynolds number reffered to MAC  -->
-				<Reynolds_number>6000000</Reynolds_number>
+				<Reynolds_number>19000000</Reynolds_number>
 				<!-- definition of alpha body array analysis  -->
 				<alpha_body_initial unit="°">-5</alpha_body_initial> <!-- must be about equal to( wingALPAzeroLift - iw) [ about -5 cruise, -19 landing] -->
                 <alpha_body_final unit="°">21</alpha_body_final> <!-- must be >( wingALPAstall - iw) [ about 20 cruise, 23 landing] -->
                 <number_of_alphas_body>60</number_of_alphas_body>
 				<condition>CRUISE</condition>
 				<!-- This is the pole for the calculation of the moment referred to the MAC. The momentum respect to the aerodynamic center is automatically calculated -->
-				<wing_momentum_pole>[0.25,0.3, 0.6, 0.9, 0.83]</wing_momentum_pole>
+				<wing_momentum_pole>[0.25,0.3, 0.6, 0.9, 0.83, 0.62, 0.7, 0.79]</wing_momentum_pole>
 				<horizontal_tail_momentum_pole>[0.25,0.3]</horizontal_tail_momentum_pole>
 				<!--
 				<condition>CRUISE</condition>
@@ -104,7 +104,7 @@ CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated start
 						<alpha_star_distribution unit="°">[8,8,10]</alpha_star_distribution>
 						<maximum_lift_coefficient_distribution>[1.87,1.87,1.55]</maximum_lift_coefficient_distribution>
 						<x_ac_referred_to_chord>[0.25,0.25,0.25]</x_ac_referred_to_chord>
-						<c_m_ac>[0.01,0.01,0.01]</c_m_ac>
+						<c_m_ac>[-0.01,-0.01,-0.01]</c_m_ac>
 					</aerodynamics>	
              </distribution>
 			 <high_lift_devices>
@@ -176,18 +176,18 @@ CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated start
         </wing>
 		<fuselage>
       	<!-- The fuselage doesn't need the position because its origin is the origib of BRF (0,0,0) -->
-      	 	<fuselageDiameter  unit="m">3.4500</fuselageDiameter>
-            <fuselageLength unit="m">30.0</fuselageLength>
+      	 	<fuselageDiameter  unit="m">3.54</fuselageDiameter>
+            <fuselageLength unit="m">38.04</fuselageLength>
 			<!--Nose fineness ratio is the ratio between nose fuselage length and maximum fuselage diameter. It varies between [1.2-1.7] -->
-			<noseFinenessRatio>1.60</noseFinenessRatio>
+			<noseFinenessRatio>1.19</noseFinenessRatio>
 			<!--Fuselage fineness ratio is the ratio between fuselage length and diameter. It varies between [7-12] -->
-            <finenessRatio>8.7000</finenessRatio>
+            <finenessRatio>10.74</finenessRatio>
 			<!--Tailcone fineness ratio is the ratio between tailcone fuselage length and maximum fuselage diameter. It varies between [2.3-3.0] -->
-			<tailFinenessRatio>2.83</tailFinenessRatio>
+			<tailFinenessRatio>3.22</tailFinenessRatio>
 			<!--Windshield angle is the angle of the front window. It varies between [35 deg - 50 deg] -->
-            <windshieldAngle unit="°">39.7</windshieldAngle>
+            <windshieldAngle unit="°">39</windshieldAngle>
 			<!--Upsweep angle is the upward curvature angle of the aft fuselage. It varies between [10 deg - 18 deg]-->
-			<upsweepAngle unit="°">13.6 </upsweepAngle>
+			<upsweepAngle unit="°">13</upsweepAngle>
 			<!--xPercentPositionPole is the position along x-axis of the reference moment point. It can be equal to 0.35, 0.50 or 0.60 which corresponds to 35%, 50% or 60% of 
 fuselage length respectively-->
             <xPercentPositionPole>0.5</xPercentPositionPole>
