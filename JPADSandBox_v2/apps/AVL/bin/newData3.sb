@@ -13,19 +13,19 @@
 
  Run case:  -unnamed-                              
 
-  Alpha =  -2.04323     pb/2V =  -0.00000     p'b/2V =  -0.00000
+  Alpha =  -0.51642     pb/2V =  -0.00000     p'b/2V =  -0.00000
   Beta  =   0.00000     qc/2V =   0.00000
   Mach  =     0.000     rb/2V =  -0.00000     r'b/2V =  -0.00000
 
-  CXtot =  -0.02411     Cltot =  -0.00000     Cl'tot =  -0.00000
-  CYtot =  -0.00000     Cmtot =   0.18785
-  CZtot =  -0.10510     Cntot =  -0.00000     Cn'tot =  -0.00000
+  CXtot =  -0.02410     Cltot =  -0.00000     Cl'tot =  -0.00000
+  CYtot =   0.00000     Cmtot =   1.20498
+  CZtot =  -0.10568     Cntot =   0.00000     Cn'tot =   0.00000
 
   CLtot =   0.10589
-  CDtot =   0.02035
-  CDvis =   0.02000     CDind =   0.00035
-  CLff  =   0.10600     CDff  =   0.00047    | Trefftz
-  CYff  =   0.00000         e =    0.6347    | Plane  
+  CDtot =   0.02315
+  CDvis =   0.02000     CDind =   0.00315
+  CLff  =   0.10587     CDff  =   0.00314    | Trefftz
+  CYff  =   0.00000         e =    0.0946    | Plane  
 
    Elevator        =   0.00000
 
@@ -35,29 +35,29 @@
 
                     axial   vel. u     sideslip vel. v      normal  vel. w
                   ----------------    ----------------    ----------------
- x force CX  |    CXu =  -0.049600    CXv =  -0.000005    CXw =  -0.037779
- y force CY  |    CYu =  -0.000002    CYv =  -0.110452    CYw =  -0.000030
- z force CZ  |    CZu =  -0.335804    CZv =  -0.000000    CZw =  -3.516799
- x mom.  Cl  |    Clu =  -0.000000    Clv =   0.117677    Clw =  -0.000001
- y mom.  Cm  |    Cmu =   0.555661    Cmv =   0.000002    Cmw =   5.037400
- z mom.  Cn  |    Cnu =  -0.000000    Cnv =  -0.018227    Cnw =  -0.000005
+ x force CX  |    CXu =  -0.048463    CXv =   0.000000    CXw =  -0.028640
+ y force CY  |    CYu =   0.000000    CYv =  -0.020047    CYw =  -0.000000
+ z force CZ  |    CZu =  -0.322116    CZv =   0.000000    CZw = -12.286390
+ x mom.  Cl  |    Clu =  -0.000000    Clv =   0.000878    Clw =  -0.000000
+ y mom.  Cm  |    Cmu =   2.005342    Cmv =   0.000000    Cmw = -44.901222
+ z mom.  Cn  |    Cnu =   0.000000    Cnv =  -0.000100    Cnw =   0.000000
 
                       roll rate  p       pitch rate  q         yaw rate  r
                   ----------------    ----------------    ----------------
- x force CX  |    CXp =   0.000010    CXq =  -0.032271    CXr =  -0.000003
- y force CY  |    CYp =   0.168129    CYq =   0.000089    CYr =  -0.049737
- z force CZ  |    CZp =   0.000000    CZq =   7.822714    CZr =  -0.000000
- x mom.  Cl  |    Clp =  -0.286988    Clq =   0.000002    Clr =   0.085435
- y mom.  Cm  |    Cmp =  -0.000004    Cmq = -31.358248    Cmr =   0.000001
- z mom.  Cn  |    Cnp =   0.041312    Cnq =   0.000016    Cnr =  -0.014137
+ x force CX  |    CXp =  -0.000000    CXq =  -2.740374    CXr =   0.000000
+ y force CY  |    CYp =   0.010434    CYq =   0.000000    CYr =  -0.000361
+ z force CZ  |    CZp =   0.000000    CZq =-107.196205    CZr =   0.000000
+ x mom.  Cl  |    Clp =  -5.078039    Clq =  -0.000000    Clr =  -0.146174
+ y mom.  Cm  |    Cmp =   0.000002    Cmq =-626.367859    Cmr =   0.000000
+ z mom.  Cn  |    Cnp =   0.106463    Cnq =   0.000000    Cnr =  -0.000945
 
                   Elevator     d1 
                   ----------------
- x force CX  |   CXd1 =  -0.000213
+ x force CX  |   CXd1 =   0.000291
  y force CY  |   CYd1 =  -0.000000
- z force CZ  |   CZd1 =  -0.007589
+ z force CZ  |   CZd1 =  -0.089000
  x mom.  Cl  |   Cld1 =  -0.000000
- y mom.  Cm  |   Cmd1 =  -0.012561
- z mom.  Cn  |   Cnd1 =  -0.000000
+ y mom.  Cm  |   Cmd1 =  -0.570053
+ z mom.  Cn  |   Cnd1 =   0.000000
 
 

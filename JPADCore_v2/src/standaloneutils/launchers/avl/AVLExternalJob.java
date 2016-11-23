@@ -274,23 +274,13 @@ public class AVLExternalJob implements IAVLExternalJob {
 							.addSections( //-------------------------------------- wing 1 - section 1
 								new AVLWingSection
 									.Builder()
-									.setDescription("Root section")
+									.setDescription("Wing root section")
 									.setAirfoilObject(theAircraft.getWing().getAirfoilList().get(0)) // 1. set source first
 									.setAirfoilCoordFile( // 2. set airfoil name
 										new File(this.binDirectory.getAbsolutePath() + File.separator 
-											+ getBaseName() + "_airfoil_root.dat"
+											+ getBaseName() + "_airfoil_wing_root.dat"
 										)
 									)
-									/*
-									.setAirfoilSectionInline(
-										// Inline section coordinates formatted as airfoil section: 
-										//    This is useful when the real airfoil shape is known.
-										//    Such a 2D array would be filled programmatically and 
-										//    the AFIL/<airfoil-section>.dat couple would not be 
-										//    required (no auxiliary file to write).
-										AVLInputGenerator.getAG38AirfoilSection()
-									)								
-							        */
 									.setOrigin(new Double[]{
 											theAircraft.getWing().getXApexConstructionAxes().doubleValue(SI.METER), 
 											theAircraft.getWing().getYApexConstructionAxes().doubleValue(SI.METER), 
@@ -298,52 +288,85 @@ public class AVLExternalJob implements IAVLExternalJob {
 									.setChord(
 											theAircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
 											)
-									.setTwist(0.0)
+									.setTwist(
+											- theAircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getAirfoilRoot().getAlphaZeroLift().doubleValue(NonSI.DEGREE_ANGLE)
+											)
 									.build()
 								)
 							.addSections( //-------------------------------------- wing 1 - section 2
 								new AVLWingSection
 									.Builder()
-									.setDescription("Tip section")
-									.setAirfoilCoordFile(
-										new File(this.binDirectory.getAbsolutePath() + File.separator 
-											+ "ag38.dat"
-										) // TODO: produce .dat file on the fly
-									)
-									/*
-									.setAirfoilSectionInline(
-										// Inline section coordinates formatted as airfoil section: 
-										//    This is useful when the real airfoil shape is known.
-										//    Such a 2D array would be filled programmatically and 
-										//    the AFIL/<airfoil-section>.dat couple would not be 
-										//    required (no auxiliary file to write).
-										AVLInputGenerator.getAG38AirfoilSection()
-									)
-									 */
-									.setOrigin(new Double[]{0.0, 12.0, 0.0})
-									.setChord(1.5)
-									.setTwist(0.0)
+									.setDescription("Wing kink section")
+									.setAirfoilObject(theAircraft.getWing().getAirfoilList().get(1)) // 2. set source first
+									.setAirfoilCoordFile( // 2. set airfoil name
+											new File(this.binDirectory.getAbsolutePath() + File.separator 
+												+ getBaseName() + "_airfoil_wing_kink.dat"
+											)
+										)
+									.setOrigin(new Double[]{
+											theAircraft.getWing().getXApexConstructionAxes().doubleValue(SI.METER), // TODO: get precise (x,y,z) of section l.e.
+											theAircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getSpan().doubleValue(SI.METER), 
+											theAircraft.getWing().getZApexConstructionAxes().doubleValue(SI.METER)})
+									.setChord(
+											theAircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordTip().doubleValue(SI.METER)
+											)
+									.setTwist(
+											theAircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getTwistGeometricAtTip().doubleValue(NonSI.DEGREE_ANGLE)
+											- theAircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getAirfoilTip().getAlphaZeroLift().doubleValue(NonSI.DEGREE_ANGLE)
+											)
 									.build()
 								)
+							.addSections( //-------------------------------------- wing 1 - section 3
+									new AVLWingSection
+										.Builder()
+										.setDescription("Wing tip section")
+										.setAirfoilObject(theAircraft.getWing().getAirfoilList().get(2)) // 2. set source first
+										.setAirfoilCoordFile( // 2. set airfoil name
+												new File(this.binDirectory.getAbsolutePath() + File.separator 
+													+ getBaseName() + "_airfoil_wing_tip.dat"
+												)
+											)
+										.setOrigin(new Double[]{
+												theAircraft.getWing().getXApexConstructionAxes().doubleValue(SI.METER), // TODO: get precise (x,y,z) of section l.e. 
+												theAircraft.getWing().getSemiSpan().doubleValue(SI.METER), 
+												theAircraft.getWing().getZApexConstructionAxes().doubleValue(SI.METER)})
+										.setChord(
+												theAircraft.getWing().getLiftingSurfaceCreator().getPanels().get(1).getChordTip().doubleValue(SI.METER)
+												)
+										.setTwist(
+												theAircraft.getWing().getLiftingSurfaceCreator().getPanels().get(1).getTwistGeometricAtTip().doubleValue(NonSI.DEGREE_ANGLE)
+												- theAircraft.getWing().getLiftingSurfaceCreator().getPanels().get(1).getAirfoilTip().getAlphaZeroLift().doubleValue(NonSI.DEGREE_ANGLE)
+												)
+										.build()
+									)
 							.build()
 						)
 					.appendWing( //----------------------------------------------- wing 2
 						new AVLWing
 							.Builder()
-							.setDescription("Horizontal tail")
-							.setOrigin(new Double[]{15.0, 0.0, 1.25})
+							.setDescription(theAircraft.getHTail().getId())
+							// .setOrigin(new Double[]{15.0, 0.0, 1.25})
+							.setIncidence(theAircraft.getHTail().getRiggingAngle().doubleValue(NonSI.DEGREE_ANGLE))
 							.addSections( //-------------------------------------- wing 2 - section 1
 								new AVLWingSection
 									.Builder()
-									.setDescription("Root section")
-									.setAirfoilCoordFile(
-										new File(this.binDirectory.getAbsolutePath() + File.separator 
-											+ "ag38.dat"
+									.setDescription("HTail root section")
+									.setAirfoilObject(theAircraft.getHTail().getAirfoilList().get(0)) // 2. set source first
+									.setAirfoilCoordFile( // 2. set airfoil name
+											new File(this.binDirectory.getAbsolutePath() + File.separator 
+												+ getBaseName() + "_airfoil_htail_root.dat"
+											)
 										)
-									)
-									.setOrigin(new Double[]{0.0, 0.0, 0.0})
-									.setChord(1.2)
-									.setTwist(0.0)
+									.setOrigin(new Double[]{
+											theAircraft.getHTail().getXApexConstructionAxes().doubleValue(SI.METER), // TODO: get precise (x,y,z) of section l.e. 
+											theAircraft.getHTail().getXApexConstructionAxes().doubleValue(SI.METER), 
+											theAircraft.getHTail().getZApexConstructionAxes().doubleValue(SI.METER)})
+									.setChord(
+											theAircraft.getHTail().getChordRoot().doubleValue(SI.METER)
+											)
+									.setTwist(
+											- theAircraft.getHTail().getLiftingSurfaceCreator().getPanels().get(0).getAirfoilRoot().getAlphaZeroLift().doubleValue(NonSI.DEGREE_ANGLE)
+											)
 									.addControlSurfaces(
 										new AVLWingSectionControlSurface
 											.Builder()
@@ -356,28 +379,27 @@ public class AVLExternalJob implements IAVLExternalJob {
 									)
 									.build()
 								)
-							.addSections(
+							.addSections( //-------------------------------------- wing 2 - section 2
 								new AVLWingSection
 									.Builder()
-									.setDescription("Tip section")
-									.setAirfoilCoordFile(
-										new File(this.binDirectory.getAbsolutePath() + File.separator 
-											+ "ag38.dat"
-										) // TODO: produce .dat file on the fly
-									)
-									/*
-									.setAirfoilSectionInline(
-											// Inline section coordinates formatted as airfoil section: 
-											//    This is useful when the real airfoil shape is known.
-											//    Such a 2D array would be filled programmatically and 
-											//    the AFIL/<airfoil-section>.dat couple would not be 
-											//    required (no auxiliary file to write).
-											AVLInputGenerator.getAG38AirfoilSection()
+									.setDescription("HTail tip section")
+									.setAirfoilObject(theAircraft.getHTail().getAirfoilList().get(1)) // 2. set source first
+									.setAirfoilCoordFile( // 2. set airfoil name
+											new File(this.binDirectory.getAbsolutePath() + File.separator 
+												+ getBaseName() + "_airfoil_htail_tip.dat"
+											)
 										)
-									*/
-									.setOrigin(new Double[]{0.0, 3.5, 0.0})
-									.setChord(1.2)
-									.setTwist(0.0)
+									.setOrigin(new Double[]{
+											theAircraft.getHTail().getXApexConstructionAxes().doubleValue(SI.METER), // TODO: get precise (x,y,z) of section l.e. 
+											theAircraft.getHTail().getSemiSpan().doubleValue(SI.METER), 
+											theAircraft.getHTail().getZApexConstructionAxes().doubleValue(SI.METER)})
+									.setChord(
+											theAircraft.getHTail().getChordRoot().doubleValue(SI.METER)
+											)
+									.setTwist(
+											theAircraft.getHTail().getLiftingSurfaceCreator().getPanels().get(0).getTwistGeometricAtTip().doubleValue(NonSI.DEGREE_ANGLE)
+											- theAircraft.getHTail().getLiftingSurfaceCreator().getPanels().get(0).getAirfoilRoot().getAlphaZeroLift().doubleValue(NonSI.DEGREE_ANGLE)
+											)
 									.addControlSurfaces(
 											new AVLWingSectionControlSurface
 												.Builder()
