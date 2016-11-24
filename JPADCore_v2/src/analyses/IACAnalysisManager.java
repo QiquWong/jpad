@@ -50,9 +50,6 @@ public interface IACAnalysisManager {
 	public Double getCruiseCL();
 	public void setCruiseCL(Double _cruiseCL);
 
-	public Amount<Length> getReferenceRange();
-	public void setReferenceRange(Amount<Length> _referenceRange);
-
 	public Amount<Length> getMaxAltitudeAtMaxSpeed();
 	public void setMaxAltitudeAtMaxSpeed(Amount<Length> _maxAltitudeAtMaxSpeed);
 

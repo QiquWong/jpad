@@ -54,7 +54,7 @@
 			<takeoff_landing>
 				<dt_rotation unit="s"></dt_rotation> <!-- the duration of the rotation phase (default = 3s) -->
 				<dt_hold unit="s"></dt_hold> <!-- the duration of the constant CL phase (default = 0.5s) -->
-				<alpha_ground unit="deg"></alpha_ground> <!-- angle of attack in BRF along the runway (dafault = 0°)-->
+				<alpha_ground unit="deg"></alpha_ground> <!-- angle of attack in BRF along the runway (default = 0°)-->
 				<wind_speed_along_runway unit="m/s"></wind_speed_along_runway> <!-- positive if behind the aircraft (default = 0m/s)-->
 				<obstacle_take_off unit="ft"></obstacle_take_off> <!-- default = 35 ft -->
 				<wheels_friction_coefficient></wheels_friction_coefficient> <!-- default = 0.03 -->
@@ -62,7 +62,7 @@
 				<k_rotation></k_rotation> <!-- V_rotation/V_stall in take-off (default = 1.05) -->
 				<k_lift_off></k_lift_off> <!-- V_lift-off/V_stall in take-off (default = 1.1) -->
 				<k_cLmax></k_cLmax> <!-- percentage of the CLmax,TO not to be surpassed during the rotation  (default = 0.9)-->
-				<k_drag_due_to_engine_failure></k_drag_due_to_engine_failure> <!-- percentage of the drag coefficent increase in OEI condition (default = 1.1) -->
+				<k_drag_due_to_engine_failure></k_drag_due_to_engine_failure> <!-- percentage of the drag coefficient increase in OEI condition (default = 1.1) -->
 				<k_alpha_dot></k_alpha_dot> <!-- indicates how fast the rotation maneuver is - faster with increasing k_alpha_dot - (default 0.04) -->
 				<alpha_reduction_rate unit="deg/s"></alpha_reduction_rate> <!-- negative angular velocity after reaching max allowed CL in rotation (default = -4 deg/s)-->
 				<obstacle_landing unit="ft"></obstacle_landing> <!-- default = 50ft -->
@@ -72,11 +72,16 @@
 				<k_touch_down></k_touch_down> <!-- V_touch_down/V_stall in landing (default = 1.15) -->
 				<free_roll_duration unit="s"></free_roll_duration> <!-- default = 2s -->
 			</takeoff_landing>
-			<!-- the following data can be assigned or not. If not default values are used -->
-			<other_data>
-				<cLmax_inverted></cLmax_inverted> <!-- to be assigned for the maneuvering flight and gust envelope (default = -1.0) --> 
+			<climb>
 				<climb_speed></climb_speed>
-			</other_data>
+			</climb>
+			<flight_maneuvering_and_gust_envelope>
+				<cLmax_inverted></cLmax_inverted> <!-- to be assigned for the maneuvering flight and gust envelope (default = -1.0) --> 
+			</flight_maneuvering_and_gust_envelope>
+			<mission_profile>
+				<rate_of_descent unit="m/s"></rate_of_descent>
+				<descent_speed_TAS unti="m/s"></descent_speed_TAS>
+			</mission_profile>
         </performance>
     </analysis>
 	<plot>
@@ -103,5 +108,11 @@
 		</landing>
 		<payload_range perform="TRUE"/>
 		<maneuvering_flight_and_gust_envelope perform="TRUE"/>
+		<mission_profile>
+			<range_profile perform="TRUE"/>
+			<time_profile perform="TRUE"/>
+			<fuel_used_profile perform="TRUE"/>
+			<weight_profile perform="TRUE"/>
+		</mission_profile>
 	</plot>
 </jpad_config>

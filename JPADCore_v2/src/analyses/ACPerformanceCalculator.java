@@ -134,9 +134,15 @@ public class ACPerformanceCalculator {
 	private Double _kTouchDown;
 	private Amount<Duration> _freeRollDuration;
 	//..............................................................................
-	// Other data
-	private Double _cLmaxInverted;
+	// Climb
 	private Amount<Velocity> _climbSpeed;
+	//..............................................................................
+	// Fligth maneuvering and gust envelope
+	private Double _cLmaxInverted;
+	//..............................................................................
+	// Mission profile
+	private Amount<Velocity> _speedTASDescent;
+	private Amount<Velocity> _rateOfDescent;
 	//..............................................................................
 	// Plot and Task Maps
 	private List<PerformanceEnum> _taskList;
@@ -279,6 +285,14 @@ public class ACPerformanceCalculator {
 	private Double _negativeLoadFactorCruisingSpeedWithGust;
 	private Double _negativeLoadFactorDiveSpeedWithGust;
 	private Double _negativeLoadFactorDesignFlapSpeedWithGust;
+	//..............................................................................
+	// Mission profile
+	private List<Amount<Length>> _rangeList;
+	private List<Amount<Duration>> _timeList;
+	private List<Amount<Mass>> _fuelUsedList;
+	private List<Amount<Mass>> _weightList;
+	private Amount<Mass> _totalFuelUsed;
+	private Amount<Duration> _totalMissionTime;
 	
 	//============================================================================================
 	// Builder pattern 
@@ -350,10 +364,17 @@ public class ACPerformanceCalculator {
 		private Double __kTouchDown = 1.15;
 		private Amount<Duration> __freeRollDuration = Amount.valueOf(2.0, SI.SECOND);
 		//..............................................................................
-		// Other data
-		private Double __cLmaxInverted = -1.0;
+		// Climb
 		private Amount<Velocity> __climbSpeed;
 		//..............................................................................
+		// Flight maneuvering and gust envelope
+		private Double __cLmaxInverted = -1.0;
+		//..............................................................................
+		// Mission profile
+		private Amount<Velocity> __speedTASDescent;
+		private Amount<Velocity> __rateOfDescent;
+		//..............................................................................
+		// Plot and Task Maps
 		private List<PerformanceEnum> __taskList = new ArrayList<PerformanceEnum>();
 		private List<PerformancePlotEnum> __plotList = new ArrayList<PerformancePlotEnum>();
 		//..............................................................................
@@ -643,6 +664,16 @@ public class ACPerformanceCalculator {
 			return this;
 		}
 		
+		public ACPerformanceCalculatorBuilder rateOfDescent(Amount<Velocity> rateOfDescent) {
+			this.__rateOfDescent = rateOfDescent;
+			return this;
+		}
+		
+		public ACPerformanceCalculatorBuilder speedTASDescent(Amount<Velocity> speedTASDescent) {
+			this.__speedTASDescent = speedTASDescent;
+			return this;
+		}
+		
 		public ACPerformanceCalculatorBuilder taskList(List<PerformanceEnum> taskList) {
 			this.__taskList = taskList;
 			return this;
@@ -720,8 +751,12 @@ public class ACPerformanceCalculator {
 		this._kTouchDown = builder.__kTouchDown;
 		this._freeRollDuration = builder.__freeRollDuration;
 		
-		this._cLmaxInverted = builder.__cLmaxInverted;
 		this._climbSpeed = builder.__climbSpeed;
+		
+		this._cLmaxInverted = builder.__cLmaxInverted;
+		
+		this._rateOfDescent = builder.__rateOfDescent;
+		this._speedTASDescent = builder.__speedTASDescent;
 		
 		this._taskList = builder.__taskList;
 		this._plotList = builder.__plotList;
@@ -1380,21 +1415,51 @@ public class ACPerformanceCalculator {
 			freeRollDuration = Amount.valueOf(Double.valueOf(reader.getXMLPropertyByPath("//performance/takeoff_landing/free_roll_duration")), SI.SECOND);
 		
 		//===========================================================================================
-		// READING OTHER DATA ...	
-		Double cLmaxInverted = -1.0;
+		// READING CLIMB DATA ...	
 		Amount<Velocity> climbSpeed = null;
-		
-		//...............................................................
-		// CL MAX INVERTED
-		String cLmaxInvertedProperty = reader.getXMLPropertyByPath("//performance/takeoff_landing/cLmax_inverted");
-		if(cLmaxInvertedProperty != null)
-			cLmaxInverted = Double.valueOf(reader.getXMLPropertyByPath("//performance/takeoff_landing/cLmax_inverted"));
-		
 		//...............................................................
 		// CLIMB SPEED
-		String climbSpeedProperty = reader.getXMLPropertyByPath("//performance/takeoff_landing/cLmax_inverted");
+		String climbSpeedProperty = reader.getXMLPropertyByPath("//performance/climb/cLmax_inverted");
 		if(climbSpeedProperty != null)
-			climbSpeed = Amount.valueOf(Double.valueOf(reader.getXMLPropertyByPath("//performance/takeoff_landing/cLmax_inverted")), SI.METERS_PER_SECOND);
+			climbSpeed = Amount.valueOf(Double.valueOf(reader.getXMLPropertyByPath("//performance/climb/cLmax_inverted")), SI.METERS_PER_SECOND);
+		
+		//===========================================================================================
+		// READING FLIGHT MANEUVERING AND GUST ENVELOPE DATA ...
+		Double cLmaxInverted = -1.0;
+		//...............................................................
+		// CL MAX INVERTED
+		String cLmaxInvertedProperty = reader.getXMLPropertyByPath("//performance/flight_maneuvering_and_gust_envelope/cLmax_inverted");
+		if(cLmaxInvertedProperty != null)
+			cLmaxInverted = Double.valueOf(reader.getXMLPropertyByPath("//performance/flight_maneuvering_and_gust_envelope/cLmax_inverted"));
+
+		//===========================================================================================
+		// READING FLIGHT MANEUVERING AND GUST ENVELOPE DATA ...
+		Amount<Velocity> rateOfDescent = null;
+		Amount<Velocity> speedTASDescent = null;
+		//...............................................................
+		// RATE OF DESCENT 
+		String rateOfDescentProperty = reader.getXMLPropertyByPath("//performance/mission_profile/rate_of_descent");
+		if(rateOfDescentProperty != null)
+			rateOfDescent = Amount.valueOf(
+					Double.valueOf(
+							reader.getXMLPropertyByPath(
+									"//performance/mission_profile/rate_of_descent"
+									)
+							),
+					SI.METERS_PER_SECOND
+					);		
+		//...............................................................
+		// SPEED TAS DESCENT
+		String speedTASDescentProperty = reader.getXMLPropertyByPath("//performance/mission_profile/descent_speed_TAS");
+		if(speedTASDescentProperty != null)
+			speedTASDescent = Amount.valueOf(
+					Double.valueOf(
+							reader.getXMLPropertyByPath(
+									"//performance/mission_profile/descent_speed_TAS"
+									)
+							),
+					SI.METERS_PER_SECOND
+					);		
 		
 		//===========================================================================================
 		// READING PLOT LIST ...	
@@ -1563,6 +1628,48 @@ public class ACPerformanceCalculator {
 						plotList.add(PerformancePlotEnum.FLIGHT_MANEUVERING_AND_GUST_DIAGRAM);
 				}
 			}
+			//...............................................................
+			// MISSION PROFILE
+			if(theAircraft.getTheAnalysisManager().getTaskListPerformance().contains(PerformanceEnum.MISSION_PROFILE)) {
+
+				String rangeProfileProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//plot/mission_profile/range_profile/@perform");
+				if (rangeProfileProperty != null) {
+					if(rangeProfileProperty.equalsIgnoreCase("TRUE")) 
+						plotList.add(PerformancePlotEnum.RANGE_PROFILE);
+				}
+				
+				String timeProfileProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//plot/mission_profile/time_profile/@perform");
+				if (timeProfileProperty != null) {
+					if(timeProfileProperty.equalsIgnoreCase("TRUE")) 
+						plotList.add(PerformancePlotEnum.TIME_PROFILE);
+				}
+				
+				String fuelUsedProfileProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//plot/mission_profile/fuel_used_profile/@perform");
+				if (fuelUsedProfileProperty != null) {
+					if(fuelUsedProfileProperty.equalsIgnoreCase("TRUE")) 
+						plotList.add(PerformancePlotEnum.FUEL_USED_PROFILE);
+				}
+				
+				String weightProfileProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//plot/mission_profile/weight_profile/@perform");
+				if (weightProfileProperty != null) {
+					if(weightProfileProperty.equalsIgnoreCase("TRUE")) 
+						plotList.add(PerformancePlotEnum.WEIGHT_PROFILE);
+				}
+				
+			}
+			
 		}
 		
 		//===========================================================================================
@@ -1623,8 +1730,10 @@ public class ACPerformanceCalculator {
 				.kFlare(kFlare)
 				.kTouchDown(kTouchDown)
 				.freeRollDuration(freeRollDuration)
-				.cLmaxInverted(cLmaxInverted)
 				.climbSpeed(climbSpeed)
+				.cLmaxInverted(cLmaxInverted)
+				.rateOfDescent(rateOfDescent)
+				.speedTASDescent(speedTASDescent)
 				.taskList(theAircraft.getTheAnalysisManager().getTaskListPerformance())
 				.plotList(plotList)
 				.build();
@@ -1797,7 +1906,6 @@ public class ACPerformanceCalculator {
 			.append("\t\tTake-off safety speed (V2) = " + _v2 + "\n")
 			.append("\t-------------------------------------\n")
 			;
-			
 		}
 		if(_taskList.contains(PerformanceEnum.CLIMB)) {
 			
@@ -1819,6 +1927,10 @@ public class ACPerformanceCalculator {
 				sb.append("\t\tTime to climb at given climb speed OEI = " + _climbTimeAtSpecificClimbSpeedOEI + "\n");
 			
 			sb.append("\t-------------------------------------\n");
+		}
+		if(_taskList.contains(PerformanceEnum.CRUISE)) {
+			
+			// TODO !!
 			
 		}
 		if(_taskList.contains(PerformanceEnum.LANDING)) {
@@ -1837,16 +1949,19 @@ public class ACPerformanceCalculator {
 			.append("\t\tApproach speed (V_Approach) = " + _vApproach + "\n")
 			.append("\t-------------------------------------\n")
 			;
-			
 		}
 		if(_taskList.contains(PerformanceEnum.PAYLOAD_RANGE)) {
 			sb.append("\tPAYLOAD-RANGE\n")
 			.append(_thePayloadRangeCalculator.toString());
 		}
-
 		if(_taskList.contains(PerformanceEnum.V_n_DIAGRAM)) {
 			sb.append("\tV-n DIAGRAM\n")
 			.append(_theEnvelopeCalculator.toString());
+		}
+		if(_taskList.contains(PerformanceEnum.MISSION_PROFILE)) {
+
+			// TODO!!
+			
 		}
 		
 		return sb.toString();
@@ -3359,7 +3474,36 @@ public class ACPerformanceCalculator {
 	//............................................................................
 	public class CalcMissionProfile {
 		
-		// TODO : COMPLETE ME !!
+		public void calculateRangeProfile() {
+			
+			
+			
+		}
+		
+		public void calculateTimeProfile() {
+			
+			
+			
+		}
+		
+		public void calculateFuelUsedProfile() {
+			
+			
+			
+		}
+		
+		public void calculateWeightProfile() {
+			
+			
+			
+		}
+		
+		public void plotProfiles() {
+			
+			
+			
+			
+		}
 		
 	}
 	//............................................................................
@@ -4087,6 +4231,22 @@ public class ACPerformanceCalculator {
 		this._negativeLoadFactorDesignFlapSpeedWithGust = _negativeLoadFactorDesignFlapSpeedWithGust;
 	}
 
+	public Amount<Velocity> getSpeedTASDescent() {
+		return _speedTASDescent;
+	}
+
+	public Amount<Velocity> getRateOfDescent() {
+		return _rateOfDescent;
+	}
+
+	public void setRateOfDescent(Amount<Velocity> _rateOfDescent) {
+		this._rateOfDescent = _rateOfDescent;
+	}
+
+	public void setSpeedTASDescent(Amount<Velocity> _vTASDescent) {
+		this._speedTASDescent = _vTASDescent;
+	}
+
 	public TakeOffCalc getTheTakeOffCalculator() {
 		return _theTakeOffCalculator;
 	}
@@ -4650,5 +4810,53 @@ public class ACPerformanceCalculator {
 
 	public void setSpecificRangeMap(List<SpecificRangeMap> _specificRangeMap) {
 		this._specificRangeMap = _specificRangeMap;
+	}
+
+	public List<Amount<Length>> getRangeList() {
+		return _rangeList;
+	}
+
+	public void setRangeList(List<Amount<Length>> _rangeList) {
+		this._rangeList = _rangeList;
+	}
+
+	public List<Amount<Duration>> getTimeList() {
+		return _timeList;
+	}
+
+	public void setTimeList(List<Amount<Duration>> _timeList) {
+		this._timeList = _timeList;
+	}
+
+	public List<Amount<Mass>> getFuelUsedList() {
+		return _fuelUsedList;
+	}
+
+	public void setFuelUsedList(List<Amount<Mass>> _fuelUsedList) {
+		this._fuelUsedList = _fuelUsedList;
+	}
+
+	public List<Amount<Mass>> getWeightList() {
+		return _weightList;
+	}
+
+	public void setWeightList(List<Amount<Mass>> _weightList) {
+		this._weightList = _weightList;
+	}
+
+	public Amount<Mass> getTotalFuelUsed() {
+		return _totalFuelUsed;
+	}
+
+	public void setTotalFuelUsed(Amount<Mass> _totalFuelUsed) {
+		this._totalFuelUsed = _totalFuelUsed;
+	}
+
+	public Amount<Duration> getTotalMissionTime() {
+		return _totalMissionTime;
+	}
+
+	public void setTotalMissionTime(Amount<Duration> _totalMissionTime) {
+		this._totalMissionTime = _totalMissionTime;
 	}
 }

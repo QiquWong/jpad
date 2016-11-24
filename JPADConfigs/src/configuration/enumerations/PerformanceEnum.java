@@ -8,6 +8,7 @@ public enum PerformanceEnum {
 	DESCENT,
 	LANDING,
 	PAYLOAD_RANGE,
-	V_n_DIAGRAM
+	V_n_DIAGRAM,
+	MISSION_PROFILE
 	
 }

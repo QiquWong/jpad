@@ -56,13 +56,13 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	private Double _positiveLimitLoadFactor;
 	private Double _negativeLimitLoadFactor;
 	private Double _cruiseCL;
-	private Amount<Length> _referenceRange;
 	private Amount<Length> _maxAltitudeAtMaxSpeed;
 	private Double _machMaxCruise;
 	private Amount<Length> _altitudeOptimumCruise;
 	private Double _machOptimumCruise;
 	private Amount<Duration> _blockTime;
 	private Amount<Duration> _flightTime;
+	private Amount<Length> _referenceRange;
 	
 	// DEPENDENT VARIABLES: 
 	private Double _nUltimate;
@@ -105,13 +105,13 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		private Double __positiveLimitLoadFactor;
 		private Double __negativeLimitLoadFactor;
 		private Double __cruiseCL;
-		private Amount<Length> __referenceRange;
 		private Amount<Length> __maxAltitudeAtMaxSpeed;
 		private Double __machMaxCruise;
 		private Amount<Length> __altitudeOptimumCruise;
 		private Double __machOptimumCruise;
 		private Amount<Duration> __blockTime;
 		private Amount<Duration> __flightTime;
+		private Amount<Length> __referenceRange;
 		
 		private Map <ComponentEnum, MethodEnum> __methodsMapWeights = new HashMap<ComponentEnum, MethodEnum>();
 		private Map <ComponentEnum, MethodEnum> __methodsMapBalance = new HashMap<ComponentEnum, MethodEnum>();
@@ -170,13 +170,13 @@ public class ACAnalysisManager implements IACAnalysisManager {
 			return this;
 		}
 		
-		public ACAnalysisManagerBuilder cruiseCL (Double cruiseCL) {
-			this.__cruiseCL = cruiseCL;
+		public ACAnalysisManagerBuilder referenceRange (Amount<Length> refernceRange) {
+			this.__referenceRange = refernceRange;
 			return this;
 		}
-		
-		public ACAnalysisManagerBuilder referenceRange (Amount<Length> referenceRange) {
-			this.__referenceRange = referenceRange;
+ 		
+		public ACAnalysisManagerBuilder cruiseCL (Double cruiseCL) {
+			this.__cruiseCL = cruiseCL;
 			return this;
 		}
 		
@@ -251,7 +251,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				__blockTime = Amount.valueOf(1.5, NonSI.HOUR);
 				__flightTime = Amount.valueOf(1.35, NonSI.HOUR);
 				__cruiseCL = 0.45;
-				__referenceRange = Amount.valueOf(1528., SI.KILOMETER);
+				__referenceRange = Amount.valueOf(1528., SI.KILOMETER); 
 				break;
 				
 			case B747_100B:
@@ -294,13 +294,13 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		this._positiveLimitLoadFactor = builder.__positiveLimitLoadFactor;
 		this._negativeLimitLoadFactor = builder.__negativeLimitLoadFactor;
 		this._cruiseCL = builder.__cruiseCL;
-		this._referenceRange = builder.__referenceRange;
 		this._maxAltitudeAtMaxSpeed = builder.__maxAltitudeAtMaxSpeed;
 		this._machMaxCruise = builder.__machMaxCruise;
 		this._altitudeOptimumCruise = builder.__altitudeOptimumCruise;
 		this._machOptimumCruise = builder.__machOptimumCruise;
 		this._blockTime = builder.__blockTime;
 		this._flightTime = builder.__flightTime;
+		this._referenceRange = builder.__referenceRange;
 		
 		this._methodsMapWeights = builder.__methodsMapWeights;
 		this._methodsMapBalance = builder.__methodsMapBalance;
@@ -345,14 +345,14 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		Double positiveLimitLoadFactor = Double.valueOf(reader.getXMLPropertyByPath("//global_data/positive_limit_load_factor"));
 		Double negativeLimitLoadFactor = Double.valueOf(reader.getXMLPropertyByPath("//global_data/negative_limit_load_factor"));
 		Double cruiseCL = Double.valueOf(reader.getXMLPropertyByPath("//global_data/cruise_lift_coefficient"));
-		Amount<Length> referenceRange = reader.getXMLAmountLengthByPath("//global_data/reference_range");
 		Amount<Length> maxAltitudeMaxSpeed = reader.getXMLAmountLengthByPath("//global_data/maximum_altitude_at_maximum_speed");
 		Double maxCruiseMach = Double.valueOf(reader.getXMLPropertyByPath("//global_data/maximum_cruise_mach_number"));
 		Amount<Length> optimumCruiseAltitude = reader.getXMLAmountLengthByPath("//global_data/optimum_cruise_altitude");
 		Double optimumCruiseMach = Double.valueOf(reader.getXMLPropertyByPath("//global_data/optimum_cruise_mach_number"));
 		Amount<Duration> blockTime = Amount.valueOf(Double.valueOf(reader.getXMLPropertyByPath("//global_data/block_time")), NonSI.HOUR);
 		Amount<Duration> flightTime = Amount.valueOf(Double.valueOf(reader.getXMLPropertyByPath("//global_data/flight_time")), NonSI.HOUR);
-
+		Amount<Length> referenceRange = Amount.valueOf(Double.valueOf(reader.getXMLPropertyByPath("//global_data/reference_range")), NonSI.NAUTICAL_MILE);
+		
 		//-------------------------------------------------------------------------------------------
 		// WEIGHTS ANALYSIS:
 		Map<ComponentEnum, MethodEnum> methodsMapWeights = new HashMap<>();
@@ -840,8 +840,26 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				}
 				if(VnDiagramFlag == Boolean.TRUE) 
 					taskListPerformance.add(PerformanceEnum.V_n_DIAGRAM);
+			////////////////////////////////////////////////////////////////////////////////////
+			Boolean missionProfileFlag = Boolean.FALSE;
+			String missionProfileFlagProperty = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//performance/@mission_profile");
+			if (missionProfileFlagProperty != null) {
+				if(missionProfileFlagProperty.equalsIgnoreCase("TRUE")) {
+					missionProfileFlag = Boolean.TRUE;
+				}
+				else if(missionProfileFlagProperty.equalsIgnoreCase("FALSE")) {
+					missionProfileFlag = Boolean.FALSE;
+				}
+				else 
+					System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE LANDING ATTRIBUTE!");
 			}
-
+			if(missionProfileFlag == Boolean.TRUE) 
+				taskListPerformance.add(PerformanceEnum.MISSION_PROFILE);
+			}
+		
 			_performanceFileComplete = new File(
 					MyConfiguration.getDir(FoldersEnum.INPUT_DIR)
 					+ File.separator 
@@ -865,13 +883,13 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				.positiveLimitLoadFactor(positiveLimitLoadFactor)
 				.negativeLimitLoadFactor(negativeLimitLoadFactor)
 				.cruiseCL(cruiseCL)
-				.referenceRange(referenceRange)
 				.maxAltitudeAtMaxSpeed(maxAltitudeMaxSpeed)
 				.machMaxCruise(maxCruiseMach)
 				.altitudeOptimumCruise(optimumCruiseAltitude)
 				.machOptimumCruise(optimumCruiseMach)
 				.blockTime(blockTime)
 				.flightTime(flightTime)
+				.referenceRange(referenceRange)
 				.methodsMapWeights(methodsMapWeights)
 				.methodsMapBalance(methodsMapBalance)
 				.plotBalance(plotBalance)
@@ -897,13 +915,13 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				.append("\tPositive limit load factor: " + _positiveLimitLoadFactor + "\n")
 				.append("\tNegative limit load factor: " + _negativeLimitLoadFactor + "\n")
 				.append("\tCruise CL: " + _cruiseCL + "\n")
-				.append("\tReference range: " + _referenceRange + "\n")
 				.append("\tMaximum altitude at maximum speed: " + _maxAltitudeAtMaxSpeed + "\n")
 				.append("\tMaximum cruise Mach number: " + _machMaxCruise + "\n")
 				.append("\tOptimum cruise altitude: " + _altitudeOptimumCruise + "\n")
 				.append("\tOptimum cruise Mach number: " + _machOptimumCruise + "\n")
 				.append("\tBlock time: " + _blockTime + "\n")
 				.append("\tFlight time: " + _flightTime + "\n")
+				.append("\tReference range: " + _referenceRange + "\n")
 				.append("\t·····································\n")
 				.append("\tn Ultimate " + _nUltimate + "\n")
 				.append("\tV dive (TAS): " + _vDive + "\n")
@@ -1137,14 +1155,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 
 	public void setCruiseCL(Double _cruiseCL) {
 		this._cruiseCL = _cruiseCL;
-	}
-
-	public Amount<Length> getReferenceRange() {
-		return _referenceRange;
-	}
-
-	public void setReferenceRange(Amount<Length> _referenceRange) {
-		this._referenceRange = _referenceRange;
 	}
 
 	public Amount<Length> getMaxAltitudeAtMaxSpeed() {
@@ -1417,5 +1427,13 @@ public class ACAnalysisManager implements IACAnalysisManager {
 
 	public void setTaskListPerformance(List<PerformanceEnum> _taskListPerformance) {
 		this._taskListPerformance = _taskListPerformance;
+	}
+
+	public Amount<Length> getReferenceRange() {
+		return _referenceRange;
+	}
+
+	public void setReferenceRange(Amount<Length> _referenceRange) {
+		this._referenceRange = _referenceRange;
 	}
 }
