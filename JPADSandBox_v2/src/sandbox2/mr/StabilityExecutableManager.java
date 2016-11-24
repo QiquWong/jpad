@@ -518,9 +518,9 @@ public class StabilityExecutableManager {
 	private Map<MethodEnum, Amount<Length>> _wingXACBRF = new HashMap<MethodEnum, Amount<Length>>();
 	private Amount<Length> _wingMAC;
 	private Amount<Length>_wingMeanAerodynamicChordLeadingEdgeX;
-	private List<Double> _wingMomentCoefficientAC =  new ArrayList<Double>();
-	private List<Double> _wingMomentCoefficientACCP =  new ArrayList<Double>();
-	private List<List<Double>> _wingMomentCoefficients =  new ArrayList<List<Double>>();
+	private Map<MethodEnum, List<Double>> _wingMomentCoefficientAC = new HashMap<MethodEnum, List<Double>>();
+	private List<List<Double>>_wingMomentCoefficients = new ArrayList<>();
+
 	
 	//h tail
 	private Map<MethodEnum, Amount<Length>> _hTailXACLRF = new HashMap<MethodEnum, Amount<Length>>();
@@ -1555,6 +1555,7 @@ public class StabilityExecutableManager {
 			.append("\n")
 			;
 		}
+		
 		if(_wingDragMethod == MethodEnum.INPUT){
 			sb.append("\t\tCL polar =  -->" + Arrays.toString(_wingliftCoefficient3DCurveCONDITION))
 			.append("\n")
@@ -1599,6 +1600,13 @@ public class StabilityExecutableManager {
 		.append("\t\tXAC BRF = " +_wingXACBRF+ "\n")
 		.append("\t\tDelta ac due to fuselage = " + _deltaXACdueToFuselage + "\n")
 		.append("\t\tXAC wing body BRF = " +_wingBodyXACBRF+ "\n")
+		.append("\t\teta Stations = " +_wingYAdimensionalDistribution+ "\n")
+		.append("\t\tMoment Coefficient respect to AC DE Young Harper --> " +_wingMomentCoefficientAC.get(MethodEnum.DEYOUNG_HARPER)+ "\n")
+		.append("\t\tMoment Coefficient respect to AC NAPOLITANO DATCOM --> " +_wingMomentCoefficientAC.get(MethodEnum.NAPOLITANO_DATCOM)+ "\n")
+		;
+		for (int i=0; i<_wingMomentumPole.size(); i++){
+			sb.append("\t\tMoment Coefficient respect to " + _wingMomentumPole.get(i) + "--> " +_wingMomentCoefficients.get(i)+ "\n");
+		}
 		;
 		
 		sb.append("\t-------------------------------------\n")
@@ -2289,121 +2297,53 @@ public class StabilityExecutableManager {
 			List<String> legend = new ArrayList<>();
 
 			xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasWing));
-			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_wingMomentCoefficientAC));
-			legend.add("null");
+			xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasWing));
+			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_wingMomentCoefficientAC.get(MethodEnum.DEYOUNG_HARPER)));
+			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_wingMomentCoefficientAC.get(MethodEnum.NAPOLITANO_DATCOM)));
+			legend.add("AC calculated by De Young Harper formula");
+			legend.add("AC calculated by Napoltano-Datcom formula");
 
 			MyChartToFileUtils.plot(
 					xList, 
 					yList, 
-					"Wing Moment Coefficient", 
+					"Wing Moment Coefficient respect to AC", 
 					"alpha_w", "CM", 
 					null, null,
 					null, null,
 					"deg", "",
-					false,
+					true,
 					legend,
 					folderPathName,
-					"Wing Moment Coefficient");
+					"Wing Moment Coefficient respect to AC");
 
 		System.out.println("Plot Wing Moment Coefficient Chart respect to AC---> DONE \n");
 		}
-
-		if(_plotList.contains(AerodynamicAndStabilityPlotEnum.WING_CM_AERODYNAMIC_CENTER)) {
+		
+		if(_plotList.contains(AerodynamicAndStabilityPlotEnum.WING_CM_QUARTER_CHORD)) {
 
 			List<Double[]> xList = new ArrayList<>();
 			List<Double[]> yList = new ArrayList<>();
 			List<String> legend = new ArrayList<>();
-			
-			for (int i=0; i<_wingMomentumPole.size(); i++){
-			xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasWing));
-			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_wingMomentCoefficients.get(i)));
-			legend.add("pole = "+ _wingMomentumPole.get(i));}
 
-			if (_wingMomentumPole.size() ==1){
+			for (int j=0; j<_wingMomentumPole.size(); j++){
+			xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasWing));
+			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_wingMomentCoefficients.get(j)));
+			legend.add("CM respect to "+ _wingMomentumPole.get(j) + " of MAC");
+
 			MyChartToFileUtils.plot(
 					xList, 
 					yList, 
 					"Wing Moment Coefficient", 
 					"alpha_w", "CM", 
 					null, null,
-					null, null,
-					"deg", "",
-					false,
-					legend,
-					folderPathName,
-					"Wing Moment Coefficient");
-			}
-			else{
-			MyChartToFileUtils.plot(
-					xList, 
-					yList, 
-					"Wing Moment Coefficient", 
-					"alpha_w", "CM", 
-					null, null,
-					null, null,
+					-0.23, 0.1,
 					"deg", "",
 					true,
 					legend,
 					folderPathName,
 					"Wing Moment Coefficient");
-			}
-
-		System.out.println("Plot Wing Moment Coefficient Chart respect to another pole---> DONE \n");
 		}
-		if(_plotList.contains(AerodynamicAndStabilityPlotEnum.WING_CM_AERODYNAMIC_CENTER)) {
-
-			List<Double[]> xList = new ArrayList<>();
-			List<Double[]> yList = new ArrayList<>();
-			List<String> legend = new ArrayList<>();
-
-			xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasWing));
-			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_wingMomentCoefficientACCP));
-			legend.add("null");
-
-			MyChartToFileUtils.plot(
-					xList, 
-					yList, 
-					"Wing Moment Coefficient CP", 
-					"alpha_w", "CM", 
-					null, null,
-					-0.05, -0.01,
-					"deg", "",
-					false,
-					legend,
-					folderPathName,
-					"Wing Moment Coefficient CP");
-
-		System.out.println("Plot Wing Moment Coefficient Chart respect to AC CP---> DONE \n");
-		}
-		
-		if(_plotList.contains(AerodynamicAndStabilityPlotEnum.WING_CM_AERODYNAMIC_CENTER)) {
-
-			List<Double[]> xList = new ArrayList<>();
-			List<Double[]> yList = new ArrayList<>();
-			List<String> legend = new ArrayList<>();
-		
-			xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasWing));
-			xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasWing));
-			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_wingMomentCoefficientAC));
-			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_wingMomentCoefficientACCP));
-			legend.add("AC");
-			legend.add("CP");
-
-			MyChartToFileUtils.plot(
-					xList, 
-					yList, 
-					"PROVA", 
-					"alpha_w", "CM", 
-					null, null,
-					null, null,
-					"deg", "",
-					true,
-					legend,
-					folderPathName,
-					"Wing Moment Coefficient PROVA ");
-
-		System.out.println("AC " + _wingMomentCoefficientAC);
-		System.out.println("cp " + _wingMomentCoefficientACCP);
+			System.out.println("Plot Wing Moment Coefficient Chart respect to other poles---> DONE \n");
 		}
 	}
 
@@ -3000,9 +2940,12 @@ public class StabilityExecutableManager {
 			for (int kk=0; kk<_numberOfAlphasBody; kk++){
 				clListTemp [kk] = clMatrix[kk][k];
 			}
-			_wingCLAirfoilsDistributionFinal.add(k,MyArrayUtils.convertDoubleArrayToListDouble(clListTemp));
+			_wingCLAirfoilsDistributionFinal.set(k,MyArrayUtils.convertDoubleArrayToListDouble(clListTemp));
 	}
-		
+//		for(int i=0; i<_wingCLAirfoilsDistributionFinal.size();i++){
+//			System.out.println(" i " + i);
+//			System.out.println("_wing cl " + _wingCLAirfoilsDistributionFinal);
+//		}
 		
 // HORIZONTAL TAIL ----------------------------------------
 		//---------cd curve-----------------------
@@ -3207,14 +3150,7 @@ public class StabilityExecutableManager {
 				
 				theNasaBlackwellCalculatorMachActualWing.calculate(_alphasWing.get(i));
 				clInducedDistributionAtAlpha = theNasaBlackwellCalculatorMachActualWing.getClTotalDistribution().toArray();
-				
-// HERE -->  modify the process. Starting form cdInduced distribution--> alpha Distribution --> cl New distribution --> cdNew distribution
 
-				
-				
-				
-				//				System.out.println(" alpha = "+  _alphasWing.get(i));
-//				System.out.println(" cl " + Arrays.toString(clInducedDistributionAtAlpha));
 //				System.out.println(" ETA STATION " + _wingYAdimensionalDistribution +"\n");
 //				MyArrayUtils.printListOfAmountWithUnitsInEvidence(_wingInducedAngleOfAttack.get(i), "cdInducedDistributionAtAlpha", ",");
 //				System.out.println("\n");
@@ -3227,7 +3163,7 @@ public class StabilityExecutableManager {
 							MyArrayUtils.convertListOfAmountTodoubleArray(_alphasWing),
 							MyArrayUtils.convertToDoublePrimitive(
 									MyArrayUtils.convertListOfDoubleToDoubleArray(
-											_wingCLAirfoilsDistributionFinal.get(i))),
+											_wingCLAirfoilsDistributionFinal.get(ii))),
 							alphaDistribution[ii]
 							);
 					
@@ -3236,7 +3172,6 @@ public class StabilityExecutableManager {
 					
 					cCd[ii] = _wingChordsDistribution.get(ii).doubleValue(SI.METER) * cdInducedDistributionAtAlpha[ii];
 				}
-
 //				System.out.println(" cd induced distribution at alpha " + _alphasBody.get(i) + " = " + Arrays.toString(cdInducedDistributionAtAlpha));
 //				System.out.println(" eta stations " + _wingYAdimensionalDistribution);
 				
@@ -3314,7 +3249,7 @@ public class StabilityExecutableManager {
 							MyArrayUtils.convertListOfAmountTodoubleArray(_alphasTail),
 							MyArrayUtils.convertToDoublePrimitive(
 									MyArrayUtils.convertListOfDoubleToDoubleArray(
-											_hTailCLAirfoilsDistributionFinal.get(i))),
+											_hTailCLAirfoilsDistributionFinal.get(ii))),
 							alphaDistributionTail[ii]
 							);
 					
@@ -3530,178 +3465,80 @@ public class StabilityExecutableManager {
 				_hTailXACMAC.get(MethodEnum.DEYOUNG_HARPER).plus(_wingMeanAerodynamicChordLeadingEdgeX).plus(_xApexHTail));
 
 	}
-	public void calculateWingMomentCharactersticswithAC(){
-		// AC ---------------------------------------------------------------------------------
-		double[] distancesArrayAC = new double[_wingNumberOfPointSemiSpanWise];
-		double[] clDistribution = new double[_wingNumberOfPointSemiSpanWise];
-		double[] cmDistribution = new double[_wingNumberOfPointSemiSpanWise];
-		double[] cCm = new double[_wingNumberOfPointSemiSpanWise];
-		double[] alphaDistribution = new double[_wingNumberOfPointSemiSpanWise];
-		double[] clInducedDistributionAtAlphaNew = new double[_wingNumberOfPointSemiSpanWise];
-		
-//		System.out.println("mean aerod le " + _wingMeanAerodynamicChordLeadingEdgeX);
-//		System.out.println("mean xac mac  " + _wingXACMAC.get(MethodEnum.DEYOUNG_HARPER));
-//		System.out.println("wing le  " + _wingXleDistribution);
-//		System.out.println("wing ac  " + _wingXACDistribution);
-//		System.out.println("wing chord  " + _wingChordsDistribution);
-		  // poles
-		for(int i=0; i<_wingNumberOfPointSemiSpanWise; i++){
-//			distancesArrayAC[i] =
-//					(_wingMeanAerodynamicChordLeadingEdgeX.doubleValue(SI.METER) + _wingXACMAC.get(MethodEnum.DEYOUNG_HARPER).doubleValue(SI.METER)) - 
-//					(_wingXleDistribution.get(i).doubleValue(SI.METER) + (_wingXACDistribution.get(i)*_wingChordsDistribution.get(i).doubleValue(SI.METER)));
-			distancesArrayAC[i] =
-					(_wingMeanAerodynamicChordLeadingEdgeX.doubleValue(SI.METER) + 0.259* _wingMAC.doubleValue(SI.METER)) - 
-					(_wingXleDistribution.get(i).doubleValue(SI.METER) + (_wingXACDistribution.get(i)*_wingChordsDistribution.get(i).doubleValue(SI.METER)));
-		}
-		
-		for (int i=0; i<_numberOfAlphasBody; i++){
-//			System.out.println("ALPHA " + _alphasWing.get(i));
-			clDistribution = new double[_wingNumberOfPointSemiSpanWise];
-			alphaDistribution = new double[_wingNumberOfPointSemiSpanWise];
-		    clInducedDistributionAtAlphaNew = new double[_wingNumberOfPointSemiSpanWise];
-			theNasaBlackwellCalculatorMachActualWing.calculate(_alphasWing.get(i));
-			clDistribution = theNasaBlackwellCalculatorMachActualWing.getClTotalDistribution().toArray();
-//			System.out.println(" cl distribution " +  Arrays.toString(clDistribution));
-			for (int ii=0; ii<_wingNumberOfPointSemiSpanWise; ii++){
-				alphaDistribution [ii] = (clDistribution[ii] - _wingCl0Distribution.get(ii))/
-						_wingClAlphaDistributionDeg.get(ii);
-				clInducedDistributionAtAlphaNew[ii] = MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertListOfAmountTodoubleArray(_alphasWing),
-						MyArrayUtils.convertToDoublePrimitive(
-								MyArrayUtils.convertListOfDoubleToDoubleArray(
-										_wingCLAirfoilsDistributionFinal.get(i))),
-						alphaDistribution[ii]
-						);
-			cmDistribution [ii] = clInducedDistributionAtAlphaNew[ii] * (distancesArrayAC[ii]/
-					_wingChordsDistribution.get(ii).doubleValue(SI.METER)) + _wingCmACDistribution.get(ii);
-			cCm[ii] = cmDistribution [ii] * _wingChordsDistribution.get(ii).doubleValue(SI.METER) *
-					_wingChordsDistribution.get(ii).doubleValue(SI.METER) ;
-			}
-//			System.out.println(" distances Array " + Arrays.toString( distancesArrayAC));
-//			System.out.println(" cm " + Arrays.toString(cmDistribution));
-//			System.out.println(" chord " + _wingChordsDistribution);
-//			System.out.println(" ccm " + Arrays.toString(cCm));
-			_wingMomentCoefficientAC.add(
-					i,
-					(2/_wingSurface.doubleValue(SI.SQUARE_METRE))* MyMathUtils.integrate1DSimpsonSpline(
-							MyArrayUtils.convertListOfAmountTodoubleArray(_wingYDistribution),
-							cCm)
-					);
-		}
-		
-	}
 	
-	
-	public void calculateWingMomentCharactersticswithCP(){
-		double[] distancesArrayAC, clDistribution, alphaDistribution, clInducedDistributionAtAlphaNew, cmDistribution, cCm,
-		xcPfracC;
-
-		for (int i=0; i<_numberOfAlphasBody; i++){
-			clDistribution = new double[_wingNumberOfPointSemiSpanWise];
-			alphaDistribution = new double[_wingNumberOfPointSemiSpanWise];
-			clInducedDistributionAtAlphaNew = new double[_wingNumberOfPointSemiSpanWise];
-			distancesArrayAC = new double[_wingNumberOfPointSemiSpanWise];
-			cmDistribution = new double[_wingNumberOfPointSemiSpanWise];
-			cCm = new double[_wingNumberOfPointSemiSpanWise];
-			xcPfracC = new double[_wingNumberOfPointSemiSpanWise];
-
-			theNasaBlackwellCalculatorMachActualWing.calculate(_alphasWing.get(i));
-			clDistribution = theNasaBlackwellCalculatorMachActualWing.getClTotalDistribution().toArray();
-
-			for (int ii=0; ii<_wingNumberOfPointSemiSpanWise; ii++){
-				alphaDistribution [ii] = (clDistribution[ii] - _wingCl0Distribution.get(ii))/
-						_wingClAlphaDistributionDeg.get(ii);
-				clInducedDistributionAtAlphaNew[ii] = MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertListOfAmountTodoubleArray(_alphasWing),
-						MyArrayUtils.convertToDoublePrimitive(
-								MyArrayUtils.convertListOfDoubleToDoubleArray(
-										_wingCLAirfoilsDistributionFinal.get(i))),
-						alphaDistribution[ii]
-						);
-				
-				xcPfracC[ii] = _wingXACDistribution.get(ii) - (_wingCmACDistribution.get(ii)/clInducedDistributionAtAlphaNew[ii]);
-//				distancesArrayAC[ii] =
-//						(_wingMeanAerodynamicChordLeadingEdgeX.doubleValue(SI.METER) + _wingXACMAC.get(MethodEnum.DEYOUNG_HARPER).doubleValue(SI.METER)) - 
-//						(_wingXleDistribution.get(ii).doubleValue(SI.METER) + (xcPfracC[ii]*_wingChordsDistribution.get(ii).doubleValue(SI.METER)));
-				distancesArrayAC[ii] =
-						(_wingMeanAerodynamicChordLeadingEdgeX.doubleValue(SI.METER) + 0.259* _wingMAC.doubleValue(SI.METER)) - 
-						(_wingXleDistribution.get(ii).doubleValue(SI.METER) + (xcPfracC[ii]*_wingChordsDistribution.get(ii).doubleValue(SI.METER)));
-				
-				cmDistribution [ii] = clInducedDistributionAtAlphaNew[ii] * (distancesArrayAC[ii]/_wingChordsDistribution.get(ii).doubleValue(SI.METER));
-				
-				cCm[ii] = cmDistribution [ii] * _wingChordsDistribution.get(ii).doubleValue(SI.METER) *
-						_wingChordsDistribution.get(ii).doubleValue(SI.METER) ;
-				
-			}
-				_wingMomentCoefficientACCP.add(
-						i,
-						(2/_wingSurface.doubleValue(SI.SQUARE_METRE))* MyMathUtils.integrate1DSimpsonSpline(
-								MyArrayUtils.convertListOfAmountTodoubleArray(_wingYDistribution),
-								cCm)
-						);
-			
-		}
-	}
-
+//-----------	
 	public void calculateWingMomentCharacterstics(){
-		for (int j=0; j<_wingMomentumPole.size(); j++){
-		// AC ---------------------------------------------------------------------------------
-		double[] distancesArrayAC = new double[_wingNumberOfPointSemiSpanWise];
-		double[] clDistribution = new double[_wingNumberOfPointSemiSpanWise];
-		double[] cmDistribution = new double[_wingNumberOfPointSemiSpanWise];
-		double[] cCm = new double[_wingNumberOfPointSemiSpanWise];
-		double[] alphaDistribution = new double[_wingNumberOfPointSemiSpanWise];
-		double[] clInducedDistributionAtAlphaNew = new double[_wingNumberOfPointSemiSpanWise];
-		Double[] cmFinal = new Double[_numberOfAlphasBody];
+	// respect TO AC DE YOUNG HARPER	
+	Amount<Length> momentumPoleYH = Amount.valueOf( 
+			_wingMeanAerodynamicChordLeadingEdgeX.doubleValue(SI.METER) + 
+			_wingXACMACpercent.get(MethodEnum.DEYOUNG_HARPER)* 
+			_wingMAC.doubleValue(SI.METER), SI.METER);
+			
+		_wingMomentCoefficientAC.put(MethodEnum.DEYOUNG_HARPER, 
+				MomentCalc.calcCMLiftingSurfaceWithIntegral(
+				theNasaBlackwellCalculatorMachActualWing, 
+				_alphasWing, 
+				_wingYDistribution, 
+				_wingCl0Distribution, 
+				_wingClAlphaDistributionDeg, 
+				_wingCmACDistribution, 
+				_wingXACDistribution, 
+				_wingChordsDistribution, 
+				_wingXleDistribution, 
+				_wingCLAirfoilsDistributionFinal, 
+				_wingSurface, 
+				momentumPoleYH
+				));
 		
-//		System.out.println("mean aerod le " + _wingMeanAerodynamicChordLeadingEdgeX);
-//		System.out.println("mean xac mac  " + _wingXACMAC.get(MethodEnum.DEYOUNG_HARPER));
-//		System.out.println("wing le  " + _wingXleDistribution);
-//		System.out.println("wing ac  " + _wingXACDistribution);
-//		System.out.println("wing chord  " + _wingChordsDistribution);
-		  // poles
-		for(int i=0; i<_wingNumberOfPointSemiSpanWise; i++){
-			distancesArrayAC[i] =
-					(_wingMeanAerodynamicChordLeadingEdgeX.doubleValue(SI.METER) + _wingMomentumPole.get(j)*_wingMAC.doubleValue(SI.METER)) - 
-					(_wingXleDistribution.get(i).doubleValue(SI.METER) + (_wingXACDistribution.get(i)*_wingChordsDistribution.get(i).doubleValue(SI.METER)));
-		}
-		
-		for (int i=0; i<_numberOfAlphasBody; i++){
-//			System.out.println("ALPHA " + _alphasWing.get(i));
-			clDistribution = new double[_wingNumberOfPointSemiSpanWise];
-			alphaDistribution = new double[_wingNumberOfPointSemiSpanWise];
-		    clInducedDistributionAtAlphaNew = new double[_wingNumberOfPointSemiSpanWise];
-			theNasaBlackwellCalculatorMachActualWing.calculate(_alphasWing.get(i));
-			clDistribution = theNasaBlackwellCalculatorMachActualWing.getClTotalDistribution().toArray();
-//			System.out.println(" cl distribution " +  Arrays.toString(clDistribution));
-			for (int ii=0; ii<_wingNumberOfPointSemiSpanWise; ii++){
-				alphaDistribution [ii] = (clDistribution[ii] - _wingCl0Distribution.get(ii))/
-						_wingClAlphaDistributionDeg.get(ii);
-				clInducedDistributionAtAlphaNew[ii] = MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertListOfAmountTodoubleArray(_alphasWing),
-						MyArrayUtils.convertToDoublePrimitive(
-								MyArrayUtils.convertListOfDoubleToDoubleArray(
-										_wingCLAirfoilsDistributionFinal.get(i))),
-						alphaDistribution[ii]
-						);
-			cmDistribution [ii] = clInducedDistributionAtAlphaNew[ii] * distancesArrayAC[ii]/
-					_wingChordsDistribution.get(ii).doubleValue(SI.METER) + _wingCmACDistribution.get(ii);
-			cCm[ii] = cmDistribution [ii] * _wingChordsDistribution.get(ii).doubleValue(SI.METER) *
-					_wingChordsDistribution.get(ii).doubleValue(SI.METER) ;
+		// respect TO AC NAPOLITANO DATCOM	
+		Amount<Length> momentumPoleND = Amount.valueOf( 
+				_wingMeanAerodynamicChordLeadingEdgeX.doubleValue(SI.METER) + 
+				_wingXACMACpercent.get(MethodEnum.NAPOLITANO_DATCOM)* 
+				_wingMAC.doubleValue(SI.METER), SI.METER);
+				
+			_wingMomentCoefficientAC.put(MethodEnum.NAPOLITANO_DATCOM, 
+					MomentCalc.calcCMLiftingSurfaceWithIntegral(
+					theNasaBlackwellCalculatorMachActualWing, 
+					_alphasWing, 
+					_wingYDistribution, 
+					_wingCl0Distribution, 
+					_wingClAlphaDistributionDeg, 
+					_wingCmACDistribution, 
+					_wingXACDistribution, 
+					_wingChordsDistribution, 
+					_wingXleDistribution, 
+					_wingCLAirfoilsDistributionFinal, 
+					_wingSurface, 
+					momentumPoleND
+					));
+			
+			
+			// respect TO another pole	
+			Amount<Length> momentumPole;
+			for (int j=0; j<_wingMomentumPole.size(); j++){
+			momentumPole = Amount.valueOf( 
+					_wingMeanAerodynamicChordLeadingEdgeX.doubleValue(SI.METER) + 
+					_wingMomentumPole.get(j)* 
+					_wingMAC.doubleValue(SI.METER), SI.METER);
+					
+				_wingMomentCoefficients.add(
+						MomentCalc.calcCMLiftingSurfaceWithIntegral(
+						theNasaBlackwellCalculatorMachActualWing, 
+						_alphasWing, 
+						_wingYDistribution, 
+						_wingCl0Distribution, 
+						_wingClAlphaDistributionDeg, 
+						_wingCmACDistribution, 
+						_wingXACDistribution, 
+						_wingChordsDistribution, 
+						_wingXleDistribution, 
+						_wingCLAirfoilsDistributionFinal, 
+						_wingSurface, 
+						momentumPole
+						));
 			}
-			System.out.println(" distances Array " + Arrays.toString( distancesArrayAC));
-			System.out.println(" cm " + Arrays.toString(cmDistribution));
-			System.out.println(" chord " + _wingChordsDistribution);
-			System.out.println(" ccm " + Arrays.toString(cCm));
-			cmFinal[i]=
-					(2/_wingSurface.doubleValue(SI.SQUARE_METRE))* MyMathUtils.integrate1DSimpsonSpline(
-							MyArrayUtils.convertListOfAmountTodoubleArray(_wingYDistribution),
-							cCm);
-		}
-		_wingMomentCoefficients.add(MyArrayUtils.convertDoubleArrayToListDouble(cmFinal));
-		}
-		
-	}
+	}	
+	
 	
 	public void calculateHtailMomentCharacterstics(){}
 	public void calculateFuselageMomentCharacterstics(){

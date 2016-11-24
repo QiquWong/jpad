@@ -572,7 +572,7 @@ public class ReaderWriter{
 
 			//MOMENT
 			// CM wing respect to c4
-			String wingMomentQuarter = reader.getXMLPropertyByPath("//plot/moment/wing/moment_coefficient_respect_to_quarter_chord");
+			String wingMomentQuarter = reader.getXMLPropertyByPath("//plot/moment/wing/moment_coefficient_respect_to_other_poles");
 			if (wingMomentQuarter != null) {
 				if(wingMomentQuarter.equalsIgnoreCase("TRUE")) 
 					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.WING_CM_QUARTER_CHORD);
