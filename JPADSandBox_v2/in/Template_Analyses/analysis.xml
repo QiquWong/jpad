@@ -52,6 +52,7 @@
 			take_off="FALSE"
 			climb="FALSE"
 			cruise="FALSE"
+			descent="TRUE"
 			landing="FALSE"
 			payload_range="FALSE"
 			V_n_diagram="FALSE"

@@ -75,13 +75,13 @@
 			<climb>
 				<climb_speed></climb_speed>
 			</climb>
+			<descent>
+				<rate_of_descent unit="m/s"></rate_of_descent>
+				<descent_speed unti="m/s"></descent_speed>
+			</descent>
 			<flight_maneuvering_and_gust_envelope>
 				<cLmax_inverted></cLmax_inverted> <!-- to be assigned for the maneuvering flight and gust envelope (default = -1.0) --> 
 			</flight_maneuvering_and_gust_envelope>
-			<mission_profile>
-				<rate_of_descent unit="m/s"></rate_of_descent>
-				<descent_speed_TAS unti="m/s"></descent_speed_TAS>
-			</mission_profile>
         </performance>
     </analysis>
 	<plot>

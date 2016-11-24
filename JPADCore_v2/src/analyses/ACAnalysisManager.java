@@ -784,6 +784,26 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				if(cruiseFlag == Boolean.TRUE) 
 					taskListPerformance.add(PerformanceEnum.CRUISE);
 
+
+				////////////////////////////////////////////////////////////////////////////////////
+				Boolean descentFlag = Boolean.FALSE;
+				String descentFlagProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//performance/@landing");
+				if (descentFlagProperty != null) {
+					if(descentFlagProperty.equalsIgnoreCase("TRUE")) {
+						descentFlag = Boolean.TRUE;
+					}
+					else if(descentFlagProperty.equalsIgnoreCase("FALSE")) {
+						descentFlag = Boolean.FALSE;
+					}
+					else 
+						System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE DESCENT ATTRIBUTE!");
+				}
+				if(descentFlag == Boolean.TRUE) 
+					taskListPerformance.add(PerformanceEnum.DESCENT);
+				
 				////////////////////////////////////////////////////////////////////////////////////
 				Boolean landingFlag = Boolean.FALSE;
 				String landingFlagProperty = MyXMLReaderUtils
@@ -817,7 +837,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 						payloadRangeFlag = Boolean.FALSE;
 					}
 					else 
-						System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE LANDING ATTRIBUTE!");
+						System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE PAYLOAD RANGE ATTRIBUTE!");
 				}
 				if(payloadRangeFlag == Boolean.TRUE) 
 					taskListPerformance.add(PerformanceEnum.PAYLOAD_RANGE);
@@ -836,7 +856,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 						VnDiagramFlag = Boolean.FALSE;
 					}
 					else 
-						System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE LANDING ATTRIBUTE!");
+						System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE V-n DIAGRAM ATTRIBUTE!");
 				}
 				if(VnDiagramFlag == Boolean.TRUE) 
 					taskListPerformance.add(PerformanceEnum.V_n_DIAGRAM);
@@ -854,7 +874,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 					missionProfileFlag = Boolean.FALSE;
 				}
 				else 
-					System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE LANDING ATTRIBUTE!");
+					System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE MISSION PROFILE ATTRIBUTE!");
 			}
 			if(missionProfileFlag == Boolean.TRUE) 
 				taskListPerformance.add(PerformanceEnum.MISSION_PROFILE);
