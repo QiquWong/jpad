@@ -2,6 +2,7 @@ package calculators.performance;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.measure.quantity.Acceleration;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Duration;
@@ -244,13 +245,13 @@ public class LandingCalc {
 				radius*Math.sin(this.thetaApproach.to(SI.RADIAN).getEstimatedValue()),
 				SI.METER
 				);
-		
-		// DATA TO PLOT AT THE BEGINNING OF THE APPROACH PHASE
+
+		// DATA AT THE BEGINNING OF THE APPROACH PHASE
 		landingDistance.add(Amount.valueOf(0.0, SI.METER));
 		verticalDistance.add(obstacle);
 		speed.add(vA);
 
-		// DATA RELATED TO FLARE PHASE TO BE PLOT
+		// DATA RELATED TO FLARE PHASE
 		double[] speedArray = MyArrayUtils.linspace(
 				vA.getEstimatedValue(),
 				vTD.getEstimatedValue(),
@@ -260,11 +261,11 @@ public class LandingCalc {
 				sApproach.plus(sFlare).getEstimatedValue(),
 				10);
 		double[] yDistance = new double[xDistance.length];
-		
+
 		double a = -2*sApproach.plus(sFlare).getEstimatedValue();
 		double b = -2*radius;
 		double c = Math.pow(sApproach.plus(sFlare).getEstimatedValue(), 2);
-		
+
 		for(int i=0; i<xDistance.length; i++) {
 			yDistance[i] = -(Math.sqrt(
 					((Math.pow(b, 2))/4)
@@ -276,10 +277,10 @@ public class LandingCalc {
 			landingDistance.add(Amount.valueOf(xDistance[i], SI.METER));
 			verticalDistance.add(Amount.valueOf(yDistance[i], SI.METER));
 		}
-		
+
 		System.out.println("\n---------------------------END!!-------------------------------");
 	}
-		
+
 	/***************************************************************************************
 	 * This method performs the integration of the ground roll distance in landing
 	 * by solving a set of ODE with a HighamHall54Integrator.

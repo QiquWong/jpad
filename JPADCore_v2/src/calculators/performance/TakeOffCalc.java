@@ -27,6 +27,8 @@ import aircraft.components.Aircraft;
 import analyses.OperatingConditions;
 import calculators.performance.customdata.TakeOffResultsMap;
 import configuration.enumerations.EngineOperatingConditionEnum;
+import configuration.enumerations.EngineTypeEnum;
+import database.databasefunctions.engine.EngineDatabaseManager;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyInterpolatingFunction;
@@ -89,7 +91,9 @@ public class TakeOffCalc {
 	// Interpolated function for balanced field length calculation
 	MyInterpolatingFunction continuedTakeOffFitted = new MyInterpolatingFunction();
 	MyInterpolatingFunction abortedTakeOffFitted = new MyInterpolatingFunction();
+	
 	// integration index
+	@SuppressWarnings("unused")
 	private double[] failureSpeedArray, continuedTakeOffArray, abortedTakeOffArray,
 	failureSpeedArrayFitted, continuedTakeOffSplineValues,
 	abortedTakeOffSplineValues;
@@ -2321,4 +2325,5 @@ public class TakeOffCalc {
 	public void setMaxTakeOffMass(Amount<Mass> maxTakeOffMass) {
 		this.maxTakeOffMass = maxTakeOffMass;
 	}
+
 }

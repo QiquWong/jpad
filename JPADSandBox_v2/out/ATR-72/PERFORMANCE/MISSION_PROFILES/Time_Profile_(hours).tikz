@@ -1,0 +1,32 @@
+%Time_Profile_(hours)
+\begin{tikzpicture}
+
+\begin{axis}[
+width=\figurewidth,
+height=\figureheight,
+scaled ticks=false, tick label style={/pgf/number format/fixed},
+xmin=0.0,
+xmax=1.3605484145194287,
+xlabel={Time (hr)},
+xmajorgrids,
+ymin=0.0,
+ymax=6480.0,
+ylabel={Altitude (m)},
+ymajorgrids,
+legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
+]
+
+\addplot [
+color=black,
+solid
+]
+table[row sep=crcr]{
+0.0	0.0\\
+0.009307731066391179	0.0\\
+0.3736298513677955	6000.0\\
+1.0375831202474026	6000.0\\
+1.2557502243593883	0.0\\
+1.2597670504809524	0.0\\
+};
+\end{axis}
+\end{tikzpicture}%

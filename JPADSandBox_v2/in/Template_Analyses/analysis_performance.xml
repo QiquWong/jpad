@@ -108,7 +108,7 @@
 			<cruise_grid perform="TRUE"/>
 			<flight_envelope perform="TRUE"/>
 		</cruise>
-		<descent perform="TRUE">
+		<descent perform="TRUE"/>
 		<landing>
 			<simulations perform="TRUE"/>
 		</landing>

@@ -1,0 +1,32 @@
+%Range_Profile_(nmi)
+\begin{tikzpicture}
+
+\begin{axis}[
+width=\figurewidth,
+height=\figureheight,
+scaled ticks=false, tick label style={/pgf/number format/fixed},
+xmin=0.0,
+xmax=215.99999999999983,
+xlabel={Range (nmi)},
+xmajorgrids,
+ymin=0.0,
+ymax=6480.0,
+ylabel={Altitude (m)},
+ymajorgrids,
+legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
+]
+
+\addplot [
+color=black,
+solid
+]
+table[row sep=crcr]{
+0.0	0.0\\
+0.6924218038369766	0.0\\
+25.92469768041083	6000.0\\
+196.35015669314117	6000.0\\
+199.58166857219084	0.0\\
+199.99999999999983	0.0\\
+};
+\end{axis}
+\end{tikzpicture}%

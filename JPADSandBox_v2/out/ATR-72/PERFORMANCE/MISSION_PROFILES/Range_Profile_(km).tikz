@@ -1,0 +1,32 @@
+%Range_Profile_(km)
+\begin{tikzpicture}
+
+\begin{axis}[
+width=\figurewidth,
+height=\figureheight,
+scaled ticks=false, tick label style={/pgf/number format/fixed},
+xmin=0.0,
+xmax=400.03199999999975,
+xlabel={Range (km)},
+xmajorgrids,
+ymin=0.0,
+ymax=6480.0,
+ylabel={Altitude (m)},
+ymajorgrids,
+legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
+]
+
+\addplot [
+color=black,
+solid
+]
+table[row sep=crcr]{
+0.0	0.0\\
+1.2823651807060807	0.0\\
+48.01254010412086	6000.0\\
+363.64049019569745	6000.0\\
+369.62525019569745	0.0\\
+370.39999999999975	0.0\\
+};
+\end{axis}
+\end{tikzpicture}%

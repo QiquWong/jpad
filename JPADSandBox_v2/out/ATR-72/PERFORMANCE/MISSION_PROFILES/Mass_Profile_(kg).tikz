@@ -1,0 +1,32 @@
+%Mass_Profile_(kg)
+\begin{tikzpicture}
+
+\begin{axis}[
+width=\figurewidth,
+height=\figureheight,
+scaled ticks=false, tick label style={/pgf/number format/fixed},
+xmin=0.0,
+xmax=81.63290487116572,
+xlabel={Time (s)},
+xmajorgrids,
+ymin=19427.689603255163,
+ymax=24300.0,
+ylabel={Aircraft mass (kg)},
+ymajorgrids,
+legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
+]
+
+\addplot [
+color=black,
+solid
+]
+table[row sep=crcr]{
+0.0	22500.0\\
+0.5584638639834707	22500.0\\
+22.41779108206773	22085.566626329364\\
+62.254987214844164	21648.112633430166\\
+75.34501346156331	21117.0539165817\\
+75.58602302885714	21117.0539165817\\
+};
+\end{axis}
+\end{tikzpicture}%

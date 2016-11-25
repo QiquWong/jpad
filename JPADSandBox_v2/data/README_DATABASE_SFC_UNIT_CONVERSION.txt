@@ -7,12 +7,12 @@ SFC UNIT CONVERSION FROM THE DATABASE
 		SFC given with respect to thrust. In order to obtain SFC
 		in kg/min, the following conversion is required:
 		
-			SFC_database*T_actual*(0.2248/9.81)*(0.454/60)
+			SFC_database*T_actual(N)*(0.2248/9.81)*(0.454/60)
 	.............................................................
 	TURBOFAN
 	.............................................................
 		SFC given with respect to thrust. In order to obtain SFC
 		in kg/min, the following conversion is required:
 		
-			SFC_database*T_actual*(0.45392/(4.4482*60))
+			SFC_database*T_actual(N)*(0.45392/(4.4482*60))
 ------------------------------------------------------------------

@@ -1,0 +1,32 @@
+%Fuel_used_Profile_(kg)
+\begin{tikzpicture}
+
+\begin{axis}[
+width=\figurewidth,
+height=\figureheight,
+scaled ticks=false, tick label style={/pgf/number format/fixed},
+xmin=0.0,
+xmax=573.5434141963403,
+xlabel={Fuel used (kg)},
+xmajorgrids,
+ymin=0.0,
+ymax=6480.0,
+ylabel={Altitude (m)},
+ymajorgrids,
+legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
+]
+
+\addplot [
+color=black,
+solid
+]
+table[row sep=crcr]{
+0.0	0.0\\
+0.0	0.0\\
+414.433373670631	6000.0\\
+437.4539928991986	6000.0\\
+531.0587168484633	0.0\\
+531.0587168484633	0.0\\
+};
+\end{axis}
+\end{tikzpicture}%

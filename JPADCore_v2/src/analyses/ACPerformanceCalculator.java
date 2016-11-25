@@ -46,12 +46,15 @@ import calculators.performance.customdata.SpecificRangeMap;
 import calculators.performance.customdata.ThrustMap;
 import configuration.MyConfiguration;
 import configuration.enumerations.EngineOperatingConditionEnum;
+import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.PerformanceEnum;
 import configuration.enumerations.PerformancePlotEnum;
+import database.databasefunctions.engine.EngineDatabaseManager;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
+import standaloneutils.MyMathUtils;
 import standaloneutils.MyXLSUtils;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
@@ -300,7 +303,7 @@ public class ACPerformanceCalculator {
 	private List<Amount<Length>> _rangeList;
 	private List<Amount<Duration>> _timeList;
 	private List<Amount<Mass>> _fuelUsedList;
-	private List<Amount<Mass>> _weightList;
+	private List<Amount<Mass>> _massList;
 	private Amount<Mass> _totalFuelUsed;
 	private Amount<Duration> _totalMissionTime;
 	
@@ -1448,7 +1451,7 @@ public class ACPerformanceCalculator {
 		Amount<Velocity> speedDescent = null;
 		//...............................................................
 		// RATE OF DESCENT 
-		String rateOfDescentProperty = reader.getXMLPropertyByPath("//performance/mission_profile/rate_of_descent");
+		String rateOfDescentProperty = reader.getXMLPropertyByPath("//performance/descent/rate_of_descent");
 		if(rateOfDescentProperty != null)
 			rateOfDescent = Amount.valueOf(
 					Double.valueOf(
@@ -1460,7 +1463,7 @@ public class ACPerformanceCalculator {
 					);		
 		//...............................................................
 		// SPEED DESCENT
-		String speedDescentProperty = reader.getXMLPropertyByPath("//performance/mission_profile/descent_speed_TAS");
+		String speedDescentProperty = reader.getXMLPropertyByPath("//performance/descent/descent_speed");
 		if(speedDescentProperty != null)
 			speedDescent = Amount.valueOf(
 					Double.valueOf(
@@ -3334,7 +3337,10 @@ public class ACPerformanceCalculator {
 			
 			_descentAngle = 
 					Amount.valueOf(
-							Math.acos(_speedDescent.divide(_rateOfDescent).getEstimatedValue()),
+							Math.asin(_rateOfDescent.to(SI.METERS_PER_SECOND)
+									.divide(_speedDescent.to(SI.METERS_PER_SECOND))
+										.getEstimatedValue()
+										),
 							SI.RADIAN)
 					.to(NonSI.DEGREE_ANGLE);
 			
@@ -3372,7 +3378,7 @@ public class ACPerformanceCalculator {
 			};
 			double[] distance = new double[] {
 					0.0,
-					_descentLength.doubleValue(SI.METER)
+					_descentLength.doubleValue(SI.KILOMETER)
 			};
 			
 			MyChartToFileUtils.plotNoLegend(
@@ -3388,7 +3394,7 @@ public class ACPerformanceCalculator {
 					altitude,
 					0.0, null, null, null,
 					"Distance", "Altitude",
-					"m", "m",
+					"km", "m",
 					descentFolderPath, "Descent_phase_vs_distance"
 					);
 			
@@ -3673,18 +3679,60 @@ public class ACPerformanceCalculator {
 			_timeList = new ArrayList<Amount<Duration>>();
 			
 			// CALCULATING TIMES AND RANGES ...
+			//...................................................................
+			// Climb
+			List<Amount<Duration>> timeArrayClimb = new ArrayList<>();
+			List<Double> rangeArrayClimb = new ArrayList<>();
 			
-			//////////////////////////////////////////////////////////
-			//														//
-			//  TODO : CAN CLIMB RANGE AND TIME BE PERFORMED USING  //
-			//	       AN AVARAGED RCmax??							//
-			//														//
-			//////////////////////////////////////////////////////////
+			timeArrayClimb.add(Amount.valueOf(0.0, SI.SECOND));
+			rangeArrayClimb.add(0.0);
+			for(int i=1; i<_rcMapAOE.size(); i++) {
+				timeArrayClimb.add(
+						Amount.valueOf(
+								MyMathUtils.integrate1DSimpsonSpline(
+										new double[] { 
+												_rcMapAOE.get(i-1).getAltitude(),
+												_rcMapAOE.get(i).getAltitude()
+										},
+										new double[] {
+												1/_rcMapAOE.get(i-1).getRCmax(),
+												1/_rcMapAOE.get(i).getRCmax()
+										}
+										),
+								SI.SECOND
+								)
+						);
+				rangeArrayClimb.add(
+						((_rcMapAOE.get(i-1).getRCMaxSpeed()+_rcMapAOE.get(i).getRCMaxSpeed())/2)
+						*(timeArrayClimb.get(i).minus(timeArrayClimb.get(i-1)).doubleValue(SI.SECOND))
+						*Math.cos(((_rcMapAOE.get(i-1).getTheta()+_rcMapAOE.get(i).getTheta())/2))
+						);
+			}
 			
-			List<Amount<Velocity>> horizontalSpeedClimb = new ArrayList<>();
-			List<Amount<Length>> altitudesClimb = new ArrayList<>();
-					
+			Amount<Length> climbRangeTotal = 
+					Amount.valueOf(
+							MyArrayUtils.sumArrayElements(MyArrayUtils.convertListOfDoubleToDoubleArray(rangeArrayClimb)),
+							SI.METER
+							);
 			
+			
+			//...................................................................
+			// Cruise
+			Amount<Length> rangeCruise = 
+					_theAircraft.getTheAnalysisManager().getReferenceRange().to(SI.METER)
+					.minus(_takeOffDistanceAOE)
+					.minus(climbRangeTotal)
+					.minus(_descentLength)
+					.minus(_landingDistance);
+			Amount<Duration> cruiseTime = 
+					PerformanceCalcUtils.calcCruiseTime(
+							_theAircraft.getTheAnalysisManager().getReferenceRange(),
+							climbRangeTotal,
+							_descentLength,
+							_theAircraft.getTheAnalysisManager().getVOptimumCruise()
+							);
+			
+			//--------------------------------------------------------------------
 			// ALTITUDE
 			_altitudeList.add(Amount.valueOf(0.0, SI.METER));
 			_altitudeList.add(Amount.valueOf(0.0, SI.METER));
@@ -3694,31 +3742,437 @@ public class ACPerformanceCalculator {
 			_altitudeList.add(Amount.valueOf(0.0, SI.METER));
 			
 			// RANGE
-			_rangeList.add(Amount.valueOf(0.0, SI.METER));
-			_rangeList.add(_takeOffDistanceAOE);
-				// TODO : continue !!	
+			_rangeList.add(Amount.valueOf(0.0, SI.KILOMETER));
+			_rangeList.add(_rangeList.get(0).plus(_takeOffDistanceAOE.to(SI.KILOMETER)));
+			_rangeList.add(_rangeList.get(1).plus(climbRangeTotal.to(SI.KILOMETER)));
+			_rangeList.add(_rangeList.get(2).plus(rangeCruise.to(SI.KILOMETER)));
+			_rangeList.add(_rangeList.get(3).plus(_descentLength.to(SI.KILOMETER)));
+			_rangeList.add(_rangeList.get(4).plus(_landingDistance.to(SI.KILOMETER)));
 			
+			// TIME
+			_timeList.add(Amount.valueOf(0.0, NonSI.MINUTE));
+			_timeList.add(_timeList.get(0).plus(_takeOffDuration.to(NonSI.MINUTE)));
+			_timeList.add(_timeList.get(1).plus(_minimumClimbTimeAOE.to(NonSI.MINUTE)));
+			_timeList.add(_timeList.get(2).plus(cruiseTime.to(NonSI.MINUTE)));
+			_timeList.add(_timeList.get(3).plus(_descentTime.to(NonSI.MINUTE)));
+			_timeList.add(_timeList.get(4).plus(_landingDuration.to(NonSI.MINUTE)));
 			
-			
+			_totalMissionTime = _timeList.get(_timeList.size()-1);
 			
 		}
 		
 		public void calculateFuelUsedProfile() {
+
+			_fuelUsedList = new ArrayList<>();
 			
+			_fuelUsedList.add(Amount.valueOf(0.0, SI.KILOGRAM));
 			
+			//----------------------------------------------------------------------
+			// TAKE-OFF (neglected)
+			_fuelUsedList.add(Amount.valueOf(0.0, SI.KILOGRAM));
+			
+			//----------------------------------------------------------------------
+			// CLIMB
+			List<Amount<Duration>> timeArrayClimb = new ArrayList<>();
+			List<Double> rangeArrayClimb = new ArrayList<>();
+			List<Double> sfcListClimb = new ArrayList<>();
+			
+			timeArrayClimb.add(Amount.valueOf(0.0, SI.SECOND));
+			rangeArrayClimb.add(0.0);
+			for(int i=1; i<_rcMapAOE.size(); i++) {
+				timeArrayClimb.add(
+						Amount.valueOf(
+								MyMathUtils.integrate1DSimpsonSpline(
+										new double[] { 
+												_rcMapAOE.get(i-1).getAltitude(),
+												_rcMapAOE.get(i).getAltitude()
+										},
+										new double[] {
+												1/_rcMapAOE.get(i-1).getRCmax(),
+												1/_rcMapAOE.get(i).getRCmax()
+										}
+										),
+								SI.SECOND
+								)
+						);
+				rangeArrayClimb.add(
+						((_rcMapAOE.get(i-1).getRCMaxSpeed()+_rcMapAOE.get(i).getRCMaxSpeed())/2)
+						*(timeArrayClimb.get(i).minus(timeArrayClimb.get(i-1)).doubleValue(SI.SECOND))
+						*Math.cos(((_rcMapAOE.get(i-1).getTheta()+_rcMapAOE.get(i).getTheta())/2))
+						);
+			}
+			Amount<Length> climbRangeTotal = 
+					Amount.valueOf(
+							MyArrayUtils.sumArrayElements(MyArrayUtils.convertListOfDoubleToDoubleArray(rangeArrayClimb)),
+							SI.METER
+							);
+			
+			for(int i=0; i<_rcMapAOE.size(); i++) {
+				
+				if((_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOPROP)
+						|| (_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.PISTON)) {
+
+					sfcListClimb.add(
+							MyMathUtils.getInterpolatedValue1DLinear(
+									_thrustListAOE.get(i).getSpeed(),
+									_thrustListAOE.get(i).getThrust(),
+									_rcMapAOE.get(i).getRCMaxSpeed()
+									)/2
+							*(0.2248/9.81)
+							*(0.454/60)
+							*EngineDatabaseManager.getSFC(
+									SpeedCalc.calculateMach(
+											_rcMapAOE.get(i).getAltitude(),
+											_rcMapAOE.get(i).getRCMaxSpeed()
+											),
+									_rcMapAOE.get(i).getAltitude(),
+									(MyMathUtils.getInterpolatedValue1DLinear(
+											_thrustListAOE.get(i).getSpeed(),
+											_thrustListAOE.get(i).getThrust(),
+											_rcMapAOE.get(i).getRCMaxSpeed()
+											)/2)/_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+									_theAircraft.getPowerPlant().getEngineType(),
+									EngineOperatingConditionEnum.CLIMB
+									)
+							);
+				}
+				else if ((_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOJET)
+						|| (_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOFAN)
+						|| (_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.PROPFAN)
+						|| (_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.RAMJET)) {
+					
+					sfcListClimb.add(
+							MyMathUtils.getInterpolatedValue1DLinear(
+									_thrustListAOE.get(i).getSpeed(),
+									_thrustListAOE.get(i).getThrust(),
+									_rcMapAOE.get(i).getRCMaxSpeed()
+									)/2
+							*(0.45392/(4.4482*60))
+							*EngineDatabaseManager.getSFC(
+									SpeedCalc.calculateMach(
+											_rcMapAOE.get(i).getAltitude(),
+											_rcMapAOE.get(i).getRCMaxSpeed()
+											),
+									_rcMapAOE.get(i).getAltitude(),
+									(MyMathUtils.getInterpolatedValue1DLinear(
+											_thrustListAOE.get(i).getSpeed(),
+											_thrustListAOE.get(i).getThrust(),
+											_rcMapAOE.get(i).getRCMaxSpeed()
+											)/2)/_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+									_theAircraft.getPowerPlant().getEngineType(),
+									EngineOperatingConditionEnum.CLIMB
+									)							
+							);
+				}
+			}
+			
+			_fuelUsedList.add(
+					Amount.valueOf(
+							MyMathUtils.integrate1DSimpsonSpline(
+									MyArrayUtils.convertListOfAmountTodoubleArray(timeArrayClimb),
+									MyArrayUtils.convertToDoublePrimitive(sfcListClimb)
+									),
+							SI.KILOGRAM					
+							)
+					);
+			
+			//----------------------------------------------------------------------
+			// CRUISE
+			Double sfcCruise = 0.0;
+			
+			if((_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOPROP)
+					|| (_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.PISTON)) {
+
+				sfcCruise = ThrustCalc.calculateThrustDatabase(
+						_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+						_theAircraft.getPowerPlant().getEngineNumber(),
+						_theOperatingConditions.getThrottleCruise(),
+						_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+						_theAircraft.getPowerPlant().getEngineType(),
+						EngineOperatingConditionEnum.CRUISE,
+						_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+						_theOperatingConditions.getMachCruise()
+						)/2
+						*(0.2248/9.81)
+						*(0.454/60)
+						*EngineDatabaseManager.getSFC(
+								_theOperatingConditions.getMachCruise(),
+								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+								EngineDatabaseManager.getThrustRatio(
+										_theOperatingConditions.getMachCruise(),
+										_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+										_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+										_theAircraft.getPowerPlant().getEngineType(),
+										EngineOperatingConditionEnum.CRUISE
+										),
+								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+								_theAircraft.getPowerPlant().getEngineType(),
+								EngineOperatingConditionEnum.CRUISE
+								);
+			}
+			else if ((_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOJET)
+					|| (_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOFAN)
+					|| (_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.PROPFAN)
+					|| (_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.RAMJET)) {
+				
+				sfcCruise = ThrustCalc.calculateThrustDatabase(
+						_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+						_theAircraft.getPowerPlant().getEngineNumber(),
+						_theOperatingConditions.getThrottleCruise(),
+						_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+						_theAircraft.getPowerPlant().getEngineType(),
+						EngineOperatingConditionEnum.CRUISE,
+						_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+						_theOperatingConditions.getMachCruise()
+						)/2
+						*(0.45392/(4.4482*60))
+						*EngineDatabaseManager.getSFC(
+								_theOperatingConditions.getMachCruise(),
+								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+								EngineDatabaseManager.getThrustRatio(
+										_theOperatingConditions.getMachCruise(),
+										_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+										_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+										_theAircraft.getPowerPlant().getEngineType(),
+										EngineOperatingConditionEnum.CRUISE
+										),
+								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+								_theAircraft.getPowerPlant().getEngineType(),
+								EngineOperatingConditionEnum.CRUISE
+								);
+			}
+			
+			_fuelUsedList.add(
+					_fuelUsedList.get(_fuelUsedList.size()-1)
+					.plus(
+							Amount.valueOf(
+									PerformanceCalcUtils.calcCruiseTime(
+											_theAircraft.getTheAnalysisManager().getReferenceRange(),
+											climbRangeTotal,
+											_descentLength,
+											_theAircraft.getTheAnalysisManager().getVOptimumCruise()
+											).doubleValue(NonSI.MINUTE)
+									*sfcCruise,
+									SI.KILOGRAM
+									)
+							)
+					);
+			
+			//----------------------------------------------------------------------
+			// DESCENT
+			double[] timeArrayDescent = MyArrayUtils.linspace(
+					0.0,
+					_descentTime.doubleValue(SI.SECOND),
+					5
+					);
+			List<Double> sfcListDescent = new ArrayList<>();
+			List<Double> altitudeSteps = new ArrayList<>();		
+			
+			altitudeSteps.add(_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER));
+			for(int i=1; i<timeArrayDescent.length; i++) {
+				altitudeSteps.add(
+						_rateOfDescent.doubleValue(SI.METERS_PER_SECOND)
+						*(timeArrayDescent[i]-timeArrayDescent[i-1])
+						);
+			}
+
+			for(int i=0; i<timeArrayDescent.length; i++) {
+				if((_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOPROP)
+						|| (_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.PISTON)) {
+
+					sfcListDescent.add(
+							ThrustCalc.calculateThrustDatabase(
+									_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+									_theAircraft.getPowerPlant().getEngineNumber(),
+									1.0,
+									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+									_theAircraft.getPowerPlant().getEngineType(),
+									EngineOperatingConditionEnum.DESCENT,
+									altitudeSteps.get(i),
+									SpeedCalc.calculateMach(
+											altitudeSteps.get(i),
+											_speedDescent.doubleValue(SI.METERS_PER_SECOND)
+											)
+									)/2
+							*(0.2248/9.81)
+							*(0.454/60)
+							*EngineDatabaseManager.getSFC(
+									SpeedCalc.calculateMach(
+											altitudeSteps.get(i),
+											_speedDescent.doubleValue(SI.METERS_PER_SECOND)
+											),
+									altitudeSteps.get(i),
+									EngineDatabaseManager.getThrustRatio(
+											SpeedCalc.calculateMach(
+													altitudeSteps.get(i),
+													_speedDescent.doubleValue(SI.METERS_PER_SECOND)
+													),
+											altitudeSteps.get(i),
+											_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+											_theAircraft.getPowerPlant().getEngineType(),
+											EngineOperatingConditionEnum.DESCENT
+											),
+									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+									_theAircraft.getPowerPlant().getEngineType(),
+									EngineOperatingConditionEnum.DESCENT
+									)
+							);
+				}
+				else if ((_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOJET)
+						|| (_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOFAN)
+						|| (_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.PROPFAN)
+						|| (_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.RAMJET)) {
+
+					sfcListDescent.add(
+							ThrustCalc.calculateThrustDatabase(
+									_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+									_theAircraft.getPowerPlant().getEngineNumber(),
+									1.0,
+									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+									_theAircraft.getPowerPlant().getEngineType(),
+									EngineOperatingConditionEnum.DESCENT,
+									altitudeSteps.get(i),
+									SpeedCalc.calculateMach(
+											altitudeSteps.get(i),
+											_speedDescent.doubleValue(SI.METERS_PER_SECOND)
+											)
+									)/2
+							*(0.45392/(4.4482*60))
+							*EngineDatabaseManager.getSFC(
+									SpeedCalc.calculateMach(
+											altitudeSteps.get(i),
+											_speedDescent.doubleValue(SI.METERS_PER_SECOND)
+											),
+									altitudeSteps.get(i),
+									EngineDatabaseManager.getThrustRatio(
+											SpeedCalc.calculateMach(
+													altitudeSteps.get(i),
+													_speedDescent.doubleValue(SI.METERS_PER_SECOND)
+													),
+											altitudeSteps.get(i),
+											_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+											_theAircraft.getPowerPlant().getEngineType(),
+											EngineOperatingConditionEnum.DESCENT
+											),
+									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+									_theAircraft.getPowerPlant().getEngineType(),
+									EngineOperatingConditionEnum.DESCENT
+									)
+							);
+				}
+			}
+			
+			_fuelUsedList.add(
+					_fuelUsedList.get(_fuelUsedList.size()-1)
+					.plus(
+							Amount.valueOf(
+									MyMathUtils.integrate1DSimpsonSpline(
+											timeArrayDescent,
+											MyArrayUtils.convertToDoublePrimitive(sfcListDescent)
+											),
+									SI.KILOGRAM					
+									)
+							)
+					);
+			
+			//----------------------------------------------------------------------
+			// LANDING (neglected)
+			_fuelUsedList.add(_fuelUsedList.get(_fuelUsedList.size()-1));
 			
 		}
 		
 		public void calculateWeightProfile() {
 			
+			_massList = new ArrayList<>();
 			
+			_massList.add(_maximumTakeOffMass);
+			_massList.add(_maximumTakeOffMass);
+			_massList.add(_maximumTakeOffMass.minus(_fuelUsedList.get(2)));
+			_massList.add(_massList.get(_massList.size()-1).minus(_fuelUsedList.get(3)));
+			_massList.add(_massList.get(_massList.size()-1).minus(_fuelUsedList.get(4)));
+			_massList.add(_massList.get(_massList.size()-1));
 			
 		}
 		
 		public void plotProfiles(String missionProfilesFolderPath) {
 			
+			if(_plotList.contains(PerformancePlotEnum.RANGE_PROFILE)) { 
+				
+				MyChartToFileUtils.plotNoLegend(
+						MyArrayUtils.convertListOfAmountTodoubleArray(_rangeList),
+						MyArrayUtils.convertListOfAmountTodoubleArray(_altitudeList),
+						0.0, null, 0.0, null,
+						"Range", "Altitude",
+						"km", "m",
+						missionProfilesFolderPath, "Range_Profile_(km)"
+						);
+				
+				double[] rangeNauticalMiles = new double[_rangeList.size()];
+				for(int i=0; i<rangeNauticalMiles.length; i++)
+					rangeNauticalMiles[i] = _rangeList.get(i).doubleValue(NonSI.NAUTICAL_MILE);
+				MyChartToFileUtils.plotNoLegend(
+						rangeNauticalMiles,
+						MyArrayUtils.convertListOfAmountTodoubleArray(_altitudeList),
+						0.0, null, 0.0, null,
+						"Range", "Altitude",
+						"nmi", "m",
+						missionProfilesFolderPath, "Range_Profile_(nmi)"
+						);
+				
+			}
 			
+			if(_plotList.contains(PerformancePlotEnum.TIME_PROFILE)) { 
+				
+				MyChartToFileUtils.plotNoLegend(
+						MyArrayUtils.convertListOfAmountTodoubleArray(_timeList),
+						MyArrayUtils.convertListOfAmountTodoubleArray(_altitudeList),
+						0.0, null, 0.0, null,
+						"Time", "Altitude",
+						"min", "m",
+						missionProfilesFolderPath, "Time_Profile_(minutes)"
+						);
+				
+				double[] timeHours = new double[_timeList.size()];
+				for(int i=0; i<timeHours.length; i++)
+					timeHours[i] = _timeList.get(i).doubleValue(NonSI.HOUR);
+				MyChartToFileUtils.plotNoLegend(
+						timeHours,
+						MyArrayUtils.convertListOfAmountTodoubleArray(_altitudeList),
+						0.0, null, 0.0, null,
+						"Time", "Altitude",
+						"hr", "m",
+						missionProfilesFolderPath, "Time_Profile_(hours)"
+						);
+				
+			}
 			
+			if(_plotList.contains(PerformancePlotEnum.FUEL_USED_PROFILE)) { 
+				
+				MyChartToFileUtils.plotNoLegend(
+						MyArrayUtils.convertListOfAmountTodoubleArray(_fuelUsedList),
+						MyArrayUtils.convertListOfAmountTodoubleArray(_altitudeList),
+						0.0, null, 0.0, null,
+						"Fuel used", "Altitude",
+						"kg", "m",
+						missionProfilesFolderPath, "Fuel_used_Profile_(kg)"
+						);
+				
+			}
+			
+			if(_plotList.contains(PerformancePlotEnum.WEIGHT_PROFILE)) { 
+				
+				MyChartToFileUtils.plotNoLegend(
+						MyArrayUtils.convertListOfAmountTodoubleArray(_timeList),
+						MyArrayUtils.convertListOfAmountTodoubleArray(_massList),
+						0.0, null, null, null,
+						"Time", "Aircraft mass",
+						"s", "kg",
+						missionProfilesFolderPath, "Mass_Profile_(kg)"
+						);
+				
+			}
 			
 		}
 		
@@ -5061,12 +5515,12 @@ public class ACPerformanceCalculator {
 		this._fuelUsedList = _fuelUsedList;
 	}
 
-	public List<Amount<Mass>> getWeightList() {
-		return _weightList;
+	public List<Amount<Mass>> getMassList() {
+		return _massList;
 	}
 
-	public void setWeightList(List<Amount<Mass>> _weightList) {
-		this._weightList = _weightList;
+	public void setMassList(List<Amount<Mass>> _weightList) {
+		this._massList = _weightList;
 	}
 
 	public Amount<Mass> getTotalFuelUsed() {
