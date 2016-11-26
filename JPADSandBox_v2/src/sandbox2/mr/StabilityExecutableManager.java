@@ -98,6 +98,9 @@ public class StabilityExecutableManager {
 	private List<Double> _wingMomentumPole;  // pole adimentionalized on MAC
 	private List<Double> _hTailMomentumPole; // pole adimentionalized on MAC
 	
+	private List<Double> _alphaWingForDistribution;
+	private List<Double> _alphaHorizontalTailForDistribution;
+	
 	
 	//Wing -------------------------------------------
 	//----------------------------------------------------------------
@@ -512,6 +515,9 @@ public class StabilityExecutableManager {
 	//----------------------------------------------------------------
 	
 	//wing
+	private Double _wingFinalMomentumPole;
+	private Double _hTailFinalMomentumPole;
+	
 	private Map<MethodEnum, Amount<Length>> _wingXACLRF = new HashMap<MethodEnum, Amount<Length>>();
 	private Map<MethodEnum, Amount<Length>> _wingXACMAC = new HashMap<MethodEnum, Amount<Length>>();
 	private Map<MethodEnum, Double> _wingXACMACpercent = new HashMap<MethodEnum, Double>();
@@ -5302,5 +5308,37 @@ public class StabilityExecutableManager {
 
 	public void setHTailMomentumPole(List<Double> _hTailMomentumPole) {
 		this._hTailMomentumPole = _hTailMomentumPole;
+	}
+
+	public List<Double> getAlphaWingForDistribution() {
+		return _alphaWingForDistribution;
+	}
+
+	public void setAlphaWingForDistribution(List<Double> _alphaWingForDistribution) {
+		this._alphaWingForDistribution = _alphaWingForDistribution;
+	}
+
+	public List<Double> getAphaHorizontalTailForDistribution() {
+		return _alphaHorizontalTailForDistribution;
+	}
+
+	public void setAlphaHorizontalTailForDistribution(List<Double> _alphaHorizontalTailForDistribution) {
+		this._alphaHorizontalTailForDistribution = _alphaHorizontalTailForDistribution;
+	}
+
+	public Double getWingFinalMomentumPole() {
+		return _wingFinalMomentumPole;
+	}
+
+	public Double getHTailFinalMomentumPole() {
+		return _hTailFinalMomentumPole;
+	}
+
+	public void setWingFinalMomentumPole(Double _wingFinalMomentumPole) {
+		this._wingFinalMomentumPole = _wingFinalMomentumPole;
+	}
+
+	public void setHTailFinalMomentumPole(Double _hTailFinalMomentumPole) {
+		this._hTailFinalMomentumPole = _hTailFinalMomentumPole;
 	}
 }

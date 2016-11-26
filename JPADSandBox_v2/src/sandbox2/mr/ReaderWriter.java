@@ -95,6 +95,11 @@ public class ReaderWriter{
 		theStabilityCalculator.setMachCurrent(Double.valueOf(reader.getXMLPropertyByPath("//operating_conditions/mach_number")));
 		theStabilityCalculator.setReynoldsCurrent(Double.valueOf(reader.getXMLPropertyByPath("//operating_conditions/Reynolds_number")));
 
+		theStabilityCalculator.setWingFinalMomentumPole(Double.valueOf(reader.getXMLPropertyByPath("//operating_conditions/wing_pole_in_equation")));
+		theStabilityCalculator.setHTailFinalMomentumPole(Double.valueOf(reader.getXMLPropertyByPath("//operating_conditions/horizontal_tail_pole_in_equation")));
+		theStabilityCalculator.setAlphaWingForDistribution(reader.readArrayDoubleFromXMLSplit("//operating_conditions/alpha_wing_array_for_distribution"));
+		theStabilityCalculator.setAlphaHorizontalTailForDistribution(reader.readArrayDoubleFromXMLSplit("//operating_conditions/alpha_horizontal_tail_array_for_distribution"));
+		
 		String condition = reader.getXMLPropertyByPath("//operating_conditions/condition");
 
 		if ( condition.equals("TAKE_OFF") || condition.equals("take_off") )
@@ -684,6 +689,56 @@ public class ReaderWriter{
 					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.NEUTRAL_POINT);	
 			}
 
+			//DISTRIBUTION
+			 //wing
+			String clWing = reader.getXMLPropertyByPath("//plot/distribution/cl_wing");
+			if ( clWing != null) {
+				if( clWing.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.CL_DISTRIBUTION_WING);	
+			}
+			
+			String inducedAngleOfAttackWing = reader.getXMLPropertyByPath("//plot/distribution/induced_angle_of_attack_wing");
+			if ( inducedAngleOfAttackWing != null) {
+				if( inducedAngleOfAttackWing.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.INDUCED_ALPHA_DISTRIBUTION_WING);	
+			}
+			
+			String centerOfPressureWing = reader.getXMLPropertyByPath("//plot/distribution/center_of_pressure_wing");
+			if ( centerOfPressureWing != null) {
+				if( centerOfPressureWing.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.CENTER_OF_PRESSURE_DISTRIBUTION_WING);	
+			}
+			
+			String cmWing = reader.getXMLPropertyByPath("//plot/distribution/cm_wing");
+			if ( cmWing != null) {
+				if( cmWing.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.CM_DISTRIBUTION_WING);	
+			}
+			
+			//horizontal tail
+			String clHTail = reader.getXMLPropertyByPath("//plot/distribution/cl_horizontal_tail");
+			if ( clHTail != null) {
+				if( clHTail.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.CL_DISTRIBUTION_HORIZONTAL_TAIL);	
+			}
+			
+			String inducedAngleOfAttackHTail = reader.getXMLPropertyByPath("//plot/distribution/induced_angle_of_attack_horizontal_tail");
+			if ( inducedAngleOfAttackHTail != null) {
+				if( inducedAngleOfAttackHTail.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.INDUCED_ALPHA_DISTRIBUTION_HORIZONTAL_TAIL);	
+			}
+			
+			String centerOfPressureHTail = reader.getXMLPropertyByPath("//plot/distribution/center_of_pressure_horizontal_tail");
+			if ( centerOfPressureHTail != null) {
+				if( centerOfPressureHTail.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.CENTER_OF_PRESSURE_DISTRIBUTION_HORIZONTAL_TAIL);	
+			}
+			
+			String cmHTail = reader.getXMLPropertyByPath("//plot/distribution/cm_horizontal_tail");
+			if ( cmHTail != null) {
+				if( cmHTail.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.CM_DISTRIBUTION_HORIZONTAL_TAIL);	
+			}
 		}
 
 

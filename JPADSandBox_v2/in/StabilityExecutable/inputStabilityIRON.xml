@@ -18,10 +18,16 @@
 				<alpha_body_initial unit="°">-6</alpha_body_initial> <!-- must be about equal to( wingALPAzeroLift - iw) [ about -5 cruise, -19 landing] -->
                 <alpha_body_final unit="°">19</alpha_body_final> <!-- must be >( wingALPAstall - iw) [ about 20 cruise, 23 landing] -->
                 <number_of_alphas_body>80</number_of_alphas_body>
+				<!-- 9 values at least. It will be added the alpha zero lift. THESE ARE ALPHAS WING -->
+				<alpha_wing_array_for_distribution>[0,2,4,6,8,10,12]</alpha_wing_array_for_distribution>
+				<alpha_horizontal_tail_array_for_distribution>[0,2,4]</alpha_horizontal_tail_array_for_distribution>
 				<condition>CRUISE</condition>
 				<!-- This is the pole for the calculation of the moment referred to the MAC. The momentum respect to the aerodynamic center is automatically calculated -->
-				<wing_momentum_pole>[0.25,0.256, 0.264]</wing_momentum_pole>
+				<wing_momentum_pole>[0.25, 0.256, 0.264]</wing_momentum_pole>
 				<horizontal_tail_momentum_pole>[0.25,0.3]</horizontal_tail_momentum_pole>
+				<!-- This is the pole used in the stability equation -->
+				<wing_pole_in_equation>0.264</wing_pole_in_equation>
+				<horizontal_tail_pole_in_equation>0.264</horizontal_tail_pole_in_equation>
 				<!--
 				<condition>CRUISE</condition>
 				<condition>LANDING</condition>
@@ -341,6 +347,16 @@ CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated start
 			 <Downwash_gradient>TRUE</Downwash_gradient>
 		     <delta_e_equilibrium>TRUE</delta_e_equilibrium>
 			 <neutral_point_stick_fixed>TRUE</neutral_point_stick_fixed>
-		</stability>	
+		</stability>
+		<distribution>
+			<cl_wing>TRUE</cl_wing>
+			<induced_angle_of_attack_wing>TRUE</induced_angle_of_attack_wing>
+			<center_of_pressure_wing>TRUE</center_of_pressure_wing>
+			<cm_wing>TRUE</cm_wing>
+			<cl_horizontal_tail>TRUE</cl_horizontal_tail>
+			<induced_angle_of_attack_horizontal_tail>TRUE</induced_angle_of_attack_horizontal_tail>
+			<center_of_pressure_horizontal_tail>TRUE</center_of_pressure_horizontal_tail>
+			<cm_horizontal_tail>TRUE</cm_horizontal_tail>
+		</distribution>
 	</plot>
 </Longitudinal_static_stability_executable>
