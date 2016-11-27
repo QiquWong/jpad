@@ -98,8 +98,8 @@ public class StabilityExecutableManager {
 	private List<Double> _wingMomentumPole;  // pole adimentionalized on MAC
 	private List<Double> _hTailMomentumPole; // pole adimentionalized on MAC
 	
-	private List<Double> _alphaWingForDistribution;
-	private List<Double> _alphaHorizontalTailForDistribution;
+	private List<Amount<Angle>> _alphaWingForDistribution;
+	private List<Amount<Angle>> _alphaHorizontalTailForDistribution;
 	
 	
 	//Wing -------------------------------------------
@@ -546,7 +546,21 @@ public class StabilityExecutableManager {
 	
 	//Stability -------------------------------------------
 	//----------------------------------------------------------------
-
+	
+	
+	//Distributions -------------------------------------------
+	//----------------------------------------------------------------
+	
+	private List<List<Double>> _clWingDistribution = new ArrayList<>();
+	private List<List<Double>> _clHtailDistribution = new ArrayList<>();
+	private List<List<Double>> _centerOfPressureWingDistribution = new ArrayList<>();
+	private List<List<Double>> _centerOfPressurehTailDistribution = new ArrayList<>();
+	private List<List<Double>> _cMWingDistribution = new ArrayList<>();
+	private List<List<Double>> _cMHTailDistribution = new ArrayList<>();
+	private List<List<Amount<Angle>>> _alphaIWingDistribution = new ArrayList<>();
+	private List<List<Amount<Angle>>> _alphaIHtailDistribution = new ArrayList<>();
+	
+	
 	/*****************************************************************************************************************************************
 	 * In this section the arrays are initialized. These initialization wont be made in the final version because                            *
 	 * it will be recalled from the wing
@@ -2334,7 +2348,7 @@ public class StabilityExecutableManager {
 			for (int j=0; j<_wingMomentumPole.size(); j++){
 			xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasWing));
 			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_wingMomentCoefficients.get(j)));
-			legend.add("CM respect to "+ _wingMomentumPole.get(j) + " of MAC");
+			legend.add("CM respect to "+ _wingMomentumPole.get(j) + " of MAC");}
 
 			MyChartToFileUtils.plot(
 					xList, 
@@ -2348,8 +2362,62 @@ public class StabilityExecutableManager {
 					legend,
 					folderPathName,
 					"Wing Moment Coefficient");
-		}
+		
 			System.out.println("Plot Wing Moment Coefficient Chart respect to other poles---> DONE \n");
+		}
+		
+		// DISTRIBUTION
+		//------------------------------------------------------------------------------------------------------------
+		if(_plotList.contains(AerodynamicAndStabilityPlotEnum.CL_DISTRIBUTION_WING)) {
+			List<Double[]> xList = new ArrayList<>();
+			List<Double[]> yList = new ArrayList<>();
+			List<String> legend = new ArrayList<>();
+
+			for (int j=0; j<_alphaWingForDistribution.size(); j++){
+			xList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_wingYAdimensionalDistribution));
+			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_clWingDistribution.get(j)));
+			legend.add("Cl distribution at alpha " + _alphaWingForDistribution.get(j) );}
+
+			MyChartToFileUtils.plot(
+					xList, 
+					yList, 
+					"Wing Lift Coefficient Distribution", 
+					"alpha_w", "Cl", 
+					0., 1.,
+					null, null,
+					"deg", "",
+					true,
+					legend,
+					folderPathName,
+					"Wing Lift Coefficient Distribution");
+		
+			System.out.println("Plot Wing Lift Coefficient Distribution Chart ---> DONE \n");
+		}
+		
+		if(_plotList.contains(AerodynamicAndStabilityPlotEnum.CL_DISTRIBUTION_HORIZONTAL_TAIL)) {
+			List<Double[]> xList = new ArrayList<>();
+			List<Double[]> yList = new ArrayList<>();
+			List<String> legend = new ArrayList<>();
+
+			for (int j=0; j<_alphaHorizontalTailForDistribution.size(); j++){
+			xList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_hTailYAdimensionalDistribution));
+			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_clHtailDistribution.get(j)));
+			legend.add("Cl distribution at alpha " + _alphaHorizontalTailForDistribution.get(j) );}
+
+			MyChartToFileUtils.plot(
+					xList, 
+					yList, 
+					"Horizontal Tail Lift Coefficient Distribution", 
+					"alpha_h", "Cl", 
+					0., 1.,
+					null, null,
+					"deg", "",
+					true,
+					legend,
+					folderPathName,
+					"Horizontal Tail Lift Coefficient Distribution");
+		
+			System.out.println("Plot Horizontal Tail Lift Coefficient Distribution Chart ---> DONE \n");
 		}
 	}
 
@@ -3592,6 +3660,43 @@ public class StabilityExecutableManager {
 		}
 	}
 
+	// DISTRIBUTIONS----------------------------------------------------------
+	public void calculateDistributions(){
+		// initialize alpha array
+		
+		if(!_alphaWingForDistribution.contains(_wingAlphaZeroLiftCONDITION))
+		_alphaWingForDistribution.add(_alphaWingForDistribution.size(), _wingAlphaZeroLiftCONDITION);
+		if(!_alphaHorizontalTailForDistribution.contains(_hTailAlphaZeroLift))
+		_alphaHorizontalTailForDistribution.add(_alphaHorizontalTailForDistribution.size(), _hTailAlphaZeroLift);
+		
+		int alphaWingSize = _alphaWingForDistribution.size();
+		int alphaTailSize = _alphaHorizontalTailForDistribution.size();
+
+		// cl 
+
+		for (int i=0; i<alphaWingSize; i++){
+			theNasaBlackwellCalculatorMachActualWing.calculate(_alphaWingForDistribution.get(i));
+			_clWingDistribution.add(i, 
+					MyArrayUtils.convertDoubleArrayToListDouble(
+							MyArrayUtils.convertFromDoublePrimitive(
+									theNasaBlackwellCalculatorMachActualWing.getClTotalDistribution().toArray())));
+		}
+
+		for (int i=0; i<alphaTailSize; i++){
+			theNasaBlackwellCalculatorMachActualHTail.calculate(_alphaHorizontalTailForDistribution.get(i));
+			_clHtailDistribution.add(i, 
+					MyArrayUtils.convertDoubleArrayToListDouble(
+							MyArrayUtils.convertFromDoublePrimitive(
+									theNasaBlackwellCalculatorMachActualHTail.getClTotalDistribution().toArray())));
+		}
+
+		
+		// 
+		
+		
+		
+	}
+	
 
 	//Getters and setters
 	public boolean getDownwashConstant() {
@@ -5310,19 +5415,19 @@ public class StabilityExecutableManager {
 		this._hTailMomentumPole = _hTailMomentumPole;
 	}
 
-	public List<Double> getAlphaWingForDistribution() {
+	public List<Amount<Angle>> getAlphaWingForDistribution() {
 		return _alphaWingForDistribution;
 	}
 
-	public void setAlphaWingForDistribution(List<Double> _alphaWingForDistribution) {
+	public void setAlphaWingForDistribution(List<Amount<Angle>> _alphaWingForDistribution) {
 		this._alphaWingForDistribution = _alphaWingForDistribution;
 	}
 
-	public List<Double> getAphaHorizontalTailForDistribution() {
+	public List<Amount<Angle>> getAphaHorizontalTailForDistribution() {
 		return _alphaHorizontalTailForDistribution;
 	}
 
-	public void setAlphaHorizontalTailForDistribution(List<Double> _alphaHorizontalTailForDistribution) {
+	public void setAlphaHorizontalTailForDistribution(List<Amount<Angle>> _alphaHorizontalTailForDistribution) {
 		this._alphaHorizontalTailForDistribution = _alphaHorizontalTailForDistribution;
 	}
 
