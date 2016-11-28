@@ -535,6 +535,8 @@ public class StabilityExecutableManager {
 	private Map<MethodEnum, Double> _hTailXACMACpercent = new HashMap<MethodEnum, Double>();
 	private Amount<Length> _hTailMAC;
 	private Amount<Length> _hTailMeanAerodynamicChordLeadingEdgeX;
+	private Map<MethodEnum, List<Double>> _hTailMomentCoefficientAC = new HashMap<MethodEnum, List<Double>>();
+	private List<List<Double>>_hTailMomentCoefficients = new ArrayList<>();
 	
 	//fuselage
 	private Map<MethodEnum, Double> _fuselageCM0 = new HashMap<MethodEnum, Double>();
@@ -1637,6 +1639,14 @@ public class StabilityExecutableManager {
 		.append("\t\tXAC MAC percent = " +_hTailXACMACpercent+ "\n")
 		.append("\t\tXAC LRF = " +_hTailXACLRF+ "\n")
 		.append("\t\tXAC BRF = " +_hTailXACBRF+ "\n")
+		.append("\t\teta Stations = " +_hTailYAdimensionalDistribution+ "\n")
+		.append("\t\tMoment Coefficient respect to AC DE Young Harper --> " +_hTailMomentCoefficientAC.get(MethodEnum.DEYOUNG_HARPER)+ "\n")
+		.append("\t\tMoment Coefficient respect to AC NAPOLITANO DATCOM --> " +_hTailMomentCoefficientAC.get(MethodEnum.NAPOLITANO_DATCOM)+ "\n")
+		;
+		for (int i=0; i<_hTailMomentumPole.size(); i++){
+			sb.append("\t\tMoment Coefficient respect to " + _hTailMomentumPole.get(i) + "--> " +_hTailMomentCoefficients.get(i)+ "\n");
+		}
+		;
 		;
 		
 		sb.append("\t-------------------------------------\n")
@@ -2419,6 +2429,58 @@ public class StabilityExecutableManager {
 		
 			System.out.println("Plot Horizontal Tail Lift Coefficient Distribution Chart ---> DONE \n");
 		}
+		
+		if(_plotList.contains(AerodynamicAndStabilityPlotEnum.CM_DISTRIBUTION_WING)) {
+			List<Double[]> xList = new ArrayList<>();
+			List<Double[]> yList = new ArrayList<>();
+			List<String> legend = new ArrayList<>();
+
+			for (int j=0; j<_alphaWingForDistribution.size(); j++){
+			xList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_wingYAdimensionalDistribution));
+			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_cMWingDistribution.get(j)));
+			legend.add("Cm distribution at alpha " + _alphaWingForDistribution.get(j) );}
+
+			MyChartToFileUtils.plot(
+					xList, 
+					yList, 
+					"Wing Moment Coefficient Distribution respect to " + _wingFinalMomentumPole, 
+					"alpha_w", "Cl", 
+					0., 1.,
+					null, null,
+					"deg", "",
+					true,
+					legend,
+					folderPathName,
+					"Wing Moment Coefficient Distribution respect to " + _wingFinalMomentumPole);
+		
+			System.out.println("Plot Wing Moment Coefficient Distribution respect to " + _wingFinalMomentumPole+ " Chart ---> DONE \n");
+		}
+		
+		if(_plotList.contains(AerodynamicAndStabilityPlotEnum.CM_DISTRIBUTION_HORIZONTAL_TAIL)) {
+			List<Double[]> xList = new ArrayList<>();
+			List<Double[]> yList = new ArrayList<>();
+			List<String> legend = new ArrayList<>();
+
+			for (int j=0; j<_alphaHorizontalTailForDistribution.size(); j++){
+			xList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_hTailYAdimensionalDistribution));
+			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_cMHTailDistribution.get(j)));
+			legend.add("Cm distribution at alpha " + _alphaHorizontalTailForDistribution.get(j) );}
+
+			MyChartToFileUtils.plot(
+					xList, 
+					yList, 
+					"Horizontal Tail Moment Coefficient Distribution respect to " + _hTailFinalMomentumPole, 
+					"alpha_t", "Cl", 
+					0., 1.,
+					null, null,
+					"deg", "",
+					true,
+					legend,
+					folderPathName,
+					"Horizontal Tail Moment Coefficient Distribution respect to " + _hTailFinalMomentumPole);
+		
+			System.out.println("Plot Horizontal Tail Moment Coefficient Distribution respect to " + _hTailFinalMomentumPole + " Chart ---> DONE \n");
+		}
 	}
 
 	/******************************************************************************************************************************************
@@ -3066,7 +3128,6 @@ public class StabilityExecutableManager {
 		for (int i=0; i<_hTailNumberOfPointSemiSpanWise; i++){
 			_hTailCdAirfoilDistribution.add(_hTailCdAirfoilDistributionInputStations.get(0));
 		}
-
 		double [][] cdMatrixHTail = new double [_numberOfAlphasBody][_hTailNumberOfPointSemiSpanWise];
 		
 		for (int i=0; i<_numberOfAlphasBody; i++){
@@ -3161,7 +3222,7 @@ public class StabilityExecutableManager {
 			for (int kk=0; kk<_numberOfAlphasBody; kk++){
 				clListTemp [kk] = clMatrixTail[kk][k];
 			}
-			_hTailCLAirfoilsDistributionFinal.add(k,MyArrayUtils.convertDoubleArrayToListDouble(clListTemp));
+			_hTailCLAirfoilsDistributionFinal.set(k,MyArrayUtils.convertDoubleArrayToListDouble(clListTemp));
 		}
 	}
 
@@ -3560,6 +3621,7 @@ public class StabilityExecutableManager {
 				_wingChordsDistribution, 
 				_wingXleDistribution, 
 				_wingCLAirfoilsDistributionFinal, 
+				_alphasWing,
 				_wingSurface, 
 				momentumPoleYH
 				));
@@ -3582,6 +3644,7 @@ public class StabilityExecutableManager {
 					_wingChordsDistribution, 
 					_wingXleDistribution, 
 					_wingCLAirfoilsDistributionFinal, 
+					_alphasWing,
 					_wingSurface, 
 					momentumPoleND
 					));
@@ -3607,6 +3670,7 @@ public class StabilityExecutableManager {
 						_wingChordsDistribution, 
 						_wingXleDistribution, 
 						_wingCLAirfoilsDistributionFinal, 
+						_alphasWing,
 						_wingSurface, 
 						momentumPole
 						));
@@ -3614,7 +3678,81 @@ public class StabilityExecutableManager {
 	}	
 	
 	
-	public void calculateHtailMomentCharacterstics(){}
+	public void calculateHtailMomentCharacterstics(){
+		// respect TO AC DE YOUNG HARPER	
+		Amount<Length> hTailMomentumPoleYH = Amount.valueOf( 
+				_hTailMeanAerodynamicChordLeadingEdgeX.doubleValue(SI.METER) + 
+				_hTailXACMACpercent.get(MethodEnum.DEYOUNG_HARPER)* 
+				_hTailMAC.doubleValue(SI.METER), SI.METER);
+
+		_hTailMomentCoefficientAC.put(MethodEnum.DEYOUNG_HARPER, 
+				MomentCalc.calcCMLiftingSurfaceWithIntegral(
+						theNasaBlackwellCalculatorMachActualHTail, 
+						_alphasTail, 
+						_hTailYDistribution, 
+						_hTailCl0Distribution, 
+						_hTailClAlphaistributionDeg, 
+						_hTailCmACDistribution, 
+						_hTailXACDistribution, 
+						_hTailChordsDistribution, 
+						_hTailXleDistribution, 
+						_hTailCLAirfoilsDistributionFinal, 
+						_alphasTail,
+						_hTailSurface, 
+						hTailMomentumPoleYH
+						));
+
+		// respect TO AC NAPOLITANO DATCOM	
+	   hTailMomentumPoleYH = Amount.valueOf( 
+				_hTailMeanAerodynamicChordLeadingEdgeX.doubleValue(SI.METER) + 
+				_hTailXACMACpercent.get(MethodEnum.NAPOLITANO_DATCOM)* 
+				_hTailMAC.doubleValue(SI.METER), SI.METER);
+
+	   _hTailMomentCoefficientAC.put(MethodEnum.NAPOLITANO_DATCOM, 
+				MomentCalc.calcCMLiftingSurfaceWithIntegral(
+						theNasaBlackwellCalculatorMachActualHTail, 
+						_alphasTail, 
+						_hTailYDistribution, 
+						_hTailCl0Distribution, 
+						_hTailClAlphaistributionDeg, 
+						_hTailCmACDistribution, 
+						_hTailXACDistribution, 
+						_hTailChordsDistribution, 
+						_hTailXleDistribution, 
+						_hTailCLAirfoilsDistributionFinal, 
+						_alphasTail,
+						_hTailSurface, 
+						hTailMomentumPoleYH
+						));
+
+
+		// respect TO another pole	
+		Amount<Length> momentumPole;
+		for (int j=0; j<_hTailMomentumPole.size(); j++){
+			momentumPole = Amount.valueOf( 
+					_hTailMeanAerodynamicChordLeadingEdgeX.doubleValue(SI.METER) + 
+					_hTailMomentumPole.get(j)* 
+					_hTailMAC.doubleValue(SI.METER), SI.METER);
+
+			_hTailMomentCoefficients.add(
+					MomentCalc.calcCMLiftingSurfaceWithIntegral(
+							theNasaBlackwellCalculatorMachActualHTail, 
+							_alphasTail, 
+							_hTailYDistribution, 
+							_hTailCl0Distribution, 
+							_hTailClAlphaistributionDeg, 
+							_hTailCmACDistribution, 
+							_hTailXACDistribution, 
+							_hTailChordsDistribution, 
+							_hTailXleDistribution, 
+							_hTailCLAirfoilsDistributionFinal, 
+							_alphasTail,
+							_hTailSurface, 
+							hTailMomentumPoleYH
+							));
+		}
+
+	}
 	public void calculateFuselageMomentCharacterstics(){
 		// fusdes
 		double fusSurfRatio = _fuselageFrontSurface.doubleValue(SI.SQUARE_METRE)/
@@ -3691,7 +3829,54 @@ public class StabilityExecutableManager {
 		}
 
 		
-		// 
+		// cm
+		
+		Amount<Length> momentumPoleYH = Amount.valueOf( 
+				_wingMeanAerodynamicChordLeadingEdgeX.doubleValue(SI.METER) + 
+				_wingFinalMomentumPole* 
+				_wingMAC.doubleValue(SI.METER), SI.METER);
+	
+		
+		Amount<Length> hTailomentumPoleYH = Amount.valueOf( 
+				_hTailMeanAerodynamicChordLeadingEdgeX.doubleValue(SI.METER) + 
+				_hTailFinalMomentumPole* 
+				_hTailMAC.doubleValue(SI.METER), SI.METER);
+	
+		for (int i=0; i<alphaWingSize; i++){
+			_cMWingDistribution.add(i,
+					MomentCalc.calcCmDistributionLiftingSurfaceWithIntegral(
+					theNasaBlackwellCalculatorMachActualWing, 
+					_alphaWingForDistribution.get(i),
+					_wingYDistribution, 
+					_wingCl0Distribution, 
+					_wingClAlphaDistributionDeg, 
+					_wingCmACDistribution, 
+					_wingXACDistribution, 
+					_wingChordsDistribution, 
+					_wingXleDistribution, 
+					_wingCLAirfoilsDistributionFinal, 
+					_alphasWing,
+					momentumPoleYH
+					));		
+		}
+		
+		for (int i=0; i<alphaTailSize; i++){
+			_cMHTailDistribution.add(i,
+					MomentCalc.calcCmDistributionLiftingSurfaceWithIntegral(
+					theNasaBlackwellCalculatorMachActualHTail, 
+					_alphaHorizontalTailForDistribution.get(i),
+					_hTailYDistribution, 
+					_hTailCl0Distribution, 
+					_hTailClAlphaistributionDeg, 
+					_hTailCmACDistribution, 
+					_hTailXACDistribution, 
+					_hTailChordsDistribution, 
+					_hTailXleDistribution, 
+					_hTailCLAirfoilsDistributionFinal, 
+					_alphasTail,
+					hTailomentumPoleYH
+					));		
+		}
 		
 		
 		

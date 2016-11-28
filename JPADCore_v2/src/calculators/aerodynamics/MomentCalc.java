@@ -296,6 +296,7 @@ public class MomentCalc {
 			List<Amount<Length>> liftingSurfaceChordDistribution,
 			List<Amount<Length>> liftingSurfaceXLEDistribution,
 			List<List<Double>> airfoilClMatrix, //this is a list of list. each list is referred to an airfoil along the semispan
+			List<Amount<Angle>> anglesOfAttackClMatrix, // references angle of attack of the list of list airfoilClMatrix
 			Amount<Area> liftingSurfaceArea,
 			Amount<Length> momentumPole  //referred to the origin of LRF
 			){
@@ -333,7 +334,7 @@ public class MomentCalc {
 				}
 				else{
 					clInducedDistributionAtAlphaNew[ii] = MyMathUtils.getInterpolatedValue1DLinear(
-							MyArrayUtils.convertListOfAmountTodoubleArray(anglesOfAttack),
+							MyArrayUtils.convertListOfAmountTodoubleArray(anglesOfAttackClMatrix),
 							MyArrayUtils.convertToDoublePrimitive(
 									MyArrayUtils.convertListOfDoubleToDoubleArray(
 											airfoilClMatrix.get(ii))),
@@ -376,6 +377,75 @@ public class MomentCalc {
 		}
 		return liftingSurfaceMomentCoefficient;
 	}
+	
+	public static List<Double> calcCmDistributionLiftingSurfaceWithIntegral(
+			NasaBlackwell theNasaBlackwellCalculator,
+			Amount<Angle> angleOfAttack,
+			List<Amount<Length>> liftingSurfaceDimensionalY,
+			List<Double> liftingSurfaceCl0Distribution, // all distributions must have the same length!!
+			List<Double> liftingSurfaceCLAlphaDegDistribution,
+			List<Double> liftingSurfaceCmACDistribution,
+			List<Double> liftingSurfaceXACadimensionalDistribution,
+			List<Amount<Length>> liftingSurfaceChordDistribution,
+			List<Amount<Length>> liftingSurfaceXLEDistribution,
+			List<List<Double>> airfoilClMatrix, //this is a list of list. each list is referred to an airfoil along the semispan
+			List<Amount<Angle>> anglesOfAttackClMatrix, // references angle of attack of the list of list airfoilClMatrix
+			Amount<Length> momentumPole  //referred to the origin of LRF
+			){
+		
+		List<Double> cmDistribution = new ArrayList<>();
+		
+		double[] distancesArrayAC, clDistribution, alphaDistribution, clInducedDistributionAtAlphaNew, xcPfracC;
+		int numberOfPointSemiSpanWise = liftingSurfaceCl0Distribution.size();
+
+			clDistribution = new double[numberOfPointSemiSpanWise];
+			alphaDistribution = new double[numberOfPointSemiSpanWise];
+			clInducedDistributionAtAlphaNew = new double[numberOfPointSemiSpanWise];
+			distancesArrayAC = new double[numberOfPointSemiSpanWise];
+			xcPfracC = new double[numberOfPointSemiSpanWise];
+
+			theNasaBlackwellCalculator.calculate(angleOfAttack);
+			clDistribution = theNasaBlackwellCalculator.getClTotalDistribution().toArray();
+
+			for (int ii=0; ii<numberOfPointSemiSpanWise; ii++){
+				alphaDistribution [ii] = (clDistribution[ii] - liftingSurfaceCl0Distribution.get(ii))/
+						liftingSurfaceCLAlphaDegDistribution.get(ii);
+
+				if (alphaDistribution[ii]<angleOfAttack.doubleValue(NonSI.DEGREE_ANGLE)){
+					clInducedDistributionAtAlphaNew[ii] =
+							liftingSurfaceCLAlphaDegDistribution.get(ii)*
+							alphaDistribution[ii]+
+							liftingSurfaceCl0Distribution.get(ii);
+				}
+				else{
+					clInducedDistributionAtAlphaNew[ii] = MyMathUtils.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertListOfAmountTodoubleArray(anglesOfAttackClMatrix),
+							MyArrayUtils.convertToDoublePrimitive(
+									MyArrayUtils.convertListOfDoubleToDoubleArray(
+											airfoilClMatrix.get(ii))),
+							alphaDistribution[ii]
+							);
+				}
+
+
+				xcPfracC[ii] = liftingSurfaceXACadimensionalDistribution.get(ii) -
+						(liftingSurfaceCmACDistribution.get(ii)/
+								clInducedDistributionAtAlphaNew[ii]);
+
+				distancesArrayAC[ii] =
+						momentumPole.doubleValue(SI.METER) - 
+						(liftingSurfaceXLEDistribution.get(ii).doubleValue(SI.METER) +
+								(xcPfracC[ii]*liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER)));
+
+				cmDistribution.add(ii, clInducedDistributionAtAlphaNew[ii] * 
+						(distancesArrayAC[ii]/
+								liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER)));
+
+			}
+			
+		return cmDistribution;
+	}
+	
 }
 
 

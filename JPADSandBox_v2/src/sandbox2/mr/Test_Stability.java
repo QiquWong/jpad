@@ -141,6 +141,7 @@ public class Test_Stability{
 		theCalculator.calculateFuselageMomentCharacterstics();
 		theCalculator.calculateWingBodyXAC();
 		theCalculator.calculateWingMomentCharacterstics();
+		theCalculator.calculateHtailMomentCharacterstics();
 		//...
 		theCalculator.calculateDistributions();
 		theCalculator.printAllData();
