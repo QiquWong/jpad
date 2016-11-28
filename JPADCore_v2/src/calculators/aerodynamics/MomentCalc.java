@@ -442,7 +442,7 @@ public class MomentCalc {
 								liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER)));
 
 			}
-			
+			cmDistribution.set(numberOfPointSemiSpanWise-1,0.);
 		return cmDistribution;
 	}
 	

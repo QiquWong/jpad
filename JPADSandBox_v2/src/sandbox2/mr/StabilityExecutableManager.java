@@ -2320,6 +2320,7 @@ public class StabilityExecutableManager {
 //			System.out.println("poli htail " + _hTailMomentumPole);
 			
 		}
+		//WING---------------------
 		if(_plotList.contains(AerodynamicAndStabilityPlotEnum.WING_CM_AERODYNAMIC_CENTER)) {
 
 			List<Double[]> xList = new ArrayList<>();
@@ -2374,6 +2375,63 @@ public class StabilityExecutableManager {
 					"Wing Moment Coefficient");
 		
 			System.out.println("Plot Wing Moment Coefficient Chart respect to other poles---> DONE \n");
+		}
+		
+		//HORIZONTAL TAIL---------------------
+		if(_plotList.contains(AerodynamicAndStabilityPlotEnum.HTAIL_CM_AERODYNAMIC_CENTER)) {
+
+			List<Double[]> xList = new ArrayList<>();
+			List<Double[]> yList = new ArrayList<>();
+			List<String> legend = new ArrayList<>();
+
+			xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasTail));
+			xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasTail));
+			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_hTailMomentCoefficientAC.get(MethodEnum.DEYOUNG_HARPER)));
+			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_hTailMomentCoefficientAC.get(MethodEnum.NAPOLITANO_DATCOM)));
+			legend.add("AC calculated by De Young Harper formula");
+			legend.add("AC calculated by Napoltano-Datcom formula");
+
+			MyChartToFileUtils.plot(
+					xList, 
+					yList, 
+					"Horizontal Tail Moment Coefficient respect to AC", 
+					"alpha_h", "CM", 
+					null, null,
+					null, null,
+					"deg", "",
+					true,
+					legend,
+					folderPathName,
+					"Horizontal Tail Moment Coefficient respect to AC");
+
+		System.out.println("Plot Horizontal Tail Moment Coefficient Chart respect to AC---> DONE \n");
+		}
+		
+		if(_plotList.contains(AerodynamicAndStabilityPlotEnum.HTAIL_CM_QUARTER_CHORD)) {
+
+			List<Double[]> xList = new ArrayList<>();
+			List<Double[]> yList = new ArrayList<>();
+			List<String> legend = new ArrayList<>();
+
+			for (int j=0; j<_hTailMomentumPole.size(); j++){
+			xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasTail));
+			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_hTailMomentCoefficients.get(j)));
+			legend.add("CM respect to "+ _hTailMomentumPole.get(j) + " of MAC");}
+
+			MyChartToFileUtils.plot(
+					xList, 
+					yList, 
+					"Horizontal Tail Moment Coefficient", 
+					"alpha_t", "CM", 
+					null, null,
+					null, null,
+					"deg", "",
+					true,
+					legend,
+					folderPathName,
+					"Horizontal Tail Moment Coefficient");
+		
+			System.out.println("Plot Horizontal Tail Moment Coefficient Chart respect to other poles---> DONE \n");
 		}
 		
 		// DISTRIBUTION
@@ -2445,7 +2503,7 @@ public class StabilityExecutableManager {
 					yList, 
 					"Wing Moment Coefficient Distribution respect to " + _wingFinalMomentumPole, 
 					"alpha_w", "Cl", 
-					0., 1.,
+					null, null,
 					null, null,
 					"deg", "",
 					true,
@@ -2471,7 +2529,7 @@ public class StabilityExecutableManager {
 					yList, 
 					"Horizontal Tail Moment Coefficient Distribution respect to " + _hTailFinalMomentumPole, 
 					"alpha_t", "Cl", 
-					0., 1.,
+					null, null,
 					null, null,
 					"deg", "",
 					true,
@@ -3822,10 +3880,17 @@ public class StabilityExecutableManager {
 
 		for (int i=0; i<alphaTailSize; i++){
 			theNasaBlackwellCalculatorMachActualHTail.calculate(_alphaHorizontalTailForDistribution.get(i));
+			if (_alphaHorizontalTailForDistribution.get(i).equals(_hTailAlphaZeroLift)){
+			List<Double> zeros = new ArrayList<>();
+			for (int j=0; j<_hTailNumberOfPointSemiSpanWise; j++)
+				zeros.add(j, 0.0);
+			_clHtailDistribution.add(i, zeros);}
+			else{
 			_clHtailDistribution.add(i, 
 					MyArrayUtils.convertDoubleArrayToListDouble(
 							MyArrayUtils.convertFromDoublePrimitive(
 									theNasaBlackwellCalculatorMachActualHTail.getClTotalDistribution().toArray())));
+			}
 		}
 
 		
