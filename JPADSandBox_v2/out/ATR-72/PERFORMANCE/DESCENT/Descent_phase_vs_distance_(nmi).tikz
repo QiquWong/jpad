@@ -1,4 +1,4 @@
-%Fuel_used_Profile_(kg)
+%Descent_phase_vs_distance_(nmi)
 \begin{tikzpicture}
 
 \begin{axis}[
@@ -6,10 +6,10 @@ width=\figurewidth,
 height=\figureheight,
 scaled ticks=false, tick label style={/pgf/number format/fixed},
 xmin=0.0,
-xmax=641.2990716244655,
-xlabel={Fuel used (kg)},
+xmax=71.26309729633472,
+xlabel={Distance (nmi)},
 xmajorgrids,
-ymin=0.0,
+ymin=14.020800000000001,
 ymax=6480.0,
 ylabel={Altitude (m)},
 ymajorgrids,
@@ -21,12 +21,11 @@ color=black,
 solid
 ]
 table[row sep=crcr]{
-0.0	0.0\\
-0.0	0.0\\
-335.1547003991341	6000.0\\
-553.0760327510854	6000.0\\
-593.7954366893198	0.0\\
-593.7954366893198	0.0\\
+0.0	6000.0\\
+20.562528720897184	4503.8099999999995\\
+38.07535624309548	3007.6199999999994\\
+53.07374788954059	1511.4299999999994\\
+65.98434934845807	15.24\\
 };
 \end{axis}
 \end{tikzpicture}%

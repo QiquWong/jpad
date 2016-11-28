@@ -6,7 +6,7 @@ width=\figurewidth,
 height=\figureheight,
 scaled ticks=false, tick label style={/pgf/number format/fixed},
 xmin=0.0,
-xmax=215.99999999999983,
+xmax=215.9999999999999,
 xlabel={Range (nmi)},
 xmajorgrids,
 ymin=0.0,
@@ -23,10 +23,10 @@ solid
 table[row sep=crcr]{
 0.0	0.0\\
 0.6924218038369766	0.0\\
-25.92469768041083	6000.0\\
-196.35015669314117	6000.0\\
-199.58166857219084	0.0\\
-199.99999999999983	0.0\\
+64.31815260564731	6000.0\\
+133.59731922373282	6000.0\\
+199.58166857219086	0.0\\
+199.9999999999999	0.0\\
 };
 \end{axis}
 \end{tikzpicture}%

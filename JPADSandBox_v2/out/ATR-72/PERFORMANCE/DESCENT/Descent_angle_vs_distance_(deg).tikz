@@ -1,15 +1,15 @@
-%Fuel_used_Profile_(kg)
+%Descent_angle_vs_distance_(deg)
 \begin{tikzpicture}
 
 \begin{axis}[
 width=\figurewidth,
 height=\figureheight,
 scaled ticks=false, tick label style={/pgf/number format/fixed},
-xmin=0.0,
-xmax=641.2990716244655,
-xlabel={Fuel used (kg)},
+xmin=2.078870016845918,
+xmax=4.1603953465817725,
+xlabel={Descent angle (deg)},
 xmajorgrids,
-ymin=0.0,
+ymin=14.020800000000001,
 ymax=6480.0,
 ylabel={Altitude (m)},
 ymajorgrids,
@@ -21,12 +21,11 @@ color=black,
 solid
 ]
 table[row sep=crcr]{
-0.0	0.0\\
-0.0	0.0\\
-335.1547003991341	6000.0\\
-553.0760327510854	6000.0\\
-593.7954366893198	0.0\\
-593.7954366893198	0.0\\
+2.078870016845918	6000.0\\
+2.4461111096393866	4503.8099999999995\\
+2.8612455857259262	3007.6199999999994\\
+3.328478167985989	1511.4299999999994\\
+3.852217913501641	15.24\\
 };
 \end{axis}
 \end{tikzpicture}%

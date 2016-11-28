@@ -17,8 +17,6 @@
 				<single_passenger_mass unit="kg">99.0</single_passenger_mass>
 			</weights>
 			<aerodynamics parabolicDragPolar="TRUE"> <!-- if TRUE uses a parabolic drag polar with wave drag correction; otherwise it reads the polar_curves tag -->
-				<current_lifting_coefficient>0.6</current_lifting_coefficient>
-				<current_drag_coefficient>0.0329</current_drag_coefficient>
 				<cD0>0.0229</cD0>
 				<oswald>0.83</oswald> 
 				<oswald_take_off>0.81</oswald_take_off>
@@ -77,7 +75,7 @@
 			</climb>
 			<descent>
 				<rate_of_descent unit="m/s"></rate_of_descent>
-				<descent_speed unti="m/s"></descent_speed>
+				<descent_speed_CAS unti="m/s"></descent_speed_CAS>
 			</descent>
 			<flight_maneuvering_and_gust_envelope>
 				<cLmax_inverted></cLmax_inverted> <!-- to be assigned for the maneuvering flight and gust envelope (default = -1.0) --> 

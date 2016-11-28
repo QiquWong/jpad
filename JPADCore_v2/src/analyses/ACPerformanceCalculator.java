@@ -88,8 +88,6 @@ public class ACPerformanceCalculator {
 	private Amount<Mass> _singlePassengerMass;
 	//..............................................................................
 	// Aerodynamics
-	private Double _currentLiftingCoefficient;
-	private Double _currentDragCoefficient;
 	private Double _cD0;
 	private Double _oswaldCruise;
 	private Double _oswaldClimb;
@@ -144,7 +142,7 @@ public class ACPerformanceCalculator {
 	private Double _cLmaxInverted;
 	//..............................................................................
 	// Descent
-	private Amount<Velocity> _speedDescent;
+	private Amount<Velocity> _speedDescentCAS;
 	private Amount<Velocity> _rateOfDescent;
 	//..............................................................................
 	// Plot and Task Maps
@@ -207,9 +205,11 @@ public class ACPerformanceCalculator {
 	private List<SpecificRangeMap> _specificRangeMap;
 	//..............................................................................
 	// Descent
-	private Amount<Length> _descentLength;
-	private Amount<Duration> _descentTime;
-	private Amount<Angle> _descentAngle;
+	private List<Amount<Length>> _descentLengths;
+	private List<Amount<Duration>> _descentTimes;
+	private List<Amount<Angle>> _descentAngles;
+	private Amount<Length> _totalDescentLength;
+	private Amount<Duration> _totalDescentTime;
 	//..............................................................................
 	// Landing
 	private LandingCalc _theLandingCalculator;
@@ -328,8 +328,6 @@ public class ACPerformanceCalculator {
 		private Amount<Mass> __singlePassengerMass;
 		//..............................................................................
 		// Aerodynamics
-		private Double __currentLiftingCoefficient;
-		private Double __currentDragCoefficient;
 		private Double __cD0;
 		private Double __oswaldCruise;
 		private Double __oswaldClimb;
@@ -434,16 +432,6 @@ public class ACPerformanceCalculator {
 		
 		public ACPerformanceCalculatorBuilder singlePassengerMass(Amount<Mass> singlePassengerMass) {
 			this.__singlePassengerMass = singlePassengerMass;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder currentLiftingCoefficient(Double cL) {
-			this.__currentLiftingCoefficient = cL;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder currentDragCoefficient(Double cD) {
-			this.__currentDragCoefficient = cD;
 			return this;
 		}
 		
@@ -682,7 +670,7 @@ public class ACPerformanceCalculator {
 			return this;
 		}
 		
-		public ACPerformanceCalculatorBuilder speedDescent(Amount<Velocity> speedDescent) {
+		public ACPerformanceCalculatorBuilder speedDescentCAS(Amount<Velocity> speedDescent) {
 			this.__speedDescent = speedDescent;
 			return this;
 		}
@@ -716,8 +704,6 @@ public class ACPerformanceCalculator {
 		this._maximumFuelMass = builder.__maximumFuelMass;
 		this._singlePassengerMass = builder.__singlePassengerMass;
 		
-		this._currentLiftingCoefficient = builder.__currentLiftingCoefficient;
-		this._currentDragCoefficient = builder.__currentDragCoefficient;
 		this._cD0 = builder.__cD0;
 		this._oswaldCruise = builder.__oswaldCruise;
 		this._oswaldClimb = builder.__oswaldClimb;
@@ -769,7 +755,7 @@ public class ACPerformanceCalculator {
 		this._cLmaxInverted = builder.__cLmaxInverted;
 		
 		this._rateOfDescent = builder.__rateOfDescent;
-		this._speedDescent = builder.__speedDescent;
+		this._speedDescentCAS = builder.__speedDescent;
 		
 		this._taskList = builder.__taskList;
 		this._plotList = builder.__plotList;
@@ -952,8 +938,6 @@ public class ACPerformanceCalculator {
 		 * Otherwise it ignores the xls file and reads the input data from the xml.
 		 */
 
-		Double currentLiftingCoefficient = null;
-		Double currentDragCoefficient = null;
 		Double cD0 = null;
 		Double oswaldCruise = null;
 		Double oswaldClimb = null;
@@ -1027,16 +1011,6 @@ public class ACPerformanceCalculator {
 				return null;
 			}
 			
-			//...............................................................
-			// CURRENT CL
-			String currentLiftingCoefficientProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/current_lifting_coefficient");
-			if(currentLiftingCoefficientProperty != null)
-				currentLiftingCoefficient = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/current_lifting_coefficient"));
-			//...............................................................
-			// CURRENT CD
-			String currentDragCoefficientProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/current_drag_coefficient");
-			if(currentDragCoefficientProperty != null)
-				currentDragCoefficient = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/current_drag_coefficient"));
 			//...............................................................
 			// CD0
 			String cD0Property = reader.getXMLPropertyByPath("//performance/aerodynamics/cD0");
@@ -1448,7 +1422,7 @@ public class ACPerformanceCalculator {
 		//===========================================================================================
 		// READING DESCENT DATA ...
 		Amount<Velocity> rateOfDescent = null;
-		Amount<Velocity> speedDescent = null;
+		Amount<Velocity> speedDescentCAS = null;
 		//...............................................................
 		// RATE OF DESCENT 
 		String rateOfDescentProperty = reader.getXMLPropertyByPath("//performance/descent/rate_of_descent");
@@ -1462,13 +1436,13 @@ public class ACPerformanceCalculator {
 					SI.METERS_PER_SECOND
 					);		
 		//...............................................................
-		// SPEED DESCENT
-		String speedDescentProperty = reader.getXMLPropertyByPath("//performance/descent/descent_speed");
-		if(speedDescentProperty != null)
-			speedDescent = Amount.valueOf(
+		// SPEED DESCENT CAS
+		String speedDescentCASProperty = reader.getXMLPropertyByPath("//performance/descent/descent_speed_CAS");
+		if(speedDescentCASProperty != null)
+			speedDescentCAS = Amount.valueOf(
 					Double.valueOf(
 							reader.getXMLPropertyByPath(
-									"//performance/descent/descent_speed"
+									"//performance/descent/descent_speed_CAS"
 									)
 							),
 					SI.METERS_PER_SECOND
@@ -1711,8 +1685,6 @@ public class ACPerformanceCalculator {
 				.operatingEmptyMass(operatingEmptyMass)
 				.maximumFuelMass(maximumFuelMass)
 				.singlePassengerMass(singlePassengerMass)
-				.currentLiftingCoefficient(currentLiftingCoefficient)
-				.currentDragCoefficient(currentDragCoefficient)
 				.cD0(cD0)
 				.oswaldCruise(oswaldCruise)
 				.oswaldClimb(oswaldClimb)
@@ -1760,7 +1732,7 @@ public class ACPerformanceCalculator {
 				.climbSpeed(climbSpeed)
 				.cLmaxInverted(cLmaxInverted)
 				.rateOfDescent(rateOfDescent)
-				.speedDescent(speedDescent)
+				.speedDescentCAS(speedDescentCAS)
 				.taskList(theAircraft.getTheAnalysisManager().getTaskListPerformance())
 				.plotList(plotList)
 				.build();
@@ -3335,67 +3307,138 @@ public class ACPerformanceCalculator {
 		
 		public void calculateDescentPerformance() {
 			
-			_descentAngle = 
-					Amount.valueOf(
-							Math.asin(_rateOfDescent.to(SI.METERS_PER_SECOND)
-									.divide(_speedDescent.to(SI.METERS_PER_SECOND))
-										.getEstimatedValue()
-										),
-							SI.RADIAN)
-					.to(NonSI.DEGREE_ANGLE);
+			_descentLengths = new ArrayList<>();
+			_descentTimes = new ArrayList<>();
+			_descentAngles = new ArrayList<>();
 			
-			_descentTime = 
-					Amount.valueOf(
-							(_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
-									- 15.24)
-							/_rateOfDescent.doubleValue(SI.METERS_PER_SECOND),
-							SI.SECOND
-							);
+
+			double[] altitudeDescent = MyArrayUtils.linspace(
+					_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+					15.24,
+					5
+					);
 			
-			Amount<Velocity> horizontalSpeed = 
-					Amount.valueOf(
-							_speedDescent.doubleValue(SI.METERS_PER_SECOND)
-							*Math.sin(_descentAngle.doubleValue(SI.RADIAN)),
-							SI.METERS_PER_SECOND
-							);
-			_descentLength = 
-					Amount.valueOf(
-							horizontalSpeed.times(_descentTime).getEstimatedValue(),
-							SI.METER
-							);
+			List<Amount<Velocity>> speedListTAS = new ArrayList<>();
+			List<Amount<Velocity>> horizontalSpeedListTAS = new ArrayList<>();
+			
+			double sigma = 0.0;
+			
+			for(int i=0; i<altitudeDescent.length; i++) {
+
+				sigma = OperatingConditions.getAtmosphere(
+						altitudeDescent[i]).getDensity()*1000
+						/1.225;
+				
+				speedListTAS.add(_speedDescentCAS.divide(sigma));
+				
+				_descentAngles.add(
+						Amount.valueOf(
+								_rateOfDescent.divide(speedListTAS.get(i)).getEstimatedValue(), 
+								SI.RADIAN
+								)
+						);
+				
+				horizontalSpeedListTAS.add(
+						Amount.valueOf(
+								speedListTAS.get(i).times(
+										Math.cos(_descentAngles.get(i).doubleValue(SI.RADIAN))
+										).getEstimatedValue(),
+								SI.METERS_PER_SECOND
+								)
+						);
+			}
+
+			_descentLengths.add(Amount.valueOf(0.0, SI.KILOMETER));
+			_descentTimes.add(Amount.valueOf(0.0, NonSI.MINUTE));
+			
+			for(int i=1; i<altitudeDescent.length; i++) {
+				
+				_descentTimes.add(
+						_descentTimes.get(_descentTimes.size()-1)
+						.plus(
+								Amount.valueOf(
+										(altitudeDescent[i-1] - altitudeDescent[i])
+										*1/_rateOfDescent.doubleValue(SI.METERS_PER_SECOND),
+										SI.SECOND
+										)
+								.to(NonSI.MINUTE)
+								)
+						);
+				
+				_descentLengths.add(
+						_descentLengths.get(_descentLengths.size()-1)
+						.plus(
+								Amount.valueOf(
+										((horizontalSpeedListTAS.get(i-1).plus(horizontalSpeedListTAS.get(i))).divide(2))
+										.times((_descentTimes.get(i).to(SI.SECOND)
+												.minus(_descentTimes.get(i-1).to(SI.SECOND))
+												))
+										.times(
+												Math.cos(
+														_descentAngles.get(i-1).to(SI.RADIAN).plus(_descentAngles.get(i).to(SI.RADIAN)).divide(2)
+														.doubleValue(SI.RADIAN)
+														)
+												)
+										.getEstimatedValue(),
+										SI.METER
+										)
+								.to(SI.KILOMETER)
+								)
+						);
+			}
+			
+			_totalDescentLength = _descentLengths.get(_descentLengths.size()-1);
+			_totalDescentTime = _descentTimes.get(_descentTimes.size()-1);
 			
 		}
 		
 		public void plotDescentPerformance(String descentFolderPath) {
 			
-			double[] altitude = new double[] { 
+			double[] altitude = MyArrayUtils.linspace(
 					_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-					15.24
-			}; 
-			double[] time = new double[] {
-					0.0,
-					_descentTime.doubleValue(SI.SECOND)
-			};
-			double[] distance = new double[] {
-					0.0,
-					_descentLength.doubleValue(SI.KILOMETER)
-			};
+					15.24,
+					5
+					);
 			
 			MyChartToFileUtils.plotNoLegend(
-					time,
+					MyArrayUtils.convertListOfAmountTodoubleArray(_descentTimes),
 					altitude,
 					0.0, null, null, null,
 					"Time", "Altitude",
-					"s", "m",
-					descentFolderPath, "Descent_phase_vs_time"
+					"min", "m",
+					descentFolderPath, "Descent_phase_vs_time_(min)"
 					);
 			MyChartToFileUtils.plotNoLegend(
-					distance,
+					MyArrayUtils.convertListOfAmountTodoubleArray(_descentLengths),
 					altitude,
 					0.0, null, null, null,
 					"Distance", "Altitude",
 					"km", "m",
-					descentFolderPath, "Descent_phase_vs_distance"
+					descentFolderPath, "Descent_phase_vs_distance_(km)"
+					);
+			
+			double[] descentLengthsNauticalMiles = new double[_descentLengths.size()];
+			for(int i=0; i<descentLengthsNauticalMiles.length; i++)
+				descentLengthsNauticalMiles[i] = _descentLengths.get(i).doubleValue(NonSI.NAUTICAL_MILE);
+			MyChartToFileUtils.plotNoLegend(
+					descentLengthsNauticalMiles,
+					altitude,
+					0.0, null, null, null,
+					"Distance", "Altitude",
+					"nmi", "m",
+					descentFolderPath, "Descent_phase_vs_distance_(nmi)"
+					);
+			
+			double[] descentThetaDegree = new double[_descentLengths.size()];
+			for(int i=0; i<descentThetaDegree.length; i++)
+				descentThetaDegree[i] = _descentAngles.get(i).doubleValue(NonSI.DEGREE_ANGLE);
+			MyChartToFileUtils.plotNoLegend(
+					descentThetaDegree,
+					altitude,
+					_descentAngles.get(0).doubleValue(NonSI.DEGREE_ANGLE), null, null, null,
+					"Descent angle", "Altitude",
+					"deg", "m",
+					descentFolderPath, "Descent_angle_vs_distance_(deg)"
 					);
 			
 		}
@@ -3660,7 +3703,7 @@ public class ACPerformanceCalculator {
 				calcClimb.calculateClimbPerformance();
 			}
 			
-			if(_descentLength == null) {
+			if(_descentLengths == null) {
 				CalcDescent calcDescent = new CalcDescent();
 				calcDescent.calculateDescentPerformance();
 			}
@@ -3682,54 +3725,61 @@ public class ACPerformanceCalculator {
 			//...................................................................
 			// Climb
 			List<Amount<Duration>> timeArrayClimb = new ArrayList<>();
-			List<Double> rangeArrayClimb = new ArrayList<>();
+			List<Amount<Length>> rangeArrayClimb = new ArrayList<>();
 			
 			timeArrayClimb.add(Amount.valueOf(0.0, SI.SECOND));
-			rangeArrayClimb.add(0.0);
+			rangeArrayClimb.add(Amount.valueOf(0.0, SI.METER));
+			
 			for(int i=1; i<_rcMapAOE.size(); i++) {
+				
 				timeArrayClimb.add(
-						Amount.valueOf(
-								MyMathUtils.integrate1DSimpsonSpline(
-										new double[] { 
-												_rcMapAOE.get(i-1).getAltitude(),
-												_rcMapAOE.get(i).getAltitude()
-										},
-										new double[] {
-												1/_rcMapAOE.get(i-1).getRCmax(),
-												1/_rcMapAOE.get(i).getRCmax()
-										}
-										),
-								SI.SECOND
+						timeArrayClimb.get(timeArrayClimb.size()-1)
+						.plus(
+								Amount.valueOf(
+										MyMathUtils.integrate1DSimpsonSpline(
+												new double[] { 
+														_rcMapAOE.get(i-1).getAltitude(),
+														_rcMapAOE.get(i).getAltitude()
+												},
+												new double[] {
+														1/_rcMapAOE.get(i-1).getRCmax(),
+														1/_rcMapAOE.get(i).getRCmax()
+												}
+												),
+										SI.SECOND
+										)
 								)
 						);
 				rangeArrayClimb.add(
-						((_rcMapAOE.get(i-1).getRCMaxSpeed()+_rcMapAOE.get(i).getRCMaxSpeed())/2)
-						*(timeArrayClimb.get(i).minus(timeArrayClimb.get(i-1)).doubleValue(SI.SECOND))
-						*Math.cos(((_rcMapAOE.get(i-1).getTheta()+_rcMapAOE.get(i).getTheta())/2))
+						rangeArrayClimb.get(rangeArrayClimb.size()-1)
+						.plus(
+								Amount.valueOf(
+										((_rcMapAOE.get(i-1).getRCMaxSpeed()+_rcMapAOE.get(i).getRCMaxSpeed())/2)
+										*(timeArrayClimb.get(i).minus(timeArrayClimb.get(i-1)).doubleValue(SI.SECOND))
+										*Math.cos(((_rcMapAOE.get(i-1).getTheta()+_rcMapAOE.get(i).getTheta())/2)),
+										SI.METER
+										)
+								)
 						);
 			}
 			
-			Amount<Length> climbRangeTotal = 
-					Amount.valueOf(
-							MyArrayUtils.sumArrayElements(MyArrayUtils.convertListOfDoubleToDoubleArray(rangeArrayClimb)),
-							SI.METER
-							);
+			Amount<Length> climbRangeTotal = rangeArrayClimb.get(rangeArrayClimb.size()-1);
 			
 			
 			//...................................................................
 			// Cruise
 			Amount<Length> rangeCruise = 
 					_theAircraft.getTheAnalysisManager().getReferenceRange().to(SI.METER)
-					.minus(_takeOffDistanceAOE)
-					.minus(climbRangeTotal)
-					.minus(_descentLength)
-					.minus(_landingDistance);
+					.minus(_takeOffDistanceAOE.to(SI.METER))
+					.minus(climbRangeTotal.to(SI.METER))
+					.minus(_totalDescentLength.to(SI.METER))
+					.minus(_landingDistance.to(SI.METER));
 			Amount<Duration> cruiseTime = 
 					PerformanceCalcUtils.calcCruiseTime(
-							_theAircraft.getTheAnalysisManager().getReferenceRange(),
-							climbRangeTotal,
-							_descentLength,
-							_theAircraft.getTheAnalysisManager().getVOptimumCruise()
+							_theAircraft.getTheAnalysisManager().getReferenceRange().to(SI.METER),
+							climbRangeTotal.to(SI.METER),
+							_totalDescentLength.to(SI.METER),
+							_theAircraft.getTheAnalysisManager().getVOptimumCruise().to(SI.METERS_PER_SECOND)
 							);
 			
 			//--------------------------------------------------------------------
@@ -3746,7 +3796,7 @@ public class ACPerformanceCalculator {
 			_rangeList.add(_rangeList.get(0).plus(_takeOffDistanceAOE.to(SI.KILOMETER)));
 			_rangeList.add(_rangeList.get(1).plus(climbRangeTotal.to(SI.KILOMETER)));
 			_rangeList.add(_rangeList.get(2).plus(rangeCruise.to(SI.KILOMETER)));
-			_rangeList.add(_rangeList.get(3).plus(_descentLength.to(SI.KILOMETER)));
+			_rangeList.add(_rangeList.get(3).plus(_totalDescentLength.to(SI.KILOMETER)));
 			_rangeList.add(_rangeList.get(4).plus(_landingDistance.to(SI.KILOMETER)));
 			
 			// TIME
@@ -3754,7 +3804,7 @@ public class ACPerformanceCalculator {
 			_timeList.add(_timeList.get(0).plus(_takeOffDuration.to(NonSI.MINUTE)));
 			_timeList.add(_timeList.get(1).plus(_minimumClimbTimeAOE.to(NonSI.MINUTE)));
 			_timeList.add(_timeList.get(2).plus(cruiseTime.to(NonSI.MINUTE)));
-			_timeList.add(_timeList.get(3).plus(_descentTime.to(NonSI.MINUTE)));
+			_timeList.add(_timeList.get(3).plus(_totalDescentTime.to(NonSI.MINUTE)));
 			_timeList.add(_timeList.get(4).plus(_landingDuration.to(NonSI.MINUTE)));
 			
 			_totalMissionTime = _timeList.get(_timeList.size()-1);
@@ -3773,39 +3823,52 @@ public class ACPerformanceCalculator {
 			
 			//----------------------------------------------------------------------
 			// CLIMB
-			List<Amount<Duration>> timeArrayClimb = new ArrayList<>();
-			List<Double> rangeArrayClimb = new ArrayList<>();
 			List<Double> sfcListClimb = new ArrayList<>();
+			List<Amount<Duration>> timeArrayClimb = new ArrayList<>();
+			List<Amount<Duration>> timeArrayClimbMinute = new ArrayList<>();
+			List<Amount<Length>> rangeArrayClimb = new ArrayList<>();
 			
 			timeArrayClimb.add(Amount.valueOf(0.0, SI.SECOND));
-			rangeArrayClimb.add(0.0);
+			timeArrayClimbMinute.add(Amount.valueOf(0.0, NonSI.MINUTE));
+			rangeArrayClimb.add(Amount.valueOf(0.0, SI.METER));
+			
 			for(int i=1; i<_rcMapAOE.size(); i++) {
+				
 				timeArrayClimb.add(
-						Amount.valueOf(
-								MyMathUtils.integrate1DSimpsonSpline(
-										new double[] { 
-												_rcMapAOE.get(i-1).getAltitude(),
-												_rcMapAOE.get(i).getAltitude()
-										},
-										new double[] {
-												1/_rcMapAOE.get(i-1).getRCmax(),
-												1/_rcMapAOE.get(i).getRCmax()
-										}
-										),
-								SI.SECOND
+						timeArrayClimb.get(timeArrayClimb.size()-1)
+						.plus(
+								Amount.valueOf(
+										MyMathUtils.integrate1DSimpsonSpline(
+												new double[] { 
+														_rcMapAOE.get(i-1).getAltitude(),
+														_rcMapAOE.get(i).getAltitude()
+												},
+												new double[] {
+														1/_rcMapAOE.get(i-1).getRCmax(),
+														1/_rcMapAOE.get(i).getRCmax()
+												}
+												),
+										SI.SECOND
+										)
 								)
 						);
+				
+				timeArrayClimbMinute.add(timeArrayClimb.get(i).to(NonSI.MINUTE));
+				
 				rangeArrayClimb.add(
-						((_rcMapAOE.get(i-1).getRCMaxSpeed()+_rcMapAOE.get(i).getRCMaxSpeed())/2)
-						*(timeArrayClimb.get(i).minus(timeArrayClimb.get(i-1)).doubleValue(SI.SECOND))
-						*Math.cos(((_rcMapAOE.get(i-1).getTheta()+_rcMapAOE.get(i).getTheta())/2))
+						rangeArrayClimb.get(rangeArrayClimb.size()-1)
+						.plus(
+								Amount.valueOf(
+										((_rcMapAOE.get(i-1).getRCMaxSpeed()+_rcMapAOE.get(i).getRCMaxSpeed())/2)
+										*(timeArrayClimb.get(i).minus(timeArrayClimb.get(i-1)).doubleValue(SI.SECOND))
+										*Math.cos(((_rcMapAOE.get(i-1).getTheta()+_rcMapAOE.get(i).getTheta())/2)),
+										SI.METER
+										)
+								)
 						);
 			}
-			Amount<Length> climbRangeTotal = 
-					Amount.valueOf(
-							MyArrayUtils.sumArrayElements(MyArrayUtils.convertListOfDoubleToDoubleArray(rangeArrayClimb)),
-							SI.METER
-							);
+			
+			Amount<Length> climbRangeTotal = rangeArrayClimb.get(rangeArrayClimb.size()-1);
 			
 			for(int i=0; i<_rcMapAOE.size(); i++) {
 				
@@ -3816,20 +3879,20 @@ public class ACPerformanceCalculator {
 							MyMathUtils.getInterpolatedValue1DLinear(
 									_thrustListAOE.get(i).getSpeed(),
 									_thrustListAOE.get(i).getThrust(),
-									_rcMapAOE.get(i).getRCMaxSpeed()
-									)/2
-							*(0.2248/9.81)
-							*(0.454/60)
+									_rcMapAOE.get(i).getRCmax()
+									)
+							/1000
+							*_theAircraft.getPowerPlant().getEngineNumber()
 							*EngineDatabaseManager.getSFC(
 									SpeedCalc.calculateMach(
 											_rcMapAOE.get(i).getAltitude(),
-											_rcMapAOE.get(i).getRCMaxSpeed()
+											_rcMapAOE.get(i).getRCmax()
 											),
 									_rcMapAOE.get(i).getAltitude(),
 									(MyMathUtils.getInterpolatedValue1DLinear(
 											_thrustListAOE.get(i).getSpeed(),
 											_thrustListAOE.get(i).getThrust(),
-											_rcMapAOE.get(i).getRCMaxSpeed()
+											_rcMapAOE.get(i).getRCmax()
 											)/2)/_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
 									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
 									_theAircraft.getPowerPlant().getEngineType(),
@@ -3846,19 +3909,19 @@ public class ACPerformanceCalculator {
 							MyMathUtils.getInterpolatedValue1DLinear(
 									_thrustListAOE.get(i).getSpeed(),
 									_thrustListAOE.get(i).getThrust(),
-									_rcMapAOE.get(i).getRCMaxSpeed()
+									_rcMapAOE.get(i).getRCmax()
 									)/2
 							*(0.45392/(4.4482*60))
 							*EngineDatabaseManager.getSFC(
 									SpeedCalc.calculateMach(
 											_rcMapAOE.get(i).getAltitude(),
-											_rcMapAOE.get(i).getRCMaxSpeed()
+											_rcMapAOE.get(i).getRCmax()
 											),
 									_rcMapAOE.get(i).getAltitude(),
 									(MyMathUtils.getInterpolatedValue1DLinear(
 											_thrustListAOE.get(i).getSpeed(),
 											_thrustListAOE.get(i).getThrust(),
-											_rcMapAOE.get(i).getRCMaxSpeed()
+											_rcMapAOE.get(i).getRCmax()
 											)/2)/_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
 									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
 									_theAircraft.getPowerPlant().getEngineType(),
@@ -3871,7 +3934,7 @@ public class ACPerformanceCalculator {
 			_fuelUsedList.add(
 					Amount.valueOf(
 							MyMathUtils.integrate1DSimpsonSpline(
-									MyArrayUtils.convertListOfAmountTodoubleArray(timeArrayClimb),
+									MyArrayUtils.convertListOfAmountTodoubleArray(timeArrayClimbMinute),
 									MyArrayUtils.convertToDoublePrimitive(sfcListClimb)
 									),
 							SI.KILOGRAM					
@@ -3894,9 +3957,9 @@ public class ACPerformanceCalculator {
 						EngineOperatingConditionEnum.CRUISE,
 						_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
 						_theOperatingConditions.getMachCruise()
-						)/2
-						*(0.2248/9.81)
-						*(0.454/60)
+						)
+						/1000
+						*_theAircraft.getPowerPlant().getEngineNumber()
 						*EngineDatabaseManager.getSFC(
 								_theOperatingConditions.getMachCruise(),
 								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
@@ -3949,10 +4012,10 @@ public class ACPerformanceCalculator {
 					.plus(
 							Amount.valueOf(
 									PerformanceCalcUtils.calcCruiseTime(
-											_theAircraft.getTheAnalysisManager().getReferenceRange(),
-											climbRangeTotal,
-											_descentLength,
-											_theAircraft.getTheAnalysisManager().getVOptimumCruise()
+											_theAircraft.getTheAnalysisManager().getReferenceRange().to(SI.METER),
+											climbRangeTotal.to(SI.METER),
+											_totalDescentLength.to(SI.METER),
+											_theAircraft.getTheAnalysisManager().getVOptimumCruise().to(SI.METERS_PER_SECOND)
 											).doubleValue(NonSI.MINUTE)
 									*sfcCruise,
 									SI.KILOGRAM
@@ -3962,23 +4025,14 @@ public class ACPerformanceCalculator {
 			
 			//----------------------------------------------------------------------
 			// DESCENT
-			double[] timeArrayDescent = MyArrayUtils.linspace(
-					0.0,
-					_descentTime.doubleValue(SI.SECOND),
+			double[] altitudeDescent = MyArrayUtils.linspace(
+					_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+					15.24,
 					5
 					);
 			List<Double> sfcListDescent = new ArrayList<>();
-			List<Double> altitudeSteps = new ArrayList<>();		
-			
-			altitudeSteps.add(_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER));
-			for(int i=1; i<timeArrayDescent.length; i++) {
-				altitudeSteps.add(
-						_rateOfDescent.doubleValue(SI.METERS_PER_SECOND)
-						*(timeArrayDescent[i]-timeArrayDescent[i-1])
-						);
-			}
 
-			for(int i=0; i<timeArrayDescent.length; i++) {
+			for(int i=0; i<altitudeDescent.length; i++) {
 				if((_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOPROP)
 						|| (_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.PISTON)) {
 
@@ -3990,26 +4044,26 @@ public class ACPerformanceCalculator {
 									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
 									_theAircraft.getPowerPlant().getEngineType(),
 									EngineOperatingConditionEnum.DESCENT,
-									altitudeSteps.get(i),
+									altitudeDescent[i],
 									SpeedCalc.calculateMach(
-											altitudeSteps.get(i),
-											_speedDescent.doubleValue(SI.METERS_PER_SECOND)
+											altitudeDescent[i],
+											_speedDescentCAS.doubleValue(SI.METERS_PER_SECOND)
 											)
-									)/2
-							*(0.2248/9.81)
-							*(0.454/60)
+									)
+							/1000
+							*_theAircraft.getPowerPlant().getEngineNumber()
 							*EngineDatabaseManager.getSFC(
 									SpeedCalc.calculateMach(
-											altitudeSteps.get(i),
-											_speedDescent.doubleValue(SI.METERS_PER_SECOND)
+											altitudeDescent[i],
+											_speedDescentCAS.doubleValue(SI.METERS_PER_SECOND)
 											),
-									altitudeSteps.get(i),
+									altitudeDescent[i],
 									EngineDatabaseManager.getThrustRatio(
 											SpeedCalc.calculateMach(
-													altitudeSteps.get(i),
-													_speedDescent.doubleValue(SI.METERS_PER_SECOND)
+													altitudeDescent[i],
+													_speedDescentCAS.doubleValue(SI.METERS_PER_SECOND)
 													),
-											altitudeSteps.get(i),
+											altitudeDescent[i],
 											_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
 											_theAircraft.getPowerPlant().getEngineType(),
 											EngineOperatingConditionEnum.DESCENT
@@ -4033,25 +4087,25 @@ public class ACPerformanceCalculator {
 									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
 									_theAircraft.getPowerPlant().getEngineType(),
 									EngineOperatingConditionEnum.DESCENT,
-									altitudeSteps.get(i),
+									altitudeDescent[i],
 									SpeedCalc.calculateMach(
-											altitudeSteps.get(i),
-											_speedDescent.doubleValue(SI.METERS_PER_SECOND)
+											altitudeDescent[i],
+											_speedDescentCAS.doubleValue(SI.METERS_PER_SECOND)
 											)
 									)/2
 							*(0.45392/(4.4482*60))
 							*EngineDatabaseManager.getSFC(
 									SpeedCalc.calculateMach(
-											altitudeSteps.get(i),
-											_speedDescent.doubleValue(SI.METERS_PER_SECOND)
+											altitudeDescent[i],
+											_speedDescentCAS.doubleValue(SI.METERS_PER_SECOND)
 											),
-									altitudeSteps.get(i),
+									altitudeDescent[i],
 									EngineDatabaseManager.getThrustRatio(
 											SpeedCalc.calculateMach(
-													altitudeSteps.get(i),
-													_speedDescent.doubleValue(SI.METERS_PER_SECOND)
+													altitudeDescent[i],
+													_speedDescentCAS.doubleValue(SI.METERS_PER_SECOND)
 													),
-											altitudeSteps.get(i),
+											altitudeDescent[i],
 											_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
 											_theAircraft.getPowerPlant().getEngineType(),
 											EngineOperatingConditionEnum.DESCENT
@@ -4064,12 +4118,16 @@ public class ACPerformanceCalculator {
 				}
 			}
 			
+			double[] descentTimeMinutes = new double[_descentTimes.size()];
+			for(int i=0; i<_descentTimes.size(); i++) 
+				descentTimeMinutes[i] = _descentTimes.get(i).doubleValue(NonSI.MINUTE);
+			
 			_fuelUsedList.add(
 					_fuelUsedList.get(_fuelUsedList.size()-1)
 					.plus(
 							Amount.valueOf(
 									MyMathUtils.integrate1DSimpsonSpline(
-											timeArrayDescent,
+											descentTimeMinutes,
 											MyArrayUtils.convertToDoublePrimitive(sfcListDescent)
 											),
 									SI.KILOGRAM					
@@ -4240,18 +4298,6 @@ public class ACPerformanceCalculator {
 		this._singlePassengerMass = _singlePassengerMass;
 	}
 
-	public Double getCurrentLiftingCoefficient() {
-		return _currentLiftingCoefficient;
-	}
-	public void setCurrentLiftingCoefficient(Double _currentLiftingCoefficient) {
-		this._currentLiftingCoefficient = _currentLiftingCoefficient;
-	}
-	public Double getCurrentDragCoefficient() {
-		return _currentDragCoefficient;
-	}
-	public void setCurrentDragCoefficient(Double _currentDragCoefficient) {
-		this._currentDragCoefficient = _currentDragCoefficient;
-	}
 	public Double getCD0() {
 		return _cD0;
 	}
@@ -4264,16 +4310,11 @@ public class ACPerformanceCalculator {
 	public void setOswaldCruise(Double _oswald) {
 		this._oswaldCruise = _oswald;
 	}
-	/**
-	 * @return the _oswaldClimb
-	 */
+
 	public Double getOswaldClimb() {
 		return _oswaldClimb;
 	}
 
-	/**
-	 * @param _oswaldClimb the _oswaldClimb to set
-	 */
 	public void setOswaldClimb(Double _oswaldClimb) {
 		this._oswaldClimb = _oswaldClimb;
 	}
@@ -4902,8 +4943,8 @@ public class ACPerformanceCalculator {
 		this._negativeLoadFactorDesignFlapSpeedWithGust = _negativeLoadFactorDesignFlapSpeedWithGust;
 	}
 
-	public Amount<Velocity> getSpeedDescent() {
-		return _speedDescent;
+	public Amount<Velocity> getSpeedDescentCAS() {
+		return _speedDescentCAS;
 	}
 
 	public Amount<Velocity> getRateOfDescent() {
@@ -4914,8 +4955,8 @@ public class ACPerformanceCalculator {
 		this._rateOfDescent = _rateOfDescent;
 	}
 
-	public void setSpeedDescent(Amount<Velocity> _vDescent) {
-		this._speedDescent = _vDescent;
+	public void setSpeedDescentCAS(Amount<Velocity> _vDescent) {
+		this._speedDescentCAS = _vDescent;
 	}
 
 	public TakeOffCalc getTheTakeOffCalculator() {
@@ -5579,28 +5620,44 @@ public class ACPerformanceCalculator {
 		this._thrustListOEI = _thrustListOEI;
 	}
 
-	public Amount<Length> getDescentLength() {
-		return _descentLength;
+	public List<Amount<Length>> getDescentLengths() {
+		return _descentLengths;
 	}
 
-	public void setDescentLength(Amount<Length> _descentLength) {
-		this._descentLength = _descentLength;
+	public void setDescentLengths(List<Amount<Length>> _descentLength) {
+		this._descentLengths = _descentLength;
 	}
 
-	public Amount<Duration> getDescentTime() {
-		return _descentTime;
+	public List<Amount<Duration>> getDescentTimes() {
+		return _descentTimes;
 	}
 
-	public void setDescentTime(Amount<Duration> _descentTime) {
-		this._descentTime = _descentTime;
+	public void setDescentTimes(List<Amount<Duration>> _descentTime) {
+		this._descentTimes = _descentTime;
 	}
 
-	public Amount<Angle> getDescentAngle() {
-		return _descentAngle;
+	public List<Amount<Angle>> getDescentAngles() {
+		return _descentAngles;
 	}
 
-	public void setDescentAngle(Amount<Angle> _descentAngle) {
-		this._descentAngle = _descentAngle;
+	public void setDescentAngles(List<Amount<Angle>> _descentAngle) {
+		this._descentAngles = _descentAngle;
+	}
+
+	public Amount<Length> getTotalDescentLength() {
+		return _totalDescentLength;
+	}
+
+	public void setTotalDescentLength(Amount<Length> _totalDescentLength) {
+		this._totalDescentLength = _totalDescentLength;
+	}
+
+	public Amount<Duration> getTotalDescentTime() {
+		return _totalDescentTime;
+	}
+
+	public void setTotalDescentTime(Amount<Duration> _totalDescentTime) {
+		this._totalDescentTime = _totalDescentTime;
 	}
 
 }

@@ -1,4 +1,4 @@
-%Fuel_used_Profile_(kg)
+%Descent_phase_vs_time_(min)
 \begin{tikzpicture}
 
 \begin{axis}[
@@ -6,10 +6,10 @@ width=\figurewidth,
 height=\figureheight,
 scaled ticks=false, tick label style={/pgf/number format/fixed},
 xmin=0.0,
-xmax=641.2990716244655,
-xlabel={Fuel used (kg)},
+xmax=14.137228346456691,
+xlabel={Time (min)},
 xmajorgrids,
-ymin=0.0,
+ymin=14.020800000000001,
 ymax=6480.0,
 ylabel={Altitude (m)},
 ymajorgrids,
@@ -21,12 +21,11 @@ color=black,
 solid
 ]
 table[row sep=crcr]{
-0.0	0.0\\
-0.0	0.0\\
-335.1547003991341	6000.0\\
-553.0760327510854	6000.0\\
-593.7954366893198	0.0\\
-593.7954366893198	0.0\\
+0.0	6000.0\\
+3.2725065616797906	4503.8099999999995\\
+6.54501312335958	3007.6199999999994\\
+9.817519685039368	1511.4299999999994\\
+13.090026246719157	15.24\\
 };
 \end{axis}
 \end{tikzpicture}%
