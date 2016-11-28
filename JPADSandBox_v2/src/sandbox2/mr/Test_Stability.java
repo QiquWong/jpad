@@ -122,6 +122,13 @@ public class Test_Stability{
 				File.separator
 				);
 		
+		String outputChartPathDist = JPADStaticWriteUtils.createNewFolder(
+				outputChartPath +
+				File.separator +
+				"Distributions"+
+				File.separator
+				);
+		
 		theCalculator.initializeData();
 		theCalculator.initializeCalculators();
 		theCalculator.calculateWingLiftCharacteristics();
@@ -147,7 +154,7 @@ public class Test_Stability{
 		theCalculator.printAllData();
 		String sb = theCalculator.printAllResults();
 		System.out.println(sb);
-		theCalculator.plot(outputChartPath);
+		theCalculator.plot(outputChartPath, outputChartPathDist);
 		// read
 		// initialize
 		// print

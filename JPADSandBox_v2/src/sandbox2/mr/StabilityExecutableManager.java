@@ -1635,6 +1635,7 @@ public class StabilityExecutableManager {
 		.append("\tHorizontal Tail\n")
 		.append("\t-------------------------------------\n")
 		.append("\t\tMAC = " +_hTailMAC+ "\n")
+		.append("\t\tx MAC = " +_hTailMeanAerodynamicChordLeadingEdgeX+ "\n")
 		.append("\t\tXAC MAC = " +_hTailXACMAC+ "\n")
 		.append("\t\tXAC MAC percent = " +_hTailXACMACpercent+ "\n")
 		.append("\t\tXAC LRF = " +_hTailXACLRF+ "\n")
@@ -1657,11 +1658,30 @@ public class StabilityExecutableManager {
 		.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this. _alphasBody, "\t\tAlpha Body", ","))
 		.append("\t\tCM fuselage = " +_fuselageMomentCoefficient+ "\n")
 		;
+		
+		sb.append("\nDISTRIBUTIONS\n")
+		.append("-------------------------------------\n")
+		.append("\t\teta wing = " + _wingYAdimensionalDistribution + "\n\n")
+		.append("\t\teta horizontal tail = " + _hTailYAdimensionalDistribution + "\n")
+		;
+		for (int i=0; i<_alphaWingForDistribution.size(); i++){
+		sb.append("\t\tCl wing at alpha = " + _alphaWingForDistribution.get(i) + " --> " +_clWingDistribution.get(i)+ "\n");
+		}
+		;
+		for (int i=0; i<_alphaHorizontalTailForDistribution.size(); i++){
+		sb.append("\t\tCl horizontal tail at alpha = " + _alphaHorizontalTailForDistribution.get(i) + " --> " +_clHtailDistribution.get(i)+ "\n");
+		}
+		sb.append("\n");
+		for (int i=0; i<_alphaWingForDistribution.size(); i++){
+		sb.append("\t\tCm wing at alpha = " + _alphaWingForDistribution.get(i) + " --> " +_cMWingDistribution.get(i)+ "\n");
+		}
+		;
+		
 		return sb.toString();
 
 	}
 
-	public void plot( String folderPathName) throws InstantiationException, IllegalAccessException{
+	public void plot( String folderPathName, String folderPathNameDistribution) throws InstantiationException, IllegalAccessException{
 
 		// DOWNWASH e DOWNWASH GRADIENT	
 		//------------------------------------------------------------------------------------------------------------
@@ -2129,36 +2149,6 @@ public class StabilityExecutableManager {
 
 			System.out.println("Plot wing Total drag Coefficient chart ---> DONE \n");
 			
-			//--induced angle of attack----------------------------------------------------------------------------------------
-			xList = new ArrayList<>();
-			yList = new ArrayList<>();
-			legend = new ArrayList<>();
-
-			xList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_wingYAdimensionalDistribution));
-			xList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_wingYAdimensionalDistribution));
-			xList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_wingYAdimensionalDistribution));
-			yList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_wingInducedAngleOfAttack.get(0)));
-			yList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_wingInducedAngleOfAttack.get(_numberOfAlphasBody/2)));
-			yList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_wingInducedAngleOfAttack.get(_numberOfAlphasBody-1)));
-
-			legend.add("Induced angle of attack at alpha = " + _alphasWing.get(0));
-			legend.add("Induced angle of attack at alpha = " + _alphasWing.get((int) Math.ceil(_numberOfAlphasBody/2)));
-			legend.add("Induced angle of attack at alpha = " + _alphasWing.get(_numberOfAlphasBody-1));
-
-			MyChartToFileUtils.plot(
-					xList, 
-					yList, 
-					"Wing Induced angle of attack distribution", 
-					"eta", "alpha_i", 
-					null, null,
-					null, null,
-					"", "deg",
-					true,
-					legend,
-					folderPathName,
-					"Induced angle of attack distribution");
-
-			System.out.println("Plot wing Induced angle of attack distribution chart ---> DONE \n");
 			}
 		}
 		
@@ -2247,37 +2237,6 @@ public class StabilityExecutableManager {
 					"Horizontal Tail Total drag Coefficient");
 
 			System.out.println("Plot Horizontal Tail Total drag Coefficient chart ---> DONE \n");
-			
-			//--induced angle of attack----------------------------------------------------------------------------------------
-			xList = new ArrayList<>();
-			yList = new ArrayList<>();
-			legend = new ArrayList<>();
-
-			xList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_hTailYAdimensionalDistribution));
-			xList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_hTailYAdimensionalDistribution));
-			xList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_hTailYAdimensionalDistribution));
-			yList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_hTailInducedAngleOfAttack.get(0)));
-			yList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_hTailInducedAngleOfAttack.get(_numberOfAlphasBody/2)));
-			yList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_hTailInducedAngleOfAttack.get(_numberOfAlphasBody-1)));
-
-			legend.add("Induced angle of attack at alpha = " + _alphasTail.get(0));
-			legend.add("Induced angle of attack at alpha = " + _alphasTail.get((int) Math.ceil(_numberOfAlphasBody/2)));
-			legend.add("Induced angle of attack at alpha = " + _alphasTail.get(_numberOfAlphasBody-1));
-
-			MyChartToFileUtils.plot(
-					xList, 
-					yList, 
-					"Horizontal Tail Induced angle of attack distribution", 
-					"eta", "alpha_i", 
-					null, null,
-					null, null,
-					"", "deg",
-					true,
-					legend,
-					folderPathName,
-					"Induced Horizontal Tail angle of attack distribution");
-
-			System.out.println("Plot Horizontal Tail Induced angle of attack distribution chart ---> DONE \n");
 			}
 		}
 
@@ -2456,7 +2415,7 @@ public class StabilityExecutableManager {
 					"deg", "",
 					true,
 					legend,
-					folderPathName,
+					folderPathNameDistribution,
 					"Wing Lift Coefficient Distribution");
 		
 			System.out.println("Plot Wing Lift Coefficient Distribution Chart ---> DONE \n");
@@ -2482,7 +2441,7 @@ public class StabilityExecutableManager {
 					"deg", "",
 					true,
 					legend,
-					folderPathName,
+					folderPathNameDistribution,
 					"Horizontal Tail Lift Coefficient Distribution");
 		
 			System.out.println("Plot Horizontal Tail Lift Coefficient Distribution Chart ---> DONE \n");
@@ -2508,7 +2467,7 @@ public class StabilityExecutableManager {
 					"deg", "",
 					true,
 					legend,
-					folderPathName,
+					folderPathNameDistribution,
 					"Wing Moment Coefficient Distribution respect to " + _wingFinalMomentumPole);
 		
 			System.out.println("Plot Wing Moment Coefficient Distribution respect to " + _wingFinalMomentumPole+ " Chart ---> DONE \n");
@@ -2534,11 +2493,114 @@ public class StabilityExecutableManager {
 					"deg", "",
 					true,
 					legend,
-					folderPathName,
+					folderPathNameDistribution,
 					"Horizontal Tail Moment Coefficient Distribution respect to " + _hTailFinalMomentumPole);
 		
 			System.out.println("Plot Horizontal Tail Moment Coefficient Distribution respect to " + _hTailFinalMomentumPole + " Chart ---> DONE \n");
 		}
+		
+		
+		//--induced angle of attack----------------------------------------------------------------------------------------
+		if(_plotList.contains(AerodynamicAndStabilityPlotEnum.INDUCED_ALPHA_DISTRIBUTION_WING)) {
+			List<Double[]> xList = new ArrayList<>();
+			List<Double[]> yList = new ArrayList<>();
+			List<String> legend = new ArrayList<>();
+
+			for (int j=0; j<_alphaWingForDistribution.size(); j++){
+				xList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_wingYAdimensionalDistribution));
+				yList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaIWingDistribution.get(j)));
+				legend.add("Induced angle of attack at alpha = " + _alphaWingForDistribution.get(j) );}
+
+		MyChartToFileUtils.plot(
+				xList, 
+				yList, 
+				"Wing Induced angle of attack distribution", 
+				"eta", "alpha_i", 
+				null, null,
+				null, null,
+				"", "deg",
+				true,
+				legend,
+				folderPathNameDistribution,
+				"Wing Induced angle of attack distribution");
+
+		System.out.println("Plot wing Induced angle of attack distribution chart ---> DONE \n");}
+		
+		if(_plotList.contains(AerodynamicAndStabilityPlotEnum.INDUCED_ALPHA_DISTRIBUTION_HORIZONTAL_TAIL)) {
+			List<Double[]> xList = new ArrayList<>();
+			List<Double[]> yList = new ArrayList<>();
+			List<String> legend = new ArrayList<>();
+
+			for (int j=0; j<_alphaHorizontalTailForDistribution.size(); j++){
+				xList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_hTailYAdimensionalDistribution));
+				yList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaIHtailDistribution.get(j)));
+				legend.add("Induced angle of attack at alpha = " + _alphaHorizontalTailForDistribution.get(j) );}
+
+		MyChartToFileUtils.plot(
+				xList, 
+				yList, 
+				"Horizontal Tail Induced angle of attack distribution", 
+				"eta", "alpha_i", 
+				null, null,
+				null, null,
+				"", "deg",
+				true,
+				legend,
+				folderPathNameDistribution,
+				"Horizontal Tail Induced angle of attack distribution");
+
+		System.out.println("Plot Horizontal Tail Induced angle of attack distribution chart ---> DONE \n");}
+		
+		//--center of pressure----------------------------------------------------------------------------------------
+		if(_plotList.contains(AerodynamicAndStabilityPlotEnum.CENTER_OF_PRESSURE_DISTRIBUTION_WING)) {
+			List<Double[]> xList = new ArrayList<>();
+			List<Double[]> yList = new ArrayList<>();
+			List<String> legend = new ArrayList<>();
+
+			for (int j=0; j<_alphaWingForDistribution.size(); j++){
+				xList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_wingYAdimensionalDistribution));
+				yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_centerOfPressureWingDistribution.get(j)));
+				legend.add("Center of pressure at alpha = " + _alphaWingForDistribution.get(j) );}
+
+		MyChartToFileUtils.plot(
+				xList, 
+				yList, 
+				"Wing center of pressure distribution", 
+				"eta", "cp", 
+				null, null,
+				null, null,
+				"", "deg",
+				true,
+				legend,
+				folderPathNameDistribution,
+				"Wing center of pressuredistribution");
+
+		System.out.println("Plot wing center of pressure distribution chart ---> DONE \n");}
+		
+		if(_plotList.contains(AerodynamicAndStabilityPlotEnum.CENTER_OF_PRESSURE_DISTRIBUTION_HORIZONTAL_TAIL)) {
+			List<Double[]> xList = new ArrayList<>();
+			List<Double[]> yList = new ArrayList<>();
+			List<String> legend = new ArrayList<>();
+
+			for (int j=0; j<_alphaHorizontalTailForDistribution.size(); j++){
+				xList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_hTailYAdimensionalDistribution));
+				yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_centerOfPressurehTailDistribution.get(j)));
+				legend.add("Center of pressure at alpha = " + _alphaHorizontalTailForDistribution.get(j) );}
+
+		MyChartToFileUtils.plot(
+				xList, 
+				yList, 
+				"Horizontal Tail center of pressure distribution", 
+				"eta", "cp", 
+				null, null,
+				null, null,
+				"", "deg",
+				true,
+				legend,
+				folderPathNameDistribution,
+				"Horizontal Tail center of pressuredistribution");
+
+		System.out.println("Plot Horizontal Tail center of pressure distribution chart ---> DONE \n");}
 	}
 
 	/******************************************************************************************************************************************
@@ -3737,6 +3799,7 @@ public class StabilityExecutableManager {
 	
 	
 	public void calculateHtailMomentCharacterstics(){
+		
 		// respect TO AC DE YOUNG HARPER	
 		Amount<Length> hTailMomentumPoleYH = Amount.valueOf( 
 				_hTailMeanAerodynamicChordLeadingEdgeX.doubleValue(SI.METER) + 
@@ -3809,7 +3872,6 @@ public class StabilityExecutableManager {
 							hTailMomentumPoleYH
 							));
 		}
-
 	}
 	public void calculateFuselageMomentCharacterstics(){
 		// fusdes
@@ -3942,9 +4004,57 @@ public class StabilityExecutableManager {
 					hTailomentumPoleYH
 					));		
 		}
+
+		// induced angle of Attack
+
+		for (int i=0; i<alphaWingSize; i++){
+			_alphaIWingDistribution.add(i, 
+					AerodynamicCalc.calculateInducedAngleOfAttackDistribution(
+							_alphaWingForDistribution.get(i), 
+							theNasaBlackwellCalculatorMachActualWing, 
+							_altitude, 
+							_machCurrent, 
+							_wingNumberOfPointSemiSpanWise
+							));
+		}
 		
+		for (int i=0; i<alphaTailSize; i++){
+			_alphaIHtailDistribution.add(i, 
+					AerodynamicCalc.calculateInducedAngleOfAttackDistribution(
+							_alphaHorizontalTailForDistribution.get(i), 
+							theNasaBlackwellCalculatorMachActualHTail, 
+							_altitude, 
+							_machCurrent, 
+							_hTailNumberOfPointSemiSpanWise
+							));
+		}
 		
+		// center of pressure 
+		for (int i=0; i<alphaWingSize; i++){
+			_centerOfPressureWingDistribution.add(i, 
+					AerodynamicCalc.calcCenterOfPressureDistribution(
+							theNasaBlackwellCalculatorMachActualWing,  
+							_alphaWingForDistribution.get(i),
+							_wingCl0Distribution, 
+							_wingClAlphaDistributionDeg, 
+							_wingCmACDistribution,
+							_wingXACDistribution, 
+							_wingCLAirfoilsDistributionFinal, 
+							_alphasWing));
+		}
 		
+		for (int i=0; i<alphaTailSize; i++){
+			_centerOfPressurehTailDistribution.add(i, 
+					AerodynamicCalc.calcCenterOfPressureDistribution(
+							theNasaBlackwellCalculatorMachActualHTail,  
+							_alphaHorizontalTailForDistribution.get(i), 
+							_hTailCl0Distribution, 
+							_hTailClAlphaistributionDeg, 
+							_hTailCmACDistribution, 
+							_hTailXACDistribution, 
+							_hTailCLAirfoilsDistributionFinal, 
+							_alphasTail));
+			}
 	}
 	
 

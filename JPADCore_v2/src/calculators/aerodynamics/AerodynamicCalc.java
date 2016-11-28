@@ -4,8 +4,13 @@ import static java.lang.Math.cos;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
@@ -16,7 +21,9 @@ import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.enumerations.AircraftTypeEnum;
 import configuration.enumerations.AirfoilTypeEnum;
+import jahuwaldt.aero.StdAtmos1976;
 import standaloneutils.MyArrayUtils;
+import standaloneutils.MyMathUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 
 /**
@@ -400,7 +407,7 @@ public class AerodynamicCalc {
 	public static Double calculateCoolings(double cd0) {
 		return cd0*0.08;
 	}
-	
+
 	/**
 	 * This method evaluates the downwash gradient using Roskam method
 	 * 
@@ -422,7 +429,7 @@ public class AerodynamicCalc {
 				1.19);
 		return downwashGradient;
 	}
-	
+
 	/**
 	 * This method evaluates the downwash gradient using Roskam method
 	 * 
@@ -440,9 +447,103 @@ public class AerodynamicCalc {
 				adimensionalVetricalDistance, 
 				sweepQuarterChord
 				);
-		
+
 		Double downwashGradientMach = machCorrection * downwashGradientMachZero;
 		return downwashGradientMach;
 	}
+	/**
+	 * This method evaluates the distribution of the induced angle of attack
+	 * 
+	 * @author Manuela Ruocco
 
-}
+	 */
+	public static List<Amount<Angle>> calculateInducedAngleOfAttackDistribution(
+			Amount<Angle> angleOfAttack,
+			NasaBlackwell theNasaBlackwellCalculator,
+			Amount<Length> altitude,
+			Double machNumber,
+			int _numberOfPointSemiSpan
+			){
+
+		double [] addend = new double[_numberOfPointSemiSpan];
+		List<Amount<Angle>> inducedAngleOfAttack = new ArrayList<>();
+		double [] verticalVelocity = new double[_numberOfPointSemiSpan];
+		double summ = 0;
+		int lowerLimit = 0, upperLimit=(_numberOfPointSemiSpan-1);
+
+		theNasaBlackwellCalculator.calculate(angleOfAttack);
+		theNasaBlackwellCalculator.calculateVerticalVelocity(angleOfAttack);
+		double [][] influenceFactor = theNasaBlackwellCalculator.getInfluenceFactor();
+		double [] gamma = theNasaBlackwellCalculator.getGamma();
+
+		StdAtmos1976 _atmosphereCruise = new StdAtmos1976(altitude.doubleValue(SI.METER));
+		Amount<Velocity> Tas = Amount.valueOf(machNumber * _atmosphereCruise.getSpeedOfSound(), SI.METERS_PER_SECOND);
+
+		for (int i=0 ; i<_numberOfPointSemiSpan; i++){
+			for (int j = 0; j<_numberOfPointSemiSpan; j++){
+
+				addend[j] =  gamma [j] * influenceFactor [i][j];
+
+				summ = MyMathUtils.summation(lowerLimit, upperLimit, addend);
+			}
+			verticalVelocity [i]= (1/(4*Math.PI)) * (summ*0.3048);
+
+			inducedAngleOfAttack.add(i, Amount.valueOf(
+					Math.atan(verticalVelocity[i]/Tas.doubleValue(SI.METERS_PER_SECOND))*57.3/2,NonSI.DEGREE_ANGLE));
+
+		}
+		return inducedAngleOfAttack;
+	}
+	
+	
+	public static List<Double> calcCenterOfPressureDistribution(
+			NasaBlackwell theNasaBlackwellCalculator,
+			Amount<Angle> angleOfAttack,
+			List<Double> liftingSurfaceCl0Distribution, // all distributions must have the same length!!
+			List<Double> liftingSurfaceCLAlphaDegDistribution,
+			List<Double> liftingSurfaceCmACDistribution,
+			List<Double> liftingSurfaceXACadimensionalDistribution,
+			List<List<Double>> airfoilClMatrix, //this is a list of list. each list is referred to an airfoil along the semispan
+			List<Amount<Angle>> anglesOfAttackClMatrix// references angle of attack of the list of list airfoilClMatrix
+			){
+
+		List<Double> cpDistribution = new ArrayList<>();
+
+		double[]  clDistribution, alphaDistribution, clInducedDistributionAtAlphaNew;
+
+		int numberOfPointSemiSpanWise = liftingSurfaceCl0Distribution.size();
+			clDistribution = new double[numberOfPointSemiSpanWise];
+			alphaDistribution = new double[numberOfPointSemiSpanWise];
+			clInducedDistributionAtAlphaNew = new double[numberOfPointSemiSpanWise];
+
+			theNasaBlackwellCalculator.calculate(angleOfAttack);
+			clDistribution = theNasaBlackwellCalculator.getClTotalDistribution().toArray();
+
+			for (int ii=0; ii<numberOfPointSemiSpanWise-1; ii++){
+				alphaDistribution [ii] = (clDistribution[ii] - liftingSurfaceCl0Distribution.get(ii))/
+						liftingSurfaceCLAlphaDegDistribution.get(ii);
+
+				if (alphaDistribution[ii]<angleOfAttack.doubleValue(NonSI.DEGREE_ANGLE)){
+					clInducedDistributionAtAlphaNew[ii] =
+							liftingSurfaceCLAlphaDegDistribution.get(ii)*
+							alphaDistribution[ii]+
+							liftingSurfaceCl0Distribution.get(ii);
+				}
+				else{
+					clInducedDistributionAtAlphaNew[ii] = MyMathUtils.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertListOfAmountTodoubleArray(anglesOfAttackClMatrix),
+							MyArrayUtils.convertToDoublePrimitive(
+									MyArrayUtils.convertListOfDoubleToDoubleArray(
+											airfoilClMatrix.get(ii))),
+							alphaDistribution[ii]
+							);
+				}
+				cpDistribution.add(ii,liftingSurfaceXACadimensionalDistribution.get(ii) -
+						(liftingSurfaceCmACDistribution.get(ii)/
+								clInducedDistributionAtAlphaNew[ii]));
+			}
+			cpDistribution.add(numberOfPointSemiSpanWise-1,0.0);
+	return cpDistribution;
+			}}
+			
+

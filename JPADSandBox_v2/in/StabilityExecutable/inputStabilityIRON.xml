@@ -24,7 +24,7 @@
 				<condition>CRUISE</condition>
 				<!-- This is the pole for the calculation of the moment referred to the MAC. The momentum respect to the aerodynamic center is automatically calculated -->
 				<wing_momentum_pole>[0.25, 0.256, 0.264]</wing_momentum_pole>
-				<horizontal_tail_momentum_pole>[0.25,0.3]</horizontal_tail_momentum_pole>
+				<horizontal_tail_momentum_pole>[0.25,0.26]</horizontal_tail_momentum_pole>
 				<!-- This is the pole used in the stability equation -->
 				<wing_pole_in_equation>0.264</wing_pole_in_equation>
 				<horizontal_tail_pole_in_equation>0.264</horizontal_tail_pole_in_equation>
@@ -251,7 +251,7 @@ CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated start
 			 <lift_coefficient>[-0.2021, -0.0837, 0.0347, 0.1531 , 0.2997 , 0.4138 , 0.5083 , 0.5935 , 0.686 , 0.7792 , 0.8686 , 0.9566 , 1.0455 , 1.1367 , 1.2278 , 1.316 , 1.4002 , 1.4543 , 1.596 , 1.775 , 1.81692]</lift_coefficient>
 			 <alpha station ="TIP" unit="°">[-6,-5,-4,-3 , -2 , -1 ,0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 12 , 13 , 14]</alpha>
 			 <lift_coefficient>[-0.3749, -0.2644, -0.1539, -0.0434, 0.0671, 0.1776, 0.2881 , 0.3986 , 0.4949 , 0.5937 , 0.6953 , 0.7997 , 0.9057 , 1.0095 , 1.0999 , 1.18295 , 1.26527 , 1.34233 , 1.41152 , 1.47913 , 1.52333]</lift_coefficient>
-			 </airfoil_lift_curve>
+			</airfoil_lift_curve>
             <distribution>
                 <geometry>
 					<y_adimensional_stations>[0,1]</y_adimensional_stations>
@@ -326,8 +326,8 @@ CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated start
 			   <moment_coefficient_respect_to_aerodynamic_center>TRUE</moment_coefficient_respect_to_aerodynamic_center>
 			</wing>
 			<horizontal_tail>
-			   <moment_coefficient_respect_to_quarter_chord>TRUE</moment_coefficient_respect_to_quarter_chord>
-			   <moment_coefficient_respect_to_aerodynamic_center>TRUE</moment_coefficient_respect_to_aerodynamic_center>
+			   <moment_coefficient_respect_to_quarter_chord>FALSE</moment_coefficient_respect_to_quarter_chord>
+			   <moment_coefficient_respect_to_aerodynamic_center>FALSE</moment_coefficient_respect_to_aerodynamic_center>
 			</horizontal_tail>
 			<fuselage>
 			   <moment_coefficient>TRUE</moment_coefficient>
@@ -356,7 +356,7 @@ CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated start
 			<cm_wing>TRUE</cm_wing>
 			<cl_horizontal_tail>TRUE</cl_horizontal_tail>
 			<induced_angle_of_attack_horizontal_tail>TRUE</induced_angle_of_attack_horizontal_tail>
-			<center_of_pressure_horizontal_tail>TRUE</center_of_pressure_horizontal_tail>
+			<center_of_pressure_horizontal_tail>FALSE</center_of_pressure_horizontal_tail>
 			<!-- The cm is referred to the pole defined in the tag <horizontal_tail_pole_in_equation> -->
 			<cm_horizontal_tail>TRUE</cm_horizontal_tail>
 		</distribution>

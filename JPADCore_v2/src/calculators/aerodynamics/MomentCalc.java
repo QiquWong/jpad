@@ -59,6 +59,15 @@ public class MomentCalc {
 				* (acToCgDistance/wingMAC);
 	}
 
+	
+	public static double calcCM0LS(
+			double acToCgDistance, double wingMAC, double cL0, double cLalpha) {
+
+		return cLalpha
+				+ cL0
+				* (acToCgDistance/wingMAC);
+	}
+
 	/**
 	 * 
 	 * @author Lorenzo Attanasio
