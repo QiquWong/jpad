@@ -388,7 +388,7 @@ public class AVLExternalJobTest extends Application {
 			
 			AVLMassInputData massData = job.importToMassInputData(theAircraft);
 			
-			AVLMacro avlMacro = job.formRunMacro(); // TODO: modify this as appropriate
+			AVLMacro avlMacro = job.formRunMacro(theOperatingConditions); // TODO: modify this as appropriate
 			
 			/*
 			 * ================================================================

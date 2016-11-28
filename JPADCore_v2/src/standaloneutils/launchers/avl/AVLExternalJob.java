@@ -11,12 +11,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.apache.commons.math3.linear.MatrixUtils;
+import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
 import analyses.OperatingConditions;
@@ -24,6 +27,7 @@ import javaslang.Tuple;
 import javaslang.Tuple2;
 import javaslang.Tuple4;
 import javaslang.Tuple6;
+import standaloneutils.atmosphere.SpeedCalc;
 import standaloneutils.launchers.SystemCommandExecutor;
 
 // see: http://www.uavs.us/2011/12/02/matlab-avl-control/
@@ -48,148 +52,148 @@ public class AVLExternalJob implements IAVLExternalJob {
 	
 	private AVLOutputStabilityDerivativesFileReader outputStabilityDerivativesFileReader;
 
-	public static void main(String[] args) throws IOException, InterruptedException {
-		// Instantiate the job executor object
-		AVLExternalJob job = new AVLExternalJob();
-
-		System.out.println("--------------------------------------------- Launch AVL job in a separate process.");
-
-		// Set the AVLROOT environment variable
-		String binDirPath = System.getProperty("user.dir") + File.separator  
-				+ "src" + File.separator 
-				+ "standaloneutils" + File.separator 
-				+ "launchers" + File.separator 
-				+ "apps" + File.separator 
-				+ "AVL" + File.separator 
-				+ "bin" 				
-				;
-		job.setEnvironmentVariable("AVLROOT", binDirPath);
-
-		// Establish the path to dir where the executable file resides 
-		job.setBinDirectory(new File(binDirPath));
-		System.out.println("Binary directory: " + job.getBinDirectory());
-
-		// Establish the path to executable file
-		job.setExecutableFile(new File(binDirPath + File.separator + "avl.exe"));
-		System.out.println("Executable file: " + job.getExecutableFile());
-		
-		// Establish the path to the cache directory - TODO: for now the same as bin dir
-		job.setCacheDirectory(new File(binDirPath));
-		System.out.println("Cache directory: " + job.getCacheDirectory());
-		
-		//-----------------------------------------------------------------------------------------------------
-		// Handle file names according to a given base-name
-		// Must assign this to avoid NullPointerException
-		job.setBaseName("newData2");
-		
-		// gather files and clean up before execution
-		List<String> fileNames = new ArrayList<>();
-		Stream<String> fileExtensions = Stream.of(".run", ".avl", ".mass", ".st", ".sb", ".eig");
-		fileExtensions.forEach(ext -> fileNames.add(job.getBaseName()+ext));
-
-		fileNames.stream().forEach(name -> {
-			Path path = FileSystems.getDefault().getPath(
-					binDirPath + File.separator + name);
-			try {
-				System.out.println("Deleting file: " + path);
-				Files.delete(path);
-			} catch (NoSuchFileException e) {
-				System.err.format("%s: no such" + " file or directory: %1$s\n", path);
-			} catch (DirectoryNotEmptyException e) {
-				System.err.format("%1$s not empty\n", path);
-			} catch (IOException e) {
-				System.err.println(e);
-			}
-		});
-		
-		// Assign the main .avl input file
-		job.setInputAVLFile(new File(binDirPath + File.separator + job.getBaseName()+".avl"));
-
-		// Assign the .mass file
-		job.setInputMassFile(new File(binDirPath + File.separator + job.getBaseName()+".mass"));
-		
-		// Assign the output stability derivatives file
-		job.setOutputStabilityDerivativesFile(new File(binDirPath + File.separator + job.getBaseName()+".st"));
-
-		// Assign the output stability derivatives file
-		job.setOutputStabilityDerivativesBodyAxesFile(new File(binDirPath + File.separator + job.getBaseName()+".sb"));
-
-		// Assign .run file with commands
-		job.setInputRunFile(new File(binDirPath + File.separator + job.getBaseName()+".run"));
-		
-		//-------------------------------------------------------------------------
-		// Generate data
-
-		AVLMainInputData inputData = job.importToMainInputData(null, null);
-		
-		AVLAircraft aircraft = job.importToAVLAircraft(null); // pass a null Aircraft object
-		
-		AVLMassInputData massData = job.importToMassInputData(null); // TODO: pass JPADAircraft/Analysis structure
-		
-		AVLMacro avlMacro = job.formRunMacro(); // TODO: modify this as appropriate
-		
-		/*
-		 * ================================================================
-		 * Form the final command to launch the external process
-		 *
-		 * Example, in Win32 shell:
-		 *
-		 * >$ cd <avl-executable-dir>
-		 * >$ avl.exe < <base-name>.run
-		 * 
-		 * ================================================================
-		 */
-		String commandLine = job.formCommand(inputData, aircraft, massData, avlMacro);
-
-		// Print out the command line
-		System.out.println("Command line: " + commandLine);
-
-		System.out.println("---------------------------------------------");
-		System.out.println("EXECUTE JOB:\n");
-		int status = job.execute();
-
-		// print the stdout and stderr
-		System.out.println("The numeric result of the command was: " + status);
-		System.out.println("---------------------------------------------");
-		System.out.println("STDOUT:");
-		System.out.println(job.getStdOut());
-		System.out.println("---------------------------------------------");
-		System.out.println("STDERR:");
-		System.out.println(job.getStdErr());
-		System.out.println("---------------------------------------------");
-		System.out.println("Environment variables:");
-		Map<String, String> env = job.getEnvironment();
-		// env.forEach((k,v)->System.out.println(k + "=" + v));
-		System.out.println("AVLROOT=" + env.get("AVLROOT"));
-		System.out.println("windir=" + env.get("windir"));
-		System.out.println("---------------------------------------------");
-
-		// Parse the AVL output file
-		
-		System.out.println("Output file full path: " + job.getOutputStabilityDerivativesFile());
-		
-		// Use AVLOutputStabilityDerivativesFileReader object
-		AVLOutputStabilityDerivativesFileReader reader = new AVLOutputStabilityDerivativesFileReader(job.getOutputStabilityDerivativesFile());
-		
-		System.out.println("The Datcom output file is available? " + reader.isFileAvailable());
-		System.out.println("The Datcom output file to read: " + reader.getTheFile());
-		
-		// parse the file and build map of variables & values
-		reader.parse();
-		
-		// print the map
-		System.out.println("------ Map of variables ------");
-		Map<String, List<Number>> variables = reader.getVariables();
-		// Print the map of variables
-		variables.forEach((key, value) -> {
-		    System.out.println(key + " = " + value);
-		});		
-		
-		System.out.println("---------------------------------------------");
-
-		System.out.println("Job terminated.");
-
-	}
+//	public static void main(String[] args) throws IOException, InterruptedException {
+//		// Instantiate the job executor object
+//		AVLExternalJob job = new AVLExternalJob();
+//
+//		System.out.println("--------------------------------------------- Launch AVL job in a separate process.");
+//
+//		// Set the AVLROOT environment variable
+//		String binDirPath = System.getProperty("user.dir") + File.separator  
+//				+ "src" + File.separator 
+//				+ "standaloneutils" + File.separator 
+//				+ "launchers" + File.separator 
+//				+ "apps" + File.separator 
+//				+ "AVL" + File.separator 
+//				+ "bin" 				
+//				;
+//		job.setEnvironmentVariable("AVLROOT", binDirPath);
+//
+//		// Establish the path to dir where the executable file resides 
+//		job.setBinDirectory(new File(binDirPath));
+//		System.out.println("Binary directory: " + job.getBinDirectory());
+//
+//		// Establish the path to executable file
+//		job.setExecutableFile(new File(binDirPath + File.separator + "avl.exe"));
+//		System.out.println("Executable file: " + job.getExecutableFile());
+//		
+//		// Establish the path to the cache directory - TODO: for now the same as bin dir
+//		job.setCacheDirectory(new File(binDirPath));
+//		System.out.println("Cache directory: " + job.getCacheDirectory());
+//		
+//		//-----------------------------------------------------------------------------------------------------
+//		// Handle file names according to a given base-name
+//		// Must assign this to avoid NullPointerException
+//		job.setBaseName("newData2");
+//		
+//		// gather files and clean up before execution
+//		List<String> fileNames = new ArrayList<>();
+//		Stream<String> fileExtensions = Stream.of(".run", ".avl", ".mass", ".st", ".sb", ".eig");
+//		fileExtensions.forEach(ext -> fileNames.add(job.getBaseName()+ext));
+//
+//		fileNames.stream().forEach(name -> {
+//			Path path = FileSystems.getDefault().getPath(
+//					binDirPath + File.separator + name);
+//			try {
+//				System.out.println("Deleting file: " + path);
+//				Files.delete(path);
+//			} catch (NoSuchFileException e) {
+//				System.err.format("%s: no such" + " file or directory: %1$s\n", path);
+//			} catch (DirectoryNotEmptyException e) {
+//				System.err.format("%1$s not empty\n", path);
+//			} catch (IOException e) {
+//				System.err.println(e);
+//			}
+//		});
+//		
+//		// Assign the main .avl input file
+//		job.setInputAVLFile(new File(binDirPath + File.separator + job.getBaseName()+".avl"));
+//
+//		// Assign the .mass file
+//		job.setInputMassFile(new File(binDirPath + File.separator + job.getBaseName()+".mass"));
+//		
+//		// Assign the output stability derivatives file
+//		job.setOutputStabilityDerivativesFile(new File(binDirPath + File.separator + job.getBaseName()+".st"));
+//
+//		// Assign the output stability derivatives file
+//		job.setOutputStabilityDerivativesBodyAxesFile(new File(binDirPath + File.separator + job.getBaseName()+".sb"));
+//
+//		// Assign .run file with commands
+//		job.setInputRunFile(new File(binDirPath + File.separator + job.getBaseName()+".run"));
+//		
+//		//-------------------------------------------------------------------------
+//		// Generate data
+//
+//		AVLMainInputData inputData = job.importToMainInputData(null, null);
+//		
+//		AVLAircraft aircraft = job.importToAVLAircraft(null); // pass a null Aircraft object
+//		
+//		AVLMassInputData massData = job.importToMassInputData(null); // TODO: pass JPADAircraft/Analysis structure
+//		
+//		AVLMacro avlMacro = job.formRunMacro(); // TODO: modify this as appropriate
+//		
+//		/*
+//		 * ================================================================
+//		 * Form the final command to launch the external process
+//		 *
+//		 * Example, in Win32 shell:
+//		 *
+//		 * >$ cd <avl-executable-dir>
+//		 * >$ avl.exe < <base-name>.run
+//		 * 
+//		 * ================================================================
+//		 */
+//		String commandLine = job.formCommand(inputData, aircraft, massData, avlMacro);
+//
+//		// Print out the command line
+//		System.out.println("Command line: " + commandLine);
+//
+//		System.out.println("---------------------------------------------");
+//		System.out.println("EXECUTE JOB:\n");
+//		int status = job.execute();
+//
+//		// print the stdout and stderr
+//		System.out.println("The numeric result of the command was: " + status);
+//		System.out.println("---------------------------------------------");
+//		System.out.println("STDOUT:");
+//		System.out.println(job.getStdOut());
+//		System.out.println("---------------------------------------------");
+//		System.out.println("STDERR:");
+//		System.out.println(job.getStdErr());
+//		System.out.println("---------------------------------------------");
+//		System.out.println("Environment variables:");
+//		Map<String, String> env = job.getEnvironment();
+//		// env.forEach((k,v)->System.out.println(k + "=" + v));
+//		System.out.println("AVLROOT=" + env.get("AVLROOT"));
+//		System.out.println("windir=" + env.get("windir"));
+//		System.out.println("---------------------------------------------");
+//
+//		// Parse the AVL output file
+//		
+//		System.out.println("Output file full path: " + job.getOutputStabilityDerivativesFile());
+//		
+//		// Use AVLOutputStabilityDerivativesFileReader object
+//		AVLOutputStabilityDerivativesFileReader reader = new AVLOutputStabilityDerivativesFileReader(job.getOutputStabilityDerivativesFile());
+//		
+//		System.out.println("The Datcom output file is available? " + reader.isFileAvailable());
+//		System.out.println("The Datcom output file to read: " + reader.getTheFile());
+//		
+//		// parse the file and build map of variables & values
+//		reader.parse();
+//		
+//		// print the map
+//		System.out.println("------ Map of variables ------");
+//		Map<String, List<Number>> variables = reader.getVariables();
+//		// Print the map of variables
+//		variables.forEach((key, value) -> {
+//		    System.out.println(key + " = " + value);
+//		});		
+//		
+//		System.out.println("---------------------------------------------");
+//
+//		System.out.println("Job terminated.");
+//
+//	}
 
 	public String getBaseName() {
 		return baseName;
@@ -260,8 +264,6 @@ public class AVLExternalJob implements IAVLExternalJob {
 			return null;
 		}
 		if (theAircraft != null) {
-			// airfoil folder
-			
 			return  // assign the aircraft getting data from theAircraft object
 				new AVLAircraft
 					.Builder()
@@ -271,6 +273,11 @@ public class AVLExternalJob implements IAVLExternalJob {
 							.Builder()
 							.setDescription(theAircraft.getWing().getId())
 							.setIncidence(theAircraft.getWing().getRiggingAngle().doubleValue(NonSI.DEGREE_ANGLE))
+							.setOrigin( // wing apex coordinates in BRF 
+									new Double[]{
+											theAircraft.getWing().getXApexConstructionAxes().doubleValue(SI.METER), 
+											theAircraft.getWing().getYApexConstructionAxes().doubleValue(SI.METER), 
+											theAircraft.getWing().getZApexConstructionAxes().doubleValue(SI.METER)})
 							.addSections( //-------------------------------------- wing 1 - section 1
 								new AVLWingSection
 									.Builder()
@@ -282,9 +289,9 @@ public class AVLExternalJob implements IAVLExternalJob {
 										)
 									)
 									.setOrigin(new Double[]{
-											theAircraft.getWing().getXApexConstructionAxes().doubleValue(SI.METER), 
-											theAircraft.getWing().getYApexConstructionAxes().doubleValue(SI.METER), 
-											theAircraft.getWing().getZApexConstructionAxes().doubleValue(SI.METER)})
+											theAircraft.getWing().getLiftingSurfaceCreator().getXLEBreakPoints().get(0).doubleValue(SI.METER), // x l.e. root in LRF 
+											theAircraft.getWing().getLiftingSurfaceCreator().getYBreakPoints().get(0).doubleValue(SI.METER), 
+											theAircraft.getWing().getLiftingSurfaceCreator().getZLEBreakPoints().get(0).doubleValue(SI.METER)})
 									.setChord(
 											theAircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
 											)
@@ -304,9 +311,9 @@ public class AVLExternalJob implements IAVLExternalJob {
 											)
 										)
 									.setOrigin(new Double[]{
-											theAircraft.getWing().getXApexConstructionAxes().doubleValue(SI.METER), // TODO: get precise (x,y,z) of section l.e.
-											theAircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getSpan().doubleValue(SI.METER), 
-											theAircraft.getWing().getZApexConstructionAxes().doubleValue(SI.METER)})
+											theAircraft.getWing().getLiftingSurfaceCreator().getXLEBreakPoints().get(1).doubleValue(SI.METER), // x l.e. of kink section in LRF 
+											theAircraft.getWing().getLiftingSurfaceCreator().getYBreakPoints().get(1).doubleValue(SI.METER), 
+											theAircraft.getWing().getLiftingSurfaceCreator().getZLEBreakPoints().get(1).doubleValue(SI.METER)})
 									.setChord(
 											theAircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordTip().doubleValue(SI.METER)
 											)
@@ -327,9 +334,9 @@ public class AVLExternalJob implements IAVLExternalJob {
 												)
 											)
 										.setOrigin(new Double[]{
-												theAircraft.getWing().getXApexConstructionAxes().doubleValue(SI.METER), // TODO: get precise (x,y,z) of section l.e. 
-												theAircraft.getWing().getSemiSpan().doubleValue(SI.METER), 
-												theAircraft.getWing().getZApexConstructionAxes().doubleValue(SI.METER)})
+												theAircraft.getWing().getLiftingSurfaceCreator().getXLEBreakPoints().get(2).doubleValue(SI.METER), // x l.e. of tip section in LRF 
+												theAircraft.getWing().getLiftingSurfaceCreator().getYBreakPoints().get(2).doubleValue(SI.METER), 
+												theAircraft.getWing().getLiftingSurfaceCreator().getZLEBreakPoints().get(2).doubleValue(SI.METER)})
 										.setChord(
 												theAircraft.getWing().getLiftingSurfaceCreator().getPanels().get(1).getChordTip().doubleValue(SI.METER)
 												)
@@ -345,7 +352,11 @@ public class AVLExternalJob implements IAVLExternalJob {
 						new AVLWing
 							.Builder()
 							.setDescription(theAircraft.getHTail().getId())
-							// .setOrigin(new Double[]{15.0, 0.0, 1.25})
+							.setOrigin( // htail apex coordinates in BRF 
+									new Double[]{
+											theAircraft.getHTail().getXApexConstructionAxes().doubleValue(SI.METER), 
+											theAircraft.getHTail().getYApexConstructionAxes().doubleValue(SI.METER), 
+											theAircraft.getHTail().getZApexConstructionAxes().doubleValue(SI.METER)})
 							.setIncidence(theAircraft.getHTail().getRiggingAngle().doubleValue(NonSI.DEGREE_ANGLE))
 							.addSections( //-------------------------------------- wing 2 - section 1
 								new AVLWingSection
@@ -358,9 +369,9 @@ public class AVLExternalJob implements IAVLExternalJob {
 											)
 										)
 									.setOrigin(new Double[]{
-											theAircraft.getHTail().getXApexConstructionAxes().doubleValue(SI.METER), // TODO: get precise (x,y,z) of section l.e. 
-											theAircraft.getHTail().getXApexConstructionAxes().doubleValue(SI.METER), 
-											theAircraft.getHTail().getZApexConstructionAxes().doubleValue(SI.METER)})
+											theAircraft.getHTail().getLiftingSurfaceCreator().getXLEBreakPoints().get(0).doubleValue(SI.METER), // x l.e. root in LRF 
+											theAircraft.getHTail().getLiftingSurfaceCreator().getYBreakPoints().get(0).doubleValue(SI.METER), 
+											theAircraft.getHTail().getLiftingSurfaceCreator().getZLEBreakPoints().get(0).doubleValue(SI.METER)})
 									.setChord(
 											theAircraft.getHTail().getChordRoot().doubleValue(SI.METER)
 											)
@@ -390,9 +401,9 @@ public class AVLExternalJob implements IAVLExternalJob {
 											)
 										)
 									.setOrigin(new Double[]{
-											theAircraft.getHTail().getXApexConstructionAxes().doubleValue(SI.METER), // TODO: get precise (x,y,z) of section l.e. 
-											theAircraft.getHTail().getSemiSpan().doubleValue(SI.METER), 
-											theAircraft.getHTail().getZApexConstructionAxes().doubleValue(SI.METER)})
+											theAircraft.getHTail().getLiftingSurfaceCreator().getXLEBreakPoints().get(1).doubleValue(SI.METER), // x l.e. tip in LRF 
+											theAircraft.getHTail().getLiftingSurfaceCreator().getYBreakPoints().get(1).doubleValue(SI.METER), 
+											theAircraft.getHTail().getLiftingSurfaceCreator().getZLEBreakPoints().get(1).doubleValue(SI.METER)})
 									.setChord(
 											theAircraft.getHTail().getChordRoot().doubleValue(SI.METER)
 											)
@@ -418,41 +429,17 @@ public class AVLExternalJob implements IAVLExternalJob {
 						new AVLBody
 							.Builder()
 							.setDescription("theFuselage")
-							.setBodyCoordFile(
-								new File(this.binDirectory.getAbsolutePath() + File.separator 
-									+ "sub.dat"
-								) // TODO: produce .dat file on the fly
-							)
-							/*
-							.setBodySectionInline(
-								// Inline body-section coordinates formatted as airfoil section: 
-								//    x --> X-coordinate of the section parallel to YZ-plane
-								//    y --> radius of the equivalent circular section, 
-								//          i.e. a circle of the same area of body's real section 
-								//          
-								//    This is useful when the real fuselage shape is known and equivalent sections
-								//    are calculated on the fly. Such a 2D array would be filled programmatically
-								//    and the BFIL/<body-section>.dat couple would not be required (no auxiliary file 
-								//    to write).
-								MatrixUtils.createRealMatrix(
-										new double[][]{
-											{1.0, 0.000},
-											{0.9, 0.010},
-											{0.8, 0.015},
-											{0.5, 0.020},
-											{0.2, 0.015},
-											{0.1, 0.010},
-											{0.0, 0.000},
-											{0.1,-0.010},
-											{0.2,-0.015},
-											{0.5,-0.020},
-											{0.8,-0.015},
-											{0.9,-0.010},
-											{1.0, 0.000}
-										}
+							.setOrigin( // body apex coordinates in BRF 
+									new Double[]{
+											theAircraft.getFuselage().getXApexConstructionAxes().doubleValue(SI.METER), 
+											theAircraft.getFuselage().getYApexConstructionAxes().doubleValue(SI.METER), 
+											theAircraft.getFuselage().getZApexConstructionAxes().doubleValue(SI.METER)})
+							.setFuselageObject(theAircraft.getFuselage()) // 2. set source first
+							.setBodyCoordFile( // 2. set airfoil name
+									new File(this.binDirectory.getAbsolutePath() + File.separator 
+										+ getBaseName() + "_body.dat"
+									)
 								)
-							)
-							*/
 							.build()
 						)
 					// -------------------------------------- build the aircraft, finally
@@ -476,16 +463,6 @@ public class AVLExternalJob implements IAVLExternalJob {
 											+ "ag38.dat"
 										) // TODO: produce .dat file on the fly
 									)
-									/*
-									.setAirfoilSectionInline(
-										// Inline section coordinates formatted as airfoil section: 
-										//    This is useful when the real airfoil shape is known.
-										//    Such a 2D array would be filled programmatically and 
-										//    the AFIL/<airfoil-section>.dat couple would not be 
-										//    required (no auxiliary file to write).
-										AVLInputGenerator.getAG38AirfoilSection()
-									)								
-							        */
 									.setOrigin(new Double[]{0.0, 0.0, 0.0})
 									.setChord(3.0)
 									.setTwist(0.0)
@@ -500,16 +477,6 @@ public class AVLExternalJob implements IAVLExternalJob {
 											+ "ag38.dat"
 										) // TODO: produce .dat file on the fly
 									)
-									/*
-									.setAirfoilSectionInline(
-										// Inline section coordinates formatted as airfoil section: 
-										//    This is useful when the real airfoil shape is known.
-										//    Such a 2D array would be filled programmatically and 
-										//    the AFIL/<airfoil-section>.dat couple would not be 
-										//    required (no auxiliary file to write).
-										AVLInputGenerator.getAG38AirfoilSection()
-									)
-									 */
 									.setOrigin(new Double[]{0.0, 12.0, 0.0})
 									.setChord(1.5)
 									.setTwist(0.0)
@@ -555,16 +522,6 @@ public class AVLExternalJob implements IAVLExternalJob {
 											+ "ag38.dat"
 										) // TODO: produce .dat file on the fly
 									)
-									/*
-									.setAirfoilSectionInline(
-											// Inline section coordinates formatted as airfoil section: 
-											//    This is useful when the real airfoil shape is known.
-											//    Such a 2D array would be filled programmatically and 
-											//    the AFIL/<airfoil-section>.dat couple would not be 
-											//    required (no auxiliary file to write).
-											AVLInputGenerator.getAG38AirfoilSection()
-										)
-									*/
 									.setOrigin(new Double[]{0.0, 3.5, 0.0})
 									.setChord(1.2)
 									.setTwist(0.0)
@@ -665,7 +622,7 @@ public class AVLExternalJob implements IAVLExternalJob {
 	// TODO: this is the sequence of commands passed to AVL,
 	//       modify them as appropriate
 	//
-	public AVLMacro formRunMacro() {
+	public AVLMacro formRunMacro(OperatingConditions theOperatingConditions) {
 		return
 			new AVLMacro()
 				.load(this.getInputAVLFile().getName())
@@ -675,7 +632,7 @@ public class AVLExternalJob implements IAVLExternalJob {
 				.back()
 				.oper()
 				.c1()
-				.velocity(10.0)
+				.velocity(SpeedCalc.calculateTAS(theOperatingConditions.getMachCruise(), theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)))
 				.back()
 				.runCase()
 				.stabilityDerivatives(this.getOutputStabilityDerivativesFile().getName())

@@ -31,22 +31,22 @@ SCALE
 #
 # x,y,z bias for whole surface
 TRANSLATE
-0.0000      0.0000      0.0000     
+11.000      0.0000      1.6000     
 #--------------------------------------------------------------
 #    Xle         Yle         Zle         chord       angle   [Nspan  Sspace]
 #
 SECTION
-     11.000      0.0000      1.6000      2.5759      1.2000     
+     0.0000      0.0000      0.0000      2.5759      1.2000     
 AFIL
 newData3_airfoil_wing_root.dat
 #-----------------------
 SECTION
-     11.000      4.7000      1.6000      2.5759      1.2000     
+     0.0000      4.7000      0.0000      2.5759      1.2000     
 AFIL
 newData3_airfoil_wing_kink.dat
 #-----------------------
 SECTION
-     11.000      13.530      1.6000      1.5906      -0.90000   
+     0.66393     13.530      0.0000      1.5906      -0.90000   
 AFIL
 newData3_airfoil_wing_tip.dat
 #-----------------------
@@ -72,19 +72,19 @@ SCALE
 #
 # x,y,z bias for whole surface
 TRANSLATE
-0.0000      0.0000      0.0000     
+25.300      0.0000      5.7374     
 #--------------------------------------------------------------
 #    Xle         Yle         Zle         chord       angle   [Nspan  Sspace]
 #
 SECTION
-     25.300      25.300      5.7374      2.0440      -0.0000    
+     0.0000      0.0000      0.0000      2.0440      -0.0000    
 AFIL
 newData3_airfoil_htail_root.dat
 CONTROL
 Elevator  1.000   0.6000  0.000   1.000   0.000   1.000   ! name, gain,  Xhinge,  (X,Y,Z)hvec,  SgnDup
 #-----------------------
 SECTION
-     25.300      3.6548      5.7374      2.0440      0.0000     
+     0.21970     3.6548      0.0000      2.0440      0.0000     
 AFIL
 newData3_airfoil_htail_tip.dat
 CONTROL
@@ -106,7 +106,7 @@ SCALE
 TRANSLATE
 0.0000      0.0000      0.0000     
 BFIL
-sub.dat
+newData3_body.dat
 #
 #==============================================================
 #

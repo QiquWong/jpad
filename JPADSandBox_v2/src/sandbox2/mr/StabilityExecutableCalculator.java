@@ -17,7 +17,7 @@ import org.jscience.physics.amount.Amount;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.creator.SlatCreator;
 import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
-import analyses.ACPerformanceCalculator.ACPerformanceCalculatorBuilder;
+import analyses.ACPerformanceManager.ACPerformanceCalculatorBuilder;
 import analyses.OperatingConditions;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.NasaBlackwell;

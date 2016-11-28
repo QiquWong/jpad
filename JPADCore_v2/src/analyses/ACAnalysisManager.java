@@ -49,7 +49,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	private ACWeightsManager _theWeights;
 	private ACBalanceManager _theBalance;
 	private ACAerodynamicsManager _theAerodynamics;
-	private ACPerformanceCalculator _thePerformance;
+	private ACPerformanceManager _thePerformance;
 	private ACCostsManager _theCosts;
 	
 	// INPUT DATA: 
@@ -1033,7 +1033,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		}
 		////////////////////////////////////////////////////////////////
 		if (this._analysisList.contains(AnalysisTypeEnum.PERFORMANCE)) {
-			_thePerformance = ACPerformanceCalculator.importFromXML(
+			_thePerformance = ACPerformanceManager.importFromXML(
 					_performanceFileComplete.getAbsolutePath(), 
 					aircraft,
 					theOperatingConditions
@@ -1345,11 +1345,11 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		this._theAerodynamics = theAerodynamics;
 	}
 
-	public ACPerformanceCalculator getThePerformance() {
+	public ACPerformanceManager getThePerformance() {
 		return _thePerformance;
 	}
 
-	public void setThePerformance(ACPerformanceCalculator thePerformance) {
+	public void setThePerformance(ACPerformanceManager thePerformance) {
 		this._thePerformance = thePerformance;
 	}
 

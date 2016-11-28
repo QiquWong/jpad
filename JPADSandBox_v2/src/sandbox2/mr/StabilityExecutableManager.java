@@ -23,7 +23,7 @@ import org.jscience.physics.amount.Amount;
 import aircraft.components.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
-import analyses.ACPerformanceCalculator.ACPerformanceCalculatorBuilder;
+import analyses.ACPerformanceManager.ACPerformanceCalculatorBuilder;
 import analyses.OperatingConditions;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.AnglesCalc;
