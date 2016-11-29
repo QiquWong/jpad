@@ -40,6 +40,7 @@
             method_vtail=""
 			method_canard=""
 		/> <!-- method_XXX="AVERAGED" if empty string -->
+		<!--
 		<performance 
 			file="analysis_performance_IRON.xml"
 			plot="TRUE"
@@ -52,6 +53,7 @@
 			V_n_diagram="FALSE"
 			mission_profile="TRUE"
 		/>
+		-->
         <!--
 		<aerodynamics file="analysis_aerodynamics.xml"/>
         <costs file="analysis_costs.xml"/>

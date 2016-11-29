@@ -512,23 +512,23 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 				.append("\n\t-------------------------------------\n")
 				.append("\tBalance Analysis\n")
 				.append("\t-------------------------------------\n")
-				.append("\tXcg structure MAC: " + getCGStructure().getXMAC() + "\n")
+				.append("\tXcg structure MAC: " + getCGStructure().getXMAC()*100 + "\n")
 				.append("\tXcg structure BRF: " + getCGStructure().getXBRF() + "\n")
 				.append("\tZcg structure BRF: " + getCGStructure().getZBRF() + "\n")
 				.append("\t·····································\n")
-				.append("\tXcg structure and engines MAC: " + getCGStructureAndPower().getXMAC() + "\n")
+				.append("\tXcg structure and engines MAC: " + getCGStructureAndPower().getXMAC()*100 + "\n")
 				.append("\tXcg structure and engines BRF: " + getCGStructureAndPower().getXBRF() + "\n")
 				.append("\tZcg structure and engines BRF: " + getCGStructureAndPower().getZBRF() + "\n")
 				.append("\t·····································\n")
-				.append("\tXcg operating empty mass MAC: " + getCGOEM().getXMAC() + "\n")
+				.append("\tXcg operating empty mass MAC: " + getCGOEM().getXMAC()*100 + "\n")
 				.append("\tXcg operating empty mass BRF: " + getCGOEM().getXBRF() + "\n")
 				.append("\tZcg operating empty mass BRF: " + getCGOEM().getZBRF() + "\n")
 				.append("\t·····································\n")
-				.append("\tXcg maximum zero fuel mass MAC: " + getCGMZFM().getXMAC() + "\n")
+				.append("\tXcg maximum zero fuel mass MAC: " + getCGMZFM().getXMAC()*100 + "\n")
 				.append("\tXcg maximum zero fuel mass BRF: " + getCGMZFM().getXBRF() + "\n")
 				.append("\tZcg maximum zero fuel mass BRF: " + getCGMZFM().getZBRF() + "\n")
 				.append("\t·····································\n")
-				.append("\tXcg maximum take-off mass MAC: " + getCGMTOM().getXMAC() + "\n")
+				.append("\tXcg maximum take-off mass MAC: " + getCGMTOM().getXMAC()*100 + "\n")
 				.append("\tXcg maximum take-off mass BRF: " + getCGMTOM().getXBRF() + "\n")
 				.append("\tZcg maximum take-off mass BRF: " + getCGMTOM().getZBRF() + "\n")
 				.append("\t·····································\n")
@@ -562,23 +562,23 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 		List<Object[]> dataListGlobal = new ArrayList<>();
 		
 		dataListGlobal.add(new Object[] {"Description","Unit","Value"});
-		dataListGlobal.add(new Object[] {"Xcg structure MAC","%", _cgStructure.getXMAC()});
+		dataListGlobal.add(new Object[] {"Xcg structure MAC","%", _cgStructure.getXMAC()*100});
 		dataListGlobal.add(new Object[] {"Xcg structure BRF","m", _cgStructure.getXBRF().doubleValue(SI.METER)});
 		dataListGlobal.add(new Object[] {"Zcg structure BRF","m", _cgStructure.getZBRF().doubleValue(SI.METER)});
 		dataListGlobal.add(new Object[] {" "});
-		dataListGlobal.add(new Object[] {"Xcg structure and engines MAC","%", _cgStructureAndPower.getXMAC()});
+		dataListGlobal.add(new Object[] {"Xcg structure and engines MAC","%", _cgStructureAndPower.getXMAC()*100});
 		dataListGlobal.add(new Object[] {"Xcg structure and engines BRF","m", _cgStructureAndPower.getXBRF().doubleValue(SI.METER)});
 		dataListGlobal.add(new Object[] {"Zcg structure and engines BRF","m", _cgStructureAndPower.getZBRF().doubleValue(SI.METER)});
 		dataListGlobal.add(new Object[] {" "});
-		dataListGlobal.add(new Object[] {"Xcg operating empty mass MAC","%", _cgOEM.getXMAC()});
+		dataListGlobal.add(new Object[] {"Xcg operating empty mass MAC","%", _cgOEM.getXMAC()*100});
 		dataListGlobal.add(new Object[] {"Xcg operating empty mass BRF","m", _cgOEM.getXBRF().doubleValue(SI.METER)});
 		dataListGlobal.add(new Object[] {"Zcg operating empty mass BRF","m", _cgOEM.getZBRF().doubleValue(SI.METER)});
 		dataListGlobal.add(new Object[] {" "});
-		dataListGlobal.add(new Object[] {"Xcg maximum zero fuel mass MAC","%",_cgMZFM.getXMAC()});
+		dataListGlobal.add(new Object[] {"Xcg maximum zero fuel mass MAC","%",_cgMZFM.getXMAC()*100});
 		dataListGlobal.add(new Object[] {"Xcg maximum zero fuel mass BRF","m",_cgMZFM.getXBRF().doubleValue(SI.METER)});
 		dataListGlobal.add(new Object[] {"Zcg maximum zero fuel mass BRF","m", _cgMZFM.getZBRF().doubleValue(SI.METER)});
 		dataListGlobal.add(new Object[] {" "});
-		dataListGlobal.add(new Object[] {"Xcg maximum take-off mass MAC","%",_cgMTOM.getXMAC()});
+		dataListGlobal.add(new Object[] {"Xcg maximum take-off mass MAC","%",_cgMTOM.getXMAC()*100});
 		dataListGlobal.add(new Object[] {"Xcg maximum take-off mass BRF","m",_cgMTOM.getXBRF().doubleValue(SI.METER)});
 		dataListGlobal.add(new Object[] {"Zcg maximum take-off mass BRF","m", _cgMTOM.getZBRF().doubleValue(SI.METER)});
 		dataListGlobal.add(new Object[] {" "});
@@ -1238,7 +1238,8 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 	public void createBalanceCharts(String balanceOutputFolderPath) {
 
 		int index = _theAircraft.getCabinConfiguration().getSeatsCoGFrontToRear().size();
-		Amount<Length> meanAerodynamicChordXle = _theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX();
+		Amount<Length> meanAerodynamicChordXle = _theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
+				.plus(_theAircraft.getWing().getXApexConstructionAxes());
 		Amount<Length> meanAerodynamicChord = _theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord();
 		
 		Double[] seatCoGFrontToRearReferToMAC = new Double[index];
@@ -1248,8 +1249,8 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 		Double[] fuelCoGAfterBoardingReferToMAC = new Double[2];
 		Double[] massWithFuelAfterBoarding = new Double[2];
 		
-		seatCoGFrontToRearReferToMAC[0] = getCGOEM().getXMAC() - (meanAerodynamicChord.times(0.02).doubleValue(SI.METER));
-		seatCoGRearToFrontReferToMAC[0] = getCGOEM().getXMAC() + (meanAerodynamicChord.times(0.02).doubleValue(SI.METER));  
+		seatCoGFrontToRearReferToMAC[0] = (getCGOEM().getXMAC()*100) - (meanAerodynamicChord.times(0.02).doubleValue(SI.METER));
+		seatCoGRearToFrontReferToMAC[0] = (getCGOEM().getXMAC()*100) + (meanAerodynamicChord.times(0.02).doubleValue(SI.METER));  
 		
 		for (int i=0; i<index; i++) {
 			seatCoGFrontToRearReferToMAC[i] = 
@@ -1259,6 +1260,7 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 								.minus(meanAerodynamicChord.times(0.02))
 					.minus(meanAerodynamicChordXle)
 					.divide(meanAerodynamicChord)
+					.times(100)
 					.getEstimatedValue();
 			seatCoGRearToFrontReferToMAC[i] = 
 					seatCoGRearToFrontReferToMAC[i] = 
@@ -1268,6 +1270,7 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 								.plus(meanAerodynamicChord.times(0.02))
 					.minus(meanAerodynamicChordXle)
 					.divide(meanAerodynamicChord)
+					.times(100)
 					.getEstimatedValue();
 		}
 		
@@ -1282,8 +1285,8 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 				+ (_theAircraft.getFuelTank().getXCG()
 						.times(_theAircraft.getFuelTank().getFuelMass()).getEstimatedValue()))
 				/(_operatingEmptyMass.plus(_theAircraft.getFuelTank().getFuelMass()).getEstimatedValue()))
-				- _theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER))
-				/ _theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER);
+				- meanAerodynamicChordXle.doubleValue(SI.METER))
+				/ (meanAerodynamicChord.doubleValue(SI.METER)/100);
 		massWithFuelBeforeBoarding[1] = _operatingEmptyMass
 				.plus(_theAircraft.getFuelTank().getFuelMass())
 				.doubleValue(SI.KILOGRAM); 
@@ -1331,7 +1334,7 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 				MyArrayUtils.convertListOfAmountToDoubleArray(
 						_theAircraft.getCabinConfiguration().getCurrentMassList()
 						)[indexOfMin];
-		fuelCoGAfterBoardingReferToMAC[1] = _cgMTOM.getXMAC(); 
+		fuelCoGAfterBoardingReferToMAC[1] = (_cgMTOM.getXMAC()*100); 
 		massWithFuelAfterBoarding[1] = _maximumTakeOffMass.doubleValue(SI.KILOGRAM); 
 				
 		
@@ -1514,7 +1517,8 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 				);
 		
 		_cgStructure.calculateCGinMAC(
-				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX(), 
+				(_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
+						.plus(_theAircraft.getWing().getXApexConstructionAxes())), 
 				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX(), 
 				Amount.valueOf(0., SI.METER), 
 				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord());
@@ -1552,7 +1556,8 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 										, SI.METER));
 		
 		getCGStructureAndPower().calculateCGinMAC(
-				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX(), 
+				(_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
+						.plus(_theAircraft.getWing().getXApexConstructionAxes())), 
 				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX(), 
 				Amount.valueOf(0., SI.METER), 
 				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord());
@@ -1568,7 +1573,8 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 		getCGOEM().setXBRF(getCGStructureAndPower().getXBRF());
 		getCGOEM().setZBRF(getCGStructureAndPower().getZBRF());
 		getCGOEM().calculateCGinMAC(
-				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX(), 
+				(_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
+						.plus(_theAircraft.getWing().getXApexConstructionAxes())), 
 				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX(), 
 				Amount.valueOf(0., SI.METER), 
 				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord());
@@ -1591,7 +1597,8 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 						, SI.METER));
 		
 		getCGMZFM().calculateCGinMAC(
-				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX(), 
+				(_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
+						.plus(_theAircraft.getWing().getXApexConstructionAxes())), 
 				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX(), 
 				Amount.valueOf(0., SI.METER), 
 				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord());
@@ -1616,7 +1623,8 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 						SI.METER));
 		
 		_cgMTOM.calculateCGinMAC(
-				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX(), 
+				(_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
+						.plus(_theAircraft.getWing().getXApexConstructionAxes())), 
 				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX(), 
 				Amount.valueOf(0., SI.METER), 
 				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord());

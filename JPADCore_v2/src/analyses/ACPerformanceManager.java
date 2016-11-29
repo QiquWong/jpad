@@ -3880,6 +3880,7 @@ public class ACPerformanceManager {
 									_rcMapAOE.get(i).getRCmax()
 									)
 							/1000
+//							*(2.20462/9.81)*(0.454/60)
 							*_theAircraft.getPowerPlant().getEngineNumber()
 							*EngineDatabaseManager.getSFC(
 									SpeedCalc.calculateMach(
@@ -3908,7 +3909,7 @@ public class ACPerformanceManager {
 									_thrustListAOE.get(i).getSpeed(),
 									_thrustListAOE.get(i).getThrust(),
 									_rcMapAOE.get(i).getRCmax()
-									)/2
+									)
 							*(0.45392/(4.4482*60))
 							*EngineDatabaseManager.getSFC(
 									SpeedCalc.calculateMach(
@@ -3957,6 +3958,7 @@ public class ACPerformanceManager {
 						_theOperatingConditions.getMachCruise()
 						)
 						/1000
+//						*(2.20462/9.81)*(0.454/60)
 						*_theAircraft.getPowerPlant().getEngineNumber()
 						*EngineDatabaseManager.getSFC(
 								_theOperatingConditions.getMachCruise(),
@@ -3987,7 +3989,7 @@ public class ACPerformanceManager {
 						EngineOperatingConditionEnum.CRUISE,
 						_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
 						_theOperatingConditions.getMachCruise()
-						)/2
+						)
 						*(0.45392/(4.4482*60))
 						*EngineDatabaseManager.getSFC(
 								_theOperatingConditions.getMachCruise(),
@@ -4049,6 +4051,7 @@ public class ACPerformanceManager {
 											)
 									)
 							/1000
+//							*(2.20462/9.81)*(0.454/60)
 							*_theAircraft.getPowerPlant().getEngineNumber()
 							*EngineDatabaseManager.getSFC(
 									SpeedCalc.calculateMach(
@@ -4090,7 +4093,7 @@ public class ACPerformanceManager {
 											altitudeDescent[i],
 											_speedDescentCAS.doubleValue(SI.METERS_PER_SECOND)
 											)
-									)/2
+									)
 							*(0.45392/(4.4482*60))
 							*EngineDatabaseManager.getSFC(
 									SpeedCalc.calculateMach(
