@@ -301,6 +301,8 @@ public class ReaderWriter{
 		theStabilityCalculator.setXApexHTail((Amount<Length>) reader.getXMLAmountWithUnitByPath("//horizontal_tail/position/x"));
 		theStabilityCalculator.setYApexHTail((Amount<Length>) reader.getXMLAmountWithUnitByPath("//horizontal_tail/position/y"));
 		theStabilityCalculator.setZApexHTail((Amount<Length>) reader.getXMLAmountWithUnitByPath("//horizontal_tail/position/z"));
+		
+		theStabilityCalculator.setVerticalTailSpan((Amount<Length>) reader.getXMLAmountWithUnitByPath("//horizontal_tail/global/vertical_tail_span"));
 
 		theStabilityCalculator.setHTailSurface((Amount<Area>) reader.getXMLAmountWithUnitByPath("//horizontal_tail/global/surface"));
 		theStabilityCalculator.setHTailAngleOfIncidence((Amount<Angle>) reader.getXMLAmountWithUnitByPath("//horizontal_tail/global/angle_of_incidence"));
@@ -738,6 +740,12 @@ public class ReaderWriter{
 			if ( cmHTail != null) {
 				if( cmHTail.equalsIgnoreCase("TRUE")) 
 					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.CM_DISTRIBUTION_HORIZONTAL_TAIL);	
+			}
+			
+			String clTotal = reader.getXMLPropertyByPath("//plot/stability/CL_Total");
+			if ( clTotal != null) {
+				if( clTotal.equalsIgnoreCase("TRUE")) 
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.CL_TOTAL);	
 			}
 		}
 

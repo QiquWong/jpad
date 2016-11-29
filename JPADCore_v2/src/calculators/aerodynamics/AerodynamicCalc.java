@@ -512,38 +512,52 @@ public class AerodynamicCalc {
 		double[]  clDistribution, alphaDistribution, clInducedDistributionAtAlphaNew;
 
 		int numberOfPointSemiSpanWise = liftingSurfaceCl0Distribution.size();
-			clDistribution = new double[numberOfPointSemiSpanWise];
-			alphaDistribution = new double[numberOfPointSemiSpanWise];
-			clInducedDistributionAtAlphaNew = new double[numberOfPointSemiSpanWise];
+		clDistribution = new double[numberOfPointSemiSpanWise];
+		alphaDistribution = new double[numberOfPointSemiSpanWise];
+		clInducedDistributionAtAlphaNew = new double[numberOfPointSemiSpanWise];
 
-			theNasaBlackwellCalculator.calculate(angleOfAttack);
-			clDistribution = theNasaBlackwellCalculator.getClTotalDistribution().toArray();
+		theNasaBlackwellCalculator.calculate(angleOfAttack);
+		clDistribution = theNasaBlackwellCalculator.getClTotalDistribution().toArray();
 
-			for (int ii=0; ii<numberOfPointSemiSpanWise-1; ii++){
-				alphaDistribution [ii] = (clDistribution[ii] - liftingSurfaceCl0Distribution.get(ii))/
-						liftingSurfaceCLAlphaDegDistribution.get(ii);
+		for (int ii=0; ii<numberOfPointSemiSpanWise-1; ii++){
+			alphaDistribution [ii] = (clDistribution[ii] - liftingSurfaceCl0Distribution.get(ii))/
+					liftingSurfaceCLAlphaDegDistribution.get(ii);
 
-				if (alphaDistribution[ii]<angleOfAttack.doubleValue(NonSI.DEGREE_ANGLE)){
-					clInducedDistributionAtAlphaNew[ii] =
-							liftingSurfaceCLAlphaDegDistribution.get(ii)*
-							alphaDistribution[ii]+
-							liftingSurfaceCl0Distribution.get(ii);
-				}
-				else{
-					clInducedDistributionAtAlphaNew[ii] = MyMathUtils.getInterpolatedValue1DLinear(
-							MyArrayUtils.convertListOfAmountTodoubleArray(anglesOfAttackClMatrix),
-							MyArrayUtils.convertToDoublePrimitive(
-									MyArrayUtils.convertListOfDoubleToDoubleArray(
-											airfoilClMatrix.get(ii))),
-							alphaDistribution[ii]
-							);
-				}
-				cpDistribution.add(ii,liftingSurfaceXACadimensionalDistribution.get(ii) -
-						(liftingSurfaceCmACDistribution.get(ii)/
-								clInducedDistributionAtAlphaNew[ii]));
+			if (alphaDistribution[ii]<angleOfAttack.doubleValue(NonSI.DEGREE_ANGLE)){
+				clInducedDistributionAtAlphaNew[ii] =
+						liftingSurfaceCLAlphaDegDistribution.get(ii)*
+						alphaDistribution[ii]+
+						liftingSurfaceCl0Distribution.get(ii);
 			}
-			cpDistribution.add(numberOfPointSemiSpanWise-1,0.0);
-	return cpDistribution;
-			}}
-			
+			else{
+				clInducedDistributionAtAlphaNew[ii] = MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertListOfAmountTodoubleArray(anglesOfAttackClMatrix),
+						MyArrayUtils.convertToDoublePrimitive(
+								MyArrayUtils.convertListOfDoubleToDoubleArray(
+										airfoilClMatrix.get(ii))),
+						alphaDistribution[ii]
+						);
+			}
+			cpDistribution.add(ii,liftingSurfaceXACadimensionalDistribution.get(ii) -
+					(liftingSurfaceCmACDistribution.get(ii)/
+							clInducedDistributionAtAlphaNew[ii]));
+		}
+		cpDistribution.add(numberOfPointSemiSpanWise-1,0.0);
+		return cpDistribution;
+	}
+
+	public static Double calculateDynamicPressureRatio(Double positionRelativeToAttachment){
+		Double dynamicPressureRatio = null;
+		double [] dynamicPressureRatioValues = {0.85, 0.95, 1};
+		double [] PositionValues = {0.0, 0.5, 1};
+
+		dynamicPressureRatio = MyMathUtils.getInterpolatedValue1DLinear(
+				PositionValues, 
+				dynamicPressureRatioValues,
+				positionRelativeToAttachment);
+
+		return dynamicPressureRatio;
+	}
+}
+
 

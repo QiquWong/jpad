@@ -149,6 +149,8 @@ public class Test_Stability{
 		theCalculator.calculateWingBodyXAC();
 		theCalculator.calculateWingMomentCharacterstics();
 		theCalculator.calculateHtailMomentCharacterstics();
+		theCalculator.calculateTotalLiftCoefficient();
+		theCalculator.calculateMomentCoefficientRespectToCG();
 		//...
 		theCalculator.calculateDistributions();
 		theCalculator.printAllData();
