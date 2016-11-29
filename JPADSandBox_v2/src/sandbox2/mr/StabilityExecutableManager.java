@@ -2511,11 +2511,13 @@ public class StabilityExecutableManager {
 			
 			xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasBody));
 			xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasBody));
+			xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasBody));
 			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_wingMomentCoefficientPendular));
 			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_wingMomentCoefficientNOPendular));
-			legend.add("Whitout pendular stability");
-			legend.add("Whit pendular stability");
-			
+			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_fuselageMomentCoefficient));
+			legend.add("WING Whitout pendular stability");
+			legend.add("WING Whit pendular stability");
+			legend.add("Fuselage");
 			
 			MyChartToFileUtils.plot(
 					xList, 
