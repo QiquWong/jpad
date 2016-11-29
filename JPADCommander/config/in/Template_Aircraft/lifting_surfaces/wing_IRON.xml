@@ -6,6 +6,7 @@
 			<secondary_spar_non_dimensional_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.55</secondary_spar_non_dimensional_position>
 			<composite_correction_factor>0.85</composite_correction_factor>
 			<roughness unit="m">0.405e-5</roughness>
+			<winglet_height unit="m">0.0</winglet_height>
 		</global_data>
 		<equivalent_wing>
 			<surface unit="m²"></surface>
@@ -54,22 +55,33 @@
             <symmetric_flap id="Inner flap" type="FOWLER">
                 <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.1</inner_station_spanwise_position>
                 <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.3</outer_station_spanwise_position>
-                <inner_chord_ratio>0.35</inner_chord_ratio>
-				<outer_chord_ratio>0.35</outer_chord_ratio>
+                <inner_chord_ratio>0.32</inner_chord_ratio>
+				<outer_chord_ratio>0.32</outer_chord_ratio>
                 <min_deflection unit="deg">0.0</min_deflection>
 				<max_deflection unit="deg">40.0</max_deflection>
             </symmetric_flap>
 			<symmetric_flap id="Outer flap" type="FOWLER">
                 <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.31</inner_station_spanwise_position>
                 <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.78</outer_station_spanwise_position>
-                <inner_chord_ratio>0.35</inner_chord_ratio>
-				<outer_chord_ratio>0.35</outer_chord_ratio>
+                <inner_chord_ratio>0.32</inner_chord_ratio>
+				<outer_chord_ratio>0.32</outer_chord_ratio>
                 <min_deflection unit="deg">0.0</min_deflection>
 				<max_deflection unit="deg">40.0</max_deflection>
             </symmetric_flap>
         </symmetric_flaps>
+		<!--
         <slats>
+			<slat id="1">
+                <min_deflection unit="deg">0.0</min_deflection>
+				<max_deflection unit="deg">25.0</max_deflection>
+                <inner_chord_ratio>0.07</inner_chord_ratio>
+				<outer_chord_ratio>0.1</outer_chord_ratio>
+                <extension_ratio>1.0</extension_ratio>
+				<inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.2</inner_station_spanwise_position>
+                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.78</outer_station_spanwise_position>
+            </slat>
         </slats>
+		-->
         <asymmetric_flaps>
             <asymmetric_flap id="Left aileron" type="PLAIN">
                 <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.78</inner_station_spanwise_position>

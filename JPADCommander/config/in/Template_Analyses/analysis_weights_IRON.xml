@@ -2,12 +2,24 @@
 <jpad_config>
     <analysis>
         <weights id="JPAD Test analysis - WEIGHTS">
-			<maximum_take_off_mass unit="kg">53967.7</maximum_take_off_mass>
-			<maximum_landing_mass unit="kg">48570.93</maximum_landing_mass>
-			<maximum_zero_fuel_mass unit="kg">45569.3</maximum_zero_fuel_mass>
-			<operating_empty_mass unit="kg">33219.3</operating_empty_mass>
-			<trapped_fuel_oil_mass unit="kg">270</trapped_fuel_oil_mass>
-			<reference_range unit="nmi">1598.272</reference_range> <!-- TO BE MOVED INSIDE analysis.xml -->
+			<global_data>
+				<maximum_take_off_mass unit="kg">54037</maximum_take_off_mass>
+				<maximum_landing_mass unit="kg">48633.3</maximum_landing_mass>
+				<maximum_zero_fuel_mass unit="kg">45569.3</maximum_zero_fuel_mass>
+				<operating_empty_mass unit="kg">33219.3</operating_empty_mass>
+				<trapped_fuel_oil_mass unit="kg">270</trapped_fuel_oil_mass>
+			</global_data>
+			<component_data>
+				<fuselage_reference_mass unit="kg">5004.7</fuselage_reference_mass>
+				<wing_reference_mass unit="kg">3209.1</wing_reference_mass>
+				<horizontal_tail_reference_mass unit="kg">548.3</horizontal_tail_reference_mass>
+				<vertical_tail_reference_mass unit="kg">452.7</vertical_tail_reference_mass>
+				<canard_reference_mass unit="kg"></canard_reference_mass>
+				<nacelles_reference_mass unit="kg">1306.8</nacelles_reference_mass> <!-- all nacelles -->
+				<fuel_tank_reference_mass unit="kg">9197</fuel_tank_reference_mass>
+				<landing_gears_reference_mass unit="kg">2233.1</landing_gears_reference_mass>
+				<systems_reference_mass unit="kg"></systems_reference_mass>
+			</component_data>			
         </weights>
     </analysis>
 </jpad_config>

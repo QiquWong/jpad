@@ -1,32 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
+	<!-- 
+	plot=TRUE -> enters the plot tag in the specified file.
+	plot=FALSE -> plots nothing.
+	-->
 <jpad_config>
     <!-- Input data, shared across analysis tasks -->
     <global_data>
-        <n_limit>2.5</n_limit>
-		<cruise_lift_coefficient>0.45</cruise_lift_coefficient>
-		<reference_range unit="nmi">825</reference_range>
-		<maximum_altitude_at_maximum_speed unit="ft">16000</maximum_altitude_at_maximum_speed>
-		<maximum_cruise_mach_number>0.43</maximum_cruise_mach_number>
-		<optimum_cruise_altitude unit="ft">16000</optimum_cruise_altitude>
-		<optimum_cruise_mach_number>0.45</optimum_cruise_mach_number>
+        <positive_limit_load_factor>2.5</positive_limit_load_factor>
+		<negative_limit_load_factor>-1.0</negative_limit_load_factor>
+		<cruise_lift_coefficient>0.42</cruise_lift_coefficient>
+		<reference_range unit="nmi">200</reference_range>
+		<maximum_altitude_at_maximum_speed unit="ft">19685.0</maximum_altitude_at_maximum_speed>
+		<maximum_cruise_mach_number>0.42</maximum_cruise_mach_number>
+		<optimum_cruise_altitude unit="ft">19685.0</optimum_cruise_altitude>
+		<optimum_cruise_mach_number>0.42</optimum_cruise_mach_number>
+		<!--??? to be defined -->
 		<block_time unit="h">1.5</block_time>
 		<flight_time unit="h">1.35</flight_time>
+		<!---->
     </global_data>
-    <!-- Required analysis tasks -->
-    <analyses id="JPAD Test analysis">
-        <weights 
+    <!-- Required analysis tasks - comment the tag of the analysis if not needed -->
+    <analyses id="ATR-72 analysis">
+		<weights 
             file="analysis_weights.xml" 
-            method_fuselage="JENKINSON"
-            method_wing="ROSKAM"
-            method_htail="JENKINSON"
-            method_vtail="JENKINSON"
-			method_nacelles="TORENBEEK_1976"
-			method_landing_gears="ROSKAM"
-			method_systems="TORENBEEK_2013"
-            /> <!-- method_XXX="AVERAGED" if not present -->
-        <balance file="analysis_balance.xml"/>
-        <aerodynamics file="analysis_aerodynamics.xml"/>
-        <performance file="analysis_performance.xml"/>
+            method_fuselage=""
+            method_wing=""
+            method_htail=""
+            method_vtail=""
+			method_nacelles=""
+			method_landing_gears=""
+			method_systems=""
+            /> 
+		<!-- method_XXX="AVERAGED" if empty string -->
+		<balance
+			file="analysis_balance.xml"
+			plot="TRUE"
+            method_fuselage=""
+            method_wing=""
+            method_htail=""
+            method_vtail=""
+			method_canard=""
+		/> 
+		<!-- method_XXX="AVERAGED" if empty string -->
+		<performance 
+			file="analysis_performance.xml"
+			plot="TRUE"
+			take_off="TRUE"
+			climb="TRUE"
+			cruise="TRUE"
+			descent="TRUE"
+			landing="TRUE"
+			payload_range="TRUE"
+			V_n_diagram="TRUE"
+			mission_profile="TRUE"
+		/>
+        <!--
+		<aerodynamics file="analysis_aerodynamics.xml"/>
         <costs file="analysis_costs.xml"/>
+		-->
     </analyses>
 </jpad_config>

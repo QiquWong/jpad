@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-	<operating_conditions id="ATR72 - Operating Conditions">
+	<operating_conditions id="ATR72-AVL_Test - Operating Conditions">
 		<global_data>
 			<!-- angle of attack at which the user wants to evaluate a generic aerodynamic output -->
 			<alpha_current unit="deg">2</alpha_current>

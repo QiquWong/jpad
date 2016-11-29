@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
 	<systems id="IRON Systems">
-		<reference_masses>
-			<overall_reference_mass unit="kg">4283</overall_reference_mass>
-		</reference_masses>
+		<!-- ADD OTHER DATA WHEN AVAILABLE -->
 	</systems>
 </jpad_config>

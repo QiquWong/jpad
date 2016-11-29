@@ -3,7 +3,6 @@
 	<nacelle id="JPAD Test Nacelle DAF - 2016" engine="engineTurbofan.xml">
 		<global_data>
 			<roughness unit="m">0.405e-5</roughness>
-			<reference_mass unit="kg">800</reference_mass>
 		</global_data>
 		<geometry>
 			<length unit="m"></length>

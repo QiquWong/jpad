@@ -117,5 +117,7 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/dex/selenium/selenium-server-standalone-2.42.2.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/dex/opencsv-2.3.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_111"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/javaslang/javaslang-2.0.4-javadoc.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/javaslang/javaslang-2.0.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
