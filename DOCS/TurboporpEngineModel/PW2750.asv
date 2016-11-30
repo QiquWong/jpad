@@ -15,6 +15,10 @@ engineDataATR72_IDLE = importdata('ATR72_IDLE.mat');
 
 nPoints = 50;
 machVector = transpose(linspace(0, 0.6, nPoints));
+t0 = engineDataATR72_TAKE_OFF(1,4); % lbf
+disp(strcat('Static thrust (lbf) = ', num2str(t0)));
+t0 = t0*4.44822; % Newton
+disp(strcat('Static thrust (N) = ', num2str(t0)));
 
 %% MAX TAKE_OFF
 t0 = engineDataATR72_TAKE_OFF(1,4); % lbf
@@ -291,10 +295,10 @@ sfc_h30000_Continous_Spline = ppval( ...
     );
 
 %% MAX CLIMB
-t0 = engineDataATR72_CLIMB(1,4); % lbf
-disp(strcat('Static thrust - MAX CLIMB (lbf) = ', num2str(t0)));
+t0 = engineDataATR72_CONTINOUS(1,4); % lbf
+disp(strcat('Static thrust - MAX CONTINOUS (lbf) = ', num2str(t0)));
 t0 = t0*4.44822; % Newton
-disp(strcat('Static thrust - MAX CLIMB (N) = ', num2str(t0)));
+disp(strcat('Static thrust - MAX CONTINOUS (N) = ', num2str(t0)));
 %% h = 0ft
 smoothingParameter = 0.999999;
 thrustRatio_h0_Climb = csaps( ...
@@ -464,10 +468,6 @@ sfc_h30000_Climb_Spline = ppval( ...
     );
 
 %% MAX IDLE
-t0 = engineDataATR72_IDLE(1,4); % lbf
-disp(strcat('Static thrust - MAX IDLE (lbf) = ', num2str(t0)));
-t0 = t0*4.44822; % Newton
-disp(strcat('Static thrust - MAX IDLE (N) = ', num2str(t0)));
 %% h = 0ft
 smoothingParameter = 0.999999;
 thrustRatio_h0_Idle = csaps( ...
@@ -637,10 +637,6 @@ sfc_h30000_Idle_Spline = ppval( ...
     );
 
 %% MAX CRUISE
-t0 = engineDataATR72_CRUISE(1,4); % lbf
-disp(strcat('Static thrust - MAX CRUISE (lbf) = ', num2str(t0)));
-t0 = t0*4.44822; % Newton
-disp(strcat('Static thrust - MAX CRUISE (N) = ', num2str(t0)));
 %% h = 0ft
 smoothingParameter = 0.999999;
 thrustRatio_h0_Cruise = csaps( ...
@@ -836,7 +832,7 @@ plot ( ...
 xlabel('Mach'); ylabel('T/T0');
 title('Thrust ratio PW2750 - MAX TAKE-OFF');
 legend('h = 0ft', 'h = 5000ft', 'h = 10000ft', 'h = 15000ft');
-% axis([0 0.6 0 1]);
+axis([0 0.6 0 1]);
 grid on;
 
 %% MAX CONTINOUS THRUST RATIO
@@ -884,7 +880,7 @@ xlabel('Mach'); ylabel('T/T0');
 title('Thrust ratio PW2750 - MAX CONTINOUS');
 legend('h = 0ft', 'h = 5000ft', 'h = 10000ft', 'h = 15000ft', ...
        'h = 20000ft', 'h = 25000ft', 'h = 30000ft');
-% axis([0 0.6 0 1]);
+axis([0 0.6 0 1]);
 grid on;
 
 %% MAX CLIMB THRUST RATIO
@@ -932,7 +928,7 @@ xlabel('Mach'); ylabel('T/T0');
 title('Thrust ratio PW2750 - MAX CLIMB');
 legend('h = 0ft', 'h = 5000ft', 'h = 10000ft', 'h = 15000ft', ...
        'h = 20000ft', 'h = 25000ft', 'h = 30000ft');
-% axis([0 0.6 0 1]);
+axis([0 0.6 0 1]);
 grid on;
 
 %% MAX CRUISE THRUST RATIO
@@ -980,7 +976,7 @@ xlabel('Mach'); ylabel('T/T0');
 title('Thrust ratio PW2750 - MAX CRUISE');
 legend('h = 0ft', 'h = 5000ft', 'h = 10000ft', 'h = 15000ft', ...
        'h = 20000ft', 'h = 25000ft', 'h = 30000ft');
-% axis([0 0.6 0 1]);
+axis([0 0.6 0 1]);
 grid on;
 
 %% MAX IDLE THRUST RATIO
@@ -1028,7 +1024,7 @@ xlabel('Mach'); ylabel('T/T0');
 title('Thrust ratio PW2750 - MAX IDLE');
 legend('h = 0ft', 'h = 5000ft', 'h = 10000ft', 'h = 15000ft', ...
        'h = 20000ft', 'h = 25000ft', 'h = 30000ft');
-% axis([0 0.6 -0.2 1]);
+axis([0 0.6 -0.2 1]);
 grid on;
 
 %% MAX TAKE OFF SFC

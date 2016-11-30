@@ -73,6 +73,8 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 	private CenterOfGravity _cgMZFM;
 	private List<CenterOfGravity> _cgList;
 	private CenterOfGravity _cgMTOM;
+	private Double _maxAftCG;
+	private Double _maxForwardCG;
 
 	//============================================================================================
 	// Builder pattern 
@@ -532,6 +534,8 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 				.append("\tXcg maximum take-off mass BRF: " + getCGMTOM().getXBRF() + "\n")
 				.append("\tZcg maximum take-off mass BRF: " + getCGMTOM().getZBRF() + "\n")
 				.append("\t·····································\n")
+				.append("\tMax aft Xcg MAC: " + getMaxAftCG() + "\n")
+				.append("\tMax forward Xcg MAC: " + getMaxForwardCG() + "\n")
 				;
 		return sb.toString();
 	}
@@ -582,6 +586,8 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 		dataListGlobal.add(new Object[] {"Xcg maximum take-off mass BRF","m",_cgMTOM.getXBRF().doubleValue(SI.METER)});
 		dataListGlobal.add(new Object[] {"Zcg maximum take-off mass BRF","m", _cgMTOM.getZBRF().doubleValue(SI.METER)});
 		dataListGlobal.add(new Object[] {" "});
+		dataListGlobal.add(new Object[] {"Max aft Xcg MAC","%",_maxAftCG});
+		dataListGlobal.add(new Object[] {"Max forward Xcg MAC","%",_maxForwardCG});
 		
 		CellStyle styleHead = wb.createCellStyle();
 		styleHead.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
@@ -1555,7 +1561,7 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 								(sum + powerPlantMass.getEstimatedValue())
 										, SI.METER));
 		
-		getCGStructureAndPower().calculateCGinMAC(
+		_cgStructureAndPower.calculateCGinMAC(
 				(_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
 						.plus(_theAircraft.getWing().getXApexConstructionAxes())), 
 				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX(), 
@@ -1570,9 +1576,9 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 		 * DO NOT AFFECT THE CG LOCATION.
 		 */
 		_cgOEM = new CenterOfGravity();
-		getCGOEM().setXBRF(getCGStructureAndPower().getXBRF());
-		getCGOEM().setZBRF(getCGStructureAndPower().getZBRF());
-		getCGOEM().calculateCGinMAC(
+		_cgOEM.setXBRF(getCGStructureAndPower().getXBRF());
+		_cgOEM.setZBRF(getCGStructureAndPower().getZBRF());
+		_cgOEM.calculateCGinMAC(
 				(_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
 						.plus(_theAircraft.getWing().getXApexConstructionAxes())), 
 				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX(), 
@@ -1584,19 +1590,19 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 		// MZFW CG location
 		_cgMZFM = new CenterOfGravity();
 
-		getCGMZFM().setXBRF(
+		_cgMZFM.setXBRF(
 				_theAircraft.getCabinConfiguration().getSeatsCoGFrontToRear().get(
 						_theAircraft.getCabinConfiguration().getSeatsCoGFrontToRear().size()-1
 						)
 				);
 		
-		getCGMZFM().setZBRF(Amount.valueOf(
+		_cgMZFM.setZBRF(Amount.valueOf(
 				getCGStructureAndPower().getZBRF().getEstimatedValue()*_operatingEmptyMass.getEstimatedValue() 
 						/(_passengersTotalMass.getEstimatedValue() 
 								+ _operatingEmptyMass.getEstimatedValue())
 						, SI.METER));
 		
-		getCGMZFM().calculateCGinMAC(
+		_cgMZFM.calculateCGinMAC(
 				(_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
 						.plus(_theAircraft.getWing().getXApexConstructionAxes())), 
 				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX(), 
@@ -1629,6 +1635,51 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 				Amount.valueOf(0., SI.METER), 
 				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord());
 
+		// MAX AFT AND FWD CG
+		int index = _theAircraft.getCabinConfiguration().getSeatsCoGFrontToRear().size();
+		Amount<Length> meanAerodynamicChordXle = _theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
+				.plus(_theAircraft.getWing().getXApexConstructionAxes());
+		Amount<Length> meanAerodynamicChord = _theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord();
+		
+		List<Double> cgExcursionRefToMAC = new ArrayList<>();
+		
+		cgExcursionRefToMAC.add((getCGOEM().getXMAC()*100) - (meanAerodynamicChord.times(0.02).doubleValue(SI.METER)));
+		cgExcursionRefToMAC.add((getCGOEM().getXMAC()*100) + (meanAerodynamicChord.times(0.02).doubleValue(SI.METER)));  
+		
+		for (int i=0; i<index; i++) {
+			cgExcursionRefToMAC.add( 
+					_theAircraft
+						.getCabinConfiguration()
+							.getSeatsCoGFrontToRear().get(i)
+								.minus(meanAerodynamicChord.times(0.02))
+					.minus(meanAerodynamicChordXle)
+					.divide(meanAerodynamicChord)
+					.times(100)
+					.getEstimatedValue()
+					);
+			cgExcursionRefToMAC.add(  
+					_theAircraft
+						.getCabinConfiguration()
+							.getSeatsCoGRearToFront().get(i)
+								.plus(meanAerodynamicChord.times(0.02))
+					.minus(meanAerodynamicChordXle)
+					.divide(meanAerodynamicChord)
+					.times(100)
+					.getEstimatedValue()
+					);
+		}
+		
+		cgExcursionRefToMAC.add(((((_cgOEM.getXBRF().times(_operatingEmptyMass).getEstimatedValue())
+				+ (_theAircraft.getFuelTank().getXCG()
+						.times(_theAircraft.getFuelTank().getFuelMass()).getEstimatedValue()))
+				/(_operatingEmptyMass.plus(_theAircraft.getFuelTank().getFuelMass()).getEstimatedValue()))
+				- meanAerodynamicChordXle.doubleValue(SI.METER))
+				/ (meanAerodynamicChord.doubleValue(SI.METER)/100)
+				);
+		cgExcursionRefToMAC.add((_cgMTOM.getXMAC()*100));
+		
+		_maxAftCG = (MyArrayUtils.getMin(cgExcursionRefToMAC));
+		_maxForwardCG = (MyArrayUtils.getMax(cgExcursionRefToMAC));
 	}
 
 	public List<CenterOfGravity> getCGList() {
@@ -1803,5 +1854,21 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 
 	public void setLandingGearsMass(Amount<Mass> _landingGearsMass) {
 		this._landingGearsMass = _landingGearsMass;
+	}
+
+	public Double getMaxAftCG() {
+		return _maxAftCG;
+	}
+
+	public void setMaxAftCG(Double _maxAftCG) {
+		this._maxAftCG = _maxAftCG;
+	}
+
+	public Double getMaxForwardCG() {
+		return _maxForwardCG;
+	}
+
+	public void setMaxForwardCG(Double _maxForwardCG) {
+		this._maxForwardCG = _maxForwardCG;
 	}
 }
