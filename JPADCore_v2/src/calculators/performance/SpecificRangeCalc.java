@@ -193,7 +193,7 @@ public class SpecificRangeCalc {
 				null, null, null, null,									// Axis
 				"", "nmi/lbs",											// Units			
 				true, legend,											// Legend visibility and values
-				performanceFolderPath, "Cruise_Grid"							// output information
+				performanceFolderPath, "Cruise_Grid"					// output information
 				);
 	}
 	

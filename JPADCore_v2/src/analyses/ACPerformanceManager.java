@@ -3869,67 +3869,32 @@ public class ACPerformanceManager {
 			Amount<Length> climbRangeTotal = rangeArrayClimb.get(rangeArrayClimb.size()-1);
 			
 			for(int i=0; i<_rcMapAOE.size(); i++) {
-				
-				if((_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOPROP)
-						|| (_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.PISTON)) {
 
-					sfcListClimb.add(
-							MyMathUtils.getInterpolatedValue1DLinear(
-									_thrustListAOE.get(i).getSpeed(),
-									_thrustListAOE.get(i).getThrust(),
-									_rcMapAOE.get(i).getRCmax()
-									)
-							/1000
-//							*(2.20462/9.81)*(0.454/60)
-							*_theAircraft.getPowerPlant().getEngineNumber()
-							*EngineDatabaseManager.getSFC(
-									SpeedCalc.calculateMach(
-											_rcMapAOE.get(i).getAltitude(),
-											_rcMapAOE.get(i).getRCmax()
-											),
-									_rcMapAOE.get(i).getAltitude(),
-									(MyMathUtils.getInterpolatedValue1DLinear(
-											_thrustListAOE.get(i).getSpeed(),
-											_thrustListAOE.get(i).getThrust(),
-											_rcMapAOE.get(i).getRCmax()
-											)/2)/_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-									_theAircraft.getPowerPlant().getEngineType(),
-									EngineOperatingConditionEnum.CLIMB
-									)
-							);
-				}
-				else if ((_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOJET)
-						|| (_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOFAN)
-						|| (_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.PROPFAN)
-						|| (_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.RAMJET)) {
-					
-					sfcListClimb.add(
-							MyMathUtils.getInterpolatedValue1DLinear(
-									_thrustListAOE.get(i).getSpeed(),
-									_thrustListAOE.get(i).getThrust(),
-									_rcMapAOE.get(i).getRCmax()
-									)
-							*(0.45392/(4.4482*60))
-							*EngineDatabaseManager.getSFC(
-									SpeedCalc.calculateMach(
-											_rcMapAOE.get(i).getAltitude(),
-											_rcMapAOE.get(i).getRCmax()
-											),
-									_rcMapAOE.get(i).getAltitude(),
-									(MyMathUtils.getInterpolatedValue1DLinear(
-											_thrustListAOE.get(i).getSpeed(),
-											_thrustListAOE.get(i).getThrust(),
-											_rcMapAOE.get(i).getRCmax()
-											)/2)/_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-									_theAircraft.getPowerPlant().getEngineType(),
-									EngineOperatingConditionEnum.CLIMB
-									)							
-							);
-				}
+				sfcListClimb.add(
+						MyMathUtils.getInterpolatedValue1DLinear(
+								_thrustListAOE.get(i).getSpeed(),
+								_thrustListAOE.get(i).getThrust(),
+								_rcMapAOE.get(i).getRCmax()
+								)
+						*(0.224809)*(0.454/60)
+						*EngineDatabaseManager.getSFC(
+								SpeedCalc.calculateMach(
+										_rcMapAOE.get(i).getAltitude(),
+										_rcMapAOE.get(i).getRCmax()
+										),
+								_rcMapAOE.get(i).getAltitude(),
+								(MyMathUtils.getInterpolatedValue1DLinear(
+										_thrustListAOE.get(i).getSpeed(),
+										_thrustListAOE.get(i).getThrust(),
+										_rcMapAOE.get(i).getRCmax()
+										)/2)/_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+								_theAircraft.getPowerPlant().getEngineType(),
+								EngineOperatingConditionEnum.CLIMB
+								)
+						);
 			}
-			
+
 			_fuelUsedList.add(
 					Amount.valueOf(
 							MyMathUtils.integrate1DSimpsonSpline(
@@ -3944,68 +3909,31 @@ public class ACPerformanceManager {
 			// CRUISE
 			Double sfcCruise = 0.0;
 			
-			if((_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOPROP)
-					|| (_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.PISTON)) {
-
-				sfcCruise = ThrustCalc.calculateThrustDatabase(
-						_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-						_theAircraft.getPowerPlant().getEngineNumber(),
-						_theOperatingConditions.getThrottleCruise(),
-						_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-						_theAircraft.getPowerPlant().getEngineType(),
-						EngineOperatingConditionEnum.CRUISE,
-						_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-						_theOperatingConditions.getMachCruise()
-						)
-						/1000
-//						*(2.20462/9.81)*(0.454/60)
-						*_theAircraft.getPowerPlant().getEngineNumber()
-						*EngineDatabaseManager.getSFC(
-								_theOperatingConditions.getMachCruise(),
-								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-								EngineDatabaseManager.getThrustRatio(
-										_theOperatingConditions.getMachCruise(),
-										_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-										_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-										_theAircraft.getPowerPlant().getEngineType(),
-										EngineOperatingConditionEnum.CRUISE
-										),
-								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-								_theAircraft.getPowerPlant().getEngineType(),
-								EngineOperatingConditionEnum.CRUISE
-								);
-			}
-			else if ((_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOJET)
-					|| (_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOFAN)
-					|| (_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.PROPFAN)
-					|| (_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.RAMJET)) {
-				
-				sfcCruise = ThrustCalc.calculateThrustDatabase(
-						_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-						_theAircraft.getPowerPlant().getEngineNumber(),
-						_theOperatingConditions.getThrottleCruise(),
-						_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-						_theAircraft.getPowerPlant().getEngineType(),
-						EngineOperatingConditionEnum.CRUISE,
-						_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-						_theOperatingConditions.getMachCruise()
-						)
-						*(0.45392/(4.4482*60))
-						*EngineDatabaseManager.getSFC(
-								_theOperatingConditions.getMachCruise(),
-								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-								EngineDatabaseManager.getThrustRatio(
-										_theOperatingConditions.getMachCruise(),
-										_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-										_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-										_theAircraft.getPowerPlant().getEngineType(),
-										EngineOperatingConditionEnum.CRUISE
-										),
-								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-								_theAircraft.getPowerPlant().getEngineType(),
-								EngineOperatingConditionEnum.CRUISE
-								);
-			}
+			sfcCruise = ThrustCalc.calculateThrustDatabase(
+					_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+					_theAircraft.getPowerPlant().getEngineNumber(),
+					_theOperatingConditions.getThrottleCruise(),
+					_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+					_theAircraft.getPowerPlant().getEngineType(),
+					EngineOperatingConditionEnum.CRUISE,
+					_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+					_theOperatingConditions.getMachCruise()
+					)
+					*(0.224809)*(0.454/60)
+					*EngineDatabaseManager.getSFC(
+							_theOperatingConditions.getMachCruise(),
+							_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+							EngineDatabaseManager.getThrustRatio(
+									_theOperatingConditions.getMachCruise(),
+									_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+									_theAircraft.getPowerPlant().getEngineType(),
+									EngineOperatingConditionEnum.CRUISE
+									),
+							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+							_theAircraft.getPowerPlant().getEngineType(),
+							EngineOperatingConditionEnum.CRUISE
+							);
 			
 			_fuelUsedList.add(
 					_fuelUsedList.get(_fuelUsedList.size()-1)
@@ -4033,96 +3961,49 @@ public class ACPerformanceManager {
 			List<Double> sfcListDescent = new ArrayList<>();
 
 			for(int i=0; i<altitudeDescent.length; i++) {
-				if((_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOPROP)
-						|| (_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.PISTON)) {
 
-					sfcListDescent.add(
-							ThrustCalc.calculateThrustDatabase(
-									_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-									_theAircraft.getPowerPlant().getEngineNumber(),
-									1.0,
-									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-									_theAircraft.getPowerPlant().getEngineType(),
-									EngineOperatingConditionEnum.DESCENT,
-									altitudeDescent[i],
-									SpeedCalc.calculateMach(
-											altitudeDescent[i],
-											_speedDescentCAS.doubleValue(SI.METERS_PER_SECOND)
-											)
-									)
-							/1000
-//							*(2.20462/9.81)*(0.454/60)
-							*_theAircraft.getPowerPlant().getEngineNumber()
-							*EngineDatabaseManager.getSFC(
-									SpeedCalc.calculateMach(
-											altitudeDescent[i],
-											_speedDescentCAS.doubleValue(SI.METERS_PER_SECOND)
-											),
-									altitudeDescent[i],
-									EngineDatabaseManager.getThrustRatio(
-											SpeedCalc.calculateMach(
-													altitudeDescent[i],
-													_speedDescentCAS.doubleValue(SI.METERS_PER_SECOND)
-													),
-											altitudeDescent[i],
-											_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-											_theAircraft.getPowerPlant().getEngineType(),
-											EngineOperatingConditionEnum.DESCENT
-											),
-									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-									_theAircraft.getPowerPlant().getEngineType(),
-									EngineOperatingConditionEnum.DESCENT
-									)
-							);
-				}
-				else if ((_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOJET)
-						|| (_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOFAN)
-						|| (_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.PROPFAN)
-						|| (_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.RAMJET)) {
-
-					sfcListDescent.add(
-							ThrustCalc.calculateThrustDatabase(
-									_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-									_theAircraft.getPowerPlant().getEngineNumber(),
-									1.0,
-									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-									_theAircraft.getPowerPlant().getEngineType(),
-									EngineOperatingConditionEnum.DESCENT,
-									altitudeDescent[i],
-									SpeedCalc.calculateMach(
-											altitudeDescent[i],
-											_speedDescentCAS.doubleValue(SI.METERS_PER_SECOND)
-											)
-									)
-							*(0.45392/(4.4482*60))
-							*EngineDatabaseManager.getSFC(
-									SpeedCalc.calculateMach(
-											altitudeDescent[i],
-											_speedDescentCAS.doubleValue(SI.METERS_PER_SECOND)
-											),
-									altitudeDescent[i],
-									EngineDatabaseManager.getThrustRatio(
-											SpeedCalc.calculateMach(
-													altitudeDescent[i],
-													_speedDescentCAS.doubleValue(SI.METERS_PER_SECOND)
-													),
-											altitudeDescent[i],
-											_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-											_theAircraft.getPowerPlant().getEngineType(),
-											EngineOperatingConditionEnum.DESCENT
-											),
-									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-									_theAircraft.getPowerPlant().getEngineType(),
-									EngineOperatingConditionEnum.DESCENT
-									)
-							);
-				}
+				sfcListDescent.add(
+						ThrustCalc.calculateThrustDatabase(
+								_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+								_theAircraft.getPowerPlant().getEngineNumber(),
+								1.0,
+								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+								_theAircraft.getPowerPlant().getEngineType(),
+								EngineOperatingConditionEnum.DESCENT,
+								altitudeDescent[i],
+								SpeedCalc.calculateMach(
+										altitudeDescent[i],
+										_speedDescentCAS.doubleValue(SI.METERS_PER_SECOND)
+										)
+								)
+						*(0.224809)*(0.454/60)
+						*EngineDatabaseManager.getSFC(
+								SpeedCalc.calculateMach(
+										altitudeDescent[i],
+										_speedDescentCAS.doubleValue(SI.METERS_PER_SECOND)
+										),
+								altitudeDescent[i],
+								EngineDatabaseManager.getThrustRatio(
+										SpeedCalc.calculateMach(
+												altitudeDescent[i],
+												_speedDescentCAS.doubleValue(SI.METERS_PER_SECOND)
+												),
+										altitudeDescent[i],
+										_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+										_theAircraft.getPowerPlant().getEngineType(),
+										EngineOperatingConditionEnum.DESCENT
+										),
+								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+								_theAircraft.getPowerPlant().getEngineType(),
+								EngineOperatingConditionEnum.DESCENT
+								)
+						);
 			}
-			
+
 			double[] descentTimeMinutes = new double[_descentTimes.size()];
 			for(int i=0; i<_descentTimes.size(); i++) 
 				descentTimeMinutes[i] = _descentTimes.get(i).doubleValue(NonSI.MINUTE);
-			
+
 			_fuelUsedList.add(
 					_fuelUsedList.get(_fuelUsedList.size()-1)
 					.plus(
