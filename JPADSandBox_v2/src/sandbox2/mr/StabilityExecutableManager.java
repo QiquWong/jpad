@@ -555,12 +555,19 @@ public class StabilityExecutableManager {
 	//Stability -------------------------------------------
 	//----------------------------------------------------------------
 	private List<Double> _wingNormalCoefficient = new ArrayList<>();
+	private List<Double> _hTailNormalCoefficient = new ArrayList<>();
+	private List<Double> _hTailNormalCoefficientDownwashConstant = new ArrayList<>();
 	private List<Double> _wingHorizontalCoefficient= new ArrayList<>();
+	private List<Double> _hTailHorizontalCoefficient= new ArrayList<>();
+	private List<Double> _hTailHorizontalCoefficientDownwashConstant= new ArrayList<>();
 	private List<Double> _wingMomentCoefficientNOPendular= new ArrayList<>();
 	private List<Double> _wingMomentCoefficientPendular= new ArrayList<>();
-	private List<Double> _fuselageMomentCoefficientPendular= new ArrayList<>();
-	private List<Double> _hTailomentCoefficientPendular= new ArrayList<>();
+	private List<Double> _hTailMomentCoefficientPendular= new ArrayList<>();
 	private List<Double> _totalMomentCoefficientPendular= new ArrayList<>();
+	private  Map <Amount<Angle>, List<Double>>_hTailNormalCoefficientDeltaE = new HashMap<Amount<Angle>, List<Double>>();
+	private  Map <Amount<Angle>, List<Double>>_hTailHorizontalCoefficientDeltaE = new HashMap<Amount<Angle>, List<Double>>();
+	private  Map <Amount<Angle>, List<Double>>_hTailMomentCoefficientPendularDeltaE = new HashMap<Amount<Angle>, List<Double>>();
+	private  Map <Amount<Angle>, List<Double>>_totalMomentCoefficientPendularDeltaE = new HashMap<Amount<Angle>, List<Double>>();
 	
 	//Distributions -------------------------------------------
 	//----------------------------------------------------------------
@@ -1269,7 +1276,6 @@ public class StabilityExecutableManager {
 
 		//--------------end linear downwash-----------------------------------------
 
-		if ( this._downwashConstant == Boolean.FALSE){
 
 			theStabilityCalculator.calculateDownwashNonLinearSlingerland(
 					this, 
@@ -1291,8 +1297,6 @@ public class StabilityExecutableManager {
 			}
 
 		}
-
-	}
 
 	public void initializeHTailArray(){ 
 
@@ -1704,9 +1708,18 @@ public class StabilityExecutableManager {
 		sb.append("\t\tCm wing at alpha = " + _alphaWingForDistribution.get(i) + " --> " +_cMWingDistribution.get(i)+ "\n");
 		}
 		;
+
+		sb.append("\nCOMPONENTS MOMENT COEFFICIENT REAPECT TO CG \n")
+		.append("-------------------------------------\n")
+		.append("\t\tX cg = " + _xCGAircraft + " Y cg = " + _yCGAircraft + " Z cg = " + _zCGAircraft + "\n\n")
+		.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this._alphasBody, "\t\tAlpha Body", ","))
+		.append("\t\tCM wing no pendular stability = " + _wingMomentCoefficientNOPendular + "\n")
+		.append("\t\tCM wing with pendular stability = " + _wingMomentCoefficientPendular + "\n")
+		.append("\t\tCM Horizontal tail = " + _hTailMomentCoefficientPendular + "\n")
+	    .append("\t\tCM Fuselage = " + _fuselageMomentCoefficient + "\n")
+		;
 		
 		return sb.toString();
-
 	}
 
 	public void plot( String folderPathName, String folderPathNameDistribution) throws InstantiationException, IllegalAccessException{
@@ -2512,12 +2525,19 @@ public class StabilityExecutableManager {
 			xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasBody));
 			xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasBody));
 			xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasBody));
+			xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasBody));
+			xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasBody));
 			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_wingMomentCoefficientPendular));
 			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_wingMomentCoefficientNOPendular));
 			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_fuselageMomentCoefficient));
+			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_hTailMomentCoefficientPendular));
+			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_totalMomentCoefficientPendular));
+		
 			legend.add("WING Whitout pendular stability");
 			legend.add("WING Whit pendular stability");
 			legend.add("Fuselage");
+			legend.add("Horizontal Tail. delta e = 0 deg");
+			legend.add("Total");
 			
 			MyChartToFileUtils.plot(
 					xList, 
@@ -2534,6 +2554,62 @@ public class StabilityExecutableManager {
 		
 			System.out.println("Plot Components Moment coefficient respect TO CG Chart ---> DONE \n");
 		}
+			if(_plotList.contains(AerodynamicAndStabilityPlotEnum.AIRCRAFT_CM_VS_CL_DELTAE)) {
+
+				List<Double[]> xList = new ArrayList<>();
+				List<Double[]> yList = new ArrayList<>();
+				List<String> legend = new ArrayList<>();
+
+				for (int i=0; i<_anglesOfElevatorDeflection.size(); i++){
+				yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_totalMomentCoefficientPendularDeltaE.get(_anglesOfElevatorDeflection.get(i))));
+				xList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_totalLiftCoefficient.get(_anglesOfElevatorDeflection.get(i))));
+				legend.add("delta e =  "+ _anglesOfElevatorDeflection.get(i));
+				}
+				
+				MyChartToFileUtils.plot(
+						xList, 
+						yList, 
+						"Total Moment Coefficient vs CL", 
+						"CL", "CM", 
+						null, null,
+						null, null,
+						"", "",
+						true,
+						legend,
+						folderPathName,
+						"Total Moment Coefficient vs CL");
+			
+				System.out.println("Plot Total Lift Coefficient Chart var delta e ---> DONE \n");
+			}
+				if(_plotList.contains(AerodynamicAndStabilityPlotEnum.AIRCRAFT_CM_VS_ALPHA_BODY)) {
+
+					List<Double[]> xList = new ArrayList<>();
+					List<Double[]> yList = new ArrayList<>();
+					List<String> legend = new ArrayList<>();
+
+					for (int i=0; i<_anglesOfElevatorDeflection.size(); i++){
+					yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_totalMomentCoefficientPendularDeltaE.get(_anglesOfElevatorDeflection.get(i))));
+					xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasBody));
+					legend.add("delta e =  "+ _anglesOfElevatorDeflection.get(i));
+					}
+					
+					MyChartToFileUtils.plot(
+							xList, 
+							yList, 
+							"Total Moment Coefficient vs alpha", 
+							"alpha_b", "CM", 
+							null, null,
+							null, null,
+							"deg", "",
+							true,
+							legend,
+							folderPathName,
+							"Total Moment Coefficient vs alpha");
+				
+					System.out.println("Plot Total Lift Coefficient var delta e vs alpha Chart ---> DONE \n");
+				}
+			
+		
 		// DISTRIBUTION
 		//------------------------------------------------------------------------------------------------------------
 		if(_plotList.contains(AerodynamicAndStabilityPlotEnum.CL_DISTRIBUTION_WING)) {
@@ -4120,7 +4196,10 @@ public class StabilityExecutableManager {
 		}
 		
 		// moment 
-		Amount<Length> _wingDistranceACtoCG = Amount.valueOf(
+		Amount<Length> _wingHorizontalDistanceACtoCG,_wingVerticalDistranceACtoCG;
+		
+		
+		_wingHorizontalDistanceACtoCG = Amount.valueOf(
 				_xCGAircraft.doubleValue(SI.METER) - (
 						_xApexWing.doubleValue(SI.METER) +
 						_wingMeanAerodynamicChordLeadingEdgeX.doubleValue(SI.METER) + 
@@ -4132,11 +4211,11 @@ public class StabilityExecutableManager {
 
 			zVerticalDistance = _zApexWing.doubleValue(SI.METER) - _zCGAircraft.doubleValue(SI.METER);
 		
-		Amount<Length> _wingVerticalDistranceACtoCG = Amount.valueOf(zVerticalDistance, SI.METER);
+		_wingVerticalDistranceACtoCG = Amount.valueOf(zVerticalDistance, SI.METER);
 		
 		for (int i=0; i<_numberOfAlphasBody; i++){
 			_wingMomentCoefficientPendular.add(i,
-					(_wingNormalCoefficient.get(i)*(_wingDistranceACtoCG.doubleValue(SI.METER)/ _wingMAC.doubleValue(SI.METER))) + 
+					(_wingNormalCoefficient.get(i)*(_wingHorizontalDistanceACtoCG.doubleValue(SI.METER)/ _wingMAC.doubleValue(SI.METER))) + 
 					(_wingHorizontalCoefficient.get(i) * (_wingVerticalDistranceACtoCG.doubleValue(SI.METER)/_wingMAC.doubleValue(SI.METER)))+
 					_wingMomentCoefficientFinal.get(i)
 					);
@@ -4144,10 +4223,172 @@ public class StabilityExecutableManager {
 		
 		for (int i=0; i<_numberOfAlphasBody; i++){
 			_wingMomentCoefficientNOPendular.add(i,
-					(_wingNormalCoefficient.get(i)*(_wingDistranceACtoCG.doubleValue(SI.METER)/ _wingMAC.doubleValue(SI.METER))) + 
+					(_wingNormalCoefficient.get(i)*(_wingHorizontalDistanceACtoCG.doubleValue(SI.METER)/ _wingMAC.doubleValue(SI.METER))) + 
 					_wingMomentCoefficientFinal.get(i)
 					);
 		}
+		
+		//HORIZONTAL TAIL------------------------------------
+		
+		// forces
+			for (int i=0; i<_numberOfAlphasBody; i++){
+				_hTailNormalCoefficientDownwashConstant.add(
+						i,
+						_hTailliftCoefficient3DCurve[i]*Math.cos(_alphasBody.get(i).doubleValue(SI.RADIAN)-_downwashAngleConstantRoskam.get(i).doubleValue(SI.RADIAN))+
+						_hTailDragCoefficient3DCurve.get(i)*Math.sin(_alphasBody.get(i).doubleValue(SI.RADIAN)-_downwashAngleConstantRoskam.get(i).doubleValue(SI.RADIAN)));
+
+				_hTailHorizontalCoefficientDownwashConstant.add(
+						i,
+						_hTailDragCoefficient3DCurve.get(i)*Math.cos(_alphasBody.get(i).doubleValue(SI.RADIAN)-_downwashAngleConstantRoskam.get(i).doubleValue(SI.RADIAN)) - 
+						_hTailliftCoefficient3DCurve[i]*Math.sin(_alphasBody.get(i).doubleValue(SI.RADIAN)-_downwashAngleConstantRoskam.get(i).doubleValue(SI.RADIAN))
+						);	
+			}
+		
+			for (int i=0; i<_numberOfAlphasBody; i++){
+				_hTailNormalCoefficient.add(
+						i,
+						_hTailliftCoefficient3DCurve[i]*Math.cos(_alphasBody.get(i).doubleValue(SI.RADIAN)-_downwashAngleVariableSlingerland.get(i).doubleValue(SI.RADIAN))+
+						_hTailDragCoefficient3DCurve.get(i)*Math.sin(_alphasBody.get(i).doubleValue(SI.RADIAN)-_downwashAngleVariableSlingerland.get(i).doubleValue(SI.RADIAN)));
+
+				_hTailHorizontalCoefficient.add(
+						i,
+						_hTailDragCoefficient3DCurve.get(i)*Math.cos(_alphasBody.get(i).doubleValue(SI.RADIAN)-_downwashAngleVariableSlingerland.get(i).doubleValue(SI.RADIAN)) - 
+						_hTailliftCoefficient3DCurve[i]*Math.sin(_alphasBody.get(i).doubleValue(SI.RADIAN)-_downwashAngleVariableSlingerland.get(i).doubleValue(SI.RADIAN))
+						);	
+			}
+
+
+			//distance 
+			Amount<Length> _hTailHorizontalDistanceACtoCG, _hTailVerticalDistranceACtoCG;
+
+			_hTailHorizontalDistanceACtoCG = Amount.valueOf(
+					_xCGAircraft.doubleValue(SI.METER) - (
+							_xApexHTail.doubleValue(SI.METER) +
+							_hTailMeanAerodynamicChordLeadingEdgeX.doubleValue(SI.METER) + 
+							(_hTailFinalMomentumPole)*_hTailMAC.doubleValue(SI.METER)
+							), 
+					SI.METER);
+
+			double zVerticalDistanceHtail;
+
+			zVerticalDistanceHtail = _zApexHTail.doubleValue(SI.METER) - _zCGAircraft.doubleValue(SI.METER);
+
+			_hTailVerticalDistranceACtoCG = Amount.valueOf(zVerticalDistanceHtail, SI.METER);
+
+			if(_downwashConstant == Boolean.FALSE){
+				for (int i=0; i<_numberOfAlphasBody; i++){
+					_hTailMomentCoefficientPendular.add(i,
+							(_hTailNormalCoefficient.get(i)*(_hTailSurface.doubleValue(SI.SQUARE_METRE)/_wingSurface.doubleValue(SI.SQUARE_METRE))*(_hTailHorizontalDistanceACtoCG.doubleValue(SI.METER)/ _wingMAC.doubleValue(SI.METER))) 
+							+ (_hTailHorizontalCoefficient.get(i)*(_hTailSurface.doubleValue(SI.SQUARE_METRE)/_wingSurface.doubleValue(SI.SQUARE_METRE)) * (_hTailVerticalDistranceACtoCG.doubleValue(SI.METER)/_wingMAC.doubleValue(SI.METER)))
+							);
+				}
+			}
+			if(_downwashConstant == Boolean.TRUE){
+				for (int i=0; i<_numberOfAlphasBody; i++){
+					_hTailMomentCoefficientPendular.add(i,
+							(_hTailNormalCoefficientDownwashConstant.get(i)*(_hTailSurface.doubleValue(SI.SQUARE_METRE)/_wingSurface.doubleValue(SI.SQUARE_METRE))*(_hTailHorizontalDistanceACtoCG.doubleValue(SI.METER)/ _wingMAC.doubleValue(SI.METER))) 
+							+ (_hTailHorizontalCoefficientDownwashConstant.get(i)*(_hTailSurface.doubleValue(SI.SQUARE_METRE)/_wingSurface.doubleValue(SI.SQUARE_METRE)) * (_hTailVerticalDistranceACtoCG.doubleValue(SI.METER)/_wingMAC.doubleValue(SI.METER)))
+							);
+				}
+			}
+
+
+		
+			//PROPELLER------------------------------------
+		
+			//TOTAL------------------------------------
+			// delta e =0
+			for (int ii=0; ii<_numberOfAlphasBody; ii++){
+			_totalMomentCoefficientPendular.add(ii,
+					_wingMomentCoefficientPendular.get(ii) +
+					_fuselageMomentCoefficient.get(ii) +
+					_hTailMomentCoefficientPendular.get(ii));
+			}
+	
+			
+			//other values
+			List<Double> normalCoefficients, horizontalCoefficients, momentCoefficentHTail, momentCoefficientTotal ;
+			
+			//normal and horizontal forces
+			for (int i=0; i<_anglesOfElevatorDeflection.size(); i++){
+				normalCoefficients = new ArrayList<>();
+				horizontalCoefficients = new ArrayList<>();
+				momentCoefficentHTail = new ArrayList<>();
+				momentCoefficientTotal = new ArrayList<>();
+			
+				if(_downwashConstant == Boolean.TRUE){
+					for (int ii=0; ii<_numberOfAlphasBody; ii++){
+						normalCoefficients.add(ii,
+								_hTailLiftCoefficient3DCurveWithElevator.get(_anglesOfElevatorDeflection.get(i))[ii]*
+								Math.cos(_alphasBody.get(ii).doubleValue(SI.RADIAN)-
+										_downwashAngleConstantRoskam.get(ii).doubleValue(SI.RADIAN))+
+								_hTailDragCoefficient3DCurve.get(ii)*
+								Math.sin(_alphasBody.get(ii).doubleValue(SI.RADIAN)-
+										_downwashAngleConstantRoskam.get(ii).doubleValue(SI.RADIAN)));
+
+						horizontalCoefficients.add(ii, 
+								_hTailDragCoefficient3DCurve.get(i)*
+								Math.cos(_alphasBody.get(ii).doubleValue(SI.RADIAN)-
+										_downwashAngleConstantRoskam.get(ii).doubleValue(SI.RADIAN)) - 
+								_hTailLiftCoefficient3DCurveWithElevator.get(_anglesOfElevatorDeflection.get(i))[ii]*
+								Math.sin(_alphasBody.get(ii).doubleValue(SI.RADIAN)-
+										_downwashAngleConstantRoskam.get(ii).doubleValue(SI.RADIAN)));
+					}
+				}
+				if(_downwashConstant == Boolean.FALSE){
+					for (int ii=0; ii<_numberOfAlphasBody; ii++){
+						normalCoefficients.add(ii, 
+								_hTailLiftCoefficient3DCurveWithElevator.get(_anglesOfElevatorDeflection.get(i))[ii]*
+								Math.cos(_alphasBody.get(ii).doubleValue(SI.RADIAN)-
+										_downwashAngleVariableSlingerland.get(ii).doubleValue(SI.RADIAN))+
+								_hTailDragCoefficient3DCurve.get(ii)*
+								Math.sin(_alphasBody.get(ii).doubleValue(SI.RADIAN)-
+										_downwashAngleVariableSlingerland.get(ii).doubleValue(SI.RADIAN)));
+
+						horizontalCoefficients.add(ii,
+								_hTailDragCoefficient3DCurve.get(ii)*
+								Math.cos(_alphasBody.get(ii).doubleValue(SI.RADIAN)-
+										_downwashAngleVariableSlingerland.get(ii).doubleValue(SI.RADIAN)) - 
+								_hTailLiftCoefficient3DCurveWithElevator.get(_anglesOfElevatorDeflection.get(i))[ii]*
+								Math.sin(_alphasBody.get(ii).doubleValue(SI.RADIAN)-
+										_downwashAngleVariableSlingerland.get(ii).doubleValue(SI.RADIAN)));
+					}
+				}
+				
+				_hTailNormalCoefficientDeltaE.put(_anglesOfElevatorDeflection.get(i),normalCoefficients);
+				_hTailHorizontalCoefficientDeltaE.put(_anglesOfElevatorDeflection.get(i),horizontalCoefficients);	
+
+				//moment
+				
+				for (int ii=0; ii<_numberOfAlphasBody; ii++){
+				momentCoefficentHTail.add(ii,
+						(_hTailNormalCoefficientDeltaE.get(_anglesOfElevatorDeflection.get(i)).get(ii)*
+								(_hTailSurface.doubleValue(SI.SQUARE_METRE)/
+										_wingSurface.doubleValue(SI.SQUARE_METRE))*
+								(_hTailHorizontalDistanceACtoCG.doubleValue(SI.METER)/
+										_wingMAC.doubleValue(SI.METER))) 
+							+ (_hTailHorizontalCoefficientDeltaE.get(_anglesOfElevatorDeflection.get(i)).get(ii)*
+									(_hTailSurface.doubleValue(SI.SQUARE_METRE)/
+											_wingSurface.doubleValue(SI.SQUARE_METRE)) * 
+									(_hTailVerticalDistranceACtoCG.doubleValue(SI.METER)/
+											_wingMAC.doubleValue(SI.METER)))
+							);
+				
+				momentCoefficientTotal.add(ii,
+						_wingMomentCoefficientPendular.get(ii) + _fuselageMomentCoefficient.get(ii) + momentCoefficentHTail.get(ii));
+				}
+		
+			 
+				_hTailMomentCoefficientPendularDeltaE.put(
+						_anglesOfElevatorDeflection.get(i),
+						momentCoefficentHTail
+						);
+				_totalMomentCoefficientPendularDeltaE.put(
+						_anglesOfElevatorDeflection.get(i),
+						momentCoefficientTotal
+						);
+				
+			}
 	}
 	
 	// DISTRIBUTIONS----------------------------------------------------------

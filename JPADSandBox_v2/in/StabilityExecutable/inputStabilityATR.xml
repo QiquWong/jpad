@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- All units can be choose by user with the exception of surfaces deflections. All values of each array must have the same unit-->    
+<!-- It is possible to choose a constant downwash calculation, or variable with the flag-->    
+<!-- If CONSTANT the downwash is calculated using Roskam method, if variable using Slingerland method-->   
+ <Longitudinal_static_stability_executable downwash="CONSTANT"> <!-- Longitudinal_static_stability_executable downwash="VARIABLE" -->
+ <!-- Longitudinal_static_stability_executable downwash="CONSTANT" -->
+ <aircraft_name>ATR-72</aircraft_name>
+        <operating_conditions>
+				<!-- This is the position of the aircraft CG in the BRF -->
+                <x_cg unit="m">11.64</x_cg>
+                <y_cg unit="m">0.0</y_cg>
+                <z_cg unit="m">0.67</z_cg>
+                <altitude unit="m">8000</altitude>
+                <mach_number>0.6</mach_number>
+				<!-- Reynolds number reffered to MAC  -->
+				<Reynolds_number>19000000</Reynolds_number>
+				<!-- definition of alpha body array analysis  -->
+				<alpha_body_initial unit="°">-4</alpha_body_initial> <!-- must be about equal to( wingALPAzeroLift - iw) [ about -5 cruise, -19 landing] -->
+                <alpha_body_final unit="°">17</alpha_body_final> <!-- must be >( wingALPAstall - iw) [ about 20 cruise, 23 landing] -->
+                <number_of_alphas_body>80</number_of_alphas_body>
+				<!-- 9 values at least. It will be added the alpha zero lift. THESE ARE ALPHAS WING -->
+				<alpha_wing_array_for_distribution unit="°">[0,2,4,6,8,10,12]</alpha_wing_array_for_distribution>
+				<alpha_horizontal_tail_array_for_distribution unit="°">[0,2,4]</alpha_horizontal_tail_array_for_distribution>
+				<condition>CRUISE</condition>
+				<!-- This is the pole for the calculation of the moment referred to the MAC. The momentum respect to the aerodynamic center is automatically calculated -->
+				<wing_momentum_pole>[0.25, 0.256, 0.264]</wing_momentum_pole>
+				<horizontal_tail_momentum_pole>[0.25,0.26]</horizontal_tail_momentum_pole>
+				<!-- This is the pole used in the stability equation . This is the position of the AC for the user. This value for the wing will be modified for the fuselage effect-->
+				<wing_pole_in_equation>0.245</wing_pole_in_equation>
+				<horizontal_tail_pole_in_equation>0.25</horizontal_tail_pole_in_equation>
+				<!--
+				<condition>CRUISE</condition>
+				<condition>LANDING</condition>
+				<condition>TAKE_OFF</condition>
+				-->
+        </operating_conditions>
+<!-- It is possible to choose the method to evaluate the drag polar of lifting surfaces. All data are given in the section <polar> below.
+INPUT: the 3D polar of the lifting surface is given as input
+CALCULATED_PARABOLIC: the drag polar is calculated using the parabolic formula CL0+kCL^2
+CALCULATED_INPUT_AIRFOIL: the drag of the lifting surface is calculated starting from the 2D polar of airfoils given as input
+CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated starting from the 2D polar of airfoils carculated using databases -->    		
+       <wing WingAirfoilLiftCurve="INPUT" wingPolar="CALCULATED_INPUT_AIRFOIL">
+	   <!-- <wing airfoilLiftCurve="CALCULATED"> -->
+	   <!-- <wing polar="INPUT"> -->
+	   <!-- <wing polar="CALCULATED_PARABOLIC"> -->
+	   <!-- <wing polar="CALCULATED_INPUT_AIRFOIL"> -->
+	   <!-- <wing polar="CALCULATED_DATABASE_AIRFOIL"> -->
+			<position>
+			<!-- This is the position of the component in BRF. The BRF has origin in 0,0,0 -->
+                    <x unit="m">11</x>
+                    <y unit="m">0.0</y>
+                    <z unit="m">1.6</z>
+            </position>
+            <global>
+                <surface unit="m²">61</surface>
+                <aspect_ratio>12.0</aspect_ratio>
+                <number_of_point_semispan>70</number_of_point_semispan>
+                <adimensional_kink_station>0.3478</adimensional_kink_station>
+				<angle_of_incidence unit="°">2</angle_of_incidence>
+				<number_of_given_sections>3</number_of_given_sections>
+				<sweep_quarter_chord unit="°">1.4</sweep_quarter_chord>
+				<sweep_LE unit="°">2</sweep_LE>
+				<!-- If your airfoil isn’t in the list, you can use the most similar one. -->
+				<mean_airfoil_family>NACA_5_DIGIT</mean_airfoil_family>
+				<!--
+				<mean_airfoil_family>NACA_4_DIGIT</mean_airfoil_family>
+				<mean_airfoil_family>NACA_5_DIGIT</mean_airfoil_family>
+				<mean_airfoil_family>NACA_63_SERIES</mean_airfoil_family>
+				<mean_airfoil_family>NACA_64_SERIES</mean_airfoil_family>
+				<mean_airfoil_family>NACA_65_SERIES</mean_airfoil_family>
+				<mean_airfoil_family>BICONVEX</mean_airfoil_family>
+				<mean_airfoil_family>DOUBLE_WEDGE</mean_airfoil_family>
+				-->
+             </global>
+			 <polar>
+			 <!-- <"INPUT"> . NB: The polar is given in the current condition  
+			 	<cl_polar_curve>[1,2,3,4,5,6,7,8]</cl_polar_curve>
+				<cd_polar_curve>[1,2,3,4,5,6,7,8]</cd_polar_curve> -->
+				<!-- <"CALCULATED_INPUT_AIRFOIL"> -->
+				<!-- for each airfoil of input station. The polar is given in the current condition-->
+				<!-- the cl must be strictly increasing-->
+				<cl_polar_curve station="ROOT">[-0.4076 , -0.3828 , -0.3573 , -0.3312 , -0.3048 , -0.2783 , -0.2514 , -0.2244 , -0.1974 , -0.1704 , -0.1436 , -0.1167 , -0.0896 , -0.0625 , -0.0356 , -0.0082 , 0.0191 , 0.0461 , 0.0736 , 0.1013 , 0.1285 , 0.1559 , 0.1832 , 0.2103 , 0.2377 , 0.2646 , 0.2915 , 0.3456 , 0.3724 , 0.3989 , 0.4259 , 0.4527 , 0.4791 , 0.5062 , 0.5322 , 0.5591 , 0.5848 , 0.6118 , 0.6377 , 0.6634 , 0.6895 , 0.715 , 0.7395 , 0.7657 , 0.7921 , 0.8174 , 0.8466 , 0.8767 , 0.9073 , 0.9421 , 0.9773 , 1.0131 , 1.047 , 1.0775 , 1.1125 , 1.1472 , 1.1803 , 1.2143 , 1.2464 , 1.2687 , 1.2758 , 1.2775 , 1.279 , 1.2852 , 1.2951 , 1.3098 , 1.323 , 1.339 , 1.3535 , 1.3678 , 1.3832 , 1.3967 , 1.4093 , 1.4245 , 1.4377 , 1.449 , 1.4586 , 1.4724 , 1.484 , 1.4934 , 1.4999 , 1.5079 , 1.5181 , 1.5253 , 1.5291 , 1.5368 , 1.5402 ]</cl_polar_curve>
+				<cd_polar_curve>[0.00824 , 0.00802 , 0.00787 , 0.00777 , 0.00768 , 0.00759 , 0.00752 , 0.00748 , 0.00744 , 0.00742 , 0.00737 , 0.00733 , 0.00731 , 0.00729 , 0.00729 , 0.00728 , 0.00727 , 0.00727 , 0.00727 , 0.00729 , 0.00733 , 0.00733 , 0.00736 , 0.00742 , 0.00747 , 0.00751 , 0.00758 , 0.00776 , 0.00785 , 0.00797 , 0.00809 , 0.00819 , 0.00834 , 0.00845 , 0.00862 , 0.00874 , 0.00893 , 0.00903 , 0.0092 , 0.00938 , 0.00951 , 0.00969 , 0.00992 , 0.01004 , 0.01022 , 0.01043 , 0.01071 , 0.01087 , 0.01108 , 0.01135 , 0.01166 , 0.01185 , 0.0121 , 0.01245 , 0.01265 , 0.01291 , 0.01327 , 0.01351 , 0.01389 , 0.01414 , 0.01436 , 0.01462 , 0.01478 , 0.01506 , 0.01547 , 0.01586 , 0.0164 , 0.01688 , 0.01747 , 0.01811 , 0.01873 , 0.01947 , 0.02031 , 0.02103 , 0.02189 , 0.02291 , 0.0241 , 0.02503 , 0.02616 , 0.0275 , 0.02913 , 0.03068 , 0.0321 , 0.03383 , 0.03592 , 0.04029 , 0.04262]</cd_polar_curve>
+				<cl_polar_curve station="KINK">[-0.4076 , -0.3828 , -0.3573 , -0.3312 , -0.3048 , -0.2783 , -0.2514 , -0.2244 , -0.1974 , -0.1704 , -0.1436 , -0.1167 , -0.0896 , -0.0625 , -0.0356 , -0.0082 , 0.0191 , 0.0461 , 0.0736 , 0.1013 , 0.1285 , 0.1559 , 0.1832 , 0.2103 , 0.2377 , 0.2646 , 0.2915 , 0.3456 , 0.3724 , 0.3989 , 0.4259 , 0.4527 , 0.4791 , 0.5062 , 0.5322 , 0.5591 , 0.5848 , 0.6118 , 0.6377 , 0.6634 , 0.6895 , 0.715 , 0.7395 , 0.7657 , 0.7921 , 0.8174 , 0.8466 , 0.8767 , 0.9073 , 0.9421 , 0.9773 , 1.0131 , 1.047 , 1.0775 , 1.1125 , 1.1472 , 1.1803 , 1.2143 , 1.2464 , 1.2687 , 1.2758 , 1.2775 , 1.279 , 1.2852 , 1.2951 , 1.3098 , 1.323 , 1.339 , 1.3535 , 1.3678 , 1.3832 , 1.3967 , 1.4093 , 1.4245 , 1.4377 , 1.449 , 1.4586 , 1.4724 , 1.484 , 1.4934 , 1.4999 , 1.5079 , 1.5181 , 1.5253 , 1.5291 , 1.5368 , 1.5402 ]</cl_polar_curve>
+				<cd_polar_curve>[0.00824 , 0.00802 , 0.00787 , 0.00777 , 0.00768 , 0.00759 , 0.00752 , 0.00748 , 0.00744 , 0.00742 , 0.00737 , 0.00733 , 0.00731 , 0.00729 , 0.00729 , 0.00728 , 0.00727 , 0.00727 , 0.00727 , 0.00729 , 0.00733 , 0.00733 , 0.00736 , 0.00742 , 0.00747 , 0.00751 , 0.00758 , 0.00776 , 0.00785 , 0.00797 , 0.00809 , 0.00819 , 0.00834 , 0.00845 , 0.00862 , 0.00874 , 0.00893 , 0.00903 , 0.0092 , 0.00938 , 0.00951 , 0.00969 , 0.00992 , 0.01004 , 0.01022 , 0.01043 , 0.01071 , 0.01087 , 0.01108 , 0.01135 , 0.01166 , 0.01185 , 0.0121 , 0.01245 , 0.01265 , 0.01291 , 0.01327 , 0.01351 , 0.01389 , 0.01414 , 0.01436 , 0.01462 , 0.01478 , 0.01506 , 0.01547 , 0.01586 , 0.0164 , 0.01688 , 0.01747 , 0.01811 , 0.01873 , 0.01947 , 0.02031 , 0.02103 , 0.02189 , 0.02291 , 0.0241 , 0.02503 , 0.02616 , 0.0275 , 0.02913 , 0.03068 , 0.0321 , 0.03383 , 0.03592  , 0.04029 , 0.04262]</cd_polar_curve>
+				<cl_polar_curve station="TIP">[-0.4092 , -0.3828 , -0.3565 , -0.33 , -0.3033 , -0.2764 , -0.2491 , -0.222 , -0.1966 , -0.172 , -0.1452 , -0.1179 , -0.0903 , -0.0626 , -0.035 , -0.0074 , 0.0481 , 0.0759 , 0.1038 , 0.1317 , 0.1593 , 0.1871 , 0.2146 , 0.2419 , 0.2693 , 0.2967 , 0.324 , 0.3507 , 0.3772 , 0.4036 , 0.4296 , 0.455 , 0.4812 , 0.5082 , 0.5371 , 0.5686 , 0.6011 , 0.6336 , 0.6681 , 0.7021 , 0.7362 , 0.77 , 0.7992 , 0.8202 , 0.8432 , 0.8667 , 0.8907 , 0.915 , 0.9411 , 0.9671 , 0.9928 , 1.0183 , 1.0448 , 1.0708 , 1.0962 , 1.1218 , 1.1476 , 1.1726 , 1.1975 , 1.2224 , 1.2462 , 1.2704 , 1.2933 , 1.3157 , 1.3375 , 1.3579 , 1.3778 , 1.3972 , 1.4146 , 1.4329 , 1.448 , 1.4636 , 1.4752 , 1.4811 , 1.4918 , 1.5017 , 1.5095 , 1.5141 , 1.525 , 1.5338 , 1.5405 , 1.545 , 1.546 , 1.5477]</cl_polar_curve>
+				<cd_polar_curve>[0.01043 , 0.01031 , 0.01012 , 0.00997 , 0.00988 , 0.00977 , 0.00966 , 0.00947 , 0.00886 , 0.00807 , 0.00778 , 0.0076 , 0.00748 , 0.00739 , 0.00732 , 0.00726 , 0.00719 , 0.00719 , 0.00721 , 0.00725 , 0.00728 , 0.00733 , 0.00738 , 0.00745 , 0.00755 , 0.00765 , 0.00776 , 0.00786 , 0.00798 , 0.00812 , 0.00826 , 0.00841 , 0.00853 , 0.00866 , 0.00883 , 0.00897 , 0.00916 , 0.00934 , 0.00951 , 0.00974 , 0.00991 , 0.01008 , 0.01026 , 0.01041 , 0.01047 , 0.01057 , 0.01073 , 0.01097 , 0.01107 , 0.01122 , 0.01142 , 0.01167 , 0.0118 , 0.01199 , 0.01224 , 0.01247 , 0.01266 , 0.01292 , 0.01318 , 0.01344 , 0.01378 , 0.01406 , 0.01445 , 0.01485 , 0.01527 , 0.01578 , 0.0163 , 0.0168 , 0.01741 , 0.01791 , 0.01857 , 0.01914 , 0.01979 , 0.02065 , 0.02137 , 0.02221 , 0.02325 , 0.02457 , 0.02555 , 0.02674 , 0.02814 , 0.02983 , 0.03193 , 0.0341 ]</cd_polar_curve>
+			 </polar>
+			 <airfoil_lift_curve>
+			 <alpha station ="ROOT" unit="°">[-5 , -4.75 , -4.5 , -4.25 , -4 , -3.75 , -3.5 , -3.25 , -3 , -2.75 , -2.5 , -2.25 , -2 , -1.75 , -1.5 , -1.25 , -1 , -0.75 , -0.5 , -0.25 , 0 , 0.25 , 0.5 , 0.75 , 1 , 1.25 , 1.5 , 2 , 2.25 , 2.5 , 2.75 , 3 , 3.25 , 3.5 , 3.75 , 4 , 4.25 , 4.5 , 4.75 , 5 , 5.25 , 5.5 , 5.75 , 6 , 6.25 , 6.5 , 6.75 , 7 , 7.25 , 7.5 , 7.75 , 8 , 8.25 , 8.5 , 8.75 , 9 , 9.25 , 9.5 , 9.75 , 10 , 10.25 , 10.5 , 10.75 , 11 , 11.25 , 11.5 , 11.75 , 12 , 12.25 , 12.5 , 12.75 , 13 , 13.25 , 13.5 , 13.75 , 14 , 14.25 , 14.5 , 14.75 , 15 , 15.25 , 15.5 , 15.75 , 16 , 16.25 , 16.5 , 16.75 , 17 , 17.25 , 17.5 , 17.75 , 18 , 18.25 , 18.5 , 18.75 , 19 , 19.25]</alpha>
+			 <lift_coefficient>[-0.4076 , -0.3828 , -0.3573 , -0.3312 , -0.3048 , -0.2783 , -0.2514 , -0.2244 , -0.1974 , -0.1704 , -0.1436 , -0.1167 , -0.0896 , -0.0625 , -0.0356 , -0.0082 , 0.0191 , 0.0461 , 0.0736 , 0.1013 , 0.1285 , 0.1559 , 0.1832 , 0.2103 , 0.2377 , 0.2646 , 0.2915 , 0.3456 , 0.3724 , 0.3989 , 0.4259 , 0.4527 , 0.4791 , 0.5062 , 0.5322 , 0.5591 , 0.5848 , 0.6118 , 0.6377 , 0.6634 , 0.6895 , 0.715 , 0.7395 , 0.7657 , 0.7921 , 0.8174 , 0.8466 , 0.8767 , 0.9073 , 0.9421 , 0.9773 , 1.0131 , 1.047 , 1.0775 , 1.1125 , 1.1472 , 1.1803 , 1.2143 , 1.2464 , 1.2687 , 1.2758 , 1.2775 , 1.279 , 1.2852 , 1.2951 , 1.3098 , 1.323 , 1.339 , 1.3535 , 1.3678 , 1.3832 , 1.3967 , 1.4093 , 1.4245 , 1.4377 , 1.449 , 1.4586 , 1.4724 , 1.484 , 1.4934 , 1.4999 , 1.5079 , 1.5181 , 1.5253 , 1.5291 , 1.529 , 1.5368 , 1.5402 , 1.539 , 1.5348 , 1.5359 , 1.5317 , 1.5215 , 1.5126 , 1.5036 , 1.489 , 1.4698]</lift_coefficient>
+			 <alpha station ="KINK" unit="°">[-5 , -4.75 , -4.5 , -4.25 , -4 , -3.75 , -3.5 , -3.25 , -3 , -2.75 , -2.5 , -2.25 , -2 , -1.75 , -1.5 , -1.25 , -1 , -0.75 , -0.5 , -0.25 , 0 , 0.25 , 0.5 , 0.75 , 1 , 1.25 , 1.5 , 2 , 2.25 , 2.5 , 2.75 , 3 , 3.25 , 3.5 , 3.75 , 4 , 4.25 , 4.5 , 4.75 , 5 , 5.25 , 5.5 , 5.75 , 6 , 6.25 , 6.5 , 6.75 , 7 , 7.25 , 7.5 , 7.75 , 8 , 8.25 , 8.5 , 8.75 , 9 , 9.25 , 9.5 , 9.75 , 10 , 10.25 , 10.5 , 10.75 , 11 , 11.25 , 11.5 , 11.75 , 12 , 12.25 , 12.5 , 12.75 , 13 , 13.25 , 13.5 , 13.75 , 14 , 14.25 , 14.5 , 14.75 , 15 , 15.25 , 15.5 , 15.75 , 16 , 16.25 , 16.5 , 16.75 , 17 , 17.25 , 17.5 , 17.75 , 18 , 18.25 , 18.5 , 18.75 , 19 , 19.25]</alpha>
+			 <lift_coefficient>[-0.4076 , -0.3828 , -0.3573 , -0.3312 , -0.3048 , -0.2783 , -0.2514 , -0.2244 , -0.1974 , -0.1704 , -0.1436 , -0.1167 , -0.0896 , -0.0625 , -0.0356 , -0.0082 , 0.0191 , 0.0461 , 0.0736 , 0.1013 , 0.1285 , 0.1559 , 0.1832 , 0.2103 , 0.2377 , 0.2646 , 0.2915 , 0.3456 , 0.3724 , 0.3989 , 0.4259 , 0.4527 , 0.4791 , 0.5062 , 0.5322 , 0.5591 , 0.5848 , 0.6118 , 0.6377 , 0.6634 , 0.6895 , 0.715 , 0.7395 , 0.7657 , 0.7921 , 0.8174 , 0.8466 , 0.8767 , 0.9073 , 0.9421 , 0.9773 , 1.0131 , 1.047 , 1.0775 , 1.1125 , 1.1472 , 1.1803 , 1.2143 , 1.2464 , 1.2687 , 1.2758 , 1.2775 , 1.279 , 1.2852 , 1.2951 , 1.3098 , 1.323 , 1.339 , 1.3535 , 1.3678 , 1.3832 , 1.3967 , 1.4093 , 1.4245 , 1.4377 , 1.449 , 1.4586 , 1.4724 , 1.484 , 1.4934 , 1.4999 , 1.5079 , 1.5181 , 1.5253 , 1.5291 , 1.529 , 1.5368 , 1.5402 , 1.539 , 1.5348 , 1.5359 , 1.5317 , 1.5215 , 1.5126 , 1.5036 , 1.489 , 1.4698]</lift_coefficient>
+			 <alpha station ="TIP" unit="°">[-5 , -4.75 , -4.5 , -4.25 , -4 , -3.75 , -3.5 , -3.25 , -3 , -2.75 , -2.5 , -2.25 , -2 , -1.75 , -1.5 , -1.25 , -0.75 , -0.5 , -0.25 , 0 , 0.25 , 0.5 , 0.75 , 1 , 1.25 , 1.5 , 1.75 , 2 , 2.25 , 2.5 , 2.75 , 3 , 3.25 , 3.5 , 3.75 , 4 , 4.25 , 4.5 , 4.75 , 5 , 5.25 , 5.5 , 5.75 , 6 , 6.25 , 6.5 , 6.75 , 7 , 7.25 , 7.5 , 7.75 , 8 , 8.25 , 8.5 , 8.75 , 9 , 9.25 , 9.5 , 9.75 , 10 , 10.25 , 10.5 , 10.75 , 11 , 11.25 , 11.5 , 11.75 , 12 , 12.25 , 12.5 , 12.75 , 13 , 13.25 , 13.5 , 13.75 , 14 , 14.25 , 14.5 , 14.75 , 15 , 15.25 , 15.5 , 15.75 , 16 , 16.25 , 16.5 , 16.75 , 17 , 17.25 , 17.5 , 17.75 , 18 , 18.25 , 18.5 , 18.75 , 19 , 19.25]</alpha>
+			 <lift_coefficient>[-0.4092 , -0.3828 , -0.3565 , -0.33 , -0.3033 , -0.2764 , -0.2491 , -0.222 , -0.1966 , -0.172 , -0.1452 , -0.1179 , -0.0903 , -0.0626 , -0.035 , -0.0074 , 0.0481 , 0.0759 , 0.1038 , 0.1317 , 0.1593 , 0.1871 , 0.2146 , 0.2419 , 0.2693 , 0.2967 , 0.324 , 0.3507 , 0.3772 , 0.4036 , 0.4296 , 0.455 , 0.4812 , 0.5082 , 0.5371 , 0.5686 , 0.6011 , 0.6336 , 0.6681 , 0.7021 , 0.7362 , 0.77 , 0.7992 , 0.8202 , 0.8432 , 0.8667 , 0.8907 , 0.915 , 0.9411 , 0.9671 , 0.9928 , 1.0183 , 1.0448 , 1.0708 , 1.0962 , 1.1218 , 1.1476 , 1.1726 , 1.1975 , 1.2224 , 1.2462 , 1.2704 , 1.2933 , 1.3157 , 1.3375 , 1.3579 , 1.3778 , 1.3972 , 1.4146 , 1.4329 , 1.448 , 1.4636 , 1.4752 , 1.4811 , 1.4918 , 1.5017 , 1.5095 , 1.5141 , 1.525 , 1.5338 , 1.5405 , 1.545 , 1.546 , 1.5477 , 1.554 , 1.5578 , 1.5586 , 1.5564 , 1.5504 , 1.5399 , 1.5239 , 1.5142 , 1.5045 , 1.4921 , 1.4758 , 1.4587 , 1.4393]</lift_coefficient>
+			 </airfoil_lift_curve>
+             <distribution>
+                   <geometry>
+						<y_adimensional_stations>[0,0.3478,1]</y_adimensional_stations>
+						<chord_distribution unit="m">[2.49,2.49,1.75]</chord_distribution>
+						<!-- XLE is in LRF, so the root value of XLE  must be zero -->
+						<x_le_distribution unit="m">[0,0,0.58]</x_le_distribution>
+						<twist_distribution unit="°">[0,0,-2]</twist_distribution>
+						<dihedral_distribution unit="°">[0,0,0]</dihedral_distribution>
+						<max_thickness_airfoil>[0.18,0.18,0.135]</max_thickness_airfoil>
+						<radius_leading_edge unit="m">[0.15,0.15,0.15]</radius_leading_edge>
+                    </geometry>
+                    <aerodynamics>
+						<alpha_zero_lift_distribution unit="°">[-1.2, -1.2 , -1.1]</alpha_zero_lift_distribution>
+						<cl_alpha_distribution unit="1/deg">[0.11,0.11,0.11]</cl_alpha_distribution>
+						<alpha_star_distribution unit="°">[9.5,9.5,10]</alpha_star_distribution>
+						<maximum_lift_coefficient_distribution>[1.8,1.8,1.8]</maximum_lift_coefficient_distribution>
+						<x_ac_referred_to_chord>[0.25,0.25,0.25]</x_ac_referred_to_chord>
+						<c_m_ac>[-0.02,-0.02,-0.02]</c_m_ac>
+					</aerodynamics>	
+             </distribution>
+			 <high_lift_devices>
+			 <!-- if condition = CRUISE, these field will be not read  -->
+			  <flaps>
+			 <!-- It is possible to set a variable number of flap and slat using different id using progressive numbers   -->
+                 <flap id = "1">
+                     <flap_type>FOWLER</flap_type>
+					 <!--
+					 <flap_type>SINGLE_SLOTTED</flap_type>
+					 <flap_type>DOUBLE_SLOTTED</flap_type>
+					 <flap_type>PLAIN</flap_type>
+					 <flap_type>TRIPLE_SLOTTED</flap_type> -->
+                     <flap_chord_ratio>0.32</flap_chord_ratio>
+					 <!-- This value must be in degree -->
+                     <flap_deflection unit = "°">40</flap_deflection>
+                     <flap_non_dimensional_inner_station>0.1</flap_non_dimensional_inner_station>
+                     <flap_non_dimensional_outer_station>0.3</flap_non_dimensional_outer_station>
+                 </flap>
+                 <flap id = "2">
+                     <flap_type>FOWLER</flap_type>
+					  <!--
+					 <flap_type>SINGLE_SLOTTED</flap_type>
+					 <flap_type>DOUBLE_SLOTTED</flap_type>
+					 <flap_type>PLAIN</flap_type>
+					 <flap_type>TRIPLE_SLOTTED</flap_type> -->
+                     <flap_chord_ratio>0.32</flap_chord_ratio>
+					 <!-- This value must be in degree -->
+                     <flap_deflection unit = "°">40</flap_deflection>
+                     <flap_non_dimensional_inner_station>0.31</flap_non_dimensional_inner_station>
+                     <flap_non_dimensional_outer_station>0.78</flap_non_dimensional_outer_station>
+                 </flap>
+             </flaps>
+             <slats>
+                 <slat id = "1">
+				 <!-- This value must be in degree -->
+                     <slat_deflection unit = "°">25</slat_deflection>
+                     <slat_chord_ratio>0.055</slat_chord_ratio>
+                     <slat_extension_ratio>1.1</slat_extension_ratio>
+                     <slat_non_dimensional_inner_station>0.12</slat_non_dimensional_inner_station>
+                     <slat_non_dimensional_outer_station>0.33</slat_non_dimensional_outer_station>
+                 </slat>
+                 <slat id = "2">
+				 <!-- This value must be in degree -->
+                     <slat_deflection unit = "°">25</slat_deflection>
+                     <slat_chord_ratio unit = "">0.085</slat_chord_ratio>
+                     <slat_extension_ratio>1.1</slat_extension_ratio>
+                     <slat_non_dimensional_inner_station>0.4</slat_non_dimensional_inner_station>
+                     <slat_non_dimensional_outer_station>0.56</slat_non_dimensional_outer_station>
+                 </slat>
+                 <slat id = "3">
+				 <!-- This value must be in degree -->
+                     <slat_deflection unit = "°">25</slat_deflection>
+                     <slat_chord_ratio>0.095</slat_chord_ratio>
+                     <slat_extension_ratio>1.1</slat_extension_ratio>
+                     <slat_non_dimensional_inner_station>0.57</slat_non_dimensional_inner_station>
+                     <slat_non_dimensional_outer_station>0.73</slat_non_dimensional_outer_station>
+                 </slat>
+			 	<slat id = "4">
+				<!-- This value must be in degree -->
+                     <slat_deflection unit = "°">25</slat_deflection>
+                     <slat_chord_ratio>0.11</slat_chord_ratio>
+                     <slat_extension_ratio>1.1</slat_extension_ratio>
+                     <slat_non_dimensional_inner_station>0.74</slat_non_dimensional_inner_station>
+                     <slat_non_dimensional_outer_station>0.95</slat_non_dimensional_outer_station>
+                 </slat>
+             </slats>
+			</high_lift_devices>
+        </wing>
+		<fuselage>
+      	<!-- The fuselage doesn't need the position because its origin is the origib of BRF (0,0,0) -->
+      	 	<fuselageDiameter  unit="m">2.8</fuselageDiameter>
+            <fuselageLength unit="m">27.166</fuselageLength>
+			<!--Nose fineness ratio is the ratio between nose fuselage length and maximum fuselage diameter. It varies between [1.2-1.7] -->
+			<noseFinenessRatio>1.2</noseFinenessRatio>
+			<!--Fuselage fineness ratio is the ratio between fuselage length and diameter. It varies between [7-12] -->
+            <finenessRatio>10.08</finenessRatio>
+			<!--Tailcone fineness ratio is the ratio between tailcone fuselage length and maximum fuselage diameter. It varies between [2.3-3.0] -->
+			<tailFinenessRatio>2.2</tailFinenessRatio>
+			<!--Windshield angle is the angle of the front window. It varies between [35 deg - 50 deg] -->
+            <windshieldAngle unit="°">25.29</windshieldAngle>
+			<!--Upsweep angle is the upward curvature angle of the aft fuselage. It varies between [10 deg - 18 deg]-->
+			<upsweepAngle unit="°">20</upsweepAngle>
+			<!--xPercentPositionPole is the position along x-axis of the reference moment point. It can be equal to 0.35, 0.50 or 0.60 which corresponds to 35%, 50% or 60% of 
+fuselage length respectively-->
+            <xPercentPositionPole>0.5</xPercentPositionPole>
+		</fuselage>
+		<!-- It is possible to choose the method to evaluate the drag polar of lifting surfaces. All data are given in the section <polar> below.
+INPUT: the 3D polar of the lifting surface is given as input
+CALCULATED_PARABOLIC: the drag polar is calculated using the parabolic formula CL0+kCL^2
+CALCULATED_INPUT_AIRFOIL: the drag of the lifting surface is calculated starting from the 2D polar of airfoils given as input
+CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated starting from the 2D polar of airfoils carculated using databases -->  
+		<horizontal_tail HtailAirfoilLiftCurve="INPUT" hTailPolar="CALCULATED_INPUT_AIRFOIL">
+		<!-- <horizontal_tail airfoilLiftCurve="CALCULATED"> -->
+	    <!-- <horizontal_tail polar="INPUT"> -->
+	    <!-- <horizontal_tail polar="CALCULATED_PARABOLIC"> -->
+	    <!-- <horizontal_tail polar="CALCULATED_INPUT_AIRFOIL"> -->
+	    <!-- <horizontal_tail polar="CALCULATED_DATABASE_AIRFOIL"> -->
+		    <position>
+			<!-- This is the position of the component in BRF. The BRF has origin in 0,0,0 -->
+               <x unit="m">24.6</x>
+               <y unit="m">0.0</y>
+               <z unit="m">7</z>
+            </position>
+			<global>
+                <surface unit="m²">11.73</surface>
+                <aspect_ratio>4.55</aspect_ratio>
+                <number_of_point_semispan>100</number_of_point_semispan>
+                <adimensional_kink_station>1</adimensional_kink_station>
+				<angle_of_incidence unit="°">-1</angle_of_incidence>
+				<!-- In this version this value must be 2. -->
+				<number_of_given_sections>2</number_of_given_sections>
+				<!-- If your airfoil isn’t in the list, you can use the most similar one. -->
+				<mean_airfoil_family>NACA_4_DIGIT</mean_airfoil_family>
+				<!--
+				<mean_airfoil_family>NACA_4_DIGIT</mean_airfoil_family>
+				<mean_airfoil_family>NACA_5_DIGIT</mean_airfoil_family>
+				<mean_airfoil_family>NACA_63_SERIES</mean_airfoil_family>
+				<mean_airfoil_family>NACA_64_SERIES</mean_airfoil_family>
+				<mean_airfoil_family>NACA_65_SERIES</mean_airfoil_family>
+				<mean_airfoil_family>BICONVEX</mean_airfoil_family>
+				<mean_airfoil_family>DOUBLE_WEDGE</mean_airfoil_family>
+				-->
+				<!-- Useful for the dynamic pressure ratio calculation -->
+				<vertical_tail_span unit="m">4.55</vertical_tail_span>
+            </global>
+			 <polar>
+			 <!-- <"INPUT">  NB: The polar is given in the current condition  
+			 	<cl_polar_curve>[1,2,3,4,5,6,7,8]</cl_polar_curve>
+				<cd_polar_curve>[1,2,3,4,5,6,7,8]</cd_polar_curve> -->
+			<!-- <"CALCULATED_INPUT_AIRFOIL"> -->
+			<!-- for each airfoil of input station . The polar is given in the current condition-->
+			<!-- the cl must be strictly increasing-->
+				<cl_polar_curve station="ROOT">[-0.5567 , -0.5196 , -0.4882 , -0.4556 , -0.4267 , -0.3976 , -0.3705 , -0.3437 , -0.3171 , -0.2904 , -0.2635 , -0.2367 , -0.21 , -0.1831 , -0.1562 , -0.1292 , -0.1023 , -0.0756 , -0.049 , -0.0238 , 0 , 0.0238 , 0.0491 , 0.0756 , 0.1024 , 0.1292 , 0.1562 , 0.1832 , 0.21 , 0.2636 , 0.2904 , 0.3172 , 0.3438 , 0.3706 , 0.3977 , 0.4267 , 0.4557 , 0.4883 , 0.5197 , 0.5567 , 0.5933 , 0.63 , 0.6636 , 0.6996 , 0.7351 , 0.7709 , 0.8078 , 0.8366 , 0.8587 , 0.881 , 0.9028 , 0.9243 , 0.947 , 0.9694 , 0.9913 , 1.0136 , 1.0368 , 1.0596 , 1.0816 , 1.1046 , 1.1284 , 1.1518 , 1.1746 , 1.1969 , 1.2209 , 1.2443 , 1.267 , 1.2881 , 1.3096 , 1.3325 , 1.3546 , 1.3755 , 1.3949 , 1.411 , 1.4317 , 1.4511 , 1.4691 , 1.4836 , 1.4959 , 1.504 , 1.5128 , 1.5269 , 1.5389 , 1.5494 , 1.5575 , 1.5636 , 1.5661 ]</cl_polar_curve>
+				<cd_polar_curve>[0.00878 , 0.00862 , 0.0084 , 0.00824 , 0.00804 , 0.00791 , 0.00774 , 0.00764 , 0.0075 , 0.00741 , 0.00733 , 0.00726 , 0.00725 , 0.00722 , 0.00721 , 0.00723 , 0.00729 , 0.00734 , 0.00737 , 0.00732 , 0.00717 , 0.00732 , 0.00737 , 0.00734 , 0.00729 , 0.00723 , 0.00721 , 0.00723 , 0.00725 , 0.00733 , 0.00741 , 0.0075 , 0.00764 , 0.00774 , 0.00791 , 0.00804 , 0.00824 , 0.00839 , 0.00862 , 0.00878 , 0.00904 , 0.0092 , 0.00945 , 0.00962 , 0.00984 , 0.01008 , 0.01027 , 0.01052 , 0.01072 , 0.0109 , 0.01113 , 0.01143 , 0.0116 , 0.01183 , 0.01214 , 0.01243 , 0.01265 , 0.01293 , 0.01331 , 0.01364 , 0.0139 , 0.01423 , 0.01464 , 0.0151 , 0.0154 , 0.01575 , 0.01617 , 0.01673 , 0.01722 , 0.01759 , 0.01801 , 0.01851 , 0.01911 , 0.01994 , 0.02037 , 0.02087 , 0.02144 , 0.02207 , 0.02281 , 0.02383 , 0.02486 , 0.0256 , 0.0265 , 0.02757 , 0.02886 , 0.03041 , 0.03239  ]</cd_polar_curve>
+				<cl_polar_curve station="TIP">[-0.5567 , -0.5196 , -0.4882 , -0.4556 , -0.4267 , -0.3976 , -0.3705 , -0.3437 , -0.3171 , -0.2904 , -0.2635 , -0.2367 , -0.21 , -0.1831 , -0.1562 , -0.1292 , -0.1023 , -0.0756 , -0.049 , -0.0238 , 0 , 0.0238 , 0.0491 , 0.0756 , 0.1024 , 0.1292 , 0.1562 , 0.1832 , 0.21 , 0.2636 , 0.2904 , 0.3172 , 0.3438 , 0.3706 , 0.3977 , 0.4267 , 0.4557 , 0.4883 , 0.5197 , 0.5567 , 0.5933 , 0.63 , 0.6636 , 0.6996 , 0.7351 , 0.7709 , 0.8078 , 0.8366 , 0.8587 , 0.881 , 0.9028 , 0.9243 , 0.947 , 0.9694 , 0.9913 , 1.0136 , 1.0368 , 1.0596 , 1.0816 , 1.1046 , 1.1284 , 1.1518 , 1.1746 , 1.1969 , 1.2209 , 1.2443 , 1.267 , 1.2881 , 1.3096 , 1.3325 , 1.3546 , 1.3755 , 1.3949 , 1.411 , 1.4317 , 1.4511 , 1.4691 , 1.4836 , 1.4959 , 1.504 , 1.5128 , 1.5269 , 1.5389 , 1.5494 , 1.5575 , 1.5636 , 1.5661 ]</cl_polar_curve>
+				<cd_polar_curve>[ 0.00878 , 0.00862 , 0.0084 , 0.00824 , 0.00804 , 0.00791 , 0.00774 , 0.00764 , 0.0075 , 0.00741 , 0.00733 , 0.00726 , 0.00725 , 0.00722 , 0.00721 , 0.00723 , 0.00729 , 0.00734 , 0.00737 , 0.00732 , 0.00717 , 0.00732 , 0.00737 , 0.00734 , 0.00729 , 0.00723 , 0.00721 , 0.00723 , 0.00725 , 0.00733 , 0.00741 , 0.0075 , 0.00764 , 0.00774 , 0.00791 , 0.00804 , 0.00824 , 0.00839 , 0.00862 , 0.00878 , 0.00904 , 0.0092 , 0.00945 , 0.00962 , 0.00984 , 0.01008 , 0.01027 , 0.01052 , 0.01072 , 0.0109 , 0.01113 , 0.01143 , 0.0116 , 0.01183 , 0.01214 , 0.01243 , 0.01265 , 0.01293 , 0.01331 , 0.01364 , 0.0139 , 0.01423 , 0.01464 , 0.0151 , 0.0154 , 0.01575 , 0.01617 , 0.01673 , 0.01722 , 0.01759 , 0.01801 , 0.01851 , 0.01911 , 0.01994 , 0.02037 , 0.02087 , 0.02144 , 0.02207 , 0.02281 , 0.02383 , 0.02486 , 0.0256 , 0.0265 , 0.02757 , 0.02886 , 0.03041 , 0.03239  ]</cd_polar_curve>
+			</polar>
+			<airfoil_lift_curve>
+			  <alpha station ="ROOT" unit="°">[-5 , -4.75 , -4.5 , -4.25 , -4 , -3.75 , -3.5 , -3.25 , -3 , -2.75 , -2.5 , -2.25 , -2 , -1.75 , -1.5 , -1.25 , -1 , -0.75 , -0.5 , -0.25 , 0 , 0.25 , 0.5 , 0.75 , 1 , 1.25 , 1.5 , 1.75 , 2 , 2.5 , 2.75 , 3 , 3.25 , 3.5 , 3.75 , 4 , 4.25 , 4.5 , 4.75 , 5 , 5.25 , 5.5 , 5.75 , 6 , 6.25 , 6.5 , 6.75 , 7 , 7.25 , 7.5 , 7.75 , 8 , 8.25 , 8.5 , 8.75 , 9 , 9.25 , 9.5 , 9.75 , 10 , 10.25 , 10.5 , 10.75 , 11 , 11.25 , 11.5 , 11.75 , 12 , 12.25 , 12.5 , 12.75 , 13 , 13.25 , 13.5 , 13.75 , 14 , 14.25 , 14.5 , 14.75 , 15 , 15.25 , 15.5 , 15.75 , 16 , 16.25 , 16.5 , 16.75 , 17 , 17.25 , 17.5 , 17.75 , 18 , 18.25 , 18.5 , 18.75 , 19 , 19.25]</alpha>
+			 <lift_coefficient>[-0.5567 , -0.5196 , -0.4882 , -0.4556 , -0.4267 , -0.3976 , -0.3705 , -0.3437 , -0.3171 , -0.2904 , -0.2635 , -0.2367 , -0.21 , -0.1831 , -0.1562 , -0.1292 , -0.1023 , -0.0756 , -0.049 , -0.0238 , 0 , 0.0238 , 0.0491 , 0.0756 , 0.1024 , 0.1292 , 0.1562 , 0.1832 , 0.21 , 0.2636 , 0.2904 , 0.3172 , 0.3438 , 0.3706 , 0.3977 , 0.4267 , 0.4557 , 0.4883 , 0.5197 , 0.5567 , 0.5933 , 0.63 , 0.6636 , 0.6996 , 0.7351 , 0.7709 , 0.8078 , 0.8366 , 0.8587 , 0.881 , 0.9028 , 0.9243 , 0.947 , 0.9694 , 0.9913 , 1.0136 , 1.0368 , 1.0596 , 1.0816 , 1.1046 , 1.1284 , 1.1518 , 1.1746 , 1.1969 , 1.2209 , 1.2443 , 1.267 , 1.2881 , 1.3096 , 1.3325 , 1.3546 , 1.3755 , 1.3949 , 1.411 , 1.4317 , 1.4511 , 1.4691 , 1.4836 , 1.4959 , 1.504 , 1.5128 , 1.5269 , 1.5389 , 1.5494 , 1.5575 , 1.5636 , 1.5661 , 1.563 , 1.558 , 1.5605 , 1.5589 , 1.5526 , 1.5403 , 1.5195 , 1.4865 , 1.4418 , 1.3907]</lift_coefficient>
+			 <alpha station ="TIP" unit="°">[-5 , -4.75 , -4.5 , -4.25 , -4 , -3.75 , -3.5 , -3.25 , -3 , -2.75 , -2.5 , -2.25 , -2 , -1.75 , -1.5 , -1.25 , -1 , -0.75 , -0.5 , -0.25 , 0 , 0.25 , 0.5 , 0.75 , 1 , 1.25 , 1.5 , 1.75 , 2 , 2.5 , 2.75 , 3 , 3.25 , 3.5 , 3.75 , 4 , 4.25 , 4.5 , 4.75 , 5 , 5.25 , 5.5 , 5.75 , 6 , 6.25 , 6.5 , 6.75 , 7 , 7.25 , 7.5 , 7.75 , 8 , 8.25 , 8.5 , 8.75 , 9 , 9.25 , 9.5 , 9.75 , 10 , 10.25 , 10.5 , 10.75 , 11 , 11.25 , 11.5 , 11.75 , 12 , 12.25 , 12.5 , 12.75 , 13 , 13.25 , 13.5 , 13.75 , 14 , 14.25 , 14.5 , 14.75 , 15 , 15.25 , 15.5 , 15.75 , 16 , 16.25 , 16.5 , 16.75 , 17 , 17.25 , 17.5 , 17.75 , 18 , 18.25 , 18.5 , 18.75 , 19 , 19.25]</alpha>
+			 <lift_coefficient>[-0.5567 , -0.5196 , -0.4882 , -0.4556 , -0.4267 , -0.3976 , -0.3705 , -0.3437 , -0.3171 , -0.2904 , -0.2635 , -0.2367 , -0.21 , -0.1831 , -0.1562 , -0.1292 , -0.1023 , -0.0756 , -0.049 , -0.0238 , 0 , 0.0238 , 0.0491 , 0.0756 , 0.1024 , 0.1292 , 0.1562 , 0.1832 , 0.21 , 0.2636 , 0.2904 , 0.3172 , 0.3438 , 0.3706 , 0.3977 , 0.4267 , 0.4557 , 0.4883 , 0.5197 , 0.5567 , 0.5933 , 0.63 , 0.6636 , 0.6996 , 0.7351 , 0.7709 , 0.8078 , 0.8366 , 0.8587 , 0.881 , 0.9028 , 0.9243 , 0.947 , 0.9694 , 0.9913 , 1.0136 , 1.0368 , 1.0596 , 1.0816 , 1.1046 , 1.1284 , 1.1518 , 1.1746 , 1.1969 , 1.2209 , 1.2443 , 1.267 , 1.2881 , 1.3096 , 1.3325 , 1.3546 , 1.3755 , 1.3949 , 1.411 , 1.4317 , 1.4511 , 1.4691 , 1.4836 , 1.4959 , 1.504 , 1.5128 , 1.5269 , 1.5389 , 1.5494 , 1.5575 , 1.5636 , 1.5661 , 1.563 , 1.558 , 1.5605 , 1.5589 , 1.5526 , 1.5403 , 1.5195 , 1.4865 , 1.4418 , 1.3907]</lift_coefficient>
+			</airfoil_lift_curve>
+            <distribution>
+                <geometry>
+					<y_adimensional_stations>[0,1]</y_adimensional_stations>
+					<chord_distribution unit="m">[2.044,1.165]</chord_distribution>
+					<!-- XLE is in LRF, so the root value of XLE  must be zero -->
+					<x_le_distribution unit="m">[0,1.03]</x_le_distribution>
+					<twist_distribution unit="°">[0,0]</twist_distribution>
+					<dihedral_distribution unit="°">[0,0]</dihedral_distribution>
+					<max_thickness_airfoil>[0.12,0.12]</max_thickness_airfoil>
+                </geometry>
+                <aerodynamics>
+					<alpha_zero_lift_distribution unit="°">[0.0,0.0]</alpha_zero_lift_distribution>
+					<alpha_star_distribution unit="°">[8,8]</alpha_star_distribution>
+					<alpha_stall_distribution unit="°">[13, 13]</alpha_stall_distribution>
+					<linear_slope_coefficient unit="1/°">[0.10, 0.10]</linear_slope_coefficient>
+					<maximum_lift_coefficient_distribution>[1.6,1.6]</maximum_lift_coefficient_distribution>
+					<x_ac_referred_to_chord>[0.20,0.20]</x_ac_referred_to_chord>
+					<c_m_ac>[0.0,0.0]</c_m_ac>
+			    </aerodynamics>	
+            </distribution>
+			<elevator>
+      		    <!-- these values must be 7 or less  -->
+				<angles_of_elevator_deflection unit="°">[-25,-20,-15,-10,-5,0,5]</angles_of_elevator_deflection>
+				<!-- elevator is automatically modelled as plain flap  -->
+                <elevator_chord_ratio>0.3</elevator_chord_ratio>
+                <elevator_deflection unit = "°">40</elevator_deflection>
+                <elevator_non_dimensional_inner_station>0.12</elevator_non_dimensional_inner_station>
+                <elevator_non_dimensional_outer_station>0.9</elevator_non_dimensional_outer_station>
+			</elevator>
+		</horizontal_tail>
+		<!-- must be modified?  -->
+		<engine>
+			   <tilting_angle unit="deg">0.0</tilting_angle>
+		   <dimensions>
+			    <length unit="m">4.371</length>
+				<propeller_diameter unit="m">3.6</propeller_diameter>
+			</dimensions>
+			<specifications>
+				<number_of_propeller_blades>6</number_of_propeller_blades>
+				<static_power unit="hp">7176.55</static_power>
+				<dry_mass unit="kg">4154.2</dry_mass>
+				<number_of_compressor_stages>5</number_of_compressor_stages>
+				<number_of_shafts>2</number_of_shafts>
+				<overall_pressure_ratio>15.0</overall_pressure_ratio>
+			</specifications>
+		</engine>
+<!-- It is possible the plots using TRUE as value of the specific plot. If no plots are required it is possible to set <plot plot="FALSE"> as attribute of plot.  -->
+	<plot plot="TRUE">
+		<lift>
+			<wing>
+			<!-- This flag allows to plot CL 3d curve and cl distribution at CL MAX -->
+			    <CL_clean_curve>TRUE</CL_clean_curve>
+				<CL_high_lift_curve>TRUE</CL_high_lift_curve>		
+			</wing>
+			<horizontal_tail>
+			    <CL_clean_curve>TRUE</CL_clean_curve>
+				<CL_curve_with_elevator_deflections>TRUE</CL_curve_with_elevator_deflections>		
+			</horizontal_tail>
+		</lift>
+		<drag>
+			<wing>
+			   <polar_drag>TRUE</polar_drag>
+			   <polar_drag_with_high_lift_devices>TRUE</polar_drag_with_high_lift_devices>
+			</wing>
+			<horizontal_tail>
+			   <polar_drag>TRUE</polar_drag>
+			</horizontal_tail>
+		</drag>
+		<moment>
+			<wing>
+			   <moment_coefficient_respect_to_other_poles>TRUE</moment_coefficient_respect_to_other_poles>
+			   <moment_coefficient_respect_to_aerodynamic_center>TRUE</moment_coefficient_respect_to_aerodynamic_center>
+			</wing>
+			<horizontal_tail>
+			   <moment_coefficient_respect_to_quarter_chord>FALSE</moment_coefficient_respect_to_quarter_chord>
+			   <moment_coefficient_respect_to_aerodynamic_center>FALSE</moment_coefficient_respect_to_aerodynamic_center>
+			</horizontal_tail>
+			<fuselage>
+			   <moment_coefficient>TRUE</moment_coefficient>
+			</fuselage>
+			<engine>
+			   <propulsive_System_CM_direct_effects>TRUE</propulsive_System_CM_direct_effects>
+			   <propulsive_System_CM_indirect_effects>TRUE</propulsive_System_CM_indirect_effects>
+			</engine>
+		</moment>
+		<stability>
+			 <CL_Total>TRUE</CL_Total>
+			 <CM_cg_vs_alpha_body_components>TRUE</CM_cg_vs_alpha_body_components>
+			 <CM_cg_vs_alpha_body_aircraft>TRUE</CM_cg_vs_alpha_body_aircraft>	
+			 <CM_cg_vs_alpha_body_aircraft_var_deltae>TRUE</CM_cg_vs_alpha_body_aircraft_var_deltae>		
+			 <CL_tot_vs_alpha_body_aircraft_var_deltae>TRUE</CL_tot_vs_alpha_body_aircraft_var_deltae>
+			 <CM_cg_vs_CL_tot_var_deltae>TRUE</CM_cg_vs_CL_tot_var_deltae>
+			 <Downwash_angle>TRUE</Downwash_angle>
+			 <Downwash_gradient>TRUE</Downwash_gradient>
+		     <delta_e_equilibrium>TRUE</delta_e_equilibrium>
+			 <neutral_point_stick_fixed>TRUE</neutral_point_stick_fixed>
+		</stability>
+		<distribution>
+			<cl_wing>TRUE</cl_wing>
+			<induced_angle_of_attack_wing>TRUE</induced_angle_of_attack_wing>
+			<center_of_pressure_wing>TRUE</center_of_pressure_wing>
+			<!-- The cm is referred to the pole defined in the tag <wing_pole_in_equation> -->
+			<cm_wing>TRUE</cm_wing>
+			<cl_horizontal_tail>TRUE</cl_horizontal_tail>
+			<induced_angle_of_attack_horizontal_tail>TRUE</induced_angle_of_attack_horizontal_tail>
+			<center_of_pressure_horizontal_tail>FALSE</center_of_pressure_horizontal_tail>
+			<!-- The cm is referred to the pole defined in the tag <horizontal_tail_pole_in_equation> -->
+			<cm_horizontal_tail>TRUE</cm_horizontal_tail>
+		</distribution>
+	</plot>
+</Longitudinal_static_stability_executable>

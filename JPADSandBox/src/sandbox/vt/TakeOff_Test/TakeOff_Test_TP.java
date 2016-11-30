@@ -405,6 +405,7 @@ public class TakeOff_Test_TP {
 		System.out.println("\nBALANCED FIELD LENGTH = " + theTakeOffCalculator.getBalancedFieldLength());
 		System.out.println("\nDecision Speed (V1/VsTO) = " + theTakeOffCalculator.getV1().divide(theTakeOffCalculator.getvSTakeOff()));
 		System.out.println("-----------------------------------------------------------\n");
+		
 	}
 
 	//------------------------------------------------------------------------------------------

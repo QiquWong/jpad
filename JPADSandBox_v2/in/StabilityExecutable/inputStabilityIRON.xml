@@ -54,7 +54,7 @@ CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated start
             <global>
                 <surface unit="m²">105</surface>
                 <aspect_ratio>12.0</aspect_ratio>
-                <number_of_point_semispan>70</number_of_point_semispan>
+                <number_of_point_semispan>100</number_of_point_semispan>
                 <adimensional_kink_station>0.3</adimensional_kink_station>
 				<angle_of_incidence unit="°">2</angle_of_incidence>
 				<number_of_given_sections>3</number_of_given_sections>
@@ -361,7 +361,7 @@ CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated start
 			<induced_angle_of_attack_horizontal_tail>TRUE</induced_angle_of_attack_horizontal_tail>
 			<center_of_pressure_horizontal_tail>FALSE</center_of_pressure_horizontal_tail>
 			<!-- The cm is referred to the pole defined in the tag <horizontal_tail_pole_in_equation> -->
-			<cm_horizontal_tail>TRUE</cm_horizontal_tail>
+			<cm_horizontal_tail>FALSE</cm_horizontal_tail>
 		</distribution>
 	</plot>
 </Longitudinal_static_stability_executable>
