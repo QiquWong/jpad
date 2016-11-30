@@ -4,10 +4,10 @@
 <!-- If CONSTANT the downwash is calculated using Roskam method, if variable using Slingerland method-->   
  <Longitudinal_static_stability_executable downwash="VARIABLE"> <!-- Longitudinal_static_stability_executable downwash="VARIABLE" -->
  <!-- Longitudinal_static_stability_executable downwash="CONSTANT" -->
- <aircraft_name>IRON</aircraft_name>
+ <aircraft_name>IRON_CGbalance</aircraft_name>
         <operating_conditions>
 				<!-- This is the position of the aircraft CG in the BRF -->
-                <x_cg unit="m">20.40</x_cg>
+                <x_cg unit="m">23.40</x_cg>
                 <y_cg unit="m">0.0</y_cg>
                 <z_cg unit="m">-0.01</z_cg>
                 <altitude unit="m">0</altitude>
