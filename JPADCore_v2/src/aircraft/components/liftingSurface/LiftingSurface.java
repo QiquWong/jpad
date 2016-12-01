@@ -697,7 +697,7 @@ public class LiftingSurface implements ILiftingSurface {
 	}
 
 	public void calculateCG(ComponentEnum type, Map<ComponentEnum, MethodEnum> methodsMap) {
-		calculateCG(MethodEnum.SFORZA, type);
+//		calculateCG(MethodEnum.SFORZA, type);
 		calculateCG(MethodEnum.TORENBEEK_1982, type);
 		
 		if(!methodsMap.get(type).equals(MethodEnum.AVERAGE)) { 
@@ -746,6 +746,7 @@ public class LiftingSurface implements ILiftingSurface {
 		_yCG = Amount.valueOf(0., SI.METER);
 		_zCG = Amount.valueOf(0., SI.METER);
 
+		@SuppressWarnings("unused")
 		Double lambda = _liftingSurfaceCreator.getTaperRatioEquivalentWing(),
 				span = getSpan().getEstimatedValue(),
 				xRearSpar = _liftingSurfaceCreator.getSecondarySparNonDimensionalPosition(),
@@ -755,21 +756,21 @@ public class LiftingSurface implements ILiftingSurface {
 		case WING : {
 			switch(method) {
 
-			//		 Bad results ...
-			case SFORZA : { // page 359 Sforza (2014) - Aircraft Design
-				methodsList.add(method);
-				_yCG = Amount.valueOf(
-						(span/6) * 
-						((1+2*lambda)/(1-lambda)),
-						SI.METER);
-
-				_xCG = Amount.valueOf(
-						_liftingSurfaceCreator.getChordEquivalentAtY(_yCG.getEstimatedValue())
-						+ _liftingSurfaceCreator.getXLEAtYEquivalent(_yCG.getEstimatedValue())
-						, SI.METER);
-				_xCGMap.put(method, _xCG);
-				_yCGMap.put(method, _yCG);
-			} break;
+//			//		 Bad results ...
+//			case SFORZA : { // page 359 Sforza (2014) - Aircraft Design
+//				methodsList.add(method);
+//				_yCG = Amount.valueOf(
+//						(span/6) * 
+//						((1+2*lambda)/(1-lambda)),
+//						SI.METER);
+//
+//				_xCG = Amount.valueOf(
+//						(_liftingSurfaceCreator.getChordEquivalentAtY(_yCG.getEstimatedValue())/2)
+//						+ _liftingSurfaceCreator.getXLEAtYEquivalent(_yCG.getEstimatedValue())
+//						, SI.METER);
+//				_xCGMap.put(method, _xCG);
+//				_yCGMap.put(method, _yCG);
+//			} break;
 
 			// page 359 Sforza (2014) - Aircraft Design
 			// page 313 Torenbeek (1982)
@@ -814,7 +815,7 @@ public class LiftingSurface implements ILiftingSurface {
 						, SI.METER);
 
 				_xCG = Amount.valueOf(
-						0.42*_liftingSurfaceCreator.getChordEquivalentAtY(_yCG.getEstimatedValue())
+						(0.42*_liftingSurfaceCreator.getChordEquivalentAtY(_yCG.getEstimatedValue()))
 						+ _liftingSurfaceCreator.getXLEAtYEquivalent(_yCG.getEstimatedValue())
 						, SI.METER);
 

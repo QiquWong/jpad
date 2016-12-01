@@ -1442,7 +1442,8 @@ public class ACWeightsManager extends ACCalculatorManager implements IACWeightsM
 
 			sum = sum.plus(_maximumTakeOffMass);
 			i++;
-			_maximumTakeOffMass = sum.divide(i);
+			if(i<4)
+				_maximumTakeOffMass = sum.divide(i);
 
 			aircraft.getTheAnalysisManager().getTheWeights().calculateDependentVariables(aircraft);
 		}

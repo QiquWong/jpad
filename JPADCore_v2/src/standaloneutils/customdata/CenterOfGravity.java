@@ -125,7 +125,7 @@ public class CenterOfGravity {
 			if (_zBRF == null) {
 				_zBRF = Amount.valueOf(_yLRF.getEstimatedValue(), SI.METER);
 			} else {
-				_zBRF = _y0.plus(_yLRF);
+				_zBRF = _z0.plus(_yLRF);
 			}
 		}
 		else {
